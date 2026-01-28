@@ -28,6 +28,61 @@ from .analysis_utils import loglog_fit
 from .plot_utils import set_loglog_axes, unique_legend_entries
 
 
+_ORIGINAL_PF_LABEL_MAP: Dict[PFLabel, str] = {
+    # original artifacts use legacy labels (e.g., w2 instead of 2nd)
+    "2nd": "w2",
+    "4th": "w3",
+    "4th(new_2)": "wmy4",
+    "8th(Morales)": "w8",
+    "10th(Morales)": "w1016",
+    "8th(Yoshida)": "wyoshida",
+}
+
+
+def _coeff_target_names(
+    ham_name: str,
+    pf_label: PFLabel,
+    *,
+    use_original: bool,
+    ave: bool = True,
+) -> List[str]:
+    """係数ファイル名候補を生成する（original は legacy/現行ラベル両対応）。"""
+    labels: List[str] = []
+    if use_original:
+        legacy = _ORIGINAL_PF_LABEL_MAP.get(pf_label)
+        if legacy is not None:
+            labels.append(legacy)
+    labels.append(pf_label)
+    # 順序を保ったまま重複除去
+    labels = list(dict.fromkeys(labels))
+    suffix = "_ave" if ave else ""
+    return [f"{ham_name}_Operator_{label}{suffix}" for label in labels]
+
+
+def _load_coeff_data(
+    ham_name: str,
+    pf_label: PFLabel,
+    *,
+    use_original: bool,
+    ave: bool = True,
+) -> Any:
+    """係数データを読み込む（original は legacy/現行ラベル両方を試す）。"""
+    last_err: Exception | None = None
+    for target in _coeff_target_names(
+        ham_name, pf_label, use_original=use_original, ave=ave
+    ):
+        try:
+            return load_data(target, use_original=use_original)
+        except Exception as e:  # keep searching other labels
+            last_err = e
+            continue
+    if last_err is not None:
+        raise last_err
+    raise FileNotFoundError(
+        f"coeff not found: {ham_name} / {pf_label} (use_original={use_original})"
+    )
+
+
 def calculation_cost(
     clique_list: Sequence[Sequence[Any]],
     num_w: PFLabel | int,
@@ -233,7 +288,7 @@ def exp_extrapolation(
     use_original: bool = False,
 ) -> None:
     """PF 別に総コストの外挿をプロットする（use_original=True で original を参照）。"""
-    Hchain_list, Hchain_str, num_qubits = _hchain_series(Hchain)
+    _, Hchain_str, num_qubits = _hchain_series(Hchain)
 
     target_error = TARGET_ERROR
 
@@ -242,19 +297,19 @@ def exp_extrapolation(
     plt.figure(figsize=(8, 6), dpi=200)
 
     # 係数データを読み込んで総回転数を算出
-    for chain, qubit, mol in zip(Hchain_list, num_qubits, Hchain_str):
-        distance = 1.0
-        _, _, ham_name, n_qubits = jw_hamiltonian_maker(chain, distance)
-        ham_name = ham_name + "_grouping"
+    for qubits, mol in zip(num_qubits, Hchain_str):
+        if qubits % 4 == 0:
+            ham_name = mol + "_sto-3g_singlet_distance_100_charge_0_grouping"
+        else:
+            ham_name = mol + "_sto-3g_triplet_1+_distance_100_charge_1_grouping"
 
-        total_dir[n_qubits] = {}
+        total_dir[qubits] = {}
 
         for n_w in n_w_list:
-            if n_w == "10th(Morales)" and n_qubits == 30:  # 10th は H15 で未評価
+            if n_w == "10th(Morales)" and qubits == 30:  # 10th は H15 で未評価
                 continue
 
-            target_path = f"{ham_name}_Operator_{n_w}_ave"
-            data = load_data(target_path, use_original=use_original)
+            data = _load_coeff_data(ham_name, n_w, use_original=use_original)
 
             coeff = data
             expo = P_DIR[n_w]
@@ -265,7 +320,7 @@ def exp_extrapolation(
             unit_expo = DECOMPO_NUM[mol][n_w]
             total_expo = unit_expo * min_f
 
-            total_dir[n_qubits][n_w] = total_expo
+            total_dir[qubits][n_w] = total_expo
 
     # プロット用の系列を構築
     series: DefaultDict[str, Dict[str, List[float]]] = defaultdict(
@@ -328,25 +383,25 @@ def exp_extrapolation_diff(
     """
 
     # 対象 H チェーン
-    Hchain_list, Hchain_str, num_qubits = _hchain_series(Hchain)
+    _, Hchain_str, num_qubits = _hchain_series(Hchain)
 
     target_error = TARGET_ERROR
 
 
     # 総回転数の算出
     total_dir: Dict[int, Dict[str, float]] = {}
-    for chain, qubit, mol in zip(Hchain_list, num_qubits, Hchain_str):
-        distance = 1.0
-        _, _, ham_name, n_qubits = jw_hamiltonian_maker(chain, distance)
-        ham_name = ham_name + "_grouping"
-        total_dir[n_qubits] = {}
+    for qubits, mol in zip(num_qubits, Hchain_str):
+        if qubits % 4 == 0:
+            ham_name = mol + "_sto-3g_singlet_distance_100_charge_0_grouping"
+        else:
+            ham_name = mol + "_sto-3g_triplet_1+_distance_100_charge_1_grouping"
+        total_dir[qubits] = {}
 
         for n_w in n_w_list:
-            if n_w == "10th(Morales)" and n_qubits == 30:  # 10th は H15 で未評価
+            if n_w == "10th(Morales)" and qubits == 30:  # 10th は H15 で未評価
                 continue
 
-            target_path = f"{ham_name}_Operator_{n_w}_ave"
-            data = load_data(target_path, use_original=use_original)
+            data = _load_coeff_data(ham_name, n_w, use_original=use_original)
 
             coeff = data
             expo = P_DIR[n_w]
@@ -357,7 +412,7 @@ def exp_extrapolation_diff(
             unit_expo = DECOMPO_NUM[mol][n_w]
             total_expo = unit_expo * min_f
 
-            total_dir[n_qubits][n_w] = total_expo
+            total_dir[qubits][n_w] = total_expo
 
     # ---- プロット（単一図・双Y軸）----
     plt.figure(figsize=(8, 6), dpi=200)
@@ -476,8 +531,7 @@ def t_depth_extrapolation(
             if n_w == "10th(Morales)" and qubits == 30:  # 10th は H15 で未評価
                 continue
 
-            target_path = f"{ham_name}_Operator_{n_w}_ave"
-            data = load_data(target_path, use_original=use_original)
+            data = _load_coeff_data(ham_name, n_w, use_original=use_original)
 
             coeff = data
             expo = P_DIR[n_w]
@@ -546,7 +600,7 @@ def t_depth_extrapolation(
     # 軸など
     ax.set_xlabel("Num qubits", fontsize=15)
     if rz_layer:
-        ax.set_ylabel("Num RZ layer", fontsize=15)
+        ax.set_ylabel("Depth of RZ rotation layers", fontsize=15)
     else:
         ax.set_ylabel("T-depth", fontsize=15)
     ax.grid(True, which='minor', axis='y', linestyle=':', linewidth=0.5, alpha=0.35)
@@ -601,8 +655,7 @@ def t_depth_extrapolation_diff(
             if n_w == "10th(Morales)" and qubits == 30:  # 10th は H15 で未評価
                 continue
 
-            target_path = f"{ham_name}_Operator_{n_w}_ave"
-            data = load_data(target_path, use_original=use_original)
+            data = _load_coeff_data(ham_name, n_w, use_original=use_original)
 
             coeff = data
             expo = P_DIR[n_w]
@@ -754,8 +807,8 @@ def t_depth_extrapolation_diff(
     # 軸ラベル
     ax.set_xlabel("Num qubits", fontsize=15)
     if rz_layer:
-        ax.set_ylabel("Num RZ layer", fontsize=15)
-        ax2.set_ylabel("Difference in Num RZ layer", fontsize=15)
+        ax.set_ylabel("Depth of RZ rotation layers", fontsize=15)
+        ax2.set_ylabel("Difference in RZ rotation depth", fontsize=15)
     else:
         ax.set_ylabel("T-depth", fontsize=15)
         ax2.set_ylabel("Difference in T-depth", fontsize=15)
@@ -806,12 +859,11 @@ def best_product_formula_all(
 
         cost_dir[str(num_w)] = unit_expo
 
-        target_path = f"{ham_name}_Operator_{num_w}_ave"
         # target_path = f"{ham_name}_Operator_{num_w}"
 
         try:
             # p(次数) 固定
-            data = load_data(target_path, use_original=use_original)
+            data = _load_coeff_data(ham_name, num_w, use_original=use_original)
             expo_dir[str(num_w)] = P_DIR[num_w]
             coeff_dir[str(num_w)] = data
 
@@ -820,7 +872,7 @@ def best_product_formula_all(
             # coeff_dir[str(num_w)] = data['coeff']
 
         except Exception as e:
-            print(f"not found {target_path}")
+            print(f"not found fitting results")
             continue
 
     # 所望精度達成ゲート数計算
