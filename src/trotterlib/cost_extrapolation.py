@@ -175,12 +175,21 @@ def _hchain_series(Hchain: int) -> Tuple[List[int], List[str], List[int]]:
 
 def _compute_min_f(eps: float, expo: float, coeff: float) -> float:
     """外挿の最小コスト係数 min_f を計算する。"""
-    return (
+    return _qpe_iteration_factor(float(coeff), float(expo), float(eps))
+
+
+def _qpe_iteration_factor(alpha: float, p: float, epsilon_e: float) -> float:
+    """QPE 反復係数 β((1+p)/(pε_E))((α(1+p))/ε_E)^(1/p) を計算する。"""
+    if alpha <= 0:
+        raise ValueError("alpha must be positive.")
+    if p <= 0:
+        raise ValueError("p must be positive.")
+    if epsilon_e <= 0:
+        raise ValueError("epsilon_e must be positive.")
+    return float(
         BETA
-        * (eps ** (-(1 + (1 / expo))))
-        * (1 / expo)
-        * (coeff ** (1 / expo))
-        * (expo + 1) ** (1 + (1 / expo))
+        * ((1.0 + p) / (p * epsilon_e))
+        * ((alpha * (1.0 + p) / epsilon_e) ** (1.0 / p))
     )
 
 
@@ -543,8 +552,11 @@ def t_depth_extrapolation(
             pf_layer_rz = PF_RZ_LAYER[mol][n_w]
 
             t = (target_error / coeff * (expo + 1))**(1/expo)
-            eps_qpe = target_error * (expo / (expo + 1))
-            M_qpe = BETA / (eps_qpe * t)
+            M_qpe = _qpe_iteration_factor(
+                float(coeff),
+                float(expo),
+                float(target_error),
+            )
 
             # RZ の近似誤差は許容誤差の 1 パーセント
             eps_rot = (t * 0.01 * target_error) / (N_0 * M_qpe)
@@ -667,8 +679,11 @@ def t_depth_extrapolation_diff(
             pf_layer_rz = PF_RZ_LAYER[mol][n_w]
 
             t = (target_error / coeff * (expo + 1))**(1/expo)
-            eps_qpe = target_error * (expo / (expo + 1))
-            M_qpe = BETA / (eps_qpe * t)
+            M_qpe = _qpe_iteration_factor(
+                float(coeff),
+                float(expo),
+                float(target_error),
+            )
 
             # RZ の近似誤差は許容誤差の 1 パーセント
             eps_rot = (t * 0.01 * target_error) / (N_0 * M_qpe)
