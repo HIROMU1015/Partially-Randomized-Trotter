@@ -83,6 +83,14 @@ def _load_coeff_data(
     )
 
 
+def _legend_label(labelkey: str) -> str:
+    """Plot legend/display labels used in this module."""
+    label = label_replace(labelkey)
+    return label.replace("4th (new_2)", "4th(new_m2)").replace(
+        "4th(new_2)", "4th(new_m2)"
+    )
+
+
 def calculation_cost(
     clique_list: Sequence[Sequence[Any]],
     num_w: PFLabel | int,
@@ -337,7 +345,7 @@ def exp_extrapolation(
     )
     for qubit, gate_dir in total_dir.items():
         for pf, gate in gate_dir.items():
-            lb = label_replace(pf)
+            lb = _legend_label(pf)
             # 散布
             plt.plot(
                 qubit,
@@ -431,7 +439,7 @@ def exp_extrapolation_diff(
     )
     for qubit, gate_dir in total_dir.items():
         for pf, gate in gate_dir.items():
-            lb = label_replace(pf)
+            lb = _legend_label(pf)
             # 散布
             plt.plot(
                 qubit,
@@ -487,7 +495,7 @@ def exp_extrapolation_diff(
                 lw=2.0,
                 alpha=0.9,
                 color=COLOR_MAP.get(pf_a, None),
-                label=f"|Δ|: {label_replace(pf_b)} − {label_replace(pf_a)}",
+                label=f"|Δ|: {_legend_label(pf_b)} − {_legend_label(pf_a)}",
             )
             # 左軸とレンジを一致させて目盛位置をそろえる
             ax2.set_ylim(ax.get_ylim())
@@ -586,7 +594,7 @@ def t_depth_extrapolation(
     )
     for qubit, gate_dir in total_dir.items():
         for pf, gate in gate_dir.items():
-            lb = label_replace(pf)
+            lb = _legend_label(pf)
             # 散布
             plt.plot(qubit, gate, ls='None', marker=MARKER_MAP[pf], color=COLOR_MAP[pf],
                      label=lb if qubit == num_qubits[0] else None)
@@ -648,7 +656,7 @@ def t_depth_extrapolation_diff(
 
 
     # PF 表示名 → ラベル
-    label_map = {pf: label_replace(pf) for pf in n_w_list}
+    label_map = {pf: _legend_label(pf) for pf in n_w_list}
     num_qubits = [i for i in range(4,(Hchain*2)+1,2)]
     Hchain_str = [f"H{i}" for i in range(2, Hchain + 1)]
 
@@ -970,7 +978,7 @@ def num_gate_plot_grouping(
         y_vals = [d[pf_key] for d in total_list_gr if pf_key in d]
         if not x_vals:
             continue
-        label = label_replace(pf_key)
+        label = _legend_label(pf_key)
         color = COLOR_MAP.get(pf_key, "gray")
         plt.plot(x_vals, y_vals, label=label, color=color)
 
@@ -982,7 +990,7 @@ def num_gate_plot_grouping(
         max_error_expo = max(error_range)
         min_error = CA * (10 ** (min_error_expo))
         max_error = CA * (10 ** (max_error_expo))
-        label_name = label_replace(label)
+        label_name = _legend_label(label)
         color = COLOR_MAP.get(label, "gray")
         plt.axvspan(
             min_error,
@@ -1124,7 +1132,7 @@ def efficient_accuracy_range_plt_grouper(
         combined_labels_0 = color_labels_list + marker_labels_list + ["CA"]
         combined_labels_1 = [s.replace("_gr", "") for s in combined_labels_0]
         combined_labels = [s.replace("my1", "4(new)") for s in combined_labels_1]
-        combined_labels_2 = [label_replace(lb) for lb in combined_labels]
+        combined_labels_2 = [_legend_label(lb) for lb in combined_labels]
 
         plt.yscale("log")
         plt.xlabel("Spin orbitals", fontsize=15)
