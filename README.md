@@ -14,6 +14,7 @@
 - `abe_trotter_project.ipynb`: 解析の一連の流れをまとめたノートブック
 - `artifacts/`: 生成物（係数、行列キャッシュ、スケーリング結果）
 - `Greatly-improved-higher-order-product-formulae-for-quantum-simulation.pdf`: 参照論文
+- `Evaluation of gate numbers for ground state energy calculations using higher-order product formulae`: 本論文
 
 ## セットアップ
 Python 3.11 を前提とする。
