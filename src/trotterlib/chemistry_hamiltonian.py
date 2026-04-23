@@ -10,7 +10,7 @@ from openfermion.linalg import get_sparse_operator
 from openfermion.ops import QubitOperator
 from openfermion.transforms import get_fermion_operator, jordan_wigner
 from openfermionpyscf import run_pyscf
-from scipy.sparse.linalg import eigsh
+from scipy.sparse.linalg import LinearOperator, eigsh
 
 from .config import DEFAULT_BASIS, DEFAULT_DISTANCE
 
@@ -52,13 +52,189 @@ def ham_list_maker(hamiltonian: QubitOperator) -> List[QubitOperator]:
     return [term for term in hamiltonian]
 
 
-def ham_ground_energy(jw_hamiltonian: QubitOperator) -> Tuple[float, np.ndarray, float]:
-    """JW ハミルトニアンの基底エネルギー・固有ベクトル・最大固有値を返す。"""
-    # 行列化して固有値を評価
-    sum_matrix = get_sparse_operator(jw_hamiltonian)
-    vals, vecs = eigsh(sum_matrix, k=1, return_eigenvectors=True, which="SA")
-    max_eig = eigsh(sum_matrix, k=1, return_eigenvectors=False, which="LA")
-    return vals[0], vecs, max_eig[0]
+def _compiled_qubit_operator_terms(
+    qubit_operator: QubitOperator,
+) -> Tuple[complex, Tuple[Tuple[complex, Tuple[Tuple[int, str], ...]], ...]]:
+    """Split QubitOperator into identity coefficient and per-term Pauli actions."""
+    identity_coeff = 0.0 + 0.0j
+    compiled_terms: list[Tuple[complex, Tuple[Tuple[int, str], ...]]] = []
+    for pauli_term, coeff in qubit_operator.terms.items():
+        coeff_complex = complex(coeff)
+        if pauli_term == ():
+            identity_coeff += coeff_complex
+            continue
+        compiled_terms.append(
+            (
+                coeff_complex,
+                tuple(sorted(((int(qubit), str(pauli)) for qubit, pauli in pauli_term))),
+            )
+        )
+    return identity_coeff, tuple(compiled_terms)
+
+
+def _apply_single_pauli_axis(
+    state_tensor: np.ndarray,
+    axis: int,
+    pauli: str,
+) -> np.ndarray:
+    """
+    Apply a single-qubit Pauli action along one tensor axis.
+
+    The tensor axes follow OpenFermion's JW basis convention used in the DF
+    project: qubit 0 is the most-significant bit of the computational-basis
+    index, i.e. basis index = sum_q occ_q * 2**(n_qubits - 1 - q).
+    """
+    moved = np.moveaxis(state_tensor, axis, 0)
+    if pauli == "X":
+        transformed = np.stack((moved[1], moved[0]), axis=0)
+    elif pauli == "Y":
+        transformed = np.stack((-1j * moved[1], 1j * moved[0]), axis=0)
+    elif pauli == "Z":
+        transformed = np.stack((moved[0], -moved[1]), axis=0)
+    else:
+        raise ValueError(f"Unsupported Pauli operator: {pauli}")
+    return np.moveaxis(transformed, 0, axis)
+
+
+def matrix_free_qubit_operator(
+    qubit_operator: QubitOperator,
+    *,
+    n_qubits: Optional[int] = None,
+) -> LinearOperator:
+    """
+    Build a matrix-free LinearOperator for a QubitOperator.
+
+    This avoids materializing the sparse matrix and instead applies each Pauli
+    term directly to the statevector tensor with OpenFermion-consistent index
+    ordering.
+    """
+    if n_qubits is None:
+        n_qubits = count_qubits(qubit_operator)
+    n_qubits = int(n_qubits)
+    if n_qubits < 0:
+        raise ValueError("n_qubits must be non-negative.")
+    dimension = 1 << n_qubits
+    identity_coeff, compiled_terms = _compiled_qubit_operator_terms(qubit_operator)
+    tensor_shape = (2,) * n_qubits
+
+    def _matvec(vec: np.ndarray) -> np.ndarray:
+        state = np.asarray(vec, dtype=np.complex128).reshape(-1)
+        if state.shape[0] != dimension:
+            raise ValueError(
+                f"Statevector dimension mismatch: got {state.shape[0]}, expected {dimension}."
+            )
+        out = np.zeros(dimension, dtype=np.complex128)
+        if identity_coeff != 0.0:
+            out += identity_coeff * state
+        if not compiled_terms:
+            return out
+        if n_qubits == 0:
+            return out
+        state_tensor = state.reshape(tensor_shape)
+        for coeff, pauli_actions in compiled_terms:
+            term_tensor = state_tensor
+            for qubit, pauli in pauli_actions:
+                if qubit < 0 or qubit >= n_qubits:
+                    raise ValueError(
+                        f"Pauli term acts on qubit {qubit}, but n_qubits={n_qubits}."
+                    )
+                term_tensor = _apply_single_pauli_axis(term_tensor, qubit, pauli)
+            out += coeff * np.asarray(term_tensor, dtype=np.complex128).reshape(-1)
+        return out
+
+    return LinearOperator(
+        shape=(dimension, dimension),
+        matvec=_matvec,
+        rmatvec=_matvec,
+        dtype=np.complex128,
+    )
+
+
+def _linear_operator_to_dense(linear_operator: LinearOperator) -> np.ndarray:
+    """Materialize a tiny LinearOperator for dense fallback / validation."""
+    dim = int(linear_operator.shape[0])
+    basis = np.eye(dim, dtype=np.complex128)
+    return np.column_stack([linear_operator @ basis[:, idx] for idx in range(dim)])
+
+
+def ham_ground_energy(
+    jw_hamiltonian: QubitOperator,
+    *,
+    n_qubits: Optional[int] = None,
+    method: str = "matrix_free",
+    return_max_eig: bool = True,
+    solver_tol: float = 1e-10,
+    solver_maxiter: Optional[int] = None,
+    v0: Optional[np.ndarray] = None,
+) -> Tuple[float, np.ndarray, Optional[float]]:
+    """
+    Return the ground-state energy, eigenvector, and optionally the maximum eigenvalue.
+
+    The default path is matrix-free so the sparse matrix is not materialized.
+    `method="sparse"` remains available as a reference / validation fallback.
+    """
+    if n_qubits is None:
+        n_qubits = count_qubits(jw_hamiltonian)
+    n_qubits = int(n_qubits)
+    dimension = 1 << n_qubits
+    if dimension <= 0:
+        raise ValueError("Hamiltonian must act on at least a one-dimensional space.")
+    if solver_tol <= 0.0:
+        raise ValueError("solver_tol must be positive.")
+
+    if method == "matrix_free":
+        linear_operator = matrix_free_qubit_operator(
+            jw_hamiltonian,
+            n_qubits=n_qubits,
+        )
+    elif method == "sparse":
+        linear_operator = get_sparse_operator(jw_hamiltonian, n_qubits=n_qubits)
+    else:
+        raise ValueError("method must be either 'matrix_free' or 'sparse'.")
+
+    if v0 is not None:
+        v0 = np.asarray(v0, dtype=np.complex128).reshape(-1)
+        if v0.shape[0] != dimension:
+            raise ValueError(
+                f"Initial vector dimension mismatch: got {v0.shape[0]}, expected {dimension}."
+            )
+
+    if dimension <= 4:
+        dense_matrix = (
+            linear_operator.toarray()
+            if hasattr(linear_operator, "toarray")
+            else _linear_operator_to_dense(linear_operator)
+        )
+        evals, evecs = np.linalg.eigh(np.asarray(dense_matrix, dtype=np.complex128))
+        min_index = int(np.argmin(evals.real))
+        energy = float(np.real_if_close(evals[min_index]))
+        state_vec = np.asarray(evecs[:, min_index : min_index + 1], dtype=np.complex128)
+        max_eig = float(np.real_if_close(np.max(evals.real))) if return_max_eig else None
+        return energy, state_vec, max_eig
+
+    vals, vecs = eigsh(
+        linear_operator,
+        k=1,
+        return_eigenvectors=True,
+        which="SA",
+        tol=float(solver_tol),
+        maxiter=solver_maxiter,
+        v0=v0,
+    )
+    energy = float(np.real_if_close(vals[0]))
+    state_vec = np.asarray(vecs[:, :1], dtype=np.complex128)
+    max_eig = None
+    if return_max_eig:
+        max_vals = eigsh(
+            linear_operator,
+            k=1,
+            return_eigenvectors=False,
+            which="LA",
+            tol=float(solver_tol),
+            maxiter=solver_maxiter,
+        )
+        max_eig = float(np.real_if_close(max_vals[0]))
+    return energy, state_vec, max_eig
 
 
 def jw_hamiltonian_maker(

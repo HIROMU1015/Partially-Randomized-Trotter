@@ -81,6 +81,39 @@ CA = 1.59360010199040e-3   # :contentReference[oaicite:8]{index=8}
 # 外挿などで使う target error
 TARGET_ERROR = CA / 10
 
+# 摂動論フィットに使う既存ノートブック由来の時間窓
+PERTURBATION_FIT_STEP = 0.002
+PERTURBATION_FIT_SPAN = 0.01
+PERTURBATION_FIT_STARTS = {
+    2: {0: 0.73, 1: 2.21},
+    3: {0: 0.75, 1: 2.27},
+    4: {0: 0.37, 1: 1.12},
+    5: {0: 0.36, 1: 1.08},
+    6: {0: 0.25, 1: 1.25},
+    7: {0: 0.23, 1: 1.19},
+    8: {0: 0.18, 1: 0.94},
+    9: {0: 0.18, 1: 0.90},
+    10: {0: 0.15, 1: 0.75},
+    11: {0: 0.14, 1: 0.72},
+    12: {0: 0.12, 1: 0.62},
+    13: {0: 0.12, 1: 0.60},
+    14: {0: 0.10, 1: 0.53},
+    15: {0: 0.10, 1: 0.51},
+}
+
+# 部分ランダム PF の既定値
+PARTIAL_RANDOMIZED_ARTIFACTS_DIR = ARTIFACTS_DIR / "partial_randomized_pf"
+PARTIAL_RANDOMIZED_CGS_CACHE_PATH = PARTIAL_RANDOMIZED_ARTIFACTS_DIR / "cgs_fit_cache.json"
+PARTIAL_RANDOMIZED_DEFAULT_KAPPA = 2.0
+PARTIAL_RANDOMIZED_KAPPA_MIN = 1.0
+PARTIAL_RANDOMIZED_KAPPA_MAX = 32.0
+PARTIAL_RANDOMIZED_KAPPA_GRID = (1.0, 2.0, 4.0, 8.0, 16.0, 32.0)
+PARTIAL_RANDOMIZED_DEFAULT_RANDOMIZED_METHOD = "qdrift"
+PARTIAL_RANDOMIZED_DEFAULT_G_RAND = 1.0
+PARTIAL_RANDOMIZED_Q_MIN = 1e-6
+PARTIAL_RANDOMIZED_Q_MAX = 1.0 - 1e-6
+PARTIAL_RANDOMIZED_BOUNDARY_REL_TOL = 1e-4
+
 
 # =========================
 # Plot style

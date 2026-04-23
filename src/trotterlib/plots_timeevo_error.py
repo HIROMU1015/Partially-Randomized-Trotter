@@ -54,7 +54,11 @@ def trotter_error_plt(
 
     # Hamiltonian と基底状態の準備
     jw_hamiltonian, _, ham_name, n_qubits = jw_hamiltonian_maker(molecule_type)
-    energy, state_vec, _ = ham_ground_energy(jw_hamiltonian)
+    energy, state_vec, _ = ham_ground_energy(
+        jw_hamiltonian,
+        n_qubits=n_qubits,
+        return_max_eig=False,
+    )
 
     # 出力先のディレクトリ設定
     ensure_artifact_dirs(include_pickle_dirs=False)
@@ -268,7 +272,11 @@ def trotter_error_plt_qc_gr(
     constant_term = next(iter(ham_terms[0].terms.values())).real
 
     if molecule_type in (2, 3):
-        energy, state_vec, _ = ham_ground_energy(jw_hamiltonian)
+        energy, state_vec, _ = ham_ground_energy(
+            jw_hamiltonian,
+            n_qubits=num_qubits,
+            return_max_eig=False,
+        )
         grouped_ops, _ = min_hamiltonian_grouper(jw_hamiltonian, ham_name)
         commuting_cliques = [[op] for op in grouped_ops]
     else:

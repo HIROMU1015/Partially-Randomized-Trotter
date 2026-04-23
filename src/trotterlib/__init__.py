@@ -19,6 +19,11 @@ from .cost_extrapolation import (
     num_gate_plot_grouping,
     efficient_accuracy_range_plt_grouper,
 )
+from .partial_randomized_pf import (
+    analyze_partial_randomized_pf,
+    build_sorted_pauli_hamiltonian,
+    save_partial_randomized_result,
+)
 
 __all__ = [
     "jw_hamiltonian_maker",
@@ -31,4 +36,7 @@ __all__ = [
     "t_depth_extrapolation_diff",
     "num_gate_plot_grouping",
     "efficient_accuracy_range_plt_grouper",
+    "analyze_partial_randomized_pf",
+    "build_sorted_pauli_hamiltonian",
+    "save_partial_randomized_result",
 ]
