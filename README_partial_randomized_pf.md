@@ -91,6 +91,23 @@ Boundary diagnostics:
 - The cache stores the fitted values and perturbation-fit diagnostics, not the explicit contents of `H_D`.
 - Cache keys are built from the full sorted Hamiltonian hash, `PF`, `L_D`, the perturbation-fit time grid, and the surrogate-definition version.
 
+## Matrix-Free Ground State Solver
+
+The `H_D` ground state used in the `C_gs` surrogate is computed with a matrix-free
+`LinearOperator` by default. When `numba` is installed, Pauli strings are compiled
+to bit masks and the statevector index loop is parallelized with OpenMP through
+`numba.prange`.
+
+- `--matrix-free-backend auto` uses the numba backend when available and falls back to the pure-Python tensor backend otherwise.
+- `--matrix-free-backend numba` requires numba and fails if it is unavailable.
+- By default, the numba backend detects the CPUs available to the process and uses that thread count.
+- `--matrix-free-threads N` sets the numba thread count for the matrix-free matvec; `0` means auto-detect.
+- `--ground-state-ncv N` passes `ncv` to ARPACK's `eigsh`; smaller values reduce memory pressure, while larger values may improve convergence.
+
+This avoids materializing the sparse Hamiltonian matrix, but it still uses full
+statevectors. It does not remove the exponential memory scaling of exact full-space
+ground-state calculations.
+
 ## Run
 
 Create an environment with the existing project requirements, then run for a small system first.
@@ -108,7 +125,9 @@ python scripts/run_partial_randomized_pf.py \
   --molecule-type 3 \
   --epsilon-total 1e-3 \
   --pf-labels 2nd,4th(new_2),8th(Morales) \
-  --kappa-mode optimize
+  --kappa-mode optimize \
+  --matrix-free-backend auto \
+  --matrix-free-threads 4
 ```
 
 Reference mode with `kappa = 2`:

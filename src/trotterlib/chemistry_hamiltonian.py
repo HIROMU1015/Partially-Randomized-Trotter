@@ -14,6 +14,104 @@ from scipy.sparse.linalg import LinearOperator, eigsh
 
 from .config import DEFAULT_BASIS, DEFAULT_DISTANCE
 
+os.environ.setdefault("NUMBA_THREADING_LAYER", "omp")
+
+try:
+    from numba import get_num_threads, njit, prange, set_num_threads
+
+    _NUMBA_AVAILABLE = True
+except ImportError:  # pragma: no cover - exercised only in minimal environments
+    get_num_threads = None
+    njit = None
+    prange = range
+    set_num_threads = None
+    _NUMBA_AVAILABLE = False
+
+
+_REAL_MATRIX_TOL = 1e-14
+
+
+def available_cpu_count() -> int:
+    """Return the number of CPUs available to this process."""
+    try:
+        return max(1, len(os.sched_getaffinity(0)))
+    except (AttributeError, OSError):
+        return max(1, os.cpu_count() or 1)
+
+
+def _resolve_numba_threads(num_threads: Optional[int]) -> int:
+    """Choose a numba thread count, respecting explicit requests and runtime caps."""
+    requested = available_cpu_count() if num_threads is None else int(num_threads)
+    if requested <= 0:
+        requested = available_cpu_count()
+    if not _NUMBA_AVAILABLE:
+        return requested
+    try:
+        set_num_threads(requested)
+        return int(get_num_threads())
+    except ValueError:
+        # NUMBA_NUM_THREADS can cap the runtime maximum. Use the current maximum
+        # mask instead of failing when auto-detected CPUs exceed that cap.
+        current = int(get_num_threads())
+        set_num_threads(current)
+        return current
+
+
+if _NUMBA_AVAILABLE:
+
+    @njit(cache=True, inline="always")
+    def _parity64(value: np.int64) -> np.int64:
+        value ^= value >> 32
+        value ^= value >> 16
+        value ^= value >> 8
+        value ^= value >> 4
+        value &= 0xF
+        return (0x6996 >> value) & 1
+
+
+    @njit(cache=True, parallel=True)
+    def _pauli_sum_matvec_real_numba(
+        state: np.ndarray,
+        identity_coeff: float,
+        coeffs: np.ndarray,
+        flip_masks: np.ndarray,
+        phase_masks: np.ndarray,
+    ) -> np.ndarray:
+        out = np.empty_like(state)
+        n_terms = coeffs.shape[0]
+        for index in prange(state.shape[0]):
+            acc = identity_coeff * state[index]
+            for term_index in range(n_terms):
+                source = index ^ flip_masks[term_index]
+                value = coeffs[term_index] * state[source]
+                if _parity64(source & phase_masks[term_index]) != 0:
+                    value = -value
+                acc += value
+            out[index] = acc
+        return out
+
+
+    @njit(cache=True, parallel=True)
+    def _pauli_sum_matvec_complex_numba(
+        state: np.ndarray,
+        identity_coeff: complex,
+        coeffs: np.ndarray,
+        flip_masks: np.ndarray,
+        phase_masks: np.ndarray,
+    ) -> np.ndarray:
+        out = np.empty_like(state)
+        n_terms = coeffs.shape[0]
+        for index in prange(state.shape[0]):
+            acc = identity_coeff * state[index]
+            for term_index in range(n_terms):
+                source = index ^ flip_masks[term_index]
+                value = coeffs[term_index] * state[source]
+                if _parity64(source & phase_masks[term_index]) != 0:
+                    value = -value
+                acc += value
+            out[index] = acc
+        return out
+
 
 def call_geometry(
     Hchain: int,
@@ -72,6 +170,71 @@ def _compiled_qubit_operator_terms(
     return identity_coeff, tuple(compiled_terms)
 
 
+def _compile_pauli_bitmasks(
+    qubit_operator: QubitOperator,
+    *,
+    n_qubits: int,
+) -> Tuple[complex, np.ndarray, np.ndarray, np.ndarray, bool]:
+    """
+    Compile Pauli strings into bit masks for fast matrix-free application.
+
+    OpenFermion's JW convention maps qubit q to bit position n_qubits - 1 - q.
+    For output basis index i, the corresponding source index is i ^ flip_mask.
+    The phase is coeff * (1j)**num_y times (-1)**popcount(source & phase_mask).
+    """
+    identity_coeff = 0.0 + 0.0j
+    coeffs: list[complex] = []
+    flip_masks: list[int] = []
+    phase_masks: list[int] = []
+    max_mask = (1 << n_qubits) - 1
+
+    for pauli_term, coeff in qubit_operator.terms.items():
+        coeff_complex = complex(coeff)
+        if pauli_term == ():
+            identity_coeff += coeff_complex
+            continue
+
+        flip_mask = 0
+        phase_mask = 0
+        y_count = 0
+        for qubit_raw, pauli_raw in pauli_term:
+            qubit = int(qubit_raw)
+            pauli = str(pauli_raw)
+            if qubit < 0 or qubit >= n_qubits:
+                raise ValueError(
+                    f"Pauli term acts on qubit {qubit}, but n_qubits={n_qubits}."
+                )
+            bit = 1 << (n_qubits - 1 - qubit)
+            if pauli == "X":
+                flip_mask |= bit
+            elif pauli == "Y":
+                flip_mask |= bit
+                phase_mask |= bit
+                y_count += 1
+            elif pauli == "Z":
+                phase_mask |= bit
+            else:
+                raise ValueError(f"Unsupported Pauli operator: {pauli}")
+
+        if flip_mask > max_mask or phase_mask > max_mask:
+            raise ValueError("Compiled Pauli mask exceeds the statevector dimension.")
+        coeffs.append(coeff_complex * ((1j) ** y_count))
+        flip_masks.append(flip_mask)
+        phase_masks.append(phase_mask)
+
+    coeff_array = np.asarray(coeffs, dtype=np.complex128)
+    flip_array = np.asarray(flip_masks, dtype=np.int64)
+    phase_array = np.asarray(phase_masks, dtype=np.int64)
+    is_real = (
+        abs(identity_coeff.imag) <= _REAL_MATRIX_TOL
+        and (
+            coeff_array.size == 0
+            or float(np.max(np.abs(coeff_array.imag))) <= _REAL_MATRIX_TOL
+        )
+    )
+    return identity_coeff, coeff_array, flip_array, phase_array, is_real
+
+
 def _apply_single_pauli_axis(
     state_tensor: np.ndarray,
     axis: int,
@@ -100,6 +263,8 @@ def matrix_free_qubit_operator(
     qubit_operator: QubitOperator,
     *,
     n_qubits: Optional[int] = None,
+    backend: str = "auto",
+    num_threads: Optional[int] = None,
 ) -> LinearOperator:
     """
     Build a matrix-free LinearOperator for a QubitOperator.
@@ -108,12 +273,78 @@ def matrix_free_qubit_operator(
     term directly to the statevector tensor with OpenFermion-consistent index
     ordering.
     """
+    if backend not in ("auto", "numba", "python"):
+        raise ValueError("backend must be 'auto', 'numba', or 'python'.")
+    if backend == "numba" and not _NUMBA_AVAILABLE:
+        raise RuntimeError("matrix_free backend='numba' requires numba to be installed.")
+    if num_threads is not None and num_threads < 0:
+        raise ValueError("num_threads must be non-negative.")
+    if backend in ("auto", "numba"):
+        if not _NUMBA_AVAILABLE:
+            if num_threads is not None:
+                raise RuntimeError("num_threads requires the numba matrix-free backend.")
+        else:
+            _resolve_numba_threads(num_threads)
+
     if n_qubits is None:
         n_qubits = count_qubits(qubit_operator)
     n_qubits = int(n_qubits)
     if n_qubits < 0:
         raise ValueError("n_qubits must be non-negative.")
     dimension = 1 << n_qubits
+    use_numba = _NUMBA_AVAILABLE and backend in ("auto", "numba")
+    if use_numba:
+        identity_coeff, coeffs, flip_masks, phase_masks, is_real = _compile_pauli_bitmasks(
+            qubit_operator,
+            n_qubits=n_qubits,
+        )
+
+        if is_real:
+            identity_real = float(identity_coeff.real)
+            coeffs_real = coeffs.real.astype(np.float64, copy=False)
+
+            def _matvec(vec: np.ndarray) -> np.ndarray:
+                state = np.asarray(vec, dtype=np.float64).reshape(-1)
+                if state.shape[0] != dimension:
+                    raise ValueError(
+                        "Statevector dimension mismatch: "
+                        f"got {state.shape[0]}, expected {dimension}."
+                    )
+                return _pauli_sum_matvec_real_numba(
+                    state,
+                    identity_real,
+                    coeffs_real,
+                    flip_masks,
+                    phase_masks,
+                )
+
+            dtype = np.float64
+        else:
+
+            def _matvec(vec: np.ndarray) -> np.ndarray:
+                state = np.asarray(vec, dtype=np.complex128).reshape(-1)
+                if state.shape[0] != dimension:
+                    raise ValueError(
+                        "Statevector dimension mismatch: "
+                        f"got {state.shape[0]}, expected {dimension}."
+                    )
+                return _pauli_sum_matvec_complex_numba(
+                    state,
+                    identity_coeff,
+                    coeffs,
+                    flip_masks,
+                    phase_masks,
+                )
+
+            dtype = np.complex128
+
+        return LinearOperator(
+            shape=(dimension, dimension),
+            matvec=_matvec,
+            rmatvec=_matvec,
+            dtype=dtype,
+        )
+
     identity_coeff, compiled_terms = _compiled_qubit_operator_terms(qubit_operator)
     tensor_shape = (2,) * n_qubits
 
@@ -162,16 +393,20 @@ def ham_ground_energy(
     *,
     n_qubits: Optional[int] = None,
     method: str = "matrix_free",
+    matrix_free_backend: str = "auto",
+    matrix_free_threads: Optional[int] = None,
     return_max_eig: bool = True,
     solver_tol: float = 1e-10,
     solver_maxiter: Optional[int] = None,
+    solver_ncv: Optional[int] = None,
     v0: Optional[np.ndarray] = None,
 ) -> Tuple[float, np.ndarray, Optional[float]]:
     """
     Return the ground-state energy, eigenvector, and optionally the maximum eigenvalue.
 
     The default path is matrix-free so the sparse matrix is not materialized.
-    `method="sparse"` remains available as a reference / validation fallback.
+    `matrix_free_backend="auto"` uses the multithreaded numba bitmask kernel when
+    available, while `method="sparse"` remains as a reference / validation fallback.
     """
     if n_qubits is None:
         n_qubits = count_qubits(jw_hamiltonian)
@@ -181,11 +416,15 @@ def ham_ground_energy(
         raise ValueError("Hamiltonian must act on at least a one-dimensional space.")
     if solver_tol <= 0.0:
         raise ValueError("solver_tol must be positive.")
+    if solver_ncv is not None and solver_ncv <= 2:
+        raise ValueError("solver_ncv must be greater than 2 for k=1 eigsh.")
 
     if method == "matrix_free":
         linear_operator = matrix_free_qubit_operator(
             jw_hamiltonian,
             n_qubits=n_qubits,
+            backend=matrix_free_backend,
+            num_threads=matrix_free_threads,
         )
     elif method == "sparse":
         linear_operator = get_sparse_operator(jw_hamiltonian, n_qubits=n_qubits)
@@ -193,7 +432,8 @@ def ham_ground_energy(
         raise ValueError("method must be either 'matrix_free' or 'sparse'.")
 
     if v0 is not None:
-        v0 = np.asarray(v0, dtype=np.complex128).reshape(-1)
+        v0_dtype = np.float64 if linear_operator.dtype == np.float64 else np.complex128
+        v0 = np.asarray(v0, dtype=v0_dtype).reshape(-1)
         if v0.shape[0] != dimension:
             raise ValueError(
                 f"Initial vector dimension mismatch: got {v0.shape[0]}, expected {dimension}."
@@ -219,6 +459,7 @@ def ham_ground_energy(
         which="SA",
         tol=float(solver_tol),
         maxiter=solver_maxiter,
+        ncv=solver_ncv,
         v0=v0,
     )
     energy = float(np.real_if_close(vals[0]))
@@ -232,6 +473,7 @@ def ham_ground_energy(
             which="LA",
             tol=float(solver_tol),
             maxiter=solver_maxiter,
+            ncv=solver_ncv,
         )
         max_eig = float(np.real_if_close(max_vals[0]))
     return energy, state_vec, max_eig

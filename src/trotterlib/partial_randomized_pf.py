@@ -441,6 +441,9 @@ def get_or_compute_cached_cgs_fit(
     pf_label: PFLabel,
     cache_document: dict[str, Any],
     cache_path: str | Path = PARTIAL_RANDOMIZED_CGS_CACHE_PATH,
+    matrix_free_backend: str = "auto",
+    matrix_free_threads: int | None = None,
+    ground_state_ncv: int | None = None,
 ) -> PerturbationFitResult:
     """
     Return a perturbative C_gs fit from the JSON cache or compute and persist it.
@@ -470,6 +473,9 @@ def get_or_compute_cached_cgs_fit(
         partition,
         pf_label,
         t_values=t_values,
+        matrix_free_backend=matrix_free_backend,
+        matrix_free_threads=matrix_free_threads,
+        ground_state_ncv=ground_state_ncv,
     )
     entries[cache_key] = _cgs_cache_record(
         sorted_hamiltonian=sorted_hamiltonian,
@@ -610,6 +616,9 @@ def fit_cgs_with_perturbation(
     pf_label: PFLabel,
     *,
     t_values: Sequence[float] | None = None,
+    matrix_free_backend: str = "auto",
+    matrix_free_threads: int | None = None,
+    ground_state_ncv: int | None = None,
 ) -> PerturbationFitResult:
     """
     Estimate C_gs^(p)(L_D) from perturbative eigenvalue-error scaling on H_D.
@@ -640,7 +649,10 @@ def fit_cgs_with_perturbation(
     energy, state_vec, _max_eig = ham_ground_energy(
         deterministic_operator,
         n_qubits=sorted_hamiltonian.num_qubits,
+        matrix_free_backend=matrix_free_backend,
+        matrix_free_threads=matrix_free_threads,
         return_max_eig=False,
+        solver_ncv=ground_state_ncv,
     )
     state_flat = np.asarray(state_vec, dtype=np.complex128).reshape(-1)
 
@@ -1177,6 +1189,9 @@ def analyze_partial_randomized_pf(
     randomized_method: str = PARTIAL_RANDOMIZED_DEFAULT_RANDOMIZED_METHOD,
     g_rand: float = PARTIAL_RANDOMIZED_DEFAULT_G_RAND,
     q_bounds: tuple[float, float] | None = None,
+    matrix_free_backend: str = "auto",
+    matrix_free_threads: int | None = None,
+    ground_state_ncv: int | None = None,
 ) -> PartialRandomizedStudyResult:
     """
     Scan PF label and L_D for the simplified partially randomized PF cost model.
@@ -1221,6 +1236,9 @@ def analyze_partial_randomized_pf(
                     partition=partition,
                     pf_label=pf_label,
                     cache_document=cgs_cache_document,
+                    matrix_free_backend=matrix_free_backend,
+                    matrix_free_threads=matrix_free_threads,
+                    ground_state_ncv=ground_state_ncv,
                 )
             fit_result = fit_cache[fit_key]
             order = pf_order(pf_label)
