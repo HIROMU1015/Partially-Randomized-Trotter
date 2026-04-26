@@ -367,6 +367,8 @@ def _cgs_cache_key_payload(
     pf_label: PFLabel,
     ld: int,
     t_values: Sequence[float],
+    ground_state_tol: float,
+    ground_state_ncv: int | None,
 ) -> dict[str, Any]:
     return {
         "cgs_definition": _CGS_CACHE_DEFINITION,
@@ -381,6 +383,8 @@ def _cgs_cache_key_payload(
         "ld": int(ld),
         "t_values": [float(value) for value in t_values],
         "noise_floor": _PERTURBATION_NOISE_FLOOR,
+        "ground_state_tol": float(ground_state_tol),
+        "ground_state_ncv": None if ground_state_ncv is None else int(ground_state_ncv),
     }
 
 
@@ -389,6 +393,8 @@ def _cgs_cache_record(
     sorted_hamiltonian: SortedPauliHamiltonian,
     sorted_hamiltonian_hash: str,
     fit_result: PerturbationFitResult,
+    ground_state_tol: float,
+    ground_state_ncv: int | None,
 ) -> dict[str, Any]:
     return {
         "cgs_definition": _CGS_CACHE_DEFINITION,
@@ -408,6 +414,8 @@ def _cgs_cache_record(
         "fit_slope": None if fit_result.fit_slope is None else float(fit_result.fit_slope),
         "fit_coeff": None if fit_result.fit_coeff is None else float(fit_result.fit_coeff),
         "noise_floor": _PERTURBATION_NOISE_FLOOR,
+        "ground_state_tol": float(ground_state_tol),
+        "ground_state_ncv": None if ground_state_ncv is None else int(ground_state_ncv),
     }
 
 
@@ -444,6 +452,7 @@ def get_or_compute_cached_cgs_fit(
     matrix_free_backend: str = "auto",
     matrix_free_threads: int | None = None,
     ground_state_ncv: int | None = None,
+    ground_state_tol: float = 1e-10,
 ) -> PerturbationFitResult:
     """
     Return a perturbative C_gs fit from the JSON cache or compute and persist it.
@@ -458,6 +467,8 @@ def get_or_compute_cached_cgs_fit(
         pf_label=pf_label,
         ld=partition.ld,
         t_values=t_values,
+        ground_state_tol=ground_state_tol,
+        ground_state_ncv=ground_state_ncv,
     )
     cache_key = _json_hash(key_payload)
     entries = cache_document["entries"]
@@ -476,11 +487,14 @@ def get_or_compute_cached_cgs_fit(
         matrix_free_backend=matrix_free_backend,
         matrix_free_threads=matrix_free_threads,
         ground_state_ncv=ground_state_ncv,
+        ground_state_tol=ground_state_tol,
     )
     entries[cache_key] = _cgs_cache_record(
         sorted_hamiltonian=sorted_hamiltonian,
         sorted_hamiltonian_hash=sorted_hamiltonian_hash,
         fit_result=fit_result,
+        ground_state_tol=ground_state_tol,
+        ground_state_ncv=ground_state_ncv,
     )
     save_cgs_json_cache(cache_document, cache_path)
     return fit_result
@@ -581,11 +595,12 @@ def default_perturbation_t_values(
     window for the Morales higher-order formulas; this function preserves that
     convention.
     """
+    del span
     if molecule_type not in PERTURBATION_FIT_STARTS:
         raise KeyError(f"No perturbation-fit time window configured for H{molecule_type}")
     mode = 1 if pf_label in _HIGH_ORDER_TIME_MODE_LABELS else 0
     t_start = PERTURBATION_FIT_STARTS[molecule_type][mode]
-    num_points = max(2, int(round(span / step)))
+    num_points = 3 if int(molecule_type) >= 12 else 4
     return tuple(round(t_start + step * idx, 10) for idx in range(num_points))
 
 
@@ -619,6 +634,7 @@ def fit_cgs_with_perturbation(
     matrix_free_backend: str = "auto",
     matrix_free_threads: int | None = None,
     ground_state_ncv: int | None = None,
+    ground_state_tol: float = 1e-10,
 ) -> PerturbationFitResult:
     """
     Estimate C_gs^(p)(L_D) from perturbative eigenvalue-error scaling on H_D.
@@ -653,6 +669,7 @@ def fit_cgs_with_perturbation(
         matrix_free_threads=matrix_free_threads,
         return_max_eig=False,
         solver_ncv=ground_state_ncv,
+        solver_tol=ground_state_tol,
     )
     state_flat = np.asarray(state_vec, dtype=np.complex128).reshape(-1)
 
@@ -1192,6 +1209,7 @@ def analyze_partial_randomized_pf(
     matrix_free_backend: str = "auto",
     matrix_free_threads: int | None = None,
     ground_state_ncv: int | None = None,
+    ground_state_tol: float = 1e-10,
 ) -> PartialRandomizedStudyResult:
     """
     Scan PF label and L_D for the simplified partially randomized PF cost model.
@@ -1239,6 +1257,7 @@ def analyze_partial_randomized_pf(
                     matrix_free_backend=matrix_free_backend,
                     matrix_free_threads=matrix_free_threads,
                     ground_state_ncv=ground_state_ncv,
+                    ground_state_tol=ground_state_tol,
                 )
             fit_result = fit_cache[fit_key]
             order = pf_order(pf_label)

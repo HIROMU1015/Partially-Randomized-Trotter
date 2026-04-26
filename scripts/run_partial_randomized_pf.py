@@ -127,6 +127,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="ARPACK ncv for ground-state eigsh. Lower values reduce memory use.",
     )
     parser.add_argument(
+        "--ground-state-tol",
+        type=float,
+        default=1e-10,
+        help="ARPACK tolerance for the C_gs ground-state eigsh solve.",
+    )
+    parser.add_argument(
         "--export-kappa-sweep-csv",
         nargs="?",
         const="__AUTO__",
@@ -179,6 +185,7 @@ def main() -> int:
         matrix_free_backend=args.matrix_free_backend,
         matrix_free_threads=args.matrix_free_threads,
         ground_state_ncv=args.ground_state_ncv,
+        ground_state_tol=args.ground_state_tol,
     )
 
     output_path = args.output if args.output is not None else _default_output_path(args)

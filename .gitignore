@@ -2,10 +2,24 @@ __pycache__/
 .ipynb_checkpoints/
 .vscode
 .mypy_cache
+.pytest_cache/
 mypy.ini
 .venv-req
 venv/
 artifacts/calculation
 artifacts/matrix
 code_draft/
-.venv311
+.venv311/
+.venv/
+*.egg-info/
+
+# Partially randomized PF: keep source, docs, and compact summary tables in git;
+# ignore raw runs, caches, logs, and long-running partial outputs.
+artifacts/partial_randomized_pf/*
+!artifacts/partial_randomized_pf/README.md
+!artifacts/partial_randomized_pf/df_cgs_cost_table.json
+!artifacts/partial_randomized_pf/df_cgs_cost_tables/
+!artifacts/partial_randomized_pf/df_cgs_cost_tables/**
+!artifacts/partial_randomized_pf/screening_results/
+artifacts/partial_randomized_pf/screening_results/*
+!artifacts/partial_randomized_pf/screening_results/df_screening_cost_minimization_eps_1.000e-04.json

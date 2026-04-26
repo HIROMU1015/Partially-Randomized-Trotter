@@ -81,6 +81,58 @@ CA = 1.59360010199040e-3   # :contentReference[oaicite:8]{index=8}
 # 外挿などで使う target error
 TARGET_ERROR = CA / 10
 
+# DF の rank_fraction 推定に使う CCSD 誤差目標（化学的精度の 1/100）
+DEFAULT_DF_CCSD_TARGET_ERROR_HA = CA / 100
+
+# molecule_type -> DF rank selection metadata.
+# Source of truth is the reference DF project config.
+DF_RANK_SELECTION_BY_MOLECULE: Dict[int, Dict[str, float | int | str]] = {
+    2: {"rank_fraction": 0.75, "selected_rank": 3, "full_rank": 4, "rank_ratio": "3/4"},
+    3: {"rank_fraction": 0.5555555555555556, "selected_rank": 5, "full_rank": 9, "rank_ratio": "5/9"},
+    4: {"rank_fraction": 0.4375, "selected_rank": 7, "full_rank": 16, "rank_ratio": "7/16"},
+    5: {"rank_fraction": 0.36, "selected_rank": 9, "full_rank": 25, "rank_ratio": "9/25"},
+    6: {"rank_fraction": 0.3055555555555556, "selected_rank": 11, "full_rank": 36, "rank_ratio": "11/36"},
+    7: {"rank_fraction": 0.2653061224489796, "selected_rank": 13, "full_rank": 49, "rank_ratio": "13/49"},
+    8: {"rank_fraction": 0.234375, "selected_rank": 15, "full_rank": 64, "rank_ratio": "15/64"},
+    9: {"rank_fraction": 0.20987654320987653, "selected_rank": 17, "full_rank": 81, "rank_ratio": "17/81"},
+    10: {"rank_fraction": 0.25, "selected_rank": 25, "full_rank": 100, "rank_ratio": "25/100"},
+    11: {"rank_fraction": 0.17355371900826447, "selected_rank": 21, "full_rank": 121, "rank_ratio": "21/121"},
+    12: {"rank_fraction": 0.19444444444444445, "selected_rank": 28, "full_rank": 144, "rank_ratio": "28/144"},
+    13: {"rank_fraction": 25 / 169, "selected_rank": 25, "full_rank": 169, "rank_ratio": "25/169"},
+    14: {"rank_fraction": 36 / 196, "selected_rank": 36, "full_rank": 196, "rank_ratio": "36/196"},
+    15: {"rank_fraction": 29 / 225, "selected_rank": 29, "full_rank": 225, "rank_ratio": "29/225"},
+}
+
+DF_RANK_FRACTION_BY_MOLECULE: Dict[int, float] = {
+    int(molecule_type): float(selection["rank_fraction"])
+    for molecule_type, selection in DF_RANK_SELECTION_BY_MOLECULE.items()
+}
+
+
+def get_df_rank_fraction_for_molecule(molecule_type: int) -> float | None:
+    """設定済みの molecule_type 用 rank_fraction を返す。未設定なら None。"""
+    return DF_RANK_FRACTION_BY_MOLECULE.get(int(molecule_type))
+
+
+def get_df_rank_selection_for_molecule(
+    molecule_type: int,
+) -> Dict[str, float | int | str] | None:
+    """設定済みの molecule_type 用 rank 選択情報を返す。未設定なら None。"""
+    return DF_RANK_SELECTION_BY_MOLECULE.get(int(molecule_type))
+
+
+def resolve_df_rank_for_molecule(molecule_type: int, df_rank: int | None = None) -> int | None:
+    """Return explicit df_rank or the configured DF selected rank for molecule_type."""
+    if df_rank is not None:
+        if int(df_rank) <= 0:
+            raise ValueError("df_rank must be positive.")
+        return int(df_rank)
+    selection = get_df_rank_selection_for_molecule(int(molecule_type))
+    if selection is None:
+        return None
+    selected_rank = selection.get("selected_rank")
+    return None if selected_rank is None else int(selected_rank)
+
 # 摂動論フィットに使う既存ノートブック由来の時間窓
 PERTURBATION_FIT_STEP = 0.002
 PERTURBATION_FIT_SPAN = 0.01
@@ -104,6 +156,12 @@ PERTURBATION_FIT_STARTS = {
 # 部分ランダム PF の既定値
 PARTIAL_RANDOMIZED_ARTIFACTS_DIR = ARTIFACTS_DIR / "partial_randomized_pf"
 PARTIAL_RANDOMIZED_CGS_CACHE_PATH = PARTIAL_RANDOMIZED_ARTIFACTS_DIR / "cgs_fit_cache.json"
+PARTIAL_RANDOMIZED_DF_CGS_CACHE_PATH = (
+    PARTIAL_RANDOMIZED_ARTIFACTS_DIR / "df_cgs_fit_cache.json"
+)
+PARTIAL_RANDOMIZED_DF_GROUND_STATE_CACHE_DIR = (
+    PARTIAL_RANDOMIZED_ARTIFACTS_DIR / "df_ground_state_cache"
+)
 PARTIAL_RANDOMIZED_DEFAULT_KAPPA = 2.0
 PARTIAL_RANDOMIZED_KAPPA_MIN = 1.0
 PARTIAL_RANDOMIZED_KAPPA_MAX = 32.0

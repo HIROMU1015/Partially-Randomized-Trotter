@@ -64,6 +64,39 @@ If `lambda_R == 0`, the randomized side is turned off explicitly:
 - Perturbative state-evolution path: `src/trotterlib/qiskit_time_evolution_ungrouped.py`
 - Fixed-order log-log coefficient fit: `src/trotterlib/analysis_utils.py`
 
+## DF-native C_gs,D GPU path
+
+DF representation を使う本流では、Pauli 項へ戻さず DF fragment のまま
+`H_D/H_R` を分割する。`src/trotterlib/df_partial_randomized_pf.py` がそのための
+DF-native な `C_gs,D` fit path を提供する。
+
+- `rank_df_fragments(...)`: DF fragment を固定の重み規則で降順に並べる。
+- `split_df_hamiltonian_by_ld(...)`: `L_D` 個の DF fragment を deterministic 側に置く。
+- `fit_df_cgs_with_perturbation(...)`: DF block circuit builder で `H_D` の Trotter 回路を作り、GPU statevector で perturbation error を計算して `C_gs,D` を fit する。
+- `get_or_compute_cached_df_cgs_fit(...)`: DF 用 cache key で GPU 実行結果を再利用する。
+- `get_or_compute_cached_df_ground_state(...)`: `H_D` と physical sector と solver 条件ごとに基底状態・基底エネルギーを `artifacts/partial_randomized_pf/df_ground_state_cache/*.npz` に保存して再利用する。
+- `df_deterministic_step_rz_cost(...)`: DF project と同じ U/D 分解ベースで `total_ref_rz_depth` を数え、`C_gs,D` の cache record の `metadata.df_step_cost` に保存する。
+
+GPU runner は `src/trotterlib/df_gpu_statevector.py` にあり、
+`qiskit-aer-gpu` の `AerSimulator(method="statevector", device="GPU")` を使う。
+default では symbolic time parameter `t` を持つ回路を一度だけ GPU backend 向けに
+transpile し、各 `t_values` では parameter bind だけを行って実行する。
+`gpu_ids=("0", "1", ...)` のように複数 GPU を渡すと、`t_values` の各点を
+1 GPU ずつ round-robin に割り当て、別プロセスで並列実行する。
+旧来のように各 `t` で個別に circuit build/transpile したい場合は
+`use_parameterized_template=False` を指定するか、
+`scripts/run_h5_df_cgs_gpu_slopes.py --no-parameterized-template` を使う。
+基底状態 cache を使わず毎回 solve したい場合は `use_ground_state_cache=False`
+または `scripts/run_h5_df_cgs_gpu_slopes.py --no-ground-state-cache` を使う。
+GPU 環境では以下を使う。
+
+```bash
+pip install -r requirements-gpu.txt
+```
+
+この path で得る `C_gs,D` は、DF `H_D` に対する deterministic surrogate であり、
+full partial-randomized scheme 全体の厳密な誤差係数ではない。
+
 ## Outputs
 
 Each candidate stores:
