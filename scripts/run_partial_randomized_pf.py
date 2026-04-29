@@ -38,14 +38,17 @@ def _parse_kappa_grid(raw: str | None) -> list[float] | None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Run the simplified partially randomized PF scan with kappa-aware randomized prefactors.",
+        description=(
+            "Run the simplified partially randomized PF scan with "
+            "kappa-aware randomized prefactors."
+        ),
     )
     parser.add_argument("--molecule-type", type=int, required=True, help="H-chain size.")
     parser.add_argument(
         "--epsilon-total",
         type=float,
         required=True,
-        help="Target total error epsilon in eps^2 = eps_qpe^2 + eps_trot^2.",
+        help="Target total error epsilon.",
     )
     parser.add_argument("--distance", type=float, default=1.0)
     parser.add_argument(
@@ -109,6 +112,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="Randomized-side per-step cost proxy G_rand used in B0.",
     )
     parser.add_argument(
+        "--error-budget-rule",
+        choices=("quadrature", "linear"),
+        default="quadrature",
+        help=(
+            "Use eps_qpe^2 + eps_trot^2 = eps^2 or "
+            "eps_qpe + eps_trot = eps."
+        ),
+    )
+    parser.add_argument(
         "--matrix-free-backend",
         choices=("auto", "numba", "python"),
         default="auto",
@@ -118,7 +130,10 @@ def build_parser() -> argparse.ArgumentParser:
         "--matrix-free-threads",
         type=int,
         default=None,
-        help="Number of numba threads for matrix-free matvec. Default auto-detects available CPUs. Use 0 for auto.",
+        help=(
+            "Number of numba threads for matrix-free matvec. "
+            "Default auto-detects available CPUs. Use 0 for auto."
+        ),
     )
     parser.add_argument(
         "--ground-state-ncv",
@@ -155,7 +170,11 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def _default_output_path(args: argparse.Namespace) -> Path:
-    suffix = f"H{args.molecule_type}_eps_{args.epsilon_total:.3e}_partial_randomized_pf_{args.kappa_mode}.json"
+    rule_suffix = "" if args.error_budget_rule == "quadrature" else "_linear"
+    suffix = (
+        f"H{args.molecule_type}_eps_{args.epsilon_total:.3e}"
+        f"_partial_randomized_pf_{args.kappa_mode}{rule_suffix}.json"
+    )
     return PROJECT_ROOT / "artifacts" / "partial_randomized_pf" / suffix
 
 
@@ -182,6 +201,7 @@ def main() -> int:
         kappa_grid=_parse_kappa_grid(args.kappa_grid),
         randomized_method=args.randomized_method,
         g_rand=args.g_rand,
+        error_budget_rule=args.error_budget_rule,
         matrix_free_backend=args.matrix_free_backend,
         matrix_free_threads=args.matrix_free_threads,
         ground_state_ncv=args.ground_state_ncv,

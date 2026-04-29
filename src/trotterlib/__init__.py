@@ -29,6 +29,7 @@ from .df_hamiltonian import (
     DFGroundStateResult,
     PhysicalSector,
     build_df_h_d_from_molecule,
+    clear_df_integral_session_cache,
     solve_df_ground_state,
 )
 from .df_partial_randomized_pf import (
@@ -70,6 +71,7 @@ __all__ = [
     "DFGroundStateResult",
     "PhysicalSector",
     "build_df_h_d_from_molecule",
+    "clear_df_integral_session_cache",
     "solve_df_ground_state",
     "DFCgsFitResult",
     "DFFragmentPartition",

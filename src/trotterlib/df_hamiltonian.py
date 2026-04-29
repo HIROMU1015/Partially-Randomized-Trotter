@@ -23,6 +23,7 @@ from .config import (
 _FUSED_NUMBA_WORKSPACE_LIMIT_BYTES = 2 * 1024**3
 _FUSED_NUMBA_MIN_BLOCK_DIM_WORK = 10_000_000
 _FUSED_NUMBA_AUTO_BLOCK_CHUNK_SIZE = 12
+_DF_INTEGRAL_SESSION_CACHE: dict[tuple[int, float, str], dict[str, Any]] = {}
 
 if _NUMBA_AVAILABLE:
     from numba import njit, prange
@@ -474,6 +475,55 @@ class _ExcitationTable:
     signs: np.ndarray
 
 
+def clear_df_integral_session_cache() -> None:
+    """Clear per-process H-chain integral cache used by DF Hamiltonian builders."""
+    _DF_INTEGRAL_SESSION_CACHE.clear()
+
+
+def _copy_integral_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "constant": float(payload["constant"]),
+        "one_body": np.array(payload["one_body"], dtype=np.complex128, copy=True),
+        "two_body": np.array(payload["two_body"], dtype=np.complex128, copy=True),
+        "hf_energy": float(payload["hf_energy"]),
+        "multiplicity": int(payload["multiplicity"]),
+        "charge": int(payload["charge"]),
+    }
+
+
+def _h_chain_integrals_session_cached(
+    molecule_type: int,
+    *,
+    distance: float,
+    basis: str,
+) -> dict[str, Any]:
+    key = (int(molecule_type), float(distance), str(basis))
+    cached = _DF_INTEGRAL_SESSION_CACHE.get(key)
+    if cached is not None:
+        return _copy_integral_payload(cached)
+
+    geometry, multiplicity, charge = geo(int(molecule_type), float(distance))
+    molecule = MolecularData(
+        geometry,
+        basis,
+        multiplicity,
+        charge,
+        f"df_d{int(float(distance) * 100)}",
+    )
+    molecule = run_pyscf(molecule, run_scf=1, run_fci=0)
+    interaction = molecule.get_molecular_hamiltonian()
+    payload = {
+        "constant": float(interaction.constant),
+        "one_body": np.asarray(interaction.one_body_tensor, dtype=np.complex128),
+        "two_body": np.asarray(interaction.two_body_tensor, dtype=np.complex128),
+        "hf_energy": float(molecule.hf_energy),
+        "multiplicity": int(multiplicity),
+        "charge": int(charge),
+    }
+    _DF_INTEGRAL_SESSION_CACHE[key] = _copy_integral_payload(payload)
+    return _copy_integral_payload(payload)
+
+
 def build_df_h_d_from_molecule(
     molecule_type: int,
     *,
@@ -492,10 +542,13 @@ def build_df_h_d_from_molecule(
     """
     if distance is None:
         distance = DEFAULT_DISTANCE
-    geometry, multiplicity, charge = geo(int(molecule_type), distance)
-    molecule = MolecularData(geometry, basis, multiplicity, charge, f"df_d{int(distance * 100)}")
-    molecule = run_pyscf(molecule, run_scf=1, run_fci=0)
-    interaction = molecule.get_molecular_hamiltonian()
+    integral_payload = _h_chain_integrals_session_cached(
+        int(molecule_type),
+        distance=float(distance),
+        basis=str(basis),
+    )
+    multiplicity = int(integral_payload["multiplicity"])
+    charge = int(integral_payload["charge"])
     resolved_df_rank = resolve_df_rank_for_molecule(int(molecule_type), df_rank)
     rank_selection = (
         get_df_rank_selection_for_molecule(int(molecule_type))
@@ -503,9 +556,9 @@ def build_df_h_d_from_molecule(
         else None
     )
     hamiltonian = df_hamiltonian_from_integrals(
-        constant=float(interaction.constant),
-        one_body=np.asarray(interaction.one_body_tensor),
-        two_body=np.asarray(interaction.two_body_tensor),
+        constant=float(integral_payload["constant"]),
+        one_body=np.asarray(integral_payload["one_body"]),
+        two_body=np.asarray(integral_payload["two_body"]),
         df_rank=resolved_df_rank,
         df_tol=df_tol,
         metadata={
@@ -514,7 +567,7 @@ def build_df_h_d_from_molecule(
             "basis": basis,
             "multiplicity": int(multiplicity),
             "charge": int(charge),
-            "hf_energy": float(molecule.hf_energy),
+            "hf_energy": float(integral_payload["hf_energy"]),
             "df_rank_source": (
                 "config"
                 if df_rank is None and resolved_df_rank is not None

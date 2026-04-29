@@ -51,6 +51,11 @@ def main() -> int:
         default=PARTIAL_RANDOMIZED_DEFAULT_RANDOMIZED_METHOD,
     )
     parser.add_argument("--g-rand", type=float, default=PARTIAL_RANDOMIZED_DEFAULT_G_RAND)
+    parser.add_argument(
+        "--error-budget-rule",
+        choices=("quadrature", "linear"),
+        default="quadrature",
+    )
     args = parser.parse_args()
 
     result = optimize_df_screening_cost(
@@ -65,6 +70,7 @@ def main() -> int:
         kappa_max=float(args.kappa_max),
         randomized_method=args.randomized_method,
         g_rand=float(args.g_rand),
+        error_budget_rule=str(args.error_budget_rule),
         progress_callback=lambda best: print(json.dumps(best, sort_keys=True), flush=True),
     )
     save_df_screening_cost_result(result, args.output)

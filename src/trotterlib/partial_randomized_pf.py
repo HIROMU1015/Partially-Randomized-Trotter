@@ -58,6 +58,7 @@ _CGS_CACHE_SORT_RULE = (
 
 KappaMode: TypeAlias = Literal["fixed", "optimize", "sweep"]
 RandomizedMethod: TypeAlias = Literal["qdrift", "rte"]
+ErrorBudgetRule: TypeAlias = Literal["quadrature", "linear"]
 
 
 @dataclass(frozen=True)
@@ -169,6 +170,7 @@ class CandidateResult:
     randomized_method: str
     g_rand_input: float
     b0: float
+    error_budget_rule: str
     g_det: float
     g_rand: float
     g_total: float
@@ -191,6 +193,7 @@ class PartialRandomizedStudyResult:
     randomized_method: str
     g_rand_input: float
     b0: float
+    error_budget_rule: str
     kappa_mode: str
     kappa_value: float | None
     kappa_min: float
@@ -231,6 +234,13 @@ def _normalize_kappa_mode(mode: str) -> KappaMode:
     normalized = mode.strip().lower()
     if normalized not in {"fixed", "optimize", "sweep"}:
         raise ValueError(f"Unsupported kappa mode: {mode}")
+    return normalized  # type: ignore[return-value]
+
+
+def _normalize_error_budget_rule(rule: str) -> ErrorBudgetRule:
+    normalized = rule.strip().lower()
+    if normalized not in {"quadrature", "linear"}:
+        raise ValueError(f"Unsupported error budget rule: {rule}")
     return normalized  # type: ignore[return-value]
 
 
@@ -783,10 +793,16 @@ def _total_cost_given_prefactor(
     b_value: float,
     kappa: float | None,
     q_bounds: tuple[float, float],
+    error_budget_rule: ErrorBudgetRule = "quadrature",
     kappa_bounds: tuple[float, float] | None = None,
 ) -> ErrorBudgetResult:
     eps_qpe = epsilon_total * q_ratio
-    eps_trot = epsilon_total * math.sqrt(max(0.0, 1.0 - (q_ratio * q_ratio)))
+    if error_budget_rule == "quadrature":
+        eps_trot = epsilon_total * math.sqrt(max(0.0, 1.0 - (q_ratio * q_ratio)))
+    elif error_budget_rule == "linear":
+        eps_trot = epsilon_total * max(0.0, 1.0 - q_ratio)
+    else:
+        raise ValueError(f"Unsupported error budget rule: {error_budget_rule}")
 
     g_det = 0.0
     if deterministic_scale > 0.0:
@@ -834,6 +850,7 @@ def total_cost_given_q_kappa(
     g_rand: float = PARTIAL_RANDOMIZED_DEFAULT_G_RAND,
     q_bounds: tuple[float, float] | None = None,
     kappa_bounds: tuple[float, float] | None = None,
+    error_budget_rule: str = "quadrature",
 ) -> ErrorBudgetResult:
     """
     Evaluate G_total(q, kappa) with B(kappa) for one candidate.
@@ -842,6 +859,7 @@ def total_cost_given_q_kappa(
     treated as irrelevant.
     """
     q_bounds_norm = _normalize_q_bounds(q_bounds)
+    error_budget_rule_norm = _normalize_error_budget_rule(error_budget_rule)
     deterministic_scale = _deterministic_scale(order, deterministic_step_cost_value, c_gs)
     if lambda_r == 0.0:
         return _total_cost_given_prefactor(
@@ -853,6 +871,7 @@ def total_cost_given_q_kappa(
             b_value=0.0,
             kappa=None,
             q_bounds=q_bounds_norm,
+            error_budget_rule=error_budget_rule_norm,
             kappa_bounds=None,
         )
     if kappa is None:
@@ -871,6 +890,7 @@ def total_cost_given_q_kappa(
         b_value=b_value,
         kappa=kappa,
         q_bounds=q_bounds_norm,
+        error_budget_rule=error_budget_rule_norm,
         kappa_bounds=kappa_bounds,
     )
 
@@ -885,6 +905,7 @@ def _optimize_q_for_prefactor(
     q_bounds: tuple[float, float],
     kappa: float | None,
     kappa_bounds: tuple[float, float] | None = None,
+    error_budget_rule: ErrorBudgetRule = "quadrature",
 ) -> ErrorBudgetResult:
     if epsilon_total <= 0.0:
         raise ValueError("epsilon_total must be positive.")
@@ -901,6 +922,7 @@ def _optimize_q_for_prefactor(
             b_value=0.0,
             kappa=None,
             q_bounds=q_bounds,
+            error_budget_rule=error_budget_rule,
             kappa_bounds=None,
         )
 
@@ -914,6 +936,7 @@ def _optimize_q_for_prefactor(
             b_value=b_value,
             kappa=kappa,
             q_bounds=q_bounds,
+            error_budget_rule=error_budget_rule,
             kappa_bounds=kappa_bounds,
         )
 
@@ -927,6 +950,7 @@ def _optimize_q_for_prefactor(
             b_value=b_value,
             kappa=kappa,
             q_bounds=q_bounds,
+            error_budget_rule=error_budget_rule,
             kappa_bounds=kappa_bounds,
         ).g_total
 
@@ -950,6 +974,7 @@ def _optimize_q_for_prefactor(
         b_value=b_value,
         kappa=kappa,
         q_bounds=q_bounds,
+        error_budget_rule=error_budget_rule,
         kappa_bounds=kappa_bounds,
     )
 
@@ -962,6 +987,7 @@ def optimize_error_budget(
     c_gs: float,
     lambda_r: float,
     random_prefactor: float,
+    error_budget_rule: str = "quadrature",
 ) -> ErrorBudgetResult:
     """
     Backward-compatible fixed-B optimizer.
@@ -972,6 +998,7 @@ def optimize_error_budget(
     if random_prefactor < 0.0:
         raise ValueError("random_prefactor must be non-negative.")
     q_bounds = _normalize_q_bounds()
+    error_budget_rule_norm = _normalize_error_budget_rule(error_budget_rule)
     deterministic_scale = _deterministic_scale(order, deterministic_step_cost_value, c_gs)
     if lambda_r == 0.0:
         return _optimize_q_for_prefactor(
@@ -983,6 +1010,7 @@ def optimize_error_budget(
             q_bounds=q_bounds,
             kappa=None,
             kappa_bounds=None,
+            error_budget_rule=error_budget_rule_norm,
         )
     return _optimize_q_for_prefactor(
         epsilon_total=epsilon_total,
@@ -993,6 +1021,7 @@ def optimize_error_budget(
         q_bounds=q_bounds,
         kappa=None,
         kappa_bounds=None,
+        error_budget_rule=error_budget_rule_norm,
     )
 
 
@@ -1010,11 +1039,13 @@ def optimize_error_budget_and_kappa(
     kappa_min: float = PARTIAL_RANDOMIZED_KAPPA_MIN,
     kappa_max: float = PARTIAL_RANDOMIZED_KAPPA_MAX,
     q_bounds: tuple[float, float] | None = None,
+    error_budget_rule: str = "quadrature",
 ) -> ErrorBudgetResult:
     """Optimize q and, when requested, kappa for one fixed (p, L_D) candidate."""
     q_bounds_norm = _normalize_q_bounds(q_bounds)
     kappa_mode_norm = _normalize_kappa_mode(kappa_mode)
     randomized_method_norm = _normalize_randomized_method(randomized_method)
+    error_budget_rule_norm = _normalize_error_budget_rule(error_budget_rule)
     kappa_bounds = _normalize_kappa_bounds(kappa_min, kappa_max)
     deterministic_scale = _deterministic_scale(order, deterministic_step_cost_value, c_gs)
 
@@ -1028,6 +1059,7 @@ def optimize_error_budget_and_kappa(
             q_bounds=q_bounds_norm,
             kappa=None,
             kappa_bounds=None,
+            error_budget_rule=error_budget_rule_norm,
         )
 
     if kappa_mode_norm == "fixed":
@@ -1050,6 +1082,7 @@ def optimize_error_budget_and_kappa(
             q_bounds=q_bounds_norm,
             kappa=float(kappa_value),
             kappa_bounds=kappa_bounds,
+            error_budget_rule=error_budget_rule_norm,
         )
 
     def objective(kappa: float) -> float:
@@ -1067,6 +1100,7 @@ def optimize_error_budget_and_kappa(
             q_bounds=q_bounds_norm,
             kappa=float(kappa),
             kappa_bounds=kappa_bounds,
+            error_budget_rule=error_budget_rule_norm,
         ).g_total
 
     result = minimize_scalar(
@@ -1093,6 +1127,7 @@ def optimize_error_budget_and_kappa(
         q_bounds=q_bounds_norm,
         kappa=kappa_opt,
         kappa_bounds=kappa_bounds,
+        error_budget_rule=error_budget_rule_norm,
     )
 
 
@@ -1107,11 +1142,13 @@ def sweep_kappa_for_candidate(
     g_rand: float = PARTIAL_RANDOMIZED_DEFAULT_G_RAND,
     kappa_grid: Sequence[float] | None = None,
     q_bounds: tuple[float, float] | None = None,
+    error_budget_rule: str = "quadrature",
 ) -> tuple[KappaSweepPoint, ...]:
     """Run sensitivity analysis over a user-specified kappa grid for one candidate."""
     q_bounds_norm = _normalize_q_bounds(q_bounds)
     kappa_grid_norm = _normalize_kappa_grid(kappa_grid)
     randomized_method_norm = _normalize_randomized_method(randomized_method)
+    error_budget_rule_norm = _normalize_error_budget_rule(error_budget_rule)
     deterministic_scale = _deterministic_scale(order, deterministic_step_cost_value, c_gs)
 
     points: list[KappaSweepPoint] = []
@@ -1126,6 +1163,7 @@ def sweep_kappa_for_candidate(
                 q_bounds=q_bounds_norm,
                 kappa=None,
                 kappa_bounds=None,
+                error_budget_rule=error_budget_rule_norm,
             )
             b_value = 0.0
         else:
@@ -1143,6 +1181,7 @@ def sweep_kappa_for_candidate(
                 q_bounds=q_bounds_norm,
                 kappa=kappa,
                 kappa_bounds=(kappa_grid_norm[0], kappa_grid_norm[-1]),
+                error_budget_rule=error_budget_rule_norm,
             )
         points.append(
             KappaSweepPoint(
@@ -1205,6 +1244,7 @@ def analyze_partial_randomized_pf(
     kappa_grid: Sequence[float] | None = None,
     randomized_method: str = PARTIAL_RANDOMIZED_DEFAULT_RANDOMIZED_METHOD,
     g_rand: float = PARTIAL_RANDOMIZED_DEFAULT_G_RAND,
+    error_budget_rule: str = "quadrature",
     q_bounds: tuple[float, float] | None = None,
     matrix_free_backend: str = "auto",
     matrix_free_threads: int | None = None,
@@ -1236,6 +1276,7 @@ def analyze_partial_randomized_pf(
     kappa_bounds = _normalize_kappa_bounds(kappa_min, kappa_max)
     kappa_grid_norm = _normalize_kappa_grid(kappa_grid)
     randomized_method_norm = _normalize_randomized_method(randomized_method)
+    error_budget_rule_norm = _normalize_error_budget_rule(error_budget_rule)
     b0 = randomized_prefactor_b0(randomized_method_norm, g_rand)
     sorted_hamiltonian_hash = _sorted_hamiltonian_hash(sorted_hamiltonian)
     cgs_cache_document = load_cgs_json_cache()
@@ -1272,6 +1313,7 @@ def analyze_partial_randomized_pf(
                     c_gs=fit_result.coeff,
                     lambda_r=partition.lambda_r,
                     random_prefactor=random_prefactor,
+                    error_budget_rule=error_budget_rule_norm,
                 )
             elif kappa_mode_norm == "sweep":
                 kappa_sweep_points = sweep_kappa_for_candidate(
@@ -1284,6 +1326,7 @@ def analyze_partial_randomized_pf(
                     g_rand=g_rand,
                     kappa_grid=kappa_grid_norm,
                     q_bounds=q_bounds_norm,
+                    error_budget_rule=error_budget_rule_norm,
                 )
                 best_sweep_point = min(kappa_sweep_points, key=lambda point: point.g_total)
                 if partition.lambda_r == 0.0:
@@ -1330,6 +1373,7 @@ def analyze_partial_randomized_pf(
                     kappa_min=kappa_bounds[0],
                     kappa_max=kappa_bounds[1],
                     q_bounds=q_bounds_norm,
+                    error_budget_rule=error_budget_rule_norm,
                 )
 
             candidate_results.append(
@@ -1355,6 +1399,7 @@ def analyze_partial_randomized_pf(
                     randomized_method=randomized_method_norm,
                     g_rand_input=float(g_rand),
                     b0=float(b0),
+                    error_budget_rule=error_budget_rule_norm,
                     g_det=budget.g_det,
                     g_rand=budget.g_rand,
                     g_total=budget.g_total,
@@ -1376,6 +1421,7 @@ def analyze_partial_randomized_pf(
         randomized_method=randomized_method_norm,
         g_rand_input=float(g_rand),
         b0=float(b0),
+        error_budget_rule=error_budget_rule_norm,
         kappa_mode=kappa_mode_norm,
         kappa_value=None if random_prefactor is not None else float(kappa_value),
         kappa_min=kappa_bounds[0],
@@ -1409,6 +1455,7 @@ def kappa_sweep_rows(result: PartialRandomizedStudyResult) -> list[dict[str, Any
                     "randomized_method": candidate.randomized_method,
                     "g_rand_input": candidate.g_rand_input,
                     "b0": candidate.b0,
+                    "error_budget_rule": candidate.error_budget_rule,
                     "kappa": point.kappa,
                     "b_value": point.b_value,
                     "q_opt": point.q_opt,
@@ -1454,6 +1501,7 @@ def save_kappa_sweep_csv(
         "randomized_method",
         "g_rand_input",
         "b0",
+        "error_budget_rule",
         "kappa",
         "b_value",
         "q_opt",

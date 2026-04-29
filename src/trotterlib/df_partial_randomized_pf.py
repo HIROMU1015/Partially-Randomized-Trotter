@@ -55,9 +55,9 @@ DFFragmentWeightRule: TypeAlias = Literal[
     "abs_lambda",
 ]
 DFEvolutionBackend: TypeAlias = Literal["gpu", "cpu", "auto"]
-_DF_CGS_CACHE_SCHEMA_VERSION = 5
+_DF_CGS_CACHE_SCHEMA_VERSION = 6
 _DF_CGS_DEFINITION = "df_hd_deterministic_surrogate_v1"
-_DF_GROUND_STATE_CACHE_SCHEMA_VERSION = 1
+_DF_GROUND_STATE_CACHE_SCHEMA_VERSION = 2
 _DF_COST_BASIS_GATES = ("rz", "cx", "sx", "x")
 _DF_TIME_WORKER_TEMPLATE: DFGPUParameterizedTemplate | None = None
 
@@ -698,10 +698,15 @@ def _df_hamiltonian_hash(
         "constant": round(float(hamiltonian.constant), 12),
         "one_body_shape": list(hamiltonian.one_body.shape),
         "one_body_norm": round(float(np.linalg.norm(hamiltonian.one_body)), 12),
+        "one_body_hash": _array_hash_payload(hamiltonian.one_body),
         "lambdas": [round(float(value), 12) for value in hamiltonian.lambdas],
+        "lambdas_hash": _array_hash_payload(hamiltonian.lambdas),
         "g_norms": [
             round(float(np.linalg.norm(g_mat, ord="fro")), 12)
             for g_mat in hamiltonian.g_matrices
+        ],
+        "g_matrix_hashes": [
+            _array_hash_payload(g_mat) for g_mat in hamiltonian.g_matrices
         ],
         "metadata": _jsonable_metadata(hamiltonian.metadata),
         "weight_rule": weight_rule,
@@ -760,16 +765,35 @@ def _df_ground_state_cache_key_payload(
 def _df_ground_state_result_from_npz(
     path: Path,
     sector: PhysicalSector,
+    *,
+    expected_cache_key: str | None = None,
+    expected_cache_payload: dict[str, Any] | None = None,
 ) -> DFGroundStateResult | None:
     try:
         with np.load(path, allow_pickle=False) as data:
+            if int(data["cache_schema_version"][()]) != _DF_GROUND_STATE_CACHE_SCHEMA_VERSION:
+                return None
+            if expected_cache_key is not None and str(data["cache_key"][()]) != str(
+                expected_cache_key
+            ):
+                return None
+            if expected_cache_payload is not None:
+                expected_payload_hash = _json_hash(expected_cache_payload)
+                if str(data["cache_payload_sha256"][()]) != expected_payload_hash:
+                    return None
+            state_vector = np.asarray(data["state_vector"], dtype=np.complex128)
+            sector_state_vector = np.asarray(
+                data["sector_state_vector"],
+                dtype=np.complex128,
+            )
+            if state_vector.size != (1 << int(sector.n_qubits)):
+                return None
+            if sector_state_vector.size != sector.dimension:
+                return None
             return DFGroundStateResult(
                 energy=float(data["energy"][()]),
-                state_vector=np.asarray(data["state_vector"], dtype=np.complex128),
-                sector_state_vector=np.asarray(
-                    data["sector_state_vector"],
-                    dtype=np.complex128,
-                ),
+                state_vector=state_vector,
+                sector_state_vector=sector_state_vector,
                 sector=sector,
                 converged=bool(data["converged"][()]),
                 residual_norm=float(data["residual_norm"][()]),
@@ -785,11 +809,19 @@ def _df_ground_state_result_from_npz(
 def _save_df_ground_state_npz(
     path: Path,
     ground_state: DFGroundStateResult,
+    *,
+    cache_key: str,
+    cache_payload: dict[str, Any],
 ) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp_path = path.with_suffix(path.suffix + ".tmp.npz")
     np.savez_compressed(
         tmp_path,
+        cache_schema_version=np.asarray(_DF_GROUND_STATE_CACHE_SCHEMA_VERSION),
+        cache_key=np.asarray(str(cache_key)),
+        cache_payload_sha256=np.asarray(_json_hash(cache_payload)),
+        hamiltonian_hash=np.asarray(str(cache_payload["hamiltonian_hash"])),
+        sector_hash=np.asarray(str(cache_payload["sector_hash"])),
         energy=np.asarray(ground_state.energy),
         state_vector=np.asarray(ground_state.state_vector, dtype=np.complex128),
         sector_state_vector=np.asarray(
@@ -829,7 +861,12 @@ def get_or_compute_cached_df_ground_state(
     )
     cache_key = _json_hash(payload)
     path = Path(cache_dir) / f"{cache_key}.npz"
-    cached = _df_ground_state_result_from_npz(path, sector)
+    cached = _df_ground_state_result_from_npz(
+        path,
+        sector,
+        expected_cache_key=cache_key,
+        expected_cache_payload=payload,
+    )
     if cached is not None:
         return cached, {
             "ground_state_cache_hit": True,
@@ -847,7 +884,12 @@ def get_or_compute_cached_df_ground_state(
         ncv=ground_state_ncv,
         expand_state=True,
     )
-    _save_df_ground_state_npz(path, ground_state)
+    _save_df_ground_state_npz(
+        path,
+        ground_state,
+        cache_key=cache_key,
+        cache_payload=payload,
+    )
     return ground_state, {
         "ground_state_cache_hit": False,
         "ground_state_cache_key": cache_key,
@@ -876,6 +918,15 @@ def _jsonable_metadata(metadata: dict[str, Any]) -> dict[str, Any]:
 def _json_hash(payload: Any) -> str:
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
+
+
+def _array_hash_payload(array: np.ndarray) -> dict[str, Any]:
+    arr = np.ascontiguousarray(np.asarray(array))
+    return {
+        "shape": list(arr.shape),
+        "dtype": str(arr.dtype),
+        "sha256": hashlib.sha256(arr.view(np.uint8).tobytes()).hexdigest(),
+    }
 
 
 def _default_cache_document() -> dict[str, Any]:

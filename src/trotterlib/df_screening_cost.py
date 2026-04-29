@@ -160,6 +160,7 @@ def optimize_df_screening_cost(
     kappa_max: float = PARTIAL_RANDOMIZED_KAPPA_MAX,
     randomized_method: str = PARTIAL_RANDOMIZED_DEFAULT_RANDOMIZED_METHOD,
     g_rand: float = PARTIAL_RANDOMIZED_DEFAULT_G_RAND,
+    error_budget_rule: str = "quadrature",
     progress_callback: Callable[[dict[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
     """Optimize the DF reduced screening model using anchor Cgs values."""
@@ -209,6 +210,7 @@ def optimize_df_screening_cost(
                     kappa_value=float(kappa_value),
                     kappa_min=float(kappa_min),
                     kappa_max=float(kappa_max),
+                    error_budget_rule=error_budget_rule,
                 )
                 candidate = {
                     "molecule": f"H{molecule_type}",
@@ -227,6 +229,7 @@ def optimize_df_screening_cost(
                     "eps_trot_opt": budget.eps_trot,
                     "kappa_opt": budget.kappa,
                     "b_opt": budget.b_value,
+                    "error_budget_rule": str(error_budget_rule),
                     "boundary_hit_q": budget.boundary_hit_q,
                     "boundary_hit_kappa": budget.boundary_hit_kappa,
                     "g_det": budget.g_det,
@@ -259,6 +262,7 @@ def optimize_df_screening_cost(
         "kappa_value": float(kappa_value),
         "kappa_min": float(kappa_min),
         "kappa_max": float(kappa_max),
+        "error_budget_rule": str(error_budget_rule),
         "cgs_table": str(Path(cgs_table_path)),
         "best_overall": best_overall,
         "best_by_molecule": best_by_molecule,

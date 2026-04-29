@@ -52,6 +52,11 @@ def main() -> int:
     parser.add_argument("--ground-state-tol", type=float, default=1e-10)
     parser.add_argument("--matrix-free-threads", type=int, default=None)
     parser.add_argument(
+        "--cache-path",
+        type=Path,
+        help="Optional DF Cgs cache path for this run.",
+    )
+    parser.add_argument(
         "--no-parameterized-template",
         action="store_true",
         help="Build and transpile one concrete circuit per t instead of one parameterized template.",
@@ -66,7 +71,16 @@ def main() -> int:
     final_path = out_dir / f"{args.output_stem}.json"
     partial_path = out_dir / f"{args.output_stem}.partial.json"
 
-    cache_document = load_df_cgs_json_cache()
+    cache_document = (
+        load_df_cgs_json_cache(args.cache_path)
+        if args.cache_path is not None
+        else load_df_cgs_json_cache()
+    )
+    cache_kwargs = (
+        {"cache_path": args.cache_path}
+        if args.cache_path is not None
+        else {}
+    )
     rows: list[dict[str, object]] = []
     if partial_path.exists():
         try:
@@ -123,6 +137,7 @@ def main() -> int:
                 partition=partition,
                 pf_label=pf_label,
                 cache_document=cache_document,
+                **cache_kwargs,
                 evolution_backend="gpu",
                 gpu_ids=gpu_ids,
                 optimization_level=int(args.optimization_level),
