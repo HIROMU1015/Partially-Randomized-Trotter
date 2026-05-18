@@ -65,9 +65,10 @@ COST_KIND_ORDER: dict[str, int] = {
     "screening": 0,
     "actual_window": 1,
     "actual_best": 2,
-    "max_ld_cgs_optimized": 3,
-    "max_ld": 4,
-    "grouping_deterministic": 5,
+    "actual_or_max_ld_cgs_optimized": 3,
+    "max_ld_cgs_optimized": 4,
+    "max_ld": 5,
+    "grouping_deterministic": 6,
 }
 
 _GROUPING_ORIGINAL_PF_LABEL_MAP: dict[str, str] = {
@@ -404,6 +405,11 @@ def collect_optimized_cost_comparisons(
             reference_context=reference_context,
             reference_randomized_cost_mode=reference_randomized_cost_mode,
         )
+        actual_or_max_ld_cgs_optimized = _actual_or_max_ld_cgs_optimized(
+            actual_costs=actual_costs,
+            max_ld_cgs_optimized=max_ld_cgs_optimized,
+            actual_best=actual_best,
+        )
         comparisons.append(
             {
                 "molecule": _molecule_label(summary),
@@ -415,6 +421,7 @@ def collect_optimized_cost_comparisons(
                 "screening_best": screening,
                 "actual_costs": sorted(actual_costs, key=lambda item: int(item["ld"])),
                 "actual_best": actual_best,
+                "actual_or_max_ld_cgs_optimized": actual_or_max_ld_cgs_optimized,
                 "max_ld_cgs_optimized": max_ld_cgs_optimized,
                 "max_ld": max_ld,
                 "missing_actual_lds": [
@@ -456,6 +463,13 @@ def build_optimized_cost_records(
         actual_best = comparison.get("actual_best")
         if isinstance(actual_best, Mapping):
             records.append(_merge_group_fields(actual_best, group_fields))
+        actual_or_max_ld_cgs_optimized = comparison.get(
+            "actual_or_max_ld_cgs_optimized"
+        )
+        if isinstance(actual_or_max_ld_cgs_optimized, Mapping):
+            records.append(
+                _merge_group_fields(actual_or_max_ld_cgs_optimized, group_fields)
+            )
         max_ld_cgs_optimized = comparison.get("max_ld_cgs_optimized")
         if isinstance(max_ld_cgs_optimized, Mapping):
             records.append(_merge_group_fields(max_ld_cgs_optimized, group_fields))
@@ -764,6 +778,10 @@ def build_cost_ratio_records(
             continue
         for numerator_kind, ratio_kind in (
             ("actual_best", "actual_best_over_max_ld"),
+            (
+                "actual_or_max_ld_cgs_optimized",
+                "actual_or_max_ld_cgs_optimized_over_max_ld",
+            ),
             ("screening", "screening_best_over_max_ld"),
         ):
             numerator = by_group_kind.get((molecule_type, pf_label, numerator_kind))
@@ -893,6 +911,10 @@ def plot_cost_vs_ld_by_system_pf(
         actual = _records_for_kind(group_records, "actual_window")
         screening = _first_record_for_kind(group_records, "screening")
         actual_best = _first_record_for_kind(group_records, "actual_best")
+        actual_or_fallback = _first_record_for_kind(
+            group_records,
+            "actual_or_max_ld_cgs_optimized",
+        )
         max_ld = _first_record_for_kind(group_records, "max_ld")
         if not actual and screening is None and max_ld is None:
             continue
@@ -934,6 +956,19 @@ def plot_cost_vs_ld_by_system_pf(
                 s=130,
                 zorder=5,
                 label="actual best",
+            )
+        if actual_or_fallback is not None:
+            marker_label = "actual or max-LD Cgs opt"
+            if actual_or_fallback.get("cgs_fallback_used"):
+                marker_label = "max-LD Cgs fallback"
+            ax.scatter(
+                [int(actual_or_fallback["ld"])],
+                [float(actual_or_fallback["g_total"])],
+                color="#7e22ce",
+                marker="P",
+                s=85,
+                zorder=6,
+                label=marker_label,
             )
         if max_ld is not None:
             ax.scatter(
@@ -983,6 +1018,12 @@ def plot_ratio_summary(
         color = COLOR_MAP.get(pf_label)
         for ratio_kind, linestyle, marker, label_suffix in (
             ("actual_best_over_max_ld", "-", MARKER_MAP.get(pf_label, "o"), "actual"),
+            (
+                "actual_or_max_ld_cgs_optimized_over_max_ld",
+                "-.",
+                "s",
+                "actual/fallback",
+            ),
             ("screening_best_over_max_ld", "--", "x", "screening"),
         ):
             series = _ratio_series(records, pf_label, ratio_kind)
@@ -1017,6 +1058,12 @@ def plot_ratio_summary(
         color = COLOR_MAP.get(pf_label, "#2f6f9f")
         for ratio_kind, linestyle, marker, label in (
             ("actual_best_over_max_ld", "-", "o", "actual best / max LD"),
+            (
+                "actual_or_max_ld_cgs_optimized_over_max_ld",
+                "-.",
+                "s",
+                "actual or max-LD Cgs opt / max LD",
+            ),
             ("screening_best_over_max_ld", "--", "x", "screening best / max LD"),
         ):
             series = _ratio_series(records, pf_label, ratio_kind)
@@ -1152,6 +1199,185 @@ def plot_optimized_cost_by_pf(
     return path
 
 
+def plot_error_budget_allocation_by_pf(
+    records: Sequence[Mapping[str, Any]],
+    output_dir: str | Path,
+    *,
+    cost_kind: str = "actual_best",
+    epsilon_total: float | None = None,
+    image_format: str = "png",
+    dpi: int = 180,
+) -> Path | None:
+    """Write a PF-to-PF comparison of optimized error-budget allocation."""
+    plt = _pyplot()
+    out_dir = Path(output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    selected: list[dict[str, Any]] = []
+    for row in records:
+        if str(row.get("cost_kind")) != str(cost_kind):
+            continue
+        qpe_fraction, trotter_fraction = _error_budget_fractions(
+            row,
+            epsilon_total=epsilon_total,
+        )
+        if qpe_fraction is None or trotter_fraction is None:
+            continue
+        selected.append(
+            {
+                **dict(row),
+                "eps_qpe_fraction": qpe_fraction,
+                "eps_trot_fraction": trotter_fraction,
+            }
+        )
+    if not selected:
+        return None
+
+    fig, axes = plt.subplots(
+        1,
+        2,
+        figsize=(9.2, 4.0),
+        sharex=True,
+        constrained_layout=True,
+    )
+    pf_labels = _sorted_pf_labels({str(row["pf_label"]) for row in selected})
+    molecule_sizes = sorted({int(row["molecule_type"]) for row in selected})
+    for pf_label in pf_labels:
+        series = sorted(
+            [row for row in selected if str(row["pf_label"]) == pf_label],
+            key=lambda item: int(item["molecule_type"]),
+        )
+        color = COLOR_MAP.get(pf_label)
+        marker = MARKER_MAP.get(pf_label, "o")
+        for ax, key, label in (
+            (axes[0], "eps_qpe_fraction", "QPE"),
+            (axes[1], "eps_trot_fraction", "Trotter"),
+        ):
+            ax.plot(
+                [int(row["molecule_type"]) for row in series],
+                [float(row[key]) for row in series],
+                color=color,
+                marker=marker,
+                linewidth=1.7,
+                markersize=5,
+                label=pf_label,
+            )
+            ax.set_title(label)
+            ax.set_xlabel("molecule size")
+            ax.set_ylim(0.0, 1.05)
+            ax.grid(True, alpha=0.25)
+            if molecule_sizes:
+                ax.set_xticks(molecule_sizes)
+    axes[0].set_ylabel("normalized error")
+    axes[1].legend(fontsize=8)
+
+    rules = sorted(
+        {
+            str(row.get("error_budget_rule"))
+            for row in selected
+            if row.get("error_budget_rule")
+        }
+    )
+    rule_text = rules[0] if len(rules) == 1 else "mixed"
+    constraint_text = {
+        "linear": "eps_QPE/eps + eps_Trot/eps = 1",
+        "quadrature": "(eps_QPE/eps)^2 + (eps_Trot/eps)^2 = 1",
+    }.get(rule_text, "normalized by epsilon")
+    fig.suptitle(
+        "DF optimized error-budget allocation by PF "
+        f"({cost_kind}, {rule_text}; {constraint_text})"
+    )
+
+    path = (
+        out_dir
+        / f"error_budget_allocation_by_pf_{_safe_label(cost_kind)}.{image_format}"
+    )
+    fig.savefig(path, dpi=int(dpi))
+    plt.close(fig)
+    return path
+
+
+def plot_cost_component_fraction_by_pf(
+    records: Sequence[Mapping[str, Any]],
+    output_dir: str | Path,
+    *,
+    cost_kind: str = "actual_best",
+    image_format: str = "png",
+    dpi: int = 180,
+) -> Path | None:
+    """Write a PF-to-PF comparison of deterministic/randomized cost fractions."""
+    plt = _pyplot()
+    out_dir = Path(output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    selected: list[dict[str, Any]] = []
+    for row in records:
+        if str(row.get("cost_kind")) != str(cost_kind):
+            continue
+        det_fraction, rand_fraction = _cost_component_fractions(row)
+        if det_fraction is None or rand_fraction is None:
+            continue
+        selected.append(
+            {
+                **dict(row),
+                "g_det_fraction": det_fraction,
+                "g_rand_fraction": rand_fraction,
+            }
+        )
+    if not selected:
+        return None
+
+    fig, axes = plt.subplots(
+        1,
+        2,
+        figsize=(9.2, 4.0),
+        sharex=True,
+        constrained_layout=True,
+    )
+    pf_labels = _sorted_pf_labels({str(row["pf_label"]) for row in selected})
+    molecule_sizes = sorted({int(row["molecule_type"]) for row in selected})
+    for pf_label in pf_labels:
+        series = sorted(
+            [row for row in selected if str(row["pf_label"]) == pf_label],
+            key=lambda item: int(item["molecule_type"]),
+        )
+        color = COLOR_MAP.get(pf_label)
+        marker = MARKER_MAP.get(pf_label, "o")
+        for ax, key, label in (
+            (axes[0], "g_det_fraction", "Deterministic"),
+            (axes[1], "g_rand_fraction", "Randomized"),
+        ):
+            ax.plot(
+                [int(row["molecule_type"]) for row in series],
+                [float(row[key]) for row in series],
+                color=color,
+                marker=marker,
+                linewidth=1.7,
+                markersize=5,
+                label=pf_label,
+            )
+            ax.set_title(label)
+            ax.set_xlabel("molecule size")
+            ax.set_ylim(0.0, 1.05)
+            ax.grid(True, alpha=0.25)
+            if molecule_sizes:
+                ax.set_xticks(molecule_sizes)
+    axes[0].set_ylabel("fraction of total cost")
+    axes[1].legend(fontsize=8)
+
+    fig.suptitle(
+        "DF optimized cost-component fractions by PF "
+        f"({cost_kind}; deterministic + randomized = total)"
+    )
+    path = (
+        out_dir / f"cost_component_fraction_by_pf_{_safe_label(cost_kind)}."
+        f"{image_format}"
+    )
+    fig.savefig(path, dpi=int(dpi))
+    plt.close(fig)
+    return path
+
+
 def _best_cost_with_replaced_cgs(
     candidates: Any,
     *,
@@ -1205,6 +1431,49 @@ def _best_cost_with_replaced_cgs(
     if not costs:
         return None
     return min(costs, key=lambda item: float(item["g_total"]))
+
+
+def _actual_or_max_ld_cgs_optimized(
+    *,
+    actual_costs: Sequence[Mapping[str, Any]],
+    max_ld_cgs_optimized: Mapping[str, Any] | None,
+    actual_best: Mapping[str, Any] | None,
+) -> dict[str, Any] | None:
+    cost_kind = "actual_or_max_ld_cgs_optimized"
+    if isinstance(max_ld_cgs_optimized, Mapping):
+        target_ld = _optional_int(max_ld_cgs_optimized.get("ld"))
+        if target_ld is not None:
+            actual_at_target = [
+                dict(cost)
+                for cost in actual_costs
+                if _optional_int(cost.get("ld")) == target_ld
+                and _optional_float(cost.get("g_total")) is not None
+            ]
+            if actual_at_target:
+                selected = min(actual_at_target, key=lambda item: float(item["g_total"]))
+                return {
+                    **selected,
+                    "cost_kind": cost_kind,
+                    "cgs_fallback_used": False,
+                    "fallback_reference_kind": "max_ld_cgs_optimized",
+                    "fallback_reference_ld": target_ld,
+                }
+        return {
+            **dict(max_ld_cgs_optimized),
+            "cost_kind": cost_kind,
+            "cgs_fallback_used": True,
+            "fallback_reference_kind": "max_ld_cgs_optimized",
+            "fallback_reference_ld": target_ld,
+        }
+    if isinstance(actual_best, Mapping):
+        return {
+            **dict(actual_best),
+            "cost_kind": cost_kind,
+            "cgs_fallback_used": False,
+            "fallback_reference_kind": "actual_best",
+            "fallback_reference_ld": _optional_int(actual_best.get("ld")),
+        }
+    return None
 
 
 def _best_recomputed_cost(
@@ -1908,6 +2177,10 @@ def _csv_fieldnames(rows: Sequence[Mapping[str, Any]]) -> list[str]:
         "df_rank_actual",
         "ld_anchor",
         "source_kind",
+        "cgs_source_kind",
+        "cgs_fallback_used",
+        "fallback_reference_kind",
+        "fallback_reference_ld",
         "g_total_num",
         "g_total_den",
         "ld_num",
@@ -1968,6 +2241,63 @@ def _cost_series_for_pf(
         ],
         key=lambda item: int(item["molecule_type"]),
     )
+
+
+def _error_budget_fractions(
+    record: Mapping[str, Any],
+    *,
+    epsilon_total: float | None,
+) -> tuple[float | None, float | None]:
+    q_opt = _optional_float(record.get("q_opt"))
+    eps_qpe = _optional_float(record.get("eps_qpe_opt"))
+    eps_trot = _optional_float(record.get("eps_trot_opt"))
+    eps_total = _optional_float(epsilon_total)
+
+    if (eps_total is None or eps_total <= 0.0) and eps_qpe is not None and q_opt:
+        eps_total = eps_qpe / q_opt
+
+    qpe_fraction = None
+    trotter_fraction = None
+    if eps_total is not None and eps_total > 0.0:
+        if eps_qpe is not None:
+            qpe_fraction = eps_qpe / eps_total
+        if eps_trot is not None:
+            trotter_fraction = eps_trot / eps_total
+
+    if qpe_fraction is None:
+        qpe_fraction = q_opt
+    if trotter_fraction is None and q_opt is not None:
+        rule = str(record.get("error_budget_rule", "quadrature"))
+        if rule == "quadrature":
+            trotter_fraction = math.sqrt(max(0.0, 1.0 - q_opt * q_opt))
+        elif rule == "linear":
+            trotter_fraction = max(0.0, 1.0 - q_opt)
+
+    if qpe_fraction is not None and not math.isfinite(qpe_fraction):
+        qpe_fraction = None
+    if trotter_fraction is not None and not math.isfinite(trotter_fraction):
+        trotter_fraction = None
+    return qpe_fraction, trotter_fraction
+
+
+def _cost_component_fractions(
+    record: Mapping[str, Any],
+) -> tuple[float | None, float | None]:
+    g_det = _optional_float(record.get("g_det"))
+    g_rand = _optional_float(record.get("g_rand"))
+    g_total = _optional_float(record.get("g_total"))
+    if g_total is None and g_det is not None and g_rand is not None:
+        g_total = g_det + g_rand
+    if g_total is None or g_total <= 0.0:
+        return None, None
+
+    det_fraction = None if g_det is None else g_det / g_total
+    rand_fraction = None if g_rand is None else g_rand / g_total
+    if det_fraction is not None and not math.isfinite(det_fraction):
+        det_fraction = None
+    if rand_fraction is not None and not math.isfinite(rand_fraction):
+        rand_fraction = None
+    return det_fraction, rand_fraction
 
 
 def _safe_label(label: str) -> str:

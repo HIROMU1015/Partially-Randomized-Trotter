@@ -31,7 +31,9 @@ from trotterlib.df_cost_plotting import (  # noqa: E402
     build_reference_max_ld_sanity_records,
     collect_optimized_cost_comparisons,
     load_df_cost_plot_inputs,
+    plot_cost_component_fraction_by_pf,
     plot_cost_vs_ld_by_system_pf,
+    plot_error_budget_allocation_by_pf,
     plot_optimized_cost_by_pf,
     plot_ratio_summary,
     write_records_csv,
@@ -128,6 +130,21 @@ def _write_plots_for_rule(
         image_format=str(args.image_format),
         dpi=int(args.dpi),
     )
+    error_budget_path = plot_error_budget_allocation_by_pf(
+        records,
+        output_dir,
+        cost_kind=str(args.pf_comparison_cost_kind),
+        epsilon_total=float(args.epsilon_total),
+        image_format=str(args.image_format),
+        dpi=int(args.dpi),
+    )
+    cost_component_path = plot_cost_component_fraction_by_pf(
+        records,
+        output_dir,
+        cost_kind=str(args.pf_comparison_cost_kind),
+        image_format=str(args.image_format),
+        dpi=int(args.dpi),
+    )
     return {
         "error_budget_rule": error_budget_rule,
         "output_dir": str(output_dir),
@@ -140,6 +157,12 @@ def _write_plots_for_rule(
         "ratio_plots": [str(path) for path in ratio_paths],
         "pf_comparison_plot": (
             None if pf_comparison_path is None else str(pf_comparison_path)
+        ),
+        "error_budget_plot": (
+            None if error_budget_path is None else str(error_budget_path)
+        ),
+        "cost_component_plot": (
+            None if cost_component_path is None else str(cost_component_path)
         ),
     }
 
@@ -189,9 +212,14 @@ def main() -> int:
     )
     parser.add_argument(
         "--pf-comparison-cost-kind",
-        choices=("actual_best", "screening"),
+        choices=("actual_best", "actual_or_max_ld_cgs_optimized", "screening"),
         default="actual_best",
-        help="Cost kind used for the PF-vs-PF optimized cost summary.",
+        help=(
+            "Cost kind used for the PF-vs-PF optimized cost summary. "
+            "actual_or_max_ld_cgs_optimized uses explicit actual Cgs at the "
+            "max-LD-Cgs-optimized LD when available, otherwise it uses the "
+            "max-LD Cgs optimized surrogate."
+        ),
     )
     parser.add_argument(
         "--df-cost-model",
