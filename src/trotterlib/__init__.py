@@ -39,6 +39,12 @@ from .grouped_uwc_comparison import (
     compare_grouped_uwc_pf_qpe,
     save_grouped_uwc_comparison,
 )
+from .grouped_uwc_theta_sweep import (
+    DEFAULT_THETA_SWEEP_VALUES,
+    GroupedUWCThetaSweepResult,
+    run_grouped_uwc_theta_sweep,
+    save_grouped_uwc_theta_sweep,
+)
 from .df_hamiltonian import (
     DFHamiltonian,
     DFGroundStateResult,
@@ -93,6 +99,10 @@ __all__ = [
     "GroupedUWCComparisonResult",
     "compare_grouped_uwc_pf_qpe",
     "save_grouped_uwc_comparison",
+    "DEFAULT_THETA_SWEEP_VALUES",
+    "GroupedUWCThetaSweepResult",
+    "run_grouped_uwc_theta_sweep",
+    "save_grouped_uwc_theta_sweep",
     "DFHamiltonian",
     "DFGroundStateResult",
     "PhysicalSector",

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 
 import numpy as np
+import pytest
 from openfermion.ops import QubitOperator
 
 import trotterlib.grouped_uwc_comparison as guc
@@ -13,6 +14,10 @@ from trotterlib.grouped_uwc_comparison import (
     save_grouped_uwc_comparison,
 )
 from trotterlib.uwc import UWCConfig
+from trotterlib.grouped_uwc_theta_sweep import (
+    run_grouped_uwc_theta_sweep,
+    save_grouped_uwc_theta_sweep,
+)
 
 
 def _toy_grouped_hamiltonian() -> QubitOperator:
@@ -241,3 +246,118 @@ def test_bliss_target_particle_number_defaults_to_grouped_reference_state(monkey
     assert uwc_parameters["target_particle_number_source"] == "grouped_reference_state"
     check = uwc.metadata["uwc_metadata"]["sector_preservation_check"]
     assert check["ground_energy_difference"] < 1e-12
+
+
+
+def _install_theta_sweep_sector_system(monkeypatch) -> None:
+    hamiltonian = QubitOperator(((0, "X"),), -1.0)
+    cliques = ((QubitOperator(((0, "X"),), -1.0),),)
+    state = np.array([1.0, 0.0, 0.0, 0.0], dtype=np.complex128)
+    data = guc.GroupedHamiltonianData(
+        molecule_type=2,
+        molecule="H2",
+        basis="sto-3g",
+        distance=1.0,
+        ham_name="theta_toy",
+        num_qubits=2,
+        jw_hamiltonian=hamiltonian,
+        cliques=cliques,
+        ground_energy=0.0,
+        state_vector=state,
+        grouping_rule="theta_toy_grouping",
+        identity_coeff=0.0,
+    )
+
+    def fake_fit(cliques, **kwargs):
+        del kwargs
+        term_count = sum(
+            1
+            for clique in cliques
+            for operator in clique
+            for term, coeff in operator.terms.items()
+            if term != () and abs(complex(coeff)) > 1e-12
+        )
+        alpha = 0.01 * max(1, term_count)
+        return guc.GroupedAlphaFitResult(
+            alpha=alpha,
+            times=(0.05, 0.06, 0.07),
+            errors=tuple(alpha * value * value for value in (0.05, 0.06, 0.07)),
+            backend="cpu",
+            requested_backend="cpu",
+            gpu_ids=("0",),
+            parallel_processes=1,
+            chunk_splits=1,
+            optimization_level=0,
+            profiles=tuple(),
+        )
+
+    monkeypatch.setattr(guc, "build_grouped_hamiltonian_data", lambda *_args, **_kwargs: data)
+    monkeypatch.setattr(guc, "fit_grouped_trotter_alpha", fake_fit)
+    monkeypatch.setitem(guc.DECOMPO_NUM, "H2", {"2nd": 1})
+    monkeypatch.setitem(guc.PF_RZ_LAYER, "H2", {"2nd": 1})
+
+
+def test_theta_sweep_fit_baseline_theta_zero_sanity_and_save(monkeypatch, tmp_path) -> None:
+    _install_theta_sweep_sector_system(monkeypatch)
+
+    result = run_grouped_uwc_theta_sweep(
+        (2,),
+        pf_labels=("2nd",),
+        theta_values=(0.0, 0.1),
+        power="quadratic",
+        target_error=1e-2,
+        cost_metric="pauli_rotations",
+        baseline_alpha_source="fit",
+        alpha_backend="cpu",
+        use_reference_rz_layers=False,
+    )
+
+    assert len(result.rows) == 4
+    uwc_rows = [row for row in result.rows if row["method"] == "uwc_grouped"]
+    assert [row["theta"] for row in uwc_rows] == [0.0, 0.1]
+
+    theta_zero = uwc_rows[0]
+    assert theta_zero["alpha_ratio_vs_grouped_baseline"] == 1.0
+    assert theta_zero["step_cost_ratio_vs_grouped_baseline"] == 1.0
+    assert theta_zero["cost_ratio_vs_grouped_baseline"] == 1.0
+    assert result.summary[0]["theta_zero_sanity_passed"] is True
+
+    nonzero = uwc_rows[1]
+    assert nonzero["target_particle_number"] == 0
+    assert nonzero["target_particle_number_source"] == "grouped_reference_state"
+    assert nonzero["sector_preservation_check"]["checked"] is True
+    assert nonzero["power"] == "quadratic"
+    assert nonzero["theta"] == 0.1
+    assert nonzero["uwc_step_pauli_rotations"] > nonzero["baseline_step_pauli_rotations"]
+    assert result.summary[0]["any_step_cost_changed"] is True
+
+    expected_cost_ratio = nonzero["step_cost_ratio_vs_grouped_baseline"] * np.sqrt(
+        nonzero["alpha_ratio_vs_grouped_baseline"]
+    )
+    assert np.isclose(nonzero["cost_ratio_vs_grouped_baseline"], expected_cost_ratio)
+
+    json_path, csv_path = save_grouped_uwc_theta_sweep(result, tmp_path / "theta.json")
+    assert json_path.exists()
+    assert csv_path.exists()
+    payload = json.loads(json_path.read_text(encoding="utf-8"))
+    assert len(payload["rows"]) == 4
+    assert len(csv_path.read_text(encoding="utf-8").splitlines()) == 5
+
+
+def test_theta_sweep_sector_error_propagates(monkeypatch) -> None:
+    _install_theta_sweep_sector_system(monkeypatch)
+
+    with pytest.raises(ValueError):
+        run_grouped_uwc_theta_sweep(
+            (2,),
+            pf_labels=("2nd",),
+            theta_values=(0.1,),
+            power="quadratic",
+            target_error=1e-2,
+            cost_metric="pauli_rotations",
+            baseline_alpha_source="fit",
+            alpha_backend="cpu",
+            use_reference_rz_layers=False,
+            uwc_target_particle_number=3,
+            uwc_sector_energy_check="error",
+        )

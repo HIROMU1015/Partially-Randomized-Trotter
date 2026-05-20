@@ -4,6 +4,7 @@ import json
 import math
 import multiprocessing as mp
 from concurrent.futures import ProcessPoolExecutor
+from functools import lru_cache
 from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -273,6 +274,17 @@ def _nonidentity_term_count(operator: QubitOperator) -> int:
     )
 
 
+def grouped_nonidentity_term_counts(
+    cliques: Sequence[Sequence[QubitOperator]],
+) -> tuple[int, ...]:
+    """Return non-identity Pauli-term counts for each grouped clique."""
+
+    return tuple(
+        _nonidentity_term_count(_sum_qubit_operators(clique))
+        for clique in cliques
+    )
+
+
 def _pauli_term_commutes(
     left: tuple[tuple[int, str], ...],
     right: tuple[tuple[int, str], ...],
@@ -530,6 +542,7 @@ def grouped_step_rz_layers(
     )
 
 
+@lru_cache(maxsize=None)
 def build_grouped_hamiltonian_data(
     molecule_type: int,
     *,
@@ -1126,6 +1139,7 @@ def compare_grouped_uwc_pf_qpe(
 
     baseline_step_pauli = int(DECOMPO_NUM[molecule_key][label])
     baseline_step_rz = int(PF_RZ_LAYER[molecule_key][label])
+    baseline_group_sizes = grouped_nonidentity_term_counts(data.cliques)
     baseline_row = _row(
         data=data,
         method="grouped_baseline",
@@ -1145,6 +1159,7 @@ def compare_grouped_uwc_pf_qpe(
         metadata={
             "baseline_step_pauli_source": "DECOMPO_NUM",
             "baseline_step_rz_source": "PF_RZ_LAYER",
+            "group_sizes": baseline_group_sizes,
             "alpha_fit_backend": None if baseline_fit is None else baseline_fit.backend,
             "alpha_requested_backend": (
                 None if baseline_fit is None else baseline_fit.requested_backend
@@ -1203,6 +1218,7 @@ def compare_grouped_uwc_pf_qpe(
     )
     uwc_alpha = uwc_fit.alpha
     uwc_step_pauli = grouped_step_pauli_rotations(uwc_cliques, label)
+    uwc_group_sizes = grouped_nonidentity_term_counts(uwc_cliques)
     use_reference_group_layers = bool(use_reference_rz_layers)
     uwc_step_rz = grouped_step_rz_layers(
         uwc_cliques,
@@ -1247,6 +1263,16 @@ def compare_grouped_uwc_pf_qpe(
             "uwc_metadata": preprocessing.metadata,
             "fit_times": uwc_fit.times,
             "fit_errors": uwc_fit.errors,
+            "baseline_num_groups": len(data.cliques),
+            "uwc_num_groups": len(uwc_cliques),
+            "baseline_num_pauli_terms": qubit_num_terms(data.jw_hamiltonian),
+            "uwc_num_pauli_terms": qubit_num_terms(uwc_hamiltonian_from_groups),
+            "baseline_group_sizes": baseline_group_sizes,
+            "uwc_group_sizes": uwc_group_sizes,
+            "baseline_step_pauli_rotations": baseline_row.step_pauli_rotations,
+            "uwc_step_pauli_rotations": uwc_step_pauli,
+            "baseline_step_rz_layers": baseline_row.step_rz_layers,
+            "uwc_step_rz_layers": uwc_step_rz,
             "alpha_fit_backend": uwc_fit.backend,
             "alpha_requested_backend": uwc_fit.requested_backend,
             "alpha_gpu_ids": uwc_fit.gpu_ids,
