@@ -16,6 +16,7 @@ from trotterlib.partial_randomized_pf import (  # noqa: E402
     save_kappa_sweep_csv,
     save_partial_randomized_result,
 )
+from trotterlib.uwc import UWCConfig  # noqa: E402
 
 
 def _parse_pf_labels(raw: str | None) -> list[str] | None:
@@ -34,6 +35,18 @@ def _parse_kappa_grid(raw: str | None) -> list[float] | None:
     if raw is None:
         return None
     return [float(token.strip()) for token in raw.split(",") if token.strip()]
+
+
+def _parse_json_object(raw: str | None, *, option_name: str) -> dict[str, object]:
+    if raw is None:
+        return {}
+    try:
+        parsed = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise argparse.ArgumentTypeError(f"{option_name} is not valid JSON: {exc}") from exc
+    if not isinstance(parsed, dict):
+        raise argparse.ArgumentTypeError(f"{option_name} must be a JSON object.")
+    return dict(parsed)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -121,6 +134,114 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument(
+        "--use-uwc",
+        action="store_true",
+        help="Enable Hamiltonian preprocessing before the L_D split.",
+    )
+    parser.add_argument(
+        "--uwc-method",
+        choices=(
+            "none",
+            "simple_shift",
+            "test_shift",
+            "bliss",
+            "orbital_optimization",
+            "orbital_optimization_bliss",
+        ),
+        default="none",
+        help="UWC preprocessing method. Default keeps the original Hamiltonian.",
+    )
+    parser.add_argument(
+        "--uwc-objective",
+        choices=("l1_norm", "lambda_r", "estimated_total_cost"),
+        default="l1_norm",
+        help="Objective used by UWC optimization when enabled.",
+    )
+    parser.add_argument(
+        "--uwc-target-ld",
+        type=int,
+        default=None,
+        help="L_D used only for UWC metrics/optimization; final scan is separate.",
+    )
+    parser.add_argument(
+        "--uwc-max-iterations",
+        type=int,
+        default=0,
+        help="Maximum UWC optimizer iterations. Zero disables optimizer search.",
+    )
+    parser.add_argument("--uwc-seed", type=int, default=None)
+    parser.add_argument(
+        "--uwc-no-cache",
+        action="store_true",
+        help="Disable C_gs cache use for this preprocessed Hamiltonian run.",
+    )
+    parser.add_argument(
+        "--uwc-optimizer-json",
+        type=str,
+        default=None,
+        help='JSON object for optimizer settings, e.g. \'{"theta_bounds":[-1,1]}\'.',
+    )
+    parser.add_argument(
+        "--uwc-parameters-json",
+        type=str,
+        default=None,
+        help="JSON object with UWC method parameters.",
+    )
+    parser.add_argument(
+        "--uwc-simple-shift",
+        type=float,
+        default=None,
+        help="Convenience parameter for simple_shift/test_shift: add this to Z_qubit.",
+    )
+    parser.add_argument(
+        "--uwc-simple-shift-qubit",
+        type=int,
+        default=0,
+        help="Qubit index used by --uwc-simple-shift.",
+    )
+    parser.add_argument(
+        "--uwc-coefficient-scale",
+        type=float,
+        default=None,
+        help="Convenience parameter for simple_shift/test_shift coefficient scaling.",
+    )
+    parser.add_argument(
+        "--uwc-bliss-theta",
+        type=float,
+        default=None,
+        help="Coefficient theta for BLISS number-sector shift.",
+    )
+    parser.add_argument(
+        "--uwc-target-particle-number",
+        type=int,
+        default=None,
+        help="Target particle number for BLISS number-sector preservation.",
+    )
+    parser.add_argument(
+        "--uwc-bliss-power",
+        choices=("linear", "quadratic"),
+        default=None,
+        help="Use (N-N_target) or (N-N_target)^2 for BLISS.",
+    )
+    parser.add_argument(
+        "--uwc-sector-energy-tol",
+        type=float,
+        default=1e-8,
+        help="Tolerance for BLISS target-sector preservation checks.",
+    )
+    parser.add_argument(
+        "--uwc-sector-energy-check",
+        choices=("warn", "error", "off"),
+        default="warn",
+        help="Warning/error policy for BLISS target-sector preservation checks.",
+    )
+    parser.add_argument(
+        "--uwc-max-sector-dimension-for-check",
+        type=int,
+        default=256,
+        help="Largest sector dimension for explicit BLISS ground-energy checks.",
+    )
+    parser.add_argument(
         "--matrix-free-backend",
         choices=("auto", "numba", "python"),
         default="auto",
@@ -169,11 +290,53 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _build_uwc_config(args: argparse.Namespace) -> UWCConfig:
+    optimizer_settings = _parse_json_object(
+        args.uwc_optimizer_json,
+        option_name="--uwc-optimizer-json",
+    )
+    parameters = _parse_json_object(
+        args.uwc_parameters_json,
+        option_name="--uwc-parameters-json",
+    )
+    if args.uwc_simple_shift is not None:
+        parameters["shift"] = args.uwc_simple_shift
+        parameters["qubit"] = args.uwc_simple_shift_qubit
+    if args.uwc_coefficient_scale is not None:
+        parameters["coefficient_scale"] = args.uwc_coefficient_scale
+    if args.uwc_bliss_theta is not None:
+        parameters["theta"] = args.uwc_bliss_theta
+    if args.uwc_target_particle_number is not None:
+        parameters["target_particle_number"] = args.uwc_target_particle_number
+    if args.uwc_bliss_power is not None:
+        parameters["power"] = args.uwc_bliss_power
+
+    return UWCConfig(
+        enabled=bool(args.use_uwc or args.uwc_method != "none"),
+        method=args.uwc_method,
+        objective=args.uwc_objective,
+        target_ld=args.uwc_target_ld,
+        optimizer_settings=optimizer_settings,
+        max_iterations=args.uwc_max_iterations,
+        seed=args.uwc_seed,
+        use_cache=not args.uwc_no_cache,
+        parameters=parameters,
+        sector_energy_tolerance=args.uwc_sector_energy_tol,
+        sector_energy_check=args.uwc_sector_energy_check,
+        max_sector_dimension_for_check=args.uwc_max_sector_dimension_for_check,
+    )
+
+
 def _default_output_path(args: argparse.Namespace) -> Path:
     rule_suffix = "" if args.error_budget_rule == "quadrature" else "_linear"
+    uwc_suffix = (
+        ""
+        if not (args.use_uwc or args.uwc_method != "none")
+        else f"_uwc_{args.uwc_method}"
+    )
     suffix = (
         f"H{args.molecule_type}_eps_{args.epsilon_total:.3e}"
-        f"_partial_randomized_pf_{args.kappa_mode}{rule_suffix}.json"
+        f"_partial_randomized_pf_{args.kappa_mode}{rule_suffix}{uwc_suffix}.json"
     )
     return PROJECT_ROOT / "artifacts" / "partial_randomized_pf" / suffix
 
@@ -185,11 +348,16 @@ def _default_sweep_csv_path(json_path: Path) -> Path:
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
+    try:
+        uwc_config = _build_uwc_config(args)
+    except (argparse.ArgumentTypeError, ValueError) as exc:
+        parser.error(str(exc))
 
     result = analyze_partial_randomized_pf(
         args.molecule_type,
         epsilon_total=args.epsilon_total,
         distance=args.distance,
+        uwc_config=uwc_config,
         pf_labels=_parse_pf_labels(args.pf_labels),
         ld_values=_parse_ld_values(args.ld_values),
         ld_step=args.ld_step,

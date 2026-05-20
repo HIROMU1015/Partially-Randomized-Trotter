@@ -21,8 +21,23 @@ from .cost_extrapolation import (
 )
 from .partial_randomized_pf import (
     analyze_partial_randomized_pf,
+    build_preprocessed_sorted_pauli_hamiltonian,
     build_sorted_pauli_hamiltonian,
     save_partial_randomized_result,
+)
+from .uwc import (
+    UWCConfig,
+    UWCPreprocessingResult,
+    lambda_r_from_qubit_operator,
+    preprocess_qubit_hamiltonian,
+    qubit_hamiltonian_hash,
+)
+from .grouped_uwc_comparison import (
+    GroupedAlphaFitResult,
+    GroupedPFQPERow,
+    GroupedUWCComparisonResult,
+    compare_grouped_uwc_pf_qpe,
+    save_grouped_uwc_comparison,
 )
 from .df_hamiltonian import (
     DFHamiltonian,
@@ -65,8 +80,19 @@ __all__ = [
     "num_gate_plot_grouping",
     "efficient_accuracy_range_plt_grouper",
     "analyze_partial_randomized_pf",
+    "build_preprocessed_sorted_pauli_hamiltonian",
     "build_sorted_pauli_hamiltonian",
     "save_partial_randomized_result",
+    "UWCConfig",
+    "UWCPreprocessingResult",
+    "lambda_r_from_qubit_operator",
+    "preprocess_qubit_hamiltonian",
+    "qubit_hamiltonian_hash",
+    "GroupedAlphaFitResult",
+    "GroupedPFQPERow",
+    "GroupedUWCComparisonResult",
+    "compare_grouped_uwc_pf_qpe",
+    "save_grouped_uwc_comparison",
     "DFHamiltonian",
     "DFGroundStateResult",
     "PhysicalSector",

@@ -6,7 +6,7 @@ import json
 import math
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Literal, Sequence, TypeAlias
+from typing import Any, Literal, Mapping, Sequence, TypeAlias
 
 import numpy as np
 from openfermion.ops import QubitOperator
@@ -34,6 +34,7 @@ from .config import (
 )
 from .pf_decomposition import iter_pf_steps
 from .qiskit_time_evolution_ungrouped import tEvolution_vector
+from .uwc import UWCConfig, UWCPreprocessingResult, preprocess_qubit_hamiltonian
 
 
 DEFAULT_PF_LABELS: tuple[PFLabel, ...] = (
@@ -202,6 +203,20 @@ class PartialRandomizedStudyResult:
     ld_values: tuple[int, ...]
     pf_labels: tuple[PFLabel, ...]
     total_terms: int
+    preprocessor: str
+    uwc_method: str
+    uwc_objective: str
+    uwc_target_ld: int
+    uwc_parameters: dict[str, Any]
+    uwc_hamiltonian_hash: str
+    original_hamiltonian_hash: str
+    original_l1_norm: float
+    uwc_l1_norm: float
+    original_num_terms: int
+    uwc_num_terms: int
+    original_lambda_r_at_target_ld: float
+    uwc_lambda_r_at_target_ld: float
+    uwc_metadata: dict[str, Any]
     best: CandidateResult
     candidates: tuple[CandidateResult, ...]
 
@@ -379,8 +394,9 @@ def _cgs_cache_key_payload(
     t_values: Sequence[float],
     ground_state_tol: float,
     ground_state_ncv: int | None,
+    preprocessor_cache_metadata: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    return {
+    payload = {
         "cgs_definition": _CGS_CACHE_DEFINITION,
         "sort_rule": _CGS_CACHE_SORT_RULE,
         "sorted_hamiltonian_hash": sorted_hamiltonian_hash,
@@ -396,6 +412,9 @@ def _cgs_cache_key_payload(
         "ground_state_tol": float(ground_state_tol),
         "ground_state_ncv": None if ground_state_ncv is None else int(ground_state_ncv),
     }
+    if preprocessor_cache_metadata is not None:
+        payload["preprocessor"] = dict(preprocessor_cache_metadata)
+    return payload
 
 
 def _cgs_cache_record(
@@ -405,8 +424,9 @@ def _cgs_cache_record(
     fit_result: PerturbationFitResult,
     ground_state_tol: float,
     ground_state_ncv: int | None,
+    preprocessor_cache_metadata: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    return {
+    record = {
         "cgs_definition": _CGS_CACHE_DEFINITION,
         "sort_rule": _CGS_CACHE_SORT_RULE,
         "sorted_hamiltonian_hash": sorted_hamiltonian_hash,
@@ -427,6 +447,9 @@ def _cgs_cache_record(
         "ground_state_tol": float(ground_state_tol),
         "ground_state_ncv": None if ground_state_ncv is None else int(ground_state_ncv),
     }
+    if preprocessor_cache_metadata is not None:
+        record["preprocessor"] = dict(preprocessor_cache_metadata)
+    return record
 
 
 def _perturbation_fit_result_from_cache_record(
@@ -463,6 +486,8 @@ def get_or_compute_cached_cgs_fit(
     matrix_free_threads: int | None = None,
     ground_state_ncv: int | None = None,
     ground_state_tol: float = 1e-10,
+    use_cache: bool = True,
+    preprocessor_cache_metadata: Mapping[str, Any] | None = None,
 ) -> PerturbationFitResult:
     """
     Return a perturbative C_gs fit from the JSON cache or compute and persist it.
@@ -471,6 +496,17 @@ def get_or_compute_cached_cgs_fit(
     hash together with the deterministic prefix length L_D and the fit settings.
     """
     t_values = default_perturbation_t_values(sorted_hamiltonian.molecule_type, pf_label)
+    if not use_cache:
+        return fit_cgs_with_perturbation(
+            sorted_hamiltonian,
+            partition,
+            pf_label,
+            t_values=t_values,
+            matrix_free_backend=matrix_free_backend,
+            matrix_free_threads=matrix_free_threads,
+            ground_state_ncv=ground_state_ncv,
+            ground_state_tol=ground_state_tol,
+        )
     key_payload = _cgs_cache_key_payload(
         sorted_hamiltonian=sorted_hamiltonian,
         sorted_hamiltonian_hash=sorted_hamiltonian_hash,
@@ -479,6 +515,7 @@ def get_or_compute_cached_cgs_fit(
         t_values=t_values,
         ground_state_tol=ground_state_tol,
         ground_state_ncv=ground_state_ncv,
+        preprocessor_cache_metadata=preprocessor_cache_metadata,
     )
     cache_key = _json_hash(key_payload)
     entries = cache_document["entries"]
@@ -505,24 +542,21 @@ def get_or_compute_cached_cgs_fit(
         fit_result=fit_result,
         ground_state_tol=ground_state_tol,
         ground_state_ncv=ground_state_ncv,
+        preprocessor_cache_metadata=preprocessor_cache_metadata,
     )
     save_cgs_json_cache(cache_document, cache_path)
     return fit_result
 
 
-def build_sorted_pauli_hamiltonian(
+def _sorted_pauli_hamiltonian_from_qubit_operator(
+    jw_hamiltonian: QubitOperator,
+    *,
     molecule_type: int,
-    distance: float = 1.0,
+    distance: float,
+    ham_name: str,
+    num_qubits: int,
 ) -> SortedPauliHamiltonian:
-    """
-    Build the JW Hamiltonian and sort non-identity Pauli terms by descending |coeff|.
-
-    The identity term is excluded from ranking/splitting because it only contributes
-    a global phase and does not affect L_D or lambda_R.
-    """
-    jw_hamiltonian, _hf_energy, ham_name, num_qubits = jw_hamiltonian_maker(
-        molecule_type, distance
-    )
+    """Sort non-identity Pauli terms by descending |coeff|."""
     identity_coeff = 0.0
     ranked_terms: list[RankedPauliTerm] = []
 
@@ -571,6 +605,64 @@ def build_sorted_pauli_hamiltonian(
         identity_coeff=identity_coeff,
         sorted_terms=sorted_terms,
     )
+
+
+def build_sorted_pauli_hamiltonian(
+    molecule_type: int,
+    distance: float = 1.0,
+) -> SortedPauliHamiltonian:
+    """
+    Build the JW Hamiltonian and sort non-identity Pauli terms by descending |coeff|.
+
+    The identity term is excluded from ranking/splitting because it only contributes
+    a global phase and does not affect L_D or lambda_R.
+    """
+    jw_hamiltonian, _hf_energy, ham_name, num_qubits = jw_hamiltonian_maker(
+        molecule_type, distance
+    )
+    return _sorted_pauli_hamiltonian_from_qubit_operator(
+        jw_hamiltonian,
+        molecule_type=molecule_type,
+        distance=distance,
+        ham_name=ham_name,
+        num_qubits=num_qubits,
+    )
+
+
+def build_preprocessed_sorted_pauli_hamiltonian(
+    molecule_type: int,
+    distance: float = 1.0,
+    *,
+    uwc_config: UWCConfig | Mapping[str, Any] | None = None,
+    uwc_target_ld: int | None = None,
+) -> tuple[SortedPauliHamiltonian, UWCPreprocessingResult]:
+    """
+    Build a JW Hamiltonian, apply UWC preprocessing, then sort Pauli terms.
+
+    This is the only UWC insertion point in the Pauli PR-PF pipeline. The returned
+    sorted Hamiltonian is a normal SortedPauliHamiltonian consumed by the existing
+    L_D split, C_gs fit, and cost optimization code.
+    """
+    jw_hamiltonian, _hf_energy, ham_name, num_qubits = jw_hamiltonian_maker(
+        molecule_type, distance
+    )
+    preprocessing = preprocess_qubit_hamiltonian(
+        jw_hamiltonian,
+        uwc_config,
+        n_qubits=num_qubits,
+        target_ld=uwc_target_ld,
+    )
+    hamiltonian_for_sort = (
+        preprocessing.hamiltonian if preprocessing.config.enabled else jw_hamiltonian
+    )
+    sorted_hamiltonian = _sorted_pauli_hamiltonian_from_qubit_operator(
+        hamiltonian_for_sort,
+        molecule_type=molecule_type,
+        distance=distance,
+        ham_name=ham_name,
+        num_qubits=num_qubits,
+    )
+    return sorted_hamiltonian, preprocessing
 
 
 def split_hamiltonian_by_ld(
@@ -1233,6 +1325,7 @@ def analyze_partial_randomized_pf(
     *,
     epsilon_total: float,
     distance: float = 1.0,
+    uwc_config: UWCConfig | Mapping[str, Any] | None = None,
     pf_labels: Sequence[PFLabel] | None = None,
     ld_values: Sequence[int] | None = None,
     ld_step: int = 1,
@@ -1264,7 +1357,11 @@ def analyze_partial_randomized_pf(
     - If random_prefactor is given, the legacy fixed-B path is used instead of
       the kappa-derived prefactor.
     """
-    sorted_hamiltonian = build_sorted_pauli_hamiltonian(molecule_type, distance)
+    sorted_hamiltonian, uwc_preprocessing = build_preprocessed_sorted_pauli_hamiltonian(
+        molecule_type,
+        distance,
+        uwc_config=uwc_config,
+    )
     pf_labels_norm = _normalize_pf_labels(pf_labels)
     ld_values_norm = _normalize_ld_values(
         sorted_hamiltonian.num_terms,
@@ -1279,7 +1376,22 @@ def analyze_partial_randomized_pf(
     error_budget_rule_norm = _normalize_error_budget_rule(error_budget_rule)
     b0 = randomized_prefactor_b0(randomized_method_norm, g_rand)
     sorted_hamiltonian_hash = _sorted_hamiltonian_hash(sorted_hamiltonian)
-    cgs_cache_document = load_cgs_json_cache()
+    uwc_metadata = dict(uwc_preprocessing.metadata)
+    cgs_cache_document = (
+        load_cgs_json_cache()
+        if uwc_preprocessing.config.use_cache
+        else _default_cgs_cache_document()
+    )
+    cgs_preprocessor_metadata: dict[str, Any] | None = None
+    if uwc_metadata["preprocessor"] != "none":
+        cgs_preprocessor_metadata = {
+            "preprocessor": uwc_metadata["preprocessor"],
+            "uwc_method": uwc_metadata["uwc_method"],
+            "uwc_objective": uwc_metadata["uwc_objective"],
+            "uwc_target_ld": uwc_metadata["uwc_target_ld"],
+            "uwc_parameters": uwc_metadata["uwc_parameters"],
+            "uwc_hamiltonian_hash": uwc_metadata["uwc_hamiltonian_hash"],
+        }
 
     fit_cache: dict[tuple[PFLabel, int], PerturbationFitResult] = {}
     candidate_results: list[CandidateResult] = []
@@ -1299,6 +1411,8 @@ def analyze_partial_randomized_pf(
                     matrix_free_threads=matrix_free_threads,
                     ground_state_ncv=ground_state_ncv,
                     ground_state_tol=ground_state_tol,
+                    use_cache=uwc_preprocessing.config.use_cache,
+                    preprocessor_cache_metadata=cgs_preprocessor_metadata,
                 )
             fit_result = fit_cache[fit_key]
             order = pf_order(pf_label)
@@ -1430,6 +1544,22 @@ def analyze_partial_randomized_pf(
         ld_values=ld_values_norm,
         pf_labels=pf_labels_norm,
         total_terms=sorted_hamiltonian.num_terms,
+        preprocessor=uwc_metadata["preprocessor"],
+        uwc_method=uwc_metadata["uwc_method"],
+        uwc_objective=uwc_metadata["uwc_objective"],
+        uwc_target_ld=int(uwc_metadata["uwc_target_ld"]),
+        uwc_parameters=dict(uwc_metadata["uwc_parameters"]),
+        uwc_hamiltonian_hash=uwc_metadata["uwc_hamiltonian_hash"],
+        original_hamiltonian_hash=uwc_metadata["original_hamiltonian_hash"],
+        original_l1_norm=float(uwc_metadata["original_l1_norm"]),
+        uwc_l1_norm=float(uwc_metadata["uwc_l1_norm"]),
+        original_num_terms=int(uwc_metadata["original_num_terms"]),
+        uwc_num_terms=int(uwc_metadata["uwc_num_terms"]),
+        original_lambda_r_at_target_ld=float(
+            uwc_metadata["original_lambda_r_at_target_ld"]
+        ),
+        uwc_lambda_r_at_target_ld=float(uwc_metadata["uwc_lambda_r_at_target_ld"]),
+        uwc_metadata=uwc_metadata,
         best=best_result,
         candidates=tuple(candidate_results),
     )
