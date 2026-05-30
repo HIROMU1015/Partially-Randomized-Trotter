@@ -662,6 +662,7 @@ def _simulate_df_time_task(
         evolved, profile = run_parameterized_gpu_template(
             _DF_TIME_WORKER_TEMPLATE,
             time_value=float(time_value),
+            psi0=state_flat,
             gpu_ids=(str(gpu_id),),
             debug=bool(debug),
             debug_label=f"t={float(time_value)} gpu={gpu_id}",

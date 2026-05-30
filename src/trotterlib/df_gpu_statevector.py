@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ctypes
 import os
 import sys
 from dataclasses import dataclass
@@ -46,7 +47,47 @@ def _prepend_library_path(lib_dirs: Sequence[str]) -> None:
         os.environ["LD_LIBRARY_PATH"] = ":".join(merged)
 
 
+def _preload_cuda_libraries() -> list[str]:
+    """Load CUDA wheel libraries early so system CUDA paths do not win later dlopens."""
+    site_packages_roots = [
+        os.path.join(
+            sys.prefix,
+            "lib",
+            f"python{sys.version_info.major}.{sys.version_info.minor}",
+            "site-packages",
+        ),
+        os.path.join(
+            sys.prefix,
+            "lib64",
+            f"python{sys.version_info.major}.{sys.version_info.minor}",
+            "site-packages",
+        ),
+    ]
+    rel_paths = [
+        os.path.join("nvidia", "nvjitlink", "lib", "libnvJitLink.so.12"),
+        os.path.join("nvidia", "cuda_runtime", "lib", "libcudart.so.12"),
+        os.path.join("nvidia", "cublas", "lib", "libcublasLt.so.12"),
+        os.path.join("nvidia", "cublas", "lib", "libcublas.so.12"),
+        os.path.join("nvidia", "cusparse", "lib", "libcusparse.so.12"),
+        os.path.join("nvidia", "cusolver", "lib", "libcusolver.so.11"),
+    ]
+    errors: list[str] = []
+    mode = getattr(ctypes, "RTLD_GLOBAL", 0)
+    for site_packages in site_packages_roots:
+        for rel_path in rel_paths:
+            lib_path = os.path.join(site_packages, rel_path)
+            if not os.path.exists(lib_path):
+                continue
+            try:
+                _CUDA_PRELOAD_HANDLES.append(ctypes.CDLL(lib_path, mode=mode))
+            except OSError as exc:
+                errors.append(f"{lib_path}: {exc}")
+    return errors
+
+
+_CUDA_PRELOAD_HANDLES: list[object] = []
 _prepend_library_path(_collect_cuda_lib_dirs())
+CUDA_PRELOAD_ERRORS = _preload_cuda_libraries()
 
 try:
     from qiskit_aer import AerSimulator
@@ -64,11 +105,23 @@ _AER_GPU_SIMULATOR_KWARGS = {
     # Keep the same numerical policy as the reference DF project.
     "fusion_enable": False,
 }
+_AER_GPU_SAFE_BASIS_GATES = (
+    "set_statevector",
+    "save_statevector",
+    "unitary",
+    "u",
+    "cx",
+    "rz",
+    "p",
+    "x",
+    "sx",
+    "id",
+)
 
 
 @dataclass(frozen=True)
 class DFGPUParameterizedTemplate:
-    """Pre-transpiled Aer GPU circuit with one symbolic time parameter."""
+    """Pre-transpiled Aer GPU body circuit with one symbolic time parameter."""
 
     circuit: QuantumCircuit
     time_parameter_name: str
@@ -78,10 +131,36 @@ class DFGPUParameterizedTemplate:
     full_num_instructions: int
     transpiled_num_instructions: int
     prepare_profile: dict[str, object]
+    semantic_phase_correction: float = 0.0
+    xx_plus_yy_count: int = 0
+    includes_initial_state: bool = False
 
 
 def _contains_instruction_name(circuit: QuantumCircuit, name: str) -> bool:
     return any(getattr(inst.operation, "name", "") == name for inst in circuit.data)
+
+
+def _xx_plus_yy_phase_correction(circuit: QuantumCircuit) -> tuple[int, float]:
+    count = sum(
+        1
+        for inst in circuit.data
+        if getattr(inst.operation, "name", "") == "xx_plus_yy"
+    )
+    return int(count), float(-count * np.pi / 4.0)
+
+
+def _apply_semantic_phase_correction(
+    state: np.ndarray,
+    phase: float,
+    profile: dict[str, object],
+) -> np.ndarray:
+    profile["semantic_phase_correction"] = float(phase)
+    if phase == 0.0:
+        return state
+    t0 = perf_counter()
+    corrected = np.exp(1j * float(phase)) * state
+    profile["apply_semantic_phase_correction_s"] = perf_counter() - t0
+    return corrected
 
 
 def _get_cached_aer_simulator(gpu_ids: Sequence[str]) -> object:
@@ -99,18 +178,10 @@ def _transpile_for_aer_gpu(
     *,
     optimization_level: int,
 ) -> QuantumCircuit:
-    prepared = circuit
-    for _ in range(3):
-        if not (
-            _contains_instruction_name(prepared, "rzz")
-            or _contains_instruction_name(prepared, "xx_plus_yy")
-        ):
-            break
-        prepared = prepared.decompose(reps=1)
-
+    del simulator  # The explicit basis gives a smaller Aer-GPU-safe circuit.
     transpiled = transpile(
-        prepared,
-        simulator,
+        circuit,
+        basis_gates=list(_AER_GPU_SAFE_BASIS_GATES),
         optimization_level=int(optimization_level),
     )
     if _contains_instruction_name(transpiled, "rzz") or _contains_instruction_name(
@@ -166,17 +237,25 @@ def build_parameterized_gpu_template(
     debug_print: Callable[[str], None] = print,
     debug_label: str = "",
 ) -> DFGPUParameterizedTemplate:
-    """Build and transpile a one-parameter statevector circuit for repeated GPU runs."""
+    """Build and transpile a one-parameter body circuit for repeated GPU runs."""
     started = perf_counter()
+    state = np.asarray(psi0, dtype=np.complex128).reshape(-1)
+    expected_dim = 1 << int(qc.num_qubits)
+    if state.size != expected_dim:
+        raise ValueError(
+            "Initial state dimension does not match the template circuit: "
+            f"got {state.size}, expected {expected_dim}."
+        )
     profile: dict[str, object] = {
         "backend": "aer_statevector_gpu",
-        "execution_strategy": "parameterized_pretranspiled_template",
+        "execution_strategy": "pretranspiled_body_template",
         "num_qubits": int(qc.num_qubits),
         "input_num_instructions": int(len(qc.data)),
         "optimization_level": int(optimization_level),
         "gpu_ids": [str(g) for g in gpu_ids if str(g) != ""],
         "aer_simulator_kwargs": dict(_AER_GPU_SIMULATOR_KWARGS),
         "time_parameter_name": str(time_parameter_name),
+        "template_includes_initial_state": False,
     }
     if AerSimulator is None:
         message = "GPU execution requested, but qiskit-aer GPU backend is unavailable."
@@ -185,6 +264,9 @@ def build_parameterized_gpu_template(
         raise RuntimeError(message)
 
     _find_template_parameter(qc, time_parameter_name)
+    xx_plus_yy_count, semantic_phase_correction = _xx_plus_yy_phase_correction(qc)
+    profile["xx_plus_yy_count"] = int(xx_plus_yy_count)
+    profile["semantic_phase_correction"] = float(semantic_phase_correction)
 
     t0 = perf_counter()
     visible_devices = [str(g) for g in gpu_ids if str(g) != ""]
@@ -200,15 +282,6 @@ def build_parameterized_gpu_template(
     )
 
     t0 = perf_counter()
-    init_state = Statevector(np.asarray(psi0, dtype=np.complex128).reshape(-1))
-    full_qc = QuantumCircuit(qc.num_qubits)
-    full_qc.set_statevector(init_state)
-    full_qc.compose(qc, inplace=True, copy=False)
-    full_qc.save_statevector()
-    profile["compose_with_initial_state_s"] = perf_counter() - t0
-    profile["full_num_instructions"] = int(len(full_qc.data))
-
-    t0 = perf_counter()
     simulator_key = tuple(visible_devices)
     profile["simulator_cache_hit"] = simulator_key in _AER_SIMULATOR_CACHE
     simulator = _get_cached_aer_simulator(visible_devices)
@@ -216,12 +289,13 @@ def build_parameterized_gpu_template(
 
     t0 = perf_counter()
     transpiled = _transpile_for_aer_gpu(
-        full_qc,
+        qc,
         simulator,
         optimization_level=int(optimization_level),
     )
     profile["transpile_s"] = perf_counter() - t0
     profile["transpiled_num_instructions"] = int(len(transpiled.data))
+    profile["full_num_instructions"] = int(len(transpiled.data) + 2)
     _find_template_parameter(transpiled, time_parameter_name)
     profile["total_s"] = perf_counter() - started
     _emit_debug(
@@ -238,9 +312,12 @@ def build_parameterized_gpu_template(
         num_qubits=int(qc.num_qubits),
         optimization_level=int(optimization_level),
         input_num_instructions=int(len(qc.data)),
-        full_num_instructions=int(len(full_qc.data)),
+        full_num_instructions=int(len(transpiled.data) + 2),
         transpiled_num_instructions=int(len(transpiled.data)),
         prepare_profile=dict(profile),
+        semantic_phase_correction=float(semantic_phase_correction),
+        xx_plus_yy_count=int(xx_plus_yy_count),
+        includes_initial_state=False,
     )
 
 
@@ -290,6 +367,7 @@ def _run_statevector_backend(
     profile: dict[str, object] = {
         "backend": "aer_statevector_gpu",
         "mode": "single",
+        "execution_strategy": "baseline",
         "num_qubits": int(qc.num_qubits),
         "input_num_instructions": int(len(qc.data)),
         "optimization_level": int(optimization_level),
@@ -317,11 +395,22 @@ def _run_statevector_backend(
 
     t0 = perf_counter()
     init_state = Statevector(np.asarray(psi0, dtype=np.complex128).reshape(-1))
+    profile["init_statevector_s"] = perf_counter() - t0
+
+    t0 = perf_counter()
     full_qc = QuantumCircuit(qc.num_qubits)
     full_qc.set_statevector(init_state)
+    profile["set_statevector_instruction_s"] = perf_counter() - t0
+
+    t0 = perf_counter()
     full_qc.compose(qc, inplace=True, copy=False)
+    profile["compose_circuit_s"] = perf_counter() - t0
+    xx_plus_yy_count, semantic_phase_correction = _xx_plus_yy_phase_correction(full_qc)
+    profile["xx_plus_yy_count"] = int(xx_plus_yy_count)
+
+    t0 = perf_counter()
     full_qc.save_statevector()
-    profile["compose_with_initial_state_s"] = perf_counter() - t0
+    profile["append_save_statevector_s"] = perf_counter() - t0
     profile["full_num_instructions"] = int(len(full_qc.data))
 
     t0 = perf_counter()
@@ -349,7 +438,14 @@ def _run_statevector_backend(
     state = np.asarray(result.get_statevector(), dtype=np.complex128)
     profile["extract_statevector_s"] = perf_counter() - t0
     if global_phase != 0.0:
+        t0 = perf_counter()
         state = np.exp(1j * global_phase) * state
+        profile["apply_global_phase_s"] = perf_counter() - t0
+    state = _apply_semantic_phase_correction(
+        state,
+        semantic_phase_correction,
+        profile,
+    )
     profile["total_s"] = perf_counter() - started
     return state, profile
 
@@ -358,17 +454,18 @@ def run_parameterized_gpu_template(
     template: DFGPUParameterizedTemplate,
     *,
     time_value: float,
+    psi0: np.ndarray | None = None,
     gpu_ids: Sequence[str] = ("0",),
     debug: bool = False,
     debug_print: Callable[[str], None] = print,
     debug_label: str = "",
 ) -> tuple[np.ndarray, dict[str, object]]:
-    """Bind a pre-transpiled template's time parameter and run it on Aer GPU."""
+    """Bind a pre-transpiled body template's time parameter and run it on Aer GPU."""
     started = perf_counter()
     profile: dict[str, object] = {
         "backend": "aer_statevector_gpu",
         "mode": "single",
-        "execution_strategy": "parameterized_pretranspiled_template",
+        "execution_strategy": "pretranspiled_body_template",
         "num_qubits": int(template.num_qubits),
         "input_num_instructions": int(template.input_num_instructions),
         "full_num_instructions": int(template.full_num_instructions),
@@ -381,12 +478,23 @@ def run_parameterized_gpu_template(
         "template_prepare_transpile_s": float(
             template.prepare_profile.get("transpile_s", 0.0)
         ),
+        "xx_plus_yy_count": int(template.xx_plus_yy_count),
     }
     if AerSimulator is None:
         message = "GPU execution requested, but qiskit-aer GPU backend is unavailable."
         if AER_IMPORT_ERROR is not None:
             message = f"{message} import_error={AER_IMPORT_ERROR}"
         raise RuntimeError(message)
+    if not template.includes_initial_state and psi0 is None:
+        raise ValueError("psi0 is required for a pretranspiled body GPU template.")
+    if psi0 is not None:
+        state = np.asarray(psi0, dtype=np.complex128).reshape(-1)
+        expected_dim = 1 << int(template.num_qubits)
+        if state.size != expected_dim:
+            raise ValueError(
+                "Initial state dimension does not match the template circuit: "
+                f"got {state.size}, expected {expected_dim}."
+            )
 
     t0 = perf_counter()
     visible_devices = [str(g) for g in gpu_ids if str(g) != ""]
@@ -408,20 +516,43 @@ def run_parameterized_gpu_template(
     profile["create_simulator_s"] = perf_counter() - t0
 
     t0 = perf_counter()
-    time_parameter = _find_template_parameter(
-        template.circuit,
-        template.time_parameter_name,
-    )
-    circuit_for_run = template.circuit.assign_parameters(
+    if template.includes_initial_state:
+        full_qc = template.circuit
+    else:
+        assert psi0 is not None
+        init_state = Statevector(np.asarray(psi0, dtype=np.complex128).reshape(-1))
+        profile["init_statevector_s"] = perf_counter() - t0
+
+        t0 = perf_counter()
+        full_qc = QuantumCircuit(template.num_qubits)
+        full_qc.set_statevector(init_state)
+        profile["set_statevector_instruction_s"] = perf_counter() - t0
+
+        t0 = perf_counter()
+        full_qc.compose(template.circuit, inplace=True, copy=False)
+        profile["compose_circuit_s"] = perf_counter() - t0
+
+        t0 = perf_counter()
+        full_qc.save_statevector()
+        profile["append_save_statevector_s"] = perf_counter() - t0
+        profile["full_num_instructions"] = int(len(full_qc.data))
+
+    t0 = perf_counter()
+    time_parameter = _find_template_parameter(full_qc, template.time_parameter_name)
+    circuit_for_run = full_qc.assign_parameters(
         {time_parameter: float(time_value)},
         inplace=False,
     )
     profile["assign_parameters_s"] = perf_counter() - t0
-    global_phase = _bind_global_phase(
-        circuit_for_run,
-        time_parameter,
-        float(time_value),
-    )
+    raw_global_phase = getattr(circuit_for_run, "global_phase", 0.0) or 0.0
+    try:
+        global_phase = float(raw_global_phase)
+    except TypeError:
+        global_phase = _bind_global_phase(
+            circuit_for_run,
+            time_parameter,
+            float(time_value),
+        )
     profile["global_phase"] = global_phase
 
     t0 = perf_counter()
@@ -432,7 +563,14 @@ def run_parameterized_gpu_template(
     state = np.asarray(result.get_statevector(), dtype=np.complex128)
     profile["extract_statevector_s"] = perf_counter() - t0
     if global_phase != 0.0:
+        t0 = perf_counter()
         state = np.exp(1j * global_phase) * state
+        profile["apply_global_phase_s"] = perf_counter() - t0
+    state = _apply_semantic_phase_correction(
+        state,
+        float(template.semantic_phase_correction),
+        profile,
+    )
     profile["total_s"] = perf_counter() - started
     return state, profile
 

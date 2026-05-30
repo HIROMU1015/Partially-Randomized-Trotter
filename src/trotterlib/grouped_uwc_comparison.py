@@ -3,10 +3,12 @@ from __future__ import annotations
 import json
 import math
 import multiprocessing as mp
+import os
 from concurrent.futures import ProcessPoolExecutor
 from functools import lru_cache
 from dataclasses import asdict, dataclass, replace
 from pathlib import Path
+from time import perf_counter
 from typing import Any, Mapping, Sequence
 
 import numpy as np
@@ -35,8 +37,11 @@ from .partial_randomized_pf import default_perturbation_t_values
 from .pf_decomposition import iter_pf_steps
 from .product_formula import _get_w_list
 from .qiskit_time_evolution_grouping import (
-    tEvolution_vector_grouper,
+    CliqueHamiltonian,
+    build_clique_hamiltonians,
+    tEvolution_vector_grouper_precomputed,
     w_trotter_grouper,
+    w_trotter_grouper_precomputed,
 )
 from .qiskit_time_evolution_pyscf import make_fci_vector_from_pyscf_solver_grouper
 from .rz_layers import (
@@ -607,15 +612,25 @@ def _build_grouped_trotter_circuit(
     time: float,
     num_qubits: int,
     pf_label: PFLabel,
+    clique_hamiltonians: Sequence[CliqueHamiltonian] | None = None,
 ) -> tuple[QuantumCircuit, int]:
     circuit = QuantumCircuit(int(num_qubits))
-    exp_term_count = w_trotter_grouper(
-        circuit,
-        cliques,
-        float(time),
-        int(num_qubits),
-        str(pf_label),
-    )
+    if clique_hamiltonians is None:
+        exp_term_count = w_trotter_grouper(
+            circuit,
+            cliques,
+            float(time),
+            int(num_qubits),
+            str(pf_label),
+        )
+    else:
+        exp_term_count = w_trotter_grouper_precomputed(
+            circuit,
+            clique_hamiltonians,
+            float(time),
+            int(num_qubits),
+            str(pf_label),
+        )
     return circuit, int(exp_term_count)
 
 
@@ -666,10 +681,23 @@ def _resolve_parallel_processes(
     return max(1, min(int(processes), int(num_times), max_parallel))
 
 
+def _resolve_clique_precompute_processes(
+    *,
+    num_cliques: int,
+    processes: int | None,
+) -> int:
+    if int(num_cliques) <= 0:
+        return 0
+    if processes is not None:
+        return max(1, min(int(processes), int(num_cliques)))
+    cpu_count = os.cpu_count() or 1
+    return max(1, min(int(num_cliques), int(cpu_count), 32))
+
+
 def _simulate_grouped_time_task(
     args: tuple[
         float,
-        tuple[tuple[QubitOperator, ...], ...],
+        tuple[CliqueHamiltonian, ...],
         int,
         str,
         np.ndarray,
@@ -681,7 +709,7 @@ def _simulate_grouped_time_task(
 ) -> tuple[float, np.ndarray, int, dict[str, Any]]:
     (
         time_value,
-        cliques,
+        clique_hamiltonians,
         num_qubits,
         pf_label,
         state_flat,
@@ -692,10 +720,11 @@ def _simulate_grouped_time_task(
     ) = args
     raw_time = -float(time_value)
     circuit, exp_term_count = _build_grouped_trotter_circuit(
-        cliques,
+        (),
         time=raw_time,
         num_qubits=int(num_qubits),
         pf_label=pf_label,
+        clique_hamiltonians=clique_hamiltonians,
     )
     input_num_instructions = len(circuit.data)
     circuit = _decompose_grouped_circuit_for_gpu(circuit)
@@ -737,6 +766,27 @@ def _run_grouped_trotter_gpu(
 ]:
     normalized_cliques = tuple(tuple(clique) for clique in cliques)
     state_flat = np.asarray(state_vector, dtype=np.complex128).reshape(-1)
+    clique_precompute_processes = _resolve_clique_precompute_processes(
+        num_cliques=len(normalized_cliques),
+        processes=processes,
+    )
+    precompute_started = perf_counter()
+    clique_hamiltonians = build_clique_hamiltonians(
+        normalized_cliques,
+        int(num_qubits),
+        processes=clique_precompute_processes,
+    )
+    clique_precompute_s = perf_counter() - precompute_started
+    clique_precompute_info = {
+        "enabled": True,
+        "processes": int(clique_precompute_processes),
+        "num_cliques": int(len(clique_hamiltonians)),
+        "nonempty_cliques": int(
+            sum(1 for item in clique_hamiltonians if item.hamiltonian is not None)
+        ),
+        "exp_term_count": int(sum(item.exp_term_count for item in clique_hamiltonians)),
+        "build_s": float(clique_precompute_s),
+    }
     assigned_gpu_ids = _assign_gpu_ids_to_times(t_values, gpu_ids)
     num_processes = _resolve_parallel_processes(
         num_times=len(t_values),
@@ -746,7 +796,7 @@ def _run_grouped_trotter_gpu(
     tasks = [
         (
             float(time_value),
-            normalized_cliques,
+            clique_hamiltonians,
             int(num_qubits),
             str(pf_label),
             state_flat,
@@ -761,7 +811,10 @@ def _run_grouped_trotter_gpu(
     if num_processes <= 1:
         task_results = [_simulate_grouped_time_task(task) for task in tasks]
     else:
-        context = mp.get_context("spawn")
+        try:
+            context = mp.get_context("fork")
+        except ValueError:
+            context = mp.get_context()
         with ProcessPoolExecutor(
             max_workers=int(num_processes),
             mp_context=context,
@@ -772,7 +825,9 @@ def _run_grouped_trotter_gpu(
     profiles: list[dict[str, Any]] = []
     for raw_time, evolved, exp_term_count, profile in task_results:
         final_states.append((float(raw_time), evolved, int(exp_term_count)))
-        profiles.append(dict(profile))
+        profile = dict(profile)
+        profile["grouped_clique_precompute"] = dict(clique_precompute_info)
+        profiles.append(profile)
     return tuple(final_states), tuple(profiles), int(num_processes)
 
 
@@ -784,12 +839,34 @@ def _run_grouped_trotter_cpu(
     pf_label: PFLabel,
     t_values: Sequence[float],
 ) -> tuple[tuple[tuple[float, np.ndarray, int], ...], tuple[dict[str, Any], ...]]:
+    normalized_cliques = tuple(tuple(clique) for clique in cliques)
+    precompute_processes = _resolve_clique_precompute_processes(
+        num_cliques=len(normalized_cliques),
+        processes=1,
+    )
+    precompute_started = perf_counter()
+    clique_hamiltonians = build_clique_hamiltonians(
+        normalized_cliques,
+        int(num_qubits),
+        processes=precompute_processes,
+    )
+    clique_precompute_s = perf_counter() - precompute_started
+    clique_precompute_info = {
+        "enabled": True,
+        "processes": int(precompute_processes),
+        "num_cliques": int(len(clique_hamiltonians)),
+        "nonempty_cliques": int(
+            sum(1 for item in clique_hamiltonians if item.hamiltonian is not None)
+        ),
+        "exp_term_count": int(sum(item.exp_term_count for item in clique_hamiltonians)),
+        "build_s": float(clique_precompute_s),
+    }
     state_flat = np.asarray(state_vector, dtype=np.complex128).reshape(-1)
     final_states: list[tuple[float, np.ndarray, int]] = []
     profiles: list[dict[str, Any]] = []
     for time_value in t_values:
-        raw_time, statevector, exp_term_count = tEvolution_vector_grouper(
-            cliques,
+        raw_time, statevector, exp_term_count = tEvolution_vector_grouper_precomputed(
+            clique_hamiltonians,
             -float(time_value),
             int(num_qubits),
             state_flat,
@@ -808,6 +885,7 @@ def _run_grouped_trotter_cpu(
                 "time": float(time_value),
                 "raw_time": float(raw_time),
                 "exp_term_count": int(exp_term_count),
+                "grouped_clique_precompute": dict(clique_precompute_info),
             }
         )
     return tuple(final_states), tuple(profiles)
