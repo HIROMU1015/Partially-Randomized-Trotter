@@ -1,5 +1,12 @@
 あなたは、このプロジェクトの研究整理を引き継ぐアシスタントです。
 
+> [!WARNING]
+> **この文書の進捗欄には、現在は無効化された 2026-04-26 の screening
+> run が含まれます。** 入力 Cgs table は基底状態の不整合を理由に commit
+> `98f960c` で削除され、派生 screening JSON は再生成されていません。
+> 下記の暫定 best を研究結果として使用しないでください。現在の検証状態と
+> 完了条件は [`VALIDATION_STATUS.md`](VALIDATION_STATUS.md) を参照してください。
+
 このプロジェクトの目的は、部分ランダム Product Formula（部分ランダムPF）の枠組みの中で、決定論部分にどの PF を入れると全体として有利かを評価することです。
 
 既存の部分ランダムPFでは、ハミルトニアンを
@@ -221,8 +228,10 @@ DF 近似誤差は C_gs,D に吸収せず、別の表現誤差として扱う想
 CLI としては scripts/run_df_screening_cost_minimization.py から実行できます。
 この CLI の epsilon_total の規定値は 1e-4 です。
 
-現在の anchor Cgs テーブルは artifacts/partial_randomized_pf/df_cgs_cost_table.json です。
-このテーブルには 35 entries が入っています。
+2026-04-26 の screening で使用した anchor Cgs テーブルは
+artifacts/partial_randomized_pf/df_cgs_cost_table.json でした。
+この旧テーブルには 35 entries が入っていましたが、基底状態の不整合を理由に
+commit `98f960c` で削除され、現在のリポジトリには存在しません。
 
 - H3-H13: 2nd, 4th, 8th(Morales)
 - H14: 2nd, 4th
@@ -231,7 +240,9 @@ H14 の 8th(Morales) は GPU ライブラリ解決エラーで未完了です。
 4th(new_2) は別途 anchor Cgs を計算中で、途中結果は artifacts/partial_randomized_pf/H3_H14_df_screening_anchor_cgs_4th_new_2.partial.json に保存されています。
 この partial には現在 H3-H12 までの 10 entries が入っています。
 
-epsilon_total = 1e-4 で、現在の 35 entries を使った簡約モデル screening を実行済みです。
+epsilon_total = 1e-4 で、削除前の 35 entries を使った簡約モデル screening が
+実行されました。この run は corrected input から再生成されていないため、現在は
+quarantined です。
 
 出力は以下です。
 
@@ -243,7 +254,8 @@ epsilon_total = 1e-4 で、現在の 35 entries を使った簡約モデル scre
 C_gs,D は anchor 値を使い回し、各 L_D では lambda_R(L_D) と total_ref_rz_depth(PF, L_D) を変えて q と kappa を最適化しています。
 635 は C_gs,D fit の回数ではありません。
 
-epsilon_total = 1e-4 の暫定 best は以下です。
+無効化前の epsilon_total = 1e-4 run が記録した暫定 best は以下です。これらの
+値は参考履歴であり、研究結果として使用しないでください。
 
     H3   8th(Morales)  L_D=3   anchor=2
     H4   8th(Morales)  L_D=4   anchor=3

@@ -1,0 +1,269 @@
+{
+  "schema_version": 1,
+  "repository": "HIROMU1015/Partially-Randomized-Trotter",
+  "audit": {
+    "base_commit": "cf285c0ac1e3d587df4a8eb6bee2279a12ced462",
+    "performed_on": "2026-07-20",
+    "scope": "Evidence committed to the repository for the legacy high-order PF, DF partially randomized screening, grouped UWC, and test result sets.",
+    "overall_status": "not_reproducible_from_repository",
+    "statement": "The repository contains historical coefficient artifacts, source code, tests, prose summaries, and one stale DF screening output, but it does not contain the complete trusted inputs, raw result files, provenance, and current automated run evidence needed to reproduce the current DF and UWC conclusions."
+  },
+  "relevant_commits": [
+    {
+      "sha": "cf285c0ac1e3d587df4a8eb6bee2279a12ced462",
+      "role": "audit_base",
+      "description": "GitHub main commit whose committed validation evidence was audited."
+    },
+    {
+      "sha": "c580aec790c46dd9aaa2f2982bc9270210523a0d",
+      "role": "df_workflow_and_screening_added",
+      "description": "Added the DF-native partial-randomized workflow, its input tables, and the canonical screening result."
+    },
+    {
+      "sha": "57e49cf27d19bfb35cb71b7e9d90a5a30e371e5b",
+      "role": "df_refinement_workflow_added",
+      "description": "Added DF refinement, comparison, plotting, and related test code."
+    },
+    {
+      "sha": "98f960c2dd09fc1ae6b8b5c802dc5ce84fc61604",
+      "role": "df_inputs_invalidated_and_removed",
+      "description": "Removed 37 DF aggregate/split input-table files because the ground state was incorrect; the derived screening JSON was not regenerated."
+    },
+    {
+      "sha": "0ce0389c5d907995558f4a3b1b8c593fd6494d77",
+      "role": "uwc_workflow_and_prose_results_added",
+      "description": "Added grouped UWC implementation, tests, and the prose result summary."
+    },
+    {
+      "sha": "c774c671c0a4eaf91045b7844bdcc9be41d2f453",
+      "role": "uwc_theta_sweep_added",
+      "description": "Added the grouped UWC theta-sweep implementation and tests, without committing the generated result artifacts."
+    }
+  ],
+  "artifact_inventory": {
+    "present": [
+      {
+        "path": "abe_trotter_project.ipynb",
+        "kind": "file",
+        "supports": [
+          "legacy_high_order_pf"
+        ],
+        "reason": "Executed historical analysis notebook; it is evidence for the earlier high-order product-formula study, not for the current DF/UWC workflows."
+      },
+      {
+        "path": "artifacts/trotter_expo_coeff_gr",
+        "kind": "directory",
+        "supports": [
+          "legacy_high_order_pf"
+        ],
+        "reason": "Contains 266 tracked historical grouped coefficient artifacts at the audit base."
+      },
+      {
+        "path": "artifacts/trotter_expo_coeff_gr_original",
+        "kind": "directory",
+        "supports": [
+          "legacy_high_order_pf"
+        ],
+        "reason": "Contains 274 tracked historical original coefficient artifacts at the audit base."
+      },
+      {
+        "path": "Partial Randomized Study Protocol.md",
+        "kind": "file",
+        "supports": [
+          "df_partial_randomized_screening"
+        ],
+        "reason": "Documents the reported 35-entry/635-candidate screening and explicitly lists unfinished regeneration and shortlist-refit work."
+      },
+      {
+        "path": "notes/uwc_current_implementation_and_results.md",
+        "kind": "file",
+        "supports": [
+          "uwc_grouped",
+          "tests"
+        ],
+        "reason": "Contains human-readable UWC tables and an older 26-passed test transcript, but not the raw machine-readable outputs."
+      },
+      {
+        "path": "tests/test_df_hamiltonian.py",
+        "kind": "file",
+        "supports": [
+          "tests"
+        ],
+        "reason": "Committed DF Hamiltonian test source."
+      },
+      {
+        "path": "tests/test_df_partial_randomized_pf.py",
+        "kind": "file",
+        "supports": [
+          "tests"
+        ],
+        "reason": "Committed DF partial-randomized workflow test source."
+      },
+      {
+        "path": "tests/test_grouped_uwc_comparison.py",
+        "kind": "file",
+        "supports": [
+          "tests"
+        ],
+        "reason": "Committed grouped-UWC comparison and theta-sweep test source."
+      },
+      {
+        "path": "tests/test_uwc_preprocessor.py",
+        "kind": "file",
+        "supports": [
+          "tests"
+        ],
+        "reason": "Committed UWC preprocessor test source."
+      }
+    ],
+    "quarantined": [
+      {
+        "path": "artifacts/partial_randomized_pf/screening_results/df_screening_cost_minimization_eps_1.000e-04.json",
+        "kind": "file",
+        "supports": [
+          "df_partial_randomized_screening"
+        ],
+        "reason": "The file reports 635 screening candidates, but its 35-entry source table and split tables were removed after an incorrect-ground-state finding. It must not be treated as a current scientific result.",
+        "invalidated_by_commit": "98f960c2dd09fc1ae6b8b5c802dc5ce84fc61604"
+      }
+    ],
+    "missing": [
+      {
+        "path": "artifacts/partial_randomized_pf/df_cgs_cost_table.json",
+        "kind": "file",
+        "supports": [
+          "df_partial_randomized_screening"
+        ],
+        "reason": "The aggregate Cgs/cost input table was removed and no corrected replacement is committed."
+      },
+      {
+        "path": "artifacts/partial_randomized_pf/df_cgs_cost_tables/index.json",
+        "kind": "file",
+        "supports": [
+          "df_partial_randomized_screening"
+        ],
+        "reason": "The split-table index was removed together with the invalid DF inputs."
+      },
+      {
+        "path": "artifacts/partial_randomized_pf/H3_H14_df_screening_anchor_cgs_4th_new_2.partial.json",
+        "kind": "file",
+        "supports": [
+          "df_partial_randomized_screening"
+        ],
+        "reason": "The protocol mentions this ten-entry partial result, but it is not committed and is not a completed canonical input."
+      },
+      {
+        "path": "artifacts/partial_randomized_pf/logs/df_screening_cost_eps1e4.log",
+        "kind": "file",
+        "supports": [
+          "df_partial_randomized_screening"
+        ],
+        "reason": "The protocol names this run log, but the log is not committed."
+      },
+      {
+        "path": "artifacts/grouped_uwc_pf_qpe/H2_H6_2nd_grouped_uwc_alpha_bliss_quadratic_theta_0p01_gpu.json",
+        "kind": "file",
+        "supports": [
+          "uwc_grouped"
+        ],
+        "reason": "The prose summary names this canonical H2-H6 result, but the output directory is ignored and the JSON is not committed."
+      },
+      {
+        "path": "artifacts/grouped_uwc_pf_qpe/H3_bliss_sector_scaling_diagnostics.json",
+        "kind": "file",
+        "supports": [
+          "uwc_grouped"
+        ],
+        "reason": "The prose summary names this H3 time-grid diagnostic, but the JSON is not committed."
+      },
+      {
+        "path": "artifacts/grouped_uwc_pf_qpe/H2_H6_2nd_grouped_uwc_alpha_simple_shift_gpu.json",
+        "kind": "file",
+        "supports": [
+          "uwc_grouped"
+        ],
+        "reason": "The prose summary names this pipeline-check output, but the JSON is not committed."
+      }
+    ]
+  },
+  "result_sets": [
+    {
+      "id": "legacy_high_order_pf",
+      "status": "historical_evidence",
+      "summary": "Historical grouped/original coefficient artifacts and an executed notebook are committed. They support the earlier high-order PF study, but do not validate the current DF or grouped-UWC conclusions.",
+      "counts": {
+        "coefficient_artifacts_grouped": 266,
+        "coefficient_artifacts_original": 274,
+        "coefficient_artifacts_total": 540,
+        "executed_notebooks": 1
+      },
+      "completion_criteria": [
+        "Record the generating commit, command, environment, input hashes, and output hashes for any historical artifact claimed as reproducible.",
+        "Run and publish at least one representative end-to-end regeneration check against the committed historical artifacts."
+      ]
+    },
+    {
+      "id": "df_partial_randomized_screening",
+      "status": "invalidated_pending_regeneration",
+      "summary": "One 635-candidate reduced-model screening output remains committed, but its 35-entry input was deleted after an incorrect-ground-state finding. Corrected inputs, a regenerated screening, and explicit-L_D shortlist refits are absent.",
+      "counts": {
+        "screening_candidates_reported": 635,
+        "input_entries_reported": 35,
+        "input_table_files_removed": 37,
+        "canonical_screening_outputs_present_but_quarantined": 1,
+        "trusted_input_tables_present": 0,
+        "shortlist_explicit_ld_refits_present": 0
+      },
+      "completion_criteria": [
+        "Regenerate and commit corrected aggregate and split Cgs/cost tables from validated ground states.",
+        "Complete and merge the H3-H14 4th(new_2) anchors and resolve the missing H14 8th(Morales) anchor.",
+        "Rerun the epsilon_total=1e-4 screening from the corrected committed tables and replace or clearly supersede the quarantined output.",
+        "Refit C_gs,D at each shortlisted explicit L_D and commit the final cost comparison rather than relying on anchor reuse.",
+        "Attach the generating commit, exact command, environment, seeds where applicable, and input/output hashes to the regenerated artifacts."
+      ]
+    },
+    {
+      "id": "uwc_grouped",
+      "status": "prose_only_missing_raw_artifacts",
+      "summary": "The repository reports grouped-UWC H2-H6 tables, H3 diagnostics, and a theta sweep in prose, but the named canonical JSON outputs and other raw sweep evidence are not committed.",
+      "counts": {
+        "molecules_reported": 5,
+        "comparison_rows_reported": 10,
+        "h3_time_grid_points_reported": 4,
+        "h3_theta_values_reported": 6,
+        "named_raw_json_files_present": 0
+      },
+      "completion_criteria": [
+        "Commit the canonical H2-H6 grouped-UWC JSON, H3 diagnostic JSON, and machine-readable theta-sweep JSON/CSV used by the prose tables.",
+        "Include exact commands, environment, generating commit, input hashes, seeds, backend/GPU metadata, and output hashes.",
+        "Add an automated consistency check that derives the published table values from the committed machine-readable outputs.",
+        "State numerical tolerances and preserve the theta=0 and target-sector invariance checks in the published run evidence."
+      ]
+    },
+    {
+      "id": "tests",
+      "status": "source_present_no_current_ci",
+      "summary": "Four test-source files with 28 test functions are committed. The only recorded run is a prose '26 passed' line predating later test additions, and audit base cf285c0 has no committed CI workflow or current machine-readable run record.",
+      "counts": {
+        "test_source_files": 4,
+        "test_functions_at_audit_base": 28,
+        "older_documented_passes": 26,
+        "ci_workflows_at_audit_base": 0,
+        "current_machine_readable_test_reports_at_audit_base": 0
+      },
+      "completion_criteria": [
+        "Run the complete test suite against the publication commit and record the exact command, environment, commit SHA, timestamp, and pass/fail/skip counts.",
+        "Add CI that checks this manifest and runs a dependency-appropriate unit or smoke-test suite on each proposed change.",
+        "Publish a machine-readable current test report or an immutable CI run linked to the publication commit.",
+        "Add a small end-to-end regeneration smoke test covering inputs, computation, serialization, and result validation."
+      ]
+    }
+  ],
+  "repository_completion_criteria": [
+    "Every current scientific conclusion has a committed, non-quarantined machine-readable result artifact.",
+    "Every result artifact identifies its generating commit, command, environment, inputs, hashes, seeds where applicable, and validation tolerances.",
+    "Corrected DF inputs reproduce a regenerated screening and explicit-L_D shortlist refits.",
+    "Committed grouped-UWC raw outputs reproduce the published prose tables.",
+    "Automated checks pass on the publication commit and expose an immutable run record."
+  ]
+}

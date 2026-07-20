@@ -1,6 +1,26 @@
 # Evaluation_numGate_highorder
 
+> [!IMPORTANT]
+> **Current validation status:** the legacy higher-order PF notebook and fit
+> coefficients are historical evidence, while the current DF
+> partial-randomized screening result is **not a validated final result** and
+> must not be used for research claims. Its Cgs input tables were removed after
+> a ground-state mismatch was found, and the screening output has not yet been
+> regenerated. The UWC tables are prose-only because their referenced raw
+> artifacts are not committed. See [VALIDATION_STATUS.md](VALIDATION_STATUS.md)
+> and [the machine-readable manifest](artifacts/validation_manifest.json) before
+> interpreting any result in this repository.
+
 高次Trotter積公式による時間発展シミュレーションの誤差スケーリングとコスト評価を行う研究用コード。OpenFermion/PySCFで水素鎖のハミルトニアンを生成し、Qiskitで時間発展を実装、誤差を摂動論で計算、log-logフィットと外挿で比較する。積公式構築アルゴリズムの参考文献として `Greatly-improved-higher-order-product-formulae-for-quantum-simulation.pdf` を同梱する。
+
+## 検証結果を確認する前に
+
+- 現在の検証範囲、利用可否、欠落成果物: [`VALIDATION_STATUS.md`](VALIDATION_STATUS.md)
+- 機械可読な状態とパス検査: [`artifacts/validation_manifest.json`](artifacts/validation_manifest.json)
+- manifest の自己検査: `python3 scripts/check_validation_manifest.py`
+- partial-randomized PF の実装説明: [`README_partial_randomized_pf.md`](README_partial_randomized_pf.md)
+
+検証ステータスが `validated` になるまでは、DF screening や UWC の数値を最終結論として引用しないでください。
 
 ## できること
 - 2nd/4th/8th/10thなどの積公式係数に基づく誤差評価

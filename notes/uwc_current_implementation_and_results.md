@@ -2,6 +2,17 @@
 
 作成日: 2026-05-20
 
+> [!WARNING]
+> **検証ステータス: prose-only / raw artifacts missing**
+>
+> 以下の表は 2026-05-20 時点の実行メモです。本文が参照する
+> `artifacts/grouped_uwc_pf_qpe/*.json`、診断 JSON、theta sweep の
+> JSON/CSV は現在のリポジトリにコミットされていません。このため、数値、
+> 実行条件、fit、CPU/GPU 一致を GitHub 上のデータだけで独立監査できません。
+> 最終的な検証結果や性能改善の根拠として使用せず、実装履歴として扱って
+> ください。全体の状態は [`../VALIDATION_STATUS.md`](../VALIDATION_STATUS.md)
+> を参照してください。
+
 ## 要約
 
 現状の UWC は、Hamiltonian 生成後、Pauli term のソートや `L_D` split に入る前の **Hamiltonian preprocessor** として実装されている。Trotter 展開や product formula の内部には UWC 固有の分岐を入れていない。
@@ -363,12 +374,16 @@ artifacts/grouped_uwc_pf_qpe/H2_H6_2nd_grouped_uwc_alpha_simple_shift_gpu.json
 
 ## テスト状況
 
-現時点で以下を確認済み。
+以下はこのメモ作成時点（2026-05-20）の履歴です。
 
 ```text
 .venv/bin/python -m pytest -q
 26 passed
 ```
+
+現在の tree には 28 個の test function があり、この記録後にも実装変更が
+入っています。現行 HEAD の CI run はコミットされていないため、上記を現在の
+テスト成功証拠として扱わないでください。
 
 主なテスト内容:
 
@@ -409,4 +424,3 @@ artifacts/grouped_uwc_pf_qpe/H2_H6_2nd_grouped_uwc_alpha_simple_shift_gpu.json
 5. spin/Sz sector-preserving shift の追加
 6. orbital optimization + BLISS
 7. DF Hamiltonian 側への拡張
-

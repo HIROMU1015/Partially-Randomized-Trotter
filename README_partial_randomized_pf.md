@@ -1,5 +1,14 @@
 # Partial Randomized PF
 
+> [!WARNING]
+> **Numerical validation is not complete.** The committed DF screening JSON is
+> quarantined because its Cgs input tables were removed after a ground-state
+> mismatch was found, and it has not been regenerated. UWC raw result files are
+> also not committed. Do not treat the current screening/UWC numbers as final
+> research results. Check [`VALIDATION_STATUS.md`](VALIDATION_STATUS.md) and
+> [`artifacts/validation_manifest.json`](artifacts/validation_manifest.json)
+> for the current evidence and completion criteria.
+
 This is the first-stage research implementation for the simplified partially randomized product-formula comparison described in the project discussion.
 
 ## Scope
