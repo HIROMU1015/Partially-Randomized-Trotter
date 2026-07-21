@@ -50,6 +50,18 @@ def main() -> int:
     parser.add_argument("--processes", type=int, default=None)
     parser.add_argument("--optimization-level", type=int, default=0)
     parser.add_argument("--ground-state-tol", type=float, default=1e-10)
+    parser.add_argument(
+        "--evolution-backend",
+        choices=("gpu", "cpu"),
+        default="gpu",
+        help="Statevector backend used for the Cgs fit.",
+    )
+    parser.add_argument(
+        "--matrix-free-backend",
+        choices=("auto", "numba", "python"),
+        default="auto",
+        help="Backend used by the DF ground-state eigensolver.",
+    )
     parser.add_argument("--matrix-free-threads", type=int, default=None)
     parser.add_argument(
         "--cache-path",
@@ -60,6 +72,11 @@ def main() -> int:
         "--no-parameterized-template",
         action="store_true",
         help="Build and transpile one concrete circuit per t instead of one parameterized template.",
+    )
+    parser.add_argument(
+        "--no-ground-state-cache",
+        action="store_true",
+        help="Recompute every H_D ground state instead of loading or saving the ground-state cache.",
     )
     parser.add_argument("--debug", action="store_true")
     args = parser.parse_args()
@@ -138,14 +155,18 @@ def main() -> int:
                 pf_label=pf_label,
                 cache_document=cache_document,
                 **cache_kwargs,
-                evolution_backend="gpu",
+                evolution_backend=str(args.evolution_backend),
                 gpu_ids=gpu_ids,
                 optimization_level=int(args.optimization_level),
-                parallel_times=True,
+                parallel_times=bool(args.evolution_backend != "cpu"),
                 processes=args.processes,
-                use_parameterized_template=not bool(args.no_parameterized_template),
-                use_ground_state_cache=True,
+                use_parameterized_template=(
+                    args.evolution_backend != "cpu"
+                    and not bool(args.no_parameterized_template)
+                ),
+                use_ground_state_cache=not bool(args.no_ground_state_cache),
                 ground_state_tol=float(args.ground_state_tol),
+                matrix_free_backend=str(args.matrix_free_backend),
                 matrix_free_threads=args.matrix_free_threads,
                 debug=bool(args.debug),
             )
@@ -167,6 +188,7 @@ def main() -> int:
                 "fixed_order_coeff": result.fit_coeff_fixed_order,
                 "t_values": list(result.t_values),
                 "perturbation_errors": list(result.perturbation_errors),
+                "evolution_backend": result.evolution_backend,
                 "gpu_ids": list(result.gpu_ids),
                 "parallel_times": result.parallel_times,
                 "processes": result.processes,
@@ -174,6 +196,10 @@ def main() -> int:
                     "use_parameterized_template"
                 ),
                 "ground_state_cache": ground_state_cache,
+                "ground_state_energy": result.metadata.get("ground_state_energy"),
+                "ground_state_residual_norm": result.metadata.get(
+                    "ground_state_residual_norm"
+                ),
                 "df_step_cost": df_step_cost,
                 "total_ref_rz_depth": (
                     df_step_cost.get("total_ref_rz_depth")

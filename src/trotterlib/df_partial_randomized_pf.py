@@ -55,9 +55,9 @@ DFFragmentWeightRule: TypeAlias = Literal[
     "abs_lambda",
 ]
 DFEvolutionBackend: TypeAlias = Literal["gpu", "cpu", "auto"]
-_DF_CGS_CACHE_SCHEMA_VERSION = 6
-_DF_CGS_DEFINITION = "df_hd_deterministic_surrogate_v1"
-_DF_GROUND_STATE_CACHE_SCHEMA_VERSION = 2
+_DF_CGS_CACHE_SCHEMA_VERSION = 7
+_DF_CGS_DEFINITION = "df_hd_deterministic_surrogate_v2"
+_DF_GROUND_STATE_CACHE_SCHEMA_VERSION = 3
 _DF_COST_BASIS_GATES = ("rz", "cx", "sx", "x")
 _DF_TIME_WORKER_TEMPLATE: DFGPUParameterizedTemplate | None = None
 
@@ -1126,6 +1126,9 @@ def fit_df_cgs_with_perturbation(
             df_tol_requested=hamiltonian.metadata.get("df_tol_requested"),
             metadata={
                 "surrogate_note": "DF H_D deterministic surrogate",
+                "df_truncation_value": hamiltonian.metadata.get(
+                    "df_truncation_value"
+                ),
                 "df_step_cost": df_step_cost,
             },
         )
@@ -1289,6 +1292,8 @@ def fit_df_cgs_with_perturbation(
         df_tol_requested=hamiltonian.metadata.get("df_tol_requested"),
         metadata={
             "surrogate_note": "DF H_D deterministic surrogate; not a full partial-randomized error bound",
+            "df_truncation_value": hamiltonian.metadata.get("df_truncation_value"),
+            "ground_state_energy": float(np.real(ground_state.energy)),
             "ground_state_converged": ground_state.converged,
             "ground_state_residual_norm": ground_state.residual_norm,
             "ground_state_cache": ground_state_cache_metadata,

@@ -607,7 +607,7 @@ def df_hamiltonian_from_integrals(
         raise ValueError("two_body must have shape (N, N, N, N).")
 
     kwargs = _low_rank_kwargs(df_rank=df_rank, df_tol=df_tol)
-    eigenvalues, one_body_squares, one_body_correction, constant_correction = (
+    eigenvalues, one_body_squares, one_body_correction, truncation_value = (
         low_rank_two_body_decomposition(two_body, **kwargs)
     )
     g_stack = np.asarray(one_body_squares, dtype=np.complex128)
@@ -615,7 +615,9 @@ def df_hamiltonian_from_integrals(
         raise ValueError("low_rank_two_body_decomposition returned invalid G matrices.")
 
     hamiltonian = DFHamiltonian(
-        constant=float(np.real_if_close(constant + constant_correction)),
+        # OpenFermion's fourth return value is a truncation-error bound, not a
+        # scalar correction to the represented Hamiltonian.
+        constant=float(np.real_if_close(constant)),
         one_body=one_body + np.asarray(one_body_correction, dtype=np.complex128),
         lambdas=np.asarray(eigenvalues, dtype=np.float64).reshape(-1),
         g_matrices=tuple(g_stack[idx] for idx in range(g_stack.shape[0])),
@@ -624,6 +626,7 @@ def df_hamiltonian_from_integrals(
             "df_rank_requested": df_rank,
             "df_tol_requested": df_tol,
             "df_rank_actual": int(g_stack.shape[0]),
+            "df_truncation_value": float(np.real_if_close(truncation_value)),
         },
     )
     return hamiltonian.hermitized()

@@ -19,6 +19,7 @@ from trotterlib.df_partial_randomized_pf import (
     _rz_depth_from_circuit,
     _save_df_ground_state_npz,
     fit_df_cgs_with_perturbation,
+    load_df_cgs_json_cache,
     rank_df_fragments,
     split_df_hamiltonian_by_ld,
 )
@@ -146,6 +147,27 @@ def test_df_ground_state_npz_validates_cache_payload(tmp_path) -> None:
         )
         is None
     )
+
+
+def test_df_cgs_cache_rejects_pre_ground_energy_fix_schema(tmp_path) -> None:
+    path = tmp_path / "df_cgs_fit_cache.json"
+    path.write_text(
+        """
+        {
+          "schema_version": 6,
+          "cgs_definition": "df_hd_deterministic_surrogate_v1",
+          "representation_type": "df",
+          "entries": {"stale": {"coeff": 1.0}}
+        }
+        """,
+        encoding="utf-8",
+    )
+
+    document = load_df_cgs_json_cache(path)
+
+    assert document["schema_version"] == 7
+    assert document["cgs_definition"] == "df_hd_deterministic_surrogate_v2"
+    assert document["entries"] == {}
 
 
 def test_df_integral_session_cache_reuses_first_integrals(monkeypatch) -> None:
