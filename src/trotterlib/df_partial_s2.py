@@ -670,19 +670,27 @@ class QiskitDFPartialS2CircuitBuilder:
         circuit: QuantumCircuit,
         block: DFDeterministicBlockSpec,
         request: DFPartialS2StepRequest,
+        *,
+        evolution_time: float | None = None,
     ) -> None:
         self._append_basis(circuit, block, inverse=True)
-        half_time = request.step_time / 2.0
+        block_time = (
+            request.step_time / 2.0
+            if evolution_time is None
+            else float(evolution_time)
+        )
+        if not math.isfinite(block_time):
+            raise ValueError("Deterministic block evolution_time must be finite.")
         if isinstance(block, DFDeterministicOneBodySpec):
             primitives = one_body_diagonal_primitives(
                 np.asarray(block.diagonal_eigenvalues),
-                half_time,
+                block_time,
             )
         else:
             primitives = df_squared_diagonal_primitives(
                 np.asarray(block.diagonal_eta),
                 block.lam,
-                half_time,
+                block_time,
             )
         append_diagonal_primitives(
             circuit,

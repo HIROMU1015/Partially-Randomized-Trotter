@@ -174,6 +174,23 @@ from .df_partial_s2_cost import (
     estimate_exact_compiled_partial_s2_cost,
     estimate_monte_carlo_compiled_partial_s2_cost,
 )
+from .df_partial_s2_repeated import (
+    BoundaryOptimizationPolicy,
+    DFPartialS2AttenuationMetadata,
+    DFPartialS2RepeatedCircuitResult,
+    DFPartialS2RepeatedRequest,
+    DFPartialS2TrajectoryStep,
+    DFPartialS2TruncationMetadata,
+    QiskitDFPartialS2RepeatedCircuitBuilder,
+    RepeatedCircuitConstructionPolicy,
+    make_df_partial_s2_repeated_request,
+    repetition_count_for_rpe_round,
+)
+from .df_partial_s2_repeated_cost import (
+    CompiledRepeatedPartialS2CostEstimate,
+    estimate_exact_compiled_repeated_partial_s2_cost,
+    estimate_monte_carlo_compiled_repeated_partial_s2_cost,
+)
 
 __all__ = [
     "jw_hamiltonian_maker",
@@ -313,4 +330,17 @@ __all__ = [
     "CompiledPartialS2CostEstimate",
     "estimate_exact_compiled_partial_s2_cost",
     "estimate_monte_carlo_compiled_partial_s2_cost",
+    "BoundaryOptimizationPolicy",
+    "DFPartialS2AttenuationMetadata",
+    "DFPartialS2RepeatedCircuitResult",
+    "DFPartialS2RepeatedRequest",
+    "DFPartialS2TrajectoryStep",
+    "DFPartialS2TruncationMetadata",
+    "QiskitDFPartialS2RepeatedCircuitBuilder",
+    "RepeatedCircuitConstructionPolicy",
+    "make_df_partial_s2_repeated_request",
+    "repetition_count_for_rpe_round",
+    "CompiledRepeatedPartialS2CostEstimate",
+    "estimate_exact_compiled_repeated_partial_s2_cost",
+    "estimate_monte_carlo_compiled_repeated_partial_s2_cost",
 ]

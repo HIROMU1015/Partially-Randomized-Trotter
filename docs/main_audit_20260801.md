@@ -311,4 +311,71 @@ The post-change suite result is **152 passed, 4 warnings in 5.05 s** (`5.63 s`
 wall time). All warnings are the same pre-existing grouped-UWC `ComplexWarning`
 instances at `chemistry_hamiltonian.py:307`. The validation manifest and
 `git diff --check` passed. No commit or push was performed during this
-follow-up; the changes remain in the working tree as requested.
+follow-up, so the changes remained in the working tree at that historical
+endpoint. They were subsequently committed and pushed as `4eeaeba` (`Add
+compiled DF partial-S2 step costs`). This sentence describes the earlier run,
+not the repository state at the start of the next follow-up.
+
+## 13. Short repeated DF partial-S2 follow-up
+
+This follow-up started from clean `main` commit
+`4eeaeba093e87db5400f20364f14c29f250ea001`, equal to `origin/main`. The
+pre-change suite result was **152 passed, 4 warnings in 5.29 s** (`5.89 s`
+wall time).
+
+`DFPartialS2RepeatedRequest` now binds a preparation, step time, strict
+positive integer `repetition_count`, ordered independent RTE occurrences,
+master/per-step seeds, control/ancilla condition, and circuit policy. The
+trajectory fingerprint binds tail hash, step/event order, and seeds. Circuit
+append order is step 0 through `q-1`; its matrix is recorded as
+`U_(q-1) ... U_1 U_0`.
+
+The raw builder concatenates unchanged one-step circuits before transpilation.
+The boundary-optimized builder only fuses the equal deterministic block at a
+reverse/forward boundary into one full-time evolution and aggregates the
+commuting constant/extracted-identity phases. It never reorders fragments or
+events and never moves or deletes RTE-internal Taylor, sign, rotation, or
+faithful-identity phase. Two- and three-step uncontrolled dense comparisons
+and controlled `diag(I,U)` comparisons agree within approximately `1.1e-15`.
+
+Attenuation metadata stores the one-step factor, `q`, primary log attenuation,
+representable product, numerical flags, config, and tail hash. Taylor metadata
+reuses `rte_occurrence_truncation_from_config` to separate one-short-step,
+one-occurrence/one-partial-S2 randomized, and repeated bounds; product-formula
+bias is explicitly excluded.
+
+The exact compiled API preflights `M**q` before enumeration or circuit
+construction and checks the trajectory probability sum. The Monte Carlo API
+draws complete trajectories classically, uses an unweighted mean, and reports
+unbiased variance, standard error, ranges, seeds, unique circuits, and cache
+hits. Both compile the whole trajectory once, sum matching separately
+transpiled one-step costs, report their cross-step difference, retain the
+primitive additive sum, and compare raw with boundary-optimized construction.
+
+For the one-qubit two-event fixture under all-to-all logical compilation at
+optimization level 1, full/matched RZ expectations for `q=1,2,3,4` are
+`1/1`, `1/2`, `1/3`, and `1/4`. The cross-step RZ differences are therefore
+`0,-1,-2,-3`, or `-1` per boundary for `q>1`. In the controlled `q=2`
+fixture, raw, boundary-optimized, and matched RZ expectations are
+`17.66349450104994`, `14.663494501049938`, and `18.66349450104994`; boundary
+optimization contributes `-3.0` and the full-vs-matched difference is `-4.0`.
+A 100-trajectory Monte Carlo run at seed 8 gives RZ mean `14.66`, unbiased
+variance `0.4488888888888889`, and standard error `0.0669991708074726`.
+
+The compiler setting is part of the result identity and materially affects
+the fixture: uncontrolled `q=2` optimization level 0 gives expected full
+RZ/depth/size `16.32698900209987`, while levels 1 and 3 give `1.0`. These are
+regression fixtures rather than chemistry estimates.
+
+Synthetic 20/26-qubit tests build only two-step dense-free circuits and ban
+many-body `Operator`, statevector/dense helpers, full enumeration,
+transpilation, chemistry generation, and quarantined JSON use. Long `2**m`
+circuits, an extrapolation proxy, Hadamard tests, quantum shots, state
+preparation, noise/backend jobs, and RPE total cost remain unimplemented.
+
+The post-change suite result is **178 passed, 4 warnings in 11.70 s**
+(`12.36 s` wall time). The warnings are the unchanged grouped-UWC
+`ComplexWarning` instances at `chemistry_hamiltonian.py:307`. The validation
+manifest, `compileall`, and `git diff --check` passed. Per the implementation
+request, no commit or push was performed; `HEAD` and `origin/main` remain at
+the starting SHA and the changes are left in the working tree.

@@ -639,6 +639,14 @@ class CircuitCost:
         "monte_carlo_compiled_partial_s2_expectation",
         "compiled_partial_s2_additive_expectation",
         "compiled_partial_s2_nonadditive_difference",
+        "exact_compiled_repeated_partial_s2_expectation",
+        "monte_carlo_compiled_repeated_partial_s2_expectation",
+        "compiled_repeated_partial_s2_raw_concatenation",
+        "compiled_repeated_partial_s2_boundary_optimized",
+        "compiled_repeated_partial_s2_boundary_difference",
+        "compiled_repeated_partial_s2_matched_step_sum",
+        "compiled_repeated_partial_s2_cross_step_difference",
+        "compiled_repeated_partial_s2_primitive_additive_sum",
         "legacy_analytic_proxy",
     ]
 

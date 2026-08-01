@@ -22,7 +22,7 @@ This is the first-stage research implementation for the simplified partially ran
 > [`docs/rte_conventions.md`](docs/rte_conventions.md) and
 > [`docs/df_rte_event_circuit_api.md`](docs/df_rte_event_circuit_api.md).
 
-## DF partial-S2 one-step circuit
+## DF partial-S2 one-step and short repeated circuits
 
 The finite-circuit path now reaches one compiled second-order partial step:
 
@@ -47,8 +47,17 @@ both sides. Controlled blocks leave Gaussian basis changes uncontrolled and
 control only shared diagonal RZ/RZZ/phase primitives.
 
 See [`docs/df_partial_s2_compiled_cost.md`](docs/df_partial_s2_compiled_cost.md).
-This Level-5 result is one circuit step only; it is not a multiple-step or RPE
-total and includes neither state preparation nor quantum-shot sampling.
+The one-step API remains unchanged. A Level-5-R validation path now also
+stores an ordered trajectory of independent RTE occurrences, concatenates
+`repetition_count` complete steps, and transpiles the whole short circuit once.
+It compares that primary cost with the matched sum of separately transpiled
+steps and with a local boundary-optimized construction. Only adjacent equal
+deterministic boundary blocks and commuting per-step scalar phases are
+simplified; event and fragment order never changes. See
+[`docs/df_partial_s2_repeated_compiled_cost.md`](docs/df_partial_s2_repeated_compiled_cost.md).
+
+These Level-5 results do not include long `2**m` RPE construction, state
+preparation, attenuation-driven shot counts, or quantum-shot sampling.
 
 ## Scope
 

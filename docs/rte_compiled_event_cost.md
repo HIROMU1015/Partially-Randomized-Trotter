@@ -7,11 +7,15 @@ DF-RTE circuits at three granularities:
 
 1. a single event expectation; and
 2. a short occurrence containing exactly `config.rte_steps` events.
-3. a complete single partial-S2 step containing one such occurrence.
+3. a complete single partial-S2 step containing one such occurrence; and
+4. a short trajectory containing multiple complete partial-S2 steps.
 
-The third API is implemented separately in `df_partial_s2_cost.py` and is
-documented in `df_partial_s2_compiled_cost.md`. It does not build multiple
-partial-S2 repetitions, state preparation, a Hadamard test, or an RPE round.
+The third API is implemented in `df_partial_s2_cost.py` and documented in
+`df_partial_s2_compiled_cost.md`. The fourth is implemented in
+`df_partial_s2_repeated_cost.py` and documented in
+`df_partial_s2_repeated_compiled_cost.md`. It fully transpiles only short
+repetitions; neither path builds state preparation, a Hadamard test, or an RPE
+round.
 Classical RTE event sampling is the only sampling performed. There are no
 quantum shots, statevector/noise simulation, or backend jobs.
 
@@ -96,9 +100,9 @@ The current research-cost ladder is:
 - Level 3: transpiled single-event expectation.
 - Level 4: transpiled short event-sequence expectation, including the paired
   additive comparison.
-- Level 5: compiled expectation for one complete partial-S2 step.
+- Level 5: compiled expectation for one complete partial-S2 step, plus short
+  repeated-step validation distinguished as Level 5-R metadata.
 - Level 6: future long-RPE confirmation for selected candidates.
 
 Levels 3 through 5 still exclude state preparation, attenuation-driven shot
-counts, quantum measurement shots, multiple partial-S2 repetitions, and total
-RPE cost.
+counts, quantum measurement shots, long `2**m` repetition, and total RPE cost.

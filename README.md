@@ -24,6 +24,7 @@
 - DF RTE event入力API: [`docs/df_rte_event_circuit_api.md`](docs/df_rte_event_circuit_api.md)
 - DF RTE event/短列のcompiled期待コスト: [`docs/rte_compiled_event_cost.md`](docs/rte_compiled_event_cost.md)
 - DF partial-S2一反復の回路とcompiled期待コスト: [`docs/df_partial_s2_compiled_cost.md`](docs/df_partial_s2_compiled_cost.md)
+- DF partial-S2短い複数反復とcompiled期待コスト: [`docs/df_partial_s2_repeated_compiled_cost.md`](docs/df_partial_s2_repeated_compiled_cost.md)
 - RTE step/occurrence/RPE round の打切り予算: [`docs/rte_truncation_budget.md`](docs/rte_truncation_budget.md)
 - RTE 一次資料の版管理: [`docs/rte_source_versions.md`](docs/rte_source_versions.md)
 
@@ -35,13 +36,14 @@
 - QPEのβ評価
 - 誤差のlog-logフィット結果を保存
 - パウリ回転数/RZ・T-depth外挿
-- 有限 RTE の列挙・標本平均、RPEラウンド打切り予算、dense-free DF-tailからQiskit event回路構築、単一event・短いevent列・DF partial-S2一反復のcompiled期待コスト
+- 有限 RTE の列挙・標本平均、RPEラウンド打切り予算、dense-free DF-tailからQiskit event回路構築、単一event・短いevent列・DF partial-S2一反復および短い複数反復のcompiled期待コスト
 
 DF-RTEのcompiledコストは、固定したcompiler設定で実際にtranspileした
 RZ/CX count/depthを対象とする。小event空間ではexact enumeration、大きい
 空間では古典Monte Carloと標準誤差を使用する。Level 5では決定論half
-sweepとRTE occurrenceを結合したpartial-S2一反復までを扱うが、state
-preparation、量子shot、複数反復、またはRPE総コストは含まない。
+sweepとRTE occurrenceを結合したpartial-S2一反復に加え、短い複数反復を
+一つの回路としてtranspileするLevel 5-R検証を扱う。state preparation、
+量子shot、長い `2**m` 回路、またはRPE総コストは含まない。
 
 ## ディレクトリ構成
 - `src/trotterlib/`: 実験用ライブラリ本体

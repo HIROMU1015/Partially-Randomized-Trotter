@@ -121,7 +121,9 @@ transpile cache additionally includes compiler settings and Qiskit version.
 ## Fidelity and exclusions
 
 A transpiled full-step expectation is Level 5. It includes one deterministic
-forward half, one finite-RTE occurrence, and one reverse half. It does not
-include multiple partial-S2 repetitions, `2^m` RPE repetition, Hadamard-test
-X/Y controls, attenuation-driven shot counts, state preparation, quantum
-shots, noise, backend jobs, or an RPE total.
+forward half, one finite-RTE occurrence, and one reverse half. The unchanged
+one-step result is also the `repetition_count=1` limit of the short repeated
+Level-5-R API documented in `df_partial_s2_repeated_compiled_cost.md`. Neither
+API includes long `2^m` RPE repetition, Hadamard-test X/Y controls,
+attenuation-driven shot counts, state preparation, quantum shots, noise,
+backend jobs, or an RPE total.
