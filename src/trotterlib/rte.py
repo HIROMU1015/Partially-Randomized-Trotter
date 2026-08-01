@@ -22,6 +22,10 @@ import numpy as np
 MeasurementAxis: TypeAlias = Literal["X", "Y"]
 TaylorDistributionKind: TypeAlias = Literal["rte_even_taylor_paired"]
 FidelityLevel: TypeAlias = Literal[0, 1, 2, 3, 4, 5, 6]
+TruncationAllocationPolicy: TypeAlias = Literal[
+    "equal_log_budget_per_short_step",
+    "user_selected_orders",
+]
 
 
 @dataclass(frozen=True)
@@ -50,6 +54,7 @@ class RTEComponent:
     coefficient_sign: int
     df_fragment_id: str | None = None
     basis_id: str | None = None
+    basis_hash: str | None = None
     is_identity: bool = False
     diagonal_pauli_support: tuple[int, ...] | None = None
     basis_change_operations: tuple[BasisChangeOperation, ...] = ()
@@ -78,6 +83,7 @@ class InvolutoryTailTerm:
     operator: np.ndarray = field(repr=False, compare=False)
     df_fragment_id: str | None = None
     basis_id: str | None = None
+    basis_hash: str | None = None
     diagonal_pauli_support: tuple[int, ...] | None = None
     basis_change_operations: tuple[BasisChangeOperation, ...] = ()
 
@@ -143,6 +149,11 @@ class RTEFiniteDistribution:
         if not math.isclose(sum(self.order_probabilities), 1.0, abs_tol=1e-14):
             raise ValueError("finite Taylor order probabilities must sum to one.")
 
+    @property
+    def step_truncation_residual_bound(self) -> float:
+        """Explicit name for the legacy one-short-step residual field."""
+        return self.truncation_residual_bound
+
 
 @dataclass(frozen=True)
 class RTEConfig:
@@ -183,7 +194,7 @@ class RTEConfig:
             abs_tol=1e-15,
         ):
             raise ValueError("dimensionless_step_time must equal lambda_r * step_time.")
-        if self.truncation_residual_bound > self.truncation_tolerance:
+        if self.step_truncation_residual_bound > self.truncation_tolerance:
             raise ValueError("finite Taylor cutoff does not meet truncation_tolerance.")
         if self.taylor_distribution != "rte_even_taylor_paired":
             raise ValueError("Unsupported Taylor distribution.")
@@ -198,12 +209,30 @@ class RTEConfig:
         ):
             raise ValueError("distribution_normalization does not match the cutoff.")
         if not math.isclose(
-            self.truncation_residual_bound,
-            finite.truncation_residual_bound,
+            self.step_truncation_residual_bound,
+            finite.step_truncation_residual_bound,
             rel_tol=1e-14,
             abs_tol=1e-15,
         ):
             raise ValueError("truncation_residual_bound does not match the cutoff.")
+
+    @property
+    def step_truncation_residual_bound(self) -> float:
+        """Explicit name for the legacy one-short-step residual field."""
+        return self.truncation_residual_bound
+
+    @property
+    def step_truncation_tolerance(self) -> float:
+        """Clarify that the legacy ``truncation_tolerance`` is per short step."""
+        return self.truncation_tolerance
+
+    @property
+    def occurrence_truncation_residual_bound(self) -> float:
+        """Compose the short-step bound across this occurrence's RTE steps."""
+        return occurrence_truncation_residual_bound(
+            self.step_truncation_residual_bound,
+            self.rte_steps,
+        )
 
 
 @dataclass(frozen=True)
@@ -213,6 +242,7 @@ class BasisReuseInterval:
     start: int
     stop: int
     basis_id: str
+    basis_hash: str | None = None
 
 
 @dataclass(frozen=True)
@@ -229,6 +259,7 @@ class RTEEventApplication:
     basis_id: str | None
     diagonal_pauli_support: tuple[int, ...] | None
     basis_change_operations: tuple[BasisChangeOperation, ...]
+    basis_hash: str | None = None
 
 
 @dataclass(frozen=True)
@@ -248,6 +279,7 @@ class RTEEvent:
     basis_id: str | None
     basis_reuse_intervals: tuple[BasisReuseInterval, ...]
     application_sequence: tuple[RTEEventApplication, ...]
+    basis_hash: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         data = asdict(self)
@@ -290,6 +322,94 @@ class RTEOperatorMoments:
     attenuated_event_mean_operator: np.ndarray = field(repr=False, compare=False)
     normalization_product: float
     attenuation_factor: float
+
+
+@dataclass(frozen=True)
+class RTEOccurrenceParameters:
+    """Dense-free inputs needed to choose one occurrence's Taylor cutoff."""
+
+    occurrence_id: str
+    tail_id: str
+    tail_hash: str
+    lambda_r: float
+    evolution_time: float
+    rte_steps: int
+    round_occurrence_count: int = 1
+
+    def __post_init__(self) -> None:
+        if not self.occurrence_id or not self.tail_id or not self.tail_hash:
+            raise ValueError("Occurrence and tail identifiers must not be empty.")
+        if not math.isfinite(self.lambda_r) or self.lambda_r <= 0.0:
+            raise ValueError("lambda_r must be finite and positive.")
+        if not math.isfinite(self.evolution_time):
+            raise ValueError("evolution_time must be finite.")
+        if self.rte_steps <= 0 or self.round_occurrence_count <= 0:
+            raise ValueError("RTE step and round occurrence counts must be positive.")
+
+
+@dataclass(frozen=True)
+class RTEOccurrenceTruncation:
+    """Finite Taylor truncation accounting for one tail occurrence kind."""
+
+    occurrence_id: str
+    tail_id: str
+    tail_hash: str
+    lambda_r: float
+    evolution_time: float
+    rte_steps: int
+    finite_taylor_order: int
+    dimensionless_step_time: float
+    step_truncation_residual_bound: float
+    occurrence_truncation_residual_bound: float
+    round_occurrence_count: int
+    round_contribution_residual_bound: float
+    allocated_step_error_bound: float | None = None
+
+    def __post_init__(self) -> None:
+        if self.finite_taylor_order < 0 or self.finite_taylor_order % 2:
+            raise ValueError("finite_taylor_order must be a non-negative even integer.")
+        if self.rte_steps <= 0 or self.round_occurrence_count <= 0:
+            raise ValueError("RTE step and occurrence counts must be positive.")
+        bounds = (
+            self.step_truncation_residual_bound,
+            self.occurrence_truncation_residual_bound,
+            self.round_contribution_residual_bound,
+        )
+        if any(math.isnan(bound) or bound < 0.0 for bound in bounds):
+            raise ValueError("Truncation residual bounds must be non-negative.")
+
+
+@dataclass(frozen=True)
+class RPERoundTruncationBudget:
+    """Baseline allocation policy and target for one RPE round."""
+
+    round_index: int
+    target_round_truncation_error: float
+    allocation_policy: TruncationAllocationPolicy
+    total_short_step_count: int
+    allocated_log_error_per_short_step: float | None
+    allocated_step_error_bound: float | None
+    partial_s2_repetitions: int | None = None
+    expected_tail_evolutions: int | None = None
+
+    def __post_init__(self) -> None:
+        if (
+            not math.isfinite(self.target_round_truncation_error)
+            or self.target_round_truncation_error < 0.0
+        ):
+            raise ValueError("Round truncation target must be finite and non-negative.")
+        if self.total_short_step_count <= 0:
+            raise ValueError("total_short_step_count must be positive.")
+
+
+@dataclass(frozen=True)
+class RPETruncationSummary:
+    """Finite Taylor error only; attenuation and other errors remain separate."""
+
+    budget: RPERoundTruncationBudget
+    occurrences: tuple[RTEOccurrenceTruncation, ...]
+    round_truncation_residual_bound: float
+    meets_round_budget: bool
 
 
 @dataclass(frozen=True)
@@ -409,6 +529,7 @@ def normalize_involutory_tail(
                 "coefficient": coefficient,
                 "df_fragment_id": term.df_fragment_id,
                 "basis_id": term.basis_id,
+                "basis_hash": term.basis_hash,
                 "diagonal_pauli_support": term.diagonal_pauli_support,
                 "basis_change_operations": [
                     asdict(operation) for operation in term.basis_change_operations
@@ -444,6 +565,7 @@ def normalize_involutory_tail(
             coefficient_abs=abs(coefficient),
             df_fragment_id=term.df_fragment_id,
             basis_id=term.basis_id,
+            basis_hash=term.basis_hash,
             is_identity=is_identity,
             diagonal_pauli_support=term.diagonal_pauli_support,
             basis_change_operations=term.basis_change_operations,
@@ -489,7 +611,7 @@ def _paired_order_weight(dimensionless_step_time: float, order: int) -> float:
     return math.exp(log_taylor) * math.hypot(1.0, magnitude / (order + 1))
 
 
-def taylor_truncation_residual_bound(
+def step_taylor_truncation_residual_bound(
     dimensionless_step_time: float,
     finite_taylor_order: int,
 ) -> float:
@@ -524,6 +646,17 @@ def taylor_truncation_residual_bound(
     raise RuntimeError("Taylor residual summation did not converge.")
 
 
+def taylor_truncation_residual_bound(
+    dimensionless_step_time: float,
+    finite_taylor_order: int,
+) -> float:
+    """Backward-compatible alias for the one-short-step Taylor bound."""
+    return step_taylor_truncation_residual_bound(
+        dimensionless_step_time,
+        finite_taylor_order,
+    )
+
+
 def choose_finite_taylor_order(
     dimensionless_step_time: float,
     truncation_tolerance: float,
@@ -535,11 +668,260 @@ def choose_finite_taylor_order(
         raise ValueError("truncation_tolerance must be positive.")
     for order in range(0, int(maximum_order) + 1, 2):
         if (
-            taylor_truncation_residual_bound(dimensionless_step_time, order)
+            step_taylor_truncation_residual_bound(dimensionless_step_time, order)
             <= truncation_tolerance
         ):
             return order
     raise ValueError("No finite Taylor cutoff met the requested tolerance.")
+
+
+def occurrence_truncation_residual_bound(
+    step_truncation_residual_bound: float,
+    rte_steps: int,
+) -> float:
+    """Compose one short-step bound as ``(1 + epsilon_step)^r - 1``."""
+    step_bound = float(step_truncation_residual_bound)
+    if math.isnan(step_bound) or step_bound < 0.0:
+        raise ValueError("step_truncation_residual_bound must be non-negative.")
+    if rte_steps < 0:
+        raise ValueError("rte_steps must be non-negative.")
+    if rte_steps == 0 or step_bound == 0.0:
+        return 0.0
+    if math.isinf(step_bound):
+        return math.inf
+    try:
+        return float(math.expm1(int(rte_steps) * math.log1p(step_bound)))
+    except OverflowError:
+        return math.inf
+
+
+def compose_truncation_residual_bounds(
+    occurrences: Sequence[tuple[float, int, int]],
+) -> float:
+    """Compose heterogeneous ``(step bound, steps, occurrence count)`` triples."""
+    log_bound = 0.0
+    for step_bound, rte_steps, occurrence_count in occurrences:
+        step_bound = float(step_bound)
+        if math.isnan(step_bound) or step_bound < 0.0:
+            raise ValueError("Every step truncation bound must be non-negative.")
+        if rte_steps < 0 or occurrence_count < 0:
+            raise ValueError("Step and occurrence counts must be non-negative.")
+        if step_bound == 0.0 or rte_steps == 0 or occurrence_count == 0:
+            continue
+        if math.isinf(step_bound):
+            return math.inf
+        log_bound += (
+            int(rte_steps) * int(occurrence_count) * math.log1p(step_bound)
+        )
+    try:
+        return float(math.expm1(log_bound))
+    except OverflowError:
+        return math.inf
+
+
+def _occurrence_truncation_record(
+    parameters: RTEOccurrenceParameters,
+    finite_taylor_order: int,
+    *,
+    allocated_step_error_bound: float | None,
+) -> RTEOccurrenceTruncation:
+    tau = parameters.lambda_r * parameters.evolution_time / parameters.rte_steps
+    step_bound = step_taylor_truncation_residual_bound(tau, finite_taylor_order)
+    occurrence_bound = occurrence_truncation_residual_bound(
+        step_bound,
+        parameters.rte_steps,
+    )
+    round_bound = occurrence_truncation_residual_bound(
+        step_bound,
+        parameters.rte_steps * parameters.round_occurrence_count,
+    )
+    return RTEOccurrenceTruncation(
+        occurrence_id=parameters.occurrence_id,
+        tail_id=parameters.tail_id,
+        tail_hash=parameters.tail_hash,
+        lambda_r=parameters.lambda_r,
+        evolution_time=parameters.evolution_time,
+        rte_steps=parameters.rte_steps,
+        finite_taylor_order=int(finite_taylor_order),
+        dimensionless_step_time=float(tau),
+        step_truncation_residual_bound=step_bound,
+        occurrence_truncation_residual_bound=occurrence_bound,
+        round_occurrence_count=parameters.round_occurrence_count,
+        round_contribution_residual_bound=round_bound,
+        allocated_step_error_bound=allocated_step_error_bound,
+    )
+
+
+def rte_occurrence_truncation_from_config(
+    occurrence_id: str,
+    config: RTEConfig,
+    *,
+    round_occurrence_count: int = 1,
+) -> RTEOccurrenceTruncation:
+    """Build occurrence accounting from an already selected finite RTE config."""
+    parameters = RTEOccurrenceParameters(
+        occurrence_id=occurrence_id,
+        tail_id=config.tail_id,
+        tail_hash=config.tail_hash,
+        lambda_r=config.lambda_r,
+        evolution_time=config.evolution_time,
+        rte_steps=config.rte_steps,
+        round_occurrence_count=round_occurrence_count,
+    )
+    return _occurrence_truncation_record(
+        parameters,
+        config.finite_taylor_order,
+        allocated_step_error_bound=None,
+    )
+
+
+def _rpe_round_context(
+    rpe_round: RPERound | None,
+    occurrence_count: int,
+) -> tuple[int, int | None, int | None]:
+    if rpe_round is None:
+        return 0, None, None
+    if occurrence_count != rpe_round.tail_evolutions:
+        raise ValueError(
+            "Sum of round_occurrence_count values must match "
+            "RPERound.tail_evolutions."
+        )
+    return (
+        rpe_round.round_index,
+        rpe_round.partial_s2_repetitions,
+        rpe_round.tail_evolutions,
+    )
+
+
+def summarize_rpe_round_truncation(
+    occurrences: Sequence[RTEOccurrenceTruncation],
+    *,
+    target_round_truncation_error: float,
+    rpe_round: RPERound | None = None,
+) -> RPETruncationSummary:
+    """Summarize user-selected cutoffs without assuming common occurrence data."""
+    if not occurrences:
+        raise ValueError("occurrences must not be empty.")
+    target = float(target_round_truncation_error)
+    if not math.isfinite(target) or target < 0.0:
+        raise ValueError(
+            "target_round_truncation_error must be finite and non-negative."
+        )
+    total_occurrences = sum(item.round_occurrence_count for item in occurrences)
+    round_index, partial_s2, expected_tail = _rpe_round_context(
+        rpe_round,
+        total_occurrences,
+    )
+    total_steps = sum(
+        item.rte_steps * item.round_occurrence_count for item in occurrences
+    )
+    if rpe_round is not None and total_steps != rpe_round.rte_total_steps:
+        raise ValueError(
+            "Composed short-step count must match RPERound.rte_total_steps."
+        )
+    total_bound = compose_truncation_residual_bounds(
+        tuple(
+            (
+                item.step_truncation_residual_bound,
+                item.rte_steps,
+                item.round_occurrence_count,
+            )
+            for item in occurrences
+        )
+    )
+    budget = RPERoundTruncationBudget(
+        round_index=round_index,
+        target_round_truncation_error=target,
+        allocation_policy="user_selected_orders",
+        total_short_step_count=total_steps,
+        allocated_log_error_per_short_step=None,
+        allocated_step_error_bound=None,
+        partial_s2_repetitions=partial_s2,
+        expected_tail_evolutions=expected_tail,
+    )
+    return RPETruncationSummary(
+        budget=budget,
+        occurrences=tuple(occurrences),
+        round_truncation_residual_bound=total_bound,
+        meets_round_budget=total_bound <= target,
+    )
+
+
+def select_rpe_round_taylor_orders(
+    occurrences: Sequence[RTEOccurrenceParameters],
+    *,
+    target_round_truncation_error: float,
+    rpe_round: RPERound | None = None,
+    maximum_order: int = 10_000,
+) -> RPETruncationSummary:
+    """Choose minimal even cutoffs under equal log budget per short step.
+
+    This is a baseline allocation, not a circuit-cost optimum. Each cutoff is
+    selected using the directly evaluated finite scalar Taylor residual.
+    """
+    if not occurrences:
+        raise ValueError("occurrences must not be empty.")
+    target = float(target_round_truncation_error)
+    if not math.isfinite(target) or target <= 0.0:
+        raise ValueError("target_round_truncation_error must be finite and positive.")
+    total_occurrences = sum(item.round_occurrence_count for item in occurrences)
+    round_index, partial_s2, expected_tail = _rpe_round_context(
+        rpe_round,
+        total_occurrences,
+    )
+    total_short_steps = sum(
+        item.rte_steps * item.round_occurrence_count for item in occurrences
+    )
+    if rpe_round is not None and total_short_steps != rpe_round.rte_total_steps:
+        raise ValueError(
+            "Composed short-step count must match RPERound.rte_total_steps."
+        )
+    allocated_log = math.log1p(target) / total_short_steps
+    allocated_step_bound = math.expm1(allocated_log)
+    records: list[RTEOccurrenceTruncation] = []
+    for parameters in occurrences:
+        tau = parameters.lambda_r * parameters.evolution_time / parameters.rte_steps
+        cutoff = choose_finite_taylor_order(
+            tau,
+            allocated_step_bound,
+            maximum_order=maximum_order,
+        )
+        records.append(
+            _occurrence_truncation_record(
+                parameters,
+                cutoff,
+                allocated_step_error_bound=allocated_step_bound,
+            )
+        )
+    total_bound = compose_truncation_residual_bounds(
+        tuple(
+            (
+                record.step_truncation_residual_bound,
+                record.rte_steps,
+                record.round_occurrence_count,
+            )
+            for record in records
+        )
+    )
+    budget = RPERoundTruncationBudget(
+        round_index=round_index,
+        target_round_truncation_error=target,
+        allocation_policy="equal_log_budget_per_short_step",
+        total_short_step_count=total_short_steps,
+        allocated_log_error_per_short_step=allocated_log,
+        allocated_step_error_bound=allocated_step_bound,
+        partial_s2_repetitions=partial_s2,
+        expected_tail_evolutions=expected_tail,
+    )
+    meets_budget = total_bound <= target * (1.0 + 1e-14) + 1e-15
+    if not meets_budget:
+        raise RuntimeError("Selected finite Taylor orders missed the round budget.")
+    return RPETruncationSummary(
+        budget=budget,
+        occurrences=tuple(records),
+        round_truncation_residual_bound=total_bound,
+        meets_round_budget=True,
+    )
 
 
 def finite_rte_distribution(
@@ -563,7 +945,7 @@ def finite_rte_distribution(
         unnormalized_order_weights=weights,
         order_probabilities=probabilities,
         exact_finite_distribution=normalization,
-        truncation_residual_bound=taylor_truncation_residual_bound(
+        truncation_residual_bound=step_taylor_truncation_residual_bound(
             dimensionless_step_time, finite_taylor_order
         ),
         paper_upper_bound=float(math.exp(tau * tau)),
@@ -602,7 +984,7 @@ def make_rte_config(
         finite_taylor_order=cutoff,
         truncation_tolerance=float(truncation_tolerance),
         distribution_normalization=distribution.exact_finite_distribution,
-        truncation_residual_bound=distribution.truncation_residual_bound,
+        truncation_residual_bound=distribution.step_truncation_residual_bound,
         seed=int(seed),
     )
     return config, distribution
@@ -614,16 +996,30 @@ def _basis_reuse_intervals(
     intervals: list[BasisReuseInterval] = []
     start = 0
     while start < len(circuit_order_components):
-        basis_id = circuit_order_components[start].basis_id
+        first = circuit_order_components[start]
+        basis_id = first.basis_id
+        basis_hash = first.basis_hash
+        basis_key = basis_hash or basis_id
         stop = start + 1
         while (
-            basis_id is not None
+            basis_key is not None
             and stop < len(circuit_order_components)
-            and circuit_order_components[stop].basis_id == basis_id
+            and (
+                circuit_order_components[stop].basis_hash
+                or circuit_order_components[stop].basis_id
+            )
+            == basis_key
         ):
             stop += 1
-        if basis_id is not None and stop - start > 1:
-            intervals.append(BasisReuseInterval(start, stop, basis_id))
+        if basis_key is not None and stop - start > 1:
+            intervals.append(
+                BasisReuseInterval(
+                    start,
+                    stop,
+                    basis_id or basis_key,
+                    basis_hash,
+                )
+            )
         start = stop
     return tuple(intervals)
 
@@ -667,6 +1063,8 @@ def _make_event(
     fragment_ids = tuple(component.df_fragment_id for component in circuit_order)
     bases = {component.basis_id for component in circuit_order}
     common_basis = next(iter(bases)) if len(bases) == 1 else None
+    basis_hashes = {component.basis_hash for component in circuit_order}
+    common_basis_hash = next(iter(basis_hashes)) if len(basis_hashes) == 1 else None
     tau = distribution.dimensionless_step_time
     application_sequence = tuple(
         RTEEventApplication(
@@ -678,6 +1076,7 @@ def _make_event(
             is_identity=component.is_identity,
             df_fragment_id=component.df_fragment_id,
             basis_id=component.basis_id,
+            basis_hash=component.basis_hash,
             diagonal_pauli_support=component.diagonal_pauli_support,
             basis_change_operations=component.basis_change_operations,
         )
@@ -698,6 +1097,7 @@ def _make_event(
         rotation_angle=float(math.atan(tau / (order + 1))),
         event_normalization=distribution.exact_finite_distribution,
         basis_id=common_basis,
+        basis_hash=common_basis_hash,
         basis_reuse_intervals=_basis_reuse_intervals(circuit_order),
         application_sequence=application_sequence,
     )

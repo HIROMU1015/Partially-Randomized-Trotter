@@ -101,6 +101,7 @@ def test_exact_diagonal_i_z_zz_expansion_and_identity_policies() -> None:
         ancilla_qubit=2,
     )
     assert request.event.application_sequence[-1].component_id == event.rotation_component_id
+    assert request.event.application_sequence[-1].basis_hash is not None
     assert any(isinstance(spec, DFRTEIdentityCircuitSpec) for spec in specs)
 
 

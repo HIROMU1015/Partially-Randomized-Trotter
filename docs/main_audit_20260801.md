@@ -150,3 +150,29 @@ The post-change lightweight suite result is **57 passed, 4 warnings in 3.02 s**
 (`3.58 s` wall time measured by `/usr/bin/time`). The same four pre-existing
 grouped-UWC `ComplexWarning` instances remain; no new warning class or warning
 site was introduced.
+
+## 9. Symbolic DF-tail and composed truncation follow-up
+
+This follow-up started from clean `main` commit
+`231d17e393f573fd29c659eaf1fd9bae2a68d8f9`, equal to `origin/main`. Its
+pre-change suite result was **57 passed, 4 warnings in 3.10 s** (`3.66 s` wall
+time).
+
+Normal DF-tail extraction now stores symbolic I/Z/ZZ components and an
+executable local-operation basis registry without constructing many-body dense
+unitaries or component matrices. Synthetic 20- and 26-qubit blocks verify the
+quadratic component path and dense-call exclusion. These are H10/H13-sized
+symbolic checks, not chemistry, statevector, or circuit results. Guarded dense
+references remain available only below an explicit qubit limit for small-system
+validation.
+
+Finite Taylor accounting now distinguishes short-step, occurrence, and
+heterogeneous RPE-round residual bounds. A baseline equal-log-budget allocator
+chooses minimal even cutoffs and rechecks the composed round bound. This is not
+a product-formula error model, attenuation/shot model, event circuit builder,
+transpilation result, or RPE total-cost result.
+
+The post-change suite result is **67 passed, 4 warnings in 2.95 s** (`3.51 s`
+wall time). The four warnings are the same pre-existing grouped-UWC
+`ComplexWarning` instances at `chemistry_hamiltonian.py:307`. The quarantined
+screening JSON was not used as input, expectation, or research evidence.

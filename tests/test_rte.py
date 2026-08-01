@@ -112,6 +112,13 @@ def test_automatic_cutoff_meets_truncation_tolerance() -> None:
 
     assert distribution.truncation_residual_bound <= 1e-10
     assert config.truncation_residual_bound == distribution.truncation_residual_bound
+    assert (
+        config.step_truncation_residual_bound
+        == distribution.step_truncation_residual_bound
+    )
+    assert config.occurrence_truncation_residual_bound >= (
+        config.step_truncation_residual_bound
+    )
     assert config.distribution_normalization == distribution.exact_finite_distribution
     assert config.finite_taylor_order % 2 == 0
     assert config.dimensionless_step_time == tail.lambda_r * config.step_time

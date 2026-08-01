@@ -25,6 +25,7 @@ class DFRTEComponentCircuitSpec:
     diagonal_pauli_support: tuple[int, ...]
     basis_change_operations: tuple[BasisChangeOperation, ...]
     num_system_qubits: int
+    basis_hash: str | None = None
     representation: Literal["established_df_basis_conjugation"] = (
         "established_df_basis_conjugation"
     )
@@ -51,6 +52,7 @@ class DFRTEIdentityCircuitSpec:
     num_system_qubits: int
     df_fragment_id: str | None = None
     basis_id: str | None = None
+    basis_hash: str | None = None
     diagonal_pauli_support: tuple[()] = ()
     uncontrolled_action: Literal["global_phase"] = "global_phase"
     controlled_action: Literal["relative_ancilla_phase"] = "relative_ancilla_phase"
@@ -90,6 +92,12 @@ def _validate_component_specs(
                 raise ValueError("Event/spec absolute coefficient mismatch.")
             if isinstance(spec, DFRTEIdentityCircuitSpec) != application.is_identity:
                 raise ValueError("Event/spec identity classification mismatch.")
+            if spec.basis_id != application.basis_id:
+                raise ValueError("Event/spec basis ID mismatch.")
+            if spec.basis_hash != application.basis_hash:
+                raise ValueError("Event/spec basis hash mismatch.")
+            if spec.diagonal_pauli_support != application.diagonal_pauli_support:
+                raise ValueError("Event/spec diagonal Pauli support mismatch.")
 
 
 @dataclass(frozen=True)

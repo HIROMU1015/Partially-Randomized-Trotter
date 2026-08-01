@@ -1,4 +1,4 @@
-"""Exact DF diagonal-block extraction into signed I/Z/ZZ RTE components."""
+"""Symbolic DF diagonal-tail extraction and guarded small-system references."""
 
 from __future__ import annotations
 
@@ -30,6 +30,110 @@ IdentityPolicy: TypeAlias = Literal[
     "extract_identity_phase",
 ]
 
+DEFAULT_MAX_DENSE_QUBITS = 8
+_MAX_LOCAL_GATE_HASH_QUBITS = 4
+
+
+@dataclass(frozen=True)
+class BasisChangeMetadata:
+    """Serializable canonical metadata for one executable DF basis."""
+
+    basis_id: str
+    basis_hash: str
+    num_system_qubits: int
+    operations: tuple[BasisChangeOperation, ...]
+
+
+@dataclass(frozen=True)
+class DFBasisDefinition:
+    """Serializable basis metadata plus runtime Qiskit operations."""
+
+    metadata: BasisChangeMetadata
+    runtime_operations: tuple[tuple[object, tuple[int, ...]], ...] = field(
+        repr=False,
+        compare=False,
+    )
+
+    @property
+    def basis_id(self) -> str:
+        return self.metadata.basis_id
+
+    @property
+    def basis_hash(self) -> str:
+        return self.metadata.basis_hash
+
+    @property
+    def num_system_qubits(self) -> int:
+        return self.metadata.num_system_qubits
+
+
+class DFBasisRegistry:
+    """Runtime registry that rejects conflicting definitions for one basis ID."""
+
+    def __init__(self) -> None:
+        self._definitions: dict[str, DFBasisDefinition] = {}
+
+    def register(
+        self,
+        u_ops: Sequence[tuple[object, tuple[int, ...]]],
+        *,
+        num_system_qubits: int,
+        basis_id: str | None = None,
+    ) -> DFBasisDefinition:
+        if num_system_qubits <= 0:
+            raise ValueError("num_system_qubits must be positive.")
+        operations = tuple(
+            (gate, tuple(int(qubit) for qubit in qubits)) for gate, qubits in u_ops
+        )
+        if any(
+            qubit < 0 or qubit >= num_system_qubits
+            for _gate, qubits in operations
+            for qubit in qubits
+        ):
+            raise ValueError("Basis operation qubit is outside the system register.")
+        described = describe_basis_change_operations(operations)
+        basis_hash = canonical_basis_hash(num_system_qubits, described)
+        identifier = basis_id or f"df-basis-{basis_hash}"
+        if not identifier:
+            raise ValueError("basis_id must not be empty.")
+        metadata = BasisChangeMetadata(
+            basis_id=str(identifier),
+            basis_hash=basis_hash,
+            num_system_qubits=int(num_system_qubits),
+            operations=described,
+        )
+        existing = self._definitions.get(str(identifier))
+        if existing is not None:
+            if existing.metadata != metadata:
+                raise ValueError(
+                    f"basis_id {identifier!r} is already registered with a "
+                    "different operation sequence."
+                )
+            return existing
+        definition = DFBasisDefinition(
+            metadata=metadata,
+            runtime_operations=operations,
+        )
+        self._definitions[str(identifier)] = definition
+        return definition
+
+    def definition(self, basis_id: str) -> DFBasisDefinition:
+        try:
+            return self._definitions[str(basis_id)]
+        except KeyError as exc:
+            raise KeyError(f"Unknown basis_id: {basis_id}") from exc
+
+    def operations(
+        self, basis_id: str
+    ) -> tuple[tuple[object, tuple[int, ...]], ...]:
+        return self.definition(basis_id).runtime_operations
+
+    def metadata(self) -> tuple[BasisChangeMetadata, ...]:
+        return tuple(
+            self._definitions[identifier].metadata
+            for identifier in sorted(self._definitions)
+        )
+
 
 @dataclass(frozen=True)
 class DFDiagonalPauliComponent:
@@ -43,6 +147,7 @@ class DFDiagonalPauliComponent:
     basis_id: str
     diagonal_pauli_support: tuple[int, ...]
     basis_change_operations: tuple[BasisChangeOperation, ...]
+    basis_hash: str | None = None
 
     @property
     def is_identity(self) -> bool:
@@ -50,8 +155,59 @@ class DFDiagonalPauliComponent:
 
 
 @dataclass(frozen=True)
+class DFTailExtractionMetadata:
+    """Audit counts separating threshold approximation from identity movement."""
+
+    coefficient_atol: float
+    threshold_input_component_count: int
+    threshold_retained_component_count: int
+    threshold_dropped_component_count: int
+    retained_identity_component_count: int
+    extracted_identity_component_count: int
+    randomized_component_count: int
+    threshold_dropped_coefficient_l1: float
+    extracted_identity_coefficient: float
+    randomized_coefficient_l1: float
+    threshold_operator_error_bound: float
+    normalization_policy: str
+
+    def __post_init__(self) -> None:
+        counts = (
+            self.threshold_input_component_count,
+            self.threshold_retained_component_count,
+            self.threshold_dropped_component_count,
+            self.retained_identity_component_count,
+            self.extracted_identity_component_count,
+            self.randomized_component_count,
+        )
+        if any(count < 0 for count in counts):
+            raise ValueError("DF extraction component counts must be non-negative.")
+        if self.threshold_input_component_count != (
+            self.threshold_retained_component_count
+            + self.threshold_dropped_component_count
+        ):
+            raise ValueError("Threshold input count must equal retained plus dropped.")
+        if (
+            self.extracted_identity_component_count
+            > self.retained_identity_component_count
+        ):
+            raise ValueError("Extracted identity count exceeds retained identities.")
+        if self.randomized_component_count != (
+            self.threshold_retained_component_count
+            - self.extracted_identity_component_count
+        ):
+            raise ValueError(
+                "Randomized count is inconsistent with identity extraction."
+            )
+
+
+@dataclass(frozen=True)
 class DFTailExtraction:
-    """Canonical exact expansion of selected squared DF fragments."""
+    """Canonical symbolic expansion of selected squared DF fragments.
+
+    This normal path stores no many-body dense matrix. Runtime basis operations
+    remain available through ``basis_registry`` for a future circuit builder.
+    """
 
     tail_id: str
     tail_hash: str
@@ -61,17 +217,61 @@ class DFTailExtraction:
     deterministic_identity_coefficient: float
     rte_lambda_r: float
     ranking_proxy_lambda_r: float | None
+    extraction_metadata: DFTailExtractionMetadata
     normalization_metadata: TailNormalizationMetadata
     num_system_qubits: int
-    basis_unitaries: tuple[tuple[str, np.ndarray], ...] = field(
-        repr=False, compare=False
-    )
+    referenced_basis_ids: tuple[str, ...]
+    basis_registry: DFBasisRegistry = field(repr=False, compare=False)
 
-    def basis_unitary(self, basis_id: str) -> np.ndarray:
-        for candidate_id, unitary in self.basis_unitaries:
-            if candidate_id == basis_id:
-                return unitary
-        raise KeyError(f"Unknown basis_id: {basis_id}")
+    def __post_init__(self) -> None:
+        if len(self.components) != self.extraction_metadata.randomized_component_count:
+            raise ValueError("Randomized component count does not match components.")
+        component_l1 = math.fsum(
+            abs(component.coefficient) for component in self.components
+        )
+        if not math.isclose(component_l1, self.rte_lambda_r, abs_tol=1e-14):
+            raise ValueError("rte_lambda_r must equal randomized component L1.")
+        if not math.isclose(
+            self.extraction_metadata.randomized_coefficient_l1,
+            self.rte_lambda_r,
+            abs_tol=1e-14,
+        ):
+            raise ValueError("Extraction metadata randomized L1 is inconsistent.")
+
+    @property
+    def basis_definitions(self) -> tuple[BasisChangeMetadata, ...]:
+        return tuple(
+            self.basis_registry.definition(basis_id).metadata
+            for basis_id in self.referenced_basis_ids
+        )
+
+    def basis_definition(self, basis_id: str) -> DFBasisDefinition:
+        return self.basis_registry.definition(basis_id)
+
+    def basis_operations(
+        self, basis_id: str
+    ) -> tuple[tuple[object, tuple[int, ...]], ...]:
+        return self.basis_registry.operations(basis_id)
+
+    def basis_unitary(
+        self,
+        basis_id: str,
+        *,
+        max_dense_qubits: int = DEFAULT_MAX_DENSE_QUBITS,
+    ) -> np.ndarray:
+        """Backward-compatible guarded small-system dense reference."""
+        return basis_change_unitary(
+            self.basis_definition(basis_id),
+            max_dense_qubits=max_dense_qubits,
+        )
+
+    @property
+    def basis_unitaries(self) -> tuple[tuple[str, np.ndarray], ...]:
+        """Legacy, lazily materialized small-system dense basis references."""
+        return tuple(
+            (basis_id, self.basis_unitary(basis_id))
+            for basis_id in self.referenced_basis_ids
+        )
 
 
 def _matrix_sha256(matrix: np.ndarray) -> str:
@@ -82,18 +282,21 @@ def _matrix_sha256(matrix: np.ndarray) -> str:
 def describe_basis_change_operations(
     u_ops: Sequence[tuple[object, tuple[int, ...]]],
 ) -> tuple[BasisChangeOperation, ...]:
-    """Convert established DF ``U_ops`` to stable, serializable metadata."""
+    """Create canonical local-gate metadata without a many-body unitary."""
     described: list[BasisChangeOperation] = []
     for gate, qubits in u_ops:
+        normalized_qubits = tuple(int(qubit) for qubit in qubits)
         parameters = tuple(str(parameter) for parameter in getattr(gate, "params", ()))
-        try:
-            matrix_hash = _matrix_sha256(Operator(gate).data)
-        except Exception:
-            matrix_hash = None
+        matrix_hash: str | None = None
+        if len(normalized_qubits) <= _MAX_LOCAL_GATE_HASH_QUBITS:
+            try:
+                matrix_hash = _matrix_sha256(Operator(gate).data)
+            except Exception:
+                matrix_hash = None
         described.append(
             BasisChangeOperation(
                 name=str(getattr(gate, "name", type(gate).__name__)),
-                qubits=tuple(int(qubit) for qubit in qubits),
+                qubits=normalized_qubits,
                 parameters=parameters,
                 matrix_sha256=matrix_hash,
             )
@@ -101,11 +304,51 @@ def describe_basis_change_operations(
     return tuple(described)
 
 
-def basis_change_unitary(block: DFBlock) -> np.ndarray:
-    """Materialize the forward ``U_ops`` unitary used by ``apply_df_block``."""
-    num_qubits = len(np.asarray(block.eta))
+def canonical_basis_hash(
+    num_system_qubits: int,
+    operations: Sequence[BasisChangeOperation],
+) -> str:
+    """Hash a basis from system size and its ordered local operation metadata."""
+    if num_system_qubits <= 0:
+        raise ValueError("num_system_qubits must be positive.")
+    payload = {
+        "num_system_qubits": int(num_system_qubits),
+        "operations": [asdict(operation) for operation in operations],
+        "hash_policy": "ordered_local_basis_operations_v1",
+    }
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _require_small_dense_reference(
+    num_system_qubits: int,
+    max_dense_qubits: int,
+    function_name: str,
+) -> None:
+    if max_dense_qubits < 0:
+        raise ValueError("max_dense_qubits must be non-negative.")
+    if num_system_qubits > max_dense_qubits:
+        raise ValueError(
+            f"{function_name} is a small-system dense reference and refuses "
+            f"{num_system_qubits} qubits above max_dense_qubits={max_dense_qubits}."
+        )
+
+
+def basis_change_unitary(
+    basis: DFBlock | DFBasisDefinition,
+    *,
+    max_dense_qubits: int = DEFAULT_MAX_DENSE_QUBITS,
+) -> np.ndarray:
+    """Materialize a basis unitary only for an explicitly bounded small system."""
+    if isinstance(basis, DFBlock):
+        num_qubits = len(np.asarray(basis.eta))
+        operations = basis.U_ops
+    else:
+        num_qubits = basis.num_system_qubits
+        operations = basis.runtime_operations
+    _require_small_dense_reference(num_qubits, max_dense_qubits, "basis_change_unitary")
     circuit = QuantumCircuit(num_qubits)
-    for gate, qubits in block.U_ops:
+    for gate, qubits in operations:
         circuit.append(gate, list(qubits))
     return np.asarray(Operator(circuit).data, dtype=np.complex128)
 
@@ -113,8 +356,15 @@ def basis_change_unitary(block: DFBlock) -> np.ndarray:
 def diagonal_pauli_matrix(
     num_qubits: int,
     support: Sequence[int],
+    *,
+    max_dense_qubits: int = DEFAULT_MAX_DENSE_QUBITS,
 ) -> np.ndarray:
-    """Return little-endian Qiskit I/Z/ZZ matrix for ``support``."""
+    """Return a guarded small-system little-endian I/Z/ZZ reference matrix."""
+    _require_small_dense_reference(
+        num_qubits,
+        max_dense_qubits,
+        "diagonal_pauli_matrix",
+    )
     support_tuple = tuple(sorted(set(int(qubit) for qubit in support)))
     if len(support_tuple) != len(tuple(support)) or len(support_tuple) > 2:
         raise ValueError("support must contain zero, one, or two unique qubits.")
@@ -133,7 +383,7 @@ def exact_df_diagonal_coefficients(
     eta: Sequence[float],
     lam: float,
 ) -> tuple[tuple[tuple[int, ...], float], ...]:
-    """Expand ``lam * (sum_k eta_k n_k)^2`` exactly into I, Z, and ZZ."""
+    """Expand ``lam * (sum_k eta_k n_k)^2`` symbolically into I, Z, and ZZ."""
     eta_array = np.asarray(eta)
     eta_real = np.real_if_close(eta_array, tol=1000)
     if np.iscomplexobj(eta_real):
@@ -172,8 +422,9 @@ def extract_df_diagonal_tail(
     identity_policy: IdentityPolicy = "faithful_identity_in_tail",
     coefficient_atol: float = 0.0,
     ranking_proxy_lambda_r: float | None = None,
+    basis_registry: DFBasisRegistry | None = None,
 ) -> DFTailExtraction:
-    """Extract selected DF blocks without aggregating equal support across bases."""
+    """Extract a symbolic DF tail without constructing any many-body matrix."""
     if not tail_id or not blocks:
         raise ValueError("tail_id and at least one DF block are required.")
     if identity_policy not in (
@@ -185,27 +436,33 @@ def extract_df_diagonal_tail(
         raise ValueError("coefficient_atol must be finite and non-negative.")
     if fragment_ids is None:
         fragment_ids = tuple(f"df-fragment-{index}" for index in range(len(blocks)))
-    if basis_ids is None:
-        basis_ids = tuple(f"{fragment_id}:basis" for fragment_id in fragment_ids)
-    if len(fragment_ids) != len(blocks) or len(basis_ids) != len(blocks):
-        raise ValueError("fragment_ids and basis_ids must match the number of blocks.")
+    if len(fragment_ids) != len(blocks):
+        raise ValueError("fragment_ids must match the number of blocks.")
     if len(set(fragment_ids)) != len(fragment_ids):
         raise ValueError("fragment_ids must be unique.")
-    if len(set(basis_ids)) != len(basis_ids):
-        raise ValueError("basis_ids must be unique per DF fragment.")
+    if basis_ids is not None and len(basis_ids) != len(blocks):
+        raise ValueError("basis_ids must match the number of blocks.")
 
+    registry = basis_registry or DFBasisRegistry()
+    num_system_qubits = len(np.asarray(blocks[0].eta))
     pre_threshold: list[DFDiagonalPauliComponent] = []
-    basis_unitaries: list[tuple[str, np.ndarray]] = []
-    for fragment_id, basis_id, block in zip(
-        fragment_ids, basis_ids, blocks, strict=True
+    for index, (fragment_id, block) in enumerate(
+        zip(fragment_ids, blocks, strict=True)
     ):
         num_qubits = len(np.asarray(block.eta))
-        if num_qubits != len(np.asarray(blocks[0].eta)):
+        if num_qubits != num_system_qubits:
             raise ValueError("All DF blocks must act on the same number of qubits.")
-        operations = describe_basis_change_operations(block.U_ops)
-        basis_unitaries.append((str(basis_id), basis_change_unitary(block)))
-        # Aggregation is intentionally local to this fragment/basis pair.
-        for support, coefficient in exact_df_diagonal_coefficients(block.eta, block.lam):
+        requested_basis_id = None if basis_ids is None else str(basis_ids[index])
+        definition = registry.register(
+            block.U_ops,
+            num_system_qubits=num_qubits,
+            basis_id=requested_basis_id,
+        )
+        operations = definition.metadata.operations
+        for support, coefficient in exact_df_diagonal_coefficients(
+            block.eta,
+            block.lam,
+        ):
             sign = 1 if coefficient >= 0.0 else -1
             pre_threshold.append(
                 DFDiagonalPauliComponent(
@@ -214,7 +471,8 @@ def extract_df_diagonal_tail(
                     coefficient_abs=abs(float(coefficient)),
                     coefficient_sign=sign,
                     df_fragment_id=str(fragment_id),
-                    basis_id=str(basis_id),
+                    basis_id=definition.basis_id,
+                    basis_hash=definition.basis_hash,
                     diagonal_pauli_support=support,
                     basis_change_operations=operations,
                 )
@@ -232,57 +490,99 @@ def extract_df_diagonal_tail(
         for component in pre_threshold
         if component.coefficient_abs > coefficient_atol
     )
-    dropped = tuple(
+    threshold_dropped = tuple(
         component
         for component in pre_threshold
         if component.coefficient_abs <= coefficient_atol
     )
-    identity_coefficient = math.fsum(
-        component.coefficient for component in retained if component.is_identity
+    retained_identities = tuple(
+        component for component in retained if component.is_identity
+    )
+    identity_coefficient = float(
+        math.fsum(component.coefficient for component in retained_identities)
     )
     if identity_policy == "extract_identity_phase":
         randomized_components = tuple(
             component for component in retained if not component.is_identity
         )
-        deterministic_identity = float(identity_coefficient)
+        deterministic_identity = identity_coefficient
+        extracted_identity_count = len(retained_identities)
     else:
         randomized_components = retained
         deterministic_identity = 0.0
+        extracted_identity_count = 0
     rte_lambda_r = float(
         math.fsum(component.coefficient_abs for component in randomized_components)
     )
-    dropped_l1 = float(math.fsum(component.coefficient_abs for component in dropped))
-    policy = "drop_abs_coefficient_lte_atol_then_apply_identity_policy"
+    dropped_l1 = float(
+        math.fsum(component.coefficient_abs for component in threshold_dropped)
+    )
+    policy = "threshold_then_exact_identity_policy_v2"
+    referenced_basis_id_set = {component.basis_id for component in pre_threshold}
+    referenced_basis_ids = tuple(sorted(referenced_basis_id_set))
+    basis_metadata = tuple(
+        metadata
+        for metadata in registry.metadata()
+        if metadata.basis_id in referenced_basis_id_set
+    )
     payload = {
         "tail_id": tail_id,
-        "pre_threshold_components": [asdict(component) for component in pre_threshold],
+        "pre_threshold_components": [
+            {
+                "component_id": component.component_id,
+                "coefficient": component.coefficient,
+                "df_fragment_id": component.df_fragment_id,
+                "basis_id": component.basis_id,
+                "basis_hash": component.basis_hash,
+                "diagonal_pauli_support": component.diagonal_pauli_support,
+            }
+            for component in pre_threshold
+        ],
+        "basis_definitions": [asdict(metadata) for metadata in basis_metadata],
         "coefficient_atol": float(coefficient_atol),
         "normalization_policy": policy,
         "identity_policy": identity_policy,
     }
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+    extraction_metadata = DFTailExtractionMetadata(
+        coefficient_atol=float(coefficient_atol),
+        threshold_input_component_count=len(pre_threshold),
+        threshold_retained_component_count=len(retained),
+        threshold_dropped_component_count=len(threshold_dropped),
+        retained_identity_component_count=len(retained_identities),
+        extracted_identity_component_count=extracted_identity_count,
+        randomized_component_count=len(randomized_components),
+        threshold_dropped_coefficient_l1=dropped_l1,
+        extracted_identity_coefficient=deterministic_identity,
+        randomized_coefficient_l1=rte_lambda_r,
+        threshold_operator_error_bound=dropped_l1,
+        normalization_policy=policy,
+    )
+    randomized_metadata = TailNormalizationMetadata(
+        coefficient_atol=0.0,
+        input_component_count=len(randomized_components),
+        retained_component_count=len(randomized_components),
+        dropped_component_count=0,
+        dropped_coefficient_l1=0.0,
+        operator_error_bound=0.0,
+        normalization_policy="already_thresholded_symbolic_df_randomized_tail",
+    )
     return DFTailExtraction(
         tail_id=tail_id,
         tail_hash=hashlib.sha256(encoded).hexdigest(),
         identity_policy=identity_policy,
         components=randomized_components,
-        identity_coefficient=float(identity_coefficient),
+        identity_coefficient=identity_coefficient,
         deterministic_identity_coefficient=deterministic_identity,
         rte_lambda_r=rte_lambda_r,
         ranking_proxy_lambda_r=(
             None if ranking_proxy_lambda_r is None else float(ranking_proxy_lambda_r)
         ),
-        normalization_metadata=TailNormalizationMetadata(
-            coefficient_atol=float(coefficient_atol),
-            input_component_count=len(pre_threshold),
-            retained_component_count=len(retained),
-            dropped_component_count=len(dropped),
-            dropped_coefficient_l1=dropped_l1,
-            operator_error_bound=dropped_l1,
-            normalization_policy=policy,
-        ),
-        num_system_qubits=len(np.asarray(blocks[0].eta)),
-        basis_unitaries=tuple(basis_unitaries),
+        extraction_metadata=extraction_metadata,
+        normalization_metadata=randomized_metadata,
+        num_system_qubits=num_system_qubits,
+        referenced_basis_ids=referenced_basis_ids,
+        basis_registry=registry,
     )
 
 
@@ -296,7 +596,7 @@ def extract_df_tail_from_hamiltonian(
     diagonal_sort: str = "descending_abs",
     ranking_weight_rule: str = "lambda_frobenius_squared",
 ) -> DFTailExtraction:
-    """Build and extract selected native DF fragments from ``DFHamiltonian``."""
+    """Build and symbolically extract selected native DF fragments."""
     from .df_partial_randomized_pf import df_fragment_weight, df_hamiltonian_to_model
     from .df_trotter.ops import build_df_blocks
 
@@ -327,18 +627,38 @@ def extract_df_tail_from_hamiltonian(
 def component_dense_operator(
     extraction: DFTailExtraction,
     component: DFDiagonalPauliComponent,
+    *,
+    max_dense_qubits: int = DEFAULT_MAX_DENSE_QUBITS,
 ) -> np.ndarray:
-    """Return unsigned ``U P U^dagger`` matching established DF circuit order."""
+    """Build one conjugated component only as a guarded small-system reference."""
+    _require_small_dense_reference(
+        extraction.num_system_qubits,
+        max_dense_qubits,
+        "component_dense_operator",
+    )
     diagonal = diagonal_pauli_matrix(
         extraction.num_system_qubits,
         component.diagonal_pauli_support,
+        max_dense_qubits=max_dense_qubits,
     )
-    basis = extraction.basis_unitary(component.basis_id)
+    basis = basis_change_unitary(
+        extraction.basis_definition(component.basis_id),
+        max_dense_qubits=max_dense_qubits,
+    )
     return basis @ diagonal @ basis.conj().T
 
 
-def dense_extracted_df_tail(extraction: DFTailExtraction) -> np.ndarray:
-    """Reconstruct the retained physical tail, including extracted identity."""
+def dense_extracted_df_tail(
+    extraction: DFTailExtraction,
+    *,
+    max_dense_qubits: int = DEFAULT_MAX_DENSE_QUBITS,
+) -> np.ndarray:
+    """Reconstruct a tail only as a guarded small-system dense reference."""
+    _require_small_dense_reference(
+        extraction.num_system_qubits,
+        max_dense_qubits,
+        "dense_extracted_df_tail",
+    )
     dimension = 1 << extraction.num_system_qubits
     result = (
         extraction.deterministic_identity_coefficient
@@ -346,14 +666,25 @@ def dense_extracted_df_tail(extraction: DFTailExtraction) -> np.ndarray:
     )
     for component in extraction.components:
         result += component.coefficient * component_dense_operator(
-            extraction, component
+            extraction,
+            component,
+            max_dense_qubits=max_dense_qubits,
         )
     return result
 
 
-def dense_df_block_hamiltonian(block: DFBlock) -> np.ndarray:
-    """Direct number-basis Hamiltonian conjugated in established circuit order."""
+def dense_df_block_hamiltonian(
+    block: DFBlock,
+    *,
+    max_dense_qubits: int = DEFAULT_MAX_DENSE_QUBITS,
+) -> np.ndarray:
+    """Build a DF block only as a guarded small-system dense reference."""
     eta = np.asarray(np.real_if_close(block.eta), dtype=float)
+    _require_small_dense_reference(
+        len(eta),
+        max_dense_qubits,
+        "dense_df_block_hamiltonian",
+    )
     dimension = 1 << len(eta)
     diagonal = np.empty(dimension, dtype=np.complex128)
     for basis_state in range(dimension):
@@ -362,21 +693,33 @@ def dense_df_block_hamiltonian(block: DFBlock) -> np.ndarray:
             for qubit in range(len(eta))
         )
         diagonal[basis_state] = float(block.lam) * occupation_sum**2
-    basis = basis_change_unitary(block)
+    basis = basis_change_unitary(block, max_dense_qubits=max_dense_qubits)
     return basis @ np.diag(diagonal) @ basis.conj().T
 
 
 def extraction_to_normalized_rte_tail(
     extraction: DFTailExtraction,
+    *,
+    max_dense_qubits: int = DEFAULT_MAX_DENSE_QUBITS,
 ) -> NormalizedRTETail:
-    """Materialize a small-system extracted DF tail as generic finite-RTE input."""
+    """Materialize generic RTE operators only for a guarded small-system check."""
+    _require_small_dense_reference(
+        extraction.num_system_qubits,
+        max_dense_qubits,
+        "extraction_to_normalized_rte_tail",
+    )
     terms = tuple(
         InvolutoryTailTerm(
             component_id=component.component_id,
             coefficient=component.coefficient,
-            operator=component_dense_operator(extraction, component),
+            operator=component_dense_operator(
+                extraction,
+                component,
+                max_dense_qubits=max_dense_qubits,
+            ),
             df_fragment_id=component.df_fragment_id,
             basis_id=component.basis_id,
+            basis_hash=component.basis_hash,
             diagonal_pauli_support=component.diagonal_pauli_support,
             basis_change_operations=component.basis_change_operations,
         )
@@ -399,7 +742,7 @@ def extraction_to_normalized_rte_tail(
 def extraction_component_circuit_specs(
     extraction: DFTailExtraction,
 ) -> tuple[DFRTECircuitSpec, ...]:
-    """Translate extracted components to the future builder's typed specs."""
+    """Translate symbolic components to the future builder's typed specs."""
     from .df_rte_circuit import (
         DFRTEComponentCircuitSpec,
         DFRTEIdentityCircuitSpec,
@@ -416,6 +759,7 @@ def extraction_component_circuit_specs(
                     num_system_qubits=extraction.num_system_qubits,
                     df_fragment_id=component.df_fragment_id,
                     basis_id=component.basis_id,
+                    basis_hash=component.basis_hash,
                 )
             )
         else:
@@ -426,6 +770,7 @@ def extraction_component_circuit_specs(
                     coefficient_sign=component.coefficient_sign,
                     df_fragment_id=component.df_fragment_id,
                     basis_id=component.basis_id,
+                    basis_hash=component.basis_hash,
                     diagonal_pauli_support=component.diagonal_pauli_support,
                     basis_change_operations=component.basis_change_operations,
                     num_system_qubits=extraction.num_system_qubits,
@@ -439,7 +784,7 @@ def uncontrolled_identity_evolution_operator(
     evolution_time: float,
     system_dimension: int,
 ) -> np.ndarray:
-    """Return the uncontrolled global-phase operator ``exp(-it c) I``."""
+    """Return the small-system uncontrolled global-phase reference."""
     return np.exp(-1j * float(evolution_time) * float(coefficient)) * np.eye(
         int(system_dimension), dtype=np.complex128
     )
@@ -450,7 +795,7 @@ def controlled_identity_evolution_operator(
     evolution_time: float,
     system_dimension: int,
 ) -> np.ndarray:
-    """Return ancilla-relative identity evolution, control qubit as MSB."""
+    """Return the small-system ancilla-relative identity reference."""
     identity = np.eye(int(system_dimension), dtype=np.complex128)
     phase = np.exp(-1j * float(evolution_time) * float(coefficient))
     return np.block(

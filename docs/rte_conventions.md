@@ -25,9 +25,9 @@ $$
 
 The sign of $h_l$ is absorbed into $P_l$. Each component and event application
 still records the original sign, absolute coefficient, identity flag, DF
-fragment ID, basis ID, diagonal Pauli support, basis-change operations, and
-circuit application index. This is needed when a future circuit builder uses
-an unsigned Z/ZZ support:
+fragment ID, basis ID and hash, diagonal Pauli support, basis-change
+operations, and circuit application index. This is needed when a future
+circuit builder uses an unsigned Z/ZZ support:
 
 - a product occurrence of $-P$ contributes a scalar phase $-1$;
 - a rotation $\exp[-i\phi(-P)]$ uses the unsigned support with angle $-\phi$.
@@ -133,7 +133,7 @@ probabilities again. Its result includes sample count, entrywise standard
 error, and a Frobenius standard-error summary. The old
 `finite_event_mean_operator` is a deprecated exact-enumeration wrapper.
 
-## Corrected operator, attenuation, and truncation
+## Corrected operator and attenuation
 
 The finite event mean and the normalization-corrected Taylor operator are
 different quantities:
@@ -151,15 +151,51 @@ For multiple tail occurrences, `compose_finite_rte_occurrences` multiplies the
 individual $B_{K_i}^{r_i}$ values. Occurrences may have different signed
 times, step counts, cutoffs, and tails; no common $B$ is assumed.
 
-The omitted one-step coefficient 1-norm is bounded by
+Normalization attenuation is not bias. It is stored separately from every
+Taylor residual and will later affect shot requirements rather than the
+operator-error budget.
+
+## Step, occurrence, and RPE-round Taylor truncation
+
+The omitted one-short-step coefficient 1-norm is bounded by
 
 $$
 R_K(\tau)\le
 \sum_{j=K+2}^{\infty}\frac{|\tau|^j}{j!}.
 $$
 
-This truncation bias is separate from normalization attenuation and from the
-deterministic product-formula error.
+This is `step_truncation_residual_bound`, not an occurrence or round bound. For
+$r$ integer RTE steps,
+
+$$
+\epsilon_{\mathrm{occ}}
+\le (1+\epsilon_{\mathrm{step}})^r-1.
+$$
+
+For heterogeneous occurrence kinds $i$, repeated $c_i$ times in one round,
+
+$$
+\epsilon_{\mathrm{round}}
+\le
+\prod_i(1+\epsilon_{\mathrm{step},i})^{r_ic_i}-1.
+$$
+
+The implementation evaluates this with `log1p` and `expm1`. Interleaved exact
+deterministic unitaries add no norm amplification. `RTEOccurrenceTruncation`,
+`RPERoundTruncationBudget`, and `RPETruncationSummary` keep the three levels
+explicit and can validate `RPERound.tail_evolutions` and `rte_total_steps`.
+
+`select_rpe_round_taylor_orders` is a baseline allocator. It divides
+$\log(1+\epsilon_{\mathrm{round}})$ equally among all short RTE steps, then
+chooses the smallest finite even cutoff whose directly evaluated scalar
+residual meets that local allocation. It finally recomputes the heterogeneous
+round product and verifies the requested budget. This is not yet a
+circuit-cost-optimal allocation.
+
+Taylor truncation remains separate from coefficient-threshold Hamiltonian
+error, deterministic product-formula error, normalization attenuation,
+attenuation-driven shot growth, and classical event-cost sampling error. See
+`docs/rte_truncation_budget.md`.
 
 ## Output taxonomy
 

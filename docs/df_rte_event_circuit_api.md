@@ -9,12 +9,14 @@ not contain an actual circuit builder and must not be reported as one.
 involution. `DFRTEIdentityCircuitSpec` is a separate type whose uncontrolled
 action is global phase and controlled action is relative ancilla phase. Both
 carry coefficient magnitude and sign. Non-identity specs also carry fragment
-ID, basis ID, diagonal support, complete basis-change operation metadata, and
-system size.
+ID, basis ID and canonical basis hash, diagonal support, complete basis-change
+operation metadata, and system size.
 
 `DFRTEEventCircuitRequest` and `DFRTEEventSequenceCircuitRequest` validate that
 every event application has a matching spec with identical coefficient sign,
 magnitude, and identity classification. They reject baseline event reordering.
+They also validate the basis ID/hash and diagonal support propagated by the
+event.
 
 The future builder boundary is:
 
@@ -29,6 +31,11 @@ For a DF component, the established native builder applies the inverse
 basis-operation sequence, the central diagonal operation, and then the forward
 sequence. The dense reference in `df_rte_tail` follows this exact circuit
 orientation; labels do not assume a different matrix convention.
+
+The future builder should receive the symbolic extraction together with its
+`DFBasisRegistry`. The registry supplies executable Qiskit operations by basis
+ID without materializing a many-body unitary. Equal basis hashes may be reused
+only when occurrences are already adjacent in the preserved event order.
 
 The builder must:
 
@@ -58,8 +65,9 @@ $$
 It aggregates identical support only inside one fragment/basis, retains fixed
 canonical ordering and hashing, and computes the actual RTE coefficient L1.
 It supports both faithful identity-in-tail and extracted deterministic-phase
-policies. Small dense references verify the central expansion, basis-conjugated
-fragment, multiple-fragment tail, and controlled identity phase.
+policies. The normal extraction is dense-free; explicitly guarded small-system
+dense references verify the central expansion, basis-conjugated fragment,
+multiple-fragment tail, and controlled identity phase.
 
 Circuit construction itself remains the next milestone after these types and
 validated inputs.
