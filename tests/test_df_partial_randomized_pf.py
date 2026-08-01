@@ -339,6 +339,8 @@ def test_optimize_df_screening_cost_uses_anchor_cgs_table(tmp_path) -> None:
     )
 
     assert result["model"] == "df_reduced_screening_cost_minimization_v1"
+    assert result["result_model"] == "legacy_analytic_proxy"
+    assert result["fidelity_level"] == 0
     assert result["best_overall"] is not None
     assert result["best_overall"]["molecule_type"] == 3
     assert result["best_overall"]["pf_label"] == "2nd"

@@ -11,6 +11,17 @@
 
 This is the first-stage research implementation for the simplified partially randomized product-formula comparison described in the project discussion.
 
+> [!IMPORTANT]
+> The `G_rand` / `B(kappa)` / anchor-Cgs cost model documented below is a
+> **`legacy_analytic_proxy` (fidelity Level 0)**.  In particular, choosing
+> `randomized_method="rte"` in that model changes only an analytic prefactor;
+> it does not sample the RTE distribution or compute a finite-RPE total.
+> The new finite-distribution implementation is in
+> `src/trotterlib/rte.py`.  Its conventions, primary-source equations, and
+> next circuit API are documented in
+> [`docs/rte_conventions.md`](docs/rte_conventions.md) and
+> [`docs/df_rte_event_circuit_api.md`](docs/df_rte_event_circuit_api.md).
+
 ## Scope
 
 - Use the Pauli LCU form of the JW Hamiltonian.
@@ -110,6 +121,7 @@ full partial-randomized scheme 全体の厳密な誤差係数ではない。
 
 Each candidate stores:
 
+- `result_model = "legacy_analytic_proxy"`, `fidelity_level = 0`
 - `c_gs`, `fit_coeff_fixed_order`
 - `fit_slope`, `fit_coeff`
 - `q_opt`, `eps_qpe_opt`, `eps_trot_opt`

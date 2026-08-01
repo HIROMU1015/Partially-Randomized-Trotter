@@ -73,6 +73,22 @@ from .config import (
     get_df_rank_selection_for_molecule,
     resolve_df_rank_for_molecule,
 )
+from .rte import (
+    CircuitCost,
+    CompilerSettings,
+    InvolutoryTailTerm,
+    RTEConfig,
+    RTEEvent,
+    RTEFiniteDistribution,
+    RPERound,
+    choose_finite_taylor_order,
+    enumerate_rte_events,
+    finite_rte_attenuation,
+    finite_rte_distribution,
+    make_rte_config,
+    normalize_involutory_tail,
+    sample_rte_events,
+)
 
 __all__ = [
     "jw_hamiltonian_maker",
@@ -123,4 +139,18 @@ __all__ = [
     "DF_RANK_SELECTION_BY_MOLECULE",
     "get_df_rank_selection_for_molecule",
     "resolve_df_rank_for_molecule",
+    "CircuitCost",
+    "CompilerSettings",
+    "InvolutoryTailTerm",
+    "RTEConfig",
+    "RTEEvent",
+    "RTEFiniteDistribution",
+    "RPERound",
+    "choose_finite_taylor_order",
+    "enumerate_rte_events",
+    "finite_rte_attenuation",
+    "finite_rte_distribution",
+    "make_rte_config",
+    "normalize_involutory_tail",
+    "sample_rte_events",
 ]

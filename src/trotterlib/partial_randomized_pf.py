@@ -179,6 +179,8 @@ class CandidateResult:
     perturbation_errors: tuple[float, ...]
     kappa_sweep: tuple[KappaSweepPoint, ...] = ()
     legacy_random_prefactor: float | None = None
+    result_model: str = "legacy_analytic_proxy"
+    fidelity_level: int = 0
 
 
 @dataclass(frozen=True)
@@ -219,6 +221,8 @@ class PartialRandomizedStudyResult:
     uwc_metadata: dict[str, Any]
     best: CandidateResult
     candidates: tuple[CandidateResult, ...]
+    result_model: str = "legacy_analytic_proxy"
+    fidelity_level: int = 0
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -1574,6 +1578,8 @@ def kappa_sweep_rows(result: PartialRandomizedStudyResult) -> list[dict[str, Any
         for point in candidate.kappa_sweep:
             rows.append(
                 {
+                    "result_model": "legacy_analytic_proxy",
+                    "fidelity_level": 0,
                     "molecule_type": result.molecule_type,
                     "ham_name": result.ham_name,
                     "epsilon_total": result.epsilon_total,

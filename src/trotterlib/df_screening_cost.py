@@ -213,6 +213,8 @@ def optimize_df_screening_cost(
                     error_budget_rule=error_budget_rule,
                 )
                 candidate = {
+                    "result_model": "legacy_analytic_proxy",
+                    "fidelity_level": 0,
                     "molecule": f"H{molecule_type}",
                     "molecule_type": int(molecule_type),
                     "df_rank_actual": int(hamiltonian.n_blocks),
@@ -252,6 +254,8 @@ def optimize_df_screening_cost(
     return {
         "schema_version": 1,
         "model": DF_SCREENING_COST_MODEL,
+        "result_model": "legacy_analytic_proxy",
+        "fidelity_level": 0,
         "epsilon_total": float(epsilon_total),
         "cgs_rule": "C_gs,D(p,L_D)=C_gs,D(p,L_anchor=floor(rank/2))",
         "cost_rule": "total_ref_rz_depth(p,L_D) with analytic D-only RZ-depth",
