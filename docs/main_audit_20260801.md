@@ -250,5 +250,65 @@ The post-change lightweight suite result is **128 passed, 4 warnings in 3.80
 s** (`4.35 s` wall time). The warnings are still the same four pre-existing
 grouped-UWC `ComplexWarning` instances at `chemistry_hamiltonian.py:307`; no
 new warning was introduced. The validation manifest and `git diff --check`
-passed. No commit or push was performed, so `HEAD` and `origin/main` remain at
-the starting SHA.
+passed. No commit or push was performed during that implementation run, so at
+that run's endpoint `HEAD` and `origin/main` remained at the starting SHA. The
+completed changes were subsequently committed and pushed as `2c01920`; this
+historical statement must not be read as the repository's current state.
+
+## 12. Compiled DF partial-S2 one-step follow-up
+
+This follow-up started from clean `main` commit
+`2c01920ece9c598d44c6657f430eff68316dcb64`, equal to `origin/main`. The
+pre-change suite result was **128 passed, 4 warnings in 3.32 s** (`3.89 s`
+wall time), and the validation manifest passed.
+
+`split_df_hamiltonian_by_ld` now applies strict integer validation and retains
+`lambda_r` only as a compatibility ranking proxy, exposed explicitly as
+`ranking_proxy_lambda_r`. `prepare_df_partial_s2` checks that the ranked prefix
+and suffix are a disjoint complete fragment partition, keeps constant and
+one-body corrections deterministic, preserves ranked-prefix order, and
+extracts the suffix into an independent `exact_rte_lambda_r`. A full
+deterministic prefix produces a valid empty randomized tail.
+
+The one-step builder explicitly applies deterministic blocks forward at half
+time, one existing RTE occurrence at full step time, and deterministic blocks
+in reverse at half time. It does not place a complete internal `H_D` S2 on
+both sides. One-body and squared-fragment central evolutions now share one
+global-phase/RZ/RZZ primitive representation. Controlled steps leave all
+basis operations uncontrolled and control only those central primitives.
+Constant correction, extracted tail identity, and RTE-internal phases remain
+separate and are each applied exactly once under their stated policy.
+
+For the two-qubit reference, uncontrolled `L_D=0`, intermediate, and full
+deterministic steps differed from independently composed dense references by
+approximately `6.8e-16` to `1.4e-15` in matrix norm. Controlled `diag(I,U)`
+comparisons, including ancilla-relative phase, differed by approximately
+`5.9e-16` to `1.1e-15`. The deterministic-only limit also matches the existing
+second-order DF circuit builder.
+
+Level-5 exact and Monte Carlo estimators compile the complete one-step circuit
+and matching forward/RTE/reverse additive parts. In a one-qubit controlled
+test with ranking proxy `0.7`, exact RTE lambda `0.35`, two RTE events, and
+finite cutoff 2, the four exact event sequences give expected full-step RZ
+count `11.443382024588187`. One hundred classical samples at seed 8 give mean
+`11.5`, unbiased variance `0.25252525252525254`, and standard error
+`0.050251890762960605`. In the matching uncontrolled case, full-step RZ is
+`1.0`, additive RZ is `3.0`, and the partial-S2 nonadditive difference is
+`-2.0`. These are algorithmic fixtures, not chemistry resource estimates.
+
+The exact test uses four unique full-step circuits and ten unique full/part
+cache entries; a repeated evaluation produces 16 cache hits without new
+transpilation. The 100-sample run uses four unique full-step circuits, ten
+unique full/part entries, and 390 hits. Cache identity separates partition,
+time, event order, control/ancilla, reuse, and compiler conditions.
+
+Synthetic 20/26-qubit tests stop after partition, preparation, one-event
+sampling, and partial-S2 circuit construction. They prohibit many-body
+`Operator`, statevector, dense DF helpers, complete enumeration, transpilation,
+and chemistry generation. The quarantined screening JSON remains unused.
+
+The post-change suite result is **152 passed, 4 warnings in 5.05 s** (`5.63 s`
+wall time). All warnings are the same pre-existing grouped-UWC `ComplexWarning`
+instances at `chemistry_hamiltonian.py:307`. The validation manifest and
+`git diff --check` passed. No commit or push was performed during this
+follow-up; the changes remain in the working tree as requested.

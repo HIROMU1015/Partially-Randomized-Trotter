@@ -635,6 +635,10 @@ class CircuitCost:
         "monte_carlo_compiled_sequence_expectation",
         "compiled_cost_standard_error",
         "compiled_sequence_nonadditive_difference",
+        "exact_compiled_partial_s2_expectation",
+        "monte_carlo_compiled_partial_s2_expectation",
+        "compiled_partial_s2_additive_expectation",
+        "compiled_partial_s2_nonadditive_difference",
         "legacy_analytic_proxy",
     ]
 

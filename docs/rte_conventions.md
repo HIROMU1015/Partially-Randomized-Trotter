@@ -165,7 +165,9 @@ ancilla phase. See `df_rte_event_circuit_api.md` for the exact rules.
 Compiled cost levels are: Level 0 analytic proxy/bound, Level 1 symbolic
 primitive sum, Level 2 constructed untranspiled event, Level 3 transpiled
 single-event expectation, and Level 4 transpiled short-sequence expectation.
-Levels 5 (partial-S2/short RPE) and 6 (selected long RPE) are future work.
+Level 5 is a transpiled expectation for one complete partial-S2 step. Multiple
+partial-S2 repetitions, short/long RPE construction, and Level 6 remain future
+work.
 Actual per-circuit counts are integers; expected or Monte Carlo mean counts are
 floats. Compiler conditions are part of the cost identity, and costs produced
 under different settings must not be directly mixed.

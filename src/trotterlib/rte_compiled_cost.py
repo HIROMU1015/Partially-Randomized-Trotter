@@ -301,6 +301,15 @@ def _metric_statistics(
     return tuple(statistics)
 
 
+def compiled_metric_statistics(
+    costs: Sequence[Any],
+    *,
+    weights: Sequence[float] | None,
+) -> tuple[tuple[str, CompiledMetricStatistics], ...]:
+    """Public shared statistics implementation for higher fidelity levels."""
+    return _metric_statistics(costs, weights=weights)
+
+
 def _circuit_cost_from_statistics(
     statistics: tuple[tuple[str, CompiledMetricStatistics], ...],
     *,
@@ -330,6 +339,24 @@ def _circuit_cost_from_statistics(
         compiler=compiler,
         fidelity_level=fidelity_level,
         estimate_kind=kind,
+    )
+
+
+def circuit_cost_from_metric_statistics(
+    statistics: tuple[tuple[str, CompiledMetricStatistics], ...],
+    *,
+    compiler: CompilerSettings,
+    estimate_kind: str,
+    use_standard_error: bool = False,
+    fidelity_level: FidelityLevel = 3,
+) -> CircuitCost | None:
+    """Create a floating expectation/standard-error record from statistics."""
+    return _circuit_cost_from_statistics(
+        statistics,
+        compiler=compiler,
+        estimate_kind=estimate_kind,
+        use_standard_error=use_standard_error,
+        fidelity_level=fidelity_level,
     )
 
 
@@ -535,6 +562,16 @@ def _subtract_costs(left: Any, right: Any) -> _MetricVector:
             for name in _COST_METRICS
         }
     )
+
+
+def sum_compiled_costs(costs: Sequence[TranspiledCircuitCost]) -> _MetricVector:
+    """Sum actual compiled metrics without duplicating the metric schema."""
+    return _sum_costs(costs)
+
+
+def subtract_compiled_costs(left: Any, right: Any) -> _MetricVector:
+    """Subtract two actual or aggregate compiled metric records."""
+    return _subtract_costs(left, right)
 
 
 def estimate_compiled_occurrence_cost(

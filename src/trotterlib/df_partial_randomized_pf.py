@@ -44,6 +44,7 @@ from .df_trotter.ops import (
 )
 from .pf_decomposition import iter_pf_steps
 from .product_formula import _get_w_list
+from .rte import require_integer_count
 from .partial_randomized_pf import (
     _PERTURBATION_NOISE_FLOOR,
     default_perturbation_t_values,
@@ -82,7 +83,11 @@ class RankedDFFragment:
 
 @dataclass(frozen=True)
 class DFFragmentPartition:
-    """DF-native H_D/H_R split for a single L_D."""
+    """DF-native H_D/H_R split for one L_D.
+
+    ``lambda_r`` is retained for compatibility and is a fragment-ranking
+    proxy, not the exact involutory RTE one-norm.
+    """
 
     ld: int
     deterministic_fragments: tuple[RankedDFFragment, ...]
@@ -91,6 +96,11 @@ class DFFragmentPartition:
     randomized_block_indices: tuple[int, ...]
     lambda_r: float
     weight_rule: str
+
+    @property
+    def ranking_proxy_lambda_r(self) -> float:
+        """Explicit name for the legacy fragment-weight tail sum."""
+        return self.lambda_r
 
 
 @dataclass(frozen=True)
@@ -190,8 +200,22 @@ def split_df_hamiltonian_by_ld(
     """Split a fixed DF representation into H_D and H_R by fragment prefix length."""
     if ranked_fragments is None:
         ranked_fragments = rank_df_fragments(hamiltonian, weight_rule=weight_rule)
-    ld = int(ld)
-    if ld < 0 or ld > len(ranked_fragments):
+    ld = require_integer_count(ld, name="ld")
+    ranked_fragments = tuple(ranked_fragments)
+    if len(ranked_fragments) != hamiltonian.n_blocks:
+        raise ValueError("ranked_fragments must cover every DF fragment exactly once.")
+    ranked_indices = tuple(fragment.original_index for fragment in ranked_fragments)
+    if len(set(ranked_indices)) != len(ranked_indices) or set(ranked_indices) != set(
+        range(hamiltonian.n_blocks)
+    ):
+        raise ValueError("ranked_fragments must be a permutation of all DF fragments.")
+    if tuple(fragment.rank for fragment in ranked_fragments) != tuple(
+        range(hamiltonian.n_blocks)
+    ):
+        raise ValueError("ranked_fragments ranks must be contiguous in tuple order.")
+    if any(fragment.weight_rule != weight_rule for fragment in ranked_fragments):
+        raise ValueError("ranked_fragments weight rule does not match weight_rule.")
+    if ld > len(ranked_fragments):
         raise ValueError("ld must be between 0 and the number of DF fragments.")
     deterministic = tuple(ranked_fragments[:ld])
     randomized = tuple(ranked_fragments[ld:])
@@ -713,6 +737,15 @@ def _df_hamiltonian_hash(
         "weight_rule": weight_rule,
     }
     return _json_hash(payload)
+
+
+def df_hamiltonian_hash(
+    hamiltonian: DFHamiltonian,
+    *,
+    weight_rule: str = "lambda_frobenius_squared",
+) -> str:
+    """Public canonical hash for DF circuit/preparation provenance."""
+    return _df_hamiltonian_hash(hamiltonian, weight_rule=weight_rule)
 
 
 def _sector_hash(sector: PhysicalSector) -> str:

@@ -57,6 +57,7 @@ from .df_partial_randomized_pf import (
     DFCgsFitResult,
     DFFragmentPartition,
     RankedDFFragment,
+    df_hamiltonian_hash,
     fit_df_cgs_with_perturbation,
     get_or_compute_cached_df_cgs_fit,
     rank_df_fragments,
@@ -131,6 +132,7 @@ from .df_rte_tail import (
     extraction_to_normalized_rte_tail,
     extraction_to_symbolic_rte_tail,
     prepare_df_rte_event_inputs,
+    empty_df_tail_extraction,
 )
 from .df_rte_circuit import (
     DFRTEComponentCircuitSpec,
@@ -154,6 +156,23 @@ from .rte_compiled_cost import (
     estimate_exact_compiled_event_cost,
     estimate_monte_carlo_compiled_event_cost,
     transpile_and_measure_cost,
+)
+from .df_partial_s2 import (
+    DFDeterministicBlockSpec,
+    DFDeterministicFragmentSpec,
+    DFDeterministicOneBodySpec,
+    DFPartialS2AdditiveCircuits,
+    DFPartialS2CircuitResult,
+    DFPartialS2Preparation,
+    DFPartialS2StepRequest,
+    QiskitDFPartialS2CircuitBuilder,
+    make_df_partial_s2_step_request,
+    prepare_df_partial_s2,
+)
+from .df_partial_s2_cost import (
+    CompiledPartialS2CostEstimate,
+    estimate_exact_compiled_partial_s2_cost,
+    estimate_monte_carlo_compiled_partial_s2_cost,
 )
 
 __all__ = [
@@ -194,6 +213,7 @@ __all__ = [
     "DFCgsFitResult",
     "DFFragmentPartition",
     "RankedDFFragment",
+    "df_hamiltonian_hash",
     "fit_df_cgs_with_perturbation",
     "get_or_compute_cached_df_cgs_fit",
     "rank_df_fragments",
@@ -260,6 +280,7 @@ __all__ = [
     "extraction_to_normalized_rte_tail",
     "extraction_to_symbolic_rte_tail",
     "prepare_df_rte_event_inputs",
+    "empty_df_tail_extraction",
     "DFRTEComponentCircuitSpec",
     "DFRTEEventCircuitBuilder",
     "DFRTEEventCircuitRequest",
@@ -279,4 +300,17 @@ __all__ = [
     "estimate_exact_compiled_event_cost",
     "estimate_monte_carlo_compiled_event_cost",
     "transpile_and_measure_cost",
+    "DFDeterministicBlockSpec",
+    "DFDeterministicFragmentSpec",
+    "DFDeterministicOneBodySpec",
+    "DFPartialS2AdditiveCircuits",
+    "DFPartialS2CircuitResult",
+    "DFPartialS2Preparation",
+    "DFPartialS2StepRequest",
+    "QiskitDFPartialS2CircuitBuilder",
+    "make_df_partial_s2_step_request",
+    "prepare_df_partial_s2",
+    "CompiledPartialS2CostEstimate",
+    "estimate_exact_compiled_partial_s2_cost",
+    "estimate_monte_carlo_compiled_partial_s2_cost",
 ]

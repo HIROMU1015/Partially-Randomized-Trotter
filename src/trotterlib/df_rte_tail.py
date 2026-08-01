@@ -709,6 +709,78 @@ def extract_df_diagonal_tail(
     )
 
 
+def empty_df_tail_extraction(
+    tail_id: str,
+    *,
+    num_system_qubits: int,
+    identity_policy: IdentityPolicy = "faithful_identity_in_tail",
+    coefficient_atol: float = 0.0,
+    ranking_proxy_lambda_r: float = 0.0,
+) -> DFTailExtraction:
+    """Create the canonical zero-randomized-tail extraction."""
+    if not tail_id:
+        raise ValueError("tail_id must not be empty.")
+    num_system_qubits = require_integer_count(
+        num_system_qubits,
+        name="num_system_qubits",
+        minimum=1,
+    )
+    if identity_policy not in (
+        "faithful_identity_in_tail",
+        "extract_identity_phase",
+    ):
+        raise ValueError(f"Unsupported identity policy: {identity_policy}")
+    if not math.isfinite(coefficient_atol) or coefficient_atol < 0.0:
+        raise ValueError("coefficient_atol must be finite and non-negative.")
+    payload = {
+        "tail_id": tail_id,
+        "pre_threshold_components": [],
+        "basis_definitions": [],
+        "coefficient_atol": float(coefficient_atol),
+        "normalization_policy": "threshold_then_exact_identity_policy_v2",
+        "identity_policy": identity_policy,
+    }
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+    extraction_metadata = DFTailExtractionMetadata(
+        coefficient_atol=float(coefficient_atol),
+        threshold_input_component_count=0,
+        threshold_retained_component_count=0,
+        threshold_dropped_component_count=0,
+        retained_identity_component_count=0,
+        extracted_identity_component_count=0,
+        randomized_component_count=0,
+        threshold_dropped_coefficient_l1=0.0,
+        extracted_identity_coefficient=0.0,
+        randomized_coefficient_l1=0.0,
+        threshold_operator_error_bound=0.0,
+        normalization_policy="threshold_then_exact_identity_policy_v2",
+    )
+    normalization_metadata = TailNormalizationMetadata(
+        coefficient_atol=0.0,
+        input_component_count=0,
+        retained_component_count=0,
+        dropped_component_count=0,
+        dropped_coefficient_l1=0.0,
+        operator_error_bound=0.0,
+        normalization_policy="already_thresholded_symbolic_df_randomized_tail",
+    )
+    return DFTailExtraction(
+        tail_id=tail_id,
+        tail_hash=hashlib.sha256(encoded).hexdigest(),
+        identity_policy=identity_policy,
+        components=(),
+        identity_coefficient=0.0,
+        deterministic_identity_coefficient=0.0,
+        rte_lambda_r=0.0,
+        ranking_proxy_lambda_r=float(ranking_proxy_lambda_r),
+        extraction_metadata=extraction_metadata,
+        normalization_metadata=normalization_metadata,
+        num_system_qubits=num_system_qubits,
+        referenced_basis_ids=(),
+        basis_registry=DFBasisRegistry(),
+    )
+
+
 def extraction_to_symbolic_rte_tail(
     extraction: DFTailExtraction,
 ) -> SymbolicRTETail:
@@ -767,7 +839,19 @@ def extract_df_tail_from_hamiltonian(
     from .df_partial_randomized_pf import df_fragment_weight, df_hamiltonian_to_model
     from .df_trotter.ops import build_df_blocks
 
-    selected = hamiltonian.select_blocks(tuple(int(index) for index in block_indices))
+    normalized_indices = tuple(
+        require_integer_count(index, name="tail block index")
+        for index in block_indices
+    )
+    if not normalized_indices:
+        return empty_df_tail_extraction(
+            tail_id,
+            num_system_qubits=hamiltonian.n_qubits,
+            identity_policy=identity_policy,
+            coefficient_atol=coefficient_atol,
+            ranking_proxy_lambda_r=0.0,
+        )
+    selected = hamiltonian.select_blocks(normalized_indices)
     blocks = build_df_blocks(
         df_hamiltonian_to_model(selected),
         sort=diagonal_sort,
@@ -778,9 +862,9 @@ def extract_df_tail_from_hamiltonian(
             int(index),
             weight_rule=ranking_weight_rule,
         )
-        for index in block_indices
+        for index in normalized_indices
     )
-    fragment_ids = tuple(f"df-fragment-{int(index)}" for index in block_indices)
+    fragment_ids = tuple(f"df-fragment-{index}" for index in normalized_indices)
     return extract_df_diagonal_tail(
         tail_id,
         blocks,

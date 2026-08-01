@@ -22,6 +22,34 @@ This is the first-stage research implementation for the simplified partially ran
 > [`docs/rte_conventions.md`](docs/rte_conventions.md) and
 > [`docs/df_rte_event_circuit_api.md`](docs/df_rte_event_circuit_api.md).
 
+## DF partial-S2 one-step circuit
+
+The finite-circuit path now reaches one compiled second-order partial step:
+
+```text
+ranked deterministic DF half sweep
+-> one sampled finite-RTE tail occurrence
+-> reversed deterministic DF half sweep
+```
+
+`L_D` counts only two-body DF fragments. Constant and one-body corrections
+remain deterministic and are applied once per step. The deterministic
+fragment order is the actual `rank_df_fragments` prefix, not original-index
+order. `DFFragmentPartition.lambda_r` is retained as the legacy
+`ranking_proxy_lambda_r`; RTE config, probabilities, Taylor cutoff, and
+attenuation instead use `exact_rte_lambda_r`, recomputed after symbolic I/Z/ZZ
+expansion and threshold/identity policy.
+
+The implementation explicitly appends each deterministic block at `delta/2`,
+the RTE occurrence at `delta`, and the same blocks in reverse at `delta/2`.
+It does not build an internal S2 for all of `H_D` and place that complete S2 on
+both sides. Controlled blocks leave Gaussian basis changes uncontrolled and
+control only shared diagonal RZ/RZZ/phase primitives.
+
+See [`docs/df_partial_s2_compiled_cost.md`](docs/df_partial_s2_compiled_cost.md).
+This Level-5 result is one circuit step only; it is not a multiple-step or RPE
+total and includes neither state preparation nor quantum-shot sampling.
+
 ## Scope
 
 - Use the Pauli LCU form of the JW Hamiltonian.

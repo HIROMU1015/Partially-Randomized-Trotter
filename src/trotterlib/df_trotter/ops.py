@@ -1,16 +1,27 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Any, Iterable, Sequence, Tuple
 
 import numpy as np
 
 from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.circuit import ParameterExpression
+from qiskit.circuit.library import PhaseGate, RZGate, RZZGate
 
 from .decompose import diag_hermitian
 from .model import DFBlock, OneBodyGaussianBlock
 
 _MAX_DENSE_GAUSSIAN_QUBITS = 8
+
+
+@dataclass(frozen=True)
+class DiagonalEvolutionPrimitives:
+    """Shared global-phase, RZ, and RZZ description of a diagonal block."""
+
+    global_phase: Any
+    rz: tuple[tuple[int, Any], ...]
+    rzz: tuple[tuple[int, int, Any], ...]
 
 
 def _bit_reverse_permutation(num_qubits: int) -> np.ndarray:
@@ -206,28 +217,38 @@ def U_to_qiskit_ops_jw_givens(U: np.ndarray) -> list[tuple[Any, Tuple[int, ...]]
     return _normalize_u_ops(circ, qr)
 
 
-def apply_D_one_body(qc: QuantumCircuit, eps: np.ndarray, tau: Any) -> Any:
-    """Apply exp(-i tau sum_k eps_k n_k) using RZ and global phase."""
+def one_body_diagonal_primitives(
+    eps: np.ndarray,
+    tau: Any,
+) -> DiagonalEvolutionPrimitives:
+    """Describe ``exp(-i tau sum_k eps_k n_k)`` without appending gates."""
     eps = np.asarray(eps)
     phase: Any = 0.0
+    rz: list[tuple[int, Any]] = []
     for k, eps_k in enumerate(eps):
         angle = _real_or_symbolic(-tau * _as_real(eps_k, "eps_k"), "rz_angle")
         if not _is_effectively_zero(angle):
-            qc.rz(angle, k)
+            rz.append((k, angle))
         phase += angle / 2.0
-    qc.global_phase += _real_or_symbolic(phase, "global_phase")
-    return phase
+    return DiagonalEvolutionPrimitives(
+        global_phase=_real_or_symbolic(phase, "global_phase"),
+        rz=tuple(rz),
+        rzz=(),
+    )
 
 
-def apply_D_squared(
-    qc: QuantumCircuit, eta: np.ndarray, lam: float, tau: Any
-) -> Any:
-    """Apply exp(-i tau lam (sum_k eta_k n_k)^2) using RZ/RZZ and global phase."""
+def df_squared_diagonal_primitives(
+    eta: np.ndarray,
+    lam: float,
+    tau: Any,
+) -> DiagonalEvolutionPrimitives:
+    """Describe one squared DF diagonal evolution without appending gates."""
     eta = np.asarray(eta)
     lam = _as_real(lam, "lambda")
     tau = -tau if _is_symbolic(tau) else -_as_real(tau, "tau")
     num_qubits = len(eta)
     rz_angles: list[Any] = [0.0 for _ in range(num_qubits)]
+    rzz: list[tuple[int, int, Any]] = []
     phase: Any = 0.0
 
     for k in range(num_qubits):
@@ -251,14 +272,61 @@ def apply_D_squared(
             rz_angles[k] += beta / 2.0
             rz_angles[j] += beta / 2.0
             phase += beta / 4.0
-            _append_rzz(qc, -beta / 2.0, k, j)
+            rzz.append((k, j, -beta / 2.0))
 
+    rz: list[tuple[int, Any]] = []
     for k, angle in enumerate(rz_angles):
         if not _is_effectively_zero(angle):
-            qc.rz(angle, k)
+            rz.append((k, angle))
 
-    qc.global_phase += _real_or_symbolic(phase, "global_phase")
-    return phase
+    return DiagonalEvolutionPrimitives(
+        global_phase=_real_or_symbolic(phase, "global_phase"),
+        rz=tuple(rz),
+        rzz=tuple(rzz),
+    )
+
+
+def append_diagonal_primitives(
+    qc: QuantumCircuit,
+    primitives: DiagonalEvolutionPrimitives,
+    *,
+    controlled: bool = False,
+    ancilla_qubit: int | None = None,
+) -> None:
+    """Append one shared primitive list with global or ancilla-relative phase."""
+    if controlled and ancilla_qubit is None:
+        raise ValueError("Controlled diagonal primitives require ancilla_qubit.")
+    for left, right, angle in primitives.rzz:
+        if controlled:
+            qc.append(RZZGate(angle).control(1), [ancilla_qubit, left, right])
+        else:
+            _append_rzz(qc, angle, left, right)
+    for qubit, angle in primitives.rz:
+        if controlled:
+            qc.append(RZGate(angle).control(1), [ancilla_qubit, qubit])
+        else:
+            qc.rz(angle, qubit)
+    if not _is_effectively_zero(primitives.global_phase):
+        if controlled:
+            qc.append(PhaseGate(primitives.global_phase), [ancilla_qubit])
+        else:
+            qc.global_phase += primitives.global_phase
+
+
+def apply_D_one_body(qc: QuantumCircuit, eps: np.ndarray, tau: Any) -> Any:
+    """Apply exp(-i tau sum_k eps_k n_k) using shared primitives."""
+    primitives = one_body_diagonal_primitives(eps, tau)
+    append_diagonal_primitives(qc, primitives)
+    return primitives.global_phase
+
+
+def apply_D_squared(
+    qc: QuantumCircuit, eta: np.ndarray, lam: float, tau: Any
+) -> Any:
+    """Apply a squared DF diagonal evolution using shared primitives."""
+    primitives = df_squared_diagonal_primitives(eta, lam, tau)
+    append_diagonal_primitives(qc, primitives)
+    return primitives.global_phase
 
 
 def _append_u_ops(
