@@ -45,13 +45,40 @@ Components are ordered by fragment, support size, and support indices.
 Identical support is aggregated only within the same fragment/basis. Equal
 Z/ZZ support from distinct orbital bases remains distinct.
 
+## Dense-free RTE normalization
+
+`extraction_to_symbolic_rte_tail` converts the randomized DF components to a
+`SymbolicRTETail`. For every retained randomized coefficient $h_l$ it sets
+
+$$
+p_l=\frac{|h_l|}{\lambda_R},
+\qquad
+\lambda_R=\sum_l|h_l|.
+$$
+
+The conversion preserves canonical component order, coefficient magnitude and
+sign, identity classification, support, fragment and component IDs, basis ID
+and hash, basis-operation metadata, threshold audit data, identity policy, and
+tail provenance. It allocates no object whose size is exponential in the
+system qubit count. `make_rte_config` accepts this symbolic tail through the
+same lightweight tail interface used by the dense reference type.
+
+If thresholding or `extract_identity_phase` leaves no randomized component,
+`SymbolicRTETail.is_deterministic_only` is true, `lambda_r` is zero, and the
+component tuple is empty. This is a valid explicit result. APIs that require
+random event sampling raise `DeterministicOnlyRTETailError` instead of dividing
+by zero. A faithful identity-only tail remains a one-component randomized tail.
+
 ## Basis definitions and registry
 
 `BasisChangeMetadata` is serializable. `DFBasisDefinition` additionally keeps
 the runtime Qiskit gate sequence, and `DFBasisRegistry` retrieves it by
 `basis_id`. The basis hash is computed from system size and the ordered local
-operation metadata. Small gate-local matrix hashes are permitted; a many-body
-basis matrix hash is never constructed.
+operation metadata. Standard registry operations must act on at most four
+qubits and be convertible to a local Qiskit `Operator` matrix. That local
+matrix hash is mandatory. Wider or opaque operations are rejected with
+`BasisFingerprintError` rather than accepted under ambiguous name/parameter
+metadata. A many-body basis matrix hash is never constructed.
 
 With automatically generated IDs, identical operation sequences share the
 same basis ID and hash across fragments. Fragment IDs remain part of component
@@ -59,6 +86,12 @@ IDs, so physical provenance is never merged. Registering different operation
 sequences under the same explicit basis ID raises an error. This permits a
 future builder to recognize adjacent equal bases without authorizing event
 reordering.
+
+`prepare_df_rte_event_inputs` returns a `DFRTEEventPreparation` containing the
+symbolic normalized tail, component circuit specs, and the executable registry.
+It verifies that the registry definitions and component fingerprints agree.
+The bundle can classically sample finite RTE events and turn each sample into a
+validated future-builder request without reconstructing any dense operator.
 
 Two identity policies are available:
 

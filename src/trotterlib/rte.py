@@ -12,9 +12,10 @@ import hashlib
 import itertools
 import json
 import math
+import operator
 import warnings
 from dataclasses import asdict, dataclass, field
-from typing import Any, Literal, Mapping, Sequence, TypeAlias
+from typing import Any, Literal, Mapping, Protocol, Sequence, TypeAlias
 
 import numpy as np
 
@@ -26,6 +27,39 @@ TruncationAllocationPolicy: TypeAlias = Literal[
     "equal_log_budget_per_short_step",
     "user_selected_orders",
 ]
+
+
+def require_integer_count(
+    value: object,
+    *,
+    name: str,
+    minimum: int = 0,
+) -> int:
+    """Return a Python integer count without silently truncating other types."""
+    if isinstance(value, (bool, np.bool_)):
+        raise TypeError(f"{name} must be an integer count, not bool.")
+    try:
+        normalized = operator.index(value)
+    except TypeError as exc:
+        raise TypeError(f"{name} must be an integer count.") from exc
+    result = int(normalized)
+    if result < minimum:
+        qualifier = "positive" if minimum == 1 else f"at least {minimum}"
+        raise ValueError(f"{name} must be {qualifier}.")
+    return result
+
+
+class DeterministicOnlyRTETailError(ValueError):
+    """Raised when an RTE-only API receives no randomized tail components."""
+
+
+class RTETailLike(Protocol):
+    """Dense-free fields required to configure and sample finite RTE events."""
+
+    tail_id: str
+    tail_hash: str
+    lambda_r: float
+    components: tuple["RTEComponent", ...]
 
 
 @dataclass(frozen=True)
@@ -40,8 +74,13 @@ class BasisChangeOperation:
     def __post_init__(self) -> None:
         if not self.name:
             raise ValueError("Basis-change operation name must not be empty.")
-        if not self.qubits or any(qubit < 0 for qubit in self.qubits):
-            raise ValueError("Basis-change operation qubits must be non-negative.")
+        if not self.qubits:
+            raise ValueError("Basis-change operation qubits must not be empty.")
+        normalized_qubits = tuple(
+            require_integer_count(qubit, name="basis operation qubit")
+            for qubit in self.qubits
+        )
+        object.__setattr__(self, "qubits", normalized_qubits)
 
 
 @dataclass(frozen=True)
@@ -138,7 +177,12 @@ class RTEFiniteDistribution:
     paper_upper_bound: float
 
     def __post_init__(self) -> None:
-        if self.finite_taylor_order < 0 or self.finite_taylor_order % 2:
+        cutoff = require_integer_count(
+            self.finite_taylor_order,
+            name="finite_taylor_order",
+        )
+        object.__setattr__(self, "finite_taylor_order", cutoff)
+        if cutoff % 2:
             raise ValueError("finite_taylor_order must be a non-negative even integer.")
         if self.orders != tuple(range(0, self.finite_taylor_order + 1, 2)):
             raise ValueError("orders must contain every even order through the cutoff.")
@@ -174,11 +218,20 @@ class RTEConfig:
     seed: int
 
     def __post_init__(self) -> None:
+        rte_steps = require_integer_count(
+            self.rte_steps,
+            name="rte_steps",
+            minimum=1,
+        )
+        cutoff = require_integer_count(
+            self.finite_taylor_order,
+            name="finite_taylor_order",
+        )
+        object.__setattr__(self, "rte_steps", rte_steps)
+        object.__setattr__(self, "finite_taylor_order", cutoff)
         if self.lambda_r <= 0.0 or not math.isfinite(self.lambda_r):
             raise ValueError("lambda_r must be finite and positive.")
-        if self.rte_steps <= 0:
-            raise ValueError("rte_steps must be a positive integer.")
-        if self.finite_taylor_order < 0 or self.finite_taylor_order % 2:
+        if cutoff % 2:
             raise ValueError("finite_taylor_order must be a non-negative even integer.")
         if self.truncation_tolerance <= 0.0:
             raise ValueError("truncation_tolerance must be positive.")
@@ -313,6 +366,13 @@ class EventOperatorSampleEstimate:
     frobenius_standard_error: float
     sample_count: int
 
+    def __post_init__(self) -> None:
+        object.__setattr__(
+            self,
+            "sample_count",
+            require_integer_count(self.sample_count, name="sample_count", minimum=1),
+        )
+
 
 @dataclass(frozen=True)
 class RTEOperatorMoments:
@@ -337,14 +397,26 @@ class RTEOccurrenceParameters:
     round_occurrence_count: int = 1
 
     def __post_init__(self) -> None:
+        object.__setattr__(
+            self,
+            "rte_steps",
+            require_integer_count(self.rte_steps, name="rte_steps", minimum=1),
+        )
+        object.__setattr__(
+            self,
+            "round_occurrence_count",
+            require_integer_count(
+                self.round_occurrence_count,
+                name="round_occurrence_count",
+                minimum=1,
+            ),
+        )
         if not self.occurrence_id or not self.tail_id or not self.tail_hash:
             raise ValueError("Occurrence and tail identifiers must not be empty.")
         if not math.isfinite(self.lambda_r) or self.lambda_r <= 0.0:
             raise ValueError("lambda_r must be finite and positive.")
         if not math.isfinite(self.evolution_time):
             raise ValueError("evolution_time must be finite.")
-        if self.rte_steps <= 0 or self.round_occurrence_count <= 0:
-            raise ValueError("RTE step and round occurrence counts must be positive.")
 
 
 @dataclass(frozen=True)
@@ -366,10 +438,27 @@ class RTEOccurrenceTruncation:
     allocated_step_error_bound: float | None = None
 
     def __post_init__(self) -> None:
-        if self.finite_taylor_order < 0 or self.finite_taylor_order % 2:
+        object.__setattr__(
+            self,
+            "rte_steps",
+            require_integer_count(self.rte_steps, name="rte_steps", minimum=1),
+        )
+        object.__setattr__(
+            self,
+            "round_occurrence_count",
+            require_integer_count(
+                self.round_occurrence_count,
+                name="round_occurrence_count",
+                minimum=1,
+            ),
+        )
+        cutoff = require_integer_count(
+            self.finite_taylor_order,
+            name="finite_taylor_order",
+        )
+        object.__setattr__(self, "finite_taylor_order", cutoff)
+        if cutoff % 2:
             raise ValueError("finite_taylor_order must be a non-negative even integer.")
-        if self.rte_steps <= 0 or self.round_occurrence_count <= 0:
-            raise ValueError("RTE step and occurrence counts must be positive.")
         bounds = (
             self.step_truncation_residual_bound,
             self.occurrence_truncation_residual_bound,
@@ -393,13 +482,43 @@ class RPERoundTruncationBudget:
     expected_tail_evolutions: int | None = None
 
     def __post_init__(self) -> None:
+        object.__setattr__(
+            self,
+            "round_index",
+            require_integer_count(self.round_index, name="round_index"),
+        )
+        object.__setattr__(
+            self,
+            "total_short_step_count",
+            require_integer_count(
+                self.total_short_step_count,
+                name="total_short_step_count",
+                minimum=1,
+            ),
+        )
+        if self.partial_s2_repetitions is not None:
+            object.__setattr__(
+                self,
+                "partial_s2_repetitions",
+                require_integer_count(
+                    self.partial_s2_repetitions,
+                    name="partial_s2_repetitions",
+                ),
+            )
+        if self.expected_tail_evolutions is not None:
+            object.__setattr__(
+                self,
+                "expected_tail_evolutions",
+                require_integer_count(
+                    self.expected_tail_evolutions,
+                    name="expected_tail_evolutions",
+                ),
+            )
         if (
             not math.isfinite(self.target_round_truncation_error)
             or self.target_round_truncation_error < 0.0
         ):
             raise ValueError("Round truncation target must be finite and non-negative.")
-        if self.total_short_step_count <= 0:
-            raise ValueError("total_short_step_count must be positive.")
 
 
 @dataclass(frozen=True)
@@ -424,6 +543,28 @@ class RPERound:
     attenuation_factor: float
     measurement_axis: MeasurementAxis
     required_shots: int
+
+    def __post_init__(self) -> None:
+        for name in (
+            "round_index",
+            "partial_s2_repetitions",
+            "tail_evolutions",
+            "rte_total_steps",
+        ):
+            object.__setattr__(
+                self,
+                name,
+                require_integer_count(getattr(self, name), name=name),
+            )
+        object.__setattr__(
+            self,
+            "required_shots",
+            require_integer_count(
+                self.required_shots,
+                name="required_shots",
+                minimum=1,
+            ),
+        )
 
 
 @dataclass(frozen=True)
@@ -602,7 +743,8 @@ def normalize_involutory_tail(
 
 
 def _paired_order_weight(dimensionless_step_time: float, order: int) -> float:
-    if order < 0 or order % 2:
+    order = require_integer_count(order, name="order")
+    if order % 2:
         raise ValueError("RTE Taylor event order must be non-negative and even.")
     magnitude = abs(float(dimensionless_step_time))
     if magnitude == 0.0:
@@ -622,7 +764,11 @@ def step_taylor_truncation_residual_bound(
     pair's 1-norm, the scalar exponential tail from degree ``K+2`` is a safe
     bound.
     """
-    if finite_taylor_order < 0 or finite_taylor_order % 2:
+    finite_taylor_order = require_integer_count(
+        finite_taylor_order,
+        name="finite_taylor_order",
+    )
+    if finite_taylor_order % 2:
         raise ValueError("finite_taylor_order must be a non-negative even integer.")
     magnitude = abs(float(dimensionless_step_time))
     if magnitude == 0.0:
@@ -666,7 +812,11 @@ def choose_finite_taylor_order(
     """Choose the smallest even cutoff meeting the one-step residual bound."""
     if truncation_tolerance <= 0.0:
         raise ValueError("truncation_tolerance must be positive.")
-    for order in range(0, int(maximum_order) + 1, 2):
+    maximum_order = require_integer_count(
+        maximum_order,
+        name="maximum_order",
+    )
+    for order in range(0, maximum_order + 1, 2):
         if (
             step_taylor_truncation_residual_bound(dimensionless_step_time, order)
             <= truncation_tolerance
@@ -683,14 +833,13 @@ def occurrence_truncation_residual_bound(
     step_bound = float(step_truncation_residual_bound)
     if math.isnan(step_bound) or step_bound < 0.0:
         raise ValueError("step_truncation_residual_bound must be non-negative.")
-    if rte_steps < 0:
-        raise ValueError("rte_steps must be non-negative.")
+    rte_steps = require_integer_count(rte_steps, name="rte_steps")
     if rte_steps == 0 or step_bound == 0.0:
         return 0.0
     if math.isinf(step_bound):
         return math.inf
     try:
-        return float(math.expm1(int(rte_steps) * math.log1p(step_bound)))
+        return float(math.expm1(rte_steps * math.log1p(step_bound)))
     except OverflowError:
         return math.inf
 
@@ -704,15 +853,16 @@ def compose_truncation_residual_bounds(
         step_bound = float(step_bound)
         if math.isnan(step_bound) or step_bound < 0.0:
             raise ValueError("Every step truncation bound must be non-negative.")
-        if rte_steps < 0 or occurrence_count < 0:
-            raise ValueError("Step and occurrence counts must be non-negative.")
+        rte_steps = require_integer_count(rte_steps, name="rte_steps")
+        occurrence_count = require_integer_count(
+            occurrence_count,
+            name="occurrence_count",
+        )
         if step_bound == 0.0 or rte_steps == 0 or occurrence_count == 0:
             continue
         if math.isinf(step_bound):
             return math.inf
-        log_bound += (
-            int(rte_steps) * int(occurrence_count) * math.log1p(step_bound)
-        )
+        log_bound += rte_steps * occurrence_count * math.log1p(step_bound)
     try:
         return float(math.expm1(log_bound))
     except OverflowError:
@@ -725,6 +875,10 @@ def _occurrence_truncation_record(
     *,
     allocated_step_error_bound: float | None,
 ) -> RTEOccurrenceTruncation:
+    finite_taylor_order = require_integer_count(
+        finite_taylor_order,
+        name="finite_taylor_order",
+    )
     tau = parameters.lambda_r * parameters.evolution_time / parameters.rte_steps
     step_bound = step_taylor_truncation_residual_bound(tau, finite_taylor_order)
     occurrence_bound = occurrence_truncation_residual_bound(
@@ -742,7 +896,7 @@ def _occurrence_truncation_record(
         lambda_r=parameters.lambda_r,
         evolution_time=parameters.evolution_time,
         rte_steps=parameters.rte_steps,
-        finite_taylor_order=int(finite_taylor_order),
+        finite_taylor_order=finite_taylor_order,
         dimensionless_step_time=float(tau),
         step_truncation_residual_bound=step_bound,
         occurrence_truncation_residual_bound=occurrence_bound,
@@ -929,7 +1083,11 @@ def finite_rte_distribution(
     finite_taylor_order: int,
 ) -> RTEFiniteDistribution:
     """Build the finite v2 Eqs. (A23)--(A26) event distribution."""
-    if finite_taylor_order < 0 or finite_taylor_order % 2:
+    finite_taylor_order = require_integer_count(
+        finite_taylor_order,
+        name="finite_taylor_order",
+    )
+    if finite_taylor_order % 2:
         raise ValueError("finite_taylor_order must be a non-negative even integer.")
     orders = tuple(range(0, finite_taylor_order + 1, 2))
     weights = tuple(
@@ -940,7 +1098,7 @@ def finite_rte_distribution(
     tau = abs(float(dimensionless_step_time))
     return RTEFiniteDistribution(
         dimensionless_step_time=float(dimensionless_step_time),
-        finite_taylor_order=int(finite_taylor_order),
+        finite_taylor_order=finite_taylor_order,
         orders=orders,
         unnormalized_order_weights=weights,
         order_probabilities=probabilities,
@@ -953,7 +1111,7 @@ def finite_rte_distribution(
 
 
 def make_rte_config(
-    tail: NormalizedRTETail,
+    tail: RTETailLike,
     *,
     evolution_time: float,
     rte_steps: int,
@@ -962,14 +1120,20 @@ def make_rte_config(
     seed: int = 0,
 ) -> tuple[RTEConfig, RTEFiniteDistribution]:
     """Create a self-consistent config and its exact finite distribution."""
-    if rte_steps <= 0:
-        raise ValueError("rte_steps must be positive.")
-    step_time = float(evolution_time) / int(rte_steps)
+    rte_steps = require_integer_count(rte_steps, name="rte_steps", minimum=1)
+    if tail.lambda_r == 0.0 or not tail.components:
+        raise DeterministicOnlyRTETailError(
+            "The tail has no randomized components; finite RTE is not required."
+        )
+    step_time = float(evolution_time) / rte_steps
     tau = tail.lambda_r * step_time
     cutoff = (
         choose_finite_taylor_order(tau, truncation_tolerance)
         if finite_taylor_order is None
-        else int(finite_taylor_order)
+        else require_integer_count(
+            finite_taylor_order,
+            name="finite_taylor_order",
+        )
     )
     distribution = finite_rte_distribution(tau, cutoff)
     config = RTEConfig(
@@ -977,7 +1141,7 @@ def make_rte_config(
         tail_hash=tail.tail_hash,
         lambda_r=tail.lambda_r,
         evolution_time=float(evolution_time),
-        rte_steps=int(rte_steps),
+        rte_steps=rte_steps,
         step_time=step_time,
         dimensionless_step_time=tau,
         taylor_distribution="rte_even_taylor_paired",
@@ -1110,6 +1274,7 @@ def enumerate_rte_events(
     max_events: int = 1_000_000,
 ) -> tuple[RTEEvent, ...]:
     """Enumerate all finite events for small systems only."""
+    max_events = require_integer_count(max_events, name="max_events")
     _validate_components(components)
     count = sum(len(components) ** (order + 1) for order in distribution.orders)
     if count > max_events:
@@ -1129,15 +1294,14 @@ def sample_rte_events(
     seed: int,
 ) -> tuple[RTEEvent, ...]:
     """Classically sample event circuits; this is not quantum shot sampling."""
-    if sample_count < 0:
-        raise ValueError("sample_count must be non-negative.")
+    sample_count = require_integer_count(sample_count, name="sample_count")
     _validate_components(components)
     rng = np.random.default_rng(int(seed))
     component_probabilities = np.asarray(
         [component.probability for component in components], dtype=float
     )
     events: list[RTEEvent] = []
-    for _ in range(int(sample_count)):
+    for _ in range(sample_count):
         order_index = int(
             rng.choice(
                 len(distribution.orders), p=distribution.order_probabilities
@@ -1257,6 +1421,12 @@ def finite_taylor_operator(
     finite_taylor_order: int,
 ) -> np.ndarray:
     """Dense paired-Taylor reference retained through degree ``K+1``."""
+    finite_taylor_order = require_integer_count(
+        finite_taylor_order,
+        name="finite_taylor_order",
+    )
+    if finite_taylor_order % 2:
+        raise ValueError("finite_taylor_order must be a non-negative even integer.")
     hamiltonian = np.asarray(normalized_hamiltonian, dtype=np.complex128)
     identity = np.eye(hamiltonian.shape[0], dtype=np.complex128)
     result = identity.copy()
@@ -1349,9 +1519,11 @@ def finite_rte_attenuation(
     tail_evolutions: int = 1,
 ) -> float:
     """Return the finite-distribution normalization attenuation ``B_K^-r``."""
-    if tail_evolutions < 0:
-        raise ValueError("tail_evolutions must be non-negative.")
-    exponent = int(config.rte_steps) * int(tail_evolutions)
+    tail_evolutions = require_integer_count(
+        tail_evolutions,
+        name="tail_evolutions",
+    )
+    exponent = config.rte_steps * tail_evolutions
     return float(math.exp(-exponent * math.log(config.distribution_normalization)))
 
 

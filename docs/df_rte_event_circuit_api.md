@@ -18,6 +18,13 @@ magnitude, and identity classification. They reject baseline event reordering.
 They also validate the basis ID/hash and diagonal support propagated by the
 event.
 
+`DFRTEEventPreparation` is the dense-free handoff bundle. It contains a
+`SymbolicRTETail`, the ordered component specs, and a `DFBasisRegistry`. Its
+`sample_events` method performs fixed-seed classical event sampling;
+`request_for_event` and `sample_requests` resolve every basis ID/hash against
+the registry before constructing `DFRTEEventCircuitRequest`. Registry conflicts
+or event fingerprint mismatches are rejected rather than guessed.
+
 The future builder boundary is:
 
 ```text
@@ -32,10 +39,10 @@ basis-operation sequence, the central diagonal operation, and then the forward
 sequence. The dense reference in `df_rte_tail` follows this exact circuit
 orientation; labels do not assume a different matrix convention.
 
-The future builder should receive the symbolic extraction together with its
-`DFBasisRegistry`. The registry supplies executable Qiskit operations by basis
-ID without materializing a many-body unitary. Equal basis hashes may be reused
-only when occurrences are already adjacent in the preserved event order.
+The future builder receives the preparation bundle. The registry supplies
+executable Qiskit operations by basis ID without materializing a many-body
+unitary. Equal basis hashes may be reused only when occurrences are already
+adjacent in the preserved event order.
 
 The builder must:
 
@@ -53,7 +60,7 @@ The builder must:
 The result type records the component order actually used, safely cancelled
 basis pairs, relative ancilla phase, and basis-switch count.
 
-## DF-to-RTE conversion already implemented
+## Implemented DF-to-event-input path
 
 `trotterlib.df_rte_tail` now performs the prerequisite conversion:
 
@@ -62,12 +69,21 @@ $$
 =c_I I+\sum_k c_k Z_k+\sum_{k<j}c_{kj}Z_kZ_j.
 $$
 
-It aggregates identical support only inside one fragment/basis, retains fixed
-canonical ordering and hashing, and computes the actual RTE coefficient L1.
-It supports both faithful identity-in-tail and extracted deterministic-phase
-policies. The normal extraction is dense-free; explicitly guarded small-system
-dense references verify the central expansion, basis-conjugated fragment,
-multiple-fragment tail, and controlled identity phase.
+The implemented path is:
 
-Circuit construction itself remains the next milestone after these types and
-validated inputs.
+```text
+symbolic DF extraction
+-> SymbolicRTETail probabilities
+-> finite distribution/config
+-> fixed-seed classical event sampling
+-> validated DF event circuit request
+```
+
+It supports faithful identity-in-tail, extracted deterministic phase, and an
+explicit deterministic-only empty randomized tail. The normal path is
+dense-free. Guarded dense references are used only as an 8-qubit-or-smaller
+test oracle. Synthetic 20/26-qubit integration tests are symbolic scalability
+checks, not H10/H13 chemistry or statevector validation.
+
+Actual Qiskit event construction, primitive transpilation, compiled event cost,
+partial-S2 circuits, and RPE circuits remain the next milestones.

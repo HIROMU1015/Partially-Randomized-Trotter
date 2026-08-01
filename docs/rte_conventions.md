@@ -44,6 +44,12 @@ The DF ranking value `abs(lambda_l) * ||G_l||_F^2` is only a selection proxy.
 The RTE $\lambda_R$ is recomputed from the exact signed I/Z/ZZ expansion and is
 stored separately.
 
+`SymbolicRTETail` is the normal DF event-generation input. It contains the
+normalized `RTEComponent` tuple but no dense operator tuple. The guarded
+`NormalizedRTETail` remains a small-system oracle. Both satisfy the lightweight
+interface consumed by `make_rte_config`; event generation needs only tail ID,
+tail hash, $\lambda_R$, and normalized components.
+
 ## Exact threshold policy and tail hash
 
 `normalize_involutory_tail(..., atol=0.0)` does not discard any nonzero
@@ -67,6 +73,13 @@ $$
 
 `rte_steps` counts independently sampled events, not Taylor order. Distribution
 weights use $|\tau|$, while the rotation angle retains the sign of $\tau$.
+
+All count-like arguments use an integer-only validator based on
+`operator.index`. Python and NumPy integers are accepted and normalized to a
+Python `int`. Booleans, floats such as `2.0` or `2.5`, strings, and negative
+counts are rejected; zero is accepted only by APIs where an empty count is
+meaningful. Finite Taylor cutoffs additionally must be even. There is no silent
+`int(...)` truncation in step, occurrence, round, sampling, or cutoff counts.
 
 Appendix A pairs Taylor degrees $n$ and $n+1$ for even
 $n=0,2,4,\ldots$. Define

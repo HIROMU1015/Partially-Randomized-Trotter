@@ -15,14 +15,17 @@ from qiskit.quantum_info import Operator
 from .df_trotter.model import DFBlock
 from .rte import (
     BasisChangeOperation,
+    DeterministicOnlyRTETailError,
     InvolutoryTailTerm,
     NormalizedRTETail,
+    RTEComponent,
     TailNormalizationMetadata,
     normalize_involutory_tail,
+    require_integer_count,
 )
 
 if TYPE_CHECKING:
-    from .df_rte_circuit import DFRTECircuitSpec
+    from .df_rte_circuit import DFRTECircuitSpec, DFRTEEventPreparation
 
 
 IdentityPolicy: TypeAlias = Literal[
@@ -32,6 +35,10 @@ IdentityPolicy: TypeAlias = Literal[
 
 DEFAULT_MAX_DENSE_QUBITS = 8
 _MAX_LOCAL_GATE_HASH_QUBITS = 4
+
+
+class BasisFingerprintError(ValueError):
+    """Raised when a basis operation lacks a safe canonical fingerprint."""
 
 
 @dataclass(frozen=True)
@@ -80,10 +87,20 @@ class DFBasisRegistry:
         num_system_qubits: int,
         basis_id: str | None = None,
     ) -> DFBasisDefinition:
-        if num_system_qubits <= 0:
-            raise ValueError("num_system_qubits must be positive.")
+        num_system_qubits = require_integer_count(
+            num_system_qubits,
+            name="num_system_qubits",
+            minimum=1,
+        )
         operations = tuple(
-            (gate, tuple(int(qubit) for qubit in qubits)) for gate, qubits in u_ops
+            (
+                gate,
+                tuple(
+                    require_integer_count(qubit, name="basis operation qubit")
+                    for qubit in qubits
+                ),
+            )
+            for gate, qubits in u_ops
         )
         if any(
             qubit < 0 or qubit >= num_system_qubits
@@ -93,9 +110,9 @@ class DFBasisRegistry:
             raise ValueError("Basis operation qubit is outside the system register.")
         described = describe_basis_change_operations(operations)
         basis_hash = canonical_basis_hash(num_system_qubits, described)
-        identifier = basis_id or f"df-basis-{basis_hash}"
-        if not identifier:
+        if basis_id is not None and not str(basis_id):
             raise ValueError("basis_id must not be empty.")
+        identifier = str(basis_id) if basis_id is not None else f"df-basis-{basis_hash}"
         metadata = BasisChangeMetadata(
             basis_id=str(identifier),
             basis_hash=basis_hash,
@@ -202,6 +219,72 @@ class DFTailExtractionMetadata:
 
 
 @dataclass(frozen=True)
+class SymbolicRTETail:
+    """Normalized RTE components with no dense many-body operators."""
+
+    tail_id: str
+    tail_hash: str
+    lambda_r: float
+    components: tuple[RTEComponent, ...]
+    extraction_metadata: DFTailExtractionMetadata
+    normalization_metadata: TailNormalizationMetadata
+    identity_policy: IdentityPolicy
+    deterministic_identity_coefficient: float
+    num_system_qubits: int
+    referenced_basis_ids: tuple[str, ...]
+    basis_definitions: tuple[BasisChangeMetadata, ...]
+
+    def __post_init__(self) -> None:
+        if not self.tail_id or not self.tail_hash:
+            raise ValueError("Symbolic RTE tail identifiers must not be empty.")
+        if not math.isfinite(self.lambda_r) or self.lambda_r < 0.0:
+            raise ValueError("lambda_r must be finite and non-negative.")
+        if len(self.components) != self.extraction_metadata.randomized_component_count:
+            raise ValueError(
+                "Symbolic component count does not match extraction metadata."
+            )
+        if tuple(item.basis_id for item in self.basis_definitions) != (
+            self.referenced_basis_ids
+        ):
+            raise ValueError("Symbolic basis definitions do not match referenced IDs.")
+        if (
+            self.normalization_metadata.input_component_count
+            != len(self.components)
+            or self.normalization_metadata.retained_component_count
+            != len(self.components)
+            or self.normalization_metadata.dropped_component_count != 0
+        ):
+            raise ValueError(
+                "Symbolic normalization metadata must describe the physical "
+                "randomized component set."
+            )
+        component_l1 = math.fsum(
+            component.coefficient_abs for component in self.components
+        )
+        if not math.isclose(component_l1, self.lambda_r, abs_tol=1e-14):
+            raise ValueError("Symbolic component L1 must equal lambda_r.")
+        if self.lambda_r == 0.0:
+            if self.components:
+                raise ValueError("A zero-lambda symbolic tail must have no components.")
+            return
+        if not self.components:
+            raise ValueError("A positive-lambda symbolic tail requires components.")
+        probability_sum = math.fsum(
+            component.probability for component in self.components
+        )
+        if not math.isclose(probability_sum, 1.0, abs_tol=1e-14):
+            raise ValueError("Symbolic RTE component probabilities must sum to one.")
+        for component in self.components:
+            expected = component.coefficient_abs / self.lambda_r
+            if not math.isclose(component.probability, expected, abs_tol=1e-14):
+                raise ValueError("Symbolic RTE component probability is inconsistent.")
+
+    @property
+    def is_deterministic_only(self) -> bool:
+        return self.lambda_r == 0.0
+
+
+@dataclass(frozen=True)
 class DFTailExtraction:
     """Canonical symbolic expansion of selected squared DF fragments.
 
@@ -282,23 +365,50 @@ def _matrix_sha256(matrix: np.ndarray) -> str:
 def describe_basis_change_operations(
     u_ops: Sequence[tuple[object, tuple[int, ...]]],
 ) -> tuple[BasisChangeOperation, ...]:
-    """Create canonical local-gate metadata without a many-body unitary."""
+    """Fingerprint supported local operations without a many-body unitary.
+
+    Standard registry operations must act on at most four qubits and expose a
+    Qiskit ``Operator`` matrix. Wider or opaque operations are rejected instead
+    of being identified only by potentially ambiguous display metadata.
+    """
     described: list[BasisChangeOperation] = []
     for gate, qubits in u_ops:
-        normalized_qubits = tuple(int(qubit) for qubit in qubits)
+        normalized_qubits = tuple(
+            require_integer_count(qubit, name="basis operation qubit")
+            for qubit in qubits
+        )
+        if not normalized_qubits:
+            raise BasisFingerprintError(
+                "Basis operations must act on at least one qubit."
+            )
+        if len(set(normalized_qubits)) != len(normalized_qubits):
+            raise BasisFingerprintError(
+                "Basis operation qubit support must not contain duplicates."
+            )
         parameters = tuple(str(parameter) for parameter in getattr(gate, "params", ()))
-        matrix_hash: str | None = None
-        if len(normalized_qubits) <= _MAX_LOCAL_GATE_HASH_QUBITS:
-            try:
-                matrix_hash = _matrix_sha256(Operator(gate).data)
-            except Exception:
-                matrix_hash = None
+        if len(normalized_qubits) > _MAX_LOCAL_GATE_HASH_QUBITS:
+            raise BasisFingerprintError(
+                "The standard basis registry rejects operations wider than "
+                "four qubits."
+            )
+        try:
+            local_matrix = np.asarray(Operator(gate).data, dtype=np.complex128)
+        except Exception as exc:
+            raise BasisFingerprintError(
+                "Basis operation cannot be converted to a stable local matrix "
+                "fingerprint."
+            ) from exc
+        expected_dimension = 1 << len(normalized_qubits)
+        if local_matrix.shape != (expected_dimension, expected_dimension):
+            raise BasisFingerprintError(
+                "Basis operation matrix shape does not match its qubit support."
+            )
         described.append(
             BasisChangeOperation(
                 name=str(getattr(gate, "name", type(gate).__name__)),
                 qubits=normalized_qubits,
                 parameters=parameters,
-                matrix_sha256=matrix_hash,
+                matrix_sha256=_matrix_sha256(local_matrix),
             )
         )
     return tuple(described)
@@ -309,10 +419,13 @@ def canonical_basis_hash(
     operations: Sequence[BasisChangeOperation],
 ) -> str:
     """Hash a basis from system size and its ordered local operation metadata."""
-    if num_system_qubits <= 0:
-        raise ValueError("num_system_qubits must be positive.")
+    num_system_qubits = require_integer_count(
+        num_system_qubits,
+        name="num_system_qubits",
+        minimum=1,
+    )
     payload = {
-        "num_system_qubits": int(num_system_qubits),
+        "num_system_qubits": num_system_qubits,
         "operations": [asdict(operation) for operation in operations],
         "hash_policy": "ordered_local_basis_operations_v1",
     }
@@ -325,8 +438,14 @@ def _require_small_dense_reference(
     max_dense_qubits: int,
     function_name: str,
 ) -> None:
-    if max_dense_qubits < 0:
-        raise ValueError("max_dense_qubits must be non-negative.")
+    num_system_qubits = require_integer_count(
+        num_system_qubits,
+        name="num_system_qubits",
+    )
+    max_dense_qubits = require_integer_count(
+        max_dense_qubits,
+        name="max_dense_qubits",
+    )
     if num_system_qubits > max_dense_qubits:
         raise ValueError(
             f"{function_name} is a small-system dense reference and refuses "
@@ -365,12 +484,16 @@ def diagonal_pauli_matrix(
         max_dense_qubits,
         "diagonal_pauli_matrix",
     )
-    support_tuple = tuple(sorted(set(int(qubit) for qubit in support)))
-    if len(support_tuple) != len(tuple(support)) or len(support_tuple) > 2:
+    normalized_support = tuple(
+        require_integer_count(qubit, name="Pauli support qubit")
+        for qubit in support
+    )
+    support_tuple = tuple(sorted(set(normalized_support)))
+    if len(support_tuple) != len(normalized_support) or len(support_tuple) > 2:
         raise ValueError("support must contain zero, one, or two unique qubits.")
     if any(qubit < 0 or qubit >= num_qubits for qubit in support_tuple):
         raise ValueError("support qubit is outside the system register.")
-    dimension = 1 << int(num_qubits)
+    dimension = 1 << num_qubits
     diagonal = np.ones(dimension, dtype=np.complex128)
     for basis_state in range(dimension):
         parity = sum((basis_state >> qubit) & 1 for qubit in support_tuple) % 2
@@ -586,6 +709,50 @@ def extract_df_diagonal_tail(
     )
 
 
+def extraction_to_symbolic_rte_tail(
+    extraction: DFTailExtraction,
+) -> SymbolicRTETail:
+    """Normalize a DF extraction for RTE event generation without dense data."""
+    component_l1 = math.fsum(
+        component.coefficient_abs for component in extraction.components
+    )
+    if not math.isclose(component_l1, extraction.rte_lambda_r, abs_tol=1e-14):
+        raise ValueError("Extraction component L1 does not match rte_lambda_r.")
+    if extraction.rte_lambda_r == 0.0:
+        normalized_components: tuple[RTEComponent, ...] = ()
+    else:
+        normalized_components = tuple(
+            RTEComponent(
+                component_id=component.component_id,
+                probability=component.coefficient_abs / extraction.rte_lambda_r,
+                coefficient_abs=component.coefficient_abs,
+                coefficient_sign=component.coefficient_sign,
+                df_fragment_id=component.df_fragment_id,
+                basis_id=component.basis_id,
+                basis_hash=component.basis_hash,
+                is_identity=component.is_identity,
+                diagonal_pauli_support=component.diagonal_pauli_support,
+                basis_change_operations=component.basis_change_operations,
+            )
+            for component in extraction.components
+        )
+    return SymbolicRTETail(
+        tail_id=extraction.tail_id,
+        tail_hash=extraction.tail_hash,
+        lambda_r=extraction.rte_lambda_r,
+        components=normalized_components,
+        extraction_metadata=extraction.extraction_metadata,
+        normalization_metadata=extraction.normalization_metadata,
+        identity_policy=extraction.identity_policy,
+        deterministic_identity_coefficient=(
+            extraction.deterministic_identity_coefficient
+        ),
+        num_system_qubits=extraction.num_system_qubits,
+        referenced_basis_ids=extraction.referenced_basis_ids,
+        basis_definitions=extraction.basis_definitions,
+    )
+
+
 def extract_df_tail_from_hamiltonian(
     tail_id: str,
     hamiltonian: object,
@@ -703,6 +870,11 @@ def extraction_to_normalized_rte_tail(
     max_dense_qubits: int = DEFAULT_MAX_DENSE_QUBITS,
 ) -> NormalizedRTETail:
     """Materialize generic RTE operators only for a guarded small-system check."""
+    if extraction.rte_lambda_r == 0.0:
+        raise DeterministicOnlyRTETailError(
+            "The extraction has no randomized components; dense RTE normalization "
+            "is not required."
+        )
     _require_small_dense_reference(
         extraction.num_system_qubits,
         max_dense_qubits,
@@ -732,9 +904,23 @@ def extraction_to_normalized_rte_tail(
     )
     if not math.isclose(tail.lambda_r, extraction.rte_lambda_r, abs_tol=1e-14):
         raise ValueError("Extracted symbolic and dense RTE lambda values disagree.")
+    normalized_by_id = {
+        component.component_id: (component, operator)
+        for component, operator in zip(
+            tail.components,
+            tail.operators,
+            strict=True,
+        )
+    }
+    ordered_pairs = tuple(
+        normalized_by_id[component.component_id]
+        for component in extraction.components
+    )
     return replace(
         tail,
         tail_hash=extraction.tail_hash,
+        components=tuple(component for component, _operator in ordered_pairs),
+        operators=tuple(operator for _component, operator in ordered_pairs),
         normalization_metadata=extraction.normalization_metadata,
     )
 
@@ -777,6 +963,22 @@ def extraction_component_circuit_specs(
                 )
             )
     return tuple(specs)
+
+
+def prepare_df_rte_event_inputs(
+    extraction: DFTailExtraction,
+    basis_registry: DFBasisRegistry | None = None,
+) -> DFRTEEventPreparation:
+    """Bundle a symbolic tail, circuit specs, and executable basis registry."""
+    from .df_rte_circuit import DFRTEEventPreparation
+
+    return DFRTEEventPreparation(
+        symbolic_tail=extraction_to_symbolic_rte_tail(extraction),
+        component_specs=extraction_component_circuit_specs(extraction),
+        basis_registry=(
+            extraction.basis_registry if basis_registry is None else basis_registry
+        ),
+    )
 
 
 def uncontrolled_identity_evolution_operator(

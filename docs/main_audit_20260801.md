@@ -176,3 +176,32 @@ The post-change suite result is **67 passed, 4 warnings in 2.95 s** (`3.51 s`
 wall time). The four warnings are the same pre-existing grouped-UWC
 `ComplexWarning` instances at `chemistry_hamiltonian.py:307`. The quarantined
 screening JSON was not used as input, expectation, or research evidence.
+
+## 10. Dense-free symbolic tail to event-input connection
+
+This follow-up started from clean `main` commit
+`f5f4782d5f70420aefd12c9fb63c1263fbcc2aed`, equal to `origin/main`. The
+pre-change suite result was **67 passed, 4 warnings in 3.29 s** (`3.84 s` wall
+time). The validation manifest passed before implementation.
+
+The DF normal path now converts an extraction into normalized symbolic
+`RTEComponent` probabilities, creates a finite config/distribution, classically
+samples a small fixed-seed event set, and validates future-builder requests
+against executable registry definitions. No dense operator is required.
+Deterministic-only empty randomized tails are represented explicitly.
+
+Count values now require Python or NumPy integers; bool, float, string, and
+negative inputs are not silently truncated. Registry operations require a
+stable matrix fingerprint from a supported at-most-four-qubit local operation;
+opaque or wider operations are rejected.
+
+Synthetic 20/26-qubit tests cover only the symbolic integration path. Small
+systems compare symbolic results with guarded dense references. No event
+circuit builder, transpilation, H10/H13 chemistry/statevector, GPU run, quantum
+shots, screening regeneration, or quarantined artifact use is part of this
+follow-up.
+
+The post-change suite result is **110 passed, 4 warnings in 2.63 s** (`3.20 s`
+wall time). The four warnings remain the pre-existing grouped-UWC
+`ComplexWarning` instances at `chemistry_hamiltonian.py:307`. The validation
+manifest and `git diff --check` both passed.

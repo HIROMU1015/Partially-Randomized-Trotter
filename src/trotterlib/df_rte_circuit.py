@@ -10,7 +10,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Literal, Protocol, TypeAlias
 
-from .rte import BasisChangeOperation, RTEEvent
+from .df_rte_tail import DFBasisDefinition, DFBasisRegistry, SymbolicRTETail
+from .rte import (
+    BasisChangeOperation,
+    DeterministicOnlyRTETailError,
+    RTEEvent,
+    RTEFiniteDistribution,
+    sample_rte_events,
+)
 
 
 @dataclass(frozen=True)
@@ -65,6 +72,136 @@ class DFRTEIdentityCircuitSpec:
 
 
 DFRTECircuitSpec: TypeAlias = DFRTEComponentCircuitSpec | DFRTEIdentityCircuitSpec
+
+
+@dataclass(frozen=True)
+class DFRTEEventPreparation:
+    """Dense-free bundle needed to sample and validate DF RTE event requests."""
+
+    symbolic_tail: SymbolicRTETail
+    component_specs: tuple[DFRTECircuitSpec, ...]
+    basis_registry: DFBasisRegistry
+
+    def __post_init__(self) -> None:
+        component_ids = tuple(
+            component.component_id for component in self.symbolic_tail.components
+        )
+        spec_ids = tuple(spec.component_id for spec in self.component_specs)
+        if spec_ids != component_ids:
+            raise ValueError(
+                "Circuit specs must preserve the symbolic component ordering."
+            )
+        definitions = {
+            metadata.basis_id: metadata
+            for metadata in self.symbolic_tail.basis_definitions
+        }
+        for basis_id in self.symbolic_tail.referenced_basis_ids:
+            registered = self.basis_registry.definition(basis_id)
+            if registered.metadata != definitions[basis_id]:
+                raise ValueError(
+                    f"Registry definition for {basis_id!r} does not match the tail."
+                )
+        for component, spec in zip(
+            self.symbolic_tail.components,
+            self.component_specs,
+            strict=True,
+        ):
+            if spec.coefficient_abs != component.coefficient_abs:
+                raise ValueError("Circuit spec coefficient does not match the tail.")
+            if spec.coefficient_sign != component.coefficient_sign:
+                raise ValueError("Circuit spec sign does not match the tail.")
+            if spec.basis_id != component.basis_id:
+                raise ValueError("Circuit spec basis ID does not match the tail.")
+            if spec.basis_hash != component.basis_hash:
+                raise ValueError("Circuit spec basis hash does not match the tail.")
+            if spec.diagonal_pauli_support != component.diagonal_pauli_support:
+                raise ValueError("Circuit spec support does not match the tail.")
+            if isinstance(spec, DFRTEIdentityCircuitSpec) != component.is_identity:
+                raise ValueError("Circuit spec identity type does not match the tail.")
+            if component.basis_id is None:
+                raise ValueError("DF symbolic component is missing a basis ID.")
+            definition = self.basis_registry.definition(component.basis_id)
+            if definition.basis_hash != component.basis_hash:
+                raise ValueError("Component basis hash does not match the registry.")
+            if definition.metadata.operations != component.basis_change_operations:
+                raise ValueError(
+                    "Component basis operations do not match the registry."
+                )
+
+    def resolve_event_basis_definitions(
+        self,
+        event: RTEEvent,
+    ) -> tuple[DFBasisDefinition, ...]:
+        """Resolve and fingerprint-check each event application in its order."""
+        resolved: list[DFBasisDefinition] = []
+        for application in event.application_sequence:
+            if application.basis_id is None:
+                raise ValueError("DF event application is missing a basis ID.")
+            definition = self.basis_registry.definition(application.basis_id)
+            if definition.basis_hash != application.basis_hash:
+                raise ValueError("Event basis hash does not match the registry.")
+            if definition.metadata.operations != application.basis_change_operations:
+                raise ValueError("Event basis operations do not match the registry.")
+            resolved.append(definition)
+        return tuple(resolved)
+
+    def sample_events(
+        self,
+        distribution: RTEFiniteDistribution,
+        *,
+        sample_count: int,
+        seed: int,
+    ) -> tuple[RTEEvent, ...]:
+        """Classically sample events from the symbolic normalized components."""
+        if self.symbolic_tail.is_deterministic_only:
+            raise DeterministicOnlyRTETailError(
+                "The tail has no randomized components to sample."
+            )
+        return sample_rte_events(
+            self.symbolic_tail.components,
+            distribution,
+            sample_count=sample_count,
+            seed=seed,
+        )
+
+    def request_for_event(
+        self,
+        event: RTEEvent,
+        *,
+        controlled: bool = False,
+        ancilla_qubit: int | None = None,
+    ) -> DFRTEEventCircuitRequest:
+        """Validate registry resolution and create a future-builder request."""
+        self.resolve_event_basis_definitions(event)
+        return DFRTEEventCircuitRequest(
+            event=event,
+            component_specs=self.component_specs,
+            controlled=controlled,
+            ancilla_qubit=ancilla_qubit,
+        )
+
+    def sample_requests(
+        self,
+        distribution: RTEFiniteDistribution,
+        *,
+        sample_count: int,
+        seed: int,
+        controlled: bool = False,
+        ancilla_qubit: int | None = None,
+    ) -> tuple[DFRTEEventCircuitRequest, ...]:
+        """Sample events and convert each to a validated circuit request."""
+        return tuple(
+            self.request_for_event(
+                event,
+                controlled=controlled,
+                ancilla_qubit=ancilla_qubit,
+            )
+            for event in self.sample_events(
+                distribution,
+                sample_count=sample_count,
+                seed=seed,
+            )
+        )
 
 
 def _validate_component_specs(
