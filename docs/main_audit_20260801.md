@@ -127,3 +127,26 @@ Pauli partial-randomized PF, fragment-summed analytic cost.
 Do not use: the quarantined tracked DF screening JSON, deleted Cgs-table
 values, or ignored/local regeneration files as published expectations or
 finite-RPE totals.
+
+## 8. Follow-up finite-RTE and DF-tail implementation basis
+
+The follow-up work started from clean commit
+`64c4b3afc90aeac76a35908dd969ccb464bf0618`, equal to `origin/main` at the
+start of the run. The pre-change suite result was **48 passed, 4 warnings in
+2.39 s**. The four warnings remained the existing grouped-UWC `ComplexWarning`
+at `chemistry_hamiltonian.py:307`.
+
+The current finite-RTE implementation uses arXiv:2503.05647v2 Appendix A,
+Eqs. (A18)–(A40). The repository PDF was identified as v1 and retained only as
+legacy reference material; hashes and dates are in `rte_source_versions.md`.
+
+This follow-up adds exact DF central-block I/Z/ZZ extraction and dense H2
+validation, but no DF RTE circuit builder, compiled circuit cost, finite-RPE
+total, regenerated screening artifact, or research conclusion. The quarantined
+screening JSON remains excluded from implementation inputs and test
+expectations.
+
+The post-change lightweight suite result is **57 passed, 4 warnings in 3.02 s**
+(`3.58 s` wall time measured by `/usr/bin/time`). The same four pre-existing
+grouped-UWC `ComplexWarning` instances remain; no new warning class or warning
+site was introduced.

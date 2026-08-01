@@ -2,186 +2,170 @@
 
 ## Scope and primary source
 
-The primary source is the repository copy of *Phase estimation with partially
-randomized time evolution*, especially Sec. IV, Eq. (10)--(11), Sec. V,
-Eq. (13)--(14), and Appendix A.2--A.3, Eq. (A3)--(A8).
+The primary source is Günther et al., *Phase estimation with partially
+randomized time evolution*, arXiv:2503.05647v2 (2026-07-10). The RTE formulas
+used here are Appendix A, Eqs. (A18)–(A31); partial randomization uses
+Eqs. (A32)–(A40). The repository PDF is v1 and is legacy reference material,
+not the implementation source. Exact source-file metadata is recorded in
+`docs/rte_source_versions.md`.
 
-This implementation is the Randomized Taylor Expansion (RTE) of Appendix A.2.
-It is not qDRIFT and never replaces an event by “sample one Hamiltonian term
-and exponentiate it.”  One RTE event contains one Pauli/involution rotation and
-an even-length product of additional involutions.
+This is the Randomized Taylor Expansion (RTE), not qDRIFT. One event contains
+one involution rotation and an even-length product of additional involutions.
+Every randomized component is validated as a Hermitian involution $P_l^2=I$.
+A complete DF fragment is generally not one such component.
 
-The proof in the paper assumes that every randomized component is a Hermitian
-involution, (P_l^2=I).  `trotterlib.rte` enforces that assumption.  Sec. VII B
-gives the DF conversion to use: expand a diagonal DF fragment into diagonal
-Paulis (P_m), then use
-
-\[
-\widetilde P_m=(U^{(l)})^\dagger P_mU^{(l)}.
-\]
-
-Each (\widetilde P_m) is still an involution and carries its source
-`df_fragment_id` and shared `basis_id`.  The whole generic DF fragment
-(U_l^\dagger D_lU_l), whose diagonal has more than two eigenvalues, is not one
-RTE component.  Treating it as if it were (P_l) would not be the cited RTE
-algorithm.
-
-## Tail decomposition
+## Tail decomposition and DF provenance
 
 The randomized tail is normalized as
 
-\[
+$$
 H_R=\lambda_R\sum_l p_lP_l,\qquad
 \lambda_R=\sum_l |h_l|,\qquad p_l=|h_l|/\lambda_R.
-\]
+$$
 
-The sign of (h_l) is absorbed into (P_l).  Identity terms are allowed and
-are kept in the same decomposition.  Their phase is a global phase on an
-uncontrolled system circuit, but a relative ancilla phase in a controlled
-Hadamard-test circuit.
+The sign of $h_l$ is absorbed into $P_l$. Each component and event application
+still records the original sign, absolute coefficient, identity flag, DF
+fragment ID, basis ID, diagonal Pauli support, basis-change operations, and
+circuit application index. This is needed when a future circuit builder uses
+an unsigned Z/ZZ support:
 
-The current DF ranking proxy
-`abs(lambda_l) * ||G_l||_F^2` is not automatically this RTE
-(\lambda_R).  The next stage must expand each selected diagonal DF tail
-fragment, combine its identity/Z/ZZ coefficients with a fixed convention, and
-hash the resulting (\widetilde P_m) LCU before computing the RTE norm.
+- a product occurrence of $-P$ contributes a scalar phase $-1$;
+- a rotation $\exp[-i\phi(-P)]$ uses the unsigned support with angle $-\phi$.
 
-## Dimensionless step time and integer steps
+These are distinct operations and are exposed as `product_sign_phase` and
+`unsigned_rotation_angle`.
 
-For physical tail evolution time (t_R) and integer RTE step count (r),
+Identity components may remain in the faithful RTE tail. On an uncontrolled
+system they are global phase; under control they are relative ancilla phase.
+The DF extractor also supports moving their exact sum to a deterministic phase
+baseline.
 
-\[
+The DF ranking value `abs(lambda_l) * ||G_l||_F^2` is only a selection proxy.
+The RTE $\lambda_R$ is recomputed from the exact signed I/Z/ZZ expansion and is
+stored separately.
+
+## Exact threshold policy and tail hash
+
+`normalize_involutory_tail(..., atol=0.0)` does not discard any nonzero
+coefficient. A nonzero threshold is explicit and records:
+
+- coefficient threshold and normalization policy;
+- input, retained, and dropped component counts;
+- dropped coefficient L1 and the corresponding operator-norm error bound.
+
+The tail hash covers the canonical input before thresholding plus the policy.
+Two inputs that retain the same terms but drop different terms therefore have
+different hashes.
+
+## Dimensionless time and finite distribution
+
+For physical tail time $t_R$ and integer RTE step count $r$,
+
+$$
 \Delta t=t_R/r,\qquad \tau=\lambda_R\Delta t.
-\]
+$$
 
-`rte_steps` is (r).  It counts repetitions of independently sampled RTE
-events.  It is not a Taylor order.  Negative evolution time is represented by
-signed (\tau); distribution weights depend on (|\tau|), while rotation
-angles retain its sign.
+`rte_steps` counts independently sampled events, not Taylor order. Distribution
+weights use $|\tau|$, while the rotation angle retains the sign of $\tau$.
 
-## Taylor-order distribution
+Appendix A pairs Taylor degrees $n$ and $n+1$ for even
+$n=0,2,4,\ldots$. Define
 
-Appendix A.2 pairs ordinary Taylor degrees (n) and (n+1) for even
-(n=0,2,4,\ldots).  Define
-
-\[
+$$
 a_n(\tau)=\frac{|\tau|^n}{n!}
 \sqrt{1+\frac{\tau^2}{(n+1)^2}}.
-\]
+$$
 
-For a finite, even cutoff (K), the implemented distribution is
+For finite even cutoff $K$,
 
-\[
+$$
 B_K(\tau)=\sum_{\substack{0\le n\le K\\n\ \mathrm{even}}}a_n(\tau),
 \qquad q_K(n)=a_n(\tau)/B_K(\tau).
-\]
+$$
 
-`exact_finite_distribution` is the directly summed (B_K).  The separate
-`paper_upper_bound` is the one-step specialization of Eq. (A5),
-(B_\infty(\tau)\le e^{\tau^2}).  These fields must not be interchanged.
+`exact_finite_distribution` is the directly summed $B_K$. The separately
+named `paper_upper_bound` stores $B_\infty\le e^{\tau^2}$. They are not
+interchangeable.
 
-The PDF's Eq. (A7) prints
-(B_{i_p}\le\exp(-\delta_{i_p}^2\lambda_R^2/r_{i_p})).  The minus sign cannot
-hold because (B_{i_p}) is a sum of positive LCU coefficients and is at least
-one.  Eq. (A5), Lemma A.2, and Eq. (A8) all use the positive exponent.  This
-implementation uses the directly summed finite (B_K\ge1) and retains the
-positive-exponent expression only as the paper upper bound.
+## Event coefficient, order, and angle sign
 
-## Conditional event distribution, coefficient, and phase
+Given even order $n$, sample $(l,l_1,\ldots,l_n)$ independently from $p$.
+The positive unnormalized event coefficient is
 
-Given order (n), sample (l,l_1,\ldots,l_n) independently from (p).  The
-event has unnormalized positive coefficient
-
-\[
+$$
 c_m=a_n(\tau)p_l p_{l_1}\cdots p_{l_n},
-\]
+$$
 
-finite event probability (c_m/B_K), phase
-((-1)^{n/2}), and unitary
+with probability $c_m/B_K$, phase $(-1)^{n/2}$, and unitary
 
-\[
+$$
 U_m=(-1)^{n/2}V_l(\phi_n)P_{l_n}\cdots P_{l_1},\qquad
 V_l(\phi)=e^{-i\phi P_l}.
-\]
+$$
 
-Circuit application order is therefore
-(P_{l_1},\ldots,P_{l_n},V_l(\phi_n)).  `selected_component_ids` and basis reuse
-intervals use this circuit order.  Baseline code must not reorder it.
+Circuit application order is
+$(P_{l_1},\ldots,P_{l_n},V_l(\phi_n))$. Baseline code preserves this order.
 
-Pairing the two Taylor degrees gives
+Direct algebra from v2 Eqs. (A18)–(A23) gives
 
-\[
+$$
 I-\frac{i\tau}{n+1}P_l
 =\sqrt{1+\frac{\tau^2}{(n+1)^2}}
 V_l\!\left(+\arctan\frac{\tau}{n+1}\right).
-\]
+$$
 
-Accordingly, this implementation uses
-(\phi_n=+\arctan(\tau/(n+1))).  The Appendix A PDF line following Eq. (A3)
-prints a minus sign, which conflicts with its own definition
-(V_l(\phi)=e^{-i\phi P_l}), the immediately preceding
-(I-i\tau P_l/(n+1)), and Lemma A.2.  The positive sign is fixed by direct
-dense reconstruction of (e^{-i\tau H}).  This source inconsistency remains a
-documented theoretical/editorial ambiguity to confirm with the authors or the
-source paper cited as Ref. [13].
+The implementation therefore uses
+$\phi_n=+\arctan(\tau/(n+1))$. This sign is confirmed by dense reconstruction
+of the finite Taylor polynomial. The displayed negative definition of
+$\phi_n$ in v2 is documented as a notation inconsistency only after checking
+the v2 text itself, its definition $V_l(\phi)=e^{-i\phi P_l}$, the preceding
+algebra, and the dense result.
 
-## Finite implementation and truncation bias
+## Exact enumeration versus Monte Carlo
 
-Only the finite set (n=0,2,\ldots,K) is sampled.  It exactly represents the
-ordinary Taylor polynomial through degree (K+1):
+`exact_enumerated_event_mean_operator` evaluates
+$\sum_m q_mU_m$ and requires the supplied event probabilities to sum to one.
+Duplicate records contribute their stated probability mass.
 
-\[
+`sample_event_mean_operator` accepts already sampled events and computes the
+unweighted mean $M^{-1}\sum_{j=1}^M U_j$. It never multiplies event
+probabilities again. Its result includes sample count, entrywise standard
+error, and a Frobenius standard-error summary. The old
+`finite_event_mean_operator` is a deprecated exact-enumeration wrapper.
+
+## Corrected operator, attenuation, and truncation
+
+The finite event mean and the normalization-corrected Taylor operator are
+different quantities:
+
+$$
 B_K\,\mathbb E_K[U]
 =\sum_{j=0}^{K+1}\frac{(-i\tau H_R/\lambda_R)^j}{j!}.
-\]
+$$
 
-The omitted LCU coefficient 1-norm is bounded by the scalar exponential tail
+`finite_rte_corrected_operator` returns the right-hand polynomial across all
+integer steps. `finite_rte_operator_moments` returns both that operator and the
+attenuated event mean, with the normalization product stored explicitly.
 
-\[
+For multiple tail occurrences, `compose_finite_rte_occurrences` multiplies the
+individual $B_{K_i}^{r_i}$ values. Occurrences may have different signed
+times, step counts, cutoffs, and tails; no common $B$ is assumed.
+
+The omitted one-step coefficient 1-norm is bounded by
+
+$$
 R_K(\tau)\le
 \sum_{j=K+2}^{\infty}\frac{|\tau|^j}{j!}.
-\]
+$$
 
-`truncation_residual_bound` evaluates this tail directly.  Automatic cutoff
-selection chooses the smallest even (K) with this value no larger than
-`truncation_tolerance`.  This is a one-step bound.  Multi-step and RPE-round
-bias must be propagated separately rather than relabeling it as the paper
-normalization bound.
-
-## RPE attenuation
-
-For infinite RTE, Lemma A.2 gives
-
-\[
-B^r\,\mathbb E[Z]=
-\langle\psi|e^{-it_RH_R}|\psi\rangle.
-\]
-
-Thus the normalization-only attenuation of one tail evolution is (B^{-r}).
-For a partial product formula with tail occurrences (i) and `partial-S2`
-repetition count (s), Eq. (A8) multiplies the corresponding normalizations;
-the round attenuation is their reciprocal.  Finite code stores the directly
-computed product from the selected integer parameters.  The paper's
-(\exp(O(\lambda_R^2\delta^2s/r))) expression is retained only as
-`paper_upper_bound` metadata.
-
-The finite-(K) operator is not exactly unbiased for the infinite exponential.
-Its truncation bias and normalization attenuation are reported separately.
-
-## Identity and controlled circuits
-
-Identity components participate in event probabilities and coefficients.
-Dense references include their phase exactly.  In the next circuit milestone,
-uncontrolled system global phase may be represented by circuit global phase;
-controlled events must convert it to an ancilla-relative phase.  Basis changes
-may remain uncontrolled when the central diagonal operation is controlled.
+This truncation bias is separate from normalization attenuation and from the
+deterministic product-formula error.
 
 ## Output taxonomy
 
-- `paper_upper_bound`: an analytic inequality from the paper.
-- `exact_finite_distribution`: a value computed from the selected integer
-  cutoff and normalized finite event distribution.
-- `empirical_compiled_estimate`: a transpiled circuit/event estimate with
+- `paper_upper_bound`: analytic inequality from the paper.
+- `exact_finite_distribution`: directly computed finite normalization.
+- `empirical_compiled_estimate`: transpiled event/circuit estimate with
   compiler and sampling metadata.
-- `legacy_analytic_proxy`: the pre-existing `G_rand`, `B(kappa)`, anchor-Cgs,
-  or fragment-summed cost model.  It is Level 0 and is not a finite-RPE total.
+- `legacy_analytic_proxy`: pre-existing `G_rand`, `B(kappa)`, anchor-Cgs, or
+  fragment-summed model; not a finite-RPE total.

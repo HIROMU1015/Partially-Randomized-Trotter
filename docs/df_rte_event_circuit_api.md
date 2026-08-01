@@ -1,94 +1,65 @@
-# Proposed DF RTE event circuit API
+# DF RTE event circuit types and Protocol
 
-The next milestone should implement the protocol already declared in
-`trotterlib.df_rte_circuit`.  This document fixes the intended semantics before
-circuit construction starts.
+`trotterlib.df_rte_circuit` currently contains types and a `Protocol`. It does
+not contain an actual circuit builder and must not be reported as one.
 
-## Boundary
+## Typed boundary
+
+`DFRTEComponentCircuitSpec` represents a non-identity DF-conjugated Z/ZZ
+involution. `DFRTEIdentityCircuitSpec` is a separate type whose uncontrolled
+action is global phase and controlled action is relative ancilla phase. Both
+carry coefficient magnitude and sign. Non-identity specs also carry fragment
+ID, basis ID, diagonal support, complete basis-change operation metadata, and
+system size.
+
+`DFRTEEventCircuitRequest` and `DFRTEEventSequenceCircuitRequest` validate that
+every event application has a matching spec with identical coefficient sign,
+magnitude, and identity classification. They reject baseline event reordering.
+
+The future builder boundary is:
 
 ```text
-DFRTEEventCircuitBuilder.build_event(
-    DFRTEEventCircuitRequest(
-        event: RTEEvent,
-        component_specs: tuple[DFRTEComponentCircuitSpec, ...],
-        controlled: bool,
-        ancilla_qubit: int | None,
-        preserve_event_order: True,
-        cancel_adjacent_equal_bases: True,
-        control_diagonal_only: True,
-        identity_as_relative_ancilla_phase: True,
-    )
-) -> DFRTEEventCircuitResult
+DFRTEEventCircuitBuilder.build_event(request) -> DFRTEEventCircuitResult
+DFRTEEventCircuitBuilder.build_sequence(request) -> DFRTEEventCircuitResult
 ```
 
-For the (r) integer steps of one tail evolution, the parallel
-`DFRTEEventSequenceCircuitRequest` / `build_sequence` entry point accepts an
-ordered tuple of events.  This is where a basis cancellation spanning two
-adjacent RTE-step boundaries is detected; it still cannot reorder either
-event or component order.
+## Required semantics for a future implementation
 
-Each component spec identifies one **proven Hermitian involution** and its DF
-fragment/basis provenance.  Following Sec. VII B of the primary paper, the
-baseline component is
+For a DF component, the established native builder applies the inverse
+basis-operation sequence, the central diagonal operation, and then the forward
+sequence. The dense reference in `df_rte_tail` follows this exact circuit
+orientation; labels do not assume a different matrix convention.
 
-\[
-\widetilde P_m=(U^{(l)})^\dagger P_mU^{(l)},
-\]
+The builder must:
 
-where `diagonal_involution_id` identifies the diagonal Pauli (P_m).  Multiple
-components from the same DF fragment share `basis_id`.  The API intentionally
-does not claim that the complete squared DF fragment is one involution.
+1. consume `event.application_sequence` in its existing order;
+2. emit $(-1)^{n/2}$, each signed product occurrence, and the final signed
+   rotation without conflating product phase with angle reversal;
+3. control only the central diagonal action when mathematically valid;
+4. convert identity/global phase to relative ancilla phase in a controlled
+   event;
+5. cancel only adjacent equal-basis inverse/forward pairs;
+6. preserve baseline event and step order;
+7. build, transpile, and count only—controlled resource validation does not
+   run statevector or quantum-shot sampling.
 
-## Required behavior
+The result type records the component order actually used, safely cancelled
+basis pairs, relative ancilla phase, and basis-switch count.
 
-1. Consume `event.selected_component_ids` in its existing circuit order.  The
-   request rejects `preserve_event_order=False`.
-2. Emit the order-(n) phase ((-1)^{n/2}), the (n) product components, and
-   the final rotation with the exact finite-RTE angle.
-3. For a component represented by (U_l^\dagger P_mU_l), keep (U_l) and
-   (U_l^\dagger) uncontrolled when mathematically valid and control only the
-   central diagonal operation.
-4. Convert identity/global phase to ancilla-relative phase in controlled
-   circuits.  Do not discard Qiskit `global_phase` during control conversion.
-5. Cancel only adjacent (U_lU_l^\dagger) pairs with identical `basis_id`.
-   Record the count and the resulting basis-switch count.
-6. Never group or reorder separated equal-fragment events in the baseline.
-   Basis-aware block randomization belongs in a separate experiment and must
-   revalidate the expected operator or quantify additional bias.
-7. Build/transpile/count only.  Do not run statevector or quantum-shot
-   sampling for controlled resource circuits.
+## DF-to-RTE conversion already implemented
 
-## Returned evidence
+`trotterlib.df_rte_tail` now performs the prerequisite conversion:
 
-`DFRTEEventCircuitResult` returns the circuit, the component order actually
-used, number of safely cancelled basis-change pairs, relative ancilla phase,
-and basis-switch count.  A later cost layer should transpile this result and
-create `CircuitCost` with:
+$$
+\lambda_l\left(\sum_k\eta_{lk}n_k\right)^2
+=c_I I+\sum_k c_k Z_k+\sum_{k<j}c_{kj}Z_kZ_j.
+$$
 
-- primary `rz_count`;
-- `rz_depth`, `cx_count`, `cx_depth`, `total_depth`, `circuit_size`;
-- complete `CompilerSettings` and fidelity level;
-- `exact_finite_distribution` for enumerated small-system expectations or
-  `empirical_compiled_estimate` plus sample variance/error/confidence interval
-  for stratified classical event sampling.
+It aggregates identical support only inside one fragment/basis, retains fixed
+canonical ordering and hashing, and computes the actual RTE coefficient L1.
+It supports both faithful identity-in-tail and extracted deterministic-phase
+policies. Small dense references verify the central expansion, basis-conjugated
+fragment, multiple-fragment tail, and controlled identity phase.
 
-## Required DF-to-RTE conversion
-
-Appendix A RTE requires (P_l^2=I), while a complete chemistry DF fragment
-(U_l^\dagger D_lU_l) generally has a multi-valued spectrum.  The baseline
-conversion is therefore the construction stated in Sec. VII B:
-
-1. expand the diagonal number-operator polynomial (D_l) into identity, Z,
-   and ZZ Pauli terms with their exact signed coefficients;
-2. conjugate each non-identity diagonal Pauli by the fragment orbital basis
-   change to obtain (\widetilde P_m);
-3. retain the source fragment and shared basis IDs so adjacent event components
-   can safely reuse basis changes;
-4. define (\lambda_R), component probabilities, identity/global phase, and
-   the tail hash from this exact expansion.
-
-Coefficient aggregation, zero thresholds, and identity handling must be fixed
-and dense-validated against the existing DF Hamiltonian before circuit costs
-are produced.  A generalized non-involutory RTE or block encoding would be a
-separate method, not the baseline.  Substituting a raw DF fragment into the
-Pauli formula remains forbidden.
+Circuit construction itself remains the next milestone after these types and
+validated inputs.

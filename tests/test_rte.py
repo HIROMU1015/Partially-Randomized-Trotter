@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+from dataclasses import replace
 
 import numpy as np
 from scipy.linalg import expm
@@ -12,15 +13,20 @@ from trotterlib.df_partial_randomized_pf import (
 )
 from trotterlib.rte import (
     InvolutoryTailTerm,
+    compose_finite_rte_occurrences,
     enumerate_rte_events,
     event_unitary,
+    exact_enumerated_event_mean_operator,
     finite_event_mean_operator,
     finite_rte_attenuation,
+    finite_rte_combined_attenuation,
+    finite_rte_corrected_operator,
     finite_rte_distribution,
     finite_rte_multi_step_operator,
     finite_taylor_operator,
     make_rte_config,
     normalize_involutory_tail,
+    sample_event_mean_operator,
     sample_rte_events,
 )
 
@@ -195,6 +201,127 @@ def test_fixed_seed_reproduces_event_sequence() -> None:
 
     assert first == second
     assert first != different
+
+
+def test_threshold_is_opt_in_audited_and_part_of_prethreshold_hash() -> None:
+    tiny = 1e-14
+    default_tail = normalize_involutory_tail(
+        "threshold",
+        (
+            InvolutoryTailTerm("large", 0.5, X),
+            InvolutoryTailTerm("tiny", tiny, Z),
+        ),
+    )
+    thresholded = normalize_involutory_tail(
+        "threshold",
+        (
+            InvolutoryTailTerm("large", 0.5, X),
+            InvolutoryTailTerm("tiny", tiny, Z),
+        ),
+        atol=1e-12,
+    )
+    different_dropped_input = normalize_involutory_tail(
+        "threshold",
+        (
+            InvolutoryTailTerm("large", 0.5, X),
+            InvolutoryTailTerm("tiny", 2.0 * tiny, Z),
+        ),
+        atol=1e-12,
+    )
+
+    assert len(default_tail.components) == 2
+    assert thresholded.normalization_metadata.dropped_component_count == 1
+    assert thresholded.normalization_metadata.dropped_coefficient_l1 == tiny
+    assert thresholded.normalization_metadata.operator_error_bound == tiny
+    assert thresholded.tail_hash != different_dropped_input.tail_hash
+    assert thresholded.components == different_dropped_input.components
+
+
+def test_exact_and_sample_event_means_are_distinct_apis() -> None:
+    tail = _toy_tail()
+    distribution = finite_rte_distribution(0.2, 2)
+    operators = _operator_map(tail)
+    exact_events = enumerate_rte_events(tail.components, distribution)
+    expected = exact_enumerated_event_mean_operator(exact_events, operators)
+    sampled = sample_rte_events(
+        tail.components,
+        distribution,
+        sample_count=4000,
+        seed=20260801,
+    )
+    estimate = sample_event_mean_operator(sampled, operators)
+
+    assert estimate.sample_count == 4000
+    assert estimate.entrywise_standard_error.shape == expected.shape
+    assert np.linalg.norm(estimate.operator_mean - expected) < (
+        6.0 * estimate.frobenius_standard_error
+    )
+    with np.testing.assert_raises(ValueError):
+        exact_enumerated_event_mean_operator(sampled, operators)
+
+    split_first = replace(
+        exact_events[0], event_probability=exact_events[0].event_probability / 2.0
+    )
+    duplicated_enumeration = (split_first, split_first, *exact_events[1:])
+    np.testing.assert_allclose(
+        exact_enumerated_event_mean_operator(duplicated_enumeration, operators),
+        expected,
+    )
+
+
+def test_signed_product_phase_and_rotation_angle_are_separate() -> None:
+    tail = _toy_tail()
+    distribution = finite_rte_distribution(0.2, 2)
+    events = enumerate_rte_events(tail.components, distribution)
+    event = next(
+        candidate
+        for candidate in events
+        if candidate.taylor_order == 2
+        and candidate.rotation_component_id == "z"
+        and candidate.product_component_ids == ("z", "x")
+    )
+
+    assert event.application_sequence[-1].role == "rotation"
+    assert event.unsigned_rotation_angle == -event.rotation_angle
+    assert event.product_sign_phase == -1
+    assert [item.application_index for item in event.application_sequence] == [0, 1, 2]
+    assert event.application_sequence[0].component_id == "z"
+    assert event.application_sequence[-1].component_id == "z"
+
+
+def test_heterogeneous_occurrences_multiply_their_own_normalizations() -> None:
+    tail = _toy_tail()
+    first, _ = make_rte_config(
+        tail,
+        evolution_time=0.2,
+        rte_steps=2,
+        finite_taylor_order=2,
+        truncation_tolerance=1.0,
+    )
+    second, _ = make_rte_config(
+        tail,
+        evolution_time=-0.1,
+        rte_steps=3,
+        finite_taylor_order=4,
+        truncation_tolerance=1.0,
+    )
+    moments = compose_finite_rte_occurrences(
+        (
+            (tail.normalized_hamiltonian, first),
+            (tail.normalized_hamiltonian, second),
+        )
+    )
+    expected_corrected = finite_rte_corrected_operator(
+        tail.normalized_hamiltonian, second
+    ) @ finite_rte_corrected_operator(tail.normalized_hamiltonian, first)
+    expected_attenuation = finite_rte_combined_attenuation((first, second))
+
+    np.testing.assert_allclose(moments.corrected_operator, expected_corrected)
+    np.testing.assert_allclose(
+        moments.attenuated_event_mean_operator,
+        expected_attenuation * expected_corrected,
+    )
+    np.testing.assert_allclose(moments.attenuation_factor, expected_attenuation)
 
 
 def _dense_df(hamiltonian: DFHamiltonian) -> np.ndarray:

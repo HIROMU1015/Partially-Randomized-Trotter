@@ -19,6 +19,9 @@
 - 機械可読な状態とパス検査: [`artifacts/validation_manifest.json`](artifacts/validation_manifest.json)
 - manifest の自己検査: `python3 scripts/check_validation_manifest.py`
 - partial-randomized PF の実装説明: [`README_partial_randomized_pf.md`](README_partial_randomized_pf.md)
+- finite RTE の規約と API: [`docs/rte_conventions.md`](docs/rte_conventions.md)
+- DF-tail の厳密 I/Z/ZZ 抽出: [`docs/df_rte_tail_extraction.md`](docs/df_rte_tail_extraction.md)
+- RTE 一次資料の版管理: [`docs/rte_source_versions.md`](docs/rte_source_versions.md)
 
 検証ステータスが `validated` になるまでは、DF screening や UWC の数値を最終結論として引用しないでください。
 
@@ -28,6 +31,7 @@
 - QPEのβ評価
 - 誤差のlog-logフィット結果を保存
 - パウリ回転数/RZ・T-depth外挿
+- 有限 RTE の厳密列挙平均・Monte Carlo 標本平均と、小規模 DF-tail の厳密 I/Z/ZZ 抽出
 
 ## ディレクトリ構成
 - `src/trotterlib/`: 実験用ライブラリ本体
