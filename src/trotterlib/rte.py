@@ -578,6 +578,41 @@ class CompilerSettings:
     transpiler_seed: int
     qiskit_version: str
 
+    def __post_init__(self) -> None:
+        if not self.basis_gates or any(
+            not isinstance(name, str) or not name.strip()
+            for name in self.basis_gates
+        ):
+            raise ValueError("basis_gates must contain at least one gate name.")
+        object.__setattr__(
+            self,
+            "basis_gates",
+            tuple(name.strip().lower() for name in self.basis_gates),
+        )
+        optimization_level = require_integer_count(
+            self.optimization_level,
+            name="optimization_level",
+        )
+        if optimization_level > 3:
+            raise ValueError("optimization_level must be between 0 and 3.")
+        object.__setattr__(self, "optimization_level", optimization_level)
+        object.__setattr__(
+            self,
+            "transpiler_seed",
+            require_integer_count(self.transpiler_seed, name="transpiler_seed"),
+        )
+        if not self.qiskit_version:
+            raise ValueError("qiskit_version must not be empty.")
+        if self.coupling_map is not None:
+            normalized_edges = tuple(
+                (
+                    require_integer_count(left, name="coupling_map qubit"),
+                    require_integer_count(right, name="coupling_map qubit"),
+                )
+                for left, right in self.coupling_map
+            )
+            object.__setattr__(self, "coupling_map", normalized_edges)
+
 
 @dataclass(frozen=True)
 class CircuitCost:
@@ -595,6 +630,11 @@ class CircuitCost:
         "paper_upper_bound",
         "exact_finite_distribution",
         "empirical_compiled_estimate",
+        "exact_compiled_expectation",
+        "monte_carlo_compiled_expectation",
+        "monte_carlo_compiled_sequence_expectation",
+        "compiled_cost_standard_error",
+        "compiled_sequence_nonadditive_difference",
         "legacy_analytic_proxy",
     ]
 

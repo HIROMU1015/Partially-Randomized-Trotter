@@ -1,12 +1,13 @@
-"""Types and Protocol for a future DF RTE event circuit implementation.
+"""Dense-free requests, results, and Protocol for DF RTE event circuits.
 
-No circuit builder is implemented here.  The protocol below prevents a
-future builder from silently reordering RTE events or controlling DF basis
-changes when only the diagonal evolution needs control.
+The concrete Qiskit implementation lives in :mod:`trotterlib.df_rte_qiskit`.
+The boundary here prevents builders from silently reordering RTE events or
+controlling DF basis changes when only the diagonal evolution needs control.
 """
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from typing import Any, Literal, Protocol, TypeAlias
 
@@ -14,8 +15,10 @@ from .df_rte_tail import DFBasisDefinition, DFBasisRegistry, SymbolicRTETail
 from .rte import (
     BasisChangeOperation,
     DeterministicOnlyRTETailError,
+    RTEConfig,
     RTEEvent,
     RTEFiniteDistribution,
+    require_integer_count,
     sample_rte_events,
 )
 
@@ -170,14 +173,18 @@ class DFRTEEventPreparation:
         *,
         controlled: bool = False,
         ancilla_qubit: int | None = None,
+        cancel_adjacent_equal_bases: bool = True,
     ) -> DFRTEEventCircuitRequest:
-        """Validate registry resolution and create a future-builder request."""
+        """Validate registry resolution and create a builder request."""
         self.resolve_event_basis_definitions(event)
         return DFRTEEventCircuitRequest(
             event=event,
             component_specs=self.component_specs,
             controlled=controlled,
             ancilla_qubit=ancilla_qubit,
+            cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
+            tail_id=self.symbolic_tail.tail_id,
+            tail_hash=self.symbolic_tail.tail_hash,
         )
 
     def sample_requests(
@@ -188,6 +195,7 @@ class DFRTEEventPreparation:
         seed: int,
         controlled: bool = False,
         ancilla_qubit: int | None = None,
+        cancel_adjacent_equal_bases: bool = True,
     ) -> tuple[DFRTEEventCircuitRequest, ...]:
         """Sample events and convert each to a validated circuit request."""
         return tuple(
@@ -195,12 +203,66 @@ class DFRTEEventPreparation:
                 event,
                 controlled=controlled,
                 ancilla_qubit=ancilla_qubit,
+                cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
             )
             for event in self.sample_events(
                 distribution,
                 sample_count=sample_count,
                 seed=seed,
             )
+        )
+
+    def sample_occurrence_request(
+        self,
+        config: RTEConfig,
+        distribution: RTEFiniteDistribution,
+        *,
+        seed: int,
+        controlled: bool = False,
+        ancilla_qubit: int | None = None,
+        cancel_adjacent_equal_bases: bool = True,
+    ) -> DFRTEEventSequenceCircuitRequest:
+        """Sample exactly one configured RTE occurrence of ``rte_steps`` events."""
+        if config.tail_id != self.symbolic_tail.tail_id:
+            raise ValueError("RTE config tail ID does not match the symbolic tail.")
+        if config.tail_hash != self.symbolic_tail.tail_hash:
+            raise ValueError("RTE config tail hash does not match the symbolic tail.")
+        if not math.isclose(config.lambda_r, self.symbolic_tail.lambda_r, abs_tol=1e-14):
+            raise ValueError("RTE config lambda_r does not match the symbolic tail.")
+        if config.finite_taylor_order != distribution.finite_taylor_order:
+            raise ValueError("RTE config and distribution Taylor cutoffs differ.")
+        if not math.isclose(
+            config.dimensionless_step_time,
+            distribution.dimensionless_step_time,
+            rel_tol=1e-14,
+            abs_tol=1e-15,
+        ):
+            raise ValueError("RTE config and distribution step times differ.")
+        if not math.isclose(
+            config.distribution_normalization,
+            distribution.exact_finite_distribution,
+            rel_tol=1e-14,
+            abs_tol=1e-15,
+        ):
+            raise ValueError("RTE config and distribution normalizations differ.")
+        events = self.sample_events(
+            distribution,
+            sample_count=config.rte_steps,
+            seed=seed,
+        )
+        if len(events) != config.rte_steps:
+            raise RuntimeError("Sampled occurrence event count does not match rte_steps.")
+        for event in events:
+            self.resolve_event_basis_definitions(event)
+        return DFRTEEventSequenceCircuitRequest(
+            events=events,
+            component_specs=self.component_specs,
+            controlled=controlled,
+            ancilla_qubit=ancilla_qubit,
+            cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
+            tail_id=self.symbolic_tail.tail_id,
+            tail_hash=self.symbolic_tail.tail_hash,
+            occurrence_rte_steps=config.rte_steps,
         )
 
 
@@ -247,12 +309,22 @@ class DFRTEEventCircuitRequest:
     cancel_adjacent_equal_bases: bool = True
     control_diagonal_only: bool = True
     identity_as_relative_ancilla_phase: bool = True
+    tail_id: str | None = None
+    tail_hash: str | None = None
 
     def __post_init__(self) -> None:
         if not self.preserve_event_order:
             raise ValueError("Baseline RTE forbids event reordering.")
         if self.controlled and self.ancilla_qubit is None:
             raise ValueError("A controlled event requires ancilla_qubit.")
+        if self.ancilla_qubit is not None:
+            object.__setattr__(
+                self,
+                "ancilla_qubit",
+                require_integer_count(self.ancilla_qubit, name="ancilla_qubit"),
+            )
+        if (self.tail_id is None) != (self.tail_hash is None):
+            raise ValueError("tail_id and tail_hash must be supplied together.")
         _validate_component_specs((self.event,), self.component_specs)
 
 
@@ -268,6 +340,9 @@ class DFRTEEventSequenceCircuitRequest:
     cancel_adjacent_equal_bases: bool = True
     control_diagonal_only: bool = True
     identity_as_relative_ancilla_phase: bool = True
+    tail_id: str | None = None
+    tail_hash: str | None = None
+    occurrence_rte_steps: int | None = None
 
     def __post_init__(self) -> None:
         if not self.events:
@@ -276,6 +351,25 @@ class DFRTEEventSequenceCircuitRequest:
             raise ValueError("Baseline RTE forbids event reordering.")
         if self.controlled and self.ancilla_qubit is None:
             raise ValueError("A controlled event sequence requires ancilla_qubit.")
+        if self.ancilla_qubit is not None:
+            object.__setattr__(
+                self,
+                "ancilla_qubit",
+                require_integer_count(self.ancilla_qubit, name="ancilla_qubit"),
+            )
+        if (self.tail_id is None) != (self.tail_hash is None):
+            raise ValueError("tail_id and tail_hash must be supplied together.")
+        if self.occurrence_rte_steps is not None:
+            steps = require_integer_count(
+                self.occurrence_rte_steps,
+                name="occurrence_rte_steps",
+                minimum=1,
+            )
+            object.__setattr__(self, "occurrence_rte_steps", steps)
+            if len(self.events) != steps:
+                raise ValueError(
+                    "Occurrence sequence event count must equal occurrence_rte_steps."
+                )
         _validate_component_specs(self.events, self.component_specs)
 
 
@@ -286,10 +380,37 @@ class DFRTEEventCircuitResult:
     cancelled_basis_change_pairs: int
     relative_ancilla_phase: float
     basis_switch_count: int
+    controlled: bool = False
+    event_count: int = 1
+    application_count: int = 0
+    naive_basis_change_count: int = 0
+    emitted_basis_change_count: int = 0
+    accumulated_global_phase: float = 0.0
+    basis_reuse_policy: Literal["disabled", "raw_adjacent_equal_basis"] = (
+        "disabled"
+    )
+    circuit_qubit_count: int = 0
+    circuit_fingerprint: str = ""
+
+    def __post_init__(self) -> None:
+        for name, minimum in (
+            ("cancelled_basis_change_pairs", 0),
+            ("basis_switch_count", 0),
+            ("event_count", 1),
+            ("application_count", 0),
+            ("naive_basis_change_count", 0),
+            ("emitted_basis_change_count", 0),
+            ("circuit_qubit_count", 0),
+        ):
+            object.__setattr__(
+                self,
+                name,
+                require_integer_count(getattr(self, name), name=name, minimum=minimum),
+            )
 
 
 class DFRTEEventCircuitBuilder(Protocol):
-    """Proposed API implemented only after the finite RTE math milestone."""
+    """Interface implemented by concrete DF RTE event circuit builders."""
 
     def build_event(
         self, request: DFRTEEventCircuitRequest

@@ -205,3 +205,50 @@ The post-change suite result is **110 passed, 4 warnings in 2.63 s** (`3.20 s`
 wall time). The four warnings remain the pre-existing grouped-UWC
 `ComplexWarning` instances at `chemistry_hamiltonian.py:307`. The validation
 manifest and `git diff --check` both passed.
+
+## 11. Qiskit DF-RTE event circuits and compiled expectations
+
+This follow-up started from clean `main` commit
+`949b4a666c52f6ef2eec35d5c432b69abd7f8a52`, equal to `origin/main`. The
+pre-change suite result was **110 passed, 4 warnings in 2.68 s** (`3.24 s`
+wall time). The validation manifest passed, and the quarantined screening JSON
+was not used.
+
+`QiskitDFRTEEventCircuitBuilder` now constructs ordered single events and
+short occurrences. It distinguishes product Z/ZZ involutions, signed Z/ZZ
+rotations, identity phase, product sign, and paired-Taylor phase. Controlled
+circuits implement the complete `diag(I, U)` convention: local basis changes
+remain uncontrolled, only the central action is controlled, and scalar phase
+becomes ancilla-relative. Raw adjacent equal-basis pairs may be reused within
+or across event boundaries; identities are conservative reuse barriers.
+
+Small-system tests cover all 68 events of a two-qubit faithful-identity case
+at finite Taylor cutoff 2 and compare the complete Qiskit matrix with the
+dense event oracle. Controlled representatives include identity, order-2
+product phase, and ZZ rotation, without discarding relative phase. Ordered
+multi-event circuits and reuse-on/off circuits also match the dense reference.
+Synthetic 20/26-qubit tests stop at circuit construction and prohibit
+many-body `Operator`, statevector, dense DF helpers, full enumeration, and
+transpilation.
+
+Compiled cost records now separate integer per-circuit measurements from
+floating expectations. Exact enumeration probability-weights every compiled
+event once. Monte Carlo reports the unweighted mean, unbiased variance, and
+standard error, with semantic-circuit/compiler caching. A representative
+controlled one-component case at dimensionless time 1.2 has exact expected RZ
+count `5.331747250524967`; 100 classical samples at seed 8 give `5.41` with
+standard error `0.04943110704237104`. These values are test fixtures for the
+algorithm, not chemistry resource results.
+
+For a representative three-event occurrence (12 classical sequence samples,
+seed 3), the mean complete-sequence RZ count is `3.0`, the mean sum of
+individually transpiled event counts is `9.0`, and the recorded nonadditive
+difference is `-6.0`. This difference includes adjacent basis reuse and
+transpiler cancellation. It is not a partial-S2 or RPE total.
+
+The post-change lightweight suite result is **128 passed, 4 warnings in 3.80
+s** (`4.35 s` wall time). The warnings are still the same four pre-existing
+grouped-UWC `ComplexWarning` instances at `chemistry_hamiltonian.py:307`; no
+new warning was introduced. The validation manifest and `git diff --check`
+passed. No commit or push was performed, so `HEAD` and `origin/main` remain at
+the starting SHA.

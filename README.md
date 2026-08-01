@@ -22,6 +22,7 @@
 - finite RTE の規約と API: [`docs/rte_conventions.md`](docs/rte_conventions.md)
 - DF-tail の厳密 I/Z/ZZ 抽出: [`docs/df_rte_tail_extraction.md`](docs/df_rte_tail_extraction.md)
 - DF RTE event入力API: [`docs/df_rte_event_circuit_api.md`](docs/df_rte_event_circuit_api.md)
+- DF RTE event/短列のcompiled期待コスト: [`docs/rte_compiled_event_cost.md`](docs/rte_compiled_event_cost.md)
 - RTE step/occurrence/RPE round の打切り予算: [`docs/rte_truncation_budget.md`](docs/rte_truncation_budget.md)
 - RTE 一次資料の版管理: [`docs/rte_source_versions.md`](docs/rte_source_versions.md)
 
@@ -33,7 +34,12 @@
 - QPEのβ評価
 - 誤差のlog-logフィット結果を保存
 - パウリ回転数/RZ・T-depth外挿
-- 有限 RTE の列挙・標本平均、RPEラウンド打切り予算、dense-free DF-tailからevent回路入力までの準備
+- 有限 RTE の列挙・標本平均、RPEラウンド打切り予算、dense-free DF-tailからQiskit event回路構築、単一eventと短いevent列のcompiled期待コスト
+
+DF-RTEのcompiledコストは、固定したcompiler設定で実際にtranspileした
+RZ/CX count/depthを対象とする。小event空間ではexact enumeration、大きい
+空間では古典Monte Carloと標準誤差を使用する。これはstate preparation、
+量子shot、partial-S2全体、またはRPE総コストを含まない。
 
 ## ディレクトリ構成
 - `src/trotterlib/`: 実験用ライブラリ本体

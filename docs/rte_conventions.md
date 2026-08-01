@@ -146,6 +146,30 @@ probabilities again. Its result includes sample count, entrywise standard
 error, and a Frobenius standard-error summary. The old
 `finite_event_mean_operator` is a deprecated exact-enumeration wrapper.
 
+The same probability rule is used for compiled circuit costs. Exact event
+enumeration computes a probability-weighted sum once. Classical Monte Carlo
+uses an unweighted arithmetic mean and stores unbiased variance and standard
+error; it never applies `event_probability` to a sampled cost a second time.
+These are circuit-cost statistics, not quantum measurement shots.
+
+## Circuit construction and compiled-cost fidelity
+
+The Qiskit DF event builder implements each component as inverse basis,
+central unsigned Z/ZZ action, then forward basis. Products apply involutions;
+only the final component is an `RZ(2*angle)` or `RZZ(2*angle)` rotation.
+Taylor phase, product signs, signed rotation angle, and identity phase are
+separate. In a controlled event, basis operations remain uncontrolled while
+only the central action is controlled; scalar/global phase becomes relative
+ancilla phase. See `df_rte_event_circuit_api.md` for the exact rules.
+
+Compiled cost levels are: Level 0 analytic proxy/bound, Level 1 symbolic
+primitive sum, Level 2 constructed untranspiled event, Level 3 transpiled
+single-event expectation, and Level 4 transpiled short-sequence expectation.
+Levels 5 (partial-S2/short RPE) and 6 (selected long RPE) are future work.
+Actual per-circuit counts are integers; expected or Monte Carlo mean counts are
+floats. Compiler conditions are part of the cost identity, and costs produced
+under different settings must not be directly mixed.
+
 ## Corrected operator and attenuation
 
 The finite event mean and the normalization-corrected Taylor operator are
@@ -216,5 +240,13 @@ attenuation-driven shot growth, and classical event-cost sampling error. See
 - `exact_finite_distribution`: directly computed finite normalization.
 - `empirical_compiled_estimate`: transpiled event/circuit estimate with
   compiler and sampling metadata.
+- `exact_compiled_expectation`: event-space probability sum of actually
+  transpiled single-event metrics (Level 3).
+- `monte_carlo_compiled_expectation`: unweighted classical event-sample mean
+  with sampling standard error (Level 3).
+- `monte_carlo_compiled_sequence_expectation`: complete short-sequence sample
+  mean, stored beside the additive-event comparison (Level 4).
+- `compiled_sequence_nonadditive_difference`: sequence cost minus the sum of
+  individually transpiled event costs for matching samples.
 - `legacy_analytic_proxy`: pre-existing `G_rand`, `B(kappa)`, anchor-Cgs, or
   fragment-summed model; not a finite-RPE total.

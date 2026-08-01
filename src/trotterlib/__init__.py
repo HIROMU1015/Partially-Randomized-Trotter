@@ -132,7 +132,29 @@ from .df_rte_tail import (
     extraction_to_symbolic_rte_tail,
     prepare_df_rte_event_inputs,
 )
-from .df_rte_circuit import DFRTEEventPreparation
+from .df_rte_circuit import (
+    DFRTEComponentCircuitSpec,
+    DFRTEEventCircuitBuilder,
+    DFRTEEventCircuitRequest,
+    DFRTEEventCircuitResult,
+    DFRTEEventPreparation,
+    DFRTEEventSequenceCircuitRequest,
+    DFRTEIdentityCircuitSpec,
+)
+from .df_rte_qiskit import QiskitDFRTEEventCircuitBuilder
+from .rte_compiled_cost import (
+    CompiledEventCostEstimate,
+    CompiledMetricStatistics,
+    CompiledSequenceCostEstimate,
+    TranspiledCircuitCost,
+    TranspiledCircuitCostCache,
+    canonical_qiskit_circuit_fingerprint,
+    compiler_settings_hash,
+    estimate_compiled_occurrence_cost,
+    estimate_exact_compiled_event_cost,
+    estimate_monte_carlo_compiled_event_cost,
+    transpile_and_measure_cost,
+)
 
 __all__ = [
     "jw_hamiltonian_maker",
@@ -238,5 +260,23 @@ __all__ = [
     "extraction_to_normalized_rte_tail",
     "extraction_to_symbolic_rte_tail",
     "prepare_df_rte_event_inputs",
+    "DFRTEComponentCircuitSpec",
+    "DFRTEEventCircuitBuilder",
+    "DFRTEEventCircuitRequest",
+    "DFRTEEventCircuitResult",
     "DFRTEEventPreparation",
+    "DFRTEEventSequenceCircuitRequest",
+    "DFRTEIdentityCircuitSpec",
+    "QiskitDFRTEEventCircuitBuilder",
+    "CompiledEventCostEstimate",
+    "CompiledMetricStatistics",
+    "CompiledSequenceCostEstimate",
+    "TranspiledCircuitCost",
+    "TranspiledCircuitCostCache",
+    "canonical_qiskit_circuit_fingerprint",
+    "compiler_settings_hash",
+    "estimate_compiled_occurrence_cost",
+    "estimate_exact_compiled_event_cost",
+    "estimate_monte_carlo_compiled_event_cost",
+    "transpile_and_measure_cost",
 ]
