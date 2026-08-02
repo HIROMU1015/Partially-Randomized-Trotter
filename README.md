@@ -44,6 +44,11 @@ RZ/CX count/depthを対象とする。小event空間ではexact enumeration、�
 sweepとRTE occurrenceを結合したpartial-S2一反復に加え、短い複数反復を
 一つの回路としてtranspileするLevel 5-R検証を扱う。state preparation、
 量子shot、長い `2**m` 回路、またはRPE総コストは含まない。
+反復APIは監査用provenance fingerprint（seed規約を含む）とcache用circuit
+semantics fingerprint（seedを含まず実回路だけを表す）を分離し、既定の
+`full_diagnostics`に加えて選択した全体回路だけをtranspileする
+`selected_only`を提供する。exact確率和とRTEパラメータ比較の許容誤差は
+明示され、許容内の確率和はraw値を記録したうえで期待値用に正規化される。
 
 ## ディレクトリ構成
 - `src/trotterlib/`: 実験用ライブラリ本体

@@ -21,8 +21,9 @@ metrics. This work does not implement an RPE estimator or RPE total cost.
 
 `DFPartialS2RepeatedRequest` stores one preparation, step time, RTE config and
 finite distribution, `q` ordered occurrences, control/ancilla condition,
-step seeds, master seed, and construction policy. Each occurrence is validated
-by the existing one-step request validator.
+master/trajectory/step seeds, the sampling convention, and construction
+policy. Each occurrence is validated by the existing one-step request
+validator.
 
 A trajectory is step-major ordered data:
 
@@ -35,11 +36,19 @@ step q-1
 
 Qiskit circuit instructions append step 0 through step `q-1`. Consequently,
 the dense matrix convention is `U_(q-1) ... U_1 U_0`: the rightmost matrix
-acts first. The trajectory fingerprint contains the tail hash, master and
-per-step seeds, step order, event order, ordered event fingerprints, and each
-occurrence fingerprint. The circuit fingerprint additionally contains
-preparation/partition hashes, `q`, time, control/ancilla condition, and
-construction/boundary policy.
+acts first.
+
+Two identities are deliberately separate. The provenance fingerprint is for
+reproduction and audit: it contains the tail hash, master/trajectory/step
+seeds, sampling convention, step/event order, ordered event fingerprints, and
+each occurrence fingerprint. The circuit-semantics fingerprint is for
+transpile caching: it contains no seed, but binds the preparation,
+Hamiltonian, partition and tail hashes, ordered events and step fingerprints,
+time, `q`, control and ancilla position, identity and basis-reuse policies,
+raw/boundary construction, matrix/event ordering, and a circuit-construction
+version. `trajectory_fingerprint` and `compiler_independent_fingerprint`
+remain compatibility aliases for provenance and circuit semantics,
+respectively.
 
 `make_df_partial_s2_repeated_request` uses the supplied seed directly for the
 single step when `q=1`. For `q>1`, `random.Random(master_seed)` generates one
@@ -47,7 +56,9 @@ independent step seed per occurrence; each step seed samples exactly
 `rte_steps` events. Monte Carlo adds one outer level: the estimator's master
 seed generates trajectory seeds, and each trajectory seed generates its step
 seeds by the same rule. This is classical trajectory selection, not quantum
-shot sampling.
+shot sampling. Different seeds that produce the same ordered events therefore
+have different provenance but the same circuit semantics and reuse one cache
+entry.
 
 ## Raw and boundary-optimized construction
 
@@ -101,10 +112,11 @@ over `q` occurrences. The configured per-short-step tolerance and allocator
 origin are recorded. This is only finite-RTE Taylor error; partial-S2
 product-formula bias is explicitly not included.
 
-## Full compiled cost and matched diagnostics
+## Compiled-cost evaluation modes
 
-Both exact and Monte Carlo APIs compile the whole short trajectory once. The
-primary cost follows the requested construction policy. They also report:
+Both exact and Monte Carlo APIs accept `evaluation_mode`. The default
+`full_diagnostics` preserves the original validation path: the primary cost
+follows the requested construction policy and the estimator also reports:
 
 ```text
 A. selected full repeated compiled cost
@@ -123,6 +135,14 @@ statistics remain floats. `CircuitCost.fidelity_level` stays 5, while
 from the existing one-step Level 5 result. Level 6 remains reserved for future
 selected long-RPE confirmation.
 
+`selected_only` builds and transpiles only the requested raw or
+boundary-optimized complete repeated circuit. It still returns the primary
+expectation, Monte Carlo variance/standard error, attenuation and Taylor
+metadata, provenance/circuit-semantics fingerprints, compiler metadata,
+unique-circuit counts, and cache hits. Raw-vs-optimized, matched-step,
+primitive-additive, cross-step, and boundary-difference diagnostics are
+`None`, never fabricated zeros.
+
 ## Exact enumeration, Monte Carlo, and cache identity
 
 If one step has `M` possible ordered event sequences, `q` repetitions have
@@ -130,7 +150,10 @@ If one step has `M` possible ordered event sequences, `q` repetitions have
 `itertools.product`, event enumeration, or circuit construction, and rejects
 the job when `maximum_trajectories` is exceeded. Each trajectory weight is the
 product of all event probabilities across all steps. The total mass is checked
-against one, and standard error is `None`.
+against one with `rel_tol=0` and `PROBABILITY_ATOL=1e-12`. The raw probability
+sum is retained in metadata. If it is within tolerance but not exactly one,
+the expectation uses weights divided by that raw sum; the normalized sum is
+also recorded. Standard error is `None`.
 
 The Monte Carlo API samples complete trajectories from the finite
 distribution. Its compiled-cost estimate is an unweighted arithmetic mean;
@@ -138,11 +161,28 @@ sampled event probability is not multiplied again. It returns the master and
 trajectory seeds, sample count, unbiased variance, standard error, min/max,
 unique circuit counts, and cache hits.
 
-The transpile cache combines the compiler-independent circuit fingerprint
-with all compiler settings and Qiskit version. Repetition count, trajectory
-step/event order, seeds, tail identity, control/ancilla condition, construction
-policy, and compiler conditions therefore cannot collide. Repeating the same
-exact evaluation reuses its entries.
+The transpile cache combines the circuit-semantics fingerprint with all
+compiler settings and Qiskit version. Seeds are intentionally absent because
+they select events but do not change a circuit once those events are fixed.
+Event order, tail identity, control/ancilla condition, construction policy,
+basis reuse, and compiler conditions remain collision-separated. In the test
+fixture, two different seed hierarchies with the same events produce different
+provenance fingerprints, the same semantic fingerprint, and a cache hit on the
+second compilation.
+
+All audited `math.isclose` calls specify both tolerances. Probability sums use
+zero relative tolerance. RTE/DF parameter consistency uses `rel_tol=1e-14`,
+`abs_tol=1e-15` unless a domain-specific absolute tolerance is recorded.
+Repeated `from_step_requests` time matching uses `rel_tol=0` and
+`abs_tol=1e-14`, preventing a large time value from hiding a materially
+different step behind Python's default relative tolerance.
+
+Fresh-cache instrumentation on the `q=2`, four-trajectory exact fixture shows
+40 cache lookup/transpile requests and 14 actual transpiles in
+`full_diagnostics`, versus 4 requests and 4 actual transpiles in
+`selected_only`. For 12 Monte Carlo trajectories, the counts are 120 requests
+and 14 actual transpiles versus 12 requests and 4 actual transpiles. The
+primary expectations are identical between modes.
 
 ## Short-trajectory reference measurements
 
@@ -165,8 +205,8 @@ RZ values both become 1.0 in this uncontrolled fixture because the transpiler
 finds the same simplification.
 
 For the controlled `q=2` fixture, raw RZ expectation is
-`17.66349450104994`, boundary-optimized full RZ is
-`14.663494501049938`, matched per-step RZ is `18.66349450104994`, and the
+`17.663494501049936`, boundary-optimized full RZ is
+`14.663494501049934`, matched per-step RZ is `18.663494501049936`, and the
 respective boundary and cross-step differences are `-3.0` and `-4.0`. A
 100-trajectory Monte Carlo run at master seed 8 gives RZ mean `14.66`,
 unbiased variance `0.4488888888888889`, and standard error
@@ -177,6 +217,17 @@ optimization level 0 gives expected full RZ/depth/size
 `16.32698900209987`, whereas levels 1 and 3 give `1.0` for those metrics.
 These numbers are algorithmic regression fixtures, not chemistry resource
 estimates or hardware timing predictions.
+
+A separate two-qubit fixture uses a non-diagonal one-body matrix and three
+non-diagonal DF matrices with three distinct basis hashes, nonempty Givens
+basis-change sequences, three deterministic blocks, and a randomized tail.
+For `q=2,3` and step times `+0.09,-0.09`, raw concatenation matches the ordered
+product of one-step matrices, boundary optimization matches raw, and the
+controlled circuit matches `diag(I,U)`. Across these comparisons the largest
+elementwise differences are respectively `1.57e-15`, `4.49e-15`, and
+`2.67e-15` (largest Frobenius norm `8.84e-15`). The tests also retain fragment
+and event order and verify that constant and extracted-identity phases scale
+exactly with `q`.
 
 ## Long-repetition exclusions
 

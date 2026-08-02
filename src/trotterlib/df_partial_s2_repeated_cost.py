@@ -23,6 +23,7 @@ from .df_partial_s2_repeated import (
 from .rte import (
     CircuitCost,
     CompilerSettings,
+    PROBABILITY_ATOL,
     RTEConfig,
     RTEEvent,
     RTEFiniteDistribution,
@@ -33,7 +34,6 @@ from .rte_compiled_cost import (
     CompiledMetricStatistics,
     TranspiledCircuitCost,
     TranspiledCircuitCostCache,
-    canonical_qiskit_circuit_fingerprint,
     circuit_cost_from_metric_statistics,
     compiled_metric_statistics,
     subtract_compiled_costs,
@@ -45,6 +45,10 @@ RepeatedPartialS2EstimateKind: TypeAlias = Literal[
     "exact_compiled_repeated_partial_s2_expectation",
     "monte_carlo_compiled_repeated_partial_s2_expectation",
 ]
+RepeatedCostEvaluationMode: TypeAlias = Literal[
+    "full_diagnostics",
+    "selected_only",
+]
 
 
 @dataclass(frozen=True)
@@ -52,36 +56,39 @@ class CompiledRepeatedPartialS2CostEstimate:
     """Full repeated transpilation and matched additive diagnostics."""
 
     estimate_kind: RepeatedPartialS2EstimateKind
+    evaluation_mode: RepeatedCostEvaluationMode
     expected_cost: CircuitCost
     standard_error: CircuitCost | None
-    raw_concatenation_expected_cost: CircuitCost
-    boundary_optimized_expected_cost: CircuitCost
-    boundary_optimization_difference: CircuitCost
-    matched_per_step_expected_cost: CircuitCost
+    raw_concatenation_expected_cost: CircuitCost | None
+    boundary_optimized_expected_cost: CircuitCost | None
+    boundary_optimization_difference: CircuitCost | None
+    matched_per_step_expected_cost: CircuitCost | None
     matched_per_step_standard_error: CircuitCost | None
-    cross_step_nonadditive_difference: CircuitCost
+    cross_step_nonadditive_difference: CircuitCost | None
     cross_step_difference_standard_error: CircuitCost | None
-    primitive_additive_expected_cost: CircuitCost
+    primitive_additive_expected_cost: CircuitCost | None
     full_metric_statistics: tuple[tuple[str, CompiledMetricStatistics], ...]
-    raw_metric_statistics: tuple[tuple[str, CompiledMetricStatistics], ...]
+    raw_metric_statistics: tuple[tuple[str, CompiledMetricStatistics], ...] | None
     boundary_optimized_metric_statistics: tuple[
         tuple[str, CompiledMetricStatistics], ...
-    ]
+    ] | None
     boundary_difference_metric_statistics: tuple[
         tuple[str, CompiledMetricStatistics], ...
-    ]
+    ] | None
     matched_per_step_metric_statistics: tuple[
         tuple[str, CompiledMetricStatistics], ...
-    ]
+    ] | None
     cross_step_difference_metric_statistics: tuple[
         tuple[str, CompiledMetricStatistics], ...
-    ]
+    ] | None
     primitive_additive_metric_statistics: tuple[
         tuple[str, CompiledMetricStatistics], ...
-    ]
+    ] | None
     sample_count: int | None
     enumerated_trajectory_count: int | None
     trajectory_probability_sum: float | None
+    normalized_trajectory_probability_sum: float | None
+    probability_atol: float
     single_event_space_size: int
     single_step_event_sequence_count: int
     trajectory_space_size: int
@@ -90,9 +97,11 @@ class CompiledRepeatedPartialS2CostEstimate:
     master_seed: int | None
     sampled_trajectory_seeds: tuple[int, ...] | None
     trajectory_seed_policy: str
+    provenance_fingerprints: tuple[str, ...]
+    circuit_semantics_fingerprints: tuple[str, ...]
     unique_trajectory_circuit_count: int
-    unique_raw_trajectory_circuit_count: int
-    unique_boundary_optimized_trajectory_circuit_count: int
+    unique_raw_trajectory_circuit_count: int | None
+    unique_boundary_optimized_trajectory_circuit_count: int | None
     unique_compiled_circuit_count: int
     transpile_cache_hit_count: int
     compiler: CompilerSettings
@@ -130,7 +139,9 @@ def _compile_repeated_samples(
     compiler: CompilerSettings,
     *,
     estimate_kind: RepeatedPartialS2EstimateKind,
+    evaluation_mode: RepeatedCostEvaluationMode,
     weights: Sequence[float] | None,
+    trajectory_probability_sum: float | None,
     master_seed: int | None,
     sampled_trajectory_seeds: tuple[int, ...] | None,
     single_event_space_size: int,
@@ -143,6 +154,8 @@ def _compile_repeated_samples(
 ) -> CompiledRepeatedPartialS2CostEstimate:
     if not requests:
         raise ValueError("At least one repeated trajectory request is required.")
+    if evaluation_mode not in ("full_diagnostics", "selected_only"):
+        raise ValueError("Unsupported repeated compiled-cost evaluation mode.")
     working_cache = cache if cache is not None else TranspiledCircuitCostCache()
     repeated_builder = QiskitDFPartialS2RepeatedCircuitBuilder()
     step_builder = QiskitDFPartialS2CircuitBuilder()
@@ -157,6 +170,8 @@ def _compile_repeated_samples(
     selected_circuit_fingerprints: set[str] = set()
     raw_circuit_fingerprints: set[str] = set()
     optimized_circuit_fingerprints: set[str] = set()
+    ordered_provenance_fingerprints: list[str] = []
+    ordered_semantics_fingerprints: list[str] = []
     cache_hits = 0
     first_selected_result = None
 
@@ -170,57 +185,76 @@ def _compile_repeated_samples(
         )
         all_keys.add(key)
         cache_hits += int(cached)
-        return cost, key
+        return cost
+
+    def require_size_limit(result) -> None:
+        if result.untranspiled_circuit_size > maximum_untranspiled_circuit_size:
+            raise ValueError(
+                "Untranspiled repeated partial-S2 circuit exceeds the "
+                "configured size limit."
+            )
 
     for request in requests:
-        raw_result = repeated_builder.build(
-            request,
-            construction_policy="raw_concatenation",
-        )
-        optimized_result = repeated_builder.build(
-            request,
-            construction_policy="boundary_optimized",
-        )
-        for result in (raw_result, optimized_result):
-            if result.untranspiled_circuit_size > (
-                maximum_untranspiled_circuit_size
-            ):
-                raise ValueError(
-                    "Untranspiled repeated partial-S2 circuit exceeds the "
-                    "configured size limit."
-                )
-
-        raw_cost, _raw_key = compile_circuit(
-            raw_result.circuit,
-            raw_result.compiler_independent_fingerprint,
-        )
-        optimized_cost, _optimized_key = compile_circuit(
-            optimized_result.circuit,
-            optimized_result.compiler_independent_fingerprint,
-        )
-        raw_costs.append(raw_cost)
-        optimized_costs.append(optimized_cost)
-        raw_circuit_fingerprints.add(
-            canonical_qiskit_circuit_fingerprint(raw_result.circuit)
-        )
-        optimized_circuit_fingerprints.add(
-            canonical_qiskit_circuit_fingerprint(optimized_result.circuit)
-        )
-        boundary_differences.append(
-            subtract_compiled_costs(optimized_cost, raw_cost)
-        )
-        if request.construction_policy == "raw_concatenation":
-            selected_cost = raw_cost
-            selected_result = raw_result
+        if evaluation_mode == "selected_only":
+            selected_result = repeated_builder.build(
+                request,
+                construction_policy=request.construction_policy,
+            )
+            require_size_limit(selected_result)
+            selected_cost = compile_circuit(
+                selected_result.circuit,
+                selected_result.circuit_semantics_fingerprint,
+            )
         else:
-            selected_cost = optimized_cost
-            selected_result = optimized_result
+            raw_result = repeated_builder.build(
+                request,
+                construction_policy="raw_concatenation",
+            )
+            optimized_result = repeated_builder.build(
+                request,
+                construction_policy="boundary_optimized",
+            )
+            require_size_limit(raw_result)
+            require_size_limit(optimized_result)
+            raw_cost = compile_circuit(
+                raw_result.circuit,
+                raw_result.circuit_semantics_fingerprint,
+            )
+            optimized_cost = compile_circuit(
+                optimized_result.circuit,
+                optimized_result.circuit_semantics_fingerprint,
+            )
+            raw_costs.append(raw_cost)
+            optimized_costs.append(optimized_cost)
+            raw_circuit_fingerprints.add(raw_result.circuit_semantics_fingerprint)
+            optimized_circuit_fingerprints.add(
+                optimized_result.circuit_semantics_fingerprint
+            )
+            boundary_differences.append(
+                subtract_compiled_costs(optimized_cost, raw_cost)
+            )
+            if request.construction_policy == "raw_concatenation":
+                selected_cost = raw_cost
+                selected_result = raw_result
+            else:
+                selected_cost = optimized_cost
+                selected_result = optimized_result
+
         selected_costs.append(selected_cost)
         selected_circuit_fingerprints.add(
-            canonical_qiskit_circuit_fingerprint(selected_result.circuit)
+            selected_result.circuit_semantics_fingerprint
+        )
+        ordered_provenance_fingerprints.append(
+            selected_result.provenance_fingerprint
+        )
+        ordered_semantics_fingerprints.append(
+            selected_result.circuit_semantics_fingerprint
         )
         if first_selected_result is None:
             first_selected_result = selected_result
+
+        if evaluation_mode == "selected_only":
+            continue
 
         per_step_costs: list[TranspiledCircuitCost] = []
         primitive_costs: list[TranspiledCircuitCost] = []
@@ -232,7 +266,7 @@ def _compile_repeated_samples(
                 raise ValueError(
                     "Untranspiled partial-S2 step exceeds the configured size limit."
                 )
-            step_cost, _step_key = compile_circuit(
+            step_cost = compile_circuit(
                 step_result.circuit,
                 step_result.compiler_independent_fingerprint,
             )
@@ -249,7 +283,7 @@ def _compile_repeated_samples(
                         "Untranspiled primitive circuit exceeds the configured "
                         "size limit."
                     )
-                part_cost, _part_key = compile_circuit(part, fingerprint)
+                part_cost = compile_circuit(part, fingerprint)
                 primitive_costs.append(part_cost)
 
         matched = sum_compiled_costs(per_step_costs)
@@ -263,95 +297,143 @@ def _compile_repeated_samples(
     if first_selected_result is None:
         raise RuntimeError("Repeated partial-S2 metadata could not be constructed.")
     selected_statistics = compiled_metric_statistics(selected_costs, weights=weights)
-    raw_statistics = compiled_metric_statistics(raw_costs, weights=weights)
-    optimized_statistics = compiled_metric_statistics(
-        optimized_costs,
-        weights=weights,
+    raw_statistics = (
+        compiled_metric_statistics(raw_costs, weights=weights)
+        if evaluation_mode == "full_diagnostics"
+        else None
     )
-    boundary_statistics = compiled_metric_statistics(
-        boundary_differences,
-        weights=weights,
+    optimized_statistics = (
+        compiled_metric_statistics(optimized_costs, weights=weights)
+        if evaluation_mode == "full_diagnostics"
+        else None
     )
-    matched_statistics = compiled_metric_statistics(matched_costs, weights=weights)
-    cross_statistics = compiled_metric_statistics(
-        cross_step_differences,
-        weights=weights,
+    boundary_statistics = (
+        compiled_metric_statistics(boundary_differences, weights=weights)
+        if evaluation_mode == "full_diagnostics"
+        else None
     )
-    primitive_statistics = compiled_metric_statistics(
-        primitive_additive_costs,
-        weights=weights,
+    matched_statistics = (
+        compiled_metric_statistics(matched_costs, weights=weights)
+        if evaluation_mode == "full_diagnostics"
+        else None
+    )
+    cross_statistics = (
+        compiled_metric_statistics(cross_step_differences, weights=weights)
+        if evaluation_mode == "full_diagnostics"
+        else None
+    )
+    primitive_statistics = (
+        compiled_metric_statistics(primitive_additive_costs, weights=weights)
+        if evaluation_mode == "full_diagnostics"
+        else None
     )
     expected = _as_cost(selected_statistics, compiler, estimate_kind)
-    raw_expected = _as_cost(
-        raw_statistics,
-        compiler,
-        "compiled_repeated_partial_s2_raw_concatenation",
+    raw_expected = (
+        _as_cost(
+            raw_statistics,
+            compiler,
+            "compiled_repeated_partial_s2_raw_concatenation",
+        )
+        if raw_statistics is not None
+        else None
     )
-    optimized_expected = _as_cost(
-        optimized_statistics,
-        compiler,
-        "compiled_repeated_partial_s2_boundary_optimized",
+    optimized_expected = (
+        _as_cost(
+            optimized_statistics,
+            compiler,
+            "compiled_repeated_partial_s2_boundary_optimized",
+        )
+        if optimized_statistics is not None
+        else None
     )
-    boundary_difference = _as_cost(
-        boundary_statistics,
-        compiler,
-        "compiled_repeated_partial_s2_boundary_difference",
+    boundary_difference = (
+        _as_cost(
+            boundary_statistics,
+            compiler,
+            "compiled_repeated_partial_s2_boundary_difference",
+        )
+        if boundary_statistics is not None
+        else None
     )
-    matched_expected = _as_cost(
-        matched_statistics,
-        compiler,
-        "compiled_repeated_partial_s2_matched_step_sum",
+    matched_expected = (
+        _as_cost(
+            matched_statistics,
+            compiler,
+            "compiled_repeated_partial_s2_matched_step_sum",
+        )
+        if matched_statistics is not None
+        else None
     )
-    cross_difference = _as_cost(
-        cross_statistics,
-        compiler,
-        "compiled_repeated_partial_s2_cross_step_difference",
+    cross_difference = (
+        _as_cost(
+            cross_statistics,
+            compiler,
+            "compiled_repeated_partial_s2_cross_step_difference",
+        )
+        if cross_statistics is not None
+        else None
     )
-    primitive_expected = _as_cost(
-        primitive_statistics,
-        compiler,
-        "compiled_repeated_partial_s2_primitive_additive_sum",
+    primitive_expected = (
+        _as_cost(
+            primitive_statistics,
+            compiler,
+            "compiled_repeated_partial_s2_primitive_additive_sum",
+        )
+        if primitive_statistics is not None
+        else None
     )
-    mandatory = (
-        expected,
-        raw_expected,
-        optimized_expected,
-        boundary_difference,
-        matched_expected,
-        cross_difference,
-        primitive_expected,
-    )
-    if any(item is None for item in mandatory):
+    if expected is None:
         raise RuntimeError("Repeated compiled expectation could not be constructed.")
+    if evaluation_mode == "full_diagnostics" and any(
+        item is None
+        for item in (
+            raw_expected,
+            optimized_expected,
+            boundary_difference,
+            matched_expected,
+            cross_difference,
+            primitive_expected,
+        )
+    ):
+        raise RuntimeError("Repeated compiled diagnostics could not be constructed.")
     exact = estimate_kind == "exact_compiled_repeated_partial_s2_expectation"
     first_request = requests[0]
     return CompiledRepeatedPartialS2CostEstimate(
         estimate_kind=estimate_kind,
-        expected_cost=expected,  # type: ignore[arg-type]
+        evaluation_mode=evaluation_mode,
+        expected_cost=expected,
         standard_error=_as_cost(
             selected_statistics,
             compiler,
             estimate_kind,
             standard_error=True,
         ),
-        raw_concatenation_expected_cost=raw_expected,  # type: ignore[arg-type]
-        boundary_optimized_expected_cost=optimized_expected,  # type: ignore[arg-type]
-        boundary_optimization_difference=boundary_difference,  # type: ignore[arg-type]
-        matched_per_step_expected_cost=matched_expected,  # type: ignore[arg-type]
-        matched_per_step_standard_error=_as_cost(
-            matched_statistics,
-            compiler,
-            "compiled_repeated_partial_s2_matched_step_sum",
-            standard_error=True,
+        raw_concatenation_expected_cost=raw_expected,
+        boundary_optimized_expected_cost=optimized_expected,
+        boundary_optimization_difference=boundary_difference,
+        matched_per_step_expected_cost=matched_expected,
+        matched_per_step_standard_error=(
+            _as_cost(
+                matched_statistics,
+                compiler,
+                "compiled_repeated_partial_s2_matched_step_sum",
+                standard_error=True,
+            )
+            if matched_statistics is not None
+            else None
         ),
-        cross_step_nonadditive_difference=cross_difference,  # type: ignore[arg-type]
-        cross_step_difference_standard_error=_as_cost(
-            cross_statistics,
-            compiler,
-            "compiled_repeated_partial_s2_cross_step_difference",
-            standard_error=True,
+        cross_step_nonadditive_difference=cross_difference,
+        cross_step_difference_standard_error=(
+            _as_cost(
+                cross_statistics,
+                compiler,
+                "compiled_repeated_partial_s2_cross_step_difference",
+                standard_error=True,
+            )
+            if cross_statistics is not None
+            else None
         ),
-        primitive_additive_expected_cost=primitive_expected,  # type: ignore[arg-type]
+        primitive_additive_expected_cost=primitive_expected,
         full_metric_statistics=selected_statistics,
         raw_metric_statistics=raw_statistics,
         boundary_optimized_metric_statistics=optimized_statistics,
@@ -361,9 +443,11 @@ def _compile_repeated_samples(
         primitive_additive_metric_statistics=primitive_statistics,
         sample_count=None if exact else len(requests),
         enumerated_trajectory_count=len(requests) if exact else None,
-        trajectory_probability_sum=(
+        trajectory_probability_sum=trajectory_probability_sum,
+        normalized_trajectory_probability_sum=(
             math.fsum(weights) if weights is not None else None
         ),
+        probability_atol=PROBABILITY_ATOL,
         single_event_space_size=single_event_space_size,
         single_step_event_sequence_count=single_step_event_sequence_count,
         trajectory_space_size=trajectory_space_size,
@@ -374,13 +458,25 @@ def _compile_repeated_samples(
         master_seed=master_seed,
         sampled_trajectory_seeds=sampled_trajectory_seeds,
         trajectory_seed_policy=(
-            "master Random(seed) draws trajectory seeds; each trajectory seed "
-            "draws q independent step seeds (q=1 reuses the trajectory seed)"
+            "not_applicable_exact_step_major_enumeration"
+            if exact
+            else (
+                "master Random(seed) draws trajectory seeds; each trajectory seed "
+                "draws q independent step seeds (q=1 reuses the trajectory seed)"
+            )
         ),
+        provenance_fingerprints=tuple(ordered_provenance_fingerprints),
+        circuit_semantics_fingerprints=tuple(ordered_semantics_fingerprints),
         unique_trajectory_circuit_count=len(selected_circuit_fingerprints),
-        unique_raw_trajectory_circuit_count=len(raw_circuit_fingerprints),
-        unique_boundary_optimized_trajectory_circuit_count=len(
-            optimized_circuit_fingerprints
+        unique_raw_trajectory_circuit_count=(
+            len(raw_circuit_fingerprints)
+            if evaluation_mode == "full_diagnostics"
+            else None
+        ),
+        unique_boundary_optimized_trajectory_circuit_count=(
+            len(optimized_circuit_fingerprints)
+            if evaluation_mode == "full_diagnostics"
+            else None
         ),
         unique_compiled_circuit_count=len(all_keys),
         transpile_cache_hit_count=cache_hits,
@@ -405,6 +501,8 @@ def _request_from_step_event_sequences(
     step_event_sequences: Sequence[tuple[RTEEvent, ...]],
     step_seeds: Sequence[int | None],
     master_seed: int | None,
+    trajectory_seed: int | None,
+    sampling_policy: str,
     controlled: bool,
     ancilla_qubit: int | None,
     cancel_adjacent_equal_bases: bool,
@@ -429,6 +527,8 @@ def _request_from_step_event_sequences(
     return DFPartialS2RepeatedRequest.from_step_requests(
         step_requests,
         master_seed=master_seed,
+        trajectory_seed=trajectory_seed,
+        sampling_policy=sampling_policy,
         construction_policy=construction_policy,
     )
 
@@ -447,6 +547,7 @@ def estimate_exact_compiled_repeated_partial_s2_cost(
     construction_policy: RepeatedCircuitConstructionPolicy = (
         "boundary_optimized"
     ),
+    evaluation_mode: RepeatedCostEvaluationMode = "full_diagnostics",
     maximum_trajectories: int = 10_000,
     maximum_untranspiled_circuit_size: int = 100_000,
     cache: TranspiledCircuitCostCache | None = None,
@@ -503,8 +604,14 @@ def estimate_exact_compiled_repeated_partial_s2_cost(
         for trajectory in trajectories
     )
     probability_sum = math.fsum(weights)
-    if not math.isclose(probability_sum, 1.0, abs_tol=1e-12):
+    if not math.isclose(
+        probability_sum,
+        1.0,
+        rel_tol=0.0,
+        abs_tol=PROBABILITY_ATOL,
+    ):
         raise ValueError("Exact repeated trajectory probabilities must sum to one.")
+    normalized_weights = tuple(weight / probability_sum for weight in weights)
     exact_step_seeds: tuple[int | None, ...] = (
         (None,) * count
         if rte_config is None
@@ -520,6 +627,8 @@ def estimate_exact_compiled_repeated_partial_s2_cost(
             step_event_sequences=trajectory,
             step_seeds=exact_step_seeds,
             master_seed=None,
+            trajectory_seed=None,
+            sampling_policy="exact_enumeration_step_major_v1",
             controlled=controlled,
             ancilla_qubit=ancilla_qubit,
             cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
@@ -531,7 +640,9 @@ def estimate_exact_compiled_repeated_partial_s2_cost(
         requests,
         compiler,
         estimate_kind="exact_compiled_repeated_partial_s2_expectation",
-        weights=weights,
+        evaluation_mode=evaluation_mode,
+        weights=normalized_weights,
+        trajectory_probability_sum=probability_sum,
         master_seed=None,
         sampled_trajectory_seeds=None,
         single_event_space_size=single_event_count,
@@ -560,6 +671,7 @@ def estimate_monte_carlo_compiled_repeated_partial_s2_cost(
     construction_policy: RepeatedCircuitConstructionPolicy = (
         "boundary_optimized"
     ),
+    evaluation_mode: RepeatedCostEvaluationMode = "full_diagnostics",
     maximum_untranspiled_circuit_size: int = 100_000,
     cache: TranspiledCircuitCostCache | None = None,
     backend: Any | None = None,
@@ -621,7 +733,9 @@ def estimate_monte_carlo_compiled_repeated_partial_s2_cost(
                 distribution=rte_distribution,
                 step_event_sequences=step_sequences,
                 step_seeds=step_seeds,
-                master_seed=trajectory_seed,
+                master_seed=master_seed,
+                trajectory_seed=trajectory_seed,
+                sampling_policy="monte_carlo_master_trajectory_step_v1",
                 controlled=controlled,
                 ancilla_qubit=ancilla_qubit,
                 cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
@@ -632,7 +746,9 @@ def estimate_monte_carlo_compiled_repeated_partial_s2_cost(
         requests,
         compiler,
         estimate_kind="monte_carlo_compiled_repeated_partial_s2_expectation",
+        evaluation_mode=evaluation_mode,
         weights=None,
+        trajectory_probability_sum=None,
         master_seed=master_seed,
         sampled_trajectory_seeds=trajectory_seeds,
         single_event_space_size=single_event_count,

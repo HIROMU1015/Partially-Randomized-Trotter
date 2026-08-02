@@ -43,6 +43,8 @@ BoundaryOptimizationPolicy: TypeAlias = Literal[
 ]
 EventOrderPolicy: TypeAlias = Literal["step_major_circuit_append_order"]
 MatrixProductConvention: TypeAlias = Literal["U_(q-1)...U_1_U_0"]
+REPEATED_STEP_TIME_ATOL = 1e-14
+DEFAULT_SAMPLING_POLICY = "explicit_step_major_seed_hierarchy_v1"
 
 
 def repetition_count_for_rpe_round(round_index: int) -> int:
@@ -122,6 +124,8 @@ class DFPartialS2RepeatedRequest:
     ancilla_qubit: int | None = None
     step_seeds: tuple[int | None, ...] = ()
     master_seed: int | None = None
+    trajectory_seed: int | None = None
+    sampling_policy: str = DEFAULT_SAMPLING_POLICY
     construction_policy: RepeatedCircuitConstructionPolicy = "raw_concatenation"
     event_order_policy: EventOrderPolicy = "step_major_circuit_append_order"
     matrix_product_convention: MatrixProductConvention = "U_(q-1)...U_1_U_0"
@@ -150,6 +154,14 @@ class DFPartialS2RepeatedRequest:
                 "master_seed",
                 require_integer_count(self.master_seed, name="master_seed"),
             )
+        if self.trajectory_seed is not None:
+            object.__setattr__(
+                self,
+                "trajectory_seed",
+                require_integer_count(self.trajectory_seed, name="trajectory_seed"),
+            )
+        if not isinstance(self.sampling_policy, str) or not self.sampling_policy:
+            raise ValueError("sampling_policy must be a non-empty string.")
 
         if self.preparation.is_deterministic_only:
             if self.rte_config is not None or self.rte_distribution is not None:
@@ -214,6 +226,8 @@ class DFPartialS2RepeatedRequest:
         requests: Sequence[DFPartialS2StepRequest],
         *,
         master_seed: int | None = None,
+        trajectory_seed: int | None = None,
+        sampling_policy: str = DEFAULT_SAMPLING_POLICY,
         construction_policy: RepeatedCircuitConstructionPolicy = (
             "raw_concatenation"
         ),
@@ -226,7 +240,12 @@ class DFPartialS2RepeatedRequest:
                 first.preparation.preparation_hash
             ):
                 raise ValueError("Every repeated step must use the same preparation.")
-            if not math.isclose(request.step_time, first.step_time, abs_tol=1e-14):
+            if not math.isclose(
+                request.step_time,
+                first.step_time,
+                rel_tol=0.0,
+                abs_tol=REPEATED_STEP_TIME_ATOL,
+            ):
                 raise ValueError("Every repeated step must use the same step_time.")
             if request.rte_config != first.rte_config:
                 raise ValueError("Every repeated step must use the same RTE config.")
@@ -255,6 +274,8 @@ class DFPartialS2RepeatedRequest:
             ancilla_qubit=first.ancilla_qubit,
             step_seeds=tuple(request.seed for request in requests),
             master_seed=master_seed,
+            trajectory_seed=trajectory_seed,
+            sampling_policy=sampling_policy,
             construction_policy=construction_policy,
         )
 
@@ -290,6 +311,7 @@ def make_df_partial_s2_repeated_request(
             ancilla_qubit=ancilla_qubit,
             step_seeds=(None,) * count,
             master_seed=master_seed,
+            sampling_policy="direct_master_to_step_seeds_v1",
             construction_policy=construction_policy,
         )
     if rte_config is None or rte_distribution is None:
@@ -321,6 +343,7 @@ def make_df_partial_s2_repeated_request(
         ancilla_qubit=ancilla_qubit,
         step_seeds=step_seeds,
         master_seed=master_seed,
+        sampling_policy="direct_master_to_step_seeds_v1",
         construction_policy=construction_policy,
     )
 
@@ -337,8 +360,13 @@ class DFPartialS2RepeatedCircuitResult:
     repetition_count: int
     controlled: bool
     ancilla_qubit: int | None
+    master_seed: int | None
+    trajectory_seed: int | None
+    sampling_policy: str
     trajectory: tuple[DFPartialS2TrajectoryStep, ...]
     trajectory_fingerprint: str
+    provenance_fingerprint: str
+    circuit_semantics_fingerprint: str
     total_random_event_count: int
     rte_steps_per_repetition: int
     event_order_policy: EventOrderPolicy
@@ -485,6 +513,8 @@ class QiskitDFPartialS2RepeatedCircuitBuilder:
         payload = {
             "tail_hash": request.preparation.tail_extraction.tail_hash,
             "master_seed": request.master_seed,
+            "trajectory_seed": request.trajectory_seed,
+            "sampling_policy": request.sampling_policy,
             "event_order_policy": request.event_order_policy,
             "matrix_product_convention": request.matrix_product_convention,
             "steps": [
@@ -498,7 +528,7 @@ class QiskitDFPartialS2RepeatedCircuitBuilder:
                 }
                 for step in steps
             ],
-            "trajectory_fingerprint_policy": "df_partial_s2_trajectory_v1",
+            "provenance_fingerprint_policy": "df_partial_s2_provenance_v2",
         }
         encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
         return tuple(steps), hashlib.sha256(encoded).hexdigest()
@@ -592,9 +622,19 @@ class QiskitDFPartialS2RepeatedCircuitBuilder:
                 else 0
             )
 
-        trajectory, trajectory_fingerprint = self._trajectory(
+        trajectory, provenance_fingerprint = self._trajectory(
             request,
             step_results,
+        )
+        basis_reuse_conditions = tuple(
+            (
+                "none"
+                if step_request.rte_occurrence is None
+                else "raw_adjacent_equal_basis"
+                if step_request.rte_occurrence.cancel_adjacent_equal_bases
+                else "disabled"
+            )
+            for step_request in step_requests
         )
         fingerprint_payload = {
             "preparation_hash": request.preparation.preparation_hash,
@@ -606,7 +646,14 @@ class QiskitDFPartialS2RepeatedCircuitBuilder:
             "rte_steps_per_repetition": (
                 0 if request.rte_config is None else request.rte_config.rte_steps
             ),
-            "trajectory_fingerprint": trajectory_fingerprint,
+            "ordered_trajectory_events": tuple(
+                {
+                    "step_index": step.step_index,
+                    "ordered_event_fingerprints": step.ordered_event_fingerprints,
+                    "occurrence_fingerprint": step.occurrence_fingerprint,
+                }
+                for step in trajectory
+            ),
             "step_circuit_fingerprints": tuple(
                 result.compiler_independent_fingerprint for result in step_results
             ),
@@ -615,14 +662,17 @@ class QiskitDFPartialS2RepeatedCircuitBuilder:
             "construction_policy": policy,
             "boundary_optimization_policy": boundary_policy,
             "identity_policy": request.preparation.identity_policy,
-            "fingerprint_policy": "df_partial_s2_repeated_circuit_v1",
+            "basis_reuse_conditions": basis_reuse_conditions,
+            "event_order_policy": request.event_order_policy,
+            "matrix_product_convention": request.matrix_product_convention,
+            "fingerprint_policy": "df_partial_s2_circuit_semantics_v2",
         }
         encoded = json.dumps(
             fingerprint_payload,
             sort_keys=True,
             separators=(",", ":"),
         ).encode()
-        fingerprint = hashlib.sha256(encoded).hexdigest()
+        semantics_fingerprint = hashlib.sha256(encoded).hexdigest()
         return DFPartialS2RepeatedCircuitResult(
             circuit=circuit,
             preparation_hash=request.preparation.preparation_hash,
@@ -632,8 +682,13 @@ class QiskitDFPartialS2RepeatedCircuitBuilder:
             repetition_count=request.repetition_count,
             controlled=request.controlled,
             ancilla_qubit=request.ancilla_qubit,
+            master_seed=request.master_seed,
+            trajectory_seed=request.trajectory_seed,
+            sampling_policy=request.sampling_policy,
             trajectory=trajectory,
-            trajectory_fingerprint=trajectory_fingerprint,
+            trajectory_fingerprint=provenance_fingerprint,
+            provenance_fingerprint=provenance_fingerprint,
+            circuit_semantics_fingerprint=semantics_fingerprint,
             total_random_event_count=sum(
                 result.randomized_event_count for result in step_results
             ),
@@ -661,7 +716,7 @@ class QiskitDFPartialS2RepeatedCircuitBuilder:
             attenuation=self._attenuation(request),
             truncation=self._truncation(request),
             step_results=step_results,
-            compiler_independent_fingerprint=fingerprint,
+            compiler_independent_fingerprint=semantics_fingerprint,
             untranspiled_circuit_size=int(circuit.size()),
             untranspiled_circuit_depth=int(circuit.depth() or 0),
             circuit_qubit_count=circuit.num_qubits,

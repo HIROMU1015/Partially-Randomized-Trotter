@@ -377,5 +377,80 @@ The post-change suite result is **178 passed, 4 warnings in 11.70 s**
 (`12.36 s` wall time). The warnings are the unchanged grouped-UWC
 `ComplexWarning` instances at `chemistry_hamiltonian.py:307`. The validation
 manifest, `compileall`, and `git diff --check` passed. Per the implementation
-request, no commit or push was performed; `HEAD` and `origin/main` remain at
-the starting SHA and the changes are left in the working tree.
+request, no commit or push was performed at that historical endpoint;
+`HEAD` and `origin/main` then remained at `4eeaeba` and the changes were left
+in the working tree. Those repeated-circuit changes were subsequently
+committed and pushed as `a0ae53918961deae62d6b34f79a89a436869f8cf`
+(`Add compiled repeated DF partial-S2 costs`). This paragraph describes the
+earlier follow-up, not the current repository state.
+
+## 14. Repeated-circuit hardening follow-up
+
+This follow-up started from a clean `main` at
+`a0ae53918961deae62d6b34f79a89a436869f8cf`, exactly equal to `origin/main`
+(`main...origin/main = 0/0`). The pre-change suite result was **178 passed, 4
+warnings in 12.20 s** (`12.89 s` wall time). The warnings were the existing
+grouped-UWC `ComplexWarning` instances at `chemistry_hamiltonian.py:307`.
+The validation manifest passed with overall status
+`not_reproducible_from_repository`, `present=9`, `quarantined=1`, and
+`missing=7`. The quarantined screening JSON was neither read as a research
+input nor regenerated.
+
+Repeated-circuit identity is now split into two explicit hashes. The
+provenance fingerprint binds master, trajectory, and step seeds, the sampling
+convention, tail hash, and ordered steps/events. The circuit-semantics
+fingerprint excludes all seeds and binds preparation/Hamiltonian/partition/tail
+hashes, ordered event and step fingerprints, time, repetition count,
+control/ancilla, identity and basis-reuse conditions, construction policy, and
+ordering/version conventions. Only the semantics hash enters the transpile
+cache. A regression test constructs identical event sequences under different
+seed hierarchies: provenance differs, semantics and cache key match, and the
+second lookup is a hit. Event order, tail, control, ancilla, reuse,
+raw/optimized policy, and compiler settings are also collision-separated.
+
+Every audited `math.isclose` call now states both relative and absolute
+tolerance. Probability sums use `rel_tol=0` and `PROBABILITY_ATOL=1e-12`.
+RTE/DF parameter consistency generally uses `rel_tol=1e-14` and
+`abs_tol=1e-15`; common repeated-step time uses the stricter absolute-only
+rule `rel_tol=0`, `abs_tol=1e-14`. Exact estimators retain the raw probability
+sum and normalize accepted weights before expectation calculation. A test
+perturbing the enumerated mass to `1+5e-13` confirms that the raw sum is kept
+while the compiled expectation remains unchanged after normalization.
+
+The nontrivial dense fixture has a non-diagonal two-qubit one-body matrix,
+three non-diagonal DF matrices, three distinct basis hashes, nonempty Givens
+basis operations, three deterministic blocks, and a randomized tail. It tests
+`q=2,3` at step times `+0.09` and `-0.09`. Maximum elementwise differences are
+`1.57e-15` for raw versus the ordered one-step product, `4.49e-15` for
+boundary-optimized versus raw, and `2.67e-15` for controlled versus
+`diag(I,U)`; the maximum Frobenius difference is `8.84e-15`. It also verifies
+phase multiplication by `q`, deterministic-fragment order, event order, and
+the prohibition on exchanging unequal bases.
+
+The repeated exact and Monte Carlo APIs now accept `evaluation_mode` with
+backward-compatible default `full_diagnostics`. That mode retains both full
+policies, matched per-step and primitive costs, and all differences.
+`selected_only` transpiles only the selected complete trajectory and returns
+all unavailable diagnostics as `None`, while preserving primary statistics,
+attenuation, Taylor, provenance, compiler, uniqueness, and cache metadata. On
+a fresh cache, the `q=2` four-trajectory exact fixture drops from 40 to 4
+cache lookup/transpile requests and from 14 to 4 actual transpiles. The
+12-trajectory Monte Carlo fixture drops from 120 to 12 requests and from 14
+to 4 actual transpiles. Both modes give identical primary expectations and,
+for Monte Carlo, identical variance and standard error.
+The controlled `q=2` exact boundary-optimized RZ expectation is
+`14.663494501049934`, differing from the historical fixture only at about
+`4e-15` after explicit weight normalization. The 100-sample seed-8 Monte Carlo
+mean, unbiased variance, and standard error remain exactly `14.66`,
+`0.4488888888888889`, and `0.0669991708074726` in the recorded precision.
+
+The post-change suite result is **188 passed, 4 warnings in 11.49 s**
+(`12.12 s` wall time). The warnings are unchanged. Targeted RTE/DF/partial-S2
+tests passed (**98 passed** before the final normalization regression; the
+final focused rerun was **44 passed**). The validation manifest, `compileall`,
+and `git diff --check` passed, and no untracked file was introduced. Heavy
+chemistry/H10/H13, GPU, long `2**m` circuits, RPE total-cost work, Hadamard
+tests, quantum shots, attenuation-corrected shot counts, noise simulation,
+and backend jobs were not run or implemented. Per request, no commit or push
+was performed; `HEAD` and `origin/main` remain at `a0ae539` and these changes
+remain in the working tree.

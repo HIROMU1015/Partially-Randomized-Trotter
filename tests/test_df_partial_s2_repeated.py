@@ -74,6 +74,44 @@ def _controlled_reference(unitary: np.ndarray) -> np.ndarray:
     return np.block([[identity, zero], [zero, unitary]])
 
 
+def _nontrivial_basis_case(step_time: float, repetition_count: int, *, controlled=False):
+    hamiltonian = DFHamiltonian(
+        constant=0.17,
+        one_body=np.asarray([[0.4, 0.13], [0.13, -0.2]], dtype=np.complex128),
+        lambdas=np.asarray([0.6, -0.35, 0.22]),
+        g_matrices=(
+            np.asarray([[1.0, 0.19], [0.19, 0.35]], dtype=np.complex128),
+            np.asarray([[0.2, -0.23], [-0.23, 1.2]], dtype=np.complex128),
+            np.asarray([[0.7, 0.31], [0.31, -0.4]], dtype=np.complex128),
+        ),
+        metadata={"name": "nontrivial-repeated-bases"},
+    )
+    preparation = prepare_df_partial_s2(
+        hamiltonian,
+        split_df_hamiltonian_by_ld(hamiltonian, 2),
+        identity_policy="extract_identity_phase",
+    )
+    config, distribution = make_rte_config(
+        preparation.rte_preparation.symbolic_tail,
+        evolution_time=step_time,
+        rte_steps=2,
+        truncation_tolerance=1.0,
+        finite_taylor_order=2,
+    )
+    request = make_df_partial_s2_repeated_request(
+        preparation,
+        step_time=step_time,
+        repetition_count=repetition_count,
+        rte_config=config,
+        rte_distribution=distribution,
+        seed=41,
+        controlled=controlled,
+        ancilla_qubit=2 if controlled else None,
+        construction_policy="boundary_optimized",
+    )
+    return hamiltonian, preparation, request
+
+
 def test_repetition_count_one_matches_existing_step_exactly() -> None:
     _hamiltonian_value, preparation, config, distribution = _randomized_case()
     step = make_df_partial_s2_step_request(
@@ -129,6 +167,23 @@ def test_repetition_count_accepts_numpy_integer_and_rpe_mapping_is_strict() -> N
     assert repetition_count_for_rpe_round(np.int64(4)) == 16
     with pytest.raises(TypeError):
         repetition_count_for_rpe_round(True)
+
+
+def test_from_step_requests_uses_strict_absolute_step_time_tolerance() -> None:
+    hamiltonian = _hamiltonian()
+    preparation = prepare_df_partial_s2(
+        hamiltonian,
+        split_df_hamiltonian_by_ld(hamiltonian, hamiltonian.n_blocks),
+    )
+    first = make_df_partial_s2_step_request(preparation, step_time=1e9)
+    outside_absolute_tolerance = make_df_partial_s2_step_request(
+        preparation,
+        step_time=1e9 + 1e-4,
+    )
+    with pytest.raises(ValueError, match="same step_time"):
+        DFPartialS2RepeatedRequest.from_step_requests(
+            (first, outside_absolute_tolerance)
+        )
 
 
 @pytest.mark.parametrize("repetition_count", (2, 3))
@@ -190,12 +245,85 @@ def test_randomized_trajectory_order_and_boundary_optimization_match_step_produc
     assert tuple(step.step_index for step in raw.trajectory) == (0, 1, 2)
     reversed_seed_result = repeated_builder.build(
         replace(
-        request,
-        step_seeds=tuple(reversed(request.step_seeds)),
+            request,
+            step_seeds=tuple(reversed(request.step_seeds)),
         ),
         construction_policy="raw_concatenation",
     )
     assert raw.trajectory_fingerprint != reversed_seed_result.trajectory_fingerprint
+
+
+@pytest.mark.parametrize("repetition_count", (2, 3))
+@pytest.mark.parametrize("step_time", (0.09, -0.09))
+def test_nontrivial_df_basis_boundary_optimization_matches_dense_references(
+    repetition_count: int,
+    step_time: float,
+) -> None:
+    hamiltonian, preparation, request = _nontrivial_basis_case(
+        step_time,
+        repetition_count,
+    )
+    basis_hashes = tuple(
+        block.basis_hash for block in preparation.deterministic_blocks
+    )
+    assert len(preparation.deterministic_blocks) == 3
+    assert len(set(basis_hashes)) == 3
+    assert all(
+        block.basis_change_operations
+        for block in preparation.deterministic_blocks
+    )
+    assert preparation.randomized_block_indices
+
+    step_builder = QiskitDFPartialS2CircuitBuilder()
+    expected = np.eye(1 << preparation.num_system_qubits, dtype=np.complex128)
+    for step_request in request.iter_step_requests():
+        expected = np.asarray(
+            Operator(step_builder.build_step(step_request).circuit).data
+        ) @ expected
+
+    builder = QiskitDFPartialS2RepeatedCircuitBuilder()
+    raw = builder.build(request, construction_policy="raw_concatenation")
+    optimized = builder.build(request, construction_policy="boundary_optimized")
+    controlled_request = _nontrivial_basis_case(
+        step_time,
+        repetition_count,
+        controlled=True,
+    )[2]
+    controlled = builder.build(
+        controlled_request,
+        construction_policy="boundary_optimized",
+    )
+
+    assert np.allclose(Operator(raw.circuit).data, expected, atol=1e-12)
+    assert np.allclose(
+        Operator(optimized.circuit).data,
+        Operator(raw.circuit).data,
+        atol=1e-12,
+    )
+    assert np.allclose(
+        Operator(controlled.circuit).data,
+        _controlled_reference(expected),
+        atol=1e-12,
+    )
+    assert optimized.fused_boundary_count == repetition_count - 1
+    assert optimized.constant_phase == pytest.approx(
+        -step_time * repetition_count * hamiltonian.constant
+    )
+    assert optimized.extracted_identity_phase == pytest.approx(
+        -step_time
+        * repetition_count
+        * preparation.extracted_identity_coefficient
+    )
+    assert all(
+        result.deterministic_block_order == preparation.deterministic_block_order
+        for result in optimized.step_results
+    )
+    assert tuple(
+        step.ordered_selected_component_ids for step in optimized.trajectory
+    ) == tuple(
+        tuple(event.selected_component_ids for event in occurrence.events)
+        for occurrence in request.rte_occurrences
+    )
 
 
 def test_controlled_repetition_is_identity_on_zero_and_product_on_one() -> None:

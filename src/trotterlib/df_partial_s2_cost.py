@@ -17,6 +17,9 @@ from .df_rte_circuit import DFRTEEventSequenceCircuitRequest
 from .rte import (
     CircuitCost,
     CompilerSettings,
+    PROBABILITY_ATOL,
+    RTE_PARAMETER_ABS_TOL,
+    RTE_PARAMETER_REL_TOL,
     RTEConfig,
     RTEEvent,
     RTEFiniteDistribution,
@@ -88,24 +91,34 @@ def _validate_rte_inputs(
     tail = preparation.rte_preparation.symbolic_tail
     if config.tail_id != tail.tail_id or config.tail_hash != tail.tail_hash:
         raise ValueError("RTE config tail identity does not match preparation.")
-    if not math.isclose(config.lambda_r, preparation.exact_rte_lambda_r):
+    if not math.isclose(
+        config.lambda_r,
+        preparation.exact_rte_lambda_r,
+        rel_tol=RTE_PARAMETER_REL_TOL,
+        abs_tol=RTE_PARAMETER_ABS_TOL,
+    ):
         raise ValueError("RTE config must use exact_rte_lambda_r.")
-    if not math.isclose(config.evolution_time, step_time, abs_tol=1e-14):
+    if not math.isclose(
+        config.evolution_time,
+        step_time,
+        rel_tol=0.0,
+        abs_tol=1e-14,
+    ):
         raise ValueError("RTE evolution_time must equal partial-S2 step_time.")
     if config.finite_taylor_order != distribution.finite_taylor_order:
         raise ValueError("RTE config and distribution Taylor cutoffs differ.")
     if not math.isclose(
         config.dimensionless_step_time,
         distribution.dimensionless_step_time,
-        rel_tol=1e-14,
-        abs_tol=1e-15,
+        rel_tol=RTE_PARAMETER_REL_TOL,
+        abs_tol=RTE_PARAMETER_ABS_TOL,
     ):
         raise ValueError("RTE config and distribution step times differ.")
     if not math.isclose(
         config.distribution_normalization,
         distribution.exact_finite_distribution,
-        rel_tol=1e-14,
-        abs_tol=1e-15,
+        rel_tol=RTE_PARAMETER_REL_TOL,
+        abs_tol=RTE_PARAMETER_ABS_TOL,
     ):
         raise ValueError("RTE config and distribution normalizations differ.")
     component_count = len(tail.components)
@@ -157,6 +170,7 @@ def _compile_request_samples(
     *,
     estimate_kind: PartialS2EstimateKind,
     weights: Sequence[float] | None,
+    event_sequence_probability_sum: float | None,
     controlled: bool,
     ancilla_qubit: int | None,
     seed: int | None,
@@ -313,9 +327,7 @@ def _compile_request_samples(
         difference_metric_statistics=difference_statistics,
         sample_count=None if is_exact else len(requests),
         enumerated_event_sequence_count=len(requests) if is_exact else None,
-        event_sequence_probability_sum=(
-            math.fsum(weights) if weights is not None else None
-        ),
+        event_sequence_probability_sum=event_sequence_probability_sum,
         single_event_space_size=single_event_space_size,
         unique_full_step_circuit_count=len(full_keys),
         unique_compiled_circuit_count=len(all_keys),
@@ -384,8 +396,14 @@ def estimate_exact_compiled_partial_s2_cost(
         for sequence in event_sequences
     )
     probability_sum = math.fsum(weights)
-    if not math.isclose(probability_sum, 1.0, abs_tol=1e-12):
+    if not math.isclose(
+        probability_sum,
+        1.0,
+        rel_tol=0.0,
+        abs_tol=PROBABILITY_ATOL,
+    ):
         raise ValueError("Exact partial-S2 event sequence probabilities must sum to one.")
+    normalized_weights = tuple(weight / probability_sum for weight in weights)
     requests = tuple(
         _request_for_events(
             preparation,
@@ -404,7 +422,8 @@ def estimate_exact_compiled_partial_s2_cost(
         requests,
         compiler,
         estimate_kind="exact_compiled_partial_s2_expectation",
-        weights=weights,
+        weights=normalized_weights,
+        event_sequence_probability_sum=probability_sum,
         controlled=controlled,
         ancilla_qubit=ancilla_qubit,
         seed=None,
@@ -481,6 +500,7 @@ def estimate_monte_carlo_compiled_partial_s2_cost(
         compiler,
         estimate_kind="monte_carlo_compiled_partial_s2_expectation",
         weights=None,
+        event_sequence_probability_sum=None,
         controlled=controlled,
         ancilla_qubit=ancilla_qubit,
         seed=seed,

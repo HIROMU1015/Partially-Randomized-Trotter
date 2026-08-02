@@ -56,6 +56,17 @@ deterministic boundary blocks and commuting per-step scalar phases are
 simplified; event and fragment order never changes. See
 [`docs/df_partial_s2_repeated_compiled_cost.md`](docs/df_partial_s2_repeated_compiled_cost.md).
 
+Repeated results separate seed-bearing provenance fingerprints from
+seed-independent circuit-semantics fingerprints used by the transpile cache.
+The default `full_diagnostics` mode retains raw/optimized, matched-step, and
+primitive comparisons. `selected_only` transpiles only the chosen complete
+trajectory and returns unavailable diagnostics as `None`, while retaining the
+primary exact or Monte Carlo statistics and error metadata. Small dense tests
+exercise non-diagonal one-body/DF bases, nonempty Givens changes, `q=2,3`,
+controlled and uncontrolled circuits, and positive and negative step times.
+Probability sums use explicit absolute tolerances and are normalized for
+expectations after their raw sums are recorded.
+
 These Level-5 results do not include long `2**m` RPE construction, state
 preparation, attenuation-driven shot counts, or quantum-shot sampling.
 

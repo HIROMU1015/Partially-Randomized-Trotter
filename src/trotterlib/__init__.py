@@ -78,6 +78,9 @@ from .rte import (
     BasisChangeOperation,
     CircuitCost,
     CompilerSettings,
+    PROBABILITY_ATOL,
+    RTE_PARAMETER_ABS_TOL,
+    RTE_PARAMETER_REL_TOL,
     DeterministicOnlyRTETailError,
     EventOperatorSampleEstimate,
     InvolutoryTailTerm,
@@ -188,6 +191,7 @@ from .df_partial_s2_repeated import (
 )
 from .df_partial_s2_repeated_cost import (
     CompiledRepeatedPartialS2CostEstimate,
+    RepeatedCostEvaluationMode,
     estimate_exact_compiled_repeated_partial_s2_cost,
     estimate_monte_carlo_compiled_repeated_partial_s2_cost,
 )
@@ -244,6 +248,9 @@ __all__ = [
     "resolve_df_rank_for_molecule",
     "CircuitCost",
     "CompilerSettings",
+    "PROBABILITY_ATOL",
+    "RTE_PARAMETER_ABS_TOL",
+    "RTE_PARAMETER_REL_TOL",
     "DeterministicOnlyRTETailError",
     "BasisChangeOperation",
     "EventOperatorSampleEstimate",
@@ -341,6 +348,7 @@ __all__ = [
     "make_df_partial_s2_repeated_request",
     "repetition_count_for_rpe_round",
     "CompiledRepeatedPartialS2CostEstimate",
+    "RepeatedCostEvaluationMode",
     "estimate_exact_compiled_repeated_partial_s2_cost",
     "estimate_monte_carlo_compiled_repeated_partial_s2_cost",
 ]

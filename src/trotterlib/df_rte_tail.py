@@ -18,6 +18,9 @@ from .rte import (
     DeterministicOnlyRTETailError,
     InvolutoryTailTerm,
     NormalizedRTETail,
+    PROBABILITY_ATOL,
+    RTE_PARAMETER_ABS_TOL,
+    RTE_PARAMETER_REL_TOL,
     RTEComponent,
     TailNormalizationMetadata,
     normalize_involutory_tail,
@@ -261,7 +264,12 @@ class SymbolicRTETail:
         component_l1 = math.fsum(
             component.coefficient_abs for component in self.components
         )
-        if not math.isclose(component_l1, self.lambda_r, abs_tol=1e-14):
+        if not math.isclose(
+            component_l1,
+            self.lambda_r,
+            rel_tol=RTE_PARAMETER_REL_TOL,
+            abs_tol=RTE_PARAMETER_ABS_TOL,
+        ):
             raise ValueError("Symbolic component L1 must equal lambda_r.")
         if self.lambda_r == 0.0:
             if self.components:
@@ -272,11 +280,21 @@ class SymbolicRTETail:
         probability_sum = math.fsum(
             component.probability for component in self.components
         )
-        if not math.isclose(probability_sum, 1.0, abs_tol=1e-14):
+        if not math.isclose(
+            probability_sum,
+            1.0,
+            rel_tol=0.0,
+            abs_tol=PROBABILITY_ATOL,
+        ):
             raise ValueError("Symbolic RTE component probabilities must sum to one.")
         for component in self.components:
             expected = component.coefficient_abs / self.lambda_r
-            if not math.isclose(component.probability, expected, abs_tol=1e-14):
+            if not math.isclose(
+                component.probability,
+                expected,
+                rel_tol=0.0,
+                abs_tol=PROBABILITY_ATOL,
+            ):
                 raise ValueError("Symbolic RTE component probability is inconsistent.")
 
     @property
@@ -312,12 +330,18 @@ class DFTailExtraction:
         component_l1 = math.fsum(
             abs(component.coefficient) for component in self.components
         )
-        if not math.isclose(component_l1, self.rte_lambda_r, abs_tol=1e-14):
+        if not math.isclose(
+            component_l1,
+            self.rte_lambda_r,
+            rel_tol=RTE_PARAMETER_REL_TOL,
+            abs_tol=RTE_PARAMETER_ABS_TOL,
+        ):
             raise ValueError("rte_lambda_r must equal randomized component L1.")
         if not math.isclose(
             self.extraction_metadata.randomized_coefficient_l1,
             self.rte_lambda_r,
-            abs_tol=1e-14,
+            rel_tol=RTE_PARAMETER_REL_TOL,
+            abs_tol=RTE_PARAMETER_ABS_TOL,
         ):
             raise ValueError("Extraction metadata randomized L1 is inconsistent.")
 
@@ -788,7 +812,12 @@ def extraction_to_symbolic_rte_tail(
     component_l1 = math.fsum(
         component.coefficient_abs for component in extraction.components
     )
-    if not math.isclose(component_l1, extraction.rte_lambda_r, abs_tol=1e-14):
+    if not math.isclose(
+        component_l1,
+        extraction.rte_lambda_r,
+        rel_tol=RTE_PARAMETER_REL_TOL,
+        abs_tol=RTE_PARAMETER_ABS_TOL,
+    ):
         raise ValueError("Extraction component L1 does not match rte_lambda_r.")
     if extraction.rte_lambda_r == 0.0:
         normalized_components: tuple[RTEComponent, ...] = ()
@@ -986,7 +1015,12 @@ def extraction_to_normalized_rte_tail(
         terms,
         atol=0.0,
     )
-    if not math.isclose(tail.lambda_r, extraction.rte_lambda_r, abs_tol=1e-14):
+    if not math.isclose(
+        tail.lambda_r,
+        extraction.rte_lambda_r,
+        rel_tol=RTE_PARAMETER_REL_TOL,
+        abs_tol=RTE_PARAMETER_ABS_TOL,
+    ):
         raise ValueError("Extracted symbolic and dense RTE lambda values disagree.")
     normalized_by_id = {
         component.component_id: (component, operator)

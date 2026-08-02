@@ -23,6 +23,9 @@ import numpy as np
 MeasurementAxis: TypeAlias = Literal["X", "Y"]
 TaylorDistributionKind: TypeAlias = Literal["rte_even_taylor_paired"]
 FidelityLevel: TypeAlias = Literal[0, 1, 2, 3, 4, 5, 6]
+PROBABILITY_ATOL = 1e-12
+RTE_PARAMETER_REL_TOL = 1e-14
+RTE_PARAMETER_ABS_TOL = 1e-15
 TruncationAllocationPolicy: TypeAlias = Literal[
     "equal_log_budget_per_short_step",
     "user_selected_orders",
@@ -190,7 +193,12 @@ class RTEFiniteDistribution:
             raise ValueError("order weights length mismatch.")
         if len(self.orders) != len(self.order_probabilities):
             raise ValueError("order probabilities length mismatch.")
-        if not math.isclose(sum(self.order_probabilities), 1.0, abs_tol=1e-14):
+        if not math.isclose(
+            sum(self.order_probabilities),
+            1.0,
+            rel_tol=0.0,
+            abs_tol=PROBABILITY_ATOL,
+        ):
             raise ValueError("finite Taylor order probabilities must sum to one.")
 
     @property
@@ -238,13 +246,18 @@ class RTEConfig:
         if self.distribution_normalization <= 0.0:
             raise ValueError("distribution_normalization must be positive.")
         expected_step = self.evolution_time / self.rte_steps
-        if not math.isclose(self.step_time, expected_step, rel_tol=1e-14, abs_tol=1e-15):
+        if not math.isclose(
+            self.step_time,
+            expected_step,
+            rel_tol=RTE_PARAMETER_REL_TOL,
+            abs_tol=RTE_PARAMETER_ABS_TOL,
+        ):
             raise ValueError("step_time must equal evolution_time / rte_steps.")
         if not math.isclose(
             self.dimensionless_step_time,
             self.lambda_r * self.step_time,
-            rel_tol=1e-14,
-            abs_tol=1e-15,
+            rel_tol=RTE_PARAMETER_REL_TOL,
+            abs_tol=RTE_PARAMETER_ABS_TOL,
         ):
             raise ValueError("dimensionless_step_time must equal lambda_r * step_time.")
         if self.step_truncation_residual_bound > self.truncation_tolerance:
@@ -257,15 +270,15 @@ class RTEConfig:
         if not math.isclose(
             self.distribution_normalization,
             finite.exact_finite_distribution,
-            rel_tol=1e-14,
-            abs_tol=1e-15,
+            rel_tol=RTE_PARAMETER_REL_TOL,
+            abs_tol=RTE_PARAMETER_ABS_TOL,
         ):
             raise ValueError("distribution_normalization does not match the cutoff.")
         if not math.isclose(
             self.step_truncation_residual_bound,
             finite.step_truncation_residual_bound,
-            rel_tol=1e-14,
-            abs_tol=1e-15,
+            rel_tol=RTE_PARAMETER_REL_TOL,
+            abs_tol=RTE_PARAMETER_ABS_TOL,
         ):
             raise ValueError("truncation_residual_bound does not match the cutoff.")
 
@@ -1249,8 +1262,8 @@ def _validate_components(components: Sequence[RTEComponent]) -> None:
     if not math.isclose(
         sum(component.probability for component in components),
         1.0,
-        rel_tol=1e-14,
-        abs_tol=1e-14,
+        rel_tol=0.0,
+        abs_tol=PROBABILITY_ATOL,
     ):
         raise ValueError("component probabilities must sum to one.")
 
@@ -1390,7 +1403,7 @@ def exact_enumerated_event_mean_operator(
     events: Sequence[RTEEvent],
     operators: Mapping[str, np.ndarray],
     *,
-    probability_atol: float = 1e-12,
+    probability_atol: float = PROBABILITY_ATOL,
 ) -> np.ndarray:
     """Return ``sum_m q_m U_m`` for a complete finite enumeration.
 
@@ -1413,7 +1426,8 @@ def exact_enumerated_event_mean_operator(
     first = next(iter(operators.values()))
     result = np.zeros_like(first, dtype=np.complex128)
     for event in events:
-        result += event.event_probability * event_unitary(event, operators)
+        normalized_probability = event.event_probability / probability_sum
+        result += normalized_probability * event_unitary(event, operators)
     return result
 
 

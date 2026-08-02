@@ -40,6 +40,8 @@ from .df_trotter.ops import (
 )
 from .rte import (
     BasisChangeOperation,
+    RTE_PARAMETER_ABS_TOL,
+    RTE_PARAMETER_REL_TOL,
     RTEConfig,
     RTEFiniteDistribution,
     finite_rte_attenuation,
@@ -168,6 +170,7 @@ class DFPartialS2Preparation:
         if not math.isclose(
             self.exact_rte_lambda_r,
             self.tail_extraction.rte_lambda_r,
+            rel_tol=RTE_PARAMETER_REL_TOL,
             abs_tol=1e-14,
         ):
             raise ValueError("exact_rte_lambda_r does not match tail extraction.")
@@ -468,26 +471,36 @@ class DFPartialS2StepRequest:
         distribution = self.rte_distribution
         occurrence = self.rte_occurrence
         tail = self.preparation.rte_preparation.symbolic_tail
-        if not math.isclose(config.evolution_time, self.step_time, abs_tol=1e-14):
+        if not math.isclose(
+            config.evolution_time,
+            self.step_time,
+            rel_tol=0.0,
+            abs_tol=1e-14,
+        ):
             raise ValueError("RTE evolution_time must equal partial-S2 step_time.")
         if config.tail_id != tail.tail_id or config.tail_hash != tail.tail_hash:
             raise ValueError("RTE config tail identity does not match preparation.")
-        if not math.isclose(config.lambda_r, self.preparation.exact_rte_lambda_r):
+        if not math.isclose(
+            config.lambda_r,
+            self.preparation.exact_rte_lambda_r,
+            rel_tol=RTE_PARAMETER_REL_TOL,
+            abs_tol=RTE_PARAMETER_ABS_TOL,
+        ):
             raise ValueError("RTE config must use exact_rte_lambda_r.")
         if config.finite_taylor_order != distribution.finite_taylor_order:
             raise ValueError("RTE config and distribution Taylor cutoffs differ.")
         if not math.isclose(
             config.dimensionless_step_time,
             distribution.dimensionless_step_time,
-            rel_tol=1e-14,
-            abs_tol=1e-15,
+            rel_tol=RTE_PARAMETER_REL_TOL,
+            abs_tol=RTE_PARAMETER_ABS_TOL,
         ):
             raise ValueError("RTE config and distribution step times differ.")
         if not math.isclose(
             config.distribution_normalization,
             distribution.exact_finite_distribution,
-            rel_tol=1e-14,
-            abs_tol=1e-15,
+            rel_tol=RTE_PARAMETER_REL_TOL,
+            abs_tol=RTE_PARAMETER_ABS_TOL,
         ):
             raise ValueError("RTE distribution normalization mismatch.")
         if len(occurrence.events) != config.rte_steps:
@@ -507,15 +520,20 @@ class DFPartialS2StepRequest:
             if not math.isclose(
                 event.event_normalization,
                 distribution.exact_finite_distribution,
-                rel_tol=1e-14,
-                abs_tol=1e-15,
+                rel_tol=RTE_PARAMETER_REL_TOL,
+                abs_tol=RTE_PARAMETER_ABS_TOL,
             ):
                 raise ValueError("RTE event normalization does not match distribution.")
             order_index = distribution.orders.index(event.taylor_order)
             expected_angle = math.atan(
                 config.dimensionless_step_time / (event.taylor_order + 1)
             )
-            if not math.isclose(event.rotation_angle, expected_angle, abs_tol=1e-14):
+            if not math.isclose(
+                event.rotation_angle,
+                expected_angle,
+                rel_tol=RTE_PARAMETER_REL_TOL,
+                abs_tol=1e-14,
+            ):
                 raise ValueError("RTE event rotation angle does not match distribution.")
             expected_phase = complex((-1) ** (event.taylor_order // 2))
             if event.phase != expected_phase:

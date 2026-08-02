@@ -10,6 +10,7 @@ from qiskit import QuantumCircuit
 from qiskit.circuit.library import RYGate
 from qiskit.quantum_info import Operator
 
+import trotterlib.rte_compiled_cost as compiled_cost_module
 from trotterlib.df_rte_qiskit import QiskitDFRTEEventCircuitBuilder
 from trotterlib.df_rte_tail import (
     extract_df_diagonal_tail,
@@ -234,6 +235,54 @@ def test_exact_compiled_expectation_is_weighted_once_and_cached() -> None:
     assert len(cache) == 2
     assert repeated.unique_compiled_circuit_count == 2
     assert repeated.transpile_cache_hit_count == 2
+
+
+def test_exact_compiled_expectation_normalizes_roundoff_and_keeps_raw_sum(
+    monkeypatch,
+) -> None:
+    _extraction, preparation, _config, distribution = _one_component_case()
+    compiler = _compiler()
+    baseline = estimate_exact_compiled_event_cost(
+        preparation,
+        distribution,
+        compiler,
+        controlled=True,
+        ancilla_qubit=1,
+    )
+    events = enumerate_rte_events(
+        preparation.symbolic_tail.components,
+        distribution,
+    )
+    scale = 1.0 + 5e-13
+    scaled_events = tuple(
+        replace(event, event_probability=event.event_probability * scale)
+        for event in events
+    )
+    monkeypatch.setattr(
+        compiled_cost_module,
+        "enumerate_rte_events",
+        lambda *_args, **_kwargs: scaled_events,
+    )
+
+    estimate = estimate_exact_compiled_event_cost(
+        preparation,
+        distribution,
+        compiler,
+        controlled=True,
+        ancilla_qubit=1,
+    )
+
+    assert estimate.event_probability_sum != 1.0
+    assert estimate.event_probability_sum == pytest.approx(
+        scale,
+        rel=0.0,
+        abs=1e-15,
+    )
+    for name in METRICS:
+        assert getattr(estimate.expected_cost, name) == pytest.approx(
+            getattr(baseline.expected_cost, name),
+            abs=1e-12,
+        )
 
 
 def test_monte_carlo_statistics_are_unweighted_reproducible_and_convergent() -> None:

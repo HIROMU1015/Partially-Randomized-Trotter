@@ -18,6 +18,7 @@ from .rte import (
     CircuitCost,
     CompilerSettings,
     FidelityLevel,
+    PROBABILITY_ATOL,
     RTEConfig,
     RTEFiniteDistribution,
     enumerate_rte_events,
@@ -367,6 +368,7 @@ def _estimate_event_costs(
     events: Sequence[Any],
     estimate_kind: CostEstimateKind,
     weights: Sequence[float] | None,
+    event_probability_sum: float | None,
     controlled: bool,
     ancilla_qubit: int | None,
     cancel_adjacent_equal_bases: bool,
@@ -430,7 +432,7 @@ def _estimate_event_costs(
             else "disabled"
         ),
         seed=None if is_exact else seed,
-        event_probability_sum=(math.fsum(weights) if weights is not None else None),
+        event_probability_sum=event_probability_sum,
     )
 
 
@@ -454,14 +456,21 @@ def estimate_exact_compiled_event_cost(
     )
     weights = tuple(event.event_probability for event in events)
     probability_sum = math.fsum(weights)
-    if not math.isclose(probability_sum, 1.0, abs_tol=1e-12):
+    if not math.isclose(
+        probability_sum,
+        1.0,
+        rel_tol=0.0,
+        abs_tol=PROBABILITY_ATOL,
+    ):
         raise ValueError("Enumerated RTE event probabilities must sum to one.")
+    normalized_weights = tuple(weight / probability_sum for weight in weights)
     return _estimate_event_costs(
         preparation,
         compiler,
         events=events,
         estimate_kind="exact_compiled_expectation",
-        weights=weights,
+        weights=normalized_weights,
+        event_probability_sum=probability_sum,
         controlled=controlled,
         ancilla_qubit=ancilla_qubit,
         cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
@@ -501,6 +510,7 @@ def estimate_monte_carlo_compiled_event_cost(
         events=events,
         estimate_kind="monte_carlo_compiled_expectation",
         weights=None,
+        event_probability_sum=None,
         controlled=controlled,
         ancilla_qubit=ancilla_qubit,
         cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,

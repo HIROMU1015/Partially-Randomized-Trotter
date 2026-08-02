@@ -15,6 +15,8 @@ from .df_rte_tail import DFBasisDefinition, DFBasisRegistry, SymbolicRTETail
 from .rte import (
     BasisChangeOperation,
     DeterministicOnlyRTETailError,
+    RTE_PARAMETER_ABS_TOL,
+    RTE_PARAMETER_REL_TOL,
     RTEConfig,
     RTEEvent,
     RTEFiniteDistribution,
@@ -227,22 +229,27 @@ class DFRTEEventPreparation:
             raise ValueError("RTE config tail ID does not match the symbolic tail.")
         if config.tail_hash != self.symbolic_tail.tail_hash:
             raise ValueError("RTE config tail hash does not match the symbolic tail.")
-        if not math.isclose(config.lambda_r, self.symbolic_tail.lambda_r, abs_tol=1e-14):
+        if not math.isclose(
+            config.lambda_r,
+            self.symbolic_tail.lambda_r,
+            rel_tol=RTE_PARAMETER_REL_TOL,
+            abs_tol=RTE_PARAMETER_ABS_TOL,
+        ):
             raise ValueError("RTE config lambda_r does not match the symbolic tail.")
         if config.finite_taylor_order != distribution.finite_taylor_order:
             raise ValueError("RTE config and distribution Taylor cutoffs differ.")
         if not math.isclose(
             config.dimensionless_step_time,
             distribution.dimensionless_step_time,
-            rel_tol=1e-14,
-            abs_tol=1e-15,
+            rel_tol=RTE_PARAMETER_REL_TOL,
+            abs_tol=RTE_PARAMETER_ABS_TOL,
         ):
             raise ValueError("RTE config and distribution step times differ.")
         if not math.isclose(
             config.distribution_normalization,
             distribution.exact_finite_distribution,
-            rel_tol=1e-14,
-            abs_tol=1e-15,
+            rel_tol=RTE_PARAMETER_REL_TOL,
+            abs_tol=RTE_PARAMETER_ABS_TOL,
         ):
             raise ValueError("RTE config and distribution normalizations differ.")
         events = self.sample_events(

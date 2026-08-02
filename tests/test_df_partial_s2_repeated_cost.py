@@ -3,6 +3,7 @@ from __future__ import annotations
 import itertools
 import math
 import random
+from dataclasses import replace
 
 import numpy as np
 import pytest
@@ -79,11 +80,24 @@ def _case(*, rte_steps: int = 1, deterministic: bool = False):
     return preparation, config, distribution, step_time
 
 
-def _step_request(preparation, config, distribution, events, *, seed=0):
+def _step_request(
+    preparation,
+    config,
+    distribution,
+    events,
+    *,
+    seed=0,
+    controlled=False,
+    ancilla_qubit=None,
+    cancel_adjacent_equal_bases=True,
+):
     tail = preparation.rte_preparation.symbolic_tail
     occurrence = DFRTEEventSequenceCircuitRequest(
         events=tuple(events),
         component_specs=preparation.rte_preparation.component_specs,
+        controlled=controlled,
+        ancilla_qubit=ancilla_qubit,
+        cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
         tail_id=tail.tail_id,
         tail_hash=tail.tail_hash,
         occurrence_rte_steps=config.rte_steps,
@@ -94,8 +108,20 @@ def _step_request(preparation, config, distribution, events, *, seed=0):
         rte_config=config,
         rte_distribution=distribution,
         rte_occurrence=occurrence,
+        controlled=controlled,
+        ancilla_qubit=ancilla_qubit,
         seed=seed,
     )
+
+
+class _CountingCache(TranspiledCircuitCostCache):
+    def __init__(self):
+        super().__init__()
+        self.call_count = 0
+
+    def get_or_transpile(self, *args, **kwargs):
+        self.call_count += 1
+        return super().get_or_transpile(*args, **kwargs)
 
 
 def _compiled_repeated_cost(request, compiler):
@@ -193,6 +219,7 @@ def test_exact_repeated_expectation_matches_manual_trajectory_weighting() -> Non
     assert len(trajectories) == 4
     assert math.fsum(probabilities) == pytest.approx(1.0)
     assert estimate.trajectory_probability_sum == pytest.approx(1.0)
+    assert estimate.normalized_trajectory_probability_sum == pytest.approx(1.0)
     assert estimate.enumerated_trajectory_count == 4
     assert estimate.single_step_event_sequence_count == 2
     assert estimate.trajectory_space_size == 4
@@ -213,6 +240,295 @@ def test_exact_repeated_expectation_matches_manual_trajectory_weighting() -> Non
                 - getattr(estimate.raw_concatenation_expected_cost, metric)
             )
         )
+
+
+def test_provenance_and_circuit_semantics_fingerprints_are_separate() -> None:
+    preparation, config, distribution, _step_time = _case(rte_steps=2)
+    events = enumerate_rte_events(
+        preparation.rte_preparation.symbolic_tail.components,
+        distribution,
+    )
+    ordered_events = (events[0], events[-1])
+    first_step = _step_request(
+        preparation,
+        config,
+        distribution,
+        ordered_events,
+        seed=11,
+    )
+    second_step = _step_request(
+        preparation,
+        config,
+        distribution,
+        ordered_events,
+        seed=999,
+    )
+    first_request = DFPartialS2RepeatedRequest.from_step_requests(
+        (first_step,),
+        master_seed=1,
+        trajectory_seed=101,
+        sampling_policy="test_sampling_a",
+        construction_policy="boundary_optimized",
+    )
+    second_request = DFPartialS2RepeatedRequest.from_step_requests(
+        (second_step,),
+        master_seed=2,
+        trajectory_seed=202,
+        sampling_policy="test_sampling_b",
+        construction_policy="boundary_optimized",
+    )
+    builder = QiskitDFPartialS2RepeatedCircuitBuilder()
+    first = builder.build(first_request)
+    second = builder.build(second_request)
+
+    assert first.provenance_fingerprint != second.provenance_fingerprint
+    assert first.trajectory_fingerprint == first.provenance_fingerprint
+    assert first.circuit_semantics_fingerprint == (
+        second.circuit_semantics_fingerprint
+    )
+    assert first.compiler_independent_fingerprint == (
+        first.circuit_semantics_fingerprint
+    )
+
+    cache = TranspiledCircuitCostCache()
+    _cost, first_key, first_hit = cache.get_or_transpile(
+        first.circuit,
+        _compiler(),
+        circuit_fingerprint=first.circuit_semantics_fingerprint,
+    )
+    _cost, second_key, second_hit = cache.get_or_transpile(
+        second.circuit,
+        _compiler(),
+        circuit_fingerprint=second.circuit_semantics_fingerprint,
+    )
+    assert not first_hit
+    assert second_hit
+    assert first_key == second_key
+    assert len(cache) == 1
+
+    reversed_step = _step_request(
+        preparation,
+        config,
+        distribution,
+        tuple(reversed(ordered_events)),
+        seed=11,
+    )
+    reversed_result = builder.build(
+        DFPartialS2RepeatedRequest.from_step_requests(
+            (reversed_step,),
+            construction_policy="boundary_optimized",
+        )
+    )
+    raw_result = builder.build(
+        first_request,
+        construction_policy="raw_concatenation",
+    )
+    no_reuse_step = _step_request(
+        preparation,
+        config,
+        distribution,
+        ordered_events,
+        seed=11,
+        cancel_adjacent_equal_bases=False,
+    )
+    no_reuse_result = builder.build(
+        DFPartialS2RepeatedRequest.from_step_requests(
+            (no_reuse_step,),
+            construction_policy="boundary_optimized",
+        )
+    )
+    assert reversed_result.circuit_semantics_fingerprint != (
+        first.circuit_semantics_fingerprint
+    )
+    assert raw_result.circuit_semantics_fingerprint != (
+        first.circuit_semantics_fingerprint
+    )
+    assert no_reuse_result.circuit_semantics_fingerprint != (
+        first.circuit_semantics_fingerprint
+    )
+
+    controlled_step = _step_request(
+        preparation,
+        config,
+        distribution,
+        ordered_events,
+        seed=11,
+        controlled=True,
+        ancilla_qubit=1,
+    )
+    controlled_result = builder.build(
+        DFPartialS2RepeatedRequest.from_step_requests(
+            (controlled_step,),
+            construction_policy="boundary_optimized",
+        )
+    )
+    moved_ancilla_step = _step_request(
+        preparation,
+        config,
+        distribution,
+        ordered_events,
+        seed=11,
+        controlled=True,
+        ancilla_qubit=2,
+    )
+    moved_ancilla_result = builder.build(
+        DFPartialS2RepeatedRequest.from_step_requests(
+            (moved_ancilla_step,),
+            construction_policy="boundary_optimized",
+        )
+    )
+    assert controlled_result.circuit_semantics_fingerprint != (
+        first.circuit_semantics_fingerprint
+    )
+    assert moved_ancilla_result.circuit_semantics_fingerprint != (
+        controlled_result.circuit_semantics_fingerprint
+    )
+
+    _cost, compiler_key, compiler_hit = cache.get_or_transpile(
+        first.circuit,
+        _compiler(seed=18),
+        circuit_fingerprint=first.circuit_semantics_fingerprint,
+    )
+    assert not compiler_hit
+    assert compiler_key != first_key
+
+    other_hamiltonian = DFHamiltonian(
+        constant=0.11,
+        one_body=np.asarray([[0.2]], dtype=np.complex128),
+        lambdas=np.asarray([0.8]),
+        g_matrices=(np.asarray([[1.0]], dtype=np.complex128),),
+        metadata={"name": "different-tail"},
+    )
+    other_preparation = prepare_df_partial_s2(
+        other_hamiltonian,
+        split_df_hamiltonian_by_ld(other_hamiltonian, 0),
+    )
+    other_config, other_distribution = make_rte_config(
+        other_preparation.rte_preparation.symbolic_tail,
+        evolution_time=config.evolution_time,
+        rte_steps=2,
+        truncation_tolerance=1.0,
+        finite_taylor_order=2,
+    )
+    other_events = enumerate_rte_events(
+        other_preparation.rte_preparation.symbolic_tail.components,
+        other_distribution,
+    )
+    other_step = _step_request(
+        other_preparation,
+        other_config,
+        other_distribution,
+        (other_events[0], other_events[-1]),
+    )
+    other_result = builder.build(
+        DFPartialS2RepeatedRequest.from_step_requests(
+            (other_step,),
+            construction_policy="boundary_optimized",
+        )
+    )
+    assert other_preparation.tail_extraction.tail_hash != (
+        preparation.tail_extraction.tail_hash
+    )
+    assert other_result.circuit_semantics_fingerprint != (
+        first.circuit_semantics_fingerprint
+    )
+
+
+@pytest.mark.parametrize("construction_policy", ("raw_concatenation", "boundary_optimized"))
+def test_selected_only_exact_matches_full_diagnostics_and_reduces_transpiles(
+    construction_policy,
+) -> None:
+    preparation, config, distribution, step_time = _case()
+    full_cache = _CountingCache()
+    selected_cache = _CountingCache()
+    full = estimate_exact_compiled_repeated_partial_s2_cost(
+        preparation,
+        step_time,
+        2,
+        config,
+        distribution,
+        _compiler(),
+        construction_policy=construction_policy,
+        evaluation_mode="full_diagnostics",
+        maximum_trajectories=4,
+        cache=full_cache,
+    )
+    selected = estimate_exact_compiled_repeated_partial_s2_cost(
+        preparation,
+        step_time,
+        2,
+        config,
+        distribution,
+        _compiler(),
+        construction_policy=construction_policy,
+        evaluation_mode="selected_only",
+        maximum_trajectories=4,
+        cache=selected_cache,
+    )
+
+    assert selected.expected_cost == full.expected_cost
+    assert selected.evaluation_mode == "selected_only"
+    assert selected.raw_concatenation_expected_cost is None
+    assert selected.boundary_optimized_expected_cost is None
+    assert selected.boundary_optimization_difference is None
+    assert selected.matched_per_step_expected_cost is None
+    assert selected.cross_step_nonadditive_difference is None
+    assert selected.primitive_additive_expected_cost is None
+    assert selected.raw_metric_statistics is None
+    assert selected.unique_raw_trajectory_circuit_count is None
+    assert selected_cache.call_count == selected.trajectory_space_size == 4
+    assert full_cache.call_count == 40
+    assert selected_cache.call_count < full_cache.call_count
+    assert selected.unique_compiled_circuit_count == len(selected_cache)
+    assert selected.transpile_cache_hit_count == (
+        selected_cache.call_count - len(selected_cache)
+    )
+
+
+def test_selected_only_monte_carlo_matches_primary_statistics_and_cache_counts() -> None:
+    preparation, config, distribution, step_time = _case()
+    sample_count = 12
+    full_cache = _CountingCache()
+    selected_cache = _CountingCache()
+    full = estimate_monte_carlo_compiled_repeated_partial_s2_cost(
+        preparation,
+        step_time,
+        2,
+        config,
+        distribution,
+        _compiler(),
+        sample_count=sample_count,
+        seed=19,
+        evaluation_mode="full_diagnostics",
+        cache=full_cache,
+    )
+    selected = estimate_monte_carlo_compiled_repeated_partial_s2_cost(
+        preparation,
+        step_time,
+        2,
+        config,
+        distribution,
+        _compiler(),
+        sample_count=sample_count,
+        seed=19,
+        evaluation_mode="selected_only",
+        cache=selected_cache,
+    )
+    assert selected.expected_cost == full.expected_cost
+    assert selected.standard_error == full.standard_error
+    assert selected.full_metric_statistics == full.full_metric_statistics
+    assert selected.provenance_fingerprints == full.provenance_fingerprints
+    assert selected.circuit_semantics_fingerprints == (
+        full.circuit_semantics_fingerprints
+    )
+    assert selected_cache.call_count == sample_count
+    assert full_cache.call_count == sample_count * 10
+    assert selected.transpile_cache_hit_count == (
+        sample_count - selected.unique_compiled_circuit_count
+    )
+    assert selected.unique_trajectory_circuit_count == (
+        len(set(selected.circuit_semantics_fingerprints))
+    )
 
 
 def test_exact_trajectory_limit_is_checked_before_product_or_circuit_build(

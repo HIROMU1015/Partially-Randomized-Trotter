@@ -190,7 +190,16 @@ def _summarize_rows(
     for (molecule, pf_label), group_rows in sorted(groups.items()):
         best = min(group_rows, key=lambda row: float(row["cost_ratio_vs_grouped_baseline"]))
         theta_zero = next(
-            (row for row in group_rows if math.isclose(float(row["theta"]), 0.0, abs_tol=1e-15)),
+            (
+                row
+                for row in group_rows
+                if math.isclose(
+                    float(row["theta"]),
+                    0.0,
+                    rel_tol=0.0,
+                    abs_tol=1e-15,
+                )
+            ),
             None,
         )
         theta_zero_passed: bool | None = None
