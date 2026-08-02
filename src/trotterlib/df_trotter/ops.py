@@ -51,10 +51,16 @@ def _is_symbolic(value: Any) -> bool:
     return isinstance(value, ParameterExpression)
 
 
-def _is_effectively_zero(value: Any, *, atol: float = 1e-12) -> bool:
+def _is_effectively_zero(value: Any, *, atol: float = 0.0) -> bool:
     if _is_symbolic(value):
         return False
-    return abs(_as_real(value, "value", atol=atol)) <= atol
+    # The imaginary-part validation tolerance is independent of the pruning
+    # policy.  In particular, exact-zero pruning must not turn harmless
+    # eigensolver roundoff in an otherwise-real angle into a validation error.
+    real_value = _as_real(value, "value")
+    if atol == 0.0:
+        return real_value == 0.0
+    return abs(real_value) <= atol
 
 
 def _real_or_symbolic(value: Any, name: str, *, atol: float = 1e-12) -> Any:
@@ -141,7 +147,7 @@ def _dense_gaussian_unitary_ops(U: np.ndarray) -> list[tuple[Any, Tuple[int, ...
     for p in range(num_qubits):
         for q in range(num_qubits):
             coeff = anti_herm[p, q]
-            if abs(coeff) < 1e-14:
+            if coeff == 0.0:
                 continue
             op += FermionOperator(((p, 1), (q, 0)), coeff)
 
@@ -297,6 +303,8 @@ def append_diagonal_primitives(
     if controlled and ancilla_qubit is None:
         raise ValueError("Controlled diagonal primitives require ancilla_qubit.")
     for left, right, angle in primitives.rzz:
+        if _is_effectively_zero(angle):
+            continue
         if controlled:
             qc.append(RZZGate(angle).control(1), [ancilla_qubit, left, right])
         else:

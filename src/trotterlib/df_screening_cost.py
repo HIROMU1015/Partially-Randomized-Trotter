@@ -43,20 +43,37 @@ DEFAULT_DF_SCREENING_COST_OUTPUT = (
     / "screening_results"
     / "df_screening_cost_minimization_eps_1.000e-04.json"
 )
-DF_SCREENING_COST_MODEL = "df_reduced_screening_cost_minimization_v1"
+DF_SCREENING_COST_MODEL = "df_reduced_screening_cost_minimization_v2_rigorous_cgs_only"
 
 
 def load_df_anchor_cgs_table(path: str | Path) -> dict[int, dict[str, dict[str, Any]]]:
-    """Load screening-anchor Cgs entries grouped by molecule_type and PF label."""
+    """Load only explicitly rigorous screening-anchor Cgs entries.
+
+    State-specific phase-bias coefficients are useful for candidate screening,
+    but substituting them into the PR theorem's Cgs bound is not justified.
+    Legacy tables without an explicit rigorous marker are therefore rejected.
+    """
     table_path = Path(path)
     document = json.loads(table_path.read_text(encoding="utf-8"))
     grouped: dict[int, dict[str, dict[str, Any]]] = {}
+    rejected = 0
     for raw in document.get("entries", []):
         if not isinstance(raw, dict) or not raw.get("is_screening_anchor"):
+            continue
+        if not (
+            raw.get("is_rigorous_bound") is True
+            and raw.get("estimate_kind") == "rigorous_pr_cgs_bound"
+        ):
+            rejected += 1
             continue
         molecule_type = int(raw["molecule_type"])
         pf_label = str(raw["pf_label"])
         grouped.setdefault(molecule_type, {})[pf_label] = raw
+    if rejected:
+        raise ValueError(
+            "Cgs table contains legacy or phase-bias surrogate anchors.  They "
+            "cannot be substituted into the rigorous PR error-bound formula."
+        )
     return grouped
 
 
@@ -73,7 +90,7 @@ def build_rank_ordered_df_cost_blocks(
     ranked = rank_df_fragments(hamiltonian)
     full_model = df_hamiltonian_to_model(hamiltonian)
     blocks: list[Block] = []
-    if np.linalg.norm(full_model.one_body_correction) > 1e-14:
+    if np.any(np.asarray(full_model.one_body_correction) != 0.0):
         blocks.append(
             Block.from_one_body_gaussian(
                 build_one_body_gaussian_block_givens(
@@ -223,6 +240,8 @@ def optimize_df_screening_cost(
                     "ld": int(ld),
                     "ld_anchor": int(anchor["ld_anchor"]),
                     "cgs_source_kind": str(anchor.get("source_kind", "screening_anchor")),
+                    "cgs_estimate_kind": "rigorous_pr_cgs_bound",
+                    "cgs_is_rigorous_bound": True,
                     "c_gs_d_screen": float(anchor["c_gs_d"]),
                     "lambda_r": float(partition.lambda_r),
                     **costs_by_ld[ld],
@@ -252,12 +271,14 @@ def optimize_df_screening_cost(
         else None
     )
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "model": DF_SCREENING_COST_MODEL,
         "result_model": "legacy_analytic_proxy",
         "fidelity_level": 0,
         "epsilon_total": float(epsilon_total),
-        "cgs_rule": "C_gs,D(p,L_D)=C_gs,D(p,L_anchor=floor(rank/2))",
+        "cgs_rule": (
+            "explicit_rigorous_pr_cgs_bound_only; phase-bias surrogate forbidden"
+        ),
         "cost_rule": "total_ref_rz_depth(p,L_D) with analytic D-only RZ-depth",
         "randomized_method": randomized_method,
         "g_rand_input": float(g_rand),

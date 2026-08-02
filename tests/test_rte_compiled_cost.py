@@ -8,6 +8,7 @@ import pytest
 import qiskit
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import RYGate
+from qiskit.providers.fake_provider import GenericBackendV2
 from qiskit.quantum_info import Operator
 
 import trotterlib.rte_compiled_cost as compiled_cost_module
@@ -112,6 +113,79 @@ def test_transpiled_cost_uses_actual_integer_counts_and_filtered_depths() -> Non
         Operator(circuit).data,
         atol=1e-12,
     )
+
+
+def test_recursive_circuit_hash_includes_custom_gate_definition() -> None:
+    definition_x = QuantumCircuit(1)
+    definition_x.x(0)
+    definition_h = QuantumCircuit(1)
+    definition_h.h(0)
+
+    circuit_x = QuantumCircuit(1)
+    circuit_x.append(definition_x.to_gate(label="same-label"), [0])
+    circuit_x_copy = QuantumCircuit(1)
+    circuit_x_copy.append(definition_x.copy().to_gate(label="same-label"), [0])
+    circuit_h = QuantumCircuit(1)
+    circuit_h.append(definition_h.to_gate(label="same-label"), [0])
+
+    assert canonical_qiskit_circuit_fingerprint(
+        circuit_x
+    ) == canonical_qiskit_circuit_fingerprint(circuit_x_copy)
+    assert canonical_qiskit_circuit_fingerprint(
+        circuit_x
+    ) != canonical_qiskit_circuit_fingerprint(circuit_h)
+
+
+def test_cost_cache_is_bounded_and_drops_transpiled_circuit_bodies() -> None:
+    cache = TranspiledCircuitCostCache(maximum_entries=1)
+    compiler = _compiler(optimization_level=0)
+    first = QuantumCircuit(1)
+    first.rz(0.1, 0)
+    second = QuantumCircuit(1)
+    second.rz(0.2, 0)
+
+    miss, _key, cached = cache.get_or_transpile(
+        first,
+        compiler,
+        circuit_fingerprint="first",
+    )
+    assert cached is False
+    assert miss.transpiled_circuit is not None
+    cache.get_or_transpile(second, compiler, circuit_fingerprint="second")
+
+    assert len(cache) == 1
+    assert cache.eviction_count == 1
+    assert next(iter(cache._costs.values())).transpiled_circuit is None
+
+
+def test_cache_validates_backend_context_before_lookup() -> None:
+    backend = GenericBackendV2(
+        num_qubits=1,
+        basis_gates=["rz", "sx", "x"],
+        seed=11,
+    )
+    compiler = replace(
+        _compiler(optimization_level=0),
+        basis_gates=("rz", "sx", "x"),
+        backend_name=backend.name,
+    )
+    circuit = QuantumCircuit(1)
+    circuit.rz(0.2, 0)
+    cache = TranspiledCircuitCostCache()
+    cache.get_or_transpile(
+        circuit,
+        compiler,
+        circuit_fingerprint="backend-bound",
+        backend=backend,
+    )
+
+    with pytest.raises(ValueError, match="requires the corresponding backend"):
+        cache.get_or_transpile(
+            circuit,
+            compiler,
+            circuit_fingerprint="backend-bound",
+            backend=None,
+        )
 
 
 def test_transpile_preserves_controlled_identity_relative_phase() -> None:
@@ -327,6 +401,9 @@ def test_monte_carlo_statistics_are_unweighted_reproducible_and_convergent() -> 
 
     assert first.sample_count == sample_count
     assert first.seed == seed
+    assert first.ancilla_qubit == 1
+    assert first.maximum_work_items == 10_000
+    assert first.event_stream_rolling_digest == second.event_stream_rolling_digest
     assert first.expected_cost.rz_count == pytest.approx(expected_mean)
     assert rz_statistics.unbiased_sample_variance == pytest.approx(expected_variance)
     assert rz_statistics.standard_error == pytest.approx(expected_standard_error)
@@ -335,6 +412,16 @@ def test_monte_carlo_statistics_are_unweighted_reproducible_and_convergent() -> 
     assert first.expected_cost.rz_count != pytest.approx(double_weighted)
     assert first.expected_cost == second.expected_cost
     assert first.standard_error == second.standard_error
+
+    with pytest.raises(ValueError, match="maximum_samples"):
+        estimate_monte_carlo_compiled_event_cost(
+            preparation,
+            distribution,
+            compiler,
+            sample_count=2,
+            seed=seed,
+            maximum_samples=1,
+        )
     assert first.unique_compiled_circuit_count == 2
     assert first.transpile_cache_hit_count == sample_count - 2
 
@@ -447,16 +534,12 @@ def test_occurrence_request_validates_config_and_distribution_identity() -> None
             finite_rte_distribution(0.9, 2),
             seed=4,
         )
-    with pytest.raises(ValueError, match="normalizations"):
-        preparation.sample_occurrence_request(
-            config,
-            replace(
-                distribution,
-                exact_finite_distribution=(
-                    1.01 * distribution.exact_finite_distribution
-                ),
+    with pytest.raises(ValueError, match="order weights"):
+        replace(
+            distribution,
+            exact_finite_distribution=(
+                1.01 * distribution.exact_finite_distribution
             ),
-            seed=4,
         )
 
 
@@ -512,4 +595,7 @@ def test_cache_separates_compiler_control_and_reuse_conditions() -> None:
     assert initial_size == 2
     assert after_compiler_change == 4
     assert after_control_change == 6
-    assert len(cache) == 8
+    # Reuse policy is provenance, not circuit semantics.  One no-op-policy
+    # event is therefore deduplicated by the actual recursive circuit hash.
+    assert len(cache) == 7
+    assert cache.hit_count >= 1

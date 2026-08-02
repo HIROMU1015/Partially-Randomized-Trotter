@@ -76,8 +76,9 @@ preparation, attenuation-driven shot counts, or quantum-shot sampling.
 - Sort Pauli terms by descending `|c_l|`.
 - Define `H_D` from the top `L_D` terms and `H_R` from the tail.
 - Compute `lambda_R(L_D) = sum_{l > L_D} |c_l|`.
-- Fit `C_gs^(p)(L_D)` from perturbative ground-state error scaling on `H_D`.
-- Treat `C_gs` as a surrogate for the deterministic part only. It is not a rigorous error constant for the full partially randomized PF on the full Hamiltonian.
+- Estimate a state-specific survival-phase-bias coefficient on `H_D` for
+  candidate screening. This value is explicitly not `C_gs` and must not be
+  substituted into the rigorous partially-randomized error bound.
 
 ## Cost Model
 
@@ -132,18 +133,20 @@ If `lambda_R == 0`, the randomized side is turned off explicitly:
 - Perturbative state-evolution path: `src/trotterlib/qiskit_time_evolution_ungrouped.py`
 - Fixed-order log-log coefficient fit: `src/trotterlib/analysis_utils.py`
 
-## DF-native C_gs,D GPU path
+## DF-native phase-bias screening path
 
 DF representation を使う本流では、Pauli 項へ戻さず DF fragment のまま
 `H_D/H_R` を分割する。`src/trotterlib/df_partial_randomized_pf.py` がそのための
-DF-native な `C_gs,D` fit path を提供する。
+DF-native な state-specific survival phase-bias fit path を提供する。
 
 - `rank_df_fragments(...)`: DF fragment を固定の重み規則で降順に並べる。
 - `split_df_hamiltonian_by_ld(...)`: `L_D` 個の DF fragment を deterministic 側に置く。
-- `fit_df_cgs_with_perturbation(...)`: DF block circuit builder で `H_D` の Trotter 回路を作り、GPU statevector で perturbation error を計算して `C_gs,D` を fit する。
+- `fit_df_cgs_with_perturbation(...)`: `t=0` anchor を持つ位相追跡gridで
+  survival phaseをunwrapし、small-time log gridと複数fit windowから
+  shift-invariantなphase-bias surrogateをfitする。名称は互換性のため残る。
 - `get_or_compute_cached_df_cgs_fit(...)`: DF 用 cache key で GPU 実行結果を再利用する。
 - `get_or_compute_cached_df_ground_state(...)`: `H_D` と physical sector と solver 条件ごとに基底状態・基底エネルギーを `artifacts/partial_randomized_pf/df_ground_state_cache/*.npz` に保存して再利用する。
-- `df_deterministic_step_rz_cost(...)`: DF project と同じ U/D 分解ベースで `total_ref_rz_depth` を数え、`C_gs,D` の cache record の `metadata.df_step_cost` に保存する。
+- `df_deterministic_step_rz_cost(...)`: DF project と同じ U/D 分解ベースで `total_ref_rz_depth` を数え、phase-bias cache record の `metadata.df_step_cost` に保存する。
 
 GPU runner は `src/trotterlib/df_gpu_statevector.py` にあり、
 `qiskit-aer-gpu` の `AerSimulator(method="statevector", device="GPU")` を使う。
@@ -162,10 +165,16 @@ GPU 環境では以下を使う。
 pip install -r requirements-gpu.txt
 ```
 
-この path で得る `C_gs,D` は、DF `H_D` に対する deterministic surrogate であり、
-full partial-randomized scheme 全体の厳密な誤差係数ではない。
+このpathで得る係数の `estimate_kind` は
+`state_specific_phase_bias_surrogate`、`is_rigorous_bound` は常に `false`。
+用途は `L_D` 候補screeningとfit安定性比較に限る。理論上界式へ代入する
+legacy screening APIは、`rigorous_pr_cgs_bound` と明記されていない表を拒否する。
 
 ## Outputs
+
+This legacy analytic output exists only when the input table explicitly marks
+`estimate_kind="rigorous_pr_cgs_bound"` and `is_rigorous_bound=true`.
+Phase-bias screening output uses `phase_bias_coefficient` instead.
 
 Each candidate stores:
 
@@ -187,11 +196,13 @@ Boundary diagnostics:
 - `boundary_hit_kappa = True` means the best `kappa` is close to the lower or upper search boundary.
 - If `kappa` sticks to the upper boundary, the randomized tail may already be nearly irrelevant and the result may be close to the deterministic limit.
 
-## C_gs Cache
+## Phase-bias cache
 
-- `C_gs^(p)(L_D)` fits are cached automatically in `artifacts/partial_randomized_pf/cgs_fit_cache.json`.
+- DF phase-bias fits are cached in `artifacts/partial_randomized_pf/df_cgs_fit_cache.json` (schema 8 / definition v3).
 - The cache stores the fitted values and perturbation-fit diagnostics, not the explicit contents of `H_D`.
-- Cache keys are built from the full sorted Hamiltonian hash, `PF`, `L_D`, the perturbation-fit time grid, and the surrogate-definition version.
+- Cache keys include the full DF Hamiltonian, physical sector, PF/`L_D`, fit and
+  branch-grid policy, overlap/branch/residual/window thresholds, resolved
+  evolution and matrix-free backends, and ground-state solver settings.
 
 ## Matrix-Free Ground State Solver
 

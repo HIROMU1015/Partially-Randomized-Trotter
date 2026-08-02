@@ -145,6 +145,15 @@ unweighted mean $M^{-1}\sum_{j=1}^M U_j$. It never multiplies event
 probabilities again. Its result includes sample count, entrywise standard
 error, and a Frobenius standard-error summary. The old
 `finite_event_mean_operator` is a deprecated exact-enumeration wrapper.
+For a single sample both standard-error fields are `None`; zero would
+incorrectly claim that uncertainty was measured to vanish.
+
+`RTEFiniteDistribution` uses versioned serialization and validates every
+redundant field against `tau` and the cutoff: non-negative canonical weights,
+positive `B_K=sum(weights)`, normalized probabilities, the canonical Taylor
+residual, and the paper bound. At `tau=0`, higher-order weights are exactly
+zero and are valid. Paper-bound overflow is recorded explicitly as positive
+infinity. Legacy unversioned records pass through the same strict validator.
 
 The same probability rule is used for compiled circuit costs. Exact event
 enumeration computes a probability-weighted sum once. Classical Monte Carlo
@@ -173,6 +182,8 @@ and boundary policy rather than changing `CircuitCost.fidelity_level`. Long
 Actual per-circuit counts are integers; expected or Monte Carlo mean counts are
 floats. Compiler conditions are part of the cost identity, and costs produced
 under different settings must not be directly mixed.
+Sampling records fix `numpy.random.PCG64`, the NumPy version, a versioned
+order-then-component convention, the master seed, and rolling event digests.
 
 ## Corrected operator and attenuation
 

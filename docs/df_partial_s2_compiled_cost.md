@@ -86,13 +86,15 @@ product of its event probabilities. It verifies the total mass and computes:
 sum(sequence_probability * compiled_full_step_metric)
 ```
 
-`maximum_event_sequences` prevents exponential enumeration, and
-`maximum_untranspiled_circuit_size` bounds each constructed step.
+`maximum_event_sequences` prevents exponential enumeration. A pre-build
+instruction-count bound checks `maximum_untranspiled_circuit_size` before
+allocating the Qiskit circuit, followed by a post-build guard.
 
 `estimate_monte_carlo_compiled_partial_s2_cost` instead samples `r` events per
 step directly from the finite distribution and reports the unweighted mean,
 unbiased sample variance, standard error, range, unique full-step count, and
-cache hits. Sampled event probability is never multiplied a second time. This
+cache statistics. `maximum_samples` bounds the workload, and metrics use
+online Welford accumulation. Sampled event probability is never multiplied a second time. This
 is classical circuit selection, not quantum-shot sampling.
 
 For every exact or sampled sequence, the APIs compile matching costs for:
@@ -116,7 +118,9 @@ The compiler-independent full-step fingerprint includes Hamiltonian and
 partition hashes, `L_D`, deterministic order, step time, tail hash, exact RTE
 lambda, finite Taylor order, ordered event-sequence fingerprint, identity and
 threshold policy, control/ancilla condition, and basis-reuse policy. The
-transpile cache additionally includes compiler settings and Qiskit version.
+transpile cache instead verifies the recursively serialized actual numeric
+circuit and additionally includes compiler settings, Qiskit version, and a
+canonical backend target fingerprint.
 
 ## Fidelity and exclusions
 

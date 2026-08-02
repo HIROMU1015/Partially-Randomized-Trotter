@@ -23,7 +23,10 @@ from .df_rte_circuit import (
     DFRTEEventPreparation,
     DFRTEEventSequenceCircuitRequest,
 )
-from .df_rte_qiskit import QiskitDFRTEEventCircuitBuilder
+from .df_rte_qiskit import (
+    QiskitDFRTEEventCircuitBuilder,
+    estimate_df_rte_untranspiled_size_upper_bound,
+)
 from .df_rte_tail import (
     DFBasisRegistry,
     DFTailExtraction,
@@ -294,7 +297,7 @@ def prepare_df_partial_s2(
     registry = DFBasisRegistry()
     deterministic_blocks: list[DFDeterministicBlockSpec] = []
 
-    if np.linalg.norm(model.one_body_correction) > 1e-14:
+    if np.any(np.asarray(model.one_body_correction) != 0.0):
         one_body = build_one_body_gaussian_block(
             model.one_body_correction,
             sort=diagonal_sort,
@@ -560,6 +563,42 @@ class DFPartialS2StepRequest:
             raise ValueError("Partial-S2 and RTE ancilla positions must match.")
 
 
+def estimate_df_partial_s2_untranspiled_size_upper_bound(
+    request: DFPartialS2StepRequest,
+) -> int:
+    """Bound a complete partial-S2 instruction count before circuit creation."""
+    deterministic_half_size = 0
+    for block in request.preparation.deterministic_blocks:
+        deterministic_half_size += 2 * len(block.runtime_basis_operations)
+        if isinstance(block, DFDeterministicOneBodySpec):
+            central_upper_bound = block.num_system_qubits
+        else:
+            central_upper_bound = (
+                block.num_system_qubits
+                + block.num_system_qubits * (block.num_system_qubits - 1) // 2
+            )
+        deterministic_half_size += central_upper_bound
+        if request.controlled:
+            deterministic_half_size += 1
+
+    phase_gate_count = 0
+    if request.controlled:
+        phase_gate_count = sum(
+            phase != 0.0
+            for phase in (
+                -request.step_time * request.preparation.constant_coefficient,
+                -request.step_time
+                * request.preparation.extracted_identity_coefficient,
+            )
+        )
+    rte_size = (
+        0
+        if request.rte_occurrence is None
+        else estimate_df_rte_untranspiled_size_upper_bound(request.rte_occurrence)
+    )
+    return int(2 * deterministic_half_size + phase_gate_count + rte_size)
+
+
 def make_df_partial_s2_step_request(
     preparation: DFPartialS2Preparation,
     *,
@@ -729,7 +768,7 @@ class QiskitDFPartialS2CircuitBuilder:
             * request.preparation.extracted_identity_coefficient
         )
         for phase in (constant_phase, identity_phase):
-            if abs(phase) <= 1e-15:
+            if phase == 0.0:
                 continue
             if request.controlled:
                 circuit.append(PhaseGate(phase), [request.ancilla_qubit])

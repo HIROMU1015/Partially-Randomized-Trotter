@@ -34,6 +34,10 @@ integers. It also stores pre/post gate dictionaries, global phase, compiler
 settings/hash, and circuit fingerprint. RZ and CX depths use independent gate
 filters and are not copies of total depth.
 
+The cache is a bounded LRU and stores metric records rather than transpiled
+circuit bodies by default. A miss still returns the transpiled circuit so a
+small number of selected diagnostics can retain it explicitly.
+
 `CircuitCost` retains floating fields because a distribution expectation or a
 sample mean need not be integral. No RZ-to-T synthesis estimate is applied.
 
@@ -79,16 +83,21 @@ difference = sequence - additive
 The difference captures cross-event basis reuse, compiler cancellations,
 phase combination, and possible routing nonadditivity. Means, unbiased sample
 variances, and standard errors are retained separately for all three series.
-`maximum_rte_steps` and `maximum_untranspiled_circuit_size` prevent accidental
-large sequence expansion.
+`maximum_rte_steps`, `maximum_samples`, and
+`maximum_untranspiled_circuit_size` prevent accidental large expansion. A
+side-effect-free instruction-count planner rejects oversized work before
+Qiskit circuit allocation; a post-build guard remains. Means and Monte Carlo
+variances use online Welford accumulation.
 
 ## Cache identity
 
-`TranspiledCircuitCostCache` combines a semantic event/sequence fingerprint
-with the compiler-settings hash. The semantic fingerprint includes the tail,
-ordered applications, Taylor order and signed angle, controlled/ancilla
-condition, and basis-reuse policy. A setting change, controlled change, event
-order change, or reuse-policy change cannot reuse an incompatible result.
+`TranspiledCircuitCostCache` keys the recursively serialized, fully numeric
+actual Qiskit circuit together with compiler settings and canonical backend
+target data. Custom definitions, controls, conditions, global phase,
+qubit/clbit placement, and nested control-flow blocks are included. Symbolic
+or unsupported circuits and non-canonical backends bypass the cache. Backend
+context is validated before lookup. Caller fingerprints remain provenance and
+do not prevent safe deduplication of identical actual circuits.
 
 ## Fidelity levels
 

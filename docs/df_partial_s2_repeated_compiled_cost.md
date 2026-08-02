@@ -159,11 +159,14 @@ The Monte Carlo API samples complete trajectories from the finite
 distribution. Its compiled-cost estimate is an unweighted arithmetic mean;
 sampled event probability is not multiplied again. It returns the master and
 trajectory seeds, sample count, unbiased variance, standard error, min/max,
-unique circuit counts, and cache hits.
+unique circuit counts, rolling provenance/event digests, PRNG/version metadata,
+and cache hit/miss/bypass/eviction counts. `maximum_samples` bounds Monte Carlo
+work, while metric statistics are accumulated online.
 
-The transpile cache combines the circuit-semantics fingerprint with all
-compiler settings and Qiskit version. Seeds are intentionally absent because
-they select events but do not change a circuit once those events are fixed.
+The transpile cache combines the recursively serialized actual numeric circuit
+with all compiler settings, Qiskit version, and canonical backend target.
+Seeds are intentionally absent because they select events but do not change a
+circuit once those events are fixed.
 Event order, tail identity, control/ancilla condition, construction policy,
 basis reuse, and compiler conditions remain collision-separated. In the test
 fixture, two different seed hierarchies with the same events produce different
@@ -217,6 +220,17 @@ optimization level 0 gives expected full RZ/depth/size
 `16.32698900209987`, whereas levels 1 and 3 give `1.0` for those metrics.
 These numbers are algorithmic regression fixtures, not chemistry resource
 estimates or hardware timing predictions.
+
+## Level-5-R regression reference
+
+`tests/data/level5r_compiled_cost_reference_v1.json` freezes the small-fixture
+compiled metrics for every combination of `q=1..4`, raw/boundary-optimized,
+controlled/uncontrolled, and exact/Monte Carlo evaluation. The Monte Carlo
+sample count and seed, compiler settings, Qiskit version, means, and standard
+errors are explicit. The corresponding regression test recomputes all cases
+with a shared bounded metrics-only cache. This fixture is implementation
+evidence and is explicitly marked `scientific_result=false`; it is not an
+H3--H14 physics result.
 
 A separate two-qubit fixture uses a non-diagonal one-body matrix and three
 non-diagonal DF matrices with three distinct basis hashes, nonempty Givens

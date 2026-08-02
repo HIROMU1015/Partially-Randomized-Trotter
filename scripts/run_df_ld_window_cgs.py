@@ -51,7 +51,11 @@ def _load_existing_cgs_keys(paths: tuple[Path, ...]) -> set[tuple[int, str, int]
         for row in _iter_entries(_load_json(path)):
             if "molecule_type" not in row or "pf_label" not in row or "ld" not in row:
                 continue
-            if row.get("c_gs_d") is None and row.get("coeff") is None:
+            if (
+                row.get("phase_bias_coefficient") is None
+                and row.get("c_gs_d") is None
+                and row.get("coeff") is None
+            ):
                 continue
             keys.add((int(row["molecule_type"]), str(row["pf_label"]), int(row["ld"])))
     return keys
@@ -73,6 +77,16 @@ def _best_ld_by_system_pf(
     pf_labels: tuple[str, ...] | None,
 ) -> dict[tuple[int, str], dict[str, Any]]:
     document = _load_json(screening_result_path)
+    if not (
+        isinstance(document, dict)
+        and document.get("schema_version") == 2
+        and document.get("model")
+        == "df_reduced_screening_cost_minimization_v2_rigorous_cgs_only"
+    ):
+        raise ValueError(
+            "The supplied screening ranking is legacy/stale. Recompute it from "
+            "an explicitly rigorous Cgs table or provide an explicit target file."
+        )
     candidates = document.get("candidates", []) if isinstance(document, dict) else []
     pf_filter = None if pf_labels is None else set(pf_labels)
     best: dict[tuple[int, str], dict[str, Any]] = {}
@@ -125,7 +139,9 @@ def _make_targets(
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Compute DF C_gs,D only near anchor-screened LD optima."
+        description=(
+            "Compute DF phase-bias diagnostics near explicitly validated LD targets."
+        )
     )
     parser.add_argument("--screening-result", type=Path)
     parser.add_argument(
@@ -339,7 +355,10 @@ def main() -> int:
             "lambda_r": result.lambda_r,
             "pf_label": result.pf_label,
             "order": result.order,
-            "c_gs_d": result.coeff,
+            "phase_bias_coefficient": result.coeff,
+            "estimate_kind": result.estimate_kind,
+            "is_rigorous_bound": result.is_rigorous_bound,
+            "estimator_status": result.estimator_status,
             "fit_slope": result.fit_slope,
             "fit_coeff": result.fit_coeff,
             "fixed_order_coeff": result.fit_coeff_fixed_order,

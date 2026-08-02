@@ -26,6 +26,9 @@ FidelityLevel: TypeAlias = Literal[0, 1, 2, 3, 4, 5, 6]
 PROBABILITY_ATOL = 1e-12
 RTE_PARAMETER_REL_TOL = 1e-14
 RTE_PARAMETER_ABS_TOL = 1e-15
+RTE_FINITE_DISTRIBUTION_SCHEMA_VERSION = 1
+RTE_SAMPLING_CONVENTION_VERSION = "rte_order_then_components_v2"
+RTE_PRNG_TYPE = "numpy.random.PCG64"
 TruncationAllocationPolicy: TypeAlias = Literal[
     "equal_log_budget_per_short_step",
     "user_selected_orders",
@@ -180,6 +183,10 @@ class RTEFiniteDistribution:
     paper_upper_bound: float
 
     def __post_init__(self) -> None:
+        tau = float(self.dimensionless_step_time)
+        if not math.isfinite(tau):
+            raise ValueError("dimensionless_step_time must be finite.")
+        object.__setattr__(self, "dimensionless_step_time", tau)
         cutoff = require_integer_count(
             self.finite_taylor_order,
             name="finite_taylor_order",
@@ -187,24 +194,167 @@ class RTEFiniteDistribution:
         object.__setattr__(self, "finite_taylor_order", cutoff)
         if cutoff % 2:
             raise ValueError("finite_taylor_order must be a non-negative even integer.")
-        if self.orders != tuple(range(0, self.finite_taylor_order + 1, 2)):
+        normalized_orders = tuple(
+            require_integer_count(order, name="order") for order in self.orders
+        )
+        object.__setattr__(self, "orders", normalized_orders)
+        if normalized_orders != tuple(range(0, self.finite_taylor_order + 1, 2)):
             raise ValueError("orders must contain every even order through the cutoff.")
-        if len(self.orders) != len(self.unnormalized_order_weights):
+        if len(normalized_orders) != len(self.unnormalized_order_weights):
             raise ValueError("order weights length mismatch.")
         if len(self.orders) != len(self.order_probabilities):
             raise ValueError("order probabilities length mismatch.")
+        weights = tuple(float(value) for value in self.unnormalized_order_weights)
+        probabilities = tuple(float(value) for value in self.order_probabilities)
+        object.__setattr__(self, "unnormalized_order_weights", weights)
+        object.__setattr__(self, "order_probabilities", probabilities)
+        if any(not math.isfinite(value) or value < 0.0 for value in weights):
+            raise ValueError("finite Taylor order weights must be finite and non-negative.")
+        if any(not math.isfinite(value) or value < 0.0 for value in probabilities):
+            raise ValueError(
+                "finite Taylor order probabilities must be finite and non-negative."
+            )
+        normalization = float(self.exact_finite_distribution)
+        if not math.isfinite(normalization) or normalization <= 0.0:
+            raise ValueError("exact_finite_distribution must be finite and positive.")
+        object.__setattr__(self, "exact_finite_distribution", normalization)
+        canonical_weights = tuple(_paired_order_weight(tau, order) for order in normalized_orders)
+        for stored, canonical in zip(weights, canonical_weights, strict=True):
+            if not math.isclose(
+                stored,
+                canonical,
+                rel_tol=RTE_PARAMETER_REL_TOL,
+                abs_tol=RTE_PARAMETER_ABS_TOL,
+            ):
+                raise ValueError("finite Taylor order weights do not match tau and cutoff.")
+        canonical_normalization = float(math.fsum(canonical_weights))
         if not math.isclose(
-            sum(self.order_probabilities),
+            normalization,
+            canonical_normalization,
+            rel_tol=RTE_PARAMETER_REL_TOL,
+            abs_tol=RTE_PARAMETER_ABS_TOL,
+        ):
+            raise ValueError("exact_finite_distribution does not match order weights.")
+        for probability, weight in zip(probabilities, weights, strict=True):
+            if not math.isclose(
+                probability,
+                weight / normalization,
+                rel_tol=RTE_PARAMETER_REL_TOL,
+                abs_tol=PROBABILITY_ATOL,
+            ):
+                raise ValueError("order probabilities do not match normalized weights.")
+        if not math.isclose(
+            math.fsum(probabilities),
             1.0,
             rel_tol=0.0,
             abs_tol=PROBABILITY_ATOL,
         ):
             raise ValueError("finite Taylor order probabilities must sum to one.")
+        residual = float(self.truncation_residual_bound)
+        if math.isnan(residual) or residual < 0.0:
+            raise ValueError(
+                "truncation_residual_bound must be non-negative or positive infinity."
+            )
+        canonical_residual = step_taylor_truncation_residual_bound(tau, cutoff)
+        if not (
+            residual == canonical_residual
+            or math.isclose(
+                residual,
+                canonical_residual,
+                rel_tol=RTE_PARAMETER_REL_TOL,
+                abs_tol=RTE_PARAMETER_ABS_TOL,
+            )
+        ):
+            raise ValueError("truncation_residual_bound does not match tau and cutoff.")
+        object.__setattr__(self, "truncation_residual_bound", residual)
+        paper_bound = float(self.paper_upper_bound)
+        if paper_bound < 0.0 or math.isnan(paper_bound):
+            raise ValueError("paper_upper_bound must be non-negative or positive infinity.")
+        canonical_paper_bound = _paper_normalization_upper_bound(tau)
+        if not (
+            paper_bound == canonical_paper_bound
+            or math.isclose(
+                paper_bound,
+                canonical_paper_bound,
+                rel_tol=RTE_PARAMETER_REL_TOL,
+                abs_tol=RTE_PARAMETER_ABS_TOL,
+            )
+        ):
+            raise ValueError("paper_upper_bound does not match tau.")
+        object.__setattr__(self, "paper_upper_bound", paper_bound)
 
     @property
     def step_truncation_residual_bound(self) -> float:
         """Explicit name for the legacy one-short-step residual field."""
         return self.truncation_residual_bound
+
+    def to_dict(self) -> dict[str, Any]:
+        residual_overflowed = math.isinf(self.truncation_residual_bound)
+        paper_overflowed = math.isinf(self.paper_upper_bound)
+        return {
+            "schema_version": RTE_FINITE_DISTRIBUTION_SCHEMA_VERSION,
+            "dimensionless_step_time": self.dimensionless_step_time,
+            "finite_taylor_order": self.finite_taylor_order,
+            "orders": list(self.orders),
+            "unnormalized_order_weights": list(self.unnormalized_order_weights),
+            "order_probabilities": list(self.order_probabilities),
+            "exact_finite_distribution": self.exact_finite_distribution,
+            "truncation_residual_bound": (
+                None if residual_overflowed else self.truncation_residual_bound
+            ),
+            "truncation_residual_overflowed": residual_overflowed,
+            "paper_upper_bound": (
+                None if paper_overflowed else self.paper_upper_bound
+            ),
+            "paper_upper_bound_overflowed": paper_overflowed,
+        }
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> "RTEFiniteDistribution":
+        schema_version = payload.get("schema_version")
+        if schema_version is not None:
+            schema_version = require_integer_count(
+                schema_version,
+                name="schema_version",
+            )
+            if schema_version not in (0, RTE_FINITE_DISTRIBUTION_SCHEMA_VERSION):
+                raise ValueError("Unsupported finite RTE distribution schema version.")
+        # Legacy in-memory/JSON records had the same redundant numerical fields
+        # but no version marker.  Route them through the strict v1 constructor;
+        # inconsistent weights, probabilities, B_K, or residuals are rejected.
+        residual_overflowed = payload.get(
+            "truncation_residual_overflowed",
+            False,
+        )
+        paper_overflowed = payload.get("paper_upper_bound_overflowed", False)
+        if not isinstance(residual_overflowed, (bool, np.bool_)):
+            raise TypeError("truncation_residual_overflowed must be boolean.")
+        if not isinstance(paper_overflowed, (bool, np.bool_)):
+            raise TypeError("paper_upper_bound_overflowed must be boolean.")
+        raw_residual = payload["truncation_residual_bound"]
+        raw_paper_bound = payload["paper_upper_bound"]
+        if residual_overflowed:
+            if raw_residual not in (None, math.inf):
+                raise ValueError("Overflowed truncation residual must omit its value.")
+            residual = math.inf
+        else:
+            residual = float(raw_residual)
+        if paper_overflowed:
+            if raw_paper_bound not in (None, math.inf):
+                raise ValueError("Overflowed paper bound must omit its value.")
+            paper_bound = math.inf
+        else:
+            paper_bound = float(raw_paper_bound)
+        return cls(
+            dimensionless_step_time=float(payload["dimensionless_step_time"]),
+            finite_taylor_order=payload["finite_taylor_order"],
+            orders=tuple(payload["orders"]),
+            unnormalized_order_weights=tuple(payload["unnormalized_order_weights"]),
+            order_probabilities=tuple(payload["order_probabilities"]),
+            exact_finite_distribution=float(payload["exact_finite_distribution"]),
+            truncation_residual_bound=residual,
+            paper_upper_bound=paper_bound,
+        )
 
 
 @dataclass(frozen=True)
@@ -224,6 +374,9 @@ class RTEConfig:
     distribution_normalization: float
     truncation_residual_bound: float
     seed: int
+    sampling_convention_version: str = RTE_SAMPLING_CONVENTION_VERSION
+    prng_type: str = RTE_PRNG_TYPE
+    numpy_version: str = np.__version__
 
     def __post_init__(self) -> None:
         rte_steps = require_integer_count(
@@ -237,8 +390,33 @@ class RTEConfig:
         )
         object.__setattr__(self, "rte_steps", rte_steps)
         object.__setattr__(self, "finite_taylor_order", cutoff)
-        if self.lambda_r <= 0.0 or not math.isfinite(self.lambda_r):
+        object.__setattr__(
+            self,
+            "seed",
+            require_integer_count(self.seed, name="seed"),
+        )
+        if not self.sampling_convention_version:
+            raise ValueError("sampling_convention_version must not be empty.")
+        if not self.prng_type:
+            raise ValueError("prng_type must not be empty.")
+        if not self.numpy_version:
+            raise ValueError("numpy_version must not be empty.")
+        for name in (
+            "evolution_time",
+            "step_time",
+            "dimensionless_step_time",
+            "truncation_tolerance",
+            "distribution_normalization",
+            "truncation_residual_bound",
+        ):
+            value = float(getattr(self, name))
+            if not math.isfinite(value):
+                raise ValueError(f"{name} must be finite.")
+            object.__setattr__(self, name, value)
+        lambda_r = float(self.lambda_r)
+        if lambda_r <= 0.0 or not math.isfinite(lambda_r):
             raise ValueError("lambda_r must be finite and positive.")
+        object.__setattr__(self, "lambda_r", lambda_r)
         if cutoff % 2:
             raise ValueError("finite_taylor_order must be a non-negative even integer.")
         if self.truncation_tolerance <= 0.0:
@@ -260,6 +438,8 @@ class RTEConfig:
             abs_tol=RTE_PARAMETER_ABS_TOL,
         ):
             raise ValueError("dimensionless_step_time must equal lambda_r * step_time.")
+        if self.step_truncation_residual_bound < 0.0:
+            raise ValueError("truncation_residual_bound must be non-negative.")
         if self.step_truncation_residual_bound > self.truncation_tolerance:
             raise ValueError("finite Taylor cutoff does not meet truncation_tolerance.")
         if self.taylor_distribution != "rte_even_taylor_paired":
@@ -327,6 +507,43 @@ class RTEEventApplication:
     basis_change_operations: tuple[BasisChangeOperation, ...]
     basis_hash: str | None = None
 
+    def __post_init__(self) -> None:
+        object.__setattr__(
+            self,
+            "application_index",
+            require_integer_count(self.application_index, name="application_index"),
+        )
+        if self.role not in ("product", "rotation"):
+            raise ValueError("RTE event application role must be product or rotation.")
+        if not self.component_id:
+            raise ValueError("RTE event application component_id must not be empty.")
+        coefficient_abs = float(self.coefficient_abs)
+        if not math.isfinite(coefficient_abs) or coefficient_abs < 0.0:
+            raise ValueError("application coefficient_abs must be finite and non-negative.")
+        object.__setattr__(self, "coefficient_abs", coefficient_abs)
+        if isinstance(self.coefficient_sign, (bool, np.bool_)):
+            raise TypeError("application coefficient_sign must be an integer sign.")
+        try:
+            coefficient_sign = int(operator.index(self.coefficient_sign))
+        except TypeError as exc:
+            raise TypeError(
+                "application coefficient_sign must be an integer sign."
+            ) from exc
+        if coefficient_sign not in (-1, 1):
+            raise ValueError("application coefficient_sign must be -1 or +1.")
+        object.__setattr__(self, "coefficient_sign", coefficient_sign)
+        if not isinstance(self.is_identity, (bool, np.bool_)):
+            raise TypeError("application is_identity must be boolean.")
+        object.__setattr__(self, "is_identity", bool(self.is_identity))
+        if self.diagonal_pauli_support is not None:
+            support = tuple(
+                require_integer_count(index, name="support qubit")
+                for index in self.diagonal_pauli_support
+            )
+            if tuple(sorted(set(support))) != support or len(support) > 2:
+                raise ValueError("application support must be a sorted I/Z/ZZ support.")
+            object.__setattr__(self, "diagonal_pauli_support", support)
+
 
 @dataclass(frozen=True)
 class RTEEvent:
@@ -346,6 +563,62 @@ class RTEEvent:
     basis_reuse_intervals: tuple[BasisReuseInterval, ...]
     application_sequence: tuple[RTEEventApplication, ...]
     basis_hash: str | None = None
+
+    def __post_init__(self) -> None:
+        order = require_integer_count(self.taylor_order, name="taylor_order")
+        object.__setattr__(self, "taylor_order", order)
+        if order % 2:
+            raise ValueError("RTE event Taylor order must be even.")
+        if not self.rotation_component_id:
+            raise ValueError("rotation_component_id must not be empty.")
+        if len(self.product_component_ids) != order:
+            raise ValueError("RTE event product count must equal its Taylor order.")
+        expected_selected = (*self.product_component_ids, self.rotation_component_id)
+        if self.selected_component_ids != expected_selected:
+            raise ValueError("selected_component_ids must be product order then rotation.")
+        if len(self.df_fragment_ids) != order + 1:
+            raise ValueError("df_fragment_ids length must equal Taylor order plus one.")
+        if len(self.application_sequence) != order + 1:
+            raise ValueError("application sequence length must equal Taylor order plus one.")
+        if tuple(item.application_index for item in self.application_sequence) != tuple(
+            range(order + 1)
+        ):
+            raise ValueError("application indices must be contiguous in circuit order.")
+        expected_roles = ("product",) * order + ("rotation",)
+        if tuple(item.role for item in self.application_sequence) != expected_roles:
+            raise ValueError("application sequence must end in exactly one rotation.")
+        if tuple(item.component_id for item in self.application_sequence) != expected_selected:
+            raise ValueError("application component IDs disagree with event metadata.")
+        probability = float(self.event_probability)
+        coefficient = float(self.event_coefficient)
+        normalization = float(self.event_normalization)
+        if not math.isfinite(probability) or probability < 0.0:
+            raise ValueError("event_probability must be finite and non-negative.")
+        if not math.isfinite(coefficient) or coefficient < 0.0:
+            raise ValueError("event_coefficient must be finite and non-negative.")
+        if not math.isfinite(normalization) or normalization <= 0.0:
+            raise ValueError("event_normalization must be finite and positive.")
+        if not math.isclose(
+            probability,
+            coefficient / normalization,
+            rel_tol=RTE_PARAMETER_REL_TOL,
+            abs_tol=PROBABILITY_ATOL,
+        ):
+            raise ValueError("event_probability does not match coefficient/normalization.")
+        phase = complex(self.phase)
+        if not math.isfinite(phase.real) or not math.isfinite(phase.imag):
+            raise ValueError("RTE event phase must be finite.")
+        expected_phase = complex((-1) ** (order // 2))
+        if abs(phase - expected_phase) > RTE_PARAMETER_ABS_TOL:
+            raise ValueError("RTE event phase does not match its Taylor order.")
+        angle = float(self.rotation_angle)
+        if not math.isfinite(angle):
+            raise ValueError("rotation_angle must be finite.")
+        object.__setattr__(self, "event_probability", probability)
+        object.__setattr__(self, "event_coefficient", coefficient)
+        object.__setattr__(self, "event_normalization", normalization)
+        object.__setattr__(self, "phase", phase)
+        object.__setattr__(self, "rotation_angle", angle)
 
     def to_dict(self) -> dict[str, Any]:
         data = asdict(self)
@@ -375,16 +648,30 @@ class EventOperatorSampleEstimate:
     """Unweighted Monte Carlo estimate of an RTE event-operator mean."""
 
     operator_mean: np.ndarray = field(repr=False, compare=False)
-    entrywise_standard_error: np.ndarray = field(repr=False, compare=False)
-    frobenius_standard_error: float
+    entrywise_standard_error: np.ndarray | None = field(repr=False, compare=False)
+    frobenius_standard_error: float | None
     sample_count: int
 
     def __post_init__(self) -> None:
+        sample_count = require_integer_count(
+            self.sample_count, name="sample_count", minimum=1
+        )
         object.__setattr__(
             self,
             "sample_count",
-            require_integer_count(self.sample_count, name="sample_count", minimum=1),
+            sample_count,
         )
+        if sample_count == 1:
+            if (
+                self.entrywise_standard_error is not None
+                or self.frobenius_standard_error is not None
+            ):
+                raise ValueError("One-sample standard error must be unavailable (None).")
+        elif (
+            self.entrywise_standard_error is None
+            or self.frobenius_standard_error is None
+        ):
+            raise ValueError("Multi-sample standard errors must be provided.")
 
 
 @dataclass(frozen=True)
@@ -811,11 +1098,27 @@ def _paired_order_weight(dimensionless_step_time: float, order: int) -> float:
     order = require_integer_count(order, name="order")
     if order % 2:
         raise ValueError("RTE Taylor event order must be non-negative and even.")
-    magnitude = abs(float(dimensionless_step_time))
+    raw_time = float(dimensionless_step_time)
+    if not math.isfinite(raw_time):
+        raise ValueError("dimensionless_step_time must be finite.")
+    magnitude = abs(raw_time)
     if magnitude == 0.0:
         return 1.0 if order == 0 else 0.0
     log_taylor = order * math.log(magnitude) - math.lgamma(order + 1)
-    return math.exp(log_taylor) * math.hypot(1.0, magnitude / (order + 1))
+    try:
+        return math.exp(log_taylor) * math.hypot(1.0, magnitude / (order + 1))
+    except OverflowError as exc:
+        raise ValueError("finite Taylor order weight overflowed.") from exc
+
+
+def _paper_normalization_upper_bound(dimensionless_step_time: float) -> float:
+    tau = abs(float(dimensionless_step_time))
+    if not math.isfinite(tau):
+        raise ValueError("dimensionless_step_time must be finite.")
+    exponent = tau * tau
+    if not math.isfinite(exponent) or exponent > math.log(np.finfo(float).max):
+        return math.inf
+    return float(math.exp(exponent))
 
 
 def step_taylor_truncation_residual_bound(
@@ -835,13 +1138,19 @@ def step_taylor_truncation_residual_bound(
     )
     if finite_taylor_order % 2:
         raise ValueError("finite_taylor_order must be a non-negative even integer.")
-    magnitude = abs(float(dimensionless_step_time))
+    raw_time = float(dimensionless_step_time)
+    if not math.isfinite(raw_time):
+        raise ValueError("dimensionless_step_time must be finite.")
+    magnitude = abs(raw_time)
     if magnitude == 0.0:
         return 0.0
     first_degree = finite_taylor_order + 2
-    term = math.exp(
-        first_degree * math.log(magnitude) - math.lgamma(first_degree + 1)
-    )
+    try:
+        term = math.exp(
+            first_degree * math.log(magnitude) - math.lgamma(first_degree + 1)
+        )
+    except OverflowError:
+        return math.inf
     total = term
     degree = first_degree
     for _ in range(100_000):
@@ -854,6 +1163,8 @@ def step_taylor_truncation_residual_bound(
         degree += 1
         term = next_term
         total += term
+        if not math.isfinite(total):
+            return math.inf
     raise RuntimeError("Taylor residual summation did not converge.")
 
 
@@ -875,8 +1186,8 @@ def choose_finite_taylor_order(
     maximum_order: int = 10_000,
 ) -> int:
     """Choose the smallest even cutoff meeting the one-step residual bound."""
-    if truncation_tolerance <= 0.0:
-        raise ValueError("truncation_tolerance must be positive.")
+    if not math.isfinite(truncation_tolerance) or truncation_tolerance <= 0.0:
+        raise ValueError("truncation_tolerance must be finite and positive.")
     maximum_order = require_integer_count(
         maximum_order,
         name="maximum_order",
@@ -1148,6 +1459,9 @@ def finite_rte_distribution(
     finite_taylor_order: int,
 ) -> RTEFiniteDistribution:
     """Build the finite v2 Eqs. (A23)--(A26) event distribution."""
+    dimensionless_step_time = float(dimensionless_step_time)
+    if not math.isfinite(dimensionless_step_time):
+        raise ValueError("dimensionless_step_time must be finite.")
     finite_taylor_order = require_integer_count(
         finite_taylor_order,
         name="finite_taylor_order",
@@ -1158,9 +1472,8 @@ def finite_rte_distribution(
     weights = tuple(
         _paired_order_weight(dimensionless_step_time, order) for order in orders
     )
-    normalization = float(sum(weights))
+    normalization = float(math.fsum(weights))
     probabilities = tuple(weight / normalization for weight in weights)
-    tau = abs(float(dimensionless_step_time))
     return RTEFiniteDistribution(
         dimensionless_step_time=float(dimensionless_step_time),
         finite_taylor_order=finite_taylor_order,
@@ -1171,7 +1484,7 @@ def finite_rte_distribution(
         truncation_residual_bound=step_taylor_truncation_residual_bound(
             dimensionless_step_time, finite_taylor_order
         ),
-        paper_upper_bound=float(math.exp(tau * tau)),
+        paper_upper_bound=_paper_normalization_upper_bound(dimensionless_step_time),
     )
 
 
@@ -1186,6 +1499,11 @@ def make_rte_config(
 ) -> tuple[RTEConfig, RTEFiniteDistribution]:
     """Create a self-consistent config and its exact finite distribution."""
     rte_steps = require_integer_count(rte_steps, name="rte_steps", minimum=1)
+    seed = require_integer_count(seed, name="seed")
+    if not math.isfinite(float(evolution_time)):
+        raise ValueError("evolution_time must be finite.")
+    if not math.isfinite(float(truncation_tolerance)) or truncation_tolerance <= 0.0:
+        raise ValueError("truncation_tolerance must be finite and positive.")
     if tail.lambda_r == 0.0 or not tail.components:
         raise DeterministicOnlyRTETailError(
             "The tail has no randomized components; finite RTE is not required."
@@ -1214,7 +1532,7 @@ def make_rte_config(
         truncation_tolerance=float(truncation_tolerance),
         distribution_normalization=distribution.exact_finite_distribution,
         truncation_residual_bound=distribution.step_truncation_residual_bound,
-        seed=int(seed),
+        seed=seed,
     )
     return config, distribution
 
@@ -1253,19 +1571,21 @@ def _basis_reuse_intervals(
     return tuple(intervals)
 
 
-def _validate_components(components: Sequence[RTEComponent]) -> None:
+def _validate_components(components: Sequence[RTEComponent]) -> float:
     if not components:
         raise ValueError("components must not be empty.")
     identifiers = [component.component_id for component in components]
     if len(set(identifiers)) != len(identifiers):
         raise ValueError("component_id values must be unique.")
+    probability_sum = math.fsum(component.probability for component in components)
     if not math.isclose(
-        sum(component.probability for component in components),
+        probability_sum,
         1.0,
         rel_tol=0.0,
         abs_tol=PROBABILITY_ATOL,
     ):
         raise ValueError("component probabilities must sum to one.")
+    return float(probability_sum)
 
 
 def _make_event(
@@ -1279,8 +1599,12 @@ def _make_event(
         raise ValueError("An order-n event requires one rotation plus n products.")
     rotation = components[int(component_indices[0])]
     products = tuple(components[int(index)] for index in component_indices[1:])
+    component_probability_sum = math.fsum(
+        component.probability for component in components
+    )
     component_probability = math.prod(
-        components[int(index)].probability for index in component_indices
+        components[int(index)].probability / component_probability_sum
+        for index in component_indices
     )
     coefficient = (
         distribution.unnormalized_order_weights[order_index]
@@ -1341,11 +1665,20 @@ def enumerate_rte_events(
     """Enumerate all finite events for small systems only."""
     max_events = require_integer_count(max_events, name="max_events")
     _validate_components(components)
-    count = sum(len(components) ** (order + 1) for order in distribution.orders)
+    supported_orders = tuple(
+        order
+        for order, probability in zip(
+            distribution.orders, distribution.order_probabilities, strict=True
+        )
+        if probability > 0.0
+    )
+    count = sum(len(components) ** (order + 1) for order in supported_orders)
     if count > max_events:
         raise ValueError(f"Event space has {count} events, above max_events={max_events}.")
     events: list[RTEEvent] = []
     for order_index, order in enumerate(distribution.orders):
+        if distribution.order_probabilities[order_index] == 0.0:
+            continue
         for indices in itertools.product(range(len(components)), repeat=order + 1):
             events.append(_make_event(indices, components, distribution, order_index))
     return tuple(events)
@@ -1360,10 +1693,12 @@ def sample_rte_events(
 ) -> tuple[RTEEvent, ...]:
     """Classically sample event circuits; this is not quantum shot sampling."""
     sample_count = require_integer_count(sample_count, name="sample_count")
-    _validate_components(components)
-    rng = np.random.default_rng(int(seed))
+    seed = require_integer_count(seed, name="seed")
+    component_probability_sum = _validate_components(components)
+    rng = np.random.Generator(np.random.PCG64(seed))
     component_probabilities = np.asarray(
-        [component.probability for component in components], dtype=float
+        [component.probability / component_probability_sum for component in components],
+        dtype=float,
     )
     events: list[RTEEvent] = []
     for _ in range(sample_count):
@@ -1448,17 +1783,19 @@ def sample_event_mean_operator(
     mean = np.mean(unitary_samples, axis=0)
     sample_count = len(sampled_events)
     if sample_count == 1:
-        entrywise_standard_error = np.zeros_like(mean, dtype=float)
+        entrywise_standard_error = None
+        frobenius_standard_error = None
     else:
         centered = unitary_samples - mean
         entrywise_variance = np.sum(np.abs(centered) ** 2, axis=0) / (
             sample_count - 1
         )
         entrywise_standard_error = np.sqrt(entrywise_variance / sample_count)
+        frobenius_standard_error = float(np.linalg.norm(entrywise_standard_error))
     return EventOperatorSampleEstimate(
         operator_mean=mean,
         entrywise_standard_error=entrywise_standard_error,
-        frobenius_standard_error=float(np.linalg.norm(entrywise_standard_error)),
+        frobenius_standard_error=frobenius_standard_error,
         sample_count=sample_count,
     )
 

@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import hashlib
 import itertools
 import math
+import platform
 import random
 from dataclasses import dataclass
 from typing import Any, Literal, Sequence, TypeAlias
@@ -11,6 +13,7 @@ from typing import Any, Literal, Sequence, TypeAlias
 from .df_partial_s2 import (
     DFPartialS2Preparation,
     QiskitDFPartialS2CircuitBuilder,
+    estimate_df_partial_s2_untranspiled_size_upper_bound,
 )
 from .df_partial_s2_cost import _request_for_events, _validate_rte_inputs
 from .df_partial_s2_repeated import (
@@ -31,11 +34,11 @@ from .rte import (
     require_integer_count,
 )
 from .rte_compiled_cost import (
+    CompiledMetricAccumulator,
     CompiledMetricStatistics,
     TranspiledCircuitCost,
     TranspiledCircuitCostCache,
     circuit_cost_from_metric_statistics,
-    compiled_metric_statistics,
     subtract_compiled_costs,
     sum_compiled_costs,
 )
@@ -104,6 +107,19 @@ class CompiledRepeatedPartialS2CostEstimate:
     unique_boundary_optimized_trajectory_circuit_count: int | None
     unique_compiled_circuit_count: int
     transpile_cache_hit_count: int
+    transpile_cache_miss_count: int
+    transpile_cache_bypass_count: int
+    transpile_cache_eviction_count: int
+    transpile_cache_maximum_entries: int
+    processed_trajectory_count: int
+    provenance_rolling_digest: str
+    circuit_semantics_rolling_digest: str
+    sampled_trajectory_seed_digest: str | None
+    master_prng_type: str | None
+    event_prng_type: str | None
+    python_version: str
+    numpy_version: str | None
+    sampling_convention_version: str | None
     compiler: CompilerSettings
     controlled: bool
     ancilla_qubit: int | None
@@ -116,6 +132,7 @@ class CompiledRepeatedPartialS2CostEstimate:
         "repeated_partial_s2_steps"
     )
     fidelity_level: Literal[5] = 5
+    statistics_policy: Literal["online_welford_v1"] = "online_welford_v1"
 
 
 def _as_cost(
@@ -157,21 +174,53 @@ def _compile_repeated_samples(
     if evaluation_mode not in ("full_diagnostics", "selected_only"):
         raise ValueError("Unsupported repeated compiled-cost evaluation mode.")
     working_cache = cache if cache is not None else TranspiledCircuitCostCache()
+    initial_misses = working_cache.miss_count
+    initial_bypasses = working_cache.bypass_count
+    initial_evictions = working_cache.eviction_count
     repeated_builder = QiskitDFPartialS2RepeatedCircuitBuilder()
     step_builder = QiskitDFPartialS2CircuitBuilder()
-    raw_costs: list[TranspiledCircuitCost] = []
-    optimized_costs: list[TranspiledCircuitCost] = []
-    selected_costs: list[TranspiledCircuitCost] = []
-    boundary_differences: list[Any] = []
-    matched_costs: list[Any] = []
-    cross_step_differences: list[Any] = []
-    primitive_additive_costs: list[Any] = []
+    if weights is not None and len(weights) != len(requests):
+        raise ValueError("Trajectory weights length must match requests.")
+    weighted = weights is not None
+    selected_accumulator = CompiledMetricAccumulator(weighted=weighted)
+    raw_accumulator = (
+        CompiledMetricAccumulator(weighted=weighted)
+        if evaluation_mode == "full_diagnostics"
+        else None
+    )
+    optimized_accumulator = (
+        CompiledMetricAccumulator(weighted=weighted)
+        if evaluation_mode == "full_diagnostics"
+        else None
+    )
+    boundary_accumulator = (
+        CompiledMetricAccumulator(weighted=weighted)
+        if evaluation_mode == "full_diagnostics"
+        else None
+    )
+    matched_accumulator = (
+        CompiledMetricAccumulator(weighted=weighted)
+        if evaluation_mode == "full_diagnostics"
+        else None
+    )
+    cross_accumulator = (
+        CompiledMetricAccumulator(weighted=weighted)
+        if evaluation_mode == "full_diagnostics"
+        else None
+    )
+    primitive_accumulator = (
+        CompiledMetricAccumulator(weighted=weighted)
+        if evaluation_mode == "full_diagnostics"
+        else None
+    )
     all_keys: set[str] = set()
     selected_circuit_fingerprints: set[str] = set()
     raw_circuit_fingerprints: set[str] = set()
     optimized_circuit_fingerprints: set[str] = set()
     ordered_provenance_fingerprints: list[str] = []
     ordered_semantics_fingerprints: list[str] = []
+    provenance_digest = hashlib.sha256()
+    semantics_digest = hashlib.sha256()
     cache_hits = 0
     first_selected_result = None
 
@@ -194,7 +243,17 @@ def _compile_repeated_samples(
                 "configured size limit."
             )
 
-    for request in requests:
+    for request_index, request in enumerate(requests):
+        weight = None if weights is None else weights[request_index]
+        planned_size = sum(
+            estimate_df_partial_s2_untranspiled_size_upper_bound(step_request)
+            for step_request in request.iter_step_requests()
+        )
+        if planned_size > maximum_untranspiled_circuit_size:
+            raise ValueError(
+                "Planned repeated partial-S2 circuit upper bound exceeds the "
+                "configured size limit before circuit construction."
+            )
         if evaluation_mode == "selected_only":
             selected_result = repeated_builder.build(
                 request,
@@ -224,14 +283,15 @@ def _compile_repeated_samples(
                 optimized_result.circuit,
                 optimized_result.circuit_semantics_fingerprint,
             )
-            raw_costs.append(raw_cost)
-            optimized_costs.append(optimized_cost)
+            raw_accumulator.update(raw_cost, weight=weight)
+            optimized_accumulator.update(optimized_cost, weight=weight)
             raw_circuit_fingerprints.add(raw_result.circuit_semantics_fingerprint)
             optimized_circuit_fingerprints.add(
                 optimized_result.circuit_semantics_fingerprint
             )
-            boundary_differences.append(
-                subtract_compiled_costs(optimized_cost, raw_cost)
+            boundary_accumulator.update(
+                subtract_compiled_costs(optimized_cost, raw_cost),
+                weight=weight,
             )
             if request.construction_policy == "raw_concatenation":
                 selected_cost = raw_cost
@@ -240,7 +300,7 @@ def _compile_repeated_samples(
                 selected_cost = optimized_cost
                 selected_result = optimized_result
 
-        selected_costs.append(selected_cost)
+        selected_accumulator.update(selected_cost, weight=weight)
         selected_circuit_fingerprints.add(
             selected_result.circuit_semantics_fingerprint
         )
@@ -249,6 +309,12 @@ def _compile_repeated_samples(
         )
         ordered_semantics_fingerprints.append(
             selected_result.circuit_semantics_fingerprint
+        )
+        provenance_digest.update(
+            bytes.fromhex(selected_result.provenance_fingerprint)
+        )
+        semantics_digest.update(
+            bytes.fromhex(selected_result.circuit_semantics_fingerprint)
         )
         if first_selected_result is None:
             first_selected_result = selected_result
@@ -288,43 +354,44 @@ def _compile_repeated_samples(
 
         matched = sum_compiled_costs(per_step_costs)
         primitive_additive = sum_compiled_costs(primitive_costs)
-        matched_costs.append(matched)
-        primitive_additive_costs.append(primitive_additive)
-        cross_step_differences.append(
-            subtract_compiled_costs(selected_cost, matched)
+        matched_accumulator.update(matched, weight=weight)
+        primitive_accumulator.update(primitive_additive, weight=weight)
+        cross_accumulator.update(
+            subtract_compiled_costs(selected_cost, matched),
+            weight=weight,
         )
 
     if first_selected_result is None:
         raise RuntimeError("Repeated partial-S2 metadata could not be constructed.")
-    selected_statistics = compiled_metric_statistics(selected_costs, weights=weights)
+    selected_statistics = selected_accumulator.finalize()
     raw_statistics = (
-        compiled_metric_statistics(raw_costs, weights=weights)
-        if evaluation_mode == "full_diagnostics"
+        raw_accumulator.finalize()
+        if raw_accumulator is not None
         else None
     )
     optimized_statistics = (
-        compiled_metric_statistics(optimized_costs, weights=weights)
-        if evaluation_mode == "full_diagnostics"
+        optimized_accumulator.finalize()
+        if optimized_accumulator is not None
         else None
     )
     boundary_statistics = (
-        compiled_metric_statistics(boundary_differences, weights=weights)
-        if evaluation_mode == "full_diagnostics"
+        boundary_accumulator.finalize()
+        if boundary_accumulator is not None
         else None
     )
     matched_statistics = (
-        compiled_metric_statistics(matched_costs, weights=weights)
-        if evaluation_mode == "full_diagnostics"
+        matched_accumulator.finalize()
+        if matched_accumulator is not None
         else None
     )
     cross_statistics = (
-        compiled_metric_statistics(cross_step_differences, weights=weights)
-        if evaluation_mode == "full_diagnostics"
+        cross_accumulator.finalize()
+        if cross_accumulator is not None
         else None
     )
     primitive_statistics = (
-        compiled_metric_statistics(primitive_additive_costs, weights=weights)
-        if evaluation_mode == "full_diagnostics"
+        primitive_accumulator.finalize()
+        if primitive_accumulator is not None
         else None
     )
     expected = _as_cost(selected_statistics, compiler, estimate_kind)
@@ -480,6 +547,46 @@ def _compile_repeated_samples(
         ),
         unique_compiled_circuit_count=len(all_keys),
         transpile_cache_hit_count=cache_hits,
+        transpile_cache_miss_count=working_cache.miss_count - initial_misses,
+        transpile_cache_bypass_count=(
+            working_cache.bypass_count - initial_bypasses
+        ),
+        transpile_cache_eviction_count=(
+            working_cache.eviction_count - initial_evictions
+        ),
+        transpile_cache_maximum_entries=working_cache.maximum_entries,
+        processed_trajectory_count=len(requests),
+        provenance_rolling_digest=provenance_digest.hexdigest(),
+        circuit_semantics_rolling_digest=semantics_digest.hexdigest(),
+        sampled_trajectory_seed_digest=(
+            None
+            if sampled_trajectory_seeds is None
+            else hashlib.sha256(
+                b"".join(
+                    int(value).to_bytes(8, byteorder="big", signed=False)
+                    for value in sampled_trajectory_seeds
+                )
+            ).hexdigest()
+        ),
+        master_prng_type=(
+            None if exact else "python.random.Random(MT19937)"
+        ),
+        event_prng_type=(
+            None
+            if first_request.rte_config is None
+            else first_request.rte_config.prng_type
+        ),
+        python_version=platform.python_version(),
+        numpy_version=(
+            None
+            if first_request.rte_config is None
+            else first_request.rte_config.numpy_version
+        ),
+        sampling_convention_version=(
+            None
+            if first_request.rte_config is None
+            else first_request.rte_config.sampling_convention_version
+        ),
         compiler=compiler,
         controlled=first_request.controlled,
         ancilla_qubit=first_request.ancilla_qubit,
@@ -665,6 +772,7 @@ def estimate_monte_carlo_compiled_repeated_partial_s2_cost(
     *,
     sample_count: int,
     seed: int,
+    maximum_samples: int = 10_000,
     controlled: bool = False,
     ancilla_qubit: int | None = None,
     cancel_adjacent_equal_bases: bool = True,
@@ -683,6 +791,15 @@ def estimate_monte_carlo_compiled_repeated_partial_s2_cost(
         minimum=1,
     )
     sample_count = require_integer_count(sample_count, name="sample_count", minimum=1)
+    maximum_samples = require_integer_count(
+        maximum_samples,
+        name="maximum_samples",
+        minimum=1,
+    )
+    if sample_count > maximum_samples:
+        raise ValueError(
+            f"sample_count={sample_count} exceeds maximum_samples={maximum_samples}."
+        )
     master_seed = require_integer_count(seed, name="seed")
     maximum_untranspiled_circuit_size = require_integer_count(
         maximum_untranspiled_circuit_size,
@@ -754,7 +871,7 @@ def estimate_monte_carlo_compiled_repeated_partial_s2_cost(
         single_event_space_size=single_event_count,
         single_step_event_sequence_count=sequence_count,
         trajectory_space_size=trajectory_space_size,
-        maximum_trajectories=None,
+        maximum_trajectories=maximum_samples,
         maximum_untranspiled_circuit_size=maximum_untranspiled_circuit_size,
         cache=cache,
         backend=backend,

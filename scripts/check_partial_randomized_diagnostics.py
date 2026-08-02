@@ -38,6 +38,7 @@ from trotterlib.df_partial_randomized_pf import (  # noqa: E402
     _analytic_d_only_rz_cost,
     _build_d_only_cost_circuit,
     _rz_depth_from_circuit,
+    default_df_phase_bias_t_values,
     get_or_compute_cached_df_cgs_fit,
     load_df_cgs_json_cache,
     rank_df_fragments,
@@ -48,10 +49,7 @@ from trotterlib.df_screening_cost import (  # noqa: E402
     df_screening_costs_for_all_ld,
 )
 from trotterlib.df_trotter.circuit import build_df_trotter_circuit  # noqa: E402
-from trotterlib.partial_randomized_pf import (  # noqa: E402
-    default_perturbation_t_values,
-    randomized_prefactor_b0,
-)
+from trotterlib.partial_randomized_pf import randomized_prefactor_b0  # noqa: E402
 
 
 DEFAULT_OUTPUT_DIR = PARTIAL_RANDOMIZED_ARTIFACTS_DIR / "diagnostics"
@@ -587,7 +585,10 @@ def _fit_result_row(
         "ld": int(result.ld),
         "df_rank_actual": int(result.df_rank_actual),
         "lambda_r": float(result.lambda_r),
-        "c_gs_d": float(result.coeff),
+        "phase_bias_coefficient": float(result.coeff),
+        "estimate_kind": result.estimate_kind,
+        "is_rigorous_bound": result.is_rigorous_bound,
+        "estimator_status": result.estimator_status,
         "fixed_order_coeff": fixed,
         "fit_slope": slope,
         "fit_slope_over_order": None if slope is None else slope / float(result.order),
@@ -621,7 +622,9 @@ def run_cgs_window_sweep(args: argparse.Namespace) -> int:
             int(ld),
             ranked_fragments=ranked,
         )
-        base_t_values = default_perturbation_t_values(int(molecule_type), pf_label)
+        base_t_values = default_df_phase_bias_t_values(
+            int(molecule_type), pf_label
+        )
         for scale in scales:
             for shift in shifts:
                 t_values = _window_values(base_t_values, shift=shift, scale=scale)

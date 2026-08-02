@@ -35,6 +35,15 @@ from trotterlib.df_trotter.ops import (
 from trotterlib.rte import enumerate_rte_events, event_unitary, make_rte_config
 
 
+def test_numeric_primitives_prune_only_exact_zero_angles() -> None:
+    primitives = one_body_diagonal_primitives(
+        np.asarray([0.0, 1e-15]),
+        1.0,
+    )
+
+    assert primitives.rz == ((1, -1e-15),)
+
+
 def _hamiltonian(
     *,
     constant: float = 0.13,

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import numpy as np
+import pytest
 
 from trotterlib.df_hamiltonian import (
     DFGroundStateResult,
@@ -12,12 +13,15 @@ from trotterlib.df_hamiltonian import (
 from trotterlib.df_partial_randomized_pf import (
     _analytic_d_only_rz_cost,
     _build_d_only_cost_circuit,
+    _collect_df_phase_bias_series,
     _df_ground_state_cache_key_payload,
     _df_ground_state_result_from_npz,
     _df_hamiltonian_hash,
     _json_hash,
     _rz_depth_from_circuit,
+    _resolve_evolution_backend,
     _save_df_ground_state_npz,
+    _sector_hash,
     fit_df_cgs_with_perturbation,
     load_df_cgs_json_cache,
     rank_df_fragments,
@@ -67,6 +71,23 @@ def test_rank_and_split_df_fragments_use_consistent_weight_rule() -> None:
     assert partition.randomized_block_indices == (0,)
     assert partition.lambda_r == ranked[1].weight
     assert partition.weight_rule == "lambda_frobenius_squared"
+
+
+def test_df_fragment_ranking_does_not_round_close_weights() -> None:
+    hamiltonian = DFHamiltonian(
+        constant=0.0,
+        one_body=np.zeros((1, 1), dtype=np.complex128),
+        lambdas=np.asarray([1.0, 1.0 + 4e-13]),
+        g_matrices=(
+            np.asarray([[1.0]], dtype=np.complex128),
+            np.asarray([[1.0]], dtype=np.complex128),
+        ),
+        metadata={},
+    )
+
+    assert tuple(
+        fragment.original_index for fragment in rank_df_fragments(hamiltonian)
+    ) == (1, 0)
 
 
 def test_df_hamiltonian_hash_depends_on_matrix_entries_not_just_norms() -> None:
@@ -149,6 +170,28 @@ def test_df_ground_state_npz_validates_cache_payload(tmp_path) -> None:
     )
 
 
+def test_df_phase_bias_cache_sector_hash_includes_basis_indices() -> None:
+    first = PhysicalSector(
+        n_qubits=2,
+        basis_indices=np.asarray([0, 1], dtype=np.int64),
+    )
+    second = PhysicalSector(
+        n_qubits=2,
+        basis_indices=np.asarray([0, 2], dtype=np.int64),
+    )
+
+    assert _sector_hash(first) != _sector_hash(second)
+
+
+def test_df_auto_evolution_backend_falls_back_to_cpu(monkeypatch) -> None:
+    monkeypatch.setattr(
+        "trotterlib.df_partial_randomized_pf.AerSimulator",
+        None,
+    )
+
+    assert _resolve_evolution_backend("auto") == "cpu"
+
+
 def test_df_cgs_cache_rejects_pre_ground_energy_fix_schema(tmp_path) -> None:
     path = tmp_path / "df_cgs_fit_cache.json"
     path.write_text(
@@ -165,8 +208,8 @@ def test_df_cgs_cache_rejects_pre_ground_energy_fix_schema(tmp_path) -> None:
 
     document = load_df_cgs_json_cache(path)
 
-    assert document["schema_version"] == 7
-    assert document["cgs_definition"] == "df_hd_deterministic_surrogate_v2"
+    assert document["schema_version"] == 8
+    assert document["cgs_definition"] == "df_phase_bias_surrogate_v3"
     assert document["entries"] == {}
 
 
@@ -223,8 +266,91 @@ def test_df_cgs_fit_cpu_path_returns_df_surrogate_metadata() -> None:
     assert result.ld == 1
     assert result.lambda_r == partition.lambda_r
     assert result.evolution_backend == "cpu"
-    assert "deterministic surrogate" in result.metadata["surrogate_note"]
+    assert "survival-phase-bias surrogate" in result.metadata["surrogate_note"]
+    assert result.is_rigorous_bound is False
+    assert result.estimator_status in {"ok", "below_noise_floor"}
+    assert result.metadata["tracking_grid_with_zero_anchor_float_hex"][0] == (
+        float(0.0).hex()
+    )
     assert len(result.perturbation_errors) == 2
+
+
+def test_df_phase_bias_is_invariant_under_constant_energy_shift() -> None:
+    state = np.asarray([1.0, 0.0], dtype=np.complex128)
+    times = (0.02, 0.04, 0.08)
+    energy = -0.7
+    signed_bias = 0.13
+
+    def evolved_states(shift: float):
+        return tuple(
+            (
+                time,
+                np.exp(-1j * (energy + shift + signed_bias) * time) * state,
+            )
+            for time in times
+        )
+
+    baseline = _collect_df_phase_bias_series(
+        evolved_states(0.0),
+        energy,
+        state,
+        fit_times=times,
+        branch_certified=True,
+    )
+    shifted = _collect_df_phase_bias_series(
+        evolved_states(3.25),
+        energy + 3.25,
+        state,
+        fit_times=times,
+        branch_certified=True,
+    )
+
+    assert baseline.status == shifted.status == "ok"
+    np.testing.assert_allclose(baseline.signed_biases, shifted.signed_biases)
+    np.testing.assert_allclose(baseline.signed_biases, signed_bias)
+
+
+def test_df_phase_bias_fit_is_constant_shift_invariant_end_to_end() -> None:
+    baseline_hamiltonian = _toy_df_hamiltonian()
+    shifted_hamiltonian = DFHamiltonian(
+        constant=baseline_hamiltonian.constant + 2.5,
+        one_body=baseline_hamiltonian.one_body,
+        lambdas=baseline_hamiltonian.lambdas,
+        g_matrices=baseline_hamiltonian.g_matrices,
+        metadata=baseline_hamiltonian.metadata,
+    )
+    sector = PhysicalSector(n_qubits=2, basis_indices=np.arange(4, dtype=np.int64))
+    baseline_partition = split_df_hamiltonian_by_ld(baseline_hamiltonian, 1)
+    shifted_partition = split_df_hamiltonian_by_ld(shifted_hamiltonian, 1)
+    kwargs = {
+        "t_values": (0.03, 0.05),
+        "evolution_backend": "cpu",
+        "use_ground_state_cache": False,
+        "require_usable_estimate": False,
+    }
+
+    baseline = fit_df_cgs_with_perturbation(
+        baseline_hamiltonian,
+        sector,
+        baseline_partition,
+        "2nd",
+        **kwargs,
+    )
+    shifted = fit_df_cgs_with_perturbation(
+        shifted_hamiltonian,
+        sector,
+        shifted_partition,
+        "2nd",
+        **kwargs,
+    )
+
+    np.testing.assert_allclose(
+        baseline.signed_phase_biases,
+        shifted.signed_phase_biases,
+        rtol=1e-8,
+        atol=1e-11,
+    )
+    assert baseline.coeff == pytest.approx(shifted.coeff, rel=1e-8, abs=1e-11)
 
 
 def test_default_perturbation_time_point_count_by_molecule_size() -> None:
@@ -316,6 +442,8 @@ def test_optimize_df_screening_cost_uses_anchor_cgs_table(tmp_path) -> None:
               "ld": 2,
               "ld_anchor": 2,
               "is_screening_anchor": true,
+              "is_rigorous_bound": true,
+              "estimate_kind": "rigorous_pr_cgs_bound",
               "source_kind": "screening_anchor",
               "df_rank_actual": 5,
               "lambda_r": 0.1,
@@ -338,10 +466,35 @@ def test_optimize_df_screening_cost_uses_anchor_cgs_table(tmp_path) -> None:
         kappa_value=2.0,
     )
 
-    assert result["model"] == "df_reduced_screening_cost_minimization_v1"
+    assert result["model"] == (
+        "df_reduced_screening_cost_minimization_v2_rigorous_cgs_only"
+    )
     assert result["result_model"] == "legacy_analytic_proxy"
     assert result["fidelity_level"] == 0
     assert result["best_overall"] is not None
     assert result["best_overall"]["molecule_type"] == 3
     assert result["best_overall"]["pf_label"] == "2nd"
     assert len(result["candidates"]) == 6
+
+
+def test_optimize_df_screening_rejects_phase_bias_as_rigorous_cgs(tmp_path) -> None:
+    table = tmp_path / "phase_bias_table.json"
+    table.write_text(
+        """
+        {
+          "schema_version": 2,
+          "entries": [{
+            "molecule_type": 3,
+            "pf_label": "2nd",
+            "is_screening_anchor": true,
+            "is_rigorous_bound": false,
+            "estimate_kind": "state_specific_phase_bias_surrogate",
+            "phase_bias_coefficient": 0.002
+          }]
+        }
+        """,
+        encoding="utf-8",
+    )
+
+    with np.testing.assert_raises(ValueError):
+        optimize_df_screening_cost(cgs_table_path=table)

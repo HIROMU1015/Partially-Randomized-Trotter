@@ -99,7 +99,10 @@ def _result_row(result: Any, *, source_kind: str, extra: dict[str, Any] | None =
         "lambda_r": float(result.lambda_r),
         "pf_label": str(result.pf_label),
         "order": int(result.order),
-        "c_gs_d": float(result.coeff),
+        "phase_bias_coefficient": float(result.coeff),
+        "estimate_kind": result.estimate_kind,
+        "is_rigorous_bound": result.is_rigorous_bound,
+        "estimator_status": result.estimator_status,
         "fit_slope": result.fit_slope,
         "fit_coeff": result.fit_coeff,
         "fixed_order_coeff": result.fit_coeff_fixed_order,
@@ -137,6 +140,20 @@ def _patch_molecule_type(row: dict[str, Any], molecule_type: int) -> dict[str, A
     return row
 
 
+def _rigorous_cgs(row: dict[str, Any]) -> float:
+    if not (
+        row.get("is_rigorous_bound") is True
+        and row.get("estimate_kind") == "rigorous_pr_cgs_bound"
+        and row.get("c_gs_d") is not None
+    ):
+        raise ValueError(
+            "The anchor-refinement analytic cost formula requires an explicit "
+            "rigorous_pr_cgs_bound.  A phase-bias surrogate may only screen "
+            "candidates before actual compiled-cost evaluation."
+        )
+    return float(row["c_gs_d"])
+
+
 def _candidate_for_ld(
     *,
     molecule_type: int,
@@ -164,7 +181,7 @@ def _candidate_for_ld(
         epsilon_total=float(epsilon_total),
         order=pf_order(pf_label),
         deterministic_step_cost_value=int(step_costs["total_ref_rz_depth"]),
-        c_gs=float(anchor_row["c_gs_d"]),
+        c_gs=_rigorous_cgs(anchor_row),
         lambda_r=float(partition.lambda_r),
         randomized_method=randomized_method,
         g_rand=float(g_rand),
@@ -183,7 +200,7 @@ def _candidate_for_ld(
         "ld": int(ld),
         "ld_anchor": int(anchor_row["ld_anchor"]),
         "cgs_source_kind": str(anchor_row.get("source_kind", "screening_anchor")),
-        "c_gs_d_screen": float(anchor_row["c_gs_d"]),
+        "c_gs_d_screen": _rigorous_cgs(anchor_row),
         "lambda_r": float(partition.lambda_r),
         **step_costs,
         "q_opt": budget.q_ratio,
@@ -259,7 +276,7 @@ def _actual_cost_for_row(
         epsilon_total=float(epsilon_total),
         order=int(row["order"]),
         deterministic_step_cost_value=int(row["total_ref_rz_depth"]),
-        c_gs=float(row["c_gs_d"]),
+        c_gs=_rigorous_cgs(row),
         lambda_r=float(row["lambda_r"]),
         randomized_method=randomized_method,
         g_rand=float(g_rand),
@@ -276,7 +293,7 @@ def _actual_cost_for_row(
         "ld": int(row["ld"]),
         "order": int(row["order"]),
         "lambda_r": float(row["lambda_r"]),
-        "c_gs_d": float(row["c_gs_d"]),
+        "c_gs_d": _rigorous_cgs(row),
         "total_ref_rz_depth": int(row["total_ref_rz_depth"]),
         "q_opt": budget.q_ratio,
         "eps_qpe_opt": budget.eps_qpe,
@@ -648,7 +665,7 @@ def main() -> int:
                 "kappa_max": float(args.kappa_max),
                 "df_rank_actual": int(hamiltonian.n_blocks),
                 "ld_anchor": int(anchor_row["ld"]),
-                "anchor_c_gs_d": float(anchor_row["c_gs_d"]),
+                "anchor_c_gs_d": _rigorous_cgs(anchor_row),
                 "anchor_fit_slope": anchor_row.get("fit_slope"),
                 "screening_best": best,
                 "screening_candidates": candidates,

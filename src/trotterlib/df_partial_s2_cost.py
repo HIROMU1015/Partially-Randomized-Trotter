@@ -12,6 +12,7 @@ from .df_partial_s2 import (
     DFPartialS2Preparation,
     DFPartialS2StepRequest,
     QiskitDFPartialS2CircuitBuilder,
+    estimate_df_partial_s2_untranspiled_size_upper_bound,
 )
 from .df_rte_circuit import DFRTEEventSequenceCircuitRequest
 from .rte import (
@@ -27,11 +28,11 @@ from .rte import (
     require_integer_count,
 )
 from .rte_compiled_cost import (
+    CompiledMetricAccumulator,
     CompiledMetricStatistics,
     TranspiledCircuitCost,
     TranspiledCircuitCostCache,
     circuit_cost_from_metric_statistics,
-    compiled_metric_statistics,
     subtract_compiled_costs,
     sum_compiled_costs,
 )
@@ -67,6 +68,10 @@ class CompiledPartialS2CostEstimate:
     unique_full_step_circuit_count: int
     unique_compiled_circuit_count: int
     transpile_cache_hit_count: int
+    transpile_cache_miss_count: int
+    transpile_cache_bypass_count: int
+    transpile_cache_eviction_count: int
+    transpile_cache_maximum_entries: int
     compiler: CompilerSettings
     controlled: bool
     ancilla_qubit: int | None
@@ -74,6 +79,7 @@ class CompiledPartialS2CostEstimate:
     seed: int | None
     maximum_event_sequences: int | None
     maximum_untranspiled_circuit_size: int
+    statistics_policy: Literal["online_welford_v1"] = "online_welford_v1"
 
 
 def _validate_rte_inputs(
@@ -181,18 +187,31 @@ def _compile_request_samples(
     backend: Any | None,
 ) -> CompiledPartialS2CostEstimate:
     working_cache = cache if cache is not None else TranspiledCircuitCostCache()
+    initial_misses = working_cache.miss_count
+    initial_bypasses = working_cache.bypass_count
+    initial_evictions = working_cache.eviction_count
     builder = QiskitDFPartialS2CircuitBuilder()
-    full_costs: list[TranspiledCircuitCost] = []
-    additive_costs: list[Any] = []
-    difference_costs: list[Any] = []
-    forward_costs: list[TranspiledCircuitCost] = []
-    rte_costs: list[TranspiledCircuitCost] = []
-    reverse_costs: list[TranspiledCircuitCost] = []
+    if weights is not None and len(weights) != len(requests):
+        raise ValueError("Event-sequence weights length must match requests.")
+    weighted = weights is not None
+    full_accumulator = CompiledMetricAccumulator(weighted=weighted)
+    additive_accumulator = CompiledMetricAccumulator(weighted=weighted)
+    difference_accumulator = CompiledMetricAccumulator(weighted=weighted)
+    forward_accumulator = CompiledMetricAccumulator(weighted=weighted)
+    rte_accumulator = CompiledMetricAccumulator(weighted=weighted)
+    reverse_accumulator = CompiledMetricAccumulator(weighted=weighted)
     all_keys: set[str] = set()
     full_keys: set[str] = set()
     cache_hits = 0
 
-    for request in requests:
+    for request_index, request in enumerate(requests):
+        weight = None if weights is None else weights[request_index]
+        planned_size = estimate_df_partial_s2_untranspiled_size_upper_bound(request)
+        if planned_size > maximum_untranspiled_circuit_size:
+            raise ValueError(
+                "Planned partial-S2 circuit upper bound exceeds the configured "
+                "size limit before circuit construction."
+            )
         result = builder.build_step(request)
         if result.untranspiled_circuit_size > maximum_untranspiled_circuit_size:
             raise ValueError(
@@ -204,7 +223,7 @@ def _compile_request_samples(
             circuit_fingerprint=result.compiler_independent_fingerprint,
             backend=backend,
         )
-        full_costs.append(full_cost)
+        full_accumulator.update(full_cost, weight=weight)
         all_keys.add(full_key)
         full_keys.add(full_key)
         cache_hits += int(full_cached)
@@ -225,22 +244,22 @@ def _compile_request_samples(
             part_costs.append(cost)
             all_keys.add(key)
             cache_hits += int(was_cached)
-        forward_costs.append(part_costs[0])
-        rte_costs.append(part_costs[1])
-        reverse_costs.append(part_costs[2])
+        forward_accumulator.update(part_costs[0], weight=weight)
+        rte_accumulator.update(part_costs[1], weight=weight)
+        reverse_accumulator.update(part_costs[2], weight=weight)
         additive = sum_compiled_costs(part_costs)
-        additive_costs.append(additive)
-        difference_costs.append(subtract_compiled_costs(full_cost, additive))
+        additive_accumulator.update(additive, weight=weight)
+        difference_accumulator.update(
+            subtract_compiled_costs(full_cost, additive),
+            weight=weight,
+        )
 
-    full_statistics = compiled_metric_statistics(full_costs, weights=weights)
-    additive_statistics = compiled_metric_statistics(additive_costs, weights=weights)
-    difference_statistics = compiled_metric_statistics(
-        difference_costs,
-        weights=weights,
-    )
-    forward_statistics = compiled_metric_statistics(forward_costs, weights=weights)
-    rte_statistics = compiled_metric_statistics(rte_costs, weights=weights)
-    reverse_statistics = compiled_metric_statistics(reverse_costs, weights=weights)
+    full_statistics = full_accumulator.finalize()
+    additive_statistics = additive_accumulator.finalize()
+    difference_statistics = difference_accumulator.finalize()
+    forward_statistics = forward_accumulator.finalize()
+    rte_statistics = rte_accumulator.finalize()
+    reverse_statistics = reverse_accumulator.finalize()
 
     def make_cost(
         statistics: tuple[tuple[str, CompiledMetricStatistics], ...],
@@ -332,6 +351,14 @@ def _compile_request_samples(
         unique_full_step_circuit_count=len(full_keys),
         unique_compiled_circuit_count=len(all_keys),
         transpile_cache_hit_count=cache_hits,
+        transpile_cache_miss_count=working_cache.miss_count - initial_misses,
+        transpile_cache_bypass_count=(
+            working_cache.bypass_count - initial_bypasses
+        ),
+        transpile_cache_eviction_count=(
+            working_cache.eviction_count - initial_evictions
+        ),
+        transpile_cache_maximum_entries=working_cache.maximum_entries,
         compiler=compiler,
         controlled=controlled,
         ancilla_qubit=ancilla_qubit,
@@ -444,6 +471,7 @@ def estimate_monte_carlo_compiled_partial_s2_cost(
     *,
     sample_count: int,
     seed: int,
+    maximum_samples: int = 10_000,
     controlled: bool = False,
     ancilla_qubit: int | None = None,
     cancel_adjacent_equal_bases: bool = True,
@@ -457,6 +485,15 @@ def estimate_monte_carlo_compiled_partial_s2_cost(
         name="sample_count",
         minimum=1,
     )
+    maximum_samples = require_integer_count(
+        maximum_samples,
+        name="maximum_samples",
+        minimum=1,
+    )
+    if sample_count > maximum_samples:
+        raise ValueError(
+            f"sample_count={sample_count} exceeds maximum_samples={maximum_samples}."
+        )
     seed = require_integer_count(seed, name="seed")
     maximum_untranspiled_circuit_size = require_integer_count(
         maximum_untranspiled_circuit_size,
@@ -504,7 +541,7 @@ def estimate_monte_carlo_compiled_partial_s2_cost(
         controlled=controlled,
         ancilla_qubit=ancilla_qubit,
         seed=seed,
-        maximum_event_sequences=None,
+        maximum_event_sequences=maximum_samples,
         maximum_untranspiled_circuit_size=maximum_untranspiled_circuit_size,
         single_event_space_size=single_event_count,
         cache=cache,

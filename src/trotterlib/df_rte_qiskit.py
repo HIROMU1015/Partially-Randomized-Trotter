@@ -20,14 +20,49 @@ from .df_rte_tail import DFBasisDefinition, DFBasisRegistry
 from .rte import RTEEvent, RTEEventApplication
 
 
-_PHASE_ATOL = 1e-12
+_PHASE_VALIDATION_ATOL = 1e-12
+
+
+def estimate_df_rte_untranspiled_size_upper_bound(
+    request: DFRTEEventCircuitRequest | DFRTEEventSequenceCircuitRequest,
+) -> int:
+    """Bound instruction count without allocating a Qiskit circuit.
+
+    The bound deliberately assumes that every non-identity application emits
+    both basis changes.  Adjacent-basis reuse can therefore only make the
+    subsequently built circuit smaller.  It is used as the pre-build OOM guard;
+    callers must retain their post-build size check as a consistency guard.
+    """
+    events = (
+        (request.event,)
+        if isinstance(request, DFRTEEventCircuitRequest)
+        else request.events
+    )
+    size = 0
+    for event in events:
+        _validate_event_application_order(event)
+        for application in event.application_sequence:
+            if application.is_identity:
+                continue
+            size += 2 * len(application.basis_change_operations)
+            support = application.diagonal_pauli_support
+            if support is None or len(support) not in (1, 2):
+                raise ValueError(
+                    "Non-identity DF applications require Z or ZZ support."
+                )
+            size += len(support) if application.role == "product" else 1
+    # Every event contributes a phase in the worst case, but the builder
+    # combines them into at most one ancilla-relative phase gate.
+    if request.controlled and events:
+        size += 1
+    return size
 
 
 def _event_phase_angle(phase: complex) -> float:
     value = complex(phase)
-    if abs(value - 1.0) <= _PHASE_ATOL:
+    if abs(value - 1.0) <= _PHASE_VALIDATION_ATOL:
         return 0.0
-    if abs(value + 1.0) <= _PHASE_ATOL:
+    if abs(value + 1.0) <= _PHASE_VALIDATION_ATOL:
         return math.pi
     raise ValueError("RTE event phase must be exactly +1 or -1 for paired Taylor events.")
 
@@ -60,14 +95,24 @@ def _circuit_fingerprint(
     ancilla_qubit: int | None,
     basis_reuse_policy: str,
 ) -> str:
+    event_payloads = []
+    for event in events:
+        event_payload = event.to_dict()
+        for field_name in (
+            "event_probability",
+            "event_coefficient",
+            "event_normalization",
+        ):
+            event_payload.pop(field_name, None)
+        event_payloads.append(event_payload)
     payload = {
         "tail_id": tail_id,
         "tail_hash": tail_hash,
-        "events": [event.to_dict() for event in events],
+        "events": event_payloads,
         "controlled": bool(controlled),
         "ancilla_qubit": ancilla_qubit,
         "basis_reuse_policy": basis_reuse_policy,
-        "fingerprint_policy": "df_rte_event_circuit_v1",
+        "fingerprint_policy": "df_rte_event_circuit_v2",
     }
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
     return hashlib.sha256(encoded).hexdigest()
@@ -217,7 +262,7 @@ class QiskitDFRTEEventCircuitBuilder:
             emitted_basis_changes += 1
 
         if controlled:
-            if abs(accumulated_phase) > _PHASE_ATOL:
+            if accumulated_phase != 0.0:
                 circuit.append(PhaseGate(accumulated_phase), [ancilla_qubit])
             global_phase = 0.0
             relative_phase = accumulated_phase

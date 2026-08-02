@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import itertools
+import json
 import math
 import random
 from dataclasses import replace
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -568,7 +570,12 @@ def test_repeated_untranspiled_size_limit_precedes_transpilation(monkeypatch) ->
         "get_or_transpile",
         forbidden,
     )
-    with pytest.raises(ValueError, match="repeated partial-S2 circuit"):
+    monkeypatch.setattr(
+        repeated_cost_module.QiskitDFPartialS2RepeatedCircuitBuilder,
+        "build",
+        forbidden,
+    )
+    with pytest.raises(ValueError, match="before circuit construction"):
         estimate_exact_compiled_repeated_partial_s2_cost(
             preparation,
             step_time,
@@ -793,3 +800,76 @@ def test_deterministic_repeated_exact_cost_has_one_trajectory() -> None:
     assert estimate.trajectory_probability_sum == 1.0
     assert estimate.attenuation.total_attenuation == 1.0
     assert estimate.truncation.repeated_partial_s2_residual_bound == 0.0
+
+
+def test_level5r_q1_q4_compiled_cost_reference() -> None:
+    reference_path = (
+        Path(__file__).parent / "data" / "level5r_compiled_cost_reference_v1.json"
+    )
+    reference = json.loads(reference_path.read_text(encoding="utf-8"))
+    assert reference["schema_version"] == 1
+    assert reference["scientific_result"] is False
+    assert reference["qiskit_version"] == qiskit.__version__
+    assert len(reference["cases"]) == 16
+
+    preparation, config, distribution, step_time = _case()
+    compiler = _compiler(
+        seed=reference["compiler"]["transpiler_seed"],
+        optimization_level=reference["compiler"]["optimization_level"],
+    )
+    cache = TranspiledCircuitCostCache(maximum_entries=256)
+    observed_axes = set()
+    for case in reference["cases"]:
+        repetition_count = case["repetition_count"]
+        controlled = case["controlled"]
+        construction_policy = case["construction_policy"]
+        observed_axes.add((repetition_count, construction_policy, controlled))
+        common = {
+            "controlled": controlled,
+            "ancilla_qubit": 1 if controlled else None,
+            "construction_policy": construction_policy,
+            "evaluation_mode": "selected_only",
+            "maximum_untranspiled_circuit_size": 100_000,
+            "cache": cache,
+        }
+        exact = estimate_exact_compiled_repeated_partial_s2_cost(
+            preparation,
+            step_time,
+            repetition_count,
+            config,
+            distribution,
+            compiler,
+            maximum_trajectories=2**repetition_count,
+            **common,
+        )
+        monte_carlo = estimate_monte_carlo_compiled_repeated_partial_s2_cost(
+            preparation,
+            step_time,
+            repetition_count,
+            config,
+            distribution,
+            compiler,
+            sample_count=case["monte_carlo"]["sample_count"],
+            maximum_samples=case["monte_carlo"]["sample_count"],
+            seed=case["monte_carlo"]["seed"],
+            **common,
+        )
+        assert monte_carlo.standard_error is not None
+        for metric in METRICS:
+            assert getattr(exact.expected_cost, metric) == pytest.approx(
+                case["exact"][metric], abs=1e-12
+            )
+            assert getattr(monte_carlo.expected_cost, metric) == pytest.approx(
+                case["monte_carlo"]["mean"][metric], abs=1e-12
+            )
+            assert getattr(monte_carlo.standard_error, metric) == pytest.approx(
+                case["monte_carlo"]["standard_error"][metric], abs=1e-12
+            )
+
+    assert observed_axes == set(
+        itertools.product(
+            range(1, 5),
+            ("raw_concatenation", "boundary_optimized"),
+            (False, True),
+        )
+    )

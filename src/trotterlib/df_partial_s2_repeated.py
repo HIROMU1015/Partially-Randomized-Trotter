@@ -552,7 +552,7 @@ class QiskitDFPartialS2RepeatedCircuitBuilder:
             request.preparation.constant_coefficient
             + request.preparation.extracted_identity_coefficient
         )
-        if abs(total_phase) <= 1e-15:
+        if total_phase == 0.0:
             return
         if request.controlled:
             circuit.append(PhaseGate(total_phase), [request.ancilla_qubit])

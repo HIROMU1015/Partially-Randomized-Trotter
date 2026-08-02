@@ -30,7 +30,7 @@ def _parse_pf_labels(raw: str) -> tuple[str, ...]:
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Compute DF screening-anchor C_gs,D for H3-H14 at "
+            "Compute DF screening-anchor phase-bias surrogates for H3-H14 at "
             "L_anchor=floor(DF rank/2)."
         )
     )
@@ -182,7 +182,10 @@ def main() -> int:
                 "lambda_r": result.lambda_r,
                 "pf_label": result.pf_label,
                 "order": result.order,
-                "c_gs_d": result.coeff,
+                "phase_bias_coefficient": result.coeff,
+                "estimate_kind": result.estimate_kind,
+                "is_rigorous_bound": result.is_rigorous_bound,
+                "estimator_status": result.estimator_status,
                 "fit_slope": result.fit_slope,
                 "fit_coeff": result.fit_coeff,
                 "fixed_order_coeff": result.fit_coeff_fixed_order,

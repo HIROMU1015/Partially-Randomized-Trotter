@@ -183,7 +183,9 @@ def test_exact_partial_s2_expectation_matches_manual_sequence_weighting() -> Non
     assert repeated.unique_full_step_circuit_count == 4
 
 
-def test_exact_partial_s2_sequence_and_size_limits_are_preflighted() -> None:
+def test_exact_partial_s2_sequence_and_size_limits_are_preflighted(
+    monkeypatch,
+) -> None:
     preparation, config, distribution = _case(rte_steps=2)
     with pytest.raises(ValueError, match="4 sequences"):
         estimate_exact_compiled_partial_s2_cost(
@@ -194,7 +196,14 @@ def test_exact_partial_s2_sequence_and_size_limits_are_preflighted() -> None:
             _compiler(),
             maximum_event_sequences=3,
         )
-    with pytest.raises(ValueError, match="size limit"):
+    def forbidden_build(*_args, **_kwargs):
+        raise AssertionError("circuit allocation began before the pre-build guard")
+
+    monkeypatch.setattr(
+        "trotterlib.df_partial_s2_cost.QiskitDFPartialS2CircuitBuilder.build_step",
+        forbidden_build,
+    )
+    with pytest.raises(ValueError, match="before circuit construction"):
         estimate_exact_compiled_partial_s2_cost(
             preparation,
             config.evolution_time,

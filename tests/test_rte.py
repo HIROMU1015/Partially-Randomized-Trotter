@@ -13,6 +13,7 @@ from trotterlib.df_partial_randomized_pf import (
 )
 from trotterlib.rte import (
     InvolutoryTailTerm,
+    RTEFiniteDistribution,
     compose_finite_rte_occurrences,
     enumerate_rte_events,
     event_unitary,
@@ -66,6 +67,32 @@ def _operator_map(tail):
             tail.components, tail.operators, strict=True
         )
     }
+
+
+def test_finite_distribution_round_trip_validates_zero_weights() -> None:
+    distribution = finite_rte_distribution(0.0, 4)
+
+    assert distribution.unnormalized_order_weights == (1.0, 0.0, 0.0)
+    assert RTEFiniteDistribution.from_dict(distribution.to_dict()) == distribution
+    legacy = distribution.to_dict()
+    legacy.pop("schema_version")
+    assert RTEFiniteDistribution.from_dict(legacy) == distribution
+
+    malformed = distribution.to_dict()
+    malformed["order_probabilities"][1] = 0.1
+    with np.testing.assert_raises(ValueError):
+        RTEFiniteDistribution.from_dict(malformed)
+
+
+def test_finite_distribution_records_paper_bound_overflow_explicitly() -> None:
+    distribution = finite_rte_distribution(30.0, 0)
+    payload = distribution.to_dict()
+
+    assert math.isinf(distribution.paper_upper_bound)
+    assert distribution.truncation_residual_bound >= 0.0
+    assert payload["paper_upper_bound"] is None
+    assert payload["paper_upper_bound_overflowed"] is True
+    assert RTEFiniteDistribution.from_dict(payload) == distribution
 
 
 def test_finite_taylor_distribution_is_normalized() -> None:
@@ -267,13 +294,31 @@ def test_exact_and_sample_event_means_are_distinct_apis() -> None:
         exact_enumerated_event_mean_operator(sampled, operators)
 
     split_first = replace(
-        exact_events[0], event_probability=exact_events[0].event_probability / 2.0
+        exact_events[0],
+        event_probability=exact_events[0].event_probability / 2.0,
+        event_coefficient=exact_events[0].event_coefficient / 2.0,
     )
     duplicated_enumeration = (split_first, split_first, *exact_events[1:])
     np.testing.assert_allclose(
         exact_enumerated_event_mean_operator(duplicated_enumeration, operators),
         expected,
     )
+
+
+def test_single_event_sample_reports_unknown_standard_error() -> None:
+    tail = _toy_tail()
+    distribution = finite_rte_distribution(0.2, 2)
+    sampled = sample_rte_events(
+        tail.components,
+        distribution,
+        sample_count=1,
+        seed=17,
+    )
+
+    estimate = sample_event_mean_operator(sampled, _operator_map(tail))
+
+    assert estimate.entrywise_standard_error is None
+    assert estimate.frobenius_standard_error is None
 
 
 def test_signed_product_phase_and_rotation_angle_are_separate() -> None:

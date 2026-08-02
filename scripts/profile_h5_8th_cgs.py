@@ -16,13 +16,13 @@ from qiskit.circuit import Parameter
 from trotterlib.df_hamiltonian import build_df_h_d_from_molecule, solve_df_ground_state
 from trotterlib.df_gpu_statevector import build_parameterized_gpu_template
 from trotterlib.df_partial_randomized_pf import (
-    _collect_df_perturbation_errors,
+    _collect_df_phase_bias_series,
     _fit_errors,
     _set_df_time_worker_template,
     _simulate_df_time_task,
     _to_qiskit_state_order,
     build_df_hd_trotter_blocks,
-    default_perturbation_t_values,
+    default_df_phase_bias_t_values,
     rank_df_fragments,
     select_df_h_d,
     split_df_hamiltonian_by_ld,
@@ -41,7 +41,7 @@ def main() -> int:
     pf_label = "8th(Morales)"
     ld = 5
     gpu_ids = ("0", "1", "2", "3", "4")
-    t_values = default_perturbation_t_values(molecule_type, pf_label)
+    t_values = default_df_phase_bias_t_values(molecule_type, pf_label)
 
     timings: dict[str, float] = {}
 
@@ -130,11 +130,15 @@ def main() -> int:
     raw_results.sort(key=lambda item: item[0])
     final_state_list = [(time_value, evolved) for time_value, evolved, _ in raw_results]
     profiles = [dict(profile) for _, _, profile in raw_results]
-    times_out, errors = _collect_df_perturbation_errors(
+    phase_series = _collect_df_phase_bias_series(
         final_state_list,
         float(np.real(ground_state.energy)),
         state_flat,
+        fit_times=t_values,
+        branch_certified=False,
     )
+    times_out = phase_series.times
+    errors = phase_series.absolute_biases
     coeff, fixed_coeff, fit_slope, fit_coeff = _fit_errors(
         pf_label=pf_label,
         times_out=times_out,
@@ -159,7 +163,10 @@ def main() -> int:
         "lambda_r": partition.lambda_r,
         "t_values": list(times_out),
         "errors": list(errors),
-        "c_gs_d": coeff,
+        "phase_bias_coefficient": coeff,
+        "estimate_kind": "state_specific_phase_bias_surrogate",
+        "is_rigorous_bound": False,
+        "estimator_status": phase_series.status,
         "fixed_order_coeff": fixed_coeff,
         "fit_slope": fit_slope,
         "fit_coeff": fit_coeff,

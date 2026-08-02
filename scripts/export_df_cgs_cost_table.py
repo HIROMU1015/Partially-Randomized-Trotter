@@ -35,6 +35,15 @@ def _entry_key(entry: dict[str, Any]) -> tuple[int, str, int, str]:
 
 
 def _compact_entry(row: dict[str, Any], *, source_path: Path) -> dict[str, Any]:
+    if not (
+        row.get("is_rigorous_bound") is True
+        and row.get("estimate_kind") == "rigorous_pr_cgs_bound"
+        and row.get("c_gs_d") is not None
+    ):
+        raise ValueError(
+            "Refusing to export a legacy or phase-bias coefficient as a "
+            "rigorous Cgs screening input."
+        )
     df_step_cost = row.get("df_step_cost")
     if not isinstance(df_step_cost, dict):
         df_step_cost = {}
@@ -54,6 +63,8 @@ def _compact_entry(row: dict[str, Any], *, source_path: Path) -> dict[str, Any]:
         "df_rank_requested": row.get("df_rank_requested"),
         "lambda_r": float(row["lambda_r"]),
         "c_gs_d": float(row["c_gs_d"]),
+        "estimate_kind": "rigorous_pr_cgs_bound",
+        "is_rigorous_bound": True,
         "fit_slope": row.get("fit_slope"),
         "fit_coeff": row.get("fit_coeff"),
         "fixed_order_coeff": row.get("fixed_order_coeff"),

@@ -30,7 +30,7 @@ def interaction_operator_from_chemist_integrals(
     for p in range(n):
         for q in range(n):
             coeff = one_body_spin[p, q]
-            if abs(coeff) < 1e-14:
+            if coeff == 0.0:
                 continue
             op += FermionOperator(((p, 1), (q, 0)), coeff)
     for p in range(n):
@@ -38,7 +38,7 @@ def interaction_operator_from_chemist_integrals(
             for r in range(n):
                 for s in range(n):
                     coeff = two_body_chemist[p, q, r, s]
-                    if abs(coeff) < 1e-14:
+                    if coeff == 0.0:
                         continue
                     op += FermionOperator(((p, 1), (q, 0), (r, 1), (s, 0)), coeff)
     op = normal_ordered(op)
@@ -63,7 +63,7 @@ def interaction_operator_from_df_model(
             for r in range(n_spatial):
                 for s in range(n_spatial):
                     coeff = two_body_spatial[p, q, r, s]
-                    if abs(coeff) < 1e-14:
+                    if coeff == 0.0:
                         continue
                     two_body_chemist[2 * p, 2 * q, 2 * r, 2 * s] = coeff
                     two_body_chemist[2 * p + 1, 2 * q + 1, 2 * r + 1, 2 * s + 1] = coeff
