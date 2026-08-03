@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import itertools
+import hashlib
 import json
 import math
+import platform
 import random
 from dataclasses import replace
 from pathlib import Path
@@ -12,9 +14,11 @@ import pytest
 import qiskit
 
 import trotterlib.df_partial_s2_repeated_cost as repeated_cost_module
+import trotterlib.rte_compiled_cost as compiled_cost_module
 from trotterlib.df_hamiltonian import DFHamiltonian
 from trotterlib.df_partial_randomized_pf import split_df_hamiltonian_by_ld
 from trotterlib.df_partial_s2 import DFPartialS2StepRequest, prepare_df_partial_s2
+from trotterlib.df_partial_s2 import QiskitDFPartialS2CircuitBuilder
 from trotterlib.df_partial_s2_cost import estimate_exact_compiled_partial_s2_cost
 from trotterlib.df_partial_s2_repeated import (
     DFPartialS2RepeatedRequest,
@@ -24,6 +28,7 @@ from trotterlib.df_partial_s2_repeated import (
 from trotterlib.df_partial_s2_repeated_cost import (
     estimate_exact_compiled_repeated_partial_s2_cost,
     estimate_monte_carlo_compiled_repeated_partial_s2_cost,
+    plan_compiled_repeated_partial_s2_workload,
 )
 from trotterlib.df_rte_circuit import DFRTEEventSequenceCircuitRequest
 from trotterlib.rte import CompilerSettings, enumerate_rte_events, make_rte_config
@@ -41,6 +46,24 @@ METRICS = (
     "total_depth",
     "circuit_size",
 )
+
+
+class _OneShotIterator:
+    def __init__(self, values):
+        self._iterator = iter(values)
+        self._iterated = False
+
+    def __iter__(self):
+        if self._iterated:
+            raise AssertionError("iterator was traversed more than once")
+        self._iterated = True
+        return self
+
+    def __next__(self):
+        return next(self._iterator)
+
+    def __len__(self):
+        raise AssertionError("streaming code requested len(iterator)")
 
 
 def _compiler(seed: int = 17, optimization_level: int = 1) -> CompilerSettings:
@@ -588,6 +611,220 @@ def test_repeated_untranspiled_size_limit_precedes_transpilation(monkeypatch) ->
         )
 
 
+@pytest.mark.parametrize("repetition_count", range(1, 5))
+def test_repeated_workload_planner_selected_and_full_formulas(
+    repetition_count,
+) -> None:
+    preparation, config, distribution, _step_time = _case()
+    trajectory_count = 7
+    selected = plan_compiled_repeated_partial_s2_workload(
+        preparation,
+        repetition_count,
+        config,
+        distribution,
+        trajectory_count=trajectory_count,
+        controlled=True,
+        evaluation_mode="selected_only",
+    )
+    full = plan_compiled_repeated_partial_s2_workload(
+        preparation,
+        repetition_count,
+        config,
+        distribution,
+        trajectory_count=trajectory_count,
+        controlled=True,
+        evaluation_mode="full_diagnostics",
+    )
+
+    assert selected.circuit_build_request_count == trajectory_count
+    assert selected.transpile_cache_request_count == trajectory_count
+    assert selected.additional_diagnostic_circuit_count == 0
+    assert full.circuit_build_request_count == trajectory_count * (
+        2 + 4 * repetition_count
+    )
+    assert full.transpile_cache_request_count == full.circuit_build_request_count
+    assert full.additional_diagnostic_circuit_count == trajectory_count * (
+        1 + 4 * repetition_count
+    )
+    assert full.planned_untranspiled_instruction_applications == (
+        4 * selected.planned_untranspiled_instruction_applications
+    )
+
+
+def test_repeated_total_work_limit_rejects_before_any_builder_or_cache(
+    monkeypatch,
+) -> None:
+    preparation, config, distribution, step_time = _case()
+
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("work began before the total-work preflight")
+
+    monkeypatch.setattr(
+        QiskitDFPartialS2RepeatedCircuitBuilder,
+        "build",
+        forbidden,
+    )
+    monkeypatch.setattr(QiskitDFPartialS2CircuitBuilder, "build_step", forbidden)
+    monkeypatch.setattr(
+        QiskitDFPartialS2CircuitBuilder,
+        "build_additive_circuits",
+        forbidden,
+    )
+    monkeypatch.setattr(TranspiledCircuitCostCache, "get_or_transpile", forbidden)
+    monkeypatch.setattr(compiled_cost_module, "transpile_and_measure_cost", forbidden)
+
+    with pytest.raises(ValueError, match="build requests"):
+        estimate_exact_compiled_repeated_partial_s2_cost(
+            preparation,
+            step_time,
+            2,
+            config,
+            distribution,
+            _compiler(),
+            maximum_trajectories=4,
+            evaluation_mode="full_diagnostics",
+            maximum_build_requests=39,
+        )
+
+
+@pytest.mark.parametrize(
+    ("option_name", "invalid_value"),
+    (
+        ("maximum_retained_provenance_records", True),
+        ("maximum_build_requests", 1.5),
+        ("maximum_transpile_requests", "100"),
+        ("maximum_planned_instruction_applications", False),
+    ),
+)
+def test_repeated_new_workload_limits_require_integer_counts(
+    option_name,
+    invalid_value,
+) -> None:
+    preparation, config, distribution, step_time = _case()
+    with pytest.raises(TypeError, match="integer count"):
+        estimate_monte_carlo_compiled_repeated_partial_s2_cost(
+            preparation,
+            step_time,
+            1,
+            config,
+            distribution,
+            _compiler(),
+            sample_count=1,
+            seed=7,
+            evaluation_mode="selected_only",
+            **{option_name: invalid_value},
+        )
+
+
+def test_repeated_streaming_retains_prefix_but_digests_every_record() -> None:
+    preparation, config, distribution, step_time = _case()
+    common = {
+        "sample_count": 12,
+        "seed": 19,
+        "evaluation_mode": "selected_only",
+        "controlled": True,
+        "ancilla_qubit": 1,
+    }
+    limited = estimate_monte_carlo_compiled_repeated_partial_s2_cost(
+        preparation,
+        step_time,
+        2,
+        config,
+        distribution,
+        _compiler(),
+        maximum_retained_provenance_records=3,
+        **common,
+    )
+    complete = estimate_monte_carlo_compiled_repeated_partial_s2_cost(
+        preparation,
+        step_time,
+        2,
+        config,
+        distribution,
+        _compiler(),
+        maximum_retained_provenance_records=12,
+        **common,
+    )
+
+    assert limited.expected_cost == complete.expected_cost
+    assert limited.standard_error == complete.standard_error
+    assert limited.total_provenance_record_count == 12
+    assert limited.retained_provenance_record_count == 3
+    assert limited.provenance_records_truncated is True
+    assert limited.provenance_fingerprints == complete.provenance_fingerprints[:3]
+    assert limited.circuit_semantics_fingerprints == (
+        complete.circuit_semantics_fingerprints[:3]
+    )
+    assert limited.sampled_trajectory_seeds == complete.sampled_trajectory_seeds[:3]
+    assert limited.provenance_rolling_digest == complete.provenance_rolling_digest
+    assert limited.circuit_semantics_rolling_digest == (
+        complete.circuit_semantics_rolling_digest
+    )
+    assert limited.sampled_trajectory_seed_digest == (
+        complete.sampled_trajectory_seed_digest
+    )
+
+
+def test_repeated_exact_accepts_one_shot_event_iterator(monkeypatch) -> None:
+    preparation, config, distribution, step_time = _case()
+    events = enumerate_rte_events(
+        preparation.rte_preparation.symbolic_tail.components,
+        distribution,
+    )
+    one_shot = _OneShotIterator(events)
+    monkeypatch.setattr(
+        repeated_cost_module,
+        "iter_rte_events",
+        lambda *_args, **_kwargs: one_shot,
+    )
+
+    result = estimate_exact_compiled_repeated_partial_s2_cost(
+        preparation,
+        step_time,
+        2,
+        config,
+        distribution,
+        _compiler(),
+        evaluation_mode="selected_only",
+        maximum_trajectories=4,
+    )
+    assert result.enumerated_trajectory_count == 4
+
+
+def test_bounded_cache_eviction_does_not_change_repeated_expectation() -> None:
+    preparation, config, distribution, step_time = _case()
+    common = {
+        "controlled": True,
+        "ancilla_qubit": 1,
+        "evaluation_mode": "selected_only",
+        "maximum_trajectories": 8,
+    }
+    large = estimate_exact_compiled_repeated_partial_s2_cost(
+        preparation,
+        step_time,
+        3,
+        config,
+        distribution,
+        _compiler(),
+        cache=TranspiledCircuitCostCache(maximum_entries=256),
+        **common,
+    )
+    small_cache = TranspiledCircuitCostCache(maximum_entries=1)
+    small = estimate_exact_compiled_repeated_partial_s2_cost(
+        preparation,
+        step_time,
+        3,
+        config,
+        distribution,
+        _compiler(),
+        cache=small_cache,
+        **common,
+    )
+    assert small.expected_cost == large.expected_cost
+    assert small.full_metric_statistics == large.full_metric_statistics
+    assert small_cache.eviction_count > 0
+
+
 def test_monte_carlo_is_unweighted_reproducible_and_reports_statistics() -> None:
     preparation, config, distribution, step_time = _case()
     compiler = _compiler()
@@ -807,7 +1044,7 @@ def test_level5r_q1_q4_compiled_cost_reference() -> None:
         Path(__file__).parent / "data" / "level5r_compiled_cost_reference_v1.json"
     )
     reference = json.loads(reference_path.read_text(encoding="utf-8"))
-    assert reference["schema_version"] == 1
+    assert reference["schema_version"] == 2
     assert reference["scientific_result"] is False
     assert reference["qiskit_version"] == qiskit.__version__
     assert len(reference["cases"]) == 16
@@ -819,6 +1056,7 @@ def test_level5r_q1_q4_compiled_cost_reference() -> None:
     )
     cache = TranspiledCircuitCostCache(maximum_entries=256)
     observed_axes = set()
+    result_stream_digest = hashlib.sha256()
     for case in reference["cases"]:
         repetition_count = case["repetition_count"]
         controlled = case["controlled"]
@@ -855,6 +1093,14 @@ def test_level5r_q1_q4_compiled_cost_reference() -> None:
             **common,
         )
         assert monte_carlo.standard_error is not None
+        for value in (
+            exact.provenance_rolling_digest,
+            exact.circuit_semantics_rolling_digest,
+            monte_carlo.provenance_rolling_digest,
+            monte_carlo.circuit_semantics_rolling_digest,
+            monte_carlo.sampled_trajectory_seed_digest,
+        ):
+            result_stream_digest.update(bytes.fromhex(value))
         for metric in METRICS:
             assert getattr(exact.expected_cost, metric) == pytest.approx(
                 case["exact"][metric], abs=1e-12
@@ -872,4 +1118,15 @@ def test_level5r_q1_q4_compiled_cost_reference() -> None:
             ("raw_concatenation", "boundary_optimized"),
             (False, True),
         )
+    )
+    runtime = reference["runtime"]
+    assert runtime["python_version"] == platform.python_version()
+    assert runtime["numpy_version"] == np.__version__
+    assert runtime["master_prng_type"] == monte_carlo.master_prng_type
+    assert runtime["event_prng_type"] == monte_carlo.event_prng_type
+    assert runtime["sampling_convention_version"] == (
+        monte_carlo.sampling_convention_version
+    )
+    assert runtime["result_stream_rolling_digest"] == (
+        result_stream_digest.hexdigest()
     )

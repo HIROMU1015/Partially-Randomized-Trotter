@@ -17,10 +17,39 @@ from .df_rte_circuit import (
     DFRTEEventSequenceCircuitRequest,
 )
 from .df_rte_tail import DFBasisDefinition, DFBasisRegistry
-from .rte import RTEEvent, RTEEventApplication
+from .rte import RTEEvent, RTEEventApplication, require_integer_count
 
 
 _PHASE_VALIDATION_ATOL = 1e-12
+
+
+def estimate_df_rte_structural_size_upper_bound(
+    component_specs: Sequence[DFRTECircuitSpec],
+    *,
+    maximum_taylor_order: int,
+    event_count: int,
+    controlled: bool,
+) -> int:
+    """Bound an event sequence before sampling or enumerating concrete events."""
+    order = require_integer_count(
+        maximum_taylor_order,
+        name="maximum_taylor_order",
+    )
+    count = require_integer_count(event_count, name="event_count")
+    maximum_product_size = 0
+    maximum_rotation_size = 0
+    for spec in component_specs:
+        if not spec.diagonal_pauli_support:
+            continue
+        basis_size = 2 * len(spec.basis_change_operations)
+        maximum_product_size = max(
+            maximum_product_size,
+            basis_size + len(spec.diagonal_pauli_support),
+        )
+        maximum_rotation_size = max(maximum_rotation_size, basis_size + 1)
+    per_event = order * maximum_product_size + maximum_rotation_size
+    phase_upper_bound = int(bool(controlled and count > 0))
+    return int(count * per_event + phase_upper_bound)
 
 
 def estimate_df_rte_untranspiled_size_upper_bound(

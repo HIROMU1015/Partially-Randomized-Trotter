@@ -3,6 +3,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
+import trotterlib.df_partial_randomized_pf as df_phase_module
 from trotterlib.df_hamiltonian import (
     DFGroundStateResult,
     DFHamiltonian,
@@ -11,9 +12,11 @@ from trotterlib.df_hamiltonian import (
     clear_df_integral_session_cache,
 )
 from trotterlib.df_partial_randomized_pf import (
+    _DFPhaseBiasSeries,
     _analytic_d_only_rz_cost,
     _build_d_only_cost_circuit,
     _collect_df_phase_bias_series,
+    _classify_df_phase_bias_status,
     _df_ground_state_cache_key_payload,
     _df_ground_state_result_from_npz,
     _df_hamiltonian_hash,
@@ -308,6 +311,120 @@ def test_df_phase_bias_is_invariant_under_constant_energy_shift() -> None:
     assert baseline.status == shifted.status == "ok"
     np.testing.assert_allclose(baseline.signed_biases, shifted.signed_biases)
     np.testing.assert_allclose(baseline.signed_biases, signed_bias)
+
+
+def test_df_phase_bias_overlap_and_branch_statuses_are_explicit() -> None:
+    state = np.asarray([1.0, 0.0], dtype=np.complex128)
+    low_overlap = _collect_df_phase_bias_series(
+        ((0.1, np.asarray([0.0, 1.0], dtype=np.complex128)),),
+        0.0,
+        state,
+        branch_certified=True,
+    )
+    branch_ambiguous = _collect_df_phase_bias_series(
+        ((0.1, state.copy()),),
+        0.0,
+        state,
+        branch_certified=False,
+    )
+
+    assert low_overlap.status == "low_overlap"
+    assert branch_ambiguous.status == "branch_ambiguous"
+
+
+def test_df_phase_bias_postfit_status_classifier_covers_failure_modes() -> None:
+    base = _DFPhaseBiasSeries(
+        times=(0.01, 0.02, 0.04),
+        absolute_biases=(1e-4, 4e-4, 1.6e-3),
+        signed_biases=(1e-4, 4e-4, 1.6e-3),
+        overlap_magnitudes=(1.0, 1.0, 1.0),
+        unwrapped_phases=(0.0, 0.0, 0.0),
+        status="ok",
+        minimum_branch_cut_clearance=np.pi,
+        maximum_adjacent_phase_increment=0.0,
+    )
+    common = {
+        "order": 2,
+        "fit_slope": 2.0,
+        "window_relative_spread": 0.0,
+        "residual_dominance_factor": 10.0,
+        "fit_slope_tolerance": 1.0,
+        "fit_window_relative_tolerance": 0.5,
+    }
+
+    assert _classify_df_phase_bias_status(
+        base,
+        ground_state_converged=False,
+        ground_state_residual_norm=0.0,
+        **common,
+    ) == "ground_state_unconverged"
+    assert _classify_df_phase_bias_status(
+        base,
+        ground_state_converged=True,
+        ground_state_residual_norm=1e-3,
+        **common,
+    ) == "residual_dominated"
+    assert _classify_df_phase_bias_status(
+        base,
+        ground_state_converged=True,
+        ground_state_residual_norm=0.0,
+        **{**common, "fit_slope": 5.0},
+    ) == "fit_unstable"
+    below_noise = _DFPhaseBiasSeries(
+        **{
+            **base.__dict__,
+            "absolute_biases": (0.0, 0.0, 0.0),
+            "signed_biases": (0.0, 0.0, 0.0),
+        }
+    )
+    assert _classify_df_phase_bias_status(
+        below_noise,
+        ground_state_converged=True,
+        ground_state_residual_norm=0.0,
+        **common,
+    ) == "below_noise_floor"
+
+
+def test_df_phase_bias_true_zero_and_unusable_rejection(monkeypatch) -> None:
+    zero_hamiltonian = DFHamiltonian(
+        constant=0.0,
+        one_body=np.zeros((1, 1), dtype=np.complex128),
+        lambdas=np.asarray([], dtype=np.float64),
+        g_matrices=(),
+        metadata={"molecule_type": 2},
+    )
+    sector = PhysicalSector(n_qubits=1, basis_indices=np.arange(2, dtype=np.int64))
+    zero_result = fit_df_cgs_with_perturbation(
+        zero_hamiltonian,
+        sector,
+        split_df_hamiltonian_by_ld(zero_hamiltonian, 0),
+        "2nd",
+        t_values=(0.02, 0.04),
+        evolution_backend="cpu",
+    )
+    assert zero_result.estimator_status == "true_zero"
+
+    monkeypatch.setattr(
+        df_phase_module,
+        "_classify_df_phase_bias_status",
+        lambda *_args, **_kwargs: "fit_unstable",
+    )
+    hamiltonian = _toy_df_hamiltonian()
+    toy_sector = PhysicalSector(
+        n_qubits=2,
+        basis_indices=np.arange(4, dtype=np.int64),
+    )
+    with pytest.raises(RuntimeError, match="status=fit_unstable"):
+        fit_df_cgs_with_perturbation(
+            hamiltonian,
+            toy_sector,
+            split_df_hamiltonian_by_ld(hamiltonian, 1),
+            "2nd",
+            t_values=(0.03, 0.05),
+            evolution_backend="cpu",
+            use_ground_state_cache=False,
+            require_usable_estimate=True,
+        )
 
 
 def test_df_phase_bias_fit_is_constant_shift_invariant_end_to_end() -> None:

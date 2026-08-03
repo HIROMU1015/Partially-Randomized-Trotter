@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from typing import Any, Literal, Protocol, TypeAlias
+from typing import Any, Iterator, Literal, Protocol, TypeAlias
 
 from .df_rte_tail import DFBasisDefinition, DFBasisRegistry, SymbolicRTETail
 from .rte import (
@@ -20,6 +20,7 @@ from .rte import (
     RTEConfig,
     RTEEvent,
     RTEFiniteDistribution,
+    iter_sample_rte_events,
     require_integer_count,
     sample_rte_events,
 )
@@ -163,6 +164,25 @@ class DFRTEEventPreparation:
                 "The tail has no randomized components to sample."
             )
         return sample_rte_events(
+            self.symbolic_tail.components,
+            distribution,
+            sample_count=sample_count,
+            seed=seed,
+        )
+
+    def iter_sample_events(
+        self,
+        distribution: RTEFiniteDistribution,
+        *,
+        sample_count: int,
+        seed: int,
+    ) -> Iterator[RTEEvent]:
+        """Yield sampled events once while preserving the public tuple API."""
+        if self.symbolic_tail.is_deterministic_only:
+            raise DeterministicOnlyRTETailError(
+                "The tail has no randomized components to sample."
+            )
+        return iter_sample_rte_events(
             self.symbolic_tail.components,
             distribution,
             sample_count=sample_count,

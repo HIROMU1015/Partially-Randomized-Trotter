@@ -6,15 +6,17 @@ import itertools
 import math
 import random
 from dataclasses import dataclass
-from typing import Any, Literal, Sequence
+from typing import Any, Iterable, Literal, Sequence
 
 from .df_partial_s2 import (
     DFPartialS2Preparation,
     DFPartialS2StepRequest,
     QiskitDFPartialS2CircuitBuilder,
+    estimate_df_partial_s2_structural_size_upper_bound,
     estimate_df_partial_s2_untranspiled_size_upper_bound,
 )
 from .df_rte_circuit import DFRTEEventSequenceCircuitRequest
+from .df_rte_qiskit import estimate_df_rte_structural_size_upper_bound
 from .rte import (
     CircuitCost,
     CompilerSettings,
@@ -24,15 +26,20 @@ from .rte import (
     RTEConfig,
     RTEEvent,
     RTEFiniteDistribution,
-    enumerate_rte_events,
+    iter_rte_events,
     require_integer_count,
 )
 from .rte_compiled_cost import (
     CompiledMetricAccumulator,
     CompiledMetricStatistics,
+    CompiledCostWorkloadBudget,
+    CompiledCostWorkloadPlan,
     TranspiledCircuitCost,
     TranspiledCircuitCostCache,
     circuit_cost_from_metric_statistics,
+    plan_compiled_cost_workload,
+    require_actual_workload_within_plan,
+    require_compiled_cost_workload_within_budget,
     subtract_compiled_costs,
     sum_compiled_costs,
 )
@@ -79,6 +86,14 @@ class CompiledPartialS2CostEstimate:
     seed: int | None
     maximum_event_sequences: int | None
     maximum_untranspiled_circuit_size: int
+    planned_build_requests: int
+    actual_build_requests: int
+    planned_transpile_requests: int
+    actual_cache_requests: int
+    planned_instruction_applications: int
+    actual_built_instruction_total: int
+    workload_budget: CompiledCostWorkloadBudget
+    workload_policy_version: str
     statistics_policy: Literal["online_welford_v1"] = "online_welford_v1"
 
 
@@ -129,7 +144,13 @@ def _validate_rte_inputs(
         raise ValueError("RTE config and distribution normalizations differ.")
     component_count = len(tail.components)
     return sum(
-        component_count ** (order + 1) for order in distribution.orders
+        component_count ** (order + 1)
+        for order, probability in zip(
+            distribution.orders,
+            distribution.order_probabilities,
+            strict=True,
+        )
+        if probability > 0.0
     )
 
 
@@ -171,29 +192,29 @@ def _request_for_events(
 
 
 def _compile_request_samples(
-    requests: Sequence[DFPartialS2StepRequest],
+    request_records: Iterable[tuple[DFPartialS2StepRequest, float | None]],
     compiler: CompilerSettings,
     *,
     estimate_kind: PartialS2EstimateKind,
-    weights: Sequence[float] | None,
-    event_sequence_probability_sum: float | None,
+    expected_request_count: int,
     controlled: bool,
     ancilla_qubit: int | None,
     seed: int | None,
     maximum_event_sequences: int | None,
     maximum_untranspiled_circuit_size: int,
     single_event_space_size: int,
+    workload_plan: CompiledCostWorkloadPlan,
+    workload_budget: CompiledCostWorkloadBudget,
     cache: TranspiledCircuitCostCache | None,
     backend: Any | None,
 ) -> CompiledPartialS2CostEstimate:
+    require_compiled_cost_workload_within_budget(workload_plan, workload_budget)
     working_cache = cache if cache is not None else TranspiledCircuitCostCache()
     initial_misses = working_cache.miss_count
     initial_bypasses = working_cache.bypass_count
     initial_evictions = working_cache.eviction_count
     builder = QiskitDFPartialS2CircuitBuilder()
-    if weights is not None and len(weights) != len(requests):
-        raise ValueError("Event-sequence weights length must match requests.")
-    weighted = weights is not None
+    weighted = estimate_kind == "exact_compiled_partial_s2_expectation"
     full_accumulator = CompiledMetricAccumulator(weighted=weighted)
     additive_accumulator = CompiledMetricAccumulator(weighted=weighted)
     difference_accumulator = CompiledMetricAccumulator(weighted=weighted)
@@ -203,9 +224,20 @@ def _compile_request_samples(
     all_keys: set[str] = set()
     full_keys: set[str] = set()
     cache_hits = 0
+    processed_request_count = 0
+    probability_sum = 0.0
+    actual_build_requests = 0
+    actual_cache_requests = 0
+    actual_built_instruction_total = 0
+    first: DFPartialS2StepRequest | None = None
 
-    for request_index, request in enumerate(requests):
-        weight = None if weights is None else weights[request_index]
+    for request, weight in request_records:
+        if weighted:
+            if weight is None:
+                raise ValueError("Exact request records require probability weights.")
+            probability_sum += float(weight)
+        elif weight is not None:
+            raise ValueError("Monte Carlo request records must be unweighted.")
         planned_size = estimate_df_partial_s2_untranspiled_size_upper_bound(request)
         if planned_size > maximum_untranspiled_circuit_size:
             raise ValueError(
@@ -213,6 +245,8 @@ def _compile_request_samples(
                 "size limit before circuit construction."
             )
         result = builder.build_step(request)
+        actual_build_requests += 1
+        actual_built_instruction_total += result.untranspiled_circuit_size
         if result.untranspiled_circuit_size > maximum_untranspiled_circuit_size:
             raise ValueError(
                 "Untranspiled partial-S2 circuit exceeds the configured size limit."
@@ -223,6 +257,7 @@ def _compile_request_samples(
             circuit_fingerprint=result.compiler_independent_fingerprint,
             backend=backend,
         )
+        actual_cache_requests += 1
         full_accumulator.update(full_cost, weight=weight)
         all_keys.add(full_key)
         full_keys.add(full_key)
@@ -235,12 +270,20 @@ def _compile_request_samples(
             (parts.rte_occurrence, parts.rte_fingerprint),
             (parts.reverse_deterministic_half, parts.reverse_fingerprint),
         ):
+            if circuit.size() > maximum_untranspiled_circuit_size:
+                raise ValueError(
+                    "Untranspiled partial-S2 primitive exceeds the configured "
+                    "size limit."
+                )
+            actual_build_requests += 1
+            actual_built_instruction_total += int(circuit.size())
             cost, key, was_cached = working_cache.get_or_transpile(
                 circuit,
                 compiler,
                 circuit_fingerprint=fingerprint,
                 backend=backend,
             )
+            actual_cache_requests += 1
             part_costs.append(cost)
             all_keys.add(key)
             cache_hits += int(was_cached)
@@ -253,6 +296,25 @@ def _compile_request_samples(
             subtract_compiled_costs(full_cost, additive),
             weight=weight,
         )
+        if first is None:
+            first = request
+        processed_request_count += 1
+
+    if processed_request_count != expected_request_count:
+        raise RuntimeError("Request iterator count differs from the preflight plan.")
+    if weighted and not math.isclose(
+        probability_sum,
+        1.0,
+        rel_tol=0.0,
+        abs_tol=PROBABILITY_ATOL,
+    ):
+        raise ValueError("Exact partial-S2 event sequence probabilities must sum to one.")
+    require_actual_workload_within_plan(
+        workload_plan,
+        actual_build_requests=actual_build_requests,
+        actual_cache_requests=actual_cache_requests,
+        actual_built_instruction_total=actual_built_instruction_total,
+    )
 
     full_statistics = full_accumulator.finalize()
     additive_statistics = additive_accumulator.finalize()
@@ -309,7 +371,8 @@ def _compile_request_samples(
     ):
         raise RuntimeError("Compiled partial-S2 expectation could not be constructed.")
     is_exact = estimate_kind == "exact_compiled_partial_s2_expectation"
-    first = requests[0]
+    if first is None:
+        raise RuntimeError("Partial-S2 metadata could not be constructed.")
     if first.rte_occurrence is None:
         reuse_policy: Literal[
             "disabled", "raw_adjacent_equal_basis", "none"
@@ -344,9 +407,11 @@ def _compile_request_samples(
         full_metric_statistics=full_statistics,
         additive_metric_statistics=additive_statistics,
         difference_metric_statistics=difference_statistics,
-        sample_count=None if is_exact else len(requests),
-        enumerated_event_sequence_count=len(requests) if is_exact else None,
-        event_sequence_probability_sum=event_sequence_probability_sum,
+        sample_count=None if is_exact else processed_request_count,
+        enumerated_event_sequence_count=(
+            processed_request_count if is_exact else None
+        ),
+        event_sequence_probability_sum=probability_sum if is_exact else None,
         single_event_space_size=single_event_space_size,
         unique_full_step_circuit_count=len(full_keys),
         unique_compiled_circuit_count=len(all_keys),
@@ -366,6 +431,58 @@ def _compile_request_samples(
         seed=None if is_exact else seed,
         maximum_event_sequences=maximum_event_sequences,
         maximum_untranspiled_circuit_size=maximum_untranspiled_circuit_size,
+        planned_build_requests=workload_plan.circuit_build_request_count,
+        actual_build_requests=actual_build_requests,
+        planned_transpile_requests=workload_plan.transpile_cache_request_count,
+        actual_cache_requests=actual_cache_requests,
+        planned_instruction_applications=(
+            workload_plan.planned_untranspiled_instruction_applications
+        ),
+        actual_built_instruction_total=actual_built_instruction_total,
+        workload_budget=workload_budget,
+        workload_policy_version=workload_plan.workload_policy_version,
+    )
+
+
+def plan_compiled_partial_s2_workload(
+    preparation: DFPartialS2Preparation,
+    rte_config: RTEConfig | None,
+    rte_distribution: RTEFiniteDistribution | None,
+    *,
+    work_item_count: int,
+    controlled: bool,
+) -> CompiledCostWorkloadPlan:
+    """Plan full-step plus three primitive circuits without building Qiskit data."""
+    if rte_config is None:
+        rte_size = 0
+    else:
+        if rte_distribution is None:
+            raise ValueError("An RTE config requires a finite distribution.")
+        supported_orders = tuple(
+            order
+            for order, probability in zip(
+                rte_distribution.orders,
+                rte_distribution.order_probabilities,
+                strict=True,
+            )
+            if probability > 0.0
+        )
+        rte_size = estimate_df_rte_structural_size_upper_bound(
+            preparation.rte_preparation.component_specs,
+            maximum_taylor_order=max(supported_orders),
+            event_count=rte_config.rte_steps,
+            controlled=controlled,
+        )
+    step_size = estimate_df_partial_s2_structural_size_upper_bound(
+        preparation,
+        controlled=controlled,
+        rte_occurrence_size_upper_bound=rte_size,
+    )
+    return plan_compiled_cost_workload(
+        work_item_count=work_item_count,
+        circuits_per_work_item=4,
+        instruction_applications_per_work_item=2 * step_size,
+        additional_diagnostic_circuits_per_work_item=3,
     )
 
 
@@ -381,6 +498,9 @@ def estimate_exact_compiled_partial_s2_cost(
     cancel_adjacent_equal_bases: bool = True,
     maximum_event_sequences: int = 10_000,
     maximum_untranspiled_circuit_size: int = 100_000,
+    maximum_build_requests: int = 1_000_000,
+    maximum_transpile_requests: int = 1_000_000,
+    maximum_planned_instruction_applications: int = 100_000_000,
     cache: TranspiledCircuitCostCache | None = None,
     backend: Any | None = None,
 ) -> CompiledPartialS2CostEstimate:
@@ -409,54 +529,82 @@ def estimate_exact_compiled_partial_s2_cost(
             f"{sequence_count} sequences, above "
             f"maximum_event_sequences={maximum_event_sequences}."
         )
-    if rte_config is None:
-        event_sequences: Sequence[tuple[RTEEvent, ...]] = ((),)
-    else:
-        events = enumerate_rte_events(
+    workload_plan = plan_compiled_partial_s2_workload(
+        preparation,
+        rte_config,
+        rte_distribution,
+        work_item_count=sequence_count,
+        controlled=controlled,
+    )
+    workload_budget = CompiledCostWorkloadBudget(
+        maximum_build_requests=maximum_build_requests,
+        maximum_transpile_requests=maximum_transpile_requests,
+        maximum_planned_instruction_applications=(
+            maximum_planned_instruction_applications
+        ),
+    )
+    require_compiled_cost_workload_within_budget(workload_plan, workload_budget)
+
+    def request_records() -> Iterable[
+        tuple[DFPartialS2StepRequest, float | None]
+    ]:
+        if rte_config is None:
+            yield (
+                _request_for_events(
+                    preparation,
+                    step_time=step_time,
+                    config=None,
+                    distribution=None,
+                    events=(),
+                    seed=None,
+                    controlled=controlled,
+                    ancilla_qubit=ancilla_qubit,
+                    cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
+                ),
+                1.0,
+            )
+            return
+        event_catalog: list[RTEEvent] = []
+        for event in iter_rte_events(
             preparation.rte_preparation.symbolic_tail.components,
             rte_distribution,
             max_events=single_event_count,
+        ):
+            event_catalog.append(event)
+        event_sequences = itertools.product(
+            event_catalog,
+            repeat=rte_steps,
         )
-        event_sequences = tuple(itertools.product(events, repeat=rte_steps))
-    weights = tuple(
-        math.prod(event.event_probability for event in sequence)
-        for sequence in event_sequences
-    )
-    probability_sum = math.fsum(weights)
-    if not math.isclose(
-        probability_sum,
-        1.0,
-        rel_tol=0.0,
-        abs_tol=PROBABILITY_ATOL,
-    ):
-        raise ValueError("Exact partial-S2 event sequence probabilities must sum to one.")
-    normalized_weights = tuple(weight / probability_sum for weight in weights)
-    requests = tuple(
-        _request_for_events(
-            preparation,
-            step_time=step_time,
-            config=rte_config,
-            distribution=rte_distribution,
-            events=tuple(sequence),
-            seed=0 if rte_config is not None else None,
-            controlled=controlled,
-            ancilla_qubit=ancilla_qubit,
-            cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
-        )
-        for sequence in event_sequences
-    )
+        for sequence in event_sequences:
+            events = tuple(sequence)
+            yield (
+                _request_for_events(
+                    preparation,
+                    step_time=step_time,
+                    config=rte_config,
+                    distribution=rte_distribution,
+                    events=events,
+                    seed=0,
+                    controlled=controlled,
+                    ancilla_qubit=ancilla_qubit,
+                    cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
+                ),
+                math.prod(event.event_probability for event in events),
+            )
+
     return _compile_request_samples(
-        requests,
+        request_records(),
         compiler,
         estimate_kind="exact_compiled_partial_s2_expectation",
-        weights=normalized_weights,
-        event_sequence_probability_sum=probability_sum,
+        expected_request_count=sequence_count,
         controlled=controlled,
         ancilla_qubit=ancilla_qubit,
         seed=None,
         maximum_event_sequences=maximum_event_sequences,
         maximum_untranspiled_circuit_size=maximum_untranspiled_circuit_size,
         single_event_space_size=single_event_count,
+        workload_plan=workload_plan,
+        workload_budget=workload_budget,
         cache=cache,
         backend=backend,
     )
@@ -476,6 +624,9 @@ def estimate_monte_carlo_compiled_partial_s2_cost(
     ancilla_qubit: int | None = None,
     cancel_adjacent_equal_bases: bool = True,
     maximum_untranspiled_circuit_size: int = 100_000,
+    maximum_build_requests: int = 1_000_000,
+    maximum_transpile_requests: int = 1_000_000,
+    maximum_planned_instruction_applications: int = 100_000_000,
     cache: TranspiledCircuitCostCache | None = None,
     backend: Any | None = None,
 ) -> CompiledPartialS2CostEstimate:
@@ -506,44 +657,67 @@ def estimate_monte_carlo_compiled_partial_s2_cost(
         rte_config,
         rte_distribution,
     )
-    rng = random.Random(seed)
-    requests: list[DFPartialS2StepRequest] = []
-    for _ in range(sample_count):
-        if rte_config is None:
-            events: tuple[RTEEvent, ...] = ()
-            occurrence_seed = None
-        else:
-            occurrence_seed = rng.randrange(0, 2**63)
-            events = preparation.rte_preparation.sample_events(
-                rte_distribution,
-                sample_count=rte_config.rte_steps,
-                seed=occurrence_seed,
+    workload_plan = plan_compiled_partial_s2_workload(
+        preparation,
+        rte_config,
+        rte_distribution,
+        work_item_count=sample_count,
+        controlled=controlled,
+    )
+    workload_budget = CompiledCostWorkloadBudget(
+        maximum_build_requests=maximum_build_requests,
+        maximum_transpile_requests=maximum_transpile_requests,
+        maximum_planned_instruction_applications=(
+            maximum_planned_instruction_applications
+        ),
+    )
+    require_compiled_cost_workload_within_budget(workload_plan, workload_budget)
+
+    def request_records() -> Iterable[
+        tuple[DFPartialS2StepRequest, float | None]
+    ]:
+        rng = random.Random(seed)
+        for _ in range(sample_count):
+            if rte_config is None:
+                events: tuple[RTEEvent, ...] = ()
+                occurrence_seed = None
+            else:
+                occurrence_seed = rng.randrange(0, 2**63)
+                events = tuple(
+                    preparation.rte_preparation.iter_sample_events(
+                        rte_distribution,
+                        sample_count=rte_config.rte_steps,
+                        seed=occurrence_seed,
+                    )
+                )
+            yield (
+                _request_for_events(
+                    preparation,
+                    step_time=step_time,
+                    config=rte_config,
+                    distribution=rte_distribution,
+                    events=events,
+                    seed=occurrence_seed,
+                    controlled=controlled,
+                    ancilla_qubit=ancilla_qubit,
+                    cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
+                ),
+                None,
             )
-        requests.append(
-            _request_for_events(
-                preparation,
-                step_time=step_time,
-                config=rte_config,
-                distribution=rte_distribution,
-                events=events,
-                seed=occurrence_seed,
-                controlled=controlled,
-                ancilla_qubit=ancilla_qubit,
-                cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
-            )
-        )
+
     return _compile_request_samples(
-        requests,
+        request_records(),
         compiler,
         estimate_kind="monte_carlo_compiled_partial_s2_expectation",
-        weights=None,
-        event_sequence_probability_sum=None,
+        expected_request_count=sample_count,
         controlled=controlled,
         ancilla_qubit=ancilla_qubit,
         seed=seed,
         maximum_event_sequences=maximum_samples,
         maximum_untranspiled_circuit_size=maximum_untranspiled_circuit_size,
         single_event_space_size=single_event_count,
+        workload_plan=workload_plan,
+        workload_budget=workload_budget,
         cache=cache,
         backend=backend,
     )

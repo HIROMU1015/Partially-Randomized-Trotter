@@ -52,6 +52,17 @@ canonical hashして検証する。既定の
 `selected_only`を提供する。exact確率和とRTEパラメータ比較の許容誤差は
 明示され、許容内の確率和はraw値を記録したうえで期待値用に正規化される。
 
+compiled-cost内部はonline統計だけでなく、event、partial-S2 request、exact
+trajectory、Monte Carlo trajectoryも一件ずつ生成・消費する。互換用の
+`enumerate_rte_events()` / `sample_rte_events()` はtupleを返すが、compiled
+経路はiterator APIを使い、exact Cartesian積では単一event catalogだけを
+保持してsequence/trajectory全体は保持しない。Level 5-R provenanceは既定で
+先頭1024件だけを結果へ保存し、全件はrolling digest、総件数、保持件数、
+truncation flagで監査する。cache hitを仮定しない総build/transpile/instruction
+workload plannerがbuilder実行前に上限を検査し、build後にも実instruction数を
+照合する。これは長いRPE回路をtranspileしたことを意味せず、Level 5-R fixture
+は引き続き非科学的な実装回帰である。
+
 ## ディレクトリ構成
 - `src/trotterlib/`: 実験用ライブラリ本体
 - `abe_trotter_project.ipynb`: 解析の一連の流れをまとめたノートブック

@@ -8,6 +8,8 @@ import numpy as np
 import pytest
 import qiskit
 
+import trotterlib.df_partial_s2_cost as partial_cost_module
+import trotterlib.rte_compiled_cost as compiled_cost_module
 from trotterlib.df_hamiltonian import DFHamiltonian
 from trotterlib.df_partial_randomized_pf import split_df_hamiltonian_by_ld
 from trotterlib.df_partial_s2 import (
@@ -18,6 +20,7 @@ from trotterlib.df_partial_s2 import (
 from trotterlib.df_partial_s2_cost import (
     estimate_exact_compiled_partial_s2_cost,
     estimate_monte_carlo_compiled_partial_s2_cost,
+    plan_compiled_partial_s2_workload,
 )
 from trotterlib.df_rte_circuit import DFRTEEventSequenceCircuitRequest
 from trotterlib.rte import CompilerSettings, enumerate_rte_events, make_rte_config
@@ -35,6 +38,24 @@ METRICS = (
     "total_depth",
     "circuit_size",
 )
+
+
+class _OneShotIterator:
+    def __init__(self, values):
+        self._iterator = iter(values)
+        self._iterated = False
+
+    def __iter__(self):
+        if self._iterated:
+            raise AssertionError("iterator was traversed more than once")
+        self._iterated = True
+        return self
+
+    def __next__(self):
+        return next(self._iterator)
+
+    def __len__(self):
+        raise AssertionError("streaming code requested len(iterator)")
 
 
 def _compiler(seed: int = 17) -> CompilerSettings:
@@ -213,6 +234,68 @@ def test_exact_partial_s2_sequence_and_size_limits_are_preflighted(
             maximum_event_sequences=4,
             maximum_untranspiled_circuit_size=1,
         )
+
+
+def test_partial_s2_workload_plan_and_total_limit_are_preflighted(
+    monkeypatch,
+) -> None:
+    preparation, config, distribution = _case()
+    plan = plan_compiled_partial_s2_workload(
+        preparation,
+        config,
+        distribution,
+        work_item_count=4,
+        controlled=False,
+    )
+    assert plan.circuit_build_request_count == 16
+    assert plan.transpile_cache_request_count == 16
+    assert plan.additional_diagnostic_circuit_count == 12
+
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("work began before the total-work preflight")
+
+    monkeypatch.setattr(QiskitDFPartialS2CircuitBuilder, "build_step", forbidden)
+    monkeypatch.setattr(
+        QiskitDFPartialS2CircuitBuilder,
+        "build_additive_circuits",
+        forbidden,
+    )
+    monkeypatch.setattr(TranspiledCircuitCostCache, "get_or_transpile", forbidden)
+    monkeypatch.setattr(compiled_cost_module, "transpile_and_measure_cost", forbidden)
+    with pytest.raises(ValueError, match="build requests"):
+        estimate_exact_compiled_partial_s2_cost(
+            preparation,
+            config.evolution_time,
+            config,
+            distribution,
+            _compiler(),
+            maximum_event_sequences=4,
+            maximum_build_requests=15,
+        )
+
+
+def test_partial_s2_exact_accepts_one_shot_event_iterator(monkeypatch) -> None:
+    preparation, config, distribution = _case(rte_steps=1)
+    events = enumerate_rte_events(
+        preparation.rte_preparation.symbolic_tail.components,
+        distribution,
+    )
+    one_shot = _OneShotIterator(events)
+    monkeypatch.setattr(
+        partial_cost_module,
+        "iter_rte_events",
+        lambda *_args, **_kwargs: one_shot,
+    )
+
+    result = estimate_exact_compiled_partial_s2_cost(
+        preparation,
+        config.evolution_time,
+        config,
+        distribution,
+        _compiler(),
+        maximum_event_sequences=2,
+    )
+    assert result.enumerated_event_sequence_count == 2
 
 
 def test_monte_carlo_partial_s2_statistics_are_unweighted_and_reproducible() -> None:

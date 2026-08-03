@@ -2,11 +2,13 @@ from __future__ import annotations
 
 from dataclasses import replace
 import math
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
 import qiskit
 from qiskit import QuantumCircuit
+from qiskit.circuit import Parameter
 from qiskit.circuit.library import RYGate
 from qiskit.providers.fake_provider import GenericBackendV2
 from qiskit.quantum_info import Operator
@@ -27,6 +29,7 @@ from trotterlib.rte import (
     make_rte_config,
 )
 from trotterlib.rte_compiled_cost import (
+    CompiledMetricAccumulator,
     TranspiledCircuitCostCache,
     canonical_qiskit_circuit_fingerprint,
     compiler_settings_hash,
@@ -45,6 +48,24 @@ METRICS = (
     "total_depth",
     "circuit_size",
 )
+
+
+class _OneShotIterator:
+    def __init__(self, values):
+        self._iterator = iter(values)
+        self._iterated = False
+
+    def __iter__(self):
+        if self._iterated:
+            raise AssertionError("one-shot iterator was traversed more than once")
+        self._iterated = True
+        return self
+
+    def __next__(self):
+        return next(self._iterator)
+
+    def __len__(self):
+        raise AssertionError("streaming code requested len(iterator)")
 
 
 def _compiler(*, seed: int = 17, optimization_level: int = 1) -> CompilerSettings:
@@ -113,6 +134,19 @@ def test_transpiled_cost_uses_actual_integer_counts_and_filtered_depths() -> Non
         Operator(circuit).data,
         atol=1e-12,
     )
+
+
+def test_zero_weight_record_does_not_affect_weighted_minimum_or_maximum() -> None:
+    zero_weight = SimpleNamespace(**{name: 999.0 for name in METRICS})
+    positive_weight = SimpleNamespace(**{name: 3.0 for name in METRICS})
+    accumulator = CompiledMetricAccumulator(weighted=True)
+    accumulator.update(zero_weight, weight=0.0)
+    accumulator.update(positive_weight, weight=1.0)
+
+    for _name, statistics in accumulator.finalize():
+        assert statistics.mean == 3.0
+        assert statistics.minimum == 3.0
+        assert statistics.maximum == 3.0
 
 
 def test_recursive_circuit_hash_includes_custom_gate_definition() -> None:
@@ -186,6 +220,84 @@ def test_cache_validates_backend_context_before_lookup() -> None:
             circuit_fingerprint="backend-bound",
             backend=None,
         )
+
+
+def test_symbolic_circuit_and_uncanonical_backend_bypass_cache(monkeypatch) -> None:
+    compiler = _compiler(optimization_level=0)
+    symbolic = QuantumCircuit(1)
+    symbolic.rz(Parameter("theta"), 0)
+    cache = TranspiledCircuitCostCache()
+    for _ in range(2):
+        _cost, _key, cached = cache.get_or_transpile(
+            symbolic,
+            compiler,
+            circuit_fingerprint="symbolic",
+        )
+        assert cached is False
+    assert len(cache) == 0
+    assert cache.bypass_count == 2
+
+    backend = GenericBackendV2(
+        num_qubits=1,
+        basis_gates=["rz", "sx", "x"],
+        seed=11,
+    )
+    backend_compiler = replace(
+        compiler,
+        basis_gates=("rz", "sx", "x"),
+        backend_name=backend.name,
+    )
+    numeric = QuantumCircuit(1)
+    numeric.rz(0.2, 0)
+    monkeypatch.setattr(
+        compiled_cost_module,
+        "_canonical_backend_fingerprint_or_none",
+        lambda _backend: None,
+    )
+    backend_cache = TranspiledCircuitCostCache()
+    for _ in range(2):
+        _cost, _key, cached = backend_cache.get_or_transpile(
+            numeric,
+            backend_compiler,
+            circuit_fingerprint="uncanonical-backend",
+            backend=backend,
+        )
+        assert cached is False
+    assert len(backend_cache) == 0
+    assert backend_cache.bypass_count == 2
+
+
+def test_same_backend_name_with_different_targets_has_distinct_cache_keys() -> None:
+    first_backend = GenericBackendV2(
+        num_qubits=2,
+        basis_gates=["rz", "sx", "x", "cx"],
+        seed=11,
+    )
+    second_backend = GenericBackendV2(
+        num_qubits=2,
+        basis_gates=["rz", "sx", "x", "cx"],
+        seed=12,
+    )
+    assert first_backend.name == second_backend.name
+    compiler = replace(_compiler(), backend_name=first_backend.name)
+    circuit = QuantumCircuit(2)
+    circuit.cx(0, 1)
+    cache = TranspiledCircuitCostCache()
+    _cost, first_key, first_cached = cache.get_or_transpile(
+        circuit,
+        compiler,
+        circuit_fingerprint="target-a",
+        backend=first_backend,
+    )
+    _cost, second_key, second_cached = cache.get_or_transpile(
+        circuit,
+        compiler,
+        circuit_fingerprint="target-b",
+        backend=second_backend,
+    )
+    assert first_cached is False
+    assert second_cached is False
+    assert first_key != second_key
 
 
 def test_transpile_preserves_controlled_identity_relative_phase() -> None:
@@ -304,11 +416,34 @@ def test_exact_compiled_expectation_is_weighted_once_and_cached() -> None:
     assert estimate.enumerated_event_count == len(events) == 2
     assert estimate.expected_cost.fidelity_level == 3
     assert estimate.expected_cost.estimate_kind == "exact_compiled_expectation"
+    assert estimate.planned_build_requests == estimate.actual_build_requests == 2
+    assert estimate.planned_transpile_requests == estimate.actual_cache_requests == 2
+    assert estimate.actual_built_instruction_total <= (
+        estimate.planned_instruction_applications
+    )
     for name in METRICS:
         assert getattr(estimate.expected_cost, name) == pytest.approx(manual[name])
     assert len(cache) == 2
     assert repeated.unique_compiled_circuit_count == 2
     assert repeated.transpile_cache_hit_count == 2
+
+
+def test_event_total_work_limit_rejects_before_builder_and_cache(monkeypatch) -> None:
+    _extraction, preparation, _config, distribution = _one_component_case()
+
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("work began before the total-work preflight")
+
+    monkeypatch.setattr(QiskitDFRTEEventCircuitBuilder, "build_event", forbidden)
+    monkeypatch.setattr(TranspiledCircuitCostCache, "get_or_transpile", forbidden)
+    monkeypatch.setattr(compiled_cost_module, "transpile_and_measure_cost", forbidden)
+    with pytest.raises(ValueError, match="build requests"):
+        estimate_exact_compiled_event_cost(
+            preparation,
+            distribution,
+            _compiler(),
+            maximum_build_requests=1,
+        )
 
 
 def test_exact_compiled_expectation_normalizes_roundoff_and_keeps_raw_sum(
@@ -332,10 +467,11 @@ def test_exact_compiled_expectation_normalizes_roundoff_and_keeps_raw_sum(
         replace(event, event_probability=event.event_probability * scale)
         for event in events
     )
+    event_iterator = _OneShotIterator(scaled_events)
     monkeypatch.setattr(
         compiled_cost_module,
-        "enumerate_rte_events",
-        lambda *_args, **_kwargs: scaled_events,
+        "iter_rte_events",
+        lambda *_args, **_kwargs: event_iterator,
     )
 
     estimate = estimate_exact_compiled_event_cost(
@@ -477,6 +613,11 @@ def test_short_occurrence_reports_nonadditive_compiled_cost_and_limits() -> None
     assert estimate.nonadditive_difference.rz_count < 0.0
     assert estimate.unique_sequence_circuit_count >= 1
     assert estimate.transpile_cache_hit_count > 0
+    assert estimate.planned_build_requests == estimate.actual_build_requests == 48
+    assert estimate.planned_transpile_requests == estimate.actual_cache_requests == 48
+    assert estimate.actual_built_instruction_total <= (
+        estimate.planned_instruction_applications
+    )
 
     with pytest.raises(ValueError, match="maximum_rte_steps"):
         estimate_compiled_occurrence_cost(

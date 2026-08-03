@@ -163,6 +163,50 @@ unique circuit counts, rolling provenance/event digests, PRNG/version metadata,
 and cache hit/miss/bypass/eviction counts. `maximum_samples` bounds Monte Carlo
 work, while metric statistics are accumulated online.
 
+Exact evaluation no longer materializes `event_sequences`, `trajectories`,
+`weights`, or `requests`. It retains the finite one-event catalog, iterates the
+flattened step-major Cartesian indices, creates one trajectory request, updates
+weighted online accumulators with the raw trajectory probability, and validates
+the accumulated mass after the stream. Monte Carlo likewise generates one
+trajectory seed/request at a time. A zero-probability exact record is excluded
+from weighted mean/min/max effective samples.
+
+`maximum_retained_provenance_records` defaults to 1024. The result stores only
+that ordered prefix of provenance fingerprints, circuit-semantics fingerprints,
+and Monte Carlo trajectory seeds. All records still feed the provenance,
+semantics, and seed rolling digests. Total count, retained count, truncation
+flag, master seed, PRNG/runtime versions, and `ordered_prefix_v1` policy make
+omission explicit and allow regeneration.
+
+## Total Level-5-R workload planner
+
+Let `N` be the exact trajectory count or Monte Carlo sample count, `q` the
+repetition count, `u_step` the structural upper bound for one partial-S2 step,
+and `u_rep = q * u_step`. Circuit requests counted here are the circuits passed
+to compiled-cost cache/transpile evaluation; cache hits never reduce preflight:
+
+```text
+selected_only per trajectory:
+    builds = cache requests = 1
+    instruction applications <= u_rep
+
+full_diagnostics per trajectory:
+    raw repeated + optimized repeated                   2
+    q separately compiled complete partial-S2 steps     q
+    q * (forward + RTE + reverse primitives)           3q
+    builds = cache requests = 2 + 4q
+    instruction applications <= 4 * u_rep
+    additional diagnostic circuits = 1 + 4q
+```
+
+The planner multiplies these values by `N` and checks
+`maximum_build_requests`, `maximum_transpile_requests`, and
+`maximum_planned_instruction_applications` before request generation or any
+Qiskit builder/cache lookup. Results store planned and actual request counts,
+actual misses/bypasses/evictions, planned and actual instructions, the complete
+budget, and workload-policy version. Per-circuit pre-build and post-build size
+guards remain separate.
+
 The transpile cache combines the recursively serialized actual numeric circuit
 with all compiler settings, Qiskit version, and canonical backend target.
 Seeds are intentionally absent because they select events but do not change a
@@ -230,7 +274,10 @@ sample count and seed, compiler settings, Qiskit version, means, and standard
 errors are explicit. The corresponding regression test recomputes all cases
 with a shared bounded metrics-only cache. This fixture is implementation
 evidence and is explicitly marked `scientific_result=false`; it is not an
-H3--H14 physics result.
+H3--H14 physics result. Schema 2 additionally binds Python/NumPy, master/event
+PRNG types, the sampling convention, and one rolling digest over all 32 exact
+and Monte Carlo result streams; gate/depth/statistical reference values are
+unchanged.
 
 A separate two-qubit fixture uses a non-diagonal one-body matrix and three
 non-diagonal DF matrices with three distinct basis hashes, nonempty Givens

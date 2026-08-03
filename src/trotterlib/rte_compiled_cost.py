@@ -8,7 +8,7 @@ import math
 import random
 from collections import OrderedDict
 from dataclasses import asdict, dataclass, field, replace
-from typing import Any, Literal, Sequence
+from typing import Any, Iterable, Literal, Sequence
 
 import numpy as np
 import qiskit
@@ -17,6 +17,7 @@ from qiskit import QuantumCircuit, transpile
 from .df_rte_circuit import DFRTEEventPreparation
 from .df_rte_qiskit import (
     QiskitDFRTEEventCircuitBuilder,
+    estimate_df_rte_structural_size_upper_bound,
     estimate_df_rte_untranspiled_size_upper_bound,
 )
 from .rte import (
@@ -26,7 +27,7 @@ from .rte import (
     PROBABILITY_ATOL,
     RTEConfig,
     RTEFiniteDistribution,
-    enumerate_rte_events,
+    iter_rte_events,
     require_integer_count,
 )
 
@@ -43,6 +44,153 @@ _COST_METRICS = (
     "total_depth",
     "circuit_size",
 )
+COMPILED_WORKLOAD_POLICY_VERSION = "cache_independent_instruction_upper_bound_v1"
+
+
+@dataclass(frozen=True)
+class CompiledCostWorkloadBudget:
+    """Explicit total-work limits checked before any Qiskit builder runs."""
+
+    maximum_build_requests: int
+    maximum_transpile_requests: int
+    maximum_planned_instruction_applications: int
+
+    def __post_init__(self) -> None:
+        for name in (
+            "maximum_build_requests",
+            "maximum_transpile_requests",
+            "maximum_planned_instruction_applications",
+        ):
+            object.__setattr__(
+                self,
+                name,
+                require_integer_count(getattr(self, name), name=name, minimum=1),
+            )
+
+
+@dataclass(frozen=True)
+class CompiledCostWorkloadPlan:
+    """Conservative circuit and instruction work independent of cache hits."""
+
+    work_item_count: int
+    circuit_build_request_count: int
+    transpile_cache_request_count: int
+    planned_untranspiled_instruction_applications: int
+    additional_diagnostic_circuit_count: int
+    workload_policy_version: str = COMPILED_WORKLOAD_POLICY_VERSION
+
+    def __post_init__(self) -> None:
+        for name in (
+            "work_item_count",
+            "circuit_build_request_count",
+            "transpile_cache_request_count",
+            "planned_untranspiled_instruction_applications",
+            "additional_diagnostic_circuit_count",
+        ):
+            object.__setattr__(
+                self,
+                name,
+                require_integer_count(getattr(self, name), name=name),
+            )
+        if self.circuit_build_request_count != self.transpile_cache_request_count:
+            raise ValueError(
+                "Every planned compiled-cost circuit must have one cache request."
+            )
+
+
+def plan_compiled_cost_workload(
+    *,
+    work_item_count: int,
+    circuits_per_work_item: int,
+    instruction_applications_per_work_item: int,
+    additional_diagnostic_circuits_per_work_item: int = 0,
+) -> CompiledCostWorkloadPlan:
+    """Return a side-effect-free conservative total compiled-cost plan."""
+    item_count = require_integer_count(
+        work_item_count,
+        name="work_item_count",
+        minimum=1,
+    )
+    circuit_count = require_integer_count(
+        circuits_per_work_item,
+        name="circuits_per_work_item",
+        minimum=1,
+    )
+    instruction_count = require_integer_count(
+        instruction_applications_per_work_item,
+        name="instruction_applications_per_work_item",
+    )
+    diagnostic_count = require_integer_count(
+        additional_diagnostic_circuits_per_work_item,
+        name="additional_diagnostic_circuits_per_work_item",
+    )
+    return CompiledCostWorkloadPlan(
+        work_item_count=item_count,
+        circuit_build_request_count=item_count * circuit_count,
+        transpile_cache_request_count=item_count * circuit_count,
+        planned_untranspiled_instruction_applications=(
+            item_count * instruction_count
+        ),
+        additional_diagnostic_circuit_count=item_count * diagnostic_count,
+    )
+
+
+def require_compiled_cost_workload_within_budget(
+    plan: CompiledCostWorkloadPlan,
+    budget: CompiledCostWorkloadBudget,
+) -> None:
+    """Reject total work before circuit construction or cache lookup."""
+    comparisons = (
+        (
+            plan.circuit_build_request_count,
+            budget.maximum_build_requests,
+            "build requests",
+        ),
+        (
+            plan.transpile_cache_request_count,
+            budget.maximum_transpile_requests,
+            "transpile requests",
+        ),
+        (
+            plan.planned_untranspiled_instruction_applications,
+            budget.maximum_planned_instruction_applications,
+            "planned instruction applications",
+        ),
+    )
+    for planned, maximum, label in comparisons:
+        if planned > maximum:
+            raise ValueError(
+                f"Compiled-cost workload has {planned} {label}, above "
+                f"the configured maximum {maximum}."
+            )
+
+
+def require_actual_workload_within_plan(
+    plan: CompiledCostWorkloadPlan,
+    *,
+    actual_build_requests: int,
+    actual_cache_requests: int,
+    actual_built_instruction_total: int,
+) -> None:
+    """Post-build guard for planner underestimation or unexpected expansion."""
+    actual_builds = require_integer_count(
+        actual_build_requests,
+        name="actual_build_requests",
+    )
+    actual_cache = require_integer_count(
+        actual_cache_requests,
+        name="actual_cache_requests",
+    )
+    actual_instructions = require_integer_count(
+        actual_built_instruction_total,
+        name="actual_built_instruction_total",
+    )
+    if actual_builds > plan.circuit_build_request_count:
+        raise RuntimeError("Actual circuit builds exceeded the preflight plan.")
+    if actual_cache > plan.transpile_cache_request_count:
+        raise RuntimeError("Actual cache requests exceeded the preflight plan.")
+    if actual_instructions > plan.planned_untranspiled_instruction_applications:
+        raise RuntimeError("Actual built instructions exceeded the preflight plan.")
 
 
 def compiler_settings_hash(settings: CompilerSettings) -> str:
@@ -300,6 +448,14 @@ class CompiledEventCostEstimate:
     event_probability_sum: float | None
     maximum_work_items: int
     workload_limit_kind: Literal["max_events", "maximum_samples"]
+    planned_build_requests: int
+    actual_build_requests: int
+    planned_transpile_requests: int
+    actual_cache_requests: int
+    planned_instruction_applications: int
+    actual_built_instruction_total: int
+    workload_budget: CompiledCostWorkloadBudget
+    workload_policy_version: str
     statistics_policy: Literal["online_welford_v1"] = "online_welford_v1"
 
 
@@ -603,14 +759,14 @@ class CompiledMetricAccumulator:
         values = _metric_values(cost)
         if any(not math.isfinite(value) for value in values):
             raise ValueError("Compiled metrics must be finite.")
+        if normalized_weight == 0.0:
+            return
         self.count += 1
         previous_weight = self.total_weight
         self.total_weight += normalized_weight
         for index, value in enumerate(values):
             self._minimums[index] = min(self._minimums[index], value)
             self._maximums[index] = max(self._maximums[index], value)
-            if normalized_weight == 0.0:
-                continue
             delta = value - self._means[index]
             self._means[index] += (
                 normalized_weight / self.total_weight
@@ -734,19 +890,22 @@ def _estimate_event_costs(
     preparation: DFRTEEventPreparation,
     compiler: CompilerSettings,
     *,
-    events: Sequence[Any],
+    events: Iterable[Any],
+    expected_event_count: int,
     estimate_kind: CostEstimateKind,
-    weights: Sequence[float] | None,
-    event_probability_sum: float | None,
+    weighted: bool,
     controlled: bool,
     ancilla_qubit: int | None,
     cancel_adjacent_equal_bases: bool,
     seed: int | None,
     maximum_work_items: int,
     workload_limit_kind: Literal["max_events", "maximum_samples"],
+    workload_plan: CompiledCostWorkloadPlan,
+    workload_budget: CompiledCostWorkloadBudget,
     cache: TranspiledCircuitCostCache | None,
     backend: Any | None,
 ) -> CompiledEventCostEstimate:
+    require_compiled_cost_workload_within_budget(workload_plan, workload_budget)
     working_cache = cache if cache is not None else TranspiledCircuitCostCache()
     initial_misses = working_cache.miss_count
     initial_bypasses = working_cache.bypass_count
@@ -754,13 +913,14 @@ def _estimate_event_costs(
     builder = QiskitDFRTEEventCircuitBuilder(
         basis_registry=preparation.basis_registry
     )
-    if weights is not None and len(weights) != len(events):
-        raise ValueError("Event weights length must match events.")
-    accumulator = CompiledMetricAccumulator(weighted=weights is not None)
+    accumulator = CompiledMetricAccumulator(weighted=weighted)
     event_digest = hashlib.sha256()
     keys: set[str] = set()
     cache_hits = 0
-    for index, event in enumerate(events):
+    processed_event_count = 0
+    probability_sum = 0.0
+    actual_built_instruction_total = 0
+    for event in events:
         encoded_event = json.dumps(
             event.to_dict(),
             sort_keys=True,
@@ -775,18 +935,37 @@ def _estimate_event_costs(
             cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
         )
         built = builder.build_event(request)
+        actual_built_instruction_total += int(built.circuit.size())
         cost, key, was_cached = working_cache.get_or_transpile(
             built.circuit,
             compiler,
             circuit_fingerprint=built.circuit_fingerprint,
             backend=backend,
         )
-        if weights is None:
-            accumulator.update(cost)
+        if weighted:
+            weight = float(event.event_probability)
+            probability_sum += weight
+            accumulator.update(cost, weight=weight)
         else:
-            accumulator.update(cost, weight=weights[index])
+            accumulator.update(cost)
         keys.add(key)
         cache_hits += int(was_cached)
+        processed_event_count += 1
+    if processed_event_count != expected_event_count:
+        raise RuntimeError("Event iterator count differs from the preflight plan.")
+    if weighted and not math.isclose(
+        probability_sum,
+        1.0,
+        rel_tol=0.0,
+        abs_tol=PROBABILITY_ATOL,
+    ):
+        raise ValueError("Enumerated RTE event probabilities must sum to one.")
+    require_actual_workload_within_plan(
+        workload_plan,
+        actual_build_requests=processed_event_count,
+        actual_cache_requests=processed_event_count,
+        actual_built_instruction_total=actual_built_instruction_total,
+    )
     statistics = accumulator.finalize()
     expected = _circuit_cost_from_statistics(
         statistics,
@@ -807,8 +986,8 @@ def _estimate_event_costs(
         expected_cost=expected,
         standard_error=standard_error,
         metric_statistics=statistics,
-        sample_count=None if is_exact else len(events),
-        enumerated_event_count=len(events) if is_exact else None,
+        sample_count=None if is_exact else processed_event_count,
+        enumerated_event_count=processed_event_count if is_exact else None,
         unique_compiled_circuit_count=len(keys),
         transpile_cache_hit_count=cache_hits,
         transpile_cache_miss_count=working_cache.miss_count - initial_misses,
@@ -829,9 +1008,19 @@ def _estimate_event_costs(
             else "disabled"
         ),
         seed=None if is_exact else seed,
-        event_probability_sum=event_probability_sum,
+        event_probability_sum=probability_sum if weighted else None,
         maximum_work_items=maximum_work_items,
         workload_limit_kind=workload_limit_kind,
+        planned_build_requests=workload_plan.circuit_build_request_count,
+        actual_build_requests=processed_event_count,
+        planned_transpile_requests=workload_plan.transpile_cache_request_count,
+        actual_cache_requests=processed_event_count,
+        planned_instruction_applications=(
+            workload_plan.planned_untranspiled_instruction_applications
+        ),
+        actual_built_instruction_total=actual_built_instruction_total,
+        workload_budget=workload_budget,
+        workload_policy_version=workload_plan.workload_policy_version,
     )
 
 
@@ -844,38 +1033,69 @@ def estimate_exact_compiled_event_cost(
     ancilla_qubit: int | None = None,
     cancel_adjacent_equal_bases: bool = True,
     max_events: int = 10_000,
+    maximum_build_requests: int = 1_000_000,
+    maximum_transpile_requests: int = 1_000_000,
+    maximum_planned_instruction_applications: int = 100_000_000,
     cache: TranspiledCircuitCostCache | None = None,
     backend: Any | None = None,
 ) -> CompiledEventCostEstimate:
     """Enumerate and probability-weight every finite RTE event exactly."""
-    events = enumerate_rte_events(
-        preparation.symbolic_tail.components,
-        distribution,
-        max_events=max_events,
+    max_events = require_integer_count(max_events, name="max_events", minimum=1)
+    supported_orders = tuple(
+        order
+        for order, probability in zip(
+            distribution.orders,
+            distribution.order_probabilities,
+            strict=True,
+        )
+        if probability > 0.0
     )
-    weights = tuple(event.event_probability for event in events)
-    probability_sum = math.fsum(weights)
-    if not math.isclose(
-        probability_sum,
-        1.0,
-        rel_tol=0.0,
-        abs_tol=PROBABILITY_ATOL,
-    ):
-        raise ValueError("Enumerated RTE event probabilities must sum to one.")
-    normalized_weights = tuple(weight / probability_sum for weight in weights)
+    event_count = sum(
+        len(preparation.symbolic_tail.components) ** (order + 1)
+        for order in supported_orders
+    )
+    if event_count > max_events:
+        raise ValueError(
+            f"Event space has {event_count} events, above max_events={max_events}."
+        )
+    per_event_instructions = estimate_df_rte_structural_size_upper_bound(
+        preparation.component_specs,
+        maximum_taylor_order=max(supported_orders),
+        event_count=1,
+        controlled=controlled,
+    )
+    plan = plan_compiled_cost_workload(
+        work_item_count=event_count,
+        circuits_per_work_item=1,
+        instruction_applications_per_work_item=per_event_instructions,
+    )
+    budget = CompiledCostWorkloadBudget(
+        maximum_build_requests=maximum_build_requests,
+        maximum_transpile_requests=maximum_transpile_requests,
+        maximum_planned_instruction_applications=(
+            maximum_planned_instruction_applications
+        ),
+    )
+    require_compiled_cost_workload_within_budget(plan, budget)
     return _estimate_event_costs(
         preparation,
         compiler,
-        events=events,
+        events=iter_rte_events(
+            preparation.symbolic_tail.components,
+            distribution,
+            max_events=max_events,
+        ),
+        expected_event_count=event_count,
         estimate_kind="exact_compiled_expectation",
-        weights=normalized_weights,
-        event_probability_sum=probability_sum,
+        weighted=True,
         controlled=controlled,
         ancilla_qubit=ancilla_qubit,
         cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
         seed=None,
         maximum_work_items=max_events,
         workload_limit_kind="max_events",
+        workload_plan=plan,
+        workload_budget=budget,
         cache=cache,
         backend=backend,
     )
@@ -889,6 +1109,9 @@ def estimate_monte_carlo_compiled_event_cost(
     sample_count: int,
     seed: int,
     maximum_samples: int = 10_000,
+    maximum_build_requests: int = 1_000_000,
+    maximum_transpile_requests: int = 1_000_000,
+    maximum_planned_instruction_applications: int = 100_000_000,
     controlled: bool = False,
     ancilla_qubit: int | None = None,
     cancel_adjacent_equal_bases: bool = True,
@@ -910,7 +1133,36 @@ def estimate_monte_carlo_compiled_event_cost(
         raise ValueError(
             f"sample_count={sample_count} exceeds maximum_samples={maximum_samples}."
         )
-    events = preparation.sample_events(
+    seed = require_integer_count(seed, name="seed")
+    supported_orders = tuple(
+        order
+        for order, probability in zip(
+            distribution.orders,
+            distribution.order_probabilities,
+            strict=True,
+        )
+        if probability > 0.0
+    )
+    per_event_instructions = estimate_df_rte_structural_size_upper_bound(
+        preparation.component_specs,
+        maximum_taylor_order=max(supported_orders),
+        event_count=1,
+        controlled=controlled,
+    )
+    plan = plan_compiled_cost_workload(
+        work_item_count=sample_count,
+        circuits_per_work_item=1,
+        instruction_applications_per_work_item=per_event_instructions,
+    )
+    budget = CompiledCostWorkloadBudget(
+        maximum_build_requests=maximum_build_requests,
+        maximum_transpile_requests=maximum_transpile_requests,
+        maximum_planned_instruction_applications=(
+            maximum_planned_instruction_applications
+        ),
+    )
+    require_compiled_cost_workload_within_budget(plan, budget)
+    events = preparation.iter_sample_events(
         distribution,
         sample_count=sample_count,
         seed=seed,
@@ -919,15 +1171,17 @@ def estimate_monte_carlo_compiled_event_cost(
         preparation,
         compiler,
         events=events,
+        expected_event_count=sample_count,
         estimate_kind="monte_carlo_compiled_expectation",
-        weights=None,
-        event_probability_sum=None,
+        weighted=False,
         controlled=controlled,
         ancilla_qubit=ancilla_qubit,
         cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
         seed=seed,
         maximum_work_items=maximum_samples,
         workload_limit_kind="maximum_samples",
+        workload_plan=plan,
+        workload_budget=budget,
         cache=cache,
         backend=backend,
     )
@@ -974,6 +1228,14 @@ class CompiledSequenceCostEstimate:
     maximum_rte_steps: int
     maximum_untranspiled_circuit_size: int
     maximum_samples: int
+    planned_build_requests: int
+    actual_build_requests: int
+    planned_transpile_requests: int
+    actual_cache_requests: int
+    planned_instruction_applications: int
+    actual_built_instruction_total: int
+    workload_budget: CompiledCostWorkloadBudget
+    workload_policy_version: str
     statistics_policy: Literal["online_welford_v1"] = "online_welford_v1"
 
 
@@ -1019,6 +1281,9 @@ def estimate_compiled_occurrence_cost(
     cancel_adjacent_equal_bases: bool = True,
     maximum_rte_steps: int = 16,
     maximum_untranspiled_circuit_size: int = 100_000,
+    maximum_build_requests: int = 1_000_000,
+    maximum_transpile_requests: int = 1_000_000,
+    maximum_planned_instruction_applications: int = 100_000_000,
     cache: TranspiledCircuitCostCache | None = None,
     backend: Any | None = None,
 ) -> CompiledSequenceCostEstimate:
@@ -1052,6 +1317,43 @@ def estimate_compiled_occurrence_cost(
         raise ValueError(
             "Configured rte_steps exceeds maximum_rte_steps for sequence expansion."
         )
+    supported_orders = tuple(
+        order
+        for order, probability in zip(
+            distribution.orders,
+            distribution.order_probabilities,
+            strict=True,
+        )
+        if probability > 0.0
+    )
+    sequence_size = estimate_df_rte_structural_size_upper_bound(
+        preparation.component_specs,
+        maximum_taylor_order=max(supported_orders),
+        event_count=config.rte_steps,
+        controlled=controlled,
+    )
+    event_size = estimate_df_rte_structural_size_upper_bound(
+        preparation.component_specs,
+        maximum_taylor_order=max(supported_orders),
+        event_count=1,
+        controlled=controlled,
+    )
+    workload_plan = plan_compiled_cost_workload(
+        work_item_count=sequence_sample_count,
+        circuits_per_work_item=1 + config.rte_steps,
+        instruction_applications_per_work_item=(
+            sequence_size + config.rte_steps * event_size
+        ),
+        additional_diagnostic_circuits_per_work_item=config.rte_steps,
+    )
+    workload_budget = CompiledCostWorkloadBudget(
+        maximum_build_requests=maximum_build_requests,
+        maximum_transpile_requests=maximum_transpile_requests,
+        maximum_planned_instruction_applications=(
+            maximum_planned_instruction_applications
+        ),
+    )
+    require_compiled_cost_workload_within_budget(workload_plan, workload_budget)
     working_cache = cache if cache is not None else TranspiledCircuitCostCache()
     initial_misses = working_cache.miss_count
     initial_bypasses = working_cache.bypass_count
@@ -1067,6 +1369,9 @@ def estimate_compiled_occurrence_cost(
     sequence_keys: set[str] = set()
     cache_hits = 0
     event_digest = hashlib.sha256()
+    actual_build_requests = 0
+    actual_cache_requests = 0
+    actual_built_instruction_total = 0
 
     for _ in range(sequence_sample_count):
         occurrence_seed = rng.randrange(0, 2**63)
@@ -1095,6 +1400,8 @@ def estimate_compiled_occurrence_cost(
                 "size limit before circuit construction."
             )
         built_sequence = builder.build_sequence(request)
+        actual_build_requests += 1
+        actual_built_instruction_total += int(built_sequence.circuit.size())
         if built_sequence.circuit.size() > maximum_untranspiled_circuit_size:
             raise ValueError(
                 "Untranspiled occurrence circuit exceeds the configured size limit."
@@ -1105,6 +1412,7 @@ def estimate_compiled_occurrence_cost(
             circuit_fingerprint=built_sequence.circuit_fingerprint,
             backend=backend,
         )
+        actual_cache_requests += 1
         sequence_accumulator.update(sequence_cost)
         all_keys.add(sequence_key)
         sequence_keys.add(sequence_key)
@@ -1127,6 +1435,8 @@ def estimate_compiled_occurrence_cost(
                     "size limit before circuit construction."
                 )
             built_event = builder.build_event(event_request)
+            actual_build_requests += 1
+            actual_built_instruction_total += int(built_event.circuit.size())
             if built_event.circuit.size() > maximum_untranspiled_circuit_size:
                 raise ValueError(
                     "Untranspiled RTE event circuit exceeds the configured size limit."
@@ -1137,12 +1447,20 @@ def estimate_compiled_occurrence_cost(
                 circuit_fingerprint=built_event.circuit_fingerprint,
                 backend=backend,
             )
+            actual_cache_requests += 1
             event_costs.append(event_cost)
             all_keys.add(event_key)
             cache_hits += int(event_cached)
         additive = _sum_costs(event_costs)
         additive_accumulator.update(additive)
         difference_accumulator.update(_subtract_costs(sequence_cost, additive))
+
+    require_actual_workload_within_plan(
+        workload_plan,
+        actual_build_requests=actual_build_requests,
+        actual_cache_requests=actual_cache_requests,
+        actual_built_instruction_total=actual_built_instruction_total,
+    )
 
     sequence_statistics = sequence_accumulator.finalize()
     additive_statistics = additive_accumulator.finalize()
@@ -1228,4 +1546,14 @@ def estimate_compiled_occurrence_cost(
         maximum_rte_steps=maximum_rte_steps,
         maximum_untranspiled_circuit_size=maximum_untranspiled_circuit_size,
         maximum_samples=maximum_samples,
+        planned_build_requests=workload_plan.circuit_build_request_count,
+        actual_build_requests=actual_build_requests,
+        planned_transpile_requests=workload_plan.transpile_cache_request_count,
+        actual_cache_requests=actual_cache_requests,
+        planned_instruction_applications=(
+            workload_plan.planned_untranspiled_instruction_applications
+        ),
+        actual_built_instruction_total=actual_built_instruction_total,
+        workload_budget=workload_budget,
+        workload_policy_version=workload_plan.workload_policy_version,
     )

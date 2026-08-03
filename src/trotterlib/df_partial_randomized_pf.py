@@ -767,6 +767,40 @@ def _collect_df_phase_bias_series(
     )
 
 
+def _classify_df_phase_bias_status(
+    phase_series: _DFPhaseBiasSeries,
+    *,
+    ground_state_converged: bool,
+    ground_state_residual_norm: float,
+    order: int,
+    fit_slope: float | None,
+    window_relative_spread: float,
+    residual_dominance_factor: float,
+    fit_slope_tolerance: float,
+    fit_window_relative_tolerance: float,
+) -> DFPhaseBiasStatus:
+    """Apply the versioned estimator-status precedence independently of I/O."""
+    if not ground_state_converged:
+        return "ground_state_unconverged"
+    if phase_series.status != "ok":
+        return phase_series.status
+    maximum_bias = max(phase_series.absolute_biases, default=0.0)
+    if maximum_bias < _PERTURBATION_NOISE_FLOOR:
+        return "below_noise_floor"
+    residual_floor = residual_dominance_factor * float(ground_state_residual_norm)
+    if maximum_bias <= residual_floor:
+        return "residual_dominated"
+    if (
+        fit_slope is not None
+        and len(phase_series.times) >= 3
+        and abs(fit_slope - order) > fit_slope_tolerance
+    ):
+        return "fit_unstable"
+    if window_relative_spread > fit_window_relative_tolerance:
+        return "fit_unstable"
+    return "ok"
+
+
 def _collect_df_perturbation_errors(
     final_state_list: Sequence[tuple[float, np.ndarray]],
     energy: float,
@@ -1707,26 +1741,17 @@ def fit_df_cgs_with_perturbation(
         )
         / max(max(window_coefficients), _PERTURBATION_NOISE_FLOOR)
     )
-    estimator_status = phase_series.status
-    if not ground_state.converged:
-        estimator_status = "ground_state_unconverged"
-    elif estimator_status == "ok":
-        residual_floor = residual_dominance_factor * float(
-            ground_state.residual_norm
-        )
-        maximum_bias = max(phase_series.absolute_biases, default=0.0)
-        if maximum_bias < _PERTURBATION_NOISE_FLOOR:
-            estimator_status = "below_noise_floor"
-        elif maximum_bias <= residual_floor:
-            estimator_status = "residual_dominated"
-        elif (
-            fit_slope is not None
-            and len(phase_series.times) >= 3
-            and abs(fit_slope - order) > fit_slope_tolerance
-        ):
-            estimator_status = "fit_unstable"
-        elif window_relative_spread > fit_window_relative_tolerance:
-            estimator_status = "fit_unstable"
+    estimator_status = _classify_df_phase_bias_status(
+        phase_series,
+        ground_state_converged=ground_state.converged,
+        ground_state_residual_norm=ground_state.residual_norm,
+        order=order,
+        fit_slope=fit_slope,
+        window_relative_spread=window_relative_spread,
+        residual_dominance_factor=residual_dominance_factor,
+        fit_slope_tolerance=fit_slope_tolerance,
+        fit_window_relative_tolerance=fit_window_relative_tolerance,
+    )
     screening_usable = estimator_status in ("ok", "true_zero", "below_noise_floor")
     result = DFCgsFitResult(
         representation_type="df",

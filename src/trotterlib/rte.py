@@ -15,7 +15,7 @@ import math
 import operator
 import warnings
 from dataclasses import asdict, dataclass, field
-from typing import Any, Literal, Mapping, Protocol, Sequence, TypeAlias
+from typing import Any, Iterator, Literal, Mapping, Protocol, Sequence, TypeAlias
 
 import numpy as np
 
@@ -1656,13 +1656,13 @@ def _make_event(
     )
 
 
-def enumerate_rte_events(
+def iter_rte_events(
     components: Sequence[RTEComponent],
     distribution: RTEFiniteDistribution,
     *,
     max_events: int = 1_000_000,
-) -> tuple[RTEEvent, ...]:
-    """Enumerate all finite events for small systems only."""
+) -> Iterator[RTEEvent]:
+    """Yield each finite event once after a side-effect-free space check."""
     max_events = require_integer_count(max_events, name="max_events")
     _validate_components(components)
     supported_orders = tuple(
@@ -1675,23 +1675,37 @@ def enumerate_rte_events(
     count = sum(len(components) ** (order + 1) for order in supported_orders)
     if count > max_events:
         raise ValueError(f"Event space has {count} events, above max_events={max_events}.")
-    events: list[RTEEvent] = []
     for order_index, order in enumerate(distribution.orders):
         if distribution.order_probabilities[order_index] == 0.0:
             continue
         for indices in itertools.product(range(len(components)), repeat=order + 1):
-            events.append(_make_event(indices, components, distribution, order_index))
-    return tuple(events)
+            yield _make_event(indices, components, distribution, order_index)
 
 
-def sample_rte_events(
+def enumerate_rte_events(
+    components: Sequence[RTEComponent],
+    distribution: RTEFiniteDistribution,
+    *,
+    max_events: int = 1_000_000,
+) -> tuple[RTEEvent, ...]:
+    """Enumerate all finite events for small systems only."""
+    return tuple(
+        iter_rte_events(
+            components,
+            distribution,
+            max_events=max_events,
+        )
+    )
+
+
+def iter_sample_rte_events(
     components: Sequence[RTEComponent],
     distribution: RTEFiniteDistribution,
     *,
     sample_count: int,
     seed: int,
-) -> tuple[RTEEvent, ...]:
-    """Classically sample event circuits; this is not quantum shot sampling."""
+) -> Iterator[RTEEvent]:
+    """Yield PCG64-sampled event circuits without retaining the sample stream."""
     sample_count = require_integer_count(sample_count, name="sample_count")
     seed = require_integer_count(seed, name="seed")
     component_probability_sum = _validate_components(components)
@@ -1700,7 +1714,6 @@ def sample_rte_events(
         [component.probability / component_probability_sum for component in components],
         dtype=float,
     )
-    events: list[RTEEvent] = []
     for _ in range(sample_count):
         order_index = int(
             rng.choice(
@@ -1711,8 +1724,25 @@ def sample_rte_events(
         indices = rng.choice(
             len(components), size=order + 1, p=component_probabilities
         )
-        events.append(_make_event(indices, components, distribution, order_index))
-    return tuple(events)
+        yield _make_event(indices, components, distribution, order_index)
+
+
+def sample_rte_events(
+    components: Sequence[RTEComponent],
+    distribution: RTEFiniteDistribution,
+    *,
+    sample_count: int,
+    seed: int,
+) -> tuple[RTEEvent, ...]:
+    """Classically sample event circuits; this is not quantum shot sampling."""
+    return tuple(
+        iter_sample_rte_events(
+            components,
+            distribution,
+            sample_count=sample_count,
+            seed=seed,
+        )
+    )
 
 
 def event_unitary(

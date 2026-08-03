@@ -110,6 +110,8 @@ from .rte import (
     finite_rte_corrected_operator,
     finite_rte_distribution,
     finite_rte_operator_moments,
+    iter_rte_events,
+    iter_sample_rte_events,
     make_rte_config,
     normalize_involutory_tail,
     occurrence_truncation_residual_bound,
@@ -152,9 +154,13 @@ from .df_rte_circuit import (
 )
 from .df_rte_qiskit import (
     QiskitDFRTEEventCircuitBuilder,
+    estimate_df_rte_structural_size_upper_bound,
     estimate_df_rte_untranspiled_size_upper_bound,
 )
 from .rte_compiled_cost import (
+    COMPILED_WORKLOAD_POLICY_VERSION,
+    CompiledCostWorkloadBudget,
+    CompiledCostWorkloadPlan,
     CompiledEventCostEstimate,
     CompiledMetricAccumulator,
     CompiledMetricStatistics,
@@ -166,6 +172,7 @@ from .rte_compiled_cost import (
     estimate_compiled_occurrence_cost,
     estimate_exact_compiled_event_cost,
     estimate_monte_carlo_compiled_event_cost,
+    plan_compiled_cost_workload,
     transpile_and_measure_cost,
 )
 from .df_partial_s2 import (
@@ -177,6 +184,7 @@ from .df_partial_s2 import (
     DFPartialS2Preparation,
     DFPartialS2StepRequest,
     QiskitDFPartialS2CircuitBuilder,
+    estimate_df_partial_s2_structural_size_upper_bound,
     estimate_df_partial_s2_untranspiled_size_upper_bound,
     make_df_partial_s2_step_request,
     prepare_df_partial_s2,
@@ -185,6 +193,7 @@ from .df_partial_s2_cost import (
     CompiledPartialS2CostEstimate,
     estimate_exact_compiled_partial_s2_cost,
     estimate_monte_carlo_compiled_partial_s2_cost,
+    plan_compiled_partial_s2_workload,
 )
 from .df_partial_s2_repeated import (
     BoundaryOptimizationPolicy,
@@ -203,6 +212,7 @@ from .df_partial_s2_repeated_cost import (
     RepeatedCostEvaluationMode,
     estimate_exact_compiled_repeated_partial_s2_cost,
     estimate_monte_carlo_compiled_repeated_partial_s2_cost,
+    plan_compiled_repeated_partial_s2_workload,
 )
 
 __all__ = [
@@ -290,6 +300,8 @@ __all__ = [
     "finite_rte_corrected_operator",
     "finite_rte_distribution",
     "finite_rte_operator_moments",
+    "iter_rte_events",
+    "iter_sample_rte_events",
     "make_rte_config",
     "normalize_involutory_tail",
     "occurrence_truncation_residual_bound",
@@ -326,7 +338,11 @@ __all__ = [
     "DFRTEEventSequenceCircuitRequest",
     "DFRTEIdentityCircuitSpec",
     "QiskitDFRTEEventCircuitBuilder",
+    "estimate_df_rte_structural_size_upper_bound",
     "estimate_df_rte_untranspiled_size_upper_bound",
+    "COMPILED_WORKLOAD_POLICY_VERSION",
+    "CompiledCostWorkloadBudget",
+    "CompiledCostWorkloadPlan",
     "CompiledEventCostEstimate",
     "CompiledMetricAccumulator",
     "CompiledMetricStatistics",
@@ -338,6 +354,7 @@ __all__ = [
     "estimate_compiled_occurrence_cost",
     "estimate_exact_compiled_event_cost",
     "estimate_monte_carlo_compiled_event_cost",
+    "plan_compiled_cost_workload",
     "transpile_and_measure_cost",
     "DFDeterministicBlockSpec",
     "DFDeterministicFragmentSpec",
@@ -347,12 +364,14 @@ __all__ = [
     "DFPartialS2Preparation",
     "DFPartialS2StepRequest",
     "QiskitDFPartialS2CircuitBuilder",
+    "estimate_df_partial_s2_structural_size_upper_bound",
     "estimate_df_partial_s2_untranspiled_size_upper_bound",
     "make_df_partial_s2_step_request",
     "prepare_df_partial_s2",
     "CompiledPartialS2CostEstimate",
     "estimate_exact_compiled_partial_s2_cost",
     "estimate_monte_carlo_compiled_partial_s2_cost",
+    "plan_compiled_partial_s2_workload",
     "BoundaryOptimizationPolicy",
     "DFPartialS2AttenuationMetadata",
     "DFPartialS2RepeatedCircuitResult",
@@ -367,4 +386,5 @@ __all__ = [
     "RepeatedCostEvaluationMode",
     "estimate_exact_compiled_repeated_partial_s2_cost",
     "estimate_monte_carlo_compiled_repeated_partial_s2_cost",
+    "plan_compiled_repeated_partial_s2_workload",
 ]

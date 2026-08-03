@@ -25,6 +25,8 @@ from trotterlib.rte import (
     finite_rte_distribution,
     finite_rte_multi_step_operator,
     finite_taylor_operator,
+    iter_rte_events,
+    iter_sample_rte_events,
     make_rte_config,
     normalize_involutory_tail,
     sample_event_mean_operator,
@@ -67,6 +69,27 @@ def _operator_map(tail):
             tail.components, tail.operators, strict=True
         )
     }
+
+
+def test_streaming_event_apis_preserve_tuple_api_order_and_pcg64_samples() -> None:
+    tail = _toy_tail()
+    distribution = finite_rte_distribution(0.4, 2)
+    assert tuple(iter_rte_events(tail.components, distribution)) == (
+        enumerate_rte_events(tail.components, distribution)
+    )
+    assert tuple(
+        iter_sample_rte_events(
+            tail.components,
+            distribution,
+            sample_count=20,
+            seed=17,
+        )
+    ) == sample_rte_events(
+        tail.components,
+        distribution,
+        sample_count=20,
+        seed=17,
+    )
 
 
 def test_finite_distribution_round_trip_validates_zero_weights() -> None:

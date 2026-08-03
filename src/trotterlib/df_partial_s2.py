@@ -567,20 +567,10 @@ def estimate_df_partial_s2_untranspiled_size_upper_bound(
     request: DFPartialS2StepRequest,
 ) -> int:
     """Bound a complete partial-S2 instruction count before circuit creation."""
-    deterministic_half_size = 0
-    for block in request.preparation.deterministic_blocks:
-        deterministic_half_size += 2 * len(block.runtime_basis_operations)
-        if isinstance(block, DFDeterministicOneBodySpec):
-            central_upper_bound = block.num_system_qubits
-        else:
-            central_upper_bound = (
-                block.num_system_qubits
-                + block.num_system_qubits * (block.num_system_qubits - 1) // 2
-            )
-        deterministic_half_size += central_upper_bound
-        if request.controlled:
-            deterministic_half_size += 1
-
+    deterministic_half_size = _df_partial_s2_deterministic_half_size_upper_bound(
+        request.preparation,
+        controlled=request.controlled,
+    )
     phase_gate_count = 0
     if request.controlled:
         phase_gate_count = sum(
@@ -596,6 +586,46 @@ def estimate_df_partial_s2_untranspiled_size_upper_bound(
         if request.rte_occurrence is None
         else estimate_df_rte_untranspiled_size_upper_bound(request.rte_occurrence)
     )
+    return int(2 * deterministic_half_size + phase_gate_count + rte_size)
+
+
+def _df_partial_s2_deterministic_half_size_upper_bound(
+    preparation: DFPartialS2Preparation,
+    *,
+    controlled: bool,
+) -> int:
+    deterministic_half_size = 0
+    for block in preparation.deterministic_blocks:
+        deterministic_half_size += 2 * len(block.runtime_basis_operations)
+        if isinstance(block, DFDeterministicOneBodySpec):
+            central_upper_bound = block.num_system_qubits
+        else:
+            central_upper_bound = (
+                block.num_system_qubits
+                + block.num_system_qubits * (block.num_system_qubits - 1) // 2
+            )
+        deterministic_half_size += central_upper_bound
+        if controlled:
+            deterministic_half_size += 1
+    return int(deterministic_half_size)
+
+
+def estimate_df_partial_s2_structural_size_upper_bound(
+    preparation: DFPartialS2Preparation,
+    *,
+    controlled: bool,
+    rte_occurrence_size_upper_bound: int,
+) -> int:
+    """Bound one step before concrete RTE events have been generated."""
+    rte_size = require_integer_count(
+        rte_occurrence_size_upper_bound,
+        name="rte_occurrence_size_upper_bound",
+    )
+    deterministic_half_size = _df_partial_s2_deterministic_half_size_upper_bound(
+        preparation,
+        controlled=controlled,
+    )
+    phase_gate_count = 2 if controlled else 0
     return int(2 * deterministic_half_size + phase_gate_count + rte_size)
 
 

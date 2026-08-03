@@ -67,6 +67,22 @@ controlled and uncontrolled circuits, and positive and negative step times.
 Probability sums use explicit absolute tolerances and are normalized for
 expectations after their raw sums are recorded.
 
+Compiled evaluation is now genuinely streamed across work items. Exact paths
+retain only the finite one-event catalog needed to index a Cartesian product;
+they do not retain all event sequences, trajectories, weights, or requests.
+Monte Carlo creates one event sequence/request, builds and compiles it, updates
+online statistics and rolling digests, then releases it. The legacy public
+tuple enumeration/sampling APIs remain available for small validation cases.
+
+Repeated provenance uses an ordered-prefix retention policy with a default
+limit of 1024 records. Provenance fingerprints, circuit-semantics fingerprints,
+and trajectory seeds beyond that prefix are not stored, but every record still
+contributes to its rolling digest. Results explicitly report the total and
+retained counts and whether truncation occurred. A cache-independent workload
+planner checks total build requests, cache/transpile requests, and conservative
+untranspiled instruction applications before any Qiskit builder runs; post-build
+counts detect planner underestimation.
+
 These Level-5 results do not include long `2**m` RPE construction, state
 preparation, attenuation-driven shot counts, or quantum-shot sampling.
 

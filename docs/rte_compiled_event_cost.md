@@ -43,7 +43,7 @@ sample mean need not be integral. No RZ-to-T synthesis estimate is applied.
 
 ## Exact and Monte Carlo event expectations
 
-`estimate_exact_compiled_event_cost` uses `enumerate_rte_events`, checks that
+`estimate_exact_compiled_event_cost` uses `iter_rte_events`, checks that
 event probabilities sum to one, transpiles each canonical event circuit, and
 computes each expected metric exactly within the fixed finite model:
 
@@ -88,6 +88,32 @@ variances, and standard errors are retained separately for all three series.
 side-effect-free instruction-count planner rejects oversized work before
 Qiskit circuit allocation; a post-build guard remains. Means and Monte Carlo
 variances use online Welford accumulation.
+
+## Streaming and total-work preflight
+
+`iter_rte_events()` and `iter_sample_rte_events()` are the compiled-cost
+streaming primitives. The existing tuple-returning `enumerate_rte_events()` and
+`sample_rte_events()` remain compatibility APIs for small validation jobs.
+Single-event exact and Monte Carlo costing consume each event once; no complete
+event sample is retained. A short occurrence retains only its current
+`rte_steps` event tuple because that tuple is the circuit request itself.
+
+Let `N` be the event/sample count, `r` the occurrence event count, `u_event` a
+structural upper bound for one event circuit, and `u_seq` the bound for one
+occurrence circuit. Preflight counts are independent of cache hits:
+
+```text
+single-event:     builds = cache requests = N
+                  instructions <= N * u_event
+short occurrence: builds = cache requests = N * (1 + r)
+                  instructions <= N * (u_seq + r * u_event)
+```
+
+`maximum_build_requests`, `maximum_transpile_requests`, and
+`maximum_planned_instruction_applications` are checked before builder creation.
+The result records the plan, actual cache requests/misses, actual built
+instruction total, budget, and workload-policy version. Existing per-circuit
+post-build size guards remain active.
 
 ## Cache identity
 

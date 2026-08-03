@@ -97,6 +97,28 @@ cache statistics. `maximum_samples` bounds the workload, and metrics use
 online Welford accumulation. Sampled event probability is never multiplied a second time. This
 is classical circuit selection, not quantum-shot sampling.
 
+The exact path lazily consumes the Cartesian sequence iterator and retains only
+the one-event catalog used by `itertools.product`; it does not materialize the
+complete sequence, weight, or request collections. Monte Carlo performs one
+sample as `events -> request -> pre-build guard -> build/compile -> online
+update -> release`. Public tuple event APIs remain unchanged.
+
+For `N` exact sequences or Monte Carlo samples and a conservative complete-step
+instruction bound `u_step`, one sample costs one full circuit and three
+forward/RTE/reverse primitive circuits:
+
+```text
+builds = cache requests = 4 * N
+planned instruction applications <= 2 * N * u_step
+additional diagnostic circuits = 3 * N
+```
+
+The second factor arises because the three primitive sizes sum to the complete
+step bound. Total build, cache/transpile, and instruction budgets are checked
+before a Qiskit builder is called, independently of expected cache hits. Actual
+counts and instruction totals are recorded and checked against the plan after
+building.
+
 For every exact or sampled sequence, the APIs compile matching costs for:
 
 ```text
