@@ -76,9 +76,12 @@ transparent baseline, not a Taylor-order circuit-cost optimization.
 - Finite Taylor cutoff: operator approximation, recorded here.
 - Deterministic product formula: not newly implemented in this milestone.
 - RTE normalization: signal attenuation, not bias.
-- Attenuation-driven shots: future sampling-cost layer.
+- Attenuation-driven shots: connected for short second-order partial-S2 rounds
+  by `rpe_resource_accounting`; not yet a full RPE circuit implementation.
 - Classical event sampling: expected-cost estimation uncertainty, not an
   operator error.
 
-The event circuit builder, transpilation, RPE round circuits, and total cost
-remain unimplemented.
+Event/partial-S2 circuit builders and short Level-5-R transpilation are
+implemented. The resource-accounting layer can form an all-round total from
+selected directly constructible candidates, but full RPE circuits and long
+`2**m` extrapolation remain unimplemented.

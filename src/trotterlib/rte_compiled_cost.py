@@ -661,6 +661,16 @@ def _canonical_backend_fingerprint_or_none(backend: Any | None) -> str | None:
         return None
 
 
+def canonical_backend_fingerprint_or_none(backend: Any | None) -> str | None:
+    """Return the canonical transpiler-backend fingerprint when available.
+
+    ``None`` means that the backend could not be represented by the existing
+    Qiskit-Target policy; callers must preserve that cache-bypass distinction.
+    The literal ``"no_backend"`` identifies an intentionally absent backend.
+    """
+    return _canonical_backend_fingerprint_or_none(backend)
+
+
 def _gate_counts(circuit: QuantumCircuit) -> tuple[tuple[str, int], ...]:
     return tuple(
         sorted((str(name).lower(), int(count)) for name, count in circuit.count_ops().items())

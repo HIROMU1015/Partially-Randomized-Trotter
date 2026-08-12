@@ -60,6 +60,29 @@ _CGS_CACHE_SORT_RULE = (
 KappaMode: TypeAlias = Literal["fixed", "optimize", "sweep"]
 RandomizedMethod: TypeAlias = Literal["qdrift", "rte"]
 ErrorBudgetRule: TypeAlias = Literal["quadrature", "linear"]
+AnalyticBaselineModel: TypeAlias = Literal[
+    "legacy_repo_model", "pr_paper_v2_model"
+]
+
+LEGACY_REPO_MODEL: AnalyticBaselineModel = "legacy_repo_model"
+PR_PAPER_V2_MODEL: AnalyticBaselineModel = "pr_paper_v2_model"
+
+
+@dataclass(frozen=True)
+class AnalyticBaselineDefinition:
+    """Versioned provenance for a simplified analytic random-cost prefactor."""
+
+    model_id: AnalyticBaselineModel
+    definition_version: int
+    coefficient: float
+    randomized_method: RandomizedMethod
+    gamma: float | None
+    gamma_policy: str
+    paper_version: str
+    source_equation: str
+    sample_schedule: str
+    source_sha256: str
+    provenance_status: str
 
 
 @dataclass(frozen=True)
@@ -852,6 +875,98 @@ def randomized_gamma(method: str) -> float:
     """Return the gamma factor used in the simplified randomized prefactor."""
     normalized = _normalize_randomized_method(method)
     return 1.0 if normalized == "qdrift" else 2.0
+
+
+def analytic_baseline_definition(
+    model: str,
+    randomized_method: str = PARTIAL_RANDOMIZED_DEFAULT_RANDOMIZED_METHOD,
+) -> AnalyticBaselineDefinition:
+    """Resolve one explicit analytic baseline without changing legacy defaults.
+
+    ``legacy_repo_model`` reproduces the repository's historical ``280/9``
+    prefactor and gamma convention.  ``pr_paper_v2_model`` represents the RTE
+    expression in arXiv:2503.05647v2, Appendix E, Eq. (E22); it is deliberately
+    unavailable for qDRIFT because Eq. (E22) does not define a qDRIFT gamma.
+    """
+    if not isinstance(model, str) or not model.strip():
+        raise ValueError("model must be a non-empty string.")
+    model_normalized = model.strip().lower()
+    method_normalized = _normalize_randomized_method(randomized_method)
+    if model_normalized == LEGACY_REPO_MODEL:
+        return AnalyticBaselineDefinition(
+            model_id=LEGACY_REPO_MODEL,
+            definition_version=1,
+            coefficient=280.0 / 9.0,
+            randomized_method=method_normalized,
+            gamma=randomized_gamma(method_normalized),
+            gamma_policy="repository_compatibility:qdrift=1,rte=2",
+            paper_version="arXiv:2503.05647v1",
+            source_equation="Appendix E, Eq. (E5), printed coefficient",
+            sample_schedule="B^2 * (4 + 11 * (M - m))",
+            source_sha256=(
+                "63d273ee800a5368a45266130a093689144553c86903c60342d9ce16adb62c47"
+            ),
+            provenance_status=(
+                "compatibility_only; v1 adjacent schedule and coefficient are "
+                "algebraically inconsistent; gamma origin unresolved"
+            ),
+        )
+    if model_normalized == PR_PAPER_V2_MODEL:
+        if method_normalized != "rte":
+            raise ValueError(
+                "pr_paper_v2_model is defined only for randomized_method='rte'; "
+                "Eq. (E22) does not define a qDRIFT gamma."
+            )
+        return AnalyticBaselineDefinition(
+            model_id=PR_PAPER_V2_MODEL,
+            definition_version=1,
+            coefficient=296.0 / 9.0,
+            randomized_method="rte",
+            gamma=None,
+            gamma_policy="not_applicable",
+            paper_version="arXiv:2503.05647v2",
+            source_equation="Appendix E, Eq. (E22)",
+            sample_schedule="B^2 * (11 + 4 * (M - m))",
+            source_sha256=(
+                "000068f58332b5f24c6f17bd3b08ea22de1908e1ef2242a4ffc6f644aaf9aa61"
+            ),
+            provenance_status="primary_source_verified",
+        )
+    raise ValueError(f"Unsupported analytic baseline model: {model}")
+
+
+def randomized_prefactor_b0_for_model(
+    model: str,
+    randomized_method: str = PARTIAL_RANDOMIZED_DEFAULT_RANDOMIZED_METHOD,
+    g_rand: float = PARTIAL_RANDOMIZED_DEFAULT_G_RAND,
+) -> float:
+    """Return B0 for an explicitly selected, versioned analytic baseline."""
+    if not math.isfinite(g_rand) or g_rand < 0.0:
+        raise ValueError("g_rand must be finite and non-negative.")
+    definition = analytic_baseline_definition(model, randomized_method)
+    gamma = 1.0 if definition.gamma is None else definition.gamma
+    return float(
+        definition.coefficient * g_rand * gamma * ((0.1 * math.pi) ** 2)
+    )
+
+
+def randomized_prefactor_B_for_model(
+    kappa: float,
+    model: str,
+    randomized_method: str = PARTIAL_RANDOMIZED_DEFAULT_RANDOMIZED_METHOD,
+    g_rand: float = PARTIAL_RANDOMIZED_DEFAULT_G_RAND,
+) -> float:
+    """Return B(kappa) for an explicitly selected analytic baseline model."""
+    if not math.isfinite(kappa) or kappa <= 0.0:
+        raise ValueError("kappa must be finite and positive.")
+    exponent = 2.0 / kappa
+    if exponent >= 700.0:
+        return math.inf
+    return float(
+        randomized_prefactor_b0_for_model(model, randomized_method, g_rand)
+        * kappa
+        * math.exp(exponent)
+    )
 
 
 def randomized_prefactor_b0(
