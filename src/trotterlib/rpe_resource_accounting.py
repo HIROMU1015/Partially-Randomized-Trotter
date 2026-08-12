@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
+from fractions import Fraction
 from typing import Any, Literal, Protocol, TypeAlias, runtime_checkable
 
 from .df_partial_s2 import DFPartialS2Preparation
@@ -56,7 +57,13 @@ RPE_COST_METRICS: tuple[RPECostMetric, ...] = (
     "total_depth",
     "circuit_size",
 )
-RPE_RESOURCE_ACCOUNTING_VERSION = "finite_rpe_resource_accounting_v1"
+RPE_RESOURCE_ACCOUNTING_VERSION = "finite_rpe_resource_accounting_v2"
+RPE_NUMERICAL_PHASE_MODEL_LIMIT = math.pi / 2.0
+RPE_STRICT_BRANCH_CERTIFICATION_LIMIT = math.pi / 3.0
+RPE_CONDITIONAL_GUARANTEE_SCOPE = (
+    "effective_partial_s2_eigenstate_unit_radius_alias_free_v1"
+)
+RPE_UNIT_UNATTENUATED_SIGNAL_RADIUS = 1.0
 MAXIMUM_RPE_ROUND_INDEX = 62
 DEFAULT_RPE_CIRCUIT_COST_SCOPE: RPECircuitCostScope = (
     "compiled_time_evolution_subcircuit"
@@ -81,6 +88,18 @@ def _finite_positive(value: float, *, name: str) -> float:
     if not math.isfinite(normalized) or normalized <= 0.0:
         raise ValueError(f"{name} must be finite and positive.")
     return normalized
+
+
+def _conservative_nonnegative_sum(values: tuple[float, ...]) -> float:
+    """Return the smallest float not below the exact represented-value sum."""
+    exact = sum((Fraction.from_float(value) for value in values), Fraction())
+    try:
+        rounded = float(exact)
+    except OverflowError:
+        return math.inf
+    if math.isfinite(rounded) and Fraction.from_float(rounded) < exact:
+        rounded = math.nextafter(rounded, math.inf)
+    return rounded
 
 
 def _normalize_cost_metric(metric: str) -> RPECostMetric:
@@ -169,14 +188,20 @@ class RPEErrorAllocation:
 
     @property
     def beta_total(self) -> float:
-        return float(
-            self.beta_pf_budget + self.beta_rte_budget + self.beta_stat_budget
+        return _conservative_nonnegative_sum(
+            (
+                self.beta_pf_budget,
+                self.beta_rte_budget,
+                self.beta_stat_budget,
+            )
         )
 
     @property
     def round_failure_probability_bound(self) -> float:
         """Union bound for the cosine and sine coordinate events."""
-        return float(self.alpha_cosine + self.alpha_sine)
+        return _conservative_nonnegative_sum(
+            (self.alpha_cosine, self.alpha_sine)
+        )
 
     @property
     def alpha_m_c(self) -> float:
@@ -193,9 +218,9 @@ class RPEPFErrorModel:
 
     The coefficient is not inferred here.  Callers must explicitly say
     whether it is a rigorous upper bound.  A state-specific fitted surrogate
-    has ``provenance_status='empirical_surrogate'`` and causes downstream
-    candidate/summary ``guarantee_status`` to remain ``empirical_screening``
-    even if all numerical budgets happen to be met.
+    has ``provenance_status='empirical_surrogate'`` and gives downstream
+    ``guarantee_status='empirical_screening'`` when no independent hard
+    certification condition fails.
     """
 
     coefficient: float
@@ -348,6 +373,7 @@ class RPERoundCandidate:
     epsilon_z: float
     normalization: float
     attenuation: float
+    unattenuated_signal_radius_lower_bound: float
     rho_observed_lower_bound: float
     epsilon_pf: float
     beta_pf: float
@@ -371,9 +397,11 @@ class RPERoundCandidate:
     feasible: bool
     infeasibility_reasons: tuple[str, ...]
     guarantee_status: RPEGuaranteeStatus
+    certification_reasons: tuple[str, ...]
     assumptions: tuple[str, ...]
     cost_metadata: tuple[tuple[str, Any], ...] = ()
     accounting_version: str = RPE_RESOURCE_ACCOUNTING_VERSION
+    guarantee_scope: str = RPE_CONDITIONAL_GUARANTEE_SCOPE
 
     @property
     def m(self) -> int:
@@ -416,6 +444,15 @@ class RPERoundCandidate:
         """Phase budget left after the allocated PF and finite-RTE budgets."""
         return self.phase_budget_residual
 
+    @property
+    def strict_branch_margin_satisfied(self) -> bool:
+        """Whether the PR Lemma B.1 strict ``pi/3`` condition can hold."""
+        return self.beta_rpe < RPE_STRICT_BRANCH_CERTIFICATION_LIMIT
+
+    @property
+    def branch_certification_margin(self) -> float:
+        return float(RPE_STRICT_BRANCH_CERTIFICATION_LIMIT - self.beta_rpe)
+
 
 @dataclass(frozen=True)
 class RPEResourceSummary:
@@ -429,12 +466,40 @@ class RPEResourceSummary:
     total_alpha_budget: float
     union_bound_satisfied: bool
     guarantee_status: RPEGuaranteeStatus
+    certification_reasons: tuple[str, ...]
     assumptions: tuple[str, ...]
     accounting_version: str = RPE_RESOURCE_ACCOUNTING_VERSION
+    guarantee_scope: str = RPE_CONDITIONAL_GUARANTEE_SCOPE
 
     @property
     def g_total(self) -> float:
         return self.total_cost
+
+    @property
+    def maximum_round_index(self) -> int:
+        return max(item.m for item in self.rounds)
+
+    @property
+    def maximum_evolution_time(self) -> float:
+        return max(item.t_m for item in self.rounds)
+
+    @property
+    def nominal_energy_resolution(self) -> float:
+        """``beta_rpe/t_M`` scale; not itself a target-precision guarantee."""
+        return float(self.rounds[0].beta_rpe / self.maximum_evolution_time)
+
+    @property
+    def conditional_energy_error_bound(self) -> float | None:
+        """High-probability energy bound under the recorded assumptions."""
+        if self.guarantee_status != "certified":
+            return None
+        return self.nominal_energy_resolution
+
+    @property
+    def conditional_success_probability_lower_bound(self) -> float | None:
+        if self.guarantee_status != "certified":
+            return None
+        return float(max(0.0, 1.0 - self.total_failure_probability_bound))
 
 
 def _provider_evaluate(
@@ -493,7 +558,7 @@ def evaluate_rpe_round_candidate(
         raise TypeError("pf_error_model must be an RPEPFErrorModel.")
     normalized_metric = _normalize_cost_metric(cost_metric)
     beta_rpe_value = _finite_positive(beta_rpe, name="beta_rpe")
-    if beta_rpe_value > math.pi / 2.0:
+    if beta_rpe_value > RPE_NUMERICAL_PHASE_MODEL_LIMIT:
         raise ValueError("beta_rpe must not exceed pi/2 in this phase model.")
     cutoff = require_integer_count(
         finite_taylor_order,
@@ -559,14 +624,15 @@ def evaluate_rpe_round_candidate(
                 tail_evolutions=specification.q_m,
             )
 
-    rho_lower = float(attenuation * (1.0 - epsilon_z))
+    reference_radius = RPE_UNIT_UNATTENUATED_SIGNAL_RADIUS
+    rho_lower = float(attenuation * (reference_radius - epsilon_z))
     epsilon_pf = float(
         pf_error_model.coefficient * specification.delta_time**2
     )
     beta_pf = float(specification.t_m * epsilon_pf)
     beta_rte = (
-        float(math.asin(epsilon_z))
-        if math.isfinite(epsilon_z) and 0.0 <= epsilon_z < 1.0
+        float(math.asin(epsilon_z / reference_radius))
+        if math.isfinite(epsilon_z) and 0.0 <= epsilon_z < reference_radius
         else None
     )
     phase_residual = float(
@@ -574,7 +640,7 @@ def evaluate_rpe_round_candidate(
     )
 
     reasons: list[str] = []
-    if not math.isfinite(epsilon_z) or epsilon_z >= 1.0:
+    if not math.isfinite(epsilon_z) or epsilon_z >= reference_radius:
         reasons.append("finite_rte_error_not_below_one")
     if not math.isfinite(rho_lower) or rho_lower <= 0.0:
         reasons.append("nonpositive_observed_radius_lower_bound")
@@ -661,8 +727,9 @@ def evaluate_rpe_round_candidate(
         "one_random_tail_occurrence_per_partial_s2_step",
         "fixed_df_representation_rank_and_fragment_order",
         "fixed_ld_and_delta_time",
-        "exact_ground_state_unit_radius_reference_model",
-        "alias_free_phase_window_assumed",
+        "exact_effective_partial_s2_eigenstate_input_assumed",
+        "unit_unattenuated_survival_signal_radius_assumed",
+        "alias_free_target_energy_branch_assumed",
         "finite_rte_error_converted_with_arcsin_unit_radius_model",
         "classical_compiled_cost_samples_are_not_quantum_shot_multipliers",
     ]
@@ -683,12 +750,43 @@ def evaluate_rpe_round_candidate(
     if dict(cost_metadata).get("backend_context_canonical") is False:
         assumptions_list.append("compiled_cost_backend_context_uncanonical")
     assumptions = tuple(assumptions_list)
+
+    certification_reasons_list: list[str] = []
+    if not feasible:
+        certification_reasons_list.append("candidate_numerically_infeasible")
+    if beta_rpe_value >= RPE_STRICT_BRANCH_CERTIFICATION_LIMIT:
+        certification_reasons_list.append(
+            "rpe_branch_margin_not_strictly_below_pi_over_three"
+        )
+    if threshold_error != 0.0:
+        certification_reasons_list.append(
+            "nonzero_df_threshold_operator_error_bound"
+        )
+    # Numerical feasibility retains the versioned 1e-15 comparison tolerance.
+    # Certification deliberately rechecks every bound without that relaxation.
+    if pf_error_model.is_rigorous_bound:
+        if allocation.beta_total > beta_rpe_value:
+            certification_reasons_list.append(
+                "phase_budget_sum_exceeded_without_tolerance"
+            )
+        if beta_pf > allocation.beta_pf_budget:
+            certification_reasons_list.append(
+                "product_formula_budget_exceeded_without_tolerance"
+            )
+        if beta_rte is None or beta_rte > allocation.beta_rte_budget:
+            certification_reasons_list.append(
+                "finite_rte_phase_budget_exceeded_without_tolerance"
+            )
+    hard_certification_failure = bool(certification_reasons_list)
     if not pf_error_model.is_rigorous_bound:
-        guarantee_status: RPEGuaranteeStatus = "empirical_screening"
-    elif feasible and threshold_error == 0.0:
-        guarantee_status = "certified"
+        certification_reasons_list.append("pf_error_model_is_empirical")
+    certification_reasons = tuple(dict.fromkeys(certification_reasons_list))
+    if hard_certification_failure:
+        guarantee_status: RPEGuaranteeStatus = "not_certified"
+    elif not pf_error_model.is_rigorous_bound:
+        guarantee_status = "empirical_screening"
     else:
-        guarantee_status = "not_certified"
+        guarantee_status = "certified"
     return RPERoundCandidate(
         specification=specification,
         allocation=allocation,
@@ -709,6 +807,7 @@ def evaluate_rpe_round_candidate(
         epsilon_z=float(epsilon_z),
         normalization=float(normalization),
         attenuation=float(attenuation),
+        unattenuated_signal_radius_lower_bound=reference_radius,
         rho_observed_lower_bound=rho_lower,
         epsilon_pf=epsilon_pf,
         beta_pf=beta_pf,
@@ -732,6 +831,7 @@ def evaluate_rpe_round_candidate(
         feasible=feasible,
         infeasibility_reasons=reasons_tuple,
         guarantee_status=guarantee_status,
+        certification_reasons=certification_reasons,
         assumptions=assumptions,
         cost_metadata=cost_metadata,
     )
@@ -783,6 +883,7 @@ def build_rpe_resource_summary(
         reference.beta_rpe,
         reference.pf_error_model,
         reference.accounting_version,
+        reference.guarantee_scope,
     )
     if any(
         (
@@ -797,13 +898,14 @@ def build_rpe_resource_summary(
             item.beta_rpe,
             item.pf_error_model,
             item.accounting_version,
+            item.guarantee_scope,
         )
         != shared_context
         for item in rounds[1:]
     ):
         raise ValueError(
             "Every round must share one DF preparation, RTE seed, delta_time, "
-            "beta_rpe, PF error model, and accounting version."
+            "beta_rpe, PF error model, accounting version, and guarantee scope."
         )
     reference_cost = reference.cosine_expected_cost
     if reference_cost is None:  # pragma: no cover - checked above via round total
@@ -832,10 +934,17 @@ def build_rpe_resource_summary(
             "A multi-round summary requires a verified cost_model_fingerprint."
         )
 
-    failure_bound = float(
-        math.fsum(item.round_failure_probability_bound for item in rounds)
+    failure_bound = _conservative_nonnegative_sum(
+        tuple(
+            alpha
+            for item in rounds
+            for alpha in (
+                item.allocation.alpha_cosine,
+                item.allocation.alpha_sine,
+            )
+        )
     )
-    union_ok = failure_bound <= alpha_budget + 1e-15
+    union_ok = failure_bound <= alpha_budget
     total_cost = float(
         math.fsum(
             item.round_total_cost
@@ -845,18 +954,30 @@ def build_rpe_resource_summary(
     )
     if not math.isfinite(total_cost):
         raise OverflowError("All-round compiled cost overflowed.")
+    summary_certification_reasons = list(
+        dict.fromkeys(
+            reason for item in rounds for reason in item.certification_reasons
+        )
+    )
+    if not union_ok:
+        summary_certification_reasons.append(
+            "all_round_union_bound_exceeded_without_tolerance"
+        )
+    any_not_certified = any(
+        item.guarantee_status == "not_certified" for item in rounds
+    )
     any_empirical = any(
-        not item.pf_error_model.is_rigorous_bound
-        or item.guarantee_status == "empirical_screening"
-        for item in rounds
+        item.guarantee_status == "empirical_screening" for item in rounds
     )
     all_certified = all(item.guarantee_status == "certified" for item in rounds)
-    if any_empirical:
-        guarantee: RPEGuaranteeStatus = "empirical_screening"
-    elif all_certified and union_ok:
+    if any_not_certified or not union_ok:
+        guarantee: RPEGuaranteeStatus = "not_certified"
+    elif any_empirical:
+        guarantee = "empirical_screening"
+    elif all_certified:
         guarantee = "certified"
-    else:
-        guarantee = "not_certified"
+    else:  # pragma: no cover - exhaustive over the three statuses
+        raise RuntimeError("Unexpected RPE guarantee-status combination.")
     assumptions = tuple(
         dict.fromkeys(value for item in rounds for value in item.assumptions)
     )
@@ -869,7 +990,10 @@ def build_rpe_resource_summary(
         total_alpha_budget=alpha_budget,
         union_bound_satisfied=union_ok,
         guarantee_status=guarantee,
+        certification_reasons=tuple(summary_certification_reasons),
         assumptions=assumptions,
+        accounting_version=reference.accounting_version,
+        guarantee_scope=reference.guarantee_scope,
     )
 
 
