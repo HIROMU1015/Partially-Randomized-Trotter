@@ -236,6 +236,9 @@ def test_cosine_and_sine_wrap_exactly_the_same_trajectory() -> None:
         sine.wrapped_circuit_semantics_fingerprint
     )
     assert cosine.wrapper_fingerprint != sine.wrapper_fingerprint
+    assert cosine.wrapper_circuit_semantics_fingerprint != (
+        sine.wrapper_circuit_semantics_fingerprint
+    )
 
 
 def test_input_evolution_is_not_modified_and_no_control_is_added() -> None:
@@ -288,6 +291,9 @@ def test_measurement_is_optional_and_uses_one_new_classical_bit() -> None:
     assert without_measurement.wrapper_fingerprint != (
         with_measurement.wrapper_fingerprint
     )
+    assert without_measurement.wrapper_circuit_semantics_fingerprint != (
+        with_measurement.wrapper_circuit_semantics_fingerprint
+    )
 
 
 def test_wrapper_fingerprint_is_reproducible_and_binds_trajectory() -> None:
@@ -308,9 +314,70 @@ def test_wrapper_fingerprint_is_reproducible_and_binds_trajectory() -> None:
     )
 
     assert first.wrapper_fingerprint == second.wrapper_fingerprint
-    assert first.compiler_independent_fingerprint == first.wrapper_fingerprint
+    assert first.wrapper_circuit_semantics_fingerprint == (
+        second.wrapper_circuit_semantics_fingerprint
+    )
+    assert first.compiler_independent_fingerprint == (
+        first.wrapper_circuit_semantics_fingerprint
+    )
     assert first.wrapper_fingerprint != changed_trajectory.wrapper_fingerprint
+    assert first.wrapper_circuit_semantics_fingerprint == (
+        changed_trajectory.wrapper_circuit_semantics_fingerprint
+    )
     assert len(first.wrapper_fingerprint) == 64
+
+
+def test_deterministic_seed_changes_only_audit_fingerprint() -> None:
+    _preparation, first_evolution = _controlled_evolution(
+        deterministic_only=True,
+        repetition_count=2,
+        seed=12,
+    )
+    _preparation, second_evolution = _controlled_evolution(
+        deterministic_only=True,
+        repetition_count=2,
+        seed=13,
+    )
+    first = _build(first_evolution, "cosine")
+    second = _build(second_evolution, "cosine")
+
+    assert first_evolution.circuit == second_evolution.circuit
+    assert first.wrapped_trajectory_fingerprint != (
+        second.wrapped_trajectory_fingerprint
+    )
+    assert first.wrapped_circuit_semantics_fingerprint == (
+        second.wrapped_circuit_semantics_fingerprint
+    )
+    assert first.wrapper_fingerprint != second.wrapper_fingerprint
+    assert first.wrapper_circuit_semantics_fingerprint == (
+        second.wrapper_circuit_semantics_fingerprint
+    )
+    assert first.compiler_independent_fingerprint == (
+        second.compiler_independent_fingerprint
+    )
+
+
+def test_wrapper_semantics_fingerprint_binds_wrapped_semantics() -> None:
+    _preparation, evolution = _controlled_evolution(
+        deterministic_only=True,
+        repetition_count=1,
+    )
+    original = _build(evolution, "cosine")
+    changed = _build(
+        replace(
+            evolution,
+            circuit_semantics_fingerprint="different-circuit-semantics",
+            compiler_independent_fingerprint="different-circuit-semantics",
+        ),
+        "cosine",
+    )
+
+    assert original.wrapper_circuit_semantics_fingerprint != (
+        changed.wrapper_circuit_semantics_fingerprint
+    )
+    assert original.compiler_independent_fingerprint != (
+        changed.compiler_independent_fingerprint
+    )
 
 
 def test_control_and_short_round_input_guards() -> None:

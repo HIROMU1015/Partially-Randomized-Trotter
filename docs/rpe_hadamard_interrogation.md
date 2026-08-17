@@ -61,6 +61,14 @@ fingerprints. Its wrapper fingerprint additionally binds:
 - ancilla position and `(m,q_m,t_m,delta_time)`;
 - wrapped trajectory, provenance, and circuit-semantics fingerprints.
 
+The audit-oriented `wrapper_fingerprint` deliberately changes when trajectory
+provenance changes, even if the constructed circuit does not. The separate
+`wrapper_circuit_semantics_fingerprint` excludes trajectory seeds and
+provenance, and instead binds the wrapped circuit-semantics fingerprint plus
+the wrapper gates, axis, measurement choice, ancilla, timing, version, and
+scope. `compiler_independent_fingerprint` uses this circuit-semantics value so
+identical deterministic circuits are not distinguished only by their seeds.
+
 Constructing one wrapper does not verify
 `fresh_iid_rte_trajectory_per_hadamard_shot`. A future multi-shot or batch
 builder must create and audit a fresh independent trajectory for every

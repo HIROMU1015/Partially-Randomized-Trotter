@@ -29,6 +29,9 @@ RPEHadamardInterrogationScope: TypeAlias = Literal[
 RPE_HADAMARD_INTERROGATION_SCHEMA_VERSION = (
     "rpe_hadamard_interrogation_wrapper_v1"
 )
+RPE_HADAMARD_CIRCUIT_SEMANTICS_SCHEMA_VERSION = (
+    "rpe_hadamard_interrogation_circuit_semantics_v1"
+)
 RPE_HADAMARD_INTERROGATION_SCOPE: RPEHadamardInterrogationScope = (
     "single_hadamard_interrogation_without_state_preparation"
 )
@@ -95,6 +98,7 @@ class RPEHadamardInterrogationResult:
     wrapped_provenance_fingerprint: str
     wrapped_circuit_semantics_fingerprint: str
     wrapper_fingerprint: str
+    wrapper_circuit_semantics_fingerprint: str
     compiler_independent_fingerprint: str
     include_measurement: bool
     state_preparation_included: bool
@@ -235,6 +239,44 @@ class QiskitRPEHadamardInterrogationBuilder:
         ).encode()
         return hashlib.sha256(encoded).hexdigest()
 
+    @staticmethod
+    def _wrapper_circuit_semantics_fingerprint(
+        *,
+        request: RPEHadamardInterrogationRequest,
+        round_index: int,
+        ancilla_qubit: int,
+        total_time: float,
+    ) -> str:
+        evolution = request.evolution
+        payload = {
+            "circuit_semantics_schema_version": (
+                RPE_HADAMARD_CIRCUIT_SEMANTICS_SCHEMA_VERSION
+            ),
+            "wrapper_schema_version": RPE_HADAMARD_INTERROGATION_SCHEMA_VERSION,
+            "wrapped_circuit_semantics_fingerprint": (
+                evolution.circuit_semantics_fingerprint
+            ),
+            "axis": request.axis,
+            "include_measurement": request.include_measurement,
+            "wrapper_gate_sequence": (
+                "H_wrapped_evolution_H"
+                if request.axis == "cosine"
+                else "H_wrapped_evolution_Sdg_H"
+            ),
+            "ancilla_qubit": ancilla_qubit,
+            "round_index": round_index,
+            "q_m": evolution.repetition_count,
+            "delta_time": float(evolution.step_time).hex(),
+            "t_m": total_time.hex(),
+            "circuit_scope": RPE_HADAMARD_INTERROGATION_SCOPE,
+        }
+        encoded = json.dumps(
+            payload,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+        return hashlib.sha256(encoded).hexdigest()
+
     def build(
         self,
         request: RPEHadamardInterrogationRequest,
@@ -279,6 +321,14 @@ class QiskitRPEHadamardInterrogationBuilder:
             total_time=total_time,
             signal_component=signal_component,
         )
+        wrapper_circuit_semantics_fingerprint = (
+            self._wrapper_circuit_semantics_fingerprint(
+                request=request,
+                round_index=round_index,
+                ancilla_qubit=ancilla,
+                total_time=total_time,
+            )
+        )
         estimator_definition = (
             "E[(-1)^b]=Re(Z_m)"
             if request.axis == "cosine"
@@ -308,7 +358,12 @@ class QiskitRPEHadamardInterrogationBuilder:
                 evolution.circuit_semantics_fingerprint
             ),
             wrapper_fingerprint=wrapper_fingerprint,
-            compiler_independent_fingerprint=wrapper_fingerprint,
+            wrapper_circuit_semantics_fingerprint=(
+                wrapper_circuit_semantics_fingerprint
+            ),
+            compiler_independent_fingerprint=(
+                wrapper_circuit_semantics_fingerprint
+            ),
             include_measurement=request.include_measurement,
             state_preparation_included=False,
             backend_execution_included=False,

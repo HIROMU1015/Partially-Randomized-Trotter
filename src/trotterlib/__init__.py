@@ -224,6 +224,7 @@ from .df_partial_s2_repeated_cost import (
 from .rpe_hadamard_interrogation import (
     RPE_HADAMARD_ALLOWED_REPETITION_COUNTS,
     RPE_HADAMARD_BIT_VALUE_MAPPING,
+    RPE_HADAMARD_CIRCUIT_SEMANTICS_SCHEMA_VERSION,
     RPE_HADAMARD_INTERROGATION_SCHEMA_VERSION,
     RPE_HADAMARD_INTERROGATION_SCOPE,
     QiskitRPEHadamardInterrogationBuilder,
@@ -464,6 +465,7 @@ __all__ = [
     "plan_compiled_repeated_partial_s2_workload",
     "RPE_HADAMARD_ALLOWED_REPETITION_COUNTS",
     "RPE_HADAMARD_BIT_VALUE_MAPPING",
+    "RPE_HADAMARD_CIRCUIT_SEMANTICS_SCHEMA_VERSION",
     "RPE_HADAMARD_INTERROGATION_SCHEMA_VERSION",
     "RPE_HADAMARD_INTERROGATION_SCOPE",
     "QiskitRPEHadamardInterrogationBuilder",
