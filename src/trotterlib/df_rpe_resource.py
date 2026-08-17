@@ -10,8 +10,11 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import platform
 from dataclasses import dataclass, field
 from typing import Any, Literal, TypeAlias
+
+import numpy as np
 
 from .df_partial_s2 import DFPartialS2Preparation
 from .df_partial_s2_repeated import RepeatedCircuitConstructionPolicy
@@ -23,6 +26,9 @@ from .df_partial_s2_repeated_cost import (
 from .rpe_resource_accounting import RPERoundCompiledCost, RPERoundCostRequest
 from .rte import (
     CompilerSettings,
+    RTE_FINITE_DISTRIBUTION_SCHEMA_VERSION,
+    RTE_PRNG_TYPE,
+    RTE_SAMPLING_CONVENTION_VERSION,
     RTEConfig,
     RTEFiniteDistribution,
     require_integer_count,
@@ -35,7 +41,7 @@ from .rte_compiled_cost import (
 
 
 DFRPERoundCostEvaluationMethod: TypeAlias = Literal["exact", "monte_carlo"]
-DF_RPE_COMPILED_COST_PROVIDER_VERSION = "df_level5r_direct_v1"
+DF_RPE_COMPILED_COST_PROVIDER_VERSION = "df_level5r_direct_v2"
 
 
 @dataclass(frozen=True)
@@ -269,7 +275,14 @@ class DFLevel5RCompiledCostProvider:
             "ancilla_policy": "immediately_after_system_register",
             "circuit_cost_scope": "compiled_time_evolution_subcircuit",
             "fidelity_level": 5,
-            "fingerprint_policy": "df_level5r_rpe_cost_model_v1",
+            "python_version": platform.python_version(),
+            "numpy_version": np.__version__,
+            "rte_prng_type": RTE_PRNG_TYPE,
+            "rte_sampling_convention_version": RTE_SAMPLING_CONVENTION_VERSION,
+            "rte_finite_distribution_schema_version": (
+                RTE_FINITE_DISTRIBUTION_SCHEMA_VERSION
+            ),
+            "fingerprint_policy": "df_level5r_rpe_cost_model_v2",
         }
         cost_model_fingerprint = (
             hashlib.sha256(
@@ -293,7 +306,7 @@ class DFLevel5RCompiledCostProvider:
             cost_model_fingerprint=cost_model_fingerprint,
             metadata=(
                 ("provider_version", DF_RPE_COMPILED_COST_PROVIDER_VERSION),
-                ("cost_model_fingerprint_policy", "df_level5r_rpe_cost_model_v1"),
+                ("cost_model_fingerprint_policy", "df_level5r_rpe_cost_model_v2"),
                 (
                     "compiler_settings_hash",
                     cost_model_payload["compiler_settings_hash"],
@@ -313,6 +326,19 @@ class DFLevel5RCompiledCostProvider:
                 ("trajectory_space_size", estimate.trajectory_space_size),
                 ("processed_trajectory_count", estimate.processed_trajectory_count),
                 ("configured_classical_sample_count", self.sample_count),
+                ("python_version", cost_model_payload["python_version"]),
+                ("numpy_version", cost_model_payload["numpy_version"]),
+                ("rte_prng_type", cost_model_payload["rte_prng_type"]),
+                (
+                    "rte_sampling_convention_version",
+                    cost_model_payload["rte_sampling_convention_version"],
+                ),
+                (
+                    "rte_finite_distribution_schema_version",
+                    cost_model_payload[
+                        "rte_finite_distribution_schema_version"
+                    ],
+                ),
                 ("deterministic_only", deterministic_only),
                 ("deterministic_exact_short_circuit", deterministic_only),
                 ("ordinary_control_semantics", "diag(I,U)"),

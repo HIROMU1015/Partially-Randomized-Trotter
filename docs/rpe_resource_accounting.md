@@ -31,7 +31,7 @@ For a randomized DF tail, `evaluate_rpe_round_candidate` obtains
 - `make_rte_config` and `finite_rte_attenuation` for
   `A_att=B_K**(-q_m*r_m)`.
 
-Version 2 of the accounting definition keeps the current unit-radius reference
+Version 3 of the accounting definition keeps the current unit-radius reference
 model explicit.  Writing the unattenuated survival-signal radius lower bound as
 `rho_star_lb`, the implemented specialization is
 
@@ -104,11 +104,35 @@ preparations, `L_D`, `delta_time`, `beta_RPE`, PF models, accounting versions,
 RTE seeds, compiled-cost scopes, provider versions, compiler settings, or explicit
 compiled-cost model fingerprints. The direct provider's fingerprint covers
 its exact/Monte Carlo mode, seed and sample count, boundary policy, ordinary
-control convention, compiler settings, and canonical backend target when one
-is available. An uncanonical backend context is recorded explicitly, leaves
+control convention, compiler settings, RTE sampling convention and PRNG,
+Python/NumPy versions, and canonical backend target when one is available. An
+uncanonical backend context is recorded explicitly, leaves
 the fingerprint unverified, and therefore cannot be combined into a
 multi-round summary. Generic providers must likewise supply a stable model
 fingerprint before their results can be combined across rounds.
+
+The Hoeffding shot count is conditional on the explicit
+`RPEHadamardSamplingPolicy`. Within each `(round, cosine/sine axis)`, the
+bounded Hadamard-test outcomes must be independent. For a randomized tail,
+the complete RTE trajectory must additionally be freshly and independently
+sampled for every quantum Hadamard-test shot. These assumptions are recorded
+as
+
+```text
+independent_bounded_hadamard_outcomes_within_each_round_axis_assumed
+fresh_iid_rte_trajectory_per_hadamard_shot_assumed
+```
+
+The safe default leaves both conditions unspecified. Reusing one randomized
+trajectory across multiple quantum shots remains numerically evaluable, but
+is `not_certified` under this Hoeffding model. Such reuse needs a separate
+circuit-randomness concentration error and budget, which are outside this
+version. Independence between the cosine and sine data sets or between RPE
+rounds is not required by the union bound used here. The classical compiled-
+cost Monte Carlo size and `rte_seed` do not establish quantum-shot freshness.
+For a deterministic-only tail the trajectory condition is not applicable,
+although independent bounded measurement outcomes within each axis are still
+required.
 
 ## Compiled cost
 
@@ -157,10 +181,13 @@ Subject to that strict branch condition, `certified` is available only when
 the caller explicitly marks an externally supplied PF coefficient as a
 rigorous bound, the candidate is feasible, the recorded DF threshold
 operator-error bound is exactly zero, the represented phase-budget
-comparisons pass without a certification tolerance, and the all-round union
-bound passes. A rigorous input whose numerical or union-bound conditions fail,
-or whose nonzero DF threshold error has not been allocated a phase budget, is
-`not_certified`; it is not relabeled as empirical.
+comparisons pass without a certification tolerance, the explicit independent
+bounded-outcome assumption holds, each randomized RTE trajectory is fresh and
+IID per Hadamard shot, and the all-round union bound passes. A rigorous input
+whose numerical or union-bound conditions fail, whose randomized trajectory
+is reused or unspecified, or whose nonzero DF threshold error has not been
+allocated a phase budget, is `not_certified`; it is not relabeled as
+empirical.
 
 This status is a conditional guarantee under all of the following recorded
 assumptions:
@@ -168,7 +195,10 @@ assumptions:
 - the prepared input is the relevant exact eigenstate of the effective
   deterministic partial-S2 evolution;
 - the unattenuated survival-signal radius is one;
-- the target energy lies in the assumed alias-free phase branch.
+- the target energy lies in the assumed alias-free phase branch;
+- bounded measurement outcomes are independent within each round and axis;
+- for a randomized tail, a fresh IID RTE trajectory is sampled for every
+  Hadamard-test shot.
 
 It is not implied merely by an exact ground state of `H`, and it is not a
 claim that a full RPE circuit or an end-to-end noisy execution has been
@@ -204,7 +234,7 @@ beta_RPE / (2**M * delta_time) <= epsilon_E
 ```
 
 before claiming that a requested energy accuracy has been met. Accounting
-version 2 therefore distinguishes numerical feasibility from this conditional
+version 3 therefore distinguishes numerical feasibility from this conditional
 certification and does not treat a floating-point tolerance as additional
 proof margin.
 
@@ -216,3 +246,37 @@ proxy and are not extrapolated by this implementation.
 
 The simplified analytic PR cost prefactors are not used by this layer. Their
 explicit, versioned definitions are documented in `docs/rte_source_versions.md`.
+
+## Short-round inner optimization
+
+`trotterlib.rpe_short_round_optimization` performs the directly constructible
+inner search over `(r_m, K_m)`. It accepts fixed DF data and `L_D`, fixed
+`delta_time`, fixed per-round PF/RTE/statistical and cosine/sine allocations,
+an explicit non-empty set of allowed guarantee statuses, and one compiled-cost
+provider. Its hard scope is `m=0,1,2`, equivalently `q_m<=4`.
+
+For a randomized tail it validates unique positive integer `r` values and
+unique non-negative even `K` values, sorts them, and evaluates the complete
+Cartesian product with `evaluate_rpe_round_candidate`. There is no heuristic
+pruning or early stopping. Selection first excludes numerically infeasible,
+costless, and disallowed-status candidates, then minimizes the represented
+`round_total_cost`; an exact cost tie is resolved lexicographically by
+`(r_m,K_m)`. A deterministic-only tail records the requested grids but replaces
+the effective search space with its sole canonical pair `(0,0)`.
+
+Every per-pair candidate or operational evaluation failure is retained. A
+provider/workload rejection makes the declared-grid search incomplete and no
+minimum is reported; it is never reclassified as mathematical infeasibility.
+Likewise, unverified or mixed cost-model fingerprints, scopes, provider
+versions, or compiler settings prevent an optimum from being reported. The
+result stores requested and effective search spaces, eligibility reasons, the
+enumeration and tie-break rules, a stable search-configuration hash, and the
+common compiled-cost-model fingerprint. For a Monte Carlo compiled-cost
+provider, ranking is explicitly the minimum point estimate and is not a
+statistically certified ordering of the true expected costs.
+
+`optimize_rpe_short_rounds` requires contiguous rounds `0,...,M<=2` and sends
+all selected candidates to the existing `build_rpe_resource_summary`. This is
+only a short-round inner optimization: it does not build a full RPE circuit,
+does not optimize `L_D`, `delta_time`, or the error/alpha allocations, and does
+not introduce a long-round proxy.

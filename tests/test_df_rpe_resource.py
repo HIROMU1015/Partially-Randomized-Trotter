@@ -10,12 +10,20 @@ from trotterlib.df_partial_s2 import prepare_df_partial_s2
 from trotterlib.df_rpe_resource import DFLevel5RCompiledCostProvider
 from trotterlib.rpe_resource_accounting import (
     RPEErrorAllocation,
+    RPEHadamardSamplingPolicy,
     RPEPFErrorModel,
     RPERoundCostRequest,
     RPERoundSpecification,
     evaluate_rpe_round_candidate,
 )
 from trotterlib.rte import CompilerSettings
+
+
+
+FRESH_IID_POLICY = RPEHadamardSamplingPolicy(
+    rte_trajectory_mode="fresh_iid_per_hadamard_shot",
+    independent_bounded_outcomes_within_each_round_axis=True,
+)
 
 
 def _compiler() -> CompilerSettings:
@@ -73,6 +81,7 @@ def test_exact_provider_connects_to_ordinary_controlled_level5r() -> None:
         finite_taylor_order=0,
         cost_metric="rz_count",
         cost_provider=provider,
+        hadamard_sampling_policy=FRESH_IID_POLICY,
     )
 
     assert candidate.feasible
@@ -95,6 +104,9 @@ def test_exact_provider_connects_to_ordinary_controlled_level5r() -> None:
     assert metadata["ancilla_qubit"] == preparation.num_system_qubits
     assert metadata["backend_context_canonical"] is True
     assert metadata["backend_fingerprint"] == "no_backend"
+    assert metadata["rte_prng_type"] == "numpy.random.PCG64"
+    assert metadata["rte_sampling_convention_version"]
+    assert metadata["numpy_version"]
     assert candidate.cost_model_fingerprint is not None
     assert len(candidate.cost_model_fingerprint) == 64
 
@@ -118,6 +130,7 @@ def test_monte_carlo_sample_count_is_metadata_not_round_cost_multiplier() -> Non
         finite_taylor_order=2,
         cost_metric="circuit_size",
         cost_provider=provider,
+        hadamard_sampling_policy=FRESH_IID_POLICY,
     )
 
     expected = (
@@ -148,6 +161,7 @@ def test_empty_tail_short_circuits_requested_monte_carlo_to_exact() -> None:
         finite_taylor_order=0,
         cost_metric="total_depth",
         cost_provider=provider,
+        hadamard_sampling_policy=FRESH_IID_POLICY,
     )
 
     assert candidate.feasible

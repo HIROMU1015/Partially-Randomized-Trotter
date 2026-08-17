@@ -43,6 +43,11 @@ RPEPFProvenance: TypeAlias = Literal[
     "rigorous_upper_bound",
     "empirical_surrogate",
 ]
+RPERTETrajectoryMode: TypeAlias = Literal[
+    "fresh_iid_per_hadamard_shot",
+    "reuse_across_hadamard_shots",
+    "unspecified",
+]
 RPECircuitCostScope: TypeAlias = Literal[
     "compiled_time_evolution_subcircuit",
     "full_rpe_circuit",
@@ -57,11 +62,11 @@ RPE_COST_METRICS: tuple[RPECostMetric, ...] = (
     "total_depth",
     "circuit_size",
 )
-RPE_RESOURCE_ACCOUNTING_VERSION = "finite_rpe_resource_accounting_v2"
+RPE_RESOURCE_ACCOUNTING_VERSION = "finite_rpe_resource_accounting_v3"
 RPE_NUMERICAL_PHASE_MODEL_LIMIT = math.pi / 2.0
 RPE_STRICT_BRANCH_CERTIFICATION_LIMIT = math.pi / 3.0
 RPE_CONDITIONAL_GUARANTEE_SCOPE = (
-    "effective_partial_s2_eigenstate_unit_radius_alias_free_v1"
+    "effective_partial_s2_eigenstate_unit_radius_alias_free_iid_shots_v2"
 )
 RPE_UNIT_UNATTENUATED_SIGNAL_RADIUS = 1.0
 MAXIMUM_RPE_ROUND_INDEX = 62
@@ -213,6 +218,30 @@ class RPEErrorAllocation:
 
 
 @dataclass(frozen=True)
+class RPEHadamardSamplingPolicy:
+    """Quantum-shot sampling assumptions used by the Hoeffding guarantee."""
+
+    rte_trajectory_mode: RPERTETrajectoryMode = "unspecified"
+    independent_bounded_outcomes_within_each_round_axis: bool = False
+
+    def __post_init__(self) -> None:
+        if self.rte_trajectory_mode not in (
+            "fresh_iid_per_hadamard_shot",
+            "reuse_across_hadamard_shots",
+            "unspecified",
+        ):
+            raise ValueError("Unsupported RTE trajectory sampling mode.")
+        if not isinstance(
+            self.independent_bounded_outcomes_within_each_round_axis,
+            bool,
+        ):
+            raise TypeError(
+                "independent_bounded_outcomes_within_each_round_axis must "
+                "be boolean."
+            )
+
+
+@dataclass(frozen=True)
 class RPEPFErrorModel:
     """Externally classified coefficient for ``epsilon_PF=C*delta**2``.
 
@@ -357,6 +386,7 @@ class RPERoundCandidate:
     specification: RPERoundSpecification
     allocation: RPEErrorAllocation
     pf_error_model: RPEPFErrorModel
+    hadamard_sampling_policy: RPEHadamardSamplingPolicy
     beta_rpe: float
     hamiltonian_hash: str
     partition_hash: str
@@ -468,6 +498,7 @@ class RPEResourceSummary:
     guarantee_status: RPEGuaranteeStatus
     certification_reasons: tuple[str, ...]
     assumptions: tuple[str, ...]
+    hadamard_sampling_policy: RPEHadamardSamplingPolicy
     accounting_version: str = RPE_RESOURCE_ACCOUNTING_VERSION
     guarantee_scope: str = RPE_CONDITIONAL_GUARANTEE_SCOPE
 
@@ -540,6 +571,7 @@ def evaluate_rpe_round_candidate(
     cost_metric: str,
     cost_provider: RPERoundCostProvider | None = None,
     rte_seed: int = 0,
+    hadamard_sampling_policy: RPEHadamardSamplingPolicy | None = None,
 ) -> RPERoundCandidate:
     """Evaluate one short, second-order partial-S2 RPE round candidate.
 
@@ -556,6 +588,16 @@ def evaluate_rpe_round_candidate(
         raise TypeError("allocation must be an RPEErrorAllocation.")
     if not isinstance(pf_error_model, RPEPFErrorModel):
         raise TypeError("pf_error_model must be an RPEPFErrorModel.")
+    if hadamard_sampling_policy is None:
+        hadamard_sampling_policy = RPEHadamardSamplingPolicy()
+    if not isinstance(hadamard_sampling_policy, RPEHadamardSamplingPolicy):
+        raise TypeError(
+            "hadamard_sampling_policy must be an "
+            "RPEHadamardSamplingPolicy."
+        )
+    independent_bounded_outcomes = (
+        hadamard_sampling_policy.independent_bounded_outcomes_within_each_round_axis
+    )
     normalized_metric = _normalize_cost_metric(cost_metric)
     beta_rpe_value = _finite_positive(beta_rpe, name="beta_rpe")
     if beta_rpe_value > RPE_NUMERICAL_PHASE_MODEL_LIMIT:
@@ -733,6 +775,18 @@ def evaluate_rpe_round_candidate(
         "finite_rte_error_converted_with_arcsin_unit_radius_model",
         "classical_compiled_cost_samples_are_not_quantum_shot_multipliers",
     ]
+    if independent_bounded_outcomes:
+        assumptions_list.append(
+            "independent_bounded_hadamard_outcomes_within_each_round_axis_assumed"
+        )
+    if (
+        not deterministic_only
+        and hadamard_sampling_policy.rte_trajectory_mode
+        == "fresh_iid_per_hadamard_shot"
+    ):
+        assumptions_list.append(
+            "fresh_iid_rte_trajectory_per_hadamard_shot_assumed"
+        )
     if scope == "compiled_time_evolution_subcircuit":
         assumptions_list.extend(
             (
@@ -762,6 +816,22 @@ def evaluate_rpe_round_candidate(
         certification_reasons_list.append(
             "nonzero_df_threshold_operator_error_bound"
         )
+    if not independent_bounded_outcomes:
+        certification_reasons_list.append(
+            "independent_bounded_hadamard_outcomes_not_assumed"
+        )
+    if not deterministic_only:
+        if (
+            hadamard_sampling_policy.rte_trajectory_mode
+            == "reuse_across_hadamard_shots"
+        ):
+            certification_reasons_list.append(
+                "rte_trajectory_reuse_not_covered_by_hoeffding_guarantee"
+            )
+        elif hadamard_sampling_policy.rte_trajectory_mode == "unspecified":
+            certification_reasons_list.append(
+                "rte_trajectory_sampling_policy_unspecified"
+            )
     # Numerical feasibility retains the versioned 1e-15 comparison tolerance.
     # Certification deliberately rechecks every bound without that relaxation.
     if pf_error_model.is_rigorous_bound:
@@ -791,6 +861,7 @@ def evaluate_rpe_round_candidate(
         specification=specification,
         allocation=allocation,
         pf_error_model=pf_error_model,
+        hadamard_sampling_policy=hadamard_sampling_policy,
         beta_rpe=beta_rpe_value,
         hamiltonian_hash=preparation.hamiltonian_hash,
         partition_hash=preparation.partition_hash,
@@ -882,6 +953,7 @@ def build_rpe_resource_summary(
         reference.specification.delta_time,
         reference.beta_rpe,
         reference.pf_error_model,
+        reference.hadamard_sampling_policy,
         reference.accounting_version,
         reference.guarantee_scope,
     )
@@ -897,6 +969,7 @@ def build_rpe_resource_summary(
             item.specification.delta_time,
             item.beta_rpe,
             item.pf_error_model,
+            item.hadamard_sampling_policy,
             item.accounting_version,
             item.guarantee_scope,
         )
@@ -905,7 +978,8 @@ def build_rpe_resource_summary(
     ):
         raise ValueError(
             "Every round must share one DF preparation, RTE seed, delta_time, "
-            "beta_rpe, PF error model, accounting version, and guarantee scope."
+            "beta_rpe, PF error model, Hadamard sampling policy, accounting "
+            "version, and guarantee scope."
         )
     reference_cost = reference.cosine_expected_cost
     if reference_cost is None:  # pragma: no cover - checked above via round total
@@ -992,6 +1066,7 @@ def build_rpe_resource_summary(
         guarantee_status=guarantee,
         certification_reasons=tuple(summary_certification_reasons),
         assumptions=assumptions,
+        hadamard_sampling_policy=reference.hadamard_sampling_policy,
         accounting_version=reference.accounting_version,
         guarantee_scope=reference.guarantee_scope,
     )

@@ -12,6 +12,7 @@ from trotterlib.df_partial_randomized_pf import split_df_hamiltonian_by_ld
 from trotterlib.df_partial_s2 import prepare_df_partial_s2
 from trotterlib.rpe_resource_accounting import (
     RPEErrorAllocation,
+    RPEHadamardSamplingPolicy,
     RPEPFErrorModel,
     RPERoundCompiledCost,
     RPERoundSpecification,
@@ -24,6 +25,13 @@ from trotterlib.rte import (
     compose_truncation_residual_bounds,
     finite_rte_attenuation,
     finite_rte_distribution,
+)
+
+
+
+FRESH_IID_POLICY = RPEHadamardSamplingPolicy(
+    rte_trajectory_mode="fresh_iid_per_hadamard_shot",
+    independent_bounded_outcomes_within_each_round_axis=True,
 )
 
 
@@ -144,6 +152,7 @@ def test_research_example_and_existing_rte_functions(
         finite_taylor_order=cutoff,
         cost_metric="rz_count",
         cost_provider=provider,
+        hadamard_sampling_policy=FRESH_IID_POLICY,
     )
 
     assert specification.q_m == 4
@@ -193,6 +202,7 @@ def test_infeasible_candidates_skip_cost_provider() -> None:
         finite_taylor_order=0,
         cost_metric="rz_count",
         cost_provider=provider,
+        hadamard_sampling_policy=FRESH_IID_POLICY,
     )
     assert not too_large.feasible
     assert "finite_rte_error_not_below_one" in too_large.infeasibility_reasons
@@ -208,6 +218,7 @@ def test_infeasible_candidates_skip_cost_provider() -> None:
         finite_taylor_order=0,
         cost_metric="rz_count",
         cost_provider=provider,
+        hadamard_sampling_policy=FRESH_IID_POLICY,
     )
     assert not insufficient.feasible
     assert "product_formula_budget_exceeded" in insufficient.infeasibility_reasons
@@ -235,6 +246,7 @@ def test_axes_metrics_summary_union_bound_and_mc_count_is_not_a_multiplier() -> 
         finite_taylor_order=2,
         cost_metric="rz_count",
         cost_provider=first_provider,
+        hadamard_sampling_policy=FRESH_IID_POLICY,
     )
     second = evaluate_rpe_round_candidate(
         preparation,
@@ -246,6 +258,7 @@ def test_axes_metrics_summary_union_bound_and_mc_count_is_not_a_multiplier() -> 
         finite_taylor_order=2,
         cost_metric="rz_count",
         cost_provider=second_provider,
+        hadamard_sampling_policy=FRESH_IID_POLICY,
     )
     assert first.cosine_shots != first.sine_shots
     assert first.round_total_cost == pytest.approx(
@@ -284,6 +297,7 @@ def test_axes_metrics_summary_union_bound_and_mc_count_is_not_a_multiplier() -> 
         finite_taylor_order=2,
         cost_metric="cx_count",
         cost_provider=metric_provider,
+        hadamard_sampling_policy=FRESH_IID_POLICY,
     )
     assert cx_candidate.round_total_cost == pytest.approx(
         cx_candidate.cosine_shots * 11.0 + cx_candidate.sine_shots * 13.0
@@ -303,6 +317,7 @@ def test_empty_randomized_tail_uses_deterministic_conventions() -> None:
         finite_taylor_order=0,
         cost_metric="total_depth",
         cost_provider=provider,
+        hadamard_sampling_policy=FRESH_IID_POLICY,
     )
     assert candidate.feasible
     assert candidate.tau_m == 0.0
@@ -336,4 +351,5 @@ def test_invalid_round_and_metric_inputs_are_rejected() -> None:
             finite_taylor_order=2,
             cost_metric="not_a_metric",
             cost_provider=_RecordingProvider(),
+            hadamard_sampling_policy=FRESH_IID_POLICY,
         )

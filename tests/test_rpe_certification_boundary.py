@@ -12,6 +12,7 @@ from trotterlib.rpe_resource_accounting import (
     RPE_CONDITIONAL_GUARANTEE_SCOPE,
     RPE_STRICT_BRANCH_CERTIFICATION_LIMIT,
     RPEErrorAllocation,
+    RPEHadamardSamplingPolicy,
     RPEPFErrorModel,
     RPERoundCompiledCost,
     RPERoundSpecification,
@@ -19,6 +20,13 @@ from trotterlib.rpe_resource_accounting import (
     evaluate_rpe_round_candidate,
 )
 from trotterlib.rte import CircuitCost, CompilerSettings
+
+
+
+FRESH_IID_POLICY = RPEHadamardSamplingPolicy(
+    rte_trajectory_mode="fresh_iid_per_hadamard_shot",
+    independent_bounded_outcomes_within_each_round_axis=True,
+)
 
 
 def _deterministic_preparation():
@@ -105,6 +113,7 @@ def _candidate(
         finite_taylor_order=0,
         cost_metric="rz_count",
         cost_provider=cost_provider,
+        hadamard_sampling_policy=FRESH_IID_POLICY,
     )
 
 

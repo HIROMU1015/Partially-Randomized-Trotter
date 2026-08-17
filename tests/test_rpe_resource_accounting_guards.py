@@ -9,6 +9,7 @@ from trotterlib.df_partial_randomized_pf import split_df_hamiltonian_by_ld
 from trotterlib.df_partial_s2 import prepare_df_partial_s2
 from trotterlib.rpe_resource_accounting import (
     RPEErrorAllocation,
+    RPEHadamardSamplingPolicy,
     RPEPFErrorModel,
     RPERoundCompiledCost,
     RPERoundSpecification,
@@ -16,6 +17,13 @@ from trotterlib.rpe_resource_accounting import (
     evaluate_rpe_round_candidate,
 )
 from trotterlib.rte import CircuitCost, CompilerSettings
+
+
+
+FRESH_IID_POLICY = RPEHadamardSamplingPolicy(
+    rte_trajectory_mode="fresh_iid_per_hadamard_shot",
+    independent_bounded_outcomes_within_each_round_axis=True,
+)
 
 
 def _compiler(seed: int = 17) -> CompilerSettings:
@@ -130,6 +138,7 @@ def _candidate(
         cost_metric="rz_count",
         cost_provider=provider or _CostProvider(),
         rte_seed=rte_seed,
+        hadamard_sampling_policy=FRESH_IID_POLICY,
     )
 
 
@@ -144,6 +153,7 @@ def test_rigorous_but_infeasible_candidate_is_not_certified() -> None:
         finite_taylor_order=0,
         cost_metric="rz_count",
         cost_provider=_CostProvider(),
+        hadamard_sampling_policy=FRESH_IID_POLICY,
     )
 
     assert not candidate.feasible
@@ -248,6 +258,7 @@ def test_deterministic_only_candidate_requires_canonical_r_and_k() -> None:
         beta_rpe=0.4,
         cost_metric="rz_count",
         cost_provider=_CostProvider(),
+        hadamard_sampling_policy=FRESH_IID_POLICY,
     )
 
     with pytest.raises(ValueError):
