@@ -144,6 +144,31 @@
           "medium_q_rpe_hadamard_benchmark"
         ],
         "reason": "Documents the validation-only scope, dataset schema, fingerprint rules, and the distinction between requested policy and actual execution facts."
+      },
+      {
+        "path": "src/trotterlib/rpe_hadamard_compiled_cost_proxy.py",
+        "kind": "file",
+        "supports": [
+          "large_q_rpe_hadamard_affine_proxy"
+        ],
+        "reason": "Calibration-only affine fitting, power-of-two prediction, unused-holdout validation, and strict versioned serialization for RPE Hadamard compiled costs."
+      },
+      {
+        "path": "tests/test_rpe_hadamard_compiled_cost_proxy.py",
+        "kind": "file",
+        "supports": [
+          "large_q_rpe_hadamard_affine_proxy",
+          "tests"
+        ],
+        "reason": "Dedicated coefficient-recovery, partition-isolation, weighting, validation, serialization-tamper, and non-integration test source."
+      },
+      {
+        "path": "docs/rpe_hadamard_compiled_cost_proxy.md",
+        "kind": "file",
+        "supports": [
+          "large_q_rpe_hadamard_affine_proxy"
+        ],
+        "reason": "Documents the affine model, calibration/holdout isolation, acceptance policy, fingerprints, serialization, and limited validation scope."
       }
     ],
     "quarantined": [
@@ -305,6 +330,30 @@
         "Publish an immutable CI run for the schema-v2 implementation commit with the exact command, Python/Qiskit/NumPy environment, timestamp, and pass/fail/skip counts.",
         "Commit a small representative generated dataset or machine-readable validation report with its generating commit, request configuration, seeds, compiler/backend context, and output hash.",
         "Keep this benchmark result set separate from any future calibrated proxy and unused-holdout validation result set."
+      ]
+    },
+    {
+      "id": "large_q_rpe_hadamard_affine_proxy",
+      "status": "source_present_no_current_ci",
+      "summary": "Source, documentation, and local tests implement a calibration-only affine proxy family with separate cosine/sine models for six metrics and unused-holdout validation. The implementation is not connected to short-round optimization or resource accounting. No generated proxy or holdout-validation result artifact and no immutable CI evidence are committed, so this records implementation capability rather than a validated scientific cost claim.",
+      "counts": {
+        "implementation_source_files": 1,
+        "documentation_files": 1,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 26,
+        "dedicated_local_test_cases_passed": 45,
+        "related_local_test_cases_passed": 131,
+        "affine_models_per_proxy": 12,
+        "committed_generated_proxy_artifacts": 0,
+        "committed_holdout_validation_artifacts": 0,
+        "resource_accounting_integrations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Publish an immutable CI run for the proxy implementation with the exact command, environment, commit SHA, timestamp, and pass/fail/skip counts.",
+        "Fit a representative proxy from a committed schema-v2 benchmark dataset and commit the versioned proxy JSON with source, calibration, fit-specification, and output fingerprints.",
+        "Validate that fixed proxy against its unused committed holdout partition and commit the versioned validation JSON with explicit tolerances and tested q_m range.",
+        "Do not connect the proxy to resource accounting until representative holdout validation passes under a documented acceptance policy."
       ]
     }
   ],

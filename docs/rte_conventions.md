@@ -182,8 +182,11 @@ separate validation-only path directly transpiles complete, measured X/Y
 Hadamard wrappers at bounded medium-size `2**m` repetition counts and writes
 calibration/holdout benchmark datasets; see
 `rpe_hadamard_compiled_cost_benchmark.md`. It is not a Level-6 proxy and is not
-connected to resource accounting. Large-`q` proxy fitting and validation remain
-future work.
+connected to resource accounting. A separate calibration-only affine proxy and
+unused-holdout validator consume schema-v2 benchmark data; see
+`rpe_hadamard_compiled_cost_proxy.md`. This proxy remains validation-only and is
+not connected to the short-round provider, Level-6 resource accounting, or an
+outer optimization.
 Actual per-circuit counts are integers; expected or Monte Carlo mean counts are
 floats. Compiler conditions are part of the cost identity, and costs produced
 under different settings must not be directly mixed.

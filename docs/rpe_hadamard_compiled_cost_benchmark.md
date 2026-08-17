@@ -101,7 +101,9 @@ controlled wrapper existed.
 
 This module does not fit, select, or validate a large-$q$ proxy.  In particular,
 it never labels a result `validated_long_circuit_proxy`, and holdout points are
-recorded as unused for fitting.
+recorded as unused for fitting.  The separate calibration-only consumer and
+holdout validator are documented in `rpe_hadamard_compiled_cost_proxy.md`; they
+do not mutate this dataset or connect it to resource accounting.
 
 ## Validation-manifest relationship
 
