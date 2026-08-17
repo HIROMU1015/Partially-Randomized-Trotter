@@ -27,6 +27,7 @@
 - DF partial-S2短い複数反復とcompiled期待コスト: [`docs/df_partial_s2_repeated_compiled_cost.md`](docs/df_partial_s2_repeated_compiled_cost.md)
 - RTE step/occurrence/RPE round の打切り予算: [`docs/rte_truncation_budget.md`](docs/rte_truncation_budget.md)
 - RTE 一次資料の版管理: [`docs/rte_source_versions.md`](docs/rte_source_versions.md)
+- 短いRPE X/Y Hadamard interrogation wrapper: [`docs/rpe_hadamard_interrogation.md`](docs/rpe_hadamard_interrogation.md)
 
 検証ステータスが `validated` になるまでは、DF screening や UWC の数値を最終結論として引用しないでください。
 
