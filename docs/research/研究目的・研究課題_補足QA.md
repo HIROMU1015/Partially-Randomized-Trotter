@@ -2,7 +2,7 @@
 
 ## この資料の位置付け
 
-本資料は、「研究目的・研究課題.md」のうち、RTEのnormalizationとattenuation、および誤差をRPEの位相誤差へ換算する考え方を補足するものである。
+本資料は、[研究目的・研究課題](研究目的・研究課題.md)のうち、RTEのnormalizationとattenuation、および誤差をRPEの位相誤差へ換算する考え方を補足するものである。
 
 ## Q1. RTEのnormalizationとは何か
 
@@ -144,27 +144,59 @@ $$
 を満たすことが、正しいbranchを帰納的に選び続けるための十分条件として用いられている。
 
 そこで、元の形が異なる誤差を、最終的に $\phi_m$ を最大何radずらすかへ変換する。
+
 | 誤差源 | 元の評価量 | 位相誤差上界への変換 |
 |---|---|---|
 | Product Formula | $\lvert\Delta E_{\mathrm{PF}}\rvert\leq\epsilon_{\mathrm{PF}}$ | $\beta_{\mathrm{PF},m}^{\mathrm{ub}}\leq t_m\epsilon_{\mathrm{PF}}$ |
-| 有限RTE | $\lvert\Delta Z_{\mathrm{RTE},m}\rvert\leq\epsilon_{Z,m}$ | $\beta_{\mathrm{RTE},m}^{\mathrm{ub}}\leq\arcsin\!\left(\epsilon_{Z,m}/\rho_m\right)$ |
-| 有限標本 | $\lvert\Delta X_m\rvert,\lvert\Delta Y_m\rvert\leq\eta_m$ | $\beta_{\mathrm{stat},m}^{\mathrm{ub}}\leq\arcsin\!\left(\sqrt{2}\eta_m/(a_m\rho_m)\right)$ |
+| finite-RTE | $\lvert\Delta Z_{\mathrm{RTE},m}\rvert\leq\epsilon_{Z,m}$ | $\beta_{\mathrm{RTE},m}^{\mathrm{ub}}\leq\arcsin\!\left(\epsilon_{Z,m}/\rho_{\star,m,\mathrm{lb}}\right)$ |
+| finite標本 | $\lvert\Delta X_m\rvert\leq\epsilon_{\mathrm{coord},m,c}$、$\lvert\Delta Y_m\rvert\leq\epsilon_{\mathrm{coord},m,s}$ | 観測半径に対する合成座標誤差から換算 |
 
-ここで、
-
-$$
-t_m=q_m\delta_{\mathrm{time}},
-\qquad
-\rho_m=\lvert Z_m\rvert
-$$
-
-であり、$a_m$ はRTEによるattenuation factorである。有限標本の式では、
+統計誤差の保守的な一般形は
 
 $$
-\sqrt{2}\eta_m<a_m\rho_m
+\beta_{\mathrm{stat},m}^{\mathrm{ub}}
+\leq
+\arcsin\!\left(
+\frac{
+\sqrt{
+\epsilon_{\mathrm{coord},m,c}^{2}
++
+\epsilon_{\mathrm{coord},m,s}^{2}
+}
+}{
+A_m^{\mathrm{att}}
+\left(
+\rho_{\star,m,\mathrm{lb}}-\epsilon_{Z,m}
+\right)
+}
+\right)
 $$
 
-を仮定する。また、cosine・sineの推定誤差が上記の範囲に収まる確率は、配分した失敗確率 $\alpha_{m,b}$ によって管理する。
+である。finite-RTE誤差が位相だけでなく半径も低下させ得るため、分母に $\rho_{\star,m,\mathrm{lb}}-\epsilon_{Z,m}$ が現れる。主解析の簡略モデルでは、この半径低下を省略して分母を $A_m^{\mathrm{att}}\rho_{\star,m}$ とするが、これは一般的な厳密下界ではない。
+
+各座標の確率事象は
+
+$$
+\Pr\!\left(
+\lvert\Delta X_m\rvert
+>
+\epsilon_{\mathrm{coord},m,c}
+\right)
+\leq
+\alpha_{m,c},
+$$
+
+$$
+\Pr\!\left(
+\lvert\Delta Y_m\rvert
+>
+\epsilon_{\mathrm{coord},m,s}
+\right)
+\leq
+\alpha_{m,s}
+$$
+
+と管理する。共通誤差を使う場合は $\epsilon_{\mathrm{coord},m,c}=\epsilon_{\mathrm{coord},m,s}=\epsilon_{\mathrm{coord},m}$ とする。
 
 各誤差源に配分する位相誤差の許容量を
 
@@ -244,31 +276,7 @@ $$
 
 ## Q7. $\beta_{\mathrm{PF},m}+\beta_{\mathrm{RTE},m}+\beta_{\mathrm{stat},m}\leq\beta_{\mathrm{RPE}}$ は何を表すか
 
-この式で加えているのは、energy errorや複素信号誤差そのものではない。それぞれを位相角へ換算した後の、RPE判定への最大影響量である。
-
-配分する許容量を明確に区別すると、
-
-$$
-\overline\beta_{\mathrm{PF},m}
-+\overline\beta_{\mathrm{RTE},m}
-+\overline\beta_{\mathrm{stat},m}
-\leq
-\beta_{\mathrm{RPE}}
-$$
-
-と書ける。さらに、選択した回路設定が
-
-$$
-\beta_{\mathrm{PF},m}^{\mathrm{actual}}
-\leq
-\overline\beta_{\mathrm{PF},m},
-\qquad
-\beta_{\mathrm{RTE},m}^{\mathrm{actual}}
-\leq
-\overline\beta_{\mathrm{RTE},m}
-$$
-
-を満たし、統計誤差については
+加えているのはenergy errorや複素信号誤差そのものではなく、Q5で位相角へ換算した許容幅である。実際のPF・finite-RTE上界は対応する配分値以下でなければならず、統計誤差は
 
 $$
 \Pr\!\left(
@@ -277,12 +285,10 @@ $$
 \overline\beta_{\mathrm{stat},m}
 \right)
 \leq
-\alpha_{m,b}
+\alpha_{m,c}+\alpha_{m,s}
 $$
 
-となるように $N_{m,b}$ を選ぶ。
-
-この線形和は、三角不等式によって最悪方向のずれを合成する保守的な十分条件であり、唯一の配分方法ではない。
+となるように $N_{m,b}$ を選ぶ。右辺はcosine・sineの二事象をunion boundで合成した値であり、単独の $\alpha_{m,b}$ ではない。位相許容幅の線形和は、三角不等式で最悪方向のずれを合成した保守的な十分条件である。
 
 ## Q8. 系統誤差が増えると統計誤差marginは自動的に小さくなるか
 
@@ -312,7 +318,7 @@ $$
 | attenuation | normalization上界からsampling overheadを評価 | 有限 $B_{K_m}$ と実際のround別attenuationを評価 |
 | RPE標本数 | $N_m=e^{2/\kappa}[11+4(M-m)]$ を解析的十分条件から設定 | $\overline\beta_{\mathrm{stat},m}$、$\alpha_{m,b}$、attenuationから決定 |
 | 誤差管理 | Product Formula biasとRPEのRMSEを主に評価 | PF・有限RTE・統計誤差をround位相への影響として整理し、配分方法を比較 |
-| 回路コスト | 平均primitive costに基づく解析式 | RTE event分布上のfull-circuit compiled期待コスト |
+| 回路コスト | 平均primitive costに基づく解析式 | time-evolution subcircuitから状態準備なしRPE interrogationへ段階的に接続するcompiled期待コスト |
 
 本研究の違いは、特定の誤差配分を新しい固定則として採用することではない。有限RTEとcompiled costを含むモデルの中で、誤差・失敗確率の配分が総コストへ与える影響を明示的に比較する点にある。
 

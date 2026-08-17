@@ -2,7 +2,7 @@
 
 ## この資料の位置付け
 
-本資料は、「先行研究と未解決点.md」を読んだ際に生じた疑問を補足するものである。証明を詳細に再掲するのではなく、各式が表す量、式が必要になる理由、似た記号の区別をQ&A形式で整理する。
+本資料は、[先行研究と未解決点](先行研究と未解決点.md)を読んだ際に生じる疑問を補足する。証明を詳細に再掲するのではなく、各式が表す量、式が必要になる理由、似た記号の区別をQ&A形式で整理する。
 
 記号は原則として次の意味で用いる。
 
@@ -387,18 +387,18 @@ N_{m,b},
 \\
 p_\omega
 &\longrightarrow
-\mathbb E[C_{m,b}^{\mathrm{full}}],
+\mathbb E[C_{m,b}^{\mathrm{scope}}],
 \\
-(N_{m,b},\mathbb E[C_{m,b}^{\mathrm{full}}])
+(N_{m,b},\mathbb E[C_{m,b}^{\mathrm{scope}}])
 &\longrightarrow
 G_{\mathrm{total}}.
 \end{aligned}
 $$
 
-したがって、$r_m$ は単にPR論文の式から固定する量ではない。PR論文の値をbaseline候補としながら、有限 $K_m$、attenuation、Taylor誤差、compiled期待コストを再計算し、roundごとの総コストで比較する必要がある。
+ここで `scope` は、現行のtime-evolution subcircuit、中間の状態準備なしHadamard interrogation、または最終目標の状態準備なしfull RPE interrogationのいずれかを明記する。したがって、$r_m$ は単にPR論文の式から固定する量ではない。PR論文の値をbaseline候補としながら、finite $K_m$、attenuation、Taylor誤差、compiled期待コストを再計算し、roundごとの総コストで比較する必要がある。
 
 ## 参照
 
-- 本編：「先行研究と未解決点.md」
+- 本編：[先行研究と未解決点](先行研究と未解決点.md)
 - J. Günther et al., [Phase estimation with partially randomized time evolution, arXiv:2503.05647v2](https://arxiv.org/abs/2503.05647v2)
 - K. Wan, M. Berta, and E. T. Campbell, [A randomized quantum algorithm for statistical phase estimation, arXiv:2110.12071](https://arxiv.org/abs/2110.12071)

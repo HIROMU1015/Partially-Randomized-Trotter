@@ -2,7 +2,7 @@
 
 ## この資料の位置付け
 
-本資料は、「研究方法・解析手順.md」のうち、外側・内側最適化の関係、$C_{\mathrm{gs}}$ proxy、$\lambda_R$、$\eta$、信号半径 $\rho_m$ および簡単な最適化例を補足するものである。
+本資料は、[研究方法・解析手順](研究方法・解析手順.md)のうち、外側・内側最適化の関係、$C_{\mathrm{gs}}$ proxy、$\lambda_R$、座標誤差、信号半径および簡単な最適化例を補足する。
 
 ## Q1. なぜ $r_m$ と $K_m$ の最適化より先に $L_D$ と $\delta_{\mathrm{time}}$ を決めるのか
 
@@ -167,18 +167,18 @@ $\delta_{\mathrm{time}}$ の候補は主に、
 
 によって比較する。
 
-## Q8. 以前の $\eta_m$ の式はどこから来たのか
+## Q8. 共通座標誤差 $\epsilon_{\mathrm{coord},m}$ の式はどこから来たのか
 
-以前の
+cosine・sineそれぞれに共通の座標誤差を許す場合、
 
 $$
-\eta_m
+\epsilon_{\mathrm{coord},m}
 =
-\frac{\rho_m^{\mathrm{obs}}}{\sqrt{2}}
+\frac{\rho_m^{\mathrm{used}}}{\sqrt{2}}
 \sin\!\left(\overline{\beta}_{\mathrm{stat},m}\right)
 $$
 
-は、cosine・sineそれぞれに許容する統計的な座標誤差を表していた。
+と置く。この式は次の幾何から得られる。
 
 各座標の誤差を $\epsilon_{\mathrm{coord},m}$ 以下とすると、複素信号全体の誤差は
 
@@ -188,76 +188,82 @@ $$
 \sqrt{2}\,\epsilon_{\mathrm{coord},m}
 $$
 
-である。半径 $\rho_m^{\mathrm{obs}}$ の信号の角度ずれを $\overline{\beta}_{\mathrm{stat},m}$ 以下にする十分条件
+である。ここで $\rho_m^{\mathrm{used}}$ は、主解析なら $\rho_m^{\mathrm{obs,model}}$、保守的評価なら $\rho_{m,\mathrm{lb}}^{\mathrm{obs}}$ である。この半径に対する角度ずれを $\overline{\beta}_{\mathrm{stat},m}$ 以下にする十分条件
 
 $$
 \sqrt{2}\,\epsilon_{\mathrm{coord},m}
 \leq
-\rho_m^{\mathrm{obs}}
+\rho_m^{\mathrm{used}}
 \sin\!\left(\overline{\beta}_{\mathrm{stat},m}\right)
 $$
 
 から、この式が得られる。
 
-ただし、PR論文では $\eta$ が基底状態populationの下界 $c_0\geq\eta$ を表す。本資料では混同を避けるため、座標誤差を $\eta_m$ ではなく
+PR論文では $\eta$ がground-state populationの下界 $c_0\geq\eta$ を表すため、本資料では座標誤差に $\eta$ を使わず、
 
 $$
 \epsilon_{\mathrm{coord},m}
 $$
 
-と書き直した。厳密基底状態を仮定する場合、PR論文の意味での $\eta$ は1である。
+に統一する。元のHamiltonianの厳密基底状態に対するpopulationが1でも、partial-$S_2$ signalの半径が1になるとは限らない。
 
-## Q9. 大規模系で $\rho_m$ を求める必要はないのか
+## Q9. signal半径の簡略モデルと保守的下界はどう違うか
 
-厳密基底状態と厳密時間発展に対しては、
+まず、二つの仮定を分ける必要がある。一つは必要な入力状態を利用でき、状態準備コストを研究範囲外とする仮定である。もう一つは、その入力に対するpartial-$S_2$ target signalが必要な位相関係と基準半径 $\rho_{\star,m}$ を持つという条件付きsignal modelである。後者の成立は本研究で証明しない。
+
+主解析では簡単のため、finite-RTE誤差による半径低下を省略し、
 
 $$
-Z_m^{\mathrm{ideal}}
+\rho_m^{\mathrm{obs,model}}
 =
-\langle\psi_0|e^{-iHt_m}|\psi_0\rangle
-=
-e^{-iE_0t_m}
+A_m^{\mathrm{att}}\rho_{\star,m}
 $$
 
-なので、基準信号半径は厳密に1である。
+を用いる。これは近似モデル値であり、`lb` を付けない。元のHamiltonianのexact ground stateを使うことだけから $\rho_{\star,m}=1$ が従うわけではない。
 
-本研究の基準評価ではProduct Formulaの影響をenergy biasだけで表し、$Z_m^{\mathrm{PF}}$ も単位半径の信号として扱う。したがって、有限RTE誤差は
-
-$$
-\beta_{\mathrm{RTE},m}^{\mathrm{ub}}
-\leq
-\arcsin(\epsilon_{Z,m})
-$$
-
-と評価でき、未知の $\rho_m$ を計算する必要はない。
-
-さらに、
+保証を伴う評価では、基準半径の正当化された下界 $\rho_{\star,m,\mathrm{lb}}$ と
 
 $$
-\left|\widetilde Z_m^{\mathrm{RTE}}-Z_m^{\mathrm{PF}}\right|
+\left|
+\widetilde Z_m^{\mathrm{RTE}}-Z_{\star,m}
+\right|
 \leq
 \epsilon_{Z,m}
 $$
 
-なら、attenuation後の観測信号半径には
+を使う。$0\leq\epsilon_{Z,m}<\rho_{\star,m,\mathrm{lb}}$ なら、三角不等式から
 
 $$
 \rho_{m,\mathrm{lb}}^{\mathrm{obs}}
 =
-A_m^{\mathrm{att}}(1-\epsilon_{Z,m})
+A_m^{\mathrm{att}}
+\left(
+\rho_{\star,m,\mathrm{lb}}-\epsilon_{Z,m}
+\right)
 $$
 
-という下界を使える。
-
-注意点は、厳密基底状態 $|\psi_0\rangle$ がProduct Formulaの実効Hamiltonianの厳密固有状態であるとは限らないことである。したがって、単位半径はProduct Formulaによる固有ベクトル変化を無視する基準モデルであり、数学的に厳密な等式ではない。小規模系では
+を得る。したがって統計位相誤差の一般形は
 
 $$
-\left|
-\langle\psi_0|S_p(\delta)^{q_m}|\psi_0\rangle
-\right|
+\beta_{\mathrm{stat},m}^{\mathrm{ub}}
+\leq
+\arcsin\!\left(
+\frac{
+\sqrt{
+\epsilon_{\mathrm{coord},m,c}^{2}
++
+\epsilon_{\mathrm{coord},m,s}^{2}
+}
+}{
+A_m^{\mathrm{att}}
+\left(
+\rho_{\star,m,\mathrm{lb}}-\epsilon_{Z,m}
+\right)
+}
+\right)
 $$
 
-を計算し、この近似の影響を検証する。
+となる。単位半径specializationでは外部仮定として $\rho_{\star,m,\mathrm{lb}}=1$ を代入する。小規模系では実際のpartial-$S_2$ signal半径を計算し、この条件付きモデルの妥当性を別に検証する。
 
 ## Q10. 簡単な数値例では、最適化はどのように進むか
 
@@ -271,14 +277,14 @@ $$
 |---|---:|---|
 | Product Formula次数 $p$ | $2$ | 手法として事前に選択 |
 | PF誤差proxy $C_{\mathrm{gs}}^{\mathrm{full-det}}$ | $0.02$ | 完全決定論的PFの $\Delta E(\delta)\approx C_{\mathrm{gs}}\delta^p$ からfit |
-| RPE目標エネルギー精度 $\epsilon_{E,\mathrm{RPE}}$ | $0.50$ | 研究上の要求精度として指定 |
+| target energy precision $\epsilon_E$ | $0.50$ | 研究上の要求精度として指定 |
 | RPE位相予算 $\beta_{\mathrm{RPE}}$ | $0.40$ | $\pi/3$ より小さい設計値として指定 |
 | 総失敗確率 $\alpha_{\mathrm{tot}}$ | $0.10$ | 成功確率の要求から指定 |
-| 入力状態 | -| $\ket{\psi_{0}}$ | 厳密基底状態を仮定 |
-| ideal／PF信号半径 | $1$ | 本研究の単位半径基準モデル |
+| 入力状態 | $\lvert\psi_0\rangle$ | 状態を利用できると仮定し、準備コストは範囲外 |
+| partial-$S_2$ target signal | $\rho_{\star,m}=1$ | 位相関係と単位半径を別の条件付きモデルとして仮定 |
 | compiler条件 | 固定 | backend、basis gate、最適化levelを指定 |
 
-$C_{\mathrm{gs}}^{\mathrm{full-det}}$、$\epsilon_{E,\mathrm{RPE}}$、$\beta_{\mathrm{RPE}}$ および $\alpha_{\mathrm{tot}}$ は、この例の内側最適化では変更しない。
+$C_{\mathrm{gs}}^{\mathrm{full-det}}$、$\epsilon_E$、$\beta_{\mathrm{RPE}}$ および $\alpha_{\mathrm{tot}}$ は、この例の内側最適化では変更しない。入力状態の利用可能性とtarget signalの位相・半径は別々の仮定であり、単位半径の成立をexact ground stateから導いてはいない。
 
 ### Step 1. 外側候補 $L_D$ を1つ仮固定する
 
@@ -345,7 +351,7 @@ M
 \left\lceil
 \log_2
 \frac{\beta_{\mathrm{RPE}}}
-{\delta_{\mathrm{time}}\epsilon_{E,\mathrm{RPE}}}
+{\delta_{\mathrm{time}}\epsilon_E}
 \right\rceil
 =3
 $$
@@ -544,7 +550,7 @@ $B_{K_2}$ と $A_2^{\mathrm{att}}$ は有限RTEの定義式から計算される
 
 ### Step 6. 信号半径、座標誤差許容量、必要標本数を計算する
 
-単位半径の基準モデルと有限RTE誤差上界から、観測信号半径の下界を
+この数値例では、主解析の簡略半径ではなく、条件付きの単位半径下界 $\rho_{\star,2,\mathrm{lb}}=1$ を与えた保守的評価を示す。finite-RTE誤差上界から、観測信号半径の下界を
 
 $$
 \rho_{2,\mathrm{lb}}^{\mathrm{obs}}
@@ -603,12 +609,12 @@ $$
 
 の順に計算される派生量であることが分かる。
 
-### Step 7. full-circuitの期待compiled costを計算する
+### Step 7. 指定scopeの期待compiled costを計算する
 
-各候補のevent確率 $p_2(\omega)$ に従ってevent列を生成し、決定論block、RTE blockおよびHadamard-test回路を結合してcompileする。各event列のコストを
+この例では中間scope `single_hadamard_interrogation_without_state_preparation` を用いる。各候補のevent確率 $p_2(\omega)$ に従ってevent列を生成し、決定論block、RTE blockおよびHadamard-test wrapperを結合してcompileする。各event列のコストを
 
 $$
-C_{2,b}^{\mathrm{full}}(\omega)
+C_{2,b}^{\mathrm{int,no\text{-}prep}}(\omega)
 $$
 
 とし、exact列挙できない場合には、古典標本数 $S_{\mathrm{MC}}$ を使って
@@ -618,7 +624,7 @@ $$
 =
 \frac{1}{S_{\mathrm{MC}}}
 \sum_{s=1}^{S_{\mathrm{MC}}}
-C_{2,b}^{\mathrm{full}}(\omega_s),
+C_{2,b}^{\mathrm{int,no\text{-}prep}}(\omega_s),
 \qquad
 \widehat{\mathrm{SE}}(\widehat C_{2,b})
 =
@@ -627,7 +633,7 @@ $$
 
 を計算する。$S_{\mathrm{MC}}$ は期待コストの推定精度が停止条件を満たすまで増やす値であり、量子回路実行回数 $N_{2,b}$ とは別である。
 
-以下は、このcompileとMonte Carloから得られたと仮定する架空の期待コストである。
+以下は、このcompileとMonte Carloから得られたと仮定する架空の期待コストである。現行の主な直接scope `compiled_time_evolution_subcircuit` を用いる場合はHadamard wrapperを含めず、cosine・sineで同じevolution期待値を再利用する。このいずれも、長roundを含む最終的なfull RPE interrogation総コストを直接評価したものではない。
 
 | $(r_2,K_2)$ | $\widehat C_{2,c}$ | $\widehat C_{2,s}$ | round総コスト $G_2=N_{2,c}\widehat C_{2,c}+N_{2,s}\widehat C_{2,s}$ |
 |---|---:|---:|---:|
@@ -645,7 +651,7 @@ $$
 
 ### Step 8. 全roundを合計し、配分も比較する
 
-同じ計算を $m=0,1,\ldots,M$ に対して行い、
+方法論上は同じ計算を $m=0,1,\ldots,M$ に対して行い、
 
 $$
 G_m
@@ -660,6 +666,8 @@ $$
 
 を計算する。
 
+ただしaccounting用providerの直接構築範囲は $m=0,1,2$（$q_m\leq4$）である。この例の $M=3$ を全roundで合計するには、$m=3$ に対する検証済みproviderまたはproxyをresource accountingへ接続する必要がある。現行のaffine proxyはfit・holdout validationまででaccountingには未接続なので、short-round実装とproxy実装が存在するだけで最終総コストを得たとはしない。
+
 ここまでの計算は1つの誤差・失敗確率配分に対する結果である。$\overline{\beta}_{\mathrm{RTE},m}$、$\overline{\beta}_{\mathrm{stat},m}$ および $\alpha_{m,b}$ の配分候補を変えると、実行可能な $(r_m,K_m)$ と $N_{m,b}$ が変わる。そのため、外側候補に対する内側最適コストは
 
 $$
@@ -669,11 +677,11 @@ G_{\mathrm{opt}}(L_D,\delta_{\mathrm{time}})
 G_{\mathrm{total}}
 $$
 
-として求める。
+として求める。これは方法論上の最終目標である。現行実装では配分自体は最適化せず、複数の事前指定scheduleを比較する。特に $\alpha_{m,b}$ を動かす場合は $\sum_{m,b}\alpha_{m,b}\leq\alpha_{\mathrm{tot}}$ によってround間が結合する。
 
 ### Step 9. 外側候補を比較する
 
-各 $(L_D,\delta_{\mathrm{time}})$ についてStep 1からStep 8までを繰り返す。以下の総コストは、各外側候補で内側最適化まで完了したと仮定する架空の値である。
+各 $(L_D,\delta_{\mathrm{time}})$ についてStep 1からStep 8までを繰り返す。以下の総コストは、必要な長round costまで別途与えられ、各外側候補で内側最適化まで完了したと仮定する架空の値である。
 
 | $L_D$ | $\delta_{\mathrm{time}}$ | $\lambda_R$ | $M$ | $G_{\mathrm{opt}}(L_D,\delta_{\mathrm{time}})$ |
 |---:|---:|---:|---:|---:|
@@ -697,7 +705,7 @@ $$
 | $L_D$, $\delta_{\mathrm{time}}$ | 外側探索変数 | 候補として仮固定し、最後に比較 |
 | $H_D$, $H_R$, $\lambda_R$, $p_j$ | 派生量 | $L_D$ とHamiltonian係数 |
 | $\epsilon_{\mathrm{PF}}$ | 派生量 | $C_{\mathrm{gs}}^{\mathrm{full-det}}\delta_{\mathrm{time}}^p$ |
-| $M$ | 派生量 | $\beta_{\mathrm{RPE}}$, $\delta_{\mathrm{time}}$, $\epsilon_{E,\mathrm{RPE}}$ |
+| $M$ | 派生量 | $\beta_{\mathrm{RPE}}$, $\delta_{\mathrm{time}}$, $\epsilon_E$ |
 | $q_m$, $t_m$ | 派生量 | $q_m=2^m$, $t_m=q_m\delta_{\mathrm{time}}$ |
 | $\beta_{\mathrm{PF},m}^{\mathrm{ub}}$ | 派生量 | $t_m\epsilon_{\mathrm{PF}}$ |
 | $\overline{\beta}_{\mathrm{RTE},m}$, $\alpha_{m,b}$ | 配分変数 | 配分候補として選び、総コストで比較 |
@@ -713,7 +721,7 @@ $$
 | $\rho_{m,\mathrm{lb}}^{\mathrm{obs}}$ | 派生量 | $A_m^{\mathrm{att}}(1-\epsilon_{Z,m}^{\mathrm{calc}})$ |
 | $\epsilon_{\mathrm{coord},m}$ | 派生量 | $\rho_{m,\mathrm{lb}}^{\mathrm{obs}}\sin(\overline{\beta}_{\mathrm{stat},m})/\sqrt{2}$ |
 | $N_{m,b}$ | 派生量 | $\epsilon_{\mathrm{coord},m}$ と $\alpha_{m,b}$ をHoeffding式へ代入 |
-| $C_{m,b}^{\mathrm{full}}(\omega)$ | compile結果 | event列ごとのfull circuitをcompile |
+| $C_{m,b}^{\mathrm{scope}}(\omega)$ | compile結果 | 明記した回路scopeでevent列ごとの回路をcompile |
 | $\widehat C_{m,b}$, $\widehat{\mathrm{SE}}$ | 古典推定量 | $S_{\mathrm{MC}}$ 個のcompiled cost標本 |
 | $G_m$, $G_{\mathrm{total}}$ | 派生量 | $N_{m,b}$ と期待compiled costを掛けて全系列・roundで合計 |
 | $G_{\mathrm{opt}}$ | 最適化結果 | 誤差・確率制約を満たす内側候補の最小総コスト |
