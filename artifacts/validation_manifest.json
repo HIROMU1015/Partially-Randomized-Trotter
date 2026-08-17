@@ -15,6 +15,11 @@
       "description": "GitHub main commit whose committed validation evidence was audited."
     },
     {
+      "sha": "87d9eb20a9a603fb4fe98659e7460b3071b1c1d2",
+      "role": "medium_q_rpe_hadamard_benchmark_added",
+      "description": "Added the medium-q RPE Hadamard wrapper compiled-cost benchmark dataset generator, its documentation, and dedicated tests after the historical audit base."
+    },
+    {
       "sha": "c580aec790c46dd9aaa2f2982bc9270210523a0d",
       "role": "df_workflow_and_screening_added",
       "description": "Added the DF-native partial-randomized workflow, its input tables, and the canonical screening result."
@@ -114,6 +119,31 @@
           "tests"
         ],
         "reason": "Committed UWC preprocessor test source."
+      },
+      {
+        "path": "src/trotterlib/rpe_hadamard_compiled_cost_benchmark.py",
+        "kind": "file",
+        "supports": [
+          "medium_q_rpe_hadamard_benchmark"
+        ],
+        "reason": "Versioned medium-q benchmark dataset generator source; the current schema validates redundant audit fields and separates requested circuit policy from observed execution state."
+      },
+      {
+        "path": "tests/test_rpe_hadamard_compiled_cost_benchmark.py",
+        "kind": "file",
+        "supports": [
+          "medium_q_rpe_hadamard_benchmark",
+          "tests"
+        ],
+        "reason": "Dedicated medium-q generator, serialization-tamper, failure-audit, exact, Monte Carlo, and workload-limit test source."
+      },
+      {
+        "path": "docs/rpe_hadamard_compiled_cost_benchmark.md",
+        "kind": "file",
+        "supports": [
+          "medium_q_rpe_hadamard_benchmark"
+        ],
+        "reason": "Documents the validation-only scope, dataset schema, fingerprint rules, and the distinction between requested policy and actual execution facts."
       }
     ],
     "quarantined": [
@@ -256,6 +286,25 @@
         "Add CI that checks this manifest and runs a dependency-appropriate unit or smoke-test suite on each proposed change.",
         "Publish a machine-readable current test report or an immutable CI run linked to the publication commit.",
         "Add a small end-to-end regeneration smoke test covering inputs, computation, serialization, and result validation."
+      ]
+    },
+    {
+      "id": "medium_q_rpe_hadamard_benchmark",
+      "status": "source_present_no_current_ci",
+      "summary": "Initial implementation commit 87d9eb2 and current schema-v2 source provide a validation-only medium-q RPE Hadamard wrapper compiled-cost dataset generator. Dedicated local tests cover exact and Monte Carlo statistics, calibration/holdout separation, canonical serialization, tamper rejection, workload preflight, and explicit failed-point execution state. This post-audit feature record does not change the historical audit base or repository-wide reproducibility status, and the local run is not immutable CI evidence.",
+      "counts": {
+        "implementation_source_files": 1,
+        "documentation_files": 1,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 21,
+        "related_local_test_cases_passed": 71,
+        "current_machine_readable_ci_reports": 0,
+        "proxy_models_fitted": 0
+      },
+      "completion_criteria": [
+        "Publish an immutable CI run for the schema-v2 implementation commit with the exact command, Python/Qiskit/NumPy environment, timestamp, and pass/fail/skip counts.",
+        "Commit a small representative generated dataset or machine-readable validation report with its generating commit, request configuration, seeds, compiler/backend context, and output hash.",
+        "Keep this benchmark result set separate from any future calibrated proxy and unused-holdout validation result set."
       ]
     }
   ],

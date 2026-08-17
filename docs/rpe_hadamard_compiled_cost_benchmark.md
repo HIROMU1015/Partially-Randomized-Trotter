@@ -45,8 +45,8 @@ actual-circuit fingerprints, costs, and phase metadata.
 The schema versions are:
 
 ```text
-rpe_hadamard_compiled_cost_benchmark_dataset_v1
-rpe_hadamard_compiled_cost_benchmark_point_v1
+rpe_hadamard_compiled_cost_benchmark_dataset_v2
+rpe_hadamard_compiled_cost_benchmark_point_v2
 ```
 
 JSON floats round-trip without changing their Python values.  Fingerprints use
@@ -76,6 +76,36 @@ two axis records have `status="failed"` and a reason.  Such records are never
 silently omitted: the dataset is `complete=false` unless every requested axis
 point succeeds.
 
+Version 2 treats redundant serialized fields as audit assertions.  In
+particular, `m`, point counts, completeness, incomplete reasons, direct metric
+means, and nested statistics must agree with their recomputed values.  Fixed
+conventions such as second-order product formula, cost-metric names,
+measurement policy, benchmark path, tail kind, and point status are validated
+rather than merely included in an outer fingerprint.  Version-1 records are
+rejected and should be regenerated.
+
+Requested circuit policy and observed execution state are separate.  Every
+point records the requested measurement/state-preparation/control convention.
+A complete point additionally records successful circuit construction and
+transpilation plus its actual scope flags.  A failed point records a
+`failure_stage`; its actual circuit flags are `null`.  Preflight failures have
+`false` completion flags and zero actual build/transpile/instruction counts.
+Failures after execution starts leave unavailable aggregate completion flags
+and actual counts as `null` rather than claiming that a complete measured
+controlled wrapper existed.
+
 This module does not fit, select, or validate a large-$q$ proxy.  In particular,
 it never labels a result `validated_long_circuit_proxy`, and holdout points are
 recorded as unused for fitting.
+
+## Validation-manifest relationship
+
+`artifacts/validation_manifest.json` retains `cf285c0` as the base of the
+historical repository-evidence audit and retains its repository-wide
+`not_reproducible_from_repository` conclusion.  The medium-$q$ generator is
+tracked as a separate post-audit result set, with initial implementation commit
+`87d9eb2`.  Its current status is `source_present_no_current_ci`: local passing
+tests establish development evidence but are not represented as immutable CI
+or as a reproducible scientific result artifact.  This separation avoids
+rewriting the historical audit while making the newer feature and its remaining
+evidence requirements visible in the repository.

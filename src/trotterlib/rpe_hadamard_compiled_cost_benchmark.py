@@ -17,6 +17,7 @@ from typing import Any, Literal, Mapping, TypeAlias
 from .df_partial_s2 import DFPartialS2Preparation
 from .df_partial_s2_repeated import RepeatedCircuitConstructionPolicy
 from .df_partial_s2_repeated_cost import (
+    DFPartialS2RepeatedTrajectoryStream,
     make_exact_df_partial_s2_repeated_trajectory_stream,
     make_monte_carlo_df_partial_s2_repeated_trajectory_stream,
     plan_compiled_repeated_partial_s2_workload,
@@ -26,6 +27,7 @@ from .df_rpe_hadamard_compiled_cost import (
     DFRPEHadamardCompiledCostEstimate,
     DFRPEHadamardCompiledMetricValues,
     _compile_hadamard_trajectory_stream_with_plan,
+    _preflight_hadamard_trajectory_stream_with_plan,
 )
 from .rpe_hadamard_interrogation import (
     RPE_HADAMARD_INTERROGATION_SCOPE,
@@ -54,12 +56,16 @@ from .rte_compiled_cost import (
 BenchmarkPartition: TypeAlias = Literal["calibration", "holdout"]
 BenchmarkPointStatus: TypeAlias = Literal["complete", "failed"]
 BenchmarkEvaluationMethod: TypeAlias = Literal["exact", "monte_carlo"]
+BenchmarkFailureStage: TypeAlias = Literal[
+    "preflight",
+    "circuit_build_or_transpile",
+]
 
 RPE_HADAMARD_COMPILED_COST_BENCHMARK_SCHEMA_VERSION = (
-    "rpe_hadamard_compiled_cost_benchmark_dataset_v1"
+    "rpe_hadamard_compiled_cost_benchmark_dataset_v2"
 )
 RPE_HADAMARD_COMPILED_COST_BENCHMARK_POINT_SCHEMA_VERSION = (
-    "rpe_hadamard_compiled_cost_benchmark_point_v1"
+    "rpe_hadamard_compiled_cost_benchmark_point_v2"
 )
 RPE_HADAMARD_BENCHMARK_PATH = "medium_q_validation_benchmark"
 RPE_HADAMARD_CONTROL_CONVENTION = "ordinary_controlled_diag_I_U_m"
@@ -88,6 +94,33 @@ def _sha256_json(payload: Any) -> str:
         separators=(",", ":"),
     ).encode()
     return hashlib.sha256(encoded).hexdigest()
+
+
+def _require_boolean(value: Any, *, name: str) -> bool:
+    if not isinstance(value, bool):
+        raise TypeError(f"{name} must be boolean.")
+    return value
+
+
+def _require_optional_boolean(value: Any, *, name: str) -> bool | None:
+    if value is None:
+        return None
+    return _require_boolean(value, name=name)
+
+
+def _require_optional_count(value: Any, *, name: str) -> int | None:
+    if value is None:
+        return None
+    return require_integer_count(value, name=name)
+
+
+def _require_json_number(value: Any, *, name: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise TypeError(f"{name} must be a JSON number.")
+    normalized = float(value)
+    if not math.isfinite(normalized):
+        raise ValueError(f"{name} must be finite.")
+    return normalized
 
 
 def round_index_for_benchmark_repetition_count(
@@ -236,18 +269,24 @@ class RPEHadamardCompiledCostBenchmarkPoint:
     compiler_context_fingerprint: str
     evaluation_configuration_fingerprint: str
     construction_policy: RepeatedCircuitConstructionPolicy
-    measurement_included: bool
-    state_preparation_included: bool
+    requested_measurement_included: bool
+    requested_state_preparation_included: bool
+    requested_control_convention: str
+    measurement_included: bool | None
+    state_preparation_included: bool | None
     backend_execution_included: bool
     quantum_shots_executed: int
-    wrapped_evolution_already_controlled: bool
-    additional_control_applied: bool
+    wrapped_evolution_already_controlled: bool | None
+    additional_control_applied: bool | None
+    circuit_build_completed: bool | None
+    transpile_completed: bool | None
     fresh_iid_trajectory_per_hadamard_shot_verified: bool
     benchmark_validation_path: bool
     benchmark_path: str
     circuit_scope: str
     status: BenchmarkPointStatus
     failure_reason: str | None
+    failure_stage: BenchmarkFailureStage | None
     planned_build_requests: int | None
     actual_build_requests: int | None
     planned_transpile_requests: int | None
@@ -258,12 +297,25 @@ class RPEHadamardCompiledCostBenchmarkPoint:
     schema_version: str = RPE_HADAMARD_COMPILED_COST_BENCHMARK_POINT_SCHEMA_VERSION
 
     def __post_init__(self) -> None:
+        if self.schema_version != (
+            RPE_HADAMARD_COMPILED_COST_BENCHMARK_POINT_SCHEMA_VERSION
+        ):
+            raise ValueError("Unsupported benchmark point schema version.")
         if self.partition not in ("calibration", "holdout"):
             raise ValueError("Unsupported benchmark partition.")
         if self.axis not in ("cosine", "sine"):
             raise ValueError("Unsupported benchmark axis.")
         if self.evaluation_method not in ("exact", "monte_carlo"):
             raise ValueError("Unsupported benchmark evaluation method.")
+        if self.tail_kind not in ("deterministic", "randomized"):
+            raise ValueError("Unsupported benchmark tail kind.")
+        if self.status not in ("complete", "failed"):
+            raise ValueError("Unsupported benchmark point status.")
+        if self.construction_policy not in (
+            "raw_concatenation",
+            "boundary_optimized",
+        ):
+            raise ValueError("Unsupported repeated circuit construction policy.")
         if self.repetition_count != self.q_m or self.q_m < 1:
             raise ValueError(
                 "repetition_count and q_m must be the same positive value."
@@ -280,6 +332,49 @@ class RPEHadamardCompiledCostBenchmarkPoint:
             raise ValueError("Unsupported benchmark validation path.")
         if self.circuit_scope != RPE_HADAMARD_INTERROGATION_SCOPE:
             raise ValueError("Unsupported benchmark circuit scope.")
+        if self.benchmark_validation_path is not True:
+            raise ValueError("benchmark_validation_path must be true.")
+        if self.requested_measurement_included is not True:
+            raise ValueError("Benchmark points must request ancilla measurement.")
+        if self.requested_state_preparation_included is not False:
+            raise ValueError("Benchmark points must exclude state preparation.")
+        if self.requested_control_convention != RPE_HADAMARD_CONTROL_CONVENTION:
+            raise ValueError("Unsupported requested control convention.")
+        for name in ("circuit_build_completed", "transpile_completed"):
+            value = getattr(self, name)
+            if value is not None and not isinstance(value, bool):
+                raise TypeError(f"{name} must be boolean or None.")
+        for name in (
+            "measurement_included",
+            "state_preparation_included",
+            "wrapped_evolution_already_controlled",
+            "additional_control_applied",
+        ):
+            value = getattr(self, name)
+            if value is not None and not isinstance(value, bool):
+                raise TypeError(f"{name} must be boolean or None.")
+        if self.backend_execution_included is not False:
+            raise ValueError("Benchmark generation must not execute a backend.")
+        if self.quantum_shots_executed != 0:
+            raise ValueError("Benchmark generation must not execute quantum shots.")
+        if self.fresh_iid_trajectory_per_hadamard_shot_verified is not False:
+            raise ValueError("Benchmark generation must not certify fresh-IID shots.")
+        if not isinstance(self.compiler_settings, CompilerSettings):
+            raise TypeError("compiler_settings must be a CompilerSettings instance.")
+        if self.compiler_settings_fingerprint != compiler_settings_hash(
+            self.compiler_settings
+        ):
+            raise ValueError("compiler_settings_fingerprint is inconsistent.")
+        require_integer_count(
+            self.rte_steps_per_occurrence,
+            name="rte_steps_per_occurrence",
+        )
+        finite_order = require_integer_count(
+            self.finite_taylor_order,
+            name="finite_taylor_order",
+        )
+        if finite_order % 2:
+            raise ValueError("finite_taylor_order must be non-negative and even.")
         if self.metric_statistics:
             statistics_by_name = dict(self.metric_statistics)
             if set(statistics_by_name) != set(RPE_COST_METRICS):
@@ -291,25 +386,69 @@ class RPEHadamardCompiledCostBenchmarkPoint:
                 "metric_statistics",
                 tuple((name, statistics_by_name[name]) for name in RPE_COST_METRICS),
             )
-        if self.status == "complete" and self.failure_reason is not None:
-            raise ValueError("A complete benchmark point cannot have a failure reason.")
-        if self.status == "failed" and not self.failure_reason:
-            raise ValueError("A failed benchmark point requires a failure reason.")
-        if self.status == "complete" and not self.metric_statistics:
-            raise ValueError("A complete benchmark point requires metric statistics.")
-        if self.status == "failed" and self.metric_statistics:
-            raise ValueError(
-                "A failed benchmark point cannot contain metric statistics."
+        if self.status == "complete":
+            if self.failure_reason is not None or self.failure_stage is not None:
+                raise ValueError(
+                    "A complete benchmark point cannot contain failure metadata."
+                )
+            if not self.metric_statistics:
+                raise ValueError(
+                    "A complete benchmark point requires metric statistics."
+                )
+            if (
+                self.measurement_included is not True
+                or self.state_preparation_included is not False
+                or self.wrapped_evolution_already_controlled is not True
+                or self.additional_control_applied is not False
+                or not self.circuit_build_completed
+                or not self.transpile_completed
+            ):
+                raise ValueError(
+                    "Complete benchmark point execution flags are inconsistent."
+                )
+        else:
+            if not self.failure_reason:
+                raise ValueError("A failed benchmark point requires a failure reason.")
+            if self.failure_stage not in (
+                "preflight",
+                "circuit_build_or_transpile",
+            ):
+                raise ValueError("A failed benchmark point requires a failure stage.")
+            if self.metric_statistics:
+                raise ValueError(
+                    "A failed benchmark point cannot contain metric statistics."
+                )
+            expected_completion: bool | None = (
+                False if self.failure_stage == "preflight" else None
             )
-        if self.status == "complete" and (
-            not self.measurement_included
-            or self.state_preparation_included
-            or self.backend_execution_included
-            or self.quantum_shots_executed != 0
-            or not self.wrapped_evolution_already_controlled
-            or self.additional_control_applied
-        ):
-            raise ValueError("Complete benchmark point scope flags are inconsistent.")
+            if (
+                self.circuit_build_completed is not expected_completion
+                or self.transpile_completed is not expected_completion
+            ):
+                raise ValueError(
+                    "Failed benchmark completion flags do not match failure stage."
+                )
+            if any(
+                value is not None
+                for value in (
+                    self.measurement_included,
+                    self.state_preparation_included,
+                    self.wrapped_evolution_already_controlled,
+                    self.additional_control_applied,
+                )
+            ):
+                raise ValueError(
+                    "Failed benchmark point actual circuit flags must be None."
+                )
+            if self.failure_stage == "preflight" and any(
+                value != 0
+                for value in (
+                    self.actual_build_requests,
+                    self.actual_transpile_requests,
+                    self.actual_built_instruction_total,
+                )
+            ):
+                raise ValueError("Preflight failure actual workload must be zero.")
         expected = _sha256_json(self._fingerprint_payload())
         if self.point_fingerprint and self.point_fingerprint != expected:
             raise ValueError("Benchmark point fingerprint does not match its content.")
@@ -403,6 +542,13 @@ class RPEHadamardCompiledCostBenchmarkPoint:
                 self.evaluation_configuration_fingerprint
             ),
             "construction_policy": self.construction_policy,
+            "requested_measurement_included": (
+                self.requested_measurement_included
+            ),
+            "requested_state_preparation_included": (
+                self.requested_state_preparation_included
+            ),
+            "requested_control_convention": self.requested_control_convention,
             "measurement_included": self.measurement_included,
             "state_preparation_included": self.state_preparation_included,
             "backend_execution_included": self.backend_execution_included,
@@ -411,6 +557,8 @@ class RPEHadamardCompiledCostBenchmarkPoint:
                 self.wrapped_evolution_already_controlled
             ),
             "additional_control_applied": self.additional_control_applied,
+            "circuit_build_completed": self.circuit_build_completed,
+            "transpile_completed": self.transpile_completed,
             "fresh_iid_trajectory_per_hadamard_shot_verified": (
                 self.fresh_iid_trajectory_per_hadamard_shot_verified
             ),
@@ -419,6 +567,7 @@ class RPEHadamardCompiledCostBenchmarkPoint:
             "circuit_scope": self.circuit_scope,
             "status": self.status,
             "failure_reason": self.failure_reason,
+            "failure_stage": self.failure_stage,
             "workload": {
                 "planned_build_requests": self.planned_build_requests,
                 "actual_build_requests": self.actual_build_requests,
@@ -447,6 +596,17 @@ class RPEHadamardCompiledCostBenchmarkPoint:
         cls,
         payload: Mapping[str, Any],
     ) -> "RPEHadamardCompiledCostBenchmarkPoint":
+        if payload.get("schema_version") != (
+            RPE_HADAMARD_COMPILED_COST_BENCHMARK_POINT_SCHEMA_VERSION
+        ):
+            raise ValueError("Unsupported benchmark point schema version.")
+        round_index = require_integer_count(
+            payload["round_index"],
+            name="round_index",
+        )
+        serialized_m = require_integer_count(payload["m"], name="m")
+        if serialized_m != round_index:
+            raise ValueError("Serialized m must equal round_index.")
         compiler_payload = dict(payload["transpile_configuration"])
         compiler_payload["basis_gates"] = tuple(compiler_payload["basis_gates"])
         if compiler_payload["coupling_map"] is not None:
@@ -462,27 +622,59 @@ class RPEHadamardCompiledCostBenchmarkPoint:
             raise ValueError("Serialized benchmark cost fields are inconsistent.")
         return cls(
             partition=payload["partition"],
-            round_index=int(payload["round_index"]),
-            repetition_count=int(payload["repetition_count"]),
-            q_m=int(payload["q_m"]),
-            delta_time=float(payload["delta_time"]),
-            t_m=float(payload["t_m"]),
-            rte_steps_per_occurrence=int(payload["r_m"]),
-            finite_taylor_order=int(payload["K_m"]),
+            round_index=round_index,
+            repetition_count=require_integer_count(
+                payload["repetition_count"],
+                name="repetition_count",
+                minimum=1,
+            ),
+            q_m=require_integer_count(payload["q_m"], name="q_m", minimum=1),
+            delta_time=_require_json_number(
+                payload["delta_time"],
+                name="delta_time",
+            ),
+            t_m=_require_json_number(payload["t_m"], name="t_m"),
+            rte_steps_per_occurrence=require_integer_count(
+                payload["r_m"],
+                name="r_m",
+            ),
+            finite_taylor_order=require_integer_count(
+                payload["K_m"],
+                name="K_m",
+            ),
             tail_kind=payload["tail_kind"],
             axis=payload["axis"],
             evaluation_method=payload["evaluation_method"],
-            sample_count=payload["sample_count"],
-            enumerated_trajectory_count=payload["enumerated_trajectory_count"],
-            trajectory_space_size=payload["trajectory_space_size"],
-            master_seed=payload["master_seed"],
+            sample_count=_require_optional_count(
+                payload["sample_count"],
+                name="sample_count",
+            ),
+            enumerated_trajectory_count=_require_optional_count(
+                payload["enumerated_trajectory_count"],
+                name="enumerated_trajectory_count",
+            ),
+            trajectory_space_size=_require_optional_count(
+                payload["trajectory_space_size"],
+                name="trajectory_space_size",
+            ),
+            master_seed=_require_optional_count(
+                payload["master_seed"],
+                name="master_seed",
+            ),
             sampled_trajectory_seeds=(
                 None
                 if payload["sampled_trajectory_seeds"] is None
-                else tuple(payload["sampled_trajectory_seeds"])
+                else tuple(
+                    require_integer_count(seed, name="sampled_trajectory_seed")
+                    for seed in payload["sampled_trajectory_seeds"]
+                )
             ),
             step_seed_hierarchy=tuple(
-                tuple(seeds) for seeds in payload["step_seed_hierarchy"]
+                tuple(
+                    _require_optional_count(seed, name="step_seed")
+                    for seed in seeds
+                )
+                for seeds in payload["step_seed_hierarchy"]
             ),
             trajectory_probability_sum=payload["trajectory_probability_sum"],
             trajectory_provenance_digest=payload["trajectory_provenance_digest"],
@@ -502,7 +694,10 @@ class RPEHadamardCompiledCostBenchmarkPoint:
                 RPEHadamardBenchmarkTrajectoryRecord.from_dict(record)
                 for record in payload["retained_trajectory_records"]
             ),
-            trajectory_records_truncated=bool(payload["trajectory_records_truncated"]),
+            trajectory_records_truncated=_require_boolean(
+                payload["trajectory_records_truncated"],
+                name="trajectory_records_truncated",
+            ),
             metric_statistics=metric_statistics,
             compiler_settings=CompilerSettings(**compiler_payload),
             compiler_settings_fingerprint=payload["compiler_settings_fingerprint"],
@@ -512,30 +707,84 @@ class RPEHadamardCompiledCostBenchmarkPoint:
                 payload["evaluation_configuration_fingerprint"]
             ),
             construction_policy=payload["construction_policy"],
-            measurement_included=bool(payload["measurement_included"]),
-            state_preparation_included=bool(payload["state_preparation_included"]),
-            backend_execution_included=bool(payload["backend_execution_included"]),
-            quantum_shots_executed=int(payload["quantum_shots_executed"]),
-            wrapped_evolution_already_controlled=bool(
-                payload["wrapped_evolution_already_controlled"]
+            requested_measurement_included=_require_boolean(
+                payload["requested_measurement_included"],
+                name="requested_measurement_included",
             ),
-            additional_control_applied=bool(payload["additional_control_applied"]),
-            fresh_iid_trajectory_per_hadamard_shot_verified=bool(
-                payload["fresh_iid_trajectory_per_hadamard_shot_verified"]
+            requested_state_preparation_included=_require_boolean(
+                payload["requested_state_preparation_included"],
+                name="requested_state_preparation_included",
             ),
-            benchmark_validation_path=bool(payload["benchmark_validation_path"]),
+            requested_control_convention=payload["requested_control_convention"],
+            measurement_included=_require_optional_boolean(
+                payload["measurement_included"],
+                name="measurement_included",
+            ),
+            state_preparation_included=_require_optional_boolean(
+                payload["state_preparation_included"],
+                name="state_preparation_included",
+            ),
+            backend_execution_included=_require_boolean(
+                payload["backend_execution_included"],
+                name="backend_execution_included",
+            ),
+            quantum_shots_executed=require_integer_count(
+                payload["quantum_shots_executed"],
+                name="quantum_shots_executed",
+            ),
+            wrapped_evolution_already_controlled=_require_optional_boolean(
+                payload["wrapped_evolution_already_controlled"],
+                name="wrapped_evolution_already_controlled",
+            ),
+            additional_control_applied=_require_optional_boolean(
+                payload["additional_control_applied"],
+                name="additional_control_applied",
+            ),
+            circuit_build_completed=_require_optional_boolean(
+                payload["circuit_build_completed"],
+                name="circuit_build_completed",
+            ),
+            transpile_completed=_require_optional_boolean(
+                payload["transpile_completed"],
+                name="transpile_completed",
+            ),
+            fresh_iid_trajectory_per_hadamard_shot_verified=_require_boolean(
+                payload["fresh_iid_trajectory_per_hadamard_shot_verified"],
+                name="fresh_iid_trajectory_per_hadamard_shot_verified",
+            ),
+            benchmark_validation_path=_require_boolean(
+                payload["benchmark_validation_path"],
+                name="benchmark_validation_path",
+            ),
             benchmark_path=payload["benchmark_path"],
             circuit_scope=payload["circuit_scope"],
             status=payload["status"],
             failure_reason=payload["failure_reason"],
-            planned_build_requests=workload["planned_build_requests"],
-            actual_build_requests=workload["actual_build_requests"],
-            planned_transpile_requests=workload["planned_transpile_requests"],
-            actual_transpile_requests=workload["actual_transpile_requests"],
-            planned_instruction_applications=(
-                workload["planned_instruction_applications"]
+            failure_stage=payload["failure_stage"],
+            planned_build_requests=_require_optional_count(
+                workload["planned_build_requests"],
+                name="planned_build_requests",
             ),
-            actual_built_instruction_total=workload["actual_built_instruction_total"],
+            actual_build_requests=_require_optional_count(
+                workload["actual_build_requests"],
+                name="actual_build_requests",
+            ),
+            planned_transpile_requests=_require_optional_count(
+                workload["planned_transpile_requests"],
+                name="planned_transpile_requests",
+            ),
+            actual_transpile_requests=_require_optional_count(
+                workload["actual_transpile_requests"],
+                name="actual_transpile_requests",
+            ),
+            planned_instruction_applications=_require_optional_count(
+                workload["planned_instruction_applications"],
+                name="planned_instruction_applications",
+            ),
+            actual_built_instruction_total=_require_optional_count(
+                workload["actual_built_instruction_total"],
+                name="actual_built_instruction_total",
+            ),
             point_fingerprint=payload["point_fingerprint"],
             schema_version=payload["schema_version"],
         )
@@ -737,6 +986,26 @@ class RPEHadamardCompiledCostBenchmarkDataset:
     benchmark_path: str = RPE_HADAMARD_BENCHMARK_PATH
 
     def __post_init__(self) -> None:
+        if self.schema_version != RPE_HADAMARD_COMPILED_COST_BENCHMARK_SCHEMA_VERSION:
+            raise ValueError("Unsupported RPE Hadamard benchmark dataset schema.")
+        if self.product_formula_order != 2:
+            raise ValueError("Benchmark datasets require second-order product formula.")
+        if self.cost_metrics != RPE_COST_METRICS:
+            raise ValueError("Benchmark cost_metrics do not match the fixed schema.")
+        if self.measurement_policy != DF_RPE_HADAMARD_MEASUREMENT_POLICY:
+            raise ValueError("Unsupported benchmark measurement policy.")
+        if self.requested_evaluation_method not in ("exact", "monte_carlo"):
+            raise ValueError("Unsupported requested evaluation method.")
+        if self.construction_policy not in (
+            "raw_concatenation",
+            "boundary_optimized",
+        ):
+            raise ValueError("Unsupported repeated circuit construction policy.")
+        if not isinstance(self.proxy_fit_performed, bool) or not isinstance(
+            self.holdout_used_for_proxy_fit,
+            bool,
+        ):
+            raise TypeError("Proxy-fit audit fields must be boolean.")
         if self.proxy_fit_performed or self.holdout_used_for_proxy_fit:
             raise ValueError("Benchmark dataset generation must not fit a proxy.")
         if self.benchmark_path != RPE_HADAMARD_BENCHMARK_PATH:
@@ -745,6 +1014,44 @@ class RPEHadamardCompiledCostBenchmarkDataset:
             raise ValueError("Unsupported benchmark circuit scope.")
         if self.control_convention != RPE_HADAMARD_CONTROL_CONVENTION:
             raise ValueError("Unsupported controlled-evolution convention.")
+        if not isinstance(self.compiler_settings, CompilerSettings):
+            raise TypeError("compiler_settings must be a CompilerSettings instance.")
+        if self.compiler_settings_fingerprint != compiler_settings_hash(
+            self.compiler_settings
+        ):
+            raise ValueError("compiler_settings_fingerprint is inconsistent.")
+        if not self.calibration_repetition_counts and not (
+            self.holdout_repetition_counts
+        ):
+            raise ValueError("At least one benchmark repetition count is required.")
+        for name, values in (
+            ("calibration_repetition_counts", self.calibration_repetition_counts),
+            ("holdout_repetition_counts", self.holdout_repetition_counts),
+        ):
+            if values != tuple(sorted(set(values))):
+                raise ValueError(f"{name} must be a sorted set.")
+            for count in values:
+                normalized = require_integer_count(count, name=name, minimum=1)
+                if normalized & (normalized - 1):
+                    raise ValueError(f"{name} must contain only powers of two.")
+        require_integer_count(self.ld, name="ld")
+        require_integer_count(
+            self.num_system_qubits,
+            name="num_system_qubits",
+            minimum=1,
+        )
+        if not math.isfinite(self.delta_time) or self.delta_time <= 0.0:
+            raise ValueError("delta_time must be finite and positive.")
+        require_integer_count(
+            self.rte_steps_per_occurrence,
+            name="rte_steps_per_occurrence",
+        )
+        finite_order = require_integer_count(
+            self.finite_taylor_order,
+            name="finite_taylor_order",
+        )
+        if finite_order % 2:
+            raise ValueError("finite_taylor_order must be non-negative and even.")
         if set(self.calibration_repetition_counts).intersection(
             self.holdout_repetition_counts
         ):
@@ -895,40 +1202,92 @@ class RPEHadamardCompiledCostBenchmarkDataset:
             compiler_payload["coupling_map"] = tuple(
                 tuple(edge) for edge in compiler_payload["coupling_map"]
             )
+        calibration_mc_seeds = tuple(
+            (
+                require_integer_count(item[0], name="calibration seed q_m"),
+                require_integer_count(item[1], name="calibration seed"),
+            )
+            for item in payload["calibration_mc_seeds"]
+        )
+        holdout_mc_seeds = tuple(
+            (
+                require_integer_count(item[0], name="holdout seed q_m"),
+                require_integer_count(item[1], name="holdout seed"),
+            )
+            for item in payload["holdout_mc_seeds"]
+        )
         dataset = cls(
             generation_id=payload["generation_id"],
             calibration_repetition_counts=tuple(
-                payload["calibration_repetition_counts"]
+                require_integer_count(count, name="calibration_repetition_count")
+                for count in payload["calibration_repetition_counts"]
             ),
-            holdout_repetition_counts=tuple(payload["holdout_repetition_counts"]),
+            holdout_repetition_counts=tuple(
+                require_integer_count(count, name="holdout_repetition_count")
+                for count in payload["holdout_repetition_counts"]
+            ),
             preparation_fingerprint=payload["preparation_fingerprint"],
             hamiltonian_fingerprint=payload["hamiltonian_fingerprint"],
             partition_fingerprint=payload["partition_fingerprint"],
-            ld=int(payload["ld"]),
-            num_system_qubits=int(payload["num_system_qubits"]),
-            delta_time=float(payload["delta_time"]),
-            rte_steps_per_occurrence=int(payload["rte_steps_per_occurrence"]),
-            finite_taylor_order=int(payload["finite_taylor_order"]),
-            product_formula_order=int(payload["product_formula_order"]),
+            ld=require_integer_count(payload["ld"], name="ld"),
+            num_system_qubits=require_integer_count(
+                payload["num_system_qubits"],
+                name="num_system_qubits",
+                minimum=1,
+            ),
+            delta_time=_require_json_number(
+                payload["delta_time"],
+                name="delta_time",
+            ),
+            rte_steps_per_occurrence=require_integer_count(
+                payload["rte_steps_per_occurrence"],
+                name="rte_steps_per_occurrence",
+            ),
+            finite_taylor_order=require_integer_count(
+                payload["finite_taylor_order"],
+                name="finite_taylor_order",
+            ),
+            product_formula_order=require_integer_count(
+                payload["product_formula_order"],
+                name="product_formula_order",
+            ),
             control_convention=payload["control_convention"],
             construction_policy=payload["construction_policy"],
             compiler_settings=CompilerSettings(**compiler_payload),
             compiler_settings_fingerprint=payload["compiler_settings_fingerprint"],
             backend_fingerprint=payload["backend_fingerprint"],
             requested_evaluation_method=payload["requested_evaluation_method"],
-            sample_count=payload["sample_count"],
-            master_seed=payload["master_seed"],
-            calibration_mc_seeds=tuple(
-                tuple(item) for item in payload["calibration_mc_seeds"]
+            sample_count=_require_optional_count(
+                payload["sample_count"],
+                name="sample_count",
             ),
-            holdout_mc_seeds=tuple(tuple(item) for item in payload["holdout_mc_seeds"]),
-            workload_limits=tuple(sorted(payload["workload_limits"].items())),
+            master_seed=_require_optional_count(
+                payload["master_seed"],
+                name="master_seed",
+            ),
+            calibration_mc_seeds=calibration_mc_seeds,
+            holdout_mc_seeds=holdout_mc_seeds,
+            workload_limits=tuple(
+                sorted(
+                    (
+                        name,
+                        require_integer_count(value, name=f"workload_limits.{name}"),
+                    )
+                    for name, value in payload["workload_limits"].items()
+                )
+            ),
             records=tuple(
                 RPEHadamardCompiledCostBenchmarkPoint.from_dict(record)
                 for record in payload["records"]
             ),
-            proxy_fit_performed=bool(payload["proxy_fit_performed"]),
-            holdout_used_for_proxy_fit=bool(payload["holdout_used_for_proxy_fit"]),
+            proxy_fit_performed=_require_boolean(
+                payload["proxy_fit_performed"],
+                name="proxy_fit_performed",
+            ),
+            holdout_used_for_proxy_fit=_require_boolean(
+                payload["holdout_used_for_proxy_fit"],
+                name="holdout_used_for_proxy_fit",
+            ),
             dataset_fingerprint=payload["dataset_fingerprint"],
             schema_version=payload["schema_version"],
             cost_metrics=tuple(payload["cost_metrics"]),
@@ -936,14 +1295,35 @@ class RPEHadamardCompiledCostBenchmarkDataset:
             circuit_scope=payload["circuit_scope"],
             benchmark_path=payload["benchmark_path"],
         )
-        if dataset.requested_point_count != payload["requested_point_count"]:
+        requested_point_count = require_integer_count(
+            payload["requested_point_count"],
+            name="requested_point_count",
+        )
+        completed_point_count = require_integer_count(
+            payload["completed_point_count"],
+            name="completed_point_count",
+        )
+        failed_point_count = require_integer_count(
+            payload["failed_point_count"],
+            name="failed_point_count",
+        )
+        if dataset.requested_point_count != requested_point_count:
             raise ValueError("Serialized requested point count is inconsistent.")
-        if dataset.completed_point_count != payload["completed_point_count"]:
+        if dataset.completed_point_count != completed_point_count:
             raise ValueError("Serialized completed point count is inconsistent.")
-        if dataset.failed_point_count != payload["failed_point_count"]:
+        if dataset.failed_point_count != failed_point_count:
             raise ValueError("Serialized failed point count is inconsistent.")
-        if dataset.complete != payload["complete"]:
+        serialized_complete = _require_boolean(
+            payload["complete"],
+            name="complete",
+        )
+        if dataset.complete != serialized_complete:
             raise ValueError("Serialized dataset completeness is inconsistent.")
+        serialized_reasons = tuple(payload["incomplete_reasons"])
+        if any(not isinstance(reason, str) for reason in serialized_reasons):
+            raise TypeError("incomplete_reasons must contain strings.")
+        if dataset.incomplete_reasons != serialized_reasons:
+            raise ValueError("Serialized incomplete_reasons are inconsistent.")
         return dataset
 
 
@@ -1006,12 +1386,19 @@ def _derived_point_seed(
     return int.from_bytes(digest[:8], "big") % (2**63)
 
 
-def _estimate_point(
+@dataclass(frozen=True)
+class _PreparedBenchmarkPoint:
+    stream: DFPartialS2RepeatedTrajectoryStream
+    workload_plan: CompiledCostWorkloadPlan
+    round_index: int
+
+
+def _prepare_point(
     request: RPEHadamardCompiledCostBenchmarkRequest,
     *,
     repetition_count: int,
     point_seed: int | None,
-) -> DFRPEHadamardCompiledCostEstimate:
+) -> _PreparedBenchmarkPoint:
     round_index = round_index_for_benchmark_repetition_count(
         repetition_count,
         maximum_repetition_count=request.maximum_repetition_count,
@@ -1052,12 +1439,39 @@ def _estimate_point(
         trajectory_count=stream.expected_record_count,
         maximum_repetition_count=request.maximum_repetition_count,
     )
-    return _compile_hadamard_trajectory_stream_with_plan(
+    _preflight_hadamard_trajectory_stream_with_plan(
         stream,
+        request.compiler,
+        workload_plan=workload_plan,
+        maximum_untranspiled_circuit_size=(
+            request.maximum_untranspiled_circuit_size
+        ),
+        maximum_retained_trajectory_records=(
+            request.maximum_retained_trajectory_records
+        ),
+        maximum_build_requests=request.maximum_build_requests,
+        maximum_transpile_requests=request.maximum_transpile_requests,
+        maximum_planned_instruction_applications=(
+            request.maximum_planned_instruction_applications
+        ),
+    )
+    return _PreparedBenchmarkPoint(
+        stream=stream,
+        workload_plan=workload_plan,
+        round_index=round_index,
+    )
+
+
+def _compile_prepared_point(
+    request: RPEHadamardCompiledCostBenchmarkRequest,
+    prepared: _PreparedBenchmarkPoint,
+) -> DFRPEHadamardCompiledCostEstimate:
+    return _compile_hadamard_trajectory_stream_with_plan(
+        prepared.stream,
         request.delta_time,
         request.compiler,
         construction_policy=request.construction_policy,
-        workload_plan=workload_plan,
+        workload_plan=prepared.workload_plan,
         maximum_untranspiled_circuit_size=(
             request.maximum_untranspiled_circuit_size
         ),
@@ -1071,7 +1485,7 @@ def _estimate_point(
         ),
         cache=request.cache,
         backend=request.backend,
-        validated_round_index=round_index,
+        validated_round_index=prepared.round_index,
         validated_wrapper_builder=QiskitRPEHadamardBenchmarkCircuitBuilder(
             maximum_repetition_count=request.maximum_repetition_count
         ),
@@ -1210,12 +1624,17 @@ def _complete_point(
         compiler_context_fingerprint=compiler_context,
         evaluation_configuration_fingerprint=evaluation_configuration,
         construction_policy=request.construction_policy,
+        requested_measurement_included=True,
+        requested_state_preparation_included=False,
+        requested_control_convention=RPE_HADAMARD_CONTROL_CONVENTION,
         measurement_included=estimate.measurement_included,
         state_preparation_included=estimate.state_preparation_included,
         backend_execution_included=estimate.backend_execution_included,
         quantum_shots_executed=estimate.quantum_shots_executed,
         wrapped_evolution_already_controlled=True,
         additional_control_applied=False,
+        circuit_build_completed=True,
+        transpile_completed=True,
         fresh_iid_trajectory_per_hadamard_shot_verified=(
             estimate.fresh_iid_trajectory_per_hadamard_shot_verified
         ),
@@ -1224,6 +1643,7 @@ def _complete_point(
         circuit_scope=estimate.circuit_scope,
         status="complete",
         failure_reason=None,
+        failure_stage=None,
         planned_build_requests=estimate.planned_build_requests,
         actual_build_requests=estimate.actual_build_requests,
         planned_transpile_requests=estimate.planned_transpile_requests,
@@ -1241,6 +1661,7 @@ def _failed_point(
     point_seed: int | None,
     axis: RPEHadamardAxis,
     failure_reason: str,
+    failure_stage: BenchmarkFailureStage,
 ) -> RPEHadamardCompiledCostBenchmarkPoint:
     round_index = repetition_count.bit_length() - 1
     compiler_fingerprint, backend_fingerprint, compiler_context = _compiler_context(
@@ -1309,24 +1730,38 @@ def _failed_point(
         compiler_context_fingerprint=compiler_context,
         evaluation_configuration_fingerprint=evaluation_configuration,
         construction_policy=request.construction_policy,
-        measurement_included=True,
-        state_preparation_included=False,
+        requested_measurement_included=True,
+        requested_state_preparation_included=False,
+        requested_control_convention=RPE_HADAMARD_CONTROL_CONVENTION,
+        measurement_included=None,
+        state_preparation_included=None,
         backend_execution_included=False,
         quantum_shots_executed=0,
-        wrapped_evolution_already_controlled=True,
-        additional_control_applied=False,
+        wrapped_evolution_already_controlled=None,
+        additional_control_applied=None,
+        circuit_build_completed=(
+            False if failure_stage == "preflight" else None
+        ),
+        transpile_completed=(
+            False if failure_stage == "preflight" else None
+        ),
         fresh_iid_trajectory_per_hadamard_shot_verified=False,
         benchmark_validation_path=True,
         benchmark_path=RPE_HADAMARD_BENCHMARK_PATH,
         circuit_scope=RPE_HADAMARD_INTERROGATION_SCOPE,
         status="failed",
         failure_reason=failure_reason,
+        failure_stage=failure_stage,
         planned_build_requests=None,
-        actual_build_requests=None,
+        actual_build_requests=0 if failure_stage == "preflight" else None,
         planned_transpile_requests=None,
-        actual_transpile_requests=None,
+        actual_transpile_requests=(
+            0 if failure_stage == "preflight" else None
+        ),
         planned_instruction_applications=None,
-        actual_built_instruction_total=None,
+        actual_built_instruction_total=(
+            0 if failure_stage == "preflight" else None
+        ),
     )
 
 
@@ -1360,12 +1795,22 @@ def generate_rpe_hadamard_compiled_cost_benchmark_dataset(
         for count in counts:
             point_seed = seed_map.get((partition, count))
             try:
-                estimate = _estimate_point(
+                prepared = _prepare_point(
                     request,
                     repetition_count=count,
                     point_seed=point_seed,
                 )
             except Exception as exc:
+                failure = (exc, "preflight")
+            else:
+                try:
+                    estimate = _compile_prepared_point(request, prepared)
+                except Exception as exc:
+                    failure = (exc, "circuit_build_or_transpile")
+                else:
+                    failure = None
+            if failure is not None:
+                exc, failure_stage = failure
                 reason = f"{type(exc).__name__}: {exc}"
                 for axis in ("cosine", "sine"):
                     records.append(
@@ -1376,6 +1821,7 @@ def generate_rpe_hadamard_compiled_cost_benchmark_dataset(
                             point_seed=point_seed,
                             axis=axis,
                             failure_reason=reason,
+                            failure_stage=failure_stage,
                         )
                     )
                 continue

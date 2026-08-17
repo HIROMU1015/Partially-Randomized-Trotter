@@ -330,24 +330,18 @@ def _axis_evaluation_fingerprint(
     )
 
 
-def _compile_hadamard_trajectory_stream_with_plan(
+def _preflight_hadamard_trajectory_stream_with_plan(
     stream: DFPartialS2RepeatedTrajectoryStream,
-    step_time: float,
     compiler: CompilerSettings,
     *,
-    construction_policy: RepeatedCircuitConstructionPolicy,
     workload_plan: CompiledCostWorkloadPlan,
     maximum_untranspiled_circuit_size: int,
     maximum_retained_trajectory_records: int,
     maximum_build_requests: int,
     maximum_transpile_requests: int,
     maximum_planned_instruction_applications: int,
-    cache: TranspiledCircuitCostCache | None,
-    backend: Any | None,
-    validated_round_index: int | None = None,
-    validated_wrapper_builder: Any | None = None,
-) -> DFRPEHadamardCompiledCostEstimate:
-    """Compile one paired wrapper for every item in a preflighted stream."""
+) -> tuple[int, int, CompiledCostWorkloadBudget]:
+    """Validate wrapper workload limits without constructing a circuit."""
     if not isinstance(compiler, CompilerSettings):
         raise TypeError("compiler must be a CompilerSettings instance.")
     size_limit = require_integer_count(
@@ -377,6 +371,45 @@ def _compile_hadamard_trajectory_stream_with_plan(
             "Planned RPE Hadamard wrapper upper bound exceeds the configured "
             "size limit before circuit construction."
         )
+    return size_limit, retention_limit, workload_budget
+
+
+def _compile_hadamard_trajectory_stream_with_plan(
+    stream: DFPartialS2RepeatedTrajectoryStream,
+    step_time: float,
+    compiler: CompilerSettings,
+    *,
+    construction_policy: RepeatedCircuitConstructionPolicy,
+    workload_plan: CompiledCostWorkloadPlan,
+    maximum_untranspiled_circuit_size: int,
+    maximum_retained_trajectory_records: int,
+    maximum_build_requests: int,
+    maximum_transpile_requests: int,
+    maximum_planned_instruction_applications: int,
+    cache: TranspiledCircuitCostCache | None,
+    backend: Any | None,
+    validated_round_index: int | None = None,
+    validated_wrapper_builder: Any | None = None,
+) -> DFRPEHadamardCompiledCostEstimate:
+    """Compile one paired wrapper for every item in a preflighted stream."""
+    size_limit, retention_limit, workload_budget = (
+        _preflight_hadamard_trajectory_stream_with_plan(
+            stream,
+            compiler,
+            workload_plan=workload_plan,
+            maximum_untranspiled_circuit_size=(
+                maximum_untranspiled_circuit_size
+            ),
+            maximum_retained_trajectory_records=(
+                maximum_retained_trajectory_records
+            ),
+            maximum_build_requests=maximum_build_requests,
+            maximum_transpile_requests=maximum_transpile_requests,
+            maximum_planned_instruction_applications=(
+                maximum_planned_instruction_applications
+            ),
+        )
+    )
     weighted = stream.evaluation_method == "exact"
     estimate_kind: DFRPEHadamardEstimateKind = (
         "exact_compiled_rpe_hadamard_interrogation_expectation"

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import math
 import statistics
+from copy import deepcopy
 from dataclasses import replace
 
 import numpy as np
@@ -463,6 +464,81 @@ def test_record_order_is_canonical_and_json_round_trip_is_exact(tmp_path) -> Non
     assert loaded.to_dict() == dataset.to_dict()
 
 
+@pytest.mark.parametrize(
+    ("field", "invalid_value", "message"),
+    (
+        ("m", 99, "m must equal round_index"),
+        ("status", "unknown", "point status"),
+        ("tail_kind", "unknown", "tail kind"),
+        ("benchmark_validation_path", False, "must be true"),
+    ),
+)
+def test_tampered_point_json_is_rejected(field, invalid_value, message) -> None:
+    dataset = generate_rpe_hadamard_compiled_cost_benchmark_dataset(
+        _request(deterministic=True, calibration=(8,))
+    ).dataset
+    payload = deepcopy(dataset.to_dict())
+    payload["records"][0][field] = invalid_value
+    with pytest.raises((TypeError, ValueError), match=message):
+        RPEHadamardCompiledCostBenchmarkDataset.from_dict(payload)
+
+
+@pytest.mark.parametrize(
+    ("field", "invalid_value", "message"),
+    (
+        (
+            "schema_version",
+            "rpe_hadamard_compiled_cost_benchmark_dataset_v1",
+            "schema",
+        ),
+        ("product_formula_order", 4, "second-order"),
+        ("cost_metrics", ["bogus"], "cost_metrics"),
+        ("measurement_policy", "bogus", "measurement policy"),
+    ),
+)
+def test_tampered_fixed_dataset_convention_is_rejected(
+    field,
+    invalid_value,
+    message,
+) -> None:
+    dataset = generate_rpe_hadamard_compiled_cost_benchmark_dataset(
+        _request(deterministic=True, calibration=(8,))
+    ).dataset
+    payload = deepcopy(dataset.to_dict())
+    payload[field] = invalid_value
+    with pytest.raises((TypeError, ValueError), match=message):
+        RPEHadamardCompiledCostBenchmarkDataset.from_dict(payload)
+
+
+def test_tampered_incomplete_reasons_are_rejected() -> None:
+    dataset = generate_rpe_hadamard_compiled_cost_benchmark_dataset(
+        _request(
+            deterministic=True,
+            calibration=(8,),
+            maximum_build_requests=1,
+        )
+    ).dataset
+    payload = deepcopy(dataset.to_dict())
+    payload["incomplete_reasons"] = ["forged reason"]
+    with pytest.raises(ValueError, match="incomplete_reasons"):
+        RPEHadamardCompiledCostBenchmarkDataset.from_dict(payload)
+
+
+def test_programmatic_invalid_audit_values_are_rejected() -> None:
+    dataset = generate_rpe_hadamard_compiled_cost_benchmark_dataset(
+        _request(deterministic=True, calibration=(8,))
+    ).dataset
+    point = dataset.records[0]
+    with pytest.raises(ValueError, match="point status"):
+        replace(point, status="unknown", point_fingerprint="")
+    with pytest.raises(ValueError, match="tail kind"):
+        replace(point, tail_kind="unknown", point_fingerprint="")
+    with pytest.raises(ValueError, match="must be true"):
+        replace(point, benchmark_validation_path=False, point_fingerprint="")
+    with pytest.raises(ValueError, match="second-order"):
+        replace(dataset, product_formula_order=4, dataset_fingerprint="")
+
+
 def test_full_wrapper_direct_transpile_matches_medium_q_record() -> None:
     request = _request(deterministic=True, calibration=(8,))
     generated = generate_rpe_hadamard_compiled_cost_benchmark_dataset(request)
@@ -518,6 +594,22 @@ def test_workload_failure_happens_before_circuit_build(monkeypatch) -> None:
     assert not dataset.complete
     assert dataset.failed_point_count == 2
     assert all("build requests" in point.failure_reason for point in dataset.records)
+    for point in dataset.records:
+        assert point.failure_stage == "preflight"
+        assert point.requested_measurement_included
+        assert not point.requested_state_preparation_included
+        assert point.requested_control_convention == (
+            "ordinary_controlled_diag_I_U_m"
+        )
+        assert point.measurement_included is None
+        assert point.state_preparation_included is None
+        assert point.wrapped_evolution_already_controlled is None
+        assert point.additional_control_applied is None
+        assert point.circuit_build_completed is False
+        assert point.transpile_completed is False
+        assert point.actual_build_requests == 0
+        assert point.actual_transpile_requests == 0
+        assert point.actual_built_instruction_total == 0
 
 
 class _FailOnceCache(TranspiledCircuitCostCache):
@@ -547,6 +639,14 @@ def test_compile_failure_is_recorded_in_partial_dataset(tmp_path) -> None:
     failures = [point for point in dataset.records if point.status == "failed"]
     assert len(failures) == 2
     assert all("injected compile failure" in point.failure_reason for point in failures)
+    for point in failures:
+        assert point.failure_stage == "circuit_build_or_transpile"
+        assert point.measurement_included is None
+        assert point.wrapped_evolution_already_controlled is None
+        assert point.circuit_build_completed is None
+        assert point.transpile_completed is None
+        assert point.actual_build_requests is None
+        assert point.actual_transpile_requests is None
     output = tmp_path / "partial.json"
     dataset.write_json(output)
     assert RPEHadamardCompiledCostBenchmarkDataset.read_json(output) == dataset
