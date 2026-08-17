@@ -81,8 +81,13 @@ particular, `m`, point counts, completeness, incomplete reasons, direct metric
 means, and nested statistics must agree with their recomputed values.  Fixed
 conventions such as second-order product formula, cost-metric names,
 measurement policy, benchmark path, tail kind, and point status are validated
-rather than merely included in an outer fingerprint.  Version-1 records are
-rejected and should be regenerated.
+rather than merely included in an outer fingerprint.  Serialized point and
+dataset fingerprints are required canonical 64-character lowercase SHA-256
+hex strings; an empty fingerprint is not treated as a request to re-fingerprint
+loaded JSON.  Each point must also agree with its dataset on time step, RTE
+parameters, construction policy, compiler/backend context, evaluation method,
+sample count, and the partition-specific seed derived from the dataset master
+seed.  Version-1 records are rejected and should be regenerated.
 
 Requested circuit policy and observed execution state are separate.  Every
 point records the requested measurement/state-preparation/control convention.

@@ -123,6 +123,18 @@ def _require_json_number(value: Any, *, name: str) -> float:
     return normalized
 
 
+def _require_sha256_fingerprint(value: Any, *, name: str) -> str:
+    if not isinstance(value, str):
+        raise TypeError(f"{name} must be a string.")
+    if len(value) != 64 or any(
+        character not in "0123456789abcdef" for character in value
+    ):
+        raise ValueError(
+            f"{name} must be a 64-character lowercase hexadecimal SHA-256."
+        )
+    return value
+
+
 def round_index_for_benchmark_repetition_count(
     repetition_count: int,
     *,
@@ -440,15 +452,18 @@ class RPEHadamardCompiledCostBenchmarkPoint:
                 raise ValueError(
                     "Failed benchmark point actual circuit flags must be None."
                 )
-            if self.failure_stage == "preflight" and any(
-                value != 0
-                for value in (
-                    self.actual_build_requests,
-                    self.actual_transpile_requests,
-                    self.actual_built_instruction_total,
+            actual_workload = (
+                self.actual_build_requests,
+                self.actual_transpile_requests,
+                self.actual_built_instruction_total,
+            )
+            if self.failure_stage == "preflight":
+                if any(value != 0 for value in actual_workload):
+                    raise ValueError("Preflight failure actual workload must be zero.")
+            elif any(value is not None for value in actual_workload):
+                raise ValueError(
+                    "Circuit-build/transpile failure actual workload must be None."
                 )
-            ):
-                raise ValueError("Preflight failure actual workload must be zero.")
         expected = _sha256_json(self._fingerprint_payload())
         if self.point_fingerprint and self.point_fingerprint != expected:
             raise ValueError("Benchmark point fingerprint does not match its content.")
@@ -600,6 +615,10 @@ class RPEHadamardCompiledCostBenchmarkPoint:
             RPE_HADAMARD_COMPILED_COST_BENCHMARK_POINT_SCHEMA_VERSION
         ):
             raise ValueError("Unsupported benchmark point schema version.")
+        point_fingerprint = _require_sha256_fingerprint(
+            payload.get("point_fingerprint"),
+            name="point_fingerprint",
+        )
         round_index = require_integer_count(
             payload["round_index"],
             name="round_index",
@@ -785,7 +804,7 @@ class RPEHadamardCompiledCostBenchmarkPoint:
                 workload["actual_built_instruction_total"],
                 name="actual_built_instruction_total",
             ),
-            point_fingerprint=payload["point_fingerprint"],
+            point_fingerprint=point_fingerprint,
             schema_version=payload["schema_version"],
         )
 
@@ -1056,6 +1075,59 @@ class RPEHadamardCompiledCostBenchmarkDataset:
             self.holdout_repetition_counts
         ):
             raise ValueError("Calibration and holdout repetitions must be disjoint.")
+        if self.requested_evaluation_method == "exact":
+            if self.sample_count is not None or self.master_seed is not None:
+                raise ValueError(
+                    "Exact benchmark datasets cannot contain sampling inputs."
+                )
+            if self.calibration_mc_seeds or self.holdout_mc_seeds:
+                raise ValueError(
+                    "Exact benchmark datasets cannot contain point seed series."
+                )
+            expected_point_seeds = {
+                (partition, count): None
+                for partition, counts in (
+                    ("calibration", self.calibration_repetition_counts),
+                    ("holdout", self.holdout_repetition_counts),
+                )
+                for count in counts
+            }
+        else:
+            samples = require_integer_count(
+                self.sample_count,
+                name="sample_count",
+                minimum=1,
+            )
+            master_seed = require_integer_count(self.master_seed, name="master_seed")
+            object.__setattr__(self, "sample_count", samples)
+            object.__setattr__(self, "master_seed", master_seed)
+            expected_calibration_seeds = tuple(
+                (
+                    count,
+                    _derived_point_seed(master_seed, "calibration", count),
+                )
+                for count in self.calibration_repetition_counts
+            )
+            expected_holdout_seeds = tuple(
+                (count, _derived_point_seed(master_seed, "holdout", count))
+                for count in self.holdout_repetition_counts
+            )
+            if self.calibration_mc_seeds != expected_calibration_seeds:
+                raise ValueError(
+                    "calibration_mc_seeds do not match the dataset master seed."
+                )
+            if self.holdout_mc_seeds != expected_holdout_seeds:
+                raise ValueError(
+                    "holdout_mc_seeds do not match the dataset master seed."
+                )
+            expected_point_seeds = {
+                (partition, count): point_seed
+                for partition, seed_series in (
+                    ("calibration", expected_calibration_seeds),
+                    ("holdout", expected_holdout_seeds),
+                )
+                for count, point_seed in seed_series
+            }
         object.__setattr__(
             self,
             "records",
@@ -1077,6 +1149,96 @@ class RPEHadamardCompiledCostBenchmarkDataset:
             raise ValueError(
                 "Dataset records must cover every requested partition/q_m/axis once."
             )
+        expected_compiler_context = _sha256_json(
+            {
+                "compiler_settings_fingerprint": (
+                    self.compiler_settings_fingerprint
+                ),
+                "backend_fingerprint": self.backend_fingerprint,
+            }
+        )
+        for record in self.records:
+            expected_evaluation_configuration = _sha256_json(
+                {
+                    "partition": record.partition,
+                    "axis": record.axis,
+                    "q_m": record.q_m,
+                    "r_m": self.rte_steps_per_occurrence,
+                    "K_m": self.finite_taylor_order,
+                    "evaluation_method": self.requested_evaluation_method,
+                    "sample_count": self.sample_count,
+                    "construction_policy": self.construction_policy,
+                    "compiler_context": expected_compiler_context,
+                    "measurement_policy": self.measurement_policy,
+                    "circuit_scope": self.circuit_scope,
+                }
+            )
+            expected_values = (
+                ("delta_time", record.delta_time, self.delta_time),
+                (
+                    "rte_steps_per_occurrence",
+                    record.rte_steps_per_occurrence,
+                    self.rte_steps_per_occurrence,
+                ),
+                (
+                    "finite_taylor_order",
+                    record.finite_taylor_order,
+                    self.finite_taylor_order,
+                ),
+                (
+                    "construction_policy",
+                    record.construction_policy,
+                    self.construction_policy,
+                ),
+                (
+                    "compiler_settings",
+                    record.compiler_settings,
+                    self.compiler_settings,
+                ),
+                (
+                    "compiler_settings_fingerprint",
+                    record.compiler_settings_fingerprint,
+                    self.compiler_settings_fingerprint,
+                ),
+                (
+                    "backend_fingerprint",
+                    record.backend_fingerprint,
+                    self.backend_fingerprint,
+                ),
+                (
+                    "compiler_context_fingerprint",
+                    record.compiler_context_fingerprint,
+                    expected_compiler_context,
+                ),
+                (
+                    "evaluation_method",
+                    record.evaluation_method,
+                    self.requested_evaluation_method,
+                ),
+                ("sample_count", record.sample_count, self.sample_count),
+                (
+                    "master_seed",
+                    record.master_seed,
+                    expected_point_seeds[(record.partition, record.q_m)],
+                ),
+                (
+                    "requested_control_convention",
+                    record.requested_control_convention,
+                    self.control_convention,
+                ),
+                (
+                    "evaluation_configuration_fingerprint",
+                    record.evaluation_configuration_fingerprint,
+                    expected_evaluation_configuration,
+                ),
+            )
+            for field_name, actual, expected in expected_values:
+                if actual != expected:
+                    raise ValueError(
+                        "Dataset record "
+                        f"{record.partition}/{record.q_m}/{record.axis} "
+                        f"{field_name} does not match the dataset configuration."
+                    )
         calibration_seeds = {seed for _q, seed in self.calibration_mc_seeds}
         holdout_seeds = {seed for _q, seed in self.holdout_mc_seeds}
         if calibration_seeds.intersection(holdout_seeds):
@@ -1196,6 +1358,10 @@ class RPEHadamardCompiledCostBenchmarkDataset:
             RPE_HADAMARD_COMPILED_COST_BENCHMARK_SCHEMA_VERSION
         ):
             raise ValueError("Unsupported RPE Hadamard benchmark dataset schema.")
+        dataset_fingerprint = _require_sha256_fingerprint(
+            payload.get("dataset_fingerprint"),
+            name="dataset_fingerprint",
+        )
         compiler_payload = dict(payload["compiler_settings"])
         compiler_payload["basis_gates"] = tuple(compiler_payload["basis_gates"])
         if compiler_payload["coupling_map"] is not None:
@@ -1288,7 +1454,7 @@ class RPEHadamardCompiledCostBenchmarkDataset:
                 payload["holdout_used_for_proxy_fit"],
                 name="holdout_used_for_proxy_fit",
             ),
-            dataset_fingerprint=payload["dataset_fingerprint"],
+            dataset_fingerprint=dataset_fingerprint,
             schema_version=payload["schema_version"],
             cost_metrics=tuple(payload["cost_metrics"]),
             measurement_policy=payload["measurement_policy"],

@@ -524,6 +524,160 @@ def test_tampered_incomplete_reasons_are_rejected() -> None:
         RPEHadamardCompiledCostBenchmarkDataset.from_dict(payload)
 
 
+@pytest.mark.parametrize(
+    "invalid_fingerprint",
+    ("", None, "0" * 63, "g" * 64, "A" * 64),
+)
+@pytest.mark.parametrize("target", ("point", "dataset"))
+def test_serialized_fingerprints_must_be_canonical_sha256(
+    target,
+    invalid_fingerprint,
+) -> None:
+    dataset = generate_rpe_hadamard_compiled_cost_benchmark_dataset(
+        _request(deterministic=True, calibration=(8,))
+    ).dataset
+    payload = deepcopy(dataset.to_dict())
+    if target == "point":
+        payload["records"][0]["point_fingerprint"] = invalid_fingerprint
+    else:
+        payload["dataset_fingerprint"] = invalid_fingerprint
+    with pytest.raises((TypeError, ValueError), match="fingerprint"):
+        RPEHadamardCompiledCostBenchmarkDataset.from_dict(payload)
+
+
+@pytest.mark.parametrize("target", ("point", "dataset"))
+def test_serialized_fingerprints_are_required(target) -> None:
+    dataset = generate_rpe_hadamard_compiled_cost_benchmark_dataset(
+        _request(deterministic=True, calibration=(8,))
+    ).dataset
+    payload = deepcopy(dataset.to_dict())
+    if target == "point":
+        del payload["records"][0]["point_fingerprint"]
+    else:
+        del payload["dataset_fingerprint"]
+    with pytest.raises(TypeError, match="fingerprint"):
+        RPEHadamardCompiledCostBenchmarkDataset.from_dict(payload)
+
+
+def test_dataset_rejects_point_configuration_mismatches() -> None:
+    request = _request(deterministic=True, calibration=(8,))
+    dataset = generate_rpe_hadamard_compiled_cost_benchmark_dataset(request).dataset
+    point = dataset.records[0]
+
+    def assert_rejected(changed_point, field_name: str) -> None:
+        changed_records = tuple(
+            changed_point if record is point else record for record in dataset.records
+        )
+        with pytest.raises(ValueError, match=field_name):
+            replace(
+                dataset,
+                records=changed_records,
+                dataset_fingerprint="",
+            )
+
+    changed_delta = point.delta_time * 2.0
+    assert_rejected(
+        replace(
+            point,
+            delta_time=changed_delta,
+            t_m=float(point.q_m * changed_delta),
+            point_fingerprint="",
+        ),
+        "delta_time",
+    )
+    assert_rejected(
+        replace(
+            point,
+            rte_steps_per_occurrence=point.rte_steps_per_occurrence + 2,
+            point_fingerprint="",
+        ),
+        "rte_steps_per_occurrence",
+    )
+    assert_rejected(
+        replace(
+            point,
+            finite_taylor_order=point.finite_taylor_order + 2,
+            point_fingerprint="",
+        ),
+        "finite_taylor_order",
+    )
+    assert_rejected(
+        replace(
+            point,
+            construction_policy="raw_concatenation",
+            point_fingerprint="",
+        ),
+        "construction_policy",
+    )
+
+    other_compiler_dataset = generate_rpe_hadamard_compiled_cost_benchmark_dataset(
+        replace(request, compiler=_compiler(seed=18))
+    ).dataset
+    other_compiler_point = other_compiler_dataset.records[0]
+    assert_rejected(
+        replace(
+            point,
+            compiler_settings=other_compiler_point.compiler_settings,
+            compiler_settings_fingerprint=(
+                other_compiler_point.compiler_settings_fingerprint
+            ),
+            point_fingerprint="",
+        ),
+        "compiler_settings",
+    )
+    assert_rejected(
+        replace(
+            point,
+            backend_fingerprint="tampered-backend",
+            point_fingerprint="",
+        ),
+        "backend_fingerprint",
+    )
+    assert_rejected(
+        replace(
+            point,
+            evaluation_method="monte_carlo",
+            point_fingerprint="",
+        ),
+        "evaluation_method",
+    )
+    assert_rejected(
+        replace(point, master_seed=123456, point_fingerprint=""),
+        "master_seed",
+    )
+
+
+def test_monte_carlo_point_seed_must_match_dataset_partition_seed() -> None:
+    dataset = generate_rpe_hadamard_compiled_cost_benchmark_dataset(
+        _request(
+            deterministic=False,
+            calibration=(8,),
+            method="monte_carlo",
+            seed=91,
+            sample_count=3,
+        )
+    ).dataset
+    point = dataset.records[0]
+    assert point.master_seed is not None
+    changed_point = replace(
+        point,
+        master_seed=point.master_seed + 1,
+        point_fingerprint="",
+    )
+    changed_records = tuple(
+        changed_point if record is point else record for record in dataset.records
+    )
+    with pytest.raises(ValueError, match="master_seed"):
+        replace(dataset, records=changed_records, dataset_fingerprint="")
+    q_m, point_seed = dataset.calibration_mc_seeds[0]
+    with pytest.raises(ValueError, match="calibration_mc_seeds"):
+        replace(
+            dataset,
+            calibration_mc_seeds=((q_m, point_seed + 1),),
+            dataset_fingerprint="",
+        )
+
+
 def test_programmatic_invalid_audit_values_are_rejected() -> None:
     dataset = generate_rpe_hadamard_compiled_cost_benchmark_dataset(
         _request(deterministic=True, calibration=(8,))
@@ -647,9 +801,36 @@ def test_compile_failure_is_recorded_in_partial_dataset(tmp_path) -> None:
         assert point.transpile_completed is None
         assert point.actual_build_requests is None
         assert point.actual_transpile_requests is None
+        assert point.actual_built_instruction_total is None
     output = tmp_path / "partial.json"
     dataset.write_json(output)
     assert RPEHadamardCompiledCostBenchmarkDataset.read_json(output) == dataset
+
+
+def test_compile_failure_rejects_non_null_actual_workload() -> None:
+    dataset = generate_rpe_hadamard_compiled_cost_benchmark_dataset(
+        _request(
+            deterministic=True,
+            calibration=(8,),
+            holdout=(16,),
+            cache=_FailOnceCache(),
+        )
+    ).dataset
+    point = next(
+        record
+        for record in dataset.records
+        if record.failure_stage == "circuit_build_or_transpile"
+    )
+    for field_name in (
+        "actual_build_requests",
+        "actual_transpile_requests",
+        "actual_built_instruction_total",
+    ):
+        with pytest.raises(ValueError, match="must be None"):
+            replace(
+                point,
+                **{field_name: 0, "point_fingerprint": ""},
+            )
 
 
 def test_short_provider_remains_capped_and_no_proxy_is_connected() -> None:
