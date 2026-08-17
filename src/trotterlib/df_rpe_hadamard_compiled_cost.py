@@ -114,6 +114,7 @@ class DFRPEHadamardTrajectoryCostRecord:
     constant_phase: float
     extracted_identity_phase: float
     rte_relative_phase: float
+    step_seeds: tuple[int | None, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -129,6 +130,7 @@ class DFRPEHadamardAxisCompiledCostEstimate:
     wrapper_circuit_semantics_multiset_digest: str
     evaluation_input_digest: str
     unique_wrapper_circuit_count: int
+    actual_circuit_fingerprint_multiset_digest: str | None = None
 
 
 @dataclass(frozen=True)
@@ -342,6 +344,8 @@ def _compile_hadamard_trajectory_stream_with_plan(
     maximum_planned_instruction_applications: int,
     cache: TranspiledCircuitCostCache | None,
     backend: Any | None,
+    validated_round_index: int | None = None,
+    validated_wrapper_builder: Any | None = None,
 ) -> DFRPEHadamardCompiledCostEstimate:
     """Compile one paired wrapper for every item in a preflighted stream."""
     if not isinstance(compiler, CompilerSettings):
@@ -379,15 +383,24 @@ def _compile_hadamard_trajectory_stream_with_plan(
         if weighted
         else "monte_carlo_compiled_rpe_hadamard_interrogation_expectation"
     )
-    round_index = round_index_for_short_rpe_repetition_count(
-        stream.repetition_count
+    round_index = (
+        round_index_for_short_rpe_repetition_count(stream.repetition_count)
+        if validated_round_index is None
+        else require_integer_count(
+            validated_round_index,
+            name="validated_round_index",
+        )
     )
     working_cache = cache if cache is not None else TranspiledCircuitCostCache()
     initial_misses = working_cache.miss_count
     initial_bypasses = working_cache.bypass_count
     initial_evictions = working_cache.eviction_count
     repeated_builder = QiskitDFPartialS2RepeatedCircuitBuilder()
-    wrapper_builder = QiskitRPEHadamardInterrogationBuilder()
+    wrapper_builder = (
+        QiskitRPEHadamardInterrogationBuilder()
+        if validated_wrapper_builder is None
+        else validated_wrapper_builder
+    )
     compiled_rows: list[
         tuple[
             str,
@@ -399,6 +412,9 @@ def _compile_hadamard_trajectory_stream_with_plan(
     retained_records: list[DFRPEHadamardTrajectoryCostRecord] = []
     cosine_semantics_entries: list[str] = []
     sine_semantics_entries: list[str] = []
+    cosine_actual_circuit_entries: list[str] = []
+    sine_actual_circuit_entries: list[str] = []
+    actual_circuit_fingerprints_complete = True
     cosine_evaluation_entries: list[str] = []
     sine_evaluation_entries: list[str] = []
     evolution_semantics_entries: list[str] = []
@@ -483,6 +499,16 @@ def _compile_hadamard_trajectory_stream_with_plan(
             cache_keys.add(key)
             cache_hits += int(cached)
         cosine_cost, sine_cost = axis_costs
+        if cosine_cost.actual_circuit_fingerprint is None:
+            actual_circuit_fingerprints_complete = False
+        else:
+            cosine_actual_circuit_entries.append(
+                cosine_cost.actual_circuit_fingerprint
+            )
+        if sine_cost.actual_circuit_fingerprint is None:
+            actual_circuit_fingerprints_complete = False
+        else:
+            sine_actual_circuit_entries.append(sine_cost.actual_circuit_fingerprint)
         cosine_values = _metric_values(cosine_cost)
         sine_values = _metric_values(sine_cost)
         probability_key = (
@@ -552,6 +578,7 @@ def _compile_hadamard_trajectory_stream_with_plan(
                     trajectory_index=index,
                     probability=normalized_weight,
                     trajectory_seed=request.trajectory_seed,
+                    step_seeds=request.step_seeds,
                     evolution_provenance_fingerprint=(
                         evolution.provenance_fingerprint
                     ),
@@ -719,6 +746,11 @@ def _compile_hadamard_trajectory_stream_with_plan(
             wrapper_circuit_semantics_multiset_digest=(
                 cosine_semantics_digest
             ),
+            actual_circuit_fingerprint_multiset_digest=(
+                _digest_entries(cosine_actual_circuit_entries, ordered=False)
+                if actual_circuit_fingerprints_complete
+                else None
+            ),
             evaluation_input_digest=cosine_evaluation_input_digest,
             unique_wrapper_circuit_count=len(cosine_semantics_unique),
         ),
@@ -732,6 +764,11 @@ def _compile_hadamard_trajectory_stream_with_plan(
                 sine_semantics_retained
             ),
             wrapper_circuit_semantics_multiset_digest=sine_semantics_digest,
+            actual_circuit_fingerprint_multiset_digest=(
+                _digest_entries(sine_actual_circuit_entries, ordered=False)
+                if actual_circuit_fingerprints_complete
+                else None
+            ),
             evaluation_input_digest=sine_evaluation_input_digest,
             unique_wrapper_circuit_count=len(sine_semantics_unique),
         ),

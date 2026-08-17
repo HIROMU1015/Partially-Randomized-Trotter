@@ -177,8 +177,13 @@ single-event expectation, and Level 4 transpiled short-sequence expectation.
 Level 5 is a transpiled expectation for one complete partial-S2 step. Short
 multiple-step whole-circuit transpilation is also available as Level 5-R,
 distinguished by `circuit_granularity`, `repetition_count`, `estimate_kind`,
-and boundary policy rather than changing `CircuitCost.fidelity_level`. Long
-`2**m` RPE construction and Level 6 remain future work.
+and boundary policy rather than changing `CircuitCost.fidelity_level`. A
+separate validation-only path directly transpiles complete, measured X/Y
+Hadamard wrappers at bounded medium-size `2**m` repetition counts and writes
+calibration/holdout benchmark datasets; see
+`rpe_hadamard_compiled_cost_benchmark.md`. It is not a Level-6 proxy and is not
+connected to resource accounting. Large-`q` proxy fitting and validation remain
+future work.
 Actual per-circuit counts are integers; expected or Monte Carlo mean counts are
 floats. Compiler conditions are part of the cost identity, and costs produced
 under different settings must not be directly mixed.

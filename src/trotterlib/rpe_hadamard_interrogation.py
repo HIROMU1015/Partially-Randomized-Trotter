@@ -121,16 +121,13 @@ class QiskitRPEHadamardInterrogationBuilder:
     """Wrap an already-controlled short trajectory without re-controlling it."""
 
     @staticmethod
-    def _validate_evolution(
+    def _validate_evolution_common(
         evolution: DFPartialS2RepeatedCircuitResult,
-    ) -> tuple[int, int, float]:
+    ) -> tuple[int, float]:
         if not evolution.controlled:
             raise ValueError("The wrapped repeated evolution must be controlled.")
         if evolution.ancilla_qubit is None:
             raise ValueError("The wrapped repeated evolution requires an ancilla.")
-        round_index = round_index_for_short_rpe_repetition_count(
-            evolution.repetition_count
-        )
         circuit = evolution.circuit
         if not isinstance(circuit, QuantumCircuit):
             raise TypeError("evolution.circuit must be a QuantumCircuit.")
@@ -179,6 +176,17 @@ class QiskitRPEHadamardInterrogationBuilder:
         total_time = float(evolution.repetition_count * delta_time)
         if not math.isfinite(total_time):
             raise ValueError("Derived t_m=q_m*delta_time must be finite.")
+        return ancilla, total_time
+
+    @classmethod
+    def _validate_evolution(
+        cls,
+        evolution: DFPartialS2RepeatedCircuitResult,
+    ) -> tuple[int, int, float]:
+        round_index = round_index_for_short_rpe_repetition_count(
+            evolution.repetition_count
+        )
+        ancilla, total_time = cls._validate_evolution_common(evolution)
         return round_index, ancilla, total_time
 
     @staticmethod
@@ -288,6 +296,23 @@ class QiskitRPEHadamardInterrogationBuilder:
             )
         evolution = request.evolution
         round_index, ancilla, total_time = self._validate_evolution(evolution)
+        return self._build_validated(
+            request,
+            round_index=round_index,
+            ancilla=ancilla,
+            total_time=total_time,
+        )
+
+    def _build_validated(
+        self,
+        request: RPEHadamardInterrogationRequest,
+        *,
+        round_index: int,
+        ancilla: int,
+        total_time: float,
+    ) -> RPEHadamardInterrogationResult:
+        """Build a wrapper after a caller has validated its repetition domain."""
+        evolution = request.evolution
         signal_component: RPEHadamardSignalComponent = (
             "real" if request.axis == "cosine" else "imaginary"
         )
