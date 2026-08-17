@@ -16,6 +16,7 @@ from typing import Any, Literal, Mapping, TypeAlias
 from .df_partial_s2_repeated import RepeatedCircuitConstructionPolicy
 from .rpe_hadamard_compiled_cost_benchmark import (
     RPE_HADAMARD_COMPILED_COST_BENCHMARK_SCHEMA_VERSION,
+    RPE_HADAMARD_CONTROL_CONVENTION,
     RPEHadamardCompiledCostBenchmarkDataset,
 )
 from .rpe_hadamard_interrogation import (
@@ -548,6 +549,8 @@ class RPEHadamardCompiledCostProxy:
             raise ValueError("Unsupported proxy circuit scope.")
         if self.product_formula_order != 2:
             raise ValueError("The proxy requires second-order partial-S2 data.")
+        if self.control_convention != RPE_HADAMARD_CONTROL_CONVENTION:
+            raise ValueError("Unsupported controlled-evolution convention.")
         if self.construction_policy not in (
             "raw_concatenation",
             "boundary_optimized",
@@ -577,6 +580,18 @@ class RPEHadamardCompiledCostProxy:
             self.backend_fingerprint,
             name="backend_fingerprint",
         )
+        expected_compiler_context_fingerprint = _compiler_context_fingerprint(
+            self.compiler_settings_fingerprint,
+            self.backend_fingerprint,
+        )
+        if (
+            self.compiler_context_fingerprint
+            != expected_compiler_context_fingerprint
+        ):
+            raise ValueError(
+                "compiler_context_fingerprint is inconsistent with the compiler "
+                "settings and backend fingerprints."
+            )
         object.__setattr__(
             self,
             "ld",
@@ -1265,6 +1280,20 @@ class RPEHadamardCompiledCostProxyValidationResult:
             or actual_point_keys != expected_point_keys
         ):
             raise ValueError("Holdout points must cover each axis/q_m exactly once.")
+        overlapping_q_m = set(q_values).intersection(
+            self.proxy.calibration_q_m_values
+        )
+        if overlapping_q_m:
+            raise ValueError(
+                "Holdout q_m must be disjoint from proxy calibration q_m."
+            )
+        if (
+            self.source_holdout_dataset_fingerprint
+            != self.proxy.source_dataset_fingerprint
+        ):
+            raise ValueError(
+                "Holdout validation must use the proxy source benchmark dataset."
+            )
         object.__setattr__(self, "holdout_points", holdout_points)
         tolerances = _canonical_tolerances(self.metric_tolerances)
         object.__setattr__(self, "metric_tolerances", tolerances)
@@ -1884,6 +1913,16 @@ def validate_rpe_hadamard_compiled_cost_proxy(
         raise ValueError(
             "Proxy and holdout dataset configurations differ: "
             + ", ".join(mismatches)
+        )
+    if set(proxy.calibration_q_m_values).intersection(
+        dataset.holdout_repetition_counts
+    ):
+        raise ValueError(
+            "Holdout q_m must be disjoint from proxy calibration q_m."
+        )
+    if dataset.dataset_fingerprint != proxy.source_dataset_fingerprint:
+        raise ValueError(
+            "Proxy validation must use the proxy source benchmark dataset."
         )
     holdout_points = _reference_points_from_dataset(
         dataset,

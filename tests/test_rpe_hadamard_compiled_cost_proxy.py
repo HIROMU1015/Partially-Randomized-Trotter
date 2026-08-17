@@ -361,6 +361,51 @@ def test_validation_requires_holdout() -> None:
         _validate(proxy, dataset, _tolerances(1.0))
 
 
+def test_validation_requires_source_dataset_and_unused_holdout(
+    base_dataset,
+) -> None:
+    source_dataset = _with_statistics(base_dataset, mean_fn=_affine_mean)
+    proxy = _fit(source_dataset)
+
+    def changed_holdout(partition, axis, metric, q_m):
+        value = _affine_mean(partition, axis, metric, q_m)
+        return value if partition == "calibration" else value + 1.0
+
+    foreign_dataset = _with_statistics(
+        base_dataset,
+        mean_fn=changed_holdout,
+    )
+    with pytest.raises(ValueError, match="source benchmark dataset"):
+        _validate(proxy, foreign_dataset, _tolerances(1.0))
+
+    overlapping_dataset = generate_rpe_hadamard_compiled_cost_benchmark_dataset(
+        _benchmark_request(calibration=(8, 16), holdout=(1, 2, 4))
+    ).dataset
+    overlapping_dataset = _with_statistics(
+        overlapping_dataset,
+        mean_fn=_affine_mean,
+    )
+    provenance_forged_proxy = replace(
+        proxy,
+        source_dataset_fingerprint=overlapping_dataset.dataset_fingerprint,
+        proxy_fingerprint="",
+    )
+    with pytest.raises(ValueError, match="disjoint"):
+        _validate(
+            provenance_forged_proxy,
+            overlapping_dataset,
+            _tolerances(1.0),
+        )
+
+    result = _validate(proxy, source_dataset, _tolerances(0.0))
+    with pytest.raises(ValueError, match="source benchmark dataset"):
+        replace(
+            result,
+            source_holdout_dataset_fingerprint="0" * 64,
+            validation_fingerprint="",
+        )
+
+
 def test_validation_does_not_refit_or_mutate_inputs(base_dataset) -> None:
     dataset = _with_statistics(base_dataset, mean_fn=_affine_mean)
     dataset_before = deepcopy(dataset.to_dict())
@@ -554,6 +599,38 @@ def test_proxy_json_rejects_invalid_fingerprints(
     else:
         payload[target] = "0" * 64
     with pytest.raises((TypeError, ValueError), match="fingerprint"):
+        RPEHadamardCompiledCostProxy.from_dict(payload)
+
+
+def test_proxy_rejects_nonordinary_control_convention(base_dataset) -> None:
+    proxy = _fit(_with_statistics(base_dataset, mean_fn=_affine_mean))
+    with pytest.raises(ValueError, match="controlled-evolution convention"):
+        replace(
+            proxy,
+            control_convention="paper_cpm_halving",
+            fit_fingerprint="",
+            proxy_fingerprint="",
+        )
+
+    payload = deepcopy(proxy.to_dict())
+    payload["control_convention"] = "paper_cpm_halving"
+    with pytest.raises(ValueError, match="controlled-evolution convention"):
+        RPEHadamardCompiledCostProxy.from_dict(payload)
+
+
+def test_proxy_rejects_inconsistent_compiler_context(base_dataset) -> None:
+    proxy = _fit(_with_statistics(base_dataset, mean_fn=_affine_mean))
+    with pytest.raises(ValueError, match="compiler_context_fingerprint"):
+        replace(
+            proxy,
+            compiler_context_fingerprint="0" * 64,
+            fit_fingerprint="",
+            proxy_fingerprint="",
+        )
+
+    payload = deepcopy(proxy.to_dict())
+    payload["compiler_context_fingerprint"] = "0" * 64
+    with pytest.raises(ValueError, match="compiler_context_fingerprint"):
         RPEHadamardCompiledCostProxy.from_dict(payload)
 
 

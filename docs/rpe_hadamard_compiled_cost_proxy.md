@@ -45,8 +45,11 @@ modify the benchmark dataset or its audit flags.
 `RPEHadamardCompiledCostProxyValidationRequest` requires at least one holdout
 $q_m$ and one explicit tolerance for every metric.  It checks that the proxy
 and holdout dataset have identical DF, partial-S2, time-step, construction,
-compiler/backend, and circuit-scope identities.  It applies the existing
-coefficients without refitting.
+compiler/backend, and circuit-scope identities.  Validation accepts only the
+exact source dataset recorded by the proxy; an independently generated or
+modified dataset is rejected even when those configuration identities match.
+Every holdout $q_m$ must also be disjoint from the proxy calibration $q_m$
+values.  It applies the existing coefficients without refitting.
 
 For observed mean $C_{\mathrm{obs}}$ and optional standard error `SE`, an entry
 passes only when the prediction is finite and nonnegative and
@@ -89,4 +92,7 @@ The following identities are separate:
 JSON loaders require canonical 64-character lowercase SHA-256 values.  Empty,
 missing, malformed, or content-inconsistent fingerprints are rejected.
 Coefficients, residual aggregates, record counts, validated ranges, and
-pass/fail summaries are recomputed and checked during loading.
+pass/fail summaries are recomputed and checked during loading.  The control
+convention is fixed to `ordinary_controlled_diag_I_U_m`, and the compiler
+context fingerprint is recomputed from the compiler-settings and backend
+fingerprints instead of being accepted as an independent opaque identifier.
