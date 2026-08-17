@@ -947,6 +947,8 @@ class CircuitCost:
         "compiled_repeated_partial_s2_matched_step_sum",
         "compiled_repeated_partial_s2_cross_step_difference",
         "compiled_repeated_partial_s2_primitive_additive_sum",
+        "exact_compiled_rpe_hadamard_interrogation_expectation",
+        "monte_carlo_compiled_rpe_hadamard_interrogation_expectation",
         "legacy_analytic_proxy",
     ]
 

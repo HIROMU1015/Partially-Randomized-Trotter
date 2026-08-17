@@ -59,6 +59,21 @@ RepeatedCostEvaluationMode: TypeAlias = Literal[
     "full_diagnostics",
     "selected_only",
 ]
+RepeatedTrajectoryEvaluationMethod: TypeAlias = Literal["exact", "monte_carlo"]
+
+
+@dataclass(frozen=True)
+class DFPartialS2RepeatedTrajectoryStream:
+    """One-shot stream of validated repeated partial-S2 trajectory requests."""
+
+    evaluation_method: RepeatedTrajectoryEvaluationMethod
+    records: Iterable[tuple[DFPartialS2RepeatedRequest, float | None]]
+    expected_record_count: int
+    repetition_count: int
+    single_event_space_size: int
+    single_step_event_sequence_count: int
+    trajectory_space_size: int
+    master_seed: int | None
 
 
 @dataclass(frozen=True)
@@ -723,6 +738,236 @@ def _request_from_step_event_sequences(
     )
 
 
+def make_exact_df_partial_s2_repeated_trajectory_stream(
+    preparation: DFPartialS2Preparation,
+    step_time: float,
+    repetition_count: int,
+    rte_config: RTEConfig | None,
+    rte_distribution: RTEFiniteDistribution | None,
+    *,
+    controlled: bool = False,
+    ancilla_qubit: int | None = None,
+    cancel_adjacent_equal_bases: bool = True,
+    construction_policy: RepeatedCircuitConstructionPolicy = (
+        "boundary_optimized"
+    ),
+    maximum_trajectories: int = 10_000,
+) -> DFPartialS2RepeatedTrajectoryStream:
+    """Return the canonical probability-weighted exact trajectory stream."""
+    count = require_integer_count(
+        repetition_count,
+        name="repetition_count",
+        minimum=1,
+    )
+    maximum = require_integer_count(
+        maximum_trajectories,
+        name="maximum_trajectories",
+        minimum=1,
+    )
+    single_event_count = _validate_rte_inputs(
+        preparation,
+        float(step_time),
+        rte_config,
+        rte_distribution,
+    )
+    rte_steps = 0 if rte_config is None else rte_config.rte_steps
+    sequence_count = 1 if rte_config is None else single_event_count**rte_steps
+    trajectory_count = sequence_count**count
+    if trajectory_count > maximum:
+        raise ValueError(
+            "Exact repeated partial-S2 trajectory space has "
+            f"{trajectory_count} trajectories (M={sequence_count}, q={count}), "
+            f"above maximum_trajectories={maximum}."
+        )
+    exact_step_seeds: tuple[int | None, ...] = (
+        (None,) * count
+        if rte_config is None
+        else tuple(range(count))
+    )
+
+    def request_records() -> Iterable[
+        tuple[DFPartialS2RepeatedRequest, float | None]
+    ]:
+        if rte_config is None:
+            yield (
+                _request_from_step_event_sequences(
+                    preparation,
+                    step_time=step_time,
+                    repetition_count=count,
+                    config=None,
+                    distribution=None,
+                    step_event_sequences=((),) * count,
+                    step_seeds=exact_step_seeds,
+                    master_seed=None,
+                    trajectory_seed=None,
+                    sampling_policy="exact_enumeration_step_major_v1",
+                    controlled=controlled,
+                    ancilla_qubit=ancilla_qubit,
+                    cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
+                    construction_policy=construction_policy,
+                ),
+                1.0,
+            )
+            return
+        event_catalog: list[RTEEvent] = []
+        for event in iter_rte_events(
+            preparation.rte_preparation.symbolic_tail.components,
+            rte_distribution,
+            max_events=single_event_count,
+        ):
+            event_catalog.append(event)
+        for event_indices in itertools.product(
+            range(len(event_catalog)),
+            repeat=rte_steps * count,
+        ):
+            step_sequences = tuple(
+                tuple(
+                    event_catalog[event_indices[step * rte_steps + offset]]
+                    for offset in range(rte_steps)
+                )
+                for step in range(count)
+            )
+            weight = math.prod(
+                event.event_probability
+                for events in step_sequences
+                for event in events
+            )
+            yield (
+                _request_from_step_event_sequences(
+                    preparation,
+                    step_time=step_time,
+                    repetition_count=count,
+                    config=rte_config,
+                    distribution=rte_distribution,
+                    step_event_sequences=step_sequences,
+                    step_seeds=exact_step_seeds,
+                    master_seed=None,
+                    trajectory_seed=None,
+                    sampling_policy="exact_enumeration_step_major_v1",
+                    controlled=controlled,
+                    ancilla_qubit=ancilla_qubit,
+                    cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
+                    construction_policy=construction_policy,
+                ),
+                weight,
+            )
+
+    return DFPartialS2RepeatedTrajectoryStream(
+        evaluation_method="exact",
+        records=request_records(),
+        expected_record_count=trajectory_count,
+        repetition_count=count,
+        single_event_space_size=single_event_count,
+        single_step_event_sequence_count=sequence_count,
+        trajectory_space_size=trajectory_count,
+        master_seed=None,
+    )
+
+
+def make_monte_carlo_df_partial_s2_repeated_trajectory_stream(
+    preparation: DFPartialS2Preparation,
+    step_time: float,
+    repetition_count: int,
+    rte_config: RTEConfig | None,
+    rte_distribution: RTEFiniteDistribution | None,
+    *,
+    sample_count: int,
+    seed: int,
+    maximum_samples: int = 10_000,
+    controlled: bool = False,
+    ancilla_qubit: int | None = None,
+    cancel_adjacent_equal_bases: bool = True,
+    construction_policy: RepeatedCircuitConstructionPolicy = (
+        "boundary_optimized"
+    ),
+) -> DFPartialS2RepeatedTrajectoryStream:
+    """Return the canonical seeded unweighted Monte Carlo trajectory stream."""
+    count = require_integer_count(
+        repetition_count,
+        name="repetition_count",
+        minimum=1,
+    )
+    samples = require_integer_count(sample_count, name="sample_count", minimum=1)
+    maximum = require_integer_count(
+        maximum_samples,
+        name="maximum_samples",
+        minimum=1,
+    )
+    if samples > maximum:
+        raise ValueError(
+            f"sample_count={samples} exceeds maximum_samples={maximum}."
+        )
+    master_seed = require_integer_count(seed, name="seed")
+    single_event_count = _validate_rte_inputs(
+        preparation,
+        float(step_time),
+        rte_config,
+        rte_distribution,
+    )
+    rte_steps = 0 if rte_config is None else rte_config.rte_steps
+    sequence_count = 1 if rte_config is None else single_event_count**rte_steps
+    trajectory_space_size = sequence_count**count
+
+    def request_records() -> Iterable[
+        tuple[DFPartialS2RepeatedRequest, float | None]
+    ]:
+        master_rng = random.Random(master_seed)
+        for _ in range(samples):
+            trajectory_seed = master_rng.randrange(0, 2**63)
+            if rte_config is None:
+                step_seeds: tuple[int | None, ...] = (None,) * count
+                step_sequences: tuple[tuple[RTEEvent, ...], ...] = ((),) * count
+            else:
+                if count == 1:
+                    normalized_step_seeds = (trajectory_seed,)
+                else:
+                    trajectory_rng = random.Random(trajectory_seed)
+                    normalized_step_seeds = tuple(
+                        trajectory_rng.randrange(0, 2**63) for _ in range(count)
+                    )
+                step_seeds = normalized_step_seeds
+                step_sequences = tuple(
+                    tuple(
+                        preparation.rte_preparation.iter_sample_events(
+                            rte_distribution,
+                            sample_count=rte_config.rte_steps,
+                            seed=step_seed,
+                        )
+                    )
+                    for step_seed in normalized_step_seeds
+                )
+            yield (
+                _request_from_step_event_sequences(
+                    preparation,
+                    step_time=step_time,
+                    repetition_count=count,
+                    config=rte_config,
+                    distribution=rte_distribution,
+                    step_event_sequences=step_sequences,
+                    step_seeds=step_seeds,
+                    master_seed=master_seed,
+                    trajectory_seed=trajectory_seed,
+                    sampling_policy="monte_carlo_master_trajectory_step_v1",
+                    controlled=controlled,
+                    ancilla_qubit=ancilla_qubit,
+                    cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
+                    construction_policy=construction_policy,
+                ),
+                None,
+            )
+
+    return DFPartialS2RepeatedTrajectoryStream(
+        evaluation_method="monte_carlo",
+        records=request_records(),
+        expected_record_count=samples,
+        repetition_count=count,
+        single_event_space_size=single_event_count,
+        single_step_event_sequence_count=sequence_count,
+        trajectory_space_size=trajectory_space_size,
+        master_seed=master_seed,
+    )
+
+
 def plan_compiled_repeated_partial_s2_workload(
     preparation: DFPartialS2Preparation,
     repetition_count: int,
@@ -808,43 +1053,34 @@ def estimate_exact_compiled_repeated_partial_s2_cost(
     backend: Any | None = None,
 ) -> CompiledRepeatedPartialS2CostEstimate:
     """Enumerate ``M**q`` trajectories only after a complete preflight count."""
-    count = require_integer_count(
-        repetition_count,
-        name="repetition_count",
-        minimum=1,
-    )
     maximum_trajectories = require_integer_count(
         maximum_trajectories,
         name="maximum_trajectories",
         minimum=1,
+    )
+    stream = make_exact_df_partial_s2_repeated_trajectory_stream(
+        preparation,
+        step_time,
+        repetition_count,
+        rte_config,
+        rte_distribution,
+        controlled=controlled,
+        ancilla_qubit=ancilla_qubit,
+        cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
+        construction_policy=construction_policy,
+        maximum_trajectories=maximum_trajectories,
     )
     maximum_untranspiled_circuit_size = require_integer_count(
         maximum_untranspiled_circuit_size,
         name="maximum_untranspiled_circuit_size",
         minimum=1,
     )
-    single_event_count = _validate_rte_inputs(
-        preparation,
-        float(step_time),
-        rte_config,
-        rte_distribution,
-    )
-    rte_steps = 0 if rte_config is None else rte_config.rte_steps
-    sequence_count = 1 if rte_config is None else single_event_count**rte_steps
-    trajectory_count = sequence_count**count
-    if trajectory_count > maximum_trajectories:
-        raise ValueError(
-            "Exact repeated partial-S2 trajectory space has "
-            f"{trajectory_count} trajectories (M={sequence_count}, q={count}), "
-            f"above maximum_trajectories={maximum_trajectories}."
-        )
-
     workload_plan = plan_compiled_repeated_partial_s2_workload(
         preparation,
-        count,
+        stream.repetition_count,
         rte_config,
         rte_distribution,
-        trajectory_count=trajectory_count,
+        trajectory_count=stream.expected_record_count,
         controlled=controlled,
         evaluation_mode=evaluation_mode,
     )
@@ -856,88 +1092,18 @@ def estimate_exact_compiled_repeated_partial_s2_cost(
         ),
     )
     require_compiled_cost_workload_within_budget(workload_plan, workload_budget)
-    exact_step_seeds: tuple[int | None, ...] = (
-        (None,) * count
-        if rte_config is None
-        else tuple(range(count))
-    )
-    def request_records() -> Iterable[
-        tuple[DFPartialS2RepeatedRequest, float | None]
-    ]:
-        if rte_config is None:
-            yield (
-                _request_from_step_event_sequences(
-                    preparation,
-                    step_time=step_time,
-                    repetition_count=count,
-                    config=None,
-                    distribution=None,
-                    step_event_sequences=((),) * count,
-                    step_seeds=exact_step_seeds,
-                    master_seed=None,
-                    trajectory_seed=None,
-                    sampling_policy="exact_enumeration_step_major_v1",
-                    controlled=controlled,
-                    ancilla_qubit=ancilla_qubit,
-                    cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
-                    construction_policy=construction_policy,
-                ),
-                1.0,
-            )
-            return
-        event_catalog: list[RTEEvent] = []
-        for event in iter_rte_events(
-            preparation.rte_preparation.symbolic_tail.components,
-            rte_distribution,
-            max_events=single_event_count,
-        ):
-            event_catalog.append(event)
-        for event_indices in itertools.product(
-            range(len(event_catalog)),
-            repeat=rte_steps * count,
-        ):
-            step_sequences = tuple(
-                tuple(
-                    event_catalog[event_indices[step * rte_steps + offset]]
-                    for offset in range(rte_steps)
-                )
-                for step in range(count)
-            )
-            weight = math.prod(
-                event.event_probability
-                for events in step_sequences
-                for event in events
-            )
-            yield (
-                _request_from_step_event_sequences(
-                    preparation,
-                    step_time=step_time,
-                    repetition_count=count,
-                    config=rte_config,
-                    distribution=rte_distribution,
-                    step_event_sequences=step_sequences,
-                    step_seeds=exact_step_seeds,
-                    master_seed=None,
-                    trajectory_seed=None,
-                    sampling_policy="exact_enumeration_step_major_v1",
-                    controlled=controlled,
-                    ancilla_qubit=ancilla_qubit,
-                    cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
-                    construction_policy=construction_policy,
-                ),
-                weight,
-            )
-
     return _compile_repeated_samples(
-        request_records(),
+        stream.records,
         compiler,
         estimate_kind="exact_compiled_repeated_partial_s2_expectation",
         evaluation_mode=evaluation_mode,
-        expected_request_count=trajectory_count,
-        master_seed=None,
-        single_event_space_size=single_event_count,
-        single_step_event_sequence_count=sequence_count,
-        trajectory_space_size=trajectory_count,
+        expected_request_count=stream.expected_record_count,
+        master_seed=stream.master_seed,
+        single_event_space_size=stream.single_event_space_size,
+        single_step_event_sequence_count=(
+            stream.single_step_event_sequence_count
+        ),
+        trajectory_space_size=stream.trajectory_space_size,
         maximum_trajectories=maximum_trajectories,
         maximum_untranspiled_circuit_size=maximum_untranspiled_circuit_size,
         maximum_retained_provenance_records=(
@@ -977,42 +1143,36 @@ def estimate_monte_carlo_compiled_repeated_partial_s2_cost(
     backend: Any | None = None,
 ) -> CompiledRepeatedPartialS2CostEstimate:
     """Directly sample full trajectories and use an unweighted sample mean."""
-    count = require_integer_count(
-        repetition_count,
-        name="repetition_count",
-        minimum=1,
-    )
-    sample_count = require_integer_count(sample_count, name="sample_count", minimum=1)
     maximum_samples = require_integer_count(
         maximum_samples,
         name="maximum_samples",
         minimum=1,
     )
-    if sample_count > maximum_samples:
-        raise ValueError(
-            f"sample_count={sample_count} exceeds maximum_samples={maximum_samples}."
-        )
-    master_seed = require_integer_count(seed, name="seed")
+    stream = make_monte_carlo_df_partial_s2_repeated_trajectory_stream(
+        preparation,
+        step_time,
+        repetition_count,
+        rte_config,
+        rte_distribution,
+        sample_count=sample_count,
+        seed=seed,
+        maximum_samples=maximum_samples,
+        controlled=controlled,
+        ancilla_qubit=ancilla_qubit,
+        cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
+        construction_policy=construction_policy,
+    )
     maximum_untranspiled_circuit_size = require_integer_count(
         maximum_untranspiled_circuit_size,
         name="maximum_untranspiled_circuit_size",
         minimum=1,
     )
-    single_event_count = _validate_rte_inputs(
-        preparation,
-        float(step_time),
-        rte_config,
-        rte_distribution,
-    )
-    rte_steps = 0 if rte_config is None else rte_config.rte_steps
-    sequence_count = 1 if rte_config is None else single_event_count**rte_steps
-    trajectory_space_size = sequence_count**count
     workload_plan = plan_compiled_repeated_partial_s2_workload(
         preparation,
-        count,
+        stream.repetition_count,
         rte_config,
         rte_distribution,
-        trajectory_count=sample_count,
+        trajectory_count=stream.expected_record_count,
         controlled=controlled,
         evaluation_mode=evaluation_mode,
     )
@@ -1024,65 +1184,18 @@ def estimate_monte_carlo_compiled_repeated_partial_s2_cost(
         ),
     )
     require_compiled_cost_workload_within_budget(workload_plan, workload_budget)
-
-    def request_records() -> Iterable[
-        tuple[DFPartialS2RepeatedRequest, float | None]
-    ]:
-        master_rng = random.Random(master_seed)
-        for _ in range(sample_count):
-            trajectory_seed = master_rng.randrange(0, 2**63)
-            if rte_config is None:
-                step_seeds: tuple[int | None, ...] = (None,) * count
-                step_sequences: tuple[tuple[RTEEvent, ...], ...] = ((),) * count
-            else:
-                if count == 1:
-                    normalized_step_seeds = (trajectory_seed,)
-                else:
-                    trajectory_rng = random.Random(trajectory_seed)
-                    normalized_step_seeds = tuple(
-                        trajectory_rng.randrange(0, 2**63) for _ in range(count)
-                    )
-                step_seeds = normalized_step_seeds
-                step_sequences = tuple(
-                    tuple(
-                        preparation.rte_preparation.iter_sample_events(
-                            rte_distribution,
-                            sample_count=rte_config.rte_steps,
-                            seed=step_seed,
-                        )
-                    )
-                    for step_seed in normalized_step_seeds
-                )
-            yield (
-                _request_from_step_event_sequences(
-                    preparation,
-                    step_time=step_time,
-                    repetition_count=count,
-                    config=rte_config,
-                    distribution=rte_distribution,
-                    step_event_sequences=step_sequences,
-                    step_seeds=step_seeds,
-                    master_seed=master_seed,
-                    trajectory_seed=trajectory_seed,
-                    sampling_policy="monte_carlo_master_trajectory_step_v1",
-                    controlled=controlled,
-                    ancilla_qubit=ancilla_qubit,
-                    cancel_adjacent_equal_bases=cancel_adjacent_equal_bases,
-                    construction_policy=construction_policy,
-                ),
-                None,
-            )
-
     return _compile_repeated_samples(
-        request_records(),
+        stream.records,
         compiler,
         estimate_kind="monte_carlo_compiled_repeated_partial_s2_expectation",
         evaluation_mode=evaluation_mode,
-        expected_request_count=sample_count,
-        master_seed=master_seed,
-        single_event_space_size=single_event_count,
-        single_step_event_sequence_count=sequence_count,
-        trajectory_space_size=trajectory_space_size,
+        expected_request_count=stream.expected_record_count,
+        master_seed=stream.master_seed,
+        single_event_space_size=stream.single_event_space_size,
+        single_step_event_sequence_count=(
+            stream.single_step_event_sequence_count
+        ),
+        trajectory_space_size=stream.trajectory_space_size,
         maximum_trajectories=maximum_samples,
         maximum_untranspiled_circuit_size=maximum_untranspiled_circuit_size,
         maximum_retained_provenance_records=(

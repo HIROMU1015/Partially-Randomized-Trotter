@@ -77,5 +77,6 @@ same randomized trajectory for multiple quantum shots is outside that
 guarantee and requires a separate circuit-randomness concentration analysis.
 
 The existing `DFLevel5RCompiledCostProvider` and resource-accounting objective
-remain unchanged. A wrapper-inclusive compiled-cost provider and short-`q`
-full-interrogation validation are separate next steps.
+remain unchanged. Wrapper-inclusive short-round costs are implemented
+separately by `DFRPEHadamardCompiledCostProvider`; see
+[`rpe_hadamard_compiled_cost.md`](rpe_hadamard_compiled_cost.md).

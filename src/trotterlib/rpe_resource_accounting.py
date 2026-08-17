@@ -50,6 +50,7 @@ RPERTETrajectoryMode: TypeAlias = Literal[
 ]
 RPECircuitCostScope: TypeAlias = Literal[
     "compiled_time_evolution_subcircuit",
+    "single_hadamard_interrogation_without_state_preparation",
     "full_rpe_circuit",
     "validated_long_circuit_proxy",
 ]
@@ -347,6 +348,7 @@ class RPERoundCompiledCost:
             )
         if self.circuit_cost_scope not in (
             "compiled_time_evolution_subcircuit",
+            "single_hadamard_interrogation_without_state_preparation",
             "full_rpe_circuit",
             "validated_long_circuit_proxy",
         ):
@@ -793,6 +795,20 @@ def evaluate_rpe_round_candidate(
                 (
                     "state_preparation_hadamard_measurement_noise_and_"
                     "backend_runs_excluded"
+                ),
+                "ordinary_controlled_diag_I_U_for_level5r_provider",
+            )
+        )
+    elif scope == "single_hadamard_interrogation_without_state_preparation":
+        assumptions_list.extend(
+            (
+                (
+                    "single_hadamard_interrogation_includes_ancilla_gates_"
+                    "controlled_evolution_and_measurement"
+                ),
+                (
+                    "state_preparation_multiple_shots_backend_runs_noise_"
+                    "full_rpe_and_phase_reconstruction_excluded"
                 ),
                 "ordinary_controlled_diag_I_U_for_level5r_provider",
             )

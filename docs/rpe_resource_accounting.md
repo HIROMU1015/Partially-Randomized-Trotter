@@ -6,10 +6,14 @@ to directly constructible, second-order DF partial-S2 rounds with fixed DF
 data, fixed `L_D`, fixed `delta_time`, one randomized-tail occurrence per
 partial-S2 step, and the ordinary controlled `diag(I,U)` circuit model.
 
-It does **not** build a full RPE circuit. In particular, the direct Level-5-R
-provider excludes state preparation, Hadamard-test H/X/Y gates, measurements,
-noise, and backend execution. Its scope is recorded as
-`compiled_time_evolution_subcircuit`.
+It does **not** build a full RPE circuit. The direct Level-5-R provider excludes
+state preparation, Hadamard-test H/X/Y gates, measurements, noise, and backend
+execution. Its scope is `compiled_time_evolution_subcircuit`. The optional
+`DFRPEHadamardCompiledCostProvider` instead includes the Hadamard ancilla gates,
+controlled evolution, axis basis change, and ancilla measurement, under the
+scope `single_hadamard_interrogation_without_state_preparation`. It still
+excludes state preparation, multiple-shot execution, backend runs, noise,
+full-round processing, and phase reconstruction.
 
 ## Round calculation
 
@@ -161,6 +165,15 @@ the quantum shot counts. Per-axis Monte Carlo standard errors are retained,
 but this layer does not report a total-cost standard error: the direct
 provider reuses the same evolution estimate for both axes, so treating those
 two fields as independent would be incorrect.
+
+`DFRPEHadamardCompiledCostProvider` directly transpiles the complete measured
+cosine and sine wrappers separately. Exact evaluation applies the enumerated
+trajectory probabilities, while Monte Carlo evaluation stores an axis-specific
+sample variance and standard error. Both axes reuse the same trajectory set.
+The accounting formula above is unchanged, and the classical trajectory sample
+count remains metadata rather than an additional multiplier. This provider
+does not establish the fresh-IID-per-quantum-shot condition; that condition
+continues to come only from `RPEHadamardSamplingPolicy`.
 
 ## Guarantee status
 

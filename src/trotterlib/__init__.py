@@ -216,9 +216,12 @@ from .df_partial_s2_repeated import (
 )
 from .df_partial_s2_repeated_cost import (
     CompiledRepeatedPartialS2CostEstimate,
+    DFPartialS2RepeatedTrajectoryStream,
     RepeatedCostEvaluationMode,
     estimate_exact_compiled_repeated_partial_s2_cost,
     estimate_monte_carlo_compiled_repeated_partial_s2_cost,
+    make_exact_df_partial_s2_repeated_trajectory_stream,
+    make_monte_carlo_df_partial_s2_repeated_trajectory_stream,
     plan_compiled_repeated_partial_s2_workload,
 )
 from .rpe_hadamard_interrogation import (
@@ -266,6 +269,19 @@ from .rpe_resource_accounting import (
 from .df_rpe_resource import (
     DF_RPE_COMPILED_COST_PROVIDER_VERSION,
     DFLevel5RCompiledCostProvider,
+)
+from .df_rpe_hadamard_compiled_cost import (
+    DF_RPE_HADAMARD_COMPILED_COST_EVALUATION_SCHEMA_VERSION,
+    DF_RPE_HADAMARD_COMPILED_COST_PROVIDER_VERSION,
+    DF_RPE_HADAMARD_MEASUREMENT_POLICY,
+    DFRPEHadamardAxisCompiledCostEstimate,
+    DFRPEHadamardCompiledCostEstimate,
+    DFRPEHadamardCompiledCostProvider,
+    DFRPEHadamardCompiledMetricValues,
+    DFRPEHadamardTrajectoryCostRecord,
+    estimate_exact_compiled_rpe_hadamard_cost,
+    estimate_monte_carlo_compiled_rpe_hadamard_cost,
+    plan_compiled_rpe_hadamard_workload,
 )
 from .rpe_short_round_optimization import (
     DEFAULT_MAXIMUM_SHORT_ROUND_CANDIDATES,
@@ -459,9 +475,12 @@ __all__ = [
     "make_df_partial_s2_repeated_request",
     "repetition_count_for_rpe_round",
     "CompiledRepeatedPartialS2CostEstimate",
+    "DFPartialS2RepeatedTrajectoryStream",
     "RepeatedCostEvaluationMode",
     "estimate_exact_compiled_repeated_partial_s2_cost",
     "estimate_monte_carlo_compiled_repeated_partial_s2_cost",
+    "make_exact_df_partial_s2_repeated_trajectory_stream",
+    "make_monte_carlo_df_partial_s2_repeated_trajectory_stream",
     "plan_compiled_repeated_partial_s2_workload",
     "RPE_HADAMARD_ALLOWED_REPETITION_COUNTS",
     "RPE_HADAMARD_BIT_VALUE_MAPPING",
@@ -503,6 +522,17 @@ __all__ = [
     "summarize_rpe_resources",
     "DF_RPE_COMPILED_COST_PROVIDER_VERSION",
     "DFLevel5RCompiledCostProvider",
+    "DF_RPE_HADAMARD_COMPILED_COST_EVALUATION_SCHEMA_VERSION",
+    "DF_RPE_HADAMARD_COMPILED_COST_PROVIDER_VERSION",
+    "DF_RPE_HADAMARD_MEASUREMENT_POLICY",
+    "DFRPEHadamardAxisCompiledCostEstimate",
+    "DFRPEHadamardCompiledCostEstimate",
+    "DFRPEHadamardCompiledCostProvider",
+    "DFRPEHadamardCompiledMetricValues",
+    "DFRPEHadamardTrajectoryCostRecord",
+    "estimate_exact_compiled_rpe_hadamard_cost",
+    "estimate_monte_carlo_compiled_rpe_hadamard_cost",
+    "plan_compiled_rpe_hadamard_workload",
     "DEFAULT_MAXIMUM_SHORT_ROUND_CANDIDATES",
     "RPE_SHORT_ROUND_ENUMERATION_RULE",
     "RPE_SHORT_ROUND_MAXIMUM_Q",
