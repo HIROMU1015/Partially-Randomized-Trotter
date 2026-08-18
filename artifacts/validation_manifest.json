@@ -169,6 +169,129 @@
           "large_q_rpe_hadamard_affine_proxy"
         ],
         "reason": "Documents the affine model, calibration/holdout isolation, acceptance policy, fingerprints, serialization, and limited validation scope."
+      },
+      {
+        "path": "src/trotterlib/finite_rte_signal_validation.py",
+        "kind": "file",
+        "supports": [
+          "finite_rte_signal_validation"
+        ],
+        "reason": "Sector-restricted finite-Taylor operator-moment validation of finite-RTE operator, signal, attenuation, radius, and phase bounds."
+      },
+      {
+        "path": "tests/test_finite_rte_signal_validation.py",
+        "kind": "file",
+        "supports": [
+          "finite_rte_signal_validation",
+          "tests"
+        ],
+        "reason": "Dedicated tamper-evidence and analytic-operator-moment versus explicit-event validation tests."
+      },
+      {
+        "path": "scripts/run_finite_rte_signal_validation.py",
+        "kind": "file",
+        "supports": [
+          "finite_rte_signal_validation"
+        ],
+        "reason": "Representative H-chain generator that reuses one Hamiltonian across L_D and delta_time sensitivity grids and records local provenance."
+      },
+      {
+        "path": "docs/finite_rte_signal_validation.md",
+        "kind": "file",
+        "supports": [
+          "finite_rte_signal_validation"
+        ],
+        "reason": "Documents the validation-only scope, provisional allocation, acceleration method, representative result, and remaining reproducibility limitations."
+      },
+      {
+        "path": "artifacts/finite_rte_signal_validation",
+        "kind": "directory",
+        "supports": [
+          "finite_rte_signal_validation"
+        ],
+        "reason": "Contains four H4 split artifacts and five L_D=3 delta-sensitivity artifacts; these are dirty-worktree evidence rather than immutable CI evidence."
+      },
+      {
+        "path": "src/trotterlib/pf_delta_validation.py",
+        "kind": "file",
+        "supports": [
+          "pf_delta_surrogate_validation"
+        ],
+        "reason": "CPU Qiskit/direct-tail partial-S2 comparison of phase and linearized perturbative energy errors against a disjoint-time empirical H_D surrogate, with explicit single-dominant-eigenphase acceptance guards."
+      },
+      {
+        "path": "tests/test_pf_delta_validation.py",
+        "kind": "file",
+        "supports": [
+          "pf_delta_surrogate_validation",
+          "tests"
+        ],
+        "reason": "Dedicated calibration/holdout isolation, Qiskit-versus-sector consistency, perturbative-versus-dominant-eigenphase consistency, single-phase guards, serialization, and tamper-rejection tests."
+      },
+      {
+        "path": "scripts/run_pf_delta_validation.py",
+        "kind": "file",
+        "supports": [
+          "pf_delta_surrogate_validation"
+        ],
+        "reason": "Representative H4 multi-L_D PF delta-grid generator that reuses one Hamiltonian and records source and environment provenance."
+      },
+      {
+        "path": "docs/pf_delta_validation.md",
+        "kind": "file",
+        "supports": [
+          "pf_delta_surrogate_validation"
+        ],
+        "reason": "Documents the disjoint calibration/holdout policy, CPU perturbative check, adopted single-dominant-eigenphase cost-input policy, spectral guards, and non-rigorous boundary."
+      },
+      {
+        "path": "artifacts/pf_delta_validation",
+        "kind": "directory",
+        "supports": [
+          "pf_delta_surrogate_validation"
+        ],
+        "reason": "Contains 12 schema-v4 fingerprinted local H4 L_D=0,...,11 direct-tail PF/Qiskit/perturbation, q-repeated single-phase, and ideal-QPE spectral results; they are dirty-worktree evidence rather than immutable CI evidence."
+      },
+      {
+        "path": "src/trotterlib/pf_c_system_size_validation.py",
+        "kind": "file",
+        "supports": [
+          "pf_c_system_size_validation"
+        ],
+        "reason": "Defines configured Qiskit delta windows, legacy trigonometric-denominator diagnostics, executable-window C envelopes, and a PF-unitary-free Qiskit/expm_multiply state-action validator."
+      },
+      {
+        "path": "tests/test_pf_c_system_size_validation.py",
+        "kind": "file",
+        "supports": [
+          "pf_c_system_size_validation",
+          "tests"
+        ],
+        "reason": "Tests configured H-chain delta windows, legacy singular-denominator detection, and fingerprinted system-size payload validation."
+      },
+      {
+        "path": "scripts/run_pf_c_system_size_validation.py",
+        "kind": "file",
+        "supports": [
+          "pf_c_system_size_validation"
+        ],
+        "reason": "Generates direct H2--H5 dominant-eigenphase comparisons and H2--H6 PF-unitary-free state-action coefficient checks at the configured Qiskit-executable deltas."
+      },
+      {
+        "path": "docs/pf_c_system_size_validation.md",
+        "kind": "file",
+        "supports": [
+          "pf_c_system_size_validation"
+        ],
+        "reason": "Documents the executable-window envelope policy, Evaluation-style delta conditioning hazard, H3 rejection, H6 state-action result, and the future H12 adoption rule."
+      },
+      {
+        "path": "artifacts/pf_c_system_size_validation",
+        "kind": "directory",
+        "supports": [
+          "pf_c_system_size_validation"
+        ],
+        "reason": "Contains four fingerprinted H2--H5 dense-reference PF payloads and one fingerprinted system-size index embedding H2--H6 state-action results; they are dirty-worktree evidence rather than immutable CI evidence."
       }
     ],
     "quarantined": [
@@ -354,6 +477,100 @@
         "Fit a representative proxy from a committed schema-v2 benchmark dataset and commit the versioned proxy JSON with source, calibration, fit-specification, and output fingerprints.",
         "Validate that fixed proxy against its unused committed holdout partition and commit the versioned validation JSON with explicit tolerances and tested q_m range.",
         "Do not connect the proxy to resource accounting until representative holdout validation passes under a documented acceptance policy."
+      ]
+    },
+    {
+      "id": "finite_rte_signal_validation",
+      "status": "source_present_no_current_ci",
+      "summary": "A representative H4, STO-3G, full-rank DF validation evaluates four L_D splits over 192 short-round points and an L_D=3 delta sensitivity over 375 additional points. All finite-RTE operator/signal/radius bounds and all applicable phase bounds pass. In the expanded delta grid, 374/375 points satisfy the provisional RTE phase allocation; only delta=0.4,q=4,r=1,K=0 fails the conservative allocation, while r=2 or K=2 restores feasibility. The artifacts are local dirty-worktree evidence, not a final-cost claim or immutable CI evidence.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 1,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 2,
+        "local_artifacts": 9,
+        "validated_grid_points": 567,
+        "validated_state_signals": 1134,
+        "mathematical_bound_failures": 0,
+        "provisional_phase_allocation_failures": 20,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Publish an immutable CI run for the validation implementation and its complete test suite.",
+        "Canonicalize or tolerance-bind the DF representation provenance across independent processes before claiming byte-identical regeneration.",
+        "Repeat the delta_time, r, and K sensitivity on another problem instance before generalizing the observed trade-off.",
+        "Keep these approximation results separate from compiled total-cost claims until shot and cost approximations receive their own validation."
+      ]
+    },
+    {
+      "id": "pf_delta_surrogate_validation",
+      "status": "source_present_no_current_ci",
+      "summary": "The H4 L_D=0,...,11 second-order partial-S2 model was evaluated on six delta_time values disjoint from the H_D fit grid and q=1,2,4. CPU Qiskit state evolution agrees with the sector-matrix reference to 6.6e-15 in state norm, and the linearized perturbative energy error agrees with the survival-phase error within 3.04e-6 relatively. The adopted primary PF input is the dominant-eigenphase coefficient (about 0.01338), with the full-H-ground-state perturbative coefficient (about 0.01342) as its scalable estimator and QPE/RPE statistical error kept separate. All 12 splits pass the single-phase guards: non-dominant weight remains below 1.97e-5, observed q<=4 signal-phase contamination below 1.56e-5 rad, signal-to-dominant energy-bias difference below 1.24%, and perturbative-to-dominant coefficient difference below 0.28%. Ideal-QPE RMSE remains a diagnostic rather than the primary cost input. These are local empirical results, not a rigorous certification input.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 1,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 3,
+        "local_artifacts": 12,
+        "validated_ld_values": 12,
+        "calibration_time_points": 4,
+        "holdout_delta_evaluations": 72,
+        "holdout_q_points": 216,
+        "validated_state_signals": 432,
+        "ideal_qpe_spectral_distributions": 72,
+        "qpe_spectral_numerical_failures": 0,
+        "single_dominant_phase_validation_failures": 0,
+        "scalable_primary_coefficient_estimator_failures": 0,
+        "survival_phase_as_qpe_rmse_proxy_failures": 12,
+        "qiskit_perturbation_validation_failures": 0,
+        "rigorous_upper_bounds_validated": 0,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Publish an immutable CI run for the PF delta-grid validation and its complete test suite.",
+        "Validate the dominant-eigenphase and direct full-H-state perturbative coefficients, spectral weights, and single-phase guards on additional problem instances and larger systems.",
+        "Extend the q-repeated signal and finite-resolution QPE/RPE reconstruction checks beyond q=4; fall back to a multi-phase or RMSE model whenever the documented single-phase guards fail.",
+        "Supply an independent rigorous Product Formula error bound before any certified RPE claim.",
+        "Keep the empirical surrogate separate from compiled-cost and final-cost validation."
+      ]
+    },
+    {
+      "id": "pf_c_system_size_validation",
+      "status": "source_present_no_current_ci",
+      "summary": "At fixed H-chain distance 1.0 Angstrom, project-selected DF ranks, and L_D=floor(L/2), the operational partial-S2 coefficient was evaluated only at established Qiskit-executable delta windows. Direct dominant-eigenphase comparisons were completed for H2--H5; the shift-invariant perturbative envelope differs by 0.64--2.07%, with H3 deliberately rejected because its signal-to-dominant-branch difference reaches 2.076% against the predeclared 2% guard. A PF-unitary-free state-action path agrees with dense H2--H5 references within 8.0e-15 and extends through H6 (12 qubits, sector dimension 924), where C_use=0.02088853 and perturbative-to-phase relative error is 3.60e-7. No configured point is ill-conditioned under the recorded legacy cosine/sine denominator guard. H12 remains unevaluated and its C will be the perturbative point-coefficient envelope over delta={0.120,0.122,0.124} after GPU support is extended.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 1,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 3,
+        "local_artifacts": 5,
+        "direct_eigenphase_validated_molecule_sizes": 4,
+        "state_action_validated_molecule_sizes": 5,
+        "direct_eigenphase_delta_points": 16,
+        "state_action_delta_points": 20,
+        "maximum_direct_reference_qubits": 10,
+        "maximum_state_action_qubits": 12,
+        "configured_delta_grid_mismatches": 0,
+        "corrected_perturbative_estimator_failures": 0,
+        "single_dominant_phase_failures": 1,
+        "state_action_validation_failures": 0,
+        "legacy_denominator_ill_conditioned_points": 0,
+        "h12_validations": 0,
+        "rigorous_upper_bounds_validated": 0,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Publish an immutable CI run for the system-size validation implementation and its complete test suite.",
+        "Extend the state-action path to GPU execution and evaluate H12 at the configured delta values 0.120, 0.122, and 0.124 before selecting its operational C.",
+        "Repeat the executable-window check for every shortlisted H12 L_D rather than transferring the midpoint-split coefficient.",
+        "Retain the legacy cosine/sine denominator diagnostics and reject any data point that is reprocessed with an ill-conditioned legacy estimator.",
+        "Keep these coefficient results separate from finite-RTE, shot, compiled-cost, and final-cost claims."
       ]
     }
   ],

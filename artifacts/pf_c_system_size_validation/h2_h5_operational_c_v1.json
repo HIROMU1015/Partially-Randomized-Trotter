@@ -1,0 +1,1083 @@
+{
+  "final_cost_evaluation_performed": false,
+  "provenance": {
+    "command": ".venv311/bin/python scripts/run_pf_c_system_size_validation.py",
+    "evidence_status": "local_worktree_validation_not_immutable_ci",
+    "generated_at_utc": "2026-08-18T07:48:23.746632+00:00",
+    "git_commit": "8fdc6b34272fa1cbc65a146b68568c717b8efa3d",
+    "numpy_version": "1.26.4",
+    "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
+    "python_version": "3.11.0rc1",
+    "qiskit_version": "1.3.0",
+    "scipy_version": "1.14.1",
+    "source_sha256": {
+      "scripts/run_pf_c_system_size_validation.py": "37d9b7cb4bf04618ae9101a2684a3400dc8e4555dab2d956115c0382184b4fad",
+      "src/trotterlib/config.py": "15e12517f82ed3e9d56eac8a272693ced87226a8ae5e97351e1c2c9b4e3415ca",
+      "src/trotterlib/finite_rte_signal_validation.py": "88bd1b209bcaec057ccc56c742c900bab0de2d1eb183890726640760215b1dd7",
+      "src/trotterlib/pf_c_system_size_validation.py": "5e528fb87f392b12b1f8a36b5b66db199d1046bbd6c5a0cae1714794edd8d89a",
+      "src/trotterlib/pf_delta_validation.py": "85b317915b3d677d1be8f735990ff6a1b7b82717389e567f225990ed3ff875ba"
+    }
+  },
+  "request": {
+    "basis": "sto-3g",
+    "delta_policy": "configured_lower_order_qiskit_execution_window",
+    "delta_step": 0.002,
+    "df_rank_policy": "project_config_selected_rank",
+    "distance": 1.0,
+    "ld_policy": "floor(df_rank_actual/2)",
+    "legacy_minimum_denominator_abs": 0.1,
+    "molecule_sizes": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "operational_coefficient_policy": "maximum of dominant-eigenphase and corrected-perturbative point coefficients over the executable delta window",
+    "q_values": [
+      1
+    ]
+  },
+  "schema_version": "pf_c_system_size_validation_v1",
+  "scope": "operational_pf_coefficient_system_size_validation_only",
+  "size_results": [
+    {
+      "basis": "sto-3g",
+      "configured_delta_grid_match": true,
+      "configured_qiskit_delta_times": [
+        0.73,
+        0.732,
+        0.734,
+        0.736
+      ],
+      "core_pf_artifact_path": "artifacts/pf_c_system_size_validation/h2_sto3g_d100_rank3_ld1_pf_v4.json",
+      "core_pf_validation_fingerprint": "3c2ce9ad958107e1cc09956f6c179da3392b846f3787fedd3abe00c28f1ed1a2",
+      "corrected_perturbative_estimator_validation_pass": true,
+      "delta_window_source": "project PERTURBATION_FIT_STARTS lower-order window inherited from the Evaluation workflow",
+      "df_rank_actual": 3,
+      "df_rank_source": "config",
+      "distance": 1.0,
+      "dominant_eigenphase_window_envelope_coefficient": 0.003289422982041188,
+      "estimator_definition": "shift-invariant relative-survival estimator without division by cos(E*delta) or sin(E*delta)",
+      "evaluated_delta_times": [
+        0.73,
+        0.732,
+        0.734,
+        0.736
+      ],
+      "ground_energy": -1.1011503302326187,
+      "ld": 1,
+      "ld_policy": "floor(df_rank_actual/2)",
+      "legacy_cosine_ill_conditioned_point_count": 0,
+      "legacy_sine_ill_conditioned_point_count": 0,
+      "maximum_corrected_perturbative_vs_phase_relative_difference": 9.971950763378666e-06,
+      "minimum_legacy_cosine_denominator_abs": 0.6891748663549665,
+      "minimum_legacy_sine_denominator_abs": 0.7200259694881493,
+      "molecule_type": 2,
+      "n_electrons": 2,
+      "n_qubits": 4,
+      "operational_coefficient_usable": true,
+      "operational_validation_window_envelope_coefficient": 0.0033439880258874246,
+      "perturbative_vs_exact_envelope_relative_difference": 0.01658802900816883,
+      "point_records": [
+        {
+          "delta_time": 0.73,
+          "dominant_eigenphase_point_coefficient": 0.0032887075071939974,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8038397410698116,
+            "legacy_cosine_denominator_abs": 0.6939471184914962,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7200259694881493,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "perturbative_vs_phase_relative_difference": 9.498204843867286e-06,
+          "relative_survival_radius": 0.9999907835842108,
+          "shift_invariant_perturbative_point_coefficient": 0.0033424656307842375
+        },
+        {
+          "delta_time": 0.732,
+          "dominant_eigenphase_point_coefficient": 0.0032889453180371744,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8060420417302768,
+            "legacy_cosine_denominator_abs": 0.6923597232395953,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7215525023417153,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "perturbative_vs_phase_relative_difference": 9.654000444161014e-06,
+          "relative_survival_radius": 0.9999906325392776,
+          "shift_invariant_perturbative_point_coefficient": 0.0033429719672577614
+        },
+        {
+          "delta_time": 0.734,
+          "dominant_eigenphase_point_coefficient": 0.003289183809566084,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.808244342390742,
+            "legacy_cosine_denominator_abs": 0.690768969955634,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7230755355745571,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "perturbative_vs_phase_relative_difference": 9.81190837605475e-06,
+          "relative_survival_radius": 0.9999904794495307,
+          "shift_invariant_perturbative_point_coefficient": 0.0033434794329678203
+        },
+        {
+          "delta_time": 0.736,
+          "dominant_eigenphase_point_coefficient": 0.003289422982041188,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8104466430512073,
+            "legacy_cosine_denominator_abs": 0.6891748663549665,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7245950617997711,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "perturbative_vs_phase_relative_difference": 9.971950763378666e-06,
+          "relative_survival_radius": 0.9999903242931547,
+          "shift_invariant_perturbative_point_coefficient": 0.0033439880258874246
+        }
+      ],
+      "sector_dimension": 6,
+      "shift_invariant_perturbative_window_envelope_coefficient": 0.0033439880258874246,
+      "single_dominant_phase_validation_pass": true
+    },
+    {
+      "basis": "sto-3g",
+      "configured_delta_grid_match": true,
+      "configured_qiskit_delta_times": [
+        0.75,
+        0.752,
+        0.754,
+        0.756
+      ],
+      "core_pf_artifact_path": "artifacts/pf_c_system_size_validation/h3_sto3g_d100_rank5_ld2_pf_v4.json",
+      "core_pf_validation_fingerprint": "c151944d14525a61b76dbe5d5edf4917e5a4dd08288b95744d24122cfeccea1b",
+      "corrected_perturbative_estimator_validation_pass": true,
+      "delta_window_source": "project PERTURBATION_FIT_STARTS lower-order window inherited from the Evaluation workflow",
+      "df_rank_actual": 5,
+      "df_rank_source": "config",
+      "distance": 1.0,
+      "dominant_eigenphase_window_envelope_coefficient": 0.004983456622518433,
+      "estimator_definition": "shift-invariant relative-survival estimator without division by cos(E*delta) or sin(E*delta)",
+      "evaluated_delta_times": [
+        0.75,
+        0.752,
+        0.754,
+        0.756
+      ],
+      "ground_energy": -1.2249225047592673,
+      "ld": 2,
+      "ld_policy": "floor(df_rank_actual/2)",
+      "legacy_cosine_ill_conditioned_point_count": 0,
+      "legacy_sine_ill_conditioned_point_count": 0,
+      "maximum_corrected_perturbative_vs_phase_relative_difference": 2.498763777625649e-05,
+      "minimum_legacy_cosine_denominator_abs": 0.6010025716525004,
+      "minimum_legacy_sine_denominator_abs": 0.7948084532230564,
+      "molecule_type": 3,
+      "n_electrons": 2,
+      "n_qubits": 6,
+      "operational_coefficient_usable": false,
+      "operational_validation_window_envelope_coefficient": 0.005086772341494019,
+      "perturbative_vs_exact_envelope_relative_difference": 0.020731738389923784,
+      "point_records": [
+        {
+          "delta_time": 0.75,
+          "dominant_eigenphase_point_coefficient": 0.004982190446805473,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.9186918785694504,
+            "legacy_cosine_denominator_abs": 0.6068603815418936,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7948084532230564,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "perturbative_vs_phase_relative_difference": 2.383665751898894e-05,
+          "relative_survival_radius": 0.9999769300934593,
+          "shift_invariant_perturbative_point_coefficient": 0.005084095541880584
+        },
+        {
+          "delta_time": 0.752,
+          "dominant_eigenphase_point_coefficient": 0.004982611289444531,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.9211417235789691,
+            "legacy_cosine_denominator_abs": 0.6049114048585882,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7962927804972297,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "perturbative_vs_phase_relative_difference": 2.421534263580229e-05,
+          "relative_survival_radius": 0.9999765640316455,
+          "shift_invariant_perturbative_point_coefficient": 0.005084986123446465
+        },
+        {
+          "delta_time": 0.754,
+          "dominant_eigenphase_point_coefficient": 0.004983033347746003,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.9235915685884876,
+            "legacy_cosine_denominator_abs": 0.6029587976557784,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7977723286311064,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "perturbative_vs_phase_relative_difference": 2.4598985771396336e-05,
+          "relative_survival_radius": 0.999976193186585,
+          "shift_invariant_perturbative_point_coefficient": 0.005085878391715792
+        },
+        {
+          "delta_time": 0.756,
+          "dominant_eigenphase_point_coefficient": 0.004983456622518433,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.9260414135980061,
+            "legacy_cosine_denominator_abs": 0.6010025716525004,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7992470887448269,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "perturbative_vs_phase_relative_difference": 2.498763777625649e-05,
+          "relative_survival_radius": 0.9999758175093374,
+          "shift_invariant_perturbative_point_coefficient": 0.005086772341494019
+        }
+      ],
+      "sector_dimension": 15,
+      "shift_invariant_perturbative_window_envelope_coefficient": 0.005086772341494019,
+      "single_dominant_phase_validation_pass": false
+    },
+    {
+      "basis": "sto-3g",
+      "configured_delta_grid_match": true,
+      "configured_qiskit_delta_times": [
+        0.37,
+        0.372,
+        0.374,
+        0.376
+      ],
+      "core_pf_artifact_path": "artifacts/pf_c_system_size_validation/h4_sto3g_d100_rank7_ld3_pf_v4.json",
+      "core_pf_validation_fingerprint": "3359a56712c76b6e4b89b84a5fb95a41379c388928c3959025e4d2d4a14ea5d7",
+      "corrected_perturbative_estimator_validation_pass": true,
+      "delta_window_source": "project PERTURBATION_FIT_STARTS lower-order window inherited from the Evaluation workflow",
+      "df_rank_actual": 7,
+      "df_rank_source": "config",
+      "distance": 1.0,
+      "dominant_eigenphase_window_envelope_coefficient": 0.013406281564718523,
+      "estimator_definition": "shift-invariant relative-survival estimator without division by cos(E*delta) or sin(E*delta)",
+      "evaluated_delta_times": [
+        0.37,
+        0.372,
+        0.374,
+        0.376
+      ],
+      "ground_energy": -2.1664244148133305,
+      "ld": 3,
+      "ld_policy": "floor(df_rank_actual/2)",
+      "legacy_cosine_ill_conditioned_point_count": 0,
+      "legacy_sine_ill_conditioned_point_count": 0,
+      "maximum_corrected_perturbative_vs_phase_relative_difference": 2.0915630823449242e-06,
+      "minimum_legacy_cosine_denominator_abs": 0.6861771929944448,
+      "minimum_legacy_sine_denominator_abs": 0.7184539282065991,
+      "molecule_type": 4,
+      "n_electrons": 4,
+      "n_qubits": 8,
+      "operational_coefficient_usable": true,
+      "operational_validation_window_envelope_coefficient": 0.013538048577375261,
+      "perturbative_vs_exact_envelope_relative_difference": 0.009828751695288202,
+      "point_records": [
+        {
+          "delta_time": 0.37,
+          "dominant_eigenphase_point_coefficient": 0.013404165768247345,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8015770334809322,
+            "legacy_cosine_denominator_abs": 0.6955745488763277,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7184539282065991,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "perturbative_vs_phase_relative_difference": 1.8998993267626493e-06,
+          "relative_survival_radius": 0.9999981784037054,
+          "shift_invariant_perturbative_point_coefficient": 0.013531931107403118
+        },
+        {
+          "delta_time": 0.372,
+          "dominant_eigenphase_point_coefficient": 0.013404867132743813,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8059098823105589,
+            "legacy_cosine_denominator_abs": 0.6924550771529068,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7214609941813639,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "perturbative_vs_phase_relative_difference": 1.9620925104905705e-06,
+          "relative_survival_radius": 0.9999981188092406,
+          "shift_invariant_perturbative_point_coefficient": 0.01353396043949036
+        },
+        {
+          "delta_time": 0.374,
+          "dominant_eigenphase_point_coefficient": 0.013405572397595699,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8102427311401856,
+            "legacy_cosine_denominator_abs": 0.6893226055897423,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7244545157723626,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "perturbative_vs_phase_relative_difference": 2.0259681770338972e-06,
+          "relative_survival_radius": 0.9999980576036285,
+          "shift_invariant_perturbative_point_coefficient": 0.013535999602076552
+        },
+        {
+          "delta_time": 0.376,
+          "dominant_eigenphase_point_coefficient": 0.013406281564718523,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8145755799698122,
+            "legacy_cosine_denominator_abs": 0.6861771929944448,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7274344367805696,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "perturbative_vs_phase_relative_difference": 2.0915630823449242e-06,
+          "relative_survival_radius": 0.9999979947524146,
+          "shift_invariant_perturbative_point_coefficient": 0.013538048577375261
+        }
+      ],
+      "sector_dimension": 70,
+      "shift_invariant_perturbative_window_envelope_coefficient": 0.013538048577375261,
+      "single_dominant_phase_validation_pass": true
+    },
+    {
+      "basis": "sto-3g",
+      "configured_delta_grid_match": true,
+      "configured_qiskit_delta_times": [
+        0.36,
+        0.362,
+        0.364,
+        0.366
+      ],
+      "core_pf_artifact_path": "artifacts/pf_c_system_size_validation/h5_sto3g_d100_rank9_ld4_pf_v4.json",
+      "core_pf_validation_fingerprint": "827e0cea4b780b5ec262d22265497977ffdab5d809c52a49254073b30627318f",
+      "corrected_perturbative_estimator_validation_pass": true,
+      "delta_window_source": "project PERTURBATION_FIT_STARTS lower-order window inherited from the Evaluation workflow",
+      "df_rank_actual": 9,
+      "df_rank_source": "config",
+      "distance": 1.0,
+      "dominant_eigenphase_window_envelope_coefficient": 0.011873307969415757,
+      "estimator_definition": "shift-invariant relative-survival estimator without division by cos(E*delta) or sin(E*delta)",
+      "evaluated_delta_times": [
+        0.36,
+        0.362,
+        0.364,
+        0.366
+      ],
+      "ground_energy": -2.368004639439233,
+      "ld": 4,
+      "ld_policy": "floor(df_rank_actual/2)",
+      "legacy_cosine_ill_conditioned_point_count": 0,
+      "legacy_sine_ill_conditioned_point_count": 0,
+      "maximum_corrected_perturbative_vs_phase_relative_difference": 1.1832589296482353e-06,
+      "minimum_legacy_cosine_denominator_abs": 0.6473531691679955,
+      "minimum_legacy_sine_denominator_abs": 0.7529159505142872,
+      "molecule_type": 5,
+      "n_electrons": 4,
+      "n_qubits": 10,
+      "operational_coefficient_usable": true,
+      "operational_validation_window_envelope_coefficient": 0.011949288675279697,
+      "perturbative_vs_exact_envelope_relative_difference": 0.006399287044491507,
+      "point_records": [
+        {
+          "delta_time": 0.36,
+          "dominant_eigenphase_point_coefficient": 0.01187167991670445,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8524816701981239,
+            "legacy_cosine_denominator_abs": 0.6581166852930925,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7529159505142872,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "perturbative_vs_phase_relative_difference": 1.0720644664372377e-06,
+          "relative_survival_radius": 0.9999989797032216,
+          "shift_invariant_perturbative_point_coefficient": 0.011945304931533758
+        },
+        {
+          "delta_time": 0.362,
+          "dominant_eigenphase_point_coefficient": 0.011872219506263514,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8572176794770023,
+            "legacy_cosine_denominator_abs": 0.6545435010015932,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7560243417354876,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "perturbative_vs_phase_relative_difference": 1.10812027391268e-06,
+          "relative_survival_radius": 0.9999989454091508,
+          "shift_invariant_perturbative_point_coefficient": 0.011946626277443454
+        },
+        {
+          "delta_time": 0.364,
+          "dominant_eigenphase_point_coefficient": 0.011872762189974927,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8619536887558809,
+            "legacy_cosine_denominator_abs": 0.6509556354682614,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7591157755257836,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "perturbative_vs_phase_relative_difference": 1.1451776742560498e-06,
+          "relative_survival_radius": 0.9999989101631079,
+          "shift_invariant_perturbative_point_coefficient": 0.011947954196168202
+        },
+        {
+          "delta_time": 0.366,
+          "dominant_eigenphase_point_coefficient": 0.011873307969415757,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8666896980347593,
+            "legacy_cosine_denominator_abs": 0.6473531691679955,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.762190182545113,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "perturbative_vs_phase_relative_difference": 1.1832589296482353e-06,
+          "relative_survival_radius": 0.999998873944202,
+          "shift_invariant_perturbative_point_coefficient": 0.011949288675279697
+        }
+      ],
+      "sector_dimension": 210,
+      "shift_invariant_perturbative_window_envelope_coefficient": 0.011949288675279697,
+      "single_dominant_phase_validation_pass": true
+    }
+  ],
+  "state_action_results": [
+    {
+      "basis": "sto-3g",
+      "builds_or_diagonalizes_pf_unitary": false,
+      "delta_times": [
+        0.73,
+        0.732,
+        0.734,
+        0.736
+      ],
+      "df_rank_actual": 3,
+      "distance": 1.0,
+      "execution_model": "Qiskit deterministic halves plus matrix-free sector scipy.sparse.linalg.expm_multiply for exact H_R action",
+      "ground_energy": -1.1011503302326173,
+      "ground_state_converged": true,
+      "ground_state_residual_norm": 1.8508003949958324e-15,
+      "ld": 1,
+      "ld_policy": "floor(df_rank_actual/2)",
+      "maximum_absolute_difference_vs_dense_reference": 2.1183142046021786e-15,
+      "maximum_perturbative_vs_phase_relative_difference": 9.97195085818825e-06,
+      "molecule_type": 2,
+      "n_electrons": 2,
+      "n_qubits": 4,
+      "operational_state_action_coefficient": 0.0033439880258862684,
+      "phase_window_envelope_coefficient": 0.003344021372303062,
+      "point_records": [
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": 1.4172690798730514e-15,
+          "absolute_phase_bias_difference_vs_dense_reference": 1.4448078150541832e-15,
+          "absolute_phase_energy_bias": 0.0017812168530060163,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.0017811999346435026,
+          "delta_time": 0.73,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8038397410698106,
+            "legacy_cosine_denominator_abs": 0.6939471184914969,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7200259694881487,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 9.498204828414361e-06,
+          "phase_point_coefficient": 0.0033424973785063173,
+          "relative_survival_radius": 0.9999907835842109,
+          "shift_invariant_perturbative_point_coefficient": 0.0033424656307815778
+        },
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": 1.7403613272737317e-15,
+          "absolute_phase_bias_difference_vs_dense_reference": 1.6688039838896884e-15,
+          "absolute_phase_energy_bias": 0.0017912619042254729,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.0017912446113821823,
+          "delta_time": 0.732,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8060420417302758,
+            "legacy_cosine_denominator_abs": 0.6923597232395959,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7215525023417146,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 9.654000484118014e-06,
+          "phase_point_coefficient": 0.003343004240619071,
+          "relative_survival_radius": 0.9999906325392777,
+          "shift_invariant_perturbative_point_coefficient": 0.0033429719672545136
+        },
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": 1.9725974326201268e-15,
+          "absolute_phase_bias_difference_vs_dense_reference": 2.1183142046021786e-15,
+          "absolute_phase_energy_bias": 0.0018013372799422379,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.0018013196053860384,
+          "delta_time": 0.734,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.808244342390741,
+            "legacy_cosine_denominator_abs": 0.6907689699556346,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7230755355745564,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 9.811908295172624e-06,
+          "phase_point_coefficient": 0.0033435122391996335,
+          "relative_survival_radius": 0.9999904794495309,
+          "shift_invariant_perturbative_point_coefficient": 0.0033434794329641588
+        },
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": 6.262351748276274e-16,
+          "absolute_phase_bias_difference_vs_dense_reference": 4.544975507059235e-16,
+          "absolute_phase_energy_bias": 0.0018114430012910793,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.001811424937670488,
+          "delta_time": 0.736,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8104466430512063,
+            "legacy_cosine_denominator_abs": 0.6891748663549673,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7245950617997704,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 9.97195085818825e-06,
+          "phase_point_coefficient": 0.003344021372303062,
+          "relative_survival_radius": 0.9999903242931558,
+          "shift_invariant_perturbative_point_coefficient": 0.0033439880258862684
+        }
+      ],
+      "sector_dimension": 6,
+      "shift_invariant_perturbative_window_envelope_coefficient": 0.0033439880258862684,
+      "state_action_validation_pass": true,
+      "tail_matvec_count": 76
+    },
+    {
+      "basis": "sto-3g",
+      "builds_or_diagonalizes_pf_unitary": false,
+      "delta_times": [
+        0.75,
+        0.752,
+        0.754,
+        0.756
+      ],
+      "df_rank_actual": 5,
+      "distance": 1.0,
+      "execution_model": "Qiskit deterministic halves plus matrix-free sector scipy.sparse.linalg.expm_multiply for exact H_R action",
+      "ground_energy": -1.2249225047592676,
+      "ground_state_converged": true,
+      "ground_state_residual_norm": 1.4636983006915105e-15,
+      "ld": 2,
+      "ld_policy": "floor(df_rank_actual/2)",
+      "maximum_absolute_difference_vs_dense_reference": 5.030698080332741e-16,
+      "maximum_perturbative_vs_phase_relative_difference": 2.4987637753877635e-05,
+      "molecule_type": 3,
+      "n_electrons": 2,
+      "n_qubits": 6,
+      "operational_state_action_coefficient": 0.005086772341494899,
+      "phase_window_envelope_coefficient": 0.005086899451095673,
+      "point_records": [
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": 6.5052130349130266e-18,
+          "absolute_phase_bias_difference_vs_dense_reference": 2.211772431870429e-16,
+          "absolute_phase_energy_bias": 0.0028598719120949243,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.002859803742307835,
+          "delta_time": 0.75,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.9186918785694507,
+            "legacy_cosine_denominator_abs": 0.6068603815418934,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7948084532230565,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 2.3836657439377966e-05,
+          "phase_point_coefficient": 0.005084216732613198,
+          "relative_survival_radius": 0.9999769300934589,
+          "shift_invariant_perturbative_point_coefficient": 0.005084095541880596
+        },
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": 3.421742056364252e-16,
+          "absolute_phase_bias_difference_vs_dense_reference": 3.677613769070831e-16,
+          "absolute_phase_energy_bias": 0.0028756496275948703,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.002875579992753812,
+          "delta_time": 0.752,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.9211417235789692,
+            "legacy_cosine_denominator_abs": 0.6049114048585881,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7962927804972297,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 2.4215342644697068e-05,
+          "phase_point_coefficient": 0.005085109261110213,
+          "relative_survival_radius": 0.9999765640316458,
+          "shift_invariant_perturbative_point_coefficient": 0.00508498612344707
+        },
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": 2.3462135012586316e-16,
+          "absolute_phase_bias_difference_vs_dense_reference": 4.423544863740858e-16,
+          "absolute_phase_energy_bias": 0.002891474367081952,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.00289140323974493,
+          "delta_time": 0.754,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.9235915685884878,
+            "legacy_cosine_denominator_abs": 0.6029587976557783,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7977723286311065,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 2.45989858432359e-05,
+          "phase_point_coefficient": 0.005086003502244355,
+          "relative_survival_radius": 0.9999761931865847,
+          "shift_invariant_perturbative_point_coefficient": 0.005085878391716205
+        },
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": 5.030698080332741e-16,
+          "absolute_phase_bias_difference_vs_dense_reference": 4.380176776841438e-16,
+          "absolute_phase_energy_bias": 0.002907346164681417,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.0029072735169686286,
+          "delta_time": 0.756,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.9260414135980063,
+            "legacy_cosine_denominator_abs": 0.6010025716525002,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7992470887448271,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 2.4987637753877635e-05,
+          "phase_point_coefficient": 0.005086899451095673,
+          "relative_survival_radius": 0.9999758175093383,
+          "shift_invariant_perturbative_point_coefficient": 0.005086772341494899
+        }
+      ],
+      "sector_dimension": 15,
+      "shift_invariant_perturbative_window_envelope_coefficient": 0.005086772341494899,
+      "state_action_validation_pass": true,
+      "tail_matvec_count": 80
+    },
+    {
+      "basis": "sto-3g",
+      "builds_or_diagonalizes_pf_unitary": false,
+      "delta_times": [
+        0.37,
+        0.372,
+        0.374,
+        0.376
+      ],
+      "df_rank_actual": 7,
+      "distance": 1.0,
+      "execution_model": "Qiskit deterministic halves plus matrix-free sector scipy.sparse.linalg.expm_multiply for exact H_R action",
+      "ground_energy": -2.166424414813334,
+      "ground_state_converged": true,
+      "ground_state_residual_norm": 6.2397044497079236e-12,
+      "ld": 3,
+      "ld_policy": "floor(df_rank_actual/2)",
+      "maximum_absolute_difference_vs_dense_reference": 4.648625234748849e-15,
+      "maximum_perturbative_vs_phase_relative_difference": 2.091563192804814e-06,
+      "molecule_type": 4,
+      "n_electrons": 4,
+      "n_qubits": 8,
+      "operational_state_action_coefficient": 0.013538048577386295,
+      "phase_window_envelope_coefficient": 0.013538076893129627,
+      "point_records": [
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": 4.390801958131796e-15,
+          "absolute_phase_bias_difference_vs_dense_reference": 4.648625234748849e-15,
+          "absolute_phase_energy_bias": 0.0018525248882189235,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.0018525213686078777,
+          "delta_time": 0.37,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8015770334809336,
+            "legacy_cosine_denominator_abs": 0.6955745488763267,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7184539282066001,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 1.89989946593187e-06,
+          "phase_point_coefficient": 0.013531956816792721,
+          "relative_survival_radius": 0.9999981784037068,
+          "shift_invariant_perturbative_point_coefficient": 0.013531931107435191
+        },
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": 1.558215362296167e-15,
+          "absolute_phase_bias_difference_vs_dense_reference": 8.91864707086576e-16,
+          "absolute_phase_energy_bias": 0.0018728872562373843,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.0018728835814599922,
+          "delta_time": 0.372,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8059098823105603,
+            "legacy_cosine_denominator_abs": 0.6924550771529059,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7214609941813648,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 1.9620921547017193e-06,
+          "phase_point_coefficient": 0.013533986994431323,
+          "relative_survival_radius": 0.9999981188092424,
+          "shift_invariant_perturbative_point_coefficient": 0.01353396043950162
+        },
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": 3.3666645860019884e-15,
+          "absolute_phase_bias_difference_vs_dense_reference": 3.2640990604848596e-15,
+          "absolute_phase_energy_bias": 0.001893365316241202,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.0018933614803434264,
+          "delta_time": 0.374,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.810242731140187,
+            "legacy_cosine_denominator_abs": 0.6893226055897413,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7244545157723636,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 2.025968122859387e-06,
+          "phase_point_coefficient": 0.013536027025659885,
+          "relative_survival_radius": 0.999998057603629,
+          "shift_invariant_perturbative_point_coefficient": 0.013535999602100621
+        },
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": 1.5599500857721438e-15,
+          "absolute_phase_bias_difference_vs_dense_reference": 1.7713695094068171e-15,
+          "absolute_phase_energy_bias": 0.001913959158843094,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.001913955155676565,
+          "delta_time": 0.376,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8145755799698136,
+            "legacy_cosine_denominator_abs": 0.6861771929944438,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7274344367805705,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 2.091563192804814e-06,
+          "phase_point_coefficient": 0.013538076893129627,
+          "relative_survival_radius": 0.9999979947524148,
+          "shift_invariant_perturbative_point_coefficient": 0.013538048577386295
+        }
+      ],
+      "sector_dimension": 70,
+      "shift_invariant_perturbative_window_envelope_coefficient": 0.013538048577386295,
+      "state_action_validation_pass": true,
+      "tail_matvec_count": 80
+    },
+    {
+      "basis": "sto-3g",
+      "builds_or_diagonalizes_pf_unitary": false,
+      "delta_times": [
+        0.36,
+        0.362,
+        0.364,
+        0.366
+      ],
+      "df_rank_actual": 9,
+      "distance": 1.0,
+      "execution_model": "Qiskit deterministic halves plus matrix-free sector scipy.sparse.linalg.expm_multiply for exact H_R action",
+      "ground_energy": -2.3680046394392376,
+      "ground_state_converged": true,
+      "ground_state_residual_norm": 8.059317050652471e-14,
+      "ld": 4,
+      "ld_policy": "floor(df_rank_actual/2)",
+      "maximum_absolute_difference_vs_dense_reference": 7.994256298604618e-15,
+      "maximum_perturbative_vs_phase_relative_difference": 1.1832589566021438e-06,
+      "molecule_type": 5,
+      "n_electrons": 4,
+      "n_qubits": 10,
+      "operational_state_action_coefficient": 0.01194928867532128,
+      "phase_window_envelope_coefficient": 0.011949302814440862,
+      "point_records": [
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": 6.005178992962712e-15,
+          "absolute_phase_bias_difference_vs_dense_reference": 6.168026159270035e-15,
+          "absolute_phase_energy_bias": 0.001548113178810072,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.0015481115191327802,
+          "delta_time": 0.36,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8524816701981255,
+            "legacy_cosine_denominator_abs": 0.6581166852930914,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7529159505142882,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 1.0720645716237034e-06,
+          "phase_point_coefficient": 0.011945317737732037,
+          "relative_survival_radius": 0.9999989797032216,
+          "shift_invariant_perturbative_point_coefficient": 0.011945304931580095
+        },
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": 7.994256298604618e-15,
+          "absolute_phase_bias_difference_vs_dense_reference": 7.97474065949988e-15,
+          "absolute_phase_energy_bias": 0.0015655354287108228,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.0015655336939092942,
+          "delta_time": 0.362,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.857217679477004,
+            "legacy_cosine_denominator_abs": 0.654543501001592,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7560243417354887,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 1.1081202614412435e-06,
+          "phase_point_coefficient": 0.011946639515817762,
+          "relative_survival_radius": 0.9999989454091501,
+          "shift_invariant_perturbative_point_coefficient": 0.011946626277504459
+        },
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": 4.591596200476111e-15,
+          "absolute_phase_bias_difference_vs_dense_reference": 3.969914674772923e-15,
+          "absolute_phase_energy_bias": 0.0015830579520620957,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.0015830561391800937,
+          "delta_time": 0.364,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8619536887558824,
+            "legacy_cosine_denominator_abs": 0.6509556354682603,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7591157755257847,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 1.1451772815439124e-06,
+          "phase_point_coefficient": 0.011947967878744232,
+          "relative_survival_radius": 0.999998910163105,
+          "shift_invariant_perturbative_point_coefficient": 0.011947954196202856
+        },
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": 5.570413921796025e-15,
+          "absolute_phase_bias_difference_vs_dense_reference": 5.613565168260948e-15,
+          "absolute_phase_energy_bias": 0.00160068080781124,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.0016006789137913374,
+          "delta_time": 0.366,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8666896980347609,
+            "legacy_cosine_denominator_abs": 0.6473531691679942,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7621901825451141,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 1.1832589566021438e-06,
+          "phase_point_coefficient": 0.011949302814440862,
+          "relative_survival_radius": 0.9999988739442008,
+          "shift_invariant_perturbative_point_coefficient": 0.01194928867532128
+        }
+      ],
+      "sector_dimension": 210,
+      "shift_invariant_perturbative_window_envelope_coefficient": 0.01194928867532128,
+      "state_action_validation_pass": true,
+      "tail_matvec_count": 80
+    },
+    {
+      "basis": "sto-3g",
+      "builds_or_diagonalizes_pf_unitary": false,
+      "delta_times": [
+        0.25,
+        0.252,
+        0.254,
+        0.256
+      ],
+      "df_rank_actual": 11,
+      "distance": 1.0,
+      "execution_model": "Qiskit deterministic halves plus matrix-free sector scipy.sparse.linalg.expm_multiply for exact H_R action",
+      "ground_energy": -3.2361443728495587,
+      "ground_state_converged": true,
+      "ground_state_residual_norm": 4.661442662551868e-13,
+      "ld": 5,
+      "ld_policy": "floor(df_rank_actual/2)",
+      "maximum_absolute_difference_vs_dense_reference": null,
+      "maximum_perturbative_vs_phase_relative_difference": 3.5950638389565383e-07,
+      "molecule_type": 6,
+      "n_electrons": 6,
+      "n_qubits": 12,
+      "operational_state_action_coefficient": 0.020888525032552306,
+      "phase_window_envelope_coefficient": 0.020888532542113106,
+      "point_records": [
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": null,
+          "absolute_phase_bias_difference_vs_dense_reference": null,
+          "absolute_phase_energy_bias": 0.0013051185629689098,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.0013051181558558626,
+          "delta_time": 0.25,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8090360932123897,
+            "legacy_cosine_denominator_abs": 0.6901962578551019,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7236222257800087,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 3.119356806486322e-07,
+          "phase_point_coefficient": 0.020881897007502558,
+          "relative_survival_radius": 0.9999997058072229,
+          "shift_invariant_perturbative_point_coefficient": 0.0208818904936938
+        },
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": null,
+          "absolute_phase_bias_difference_vs_dense_reference": null,
+          "absolute_phase_energy_bias": 0.0013262234000832045,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.001326222966180212,
+          "delta_time": 0.252,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8155083819580888,
+            "legacy_cosine_denominator_abs": 0.6854983422758053,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7280741876602431,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 3.271718720253487e-07,
+          "phase_point_coefficient": 0.020884092341950183,
+          "relative_survival_radius": 0.9999996914438548,
+          "shift_invariant_perturbative_point_coefficient": 0.020884085509262594
+        },
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": null,
+          "absolute_phase_bias_difference_vs_dense_reference": null,
+          "absolute_phase_energy_bias": 0.001347500801414222,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.00134750033919111,
+          "delta_time": 0.254,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.8219806707037879,
+            "legacy_cosine_denominator_abs": 0.6807717109136331,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7324956502394568,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 3.430225136147872e-07,
+          "phase_point_coefficient": 0.02088630419452883,
+          "relative_survival_radius": 0.9999996765018703,
+          "shift_invariant_perturbative_point_coefficient": 0.020886297030056265
+        },
+        {
+          "absolute_perturbative_bias_difference_vs_dense_reference": null,
+          "absolute_phase_bias_difference_vs_dense_reference": null,
+          "absolute_phase_energy_bias": 0.0013689508686799245,
+          "absolute_shift_invariant_perturbative_energy_bias": 0.001368950376533348,
+          "delta_time": 0.256,
+          "legacy_conditioning": {
+            "energy_times_delta": -0.828452959449487,
+            "legacy_cosine_denominator_abs": 0.6760165617689472,
+            "legacy_cosine_formula_well_conditioned": true,
+            "legacy_sine_denominator_abs": 0.7368864283009229,
+            "legacy_sine_formula_well_conditioned": true,
+            "minimum_denominator_abs": 0.1,
+            "shift_invariant_formula_uses_trigonometric_denominator": false
+          },
+          "maximum_sector_leakage_norm": 0.0,
+          "perturbative_vs_phase_relative_difference": 3.5950638389565383e-07,
+          "phase_point_coefficient": 0.020888532542113106,
+          "relative_survival_radius": 0.9999996609628569,
+          "shift_invariant_perturbative_point_coefficient": 0.020888525032552306
+        }
+      ],
+      "sector_dimension": 924,
+      "shift_invariant_perturbative_window_envelope_coefficient": 0.020888525032552306,
+      "state_action_validation_pass": true,
+      "tail_matvec_count": 80
+    }
+  ],
+  "summary": {
+    "all_configured_delta_grids_match": true,
+    "all_corrected_perturbative_estimator_validation_pass": true,
+    "all_operational_coefficients_usable": false,
+    "all_single_dominant_phase_validation_pass": false,
+    "all_state_action_validation_pass": true,
+    "h12_direct_validation_performed": false,
+    "legacy_cosine_ill_conditioned_point_count": 0,
+    "legacy_sine_ill_conditioned_point_count": 0,
+    "maximum_n_qubits": 10,
+    "maximum_perturbative_vs_exact_envelope_relative_difference": 0.020731738389923784,
+    "maximum_state_action_n_qubits": 12,
+    "minimum_n_qubits": 4,
+    "state_action_validated_molecule_sizes": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "validated_molecule_sizes": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "validated_size_count": 4
+  },
+  "validation_fingerprint": "a8a5928721f883dd4419ff199e525f51bd30e1d33f435c4b3a7f9f703748a50b",
+  "validation_method": "configured_qiskit_delta_window_exact_eigenphase_perturbation_envelope_v1"
+}

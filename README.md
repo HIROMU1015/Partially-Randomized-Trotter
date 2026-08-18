@@ -1,4 +1,13 @@
-# Evaluation_numGate_highorder
+# Partially Randomized Trotter
+
+## 研究内容を確認する入口
+
+このリポジトリから研究紹介、発表、進捗報告などを作る場合は、最初に
+[`docs/research/研究概要・現状.md`](docs/research/研究概要・現状.md)を参照する。
+研究背景、目的、現在の検証段階、採用済みのCの扱い、主要結果、未決定事項、
+証拠資料の読み順を一か所にまとめている。
+
+Codex向けのリポジトリ読解規則は[`AGENTS.md`](AGENTS.md)に記載する。
 
 > [!IMPORTANT]
 > **Current validation status:** the legacy higher-order PF notebook and fit
@@ -11,7 +20,15 @@
 > and [the machine-readable manifest](artifacts/validation_manifest.json) before
 > interpreting any result in this repository.
 
-高次Trotter積公式による時間発展シミュレーションの誤差スケーリングとコスト評価を行う研究用コード。OpenFermion/PySCFで水素鎖のハミルトニアンを生成し、Qiskitで時間発展を実装、誤差を摂動論で計算、log-logフィットと外挿で比較する。積公式構築アルゴリズムの参考文献として `Greatly-improved-higher-order-product-formulae-for-quantum-simulation.pdf` を同梱する。
+現在の中心課題は、DF Hamiltonianに対する部分ランダム化時間発展について、二次PF、
+finite RTE、RPEの誤差・失敗確率・期待compiled costを接続することである。
+OpenFermion/PySCFでH-chain Hamiltonianを生成し、Qiskit回路、摂動論、sector内厳密計算を
+使って、最終コスト評価に入る前の近似検証を進めている。
+
+このリポジトリは旧来の高次Trotter積公式の誤差スケーリング・コスト評価から発展したため、
+高次PF notebookと係数artifactも歴史的資料として残る。これらを現在のDF部分ランダム化の
+結果と混同しないこと。積公式構築アルゴリズムの参考文献として
+`Greatly-improved-higher-order-product-formulae-for-quantum-simulation.pdf`を同梱する。
 
 ## 検証結果を確認する前に
 
@@ -26,8 +43,13 @@
 - DF partial-S2一反復の回路とcompiled期待コスト: [`docs/df_partial_s2_compiled_cost.md`](docs/df_partial_s2_compiled_cost.md)
 - DF partial-S2短い複数反復とcompiled期待コスト: [`docs/df_partial_s2_repeated_compiled_cost.md`](docs/df_partial_s2_repeated_compiled_cost.md)
 - RTE step/occurrence/RPE round の打切り予算: [`docs/rte_truncation_budget.md`](docs/rte_truncation_budget.md)
+- finite-RTE信号近似の小規模検証: [`docs/finite_rte_signal_validation.md`](docs/finite_rte_signal_validation.md)
+- PF誤差surrogate・CPU Qiskit摂動・QPE分枝のholdout検証: [`docs/pf_delta_validation.md`](docs/pf_delta_validation.md)
+- H-chain系サイズ・実行可能delta窓におけるPF係数検証: [`docs/pf_c_system_size_validation.md`](docs/pf_c_system_size_validation.md)
 - RTE 一次資料の版管理: [`docs/rte_source_versions.md`](docs/rte_source_versions.md)
 - 短いRPE X/Y Hadamard interrogation wrapper: [`docs/rpe_hadamard_interrogation.md`](docs/rpe_hadamard_interrogation.md)
+- 研究概要・現在地: [`docs/research/研究概要・現状.md`](docs/research/研究概要・現状.md)
+- 研究目的・背景・解析手順の索引: [`docs/research/README.md`](docs/research/README.md)
 
 検証ステータスが `validated` になるまでは、DF screening や UWC の数値を最終結論として引用しないでください。
 

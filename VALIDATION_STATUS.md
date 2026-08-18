@@ -1,5 +1,25 @@
 # Validation status
 
+## 2026-08-18 current local approximation-validation note
+
+研究内容と現在地の短い統合要約は
+[`docs/research/研究概要・現状.md`](docs/research/研究概要・現状.md)を参照する。
+
+2026-08-18のdirty local worktreeでは、最終コスト評価の入力を検証するため、次の三つの
+result setを追加した。
+
+- finite-RTE signal、attenuation、radius、phase-boundのH4 grid検証
+- PF誤差surrogate、CPU Qiskit摂動係数、理想QPE分枝のH4全`L_D`検証
+- H2--H6の実行可能delta窓と、PF演算子を構築しないstate-action係数検証
+
+対応する文書、source、test、dirty-worktree artifactはmanifestへ登録され、構造検査は
+成功している。local testは`442 passed, 4 warnings`だった。これらは近似手法と実装経路の
+local evidenceであり、最終compiled cost、H12の係数、量子shot、ノイズ、または外部から
+再現された科学的結論ではない。artifactはimmutable CI evidenceでもない。
+
+したがって、下記auditの`overall_status = not_reproducible_from_repository`は変更しない。
+旧DF screeningとprose-only UWCを使用禁止とする判断も引き続き有効である。
+
 ## 2026-08-02 implementation hardening note
 
 The current worktree replaces the DF legacy overlap proxy with a

@@ -81,6 +81,15 @@ from .config import (
     get_df_rank_selection_for_molecule,
     resolve_df_rank_for_molecule,
 )
+from .pf_c_system_size_validation import (
+    configured_qiskit_delta_times,
+    legacy_perturbation_conditioning,
+    make_system_size_payload,
+    summarize_size_result,
+    validate_state_action_coefficient,
+    validate_system_size_payload,
+    write_system_size_validation,
+)
 from .rte import (
     BasisChangeOperation,
     CircuitCost,
@@ -329,6 +338,21 @@ from .rpe_short_round_optimization import (
     optimize_rpe_short_round,
     optimize_rpe_short_rounds,
 )
+from .finite_rte_signal_validation import (
+    FINITE_RTE_SIGNAL_VALIDATION_METHOD,
+    FINITE_RTE_SIGNAL_VALIDATION_SCHEMA_VERSION,
+    dense_df_operator_in_sector,
+    validate_finite_rte_signal_payload,
+    validate_finite_rte_signals,
+    write_finite_rte_signal_validation,
+)
+from .pf_delta_validation import (
+    PF_DELTA_VALIDATION_METHOD,
+    PF_DELTA_VALIDATION_SCHEMA_VERSION,
+    validate_pf_delta_grid,
+    validate_pf_delta_payload,
+    write_pf_delta_validation,
+)
 
 __all__ = [
     "jw_hamiltonian_maker",
@@ -387,6 +411,13 @@ __all__ = [
     "DF_RANK_SELECTION_BY_MOLECULE",
     "get_df_rank_selection_for_molecule",
     "resolve_df_rank_for_molecule",
+    "configured_qiskit_delta_times",
+    "legacy_perturbation_conditioning",
+    "make_system_size_payload",
+    "summarize_size_result",
+    "validate_state_action_coefficient",
+    "validate_system_size_payload",
+    "write_system_size_validation",
     "CircuitCost",
     "CompilerSettings",
     "PROBABILITY_ATOL",
@@ -603,4 +634,15 @@ __all__ = [
     "RPEShortRoundOptimizationResult",
     "optimize_rpe_short_round",
     "optimize_rpe_short_rounds",
+    "FINITE_RTE_SIGNAL_VALIDATION_METHOD",
+    "FINITE_RTE_SIGNAL_VALIDATION_SCHEMA_VERSION",
+    "dense_df_operator_in_sector",
+    "validate_finite_rte_signal_payload",
+    "validate_finite_rte_signals",
+    "write_finite_rte_signal_validation",
+    "PF_DELTA_VALIDATION_METHOD",
+    "PF_DELTA_VALIDATION_SCHEMA_VERSION",
+    "validate_pf_delta_grid",
+    "validate_pf_delta_payload",
+    "write_pf_delta_validation",
 ]
