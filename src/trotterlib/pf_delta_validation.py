@@ -35,9 +35,9 @@ from .finite_rte_signal_validation import (
 from .rte import require_integer_count
 
 
-PF_DELTA_VALIDATION_SCHEMA_VERSION = "pf_delta_validation_v4"
+PF_DELTA_VALIDATION_SCHEMA_VERSION = "pf_delta_validation_v5"
 PF_DELTA_VALIDATION_METHOD = (
-    "cpu_qiskit_exact_tail_partial_s2_single_phase_holdout_v4"
+    "cpu_qiskit_exact_tail_partial_s2_paper_d6_single_phase_holdout_v5"
 )
 
 
@@ -53,6 +53,53 @@ def _canonical_json(payload: Mapping[str, Any]) -> str:
 
 def _fingerprint(payload: Mapping[str, Any]) -> str:
     return hashlib.sha256(_canonical_json(payload).encode("utf-8")).hexdigest()
+
+
+def paper_d6_perturbative_energy_bias(
+    relative_survival_amplitude: complex,
+    energy: float,
+    delta_time: float,
+    *,
+    minimum_sine_abs: float = 0.1,
+) -> dict[str, Any]:
+    """Evaluate paper Eq. (D6) and reject a small sine denominator.
+
+    ``relative_survival_amplitude`` is
+    ``exp(i E delta) <psi_0|U_PF(delta)|psi_0>``.  No small-delta fallback is
+    substituted when the published denominator is ill-conditioned.
+    """
+    relative = complex(relative_survival_amplitude)
+    energy_value = float(energy)
+    delta_value = float(delta_time)
+    threshold = float(minimum_sine_abs)
+    if not math.isfinite(relative.real) or not math.isfinite(relative.imag):
+        raise ValueError("relative_survival_amplitude must be finite.")
+    if not math.isfinite(energy_value):
+        raise ValueError("energy must be finite.")
+    if not math.isfinite(delta_value) or delta_value <= 0.0:
+        raise ValueError("delta_time must be finite and positive.")
+    if not math.isfinite(threshold) or not 0.0 < threshold < 1.0:
+        raise ValueError("minimum_sine_abs must lie strictly in (0, 1).")
+
+    phase = energy_value * delta_value
+    sine = float(math.sin(phase))
+    sine_abs = float(abs(sine))
+    denominator = float(delta_value * sine)
+    well_conditioned = bool(sine_abs >= threshold)
+    numerator = float(np.real(np.exp(-1j * phase) * (relative - 1.0)))
+    signed_bias = None if not well_conditioned else float(numerator / denominator)
+    return {
+        "definition": "paper Eq. (D6) full-H-ground-state perturbative bias",
+        "numerator_real_delta_overlap": numerator,
+        "denominator_delta_sine": denominator,
+        "sine_denominator_abs": sine_abs,
+        "minimum_sine_abs": threshold,
+        "well_conditioned": well_conditioned,
+        "signed_energy_bias": signed_bias,
+        "absolute_energy_bias": (
+            None if signed_bias is None else float(abs(signed_bias))
+        ),
+    }
 
 
 def _float_grid(values: Sequence[float], *, name: str) -> tuple[float, ...]:
@@ -182,6 +229,7 @@ def _phase_and_perturbative_energy_bias(
     evolved_state: np.ndarray,
     ground_energy: float,
     delta_time: float,
+    paper_d6_minimum_sine_abs: float = 1e-6,
 ) -> dict[str, Any]:
     """Compare exact survival phase with its first-order state-difference proxy."""
     state = np.asarray(initial_state, dtype=np.complex128).reshape(-1)
@@ -197,6 +245,12 @@ def _phase_and_perturbative_energy_bias(
             * np.vdot(state, delta_state)
         )
     )
+    paper_d6 = paper_d6_perturbative_energy_bias(
+        relative_overlap,
+        ground_energy,
+        delta_time,
+        minimum_sine_abs=paper_d6_minimum_sine_abs,
+    )
     return {
         "relative_survival_amplitude": _complex_payload(relative_overlap),
         "relative_survival_radius": float(abs(relative_overlap)),
@@ -206,6 +260,7 @@ def _phase_and_perturbative_energy_bias(
         "absolute_linearized_perturbative_energy_bias": float(
             abs(signed_perturbative_bias)
         ),
+        "paper_d6_perturbative_energy_bias": paper_d6,
     }
 
 
@@ -515,6 +570,7 @@ def validate_pf_delta_grid(
     matrix_free_backend: str = "python",
     numerical_atol: float = 1e-10,
     perturbative_relative_tolerance: float = 1e-4,
+    paper_d6_minimum_sine_abs: float = 1e-6,
     qpe_cluster_energy_tolerance: float = 1e-8,
     minimum_dominant_qpe_cluster_weight: float = 0.9995,
     maximum_single_phase_contamination: float = 8e-4,
@@ -552,6 +608,7 @@ def validate_pf_delta_grid(
         ("surrogate_relative_tolerance", surrogate_relative_tolerance),
         ("numerical_atol", numerical_atol),
         ("perturbative_relative_tolerance", perturbative_relative_tolerance),
+        ("paper_d6_minimum_sine_abs", paper_d6_minimum_sine_abs),
         ("qpe_cluster_energy_tolerance", qpe_cluster_energy_tolerance),
         ("maximum_single_phase_contamination", maximum_single_phase_contamination),
         (
@@ -563,6 +620,8 @@ def validate_pf_delta_grid(
     ):
         if not math.isfinite(float(value)) or float(value) <= 0.0:
             raise ValueError(f"{name} must be finite and positive.")
+    if paper_d6_minimum_sine_abs >= 1.0:
+        raise ValueError("paper_d6_minimum_sine_abs must be smaller than 1.")
     if not (
         math.isfinite(float(minimum_dominant_qpe_cluster_weight))
         and 0.0 < minimum_dominant_qpe_cluster_weight <= 1.0
@@ -688,12 +747,14 @@ def validate_pf_delta_grid(
             evolved_state=qiskit_evolved_state,
             ground_energy=float(eigenvalues[0]),
             delta_time=delta_time,
+            paper_d6_minimum_sine_abs=paper_d6_minimum_sine_abs,
         )
         matrix_estimators = _phase_and_perturbative_energy_bias(
             initial_state=physical_state,
             evolved_state=matrix_evolved_state,
             ground_energy=float(eigenvalues[0]),
             delta_time=delta_time,
+            paper_d6_minimum_sine_abs=paper_d6_minimum_sine_abs,
         )
         qpe_spectrum = _qpe_spectral_energy_distribution(
             unitary=pf_step,
@@ -702,6 +763,19 @@ def validate_pf_delta_grid(
             delta_time=delta_time,
             cluster_energy_tolerance=qpe_cluster_energy_tolerance,
             numerical_atol=numerical_atol,
+        )
+        paper_d6 = qiskit_estimators["paper_d6_perturbative_energy_bias"]
+        paper_d6_bias = paper_d6["absolute_energy_bias"]
+        dominant_bias = float(
+            qpe_spectrum["dominant_phase_cluster_absolute_energy_bias"]
+        )
+        paper_d6_vs_dominant_relative_difference = (
+            None
+            if paper_d6_bias is None
+            else float(
+                abs(float(paper_d6_bias) - dominant_bias)
+                / max(dominant_bias, numerical_atol)
+            )
         )
         signed_phase_bias = float(qiskit_estimators["signed_phase_energy_bias"])
         signed_perturbative_bias = float(
@@ -922,6 +996,10 @@ def validate_pf_delta_grid(
                     "absolute_linearized_perturbative_energy_bias": (
                         perturbative_bias
                     ),
+                    "paper_d6_perturbative_energy_bias": paper_d6,
+                    "paper_d6_vs_dominant_eigenphase_relative_difference": (
+                        paper_d6_vs_dominant_relative_difference
+                    ),
                     "phase_bias_absolute_error_vs_sector_matrix": (
                         qiskit_matrix_phase_bias_error
                     ),
@@ -984,6 +1062,20 @@ def validate_pf_delta_grid(
         result["absolute_linearized_perturbative_energy_bias"]
         for result in qiskit_validations
     ]
+    paper_d6_conditioned_indices = [
+        index
+        for index, result in enumerate(qiskit_validations)
+        if result["paper_d6_perturbative_energy_bias"]["well_conditioned"]
+    ]
+    paper_d6_deltas = [validation[index] for index in paper_d6_conditioned_indices]
+    paper_d6_biases = [
+        float(
+            qiskit_validations[index]["paper_d6_perturbative_energy_bias"][
+                "absolute_energy_bias"
+            ]
+        )
+        for index in paper_d6_conditioned_indices
+    ]
     qpe_spectra = [
         point["qpe_spectral_energy_distribution"] for point in points
     ]
@@ -997,6 +1089,10 @@ def validate_pf_delta_grid(
     dominant_cluster_biases = [
         result["dominant_phase_cluster_absolute_energy_bias"]
         for result in qpe_spectra
+    ]
+    paper_d6_reference_dominant_biases = [
+        dominant_cluster_biases[index]
+        for index in paper_d6_conditioned_indices
     ]
     non_dominant_cluster_weights = [
         result["non_dominant_phase_cluster_weight"]
@@ -1015,6 +1111,19 @@ def validate_pf_delta_grid(
     perturbative_coefficient, perturbative_slope = _fit_fixed_second_order(
         validation,
         perturbative_biases,
+        numerical_atol=numerical_atol,
+    )
+    paper_d6_coefficient, paper_d6_slope = _fit_fixed_second_order(
+        paper_d6_deltas,
+        paper_d6_biases,
+        numerical_atol=numerical_atol,
+    )
+    (
+        paper_d6_reference_dominant_coefficient,
+        paper_d6_reference_dominant_slope,
+    ) = _fit_fixed_second_order(
+        paper_d6_deltas,
+        paper_d6_reference_dominant_biases,
         numerical_atol=numerical_atol,
     )
     qpe_mean_coefficient, qpe_mean_slope = _fit_fixed_second_order(
@@ -1116,7 +1225,7 @@ def validate_pf_delta_grid(
             for result in qpe_spectra
         )
     )
-    dominant_coefficient_relative_difference = (
+    shift_invariant_dominant_coefficient_relative_difference = (
         None
         if perturbative_coefficient is None
         or dominant_cluster_coefficient is None
@@ -1125,10 +1234,33 @@ def validate_pf_delta_grid(
             / max(abs(dominant_cluster_coefficient), numerical_atol)
         )
     )
+    paper_d6_dominant_coefficient_relative_difference = (
+        None
+        if paper_d6_coefficient is None
+        or paper_d6_reference_dominant_coefficient is None
+        else float(
+            abs(paper_d6_coefficient - paper_d6_reference_dominant_coefficient)
+            / max(abs(paper_d6_reference_dominant_coefficient), numerical_atol)
+        )
+    )
+    paper_d6_estimator_pass = bool(
+        len(paper_d6_conditioned_indices) >= 2
+        and all(
+            qiskit_validations[index][
+                "paper_d6_vs_dominant_eigenphase_relative_difference"
+            ]
+            is not None
+            and qiskit_validations[index][
+                "paper_d6_vs_dominant_eigenphase_relative_difference"
+            ]
+            <= dominant_branch_phase_relative_tolerance + numerical_atol
+            for index in paper_d6_conditioned_indices
+        )
+    )
     scalable_primary_coefficient_estimator_pass = bool(
-        qiskit_perturbation_pass
-        and dominant_coefficient_relative_difference is not None
-        and dominant_coefficient_relative_difference
+        paper_d6_estimator_pass
+        and paper_d6_dominant_coefficient_relative_difference is not None
+        and paper_d6_dominant_coefficient_relative_difference
         <= dominant_branch_phase_relative_tolerance + numerical_atol
     )
     single_dominant_phase_approximation_pass = bool(
@@ -1190,6 +1322,9 @@ def validate_pf_delta_grid(
             "numerical_atol": float(numerical_atol),
             "perturbative_relative_tolerance": float(
                 perturbative_relative_tolerance
+            ),
+            "paper_d6_minimum_sine_abs": float(
+                paper_d6_minimum_sine_abs
             ),
             "qpe_cluster_energy_tolerance": float(
                 qpe_cluster_energy_tolerance
@@ -1312,6 +1447,22 @@ def validate_pf_delta_grid(
                 perturbative_coefficient
             ),
             "cpu_linearized_perturbative_free_fit_slope": perturbative_slope,
+            "cpu_paper_d6_fixed_second_order_coefficient": (
+                paper_d6_coefficient
+            ),
+            "cpu_paper_d6_free_fit_slope": paper_d6_slope,
+            "paper_d6_conditioned_delta_count": len(
+                paper_d6_conditioned_indices
+            ),
+            "paper_d6_ill_conditioned_delta_count": (
+                len(validation) - len(paper_d6_conditioned_indices)
+            ),
+            "paper_d6_reference_dominant_fixed_second_order_coefficient": (
+                paper_d6_reference_dominant_coefficient
+            ),
+            "paper_d6_reference_dominant_free_fit_slope": (
+                paper_d6_reference_dominant_slope
+            ),
             "qpe_mean_energy_bias_fixed_second_order_coefficient": (
                 qpe_mean_coefficient
             ),
@@ -1337,11 +1488,12 @@ def validate_pf_delta_grid(
                 dominant_cluster_coefficient
             ),
             "scalable_pf_coefficient_estimator_kind": (
-                "linearized_full_h_ground_state_perturbation"
+                "paper_eq_d6_full_h_ground_state_perturbation"
             ),
             "scalable_pf_fixed_second_order_coefficient": (
-                perturbative_coefficient
+                paper_d6_coefficient
             ),
+            "shift_invariant_coefficient_policy": "diagnostic_only",
             "qpe_rmse_coefficient_policy": (
                 "diagnostic_only_not_primary_cost_input"
             ),
@@ -1398,8 +1550,23 @@ def validate_pf_delta_grid(
                     for result in single_phase_q_diagnostics
                 )
             ),
-            "perturbative_vs_dominant_branch_coefficient_relative_difference": (
-                dominant_coefficient_relative_difference
+            "shift_invariant_vs_dominant_branch_coefficient_relative_difference": (
+                shift_invariant_dominant_coefficient_relative_difference
+            ),
+            "paper_d6_vs_dominant_branch_coefficient_relative_difference": (
+                paper_d6_dominant_coefficient_relative_difference
+            ),
+            "maximum_paper_d6_vs_dominant_eigenphase_relative_difference": (
+                None
+                if not paper_d6_conditioned_indices
+                else float(
+                    max(
+                        qiskit_validations[index][
+                            "paper_d6_vs_dominant_eigenphase_relative_difference"
+                        ]
+                        for index in paper_d6_conditioned_indices
+                    )
+                )
             ),
             "maximum_phase_vs_qpe_mean_relative_difference": float(
                 max(
@@ -1488,6 +1655,7 @@ def validate_pf_delta_grid(
                 for result in qiskit_validations
             ),
             "cpu_qiskit_perturbation_validation_pass": qiskit_perturbation_pass,
+            "paper_d6_estimator_validation_pass": paper_d6_estimator_pass,
             "scaling_slope_acceptance_pass": scaling_pass,
             "maximum_physical_surrogate_prediction_relative_error": (
                 maximum_prediction_error

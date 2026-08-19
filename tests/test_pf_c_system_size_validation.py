@@ -3,6 +3,7 @@ from __future__ import annotations
 from copy import deepcopy
 import math
 
+import numpy as np
 import pytest
 
 from trotterlib.pf_c_system_size_validation import (
@@ -11,6 +12,7 @@ from trotterlib.pf_c_system_size_validation import (
     make_system_size_payload,
     validate_system_size_payload,
 )
+from trotterlib.pf_delta_validation import paper_d6_perturbative_energy_bias
 
 
 def _size_result(molecule_type: int) -> dict[str, object]:
@@ -20,10 +22,12 @@ def _size_result(molecule_type: int) -> dict[str, object]:
         "configured_delta_grid_match": True,
         "single_dominant_phase_validation_pass": True,
         "corrected_perturbative_estimator_validation_pass": True,
+        "paper_d6_estimator_validation_pass": True,
         "operational_coefficient_usable": True,
-        "perturbative_vs_exact_envelope_relative_difference": 0.01,
+        "paper_d6_vs_exact_envelope_relative_difference": 0.01,
         "legacy_cosine_ill_conditioned_point_count": 0,
         "legacy_sine_ill_conditioned_point_count": 0,
+        "paper_d6_ill_conditioned_point_count": 0,
     }
 
 
@@ -43,6 +47,33 @@ def test_legacy_conditioning_flags_cosine_singularity_but_not_new_formula() -> N
     assert not diagnostic[
         "shift_invariant_formula_uses_trigonometric_denominator"
     ]
+
+
+def test_paper_d6_estimator_matches_the_published_expression() -> None:
+    energy = -1.25
+    delta = 0.3
+    survival = 0.97 - 0.08j
+    relative = np.exp(1j * energy * delta) * survival
+    result = paper_d6_perturbative_energy_bias(relative, energy, delta)
+    expected = (
+        np.real(survival - np.exp(-1j * energy * delta))
+        / (delta * np.sin(energy * delta))
+    )
+    assert result["well_conditioned"]
+    assert result["signed_energy_bias"] == pytest.approx(expected)
+    assert result["absolute_energy_bias"] == pytest.approx(abs(expected))
+
+
+def test_paper_d6_estimator_rejects_small_sine_denominator() -> None:
+    result = paper_d6_perturbative_energy_bias(
+        1.0 + 0.0j,
+        1.0,
+        1e-3,
+        minimum_sine_abs=0.1,
+    )
+    assert not result["well_conditioned"]
+    assert result["signed_energy_bias"] is None
+    assert result["absolute_energy_bias"] is None
 
 
 def test_system_size_payload_is_tamper_evident() -> None:

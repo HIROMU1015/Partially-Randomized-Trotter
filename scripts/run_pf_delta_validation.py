@@ -105,6 +105,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--slope-min", type=float, default=1.5)
     parser.add_argument("--slope-max", type=float, default=2.5)
     parser.add_argument("--coefficient-atol", type=float, default=1e-12)
+    parser.add_argument("--paper-d6-minimum-sine-abs", type=float, default=0.1)
     parser.add_argument("--seed", type=int, default=20260818)
     parser.add_argument(
         "--output",
@@ -124,7 +125,7 @@ def _default_output_path(args: argparse.Namespace, ld: int) -> Path:
     distance_label = int(round(100 * float(args.distance)))
     return args.output_directory / (
         f"h{args.molecule}_{basis_label}_d{distance_label}_"
-        f"rank{args.df_rank}_ld{ld}_v4.json"
+        f"rank{args.df_rank}_ld{ld}_v5.json"
     )
 
 
@@ -199,6 +200,7 @@ def main() -> int:
             surrogate_relative_tolerance=args.relative_tolerance,
             scaling_slope_interval=(args.slope_min, args.slope_max),
             coefficient_atol=args.coefficient_atol,
+            paper_d6_minimum_sine_abs=args.paper_d6_minimum_sine_abs,
             seed=args.seed,
             provenance=provenance,
         )

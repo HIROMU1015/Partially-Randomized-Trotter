@@ -1,0 +1,3886 @@
+{
+  "final_cost_evaluation_performed": false,
+  "hamiltonian": {
+    "df_truncation_value": 0.0,
+    "ground_energy": -2.166387448634763,
+    "hamiltonian_hash": "68a219c806c12872e525a1509508e167f32e2b68f6ad782d93a9d01dba6f60b6",
+    "metadata": {
+      "basis": "sto-3g",
+      "charge": 0,
+      "df_rank_actual": 12,
+      "df_rank_config_selection": null,
+      "df_rank_requested": 12,
+      "df_rank_source": "explicit",
+      "df_tol_requested": null,
+      "df_truncation_value": 0.0,
+      "distance": 1.0,
+      "hermitized": true,
+      "hf_energy": -2.098545936997718,
+      "molecule_type": 4,
+      "multiplicity": 1
+    },
+    "n_df_blocks": 12,
+    "n_qubits": 8,
+    "partition_hash": "535ff706e2c2e3d23c7364fa4e93542adaad33a923894e79f92c6b3710f3ed6b",
+    "preparation_hash": "9b9998cebecda7ca315e42dfca964f7d10e32e82b505bc4f7c091fbf2a86845d",
+    "sector_dimension": 70,
+    "sector_n_electrons": 4,
+    "spectral_width": 2.917351036908064
+  },
+  "partial_s2": {
+    "deterministic_block_indices": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "exact_rte_lambda_r": 0.05440471795771515,
+    "normalized_tail_sector_leakage_frobenius_norm": 0.0,
+    "randomized_block_indices": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "threshold_operator_error_bound": 4.808228341542372e-14
+  },
+  "performance": {
+    "acceleration": "one Hamiltonian eigensystem and one symbolic tail are reused; q repetitions use matrix powers",
+    "dense_hamiltonian_and_spectrum_seconds": 0.46956514846533537,
+    "holdout_grid_seconds": 5.790923715569079,
+    "partial_s2_preparation_seconds": 0.13980604149401188,
+    "surrogate_fit_seconds": 0.5991815663874149,
+    "total_seconds": 7.000898051075637
+  },
+  "points": [
+    {
+      "alias_phase_span": 0.0364668879613508,
+      "alias_phase_span_le_pi_over_two": true,
+      "cpu_qiskit_direct_tail_validation": {
+        "absolute_linearized_perturbative_energy_bias": 2.088551597991967e-06,
+        "absolute_qiskit_phase_energy_bias": 2.0885515983337697e-06,
+        "exact_tail_backend": "scipy.linalg.expm_sector_matrix",
+        "execution_model": "Qiskit Statevector deterministic halves with an exact sector expm action for exp(-i H_R delta)",
+        "linearized_perturbation_consistency_pass": true,
+        "maximum_sector_leakage_norm": 0.0,
+        "paper_d6_perturbative_energy_bias": {
+          "absolute_energy_bias": null,
+          "definition": "paper Eq. (D6) full-H-ground-state perturbative bias",
+          "denominator_delta_sine": -0.0003384566692540751,
+          "minimum_sine_abs": 0.1,
+          "numerator_real_delta_overlap": 7.06881886923771e-10,
+          "signed_energy_bias": null,
+          "sine_denominator_abs": 0.02707653354032601,
+          "well_conditioned": false
+        },
+        "paper_d6_vs_dominant_eigenphase_relative_difference": null,
+        "perturbative_vs_phase_relative_difference": 1.6365541649138178e-10,
+        "phase_bias_absolute_error_vs_sector_matrix": 1.942889022544603e-15,
+        "qiskit_matrix_consistency_pass": true,
+        "qiskit_statevector_backend": "qiskit.quantum_info.Statevector",
+        "relative_survival_amplitude": {
+          "imag": -2.610689497917207e-08,
+          "real": 0.9999999999999977
+        },
+        "relative_survival_radius": 0.999999999999998,
+        "signed_linearized_perturbative_energy_bias": 2.088551597991967e-06,
+        "signed_matrix_phase_energy_bias": 2.0885515963908807e-06,
+        "signed_qiskit_phase_energy_bias": 2.0885515983337697e-06,
+        "statevector_l2_error_vs_sector_matrix": 2.0790740931389605e-15
+      },
+      "delta_time": 0.0125,
+      "deterministic_half_maximum_sector_leakage_frobenius_norm": 0.0,
+      "effective_state_fingerprint": "a3f192f06df7aca7afccd53b60c82b26607f18912f4f6f237110f350c4bd0fbb",
+      "effective_state_physical_overlap": 0.9999999999907687,
+      "q_results": [
+        {
+          "pf_operator_error_spectral_norm": 1.2204257935417914e-07,
+          "q_m": 1,
+          "single_dominant_phase_diagnostic": {
+            "dominant_branch_relative_signal": {
+              "imag": -2.610659873816697e-08,
+              "real": 0.9999999999999997
+            },
+            "dominant_branch_signed_energy_bias": 2.0885278990533577e-06,
+            "relative_physical_pf_signal": {
+              "imag": -2.610689495488594e-08,
+              "real": 0.999999999999997
+            },
+            "relative_physical_pf_signal_radius": 0.9999999999999973,
+            "signal_matches_dominant_branch_within_tolerance": true,
+            "signal_phase_contamination": 2.962167190391833e-13,
+            "signal_phase_contamination_within_analytic_bound": true,
+            "signal_vs_dominant_branch_relative_difference": 1.1346430916134628e-05,
+            "signed_signal_energy_bias": 2.0885515963908807e-06
+          },
+          "state_results": [
+            {
+              "actual_energy_phase_bias": 2.0885515952806627e-06,
+              "actual_over_surrogate_prediction": 0.9914037539344727,
+              "actual_pf_phase_error": 2.6106894941008288e-08,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.02707653354032593,
+                "real": 0.9996333634545391
+              },
+              "exact_signal_radius": 0.9999999999999976,
+              "numerical_operator_phase_bound": 1.2204257935417972e-07,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.027076507443002714,
+                "real": 0.9996333641614228
+              },
+              "pf_signal_error": 2.6106894942424523e-08,
+              "pf_signal_radius": 0.9999999999999973,
+              "pf_signal_within_operator_error": true,
+              "state_label": "physical_df_ground_state",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 2.106660971367178e-06,
+              "surrogate_predicted_phase_error": 2.6333262142089723e-08,
+              "surrogate_prediction_relative_error": 0.008670782243271103,
+              "surrogate_underpredicts_actual": false
+            },
+            {
+              "actual_energy_phase_bias": 2.0885040469265135e-06,
+              "actual_over_surrogate_prediction": 0.9913811834521807,
+              "actual_pf_phase_error": 2.6106300586581422e-08,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.027076533540028817,
+                "real": 0.9996333634545457
+              },
+              "exact_signal_radius": 0.9999999999999961,
+              "numerical_operator_phase_bound": 1.220425793541799e-07,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.0270765074432999,
+                "real": 0.9996333641614192
+              },
+              "pf_signal_error": 2.6106300587846135e-08,
+              "pf_signal_radius": 1.0000000000000018,
+              "pf_signal_within_operator_error": true,
+              "state_label": "effective_partial_s2_eigenstate_control",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 2.106660971367178e-06,
+              "surrogate_predicted_phase_error": 2.6333262142089723e-08,
+              "surrogate_prediction_relative_error": 0.00869374635274682,
+              "surrogate_underpredicts_actual": false
+            }
+          ],
+          "t_m": 0.0125
+        },
+        {
+          "pf_operator_error_spectral_norm": 2.4407485975911817e-07,
+          "q_m": 2,
+          "single_dominant_phase_diagnostic": {
+            "dominant_branch_relative_signal": {
+              "imag": -5.221319747633392e-08,
+              "real": 0.9999999999999987
+            },
+            "dominant_branch_signed_energy_bias": 2.0885278990533577e-06,
+            "relative_physical_pf_signal": {
+              "imag": -5.2213789812627365e-08,
+              "real": 0.9999999999999896
+            },
+            "relative_physical_pf_signal_radius": 0.9999999999999909,
+            "signal_matches_dominant_branch_within_tolerance": true,
+            "signal_phase_contamination": 5.923362939144402e-13,
+            "signal_phase_contamination_within_analytic_bound": true,
+            "signal_vs_dominant_branch_relative_difference": 1.1344570387391685e-05,
+            "signed_signal_energy_bias": 2.0885515925051145e-06
+          },
+          "state_results": [
+            {
+              "actual_energy_phase_bias": 2.0885515919500085e-06,
+              "actual_over_surrogate_prediction": 0.9914037523534617,
+              "actual_pf_phase_error": 5.221378979875022e-08,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.05413321258721143,
+                "real": 0.9985337226628764
+              },
+              "exact_signal_radius": 0.9999999999999972,
+              "numerical_operator_phase_bound": 2.440748597591213e-07,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.05413316044998111,
+                "real": 0.9985337254893689
+              },
+              "pf_signal_error": 5.221378980400668e-08,
+              "pf_signal_radius": 0.9999999999999909,
+              "pf_signal_within_operator_error": true,
+              "state_label": "physical_df_ground_state",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 2.106660971367178e-06,
+              "surrogate_predicted_phase_error": 5.2666524284179446e-08,
+              "surrogate_prediction_relative_error": 0.008670783851818213,
+              "surrogate_underpredicts_actual": false
+            },
+            {
+              "actual_energy_phase_bias": 2.088504051089865e-06,
+              "actual_over_surrogate_prediction": 0.9913811854284607,
+              "actual_pf_phase_error": 5.221260127724663e-08,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.05413321258661754,
+                "real": 0.9985337226628992
+              },
+              "exact_signal_radius": 0.9999999999999878,
+              "numerical_operator_phase_bound": 2.4407485975912356e-07,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.054133160450575174,
+                "real": 0.998533725489349
+              },
+              "pf_signal_error": 5.221260127859533e-08,
+              "pf_signal_radius": 1.000000000000003,
+              "pf_signal_within_operator_error": true,
+              "state_label": "effective_partial_s2_eigenstate_control",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 2.106660971367178e-06,
+              "surrogate_predicted_phase_error": 5.2666524284179446e-08,
+              "surrogate_prediction_relative_error": 0.008693744341955072,
+              "surrogate_underpredicts_actual": false
+            }
+          ],
+          "t_m": 0.025
+        },
+        {
+          "pf_operator_error_spectral_norm": 4.880673410172665e-07,
+          "q_m": 4,
+          "single_dominant_phase_diagnostic": {
+            "dominant_branch_relative_signal": {
+              "imag": -1.0442639495266771e-07,
+              "real": 0.9999999999999946
+            },
+            "dominant_branch_signed_energy_bias": 2.0885278990533577e-06,
+            "relative_physical_pf_signal": {
+              "imag": -1.0442757869544295e-07,
+              "real": 0.9999999999999553
+            },
+            "relative_physical_pf_signal_radius": 0.9999999999999607,
+            "signal_matches_dominant_branch_within_tolerance": true,
+            "signal_phase_contamination": 1.18374277934128e-12,
+            "signal_phase_contamination_within_analytic_bound": true,
+            "signal_vs_dominant_branch_relative_difference": 1.1335666426843278e-05,
+            "signed_signal_energy_bias": 2.0885515739089445e-06
+          },
+          "state_results": [
+            {
+              "actual_energy_phase_bias": 2.088551573353839e-06,
+              "actual_over_surrogate_prediction": 0.991403743526142,
+              "actual_pf_phase_error": 1.0442757866769195e-07,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.10810767656881852,
+                "real": 0.9941391905899727
+              },
+              "exact_signal_radius": 0.9999999999999971,
+              "numerical_operator_phase_bound": 4.880673410172872e-07,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.10810757275326546,
+                "real": 0.994139201879354
+              },
+              "pf_signal_error": 1.0442757867094675e-07,
+              "pf_signal_radius": 0.9999999999999608,
+              "pf_signal_within_operator_error": true,
+              "state_label": "physical_df_ground_state",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 2.106660971367178e-06,
+              "surrogate_predicted_phase_error": 1.0533304856835889e-07,
+              "surrogate_prediction_relative_error": 0.008670792832881071,
+              "surrogate_underpredicts_actual": false
+            },
+            {
+              "actual_energy_phase_bias": 2.088504070518834e-06,
+              "actual_over_surrogate_prediction": 0.9913811946510974,
+              "actual_pf_phase_error": 1.044252035259417e-07,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.10810767656763332,
+                "real": 0.9941391905900587
+              },
+              "exact_signal_radius": 0.9999999999999546,
+              "numerical_operator_phase_bound": 4.88067341017308e-07,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.10810757275445101,
+                "real": 0.9941392018792709
+              },
+              "pf_signal_error": 1.044252035175294e-07,
+              "pf_signal_radius": 1.0000000000000062,
+              "pf_signal_within_operator_error": true,
+              "state_label": "effective_partial_s2_eigenstate_control",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 2.106660971367178e-06,
+              "surrogate_predicted_phase_error": 1.0533304856835889e-07,
+              "surrogate_prediction_relative_error": 0.008693734958262807,
+              "surrogate_underpredicts_actual": false
+            }
+          ],
+          "t_m": 0.05
+        }
+      ],
+      "qpe_spectral_energy_distribution": {
+        "absolute_qpe_mean_energy_bias": 2.0885516753479683e-06,
+        "definition": "target-centered Schur eigenphase distribution of one direct-tail partial-S2 step",
+        "dominant_phase_cluster_absolute_energy_bias": 2.0885278990533577e-06,
+        "dominant_phase_cluster_signed_energy_bias": 2.0885278990533577e-06,
+        "dominant_phase_cluster_weight": 0.999999999981539,
+        "dominant_phase_cluster_weight_pass": true,
+        "effective_phase_cluster_count": 1.000000000036922,
+        "maximum_eigenvalue_modulus_error": 7.105427357601002e-15,
+        "non_dominant_phase_cluster_weight": 1.8461010498072028e-11,
+        "numerical_consistency_pass": true,
+        "phase_cluster_count": 36,
+        "phase_cluster_energy_tolerance": 1e-08,
+        "phase_clusters": [
+          {
+            "maximum_signed_energy_shift": 2.0885278990533577e-06,
+            "minimum_signed_energy_shift": 2.0885278990533577e-06,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.0885278990533577e-06,
+            "weight": 0.999999999981539,
+            "weight_rank": 1
+          },
+          {
+            "maximum_signed_energy_shift": 0.8341127984568523,
+            "minimum_signed_energy_shift": 0.8341127984568523,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.8341127984568523,
+            "weight": 7.338248162426633e-12,
+            "weight_rank": 2
+          },
+          {
+            "maximum_signed_energy_shift": 1.690919671029857,
+            "minimum_signed_energy_shift": 1.690919671029857,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.690919671029857,
+            "weight": 3.23995880254884e-12,
+            "weight_rank": 3
+          },
+          {
+            "maximum_signed_energy_shift": 1.0195847583330186,
+            "minimum_signed_energy_shift": 1.0195847583330186,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.0195847583330186,
+            "weight": 2.173008768409191e-12,
+            "weight_rank": 4
+          },
+          {
+            "maximum_signed_energy_shift": 1.6148300711347543,
+            "minimum_signed_energy_shift": 1.6148300711347543,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.6148300711347543,
+            "weight": 1.9827981879290868e-12,
+            "weight_rank": 5
+          },
+          {
+            "maximum_signed_energy_shift": 1.2231373545890762,
+            "minimum_signed_energy_shift": 1.2231373545890762,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.2231373545890762,
+            "weight": 1.2690119410457434e-12,
+            "weight_rank": 6
+          },
+          {
+            "maximum_signed_energy_shift": 2.0798110103136738,
+            "minimum_signed_energy_shift": 2.0798110103136738,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.0798110103136738,
+            "weight": 1.2686361455789772e-12,
+            "weight_rank": 7
+          },
+          {
+            "maximum_signed_energy_shift": 2.416376008087989,
+            "minimum_signed_energy_shift": 2.416376008087989,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.416376008087989,
+            "weight": 7.093418581242455e-13,
+            "weight_rank": 8
+          },
+          {
+            "maximum_signed_energy_shift": 0.5167306521792083,
+            "minimum_signed_energy_shift": 0.5167306521792083,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.5167306521792083,
+            "weight": 1.55761249259417e-13,
+            "weight_rank": 9
+          },
+          {
+            "maximum_signed_energy_shift": 1.9879668209770345,
+            "minimum_signed_energy_shift": 1.9879668209770345,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.9879668209770347,
+            "weight": 1.5242510287658847e-13,
+            "weight_rank": 10
+          },
+          {
+            "maximum_signed_energy_shift": 2.6872293590752743,
+            "minimum_signed_energy_shift": 2.6872293590752743,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.6872293590752743,
+            "weight": 1.302990062837787e-13,
+            "weight_rank": 11
+          },
+          {
+            "maximum_signed_energy_shift": 2.917348426437603,
+            "minimum_signed_energy_shift": 2.917348426437603,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.917348426437603,
+            "weight": 4.1498529988987085e-14,
+            "weight_rank": 12
+          },
+          {
+            "maximum_signed_energy_shift": 0.2326316594669835,
+            "minimum_signed_energy_shift": 0.2326316594667563,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.23263165946692302,
+            "weight": 2.4194089737531146e-27,
+            "weight_rank": 13
+          },
+          {
+            "maximum_signed_energy_shift": 0.4468942911062952,
+            "minimum_signed_energy_shift": 0.4468942911062552,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.44689429110626894,
+            "weight": 5.524818457009064e-28,
+            "weight_rank": 14
+          },
+          {
+            "maximum_signed_energy_shift": 0.8815655970774491,
+            "minimum_signed_energy_shift": 0.8815655970774287,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.8815655970774335,
+            "weight": 4.921340651199955e-28,
+            "weight_rank": 15
+          },
+          {
+            "maximum_signed_energy_shift": 1.3868523394937184,
+            "minimum_signed_energy_shift": 1.3868523394937142,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.3868523394937173,
+            "weight": 4.302553119274394e-28,
+            "weight_rank": 16
+          },
+          {
+            "maximum_signed_energy_shift": 0.9517308732501918,
+            "minimum_signed_energy_shift": 0.9517308732501664,
+            "schur_multiplicity": 5,
+            "signed_energy_shift": 0.9517308732501767,
+            "weight": 2.504462265256846e-28,
+            "weight_rank": 17
+          },
+          {
+            "maximum_signed_energy_shift": 1.4657399985362947,
+            "minimum_signed_energy_shift": 1.4657399985362947,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.4657399985362947,
+            "weight": 1.830426303442946e-28,
+            "weight_rank": 18
+          },
+          {
+            "maximum_signed_energy_shift": 0.5432502856899439,
+            "minimum_signed_energy_shift": 0.5432502856899439,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.5432502856899439,
+            "weight": 1.5256655351118844e-28,
+            "weight_rank": 19
+          },
+          {
+            "maximum_signed_energy_shift": 1.4466950378217338,
+            "minimum_signed_energy_shift": 1.4466950378216519,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.4466950378217238,
+            "weight": 1.1939818434370848e-28,
+            "weight_rank": 20
+          },
+          {
+            "maximum_signed_energy_shift": 1.1829478678803151,
+            "minimum_signed_energy_shift": 1.1829478678803151,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.1829478678803151,
+            "weight": 1.1219314498676029e-28,
+            "weight_rank": 21
+          },
+          {
+            "maximum_signed_energy_shift": 1.060406683392174,
+            "minimum_signed_energy_shift": 1.0604066833921295,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.0604066833921535,
+            "weight": 9.91374522481773e-29,
+            "weight_rank": 22
+          },
+          {
+            "maximum_signed_energy_shift": 1.0443899973262387,
+            "minimum_signed_energy_shift": 1.0443899973262387,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.0443899973262387,
+            "weight": 9.409498866002658e-29,
+            "weight_rank": 23
+          },
+          {
+            "maximum_signed_energy_shift": 1.9083016157574555,
+            "minimum_signed_energy_shift": 1.9083016157574044,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.9083016157574273,
+            "weight": 8.99638225424201e-29,
+            "weight_rank": 24
+          },
+          {
+            "maximum_signed_energy_shift": 1.2224117012868019,
+            "minimum_signed_energy_shift": 1.2224117012867575,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.222411701286801,
+            "weight": 8.753168424829819e-29,
+            "weight_rank": 25
+          },
+          {
+            "maximum_signed_energy_shift": 1.5270082092083865,
+            "minimum_signed_energy_shift": 1.5270082092083717,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.527008209208386,
+            "weight": 6.966787670073565e-29,
+            "weight_rank": 26
+          },
+          {
+            "maximum_signed_energy_shift": 0.7286966738392342,
+            "minimum_signed_energy_shift": 0.7286966738391595,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.7286966738392076,
+            "weight": 5.294158020398624e-29,
+            "weight_rank": 27
+          },
+          {
+            "maximum_signed_energy_shift": 2.4159534015029966,
+            "minimum_signed_energy_shift": 2.4159534015028625,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 2.4159534015029043,
+            "weight": 4.1725873404195515e-29,
+            "weight_rank": 28
+          },
+          {
+            "maximum_signed_energy_shift": 2.374167877274996,
+            "minimum_signed_energy_shift": 2.374167877274996,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.374167877274996,
+            "weight": 2.582618770556058e-29,
+            "weight_rank": 29
+          },
+          {
+            "maximum_signed_energy_shift": 1.9072505590222515,
+            "minimum_signed_energy_shift": 1.9072505590222515,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.9072505590222513,
+            "weight": 2.2347393197767064e-29,
+            "weight_rank": 30
+          },
+          {
+            "maximum_signed_energy_shift": 1.5417419663598568,
+            "minimum_signed_energy_shift": 1.5417419663598215,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.5417419663598295,
+            "weight": 1.8774911299382222e-29,
+            "weight_rank": 31
+          },
+          {
+            "maximum_signed_energy_shift": 1.784362916285566,
+            "minimum_signed_energy_shift": 1.784362916285566,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.784362916285566,
+            "weight": 1.5796193999723135e-29,
+            "weight_rank": 32
+          },
+          {
+            "maximum_signed_energy_shift": 1.9493301573683852,
+            "minimum_signed_energy_shift": 1.9493301573683297,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.9493301573683648,
+            "weight": 2.6669185805959765e-30,
+            "weight_rank": 33
+          },
+          {
+            "maximum_signed_energy_shift": 1.7543709394137514,
+            "minimum_signed_energy_shift": 1.7543709394136968,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.7543709394137426,
+            "weight": 2.314444201259544e-30,
+            "weight_rank": 34
+          },
+          {
+            "maximum_signed_energy_shift": 2.3109876738390924,
+            "minimum_signed_energy_shift": 2.3109876738390125,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 2.310987673839036,
+            "weight": 1.4026062575494403e-30,
+            "weight_rank": 35
+          },
+          {
+            "maximum_signed_energy_shift": 2.8202286402080516,
+            "minimum_signed_energy_shift": 2.8202286402080516,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.8202286402080516,
+            "weight": 7.7828084048929825e-31,
+            "weight_rank": 36
+          }
+        ],
+        "phase_is_qpe_rmse_proxy_within_tolerance": false,
+        "phase_matches_qpe_mean_within_tolerance": true,
+        "phase_vs_qpe_mean_relative_difference": 3.687445202924419e-08,
+        "phase_vs_qpe_rmse_relative_difference": 0.6682190256827522,
+        "qpe_energy_rmse": 6.294970959777531e-06,
+        "qpe_energy_standard_deviation": 5.9384014081100675e-06,
+        "qpe_second_moment_identity_error": 1.2924697071141057e-26,
+        "raw_weight_sum": 1.0000000000000016,
+        "relative_survival_amplitude_from_spectrum": {
+          "imag": -2.6106895922612923e-08,
+          "real": 0.9999999999999969
+        },
+        "relative_survival_reconstruction_error": 9.740746712300495e-16,
+        "schur_offdiagonal_frobenius_norm": 2.243684567994696e-14,
+        "signed_qpe_mean_energy_bias": 2.0885516753479683e-06,
+        "single_phase_contamination_bound": 1.8461010498412836e-11,
+        "single_phase_contamination_bound_pass": true,
+        "single_phase_signal_radius_lower_bound": 0.999999999963078,
+        "target_centered_phase_branch_cut_clearance": 3.1051257982593232,
+        "unitary_defect_spectral_norm": 7.950398848139165e-15,
+        "weight_normalization_error": 0.0
+      }
+    },
+    {
+      "alias_phase_span": 0.0729337759227016,
+      "alias_phase_span_le_pi_over_two": true,
+      "cpu_qiskit_direct_tail_validation": {
+        "absolute_linearized_perturbative_energy_bias": 8.354629554354686e-06,
+        "absolute_qiskit_phase_energy_bias": 8.354629554564902e-06,
+        "exact_tail_backend": "scipy.linalg.expm_sector_matrix",
+        "execution_model": "Qiskit Statevector deterministic halves with an exact sector expm action for exp(-i H_R delta)",
+        "linearized_perturbation_consistency_pass": true,
+        "maximum_sector_leakage_norm": 0.0,
+        "paper_d6_perturbative_energy_bias": {
+          "absolute_energy_bias": null,
+          "definition": "paper Eq. (D6) full-H-ground-state perturbative bias",
+          "denominator_delta_sine": -0.0013533303146802899,
+          "minimum_sine_abs": 0.1,
+          "numerator_real_delta_overlap": 1.130637245581743e-08,
+          "signed_energy_bias": null,
+          "sine_denominator_abs": 0.05413321258721159,
+          "well_conditioned": false
+        },
+        "paper_d6_vs_dominant_eigenphase_relative_difference": null,
+        "perturbative_vs_phase_relative_difference": 2.516169454032963e-11,
+        "phase_bias_absolute_error_vs_sector_matrix": 5.082197683525802e-21,
+        "qiskit_matrix_consistency_pass": true,
+        "qiskit_statevector_backend": "qiskit.quantum_info.Statevector",
+        "relative_survival_amplitude": {
+          "imag": -2.0886573886408355e-07,
+          "real": 0.9999999999997987
+        },
+        "relative_survival_radius": 0.9999999999998205,
+        "signed_linearized_perturbative_energy_bias": 8.354629554354686e-06,
+        "signed_matrix_phase_energy_bias": 8.354629554564897e-06,
+        "signed_qiskit_phase_energy_bias": 8.354629554564902e-06,
+        "statevector_l2_error_vs_sector_matrix": 1.965683005948535e-15
+      },
+      "delta_time": 0.025,
+      "deterministic_half_maximum_sector_leakage_frobenius_norm": 0.0,
+      "effective_state_fingerprint": "b0dc72cded1a60bfe592b94e80532e3fa568317f7659b8e2bfbfd4d4c547de81",
+      "effective_state_physical_overlap": 0.9999999998523044,
+      "q_results": [
+        {
+          "pf_operator_error_spectral_norm": 9.763208408072852e-07,
+          "q_m": 1,
+          "single_dominant_phase_diagnostic": {
+            "dominant_branch_relative_signal": {
+              "imag": -2.0885623064416542e-07,
+              "real": 0.9999999999999782
+            },
+            "dominant_branch_signed_energy_bias": 8.354249225766677e-06,
+            "relative_physical_pf_signal": {
+              "imag": -2.0886573886408355e-07,
+              "real": 0.9999999999997993
+            },
+            "relative_physical_pf_signal_radius": 0.999999999999821,
+            "signal_matches_dominant_branch_within_tolerance": true,
+            "signal_phase_contamination": 9.508219955505828e-12,
+            "signal_phase_contamination_within_analytic_bound": true,
+            "signal_vs_dominant_branch_relative_difference": 4.552519178466934e-05,
+            "signed_signal_energy_bias": 8.354629554564897e-06
+          },
+          "state_results": [
+            {
+              "actual_energy_phase_bias": 8.354629554009808e-06,
+              "actual_over_surrogate_prediction": 0.9914539723717186,
+              "actual_pf_phase_error": 2.088657388502452e-07,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.05413321258721143,
+                "real": 0.9985337226628764
+              },
+              "exact_signal_radius": 0.9999999999999972,
+              "numerical_operator_phase_bound": 9.76320840807443e-07,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.054133004027716966,
+                "real": 0.9985337339692523
+              },
+              "pf_signal_error": 2.088657388528019e-07,
+              "pf_signal_radius": 0.9999999999998211,
+              "pf_signal_within_operator_error": true,
+              "state_label": "physical_df_ground_state",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 8.426643885468711e-06,
+              "surrogate_predicted_phase_error": 2.1066609713671778e-07,
+              "surrogate_prediction_relative_error": 0.008619691752142429,
+              "surrogate_underpredicts_actual": false
+            },
+            {
+              "actual_energy_phase_bias": 8.353868866108223e-06,
+              "actual_over_surrogate_prediction": 0.9913637006203638,
+              "actual_pf_phase_error": 2.0884672165270557e-07,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.054133212577707326,
+                "real": 0.9985337226632168
+              },
+              "exact_signal_radius": 0.9999999999998226,
+              "numerical_operator_phase_bound": 9.763208408076134e-07,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.054133004037221266,
+                "real": 0.9985337339689153
+              },
+              "pf_signal_error": 2.088467216514272e-07,
+              "pf_signal_radius": 0.9999999999999992,
+              "pf_signal_within_operator_error": true,
+              "state_label": "effective_partial_s2_eigenstate_control",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 8.426643885468711e-06,
+              "surrogate_predicted_phase_error": 2.1066609713671778e-07,
+              "surrogate_prediction_relative_error": 0.008711534802244479,
+              "surrogate_underpredicts_actual": false
+            }
+          ],
+          "t_m": 0.025
+        },
+        {
+          "pf_operator_error_spectral_norm": 1.9523121529017512e-06,
+          "q_m": 2,
+          "single_dominant_phase_diagnostic": {
+            "dominant_branch_relative_signal": {
+              "imag": -4.1771246128832174e-07,
+              "real": 0.9999999999999127
+            },
+            "dominant_branch_signed_energy_bias": 8.354249225766677e-06,
+            "relative_physical_pf_signal": {
+              "imag": -4.1773146298995645e-07,
+              "real": 0.999999999999204
+            },
+            "relative_physical_pf_signal_radius": 0.9999999999992912,
+            "signal_matches_dominant_branch_within_tolerance": true,
+            "signal_phase_contamination": 1.9001701930762785e-11,
+            "signal_phase_contamination_within_analytic_bound": true,
+            "signal_vs_dominant_branch_relative_difference": 4.5489909188087275e-05,
+            "signed_signal_energy_bias": 8.354629259805292e-06
+          },
+          "state_results": [
+            {
+              "actual_energy_phase_bias": 8.35462925952776e-06,
+              "actual_over_surrogate_prediction": 0.9914539374251786,
+              "actual_pf_phase_error": 4.1773146297638804e-07,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.10810767656881852,
+                "real": 0.9941391905899727
+              },
+              "exact_signal_radius": 0.9999999999999971,
+              "numerical_operator_phase_bound": 1.952312152902997e-06,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.10810726128551429,
+                "real": 0.9941392357491621
+              },
+              "pf_signal_error": 4.1773146297486153e-07,
+              "pf_signal_radius": 0.9999999999992912,
+              "pf_signal_within_operator_error": true,
+              "state_label": "physical_df_ground_state",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 8.426643885468711e-06,
+              "surrogate_predicted_phase_error": 4.2133219427343557e-07,
+              "surrogate_prediction_relative_error": 0.008619727303736998,
+              "surrogate_underpredicts_actual": false
+            },
+            {
+              "actual_energy_phase_bias": 8.353869160599488e-06,
+              "actual_over_surrogate_prediction": 0.9913637355679977,
+              "actual_pf_phase_error": 4.1769345802997446e-07,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.10810767654985143,
+                "real": 0.994139190591328
+              },
+              "exact_signal_radius": 0.9999999999992941,
+              "numerical_operator_phase_bound": 1.9523121529043694e-06,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.10810726130448178,
+                "real": 0.9941392357478102
+              },
+              "pf_signal_error": 4.176934580382884e-07,
+              "pf_signal_radius": 0.9999999999999978,
+              "pf_signal_within_operator_error": true,
+              "state_label": "effective_partial_s2_eigenstate_control",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 8.426643885468711e-06,
+              "surrogate_predicted_phase_error": 4.2133219427343557e-07,
+              "surrogate_prediction_relative_error": 0.008711499243064615,
+              "surrogate_underpredicts_actual": false
+            }
+          ],
+          "t_m": 0.05
+        },
+        {
+          "pf_operator_error_spectral_norm": 3.901989745606997e-06,
+          "q_m": 4,
+          "single_dominant_phase_diagnostic": {
+            "dominant_branch_relative_signal": {
+              "imag": -8.354249225765705e-07,
+              "real": 0.9999999999996511
+            },
+            "dominant_branch_signed_energy_bias": 8.354249225766677e-06,
+            "relative_physical_pf_signal": {
+              "imag": -8.35462807990961e-07,
+              "real": 0.9999999999968305
+            },
+            "relative_physical_pf_signal_radius": 0.9999999999971796,
+            "signal_matches_dominant_branch_within_tolerance": true,
+            "signal_phase_contamination": 3.7885416746877913e-11,
+            "signal_phase_contamination_within_analytic_bound": true,
+            "signal_vs_dominant_branch_relative_difference": 4.5348679124751755e-05,
+            "signed_signal_energy_bias": 8.354628079934145e-06
+          },
+          "state_results": [
+            {
+              "actual_energy_phase_bias": 8.354628079379055e-06,
+              "actual_over_surrogate_prediction": 0.9914537973755075,
+              "actual_pf_phase_error": 8.354628079379056e-07,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.21494815616137622,
+                "real": 0.9766254605337807
+              },
+              "exact_signal_radius": 0.9999999999999973,
+              "numerical_operator_phase_bound": 3.901989745616909e-06,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.21494734022644596,
+                "real": 0.9766256401118781
+              },
+              "pf_signal_error": 8.354628079576802e-07,
+              "pf_signal_radius": 0.9999999999971796,
+              "pf_signal_within_operator_error": true,
+              "state_label": "physical_df_ground_state",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 8.426643885468711e-06,
+              "surrogate_predicted_phase_error": 8.426643885468711e-07,
+              "surrogate_prediction_relative_error": 0.00861986977821383,
+              "surrogate_underpredicts_actual": false
+            },
+            {
+              "actual_energy_phase_bias": 8.35387034022982e-06,
+              "actual_over_surrogate_prediction": 0.9913638755561529,
+              "actual_pf_phase_error": 8.353870340229821e-07,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.21494815612377033,
+                "real": 0.9766254605391778
+              },
+              "exact_signal_radius": 0.9999999999971849,
+              "numerical_operator_phase_bound": 3.901989745627883e-06,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.21494734026405263,
+                "real": 0.9766256401064844
+              },
+              "pf_signal_error": 8.353870340143898e-07,
+              "pf_signal_radius": 0.9999999999999954,
+              "pf_signal_within_operator_error": true,
+              "state_label": "effective_partial_s2_eigenstate_control",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 8.426643885468711e-06,
+              "surrogate_predicted_phase_error": 8.426643885468711e-07,
+              "surrogate_prediction_relative_error": 0.008711356805292336,
+              "surrogate_underpredicts_actual": false
+            }
+          ],
+          "t_m": 0.1
+        }
+      ],
+      "qpe_spectral_energy_distribution": {
+        "absolute_qpe_mean_energy_bias": 8.354629669081475e-06,
+        "definition": "target-centered Schur eigenphase distribution of one direct-tail partial-S2 step",
+        "dominant_phase_cluster_absolute_energy_bias": 8.354249225766677e-06,
+        "dominant_phase_cluster_signed_energy_bias": 8.354249225766677e-06,
+        "dominant_phase_cluster_weight": 0.9999999997046102,
+        "dominant_phase_cluster_weight_pass": true,
+        "effective_phase_cluster_count": 1.0000000005907796,
+        "maximum_eigenvalue_modulus_error": 5.773159728050814e-15,
+        "non_dominant_phase_cluster_weight": 2.9538982371235534e-10,
+        "numerical_consistency_pass": true,
+        "phase_cluster_count": 36,
+        "phase_cluster_energy_tolerance": 1e-08,
+        "phase_clusters": [
+          {
+            "maximum_signed_energy_shift": 8.354249225766677e-06,
+            "minimum_signed_energy_shift": 8.354249225766677e-06,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 8.354249225766677e-06,
+            "weight": 0.9999999997046102,
+            "weight_rank": 1
+          },
+          {
+            "maximum_signed_energy_shift": 0.8341149203867874,
+            "minimum_signed_energy_shift": 0.8341149203867874,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.8341149203867874,
+            "weight": 1.1741316662690542e-10,
+            "weight_rank": 2
+          },
+          {
+            "maximum_signed_energy_shift": 1.690921513338154,
+            "minimum_signed_energy_shift": 1.690921513338154,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.690921513338154,
+            "weight": 5.1844346202370125e-11,
+            "weight_rank": 3
+          },
+          {
+            "maximum_signed_energy_shift": 1.0195897430050809,
+            "minimum_signed_energy_shift": 1.0195897430050809,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.0195897430050809,
+            "weight": 3.4769673705112986e-11,
+            "weight_rank": 4
+          },
+          {
+            "maximum_signed_energy_shift": 1.6148301527641489,
+            "minimum_signed_energy_shift": 1.6148301527641489,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.6148301527641489,
+            "weight": 3.1725695038613204e-11,
+            "weight_rank": 5
+          },
+          {
+            "maximum_signed_energy_shift": 1.2231379267445996,
+            "minimum_signed_energy_shift": 1.2231379267445996,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.2231379267445996,
+            "weight": 2.030490265635391e-11,
+            "weight_rank": 6
+          },
+          {
+            "maximum_signed_energy_shift": 2.0798106396859017,
+            "minimum_signed_energy_shift": 2.0798106396859017,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.0798106396859017,
+            "weight": 2.02999777442643e-11,
+            "weight_rank": 7
+          },
+          {
+            "maximum_signed_energy_shift": 2.416373327293205,
+            "minimum_signed_energy_shift": 2.416373327293205,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.416373327293205,
+            "weight": 1.1351437376784802e-11,
+            "weight_rank": 8
+          },
+          {
+            "maximum_signed_energy_shift": 0.5167339214778373,
+            "minimum_signed_energy_shift": 0.5167339214778373,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.5167339214778373,
+            "weight": 2.492211812708758e-12,
+            "weight_rank": 9
+          },
+          {
+            "maximum_signed_energy_shift": 1.9879662076643916,
+            "minimum_signed_energy_shift": 1.9879662076643916,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.9879662076643916,
+            "weight": 2.4391440926215215e-12,
+            "weight_rank": 10
+          },
+          {
+            "maximum_signed_energy_shift": 2.6872217175864255,
+            "minimum_signed_energy_shift": 2.6872217175864255,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.6872217175864255,
+            "weight": 2.0850715542701113e-12,
+            "weight_rank": 11
+          },
+          {
+            "maximum_signed_energy_shift": 2.9173405949489783,
+            "minimum_signed_energy_shift": 2.9173405949489783,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.917340594948978,
+            "weight": 6.641883806595691e-13,
+            "weight_rank": 12
+          },
+          {
+            "maximum_signed_energy_shift": 0.23263599259273174,
+            "minimum_signed_energy_shift": 0.23263599259271817,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.2326359925927288,
+            "weight": 8.231789253089437e-28,
+            "weight_rank": 13
+          },
+          {
+            "maximum_signed_energy_shift": 0.44689724647732537,
+            "minimum_signed_energy_shift": 0.4468972464772855,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.4468972464773024,
+            "weight": 7.5696612497415685e-28,
+            "weight_rank": 14
+          },
+          {
+            "maximum_signed_energy_shift": 0.9517308732504327,
+            "minimum_signed_energy_shift": 0.9517308732504148,
+            "schur_multiplicity": 5,
+            "signed_energy_shift": 0.9517308732504304,
+            "weight": 2.302764531827071e-28,
+            "weight_rank": 15
+          },
+          {
+            "maximum_signed_energy_shift": 1.2224106475919878,
+            "minimum_signed_energy_shift": 1.2224106475919405,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.22241064759197,
+            "weight": 1.021798366921134e-28,
+            "weight_rank": 16
+          },
+          {
+            "maximum_signed_energy_shift": 1.5270080627654041,
+            "minimum_signed_energy_shift": 1.5270080627653853,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.5270080627654001,
+            "weight": 5.570649106058222e-29,
+            "weight_rank": 17
+          },
+          {
+            "maximum_signed_energy_shift": 1.4466948986050798,
+            "minimum_signed_energy_shift": 1.4466948986050443,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.4466948986050656,
+            "weight": 5.338006468422971e-29,
+            "weight_rank": 18
+          },
+          {
+            "maximum_signed_energy_shift": 1.182950131791876,
+            "minimum_signed_energy_shift": 1.182950131791876,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.182950131791876,
+            "weight": 4.2835442903016584e-29,
+            "weight_rank": 19
+          },
+          {
+            "maximum_signed_energy_shift": 1.9082997290963502,
+            "minimum_signed_energy_shift": 1.9082997290963126,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.908299729096335,
+            "weight": 1.8482066645044072e-29,
+            "weight_rank": 20
+          },
+          {
+            "maximum_signed_energy_shift": 1.4657421906888015,
+            "minimum_signed_energy_shift": 1.4657421906888015,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.4657421906888015,
+            "weight": 1.7861236554240523e-29,
+            "weight_rank": 21
+          },
+          {
+            "maximum_signed_energy_shift": 1.3868526826933285,
+            "minimum_signed_energy_shift": 1.3868526826932974,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.3868526826932992,
+            "weight": 1.35321363642706e-29,
+            "weight_rank": 22
+          },
+          {
+            "maximum_signed_energy_shift": 1.0604088278420554,
+            "minimum_signed_energy_shift": 1.0604088278420194,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.0604088278420336,
+            "weight": 9.621483200375579e-30,
+            "weight_rank": 23
+          },
+          {
+            "maximum_signed_energy_shift": 0.8815677407755651,
+            "minimum_signed_energy_shift": 0.8815677407755163,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.881567740775527,
+            "weight": 9.385891655125082e-30,
+            "weight_rank": 24
+          },
+          {
+            "maximum_signed_energy_shift": 1.5417409801683115,
+            "minimum_signed_energy_shift": 1.5417409801682775,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.5417409801683064,
+            "weight": 6.869833565732999e-30,
+            "weight_rank": 25
+          },
+          {
+            "maximum_signed_energy_shift": 0.5432528760463166,
+            "minimum_signed_energy_shift": 0.5432528760463166,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.5432528760463166,
+            "weight": 6.338083147189668e-30,
+            "weight_rank": 26
+          },
+          {
+            "maximum_signed_energy_shift": 2.3109844038927307,
+            "minimum_signed_energy_shift": 2.3109844038926486,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 2.310984403892699,
+            "weight": 4.625411185764648e-30,
+            "weight_rank": 27
+          },
+          {
+            "maximum_signed_energy_shift": 0.7286981992394054,
+            "minimum_signed_energy_shift": 0.7286981992393928,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.7286981992394038,
+            "weight": 3.424377298076981e-30,
+            "weight_rank": 28
+          },
+          {
+            "maximum_signed_energy_shift": 1.9072483546428824,
+            "minimum_signed_energy_shift": 1.9072483546428824,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.9072483546428824,
+            "weight": 2.720724996851227e-30,
+            "weight_rank": 29
+          },
+          {
+            "maximum_signed_energy_shift": 2.4159503225662293,
+            "minimum_signed_energy_shift": 2.415950322566159,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 2.4159503225662076,
+            "weight": 2.1322383196749596e-30,
+            "weight_rank": 30
+          },
+          {
+            "maximum_signed_energy_shift": 1.9493295993828792,
+            "minimum_signed_energy_shift": 1.9493295993828348,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.9493295993828406,
+            "weight": 1.7712393081421218e-30,
+            "weight_rank": 31
+          },
+          {
+            "maximum_signed_energy_shift": 2.820221951033557,
+            "minimum_signed_energy_shift": 2.820221951033557,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.820221951033557,
+            "weight": 8.733648409161633e-31,
+            "weight_rank": 32
+          },
+          {
+            "maximum_signed_energy_shift": 2.374167709423489,
+            "minimum_signed_energy_shift": 2.374167709423489,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.374167709423489,
+            "weight": 8.496148587801298e-31,
+            "weight_rank": 33
+          },
+          {
+            "maximum_signed_energy_shift": 1.784364315930233,
+            "minimum_signed_energy_shift": 1.784364315930233,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.784364315930233,
+            "weight": 7.260963448171987e-31,
+            "weight_rank": 34
+          },
+          {
+            "maximum_signed_energy_shift": 1.7543686132483167,
+            "minimum_signed_energy_shift": 1.7543686132482952,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.7543686132483027,
+            "weight": 6.308160647880269e-31,
+            "weight_rank": 35
+          },
+          {
+            "maximum_signed_energy_shift": 1.0443906126685698,
+            "minimum_signed_energy_shift": 1.0443906126685698,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.0443906126685698,
+            "weight": 3.6577358921578046e-32,
+            "weight_rank": 36
+          }
+        ],
+        "phase_is_qpe_rmse_proxy_within_tolerance": false,
+        "phase_matches_qpe_mean_within_tolerance": true,
+        "phase_vs_qpe_mean_relative_difference": 1.3706959745423605e-08,
+        "phase_vs_qpe_rmse_relative_difference": 0.6682147429161766,
+        "qpe_energy_rmse": 2.5180834217881344e-05,
+        "qpe_energy_standard_deviation": 2.3754464317279978e-05,
+        "qpe_second_moment_identity_error": 3.101927297073854e-25,
+        "raw_weight_sum": 0.9999999999999981,
+        "relative_survival_amplitude_from_spectrum": {
+          "imag": -2.0886573926471587e-07,
+          "real": 0.999999999999802
+        },
+        "relative_survival_reconstruction_error": 2.8043227401363046e-15,
+        "schur_offdiagonal_frobenius_norm": 2.4387604209489697e-14,
+        "signed_qpe_mean_energy_bias": 8.354629669081475e-06,
+        "single_phase_contamination_bound": 2.953898237996105e-10,
+        "single_phase_contamination_bound_pass": true,
+        "single_phase_signal_radius_lower_bound": 0.9999999994092204,
+        "target_centered_phase_branch_cut_clearance": 3.0686591387160687,
+        "unitary_defect_spectral_norm": 1.0391006546659776e-14,
+        "weight_normalization_error": 0.0
+      }
+    },
+    {
+      "alias_phase_span": 0.1458675518454032,
+      "alias_phase_span_le_pi_over_two": true,
+      "cpu_qiskit_direct_tail_validation": {
+        "absolute_linearized_perturbative_energy_bias": 3.342527524000193e-05,
+        "absolute_qiskit_phase_energy_bias": 3.3425275240532446e-05,
+        "exact_tail_backend": "scipy.linalg.expm_sector_matrix",
+        "execution_model": "Qiskit Statevector deterministic halves with an exact sector expm action for exp(-i H_R delta)",
+        "linearized_perturbation_consistency_pass": true,
+        "maximum_sector_leakage_norm": 0.0,
+        "paper_d6_perturbative_energy_bias": {
+          "absolute_energy_bias": 3.3422943715858205e-05,
+          "definition": "paper Eq. (D6) full-H-ground-state perturbative bias",
+          "denominator_delta_sine": -0.005405383828440942,
+          "minimum_sine_abs": 0.1,
+          "numerator_real_delta_overlap": 1.8066383946059175e-07,
+          "signed_energy_bias": -3.3422943715858205e-05,
+          "sine_denominator_abs": 0.10810767656881884,
+          "well_conditioned": true
+        },
+        "paper_d6_vs_dominant_eigenphase_relative_difference": 0.00011223237636493087,
+        "perturbative_vs_phase_relative_difference": 1.587163222162483e-11,
+        "phase_bias_absolute_error_vs_sector_matrix": 1.1102298008887346e-15,
+        "qiskit_matrix_consistency_pass": true,
+        "qiskit_statevector_backend": "qiskit.quantum_info.Statevector",
+        "relative_survival_amplitude": {
+          "imag": -1.6712637620069914e-06,
+          "real": 0.9999999999873229
+        },
+        "relative_survival_radius": 0.9999999999887195,
+        "signed_linearized_perturbative_energy_bias": 3.342527524000193e-05,
+        "signed_matrix_phase_energy_bias": 3.3425275239422216e-05,
+        "signed_qiskit_phase_energy_bias": 3.3425275240532446e-05,
+        "statevector_l2_error_vs_sector_matrix": 2.201578904597688e-15
+      },
+      "delta_time": 0.05,
+      "deterministic_half_maximum_sector_leakage_frobenius_norm": 0.0,
+      "effective_state_fingerprint": "69f311a7b639212f18866239bdb2c42d1168c9fce17c9050a65712c3dd6b3243",
+      "effective_state_physical_overlap": 0.9999999976364324,
+      "q_results": [
+        {
+          "pf_operator_error_spectral_norm": 7.809932763773038e-06,
+          "q_m": 1,
+          "single_dominant_phase_diagnostic": {
+            "dominant_branch_relative_signal": {
+              "imag": -1.670959650019801e-06,
+              "real": 0.9999999999986039
+            },
+            "dominant_branch_signed_energy_bias": 3.341919300041157e-05,
+            "relative_physical_pf_signal": {
+              "imag": -1.6712637619514803e-06,
+              "real": 0.999999999987323
+            },
+            "relative_physical_pf_signal_radius": 0.9999999999887196,
+            "signal_matches_dominant_branch_within_tolerance": true,
+            "signal_phase_contamination": 3.0411195053216344e-10,
+            "signal_phase_contamination_within_analytic_bound": true,
+            "signal_vs_dominant_branch_relative_difference": 0.0001819983807080577,
+            "signed_signal_energy_bias": 3.3425275239422216e-05
+          },
+          "state_results": [
+            {
+              "actual_energy_phase_bias": 3.3425275239144755e-05,
+              "actual_over_surrogate_prediction": 0.9916544383934636,
+              "actual_pf_phase_error": 1.6712637619572378e-06,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.10810767656881852,
+                "real": 0.9941391905899727
+              },
+              "exact_signal_radius": 0.9999999999999971,
+              "numerical_operator_phase_bound": 7.809932763852454e-06,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.1081060150986448,
+                "real": 0.9941393712538151
+              },
+              "pf_signal_error": 1.6712637619852462e-06,
+              "pf_signal_radius": 0.9999999999887197,
+              "pf_signal_within_operator_error": true,
+              "state_label": "physical_df_ground_state",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 3.3706575541874846e-05,
+              "surrogate_predicted_phase_error": 1.6853287770937423e-06,
+              "surrogate_prediction_relative_error": 0.008415796151789237,
+              "surrogate_underpredicts_actual": false
+            },
+            {
+              "actual_energy_phase_bias": 3.341311080801544e-05,
+              "actual_over_surrogate_prediction": 0.9912935464626235,
+              "actual_pf_phase_error": 1.6706555404007722e-06,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.10810767626527168,
+                "real": 0.9941391906116355
+              },
+              "exact_signal_radius": 0.9999999999887172,
+              "numerical_operator_phase_bound": 7.809932763940549e-06,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.1081060154021941,
+                "real": 0.9941393712321556
+              },
+              "pf_signal_error": 1.6706555404258232e-06,
+              "pf_signal_radius": 1.0000000000000024,
+              "pf_signal_within_operator_error": true,
+              "state_label": "effective_partial_s2_eigenstate_control",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 3.3706575541874846e-05,
+              "surrogate_predicted_phase_error": 1.6853287770937423e-06,
+              "surrogate_prediction_relative_error": 0.008782921636527392,
+              "surrogate_underpredicts_actual": false
+            }
+          ],
+          "t_m": 0.05
+        },
+        {
+          "pf_operator_error_spectral_norm": 1.5609325408461196e-05,
+          "q_m": 2,
+          "single_dominant_phase_diagnostic": {
+            "dominant_branch_relative_signal": {
+              "imag": -3.3419193000349366e-06,
+              "real": 0.9999999999944158
+            },
+            "dominant_branch_signed_energy_bias": 3.341919300041157e-05,
+            "relative_physical_pf_signal": {
+              "imag": -3.3425256362185074e-06,
+              "real": 0.9999999999493783
+            },
+            "relative_physical_pf_signal_radius": 0.9999999999549645,
+            "signal_matches_dominant_branch_within_tolerance": true,
+            "signal_phase_contamination": 6.063363341065774e-10,
+            "signal_phase_contamination_within_analytic_bound": true,
+            "signal_vs_dominant_branch_relative_difference": 0.00018143356546605532,
+            "signed_signal_energy_bias": 3.3425256363752634e-05
+          },
+          "state_results": [
+            {
+              "actual_energy_phase_bias": 3.3425256363475166e-05,
+              "actual_over_surrogate_prediction": 0.9916538783938408,
+              "actual_pf_phase_error": 3.342525636347517e-06,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.21494815616137622,
+                "real": 0.9766254605337807
+              },
+              "exact_signal_radius": 0.9999999999999973,
+              "numerical_operator_phase_bound": 1.560932540909511e-05,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.21494489175485698,
+                "real": 0.9766261789540673
+              },
+              "pf_signal_error": 3.3425256365556507e-06,
+              "pf_signal_radius": 0.9999999999549646,
+              "pf_signal_within_operator_error": true,
+              "state_label": "physical_df_ground_state",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 3.3706575541874846e-05,
+              "surrogate_predicted_phase_error": 3.3706575541874846e-06,
+              "surrogate_prediction_relative_error": 0.00841636561708127,
+              "surrogate_underpredicts_actual": false
+            },
+            {
+              "actual_energy_phase_bias": 3.3413129683813994e-05,
+              "actual_over_surrogate_prediction": 0.9912941064660724,
+              "actual_pf_phase_error": 3.3413129683813996e-06,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.2149481555595365,
+                "real": 0.9766254606201265
+              },
+              "exact_signal_radius": 0.9999999999549605,
+              "numerical_operator_phase_bound": 1.5609325409798106e-05,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.2149448923567019,
+                "real": 0.9766261788677262
+              },
+              "pf_signal_error": 3.3413129686317486e-06,
+              "pf_signal_radius": 1.000000000000005,
+              "pf_signal_within_operator_error": true,
+              "state_label": "effective_partial_s2_eigenstate_control",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 3.3706575541874846e-05,
+              "surrogate_predicted_phase_error": 3.3706575541874846e-06,
+              "surrogate_prediction_relative_error": 0.008782351753269094,
+              "surrogate_underpredicts_actual": false
+            }
+          ],
+          "t_m": 0.1
+        },
+        {
+          "pf_operator_error_spectral_norm": 3.1134543261707427e-05,
+          "q_m": 4,
+          "single_dominant_phase_diagnostic": {
+            "dominant_branch_relative_signal": {
+              "imag": -6.6838386000325495e-06,
+              "real": 0.9999999999776632
+            },
+            "dominant_branch_signed_energy_bias": 3.341919300041157e-05,
+            "relative_physical_pf_signal": {
+              "imag": -6.6850362734904856e-06,
+              "real": 0.9999999997988918
+            },
+            "relative_physical_pf_signal_radius": 0.9999999998212367,
+            "signal_matches_dominant_branch_within_tolerance": true,
+            "signal_phase_contamination": 1.1976746530028223e-09,
+            "signal_phase_contamination_within_analytic_bound": true,
+            "signal_vs_dominant_branch_relative_difference": 0.00017918964305742278,
+            "signed_signal_energy_bias": 3.342518137367658e-05
+          },
+          "state_results": [
+            {
+              "actual_energy_phase_bias": 3.342518137395424e-05,
+              "actual_over_surrogate_prediction": 0.9916516536196025,
+              "actual_pf_phase_error": 6.685036274790849e-06,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.4198476840039833,
+                "real": 0.907594580325646
+              },
+              "exact_signal_radius": 0.999999999999997,
+              "numerical_operator_phase_bound": 3.1134543266737616e-05,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.41984161661685854,
+                "real": 0.9075973868401208
+              },
+              "pf_signal_error": 6.685036276584455e-06,
+              "pf_signal_radius": 0.9999999998212366,
+              "pf_signal_within_operator_error": true,
+              "state_label": "physical_df_ground_state",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 3.3706575541874846e-05,
+              "surrogate_predicted_phase_error": 6.741315108374969e-06,
+              "surrogate_prediction_relative_error": 0.008418628003014395,
+              "surrogate_underpredicts_actual": false
+            },
+            {
+              "actual_energy_phase_bias": 3.341320467431962e-05,
+              "actual_over_surrogate_prediction": 0.9912963312695245,
+              "actual_pf_phase_error": 6.682640934863924e-06,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.4198476828419328,
+                "real": 0.9075945806662339
+              },
+              "exact_signal_radius": 0.9999999998212286,
+              "numerical_operator_phase_bound": 3.113454327230349e-05,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.41984161777892104,
+                "real": 0.9075973864995418
+              },
+              "pf_signal_error": 6.682640936670307e-06,
+              "pf_signal_radius": 1.0000000000000102,
+              "pf_signal_within_operator_error": true,
+              "state_label": "effective_partial_s2_eigenstate_control",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 3.3706575541874846e-05,
+              "surrogate_predicted_phase_error": 6.741315108374969e-06,
+              "surrogate_prediction_relative_error": 0.008780087705286793,
+              "surrogate_underpredicts_actual": false
+            }
+          ],
+          "t_m": 0.2
+        }
+      ],
+      "qpe_spectral_energy_distribution": {
+        "absolute_qpe_mean_energy_bias": 3.34252815400004e-05,
+        "definition": "target-centered Schur eigenphase distribution of one direct-tail partial-S2 step",
+        "dominant_phase_cluster_absolute_energy_bias": 3.341919300041157e-05,
+        "dominant_phase_cluster_signed_energy_bias": 3.341919300041157e-05,
+        "dominant_phase_cluster_weight": 0.9999999952728663,
+        "dominant_phase_cluster_weight_pass": true,
+        "effective_phase_cluster_count": 1.0000000094542674,
+        "maximum_eigenvalue_modulus_error": 6.217248937900877e-15,
+        "non_dominant_phase_cluster_weight": 4.72713368449007e-09,
+        "numerical_consistency_pass": true,
+        "phase_cluster_count": 36,
+        "phase_cluster_energy_tolerance": 1e-08,
+        "phase_clusters": [
+          {
+            "maximum_signed_energy_shift": 3.341919300041157e-05,
+            "minimum_signed_energy_shift": 3.341919300041157e-05,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 3.341919300041157e-05,
+            "weight": 0.9999999952728663,
+            "weight_rank": 1
+          },
+          {
+            "maximum_signed_energy_shift": 0.834123409730019,
+            "minimum_signed_energy_shift": 0.834123409730019,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.834123409730019,
+            "weight": 1.8786871628876156e-09,
+            "weight_rank": 2
+          },
+          {
+            "maximum_signed_energy_shift": 1.6909288828289721,
+            "minimum_signed_energy_shift": 1.6909288828289721,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.6909288828289721,
+            "weight": 8.298299119813503e-10,
+            "weight_rank": 3
+          },
+          {
+            "maximum_signed_energy_shift": 1.0196096828589685,
+            "minimum_signed_energy_shift": 1.0196096828589685,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.0196096828589685,
+            "weight": 5.564129235535699e-10,
+            "weight_rank": 4
+          },
+          {
+            "maximum_signed_energy_shift": 1.6148304785654837,
+            "minimum_signed_energy_shift": 1.6148304785654837,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.6148304785654837,
+            "weight": 5.076702207855733e-10,
+            "weight_rank": 5
+          },
+          {
+            "maximum_signed_energy_shift": 1.223140215845772,
+            "minimum_signed_energy_shift": 1.223140215845772,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.223140215845772,
+            "weight": 3.249239571293709e-10,
+            "weight_rank": 6
+          },
+          {
+            "maximum_signed_energy_shift": 2.0798091574096667,
+            "minimum_signed_energy_shift": 2.0798091574096667,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.0798091574096667,
+            "weight": 3.249148299113552e-10,
+            "weight_rank": 7
+          },
+          {
+            "maximum_signed_energy_shift": 2.416362601423415,
+            "minimum_signed_energy_shift": 2.416362601423415,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.416362601423415,
+            "weight": 1.817489645036258e-10,
+            "weight_rank": 8
+          },
+          {
+            "maximum_signed_energy_shift": 0.5167469995868428,
+            "minimum_signed_energy_shift": 0.5167469995868428,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.5167469995868428,
+            "weight": 3.987740605174891e-11,
+            "weight_rank": 9
+          },
+          {
+            "maximum_signed_energy_shift": 1.987963753236486,
+            "minimum_signed_energy_shift": 1.987963753236486,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.987963753236486,
+            "weight": 3.904822813984735e-11,
+            "weight_rank": 10
+          },
+          {
+            "maximum_signed_energy_shift": 2.687191150640763,
+            "minimum_signed_energy_shift": 2.687191150640763,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.687191150640763,
+            "weight": 3.3379557688826456e-11,
+            "weight_rank": 11
+          },
+          {
+            "maximum_signed_energy_shift": 2.917309267824567,
+            "minimum_signed_energy_shift": 2.917309267824567,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.917309267824567,
+            "weight": 1.0640580837429272e-11,
+            "weight_rank": 12
+          },
+          {
+            "maximum_signed_energy_shift": 0.4469090688958842,
+            "minimum_signed_energy_shift": 0.4469090688958634,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.4469090688958806,
+            "weight": 6.259253716643106e-28,
+            "weight_rank": 13
+          },
+          {
+            "maximum_signed_energy_shift": 0.2326533263761363,
+            "minimum_signed_energy_shift": 0.23265332637611247,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.23265332637613226,
+            "weight": 1.5997432800773748e-28,
+            "weight_rank": 14
+          },
+          {
+            "maximum_signed_energy_shift": 0.9517308732503619,
+            "minimum_signed_energy_shift": 0.9517308732503325,
+            "schur_multiplicity": 5,
+            "signed_energy_shift": 0.9517308732503423,
+            "weight": 1.4847432657052686e-28,
+            "weight_rank": 15
+          },
+          {
+            "maximum_signed_energy_shift": 0.88157631565493,
+            "minimum_signed_energy_shift": 0.8815763156549209,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.8815763156549233,
+            "weight": 6.816050722595862e-29,
+            "weight_rank": 16
+          },
+          {
+            "maximum_signed_energy_shift": 1.9082921822369048,
+            "minimum_signed_energy_shift": 1.9082921822368828,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.9082921822368877,
+            "weight": 1.74131069450233e-29,
+            "weight_rank": 17
+          },
+          {
+            "maximum_signed_energy_shift": 0.5432632381918457,
+            "minimum_signed_energy_shift": 0.5432632381918457,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.5432632381918457,
+            "weight": 1.2456412849075419e-29,
+            "weight_rank": 18
+          },
+          {
+            "maximum_signed_energy_shift": 2.415938006144521,
+            "minimum_signed_energy_shift": 2.4159380061445006,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 2.4159380061445104,
+            "weight": 1.1701443074194128e-29,
+            "weight_rank": 19
+          },
+          {
+            "maximum_signed_energy_shift": 0.7287043012558394,
+            "minimum_signed_energy_shift": 0.7287043012558194,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.7287043012558381,
+            "weight": 1.1601531754285198e-29,
+            "weight_rank": 20
+          },
+          {
+            "maximum_signed_energy_shift": 1.0443930745315602,
+            "minimum_signed_energy_shift": 1.0443930745315602,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.0443930745315602,
+            "weight": 1.0941040726140864e-29,
+            "weight_rank": 21
+          },
+          {
+            "maximum_signed_energy_shift": 1.5417370353425637,
+            "minimum_signed_energy_shift": 1.5417370353425508,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.5417370353425515,
+            "weight": 7.85878010335429e-30,
+            "weight_rank": 22
+          },
+          {
+            "maximum_signed_energy_shift": 1.1829591876624712,
+            "minimum_signed_energy_shift": 1.1829591876624712,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.1829591876624712,
+            "weight": 7.054348214448725e-30,
+            "weight_rank": 23
+          },
+          {
+            "maximum_signed_energy_shift": 1.4657509598375091,
+            "minimum_signed_energy_shift": 1.4657509598375091,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.4657509598375091,
+            "weight": 6.938105178909513e-30,
+            "weight_rank": 24
+          },
+          {
+            "maximum_signed_energy_shift": 1.4466943427216605,
+            "minimum_signed_energy_shift": 1.446694342721646,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.4466943427216519,
+            "weight": 4.254953714160885e-30,
+            "weight_rank": 25
+          },
+          {
+            "maximum_signed_energy_shift": 1.2224064324295119,
+            "minimum_signed_energy_shift": 1.2224064324295054,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.222406432429509,
+            "weight": 3.8717719601282356e-30,
+            "weight_rank": 26
+          },
+          {
+            "maximum_signed_energy_shift": 1.3868540544681736,
+            "minimum_signed_energy_shift": 1.3868540544681707,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.3868540544681727,
+            "weight": 3.540574550678238e-30,
+            "weight_rank": 27
+          },
+          {
+            "maximum_signed_energy_shift": 1.9072395369839719,
+            "minimum_signed_energy_shift": 1.9072395369839719,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.9072395369839719,
+            "weight": 2.999270235963124e-30,
+            "weight_rank": 28
+          },
+          {
+            "maximum_signed_energy_shift": 1.5270074768883617,
+            "minimum_signed_energy_shift": 1.5270074768883337,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.5270074768883497,
+            "weight": 2.735002716769489e-30,
+            "weight_rank": 29
+          },
+          {
+            "maximum_signed_energy_shift": 1.0604174058265055,
+            "minimum_signed_energy_shift": 1.060417405826487,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.0604174058264975,
+            "weight": 1.6799546078783173e-30,
+            "weight_rank": 30
+          },
+          {
+            "maximum_signed_energy_shift": 2.310971323439185,
+            "minimum_signed_energy_shift": 2.3109713234391647,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 2.310971323439183,
+            "weight": 1.0913298051695507e-30,
+            "weight_rank": 31
+          },
+          {
+            "maximum_signed_energy_shift": 1.7543593082760691,
+            "minimum_signed_energy_shift": 1.7543593082760371,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.754359308276053,
+            "weight": 8.250556069746115e-31,
+            "weight_rank": 32
+          },
+          {
+            "maximum_signed_energy_shift": 1.949327366980118,
+            "minimum_signed_energy_shift": 1.9493273669801052,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.9493273669801088,
+            "weight": 7.074637015285275e-31,
+            "weight_rank": 33
+          },
+          {
+            "maximum_signed_energy_shift": 2.820195193016116,
+            "minimum_signed_energy_shift": 2.820195193016116,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.820195193016116,
+            "weight": 2.325402143125462e-31,
+            "weight_rank": 34
+          },
+          {
+            "maximum_signed_energy_shift": 2.3741670373203534,
+            "minimum_signed_energy_shift": 2.3741670373203534,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.3741670373203534,
+            "weight": 7.051643961404408e-32,
+            "weight_rank": 35
+          },
+          {
+            "maximum_signed_energy_shift": 1.7843699146811849,
+            "minimum_signed_energy_shift": 1.7843699146811849,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.7843699146811849,
+            "weight": 4.4555508369933714e-32,
+            "weight_rank": 36
+          }
+        ],
+        "phase_is_qpe_rmse_proxy_within_tolerance": false,
+        "phase_matches_qpe_mean_within_tolerance": true,
+        "phase_vs_qpe_mean_relative_difference": 1.8846417030821427e-07,
+        "phase_vs_qpe_rmse_relative_difference": 0.6681977452404639,
+        "qpe_energy_rmse": 0.00010073854158934643,
+        "qpe_energy_standard_deviation": 9.503159640624895e-05,
+        "qpe_second_moment_identity_error": 1.6543612251060553e-24,
+        "raw_weight_sum": 0.9999999999999957,
+        "relative_survival_amplitude_from_spectrum": {
+          "imag": -1.671263761809814e-06,
+          "real": 0.999999999987322
+        },
+        "relative_survival_reconstruction_error": 1.0091934465275113e-15,
+        "schur_offdiagonal_frobenius_norm": 2.303987044307245e-14,
+        "signed_qpe_mean_energy_bias": 3.34252815400004e-05,
+        "single_phase_contamination_bound": 4.727133706835863e-09,
+        "single_phase_contamination_bound_pass": true,
+        "single_phase_signal_radius_lower_bound": 0.9999999905457326,
+        "target_centered_phase_branch_cut_clearance": 2.995727190198565,
+        "unitary_defect_spectral_norm": 7.689756390403445e-15,
+        "weight_normalization_error": 0.0
+      }
+    },
+    {
+      "alias_phase_span": 0.2917351036908064,
+      "alias_phase_span_le_pi_over_two": true,
+      "cpu_qiskit_direct_tail_validation": {
+        "absolute_linearized_perturbative_energy_bias": 0.00013380904097886698,
+        "absolute_qiskit_phase_energy_bias": 0.00013380904107968062,
+        "exact_tail_backend": "scipy.linalg.expm_sector_matrix",
+        "execution_model": "Qiskit Statevector deterministic halves with an exact sector expm action for exp(-i H_R delta)",
+        "linearized_perturbation_consistency_pass": true,
+        "maximum_sector_leakage_norm": 0.0,
+        "paper_d6_perturbative_energy_bias": {
+          "absolute_energy_bias": 0.000133772193430835,
+          "definition": "paper Eq. (D6) full-H-ground-state perturbative bias",
+          "denominator_delta_sine": -0.021494815616137683,
+          "minimum_sine_abs": 0.1,
+          "numerator_real_delta_overlap": 2.875408632362103e-06,
+          "signed_energy_bias": -0.000133772193430835,
+          "sine_denominator_abs": 0.21494815616137683,
+          "well_conditioned": true
+        },
+        "paper_d6_vs_dominant_eigenphase_relative_difference": 0.0004506573382663685,
+        "perturbative_vs_phase_relative_difference": 7.534142964356184e-10,
+        "phase_bias_absolute_error_vs_sector_matrix": 2.2203105239787524e-15,
+        "qiskit_matrix_consistency_pass": true,
+        "qiskit_statevector_backend": "qiskit.quantum_info.Statevector",
+        "relative_survival_amplitude": {
+          "imag": -1.3380904097914925e-05,
+          "real": 0.9999999991890123
+        },
+        "relative_survival_radius": 0.9999999992785366,
+        "signed_linearized_perturbative_energy_bias": 0.00013380904097886698,
+        "signed_matrix_phase_energy_bias": 0.00013380904108190093,
+        "signed_qiskit_phase_energy_bias": 0.00013380904107968062,
+        "statevector_l2_error_vs_sector_matrix": 1.8593195234312113e-15
+      },
+      "delta_time": 0.1,
+      "deterministic_half_maximum_sector_leakage_frobenius_norm": 0.0,
+      "effective_state_fingerprint": "8bdd6f405951b2b99445d3bf7150df5876f9d237090f37766d55ae9db75ed48d",
+      "effective_state_physical_overlap": 0.9999999621542062,
+      "q_results": [
+        {
+          "pf_operator_error_spectral_norm": 6.245918092252283e-05,
+          "q_m": 1,
+          "single_dominant_phase_diagnostic": {
+            "dominant_branch_relative_signal": {
+              "imag": -1.3371193516205428e-05,
+              "real": 0.9999999999106056
+            },
+            "dominant_branch_signed_energy_bias": 0.00013371193516603864,
+            "relative_physical_pf_signal": {
+              "imag": -1.338090409813697e-05,
+              "real": 0.9999999991890132
+            },
+            "relative_physical_pf_signal_radius": 0.9999999992785374,
+            "signal_matches_dominant_branch_within_tolerance": true,
+            "signal_phase_contamination": 9.710591586230752e-09,
+            "signal_phase_contamination_within_analytic_bound": true,
+            "signal_vs_dominant_branch_relative_difference": 0.0007262322225889279,
+            "signed_signal_energy_bias": 0.00013380904108190093
+          },
+          "state_results": [
+            {
+              "actual_energy_phase_bias": 0.0001338090410813462,
+              "actual_over_surrogate_prediction": 0.9924550249484007,
+              "actual_pf_phase_error": 1.338090410813462e-05,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.21494815616137622,
+                "real": 0.9766254605337807
+              },
+              "exact_signal_radius": 0.9999999999999973,
+              "numerical_operator_phase_bound": 6.245918096313343e-05,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.21493508785542953,
+                "real": 0.9766283359424166
+              },
+              "pf_signal_error": 1.338090412264677e-05,
+              "pf_signal_radius": 0.9999999992785374,
+              "pf_signal_within_operator_error": true,
+              "state_label": "physical_df_ground_state",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 0.00013482630216749938,
+              "surrogate_predicted_phase_error": 1.3482630216749938e-05,
+              "surrogate_prediction_relative_error": 0.0076023344755513055,
+              "surrogate_underpredicts_actual": false
+            },
+            {
+              "actual_energy_phase_bias": 0.00013361483192909012,
+              "actual_over_surrogate_prediction": 0.9910145852928295,
+              "actual_pf_phase_error": 1.3361483192909014e-05,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.21494814652295824,
+                "real": 0.9766254619164384
+              },
+              "exact_signal_radius": 0.9999999992785759,
+              "numerical_operator_phase_bound": 6.245918100819283e-05,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.21493509749413503,
+                "real": 0.9766283345598681
+              },
+              "pf_signal_error": 1.336148320745303e-05,
+              "pf_signal_radius": 0.9999999999999974,
+              "pf_signal_within_operator_error": true,
+              "state_label": "effective_partial_s2_eigenstate_control",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 0.00013482630216749938,
+              "surrogate_predicted_phase_error": 1.3482630216749938e-05,
+              "surrogate_prediction_relative_error": 0.009066884423820485,
+              "surrogate_underpredicts_actual": false
+            }
+          ],
+          "t_m": 0.1
+        },
+        {
+          "pf_operator_error_spectral_norm": 0.0001245816918558626,
+          "q_m": 2,
+          "single_dominant_phase_diagnostic": {
+            "dominant_branch_relative_signal": {
+              "imag": -2.6742387030020234e-05,
+              "real": 0.9999999996424224
+            },
+            "dominant_branch_signed_energy_bias": 0.00013371193516603864,
+            "relative_physical_pf_signal": {
+              "imag": -2.6761567845423606e-05,
+              "real": 0.9999999967782462
+            },
+            "relative_physical_pf_signal_radius": 0.999999997136337,
+            "signal_matches_dominant_branch_within_tolerance": true,
+            "signal_phase_contamination": 1.9180892046347482e-08,
+            "signal_phase_contamination_within_analytic_bound": true,
+            "signal_vs_dominant_branch_relative_difference": 0.0007172468195351482,
+            "signed_signal_energy_bias": 0.00013380783962627037
+          },
+          "state_results": [
+            {
+              "actual_energy_phase_bias": 0.00013380783962682583,
+              "actual_over_surrogate_prediction": 0.9924461138197777,
+              "actual_pf_phase_error": 2.676156792536517e-05,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.4198476840039833,
+                "real": 0.907594580325646
+              },
+              "exact_signal_radius": 0.999999999999997,
+              "numerical_operator_phase_bound": 0.0001245816921781267,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.41982339399740115,
+                "real": 0.9076058131838828
+              },
+              "pf_signal_error": 2.6761568039433172e-05,
+              "pf_signal_radius": 0.9999999971363371,
+              "pf_signal_within_operator_error": true,
+              "state_label": "physical_df_ground_state",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 0.00013482630216749938,
+              "surrogate_predicted_phase_error": 2.6965260433499876e-05,
+              "surrogate_prediction_relative_error": 0.007611381691191802,
+              "surrogate_underpredicts_actual": false
+            },
+            {
+              "actual_energy_phase_bias": 0.00013361603332534636,
+              "actual_over_surrogate_prediction": 0.9910234959893103,
+              "actual_pf_phase_error": 2.6723206665069276e-05,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.41984766539374535,
+                "real": 0.9075945857795713
+              },
+              "exact_signal_radius": 0.999999997136485,
+              "numerical_operator_phase_bound": 0.00012458169253486788,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.41982341260832,
+                "real": 0.9076058077303683
+              },
+              "pf_signal_error": 2.672320677943792e-05,
+              "pf_signal_radius": 0.9999999999999949,
+              "pf_signal_within_operator_error": true,
+              "state_label": "effective_partial_s2_eigenstate_control",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 0.00013482630216749938,
+              "surrogate_predicted_phase_error": 2.6965260433499876e-05,
+              "surrogate_prediction_relative_error": 0.00905781149187457,
+              "surrogate_underpredicts_actual": false
+            }
+          ],
+          "t_m": 0.2
+        },
+        {
+          "pf_operator_error_spectral_norm": 0.0002464971772402334,
+          "q_m": 4,
+          "single_dominant_phase_diagnostic": {
+            "dominant_branch_relative_signal": {
+              "imag": -5.348477404091551e-05,
+              "real": 0.9999999985696895
+            },
+            "dominant_branch_signed_energy_bias": 0.00013371193516603864,
+            "relative_physical_pf_signal": {
+              "imag": -5.352126465951734e-05,
+              "real": 0.9999999874607284
+            },
+            "relative_physical_pf_signal_radius": 0.9999999888929912,
+            "signal_matches_dominant_branch_within_tolerance": true,
+            "signal_phase_contamination": 3.649121311522463e-08,
+            "signal_phase_contamination_within_analytic_bound": true,
+            "signal_vs_dominant_branch_relative_difference": 0.0006822729225686446,
+            "signed_signal_energy_bias": 0.00013380316319882668
+          },
+          "state_results": [
+            {
+              "actual_energy_phase_bias": 0.00013380316319868828,
+              "actual_over_surrogate_prediction": 0.9924114289840863,
+              "actual_pf_phase_error": 5.352126527947532e-05,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.7621029651285814,
+                "real": 0.6474558444729791
+              },
+              "exact_signal_radius": 0.9999999999999971,
+              "numerical_operator_phase_bound": 0.00024649717973646414,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.7620683029167602,
+                "real": 0.6474966250688506
+              },
+              "pf_signal_error": 5.352126612832063e-05,
+              "pf_signal_radius": 0.9999999888929914,
+              "pf_signal_within_operator_error": true,
+              "state_label": "physical_df_ground_state",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 0.00013482630216749938,
+              "surrogate_predicted_phase_error": 5.393052086699975e-05,
+              "surrogate_prediction_relative_error": 0.007646597766091769,
+              "surrogate_underpredicts_actual": false
+            },
+            {
+              "actual_energy_phase_bias": 0.00013362070951499524,
+              "actual_over_surrogate_prediction": 0.991058179056143,
+              "actual_pf_phase_error": 5.34482838059981e-05,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.7621029330385025,
+                "real": 0.6474558650913904
+              },
+              "exact_signal_radius": 0.9999999888935645,
+              "numerical_operator_phase_bound": 0.00024649718247416857,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.7620683350089877,
+                "real": 0.6474966044517984
+              },
+              "pf_signal_error": 5.344828465678916e-05,
+              "pf_signal_radius": 0.9999999999999897,
+              "pf_signal_within_operator_error": true,
+              "state_label": "effective_partial_s2_eigenstate_control",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 0.00013482630216749938,
+              "surrogate_predicted_phase_error": 5.393052086699975e-05,
+              "surrogate_prediction_relative_error": 0.009022498509999637,
+              "surrogate_underpredicts_actual": false
+            }
+          ],
+          "t_m": 0.4
+        }
+      ],
+      "qpe_spectral_energy_distribution": {
+        "absolute_qpe_mean_energy_bias": 0.0001338094444872858,
+        "definition": "target-centered Schur eigenphase distribution of one direct-tail partial-S2 step",
+        "dominant_phase_cluster_absolute_energy_bias": 0.00013371193516603864,
+        "dominant_phase_cluster_signed_energy_bias": 0.00013371193516603864,
+        "dominant_phase_cluster_weight": 0.9999999243084151,
+        "dominant_phase_cluster_weight_pass": true,
+        "effective_phase_cluster_count": 1.0000001513831855,
+        "maximum_eigenvalue_modulus_error": 7.882583474838611e-15,
+        "non_dominant_phase_cluster_weight": 7.56915848887374e-08,
+        "numerical_consistency_pass": true,
+        "phase_cluster_count": 36,
+        "phase_cluster_energy_tolerance": 1e-08,
+        "phase_clusters": [
+          {
+            "maximum_signed_energy_shift": 0.00013371193516603864,
+            "minimum_signed_energy_shift": 0.00013371193516603864,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.00013371193516603864,
+            "weight": 0.9999999243084151,
+            "weight_rank": 1
+          },
+          {
+            "maximum_signed_energy_shift": 0.8341573931062163,
+            "minimum_signed_energy_shift": 0.8341573931062163,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.8341573931062163,
+            "weight": 3.006389009811213e-08,
+            "weight_rank": 2
+          },
+          {
+            "maximum_signed_energy_shift": 1.6909583649198492,
+            "minimum_signed_energy_shift": 1.6909583649198492,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.6909583649198492,
+            "weight": 1.3297801984550307e-08,
+            "weight_rank": 3
+          },
+          {
+            "maximum_signed_energy_shift": 1.0196894609460445,
+            "minimum_signed_energy_shift": 1.0196894609460445,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.0196894609460445,
+            "weight": 8.908889343485e-09,
+            "weight_rank": 4
+          },
+          {
+            "maximum_signed_energy_shift": 1.6148317703306816,
+            "minimum_signed_energy_shift": 1.6148317703306816,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.6148317703306816,
+            "weight": 8.126507814773116e-09,
+            "weight_rank": 5
+          },
+          {
+            "maximum_signed_energy_shift": 2.0798032320678836,
+            "minimum_signed_energy_shift": 2.0798032320678836,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.0798032320678836,
+            "weight": 5.20601822881834e-09,
+            "weight_rank": 6
+          },
+          {
+            "maximum_signed_energy_shift": 1.223149379929919,
+            "minimum_signed_energy_shift": 1.223149379929919,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.223149379929919,
+            "weight": 5.2016970627989774e-09,
+            "weight_rank": 7
+          },
+          {
+            "maximum_signed_energy_shift": 2.416319654882195,
+            "minimum_signed_energy_shift": 2.416319654882195,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.416319654882195,
+            "weight": 2.9160606349595715e-09,
+            "weight_rank": 8
+          },
+          {
+            "maximum_signed_energy_shift": 0.5167993266757219,
+            "minimum_signed_energy_shift": 0.5167993266757219,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.5167993266757219,
+            "weight": 6.381673947512296e-10,
+            "weight_rank": 9
+          },
+          {
+            "maximum_signed_energy_shift": 1.9879539166997453,
+            "minimum_signed_energy_shift": 1.9879539166997453,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.9879539166997453,
+            "weight": 6.261769006974898e-10,
+            "weight_rank": 10
+          },
+          {
+            "maximum_signed_energy_shift": 2.687068867033183,
+            "minimum_signed_energy_shift": 2.687068867033183,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.687068867033183,
+            "weight": 5.352551576695338e-10,
+            "weight_rank": 11
+          },
+          {
+            "maximum_signed_energy_shift": 2.9171839406169697,
+            "minimum_signed_energy_shift": 2.9171839406169697,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.9171839406169697,
+            "weight": 1.7112029466140452e-10,
+            "weight_rank": 12
+          },
+          {
+            "maximum_signed_energy_shift": 0.23272268200999452,
+            "minimum_signed_energy_shift": 0.23272268200998178,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.23272268200998752,
+            "weight": 1.1936813211570754e-28,
+            "weight_rank": 13
+          },
+          {
+            "maximum_signed_energy_shift": 0.8816106165805254,
+            "minimum_signed_energy_shift": 0.8816106165805223,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.8816106165805244,
+            "weight": 4.579570034274966e-29,
+            "weight_rank": 14
+          },
+          {
+            "maximum_signed_energy_shift": 0.44695637354521006,
+            "minimum_signed_energy_shift": 0.446956373545206,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.44695637354520706,
+            "weight": 3.899697147215301e-29,
+            "weight_rank": 15
+          },
+          {
+            "maximum_signed_energy_shift": 1.3868595251997675,
+            "minimum_signed_energy_shift": 1.3868595251997644,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.3868595251997653,
+            "weight": 5.26452555857094e-30,
+            "weight_rank": 16
+          },
+          {
+            "maximum_signed_energy_shift": 0.7287287159890943,
+            "minimum_signed_energy_shift": 0.7287287159890905,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.7287287159890935,
+            "weight": 4.458738635304156e-30,
+            "weight_rank": 17
+          },
+          {
+            "maximum_signed_energy_shift": 1.4466921349419142,
+            "minimum_signed_energy_shift": 1.4466921349419022,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.4466921349419106,
+            "weight": 3.1287671564700974e-30,
+            "weight_rank": 18
+          },
+          {
+            "maximum_signed_energy_shift": 1.0444029299064665,
+            "minimum_signed_energy_shift": 1.0444029299064665,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.0444029299064665,
+            "weight": 2.7646767443881147e-30,
+            "weight_rank": 19
+          },
+          {
+            "maximum_signed_energy_shift": 1.908261991375662,
+            "minimum_signed_energy_shift": 1.908261991375653,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.9082619913756598,
+            "weight": 2.4538925152256934e-30,
+            "weight_rank": 20
+          },
+          {
+            "maximum_signed_energy_shift": 0.9517308732503202,
+            "minimum_signed_energy_shift": 0.9517308732503156,
+            "schur_multiplicity": 5,
+            "signed_energy_shift": 0.951730873250317,
+            "weight": 2.428671995074913e-30,
+            "weight_rank": 21
+          },
+          {
+            "maximum_signed_energy_shift": 1.5417212551021686,
+            "minimum_signed_energy_shift": 1.5417212551021653,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.5417212551021662,
+            "weight": 2.2677072802011556e-30,
+            "weight_rank": 22
+          },
+          {
+            "maximum_signed_energy_shift": 1.0604517207387614,
+            "minimum_signed_energy_shift": 1.0604517207387525,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.060451720738758,
+            "weight": 2.2360735458391204e-30,
+            "weight_rank": 23
+          },
+          {
+            "maximum_signed_energy_shift": 1.2223895656660022,
+            "minimum_signed_energy_shift": 1.2223895656659984,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.222389565665999,
+            "weight": 1.3259923917256445e-30,
+            "weight_rank": 24
+          },
+          {
+            "maximum_signed_energy_shift": 2.4158887296753955,
+            "minimum_signed_energy_shift": 2.415888729675381,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 2.4158887296753937,
+            "weight": 1.2213909053634364e-30,
+            "weight_rank": 25
+          },
+          {
+            "maximum_signed_energy_shift": 1.5270051317148072,
+            "minimum_signed_energy_shift": 1.5270051317148043,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.5270051317148052,
+            "weight": 1.1799493115336832e-30,
+            "weight_rank": 26
+          },
+          {
+            "maximum_signed_energy_shift": 2.3109189909469956,
+            "minimum_signed_energy_shift": 2.3109189909469943,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 2.310918990946995,
+            "weight": 8.049913183245473e-31,
+            "weight_rank": 27
+          },
+          {
+            "maximum_signed_energy_shift": 1.9493184300149762,
+            "minimum_signed_energy_shift": 1.9493184300149728,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.9493184300149762,
+            "weight": 4.586091090573879e-31,
+            "weight_rank": 28
+          },
+          {
+            "maximum_signed_energy_shift": 0.543304698333944,
+            "minimum_signed_energy_shift": 0.543304698333944,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.543304698333944,
+            "weight": 2.460929511705531e-31,
+            "weight_rank": 29
+          },
+          {
+            "maximum_signed_energy_shift": 1.9072042641109181,
+            "minimum_signed_energy_shift": 1.9072042641109181,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.9072042641109181,
+            "weight": 2.189776524551577e-31,
+            "weight_rank": 30
+          },
+          {
+            "maximum_signed_energy_shift": 1.7543220834345787,
+            "minimum_signed_energy_shift": 1.7543220834345745,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.754322083434577,
+            "weight": 1.8801189023947237e-31,
+            "weight_rank": 31
+          },
+          {
+            "maximum_signed_energy_shift": 2.8200881398405455,
+            "minimum_signed_energy_shift": 2.8200881398405455,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.8200881398405455,
+            "weight": 1.2171843175789493e-31,
+            "weight_rank": 32
+          },
+          {
+            "maximum_signed_energy_shift": 1.1829954147430115,
+            "minimum_signed_energy_shift": 1.1829954147430115,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.1829954147430115,
+            "weight": 1.0421557177902945e-31,
+            "weight_rank": 33
+          },
+          {
+            "maximum_signed_energy_shift": 1.7843923124552008,
+            "minimum_signed_energy_shift": 1.7843923124552008,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.7843923124552008,
+            "weight": 7.024145107644142e-32,
+            "weight_rank": 34
+          },
+          {
+            "maximum_signed_energy_shift": 2.3741643377663637,
+            "minimum_signed_energy_shift": 2.3741643377663637,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.3741643377663637,
+            "weight": 2.943219383021178e-32,
+            "weight_rank": 35
+          },
+          {
+            "maximum_signed_energy_shift": 1.465786045068355,
+            "minimum_signed_energy_shift": 1.465786045068355,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.465786045068355,
+            "weight": 1.5220564696002665e-32,
+            "weight_rank": 36
+          }
+        ],
+        "phase_is_qpe_rmse_proxy_within_tolerance": false,
+        "phase_matches_qpe_mean_within_tolerance": true,
+        "phase_vs_qpe_mean_relative_difference": 3.014791719059487e-06,
+        "phase_vs_qpe_rmse_relative_difference": 0.6681304228923455,
+        "qpe_energy_rmse": 0.0004031976725491609,
+        "qpe_energy_standard_deviation": 0.00038034641540977396,
+        "qpe_second_moment_identity_error": 0.0,
+        "raw_weight_sum": 1.000000000000001,
+        "relative_survival_amplitude_from_spectrum": {
+          "imag": -1.3380904097646633e-05,
+          "real": 0.999999999189017
+        },
+        "relative_survival_reconstruction_error": 3.9165956317062436e-15,
+        "schur_offdiagonal_frobenius_norm": 2.387604285950315e-14,
+        "signed_qpe_mean_energy_bias": 0.0001338094444872858,
+        "single_phase_contamination_bound": 7.569159061795391e-08,
+        "single_phase_contamination_bound_pass": true,
+        "single_phase_signal_radius_lower_bound": 0.9999998486168302,
+        "target_centered_phase_branch_cut_clearance": 2.849874259528096,
+        "unitary_defect_spectral_norm": 1.1062080994327842e-14,
+        "weight_normalization_error": 0.0
+      }
+    },
+    {
+      "alias_phase_span": 0.5834702073816128,
+      "alias_phase_span_le_pi_over_two": true,
+      "cpu_qiskit_direct_tail_validation": {
+        "absolute_linearized_perturbative_energy_bias": 0.0005369518078526119,
+        "absolute_qiskit_phase_energy_bias": 0.0005369518336011595,
+        "exact_tail_backend": "scipy.linalg.expm_sector_matrix",
+        "execution_model": "Qiskit Statevector deterministic halves with an exact sector expm action for exp(-i H_R delta)",
+        "linearized_perturbation_consistency_pass": true,
+        "maximum_sector_leakage_norm": 0.0,
+        "paper_d6_perturbative_energy_bias": {
+          "absolute_energy_bias": 0.000536391950879376,
+          "definition": "paper Eq. (D6) full-H-ground-state perturbative bias",
+          "denominator_delta_sine": -0.0839695368007969,
+          "minimum_sine_abs": 0.1,
+          "numerator_real_delta_overlap": 4.5040583659017e-05,
+          "signed_energy_bias": -0.000536391950879376,
+          "sine_denominator_abs": 0.4198476840039845,
+          "well_conditioned": true
+        },
+        "paper_d6_vs_dominant_eigenphase_relative_difference": 0.0018311336031411947,
+        "perturbative_vs_phase_relative_difference": 4.795317940458642e-08,
+        "phase_bias_absolute_error_vs_sector_matrix": 5.545694112263355e-16,
+        "qiskit_matrix_consistency_pass": true,
+        "qiskit_statevector_backend": "qiskit.quantum_info.Statevector",
+        "relative_survival_amplitude": {
+          "imag": -0.00010739036157053627,
+          "real": 0.9999999482027199
+        },
+        "relative_survival_radius": 0.999999953969065,
+        "signed_linearized_perturbative_energy_bias": 0.0005369518078526119,
+        "signed_matrix_phase_energy_bias": 0.000536951833601714,
+        "signed_qiskit_phase_energy_bias": 0.0005369518336011595,
+        "statevector_l2_error_vs_sector_matrix": 2.441683430170212e-15
+      },
+      "delta_time": 0.2,
+      "deterministic_half_maximum_sector_leakage_frobenius_norm": 0.0,
+      "effective_state_fingerprint": "71d4a3d79769f1c16be5c40aff315f0a89596c2b4f85d8f586cbd6dd948ffc0c",
+      "effective_state_physical_overlap": 0.9999993926216254,
+      "q_results": [
+        {
+          "pf_operator_error_spectral_norm": 0.000499025103523335,
+          "q_m": 1,
+          "single_dominant_phase_diagnostic": {
+            "dominant_branch_relative_signal": {
+              "imag": -0.00010708230795845046,
+              "real": 0.9999999942666896
+            },
+            "dominant_branch_signed_energy_bias": 0.0005354115408154792,
+            "relative_physical_pf_signal": {
+              "imag": -0.0001073903615706473,
+              "real": 0.9999999482027209
+            },
+            "relative_physical_pf_signal_radius": 0.999999953969066,
+            "signal_matches_dominant_branch_within_tolerance": true,
+            "signal_phase_contamination": 3.0805855724698234e-07,
+            "signal_phase_contamination_within_analytic_bound": true,
+            "signal_vs_dominant_branch_relative_difference": 0.002876838971175119,
+            "signed_signal_energy_bias": 0.000536951833601714
+          },
+          "state_results": [
+            {
+              "actual_energy_phase_bias": 0.0005369518336019931,
+              "actual_over_surrogate_prediction": 0.9956362834436401,
+              "actual_pf_phase_error": 0.00010739036672039864,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.4198476840039833,
+                "real": 0.907594580325646
+              },
+              "exact_signal_radius": 0.999999999999997,
+              "numerical_operator_phase_bound": 0.0004990251242350475,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.41975019534687613,
+                "real": 0.9076396209093087
+              },
+              "pf_signal_error": 0.00010739037406229884,
+              "pf_signal_radius": 0.999999953969066,
+              "pf_signal_within_operator_error": true,
+              "state_label": "physical_df_ground_state",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 0.0005393052086699975,
+              "surrogate_predicted_phase_error": 0.0001078610417339995,
+              "surrogate_prediction_relative_error": 0.004382842036719447,
+              "surrogate_underpredicts_actual": false
+            },
+            {
+              "actual_energy_phase_bias": 0.000533871415867466,
+              "actual_over_surrogate_prediction": 0.9899244570325363,
+              "actual_pf_phase_error": 0.0001067742831734932,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.41984738512002284,
+                "real": 0.9075946678800498
+              },
+              "exact_signal_radius": 0.9999999539782083,
+              "numerical_operator_phase_bound": 0.0004990251472010794,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.41975049427451483,
+                "real": 0.9076395333811218
+              },
+              "pf_signal_error": 0.00010677429058390558,
+              "pf_signal_radius": 1.0,
+              "pf_signal_within_operator_error": true,
+              "state_label": "effective_partial_s2_eigenstate_control",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 0.0005393052086699975,
+              "surrogate_predicted_phase_error": 0.0001078610417339995,
+              "surrogate_prediction_relative_error": 0.0101780927785811,
+              "surrogate_underpredicts_actual": false
+            }
+          ],
+          "t_m": 0.2
+        },
+        {
+          "pf_operator_error_spectral_norm": 0.0009873550244375623,
+          "q_m": 2,
+          "single_dominant_phase_diagnostic": {
+            "dominant_branch_relative_signal": {
+              "imag": -0.0002141646146890287,
+              "real": 0.9999999770667587
+            },
+            "dominant_branch_signed_energy_bias": 0.0005354115408154792,
+            "relative_physical_pf_signal": {
+              "imag": -0.00021475060384085198,
+              "real": 0.9999997984128273
+            },
+            "relative_physical_pf_signal_radius": 0.9999998214717426,
+            "signal_matches_dominant_branch_within_tolerance": true,
+            "signal_phase_contamination": 5.860275043575282e-07,
+            "signal_phase_contamination_within_analytic_bound": true,
+            "signal_vs_dominant_branch_relative_difference": 0.0027363413920109617,
+            "signed_signal_energy_bias": 0.0005368766095763729
+          },
+          "state_results": [
+            {
+              "actual_energy_phase_bias": 0.0005368766095760969,
+              "actual_over_surrogate_prediction": 0.9954968002258129,
+              "actual_pf_phase_error": 0.00021475064383043877,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.7621029651285814,
+                "real": 0.6474558444729791
+              },
+              "exact_signal_radius": 0.9999999999999971,
+              "numerical_operator_phase_bound": 0.000987355184861425,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.7619637699648407,
+                "real": 0.647619376026138
+              },
+              "pf_signal_error": 0.0002147506984560275,
+              "pf_signal_radius": 0.9999998214717426,
+              "pf_signal_within_operator_error": true,
+              "state_label": "physical_df_ground_state",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 0.0005393052086699975,
+              "surrogate_predicted_phase_error": 0.000215722083467999,
+              "surrogate_prediction_relative_error": 0.004523570315008126,
+              "surrogate_underpredicts_actual": false
+            },
+            {
+              "actual_energy_phase_bias": 0.0005339466247542259,
+              "actual_over_surrogate_prediction": 0.9900639121788075,
+              "actual_pf_phase_error": 0.00021357864990169035,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.7621024497117017,
+                "real": 0.6474561754737252
+              },
+              "exact_signal_radius": 0.9999998215078041,
+              "numerical_operator_phase_bound": 0.000987355361096706,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.7619642855196317,
+                "real": 0.6476190451126008
+              },
+              "pf_signal_error": 0.00021357870501953572,
+              "pf_signal_radius": 0.9999999999999999,
+              "pf_signal_within_operator_error": true,
+              "state_label": "effective_partial_s2_eigenstate_control",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 0.0005393052086699975,
+              "surrogate_predicted_phase_error": 0.000215722083467999,
+              "surrogate_prediction_relative_error": 0.010035804455619867,
+              "surrogate_underpredicts_actual": false
+            }
+          ],
+          "t_m": 0.4
+        },
+        {
+          "pf_operator_error_spectral_norm": 0.0018925418014766142,
+          "q_m": 4,
+          "single_dominant_phase_diagnostic": {
+            "dominant_branch_relative_signal": {
+              "imag": -0.0004283292195550798,
+              "real": 0.9999999082670357
+            },
+            "dominant_branch_signed_energy_bias": 0.0005354115408154792,
+            "relative_physical_pf_signal": {
+              "imag": -0.0004292852124135327,
+              "real": 0.9999992762214438
+            },
+            "relative_physical_pf_signal_radius": 0.9999993683644031,
+            "signal_matches_dominant_branch_within_tolerance": true,
+            "signal_phase_contamination": 9.562640983624524e-07,
+            "signal_phase_contamination_within_analytic_bound": true,
+            "signal_vs_dominant_branch_relative_difference": 0.0022325445602693196,
+            "signed_signal_energy_bias": 0.0005366068709384322
+          },
+          "state_results": [
+            {
+              "actual_energy_phase_bias": 0.0005366068709383989,
+              "actual_over_surrogate_prediction": 0.9949966406995158,
+              "actual_pf_phase_error": 0.0004292854967507192,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.9868560377253771,
+                "real": -0.16160185891555806
+              },
+              "exact_signal_radius": 0.9999999999999974,
+              "numerical_operator_phase_bound": 0.0018925429312358327,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.9869246967484724,
+                "real": -0.16117809924782187
+              },
+              "pf_signal_error": 0.000429285822561482,
+              "pf_signal_radius": 0.999999368364403,
+              "pf_signal_within_operator_error": true,
+              "state_label": "physical_df_ground_state",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 0.0005393052086699975,
+              "surrogate_predicted_phase_error": 0.000431444166935998,
+              "surrogate_prediction_relative_error": 0.00502851878672347,
+              "surrogate_underpredicts_actual": false
+            },
+            {
+              "actual_energy_phase_bias": 0.0005342163007406555,
+              "actual_over_surrogate_prediction": 0.9905639555347666,
+              "actual_pf_phase_error": 0.00042737304059252445,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.9868555690459735,
+                "real": -0.16160081324032052
+              },
+              "exact_signal_radius": 0.9999993684982932,
+              "numerical_operator_phase_bound": 0.0018925441263821007,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.9869251659962577,
+                "real": -0.16117914481488593
+              },
+              "pf_signal_error": 0.0004273733689613178,
+              "pf_signal_radius": 0.9999999999999993,
+              "pf_signal_within_operator_error": true,
+              "state_label": "effective_partial_s2_eigenstate_control",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 0.0005393052086699975,
+              "surrogate_predicted_phase_error": 0.000431444166935998,
+              "surrogate_prediction_relative_error": 0.009525931579187337,
+              "surrogate_underpredicts_actual": false
+            }
+          ],
+          "t_m": 0.8
+        }
+      ],
+      "qpe_spectral_energy_distribution": {
+        "absolute_qpe_mean_energy_bias": 0.0005369776499798843,
+        "definition": "target-centered Schur eigenphase distribution of one direct-tail partial-S2 step",
+        "dominant_phase_cluster_absolute_energy_bias": 0.0005354115408154792,
+        "dominant_phase_cluster_signed_energy_bias": 0.0005354115408154792,
+        "dominant_phase_cluster_weight": 0.9999987852436211,
+        "dominant_phase_cluster_weight_pass": true,
+        "effective_phase_cluster_count": 1.0000024295168533,
+        "maximum_eigenvalue_modulus_error": 5.662137425588298e-15,
+        "non_dominant_phase_cluster_weight": 1.2147563789310922e-06,
+        "numerical_consistency_pass": true,
+        "phase_cluster_count": 36,
+        "phase_cluster_energy_tolerance": 1e-08,
+        "phase_clusters": [
+          {
+            "maximum_signed_energy_shift": 0.0005354115408154792,
+            "minimum_signed_energy_shift": 0.0005354115408154792,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.0005354115408154792,
+            "weight": 0.9999987852436211,
+            "weight_rank": 1
+          },
+          {
+            "maximum_signed_energy_shift": 0.8342937437933423,
+            "minimum_signed_energy_shift": 0.8342937437933423,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.8342937437933423,
+            "weight": 4.813354777952342e-07,
+            "weight_rank": 2
+          },
+          {
+            "maximum_signed_energy_shift": 1.6910763586865902,
+            "minimum_signed_energy_shift": 1.6910763586865902,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.6910763586865902,
+            "weight": 2.1408333959817976e-07,
+            "weight_rank": 3
+          },
+          {
+            "maximum_signed_energy_shift": 1.0200088722446838,
+            "minimum_signed_energy_shift": 1.0200088722446838,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.0200088722446838,
+            "weight": 1.4294465901077327e-07,
+            "weight_rank": 4
+          },
+          {
+            "maximum_signed_energy_shift": 1.614836754136472,
+            "minimum_signed_energy_shift": 1.614836754136472,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.614836754136472,
+            "weight": 1.302668141832917e-07,
+            "weight_rank": 5
+          },
+          {
+            "maximum_signed_energy_shift": 2.0797795906611185,
+            "minimum_signed_energy_shift": 2.0797795906611185,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.0797795906611185,
+            "weight": 8.377100034330529e-08,
+            "weight_rank": 6
+          },
+          {
+            "maximum_signed_energy_shift": 1.2231861593823816,
+            "minimum_signed_energy_shift": 1.2231861593823816,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.2231861593823816,
+            "weight": 8.34138755806499e-08,
+            "weight_rank": 7
+          },
+          {
+            "maximum_signed_energy_shift": 2.4161471783736843,
+            "minimum_signed_energy_shift": 2.4161471783736843,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.4161471783736843,
+            "weight": 4.71778627163678e-08,
+            "weight_rank": 8
+          },
+          {
+            "maximum_signed_energy_shift": 0.5170088698006838,
+            "minimum_signed_energy_shift": 0.5170088698006838,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.5170088698006838,
+            "weight": 1.0218909542516938e-08,
+            "weight_rank": 9
+          },
+          {
+            "maximum_signed_energy_shift": 1.987914269033042,
+            "minimum_signed_energy_shift": 1.987914269033042,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.987914269033042,
+            "weight": 1.0109333072427438e-08,
+            "weight_rank": 10
+          },
+          {
+            "maximum_signed_energy_shift": 2.6865794798798324,
+            "minimum_signed_energy_shift": 2.6865794798798324,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.6865794798798324,
+            "weight": 8.64073259327579e-09,
+            "weight_rank": 11
+          },
+          {
+            "maximum_signed_energy_shift": 2.916682331611068,
+            "minimum_signed_energy_shift": 2.916682331611068,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.916682331611068,
+            "weight": 2.794374586869023e-09,
+            "weight_rank": 12
+          },
+          {
+            "maximum_signed_energy_shift": 0.23300043310843196,
+            "minimum_signed_energy_shift": 0.23300043310842986,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.23300043310843155,
+            "weight": 3.2754614118217863e-29,
+            "weight_rank": 13
+          },
+          {
+            "maximum_signed_energy_shift": 0.88174784279311,
+            "minimum_signed_energy_shift": 0.8817478427931003,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.881747842793106,
+            "weight": 1.2113395953058929e-29,
+            "weight_rank": 14
+          },
+          {
+            "maximum_signed_energy_shift": 2.8196595887680402,
+            "minimum_signed_energy_shift": 2.8196595887680402,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.8196595887680402,
+            "weight": 5.839728768914045e-30,
+            "weight_rank": 15
+          },
+          {
+            "maximum_signed_energy_shift": 0.5434707245454005,
+            "minimum_signed_energy_shift": 0.5434707245454005,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.5434707245454005,
+            "weight": 5.609409781064096e-30,
+            "weight_rank": 16
+          },
+          {
+            "maximum_signed_energy_shift": 0.4471458321053241,
+            "minimum_signed_energy_shift": 0.44714583210531966,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.44714583210532066,
+            "weight": 5.148383325683667e-30,
+            "weight_rank": 17
+          },
+          {
+            "maximum_signed_energy_shift": 1.386881145674919,
+            "minimum_signed_energy_shift": 1.3868811456749168,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.386881145674918,
+            "weight": 5.056358146107155e-30,
+            "weight_rank": 18
+          },
+          {
+            "maximum_signed_energy_shift": 0.951730873250329,
+            "minimum_signed_energy_shift": 0.9517308732503212,
+            "schur_multiplicity": 5,
+            "signed_energy_shift": 0.9517308732503227,
+            "weight": 2.534920641784526e-30,
+            "weight_rank": 19
+          },
+          {
+            "maximum_signed_energy_shift": 1.9081411730835192,
+            "minimum_signed_energy_shift": 1.908141173083517,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.908141173083518,
+            "weight": 2.362001382790341e-30,
+            "weight_rank": 20
+          },
+          {
+            "maximum_signed_energy_shift": 1.5269957243522496,
+            "minimum_signed_energy_shift": 1.5269957243522492,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.526995724352249,
+            "weight": 1.0998005571308287e-30,
+            "weight_rank": 21
+          },
+          {
+            "maximum_signed_energy_shift": 1.0605890279472983,
+            "minimum_signed_energy_shift": 1.0605890279472916,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.0605890279472943,
+            "weight": 1.0909003629093202e-30,
+            "weight_rank": 22
+          },
+          {
+            "maximum_signed_energy_shift": 0.7288264817292518,
+            "minimum_signed_energy_shift": 0.7288264817292462,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.7288264817292474,
+            "weight": 1.0121158112528584e-30,
+            "weight_rank": 23
+          },
+          {
+            "maximum_signed_energy_shift": 1.2223220007873652,
+            "minimum_signed_energy_shift": 1.2223220007873614,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.222322000787364,
+            "weight": 7.211663299191716e-31,
+            "weight_rank": 24
+          },
+          {
+            "maximum_signed_energy_shift": 1.4466835563739662,
+            "minimum_signed_energy_shift": 1.4466835563739617,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.4466835563739633,
+            "weight": 6.472246119906346e-31,
+            "weight_rank": 25
+          },
+          {
+            "maximum_signed_energy_shift": 2.41569145081469,
+            "minimum_signed_energy_shift": 2.4156914508146836,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 2.4156914508146885,
+            "weight": 5.664031394020164e-31,
+            "weight_rank": 26
+          },
+          {
+            "maximum_signed_energy_shift": 1.0444424783464563,
+            "minimum_signed_energy_shift": 1.0444424783464563,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.0444424783464563,
+            "weight": 4.783969983738095e-31,
+            "weight_rank": 27
+          },
+          {
+            "maximum_signed_energy_shift": 1.9070631369107942,
+            "minimum_signed_energy_shift": 1.9070631369107942,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.9070631369107942,
+            "weight": 3.7069453126729143e-31,
+            "weight_rank": 28
+          },
+          {
+            "maximum_signed_energy_shift": 2.3107094899218468,
+            "minimum_signed_energy_shift": 2.3107094899218428,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 2.3107094899218454,
+            "weight": 1.7310971199055111e-31,
+            "weight_rank": 29
+          },
+          {
+            "maximum_signed_energy_shift": 1.4659265242690922,
+            "minimum_signed_energy_shift": 1.4659265242690922,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.4659265242690922,
+            "weight": 1.2478688805115725e-31,
+            "weight_rank": 30
+          },
+          {
+            "maximum_signed_energy_shift": 1.1831403806142624,
+            "minimum_signed_energy_shift": 1.1831403806142624,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.1831403806142624,
+            "weight": 1.1092333081106474e-31,
+            "weight_rank": 31
+          },
+          {
+            "maximum_signed_energy_shift": 1.5416581191347563,
+            "minimum_signed_energy_shift": 1.5416581191347538,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.5416581191347554,
+            "weight": 1.083371833557109e-31,
+            "weight_rank": 32
+          },
+          {
+            "maximum_signed_energy_shift": 1.7541731047962965,
+            "minimum_signed_energy_shift": 1.754173104796294,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.7541731047962954,
+            "weight": 6.175626543540501e-32,
+            "weight_rank": 33
+          },
+          {
+            "maximum_signed_energy_shift": 2.374153361025156,
+            "minimum_signed_energy_shift": 2.374153361025156,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.374153361025156,
+            "weight": 4.0944738986880143e-32,
+            "weight_rank": 34
+          },
+          {
+            "maximum_signed_energy_shift": 1.9492825643129303,
+            "minimum_signed_energy_shift": 1.9492825643129246,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.949282564312927,
+            "weight": 3.705275205751426e-32,
+            "weight_rank": 35
+          },
+          {
+            "maximum_signed_energy_shift": 1.7844819477456666,
+            "minimum_signed_energy_shift": 1.7844819477456666,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.7844819477456664,
+            "weight": 1.0685374634105678e-32,
+            "weight_rank": 36
+          }
+        ],
+        "phase_is_qpe_rmse_proxy_within_tolerance": false,
+        "phase_matches_qpe_mean_within_tolerance": true,
+        "phase_vs_qpe_mean_relative_difference": 4.807719413600988e-05,
+        "phase_vs_qpe_rmse_relative_difference": 0.6678720015256414,
+        "qpe_energy_rmse": 0.0016167015008300004,
+        "qpe_energy_standard_deviation": 0.0015249192589144045,
+        "qpe_second_moment_identity_error": 0.0,
+        "raw_weight_sum": 1.0000000000000036,
+        "relative_survival_amplitude_from_spectrum": {
+          "imag": -0.0001073903615699061,
+          "real": 0.9999999482027226
+        },
+        "relative_survival_reconstruction_error": 1.924791659557234e-15,
+        "schur_offdiagonal_frobenius_norm": 2.5917839411606526e-14,
+        "signed_qpe_mean_energy_bias": 0.0005369776499798843,
+        "single_phase_contamination_bound": 1.2147578545662436e-06,
+        "single_phase_contamination_bound_pass": true,
+        "single_phase_signal_radius_lower_bound": 0.9999975704872421,
+        "target_centered_phase_branch_cut_clearance": 2.5582561872675793,
+        "unitary_defect_spectral_norm": 8.833260795463902e-15,
+        "weight_normalization_error": 0.0
+      }
+    },
+    {
+      "alias_phase_span": 1.1669404147632256,
+      "alias_phase_span_le_pi_over_two": true,
+      "cpu_qiskit_direct_tail_validation": {
+        "absolute_linearized_perturbative_energy_bias": 0.002174531920806739,
+        "absolute_qiskit_phase_energy_bias": 0.002174538522455069,
+        "exact_tail_backend": "scipy.linalg.expm_sector_matrix",
+        "execution_model": "Qiskit Statevector deterministic halves with an exact sector expm action for exp(-i H_R delta)",
+        "linearized_perturbation_consistency_pass": true,
+        "maximum_sector_leakage_norm": 0.0,
+        "paper_d6_perturbative_energy_bias": {
+          "absolute_energy_bias": 0.0021675483348587397,
+          "definition": "paper Eq. (D6) full-H-ground-state perturbative bias",
+          "denominator_delta_sine": -0.3048411860514335,
+          "minimum_sine_abs": 0.1,
+          "numerator_real_delta_overlap": 0.000660758005222148,
+          "signed_energy_bias": -0.0021675483348587397,
+          "sine_denominator_abs": 0.7621029651285837,
+          "well_conditioned": true
+        },
+        "paper_d6_vs_dominant_eigenphase_relative_difference": 0.007813278382790178,
+        "perturbative_vs_phase_relative_difference": 3.0358847460375146e-06,
+        "phase_bias_absolute_error_vs_sector_matrix": 6.973588373426765e-16,
+        "qiskit_matrix_consistency_pass": true,
+        "qiskit_statevector_backend": "qiskit.quantum_info.Statevector",
+        "relative_survival_amplitude": {
+          "imag": -0.0008698127683227086,
+          "real": 0.9999967119230733
+        },
+        "relative_survival_radius": 0.9999970902113715,
+        "signed_linearized_perturbative_energy_bias": 0.002174531920806739,
+        "signed_matrix_phase_energy_bias": 0.0021745385224543716,
+        "signed_qiskit_phase_energy_bias": 0.002174538522455069,
+        "statevector_l2_error_vs_sector_matrix": 2.285073762595567e-15
+      },
+      "delta_time": 0.4,
+      "deterministic_half_maximum_sector_leakage_frobenius_norm": 0.0,
+      "effective_state_fingerprint": "faec248e6bee64c9315ec214b60c0311f936da108825a22d8c2c47085875f379",
+      "effective_state_physical_overlap": 0.9999901618906799,
+      "q_results": [
+        {
+          "pf_operator_error_spectral_norm": 0.0039715361803943075,
+          "q_m": 1,
+          "single_dominant_phase_diagnostic": {
+            "dominant_branch_relative_signal": {
+              "imag": -0.000860297483266167,
+              "real": 0.9999996299440517
+            },
+            "dominant_branch_signed_energy_bias": 0.0021507439734639575,
+            "relative_physical_pf_signal": {
+              "imag": -0.000869812768322431,
+              "real": 0.9999967119230748
+            },
+            "relative_physical_pf_signal_radius": 0.9999970902113731,
+            "signal_matches_dominant_branch_within_tolerance": true,
+            "signal_phase_contamination": 9.51781959616567e-06,
+            "signal_phase_contamination_within_analytic_bound": true,
+            "signal_vs_dominant_branch_relative_difference": 0.011063403772830705,
+            "signed_signal_energy_bias": 0.0021745385224543716
+          },
+          "state_results": [
+            {
+              "actual_energy_phase_bias": 0.0021745385224541,
+              "actual_over_surrogate_prediction": 1.0080277769877366,
+              "actual_pf_phase_error": 0.0008698154089816401,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.7621029651285814,
+                "real": 0.6474558444729791
+              },
+              "exact_signal_radius": 0.9999999999999971,
+              "numerical_operator_phase_bound": 0.0039715466210410695,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.7615372939149618,
+                "real": 0.6481166024782038
+              },
+              "pf_signal_error": 0.0008698189831145329,
+              "pf_signal_radius": 0.9999970902113731,
+              "pf_signal_within_operator_error": true,
+              "state_label": "physical_df_ground_state",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 0.00215722083467999,
+              "surrogate_predicted_phase_error": 0.000862888333871996,
+              "surrogate_prediction_relative_error": 0.007963845015983404,
+              "surrogate_underpredicts_actual": true
+            },
+            {
+              "actual_energy_phase_bias": 0.002126959401236246,
+              "actual_over_surrogate_prediction": 0.9859720280106449,
+              "actual_pf_phase_error": 0.0008507837604944984,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.7620945895362846,
+                "real": 0.6474612124812852
+              },
+              "exact_signal_radius": 0.9999970925298803,
+              "numerical_operator_phase_bound": 0.0039715581682884735,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.7615456784743214,
+                "real": 0.6481112401409845
+              },
+              "pf_signal_error": 0.0008507874660100353,
+              "pf_signal_radius": 0.9999999999999998,
+              "pf_signal_within_operator_error": true,
+              "state_label": "effective_partial_s2_eigenstate_control",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 0.00215722083467999,
+              "surrogate_predicted_phase_error": 0.000862888333871996,
+              "surrogate_prediction_relative_error": 0.014227555742792,
+              "surrogate_underpredicts_actual": false
+            }
+          ],
+          "t_m": 0.4
+        },
+        {
+          "pf_operator_error_spectral_norm": 0.007610683786806106,
+          "q_m": 2,
+          "single_dominant_phase_diagnostic": {
+            "dominant_branch_relative_signal": {
+              "imag": -0.0017205943298159321,
+              "real": 0.9999985197764806
+            },
+            "dominant_branch_signed_energy_bias": 0.0021507439734639575,
+            "relative_physical_pf_signal": {
+              "imag": -0.0017360859405104179,
+              "real": 0.9999882053281746
+            },
+            "relative_physical_pf_signal_radius": 0.9999897123420102,
+            "signal_matches_dominant_branch_within_tolerance": true,
+            "signal_phase_contamination": 1.550949430170449e-05,
+            "signal_phase_contamination_within_analytic_bound": true,
+            "signal_vs_dominant_branch_relative_difference": 0.009014028687899255,
+            "signed_signal_energy_bias": 0.002170130841341088
+          },
+          "state_results": [
+            {
+              "actual_energy_phase_bias": 0.0021701308413410595,
+              "actual_over_surrogate_prediction": 1.0059845549669857,
+              "actual_pf_phase_error": 0.0017361046730728477,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.9868560377253771,
+                "real": -0.16160185891555806
+              },
+              "exact_signal_radius": 0.9999999999999974,
+              "numerical_operator_phase_bound": 0.007610757260369617,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.9871249527974993,
+                "real": -0.15988668598226335
+              },
+              "pf_signal_error": 0.001736126005542591,
+              "pf_signal_radius": 0.9999897123420102,
+              "pf_signal_within_operator_error": true,
+              "state_label": "physical_df_ground_state",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 0.00215722083467999,
+              "surrogate_predicted_phase_error": 0.001725776667743992,
+              "surrogate_prediction_relative_error": 0.005948953129983378,
+              "surrogate_underpredicts_actual": true
+            },
+            {
+              "actual_energy_phase_bias": 0.002131363110106286,
+              "actual_over_surrogate_prediction": 0.9880134086608059,
+              "actual_pf_phase_error": 0.0017050904880850288,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": 0.9868483992885847,
+                "real": -0.1615848970525714
+              },
+              "exact_signal_radius": 0.9999897210141372,
+              "numerical_operator_phase_bound": 0.00761083549355057,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": 0.9871326282,
+                "real": -0.1599036408058296
+              },
+              "pf_signal_error": 0.0017051125010663136,
+              "pf_signal_radius": 0.9999999999999997,
+              "pf_signal_within_operator_error": true,
+              "state_label": "effective_partial_s2_eigenstate_control",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 0.00215722083467999,
+              "surrogate_predicted_phase_error": 0.001725776667743992,
+              "surrogate_prediction_relative_error": 0.01213201281897703,
+              "surrogate_underpredicts_actual": false
+            }
+          ],
+          "t_m": 0.8
+        },
+        {
+          "pf_operator_error_spectral_norm": 0.012955197731348312,
+          "q_m": 4,
+          "single_dominant_phase_diagnostic": {
+            "dominant_branch_relative_signal": {
+              "imag": -0.003441183565903475,
+              "real": 0.9999940791103044
+            },
+            "dominant_branch_signed_energy_bias": 0.0021507439734639575,
+            "relative_physical_pf_signal": {
+              "imag": -0.003453931151651324,
+              "real": 0.9999685253707921
+            },
+            "relative_physical_pf_signal_radius": 0.9999744903609475,
+            "signal_matches_dominant_branch_within_tolerance": true,
+            "signal_phase_contamination": 1.2835772815540522e-05,
+            "signal_phase_contamination_within_analytic_bound": true,
+            "signal_vs_dominant_branch_relative_difference": 0.003730038586039702,
+            "signed_signal_energy_bias": 0.0021587663314736705
+          },
+          "state_results": [
+            {
+              "actual_energy_phase_bias": 0.002158766331473711,
+              "actual_over_surrogate_prediction": 1.000716429569414,
+              "actual_pf_phase_error": 0.003454026130357938,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": -0.31895554035692697,
+                "real": -0.9477696783900692
+              },
+              "exact_signal_radius": 0.9999999999999972,
+              "numerical_operator_phase_bound": 0.012955560152628564,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": -0.3156719701327792,
+                "real": -0.9488414981677006
+              },
+              "pf_signal_error": 0.0034540745580591637,
+              "pf_signal_radius": 0.9999744903609475,
+              "pf_signal_within_operator_error": true,
+              "state_label": "physical_df_ground_state",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 0.00215722083467999,
+              "surrogate_predicted_phase_error": 0.003451553335487984,
+              "surrogate_prediction_relative_error": 0.0007159166655455583,
+              "surrogate_underpredicts_actual": true
+            },
+            {
+              "actual_energy_phase_bias": 0.002142712900525737,
+              "actual_over_surrogate_prediction": 0.9932747107199132,
+              "actual_pf_phase_error": 0.0034283406408411794,
+              "actual_pf_phase_within_provisional_budget": true,
+              "exact_signal": {
+                "imag": -0.31893523190463563,
+                "real": -0.9477496180828419
+              },
+              "exact_signal_radius": 0.9999745100382491,
+              "numerical_operator_phase_bound": 0.012955890416257998,
+              "operator_phase_bound_applicable": true,
+              "operator_phase_bound_pass": true,
+              "pf_signal": {
+                "imag": -0.31569220241481466,
+                "real": -0.9488616513140796
+              },
+              "pf_signal_error": 0.0034283900272905885,
+              "pf_signal_radius": 0.9999999999999992,
+              "pf_signal_within_operator_error": true,
+              "state_label": "effective_partial_s2_eigenstate_control",
+              "surrogate_point_prediction_within_tolerance": true,
+              "surrogate_predicted_energy_bias": 0.00215722083467999,
+              "surrogate_predicted_phase_error": 0.003451553335487984,
+              "surrogate_prediction_relative_error": 0.006770825037126245,
+              "surrogate_underpredicts_actual": false
+            }
+          ],
+          "t_m": 1.6
+        }
+      ],
+      "qpe_spectral_energy_distribution": {
+        "absolute_qpe_mean_energy_bias": 0.002176190483366143,
+        "definition": "target-centered Schur eigenphase distribution of one direct-tail partial-S2 step",
+        "dominant_phase_cluster_absolute_energy_bias": 0.0021507439734639575,
+        "dominant_phase_cluster_signed_energy_bias": 0.0021507439734639575,
+        "dominant_phase_cluster_weight": 0.9999803238781496,
+        "dominant_phase_cluster_weight_pass": true,
+        "effective_phase_cluster_count": 1.0000393533190723,
+        "maximum_eigenvalue_modulus_error": 3.774758283725532e-15,
+        "non_dominant_phase_cluster_weight": 1.967612185038714e-05,
+        "numerical_consistency_pass": true,
+        "phase_cluster_count": 36,
+        "phase_cluster_energy_tolerance": 1e-08,
+        "phase_clusters": [
+          {
+            "maximum_signed_energy_shift": 0.0021507439734639575,
+            "minimum_signed_energy_shift": 0.0021507439734639575,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.0021507439734639575,
+            "weight": 0.9999803238781496,
+            "weight_rank": 1
+          },
+          {
+            "maximum_signed_energy_shift": 0.8348458946047068,
+            "minimum_signed_energy_shift": 0.8348458946047068,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.8348458946047068,
+            "weight": 7.721394455341826e-06,
+            "weight_rank": 2
+          },
+          {
+            "maximum_signed_energy_shift": 1.6915493389308125,
+            "minimum_signed_energy_shift": 1.6915493389308125,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.6915493389308125,
+            "weight": 3.5110146441223134e-06,
+            "weight_rank": 3
+          },
+          {
+            "maximum_signed_energy_shift": 1.021291314091995,
+            "minimum_signed_energy_shift": 1.021291314091995,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.021291314091995,
+            "weight": 2.3129585142128054e-06,
+            "weight_rank": 4
+          },
+          {
+            "maximum_signed_energy_shift": 1.6148537442136273,
+            "minimum_signed_energy_shift": 1.6148537442136273,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.6148537442136273,
+            "weight": 2.0999307083869878e-06,
+            "weight_rank": 5
+          },
+          {
+            "maximum_signed_energy_shift": 2.0796859678874626,
+            "minimum_signed_energy_shift": 2.0796859678874626,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.0796859678874626,
+            "weight": 1.371324159668884e-06,
+            "weight_rank": 6
+          },
+          {
+            "maximum_signed_energy_shift": 1.2233352627573142,
+            "minimum_signed_energy_shift": 1.2233352627573142,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.2233352627573142,
+            "weight": 1.3466344151576567e-06,
+            "weight_rank": 7
+          },
+          {
+            "maximum_signed_energy_shift": 2.4154461398279543,
+            "minimum_signed_energy_shift": 2.4154461398279543,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.4154461398279543,
+            "weight": 7.89219565615204e-07,
+            "weight_rank": 8
+          },
+          {
+            "maximum_signed_energy_shift": 1.98775083364855,
+            "minimum_signed_energy_shift": 1.98775083364855,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.9877508336485499,
+            "weight": 1.676891899177339e-07,
+            "weight_rank": 9
+          },
+          {
+            "maximum_signed_energy_shift": 0.5178508201323828,
+            "minimum_signed_energy_shift": 0.5178508201323828,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.5178508201323828,
+            "weight": 1.6402468132449956e-07,
+            "weight_rank": 10
+          },
+          {
+            "maximum_signed_energy_shift": 2.684617918547173,
+            "minimum_signed_energy_shift": 2.684617918547173,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.684617918547173,
+            "weight": 1.4342067743483534e-07,
+            "weight_rank": 11
+          },
+          {
+            "maximum_signed_energy_shift": 2.914671040528121,
+            "minimum_signed_energy_shift": 2.914671040528121,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.914671040528121,
+            "weight": 4.851083926404578e-08,
+            "weight_rank": 12
+          },
+          {
+            "maximum_signed_energy_shift": 0.2341167309312872,
+            "minimum_signed_energy_shift": 0.23411673093127935,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.23411673093128182,
+            "weight": 3.3524588964227303e-29,
+            "weight_rank": 13
+          },
+          {
+            "maximum_signed_energy_shift": 0.4479075294214314,
+            "minimum_signed_energy_shift": 0.4479075294214288,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.44790752942142975,
+            "weight": 1.354089237179867e-29,
+            "weight_rank": 14
+          },
+          {
+            "maximum_signed_energy_shift": 2.8179399269637604,
+            "minimum_signed_energy_shift": 2.8179399269637604,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.8179399269637604,
+            "weight": 7.906420171576464e-30,
+            "weight_rank": 15
+          },
+          {
+            "maximum_signed_energy_shift": 0.8822971068830461,
+            "minimum_signed_energy_shift": 0.8822971068830429,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.8822971068830434,
+            "weight": 7.595831000317292e-30,
+            "weight_rank": 16
+          },
+          {
+            "maximum_signed_energy_shift": 2.4148995376364466,
+            "minimum_signed_energy_shift": 2.41489953763644,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 2.4148995376364466,
+            "weight": 5.570801359094643e-30,
+            "weight_rank": 17
+          },
+          {
+            "maximum_signed_energy_shift": 0.5441378447291759,
+            "minimum_signed_energy_shift": 0.5441378447291759,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 0.5441378447291759,
+            "weight": 2.72180286789315e-30,
+            "weight_rank": 18
+          },
+          {
+            "maximum_signed_energy_shift": 1.3869633927450369,
+            "minimum_signed_energy_shift": 1.3869633927450333,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.3869633927450342,
+            "weight": 1.7882713449384917e-30,
+            "weight_rank": 19
+          },
+          {
+            "maximum_signed_energy_shift": 0.7292192619173796,
+            "minimum_signed_energy_shift": 0.7292192619173739,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 0.7292192619173784,
+            "weight": 1.473772357031877e-30,
+            "weight_rank": 20
+          },
+          {
+            "maximum_signed_energy_shift": 0.9517308732503129,
+            "minimum_signed_energy_shift": 0.9517308732503117,
+            "schur_multiplicity": 5,
+            "signed_energy_shift": 0.9517308732503118,
+            "weight": 1.0418213229851481e-30,
+            "weight_rank": 21
+          },
+          {
+            "maximum_signed_energy_shift": 1.526957667117234,
+            "minimum_signed_energy_shift": 1.5269576671172316,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.526957667117233,
+            "weight": 9.850042700048934e-31,
+            "weight_rank": 22
+          },
+          {
+            "maximum_signed_energy_shift": 1.2220501760315998,
+            "minimum_signed_energy_shift": 1.2220501760315976,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.2220501760315978,
+            "weight": 9.756296697597827e-31,
+            "weight_rank": 23
+          },
+          {
+            "maximum_signed_energy_shift": 1.0611390159806595,
+            "minimum_signed_energy_shift": 1.0611390159806577,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.0611390159806582,
+            "weight": 8.360409694408885e-31,
+            "weight_rank": 24
+          },
+          {
+            "maximum_signed_energy_shift": 1.9076570181176866,
+            "minimum_signed_energy_shift": 1.907657018117685,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.907657018117685,
+            "weight": 2.090845725068995e-31,
+            "weight_rank": 25
+          },
+          {
+            "maximum_signed_energy_shift": 2.3098687358546686,
+            "minimum_signed_energy_shift": 2.3098687358546672,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 2.309868735854668,
+            "weight": 1.7200223621307414e-31,
+            "weight_rank": 26
+          },
+          {
+            "maximum_signed_energy_shift": 1.1837211635183478,
+            "minimum_signed_energy_shift": 1.1837211635183478,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.1837211635183478,
+            "weight": 1.0000694287046876e-31,
+            "weight_rank": 27
+          },
+          {
+            "maximum_signed_energy_shift": 1.7535759200533076,
+            "minimum_signed_energy_shift": 1.7535759200533043,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.7535759200533056,
+            "weight": 9.540468733257042e-32,
+            "weight_rank": 28
+          },
+          {
+            "maximum_signed_energy_shift": 1.4466533141657314,
+            "minimum_signed_energy_shift": 1.4466533141657296,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.44665331416573,
+            "weight": 8.618295382826779e-32,
+            "weight_rank": 29
+          },
+          {
+            "maximum_signed_energy_shift": 1.5414053349364,
+            "minimum_signed_energy_shift": 1.541405334936398,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.5414053349363992,
+            "weight": 7.081162746625422e-32,
+            "weight_rank": 30
+          },
+          {
+            "maximum_signed_energy_shift": 1.949137205143823,
+            "minimum_signed_energy_shift": 1.9491372051438183,
+            "schur_multiplicity": 3,
+            "signed_energy_shift": 1.9491372051438185,
+            "weight": 4.286632175734525e-32,
+            "weight_rank": 31
+          },
+          {
+            "maximum_signed_energy_shift": 1.9064980631502315,
+            "minimum_signed_energy_shift": 1.9064980631502315,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.9064980631502315,
+            "weight": 3.358679561447562e-32,
+            "weight_rank": 32
+          },
+          {
+            "maximum_signed_energy_shift": 1.0446027146178336,
+            "minimum_signed_energy_shift": 1.0446027146178336,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.0446027146178336,
+            "weight": 2.8808724073183454e-32,
+            "weight_rank": 33
+          },
+          {
+            "maximum_signed_energy_shift": 1.4664906602108907,
+            "minimum_signed_energy_shift": 1.4664906602108907,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.4664906602108907,
+            "weight": 2.05597653926906e-32,
+            "weight_rank": 34
+          },
+          {
+            "maximum_signed_energy_shift": 2.3741065811910116,
+            "minimum_signed_energy_shift": 2.3741065811910116,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 2.3741065811910116,
+            "weight": 7.31072680843935e-33,
+            "weight_rank": 35
+          },
+          {
+            "maximum_signed_energy_shift": 1.7848411878434982,
+            "minimum_signed_energy_shift": 1.7848411878434982,
+            "schur_multiplicity": 1,
+            "signed_energy_shift": 1.7848411878434982,
+            "weight": 3.0512776991034204e-33,
+            "weight_rank": 36
+          }
+        ],
+        "phase_is_qpe_rmse_proxy_within_tolerance": false,
+        "phase_matches_qpe_mean_within_tolerance": true,
+        "phase_vs_qpe_mean_relative_difference": 0.0007591067618853944,
+        "phase_vs_qpe_rmse_relative_difference": 0.6670098060836059,
+        "qpe_energy_rmse": 0.006530338016503405,
+        "qpe_energy_standard_deviation": 0.006157069886715292,
+        "qpe_second_moment_identity_error": 0.0,
+        "raw_weight_sum": 0.9999999999999972,
+        "relative_survival_amplitude_from_spectrum": {
+          "imag": -0.0008698127683216434,
+          "real": 0.9999967119230764
+        },
+        "relative_survival_reconstruction_error": 1.7425025352824143e-15,
+        "schur_offdiagonal_frobenius_norm": 2.2574020727669085e-14,
+        "signed_qpe_mean_energy_bias": 0.002176190483366143,
+        "single_phase_contamination_bound": 1.9676509009045643e-05,
+        "single_phase_contamination_bound_pass": true,
+        "single_phase_signal_radius_lower_bound": 0.9999606477562992,
+        "target_centered_phase_branch_cut_clearance": 1.9757242373785446,
+        "unitary_defect_spectral_norm": 6.5942168025280246e-15,
+        "weight_normalization_error": 0.0
+      }
+    }
+  ],
+  "provenance": {
+    "batch_ld_values": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "batch_position": 5,
+    "command": ".venv311/bin/python scripts/run_pf_delta_validation.py --ld-values 0,1,2,3,4,5,6,7,8,9,10,11",
+    "evidence_status": "local_worktree_validation_not_immutable_ci",
+    "generated_at_utc": "2026-08-19T04:25:24.848513+00:00",
+    "git_commit": "8418192ec9844b3f51b1414b9a0126e68a036628",
+    "git_worktree_status_before_generation": [
+      " M scripts/run_pf_c_system_size_validation.py",
+      " M scripts/run_pf_delta_validation.py",
+      " M src/trotterlib/pf_c_system_size_validation.py",
+      " M src/trotterlib/pf_delta_validation.py",
+      " M tests/test_pf_c_system_size_validation.py",
+      " M tests/test_pf_delta_validation.py",
+      "?? artifacts/pf_c_system_size_validation/h2_h6_paper_d6_c_v1.json",
+      "?? artifacts/pf_c_system_size_validation/h2_sto3g_d100_rank3_ld1_pf_d6_validation_v1.json",
+      "?? artifacts/pf_c_system_size_validation/h3_sto3g_d100_rank5_ld2_pf_d6_validation_v1.json",
+      "?? artifacts/pf_c_system_size_validation/h4_sto3g_d100_rank7_ld3_pf_d6_validation_v1.json",
+      "?? artifacts/pf_c_system_size_validation/h5_sto3g_d100_rank9_ld4_pf_d6_validation_v1.json"
+    ],
+    "numpy_version": "1.26.4",
+    "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
+    "python_version": "3.11.0rc1",
+    "qiskit_version": "1.3.0",
+    "scipy_version": "1.14.1",
+    "shared_hamiltonian_generation": true,
+    "source_sha256": {
+      "scripts/run_pf_delta_validation.py": "f8b71229d31aca0b603e63367efeba6437fa97cd4ce93ebd2d6d45a1babc2506",
+      "src/trotterlib/finite_rte_signal_validation.py": "88bd1b209bcaec057ccc56c742c900bab0de2d1eb183890726640760215b1dd7",
+      "src/trotterlib/pf_delta_validation.py": "4c329e2b16aa2530b7621f9eac23a7c9a765d6ad60fbc97970b60e97d2bdd453"
+    }
+  },
+  "request": {
+    "beta_pf_budget": 0.08,
+    "calibration_validation_times_disjoint": true,
+    "coefficient_atol": 1e-12,
+    "dominant_branch_phase_relative_tolerance": 0.02,
+    "ld": 5,
+    "matrix_free_backend": "python",
+    "maximum_dense_reference_qubits": 8,
+    "maximum_single_phase_contamination": 0.0008,
+    "minimum_dominant_qpe_cluster_weight": 0.9995,
+    "numerical_atol": 1e-10,
+    "paper_d6_minimum_sine_abs": 0.1,
+    "perturbative_relative_tolerance": 0.0001,
+    "product_formula": "2nd",
+    "q_values": [
+      1,
+      2,
+      4
+    ],
+    "qpe_cluster_energy_tolerance": 1e-08,
+    "qpe_mean_phase_relative_tolerance": 0.01,
+    "qpe_rmse_phase_relative_tolerance": 0.25,
+    "scaling_slope_interval": [
+      1.5,
+      2.5
+    ],
+    "seed": 20260818,
+    "surrogate_calibration_times": [
+      0.01,
+      0.02,
+      0.04,
+      0.08
+    ],
+    "surrogate_relative_tolerance": 0.25,
+    "validation_delta_times": [
+      0.0125,
+      0.025,
+      0.05,
+      0.1,
+      0.2,
+      0.4
+    ]
+  },
+  "schema_version": "pf_delta_validation_v5",
+  "scope": "partial_s2_product_formula_error_and_empirical_surrogate_only",
+  "states": {
+    "effective_partial_s2_eigenstate_control": {
+      "definition": "per-delta PF-step eigenvector with maximum physical-state overlap"
+    },
+    "physical_df_ground_state": {
+      "definition": "lowest eigenvector in the full DF sector",
+      "state_fingerprint": "537b83483a9059a7ba019809003852d3b2c60bac2e8574c3a43eadc69df1a532"
+    }
+  },
+  "summary": {
+    "all_actual_pf_phases_within_provisional_budget": true,
+    "all_alias_phase_spans_le_pi_over_two": true,
+    "all_cpu_qiskit_matrix_consistency_pass": true,
+    "all_dominant_phase_cluster_weight_pass": true,
+    "all_linearized_perturbation_consistency_pass": true,
+    "all_operator_phase_bounds_applicable": true,
+    "all_operator_phase_bounds_pass": true,
+    "all_phase_is_qpe_rmse_proxy_within_tolerance": false,
+    "all_phase_matches_qpe_mean_within_tolerance": true,
+    "all_qpe_spectral_numerical_consistency_pass": true,
+    "all_signal_errors_within_numerical_operator_error": true,
+    "all_signal_phase_contamination_within_analytic_bound": true,
+    "all_signals_match_dominant_branch_within_tolerance": true,
+    "all_single_phase_contamination_bounds_pass": true,
+    "candidate_1p2_margin_covers_physical_holdout": true,
+    "cpu_linearized_perturbative_fixed_second_order_coefficient": 0.013416389391733202,
+    "cpu_linearized_perturbative_free_fit_slope": 2.0039804285166665,
+    "cpu_paper_d6_fixed_second_order_coefficient": 0.013425652483813007,
+    "cpu_paper_d6_free_fit_slope": 2.00607539793615,
+    "cpu_qiskit_perturbation_validation_pass": true,
+    "cpu_qiskit_phase_bias_fixed_second_order_coefficient": 0.013416396289549428,
+    "cpu_qiskit_phase_bias_free_fit_slope": 2.003981060134743,
+    "dominant_phase_cluster_bias_fixed_second_order_coefficient": 0.013383253664613301,
+    "dominant_phase_cluster_bias_free_fit_slope": 2.0013437285161664,
+    "empirical_screening_validation_pass": true,
+    "maximum_linearized_perturbative_vs_phase_relative_difference": 3.0358847460375146e-06,
+    "maximum_non_dominant_phase_cluster_weight": 1.967612185038714e-05,
+    "maximum_observed_signal_phase_contamination": 1.550949430170449e-05,
+    "maximum_paper_d6_vs_dominant_eigenphase_relative_difference": 0.007813278382790178,
+    "maximum_phase_vs_qpe_mean_relative_difference": 0.0007591067618853944,
+    "maximum_phase_vs_qpe_rmse_relative_difference": 0.6682190256827522,
+    "maximum_physical_actual_over_surrogate_prediction": 1.0080277769877366,
+    "maximum_physical_surrogate_prediction_relative_error": 0.008670792832881071,
+    "maximum_qiskit_phase_bias_absolute_error_vs_sector_matrix": 2.2203105239787524e-15,
+    "maximum_qiskit_statevector_l2_error_vs_sector_matrix": 2.441683430170212e-15,
+    "maximum_signal_vs_dominant_branch_relative_difference": 0.011063403772830705,
+    "maximum_single_phase_contamination_bound": 1.9676509009045643e-05,
+    "minimum_dominant_phase_cluster_weight": 0.9999803238781496,
+    "minimum_observed_physical_pf_signal_radius": 0.9999744903609475,
+    "minimum_single_phase_signal_radius_lower_bound": 0.9999606477562992,
+    "non_dominant_phase_cluster_weight_fixed_fourth_order_coefficient": 0.0007588935359755146,
+    "non_dominant_phase_cluster_weight_free_fit_slope": 4.003886795224685,
+    "overall_pass": true,
+    "paper_d6_conditioned_delta_count": 4,
+    "paper_d6_estimator_validation_pass": true,
+    "paper_d6_ill_conditioned_delta_count": 2,
+    "paper_d6_reference_dominant_fixed_second_order_coefficient": 0.013391543864992262,
+    "paper_d6_reference_dominant_free_fit_slope": 2.0025565257372113,
+    "paper_d6_vs_dominant_branch_coefficient_relative_difference": 0.002547026628491282,
+    "physical_q1_energy_bias_scaling_slope": 2.0039810604465633,
+    "physical_surrogate_comparison_count": 18,
+    "physical_surrogate_underprediction_count": 3,
+    "q_point_count": 18,
+    "qpe_energy_rmse_fixed_second_order_coefficient": 0.04040364062236406,
+    "qpe_energy_rmse_free_fit_slope": 2.003095229845114,
+    "qpe_energy_standard_deviation_fixed_second_order_coefficient": 0.03811042937113884,
+    "qpe_energy_standard_deviation_free_fit_slope": 2.002964972103317,
+    "qpe_mean_energy_bias_fixed_second_order_coefficient": 0.013418209251644886,
+    "qpe_mean_energy_bias_free_fit_slope": 2.004143623466816,
+    "qpe_rmse_coefficient_policy": "diagnostic_only_not_primary_cost_input",
+    "qpe_rmse_scaling_acceptance_pass": true,
+    "qpe_rmse_to_phase_fixed_coefficient_ratio": 3.0115121639509175,
+    "qpe_rpe_statistical_error_policy": "separate_from_product_formula_coefficient",
+    "qpe_spectral_diagnostics_pass": false,
+    "qpe_spectral_energy_model_validation_pass": true,
+    "recommended_pf_coefficient_kind": "dominant_eigenphase_branch_energy_bias",
+    "recommended_pf_fixed_second_order_coefficient": 0.013383253664613301,
+    "scalable_pf_coefficient_estimator_kind": "paper_eq_d6_full_h_ground_state_perturbation",
+    "scalable_pf_fixed_second_order_coefficient": 0.013425652483813007,
+    "scalable_primary_coefficient_estimator_validation_pass": true,
+    "scaling_slope_acceptance_pass": true,
+    "shift_invariant_coefficient_policy": "diagnostic_only",
+    "shift_invariant_vs_dominant_branch_coefficient_relative_difference": 0.0024759096666840535,
+    "single_dominant_phase_approximation_validation_pass": true,
+    "single_dominant_phase_cost_model_validation_pass": true,
+    "state_evaluation_count": 36,
+    "surrogate_point_prediction_acceptance_pass": true,
+    "surrogate_validated_as_rigorous_upper_bound": false,
+    "validation_delta_count": 6
+  },
+  "surrogate": {
+    "calibration_energy_biases": [
+      1.347968802550837e-06,
+      5.392049601954647e-06,
+      2.157099047480992e-05,
+      8.632858749309454e-05
+    ],
+    "coefficient": 0.013482630216749936,
+    "empirical_only_statement": "The fitted coefficient is a screening point predictor, not a rigorous Product Formula error upper bound.",
+    "estimate_kind": "state_specific_phase_bias_surrogate",
+    "estimator_status": "ok",
+    "fit_window_coefficients": [
+      0.013482630216749936,
+      0.013480560326114556,
+      0.013483611089865245
+    ],
+    "fit_window_relative_spread": 0.00022625717475504192,
+    "fixed_order_coefficient": 0.013482630216749936,
+    "free_fit_coefficient": 0.013497660312810248,
+    "free_fit_slope": 2.0003124862380113,
+    "ground_state_energy": -2.1923141690411794,
+    "ground_state_residual_norm": 6.119737503422895e-12,
+    "is_rigorous_bound": false,
+    "relative_overlap_magnitudes": [
+      0.9999999999999996,
+      0.9999999999999533,
+      0.9999999999969951,
+      0.999999999807785
+    ],
+    "screening_usable": true,
+    "signed_calibration_energy_biases": [
+      1.347968802550837e-06,
+      5.392049601954647e-06,
+      2.157099047480992e-05,
+      8.632858749309454e-05
+    ]
+  },
+  "validation_fingerprint": "a9dfe965bc83d3511b84b9ac4c9e7e1e00537ffd7ce24861d7855e4832501ba8",
+  "validation_method": "cpu_qiskit_exact_tail_partial_s2_paper_d6_single_phase_holdout_v5"
+}

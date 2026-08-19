@@ -34,14 +34,15 @@ from .pf_delta_validation import (
     _openfermion_sector_state_to_qiskit_full,
     _phase_and_perturbative_energy_bias,
     _qiskit_full_state_to_openfermion_sector,
+    paper_d6_perturbative_energy_bias,
     validate_pf_delta_payload,
 )
 from .rte import require_integer_count
 
 
-PF_C_SYSTEM_SIZE_SCHEMA_VERSION = "pf_c_system_size_validation_v1"
+PF_C_SYSTEM_SIZE_SCHEMA_VERSION = "pf_c_system_size_validation_v2"
 PF_C_SYSTEM_SIZE_METHOD = (
-    "configured_qiskit_delta_window_exact_eigenphase_perturbation_envelope_v1"
+    "configured_qiskit_delta_window_exact_eigenphase_paper_d6_envelope_v2"
 )
 
 
@@ -92,12 +93,7 @@ def legacy_perturbation_conditioning(
     *,
     minimum_denominator_abs: float = 0.1,
 ) -> dict[str, Any]:
-    """Diagnose the trigonometric denominators used by legacy estimators.
-
-    The shift-invariant estimator used in this project does not divide by
-    either trigonometric factor.  These values only flag deltas that would be
-    unsafe if data were processed with an Evaluation-style legacy formula.
-    """
+    """Diagnose the legacy-cosine and paper-Eq.-D6 sine denominators."""
     energy_value = float(energy)
     delta_value = float(delta_time)
     threshold = float(minimum_denominator_abs)
@@ -119,6 +115,8 @@ def legacy_perturbation_conditioning(
             cosine_abs >= threshold
         ),
         "legacy_sine_formula_well_conditioned": bool(sine_abs >= threshold),
+        "paper_d6_formula_well_conditioned": bool(sine_abs >= threshold),
+        "paper_d6_formula_uses_sine_denominator": True,
         "shift_invariant_formula_uses_trigonometric_denominator": False,
     }
 
@@ -154,7 +152,8 @@ def validate_state_action_coefficient(
     matrix_free_backend: str = "auto",
     numerical_atol: float = 1e-9,
     perturbative_relative_tolerance: float = 1e-4,
-    legacy_minimum_denominator_abs: float = 0.1,
+    paper_d6_relative_tolerance: float = 0.02,
+    paper_d6_minimum_sine_abs: float = 0.1,
     exact_reference_payload: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Evaluate C by state action without building or diagonalizing the PF unitary."""
@@ -269,6 +268,25 @@ def validate_state_action_coefficient(
         perturbative_bias = float(
             estimators["absolute_linearized_perturbative_energy_bias"]
         )
+        relative_payload = estimators["relative_survival_amplitude"]
+        relative_survival = complex(
+            float(relative_payload["real"]),
+            float(relative_payload["imag"]),
+        )
+        paper_d6 = paper_d6_perturbative_energy_bias(
+            relative_survival,
+            float(ground.energy),
+            delta,
+            minimum_sine_abs=paper_d6_minimum_sine_abs,
+        )
+        paper_d6_bias = paper_d6["absolute_energy_bias"]
+        if paper_d6_bias is None:
+            paper_d6_vs_phase_relative_difference = None
+        else:
+            paper_d6_vs_phase_relative_difference = float(
+                abs(float(paper_d6_bias) - phase_bias)
+                / max(phase_bias, numerical_atol)
+            )
         relative_difference = float(
             abs(
                 float(estimators["signed_phase_energy_bias"])
@@ -278,6 +296,7 @@ def validate_state_action_coefficient(
         )
         reference_phase_difference = None
         reference_perturbative_difference = None
+        reference_paper_d6_difference = None
         if delta in reference_by_delta:
             reference = reference_by_delta[delta][
                 "cpu_qiskit_direct_tail_validation"
@@ -297,6 +316,21 @@ def validate_state_action_coefficient(
                     - reference_perturbative
                 )
             )
+            reference_relative_payload = reference["relative_survival_amplitude"]
+            reference_paper_d6 = paper_d6_perturbative_energy_bias(
+                complex(
+                    float(reference_relative_payload["real"]),
+                    float(reference_relative_payload["imag"]),
+                ),
+                float(ground.energy),
+                delta,
+                minimum_sine_abs=paper_d6_minimum_sine_abs,
+            )
+            reference_paper_d6_bias = reference_paper_d6["absolute_energy_bias"]
+            if paper_d6_bias is not None and reference_paper_d6_bias is not None:
+                reference_paper_d6_difference = float(
+                    abs(float(paper_d6_bias) - float(reference_paper_d6_bias))
+                )
         point_records.append(
             {
                 "delta_time": delta,
@@ -307,6 +341,15 @@ def validate_state_action_coefficient(
                 "phase_point_coefficient": phase_bias / delta**2,
                 "shift_invariant_perturbative_point_coefficient": (
                     perturbative_bias / delta**2
+                ),
+                "paper_d6_perturbative_energy_bias": paper_d6,
+                "paper_d6_point_coefficient": (
+                    None
+                    if paper_d6_bias is None
+                    else float(paper_d6_bias) / delta**2
+                ),
+                "paper_d6_vs_phase_relative_difference": (
+                    paper_d6_vs_phase_relative_difference
                 ),
                 "perturbative_vs_phase_relative_difference": relative_difference,
                 "relative_survival_radius": float(
@@ -321,10 +364,13 @@ def validate_state_action_coefficient(
                 "absolute_perturbative_bias_difference_vs_dense_reference": (
                     reference_perturbative_difference
                 ),
+                "absolute_paper_d6_bias_difference_vs_dense_reference": (
+                    reference_paper_d6_difference
+                ),
                 "legacy_conditioning": legacy_perturbation_conditioning(
                     float(ground.energy),
                     delta,
-                    minimum_denominator_abs=legacy_minimum_denominator_abs,
+                    minimum_denominator_abs=paper_d6_minimum_sine_abs,
                 ),
             }
         )
@@ -336,12 +382,28 @@ def validate_state_action_coefficient(
         float(point["shift_invariant_perturbative_point_coefficient"])
         for point in point_records
     ]
+    paper_d6_coefficients = [
+        float(point["paper_d6_point_coefficient"])
+        for point in point_records
+        if point["paper_d6_point_coefficient"] is not None
+    ]
+    paper_d6_envelope = (
+        None
+        if len(paper_d6_coefficients) != len(point_records)
+        else float(max(paper_d6_coefficients))
+    )
+    paper_d6_phase_differences = [
+        float(point["paper_d6_vs_phase_relative_difference"])
+        for point in point_records
+        if point["paper_d6_vs_phase_relative_difference"] is not None
+    ]
     reference_differences = [
         float(value)
         for point in point_records
         for value in (
             point["absolute_phase_bias_difference_vs_dense_reference"],
             point["absolute_perturbative_bias_difference_vs_dense_reference"],
+            point["absolute_paper_d6_bias_difference_vs_dense_reference"],
         )
         if value is not None
     ]
@@ -351,8 +413,13 @@ def validate_state_action_coefficient(
             point["maximum_sector_leakage_norm"] <= numerical_atol
             and point["perturbative_vs_phase_relative_difference"]
             <= perturbative_relative_tolerance
+            and point["paper_d6_perturbative_energy_bias"]["well_conditioned"]
+            and point["paper_d6_vs_phase_relative_difference"] is not None
+            and point["paper_d6_vs_phase_relative_difference"]
+            <= paper_d6_relative_tolerance
             for point in point_records
         )
+        and len(paper_d6_coefficients) == len(point_records)
         and (
             not reference_differences
             or max(reference_differences) <= 10.0 * numerical_atol
@@ -382,14 +449,23 @@ def validate_state_action_coefficient(
         "shift_invariant_perturbative_window_envelope_coefficient": float(
             max(perturbative_coefficients)
         ),
-        "operational_state_action_coefficient": float(
-            max(perturbative_coefficients)
-        ),
+        "paper_d6_window_envelope_coefficient": paper_d6_envelope,
+        "operational_state_action_coefficient": paper_d6_envelope,
+        "operational_state_action_coefficient_kind": "paper_eq_d6_perturbation",
         "maximum_perturbative_vs_phase_relative_difference": float(
             max(
                 point["perturbative_vs_phase_relative_difference"]
                 for point in point_records
             )
+        ),
+        "maximum_paper_d6_vs_phase_relative_difference": (
+            None
+            if not paper_d6_phase_differences
+            else float(max(paper_d6_phase_differences))
+        ),
+        "paper_d6_ill_conditioned_point_count": sum(
+            not point["paper_d6_perturbative_energy_bias"]["well_conditioned"]
+            for point in point_records
         ),
         "maximum_absolute_difference_vs_dense_reference": (
             None if not reference_differences else float(max(reference_differences))
@@ -404,7 +480,8 @@ def summarize_size_result(
     *,
     molecule_type: int,
     core_artifact_path: str,
-    legacy_minimum_denominator_abs: float = 0.1,
+    paper_d6_minimum_sine_abs: float = 0.1,
+    paper_d6_relative_tolerance: float = 0.02,
 ) -> dict[str, Any]:
     """Reduce one full PF validation to the operational-C size-sweep record."""
     validate_pf_delta_payload(pf_payload)
@@ -427,6 +504,7 @@ def summarize_size_result(
     point_records: list[dict[str, Any]] = []
     exact_coefficients: list[float] = []
     perturbative_coefficients: list[float] = []
+    paper_d6_coefficients: list[float] = []
     for point in pf_payload["points"]:
         delta = float(point["delta_time"])
         qpe = point["qpe_spectral_energy_distribution"]
@@ -437,14 +515,45 @@ def summarize_size_result(
         )
         exact_coefficient = exact_bias / delta**2
         perturbative_coefficient = perturbative_bias / delta**2
+        relative_payload = qiskit["relative_survival_amplitude"]
+        paper_d6 = paper_d6_perturbative_energy_bias(
+            complex(
+                float(relative_payload["real"]),
+                float(relative_payload["imag"]),
+            ),
+            energy,
+            delta,
+            minimum_sine_abs=paper_d6_minimum_sine_abs,
+        )
+        paper_d6_bias = paper_d6["absolute_energy_bias"]
+        paper_d6_coefficient = (
+            None
+            if paper_d6_bias is None
+            else float(paper_d6_bias) / delta**2
+        )
+        paper_d6_vs_exact_relative_difference = (
+            None
+            if paper_d6_coefficient is None
+            else float(
+                abs(paper_d6_coefficient - exact_coefficient)
+                / max(abs(exact_coefficient), 1e-300)
+            )
+        )
         exact_coefficients.append(exact_coefficient)
         perturbative_coefficients.append(perturbative_coefficient)
+        if paper_d6_coefficient is not None:
+            paper_d6_coefficients.append(paper_d6_coefficient)
         point_records.append(
             {
                 "delta_time": delta,
                 "dominant_eigenphase_point_coefficient": exact_coefficient,
                 "shift_invariant_perturbative_point_coefficient": (
                     perturbative_coefficient
+                ),
+                "paper_d6_perturbative_energy_bias": paper_d6,
+                "paper_d6_point_coefficient": paper_d6_coefficient,
+                "paper_d6_vs_dominant_eigenphase_relative_difference": (
+                    paper_d6_vs_exact_relative_difference
                 ),
                 "perturbative_vs_phase_relative_difference": float(
                     qiskit["perturbative_vs_phase_relative_difference"]
@@ -455,20 +564,52 @@ def summarize_size_result(
                 "legacy_conditioning": legacy_perturbation_conditioning(
                     energy,
                     delta,
-                    minimum_denominator_abs=legacy_minimum_denominator_abs,
+                    minimum_denominator_abs=paper_d6_minimum_sine_abs,
                 ),
             }
         )
 
     exact_envelope = float(max(exact_coefficients))
     perturbative_envelope = float(max(perturbative_coefficients))
-    operational_envelope = float(max(exact_envelope, perturbative_envelope))
-    envelope_relative_difference = float(
+    paper_d6_envelope = (
+        None
+        if len(paper_d6_coefficients) != len(point_records)
+        else float(max(paper_d6_coefficients))
+    )
+    operational_envelope = (
+        None
+        if paper_d6_envelope is None
+        else float(max(exact_envelope, paper_d6_envelope))
+    )
+    shift_invariant_envelope_relative_difference = float(
         abs(perturbative_envelope - exact_envelope)
         / max(abs(exact_envelope), 1e-300)
     )
+    paper_d6_envelope_relative_difference = (
+        None
+        if paper_d6_envelope is None
+        else float(
+            abs(paper_d6_envelope - exact_envelope)
+            / max(abs(exact_envelope), 1e-300)
+        )
+    )
     corrected_estimator_pass = bool(
         summary["cpu_qiskit_perturbation_validation_pass"]
+    )
+    paper_d6_estimator_pass = bool(
+        len(paper_d6_coefficients) == len(point_records)
+        and all(
+            point["paper_d6_perturbative_energy_bias"]["well_conditioned"]
+            and point[
+                "paper_d6_vs_dominant_eigenphase_relative_difference"
+            ]
+            is not None
+            and point[
+                "paper_d6_vs_dominant_eigenphase_relative_difference"
+            ]
+            <= paper_d6_relative_tolerance
+            for point in point_records
+        )
     )
     return {
         "molecule_type": molecule,
@@ -490,17 +631,25 @@ def summarize_size_result(
             "from the Evaluation workflow"
         ),
         "estimator_definition": (
-            "shift-invariant relative-survival estimator without division "
-            "by cos(E*delta) or sin(E*delta)"
+            "paper Eq. (D6) full-H-ground-state perturbative estimator with "
+            "explicit sine-conditioning rejection"
         ),
+        "shift_invariant_estimator_policy": "diagnostic_only",
         "point_records": point_records,
         "dominant_eigenphase_window_envelope_coefficient": exact_envelope,
         "shift_invariant_perturbative_window_envelope_coefficient": (
             perturbative_envelope
         ),
+        "paper_d6_window_envelope_coefficient": paper_d6_envelope,
         "operational_validation_window_envelope_coefficient": operational_envelope,
-        "perturbative_vs_exact_envelope_relative_difference": (
-            envelope_relative_difference
+        "operational_coefficient_kind": (
+            "maximum_of_dominant_eigenphase_and_paper_eq_d6"
+        ),
+        "shift_invariant_vs_exact_envelope_relative_difference": (
+            shift_invariant_envelope_relative_difference
+        ),
+        "paper_d6_vs_exact_envelope_relative_difference": (
+            paper_d6_envelope_relative_difference
         ),
         "minimum_legacy_cosine_denominator_abs": float(
             min(
@@ -516,6 +665,14 @@ def summarize_size_result(
                 for point in point_records
             )
         ),
+        "minimum_paper_d6_sine_denominator_abs": float(
+            min(
+                point["paper_d6_perturbative_energy_bias"][
+                    "sine_denominator_abs"
+                ]
+                for point in point_records
+            )
+        ),
         "legacy_cosine_ill_conditioned_point_count": sum(
             not point["legacy_conditioning"][
                 "legacy_cosine_formula_well_conditioned"
@@ -528,6 +685,10 @@ def summarize_size_result(
             ]
             for point in point_records
         ),
+        "paper_d6_ill_conditioned_point_count": sum(
+            not point["paper_d6_perturbative_energy_bias"]["well_conditioned"]
+            for point in point_records
+        ),
         "maximum_corrected_perturbative_vs_phase_relative_difference": float(
             summary[
                 "maximum_linearized_perturbative_vs_phase_relative_difference"
@@ -537,9 +698,11 @@ def summarize_size_result(
             summary["single_dominant_phase_approximation_validation_pass"]
         ),
         "corrected_perturbative_estimator_validation_pass": corrected_estimator_pass,
+        "paper_d6_estimator_validation_pass": paper_d6_estimator_pass,
+        "paper_d6_relative_tolerance": float(paper_d6_relative_tolerance),
         "operational_coefficient_usable": bool(
             configured_delta_grid_match
-            and corrected_estimator_pass
+            and paper_d6_estimator_pass
             and summary["single_dominant_phase_approximation_validation_pass"]
         ),
         "core_pf_artifact_path": str(core_artifact_path),
@@ -590,13 +753,17 @@ def make_system_size_payload(
                 result["corrected_perturbative_estimator_validation_pass"]
                 for result in results
             ),
+            "all_paper_d6_estimator_validation_pass": all(
+                result["paper_d6_estimator_validation_pass"]
+                for result in results
+            ),
             "all_operational_coefficients_usable": all(
                 result["operational_coefficient_usable"] for result in results
             ),
-            "maximum_perturbative_vs_exact_envelope_relative_difference": float(
+            "maximum_paper_d6_vs_exact_envelope_relative_difference": float(
                 max(
                     result[
-                        "perturbative_vs_exact_envelope_relative_difference"
+                        "paper_d6_vs_exact_envelope_relative_difference"
                     ]
                     for result in results
                 )
@@ -607,6 +774,10 @@ def make_system_size_payload(
             ),
             "legacy_sine_ill_conditioned_point_count": sum(
                 int(result["legacy_sine_ill_conditioned_point_count"])
+                for result in results
+            ),
+            "paper_d6_ill_conditioned_point_count": sum(
+                int(result["paper_d6_ill_conditioned_point_count"])
                 for result in results
             ),
             "h12_direct_validation_performed": any(
@@ -655,6 +826,7 @@ def validate_system_size_payload(payload: Mapping[str, Any]) -> None:
             "configured_delta_grid_match",
             "single_dominant_phase_validation_pass",
             "corrected_perturbative_estimator_validation_pass",
+            "paper_d6_estimator_validation_pass",
             "operational_coefficient_usable",
         ):
             if not isinstance(result.get(key), bool):

@@ -1,19 +1,23 @@
 # Validation status
 
-## 2026-08-18 current local approximation-validation note
+## 2026-08-19 current local approximation-validation note
 
 研究内容と現在地の短い統合要約は
 [`docs/research/研究概要・現状.md`](docs/research/研究概要・現状.md)を参照する。
 
-2026-08-18のdirty local worktreeでは、最終コスト評価の入力を検証するため、次の三つの
+2026-08-19のdirty local worktreeでは、最終コスト評価の入力を検証するため、次の三つの
 result setを追加した。
 
 - finite-RTE signal、attenuation、radius、phase-boundのH4 grid検証
-- PF誤差surrogate、CPU Qiskit摂動係数、理想QPE分枝のH4全`L_D`検証
-- H2--H6の実行可能delta窓と、PF演算子を構築しないstate-action係数検証
+- PF誤差surrogate、論文Appendix D Eq. (D6)のCPU Qiskit摂動係数、理想QPE分枝の
+  H4全`L_D`検証
+- H2--H6の実行可能delta窓と、PF演算子を構築しないEq. (D6) state-action係数検証
 
 対応する文書、source、test、dirty-worktree artifactはmanifestへ登録され、構造検査は
-成功している。local testは`442 passed, 4 warnings`だった。これらは近似手法と実装経路の
+成功している。H4全12分割では、well-conditionedな4点でfitしたEq. (D6)係数と
+支配固有位相係数の差が最大0.288%だった。H2--H5の実行可能窓では両者の上包絡差が
+最大1.144%で、事前の2%条件を全系が通過した。H6（DF rank 11、$L_D=5$）ではEq. (D6)による
+`C_use=0.02086663`を得た。local testは`444 passed, 4 warnings`だった。これらは近似手法と実装経路の
 local evidenceであり、最終compiled cost、H12の係数、量子shot、ノイズ、または外部から
 再現された科学的結論ではない。artifactはimmutable CI evidenceでもない。
 

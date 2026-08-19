@@ -61,7 +61,8 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--molecule-sizes", type=_int_tuple, default=(2, 3, 4, 5))
     parser.add_argument("--distance", type=float, default=DEFAULT_DISTANCE)
     parser.add_argument("--basis", default=DEFAULT_BASIS)
-    parser.add_argument("--legacy-minimum-denominator-abs", type=float, default=0.1)
+    parser.add_argument("--paper-d6-minimum-sine-abs", type=float, default=0.1)
+    parser.add_argument("--paper-d6-relative-tolerance", type=float, default=0.02)
     parser.add_argument(
         "--output-directory",
         type=Path,
@@ -124,7 +125,7 @@ def main() -> int:
         core_path = args.output_directory / (
             f"h{size}_{str(args.basis).replace('-', '').lower()}_"
             f"d{int(round(100 * args.distance))}_rank{hamiltonian.n_blocks}_"
-            f"ld{ld}_pf_v4.json"
+            f"ld{ld}_pf_d6_validation_v1.json"
         )
         core_payload = validate_pf_delta_grid(
             hamiltonian,
@@ -133,6 +134,9 @@ def main() -> int:
             validation_delta_times=delta_times,
             q_values=(1,),
             maximum_dense_reference_qubits=max(8, hamiltonian.n_qubits),
+            paper_d6_minimum_sine_abs=(
+                args.paper_d6_minimum_sine_abs
+            ),
             provenance={
                 **provenance,
                 "system_size_validation_molecule_type": size,
@@ -143,7 +147,8 @@ def main() -> int:
             core_payload,
             molecule_type=size,
             core_artifact_path=str(core_path),
-            legacy_minimum_denominator_abs=args.legacy_minimum_denominator_abs,
+            paper_d6_minimum_sine_abs=args.paper_d6_minimum_sine_abs,
+            paper_d6_relative_tolerance=args.paper_d6_relative_tolerance,
         )
         size_results.append(result)
         print(json.dumps(result, indent=2, sort_keys=True), flush=True)
@@ -173,7 +178,7 @@ def main() -> int:
             core_path = args.output_directory / (
                 f"h{size}_{str(args.basis).replace('-', '').lower()}_"
                 f"d{int(round(100 * args.distance))}_rank{hamiltonian.n_blocks}_"
-                f"ld{ld}_pf_v4.json"
+                f"ld{ld}_pf_d6_validation_v1.json"
             )
             exact_reference = json.loads(core_path.read_text(encoding="utf-8"))
         state_result = validate_state_action_coefficient(
@@ -182,6 +187,10 @@ def main() -> int:
             molecule_type=size,
             ld=ld,
             exact_reference_payload=exact_reference,
+            paper_d6_relative_tolerance=args.paper_d6_relative_tolerance,
+            paper_d6_minimum_sine_abs=(
+                args.paper_d6_minimum_sine_abs
+            ),
         )
         state_action_results.append(state_result)
         print(json.dumps(state_result, indent=2, sort_keys=True), flush=True)
@@ -198,21 +207,29 @@ def main() -> int:
             "delta_policy": "configured_lower_order_qiskit_execution_window",
             "delta_step": 0.002,
             "q_values": [1],
-            "legacy_minimum_denominator_abs": float(
-                args.legacy_minimum_denominator_abs
+            "paper_d6_minimum_sine_abs": float(
+                args.paper_d6_minimum_sine_abs
+            ),
+            "paper_d6_relative_tolerance": float(
+                args.paper_d6_relative_tolerance
             ),
             "operational_coefficient_policy": (
-                "maximum of dominant-eigenphase and corrected-perturbative "
-                "point coefficients over the executable delta window"
+                "maximum of dominant-eigenphase and paper-Eq.-D6 "
+                "point coefficients over the executable delta window; "
+                "shift-invariant estimator retained as a diagnostic"
             ),
         },
         provenance=provenance,
     )
-    index_path = args.output_directory / "h2_h5_operational_c_v1.json"
+    index_path = args.output_directory / "h2_h6_paper_d6_c_v1.json"
     write_system_size_validation(index_payload, index_path)
     print(json.dumps(index_payload["summary"], indent=2, sort_keys=True))
     print(f"wrote {index_path}")
-    return 0 if index_payload["summary"]["all_operational_coefficients_usable"] else 1
+    validation_ok = bool(
+        index_payload["summary"]["all_paper_d6_estimator_validation_pass"]
+        and index_payload["summary"]["all_state_action_validation_pass"]
+    )
+    return 0 if validation_ok else 1
 
 
 if __name__ == "__main__":

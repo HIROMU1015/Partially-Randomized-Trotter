@@ -96,8 +96,10 @@ def test_pf_delta_validation_is_disjoint_and_tamper_evident(tmp_path) -> None:
     )
     assert payload["summary"]["recommended_pf_fixed_second_order_coefficient"] > 0.0
     assert payload["summary"]["scalable_pf_coefficient_estimator_kind"] == (
-        "linearized_full_h_ground_state_perturbation"
+        "paper_eq_d6_full_h_ground_state_perturbation"
     )
+    assert payload["summary"]["paper_d6_estimator_validation_pass"]
+    assert payload["summary"]["cpu_paper_d6_fixed_second_order_coefficient"] > 0.0
     assert payload["summary"]["qpe_rmse_coefficient_policy"] == (
         "diagnostic_only_not_primary_cost_input"
     )
