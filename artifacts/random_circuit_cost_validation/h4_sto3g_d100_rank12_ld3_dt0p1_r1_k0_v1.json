@@ -1,0 +1,666 @@
+{
+  "acceptance_threshold_decided": false,
+  "configuration": {
+    "coefficient_atol": 1e-12,
+    "compiler": {
+      "backend_name": null,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "coupling_map": null,
+      "layout_method": null,
+      "optimization_level": 1,
+      "qiskit_version": "1.3.0",
+      "routing_method": null,
+      "transpiler_seed": 17
+    },
+    "component_count": 218,
+    "delta_time": 0.1,
+    "dimensionless_short_step_time": 0.058327042463395,
+    "evaluation_scopes": [
+      "partial_s2",
+      "rte_occurrence"
+    ],
+    "event_sequence_space_size": 218,
+    "finite_taylor_order": 0,
+    "lambda_r": 0.58327042463395,
+    "ld": 3,
+    "maximum_exact_event_sequences": 1000,
+    "monte_carlo_sample_counts": [
+      30,
+      100
+    ],
+    "rte_steps": 1,
+    "seed": 20260822,
+    "single_event_space_size": 218
+  },
+  "final_cost_evaluation_performed": false,
+  "hamiltonian": {
+    "df_rank": 12,
+    "metadata": {
+      "basis": "sto-3g",
+      "charge": 0,
+      "df_rank_actual": 12,
+      "df_rank_config_selection": null,
+      "df_rank_requested": 12,
+      "df_rank_source": "explicit",
+      "df_tol_requested": null,
+      "df_truncation_value": 0.0,
+      "distance": 1.0,
+      "hermitized": true,
+      "hf_energy": -2.09854593699772,
+      "molecule_type": 4,
+      "multiplicity": 1
+    },
+    "n_qubits": 8,
+    "partition_hash": "8b63c2529d2fb1b1dd9ef68613666ba65417d3e27033fd9c7cbd158590f74128",
+    "preparation_hash": "a0e19fe156c555dd311b01fffa8f8d18ba52e08d5a6b587b043156f065110146"
+  },
+  "partial_s2": {
+    "exact": {
+      "cache": {
+        "bypasses": 0,
+        "evictions": 0,
+        "hits": 434,
+        "misses": 438
+      },
+      "elapsed_seconds": 420.37208979111165,
+      "enumerated_event_sequence_count": 218,
+      "estimate_kind": "exact_compiled_partial_s2_expectation",
+      "event_sequence_probability_sum": 1.0000000000000004,
+      "metrics": {
+        "circuit_size": {
+          "absolute_additive_relative_error": 0.0026582354241871334,
+          "additive": 6176.969056220648,
+          "additive_minus_full": 16.37630588293814,
+          "additive_standard_error": null,
+          "difference_standard_error": null,
+          "full": 6160.59275033771,
+          "full_minus_additive": -16.3763058829404,
+          "full_standard_error": null,
+          "signed_additive_relative_error": 0.0026582354241871334
+        },
+        "cx_count": {
+          "absolute_additive_relative_error": 0.0001548540381145524,
+          "additive": 1156.316796894247,
+          "additive_minus_full": 0.17903260141747523,
+          "additive_standard_error": null,
+          "difference_standard_error": null,
+          "full": 1156.1377642928296,
+          "full_minus_additive": -0.17903260141892513,
+          "full_standard_error": null,
+          "signed_additive_relative_error": 0.0001548540381145524
+        },
+        "cx_depth": {
+          "absolute_additive_relative_error": 2.5137553315252295e-09,
+          "additive": 425.74546242339557,
+          "additive_minus_full": 1.0702199233492138e-06,
+          "additive_standard_error": null,
+          "difference_standard_error": null,
+          "full": 425.74546135317564,
+          "full_minus_additive": -1.0702201203241653e-06,
+          "full_standard_error": null,
+          "signed_additive_relative_error": 2.5137553315252295e-09
+        },
+        "rz_count": {
+          "absolute_additive_relative_error": 0.003488807209767443,
+          "additive": 3100.7640410410463,
+          "additive_minus_full": 10.780357353712134,
+          "additive_standard_error": null,
+          "difference_standard_error": null,
+          "full": 3089.983683687334,
+          "full_minus_additive": -10.780357353714425,
+          "full_standard_error": null,
+          "signed_additive_relative_error": 0.003488807209767443
+        },
+        "rz_depth": {
+          "absolute_additive_relative_error": 0.009871832557000075,
+          "additive": 613.7094833698102,
+          "additive_minus_full": 5.999214022169326,
+          "additive_standard_error": null,
+          "difference_standard_error": null,
+          "full": 607.7102693476409,
+          "full_minus_additive": -5.999214022169017,
+          "full_standard_error": null,
+          "signed_additive_relative_error": 0.009871832557000075
+        },
+        "total_depth": {
+          "absolute_additive_relative_error": 0.007240011803327919,
+          "additive": 1401.377810995235,
+          "additive_minus_full": 10.073062798967158,
+          "additive_standard_error": null,
+          "difference_standard_error": null,
+          "full": 1391.3047481962678,
+          "full_minus_additive": -10.073062798966525,
+          "full_standard_error": null,
+          "signed_additive_relative_error": 0.007240011803327919
+        }
+      },
+      "sample_count": null,
+      "single_event_space_size": 218,
+      "unique_compiled_circuit_count": 438,
+      "unique_full_step_circuit_count": 218
+    },
+    "exact_skip_reason": null,
+    "monte_carlo": [
+      {
+        "cache": {
+          "bypasses": 0,
+          "evictions": 0,
+          "hits": 120,
+          "misses": 0
+        },
+        "convergence_against_exact": {
+          "metrics": {
+            "circuit_size": {
+              "additive_absolute_z_score": 0.3691253728774857,
+              "additive_minus_exact": 3.5642771126849766,
+              "additive_signed_relative_error": 0.0005770268687189708,
+              "full_absolute_z_score": 0.5987375611986111,
+              "full_minus_exact": 5.940582995624027,
+              "full_signed_relative_error": 0.0009642875671822938
+            },
+            "cx_count": {
+              "additive_absolute_z_score": 0.06496160485358636,
+              "additive_minus_exact": 0.08320310575322765,
+              "additive_signed_relative_error": 7.19552859360886e-05,
+              "full_absolute_z_score": 0.20474298685735234,
+              "full_minus_exact": 0.2622357071707029,
+              "full_signed_relative_error": 0.0002268204666172319
+            },
+            "cx_depth": {
+              "additive_absolute_z_score": 0.06546278379488385,
+              "additive_minus_exact": -0.01212909006216023,
+              "additive_signed_relative_error": -2.8489064787960293e-05,
+              "full_absolute_z_score": 0.06545700763400977,
+              "full_minus_exact": -0.012128019842236881,
+              "full_signed_relative_error": -2.8486551104243307e-05
+            },
+            "rz_count": {
+              "additive_absolute_z_score": 0.19648744728953701,
+              "additive_minus_exact": 0.9692922922868092,
+              "additive_signed_relative_error": 0.00031259788860341027,
+              "full_absolute_z_score": 0.4755931696650003,
+              "full_minus_exact": 2.416316312665458,
+              "full_signed_relative_error": 0.0007819835183666807
+            },
+            "rz_depth": {
+              "additive_absolute_z_score": 0.2543462059816974,
+              "additive_minus_exact": -0.10948336981027751,
+              "additive_signed_relative_error": -0.00017839608605869434,
+              "full_absolute_z_score": 0.25617214977173625,
+              "full_minus_exact": -0.11026934764095131,
+              "full_signed_relative_error": -0.0001814505253619002
+            },
+            "total_depth": {
+              "additive_absolute_z_score": 0.4704023669588573,
+              "additive_minus_exact": 0.42218900476518684,
+              "additive_signed_relative_error": 0.00030126708261875166,
+              "full_absolute_z_score": 0.5518088299005091,
+              "full_minus_exact": 0.49525180373234434,
+              "full_signed_relative_error": 0.00035596213149879973
+            }
+          }
+        },
+        "elapsed_seconds": 58.349887256510556,
+        "enumerated_event_sequence_count": null,
+        "estimate_kind": "monte_carlo_compiled_partial_s2_expectation",
+        "event_sequence_probability_sum": null,
+        "metrics": {
+          "circuit_size": {
+            "absolute_additive_relative_error": 0.002270319358256247,
+            "additive": 6180.533333333333,
+            "additive_minus_full": 13.99999999999909,
+            "additive_standard_error": 9.65600680576346,
+            "difference_standard_error": 1.2972118642263704,
+            "full": 6166.533333333334,
+            "full_minus_additive": -14.000000000000004,
+            "full_standard_error": 9.921847868925393,
+            "signed_additive_relative_error": 0.002270319358256247
+          },
+          "cx_count": {
+            "absolute_additive_relative_error": 0.0,
+            "additive": 1156.4000000000003,
+            "additive_minus_full": 0.0,
+            "additive_standard_error": 1.2808043449781585,
+            "difference_standard_error": 0.0,
+            "full": 1156.4000000000003,
+            "full_minus_additive": 0.0,
+            "full_standard_error": 1.2808043449781585,
+            "signed_additive_relative_error": 0.0
+          },
+          "cx_depth": {
+            "absolute_additive_relative_error": 0.0,
+            "additive": 425.7333333333334,
+            "additive_minus_full": 0.0,
+            "additive_standard_error": 0.1852822223412406,
+            "difference_standard_error": 0.0,
+            "full": 425.7333333333334,
+            "full_minus_additive": 0.0,
+            "full_standard_error": 0.1852822223412406,
+            "signed_additive_relative_error": 0.0
+          },
+          "rz_count": {
+            "absolute_additive_relative_error": 0.003018152028629377,
+            "additive": 3101.733333333333,
+            "additive_minus_full": 9.333333333333485,
+            "additive_standard_error": 4.933100336218904,
+            "difference_standard_error": 0.8648079094842469,
+            "full": 3092.3999999999996,
+            "full_minus_additive": -9.333333333333337,
+            "full_standard_error": 5.080637121780933,
+            "signed_additive_relative_error": 0.003018152028629377
+          },
+          "rz_depth": {
+            "absolute_additive_relative_error": 0.009874917709019092,
+            "additive": 613.5999999999999,
+            "additive_minus_full": 6.0,
+            "additive_standard_error": 0.43045017867558,
+            "difference_standard_error": 0.0,
+            "full": 607.5999999999999,
+            "full_minus_additive": -6.0,
+            "full_standard_error": 0.43045017867558,
+            "signed_additive_relative_error": 0.009874917709019092
+          },
+          "total_depth": {
+            "absolute_additive_relative_error": 0.00718494036499497,
+            "additive": 1401.8000000000002,
+            "additive_minus_full": 10.0,
+            "additive_standard_error": 0.8975061233102015,
+            "difference_standard_error": 0.0,
+            "full": 1391.8000000000002,
+            "full_minus_additive": -10.0,
+            "full_standard_error": 0.8975061233102015,
+            "signed_additive_relative_error": 0.00718494036499497
+          }
+        },
+        "sample_count": 30,
+        "single_event_space_size": 218,
+        "unique_compiled_circuit_count": 38,
+        "unique_full_step_circuit_count": 18
+      },
+      {
+        "cache": {
+          "bypasses": 0,
+          "evictions": 0,
+          "hits": 400,
+          "misses": 0
+        },
+        "convergence_against_exact": {
+          "metrics": {
+            "circuit_size": {
+              "additive_absolute_z_score": 2.1898163283780527,
+              "additive_minus_exact": 11.430943779350855,
+              "additive_signed_relative_error": 0.001850574881517187,
+              "full_absolute_z_score": 2.3212656570418453,
+              "full_minus_exact": 12.447249662289323,
+              "full_signed_relative_error": 0.002020462992235121
+            },
+            "cx_count": {
+              "additive_absolute_z_score": 1.897483084743285,
+              "additive_minus_exact": 1.3632031057532004,
+              "additive_signed_relative_error": 0.0011789183633885017,
+              "full_absolute_z_score": 2.0231009056710003,
+              "full_minus_exact": 1.4222357071707847,
+              "full_signed_relative_error": 0.001230161102851543
+            },
+            "cx_depth": {
+              "additive_absolute_z_score": 0.15226850023875743,
+              "additive_minus_exact": 0.014537576604368496,
+              "additive_signed_relative_error": 3.414616921955861e-05,
+              "full_absolute_z_score": 0.15227970986379255,
+              "full_minus_exact": 0.014538646824291845,
+              "full_signed_relative_error": 3.414868306072525e-05
+            },
+            "rz_count": {
+              "additive_absolute_z_score": 2.203898610400021,
+              "additive_minus_exact": 5.97595895895347,
+              "additive_signed_relative_error": 0.0019272536961397132,
+              "full_absolute_z_score": 2.410577040773252,
+              "full_minus_exact": 6.596316312665294,
+              "full_signed_relative_error": 0.0021347414704772126
+            },
+            "rz_depth": {
+              "additive_absolute_z_score": 1.5752423187506768,
+              "additive_minus_exact": 0.3305166301895497,
+              "additive_signed_relative_error": 0.000538555520398218,
+              "full_absolute_z_score": 1.5714963482687463,
+              "full_minus_exact": 0.3297306523588759,
+              "full_signed_relative_error": 0.0005425787073054271
+            },
+            "total_depth": {
+              "additive_absolute_z_score": 1.3370148040462926,
+              "additive_minus_exact": 0.6421890047649867,
+              "additive_signed_relative_error": 0.00045825543955838353,
+              "full_absolute_z_score": 1.3432378678424597,
+              "full_minus_exact": 0.6552518037324262,
+              "full_signed_relative_error": 0.0004709620984057703
+            }
+          }
+        },
+        "elapsed_seconds": 194.51201125700027,
+        "enumerated_event_sequence_count": null,
+        "estimate_kind": "monte_carlo_compiled_partial_s2_expectation",
+        "event_sequence_probability_sum": null,
+        "metrics": {
+          "circuit_size": {
+            "absolute_additive_relative_error": 0.0024882391819913163,
+            "additive": 6188.399999999999,
+            "additive_minus_full": 15.359999999999673,
+            "additive_standard_error": 5.220046828227597,
+            "difference_standard_error": 0.9908184556825795,
+            "full": 6173.039999999999,
+            "full_minus_additive": -15.360000000000005,
+            "full_standard_error": 5.362268478202423,
+            "signed_additive_relative_error": 0.0024882391819913163
+          },
+          "cx_count": {
+            "absolute_additive_relative_error": 0.00010366633263061165,
+            "additive": 1157.6800000000003,
+            "additive_minus_full": 0.11999999999989086,
+            "additive_standard_error": 0.718427013507544,
+            "difference_standard_error": 0.06857864319910612,
+            "full": 1157.5600000000004,
+            "full_minus_additive": -0.12000000000000002,
+            "full_standard_error": 0.7029979093895333,
+            "signed_additive_relative_error": 0.00010366633263061165
+          },
+          "cx_depth": {
+            "absolute_additive_relative_error": 0.0,
+            "additive": 425.75999999999993,
+            "additive_minus_full": 0.0,
+            "additive_standard_error": 0.09547330263037683,
+            "difference_standard_error": 0.0,
+            "full": 425.75999999999993,
+            "full_minus_additive": 0.0,
+            "full_standard_error": 0.09547330263037683,
+            "signed_additive_relative_error": 0.0
+          },
+          "rz_count": {
+            "absolute_additive_relative_error": 0.0032810390818258568,
+            "additive": 3106.74,
+            "additive_minus_full": 10.16000000000031,
+            "additive_standard_error": 2.7115398733650444,
+            "difference_standard_error": 0.6316116950574405,
+            "full": 3096.5799999999995,
+            "full_minus_additive": -10.160000000000005,
+            "full_standard_error": 2.73640551664317,
+            "signed_additive_relative_error": 0.0032810390818258568
+          },
+          "rz_depth": {
+            "absolute_additive_relative_error": 0.009867771857114668,
+            "additive": 614.0399999999997,
+            "additive_minus_full": 6.0,
+            "additive_standard_error": 0.2098195472882433,
+            "difference_standard_error": 0.0,
+            "full": 608.0399999999997,
+            "full_minus_additive": -6.0,
+            "full_standard_error": 0.2098195472882433,
+            "signed_additive_relative_error": 0.009867771857114668
+          },
+          "total_depth": {
+            "absolute_additive_relative_error": 0.007227219172964537,
+            "additive": 1402.02,
+            "additive_minus_full": 10.059999999999718,
+            "additive_standard_error": 0.48031555284316185,
+            "difference_standard_error": 0.03428932159955305,
+            "full": 1391.9600000000003,
+            "full_minus_additive": -10.06,
+            "full_standard_error": 0.4878151661886268,
+            "signed_additive_relative_error": 0.007227219172964537
+          }
+        },
+        "sample_count": 100,
+        "single_event_space_size": 218,
+        "unique_compiled_circuit_count": 78,
+        "unique_full_step_circuit_count": 38
+      }
+    ],
+    "status": "executed"
+  },
+  "performance": {
+    "shared_transpile_cache": {
+      "final_bypasses": 0,
+      "final_evictions": 0,
+      "final_hits": 1214,
+      "final_misses": 438,
+      "maximum_entries": 4096
+    },
+    "total_seconds": 695.8164150780067
+  },
+  "provenance": {
+    "batch_delta_time_values": [
+      0.1
+    ],
+    "batch_finite_taylor_order_values": [
+      0
+    ],
+    "batch_ld_values": [
+      3
+    ],
+    "batch_position": 0,
+    "batch_rte_step_values": [
+      1,
+      2
+    ],
+    "command": ".venv311/bin/python scripts/run_random_circuit_cost_validation.py --molecule 4 --distance 1.0 --basis sto-3g --df-rank 12 --ld 3 --delta-time 0.1 --rte-step-values 1,2 --finite-taylor-order 0 --sample-counts 30,100 --maximum-exact-event-sequences 1000",
+    "evidence_status": "local_worktree_validation_not_immutable_ci",
+    "generated_at_utc": "2026-08-22T15:30:32.678657+00:00",
+    "git_commit": "e07a5e60ce6213fca3e7b05f733eae2174a71eae",
+    "git_worktree_status_before_generation": [
+      " M VALIDATION_STATUS.md",
+      " M artifacts/validation_manifest.json",
+      " M docs/research/README.md",
+      " M \"docs/research/\\346\\225\\260\\345\\200\\244\\345\\256\\237\\351\\250\\223\\343\\203\\273\\350\\251\\225\\344\\276\\241\\350\\250\\210\\347\\224\\273.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/README.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\346\\246\\202\\350\\246\\201\\343\\203\\273\\347\\217\\276\\347\\212\\266.md\"",
+      " M src/trotterlib/__init__.py",
+      "?? artifacts/random_circuit_cost_validation/",
+      "?? docs/random_circuit_cost_validation.md",
+      "?? \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-08-23.md\"",
+      "?? scripts/run_random_circuit_cost_validation.py",
+      "?? src/trotterlib/random_circuit_cost_validation.py",
+      "?? tests/test_random_circuit_cost_validation.py"
+    ],
+    "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
+    "python_version": "3.11.0rc1",
+    "qiskit_version": "1.3.0",
+    "shared_hamiltonian_generation": true,
+    "source_sha256": {
+      "scripts/run_random_circuit_cost_validation.py": "1b347f392ff40e27f3e257b938f3d5e04604e9fcb78df476ca36861c47c38676",
+      "src/trotterlib/random_circuit_cost_validation.py": "cefb2cb2f04a60db08e5c6e9c85fa7c92832cfb955bdf87d10ea53cd5381a622"
+    }
+  },
+  "rte_occurrence": {
+    "exact": null,
+    "exact_status": "not_implemented_for_compiled_sequence_cost",
+    "monte_carlo": [
+      {
+        "cache": {
+          "bypasses": 0,
+          "evictions": 0,
+          "hits": 60,
+          "misses": 0
+        },
+        "elapsed_seconds": 5.128679900430143,
+        "estimate_kind": "monte_carlo_compiled_rte_occurrence_expectation",
+        "event_count_per_sample": 1,
+        "metrics": {
+          "circuit_size": {
+            "absolute_additive_relative_error": 0.0,
+            "additive": 614.5333333333333,
+            "additive_minus_full": 0.0,
+            "additive_standard_error": 9.656006805763456,
+            "difference_standard_error": 0.0,
+            "full": 614.5333333333333,
+            "full_minus_additive": 0.0,
+            "full_standard_error": 9.656006805763456,
+            "signed_additive_relative_error": 0.0
+          },
+          "cx_count": {
+            "absolute_additive_relative_error": 0.0,
+            "additive": 88.4,
+            "additive_minus_full": 0.0,
+            "additive_standard_error": 1.2808043449781634,
+            "difference_standard_error": 0.0,
+            "full": 88.4,
+            "full_minus_additive": 0.0,
+            "full_standard_error": 1.2808043449781634,
+            "signed_additive_relative_error": 0.0
+          },
+          "cx_depth": {
+            "absolute_additive_relative_error": 0.0,
+            "additive": 33.733333333333334,
+            "additive_minus_full": 0.0,
+            "additive_standard_error": 0.18528222234124037,
+            "difference_standard_error": 0.0,
+            "full": 33.733333333333334,
+            "full_minus_additive": 0.0,
+            "full_standard_error": 0.18528222234124037,
+            "signed_additive_relative_error": 0.0
+          },
+          "rz_count": {
+            "absolute_additive_relative_error": 0.0,
+            "additive": 307.73333333333335,
+            "additive_minus_full": 0.0,
+            "additive_standard_error": 4.933100336218904,
+            "difference_standard_error": 0.0,
+            "full": 307.73333333333335,
+            "full_minus_additive": 0.0,
+            "full_standard_error": 4.933100336218904,
+            "signed_additive_relative_error": 0.0
+          },
+          "rz_depth": {
+            "absolute_additive_relative_error": 0.0,
+            "additive": 63.599999999999994,
+            "additive_minus_full": 0.0,
+            "additive_standard_error": 0.43045017867558016,
+            "difference_standard_error": 0.0,
+            "full": 63.599999999999994,
+            "full_minus_additive": 0.0,
+            "full_standard_error": 0.43045017867558016,
+            "signed_additive_relative_error": 0.0
+          },
+          "total_depth": {
+            "absolute_additive_relative_error": 0.0,
+            "additive": 143.79999999999998,
+            "additive_minus_full": 0.0,
+            "additive_standard_error": 0.8975061233102037,
+            "difference_standard_error": 0.0,
+            "full": 143.79999999999998,
+            "full_minus_additive": 0.0,
+            "full_standard_error": 0.8975061233102037,
+            "signed_additive_relative_error": 0.0
+          }
+        },
+        "sample_count": 30,
+        "unique_compiled_circuit_count": 18,
+        "unique_sequence_circuit_count": 18
+      },
+      {
+        "cache": {
+          "bypasses": 0,
+          "evictions": 0,
+          "hits": 200,
+          "misses": 0
+        },
+        "elapsed_seconds": 17.318522260524333,
+        "estimate_kind": "monte_carlo_compiled_rte_occurrence_expectation",
+        "event_count_per_sample": 1,
+        "metrics": {
+          "circuit_size": {
+            "absolute_additive_relative_error": 0.0,
+            "additive": 622.3999999999995,
+            "additive_minus_full": 0.0,
+            "additive_standard_error": 5.2200468282275905,
+            "difference_standard_error": 0.0,
+            "full": 622.3999999999995,
+            "full_minus_additive": 0.0,
+            "full_standard_error": 5.2200468282275905,
+            "signed_additive_relative_error": 0.0
+          },
+          "cx_count": {
+            "absolute_additive_relative_error": 0.0,
+            "additive": 89.68000000000004,
+            "additive_minus_full": 0.0,
+            "additive_standard_error": 0.7184270135075473,
+            "difference_standard_error": 0.0,
+            "full": 89.68000000000004,
+            "full_minus_additive": 0.0,
+            "full_standard_error": 0.7184270135075473,
+            "signed_additive_relative_error": 0.0
+          },
+          "cx_depth": {
+            "absolute_additive_relative_error": 0.0,
+            "additive": 33.75999999999998,
+            "additive_minus_full": 0.0,
+            "additive_standard_error": 0.09547330263037691,
+            "difference_standard_error": 0.0,
+            "full": 33.75999999999998,
+            "full_minus_additive": 0.0,
+            "full_standard_error": 0.09547330263037691,
+            "signed_additive_relative_error": 0.0
+          },
+          "rz_count": {
+            "absolute_additive_relative_error": 0.0,
+            "additive": 312.74000000000007,
+            "additive_minus_full": 0.0,
+            "additive_standard_error": 2.7115398733650378,
+            "difference_standard_error": 0.0,
+            "full": 312.74000000000007,
+            "full_minus_additive": 0.0,
+            "full_standard_error": 2.7115398733650378,
+            "signed_additive_relative_error": 0.0
+          },
+          "rz_depth": {
+            "absolute_additive_relative_error": 0.0,
+            "additive": 64.04,
+            "additive_minus_full": 0.0,
+            "additive_standard_error": 0.20981954728824115,
+            "difference_standard_error": 0.0,
+            "full": 64.04,
+            "full_minus_additive": 0.0,
+            "full_standard_error": 0.20981954728824115,
+            "signed_additive_relative_error": 0.0
+          },
+          "total_depth": {
+            "absolute_additive_relative_error": 0.0,
+            "additive": 144.02000000000007,
+            "additive_minus_full": 0.0,
+            "additive_standard_error": 0.48031555284315974,
+            "difference_standard_error": 0.0,
+            "full": 144.02000000000007,
+            "full_minus_additive": 0.0,
+            "full_standard_error": 0.48031555284315974,
+            "signed_additive_relative_error": 0.0
+          }
+        },
+        "sample_count": 100,
+        "unique_compiled_circuit_count": 38,
+        "unique_sequence_circuit_count": 38
+      }
+    ],
+    "status": "executed"
+  },
+  "schema_version": "random_circuit_cost_validation_v1",
+  "scope": {
+    "monte_carlo_seed_prefix_reuse": true,
+    "paired_sampling": true,
+    "partial_s2_comparison": "complete partial-S2 step versus separately transpiled forward half, RTE occurrence, and reverse half",
+    "purpose": "measure nonadditivity of separately transpiled cost pieces and check Monte Carlo convergence where exact enumeration is feasible",
+    "rte_occurrence_comparison": "complete RTE event sequence versus the sum of separately transpiled event circuits"
+  },
+  "summary": {
+    "exact_partial_s2_available": true,
+    "exact_partial_s2_maximum_absolute_additive_relative_error": 0.009871832557000075,
+    "interpretation_status": "pilot_measurement_only_no_model_acceptance_threshold_yet",
+    "largest_monte_carlo_sample_count": 100,
+    "largest_sample_partial_s2_maximum_absolute_additive_relative_error": 0.009867771857114668,
+    "largest_sample_rte_occurrence_maximum_absolute_additive_relative_error": 0.0
+  },
+  "validation_fingerprint": "d41fb6af86f78de55d524e9aaba77a39e7f7559f01e2c2810b1ee9e5d7c7886f",
+  "validation_method": "paired_full_circuit_vs_separately_transpiled_additive_parts_v1"
+}

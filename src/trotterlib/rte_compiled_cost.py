@@ -6,15 +6,20 @@ import hashlib
 import json
 import math
 import random
+import sqlite3
 from collections import OrderedDict
 from dataclasses import asdict, dataclass, field, replace
-from typing import Any, Iterable, Literal, Sequence
+from pathlib import Path
+from typing import Any, Callable, Iterable, Literal, Sequence
 
 import numpy as np
 import qiskit
 from qiskit import QuantumCircuit, transpile
 
-from .df_rte_circuit import DFRTEEventPreparation
+from .df_rte_circuit import (
+    DFRTEEventPreparation,
+    DFRTEEventSequenceCircuitRequest,
+)
 from .df_rte_qiskit import (
     QiskitDFRTEEventCircuitBuilder,
     estimate_df_rte_structural_size_upper_bound,
@@ -45,6 +50,7 @@ _COST_METRICS = (
     "circuit_size",
 )
 COMPILED_WORKLOAD_POLICY_VERSION = "cache_independent_instruction_upper_bound_v1"
+PERSISTENT_COMPILED_COST_CACHE_SCHEMA_VERSION = "compiled_cost_metric_cache_v1"
 
 
 @dataclass(frozen=True)
@@ -467,6 +473,7 @@ class TranspiledCircuitCostCache:
         *,
         maximum_entries: int = 256,
         retain_transpiled_circuits: bool = False,
+        persistent_path: str | Path | None = None,
     ) -> None:
         self.maximum_entries = require_integer_count(
             maximum_entries,
@@ -475,10 +482,140 @@ class TranspiledCircuitCostCache:
         )
         self._costs: OrderedDict[str, TranspiledCircuitCost] = OrderedDict()
         self.retain_transpiled_circuits = bool(retain_transpiled_circuits)
+        self.persistent_path = (
+            None if persistent_path is None else Path(persistent_path)
+        )
+        self._persistent_connection: sqlite3.Connection | None = None
         self.hit_count = 0
         self.miss_count = 0
         self.bypass_count = 0
         self.eviction_count = 0
+        self.persistent_hit_count = 0
+        self.persistent_write_count = 0
+
+    def _connection(self) -> sqlite3.Connection | None:
+        if self.persistent_path is None:
+            return None
+        if self._persistent_connection is None:
+            self.persistent_path.parent.mkdir(parents=True, exist_ok=True)
+            connection = sqlite3.connect(
+                self.persistent_path,
+                timeout=30.0,
+                isolation_level=None,
+            )
+            connection.execute("PRAGMA busy_timeout=30000")
+            # Multiple spawned workers may open a new cache simultaneously.
+            # Install the busy handler before the WAL transition so the losing
+            # initializer waits for the schema lock instead of failing eagerly.
+            connection.execute("PRAGMA journal_mode=WAL")
+            connection.execute(
+                """
+                CREATE TABLE IF NOT EXISTS compiled_cost_metric_cache (
+                    cache_key TEXT PRIMARY KEY,
+                    schema_version TEXT NOT NULL,
+                    payload_json TEXT NOT NULL
+                )
+                """
+            )
+            self._persistent_connection = connection
+        return self._persistent_connection
+
+    @staticmethod
+    def _persistent_payload(cost: TranspiledCircuitCost) -> str:
+        return json.dumps(
+            {
+                "pretranspile_gate_counts": [list(item) for item in cost.pretranspile_gate_counts],
+                "posttranspile_gate_counts": [
+                    list(item) for item in cost.posttranspile_gate_counts
+                ],
+                "rz_count": cost.rz_count,
+                "rz_depth": cost.rz_depth,
+                "cx_count": cost.cx_count,
+                "cx_depth": cost.cx_depth,
+                "total_depth": cost.total_depth,
+                "circuit_size": cost.circuit_size,
+                "qubit_count": cost.qubit_count,
+                "global_phase": cost.global_phase,
+                "compiler_settings_hash": cost.compiler_settings_hash,
+                "actual_circuit_fingerprint": cost.actual_circuit_fingerprint,
+                "backend_fingerprint": cost.backend_fingerprint,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+            allow_nan=False,
+        )
+
+    def _load_persistent(
+        self,
+        key: str,
+        *,
+        compiler: CompilerSettings,
+        compiler_hash: str,
+        circuit_fingerprint: str,
+        actual_circuit_fingerprint: str,
+        backend_fingerprint: str | None,
+    ) -> TranspiledCircuitCost | None:
+        connection = self._connection()
+        if connection is None:
+            return None
+        row = connection.execute(
+            "SELECT schema_version, payload_json "
+            "FROM compiled_cost_metric_cache WHERE cache_key = ?",
+            (key,),
+        ).fetchone()
+        if row is None:
+            return None
+        if row[0] != PERSISTENT_COMPILED_COST_CACHE_SCHEMA_VERSION:
+            return None
+        payload = json.loads(row[1])
+        if payload.get("compiler_settings_hash") != compiler_hash:
+            raise ValueError("Persistent compiled-cost compiler hash mismatch.")
+        if payload.get("actual_circuit_fingerprint") != actual_circuit_fingerprint:
+            raise ValueError("Persistent compiled-cost circuit hash mismatch.")
+        if payload.get("backend_fingerprint") != backend_fingerprint:
+            raise ValueError("Persistent compiled-cost backend hash mismatch.")
+        return TranspiledCircuitCost(
+            pretranspile_gate_counts=tuple(
+                (str(name), int(count))
+                for name, count in payload["pretranspile_gate_counts"]
+            ),
+            posttranspile_gate_counts=tuple(
+                (str(name), int(count))
+                for name, count in payload["posttranspile_gate_counts"]
+            ),
+            rz_count=int(payload["rz_count"]),
+            rz_depth=int(payload["rz_depth"]),
+            cx_count=int(payload["cx_count"]),
+            cx_depth=int(payload["cx_depth"]),
+            total_depth=int(payload["total_depth"]),
+            circuit_size=int(payload["circuit_size"]),
+            qubit_count=int(payload["qubit_count"]),
+            global_phase=float(payload["global_phase"]),
+            compiler=compiler,
+            compiler_settings_hash=compiler_hash,
+            circuit_fingerprint=circuit_fingerprint,
+            actual_circuit_fingerprint=actual_circuit_fingerprint,
+            backend_fingerprint=backend_fingerprint,
+            transpiled_circuit=None,
+        )
+
+    def _store_persistent(self, key: str, cost: TranspiledCircuitCost) -> None:
+        connection = self._connection()
+        if connection is None:
+            return
+        connection.execute(
+            """
+            INSERT OR IGNORE INTO compiled_cost_metric_cache
+                (cache_key, schema_version, payload_json)
+            VALUES (?, ?, ?)
+            """,
+            (
+                key,
+                PERSISTENT_COMPILED_COST_CACHE_SCHEMA_VERSION,
+                self._persistent_payload(cost),
+            ),
+        )
+        self.persistent_write_count += 1
 
     def get_or_transpile(
         self,
@@ -517,6 +654,24 @@ class TranspiledCircuitCostCache:
             self._costs.move_to_end(key)
             self.hit_count += 1
             return replace(cached, circuit_fingerprint=circuit_fingerprint), key, True
+        if cacheable:
+            persistent = self._load_persistent(
+                key,
+                compiler=compiler,
+                compiler_hash=settings_hash,
+                circuit_fingerprint=circuit_fingerprint,
+                actual_circuit_fingerprint=actual_fingerprint,
+                backend_fingerprint=backend_fingerprint,
+            )
+            if persistent is not None:
+                self._costs[key] = persistent
+                self._costs.move_to_end(key)
+                if len(self._costs) > self.maximum_entries:
+                    self._costs.popitem(last=False)
+                    self.eviction_count += 1
+                self.hit_count += 1
+                self.persistent_hit_count += 1
+                return persistent, key, True
         cost = transpile_and_measure_cost(
             circuit,
             compiler,
@@ -539,6 +694,7 @@ class TranspiledCircuitCostCache:
             if len(self._costs) > self.maximum_entries:
                 self._costs.popitem(last=False)
                 self.eviction_count += 1
+            self._store_persistent(key, cost)
         else:
             self.bypass_count += 1
         return cost, key, False
@@ -1296,6 +1452,15 @@ def estimate_compiled_occurrence_cost(
     maximum_planned_instruction_applications: int = 100_000_000,
     cache: TranspiledCircuitCostCache | None = None,
     backend: Any | None = None,
+    sample_observer: Callable[
+        [
+            DFRTEEventSequenceCircuitRequest,
+            TranspiledCircuitCost,
+            tuple[TranspiledCircuitCost, ...],
+        ],
+        None,
+    ]
+    | None = None,
 ) -> CompiledSequenceCostEstimate:
     """Compile short sampled occurrences and compare additive event costs."""
     sequence_sample_count = require_integer_count(
@@ -1464,6 +1629,8 @@ def estimate_compiled_occurrence_cost(
         additive = _sum_costs(event_costs)
         additive_accumulator.update(additive)
         difference_accumulator.update(_subtract_costs(sequence_cost, additive))
+        if sample_observer is not None:
+            sample_observer(request, sequence_cost, tuple(event_costs))
 
     require_actual_workload_within_plan(
         workload_plan,

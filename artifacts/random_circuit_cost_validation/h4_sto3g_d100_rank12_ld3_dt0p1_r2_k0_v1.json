@@ -1,0 +1,479 @@
+{
+  "acceptance_threshold_decided": false,
+  "configuration": {
+    "coefficient_atol": 1e-12,
+    "compiler": {
+      "backend_name": null,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "coupling_map": null,
+      "layout_method": null,
+      "optimization_level": 1,
+      "qiskit_version": "1.3.0",
+      "routing_method": null,
+      "transpiler_seed": 17
+    },
+    "component_count": 218,
+    "delta_time": 0.1,
+    "dimensionless_short_step_time": 0.0291635212316975,
+    "evaluation_scopes": [
+      "partial_s2",
+      "rte_occurrence"
+    ],
+    "event_sequence_space_size": 47524,
+    "finite_taylor_order": 0,
+    "lambda_r": 0.58327042463395,
+    "ld": 3,
+    "maximum_exact_event_sequences": 1000,
+    "monte_carlo_sample_counts": [
+      30,
+      100
+    ],
+    "rte_steps": 2,
+    "seed": 20260822,
+    "single_event_space_size": 218
+  },
+  "final_cost_evaluation_performed": false,
+  "hamiltonian": {
+    "df_rank": 12,
+    "metadata": {
+      "basis": "sto-3g",
+      "charge": 0,
+      "df_rank_actual": 12,
+      "df_rank_config_selection": null,
+      "df_rank_requested": 12,
+      "df_rank_source": "explicit",
+      "df_tol_requested": null,
+      "df_truncation_value": 0.0,
+      "distance": 1.0,
+      "hermitized": true,
+      "hf_energy": -2.09854593699772,
+      "molecule_type": 4,
+      "multiplicity": 1
+    },
+    "n_qubits": 8,
+    "partition_hash": "8b63c2529d2fb1b1dd9ef68613666ba65417d3e27033fd9c7cbd158590f74128",
+    "preparation_hash": "a0e19fe156c555dd311b01fffa8f8d18ba52e08d5a6b587b043156f065110146"
+  },
+  "partial_s2": {
+    "exact": null,
+    "exact_skip_reason": "event_sequence_space_size=47524 exceeds maximum_exact_event_sequences=1000",
+    "monte_carlo": [
+      {
+        "cache": {
+          "bypasses": 0,
+          "evictions": 0,
+          "hits": 58,
+          "misses": 62
+        },
+        "elapsed_seconds": 60.1569453664124,
+        "enumerated_event_sequence_count": null,
+        "estimate_kind": "monte_carlo_compiled_partial_s2_expectation",
+        "event_sequence_probability_sum": null,
+        "metrics": {
+          "circuit_size": {
+            "absolute_additive_relative_error": 0.0024561606940499392,
+            "additive": 6339.7666666666655,
+            "additive_minus_full": 15.533333333333758,
+            "additive_standard_error": 35.363195470287074,
+            "difference_standard_error": 1.5863884620389868,
+            "full": 6324.233333333332,
+            "full_minus_additive": -15.533333333333337,
+            "full_standard_error": 34.18024176630506,
+            "signed_additive_relative_error": 0.0024561606940499392
+          },
+          "cx_count": {
+            "absolute_additive_relative_error": 0.00011293054771324629,
+            "additive": 1180.8,
+            "additive_minus_full": 0.13333333333343944,
+            "additive_standard_error": 5.258031623309633,
+            "difference_standard_error": 0.09264111117062017,
+            "full": 1180.6666666666665,
+            "full_minus_additive": -0.13333333333333336,
+            "full_standard_error": 5.210363971960741,
+            "signed_additive_relative_error": 0.00011293054771324629
+          },
+          "cx_depth": {
+            "absolute_additive_relative_error": 0.0,
+            "additive": 433.0,
+            "additive_minus_full": 0.0,
+            "additive_standard_error": 2.270753583962923,
+            "difference_standard_error": 0.0,
+            "full": 433.0,
+            "full_minus_additive": 0.0,
+            "full_standard_error": 2.270753583962923,
+            "signed_additive_relative_error": 0.0
+          },
+          "rz_count": {
+            "absolute_additive_relative_error": 0.0032360079429283673,
+            "additive": 3182.8999999999996,
+            "additive_minus_full": 10.26666666666597,
+            "additive_standard_error": 17.977658548780806,
+            "difference_standard_error": 1.0090775727825487,
+            "full": 3172.6333333333337,
+            "full_minus_additive": -10.26666666666667,
+            "full_standard_error": 17.179678140063295,
+            "signed_additive_relative_error": 0.0032360079429283673
+          },
+          "rz_depth": {
+            "absolute_additive_relative_error": 0.009675858732462506,
+            "additive": 626.1,
+            "additive_minus_full": 6.0,
+            "additive_standard_error": 4.167567718664589,
+            "difference_standard_error": 0.0,
+            "full": 620.1,
+            "full_minus_additive": -6.0,
+            "full_standard_error": 4.167567718664589,
+            "signed_additive_relative_error": 0.009675858732462506
+          },
+          "total_depth": {
+            "absolute_additive_relative_error": 0.0070916989550312325,
+            "additive": 1429.5666666666666,
+            "additive_minus_full": 10.066666666666833,
+            "additive_standard_error": 9.10925805845234,
+            "difference_standard_error": 0.04632055558531008,
+            "full": 1419.4999999999998,
+            "full_minus_additive": -10.066666666666666,
+            "full_standard_error": 9.085133745433458,
+            "signed_additive_relative_error": 0.0070916989550312325
+          }
+        },
+        "sample_count": 30,
+        "single_event_space_size": 218,
+        "unique_compiled_circuit_count": 62,
+        "unique_full_step_circuit_count": 30
+      },
+      {
+        "cache": {
+          "bypasses": 0,
+          "evictions": 0,
+          "hits": 266,
+          "misses": 134
+        },
+        "elapsed_seconds": 201.44603102188557,
+        "enumerated_event_sequence_count": null,
+        "estimate_kind": "monte_carlo_compiled_partial_s2_expectation",
+        "event_sequence_probability_sum": null,
+        "metrics": {
+          "circuit_size": {
+            "absolute_additive_relative_error": 0.0025834567843180593,
+            "additive": 6395.530000000002,
+            "additive_minus_full": 16.48000000000411,
+            "additive_standard_error": 24.3482248123996,
+            "difference_standard_error": 0.8190262757714435,
+            "full": 6379.049999999997,
+            "full_minus_additive": -16.48,
+            "full_standard_error": 23.705816423891278,
+            "signed_additive_relative_error": 0.0025834567843180593
+          },
+          "cx_count": {
+            "absolute_additive_relative_error": 0.00018507924756856335,
+            "additive": 1188.8999999999999,
+            "additive_minus_full": 0.2199999999997999,
+            "additive_standard_error": 3.622084337711496,
+            "difference_standard_error": 0.06289320754704403,
+            "full": 1188.68,
+            "full_minus_additive": -0.22000000000000003,
+            "full_standard_error": 3.583939483616066,
+            "signed_additive_relative_error": 0.00018507924756856335
+          },
+          "cx_depth": {
+            "absolute_additive_relative_error": 0.0,
+            "additive": 435.59999999999997,
+            "additive_minus_full": 0.0,
+            "additive_standard_error": 1.4076271315281406,
+            "difference_standard_error": 0.0,
+            "full": 435.59999999999997,
+            "full_minus_additive": 0.0,
+            "full_standard_error": 1.4076271315281406,
+            "signed_additive_relative_error": 0.0
+          },
+          "rz_count": {
+            "absolute_additive_relative_error": 0.0033862830545277507,
+            "additive": 3211.9900000000016,
+            "additive_minus_full": 10.84000000000151,
+            "additive_standard_error": 12.454584122184299,
+            "difference_standard_error": 0.5157557953179397,
+            "full": 3201.15,
+            "full_minus_additive": -10.84,
+            "full_standard_error": 12.037394387339964,
+            "signed_additive_relative_error": 0.0033862830545277507
+          },
+          "rz_depth": {
+            "absolute_additive_relative_error": 0.00959478043944095,
+            "additive": 631.3399999999997,
+            "additive_minus_full": 6.0,
+            "additive_standard_error": 2.6169694864345088,
+            "difference_standard_error": 0.0,
+            "full": 625.3399999999997,
+            "full_minus_additive": -6.0,
+            "full_standard_error": 2.6169694864345088,
+            "signed_additive_relative_error": 0.00959478043944095
+          },
+          "total_depth": {
+            "absolute_additive_relative_error": 0.007067261313909522,
+            "additive": 1440.65,
+            "additive_minus_full": 10.110000000000127,
+            "additive_standard_error": 5.699891457410627,
+            "difference_standard_error": 0.03144660377352201,
+            "full": 1430.54,
+            "full_minus_additive": -10.110000000000003,
+            "full_standard_error": 5.681538772927881,
+            "signed_additive_relative_error": 0.007067261313909522
+          }
+        },
+        "sample_count": 100,
+        "single_event_space_size": 218,
+        "unique_compiled_circuit_count": 196,
+        "unique_full_step_circuit_count": 97
+      }
+    ],
+    "status": "executed"
+  },
+  "performance": {
+    "shared_transpile_cache": {
+      "final_bypasses": 0,
+      "final_evictions": 0,
+      "final_hits": 662,
+      "final_misses": 248,
+      "maximum_entries": 4096
+    },
+    "total_seconds": 298.79400198720396
+  },
+  "provenance": {
+    "batch_delta_time_values": [
+      0.1
+    ],
+    "batch_finite_taylor_order_values": [
+      0
+    ],
+    "batch_ld_values": [
+      3
+    ],
+    "batch_position": 1,
+    "batch_rte_step_values": [
+      1,
+      2
+    ],
+    "command": ".venv311/bin/python scripts/run_random_circuit_cost_validation.py --molecule 4 --distance 1.0 --basis sto-3g --df-rank 12 --ld 3 --delta-time 0.1 --rte-step-values 1,2 --finite-taylor-order 0 --sample-counts 30,100 --maximum-exact-event-sequences 1000",
+    "evidence_status": "local_worktree_validation_not_immutable_ci",
+    "generated_at_utc": "2026-08-22T15:30:32.678657+00:00",
+    "git_commit": "e07a5e60ce6213fca3e7b05f733eae2174a71eae",
+    "git_worktree_status_before_generation": [
+      " M VALIDATION_STATUS.md",
+      " M artifacts/validation_manifest.json",
+      " M docs/research/README.md",
+      " M \"docs/research/\\346\\225\\260\\345\\200\\244\\345\\256\\237\\351\\250\\223\\343\\203\\273\\350\\251\\225\\344\\276\\241\\350\\250\\210\\347\\224\\273.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/README.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\346\\246\\202\\350\\246\\201\\343\\203\\273\\347\\217\\276\\347\\212\\266.md\"",
+      " M src/trotterlib/__init__.py",
+      "?? artifacts/random_circuit_cost_validation/",
+      "?? docs/random_circuit_cost_validation.md",
+      "?? \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-08-23.md\"",
+      "?? scripts/run_random_circuit_cost_validation.py",
+      "?? src/trotterlib/random_circuit_cost_validation.py",
+      "?? tests/test_random_circuit_cost_validation.py"
+    ],
+    "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
+    "python_version": "3.11.0rc1",
+    "qiskit_version": "1.3.0",
+    "shared_hamiltonian_generation": true,
+    "source_sha256": {
+      "scripts/run_random_circuit_cost_validation.py": "1b347f392ff40e27f3e257b938f3d5e04604e9fcb78df476ca36861c47c38676",
+      "src/trotterlib/random_circuit_cost_validation.py": "cefb2cb2f04a60db08e5c6e9c85fa7c92832cfb955bdf87d10ea53cd5381a622"
+    }
+  },
+  "rte_occurrence": {
+    "exact": null,
+    "exact_status": "not_implemented_for_compiled_sequence_cost",
+    "monte_carlo": [
+      {
+        "cache": {
+          "bypasses": 0,
+          "evictions": 0,
+          "hits": 63,
+          "misses": 27
+        },
+        "elapsed_seconds": 8.517323233187199,
+        "estimate_kind": "monte_carlo_compiled_rte_occurrence_expectation",
+        "event_count_per_sample": 2,
+        "metrics": {
+          "circuit_size": {
+            "absolute_additive_relative_error": 0.574721061474174,
+            "additive": 1218.4666666666667,
+            "additive_minus_full": 444.70000000000005,
+            "additive_standard_error": 14.156979784839436,
+            "difference_standard_error": 40.49036070899872,
+            "full": 773.7666666666667,
+            "full_minus_additive": -444.70000000000005,
+            "full_standard_error": 35.36319547028707,
+            "signed_additive_relative_error": 0.574721061474174
+          },
+          "cx_count": {
+            "absolute_additive_relative_error": 0.5596926713947987,
+            "additive": 175.9333333333333,
+            "additive_minus_full": 63.1333333333333,
+            "additive_standard_error": 1.8507117818874068,
+            "difference_standard_error": 5.891496567152211,
+            "full": 112.80000000000001,
+            "full_minus_additive": -63.13333333333333,
+            "full_standard_error": 5.258031623309633,
+            "signed_additive_relative_error": 0.5596926713947987
+          },
+          "cx_depth": {
+            "absolute_additive_relative_error": 0.6471544715447152,
+            "additive": 67.53333333333333,
+            "additive_minus_full": 26.533333333333324,
+            "additive_standard_error": 0.22860563509779788,
+            "difference_standard_error": 2.3192018709046573,
+            "full": 41.00000000000001,
+            "full_minus_additive": -26.53333333333333,
+            "full_standard_error": 2.270753583962923,
+            "signed_additive_relative_error": 0.6471544715447152
+          },
+          "rz_count": {
+            "absolute_additive_relative_error": 0.5736693237336075,
+            "additive": 612.0,
+            "additive_minus_full": 223.09999999999997,
+            "additive_standard_error": 7.036195419188658,
+            "difference_standard_error": 20.038144659107296,
+            "full": 388.90000000000003,
+            "full_minus_additive": -223.10000000000005,
+            "full_standard_error": 17.97765854878081,
+            "signed_additive_relative_error": 0.5736693237336075
+          },
+          "rz_depth": {
+            "absolute_additive_relative_error": 0.670608848007008,
+            "additive": 127.13333333333333,
+            "additive_minus_full": 51.03333333333332,
+            "additive_standard_error": 0.5886538965824364,
+            "difference_standard_error": 4.245750636510928,
+            "full": 76.10000000000001,
+            "full_minus_additive": -51.03333333333334,
+            "full_standard_error": 4.16756771866459,
+            "signed_additive_relative_error": 0.670608848007008
+          },
+          "total_depth": {
+            "absolute_additive_relative_error": 0.6724305420633383,
+            "additive": 286.9333333333334,
+            "additive_minus_full": 115.36666666666673,
+            "additive_standard_error": 1.3820968022831217,
+            "difference_standard_error": 9.671201869150996,
+            "full": 171.56666666666666,
+            "full_minus_additive": -115.36666666666669,
+            "full_standard_error": 9.109258058452342,
+            "signed_additive_relative_error": 0.6724305420633383
+          }
+        },
+        "sample_count": 30,
+        "unique_compiled_circuit_count": 57,
+        "unique_sequence_circuit_count": 30
+      },
+      {
+        "cache": {
+          "bypasses": 0,
+          "evictions": 0,
+          "hits": 275,
+          "misses": 25
+        },
+        "elapsed_seconds": 28.631691281683743,
+        "estimate_kind": "monte_carlo_compiled_rte_occurrence_expectation",
+        "event_count_per_sample": 2,
+        "metrics": {
+          "circuit_size": {
+            "absolute_additive_relative_error": 0.497185153038466,
+            "additive": 1241.9599999999994,
+            "additive_minus_full": 412.4299999999989,
+            "additive_standard_error": 8.666292765827286,
+            "difference_standard_error": 25.318274052748958,
+            "full": 829.5300000000004,
+            "full_minus_additive": -412.43000000000006,
+            "full_standard_error": 24.3482248123996,
+            "signed_additive_relative_error": 0.497185153038466
+          },
+          "cx_count": {
+            "absolute_additive_relative_error": 0.4830438378825476,
+            "additive": 179.30000000000004,
+            "additive_minus_full": 58.40000000000002,
+            "additive_standard_error": 1.194727474101829,
+            "difference_standard_error": 3.6816772637953314,
+            "full": 120.90000000000002,
+            "full_minus_additive": -58.4,
+            "full_standard_error": 3.6220843377114993,
+            "signed_additive_relative_error": 0.4830438378825476
+          },
+          "cx_depth": {
+            "absolute_additive_relative_error": 0.5499999999999994,
+            "additive": 67.58,
+            "additive_minus_full": 23.979999999999983,
+            "additive_standard_error": 0.13422429592350882,
+            "difference_standard_error": 1.4271522821211606,
+            "full": 43.600000000000016,
+            "full_minus_additive": -23.979999999999997,
+            "full_standard_error": 1.4076271315281403,
+            "signed_additive_relative_error": 0.5499999999999994
+          },
+          "rz_count": {
+            "absolute_additive_relative_error": 0.49606449915069717,
+            "additive": 625.3399999999999,
+            "additive_minus_full": 207.3499999999999,
+            "additive_standard_error": 4.321434011898358,
+            "difference_standard_error": 12.547367827314995,
+            "full": 417.99,
+            "full_minus_additive": -207.34999999999997,
+            "full_standard_error": 12.454584122184313,
+            "signed_additive_relative_error": 0.49606449915069717
+          },
+          "rz_depth": {
+            "absolute_additive_relative_error": 0.5746250307351863,
+            "additive": 128.08000000000004,
+            "additive_minus_full": 46.74000000000005,
+            "additive_standard_error": 0.2883880662712602,
+            "difference_standard_error": 2.628000737973237,
+            "full": 81.33999999999999,
+            "full_minus_additive": -46.739999999999974,
+            "full_standard_error": 2.616969486434508,
+            "signed_additive_relative_error": 0.5746250307351863
+          },
+          "total_depth": {
+            "absolute_additive_relative_error": 0.5758007117437721,
+            "additive": 287.82,
+            "additive_minus_full": 105.16999999999999,
+            "additive_standard_error": 0.6981042149632785,
+            "difference_standard_error": 5.96227288706228,
+            "full": 182.65,
+            "full_minus_additive": -105.16999999999999,
+            "full_standard_error": 5.699891457410626,
+            "signed_additive_relative_error": 0.5758007117437721
+          }
+        },
+        "sample_count": 100,
+        "unique_compiled_circuit_count": 149,
+        "unique_sequence_circuit_count": 97
+      }
+    ],
+    "status": "executed"
+  },
+  "schema_version": "random_circuit_cost_validation_v1",
+  "scope": {
+    "monte_carlo_seed_prefix_reuse": true,
+    "paired_sampling": true,
+    "partial_s2_comparison": "complete partial-S2 step versus separately transpiled forward half, RTE occurrence, and reverse half",
+    "purpose": "measure nonadditivity of separately transpiled cost pieces and check Monte Carlo convergence where exact enumeration is feasible",
+    "rte_occurrence_comparison": "complete RTE event sequence versus the sum of separately transpiled event circuits"
+  },
+  "summary": {
+    "exact_partial_s2_available": false,
+    "exact_partial_s2_maximum_absolute_additive_relative_error": null,
+    "interpretation_status": "pilot_measurement_only_no_model_acceptance_threshold_yet",
+    "largest_monte_carlo_sample_count": 100,
+    "largest_sample_partial_s2_maximum_absolute_additive_relative_error": 0.00959478043944095,
+    "largest_sample_rte_occurrence_maximum_absolute_additive_relative_error": 0.5758007117437721
+  },
+  "validation_fingerprint": "38c9ec8d196522a2ec8049c6edf623b879c7f160bf37af15834d81e1a2568af2",
+  "validation_method": "paired_full_circuit_vs_separately_transpiled_additive_parts_v1"
+}

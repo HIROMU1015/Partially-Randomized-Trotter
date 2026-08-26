@@ -212,6 +212,416 @@
         "reason": "Contains four H4 split artifacts and five L_D=3 delta-sensitivity artifacts; these are dirty-worktree evidence rather than immutable CI evidence."
       },
       {
+        "path": "src/trotterlib/random_circuit_cost_validation.py",
+        "kind": "file",
+        "supports": [
+          "random_circuit_cost_validation"
+        ],
+        "reason": "Paired full-circuit versus separately transpiled additive-part validation, exact-enumeration/Monte-Carlo comparison, selectable RTE-occurrence-only scope, and strict fingerprinted serialization."
+      },
+      {
+        "path": "tests/test_random_circuit_cost_validation.py",
+        "kind": "file",
+        "supports": [
+          "random_circuit_cost_validation",
+          "tests"
+        ],
+        "reason": "Dedicated exact/Monte-Carlo payload, tamper-rejection, serialization, exact-skip, and occurrence-only-scope tests."
+      },
+      {
+        "path": "scripts/run_random_circuit_cost_validation.py",
+        "kind": "file",
+        "supports": [
+          "random_circuit_cost_validation"
+        ],
+        "reason": "H-chain pilot generator recording molecular, finite-RTE, compiler, source-hash, command, environment, and dirty-worktree provenance."
+      },
+      {
+        "path": "docs/random_circuit_cost_validation.md",
+        "kind": "file",
+        "supports": [
+          "random_circuit_cost_validation"
+        ],
+        "reason": "Documents the two additive models, H4 pilot conditions and results, the RTE-occurrence-level modeling decision, runtime acceleration, and remaining validation grid."
+      },
+      {
+        "path": "artifacts/random_circuit_cost_validation",
+        "kind": "directory",
+        "supports": [
+          "random_circuit_cost_validation"
+        ],
+        "reason": "Contains three fingerprinted H4 L_D=3, delta=0.1, K=0 local artifacts covering an r=1 exact anchor, r=2 partial-S2 pilot, and r=2 300-sample occurrence-only comparison; they are dirty-worktree evidence rather than immutable CI evidence."
+      },
+      {
+        "path": "src/trotterlib/rte_boundary_cost_validation.py",
+        "kind": "file",
+        "supports": [
+          "rte_boundary_cost_validation"
+        ],
+        "reason": "Expectation-level one-, pair-, and three-event cluster calibration with independent longer-sequence holdouts, propagated Monte Carlo uncertainty, and strict fingerprinted serialization."
+      },
+      {
+        "path": "tests/test_rte_boundary_cost_validation.py",
+        "kind": "file",
+        "supports": [
+          "rte_boundary_cost_validation",
+          "tests"
+        ],
+        "reason": "Dedicated calibration/holdout structure, serialization, tamper-rejection, and version-1 cutoff-scope tests."
+      },
+      {
+        "path": "scripts/run_rte_boundary_cost_validation.py",
+        "kind": "file",
+        "supports": [
+          "rte_boundary_cost_validation"
+        ],
+        "reason": "H-chain cluster-calibration generator recording fixed-short-step, compiler, source-hash, command, environment, and dirty-worktree provenance."
+      },
+      {
+        "path": "docs/rte_boundary_cost_validation.md",
+        "kind": "file",
+        "supports": [
+          "rte_boundary_cost_validation"
+        ],
+        "reason": "Documents the cluster formula, disjoint calibration/holdout policy, H4 pilot result, interpretation, and remaining acceptance limitations."
+      },
+      {
+        "path": "artifacts/rte_boundary_cost_validation",
+        "kind": "directory",
+        "supports": [
+          "rte_boundary_cost_validation"
+        ],
+        "reason": "Contains one 300-sample pilot and two common-preparation-hash, independent-seed 1000-sample H4 L_D=3, fixed-short-step, K=0 calibration/holdout artifacts; they are dirty-worktree evidence rather than immutable CI evidence."
+      },
+      {
+        "path": "src/trotterlib/rte_boundary_pair_validation.py",
+        "kind": "file",
+        "supports": [
+          "rte_boundary_pair_validation"
+        ],
+        "reason": "Online same/different and directed-fragment-pair boundary-correction statistics with disjoint calibration/holdout seeds and fingerprinted serialization."
+      },
+      {
+        "path": "tests/test_rte_boundary_pair_validation.py",
+        "kind": "file",
+        "supports": [
+          "rte_boundary_pair_validation",
+          "tests"
+        ],
+        "reason": "Dedicated stratification, disjoint-seed, serialization, tamper-rejection, and K=0 scope tests."
+      },
+      {
+        "path": "scripts/run_rte_boundary_cost_replication.py",
+        "kind": "file",
+        "supports": [
+          "rte_boundary_cost_validation",
+          "rte_boundary_pair_validation"
+        ],
+        "reason": "Parallel H-chain generator that constructs one parent Hamiltonian payload, runs two full-cluster seeds and one pair-stratified task, and rejects mismatched worker preparation hashes."
+      },
+      {
+        "path": "docs/rte_boundary_pair_validation.md",
+        "kind": "file",
+        "supports": [
+          "rte_boundary_cost_validation",
+          "rte_boundary_pair_validation"
+        ],
+        "reason": "Documents the 1000-sample two-seed cluster result, 1500/1500-sample fragment-stratified result, metric-dependent decision, and remaining validation limits."
+      },
+      {
+        "path": "artifacts/rte_boundary_pair_validation",
+        "kind": "directory",
+        "supports": [
+          "rte_boundary_pair_validation"
+        ],
+        "reason": "Contains one fingerprinted H4 L_D=3, fixed-short-step, K=0, 1500-calibration/1500-holdout same/different and directed-fragment-pair artifact; it is dirty-worktree evidence rather than immutable CI evidence."
+      },
+      {
+        "path": "src/trotterlib/hierarchical_cost_validation.py",
+        "kind": "file",
+        "supports": [
+          "hierarchical_compiled_cost_validation"
+        ],
+        "reason": "Independent one-/two-/three-event cluster calibration for K=0 or K>0, longer-sequence holdouts, controlled repeated partial-S2 affine holdout generalized to explicit q>=3, propagated uncertainty, and fingerprinted serialization."
+      },
+      {
+        "path": "tests/test_hierarchical_cost_validation.py",
+        "kind": "file",
+        "supports": [
+          "hierarchical_compiled_cost_validation",
+          "tests"
+        ],
+        "reason": "Dedicated independent-seed, K=2 Monte Carlo C1, controlled q=4 holdout, formula, serialization, and tamper-rejection tests."
+      },
+      {
+        "path": "scripts/run_hierarchical_cost_validation.py",
+        "kind": "file",
+        "supports": [
+          "hierarchical_compiled_cost_validation"
+        ],
+        "reason": "Parallel H4 generator that shares one parent Hamiltonian across K=0 L=8, K=2 L=4/6, and controlled q=4 holdout workers and rejects mismatched preparation hashes."
+      },
+      {
+        "path": "scripts/run_controlled_repetition_holdout.py",
+        "kind": "file",
+        "supports": [
+          "hierarchical_compiled_cost_validation"
+        ],
+        "reason": "Runs a fixed-snapshot controlled q=1/2 affine calibration with an explicitly unused q=8 holdout; no q=8 result is claimed until its output validates."
+      },
+      {
+        "path": "docs/hierarchical_cost_validation.md",
+        "kind": "file",
+        "supports": [
+          "hierarchical_compiled_cost_validation"
+        ],
+        "reason": "Documents the three held-out models, H4 conditions, point and uncertainty results, metric-dependent K=0 decision, K=2 limitation, controlled affine result, and remaining scope."
+      },
+      {
+        "path": "artifacts/hierarchical_cost_validation",
+        "kind": "directory",
+        "supports": [
+          "hierarchical_compiled_cost_validation"
+        ],
+        "reason": "Contains three common-preparation-hash, fingerprinted H4 local artifacts for K=0 L=8, K=2 L=4/6, and controlled partial-S2 q=4 holdouts; they are dirty-worktree evidence rather than immutable CI evidence."
+      },
+      {
+        "path": "src/trotterlib/rte_order_stratified_cost_validation.py",
+        "kind": "file",
+        "supports": [
+          "rte_order_stratified_cost_validation"
+        ],
+        "reason": "Forces every K=2 Taylor-order pattern, analytically recombines conditional expectations, and directly estimates paired one-/two-/three-event local-window residuals against full compiled trajectories, including an explicit probability-weighted two-or-more-order-2 aggregate in both independent and paired modes."
+      },
+      {
+        "path": "tests/test_rte_order_stratified_cost_validation.py",
+        "kind": "file",
+        "supports": [
+          "rte_order_stratified_cost_validation",
+          "tests"
+        ],
+        "reason": "Dedicated cluster-formula, all-pattern forced-order-count, unique-seed, probability-weighted multi-order paired-residual, serialization, and tamper-rejection tests."
+      },
+      {
+        "path": "scripts/run_rte_order_stratified_cost_validation.py",
+        "kind": "file",
+        "supports": [
+          "rte_order_stratified_cost_validation"
+        ],
+        "reason": "Reproducible H4 generator for independent order-stratified and paired-local-residual K=2 validations with source hashes, compiler provenance, and exact saved-Hamiltonian snapshot loading."
+      },
+      {
+        "path": "artifacts/rte_order_stratified_cost_validation",
+        "kind": "directory",
+        "supports": [
+          "rte_order_stratified_cost_validation"
+        ],
+        "reason": "Contains four fingerprinted H4 local artifacts with analytic order probabilities, forced order counts, stratum seeds and digests, and paired residual statistics. The two shared_* artifacts have a matching preparation hash and are primary; the earlier two separate-process artifacts are diagnostic only. All are dirty-worktree evidence rather than immutable CI evidence."
+      },
+      {
+        "path": "src/trotterlib/rte_connected_cluster_cost_validation.py",
+        "kind": "file",
+        "supports": [
+          "rte_connected_cluster_cost_validation"
+        ],
+        "reason": "Operational K1--K3 connected-cluster compiled-cost estimator with Taylor-order conditioning, exact order-0 single-event enumeration, same/different-basis pair stratification, pilot allocation, independent L=4/6/8 holdouts, exact DF-Hamiltonian snapshots, and fingerprinted resumable checkpoints. It also separates offline calibration, transpile-free prediction, and fixed-calibration transfer validation, with v3 fixed-index sample chunks, sufficient-statistics merging, adaptive production allocation, legacy checkpoint compatibility, an exact-numeric SQLite metric cache, and an independent paired four-event-coefficient calibration path."
+      },
+      {
+        "path": "src/trotterlib/rte_cost_angle_invariance_validation.py",
+        "kind": "file",
+        "supports": [
+          "rte_connected_cluster_cost_validation"
+        ],
+        "reason": "Compiles fixed event identities at several numeric short-step times and compares all six metrics without enabling angle-independent cache reuse; current use is implementation smoke only."
+      },
+      {
+        "path": "tests/test_rte_connected_cluster_cost_validation.py",
+        "kind": "file",
+        "supports": [
+          "rte_connected_cluster_cost_validation",
+          "tests"
+        ],
+        "reason": "Dedicated connected-window formula, merged-statistics, Hamiltonian-snapshot round-trip, disjoint-stage, checkpoint-resume, supplement, calibration/prediction/transfer separation, fixed sample chunks, incremental sufficient-statistics merging, legacy checkpoint reuse, adaptive allocation, persistent-cache invalidation, angle-invariance, independent paired K4, serialization, parallel-invariance, and tamper-rejection tests."
+      },
+      {
+        "path": "scripts/run_rte_connected_cluster_cost_validation.py",
+        "kind": "file",
+        "supports": [
+          "rte_connected_cluster_cost_validation"
+        ],
+        "reason": "H4 generator that freezes the exact DF representation, records compiler and source provenance, runs either legacy full validation or calibration-only mode, and incrementally resumes fixed-index sample chunks from fingerprinted checkpoints."
+      },
+      {
+        "path": "scripts/run_rte_connected_cluster_holdout_supplement.py",
+        "kind": "file",
+        "supports": [
+          "rte_connected_cluster_cost_validation"
+        ],
+        "reason": "Independent holdout supplement and pooled-summary diagnostic with source-artifact integrity checks, exact-snapshot loading when available, and an explicit replication-consistency guard."
+      },
+      {
+        "path": "scripts/run_rte_connected_cluster_transfer_validation.py",
+        "kind": "file",
+        "supports": [
+          "rte_connected_cluster_cost_validation"
+        ],
+        "reason": "Runs unused full-circuit holdouts against a separately fingerprinted, fixed calibration artifact, with fixed-index sample chunk checkpoints for incremental resume."
+      },
+      {
+        "path": "scripts/run_rte_connected_cluster_k4_extrapolation_diagnostic.py",
+        "kind": "file",
+        "supports": [
+          "rte_connected_cluster_cost_validation"
+        ],
+        "reason": "Runs the optional K4 extrapolation diagnostic for transfer residuals without changing the adopted K1--K3 operational estimator."
+      },
+      {
+        "path": "scripts/run_rte_connected_cluster_k4_calibration.py",
+        "kind": "file",
+        "supports": [
+          "rte_connected_cluster_cost_validation"
+        ],
+        "reason": "Runs fixed-snapshot, same-trajectory four-event connected-coefficient calibration independently of the full-circuit transfer holdout."
+      },
+      {
+        "path": "scripts/run_rte_cost_data_batch.py",
+        "kind": "file",
+        "supports": [
+          "rte_connected_cluster_cost_validation",
+          "rte_order_stratified_cost_validation",
+          "hierarchical_compiled_cost_validation"
+        ],
+        "reason": "Orchestrates the completed 2026-08-25 detached data batch with atomic plan/status files, separated logs, output validation, and resumable K4 checkpoints. The three validated outputs cover multiple-order-2 diagnostics, independent paired K4, and controlled q=8."
+      },
+      {
+        "path": "scripts/run_rte_cost_followup_batch.py",
+        "kind": "file",
+        "supports": [
+          "rte_connected_cluster_cost_validation",
+          "rte_order_stratified_cost_validation"
+        ],
+        "reason": "Orchestrates the completed paired multi-order residual, incremental K4 precision, unused L8 fixed-calibration holdout, and L8 K1--K4 evaluation batch with atomic status. All four committed output summaries validate."
+      },
+      {
+        "path": "scripts/run_rte_cost_angle_invariance_validation.py",
+        "kind": "file",
+        "supports": [
+          "rte_connected_cluster_cost_validation"
+        ],
+        "reason": "Runs sampled fixed-event comparisons across an explicit short-step-time grid while leaving structural cache reuse disabled."
+      },
+      {
+        "path": "docs/rte_connected_cluster_cost_validation.md",
+        "kind": "file",
+        "supports": [
+          "rte_connected_cluster_cost_validation"
+        ],
+        "reason": "Documents the K1--K3 estimator, sample allocation, independent holdout design, primary H4 results, conservative-diagnostic limitation, reconstruction irregularity, snapshot policy, and non-final scope."
+      },
+      {
+        "path": "artifacts/rte_connected_cluster_cost_validation",
+        "kind": "directory",
+        "supports": [
+          "rte_connected_cluster_cost_validation"
+        ],
+        "reason": "Contains the fingerprinted primary H4 1500/375 holdout artifact, its exact DF snapshot and resumable checkpoints, calibration/transfer artifacts for L_D=0,3,6 and short-step 0.020, 0.025, 0.030, the completed chunk-resumed short-step 0.030 high-statistics holdout, a K4 extrapolation diagnostic, earlier pilot runs, and a non-combinable reconstruction diagnostic. These are dirty-worktree evidence rather than immutable CI evidence."
+      },
+      {
+        "path": "src/trotterlib/rte_system_size_cost_validation.py",
+        "kind": "file",
+        "supports": [
+          "rte_system_size_cost_validation"
+        ],
+        "reason": "Runs same-trajectory K1--K3 and K1--K4 connected-window residuals at L=4,6,8, validates shared event/full statistics, and chooses the smallest tested cluster length that passes the predeclared point tolerance."
+      },
+      {
+        "path": "tests/test_rte_system_size_cost_validation.py",
+        "kind": "file",
+        "supports": [
+          "rte_system_size_cost_validation",
+          "tests"
+        ],
+        "reason": "Dedicated H5 system-size configuration, paired-model consistency, selection-rule, serialization, and tamper-rejection tests."
+      },
+      {
+        "path": "scripts/run_h5_system_size_cost_validation.py",
+        "kind": "file",
+        "supports": [
+          "rte_system_size_cost_validation"
+        ],
+        "reason": "Generates the H5 exact DF snapshot and paired K1--K3/K1--K4 L=4,6,8 structural validation with resumable pattern checkpoints and a validated status summary."
+      },
+      {
+        "path": "scripts/run_h5_independent_cost_validation_batch.py",
+        "kind": "file",
+        "supports": [
+          "rte_system_size_cost_validation",
+          "rte_connected_cluster_cost_validation"
+        ],
+        "reason": "Orchestrates independent H5 K1--K3 adaptive calibration and a separate-seed L=4,6,8 full-circuit holdout against the same exact DF snapshot."
+      },
+      {
+        "path": "scripts/run_rte_paired_k4_l8_validation.py",
+        "kind": "file",
+        "supports": [
+          "rte_connected_cluster_cost_validation"
+        ],
+        "reason": "Runs the H4 L_D=6 same-trajectory K1--K4 structural residual validation at unused L=8 with atomic status and pattern checkpoints."
+      },
+      {
+        "path": "docs/rte_compiled_cost_validation_summary.md",
+        "kind": "file",
+        "supports": [
+          "random_circuit_cost_validation",
+          "rte_boundary_cost_validation",
+          "rte_order_stratified_cost_validation",
+          "rte_connected_cluster_cost_validation",
+          "rte_system_size_cost_validation"
+        ],
+        "reason": "Current one-stop synthesis of the circuit-cost validation sequence, adopted condition-specific K1--K3/K4 rule, numerical scope, limitations, and evidence map."
+      },
+      {
+        "path": "artifacts/rte_cost_data_batch/2026-08-25",
+        "kind": "directory",
+        "supports": [
+          "rte_connected_cluster_cost_validation"
+        ],
+        "reason": "Contains compact validated H4 outputs, plan, status, and completion marker for multiple-order-2, independent K4, and controlled q=8. Runtime cache, checkpoints, and logs are excluded from git."
+      },
+      {
+        "path": "artifacts/rte_cost_followup_batch/2026-08-25",
+        "kind": "directory",
+        "supports": [
+          "rte_connected_cluster_cost_validation"
+        ],
+        "reason": "Contains compact validated H4 paired multi-order, K4 precision, fixed K1--K3 L8, and fixed K1--K4 L8 outputs plus plan/status. Runtime cache, checkpoints, and logs are excluded from git."
+      },
+      {
+        "path": "artifacts/rte_cost_paired_k4_l8/2026-08-25",
+        "kind": "directory",
+        "supports": [
+          "rte_connected_cluster_cost_validation"
+        ],
+        "reason": "Contains the validated H4 L_D=6 paired K1--K4 L8 structural result, plan, status, and completion marker; runtime cache, checkpoints, and logs are excluded."
+      },
+      {
+        "path": "artifacts/rte_cost_system_size_h5/2026-08-25",
+        "kind": "directory",
+        "supports": [
+          "rte_system_size_cost_validation"
+        ],
+        "reason": "Contains the exact H5 rank-9 DF snapshot, validated paired K1--K3/K1--K4 L=4,6,8 result, plan, status, and completion marker; runtime cache, checkpoints, and logs are excluded."
+      },
+      {
+        "path": "artifacts/rte_cost_system_size_h5_independent/2026-08-26",
+        "kind": "directory",
+        "supports": [
+          "rte_system_size_cost_validation",
+          "rte_connected_cluster_cost_validation"
+        ],
+        "reason": "Contains the validated independent H5 adaptive K1--K3 calibration and separate-seed full L=4,6,8 holdout, with plan/status and completion marker; runtime cache, checkpoints, and logs are excluded."
+      },
+      {
         "path": "src/trotterlib/pf_delta_validation.py",
         "kind": "file",
         "supports": [
@@ -502,6 +912,245 @@
         "Canonicalize or tolerance-bind the DF representation provenance across independent processes before claiming byte-identical regeneration.",
         "Repeat the delta_time, r, and K sensitivity on another problem instance before generalizing the observed trade-off.",
         "Keep these approximation results separate from compiled total-cost claims until shot and cost approximations receive their own validation."
+      ]
+    },
+    {
+      "id": "random_circuit_cost_validation",
+      "status": "source_present_no_current_ci",
+      "summary": "A single H4-chain pilot at distance 1.0 Angstrom, STO-3G, DF rank 12, L_D=3, delta=0.1, q=1, and K=0 compares complete-circuit transpilation with separately transpiled additive pieces. A shared-Hamiltonian batch gives identical preparation hashes for r=1 and r=2. Exact enumeration of 218 r=1 trajectories finds at most a 0.987% partial-S2 three-part overestimate. At r=2, a 100-sample paired comparison finds that separately compiling individual RTE events overestimates the complete occurrence by 48.30--57.58% across all six metrics, with absolute paired-difference z-scores of 15.86--17.79. A separate-process, different-preparation-hash 300-sample replicate finds 52.99--61.15% overestimation. The pilot rejects individual events as the additive proxy unit and selects the complete RTE occurrence as the minimum unit for the next calibration grid. Cross-process DF circuit representations are not canonical, so different preparation hashes are not used for absolute-cost or MC-convergence comparisons. This does not validate a general proxy or final total cost.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 1,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 3,
+        "related_local_test_cases_passed": 53,
+        "local_artifacts": 3,
+        "exact_partial_s2_trajectories": 218,
+        "largest_rte_occurrence_monte_carlo_samples": 300,
+        "validated_ld_values": 1,
+        "validated_delta_values": 1,
+        "validated_finite_taylor_orders": 1,
+        "validated_rte_step_values": 2,
+        "compiler_contexts": 1,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Canonicalize the cross-process DF circuit representation, or generate every compared grid point from one shared Hamiltonian and require matching preparation hashes.",
+        "Run the RTE-occurrence comparison over the planned L_D, delta, r, and K grid and predeclare an acceptance or correction policy.",
+        "Use unused holdout conditions to validate an occurrence-level proxy and its uncertainty before connecting it to resource accounting.",
+        "Evaluate q=2 and q=4 repeated partial-S2 boundaries and controlled circuits at representative points.",
+        "Repeat under additional compiler optimization and coupling contexts before treating the observed event-boundary effect as compiler-independent.",
+        "Publish an immutable CI run and committed representative regeneration record; keep all pilot values separate from full-RPE and final-cost claims."
+      ]
+    },
+    {
+      "id": "rte_boundary_cost_validation",
+      "status": "source_present_no_current_ci",
+      "summary": "At H4-chain distance 1.0 Angstrom, STO-3G, DF rank 12, L_D=3, K=0, and fixed short-step time 0.025, two independent-seed 1000-sample cluster runs share one preparation hash. Pair-only maximum holdout errors are 8.07% and 8.18%, with maximum absolute z-scores 2.96 and 3.02; the statistically resolved residual is confined to count/size metrics, while depth metrics remain below z=1. Triple-corrected maximum errors are 2.33% and 3.73%, with maximum z-scores 0.79 and 0.97. The triple coefficient itself is at most 1.40 standard errors from zero, so depth retains pair-only as a candidate and count/size retain triple only as the next candidate pending stronger C3 calibration or an unused L=8 holdout. The older 300-sample artifact has a different preparation hash and is not treated as a prefix convergence comparison. No acceptance threshold, general proxy, or final total cost is established.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 2,
+        "documentation_files": 2,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 2,
+        "complete_local_test_suite_passed": 451,
+        "local_artifacts": 3,
+        "exact_single_events": 218,
+        "calibration_sequence_lengths": 3,
+        "largest_monte_carlo_calibration_sequences_per_length": 1000,
+        "holdout_sequence_lengths": 2,
+        "largest_monte_carlo_holdout_sequences_per_length": 1000,
+        "high_statistics_independent_seeds": 2,
+        "cost_metrics": 6,
+        "compiler_contexts": 1,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Predeclare metric-specific acceptance thresholds and Monte Carlo stopping rules before using the model in resource accounting.",
+        "Validate pair and higher-cluster corrections on unused L_D, short-step time, delta, r, and K conditions generated from a shared Hamiltonian representation.",
+        "Extend the cluster schema beyond K=0 and test variable-length finite-Taylor events.",
+        "Repeat under controlled circuits, coupling constraints, and additional compiler optimization contexts.",
+        "Publish an immutable CI run and committed representative regeneration record; keep this pilot separate from full-RPE and final-cost claims."
+      ]
+    },
+    {
+      "id": "rte_boundary_pair_validation",
+      "status": "source_present_no_current_ci",
+      "summary": "For the same H4, distance 1.0 Angstrom, STO-3G, DF rank 12, L_D=3, K=0, short-step 0.025, and compiler context, 1500 calibration pair sequences and 1500 independent-seed holdout pair sequences stratify the boundary correction by same versus different DF fragment and directed fragment pair. The analytic same-fragment probability is 0.7310604. A same-fragment-only model leaves at most 3.65% relative error and z=2.59, whereas analytic-probability weighting of both same and different conditional corrections predicts the pair holdout within 0.849% and z=0.587 across six metrics. Different-fragment boundaries therefore cannot be assigned zero correction. This validates only the pair coefficient construction at one H4 condition; it does not by itself validate longer sequences, other splits, K>0, controlled circuits, or a final cost proxy.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 1,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 2,
+        "complete_local_test_suite_passed": 451,
+        "local_artifacts": 1,
+        "calibration_pair_sequences": 1500,
+        "holdout_pair_sequences": 1500,
+        "fragment_classes": 2,
+        "cost_metrics": 6,
+        "compiler_contexts": 1,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Predeclare metric-specific acceptance thresholds before using the stratified pair model in resource accounting.",
+        "Validate same/different conditional corrections on unused L_D and short-step-time conditions without reusing holdout data for calibration.",
+        "Determine whether directed fragment-pair or circuit-feature subclasses are required when the two-class model fails.",
+        "Extend the boundary classification to K>0 variable-length events, controlled circuits, coupling constraints, and additional compiler contexts.",
+        "Publish an immutable CI run and committed representative regeneration record; keep this result separate from full-RPE and final-cost claims."
+      ]
+    },
+    {
+      "id": "hierarchical_compiled_cost_validation",
+      "status": "source_present_no_current_ci",
+      "summary": "For one shared H4-chain Hamiltonian at distance 1.0 Angstrom, STO-3G, DF rank 12, L_D=3, delta=0.1, r=4, and one compiler context, three independent-seed holdouts extend the boundary-cost study. At K=0, 2000-sample C2/C3 calibration predicts an independent 2000-sample L=8 holdout with triple-corrected maximum error 1.744% and maximum z=0.521, while pair-only count/size error remains as large as 8.851%; this supports triple for count/size and pair for depth at this condition. The original K=2 IID pilot is not evidence for internal order-2 behavior because a seed reconstruction finds only one order-2 draw among 8000 event positions. Controlled partial-S2 q=1/2 calibration with 300 samples each predicts an independent 300-sample q=4 holdout within 0.307% point error, z=0.925, and a 0.958% pointwise normal diagnostic across six metrics. These are local proxy validations, not final resource estimates.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 1,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 3,
+        "related_local_test_cases_passed": 31,
+        "complete_local_test_suite_passed": 454,
+        "local_artifacts": 3,
+        "validated_ld_values": 1,
+        "validated_delta_values": 1,
+        "validated_finite_taylor_orders": 2,
+        "k0_calibration_sequences_per_length": 2000,
+        "k0_l8_holdout_sequences": 2000,
+        "k2_calibration_sequences_per_length": 500,
+        "k2_holdout_sequences_per_length": 500,
+        "controlled_calibration_trajectories_per_q": 300,
+        "controlled_q4_holdout_trajectories": 300,
+        "cost_metrics": 6,
+        "compiler_contexts": 1,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Use the separate Taylor-order-stratified result rather than the original K=2 IID pilot when assessing internal order-2 behavior.",
+        "Transfer K=0 triple and controlled affine coefficients to unused L_D and short-step-time conditions without recalibrating on holdout data.",
+        "Repeat under coupling constraints and additional compiler optimization contexts before treating the local corrections as compiler independent.",
+        "Validate controlled affine extrapolation beyond q=4 only over explicitly held-out q values needed by the resource model.",
+        "Publish an immutable CI run and committed regeneration record; do not connect these local proxies to final total cost before their remaining holdouts pass."
+      ]
+    },
+    {
+      "id": "rte_order_stratified_cost_validation",
+      "status": "source_present_no_current_ci",
+      "summary": "For H4 chain at distance 1.0 Angstrom, STO-3G, DF rank 12, L_D=3, delta=0.1, r=4, K=2, and one compiler context, the order-2 probability per short step is 0.0001062925. Every Taylor-order pattern was therefore sampled conditionally and recombined with exact analytic probabilities. In one shared-Hamiltonian batch, independent conditional C1/C2/C3 calibration and L=4/6 holdout has up to 9.119% all-metric point error and z=1.651, showing that 500-sample independent coefficient subtraction is too noisy. The paired stage uses the identical parent Hamiltonian and identical trajectories for local one-/two-/three-event windows and each full circuit. For all-order-0 and exactly-one-order-2 conditions at L=4 and L=6, its maximum point error across six metrics is 1.373%; the maximum RZ-count pointwise normal 95% diagnostic is 1.796%. The maximum paired z-score is 7.535, so a small nonzero four-event-and-longer residual remains. This supports the three-event local formula at a provisional 5% tolerance only for this condition, not an independent 500-sample operational estimator or final resource estimate.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 1,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 3,
+        "related_local_test_cases_passed": 22,
+        "complete_local_test_suite_passed": 457,
+        "local_artifacts": 4,
+        "validated_ld_values": 1,
+        "validated_delta_values": 1,
+        "validated_finite_taylor_orders": 1,
+        "independent_zero_order2_samples_per_length": 500,
+        "independent_single_order2_samples_per_pattern": 100,
+        "paired_zero_order2_samples_per_length": 100,
+        "paired_single_order2_samples_per_pattern": 25,
+        "paired_holdout_sequence_lengths": 2,
+        "cost_metrics": 6,
+        "compiler_contexts": 1,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Implement the operational estimator with analytic Taylor-order weights and paired connected pair/triple coefficients rather than subtracting independent large cost means.",
+        "Predeclare a Monte Carlo standard-error stopping rule and validate the resulting estimator on unused trajectories.",
+        "Repeat the paired residual validation at unused L_D, short-step-time, Taylor-cutoff, coupling, and compiler conditions before transferring the 5% conclusion.",
+        "Add a four-event term only where the measured paired residual exceeds the required tolerance; retain the nonzero residual as model uncertainty otherwise.",
+        "Publish an immutable CI run and committed regeneration record; keep this local model validation separate from final total-cost claims."
+      ]
+    },
+    {
+      "id": "rte_connected_cluster_cost_validation",
+      "status": "source_present_no_current_ci",
+      "summary": "For one exact H4-chain DF Hamiltonian snapshot at distance 1.0 Angstrom, STO-3G, DF rank 12, K=2, and one compiler context, an operational K1--K3 connected-cluster estimator conditions on Taylor-order patterns, exactly enumerates order-0 single events, stratifies pair boundaries by same/different basis, and uses Neyman allocation. The original L_D=3, short-step 0.025 L=4/6/8 holdout has maximum point error 2.936%, primary z 2.074, and prediction-side 95% relative half-width 1.537%. High-statistics transfer maximum errors are 2.043% at (L_D,s)=(0,0.025), 2.140% at (3,0.020), 3.777% at (3,0.025), 3.541% at (3,0.030), and 6.119% at (6,0.025); only L_D=6 fails the predeclared 5% point criterion. Follow-up same-trajectory multi-order residuals at L_D=0 have maximum error 1.679%, so the earlier independent-coefficient failure is not a multi-order structural failure. At L_D=6, fixed independent K1--K4 gives 3.750% point error at unused L8 but a 7.045% primary pointwise-normal upper diagnostic; a paired K1--K4 L8 structural validation gives 4.008% point error and 4.902% diagnostic. Controlled q=1/2 affine calibration predicts unused q=8 within 0.0529%. Exact DF snapshots are required because a nominal molecular rebuild was not combinable. These are local one-compiler results, not rigorous 5% guarantees or final resource estimates.",
+      "counts": {
+        "implementation_source_files": 2,
+        "generator_scripts": 9,
+        "documentation_files": 2,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 10,
+        "related_local_test_cases_passed": 10,
+        "complete_local_test_suite_passed": 470,
+        "primary_local_artifacts": 1,
+        "diagnostic_local_artifacts": 4,
+        "completed_transfer_validation_artifacts": 12,
+        "k4_extrapolation_diagnostic_artifacts": 1,
+        "completed_followup_batch_outputs": 8,
+        "hamiltonian_snapshots": 1,
+        "resumable_checkpoints": 9,
+        "validated_ld_values": 3,
+        "validated_delta_values": 3,
+        "validated_finite_taylor_orders": 1,
+        "holdout_sequence_lengths": 3,
+        "all_order0_samples_per_length": 1500,
+        "single_order2_samples_per_position": 375,
+        "cost_metrics": 6,
+        "compiler_contexts": 1,
+        "lightweight_operation_api_stages": 3,
+        "angle_invariance_scientific_artifacts": 0,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Retain K1--K4 as the condition-specific L_D=6 point-tolerance candidate, and improve independent-coefficient precision before claiming a 95% error-below-5% statement.",
+        "Repeat under coupling constraints and additional compiler optimization contexts before treating the local coefficients or 5% point result as compiler independent.",
+        "Retain the 5.724%, 7.045%, and other pointwise-normal diagnostic limitations explicitly; do not call these diagnostics rigorous simultaneous bounds.",
+        "Add a K4 term or finer boundary classes only when a transfer holdout exceeds the point tolerance or shows residual growth with sequence length; do not add K4 universally.",
+        "Use exact serialized DF Hamiltonian snapshots for calibration and holdout extensions; do not pool compiled costs from merely nominally identical molecular rebuilds.",
+        "Validate the sampled angle-invariance diagnostic with adequate same/different-boundary coverage at every intended L_D, short-step interval, and compiler/coupling context before excluding numeric angles from cache or calibration keys.",
+        "Publish an immutable CI run and committed regeneration record; keep this local estimator separate from full-RPE and final total-cost claims."
+      ]
+    },
+    {
+      "id": "rte_system_size_cost_validation",
+      "status": "source_present_no_current_ci",
+      "summary": "For one exact H5-chain DF Hamiltonian snapshot at distance 1.0 Angstrom, STO-3G, 10 qubits, project-selected DF rank 9, L_D=4, short-step 0.025, K=2, and the same Qiskit 1.3.0 topology-free compiler context, paired full/local-window residuals were measured at L=4/6/8. K1--K3 has 1.665% maximum point error and K1--K4 has 0.551%; the predeclared smallest-passing-cluster rule selects K1--K3. A separate adaptive K1--K3 calibration reaches 0.745% maximum realized RZ relative standard error. An independent-seed full holdout with 500 all-order-0 samples per length and 125 exactly-one-order-2 samples per position has 3.776% maximum point error, primary z 2.009, and 1.459% prediction-side 95% relative half-width, passing the predeclared 5% point and 2% precision criteria. The 7.461% pointwise-normal upper diagnostic is not a hard criterion or rigorous bound. This validates one H5 snapshot/compiler condition only and does not establish H12, coupling-map, backend, or final-cost transfer.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 2,
+        "documentation_files": 2,
+        "dedicated_test_source_files": 1,
+        "complete_local_test_suite_passed": 472,
+        "complete_local_test_suite_warnings": 4,
+        "paired_local_artifacts": 1,
+        "independent_calibration_artifacts": 1,
+        "independent_holdout_artifacts": 1,
+        "hamiltonian_snapshots": 1,
+        "validated_molecule_sizes": 1,
+        "validated_qubits": 10,
+        "validated_df_rank": 9,
+        "validated_ld_values": 1,
+        "validated_short_step_values": 1,
+        "validated_finite_taylor_orders": 1,
+        "holdout_sequence_lengths": 3,
+        "paired_zero_order0_samples_per_length": 100,
+        "paired_single_order2_samples_per_position": 20,
+        "independent_zero_order0_samples_per_length": 500,
+        "independent_single_order2_samples_per_position": 125,
+        "compiler_contexts": 1,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Recalibrate and hold out each new exact Hamiltonian snapshot and compiler/backend context rather than transferring H5 coefficients.",
+        "Add an L>8 holdout only if the resource model uses longer event sequences than the validated range.",
+        "Add K4 only when a K1--K3 holdout fails the point or prediction-precision criteria.",
+        "Repeat under coupling constraints or a real backend compiler before treating the topology-free conclusion as hardware relevant.",
+        "Publish an immutable CI or external regeneration record; keep this local validation separate from full-RPE and final-total-cost claims."
       ]
     },
     {

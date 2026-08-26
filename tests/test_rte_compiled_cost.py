@@ -192,6 +192,55 @@ def test_cost_cache_is_bounded_and_drops_transpiled_circuit_bodies() -> None:
     assert next(iter(cache._costs.values())).transpiled_circuit is None
 
 
+def test_persistent_cost_cache_reuses_only_exact_numeric_compiler_context(
+    tmp_path,
+) -> None:
+    path = tmp_path / "compiled-cost.sqlite"
+    compiler = _compiler(optimization_level=0)
+    first = QuantumCircuit(1)
+    first.rz(0.1, 0)
+
+    cold = TranspiledCircuitCostCache(persistent_path=path)
+    cold_cost, first_key, cached = cold.get_or_transpile(
+        first,
+        compiler,
+        circuit_fingerprint="first-cold",
+    )
+    assert cached is False
+    assert cold.persistent_write_count == 1
+
+    warm = TranspiledCircuitCostCache(persistent_path=path)
+    warm_cost, second_key, cached = warm.get_or_transpile(
+        first,
+        compiler,
+        circuit_fingerprint="first-warm",
+    )
+    assert cached is True
+    assert warm.persistent_hit_count == 1
+    assert second_key == first_key
+    assert warm_cost.transpiled_circuit is None
+    assert warm_cost.posttranspile_gate_counts == cold_cost.posttranspile_gate_counts
+
+    changed_angle = QuantumCircuit(1)
+    changed_angle.rz(0.2, 0)
+    _cost, changed_key, cached = warm.get_or_transpile(
+        changed_angle,
+        compiler,
+        circuit_fingerprint="changed-angle",
+    )
+    assert cached is False
+    assert changed_key != first_key
+
+    changed_compiler = _compiler(seed=18, optimization_level=0)
+    _cost, changed_compiler_key, cached = warm.get_or_transpile(
+        first,
+        changed_compiler,
+        circuit_fingerprint="changed-compiler",
+    )
+    assert cached is False
+    assert changed_compiler_key != first_key
+
+
 def test_cache_validates_backend_context_before_lookup() -> None:
     backend = GenericBackendV2(
         num_qubits=1,
@@ -588,6 +637,7 @@ def test_short_occurrence_reports_nonadditive_compiled_cost_and_limits() -> None
         rte_steps=3
     )
     compiler = _compiler()
+    observations = []
     estimate = estimate_compiled_occurrence_cost(
         preparation,
         config,
@@ -595,8 +645,14 @@ def test_short_occurrence_reports_nonadditive_compiled_cost_and_limits() -> None
         compiler,
         sequence_sample_count=12,
         seed=3,
+        sample_observer=lambda request, sequence_cost, event_costs: observations.append(
+            (request, sequence_cost, event_costs)
+        ),
     )
 
+    assert len(observations) == 12
+    assert all(len(request.events) == 3 for request, _cost, _events in observations)
+    assert all(len(event_costs) == 3 for _request, _cost, event_costs in observations)
     assert estimate.event_count_per_sample == config.rte_steps == 3
     assert estimate.sample_count == 12
     assert estimate.sequence_expected_cost.fidelity_level == 4
