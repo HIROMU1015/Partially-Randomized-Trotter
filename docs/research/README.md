@@ -2,6 +2,9 @@
 
 このディレクトリには、DF部分ランダム化・有限RTE・RPE compiled cost研究の目的、背景、未解決点、解析手順および数値評価計画をまとめる。
 
+実装、runner、テスト、成果物を含むリポジトリ全体の区分は
+[`../../PROJECT_MAP.md`](../../PROJECT_MAP.md)を参照する。
+
 初めてこの研究を確認する場合や、Codexを使って発表・共有資料を作る場合は、まず
 [研究概要・現状](研究概要・現状.md)を読む。この一冊で現在の研究段階、採用済みの
 方針、主要な検証結果、未決定事項および証拠の読み順を確認できる。
@@ -53,6 +56,15 @@
 - [検証状況](../../VALIDATION_STATUS.md)
 - [有限RTE規約](../rte_conventions.md)
 - [finite-RTE信号近似の小規模検証](../finite_rte_signal_validation.md)
+- [RPE短roundの信号・shot・回路cost接続検証](../rpe_round_cost_connection_validation.md)
+- [RPE短roundの仮想Hadamard測定・失敗確率検証](../rpe_hadamard_failure_validation.md)
+- [$q=8$ Hadamard 1 shot cost proxy・resource接続検証](../rpe_hadamard_proxy_resource_validation.md)
+- [RPE位相誤差・失敗確率配分の感度検証](../rpe_allocation_sensitivity_validation.md)
+- [RPE限定4段の集計・失敗確率検証](../rpe_four_round_accounting_validation.md)
+- [RPE 4段の物理信号・分枝復元検証](../rpe_four_round_phase_validation.md)
+- [目標精度からのRPE round範囲・固定設定診断](../rpe_target_round_horizon_validation.md)
+- [RPEのdelta候補とround別有限RTE schedule検証](../rpe_delta_round_schedule_validation.md)
+- [delta scheduleの中央RTE compiled-cost proxy検証](../rpe_delta_compiled_cost_validation.md)
 - [ランダム回路compiled-cost加法モデルのpilot検証](../random_circuit_cost_validation.md)
 - [RTE境界補正cost modelのpilot検証](../rte_boundary_cost_validation.md)
 - [RTE境界補正のfragment層別・高統計検証](../rte_boundary_pair_validation.md)

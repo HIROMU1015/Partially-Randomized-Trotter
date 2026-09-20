@@ -2,7 +2,10 @@
 
 ## 研究内容を確認する入口
 
-このリポジトリから研究紹介、発表、進捗報告などを作る場合は、最初に
+リポジトリ内の実装、検証、文書、成果物の区分は、最初に
+[`PROJECT_MAP.md`](PROJECT_MAP.md)を参照する。
+
+このリポジトリから研究紹介、発表、進捗報告などを作る場合は、続いて
 [`docs/research/研究概要・現状.md`](docs/research/研究概要・現状.md)を参照する。
 研究背景、目的、現在の検証段階、採用済みのCの扱い、主要結果、未決定事項、
 証拠資料の読み順を一か所にまとめている。
@@ -44,6 +47,15 @@ OpenFermion/PySCFでH-chain Hamiltonianを生成し、Qiskit回路、摂動論�
 - DF partial-S2短い複数反復とcompiled期待コスト: [`docs/df_partial_s2_repeated_compiled_cost.md`](docs/df_partial_s2_repeated_compiled_cost.md)
 - RTE step/occurrence/RPE round の打切り予算: [`docs/rte_truncation_budget.md`](docs/rte_truncation_budget.md)
 - finite-RTE信号近似の小規模検証: [`docs/finite_rte_signal_validation.md`](docs/finite_rte_signal_validation.md)
+- RPE短roundの信号・shot・回路cost接続検証: [`docs/rpe_round_cost_connection_validation.md`](docs/rpe_round_cost_connection_validation.md)
+- RPE短roundの仮想Hadamard測定・失敗確率検証: [`docs/rpe_hadamard_failure_validation.md`](docs/rpe_hadamard_failure_validation.md)
+- $q=8$ Hadamard 1 shot cost proxy・resource接続検証: [`docs/rpe_hadamard_proxy_resource_validation.md`](docs/rpe_hadamard_proxy_resource_validation.md)
+- RPE位相誤差・失敗確率配分の感度検証: [`docs/rpe_allocation_sensitivity_validation.md`](docs/rpe_allocation_sensitivity_validation.md)
+- RPE限定4段の集計・失敗確率検証: [`docs/rpe_four_round_accounting_validation.md`](docs/rpe_four_round_accounting_validation.md)
+- RPE 4段の物理信号・分岐復元検証: [`docs/rpe_four_round_phase_validation.md`](docs/rpe_four_round_phase_validation.md)
+- 目標精度からのRPE round範囲・固定設定診断: [`docs/rpe_target_round_horizon_validation.md`](docs/rpe_target_round_horizon_validation.md)
+- RPEのdelta候補・round別有限RTE schedule検証: [`docs/rpe_delta_round_schedule_validation.md`](docs/rpe_delta_round_schedule_validation.md)
+- delta scheduleの中央RTE compiled-cost proxy検証: [`docs/rpe_delta_compiled_cost_validation.md`](docs/rpe_delta_compiled_cost_validation.md)
 - PF誤差surrogate・CPU Qiskit摂動・QPE分枝のholdout検証: [`docs/pf_delta_validation.md`](docs/pf_delta_validation.md)
 - H-chain系サイズ・実行可能delta窓におけるPF係数検証: [`docs/pf_c_system_size_validation.md`](docs/pf_c_system_size_validation.md)
 - RTE 一次資料の版管理: [`docs/rte_source_versions.md`](docs/rte_source_versions.md)
@@ -87,11 +99,16 @@ workload plannerがbuilder実行前に上限を検査し、build後にも実inst
 は引き続き非科学的な実装回帰である。
 
 ## ディレクトリ構成
-- `src/trotterlib/`: 実験用ライブラリ本体
-- `abe_trotter_project.ipynb`: 解析の一連の流れをまとめたノートブック
-- `artifacts/`: 生成物（係数、行列キャッシュ、スケーリング結果）
-- `Greatly-improved-higher-order-product-formulae-for-quantum-simulation.pdf`: 参照論文
-- `Evaluation of gate numbers for ground state energy calculations using higher-order product formulae`: 本論文
+
+- [`src/trotterlib/`](src/trotterlib/)：ライブラリ本体。モジュール分類は[`src/trotterlib/README.md`](src/trotterlib/README.md)
+- [`scripts/`](scripts/)：検証runner、batch、診断、旧経路。分類は[`scripts/README.md`](scripts/README.md)
+- [`tests/`](tests/)：自動回帰テスト。研究結果のstatusはテストだけでなくmanifestで判断する
+- [`docs/research/`](docs/research/)：研究方針、解析手順、現在地、研究ノート
+- [`docs/`](docs/)：実装規約と検証報告。索引は[`docs/README.md`](docs/README.md)
+- [`artifacts/`](artifacts/)：固定入力、結果、キャッシュ。利用規則は[`artifacts/README.md`](artifacts/README.md)
+
+`abe_trotter_project.ipynb`、旧protocol、旧screening文書は歴史的・補助的資料であり、
+現行研究の入口ではない。詳細は[`PROJECT_MAP.md`](PROJECT_MAP.md)の状態区分を参照する。
 
 ## セットアップ
 Python 3.11 を前提とする。
@@ -104,10 +121,14 @@ pip install -r requirements.txt
 
 `requirements.txt` には `-e .` が含まれているため、`trotterlib` がインストールされる。
 
-## 使い方（ノートブック）
+## 旧高次PF経路の使い方（ノートブック）
+
+以下は本プロジェクトの出発点となった高次PF解析の再現手順であり、現在のDF部分ランダム化
+検証の実行入口ではない。
+
 `abe_trotter_project.ipynb` を開いて、Error plt → extrapolation の流れで実行する。論文と同様の外挿を再現する場合は `artifacts/trotter_expo_coeff_gr_original` を参照する（例: `exp_extrapolation(..., use_original=True)`）。既存の挙動で実行したい場合は従来通り `artifacts/trotter_expo_coeff_gr` のデータを使う。
 
-## 主要関数（trotterlib.__all__）
+## 旧高次PF経路の主要関数（trotterlib.__all__）
 `pf_label` は積公式ラベル（例: `"2nd"`, `"4th(new_2)"`, `"8th(Morales)"`, `"10th(Morales)"`）を指定する。
 
 - `jw_hamiltonian_maker(mol_type, distance=None)`: 水素鎖のJWハミルトニアンを構築し、`(jw_hamiltonian, HFエネルギー, ham_name, num_qubits)` を返す。`mol_type` はH鎖の原子数、`distance` は原子間距離（省略時は `config.DEFAULT_DISTANCE`）。

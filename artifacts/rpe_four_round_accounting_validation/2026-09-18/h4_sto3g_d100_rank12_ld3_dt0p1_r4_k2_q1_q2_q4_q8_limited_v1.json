@@ -1,0 +1,283 @@
+{
+  "configuration": {
+    "alpha_total": 0.05,
+    "beta_pf_budget": 0.02,
+    "beta_rpe": 0.4,
+    "beta_rte_budget": 0.02,
+    "beta_stat_budget": 0.36,
+    "compiler": {
+      "backend_name": null,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "coupling_map": null,
+      "layout_method": null,
+      "optimization_level": 1,
+      "qiskit_version": "1.3.0",
+      "routing_method": null,
+      "transpiler_seed": 17
+    },
+    "cost_metric": "rz_count",
+    "delta_time": 0.1,
+    "finite_taylor_order": 2,
+    "mixed_cost_portfolio_fingerprint": "212aaa6b6f9d5a9b4b073d1a64f56246192ee277f6011c80a7655e91b90c2116",
+    "rte_steps_per_occurrence": 4,
+    "selected_scenario_id": "guarded_provisional:cost_sensitivity_weighted"
+  },
+  "content_fingerprint": "a54e1f8068572a7bac95681f75e3dd6b0c832f3fde4a7805868be04ce976d463",
+  "limited_aggregation": {
+    "certification_reasons": [
+      "pf_error_model_is_empirical"
+    ],
+    "cost_scope": "single_hadamard_interrogation_without_state_preparation",
+    "guarantee_status": "empirical_screening",
+    "interpretation": "fixed_condition_four_round_accounting_not_final_total_cost",
+    "manual_recomputed_rz_cost": 32673960.60714286,
+    "total_alpha_budget": 0.05,
+    "total_axis_alpha_union_bound": 0.05,
+    "total_quantum_shots": 1572,
+    "total_rz_cost": 32673960.60714286,
+    "union_bound_satisfied": true
+  },
+  "method": "selected_allocation_mixed_cost_summary_and_short_round_binomial_v1",
+  "provenance": {
+    "command": ".venv311/bin/python scripts/run_rpe_four_round_accounting_validation.py",
+    "evidence_status": "local_worktree_validation_not_immutable_ci",
+    "generated_at_utc": "2026-09-18T12:31:53.030000+00:00",
+    "git_commit": "2bf31169e53f747601f2012425e525f0d59af988",
+    "git_worktree_status_before_generation": [
+      " M README.md",
+      " M VALIDATION_STATUS.md",
+      " M artifacts/validation_manifest.json",
+      " M docs/research/README.md",
+      " M \"docs/research/\\346\\225\\260\\345\\200\\244\\345\\256\\237\\351\\250\\223\\343\\203\\273\\350\\251\\225\\344\\276\\241\\350\\250\\210\\347\\224\\273.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/README.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\346\\246\\202\\350\\246\\201\\343\\203\\273\\347\\217\\276\\347\\212\\266.md\"",
+      " M docs/rpe_hadamard_compiled_cost_benchmark.md",
+      " M docs/rpe_hadamard_compiled_cost_proxy.md",
+      " M src/trotterlib/__init__.py",
+      " M src/trotterlib/rte.py",
+      " M tests/test_rpe_hadamard_compiled_cost_proxy.py",
+      "?? .bento-html-change-a62213865dab.candidate.html",
+      "?? .bento-html-change-ae7701dc2c2a.candidate.html",
+      "?? .bento-html-change-ecdcc0d644c1.candidate.html",
+      "?? artifacts/rpe_allocation_sensitivity_validation/",
+      "?? artifacts/rpe_four_round_accounting_validation/",
+      "?? artifacts/rpe_hadamard_failure_validation/",
+      "?? artifacts/rpe_hadamard_proxy_resource_validation/",
+      "?? artifacts/rpe_round_cost_connection_validation/",
+      "?? current-bentoslide.pdf",
+      "?? \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-01.md\"",
+      "?? \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-18.md\"",
+      "?? docs/rpe_allocation_sensitivity_validation.md",
+      "?? docs/rpe_four_round_accounting_validation.md",
+      "?? docs/rpe_hadamard_failure_validation.md",
+      "?? docs/rpe_hadamard_proxy_resource_validation.md",
+      "?? docs/rpe_round_cost_connection_validation.md",
+      "?? scripts/run_rpe_allocation_sensitivity_validation.py",
+      "?? scripts/run_rpe_four_round_accounting_validation.py",
+      "?? scripts/run_rpe_hadamard_failure_validation.py",
+      "?? scripts/run_rpe_hadamard_proxy_resource_validation.py",
+      "?? scripts/run_rpe_round_cost_connection_validation.py",
+      "?? src/trotterlib/rpe_allocation_sensitivity_validation.py",
+      "?? src/trotterlib/rpe_four_round_accounting_validation.py",
+      "?? src/trotterlib/rpe_hadamard_failure_validation.py",
+      "?? src/trotterlib/rpe_hadamard_proxy_resource_validation.py",
+      "?? src/trotterlib/rpe_hadamard_validated_proxy_provider.py",
+      "?? src/trotterlib/rpe_round_cost_connection_validation.py",
+      "?? tests/test_rpe_allocation_sensitivity_validation.py",
+      "?? tests/test_rpe_four_round_accounting_validation.py",
+      "?? tests/test_rpe_hadamard_failure_validation.py",
+      "?? tests/test_rpe_hadamard_proxy_resource_validation.py",
+      "?? tests/test_rpe_round_cost_connection_validation.py"
+    ],
+    "inputs": {
+      "allocation": {
+        "path": "artifacts/rpe_allocation_sensitivity_validation/2026-09-01/h4_sto3g_d100_rank12_ld3_dt0p1_r4_k2_q1_q2_q4_q8_beta_alpha_sensitivity_v1.json",
+        "sha256": "20d65463e7ff99052057bea074e9ac5cfe8527036a628e5fbfc301a792c2d71b"
+      },
+      "direct": {
+        "path": "artifacts/rpe_round_cost_connection_validation/h4_sto3g_d100_rank12_ld3_dt0p1_r4_k2_q1_q2_q4_mc8_v1.json",
+        "sha256": "fc79175f9c4e928099e5f7a9d6ac75758449b28cab850f1b1de96f920b37cfc2"
+      },
+      "previous_failure": {
+        "path": "artifacts/rpe_hadamard_failure_validation/h4_sto3g_d100_rank12_ld3_dt0p1_r4_k2_q1_q2_q4_marginal100000_fresh_v1.json",
+        "sha256": "edcbd00a76894f146c9a8b32bfc1d7634b67f4af2e0025a354f933afcd54f9e8"
+      },
+      "proxy_validation": {
+        "path": "artifacts/rpe_hadamard_proxy_resource_validation/2026-09-01/h4_sto3g_d100_rank12_ld3_dt0p1_r4_k2_cal_q1_q2_q4_hold_q8_mc8_v1.proxy_validation.json",
+        "sha256": "a859affa14531ec57ded96cc692616fa1f6b110de19fa1a44c81af27e289045a"
+      },
+      "snapshot": {
+        "path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "sha256": "13e4b10d2347ed900fe4aa4b2238128ebe735a48988e321b9e4fabac4d092a3b"
+      }
+    },
+    "numpy_version": "1.26.4",
+    "python_version": "3.11.0rc1",
+    "qiskit_version": "1.3.0",
+    "source_sha256": {
+      "scripts/run_rpe_four_round_accounting_validation.py": "65e344ea7b6f1362a04de09c59e5d9e07c1c992fb9a22e1cfe9591959b08c04a",
+      "src/trotterlib/rpe_four_round_accounting_validation.py": "afd0eeb63abfb2d4b79e99334dece0bb54d9482e6cdd13cdb23126ab2643b44e"
+    }
+  },
+  "rounds": [
+    {
+      "alpha_cosine": 0.0017130898557221983,
+      "alpha_sine": 0.0017130898557221983,
+      "cosine_one_shot_rz": 6263.875,
+      "cosine_shots": 229,
+      "cost_evaluation_method": "fixed_direct_hadamard_compiled_cost",
+      "guarantee_status": "empirical_screening",
+      "m": 0,
+      "q_m": 1,
+      "round_rz_cost": 2868854.75,
+      "sine_one_shot_rz": 6263.875,
+      "sine_shots": 229,
+      "source_cost_model_fingerprint": "2c1d7896ed9f7a35656f7bec99a2f1b6cf269899050fdae163caadf93174e3ec"
+    },
+    {
+      "alpha_cosine": 0.0033650305329058485,
+      "alpha_sine": 0.0033650305329058485,
+      "cosine_one_shot_rz": 12283.25,
+      "cosine_shots": 207,
+      "cost_evaluation_method": "fixed_direct_hadamard_compiled_cost",
+      "guarantee_status": "empirical_screening",
+      "m": 1,
+      "q_m": 2,
+      "round_rz_cost": 5085265.5,
+      "sine_one_shot_rz": 12283.25,
+      "sine_shots": 207,
+      "source_cost_model_fingerprint": "216d4d2e05389c0074a1e8c19949eefd720f15a3fa7114529445c89710018ab1"
+    },
+    {
+      "alpha_cosine": 0.006599881660064346,
+      "alpha_sine": 0.006599881660064346,
+      "cosine_one_shot_rz": 24009.5,
+      "cosine_shots": 186,
+      "cost_evaluation_method": "fixed_direct_hadamard_compiled_cost",
+      "guarantee_status": "empirical_screening",
+      "m": 2,
+      "q_m": 4,
+      "round_rz_cost": 8931534.0,
+      "sine_one_shot_rz": 24009.5,
+      "sine_shots": 186,
+      "source_cost_model_fingerprint": "f22a759cda3c99fdee97c2418eb7319e82b2c0a0359a6fac68ed1c565e3c7678"
+    },
+    {
+      "alpha_cosine": 0.013321997951307608,
+      "alpha_sine": 0.013321997951307608,
+      "cosine_one_shot_rz": 48135.080357142855,
+      "cosine_shots": 164,
+      "cost_evaluation_method": "holdout_validated_affine_proxy",
+      "guarantee_status": "empirical_screening",
+      "m": 3,
+      "q_m": 8,
+      "round_rz_cost": 15788306.357142856,
+      "sine_one_shot_rz": 48135.080357142855,
+      "sine_shots": 164,
+      "source_cost_model_fingerprint": "07c65bfc1fd85eb12bc75559105f0b7f6b2fe78affbfa6a561ddd6ce2e5e7d06"
+    }
+  ],
+  "schema_version": "rpe_four_round_accounting_validation_v1",
+  "scope": {
+    "backend_execution_performed": false,
+    "description": "limited_q1_q2_q4_q8_accounting_diagnostic_only",
+    "final_total_cost_evaluation_performed": false,
+    "full_rpe_phase_reconstruction_performed": false,
+    "new_explicit_fresh_iid_trajectory_batch_performed": false,
+    "q8_failure_check": "analytic_hoeffding_axis_bounds_only",
+    "q8_physical_signal_or_phase_evaluated": false,
+    "state_preparation_included": false
+  },
+  "short_round_exact_binomial": {
+    "allocated_short_round_alpha": 0.023356004097384787,
+    "combined_coordinate_failure_probability": 0.00022245968761536172,
+    "combined_phase_failure_probability": 7.744420460475965e-08,
+    "new_beta_stat_and_axis_shots_applied": true,
+    "q_values": [
+      1,
+      2,
+      4
+    ],
+    "reused_physical_signal_from_previous_validation": true,
+    "rounds": [
+      {
+        "alpha_cosine": 0.0017130898557221983,
+        "alpha_sine": 0.0017130898557221983,
+        "coordinate_success_but_phase_failure_grid_points": 0,
+        "cosine_coordinate_failure_probability": 5.610459298959853e-24,
+        "cosine_shots": 229,
+        "epsilon_coordinate": 0.24888375579438385,
+        "exact_phase_failure_probability": 3.038702623853689e-08,
+        "q_m": 1,
+        "signal_radius": 0.9991499574765716,
+        "sine_coordinate_failure_probability": 0.00010737741093062233,
+        "sine_shots": 229
+      },
+      {
+        "alpha_cosine": 0.0033650305329058485,
+        "alpha_sine": 0.0033650305329058485,
+        "coordinate_success_but_phase_failure_grid_points": 0,
+        "cosine_coordinate_failure_probability": 1.3281708996904901e-11,
+        "cosine_shots": 207,
+        "epsilon_coordinate": 0.2486721923949282,
+        "exact_phase_failure_probability": 4.4864169352519616e-08,
+        "q_m": 2,
+        "signal_radius": 0.9983006361110305,
+        "sine_coordinate_failure_probability": 0.00010096449002974298,
+        "sine_shots": 207
+      },
+      {
+        "alpha_cosine": 0.006599881660064346,
+        "alpha_sine": 0.006599881660064346,
+        "coordinate_success_but_phase_failure_grid_points": 0,
+        "cosine_coordinate_failure_probability": 1.277634226299179e-05,
+        "cosine_shots": 186,
+        "epsilon_coordinate": 0.248249604960943,
+        "exact_phase_failure_probability": 2.19301048994843e-09,
+        "q_m": 4,
+        "signal_radius": 0.9966041547128822,
+        "sine_coordinate_failure_probability": 1.3552337763308382e-06,
+        "sine_shots": 186
+      }
+    ]
+  },
+  "source_evidence": {
+    "allocation_content_fingerprint": "1cc242bdadc7d504b328befdab091c0fa82186cf0453333f1f24b0bdbc8afd7b",
+    "direct_connection_validation_fingerprint": "0c3885e14f0a074ec124f5102485257d3be2e10aab40d12c3d225db74da913e5",
+    "previous_failure_validation_fingerprint": "abd9f9b781026d0ead740386f6265873d85d6b4cba6d90ccb7b16db1cf672524",
+    "proxy_validation_fingerprint": "5fd84b6e15fe0f149fafcad6991f8c3a685d4b9c9d1713c30c374aae5ecbfa97"
+  },
+  "summary": {
+    "checks": {
+      "all_four_rounds_feasible": true,
+      "manual_shot_times_one_shot_cost_matches_summary": true,
+      "mixed_cost_portfolio_has_validated_q_routes": true,
+      "not_a_certified_final_result": true,
+      "same_hadamard_scope_all_rounds": true,
+      "selected_rounds_reproduce_prior_sensitivity_result": true,
+      "short_round_coordinate_success_implies_phase_success": true,
+      "short_round_exact_coordinate_failures_within_allocations": true,
+      "short_round_exact_failures_within_short_round_alpha": true,
+      "short_round_exact_phase_failures_within_axis_unions": true,
+      "summary_matches_prior_comparison_sum": true,
+      "union_bound_within_total_alpha": true
+    },
+    "overall_pass": true
+  },
+  "system": {
+    "basis": "STO-3G",
+    "df_rank": 12,
+    "geometry_angstrom": 1.0,
+    "hamiltonian_hash": "56e4df83655aa2f2f8132126f2635996516dc2cfb1bf4cb8d95490184ad631e5",
+    "ld": 3,
+    "model": "H4 linear chain",
+    "num_system_qubits": 8,
+    "partition_hash": "9034397f5bde1f20cb712578d14245f4dac1236413d34642a75d83d867b52086",
+    "preparation_hash": "50c77f5455cc1a3c0710ed3c7588efc957b9cead7436bd0a6d851af61738a4bc"
+  }
+}

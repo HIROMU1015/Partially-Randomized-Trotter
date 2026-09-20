@@ -1,5 +1,205 @@
 # Validation status
 
+## 2026-09-20 delta-schedule central-RTE compiled-cost note
+
+H4 chain、1.0 Å、STO-3G、8 qubit、DF rank 12、固定Hamiltonian snapshot、$L_D=3$、
+Qiskit 1.3.0、`rz,sx,x,cx`、optimization level 1、seed 17、coupling mapなしで、
+前項の$\delta=0.01,0.0125,0.02$ scheduleへ境界補正型compiled-cost modelを接続した。
+
+scheduleで現れる短時間幅0.02--0.000390625の12点について、同じ1--4イベント列を
+角度だけ変えて個別にコンパイルした。1--3イベントは280 trajectory・3,080 metric比較、
+4イベントは160 trajectory・1,760比較で、RZ/CX数・深さ、全体深さ、回路サイズの差は
+すべて0だった。したがって、この固定compiler範囲では短時間幅0.02の係数を再利用した。
+
+固定K1--K3を未使用イベント列へ適用すると、$L=8$は全6指標最大2.319%、$L=16$は
+3.556%以下で点基準を通過したが、$L=32$は全次数0 RZ誤差7.966%、$z=3.151$で不通過だった。
+各4イベントTaylorパターン100標本でK4を較正すると、$L=32$の最大点誤差は4.175%へ下がった。
+ただしK4の点ごとの95%診断は5%を超え、厳密な5%保証ではない。次数2が2か所以上のK4窓は
+今回のround分布では最大期待数$7.64\times10^{-13}$以下だった。
+
+$r\leq16$にK1--K3、$r=32$にK1--K4を使い、各roundの解析Taylor確率、$q_m$、暫定shot数で
+中央RTEブロックを集計した。RZ代理値は$\delta=0.02$で$7.9877\times10^{11}$、0.01で
+$9.2021\times10^{11}$、0.0125で$1.2626\times10^{12}$となり、全6指標で0.02が最小だった。
+0.01はRZで15.203%増、0.0125は58.073%増である。
+
+これは中央$\widetilde U_{\rm RTE}$ブロックだけのlocal dirty-worktree proxyである。
+決定論DF half sweep、決定論/RTE外側境界、制御化、Hadamard wrapper、状態準備、$q>8$一体回路、
+最終総cost、immutable CIは未評価。従って$\delta=0.02$は次の優先候補であって最終採用ではない。
+次は0.02と比較対照0.01の制御付きpartial-$S_2$反復proxyを検証する。詳細は
+[delta schedule中央RTE cost検証](docs/rpe_delta_compiled_cost_validation.md)。
+変更後のlocal全テストは`494 passed, 4 warnings`で、warningは既存grouped-UWC由来である。
+
+## 2026-09-20 delta and round-specific finite-RTE schedule note
+
+H4 chain、1.0 Å、STO-3G、8 qubit、DF rank 12、固定Hamiltonian snapshot、$L_D=3$で、
+既存PF検証で実行済みの10個の$\delta$候補を、暫定`CA/10`、
+$\beta_{\rm RPE}=0.4$、経験的$C=0.01342567$でscreeningした。PF位相予算0.02 radを
+通過したのは$\delta=0.01,0.0125,0.02$の3候補だった。$\delta=0.0125$は較正と
+独立なPF検証gridにおける唯一の通過点である。
+
+各候補の18--19 roundで$r_m\in\{1,2,4,8,16,32,64,128\}$、
+$K_m\in\{0,2,4,6,8\}$を走査し、shot数で重み付けしたランダム成分作用数を
+暫定proxyとしてround別scheduleを構成した。選択した全56 round点のH4 sector行列検査で、
+演算子・信号・適用可能な位相上界、PF/RTE予算、半径下界がすべて通過した。
+最小観測半径は0.572701、最大実PF位相誤差は0.0139884 rad、最大有限RTE位相上界は
+0.0176405 radだった。
+
+暫定proxyでは$\delta=0.02$が最小だが、$\delta=0.01$との差は約0.87%である。
+このproxyはcompiled costではないため、両者をshortlistとし、回路cost modelの
+再較正またはholdout後に比較する。$q>8$一体compile、fresh-IID実験、最終総cost、
+immutable CIは未評価。詳細は
+[delta/round schedule検証](docs/rpe_delta_round_schedule_validation.md)。
+変更後のlocal全テストは`490 passed, 4 warnings`で、warningは既存grouped-UWC由来である。
+
+## 2026-09-20 target-precision round-horizon note
+
+H4 chain、1.0 Å、STO-3G、8 qubit、DF rank 12、固定Hamiltonian snapshot、
+$L_D=3,\delta=0.1$、$\beta_{\rm RPE}=0.4$について、
+$\beta_{\rm RPE}/(2^M\delta)\leq\epsilon_E$を満たす最小round範囲を計算した。
+正本文書では$\epsilon_E$は外部入力なので、既存設定`TARGET_ERROR=CA/10`を暫定主条件、
+化学精度$CA$を感度比較とした。
+
+補足資料の架空例$\epsilon_E=0.50$は$M=3,q_{\max}=8$、化学精度は
+$M=12,q_{\max}=4096$、暫定`CA/10`は$M=15,q_{\max}=32768$となった。
+従って、既存4段検証は実目標候補のround範囲を覆わない。
+
+固定$r=4,K=2$をsector行列上で$q=8,4096,32768$へ延ばすと、$q=32768$の
+PF位相誤差は0.437285 radで0.02 rad予算を超え、attenuationは
+$7.90584\times10^{-13}$だった。finite-RTE演算子・信号上界は通過したが、この固定設定を
+長roundへ単純外挿する候補は棄却する。次は$\delta$候補とround別$(r_m,K_m)$を再探索する。
+
+これはlocal dirty-worktreeの小規模行列診断である。$q>8$回路コンパイル、cost proxy、
+fresh-IID shot、最終総cost、immutable CIは未評価。詳細は
+[round範囲診断](docs/rpe_target_round_horizon_validation.md)。
+変更後のlocal全テストは`487 passed, 4 warnings`で、warningは既存grouped-UWC由来である。
+
+## 2026-09-20 physical q=8 and four-round branch-reconstruction note
+
+H4 chain、1.0 Å、STO-3G、8 qubit、DF rank 12、固定Hamiltonian snapshot、
+$L_D=3,\delta=0.1,r=4,K=2$、$q=1,2,4,8$で、限定4段集計と同じ
+$\beta=(0.02,0.02,0.36)$および重み付き$\alpha$を使い、$q=8$物理信号と4段の
+逐次分枝復元を検証した。
+
+$q=8$のfinite-RTE信号半径は0.993219824261、exact信号からの系統位相差は
+$1.06819\times10^{-4}$ rad、厳密二項の統計位相失敗率は$2.07129\times10^{-6}$だった。
+4段合成の座標失敗率は$1.33625\times10^{-3}$、統計位相失敗率は
+$2.14873\times10^{-6}$で、割当予算0.05以内だった。
+
+4段8軸の全1,572 shotへ異なるRTE trajectory seedを割り当てた明示的監査を行い、seed重複なし、
+trajectory平均の解析信号からの差は最大1.925標準誤差だった。解析的周辺分布から生成した
+10万回の4段測定では分枝失敗・最終位相失敗とも0件で、最終失敗率の片側95%上限は
+$2.99569\times10^{-5}$だった。
+
+固定H4の4段end-to-end接続はlocalに通過したが、目標エネルギー精度からのround数決定、$q>8$、
+別条件、実backend、noise、状態準備、最終総cost、immutable CIは未評価である。PF係数が経験値の
+ため保証statusは引き続き`empirical_screening`である。詳細は
+[4段分枝復元検証](docs/rpe_four_round_phase_validation.md)。
+変更後のlocal全テストは`484 passed, 4 warnings`で、warningは既存grouped-UWC由来である。
+
+## 2026-09-18 limited four-round RPE accounting note
+
+H4 chain、1.0 Å、STO-3G、8 qubit、DF rank 12、固定Hamiltonian snapshot、
+$L_D=3,\delta=0.1,r=4,K=2$、$q=1,2,4,8$で、前回選んだ暫定配分
+$(\beta_{\rm PF},\beta_{\rm RTE},\beta_{\rm stat})=(0.02,0.02,0.36)$と重み付き
+$\alpha$を既存の厳格な資源集計APIへ接続した。$q=1,2,4$の固定Hadamard直接costと、
+未使用$q=8$ holdout通過済みproxyを出典付き複合providerとして使用した。
+
+4段・8軸の合計は1,572 shot、RZ数32,673,960.607143で、shot×1 shot costの直接再計算と
+前回診断値に一致した。保守的$\alpha$ union boundは0.05の予算内だった。
+前回の$q=1,2,4$物理信号を固定し、新しいshot数と$\beta_{\rm stat}=0.36$で厳密二項失敗率を
+再計算すると、合成座標失敗率$2.2246\times10^{-4}$、統計位相失敗率
+$7.7444\times10^{-8}$で、各軸・各段の割当額を満たした。
+
+これはlocal dirty-worktreeの限定4段診断で、PF入力が経験値のため`empirical_screening`である。
+$q=8$物理信号・厳密失敗率、4段branch復元、最終全round総コスト、実backend、noise、
+immutable CIは未評価。詳細は[限定4段検証](docs/rpe_four_round_accounting_validation.md)。
+変更後のlocal全テストは`481 passed, 4 warnings`で、warningは既存grouped-UWC由来である。
+
+## 2026-09-01 beta/alpha allocation-sensitivity note
+
+H4 chain、距離1.0 Å、STO-3G、8 qubit、DF rank 12、固定Hamiltonian snapshot、$L_D=3$、
+$\delta=0.1$、$r=4$、$K=2$、$q=1,2,4,8$で、RPE位相誤差・失敗確率配分の感度を評価した。
+$q=1,2,4$の状態準備なしHadamard直接compiled costと、未使用holdoutを通過した$q=8$ proxyを
+固定入力としたため、sweep中の回路再compileはない。
+
+5種類の$\beta$配分と、一様／cost感度重み$\alpha$配分の10 scenarioは、$\beta$和、$\alpha$和、
+PF・RTE実寄与、正半径、shot式、round cost恒等式を全て通過した。単一条件への過適合を避ける
+暫定100倍headroom規則では$(\beta_{\rm PF},\beta_{\rm RTE},\beta_{\rm stat})=(0.02,0.02,0.36)$と
+cost感度重み$\alpha$を選んだ。各軸shotは$q=1,2,4,8$で229、207、186、164、RZ comparison costは
+$3.2674\times10^7$である。現行$(0.08,0.08,0.24)$・一様$\alpha$比では56.35%小さいが、同じ
+$\beta$での$\alpha$変更単独は4.35%だった。
+
+これは1 snapshot・1 compiler・固定$(L_D,\delta,r,K)$・RZ指標のlocal dirty-worktree sensitivity
+diagnosticである。100倍guardは理論値でなく、比較costは最終総costでもその削減率でもない。
+選択後の非一様$\alpha$に対する厳密二項失敗率・仮想測定も再実行していない。今回の失敗確率条件は
+Hoeffding shot式とunion boundである。$q=8$物理信号・位相、branch reconstruction、$q>8$、noise、
+実backend、immutable CIは未評価である。
+変更後のlocal全test suiteは`479 passed, 4 warnings`で、warningは既存grouped-UWC test由来である。
+
+## 2026-09-01 q=8 Hadamard cost-proxy/resource connection note
+
+H4 chain、距離1.0 Å、STO-3G、8 qubit、DF rank 12、固定Hamiltonian snapshot、$L_D=3$、
+$\delta=0.1$、$r=4$、$K=2$、Qiskit 1.3.0、`rz,sx,x,cx`、optimization level 1、
+seed 17、coupling mapなしで、状態準備を除くHadamard interrogation全体のcompiled costを
+評価した。各$q$ 8 trajectoryの$q=1,2,4$だけでaxis・metric別affine proxyを較正し、
+係数固定後に未使用$q=8$の一体compileを予測した。
+
+両軸・全6指標の最大相対点誤差はcircuit sizeの0.726%、RZ countは0.675%で、
+事前の5%基準を通過した。較正点とholdoutを含むRZ平均の最大相対標準誤差は
+0.732%で、事前2%条件を通過した。holdoutはfitに使用していない。
+
+通過したvalidation fingerprint、Hamiltonian・DF split、$L_D,\delta,r,K$、compilerを要求し、
+実際にholdoutした$q$だけを返すproviderをresource accountingへ接続した。
+$(\beta_{\rm PF},\beta_{\rm RTE},\beta_{\rm stat})=(0.08,0.08,0.24)$ rad、
+$\alpha_{m,b}=0.05/8$の$q=8$ candidateは各軸414 shot、1 shot RZ count 48135.0804となり、
+round RZ cost $3.9855847\times10^7$の再計算が一致した。未検証$q=16$は拒否した。
+
+これは1 snapshot・1 compiler・$q=8$のlocal dirty-worktree evidenceである。$q>8$、別分割、
+proxy係数共分散、$q=8$物理信号・位相、複数round合計、状態準備、noise、実backend、
+最終総costまたはimmutable CI evidenceではない。
+変更後のlocal全test suiteは`478 passed, 4 warnings`で、warningは既存grouped-UWC test由来である。
+
+## 2026-09-01 virtual-Hadamard statistical failure note
+
+H4 chain、距離1.0 Å、STO-3G、8 qubit、DF rank 12、固定Hamiltonian snapshot、$L_D=3$、
+$\delta=0.1$、$r=4$、$K=2$、$q=1,2,4$で、finite-RTEの物理基底状態信号を用いた
+仮想Hadamard測定を検証した。$(\beta_{\mathrm{PF}},\beta_{\mathrm{RTE}},
+\beta_{\mathrm{stat}})=(0.08,0.08,0.24)$ rad、$\alpha_{m,b}=0.05/6$から得た各軸shot数は
+389、390、391である。
+
+厳密二項計算では、6軸のいずれかの座標誤差が許容量以上となる確率は0.0010363、
+3 roundのいずれかの統計位相誤差が0.24 radを超える確率は$1.4775\times10^{-6}$で、
+いずれも$\alpha_{\mathrm{tot}}=0.05$以内だった。10万回の周辺Bernoulli反復では座標失敗111回、
+位相失敗0回で、片側95%上限はそれぞれ0.001299、$2.996\times10^{-5}$だった。
+
+別に各shotへfresh IIDなRTE trajectoryを割り当て、計2340 trajectoryをsector内で直接作用した。
+seed重複はなく、trajectory平均信号と解析信号の差は最大2.063標準誤差、全軸の条件付き測定数は
+周辺二項分布の99.9%中央区間内だった。これはshort-roundの測定統計とfresh-IID実装のlocal検証であり、
+全roundのRPE branch selection、最終位相復元、実backend、noise、状態準備、最終総costまたは
+immutable CI evidenceではない。変更後のlocal全test suiteは`475 passed, 4 warnings`だった。
+最初の全suite実行では既存の並列SQLite cache testが一時的な`database is locked`で1件失敗したが、
+単独再実行と続く全suite再実行では通過した。4 warningは既存grouped-UWC test由来である。
+
+## 2026-09-01 short-round signal・shot・compiled-cost connection note
+
+H4 chain、距離1.0 Å、STO-3G、8 qubit、DF rank 12、固定Hamiltonian snapshot、$L_D=3$、
+$\delta=0.1$、$r=4$、$K=2$、$q=1,2,4$で、finite-RTE信号検証、RPE shot式、
+controlled time-evolution direct provider、状態準備なしHadamard interrogation providerを接続した。
+物理full-$H$基底状態のPF信号半径は1から最大$1.11\times10^{-8}$のずれで、単位半径仮定と
+実半径から得る各軸shot数は$q=1,2,4$で389、390、391と一致した。
+
+同一compiler条件ではHadamard interrogationのRZ countはtime-evolution部分より各軸+2、
+circuit sizeは+5で、CX count/depth、RZ depth、total depthは同じだった。
+全roundで`round_cost=N_c g_c+N_s g_s`の再計算、scope識別、古典Monte Carlo標本数8を
+量子shot数へ追加乗算していないことを確認し、専用payload validatorを通過した。
+
+これは1 snapshot・1 compiler・$q\leq4$のlocal接続検証である。8 trajectoryのcompiled-cost
+点推定を精密な候補順位または最終総costには使わない。仮想Hadamard測定は上記の別検証で
+追加した。$q=8$ proxyの1 round接続は上記の別検証で追加したが、$q>8$、
+全round集計、状態準備、noise、実backend、immutable CIは未評価である。
+変更後のlocal全test suiteは`473 passed, 4 warnings`で、warningは既存grouped-UWC test由来である。
+保存した接続結果JSONは専用validatorを再通過した。
+
 ## 2026-08-26 H4 follow-up・H5 system-size circuit-cost completion note
 
 2026-08-25のH4 follow-upは全jobがreturn code 0で完走し、専用validatorを通過した。同一H4 chain、

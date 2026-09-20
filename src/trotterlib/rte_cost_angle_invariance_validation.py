@@ -61,8 +61,8 @@ def validate_rte_cost_angle_invariance(
             }
         )
     )
-    if not lengths or any(length > 3 for length in lengths):
-        raise ValueError("Angle-invariance cluster lengths must be in 1, 2, 3.")
+    if not lengths or any(length > 4 for length in lengths):
+        raise ValueError("Angle-invariance cluster lengths must be in 1, 2, 3, 4.")
     times = tuple(float(value) for value in short_step_times)
     if len(times) < 2 or any(not math.isfinite(value) or value <= 0.0 for value in times):
         raise ValueError("At least two finite positive short-step times are required.")

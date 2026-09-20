@@ -35,6 +35,9 @@
 
 | 日付 | 主題 | 基準commit | 到達点 | 次の主要課題 |
 |---|---|---|---|---|
+| [2026-09-20](2026-09-20.md) | 4段RPE分枝復元、目標round診断、$\delta$/round別scheduleと中央RTE cost検証 | `2bf3116` + dirty worktree | H4の固定長round設定を棄却し、3個の$\delta$に行列検査を通るscheduleを構成。局所角度・$L=8,16,32$検証後の中央RTE proxyは0.02を全6指標で最小とした | $\delta=0.02$と0.01の制御付きpartial-$S_2$反復・Hadamard 1 shot costを検証 |
+| [2026-09-18](2026-09-18.md) | 暫定配分を使った限定4段集計と新配分の短段失敗率 | `2bf3116` + dirty worktree | H4固定条件の$q=1,2,4,8$で1,572 shot、RZ数$3.2673961\times10^7$、8軸$\alpha$和0.05。$q=1,2,4$の厳密二項座標失敗率$2.2246\times10^{-4}$ | $q=8$物理信号、branch復元、必要全round・最終コストを別途検証 |
+| [2026-09-01](2026-09-01.md) | RPE短段の信号・shot・cost接続、失敗率、$q=8$代理モデル、配分感度 | `2bf3116`に至る前のdirty worktree | 配分感度から$\beta=(0.02,0.02,0.36)$と重み付き$\alpha$を固定条件の暫定入力に選択 | 限定4段集計（2026-09-18に実施） |
 | [2026-08-26](2026-08-26.md) | H5 connected-cluster系サイズ検証と回路cost modelの区切り | `e07a5e6` + dirty worktree | H5、rank 9、$L_D=4$、$K=2$、$L=4,6,8$でpaired K1--K3最大1.665%。独立calibration/holdoutは最大3.776%、予測半幅1.459%で5%/2%基準を通過 | cost providerをRPE shot・誤差/失敗確率配分へ接続。新compiler・$L>8$・不通過条件だけ追加holdout |
 | [2026-08-24](2026-08-24.md) | 階層compiled-cost model、$K=2$次数条件付き再検証、connected-cluster運用推定と軽量化 | `e07a5e6` | 固定DF snapshotの$L=4,6,8$ holdoutでK1--K3運用推定は全metric最大2.936%。点誤差5%内だが95%診断5.724%の留保。calibration/prediction/transfer分離と厳密key cacheを実装 | 別$L_D$・short-step・compiler/coupling条件への移送と角度不変性検証 |
 | [2026-08-25](2026-08-25.md) | 複数order-2、独立K4、controlled $q=8$の追加・follow-up batch | dirty worktree | paired複数order-2は最大1.679%。$L_D=6$のK1--K4 paired $L=8$は4.008%。controlled $q=8$は0.0529%。全job完走・validator通過 | 系サイズ方向の独立holdoutで運用規則を確認 |

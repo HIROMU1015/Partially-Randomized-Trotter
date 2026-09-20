@@ -9,8 +9,10 @@ single_hadamard_interrogation_without_state_preparation
 ```
 
 It does not execute a backend or quantum shots, model noise, reconstruct a
-phase, aggregate a full RPE experiment, or connect its predictions to the
-short-round provider or resource accounting.
+phase, or aggregate a full RPE experiment.  The fit object itself remains
+disconnected from resource accounting.  A separate provider may consume it
+only after an unused-holdout validation passes and only at explicitly validated
+$q_m$ values; see `rpe_hadamard_proxy_resource_validation.md`.
 
 ## Fit model and partition isolation
 

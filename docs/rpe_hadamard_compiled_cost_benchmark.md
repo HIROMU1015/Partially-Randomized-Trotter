@@ -6,7 +6,9 @@ $q_m=2^m$.  It is separate from the normal short-round API:
 
 - `QiskitRPEHadamardInterrogationBuilder` still accepts only $q_m=1,2,4$;
 - `DFRPEHadamardCompiledCostProvider` remains a short-round provider;
-- no benchmark result is connected to RPE resource accounting.
+- the benchmark dataset itself is not a resource-accounting provider.  A
+  separately validated proxy may be connected only at its explicitly held-out
+  $q_m$ values; the current H4 example permits $q_m=8$ only.
 
 The benchmark circuit builder delegates the wrapper gate sequence to the
 ordinary builder after validating the benchmark repetition domain.  Each
@@ -99,11 +101,14 @@ Failures after execution starts leave unavailable aggregate completion flags
 and actual counts as `null` rather than claiming that a complete measured
 controlled wrapper existed.
 
-This module does not fit, select, or validate a large-$q$ proxy.  In particular,
-it never labels a result `validated_long_circuit_proxy`, and holdout points are
-recorded as unused for fitting.  The separate calibration-only consumer and
-holdout validator are documented in `rpe_hadamard_compiled_cost_proxy.md`; they
-do not mutate this dataset or connect it to resource accounting.
+This module itself does not fit, select, or validate a large-$q$ proxy.  In
+particular, it never labels a result `validated_long_circuit_proxy`, and holdout
+points are recorded as unused for fitting.  The separate calibration-only
+consumer and holdout validator are documented in
+`rpe_hadamard_compiled_cost_proxy.md`.  A passed validation can now be consumed
+by the separately guarded provider documented in
+`rpe_hadamard_proxy_resource_validation.md`; benchmark generation itself still
+does not mutate the dataset or perform resource accounting.
 
 ## Validation-manifest relationship
 

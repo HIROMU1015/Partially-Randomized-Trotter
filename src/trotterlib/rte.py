@@ -949,6 +949,7 @@ class CircuitCost:
         "compiled_repeated_partial_s2_primitive_additive_sum",
         "exact_compiled_rpe_hadamard_interrogation_expectation",
         "monte_carlo_compiled_rpe_hadamard_interrogation_expectation",
+        "validated_hadamard_affine_proxy",
         "legacy_analytic_proxy",
     ]
 

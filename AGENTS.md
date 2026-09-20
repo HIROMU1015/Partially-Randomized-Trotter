@@ -1,5 +1,23 @@
 # Repository guidance for Codex
 
+## Repository entry point
+
+Before interpreting files by name, read `PROJECT_MAP.md`. It classifies the
+library, runners, tests, evidence artifacts, research documents, presentation
+material, and historical files.
+
+Use these source-of-truth priorities:
+
+1. current synthesis and normative research documents under `docs/research/`;
+2. `VALIDATION_STATUS.md` and `artifacts/validation_manifest.json` for evidence status;
+3. validation-specific documents and machine-readable artifacts for numerical claims;
+4. dated research notes for decision history;
+5. presentation plans, old protocols, notebooks, and implementation prompts only as context.
+
+Do not treat `BentoSlide構成案*.md`, `Partial Randomized Study Protocol.md`,
+`codex-inst.md`, `README_partial_randomized_pf.md`, or
+`abe_trotter_project.ipynb` as the current project specification.
+
 ## Research-material tasks
 
 When asked to explain this project or create slides, reports, summaries, or other
@@ -48,3 +66,9 @@ When a research decision or validation result changes:
    rewriting its earlier history; and
 4. update the machine-readable manifest when the evidence inventory or status
    changes.
+
+When adding a new validation path, keep the library module, runner, test,
+validation document, and artifact directory discoverable through the indexes in
+`PROJECT_MAP.md`, `scripts/README.md`, `src/trotterlib/README.md`, and
+`docs/README.md`. Do not move evidence or rename public paths merely for tidiness
+without updating all references and provenance records.

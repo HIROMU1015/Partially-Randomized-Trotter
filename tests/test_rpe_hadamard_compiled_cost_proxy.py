@@ -28,7 +28,15 @@ from trotterlib.rpe_hadamard_compiled_cost_proxy import (
     fit_rpe_hadamard_compiled_cost_proxy,
     validate_rpe_hadamard_compiled_cost_proxy,
 )
-from trotterlib.rpe_resource_accounting import RPE_COST_METRICS
+from trotterlib.rpe_hadamard_validated_proxy_provider import (
+    ValidatedRPEHadamardCompiledCostProxyProvider,
+)
+from trotterlib.rpe_resource_accounting import (
+    RPE_COST_METRICS,
+    RPEErrorAllocation,
+    RPERoundCostRequest,
+    RPERoundSpecification,
+)
 from trotterlib.rte import CompilerSettings, make_rte_config
 from trotterlib.rte_compiled_cost import CompiledMetricStatistics
 
@@ -710,4 +718,71 @@ def test_proxy_remains_disconnected_from_short_provider_and_resources(
         DFRPEHadamardCompiledCostProvider(
             compiler=_compiler(),
             maximum_repetition_count=8,
+        )
+
+
+def test_passed_holdout_proxy_provider_is_limited_to_validated_q(
+    base_dataset,
+) -> None:
+    dataset = _with_statistics(base_dataset, mean_fn=_affine_mean)
+    validation = _validate(_fit(dataset), dataset, _tolerances(1.0e-9))
+    provider = ValidatedRPEHadamardCompiledCostProxyProvider(
+        validation=validation,
+        compiler=_compiler(),
+    )
+    preparation = _benchmark_request().preparation
+    allocation = RPEErrorAllocation(
+        beta_pf_budget=0.08,
+        beta_rte_budget=0.08,
+        beta_stat_budget=0.24,
+        alpha_cosine=0.01,
+        alpha_sine=0.01,
+    )
+
+    compiled = provider.evaluate(
+        RPERoundCostRequest(
+            preparation=preparation,
+            specification=RPERoundSpecification(3, 0.2),
+            allocation=allocation,
+            rte_steps_per_occurrence=0,
+            finite_taylor_order=0,
+            rte_config=None,
+            rte_distribution=None,
+        )
+    )
+    assert compiled.cosine_expected_cost.rz_count == pytest.approx(
+        validation.proxy.predict(8, axis="cosine", metric="rz_count")
+    )
+    assert compiled.circuit_cost_scope == (
+        "single_hadamard_interrogation_without_state_preparation"
+    )
+    assert compiled.cost_model_fingerprint == provider.cost_model_fingerprint
+    assert compiled.classical_sample_count is None
+
+    with pytest.raises(ValueError, match="not directly validated"):
+        provider.evaluate(
+            RPERoundCostRequest(
+                preparation=preparation,
+                specification=RPERoundSpecification(5, 0.2),
+                allocation=allocation,
+                rte_steps_per_occurrence=0,
+                finite_taylor_order=0,
+                rte_config=None,
+                rte_distribution=None,
+            )
+        )
+
+
+def test_failed_holdout_proxy_cannot_feed_resource_accounting(base_dataset) -> None:
+    def shifted_holdout(partition, axis, metric, q_m):
+        value = _affine_mean(partition, axis, metric, q_m)
+        return value if partition == "calibration" else value + 1.0
+
+    dataset = _with_statistics(base_dataset, mean_fn=shifted_holdout)
+    validation = _validate(_fit(dataset), dataset, _tolerances(0.0))
+    assert not validation.overall_pass
+    with pytest.raises(ValueError, match="failed holdout validation"):
+        ValidatedRPEHadamardCompiledCostProxyProvider(
+            validation=validation,
+            compiler=_compiler(),
         )
