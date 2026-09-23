@@ -54,6 +54,11 @@
 - [`rpe_delta_round_schedule_validation.md`](rpe_delta_round_schedule_validation.md)
 - [`rpe_delta_compiled_cost_validation.md`](rpe_delta_compiled_cost_validation.md)
 
+## 実行・運用
+
+- [`server_parallel_validation_execution.md`](server_parallel_validation_execution.md)：共有CPU/GPUサーバー向けのbounded実行、checkpoint、resume、dry-run
+- [`examples/parallel_validation_h4_q1_manifest.json`](examples/parallel_validation_h4_q1_manifest.json)：H4 q=1のdry-run用manifest例
+
 ## 発表資料と参考文献
 
 - [`presentations/README.md`](presentations/README.md)：発表資料・構成案の位置づけ

@@ -1,0 +1,42 @@
+{
+  "batch_id": "h4-q1-full-wrapper-dry-run-example",
+  "schema_version": "parallel_validation_task_manifest_v1",
+  "source_paths": [],
+  "tasks": [
+    {
+      "adapter": "rpe_hadamard_full_wrapper",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.1,
+      "estimated_memory_gib": 1.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "partition": "calibration",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz"
+      },
+      "q": 1,
+      "r": 4,
+      "resource": "cpu",
+      "seed": 20260923,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "h4-q1-full-wrapper-dry-run-example"
+    }
+  ]
+}

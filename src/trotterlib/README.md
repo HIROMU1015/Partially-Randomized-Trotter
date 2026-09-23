@@ -40,6 +40,14 @@
 - `rpe_hadamard_compiled_cost_proxy.py`：反復数方向のcost proxy
 - `rpe_hadamard_validated_proxy_provider.py`：検証範囲を守ってproxyを供給
 
+## 共有サーバー向け実行基盤
+
+- `parallel_validation_executor.py`：決定論的task ID、資源guard、bounded subprocess、
+  atomic checkpoint、resume、GPU job割当、決定論的集約
+
+科学ロジックや科学的判定は含めない。運用方法と安全上の既定値は
+[`../../docs/server_parallel_validation_execution.md`](../../docs/server_parallel_validation_execution.md)を参照する。
+
 ## 検証モジュール
 
 次のモジュールは、研究用APIそのものではなく、条件固定、比較、判定、成果物生成を担当する。

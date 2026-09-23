@@ -78,6 +78,14 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 `src/trotterlib/` の処理を呼び出して成果物を保存する入口である。検証名と同名の
 ライブラリ、runner、test、文書、artifactを一組として読む。
 
+## 共有サーバー向けexecution infrastructure
+
+長時間検証を独立taskへ分割して安全に実行・再開する経路は、
+`src/trotterlib/parallel_validation_executor.py`、`scripts/run_parallel_validation_batch.py`、
+`tests/test_parallel_validation_executor.py`、
+[`docs/server_parallel_validation_execution.md`](docs/server_parallel_validation_execution.md)を一組として読む。
+これは実装・運用基盤であり、新しい科学的検証結果や最終総cost評価ではない。
+
 ## ファイルの状態区分
 
 ### 現行の正本

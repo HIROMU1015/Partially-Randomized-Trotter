@@ -64,6 +64,7 @@
 次のrunnerは、上記の検証を複数jobで実行・再開するためのもの。単独の数値だけで結論を
 判断せず、対応する検証文書とmanifestを読む。
 
+- `run_parallel_validation_batch.py`：共有サーバー向けtask manifest生成、dry-run、bounded実行、resume、status
 - `run_rte_cost_data_batch.py`
 - `run_rte_cost_followup_batch.py`
 - `run_df_anchor_refinement_pipeline.py`
