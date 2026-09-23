@@ -22,7 +22,7 @@ from .df_partial_s2 import (
     DFPartialS2StepRequest,
     QiskitDFPartialS2CircuitBuilder,
 )
-from .df_rte_circuit import DFRTEEventSequenceCircuitRequest
+from .df_rte_circuit import DFRTEBasisPlan, DFRTEEventSequenceCircuitRequest
 from .rte import (
     RTEConfig,
     RTEEvent,
@@ -129,6 +129,7 @@ class DFPartialS2RepeatedRequest:
     construction_policy: RepeatedCircuitConstructionPolicy = "raw_concatenation"
     event_order_policy: EventOrderPolicy = "step_major_circuit_append_order"
     matrix_product_convention: MatrixProductConvention = "U_(q-1)...U_1_U_0"
+    rte_basis_plans: tuple[DFRTEBasisPlan | None, ...] = ()
 
     def __post_init__(self) -> None:
         repetition_count = require_integer_count(
@@ -170,6 +171,17 @@ class DFPartialS2RepeatedRequest:
                 raise ValueError(
                     "Deterministic-only repetition must not contain RTE occurrences."
                 )
+            if self.rte_basis_plans and any(
+                plan is not None for plan in self.rte_basis_plans
+            ):
+                raise ValueError(
+                    "Deterministic-only repetition must not contain RTE basis plans."
+                )
+            object.__setattr__(
+                self,
+                "rte_basis_plans",
+                (None,) * repetition_count,
+            )
             seeds = self.step_seeds or (None,) * repetition_count
             if len(seeds) != repetition_count or any(
                 seed is not None for seed in seeds
@@ -185,6 +197,19 @@ class DFPartialS2RepeatedRequest:
                 raise ValueError(
                     "Randomized repetition requires one RTE occurrence per step."
                 )
+            plans = self.rte_basis_plans or (None,) * repetition_count
+            if len(plans) != repetition_count:
+                raise ValueError(
+                    "rte_basis_plans must contain one plan per repetition."
+                )
+            if any(
+                plan is not None and not isinstance(plan, DFRTEBasisPlan)
+                for plan in plans
+            ):
+                raise TypeError(
+                    "Every RTE basis plan must be a DFRTEBasisPlan or None."
+                )
+            object.__setattr__(self, "rte_basis_plans", tuple(plans))
             if len(self.step_seeds) != repetition_count:
                 raise ValueError("step_seeds must contain one seed per repetition.")
             normalized_seeds: list[int] = []
@@ -206,6 +231,7 @@ class DFPartialS2RepeatedRequest:
             )
         else:
             occurrences = self.rte_occurrences
+        plans = self.rte_basis_plans or (None,) * self.repetition_count
         return tuple(
             DFPartialS2StepRequest(
                 preparation=self.preparation,
@@ -213,6 +239,7 @@ class DFPartialS2RepeatedRequest:
                 rte_config=self.rte_config,
                 rte_distribution=self.rte_distribution,
                 rte_occurrence=occurrence,
+                rte_basis_plan=plans[index],
                 controlled=self.controlled,
                 ancilla_qubit=self.ancilla_qubit,
                 seed=self.step_seeds[index],
@@ -270,6 +297,7 @@ class DFPartialS2RepeatedRequest:
                 for request in requests
                 if request.rte_occurrence is not None
             ),
+            rte_basis_plans=tuple(request.rte_basis_plan for request in requests),
             controlled=first.controlled,
             ancilla_qubit=first.ancilla_qubit,
             step_seeds=tuple(request.seed for request in requests),
@@ -339,6 +367,7 @@ def make_df_partial_s2_repeated_request(
         rte_config=rte_config,
         rte_distribution=rte_distribution,
         rte_occurrences=occurrences,
+        rte_basis_plans=(None,) * count,
         controlled=controlled,
         ancilla_qubit=ancilla_qubit,
         step_seeds=step_seeds,

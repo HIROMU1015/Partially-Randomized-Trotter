@@ -284,3 +284,20 @@ dirty local worktreeで生成した証拠であり、immutable CI evidenceでは
 
 4 warningは既存の`chemistry_hamiltonian.py`の`ComplexWarning`であり、今回の検証の
 失敗ではない。
+
+## 2026-09-21 same-snapshot入力と決定論endpoint
+
+研究方向screeningではPF入力とcompiled-cost入力を同一Hamiltonian fingerprintへ結ぶ必要が
+あったため、runnerへ`--snapshot`と`--n-electrons`を追加した。また$L_D=L$のtailなし
+決定論endpointを、一般RTE式へ$\lambda_R=0$を無理に代入せず、既存のdeterministic-only
+経路で検証できるようにした。
+
+H4 rank-12固定snapshot hash `56e4df83...31e5`から$L_D=0,3,12$を再生成し、論文D6係数は
+それぞれ0.01153377、0.01339914、0.01342567となった。$L_D=12$の支配固有位相係数は
+0.01338327で、D6との相対差は0.255%だった。全12 fragmentを決定論側に置いても、
+二次PFの分割誤差がゼロになるわけではない。
+
+$L_D=0$ artifactの`overall_pass=false`は、$H_D$だけを使う旧surrogateのholdout判定に由来する。
+D6 estimator、単一支配位相およびQiskit/sector行列整合性は通過しているため、研究方向screeningでは
+D6係数だけを経験的入力として用いた。same-snapshot成果物と利用上の制約は
+[研究方向screening検証](research_direction_prevalidation.md)に記録する。

@@ -68,6 +68,24 @@
 - `rpe_delta_round_schedule_validation.py`
 - `rpe_delta_compiled_cost_validation.py`
 - `rpe_hadamard_compiled_cost_benchmark.py`
+- `research_direction_prevalidation.py`
+- `research_direction_ablation.py`
+- `research_direction_pf_sensitivity.py`
+- `research_direction_gate_s1.py`
+- `research_direction_structure_pilot.py`
+- `research_direction_sequence_policy.py`
+- `research_direction_full_scope.py`
+- `research_direction_full_scope_extension.py`
+- `research_direction_full_scope_replication.py`
+- `research_direction_decision_cost.py`
+- `research_direction_decision_synthesis.py`
+- `research_direction_round_dominance.py`
+- `research_direction_proxy_precision.py`
+- `research_direction_m08_reaggregation.py`
+- `research_direction_compiler_transfer_compute.py`
+- `research_direction_compiler_transfer_analysis.py`
+- `research_direction_uncertainty_break_even.py`
+- `research_direction_wp11_synthesis.py`
 
 同名のrunner、test、文書、artifactと合わせて読む。モジュールが実装済みでも、対象範囲が
 科学的に検証済みとは限らない。

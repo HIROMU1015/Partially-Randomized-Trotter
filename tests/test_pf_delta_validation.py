@@ -153,6 +153,28 @@ def test_pf_delta_validation_is_disjoint_and_tamper_evident(tmp_path) -> None:
         validate_pf_delta_payload(tampered)
 
 
+def test_pf_delta_validation_supports_full_deterministic_endpoint() -> None:
+    hamiltonian = _hamiltonian()
+    payload = validate_pf_delta_grid(
+        hamiltonian,
+        PhysicalSector.number_sector(n_qubits=2, n_electrons=1),
+        ld=hamiltonian.n_blocks,
+        surrogate_calibration_times=(0.01, 0.02, 0.04, 0.08),
+        validation_delta_times=(0.015, 0.03),
+        q_values=(1, 2),
+        surrogate_relative_tolerance=10.0,
+        scaling_slope_interval=(0.1, 4.0),
+        coefficient_atol=0.05,
+        provenance={"test": True},
+    )
+
+    assert payload["request"]["ld"] == hamiltonian.n_blocks
+    assert payload["partial_s2"]["randomized_block_indices"] == []
+    assert payload["partial_s2"]["exact_rte_lambda_r"] == 0.0
+    assert payload["summary"]["overall_pass"]
+    validate_pf_delta_payload(payload)
+
+
 def test_pf_delta_validation_rejects_overlapping_fit_and_holdout_times() -> None:
     with pytest.raises(ValueError, match="must be disjoint"):
         validate_pf_delta_grid(

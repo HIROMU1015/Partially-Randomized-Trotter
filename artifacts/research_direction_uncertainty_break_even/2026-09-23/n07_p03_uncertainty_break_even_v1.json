@@ -1,0 +1,783 @@
+{
+  "checks": {
+    "all_scenarios_have_positive_finite_point_break_even": true,
+    "final_total_cost_and_superiority_not_claimed": true,
+    "opt1_local_has_small_guaranteed_ld3_preparation_region": true,
+    "opt2_focused_measured_has_no_guaranteed_ld3_region": true,
+    "shot_counts_are_fixed_and_ld3_uses_more_shots": true,
+    "uniform_ratio_counterfactual_changes_measured_interval_decision": true,
+    "unmeasured_sources_remain_explicit": true,
+    "upstream_artifacts_pass_and_bind": true
+  },
+  "configuration": {
+    "basis": "STO-3G",
+    "candidate_ld_values": [
+      3,
+      12
+    ],
+    "comparison_task": "WP00 fixed H4 CA_over_10 task",
+    "cost_units": "compiled_rz",
+    "delta_time": 0.02,
+    "df_rank": 12,
+    "geometry_angstrom": 1.0,
+    "ld12_total_shots": 11162,
+    "ld3_total_shots": 13538,
+    "molecule": "H4_chain",
+    "n_qubits": 8,
+    "preparation_parameter_units": "compiled_rz_equivalent_per_shot"
+  },
+  "content_fingerprint": "ff70308a64798c6ba8c9d20533c9e9e8c614e58c0d433dd861b7de45ac70c32d",
+  "decision": {
+    "current_scientific_claim": "H4_no_prep_point_preference_only; robust interval superiority not established",
+    "n07_status": "uncertainty_classes_separated",
+    "next_action": "WP11_scoped_direction_synthesis_before_full_opt2_or_external_pilot",
+    "p03_status": "preparation_cost_parameterized",
+    "robust_directional_result": "undetermined_under_compiler_transfer_and_preparation_sensitivity"
+  },
+  "input_fingerprints": {
+    "compiler_transfer": "7ebe8815a633a182b4afa4608b969df5c53d1b6d1efe6eeaf2ce4e653fcbbd95",
+    "m08_reaggregation": "6aa69bc756a97aa025e26994f596f9ee3df999be2e64be870ce938dca5180b3e",
+    "wp01d": "709142f76a78232804cae9971a24bc5757b3ef2e5258adb7314fc42e91937474"
+  },
+  "limitations": [
+    "Break-even P is an RZ-equivalent accounting parameter, not a measured state-preparation circuit cost.",
+    "The focused opt2 scenario mixes opt2 r=32 costs with opt1 r<32 costs for L_D=3.",
+    "Measured proxy discrepancies end at q=32 while the selected schedule reaches q=131072.",
+    "Candidate-specific preparation states require the two-dimensional P3/P12 boundary rather than a common P.",
+    "No backend, noise, external snapshot, system-size, or final total-cost claim is made."
+  ],
+  "method": "n07_p03_uncertainty_ledger_and_preparation_break_even_v1",
+  "n07_uncertainty_ledger": [
+    {
+      "class": "sampling_uncertainty",
+      "combination_rule": "conservative shared-fit sum; do not average as independent rounds",
+      "decision_relevance": "included in every interval",
+      "quantification": {
+        "opt1_ld12_conservative_95_half_width": 0.0,
+        "opt1_ld3_conservative_95_half_width": 76462801182.37846,
+        "opt2_focused_ld3_conservative_95_half_width": 63980932693.26934
+      },
+      "source": "calibration_sampling",
+      "status": "quantified_local"
+    },
+    {
+      "class": "model_bias_sensitivity",
+      "combination_rule": "symmetric discrepancy scenario plus calibration half-width; not quadrature with sampling SE",
+      "decision_relevance": "opt2 focused measured interval already overlaps",
+      "quantification": {
+        "opt1_m08_max_observed_rz": 0.03286427482987788,
+        "opt1_m08_selected_rz": 0.024655707009623114,
+        "opt2_max_observed_rz": 0.034203536597348344,
+        "opt2_selected_rz": 0.023395996738593692
+      },
+      "source": "affine_proxy_model_discrepancy",
+      "status": "quantified_only_through_q32"
+    },
+    {
+      "class": "systematic_context_sensitivity",
+      "combination_rule": "report separate compiler contexts; do not turn context shift into sampling SE",
+      "decision_relevance": "local separation is not compiler invariant",
+      "quantification": {
+        "focused_point_advantage_ld3": 0.0842221208062548,
+        "ld12_relative_change": -0.21482824038131446,
+        "ld3_focused_relative_change": -0.16472258592842975
+      },
+      "source": "compiler_context",
+      "status": "partially_quantified"
+    },
+    {
+      "class": "unmeasured_extrapolation",
+      "combination_rule": "retain explicit 5% and 25% scenarios",
+      "decision_relevance": "blocks robust long-schedule superiority",
+      "quantification": {
+        "direct_q_maximum": 32,
+        "schedule_q_maximum": 131072
+      },
+      "source": "long_q_transfer",
+      "status": "unresolved"
+    },
+    {
+      "class": "unmeasured_compiler_domain",
+      "combination_rule": "focused mixed-context result and uniform-ratio counterfactual remain separate",
+      "decision_relevance": "blocks a coherent full-opt2 candidate comparison",
+      "quantification": {
+        "direct_opt2_r_values_for_ld3": [
+          32
+        ]
+      },
+      "source": "opt2_r_below_32",
+      "status": "unresolved"
+    },
+    {
+      "class": "omitted_cost_parameter",
+      "combination_rule": "add P*N_shots; use separate P3 and P12 when preparations differ",
+      "decision_relevance": "positive common P always reduces the L_D=3 point advantage because it uses more shots",
+      "quantification": {
+        "ld12_shots": 11162,
+        "ld3_shots": 13538,
+        "point_break_even_range_across_noncounterfactual_contexts": [
+          47067344.3364899,
+          99045126.10035248
+        ]
+      },
+      "source": "state_preparation",
+      "status": "parameterized_not_measured"
+    },
+    {
+      "class": "external_transfer_and_execution",
+      "combination_rule": "do not assign a numerical error bar without a new validation",
+      "decision_relevance": "outside the current H4 local claim",
+      "quantification": null,
+      "source": "external_snapshot_backend_noise",
+      "status": "unmeasured"
+    }
+  ],
+  "overall_pass": true,
+  "p03_break_even_scenarios": {
+    "opt1_local_5_percent": {
+      "break_even": {
+        "candidate_specific_preparation_boundary": {
+          "ld12_guaranteed_better_if_weighted_preparation_difference_above": 469139795243.2942,
+          "ld3_guaranteed_better_if_weighted_preparation_difference_below": 1522643985.5808105,
+          "point_equality": "N3*P3-N12*P12=ld12_cost-ld3_cost",
+          "point_rhs_compiled_rz": 235331219614.4375,
+          "weighted_preparation_difference_definition": "N3*P3-N12*P12"
+        },
+        "common_per_shot_preparation_ld12_guaranteed_better_from": 197449408.7724302,
+        "common_per_shot_preparation_ld3_guaranteed_better_until": 640843.4282747519,
+        "common_per_shot_preparation_point_break_even": 99045126.10035248,
+        "common_preparation_cost_point_preference": {
+          "above_break_even": "L_D=12",
+          "at_break_even": "equal_point_estimates",
+          "below_break_even": "L_D=3"
+        },
+        "intervals_overlap_at_zero_preparation_cost": false,
+        "ld12_total_shots": 11162,
+        "ld3_minus_ld12_shot_count": 2376,
+        "ld3_total_shots": 13538,
+        "point_no_prep_work_advantage_ld3": 235331219614.4375,
+        "units": "compiled_rz_equivalent_per_shot"
+      },
+      "direct_domain": "scenario assumption",
+      "evidence_class": "local_model_discrepancy_scenario",
+      "family": "optimization_level_1_wp01d",
+      "ld12_no_prep_compiled_rz": 1691123354272.0,
+      "ld12_no_prep_interval": [
+        1606567186558.4,
+        1775679521985.6
+      ],
+      "ld3_no_prep_compiled_rz": 1455792134657.5625,
+      "ld3_no_prep_interval": [
+        1306539726742.306,
+        1605044542572.819
+      ],
+      "name": "opt1_local_5_percent",
+      "no_prep_intervals_overlap": false
+    },
+    "opt1_m08_max_rz_q_le_32_common_width": {
+      "break_even": {
+        "candidate_specific_preparation_boundary": {
+          "ld12_guaranteed_better_if_weighted_preparation_difference_above": 415215116291.3967,
+          "ld3_guaranteed_better_if_weighted_preparation_difference_below": 55447322937.47827,
+          "point_equality": "N3*P3-N12*P12=ld12_cost-ld3_cost",
+          "point_rhs_compiled_rz": 235331219614.4375,
+          "weighted_preparation_difference_definition": "N3*P3-N12*P12"
+        },
+        "common_per_shot_preparation_ld12_guaranteed_better_from": 174753836.8229784,
+        "common_per_shot_preparation_ld3_guaranteed_better_until": 23336415.377726544,
+        "common_per_shot_preparation_point_break_even": 99045126.10035248,
+        "common_preparation_cost_point_preference": {
+          "above_break_even": "L_D=12",
+          "at_break_even": "equal_point_estimates",
+          "below_break_even": "L_D=3"
+        },
+        "intervals_overlap_at_zero_preparation_cost": false,
+        "ld12_total_shots": 11162,
+        "ld3_minus_ld12_shot_count": 2376,
+        "ld3_total_shots": 13538,
+        "point_no_prep_work_advantage_ld3": 235331219614.4375,
+        "units": "compiled_rz_equivalent_per_shot"
+      },
+      "direct_domain": "L_D=3 r=32 q<=32; width applied symmetrically",
+      "evidence_class": "measured_q_le_32_common_width_counterfactual_for_ld12",
+      "family": "optimization_level_1_wp01d",
+      "ld12_no_prep_compiled_rz": 1691123354272.0,
+      "ld12_no_prep_interval": [
+        1635545811585.98,
+        1746700896958.02
+      ],
+      "ld3_no_prep_compiled_rz": 1455792134657.5625,
+      "ld3_no_prep_interval": [
+        1331485780666.6233,
+        1580098488648.5017
+      ],
+      "name": "opt1_m08_max_rz_q_le_32_common_width",
+      "no_prep_intervals_overlap": false
+    },
+    "opt1_m08_selected_q_le_32_common_width": {
+      "break_even": {
+        "candidate_specific_preparation_boundary": {
+          "ld12_guaranteed_better_if_weighted_preparation_difference_above": 389383447075.9082,
+          "ld3_guaranteed_better_if_weighted_preparation_difference_below": 81278992152.9668,
+          "point_equality": "N3*P3-N12*P12=ld12_cost-ld3_cost",
+          "point_rhs_compiled_rz": 235331219614.4375,
+          "weighted_preparation_difference_definition": "N3*P3-N12*P12"
+        },
+        "common_per_shot_preparation_ld12_guaranteed_better_from": 163881922.16999504,
+        "common_per_shot_preparation_ld3_guaranteed_better_until": 34208330.03070993,
+        "common_per_shot_preparation_point_break_even": 99045126.10035248,
+        "common_preparation_cost_point_preference": {
+          "above_break_even": "L_D=12",
+          "at_break_even": "equal_point_estimates",
+          "below_break_even": "L_D=3"
+        },
+        "intervals_overlap_at_zero_preparation_cost": false,
+        "ld12_total_shots": 11162,
+        "ld3_minus_ld12_shot_count": 2376,
+        "ld3_total_shots": 13538,
+        "point_no_prep_work_advantage_ld3": 235331219614.4375,
+        "units": "compiled_rz_equivalent_per_shot"
+      },
+      "direct_domain": "L_D=3 r=32 q<=32; width applied symmetrically",
+      "evidence_class": "measured_q_le_32_common_width_counterfactual_for_ld12",
+      "family": "optimization_level_1_wp01d",
+      "ld12_no_prep_compiled_rz": 1691123354272.0,
+      "ld12_no_prep_interval": [
+        1649427512331.9385,
+        1732819196212.0615
+      ],
+      "ld3_no_prep_compiled_rz": 1455792134657.5625,
+      "ld3_no_prep_interval": [
+        1343435749136.1533,
+        1568148520178.9717
+      ],
+      "name": "opt1_m08_selected_q_le_32_common_width",
+      "no_prep_intervals_overlap": false
+    },
+    "opt1_transfer_25_percent": {
+      "break_even": {
+        "candidate_specific_preparation_boundary": {
+          "ld12_guaranteed_better_if_weighted_preparation_difference_above": 1098522893029.2065,
+          "ld3_guaranteed_better_if_weighted_preparation_difference_below": -627860453800.3315,
+          "point_equality": "N3*P3-N12*P12=ld12_cost-ld3_cost",
+          "point_rhs_compiled_rz": 235331219614.4375,
+          "weighted_preparation_difference_definition": "N3*P3-N12*P12"
+        },
+        "common_per_shot_preparation_ld12_guaranteed_better_from": 462341284.94495225,
+        "common_per_shot_preparation_ld3_guaranteed_better_until": null,
+        "common_per_shot_preparation_point_break_even": 99045126.10035248,
+        "common_preparation_cost_point_preference": {
+          "above_break_even": "L_D=12",
+          "at_break_even": "equal_point_estimates",
+          "below_break_even": "L_D=3"
+        },
+        "intervals_overlap_at_zero_preparation_cost": true,
+        "ld12_total_shots": 11162,
+        "ld3_minus_ld12_shot_count": 2376,
+        "ld3_total_shots": 13538,
+        "point_no_prep_work_advantage_ld3": 235331219614.4375,
+        "units": "compiled_rz_equivalent_per_shot"
+      },
+      "direct_domain": "scenario assumption",
+      "evidence_class": "transfer_sensitivity_scenario",
+      "family": "optimization_level_1_wp01d",
+      "ld12_no_prep_compiled_rz": 1691123354272.0,
+      "ld12_no_prep_interval": [
+        1268342515704.0,
+        2113904192840.0
+      ],
+      "ld3_no_prep_compiled_rz": 1455792134657.5625,
+      "ld3_no_prep_interval": [
+        1015381299810.7935,
+        1896202969504.3315
+      ],
+      "name": "opt1_transfer_25_percent",
+      "no_prep_intervals_overlap": true
+    },
+    "opt2_focused_local_5_percent": {
+      "break_even": {
+        "candidate_specific_preparation_boundary": {
+          "ld12_guaranteed_better_if_weighted_preparation_difference_above": 303003572310.19434,
+          "ld3_guaranteed_better_if_weighted_preparation_difference_below": -79339552023.19434,
+          "point_equality": "N3*P3-N12*P12=ld12_cost-ld3_cost",
+          "point_rhs_compiled_rz": 111832010143.5,
+          "weighted_preparation_difference_definition": "N3*P3-N12*P12"
+        },
+        "common_per_shot_preparation_ld12_guaranteed_better_from": 127526756.02280906,
+        "common_per_shot_preparation_ld3_guaranteed_better_until": null,
+        "common_per_shot_preparation_point_break_even": 47067344.3364899,
+        "common_preparation_cost_point_preference": {
+          "above_break_even": "L_D=12",
+          "at_break_even": "equal_point_estimates",
+          "below_break_even": "L_D=3"
+        },
+        "intervals_overlap_at_zero_preparation_cost": true,
+        "ld12_total_shots": 11162,
+        "ld3_minus_ld12_shot_count": 2376,
+        "ld3_total_shots": 13538,
+        "point_no_prep_work_advantage_ld3": 111832010143.5,
+        "units": "compiled_rz_equivalent_per_shot"
+      },
+      "direct_domain": "scenario assumption",
+      "evidence_class": "focused_mixed_compiler_local_scenario",
+      "family": "optimization_level_2_focused_fixed_plan",
+      "ld12_no_prep_compiled_rz": 1327822299806.0,
+      "ld12_no_prep_interval": [
+        1261431184815.7,
+        1394213414796.3
+      ],
+      "ld3_no_prep_compiled_rz": 1215990289662.5,
+      "ld3_no_prep_interval": [
+        1091209842486.1057,
+        1340770736838.8943
+      ],
+      "name": "opt2_focused_local_5_percent",
+      "no_prep_intervals_overlap": true
+    },
+    "opt2_focused_maximum_rz_q_le_32": {
+      "break_even": {
+        "candidate_specific_preparation_boundary": {
+          "ld12_guaranteed_better_if_weighted_preparation_difference_above": 262820329837.45044,
+          "ld3_guaranteed_better_if_weighted_preparation_difference_below": -39156309550.45044,
+          "point_equality": "N3*P3-N12*P12=ld12_cost-ld3_cost",
+          "point_rhs_compiled_rz": 111832010143.5,
+          "weighted_preparation_difference_definition": "N3*P3-N12*P12"
+        },
+        "common_per_shot_preparation_ld12_guaranteed_better_from": 110614616.93495388,
+        "common_per_shot_preparation_ld3_guaranteed_better_until": null,
+        "common_per_shot_preparation_point_break_even": 47067344.3364899,
+        "common_preparation_cost_point_preference": {
+          "above_break_even": "L_D=12",
+          "at_break_even": "equal_point_estimates",
+          "below_break_even": "L_D=3"
+        },
+        "intervals_overlap_at_zero_preparation_cost": true,
+        "ld12_total_shots": 11162,
+        "ld3_minus_ld12_shot_count": 2376,
+        "ld3_total_shots": 13538,
+        "point_no_prep_work_advantage_ld3": 111832010143.5,
+        "units": "compiled_rz_equivalent_per_shot"
+      },
+      "direct_domain": "L_D=3 opt2 direct only at r=32 and q<=32",
+      "evidence_class": "focused_mixed_compiler_measured_discrepancy",
+      "family": "optimization_level_2_focused_fixed_plan",
+      "ld12_no_prep_compiled_rz": 1327822299806.0,
+      "ld12_no_prep_interval": [
+        1282406081179.8103,
+        1373238518432.1897
+      ],
+      "ld3_no_prep_compiled_rz": 1215990289662.5,
+      "ld3_no_prep_interval": [
+        1110418188594.7393,
+        1321562390730.2607
+      ],
+      "name": "opt2_focused_maximum_rz_q_le_32",
+      "no_prep_intervals_overlap": true
+    },
+    "opt2_focused_selected_q_le_32": {
+      "break_even": {
+        "candidate_specific_preparation_boundary": {
+          "ld12_guaranteed_better_if_weighted_preparation_difference_above": 235327973883.56787,
+          "ld3_guaranteed_better_if_weighted_preparation_difference_below": -11663953596.567871,
+          "point_equality": "N3*P3-N12*P12=ld12_cost-ld3_cost",
+          "point_rhs_compiled_rz": 111832010143.5,
+          "weighted_preparation_difference_definition": "N3*P3-N12*P12"
+        },
+        "common_per_shot_preparation_ld12_guaranteed_better_from": 99043760.05200668,
+        "common_per_shot_preparation_ld3_guaranteed_better_until": null,
+        "common_per_shot_preparation_point_break_even": 47067344.3364899,
+        "common_preparation_cost_point_preference": {
+          "above_break_even": "L_D=12",
+          "at_break_even": "equal_point_estimates",
+          "below_break_even": "L_D=3"
+        },
+        "intervals_overlap_at_zero_preparation_cost": true,
+        "ld12_total_shots": 11162,
+        "ld3_minus_ld12_shot_count": 2376,
+        "ld3_total_shots": 13538,
+        "point_no_prep_work_advantage_ld3": 111832010143.5,
+        "units": "compiled_rz_equivalent_per_shot"
+      },
+      "direct_domain": "L_D=3 opt2 direct only at r=32 and q<=32",
+      "evidence_class": "focused_mixed_compiler_measured_discrepancy",
+      "family": "optimization_level_2_focused_fixed_plan",
+      "ld12_no_prep_compiled_rz": 1327822299806.0,
+      "ld12_no_prep_interval": [
+        1296756573610.307,
+        1358888026001.693
+      ],
+      "ld3_no_prep_compiled_rz": 1215990289662.5,
+      "ld3_no_prep_interval": [
+        1123560052118.1252,
+        1308420527206.8748
+      ],
+      "name": "opt2_focused_selected_q_le_32",
+      "no_prep_intervals_overlap": true
+    },
+    "opt2_focused_transfer_25_percent": {
+      "break_even": {
+        "candidate_specific_preparation_boundary": {
+          "ld12_guaranteed_better_if_weighted_preparation_difference_above": 811766090203.8943,
+          "ld3_guaranteed_better_if_weighted_preparation_difference_below": -588102069916.8943,
+          "point_equality": "N3*P3-N12*P12=ld12_cost-ld3_cost",
+          "point_rhs_compiled_rz": 111832010143.5,
+          "weighted_preparation_difference_definition": "N3*P3-N12*P12"
+        },
+        "common_per_shot_preparation_ld12_guaranteed_better_from": 341652394.86695886,
+        "common_per_shot_preparation_ld3_guaranteed_better_until": null,
+        "common_per_shot_preparation_point_break_even": 47067344.3364899,
+        "common_preparation_cost_point_preference": {
+          "above_break_even": "L_D=12",
+          "at_break_even": "equal_point_estimates",
+          "below_break_even": "L_D=3"
+        },
+        "intervals_overlap_at_zero_preparation_cost": true,
+        "ld12_total_shots": 11162,
+        "ld3_minus_ld12_shot_count": 2376,
+        "ld3_total_shots": 13538,
+        "point_no_prep_work_advantage_ld3": 111832010143.5,
+        "units": "compiled_rz_equivalent_per_shot"
+      },
+      "direct_domain": "scenario assumption",
+      "evidence_class": "focused_mixed_compiler_transfer_scenario",
+      "family": "optimization_level_2_focused_fixed_plan",
+      "ld12_no_prep_compiled_rz": 1327822299806.0,
+      "ld12_no_prep_interval": [
+        995866724854.5,
+        1659777874757.5
+      ],
+      "ld3_no_prep_compiled_rz": 1215990289662.5,
+      "ld3_no_prep_interval": [
+        848011784553.6057,
+        1583968794771.3943
+      ],
+      "name": "opt2_focused_transfer_25_percent",
+      "no_prep_intervals_overlap": true
+    },
+    "opt2_uniform_ratio_counterfactual_local_5_percent": {
+      "break_even": {
+        "candidate_specific_preparation_boundary": {
+          "ld12_guaranteed_better_if_weighted_preparation_difference_above": 326001980378.8734,
+          "ld3_guaranteed_better_if_weighted_preparation_difference_below": -50834258042.69141,
+          "point_equality": "N3*P3-N12*P12=ld12_cost-ld3_cost",
+          "point_rhs_compiled_rz": 137583861168.09106,
+          "weighted_preparation_difference_definition": "N3*P3-N12*P12"
+        },
+        "common_per_shot_preparation_ld12_guaranteed_better_from": 137206220.69817904,
+        "common_per_shot_preparation_ld3_guaranteed_better_until": null,
+        "common_per_shot_preparation_point_break_even": 57905665.474785805,
+        "common_preparation_cost_point_preference": {
+          "above_break_even": "L_D=12",
+          "at_break_even": "equal_point_estimates",
+          "below_break_even": "L_D=3"
+        },
+        "intervals_overlap_at_zero_preparation_cost": true,
+        "ld12_total_shots": 11162,
+        "ld3_minus_ld12_shot_count": 2376,
+        "ld3_total_shots": 13538,
+        "point_no_prep_work_advantage_ld3": 137583861168.09106,
+        "units": "compiled_rz_equivalent_per_shot"
+      },
+      "direct_domain": "ratio transfer to unmeasured L_D=3 r<32 rounds",
+      "evidence_class": "counterfactual_not_direct_evidence_for_r_below_32",
+      "family": "optimization_level_2_uniform_ratio_counterfactual",
+      "ld12_no_prep_compiled_rz": 1327822299806.0,
+      "ld12_no_prep_interval": [
+        1261431184815.7,
+        1394213414796.3
+      ],
+      "ld3_no_prep_compiled_rz": 1190238438637.909,
+      "ld3_no_prep_interval": [
+        1068211434417.4266,
+        1312265442858.3914
+      ],
+      "name": "opt2_uniform_ratio_counterfactual_local_5_percent",
+      "no_prep_intervals_overlap": true
+    },
+    "opt2_uniform_ratio_counterfactual_maximum_rz_q_le_32": {
+      "break_even": {
+        "candidate_specific_preparation_boundary": {
+          "ld12_guaranteed_better_if_weighted_preparation_difference_above": 286225526078.39,
+          "ld3_guaranteed_better_if_weighted_preparation_difference_below": -11057803742.208008,
+          "point_equality": "N3*P3-N12*P12=ld12_cost-ld3_cost",
+          "point_rhs_compiled_rz": 137583861168.09106,
+          "weighted_preparation_difference_definition": "N3*P3-N12*P12"
+        },
+        "common_per_shot_preparation_ld12_guaranteed_better_from": 120465288.75353116,
+        "common_per_shot_preparation_ld3_guaranteed_better_until": null,
+        "common_per_shot_preparation_point_break_even": 57905665.474785805,
+        "common_preparation_cost_point_preference": {
+          "above_break_even": "L_D=12",
+          "at_break_even": "equal_point_estimates",
+          "below_break_even": "L_D=3"
+        },
+        "intervals_overlap_at_zero_preparation_cost": true,
+        "ld12_total_shots": 11162,
+        "ld3_minus_ld12_shot_count": 2376,
+        "ld3_total_shots": 13538,
+        "point_no_prep_work_advantage_ld3": 137583861168.09106,
+        "units": "compiled_rz_equivalent_per_shot"
+      },
+      "direct_domain": "ratio transfer to unmeasured L_D=3 r<32 rounds",
+      "evidence_class": "counterfactual_not_direct_evidence_for_r_below_32",
+      "family": "optimization_level_2_uniform_ratio_counterfactual",
+      "ld12_no_prep_compiled_rz": 1327822299806.0,
+      "ld12_no_prep_interval": [
+        1282406081179.8103,
+        1373238518432.1897
+      ],
+      "ld3_no_prep_compiled_rz": 1190238438637.909,
+      "ld3_no_prep_interval": [
+        1087012992353.7997,
+        1293463884922.0183
+      ],
+      "name": "opt2_uniform_ratio_counterfactual_maximum_rz_q_le_32",
+      "no_prep_intervals_overlap": true
+    },
+    "opt2_uniform_ratio_counterfactual_selected_q_le_32": {
+      "break_even": {
+        "candidate_specific_preparation_boundary": {
+          "ld12_guaranteed_better_if_weighted_preparation_difference_above": 259011484280.89258,
+          "ld3_guaranteed_better_if_weighted_preparation_difference_below": 16156238055.28955,
+          "point_equality": "N3*P3-N12*P12=ld12_cost-ld3_cost",
+          "point_rhs_compiled_rz": 137583861168.09106,
+          "weighted_preparation_difference_definition": "N3*P3-N12*P12"
+        },
+        "common_per_shot_preparation_ld12_guaranteed_better_from": 109011567.45828812,
+        "common_per_shot_preparation_ld3_guaranteed_better_until": 6799763.491283481,
+        "common_per_shot_preparation_point_break_even": 57905665.474785805,
+        "common_preparation_cost_point_preference": {
+          "above_break_even": "L_D=12",
+          "at_break_even": "equal_point_estimates",
+          "below_break_even": "L_D=3"
+        },
+        "intervals_overlap_at_zero_preparation_cost": false,
+        "ld12_total_shots": 11162,
+        "ld3_minus_ld12_shot_count": 2376,
+        "ld3_total_shots": 13538,
+        "point_no_prep_work_advantage_ld3": 137583861168.09106,
+        "units": "compiled_rz_equivalent_per_shot"
+      },
+      "direct_domain": "ratio transfer to unmeasured L_D=3 r<32 rounds",
+      "evidence_class": "counterfactual_not_direct_evidence_for_r_below_32",
+      "family": "optimization_level_2_uniform_ratio_counterfactual",
+      "ld12_no_prep_compiled_rz": 1327822299806.0,
+      "ld12_no_prep_interval": [
+        1296756573610.307,
+        1358888026001.693
+      ],
+      "ld3_no_prep_compiled_rz": 1190238438637.909,
+      "ld3_no_prep_interval": [
+        1099876541720.8005,
+        1280600335555.0173
+      ],
+      "name": "opt2_uniform_ratio_counterfactual_selected_q_le_32",
+      "no_prep_intervals_overlap": false
+    },
+    "opt2_uniform_ratio_counterfactual_transfer_25_percent": {
+      "break_even": {
+        "candidate_specific_preparation_boundary": {
+          "ld12_guaranteed_better_if_weighted_preparation_difference_above": 829614128067.6552,
+          "ld3_guaranteed_better_if_weighted_preparation_difference_below": -554446405731.4731,
+          "point_equality": "N3*P3-N12*P12=ld12_cost-ld3_cost",
+          "point_rhs_compiled_rz": 137583861168.09106,
+          "weighted_preparation_difference_definition": "N3*P3-N12*P12"
+        },
+        "common_per_shot_preparation_ld12_guaranteed_better_from": 349164195.31466967,
+        "common_per_shot_preparation_ld3_guaranteed_better_until": null,
+        "common_per_shot_preparation_point_break_even": 57905665.474785805,
+        "common_preparation_cost_point_preference": {
+          "above_break_even": "L_D=12",
+          "at_break_even": "equal_point_estimates",
+          "below_break_even": "L_D=3"
+        },
+        "intervals_overlap_at_zero_preparation_cost": true,
+        "ld12_total_shots": 11162,
+        "ld3_minus_ld12_shot_count": 2376,
+        "ld3_total_shots": 13538,
+        "point_no_prep_work_advantage_ld3": 137583861168.09106,
+        "units": "compiled_rz_equivalent_per_shot"
+      },
+      "direct_domain": "ratio transfer to unmeasured L_D=3 r<32 rounds",
+      "evidence_class": "counterfactual_not_direct_evidence_for_r_below_32",
+      "family": "optimization_level_2_uniform_ratio_counterfactual",
+      "ld12_no_prep_compiled_rz": 1327822299806.0,
+      "ld12_no_prep_interval": [
+        995866724854.5,
+        1659777874757.5
+      ],
+      "ld3_no_prep_compiled_rz": 1190238438637.909,
+      "ld3_no_prep_interval": [
+        830163746689.8448,
+        1550313130585.9731
+      ],
+      "name": "opt2_uniform_ratio_counterfactual_transfer_25_percent",
+      "no_prep_intervals_overlap": true
+    }
+  },
+  "provenance": {
+    "command": ".venv311/bin/python scripts/run_research_direction_uncertainty_break_even.py",
+    "evidence_status": "local_worktree_analysis_not_externally_reproduced",
+    "generated_at_utc": "2026-09-23T11:27:08.974709+00:00",
+    "git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+    "git_worktree_status_before_generation": [
+      " M PROJECT_MAP.md",
+      " M VALIDATION_STATUS.md",
+      " M artifacts/validation_manifest.json",
+      " M docs/README.md",
+      " M docs/pf_delta_validation.md",
+      " M \"docs/research/\\346\\225\\260\\345\\200\\244\\345\\256\\237\\351\\250\\223\\343\\203\\273\\350\\251\\225\\344\\276\\241\\350\\250\\210\\347\\224\\273.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/README.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\346\\246\\202\\350\\246\\201\\343\\203\\273\\347\\217\\276\\347\\212\\266.md\"",
+      " M scripts/README.md",
+      " M scripts/run_pf_delta_validation.py",
+      " M src/trotterlib/README.md",
+      " M src/trotterlib/df_partial_s2.py",
+      " M src/trotterlib/df_partial_s2_repeated.py",
+      " M src/trotterlib/df_rte_circuit.py",
+      " M src/trotterlib/df_rte_qiskit.py",
+      " M src/trotterlib/pf_delta_validation.py",
+      " M tests/test_pf_delta_validation.py",
+      "?? artifacts/research_direction_ablation/",
+      "?? artifacts/research_direction_compiler_transfer/",
+      "?? artifacts/research_direction_decision_cost/",
+      "?? artifacts/research_direction_full_scope/",
+      "?? artifacts/research_direction_full_scope_extension/",
+      "?? artifacts/research_direction_full_scope_replication/",
+      "?? artifacts/research_direction_gate_s1/",
+      "?? artifacts/research_direction_pf_sensitivity/",
+      "?? artifacts/research_direction_prevalidation/",
+      "?? artifacts/research_direction_proxy_precision/",
+      "?? artifacts/research_direction_round_dominance/",
+      "?? artifacts/research_direction_sequence_policy/",
+      "?? artifacts/research_direction_structure_pilot/",
+      "?? \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-21.md\"",
+      "?? \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-22.md\"",
+      "?? \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-23.md\"",
+      "?? docs/research_direction_ablation.md",
+      "?? docs/research_direction_compiler_transfer.md",
+      "?? docs/research_direction_decision_cost.md",
+      "?? docs/research_direction_full_scope.md",
+      "?? docs/research_direction_full_scope_extension.md",
+      "?? docs/research_direction_gate_s1.md",
+      "?? docs/research_direction_late_round_proxy.md",
+      "?? docs/research_direction_pf_sensitivity.md",
+      "?? docs/research_direction_prevalidation.md",
+      "?? docs/research_direction_sequence_policy.md",
+      "?? docs/research_direction_structure_pilot.md",
+      "?? partial_randomized_trotter_prevalidation_catalog.md",
+      "?? scripts/run_research_direction_ablation.py",
+      "?? scripts/run_research_direction_compiler_transfer_analysis.py",
+      "?? scripts/run_research_direction_compiler_transfer_compute.py",
+      "?? scripts/run_research_direction_decision_cost.py",
+      "?? scripts/run_research_direction_decision_synthesis.py",
+      "?? scripts/run_research_direction_full_scope.py",
+      "?? scripts/run_research_direction_full_scope_extension.py",
+      "?? scripts/run_research_direction_full_scope_replication.py",
+      "?? scripts/run_research_direction_gate_s1.py",
+      "?? scripts/run_research_direction_m08_reaggregation.py",
+      "?? scripts/run_research_direction_pf_sensitivity.py",
+      "?? scripts/run_research_direction_prevalidation.py",
+      "?? scripts/run_research_direction_proxy_precision.py",
+      "?? scripts/run_research_direction_round_dominance.py",
+      "?? scripts/run_research_direction_sequence_policy.py",
+      "?? scripts/run_research_direction_structure_pilot.py",
+      "?? scripts/run_research_direction_uncertainty_break_even.py",
+      "?? src/trotterlib/research_direction_ablation.py",
+      "?? src/trotterlib/research_direction_compiler_transfer_analysis.py",
+      "?? src/trotterlib/research_direction_compiler_transfer_compute.py",
+      "?? src/trotterlib/research_direction_decision_cost.py",
+      "?? src/trotterlib/research_direction_decision_synthesis.py",
+      "?? src/trotterlib/research_direction_full_scope.py",
+      "?? src/trotterlib/research_direction_full_scope_extension.py",
+      "?? src/trotterlib/research_direction_full_scope_replication.py",
+      "?? src/trotterlib/research_direction_gate_s1.py",
+      "?? src/trotterlib/research_direction_m08_reaggregation.py",
+      "?? src/trotterlib/research_direction_pf_sensitivity.py",
+      "?? src/trotterlib/research_direction_prevalidation.py",
+      "?? src/trotterlib/research_direction_proxy_precision.py",
+      "?? src/trotterlib/research_direction_round_dominance.py",
+      "?? src/trotterlib/research_direction_sequence_policy.py",
+      "?? src/trotterlib/research_direction_structure_pilot.py",
+      "?? src/trotterlib/research_direction_uncertainty_break_even.py",
+      "?? tests/test_research_direction_ablation.py",
+      "?? tests/test_research_direction_compiler_transfer_analysis.py",
+      "?? tests/test_research_direction_compiler_transfer_compute.py",
+      "?? tests/test_research_direction_decision_cost.py",
+      "?? tests/test_research_direction_decision_synthesis.py",
+      "?? tests/test_research_direction_full_scope.py",
+      "?? tests/test_research_direction_full_scope_extension.py",
+      "?? tests/test_research_direction_full_scope_replication.py",
+      "?? tests/test_research_direction_gate_s1.py",
+      "?? tests/test_research_direction_m08_reaggregation.py",
+      "?? tests/test_research_direction_pf_sensitivity.py",
+      "?? tests/test_research_direction_prevalidation.py",
+      "?? tests/test_research_direction_proxy_precision.py",
+      "?? tests/test_research_direction_round_dominance.py",
+      "?? tests/test_research_direction_sequence_policy.py",
+      "?? tests/test_research_direction_structure_pilot.py",
+      "?? tests/test_research_direction_uncertainty_break_even.py"
+    ],
+    "python_version": "3.11.0rc1",
+    "source_sha256": {
+      "scripts/run_research_direction_uncertainty_break_even.py": "1affcc1245710ace51a4132c2c4082d6b3ea20b12c2a5e9e69af08186f02bdda",
+      "src/trotterlib/research_direction_uncertainty_break_even.py": "bec4bad244ac0ebc2a08a75a5e742372c19e938ae3a0644f5ff9ec2a7271734e"
+    }
+  },
+  "schema_version": "research_direction_uncertainty_break_even_v1",
+  "scope": {
+    "backend_execution_included": false,
+    "external_transfer_validated": false,
+    "final_total_cost_evaluation_performed": false,
+    "ld3_opt2_r_below_32_directly_validated": false,
+    "new_circuit_compilation_performed": false,
+    "noise_included": false,
+    "q_above_32_directly_validated": false,
+    "scientific_superiority_claimed": false,
+    "state_preparation_cost_measured": false,
+    "state_preparation_cost_parameterized": true
+  },
+  "source_evidence": {
+    "compiler_transfer": {
+      "content_fingerprint": "7ebe8815a633a182b4afa4608b969df5c53d1b6d1efe6eeaf2ce4e653fcbbd95",
+      "path": "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_focused_analysis_reaggregation_v1.json",
+      "sha256": "e7547aed984314ddc91a6e76d8a76a9c2882df81fed5f5b93e3f2c9d9030cb4a"
+    },
+    "m08_reaggregation": {
+      "content_fingerprint": "6aa69bc756a97aa025e26994f596f9ee3df999be2e64be870ce938dca5180b3e",
+      "path": "artifacts/research_direction_proxy_precision/2026-09-22/wp01d_c07_m08_measured_discrepancy_reaggregation_v1.json",
+      "sha256": "920d38e452e96c83b7b128ebd2efe4b53edadd56d93ee5db900b2471b2d5b4ac"
+    },
+    "wp01d": {
+      "content_fingerprint": "709142f76a78232804cae9971a24bc5757b3ef2e5258adb7314fc42e91937474",
+      "path": "artifacts/research_direction_decision_cost/2026-09-22/wp01d_c07_full_scope_optimization_compute_v2.json",
+      "sha256": "718c79f8137913bf4690ac717a5c6a3c693114666bfded189fb44c9de540128d"
+    }
+  },
+  "stage": "N07-P03-analysis-reaggregation",
+  "summary": {
+    "compiler_robust_interval_preference": "not_established",
+    "ld3_minus_ld12_shots": 2376,
+    "next_action": "WP11_scoped_direction_synthesis_before_full_opt2_or_external_pilot",
+    "opt1_local_ld3_guaranteed_better_until": 640843.4282747519,
+    "opt1_point_break_even": 99045126.10035248,
+    "opt2_focused_ld3_guaranteed_better_until": null,
+    "opt2_focused_point_break_even": 47067344.3364899,
+    "robust_directional_result": "undetermined_under_compiler_transfer_and_preparation_sensitivity"
+  },
+  "synthesis": {
+    "common_preparation_cost_effect": "always_erodes_ld3_advantage_because_ld3_uses_more_shots",
+    "compiler_robust_guaranteed_ld3_preparation_interval": null,
+    "compiler_robust_interval_preference": "not_established",
+    "dominant_next_decision_uncertainties": [
+      "unmeasured_opt2_r_below_32",
+      "q_above_32_transfer",
+      "state_preparation_if_cost_approaches_point_break_even"
+    ],
+    "no_prep_point_preference_in_all_scenarios": "L_D=3",
+    "noncounterfactual_point_break_even_range": [
+      47067344.3364899,
+      99045126.10035248
+    ]
+  }
+}

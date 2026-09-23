@@ -1,5 +1,345 @@
 # Validation status
 
+## 2026-09-23 WP11 scoped direction synthesis note
+
+Gate S1、WP06-a/b、WP05-a/b/R、WP01-D/C07、G08、M08、M06/L08、N07/P03の11個の
+fingerprint済みartifactを新規compileなしで統合した。固定範囲はH4 linear chain、1.0 Å、
+STO-3G、8 qubit、DF rank 12、`CA/10`、`L_D=3,12`、compiled RZである。
+
+T4（長いランダム回路cost予測）とT7（信頼できる資源評価・否定的結果）を主軸として継続し、
+T1は一般的優位性からH4条件付き成立限界へ範囲変更、T2/T5/T6は限定継続、T3は保留とした。
+状態準備なしの点推定候補は`L_D=3`だが、頑健判定は
+`undetermined_under_compiler_transfer_and_preparation_sensitivity`のままである。
+
+次の一件は`all_r_coherent_opt2_reoptimization`とした。既存opt2証拠は`L_D=3,r=32`だけなので、
+未測定`r=1,2,4,8,16`をoptimization level 2で較正・holdoutし、同一compiler contextで
+beta、alpha、shot、scheduleを再最適化する。外部instance pilotは棄却せず、この比較を完了または
+停止した後へ延期する。選択次段はCPU transpile中心でGPUを必要としない。
+
+WP11自体は新規物理計算、full opt2実行、q>32直接検証、状態準備計測、backend/noise、最終総cost、
+科学的優位性を含まない。artifact fingerprintは
+`45def7f696eddba574878cc7530837dfdfc5c6e9c2767ee3e115cf4a5f1ac092`。専用testは`3 passed`、
+変更後のlocal全suiteは`557 passed, 4 warnings`で、warningは既存grouped-UWC test由来である。
+詳細は[WP11限定判断統合](docs/research_direction_wp11_synthesis.md)。
+
+## 2026-09-23 N07/P03 uncertainty ledger and preparation break-even note
+
+WP01-D/C07、M08再集計、M06/L08 compiler-transferのfingerprint済みartifactを使い、新しい
+回路compileなしで不確かさ台帳と状態準備costのbreak-evenを再集計した。固定H4 linear chain、
+1.0 Å、STO-3G、8 qubit、DF rank 12、$L_D=3,12$、$\delta=0.02$、compiled RZ比較である。
+shot数は13,538と11,162で、$L_D=3$が2,376多い。
+
+共通の1 shot当たり状態準備costをPとすると、点推定break-evenはopt1で99,045,126、opt2
+focusedで47,067,344 compiled-RZ相当/shotだった。opt1 local 5%区間で$L_D=3$が確実に低い
+P範囲は0--640,843に限られる。opt2 focused selected実測幅はP=0ですでに区間が重なるため、
+compiler-robustに$L_D=3$区間が低い非負P範囲はない。候補別準備では共通Pを使わず、
+`13538*P3-11162*P12`の二次元境界を使用する。
+
+sampling、model discrepancy、compiler、q>32移送、opt2の$r<32$、状態準備、外部snapshot/backend/noiseを
+別classとして記録した。頑健判定は
+`undetermined_under_compiler_transfer_and_preparation_sensitivity`である。後続WP11限定判断統合へ入力済みである。
+状態準備costは測定しておらず、q>32、full opt2、backend/noise、最終総cost、科学的優位性を含まない。
+artifact fingerprintは`ff70308a64798c6ba8c9d20533c9e9e8c614e58c0d433dd861b7de45ac70c32d`。
+専用testは`2 passed`。変更後のlocal全suiteは`540 passed, 4 warnings`で、warningは既存
+grouped-UWC test由来である。詳細は
+[N07/P03不確かさ・break-even](docs/research_direction_uncertainty_break_even.md)。
+
+## 2026-09-23 M06/L08 compiler-transfer analysis and reaggregation note
+
+固定H4 linear chain、1.0 Å、STO-3G、8 qubit、DF rank 12、$\delta=0.02$で、
+同一trajectoryをQiskit optimization level 1から2へ変更して再compileした。$L_D=3,r=32$の
+$q=1,2,16,32$とtail-free $L_D=12$を評価し、その他のcompiler条件は固定した。
+optimization level 2の$q=1,2$ affine proxyは$q=16,32$でselected RZ最大2.340%、selected
+全metric最大2.470%、full-basis RZ最大3.420%、direct RZ relative SE最大1.387%となり、
+5%点誤差・2%精度基準を通過した。
+
+WP01-D/C07のschedule、shot、$\alpha$、$\beta$を固定し、$L_D=3$は直接証拠のある$r=32$の
+最後3 roundだけ、$L_D=12$は決定論provider全体をoptimization level 2へ置換した。点推定は
+$1.2159903\times10^{12}$と$1.3278223\times10^{12}$で$L_D=3$が8.42%低いが、対称discrepancyの
+分離上限1.881%に対しselected実測値は2.340%で、区間は重なった。一様比率を未測定$r<32$へ
+移す反実仮想もdiscrepancyの選択で分離判定が変わる。従ってcompiler-invariantなlocal分離は
+未確立で、頑健判定は`undetermined_under_compiler_and_transfer_sensitivity`とする。
+
+raw artifact fingerprintは`87f66c8944dedfaa9fe5f0edf864d2a2a07cb82e23245af4f5944f90bda83ad6`、
+解析・再集計artifact fingerprintは`7ebe8815a633a182b4afa4608b969df5c53d1b6d1efe6eeaf2ce4e653fcbbd95`。
+専用testは`3 passed`、変更後のlocal全suiteは`538 passed, 4 warnings`で、warningは既存grouped-UWC test由来である。これはlocal dirty-worktree evidenceであり、$L_D=3,r<32$のopt2直接検証、
+$q>32$、full opt2再最適化、最終総cost、科学的優位性を含まない。詳細は
+[M06/L08 compiler-transfer解析](docs/research_direction_compiler_transfer.md)。
+
+## 2026-09-22 M08 late-round holdout and WP01-D/C07 reaggregation note
+
+固定H4 linear chain、1.0 Å、STO-3G、8 qubit、DF rank 12、$L_D=3$、$\delta=0.02$、
+$r=32,K=2$について、G08で固定した未使用$q=16,32$を各8 fresh trajectory、cosine/sine両軸、
+selected `support_run_le_1`／full basisのcomplete controlled Hadamard wrapperで直接transpileした。
+selected policyのRZ誤差は最大2.466%、全metric最大2.569%、full-basis RZ誤差最大3.286%、
+direct RZ relative SE最大1.353%で、5%基準、5.0484%分離限界、2%精度診断を全て通過した。
+事前規則による$q=64$ follow-upは発火しなかった。
+
+WP01-D/C07の点推定・schedule・shot数・較正half-widthを保持し、M08 selected RZ 2.466%と
+観測RZ最大3.286%を共通の対称model-discrepancy scenarioとして再集計した。両scenarioとも
+$L_D=3$と$L_D=12$の区間は分離し、従来5%区間も僅かに分離したままだった。一方、25%移送区間は
+重なったため、頑健な方向判断は`undetermined_under_transfer_sensitivity`を維持する。
+
+M08測定は$q\leq32$だけの直接証拠で、実scheduleの$q_{\max}=131072$、$L_D=12$、別snapshot、
+別compilerへの直接証拠ではない。再集計は同じ許容幅を両候補へ置く反実仮想であり、点推定の
+再最適化でも最終総cost評価でもない。M08 artifact fingerprintは
+`e010a63bfa5aecd7de01ba074f56300615460de9e6f51a40dca352954992aaf8`、再集計artifactは
+`6aa69bc756a97aa025e26994f596f9ee3df999be2e64be870ce938dca5180b3e`。詳細は
+[G08/M08後半round proxy精度](docs/research_direction_late_round_proxy.md)。変更後のlocal全suiteは
+`535 passed, 4 warnings`で、warningは既存grouped-UWC test由来である。
+
+## 2026-09-22 G08 round-dominance note
+
+WP01-D/C07のfingerprint済みschema-v2 computeと判断統合artifactを、新しい回路compileなしで
+round別に再集計した。最後3 roundは$L_D=3$のcompiled RZ cost 90.94%、較正不確かさ87.70%、
+$L_D=12$のcost 83.03%を占めた。両候補の最大cost/PF-riskはround 17だが、$L_D=3$の最大
+finite-RTE riskはround 7であり、最大cost roundとは一致しない。
+
+この結果からM08を$\delta=0.02,r=32,K=2,q=16,32$の各8 fresh trajectoryへ限定した。
+判定はselected RZ・全metricとfull-basis RZの5%、local区間分離限界5.0484%、direct RZ
+relative SE 2%である。G08 artifact fingerprintは
+`e696ced27b06e871368f3afa164f507c240d4aa6693223f9f6abe7990b30d064`。これはlocal
+dirty-worktreeの検証資源配分判断で、$q>8$精度または最終総costそのものの検証ではない。詳細は
+[G08/M08後半round proxy精度](docs/research_direction_late_round_proxy.md)。
+
+## 2026-09-22 WP01-D/C07 candidate-specific optimization and interval synthesis note
+
+固定H4 linear chain、1.0 Å、STO-3G、8 qubit、DF rank 12、CA/10について、$L_D=3$の
+`support_run_le_1`とtail-free $L_D=12$、$\delta=0.01,0.02$を比較した。WP05-bRまでの
+complete controlled partial-$S_2$／Hadamard wrapperの$q=1,2$ affine proxyと$q=4,8$ holdoutを
+使い、compiled RZ、$\beta_{\mathrm{RPE}}=0.40$ rad、$\alpha_{\mathrm{tot}}=0.05$、
+cost-weighted $\alpha$の下でPF/RTE/statistical budgetと整数shot数を候補ごとに再最適化した。
+coarse/fine gridの後、上位20解のPF/RTE制約境界を反復的に締めている。
+
+両候補とも$\delta=0.02$を選んだ。$L_D=3$は13,538 shot、点推定
+$1.4557921\times10^{12}$、$L_D=12$は11,162 shot、$1.6911234\times10^{12}$で、前者が
+13.916%低い。5% local model区間はそれぞれ$[1.30654,1.60504]\times10^{12}$と
+$[1.60657,1.77568]\times10^{12}$で僅かに分離した。ただし分離幅は$L_D=12$点推定の約0.090%、
+対称model discrepancy 5.0484%が分離限界で、採用した5%との差は0.0484 percentage pointに過ぎない。
+25%移送区間$[1.01538,1.89620]\times10^{12}$と$[1.26834,2.11390]\times10^{12}$は重なる。
+
+したがってlocal model条件付きの候補は$L_D=3$だが、頑健な方向判断は
+`undetermined_under_transfer_sensitivity`であり、部分ランダム化の科学的優位性または最終総costを
+示さない。次はM08/G08として、総costの83--91%を占める後半3 round付近の$q>8$ proxyを直接
+較正・holdoutする。状態準備、実backend、noise、別snapshot/系サイズ、immutable CI、外部再現は
+含まない。詳細は[WP01-D/C07再最適化](docs/research_direction_decision_cost.md)。
+compute artifact fingerprintは
+`709142f76a78232804cae9971a24bc5757b3ef2e5258adb7314fc42e91937474`、判断統合artifactは
+`7d85b472851a6c4046b847a7e9898a718e96b2bad7a50fd491d939b34244250f`である。schema-v1 computeは
+grid下端依存を検出した予備診断で、現行判断には使わない。変更後のlocal全suiteは
+`530 passed, 4 warnings`で、warningは既存grouped-UWC test由来である。
+
+## 2026-09-22 WP05-b/R full-scope extension and focused replication note
+
+WP05-aと同じ固定H4 snapshot・compilerで、$L_D=3$の`support_run_le_1`とfull basisを
+$q=8$および比較対照$\delta=0.01$へ拡張した。$\delta=0.01$は選択policyの$q=8$ RZ誤差
+最大2.650%、全metric最大2.804%、full basis RZ誤差最大4.321%、全metric最大4.500%で
+事前5%基準を通過した。初回$\delta=0.02,r=32,q=8$は選択policy RZ 5.084%、
+全metric 5.392%、full basis RZ 8.995%で不通過だった。
+
+この一点を新しいseedの独立32 trajectoryで再検証したWP05-bRでは、選択policyの$q=8$ RZ誤差
+0.516%、全metric最大0.537%、full basis RZ誤差0.829%、選択policy$q=4$全metric最大1.094%で、
+全checkが5%基準を通過した。初回超過は高統計再検証で再現しなかった。これは1 snapshot・
+1 compiler・最大$q=8$のlocal dirty-worktree evidenceであり、$q>8$や別条件への精度移送、
+最終総costを保証しない。詳細は
+[WP05-b/R拡張・再検証](docs/research_direction_full_scope_extension.md)。初回artifact fingerprintは
+`363ac90ace643556ff068ff7b22ed8e43c51c6dbd0085a2256dac29a0303bfda`、再検証artifactは
+`7bfeddaccfe10f28b67bdf857ebd76cd43b0eb74b5af5d209a435ee9d8abb472`である。
+
+## 2026-09-22 WP05-a full controlled-interrogation connection note
+
+固定H4 linear chain、1.0 Å、STO-3G、8 qubit、DF rank 12、$L_D=3,12$、$\delta=0.02$、
+Qiskit 1.3.0の`rz,sx,x,cx`、optimization level 1、seed 17、coupling mapなしで実施した。
+WP06-bの`support_run_le_1`を明示basis planとしてcomplete controlled partial-$S_2$、反復回路、
+cosine/sine Hadamard wrapper、ancilla Z測定まで伝播した。production既定値はfull basisのままである。
+
+$L_D=3$では$r=1,2,4,8,16,32$、$q=1,2,4$、各8 trajectoryについてfull/policyを対応付け、
+576本のmeasurement-bearing wrapperを直接transpileした。$q=1,2$から固定したaffine式は、独立seedの
+$q=4$で選択policyのRZを最大2.288%、全6 metricを最大2.431%で予測した。full basisのRZ最大誤差は
+4.234%、tail-free $L_D=12$は0%だった。WP06-b中央RTE additive bridgeと今回の直接wrapper差の
+RZ残差はfull-wrapper平均比で最大2.625%となり、事前5%基準を通過した。H4の固定ランダム状態作用
+比較はcontrolled evolutionと両wrapperで最大$1.08\times10^{-16}$、relative ancilla phaseも一致した。
+専用小系testでは完全operatorを比較している。
+
+WP04のround、shot、$\alpha$を固定した非decision-grade長$q$感度では、選択policyの$L_D=3$が
+$1.5933\times10^{12}$、tail-free $L_D=12$が$1.6963\times10^{12}$で、点推定は$L_D=3$が6.07%
+低い。ただしlocal区間$[1.3489,1.8377]\times10^{12}$と
+$[1.6115,1.7811]\times10^{12}$は重なる。$q>4$を直接transpileせず、$\alpha$・shot・scheduleも
+再最適化していないため、最終総costまたは科学的優位性ではない。
+
+後続のWP05-b/Rで$q=8$と$\delta=0.01$の5%基準を通過し、WP01-D/C07の再最適化まで完了した。
+状態準備、backend実行、noise、量子shot、immutable CI、外部再現は含まない。詳細は
+[WP05-a full-scope接続](docs/research_direction_full_scope.md)。専用testは`4 passed`、成果物fingerprintは
+`d8196ef1d8a576b7b7ab443c8613d2bd70b7a4fa57f43ac495be62bf2748f512`である。変更後のlocal全suiteは
+`524 passed, 4 warnings`で、warningは既存grouped-UWC test由来である。
+
+## 2026-09-22 WP06-b sequence-policy and proxy-bridge note
+
+WP06-aと同じH4 linear chain、1.0 Å、STO-3G、8 qubit、DF rank 12、固定snapshot、$L_D=3$、
+$\delta=0.02,K=2$、Qiskit 1.3.0 compilerでsequence-aware basis policyを比較した。元DF basisの
+run長1,2,3以下または全runをsupport限定へ置換する候補を列長1,2,4の独立trainingで比較し、各trajectory
+のRZ悪化5% guardを通る`support_run_le_1`を固定した。production builderの既定値は変更せず、明示
+basis planとして渡す。
+
+未使用列長3,6の各12本では、full basis共有比でRZ -10.67%、CX -8.13%、total depth -2.25%、
+circuit size -10.63%だった。trajectory別oracleに対するpooled RZ regretはfull RZ基準0.390%。sampled
+列長1,3と強制$K=2$非零phase eventのcontrolled operator残差は最大$1.34\times10^{-15}$で、強制
+eventのrelative ancilla phaseも一致した。
+
+$r=1,2,4,8,16,32$の独立各8本から中央RTE差を既存Hadamard proxyの$q$ slopeへ加えると、RZ slopeは
+最大8.00%変化した。WP04のround、shot、$\alpha$、wrapper interceptを固定したbridgeでは$L_D=3$の
+点推定が$1.7848\times10^{12}$から$1.6503\times10^{12}$へ下がり、$L_D=3/12$の点順位が反転した。
+ただし両local区間は重なるため未決定を維持する。
+
+後続WP05-aで選択policyをcomplete controlled partial-$S_2$／Hadamard wrapperへ直接接続し、
+未使用$q=4$とadditive bridgeの5%基準を通過した。さらにWP05-b/Rの$q=8$・$\delta=0.01$、
+WP01-D/C07の候補別再最適化まで完了した。
+WP06-b自体は中央RTEだけのadditive bridgeであり、full wrapper、$\alpha$・shot再最適化、
+状態準備、実backend、noise、最終総cost、immutable CIまたは外部再現ではない。詳細は
+[WP06-b sequence policy](docs/research_direction_sequence_policy.md)。専用testは`5 passed`だった。
+変更後のlocal全suiteは`520 passed, 4 warnings`で、warningは既存grouped-UWC test由来である。
+
+## 2026-09-22 WP06-a circuit-structure pilot note
+
+Gate S1と同じH4 linear chain、1.0 Å、STO-3G、8 qubit、DF rank 12、固定snapshot、$L_D=3$、
+$\delta=0.02$で、係数最大のZ/ZZ event、同一fragmentの異なるsupportからなる長さ1--3列、
+full Gaussian basis、support限定completion、basis融合、control、scalar/relative phaseを比較した。
+compilerはQiskit 1.3.0、`rz,sx,x,cx`、optimization level 1、seed 17、coupling mapなしである。
+
+support限定completionは必要なunitary列を保持し、単一controlled ZのRZを204から78へ61.76%、
+ZZを311から189へ39.23%減らした。全比較の最大operator残差は$4.73\times10^{-15}$で、
+$10^{-10}$基準を通過した。Gate S1で事前固定した5% triggerは発火した。一方、異なるZZ supportの
+列では長さ2がRZ 19.58%減・depth 45.26%増、長さ3がRZ 15.01%増・depth 86.64%増となり、
+full basis共有とsupport限定の優劣が列長で反転した。support限定への一律置換は採用しない。
+
+whole-event controlと現行diagonal-only controlはrelative phaseを含め一致し、現行方針はRZを
+2,567から311へ87.88%、CXを1,834から98へ94.66%減らした。controlled scalar補償を省くと
+operator差0.0477098が生じ、現行補償を入れると$4.73\times10^{-15}$以内で一致した。controlと
+phase方針は維持する。
+
+次はfocused WP06-bとしてsequence-awareなfull/support basis policyをproduction builderへ統合し、
+物理event分布と未使用短列holdoutでproxyを再較正する。その後にWP05へ進む。これはlocal
+dirty-worktreeの構造pilotであり、$L_D$候補順位、RPE $q$傾き、full controlled interrogation、
+最終総cost、immutable CIまたは外部再現ではない。詳細は
+[WP06-a回路構造pilot](docs/research_direction_structure_pilot.md)。専用testは`4 passed`だった。
+変更後のlocal全suiteは`515 passed, 4 warnings`で、warningは既存grouped-UWC test由来である。
+
+## 2026-09-22 Gate-S1 research-direction synthesis note
+
+WP00、WP02、WP01-S、WP04、WP03のfingerprint済み成果物を統合した。新しい物理計算または
+回路compileは行っていない。WP04の$L_D=12$点推定は$L_D=3$より4.958%低いが、local 5%と
+transfer 25%の両scenarioが重なるため、`undetermined_not_tied`を維持する。主な共通利得は
+$\beta$、次いで$\alpha$再配分で、PF係数policyは全て$L_D=12,\delta=0.02$を選択した。
+partial randomization固有の優位性は示されていない。
+
+最大の残存不確かさをfull controlled interrogationの回路scope・構造と判定し、T4/T7を主軸、
+T1/T2/T5/T6を限定継続、T3を保留とした。次はWP06-aだけを行い、その後WP05へ進む。
+WP06-a専用のresearch-routing triggerはRZ相対変化5%、候補順位反転、$q$傾き・適用domainの変更、
+またはcontrolled relative phase補償の欠落である。5%は現点推定差4.958%に合わせたtask固有値で、
+普遍的な回路精度保証ではない。
+
+これはlocal dirty-worktreeの研究方向判断で、科学的優位性のdecision-grade評価、最終総cost、
+immutable CIまたは外部再現ではない。詳細は
+[Gate S1判断](docs/research_direction_gate_s1.md)。専用testは`4 passed`だった。
+変更後のlocal全suiteは`511 passed, 4 warnings`で、warningは既存grouped-UWC test由来である。
+
+## 2026-09-22 research-direction WP03 PF-coefficient sensitivity note
+
+WP00/WP04と同じH4 linear chain、1.0 Å、STO-3G、8 qubit、DF rank 12、固定snapshot
+`56e4df83...31e5`、CA/10 taskで、costed候補$L_D=3,12$、
+$\delta=0.01,0.0125,0.02$について、$C_D$、論文D6、支配固有位相係数だけを差し替えた。
+compiled-cost provider、round別compiled-RZ schedule、cost感度重み$\alpha$、WP04の候補別
+$\beta$配分は固定した。$L_D=0$はWP01-Sでcompiled-cost評価前にscreen out済みなので、
+係数反例の監査だけに含めた。
+
+$C_D$もD6・支配固有位相と同じconditioned窓$\delta=0.05,0.1,0.2,0.4$で再fitした。
+$L_D=3$の係数は$C_D=0.0117236$、D6 0.0133991、支配固有位相0.0133569で、$C_D$はD6比
+12.50%低かった。$L_D=12$では0.0134411、0.0134257、0.0133833だった。costed候補のD6と
+支配固有位相係数差は最大0.317%である。$L_D=0$では$C_D=0$でもD6 0.0115338、支配固有位相
+0.0114931が非零なので、$C_D$は引き続き広いscreening専用とし、shortlist後は候補ごとのD6を使う。
+
+3係数×2候補×3$\delta$の18条件は全てPF予算内で、全係数が$L_D=12,\delta=0.02$を
+RZ点推定最良とした。D6で$L_D=3,\delta=0.02$を選ぶ点regretは5.216%だが、相対差の
+local 5%＋較正scenarioは$[-15.91\%,28.57\%]$、25%移送scenarioは
+$[-46.20\%,90.91\%]$で0を跨ぐ。従って係数選択はWP04の`undetermined`判定を解消しない。
+$\delta=0.02$がPF予算外になるまでのD6係数増加余裕は$L_D=3$で6.76%、$L_D=12$で6.55%で、
+現行D6対支配固有位相差より大きいが、別instanceへ無条件に移送できる余裕ではない。
+
+保存されたD6のsigned biasは支配固有位相と逆符号で、定義の符号規約が直接揃っていない。
+また個々のmixed/tail交換子項は分解していないため、符号差を物理的相殺と解釈せず、$C_D$から
+full partial係数への差も省略効果の合計として扱う。
+
+これは$q=1,2$直接較正から長$q$へaffine外挿したlocal dirty-worktree screeningである。
+係数familyは統計的信頼分布でなく、状態準備、実backend、noise、full-scope holdout、最終総cost、
+優位性、immutable CIまたは外部再現を含まない。Gate S1に必要なWP01-S、WP02、WP04、WP03が
+揃ったため、次は研究方向判断を統合する。詳細は
+[WP03係数感度](docs/research_direction_pf_sensitivity.md)。専用testは`4 passed`だった。
+変更後のlocal全suiteは`507 passed, 4 warnings`で、warningは既存grouped-UWC test由来である。
+
+## 2026-09-21 research-direction WP04 ablation note
+
+WP00/WP01-Sと同じH4 linear chain、1.0 Å、STO-3G、8 qubit、DF rank 12、固定snapshot
+`56e4df83...31e5`、CA/10、$\delta=0.02$、$M=17$、$q_{\max}=131072$で、$L_D=3,12$の
+round schedule、$\beta$、$\alpha$、schedule-selection cost providerを分離した。状態準備なし
+Hadamard scopeの$q=1,2$直接較正を再利用し、$q>2$は軸別affine外挿とした。
+
+3 schedule policy、2 alpha policy、候補別beta profileから42 factorial cellを評価し、固定順の
+逐次差分、完全設定からのleave-one-out、beta--alpha interactionを保存した。完全設定から
+beta再配分を戻すとRZ点推定は$L_D=3,12$で143.2%、149.6%、alpha再配分を戻すと35.4%、
+26.3%増えた。$L_D=3$のcompiled-RZに整合したround scheduleは同じ完全設定の固定schedule比
+1.93%減に留まる一方、成分作用数を目的に選ぶscheduleはRZを16.87%増やした。したがって、
+WP04での主要な共通利得はbeta、次いでalpha再配分であり、cost provider変更をfinite-RTE固有の
+schedule利得と同一視しない。
+
+完全設定のRZ点推定は$L_D=3$で$1.7848\times10^{12}$、$L_D=12$で
+$1.6963\times10^{12}$となり、決定論endpointは4.96%低い。ただしlocal 5%＋較正区間と
+25%移送＋較正区間はともに重なるため、方向判定は引き続き`undetermined`である。
+$L_D=3$の選択schedule全18点を含むsector行列gridは既存validatorを通過し、最小観測半径
+0.5727013937は最小保守下界0.5727013920以上だった。$L_D=12$のtailなし信号の最小半径は
+0.9999999998だった。最後の3 roundは両候補のRZの91.9%、83.0%を占める。
+
+これはlocal dirty-worktreeの`model_conditional_screening`である。長$q$ costは未使用holdoutの
+ない$q=1,2$ affine外挿、beta gridは連続最適化でなく、厳密二項値は既知の小系信号に対する
+counterfactualである。状態準備、実backend、noise、full-scope holdout、最終総cost、部分
+ランダム化の優位性、immutable CIまたは外部再現を主張しない。次はWP03でPF係数だけを
+差し替え、候補順位とregretの変化を評価する。詳細は
+[WP04寄与分解](docs/research_direction_ablation.md)。専用testは`4 passed`だった。
+変更後のlocal全suiteは`503 passed, 4 warnings`で、warningは既存grouped-UWC test由来である。
+
+## 2026-09-21 research-direction WP00/WP02/WP01-S note
+
+H4 linear chain、1.0 Å、STO-3G、8 qubit、DF rank 12の固定Hamiltonian snapshot
+`56e4df83...31e5`について、研究方向screeningの最初の3段階を実行した。WP00では
+$L_D=0,3,12$のPF入力を同じsnapshotから再生成し、CA/10、$\beta=(0.02,0.02,0.36)$、
+$\alpha_{\rm total}=0.05$一様配分、状態準備なしHadamard scope、同一compilerの比較契約を固定した。
+既存PF artifactはcost snapshotとHamiltonian hashが一致しなかったため、この比較には使用しない。
+
+WP02ではCA、CA/10、CA/100と$\delta=0.01,0.0125,0.02$の9条件を監査した。
+CA/10の$q_{\max}$は131,072--262,144で、既存3 schedule・56点sector行列検査を再利用した。
+CA/100の$q_{\max}$は2,097,152--4,194,304で、3条件すべてが経験的
+$qC\delta^3\leq0.02$を満たさない。従ってCA/100は長回路costを先に外挿せず、
+小さい$\delta$と新scheduleを作る必要がある。
+
+WP01-Sでは$L_D=0$だけ$r=1,\ldots,65536$、$K=0,2,\ldots,16$へ探索域を拡張した。
+成分作用数proxyの最良条件は$\delta=0.02$、半径下界0.5473、shot合計25,400、
+proxy値$4.4839\times10^{12}$で、探索境界には当たらなかった。同じ目的関数の$L_D=3$最良値の
+560.6倍だったため、compiled RZ cost評価前にscreen outした。$L_D=3$の7種類の$(r,K)$は
+$\delta=0.02,q=1,2$のfull Hadamard wrapperを各8 classical trajectoryで直接compileし、
+$L_D=12$はtailなしの$q=1,2$を厳密評価した。CA/10の全roundへaffine外挿すると、
+両候補とも$\delta=0.02$が最小で、no-prep総RZ点推定は$L_D=3$が
+$3.0814\times10^{12}$、$L_D=12$が$2.4329\times10^{12}$だった。決定論endpointは
+点推定で21.0%低く、5% scenarioでは区間が分離するが、25%移送scenarioでは重なる。
+
+従って現状は、$L_D=0$をこの解析的screen内で強く不利とし、$L_D=3$対12は
+`undetermined`とする。$L_D=0$対3の560.6倍はcomponent-application proxyの比較であり、
+compiled RZ cost比または一般的な理論上の棄却ではない。
+PF係数は経験値、schedule別$q=1,2$ fitには未使用holdoutがなく、$q>2$は直接compileしていない。
+scenario幅も統計的信頼区間ではない。この結果を最終総cost、部分ランダム化の優位性、
+immutable CIまたは外部再現とは扱わない。次はWP04、WP03で寄与と係数感度を分離し、
+WP05後のWP01-Dでdecision-gradeに再評価する。詳細は
+[研究方向screening検証](docs/research_direction_prevalidation.md)。関連testの部分実行は`8 passed`で、
+変更後のlocal全suiteは`499 passed, 4 warnings`だった。warningは既存grouped-UWC test由来である。
+
 ## 2026-09-20 delta-schedule central-RTE compiled-cost note
 
 H4 chain、1.0 Å、STO-3G、8 qubit、DF rank 12、固定Hamiltonian snapshot、$L_D=3$、

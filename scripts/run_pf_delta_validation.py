@@ -22,6 +22,9 @@ from trotterlib.pf_delta_validation import (
     validate_pf_delta_grid,
     write_pf_delta_validation,
 )
+from trotterlib.rte_connected_cluster_cost_validation import (
+    load_connected_cluster_hamiltonian_snapshot,
+)
 
 
 def _float_tuple(value: str) -> tuple[float, ...]:
@@ -76,6 +79,19 @@ def _file_sha256(path: Path) -> str:
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--snapshot",
+        type=Path,
+        help=(
+            "Use an existing DF Hamiltonian snapshot instead of rebuilding the "
+            "molecule. This is the preferred path for cross-validation joins."
+        ),
+    )
+    parser.add_argument(
+        "--n-electrons",
+        type=int,
+        help="Physical-sector electron count; required with --snapshot.",
+    )
     parser.add_argument("--molecule", type=int, default=4)
     parser.add_argument("--distance", type=float, default=1.0)
     parser.add_argument("--basis", default="sto-3g")
@@ -138,17 +154,26 @@ def main() -> int:
         raise ValueError("L_D values must be non-negative.")
     if args.output is not None and len(ld_values) != 1:
         raise ValueError("--output can only be used with one L_D value.")
-    hamiltonian, molecule_sector = build_df_h_d_from_molecule(
-        args.molecule,
-        distance=args.distance,
-        basis=args.basis,
-        df_rank=args.df_rank,
-    )
-    if molecule_sector.n_electrons is None:
-        raise RuntimeError("The molecular sector is missing its electron count.")
+    if args.snapshot is None:
+        if args.n_electrons is not None:
+            raise ValueError("--n-electrons is only valid with --snapshot.")
+        hamiltonian, molecule_sector = build_df_h_d_from_molecule(
+            args.molecule,
+            distance=args.distance,
+            basis=args.basis,
+            df_rank=args.df_rank,
+        )
+        if molecule_sector.n_electrons is None:
+            raise RuntimeError("The molecular sector is missing its electron count.")
+        n_electrons = molecule_sector.n_electrons
+    else:
+        if args.n_electrons is None:
+            raise ValueError("--n-electrons is required with --snapshot.")
+        hamiltonian = load_connected_cluster_hamiltonian_snapshot(args.snapshot)
+        n_electrons = args.n_electrons
     validation_sector = PhysicalSector.number_sector(
         n_qubits=hamiltonian.n_qubits,
-        n_electrons=molecule_sector.n_electrons,
+        n_electrons=n_electrons,
     )
     command = shlex.join(
         [
@@ -169,6 +194,15 @@ def main() -> int:
         "qiskit_version": qiskit.__version__,
         "platform": platform.platform(),
         "shared_hamiltonian_generation": True,
+        "hamiltonian_input": (
+            {
+                "kind": "snapshot",
+                "path": str(args.snapshot),
+                "sha256": _file_sha256(args.snapshot),
+            }
+            if args.snapshot is not None
+            else {"kind": "rebuilt_from_molecule_arguments"}
+        ),
         "batch_ld_values": list(ld_values),
         "source_sha256": {
             "src/trotterlib/pf_delta_validation.py": _file_sha256(

@@ -1,6 +1,6 @@
 # プロジェクト案内
 
-最終更新：2026-09-20
+最終更新：2026-09-23
 
 このファイルは、人またはGPTがリポジトリ全体を読むときの入口である。研究内容の正本、
 実装、検証コード、結果データ、発表資料を区別し、古い研究経路を現在の結論として読まない
@@ -33,8 +33,55 @@ $\delta=0.1,r=4,K=2$は長roundへ単純外挿できないことを確認した�
 行列検査を通るscheduleを構成した。さらに、短時間幅0.02--0.000390625で局所回路指標が
 変わらないことと、イベント列長8、16、32への移送を検査し、$r\leq16$では1--3イベント、
 $r=32$では4イベント補正を用いる中央RTEブロックcost proxyを接続した。この限定proxyでは
-$\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比較対照0.01について、
-制御付きpartial-$S_2$反復とHadamard 1 shot costへ接続する段階である。
+$\delta=0.02$が全6指標で最小となった。
+
+2026-09-21に、広い検証backlogを一括実行せず、研究方向を選ぶGate S1を先に置く方針を採用し、
+最初の`WP00 -> WP02 -> WP01-S`を実行した。H4 rank-12固定snapshotへPF入力を結び直し、
+CA/CA/10/CA/100のround horizonを監査した。CA/10は既存3 schedule・56点行列検査を再利用できるが、
+CA/100は既存3つの$\delta$がすべて経験的PF予算を超える。CA/10の条件付き比較では
+$L_D=0$を拡張した解析的成分作用数proxyでscreen outし、$L_D=12$の点推定は$L_D=3$より
+21.0%低かった。
+ただし保守的な長$q$移送scenarioでは区間が重なるため、結論は未決定である。続くWP04では、
+両候補に公平な$\beta$・$\alpha$再配分を与えると決定論endpointの点推定差は4.96%へ縮み、
+5%・25%区間がともに重なることを確認した。共通の主要因は$\beta$、次いで$\alpha$再配分で、
+$L_D=3$のcompiled-cost整合round schedule単独の利得は固定schedule比1.93%だった。WP03では
+$C_D$、論文D6、支配固有位相係数だけを差し替えた18条件の選択が全て
+$L_D=12,\delta=0.02$で変わらず、係数選択も区間重なりを解消しなかった。Gate S1では
+これらを統合し、区間判定を「同点」でなく`undetermined`、最大の残存不確かさをfull controlled
+interrogationの回路scope・構造とした。T4とT7を主軸、T1/T2/T5/T6を限定継続、T3を保留とし、
+次の一件をWP06-aとした。WP06-aではsupport限定Gaussian completionが単一Z/ZZ eventのRZを
+39--62%減らした一方、異なるsupportの長さ3列ではfull basis共有より15.0%増え、事前の5% triggerが
+発火した。control・relative-phaseの現行方針は同値性を通過した。WP06-bでは独立trainingから、同一
+元basisのsingleton runだけsupport限定へ置換するpolicyを固定した。未使用列長3, 6でRZ -10.67%、
+CX -8.13%、total depth -2.25%、最大operator残差$1.34\times10^{-15}$だった。中央RTE差だけを既存
+proxyの$q$ slopeへ加えたbridgeでは$L_D=3/12$の点順位が反転した。続くWP05-aでは選択policyを
+complete controlled partial-$S_2$／Hadamard wrapperへ接続し、$q=1,2$較正から未使用$q=4$をRZ最大
+2.29%で予測した。中央additive bridgeのfull-wrapper RZ残差も最大2.63%で5%基準を通過した。
+固定WP04条件の点順位は$L_D=3$となったが区間は重なった。WP05-bでは$q=8$と比較対照
+$\delta=0.01$へ拡張し、$\delta=0.02,r=32,q=8$の初回5%逸脱を独立32 trajectoryで再検証した。
+再検証では選択policyのRZ誤差0.52%、全metric最大0.54%、full basisのRZ誤差0.83%となり、
+5%基準を通過した。続くWP01-D/C07では$\alpha$・shot数を候補ごとに再最適化し、点推定で
+$L_D=3$が$L_D=12$より13.92%低かった。5% local model区間は僅かに分離した一方、25%移送区間は
+重なるため、頑健な方向判断は未確定である。G08で後半3 roundへのcost集中を確認し、M08の
+$q=16,32$直接holdoutはselected RZ 2.466%、観測RZ最大3.286%で通過した。これらの実測幅による
+再集計ではlocal区間が分離するが、直接domainは$q\leq32$で25%移送区間は重なるため、頑健判定は
+変わらず、現比較は最終的な科学的優位性評価ではない。
+2026-09-23のM06/L08では、同一trajectoryをoptimization level 2で再compileした。q=16,32 proxyは5%基準を通過したが、固定plan focused再集計の点推定差は8.42%、区間分離上限は1.881%となり、実測selected RZ discrepancy 2.340%で区間が重なった。従ってcompilerをまたぐlocal分離は未確立で、頑健判定は`undetermined_under_compiler_and_transfer_sensitivity`である。
+続くN07/P03では不確かさをsampling、model bias、compiler、長q移送、状態準備、外部移送に分離し、状態準備をRZ相当/shotのパラメータとして再集計した。`L_D=3`は2,376 shot多く、共通準備costは常に点推定利得を縮める。点推定break-evenはopt1で約9,905万、opt2 focusedで約4,707万RZ相当/shotだが、opt2 focusedはP=0ですでに区間が重なり、compiler-robustな区間優位性は確立しない。WP11では11個のartifactをT1--T7へ統合し、T4/T7を主軸、T1を範囲変更、T3を保留とした。次の一件は`L_D=3`のopt2未測定`r=1,2,4,8,16`を埋めるall-r coherent opt2再最適化であり、外部instance pilotは棄却せずその後へ延期する。
+固定条件、数値、成果物は
+[`research_direction_prevalidation.md`](docs/research_direction_prevalidation.md)と
+[`research_direction_ablation.md`](docs/research_direction_ablation.md)、
+[`research_direction_pf_sensitivity.md`](docs/research_direction_pf_sensitivity.md)、
+[`research_direction_gate_s1.md`](docs/research_direction_gate_s1.md)、
+[`research_direction_structure_pilot.md`](docs/research_direction_structure_pilot.md)、
+[`research_direction_sequence_policy.md`](docs/research_direction_sequence_policy.md)、
+[`research_direction_full_scope.md`](docs/research_direction_full_scope.md)、
+[`research_direction_full_scope_extension.md`](docs/research_direction_full_scope_extension.md)、
+[`research_direction_decision_cost.md`](docs/research_direction_decision_cost.md)、
+[`research_direction_late_round_proxy.md`](docs/research_direction_late_round_proxy.md)、
+[`research_direction_compiler_transfer.md`](docs/research_direction_compiler_transfer.md)、
+[`research_direction_uncertainty_break_even.md`](docs/research_direction_uncertainty_break_even.md)、
+[`research_direction_wp11_synthesis.md`](docs/research_direction_wp11_synthesis.md)に記録する。
 
 最終的な全RPE段の総コスト最適化と、決定論PFに対する最終的な優位性評価はまだ行っていない。
 最新の到達点と次の検証は、必ず
@@ -50,6 +97,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 | `docs/research/` | 研究方針の正本 | 概要、目的、方法、評価計画、研究ノート |
 | `docs/` | 実装・検証の説明 | 各検証の条件、結果、限界、実装規約。索引は[`docs/README.md`](docs/README.md) |
 | `artifacts/` | 計算結果と入力snapshot | JSON等の証拠、キャッシュ、途中状態。利用規則は[`artifacts/README.md`](artifacts/README.md) |
+| [`partial_randomized_trotter_prevalidation_catalog.md`](partial_randomized_trotter_prevalidation_catalog.md) | 研究方向を選ぶための事前検証backlog | 実行層・Gate S1・条件付きbranchの索引。現行仕様と結果は`docs/research/`とmanifestを優先 |
 | `BentoSlide構成案*.md` | 発表資料生成用の指示 | 研究の正本ではない。位置づけは[`docs/presentations/README.md`](docs/presentations/README.md) |
 | ルートのPDF | 参考論文または発表資料 | 種別は[`docs/references/README.md`](docs/references/README.md)で確認 |
 

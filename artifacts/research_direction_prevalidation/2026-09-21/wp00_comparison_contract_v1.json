@@ -1,0 +1,227 @@
+{
+  "checks": {
+    "all_pf_inputs_match_fixed_snapshot": true,
+    "allocation_horizon_and_schedule_paths_exist": true,
+    "ld0_pf_matches_fixed_snapshot": true,
+    "ld12_pf_matches_fixed_snapshot": true,
+    "ld3_pf_matches_fixed_snapshot": true
+  },
+  "comparison_contract": {
+    "alpha_policy": "uniform_across_all_round_axes_per_candidate",
+    "alpha_total": 0.05,
+    "backend_execution_included": false,
+    "basis": "STO-3G",
+    "beta_rpe": 0.4,
+    "candidate_ld_values": [
+      0,
+      3,
+      12
+    ],
+    "circuit_scope": "single_hadamard_interrogation_without_state_preparation",
+    "compiler": {
+      "backend": null,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "coupling_map": null,
+      "optimization_level": 1,
+      "qiskit_version": "1.3.0",
+      "transpiler_seed": 17
+    },
+    "control_convention": "ordinary_controlled_diag_I_U",
+    "delta_candidates": [
+      0.01,
+      0.0125,
+      0.02
+    ],
+    "df_rank": 12,
+    "geometry_angstrom": 1.0,
+    "input_state": "exact physical-sector ground state assumed available",
+    "model": "H4 linear chain",
+    "n_qubits": 8,
+    "phase_allocation": {
+      "beta_pf": 0.02,
+      "beta_rte": 0.02,
+      "beta_stat": 0.36
+    },
+    "physical_sector_dimension": 70,
+    "physical_sector_n_electrons": 4,
+    "precision_scenarios_ha": {
+      "CA": 0.0015936001019904,
+      "CA_over_10": 0.00015936001019904,
+      "CA_over_100": 1.5936001019904e-05
+    },
+    "primary_cost_metric": "rz_count",
+    "product_formula": "second_order_partial_S2",
+    "provisional_primary_precision": "CA_over_10",
+    "quantum_shots_executed": 0,
+    "secondary_cost_metrics": [
+      "rz_depth",
+      "cx_count",
+      "cx_depth",
+      "total_depth",
+      "circuit_size"
+    ],
+    "state_preparation_included": false
+  },
+  "content_fingerprint": "aee0a410a11e1e5da589394d81b0cb36a176a466467eb8f5e675ef64aad05086",
+  "coverage": {
+    "A01_A03_B01_B05_B08_N03": {
+      "blocked_by": null,
+      "covered_domain": "one H4 rank-12 snapshot and three L_D values",
+      "current_status": "satisfied_for_representative_H4_contract",
+      "remaining_delta": "cross-instance portability and immutable external reproduction",
+      "reused_evidence": [
+        "artifacts/research_direction_prevalidation/2026-09-21/pf_delta_same_snapshot/h4_sto3g_d100_rank12_ld0_v5.json",
+        "artifacts/research_direction_prevalidation/2026-09-21/pf_delta_same_snapshot/h4_sto3g_d100_rank12_ld3_v5.json",
+        "artifacts/research_direction_prevalidation/2026-09-21/pf_delta_same_snapshot/h4_sto3g_d100_rank12_ld12_v5.json"
+      ]
+    }
+  },
+  "evidence_registry": {
+    "allocation": {
+      "content_fingerprint": "1cc242bdadc7d504b328befdab091c0fa82186cf0453333f1f24b0bdbc8afd7b",
+      "path": "artifacts/rpe_allocation_sensitivity_validation/2026-09-01/h4_sto3g_d100_rank12_ld3_dt0p1_r4_k2_q1_q2_q4_q8_beta_alpha_sensitivity_v1.json",
+      "sha256": "20d65463e7ff99052057bea074e9ac5cfe8527036a628e5fbfc301a792c2d71b"
+    },
+    "central_rte_cost": {
+      "path": "artifacts/rpe_delta_compiled_cost_validation/2026-09-20/h4_ld3_delta_0p01_0p0125_0p02_round_schedule_rte_block_cost_v1.json",
+      "sha256": "7332d66e4c853a3483ed72edf4b979d074ad34bc80d9ef6fb228ca5ac7119850"
+    },
+    "round_schedule": {
+      "content_fingerprint": "d5fa8dc8cd8cf8f48f849b1cb8a15651e01d4dab177eca18a2efb0b0ebb1b78f",
+      "path": "artifacts/rpe_delta_round_schedule_validation/2026-09-20/h4_sto3g_d100_rank12_ld3_executed_delta_ca_over_10_round_schedule_v1.json",
+      "sha256": "e8f3a66c6b903b9a230b2fdbd86e73f9afca7f57a8d6942c152d66f947c05120"
+    },
+    "same_snapshot_pf": {
+      "0": {
+        "path": "artifacts/research_direction_prevalidation/2026-09-21/pf_delta_same_snapshot/h4_sto3g_d100_rank12_ld0_v5.json",
+        "sha256": "2674859b56df4272ea5c15a5ee216701a5bafea9a44ed48eb4052b32cc58552f",
+        "validation_fingerprint": "ca3367661cbb4cbbaf6570beca5ce419efaf29fccd6360e2f1de636f8e1d60b3"
+      },
+      "12": {
+        "path": "artifacts/research_direction_prevalidation/2026-09-21/pf_delta_same_snapshot/h4_sto3g_d100_rank12_ld12_v5.json",
+        "sha256": "c47e1469dfe0d9283010e29bde05cdb766591409722a9ceb99018240fad8f58b",
+        "validation_fingerprint": "57e39f2c65d2eb4fe3353d5f6c90e13dec601bb1750d53106a89231b164b5225"
+      },
+      "3": {
+        "path": "artifacts/research_direction_prevalidation/2026-09-21/pf_delta_same_snapshot/h4_sto3g_d100_rank12_ld3_v5.json",
+        "sha256": "d648a3a7ab78cc595a45d8e1a6907851bfab092336bc0408def1e3bdfaf60ad5",
+        "validation_fingerprint": "3d2be94381a92eb1f3b9637ba565e511c94d9398fb5eaa5575a967f9131a4c32"
+      }
+    },
+    "short_q_full_hadamard_connection": {
+      "path": "artifacts/rpe_hadamard_proxy_resource_validation/2026-09-01/h4_sto3g_d100_rank12_ld3_dt0p1_r4_k2_cal_q1_q2_q4_hold_q8_mc8_v1.connection.json",
+      "sha256": "baa0557c944865e547408e9f8456715c18612af4ab2d9840100fd90216d1a666"
+    },
+    "target_horizon": {
+      "path": "artifacts/rpe_target_round_horizon_validation/2026-09-20/h4_sto3g_d100_rank12_ld3_dt0p1_r4_k2_ca_over_10_horizon_v1.json",
+      "sha256": "e311f199cfa628fbb8ea0d520f39720aee126d9b50dc27deb681dfe74eaf9052"
+    }
+  },
+  "fixed_instance": {
+    "candidate_fingerprints": {
+      "0": {
+        "coefficient_is_rigorous_bound": false,
+        "paper_d6_estimator_validation_pass": true,
+        "partition_hash": "fe98345ece08905c4b23b43659a20ff2b2425d11b12b64f008862ea0c704cbe3",
+        "pf_artifact_overall_pass": false,
+        "pf_validation_fingerprint": "ca3367661cbb4cbbaf6570beca5ce419efaf29fccd6360e2f1de636f8e1d60b3",
+        "preparation_hash": "26995b0d4f2fa409f706132aa1f6b20eabd1e1e90ade118b49f3a88ca7ab0cd4",
+        "scalable_pf_coefficient": 0.011533773850327684
+      },
+      "12": {
+        "coefficient_is_rigorous_bound": false,
+        "paper_d6_estimator_validation_pass": true,
+        "partition_hash": "2e579fb1fd0061e38786d1ede1e86f5baaa54b2333573eb0ceaa9d2abbb397be",
+        "pf_artifact_overall_pass": true,
+        "pf_validation_fingerprint": "57e39f2c65d2eb4fe3353d5f6c90e13dec601bb1750d53106a89231b164b5225",
+        "preparation_hash": "ae5840e7f10fdfb80a674154806fcce1dd694d8e5008c513203cea5eef4ade71",
+        "scalable_pf_coefficient": 0.013425665145396077
+      },
+      "3": {
+        "coefficient_is_rigorous_bound": false,
+        "paper_d6_estimator_validation_pass": true,
+        "partition_hash": "9034397f5bde1f20cb712578d14245f4dac1236413d34642a75d83d867b52086",
+        "pf_artifact_overall_pass": true,
+        "pf_validation_fingerprint": "3d2be94381a92eb1f3b9637ba565e511c94d9398fb5eaa5575a967f9131a4c32",
+        "preparation_hash": "89145d8324bf139eaec67265f3134a5c1a3cebb7ed97792d54ed3221d31f8919",
+        "scalable_pf_coefficient": 0.013399136433495978
+      }
+    },
+    "hamiltonian_hash": "56e4df83655aa2f2f8132126f2635996516dc2cfb1bf4cb8d95490184ad631e5",
+    "snapshot": {
+      "path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+      "sha256": "13e4b10d2347ed900fe4aa4b2238128ebe735a48988e321b9e4fabac4d092a3b"
+    }
+  },
+  "known_exclusions": [
+    "stale_DF_screening_values",
+    "prose_only_UWC_values",
+    "state_preparation_cost",
+    "noise_and_backend_execution",
+    "final_total_cost_claim"
+  ],
+  "legacy_join_diagnostic": {
+    "action": "do_not_join_legacy_PF_artifact_by_fingerprint;_use_the_same_snapshot_regeneration_for_this_contract",
+    "coefficient_relative_difference_after_same_snapshot_regeneration": 4.15137783272099e-09,
+    "fingerprints_match": false,
+    "fixed_snapshot_hamiltonian_hash": "56e4df83655aa2f2f8132126f2635996516dc2cfb1bf4cb8d95490184ad631e5",
+    "legacy_hamiltonian_hash": "68a219c806c12872e525a1509508e167f32e2b68f6ad782d93a9d01dba6f60b6",
+    "legacy_pf_ld3": {
+      "path": "artifacts/pf_delta_validation/h4_sto3g_d100_rank12_ld3_v5.json",
+      "sha256": "074ded680d8c69677c3662a94d6c4ba8b101acd32b7aa610ad5ad37e3eadc4c3",
+      "validation_fingerprint": "c70433de751a6678f509015c55ccd850bec1c3c146667408b1850b1160b07188"
+    }
+  },
+  "overall_pass": true,
+  "provenance": {
+    "command": ".venv311/bin/python scripts/run_research_direction_prevalidation.py --stage all --samples 8",
+    "evidence_status": "local_worktree_validation_not_immutable_ci",
+    "generated_at_utc": "2026-09-21T04:42:13.272874+00:00",
+    "git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+    "git_worktree_status_before_generation": [
+      " M PROJECT_MAP.md",
+      " M VALIDATION_STATUS.md",
+      " M artifacts/validation_manifest.json",
+      " M docs/README.md",
+      " M docs/pf_delta_validation.md",
+      " M \"docs/research/\\346\\225\\260\\345\\200\\244\\345\\256\\237\\351\\250\\223\\343\\203\\273\\350\\251\\225\\344\\276\\241\\350\\250\\210\\347\\224\\273.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/README.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\346\\246\\202\\350\\246\\201\\343\\203\\273\\347\\217\\276\\347\\212\\266.md\"",
+      " M scripts/README.md",
+      " M scripts/run_pf_delta_validation.py",
+      " M src/trotterlib/README.md",
+      " M src/trotterlib/pf_delta_validation.py",
+      " M tests/test_pf_delta_validation.py",
+      "?? artifacts/research_direction_prevalidation/",
+      "?? \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-21.md\"",
+      "?? docs/research_direction_prevalidation.md",
+      "?? partial_randomized_trotter_prevalidation_catalog.md",
+      "?? scripts/run_research_direction_prevalidation.py",
+      "?? src/trotterlib/research_direction_prevalidation.py",
+      "?? tests/test_research_direction_prevalidation.py"
+    ],
+    "numpy_version": "1.26.4",
+    "python_version": "3.11.0rc1",
+    "qiskit_version": "1.3.0",
+    "source_sha256": {
+      "scripts/run_research_direction_prevalidation.py": "ba8aa1037a8819c990f1a24b9b9da5bcc0de7a1349c5f7a2189f8383fe653f16",
+      "src/trotterlib/research_direction_prevalidation.py": "03c9aa2dbc9f9f8ce58d082636f666204a43097585e03d652358594f3a147708"
+    }
+  },
+  "schema_version": "research_direction_prevalidation_v1",
+  "source_version_table": {
+    "numpy": "1.26.4",
+    "pf_artifact_schema": "pf_delta_validation_v5",
+    "python": "3.11.0rc1",
+    "qiskit": "1.3.0",
+    "repository_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+    "schedule_artifact_schema": "rpe_delta_round_schedule_validation_v1"
+  },
+  "stage": "WP00",
+  "status": "complete_for_representative_h4_screening_contract"
+}

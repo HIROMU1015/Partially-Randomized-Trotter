@@ -590,8 +590,8 @@ def validate_pf_delta_grid(
         name="maximum_dense_reference_qubits",
         minimum=1,
     )
-    if ld_value >= hamiltonian.n_blocks:
-        raise ValueError("Validation requires a non-empty randomized tail.")
+    if ld_value > hamiltonian.n_blocks:
+        raise ValueError("ld must not exceed the number of DF blocks.")
     calibration = _float_grid(
         surrogate_calibration_times,
         name="surrogate_calibration_times",

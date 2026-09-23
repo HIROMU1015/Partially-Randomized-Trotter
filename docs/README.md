@@ -53,6 +53,19 @@
 - [`rpe_target_round_horizon_validation.md`](rpe_target_round_horizon_validation.md)
 - [`rpe_delta_round_schedule_validation.md`](rpe_delta_round_schedule_validation.md)
 - [`rpe_delta_compiled_cost_validation.md`](rpe_delta_compiled_cost_validation.md)
+- [`research_direction_prevalidation.md`](research_direction_prevalidation.md)
+- [`research_direction_ablation.md`](research_direction_ablation.md)
+- [`research_direction_pf_sensitivity.md`](research_direction_pf_sensitivity.md)
+- [`research_direction_gate_s1.md`](research_direction_gate_s1.md)
+- [`research_direction_structure_pilot.md`](research_direction_structure_pilot.md)
+- [`research_direction_sequence_policy.md`](research_direction_sequence_policy.md)
+- [`research_direction_full_scope.md`](research_direction_full_scope.md)
+- [`research_direction_full_scope_extension.md`](research_direction_full_scope_extension.md)
+- [`research_direction_decision_cost.md`](research_direction_decision_cost.md)
+- [`research_direction_late_round_proxy.md`](research_direction_late_round_proxy.md)
+- [`research_direction_compiler_transfer.md`](research_direction_compiler_transfer.md)
+- [`research_direction_uncertainty_break_even.md`](research_direction_uncertainty_break_even.md)
+- [`research_direction_wp11_synthesis.md`](research_direction_wp11_synthesis.md)
 
 ## 実行・運用
 

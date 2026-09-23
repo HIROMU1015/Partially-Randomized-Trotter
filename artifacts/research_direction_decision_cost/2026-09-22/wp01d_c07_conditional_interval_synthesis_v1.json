@@ -1,0 +1,179 @@
+{
+  "checks": {
+    "both_candidates_select_delta_0p02": true,
+    "compute_artifact_passed": true,
+    "local_5_percent_intervals_separate": true,
+    "local_separation_margin_is_positive": true,
+    "robust_scientific_superiority_not_claimed": true,
+    "transfer_25_percent_intervals_overlap": true
+  },
+  "comparison": {
+    "adopted_local_model_discrepancy": 0.05,
+    "ld3_over_ld12_point_estimate_ratio": 0.8608432560404539,
+    "ld3_point_reduction_relative_to_ld12": 0.1391567439595461,
+    "local_5_percent_intervals_overlap": false,
+    "local_interval_separation_gap_over_ld12_point": 0.0009003742877386274,
+    "local_interval_separation_gap_rz": 1522643985.5808105,
+    "maximum_symmetric_model_discrepancy_for_interval_separation": 0.05048385283651161,
+    "point_preference": "L_D=3",
+    "separation_margin_in_model_discrepancy": 0.0004838528365116099,
+    "transfer_25_percent_intervals_overlap": true
+  },
+  "content_fingerprint": "7d85b472851a6c4046b847a7e9898a718e96b2bad7a50fd491d939b34244250f",
+  "decision": {
+    "local_model_conditional_result": "L_D=3_interval_is_lower_under_5_percent_discrepancy",
+    "next_action": "M08_G08_quantify_dominant_late_round_proxy_precision",
+    "partial_randomization_scientific_superiority_established": false,
+    "robust_directional_result": "undetermined_under_transfer_sensitivity"
+  },
+  "input_compute_fingerprint": "709142f76a78232804cae9971a24bc5757b3ef2e5258adb7314fc42e91937474",
+  "limitations": [
+    "The local interval separation depends on a 5% discrepancy allowance and has only a 0.048 percentage-point discrepancy margin.",
+    "The 25% transfer-sensitivity intervals overlap, so the direction is not robust to the documented extrapolation scenario.",
+    "The comparison is H4-only, no-state-preparation, one compiler context, and uses affine q extrapolation beyond direct q=8 validation.",
+    "State preparation, backend noise, fault-tolerant synthesis, and external reproduction remain outside scope."
+  ],
+  "method": "wp01d_c07_conditional_interval_synthesis_v1",
+  "overall_pass": true,
+  "provenance": {
+    "command": ".venv311/bin/python scripts/run_research_direction_decision_synthesis.py",
+    "evidence_status": "local_worktree_validation_not_immutable_ci",
+    "generated_at_utc": "2026-09-22T06:12:44.544017+00:00",
+    "git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+    "git_worktree_status_before_generation": [
+      " M PROJECT_MAP.md",
+      " M VALIDATION_STATUS.md",
+      " M artifacts/validation_manifest.json",
+      " M docs/README.md",
+      " M docs/pf_delta_validation.md",
+      " M \"docs/research/\\346\\225\\260\\345\\200\\244\\345\\256\\237\\351\\250\\223\\343\\203\\273\\350\\251\\225\\344\\276\\241\\350\\250\\210\\347\\224\\273.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/README.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\346\\246\\202\\350\\246\\201\\343\\203\\273\\347\\217\\276\\347\\212\\266.md\"",
+      " M scripts/README.md",
+      " M scripts/run_pf_delta_validation.py",
+      " M src/trotterlib/README.md",
+      " M src/trotterlib/df_partial_s2.py",
+      " M src/trotterlib/df_partial_s2_repeated.py",
+      " M src/trotterlib/df_rte_circuit.py",
+      " M src/trotterlib/df_rte_qiskit.py",
+      " M src/trotterlib/pf_delta_validation.py",
+      " M tests/test_pf_delta_validation.py",
+      "?? artifacts/research_direction_ablation/",
+      "?? artifacts/research_direction_decision_cost/",
+      "?? artifacts/research_direction_full_scope/",
+      "?? artifacts/research_direction_full_scope_extension/",
+      "?? artifacts/research_direction_full_scope_replication/",
+      "?? artifacts/research_direction_gate_s1/",
+      "?? artifacts/research_direction_pf_sensitivity/",
+      "?? artifacts/research_direction_prevalidation/",
+      "?? artifacts/research_direction_sequence_policy/",
+      "?? artifacts/research_direction_structure_pilot/",
+      "?? \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-21.md\"",
+      "?? \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-22.md\"",
+      "?? docs/research_direction_ablation.md",
+      "?? docs/research_direction_full_scope.md",
+      "?? docs/research_direction_gate_s1.md",
+      "?? docs/research_direction_pf_sensitivity.md",
+      "?? docs/research_direction_prevalidation.md",
+      "?? docs/research_direction_sequence_policy.md",
+      "?? docs/research_direction_structure_pilot.md",
+      "?? partial_randomized_trotter_prevalidation_catalog.md",
+      "?? scripts/run_research_direction_ablation.py",
+      "?? scripts/run_research_direction_decision_cost.py",
+      "?? scripts/run_research_direction_decision_synthesis.py",
+      "?? scripts/run_research_direction_full_scope.py",
+      "?? scripts/run_research_direction_full_scope_extension.py",
+      "?? scripts/run_research_direction_full_scope_replication.py",
+      "?? scripts/run_research_direction_gate_s1.py",
+      "?? scripts/run_research_direction_pf_sensitivity.py",
+      "?? scripts/run_research_direction_prevalidation.py",
+      "?? scripts/run_research_direction_sequence_policy.py",
+      "?? scripts/run_research_direction_structure_pilot.py",
+      "?? src/trotterlib/research_direction_ablation.py",
+      "?? src/trotterlib/research_direction_decision_cost.py",
+      "?? src/trotterlib/research_direction_decision_synthesis.py",
+      "?? src/trotterlib/research_direction_full_scope.py",
+      "?? src/trotterlib/research_direction_full_scope_extension.py",
+      "?? src/trotterlib/research_direction_full_scope_replication.py",
+      "?? src/trotterlib/research_direction_gate_s1.py",
+      "?? src/trotterlib/research_direction_pf_sensitivity.py",
+      "?? src/trotterlib/research_direction_prevalidation.py",
+      "?? src/trotterlib/research_direction_sequence_policy.py",
+      "?? src/trotterlib/research_direction_structure_pilot.py",
+      "?? tests/test_research_direction_ablation.py",
+      "?? tests/test_research_direction_decision_cost.py",
+      "?? tests/test_research_direction_decision_synthesis.py",
+      "?? tests/test_research_direction_full_scope.py",
+      "?? tests/test_research_direction_full_scope_extension.py",
+      "?? tests/test_research_direction_full_scope_replication.py",
+      "?? tests/test_research_direction_gate_s1.py",
+      "?? tests/test_research_direction_pf_sensitivity.py",
+      "?? tests/test_research_direction_prevalidation.py",
+      "?? tests/test_research_direction_sequence_policy.py",
+      "?? tests/test_research_direction_structure_pilot.py"
+    ],
+    "python_version": "3.11.0rc1",
+    "source_sha256": {
+      "scripts/run_research_direction_decision_synthesis.py": "44d28815310333b5bdb4cf3b1599ba5d37274f7b648e2cbd2590eb7092e27378",
+      "src/trotterlib/research_direction_decision_synthesis.py": "422aa784c9aee05b5a40ca08ab9ff86e334ccf8bf037ca554940d33826b4b2bc"
+    }
+  },
+  "schema_version": "research_direction_decision_synthesis_v1",
+  "scope": {
+    "backend_execution_included": false,
+    "decision_grade_scientific_superiority_claimed": false,
+    "external_reproduction_included": false,
+    "final_total_cost_evaluation_performed": false,
+    "full_controlled_hadamard_cost_provider_used": true,
+    "h4_ca_over_10_no_state_preparation_comparison": true,
+    "noise_included": false,
+    "state_preparation_included": false
+  },
+  "selected_candidates": {
+    "12": {
+      "delta_time": 0.02,
+      "last_three_round_cost_fraction": 0.8302590160162672,
+      "local_5_percent_plus_calibration_interval": [
+        1606567186558.4,
+        1775679521985.6
+      ],
+      "total_compiled_rz_point_estimate": 1691123354272.0,
+      "total_shots": 11162,
+      "transfer_25_percent_plus_calibration_interval": [
+        1268342515704.0,
+        2113904192840.0
+      ]
+    },
+    "3": {
+      "delta_time": 0.02,
+      "last_three_round_cost_fraction": 0.9093508353709496,
+      "local_5_percent_plus_calibration_interval": [
+        1306539726742.306,
+        1605044542572.819
+      ],
+      "total_compiled_rz_point_estimate": 1455792134657.5625,
+      "total_shots": 13538,
+      "transfer_25_percent_plus_calibration_interval": [
+        1015381299810.7935,
+        1896202969504.3315
+      ]
+    }
+  },
+  "source_evidence": {
+    "compute": {
+      "content_fingerprint": "709142f76a78232804cae9971a24bc5757b3ef2e5258adb7314fc42e91937474",
+      "path": "artifacts/research_direction_decision_cost/2026-09-22/wp01d_c07_full_scope_optimization_compute_v2.json",
+      "sha256": "718c79f8137913bf4690ac717a5c6a3c693114666bfded189fb44c9de540128d"
+    }
+  },
+  "stage": "WP01-D/C07-synthesis",
+  "summary": {
+    "ld3_point_reduction_relative_to_ld12": 0.1391567439595461,
+    "local_5_percent_intervals_overlap": false,
+    "maximum_symmetric_model_discrepancy_for_interval_separation": 0.05048385283651161,
+    "next_action": "M08_G08_quantify_dominant_late_round_proxy_precision",
+    "point_preference": "L_D=3",
+    "robust_directional_result": "undetermined_under_transfer_sensitivity",
+    "transfer_25_percent_intervals_overlap": true
+  }
+}

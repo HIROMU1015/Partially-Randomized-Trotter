@@ -11,6 +11,8 @@ from qiskit import QuantumCircuit
 from qiskit.circuit.library import PhaseGate, RZGate, RZZGate, ZGate
 
 from .df_rte_circuit import (
+    DFRTEApplicationBasisChoice,
+    DFRTEBasisPlan,
     DFRTECircuitSpec,
     DFRTEEventCircuitRequest,
     DFRTEEventCircuitResult,
@@ -123,6 +125,8 @@ def _circuit_fingerprint(
     controlled: bool,
     ancilla_qubit: int | None,
     basis_reuse_policy: str,
+    basis_structure_policy: str,
+    basis_plan_fingerprint: str | None,
 ) -> str:
     event_payloads = []
     for event in events:
@@ -143,6 +147,14 @@ def _circuit_fingerprint(
         "basis_reuse_policy": basis_reuse_policy,
         "fingerprint_policy": "df_rte_event_circuit_v2",
     }
+    if basis_plan_fingerprint is not None:
+        payload.update(
+            {
+                "basis_structure_policy": basis_structure_policy,
+                "basis_plan_fingerprint": basis_plan_fingerprint,
+                "fingerprint_policy": "df_rte_event_circuit_v3",
+            }
+        )
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
     return hashlib.sha256(encoded).hexdigest()
 
@@ -160,6 +172,8 @@ class QiskitDFRTEEventCircuitBuilder:
     def build_event(
         self,
         request: DFRTEEventCircuitRequest,
+        *,
+        basis_plan: DFRTEBasisPlan | None = None,
     ) -> DFRTEEventCircuitResult:
         return self._build(
             events=(request.event,),
@@ -173,11 +187,14 @@ class QiskitDFRTEEventCircuitBuilder:
             ),
             tail_id=request.tail_id,
             tail_hash=request.tail_hash,
+            basis_plan=basis_plan,
         )
 
     def build_sequence(
         self,
         request: DFRTEEventSequenceCircuitRequest,
+        *,
+        basis_plan: DFRTEBasisPlan | None = None,
     ) -> DFRTEEventCircuitResult:
         return self._build(
             events=request.events,
@@ -191,6 +208,7 @@ class QiskitDFRTEEventCircuitBuilder:
             ),
             tail_id=request.tail_id,
             tail_hash=request.tail_hash,
+            basis_plan=basis_plan,
         )
 
     def _build(
@@ -205,6 +223,7 @@ class QiskitDFRTEEventCircuitBuilder:
         identity_as_relative_ancilla_phase: bool,
         tail_id: str | None,
         tail_hash: str | None,
+        basis_plan: DFRTEBasisPlan | None,
     ) -> DFRTEEventCircuitResult:
         if not events:
             raise ValueError("At least one RTE event is required.")
@@ -236,6 +255,19 @@ class QiskitDFRTEEventCircuitBuilder:
         nonidentity_count = sum(
             not application.is_identity for _event, application in flattened
         )
+        if basis_plan is not None and len(basis_plan.choices) != nonidentity_count:
+            raise ValueError(
+                "Explicit basis-plan length must match non-identity applications."
+            )
+        choice_iterator = iter(()) if basis_plan is None else iter(basis_plan.choices)
+        basis_structure_policy = (
+            "registered_full_basis" if basis_plan is None else basis_plan.policy_id
+        )
+        basis_plan_fingerprint = (
+            None if basis_plan is None else basis_plan.plan_fingerprint
+        )
+        full_basis_application_count = 0
+        support_restricted_application_count = 0
         active_definition: DFBasisDefinition | None = None
         active_key: tuple[str, str] | None = None
         last_group_key: tuple[str, str] | None = None
@@ -256,7 +288,22 @@ class QiskitDFRTEEventCircuitBuilder:
                 )
                 continue
 
-            definition = self._resolve_basis(application, num_system_qubits)
+            source_definition = self._resolve_basis(application, num_system_qubits)
+            if basis_plan is None:
+                definition = source_definition
+                full_basis_application_count += 1
+            else:
+                choice = next(choice_iterator)
+                definition = self._resolve_basis_choice(
+                    application,
+                    source_definition,
+                    choice,
+                    num_system_qubits,
+                )
+                if choice.construction == "registered_full_basis":
+                    full_basis_application_count += 1
+                else:
+                    support_restricted_application_count += 1
             key = (definition.basis_id, definition.basis_hash)
             can_reuse = reuse_enabled and active_key == key
             if can_reuse:
@@ -290,6 +337,14 @@ class QiskitDFRTEEventCircuitBuilder:
             self._append_basis(circuit, active_definition, inverse=False)
             emitted_basis_changes += 1
 
+        if basis_plan is not None:
+            try:
+                next(choice_iterator)
+            except StopIteration:
+                pass
+            else:
+                raise RuntimeError("Explicit basis plan was not fully consumed.")
+
         if controlled:
             if accumulated_phase != 0.0:
                 circuit.append(PhaseGate(accumulated_phase), [ancilla_qubit])
@@ -307,6 +362,8 @@ class QiskitDFRTEEventCircuitBuilder:
             controlled=controlled,
             ancilla_qubit=ancilla_qubit,
             basis_reuse_policy=reuse_policy,
+            basis_structure_policy=basis_structure_policy,
+            basis_plan_fingerprint=basis_plan_fingerprint,
         )
         return DFRTEEventCircuitResult(
             circuit=circuit,
@@ -325,6 +382,12 @@ class QiskitDFRTEEventCircuitBuilder:
             basis_reuse_policy=reuse_policy,
             circuit_qubit_count=circuit.num_qubits,
             circuit_fingerprint=fingerprint,
+            basis_structure_policy=basis_structure_policy,
+            basis_plan_fingerprint=basis_plan_fingerprint,
+            full_basis_application_count=full_basis_application_count,
+            support_restricted_application_count=(
+                support_restricted_application_count
+            ),
         )
 
     @staticmethod
@@ -355,6 +418,30 @@ class QiskitDFRTEEventCircuitBuilder:
             raise ValueError("Event basis system size does not match circuit specs.")
         if definition.metadata.operations != application.basis_change_operations:
             raise ValueError("Event basis operations do not match the builder registry.")
+        return definition
+
+    def _resolve_basis_choice(
+        self,
+        application: RTEEventApplication,
+        source_definition: DFBasisDefinition,
+        choice: DFRTEApplicationBasisChoice,
+        num_system_qubits: int,
+    ) -> DFBasisDefinition:
+        if choice.source_basis_id != application.basis_id:
+            raise ValueError("Basis-plan source ID does not match the application.")
+        if choice.source_basis_hash != application.basis_hash:
+            raise ValueError("Basis-plan source hash does not match the application.")
+        if choice.diagonal_pauli_support != application.diagonal_pauli_support:
+            raise ValueError("Basis-plan support does not match the application.")
+        if choice.construction == "registered_full_basis":
+            return source_definition
+        definition = self._basis_registry.definition(choice.selected_basis_id)
+        if definition.basis_hash != choice.selected_basis_hash:
+            raise ValueError("Selected basis hash does not match the registry.")
+        if definition.num_system_qubits != num_system_qubits:
+            raise ValueError("Selected basis system size does not match the request.")
+        if choice.preserved_columns_max_abs_residual > _PHASE_VALIDATION_ATOL:
+            raise ValueError("Support-restricted basis certificate exceeds tolerance.")
         return definition
 
     @staticmethod

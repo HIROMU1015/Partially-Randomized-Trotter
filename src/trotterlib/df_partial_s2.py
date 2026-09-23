@@ -20,6 +20,7 @@ from .df_partial_randomized_pf import (
     rank_df_fragments,
 )
 from .df_rte_circuit import (
+    DFRTEBasisPlan,
     DFRTEEventPreparation,
     DFRTEEventSequenceCircuitRequest,
 )
@@ -433,6 +434,7 @@ class DFPartialS2StepRequest:
     ancilla_qubit: int | None = None
     seed: int | None = None
     pf_label: Literal["2nd"] = "2nd"
+    rte_basis_plan: DFRTEBasisPlan | None = None
 
     def __post_init__(self) -> None:
         if self.pf_label != "2nd":
@@ -459,6 +461,7 @@ class DFPartialS2StepRequest:
                     self.rte_config,
                     self.rte_distribution,
                     self.rte_occurrence,
+                    self.rte_basis_plan,
                 )
             ):
                 raise ValueError("A deterministic-only step must not contain RTE data.")
@@ -473,6 +476,11 @@ class DFPartialS2StepRequest:
         config = self.rte_config
         distribution = self.rte_distribution
         occurrence = self.rte_occurrence
+        if self.rte_basis_plan is not None and not isinstance(
+            self.rte_basis_plan,
+            DFRTEBasisPlan,
+        ):
+            raise TypeError("rte_basis_plan must be a DFRTEBasisPlan or None.")
         tail = self.preparation.rte_preparation.symbolic_tail
         if not math.isclose(
             config.evolution_time,
@@ -722,6 +730,10 @@ class DFPartialS2CircuitResult:
     extracted_identity_phase: float
     rte_relative_phase: float
     rte_sequence_fingerprint: str | None
+    rte_basis_structure_policy: str | None
+    rte_basis_plan_fingerprint: str | None
+    rte_full_basis_application_count: int
+    rte_support_restricted_application_count: int
     basis_reuse_policy: Literal["disabled", "raw_adjacent_equal_basis", "none"]
     compiler_independent_fingerprint: str
     untranspiled_circuit_size: int
@@ -841,6 +853,21 @@ class QiskitDFPartialS2CircuitBuilder:
             "role": role,
             "fingerprint_policy": "df_partial_s2_circuit_v1",
         }
+        # Keep the established no-plan fingerprint byte-for-byte stable.  An
+        # explicit plan is part of circuit semantics and therefore must not
+        # alias the default full-basis path.
+        if request.rte_basis_plan is not None:
+            payload.update(
+                {
+                    "rte_basis_structure_policy": (
+                        request.rte_basis_plan.policy_id
+                    ),
+                    "rte_basis_plan_fingerprint": (
+                        request.rte_basis_plan.plan_fingerprint
+                    ),
+                    "fingerprint_policy": "df_partial_s2_circuit_v2",
+                }
+            )
         encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
         return hashlib.sha256(encoded).hexdigest()
 
@@ -859,7 +886,10 @@ class QiskitDFPartialS2CircuitBuilder:
         if request.rte_occurrence is not None:
             rte_result = QiskitDFRTEEventCircuitBuilder(
                 basis_registry=request.preparation.rte_preparation.basis_registry
-            ).build_sequence(request.rte_occurrence)
+            ).build_sequence(
+                request.rte_occurrence,
+                basis_plan=request.rte_basis_plan,
+            )
             rte_circuit = rte_result.circuit
             rte_fingerprint = rte_result.circuit_fingerprint
 
@@ -966,6 +996,20 @@ class QiskitDFPartialS2CircuitBuilder:
                 0.0 if rte_result is None else rte_result.relative_ancilla_phase
             ),
             rte_sequence_fingerprint=rte_fingerprint,
+            rte_basis_structure_policy=(
+                None if rte_result is None else rte_result.basis_structure_policy
+            ),
+            rte_basis_plan_fingerprint=(
+                None if rte_result is None else rte_result.basis_plan_fingerprint
+            ),
+            rte_full_basis_application_count=(
+                0 if rte_result is None else rte_result.full_basis_application_count
+            ),
+            rte_support_restricted_application_count=(
+                0
+                if rte_result is None
+                else rte_result.support_restricted_application_count
+            ),
             basis_reuse_policy=reuse_policy,
             compiler_independent_fingerprint=full_fingerprint,
             untranspiled_circuit_size=int(circuit.size()),
