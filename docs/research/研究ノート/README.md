@@ -30,12 +30,13 @@
 7. 失敗や方針変更も削除せず、後続ノートから訂正内容を参照する。
 
 新しい記録は[テンプレート](テンプレート.md)を複製して作成する。
-| [2026-09-24](2026-09-24.md) | M06-F all-r coherent opt2初期計算・解析 | `26aa95c` + dirty worktree | 36/36 cell完了。12 group中7通過、5 groupはRZ相対SE 2%基準でfresh-32待ち | 15 taskのfresh 32 trajectory拡張後にcoherent再最適化 |
 
 ## 時系列索引
 
 | 日付 | 主題 | 基準commit | 到達点 | 次の主要課題 |
 |---|---|---|---|---|
+| [2026-09-25](2026-09-25.md) | M06-F fresh-32・coherent opt2再最適化 | `7753eb7` + dirty worktree | 51/51完了、両gate通過。点推定は`L_D=3`が4.858%低いが全区間重複 | 局所compiler精密化を止め、外部instance pilotを次のdiscriminatorとして検討 |
+| [2026-09-24](2026-09-24.md) | M06-F all-r coherent opt2初期計算・解析 | `26aa95c` + dirty worktree | 36/36 cell完了。12 group中7通過、5 groupはRZ相対SE 2%基準でfresh-32待ち | 15 taskのfresh 32 trajectory拡張後にcoherent再最適化 |
 | [2026-09-23](2026-09-23.md) | M06/L08、N07/P03、WP11限定判断統合 | `efa90e0` + dirty worktree | T4/T7を主軸、T1を範囲変更、T3を保留。次段はall-r coherent opt2再最適化 | opt2未測定$r=1,2,4,8,16$のCPU transpile・再最適化 |
 | [2026-09-22](2026-09-22.md) | WP03、Gate S1、WP06-a/b、WP05-a/b/R、WP01-D/C07、G08/M08 | `efa90e0` + dirty worktree | M08の$q=16,32$直接holdoutはRZ最大3.286%で通過し、実測幅によるlocal再集計区間も分離。ただし25%移送区間は重なる | 主張範囲の見直しまたは外部条件での移送検証 |
 | [2026-09-21](2026-09-21.md) | 研究方向screeningの実行gateとWP00/WP02/WP01-S/WP04 | `efa90e0` + dirty worktree | $L_D=0$をscreen out。WP04で公平な配分改善後の決定論endpoint差は4.96%へ縮み、5%・25%区間とも重なり未決定。主要因は$\beta$、次いで$\alpha$再配分 | WP03でPF係数選択感度を評価 |

@@ -1795,7 +1795,7 @@
         "supports": [
           "research_direction_full_opt2"
         ],
-        "reason": "Documents the fixed M06-F scope, execution safety, acceptance rules, completed initial result, and pending fresh-32 extension."
+        "reason": "Documents the fixed M06-F scope, execution safety, initial and fresh-32 audits, direct compiled-RZ measurements, coherent opt2 reoptimization, preparation break-even, routing decision, and claim limits."
       },
       {
         "path": "artifacts/research_direction_full_opt2/2026-09-24",
@@ -1803,7 +1803,65 @@
         "supports": [
           "research_direction_full_opt2"
         ],
-        "reason": "Contains compact smoke/timing records, the completed 36-cell initial manifest and summaries, the fingerprinted initial analysis, and the pending 15-task fresh-32 extension manifest. Runtime logs, checkpoints, task specs, and worker outputs remain local."
+        "reason": "Contains compact smoke/timing records, the completed 36-cell initial manifest and summaries, the fingerprinted initial analysis and completion audit, the preregistered extension manifest, and the completed 15-task fresh-32 runtime directory. The final integrated analysis is stored separately under the 2026-09-25 directory."
+      },
+      {
+        "path": "src/trotterlib/research_direction_full_opt2_completion.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_full_opt2"
+        ],
+        "reason": "Reloads and cross-checks task specs, worker results, checkpoints, aggregate, provenance, direct compiled-RZ rows, upstream comparisons, and the preregistered extension gate without bypassing it."
+      },
+      {
+        "path": "scripts/run_research_direction_full_opt2_completion.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_full_opt2"
+        ],
+        "reason": "Captures post-run tmux/process and original-main observations and writes a new immutable dated completion-audit artifact."
+      },
+      {
+        "path": "tests/test_research_direction_full_opt2_completion.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_full_opt2",
+          "tests"
+        ],
+        "reason": "Tests initial-batch integrity, fresh-32 gating, direct scope, holdout accuracy, and completion-audit fingerprint tamper rejection."
+      },
+      {
+        "path": "src/trotterlib/research_direction_full_opt2_extension_analysis.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_full_opt2"
+        ],
+        "reason": "Integrates the initial and fresh-32 checkpoints, replaces preregistered failing cells without mixing samples, audits gates and seeds, records direct RZ statistics, and runs coherent reoptimization only after all checks pass."
+      },
+      {
+        "path": "scripts/run_research_direction_full_opt2_extension_analysis.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_full_opt2"
+        ],
+        "reason": "Writes non-overwriting dated integrated-audit and coherent-analysis artifacts with source, dependency, command, commit, and dirty-worktree provenance."
+      },
+      {
+        "path": "tests/test_research_direction_full_opt2_extension_analysis.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_full_opt2",
+          "tests"
+        ],
+        "reason": "Tests 51-task integrity, both preregistered gates, direct-RZ evidence, coherent candidate search, mixed-context differences, and tamper rejection."
+      },
+      {
+        "path": "artifacts/research_direction_full_opt2/2026-09-25",
+        "kind": "directory",
+        "supports": [
+          "research_direction_full_opt2"
+        ],
+        "reason": "Contains timestamped integrated audits and coherent analyses. The designated final pair has content fingerprints b39960a630746e2c05009f8d7e13bd982ff565b3a3c70a7abfc2dc65dc7009ca and 5ce368a94daa39680b4edc0cfb59b30168d8bc159ad2538b29cb67b928e3cdba."
       }
     ],
     "quarantined": [
@@ -2728,15 +2786,15 @@
     {
       "id": "research_direction_full_opt2",
       "status": "source_present_no_current_ci",
-      "summary": "For the fixed H4 linear chain at 1.0 Angstrom, STO-3G, 8 qubits, DF rank 12, L_D=3/12, delta=0.01/0.02, K=2, and one topology-free Qiskit 1.3.0 optimization-level-2 rz/sx/x/cx compiler context with seed 17, M06-F completed all 36 initial cell tasks and 1,062 direct transpiles without failure or interruption. Seven of twelve randomized (delta,r) groups pass every preregistered check, and every selected-policy holdout remains below the 5% threshold. Five groups fail only the 2% direct-RZ relative-standard-error gate: (0.01,16), (0.01,32), (0.02,8), (0.02,16), and (0.02,32), with maxima 3.911%, 2.416%, 2.735%, 2.543%, and 2.141%. The preregistered fresh-32 extension is prepared only for q=1,2,8 in these groups, totaling 15 tasks and 1,920 direct transpiles, but has not run. Coherent beta/alpha/shot/schedule reoptimization, candidate comparison, q>32 validation, preparation cost, backend/noise execution, final total cost, and scientific superiority remain unperformed.",
+      "summary": "For the fixed H4 linear chain at 1.0 Angstrom, STO-3G, 8 qubits, DF rank 12, L_D=3/12, delta=0.01/0.02, K=2, and one topology-free Qiskit 1.3.0 optimization-level-2 rz/sx/x/cx compiler context with seed 17, M06-F completed the 36-task initial batch and the preregistered 15-task fresh-32 extension. The integrated audit is 51/51/0 expected/completed/failed with no missing, partial, duplicate, corrupt, seed-overlap, aggregate, source-hash, CPU-only, or thread-setting failure. All twelve randomized groups pass: maximum direct-RZ relative SE is 1.9844%, selected-policy RZ holdout error 4.4898%, and selected all-metric holdout error 4.7488%. Coherent beta/alpha/integer-shot/schedule reoptimization selects delta=0.02 for both candidates and gives no-preparation compiled-RZ point estimates 1.263314e12 and 1.327822e12 with 13,588 and 11,162 shots. L_D=3 is 4.858% lower at the point estimate, but local, per-r measured-discrepancy, and 25% transfer intervals all overlap. The common preparation-cost point break-even is 26,590,335 RZ equivalents per shot, while robust intervals overlap already at P=0. This resolves the missing all-r compiler context only within the measured H4 domain; q>32, preparation, external-instance, coupling/backend, H12, final-total-cost, superiority, and immutable-reproduction claims remain open.",
       "counts": {
-        "implementation_source_files": 3,
-        "generator_scripts": 2,
-        "documentation_files": 1,
-        "dedicated_test_source_files": 1,
-        "dedicated_test_functions": 4,
-        "related_local_tests_passed": 32,
-        "local_scientific_artifacts": 4,
+        "implementation_source_files": 5,
+        "generator_scripts": 4,
+        "documentation_files": 2,
+        "dedicated_test_source_files": 3,
+        "dedicated_test_functions": 10,
+        "related_local_tests_passed": 36,
+        "local_scientific_artifacts": 7,
         "upstream_fingerprinted_artifacts": 6,
         "physical_molecule_sizes": 1,
         "physical_qubits": 8,
@@ -2749,23 +2807,30 @@
         "initial_deterministic_cell_tasks": 3,
         "initial_direct_transpiles": 1062,
         "randomized_proxy_groups": 12,
-        "passing_proxy_groups": 7,
+        "passing_proxy_groups": 12,
         "precision_extension_groups": 5,
-        "pending_extension_tasks": 15,
-        "pending_extension_direct_transpiles": 1920,
-        "completed_extension_tasks": 0,
-        "coherent_reoptimizations_completed": 0,
+        "pending_extension_tasks": 0,
+        "completed_extension_tasks": 15,
+        "coherent_reoptimizations_completed": 4,
         "measured_state_preparation_costs": 0,
         "final_cost_evaluations": 0,
-        "current_machine_readable_ci_reports": 0
+        "current_machine_readable_ci_reports": 0,
+        "extension_direct_transpiles": 1920,
+        "integrated_expected_tasks": 51,
+        "integrated_completed_tasks": 51,
+        "integrated_failed_tasks": 0,
+        "complete_local_test_suite_passed": 565,
+        "complete_local_test_suite_failed": 2,
+        "complete_local_test_suite_warnings": 4
       },
       "completion_criteria": [
-        "Preserve the initial manifest, aggregate, provenance, analysis, and extension fingerprints while keeping runtime checkpoints and logs local.",
-        "Run fresh 32-trajectory q=1,2,8 cells only for the five preregistered failing (delta,r) groups and retain the original eight-trajectory evidence separately.",
-        "Keep optimization level 2, basis, compiler seed, topology-free context, input hashes, and physical trajectory definitions fixed throughout the extension.",
-        "Proceed to coherent beta, alpha, integer-shot, and schedule reoptimization only after every extension cell completes and all proxy checks pass.",
-        "Keep q>32, state preparation, backend/noise execution, external-instance transfer, final total cost, and scientific superiority outside the current claim.",
-        "Publish immutable clean-checkout or CI regeneration evidence before external reuse."
+        "Preserve the initial, extension, aggregate, provenance, audit, and coherent-analysis fingerprints and retain the original eight-trajectory cells separately from fresh replacements.",
+        "Keep optimization level 2, basis, compiler seed, topology-free context, input hashes, physical trajectory definitions, calibration q=1,2, and fixed holdout q=8 explicit when reusing this H4 evidence.",
+        "Treat L_D=3 as a no-preparation point preference only; all propagated intervals overlap and no robust superiority is established.",
+        "Preregister a small external-instance pilot before execution and recalibrate its physical instance and compiler context rather than transferring the H4 point model.",
+        "Add direct q>32 evidence only when the external-pilot design or resource-model error budget requires it; do not infer long-q validity from q=8 or the focused r=32 q<=32 evidence.",
+        "Measure concrete candidate-specific state-preparation circuits before incorporating preparation into a total-cost claim.",
+        "Publish immutable clean-checkout or CI regeneration evidence; do not claim H12 transfer, backend/noise validity, final total cost, or scientific superiority from M06-F."
       ]
     },
     {

@@ -1,6 +1,51 @@
 # Validation status
 
+## 2026-09-25 M06-F fresh-32 and coherent opt2 result
+
+事前登録済みfresh-32拡張は固定H4 linear chain、1.0 Å、STO-3G、8 qubit、DF rank 12、
+`L_D=3`、`delta=0.01,0.02`、`r=1,2,4,8,16,32`、`q=1,2,8`のうち初期精度gateで
+指定された5 groupだけをQiskit 1.3.0、optimization level 2、basis `rz,sx,x,cx`、seed 17で
+実行した。15/15 task、1,920 direct transpile、failed 0、wrapper exit code 0、13,833秒で完了した。
+初期36 taskと統合して51/51/0 expected/completed/failedで、missing、partial、duplicate、seed重複、
+破損JSON、aggregate不一致は0。CPU-only、各thread=1、compute source hash不変も確認した。
+
+12個のrandomized group全てが事前gateを通過した。direct RZ relative SE最大1.9844%、
+selected-policy RZ holdout最大4.4898%、selected全metric holdout最大4.7488%である。
+`q=1,2`は較正、`q=8`は固定holdoutとして分離した。同一opt2 contextでbeta、alpha、integer
+shot、scheduleを再最適化すると、両候補とも`delta=0.02`を選び、状態準備なしのcompiled-RZ
+点推定は`L_D=3/12`で`1.263314e12/1.327822e12`、shotは13,588/11,162だった。
+点推定は`L_D=3`が4.858%低いが、local 5%、per-r実測幅、25%移送の全区間は重なる。
+
+旧mixed compiler-context focused推定に対し、coherentな`L_D=3`点推定は3.8918%増え、
+点利得は8.422%から4.858%へ縮小した。共通状態準備costの点break-evenは26,590,335
+compiled-RZ相当/shotだが、P=0ですでに区間が重なるため頑健な非負P範囲はない。
+all-rのcompiler-context欠落は現H4測定範囲で解消した一方、q>32、状態準備、外部instance、
+coupling/backend、H12、immutable再現は未解決であり、最終総costまたは科学的優位性は主張しない。
+
+監査artifact fingerprintは
+`b39960a630746e2c05009f8d7e13bd982ff565b3a3c70a7abfc2dc65dc7009ca`、
+coherent解析fingerprintは
+`5ce368a94daa39680b4edc0cfb59b30168d8bc159ad2538b29cb67b928e3cdba`。
+T4/T7主軸、T1範囲変更、T2/T5/T6限定、T3保留は維持し、局所compiler精密化を止めて
+外部instance pilotを次のdiscriminator候補として再開可能にする。
+専用testは`3 passed`、関連testは`36 passed`、manifest検査はpass。全suiteは
+`565 passed, 2 failed, 4 warnings`で、2 failureは既知のPython版保存reference不一致と
+four-round DF preparation hash不一致であり、M06-F変更面の新規回帰ではない。
+詳細は[M06-F all-r coherent opt2](docs/research_direction_full_opt2.md)。
+
 ## 2026-09-24 M06-F all-r coherent opt2 initial result
+
+終了後の完全性監査で、初期36 taskのtask spec、worker result、checkpoint、aggregateを再照合した。
+failed、missing、partial、duplicate、破損JSON、fingerprint不一致はいずれも0で、tmuxと関連processも
+終了していた。runner契約から終了code 0と判定したが、元shellの`$?`自体は独立保存されていない。
+初期batchは36/36完了、所要17,475.324秒、事前登録workflow全体はfresh-32 15 task未実行のため
+36/51である。監査artifact fingerprintは
+`7d184c4ebde0665fbc85452c69b9de14997f101fb51f9e2969fd13bf1d5ebf35`。
+この監査は下記の研究判断を変更せず、coherent再最適化を完了扱いにしない。
+監査専用testは`3 passed`、関連testは`33 passed`。全suiteは`562 passed, 2 failed, 5 warnings`で、
+失敗2件は今回の変更外にある保存referenceのPython版不一致と既存four-round artifactの
+DF preparation hash不一致である。この監査では無関係な保存artifactを変更しない。
+
 
 WP11が選択した`all_r_coherent_opt2_reoptimization`について、固定H4 linear chain、1.0 Å、
 STO-3G、8 qubit、DF rank 12、`L_D=3,12`、`delta=0.01,0.02`、Qiskit 1.3.0、

@@ -66,7 +66,7 @@
 - [`research_direction_compiler_transfer.md`](research_direction_compiler_transfer.md)
 - [`research_direction_uncertainty_break_even.md`](research_direction_uncertainty_break_even.md)
 - [`research_direction_wp11_synthesis.md`](research_direction_wp11_synthesis.md)
-- [`research_direction_full_opt2.md`](research_direction_full_opt2.md)：WP11選択M06-Fの事前固定条件、checkpoint compute、受理・拡張規則
+- [`research_direction_full_opt2.md`](research_direction_full_opt2.md)：WP11選択M06-Fの事前固定条件、51/51完全性監査、direct-RZ測定、coherent opt2再最適化
 
 ## 実行・運用
 
