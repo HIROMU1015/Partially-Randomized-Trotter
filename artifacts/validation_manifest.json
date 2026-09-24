@@ -1755,6 +1755,55 @@
           "research_direction_wp11_synthesis"
         ],
         "reason": "Contains the fingerprinted WP11 direction-synthesis artifact; it is local dirty-worktree evidence rather than immutable CI or a completed opt2 computation."
+      },
+      {
+        "path": "src/trotterlib/research_direction_full_opt2.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_full_opt2"
+        ],
+        "reason": "Validates the WP11 evidence contract, defines same-context optimization-level-2 cell computations, applies proxy acceptance checks, and gates coherent reoptimization on complete passing evidence."
+      },
+      {
+        "path": "scripts/run_research_direction_full_opt2_compute.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_full_opt2"
+        ],
+        "reason": "Creates hash-bound cell manifests and runs bounded, resumable CPU-only compute with recorded git, dependency, resource, thread, and CUDA provenance."
+      },
+      {
+        "path": "scripts/run_research_direction_full_opt2_analysis.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_full_opt2"
+        ],
+        "reason": "Analyzes the complete initial batch, preserves the preregistered acceptance gate, and emits a fresh 32-trajectory extension manifest only for failing cells."
+      },
+      {
+        "path": "tests/test_research_direction_full_opt2.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_full_opt2",
+          "tests"
+        ],
+        "reason": "Tests manifest scope, evidence validation, result guards, extension selection, and fingerprint tamper rejection for M06-F."
+      },
+      {
+        "path": "docs/research_direction_full_opt2.md",
+        "kind": "file",
+        "supports": [
+          "research_direction_full_opt2"
+        ],
+        "reason": "Documents the fixed M06-F scope, execution safety, acceptance rules, completed initial result, and pending fresh-32 extension."
+      },
+      {
+        "path": "artifacts/research_direction_full_opt2/2026-09-24",
+        "kind": "directory",
+        "supports": [
+          "research_direction_full_opt2"
+        ],
+        "reason": "Contains compact smoke/timing records, the completed 36-cell initial manifest and summaries, the fingerprinted initial analysis, and the pending 15-task fresh-32 extension manifest. Runtime logs, checkpoints, task specs, and worker outputs remain local."
       }
     ],
     "quarantined": [
@@ -2674,6 +2723,49 @@
         "Reoptimize beta, alpha, shots, and schedules for both candidates in one compiler context and then repeat uncertainty and preparation break-even accounting.",
         "Defer rather than reject the external-instance pilot, and advance it only after the selected compiler-context discriminator completes or stops.",
         "Publish immutable clean-checkout or CI evidence before external reuse; do not claim q>32 transfer, measured preparation cost, final total cost, or scientific superiority from WP11."
+      ]
+    },
+    {
+      "id": "research_direction_full_opt2",
+      "status": "source_present_no_current_ci",
+      "summary": "For the fixed H4 linear chain at 1.0 Angstrom, STO-3G, 8 qubits, DF rank 12, L_D=3/12, delta=0.01/0.02, K=2, and one topology-free Qiskit 1.3.0 optimization-level-2 rz/sx/x/cx compiler context with seed 17, M06-F completed all 36 initial cell tasks and 1,062 direct transpiles without failure or interruption. Seven of twelve randomized (delta,r) groups pass every preregistered check, and every selected-policy holdout remains below the 5% threshold. Five groups fail only the 2% direct-RZ relative-standard-error gate: (0.01,16), (0.01,32), (0.02,8), (0.02,16), and (0.02,32), with maxima 3.911%, 2.416%, 2.735%, 2.543%, and 2.141%. The preregistered fresh-32 extension is prepared only for q=1,2,8 in these groups, totaling 15 tasks and 1,920 direct transpiles, but has not run. Coherent beta/alpha/shot/schedule reoptimization, candidate comparison, q>32 validation, preparation cost, backend/noise execution, final total cost, and scientific superiority remain unperformed.",
+      "counts": {
+        "implementation_source_files": 3,
+        "generator_scripts": 2,
+        "documentation_files": 1,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 4,
+        "related_local_tests_passed": 32,
+        "local_scientific_artifacts": 4,
+        "upstream_fingerprinted_artifacts": 6,
+        "physical_molecule_sizes": 1,
+        "physical_qubits": 8,
+        "physical_df_rank": 12,
+        "physical_ld_values": 2,
+        "delta_values": 2,
+        "randomized_r_values": 6,
+        "initial_cell_tasks": 36,
+        "initial_randomized_cell_tasks": 33,
+        "initial_deterministic_cell_tasks": 3,
+        "initial_direct_transpiles": 1062,
+        "randomized_proxy_groups": 12,
+        "passing_proxy_groups": 7,
+        "precision_extension_groups": 5,
+        "pending_extension_tasks": 15,
+        "pending_extension_direct_transpiles": 1920,
+        "completed_extension_tasks": 0,
+        "coherent_reoptimizations_completed": 0,
+        "measured_state_preparation_costs": 0,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Preserve the initial manifest, aggregate, provenance, analysis, and extension fingerprints while keeping runtime checkpoints and logs local.",
+        "Run fresh 32-trajectory q=1,2,8 cells only for the five preregistered failing (delta,r) groups and retain the original eight-trajectory evidence separately.",
+        "Keep optimization level 2, basis, compiler seed, topology-free context, input hashes, and physical trajectory definitions fixed throughout the extension.",
+        "Proceed to coherent beta, alpha, integer-shot, and schedule reoptimization only after every extension cell completes and all proxy checks pass.",
+        "Keep q>32, state preparation, backend/noise execution, external-instance transfer, final total cost, and scientific superiority outside the current claim.",
+        "Publish immutable clean-checkout or CI regeneration evidence before external reuse."
       ]
     },
     {

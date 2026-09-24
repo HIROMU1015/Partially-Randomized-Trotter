@@ -1,5 +1,27 @@
 # Validation status
 
+## 2026-09-24 M06-F all-r coherent opt2 initial result
+
+WP11が選択した`all_r_coherent_opt2_reoptimization`について、固定H4 linear chain、1.0 Å、
+STO-3G、8 qubit、DF rank 12、`L_D=3,12`、`delta=0.01,0.02`、Qiskit 1.3.0、
+optimization level 2、basis `rz,sx,x,cx`、seed 17の同一compiler contextで初期計算を実行した。
+36 cell task、1,062 direct transpileは全て完了し、失敗・中断は0だった。
+
+12個のrandomized `(delta,r)` groupのうち7個は全基準を通過した。selected-policy RZおよび
+全compiled metricのholdout誤差は全groupで5%以内だった。一方、direct RZ relative SEの2%基準は
+`(0.01,16)`, `(0.01,32)`, `(0.02,8)`, `(0.02,16)`, `(0.02,32)`の5 groupで不通過となった。
+最大値は順に3.911%、2.416%、2.735%、2.543%、2.141%である。これは初期8 trajectoryの
+精度不足として扱い、事前規則どおり各groupの`q=1,2,8`をfresh 32 trajectoryで再計算する
+15 task、1,920 direct transpileのextension manifestを生成した。追加計算は未実行である。
+
+初期aggregate fingerprintは`ae0e0d9b616da5c31cbdd09d27d2b6e103cc07de05f0b400ab04f51da8f0c63a`、
+解析fingerprintは`b256b47a83fb54657716d4d7f910a8772aa0f583c54ec9a63259f37784d0bcaf`、
+extension manifest fingerprintは`c150a17c92ade7bd5257a8b99a92bdfdae688fb467000500a9e92754ac23e997`である。
+statusは`requires_fresh_32_trajectory_extension`であり、coherent再最適化、`L_D=3/12`比較、
+状態準備、q>32、backend/noise、最終総cost、科学的優位性は未評価である。専用testは`4 passed`、
+関連testは`32 passed`。これはlocal dirty-worktree evidenceであり、immutable CIではない。
+詳細は[M06-F all-r coherent opt2](docs/research_direction_full_opt2.md)。
+
 ## 2026-09-23 WP11 scoped direction synthesis note
 
 Gate S1、WP06-a/b、WP05-a/b/R、WP01-D/C07、G08、M08、M06/L08、N07/P03の11個の

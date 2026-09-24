@@ -1,0 +1,65 @@
+{
+  "batch_id": "wp11-all-r-opt2-smoke-20260924-013145",
+  "schema_version": "parallel_validation_task_manifest_v1",
+  "source_paths": [
+    "src/trotterlib/research_direction_full_opt2.py",
+    "src/trotterlib/research_direction_full_scope.py",
+    "src/trotterlib/research_direction_decision_cost.py",
+    "src/trotterlib/research_direction_sequence_policy.py",
+    "src/trotterlib/parallel_validation_executor.py",
+    "src/trotterlib/df_partial_s2_repeated.py",
+    "src/trotterlib/df_partial_s2_repeated_cost.py",
+    "src/trotterlib/rpe_hadamard_compiled_cost_benchmark.py",
+    "src/trotterlib/rte_compiled_cost.py",
+    "scripts/run_research_direction_full_opt2_compute.py"
+  ],
+  "tasks": [
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 4,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 1,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 1,
+      "r": 1,
+      "resource": "cpu",
+      "seed": 10362136597436625433,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    }
+  ]
+}

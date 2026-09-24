@@ -134,6 +134,13 @@ $q=16,32$直接holdoutはselected RZ 2.466%、観測RZ最大3.286%で通過し�
 [`docs/server_parallel_validation_execution.md`](docs/server_parallel_validation_execution.md)を一組として読む。
 これは実装・運用基盤であり、新しい科学的検証結果や最終総cost評価ではない。
 
+WP11が選択したM06-F計算経路は、`src/trotterlib/research_direction_full_opt2.py`、
+`scripts/run_research_direction_full_opt2_compute.py`、
+`scripts/run_research_direction_full_opt2_analysis.py`、`tests/test_research_direction_full_opt2.py`、
+[`docs/research_direction_full_opt2.md`](docs/research_direction_full_opt2.md)を一組として読む。
+初期36 cellは完了したが、5 groupのfresh-32拡張待ちでcoherent再最適化は未完了である。
+compact resultは`artifacts/research_direction_full_opt2/2026-09-24/`に置く。
+
 ## ファイルの状態区分
 
 ### 現行の正本

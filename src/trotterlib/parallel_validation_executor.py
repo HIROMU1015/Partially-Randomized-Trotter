@@ -38,6 +38,7 @@ _THREAD_ENVIRONMENT = {
     "OPENBLAS_NUM_THREADS": "1",
     "MKL_NUM_THREADS": "1",
     "NUMEXPR_NUM_THREADS": "1",
+    "NUMBA_NUM_THREADS": "1",
 }
 _METRIC_NAMES = (
     "rz_count",

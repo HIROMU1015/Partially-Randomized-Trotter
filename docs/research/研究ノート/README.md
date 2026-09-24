@@ -30,6 +30,7 @@
 7. 失敗や方針変更も削除せず、後続ノートから訂正内容を参照する。
 
 新しい記録は[テンプレート](テンプレート.md)を複製して作成する。
+| [2026-09-24](2026-09-24.md) | M06-F all-r coherent opt2初期計算・解析 | `26aa95c` + dirty worktree | 36/36 cell完了。12 group中7通過、5 groupはRZ相対SE 2%基準でfresh-32待ち | 15 taskのfresh 32 trajectory拡張後にcoherent再最適化 |
 
 ## 時系列索引
 

@@ -182,6 +182,7 @@ def _compile_paired_requests(
     training_fingerprint: str,
     maximum_repetition_count: int,
     operator_probe_requested: bool,
+    retain_trajectory_records: bool = False,
 ) -> tuple[dict[str, Any], dict[str, Any] | None]:
     repeated_builder = QiskitDFPartialS2RepeatedCircuitBuilder()
     wrapper_builder = QiskitRPEHadamardBenchmarkCircuitBuilder(
@@ -206,8 +207,9 @@ def _compile_paired_requests(
     support_application_counts: list[int] = []
     full_application_counts: list[int] = []
     operator_probe: dict[str, Any] | None = None
+    trajectory_records: list[dict[str, Any]] = []
 
-    for request in requests:
+    for trajectory_index, request in enumerate(requests):
         selected_request = apply_run_threshold_policy(
             request,
             support_definitions,
@@ -237,11 +239,13 @@ def _compile_paired_requests(
         )
         support_application_counts.append(support_count)
         full_application_counts.append(full_count)
-        plan_fingerprints.extend(
+        request_plan_fingerprints = tuple(
             plan.plan_fingerprint
             for plan in selected_request.rte_basis_plans
             if plan is not None
         )
+        plan_fingerprints.extend(request_plan_fingerprints)
+        trajectory_axes: dict[str, Any] = {}
 
         for axis in AXES:
             policy_costs: dict[str, dict[str, float]] = {}
@@ -280,6 +284,10 @@ def _compile_paired_requests(
                     policy_costs[POLICY_LABEL][metric]
                     - policy_costs["full_basis_shared"][metric]
                 )
+
+            trajectory_axes[axis] = {
+                "policies": policy_costs,
+            }
 
         if (
             operator_probe_requested
@@ -354,6 +362,24 @@ def _compile_paired_requests(
                     or sine_selected.additional_control_applied
                 ),
             }
+        if retain_trajectory_records:
+            trajectory_records.append(
+                {
+                    "trajectory_index": trajectory_index,
+                    "trajectory_seed": request.trajectory_seed,
+                    "q_m": request.repetition_count,
+                    "support_restricted_application_count": support_count,
+                    "full_basis_application_count": full_count,
+                    "basis_plan_fingerprint_digest": hashlib.sha256(
+                        "".join(request_plan_fingerprints).encode()
+                    ).hexdigest(),
+                    "evolution_semantics_fingerprint": {
+                        "full_basis_shared": full_evolution.circuit_semantics_fingerprint,
+                        POLICY_LABEL: selected_evolution.circuit_semantics_fingerprint,
+                    },
+                    "axes": trajectory_axes,
+                }
+            )
 
     axes: dict[str, Any] = {}
     for axis in AXES:
@@ -385,6 +411,10 @@ def _compile_paired_requests(
                 policy: hashlib.sha256("".join(values).encode()).hexdigest()
                 for policy, values in evolution_fingerprints.items()
             },
+            **(
+                {"trajectory_records": trajectory_records}
+                if retain_trajectory_records else {}
+            ),
         },
         operator_probe,
     )
