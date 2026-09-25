@@ -3,6 +3,34 @@
 事前検証カタログの実施ID・work packageと、以下のstatus、専用文書、artifact、runner、testの対応は
 [事前検証カタログ実施証拠索引](docs/research/prevalidation_catalog_evidence_map.md)を参照する。
 
+## 2026-09-26 P-D S1 公平PF再最適化
+
+S0で主RQ、既知baseline、共通比較契約、停止規則を固定した。S1はH4 linear chain、1.0 Å、
+STO-3G、8 qubit、4-electron sector、DF rank 12、`L_D=3`、固定5公式を対象とし、共通物理時間
+`T=0.8`、総位相誤差予算`8e-7 rad`でnested/native構成を比較した。primary gridは
+`delta={0.1,0.2,0.4}`、nested `m_D={8,16,32,64}`、`R={16,32,64,128}`、K2で、
+事前登録規則による一段境界延長と限定K4感度だけを追加した。
+
+one-shot workを含むB1b、leading absolute-tail-time modelのB2、finite modelのB4は全scopeで同じ
+new fourthを選んだ。nestedは`delta=0.2,m_D=16,R=16`、native/combinedは
+`delta=0.2,R=16`で、B2のB4 regretは0だった。限定K4でもformula・delta・m_D・Rは不変で、
+decision-relevantなfinite補正は確認されなかった。
+
+outer-stageだけを見るB1aはnested/combinedでfinite-infeasibleな`delta=0.4,m_D=128,R=16`を
+選び、一段延長後も`m_D`上限依存が残った。従って一次分類はCase Bだが、正式statusは
+`stop_s1_undetermined_boundary_no_go_decision`である。Case Bを生じさせたのはB1aだけで、B1bは
+B2/B4と一致する。Case C/Dの証拠はなく、S2へ進まず計算を停止した。
+
+v1本実行は高段PFでtail occurrence数が`R=16`を超える配分不能点をinfeasibleとして保存せず、
+result生成前に停止した。grid・閾値・分類規則を変えず修正し、v1 expectedを保持したままv2へ
+非上書きで再固定した。v2 expected fingerprintは
+`e3eacbb9d8928f781df7709208f048c59aaab7052304e4eae4adc346bbf6d0d5`、result fingerprintは
+`0ba7764da7b7d8b7e195a5c315d3dc0a65c2c79ce01c51cf021a2685977487d2`、result file SHA-256は
+`6b8de6e255eb0796d93398c767017c2899837a63c7230e9956fb2d9beedbeaec`。専用testは`5 passed`、
+全suiteは`611 passed, 2 skipped, 4 warnings`で失敗0、artifact validatorも通過した。これはdirty worktreeのlocal evidenceで、immutable CIまたは外部
+独立再現ではない。H12、長RPE、compiled total cost、sampled H4 finite operatorは未評価である。
+詳細は[P-D S1公平再最適化](docs/research_direction_pd_fair_comparison.md)。
+
 
 ## 2026-09-25 P-D現実化 Go/No-Go gate
 

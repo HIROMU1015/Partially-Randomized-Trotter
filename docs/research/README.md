@@ -54,6 +54,10 @@
 | 13 | [P-D energy・tail Pareto結果](../research_direction_energy_tail_pareto.md) | energy-onlyとtail-awareのblind逆転、条件付き候補判断、後続の現実化gateを記録する。 |
 | 14 | [P-D現実化Go/No-Go事前登録](pd_realization_go_no_go_preregistration.md) | 負時間D1、内部`H_D` D2、fresh `L_D=5` D3、固定閾値、終了後の停止規則を記録する。 |
 | 15 | [P-D現実化Go/No-Go結果](../research_direction_pd_realization.md) | D1--D3全通過、正式主研究候補化、未評価範囲、研究再設計の停止点を記録する。 |
+| 16 | [P-D主研究契約](pd_primary_research_contract.md) | S0の主RQ、固定H4 scope、B0/B1a/B1b/B2/B4、Case A--D、S1後の強制停止を固定する。 |
+| 17 | [P-D既知baseline](pd_prior_art_and_baselines.md) | 既知のabsolute-tail-time modelとS1で新たに問うfinite/internal/construction差を分離する。 |
+| 18 | [P-D S1事前登録](pd_s1_fair_comparison_preregistration.md) | 共通時間・位相予算、nested/native、regret、K4 trigger、境界規則を結果前に固定する。 |
+| 19 | [P-D S1結果](../research_direction_pd_fair_comparison.md) | B1b/B2/B4一致、Case C/D不成立、B1a上限依存によるCase B＋undetermined停止を記録する。 |
 
 ## 研究ノート
 

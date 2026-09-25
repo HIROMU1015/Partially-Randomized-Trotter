@@ -30,3 +30,4 @@ artifact tamperとscope guardを検査する。
 `test_research_direction_geometry_tracking_breakdown.py`では、16 taskのcompile-before manifestとsource hash、
 訂正済み先行P-Cとのtraining再現、追跡prefix不変、stretch側blind予測破れ、固定停止判断、
 artifact tamperとscope guardを検査する。
+`test_research_direction_pd_fair_comparison.py`では、共通時間のexpected manifest、source freeze、finite K2/K4 cost、配分不能点のinfeasible記録、S1後の強制停止とscope guardを検査する。

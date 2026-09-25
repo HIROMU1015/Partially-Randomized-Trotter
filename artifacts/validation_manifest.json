@@ -2428,6 +2428,30 @@
           "research_direction_pd_realization"
         ],
         "reason": "Fingerprint-bound result 805a17f95497a4d61286748a126c01b1235fbe0d987528be86ea3938700b9ede, file SHA-256 59e8019805e429280a5f6338e38a1cbfd803ae8b51c30e87a965a2ef3dcb694d: D1-D3 all pass and P-D advances to a formal primary candidate before the mandatory research-redesign stop."
+      },
+      {
+        "path": "artifacts/research_direction_pd_fair_comparison/2026-09-26/pd_s1_expected_tasks_v1.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_pd_fair_comparison"
+        ],
+        "reason": "Original 300-primary-task freeze, content fingerprint c1e5631e547c68670c74244109817c3640216d1a55955d293d0f58bdbd172ff9 and file SHA-256 18ecbbbff0623951aea9d32d6049634bcf0fb3fbfffe30fc2fb1c6c486de0ace; retained as the pre-allocation-infeasibility-fix audit history and not used as a completed numerical result."
+      },
+      {
+        "path": "artifacts/research_direction_pd_fair_comparison/2026-09-26/pd_s1_expected_tasks_v2.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_pd_fair_comparison"
+        ],
+        "reason": "Corrected-source 300-primary-task manifest with unchanged grid, thresholds, K4 triggers, boundary rule, and classification; content fingerprint e3eacbb9d8928f781df7709208f048c59aaab7052304e4eae4adc346bbf6d0d5 and file SHA-256 8569bd7e0a3fa53fa96ec78bfeb9a5536e61f262a037d2fb1c0147466c8ca6f2."
+      },
+      {
+        "path": "artifacts/research_direction_pd_fair_comparison/2026-09-26/pd_s1_fair_comparison_v2.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_pd_fair_comparison"
+        ],
+        "reason": "Fingerprint-bound S1 result 0ba7764da7b7d8b7e195a5c315d3dc0a65c2c79ce01c51cf021a2685977487d2, file SHA-256 6b8de6e255eb0796d93398c767017c2899837a63c7230e9956fb2d9beedbeaec: B1b/B2/B4 agree, finite correction is not decision-relevant, and B1a leaves an unresolved m_D boundary, so S1 stops without a GO decision."
       }
     ],
     "quarantined": [
@@ -4206,6 +4230,46 @@
         "Treat D1 as dense small-matrix semantics rather than compiled Qiskit controlled-circuit evidence, and D2/D3 as internal-H_D realization with exact H_R occurrences rather than a sampled H4 finite-RTE operator.",
         "Stop additional computation after this gate and redesign the research RQ, novelty claim, minimum endpoint, and necessary validations before any new generalization.",
         "Do not infer compiled-circuit performance, long-RPE cost, H12 transfer, backend or noise behavior, final total cost, global product-formula optimality, or scientific superiority."
+      ]
+    },
+    {
+      "id": "research_direction_pd_fair_comparison",
+      "status": "source_present_no_current_ci",
+      "summary": "Under the preregistered fixed H4 linear-chain 1.0 Angstrom, STO-3G, 8-qubit, four-electron, DF-rank-12, L_D=3 conditions, five formulas were fairly reoptimized at common total time T=0.8 and phase budget 8e-7 rad across nested and native constructions. B1b, leading absolute-tail-time B2, and finite-RTE B4 all select the new fourth-order formula at delta 0.2 and R=16; nested also selects m_D=16. B2 has zero B4 regret in nested, native, and combined scopes, and the restricted K4 sensitivity changes no formula or setting. Outer-stage-only B1a selects a finite-infeasible m_D=128 boundary point after one extension. The preregistered primary classification is Case B with undetermined_boundary, yielding stop_s1_undetermined_boundary_no_go_decision. Case C/D evidence is absent and S2 is not started.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 4,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 5,
+        "dedicated_local_test_cases_passed": 5,
+        "local_artifacts": 3,
+        "expected_primary_tasks": 300,
+        "primary_k2_candidates_after_boundary_extension": 308,
+        "fixed_formulae": 5,
+        "constructions": 2,
+        "delta_values": 3,
+        "b4_feasible_candidates": 87,
+        "restricted_k4_candidates": 10,
+        "b2_zero_regret_scopes": 3,
+        "boundary_extension_records": 2,
+        "finite_rte_h4_sampled_operator_evaluations": 0,
+        "circuit_compilations": 0,
+        "new_hamiltonian_and_df_computations": 0,
+        "final_cost_evaluations": 0,
+        "h12_evaluations": 0,
+        "current_machine_readable_ci_reports": 0,
+        "complete_local_test_suite_passed": 611,
+        "complete_local_test_suite_skipped": 2,
+        "complete_local_test_suite_warnings": 4
+      },
+      "completion_criteria": [
+        "Preserve v2 expected fingerprint e3eacbb9d8928f781df7709208f048c59aaab7052304e4eae4adc346bbf6d0d5 and result fingerprint 0ba7764da7b7d8b7e195a5c315d3dc0a65c2c79ce01c51cf021a2685977487d2.",
+        "Retain the v1 expected artifact as technical-failure history; do not use it as a completed numerical result or overwrite either expected generation.",
+        "Do not change the fixed time, phase budget, formula family, grids, regret threshold, K4 trigger, boundary rule, or A-D classification after observing the result.",
+        "Keep the formal Case B classification separate from its mechanism: B1a alone causes the decision-relevant failure, while B1b, B2, and B4 agree with zero regret.",
+        "Treat the one-step m_D extension as unresolved and do not issue a GO decision or advance automatically to S2 without a new preregistration.",
+        "Do not infer compiled-circuit performance, measured shot cost, exhaustive K4 optimality, sampled H4 finite-RTE operator behavior, long-RPE cost, H12 transfer, backend/noise behavior, final total cost, or scientific superiority."
       ]
     }
   ],

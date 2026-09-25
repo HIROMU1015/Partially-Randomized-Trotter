@@ -34,13 +34,12 @@ P-Cは0.80--1.20 Åの局所pilotを通過したが、事前登録した0.70--1.
 pair予測、continuity診断、mechanism discriminationも固定gateを通らず、
 `stop_pc_current_h4_family_as_primary`となった。
 
-従って、A/B/Cに確認済みの主研究候補はない。否定結果と既存run-level policyは保持する。
-続くP-Dでは、固定した5公式のexact two-block監査において、energy-only選択のMorales 8次と
-tail-aware選択の新4次が`L_D=3` developmentと`L_D=4` blindの両方で逆転し、新4次は
-`Gamma_R`を56.702%、stage数を35から11へ減らした。後続の現実化Go/No-Goでは負時間RTEの
-dense sampled-operator/control位相、fragment内部`H_D`誤差、fresh `L_D=5`の選択差が全て固定gateを
-通過した。P-Dを正式主研究候補としてRQ・新規性・最小着地点・必要検証の再設計へ進めるが、ここで
-計算を止める。H12、長RPE、compiled総costへはまだ広げない。
+従って、A/B/Cに確認済みの主研究候補はない。P-Dのpilotと現実化gateは通過したが、S0/S1の
+公平再最適化ではB1b/B2/B4が全scopeで同じnew fourth、`delta=0.2,R=16`を選び、B2のB4 regretは0、
+限定K4でも選択は変わらなかった。finite補正が選択を変えるCase C/Dの証拠は得られていない。
+outer-stageだけのB1aは一段延長後も`m_D=128`上限へ達したため、一次分類Case Bに
+`undetermined_boundary`を付け、GO判定を出さず停止した。P-Dの研究方針とbaseline設計を再検討し、
+H12、長RPE、compiled総costへはまだ広げない。
 
 それ以前の中心課題は、DF Hamiltonianを決定論部分とランダム部分へ分けたpartial-$S_2$について、有限RTE、
 RPEの信号半径・測定回数、1 shot当たりのコンパイル後回路コストを接続することだった。PF係数、有限RTE、
@@ -244,6 +243,23 @@ P-D energy係数・random-tail負担Pareto監査は
 development `L_D=3`とblind `L_D=4`で同じselection reversalを確認し、7 gate全てを通過した。
 ただしexact two-block pilotであり、負時間RTEと内部`H_D`誤差の次gateを通るまでは
 `P-D-conditional-candidate`として扱う。
+
+P-D現実化Go/No-Goは`research_direction_pd_realization.py`と同名runner/test、
+[事前登録](docs/research/pd_realization_go_no_go_preregistration.md)、
+[結果文書](docs/research_direction_pd_realization.md)、
+`artifacts/research_direction_pd_realization/2026-09-25/`を一組として読む。
+
+続くS0/S1公平再最適化は
+`src/trotterlib/research_direction_pd_fair_comparison.py`、
+`scripts/run_research_direction_pd_fair_comparison.py`、
+`tests/test_research_direction_pd_fair_comparison.py`、
+[S0契約](docs/research/pd_primary_research_contract.md)、
+[既知baseline](docs/research/pd_prior_art_and_baselines.md)、
+[S1事前登録](docs/research/pd_s1_fair_comparison_preregistration.md)、
+[結果文書](docs/research_direction_pd_fair_comparison.md)、
+`artifacts/research_direction_pd_fair_comparison/2026-09-26/`を一組として読む。
+B1b/B2/B4は同じ選択となりCase C/Dの証拠は得られず、B1aの`m_D`上限依存により
+`stop_s1_undetermined_boundary_no_go_decision`で停止した。
 
 ## ファイルの状態区分
 
