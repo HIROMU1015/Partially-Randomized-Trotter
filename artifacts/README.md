@@ -11,7 +11,10 @@
 
 - [`research_direction_energy_tail_pareto/2026-09-25/`](research_direction_energy_tail_pareto/2026-09-25/)：
   P-Dの固定expected tasksとexact two-block Pareto結果。負時間sampled RTEと内部`H_D`誤差は
-  未検証なので、結果文書と一組で使う
+  後続の現実化gateと区別して使う
+- [`research_direction_pd_realization/2026-09-25/`](research_direction_pd_realization/2026-09-25/)：
+  P-D現実化のv1/v2 expected tasksとD1--D3完了結果。v1は技術的KeyError前の凍結履歴で、
+  数値判断にはv2 resultを使う
 manifestは次で検査できる。
 
 ```bash

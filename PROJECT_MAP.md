@@ -37,9 +37,10 @@ pair予測、continuity診断、mechanism discriminationも固定gateを通ら�
 従って、A/B/Cに確認済みの主研究候補はない。否定結果と既存run-level policyは保持する。
 続くP-Dでは、固定した5公式のexact two-block監査において、energy-only選択のMorales 8次と
 tail-aware選択の新4次が`L_D=3` developmentと`L_D=4` blindの両方で逆転し、新4次は
-`Gamma_R`を56.702%、stage数を35から11へ減らした。P-Dは条件付き候補へ進めるが、負時間RTEの
-sampled operator/control位相と実際の`H_D`内部誤差は未検証である。次はこの2点だけを判定し、
-通過前にH12、長RPE、compiled総costへ広げない。
+`Gamma_R`を56.702%、stage数を35から11へ減らした。後続の現実化Go/No-Goでは負時間RTEの
+dense sampled-operator/control位相、fragment内部`H_D`誤差、fresh `L_D=5`の選択差が全て固定gateを
+通過した。P-Dを正式主研究候補としてRQ・新規性・最小着地点・必要検証の再設計へ進めるが、ここで
+計算を止める。H12、長RPE、compiled総costへはまだ広げない。
 
 それ以前の中心課題は、DF Hamiltonianを決定論部分とランダム部分へ分けたpartial-$S_2$について、有限RTE、
 RPEの信号半径・測定回数、1 shot当たりのコンパイル後回路コストを接続することだった。PF係数、有限RTE、

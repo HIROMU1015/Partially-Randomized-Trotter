@@ -24,6 +24,10 @@ blind holdoutの`L_D=4`の両方で確認した。判断点`delta=0.4`、energy 
 `H_D`内部近似誤差をまだ含めていないため、高次partial-RTEの実用的優位性や最終総costは
 結論していない。
 
+後続のP-D現実化Go/No-Goは2026-09-25に完了し、D1--D3を全て通過した。現在の判断と
+限界は[P-D現実化結果](research_direction_pd_realization.md)を正本とする。本書の条件付き判断は、
+後続gate前のpilot履歴として保持する。
+
 ## 条件と事前固定
 
 - 系：H4 linear chain、1.0 Å、STO-3G、8 qubit、4 electron sector、DF rank 12
@@ -116,16 +120,17 @@ compiled circuit cost、あるいは総costの下界ではない。
 独立した差分がある。ただし、現時点の選択規則はpilot診断であり、実装済みpartial-RTE全体の
 資源最適化規則ではない。
 
-## 次の停止点
+## 当時固定した次の停止点
 
-次の一件は`PD-1`として、次を同じ検証内で行う。
+このpilot完了時点では、次の一件を`PD-1`として同じ検証内で行うことにした。
 
 1. 負のtail係数を含む有限RTE sampled operator、identity phase、通常/control branchを
    小行列oracleと照合する。
 2. exact `H_D`を使う二block参照と、実際のfragment列で近似した`H_D`を比較し、内部誤差が
    selection reversalを保つか確認する。
 
-このgateを通るまでは、compiled回路、長RPE、H12、全PF family探索へ広げない。
+このgateを通るまでは、compiled回路、長RPE、H12、全PF family探索へ広げないと固定した。
+後続gateは固定条件を全て通過したが、そこで計算を停止し研究再設計へ進む。
 
 ## 証拠
 

@@ -2363,6 +2363,71 @@
           "research_direction_theme_selection"
         ],
         "reason": "Fingerprint-bound pre-audit selection result 7daa49c3c30b453d69d52830d0889ce04104cc5a0f02a2c3083517486d575fbb: it preserves the original pending-audit decision; the later audit and preregistration documents record the current status."
+      },
+      {
+        "path": "src/trotterlib/research_direction_pd_realization.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_pd_realization"
+        ],
+        "reason": "Implements the frozen signed-time finite-RTE small-matrix oracle, ordinary/controlled phase checks, fragment-level internal-H_D product formula, fixed L_D=3/4/5 roles, selection gates, fingerprints, and scope guards."
+      },
+      {
+        "path": "scripts/run_research_direction_pd_realization.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_pd_realization"
+        ],
+        "reason": "Freezes non-overwriting expected tasks and source/input hashes before the internal-H_D transfer and fresh L_D=5 holdout, then generates the fingerprint-bound D1-D3 result."
+      },
+      {
+        "path": "tests/test_research_direction_pd_realization.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_pd_realization",
+          "tests"
+        ],
+        "reason": "Checks the negative-time task set, fresh-L_D=5 disclosure, signed-time/control oracle, frozen expected/result fingerprints, tamper rejection, and scope-overstatement rejection."
+      },
+      {
+        "path": "docs/research/pd_realization_go_no_go_preregistration.md",
+        "kind": "file",
+        "supports": [
+          "research_direction_pd_realization"
+        ],
+        "reason": "Preserves the fixed H4 conditions, five formulas, D1-D3 roles, thresholds, 32 internal-H_D substeps, fresh L_D=5 holdout, decision rule, and mandatory post-gate stop."
+      },
+      {
+        "path": "docs/research_direction_pd_realization.md",
+        "kind": "file",
+        "supports": [
+          "research_direction_pd_realization"
+        ],
+        "reason": "Documents all three passed gates, the energy-only versus tail-aware selections at L_D=3/4/5, the v1 technical failure and v2 freeze, limitations, and the stop for research redesign."
+      },
+      {
+        "path": "artifacts/research_direction_pd_realization/2026-09-25/pd_realization_expected_tasks_v1.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_pd_realization"
+        ],
+        "reason": "Original 29-task frozen manifest, content fingerprint c44cee2bcf73feea8cc77d4c1e859fb297d628d46d8410cba35cf0d13b5599f3 and file SHA-256 fca6e9b75d2d8b8b270836fac968d47eace9c3600767b8ba72951f69a770d56e; retained as the pre-KeyError audit history and not used for the numerical decision."
+      },
+      {
+        "path": "artifacts/research_direction_pd_realization/2026-09-25/pd_realization_expected_tasks_v2.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_pd_realization"
+        ],
+        "reason": "Corrected-source 29-task manifest with unchanged tasks, seeds, thresholds, and holdout; content fingerprint 8924d637e52b03900f32e2f167e63593cf9729b4b78d4dee3af87fca661183f4 and file SHA-256 a88a57ca29d7db427bd3274ebb1e5bc6251da1cfc23dc6ebe040b3a8de732161."
+      },
+      {
+        "path": "artifacts/research_direction_pd_realization/2026-09-25/pd_realization_go_no_go_v2.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_pd_realization"
+        ],
+        "reason": "Fingerprint-bound result 805a17f95497a4d61286748a126c01b1235fbe0d987528be86ea3938700b9ede, file SHA-256 59e8019805e429280a5f6338e38a1cbfd803ae8b51c30e87a965a2ef3dcb694d: D1-D3 all pass and P-D advances to a formal primary candidate before the mandatory research-redesign stop."
       }
     ],
     "quarantined": [
@@ -4099,6 +4164,48 @@
         "Before advancing P-D beyond a conditional candidate, validate sampled finite RTE with negative coefficients and ordinary/controlled phase handling against a small-matrix oracle.",
         "Restore the actual fragment-level H_D approximation and verify whether the selection reversal survives combined outer and inner error.",
         "Do not infer compiled-circuit performance, long-RPE cost, H12 transfer, backend/noise behavior, final total cost, or scientific superiority."
+      ]
+    },
+    {
+      "id": "research_direction_pd_realization",
+      "status": "source_present_no_current_ci",
+      "summary": "Under the preregistered H4 linear-chain 1.0 Angstrom, STO-3G, 8-qubit, four-electron, DF-rank-12 conditions, all 14 negative-time finite-RTE small-matrix tasks pass ordinary, adjoint, controlled-block, identity-phase, and fixed-seed sampling gates. Restoring a 32-substep fragment-level internal H_D approximation preserves the energy-only Morales-eighth versus tail-aware new-fourth selection difference at L_D=3 and L_D=4. The frozen fresh L_D=5 holdout selects Morales eighth by energy and second order by tail burden, reducing log B_K by 96.580 percent and the stage proxy from 6400 to 768. D1-D3 all pass, so P-D advances to a formal primary research candidate and computation stops for RQ, novelty, endpoint, and validation redesign.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 2,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 4,
+        "dedicated_local_test_cases_passed": 4,
+        "local_artifacts": 3,
+        "expected_tasks": 29,
+        "completed_tasks": 29,
+        "failed_tasks": 0,
+        "fixed_formulae": 5,
+        "negative_time_oracle_tasks": 14,
+        "development_splits": 1,
+        "internal_hd_transfer_splits": 1,
+        "fresh_holdout_splits": 1,
+        "selection_reversals": 3,
+        "preregistered_gates": 3,
+        "preregistered_gates_passed": 3,
+        "preregistered_gates_failed": 0,
+        "finite_rte_h4_sampled_operator_evaluations": 0,
+        "circuit_compilations": 0,
+        "new_hamiltonian_and_df_computations": 0,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0,
+        "complete_local_test_suite_passed": 606,
+        "complete_local_test_suite_skipped": 2,
+        "complete_local_test_suite_warnings": 4
+      },
+      "completion_criteria": [
+        "Preserve v2 expected fingerprint 8924d637e52b03900f32e2f167e63593cf9729b4b78d4dee3af87fca661183f4 and result fingerprint 805a17f95497a4d61286748a126c01b1235fbe0d987528be86ea3938700b9ede.",
+        "Retain the v1 expected artifact as technical-failure history; do not use it as a completed numerical result or overwrite either expected generation.",
+        "Do not change the formula family, deltas, energy and weight thresholds, tail allocation, 32 internal-H_D substeps, L_D roles, seeds, or gates after the observed result.",
+        "Treat D1 as dense small-matrix semantics rather than compiled Qiskit controlled-circuit evidence, and D2/D3 as internal-H_D realization with exact H_R occurrences rather than a sampled H4 finite-RTE operator.",
+        "Stop additional computation after this gate and redesign the research RQ, novelty claim, minimum endpoint, and necessary validations before any new generalization.",
+        "Do not infer compiled-circuit performance, long-RPE cost, H12 transfer, backend or noise behavior, final total cost, global product-formula optimality, or scientific superiority."
       ]
     }
   ],

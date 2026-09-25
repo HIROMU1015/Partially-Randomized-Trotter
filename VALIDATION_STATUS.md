@@ -4,6 +4,37 @@
 [事前検証カタログ実施証拠索引](docs/research/prevalidation_catalog_evidence_map.md)を参照する。
 
 
+## 2026-09-25 P-D現実化 Go/No-Go gate
+
+H4 linear chain、1.0 Å、STO-3G、8 qubit、4-electron sector、DF rank 12、固定5公式、
+診断delta 0.2、主判断delta 0.4を用いた。D1負時間14 task、D2 `L_D=3,4`、D3 fresh
+`L_D=5`を結果前に固定し、energy tolerance `1e-6 Ha`、minimum weight 0.9995、tail burden
+20%削減、内部`H_D` 32 substep等の閾値を結果後に変更していない。
+
+D1は14/14通過した。ordinary oracle residual最大`3.3314e-16`、signed adjoint 0、controlled
+residual最大`6.6613e-16`、identity relative-phase residual最大`3.4694e-18 rad`、sampled mean
+最大絶対誤差`5.1531e-4`、最大standardized residual 2.4874だった。
+
+fragment内部`H_D`誤差を戻した主判断deltaでは、`L_D=3,4`のenergy-only選択はMorales 8次、
+tail-aware選択は新4次のまま残った。fresh `L_D=5`ではenergy-onlyがMorales 8次、tail-awareが
+二次となり、`log B_K`を96.580%、stage proxyを6400から768へ減らした。全splitのfragment再構成
+residualは0、最大unitary defectは`1.4382e-11`、最小target weightは`0.9999959245`である。
+D1--D3は全て通過し、statusを
+`advance_pd_to_formal_primary_candidate_then_stop_for_research_redesign`とした。
+
+P-Dを正式主研究候補としてRQ・新規性・最小着地点・必要な本検証の再設計へ進めるが、計算は
+ここで停止する。D1はdense small-matrix oracleでcompiled Qiskit controlではない。D2/D3の
+各`H_R` occurrenceはexactで、sampled H4 operator、compiled depth、long RPE、最終総cost、H12、
+backend/noise、global PF optimality、科学的優位性は未評価である。
+
+v1本実行は旧P-D負担表にないdelta 0.2を参照する技術的`KeyError`でresult生成前に停止した。
+task、seed、thresholdを変えず修正し、v1 expectedを保持したままv2へ非上書きで再固定した。
+v2 expected fingerprintは`8924d637e52b03900f32e2f167e63593cf9729b4b78d4dee3af87fca661183f4`、
+result fingerprintは`805a17f95497a4d61286748a126c01b1235fbe0d987528be86ea3938700b9ede`、
+file SHA-256は`59e8019805e429280a5f6338e38a1cbfd803ae8b51c30e87a965a2ef3dcb694d`。
+専用testは`4 passed`、全suiteは`606 passed, 2 skipped, 4 warnings`で失敗0。これはclean
+worktreeから生成したlocal evidenceだが、immutable CIまたは外部独立再現ではない。詳細は[P-D現実化Go/No-Go](docs/research_direction_pd_realization.md)。
+
 ## 2026-09-25 P-D energy係数・random-tail負担Pareto監査
 
 H4 linear chain、1.0 Å、STO-3G、8 qubit、4-electron sector、DF rank 12の固定snapshotで、

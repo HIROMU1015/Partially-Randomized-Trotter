@@ -28,6 +28,8 @@ ARTIFACT_ROOT = (
 )
 EXPECTED = ARTIFACT_ROOT / "pd_realization_expected_tasks_v2.json"
 FINAL = ARTIFACT_ROOT / "pd_realization_go_no_go_v2.json"
+EXPECTED_FINGERPRINT = "8924d637e52b03900f32e2f167e63593cf9729b4b78d4dee3af87fca661183f4"
+RESULT_FINGERPRINT = "805a17f95497a4d61286748a126c01b1235fbe0d987528be86ea3938700b9ede"
 
 
 def _load(path: Path) -> dict:
@@ -65,14 +67,20 @@ def test_d1_signed_time_and_controlled_oracle_passes() -> None:
 def test_frozen_expected_and_result_artifacts() -> None:
     expected = _load(EXPECTED)
     validate_expected_task_manifest(expected)
+    assert expected["content_fingerprint"] == EXPECTED_FINGERPRINT
     assert expected["content_fingerprint"] == fingerprint(
         {key: value for key, value in expected.items() if key != "content_fingerprint"}
     )
 
     final = _load(FINAL)
     validate_result(final)
+    assert final["content_fingerprint"] == RESULT_FINGERPRINT
     assert final["expected_task_fingerprint"] == expected["content_fingerprint"]
     assert [row["ld"] for row in final["d2_d3_internal_hd_splits"]] == [3, 4, 5]
+    assert all(final["gates"].values())
+    assert final["decision"]["status"] == (
+        "advance_pd_to_formal_primary_candidate_then_stop_for_research_redesign"
+    )
     assert final["decision"]["stop_after_this_validation_for_research_redesign"]
 
 

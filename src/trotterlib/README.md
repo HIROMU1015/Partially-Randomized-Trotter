@@ -100,6 +100,7 @@
 - `research_direction_joint_synthesis_mechanism_validation.py`
 
 - `research_direction_energy_tail_pareto.py`
+- `research_direction_pd_realization.py`
 同名のrunner、test、文書、artifactと合わせて読む。モジュールが実装済みでも、対象範囲が
 科学的に検証済みとは限らない。
 

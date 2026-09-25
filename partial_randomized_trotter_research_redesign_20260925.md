@@ -981,6 +981,26 @@ A0は証拠整理として別枠で実施可能。次の重い計算は、選ん
 
 このうち一つを、既知研究との差分と独立した証拠を伴って示すことが、最初の明確な到達点になる。
 
+### 16.4 2026-09-25 実施更新：P-D現実化gate後の停止点
+
+案A/B/Cの停止後にP-Dを独立pilotとして評価し、exact two-block Pareto監査に続く現実化
+Go/No-Goを完了した。負時間finite-RTEのdense operator/control位相、fragment内部`H_D`誤差、
+fresh `L_D=5`選択差のD1--D3は、事前固定した条件を全て通過した。
+
+従ってP-Dを正式主研究候補へ進める。ただし、これは本書が重視する「主張に必要な判別だけを
+先に行う」という停止点であり、直ちにH12、長RPE、full総costへ進む判断ではない。次は計算を
+停止し、次の順で研究方針を再設計する。
+
+1. randomized tail負担を含むPF選択／設計という研究RQを一文で固定する。
+2. eigenvalue-optimized PF、near-integrable PF、randomized/partially randomized simulation、
+   negative-time PF、cost-aware PF optimizationとの差分を監査する。
+3. 修士研究・論文としての最小着地点を決める。
+4. その主張に必要な最小の一般化・反証検証だけを新たに事前登録する。
+
+D1はdense small-matrix oracle、D2/D3ではtail occurrenceをexactに保っており、compiled control、
+H4 sampled operator、end-to-end RPE、最終総cost、H12は未評価である。詳細な数値とartifactは
+[`docs/research_direction_pd_realization.md`](docs/research_direction_pd_realization.md)を参照する。
+
 <a id="refs"></a>
 ## 17. 出典と確認範囲
 
