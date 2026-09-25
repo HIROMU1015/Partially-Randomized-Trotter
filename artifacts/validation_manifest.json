@@ -1984,7 +1984,72 @@
         "supports": [
           "research_direction_geometry_energy_difference_pilot"
         ],
-        "reason": "Fingerprint-bound P-C result 8280564081b8a5b4a29f8a0f139ea9be2fa940c9e1e89d8219076304dce185ad: geometry coefficient holdout error 4.409%, delta holdout error 0.840%, and combined pair normalized error 2.539%."
+        "reason": "Historical fingerprint-bound P-C result 8280564081b8a5b4a29f8a0f139ea9be2fa940c9e1e89d8219076304dce185ad. Its PF biases, fitted coefficients, holdout predictions, and gates remain valid, but its exact-energy fields incorrectly copied surrogate energies and must not be used; the corrected-energy artifact supersedes those fields."
+      },
+      {
+        "path": "artifacts/research_direction_geometry_energy_difference_pilot/2026-09-25/pc_h4_geometry_signed_error_v1_corrected_energy.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_geometry_energy_difference_pilot"
+        ],
+        "reason": "Current corrected P-C pilot artifact 3c199dbc20d0892cf1bcfad4b27646ea8c90d1c1d32fc5e2c75be610bb1fe611: exact-energy fields use the full DF-rank-12 Hamiltonian ground energy while the original PF-bias, coefficient, holdout, and gate conclusions are preserved."
+      },
+      {
+        "path": "src/trotterlib/research_direction_geometry_tracking_breakdown.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_geometry_tracking_breakdown"
+        ],
+        "reason": "Implements the preregistered H4 geometry construction, orbital alignment, DF-fragment tracking, independent/tracked partial-S2 evaluation, blind coefficient and pair predictions, continuity diagnostics, seven gates, and scope guards."
+      },
+      {
+        "path": "scripts/run_research_direction_geometry_tracking_breakdown.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_geometry_tracking_breakdown"
+        ],
+        "reason": "Freezes a compile-before expected-task artifact with source hashes, verifies those hashes before computation, builds all eight geometries, and writes a non-overwriting fingerprinted final result with provenance."
+      },
+      {
+        "path": "tests/test_research_direction_geometry_tracking_breakdown.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_geometry_tracking_breakdown",
+          "tests"
+        ],
+        "reason": "Tests the frozen 16-task manifest and source hashes, stop decision, unchanged tracked prefixes, stretched-region breakdown, gate outcomes, tamper evidence, and scope guard."
+      },
+      {
+        "path": "docs/research/pc_geometry_tracking_breakdown_preregistration.md",
+        "kind": "file",
+        "supports": [
+          "research_direction_geometry_tracking_breakdown"
+        ],
+        "reason": "Preserves the pre-result geometry grid, training/blind split, tracking paths, policies, deltas, four pairs, diagnostics, seven gates, decision rule, source hashes, and stopping condition."
+      },
+      {
+        "path": "docs/research_direction_geometry_tracking_breakdown.md",
+        "kind": "file",
+        "supports": [
+          "research_direction_geometry_tracking_breakdown"
+        ],
+        "reason": "Documents the completed 16 tasks, local interpolation, stretched-region prediction failure, unchanged tracked prefix, diagnostic failure, fixed-gate stop decision, evidence hashes, and scope."
+      },
+      {
+        "path": "artifacts/research_direction_geometry_tracking_breakdown/2026-09-25/pc_tracking_breakdown_expected_tasks_v1.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_geometry_tracking_breakdown"
+        ],
+        "reason": "Compile-before manifest cbe260750d081316070d3684a2a24194d91d029ad700a54cf4f61152f2ed4a4e freezes 16 tasks, source hashes, geometry roles, policies, deltas, tracking edges, pairs, thresholds, decision rules, and scope."
+      },
+      {
+        "path": "artifacts/research_direction_geometry_tracking_breakdown/2026-09-25/pc_tracking_breakdown_validation_v1.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_geometry_tracking_breakdown"
+        ],
+        "reason": "Fingerprint-bound final result 26845effe8efda56390aabdf9e40d61fa3a033e3ac7e6ff6911e2e124156f07a: 16/16 tasks complete, tracked prefixes unchanged, 3/5 blind coefficients and 1/4 pairs within threshold, diagnostic accuracy 50%, and fixed status stop_pc_current_h4_family_as_primary."
       },
       {
         "path": "src/trotterlib/research_direction_joint_synthesis_pilot.py",
@@ -2058,7 +2123,181 @@
         "supports": [
           "research_direction_theme_selection"
         ],
-        "reason": "Documents the four-question comparison, provisional P-A selection, P-C fallback, P-B scoped stop, and the prior-art audit required before a blind holdout."
+        "reason": "Documents the four-question comparison, provisional P-A selection, P-C fallback, P-B scoped stop, scoped prior-art audit outcome, and preregistered blind next step."
+      },
+      {
+        "path": "docs/research/pa_joint_synthesis_prior_art_audit.md",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_pilot",
+          "research_direction_theme_selection"
+        ],
+        "reason": "Records the scoped P-A v1 prior-art search protocol, closest-primary-literature comparison, narrow novelty statement, v1/v2 boundary, and explicit limits; it is not an exhaustive novelty proof."
+      },
+      {
+        "path": "docs/research/pa_joint_synthesis_blind_validation_preregistration.md",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_pilot",
+          "research_direction_theme_selection",
+          "research_direction_joint_synthesis_blind_validation"
+        ],
+        "reason": "Preserves the pre-compute registration for the H5 physical-transfer and H4 optimization-level-2 compiler-transfer strata, frozen v1 hashes, four-policy contract, six gates, leakage controls, and P-C fallback; both strata were later completed without changing these scientific conditions."
+      },
+      {
+        "path": "src/trotterlib/research_direction_joint_synthesis_blind_validation.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_blind_validation"
+        ],
+        "reason": "Implements the frozen two-stratum task plan, source and input guards, checkpoint validation, six preregistered gates per stratum, aggregation, provenance, and final-artifact validation."
+      },
+      {
+        "path": "scripts/run_research_direction_joint_synthesis_blind_validation.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_blind_validation"
+        ],
+        "reason": "Provides dry-run task freezing, checkpointed execution and resume, status reporting, exact H5/H4 input loading, and non-overwriting final artifact generation."
+      },
+      {
+        "path": "tests/test_research_direction_joint_synthesis_blind_validation.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_blind_validation",
+          "tests"
+        ],
+        "reason": "Tests fixed gate outcomes, frozen hashes, tamper guards, and regression validation of the completed blind-transfer artifact."
+      },
+      {
+        "path": "docs/research_direction_joint_synthesis_blind_validation.md",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_blind_validation"
+        ],
+        "reason": "Documents preregistration fidelity, implementation-only interruptions, both-stratum results, all fixed gates, provenance, limits, and the historical blind-gate decision later narrowed by the formalization audit."
+      },
+      {
+        "path": "artifacts/research_direction_joint_synthesis_blind_validation/2026-09-25/pa_v1_blind_expected_tasks_v1.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_blind_validation"
+        ],
+        "reason": "Compile-before-results expected-task bundle with 48 holdout tasks, six operator probes, frozen event digests, content fingerprint 40490bd435b1286b59213559bd0296649a79e190ffc99025450089080e335e05, and file SHA-256 109bd7047f9e4832d1fa0c870af1a68c363829d9a61ff7f387630ac8fd6814c7."
+      },
+      {
+        "path": "artifacts/research_direction_joint_synthesis_blind_validation/2026-09-25/checkpoints",
+        "kind": "directory",
+        "supports": [
+          "research_direction_joint_synthesis_blind_validation"
+        ],
+        "reason": "Contains 54 fingerprinted task checkpoints: 48 completed holdout compilations and six completed operator-equivalence probes."
+      },
+      {
+        "path": "artifacts/research_direction_joint_synthesis_blind_validation/2026-09-25/pa_v1_h5_physical_h4_opt2_blind_v1.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_blind_validation"
+        ],
+        "reason": "Fingerprint-bound final result 78af3474898dbf989780ea5f2881cb5b61595609dd2698164b9846c1ce1c5919: both the H5 physical-transfer and H4 opt2 compiler-transfer strata pass all six preregistered gates."
+      },
+      {
+        "path": "src/trotterlib/research_direction_joint_synthesis_formalization.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_formalization"
+        ],
+        "reason": "Validates the frozen pilot and blind artifacts, formalizes the four-level lexicographic interval objective and generic DP, and audits empirical mechanism coverage without new compilation."
+      },
+      {
+        "path": "scripts/run_research_direction_joint_synthesis_formalization.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_formalization"
+        ],
+        "reason": "Loads the two exact input artifacts and writes a non-overwriting fingerprinted formalization and mechanism-audit artifact."
+      },
+      {
+        "path": "tests/test_research_direction_joint_synthesis_formalization.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_formalization",
+          "tests"
+        ],
+        "reason": "Checks DP against exhaustive search, exercises a synthetic nondegenerate split, verifies the completed-evidence mechanism narrowing, and rejects tampered or out-of-scope artifacts."
+      },
+      {
+        "path": "docs/research/pa_joint_synthesis_v1_formalization.md",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_formalization"
+        ],
+        "reason": "Documents the exact candidate family, objective, recurrence, complexity, equivalence assumptions, mechanism coverage, corrected research decision, and next stopping rule."
+      },
+      {
+        "path": "artifacts/research_direction_joint_synthesis_formalization/2026-09-25/pa_v1_formalization_and_mechanism_audit_v1.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_formalization"
+        ],
+        "reason": "Fingerprint-bound result aaa5fdba8ddc6ec25fe1f286d886aba14a7a440c435f1ca5dd78ce33404b3676: all 54 completed records use one selected segment per source-basis run, no within-run split is observed, and all 256 holdout events have Taylor order zero."
+      },
+      {
+        "path": "src/trotterlib/research_direction_joint_synthesis_mechanism_validation.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_mechanism_validation"
+        ],
+        "reason": "Implements the frozen one-segment-per-source-run baseline, interval-union candidate, forced-support order-2 task construction, compilation, operator probes, fixed gates, provenance, and artifact validation."
+      },
+      {
+        "path": "scripts/run_research_direction_joint_synthesis_mechanism_validation.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_mechanism_validation"
+        ],
+        "reason": "Provides the compile-before dry run and the non-overwriting 30-task H4 mechanism comparison under the preregistered source, compiler, profile, fragment, and gate conditions."
+      },
+      {
+        "path": "tests/test_research_direction_joint_synthesis_mechanism_validation.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_mechanism_validation",
+          "tests"
+        ],
+        "reason": "Checks the expected-task manifest, frozen stop decision, zero split and zero compiled benefit, artifact tamper rejection, and scope guards."
+      },
+      {
+        "path": "docs/research/pa_joint_synthesis_mechanism_validation_preregistration.md",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_mechanism_validation"
+        ],
+        "reason": "Preserves the pre-compute H4 forced-support order-2 profiles, separated training and blind fragments, explicit one-segment baseline, seven gates, hashes, and stopping rule."
+      },
+      {
+        "path": "docs/research_direction_joint_synthesis_mechanism_validation.md",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_mechanism_validation"
+        ],
+        "reason": "Documents the 30/30 completed tasks, zero within-run splits, identical plans and compiled metrics, gate results, stop decision, retained run-level evidence, and scope."
+      },
+      {
+        "path": "artifacts/research_direction_joint_synthesis_mechanism_validation/2026-09-25/pa_forced_support_order2_expected_tasks_v1.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_mechanism_validation"
+        ],
+        "reason": "Compile-before-results expected-task bundle with 30 tasks, all events at Taylor order 2, frozen profiles and fragment split, content fingerprint e8b064e9821fae5c2e7a44d0c98d3f9a0ed973a4cd87945fb051151e446a96fc, and file SHA-256 437d905358419e284ed5ad4621be91e412e6d3939c4e213b6c10c4dd816fb2b4."
+      },
+      {
+        "path": "artifacts/research_direction_joint_synthesis_mechanism_validation/2026-09-25/pa_forced_support_order2_mechanism_validation_v1.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_mechanism_validation"
+        ],
+        "reason": "Fingerprint-bound result fdc89974e89a4a6809cecd2c5608a36d684d40d76d9b3055fbbe6ec9276abbaf: training and blind rows have zero splits, zero plan changes, and identical compiled metrics, so the frozen rule stops P-A interval DP as a primary theme and returns to P-C."
       },
       {
         "path": "artifacts/research_direction_theme_selection/2026-09-25/theme_selection_pb_pc_pa_v1.json",
@@ -2066,7 +2305,7 @@
         "supports": [
           "research_direction_theme_selection"
         ],
-        "reason": "Fingerprint-bound selection result 7daa49c3c30b453d69d52830d0889ce04104cc5a0f02a2c3083517486d575fbb: P-A is provisional pending novelty audit, P-C is secondary, and P-B stops in the current scope."
+        "reason": "Fingerprint-bound pre-audit selection result 7daa49c3c30b453d69d52830d0889ce04104cc5a0f02a2c3083517486d575fbb: it preserves the original pending-audit decision; the later audit and preregistration documents record the current status."
       }
     ],
     "quarantined": [
@@ -3080,7 +3319,7 @@
     {
       "id": "research_direction_geometry_energy_difference_pilot",
       "status": "source_present_no_current_ci",
-      "summary": "For H4 linear chains at 0.80, 0.85, 1.00, 1.15, and 1.20 Angstrom, STO-3G, 8 qubits, DF rank 12, L_D=3, and second-order partial-S2, P-C fitted signed dominant-eigenphase PF-bias coefficients at delta=0.0125..0.2 using 0.80/1.00/1.20 Angstrom as geometry training points. Coefficient predictions at the unused 0.85/1.15 geometries have maximum relative error 4.409%; predictions at the unused delta=0.4 have maximum error 0.840%. For the double holdout 0.85 to 1.15 Angstrom at delta=0.4, actual and predicted PF difference errors are -0.00169849 and -0.00178045 Hartree, with prediction error 2.539% of the larger endpoint PF bias. The coefficient span is 63.303% and the minimum adjacent-pair cancellation ratio at delta=0.1 is 9.786%, so all five pilot gates pass and theme C remains a primary-theme candidate. Exact means the DF-rank-12 sector reference; no potential-energy-surface, cross-system, circuit-cost, RPE/RTE, final-cost, or superiority claim is made.",
+      "summary": "For H4 linear chains at 0.80, 0.85, 1.00, 1.15, and 1.20 Angstrom, STO-3G, 8 qubits, DF rank 12, L_D=3, and second-order partial-S2, P-C fitted signed dominant-eigenphase PF-bias coefficients at delta=0.0125..0.2 using 0.80/1.00/1.20 Angstrom as geometry training points. Coefficient predictions at the unused 0.85/1.15 geometries have maximum relative error 4.409%; predictions at the unused delta=0.4 have maximum error 0.840%. For the double holdout 0.85 to 1.15 Angstrom at delta=0.4, actual and predicted PF difference errors are -0.00169849 and -0.00178045 Hartree, with prediction error 2.539% of the larger endpoint PF bias. All five local pilot gates pass. The corrected artifact 3c199dbc20d0892cf1bcfad4b27646ea8c90d1c1d32fc5e2c75be610bb1fe611 replaces only the original artifact's incorrect surrogate exact-energy fields; PF-bias conclusions are unchanged. The later tracking and held-out-region validation stops the current H4 family as a primary theme, so this local result must not be extrapolated.",
       "counts": {
         "implementation_source_files": 1,
         "analysis_runner_scripts": 1,
@@ -3110,7 +3349,7 @@
         "Preserve the five exact input hashes and distinguish the 0.80/1.00/1.20 coefficient-training geometries from the 0.85/1.15 geometry holdouts and delta=0.4 holdout.",
         "Interpret exact energies only as DF-rank-12 physical-sector references, not untruncated molecular FCI values.",
         "Do not extrapolate the smooth signed-error result outside 0.80--1.20 Angstrom, to another molecule, DF rank, L_D, PF family, orbital/fragment tracking policy, or RPE/RTE cost.",
-        "Retain P-C as the secondary candidate during the P-A novelty audit; if C is selected, next test continuous orbital and DF-fragment tracking and a held-out geometry region where cancellation may break."
+        "Preserve the completed later orbital/DF-fragment tracking and held-out-region result, which stops the current H4 P-C family without invalidating this local pilot."
       ]
     },
     {
@@ -3521,11 +3760,11 @@
     {
       "id": "research_direction_joint_synthesis_pilot",
       "status": "source_present_no_current_ci",
-      "summary": "For H4 linear chain at 1.0 Angstrom, STO-3G, 8 qubits, DF rank 12, L_D=3, delta=0.02, finite Taylor cutoff 2, and one topology-free Qiskit 1.3.0 optimization-level-1 rz/sx/x/cx compiler context, P-A compared full-basis sharing, per-event support restriction, the fixed support_run_le_1 policy, and an interval support-union dynamic program with adjacent-basis cancellation enabled for all policies. On 24 independent holdouts at unused sequence lengths 3, 5, and 8, the candidate lowers pooled RZ by 7.194% versus the current policy and improves every length; maximum individual RZ increase is 0.231%, four-policy oracle regret is 0.00482% of full-basis RZ, and 87.5% of trajectories change basis choice. Three independent operator probes have maximum residual 3.126e-15. All six pilot gates pass, so P-A advances as a provisional theme candidate. This does not establish literature novelty, another physical/compiler context, full-wrapper cost, final total cost, or scientific superiority.",
+      "summary": "For H4 linear chain at 1.0 Angstrom, STO-3G, 8 qubits, DF rank 12, L_D=3, delta=0.02, finite Taylor cutoff 2, and topology-free Qiskit 1.3.0 optimization level 1, the P-A pilot found a 7.194% pooled-RZ reduction on 24 holdouts, and the frozen v1 later passed both H5 physical-transfer and H4 optimization-level-2 compiler-transfer strata. Formalization then found all 54 records use one segment per source-basis run and all 256 holdout events have Taylor order zero. The preregistered nondegenerate comparison subsequently found zero splits, zero plan changes, and zero additional compiled benefit in all 15 training and 15 blind forced-support order-2 tasks. Therefore the run-level full/support-union evidence is retained, but P-A interval DP is stopped as a primary theme and the project returns to P-C.",
       "counts": {
         "implementation_source_files": 1,
         "generator_scripts": 1,
-        "documentation_files": 1,
+        "documentation_files": 4,
         "dedicated_test_source_files": 1,
         "dedicated_test_functions": 3,
         "dedicated_local_test_cases_passed": 3,
@@ -3540,6 +3779,10 @@
         "support_union_interval_trajectories": 24,
         "compiler_contexts": 1,
         "full_wrapper_compilations": 0,
+        "scoped_prior_art_audits_completed": 1,
+        "blind_validation_preregistrations_completed": 1,
+        "blind_validation_strata_completed": 2,
+        "blind_validation_strata_passed": 2,
         "final_cost_evaluations": 0,
         "complete_local_test_suite_passed": 582,
         "complete_local_test_suite_skipped": 2,
@@ -3549,19 +3792,21 @@
       "completion_criteria": [
         "Preserve the exact H4 snapshot, WP06-b fingerprint, event seeds, compiler context, four-policy baseline contract, and separate training, holdout, and operator-probe streams.",
         "Treat the compiled oracle as the minimum among four listed policies only, not a global circuit optimum, and report classical policy-search cost in future extensions.",
-        "Complete a dedicated prior-art and novelty audit covering fermionic Gaussian circuits, basis-change sharing, and block or peephole synthesis before finalizing P-A as the primary theme.",
-        "Only if an independent contribution remains, predeclare one blind holdout on an unused snapshot or event family and an unused compiler or coupling context.",
-        "Do not infer full partial-S2 wrapper, RPE, backend, H12, final-total-cost, or scientific-superiority claims from this single H4 topology-free pilot."
+        "Preserve the scoped prior-art audit conclusion: the searched literature did not reveal the same v1 combination, but this is not an exhaustive novelty proof, patent search, or peer-review novelty determination.",
+        "Preserve the completed two-stratum blind result and its frozen v1 hashes, four-policy contract, seeds, sample sizes, six gates, expected-task fingerprint, and final artifact fingerprint.",
+        "Treat the completed data as evidence for run-level full/support-union selection, not for interval subdivision, because no completed record split a source-basis run.",
+        "Preserve the completed nondegenerate result: the explicit one-segment baseline and interval candidate are identical on all 30 forced-support order-2 tasks; do not claim an interval-DP contribution from the earlier pilot or blind results.",
+        "Do not infer full partial-S2 wrapper, RPE, backend, H12, final-total-cost, or scientific-superiority claims from the completed topology-free studies."
       ]
     },
     {
       "id": "research_direction_theme_selection",
       "status": "source_present_no_current_ci",
-      "summary": "The completed P-B, P-C, and P-A artifacts were validated and compared using four adopted questions: baseline difference, one clear counterexample/improvement/prediction, unused-condition prediction, and a one-sentence completion claim. P-B stops in the current H4 scope because no practical energy/signal selection disagreement was found. P-C remains a secondary candidate after passing its geometry and delta holdouts. P-A is the provisional primary because it gives a direct 7.194% pooled-RZ improvement over a strong current baseline on unused sequence lengths while preserving operator equivalence. The selection remains provisional_pending_prior_art_and_novelty_audit; broader circuit-synthesis novelty is not established. The next action is a literature novelty audit, followed by a predeclared blind external-sequence and compiler holdout only if an independent contribution remains. H12 and long-RPE expansion are not the next required tasks.",
+      "summary": "The completed P-B, P-C, and P-A artifacts were compared using four adopted questions. P-B stopped in the fixed H4 grid, P-C passed its local geometry and delta holdouts, and P-A was provisionally selected after the initial H4 pilot and blind transfer. Formalization and the forced-support order-2 validation then found zero interval splits, plan changes, or additional compiled benefit on all 30 tasks, so P-A interval DP stopped and the project returned to P-C. The later preregistered P-C tracking and held-out-region validation also met its fixed stop rule. No P-A, P-B, or P-C primary theme is currently confirmed; H12 and long-RPE expansion are not automatic next tasks.",
       "counts": {
         "implementation_source_files": 1,
         "generator_scripts": 1,
-        "documentation_files": 1,
+        "documentation_files": 4,
         "dedicated_test_source_files": 1,
         "dedicated_test_functions": 3,
         "dedicated_local_test_cases_passed": 3,
@@ -3573,7 +3818,10 @@
         "stopped_themes_in_current_scope": 1,
         "new_physical_simulations": 0,
         "new_circuit_compilations": 0,
-        "literature_novelty_audits_completed": 0,
+        "literature_novelty_audits_completed": 1,
+        "blind_validation_preregistrations_completed": 1,
+        "blind_validation_strata_completed": 2,
+        "blind_validation_strata_passed": 2,
         "final_cost_evaluations": 0,
         "complete_local_test_suite_passed": 582,
         "complete_local_test_suite_skipped": 2,
@@ -3582,11 +3830,175 @@
       },
       "completion_criteria": [
         "Preserve the exact P-B, P-C, and P-A input fingerprints and keep the selection artifact as a no-new-compute synthesis.",
-        "Keep P-A provisional until a dedicated prior-art and novelty audit identifies an independent contribution relative to broader circuit-synthesis methods.",
-        "If P-A survives that audit, predeclare an unused physical or event-family holdout and an unused compiler or coupling context before further computation.",
-        "If P-A reduces to known methods or fails the blind holdout, return to P-C and test orbital and DF-fragment tracking as a mechanism for cancellation and breakdown rather than merely adding nearby geometries.",
+        "Preserve the scoped audit limit: the declared search did not find the same v1 combination, but this is not proof of novelty.",
+        "Preserve the completed unused-H5 physical-transfer and H4 optimization-level-2 compiler-transfer evidence and its frozen gates, while distinguishing transfer of the run-level policy from evidence for interval subdivision.",
+        "Preserve the completed forced-support order-2 comparison and its stop decision; do not revive P-A interval DP by changing profiles or gates after observing the null result.",
+        "If P-A remains indistinguishable from the simpler baseline, return to P-C and test orbital and DF-fragment tracking as a mechanism for cancellation and breakdown rather than merely adding nearby geometries.",
         "Do not expand H12, q above 32, or final RPE cost merely to support the theme-selection result; require the selected theme to justify each expansion.",
         "Publish immutable clean-checkout or CI evidence before external reuse and do not claim final scientific superiority from the local dirty-worktree pilots."
+      ]
+    },
+    {
+      "id": "research_direction_joint_synthesis_blind_validation",
+      "status": "source_present_no_current_ci",
+      "summary": "The preregistered P-A v1 blind transfer validation completed 48/48 holdout compilations and 6/6 operator probes. H5 physical transfer reduced pooled RZ by 17.076% and H4 optimization-level-2 transfer reduced it by 6.598%, with both strata passing all six frozen gates. A later audit found that every completed record uses one segment per source-basis run and every holdout event has Taylor order zero. The subsequent forced-support order-2 mechanism validation found the interval candidate identical to the explicit one-segment baseline in all 30 tasks. Thus this blind result supports the run-level full/support-union policy only; it does not support interval subdivision, and P-A interval DP is stopped as a primary theme.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 2,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 4,
+        "dedicated_local_test_cases_passed": 4,
+        "expected_holdout_tasks": 48,
+        "completed_holdout_tasks": 48,
+        "failed_holdout_tasks": 0,
+        "expected_operator_probes": 6,
+        "completed_operator_probes": 6,
+        "failed_operator_probes": 0,
+        "fingerprinted_checkpoints": 54,
+        "validation_strata": 2,
+        "validation_strata_passed": 2,
+        "preregistered_gates_per_stratum": 6,
+        "preregistered_gates_passed": 12,
+        "compared_policies": 4,
+        "physical_snapshots": 2,
+        "compiler_contexts": 2,
+        "missing_tasks": 0,
+        "extra_tasks": 0,
+        "full_wrapper_compilations": 0,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Preserve the exact preregistration, frozen source and input hashes, expected-task fingerprint, event digests, four-policy contract, seeds, sample sizes, gates, checkpoint fingerprints, and final artifact fingerprint.",
+        "Preserve the completed formalization of the finite candidate family, dynamic-programming optimality statement, computational complexity, deterministic completion rule, adjacent-basis cancellation assumptions, and operator-equivalence conditions.",
+        "Do not interpret the existing multi-application-segment gate as evidence of a within-run split; all 54 completed records use one segment per source-basis run.",
+        "Preserve the later preregistered training/blind mechanism result, which found no interval contribution on the explicit one-segment baseline comparison.",
+        "Design pairwise relative-basis-transition v2 only if the simpler mechanism comparison justifies it, and do not reuse this H5 blind set as training.",
+        "Publish clean-checkout or immutable CI evidence before external reuse, and do not infer literature novelty, global optimality, routed/noisy performance, full-wrapper or RPE total cost, H12 transfer, or scientific superiority."
+      ]
+    },
+    {
+      "id": "research_direction_joint_synthesis_formalization",
+      "status": "source_present_no_current_ci",
+      "summary": "The exact P-A v1 objective is a four-level lexicographic tuple over each source-basis run: twice the selected basis-operation count, segment count, summed support-union size, and full-mode penalty. The run-local dynamic program is O(n^2) in time with O(n) predecessor state and O(n^2) materialized option storage under the documented equivalence assumptions. The audit found 54/54 records with one segment per source-basis run and 256/256 holdout events at Taylor order zero. The preregistered follow-up then found zero splits and no advantage over the explicit one-segment baseline on all 30 forced-support order-2 tasks. P-A interval DP is therefore stopped as a primary theme; the formalization remains valid. The subsequent P-C tracking validation also stopped its current H4 family.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 1,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 4,
+        "dedicated_local_test_cases_passed": 4,
+        "input_fingerprinted_artifacts": 2,
+        "completed_evidence_records": 54,
+        "holdout_records": 48,
+        "operator_probe_records": 6,
+        "holdout_events": 256,
+        "nonzero_taylor_order_holdout_events": 0,
+        "records_with_within_run_interval_splits": 0,
+        "validation_strata": 2,
+        "new_circuit_compilations": 0,
+        "new_physical_simulations": 0,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Preserve pilot fingerprint 1a9840a4ee46daa6e3749272593acf3e8ae29be9fcecc1a05b0bd9ea817fbc37, blind fingerprint 78af3474898dbf989780ea5f2881cb5b61595609dd2698164b9846c1ce1c5919, and formalization fingerprint aaa5fdba8ddc6ec25fe1f286d886aba14a7a440c435f1ca5dd78ce33404b3676.",
+        "Preserve the exact four-level objective and distinguish O(n) DP state from O(n^2) materialized interval-option storage.",
+        "Do not claim interval-subdivision advantage or nonzero-Taylor-order transfer from the completed evidence.",
+        "Preserve the completed preregistration, expected-task fingerprint, forced-support profiles, training/blind fragment separation, order-2 coverage, operator probes, gates, and stopping rule.",
+        "If no nondegenerate split or baseline advantage transfers to the blind stream, stop P-A as an interval-DP primary theme and return to P-C.",
+        "Do not infer routed or noisy performance, full-wrapper or RPE total cost, H12 transfer, novelty, global optimality, or scientific superiority."
+      ]
+    },
+    {
+      "id": "research_direction_joint_synthesis_mechanism_validation",
+      "status": "source_present_no_current_ci",
+      "summary": "Under the preregistered H4 linear-chain 1.0 Angstrom, STO-3G, 8-qubit, DF-rank-12, L_D=3, delta=0.02, Qiskit 1.3.0 optimization-level-1 conditions, all 30 forced-support tasks use Taylor order 2 and one source-basis run. The interval-union candidate and explicit one-segment-per-source-run baseline select identical plans on all 15 training and 15 blind rows. Blind pooled RZ is 4378 versus 4378, all compiled metrics are identical, and five operator probes have maximum difference 8.327e-16 with matching relative phase. Only three of seven fixed gates pass. The unchanged stopping rule yields stop_pa_interval_dp_as_primary_and_return_to_pc. Existing run-level full/support-union improvements remain implementation evidence, but interval subdivision is not an independent research contribution in this scope.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 2,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 4,
+        "dedicated_local_test_cases_passed": 4,
+        "local_artifacts": 2,
+        "expected_tasks": 30,
+        "completed_tasks": 30,
+        "failed_tasks": 0,
+        "training_tasks": 15,
+        "blind_tasks": 15,
+        "forced_support_profiles": 5,
+        "taylor_order_2_tasks": 30,
+        "records_with_within_run_interval_splits": 0,
+        "records_with_plan_changes": 0,
+        "records_with_rz_improvement": 0,
+        "operator_equivalence_probes": 5,
+        "preregistered_gates": 7,
+        "preregistered_gates_passed": 3,
+        "preregistered_gates_failed": 4,
+        "circuit_compilations": 60,
+        "new_physical_simulations": 0,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Preserve expected-task fingerprint e8b064e9821fae5c2e7a44d0c98d3f9a0ed973a4cd87945fb051151e446a96fc and final fingerprint fdc89974e89a4a6809cecd2c5608a36d684d40d76d9b3055fbbe6ec9276abbaf.",
+        "Preserve source SHA-256 3c5c939862b63805fc9103c2f16649687c5c6a4a5c108ab28089c749f928513e and runner SHA-256 94606639ed1e5762fd2885b30193b3a73e6e00b0b1429d4072f155fed0ffe7ef recorded before compilation.",
+        "Do not change profiles, fragments, thresholds, or gates after observing the null result to revive P-A interval DP under the same claim.",
+        "Keep earlier H5 and H4 opt2 improvements as run-level full/support-union evidence, separate from the rejected interval-subdivision claim.",
+        "Preserve the completed later P-C orbital/DF-fragment tracking and held-out-region stop result before considering a newly preregistered theme, H12, long RPE, or full-wrapper cost.",
+        "Do not infer natural event frequency, routed or noisy performance, literature novelty, global optimality, full-wrapper or RPE total cost, H12 transfer, or scientific superiority."
+      ]
+    },
+    {
+      "id": "research_direction_geometry_tracking_breakdown",
+      "status": "source_present_no_current_ci",
+      "summary": "Under the preregistered H4 linear-chain, STO-3G, 8-qubit, four-electron, DF-rank-12, L_D=3, second-order partial-S2 exact-tail conditions, all 16 independent/tracked tasks across 0.70 to 1.60 Angstrom completed. The tracked prefix equals the independent first-three-fragment prefix at every geometry. Blind coefficient prediction errors are 6.135% and 3.461% at 0.90 and 1.10 Angstrom but 33.653% and 123.245% at 1.40 and 1.60 Angstrom. Three of five blind points and one of four fixed pairs meet the 15% thresholds. Four nontrivial-cancellation pairs exist, but the continuity diagnostic has 50% accuracy and fails to flag both stretched-region breakdowns. Only representation integrity, delta holdout, and nontrivial cancellation pass among seven gates. The unchanged rule yields stop_pc_current_h4_family_as_primary; the local earlier pilot remains valid, but no P-A, P-B, or P-C primary theme is currently confirmed.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 2,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 4,
+        "dedicated_local_test_cases_passed": 4,
+        "local_artifacts": 2,
+        "expected_tasks": 16,
+        "completed_tasks": 16,
+        "failed_tasks": 0,
+        "geometry_points": 8,
+        "coefficient_training_geometries": 3,
+        "blind_geometries": 5,
+        "policies": 2,
+        "fit_delta_values": 3,
+        "delta_holdouts": 1,
+        "fixed_geometry_pairs": 4,
+        "changed_blind_prefixes": 0,
+        "blind_coefficients_within_threshold": 3,
+        "pairs_within_threshold": 1,
+        "nontrivial_cancellation_pairs": 4,
+        "actual_breakdown_points": 2,
+        "clear_diagnostic_points": 4,
+        "correct_diagnostic_points": 2,
+        "preregistered_gates": 7,
+        "preregistered_gates_passed": 3,
+        "preregistered_gates_failed": 4,
+        "new_hamiltonian_and_df_computations": 8,
+        "rpe_or_rte_sampling_evaluations": 0,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0,
+        "related_local_test_cases_passed": 14,
+        "complete_local_test_suite_passed": 598,
+        "complete_local_test_suite_skipped": 2,
+        "complete_local_test_suite_warnings": 4
+      },
+      "completion_criteria": [
+        "Preserve expected fingerprint cbe260750d081316070d3684a2a24194d91d029ad700a54cf4f61152f2ed4a4e, final fingerprint 26845effe8efda56390aabdf9e40d61fa3a033e3ac7e6ff6911e2e124156f07a, and corrected prior-P-C fingerprint 3c199dbc20d0892cf1bcfad4b27646ea8c90d1c1d32fc5e2c75be610bb1fe611.",
+        "Preserve source SHA-256 a77c427f569b36218baa0a6343ed77db96951767a12a0f9a373bef8f2da3195b and runner SHA-256 53410e399e4a4b8bc31991d0b6dcef1e9d746522b9bb4179906727fff4968912 recorded before the final computation.",
+        "Do not change the geometry grid, training/blind split, tracking paths, thresholds, pairs, diagnostics, gates, or decision rule after the observed stop result.",
+        "Retain the earlier 0.80 to 1.20 Angstrom local interpolation result, but do not extrapolate it to the stretched region or revive the same H4-family claim by adding points or relaxing thresholds.",
+        "Require a new preregistration and an independent condition before reconsidering P-C; alternatively preregister the untested P-D Pareto pilot or redefine the research question.",
+        "Do not infer a potential-energy surface, force, reaction barrier, cross-system transfer, natural measurement covariance, RPE/RTE cost, circuit resources, H12 transfer, final total cost, or scientific superiority."
       ]
     }
   ],

@@ -27,7 +27,7 @@ DEFAULT_INPUT_DIRECTORY = Path(
 )
 DEFAULT_OUTPUT = Path(
     "artifacts/research_direction_geometry_energy_difference_pilot/"
-    "2026-09-25/pc_h4_geometry_signed_error_v1.json"
+    "2026-09-25/pc_h4_geometry_signed_error_v1_corrected_energy.json"
 )
 
 

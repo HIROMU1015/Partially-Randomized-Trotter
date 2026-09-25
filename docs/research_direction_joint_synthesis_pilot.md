@@ -79,9 +79,24 @@ run/support構造の共同選択に依存する。
 ## 判断と限界
 
 P-Aは3 pilot中で最も強い直接効果を強いproject baselineに対して示し、未使用列長でも同じ方向を
-再現した。このため暫定主題とする。ただし、現在のproject内baselineに対する差分と、広い量子回路合成・
-fermionic Gaussian circuit最適化文献に対する新規性は別である。まず先行研究・新規性監査を行い、
-通過した場合だけ未使用snapshotまたはcompiler contextのblind holdoutへ進む。
+再現したため暫定主題とした。ただし、現在のproject内baselineに対する差分と、広い量子回路合成・
+fermionic Gaussian circuit最適化文献に対する新規性は別である。後続の
+[scoped prior-art audit](research/pa_joint_synthesis_prior_art_audit.md)では、各構成要素は既知だが
+現行v1と同じ組合せは検索範囲内で確認できなかった。ただし新規性の証明ではない。
+[blind transfer事前登録](research/pa_joint_synthesis_blind_validation_preregistration.md)に固定した
+未使用H5 snapshotとH4 opt2 compiler contextは、後続の
+[blind transfer validation](research_direction_joint_synthesis_blind_validation.md)で両方とも全6 gateを
+通過した。
+
+ただし、後続の[形式化・機構監査](research/pa_joint_synthesis_v1_formalization.md)で、
+blindの54/54 recordは全て一run一segmentであり、run内区間分割は0件、holdout 256 eventは
+全てTaylor order 0と判明した。従って観測利益は一区間のfull/support-union選択baselineでも説明でき、
+interval DP固有の寄与は未識別である。P-A v1は
+`conditional_candidate_pending_nondegenerate_mechanism_validation`として後続比較へ進んだ。その
+[非退化mechanism validation](research_direction_joint_synthesis_mechanism_validation.md)では、明示的一区間baseline、
+forced support変化、全event order 2を用いたtraining 15／blind 15の全30 taskでsplit、plan差、追加RZ改善が
+いずれも0だった。事前固定規則どおりP-A interval DPは主研究候補から外し、P-Cへ戻る。既存の
+run-level full/support-union選択による改善は実装上の結果として保持する。
 
 このpilotではproduction defaultを変更していない。H12、長RPE、追加$q>32$、総cost計算は次の
 必須作業ではない。

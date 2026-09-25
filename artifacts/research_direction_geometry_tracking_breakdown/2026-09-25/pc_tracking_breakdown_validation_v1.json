@@ -1,0 +1,1645 @@
+{
+  "blind_coefficient_predictions": {
+    "independent": [
+      {
+        "actual_coefficient_hartree": 0.03335524293192832,
+        "geometry_angstrom": 0.7,
+        "predicted_coefficient_hartree": 0.028416530514706342,
+        "relative_error": 0.1480640517984218
+      },
+      {
+        "actual_coefficient_hartree": 0.017306799756786367,
+        "geometry_angstrom": 0.9,
+        "predicted_coefficient_hartree": 0.01836862239714611,
+        "relative_error": 0.06135291649996574
+      },
+      {
+        "actual_coefficient_hartree": 0.010603586474660706,
+        "geometry_angstrom": 1.1,
+        "predicted_coefficient_hartree": 0.010970539675898849,
+        "relative_error": 0.03460651753206775
+      },
+      {
+        "actual_coefficient_hartree": 0.005800078762757475,
+        "geometry_angstrom": 1.4,
+        "predicted_coefficient_hartree": 0.0038481536884974205,
+        "relative_error": 0.33653423584407843
+      },
+      {
+        "actual_coefficient_hartree": 0.0038721735451209558,
+        "geometry_angstrom": 1.6,
+        "predicted_coefficient_hartree": -0.000900103636436873,
+        "relative_error": 1.2324543634081246
+      }
+    ],
+    "tracked": [
+      {
+        "actual_coefficient_hartree": 0.03335524293192832,
+        "geometry_angstrom": 0.7,
+        "predicted_coefficient_hartree": 0.028416530514706342,
+        "relative_error": 0.1480640517984218
+      },
+      {
+        "actual_coefficient_hartree": 0.017306799756786367,
+        "geometry_angstrom": 0.9,
+        "predicted_coefficient_hartree": 0.01836862239714611,
+        "relative_error": 0.06135291649996574
+      },
+      {
+        "actual_coefficient_hartree": 0.010603586474660706,
+        "geometry_angstrom": 1.1,
+        "predicted_coefficient_hartree": 0.010970539675898849,
+        "relative_error": 0.03460651753206775
+      },
+      {
+        "actual_coefficient_hartree": 0.005800078762757475,
+        "geometry_angstrom": 1.4,
+        "predicted_coefficient_hartree": 0.0038481536884974205,
+        "relative_error": 0.33653423584407843
+      },
+      {
+        "actual_coefficient_hartree": 0.0038721735451209558,
+        "geometry_angstrom": 1.6,
+        "predicted_coefficient_hartree": -0.000900103636436873,
+        "relative_error": 1.2324543634081246
+      }
+    ]
+  },
+  "checks": {
+    "all_tasks_complete": true,
+    "all_values_finite": true,
+    "expected_manifest_validated": true,
+    "fixed_geometry_grid_complete": true
+  },
+  "configuration": {
+    "anchor_geometry_angstrom": 1.0,
+    "basis": "STO-3G",
+    "blind_geometries_angstrom": [
+      0.7,
+      0.9,
+      1.1,
+      1.4,
+      1.6
+    ],
+    "delta_holdout": 0.2,
+    "df_rank": 12,
+    "fit_deltas": [
+      0.025,
+      0.05,
+      0.1
+    ],
+    "gate_thresholds": {
+      "breakdown_coefficient_prediction_relative_error": 0.2,
+      "maximum_blind_coefficient_relative_error": 0.15,
+      "maximum_delta_holdout_relative_error": 0.1,
+      "maximum_nontrivial_cancellation_ratio": 0.5,
+      "maximum_operator_reorder_difference": 1e-10,
+      "maximum_pair_error_degradation": 0.05,
+      "maximum_pair_prediction_normalized_error": 0.15,
+      "maximum_training_coefficient_relative_difference": 0.01,
+      "maximum_training_ground_energy_absolute_difference_hartree": 1e-08,
+      "minimum_blind_coefficient_pass_count": 4,
+      "minimum_changed_blind_prefixes": 2,
+      "minimum_clear_diagnostic_count": 4,
+      "minimum_diagnostic_accuracy": 0.8,
+      "minimum_fragment_similarity": 0.9,
+      "minimum_ground_state_gap_hartree": 0.02,
+      "minimum_ground_state_overlap": 0.95,
+      "minimum_nontrivial_exact_energy_difference_hartree": 0.02,
+      "minimum_orbital_singular_value": 0.8,
+      "minimum_pair_prediction_pass_count": 3,
+      "minimum_tracking_median_error_reduction": 0.1,
+      "smooth_coefficient_prediction_relative_error": 0.1
+    },
+    "geometries_angstrom": [
+      0.7,
+      0.8,
+      0.9,
+      1.0,
+      1.1,
+      1.2,
+      1.4,
+      1.6
+    ],
+    "identity_policy": "extract_identity_phase",
+    "ld": 3,
+    "left_tracking_path_angstrom": [
+      1.0,
+      0.9,
+      0.8,
+      0.7
+    ],
+    "molecule": "H4 linear chain",
+    "n_electrons": 4,
+    "n_qubits": 8,
+    "pairs": [
+      {
+        "label": "interpolation",
+        "left": 0.9,
+        "right": 1.1
+      },
+      {
+        "label": "compression_boundary",
+        "left": 0.7,
+        "right": 0.9
+      },
+      {
+        "label": "stretched_region",
+        "left": 1.4,
+        "right": 1.6
+      },
+      {
+        "label": "cross_region",
+        "left": 0.9,
+        "right": 1.4
+      }
+    ],
+    "policies": [
+      "independent",
+      "tracked"
+    ],
+    "product_formula": "second_order_partial_S2_exact_tail_reference",
+    "right_tracking_path_angstrom": [
+      1.0,
+      1.1,
+      1.2,
+      1.4,
+      1.6
+    ],
+    "training_geometries_angstrom": [
+      0.8,
+      1.0,
+      1.2
+    ]
+  },
+  "content_fingerprint": "26845effe8efda56390aabdf9e40d61fa3a033e3ac7e6ff6911e2e124156f07a",
+  "decision": {
+    "current_primary_theme": "none_confirmed",
+    "next_action": "do_not_advance_pc_from_this_h4_family",
+    "status": "stop_pc_current_h4_family_as_primary",
+    "thresholds_changed_after_results": false
+  },
+  "diagnostic_classification": [
+    {
+      "actual_class": "inconclusive",
+      "coefficient_prediction_relative_error": 0.1480640517984218,
+      "diagnostic_correct": null,
+      "geometry_angstrom": 0.7,
+      "incoming_edge": {
+        "assigned_fragment_indices": [
+          0,
+          1,
+          2
+        ],
+        "assigned_fragment_similarities": [
+          0.9995523710976045,
+          0.9985800025758413,
+          0.9825970020455861
+        ],
+        "assignment_margins": [
+          0.9735392411467539,
+          0.9496771572782303,
+          0.8260744027629301
+        ],
+        "fock_transform_unitary_defect": 2.221821536891142e-15,
+        "ground_state_gap_hartree": 0.45252602372647566,
+        "ground_state_overlap": 0.9823520387398098,
+        "independent_prefix_indices": [
+          0,
+          1,
+          2
+        ],
+        "left_geometry_angstrom": 0.8,
+        "minimum_assignment_margin": 0.8260744027629301,
+        "minimum_fragment_similarity": 0.9825970020455861,
+        "minimum_orbital_singular_value": 0.972678910216456,
+        "predicted_breakdown": false,
+        "prefix_differs_from_independent": false,
+        "right_geometry_angstrom": 0.7,
+        "spatial_orbital_cross_overlap_singular_values": [
+          0.9996243125372524,
+          0.9992973762253561,
+          0.9748917062793441,
+          0.972678910216456
+        ]
+      },
+      "predicted_breakdown": false
+    },
+    {
+      "actual_class": "smooth",
+      "coefficient_prediction_relative_error": 0.06135291649996574,
+      "diagnostic_correct": true,
+      "geometry_angstrom": 0.9,
+      "incoming_edge": {
+        "assigned_fragment_indices": [
+          0,
+          1,
+          2
+        ],
+        "assigned_fragment_similarities": [
+          0.9997689973360362,
+          0.9989883032937886,
+          0.9888224709967229
+        ],
+        "assignment_margins": [
+          0.9822882175483525,
+          0.9565414767140211,
+          0.8751378943485835
+        ],
+        "fock_transform_unitary_defect": 2.106460097899635e-15,
+        "ground_state_gap_hartree": 0.28870649071427534,
+        "ground_state_overlap": 0.986379291683736,
+        "independent_prefix_indices": [
+          0,
+          1,
+          2
+        ],
+        "left_geometry_angstrom": 1.0,
+        "minimum_assignment_margin": 0.8751378943485835,
+        "minimum_fragment_similarity": 0.9888224709967229,
+        "minimum_orbital_singular_value": 0.9758030767955373,
+        "predicted_breakdown": false,
+        "prefix_differs_from_independent": false,
+        "right_geometry_angstrom": 0.9,
+        "spatial_orbital_cross_overlap_singular_values": [
+          0.9993172560810862,
+          0.9990914288742957,
+          0.9765858781348156,
+          0.9758030767955373
+        ]
+      },
+      "predicted_breakdown": false
+    },
+    {
+      "actual_class": "smooth",
+      "coefficient_prediction_relative_error": 0.03460651753206775,
+      "diagnostic_correct": true,
+      "geometry_angstrom": 1.1,
+      "incoming_edge": {
+        "assigned_fragment_indices": [
+          0,
+          1,
+          2
+        ],
+        "assigned_fragment_similarities": [
+          0.9998275217849442,
+          0.9991887633241061,
+          0.9910227927434836
+        ],
+        "assignment_margins": [
+          0.9852575696860513,
+          0.9613581413020198,
+          0.8943187318462076
+        ],
+        "fock_transform_unitary_defect": 1.7747410358196235e-15,
+        "ground_state_gap_hartree": 0.18694073078670148,
+        "ground_state_overlap": 0.9880821012808091,
+        "independent_prefix_indices": [
+          0,
+          1,
+          2
+        ],
+        "left_geometry_angstrom": 1.0,
+        "minimum_assignment_margin": 0.8943187318462076,
+        "minimum_fragment_similarity": 0.9910227927434836,
+        "minimum_orbital_singular_value": 0.9766183136028358,
+        "predicted_breakdown": false,
+        "prefix_differs_from_independent": false,
+        "right_geometry_angstrom": 1.1,
+        "spatial_orbital_cross_overlap_singular_values": [
+          0.9991297271161667,
+          0.9989837360509914,
+          0.977295595254862,
+          0.9766183136028358
+        ]
+      },
+      "predicted_breakdown": false
+    },
+    {
+      "actual_class": "breakdown",
+      "coefficient_prediction_relative_error": 0.33653423584407843,
+      "diagnostic_correct": false,
+      "geometry_angstrom": 1.4,
+      "incoming_edge": {
+        "assigned_fragment_indices": [
+          0,
+          1,
+          2
+        ],
+        "assigned_fragment_similarities": [
+          0.999639164517525,
+          0.9981844694421024,
+          0.9790849051694194
+        ],
+        "assignment_margins": [
+          0.9791866860275584,
+          0.9405027203856666,
+          0.8342143754861346
+        ],
+        "fock_transform_unitary_defect": 2.929032017625099e-15,
+        "ground_state_gap_hartree": 0.09172458492148094,
+        "ground_state_overlap": 0.9643492450797836,
+        "independent_prefix_indices": [
+          0,
+          1,
+          2
+        ],
+        "left_geometry_angstrom": 1.2,
+        "minimum_assignment_margin": 0.8342143754861346,
+        "minimum_fragment_similarity": 0.9790849051694194,
+        "minimum_orbital_singular_value": 0.9175904712521754,
+        "predicted_breakdown": false,
+        "prefix_differs_from_independent": false,
+        "right_geometry_angstrom": 1.4,
+        "spatial_orbital_cross_overlap_singular_values": [
+          0.9948139351066365,
+          0.9947809671485462,
+          0.9190541967661581,
+          0.9175904712521754
+        ]
+      },
+      "predicted_breakdown": false
+    },
+    {
+      "actual_class": "breakdown",
+      "coefficient_prediction_relative_error": 1.2324543634081246,
+      "diagnostic_correct": false,
+      "geometry_angstrom": 1.6,
+      "incoming_edge": {
+        "assigned_fragment_indices": [
+          0,
+          1,
+          2
+        ],
+        "assigned_fragment_similarities": [
+          0.9997865229665699,
+          0.9989252815537903,
+          0.9872302606284955
+        ],
+        "assignment_margins": [
+          0.9840476962833203,
+          0.9539469842834605,
+          0.8730228380631144
+        ],
+        "fock_transform_unitary_defect": 2.9296733566046483e-15,
+        "ground_state_gap_hartree": 0.05362590862055705,
+        "ground_state_overlap": 0.9721523858526844,
+        "independent_prefix_indices": [
+          0,
+          1,
+          2
+        ],
+        "left_geometry_angstrom": 1.4,
+        "minimum_assignment_margin": 0.8730228380631144,
+        "minimum_fragment_similarity": 0.9872302606284955,
+        "minimum_orbital_singular_value": 0.9207368723163963,
+        "predicted_breakdown": false,
+        "prefix_differs_from_independent": false,
+        "right_geometry_angstrom": 1.6,
+        "spatial_orbital_cross_overlap_singular_values": [
+          0.9937012572130683,
+          0.9935232393869629,
+          0.9212979540418302,
+          0.9207368723163963
+        ]
+      },
+      "predicted_breakdown": false
+    }
+  ],
+  "expected_task_fingerprint": "cbe260750d081316070d3684a2a24194d91d029ad700a54cf4f61152f2ed4a4e",
+  "gates": {
+    "blind_coefficient_prediction_pass": false,
+    "delta_holdout_pass": true,
+    "diagnostic_transfer_pass": false,
+    "mechanism_discrimination_pass": false,
+    "nontrivial_cancellation_pass": true,
+    "pair_prediction_pass": false,
+    "representation_integrity_pass": true
+  },
+  "geometry_rows": [
+    {
+      "delta_holdout": {
+        "actual_signed_bias_hartree": 0.0013382853261165004,
+        "delta": 0.2,
+        "predicted_signed_bias_hartree": 0.0013342097172771331,
+        "relative_error": 0.003045396045097528
+      },
+      "dominant_cluster_weight_by_delta": {
+        "0.025": 0.9999999989083945,
+        "0.05": 0.9999999825244019,
+        "0.1": 0.9999997197540175,
+        "0.2": 0.99999547480952
+      },
+      "exact_df_rank12_ground_energy_hartree": -2.106996915095282,
+      "full_operator_reorder_difference": 0.0,
+      "geometry_angstrom": 0.7,
+      "ground_state_gap_hartree": 0.45252602372647566,
+      "hamiltonian_hash": "822c57c2be19f95cfe4bbcb4106ef01d93115268ee02d8a7b08fd1e34f79223d",
+      "maximum_unitary_defect": 7.179786530194433e-15,
+      "partition_hash": "2846a32e86a5be4c2f3663e86ae5d9e02af387441662a8b1b7f0b2650ce80d82",
+      "policy": "independent",
+      "preparation_hash": "8ca71a2c0aeb76c3cc1c623e43e0d8e6d8b59ca8a287bff4cad3b016deadce8b",
+      "role": "blind_holdout",
+      "selected_original_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "signed_bias_by_delta_hartree": {
+        "0.025": 2.082855473567949e-05,
+        "0.05": 8.332976248421733e-05,
+        "0.1": 0.00033356817003673254,
+        "0.2": 0.0013382853261165004
+      },
+      "signed_second_order_coefficient_hartree": 0.03335524293192832
+    },
+    {
+      "delta_holdout": {
+        "actual_signed_bias_hartree": 0.0013382853261165004,
+        "delta": 0.2,
+        "predicted_signed_bias_hartree": 0.0013342097172771331,
+        "relative_error": 0.003045396045097528
+      },
+      "dominant_cluster_weight_by_delta": {
+        "0.025": 0.9999999989083945,
+        "0.05": 0.9999999825244019,
+        "0.1": 0.9999997197540175,
+        "0.2": 0.99999547480952
+      },
+      "exact_df_rank12_ground_energy_hartree": -2.106996915095282,
+      "full_fragment_order": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "full_operator_reorder_difference": 0.0,
+      "geometry_angstrom": 0.7,
+      "ground_state_gap_hartree": 0.45252602372647566,
+      "hamiltonian_hash": "822c57c2be19f95cfe4bbcb4106ef01d93115268ee02d8a7b08fd1e34f79223d",
+      "maximum_unitary_defect": 7.179786530194433e-15,
+      "partition_hash": "2846a32e86a5be4c2f3663e86ae5d9e02af387441662a8b1b7f0b2650ce80d82",
+      "policy": "tracked",
+      "preparation_hash": "8ca71a2c0aeb76c3cc1c623e43e0d8e6d8b59ca8a287bff4cad3b016deadce8b",
+      "reused_identical_independent_policy": true,
+      "role": "blind_holdout",
+      "selected_original_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "signed_bias_by_delta_hartree": {
+        "0.025": 2.082855473567949e-05,
+        "0.05": 8.332976248421733e-05,
+        "0.1": 0.00033356817003673254,
+        "0.2": 0.0013382853261165004
+      },
+      "signed_second_order_coefficient_hartree": 0.03335524293192832
+    },
+    {
+      "delta_holdout": {
+        "actual_signed_bias_hartree": 0.0009376523706686719,
+        "delta": 0.2,
+        "predicted_signed_bias_hartree": 0.000935703058237049,
+        "relative_error": 0.0020789287081232183
+      },
+      "dominant_cluster_weight_by_delta": {
+        "0.025": 0.9999999993376878,
+        "0.05": 0.99999998939897,
+        "0.1": 0.9999998301248257,
+        "0.2": 0.9999972653024249
+      },
+      "exact_df_rank12_ground_energy_hartree": -2.167560544134049,
+      "full_operator_reorder_difference": 0.0,
+      "geometry_angstrom": 0.8,
+      "ground_state_gap_hartree": 0.3596483598892628,
+      "hamiltonian_hash": "67cc5daa71fbe5d749cd2a1f439db62829e75d0c48023a69ce147b1a6343b927",
+      "maximum_unitary_defect": 8.944974448171326e-15,
+      "partition_hash": "790dffa14bce71affec8f2c3526f0f540e68f7aaa35e6ef0804f5a18556f0a9b",
+      "policy": "independent",
+      "preparation_hash": "3fa4d73c704b32f319ca86e60a2b7e023bad0c2766f8df75b74b0a5d9a5a7694",
+      "role": "coefficient_training",
+      "selected_original_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "signed_bias_by_delta_hartree": {
+        "0.025": 1.4611504309303715e-05,
+        "0.05": 5.845347325465293e-05,
+        "0.1": 0.00023393331002903104,
+        "0.2": 0.0009376523706686719
+      },
+      "signed_second_order_coefficient_hartree": 0.023392576455926222
+    },
+    {
+      "delta_holdout": {
+        "actual_signed_bias_hartree": 0.0009376523706686719,
+        "delta": 0.2,
+        "predicted_signed_bias_hartree": 0.000935703058237049,
+        "relative_error": 0.0020789287081232183
+      },
+      "dominant_cluster_weight_by_delta": {
+        "0.025": 0.9999999993376878,
+        "0.05": 0.99999998939897,
+        "0.1": 0.9999998301248257,
+        "0.2": 0.9999972653024249
+      },
+      "exact_df_rank12_ground_energy_hartree": -2.167560544134049,
+      "full_fragment_order": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "full_operator_reorder_difference": 0.0,
+      "geometry_angstrom": 0.8,
+      "ground_state_gap_hartree": 0.3596483598892628,
+      "hamiltonian_hash": "67cc5daa71fbe5d749cd2a1f439db62829e75d0c48023a69ce147b1a6343b927",
+      "maximum_unitary_defect": 8.944974448171326e-15,
+      "partition_hash": "790dffa14bce71affec8f2c3526f0f540e68f7aaa35e6ef0804f5a18556f0a9b",
+      "policy": "tracked",
+      "preparation_hash": "3fa4d73c704b32f319ca86e60a2b7e023bad0c2766f8df75b74b0a5d9a5a7694",
+      "reused_identical_independent_policy": true,
+      "role": "coefficient_training",
+      "selected_original_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "signed_bias_by_delta_hartree": {
+        "0.025": 1.4611504309303715e-05,
+        "0.05": 5.845347325465293e-05,
+        "0.1": 0.00023393331002903104,
+        "0.2": 0.0009376523706686719
+      },
+      "signed_second_order_coefficient_hartree": 0.023392576455926222
+    },
+    {
+      "delta_holdout": {
+        "actual_signed_bias_hartree": 0.000693291174199077,
+        "delta": 0.2,
+        "predicted_signed_bias_hartree": 0.0006922719902714548,
+        "relative_error": 0.001470066208183833
+      },
+      "dominant_cluster_weight_by_delta": {
+        "0.025": 0.9999999995697838,
+        "0.05": 0.999999993114716,
+        "0.1": 0.9999998897184375,
+        "0.2": 0.9999982279633048
+      },
+      "exact_df_rank12_ground_energy_hartree": -2.1803166143238615,
+      "full_operator_reorder_difference": 0.0,
+      "geometry_angstrom": 0.9,
+      "ground_state_gap_hartree": 0.28870649071427534,
+      "hamiltonian_hash": "45033d07ba6b1fa52a7d7cb5f2b168dca18eeb3781d514d67bba94da07418022",
+      "maximum_unitary_defect": 1.0096738224905001e-14,
+      "partition_hash": "58d706e8fe97160f40a35c1902ebeb1547013ae385daf1fed307e57e98007ab9",
+      "policy": "independent",
+      "preparation_hash": "e8ad6e34adb597b43845bc0fafffcef03d535f6774f20a3ade8be5c7acbb2dd9",
+      "role": "blind_holdout",
+      "selected_original_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "signed_bias_by_delta_hartree": {
+        "0.025": 1.0812112887365226e-05,
+        "0.05": 4.325235647666965e-05,
+        "0.1": 0.00017307194810672687,
+        "0.2": 0.000693291174199077
+      },
+      "signed_second_order_coefficient_hartree": 0.017306799756786367
+    },
+    {
+      "delta_holdout": {
+        "actual_signed_bias_hartree": 0.000693291174199077,
+        "delta": 0.2,
+        "predicted_signed_bias_hartree": 0.0006922719902714548,
+        "relative_error": 0.001470066208183833
+      },
+      "dominant_cluster_weight_by_delta": {
+        "0.025": 0.9999999995697838,
+        "0.05": 0.999999993114716,
+        "0.1": 0.9999998897184375,
+        "0.2": 0.9999982279633048
+      },
+      "exact_df_rank12_ground_energy_hartree": -2.1803166143238615,
+      "full_fragment_order": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "full_operator_reorder_difference": 0.0,
+      "geometry_angstrom": 0.9,
+      "ground_state_gap_hartree": 0.28870649071427534,
+      "hamiltonian_hash": "45033d07ba6b1fa52a7d7cb5f2b168dca18eeb3781d514d67bba94da07418022",
+      "maximum_unitary_defect": 1.0096738224905001e-14,
+      "partition_hash": "58d706e8fe97160f40a35c1902ebeb1547013ae385daf1fed307e57e98007ab9",
+      "policy": "tracked",
+      "preparation_hash": "e8ad6e34adb597b43845bc0fafffcef03d535f6774f20a3ade8be5c7acbb2dd9",
+      "reused_identical_independent_policy": true,
+      "role": "blind_holdout",
+      "selected_original_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "signed_bias_by_delta_hartree": {
+        "0.025": 1.0812112887365226e-05,
+        "0.05": 4.325235647666965e-05,
+        "0.1": 0.00017307194810672687,
+        "0.2": 0.000693291174199077
+      },
+      "signed_second_order_coefficient_hartree": 0.017306799756786367
+    },
+    {
+      "delta_holdout": {
+        "actual_signed_bias_hartree": 0.000534355593134876,
+        "delta": 0.2,
+        "predicted_signed_bias_hartree": 0.0005337867335346399,
+        "relative_error": 0.001064571247207871
+      },
+      "dominant_cluster_weight_by_delta": {
+        "0.025": 0.9999999997052241,
+        "0.05": 0.9999999952826941,
+        "0.1": 0.9999999244659721,
+        "0.2": 0.9999987877844962
+      },
+      "exact_df_rank12_ground_energy_hartree": -2.1663874486347634,
+      "full_operator_reorder_difference": 0.0,
+      "geometry_angstrom": 1.0,
+      "ground_state_gap_hartree": 0.2326302151201849,
+      "hamiltonian_hash": "9eb4a74eadcea4828c521d6fafc5e18db216eb797f9feedf56362e6c797f31cc",
+      "maximum_unitary_defect": 8.807381444250937e-15,
+      "partition_hash": "0836a4754b6587009206869056a78c50e33d7e1cc16b1f2caf4a03a1763e84b5",
+      "policy": "independent",
+      "preparation_hash": "8b9c664939bb17d805116a8b61bec23970676279720a588b344eb20ef5995a4a",
+      "role": "coefficient_training",
+      "selected_original_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "signed_bias_by_delta_hartree": {
+        "0.025": 8.337827259772744e-06,
+        "0.05": 3.335349046296226e-05,
+        "0.1": 0.00013344889038262973,
+        "0.2": 0.000534355593134876
+      },
+      "signed_second_order_coefficient_hartree": 0.013344668338365994
+    },
+    {
+      "delta_holdout": {
+        "actual_signed_bias_hartree": 0.000534355593134876,
+        "delta": 0.2,
+        "predicted_signed_bias_hartree": 0.0005337867335346399,
+        "relative_error": 0.001064571247207871
+      },
+      "dominant_cluster_weight_by_delta": {
+        "0.025": 0.9999999997052241,
+        "0.05": 0.9999999952826941,
+        "0.1": 0.9999999244659721,
+        "0.2": 0.9999987877844962
+      },
+      "exact_df_rank12_ground_energy_hartree": -2.1663874486347634,
+      "full_fragment_order": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "full_operator_reorder_difference": 0.0,
+      "geometry_angstrom": 1.0,
+      "ground_state_gap_hartree": 0.2326302151201849,
+      "hamiltonian_hash": "9eb4a74eadcea4828c521d6fafc5e18db216eb797f9feedf56362e6c797f31cc",
+      "maximum_unitary_defect": 8.807381444250937e-15,
+      "partition_hash": "0836a4754b6587009206869056a78c50e33d7e1cc16b1f2caf4a03a1763e84b5",
+      "policy": "tracked",
+      "preparation_hash": "8b9c664939bb17d805116a8b61bec23970676279720a588b344eb20ef5995a4a",
+      "reused_identical_independent_policy": true,
+      "role": "coefficient_training",
+      "selected_original_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "signed_bias_by_delta_hartree": {
+        "0.025": 8.337827259772744e-06,
+        "0.05": 3.335349046296226e-05,
+        "0.1": 0.00013344889038262973,
+        "0.2": 0.000534355593134876
+      },
+      "signed_second_order_coefficient_hartree": 0.013344668338365994
+    },
+    {
+      "delta_holdout": {
+        "actual_signed_bias_hartree": 0.00042447706109261516,
+        "delta": 0.2,
+        "predicted_signed_bias_hartree": 0.0004241434589864283,
+        "relative_error": 0.0007859131547135506
+      },
+      "dominant_cluster_weight_by_delta": {
+        "0.025": 0.9999999997892786,
+        "0.05": 0.9999999966279973,
+        "0.1": 0.9999999460184542,
+        "0.2": 0.9999991344019209
+      },
+      "exact_df_rank12_ground_energy_hartree": -2.137970526843624,
+      "full_operator_reorder_difference": 0.0,
+      "geometry_angstrom": 1.1,
+      "ground_state_gap_hartree": 0.18694073078670148,
+      "hamiltonian_hash": "a46e773415d84a9bae8a14da7c47d92e594761cac932a4101ff6fee601e9e46d",
+      "maximum_unitary_defect": 8.487523935647644e-15,
+      "partition_hash": "73ade98ae788ee9ae09d3d4350b240835df113b544f5332363c10b52379f7286",
+      "policy": "independent",
+      "preparation_hash": "4b1f9219479f6ca3e7a1b359856e26d50c2261807f7015cb15137c02ab7ccc41",
+      "role": "blind_holdout",
+      "selected_original_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "signed_bias_by_delta_hartree": {
+        "0.025": 6.62572017473818e-06,
+        "0.05": 2.6504165048998498e-05,
+        "0.1": 0.00010603716011676567,
+        "0.2": 0.00042447706109261516
+      },
+      "signed_second_order_coefficient_hartree": 0.010603586474660706
+    },
+    {
+      "delta_holdout": {
+        "actual_signed_bias_hartree": 0.00042447706109261516,
+        "delta": 0.2,
+        "predicted_signed_bias_hartree": 0.0004241434589864283,
+        "relative_error": 0.0007859131547135506
+      },
+      "dominant_cluster_weight_by_delta": {
+        "0.025": 0.9999999997892786,
+        "0.05": 0.9999999966279973,
+        "0.1": 0.9999999460184542,
+        "0.2": 0.9999991344019209
+      },
+      "exact_df_rank12_ground_energy_hartree": -2.137970526843624,
+      "full_fragment_order": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "full_operator_reorder_difference": 0.0,
+      "geometry_angstrom": 1.1,
+      "ground_state_gap_hartree": 0.18694073078670148,
+      "hamiltonian_hash": "a46e773415d84a9bae8a14da7c47d92e594761cac932a4101ff6fee601e9e46d",
+      "maximum_unitary_defect": 8.487523935647644e-15,
+      "partition_hash": "73ade98ae788ee9ae09d3d4350b240835df113b544f5332363c10b52379f7286",
+      "policy": "tracked",
+      "preparation_hash": "4b1f9219479f6ca3e7a1b359856e26d50c2261807f7015cb15137c02ab7ccc41",
+      "reused_identical_independent_policy": true,
+      "role": "blind_holdout",
+      "selected_original_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "signed_bias_by_delta_hartree": {
+        "0.025": 6.62572017473818e-06,
+        "0.05": 2.6504165048998498e-05,
+        "0.1": 0.00010603716011676567,
+        "0.2": 0.00042447706109261516
+      },
+      "signed_second_order_coefficient_hartree": 0.010603586474660706
+    },
+    {
+      "delta_holdout": {
+        "actual_signed_bias_hartree": 0.0003440601132621039,
+        "delta": 0.2,
+        "predicted_signed_bias_hartree": 0.00034385644053726836,
+        "relative_error": 0.0005919684293086537
+      },
+      "dominant_cluster_weight_by_delta": {
+        "0.025": 0.9999999998440057,
+        "0.05": 0.999999997503842,
+        "0.1": 0.9999999600455423,
+        "0.2": 0.9999993597071469
+      },
+      "exact_df_rank12_ground_energy_hartree": -2.1026084809554217,
+      "full_operator_reorder_difference": 0.0,
+      "geometry_angstrom": 1.2,
+      "ground_state_gap_hartree": 0.14909212271026417,
+      "hamiltonian_hash": "aed376cad962b08af7f9ce9c03d86534069c29a5b5f8aff6bc7041c6138d5c3b",
+      "maximum_unitary_defect": 8.18634089067893e-15,
+      "partition_hash": "2a2398591e74c4d9e000b1286cde4b6a51b42008128b1bd3780ea65f4d0854c9",
+      "policy": "independent",
+      "preparation_hash": "6615a9a2b8059d2cb410b3fa38f406dbc73ebda2c8f565e0bb7c6fb9cb05e6f7",
+      "role": "coefficient_training",
+      "selected_original_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "signed_bias_by_delta_hartree": {
+        "0.025": 5.371828024943429e-06,
+        "0.05": 2.1488095269514267e-05,
+        "0.1": 8.596490125398653e-05,
+        "0.2": 0.0003440601132621039
+      },
+      "signed_second_order_coefficient_hartree": 0.008596411013431707
+    },
+    {
+      "delta_holdout": {
+        "actual_signed_bias_hartree": 0.0003440601132621039,
+        "delta": 0.2,
+        "predicted_signed_bias_hartree": 0.00034385644053726836,
+        "relative_error": 0.0005919684293086537
+      },
+      "dominant_cluster_weight_by_delta": {
+        "0.025": 0.9999999998440057,
+        "0.05": 0.999999997503842,
+        "0.1": 0.9999999600455423,
+        "0.2": 0.9999993597071469
+      },
+      "exact_df_rank12_ground_energy_hartree": -2.1026084809554217,
+      "full_fragment_order": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "full_operator_reorder_difference": 0.0,
+      "geometry_angstrom": 1.2,
+      "ground_state_gap_hartree": 0.14909212271026417,
+      "hamiltonian_hash": "aed376cad962b08af7f9ce9c03d86534069c29a5b5f8aff6bc7041c6138d5c3b",
+      "maximum_unitary_defect": 8.18634089067893e-15,
+      "partition_hash": "2a2398591e74c4d9e000b1286cde4b6a51b42008128b1bd3780ea65f4d0854c9",
+      "policy": "tracked",
+      "preparation_hash": "6615a9a2b8059d2cb410b3fa38f406dbc73ebda2c8f565e0bb7c6fb9cb05e6f7",
+      "reused_identical_independent_policy": true,
+      "role": "coefficient_training",
+      "selected_original_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "signed_bias_by_delta_hartree": {
+        "0.025": 5.371828024943429e-06,
+        "0.05": 2.1488095269514267e-05,
+        "0.1": 8.596490125398653e-05,
+        "0.2": 0.0003440601132621039
+      },
+      "signed_second_order_coefficient_hartree": 0.008596411013431707
+    },
+    {
+      "delta_holdout": {
+        "actual_signed_bias_hartree": 0.00023208718258811495,
+        "delta": 0.2,
+        "predicted_signed_bias_hartree": 0.00023200315051029907,
+        "relative_error": 0.0003620711703196774
+      },
+      "dominant_cluster_weight_by_delta": {
+        "0.025": 0.9999999999069011,
+        "0.05": 0.9999999985103372,
+        "0.1": 0.9999999761601338,
+        "0.2": 0.9999996182251955
+      },
+      "exact_df_rank12_ground_energy_hartree": -2.0290704935919592,
+      "full_operator_reorder_difference": 0.0,
+      "geometry_angstrom": 1.4,
+      "ground_state_gap_hartree": 0.09172458492148094,
+      "hamiltonian_hash": "f90465cbc76ea8bb6dbb532c1fff158eedd9c280dcd98d3f563a5d3a312058a8",
+      "maximum_unitary_defect": 7.241711692723956e-15,
+      "partition_hash": "5f6c20e8df3eae4afb1f35a9298ba9fe81d66480418ffbc5f91687c0d4fadf5f",
+      "policy": "independent",
+      "preparation_hash": "bde618b3757d318f2a8255483ef2d853eed8208a6e525c64f6677a28ddf1f7ea",
+      "role": "blind_holdout",
+      "selected_original_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "signed_bias_by_delta_hartree": {
+        "0.025": 3.624665842577686e-06,
+        "0.05": 1.4498986394687292e-05,
+        "0.1": 5.800111421713546e-05,
+        "0.2": 0.00023208718258811495
+      },
+      "signed_second_order_coefficient_hartree": 0.005800078762757475
+    },
+    {
+      "delta_holdout": {
+        "actual_signed_bias_hartree": 0.00023208718258811495,
+        "delta": 0.2,
+        "predicted_signed_bias_hartree": 0.00023200315051029907,
+        "relative_error": 0.0003620711703196774
+      },
+      "dominant_cluster_weight_by_delta": {
+        "0.025": 0.9999999999069011,
+        "0.05": 0.9999999985103372,
+        "0.1": 0.9999999761601338,
+        "0.2": 0.9999996182251955
+      },
+      "exact_df_rank12_ground_energy_hartree": -2.0290704935919592,
+      "full_fragment_order": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "full_operator_reorder_difference": 0.0,
+      "geometry_angstrom": 1.4,
+      "ground_state_gap_hartree": 0.09172458492148094,
+      "hamiltonian_hash": "f90465cbc76ea8bb6dbb532c1fff158eedd9c280dcd98d3f563a5d3a312058a8",
+      "maximum_unitary_defect": 7.241711692723956e-15,
+      "partition_hash": "5f6c20e8df3eae4afb1f35a9298ba9fe81d66480418ffbc5f91687c0d4fadf5f",
+      "policy": "tracked",
+      "preparation_hash": "bde618b3757d318f2a8255483ef2d853eed8208a6e525c64f6677a28ddf1f7ea",
+      "reused_identical_independent_policy": true,
+      "role": "blind_holdout",
+      "selected_original_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "signed_bias_by_delta_hartree": {
+        "0.025": 3.624665842577686e-06,
+        "0.05": 1.4498986394687292e-05,
+        "0.1": 5.800111421713546e-05,
+        "0.2": 0.00023208718258811495
+      },
+      "signed_second_order_coefficient_hartree": 0.005800078762757475
+    },
+    {
+      "delta_holdout": {
+        "actual_signed_bias_hartree": 0.00015492528998614278,
+        "delta": 0.2,
+        "predicted_signed_bias_hartree": 0.00015488694180483827,
+        "relative_error": 0.0002475269293214783
+      },
+      "dominant_cluster_weight_by_delta": {
+        "0.025": 0.9999999999398272,
+        "0.05": 0.9999999990372035,
+        "0.1": 0.9999999845931683,
+        "0.2": 0.9999997533569941
+      },
+      "exact_df_rank12_ground_energy_hartree": -1.9675603099203745,
+      "full_operator_reorder_difference": 0.0,
+      "geometry_angstrom": 1.6,
+      "ground_state_gap_hartree": 0.05362590862055705,
+      "hamiltonian_hash": "ce48023c08cd66b0f6fc6224a9bb359d00714c4cf0bf60269c1353bb364d5098",
+      "maximum_unitary_defect": 1.0401823766437888e-14,
+      "partition_hash": "ba18e25de7387677c5fd1eff208cc1df7902d48b922b1196ecf74b7fe19d0ea6",
+      "policy": "independent",
+      "preparation_hash": "a6c9f52e2b8bde8904b3dde36ca441025e48e09b4c3485f508e2aec2d7f0c728",
+      "role": "blind_holdout",
+      "selected_original_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "signed_bias_by_delta_hartree": {
+        "0.025": 2.4199333752263792e-06,
+        "0.05": 9.679881400159706e-06,
+        "0.1": 3.8721884510024866e-05,
+        "0.2": 0.00015492528998614278
+      },
+      "signed_second_order_coefficient_hartree": 0.0038721735451209558
+    },
+    {
+      "delta_holdout": {
+        "actual_signed_bias_hartree": 0.00015492528998614278,
+        "delta": 0.2,
+        "predicted_signed_bias_hartree": 0.00015488694180483827,
+        "relative_error": 0.0002475269293214783
+      },
+      "dominant_cluster_weight_by_delta": {
+        "0.025": 0.9999999999398272,
+        "0.05": 0.9999999990372035,
+        "0.1": 0.9999999845931683,
+        "0.2": 0.9999997533569941
+      },
+      "exact_df_rank12_ground_energy_hartree": -1.9675603099203745,
+      "full_fragment_order": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "full_operator_reorder_difference": 0.0,
+      "geometry_angstrom": 1.6,
+      "ground_state_gap_hartree": 0.05362590862055705,
+      "hamiltonian_hash": "ce48023c08cd66b0f6fc6224a9bb359d00714c4cf0bf60269c1353bb364d5098",
+      "maximum_unitary_defect": 1.0401823766437888e-14,
+      "partition_hash": "ba18e25de7387677c5fd1eff208cc1df7902d48b922b1196ecf74b7fe19d0ea6",
+      "policy": "tracked",
+      "preparation_hash": "a6c9f52e2b8bde8904b3dde36ca441025e48e09b4c3485f508e2aec2d7f0c728",
+      "reused_identical_independent_policy": true,
+      "role": "blind_holdout",
+      "selected_original_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "signed_bias_by_delta_hartree": {
+        "0.025": 2.4199333752263792e-06,
+        "0.05": 9.679881400159706e-06,
+        "0.1": 3.8721884510024866e-05,
+        "0.2": 0.00015492528998614278
+      },
+      "signed_second_order_coefficient_hartree": 0.0038721735451209558
+    }
+  ],
+  "method": "pc_h4_orbital_fragment_tracking_signed_error_breakdown_v1",
+  "overall_pass": false,
+  "pair_predictions": {
+    "independent": [
+      {
+        "actual_signed_pf_difference_error_hartree": -0.00026881411310646184,
+        "cancellation_ratio": 0.2404918162988522,
+        "delta": 0.2,
+        "exact_df_rank12_energy_difference_hartree": 0.04234608748023749,
+        "label": "interpolation",
+        "left_geometry_angstrom": 0.9,
+        "predicted_signed_pf_difference_error_hartree": -0.00029592330884989045,
+        "prediction_absolute_error_hartree": 2.7109195743428615e-05,
+        "prediction_error_normalized_by_larger_endpoint_bias": 0.039102179217478786,
+        "right_geometry_angstrom": 1.1
+      },
+      {
+        "actual_signed_pf_difference_error_hartree": -0.0006449941519174234,
+        "cancellation_ratio": 0.3174845504548967,
+        "delta": 0.2,
+        "exact_df_rank12_energy_difference_hartree": -0.07331969922857962,
+        "label": "compression_boundary",
+        "left_geometry_angstrom": 0.7,
+        "predicted_signed_pf_difference_error_hartree": -0.00040191632470240943,
+        "prediction_absolute_error_hartree": 0.00024307782721501395,
+        "prediction_error_normalized_by_larger_endpoint_bias": 0.1816337835223739,
+        "right_geometry_angstrom": 0.9
+      },
+      {
+        "actual_signed_pf_difference_error_hartree": -7.716189260197217e-05,
+        "cancellation_ratio": 0.1993783096671821,
+        "delta": 0.2,
+        "exact_df_rank12_energy_difference_hartree": 0.061510183671584784,
+        "label": "stretched_region",
+        "left_geometry_angstrom": 1.4,
+        "predicted_signed_pf_difference_error_hartree": -0.00018993029299737177,
+        "prediction_absolute_error_hartree": 0.0001127684003953996,
+        "prediction_error_normalized_by_larger_endpoint_bias": 0.48588810091908285,
+        "right_geometry_angstrom": 1.6
+      },
+      {
+        "actual_signed_pf_difference_error_hartree": -0.00046120399161096205,
+        "cancellation_ratio": 0.49839504914747484,
+        "delta": 0.2,
+        "exact_df_rank12_energy_difference_hartree": 0.15124612073190224,
+        "label": "cross_region",
+        "left_geometry_angstrom": 0.9,
+        "predicted_signed_pf_difference_error_hartree": -0.0005808187483459477,
+        "prediction_absolute_error_hartree": 0.00011961475673498564,
+        "prediction_error_normalized_by_larger_endpoint_bias": 0.1725317747960232,
+        "right_geometry_angstrom": 1.4
+      }
+    ],
+    "tracked": [
+      {
+        "actual_signed_pf_difference_error_hartree": -0.00026881411310646184,
+        "cancellation_ratio": 0.2404918162988522,
+        "delta": 0.2,
+        "exact_df_rank12_energy_difference_hartree": 0.04234608748023749,
+        "label": "interpolation",
+        "left_geometry_angstrom": 0.9,
+        "predicted_signed_pf_difference_error_hartree": -0.00029592330884989045,
+        "prediction_absolute_error_hartree": 2.7109195743428615e-05,
+        "prediction_error_normalized_by_larger_endpoint_bias": 0.039102179217478786,
+        "right_geometry_angstrom": 1.1
+      },
+      {
+        "actual_signed_pf_difference_error_hartree": -0.0006449941519174234,
+        "cancellation_ratio": 0.3174845504548967,
+        "delta": 0.2,
+        "exact_df_rank12_energy_difference_hartree": -0.07331969922857962,
+        "label": "compression_boundary",
+        "left_geometry_angstrom": 0.7,
+        "predicted_signed_pf_difference_error_hartree": -0.00040191632470240943,
+        "prediction_absolute_error_hartree": 0.00024307782721501395,
+        "prediction_error_normalized_by_larger_endpoint_bias": 0.1816337835223739,
+        "right_geometry_angstrom": 0.9
+      },
+      {
+        "actual_signed_pf_difference_error_hartree": -7.716189260197217e-05,
+        "cancellation_ratio": 0.1993783096671821,
+        "delta": 0.2,
+        "exact_df_rank12_energy_difference_hartree": 0.061510183671584784,
+        "label": "stretched_region",
+        "left_geometry_angstrom": 1.4,
+        "predicted_signed_pf_difference_error_hartree": -0.00018993029299737177,
+        "prediction_absolute_error_hartree": 0.0001127684003953996,
+        "prediction_error_normalized_by_larger_endpoint_bias": 0.48588810091908285,
+        "right_geometry_angstrom": 1.6
+      },
+      {
+        "actual_signed_pf_difference_error_hartree": -0.00046120399161096205,
+        "cancellation_ratio": 0.49839504914747484,
+        "delta": 0.2,
+        "exact_df_rank12_energy_difference_hartree": 0.15124612073190224,
+        "label": "cross_region",
+        "left_geometry_angstrom": 0.9,
+        "predicted_signed_pf_difference_error_hartree": -0.0005808187483459477,
+        "prediction_absolute_error_hartree": 0.00011961475673498564,
+        "prediction_error_normalized_by_larger_endpoint_bias": 0.1725317747960232,
+        "right_geometry_angstrom": 1.4
+      }
+    ]
+  },
+  "provenance": {
+    "command": ".venv311/bin/python scripts/run_research_direction_geometry_tracking_breakdown.py",
+    "cpu_count_visible": 32,
+    "elapsed_seconds": 29.71083344402723,
+    "evidence_status": "local_dirty_worktree_not_externally_reproduced",
+    "generated_at_utc": "2026-09-25T08:35:24.712787+00:00",
+    "git_commit": "3336f030c56f4eb500b1bdf8f541619f9c445038",
+    "git_worktree_status_before_generation": [
+      " M PROJECT_MAP.md",
+      " M VALIDATION_STATUS.md",
+      " M artifacts/validation_manifest.json",
+      " M docs/README.md",
+      " M docs/research/README.md",
+      " M \"docs/research/\\345\\205\\210\\350\\241\\214\\347\\240\\224\\347\\251\\266\\343\\201\\250\\346\\234\\252\\350\\247\\243\\346\\261\\272\\347\\202\\271.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-25.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/README.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\346\\246\\202\\350\\246\\201\\343\\203\\273\\347\\217\\276\\347\\212\\266.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\347\\233\\256\\347\\232\\204\\343\\203\\273\\347\\240\\224\\347\\251\\266\\350\\252\\262\\351\\241\\214.md\"",
+      " M docs/research_direction_joint_synthesis_pilot.md",
+      " M docs/research_direction_theme_selection.md",
+      " M scripts/README.md",
+      " M scripts/run_research_direction_geometry_energy_difference_pilot.py",
+      " M src/trotterlib/README.md",
+      " M src/trotterlib/research_direction_geometry_energy_difference_pilot.py",
+      " M tests/README.md",
+      " M tests/test_research_direction_geometry_energy_difference_pilot.py",
+      "?? artifacts/research_direction_geometry_energy_difference_pilot/2026-09-25/pc_h4_geometry_signed_error_v1_corrected_energy.json",
+      "?? artifacts/research_direction_geometry_tracking_breakdown/",
+      "?? artifacts/research_direction_joint_synthesis_blind_validation/",
+      "?? artifacts/research_direction_joint_synthesis_formalization/",
+      "?? artifacts/research_direction_joint_synthesis_mechanism_validation/",
+      "?? docs/research/pa_joint_synthesis_blind_validation_preregistration.md",
+      "?? docs/research/pa_joint_synthesis_mechanism_validation_preregistration.md",
+      "?? docs/research/pa_joint_synthesis_prior_art_audit.md",
+      "?? docs/research/pa_joint_synthesis_v1_formalization.md",
+      "?? docs/research/pc_geometry_tracking_breakdown_preregistration.md",
+      "?? docs/research_direction_joint_synthesis_blind_validation.md",
+      "?? docs/research_direction_joint_synthesis_mechanism_validation.md",
+      "?? scripts/run_research_direction_geometry_tracking_breakdown.py",
+      "?? scripts/run_research_direction_joint_synthesis_blind_validation.py",
+      "?? scripts/run_research_direction_joint_synthesis_formalization.py",
+      "?? scripts/run_research_direction_joint_synthesis_mechanism_validation.py",
+      "?? src/trotterlib/research_direction_geometry_tracking_breakdown.py",
+      "?? src/trotterlib/research_direction_joint_synthesis_blind_validation.py",
+      "?? src/trotterlib/research_direction_joint_synthesis_formalization.py",
+      "?? src/trotterlib/research_direction_joint_synthesis_mechanism_validation.py",
+      "?? tests/test_research_direction_joint_synthesis_blind_validation.py",
+      "?? tests/test_research_direction_joint_synthesis_formalization.py",
+      "?? tests/test_research_direction_joint_synthesis_mechanism_validation.py"
+    ],
+    "mode": "preregistered_full_computation",
+    "numpy_version": "1.26.4",
+    "python_version": "3.11.0rc1",
+    "scipy_version": "1.14.1",
+    "source_sha256": {
+      "scripts/run_research_direction_geometry_tracking_breakdown.py": "53410e399e4a4b8bc31991d0b6dcef1e9d746522b9bb4179906727fff4968912",
+      "src/trotterlib/research_direction_geometry_tracking_breakdown.py": "a77c427f569b36218baa0a6343ed77db96951767a12a0f9a373bef8f2da3195b"
+    }
+  },
+  "schema_version": "research_direction_geometry_tracking_breakdown_v1",
+  "scope": {
+    "circuit_resources_evaluated": false,
+    "cross_system_transfer_claimed": false,
+    "exact_energy_means_df_rank12_sector_reference": true,
+    "final_total_cost_evaluated": false,
+    "force_or_reaction_barrier_claimed": false,
+    "h12_evaluated": false,
+    "natural_quantum_measurement_covariance_claimed": false,
+    "potential_energy_surface_claimed": false,
+    "rpe_rte_sampling_evaluated": false,
+    "scientific_superiority_claimed": false,
+    "signed_bias_convention": "E_PF_minus_E_exact"
+  },
+  "source_evidence": [
+    {
+      "content_fingerprint": "cbe260750d081316070d3684a2a24194d91d029ad700a54cf4f61152f2ed4a4e",
+      "path": "artifacts/research_direction_geometry_tracking_breakdown/2026-09-25/pc_tracking_breakdown_expected_tasks_v1.json",
+      "role": "compile_before_expected_tasks",
+      "sha256": "a3dd1621dc8777e9f6429fd2d35c6e1270e18d27e4996c7168ec9bd216b2d5b2"
+    },
+    {
+      "content_fingerprint": "3c199dbc20d0892cf1bcfad4b27646ea8c90d1c1d32fc5e2c75be610bb1fe611",
+      "path": "artifacts/research_direction_geometry_energy_difference_pilot/2026-09-25/pc_h4_geometry_signed_error_v1_corrected_energy.json",
+      "role": "prior_pc_signed_error_pilot",
+      "sha256": "499427a801d3e35bac9151077b314d0848588189f8440c023cfd34adfccaae9b"
+    }
+  ],
+  "summary": {
+    "actual_breakdown_count": 2,
+    "breakdown_mechanism_pass": false,
+    "changed_blind_prefix_count": 0,
+    "clear_diagnostic_count": 4,
+    "diagnostic_accuracy": 0.5,
+    "independent_blind_coefficient_error_median": 0.1480640517984218,
+    "maximum_delta_holdout_relative_error": 0.003045396045097528,
+    "maximum_full_operator_reorder_difference": 0.0,
+    "maximum_pair_error_degradation": 0.0,
+    "nontrivial_cancellation_count": 4,
+    "tracked_blind_coefficient_error_median": 0.1480640517984218,
+    "tracked_blind_coefficient_pass_count": 3,
+    "tracked_pair_prediction_pass_count": 1,
+    "tracking_mechanism_pass": false,
+    "tracking_median_error_reduction": 0.0,
+    "training_coefficient_relative_differences": {
+      "0.8": 0.0019492417156093756,
+      "1.0": 0.0009980982503143773,
+      "1.2": 0.0005549888282394559
+    },
+    "training_ground_energy_absolute_differences_hartree": {
+      "0.8": 1.3322676295501878e-15,
+      "1.0": 2.220446049250313e-15,
+      "1.2": 0.0
+    }
+  },
+  "tracked_original_fragment_indices": {
+    "0.7": [
+      0,
+      1,
+      2
+    ],
+    "0.8": [
+      0,
+      1,
+      2
+    ],
+    "0.9": [
+      0,
+      1,
+      2
+    ],
+    "1.0": [
+      0,
+      1,
+      2
+    ],
+    "1.1": [
+      0,
+      1,
+      2
+    ],
+    "1.2": [
+      0,
+      1,
+      2
+    ],
+    "1.4": [
+      0,
+      1,
+      2
+    ],
+    "1.6": [
+      0,
+      1,
+      2
+    ]
+  },
+  "tracking_edge_diagnostics": [
+    {
+      "assigned_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "assigned_fragment_similarities": [
+        0.9997689973360362,
+        0.9989883032937886,
+        0.9888224709967229
+      ],
+      "assignment_margins": [
+        0.9822882175483525,
+        0.9565414767140211,
+        0.8751378943485835
+      ],
+      "fock_transform_unitary_defect": 2.106460097899635e-15,
+      "ground_state_gap_hartree": 0.28870649071427534,
+      "ground_state_overlap": 0.986379291683736,
+      "independent_prefix_indices": [
+        0,
+        1,
+        2
+      ],
+      "left_geometry_angstrom": 1.0,
+      "minimum_assignment_margin": 0.8751378943485835,
+      "minimum_fragment_similarity": 0.9888224709967229,
+      "minimum_orbital_singular_value": 0.9758030767955373,
+      "predicted_breakdown": false,
+      "prefix_differs_from_independent": false,
+      "right_geometry_angstrom": 0.9,
+      "spatial_orbital_cross_overlap_singular_values": [
+        0.9993172560810862,
+        0.9990914288742957,
+        0.9765858781348156,
+        0.9758030767955373
+      ]
+    },
+    {
+      "assigned_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "assigned_fragment_similarities": [
+        0.999684156166216,
+        0.9987750061421963,
+        0.9861157936758079
+      ],
+      "assignment_margins": [
+        0.9786954940162927,
+        0.9526231010325567,
+        0.8546063360536414
+      ],
+      "fock_transform_unitary_defect": 1.6264210471927552e-15,
+      "ground_state_gap_hartree": 0.3596483598892628,
+      "ground_state_overlap": 0.9844534514591563,
+      "independent_prefix_indices": [
+        0,
+        1,
+        2
+      ],
+      "left_geometry_angstrom": 0.9,
+      "minimum_assignment_margin": 0.8546063360536414,
+      "minimum_fragment_similarity": 0.9861157936758079,
+      "minimum_orbital_singular_value": 0.9746540776304574,
+      "predicted_breakdown": false,
+      "prefix_differs_from_independent": false,
+      "right_geometry_angstrom": 0.8,
+      "spatial_orbital_cross_overlap_singular_values": [
+        0.9994846292515054,
+        0.9991870650936089,
+        0.9757723257480948,
+        0.9746540776304574
+      ]
+    },
+    {
+      "assigned_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "assigned_fragment_similarities": [
+        0.9995523710976045,
+        0.9985800025758413,
+        0.9825970020455861
+      ],
+      "assignment_margins": [
+        0.9735392411467539,
+        0.9496771572782303,
+        0.8260744027629301
+      ],
+      "fock_transform_unitary_defect": 2.221821536891142e-15,
+      "ground_state_gap_hartree": 0.45252602372647566,
+      "ground_state_overlap": 0.9823520387398098,
+      "independent_prefix_indices": [
+        0,
+        1,
+        2
+      ],
+      "left_geometry_angstrom": 0.8,
+      "minimum_assignment_margin": 0.8260744027629301,
+      "minimum_fragment_similarity": 0.9825970020455861,
+      "minimum_orbital_singular_value": 0.972678910216456,
+      "predicted_breakdown": false,
+      "prefix_differs_from_independent": false,
+      "right_geometry_angstrom": 0.7,
+      "spatial_orbital_cross_overlap_singular_values": [
+        0.9996243125372524,
+        0.9992973762253561,
+        0.9748917062793441,
+        0.972678910216456
+      ]
+    },
+    {
+      "assigned_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "assigned_fragment_similarities": [
+        0.9998275217849442,
+        0.9991887633241061,
+        0.9910227927434836
+      ],
+      "assignment_margins": [
+        0.9852575696860513,
+        0.9613581413020198,
+        0.8943187318462076
+      ],
+      "fock_transform_unitary_defect": 1.7747410358196235e-15,
+      "ground_state_gap_hartree": 0.18694073078670148,
+      "ground_state_overlap": 0.9880821012808091,
+      "independent_prefix_indices": [
+        0,
+        1,
+        2
+      ],
+      "left_geometry_angstrom": 1.0,
+      "minimum_assignment_margin": 0.8943187318462076,
+      "minimum_fragment_similarity": 0.9910227927434836,
+      "minimum_orbital_singular_value": 0.9766183136028358,
+      "predicted_breakdown": false,
+      "prefix_differs_from_independent": false,
+      "right_geometry_angstrom": 1.1,
+      "spatial_orbital_cross_overlap_singular_values": [
+        0.9991297271161667,
+        0.9989837360509914,
+        0.977295595254862,
+        0.9766183136028358
+      ]
+    },
+    {
+      "assigned_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "assigned_fragment_similarities": [
+        0.9998697291660171,
+        0.9993611062326542,
+        0.9928426372171236
+      ],
+      "assignment_margins": [
+        0.9873308319392382,
+        0.9653841877570545,
+        0.9074104225129543
+      ],
+      "fock_transform_unitary_defect": 2.5087948609860038e-15,
+      "ground_state_gap_hartree": 0.14909212271026417,
+      "ground_state_overlap": 0.9895421391274739,
+      "independent_prefix_indices": [
+        0,
+        1,
+        2
+      ],
+      "left_geometry_angstrom": 1.1,
+      "minimum_assignment_margin": 0.9074104225129543,
+      "minimum_fragment_similarity": 0.9928426372171236,
+      "minimum_orbital_singular_value": 0.9772974088730559,
+      "predicted_breakdown": false,
+      "prefix_differs_from_independent": false,
+      "right_geometry_angstrom": 1.2,
+      "spatial_orbital_cross_overlap_singular_values": [
+        0.9989345921224075,
+        0.9988566809960691,
+        0.9778827850629925,
+        0.9772974088730559
+      ]
+    },
+    {
+      "assigned_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "assigned_fragment_similarities": [
+        0.999639164517525,
+        0.9981844694421024,
+        0.9790849051694194
+      ],
+      "assignment_margins": [
+        0.9791866860275584,
+        0.9405027203856666,
+        0.8342143754861346
+      ],
+      "fock_transform_unitary_defect": 2.929032017625099e-15,
+      "ground_state_gap_hartree": 0.09172458492148094,
+      "ground_state_overlap": 0.9643492450797836,
+      "independent_prefix_indices": [
+        0,
+        1,
+        2
+      ],
+      "left_geometry_angstrom": 1.2,
+      "minimum_assignment_margin": 0.8342143754861346,
+      "minimum_fragment_similarity": 0.9790849051694194,
+      "minimum_orbital_singular_value": 0.9175904712521754,
+      "predicted_breakdown": false,
+      "prefix_differs_from_independent": false,
+      "right_geometry_angstrom": 1.4,
+      "spatial_orbital_cross_overlap_singular_values": [
+        0.9948139351066365,
+        0.9947809671485462,
+        0.9190541967661581,
+        0.9175904712521754
+      ]
+    },
+    {
+      "assigned_fragment_indices": [
+        0,
+        1,
+        2
+      ],
+      "assigned_fragment_similarities": [
+        0.9997865229665699,
+        0.9989252815537903,
+        0.9872302606284955
+      ],
+      "assignment_margins": [
+        0.9840476962833203,
+        0.9539469842834605,
+        0.8730228380631144
+      ],
+      "fock_transform_unitary_defect": 2.9296733566046483e-15,
+      "ground_state_gap_hartree": 0.05362590862055705,
+      "ground_state_overlap": 0.9721523858526844,
+      "independent_prefix_indices": [
+        0,
+        1,
+        2
+      ],
+      "left_geometry_angstrom": 1.4,
+      "minimum_assignment_margin": 0.8730228380631144,
+      "minimum_fragment_similarity": 0.9872302606284955,
+      "minimum_orbital_singular_value": 0.9207368723163963,
+      "predicted_breakdown": false,
+      "prefix_differs_from_independent": false,
+      "right_geometry_angstrom": 1.6,
+      "spatial_orbital_cross_overlap_singular_values": [
+        0.9937012572130683,
+        0.9935232393869629,
+        0.9212979540418302,
+        0.9207368723163963
+      ]
+    }
+  ]
+}

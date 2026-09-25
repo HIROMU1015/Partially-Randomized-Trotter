@@ -23,7 +23,7 @@ ARTIFACT_DIRECTORY = (
     / "2026-09-25"
 )
 INPUT_DIRECTORY = ARTIFACT_DIRECTORY / "inputs"
-ARTIFACT = ARTIFACT_DIRECTORY / "pc_h4_geometry_signed_error_v1.json"
+ARTIFACT = ARTIFACT_DIRECTORY / "pc_h4_geometry_signed_error_v1_corrected_energy.json"
 
 
 def _distance_label(distance: float) -> str:
@@ -57,6 +57,13 @@ def test_pc_geometry_holdouts_and_difference_prediction_are_evaluated() -> None:
     ] >= 0.0
     assert body["scope"]["exact_energy_means_df_rank12_sector_reference"]
     assert not body["scope"]["final_total_cost_evaluation_performed"]
+    for row, source in zip(body["geometry_rows"], _inputs(), strict=True):
+        assert row["exact_df_rank12_ground_energy_hartree"] == pytest.approx(
+            source["hamiltonian"]["ground_energy"], abs=1e-12
+        )
+        assert row["exact_df_rank12_ground_energy_hartree"] != pytest.approx(
+            source["surrogate"]["ground_state_energy"], abs=1e-6
+        )
 
 
 def test_pc_artifact_is_tamper_evident_and_scope_limited() -> None:

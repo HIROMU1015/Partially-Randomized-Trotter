@@ -42,6 +42,14 @@
 | 1 | [研究目的・研究課題 補足Q&A](研究目的・研究課題_補足QA.md) | normalization、attenuation、位相誤差換算の直感を補う。 |
 | 2 | [先行研究と未解決点 補足Q&A](先行研究と未解決点_補足QA.md) | PR論文の各量の意味と有限RTEへの対応を具体化する。 |
 | 3 | [研究方法・解析手順 補足Q&A](研究方法・解析手順_補足QA.md) | 外側・内側最適化、信号半径および数値例を詳しく説明する。 |
+| 4 | [P-A joint synthesis先行研究監査](pa_joint_synthesis_prior_art_audit.md) | P-A v1の検索範囲、closest prior art、限定novelty statement、v2との境界を記録する。 |
+| 5 | [P-A blind transfer事前登録](pa_joint_synthesis_blind_validation_preregistration.md) | 実行前にH5 physical transferとH4 compiler transferの条件・gateを固定した記録。 |
+| 6 | [P-A blind transfer検証結果](../research_direction_joint_synthesis_blind_validation.md) | 両stratumの完了、固定gate、結果、判断、scopeを記録する。 |
+| 7 | [P-A v1形式化・機構監査](pa_joint_synthesis_v1_formalization.md) | 目的関数、DP、計算量、同値性条件と、完成済み証拠が一run一segment・order 0へ退化している制約を記録する。 |
+| 8 | [P-A非退化mechanism validation事前登録](pa_joint_synthesis_mechanism_validation_preregistration.md) | 明示的一区間baseline、forced support変化、order 2 stream、固定gateと停止規則を計算前に記録する。 |
+| 9 | [P-A非退化mechanism validation結果](../research_direction_joint_synthesis_mechanism_validation.md) | 30/30 taskで分割・plan差・追加RZ改善が0だった結果と、P-A停止・P-C復帰判断を記録する。 |
+| 10 | [P-C geometry tracking・breakdown事前登録](pc_geometry_tracking_breakdown_preregistration.md) | 8 geometry、2 policy、blind region、4 pair、7 gate、固定停止規則を計算前に記録する。 |
+| 11 | [P-C geometry tracking・breakdown結果](../research_direction_geometry_tracking_breakdown.md) | 16/16 task、prefix変更0、stretch予測破れ、current H4 family停止を記録する。 |
 
 ## 研究ノート
 

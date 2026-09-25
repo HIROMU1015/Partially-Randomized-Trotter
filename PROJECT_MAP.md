@@ -26,9 +26,17 @@
 
 ## 現在の研究段階
 
-2026-09-25現在、A0後のP-B/P-C/P-Aテーマ選定を完了し、DF event列のinterval-aware joint synthesis
-（P-A）を暫定主題、geometry間エネルギー差（P-C）を副候補、signal-weight（P-B）を現範囲で停止とした。
-P-Aの広い回路合成文献に対する新規性は未監査なので、次は計算拡張でなく先行研究・新規性監査を行う。
+2026-09-25現在、A0後のP-B/P-C/P-Aテーマ選定と、各候補の停止点まで完了した。P-Bは現H4 gridで
+実用的signal差がなく停止した。P-A v1はblind transferを通過したが、形式化とforced-support
+Taylor-order-2検証でinterval分割・一区間baselineとの差が全30 taskで0となり、interval claimを停止した。
+P-Cは0.80--1.20 Åの局所pilotを通過したが、事前登録した0.70--1.60 Å tracking・breakdown検証では
+追跡prefixが独立prefixと全点同一で、1.40/1.60 Åのcoefficient予測誤差が33.653%/123.245%となった。
+pair予測、continuity診断、mechanism discriminationも固定gateを通らず、
+`stop_pc_current_h4_family_as_primary`となった。
+
+従って、現時点でA/B/Cに確認済みの主研究候補はない。否定結果と既存run-level policyは保持し、
+次は未実施のP-D（有限PF familyのenergy係数対random-tail負担Pareto監査）を独立pilotとして
+事前登録するか、R3/R6/R8へ問いを再定義するかを選ぶ。H12や長RPEは自動的な次作業にしない。
 
 それ以前の中心課題は、DF Hamiltonianを決定論部分とランダム部分へ分けたpartial-$S_2$について、有限RTE、
 RPEの信号半径・測定回数、1 shot当たりのコンパイル後回路コストを接続することだった。PF係数、有限RTE、
@@ -178,8 +186,49 @@ P-Aは`src/trotterlib/research_direction_joint_synthesis_pilot.py`、
 未使用列長3、5、8でinterval-union DPが現行policy比pooled RZを7.19%減らし、全gateを通過した。
 3 pilotの比較は`research_direction_theme_selection.py`と同名runner/test、
 [`docs/research_direction_theme_selection.md`](docs/research_direction_theme_selection.md)へ固定した。
-P-Aを暫定主題、P-Cを副候補、P-Bを現範囲で停止とするが、P-Aの広い回路合成文献に対する
-新規性は未監査である。次は計算拡張でなく先行研究・新規性監査を行う。
+P-Aを暫定主題、P-Cを副候補、P-Bを現範囲で停止とした。続くscoped prior-art auditは
+[`docs/research/pa_joint_synthesis_prior_art_audit.md`](docs/research/pa_joint_synthesis_prior_art_audit.md)に、
+計算前のblind条件は
+[`docs/research/pa_joint_synthesis_blind_validation_preregistration.md`](docs/research/pa_joint_synthesis_blind_validation_preregistration.md)に固定した。
+実装は`src/trotterlib/research_direction_joint_synthesis_blind_validation.py`、
+`scripts/run_research_direction_joint_synthesis_blind_validation.py`、
+`tests/test_research_direction_joint_synthesis_blind_validation.py`を一組として読む。compile前dry-runで
+48 holdout taskと6 operator probeのevent digestを
+`artifacts/research_direction_joint_synthesis_blind_validation/2026-09-25/`へ固定した。未使用H5 snapshotと
+H4 opt2 compiler contextの2 stratumは48/48 holdout、6/6 operator probeまで完了し、両方で全6 gateが
+通過した。結果とscopeは
+[`docs/research_direction_joint_synthesis_blind_validation.md`](docs/research_direction_joint_synthesis_blind_validation.md)に記録する。
+blind gate時点ではP-A v1を正式候補へ進めた。続く形式化は
+`src/trotterlib/research_direction_joint_synthesis_formalization.py`、
+`scripts/run_research_direction_joint_synthesis_formalization.py`、
+`tests/test_research_direction_joint_synthesis_formalization.py`、
+[`docs/research/pa_joint_synthesis_v1_formalization.md`](docs/research/pa_joint_synthesis_v1_formalization.md)を
+一組として読む。DP最適性は有限proxy候補内で形式化できたが、全54 recordが1 run 1 segmentで、
+interval分割と非零Taylor-order構造は未検証だった。P-Aを条件付き候補へ狭め、次はこの2点を明示的な
+one-segment baselineに対して判別する。H12、長RPE総cost、coupling/noiseは次の必須作業ではない。
+
+続く非退化mechanism validationは
+`src/trotterlib/research_direction_joint_synthesis_mechanism_validation.py`、
+`scripts/run_research_direction_joint_synthesis_mechanism_validation.py`、
+`tests/test_research_direction_joint_synthesis_mechanism_validation.py`、
+[事前登録](docs/research/pa_joint_synthesis_mechanism_validation_preregistration.md)、
+[結果文書](docs/research_direction_joint_synthesis_mechanism_validation.md)を一組として読む。
+training/blindをDF fragmentで分離したforced-support order-2全30 taskでcandidateと一区間baselineの
+plan・compiled metricが完全一致し、run内分割は0件だった。P-Aのinterval claimを停止してP-Cへ戻る。
+H12、長RPE総cost、coupling/noiseは次の必須作業ではない。
+
+
+続くP-C tracking・breakdown validationは
+`src/trotterlib/research_direction_geometry_tracking_breakdown.py`、
+`scripts/run_research_direction_geometry_tracking_breakdown.py`、
+`tests/test_research_direction_geometry_tracking_breakdown.py`、
+[事前登録](docs/research/pc_geometry_tracking_breakdown_preregistration.md)、
+[結果文書](docs/research_direction_geometry_tracking_breakdown.md)、
+`artifacts/research_direction_geometry_tracking_breakdown/2026-09-25/`を一組として読む。
+固定8 geometry・2 policyの16/16 taskを完了した。追跡prefixは全点で独立先頭3 fragmentと同一、
+blind coefficientは3/5、pairは1/4だけが固定誤差基準内で、診断正解率は50%だった。
+7 gate中3 gate通過でcurrent H4 familyのP-Cを主研究候補から停止した。
+先行P-C pilotの訂正版exact-energy artifactも同時に参照する。
 
 ## ファイルの状態区分
 

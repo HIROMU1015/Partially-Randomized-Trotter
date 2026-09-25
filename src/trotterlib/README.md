@@ -92,8 +92,12 @@
 - `research_direction_proxy_lineage_reconciliation.py`
 - `research_direction_signal_weight_pilot.py`
 - `research_direction_geometry_energy_difference_pilot.py`
+- `research_direction_geometry_tracking_breakdown.py`
 - `research_direction_joint_synthesis_pilot.py`
 - `research_direction_theme_selection.py`
+- `research_direction_joint_synthesis_blind_validation.py`
+- `research_direction_joint_synthesis_formalization.py`
+- `research_direction_joint_synthesis_mechanism_validation.py`
 
 同名のrunner、test、文書、artifactと合わせて読む。モジュールが実装済みでも、対象範囲が
 科学的に検証済みとは限らない。

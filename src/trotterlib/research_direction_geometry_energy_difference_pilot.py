@@ -167,7 +167,7 @@ def _geometry_row(payload: Mapping[str, Any]) -> dict[str, Any]:
             else "geometry_holdout"
         ),
         "exact_df_rank12_ground_energy_hartree": float(
-            payload["surrogate"]["ground_state_energy"]
+            payload["hamiltonian"]["ground_energy"]
         ),
         "hamiltonian_hash": payload["hamiltonian"]["hamiltonian_hash"],
         "signed_target_phase_bias_by_delta_hartree": {

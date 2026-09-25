@@ -3,15 +3,125 @@
 事前検証カタログの実施ID・work packageと、以下のstatus、専用文書、artifact、runner、testの対応は
 [事前検証カタログ実施証拠索引](docs/research/prevalidation_catalog_evidence_map.md)を参照する。
 
+
+## 2026-09-25 P-C geometry tracking・breakdown validation
+
+H4 linear chain、STO-3G、8 qubit、4-electron sector、DF rank 12、`L_D=3`、
+二次partial-`S_2` exact-tail参照を固定し、0.70--1.60 Åの8 geometryでindependent/tracked
+prefixを比較した。trainingは0.80/1.00/1.20 Å、blindは0.70/0.90/1.10/1.40/1.60 Å、
+fit deltaは0.025/0.05/0.10、holdout deltaは0.20である。compile-before expected taskは16件、
+本計算は16/16完了した。
+
+tracked prefixは全点で独立先頭3 fragmentと同じだった。blind coefficient予測の15%基準は3/5点、
+pair予測の15%基準は1/4 pairだけが通過した。0.90/1.10 Åの係数誤差は6.135%/3.461%だったが、
+1.40/1.60 Åでは33.653%/123.245%へ増えた。分類可能blind 4点のcontinuity診断正解率は50%で、
+stretch側2 breakdownをflagできなかった。
+
+固定7 gate中、representation integrity、delta holdout、nontrivial cancellationの3 gateだけが通過した。
+thresholdを変更せずstatusを`stop_pc_current_h4_family_as_primary`とする。局所P-C pilotの
+0.80--1.20 Å結果は保持するが、同じH4 pathへの点追加で主張を復活させない。P-A interval、
+P-B current grid、P-C current H4 familyはいずれも停止点に達し、現時点でA/B/Cに確認済み主題はない。
+
+expected fingerprintは`cbe260750d081316070d3684a2a24194d91d029ad700a54cf4f61152f2ed4a4e`、
+final fingerprintは`26845effe8efda56390aabdf9e40d61fa3a033e3ac7e6ff6911e2e124156f07a`、
+final file SHA-256は`58e31d3877d45e91e9c6c9f4238d2c1f876f02bb875643813a126f283f2dd2b7`。
+専用testは`4 passed`、訂正済み先行P-Cと合わせて`7 passed`、関連testは`14 passed`。
+全suiteは`598 passed, 2 skipped, 4 warnings`で失敗0だった。
+結果はlocal dirty-worktree evidenceであり、immutable CIまたは外部再現ではない。
+詳細は[P-C geometry tracking・breakdown validation](docs/research_direction_geometry_tracking_breakdown.md)。
+
+
+## 2026-09-25 P-A nondegenerate mechanism validation
+
+形式化監査後に事前登録した明示的`one_segment_per_source_run` baselineとの比較を完了した。
+固定H4 linear chain、1.0 Å、STO-3G、8 qubit、DF rank 12、`L_D=3`、$\delta=0.02$、
+Qiskit 1.3.0 opt1で、training fragment 3/5/7とblind fragment 4/6/8を分離し、5種類の
+forced-support profileを全てTaylor order 2で評価した。
+
+training 15、blind 15の全30 taskで`interval_union_dp`は一区間baselineと同じplanを選び、
+run内分割、plan変更、RZ改善rowはいずれも0件だった。blind pooled RZは4,378対4,378で、
+RZ depth、CX、depth、circuit sizeも完全に一致した。5 operator probeの最大差は
+$8.327\times10^{-16}$でrelative ancilla phaseも一致した。
+
+事前固定した7 gate中、order-2 coverage、最大個別RZ悪化、operator同値性の3 gateだけが通過し、
+分割のbasis/profile移送、25% plan変更、2% pooled RZ改善の4 gateは不通過だった。thresholdを変更せず、
+statusを`stop_pa_interval_dp_as_primary_and_return_to_pc`とする。P-Aの既存run-level
+full/support-union改善は保持するが、interval subdivisionを独立研究寄与として主張しない。
+この時点ではP-Cへ戻った。後続tracking・breakdown validationによりcurrent H4 familyのP-Cも
+固定停止条件に達した。
+
+expected-task fingerprintは`e8b064e9821fae5c2e7a44d0c98d3f9a0ed973a4cd87945fb051151e446a96fc`、
+final artifact fingerprintは`fdc89974e89a4a6809cecd2c5608a36d684d40d76d9b3055fbbe6ec9276abbaf`。
+詳細は[P-A非退化mechanism validation](docs/research_direction_joint_synthesis_mechanism_validation.md)を参照する。
+
+## 2026-09-25 P-A v1 formalization / mechanism audit
+
+凍結済みP-A v1について、有限候補問題、4成分の辞書式目的、DP漸化式、計算量、operator同値性条件を
+形式化し、blind artifactの48 holdoutと6 operator probeを再解析した。DP遷移数は全recordで
+$\sum_r n_r(n_r+1)$と一致し、保存された選択目的もsegment metadataから完全に再構成できた。
+
+ただし、全54 recordでselected segment数はsource-basis run数と一致し、run内部を複数区間へ分けた
+recordは0だった。H4/H5 holdoutの256 eventは全てTaylor order 0で、6 probeもapplication数から
+非零orderを含まない。従ってblind検証が直接支持するのはrunごとのfull/support-union選択であり、
+明示的なone-segment-per-source-run baselineに対するinterval分割の増分利益は未識別である。
+
+本監査完了時点のstatusは
+`pa_v1_formalized_but_interval_mechanism_not_empirically_distinguished`、
+P-Aは`conditional_candidate_pending_nondegenerate_mechanism_validation`とした。既存blind gate通過と
+H5/H4のRZ改善値は有効だが、interval分割の効果または非零Taylor-order移送を主張しない。次は
+one-segment baseline、support変化を持つforced run、Taylor order 2を含む小さいmechanism判別を
+事前登録する、とした。後続P-A検証は完了してinterval DPを停止し、その後のP-C tracking検証でも
+current H4 familyが停止条件に達した。現行statusは本書先頭のP-C節を優先する。
+H12、長RPE総cost、full wrapper、backend/noiseは不要である。
+
+artifact fingerprintは`aaa5fdba8ddc6ec25fe1f286d886aba14a7a440c435f1ca5dd78ce33404b3676`。
+詳細は[P-A v1 DP形式化・mechanism監査](docs/research/pa_joint_synthesis_v1_formalization.md)を参照する。
+
+
+## 2026-09-25 P-A v1 blind transfer validation
+
+事前登録した固定v1、4 policy、6 gateを変更せず、未使用H5 physical snapshotと元H4 event streamの
+Qiskit optimization level 2へのpaired compiler transferを実行した。holdoutは48/48、operator probeは
+6/6完了し、両stratumで全6 gateが通過した。H5では現行policy比pooled RZが-17.076%、最大個別悪化
+0%、4-policy oracle regret/full RZが0%、basis列変更率95.83%、operator最大残差が
+$2.998\times10^{-15}$だった。H4 opt2ではそれぞれ-6.598%、+0.265%、0.0116%、87.5%、
+$3.126\times10^{-15}$だった。
+
+blind gateだけに基づくこの時点のstatusを`advance_pa_v1_to_formal_primary_theme_candidate`とした。
+これは文献上の新規性証明、全Gaussian circuitに対するglobal optimum、
+coupling/noise/backend、full partial-$S_2$ wrapper、RPE総cost、H12または科学的優位性の検証ではない。
+後続形式化でmechanism範囲を狭めたため、現行statusは直前節を優先する。
+
+final artifact fingerprintは`78af3474898dbf989780ea5f2881cb5b61595609dd2698164b9846c1ce1c5919`、
+file SHA-256は`ff6a8f846795b3f56e3688c62eab3ad26c3ace6632063ba72ff97f4a12ac4ea3`である。
+詳細は[P-A v1 blind transfer validation](docs/research_direction_joint_synthesis_blind_validation.md)を参照する。
+結果はlocal dirty-worktree evidenceであり、immutable CIまたは外部再現ではない。
+## 2026-09-25 P-A scoped prior-art audit / blind preregistration
+
+
+P-A v1について、DF/low-rank回路、partial basis rotation、fermionic Gaussian/Givens合成、
+隣接network融合、completion自由度、DP/block synthesisを対象にscoped prior-art auditを行った。
+各構成要素は既知だが、明示した検索範囲では、同一source-basis runを区間分割し、full basisまたは
+support-union completionを選ぶ現行v1と同じ組合せは確認できなかった。これは網羅的な新規性証明、
+特許調査または査読上の新規性判定ではない。
+
+statusを`provisional_pending_blind_validation_after_scoped_prior_art_audit`へ更新した。次の計算は
+事前登録済みの2 stratum、すなわち未使用H5 physical snapshotへの移送と、元H4 event streamの
+Qiskit optimization level 2へのpaired compiler移送に限定する。両stratumは同じ4 policyと6 gateで
+別々に判定し、どちらかが不通過ならP-Aを正式主題化せずP-Cへ戻る。P-A v2、H12、長RPE総costは
+このblind検証へ含めない。この事前登録の固定時点では両stratumとも未実行だったが、後続のblind
+transfer validationで両方が完了・通過した。
+
 ## 2026-09-25 P-B/P-C/P-A theme selection
 
 3件のfingerprint済みpilotを4問で比較した。P-Bは現H4 gridで実用的なenergy/signal選択差がなく停止、
 P-Cは未使用geometry/deltaの差分bias予測gateを通過、P-Aは強いproject baselineに対して未使用列長で
 compiled-cost改善とoperator同値性を示した。
 
-選定はP-Aを暫定主題、P-Cを副候補、P-Bを現範囲で停止とする。ただしP-Aの広い回路合成文献に対する
-新規性は未監査で、statusは`provisional_pending_prior_art_and_novelty_audit`である。次は計算拡張でなく
-先行研究・新規性監査を行い、通過した場合だけblind外部列/compiler holdoutを事前登録する。
+選定はP-Aを暫定主題、P-Cを副候補、P-Bを現範囲で停止とする。その後のscoped prior-art auditでは、
+各構成要素は既知だが現行v1と同じ組合せを検索範囲内で確認できなかった。これは新規性の証明ではなく、
+この時点のstatusを`provisional_pending_blind_validation_after_scoped_prior_art_audit`とした。その後、
+事前登録済みH5 physical transferとH4 optimization-level-2 compiler transferは両方とも全gateを通過した。
 H12、長RPE総cost、追加$q>32$は次の必須作業ではない。selection artifact fingerprintは
 `7daa49c3c30b453d69d52830d0889ce04104cc5a0f02a2c3083517486d575fbb`。
 
@@ -38,11 +148,15 @@ $\delta=0.4$の二重holdoutではactual/predicted difference biasが-0.00169849
 endpoint-bias正規化誤差は2.539%だった。coefficient spanは63.303%、$\delta=0.1$隣接pairの
 最小cancellation ratioは9.786%で、固定した5 gateを全て通過した。
 
-従って案Cを主研究候補として残した。後続のP-Aと3案比較は完了し、現在はP-Cを副候補とする。これは0.80--1.20 Åの
-単一H4/DF/PF条件に限るlocal dirty-worktree結果で、potential-energy surface、別系移送、RPE/RTE
-cost、回路compile、最終総costまたは科学的優位性の評価ではない。artifact fingerprintは
-`8280564081b8a5b4a29f8a0f139ea9be2fa940c9e1e89d8219076304dce185ad`。専用testは`3 passed`、
-PF/P-B/P-C関連は`10 passed`、全suiteは`576 passed, 2 skipped, 4 warnings`で失敗0だった。
+従って案Cを次段へ残した。後続tracking・breakdown validationではcurrent H4 familyを固定条件で停止した。
+これは0.80--1.20 Åの単一H4/DF/PF条件に限るlocal dirty-worktree結果で、potential-energy surface、
+別系移送、RPE/RTE cost、回路compile、最終総costまたは科学的優位性の評価ではない。
+
+初版統合artifactのexact-energy欄はsurrogate値を誤って転記していた。訂正版ではfull
+DF-rank-12 Hamiltonian値へ直したが、PF bias、係数、holdout予測、5 gateは変わらない。
+訂正版fingerprintは`3c199dbc20d0892cf1bcfad4b27646ea8c90d1c1d32fc5e2c75be610bb1fe611`。
+専用testは`3 passed`、当時のPF/P-B/P-C関連は`10 passed`、全suiteは
+`576 passed, 2 skipped, 4 warnings`で失敗0だった。
 詳細は[P-C geometry signed-error pilot](docs/research_direction_geometry_energy_difference_pilot.md)。
 
 ## 2026-09-25 P-B energy-bias / target-weight pilot

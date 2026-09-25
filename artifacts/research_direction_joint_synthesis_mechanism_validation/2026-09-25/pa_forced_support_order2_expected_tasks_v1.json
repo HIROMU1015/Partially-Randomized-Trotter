@@ -1,0 +1,900 @@
+{
+  "configuration": {
+    "basis": "STO-3G",
+    "blind_fragments": [
+      4,
+      6,
+      8
+    ],
+    "delta_time": 0.02,
+    "df_rank": 12,
+    "finite_taylor_order": 2,
+    "geometry_angstrom": 1.0,
+    "ld": 3,
+    "molecule": "H4_linear_chain",
+    "n_qubits": 8,
+    "primary_gates": {
+      "equivalence_atol": 1e-10,
+      "maximum_per_row_rz_increase": 0.05,
+      "minimum_blind_split_basis_count": 2,
+      "minimum_blind_split_profile_count": 2,
+      "minimum_changed_blind_row_fraction": 0.25,
+      "minimum_pooled_rz_improvement": 0.02
+    },
+    "profiles": {
+      "mixed_local_far_blocks": [
+        [
+          [
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1
+          ]
+        ],
+        [
+          [
+            6
+          ],
+          [
+            6,
+            7
+          ],
+          [
+            7
+          ]
+        ]
+      ],
+      "singleton_far_blocks": [
+        [
+          [
+            0
+          ],
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ],
+        [
+          [
+            7
+          ],
+          [
+            7
+          ],
+          [
+            7
+          ]
+        ]
+      ],
+      "singleton_pair_far_blocks": [
+        [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            0
+          ]
+        ],
+        [
+          [
+            6
+          ],
+          [
+            7
+          ],
+          [
+            6
+          ]
+        ]
+      ],
+      "three_separated_zz_blocks": [
+        [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        [
+          [
+            3,
+            4
+          ],
+          [
+            3,
+            4
+          ],
+          [
+            3,
+            4
+          ]
+        ],
+        [
+          [
+            6,
+            7
+          ],
+          [
+            6,
+            7
+          ],
+          [
+            6,
+            7
+          ]
+        ]
+      ],
+      "zz_far_blocks": [
+        [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        [
+          [
+            6,
+            7
+          ],
+          [
+            6,
+            7
+          ],
+          [
+            6,
+            7
+          ]
+        ]
+      ]
+    },
+    "training_fragments": [
+      3,
+      5,
+      7
+    ]
+  },
+  "content_fingerprint": "e8b064e9821fae5c2e7a44d0c98d3f9a0ed973a4cd87945fb051151e446a96fc",
+  "created_before_compilation": true,
+  "decision_rule": {
+    "fail_status": "stop_pa_interval_dp_as_primary_and_return_to_pc",
+    "pass": "All frozen blind structural, compiled-RZ, and operator-equivalence gates pass without threshold changes.",
+    "pass_status": "advance_pa_after_nondegenerate_mechanism_validation",
+    "threshold_relaxation_after_results": false
+  },
+  "method": "forced_support_order2_one_segment_baseline_blind_v1",
+  "schema_version": "pa_joint_synthesis_mechanism_expected_tasks_v1",
+  "source_evidence": {
+    "formalization": {
+      "content_fingerprint": "aaa5fdba8ddc6ec25fe1f286d886aba14a7a440c435f1ca5dd78ce33404b3676",
+      "path": "artifacts/research_direction_joint_synthesis_formalization/2026-09-25/pa_v1_formalization_and_mechanism_audit_v1.json",
+      "sha256": "276d14158fec50e037596b06b94c2b3ea19e8dc86a16993d6848e8a289771a78"
+    },
+    "snapshot": {
+      "path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+      "sha256": "13e4b10d2347ed900fe4aa4b2238128ebe735a48988e321b9e4fabac4d092a3b"
+    }
+  },
+  "task_count": 30,
+  "tasks": [
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "63236017efa872d9d0c480714a1dbe5813560fc08380cde80f37dbf6c3b7f36f",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 3,
+      "partition": "training_diagnostic",
+      "profile_id": "singleton_far_blocks",
+      "source_basis_hashes": [
+        "808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_basis_ids": [
+        "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_3__singleton_far_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "47a281f16c5a36d2a220b50c6061d03aa301faaa8bf807cb921e59868e89b9b7",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 3,
+      "partition": "training_diagnostic",
+      "profile_id": "singleton_pair_far_blocks",
+      "source_basis_hashes": [
+        "808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_basis_ids": [
+        "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_3__singleton_pair_far_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "a2fe03dcafb0ae100c2ba5dd72a763c2d3034554bdb6d47914a309fdd2d5dca3",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 3,
+      "partition": "training_diagnostic",
+      "profile_id": "zz_far_blocks",
+      "source_basis_hashes": [
+        "808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_basis_ids": [
+        "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_3__zz_far_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "28ff44d703228d6d8900043dc4b12b38b056d8b5d200cd253b7e3f5b69a9d07d",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 3,
+      "partition": "training_diagnostic",
+      "profile_id": "mixed_local_far_blocks",
+      "source_basis_hashes": [
+        "808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_basis_ids": [
+        "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_3__mixed_local_far_blocks"
+    },
+    {
+      "application_count": 9,
+      "event_count": 3,
+      "event_digest": "32a0bbb452abe878845cfbd74c8cfef89b40cb89682265b8cd075cfc77454d55",
+      "event_orders": [
+        2,
+        2,
+        2
+      ],
+      "fragment_index": 3,
+      "partition": "training_diagnostic",
+      "profile_id": "three_separated_zz_blocks",
+      "source_basis_hashes": [
+        "808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_basis_ids": [
+        "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        9
+      ],
+      "task_key": "training_diagnostic__fragment_3__three_separated_zz_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "c0af1014672a8455e11747687e32ff09e9081700dd50f6bb18623849f9ef31ba",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 5,
+      "partition": "training_diagnostic",
+      "profile_id": "singleton_far_blocks",
+      "source_basis_hashes": [
+        "9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_basis_ids": [
+        "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_5__singleton_far_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "47fb64d8be3e43593fc476ebf65967183331013549b0d2dbac51c0a59445c155",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 5,
+      "partition": "training_diagnostic",
+      "profile_id": "singleton_pair_far_blocks",
+      "source_basis_hashes": [
+        "9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_basis_ids": [
+        "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_5__singleton_pair_far_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "e91d7231a845a0edcf8641dd71e139a28a1e7fa3face7e77eefa084711f90f50",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 5,
+      "partition": "training_diagnostic",
+      "profile_id": "zz_far_blocks",
+      "source_basis_hashes": [
+        "9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_basis_ids": [
+        "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_5__zz_far_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "b75c21bbe4c47c163aa3eaad8ac38f7c18ac44130ccdc8d34d562e6867ed8201",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 5,
+      "partition": "training_diagnostic",
+      "profile_id": "mixed_local_far_blocks",
+      "source_basis_hashes": [
+        "9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_basis_ids": [
+        "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_5__mixed_local_far_blocks"
+    },
+    {
+      "application_count": 9,
+      "event_count": 3,
+      "event_digest": "065fc7c89a0a504d7d7169a7c2005cbab683e02737f9a94f6c8ef29068e97ad6",
+      "event_orders": [
+        2,
+        2,
+        2
+      ],
+      "fragment_index": 5,
+      "partition": "training_diagnostic",
+      "profile_id": "three_separated_zz_blocks",
+      "source_basis_hashes": [
+        "9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_basis_ids": [
+        "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        9
+      ],
+      "task_key": "training_diagnostic__fragment_5__three_separated_zz_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "8944c00f6c63a37a5c2dff55a6d81ce5d92cc30448d88b285296e896aa88a73f",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 7,
+      "partition": "training_diagnostic",
+      "profile_id": "singleton_far_blocks",
+      "source_basis_hashes": [
+        "8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_basis_ids": [
+        "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_7__singleton_far_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "c542ce3307cf6ff2349dd07c4badd59a894ba17adaa6e1c2e3ee3d1ec9134834",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 7,
+      "partition": "training_diagnostic",
+      "profile_id": "singleton_pair_far_blocks",
+      "source_basis_hashes": [
+        "8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_basis_ids": [
+        "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_7__singleton_pair_far_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "bdd1539dd3b42501fe1cd403155f0e2b501fe9cbce3d43077024f461058084e9",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 7,
+      "partition": "training_diagnostic",
+      "profile_id": "zz_far_blocks",
+      "source_basis_hashes": [
+        "8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_basis_ids": [
+        "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_7__zz_far_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "3cead6a8c20054fbc6a6e2e006f4f4825598417d9c388d9e43f8af24662c636b",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 7,
+      "partition": "training_diagnostic",
+      "profile_id": "mixed_local_far_blocks",
+      "source_basis_hashes": [
+        "8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_basis_ids": [
+        "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_7__mixed_local_far_blocks"
+    },
+    {
+      "application_count": 9,
+      "event_count": 3,
+      "event_digest": "3dbf355c5dcedc0fedf241197b3e6ce8df1a58d4ba7165f8ae3970768d415f63",
+      "event_orders": [
+        2,
+        2,
+        2
+      ],
+      "fragment_index": 7,
+      "partition": "training_diagnostic",
+      "profile_id": "three_separated_zz_blocks",
+      "source_basis_hashes": [
+        "8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_basis_ids": [
+        "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        9
+      ],
+      "task_key": "training_diagnostic__fragment_7__three_separated_zz_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "7fddd39a0da34cf257f5b5aa6c0c612772f07d93a897881ef8520d5f089748ac",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 4,
+      "partition": "blind_holdout",
+      "profile_id": "singleton_far_blocks",
+      "source_basis_hashes": [
+        "e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_basis_ids": [
+        "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_4__singleton_far_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "5b14171ede389113a8d3577a17c1098b1cad4ead1a7a6518afaa43299d23dbce",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 4,
+      "partition": "blind_holdout",
+      "profile_id": "singleton_pair_far_blocks",
+      "source_basis_hashes": [
+        "e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_basis_ids": [
+        "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_4__singleton_pair_far_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "257da4f57fa3d4e69e46372ca6acfba7f37b2d377e11019451993b11496ed659",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 4,
+      "partition": "blind_holdout",
+      "profile_id": "zz_far_blocks",
+      "source_basis_hashes": [
+        "e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_basis_ids": [
+        "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_4__zz_far_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "216e180e2262485a62e1b75172b0a13bc00fa5585c4ab5b0b6dbda25699546cd",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 4,
+      "partition": "blind_holdout",
+      "profile_id": "mixed_local_far_blocks",
+      "source_basis_hashes": [
+        "e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_basis_ids": [
+        "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_4__mixed_local_far_blocks"
+    },
+    {
+      "application_count": 9,
+      "event_count": 3,
+      "event_digest": "d36367645dd7d91823c000c7536119966a1b0bd59fa791d4e4564771a0490249",
+      "event_orders": [
+        2,
+        2,
+        2
+      ],
+      "fragment_index": 4,
+      "partition": "blind_holdout",
+      "profile_id": "three_separated_zz_blocks",
+      "source_basis_hashes": [
+        "e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_basis_ids": [
+        "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        9
+      ],
+      "task_key": "blind_holdout__fragment_4__three_separated_zz_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "ca899481cb4df66e5bcc8934ac4d3a1bcfdd985c13d309a5e13c3e335bd3f077",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 6,
+      "partition": "blind_holdout",
+      "profile_id": "singleton_far_blocks",
+      "source_basis_hashes": [
+        "52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_basis_ids": [
+        "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_6__singleton_far_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "269e94925db7bbe21b0f29977c895f56d02fa85558e01b113c044bdf832de853",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 6,
+      "partition": "blind_holdout",
+      "profile_id": "singleton_pair_far_blocks",
+      "source_basis_hashes": [
+        "52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_basis_ids": [
+        "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_6__singleton_pair_far_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "6abe9f9ae89256544203ddeed5f2b24cd12954de358b88658fd66d119eba06db",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 6,
+      "partition": "blind_holdout",
+      "profile_id": "zz_far_blocks",
+      "source_basis_hashes": [
+        "52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_basis_ids": [
+        "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_6__zz_far_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "2f630c8f27998f189536f617625cfda72ac65cbd0b4faf64f93cf146115e0b5a",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 6,
+      "partition": "blind_holdout",
+      "profile_id": "mixed_local_far_blocks",
+      "source_basis_hashes": [
+        "52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_basis_ids": [
+        "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_6__mixed_local_far_blocks"
+    },
+    {
+      "application_count": 9,
+      "event_count": 3,
+      "event_digest": "4353b1b56d3c0590553ddb1dc6a0cab22a6fa8da3102edbbfec6f34103bee7d1",
+      "event_orders": [
+        2,
+        2,
+        2
+      ],
+      "fragment_index": 6,
+      "partition": "blind_holdout",
+      "profile_id": "three_separated_zz_blocks",
+      "source_basis_hashes": [
+        "52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_basis_ids": [
+        "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        9
+      ],
+      "task_key": "blind_holdout__fragment_6__three_separated_zz_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "2c622cfa2941a3c0f336070fa9660460e4c0ff8a57aa4e34a35c1ec9f799b2f4",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 8,
+      "partition": "blind_holdout",
+      "profile_id": "singleton_far_blocks",
+      "source_basis_hashes": [
+        "7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_basis_ids": [
+        "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_8__singleton_far_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "dfd17dd978fb6046bfce0bb4172387343d952c106d242e1a2a4233de04047d50",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 8,
+      "partition": "blind_holdout",
+      "profile_id": "singleton_pair_far_blocks",
+      "source_basis_hashes": [
+        "7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_basis_ids": [
+        "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_8__singleton_pair_far_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "7eecf62336335d8e84e566da7d13853f4a55df7d0710674b88831ed8d43ea5ea",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 8,
+      "partition": "blind_holdout",
+      "profile_id": "zz_far_blocks",
+      "source_basis_hashes": [
+        "7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_basis_ids": [
+        "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_8__zz_far_blocks"
+    },
+    {
+      "application_count": 6,
+      "event_count": 2,
+      "event_digest": "3899aba3b9d46106bfd1cf61a9925c1879eb20ff068e1514ff1a7cd7b08d2cdd",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 8,
+      "partition": "blind_holdout",
+      "profile_id": "mixed_local_far_blocks",
+      "source_basis_hashes": [
+        "7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_basis_ids": [
+        "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_8__mixed_local_far_blocks"
+    },
+    {
+      "application_count": 9,
+      "event_count": 3,
+      "event_digest": "612f4f99d14813a391ac77d79d6505754d714da81503bda6597cf04b55ad1993",
+      "event_orders": [
+        2,
+        2,
+        2
+      ],
+      "fragment_index": 8,
+      "partition": "blind_holdout",
+      "profile_id": "three_separated_zz_blocks",
+      "source_basis_hashes": [
+        "7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_basis_ids": [
+        "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        9
+      ],
+      "task_key": "blind_holdout__fragment_8__three_separated_zz_blocks"
+    }
+  ]
+}

@@ -4,7 +4,8 @@
 
 固定H4条件の小規模pilotでは、geometryに依存する符号付きProduct Formula（PF）誤差係数を
 未使用geometryへ補間し、さらに未使用deltaでgeometry間エネルギー差のPF biasを予測できた。
-事前に固定した5条件を全て通過したため、案Cを主研究候補として次段へ残す。
+事前に固定した5条件を全て通過したため、案Cを次段へ残した。その後のgeometry tracking・breakdown
+validationでは固定停止条件が成立し、現在はこのH4 familyを主研究候補として進めない。
 
 ただし、これは0.80--1.20 ÅのH4 linear chain、STO-3G、8 qubit、DF rank 12、`L_D=3`、
 二次partial-$S_2$だけのlocal dirty-worktree結果である。potential-energy surfaceの完成、別系への
@@ -57,17 +58,17 @@ $$
 
 | $R$ (Å) | DF rank-12 $E_0$ (Ha) | signed $C(R)$ (Ha) | $\delta=0.4$ holdout相対誤差 |
 |---:|---:|---:|---:|
-| 0.80 | -2.3477989969 | 0.0234382633 | 0.840% |
-| 0.85 | -2.3557367337 | 0.0200349441 | 0.702% |
-| 1.00 | -2.3354729746 | 0.0133580009 | 0.428% |
-| 1.15 | -2.2798264993 | 0.0095350152 | 0.273% |
-| 1.20 | -2.2576374582 | 0.0086011846 | 0.237% |
+| 0.80 | -2.1675605441 | 0.0234382633 | 0.840% |
+| 0.85 | -2.1783136329 | 0.0200349441 | 0.702% |
+| 1.00 | -2.1663874486 | 0.0133580009 | 0.428% |
+| 1.15 | -2.1208025758 | 0.0095350152 | 0.273% |
+| 1.20 | -2.1026084810 | 0.0086011846 | 0.237% |
 
 - geometry holdout coefficient誤差: 0.85 Åで4.409%、1.15 Åで2.678%
 - coefficient span fraction: 63.303%
 - 全geometryのdelta holdout最大誤差: 0.840%
 - 二重holdout（0.85→1.15 Å、$\delta=0.4$）:
-  - exact DF rank-12 energy difference: 0.0759102343 Ha
+  - exact DF rank-12 energy difference: 0.0575110571 Ha
   - actual signed PF difference error: -0.0016984874 Ha
   - predicted signed PF difference error: -0.0017804494 Ha
   - endpoint-bias正規化予測誤差: 2.539%
@@ -77,21 +78,24 @@ $$
 したがって、単に「近いgeometryで誤差が近い」という観測だけでなく、未使用geometryと未使用deltaを
 同時に使った差分biasが固定gate内で予測された。案Cは主研究候補として残す。
 
-## 次の判断
+## 訂正と後続判断
 
-P-A完了後の比較ではP-Aを暫定主題、P-Cを副候補とした。P-Aの先行研究・新規性監査で独立差分が
-残らない場合、またはblind holdoutで再現しない場合はP-Cを再開する。
-案Cを選ぶ場合は、geometry gridを増やす前に、orbital/DF fragment対応を連続的に追跡した場合と
-各geometryを独立生成した場合を比較し、相殺が保たれる条件と破れる条件をholdoutで検証する。
+初版artifactでは表のexact-energy欄にraw inputのsurrogate ground-state energyを転記していた。
+PF bias、`C(R)`、holdout予測、gateはraw validationがfull DF-rank-12 Hamiltonian ground energyから
+計算していたため変わらない。訂正版artifactではexact-energy欄とexact energy differenceだけを
+full Hamiltonian値へ直した。
+
+後続の[geometry tracking・breakdown validation](research_direction_geometry_tracking_breakdown.md)では、
+stretch側のblind予測と診断が固定gateを通らず、`stop_pc_current_h4_family_as_primary`となった。
 
 ## 証拠と再実行
 
 - 統合artifact:
-  `artifacts/research_direction_geometry_energy_difference_pilot/2026-09-25/pc_h4_geometry_signed_error_v1.json`
+  `artifacts/research_direction_geometry_energy_difference_pilot/2026-09-25/pc_h4_geometry_signed_error_v1_corrected_energy.json`
 - raw input 5件:
   `artifacts/research_direction_geometry_energy_difference_pilot/2026-09-25/inputs/`
 - content fingerprint:
-  `8280564081b8a5b4a29f8a0f139ea9be2fa940c9e1e89d8219076304dce185ad`
+  `3c199dbc20d0892cf1bcfad4b27646ea8c90d1c1d32fc5e2c75be610bb1fe611`
 - 解析runner:
   `scripts/run_research_direction_geometry_energy_difference_pilot.py`
 - library:
