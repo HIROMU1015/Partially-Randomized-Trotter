@@ -17,7 +17,9 @@
    各結果を再利用できるか、欠落データや再計算が必要かを示す状態表。
 4. [`artifacts/validation_manifest.json`](artifacts/validation_manifest.json)
    検証結果、生成コード、テスト、成果物を結ぶ機械可読な証拠台帳。
-5. 数値を使う場合だけ、対応する `docs/*_validation.md` と `artifacts/` のJSONを確認する。
+5. [`docs/research/prevalidation_catalog_evidence_map.md`](docs/research/prevalidation_catalog_evidence_map.md)
+   事前検証カタログのうち、実施したID・work packageと文書、artifact、runner、testの対応表。
+6. 数値を使う場合だけ、対応する `docs/*_validation.md` と `artifacts/` のJSONを確認する。
 
 `docs/research/研究ノート/` は意思決定の時系列記録であり、現在の仕様ではない。過去の暫定値が
 後日のノートや研究概要で変更されている場合は、最新の研究概要と規範文書を優先する。
@@ -97,7 +99,7 @@ $q=16,32$直接holdoutはselected RZ 2.466%、観測RZ最大3.286%で通過し�
 | `docs/research/` | 研究方針の正本 | 概要、目的、方法、評価計画、研究ノート |
 | `docs/` | 実装・検証の説明 | 各検証の条件、結果、限界、実装規約。索引は[`docs/README.md`](docs/README.md) |
 | `artifacts/` | 計算結果と入力snapshot | JSON等の証拠、キャッシュ、途中状態。利用規則は[`artifacts/README.md`](artifacts/README.md) |
-| [`partial_randomized_trotter_prevalidation_catalog.md`](partial_randomized_trotter_prevalidation_catalog.md) | 研究方向を選ぶための事前検証backlog | 実行層・Gate S1・条件付きbranchの索引。現行仕様と結果は`docs/research/`とmanifestを優先 |
+| [`partial_randomized_trotter_prevalidation_catalog.md`](partial_randomized_trotter_prevalidation_catalog.md) | 研究方向を選ぶための事前検証backlog | 実行層・Gate S1・条件付きbranchの索引。実施済み範囲との対応は[`prevalidation_catalog_evidence_map.md`](docs/research/prevalidation_catalog_evidence_map.md)を参照 |
 | `BentoSlide構成案*.md` | 発表資料生成用の指示 | 研究の正本ではない。位置づけは[`docs/presentations/README.md`](docs/presentations/README.md) |
 | ルートのPDF | 参考論文または発表資料 | 種別は[`docs/references/README.md`](docs/references/README.md)で確認 |
 
@@ -178,6 +180,7 @@ compute resultは`artifacts/research_direction_full_opt2/2026-09-24/`、最終�
 
 ## GPTが回答・資料作成するときの確認事項
 
+- 事前検証カタログの実施状況は、[`prevalidation_catalog_evidence_map.md`](docs/research/prevalidation_catalog_evidence_map.md)から専用文書・artifact・testまで追跡する。
 - 「理論上の関係」「ローカル検証済み」「実装のみ」「未検証」「最終結論」を分ける。
 - 数値には、分子、距離、basis、DF rank、$L_D$、時間幅、Taylor cutoff、検証範囲を添える。
 - `C_use`を厳密上界と呼ばない。実行したdelta窓上の経験的包絡である。

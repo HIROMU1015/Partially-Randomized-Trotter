@@ -1,5 +1,8 @@
 # Validation status
 
+事前検証カタログの実施ID・work packageと、以下のstatus、専用文書、artifact、runner、testの対応は
+[事前検証カタログ実施証拠索引](docs/research/prevalidation_catalog_evidence_map.md)を参照する。
+
 ## 2026-09-25 M06-F fresh-32 and coherent opt2 result
 
 事前登録済みfresh-32拡張は固定H4 linear chain、1.0 Å、STO-3G、8 qubit、DF rank 12、

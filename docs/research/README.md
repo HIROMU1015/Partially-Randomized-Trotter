@@ -14,6 +14,7 @@
 | 種類 | 正本とする内容 |
 |---|---|
 | [研究概要・現状](研究概要・現状.md) | 現在地と資料作成用の統合要約 |
+| [事前検証カタログ実施証拠索引](prevalidation_catalog_evidence_map.md) | 実施したカタログID・work packageとGitHub上の証拠の対応 |
 | 下記の主資料4本 | 研究目的、理論的位置付け、解析方法、評価計画 |
 | `docs/*.md`の検証資料 | 個別検証の方法、条件、数値結果、限界 |
 | `VALIDATION_STATUS.md`とmanifest | 外部再現性、証拠status、利用禁止結果 |
@@ -54,6 +55,7 @@
 現行実装の保証範囲、検証状況およびAPI規約は、研究資料の閲覧順序とは分けて次を参照する。
 
 - [検証状況](../../VALIDATION_STATUS.md)
+- [事前検証カタログ実施証拠索引](prevalidation_catalog_evidence_map.md)
 - [有限RTE規約](../rte_conventions.md)
 - [finite-RTE信号近似の小規模検証](../finite_rte_signal_validation.md)
 - [RPE短roundの信号・shot・回路cost接続検証](../rpe_round_cost_connection_validation.md)

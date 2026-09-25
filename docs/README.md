@@ -7,6 +7,7 @@
 ## 研究方針と現在地
 
 - [`research/研究概要・現状.md`](research/研究概要・現状.md)：最新の短い全体要約
+- [`research/prevalidation_catalog_evidence_map.md`](research/prevalidation_catalog_evidence_map.md)：事前検証カタログの実施IDと文書・artifact・testの対応
 - [`research/README.md`](research/README.md)：研究文書内の索引
 - [`research/研究目的・研究課題.md`](research/研究目的・研究課題.md)：目的と研究課題
 - [`research/研究方法・解析手順.md`](research/研究方法・解析手順.md)：採用する解析手順

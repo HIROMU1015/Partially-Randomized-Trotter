@@ -11,7 +11,7 @@
 
 ## 文書内ナビゲーション
 
-[使い方](#how-to-use) ／ [現在の研究と注意点](#baseline-state) ／ [共通の数式・規約](#notation) ／ [18領域の索引](#catalog) ／ [最初の12検証セット](#first-packets) ／ [実験行列](#experiment-matrices) ／ [研究方向への判定表](#decision-gates) ／ [追加の数式check](#derivations) ／ [成果物schema](#deliverables) ／ [誤判断の防止](#pitfalls) ／ [目的別の読み方](#reading-guide) ／ [出典](#references) ／ [全144項目のID索引](#task-index)
+[使い方](#how-to-use) ／ [実施証拠索引](docs/research/prevalidation_catalog_evidence_map.md) ／ [現在の研究と注意点](#baseline-state) ／ [共通の数式・規約](#notation) ／ [18領域の索引](#catalog) ／ [最初の12検証セット](#first-packets) ／ [実験行列](#experiment-matrices) ／ [研究方向への判定表](#decision-gates) ／ [追加の数式check](#derivations) ／ [成果物schema](#deliverables) ／ [誤判断の防止](#pitfalls) ／ [目的別の読み方](#reading-guide) ／ [出典](#references) ／ [全144項目のID索引](#task-index)
 
 **内訳：現行経路83項目、比較28項目、拡張候補33項目。** 「現行」は未実装という意味ではなく、証拠の再利用や追加確認を含む。各IDには、優先度・負荷・先行条件と、問い・最小検証・観測判定・研究分岐を記した。
 
@@ -21,6 +21,8 @@
 ### 0.1 全項目を終えることは目的ではない
 
 この144項目は、すべて実行しないと研究を進められないという条件ではない。先に少数の判別力の高い検証を行い、結果を見て有望な枝を複数残す。既存の検証で十分な項目は証拠の再利用で完了できる。途中で効果が小さいと分かった枝は、必要な反例・適用範囲だけ記録して保留する。
+
+GitHub上で「どのカタログIDを、どの範囲で、どの文書・artifact・testにより確認できるか」を追跡する場合は、[事前検証カタログ実施証拠索引](docs/research/prevalidation_catalog_evidence_map.md)を使う。同索引のcoverageは代表条件内のwork-package完了であり、各IDの一般的問いを全面完了したという意味ではない。
 
 研究の価値を、あらかじめ「部分ランダム化が勝つこと」と同一視しない。優位領域の特定、既存近似の破綻条件、良い分割・PFの選択基準、信頼できるコスト予測、あるいは有用な否定的結果のいずれも成果候補である。
 
@@ -2631,7 +2633,7 @@ opt1 local 5%で`L_D=3`区間が確実に低いPは0--640,843だけで、opt2 fo
 
 ここで`existing_evidence_reused`は「新規計算不要で全条件が完了」という意味ではない。表の`remaining_delta`が空になった範囲だけを完了扱いにする。
 
-### 3.2 2026-09-22--23実行状況
+### 3.2 2026-09-22--25実行状況
 
 Gate S1前の5段階とGate S1統合を実行した。詳細条件、数値およびartifactは
 [`docs/research_direction_prevalidation.md`](docs/research_direction_prevalidation.md)と
@@ -2644,7 +2646,12 @@ Gate S1前の5段階とGate S1統合を実行した。詳細条件、数値お�
 [`docs/research_direction_full_scope_extension.md`](docs/research_direction_full_scope_extension.md)、
 [`docs/research_direction_decision_cost.md`](docs/research_direction_decision_cost.md)、
 [`docs/research_direction_late_round_proxy.md`](docs/research_direction_late_round_proxy.md)、
-[`docs/research_direction_compiler_transfer.md`](docs/research_direction_compiler_transfer.md)を正本とする。
+[`docs/research_direction_compiler_transfer.md`](docs/research_direction_compiler_transfer.md)、
+[`docs/research_direction_uncertainty_break_even.md`](docs/research_direction_uncertainty_break_even.md)、
+[`docs/research_direction_wp11_synthesis.md`](docs/research_direction_wp11_synthesis.md)、
+[`docs/research_direction_full_opt2.md`](docs/research_direction_full_opt2.md)を正本とする。
+カタログID、結果文書、artifact、runner、testの対応は
+[`docs/research/prevalidation_catalog_evidence_map.md`](docs/research/prevalidation_catalog_evidence_map.md)にまとめる。
 
 | 検証 | 実行後status | 主な結果 | 次の差分 |
 |---|---|---|---|
@@ -2664,6 +2671,7 @@ Gate S1前の5段階とGate S1統合を実行した。詳細条件、数値お�
 | M06/L08 | `completed_focused_compiler_transfer_robust_undetermined` | optimization level 2の同一trajectory $q=1,2,16,32$はproxy基準を通過。固定plan focused再集計は$L_D=3$が8.42%低いが、実測2.340%幅で区間が重なる | compiler-invariantな分離は未確立。N07/P03の解析・再集計まで完了 |
 | N07/P03 | `completed_uncertainty_ledger_break_even_robust_undetermined` | 不確かさを7 classへ分離。$L_D=3$は2,376 shot多く、共通Pの点break-evenはopt1 99,045,126、opt2 focused 47,067,344 RZ相当/shot。opt2 focusedではP=0から区間が重なる | WP11限定判断統合まで完了 |
 | WP11 | `completed_scoped_direction_synthesis` | 11 artifactを統合し、T4/T7を主軸、T2/T5/T6を限定継続、T1を範囲変更、T3を保留。頑健判定は未確定のまま | 次の一件はopt2未測定$r=1,2,4,8,16$を埋めるall-r coherent再最適化。外部pilotは延期 |
+| M06-F | `completed_all_r_coherent_opt2_reoptimization` | 初期36とfresh-32拡張15を統合して51/51。direct RZ relative SE最大1.9844%、selected RZ/all-metric holdout最大4.4898%/4.7488%でgate通過。同一opt2 contextの点推定は$L_D=3/12$で$1.263314\times10^{12}/1.327822\times10^{12}$ | 全区間が重なり頑健優位性は未確立。$q>32$、状態準備、外部instance、backend/noise、H12、最終総costは未評価 |
 
 WP01-S、WP04、WP03の値は$q=1,2$直接較正からの長$q$ affine外挿であり、decision-grade総costではない。
 
