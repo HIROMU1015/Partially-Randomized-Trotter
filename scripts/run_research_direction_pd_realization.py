@@ -32,11 +32,11 @@ from trotterlib.research_direction_pd_realization import (
 
 DEFAULT_EXPECTED = Path(
     "artifacts/research_direction_pd_realization/2026-09-25/"
-    "pd_realization_expected_tasks_v1.json"
+    "pd_realization_expected_tasks_v2.json"
 )
 DEFAULT_OUTPUT = Path(
     "artifacts/research_direction_pd_realization/2026-09-25/"
-    "pd_realization_go_no_go_v1.json"
+    "pd_realization_go_no_go_v2.json"
 )
 DEFAULT_SNAPSHOT = Path(
     "artifacts/rte_connected_cluster_cost_validation/"

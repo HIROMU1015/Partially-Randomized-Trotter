@@ -26,8 +26,8 @@ ARTIFACT_ROOT = (
     / "research_direction_pd_realization"
     / "2026-09-25"
 )
-EXPECTED = ARTIFACT_ROOT / "pd_realization_expected_tasks_v1.json"
-FINAL = ARTIFACT_ROOT / "pd_realization_go_no_go_v1.json"
+EXPECTED = ARTIFACT_ROOT / "pd_realization_expected_tasks_v2.json"
+FINAL = ARTIFACT_ROOT / "pd_realization_go_no_go_v2.json"
 
 
 def _load(path: Path) -> dict:

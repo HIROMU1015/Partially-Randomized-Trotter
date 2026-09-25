@@ -654,10 +654,6 @@ def evaluate_internal_hd_split(
         role=role,
         registry_rows=registry_rows,
     )
-    burden_by_key = {
-        (str(row["label"]), float(row["delta"])): row
-        for row in exact_reference["finite_rte_burden"]
-    }
     registry_by_label = {str(row["label"]): row for row in registry_rows}
     inner_stage_count = INTERNAL_HD_SUBSTEPS * (2 * len(h_d_terms) - 1)
     rows: list[dict[str, Any]] = []
@@ -682,9 +678,15 @@ def evaluate_internal_hd_split(
             realized_metrics = pd._dominant_phase_metrics(
                 realized, ground_state, ground_energy, delta
             )
-            burden = burden_by_key[(label, float(delta))][
-                "absolute_time_proportional_allocation"
-            ]
+            burden = pd._finite_rte_burden(
+                tuple(
+                    float(value)
+                    for value in registry["tail_coefficients_in_circuit_order"]
+                ),
+                lambda_r=float(exact_reference["exact_rte_lambda_r"]),
+                delta=delta,
+                policy="absolute_time_proportional",
+            )
             deterministic_occurrences = int(
                 registry["deterministic_occurrence_count"]
             )
