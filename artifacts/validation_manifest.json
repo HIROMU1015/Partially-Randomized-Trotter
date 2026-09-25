@@ -1828,7 +1828,7 @@
           "research_direction_full_opt2",
           "tests"
         ],
-        "reason": "Tests initial-batch integrity, fresh-32 gating, direct scope, holdout accuracy, and completion-audit fingerprint tamper rejection."
+        "reason": "Always validates the committed completion-audit schema, fingerprint, initial-batch integrity, fresh-32 gate, direct scope, and holdout accuracy; raw task/checkpoint/worker reconstruction is optional when the untracked server evidence is available."
       },
       {
         "path": "src/trotterlib/research_direction_full_opt2_extension_analysis.py",
@@ -1853,7 +1853,7 @@
           "research_direction_full_opt2",
           "tests"
         ],
-        "reason": "Tests 51-task integrity, both preregistered gates, direct-RZ evidence, coherent candidate search, mixed-context differences, and tamper rejection."
+        "reason": "Always validates the committed 51-task audit and coherent-analysis schema, fingerprints, gates, direct-RZ evidence, candidate comparison, mixed-context difference, and tamper rejection; raw reconstruction is optional when the untracked server evidence is available."
       },
       {
         "path": "artifacts/research_direction_full_opt2/2026-09-25",
@@ -2786,13 +2786,15 @@
     {
       "id": "research_direction_full_opt2",
       "status": "source_present_no_current_ci",
-      "summary": "For the fixed H4 linear chain at 1.0 Angstrom, STO-3G, 8 qubits, DF rank 12, L_D=3/12, delta=0.01/0.02, K=2, and one topology-free Qiskit 1.3.0 optimization-level-2 rz/sx/x/cx compiler context with seed 17, M06-F completed the 36-task initial batch and the preregistered 15-task fresh-32 extension. The integrated audit is 51/51/0 expected/completed/failed with no missing, partial, duplicate, corrupt, seed-overlap, aggregate, source-hash, CPU-only, or thread-setting failure. All twelve randomized groups pass: maximum direct-RZ relative SE is 1.9844%, selected-policy RZ holdout error 4.4898%, and selected all-metric holdout error 4.7488%. Coherent beta/alpha/integer-shot/schedule reoptimization selects delta=0.02 for both candidates and gives no-preparation compiled-RZ point estimates 1.263314e12 and 1.327822e12 with 13,588 and 11,162 shots. L_D=3 is 4.858% lower at the point estimate, but local, per-r measured-discrepancy, and 25% transfer intervals all overlap. The common preparation-cost point break-even is 26,590,335 RZ equivalents per shot, while robust intervals overlap already at P=0. This resolves the missing all-r compiler context only within the measured H4 domain; q>32, preparation, external-instance, coupling/backend, H12, final-total-cost, superiority, and immutable-reproduction claims remain open.",
+      "summary": "For the fixed H4 linear chain at 1.0 Angstrom, STO-3G, 8 qubits, DF rank 12, L_D=3/12, delta=0.01/0.02, K=2, and one topology-free Qiskit 1.3.0 optimization-level-2 rz/sx/x/cx compiler context with seed 17, M06-F completed the 36-task initial batch and the preregistered 15-task fresh-32 extension. The integrated audit is 51/51/0 expected/completed/failed with no missing, partial, duplicate, corrupt, seed-overlap, aggregate, source-hash, CPU-only, or thread-setting failure. All twelve randomized groups pass: maximum direct-RZ relative SE is 1.9844%, selected-policy RZ holdout error 4.4898%, and selected all-metric holdout error 4.7488%. Coherent beta/alpha/integer-shot/schedule reoptimization selects delta=0.02 for both candidates and gives no-preparation compiled-RZ point estimates 1.263314e12 and 1.327822e12 with 13,588 and 11,162 shots. L_D=3 is 4.858% lower at the point estimate, but local, per-r measured-discrepancy, and 25% transfer intervals all overlap. The common preparation-cost point break-even is 26,590,335 RZ equivalents per shot, while robust intervals overlap already at P=0. This resolves the missing all-r compiler context only within the measured H4 domain; q>32, preparation, external-instance, coupling/backend, H12, final-total-cost, superiority, and immutable-reproduction claims remain open. Committed-artifact validation passes in a clean checkout, while raw checkpoint reconstruction remains an optional integration test where the untracked server evidence is available.",
       "counts": {
         "implementation_source_files": 5,
         "generator_scripts": 4,
         "documentation_files": 2,
         "dedicated_test_source_files": 3,
-        "dedicated_test_functions": 10,
+        "dedicated_test_functions": 12,
+        "clean_checkout_dedicated_tests_passed": 10,
+        "clean_checkout_optional_raw_tests_skipped": 2,
         "related_local_tests_passed": 36,
         "local_scientific_artifacts": 7,
         "upstream_fingerprinted_artifacts": 6,
@@ -2819,8 +2821,9 @@
         "integrated_expected_tasks": 51,
         "integrated_completed_tasks": 51,
         "integrated_failed_tasks": 0,
-        "complete_local_test_suite_passed": 565,
-        "complete_local_test_suite_failed": 2,
+        "complete_local_test_suite_passed": 567,
+        "complete_local_test_suite_failed": 0,
+        "complete_local_test_suite_skipped": 2,
         "complete_local_test_suite_warnings": 4
       },
       "completion_criteria": [
@@ -2830,6 +2833,7 @@
         "Preregister a small external-instance pilot before execution and recalibrate its physical instance and compiler context rather than transferring the H4 point model.",
         "Add direct q>32 evidence only when the external-pilot design or resource-model error budget requires it; do not infer long-q validity from q=8 or the focused r=32 q<=32 evidence.",
         "Measure concrete candidate-specific state-preparation circuits before incorporating preparation into a total-cost claim.",
+        "Keep committed-artifact validation runnable in clean checkout and run raw checkpoint reconstruction only where the untracked server evidence is available.",
         "Publish immutable clean-checkout or CI regeneration evidence; do not claim H12 transfer, backend/noise validity, final total cost, or scientific superiority from M06-F."
       ]
     },

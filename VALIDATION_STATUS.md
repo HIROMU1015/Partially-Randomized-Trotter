@@ -28,9 +28,10 @@ coherent解析fingerprintは
 `5ce368a94daa39680b4edc0cfb59b30168d8bc159ad2538b29cb67b928e3cdba`。
 T4/T7主軸、T1範囲変更、T2/T5/T6限定、T3保留は維持し、局所compiler精密化を止めて
 外部instance pilotを次のdiscriminator候補として再開可能にする。
-専用testは`3 passed`、関連testは`36 passed`、manifest検査はpass。全suiteは
-`565 passed, 2 failed, 4 warnings`で、2 failureは既知のPython版保存reference不一致と
-four-round DF preparation hash不一致であり、M06-F変更面の新規回帰ではない。
+commit済みartifactを使うM06-F専用testは`10 passed`、Git管理外raw checkpointを再集計する
+optional integration testは`2 skipped`。manifest検査はpass。clean checkout相当の全suiteは
+`567 passed, 2 skipped, 4 warnings`で、失敗は0だった。raw再集計はserver evidenceが利用できる
+環境でのみ実行し、clean checkoutの通常testを失敗させない。
 詳細は[M06-F all-r coherent opt2](docs/research_direction_full_opt2.md)。
 
 ## 2026-09-24 M06-F all-r coherent opt2 initial result

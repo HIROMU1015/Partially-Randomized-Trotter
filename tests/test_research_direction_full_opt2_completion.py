@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from copy import deepcopy
 from pathlib import Path
 
@@ -14,6 +15,16 @@ from trotterlib.research_direction_full_opt2_completion import (
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 BASE = Path("artifacts/research_direction_full_opt2/2026-09-24")
+AUDIT_PATH = BASE / "wp11_all_r_opt2_completion_audit_20260924_230342.json"
+RAW_OUTPUT = BASE / "wp11_all_r_opt2_initial_20260924_023012"
+RAW_EVIDENCE_AVAILABLE = all(
+    (REPO_ROOT / RAW_OUTPUT / directory).is_dir()
+    for directory in ("checkpoints", "tasks", "worker_results")
+)
+
+
+def _artifact() -> dict[str, object]:
+    return json.loads((REPO_ROOT / AUDIT_PATH).read_text())
 
 
 def _body() -> dict[str, object]:
@@ -50,11 +61,7 @@ def _body() -> dict[str, object]:
 
 
 def test_completion_audit_validates_initial_batch_and_gates_reoptimization() -> None:
-    body = _body()
-    artifact = finalize_completion_audit(
-        body,
-        provenance={"evidence_status": "unit_test"},
-    )
+    artifact = _artifact()
     validate_completion_audit(artifact)
     assert artifact["initial_compute_integrity_pass"] is True
     assert artifact["execution"]["initial_batch"]["expected"] == 36
@@ -70,7 +77,7 @@ def test_completion_audit_validates_initial_batch_and_gates_reoptimization() -> 
 
 
 def test_completion_audit_records_direct_scope_and_holdout_accuracy() -> None:
-    body = _body()
+    body = _artifact()
     selected = [
         row
         for row in body["direct_compiled_rz_measurements"]
@@ -85,11 +92,21 @@ def test_completion_audit_records_direct_scope_and_holdout_accuracy() -> None:
 
 
 def test_completion_audit_fingerprint_detects_tampering() -> None:
-    artifact = finalize_completion_audit(
-        _body(),
-        provenance={"evidence_status": "unit_test"},
-    )
+    artifact = _artifact()
     tampered = deepcopy(artifact)
     tampered["status"] = "coherent_opt2_reoptimization_complete"
     with pytest.raises(ValueError, match="fingerprint mismatch"):
         validate_completion_audit(tampered)
+
+
+@pytest.mark.skipif(
+    not RAW_EVIDENCE_AVAILABLE,
+    reason="raw M06-F task/checkpoint/worker evidence is not tracked by Git",
+)
+def test_raw_completion_evidence_rebuilds_when_available() -> None:
+    artifact = finalize_completion_audit(
+        _body(),
+        provenance={"evidence_status": "optional_raw_integration_test"},
+    )
+    validate_completion_audit(artifact)
+    assert artifact["initial_compute_integrity_pass"] is True

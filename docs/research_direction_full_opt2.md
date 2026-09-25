@@ -237,11 +237,11 @@ external reproduction are still unresolved.
 
 ## Final validation
 
-The extension-analysis tests pass 3/3. The M06-F, bounded-executor, full-scope,
-compiler-transfer, and decision-cost related selection passes 36/36. The full
-local suite reports 565 passed, 2 failed, and 4 warnings. Both failures predate
-and are outside this change: the historical level-5R compiled-cost reference
-records Python 3.11.0rc1 while this environment is Python 3.12.3, and the saved
-four-round artifact has a DF-preparation hash mismatch. Manifest validation and
-Python syntax checks pass. Black and isort are not installed in the local
-environment, so their standalone checks were unavailable.
+In a clean checkout, the committed-artifact M06-F tests report 10 passed and
+the two raw-evidence reconstruction tests are skipped because checkpoints,
+task specifications, and worker results are intentionally not tracked by Git.
+The full clean-checkout-equivalent suite reports 567 passed, 2 skipped, and
+4 warnings with no failures. Manifest validation, artifact schema/fingerprint
+validation, Python syntax checks, and git diff checks pass. Raw reconstruction
+remains an optional integration test on the server evidence; this does not turn
+the result into clean regeneration or immutable CI evidence.
