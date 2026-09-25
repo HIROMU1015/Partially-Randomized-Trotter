@@ -58,8 +58,9 @@ H4でのcoverageをH12、別分子、別geometry、別snapshot、backend/noise�
 |---|---|---|---|---|---|
 | WP11 | A04–A08、N08、P03、P08、Q08の判断統合 | `completed_scoped_direction_synthesis`。11 artifactをT1–T7へ統合 | [WP11](../research_direction_wp11_synthesis.md) | [`wp11`](../../artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json) | [`runner`](../../scripts/run_research_direction_wp11_synthesis.py) / [`test`](../../tests/test_research_direction_wp11_synthesis.py) |
 | M06-F | 主にM06/L08。G08/M08/N07/P03の判断入力を同一opt2 contextで更新 | `completed_all_r_coherent_opt2_reoptimization`。初期36＋fresh-32拡張15の51/51 task | [M06-F](../research_direction_full_opt2.md) | [`2026-09-24`](../../artifacts/research_direction_full_opt2/2026-09-24/)、[`2026-09-25`](../../artifacts/research_direction_full_opt2/2026-09-25/) | `scripts/run_research_direction_full_opt2_*.py` / `tests/test_research_direction_full_opt2*.py` |
+| A0 | M06/M08のevidence-lineage補足 | `completed_selected_rz_q16_q32_reconciliation`。新規compileなし、単一H4 cell限定 | [M06-F A0](../research_direction_full_opt2.md#a0-proxy-lineage-reconciliation) | [`a0`](../../artifacts/research_direction_full_opt2/2026-09-25/m06f_a0_proxy_lineage_reconciliation_v1.json) | [`runner`](../../scripts/run_research_direction_proxy_lineage_reconciliation.py) / [`test`](../../tests/test_research_direction_proxy_lineage_reconciliation.py) |
 
-`M06-F`はカタログの独立した145番目のIDではなく、WP11が選んだM06/L08中心の追加検証名である。
+`M06-F`と`A0`はカタログの独立した145番目以降のIDではなく、WP11後の追加検証名である。
 
 ## 4. 現在の結論
 
@@ -69,6 +70,7 @@ H4でのcoverageをH12、別分子、別geometry、別snapshot、backend/noise�
 - M06/L08ではcompiler変更後の区間が重なり、compiler-invariantな優位性は確立しなかった。
 - N07/P03は状態準備costをパラメータ評価したが、準備回路自体は測定していない。
 - M06-Fは51/51 taskと両gateを完了した。状態準備なし点推定は`L_D=3/12`で`1.263314e12/1.327822e12` compiled RZ、`L_D=3`が4.858%低いが、全不確かさ区間が重なるため頑健な優位性は主張しない。
+- A0は最新fresh較正から旧`q=16,32`を再照合し、単一cellのselected RZを最大4.911%で通過させた。full-basis `q=32`は5.598%で、全metric・他cell・`q>32`へは一般化しない。
 
 T4/T7を主軸、T1をH4条件付き成立限界へ範囲変更、T2/T5/T6を限定継続、T3を保留とする。
 
@@ -91,7 +93,7 @@ T4/T7を主軸、T1をH4条件付き成立限界へ範囲変更、T2/T5/T6を限
 
 GitHubには集計済みartifact、provenance、検証ロジック、runner、test、結果文書が含まれる。M06-Fの`checkpoints/`、`tasks/`、`worker_results/`はGit管理外である。clean checkoutではコミット済みartifactを検証できるが、生データからの完全再集計はserver evidenceがある環境だけで実行される。
 
-clean-checkout相当testは`567 passed, 2 skipped, 4 warnings`、失敗0である。これはimmutable CIまたは外部独立再現を意味しない。
+clean-checkout相当testは`570 passed, 2 skipped, 4 warnings`、失敗0である。これはimmutable CIまたは外部独立再現を意味しない。
 
 ## 7. GPT向け確認事項
 

@@ -26,9 +26,13 @@
 
 ## 現在の研究段階
 
-現在の中心課題は、DF Hamiltonianを決定論部分とランダム部分へ分けたpartial-$S_2$について、
-有限RTE、RPEの信号半径・測定回数、1 shot当たりのコンパイル後回路コストを接続することである。
-PF係数、有限RTE、ランダム回路コスト、短いRPE段の接続は限定条件で検証を進めている。
+2026-09-25現在、A0後のP-B/P-C/P-Aテーマ選定を完了し、DF event列のinterval-aware joint synthesis
+（P-A）を暫定主題、geometry間エネルギー差（P-C）を副候補、signal-weight（P-B）を現範囲で停止とした。
+P-Aの広い回路合成文献に対する新規性は未監査なので、次は計算拡張でなく先行研究・新規性監査を行う。
+
+それ以前の中心課題は、DF Hamiltonianを決定論部分とランダム部分へ分けたpartial-$S_2$について、有限RTE、
+RPEの信号半径・測定回数、1 shot当たりのコンパイル後回路コストを接続することだった。PF係数、有限RTE、
+ランダム回路コスト、短いRPE段の接続は限定条件で検証済みだが、最終総cost評価には達していない。
 既存設定`CA/10`を暫定目標にすると$q_{\max}=32768$が必要で、従来の固定
 $\delta=0.1,r=4,K=2$は長roundへ単純外挿できないことを確認した。その後、H4の
 実行済み$\delta$窓でround別$(r_m,K_m)$を再探索し、$\delta=0.01,0.0125,0.02$に
@@ -139,17 +143,43 @@ $q=16,32$直接holdoutはselected RZ 2.466%、観測RZ最大3.286%で通過し�
 WP11が選択したM06-F計算経路は、`src/trotterlib/research_direction_full_opt2.py`、
 `src/trotterlib/research_direction_full_opt2_completion.py`、
 `src/trotterlib/research_direction_full_opt2_extension_analysis.py`、
+`src/trotterlib/research_direction_proxy_lineage_reconciliation.py`、
 `scripts/run_research_direction_full_opt2_compute.py`、
 `scripts/run_research_direction_full_opt2_analysis.py`、
 `scripts/run_research_direction_full_opt2_completion.py`、
 `scripts/run_research_direction_full_opt2_extension_analysis.py`、
+`scripts/run_research_direction_proxy_lineage_reconciliation.py`、
 `tests/test_research_direction_full_opt2.py`、
 `tests/test_research_direction_full_opt2_completion.py`、
 `tests/test_research_direction_full_opt2_extension_analysis.py`、
+`tests/test_research_direction_proxy_lineage_reconciliation.py`、
 [`docs/research_direction_full_opt2.md`](docs/research_direction_full_opt2.md)を一組として読む。
 初期36 taskとfresh-32拡張15 taskは51/51で完了し、両gate通過後のcoherent再最適化も完了した。
+A0は新規compileなしで最新fresh `q=1,2` proxyを旧`q=16,32`固定holdoutへ再照合した。
 compute resultは`artifacts/research_direction_full_opt2/2026-09-24/`、最終監査・解析は
 `artifacts/research_direction_full_opt2/2026-09-25/`に置く。
+
+2026-09-25からはA0完了後の研究テーマ選定を`P-B -> P-C -> P-A`で行う。P-Bは
+`src/trotterlib/research_direction_signal_weight_pilot.py`、
+`scripts/run_research_direction_signal_weight_pilot.py`、
+`tests/test_research_direction_signal_weight_pilot.py`、
+[`docs/research_direction_signal_weight_pilot.md`](docs/research_direction_signal_weight_pilot.md)を一組として読む。
+現H4 gridでは案Bを進めるsignal差が得られず停止した。P-Cは
+`src/trotterlib/research_direction_geometry_energy_difference_pilot.py`、
+`scripts/run_research_direction_geometry_energy_difference_pilot.py`、
+`tests/test_research_direction_geometry_energy_difference_pilot.py`、
+[`docs/research_direction_geometry_energy_difference_pilot.md`](docs/research_direction_geometry_energy_difference_pilot.md)、
+`artifacts/research_direction_geometry_energy_difference_pilot/2026-09-25/`を一組として読む。
+固定H4 5 geometryの未使用geometry/delta差分bias予測gateを通過して案Cを候補として残し、
+P-Aは`src/trotterlib/research_direction_joint_synthesis_pilot.py`、
+`scripts/run_research_direction_joint_synthesis_pilot.py`、
+`tests/test_research_direction_joint_synthesis_pilot.py`、
+[`docs/research_direction_joint_synthesis_pilot.md`](docs/research_direction_joint_synthesis_pilot.md)を一組として読む。
+未使用列長3、5、8でinterval-union DPが現行policy比pooled RZを7.19%減らし、全gateを通過した。
+3 pilotの比較は`research_direction_theme_selection.py`と同名runner/test、
+[`docs/research_direction_theme_selection.md`](docs/research_direction_theme_selection.md)へ固定した。
+P-Aを暫定主題、P-Cを副候補、P-Bを現範囲で停止とするが、P-Aの広い回路合成文献に対する
+新規性は未監査である。次は計算拡張でなく先行研究・新規性監査を行う。
 
 ## ファイルの状態区分
 
@@ -175,6 +205,10 @@ compute resultは`artifacts/research_direction_full_opt2/2026-09-24/`、最終�
 - `codex-inst.md`：過去の実装依頼メモ
 - `README_partial_randomized_pf.md`：旧screeningを含む実装経路の説明
 - `docs/main_audit_20260801.md`：特定時点の監査記録
+- `partial_randomized_trotter_validation_review_898da848.md`：commit `898da848`を対象にした外部GPTレビュー。
+  現在のP-A/P-C/P-B判断より前の評価であり、一次証拠または現行仕様ではない
+- `partial_randomized_trotter_research_redesign_20260925.md`：上記レビューを受けたテーマ再設計入力。
+  pilotの着想と停止条件を確認する補助資料で、実施結果と現在の判断は正本文書を優先する
 
 これらは削除していないが、現在の研究方針や最新結果を確定する根拠には使わない。
 

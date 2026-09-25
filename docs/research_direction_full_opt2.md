@@ -224,6 +224,41 @@ The final coherent artifact is
 `wp11_all_r_opt2_coherent_analysis_20260925_065827.json`, content fingerprint
 `5ce368a94daa39680b4edc0cfb59b30168d8bc159ad2538b29cb67b928e3cdba`.
 
+## A0 proxy-lineage reconciliation
+
+A0 used no new compilation. It fitted the latest fresh-32 `q=1,2` affine
+compiled-RZ proxy for the exact `L_D=3, delta=0.02, r=32, K=2` cell and applied
+it to the pre-existing optimization-level-2 `q=16,32` measurements as fixed
+holdouts. The holdouts were not added to the fit. The Hamiltonian snapshot,
+H4 geometry, basis, DF rank, compiler, selected policy, and cosine/sine axes
+match; the fresh calibration has 32 trajectories per q and the legacy M08
+holdouts have 8 trajectories per q.
+
+| policy | q | prediction +/- propagated calibration SE | direct mean +/- SE | absolute relative error | standardized residual |
+|---|---:|---:|---:|---:|---:|
+| `support_run_le_1` | 16 | 112,489.938 +/- 2,490.512 | 108,848.750 +/- 1,114.493 | 3.345% | 1.334 |
+| `support_run_le_1` | 32 | 225,287.438 +/- 5,193.810 | 214,741.000 +/- 704.488 | 4.911% | 2.012 |
+| `full_basis_shared` | 16 | 122,383.312 +/- 3,496.953 | 118,312.875 +/- 1,640.454 | 3.440% | 1.054 |
+| `full_basis_shared` | 32 | 245,178.312 +/- 7,284.579 | 232,181.125 +/- 1,148.406 | 5.598% | 1.762 |
+
+The selected-policy RZ proxy passes the existing 5% point-error criterion at
+both fixed holdouts; its maximum is 4.911% at `q=32`. The maximum direct RZ
+relative SE is 1.3865%, below the existing 2% precision threshold. The selected
+`q=32` standardized residual is 2.012, slightly above 1.96, so the result is
+not described as statistical identity. Conversely, the non-gating full-basis
+`q=32` point error is 5.598% and is not promoted to a passing q=32 domain.
+
+The applicable-domain update is therefore limited to selected-policy compiled
+RZ for this exact H4 cell: fresh `q=8` plus legacy fixed `q=16,32` holdouts now
+check the latest fresh calibration through `q=32`. It does not validate all
+metrics at `q=16,32`, any other `(delta,r)` cell, or `q>32`; it performs no
+schedule/cost reoptimization and changes no research-routing decision.
+
+The fingerprinted artifact is
+`m06f_a0_proxy_lineage_reconciliation_v1.json`, content fingerprint
+`b786b1d48995d320c2301718cc958018462cf1cbb05fcfa19ca6cc9460dd2295`.
+Its dedicated rebuild, scope-guard, and tamper tests pass 3/3.
+
 ## Research routing
 
 WP11's selected discriminator is now complete. Because the coherent intervals
@@ -237,10 +272,10 @@ external reproduction are still unresolved.
 
 ## Final validation
 
-In a clean checkout, the committed-artifact M06-F tests report 10 passed and
-the two raw-evidence reconstruction tests are skipped because checkpoints,
+In a clean-checkout-equivalent run, the committed-artifact M06-F and A0 tests
+report 13 passed and the two raw-evidence reconstruction tests are skipped because checkpoints,
 task specifications, and worker results are intentionally not tracked by Git.
-The full clean-checkout-equivalent suite reports 567 passed, 2 skipped, and
+The full suite reports 570 passed, 2 skipped, and
 4 warnings with no failures. Manifest validation, artifact schema/fingerprint
 validation, Python syntax checks, and git diff checks pass. Raw reconstruction
 remains an optional integration test on the server evidence; this does not turn

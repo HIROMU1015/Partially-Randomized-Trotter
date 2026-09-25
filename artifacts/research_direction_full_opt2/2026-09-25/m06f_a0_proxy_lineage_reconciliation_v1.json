@@ -1,0 +1,472 @@
+{
+  "affine_models": {
+    "full_basis_shared": {
+      "cosine": {
+        "formula": "(2-q)*mean_q1+(q-1)*mean_q2",
+        "intercept": -411.6875,
+        "model_fingerprint": "7d4021f14b7c3d8ba21127d76dd66e1d96920a997a3f29b9e9291087b0528cdf",
+        "q1_mean": 7263.0,
+        "q1_standard_error": 115.25404968044262,
+        "q2_mean": 14937.6875,
+        "q2_standard_error": 206.8291547851831,
+        "slope": 7674.6875
+      },
+      "sine": {
+        "formula": "(2-q)*mean_q1+(q-1)*mean_q2",
+        "intercept": -411.6875,
+        "model_fingerprint": "4dd9815468329564f1f8e5f734cd0687e0f3e1cf1be8baa04d539201fa40aa15",
+        "q1_mean": 7263.0,
+        "q1_standard_error": 115.25404968044262,
+        "q2_mean": 14937.6875,
+        "q2_standard_error": 206.8291547851831,
+        "slope": 7674.6875
+      }
+    },
+    "support_run_le_1": {
+      "cosine": {
+        "formula": "(2-q)*mean_q1+(q-1)*mean_q2",
+        "intercept": -307.5625,
+        "model_fingerprint": "8eb6c4ddaee095f89e8a5f34b550621f750701707b614a63b04dd499ff018796",
+        "q1_mean": 6742.28125,
+        "q1_standard_error": 87.69648715671008,
+        "q2_mean": 13792.125,
+        "q2_standard_error": 144.45728349249913,
+        "slope": 7049.84375
+      },
+      "sine": {
+        "formula": "(2-q)*mean_q1+(q-1)*mean_q2",
+        "intercept": -307.5625,
+        "model_fingerprint": "3e57a89468c1f214c8c005a6eccb5a14986ee320cab69f8155d2d266caa793a3",
+        "q1_mean": 6742.28125,
+        "q1_standard_error": 87.69648715671008,
+        "q2_mean": 13792.125,
+        "q2_standard_error": 144.45728349249913,
+        "slope": 7049.84375
+      }
+    }
+  },
+  "applicable_domain": {
+    "all_metrics_latest_fresh_holdout_max_q": 8,
+    "full_basis_compiled_rz": {
+      "five_percent_criterion_passed": false,
+      "legacy_fixed_holdout_q_reconciled": [
+        16,
+        32
+      ],
+      "maximum_q_passing_individually": 16
+    },
+    "q_above_32_validated": false,
+    "selected_policy_compiled_rz": {
+      "cell": "ld3:delta0.02:r32",
+      "five_percent_criterion_passed": true,
+      "fresh_calibration_q": [
+        1,
+        2
+      ],
+      "fresh_direct_holdout_q": [
+        8
+      ],
+      "legacy_fixed_holdout_q_reconciled": [
+        16,
+        32
+      ],
+      "maximum_directly_reconciled_q": 32
+    }
+  },
+  "checks": {
+    "fixed_context_matches": true,
+    "input_artifacts_validate": true,
+    "legacy_direct_rz_relative_se_within_2_percent": true,
+    "legacy_q16_q32_excluded_from_fit": true,
+    "selected_policy_q16_q32_within_5_percent": true,
+    "source_lineage_matches": true
+  },
+  "configuration": {
+    "basis": "STO-3G",
+    "calibration_q": [
+      1,
+      2
+    ],
+    "compiler": {
+      "backend_name": null,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "coupling_map": null,
+      "layout_method": null,
+      "optimization_level": 2,
+      "qiskit_version": "1.3.0",
+      "routing_method": null,
+      "transpiler_seed": 17
+    },
+    "delta": 0.02,
+    "df_rank": 12,
+    "direct_rz_relative_se_limit": 0.02,
+    "fresh_holdout_q_already_in_latest_artifact": [
+      8
+    ],
+    "geometry_angstrom": 1.0,
+    "k": 2,
+    "ld": 3,
+    "legacy_fixed_holdout_q": [
+      16,
+      32
+    ],
+    "metric": "rz_count",
+    "molecule": "H4_chain",
+    "n_qubits": 8,
+    "r": 32,
+    "relative_error_limit": 0.05,
+    "selected_policy": "support_run_le_1"
+  },
+  "content_fingerprint": "b786b1d48995d320c2301718cc958018462cf1cbb05fcfa19ca6cc9460dd2295",
+  "context_checks": {
+    "expected_compiler": true,
+    "legacy_snapshot_matches": true,
+    "qiskit_1p3p0": true,
+    "same_basis": true,
+    "same_compiler": true,
+    "same_df_rank": true,
+    "same_finite_taylor_order": true,
+    "same_geometry_angstrom": true,
+    "same_molecule": true,
+    "same_n_qubits": true,
+    "target_delta_present": true,
+    "target_k_matches": true,
+    "target_r_present": true
+  },
+  "decision": {
+    "full_basis_diagnostic": "The q=32 full-basis RZ residual exceeds 5%; this non-gating diagnostic is not promoted to a passing q=32 domain.",
+    "next_action_changed": false,
+    "selected_policy_domain_update": "For the exact H4 L_D=3 delta=0.02 r=32 K=2 opt2 cell, the latest fresh q=1,2 RZ proxy is now fixed-holdout checked against legacy q=16,32 measurements.",
+    "status": "selected_policy_rz_q16_q32_reconciled_within_5_percent"
+  },
+  "fixed_holdout_rows": [
+    {
+      "absolute_relative_error": 0.03345180812825136,
+      "absolute_residual": 3641.1875,
+      "absolute_standardized_residual": 1.334498649735901,
+      "axis": "cosine",
+      "combined_standard_error": 2728.505945450447,
+      "direct_mean": 108848.75,
+      "direct_relative_standard_error": 0.010238909766593298,
+      "direct_standard_error": 1114.4925294564723,
+      "holdout_partition": "m08_fresh_holdout",
+      "holdout_sample_count": 8,
+      "metric": "rz_count",
+      "model_fingerprint": "8eb6c4ddaee095f89e8a5f34b550621f750701707b614a63b04dd499ff018796",
+      "policy": "support_run_le_1",
+      "prediction": 112489.9375,
+      "prediction_standard_error": 2490.512215618336,
+      "q_m": 16,
+      "signed_relative_error": 0.03345180812825136,
+      "signed_residual": 3641.1875,
+      "within_1p96_combined_standard_errors": true,
+      "within_5_percent": true
+    },
+    {
+      "absolute_relative_error": 0.04911236093712892,
+      "absolute_residual": 10546.4375,
+      "absolute_standardized_residual": 2.012152530848661,
+      "axis": "cosine",
+      "combined_standard_error": 5241.370789893275,
+      "direct_mean": 214741.0,
+      "direct_relative_standard_error": 0.0032806389144373303,
+      "direct_standard_error": 704.4876811251868,
+      "holdout_partition": "m08_fresh_holdout",
+      "holdout_sample_count": 8,
+      "metric": "rz_count",
+      "model_fingerprint": "8eb6c4ddaee095f89e8a5f34b550621f750701707b614a63b04dd499ff018796",
+      "policy": "support_run_le_1",
+      "prediction": 225287.4375,
+      "prediction_standard_error": 5193.810245310211,
+      "q_m": 32,
+      "signed_relative_error": 0.04911236093712892,
+      "signed_residual": 10546.4375,
+      "within_1p96_combined_standard_errors": false,
+      "within_5_percent": true
+    },
+    {
+      "absolute_relative_error": 0.03345180812825136,
+      "absolute_residual": 3641.1875,
+      "absolute_standardized_residual": 1.334498649735901,
+      "axis": "sine",
+      "combined_standard_error": 2728.505945450447,
+      "direct_mean": 108848.75,
+      "direct_relative_standard_error": 0.010238909766593298,
+      "direct_standard_error": 1114.4925294564723,
+      "holdout_partition": "m08_fresh_holdout",
+      "holdout_sample_count": 8,
+      "metric": "rz_count",
+      "model_fingerprint": "3e57a89468c1f214c8c005a6eccb5a14986ee320cab69f8155d2d266caa793a3",
+      "policy": "support_run_le_1",
+      "prediction": 112489.9375,
+      "prediction_standard_error": 2490.512215618336,
+      "q_m": 16,
+      "signed_relative_error": 0.03345180812825136,
+      "signed_residual": 3641.1875,
+      "within_1p96_combined_standard_errors": true,
+      "within_5_percent": true
+    },
+    {
+      "absolute_relative_error": 0.04911236093712892,
+      "absolute_residual": 10546.4375,
+      "absolute_standardized_residual": 2.012152530848661,
+      "axis": "sine",
+      "combined_standard_error": 5241.370789893275,
+      "direct_mean": 214741.0,
+      "direct_relative_standard_error": 0.0032806389144373303,
+      "direct_standard_error": 704.4876811251868,
+      "holdout_partition": "m08_fresh_holdout",
+      "holdout_sample_count": 8,
+      "metric": "rz_count",
+      "model_fingerprint": "3e57a89468c1f214c8c005a6eccb5a14986ee320cab69f8155d2d266caa793a3",
+      "policy": "support_run_le_1",
+      "prediction": 225287.4375,
+      "prediction_standard_error": 5193.810245310211,
+      "q_m": 32,
+      "signed_relative_error": 0.04911236093712892,
+      "signed_residual": 10546.4375,
+      "within_1p96_combined_standard_errors": false,
+      "within_5_percent": true
+    },
+    {
+      "absolute_relative_error": 0.034404011397745175,
+      "absolute_residual": 4070.4375,
+      "absolute_standardized_residual": 1.0538043658415739,
+      "axis": "cosine",
+      "combined_standard_error": 3862.6121051883542,
+      "direct_mean": 118312.875,
+      "direct_relative_standard_error": 0.013865389739485829,
+      "direct_standard_error": 1640.4541230740695,
+      "holdout_partition": "m08_fresh_holdout",
+      "holdout_sample_count": 8,
+      "metric": "rz_count",
+      "model_fingerprint": "7d4021f14b7c3d8ba21127d76dd66e1d96920a997a3f29b9e9291087b0528cdf",
+      "policy": "full_basis_shared",
+      "prediction": 122383.3125,
+      "prediction_standard_error": 3496.9533232854133,
+      "q_m": 16,
+      "signed_relative_error": 0.034404011397745175,
+      "signed_residual": 4070.4375,
+      "within_1p96_combined_standard_errors": true,
+      "within_5_percent": true
+    },
+    {
+      "absolute_relative_error": 0.05597865674912205,
+      "absolute_residual": 12997.1875,
+      "absolute_standardized_residual": 1.7624390257169782,
+      "axis": "cosine",
+      "combined_standard_error": 7374.545905049175,
+      "direct_mean": 232181.125,
+      "direct_relative_standard_error": 0.004946162453847221,
+      "direct_standard_error": 1148.4055629670083,
+      "holdout_partition": "m08_fresh_holdout",
+      "holdout_sample_count": 8,
+      "metric": "rz_count",
+      "model_fingerprint": "7d4021f14b7c3d8ba21127d76dd66e1d96920a997a3f29b9e9291087b0528cdf",
+      "policy": "full_basis_shared",
+      "prediction": 245178.3125,
+      "prediction_standard_error": 7284.579052259917,
+      "q_m": 32,
+      "signed_relative_error": 0.05597865674912205,
+      "signed_residual": 12997.1875,
+      "within_1p96_combined_standard_errors": true,
+      "within_5_percent": false
+    },
+    {
+      "absolute_relative_error": 0.034404011397745175,
+      "absolute_residual": 4070.4375,
+      "absolute_standardized_residual": 1.0538043658415739,
+      "axis": "sine",
+      "combined_standard_error": 3862.6121051883542,
+      "direct_mean": 118312.875,
+      "direct_relative_standard_error": 0.013865389739485829,
+      "direct_standard_error": 1640.4541230740695,
+      "holdout_partition": "m08_fresh_holdout",
+      "holdout_sample_count": 8,
+      "metric": "rz_count",
+      "model_fingerprint": "4dd9815468329564f1f8e5f734cd0687e0f3e1cf1be8baa04d539201fa40aa15",
+      "policy": "full_basis_shared",
+      "prediction": 122383.3125,
+      "prediction_standard_error": 3496.9533232854133,
+      "q_m": 16,
+      "signed_relative_error": 0.034404011397745175,
+      "signed_residual": 4070.4375,
+      "within_1p96_combined_standard_errors": true,
+      "within_5_percent": true
+    },
+    {
+      "absolute_relative_error": 0.05597865674912205,
+      "absolute_residual": 12997.1875,
+      "absolute_standardized_residual": 1.7624390257169782,
+      "axis": "sine",
+      "combined_standard_error": 7374.545905049175,
+      "direct_mean": 232181.125,
+      "direct_relative_standard_error": 0.004946162453847221,
+      "direct_standard_error": 1148.4055629670083,
+      "holdout_partition": "m08_fresh_holdout",
+      "holdout_sample_count": 8,
+      "metric": "rz_count",
+      "model_fingerprint": "4dd9815468329564f1f8e5f734cd0687e0f3e1cf1be8baa04d539201fa40aa15",
+      "policy": "full_basis_shared",
+      "prediction": 245178.3125,
+      "prediction_standard_error": 7284.579052259917,
+      "q_m": 32,
+      "signed_relative_error": 0.05597865674912205,
+      "signed_residual": 12997.1875,
+      "within_1p96_combined_standard_errors": true,
+      "within_5_percent": false
+    }
+  ],
+  "lineage_checks": {
+    "fresh_and_legacy_source_partitions_separate": true,
+    "latest_calibration_q_exact": true,
+    "latest_calibration_sample_count_32": true,
+    "latest_cell_is_fresh32_extension": true,
+    "legacy_holdout_q_exact": true,
+    "legacy_holdout_sample_count_8": true,
+    "legacy_holdouts_are_m08_fresh": true,
+    "policies_and_axes_present": true
+  },
+  "method": "a0_fresh_q1_q2_legacy_q16_q32_fixed_holdout_v1",
+  "overall_pass": true,
+  "provenance": {
+    "command": ".venv311/bin/python scripts/run_research_direction_proxy_lineage_reconciliation.py",
+    "evidence_status": "local_worktree_analysis_not_externally_reproduced",
+    "generated_at_utc": "2026-09-25T02:44:28.087301+00:00",
+    "git_commit": "898da8487aca30a176ce5931d34a923c28c34ac9",
+    "git_worktree_status_before_generation": [
+      "?? partial_randomized_trotter_validation_review_898da848.md",
+      "?? scripts/run_research_direction_proxy_lineage_reconciliation.py",
+      "?? src/trotterlib/research_direction_proxy_lineage_reconciliation.py",
+      "?? tests/test_research_direction_proxy_lineage_reconciliation.py"
+    ],
+    "python_version": "3.11.0rc1",
+    "source_sha256": {
+      "scripts/run_research_direction_proxy_lineage_reconciliation.py": "00ac712a8c63e5822627915bcaacc5cf8fd362eb15513bc1822afe2a11c708f7",
+      "src/trotterlib/research_direction_proxy_lineage_reconciliation.py": "3ca3fdee8f485ed8576e0273e76bcc9cf653fba0ecd094c2ce1aa6918af36302"
+    }
+  },
+  "schema_version": "research_direction_proxy_lineage_reconciliation_v1",
+  "scope": {
+    "all_metric_q16_q32_reconciliation_performed": false,
+    "backend_execution_included": false,
+    "external_instance_included": false,
+    "final_total_cost_evaluation_performed": false,
+    "legacy_holdouts_refit": false,
+    "new_compilation_performed": false,
+    "q_above_32_directly_validated": false,
+    "schedule_or_cost_reoptimization_performed": false,
+    "scientific_superiority_claimed": false,
+    "state_preparation_included": false
+  },
+  "source_evidence": {
+    "latest_fresh_proxy": {
+      "content_fingerprint": "5ce368a94daa39680b4edc0cfb59b30168d8bc159ad2538b29cb67b928e3cdba",
+      "path": "artifacts/research_direction_full_opt2/2026-09-25/wp11_all_r_opt2_coherent_analysis_20260925_065827.json",
+      "sha256": "3a86b356a0e602506577141c1c1d7ced7acb06f629818ca5a6bc59fb33633a88"
+    },
+    "legacy_fixed_holdouts": {
+      "content_fingerprint": "87f66c8944dedfaa9fe5f0edf864d2a2a07cb82e23245af4f5944f90bda83ad6",
+      "path": "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json",
+      "sha256": "a8a051fd4db3a4baa3fdf8431d46b5b9e1c21b015ec6d21e8685f7bcc98ed7e5"
+    }
+  },
+  "stage": "A0-proxy-lineage-reconciliation",
+  "summary": {
+    "full_basis_q16_q32_pass_5_percent": false,
+    "maximum_direct_rz_relative_standard_error": {
+      "absolute_relative_error": 0.034404011397745175,
+      "absolute_residual": 4070.4375,
+      "absolute_standardized_residual": 1.0538043658415739,
+      "axis": "cosine",
+      "combined_standard_error": 3862.6121051883542,
+      "direct_mean": 118312.875,
+      "direct_relative_standard_error": 0.013865389739485829,
+      "direct_standard_error": 1640.4541230740695,
+      "holdout_partition": "m08_fresh_holdout",
+      "holdout_sample_count": 8,
+      "metric": "rz_count",
+      "model_fingerprint": "7d4021f14b7c3d8ba21127d76dd66e1d96920a997a3f29b9e9291087b0528cdf",
+      "policy": "full_basis_shared",
+      "prediction": 122383.3125,
+      "prediction_standard_error": 3496.9533232854133,
+      "q_m": 16,
+      "signed_relative_error": 0.034404011397745175,
+      "signed_residual": 4070.4375,
+      "within_1p96_combined_standard_errors": true,
+      "within_5_percent": true
+    },
+    "maximum_full_basis_absolute_relative_error": {
+      "absolute_relative_error": 0.05597865674912205,
+      "absolute_residual": 12997.1875,
+      "absolute_standardized_residual": 1.7624390257169782,
+      "axis": "cosine",
+      "combined_standard_error": 7374.545905049175,
+      "direct_mean": 232181.125,
+      "direct_relative_standard_error": 0.004946162453847221,
+      "direct_standard_error": 1148.4055629670083,
+      "holdout_partition": "m08_fresh_holdout",
+      "holdout_sample_count": 8,
+      "metric": "rz_count",
+      "model_fingerprint": "7d4021f14b7c3d8ba21127d76dd66e1d96920a997a3f29b9e9291087b0528cdf",
+      "policy": "full_basis_shared",
+      "prediction": 245178.3125,
+      "prediction_standard_error": 7284.579052259917,
+      "q_m": 32,
+      "signed_relative_error": 0.05597865674912205,
+      "signed_residual": 12997.1875,
+      "within_1p96_combined_standard_errors": true,
+      "within_5_percent": false
+    },
+    "maximum_selected_policy_absolute_relative_error": {
+      "absolute_relative_error": 0.04911236093712892,
+      "absolute_residual": 10546.4375,
+      "absolute_standardized_residual": 2.012152530848661,
+      "axis": "cosine",
+      "combined_standard_error": 5241.370789893275,
+      "direct_mean": 214741.0,
+      "direct_relative_standard_error": 0.0032806389144373303,
+      "direct_standard_error": 704.4876811251868,
+      "holdout_partition": "m08_fresh_holdout",
+      "holdout_sample_count": 8,
+      "metric": "rz_count",
+      "model_fingerprint": "8eb6c4ddaee095f89e8a5f34b550621f750701707b614a63b04dd499ff018796",
+      "policy": "support_run_le_1",
+      "prediction": 225287.4375,
+      "prediction_standard_error": 5193.810245310211,
+      "q_m": 32,
+      "signed_relative_error": 0.04911236093712892,
+      "signed_residual": 10546.4375,
+      "within_1p96_combined_standard_errors": false,
+      "within_5_percent": true
+    },
+    "maximum_selected_policy_absolute_standardized_residual": {
+      "absolute_relative_error": 0.04911236093712892,
+      "absolute_residual": 10546.4375,
+      "absolute_standardized_residual": 2.012152530848661,
+      "axis": "cosine",
+      "combined_standard_error": 5241.370789893275,
+      "direct_mean": 214741.0,
+      "direct_relative_standard_error": 0.0032806389144373303,
+      "direct_standard_error": 704.4876811251868,
+      "holdout_partition": "m08_fresh_holdout",
+      "holdout_sample_count": 8,
+      "metric": "rz_count",
+      "model_fingerprint": "8eb6c4ddaee095f89e8a5f34b550621f750701707b614a63b04dd499ff018796",
+      "policy": "support_run_le_1",
+      "prediction": 225287.4375,
+      "prediction_standard_error": 5193.810245310211,
+      "q_m": 32,
+      "signed_relative_error": 0.04911236093712892,
+      "signed_residual": 10546.4375,
+      "within_1p96_combined_standard_errors": false,
+      "within_5_percent": true
+    },
+    "selected_policy_q16_q32_pass_5_percent": true
+  }
+}

@@ -3,6 +3,88 @@
 事前検証カタログの実施ID・work packageと、以下のstatus、専用文書、artifact、runner、testの対応は
 [事前検証カタログ実施証拠索引](docs/research/prevalidation_catalog_evidence_map.md)を参照する。
 
+## 2026-09-25 P-B/P-C/P-A theme selection
+
+3件のfingerprint済みpilotを4問で比較した。P-Bは現H4 gridで実用的なenergy/signal選択差がなく停止、
+P-Cは未使用geometry/deltaの差分bias予測gateを通過、P-Aは強いproject baselineに対して未使用列長で
+compiled-cost改善とoperator同値性を示した。
+
+選定はP-Aを暫定主題、P-Cを副候補、P-Bを現範囲で停止とする。ただしP-Aの広い回路合成文献に対する
+新規性は未監査で、statusは`provisional_pending_prior_art_and_novelty_audit`である。次は計算拡張でなく
+先行研究・新規性監査を行い、通過した場合だけblind外部列/compiler holdoutを事前登録する。
+H12、長RPE総cost、追加$q>32$は次の必須作業ではない。selection artifact fingerprintは
+`7daa49c3c30b453d69d52830d0889ce04104cc5a0f02a2c3083517486d575fbb`。
+
+## 2026-09-25 P-A interval-aware joint synthesis pilot
+
+固定H4 linear chain、1.0 Å、STO-3G、8 qubit、DF rank 12、`L_D=3`、$\delta=0.02$、K=2、
+topology-free Qiskit 1.3.0 opt1で、full共有、event-support、現行`support_run_le_1`、interval-union DPを
+比較した。training列長2/4/6とは独立なholdout列長3/5/8を各8 trajectory評価した。
+
+DPのpooled RZは現行比-7.194%、各長で改善、最大個別悪化+0.231%、4候補内oracle regret/full RZは
+0.00482%、basis列変更率87.5%、operator最大残差$3.126\times10^{-15}$だった。事前固定した6 gateは
+全て通過した。full wrapper、coupling/backend/noise、RPE総cost、科学的優位性または外部文献上の新規性は
+評価していない。artifact fingerprintは
+`1a9840a4ee46daa6e3749272593acf3e8ae29be9fcecc1a05b0bd9ea817fbc37`。専用testは`3 passed`、全suiteは`582 passed, 2 skipped, 4 warnings`で失敗0。
+
+## 2026-09-25 P-C geometry signed-error pilot
+
+H4 linear chainの0.80、0.85、1.00、1.15、1.20 Åについて、STO-3G、8 qubit、DF rank 12、
+`L_D=3`、二次partial-$S_2$を固定し、geometry間エネルギー差の符号付きPF biasを評価した。
+0.80/1.00/1.20 Åをcoefficient training、0.85/1.15 Åをgeometry holdout、$\delta=0.4$をdelta holdoutとした。
+
+geometry holdout coefficient誤差は最大4.409%、delta holdout誤差は最大0.840%。0.85→1.15 Å、
+$\delta=0.4$の二重holdoutではactual/predicted difference biasが-0.00169849/-0.00178045 Haで、
+endpoint-bias正規化誤差は2.539%だった。coefficient spanは63.303%、$\delta=0.1$隣接pairの
+最小cancellation ratioは9.786%で、固定した5 gateを全て通過した。
+
+従って案Cを主研究候補として残した。後続のP-Aと3案比較は完了し、現在はP-Cを副候補とする。これは0.80--1.20 Åの
+単一H4/DF/PF条件に限るlocal dirty-worktree結果で、potential-energy surface、別系移送、RPE/RTE
+cost、回路compile、最終総costまたは科学的優位性の評価ではない。artifact fingerprintは
+`8280564081b8a5b4a29f8a0f139ea9be2fa940c9e1e89d8219076304dce185ad`。専用testは`3 passed`、
+PF/P-B/P-C関連は`10 passed`、全suiteは`576 passed, 2 skipped, 4 warnings`で失敗0だった。
+詳細は[P-C geometry signed-error pilot](docs/research_direction_geometry_energy_difference_pilot.md)。
+
+## 2026-09-25 P-B energy-bias / target-weight pilot
+
+研究テーマ選定の最初のpilotとして、固定H4 linear chain、1.0 Å、STO-3G、8 qubit、DF rank 12の
+`pf_delta_validation_v5`を再解析した。二次partial-$S_2$、$L_D=0,...,11$、6 delta、$q=1,2,4$の
+12 artifact・72候補を使用し、新しいHamiltonian/PF計算または回路compileは行っていない。
+
+screeningの最小target weightは0.9999803239、最小q別signal半径は0.9999744904で、全候補が通過した。
+各deltaのenergy-only最良とsignal-screened後のenergy最良は全て`L_D=0`で一致し、選択不一致は0/6。
+ordering inversionは118組あるが、最大leakage比1.00349で、意味のあるinversionは0だった。
+
+従って、このH4・二次partial-$S_2$・prefix gridではenergy-only基準の実質的なsignal failureを
+確認できず、案Bを主題へ進めない。これは他PF family、小gap、別系に対する一般的な棄却ではなく、
+weight問題を区別するstate-action診断も未検証である。後続のP-CとP-Aを含む比較では現範囲の停止を維持した。
+
+artifact fingerprintは`e7b6e98d1a4049f5e061c4ec47de891edf40689ee9ccfc03f62c9022ea350197`、専用
+testは`3 passed`、全suiteは`573 passed, 2 skipped, 4 warnings`で失敗0だった。詳細は
+[P-B signal-weight pilot](docs/research_direction_signal_weight_pilot.md)。
+新しい結果はlocal dirty-worktree解析であり、immutable CIまたは外部再現ではない。
+
+## 2026-09-25 A0 fresh-proxy / legacy-holdout再照合
+
+新規compileなしで、固定H4 linear chain、1.0 Å、STO-3G、8 qubit、DF rank 12、
+`L_D=3, delta=0.02, r=32, K=2`、Qiskit 1.3.0 optimization level 2の同一条件を再照合した。
+最新fresh-32の`q=1,2`だけでaffine compiled-RZ proxyを固定し、旧M08/opt2の`q=16,32`
+各8 trajectoryをfitへ混ぜずholdoutとして適用した。
+
+selected `support_run_le_1`の絶対相対誤差は`q=16`で3.345%、`q=32`で4.911%となり、
+既存5%基準を両方通過した。旧holdoutのdirect RZ relative SE最大は、full basisの`q=16`に
+おける1.3865%で2%基準内だった。ただしselected `q=32`の標準化残差は2.012で1.96を僅かに
+超える。非gatingのfull-basis診断は`q=32`で5.598%となり5%を超えた。
+
+従って、最新fresh較正の適用domainを`q=32`まで接続できるのは、この単一cellのselected-policy
+compiled RZに限る。全metric、他の`delta/r`、`q>32`へは拡張しない。schedule・cost再最適化、
+最終総cost、科学的優位性の評価も行っておらず、外部instance pilotを次のdiscriminator候補とする
+既存方針は変更しない。artifact fingerprintは
+`b786b1d48995d320c2301718cc958018462cf1cbb05fcfa19ca6cc9460dd2295`、専用testは`3 passed`。
+M06-F関連全体は`13 passed, 2 skipped`、全suiteは`570 passed, 2 skipped, 4 warnings`で
+失敗0、manifest検査もpassした。
+詳細は[M06-F all-r coherent opt2](docs/research_direction_full_opt2.md)を参照する。
+
 ## 2026-09-25 M06-F fresh-32 and coherent opt2 result
 
 事前登録済みfresh-32拡張は固定H4 linear chain、1.0 Å、STO-3G、8 qubit、DF rank 12、

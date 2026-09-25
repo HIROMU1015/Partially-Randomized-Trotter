@@ -1856,12 +1856,217 @@
         "reason": "Always validates the committed 51-task audit and coherent-analysis schema, fingerprints, gates, direct-RZ evidence, candidate comparison, mixed-context difference, and tamper rejection; raw reconstruction is optional when the untracked server evidence is available."
       },
       {
+        "path": "src/trotterlib/research_direction_proxy_lineage_reconciliation.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_full_opt2"
+        ],
+        "reason": "Implements A0 by validating fixed source fingerprints and compiler/snapshot context, fitting only the latest fresh q=1,2 RZ proxy, and scoring legacy q=16,32 points as excluded fixed holdouts."
+      },
+      {
+        "path": "scripts/run_research_direction_proxy_lineage_reconciliation.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_full_opt2"
+        ],
+        "reason": "Runs the no-new-compilation A0 reconciliation and writes a non-overwriting fingerprinted artifact with source hashes, command, commit, and dirty-worktree provenance."
+      },
+      {
+        "path": "tests/test_research_direction_proxy_lineage_reconciliation.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_full_opt2",
+          "tests"
+        ],
+        "reason": "Tests the A0 selected-policy q=16,32 result, preserves the full-basis q=32 failure and scope limits, rebuilds the numerical summary, and rejects tampering."
+      },
+      {
         "path": "artifacts/research_direction_full_opt2/2026-09-25",
         "kind": "directory",
         "supports": [
           "research_direction_full_opt2"
         ],
-        "reason": "Contains timestamped integrated audits and coherent analyses. The designated final pair has content fingerprints b39960a630746e2c05009f8d7e13bd982ff565b3a3c70a7abfc2dc65dc7009ca and 5ce368a94daa39680b4edc0cfb59b30168d8bc159ad2538b29cb67b928e3cdba."
+        "reason": "Contains timestamped integrated audits and coherent analyses plus the A0 proxy-lineage reconciliation. The designated fingerprints are b39960a630746e2c05009f8d7e13bd982ff565b3a3c70a7abfc2dc65dc7009ca, 5ce368a94daa39680b4edc0cfb59b30168d8bc159ad2538b29cb67b928e3cdba, and b786b1d48995d320c2301718cc958018462cf1cbb05fcfa19ca6cc9460dd2295."
+      },
+      {
+        "path": "artifacts/research_direction_full_opt2/2026-09-25/m06f_a0_proxy_lineage_reconciliation_v1.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_full_opt2"
+        ],
+        "reason": "Fingerprint-bound A0 result: selected-policy RZ errors are 3.345% and 4.911% at fixed q=16,32 holdouts, while the non-gating full-basis q=32 diagnostic is 5.598%; no new compilation or reoptimization is claimed."
+      },
+      {
+        "path": "src/trotterlib/research_direction_signal_weight_pilot.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_signal_weight_pilot"
+        ],
+        "reason": "Reanalyzes the fixed H4 pf_delta_validation_v5 grid, separates target phase bias, target weight, q-specific signal radius, and one-step state-action loss, and applies explicit P-B screening and stop rules."
+      },
+      {
+        "path": "scripts/run_research_direction_signal_weight_pilot.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_signal_weight_pilot"
+        ],
+        "reason": "Loads the exact twelve H4 PF validation inputs and writes a non-overwriting fingerprinted P-B analysis artifact with source, input, commit, command, and dirty-worktree provenance."
+      },
+      {
+        "path": "tests/test_research_direction_signal_weight_pilot.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_signal_weight_pilot",
+          "tests"
+        ],
+        "reason": "Tests the 72-candidate reanalysis, scoped negative result, next-pilot routing, artifact fingerprint, and rejection of an overstated general no-go claim."
+      },
+      {
+        "path": "docs/research_direction_signal_weight_pilot.md",
+        "kind": "file",
+        "supports": [
+          "research_direction_signal_weight_pilot"
+        ],
+        "reason": "Documents the P-B question, fixed H4 scope, screening thresholds, null selection result, stop decision, and limits."
+      },
+      {
+        "path": "artifacts/research_direction_signal_weight_pilot/2026-09-25/pb_h4_s2_prefix_grid_v1.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_signal_weight_pilot"
+        ],
+        "reason": "Fingerprint-bound P-B result e7b6e98d1a4049f5e061c4ec47de891edf40689ee9ccfc03f62c9022ea350197: all 72 candidates pass weight/signal screening, all six energy-only choices remain unchanged after screening, and no meaningful ordering inversion is observed."
+      },
+      {
+        "path": "src/trotterlib/research_direction_geometry_energy_difference_pilot.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_geometry_energy_difference_pilot"
+        ],
+        "reason": "Fits signed second-order PF-bias coefficients, interpolates unused geometries, evaluates an unused delta and geometry-pair energy difference, and applies fixed P-C advancement and scope gates."
+      },
+      {
+        "path": "scripts/run_research_direction_geometry_energy_difference_pilot.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_geometry_energy_difference_pilot"
+        ],
+        "reason": "Loads the exact five H4 geometry artifacts and writes a non-overwriting P-C artifact with source, input, command, commit, dirty-worktree, and discarded-preflight provenance."
+      },
+      {
+        "path": "tests/test_research_direction_geometry_energy_difference_pilot.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_geometry_energy_difference_pilot",
+          "tests"
+        ],
+        "reason": "Tests geometry and pair holdout evaluation, fingerprint tamper detection, DF-rank-12 exact-energy scope, and final-cost and potential-surface claim guards."
+      },
+      {
+        "path": "docs/research_direction_geometry_energy_difference_pilot.md",
+        "kind": "file",
+        "supports": [
+          "research_direction_geometry_energy_difference_pilot"
+        ],
+        "reason": "Documents the P-C question, fixed H4 geometry/delta holdouts, preregistered pilot gates, signed-error and energy-difference results, decision, and limits."
+      },
+      {
+        "path": "artifacts/research_direction_geometry_energy_difference_pilot/2026-09-25/inputs",
+        "kind": "directory",
+        "supports": [
+          "research_direction_geometry_energy_difference_pilot"
+        ],
+        "reason": "Contains the five fingerprinted pf_delta_validation_v5 inputs at H4 distances 0.80, 0.85, 1.00, 1.15, and 1.20 Angstrom used by P-C."
+      },
+      {
+        "path": "artifacts/research_direction_geometry_energy_difference_pilot/2026-09-25/pc_h4_geometry_signed_error_v1.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_geometry_energy_difference_pilot"
+        ],
+        "reason": "Fingerprint-bound P-C result 8280564081b8a5b4a29f8a0f139ea9be2fa940c9e1e89d8219076304dce185ad: geometry coefficient holdout error 4.409%, delta holdout error 0.840%, and combined pair normalized error 2.539%."
+      },
+      {
+        "path": "src/trotterlib/research_direction_joint_synthesis_pilot.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_pilot"
+        ],
+        "reason": "Implements interval-aware dynamic programming over source-basis runs, preserved support-union basis completion, four-policy compilation, independent holdouts, equivalence probes, and fixed P-A gates."
+      },
+      {
+        "path": "scripts/run_research_direction_joint_synthesis_pilot.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_pilot"
+        ],
+        "reason": "Loads the exact H4 snapshot and WP06-b baseline, fixes compiler and seeds, and writes a non-overwriting fingerprinted P-A artifact with source and dirty-worktree provenance."
+      },
+      {
+        "path": "tests/test_research_direction_joint_synthesis_pilot.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_pilot",
+          "tests"
+        ],
+        "reason": "Tests preserved support-union completion, scope and tamper guards, and the committed P-A artifact decision and baseline contract."
+      },
+      {
+        "path": "docs/research_direction_joint_synthesis_pilot.md",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_pilot"
+        ],
+        "reason": "Documents the P-A question, strong four-policy baseline contract, independent event-sequence holdout, gates, results, provisional decision, and limits."
+      },
+      {
+        "path": "artifacts/research_direction_joint_synthesis_pilot/2026-09-25/pa_h4_interval_union_joint_synthesis_v1.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_joint_synthesis_pilot"
+        ],
+        "reason": "Fingerprint-bound P-A result 1a9840a4ee46daa6e3749272593acf3e8ae29be9fcecc1a05b0bd9ea817fbc37: pooled holdout RZ improves 7.194% over the current policy, all six gates pass, and maximum operator residual is 3.126e-15."
+      },
+      {
+        "path": "src/trotterlib/research_direction_theme_selection.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_theme_selection"
+        ],
+        "reason": "Validates and fingerprint-binds P-B, P-C, and P-A, applies the adopted four-question comparison, and preserves provisional novelty and scope guards."
+      },
+      {
+        "path": "scripts/run_research_direction_theme_selection.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_theme_selection"
+        ],
+        "reason": "Loads the three fixed pilot artifacts and writes a non-overwriting theme-selection artifact with input hashes, source hashes, command, commit, and dirty-worktree provenance."
+      },
+      {
+        "path": "tests/test_research_direction_theme_selection.py",
+        "kind": "file",
+        "supports": [
+          "research_direction_theme_selection",
+          "tests"
+        ],
+        "reason": "Tests the provisional P-A, secondary P-C, stopped P-B decision, quantitative evidence preservation, upstream tamper rejection, and novelty-scope guard."
+      },
+      {
+        "path": "docs/research_direction_theme_selection.md",
+        "kind": "file",
+        "supports": [
+          "research_direction_theme_selection"
+        ],
+        "reason": "Documents the four-question comparison, provisional P-A selection, P-C fallback, P-B scoped stop, and the prior-art audit required before a blind holdout."
+      },
+      {
+        "path": "artifacts/research_direction_theme_selection/2026-09-25/theme_selection_pb_pc_pa_v1.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_theme_selection"
+        ],
+        "reason": "Fingerprint-bound selection result 7daa49c3c30b453d69d52830d0889ce04104cc5a0f02a2c3083517486d575fbb: P-A is provisional pending novelty audit, P-C is secondary, and P-B stops in the current scope."
       }
     ],
     "quarantined": [
@@ -2786,17 +2991,17 @@
     {
       "id": "research_direction_full_opt2",
       "status": "source_present_no_current_ci",
-      "summary": "For the fixed H4 linear chain at 1.0 Angstrom, STO-3G, 8 qubits, DF rank 12, L_D=3/12, delta=0.01/0.02, K=2, and one topology-free Qiskit 1.3.0 optimization-level-2 rz/sx/x/cx compiler context with seed 17, M06-F completed the 36-task initial batch and the preregistered 15-task fresh-32 extension. The integrated audit is 51/51/0 expected/completed/failed with no missing, partial, duplicate, corrupt, seed-overlap, aggregate, source-hash, CPU-only, or thread-setting failure. All twelve randomized groups pass: maximum direct-RZ relative SE is 1.9844%, selected-policy RZ holdout error 4.4898%, and selected all-metric holdout error 4.7488%. Coherent beta/alpha/integer-shot/schedule reoptimization selects delta=0.02 for both candidates and gives no-preparation compiled-RZ point estimates 1.263314e12 and 1.327822e12 with 13,588 and 11,162 shots. L_D=3 is 4.858% lower at the point estimate, but local, per-r measured-discrepancy, and 25% transfer intervals all overlap. The common preparation-cost point break-even is 26,590,335 RZ equivalents per shot, while robust intervals overlap already at P=0. This resolves the missing all-r compiler context only within the measured H4 domain; q>32, preparation, external-instance, coupling/backend, H12, final-total-cost, superiority, and immutable-reproduction claims remain open. Committed-artifact validation passes in a clean checkout, while raw checkpoint reconstruction remains an optional integration test where the untracked server evidence is available.",
+      "summary": "For the fixed H4 linear chain at 1.0 Angstrom, STO-3G, 8 qubits, DF rank 12, L_D=3/12, delta=0.01/0.02, K=2, and one topology-free Qiskit 1.3.0 optimization-level-2 rz/sx/x/cx compiler context with seed 17, M06-F completed the 36-task initial batch and the preregistered 15-task fresh-32 extension. The integrated audit is 51/51/0 expected/completed/failed with no missing, partial, duplicate, corrupt, seed-overlap, aggregate, source-hash, CPU-only, or thread-setting failure. All twelve randomized groups pass: maximum direct-RZ relative SE is 1.9844%, selected-policy RZ holdout error 4.4898%, and selected all-metric holdout error 4.7488%. Coherent beta/alpha/integer-shot/schedule reoptimization selects delta=0.02 for both candidates and gives no-preparation compiled-RZ point estimates 1.263314e12 and 1.327822e12 with 13,588 and 11,162 shots. L_D=3 is 4.858% lower at the point estimate, but local, per-r measured-discrepancy, and 25% transfer intervals all overlap. The common preparation-cost point break-even is 26,590,335 RZ equivalents per shot, while robust intervals overlap already at P=0. A0 then used no new compilation: the latest fresh q=1,2 proxy predicts legacy fixed q=16,32 selected-policy RZ within 3.345% and 4.911%, while the non-gating full-basis q=32 diagnostic is 5.598%; this updates only the exact selected-policy H4 cell through q=32 and does not change routing. This resolves the missing all-r compiler context only within the measured H4 domain; q>32, preparation, external-instance, coupling/backend, H12, final-total-cost, superiority, and immutable-reproduction claims remain open. Committed-artifact validation passes in a clean checkout, while raw checkpoint reconstruction remains an optional integration test where the untracked server evidence is available.",
       "counts": {
-        "implementation_source_files": 5,
-        "generator_scripts": 4,
+        "implementation_source_files": 6,
+        "generator_scripts": 5,
         "documentation_files": 2,
-        "dedicated_test_source_files": 3,
-        "dedicated_test_functions": 12,
-        "clean_checkout_dedicated_tests_passed": 10,
+        "dedicated_test_source_files": 4,
+        "dedicated_test_functions": 15,
+        "clean_checkout_dedicated_tests_passed": 13,
         "clean_checkout_optional_raw_tests_skipped": 2,
-        "related_local_tests_passed": 36,
-        "local_scientific_artifacts": 7,
+        "related_local_tests_passed": 39,
+        "local_scientific_artifacts": 8,
         "upstream_fingerprinted_artifacts": 6,
         "physical_molecule_sizes": 1,
         "physical_qubits": 8,
@@ -2821,20 +3026,91 @@
         "integrated_expected_tasks": 51,
         "integrated_completed_tasks": 51,
         "integrated_failed_tasks": 0,
-        "complete_local_test_suite_passed": 567,
+        "complete_local_test_suite_passed": 570,
         "complete_local_test_suite_failed": 0,
         "complete_local_test_suite_skipped": 2,
         "complete_local_test_suite_warnings": 4
       },
       "completion_criteria": [
         "Preserve the initial, extension, aggregate, provenance, audit, and coherent-analysis fingerprints and retain the original eight-trajectory cells separately from fresh replacements.",
+        "Preserve A0 as a no-new-compilation fixed-holdout reconciliation: only selected-policy RZ for the exact H4 L_D=3, delta=0.02, r=32, K=2 cell is connected through q=32; full-basis q=32, all metrics, other cells, and q>32 remain outside the passing domain.",
         "Keep optimization level 2, basis, compiler seed, topology-free context, input hashes, physical trajectory definitions, calibration q=1,2, and fixed holdout q=8 explicit when reusing this H4 evidence.",
         "Treat L_D=3 as a no-preparation point preference only; all propagated intervals overlap and no robust superiority is established.",
-        "Preregister a small external-instance pilot before execution and recalibrate its physical instance and compiler context rather than transferring the H4 point model.",
-        "Add direct q>32 evidence only when the external-pilot design or resource-model error budget requires it; do not infer long-q validity from q=8 or the focused r=32 q<=32 evidence.",
+        "Keep the former external-instance pilot deferred while the adopted P-B, P-C, P-A theme-selection sequence is executed; redesign it only if the selected theme needs that holdout.",
+        "Add direct q>32 evidence only when the selected theme or resource-model error budget requires it; do not infer long-q validity from q=8 or the focused r=32 q<=32 evidence.",
         "Measure concrete candidate-specific state-preparation circuits before incorporating preparation into a total-cost claim.",
         "Keep committed-artifact validation runnable in clean checkout and run raw checkpoint reconstruction only where the untracked server evidence is available.",
         "Publish immutable clean-checkout or CI regeneration evidence; do not claim H12 transfer, backend/noise validity, final total cost, or scientific superiority from M06-F."
+      ]
+    },
+    {
+      "id": "research_direction_signal_weight_pilot",
+      "status": "source_present_no_current_ci",
+      "summary": "P-B reanalyzed twelve committed H4 pf_delta_validation_v5 artifacts covering second-order partial-S2, L_D=0..11, delta=0.0125..0.4, q=1/2/4, and 72 candidates. Minimum target weight is 0.9999803239 and minimum q-signal radius is 0.9999744904, so all candidates pass the preregistered 0.995/0.99 screening. At every delta, the energy-only and signal-screened energy choice is L_D=0. There are 118 numerical energy/weight ordering inversions, but the largest leakage disadvantage factor is only 1.00349 and no inversion or near-tie difference meets the meaningful-effect rule. P-B therefore stops in this fixed H4 grid and does not advance theme B; this does not reject signal-weight effects for other PF families, gaps, geometries, or systems. The next theme-selection pilot is P-C geometry signed error.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 1,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 3,
+        "local_artifacts": 1,
+        "upstream_fingerprinted_artifacts": 12,
+        "candidate_points": 72,
+        "ld_values": 12,
+        "delta_values": 6,
+        "q_values": 3,
+        "energy_signal_selection_disagreements": 0,
+        "pairwise_ordering_inversions": 118,
+        "meaningful_pairwise_ordering_inversions": 0,
+        "new_hamiltonian_or_pf_computations": 0,
+        "new_circuit_compilations": 0,
+        "final_cost_evaluations": 0,
+        "complete_local_test_suite_passed": 573,
+        "complete_local_test_suite_skipped": 2,
+        "complete_local_test_suite_warnings": 4,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Preserve the exact twelve input fingerprints and the 72-candidate H4 second-order partial-S2 scope when reusing this null pilot.",
+        "Do not call the one-step state-action diagnostic a validated selector because the reference grid contains no practical weight or signal failure.",
+        "Do not generalize the null result to other PF families, gaps, geometries, molecules, q values, or state-preparation conditions.",
+        "Keep P-B stopped in the current grid after the completed P-C/P-A comparison; revisit signal-weight diagnostics only if another scoped study naturally exposes a candidate failure."
+      ]
+    },
+    {
+      "id": "research_direction_geometry_energy_difference_pilot",
+      "status": "source_present_no_current_ci",
+      "summary": "For H4 linear chains at 0.80, 0.85, 1.00, 1.15, and 1.20 Angstrom, STO-3G, 8 qubits, DF rank 12, L_D=3, and second-order partial-S2, P-C fitted signed dominant-eigenphase PF-bias coefficients at delta=0.0125..0.2 using 0.80/1.00/1.20 Angstrom as geometry training points. Coefficient predictions at the unused 0.85/1.15 geometries have maximum relative error 4.409%; predictions at the unused delta=0.4 have maximum error 0.840%. For the double holdout 0.85 to 1.15 Angstrom at delta=0.4, actual and predicted PF difference errors are -0.00169849 and -0.00178045 Hartree, with prediction error 2.539% of the larger endpoint PF bias. The coefficient span is 63.303% and the minimum adjacent-pair cancellation ratio at delta=0.1 is 9.786%, so all five pilot gates pass and theme C remains a primary-theme candidate. Exact means the DF-rank-12 sector reference; no potential-energy-surface, cross-system, circuit-cost, RPE/RTE, final-cost, or superiority claim is made.",
+      "counts": {
+        "implementation_source_files": 1,
+        "analysis_runner_scripts": 1,
+        "upstream_compute_runner_scripts": 1,
+        "documentation_files": 1,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 3,
+        "dedicated_local_test_cases_passed": 3,
+        "local_artifacts": 6,
+        "input_pf_validation_artifacts": 5,
+        "geometry_points": 5,
+        "coefficient_training_geometries": 3,
+        "geometry_holdouts": 2,
+        "coefficient_fit_delta_values": 5,
+        "delta_holdouts": 1,
+        "new_hamiltonian_and_pf_computations": 5,
+        "new_circuit_compilations": 0,
+        "rpe_or_rte_cost_evaluations": 0,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0,
+        "related_local_test_cases_passed": 10,
+        "complete_local_test_suite_passed": 576,
+        "complete_local_test_suite_skipped": 2,
+        "complete_local_test_suite_warnings": 4
+      },
+      "completion_criteria": [
+        "Preserve the five exact input hashes and distinguish the 0.80/1.00/1.20 coefficient-training geometries from the 0.85/1.15 geometry holdouts and delta=0.4 holdout.",
+        "Interpret exact energies only as DF-rank-12 physical-sector references, not untruncated molecular FCI values.",
+        "Do not extrapolate the smooth signed-error result outside 0.80--1.20 Angstrom, to another molecule, DF rank, L_D, PF family, orbital/fragment tracking policy, or RPE/RTE cost.",
+        "Retain P-C as the secondary candidate during the P-A novelty audit; if C is selected, next test continuous orbital and DF-fragment tracking and a held-out geometry region where cancellation may break."
       ]
     },
     {
@@ -3240,6 +3516,77 @@
         "Repeat the executable-window check for every shortlisted H12 L_D rather than transferring the midpoint-split coefficient.",
         "Reject any paper-Eq.-D6 point with |sin(E0 delta)| below the recorded threshold without silently substituting a small-delta fallback; retain the shift-invariant and legacy-cosine values as diagnostics only.",
         "Keep these coefficient results separate from finite-RTE, shot, compiled-cost, and final-cost claims."
+      ]
+    },
+    {
+      "id": "research_direction_joint_synthesis_pilot",
+      "status": "source_present_no_current_ci",
+      "summary": "For H4 linear chain at 1.0 Angstrom, STO-3G, 8 qubits, DF rank 12, L_D=3, delta=0.02, finite Taylor cutoff 2, and one topology-free Qiskit 1.3.0 optimization-level-1 rz/sx/x/cx compiler context, P-A compared full-basis sharing, per-event support restriction, the fixed support_run_le_1 policy, and an interval support-union dynamic program with adjacent-basis cancellation enabled for all policies. On 24 independent holdouts at unused sequence lengths 3, 5, and 8, the candidate lowers pooled RZ by 7.194% versus the current policy and improves every length; maximum individual RZ increase is 0.231%, four-policy oracle regret is 0.00482% of full-basis RZ, and 87.5% of trajectories change basis choice. Three independent operator probes have maximum residual 3.126e-15. All six pilot gates pass, so P-A advances as a provisional theme candidate. This does not establish literature novelty, another physical/compiler context, full-wrapper cost, final total cost, or scientific superiority.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 1,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 3,
+        "dedicated_local_test_cases_passed": 3,
+        "local_artifacts": 1,
+        "training_trajectories": 18,
+        "independent_holdout_trajectories": 24,
+        "operator_equivalence_probes": 3,
+        "holdout_sequence_lengths": 3,
+        "compared_policies": 4,
+        "changed_holdout_trajectories": 21,
+        "multi_application_interval_trajectories": 22,
+        "support_union_interval_trajectories": 24,
+        "compiler_contexts": 1,
+        "full_wrapper_compilations": 0,
+        "final_cost_evaluations": 0,
+        "complete_local_test_suite_passed": 582,
+        "complete_local_test_suite_skipped": 2,
+        "complete_local_test_suite_warnings": 4,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Preserve the exact H4 snapshot, WP06-b fingerprint, event seeds, compiler context, four-policy baseline contract, and separate training, holdout, and operator-probe streams.",
+        "Treat the compiled oracle as the minimum among four listed policies only, not a global circuit optimum, and report classical policy-search cost in future extensions.",
+        "Complete a dedicated prior-art and novelty audit covering fermionic Gaussian circuits, basis-change sharing, and block or peephole synthesis before finalizing P-A as the primary theme.",
+        "Only if an independent contribution remains, predeclare one blind holdout on an unused snapshot or event family and an unused compiler or coupling context.",
+        "Do not infer full partial-S2 wrapper, RPE, backend, H12, final-total-cost, or scientific-superiority claims from this single H4 topology-free pilot."
+      ]
+    },
+    {
+      "id": "research_direction_theme_selection",
+      "status": "source_present_no_current_ci",
+      "summary": "The completed P-B, P-C, and P-A artifacts were validated and compared using four adopted questions: baseline difference, one clear counterexample/improvement/prediction, unused-condition prediction, and a one-sentence completion claim. P-B stops in the current H4 scope because no practical energy/signal selection disagreement was found. P-C remains a secondary candidate after passing its geometry and delta holdouts. P-A is the provisional primary because it gives a direct 7.194% pooled-RZ improvement over a strong current baseline on unused sequence lengths while preserving operator equivalence. The selection remains provisional_pending_prior_art_and_novelty_audit; broader circuit-synthesis novelty is not established. The next action is a literature novelty audit, followed by a predeclared blind external-sequence and compiler holdout only if an independent contribution remains. H12 and long-RPE expansion are not the next required tasks.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 1,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 3,
+        "dedicated_local_test_cases_passed": 3,
+        "local_artifacts": 1,
+        "upstream_fingerprinted_pilot_artifacts": 3,
+        "themes_compared": 3,
+        "provisional_primary_themes": 1,
+        "secondary_themes": 1,
+        "stopped_themes_in_current_scope": 1,
+        "new_physical_simulations": 0,
+        "new_circuit_compilations": 0,
+        "literature_novelty_audits_completed": 0,
+        "final_cost_evaluations": 0,
+        "complete_local_test_suite_passed": 582,
+        "complete_local_test_suite_skipped": 2,
+        "complete_local_test_suite_warnings": 4,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Preserve the exact P-B, P-C, and P-A input fingerprints and keep the selection artifact as a no-new-compute synthesis.",
+        "Keep P-A provisional until a dedicated prior-art and novelty audit identifies an independent contribution relative to broader circuit-synthesis methods.",
+        "If P-A survives that audit, predeclare an unused physical or event-family holdout and an unused compiler or coupling context before further computation.",
+        "If P-A reduces to known methods or fails the blind holdout, return to P-C and test orbital and DF-fragment tracking as a mechanism for cancellation and breakdown rather than merely adding nearby geometries.",
+        "Do not expand H12, q above 32, or final RPE cost merely to support the theme-selection result; require the selected theme to justify each expansion.",
+        "Publish immutable clean-checkout or CI evidence before external reuse and do not claim final scientific superiority from the local dirty-worktree pilots."
       ]
     }
   ],

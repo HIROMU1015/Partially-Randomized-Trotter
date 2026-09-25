@@ -89,6 +89,11 @@
 - `research_direction_full_opt2.py`
 - `research_direction_full_opt2_completion.py`
 - `research_direction_full_opt2_extension_analysis.py`
+- `research_direction_proxy_lineage_reconciliation.py`
+- `research_direction_signal_weight_pilot.py`
+- `research_direction_geometry_energy_difference_pilot.py`
+- `research_direction_joint_synthesis_pilot.py`
+- `research_direction_theme_selection.py`
 
 同名のrunner、test、文書、artifactと合わせて読む。モジュールが実装済みでも、対象範囲が
 科学的に検証済みとは限らない。
