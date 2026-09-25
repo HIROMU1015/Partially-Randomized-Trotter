@@ -50,6 +50,8 @@
 | 9 | [P-A非退化mechanism validation結果](../research_direction_joint_synthesis_mechanism_validation.md) | 30/30 taskで分割・plan差・追加RZ改善が0だった結果と、P-A停止・P-C復帰判断を記録する。 |
 | 10 | [P-C geometry tracking・breakdown事前登録](pc_geometry_tracking_breakdown_preregistration.md) | 8 geometry、2 policy、blind region、4 pair、7 gate、固定停止規則を計算前に記録する。 |
 | 11 | [P-C geometry tracking・breakdown結果](../research_direction_geometry_tracking_breakdown.md) | 16/16 task、prefix変更0、stretch予測破れ、current H4 family停止を記録する。 |
+| 12 | [P-D energy・tail Pareto事前登録](pd_energy_tail_pareto_preregistration.md) | 固定5公式、`L_D=3` development、`L_D=4` blind、7 gateと停止規則を記録する。 |
+| 13 | [P-D energy・tail Pareto結果](../research_direction_energy_tail_pareto.md) | energy-onlyとtail-awareのblind逆転、条件付き候補判断、未検証のsigned-time/internal-`H_D` gateを記録する。 |
 
 ## 研究ノート
 

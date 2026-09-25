@@ -9,6 +9,9 @@
 - [`../VALIDATION_STATUS.md`](../VALIDATION_STATUS.md)：再現可能性、失効理由、未解決事項
 - [`../docs/research/研究概要・現状.md`](../docs/research/研究概要・現状.md)：現在採用している結果の要約
 
+- [`research_direction_energy_tail_pareto/2026-09-25/`](research_direction_energy_tail_pareto/2026-09-25/)：
+  P-Dの固定expected tasksとexact two-block Pareto結果。負時間sampled RTEと内部`H_D`誤差は
+  未検証なので、結果文書と一組で使う
 manifestは次で検査できる。
 
 ```bash

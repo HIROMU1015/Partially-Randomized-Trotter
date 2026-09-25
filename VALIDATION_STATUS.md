@@ -4,6 +4,32 @@
 [事前検証カタログ実施証拠索引](docs/research/prevalidation_catalog_evidence_map.md)を参照する。
 
 
+## 2026-09-25 P-D energy係数・random-tail負担Pareto監査
+
+H4 linear chain、1.0 Å、STO-3G、8 qubit、4-electron sector、DF rank 12の固定snapshotで、
+二次、標準/新四次、Yoshida/Morales八次の5公式を比較した。`L_D=3`は探索を開示したdevelopment、
+expected-task固定前に未確認の`L_D=4`をblind holdoutとした。非可換3次元toyの局所/global
+operator次数と、`H_D`内部だけの高次化が外側Strangの二次を変えないことも確認した。
+
+`delta=0.4`、energy tolerance `1e-6 Ha`では、両splitともenergy-only選択は
+`8th(Morales)`、tail-aware選択は`4th(new_2)`となった。新4次はMorales 8次より
+`Gamma_R`が56.702%小さく、full exponential stage数も35から11へ減る。係数・次数、
+nested/global区別、finite-RTE配分、development/blind逆転、unitarity、target weightの7 gateは
+全て通過し、statusを
+`advance_pd_as_conditional_candidate_pending_signed_time_and_inner_hd_validation`とした。
+
+これはexact dense `H_D/H_R`二blockと解析的finite-RTE normalizationのlocal dirty-worktree
+evidenceである。負のtail係数を含むsampled operator、identity/control位相、実際のfragment列での
+`H_D`内部誤差、compiled回路、RPE総cost、H12、全PF family最適性、科学的優位性は未評価である。
+従ってP-Dは正式主題ではなく条件付き候補で、次はsigned-time RTE oracleと内部`H_D`誤差だけを
+検証する。
+
+expected fingerprintは`f302dafce37fb90f3acfe32aa83edf563dd1609015a1b3d50972880e13407c7d`、
+result fingerprintは`846362ab808e9b26e5648f7f9d12d541dd01a6f9c2954e45d9194b4dfef8d835`。
+専用testは`4 passed`、P-D追加後のlocal全suiteは`602 passed, 2 skipped, 4 warnings`、失敗0。
+これはimmutable CIまたは外部独立再現ではない。詳細は
+[P-D energy・tail Pareto監査](docs/research_direction_energy_tail_pareto.md)。
+
 ## 2026-09-25 P-C geometry tracking・breakdown validation
 
 H4 linear chain、STO-3G、8 qubit、4-electron sector、DF rank 12、`L_D=3`、

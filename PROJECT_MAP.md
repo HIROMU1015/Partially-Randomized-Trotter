@@ -34,9 +34,12 @@ P-Cは0.80--1.20 Åの局所pilotを通過したが、事前登録した0.70--1.
 pair予測、continuity診断、mechanism discriminationも固定gateを通らず、
 `stop_pc_current_h4_family_as_primary`となった。
 
-従って、現時点でA/B/Cに確認済みの主研究候補はない。否定結果と既存run-level policyは保持し、
-次は未実施のP-D（有限PF familyのenergy係数対random-tail負担Pareto監査）を独立pilotとして
-事前登録するか、R3/R6/R8へ問いを再定義するかを選ぶ。H12や長RPEは自動的な次作業にしない。
+従って、A/B/Cに確認済みの主研究候補はない。否定結果と既存run-level policyは保持する。
+続くP-Dでは、固定した5公式のexact two-block監査において、energy-only選択のMorales 8次と
+tail-aware選択の新4次が`L_D=3` developmentと`L_D=4` blindの両方で逆転し、新4次は
+`Gamma_R`を56.702%、stage数を35から11へ減らした。P-Dは条件付き候補へ進めるが、負時間RTEの
+sampled operator/control位相と実際の`H_D`内部誤差は未検証である。次はこの2点だけを判定し、
+通過前にH12、長RPE、compiled総costへ広げない。
 
 それ以前の中心課題は、DF Hamiltonianを決定論部分とランダム部分へ分けたpartial-$S_2$について、有限RTE、
 RPEの信号半径・測定回数、1 shot当たりのコンパイル後回路コストを接続することだった。PF係数、有限RTE、
@@ -229,6 +232,17 @@ H12、長RPE総cost、coupling/noiseは次の必須作業ではない。
 blind coefficientは3/5、pairは1/4だけが固定誤差基準内で、診断正解率は50%だった。
 7 gate中3 gate通過でcurrent H4 familyのP-Cを主研究候補から停止した。
 先行P-C pilotの訂正版exact-energy artifactも同時に参照する。
+
+P-D energy係数・random-tail負担Pareto監査は
+`src/trotterlib/research_direction_energy_tail_pareto.py`、
+`scripts/run_research_direction_energy_tail_pareto.py`、
+`tests/test_research_direction_energy_tail_pareto.py`、
+[事前登録](docs/research/pd_energy_tail_pareto_preregistration.md)、
+[結果文書](docs/research_direction_energy_tail_pareto.md)、
+`artifacts/research_direction_energy_tail_pareto/2026-09-25/`を一組として読む。
+development `L_D=3`とblind `L_D=4`で同じselection reversalを確認し、7 gate全てを通過した。
+ただしexact two-block pilotであり、負時間RTEと内部`H_D`誤差の次gateを通るまでは
+`P-D-conditional-candidate`として扱う。
 
 ## ファイルの状態区分
 

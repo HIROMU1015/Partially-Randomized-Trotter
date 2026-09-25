@@ -1,0 +1,281 @@
+{
+  "configuration": {
+    "basis": "STO-3G",
+    "blind_holdout_ld": 4,
+    "coefficient_windows": {
+      "2": [
+        0.025,
+        0.05,
+        0.1,
+        0.2
+      ],
+      "4": [
+        0.025,
+        0.05,
+        0.1,
+        0.2
+      ],
+      "8": [
+        0.2,
+        0.25,
+        0.32,
+        0.4
+      ]
+    },
+    "development_ld": 3,
+    "df_rank": 12,
+    "direct_deltas": [
+      0.025,
+      0.05,
+      0.1,
+      0.2,
+      0.25,
+      0.32,
+      0.4
+    ],
+    "finite_rte_audit_deltas": [
+      0.02,
+      0.4
+    ],
+    "formula_labels": [
+      "2nd",
+      "4th",
+      "4th(new_2)",
+      "8th(Yoshida)",
+      "8th(Morales)"
+    ],
+    "gate_thresholds": {
+      "coefficient_sum_absolute_tolerance": 1e-12,
+      "coefficient_symmetry_absolute_tolerance": 1e-12,
+      "decision_delta": 0.4,
+      "decision_energy_tolerance_hartree": 1e-06,
+      "finite_rte_taylor_order": 2,
+      "finite_rte_total_short_steps_per_outer_step": 64,
+      "minimum_gamma_reduction": 0.2,
+      "minimum_target_weight": 0.9995,
+      "nested_global_minimum_slope_separation": 1.5,
+      "order_slope_absolute_tolerance": 0.35
+    },
+    "geometry_angstrom": 1.0,
+    "molecule": "H4 linear chain",
+    "n_electrons": 4,
+    "n_qubits": 8,
+    "toy_global_step_counts": [
+      2,
+      3,
+      4
+    ],
+    "toy_global_total_time": 0.8,
+    "toy_local_times": [
+      0.2,
+      0.25,
+      0.32,
+      0.4
+    ]
+  },
+  "content_fingerprint": "f302dafce37fb90f3acfe32aa83edf563dd1609015a1b3d50972880e13407c7d",
+  "decision_rules": [
+    "advance_pd_as_conditional_candidate_pending_signed_time_and_inner_hd_validation",
+    "stop_pd_reversal_did_not_transfer",
+    "stop_pd_no_randomization_specific_selection_difference",
+    "stop_pd_due_formula_or_order_definition_failure"
+  ],
+  "exploration_disclosure": {
+    "blind_ld4_candidate_grid_inspected_before_freeze": false,
+    "development_ld3_candidate_grid_inspected_before_freeze": true,
+    "reason": "LD3 was used to choose a numerically resolved delta window; LD4 is the frozen transfer holdout for the research decision."
+  },
+  "method": "pd_k01_k03_two_block_energy_tail_pareto_v1",
+  "provenance": {
+    "command": ".venv311/bin/python scripts/run_research_direction_energy_tail_pareto.py --dry-run",
+    "cpu_count_visible": 32,
+    "evidence_status": "local_dirty_worktree_not_externally_reproduced",
+    "generated_at_utc": "2026-09-25T13:03:33.249976+00:00",
+    "git_commit": "9bc1a2b40ecf67f4acca817aeae401c10677a444",
+    "git_worktree_status_before_generation": [
+      "?? docs/research/pd_energy_tail_pareto_preregistration.md",
+      "?? scripts/run_research_direction_energy_tail_pareto.py",
+      "?? src/trotterlib/research_direction_energy_tail_pareto.py",
+      "?? tests/test_research_direction_energy_tail_pareto.py"
+    ],
+    "mode": "freeze_expected_tasks_before_blind_ld4",
+    "numpy_version": "1.26.4",
+    "python_version": "3.11.0rc1",
+    "scipy_version": "1.14.1",
+    "source_sha256": {
+      "Evaluation of gate numbers for ground state energy calculations using higher-order.pdf": "2f72759037ca61f470ae996bf055b17686af9640a290e53cca8b5c4c2465aae1",
+      "Greatly-improved-higher-order-product-formulae-for-quantum-simulation.pdf": "c78a4b07b2a0d7f103b16aea05f16f8cdcb0f08aa691bda9fc5cebd2bdc3ad90",
+      "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz": "13e4b10d2347ed900fe4aa4b2238128ebe735a48988e321b9e4fabac4d092a3b",
+      "scripts/run_research_direction_energy_tail_pareto.py": "b68ffb99896b3c0bfbcf735ef6c190c1825242eac0ca012202eac9476643caa9",
+      "src/trotterlib/pf_decomposition.py": "d6dd0024e5312d69e43b2a498773dc8529bd5f50da39cb3df28fa9f7652e2e26",
+      "src/trotterlib/product_formula.py": "39c4e03748fcab03ea7e64936a19372cb5f1bd1bc9f72a4f09cef58c3c202eca",
+      "src/trotterlib/research_direction_energy_tail_pareto.py": "c9a3c5c4488be88bdb10b50d260939bfb7a1caf1f8699e3f45d6747c668558be"
+    }
+  },
+  "schema_version": "research_direction_energy_tail_pareto_expected_v1",
+  "scope": {
+    "compiled_circuit_cost_evaluated": false,
+    "finite_rte_normalization_analytic_audit": true,
+    "finite_rte_sampled_operator_evaluated": false,
+    "global_pf_optimality_claimed": false,
+    "h12_evaluated": false,
+    "internal_hd_fragment_error_in_h4_pareto_evaluated": false,
+    "negative_time_circuit_oracle_evaluated": false,
+    "rpe_total_cost_evaluated": false,
+    "scientific_superiority_claimed": false,
+    "two_block_exact_hd_hr_reference": true
+  },
+  "task_count": 10,
+  "tasks": [
+    {
+      "direct_deltas": [
+        0.025,
+        0.05,
+        0.1,
+        0.2,
+        0.25,
+        0.32,
+        0.4
+      ],
+      "formula_label": "2nd",
+      "ld": 3,
+      "role": "development_previously_inspected",
+      "task_id": "LD3_2nd"
+    },
+    {
+      "direct_deltas": [
+        0.025,
+        0.05,
+        0.1,
+        0.2,
+        0.25,
+        0.32,
+        0.4
+      ],
+      "formula_label": "4th",
+      "ld": 3,
+      "role": "development_previously_inspected",
+      "task_id": "LD3_4th"
+    },
+    {
+      "direct_deltas": [
+        0.025,
+        0.05,
+        0.1,
+        0.2,
+        0.25,
+        0.32,
+        0.4
+      ],
+      "formula_label": "4th(new_2)",
+      "ld": 3,
+      "role": "development_previously_inspected",
+      "task_id": "LD3_4th_new_2"
+    },
+    {
+      "direct_deltas": [
+        0.025,
+        0.05,
+        0.1,
+        0.2,
+        0.25,
+        0.32,
+        0.4
+      ],
+      "formula_label": "8th(Yoshida)",
+      "ld": 3,
+      "role": "development_previously_inspected",
+      "task_id": "LD3_8th_Yoshida"
+    },
+    {
+      "direct_deltas": [
+        0.025,
+        0.05,
+        0.1,
+        0.2,
+        0.25,
+        0.32,
+        0.4
+      ],
+      "formula_label": "8th(Morales)",
+      "ld": 3,
+      "role": "development_previously_inspected",
+      "task_id": "LD3_8th_Morales"
+    },
+    {
+      "direct_deltas": [
+        0.025,
+        0.05,
+        0.1,
+        0.2,
+        0.25,
+        0.32,
+        0.4
+      ],
+      "formula_label": "2nd",
+      "ld": 4,
+      "role": "blind_holdout_not_inspected_before_freeze",
+      "task_id": "LD4_2nd"
+    },
+    {
+      "direct_deltas": [
+        0.025,
+        0.05,
+        0.1,
+        0.2,
+        0.25,
+        0.32,
+        0.4
+      ],
+      "formula_label": "4th",
+      "ld": 4,
+      "role": "blind_holdout_not_inspected_before_freeze",
+      "task_id": "LD4_4th"
+    },
+    {
+      "direct_deltas": [
+        0.025,
+        0.05,
+        0.1,
+        0.2,
+        0.25,
+        0.32,
+        0.4
+      ],
+      "formula_label": "4th(new_2)",
+      "ld": 4,
+      "role": "blind_holdout_not_inspected_before_freeze",
+      "task_id": "LD4_4th_new_2"
+    },
+    {
+      "direct_deltas": [
+        0.025,
+        0.05,
+        0.1,
+        0.2,
+        0.25,
+        0.32,
+        0.4
+      ],
+      "formula_label": "8th(Yoshida)",
+      "ld": 4,
+      "role": "blind_holdout_not_inspected_before_freeze",
+      "task_id": "LD4_8th_Yoshida"
+    },
+    {
+      "direct_deltas": [
+        0.025,
+        0.05,
+        0.1,
+        0.2,
+        0.25,
+        0.32,
+        0.4
+      ],
+      "formula_label": "8th(Morales)",
+      "ld": 4,
+      "role": "blind_holdout_not_inspected_before_freeze",
+      "task_id": "LD4_8th_Morales"
+    }
+  ]
+}
