@@ -293,7 +293,30 @@ finite-RTE phase/radius分離FR-1は
 [結果文書](docs/finite_rte_phase_amplitude_validation.md)、
 `artifacts/finite_rte_phase_amplitude/2026-09-26/`を一組として読む。
 33条件・99状態でG0/G1/G3/G4を通過し、G2は不通過だった。判定は
-`GO_FR2_MECHANISM_ONLY`であり、利用可能情報による実用的GOではないためFR-2は開始しない。
+`GO_FR2_MECHANISM_ONLY`であり、利用可能情報による実用的GOではないため旧FR-2は開始しない。
+その後のFR-R0で正scalar分離、情報層、強いbaseline、非一様系のdecision gateを正式契約へ固定した。
+FR-R1a事後解析は完了し、正scalar処理後にFR固有の片側認証差が残らない
+`POSTHOC_SCALAR_EXPLAINS_OLD_GAIN`となった。続くFR-R1b非一様4×4検証では、同情報FR境界が
+norm境界より厳しい8 witnessを得た一方、固定予算の片側認証差は0だった。現行判断は
+`MECHANISM_ONLY_NO_PRACTICAL_GO`で、強制停止中である。
+
+FR-1後の再設計は、[提案文書](fr1_revised_research_plan_20260926.md)と
+[FR-R0正式契約](docs/research/fr_revision_scalar_structure_contract.md)を読む。後者が現行の規範で、
+正scalar分離、I0/I1/I2、共通$\gamma$と最適化比較、FR-R1の事前登録要件を固定する。
+statusは`FR_R1B_COMPLETE_MECHANISM_ONLY_NO_PRACTICAL_GO_MANDATORY_STOP`である。
+[FR-R1a実装](src/trotterlib/fr_revision_fr1a_posthoc.py)、
+[runner](scripts/run_fr_revision_fr1a_posthoc.py)、
+[test](tests/test_fr_revision_fr1a_posthoc.py)、
+[FR-R1a事後計画](docs/research/fr_revision_fr1a_posthoc_plan.md)と
+[FR-R1a結果](docs/fr_revision_fr1a_posthoc.md)、
+[artifact](artifacts/fr_revision_fr1a_posthoc/2026-09-26/)、
+[FR-R1b事前登録](docs/research/fr_revision_nonuniform_preregistration.md)、
+[FR-R1b実装](src/trotterlib/fr_revision_nonuniform.py)、
+[runner](scripts/run_fr_revision_nonuniform.py)、
+[test](tests/test_fr_revision_nonuniform.py)、
+[FR-R1b結果](docs/fr_revision_nonuniform.md)、
+[artifact](artifacts/fr_revision_nonuniform/2026-09-27/)を一組として読む。
+FR-R2は開始していない。
 
 ## ファイルの状態区分
 
@@ -305,6 +328,7 @@ finite-RTE phase/radius分離FR-1は
 - `docs/research/数値実験・評価計画.md`
 - `VALIDATION_STATUS.md`
 - `artifacts/validation_manifest.json`
+- `docs/research/fr_revision_scalar_structure_contract.md`（FR-R0の現行比較契約）
 
 ### 現行実装・検証
 
@@ -323,6 +347,8 @@ finite-RTE phase/radius分離FR-1は
   現在のP-A/P-C/P-B判断より前の評価であり、一次証拠または現行仕様ではない
 - `partial_randomized_trotter_research_redesign_20260925.md`：上記レビューを受けたテーマ再設計入力。
   pilotの着想と停止条件を確認する補助資料で、実施結果と現在の判断は正本文書を優先する
+- `fr1_revised_research_plan_20260926.md`：FR-1後の再設計入力。採択済み部分の正本は
+  `docs/research/fr_revision_scalar_structure_contract.md`を優先する
 
 これらは削除していないが、現在の研究方針や最新結果を確定する根拠には使わない。
 

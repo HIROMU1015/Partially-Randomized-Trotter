@@ -13,6 +13,7 @@ FR-0は解析契約の確認であり、新しい数値検証、回路compile、
 - [先行研究対応表](finite_rte_phase_amplitude_prior_art.md)
 - [FR-1事前登録](finite_rte_phase_amplitude_fr1_preregistration.md)
 - [研究再設計案](../../research_redesign_phase_amplitude_20260926.md)
+- [FR-R0正scalar分離・構造比較契約](fr_revision_scalar_structure_contract.md)
 - [既存finite-RTE検証](../finite_rte_signal_validation.md)
 - [RTE規約](../rte_conventions.md)
 
@@ -284,7 +285,7 @@ FR-1ではこの意味を変えず、新しい境界計算だけを追加した�
 - FR-0数式契約：上記命題の範囲で成立。
 - 先行研究：限定監査では同じ問い・同じ非可換state-conditioned境界を確認できないが、world-firstは主張しない。
 - FR-1結果：G0/G1/G3/G4通過、G2不通過、`GO_FR2_MECHANISM_ONLY`。
-- 現在の決定：FR-2を開始せず、oracle依存を除ける独立差分があるか再設計する。
+- 現在の決定：旧FR-2を開始しない。後続のFR-R0で正scalar分離、情報層、強いbaselineを固定したが、FR-R1a/bは未事前登録・未開始である。
 - 未実施：H4/H12、回路compile、RPE総cost、noise/backend、FR-2以降。
 - 禁止する主張：一般にtight、既存norm boundより常に強い、資源優位性を実証した、研究主題を採用済み。
 

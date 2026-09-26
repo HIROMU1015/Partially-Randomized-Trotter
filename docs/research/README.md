@@ -65,6 +65,12 @@
 | 24 | [finite-RTE位相・信号半径分離の先行研究監査](finite_rte_phase_amplitude_prior_art.md) | finite LCU/RTE、PF spectral解析、randomized平均信号、phase-lag、nonunitary分解との限定差分を記録する。 |
 | 25 | [FR-1非可換toy機構試験 事前登録](finite_rte_phase_amplitude_fr1_preregistration.md) | 2×2 toyの固定grid、available-information baseline、G0--G4、FR-1後の強制停止を定める。 |
 | 26 | [FR-1 finite-RTE位相・信号半径分離結果](../finite_rte_phase_amplitude_validation.md) | 33条件・99状態、G0/G1/G3/G4通過、G2不通過、`GO_FR2_MECHANISM_ONLY`とFR-2停止を記録する。 |
+| 27 | [FR-1後の研究方針改訂案](../../fr1_revised_research_plan_20260926.md) | involution toyの特殊性、正scalar分離、非一様4×4案をまとめた再設計入力。正式契約と衝突する場合は次項を優先する。 |
+| 28 | [FR-R0正scalar分離・構造比較契約](fr_revision_scalar_structure_contract.md) | 正scalar、I0/I1/I2、共通$\gamma$/最適化baseline、FR-R1事前登録要件、定量的GO/STOPを固定する。 |
+| 29 | [FR-R1a正scalar事後再解析計画](fr_revision_fr1a_posthoc_plan.md) | 既存33条件・99状態の固定artifactだけを説明監査し、旧G2とdecisionを変更しないposthoc規則を定める。 |
+| 30 | [FR-R1b非一様4×4事前登録](fr_revision_nonuniform_preregistration.md) | 20条件・61状態行・2 semantic control、固定状態、強いbaseline、R0--R7と強制停止を結果前に固定する。 |
+| 31 | [FR-R1a正scalar事後再解析結果](../fr_revision_fr1a_posthoc.md) | 33条件・99状態を再構成し、891 method recordのsoundness違反0、片側FR認証差0、`POSTHOC_SCALAR_EXPLAINS_OLD_GAIN`を記録する。 |
+| 32 | [FR-R1b非一様4×4結果](../fr_revision_nonuniform.md) | 20条件・61状態で非一様FR固有のstrict gain 8件を確認したが、固定予算の片側認証差0により`MECHANISM_ONLY_NO_PRACTICAL_GO`で停止した結果を記録する。 |
 
 ## 研究ノート
 

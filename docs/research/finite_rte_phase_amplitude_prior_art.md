@@ -26,6 +26,7 @@
 | Yi and Crosson, *Spectral analysis of product formulas for quantum simulation*, npj Quantum Information 8, 37 (2022) | effective Hamiltonian、eigenvalue/eigenvector/gap解析 | unitary PFの固有値誤差と固有ベクトル誤差の分離、state-specific条件 | finite-RTE平均は一般に非unitary。本案はPF spectral theoryの一般化を主張せず、観測複素信号へ限定する |
 | Li, *Some Error Analysis for the Quantum Phase Estimation Algorithms*, arXiv:2111.10430 / J. Phys. A 55, 325303 (2022) | Theorems 2.2、3.1、4.1 | 不完全入力、近似unitary、random unitaryをresidual、gap、concentrationから評価 | 状態情報を使うこと自体は既知。有限RTEの平均Hadamard信号をradial/tangentialへ分ける同じ境界ではない |
 | Casares et al., *Theory and practice of Trotter product formulas for quantum chemistry*, arXiv:2606.30741 | 公開PDF v1 Appendix F、確認版F8--F14 | random orderingによるspectral shift、dephasing/damping、broadeningの平均信号解析 | 位相と減衰の区別は既知。本案はfinite paired-Taylor cutoffの局所相対誤差と利用可能情報による認証に限定する |
+| Gu et al., *Noise-Resilient Phase Estimation with Randomized Compiling*, PRL 130, 250601 (2023) | Theorem 1、Supplemental Material I | randomized compiling下のcoherent bias、一次Hermitian perturbationと位相への寄与 | 一次Hermitian成分が位相を変えないという観察は本案固有でない。FR-R0は正scalar除去後の非一様成分と同情報baselineの比較だけを候補差分とする |
 | Van der Houwen--SommeijerおよびPapakostas--Tsitourasのphase-lag/dissipation解析 | DOI:10.1137/0726012、DOI:10.1137/S1064827597315509 | scalar数値積分でphase-lagとamplitude/dissipationの次数が異なり得る | scalar Taylor展開の次数差は新規性でない。FR-1では可換対照と非可換列を明示的に分ける |
 | Hu and Jin, *Quantum Simulation of Non-Unitary Dynamics via Amplitude-Phase Separation*, arXiv:2602.09575 v2 (2026) | Cartesian decompositionとalgorithmic framework | 一般nonunitary生成子のcoherent/dissipative分解を使うsimulation framework | 本案はfinite-RTE推定量の局所誤差境界でありgeneric nonunitary simulationではない。`APS`を名称・略称として使わない |
 | de Montbrun--GerchinovitzおよびPoiani et al. | arXiv:2308.00978、arXiv:2406.03033 | multi-fidelity optimization/best-arm identificationとcost-aware認証 | 本案はoptimizerを新規化しない。後に設計へ使う場合も既知の選択法との差分を別途監査する |
@@ -69,6 +70,7 @@ state-dependent phase estimationの追加検索を行う。
 - https://www.nature.com/articles/s41534-022-00548-w
 - https://arxiv.org/abs/2111.10430
 - https://arxiv.org/abs/2606.30741
+- https://arxiv.org/abs/2208.04100
 - https://doi.org/10.1137/0726012
 - https://doi.org/10.1137/S1064827597315509
 - https://arxiv.org/abs/2602.09575

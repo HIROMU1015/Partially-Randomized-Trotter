@@ -2541,6 +2541,137 @@
           "finite_rte_phase_amplitude_fr1"
         ],
         "reason": "Exact complete pre-run FR-1 preregistration copy with SHA-256 bc8066d7a31a3f46f476d2c591c7f0dad5e6f49023fc261dc518b61e2ec600a3; its grid and gates govern the result."
+      },
+      {
+        "path": "fr1_revised_research_plan_20260926.md",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr_revision_r0"
+        ],
+        "reason": "External research-redesign input identifying the involution-toy special case, positive-scalar recentering, strong baselines, and a nonuniform 4x4 proposal; it is contextual input rather than the normative contract."
+      },
+      {
+        "path": "docs/research/fr_revision_scalar_structure_contract.md",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr_revision_r0"
+        ],
+        "reason": "Normative FR-R0 contract fixing the positive-scalar algebra, physical-radius accounting, I0/I1/I2 information layers, common-gamma and optimized-scalar comparisons, FR-R1 preregistration requirements, and mandatory stop."
+      },
+      {
+        "path": "docs/research/fr_revision_fr1a_posthoc_plan.md",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr_revision_r1_plans"
+        ],
+        "reason": "Frozen post-hoc plan for the existing 33-condition, 99-state FR-1 artifact. It preserves the old G2 failure, fixes common-gamma and optimized-scalar comparisons, and has SHA-256 a0aa2e75d2e304e008646f138211ed1e4da4d98def697f8503b07c3e7b56c95f."
+      },
+      {
+        "path": "docs/research/fr_revision_nonuniform_preregistration.md",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr_revision_r1_plans",
+          "finite_rte_phase_amplitude_fr_revision_fr1b"
+        ],
+        "reason": "Pre-run FR-R1b contract freezing 20 matrix conditions, 61 state rows, two semantic controls, fixed states across q, phase budgets, strong scalar baselines, gates R0-R7, and SHA-256 1bc2a72fa8dec98e2bdbe3504e65366d8daa93f7a7797837622ba7545607515e."
+      },
+      {
+        "path": "src/trotterlib/fr_revision_fr1a_posthoc.py",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr_revision_fr1a"
+        ],
+        "reason": "Reconstructs the frozen 33-condition FR-1 grid, audits source hashes and 99 state fingerprints, removes positive scalar amplitude, evaluates nine norm/FR/oracle methods, and preserves the old FR-1 decision."
+      },
+      {
+        "path": "scripts/run_fr_revision_fr1a_posthoc.py",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr_revision_fr1a"
+        ],
+        "reason": "Runs only the frozen FR-R1a post-hoc analysis, records local provenance and source hashes, and writes non-overwriting expected and result artifacts."
+      },
+      {
+        "path": "tests/test_fr_revision_fr1a_posthoc.py",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr_revision_fr1a",
+          "tests"
+        ],
+        "reason": "Checks frozen expected scope, deterministic reconstruction, scalar-only classification, 891-record soundness, mandatory stop, tamper evidence, and non-overwriting serialization."
+      },
+      {
+        "path": "docs/fr_revision_fr1a_posthoc.md",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr_revision_fr1a"
+        ],
+        "reason": "Reports the post-hoc source audit, main five-row scalar comparison, zero one-sided FR certifications, scalar-only classification, unchanged old decision, and unstarted FR-R1b scope."
+      },
+      {
+        "path": "artifacts/fr_revision_fr1a_posthoc/2026-09-26/fr_revision_fr1a_expected_v1.json",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr_revision_fr1a"
+        ],
+        "reason": "Source-hash-bound expected specification with content fingerprint 83fa10248e71cad40fa0ba87877c49f88f6755c24470c232fb41ccff4205f4a9 and file SHA-256 332f8d5efe53659c5f3ec1c53ea36e116ca1f685df376496089e3ee536e22d3f."
+      },
+      {
+        "path": "artifacts/fr_revision_fr1a_posthoc/2026-09-26/fr_revision_fr1a_posthoc_v1.json",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr_revision_fr1a"
+        ],
+        "reason": "Post-hoc result with content fingerprint 5cc5c29656b9ceb69a00674cee5987b93c7cc8d9403892c57b341a51c878a18a and file SHA-256 3fab6acdde3798dc7005101713ecaa708f5cf0b5fc24d8c77f80939dcaa6a610: all 891 method records are sound and the classification is POSTHOC_SCALAR_EXPLAINS_OLD_GAIN."
+      },
+      {
+        "path": "src/trotterlib/fr_revision_nonuniform.py",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr_revision_fr1b"
+        ],
+        "reason": "Implements the frozen nonuniform 4x4 FR-R1b matrix grid, fixed-state reuse, positive-scalar norm/FR comparisons, semantic controls, R0-R7 gates, and mandatory-stop classification."
+      },
+      {
+        "path": "scripts/run_fr_revision_nonuniform.py",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr_revision_fr1b"
+        ],
+        "reason": "Separates pre-result expected-specification freezing from execution, verifies preregistration and source hashes, and writes non-overwriting FR-R1b artifacts."
+      },
+      {
+        "path": "tests/test_fr_revision_nonuniform.py",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr_revision_fr1b",
+          "tests"
+        ],
+        "reason": "Checks frozen scope, completeness, fixed-state reuse, information-layer separation, gate priority, mandatory stop, tamper evidence, and non-overwriting serialization."
+      },
+      {
+        "path": "docs/fr_revision_nonuniform.md",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr_revision_fr1b"
+        ],
+        "reason": "Reports the 20-condition, 61-state FR-R1b result, eight same-information strict-gain witnesses, zero one-sided budget witnesses, R5 failure, and MECHANISM_ONLY_NO_PRACTICAL_GO stop decision."
+      },
+      {
+        "path": "artifacts/fr_revision_nonuniform/2026-09-27/fr_revision_nonuniform_expected_v1.json",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr_revision_fr1b"
+        ],
+        "reason": "Pre-result source-hash-bound expected specification with content fingerprint 408b5a6cf007ff7cbaec804435ea867ec33fd1d1c08af87509f2316ddd8c2fb4, configuration fingerprint b12f477f89e570090e75e57809868308f8b29df10b3177508276ef14a0d1df1c, and file SHA-256 93b462e311a6759fb2a4120abb4272fced87824ad0aa1c99b15bc32ec672b7f4."
+      },
+      {
+        "path": "artifacts/fr_revision_nonuniform/2026-09-27/fr_revision_nonuniform_r1b_v1.json",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr_revision_fr1b"
+        ],
+        "reason": "Machine-readable FR-R1b result with content fingerprint affac0ae8132450ccb2de3512b6a463a3f9d7b1ac8a6f12cc38303ac75e891d4 and file SHA-256 e2a6f9326951fe67e979022dc733704e0c036d3342ab3cb317c5f77b885aeebc: R0-R4/R6/R7 pass, R5 fails, and the mandatory-stop classification is MECHANISM_ONLY_NO_PRACTICAL_GO."
       }
     ],
     "quarantined": [
@@ -4157,6 +4288,10 @@
         "dedicated_test_source_files": 1,
         "dedicated_test_functions": 4,
         "dedicated_local_test_cases_passed": 4,
+        "related_local_test_cases_passed": 8,
+        "complete_local_test_suite_passed": 623,
+        "complete_local_test_suite_skipped": 2,
+        "complete_local_test_suite_warnings": 4,
         "local_artifacts": 2,
         "expected_tasks": 30,
         "completed_tasks": 30,
@@ -4436,6 +4571,153 @@
         "Preserve the G2 failure and GO_FR2_MECHANISM_ONLY label: oracle-state improvement demonstrates a mechanism but does not authorize FR-2.",
         "Do not infer H4, chemistry, compiled-circuit, sampled-shot, long-RPE, H12, backend/noise, or final total-cost performance from this two-level deterministic matrix validation.",
         "Before new computation, freeze a new contract for either an oracle-free high-overlap certificate or a structural kappa*s bound; otherwise stop this direction."
+      ]
+    },
+    {
+      "id": "finite_rte_phase_amplitude_fr_revision_r0",
+      "status": "source_present_no_current_ci",
+      "summary": "FR-R0 preserves the completed FR-1 G2 failure and GO_FR2_MECHANISM_ONLY decision while fixing a revised question after removing positive common scalar amplitude. It defines the exact involution control, physical Gamma_c/B attenuation, I0/I1/I2 information layers, same-information common-gamma comparison, optimized scalar norm baseline, fixed-state requirement across q, and quantitative FR-R1b GO/STOP categories. FR-R1a and FR-R1b were subsequently completed as separate result sets below without changing this contract.",
+      "counts": {
+        "documentation_files": 2,
+        "implementation_source_files": 0,
+        "generator_scripts": 0,
+        "dedicated_test_source_files": 0,
+        "numerical_artifacts": 0,
+        "new_hamiltonian_evaluations": 0,
+        "diagonalizations": 0,
+        "rte_sampling_runs": 0,
+        "circuit_compilations": 0,
+        "h4_evaluations": 0,
+        "h12_evaluations": 0,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Preserve the completed FR-1 G2 failure and GO_FR2_MECHANISM_ONLY decision; FR-R is a new redesign unit, not a reclassification.",
+        "Treat dense exact spectra, exact signal radius, and post-result scalar choices as I2 oracle diagnostics that cannot support a practical GO.",
+        "Compare scalar-NORM and scalar-FR first at the same gamma, then separately compare each method under its preregistered allowed scalar optimization and information cost.",
+        "Freeze FR-R1a post-hoc analysis and FR-R1b numerical preregistration in separate complete documents; do not tune FR-R1b thresholds from FR-R1a results.",
+        "Reuse one fixed input state across q for each (nu,H_D), and freeze sequence, inner-step, negative-time, K4, and signal-near-zero controls before computation.",
+        "Do not start H4, H12, P-D S2, long RPE, full compiled cost, or FR-R2 before the mandatory post-FR-R1b stop and redesign."
+      ]
+    },
+    {
+      "id": "finite_rte_phase_amplitude_fr_revision_r1_plans",
+      "status": "source_present_no_current_ci",
+      "summary": "FR-R1a is frozen as a post-hoc reanalysis of only the completed 33-condition, 99-state FR-1 evidence and cannot reclassify its G2 failure. FR-R1b independently preregisters a 4x4 nonuniform-spectrum test with 18 primary plus negative-time and K4 control conditions, 61 state rows, two semantic controls, fixed states across q, fixed phase budgets, same-information scalar baselines, gates R0-R7, and a mandatory post-run stop. Both analyses were subsequently executed without changing this plan; their result sets appear below.",
+      "counts": {
+        "documentation_files": 2,
+        "implementation_source_files": 0,
+        "generator_scripts": 0,
+        "dedicated_test_source_files": 0,
+        "numerical_artifacts": 0,
+        "fr1a_source_conditions": 33,
+        "fr1a_source_state_rows": 99,
+        "fr1b_expected_matrix_conditions": 20,
+        "fr1b_expected_state_rows": 61,
+        "fr1b_expected_semantic_controls": 2,
+        "preregistered_phase_budgets": 3,
+        "preregistered_gates": 8,
+        "new_hamiltonian_evaluations": 0,
+        "diagonalizations": 0,
+        "rte_sampling_runs": 0,
+        "circuit_compilations": 0,
+        "h4_evaluations": 0,
+        "h12_evaluations": 0,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Use FR-R1a plan SHA-256 a0aa2e75d2e304e008646f138211ed1e4da4d98def697f8503b07c3e7b56c95f and source FR-1 artifact fingerprint d96b200163f3a432652656ae97c65c837e01fe81323cd69528373dff16ce6152; do not overwrite or reclassify the source result.",
+        "Use FR-R1b preregistration SHA-256 1bc2a72fa8dec98e2bdbe3504e65366d8daa93f7a7797837622ba7545607515e before implementation and freeze all expected condition and state IDs in a non-overwriting expected artifact.",
+        "Do not tune FR-R1b phase budgets, state rules, scalar optimization interval, radius floor, or gates from FR-R1a results.",
+        "Reuse one fixed standard state across q for each (nu,H_D,sigma), and keep true rho out of available-bound calculations except for the input-certificate audit.",
+        "Require a one-sided certification difference against OPT-SCALAR-NORM-I1 at a preregistered phase budget; a smaller bound ratio alone is not a GO.",
+        "Stop after FR-R1b regardless of status and do not automatically start FR-R2, H4, H12, P-D S2, long RPE, or full compiled cost."
+      ]
+    },
+    {
+      "id": "finite_rte_phase_amplitude_fr_revision_fr1a",
+      "status": "source_present_no_current_ci",
+      "summary": "The frozen FR-R1a post-hoc analysis reconstructs all 33 existing FR-1 conditions and 99 states with matching fingerprints and zero numeric difference, compares nine methods including common-gamma and optimized positive-scalar norm/FR bounds, and finds zero soundness violations across 891 method records. On the five primary analytic-mixture rows, scalar-NORM is tighter than scalar-FR and no preregistered phase budget has an FR-only certification, including the I2 oracle diagnostic. The classification is POSTHOC_SCALAR_EXPLAINS_OLD_GAIN; the old G2 failure and GO_FR2_MECHANISM_ONLY decision are unchanged, and the later FR-R1b result is tracked separately.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 2,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 4,
+        "dedicated_local_test_cases_passed": 4,
+        "local_artifacts": 2,
+        "source_conditions": 33,
+        "source_state_records": 99,
+        "main_state_records": 5,
+        "methods_per_state": 9,
+        "method_records": 891,
+        "state_fingerprint_matches": 99,
+        "soundness_violations": 0,
+        "common_gamma_fr_only_certifications": 0,
+        "optimized_fr_only_certifications": 0,
+        "oracle_only_certifications": 0,
+        "new_hamiltonian_conditions": 0,
+        "rte_sampling_runs": 0,
+        "circuit_compilations": 0,
+        "h4_evaluations": 0,
+        "h12_evaluations": 0,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Preserve source FR-1 fingerprint d96b200163f3a432652656ae97c65c837e01fe81323cd69528373dff16ce6152, source file SHA-256 6a81a0ba6e39ba0f5d79ba026a2a45c3c65709e071e9c6fa5606b3e99a89b0f7, frozen preregistration SHA-256 bc8066d7a31a3f46f476d2c591c7f0dad5e6f49023fc261dc518b61e2ec600a3, and FR-R1a plan SHA-256 a0aa2e75d2e304e008646f138211ed1e4da4d98def697f8503b07c3e7b56c95f.",
+        "Treat POSTHOC_SCALAR_EXPLAINS_OLD_GAIN only as an explanation of the uniform involution toy; do not generalize it to nonuniform spectra or chemistry.",
+        "Preserve the old FR-1 G2 failure and GO_FR2_MECHANISM_ONLY decision; FR-R1a is not a preregistered reclassification.",
+        "Do not modify FR-R1b phase budgets, state rules, gamma interval, radius floor, grid, or gates from this post-hoc result.",
+        "Do not infer H4, H12, compiled-circuit, sampled-shot, long-RPE, or final total-cost performance from FR-R1a.",
+        "Treat the subsequent FR-R1b computation as a separate preregistered result set and preserve its own R0-R7 classification."
+      ]
+    },
+    {
+      "id": "finite_rte_phase_amplitude_fr_revision_fr1b",
+      "status": "source_present_no_current_ci",
+      "summary": "The independently preregistered FR-R1b validation freezes its expected specification before result computation and evaluates 20 nonuniform/involution/control 4x4 matrix conditions, 61 state rows, two semantic controls, and 610 method records. All 227 applicable records are sound. Nonuniform radial width is positive while the involution width is zero, and same-information common-scalar and optimized comparisons each contain eight strict FR-gain witnesses. However, there are zero one-sided certifications at the fixed phase budgets, so R5 fails while R0-R4/R6/R7 pass. The classification is MECHANISM_ONLY_NO_PRACTICAL_GO, no research GO is authorized, and the mandatory post-FR-R1b stop is active.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 2,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 5,
+        "dedicated_local_test_cases_passed": 5,
+        "related_local_test_cases_passed": 13,
+        "complete_local_test_suite_passed": 628,
+        "complete_local_test_suite_skipped": 2,
+        "complete_local_test_suite_warnings": 4,
+        "local_artifacts": 2,
+        "matrix_conditions": 20,
+        "primary_matrix_conditions": 18,
+        "state_records": 61,
+        "semantic_controls": 2,
+        "method_records": 610,
+        "applicable_method_records": 227,
+        "soundness_violations": 0,
+        "same_information_common_scalar_witnesses": 8,
+        "optimized_strict_gain_witnesses": 8,
+        "one_sided_decision_witnesses": 0,
+        "gates_passed": 7,
+        "gates_failed": 1,
+        "new_chemistry_hamiltonian_conditions": 0,
+        "rte_monte_carlo_sampling_runs": 0,
+        "circuit_compilations": 0,
+        "h4_evaluations": 0,
+        "h12_evaluations": 0,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Preserve preregistration SHA-256 1bc2a72fa8dec98e2bdbe3504e65366d8daa93f7a7797837622ba7545607515e, expected fingerprint 408b5a6cf007ff7cbaec804435ea867ec33fd1d1c08af87509f2316ddd8c2fb4, and result fingerprint affac0ae8132450ccb2de3512b6a463a3f9d7b1ac8a6f12cc38303ac75e891d4.",
+        "Keep the 20 matrix conditions, 61 state rows, two semantic controls, fixed state reuse across q, phase budgets, radius floor, scalar interval, and R0-R7 priority unchanged.",
+        "Interpret the eight strict-gain witnesses as evidence for a nonuniform FR mechanism, not as practical decision relevance or a research GO.",
+        "Preserve R5 failure because no preregistered phase budget has an FR-only certification; a smaller continuous bound alone is insufficient.",
+        "Do not infer chemistry, H4, H12, compiled-circuit, sampled-shot, long-RPE, backend/noise, or final total-cost performance from this deterministic 4x4 validation.",
+        "Honor the mandatory stop: do not start FR-R2 without a new research question, novelty check, and separately frozen comparison contract."
       ]
     }
   ],

@@ -1,5 +1,68 @@
 # Validation status
 
+## 2026-09-27 FR-R1b 非一様4×4検証
+
+結果前に凍結した[FR-R1b事前登録](docs/research/fr_revision_nonuniform_preregistration.md)どおり、
+20 matrix conditions、61 state rows、2 semantic controlsを実行した。610 method record中227が適用可能で、
+soundness違反は0。非一様$\nu=0,0.5$ではHermitian radial widthが正、involution controlの$\nu=1$では
+0となり、$q=4,8$の可換・非可換条件で同情報FR境界がnorm境界より厳しいwitnessを8件確認した。
+
+ただし位相予算$10^{-2},10^{-3},10^{-4}$ radでFRだけが認証する条件は0件だった。R0--R4/R6/R7は
+通過、R5 decision relevanceは不通過で、判定は`MECHANISM_ONLY_NO_PRACTICAL_GO`である。
+事前登録の強制停止に従い、FR-R2、H4/H12、compile、Monte Carlo、長RPE、最終総costへ進まない。
+
+result fingerprintは`affac0ae8132450ccb2de3512b6a463a3f9d7b1ac8a6f12cc38303ac75e891d4`、
+file SHA-256は`e2a6f9326951fe67e979022dc733704e0c036d3342ab3cb317c5f77b885aeebc`。
+専用testは`5 passed`、FR系列関連testは`13 passed`、全suiteは
+`628 passed, 2 skipped, 4 warnings`で失敗0。詳細は[FR-R1b結果](docs/fr_revision_nonuniform.md)。
+
+## 2026-09-26 FR-R1a 正scalar事後再解析
+
+凍結済み[FR-R1a計画](docs/research/fr_revision_fr1a_posthoc_plan.md)に従い、完了済みFR-1の
+33条件・99状態を決定論的に再構成した。元result、凍結事前登録、計画hashは全て一致し、
+state fingerprintは99/99一致、最大数値差0だった。正scalar処理を含む9手法を全状態へ適用した
+891 method recordで位相上界・物理半径下界の違反は0である。
+
+主5行では`SCALAR-NORM-COMMON`が`SCALAR-FR-COMMON`より全て厳しく、共通scalar比較と
+各法最適化比較のどちらにも、FRだけが固定位相予算を通るone-sided certificationはなかった。
+I2 `DENSE-ORACLE`だけの片側認証も0で、分類は`POSTHOC_SCALAR_EXPLAINS_OLD_GAIN`である。
+これは事後説明監査であり、旧G2不通過と`GO_FR2_MECHANISM_ONLY`を変更せず、新しい研究GOを
+認めない。このFR-R1a実行時点ではFR-R1bは未実行だったが、翌日の独立結果は上節に記録した。
+FR-R1a自体のH4/H12、compile、Monte Carlo、RPE総costは0件である。
+
+result fingerprintは`5cc5c29656b9ceb69a00674cee5987b93c7cc8d9403892c57b341a51c878a18a`、
+file SHA-256は`3fab6acdde3798dc7005101713ecaa708f5cf0b5fc24d8c77f80939dcaa6a610`。
+専用testは`4 passed`、元FR-1との関連testは`8 passed`、全suiteは
+`623 passed, 2 skipped, 4 warnings`で失敗0。詳細は[FR-R1a結果](docs/fr_revision_fr1a_posthoc.md)。
+
+## 2026-09-26 FR-R1a/R1b 計画固定（実行前履歴）
+
+[FR-R1a事後計画](docs/research/fr_revision_fr1a_posthoc_plan.md)は既存FR-1 artifactのfingerprintと
+33条件・99状態を固定し、正scalar、共通γ、最適scalar norm、I0/I1/I2を再集計する。ただし
+posthocであり、旧G2不通過と`GO_FR2_MECHANISM_ONLY`を変更せず、新しい研究GOにも使わない。
+
+[FR-R1b事前登録](docs/research/fr_revision_nonuniform_preregistration.md)は非一様4×4について、
+18 primary＋負時間/K4の20 matrix conditions、61 state rows、2 semantic controlsを固定した。
+同一状態を全qで再利用し、位相予算は`1e-2,1e-3,1e-4 rad`、物理半径下限は0.2、
+入力certificateは0.8である。R0--R7と終了分類を結果前に固定し、FR-R1b後は必ず停止する。
+
+この節の時点のstatusは`PREREGISTERED_NOT_RUN`だった。後続でFR-R1aだけを完了し、FR-R1b契約は
+その結果で変更していない。
+FR-R1a計画SHA-256は`a0aa2e75d2e304e008646f138211ed1e4da4d98def697f8503b07c3e7b56c95f`、
+FR-R1b事前登録SHA-256は`1bc2a72fa8dec98e2bdbe3504e65366d8daa93f7a7797837622ba7545607515e`。
+
+## 2026-09-26 FR-R0 正scalar分離・構造比較契約
+
+完了済みFR-1の`GO_FR2_MECHANISM_ONLY`を変更せず、正の共通scalarを位相誤差から除く代数、
+$\Gamma_c/\mathcal B$を物理半径へ戻す規約、I0/I1/I2情報層、共通$\gamma$と各法最適化の
+二層比較を[正式契約](docs/research/fr_revision_scalar_structure_contract.md)へ固定した。FR-R1bのGOには
+soundness、非一様系、同情報利益、事前位相予算またはK/r選択差、oracle非依存、機構整合を全て要求する。
+
+FR-R0作成時statusは`FR_R0_COMPLETE_FR_R1_NOT_PREREGISTERED_NOT_STARTED`だった。後続の
+FR-R1a/R1b計画固定により現行statusは上節へ移ったが、FR-R0自体が文書契約だけで、新しいHamiltonian、
+対角化、RTE sampling、compile、test、数値artifactが0件だった事実は変わらない。旧FR-1のG2不通過を
+再分類せず、H4/H12、長RPE、最終総costへ進まない。
+
 ## 2026-09-26 finite-RTE phase/radius FR-1
 
 事前登録した2×2 fixed gridを変更せず実行した。33条件、99状態評価、495個の適用可能method recordで
