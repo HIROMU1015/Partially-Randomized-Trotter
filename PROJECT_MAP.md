@@ -261,6 +261,21 @@ P-D現実化Go/No-Goは`research_direction_pd_realization.py`と同名runner/tes
 B1b/B2/B4は同じ選択となりCase C/Dの証拠は得られず、B1aの`m_D`上限依存により
 `stop_s1_undetermined_boundary_no_go_decision`で停止した。
 
+その固定artifactの事後再解析は
+`src/trotterlib/research_direction_pd_s1_posthoc.py`、
+`scripts/run_research_direction_pd_s1_posthoc.py`、
+`tests/test_research_direction_pd_s1_posthoc.py`、
+[外部review](pd_s1_review_5c331f0.md)、
+[事後計画](docs/research/pd_s1_posthoc_reanalysis_plan.md)、
+[結果文書](docs/research_direction_pd_s1_posthoc.md)、
+`pd_s1_posthoc_reanalysis_v1.json`を一組として読む。一次Case Bは保存し、B1b/B2/B4だけを
+固定候補集合でCase A相当と事後解釈する。P-D S2は開始せず、R3も未採用である。
+
+R3の次段判断は
+[R3先行研究監査と条件付き最小研究契約](docs/research/r3_prior_art_and_minimal_contract.md)を読む。
+広いsplit/error/cost最適化は既存研究との重複が強いためNo-Goである。R3-Sはselectiveな認証・棄却へ狭めて監査したが、一般certified multi-fidelity法との差分と
+quantum-specific保証を固定できなかった。`STOP_R3_NO_METHOD_DELTA`でR3を停止し、数値pilotを開始しない。
+
 ## ファイルの状態区分
 
 ### 現行の正本

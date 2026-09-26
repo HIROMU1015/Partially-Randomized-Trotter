@@ -118,3 +118,14 @@ hashを非上書きで再固定した。
 3. `undetermined_boundary`を解く追加計算が研究判断を変えるのか、それともB1aの定義上の問題か
 
 を研究方針として再検討する。追加計算を行う場合は新しい事前登録を要求する。
+
+## 事後再解析（2026-09-26）
+
+固定S1 v2 artifactだけを用いる[事後再解析](research_direction_pd_s1_posthoc.md)を別schemaで実施した。
+一次の`Case B + undetermined_boundary`は保存した。B1b/B2/B4は全scopeで同一候補、false acceptanceなし、
+B4 regret 0であり、B4最良から5%以内ではB2 objective相対誤差が最大0.03132%だった。この範囲だけを
+`A_equivalent_on_frozen_candidate_set_under_B4`と事後解釈する。
+
+全候補ではB2 proxy受理/B4不適格が45件あるため、B2を全域のfinite feasibility判定器とはしない。
+B1aの固定tailはunit signal radiusでもfinite位相上界だけで予算を超え、`m_D`追加では解消しない。
+P-D S2には進まず、R3は先行研究差分と別契約を固定する前の候補段階に留める。

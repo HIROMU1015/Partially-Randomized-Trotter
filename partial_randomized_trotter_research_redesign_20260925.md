@@ -374,6 +374,18 @@ p>1かつa_F>a_Dなら、このモデルのPR有利条件は
 
 コードとの距離は近いが、研究としての一般性には複数条件の評価が必要で、合計計算量は大きくなりやすい。単一H4で精密化し続けるより、対照の強さと境界の予測性を優先する。
 
+### 7.7 2026-09-26先行研究監査による更新
+
+P-D S1事後再解析後にclosest workを再監査した結果、fragment norm、PF誤差、per-step cost、
+randomized remainderを合わせて分割・公式を選ぶ広いR3は、SPRINTを含む既存研究との重複が強く、
+独立主題としてはNo-Goとした。
+
+残すのは、ordered DF prefix固有の安価な診断により、高価な詳細評価と同じ選択を認証するか棄却し、
+未使用条件でregretと詳細評価数を同時に評価する狭いR3-Sだけである。一般のmulti-fidelity best-arm identificationおよびcertified multi-fidelity optimizationまで追加監査したが、
+quantum-specificな保証または方法論差分を固定できなかった。R3-S0は`STOP_R3_NO_METHOD_DELTA`とし、
+条件付き最小契約の数値部分は実行しない。詳細は
+[R3先行研究監査と条件付き最小研究契約](docs/research/r3_prior_art_and_minimal_contract.md)を参照する。
+
 <a id="r4"></a>
 ## 8. R4：固有値誤差とスペクトル重みを合わせたPFの使用条件
 

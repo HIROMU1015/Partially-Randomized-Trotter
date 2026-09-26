@@ -58,6 +58,9 @@
 | 17 | [P-D既知baseline](pd_prior_art_and_baselines.md) | 既知のabsolute-tail-time modelとS1で新たに問うfinite/internal/construction差を分離する。 |
 | 18 | [P-D S1事前登録](pd_s1_fair_comparison_preregistration.md) | 共通時間・位相予算、nested/native、regret、K4 trigger、境界規則を結果前に固定する。 |
 | 19 | [P-D S1結果](../research_direction_pd_fair_comparison.md) | B1b/B2/B4一致、Case C/D不成立、B1a上限依存によるCase B＋undetermined停止を記録する。 |
+| 20 | [P-D S1事後再解析計画](pd_s1_posthoc_reanalysis_plan.md) | 固定artifact、主baseline、5%近傍、B1a・構成差の再集計規則を事後計画として固定する。 |
+| 21 | [P-D S1事後再解析結果](../research_direction_pd_s1_posthoc.md) | 一次Case Bを保存し、主baselineのCase A相当解釈、B1a診断、P-D停止を記録する。 |
+| 22 | [R3先行研究監査・条件付き最小契約](r3_prior_art_and_minimal_contract.md) | 広いR3のNo-Go、R3-S0の方法論監査不通過、実行しない条件付き最小契約を記録する。 |
 
 ## 研究ノート
 

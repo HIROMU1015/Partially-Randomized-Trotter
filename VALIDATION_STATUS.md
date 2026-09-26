@@ -3,6 +3,28 @@
 事前検証カタログの実施ID・work packageと、以下のstatus、専用文書、artifact、runner、testの対応は
 [事前検証カタログ実施証拠索引](docs/research/prevalidation_catalog_evidence_map.md)を参照する。
 
+## 2026-09-26 P-D S1 固定artifact事後再解析
+
+S1 v2のfingerprintとfile SHA-256を固定し、保存済み308候補だけを再集計した。一次の
+`Case B + undetermined_boundary`と停止statusは変更していない。主baselineをB1b/B2/B4、B0/B1aを
+診断用ablationとし、各scopeの選択、regret、false acceptance、B4最良から5%以内、B1aの`m_D`列、
+nested/native work内訳を別schemaへ保存した。
+
+B1b/B2/B4はnested/native/combinedの各scopeで同一候補を選び、false acceptanceなし、B4 regret 0。
+5%近傍はnested 5候補、native/combined各1候補で、B2 objective相対誤差は最大0.03132%だった。
+従ってこの固定候補集合とB4参照に限り、主baselineをCase A相当と事後解釈する。ただし全候補では
+B2 proxy受理/B4不適格が45件あり、全域のfinite feasibility判定能力は支持されない。
+
+B1a選択の固定tailはunit signal radiusでもfinite位相上界`1.8178593e-6 rad`が予算`8e-7 rad`を超え、
+`m_D`だけの追加では採用中のB4上界を満たせない。nested/native B4 objective比13.2297は主に
+deterministic action差だが、解析的component-action proxyなのでcompiled circuit優位性とはしない。
+
+artifact fingerprintは`976212ee45a472bf0091064e8baf3eb7a861f2c240cdcfda445e64b4c72e0245`、
+file SHA-256は`d8657c52e609e524c4e43a3004948ffb3fd54e6f60219442638b847ade3e699b`。専用testは
+`4 passed`、全suiteは`615 passed, 2 skipped, 4 warnings`で失敗0。新しいHamiltonian、対角化、RTE sampling、compile、H12、長RPE、最終総costは0件。
+P-D S2には進まず、R3は先行研究差分と別契約を固定する前の候補段階である。詳細は
+[P-D S1事後再解析](docs/research_direction_pd_s1_posthoc.md)。
+
 ## 2026-09-26 P-D S1 公平PF再最適化
 
 S0で主RQ、既知baseline、共通比較契約、停止規則を固定した。S1はH4 linear chain、1.0 Å、

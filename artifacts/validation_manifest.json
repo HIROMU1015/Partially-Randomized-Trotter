@@ -2452,6 +2452,14 @@
           "research_direction_pd_fair_comparison"
         ],
         "reason": "Fingerprint-bound S1 result 0ba7764da7b7d8b7e195a5c315d3dc0a65c2c79ce01c51cf021a2685977487d2, file SHA-256 6b8de6e255eb0796d93398c767017c2899837a63c7230e9956fb2d9beedbeaec: B1b/B2/B4 agree, finite correction is not decision-relevant, and B1a leaves an unresolved m_D boundary, so S1 stops without a GO decision."
+      },
+      {
+        "path": "artifacts/research_direction_pd_fair_comparison/2026-09-26/pd_s1_posthoc_reanalysis_v1.json",
+        "kind": "file",
+        "supports": [
+          "research_direction_pd_s1_posthoc_reanalysis"
+        ],
+        "reason": "Post-hoc frozen-artifact reanalysis fingerprint 976212ee45a472bf0091064e8baf3eb7a861f2c240cdcfda445e64b4c72e0245 and file SHA-256 d8657c52e609e524c4e43a3004948ffb3fd54e6f60219442638b847ade3e699b: preserves formal Case B, separates B1a from B1b/B2/B4, audits the five-percent B4 neighborhood, and stops P-D without S2."
       }
     ],
     "quarantined": [
@@ -4270,6 +4278,44 @@
         "Keep the formal Case B classification separate from its mechanism: B1a alone causes the decision-relevant failure, while B1b, B2, and B4 agree with zero regret.",
         "Treat the one-step m_D extension as unresolved and do not issue a GO decision or advance automatically to S2 without a new preregistration.",
         "Do not infer compiled-circuit performance, measured shot cost, exhaustive K4 optimality, sampled H4 finite-RTE operator behavior, long-RPE cost, H12 transfer, backend/noise behavior, final total cost, or scientific superiority."
+      ]
+    },
+    {
+      "id": "research_direction_pd_s1_posthoc_reanalysis",
+      "status": "source_present_no_current_ci",
+      "summary": "A post-hoc reanalysis fixes the S1 v2 fingerprint and file hash and performs no new Hamiltonian, diagonalization, RTE sampling, compilation, or candidate evaluation. The formal Case B plus undetermined_boundary result is preserved. B1b, B2, and B4 agree with zero B4 regret and no selected false acceptance in nested, native, and combined scopes, so they are labelled A-equivalent only on the frozen candidate set under B4. Within five percent of the B4 optimum, the maximum B2 objective relative error is 0.03132 percent and no false acceptance occurs; across all candidates, 45 B2-proxy-accepted points are B4-infeasible. B1a remains a diagnostic ablation, P-D stops without S2, and R3 remains an unadopted design candidate pending prior-art audit and a separate contract.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 3,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 4,
+        "dedicated_local_test_cases_passed": 4,
+        "local_artifacts": 1,
+        "source_candidates_reanalyzed": 308,
+        "new_candidate_evaluations": 0,
+        "near_optimal_nested_candidates": 5,
+        "near_optimal_native_candidates": 1,
+        "near_optimal_combined_candidates": 1,
+        "all_scope_b2_proxy_accepts_b4_infeasible": 45,
+        "new_hamiltonian_and_df_computations": 0,
+        "diagonalizations": 0,
+        "rte_sampling_runs": 0,
+        "circuit_compilations": 0,
+        "h12_evaluations": 0,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0,
+        "complete_local_test_suite_passed": 615,
+        "complete_local_test_suite_skipped": 2,
+        "complete_local_test_suite_warnings": 4
+      },
+      "completion_criteria": [
+        "Preserve source S1 fingerprint 0ba7764da7b7d8b7e195a5c315d3dc0a65c2c79ce01c51cf021a2685977487d2 and its formal Case B plus undetermined_boundary result.",
+        "Keep B0 and B1a as diagnostic ablations; do not delete them or present the post-hoc B1b/B2/B4 interpretation as a preregistered Case A reclassification.",
+        "Limit A-equivalent to the frozen candidate set under B4 and record the lower R boundary and all-candidate B2 false-acceptance behavior.",
+        "Do not interpret the nested/native analytic objective ratio as compiled-circuit, measured-shot, or physical superiority.",
+        "Do not start P-D S2, H12, long RPE, new grids, or final total cost from this result.",
+        "Do not adopt R3 or claim its novelty until a separate prior-art delta and minimal research contract are fixed before computation."
       ]
     }
   ],
