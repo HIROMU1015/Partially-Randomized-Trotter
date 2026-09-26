@@ -61,6 +61,10 @@
 | 20 | [P-D S1事後再解析計画](pd_s1_posthoc_reanalysis_plan.md) | 固定artifact、主baseline、5%近傍、B1a・構成差の再集計規則を事後計画として固定する。 |
 | 21 | [P-D S1事後再解析結果](../research_direction_pd_s1_posthoc.md) | 一次Case Bを保存し、主baselineのCase A相当解釈、B1a診断、P-D停止を記録する。 |
 | 22 | [R3先行研究監査・条件付き最小契約](r3_prior_art_and_minimal_contract.md) | 広いR3のNo-Go、R3-S0の方法論監査不通過、実行しない条件付き最小契約を記録する。 |
+| 23 | [finite-RTE位相・信号半径分離契約](finite_rte_phase_amplitude_contract.md) | FR-0の演算子定義、非可換積の位相・半径境界、norm baseline、主張範囲を固定する。 |
+| 24 | [finite-RTE位相・信号半径分離の先行研究監査](finite_rte_phase_amplitude_prior_art.md) | finite LCU/RTE、PF spectral解析、randomized平均信号、phase-lag、nonunitary分解との限定差分を記録する。 |
+| 25 | [FR-1非可換toy機構試験 事前登録](finite_rte_phase_amplitude_fr1_preregistration.md) | 2×2 toyの固定grid、available-information baseline、G0--G4、FR-1後の強制停止を定める。 |
+| 26 | [FR-1 finite-RTE位相・信号半径分離結果](../finite_rte_phase_amplitude_validation.md) | 33条件・99状態、G0/G1/G3/G4通過、G2不通過、`GO_FR2_MECHANISM_ONLY`とFR-2停止を記録する。 |
 
 ## 研究ノート
 

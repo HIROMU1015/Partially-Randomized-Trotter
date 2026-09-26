@@ -2460,6 +2460,87 @@
           "research_direction_pd_s1_posthoc_reanalysis"
         ],
         "reason": "Post-hoc frozen-artifact reanalysis fingerprint 976212ee45a472bf0091064e8baf3eb7a861f2c240cdcfda445e64b4c72e0245 and file SHA-256 d8657c52e609e524c4e43a3004948ffb3fd54e6f60219442638b847ade3e699b: preserves formal Case B, separates B1a from B1b/B2/B4, audits the five-percent B4 neighborhood, and stops P-D without S2."
+      },
+      {
+        "path": "src/trotterlib/finite_rte_phase_amplitude.py",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr1"
+        ],
+        "reason": "Implements the preregistered two-level FR-1 exact and finite-RTE operators, phase/amplitude bounds, interval supremum, semantic controls, decision gates, fingerprinting, and artifact validation."
+      },
+      {
+        "path": "scripts/run_finite_rte_phase_amplitude.py",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr1"
+        ],
+        "reason": "Runs the fixed FR-1 matrix experiment and records command, commit, dirty-worktree state, environment, and frozen-input hashes."
+      },
+      {
+        "path": "tests/test_finite_rte_phase_amplitude.py",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr1",
+          "tests"
+        ],
+        "reason": "Checks the frozen condition grid, event-average semantics, analytic strong-bound supremum, artifact fingerprint validation, and preregistered mechanism-only decision."
+      },
+      {
+        "path": "docs/research/finite_rte_phase_amplitude_contract.md",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr1"
+        ],
+        "reason": "Defines the finite-RTE phase/amplitude research question, claim ladder, admissible methods, scope, and post-FR-1 stop. The current copy also discloses and repairs a truncated frozen parent-contract copy."
+      },
+      {
+        "path": "docs/research/finite_rte_phase_amplitude_prior_art.md",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr1"
+        ],
+        "reason": "Records the pre-computation prior-art boundary and limits the local claim to a finite-RTE phase/amplitude certification comparison."
+      },
+      {
+        "path": "docs/research/finite_rte_phase_amplitude_fr1_preregistration.md",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr1"
+        ],
+        "reason": "Freezes the full 33-condition grid, three state classes, OLD/STRONG/PROPOSAL comparison, five gates, and four-way decision rule before execution."
+      },
+      {
+        "path": "docs/finite_rte_phase_amplitude_validation.md",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr1"
+        ],
+        "reason": "Reports the completed FR-1 semantics, soundness, utility, conditioning, sensitivity, scope, limitations, and mechanism-only stop decision."
+      },
+      {
+        "path": "artifacts/finite_rte_phase_amplitude/2026-09-26/finite_rte_phase_amplitude_fr1_v1.json",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr1"
+        ],
+        "reason": "Machine-readable FR-1 result with content fingerprint d96b200163f3a432652656ae97c65c837e01fe81323cd69528373dff16ce6152 and file SHA-256 6a81a0ba6e39ba0f5d79ba026a2a45c3c65709e071e9c6fa5606b3e99a89b0f7."
+      },
+      {
+        "path": "artifacts/finite_rte_phase_amplitude/2026-09-26/fr0_contract_frozen.md",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr1"
+        ],
+        "reason": "Exact pre-run parent-contract copy with SHA-256 8e53763d6cd03fb10809c1a2450358834b3f9aa0dbc5677fe9a25fbc4fd45b04. It is retained immutably even though a later audit found that the copied Markdown ended prematurely; the complete execution contract was independently frozen in the FR-1 preregistration."
+      },
+      {
+        "path": "artifacts/finite_rte_phase_amplitude/2026-09-26/fr1_preregistration_frozen.md",
+        "kind": "file",
+        "supports": [
+          "finite_rte_phase_amplitude_fr1"
+        ],
+        "reason": "Exact complete pre-run FR-1 preregistration copy with SHA-256 bc8066d7a31a3f46f476d2c591c7f0dad5e6f49023fc261dc518b61e2ec600a3; its grid and gates govern the result."
       }
     ],
     "quarantined": [
@@ -4316,6 +4397,45 @@
         "Do not interpret the nested/native analytic objective ratio as compiled-circuit, measured-shot, or physical superiority.",
         "Do not start P-D S2, H12, long RPE, new grids, or final total cost from this result.",
         "Do not adopt R3 or claim its novelty until a separate prior-art delta and minimal research contract are fixed before computation."
+      ]
+    },
+    {
+      "id": "finite_rte_phase_amplitude_fr1",
+      "status": "source_present_no_current_ci",
+      "summary": "The preregistered two-level FR-1 matrix validation covers 33 conditions and three state classes at fixed T=0.8. Ordinary and controlled event-average semantics agree with the analytic finite-RTE operator to at most 4.45e-16, and all 495 applicable OLD, STRONG, and PROPOSAL records are sound. The available-state PROPOSAL bound is tighter than STRONG but reaches only a 0.631998 minimum ratio rather than the preregistered 0.5 utility threshold; reference-eigenstate oracle radii do show the mechanism. G0, G1, G3, and G4 pass while G2 fails, so the frozen decision is GO_FR2_MECHANISM_ONLY: the mechanism is retained, FR-2 is not started, and the next step must redesign an oracle-free high-overlap or structural kappa*s certificate before further computation.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 4,
+        "dedicated_test_source_files": 1,
+        "dedicated_test_functions": 4,
+        "dedicated_local_test_cases_passed": 4,
+        "local_artifacts": 3,
+        "conditions": 33,
+        "state_records": 99,
+        "applicable_method_records": 495,
+        "bound_violations": 0,
+        "preregistered_gates": 5,
+        "preregistered_gates_passed": 4,
+        "preregistered_gates_failed": 1,
+        "semantic_control_classes": 4,
+        "h4_evaluations": 0,
+        "h12_evaluations": 0,
+        "circuit_compilations": 0,
+        "monte_carlo_sampling_runs": 0,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0,
+        "complete_local_test_suite_passed": 619,
+        "complete_local_test_suite_skipped": 2,
+        "complete_local_test_suite_warnings": 4
+      },
+      "completion_criteria": [
+        "Preserve result fingerprint d96b200163f3a432652656ae97c65c837e01fe81323cd69528373dff16ce6152 and file SHA-256 6a81a0ba6e39ba0f5d79ba026a2a45c3c65709e071e9c6fa5606b3e99a89b0f7.",
+        "Use the complete frozen FR-1 preregistration SHA-256 bc8066d7a31a3f46f476d2c591c7f0dad5e6f49023fc261dc518b61e2ec600a3 as the governing grid and decision contract.",
+        "Retain the frozen parent-contract SHA-256 8e53763d6cd03fb10809c1a2450358834b3f9aa0dbc5677fe9a25fbc4fd45b04 as immutable audit history and disclose that it ended prematurely; do not rewrite it after the result.",
+        "Preserve the G2 failure and GO_FR2_MECHANISM_ONLY label: oracle-state improvement demonstrates a mechanism but does not authorize FR-2.",
+        "Do not infer H4, chemistry, compiled-circuit, sampled-shot, long-RPE, H12, backend/noise, or final total-cost performance from this two-level deterministic matrix validation.",
+        "Before new computation, freeze a new contract for either an oracle-free high-overlap certificate or a structural kappa*s bound; otherwise stop this direction."
       ]
     }
   ],

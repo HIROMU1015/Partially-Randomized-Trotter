@@ -1,5 +1,27 @@
 # Validation status
 
+## 2026-09-26 finite-RTE phase/radius FR-1
+
+事前登録した2×2 fixed gridを変更せず実行した。33条件、99状態評価、495個の適用可能method recordで
+位相上界・信号半径下界の違反は0だった。paired-eventのordinary平均最大residualは
+`4.4431e-16`、controlled relative-phase最大residualは`3.3379e-16`である。負時間、K=4、
+非対称配置を含め、G0/G1/G3/G4は通過した。
+
+主判定の`analytic_mixture_state`へ利用可能な$\underline\rho=0.8$だけを与えると、
+`PROPOSED-AVAILABLE`対`STRONG-NORM`の位相上界比は最小0.631998で、固定50%基準を通らなかった。
+提案法だけが`1e-3 rad`を認証する点もなくG2は不通過。一方、$\rho=1$またはdense真値を使う
+`PROPOSED-REF`では改善したため、事前規則どおり`GO_FR2_MECHANISM_ONLY`とした。
+これは利用可能情報による実用的GOでなく、FR-2は開始しない。
+
+artifact fingerprintは`d96b200163f3a432652656ae97c65c837e01fe81323cd69528373dff16ce6152`、
+file SHA-256は`6a81a0ba6e39ba0f5d79ba026a2a45c3c65709e071e9c6fa5606b3e99a89b0f7`。
+完全な実行契約は凍結FR-1事前登録SHA-256
+`bc8066d7a31a3f46f476d2c591c7f0dad5e6f49023fc261dc518b61e2ec600a3`である。凍結親契約は後の監査で
+末尾切断が判明したため不変の監査履歴として残し、現行親契約で修復したが、FR-1のgrid・gate・判定には影響しない。
+専用testは`4 passed`、全suiteは`619 passed, 2 skipped, 4 warnings`で失敗0。artifactはdirty worktreeで生成したlocal evidenceであり、immutable CIではない。
+H4/H12、circuit compilation、Monte Carlo sampling、RPE総cost、最終costは0件。詳細は
+[FR-1検証](docs/finite_rte_phase_amplitude_validation.md)。
+
 事前検証カタログの実施ID・work packageと、以下のstatus、専用文書、artifact、runner、testの対応は
 [事前検証カタログ実施証拠索引](docs/research/prevalidation_catalog_evidence_map.md)を参照する。
 

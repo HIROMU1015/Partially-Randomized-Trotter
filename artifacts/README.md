@@ -15,6 +15,9 @@
 - [`research_direction_pd_realization/2026-09-25/`](research_direction_pd_realization/2026-09-25/)：
   P-D現実化のv1/v2 expected tasksとD1--D3完了結果。v1は技術的KeyError前の凍結履歴で、
   数値判断にはv2 resultを使う
+- [`finite_rte_phase_amplitude/2026-09-26/`](finite_rte_phase_amplitude/2026-09-26/)：
+  FR-1のfingerprint付き2×2 fixed-grid結果と実行時FR-0/FR-1契約の凍結copy。
+  G2不通過の`GO_FR2_MECHANISM_ONLY`であり、FR-2やH4結果ではない
 manifestは次で検査できる。
 
 ```bash

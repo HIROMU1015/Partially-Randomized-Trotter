@@ -1,6 +1,6 @@
 # プロジェクト案内
 
-最終更新：2026-09-25
+最終更新：2026-09-26
 
 このファイルは、人またはGPTがリポジトリ全体を読むときの入口である。研究内容の正本、
 実装、検証コード、結果データ、発表資料を区別し、古い研究経路を現在の結論として読まない
@@ -40,6 +40,13 @@ pair予測、continuity診断、mechanism discriminationも固定gateを通ら�
 outer-stageだけのB1aは一段延長後も`m_D=128`上限へ達したため、一次分類Case Bに
 `undetermined_boundary`を付け、GO判定を出さず停止した。P-Dの研究方針とbaseline設計を再検討し、
 H12、長RPE、compiled総costへはまだ広げない。
+その後、固定S1 artifactの事後再解析で主baselineのB1b/B2/B4一致を確認し、P-D S2を停止した。
+R3も一般multi-fidelity法との差分を固定できず`STOP_R3_NO_METHOD_DELTA`となった。2026-09-26には、
+有限RTE打切り誤差をHadamard複素信号の位相方向と半径方向へ分ける新候補についてFR-0を完了し、
+事前登録済みFR-1を固定2×2 toyで実行した。補正後演算子$A_{\rm corr}$と実際の平均
+$A_{\rm mean}=A_{\rm corr}/\mathcal B$を区別した境界は495適用recordで違反0、semantic・負時間・K4・
+非対称配置も通過した。一方、利用可能な$\underline\rho=0.8$でのG2は不通過で、真の$\rho$を使う
+場合だけ改善した。現在の判断は`GO_FR2_MECHANISM_ONLY`であり、FR-2は開始せず再設計で停止する。
 
 それ以前の中心課題は、DF Hamiltonianを決定論部分とランダム部分へ分けたpartial-$S_2$について、有限RTE、
 RPEの信号半径・測定回数、1 shot当たりのコンパイル後回路コストを接続することだった。PF係数、有限RTE、
@@ -275,6 +282,18 @@ R3の次段判断は
 [R3先行研究監査と条件付き最小研究契約](docs/research/r3_prior_art_and_minimal_contract.md)を読む。
 広いsplit/error/cost最適化は既存研究との重複が強いためNo-Goである。R3-Sはselectiveな認証・棄却へ狭めて監査したが、一般certified multi-fidelity法との差分と
 quantum-specific保証を固定できなかった。`STOP_R3_NO_METHOD_DELTA`でR3を停止し、数値pilotを開始しない。
+
+finite-RTE phase/radius分離FR-1は
+`src/trotterlib/finite_rte_phase_amplitude.py`、
+`scripts/run_finite_rte_phase_amplitude.py`、
+`tests/test_finite_rte_phase_amplitude.py`、
+[FR-0契約](docs/research/finite_rte_phase_amplitude_contract.md)、
+[scoped先行研究監査](docs/research/finite_rte_phase_amplitude_prior_art.md)、
+[FR-1事前登録](docs/research/finite_rte_phase_amplitude_fr1_preregistration.md)、
+[結果文書](docs/finite_rte_phase_amplitude_validation.md)、
+`artifacts/finite_rte_phase_amplitude/2026-09-26/`を一組として読む。
+33条件・99状態でG0/G1/G3/G4を通過し、G2は不通過だった。判定は
+`GO_FR2_MECHANISM_ONLY`であり、利用可能情報による実用的GOではないためFR-2は開始しない。
 
 ## ファイルの状態区分
 
