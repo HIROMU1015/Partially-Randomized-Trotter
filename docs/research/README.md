@@ -71,6 +71,7 @@
 | 30 | [FR-R1b非一様4×4事前登録](fr_revision_nonuniform_preregistration.md) | 20条件・61状態行・2 semantic control、固定状態、強いbaseline、R0--R7と強制停止を結果前に固定する。 |
 | 31 | [FR-R1a正scalar事後再解析結果](../fr_revision_fr1a_posthoc.md) | 33条件・99状態を再構成し、891 method recordのsoundness違反0、片側FR認証差0、`POSTHOC_SCALAR_EXPLAINS_OLD_GAIN`を記録する。 |
 | 32 | [FR-R1b非一様4×4結果](../fr_revision_nonuniform.md) | 20条件・61状態で非一様FR固有のstrict gain 8件を確認したが、固定予算の片側認証差0により`MECHANISM_ONLY_NO_PRACTICAL_GO`で停止した結果を記録する。 |
+| 33 | [FR研究主張・証明義務・完成原稿契約](fr_research_claim_and_manuscript.md) | C1/C2を中核、C3を条件付き応用に置き、既知事項、新規性監査、T0--T6、追加計算を始めない完成判定を固定する。 |
 
 ## 研究ノート
 

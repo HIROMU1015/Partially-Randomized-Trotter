@@ -1,7 +1,7 @@
 # finite-RTE位相・信号半径分離：scoped先行研究監査
 
-最終更新：2026-09-26 JST
-状態：`SCOPED_GAP_SURVIVES_NO_PRIORITY_CLAIM`
+最終更新：2026-09-27 JST
+状態：`POST_FR_R1B_FULL_THEOREM_AUDIT_OPEN`
 
 本書は[FR-0契約](finite_rte_phase_amplitude_contract.md)の主RQに最も近い公開一次文献を、
 式・対象・出力量の単位で対応付ける。網羅的systematic reviewでも、新規性や優先権の証明でもない。
@@ -27,6 +27,8 @@
 | Li, *Some Error Analysis for the Quantum Phase Estimation Algorithms*, arXiv:2111.10430 / J. Phys. A 55, 325303 (2022) | Theorems 2.2、3.1、4.1 | 不完全入力、近似unitary、random unitaryをresidual、gap、concentrationから評価 | 状態情報を使うこと自体は既知。有限RTEの平均Hadamard信号をradial/tangentialへ分ける同じ境界ではない |
 | Casares et al., *Theory and practice of Trotter product formulas for quantum chemistry*, arXiv:2606.30741 | 公開PDF v1 Appendix F、確認版F8--F14 | random orderingによるspectral shift、dephasing/damping、broadeningの平均信号解析 | 位相と減衰の区別は既知。本案はfinite paired-Taylor cutoffの局所相対誤差と利用可能情報による認証に限定する |
 | Gu et al., *Noise-Resilient Phase Estimation with Randomized Compiling*, PRL 130, 250601 (2023) | Theorem 1、Supplemental Material I | randomized compiling下のcoherent bias、一次Hermitian perturbationと位相への寄与 | 一次Hermitian成分が位相を変えないという観察は本案固有でない。FR-R0は正scalar除去後の非一様成分と同情報baselineの比較だけを候補差分とする |
+| Ogawa et al., *Operational formulation of weak values without probe systems*, arXiv:1912.10222 | 本文の感度表現 | 小変換に対するpostselection probability amplitudeの感度をweak valueで表す | 補正比のweak-value型書換え自体は新規でない。finite-RTE構造から得る保証と限界だけを候補差分とする |
+| Liほか、q-numerical range | fixed-overlap matrix elementsの定義と幾何 | 状態間overlapを固定した`<y|Q|x>`の値域 | 信号補正のcontainmentをこの既知言語で記述すること自体は新規でない。有限RTEが値域全体を実現するとも主張しない |
 | Van der Houwen--SommeijerおよびPapakostas--Tsitourasのphase-lag/dissipation解析 | DOI:10.1137/0726012、DOI:10.1137/S1064827597315509 | scalar数値積分でphase-lagとamplitude/dissipationの次数が異なり得る | scalar Taylor展開の次数差は新規性でない。FR-1では可換対照と非可換列を明示的に分ける |
 | Hu and Jin, *Quantum Simulation of Non-Unitary Dynamics via Amplitude-Phase Separation*, arXiv:2602.09575 v2 (2026) | Cartesian decompositionとalgorithmic framework | 一般nonunitary生成子のcoherent/dissipative分解を使うsimulation framework | 本案はfinite-RTE推定量の局所誤差境界でありgeneric nonunitary simulationではない。`APS`を名称・略称として使わない |
 | de Montbrun--GerchinovitzおよびPoiani et al. | arXiv:2308.00978、arXiv:2406.03033 | multi-fidelity optimization/best-arm identificationとcost-aware認証 | 本案はoptimizerを新規化しない。後に設計へ使う場合も既知の選択法との差分を別途監査する |
@@ -63,7 +65,14 @@ Hadamard複素信号・phase/radius別認証」を同一の仮定と出力で与
 結果が有望でも、論文主張を固定する前にfinite LCU/RTE、nonunitary perturbation、
 state-dependent phase estimationの追加検索を行う。
 
-## 6. 参照URL
+## 6. FR-R1b後の監査状態
+
+FR-R1bは非一様系で同情報FR境界のstrict gainを8件示したが、固定予算の片側認証差は0だった。
+従って上の限定gapを実用的な新規手法として確定せず、
+[完成原稿契約](fr_research_claim_and_manuscript.md)のC2/T3を中心に、同じ情報層での十分条件と
+改善不能条件が既知定理の直接系かを全文監査する。監査終了までは新規性も優先権も主張しない。
+
+## 7. 参照URL
 
 - https://arxiv.org/abs/2503.05647
 - https://arxiv.org/abs/2110.12071
@@ -71,6 +80,8 @@ state-dependent phase estimationの追加検索を行う。
 - https://arxiv.org/abs/2111.10430
 - https://arxiv.org/abs/2606.30741
 - https://arxiv.org/abs/2208.04100
+- https://arxiv.org/abs/1912.10222
+- https://doi.org/10.1080/03081089808818538
 - https://doi.org/10.1137/0726012
 - https://doi.org/10.1137/S1064827597315509
 - https://arxiv.org/abs/2602.09575

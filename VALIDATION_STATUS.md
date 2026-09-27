@@ -1,5 +1,17 @@
 # Validation status
 
+## 2026-09-27 FR研究完成フェーズ契約（文書のみ）
+
+FR-R1bの`MECHANISM_ONLY_NO_PRACTICAL_GO`と強制停止を変更せず、
+[研究主張・証明義務・完成原稿契約](docs/research/fr_research_claim_and_manuscript.md)を固定した。
+中核はC1の正scalar・方向依存補正の分離と、C2の同情報strict improvement／改善不能条件である。
+resource designのC3は、先行研究監査と証明義務T1--T4を通過した場合だけ行う条件付き応用とした。
+
+これは数値検証ではない。新しいHamiltonian評価、対角化、RTE sampling、回路compile、artifact、testは
+いずれも0件で、FR-R1bのfingerprint、gate、結果を変更していない。先行研究を定理単位で照合し、
+`PROCEED_THEORY`、`TECHNICAL_NOTE`、`STOP_NEW_METHOD`、`ONE_OPEN_ITEM`の一つへ収束するまで、
+FR-R2、H4/H12、長RPE、新規gridを開始しない。
+
 ## 2026-09-27 FR-R1b 非一様4×4検証
 
 結果前に凍結した[FR-R1b事前登録](docs/research/fr_revision_nonuniform_preregistration.md)どおり、

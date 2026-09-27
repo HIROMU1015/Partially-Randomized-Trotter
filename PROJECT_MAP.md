@@ -1,6 +1,6 @@
 # プロジェクト案内
 
-最終更新：2026-09-26
+最終更新：2026-09-27
 
 このファイルは、人またはGPTがリポジトリ全体を読むときの入口である。研究内容の正本、
 実装、検証コード、結果データ、発表資料を区別し、古い研究経路を現在の結論として読まない
@@ -46,7 +46,10 @@ R3も一般multi-fidelity法との差分を固定できず`STOP_R3_NO_METHOD_DEL
 事前登録済みFR-1を固定2×2 toyで実行した。補正後演算子$A_{\rm corr}$と実際の平均
 $A_{\rm mean}=A_{\rm corr}/\mathcal B$を区別した境界は495適用recordで違反0、semantic・負時間・K4・
 非対称配置も通過した。一方、利用可能な$\underline\rho=0.8$でのG2は不通過で、真の$\rho$を使う
-場合だけ改善した。現在の判断は`GO_FR2_MECHANISM_ONLY`であり、FR-2は開始せず再設計で停止する。
+場合だけ改善した。その後のFR-R1aでは正scalar処理後の片側差が0、FR-R1bでは同情報のstrict gainが
+8件あったが固定予算の片側認証差が0となり、現行判断は`MECHANISM_ONLY_NO_PRACTICAL_GO`である。
+FR-R2は開始せず、2026-09-27に研究を候補探索から理論成果の完成へ切り替えた。C1/C2を中核、C3を
+条件付き応用とし、先行研究との定理単位の照合と証明義務T1--T4を終えるまで新しい数値計算を行わない。
 
 それ以前の中心課題は、DF Hamiltonianを決定論部分とランダム部分へ分けたpartial-$S_2$について、有限RTE、
 RPEの信号半径・測定回数、1 shot当たりのコンパイル後回路コストを接続することだった。PF係数、有限RTE、
@@ -318,6 +321,11 @@ statusは`FR_R1B_COMPLETE_MECHANISM_ONLY_NO_PRACTICAL_GO_MANDATORY_STOP`であ�
 [artifact](artifacts/fr_revision_nonuniform/2026-09-27/)を一組として読む。
 FR-R2は開始していない。
 
+FR-R1b後の現行方針は、[研究主張・証明義務・完成原稿契約](docs/research/fr_research_claim_and_manuscript.md)
+を読む。正scalar分離と方向依存補正をC1、同じ情報層でのstrict improvementと改善不能条件をC2、
+resource designを条件付きC3として分離する。新規性とT1--T4の証明監査が終わるまでは、既存artifact
+だけを用いて原稿を完成させ、FR-R2、H4/H12、長RPE、新しいgridへ進まない。
+
 ## ファイルの状態区分
 
 ### 現行の正本
@@ -329,6 +337,7 @@ FR-R2は開始していない。
 - `VALIDATION_STATUS.md`
 - `artifacts/validation_manifest.json`
 - `docs/research/fr_revision_scalar_structure_contract.md`（FR-R0の現行比較契約）
+- `docs/research/fr_research_claim_and_manuscript.md`（FR-R1b後の研究完成フェーズ契約）
 
 ### 現行実装・検証
 
@@ -349,6 +358,8 @@ FR-R2は開始していない。
   pilotの着想と停止条件を確認する補助資料で、実施結果と現在の判断は正本文書を優先する
 - `fr1_revised_research_plan_20260926.md`：FR-1後の再設計入力。採択済み部分の正本は
   `docs/research/fr_revision_scalar_structure_contract.md`を優先する
+- `research_focus_and_completion_plan_16d4482_20260927.md`：FR-R1b後の完成方針を検討した入力資料。
+  採択済みの主張階層、証明義務、停止条件は`docs/research/fr_research_claim_and_manuscript.md`を優先する
 
 これらは削除していないが、現在の研究方針や最新結果を確定する根拠には使わない。
 
