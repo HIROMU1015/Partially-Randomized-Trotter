@@ -15,6 +15,7 @@ from qiskit.circuit.library import PhaseGate
 from .df_hamiltonian import DFHamiltonian
 from .df_partial_randomized_pf import (
     DFFragmentPartition,
+    df_fragment_weight,
     df_hamiltonian_hash,
     df_hamiltonian_to_model,
     rank_df_fragments,
@@ -109,6 +110,10 @@ class DFDeterministicFragmentSpec:
 DFDeterministicBlockSpec: TypeAlias = (
     DFDeterministicOneBodySpec | DFDeterministicFragmentSpec
 )
+DFPartialS2PartitionPolicy: TypeAlias = Literal[
+    "weight_ranked_prefix",
+    "explicit_ordered_partition",
+]
 
 
 @dataclass(frozen=True)
@@ -205,6 +210,8 @@ class DFPartialS2Preparation:
 def _partition_hash(
     hamiltonian_hash: str,
     partition: DFFragmentPartition,
+    *,
+    partition_policy: DFPartialS2PartitionPolicy,
 ) -> str:
     payload = {
         "hamiltonian_hash": hamiltonian_hash,
@@ -217,7 +224,11 @@ def _partition_hash(
         ],
         "ranking_proxy_lambda_r": partition.ranking_proxy_lambda_r,
         "weight_rule": partition.weight_rule,
-        "partition_hash_policy": "ranked_df_prefix_v1",
+        "partition_hash_policy": (
+            "ranked_df_prefix_v1"
+            if partition_policy == "weight_ranked_prefix"
+            else "explicit_ordered_df_partition_v1"
+        ),
     }
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
     return hashlib.sha256(encoded).hexdigest()
@@ -226,28 +237,70 @@ def _partition_hash(
 def _validate_partition(
     hamiltonian: DFHamiltonian,
     partition: DFFragmentPartition,
+    *,
+    partition_policy: DFPartialS2PartitionPolicy,
 ) -> None:
     ld = require_integer_count(partition.ld, name="partition.ld")
     if ld > hamiltonian.n_blocks:
         raise ValueError("partition.ld exceeds the number of DF fragments.")
-    expected = rank_df_fragments(
-        hamiltonian,
-        weight_rule=partition.weight_rule,
-    )
-    if partition.deterministic_fragments != expected[:ld]:
-        raise ValueError("Deterministic fragments are not the ranked L_D prefix.")
-    if partition.randomized_fragments != expected[ld:]:
-        raise ValueError("Randomized fragments are not the ranked suffix.")
     deterministic = partition.deterministic_block_indices
     randomized = partition.randomized_block_indices
-    if deterministic != tuple(item.original_index for item in expected[:ld]):
-        raise ValueError("Deterministic block order differs from ranked prefix order.")
-    if randomized != tuple(item.original_index for item in expected[ld:]):
-        raise ValueError("Randomized block order differs from ranked suffix order.")
     if set(deterministic).intersection(randomized):
         raise ValueError("Deterministic and randomized fragments overlap.")
     if set((*deterministic, *randomized)) != set(range(hamiltonian.n_blocks)):
         raise ValueError("DF partition does not cover every two-body fragment.")
+    if partition_policy == "weight_ranked_prefix":
+        expected = rank_df_fragments(
+            hamiltonian,
+            weight_rule=partition.weight_rule,
+        )
+        if partition.deterministic_fragments != expected[:ld]:
+            raise ValueError("Deterministic fragments are not the ranked L_D prefix.")
+        if partition.randomized_fragments != expected[ld:]:
+            raise ValueError("Randomized fragments are not the ranked suffix.")
+        if deterministic != tuple(item.original_index for item in expected[:ld]):
+            raise ValueError("Deterministic block order differs from ranked prefix order.")
+        if randomized != tuple(item.original_index for item in expected[ld:]):
+            raise ValueError("Randomized block order differs from ranked suffix order.")
+    elif partition_policy == "explicit_ordered_partition":
+        ordered = (
+            partition.deterministic_fragments + partition.randomized_fragments
+        )
+        if tuple(item.rank for item in ordered) != tuple(range(hamiltonian.n_blocks)):
+            raise ValueError("Explicit partition ranks must be contiguous in order.")
+        if deterministic != tuple(
+            item.original_index for item in partition.deterministic_fragments
+        ):
+            raise ValueError("Explicit deterministic block order is inconsistent.")
+        if randomized != tuple(
+            item.original_index for item in partition.randomized_fragments
+        ):
+            raise ValueError("Explicit randomized block order is inconsistent.")
+        for item in ordered:
+            index = int(item.original_index)
+            if item.weight_rule != partition.weight_rule:
+                raise ValueError("Explicit fragment weight rule mismatch.")
+            if not math.isclose(
+                item.lam,
+                float(hamiltonian.lambdas[index]),
+                rel_tol=0.0,
+                abs_tol=0.0,
+            ):
+                raise ValueError("Explicit fragment lambda mismatch.")
+            expected_weight = df_fragment_weight(
+                hamiltonian,
+                index,
+                weight_rule=partition.weight_rule,
+            )
+            if not math.isclose(
+                item.weight,
+                expected_weight,
+                rel_tol=1e-13,
+                abs_tol=1e-14,
+            ):
+                raise ValueError("Explicit fragment weight mismatch.")
+    else:  # pragma: no cover - guarded by the public entry point.
+        raise ValueError(f"Unsupported partition policy: {partition_policy}")
 
 
 def _block_hash_payload(block: DFDeterministicBlockSpec) -> dict[str, object]:
@@ -280,20 +333,39 @@ def prepare_df_partial_s2(
     coefficient_atol: float = 0.0,
     diagonal_sort: str = "descending_abs",
     basis_construction_policy: BasisConstructionPolicy = "fermionic_gaussian_jw",
+    partition_policy: DFPartialS2PartitionPolicy = "weight_ranked_prefix",
 ) -> DFPartialS2Preparation:
-    """Prepare ranked deterministic blocks and the exact symbolic RTE tail."""
+    """Prepare deterministic blocks and the exact symbolic RTE tail.
+
+    ``explicit_ordered_partition`` is a provenance-bearing adapter for a
+    preregistered fragment order.  It validates every stored fragment against
+    the Hamiltonian but does not re-sort the explicit order.
+    """
     if basis_construction_policy != "fermionic_gaussian_jw":
         raise ValueError("Unsupported basis construction policy.")
     if not diagonal_sort:
         raise ValueError("diagonal_sort must not be empty.")
     if not math.isfinite(coefficient_atol) or coefficient_atol < 0.0:
         raise ValueError("coefficient_atol must be finite and non-negative.")
-    _validate_partition(hamiltonian, partition)
+    if partition_policy not in (
+        "weight_ranked_prefix",
+        "explicit_ordered_partition",
+    ):
+        raise ValueError(f"Unsupported partition policy: {partition_policy}")
+    _validate_partition(
+        hamiltonian,
+        partition,
+        partition_policy=partition_policy,
+    )
     hamiltonian_fingerprint = df_hamiltonian_hash(
         hamiltonian,
         weight_rule=partition.weight_rule,
     )
-    partition_fingerprint = _partition_hash(hamiltonian_fingerprint, partition)
+    partition_fingerprint = _partition_hash(
+        hamiltonian_fingerprint,
+        partition,
+        partition_policy=partition_policy,
+    )
     model = df_hamiltonian_to_model(hamiltonian)
     registry = DFBasisRegistry()
     deterministic_blocks: list[DFDeterministicBlockSpec] = []

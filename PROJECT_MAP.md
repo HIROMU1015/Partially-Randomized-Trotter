@@ -341,6 +341,12 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
 
 ### 現行実装・検証
 
+- `docs/research/pr2_s0_s1_execution_amendment_v3.md`、
+  `artifacts/pr2_s1_s3_preregistration/2026-09-28/pr2_s0_s1_authorization_manifest_v3.json`
+  （S0実行、条件付きS1 correctness、S1後mandatory STOPの結果前許可）
+- `src/trotterlib/pr2_s0_s1_validation.py`、`scripts/run_pr2_s0_s1_validation.py`、
+  `tests/test_pr2_s0_s1_validation.py`（snapshot/identity/corrected-estimator gateとS1 correctness-only経路。
+  S2/S3 commandは実装しない）
 - `src/trotterlib/` のDF、RTE、RPE、compiled-cost関連モジュール
 - 対応する `scripts/run_*.py`、`tests/test_*.py`、`docs/*_validation.md`
 - manifestに登録され、statusと限界が明示されたartifact

@@ -15,7 +15,8 @@
 
 ### partial-$S_2$・finite RTE
 
-- `df_partial_s2.py`：決定論half sweepとRTE中央部を持つpartial-$S_2$
+- `df_partial_s2.py`：決定論half sweepとRTE中央部を持つpartial-$S_2$。通常weight-ranked prefixに加え、
+  保存順・fragment内容を検証する結果前explicit ordered-partition adapterを提供
 - `df_partial_s2_repeated.py`：partial-$S_2$の反復
 - `df_rte_tail.py`：ランダム側HamiltonianのI/Z/ZZ表現
 - `df_rte_circuit.py`、`df_rte_qiskit.py`：RTEイベント回路構築
@@ -53,6 +54,8 @@
 次のモジュールは、研究用APIそのものではなく、条件固定、比較、判定、成果物生成を担当する。
 
 - `finite_rte_signal_validation.py`
+- `pr2_s0_s1_validation.py`：PR-2のsnapshot freeze、prefix identity、corrected estimator、
+  S1 correctness-only artifactと強制停止
 - `pf_delta_validation.py`
 - `pf_c_system_size_validation.py`
 - `pauli_partial_cgs_validation.py`
