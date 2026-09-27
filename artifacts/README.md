@@ -18,6 +18,18 @@
 - [`finite_rte_phase_amplitude/2026-09-26/`](finite_rte_phase_amplitude/2026-09-26/)：
   FR-1のfingerprint付き2×2 fixed-grid結果と実行時FR-0/FR-1契約の凍結copy。
   G2不通過の`GO_FR2_MECHANISM_ONLY`であり、FR-2やH4結果ではない
+- [`pr2_pr3_minimal_pilot/2026-09-27/`](pr2_pr3_minimal_pilot/2026-09-27/)：
+  事前登録済みPR-2 H4 rank圧縮残差とPR-3固定2-qubit外挿のfingerprint付きlocal結果。
+  PR-2主題候補選択後の強制STOPを含み、最終総costまたは外部CI証拠ではない
+- [`pr2_s1_s3_preregistration/2026-09-27/`](pr2_s1_s3_preregistration/2026-09-27/)：
+  PR-2 S1--S3の実装監査、固定条件、入力・prefix identity blocker、予定task上限を記録したdry-run manifest。
+  数値結果ではなく、実行許可はfalse、全実行countは0である
+- [`pr2_s0_s1_validation/2026-09-28/`](pr2_s0_s1_validation/2026-09-28/)：
+  source commit `c644925`のtest log、development/held-out input snapshot、development byte-hash不一致で
+  `STOP_INPUT_REPRODUCTION_MISMATCH`となったS0 artifact。S1結果やheld-out signal/cost/rankingは含まない
+- [`pr2_s1_s3_preregistration/2026-09-28/`](pr2_s1_s3_preregistration/2026-09-28/)：
+  外部レビュー後amendment v2のmachine-readable dry-run manifest。補正後estimand、S1軽量化、stage gateを
+  記録し、S0実装だけを許可する。S0/S1実行countは0である
 manifestは次で検査できる。
 
 ```bash

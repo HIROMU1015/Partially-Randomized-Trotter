@@ -1,6 +1,6 @@
 # プロジェクト案内
 
-最終更新：2026-09-27
+最終更新：2026-09-28
 
 このファイルは、人またはGPTがリポジトリ全体を読むときの入口である。研究内容の正本、
 実装、検証コード、結果データ、発表資料を区別し、古い研究経路を現在の結論として読まない
@@ -347,6 +347,10 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
 - `src/trotterlib/pr2_s0_s1_validation.py`、`scripts/run_pr2_s0_s1_validation.py`、
   `tests/test_pr2_s0_s1_validation.py`（snapshot/identity/corrected-estimator gateとS1 correctness-only経路。
   S2/S3 commandは実装しない）
+- `docs/research/pr2_s0_reproduction_stop_c644925.md`、
+  `docs/research/pr2_s0_external_review_request_c644925.md`、
+  `artifacts/pr2_s0_s1_validation/2026-09-28/`（development byte-level hash不一致による
+  `STOP_INPUT_REPRODUCTION_MISMATCH`、S1未実行、held-out signal/cost/ranking未開封、および外部レビュー依頼）
 - `src/trotterlib/` のDF、RTE、RPE、compiled-cost関連モジュール
 - 対応する `scripts/run_*.py`、`tests/test_*.py`、`docs/*_validation.md`
 - manifestに登録され、statusと限界が明示されたartifact

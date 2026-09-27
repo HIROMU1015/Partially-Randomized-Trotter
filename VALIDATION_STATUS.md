@@ -1,5 +1,28 @@
 # Validation status
 
+## 2026-09-28 PR-2 S0 input reproduction不一致・mandatory STOP
+
+[amendment v3](docs/research/pr2_s0_s1_execution_amendment_v3.md)とauthorization manifestをcommit
+`e9bffb8`、S0/S1実装と専用testをsource commit `c644925`で結果前固定した。専用・関連test packetは
+`123 passed`である。
+
+S0はH4 linear 1.00 Å、STO-3G、8 qubits、4-electron singlet、DF rank 12 development inputと、H4
+1.30 Å held-out geometry inputを生成・freezeした。固定環境versionは完全一致したが、developmentのcanonical
+Hamiltonian hashはpilot expected `d8b4aaf21afcc3935d5b5aa4d0805b358c5ec670d8104d25807c7cd0620a3dc3`に対し
+observed `de7a549238e3a21f15a84018bef28440c345b31030282c01cf874f3d1d212424`となった。
+
+従ってterminal statusは`STOP_INPUT_REPRODUCTION_MISMATCH`、`S1_authorized=false`である。分子build/
+ground-state solveは2件、signal evaluation、circuit compile、trajectory sampling、quantum shotは0件。
+prefix identityは実行せず、held-out signal/cost/rankingも開封していない。S1/S2/S3へ進まない。
+
+限定診断ではpilot source hashとpackage版が一致し、ground energy差は約`1.38e-14` Ha、rank 3/6/9 residual
+$\lambda_R$差は`1.2e-15`以下だったが、byte-level Hamiltonian/tail hashは不一致だった。近似一致を同一snapshot
+扱いせず、旧pilot結果と新snapshotを混ぜない。S0 result fingerprintは
+`6d44888a1b806bc3b6418b49a18fdbcee09b621dd345838dc0d426abb1005182`、file SHA-256は
+`cf082a81ed70dcee774906ff2391683811cbdf544c1217127e100a977a11fbd7`。詳細は
+[S0停止報告](docs/research/pr2_s0_reproduction_stop_c644925.md)を参照する。これはlocal dirty-worktree evidenceで、
+immutable CIまたは外部再現ではない。
+
 ## 2026-09-27 FR研究完成フェーズ契約（文書のみ）
 
 FR-R1bの`MECHANISM_ONLY_NO_PRACTICAL_GO`と強制停止を変更せず、

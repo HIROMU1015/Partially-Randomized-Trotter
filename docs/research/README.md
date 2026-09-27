@@ -72,6 +72,15 @@
 | 31 | [FR-R1a正scalar事後再解析結果](../fr_revision_fr1a_posthoc.md) | 33条件・99状態を再構成し、891 method recordのsoundness違反0、片側FR認証差0、`POSTHOC_SCALAR_EXPLAINS_OLD_GAIN`を記録する。 |
 | 32 | [FR-R1b非一様4×4結果](../fr_revision_nonuniform.md) | 20条件・61状態で非一様FR固有のstrict gain 8件を確認したが、固定予算の片側認証差0により`MECHANISM_ONLY_NO_PRACTICAL_GO`で停止した結果を記録する。 |
 | 33 | [FR研究主張・証明義務・完成原稿契約](fr_research_claim_and_manuscript.md) | C1/C2を中核、C3を条件付き応用に置き、既知事項、新規性監査、T0--T6、追加計算を始めない完成判定を固定する。 |
+| 34 | [PR-2／PR-3最小pilot事前登録](pr2_pr3_minimal_pilot_preregistration.md) | PR-2/PR-3の各一条件、correctness、GO/STOP、pilot後の強制停止を結果前に固定する。 |
+| 35 | [PR-2／PR-3最小pilot結果](../pr2_pr3_minimal_pilot_validation.md) | PR-2 `GO_PR2`、PR-3停止、PR-2主題候補選択、one-step/toy scopeを記録する。 |
+| 36 | [PR-2主研究契約](pr2_primary_research_contract.md) | 限定的な資源研究claim、prefix identity gate、rank-6 anchor、独立条件、完成・停止規則を固定する。 |
+| 37 | [PR-2 S1--S3結果前事前登録](pr2_s1_s3_preregistration.md) | matched baseline、finite-RTE、signal、shot、compiled cost、stage stopと実装gapを固定する。 |
+| 38 | [PR-2 S0/S1前 独立批判レビュー](pr2_s0_s1_external_review_d3e1723.md) | fixed commit `d3e1723`を監査し、`AMEND_BEFORE_S0`と判定した外部レビュー。 |
+| 39 | [PR-2 S1--S3事前登録 amendment v2](pr2_s1_s3_preregistration_amendment_v2.md) | normalization補正、shot overhead、baseline family、S1 correctness-onlyとレビュー停止を結果前に固定する。 |
+| 40 | [PR-2 S0/S1実行許可 amendment v3](pr2_s0_s1_execution_amendment_v3.md) | S0と、S0通過時だけのS1 correctnessを許可し、S1後mandatory STOPを固定する。 |
+| 41 | [PR-2 S0 input reproduction停止報告](pr2_s0_reproduction_stop_c644925.md) | pilot development hash不一致で`STOP_INPUT_REPRODUCTION_MISMATCH`。S1を実行せず、近似一致でgateを緩和しない。 |
+| 42 | [PR-2 S0 STOP後 外部レビュー依頼](pr2_s0_external_review_request_c644925.md) | terminal STOP確認、canonicalizationの最低要件、終了または新pilot化をGPTへ批判的レビューさせる指示。 |
 
 ## 研究ノート
 
