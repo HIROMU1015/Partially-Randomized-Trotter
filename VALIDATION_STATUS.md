@@ -1,5 +1,27 @@
 # Validation status
 
+## 2026-09-28 PR-2別系列 V1–V3通過・V4 review待ち
+
+旧S0の`STOP_INPUT_REPRODUCTION_MISMATCH`と`S1_authorized=false`を維持したまま、外部レビューの
+`AMEND_AND_RESTART_FROM_NEW_S0`に従い、別系列`pr2-rebaseline-de7a5492-v1`を開始した。V0の
+read-only一巡監査では旧pilot完全入力を回収できず、性能未評価の最初の保存済みdevelopment snapshotを
+新系列入力として固定した。specification commitは`30ea857`、source commitは`ef86868`である。
+
+保存済みH4 linear 1.0 Å、STO-3G、DF rank 12、N=4、N_alpha=N_beta=2、S_z=0入力に対し、V1の
+raw/layer hash、二回load、shape/dtype、Hermiticity、state/sector、Rayleigh residualを通過した。V2の
+rank 3/6/9では、B2-G/B2-Wのexact cover、sampling sign、確率和、identity coefficient、repeat
+preparation、`H_D+H_R=H`再構成を全て通過した。G/Wは全rankでordered prefixまで同一だったため、
+`collapse_B2_G_and_B2_W=true`である。
+
+統合statusは`S0_PRIME_PASS_V4_REVIEW_REQUIRED`。result fingerprintは
+`b210b394e9cd5a8eded947b0fd12cefe19ce9f27eb6b8140b3e863df73ea7961`、artifact SHA-256は
+`0eb22c813eb838169eb455334146140467ebbc5636db78bd923b1e6bdaed46d8`。専用testは7 passed。
+分子計算、signal、trajectory、compile、quantum shot、held-out NPZ loadは0件である。
+
+`V4_authorized=false`、`S1_prime_authorized=false`、`automatic_next_stage=null`として停止した。
+これはresource winner、PR-2優位性、held-out transfer、S2/S3、最終総costの証拠ではない。詳細は
+[V0–V3結果packet](docs/research/pr2_v1_v3_result_packet_ef86868_20260928.md)を参照する。
+
 ## 2026-09-28 PR-2 S0 input reproduction不一致・mandatory STOP
 
 [amendment v3](docs/research/pr2_s0_s1_execution_amendment_v3.md)とauthorization manifestをcommit

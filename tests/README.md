@@ -35,3 +35,7 @@ artifact tamperとscope guardを検査する。
 
 `test_pr2_s0_s1_validation.py`では、generation-prefix adapter、snapshot改ざん検出、corrected finite-RTE
 mean、$\mathcal B^2$ shot式、q=1/8 controlled wrapperのRe/Im規約、stage gate、非上書きを検査する。
+
+`test_pr2_new_series_validation.py`では、固定amendment/input hash、development二回load、held-out非開封、
+raw/internal tamper、rank 3/6/9のpartition・sampling sign・確率和・再構成、counter、fingerprint、
+非上書き、V4非承認guardを検査する。

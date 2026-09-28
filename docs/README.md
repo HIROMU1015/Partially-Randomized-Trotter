@@ -4,6 +4,11 @@
 研究全体を初めて読む場合は、先に[`../PROJECT_MAP.md`](../PROJECT_MAP.md)と
 [`research/研究概要・現状.md`](research/研究概要・現状.md)を読む。
 
+PR-2別系列の最新packetは
+[`research/pr2_v1_v3_result_packet_ef86868_20260928.md`](research/pr2_v1_v3_result_packet_ef86868_20260928.md)。
+旧S0 STOPを保持し、V1–V3通過後にV4/S1′未承認で停止したlocal validationを、外部レビュー、V0監査、
+amendment v4、authorization manifestとともに追跡できる。
+
 ## 研究方針と現在地
 
 - [`research/研究概要・現状.md`](research/研究概要・現状.md)：最新の短い全体要約

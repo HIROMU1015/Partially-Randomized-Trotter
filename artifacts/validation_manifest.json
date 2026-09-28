@@ -5008,6 +5008,44 @@
         "Require a new result-prior amendment and external review before any rerun, canonicalization change, or alternative input-binding rule.",
         "Do not start S1/S2/S3, 32/128 expected-cost Monte Carlo, resource selection, state-preparation break-even, additional ranks/geometries, H12, long RPE, or final total-cost evaluation."
       ]
+    },
+    {
+      "id": "pr2_new_series_v1_v3",
+      "status": "source_present_no_current_ci",
+      "summary": "External review recommends AMEND_AND_RESTART_FROM_NEW_S0 without changing the old STOP. A bounded V0 audit cannot recover the old complete pilot input, so series pr2-rebaseline-de7a5492-v1 adopts the first fully saved, performance-unselected H4 1.00 Angstrom STO-3G rank-12 development snapshot as a separate input series. Result-prior specification commit 30ea857 and source commit ef86868 freeze V1-V3. V1 passes raw/layer hash, double-load, layout, Hermiticity, state/sector, and Rayleigh-residual checks. V2 passes rank-3/6/9 partition, coefficient-sign, probability, repeat-preparation, and H_D+H_R reconstruction checks; B2-G and B2-W have identical ordered prefixes at every rank and are collapsed. The terminal status is S0_PRIME_PASS_V4_REVIEW_REQUIRED. V4/S1-prime, held-out evaluation, resource comparison, S2/S3, and final total cost remain unexecuted and unauthorized.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 6,
+        "dedicated_test_source_files": 1,
+        "dedicated_local_test_cases_passed": 7,
+        "local_artifact_files": 3,
+        "development_snapshot_loads": 2,
+        "held_out_raw_hash_checks": 1,
+        "held_out_npz_loads": 0,
+        "molecular_calculations": 0,
+        "operator_reconstructions_or_applications": 14,
+        "signal_evaluations": 0,
+        "wrapper_probe_trajectories": 0,
+        "candidate_trajectories": 0,
+        "circuit_compilations": 0,
+        "quantum_shots": 0,
+        "s1_prime_runs": 0,
+        "s2_runs": 0,
+        "s3_runs": 0,
+        "resource_winner_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Preserve the old STOP_INPUT_REPRODUCTION_MISMATCH and S1_authorized=false; the new series does not supersede or pass the old S0.",
+        "Preserve specification commit 30ea857ed4960d3e189bc0877282f11a9846635b, source commit ef86868, result fingerprint b210b394e9cd5a8eded947b0fd12cefe19ce9f27eb6b8140b3e863df73ea7961, and result file SHA-256 0eb22c813eb838169eb455334146140467ebbc5636db78bd923b1e6bdaed46d8.",
+        "Treat the development input as a separate frozen series selected because it was the first fully saved input before candidate performance evaluation, not because it is identical to the old pilot input or has favorable performance.",
+        "Use only the sector claim N=4, N_alpha=2, N_beta=2, S_z=0; do not claim that equal alpha/beta counts alone prove a singlet.",
+        "Collapse B2-G and B2-W for this frozen input because ordered prefixes match at ranks 3, 6, and 9; do not promote this identity check to a new-method claim.",
+        "Keep the H4 1.30 Angstrom held-out NPZ unopened for signal, cost, ranking, and candidate eligibility.",
+        "Require separate result-prior authorization before V4/S1-prime. Do not automatically start expected-cost Monte Carlo, resource selection, S2/S3, additional ranks/geometries, H12, long RPE, or final total-cost evaluation.",
+        "Classify the result as dirty-worktree local validation, not immutable CI or independent external reproduction."
+      ]
     }
   ],
   "repository_completion_criteria": [

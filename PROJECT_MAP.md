@@ -6,6 +6,12 @@
 実装、検証コード、結果データ、発表資料を区別し、古い研究経路を現在の結論として読まない
 ための案内をまとめる。
 
+PR-2の最新状態は、旧S0 STOPを保持した別系列`pr2-rebaseline-de7a5492-v1`のV1–V3通過、
+`S0_PRIME_PASS_V4_REVIEW_REQUIRED`である。入口は
+`docs/research/pr2_v1_v3_result_packet_ef86868_20260928.md`、実装は
+`src/trotterlib/pr2_new_series_validation.py`、runnerは`scripts/run_pr2_new_series_v1_v3.py`、
+artifactは`artifacts/pr2_new_series_validation/2026-09-28/`。V4/S1′は未承認である。
+
 ## 最初に読む順序
 
 1. [`docs/research/研究概要・現状.md`](docs/research/研究概要・現状.md)

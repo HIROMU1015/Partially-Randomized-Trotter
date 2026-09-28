@@ -56,6 +56,8 @@
 - `finite_rte_signal_validation.py`
 - `pr2_s0_s1_validation.py`：PR-2のsnapshot freeze、prefix identity、corrected estimator、
   S1 correctness-only artifactと強制停止
+- `pr2_new_series_validation.py`：別snapshot系列のV1 integrity/model、V2 rank 3/6/9構造、
+  operation counter、V4非承認guard
 - `pf_delta_validation.py`
 - `pf_c_system_size_validation.py`
 - `pauli_partial_cgs_validation.py`

@@ -5,6 +5,12 @@
 実装、runner、テスト、成果物を含むリポジトリ全体の区分は
 [`../../PROJECT_MAP.md`](../../PROJECT_MAP.md)を参照する。
 
+PR-2の最新系列は、外部レビュー後に旧STOPを維持して別snapshot系列を固定し、V1–V3を通過して
+`S0_PRIME_PASS_V4_REVIEW_REQUIRED`で停止している。正本は
+[new-series amendment v4](pr2_new_series_amendment_v4.md)と
+[V0–V3結果packet](pr2_v1_v3_result_packet_ef86868_20260928.md)。
+V4/S1′、held-out、S2/S3、resource winnerは未実行・未承認である。
+
 初めてこの研究を確認する場合や、Codexを使って発表・共有資料を作る場合は、まず
 [研究概要・現状](研究概要・現状.md)を読む。この一冊で現在の研究段階、採用済みの
 方針、主要な検証結果、未決定事項および証拠の読み順を確認できる。
