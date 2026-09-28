@@ -1,0 +1,158 @@
+{
+  "authorization": {
+    "automatic_next_stage_after_s2": null,
+    "s2_development_authorized_only_after_v4_pass_without_deviation": true,
+    "s3_authorized": false,
+    "v4_authorized": true
+  },
+  "baselines": {
+    "B0": {
+      "ld": 6,
+      "semantics": "generation_prefix_rank6_discard_residual_deterministic_s2"
+    },
+    "B1": {
+      "ld": 12,
+      "semantics": "rank12_deterministic_s2"
+    },
+    "B2": {
+      "ld": 6,
+      "semantics": "collapsed_generation_and_weight_prefix_partial_randomization"
+    },
+    "B3": {
+      "ld": 0,
+      "semantics": "two_body_random_endpoint_one_body_deterministic"
+    }
+  },
+  "comparison": {
+    "accuracy": {
+      "alpha_axis": 0.025,
+      "complex_error": 0.05,
+      "estimator": "normalization_corrected_mean",
+      "shot_formula": "ceil(2*B_total^2/(epsilon_axis-bias_axis)^2*log(2/alpha_axis))"
+    },
+    "compiler": {
+      "backend": null,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "coupling_map": null,
+      "optimization_level": 1,
+      "qiskit_version": "1.3.0",
+      "transpiler_seed": 17
+    },
+    "cost_scope": "full_measured_hadamard_wrapper_without_state_preparation",
+    "development": {
+      "delta_time": 0.1,
+      "q": 8,
+      "total_time": 0.8
+    },
+    "engineering_interval": "max(0,mean-2SE)_to_mean+2SE",
+    "finite_rte_grid": {
+      "K": [
+        2,
+        4
+      ],
+      "r": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32
+      ]
+    },
+    "materiality_ratio_upper_threshold": 0.9,
+    "primary_metric": "rz_count",
+    "random_cost_sampling": {
+      "expansion_additional_trajectories": 96,
+      "expansion_master_seed": 20260927128,
+      "initial_master_seed": 20260927102,
+      "initial_trajectories": 32,
+      "maximum_total_trajectories": 128,
+      "rz_relative_standard_error_trigger": 0.02
+    },
+    "secondary_metrics": [
+      "cx_count",
+      "rz_depth",
+      "cx_depth",
+      "total_depth",
+      "circuit_size"
+    ],
+    "state_preparation_primary_included": false,
+    "state_preparation_secondary_sensitivity": "common_rz_equivalent_cost_per_shot_P"
+  },
+  "created_on": "2026-09-28",
+  "development_input": {
+    "hamiltonian_hash": "de7a549238e3a21f15a84018bef28440c345b31030282c01cf874f3d1d212424",
+    "path": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz",
+    "raw_file_sha256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a"
+  },
+  "held_out_input": {
+    "allowed_operation": "existence_and_raw_file_sha256_only",
+    "path": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p30_rank12_held_out_v1.npz",
+    "raw_file_sha256": "ad7e3e7165c55dbaa395eef7a1dd74db89e1f7ab29a69ac64333f4aebf8b3e37"
+  },
+  "known_results": {
+    "b2_g_b2_w_ordered_prefix_identical_at_ranks": [
+      3,
+      6,
+      9
+    ],
+    "resource_result_seen": false,
+    "v1_v3_artifact_path": "artifacts/pr2_new_series_validation/2026-09-28/pr2_v1_v3_result_v1.json",
+    "v1_v3_artifact_sha256": "0eb22c813eb838169eb455334146140467ebbc5636db78bd923b1e6bdaed46d8",
+    "v1_v3_result_fingerprint": "b210b394e9cd5a8eded947b0fd12cefe19ce9f27eb6b8140b3e863df73ea7961",
+    "v1_v3_status": "S0_PRIME_PASS_V4_REVIEW_REQUIRED"
+  },
+  "mandatory_stop": {
+    "additional_geometry_authorized": false,
+    "h12_authorized": false,
+    "held_out_npz_load_authorized": false,
+    "long_rpe_authorized": false,
+    "precision_sweep_authorized": false,
+    "required_after_s2": true
+  },
+  "old_series": {
+    "s1_authorized": false,
+    "status": "STOP_INPUT_REPRODUCTION_MISMATCH",
+    "superseded": false
+  },
+  "review_input": {
+    "classification": "user_supplied_research_direction_decision_not_independent_external_reproduction",
+    "decision": "V4_then_one_development_shot_inclusive_resource_comparison_then_stop"
+  },
+  "schema_version": "pr2_v4_s2_development_authorization_v1",
+  "series_id": "pr2-rebaseline-de7a5492-v1",
+  "specification": {
+    "path": "docs/research/pr2_v4_s2_development_authorization_v5.md",
+    "sha256": "a55d7878ab2c201b65cfaaf687806118c56df3a4135026d59811da8931056bcf"
+  },
+  "v4": {
+    "b2_control_ranks": [
+      3,
+      9
+    ],
+    "b2_control_sentinel": {
+      "K": 2,
+      "r": 1
+    },
+    "delta_time": 0.1,
+    "deterministic_cells": [
+      "B0-rank3",
+      "B0-rank6",
+      "B0-rank9",
+      "B1-rank12"
+    ],
+    "q": 1,
+    "random_full_grid_methods": [
+      "B2-rank6",
+      "B3-rank0"
+    ],
+    "resource_selection_authorized": false,
+    "total_time": 0.1,
+    "trajectory_count_per_random_compile_cell": 1
+  }
+}
