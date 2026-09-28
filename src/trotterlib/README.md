@@ -58,6 +58,10 @@
   S1 correctness-only artifactと強制停止
 - `pr2_new_series_validation.py`：別snapshot系列のV1 integrity/model、V2 rank 3/6/9構造、
   operation counter、V4非承認guard
+- `pr2_v4_s2_development_validation.py`：別snapshot系列のV4 correctnessとdevelopment-only
+  S2 resource comparison、32→96拡張規則、mandatory STOP
+- `pr2_v4_s2_parallel_execution.py`：同じS2 compile cellと段階barrierを維持するbounded
+  spawned-process実行、canonical result order、persistent compiled-cost cache
 - `pf_delta_validation.py`
 - `pf_c_system_size_validation.py`
 - `pauli_partial_cgs_validation.py`

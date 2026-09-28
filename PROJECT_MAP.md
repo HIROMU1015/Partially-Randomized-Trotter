@@ -353,6 +353,14 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
 - `src/trotterlib/pr2_s0_s1_validation.py`、`scripts/run_pr2_s0_s1_validation.py`、
   `tests/test_pr2_s0_s1_validation.py`（snapshot/identity/corrected-estimator gateとS1 correctness-only経路。
   S2/S3 commandは実装しない）
+- `src/trotterlib/pr2_v4_s2_development_validation.py`、`scripts/run_pr2_v4_correctness.py`、
+  `scripts/run_pr2_s2_development.py`、`tests/test_pr2_v4_s2_development_validation.py`
+  （別snapshot系列のV4 correctnessとdevelopment-only S2比較のserial経路）
+- `src/trotterlib/pr2_v4_s2_parallel_execution.py`、
+  `scripts/run_pr2_s2_development_parallel.py`、
+  `tests/test_pr2_v4_s2_parallel_execution.py`、
+  `docs/pr2_s2_parallel_execution.md`（同じS2 cellと段階barrierを保つbounded CPU並列実行層。
+  実H4 S2の追加結果ではない）
 - `docs/research/pr2_s0_reproduction_stop_c644925.md`、
   `docs/research/pr2_s0_external_review_request_c644925.md`、
   `artifacts/pr2_s0_s1_validation/2026-09-28/`（development byte-level hash不一致による

@@ -39,3 +39,9 @@ mean、$\mathcal B^2$ shot式、q=1/8 controlled wrapperのRe/Im規約、stage g
 `test_pr2_new_series_validation.py`では、固定amendment/input hash、development二回load、held-out非開封、
 raw/internal tamper、rank 3/6/9のpartition・sampling sign・確率和・再構成、counter、fingerprint、
 非上書き、V4非承認guardを検査する。
+
+`test_pr2_v4_s2_development_validation.py`ではV4/S2のnormalization、full-wrapper compile、
+32/96 pooling、resource decision、mandatory STOPを検査する。
+`test_pr2_v4_s2_parallel_execution.py`では、同じcompile cellのserial/parallel完全一致、canonical
+result order、persistent SQLite cache再利用、worker上限をtoy Hamiltonianで検査する。実H4 S2の
+並列再実行結果や速度倍率を示すものではない。
