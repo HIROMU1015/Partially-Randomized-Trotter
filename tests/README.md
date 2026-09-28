@@ -43,5 +43,5 @@ raw/internal tamper、rank 3/6/9のpartition・sampling sign・確率和・再�
 `test_pr2_v4_s2_development_validation.py`ではV4/S2のnormalization、full-wrapper compile、
 32/96 pooling、resource decision、mandatory STOPを検査する。
 `test_pr2_v4_s2_parallel_execution.py`では、同じcompile cellのserial/parallel完全一致、canonical
-result order、persistent SQLite cache再利用、worker上限をtoy Hamiltonianで検査する。実H4 S2の
-並列再実行結果や速度倍率を示すものではない。
+result order、persistent SQLite cache再利用、worker上限、cell identity付き例外、atomicで非上書きの
+failure reportをtoy Hamiltonianで検査する。実H4 S2の並列再実行結果や速度倍率を示すものではない。

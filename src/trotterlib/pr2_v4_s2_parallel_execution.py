@@ -8,9 +8,12 @@ rules.  The held-out snapshot remains unopened.
 
 from __future__ import annotations
 
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass
+from datetime import datetime, timezone
+import json
 from multiprocessing import get_context
+import os
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
@@ -53,8 +56,36 @@ class S2CompileJob:
             "master_seed": self.master_seed,
         }
 
+    def identity_record(self) -> dict[str, Any]:
+        return {
+            "ordinal": self.ordinal,
+            "stage": self.stage,
+            "stream": self.stream,
+            "method": self.method,
+            "rank": self.rank,
+            "q": self.q,
+            "r": self.rte_steps,
+            "K": self.cutoff,
+            "sample_count": self.sample_count,
+            "master_seed": self.master_seed,
+        }
+
 
 _WORKER_CACHE: TranspiledCircuitCostCache | None = None
+
+
+def _emit_progress(event: str, **payload: Any) -> None:
+    print(
+        json.dumps(
+            {
+                "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+                "event": event,
+                **payload,
+            },
+            sort_keys=True,
+        ),
+        flush=True,
+    )
 
 
 def _validate_worker_count(workers: int) -> int:
@@ -78,17 +109,19 @@ def _initialize_compile_worker(
     )
 
 
-def _execute_compile_job(job: S2CompileJob) -> tuple[int, dict[str, Any]]:
+def _execute_compile_job(job: S2CompileJob) -> tuple[int, int, dict[str, Any]]:
     if _WORKER_CACHE is None:
         raise RuntimeError("Parallel compile worker was not initialized.")
-    return (
-        job.ordinal,
-        validation._compile_cost_batch(
+    try:
+        result = validation._compile_cost_batch(
             job.preparation,
             cache=_WORKER_CACHE,
             **job.keyword_arguments(),
-        ),
-    )
+        )
+    except Exception as exc:
+        identity = json.dumps(job.identity_record(), sort_keys=True)
+        raise RuntimeError(f"S2 compile job failed: {identity}") from exc
+    return job.ordinal, os.getpid(), result
 
 
 class S2CompileDispatcher:
@@ -146,30 +179,103 @@ class S2CompileDispatcher:
         if len(set(ordinals)) != len(ordinals):
             raise ValueError("Compile-job ordinals must be unique within a phase.")
         if not normalized:
+            _emit_progress("compile_phase_skipped", reason="no_jobs")
             return []
+        phase_identities = {(job.stage, job.stream) for job in normalized}
+        if len(phase_identities) != 1:
+            raise ValueError("Every compile call must contain exactly one phase.")
+        stage, stream = next(iter(phase_identities))
+        phase = f"{stage}:{stream}"
+        _emit_progress(
+            "compile_phase_started",
+            phase=phase,
+            job_count=len(normalized),
+            workers=self.workers,
+        )
         if self.workers == 1:
             if self._serial_cache is None:
                 raise RuntimeError("Compile dispatcher is not active.")
-            observed = [
-                (
-                    job.ordinal,
-                    validation._compile_cost_batch(
+            observed: list[tuple[int, int, dict[str, Any]]] = []
+            for completed, job in enumerate(normalized, start=1):
+                try:
+                    result = validation._compile_cost_batch(
                         job.preparation,
                         cache=self._serial_cache,
                         **job.keyword_arguments(),
-                    ),
+                    )
+                except Exception as exc:
+                    _emit_progress(
+                        "compile_cell_failed",
+                        phase=phase,
+                        completed=completed - 1,
+                        total=len(normalized),
+                        job=job.identity_record(),
+                        exception_type=type(exc).__name__,
+                        exception_message=str(exc),
+                    )
+                    raise
+                observed.append((job.ordinal, os.getpid(), result))
+                _emit_progress(
+                    "compile_cell_completed",
+                    phase=phase,
+                    completed=completed,
+                    total=len(normalized),
+                    worker_pid=os.getpid(),
+                    job=job.identity_record(),
                 )
-                for job in normalized
-            ]
         else:
             if self._executor is None:
                 raise RuntimeError("Compile dispatcher is not active.")
-            observed = list(
-                self._executor.map(_execute_compile_job, normalized, chunksize=1)
-            )
-        if [ordinal for ordinal, _result in observed] != ordinals:
+            futures = {
+                self._executor.submit(_execute_compile_job, job): (position, job)
+                for position, job in enumerate(normalized)
+            }
+            by_position: dict[int, tuple[int, int, dict[str, Any]]] = {}
+            completed = 0
+            try:
+                for future in as_completed(futures):
+                    position, job = futures[future]
+                    result = future.result()
+                    if result[0] != job.ordinal:
+                        raise RuntimeError(
+                            "Parallel compile worker returned the wrong ordinal."
+                        )
+                    by_position[position] = result
+                    completed += 1
+                    _emit_progress(
+                        "compile_cell_completed",
+                        phase=phase,
+                        completed=completed,
+                        total=len(normalized),
+                        worker_pid=result[1],
+                        job=job.identity_record(),
+                    )
+            except Exception as exc:
+                for pending in futures:
+                    pending.cancel()
+                failed_job = futures.get(future) if "future" in locals() else None
+                _emit_progress(
+                    "compile_cell_failed",
+                    phase=phase,
+                    completed=completed,
+                    total=len(normalized),
+                    job=(
+                        None if failed_job is None else failed_job[1].identity_record()
+                    ),
+                    exception_type=type(exc).__name__,
+                    exception_message=str(exc),
+                )
+                raise
+            observed = [by_position[position] for position in range(len(normalized))]
+        if [ordinal for ordinal, _pid, _result in observed] != ordinals:
             raise RuntimeError("Parallel compile results changed canonical order.")
-        return [result for _ordinal, result in observed]
+        _emit_progress(
+            "compile_phase_completed",
+            phase=phase,
+            job_count=len(normalized),
+            workers=self.workers,
+        )
+        return [result for _ordinal, _pid, result in observed]
 
 
 def _job(

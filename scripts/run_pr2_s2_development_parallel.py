@@ -18,6 +18,7 @@ import argparse
 import json
 import subprocess
 import sys
+import traceback
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
@@ -191,6 +192,20 @@ def _provenance(
     }
 
 
+def _write_failure_report(path: Path, payload: dict[str, Any]) -> None:
+    if path.exists():
+        raise FileExistsError(f"Refusing to overwrite failure report: {path}")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    if temporary.exists():
+        raise FileExistsError(f"Refusing to overwrite temporary report: {temporary}")
+    temporary.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    temporary.replace(path)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
@@ -208,34 +223,98 @@ def main() -> int:
         choices=range(1, MAXIMUM_PARALLEL_WORKERS + 1),
     )
     parser.add_argument("--persistent-cache", type=Path, default=DEFAULT_CACHE)
+    parser.add_argument(
+        "--failure-report",
+        type=Path,
+        help="Non-overwriting JSON report written if the run raises an exception.",
+    )
     args = parser.parse_args()
 
     artifact = args.artifact.resolve()
     cache_path = args.persistent_cache.resolve()
-    if artifact.exists():
-        raise FileExistsError(f"Refusing to overwrite artifact: {artifact}")
-    if cache_path == artifact:
-        raise ValueError("Persistent cache and result artifact must differ.")
-
-    v4_path = args.v4_artifact.resolve(strict=True)
-    v4_payload = json.loads(v4_path.read_text(encoding="utf-8"))
-    validate_v4_payload(v4_payload)
-    if v4_payload["status"] != V4_PASS_STATUS or v4_payload["deviations"]:
-        raise RuntimeError("S2 requires a deviation-free V4 PASS artifact.")
-
-    payload = run_s2_development_parallel(
-        ROOT,
-        v4_payload,
-        provenance=_provenance(
-            args.test_log,
-            v4_path,
-            workers=args.workers,
-            cache_path=cache_path,
-        ),
-        workers=args.workers,
-        persistent_cache_path=cache_path,
+    failure_report = (
+        args.failure_report.resolve()
+        if args.failure_report is not None
+        else artifact.with_name(f"{artifact.stem}_failure.json")
     )
-    write_json_artifact(payload, artifact, validator=validate_s2_payload)
+    if failure_report.exists():
+        raise FileExistsError(
+            f"Refusing to overwrite failure report: {failure_report}"
+        )
+    if failure_report in (artifact, cache_path):
+        raise ValueError("Failure report, result artifact, and cache must differ.")
+
+    print(
+        json.dumps(
+            {
+                "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+                "event": "parallel_s2_run_started",
+                "pid": os.getpid(),
+                "workers": args.workers,
+                "artifact": str(artifact),
+                "failure_report": str(failure_report),
+                "persistent_cache": str(cache_path),
+            },
+            sort_keys=True,
+        ),
+        flush=True,
+    )
+    try:
+        if artifact.exists():
+            raise FileExistsError(f"Refusing to overwrite artifact: {artifact}")
+        if cache_path == artifact:
+            raise ValueError("Persistent cache and result artifact must differ.")
+
+        v4_path = args.v4_artifact.resolve(strict=True)
+        v4_payload = json.loads(v4_path.read_text(encoding="utf-8"))
+        validate_v4_payload(v4_payload)
+        if v4_payload["status"] != V4_PASS_STATUS or v4_payload["deviations"]:
+            raise RuntimeError("S2 requires a deviation-free V4 PASS artifact.")
+
+        payload = run_s2_development_parallel(
+            ROOT,
+            v4_payload,
+            provenance=_provenance(
+                args.test_log,
+                v4_path,
+                workers=args.workers,
+                cache_path=cache_path,
+            ),
+            workers=args.workers,
+            persistent_cache_path=cache_path,
+        )
+        write_json_artifact(payload, artifact, validator=validate_s2_payload)
+    except BaseException as exc:
+        failure_payload = {
+            "schema_version": "pr2_s2_parallel_failure_v1",
+            "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+            "pid": os.getpid(),
+            "workers": args.workers,
+            "artifact": str(artifact),
+            "persistent_cache": str(cache_path),
+            "exception_type": type(exc).__name__,
+            "exception_message": str(exc),
+            "traceback": traceback.format_exc(),
+            "command": [sys.executable, *sys.argv],
+            "cwd": str(ROOT),
+        }
+        _write_failure_report(failure_report, failure_payload)
+        print(
+            json.dumps(
+                {
+                    "timestamp_utc": failure_payload["timestamp_utc"],
+                    "event": "parallel_s2_run_failed",
+                    "exception_type": failure_payload["exception_type"],
+                    "exception_message": failure_payload["exception_message"],
+                    "failure_report": str(failure_report),
+                },
+                sort_keys=True,
+            ),
+            file=sys.stderr,
+            flush=True,
+        )
+        raise
+
     print(
         json.dumps(
             {
@@ -250,7 +329,8 @@ def main() -> int:
                 "mandatory_stop_reached": True,
             },
             sort_keys=True,
-        )
+        ),
+        flush=True,
     )
     return 0
 

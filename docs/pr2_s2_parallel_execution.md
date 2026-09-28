@@ -29,10 +29,13 @@ held-out評価、S3許可ではない。
   - phaseごとにbarrierを置き、段階間の依存関係を維持する。
   - 既存`_compile_cost_batch`だけをworker内で呼び、科学ロジックを複製しない。
   - 任意のSQLite persistent compiled-cost cacheをworker間で共有する。
+  - phase開始・各cell完了・phase完了を時刻、worker PID、cell identity付きJSONで出力する。
+  - worker例外にはordinal、method、rank、q、r、K、sample count、seedを付けて再送出する。
 - `scripts/run_pr2_s2_development_parallel.py`
   - BLAS/OpenMP thread数をworkerごとに1へ固定する。
   - source freeze、V4 PASS、dedicated test log、非上書きを要求する。
   - serial成果物とは異なる既定output名を使う。
+  - Python例外時は完全なtracebackを非上書きfailure JSONへatomic writeする。
 - `tests/test_pr2_v4_s2_parallel_execution.py`
   - toy Hamiltonian上でserial/parallel出力の完全一致を検査する。
   - worker完了順から独立したcanonical orderを検査する。
@@ -50,13 +53,18 @@ PYTHONPATH=src \
 .venv311/bin/python scripts/run_pr2_s2_development_parallel.py \
   --workers 4 \
   --test-log /tmp/pr2_v4_s2_parallel_tests.xml \
-  --v4-artifact artifacts/pr2_v4_s2_development/2026-09-28/pr2_v4_correctness_result_v1.json
+  --v4-artifact artifacts/pr2_v4_s2_development/2026-09-28/pr2_v4_correctness_result_v1.json \
+  --failure-report artifacts/pr2_v4_s2_development/2026-09-29/pr2_s2_parallel_failure.json
 ```
 
 SQLite cacheは既定で
 `artifacts/pr2_v4_s2_development/2026-09-28/cache/`以下に置かれ、git管理対象外である。
 中断後に同じcacheを指定すると、既にtranspile済みの実回路costを再利用できる。ただし最終JSONは
 非上書きであり、既存成果物を置換しない。
+
+長時間runではstdout/stderrと終了コードを、runnerとは別の監視shellから永続logへ保存する。
+Python例外はfailure JSONにも残る。SIGKILLなどPythonが捕捉できない終了でも、監視shellが残れば
+終了コードをlogへ記録できる。
 
 ## 現在確認済みの範囲
 

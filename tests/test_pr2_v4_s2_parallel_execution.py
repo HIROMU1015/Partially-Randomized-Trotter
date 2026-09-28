@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import copy
+from dataclasses import replace
+import importlib.util
+import json
 from pathlib import Path
 
 import numpy as np
@@ -51,6 +54,7 @@ def _jobs() -> list[S2CompileJob]:
 
 def test_parallel_compile_cells_match_serial_and_preserve_order(
     tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
 ) -> None:
     jobs = _jobs()
     with S2CompileDispatcher(
@@ -69,6 +73,14 @@ def test_parallel_compile_cells_match_serial_and_preserve_order(
     assert parallel == serial
     assert [(item["r"], item["K"]) for item in parallel] == [(1, 2), (2, 2)]
     assert (tmp_path / "parallel-cache.sqlite").is_file()
+    events = [
+        json.loads(line)["event"]
+        for line in capsys.readouterr().out.splitlines()
+        if line.strip()
+    ]
+    assert "compile_phase_started" in events
+    assert "compile_cell_completed" in events
+    assert "compile_phase_completed" in events
 
 
 def test_persistent_parallel_cache_reproduces_identical_cells(tmp_path: Path) -> None:
@@ -99,7 +111,7 @@ def test_parallel_dispatcher_rejects_unsafe_worker_counts_and_ordinals() -> None
         )
 
     jobs = _jobs()
-    duplicate = [jobs[0], jobs[1].__class__(**{**jobs[1].__dict__, "ordinal": 0})]
+    duplicate = [jobs[0], replace(jobs[1], ordinal=0)]
     with S2CompileDispatcher(
         workers=1,
         persistent_cache_path=None,
@@ -107,6 +119,44 @@ def test_parallel_dispatcher_rejects_unsafe_worker_counts_and_ordinals() -> None
     ) as dispatcher:
         with pytest.raises(ValueError, match="ordinals"):
             dispatcher.compile(duplicate)
+
+
+def test_parallel_worker_failure_identifies_the_exact_cell(tmp_path: Path) -> None:
+    invalid = replace(_jobs()[0], cutoff=3, sample_count=1)
+    with S2CompileDispatcher(
+        workers=2,
+        persistent_cache_path=tmp_path / "failure-cache.sqlite",
+        maximum_cache_entries=64,
+    ) as dispatcher:
+        with pytest.raises(RuntimeError) as captured:
+            dispatcher.compile([invalid])
+    message = str(captured.value)
+    assert "S2 compile job failed" in message
+    assert '"ordinal": 0' in message
+    assert '"r": 1' in message
+    assert '"K": 3' in message
+
+
+def test_failure_report_is_atomic_and_non_overwriting(tmp_path: Path) -> None:
+    runner_path = (
+        Path(__file__).resolve().parents[1]
+        / "scripts/run_pr2_s2_development_parallel.py"
+    )
+    spec = importlib.util.spec_from_file_location(
+        "pr2_parallel_runner_test",
+        runner_path,
+    )
+    assert spec is not None and spec.loader is not None
+    runner = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(runner)
+
+    report = tmp_path / "failure.json"
+    payload = {"schema_version": "test_failure_v1", "exception_type": "Test"}
+    runner._write_failure_report(report, payload)
+    assert json.loads(report.read_text(encoding="utf-8")) == payload
+    assert not report.with_suffix(".json.tmp").exists()
+    with pytest.raises(FileExistsError, match="Refusing to overwrite"):
+        runner._write_failure_report(report, payload)
 
 
 def test_parallel_toy_s2_matches_serial_across_all_stage_barriers(
