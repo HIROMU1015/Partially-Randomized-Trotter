@@ -4,10 +4,10 @@
 研究全体を初めて読む場合は、先に[`../PROJECT_MAP.md`](../PROJECT_MAP.md)と
 [`research/研究概要・現状.md`](research/研究概要・現状.md)を読む。
 
-PR-2別系列の最新packetは
-[`research/pr2_v1_v3_result_packet_ef86868_20260928.md`](research/pr2_v1_v3_result_packet_ef86868_20260928.md)。
-旧S0 STOPを保持し、V1–V3通過後にV4/S1′未承認で停止したlocal validationを、外部レビュー、V0監査、
-amendment v4、authorization manifestとともに追跡できる。
+PR-2別系列の最新結果は
+[`pr2_v4_s2_development_validation.md`](pr2_v4_s2_development_validation.md)。旧S0 STOPを保持したまま、
+V1–V3、V4 correctness、development-only S2まで完了し、
+`S2_TRANSFER_CANDIDATE_AWAITING_REVIEW`のmandatory STOPに到達した。held-outとS3は未承認である。
 
 ## 研究方針と現在地
 
@@ -45,6 +45,8 @@ amendment v4、authorization manifestとともに追跡できる。
 - [`research/pr2_codex_validation_policy_d3e1723.md`](research/pr2_codex_validation_policy_d3e1723.md)：Codexが実装・実行してよいS0/S1範囲とS2/S3禁止を定める方針
 - [`research/pr2_s0_reproduction_stop_c644925.md`](research/pr2_s0_reproduction_stop_c644925.md)：development hash不一致による`STOP_INPUT_REPRODUCTION_MISMATCH`、S1未実行、証拠hashと再試行条件
 - [`research/pr2_s0_external_review_request_c644925.md`](research/pr2_s0_external_review_request_c644925.md)：S0 terminal STOP後に、終了または新しい結果前amendmentの要否をGPTへ確認するレビュー依頼
+- [`research/pr2_v4_s2_development_authorization_v5.md`](research/pr2_v4_s2_development_authorization_v5.md)：V4 correctness、development-only S2、S2後mandatory STOPを結果前固定
+- [`pr2_v4_s2_development_validation.md`](pr2_v4_s2_development_validation.md)：V4/S2の実行結果、B2/B3 frontier、rank control、方針review判断
 - [`df_rte_tail_extraction.md`](df_rte_tail_extraction.md)
 - [`df_rte_event_circuit_api.md`](df_rte_event_circuit_api.md)
 

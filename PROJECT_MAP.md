@@ -360,7 +360,8 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
   `scripts/run_pr2_s2_development_parallel.py`、
   `tests/test_pr2_v4_s2_parallel_execution.py`、
   `docs/pr2_s2_parallel_execution.md`（同じS2 cellと段階barrierを保つbounded CPU並列実行層。
-  実H4 S2の追加結果ではない）
+  実H4 S2結果は`docs/pr2_v4_s2_development_validation.md`と
+  `artifacts/pr2_v4_s2_development/2026-09-29/`で追跡する）
 - `docs/research/pr2_s0_reproduction_stop_c644925.md`、
   `docs/research/pr2_s0_external_review_request_c644925.md`、
   `artifacts/pr2_s0_s1_validation/2026-09-28/`（development byte-level hash不一致による

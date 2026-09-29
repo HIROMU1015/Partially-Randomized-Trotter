@@ -30,6 +30,9 @@
 - [`pr2_s1_s3_preregistration/2026-09-28/`](pr2_s1_s3_preregistration/2026-09-28/)：
   外部レビュー後amendment v2のmachine-readable dry-run manifest。補正後estimand、S1軽量化、stage gateを
   記録し、S0実装だけを許可する。S0/S1実行countは0である
+- [`pr2_v4_s2_development/2026-09-29/`](pr2_v4_s2_development/2026-09-29/)：
+  別系列のV4通過後に実行したH4 1.00 Å development-only S2結果。引用対象は結果JSONだけで、
+  SQLite cacheとlogは再開・監査用でGit管理しない。held-out NPZ loadは0、S3は未承認である
 manifestは次で検査できる。
 
 ```bash

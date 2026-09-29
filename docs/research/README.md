@@ -5,11 +5,10 @@
 実装、runner、テスト、成果物を含むリポジトリ全体の区分は
 [`../../PROJECT_MAP.md`](../../PROJECT_MAP.md)を参照する。
 
-PR-2の最新系列は、外部レビュー後に旧STOPを維持して別snapshot系列を固定し、V1–V3を通過して
-`S0_PRIME_PASS_V4_REVIEW_REQUIRED`で停止している。正本は
-[new-series amendment v4](pr2_new_series_amendment_v4.md)と
-[V0–V3結果packet](pr2_v1_v3_result_packet_ef86868_20260928.md)。
-V4/S1′、held-out、S2/S3、resource winnerは未実行・未承認である。
+PR-2の最新系列は、旧STOPを維持した別snapshotでV1–V3、V4 correctness、development-only S2を完了し、
+`S2_TRANSFER_CANDIDATE_AWAITING_REVIEW`のmandatory STOPに到達した。正本は
+[authorization v5](pr2_v4_s2_development_authorization_v5.md)と
+[S2検証報告](../pr2_v4_s2_development_validation.md)。held-outとS3は未実行・未承認で、次は研究方針reviewである。
 
 初めてこの研究を確認する場合や、Codexを使って発表・共有資料を作る場合は、まず
 [研究概要・現状](研究概要・現状.md)を読む。この一冊で現在の研究段階、採用済みの
@@ -87,6 +86,8 @@ V4/S1′、held-out、S2/S3、resource winnerは未実行・未承認である�
 | 40 | [PR-2 S0/S1実行許可 amendment v3](pr2_s0_s1_execution_amendment_v3.md) | S0と、S0通過時だけのS1 correctnessを許可し、S1後mandatory STOPを固定する。 |
 | 41 | [PR-2 S0 input reproduction停止報告](pr2_s0_reproduction_stop_c644925.md) | pilot development hash不一致で`STOP_INPUT_REPRODUCTION_MISMATCH`。S1を実行せず、近似一致でgateを緩和しない。 |
 | 42 | [PR-2 S0 STOP後 外部レビュー依頼](pr2_s0_external_review_request_c644925.md) | terminal STOP確認、canonicalizationの最低要件、終了または新pilot化をGPTへ批判的レビューさせる指示。 |
+| 43 | [PR-2 V4/S2 development実行許可](pr2_v4_s2_development_authorization_v5.md) | V4 correctness、rank 6 primary比較、rank 3/9 control、held-out未開封、S2後mandatory STOPを結果前固定する。 |
+| 44 | [PR-2 V4/S2 development結果](../pr2_v4_s2_development_validation.md) | B2/B3 frontier、rank control、実行範囲、held-out前の研究方針review判断を記録する。 |
 
 ## 研究ノート
 

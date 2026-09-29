@@ -5046,6 +5046,41 @@
         "Require separate result-prior authorization before V4/S1-prime. Do not automatically start expected-cost Monte Carlo, resource selection, S2/S3, additional ranks/geometries, H12, long RPE, or final total-cost evaluation.",
         "Classify the result as dirty-worktree local validation, not immutable CI or independent external reproduction."
       ]
+    },
+    {
+      "id": "pr2_v4_s2_development",
+      "status": "source_present_no_current_ci",
+      "summary": "Result-prior authorization v5 and source commit e098c54 freeze V4 correctness and one development-only H4 1.00 Angstrom resource comparison. V4 passes, and the six-worker S2 run from commit 16331cc preserves the serial scientific cells, seeds, staged 32/96 trajectory extension, and canonical output order. The terminal status is S2_TRANSFER_CANDIDATE_AWAITING_REVIEW: selected rank-6 B2 r=1 K=2 materially beats B0 and B1, but not B3 r=32 K=4 by the preregistered 10% threshold, so B2 and B3 remain on the primary material frontier. The lower-work rank-3 fixed-setting result remains a control and is not promoted post hoc. Mandatory stop is reached; held-out H4 1.30 Angstrom remains unopened and S3 is unauthorized.",
+      "counts": {
+        "implementation_source_files": 2,
+        "generator_scripts": 2,
+        "documentation_files": 5,
+        "dedicated_test_source_files": 2,
+        "dedicated_local_test_cases_passed": 15,
+        "local_artifact_files": 1,
+        "development_npz_loads": 1,
+        "held_out_npz_loads": 0,
+        "signal_evaluations": 28,
+        "full_wrappers_compiled": 3204,
+        "random_trajectories_compiled": 1600,
+        "molecular_calculations": 0,
+        "quantum_shots": 0,
+        "s2_runs": 1,
+        "s3_runs": 0,
+        "h12_evaluations": 0,
+        "long_rpe_evaluations": 0,
+        "final_cost_evaluations": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Preserve authorization commit 33a1c0d0a7f6880972f4e0ffdb5b6e7ffe0358e0, serial source commit e098c54c78f589055082f9cfc2b13de50c90ca94, parallel execution commit 16331cc30299a42cc3ddbdd341827fc118c59b0c, result fingerprint 51fb92fdbcedb67299964eddd25e81c1faeaa55d7f7966765600a05e71d41a49, and artifact SHA-256 bbe665724af438d242569b020ab6148dacce84716a75681949bea22c632dd27c.",
+        "Interpret S2_TRANSFER_CANDIDATE_AWAITING_REVIEW as a development-only conditional transfer candidate, not as held-out transfer, general PR-2 superiority, or final total-cost evidence.",
+        "Keep rank 3 and rank 9 as fixed-setting controls outside the primary winner decision; the rank-3 work result can motivate a new result-prior resource-map design but cannot be promoted post hoc.",
+        "Preserve the primary B2/B3 material frontier and the preregistered 10% threshold; do not reinterpret the approximately 4.7% point difference as material dominance.",
+        "Keep held-out H4 1.30 Angstrom unopened for NPZ load, signal, cost, and ranking; S3_authorized remains false and automatic_next_stage remains null.",
+        "Do not start S3, additional ranks or geometries, H12, long RPE, or final total-cost evaluation before the mandatory research-direction review and a separate result-prior authorization.",
+        "Classify the artifact as local validation, not immutable CI or independent external reproduction."
+      ]
     }
   ],
   "repository_completion_criteria": [

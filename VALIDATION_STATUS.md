@@ -1,5 +1,29 @@
 # Validation status
 
+## 2026-09-29 PR-2 V4/S2 development比較完了・mandatory STOP
+
+結果前authorization v5とsource commit `e098c54`に従い、H4 linear 1.00 Å、STO-3G、DF rank 12、
+`T=0.8`、`delta=0.1`、`q=8`のdevelopment-only比較を完了した。6-worker並列層はcell、seed、
+32/96 trajectory拡張、段階barrier、canonical結果順を変えず、source commit `16331cc`から実行した。
+
+正式statusは`S2_TRANSFER_CANDIDATE_AWAITING_REVIEW`。rank 6 B2 `r=1,K=2`のno-prep RZ workは
+`1.236973821e9`で、B0/B1に対するratio intervalはそれぞれ`[0.370062,0.370218]`、
+`[0.552534,0.552768]`だった。B3 `r=32,K=4`は`1.179054305e9`で、B2/B3 intervalは
+`[1.035433,1.063175]`。従って10%基準のprimary frontierはB2/B3の2候補で、materially dominating
+endpointはない。rank 3 controlは`6.882866351e8`だったが、事前規則どおりprimary winnerへ混ぜない。
+
+result fingerprintは`51fb92fdbcedb67299964eddd25e81c1faeaa55d7f7966765600a05e71d41a49`、
+artifact SHA-256は`bbe665724af438d242569b020ab6148dacce84716a75681949bea22c632dd27c`。
+development NPZ load 1、held-out NPZ load 0、full wrapper compile 3,204、random trajectory compile
+1,600、signal evaluation 28、量子shot 0、分子計算0。専用testは15 passedである。
+
+`mandatory_stop_reached=true`、`S3_authorized=false`、`automatic_next_stage=null`。held-out 1.30 Åの
+signal/cost/rankingは未開封で、transfer、backend/noise、状態準備実回路、H12、長RPE、最終総costは
+未検証である。これはlocal validationでありimmutable CIまたは外部再現ではない。次は追加計算ではなく、
+rank 6 transfer契約を維持するかsplit/resource-map研究へ再設計するかの方針reviewである。詳細は
+[S2検証報告](docs/pr2_v4_s2_development_validation.md)を参照する。
+
+
 ## 2026-09-28 PR-2別系列 V1–V3通過・V4 review待ち
 
 旧S0の`STOP_INPUT_REPRODUCTION_MISMATCH`と`S1_authorized=false`を維持したまま、外部レビューの

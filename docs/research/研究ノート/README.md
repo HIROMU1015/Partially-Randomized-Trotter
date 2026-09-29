@@ -35,6 +35,7 @@
 
 | 日付 | 主題 | 基準commit | 到達点 | 次の主要課題 |
 |---|---|---|---|---|
+| [2026-09-29](2026-09-29.md) | PR-2 V4/S2 development比較 | `16331cc` | B2/B3 primary frontier、rank 3 controlの低コスト、`S2_TRANSFER_CANDIDATE_AWAITING_REVIEW`でmandatory STOP | held-out前にrank 6 transfer維持かsplit/resource-map再設計かを決定 |
 | [2026-09-27](2026-09-27.md) | FR-R1b完了と研究完成フェーズ移行 | `ecb7f4c`、`16d4482` + dirty worktree | R5不通過と`MECHANISM_ONLY_NO_PRACTICAL_GO`を維持。C1/C2を中核、C3を条件付き応用とする完成原稿契約を固定 | 新規計算を止め、定理単位の先行研究監査とT1--T4の証明へ進む |
 | [2026-09-25](2026-09-25.md) | M06-F・A0・P-B/P-C/P-A停止点 | `3336f03` + dirty worktree | P-C tracking 16/16完了。stretch予測破れと診断不通過によりA/B/C全てcurrent scopeで停止 | P-Dを事前登録するかR3/R6/R8へ問いを再定義 |
 | [2026-09-26](2026-09-26.md) | P-D S0契約・S1公平再最適化 | `9a494bd` + dirty worktree | B1b/B2/B4一致、Case C/D不成立。B1a上限依存でCase B＋undetermined、S1停止 | P-Dの研究価値・baseline設計を再検討。S2/H12/長RPEは保留 |
