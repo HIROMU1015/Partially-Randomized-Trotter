@@ -11,7 +11,8 @@ compile-free M1-Aを完了して`SELECTION_LIMITED`で停止した段階であ�
 208 base＋2 boundary候補を評価し、64 proxy-frontier候補中52件が16-cell cap外に残った。hard barrierにより
 compile job、trajectory、circuit、held-out accessは全て0である。入口は
 `docs/pr2_matched_accuracy_m1_a_validation.md`。M1-B、held-out H4 1.30 Å、S3は未承認であり、compile
-budget拡張またはtechnical-note縮小を別途判断するまで追加計算しない。
+budget拡張またはtechnical-note縮小を別途判断するまで追加計算しない。GPTへ渡す固定レビュー依頼は
+`docs/research/pr2_m1_a_selection_limited_external_review_request_3c1831e.md`である。
 
 ## 最初に読む順序
 
@@ -368,7 +369,8 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
   `docs/research/pr2_matched_accuracy_m1_implementation_contract_v1.md`、
   `docs/research/pr2_matched_accuracy_m1_preexecution_amendment_v2.md`、
   `docs/research/pr2_matched_accuracy_m1_execution_authorization_v1.md`、
-  `docs/research/pr2_matched_accuracy_m1_execution_authorization_v1_1.md`
+  `docs/research/pr2_matched_accuracy_m1_execution_authorization_v1_1.md`、
+  `docs/research/pr2_m1_a_selection_limited_external_review_request_3c1831e.md`
   （S2後の新規性gate、M1前研究契約、zero-compute実装契約。候補identity、16-cell selector、schema、
   seed規則、追加prior-art gate、M1-A/M1-B hard barrier、compile-free M1-A予算を固定済み）
 - `src/trotterlib/pr2_matched_accuracy_m1_contract.py`、

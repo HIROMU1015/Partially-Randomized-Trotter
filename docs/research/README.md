@@ -102,6 +102,7 @@ S2後reviewでは新手法claimを外し、matched-accuracy resource-map研究�
 | 49 | [PR-2 matched-accuracy M1-A実行認可 v1](pr2_matched_accuracy_m1_execution_authorization_v1.md) | development-only、最大212 signal、compile 0、held-out access 0を固定した初回認可。実行はconfig整合性でresult作成前に停止した。 |
 | 50 | [PR-2 matched-accuracy M1-A再認可 v1.1](pr2_matched_accuracy_m1_execution_authorization_v1_1.md) | 固定KのRTEConfig self-consistencyだけを修正し、候補・threshold・selectorを変えず同じM1-Aを再認可する。 |
 | 51 | [PR-2 matched-accuracy M1-A結果](../pr2_matched_accuracy_m1_a_validation.md) | 210候補、64 proxy frontier、52未選択frontierにより`SELECTION_LIMITED`でcompile 0停止した結果を記録する。 |
+| 52 | [PR-2 M1-A limited後 GPTレビュー依頼](pr2_m1_a_selection_limited_external_review_request_3c1831e.md) | commit `3c1831e`を固定し、bounded compile拡張・technical note縮小・研究停止の三択と回答形式を指定する。 |
 
 ## 研究ノート
 
