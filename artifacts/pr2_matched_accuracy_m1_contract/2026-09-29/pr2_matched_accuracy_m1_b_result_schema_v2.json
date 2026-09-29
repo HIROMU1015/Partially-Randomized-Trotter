@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pr2_matched_accuracy_m1_b_result_schema_v2",
+  "title": "PR-2 matched-accuracy M1-B direct-compile result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "series_id",
+    "status",
+    "execution_authorization_sha256",
+    "m1_a_artifact_sha256",
+    "m1_a_result_fingerprint",
+    "m1_a_status",
+    "precompile_barrier_status",
+    "compile_plan",
+    "compile_records",
+    "resource_analysis",
+    "decision",
+    "counters",
+    "held_out",
+    "S3_authorized",
+    "automatic_next_stage",
+    "mandatory_stop_reached",
+    "result_fingerprint"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "pr2_matched_accuracy_m1_b_result_v2"
+    },
+    "series_id": {
+      "const": "pr2-rebaseline-de7a5492-v1"
+    },
+    "status": {
+      "enum": [
+        "CONTINUE_TO_FROZEN_TRANSFER_REVIEW",
+        "NARROW_TO_TECHNICAL_NOTE",
+        "STOP_DUPLICATIVE",
+        "IMPLEMENTATION_GATE_FAILED"
+      ]
+    },
+    "execution_authorization_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "m1_a_artifact_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "m1_a_result_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "m1_a_status": {"const": "M1_A_COMPLETE_M1_B_ELIGIBLE"},
+    "precompile_barrier_status": {"const": "M1_A_COMPLETE_M1_B_ELIGIBLE"},
+    "compile_plan": {
+      "type": "object",
+      "required": [
+        "deterministic_or_discard_compile_cells",
+        "random_compile_cells",
+        "deterministic_or_discard_compile_cell_count",
+        "random_compile_cell_count"
+      ],
+      "properties": {
+        "deterministic_or_discard_compile_cells": {
+          "type": "array",
+          "maxItems": 16
+        },
+        "random_compile_cells": {"type": "array", "maxItems": 16},
+        "deterministic_or_discard_compile_cell_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 16
+        },
+        "random_compile_cell_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 16
+        }
+      }
+    },
+    "compile_records": {"type": "array"},
+    "resource_analysis": {
+      "type": "object",
+      "required": [
+        "fixed_q8_comparison",
+        "matched_accuracy_comparison",
+        "no_preparation_lower_envelope",
+        "state_preparation_sensitivity"
+      ]
+    },
+    "decision": {
+      "type": "object",
+      "required": [
+        "status",
+        "winner_claim_permitted",
+        "held_out_candidate_selection_permitted"
+      ]
+    },
+    "counters": {
+      "type": "object",
+      "required": [
+        "held_out_npz_loads",
+        "random_trajectories_compiled",
+        "full_wrappers_compiled",
+        "quantum_shots_executed"
+      ],
+      "properties": {
+        "held_out_npz_loads": {"const": 0},
+        "random_trajectories_compiled": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2048
+        },
+        "full_wrappers_compiled": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4128
+        },
+        "quantum_shots_executed": {"const": 0}
+      }
+    },
+    "held_out": {
+      "type": "object",
+      "required": ["npz_loaded", "signal_cost_ranking_evaluated"],
+      "properties": {
+        "npz_loaded": {"const": false},
+        "signal_cost_ranking_evaluated": {"const": false}
+      }
+    },
+    "S3_authorized": {"const": false},
+    "automatic_next_stage": {"type": "null"},
+    "mandatory_stop_reached": {"const": true},
+    "result_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

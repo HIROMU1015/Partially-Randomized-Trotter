@@ -2930,6 +2930,78 @@
           "pr2_matched_accuracy_m1_implementation_contract"
         ],
         "reason": "Machine-readable zero-compute dry run with SHA-256 b599322b6b8f38308ad6327e339e4743723f5e7e2a3d89c5b294860f95d908db and artifact fingerprint af0e4ff6e4a0da87404724e8416ab99b9a8884d106ecd96c68edef62bd757832. It enumerates 208 base candidates, four synthetic boundary requests, and a capped sixteen-cell synthetic selection while all scientific counters remain zero."
+      },
+      {
+        "path": "docs/research/pr2_matched_accuracy_m1_preexecution_amendment_v2.md",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_preexecution_amendment_v2"
+        ],
+        "reason": "Documentation-only final M1 preexecution amendment with SHA-256 163e228cbcc866bec4e5c5aeeb8e7aa95bb459a9871cddc6cfcec064f0efc4fa. It adds claim-level comparison with arXiv:2603.13495 and arXiv:2603.22778 and freezes an M1-A/M1-B hard precompile barrier without authorizing science."
+      },
+      {
+        "path": "src/trotterlib/pr2_matched_accuracy_m1_precompile_barrier.py",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_preexecution_amendment_v2"
+        ],
+        "reason": "Standard-library-only precompile hard barrier with SHA-256 2a533ffc7f1311db12b063f10a156c9f3d0cf9786910f21b38a7b52e75c56430. It validates selector reasons and rejects compile-plan creation when selection_limited is true."
+      },
+      {
+        "path": "scripts/run_pr2_matched_accuracy_m1_precompile_barrier.py",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_preexecution_amendment_v2"
+        ],
+        "reason": "Non-overwrite zero-compute barrier runner with SHA-256 0d93f165de8822e41bd35d382cdb11cbec9362d68bbdab24a727e0e4dd795516. It exercises limited and clear synthetic branches and performs no scientific access or compile."
+      },
+      {
+        "path": "tests/test_pr2_matched_accuracy_m1_precompile_barrier.py",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_preexecution_amendment_v2"
+        ],
+        "reason": "Dedicated precompile-barrier tests with SHA-256 e8012fd413ab8c91e87045fa139f4e0560425bc6dae141e2a11eb1564cb7f4cf; ten local tests pass, with no current immutable CI record."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m1_contract/2026-09-29/pr2_matched_accuracy_m1_a_result_schema_v2.json",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_preexecution_amendment_v2"
+        ],
+        "reason": "Reserved future M1-A schema with SHA-256 b5ad6554bd9009437ba52603766f39793b0663a66b763328dd5976abf7e33f22; it requires empty compile records and zero direct-compile counters before the barrier."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m1_contract/2026-09-29/pr2_matched_accuracy_m1_b_result_schema_v2.json",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_preexecution_amendment_v2"
+        ],
+        "reason": "Reserved future M1-B schema with SHA-256 7e76123aae9673e76f94e8fcbdcc3f274a67020ac283509662f7c5915f4a360b; it requires a byte-fixed clear M1-A result before direct compile."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m1_contract/2026-09-29/pr2_matched_accuracy_m1_precompile_barrier_dry_run_schema_v2.json",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_preexecution_amendment_v2"
+        ],
+        "reason": "Zero-compute precompile-barrier dry-run schema with SHA-256 3f9cc7140166156bdf21a1583c0f8a31f1ef36faf087db54702357846e2758c4."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m1_contract/2026-09-29/pr2_matched_accuracy_m1_preexecution_amendment_authorization_v2.json",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_preexecution_amendment_v2"
+        ],
+        "reason": "Machine-readable amendment-only authorization with SHA-256 ceb1ee5648576064681a24926786df5043a2d975dbd0264f4c944535c9d389ae. M1 science, snapshot access, signal, trajectories, circuit build, direct compile, held-out, S3, and automatic continuation are false."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m1_contract/2026-09-29/pr2_matched_accuracy_m1_precompile_barrier_dry_run_v2.json",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_preexecution_amendment_v2"
+        ],
+        "reason": "Machine-readable zero-compute barrier dry run with SHA-256 1fa0f7bb16069b7377d73b6e756751cbe5500a9d44525f6dbe9615d11c9025a4 and artifact fingerprint 8ccddb2563bc04bd718e159a327fcf2c03fb60042415f917f9a2a7ac51fc8f01. The limited fixture creates zero compile jobs; the clear control creates only a 16+16 cell identity plan; all scientific counters are zero."
       }
     ],
     "quarantined": [
@@ -5232,6 +5304,45 @@
         "Use candidate, axis, trajectory, outer step, tail occurrence, and RTE step coordinates in the future occurrence-seed identity and reject reuse across coordinate tuples.",
         "Cap future random direct compile selection at sixteen cells and return SELECTION_LIMITED whenever a plausible uncompiled frontier, boundary, or tail challenger remains unresolved.",
         "Require independent review and a separate execution authorization before any development NPZ load, signal evaluation, trajectory sampling, circuit build, or compile.",
+        "Keep held-out H4 1.30 Angstrom, S3, additional geometries, H12, long RPE, and final total-cost evaluation unauthorized."
+      ]
+    },
+    {
+      "id": "pr2_matched_accuracy_m1_preexecution_amendment_v2",
+      "status": "source_present_no_current_ci",
+      "summary": "A final preexecution amendment preserves the frozen v1 contracts and adds two safeguards before M1. Claim-level comparison with arXiv:2603.13495 treats joint per-circuit cost and estimator-variance optimization via classical importance sampling as prior art; comparison with arXiv:2603.22778 treats single-ancilla Trotter QPE, partially randomized time evolution, UWC, and end-to-end early-FTQC chemistry resource estimation as prior art. PROCEED_RESOURCE_STUDY is retained only for the narrow fixed-DF-prefix matched-accuracy comparison. A standard-library-only M1-A/M1-B hard barrier makes SELECTION_LIMITED a terminal precompile stop. The synthetic limited fixture creates no compile plan or jobs, the clear control creates only a 16+16 cell identity plan, ten dedicated tests pass, and all scientific counters remain zero. M1 science still requires a separate result-prior execution authorization.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 1,
+        "dedicated_test_source_files": 1,
+        "schema_files": 3,
+        "authorization_files": 1,
+        "dry_run_artifact_files": 1,
+        "dedicated_local_test_cases_passed": 10,
+        "prior_art_papers_added": 2,
+        "synthetic_limited_compile_jobs_created": 0,
+        "synthetic_clear_plan_cells": 32,
+        "new_molecular_calculations": 0,
+        "development_npz_loads": 0,
+        "held_out_path_or_file_accesses": 0,
+        "held_out_npz_loads": 0,
+        "new_signal_evaluations": 0,
+        "new_trajectory_samples": 0,
+        "new_circuit_builds": 0,
+        "new_circuit_compilations": 0,
+        "new_quantum_shots": 0,
+        "s3_runs": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Preserve implementation base commit 0ee4d641c10f4e248d2b03ebc59703c56f10e581, authorization SHA-256 ceb1ee5648576064681a24926786df5043a2d975dbd0264f4c944535c9d389ae, dry-run SHA-256 1fa0f7bb16069b7377d73b6e756751cbe5500a9d44525f6dbe9615d11c9025a4, and artifact fingerprint 8ccddb2563bc04bd718e159a327fcf2c03fb60042415f917f9a2a7ac51fc8f01.",
+        "Treat joint circuit-cost and estimator-variance optimization, classical importance sampling for randomized protocols, single-ancilla partially randomized Trotter QPE, UWC, and early-FTQC chemistry resource estimation as prior art, not PR-2 claims.",
+        "Retain PROCEED_RESOURCE_STUDY only for the narrow fixed-DF-prefix matched-accuracy discard/deterministic/partial/random-dominant comparison; do not claim a new general algorithm or resource optimum.",
+        "Complete M1-A signal, bias, normalization, shot, eligibility, proxy, boundary, and selector evaluation before creating any deterministic, random, trajectory, circuit, or wrapper compile job.",
+        "If M1-A returns selection_limited=true, set status SELECTION_LIMITED and stop with all compile jobs and compile counters at zero; do not expand the cap, change the proxy, or rescue in another output under the same authorization.",
+        "Permit M1-B planning only from a byte-fixed M1-A artifact whose barrier status is M1_A_COMPLETE_M1_B_ELIGIBLE and whose selected fingerprints match the frozen selector output.",
+        "Require a separate result-prior execution authorization before development snapshot access, M1-A signal evaluation, M1-B trajectory sampling, circuit build, or direct compile.",
         "Keep held-out H4 1.30 Angstrom, S3, additional geometries, H12, long RPE, and final total-cost evaluation unauthorized."
       ]
     }

@@ -1,5 +1,23 @@
 # Validation status
 
+## 2026-09-29 PR-2 M1前最終amendment・precompile hard barrier完了
+
+[M1前最終amendment](docs/research/pr2_matched_accuracy_m1_preexecution_amendment_v2.md)で、Cugini--Atif--
+Subasiのrandomized protocolに対するcost–variance共同最適化と、Kanasugi et al.のsingle-ancilla
+Trotter QPE・部分ランダム化・化学end-to-end resource estimateを既知貢献として追加した。一般的な
+importance samplingまたは化学QPE resource optimalityを新規claimから除外し、固定DF-prefix候補の
+matched-accuracy・discard baseline・full-wrapper比較という限定scopeで`PROCEED_RESOURCE_STUDY`を維持した。
+
+M1をM1-A signal/selectorとM1-B direct compileへ分けるstandard-library-only hard barrierを追加した。
+M1-Aで`selection_limited=true`なら正式statusを`SELECTION_LIMITED`とし、deterministic/discard/randomの
+compile jobを一件も生成せず、circuit build、compile、full-wrapper counter 0のままmandatory STOPする。
+synthetic dry-runではlimited fixtureがこの停止分岐に入り、clear controlだけが16+16 cellのplan identityを
+生成した。科学counterは全て0、専用testは10 passedである。
+
+現行statusは`M1_PREEXECUTION_AMENDMENT_V2_FROZEN_SCIENCE_NOT_AUTHORIZED`。M1 signal、trajectory、compile、
+held-out、S3は未実行・未承認である。次はM1-Aと条件付きM1-Bを固定する別execution authorizationであり、
+本amendmentから自動実行しない。
+
 ## 2026-09-29 PR-2 M1実装契約・zero-compute dry-run完了
 
 [M1実装契約](docs/research/pr2_matched_accuracy_m1_implementation_contract_v1.md)として、standard-library-only

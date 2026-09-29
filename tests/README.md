@@ -49,3 +49,7 @@ failure reportをtoy Hamiltonianで検査する。実H4 S2の並列再実行結�
 `test_pr2_matched_accuracy_m1_contract.py`では208候補のexact countとfingerprint uniqueness、
 `q*delta=T`、occurrence seed独立性、最大4件のr64境界、16-cell selectorと`SELECTION_LIMITED`経路、
 source hash、schema、全科学counter 0、非上書きrunnerを検査する。M1 signalまたはcompileのtestではない。
+
+`test_pr2_matched_accuracy_m1_precompile_barrier.py`では、selector理由と未解決集合の整合性、limited時の
+compile-plan生成拒否、clear時の最大16+16 cell plan、source hash、non-overwrite dry-run、全科学counter 0を
+検査する。M1-A signalまたはM1-B compileを実行するtestではない。

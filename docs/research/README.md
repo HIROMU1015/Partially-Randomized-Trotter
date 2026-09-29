@@ -9,8 +9,10 @@ PR-2の最新系列は、旧STOPを維持した別snapshotでV1–V3、V4 correc
 S2後reviewでは新手法claimを外し、matched-accuracy resource-map研究へ狭めた。
 [M1前先行研究gate](pr2_matched_accuracy_prior_art_gate_v1.md)は`PROCEED_RESOURCE_STUDY`、
 [M1実装契約](pr2_matched_accuracy_m1_implementation_contract_v1.md)は208候補台帳、最大4境界候補、
-16-cell selector、schema、zero-compute guardを固定した。現行statusは
-`M1_IMPLEMENTATION_CONTRACT_FROZEN_SCIENCE_NOT_AUTHORIZED`。旧S2 statusと結果は保持し、
+16-cell selector、schema、zero-compute guardを固定した。続く
+[M1前最終amendment](pr2_matched_accuracy_m1_preexecution_amendment_v2.md)は追加prior-art二件を照合し、
+`SELECTION_LIMITED`ならM1-B compile前に停止するhard barrierを固定した。現行statusは
+`M1_PREEXECUTION_AMENDMENT_V2_FROZEN_SCIENCE_NOT_AUTHORIZED`。旧S2 statusと結果は保持し、
 held-out、S3、M1科学計算は未実行・未承認である。
 
 初めてこの研究を確認する場合や、Codexを使って発表・共有資料を作る場合は、まず
@@ -94,6 +96,7 @@ held-out、S3、M1科学計算は未実行・未承認である。
 | 45 | [PR-2 matched-accuracy M1前先行研究gate](pr2_matched_accuracy_prior_art_gate_v1.md) | 最接近研究とのclaim overlapを固定し、新手法ではなく限定resource studyとして`PROCEED_RESOURCE_STUDY`と判定する。 |
 | 46 | [PR-2 matched-accuracy resource-map契約](pr2_matched_accuracy_resource_contract_v1.md) | baseline、可変q correctness、random direct-compile 16-cell選抜、`SELECTION_LIMITED`、held-out前の別freezeを固定し、M1計算を未承認のまま保つ。 |
 | 47 | [PR-2 matched-accuracy M1実装契約](pr2_matched_accuracy_m1_implementation_contract_v1.md) | 208候補identity、最大4境界候補、occurrence seed、16-cell selector、result schema、zero-compute dry-runを固定し、M1科学計算を未承認のまま独立reviewへ渡す。 |
+| 48 | [PR-2 matched-accuracy M1前最終amendment](pr2_matched_accuracy_m1_preexecution_amendment_v2.md) | 2026年の近接研究二件をclaim単位で追加照合し、M1-Aで`SELECTION_LIMITED`ならcompile job 0のままmandatory STOPするM1-B前hard barrierを固定する。 |
 
 ## 研究ノート
 

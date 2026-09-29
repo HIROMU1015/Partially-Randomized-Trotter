@@ -8,8 +8,10 @@ PR-2別系列の最新計算結果は
 [`pr2_v4_s2_development_validation.md`](pr2_v4_s2_development_validation.md)。旧S0 STOPとS2結果を保持した
 S2後reviewでは、[`matched-accuracy先行研究gate`](research/pr2_matched_accuracy_prior_art_gate_v1.md)、
 [`M1前resource-map契約`](research/pr2_matched_accuracy_resource_contract_v1.md)、
-[`M1実装契約`](research/pr2_matched_accuracy_m1_implementation_contract_v1.md)を固定した。208候補台帳と
-synthetic 16-cell selector dry-runは完了したが、M1科学計算、held-out、S3は未承認である。
+[`M1実装契約`](research/pr2_matched_accuracy_m1_implementation_contract_v1.md)、
+[`M1前最終amendment`](research/pr2_matched_accuracy_m1_preexecution_amendment_v2.md)を固定した。追加prior-art
+二件をclaim単位で照合し、`SELECTION_LIMITED`ならM1-B compile前に停止するhard barrierを実装したが、
+M1科学計算、held-out、S3は未承認である。
 
 ## 研究方針と現在地
 
@@ -51,7 +53,8 @@ synthetic 16-cell selector dry-runは完了したが、M1科学計算、held-out
 - [`pr2_v4_s2_development_validation.md`](pr2_v4_s2_development_validation.md)：V4/S2の実行結果、B2/B3 frontier、rank control、方針review判断
 - [`research/pr2_matched_accuracy_prior_art_gate_v1.md`](research/pr2_matched_accuracy_prior_art_gate_v1.md)：M1前のclaim-level先行研究比較と`PROCEED_RESOURCE_STUDY`判定
 - [`research/pr2_matched_accuracy_resource_contract_v1.md`](research/pr2_matched_accuracy_resource_contract_v1.md)：matched-accuracy baseline、可変q correctness、compile選抜、held-out前freezeを定める研究契約
-- [`research/pr2_matched_accuracy_m1_implementation_contract_v1.md`](research/pr2_matched_accuracy_m1_implementation_contract_v1.md)：M1の候補identity、seed、selector、schema、zero-compute guardと科学計算未承認を固定する現行実装契約
+- [`research/pr2_matched_accuracy_m1_implementation_contract_v1.md`](research/pr2_matched_accuracy_m1_implementation_contract_v1.md)：M1の候補identity、seed、selector、schema、zero-compute guardと科学計算未承認を固定する実装契約
+- [`research/pr2_matched_accuracy_m1_preexecution_amendment_v2.md`](research/pr2_matched_accuracy_m1_preexecution_amendment_v2.md)：2026年の近接研究二件との最終claim照合と、M1-A limited時にcompile job 0で停止するhard barrierを追加する現行amendment
 - [`df_rte_tail_extraction.md`](df_rte_tail_extraction.md)
 - [`df_rte_event_circuit_api.md`](df_rte_event_circuit_api.md)
 
