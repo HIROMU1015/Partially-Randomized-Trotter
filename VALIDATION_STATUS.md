@@ -1,5 +1,25 @@
 # Validation status
 
+## 2026-09-30 PR-2 M1-B1 bounded compile実行前契約・zero-compute plan完了
+
+[M1-B1契約](docs/research/pr2_matched_accuracy_m1_b1_bounded_compile_contract_v1.md)は、M1-Aの
+`SELECTION_LIMITED`を旧proxy selectorの監査結果として保存したまま、`PROCEED_BOUNDED_COMPILE_EXPANSION`
+を固定した。M1-Aでaccuracy適格だったrandom B2/B3 194 fingerprintを追加・除外せず、各32 trajectoryを
+cosine/sine二軸で共有する12,416 wrapperと、B0/B1全16 cellの32 wrapper、総上限12,448 wrapperを定めた。
+B0/B1のaccuracy不適格4 cellはbaseline completeness用にcompileするが、matched-accuracy frontierへ入れない。
+
+standard-library-only実装はcandidate、axis、trajectory seed、compiler、source commitを含むcache/checkpoint
+identityを生成し、cross-cell reuseを禁止する。source commitは
+`12281687fe13c13ac19688d328f9da26a1d63f34`、zero-compute plan fingerprintは
+`94592dbddce9b21cfe9fd31c61c578943264002655379e255aa36161072b5814`、file SHA-256は
+`d0c2234cb787b57af85457a6232504be39bbb2140d60f9b67bbda3d252622e6c`である。専用testは9 passed。
+snapshot load、signal再評価、trajectory/occurrence sampling、circuit、compile、quantum shot、GPU、held-out
+accessは全て0である。
+
+現行statusは`M1_B1_BOUNDED_COMPILE_CONTRACT_FROZEN_EXECUTION_NOT_AUTHORIZED`。M1-B1科学実行には別の
+result-prior authorizationと実行前reviewが必要である。B1は32 trajectoryのactual compiled resource mapで
+停止し、追加96、held-out候補確定、transfer、winner精密化、S3へ自動進行しない。
+
 ## 2026-09-30 PR-2 M1-A `SELECTION_LIMITED`完了
 
 [M1-A結果](docs/pr2_matched_accuracy_m1_a_validation.md)は、H4 linear 1.00 Å、STO-3G、DF rank 12、

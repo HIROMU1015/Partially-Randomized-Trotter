@@ -69,6 +69,9 @@
 - `pr2_matched_accuracy_m1_execution.py`：保存済みdevelopment H4だけを一回読み、Qiskit circuitを作らず
   base 208＋r64最大4候補のsignal、normalization、analytic shot、selector、hard barrierを評価するM1-A経路。
   実結果は210候補、52未選択frontierで`SELECTION_LIMITED`となり、M1-Bを開始していない
+- `pr2_matched_accuracy_m1_b1_contract.py`：byte-fixed M1-A結果からaccuracy適格random 194 cellとB0/B1
+  16 cellを固定し、paired-axis trajectory seed、source/compiler/candidate/axis/trajectoryを含む12,448 wrapper
+  cache identityを生成・検証するstandard-library-only経路。M1-B1科学実行は行わない
 - `pf_delta_validation.py`
 - `pf_c_system_size_validation.py`
 - `pauli_partial_cgs_validation.py`

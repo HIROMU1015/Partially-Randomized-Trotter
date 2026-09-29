@@ -16,6 +16,9 @@ S2後reviewでは新手法claimを外し、matched-accuracy resource-map研究�
 同じ候補のcompile-free再実行を許可する。現行statusは
 再実行は210候補を評価したが、64 proxy-frontier候補中52件が16-cell cap外に残り、現行statusは
 `SELECTION_LIMITED`である。compile、held-out、M1-B、S3は未実行・未承認である。
+外部reviewは`PROCEED_BOUNDED_COMPILE_EXPANSION`を選び、
+[M1-B1 bounded compile契約](pr2_matched_accuracy_m1_b1_bounded_compile_contract_v1.md)とzero-compute planが
+random 194 cell、baseline 16 cell、計12,448 wrapperのidentityを固定した。M1-B1科学実行はまだ未承認である。
 
 初めてこの研究を確認する場合や、Codexを使って発表・共有資料を作る場合は、まず
 [研究概要・現状](研究概要・現状.md)を読む。この一冊で現在の研究段階、採用済みの
@@ -103,6 +106,8 @@ S2後reviewでは新手法claimを外し、matched-accuracy resource-map研究�
 | 50 | [PR-2 matched-accuracy M1-A再認可 v1.1](pr2_matched_accuracy_m1_execution_authorization_v1_1.md) | 固定KのRTEConfig self-consistencyだけを修正し、候補・threshold・selectorを変えず同じM1-Aを再認可する。 |
 | 51 | [PR-2 matched-accuracy M1-A結果](../pr2_matched_accuracy_m1_a_validation.md) | 210候補、64 proxy frontier、52未選択frontierにより`SELECTION_LIMITED`でcompile 0停止した結果を記録する。 |
 | 52 | [PR-2 M1-A limited後 GPTレビュー依頼](pr2_m1_a_selection_limited_external_review_request_3c1831e.md) | commit `3c1831e`を固定し、bounded compile拡張・technical note縮小・研究停止の三択と回答形式を指定する。 |
+| 53 | [PR-2 matched-accuracy M1-B1 bounded compile契約](pr2_matched_accuracy_m1_b1_bounded_compile_contract_v1.md) | 旧selector監査を保存し、M1-A適格random 194 cell×32 trajectory×2軸とB0/B1 16 cell×2軸の12,448-wrapper有限grid、cache identity、B1後STOPをzero-compute固定する。 |
+| 54 | [PR-2 M1-B1実行前GPTレビュー依頼](pr2_m1_b1_preexecution_external_review_request_1228168.md) | source commit `1228168`とplan fingerprintを固定し、別result-prior execution authorizationへ進む前の候補・seed・cache・resource・停止規則レビューを依頼する。 |
 
 ## 研究ノート
 
