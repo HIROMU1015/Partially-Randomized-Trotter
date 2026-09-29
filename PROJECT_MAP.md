@@ -7,13 +7,11 @@
 ための案内をまとめる。
 
 PR-2の最新状態は、旧S0 STOPとdevelopment-only S2結果を保持し、matched-accuracy resource-map研究の
-compile-free M1-A execution authorization v1.1を結果前固定する段階である。v1初回実行は固定Kと
-RTEConfig toleranceの不整合によりresult作成前に停止し、科学結果・compileは0だった。M1-Aはdevelopment H4 1.00 Åだけを
-一回読み、base 208＋r64最大4候補のsignal/selectorまでを許可する。`selection_limited=true`ならcompile job
-を一件も作らず停止する。現行statusは
-`M1_A_RETRY_AUTHORIZED_AFTER_IMPLEMENTATION_GATE_FAILURE`。入口は
-`docs/research/pr2_matched_accuracy_m1_execution_authorization_v1_1.md`である。M1-A結果はまだ未作成で、
-trajectory／circuit compile、held-out H4 1.30 Å、S3は未承認である。
+compile-free M1-Aを完了して`SELECTION_LIMITED`で停止した段階である。development H4 1.00 Åの
+208 base＋2 boundary候補を評価し、64 proxy-frontier候補中52件が16-cell cap外に残った。hard barrierにより
+compile job、trajectory、circuit、held-out accessは全て0である。入口は
+`docs/pr2_matched_accuracy_m1_a_validation.md`。M1-B、held-out H4 1.30 Å、S3は未承認であり、compile
+budget拡張またはtechnical-note縮小を別途判断するまで追加計算しない。
 
 ## 最初に読む順序
 
@@ -382,6 +380,7 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
   `tests/test_pr2_matched_accuracy_m1_contract.py`、
   `tests/test_pr2_matched_accuracy_m1_precompile_barrier.py`、
   `tests/test_pr2_matched_accuracy_m1_execution.py`、
+  `docs/pr2_matched_accuracy_m1_a_validation.md`、
   `artifacts/pr2_matched_accuracy_m1_contract/2026-09-29/`、
   `artifacts/pr2_matched_accuracy_m1_execution/2026-09-30/`
   （候補列挙、synthetic barrier、development-only dense signal M1-A。M1-B/held-outは未承認）

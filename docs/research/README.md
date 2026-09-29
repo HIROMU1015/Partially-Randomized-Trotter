@@ -14,7 +14,8 @@ S2後reviewでは新手法claimを外し、matched-accuracy resource-map研究�
 `SELECTION_LIMITED`ならM1-B compile前に停止するhard barrierを固定した。M1-A v1実行は固定Kのconfig
 整合性でresult作成前に停止し、[v1.1再認可](pr2_matched_accuracy_m1_execution_authorization_v1_1.md)が
 同じ候補のcompile-free再実行を許可する。現行statusは
-`M1_A_RETRY_AUTHORIZED_AFTER_IMPLEMENTATION_GATE_FAILURE`。held-out、M1-B、S3は未承認である。
+再実行は210候補を評価したが、64 proxy-frontier候補中52件が16-cell cap外に残り、現行statusは
+`SELECTION_LIMITED`である。compile、held-out、M1-B、S3は未実行・未承認である。
 
 初めてこの研究を確認する場合や、Codexを使って発表・共有資料を作る場合は、まず
 [研究概要・現状](研究概要・現状.md)を読む。この一冊で現在の研究段階、採用済みの
@@ -100,6 +101,7 @@ S2後reviewでは新手法claimを外し、matched-accuracy resource-map研究�
 | 48 | [PR-2 matched-accuracy M1前最終amendment](pr2_matched_accuracy_m1_preexecution_amendment_v2.md) | 2026年の近接研究二件をclaim単位で追加照合し、M1-Aで`SELECTION_LIMITED`ならcompile job 0のままmandatory STOPするM1-B前hard barrierを固定する。 |
 | 49 | [PR-2 matched-accuracy M1-A実行認可 v1](pr2_matched_accuracy_m1_execution_authorization_v1.md) | development-only、最大212 signal、compile 0、held-out access 0を固定した初回認可。実行はconfig整合性でresult作成前に停止した。 |
 | 50 | [PR-2 matched-accuracy M1-A再認可 v1.1](pr2_matched_accuracy_m1_execution_authorization_v1_1.md) | 固定KのRTEConfig self-consistencyだけを修正し、候補・threshold・selectorを変えず同じM1-Aを再認可する。 |
+| 51 | [PR-2 matched-accuracy M1-A結果](../pr2_matched_accuracy_m1_a_validation.md) | 210候補、64 proxy frontier、52未選択frontierにより`SELECTION_LIMITED`でcompile 0停止した結果を記録する。 |
 
 ## 研究ノート
 

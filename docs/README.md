@@ -10,10 +10,9 @@ S2後reviewでは、[`matched-accuracy先行研究gate`](research/pr2_matched_ac
 [`M1前resource-map契約`](research/pr2_matched_accuracy_resource_contract_v1.md)、
 [`M1実装契約`](research/pr2_matched_accuracy_m1_implementation_contract_v1.md)、
 [`M1前最終amendment`](research/pr2_matched_accuracy_m1_preexecution_amendment_v2.md)を固定した。続いて
-[`M1-A execution authorization v1.1`](research/pr2_matched_accuracy_m1_execution_authorization_v1_1.md)で、development
-1.00 Åのcompile-free signal/selector再実行だけを結果前承認した。v1は固定Kのconfig整合性gateでresult
-作成前に停止しており、M1-A結果は未作成、M1-B、held-out、S3は
-未承認である。
+[`M1-A validation`](pr2_matched_accuracy_m1_a_validation.md)でdevelopment 1.00 Åの210候補を評価した。
+64 proxy-frontier候補中52件が16-cell cap外に残り、`SELECTION_LIMITED`でcompile 0のまま停止した。
+winnerは未確定で、M1-B、held-out、S3は未承認である。
 
 ## 研究方針と現在地
 
@@ -53,6 +52,7 @@ S2後reviewでは、[`matched-accuracy先行研究gate`](research/pr2_matched_ac
 - [`research/pr2_s0_external_review_request_c644925.md`](research/pr2_s0_external_review_request_c644925.md)：S0 terminal STOP後に、終了または新しい結果前amendmentの要否をGPTへ確認するレビュー依頼
 - [`research/pr2_v4_s2_development_authorization_v5.md`](research/pr2_v4_s2_development_authorization_v5.md)：V4 correctness、development-only S2、S2後mandatory STOPを結果前固定
 - [`pr2_v4_s2_development_validation.md`](pr2_v4_s2_development_validation.md)：V4/S2の実行結果、B2/B3 frontier、rank control、方針review判断
+- [`pr2_matched_accuracy_m1_a_validation.md`](pr2_matched_accuracy_m1_a_validation.md)：210候補のcompile-free signal/selector、52未選択frontier、`SELECTION_LIMITED`、全compile counter 0を記録するM1-A結果
 - [`research/pr2_matched_accuracy_prior_art_gate_v1.md`](research/pr2_matched_accuracy_prior_art_gate_v1.md)：M1前のclaim-level先行研究比較と`PROCEED_RESOURCE_STUDY`判定
 - [`research/pr2_matched_accuracy_resource_contract_v1.md`](research/pr2_matched_accuracy_resource_contract_v1.md)：matched-accuracy baseline、可変q correctness、compile選抜、held-out前freezeを定める研究契約
 - [`research/pr2_matched_accuracy_m1_implementation_contract_v1.md`](research/pr2_matched_accuracy_m1_implementation_contract_v1.md)：M1の候補identity、seed、selector、schema、zero-compute guardと科学計算未承認を固定する実装契約

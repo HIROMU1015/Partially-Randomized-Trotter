@@ -1,5 +1,19 @@
 # Validation status
 
+## 2026-09-30 PR-2 M1-A `SELECTION_LIMITED`完了
+
+[M1-A結果](docs/pr2_matched_accuracy_m1_a_validation.md)は、H4 linear 1.00 Å、STO-3G、DF rank 12、
+sector 8 qubitのdevelopment snapshotで208 base＋2 r64 boundary候補、計210候補を評価した。206候補が
+accuracy適格で、random B2/B3は194/194適格だった。16-cell selectorに対してproxy frontierは64件、
+未選択frontierは52件残り、理由`unselected_proxy_nondominated_candidates`で正式status
+`SELECTION_LIMITED`となった。
+
+hard barrierはcompile job 0、circuit/compile/trajectory/full wrapper/quantum shot 0で停止した。held-out
+path/stat/hash/load/signal/cost/rankingも0、S3は未承認である。result fingerprintは
+`422f898bba1e3849d0f45830082b76d4f42da436e2b49796e562cd79fc716c9e`、file SHA-256は
+`1f960d7a33296e2dcb74d497e360572b26409dc9aeae01522335e7b91ed81086`。pre/post focused testsは各26 passed、
+専用validatorと凍結JSON schemaも通過した。winnerは未確定で、M1-Bへ進まない。
+
 ## 2026-09-30 PR-2 M1-A v1停止・v1.1 result-prior再認可
 
 [M1-A execution authorization v1](docs/research/pr2_matched_accuracy_m1_execution_authorization_v1.md)で、保存済み

@@ -3017,7 +3017,7 @@
         "supports": [
           "pr2_matched_accuracy_m1_execution_authorization"
         ],
-        "reason": "Dated decision history for the M1-A authorization and v1 implementation-gate stop with SHA-256 593ce2526450fee41fc1d793b80b2ba6e7a8fb010e23d966a8d9ff366d4177fb. It records that no result artifact or compile work was created before the v1.1 result-prior retry authorization."
+        "reason": "Dated decision history for the M1-A authorization, v1 implementation-gate stop, and v1.1 SELECTION_LIMITED completion with SHA-256 a376d6ee583d697e54de6c3b777ed2cd39b1501737d188144d2129d656e1af5f. It records zero compile and held-out work and the mandatory stop."
       },
       {
         "path": "src/trotterlib/pr2_matched_accuracy_m1_execution.py",
@@ -3066,6 +3066,22 @@
           "pr2_matched_accuracy_m1_execution_authorization"
         ],
         "reason": "Machine-readable M1-A v1.1 retry authorization with SHA-256 846231a09f5b8e69aa55b78e7045eaae7a562198d01f2b229585f0b0336a9c41. It preserves the candidate grid, fixed K values, selector, thresholds, zero compile budget, and zero held-out access."
+      },
+      {
+        "path": "docs/pr2_matched_accuracy_m1_a_validation.md",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_a"
+        ],
+        "reason": "M1-A validation report with SHA-256 0919a64680708c45d7e4bde6be0c09a2ed34ed2de35b820d37025375a90211ab. It reports 210 candidates, 64 proxy-frontier candidates, 52 unselected frontier candidates, SELECTION_LIMITED, and zero compile or held-out work."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m1_execution/2026-09-30/pr2_matched_accuracy_m1_a_result_v1.json",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_a"
+        ],
+        "reason": "Machine-readable M1-A result with SHA-256 1f960d7a33296e2dcb74d497e360572b26409dc9aeae01522335e7b91ed81086 and content fingerprint 422f898bba1e3849d0f45830082b76d4f42da436e2b49796e562cd79fc716c9e. The frozen hard barrier returns SELECTION_LIMITED before any compile job."
       }
     ],
     "quarantined": [
@@ -5447,6 +5463,50 @@
         "If the barrier is clear, commit the M1-A artifact byte-identically and require a separate result-prior M1-B source and authorization before any trajectory or direct compile.",
         "Do not resolve, stat, hash, load, score, or rank the held-out H4 1.30 Angstrom input; keep S3 and automatic continuation unauthorized.",
         "Classify local tests and the future M1-A run as local evidence, not immutable CI or independent external reproduction."
+      ]
+    },
+    {
+      "id": "pr2_matched_accuracy_m1_a",
+      "status": "source_present_no_current_ci",
+      "summary": "Under the frozen H4 linear 1.00 Angstrom STO-3G DF-rank-12 development snapshot, compile-free M1-A evaluated 208 base and two preregistered r64 boundary candidates at T=0.8 with q in {1,2,4,8}. Two hundred six of 210 candidates are accuracy eligible and all 194 random B2/B3 candidates are eligible. The proxy frontier contains 64 candidates; the sixteen-cell selector leaves 52 unselected proxy-nondominated candidates, so the preregistered hard barrier returns SELECTION_LIMITED. No winner or held-out candidate is fixed. Compile jobs, circuits, compilations, trajectories, full wrappers, quantum shots, molecular calculations, held-out path/file access, and GPU activity are all zero. M1-B, held-out transfer, and S3 remain unauthorized.",
+      "counts": {
+        "base_candidates": 208,
+        "boundary_candidates": 2,
+        "signal_evaluations": 210,
+        "accuracy_eligible_candidates": 206,
+        "accuracy_ineligible_candidates": 4,
+        "b0_candidates": 12,
+        "b0_accuracy_eligible": 8,
+        "b1_candidates": 4,
+        "b1_accuracy_eligible": 4,
+        "b2_candidates": 145,
+        "b2_accuracy_eligible": 145,
+        "b3_candidates": 49,
+        "b3_accuracy_eligible": 49,
+        "random_accuracy_eligible": 194,
+        "proxy_frontier_candidates": 64,
+        "selected_random_cells": 16,
+        "unselected_proxy_frontier_candidates": 52,
+        "compile_jobs": 0,
+        "circuits_built": 0,
+        "circuit_compilations": 0,
+        "random_trajectories_sampled": 0,
+        "full_wrappers_compiled": 0,
+        "quantum_shots": 0,
+        "molecular_calculations": 0,
+        "held_out_path_or_file_accesses": 0,
+        "gpu_queries_allocations_kernels": 0,
+        "pre_focused_tests_passed": 26,
+        "post_focused_tests_passed": 26,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Preserve v1.1 authorization commit dc37270c826f3f3994bb112fcdca4850b1300c53, authorization SHA-256 846231a09f5b8e69aa55b78e7045eaae7a562198d01f2b229585f0b0336a9c41, result SHA-256 1f960d7a33296e2dcb74d497e360572b26409dc9aeae01522335e7b91ed81086, and result fingerprint 422f898bba1e3849d0f45830082b76d4f42da436e2b49796e562cd79fc716c9e.",
+        "Treat SELECTION_LIMITED as a terminal precompile barrier for this authorization; do not expand the cap, alter the selector, rescue in another output, or start M1-B.",
+        "Do not claim a deterministic, partial, random-dominant, or overall resource winner from the compile-free action proxies.",
+        "Keep H4 1.30 Angstrom held-out path resolution, stat, hash, load, signal, cost, and ranking at zero until a separate post-review authorization.",
+        "Require a new research-direction decision before either increasing compile budget or narrowing to a technical note; do not start additional computation automatically.",
+        "Classify this as local evidence, not immutable CI or independent external reproduction."
       ]
     }
   ],
