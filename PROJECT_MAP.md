@@ -6,11 +6,13 @@
 実装、検証コード、結果データ、発表資料を区別し、古い研究経路を現在の結論として読まない
 ための案内をまとめる。
 
-PR-2の最新状態は、旧S0 STOPを保持した別系列`pr2-rebaseline-de7a5492-v1`のV1–V3通過、
-`S0_PRIME_PASS_V4_REVIEW_REQUIRED`である。入口は
-`docs/research/pr2_v1_v3_result_packet_ef86868_20260928.md`、実装は
-`src/trotterlib/pr2_new_series_validation.py`、runnerは`scripts/run_pr2_new_series_v1_v3.py`、
-artifactは`artifacts/pr2_new_series_validation/2026-09-28/`。V4/S1′は未承認である。
+PR-2の最新状態は、旧S0 STOPを保持した別系列のV4 correctnessとdevelopment-only S2を完了し、
+S2後reviewでmatched-accuracy resource-map研究へ狭めた段階である。M1前先行研究gateは
+`PROCEED_RESOURCE_STUDY`だが、現行statusは
+`PR2_MATCHED_ACCURACY_CONTRACT_FIXED_M1_NOT_AUTHORIZED`。入口は
+`docs/research/pr2_matched_accuracy_prior_art_gate_v1.md`と
+`docs/research/pr2_matched_accuracy_resource_contract_v1.md`である。旧S2 status、B2/B3 frontier、
+rank 3/9 controlを保存し、held-out H4 1.30 Å、S3、M1科学計算は未承認である。
 
 ## 最初に読む順序
 
@@ -362,6 +364,10 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
   `docs/pr2_s2_parallel_execution.md`（同じS2 cellと段階barrierを保つbounded CPU並列実行層。
   実H4 S2結果は`docs/pr2_v4_s2_development_validation.md`と
   `artifacts/pr2_v4_s2_development/2026-09-29/`で追跡する）
+- `docs/research/pr2_matched_accuracy_prior_art_gate_v1.md`、
+  `docs/research/pr2_matched_accuracy_resource_contract_v1.md`
+  （S2後の新規性gateとM1前契約。resource studyへの限定進行、direct-compile 16-cell選抜、
+  可変q correctness、held-out前の別freezeを定める。M1実装・計算は未承認）
 - `docs/research/pr2_s0_reproduction_stop_c644925.md`、
   `docs/research/pr2_s0_external_review_request_c644925.md`、
   `artifacts/pr2_s0_s1_validation/2026-09-28/`（development byte-level hash不一致による

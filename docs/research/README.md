@@ -5,10 +5,12 @@
 実装、runner、テスト、成果物を含むリポジトリ全体の区分は
 [`../../PROJECT_MAP.md`](../../PROJECT_MAP.md)を参照する。
 
-PR-2の最新系列は、旧STOPを維持した別snapshotでV1–V3、V4 correctness、development-only S2を完了し、
-`S2_TRANSFER_CANDIDATE_AWAITING_REVIEW`のmandatory STOPに到達した。正本は
-[authorization v5](pr2_v4_s2_development_authorization_v5.md)と
-[S2検証報告](../pr2_v4_s2_development_validation.md)。held-outとS3は未実行・未承認で、次は研究方針reviewである。
+PR-2の最新系列は、旧STOPを維持した別snapshotでV1–V3、V4 correctness、development-only S2を完了した。
+S2後reviewでは新手法claimを外し、matched-accuracy resource-map研究へ狭めた。
+[M1前先行研究gate](pr2_matched_accuracy_prior_art_gate_v1.md)は`PROCEED_RESOURCE_STUDY`、
+[M1前契約](pr2_matched_accuracy_resource_contract_v1.md)の現行statusは
+`PR2_MATCHED_ACCURACY_CONTRACT_FIXED_M1_NOT_AUTHORIZED`である。旧S2 statusと結果は保持し、
+held-out、S3、M1科学計算は未実行・未承認である。
 
 初めてこの研究を確認する場合や、Codexを使って発表・共有資料を作る場合は、まず
 [研究概要・現状](研究概要・現状.md)を読む。この一冊で現在の研究段階、採用済みの
@@ -88,6 +90,8 @@ PR-2の最新系列は、旧STOPを維持した別snapshotでV1–V3、V4 correc
 | 42 | [PR-2 S0 STOP後 外部レビュー依頼](pr2_s0_external_review_request_c644925.md) | terminal STOP確認、canonicalizationの最低要件、終了または新pilot化をGPTへ批判的レビューさせる指示。 |
 | 43 | [PR-2 V4/S2 development実行許可](pr2_v4_s2_development_authorization_v5.md) | V4 correctness、rank 6 primary比較、rank 3/9 control、held-out未開封、S2後mandatory STOPを結果前固定する。 |
 | 44 | [PR-2 V4/S2 development結果](../pr2_v4_s2_development_validation.md) | B2/B3 frontier、rank control、実行範囲、held-out前の研究方針review判断を記録する。 |
+| 45 | [PR-2 matched-accuracy M1前先行研究gate](pr2_matched_accuracy_prior_art_gate_v1.md) | 最接近研究とのclaim overlapを固定し、新手法ではなく限定resource studyとして`PROCEED_RESOURCE_STUDY`と判定する。 |
+| 46 | [PR-2 matched-accuracy resource-map契約](pr2_matched_accuracy_resource_contract_v1.md) | baseline、可変q correctness、random direct-compile 16-cell選抜、`SELECTION_LIMITED`、held-out前の別freezeを固定し、M1計算を未承認のまま保つ。 |
 
 ## 研究ノート
 

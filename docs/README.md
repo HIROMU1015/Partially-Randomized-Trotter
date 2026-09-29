@@ -4,10 +4,11 @@
 研究全体を初めて読む場合は、先に[`../PROJECT_MAP.md`](../PROJECT_MAP.md)と
 [`research/研究概要・現状.md`](research/研究概要・現状.md)を読む。
 
-PR-2別系列の最新結果は
-[`pr2_v4_s2_development_validation.md`](pr2_v4_s2_development_validation.md)。旧S0 STOPを保持したまま、
-V1–V3、V4 correctness、development-only S2まで完了し、
-`S2_TRANSFER_CANDIDATE_AWAITING_REVIEW`のmandatory STOPに到達した。held-outとS3は未承認である。
+PR-2別系列の最新計算結果は
+[`pr2_v4_s2_development_validation.md`](pr2_v4_s2_development_validation.md)。旧S0 STOPとS2結果を保持した
+S2後reviewでは、[`matched-accuracy先行研究gate`](research/pr2_matched_accuracy_prior_art_gate_v1.md)と
+[`M1前resource-map契約`](research/pr2_matched_accuracy_resource_contract_v1.md)を固定した。
+M1科学計算、held-out、S3は未承認である。
 
 ## 研究方針と現在地
 
@@ -47,6 +48,8 @@ V1–V3、V4 correctness、development-only S2まで完了し、
 - [`research/pr2_s0_external_review_request_c644925.md`](research/pr2_s0_external_review_request_c644925.md)：S0 terminal STOP後に、終了または新しい結果前amendmentの要否をGPTへ確認するレビュー依頼
 - [`research/pr2_v4_s2_development_authorization_v5.md`](research/pr2_v4_s2_development_authorization_v5.md)：V4 correctness、development-only S2、S2後mandatory STOPを結果前固定
 - [`pr2_v4_s2_development_validation.md`](pr2_v4_s2_development_validation.md)：V4/S2の実行結果、B2/B3 frontier、rank control、方針review判断
+- [`research/pr2_matched_accuracy_prior_art_gate_v1.md`](research/pr2_matched_accuracy_prior_art_gate_v1.md)：M1前のclaim-level先行研究比較と`PROCEED_RESOURCE_STUDY`判定
+- [`research/pr2_matched_accuracy_resource_contract_v1.md`](research/pr2_matched_accuracy_resource_contract_v1.md)：matched-accuracy baseline、可変q correctness、compile選抜、held-out前freezeを定める現行契約
 - [`df_rte_tail_extraction.md`](df_rte_tail_extraction.md)
 - [`df_rte_event_circuit_api.md`](df_rte_event_circuit_api.md)
 

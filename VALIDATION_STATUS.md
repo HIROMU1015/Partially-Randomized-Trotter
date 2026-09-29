@@ -1,5 +1,23 @@
 # Validation status
 
+## 2026-09-29 PR-2 matched-accuracy再設計契約固定・M1未承認
+
+S2後のmandatory reviewを完了し、PR-2を新しいprefix法またはrank 6の優位性主張から、固定DF snapshot上の
+discard／deterministic／partial／random-dominantを同じ複素signal精度で比較する限定resource studyへ
+狭めた。[M1前先行研究gate](docs/research/pr2_matched_accuracy_prior_art_gate_v1.md)は、最接近研究の
+既知貢献を除外したうえで`PROCEED_RESOURCE_STUDY`と判定した。これは新algorithm、投稿可能性、
+一般的優位性の判定ではない。
+
+[M1前契約](docs/research/pr2_matched_accuracy_resource_contract_v1.md)は`q={1,2,4,8}`と`delta=T/q`、
+可変q correctness、signal/cost fingerprint、random direct-compile最大16 cellの結果前選抜、
+`SELECTION_LIMITED`、held-out前の最大5構成・数値判定の別freezeを固定した。
+
+現行statusは`PR2_MATCHED_ACCURACY_CONTRACT_FIXED_M1_NOT_AUTHORIZED`。新しい分子計算、signal、trajectory、
+compile、量子shot、held-out loadは0件である。旧S2の`S2_TRANSFER_CANDIDATE_AWAITING_REVIEW`、
+B2/B3 frontier、rank 3/9 control、10% materiality、旧S0 STOPを変更しない。次はM1 source/runner/test/
+schemaと機械可読dry-runを別commit・別authorizationへ固定するかのレビューであり、M1科学計算、S3、
+H12、長RPE、最終総costへ自動進行しない。
+
 ## 2026-09-29 PR-2 V4/S2 development比較完了・mandatory STOP
 
 結果前authorization v5とsource commit `e098c54`に従い、H4 linear 1.00 Å、STO-3G、DF rank 12、
