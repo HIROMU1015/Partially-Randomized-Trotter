@@ -9,9 +9,10 @@ PR-2別系列の最新計算結果は
 S2後reviewでは、[`matched-accuracy先行研究gate`](research/pr2_matched_accuracy_prior_art_gate_v1.md)、
 [`M1前resource-map契約`](research/pr2_matched_accuracy_resource_contract_v1.md)、
 [`M1実装契約`](research/pr2_matched_accuracy_m1_implementation_contract_v1.md)、
-[`M1前最終amendment`](research/pr2_matched_accuracy_m1_preexecution_amendment_v2.md)を固定した。追加prior-art
-二件をclaim単位で照合し、`SELECTION_LIMITED`ならM1-B compile前に停止するhard barrierを実装したが、
-M1科学計算、held-out、S3は未承認である。
+[`M1前最終amendment`](research/pr2_matched_accuracy_m1_preexecution_amendment_v2.md)を固定した。続いて
+[`M1-A execution authorization`](research/pr2_matched_accuracy_m1_execution_authorization_v1.md)で、development
+1.00 Åのcompile-free signal/selectorだけを結果前承認した。M1-A数値は未実行で、M1-B、held-out、S3は
+未承認である。
 
 ## 研究方針と現在地
 
@@ -55,6 +56,7 @@ M1科学計算、held-out、S3は未承認である。
 - [`research/pr2_matched_accuracy_resource_contract_v1.md`](research/pr2_matched_accuracy_resource_contract_v1.md)：matched-accuracy baseline、可変q correctness、compile選抜、held-out前freezeを定める研究契約
 - [`research/pr2_matched_accuracy_m1_implementation_contract_v1.md`](research/pr2_matched_accuracy_m1_implementation_contract_v1.md)：M1の候補identity、seed、selector、schema、zero-compute guardと科学計算未承認を固定する実装契約
 - [`research/pr2_matched_accuracy_m1_preexecution_amendment_v2.md`](research/pr2_matched_accuracy_m1_preexecution_amendment_v2.md)：2026年の近接研究二件との最終claim照合と、M1-A limited時にcompile job 0で停止するhard barrierを追加する現行amendment
+- [`research/pr2_matched_accuracy_m1_execution_authorization_v1.md`](research/pr2_matched_accuracy_m1_execution_authorization_v1.md)：development-only M1-Aの入力、source、最大212 signal、compile 0、held-out access 0を結果前固定する実行承認
 - [`df_rte_tail_extraction.md`](df_rte_tail_extraction.md)
 - [`df_rte_event_circuit_api.md`](df_rte_event_circuit_api.md)
 

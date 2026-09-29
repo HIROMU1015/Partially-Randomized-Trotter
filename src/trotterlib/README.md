@@ -66,6 +66,8 @@
   occurrence seed、16-cell selector、zero-compute dry-run validator。科学計算moduleをimportしない
 - `pr2_matched_accuracy_m1_precompile_barrier.py`：M1-A selectorを検証し、`SELECTION_LIMITED`なら
   M1-B compile plan生成前に停止するstandard-library-only hard barrier
+- `pr2_matched_accuracy_m1_execution.py`：保存済みdevelopment H4だけを一回読み、Qiskit circuitを作らず
+  base 208＋r64最大4候補のsignal、normalization、analytic shot、selector、hard barrierを評価するM1-A経路
 - `pf_delta_validation.py`
 - `pf_c_system_size_validation.py`
 - `pauli_partial_cgs_validation.py`

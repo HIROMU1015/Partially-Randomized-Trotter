@@ -1,18 +1,18 @@
 # プロジェクト案内
 
-最終更新：2026-09-29
+最終更新：2026-09-30
 
 このファイルは、人またはGPTがリポジトリ全体を読むときの入口である。研究内容の正本、
 実装、検証コード、結果データ、発表資料を区別し、古い研究経路を現在の結論として読まない
 ための案内をまとめる。
 
 PR-2の最新状態は、旧S0 STOPとdevelopment-only S2結果を保持し、matched-accuracy resource-map研究の
-M1前最終amendmentまで固定した段階である。2026年の近接研究二件を追加照合し、一般的なcost–variance
-共同最適化と化学QPEのend-to-end resource estimateを新規claimから除外した。M1はM1-A signal/selectorと
-M1-B direct compileへ分け、`selection_limited=true`ならcompile jobを一件も作らず停止するhard barrierを
-実装した。現行statusは`M1_PREEXECUTION_AMENDMENT_V2_FROZEN_SCIENCE_NOT_AUTHORIZED`。入口は
-`docs/research/pr2_matched_accuracy_m1_preexecution_amendment_v2.md`である。M1 signal／trajectory／
-circuit compile、held-out H4 1.30 Å、S3は未実行・未承認である。
+compile-free M1-A execution authorizationを結果前固定した段階である。M1-Aはdevelopment H4 1.00 Åだけを
+一回読み、base 208＋r64最大4候補のsignal/selectorまでを許可する。`selection_limited=true`ならcompile job
+を一件も作らず停止する。現行statusは
+`M1_A_EXECUTION_AUTHORIZED_M1_B_REQUIRES_CLEAR_FROZEN_RESULT`。入口は
+`docs/research/pr2_matched_accuracy_m1_execution_authorization_v1.md`である。M1-A数値はまだ未実行で、
+trajectory／circuit compile、held-out H4 1.30 Å、S3は未承認である。
 
 ## 最初に読む順序
 
@@ -367,17 +367,22 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
 - `docs/research/pr2_matched_accuracy_prior_art_gate_v1.md`、
   `docs/research/pr2_matched_accuracy_resource_contract_v1.md`、
   `docs/research/pr2_matched_accuracy_m1_implementation_contract_v1.md`、
-  `docs/research/pr2_matched_accuracy_m1_preexecution_amendment_v2.md`
+  `docs/research/pr2_matched_accuracy_m1_preexecution_amendment_v2.md`、
+  `docs/research/pr2_matched_accuracy_m1_execution_authorization_v1.md`
   （S2後の新規性gate、M1前研究契約、zero-compute実装契約。候補identity、16-cell selector、schema、
-  seed規則、追加prior-art gate、M1-A/M1-B hard barrierを固定済み。M1科学計算は未承認）
+  seed規則、追加prior-art gate、M1-A/M1-B hard barrier、compile-free M1-A予算を固定済み）
 - `src/trotterlib/pr2_matched_accuracy_m1_contract.py`、
   `src/trotterlib/pr2_matched_accuracy_m1_precompile_barrier.py`、
+  `src/trotterlib/pr2_matched_accuracy_m1_execution.py`、
   `scripts/run_pr2_matched_accuracy_m1_contract.py`、
   `scripts/run_pr2_matched_accuracy_m1_precompile_barrier.py`、
+  `scripts/run_pr2_matched_accuracy_m1_a.py`、
   `tests/test_pr2_matched_accuracy_m1_contract.py`、
   `tests/test_pr2_matched_accuracy_m1_precompile_barrier.py`、
-  `artifacts/pr2_matched_accuracy_m1_contract/2026-09-29/`
-  （standard-library-only候補列挙、synthetic selector/barrier dry-run、zero-compute guard。科学値ではない）
+  `tests/test_pr2_matched_accuracy_m1_execution.py`、
+  `artifacts/pr2_matched_accuracy_m1_contract/2026-09-29/`、
+  `artifacts/pr2_matched_accuracy_m1_execution/2026-09-30/`
+  （候補列挙、synthetic barrier、development-only dense signal M1-A。M1-B/held-outは未承認）
 - `docs/research/pr2_s0_reproduction_stop_c644925.md`、
   `docs/research/pr2_s0_external_review_request_c644925.md`、
   `artifacts/pr2_s0_s1_validation/2026-09-28/`（development byte-level hash不一致による

@@ -1,5 +1,19 @@
 # Validation status
 
+## 2026-09-30 PR-2 M1-A result-prior execution authorization固定
+
+[M1-A execution authorization](docs/research/pr2_matched_accuracy_m1_execution_authorization_v1.md)で、保存済み
+development H4 linear 1.00 Å、STO-3G、DF rank 12、sector 8 qubitだけを対象とするcompile-free M1-Aを
+結果前固定した。base 208候補、r64最大4候補、signal最大212、development NPZ load 1、単一process、
+BLAS thread 1を上限とする。M1-A sourceはQiskit circuitを作らず、dense small-system actionでsignal、bias、
+normalization、analytic shot、action proxy、selector、hard barrierまでを評価する。
+
+現行statusは`M1_A_EXECUTION_AUTHORIZED_M1_B_REQUIRES_CLEAR_FROZEN_RESULT`。このauthorization commit時点で
+科学signalは未実行である。`SELECTION_LIMITED`なら全compile counter 0で停止する。clearでもM1-A artifactを
+commitしてbyte固定し、別のresult-prior M1-B source/authorizationを固定するまでtrajectory/circuit/compileを
+開始しない。held-out path access/NPZ load/signal/cost/ranking、S3、量子shotは0・未承認である。focused
+authorization gateは24 passedで、immutable CIまたは外部再現ではない。
+
 ## 2026-09-29 PR-2 M1前最終amendment・precompile hard barrier完了
 
 [M1前最終amendment](docs/research/pr2_matched_accuracy_m1_preexecution_amendment_v2.md)で、Cugini--Atif--
