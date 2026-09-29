@@ -3017,7 +3017,7 @@
         "supports": [
           "pr2_matched_accuracy_m1_execution_authorization"
         ],
-        "reason": "Dated decision history for the M1-A result-prior authorization with SHA-256 d317bd9aa8e78cfb76178b09f3668c27ccf678fb7c03d341f29a707d4968e36b. It records the limited-stop and clear-freeze branches without reporting scientific results."
+        "reason": "Dated decision history for the M1-A authorization and v1 implementation-gate stop with SHA-256 593ce2526450fee41fc1d793b80b2ba6e7a8fb010e23d966a8d9ff366d4177fb. It records that no result artifact or compile work was created before the v1.1 result-prior retry authorization."
       },
       {
         "path": "src/trotterlib/pr2_matched_accuracy_m1_execution.py",
@@ -3025,7 +3025,7 @@
         "supports": [
           "pr2_matched_accuracy_m1_execution_authorization"
         ],
-        "reason": "M1-A development-only dense signal and hard-barrier implementation with SHA-256 9890f0e49aaa06034477507696dec8d9e793ba891f2e3403976766e10ee56365. It does not import a held-out path constant or construct a Qiskit circuit."
+        "reason": "M1-A development-only dense signal and hard-barrier implementation v1.1 with SHA-256 7528ebae754e14ee623d28212a668e4edc237575775a78d0d2bf4d34dc53c293. It uses the established residual-nextafter rule to make each frozen K self-consistent, does not import a held-out path constant, and constructs no Qiskit circuit."
       },
       {
         "path": "scripts/run_pr2_matched_accuracy_m1_a.py",
@@ -3041,7 +3041,7 @@
         "supports": [
           "pr2_matched_accuracy_m1_execution_authorization"
         ],
-        "reason": "Dedicated M1-A source, dense-action, result, authorization-hash, and prohibition tests with SHA-256 8d1fd80d460e82418beb97a17c62d5bb7ee9a095eb0d585adacaf91035c0ed68; twenty-four focused local tests pass across the M1 suite, with no current immutable CI record."
+        "reason": "Dedicated M1-A source, fixed-K tolerance, dense-action, result, authorization-hash, and prohibition tests with SHA-256 10fc09c759b1ce6bebfec48614743489e1a97c4fd0d90872e7c358a941e3c82f; twenty-six focused local tests pass across the M1 suite, with no current immutable CI record."
       },
       {
         "path": "artifacts/pr2_matched_accuracy_m1_execution/2026-09-30/pr2_matched_accuracy_m1_execution_authorization_v1.json",
@@ -3050,6 +3050,22 @@
           "pr2_matched_accuracy_m1_execution_authorization"
         ],
         "reason": "Machine-readable result-prior M1-A authorization with SHA-256 cb1b2a393b9f30309dd5d741a80aa0343c635598c59ac3c667b37f3e830bc7ef. It caps the run at 212 signal candidates, one development NPZ load, zero compile work, and zero held-out path/file access."
+      },
+      {
+        "path": "docs/research/pr2_matched_accuracy_m1_execution_authorization_v1_1.md",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_execution_authorization"
+        ],
+        "reason": "Result-prior M1-A retry authorization with SHA-256 c4fabef52be434e18853b426b8ea725b79668e8609123c70c76b50b4a4550415. It records the result-free v1 implementation failure and permits only the fixed-K RTEConfig self-consistency correction before retry."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m1_execution/2026-09-30/pr2_matched_accuracy_m1_execution_authorization_v1_1.json",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_execution_authorization"
+        ],
+        "reason": "Machine-readable M1-A v1.1 retry authorization with SHA-256 846231a09f5b8e69aa55b78e7045eaae7a562198d01f2b229585f0b0336a9c41. It preserves the candidate grid, fixed K values, selector, thresholds, zero compile budget, and zero held-out access."
       }
     ],
     "quarantined": [
@@ -5397,14 +5413,15 @@
     {
       "id": "pr2_matched_accuracy_m1_execution_authorization",
       "status": "source_present_no_current_ci",
-      "summary": "A result-prior execution bundle now authorizes exactly one compile-free M1-A run on the saved H4 linear 1.00 Angstrom STO-3G rank-12 development snapshot. It freezes the dense small-system signal path, 208 base candidates plus at most four r64 boundary candidates, analytic normalized-shot accounting, sixteen-cell selector, hard precompile barrier, single-process execution, non-overwrite output, and source hashes. The authorization commit itself contains no new scientific signal. If selection is limited, the run must stop before any compile job. A clear result must be committed byte-identically before a separate result-prior M1-B source/authorization can permit trajectories or direct compile. Held-out H4 1.30 Angstrom path/file access, S3, and quantum shots remain unauthorized.",
+      "summary": "The v1 compile-free M1-A attempt stopped before result creation because the frozen finite-Taylor K was paired with a provisional tolerance that failed RTEConfig self-consistency. No selector result, compile job, circuit, trajectory, or quantum shot was created. A result-prior v1.1 bundle changes only that implementation detail, using the established residual-nextafter rule while preserving the H4 1.00 Angstrom development snapshot, 208 base candidates plus at most four r64 boundary candidates, K values, analytic normalized-shot accounting, sixteen-cell selector, hard barrier, output, and prohibitions. If selection is limited, the retry must stop before compile. A clear result must be committed byte-identically before separate M1-B authorization. Held-out H4 1.30 Angstrom path/file access, S3, and quantum shots remain unauthorized.",
       "counts": {
         "implementation_source_files": 1,
         "generator_scripts": 1,
-        "documentation_files": 2,
+        "documentation_files": 3,
         "dedicated_test_source_files": 1,
-        "authorization_files": 1,
-        "dedicated_local_test_cases_passed": 24,
+        "authorization_files": 2,
+        "dedicated_local_test_cases_passed": 26,
+        "implementation_gate_failures_before_result": 1,
         "authorized_base_signal_candidates": 208,
         "authorized_maximum_boundary_candidates": 4,
         "authorized_maximum_signal_candidates": 212,
@@ -5421,7 +5438,8 @@
         "current_machine_readable_ci_reports": 0
       },
       "completion_criteria": [
-        "Preserve authorization base commit 86f524fd0d80650dca8ef4742f25cb056b691a85, machine authorization SHA-256 cb1b2a393b9f30309dd5d741a80aa0343c635598c59ac3c667b37f3e830bc7ef, and all required source hashes.",
+        "Preserve v1 authorization commit 88bad4bd06db398c53c5e77dadb2e5b0bef23226, v1 machine authorization SHA-256 cb1b2a393b9f30309dd5d741a80aa0343c635598c59ac3c667b37f3e830bc7ef, v1.1 machine authorization SHA-256 846231a09f5b8e69aa55b78e7045eaae7a562198d01f2b229585f0b0336a9c41, and all v1.1 required source hashes.",
+        "Retain the v1 implementation-gate failure as result-free audit history; do not reinterpret it as an M1-A scientific result.",
         "Read only the authorized development snapshot, with one raw SHA-256 check and one NPZ load; do not regenerate molecular inputs or use a fallback snapshot.",
         "Evaluate exactly the frozen 208 base candidates and at most four parent-bound r64 candidates with T=0.8, q in {1,2,4,8}, and delta=T/q.",
         "Keep M1-A circuit builds, trajectory sampling, compile jobs, transpiles, full wrappers, backend shots, and quantum shots at zero.",

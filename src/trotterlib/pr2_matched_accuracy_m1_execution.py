@@ -58,7 +58,7 @@ from .pr2_s0_s1_validation import (
     corrected_hoeffding_shots,
     generation_partition,
 )
-from .rte import make_rte_config
+from .rte import make_rte_config, step_taylor_truncation_residual_bound
 
 
 SCHEMA_VERSION = "pr2_matched_accuracy_m1_a_result_v2"
@@ -76,6 +76,17 @@ M1_A_STATUSES = frozenset(
 )
 RECONSTRUCTION_TOLERANCE = 1e-10
 NORMALIZATION_TOLERANCE = 1e-12
+
+
+def _explicit_cutoff_tolerance(tau: float, cutoff: int) -> float:
+    """Return the smallest positive tolerance accepting the frozen cutoff."""
+
+    residual = step_taylor_truncation_residual_bound(tau, cutoff)
+    if not math.isfinite(residual):
+        raise ValueError("The frozen finite-Taylor residual overflowed.")
+    if residual == 0.0:
+        return math.ulp(0.0)
+    return math.nextafter(residual, math.inf)
 
 
 def _package_version(name: str) -> str:
@@ -412,11 +423,12 @@ def _random_signal_record(
     delta = float(candidate["delta"])
     rte_steps = int(candidate["r"])
     cutoff = int(candidate["K"])
+    tau = preparation.exact_rte_lambda_r * delta / rte_steps
     config, distribution = make_rte_config(
         preparation.rte_preparation.symbolic_tail,
         evolution_time=delta,
         rte_steps=rte_steps,
-        truncation_tolerance=1.0,
+        truncation_tolerance=_explicit_cutoff_tolerance(tau, cutoff),
         finite_taylor_order=cutoff,
         seed=0,
     )
@@ -550,7 +562,7 @@ def _validate_authorization(
     authorization_sha = file_sha256(absolute)
     authorization = json.loads(absolute.read_text(encoding="utf-8"))
     if authorization.get("schema_version") != (
-        "pr2_matched_accuracy_m1_execution_authorization_v1"
+        "pr2_matched_accuracy_m1_execution_authorization_v1_1"
     ):
         raise ValueError("Unexpected M1 execution authorization schema.")
     permissions = authorization.get("permissions", {})

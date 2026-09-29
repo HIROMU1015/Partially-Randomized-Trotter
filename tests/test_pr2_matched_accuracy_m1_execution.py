@@ -19,7 +19,14 @@ from trotterlib.pr2_matched_accuracy_m1_execution import (
     _apply_spectral_values,
     _axis_record,
     _eigendecomposition,
+    _explicit_cutoff_tolerance,
     validate_m1_a_result,
+)
+from trotterlib.rte import (
+    InvolutoryTailTerm,
+    make_rte_config,
+    normalize_involutory_tail,
+    step_taylor_truncation_residual_bound,
 )
 
 
@@ -123,6 +130,34 @@ def test_signal_candidate_cap_and_base_count_are_frozen() -> None:
     assert MAXIMUM_SIGNAL_CANDIDATES == 212
 
 
+@pytest.mark.parametrize(("tau", "cutoff"), [(2.0, 2), (4.0, 4)])
+def test_explicit_cutoff_tolerance_accepts_frozen_candidate(
+    tau: float,
+    cutoff: int,
+) -> None:
+    tail = normalize_involutory_tail(
+        "synthetic-z",
+        (
+            InvolutoryTailTerm(
+                "z",
+                1.0,
+                np.diag([1.0, -1.0]).astype(np.complex128),
+            ),
+        ),
+    )
+    tolerance = _explicit_cutoff_tolerance(tau, cutoff)
+    config, _distribution = make_rte_config(
+        tail,
+        evolution_time=tau,
+        rte_steps=1,
+        truncation_tolerance=tolerance,
+        finite_taylor_order=cutoff,
+    )
+    residual = step_taylor_truncation_residual_bound(tau, cutoff)
+    assert config.step_truncation_residual_bound == residual
+    assert tolerance >= residual
+
+
 def test_execution_source_has_no_heldout_path_or_circuit_builder_calls() -> None:
     path = ROOT / "src/trotterlib/pr2_matched_accuracy_m1_execution.py"
     source = path.read_text(encoding="utf-8")
@@ -143,7 +178,7 @@ def test_execution_authorization_hashes_and_prohibitions_are_fixed() -> None:
     path = (
         ROOT
         / "artifacts/pr2_matched_accuracy_m1_execution/2026-09-30/"
-        "pr2_matched_accuracy_m1_execution_authorization_v1.json"
+        "pr2_matched_accuracy_m1_execution_authorization_v1_1.json"
     )
     authorization = json.loads(path.read_text(encoding="utf-8"))
     for relative, expected in authorization["required_source_hashes"].items():

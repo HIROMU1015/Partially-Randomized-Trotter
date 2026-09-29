@@ -1,18 +1,22 @@
 # Validation status
 
-## 2026-09-30 PR-2 M1-A result-prior execution authorization固定
+## 2026-09-30 PR-2 M1-A v1停止・v1.1 result-prior再認可
 
-[M1-A execution authorization](docs/research/pr2_matched_accuracy_m1_execution_authorization_v1.md)で、保存済み
+[M1-A execution authorization v1](docs/research/pr2_matched_accuracy_m1_execution_authorization_v1.md)で、保存済み
 development H4 linear 1.00 Å、STO-3G、DF rank 12、sector 8 qubitだけを対象とするcompile-free M1-Aを
 結果前固定した。base 208候補、r64最大4候補、signal最大212、development NPZ load 1、単一process、
 BLAS thread 1を上限とする。M1-A sourceはQiskit circuitを作らず、dense small-system actionでsignal、bias、
 normalization、analytic shot、action proxy、selector、hard barrierまでを評価する。
 
-現行statusは`M1_A_EXECUTION_AUTHORIZED_M1_B_REQUIRES_CLEAR_FROZEN_RESULT`。このauthorization commit時点で
-科学signalは未実行である。`SELECTION_LIMITED`なら全compile counter 0で停止する。clearでもM1-A artifactを
+v1初回実行は固定`K={2,4}`に暫定`truncation_tolerance=1.0`を渡した実装不整合により、result作成前に
+停止した。selector結果、compile、circuit、trajectory、量子shotは0である。
+[v1.1再認可](docs/research/pr2_matched_accuracy_m1_execution_authorization_v1_1.md)は候補・K・signal・selector・
+thresholdを変えず、固定Kの一step残差を受理するself-consistent toleranceだけを既存validation規則で
+構成する。現行statusは`M1_A_RETRY_AUTHORIZED_AFTER_IMPLEMENTATION_GATE_FAILURE`で、M1-A結果は未作成である。
+`SELECTION_LIMITED`なら全compile counter 0で停止する。clearでもM1-A artifactを
 commitしてbyte固定し、別のresult-prior M1-B source/authorizationを固定するまでtrajectory/circuit/compileを
 開始しない。held-out path access/NPZ load/signal/cost/ranking、S3、量子shotは0・未承認である。focused
-authorization gateは24 passedで、immutable CIまたは外部再現ではない。
+v1.1 authorization gateは26 passedで、immutable CIまたは外部再現ではない。
 
 ## 2026-09-29 PR-2 M1前最終amendment・precompile hard barrier完了
 

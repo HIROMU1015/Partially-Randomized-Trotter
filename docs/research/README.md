@@ -11,9 +11,10 @@ S2後reviewでは新手法claimを外し、matched-accuracy resource-map研究�
 [M1実装契約](pr2_matched_accuracy_m1_implementation_contract_v1.md)は208候補台帳、最大4境界候補、
 16-cell selector、schema、zero-compute guardを固定した。続く
 [M1前最終amendment](pr2_matched_accuracy_m1_preexecution_amendment_v2.md)は追加prior-art二件を照合し、
-`SELECTION_LIMITED`ならM1-B compile前に停止するhard barrierを固定した。現行statusは
-`M1_PREEXECUTION_AMENDMENT_V2_FROZEN_SCIENCE_NOT_AUTHORIZED`。旧S2 statusと結果は保持し、
-held-out、S3、M1科学計算は未実行・未承認である。
+`SELECTION_LIMITED`ならM1-B compile前に停止するhard barrierを固定した。M1-A v1実行は固定Kのconfig
+整合性でresult作成前に停止し、[v1.1再認可](pr2_matched_accuracy_m1_execution_authorization_v1_1.md)が
+同じ候補のcompile-free再実行を許可する。現行statusは
+`M1_A_RETRY_AUTHORIZED_AFTER_IMPLEMENTATION_GATE_FAILURE`。held-out、M1-B、S3は未承認である。
 
 初めてこの研究を確認する場合や、Codexを使って発表・共有資料を作る場合は、まず
 [研究概要・現状](研究概要・現状.md)を読む。この一冊で現在の研究段階、採用済みの
@@ -97,6 +98,8 @@ held-out、S3、M1科学計算は未実行・未承認である。
 | 46 | [PR-2 matched-accuracy resource-map契約](pr2_matched_accuracy_resource_contract_v1.md) | baseline、可変q correctness、random direct-compile 16-cell選抜、`SELECTION_LIMITED`、held-out前の別freezeを固定し、M1計算を未承認のまま保つ。 |
 | 47 | [PR-2 matched-accuracy M1実装契約](pr2_matched_accuracy_m1_implementation_contract_v1.md) | 208候補identity、最大4境界候補、occurrence seed、16-cell selector、result schema、zero-compute dry-runを固定し、M1科学計算を未承認のまま独立reviewへ渡す。 |
 | 48 | [PR-2 matched-accuracy M1前最終amendment](pr2_matched_accuracy_m1_preexecution_amendment_v2.md) | 2026年の近接研究二件をclaim単位で追加照合し、M1-Aで`SELECTION_LIMITED`ならcompile job 0のままmandatory STOPするM1-B前hard barrierを固定する。 |
+| 49 | [PR-2 matched-accuracy M1-A実行認可 v1](pr2_matched_accuracy_m1_execution_authorization_v1.md) | development-only、最大212 signal、compile 0、held-out access 0を固定した初回認可。実行はconfig整合性でresult作成前に停止した。 |
+| 50 | [PR-2 matched-accuracy M1-A再認可 v1.1](pr2_matched_accuracy_m1_execution_authorization_v1_1.md) | 固定KのRTEConfig self-consistencyだけを修正し、候補・threshold・selectorを変えず同じM1-Aを再認可する。 |
 
 ## 研究ノート
 

@@ -7,11 +7,12 @@
 ための案内をまとめる。
 
 PR-2の最新状態は、旧S0 STOPとdevelopment-only S2結果を保持し、matched-accuracy resource-map研究の
-compile-free M1-A execution authorizationを結果前固定した段階である。M1-Aはdevelopment H4 1.00 Åだけを
+compile-free M1-A execution authorization v1.1を結果前固定する段階である。v1初回実行は固定Kと
+RTEConfig toleranceの不整合によりresult作成前に停止し、科学結果・compileは0だった。M1-Aはdevelopment H4 1.00 Åだけを
 一回読み、base 208＋r64最大4候補のsignal/selectorまでを許可する。`selection_limited=true`ならcompile job
 を一件も作らず停止する。現行statusは
-`M1_A_EXECUTION_AUTHORIZED_M1_B_REQUIRES_CLEAR_FROZEN_RESULT`。入口は
-`docs/research/pr2_matched_accuracy_m1_execution_authorization_v1.md`である。M1-A数値はまだ未実行で、
+`M1_A_RETRY_AUTHORIZED_AFTER_IMPLEMENTATION_GATE_FAILURE`。入口は
+`docs/research/pr2_matched_accuracy_m1_execution_authorization_v1_1.md`である。M1-A結果はまだ未作成で、
 trajectory／circuit compile、held-out H4 1.30 Å、S3は未承認である。
 
 ## 最初に読む順序
@@ -368,7 +369,8 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
   `docs/research/pr2_matched_accuracy_resource_contract_v1.md`、
   `docs/research/pr2_matched_accuracy_m1_implementation_contract_v1.md`、
   `docs/research/pr2_matched_accuracy_m1_preexecution_amendment_v2.md`、
-  `docs/research/pr2_matched_accuracy_m1_execution_authorization_v1.md`
+  `docs/research/pr2_matched_accuracy_m1_execution_authorization_v1.md`、
+  `docs/research/pr2_matched_accuracy_m1_execution_authorization_v1_1.md`
   （S2後の新規性gate、M1前研究契約、zero-compute実装契約。候補identity、16-cell selector、schema、
   seed規則、追加prior-art gate、M1-A/M1-B hard barrier、compile-free M1-A予算を固定済み）
 - `src/trotterlib/pr2_matched_accuracy_m1_contract.py`、

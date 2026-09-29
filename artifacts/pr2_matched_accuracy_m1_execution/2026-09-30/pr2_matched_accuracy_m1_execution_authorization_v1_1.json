@@ -1,0 +1,110 @@
+{
+  "schema_version": "pr2_matched_accuracy_m1_execution_authorization_v1_1",
+  "series_id": "pr2-rebaseline-de7a5492-v1",
+  "status": "M1_A_RETRY_AUTHORIZED_AFTER_IMPLEMENTATION_GATE_FAILURE",
+  "created_on": "2026-09-30",
+  "authorization_base_commit": "88bad4bd06db398c53c5e77dadb2e5b0bef23226",
+  "previous_attempt": {
+    "authorization_sha256": "cb1b2a393b9f30309dd5d741a80aa0343c635598c59ac3c667b37f3e830bc7ef",
+    "failure_class": "implementation_gate_failure",
+    "failure_message": "finite Taylor cutoff does not meet truncation_tolerance.",
+    "result_artifact_created": false,
+    "compile_jobs": 0,
+    "circuits_built": 0,
+    "random_trajectories": 0,
+    "quantum_shots": 0
+  },
+  "authorized_fix": {
+    "scope": "fixed_cutoff_rte_config_self_consistency_only",
+    "tau_definition": "exact_rte_lambda_r*delta/r",
+    "positive_residual_tolerance": "nextafter(step_residual,+infinity)",
+    "zero_residual_tolerance": "ulp(0.0)",
+    "candidate_grid_changed": false,
+    "finite_taylor_cutoffs_changed": false,
+    "selector_changed": false,
+    "accuracy_threshold_changed": false
+  },
+  "development_input": {
+    "path": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz",
+    "raw_file_sha256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a",
+    "hamiltonian_hash": "de7a549238e3a21f15a84018bef28440c345b31030282c01cf874f3d1d212424",
+    "state_hash": "31e63b0104126c85136ee173f1dce7642aee2d272924e70e8b120ac340ab45bd",
+    "state_vector_hash": "c9aca811b5c023772d148d0331c82958bac6824b593a367cb65a5f89937f4f63"
+  },
+  "required_source_hashes": {
+    "src/trotterlib/pr2_matched_accuracy_m1_execution.py": "7528ebae754e14ee623d28212a668e4edc237575775a78d0d2bf4d34dc53c293",
+    "scripts/run_pr2_matched_accuracy_m1_a.py": "b15a88a1934963f92f466e6eae50ee07057f40ebdb5e7e8d9186ea357d6bf1f7",
+    "tests/test_pr2_matched_accuracy_m1_execution.py": "10fc09c759b1ce6bebfec48614743489e1a97c4fd0d90872e7c358a941e3c82f",
+    "src/trotterlib/pr2_matched_accuracy_m1_contract.py": "aea16dd8e2d4602bc8ac143b9cd2beac3636008f24f26be53a5a02410631797b",
+    "src/trotterlib/pr2_matched_accuracy_m1_precompile_barrier.py": "2a533ffc7f1311db12b063f10a156c9f3d0cf9786910f21b38a7b52e75c56430",
+    "artifacts/pr2_matched_accuracy_m1_contract/2026-09-29/pr2_matched_accuracy_m1_a_result_schema_v2.json": "b5ad6554bd9009437ba52603766f39793b0663a66b763328dd5976abf7e33f22",
+    "docs/research/pr2_matched_accuracy_m1_preexecution_amendment_v2.md": "163e228cbcc866bec4e5c5aeeb8e7aa95bb459a9871cddc6cfcec064f0efc4fa",
+    "docs/research/pr2_matched_accuracy_m1_execution_authorization_v1_1.md": "c4fabef52be434e18853b426b8ea725b79668e8609123c70c76b50b4a4550415"
+  },
+  "m1_a_budget": {
+    "base_candidates": 208,
+    "maximum_boundary_candidates": 4,
+    "maximum_signal_evaluations": 212,
+    "development_raw_hash_checks": 1,
+    "development_npz_loads": 1,
+    "processes": 1,
+    "blas_threads_each": 1,
+    "random_direct_compile_cap": 16,
+    "compile_jobs": 0,
+    "circuits_built": 0,
+    "circuit_compilations": 0,
+    "random_trajectories": 0,
+    "full_wrappers_compiled": 0,
+    "quantum_shots": 0
+  },
+  "output": {
+    "path": "artifacts/pr2_matched_accuracy_m1_execution/2026-09-30/pr2_matched_accuracy_m1_a_result_v1.json",
+    "non_overwrite": true,
+    "must_be_absent_before_retry": true,
+    "schema_path": "artifacts/pr2_matched_accuracy_m1_contract/2026-09-29/pr2_matched_accuracy_m1_a_result_schema_v2.json"
+  },
+  "barrier": {
+    "limited_status": "SELECTION_LIMITED",
+    "clear_status": "M1_A_COMPLETE_M1_B_ELIGIBLE",
+    "limited_requires_compile_counters_zero": true,
+    "clear_requires_m1_a_artifact_commit_before_m1_b": true,
+    "selection_limited_rescue_authorized": false,
+    "winner_claim_permitted": false,
+    "held_out_candidate_selection_permitted": false
+  },
+  "permissions": {
+    "m1_a_scientific_execution_authorized": true,
+    "development_npz_load_authorized": true,
+    "signal_evaluation_authorized": true,
+    "held_out_access_authorized": false,
+    "m1_b_direct_compile_before_clear_barrier_authorized": false,
+    "m1_b_direct_compile_under_this_authorization": false,
+    "trajectory_sampling_authorized": false,
+    "circuit_build_authorized": false,
+    "direct_compile_authorized": false,
+    "quantum_shots_authorized": false,
+    "s3_authorized": false,
+    "automatic_next_stage": null
+  },
+  "held_out_guard": {
+    "path_resolution_or_stat": 0,
+    "raw_hash_checks": 0,
+    "npz_loads": 0,
+    "signal_evaluations": 0,
+    "cost_or_ranking_evaluations": 0
+  },
+  "m1_b_if_clear": {
+    "requires_byte_fixed_m1_a_artifact": true,
+    "requires_separate_result_prior_source_and_execution_authorization_commit": true,
+    "selected_fingerprints_may_change": false,
+    "maximum_processes": 6,
+    "maximum_random_trajectories": 2048,
+    "maximum_full_wrappers": 4128
+  },
+  "mandatory_stop": {
+    "required_after_limited_result": true,
+    "required_after_clear_m1_a_freeze_before_m1_b_authorization": true,
+    "held_out_transfer_authorized": false,
+    "s3_authorized": false
+  }
+}
