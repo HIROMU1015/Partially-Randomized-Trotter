@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "const": "pr2_matched_accuracy_m1_b1_zero_compute_plan_v1"
+    },
+    "status": {
+      "const": "M1_B1_BOUNDED_COMPILE_CONTRACT_FROZEN_EXECUTION_NOT_AUTHORIZED"
+    },
+    "decision": {
+      "properties": {
+        "review_decision": {
+          "const": "PROCEED_BOUNDED_COMPILE_EXPANSION"
+        },
+        "science_execution_authorized": {
+          "const": false
+        },
+        "automatic_next_stage": {
+          "const": null
+        }
+      },
+      "required": [
+        "review_decision",
+        "science_execution_authorized",
+        "automatic_next_stage"
+      ],
+      "type": "object"
+    },
+    "resource_caps": {
+      "properties": {
+        "random_cells": {"const": 194},
+        "trajectories_per_random_cell": {"const": 32},
+        "random_trajectories": {"const": 6208},
+        "random_full_wrappers": {"const": 12416},
+        "deterministic_or_discard_cells": {"const": 16},
+        "deterministic_or_discard_full_wrappers": {"const": 32},
+        "total_full_wrappers": {"const": 12448},
+        "maximum_process_workers": {"const": 6},
+        "blas_threads_per_worker": {"const": 1},
+        "extension_trajectories": {"const": 0}
+      },
+      "required": [
+        "random_cells",
+        "trajectories_per_random_cell",
+        "random_trajectories",
+        "random_full_wrappers",
+        "deterministic_or_discard_cells",
+        "deterministic_or_discard_full_wrappers",
+        "total_full_wrappers",
+        "maximum_process_workers",
+        "blas_threads_per_worker",
+        "extension_trajectories"
+      ],
+      "type": "object"
+    },
+    "random_cells": {
+      "maxItems": 194,
+      "minItems": 194,
+      "type": "array"
+    },
+    "deterministic_or_discard_cells": {
+      "maxItems": 16,
+      "minItems": 16,
+      "type": "array"
+    },
+    "plan_fingerprint": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "status",
+    "source_commit",
+    "decision",
+    "resource_caps",
+    "random_cells",
+    "deterministic_or_discard_cells",
+    "zero_compute_counters",
+    "plan_fingerprint"
+  ],
+  "title": "PR-2 M1-B1 zero-compute bounded compile plan",
+  "type": "object"
+}

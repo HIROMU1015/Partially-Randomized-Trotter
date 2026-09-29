@@ -1,0 +1,50 @@
+{
+  "schema_version": "pr2_matched_accuracy_m1_b1_implementation_authorization_v1",
+  "status": "M1_B1_BOUNDED_COMPILE_CONTRACT_FROZEN_EXECUTION_NOT_AUTHORIZED",
+  "planning_base_commit": "6661bb5ad2e09ab54d4487e34b7a07c22bb6e88e",
+  "source_commit_policy": "full_commit_descendant_of_planning_base",
+  "decision": "PROCEED_BOUNDED_COMPILE_EXPANSION",
+  "m1_a_input": {
+    "path": "artifacts/pr2_matched_accuracy_m1_execution/2026-09-30/pr2_matched_accuracy_m1_a_result_v1.json",
+    "commit": "3c1831e326c27c5f679b3820997f27916d26ed9f",
+    "sha256": "1f960d7a33296e2dcb74d497e360572b26409dc9aeae01522335e7b91ed81086",
+    "result_fingerprint": "422f898bba1e3849d0f45830082b76d4f42da436e2b49796e562cd79fc716c9e",
+    "status": "SELECTION_LIMITED",
+    "read_purpose": "candidate_and_signal_record_identity_only"
+  },
+  "required_source_hashes": {
+    "docs/research/pr2_matched_accuracy_m1_b1_bounded_compile_contract_v1.md": "f4ba1a42e24f5941aae33c47c98aa16f397c6f4f2074928414040d0c4bd60fd4",
+    "src/trotterlib/pr2_matched_accuracy_m1_b1_contract.py": "3523a2fc27c3a39e6db46cf70fb985dbc93ee8b9028bddca2bff2a013adb643e",
+    "scripts/run_pr2_matched_accuracy_m1_b1_contract.py": "2cd9e0b91e775f2a8c5b32f1e680467c1fd2f6c4dcd4cb1814a4b47a47fde9a3",
+    "tests/test_pr2_matched_accuracy_m1_b1_contract.py": "88a62c5ebce5dc2d5e0195d36b3ba4f053a4cbc61305a2f3a3482167602661ed",
+    "artifacts/pr2_matched_accuracy_m1_b1_contract/2026-09-30/pr2_matched_accuracy_m1_b1_plan_schema_v1.json": "87cece8a0b3abd2070c1003c0894613131b7249ffc09bcc2e312db9674b5d436",
+    "artifacts/pr2_matched_accuracy_m1_b1_contract/2026-09-30/pr2_matched_accuracy_m1_b1_result_schema_v1.json": "2ca0c2d1bc6e20ecb67f2485f689a4fe0cf845d9a18baf38f6bbfb2e8f27d09c"
+  },
+  "permissions": {
+    "m1_a_result_identity_read_authorized": true,
+    "zero_compute_plan_generation_authorized": true,
+    "m1_b1_scientific_execution_authorized": false,
+    "development_npz_load_authorized": false,
+    "signal_reevaluation_authorized": false,
+    "trajectory_sampling_authorized": false,
+    "circuit_build_authorized": false,
+    "direct_compile_authorized": false,
+    "held_out_access_authorized": false,
+    "additional_96_trajectories_authorized": false,
+    "transfer_authorized": false,
+    "s3_authorized": false,
+    "automatic_next_stage": null
+  },
+  "resource_caps": {
+    "random_cells": 194,
+    "trajectories_per_random_cell": 32,
+    "random_trajectories": 6208,
+    "random_full_wrappers": 12416,
+    "deterministic_or_discard_cells": 16,
+    "deterministic_or_discard_full_wrappers": 32,
+    "total_full_wrappers": 12448,
+    "maximum_process_workers_for_future_execution": 6,
+    "blas_threads_per_worker_for_future_execution": 1
+  },
+  "mandatory_stop": "commit_and_push_zero_compute_bundle_for_preexecution_review"
+}
