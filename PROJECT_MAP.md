@@ -1,18 +1,17 @@
 # プロジェクト案内
 
-最終更新：2026-09-28
+最終更新：2026-09-29
 
 このファイルは、人またはGPTがリポジトリ全体を読むときの入口である。研究内容の正本、
 実装、検証コード、結果データ、発表資料を区別し、古い研究経路を現在の結論として読まない
 ための案内をまとめる。
 
-PR-2の最新状態は、旧S0 STOPを保持した別系列のV4 correctnessとdevelopment-only S2を完了し、
-S2後reviewでmatched-accuracy resource-map研究へ狭めた段階である。M1前先行研究gateは
-`PROCEED_RESOURCE_STUDY`だが、現行statusは
-`PR2_MATCHED_ACCURACY_CONTRACT_FIXED_M1_NOT_AUTHORIZED`。入口は
-`docs/research/pr2_matched_accuracy_prior_art_gate_v1.md`と
-`docs/research/pr2_matched_accuracy_resource_contract_v1.md`である。旧S2 status、B2/B3 frontier、
-rank 3/9 controlを保存し、held-out H4 1.30 Å、S3、M1科学計算は未承認である。
+PR-2の最新状態は、旧S0 STOPとdevelopment-only S2結果を保持し、matched-accuracy resource-map研究の
+M1実装契約まで固定した段階である。候補208件、r64境界最大4件、random direct-compile最大16 cell、
+occurrence seed、result schema、zero-compute guardを実装し、synthetic dry-runと専用testを通過した。
+現行statusは`M1_IMPLEMENTATION_CONTRACT_FROZEN_SCIENCE_NOT_AUTHORIZED`。入口は
+`docs/research/pr2_matched_accuracy_m1_implementation_contract_v1.md`である。M1 signal／trajectory／
+circuit compile、held-out H4 1.30 Å、S3は未実行・未承認である。
 
 ## 最初に読む順序
 
@@ -365,9 +364,15 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
   実H4 S2結果は`docs/pr2_v4_s2_development_validation.md`と
   `artifacts/pr2_v4_s2_development/2026-09-29/`で追跡する）
 - `docs/research/pr2_matched_accuracy_prior_art_gate_v1.md`、
-  `docs/research/pr2_matched_accuracy_resource_contract_v1.md`
-  （S2後の新規性gateとM1前契約。resource studyへの限定進行、direct-compile 16-cell選抜、
-  可変q correctness、held-out前の別freezeを定める。M1実装・計算は未承認）
+  `docs/research/pr2_matched_accuracy_resource_contract_v1.md`、
+  `docs/research/pr2_matched_accuracy_m1_implementation_contract_v1.md`
+  （S2後の新規性gate、M1前研究契約、zero-compute実装契約。候補identity、16-cell selector、schema、
+  seed規則、dry-runを固定済み。M1科学計算は未承認）
+- `src/trotterlib/pr2_matched_accuracy_m1_contract.py`、
+  `scripts/run_pr2_matched_accuracy_m1_contract.py`、
+  `tests/test_pr2_matched_accuracy_m1_contract.py`、
+  `artifacts/pr2_matched_accuracy_m1_contract/2026-09-29/`
+  （standard-library-only候補列挙、synthetic selector dry-run、zero-compute guard。科学値ではない）
 - `docs/research/pr2_s0_reproduction_stop_c644925.md`、
   `docs/research/pr2_s0_external_review_request_c644925.md`、
   `artifacts/pr2_s0_s1_validation/2026-09-28/`（development byte-level hash不一致による

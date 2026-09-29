@@ -45,3 +45,7 @@ raw/internal tamper、rank 3/6/9のpartition・sampling sign・確率和・再�
 `test_pr2_v4_s2_parallel_execution.py`では、同じcompile cellのserial/parallel完全一致、canonical
 result order、persistent SQLite cache再利用、worker上限、cell identity付き例外、atomicで非上書きの
 failure reportをtoy Hamiltonianで検査する。実H4 S2の並列再実行結果や速度倍率を示すものではない。
+
+`test_pr2_matched_accuracy_m1_contract.py`では208候補のexact countとfingerprint uniqueness、
+`q*delta=T`、occurrence seed独立性、最大4件のr64境界、16-cell selectorと`SELECTION_LIMITED`経路、
+source hash、schema、全科学counter 0、非上書きrunnerを検査する。M1 signalまたはcompileのtestではない。

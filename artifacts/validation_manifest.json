@@ -2866,6 +2866,70 @@
           "pr2_matched_accuracy_resource_contract"
         ],
         "reason": "Documentation-only M1 pre-contract with SHA-256 313843ef55e6740d1ab37e1d0fac0e2c68243445e9235bbc45cf92b481305416. It freezes matched-accuracy baselines, variable-q correctness, a deterministic 16-random-cell compile selector, SELECTION_LIMITED handling, and a separate numeric freeze before held-out access while keeping M1 unauthorized."
+      },
+      {
+        "path": "docs/research/pr2_matched_accuracy_m1_implementation_contract_v1.md",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_implementation_contract"
+        ],
+        "reason": "M1 zero-compute implementation contract with SHA-256 b353f86a28b2aec185616cbc4f3b1e635bfb3e523f401e0a82e13ba56535f33a. It freezes 208 base candidates, at most four r64 boundary candidates, fingerprints, occurrence seeds, schemas, resource caps, and the mandatory review stop."
+      },
+      {
+        "path": "src/trotterlib/pr2_matched_accuracy_m1_contract.py",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_implementation_contract"
+        ],
+        "reason": "Standard-library-only candidate-ledger, fingerprint, occurrence-seed, selector, dry-run validator, and non-overwrite writer source with SHA-256 aea16dd8e2d4602bc8ac143b9cd2beac3636008f24f26be53a5a02410631797b."
+      },
+      {
+        "path": "scripts/run_pr2_matched_accuracy_m1_contract.py",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_implementation_contract"
+        ],
+        "reason": "Non-overwrite zero-compute contract runner with SHA-256 f087c1d2ffc71a9be1d6de8984f723db333e4b890350dea4d4ed020783636d4e; it reads only authorization/source identities and the known S2 JSON identity."
+      },
+      {
+        "path": "tests/test_pr2_matched_accuracy_m1_contract.py",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_implementation_contract"
+        ],
+        "reason": "Dedicated zero-compute contract tests with SHA-256 2ffa11e5c93577f56974c4df69c4e233210e892a42b772071fea49bfab1353a8; seven local tests pass, with no current immutable CI record."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m1_contract/2026-09-29/pr2_matched_accuracy_m1_dry_run_schema_v1.json",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_implementation_contract"
+        ],
+        "reason": "Zero-compute dry-run JSON schema with SHA-256 12f7b61470040e64f446ea919458db9a7bc66de76f279334640f6fec5dfe7893."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m1_contract/2026-09-29/pr2_matched_accuracy_m1_result_schema_v1.json",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_implementation_contract"
+        ],
+        "reason": "Reserved future M1 result schema with SHA-256 f87f9c815b9d7e7020e0775937c2252a5f7b3efeb54583ffc95a1963081017a8; its presence does not authorize or report an M1 scientific run."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m1_contract/2026-09-29/pr2_matched_accuracy_m1_implementation_authorization_v1.json",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_implementation_contract"
+        ],
+        "reason": "Machine-readable implementation-only authorization with SHA-256 0e1c6f80baa14411d42253769a3cc64f6e76992ce2c8c2274921438a0fb99652; development/held-out NPZ access, signal, sampling, circuit build, compile, S3, and automatic continuation are false."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m1_contract/2026-09-29/pr2_matched_accuracy_m1_dry_run_v1.json",
+        "kind": "file",
+        "supports": [
+          "pr2_matched_accuracy_m1_implementation_contract"
+        ],
+        "reason": "Machine-readable zero-compute dry run with SHA-256 b599322b6b8f38308ad6327e339e4743723f5e7e2a3d89c5b294860f95d908db and artifact fingerprint af0e4ff6e4a0da87404724e8416ab99b9a8884d106ecd96c68edef62bd757832. It enumerates 208 base candidates, four synthetic boundary requests, and a capped sixteen-cell synthetic selection while all scientific counters remain zero."
       }
     ],
     "quarantined": [
@@ -5101,7 +5165,7 @@
     {
       "id": "pr2_matched_accuracy_resource_contract",
       "status": "source_present_no_current_ci",
-      "summary": "The mandatory S2 research-direction review preserves S2_TRANSFER_CANDIDATE_AWAITING_REVIEW, the B2/B3 material frontier, rank-3/9 control roles, and the unopened held-out input while narrowing PR-2 to a matched-accuracy DF-prefix resource/applicability study. A claim-level prior-art gate returns PROCEED_RESOURCE_STUDY only under this narrow scope. Contract v1 freezes discard/deterministic/partial/random-dominant baselines, q in {1,2,4,8} with delta=T/q, variable-q correctness and candidate identity, at most 16 result-prior-selected random compile cells, SELECTION_LIMITED handling, and a separate numeric held-out freeze. M1 implementation and all new scientific computation remain unauthorized.",
+      "summary": "The mandatory S2 research-direction review preserves S2_TRANSFER_CANDIDATE_AWAITING_REVIEW, the B2/B3 material frontier, rank-3/9 control roles, and the unopened held-out input while narrowing PR-2 to a matched-accuracy DF-prefix resource/applicability study. A claim-level prior-art gate returns PROCEED_RESOURCE_STUDY only under this narrow scope. Contract v1 freezes discard/deterministic/partial/random-dominant baselines, q in {1,2,4,8} with delta=T/q, variable-q correctness and candidate identity, at most 16 result-prior-selected random compile cells, SELECTION_LIMITED handling, and a separate numeric held-out freeze. A separate child result set now freezes the zero-compute M1 implementation contract; M1 scientific execution remains unauthorized.",
       "counts": {
         "documentation_files": 2,
         "implementation_source_files": 0,
@@ -5128,6 +5192,47 @@
         "Return SELECTION_LIMITED and do not select a winner or held-out candidate if the sixteen-cell cap leaves a plausible uncompiled candidate or unresolved boundary.",
         "Keep H4 1.30 Angstrom unopened and S3 unauthorized until M1 completes, stops, and a separate authorization freezes at most five representative candidates and numeric transfer criteria.",
         "Do not start additional geometries, molecules, bases, PF families, H12, long RPE, or final total-cost evaluation from this documentation-only contract."
+      ]
+    },
+    {
+      "id": "pr2_matched_accuracy_m1_implementation_contract",
+      "status": "source_present_no_current_ci",
+      "summary": "The M1 implementation contract is frozen at base commit 61bbaad without authorizing M1 science. A standard-library-only module and non-overwrite runner enumerate 208 base candidates, permit at most four parent-bound r64 boundary candidates, define full candidate and occurrence-seed identities, reserve dry-run and future-result schemas, and exercise the deterministic sixteen-cell selector on explicitly synthetic metadata-only values. The dry run selects sixteen fixture cells, exercises SELECTION_LIMITED, passes seven dedicated local tests, and records zero development/held-out NPZ loads, signal evaluations, trajectory samples, circuit builds, compilations, and quantum shots. Independent review and a separate execution authorization are required before M1.",
+      "counts": {
+        "implementation_source_files": 1,
+        "generator_scripts": 1,
+        "documentation_files": 1,
+        "dedicated_test_source_files": 1,
+        "schema_files": 2,
+        "authorization_files": 1,
+        "dry_run_artifact_files": 1,
+        "dedicated_local_test_cases_passed": 7,
+        "base_candidate_identities": 208,
+        "maximum_boundary_candidate_identities": 4,
+        "maximum_signal_candidate_identities": 212,
+        "synthetic_boundary_requests": 4,
+        "synthetic_selected_compile_cells": 16,
+        "new_molecular_calculations": 0,
+        "development_npz_loads": 0,
+        "held_out_path_or_file_accesses": 0,
+        "held_out_npz_loads": 0,
+        "new_signal_evaluations": 0,
+        "new_trajectory_samples": 0,
+        "new_circuit_builds": 0,
+        "new_circuit_compilations": 0,
+        "new_quantum_shots": 0,
+        "s3_runs": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Preserve base commit 61bbaadfa852f569726b7a392f231606790b2aac, implementation authorization SHA-256 0e1c6f80baa14411d42253769a3cc64f6e76992ce2c8c2274921438a0fb99652, dry-run SHA-256 b599322b6b8f38308ad6327e339e4743723f5e7e2a3d89c5b294860f95d908db, and artifact fingerprint af0e4ff6e4a0da87404724e8416ab99b9a8884d106ecd96c68edef62bd757832.",
+        "Treat the dry-run proxy records and selected sixteen fixture cells as synthetic software-test values only, not signal, shot, gate-count, candidate-selection, or scientific evidence.",
+        "Keep the base ledger at B0=12, B1=4, B2=144, B3=48; require unique fingerprints and q times delta equals T for all 208 candidates.",
+        "Permit at most four r64 boundary candidates, each bound to one frozen r32 parent fingerprint; do not add r128.",
+        "Use candidate, axis, trajectory, outer step, tail occurrence, and RTE step coordinates in the future occurrence-seed identity and reject reuse across coordinate tuples.",
+        "Cap future random direct compile selection at sixteen cells and return SELECTION_LIMITED whenever a plausible uncompiled frontier, boundary, or tail challenger remains unresolved.",
+        "Require independent review and a separate execution authorization before any development NPZ load, signal evaluation, trajectory sampling, circuit build, or compile.",
+        "Keep held-out H4 1.30 Angstrom, S3, additional geometries, H12, long RPE, and final total-cost evaluation unauthorized."
       ]
     }
   ],

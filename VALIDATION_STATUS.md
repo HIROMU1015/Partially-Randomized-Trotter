@@ -1,5 +1,22 @@
 # Validation status
 
+## 2026-09-29 PR-2 M1実装契約・zero-compute dry-run完了
+
+[M1実装契約](docs/research/pr2_matched_accuracy_m1_implementation_contract_v1.md)として、standard-library-only
+module、non-overwrite runner、専用test、dry-run/result schema、machine authorizationを固定した。候補は
+B0 12、B1 4、B2 144、B3 48のbase 208件、r64境界は最大4件、signal候補上限212件、random direct
+compile上限16 cellである。candidate fingerprintはsnapshot/Hamiltonian/state、method/rank、`T,q,delta,r,K`、
+compiler、wrapper、seed policyを含む。
+
+zero-compute dry-runはbase 208件、boundary request 4件、synthetic selector選抜16件を生成し、
+`SELECTION_LIMITED`経路を含む停止規則を機械検査した。専用testは7 passed。development/held-out NPZ load、
+分子計算、signal、trajectory、circuit build、compile、量子shotは全て0である。synthetic proxyと選抜結果は
+科学値でもM1候補選択でもない。
+
+現行statusは`M1_IMPLEMENTATION_CONTRACT_FROZEN_SCIENCE_NOT_AUTHORIZED`。次は独立reviewであり、M1を
+実行する場合はsource identity、process/resource上限、output、test gateを別authorizationへ固定する。
+held-out、S3、追加geometry、H12、長RPE、最終総costは未承認のままである。
+
 ## 2026-09-29 PR-2 matched-accuracy再設計契約固定・M1未承認
 
 S2後のmandatory reviewを完了し、PR-2を新しいprefix法またはrank 6の優位性主張から、固定DF snapshot上の

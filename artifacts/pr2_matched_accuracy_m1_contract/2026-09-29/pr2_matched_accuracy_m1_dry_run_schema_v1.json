@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pr2_matched_accuracy_m1_dry_run_schema_v1",
+  "title": "PR-2 matched-accuracy M1 zero-compute contract dry run",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "series_id",
+    "status",
+    "implementation_base_commit",
+    "authorization_sha256",
+    "source_hashes",
+    "contract_identity",
+    "m0_read_only_ledger",
+    "candidate_counts",
+    "candidate_ledger",
+    "selector_dry_run",
+    "seed_policy",
+    "resource_caps",
+    "zero_compute_counters",
+    "access_audit",
+    "authorization",
+    "mandatory_stop_reached",
+    "next_review",
+    "artifact_fingerprint"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "pr2_matched_accuracy_m1_contract_dry_run_v1"
+    },
+    "series_id": {
+      "const": "pr2-rebaseline-de7a5492-v1"
+    },
+    "status": {
+      "const": "M1_IMPLEMENTATION_CONTRACT_FROZEN_SCIENCE_NOT_AUTHORIZED"
+    },
+    "implementation_base_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "authorization_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_hashes": {
+      "type": "object",
+      "minProperties": 5,
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
+    "contract_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resource_contract_sha256",
+        "prior_art_gate_sha256"
+      ],
+      "properties": {
+        "resource_contract_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "prior_art_gate_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "m0_read_only_ledger": {
+      "type": "object"
+    },
+    "candidate_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "B0",
+        "B1",
+        "B2",
+        "B3",
+        "deterministic_or_discard",
+        "random_base",
+        "base_total",
+        "maximum_boundary_additions",
+        "maximum_signal_candidates",
+        "maximum_random_direct_compile_cells"
+      ],
+      "properties": {
+        "B0": {"const": 12},
+        "B1": {"const": 4},
+        "B2": {"const": 144},
+        "B3": {"const": 48},
+        "deterministic_or_discard": {"const": 16},
+        "random_base": {"const": 192},
+        "base_total": {"const": 208},
+        "maximum_boundary_additions": {"const": 4},
+        "maximum_signal_candidates": {"const": 212},
+        "maximum_random_direct_compile_cells": {"const": 16}
+      }
+    },
+    "candidate_ledger": {
+      "type": "array",
+      "minItems": 208,
+      "maxItems": 208,
+      "items": {
+        "type": "object",
+        "required": [
+          "candidate_id",
+          "candidate_fingerprint",
+          "method",
+          "rank",
+          "T",
+          "q",
+          "delta",
+          "r",
+          "K"
+        ]
+      }
+    },
+    "selector_dry_run": {
+      "type": "object",
+      "required": [
+        "fixture_only",
+        "scientific_values",
+        "boundary_request_count",
+        "selection"
+      ]
+    },
+    "seed_policy": {
+      "type": "object"
+    },
+    "resource_caps": {
+      "type": "object"
+    },
+    "zero_compute_counters": {
+      "type": "object",
+      "additionalProperties": {
+        "const": 0
+      }
+    },
+    "access_audit": {
+      "type": "object"
+    },
+    "authorization": {
+      "type": "object",
+      "required": [
+        "implementation_contract_authorized",
+        "synthetic_selector_dry_run_authorized",
+        "m1_scientific_execution_authorized",
+        "held_out_access_authorized",
+        "s3_authorized",
+        "automatic_next_stage"
+      ],
+      "properties": {
+        "implementation_contract_authorized": {"const": true},
+        "synthetic_selector_dry_run_authorized": {"const": true},
+        "m1_scientific_execution_authorized": {"const": false},
+        "held_out_access_authorized": {"const": false},
+        "s3_authorized": {"const": false},
+        "automatic_next_stage": {"type": "null"}
+      }
+    },
+    "mandatory_stop_reached": {"const": true},
+    "next_review": {
+      "const": "independent_review_before_m1_execution_authorization"
+    },
+    "artifact_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

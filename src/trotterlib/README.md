@@ -62,6 +62,8 @@
   S2 resource comparison、32→96拡張規則、mandatory STOP
 - `pr2_v4_s2_parallel_execution.py`：同じS2 compile cellと段階barrierを維持するbounded
   spawned-process実行、canonical result order、persistent compiled-cost cache
+- `pr2_matched_accuracy_m1_contract.py`：standard-library-onlyのM1候補台帳、candidate fingerprint、
+  occurrence seed、16-cell selector、zero-compute dry-run validator。科学計算moduleをimportしない
 - `pf_delta_validation.py`
 - `pf_c_system_size_validation.py`
 - `pauli_partial_cgs_validation.py`

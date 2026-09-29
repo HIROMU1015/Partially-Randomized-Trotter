@@ -35,7 +35,7 @@
 
 | 日付 | 主題 | 基準commit | 到達点 | 次の主要課題 |
 |---|---|---|---|---|
-| [2026-09-29](2026-09-29.md) | PR-2 V4/S2完了とmatched-accuracy再設計 | `a9171d8` | 旧S2を保持し、先行研究gate `PROCEED_RESOURCE_STUDY`とM1前resource-map契約を固定。M1未承認 | M1実装契約を別freezeし、計算前reviewで停止 |
+| [2026-09-29](2026-09-29.md) | PR-2 V4/S2完了とmatched-accuracy再設計 | `61bbaad` | 旧S2を保持し、M1前研究契約とzero-compute実装契約を固定。208候補・16-cell selector、専用test通過、M1科学計算未承認 | 独立review後、必要ならM1 execution authorizationを別freeze |
 | [2026-09-27](2026-09-27.md) | FR-R1b完了と研究完成フェーズ移行 | `ecb7f4c`、`16d4482` + dirty worktree | R5不通過と`MECHANISM_ONLY_NO_PRACTICAL_GO`を維持。C1/C2を中核、C3を条件付き応用とする完成原稿契約を固定 | 新規計算を止め、定理単位の先行研究監査とT1--T4の証明へ進む |
 | [2026-09-25](2026-09-25.md) | M06-F・A0・P-B/P-C/P-A停止点 | `3336f03` + dirty worktree | P-C tracking 16/16完了。stretch予測破れと診断不通過によりA/B/C全てcurrent scopeで停止 | P-Dを事前登録するかR3/R6/R8へ問いを再定義 |
 | [2026-09-26](2026-09-26.md) | P-D S0契約・S1公平再最適化 | `9a494bd` + dirty worktree | B1b/B2/B4一致、Case C/D不成立。B1a上限依存でCase B＋undetermined、S1停止 | P-Dの研究価値・baseline設計を再検討。S2/H12/長RPEは保留 |
