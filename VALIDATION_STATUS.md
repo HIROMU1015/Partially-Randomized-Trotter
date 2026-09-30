@@ -1,6 +1,6 @@
 # Validation status
 
-## 2026-09-30 PR-2 M1-B1 execution source実装・authorization未固定
+## 2026-09-30 PR-2 M1-B1 execution source・authorization固定、本計算未実行
 
 実行前外部reviewの`REVISE_CONTRACT_BEFORE_AUTHORIZATION`を
 [execution contract amendment v2](docs/research/pr2_matched_accuracy_m1_b1_execution_contract_amendment_v2.md)へ反映した。
@@ -11,7 +11,14 @@
 
 source-bound planは実benchmarkと同じtrajectory seed列を固定し、source/compiler/candidate/axis/trajectoryを
 cache keyへ含める。cacheはcandidate別、checkpointはtask fingerprint完全一致時だけ再利用する。専用synthetic
-testは8 passed。M1-B1本計算、追加96、held-out、transfer、S3はまだ未実行・未承認である。
+testは8 passed。M1-B1本計算は未実行で、追加96、held-out、transfer、S3は未実行・未承認である。
+
+actual execution source commitは`33f436bb3a7d5b9cefa23604bb22c8d1fb17cd62`。source-bound execution plan v2の
+SHA-256は`5afc94fac0571b38c74b0b00cfcf68e34e491a5fc65ef579d3ec884d079e5aa5`、fingerprintは
+`17c91d41e77d7c085629b60ea470abc87e9590f448ba9bcdfa4342410cd89607`である。
+[execution authorization v1](docs/research/pr2_matched_accuracy_m1_b1_execution_authorization_v1.md)とmachine JSONは
+一回のbounded runだけを固定した。実runnerのzero-compute authorization gateはPASSしたが、bundleの外部review前で
+trajectory sampling、circuit build、compileは0のままである。
 
 ## 2026-09-30 PR-2 M1-B1 bounded compile実行前契約・zero-compute plan完了
 

@@ -9,12 +9,14 @@
 PR-2の最新状態は、旧S0 STOPとdevelopment-only S2結果を保持し、matched-accuracy resource-map研究の
 compile-free M1-Aを`SELECTION_LIMITED`で停止した後、`PROCEED_BOUNDED_COMPILE_EXPANSION`を採用して
 M1-B1実行前契約を固定し、外部reviewの`REVISE_CONTRACT_BEFORE_AUTHORIZATION`に従って科学実行sourceを
-先に実装した段階である。旧16-cell selectorは「proxyでは安全に候補圧縮できなかった」監査
+先に実装し、source commit `33f436bb3a7d5b9cefa23604bb22c8d1fb17cd62`へ結合したexecution plan v2と
+result-prior authorizationを固定した段階である。旧16-cell selectorは「proxyでは安全に候補圧縮できなかった」監査
 結果として保存する。M1-Aでaccuracy適格だったB2/B3 194 cellを32 trajectory・Re/Im二軸、B0/B1 16 cellを
 二軸で測る12,448-wrapper上限、task/cache identity、B1後STOPをzero-compute planへ固定した。入口は
 `docs/research/pr2_matched_accuracy_m1_b1_bounded_compile_contract_v1.md`と
-`docs/research/pr2_matched_accuracy_m1_b1_execution_contract_amendment_v2.md`。実行source commitを固定した後に
-別commitでresult-prior authorizationを作る。M1-B1科学実行、追加96 trajectory、
+`docs/research/pr2_matched_accuracy_m1_b1_execution_contract_amendment_v2.md`と
+`docs/research/pr2_matched_accuracy_m1_b1_execution_authorization_v1.md`。authorization bundleの外部review前なので、
+M1-B1科学実行、追加96 trajectory、
 held-out H4 1.30 Å、transfer、S3は未承認である。
 
 ## 最初に読む順序
@@ -376,6 +378,7 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
   `docs/research/pr2_m1_a_selection_limited_external_review_request_3c1831e.md`、
   `docs/research/pr2_matched_accuracy_m1_b1_bounded_compile_contract_v1.md`、
   `docs/research/pr2_matched_accuracy_m1_b1_execution_contract_amendment_v2.md`、
+  `docs/research/pr2_matched_accuracy_m1_b1_execution_authorization_v1.md`、
   `docs/research/pr2_m1_b1_preexecution_external_review_request_1228168.md`
   （S2後の新規性gate、M1前研究契約、zero-compute実装契約。候補identity、16-cell selector、schema、
   seed規則、追加prior-art gate、M1-A/M1-B hard barrier、compile-free M1-A予算を固定済み）

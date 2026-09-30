@@ -3174,6 +3174,30 @@
         "kind": "file",
         "supports": ["pr2_matched_accuracy_m1_b1_execution_source"],
         "reason": "Revised result schema with SHA-256 035d9b1e48d8d02718f8c7218ea49d28297b3b3f29c39c4232cdef83c7c1d081. It permits only compile-map-complete-awaiting-review or implementation-gate-failed and keeps the research decision null."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m1_b1_contract/2026-09-30/pr2_matched_accuracy_m1_b1_execution_plan_v2.json",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m1_b1_execution_source"],
+        "reason": "Source-bound zero-compute execution plan with SHA-256 5afc94fac0571b38c74b0b00cfcf68e34e491a5fc65ef579d3ec884d079e5aa5 and fingerprint 17c91d41e77d7c085629b60ea470abc87e9590f448ba9bcdfa4342410cd89607. It records 194 random and 16 baseline tasks and 12,448 unique wrapper identities using source commit 33f436bb3a7d5b9cefa23604bb22c8d1fb17cd62."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m1_b1_contract/2026-09-30/pr2_matched_accuracy_m1_b1_execution_plan_schema_v2.json",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m1_b1_execution_source"],
+        "reason": "Execution plan v2 schema with SHA-256 3b503205e32d9a1f72c0fbe9830a93372dbe2c3ff49b225ee255755370c014ff and fixed source, count, worker, and zero-extension constraints."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m1_b1_contract/2026-09-30/pr2_matched_accuracy_m1_b1_execution_authorization_v1.json",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m1_b1_execution_source"],
+        "reason": "Result-prior one-run authorization with SHA-256 7d188f782354609fec1ea83e289e9872c6a801c3e0e9493f93753fe7cae9d93a. The runtime gate accepts it without loading a snapshot or invoking trajectory, circuit, or compiler work."
+      },
+      {
+        "path": "docs/research/pr2_matched_accuracy_m1_b1_execution_authorization_v1.md",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m1_b1_execution_source"],
+        "reason": "Human-readable result-prior authorization with SHA-256 4eb0700b94ea1e5f6d711a964ed354443fa1687a7205d825221555dca5c57111. It requires a separate review before launch and a mandatory stop after the compiled map."
       }
     ],
     "quarantined": [
@@ -5648,16 +5672,19 @@
     },
     {
       "id": "pr2_matched_accuracy_m1_b1_execution_source",
-      "status": "source_present_execution_not_authorized",
-      "summary": "The pre-execution review returned REVISE_CONTRACT_BEFORE_AUTHORIZATION. The actual 12,448-wrapper module, runner, tests, and result schema are therefore committed before any execution authorization. The source-bound plan uses the benchmark's actual trajectory-seed policy, separates axis wrapper identities, isolates persistent compile caches by candidate, and accepts checkpoints only under an exact task fingerprint. The science runner can complete only as M1_B1_COMPILE_MAP_COMPLETE_AWAITING_REVIEW or fail an implementation gate; it does not choose the later four-way research decision. No M1-B1 scientific execution is authorized by this source bundle.",
+      "status": "authorization_frozen_execution_not_started",
+      "summary": "The pre-execution review returned REVISE_CONTRACT_BEFORE_AUTHORIZATION. The actual 12,448-wrapper module, runner, tests, and result schema were committed first at source commit 33f436bb3a7d5b9cefa23604bb22c8d1fb17cd62. A source-bound plan then froze the benchmark's actual trajectory-seed policy, separate axis wrapper identities, candidate-scoped caches, and exact task checkpoints. The result-prior authorization permits one bounded run, but the bundle awaits external review and no trajectory, circuit, or compile work has started. The science runner can complete only as M1_B1_COMPILE_MAP_COMPLETE_AWAITING_REVIEW or fail an implementation gate; it does not choose the later four-way research decision.",
       "counts": {
         "frozen_random_cells": 194,
         "frozen_baseline_cells": 16,
         "planned_random_trajectories": 6208,
         "planned_total_full_wrappers": 12448,
         "maximum_future_process_workers": 6,
+        "source_bound_execution_plan_files": 1,
+        "result_prior_authorization_files": 2,
+        "zero_compute_authorization_gate_passed": 1,
         "dedicated_local_tests_passed": 8,
-        "m1_focused_local_tests_passed": 42,
+        "m1_focused_local_tests_passed": 43,
         "development_npz_loads": 0,
         "held_out_path_or_file_accesses": 0,
         "signal_reevaluations": 0,

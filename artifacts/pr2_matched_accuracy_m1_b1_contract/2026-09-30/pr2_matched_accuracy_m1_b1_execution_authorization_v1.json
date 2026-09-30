@@ -1,0 +1,89 @@
+{
+  "schema_version": "pr2_matched_accuracy_m1_b1_execution_authorization_v1",
+  "series_id": "pr2-rebaseline-de7a5492-v1",
+  "status": "M1_B1_EXECUTION_AUTHORIZED_ONCE",
+  "execution_run_limit": 1,
+  "source_commit": "33f436bb3a7d5b9cefa23604bb22c8d1fb17cd62",
+  "source_hashes": {
+    "artifacts/pr2_matched_accuracy_m1_b1_contract/2026-09-30/pr2_matched_accuracy_m1_b1_result_schema_v2.json": "035d9b1e48d8d02718f8c7218ea49d28297b3b3f29c39c4232cdef83c7c1d081",
+    "scripts/run_pr2_matched_accuracy_m1_b1.py": "07f34e4f1a22e93ace21d26ce122b7931311f8d94dfebd2d79f1086d9fdc9371",
+    "src/trotterlib/pr2_matched_accuracy_m1_b1_contract.py": "3523a2fc27c3a39e6db46cf70fb985dbc93ee8b9028bddca2bff2a013adb643e",
+    "src/trotterlib/pr2_matched_accuracy_m1_b1_execution.py": "b7a3a479cbebdd3ff7a93de75c4ba030343769c308401395e208754c3d566987",
+    "tests/test_pr2_matched_accuracy_m1_b1_execution.py": "971caf4c9b5025bfae6779ff15a53656fecebc068152192a72b1cea8555dc712"
+  },
+  "m1_a_result": {
+    "commit": "3c1831e326c27c5f679b3820997f27916d26ed9f",
+    "path": "artifacts/pr2_matched_accuracy_m1_execution/2026-09-30/pr2_matched_accuracy_m1_a_result_v1.json",
+    "sha256": "1f960d7a33296e2dcb74d497e360572b26409dc9aeae01522335e7b91ed81086",
+    "result_fingerprint": "422f898bba1e3849d0f45830082b76d4f42da436e2b49796e562cd79fc716c9e",
+    "status": "SELECTION_LIMITED",
+    "legacy_selector_audit_preserved": true
+  },
+  "execution_plan_path": "artifacts/pr2_matched_accuracy_m1_b1_contract/2026-09-30/pr2_matched_accuracy_m1_b1_execution_plan_v2.json",
+  "execution_plan_sha256": "5afc94fac0571b38c74b0b00cfcf68e34e491a5fc65ef579d3ec884d079e5aa5",
+  "execution_plan_fingerprint": "17c91d41e77d7c085629b60ea470abc87e9590f448ba9bcdfa4342410cd89607",
+  "result_schema": {
+    "path": "artifacts/pr2_matched_accuracy_m1_b1_contract/2026-09-30/pr2_matched_accuracy_m1_b1_result_schema_v2.json",
+    "sha256": "035d9b1e48d8d02718f8c7218ea49d28297b3b3f29c39c4232cdef83c7c1d081",
+    "schema_version": "pr2_matched_accuracy_m1_b1_result_v2"
+  },
+  "result_terminal_statuses": [
+    "M1_B1_COMPILE_MAP_COMPLETE_AWAITING_REVIEW",
+    "IMPLEMENTATION_GATE_FAILED"
+  ],
+  "permissions": {
+    "m1_b1_scientific_execution_authorized": true,
+    "development_npz_load_authorized": true,
+    "trajectory_sampling_authorized": true,
+    "circuit_build_authorized": true,
+    "direct_compile_authorized": true,
+    "signal_reevaluation_authorized": false,
+    "candidate_add_remove_authorized": false,
+    "additional_96_trajectories_authorized": false,
+    "held_out_access_authorized": false,
+    "transfer_authorized": false,
+    "winner_refinement_authorized": false,
+    "s3_authorized": false,
+    "automatic_research_decision_authorized": false
+  },
+  "resource_caps": {
+    "baseline_cells": 16,
+    "baseline_full_wrappers": 32,
+    "blas_threads_per_worker": 1,
+    "extension_trajectories": 0,
+    "maximum_process_workers": 6,
+    "random_cells": 194,
+    "random_full_wrappers": 12416,
+    "random_trajectories": 6208,
+    "total_full_wrappers": 12448,
+    "trajectories_per_random_cell": 32
+  },
+  "execution_policy": {
+    "candidate_set_from_m1_a_only": true,
+    "same_trajectory_shared_by_cosine_and_sine": true,
+    "axis_specific_wrapper_identity": true,
+    "candidate_scoped_persistent_compile_cache": true,
+    "checkpoint_reuse_requires_exact_task_fingerprint": true,
+    "resume_requires_exact_run_identity": true,
+    "result_after_32_trajectories": "mandatory_stop_for_external_review"
+  },
+  "environment": {
+    "python": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+    "pythonpath": "src",
+    "python_no_user_site": true,
+    "python_dont_write_bytecode": true,
+    "openblas_num_threads": 1,
+    "omp_num_threads": 1,
+    "mkl_num_threads": 1,
+    "process_start_method": "spawn",
+    "gpu_query_allocation_kernel": 0
+  },
+  "output_policy": {
+    "recommended_output": "artifacts/pr2_matched_accuracy_m1_b1_execution/2026-09-30",
+    "non_overwrite": true,
+    "resume_only_same_output_and_identity": true,
+    "runtime_cache_checkpoint_committed": false
+  },
+  "research_decision": null,
+  "automatic_next_stage": null
+}
