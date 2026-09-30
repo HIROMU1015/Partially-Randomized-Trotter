@@ -115,6 +115,7 @@ plan v2を固定したが、bundleの外部review前なので本計算は開始�
 | 54 | [PR-2 M1-B1実行前GPTレビュー依頼](pr2_m1_b1_preexecution_external_review_request_1228168.md) | source commit `1228168`とplan fingerprintを固定し、別result-prior execution authorizationへ進む前の候補・seed・cache・resource・停止規則レビューを依頼する。 |
 | 55 | [PR-2 M1-B1 execution contract amendment v2](pr2_matched_accuracy_m1_b1_execution_contract_amendment_v2.md) | actual science module/runner/testを先にsource commit化し、result statusをcompile map完成review待ちまたはimplementation failureだけへ限定する。 |
 | 56 | [PR-2 M1-B1 execution authorization v1](pr2_matched_accuracy_m1_b1_execution_authorization_v1.md) | source commit `33f436b`とplan v2を結び、12,448 wrapper、最大6 workers、一回限り、held-out/追加96/研究自動判定禁止を結果前固定する。 |
+| 57 | [PR-2 M1-B1 authorization最終GPTレビュー依頼](pr2_m1_b1_execution_authorization_external_review_request_8fc2400.md) | bundle commit `8fc2400`を固定し、source-first順序、seed/cache/checkpoint、resource cap、2 terminal statusを本計算前に最終確認する。 |
 
 ## 研究ノート
 

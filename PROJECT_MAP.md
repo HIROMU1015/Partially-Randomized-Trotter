@@ -379,6 +379,7 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
   `docs/research/pr2_matched_accuracy_m1_b1_bounded_compile_contract_v1.md`、
   `docs/research/pr2_matched_accuracy_m1_b1_execution_contract_amendment_v2.md`、
   `docs/research/pr2_matched_accuracy_m1_b1_execution_authorization_v1.md`、
+  `docs/research/pr2_m1_b1_execution_authorization_external_review_request_8fc2400.md`、
   `docs/research/pr2_m1_b1_preexecution_external_review_request_1228168.md`
   （S2後の新規性gate、M1前研究契約、zero-compute実装契約。候補identity、16-cell selector、schema、
   seed規則、追加prior-art gate、M1-A/M1-B hard barrier、compile-free M1-A予算を固定済み）
