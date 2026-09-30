@@ -11,7 +11,7 @@
 
 source-bound planは実benchmarkと同じtrajectory seed列を固定し、source/compiler/candidate/axis/trajectoryを
 cache keyへ含める。cacheはcandidate別、checkpointはtask fingerprint完全一致時だけ再利用する。専用synthetic
-testは7 passed。M1-B1本計算、追加96、held-out、transfer、S3はまだ未実行・未承認である。
+testは8 passed。M1-B1本計算、追加96、held-out、transfer、S3はまだ未実行・未承認である。
 
 ## 2026-09-30 PR-2 M1-B1 bounded compile実行前契約・zero-compute plan完了
 

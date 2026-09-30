@@ -101,6 +101,58 @@ def test_result_contract_stops_at_compile_map_review() -> None:
     assert all(decision not in serialized for decision in execution.RESEARCH_DECISIONS)
 
 
+def test_authorization_gate_requires_exact_permissions_caps_and_source_hashes(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    plan = _plan()
+    schema_path = "result_schema_v2.json"
+    schema_sha = "c" * 64
+    authorization = {
+        "schema_version": execution.AUTHORIZATION_SCHEMA_VERSION,
+        "status": "M1_B1_EXECUTION_AUTHORIZED_ONCE",
+        "source_commit": plan["source_commit"],
+        "source_hashes": plan["source_hashes"],
+        "execution_plan_sha256": "d" * 64,
+        "execution_plan_fingerprint": plan["plan_fingerprint"],
+        "permissions": execution.EXPECTED_EXECUTION_PERMISSIONS,
+        "resource_caps": plan["resource_caps"],
+        "execution_run_limit": 1,
+        "result_schema": {
+            "path": schema_path,
+            "sha256": schema_sha,
+            "schema_version": execution.RESULT_SCHEMA_VERSION,
+        },
+        "result_terminal_statuses": [
+            execution.COMPLETE_STATUS,
+            execution.FAILURE_STATUS,
+        ],
+    }
+    monkeypatch.setattr(execution, "_git_head", lambda _root: "e" * 40)
+    monkeypatch.setattr(execution, "_is_ancestor", lambda _root, _a, _d: True)
+    monkeypatch.setattr(
+        execution,
+        "file_sha256",
+        lambda path: schema_sha if str(path).endswith(schema_path) else "b" * 64,
+    )
+    execution.validate_execution_inputs(
+        ROOT,
+        authorization,
+        "f" * 64,
+        plan,
+        "d" * 64,
+    )
+    unauthorized = copy.deepcopy(authorization)
+    unauthorized["permissions"]["held_out_access_authorized"] = True
+    with pytest.raises(ValueError, match="permissions"):
+        execution.validate_execution_inputs(
+            ROOT,
+            unauthorized,
+            "f" * 64,
+            plan,
+            "d" * 64,
+        )
+
+
 def test_synthetic_random_cell_uses_dynamic_delta_and_paired_seed_stream(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

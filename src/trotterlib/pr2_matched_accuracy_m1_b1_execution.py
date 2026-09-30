@@ -72,6 +72,21 @@ RESEARCH_DECISIONS = (
     "STOP_DUPLICATIVE",
     "COMPILE_RESULT_INCONCLUSIVE",
 )
+EXPECTED_EXECUTION_PERMISSIONS = {
+    "m1_b1_scientific_execution_authorized": True,
+    "development_npz_load_authorized": True,
+    "trajectory_sampling_authorized": True,
+    "circuit_build_authorized": True,
+    "direct_compile_authorized": True,
+    "signal_reevaluation_authorized": False,
+    "candidate_add_remove_authorized": False,
+    "additional_96_trajectories_authorized": False,
+    "held_out_access_authorized": False,
+    "transfer_authorized": False,
+    "winner_refinement_authorized": False,
+    "s3_authorized": False,
+    "automatic_research_decision_authorized": False,
+}
 
 
 def _full_commit(value: str) -> str:
@@ -470,9 +485,26 @@ def validate_execution_inputs(
         raise ValueError("execution plan fingerprint differs from authorization")
     if authorization.get("authorization_sha256") not in (None, authorization_sha256):
         raise ValueError("authorization self-audit SHA-256 is inconsistent")
-    for relative, expected in dict(authorization.get("source_hashes", {})).items():
+    if authorization.get("source_hashes") != plan.get("source_hashes"):
+        raise ValueError("authorization source hashes differ from the source-bound plan")
+    for relative, expected in dict(plan["source_hashes"]).items():
         if file_sha256(root / relative) != expected:
             raise ValueError(f"authorized source hash mismatch: {relative}")
+    if authorization.get("permissions") != EXPECTED_EXECUTION_PERMISSIONS:
+        raise ValueError("authorization permissions differ from the frozen execution boundary")
+    if authorization.get("resource_caps") != plan.get("resource_caps"):
+        raise ValueError("authorization resource caps differ from the source-bound plan")
+    if authorization.get("execution_run_limit") != 1:
+        raise ValueError("authorization must permit exactly one M1-B1 execution")
+    result_schema = authorization.get("result_schema", {})
+    if result_schema.get("schema_version") != RESULT_SCHEMA_VERSION:
+        raise ValueError("authorization names the wrong result schema")
+    schema_relative = result_schema.get("path")
+    schema_sha = result_schema.get("sha256")
+    if not isinstance(schema_relative, str) or not isinstance(schema_sha, str):
+        raise ValueError("authorization result schema identity is incomplete")
+    if file_sha256(root / schema_relative) != schema_sha:
+        raise ValueError("authorization result schema SHA-256 mismatch")
     if authorization.get("result_terminal_statuses") != [COMPLETE_STATUS, FAILURE_STATUS]:
         raise ValueError("authorization permits an unfrozen terminal status")
     if any(decision in authorization.get("result_terminal_statuses", []) for decision in RESEARCH_DECISIONS):
