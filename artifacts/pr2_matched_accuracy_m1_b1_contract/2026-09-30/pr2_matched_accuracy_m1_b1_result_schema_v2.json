@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "const": "pr2_matched_accuracy_m1_b1_result_v2"
+    },
+    "status": {
+      "enum": [
+        "M1_B1_COMPILE_MAP_COMPLETE_AWAITING_REVIEW",
+        "IMPLEMENTATION_GATE_FAILED"
+      ]
+    },
+    "research_decision": {"type": "null"},
+    "m1_a_result_sha256": {
+      "const": "1f960d7a33296e2dcb74d497e360572b26409dc9aeae01522335e7b91ed81086"
+    },
+    "m1_a_result_fingerprint": {
+      "const": "422f898bba1e3849d0f45830082b76d4f42da436e2b49796e562cd79fc716c9e"
+    },
+    "resource_counts": {
+      "properties": {
+        "random_cells": {"const": 194},
+        "trajectories_per_random_cell": {"const": 32},
+        "random_trajectories": {"const": 6208},
+        "random_full_wrappers": {"const": 12416},
+        "baseline_cells": {"const": 16},
+        "baseline_full_wrappers": {"const": 32},
+        "total_full_wrappers": {"const": 12448},
+        "extension_trajectories": {"const": 0}
+      },
+      "required": [
+        "random_cells",
+        "trajectories_per_random_cell",
+        "random_trajectories",
+        "random_full_wrappers",
+        "baseline_cells",
+        "baseline_full_wrappers",
+        "total_full_wrappers",
+        "extension_trajectories"
+      ],
+      "type": "object"
+    },
+    "held_out_accessed": {"const": false},
+    "signal_reevaluations": {"const": 0},
+    "additional_96_trajectories_executed": {"const": false},
+    "transfer_executed": {"const": false},
+    "s3_authorized": {"const": false},
+    "automatic_next_stage": {"type": "null"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {"const": "M1_B1_COMPILE_MAP_COMPLETE_AWAITING_REVIEW"}
+        }
+      },
+      "then": {
+        "required": [
+          "source_commit",
+          "authorization_sha256",
+          "execution_plan_sha256",
+          "execution_plan_fingerprint",
+          "m1_a_result_sha256",
+          "m1_a_result_fingerprint",
+          "resource_counts",
+          "compile_map",
+          "held_out_accessed",
+          "signal_reevaluations",
+          "additional_96_trajectories_executed",
+          "transfer_executed",
+          "s3_authorized",
+          "result_fingerprint"
+        ]
+      },
+      "else": {
+        "required": ["exception_type", "exception_message"]
+      }
+    }
+  ],
+  "required": [
+    "schema_version",
+    "status",
+    "research_decision",
+    "automatic_next_stage"
+  ],
+  "title": "PR-2 M1-B1 compiled map awaiting external research review",
+  "type": "object"
+}

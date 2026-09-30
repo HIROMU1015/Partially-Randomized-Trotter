@@ -19,6 +19,9 @@ S2後reviewでは新手法claimを外し、matched-accuracy resource-map研究�
 外部reviewは`PROCEED_BOUNDED_COMPILE_EXPANSION`を選び、
 [M1-B1 bounded compile契約](pr2_matched_accuracy_m1_b1_bounded_compile_contract_v1.md)とzero-compute planが
 random 194 cell、baseline 16 cell、計12,448 wrapperのidentityを固定した。M1-B1科学実行はまだ未承認である。
+[execution contract amendment v2](pr2_matched_accuracy_m1_b1_execution_contract_amendment_v2.md)は、外部reviewの
+修正要求に従いactual execution sourceをauthorizationより先に固定し、science runnerをcompile map完成・
+review待ちで停止させる。研究四分岐はrunnerが自動選択しない。
 
 初めてこの研究を確認する場合や、Codexを使って発表・共有資料を作る場合は、まず
 [研究概要・現状](研究概要・現状.md)を読む。この一冊で現在の研究段階、採用済みの
@@ -108,6 +111,7 @@ random 194 cell、baseline 16 cell、計12,448 wrapperのidentityを固定した
 | 52 | [PR-2 M1-A limited後 GPTレビュー依頼](pr2_m1_a_selection_limited_external_review_request_3c1831e.md) | commit `3c1831e`を固定し、bounded compile拡張・technical note縮小・研究停止の三択と回答形式を指定する。 |
 | 53 | [PR-2 matched-accuracy M1-B1 bounded compile契約](pr2_matched_accuracy_m1_b1_bounded_compile_contract_v1.md) | 旧selector監査を保存し、M1-A適格random 194 cell×32 trajectory×2軸とB0/B1 16 cell×2軸の12,448-wrapper有限grid、cache identity、B1後STOPをzero-compute固定する。 |
 | 54 | [PR-2 M1-B1実行前GPTレビュー依頼](pr2_m1_b1_preexecution_external_review_request_1228168.md) | source commit `1228168`とplan fingerprintを固定し、別result-prior execution authorizationへ進む前の候補・seed・cache・resource・停止規則レビューを依頼する。 |
+| 55 | [PR-2 M1-B1 execution contract amendment v2](pr2_matched_accuracy_m1_b1_execution_contract_amendment_v2.md) | actual science module/runner/testを先にsource commit化し、result statusをcompile map完成review待ちまたはimplementation failureだけへ限定する。 |
 
 ## 研究ノート
 

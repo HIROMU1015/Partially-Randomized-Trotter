@@ -3144,6 +3144,36 @@
         "kind": "file",
         "supports": ["pr2_matched_accuracy_m1_b1_contract"],
         "reason": "Commit-fixed M1-B1 pre-execution GPT review request with SHA-256 b771241e97b37b3eb960cbdd69eafd8e6b3d750e8f2c488deffaeb373a7725c9. It requests contract review without authorizing or starting compile work."
+      },
+      {
+        "path": "docs/research/pr2_matched_accuracy_m1_b1_execution_contract_amendment_v2.md",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m1_b1_execution_source"],
+        "reason": "Source-first execution amendment with SHA-256 4d312f9e3886956743d8cac9a39b311917a04c3f836a7f30025573ec36d2a5d7. It records REVISE_CONTRACT_BEFORE_AUTHORIZATION and removes automated post-map research decisions from the science runner."
+      },
+      {
+        "path": "src/trotterlib/pr2_matched_accuracy_m1_b1_execution.py",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m1_b1_execution_source"],
+        "reason": "M1-B1 source-bound plan, exact checkpoint, bounded parallel compile, and compile-map implementation with SHA-256 40eee920c3e5a8799d9332b907c8c3eedbd5f6c1ba5703dc36bddee3f3b0457a."
+      },
+      {
+        "path": "scripts/run_pr2_matched_accuracy_m1_b1.py",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m1_b1_execution_source"],
+        "reason": "Non-overwrite plan-freeze and separately authorized execution runner with SHA-256 07f34e4f1a22e93ace21d26ce122b7931311f8d94dfebd2d79f1086d9fdc9371."
+      },
+      {
+        "path": "tests/test_pr2_matched_accuracy_m1_b1_execution.py",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m1_b1_execution_source"],
+        "reason": "Dedicated source-commit, benchmark-seed, cache-key, checkpoint, terminal-status, and synthetic dynamic-delta tests with SHA-256 491ac9ec85dc358a569dd9c23a868c1f7c32909a6ba6f5e9ea0d65e7d77b5d15; seven local tests pass."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m1_b1_contract/2026-09-30/pr2_matched_accuracy_m1_b1_result_schema_v2.json",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m1_b1_execution_source"],
+        "reason": "Revised result schema with SHA-256 035d9b1e48d8d02718f8c7218ea49d28297b3b3f29c39c4232cdef83c7c1d081. It permits only compile-map-complete-awaiting-review or implementation-gate-failed and keeps the research decision null."
       }
     ],
     "quarantined": [
@@ -5614,6 +5644,39 @@
         "Stop after the 32-trajectory actual compiled resource map and return to one of CONTINUE_RESOURCE_STUDY, NARROW_TO_TECHNICAL_NOTE, STOP_DUPLICATIVE, or COMPILE_RESULT_INCONCLUSIVE.",
         "Keep the additional 96 trajectories, held-out candidate freeze and access, transfer, winner refinement, S3, and automatic continuation unauthorized.",
         "Classify the plan and nine local tests as local pre-execution evidence, not a scientific result, immutable CI, or independent external reproduction."
+      ]
+    },
+    {
+      "id": "pr2_matched_accuracy_m1_b1_execution_source",
+      "status": "source_present_execution_not_authorized",
+      "summary": "The pre-execution review returned REVISE_CONTRACT_BEFORE_AUTHORIZATION. The actual 12,448-wrapper module, runner, tests, and result schema are therefore committed before any execution authorization. The source-bound plan uses the benchmark's actual trajectory-seed policy, separates axis wrapper identities, isolates persistent compile caches by candidate, and accepts checkpoints only under an exact task fingerprint. The science runner can complete only as M1_B1_COMPILE_MAP_COMPLETE_AWAITING_REVIEW or fail an implementation gate; it does not choose the later four-way research decision. No M1-B1 scientific execution is authorized by this source bundle.",
+      "counts": {
+        "frozen_random_cells": 194,
+        "frozen_baseline_cells": 16,
+        "planned_random_trajectories": 6208,
+        "planned_total_full_wrappers": 12448,
+        "maximum_future_process_workers": 6,
+        "dedicated_local_tests_passed": 7,
+        "m1_focused_local_tests_passed": 42,
+        "development_npz_loads": 0,
+        "held_out_path_or_file_accesses": 0,
+        "signal_reevaluations": 0,
+        "trajectory_samples": 0,
+        "circuits_built": 0,
+        "compiler_invocations": 0,
+        "full_wrappers_compiled": 0,
+        "quantum_shots": 0,
+        "gpu_queries_allocations_kernels": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Commit the actual execution module, runner, test, and result schema before freezing any M1-B1 execution authorization.",
+        "Bind the future execution plan and every wrapper result identity to that actual source commit, compiler identity, candidate fingerprint, axis, trajectory index, and benchmark-generated trajectory seed.",
+        "Keep all 194 M1-A-eligible random fingerprints and all 16 baselines fixed; do not re-evaluate signal or add, remove, or replace candidates.",
+        "Allow only M1_B1_COMPILE_MAP_COMPLETE_AWAITING_REVIEW or IMPLEMENTATION_GATE_FAILED as terminal execution statuses; leave the research decision null.",
+        "Stop after 32 trajectories and the actual compile map; keep additional 96 trajectories, held-out access, transfer, winner refinement, and S3 unauthorized.",
+        "Require a separate source-bound zero-compute plan, result-prior authorization commit, and pre-execution review before science execution.",
+        "Classify the source and local tests as pre-execution evidence, not a scientific result, immutable CI, or independent external reproduction."
       ]
     }
   ],

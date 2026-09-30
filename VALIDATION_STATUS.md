@@ -1,5 +1,18 @@
 # Validation status
 
+## 2026-09-30 PR-2 M1-B1 execution source実装・authorization未固定
+
+実行前外部reviewの`REVISE_CONTRACT_BEFORE_AUTHORIZATION`を
+[execution contract amendment v2](docs/research/pr2_matched_accuracy_m1_b1_execution_contract_amendment_v2.md)へ反映した。
+12,448 wrapperを実際に生成・compileするmodule/runner/testとresult schema v2を、execution authorizationより
+先に実装する。result terminal statusは`M1_B1_COMPILE_MAP_COMPLETE_AWAITING_REVIEW`または
+`IMPLEMENTATION_GATE_FAILED`に限定し、resource study継続・technical note化・重複停止・inconclusiveの
+研究判断はcompile map完成後の外部reviewへ戻す。
+
+source-bound planは実benchmarkと同じtrajectory seed列を固定し、source/compiler/candidate/axis/trajectoryを
+cache keyへ含める。cacheはcandidate別、checkpointはtask fingerprint完全一致時だけ再利用する。専用synthetic
+testは7 passed。M1-B1本計算、追加96、held-out、transfer、S3はまだ未実行・未承認である。
+
 ## 2026-09-30 PR-2 M1-B1 bounded compile実行前契約・zero-compute plan完了
 
 [M1-B1契約](docs/research/pr2_matched_accuracy_m1_b1_bounded_compile_contract_v1.md)は、M1-Aの
