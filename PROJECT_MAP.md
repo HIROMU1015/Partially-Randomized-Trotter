@@ -1,23 +1,23 @@
 # プロジェクト案内
 
-最終更新：2026-09-30
+最終更新：2026-10-03
 
 このファイルは、人またはGPTがリポジトリ全体を読むときの入口である。研究内容の正本、
 実装、検証コード、結果データ、発表資料を区別し、古い研究経路を現在の結論として読まない
 ための案内をまとめる。
 
 PR-2の最新状態は、旧S0 STOPとdevelopment-only S2結果を保持し、matched-accuracy resource-map研究の
-compile-free M1-Aを`SELECTION_LIMITED`で停止した後、`PROCEED_BOUNDED_COMPILE_EXPANSION`を採用して
-M1-B1実行前契約を固定し、外部reviewの`REVISE_CONTRACT_BEFORE_AUTHORIZATION`に従って科学実行sourceを
-先に実装し、source commit `33f436bb3a7d5b9cefa23604bb22c8d1fb17cd62`へ結合したexecution plan v2と
-result-prior authorizationを固定した段階である。旧16-cell selectorは「proxyでは安全に候補圧縮できなかった」監査
-結果として保存する。M1-Aでaccuracy適格だったB2/B3 194 cellを32 trajectory・Re/Im二軸、B0/B1 16 cellを
-二軸で測る12,448-wrapper上限、task/cache identity、B1後STOPをzero-compute planへ固定した。入口は
+compile-free M1-Aを`SELECTION_LIMITED`で停止した後、`PROCEED_BOUNDED_COMPILE_EXPANSION`として
+M1-B1を実行・検証した段階である。旧16-cell selectorは「proxyではactual frontierを完全に保持できなかった」
+監査結果として保存する。M1-Aでaccuracy適格だったB2/B3 194 cellを32 trajectory・Re/Im二軸、B0/B1 16 cellを
+二軸で測る12,448-wrapper mapは全件完了した。actual six-metric ParetoはB2 rank 3、q=1の2件で、
+primary RZ point minimumは`B2-rank3-q1-r4-K2`、状態準備cost感度のlower envelopeも全てB2だった。
+研究判断は`CONTINUE_RESOURCE_STUDY`。入口は
 `docs/research/pr2_matched_accuracy_m1_b1_bounded_compile_contract_v1.md`と
 `docs/research/pr2_matched_accuracy_m1_b1_execution_contract_amendment_v2.md`と
-`docs/research/pr2_matched_accuracy_m1_b1_execution_authorization_v1.md`。authorization bundleの外部review前なので、
-M1-B1科学実行、追加96 trajectory、
-held-out H4 1.30 Å、transfer、S3は未承認である。
+`docs/research/pr2_matched_accuracy_m1_b1_execution_authorization_v1.md`と
+`docs/pr2_matched_accuracy_m1_b1_result_validation.md`。追加96 trajectory、held-out H4 1.30 Å、
+transfer、S3は未実行・未承認である。
 
 ## 最初に読む順序
 
@@ -399,12 +399,20 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
   `tests/test_pr2_matched_accuracy_m1_b1_contract.py`、
   `tests/test_pr2_matched_accuracy_m1_b1_execution.py`、
   `docs/pr2_matched_accuracy_m1_a_validation.md`、
+  `docs/pr2_matched_accuracy_m1_b1_result_validation.md`、
   `artifacts/pr2_matched_accuracy_m1_contract/2026-09-29/`、
   `artifacts/pr2_matched_accuracy_m1_execution/2026-09-30/`、
-  `artifacts/pr2_matched_accuracy_m1_b1_contract/2026-09-30/`
+  `artifacts/pr2_matched_accuracy_m1_b1_contract/2026-09-30/`、
+  `artifacts/pr2_matched_accuracy_m1_b1_execution/2026-09-30/`、
+  `artifacts/pr2_matched_accuracy_m1_b1_result_validation/2026-10-03/`
   （候補列挙、synthetic barrier、development-only dense signal M1-A、194+16 cellのbounded compile
-  zero-compute planとactual execution source。science runnerはcompile map完成後に研究四分岐を自動判定せず
-  review待ちで停止する。M1-B1科学実行/held-outは未承認）
+  plan/source/result/validation。science runnerはcompile map完成後に研究四分岐を自動判定せずreview待ちで
+  停止し、別validatorがcheckpoint/cache再集計と研究reviewを行う。held-outは未承認）
+- `src/trotterlib/pr2_matched_accuracy_m1_b1_result_validation.py`、
+  `scripts/run_pr2_matched_accuracy_m1_b1_result_validation.py`、
+  `tests/test_pr2_matched_accuracy_m1_b1_result_validation.py`
+  （保存済みM1-A/M1-B1 artifact、全checkpoint、candidate別SQLite cacheをread-onlyで検査し、
+  actual Pareto、旧selector、fixed-q=8、proxy、状態準備感度を再集計する。分子snapshot/held-outは読まない）
 - `docs/research/pr2_s0_reproduction_stop_c644925.md`、
   `docs/research/pr2_s0_external_review_request_c644925.md`、
   `artifacts/pr2_s0_s1_validation/2026-09-28/`（development byte-level hash不一致による

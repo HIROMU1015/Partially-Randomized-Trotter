@@ -3204,6 +3204,60 @@
         "kind": "file",
         "supports": ["pr2_matched_accuracy_m1_b1_execution_source"],
         "reason": "Commit-fixed final authorization review request with SHA-256 1b89b530d54cf3d5ba19c20f6884789ae994d6e5feee1ecd002d6292513e6be8. It requests approval, revision, or stop without launching M1-B1."
+      },
+      {
+        "path": "docs/research/gpu_server_pr2_m1_b1_cpu_acceleration_feasibility_prompt.md",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m1_b1_execution_source"],
+        "reason": "Zero-science GPU-server CPU acceleration feasibility prompt with SHA-256 cb1206cdafaacdb8c22a1a2c6adb2f8abc192310739d098ae326bbe398beccae. It prohibits the science runner, molecular data access, runtime migration, GPU query/use, and changes to the active local run."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m1_b1_execution/2026-09-30/pr2_matched_accuracy_m1_b1_compile_map_result_v2.json",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m1_b1_result_validation"],
+        "reason": "Bounded M1-B1 compile-map result with SHA-256 71278113c32b26af0dbf6144a626237a0087478212f8a93fc908de3d4d52aee4 and fingerprint 504d9c9089726800a291a8259e87b2d37c1fdea046263db6c9582bb659c77975. It contains 210 cells and stops at M1_B1_COMPILE_MAP_COMPLETE_AWAITING_REVIEW without a research decision."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m1_b1_execution/2026-09-30/M1_B1_COMPLETE.json",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m1_b1_result_validation"],
+        "reason": "M1-B1 completion marker with SHA-256 c076d80bd584e646bce7877df3b13dac9aec5e93a52f7ed9b1464fa6a1e0e52c. It binds the completed result fingerprint and preserves the awaiting-review stop."
+      },
+      {
+        "path": "src/trotterlib/pr2_matched_accuracy_m1_b1_result_validation.py",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m1_b1_result_validation"],
+        "reason": "Read-only M1-B1 result, checkpoint, cache, Pareto, selector, proxy, fixed-q, and state-preparation sensitivity validator with SHA-256 11788a67af1e47736c8ef56b82be99878be72e1a59a99a1ce7bcbd68d1a81a4d. It does not load development or held-out molecular snapshots."
+      },
+      {
+        "path": "scripts/run_pr2_matched_accuracy_m1_b1_result_validation.py",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m1_b1_result_validation"],
+        "reason": "Non-overwrite M1-B1 result-validation runner with SHA-256 0ca1e5ca99a6007abdeb251198aef210bad2c415ed60e22ead82108385b5cde0."
+      },
+      {
+        "path": "tests/test_pr2_matched_accuracy_m1_b1_result_validation.py",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m1_b1_result_validation"],
+        "reason": "Dedicated result identity, checkpoint/cache integrity, recomputation, Pareto, and stop-rule tests with SHA-256 9e7461a34b210eb871b2969ea7d66c9021b4c916b8ba9ef65e0b86352b0f657d; four local tests pass."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m1_b1_result_validation/2026-10-03/pr2_matched_accuracy_m1_b1_result_validation_v1.json",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m1_b1_result_validation"],
+        "reason": "Machine-readable M1-B1 result validation with SHA-256 c9a05babed99cd1e80eaec5b58e47f25d74513c7ba2e5a00775cfd5959c37a0f and fingerprint c3cf1c084ebfe343d576236de2803c9c69855e0247ca6a2d628c496ee0546214. It records all integrity gates passed and the external research review decision CONTINUE_RESOURCE_STUDY."
+      },
+      {
+        "path": "docs/pr2_matched_accuracy_m1_b1_result_validation.md",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m1_b1_result_validation"],
+        "reason": "Human-readable M1-B1 result validation report with SHA-256 4b619186a35e0c46fa7574757686ac2cbd47b8aa1ddd43ba76d2a6db5aa23b71. It states the H4 development scope, numerical results, selector audit, limitations, and held-out-before-review stop."
+      },
+      {
+        "path": "docs/research/研究ノート/2026-10-03.md",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m1_b1_result_validation"],
+        "reason": "Dated M1-B1 validation and research-decision record with SHA-256 016c3913f536cb81728605fd922b6991d897406cede07db04537edd0ad0e1c41."
       }
     ],
     "quarantined": [
@@ -5678,8 +5732,8 @@
     },
     {
       "id": "pr2_matched_accuracy_m1_b1_execution_source",
-      "status": "authorization_frozen_execution_not_started",
-      "summary": "The pre-execution review returned REVISE_CONTRACT_BEFORE_AUTHORIZATION. The actual 12,448-wrapper module, runner, tests, and result schema were committed first at source commit 33f436bb3a7d5b9cefa23604bb22c8d1fb17cd62. A source-bound plan then froze the benchmark's actual trajectory-seed policy, separate axis wrapper identities, candidate-scoped caches, and exact task checkpoints. The result-prior authorization permits one bounded run, but the bundle awaits external review and no trajectory, circuit, or compile work has started. The science runner can complete only as M1_B1_COMPILE_MAP_COMPLETE_AWAITING_REVIEW or fail an implementation gate; it does not choose the later four-way research decision.",
+      "status": "source_present_no_current_ci",
+      "summary": "The pre-execution review returned REVISE_CONTRACT_BEFORE_AUTHORIZATION. The actual 12,448-wrapper module, runner, tests, and result schema were committed first at source commit 33f436bb3a7d5b9cefa23604bb22c8d1fb17cd62. A source-bound plan then froze the benchmark's actual trajectory-seed policy, separate axis wrapper identities, candidate-scoped caches, and exact task checkpoints. After result-prior review, the single bounded run completed as M1_B1_COMPILE_MAP_COMPLETE_AWAITING_REVIEW. The science runner did not choose a research decision or access held-out data. Result integrity and the later research review are recorded separately in pr2_matched_accuracy_m1_b1_result_validation.",
       "counts": {
         "frozen_random_cells": 194,
         "frozen_baseline_cells": 16,
@@ -5692,13 +5746,12 @@
         "zero_compute_authorization_gate_passed": 1,
         "dedicated_local_tests_passed": 8,
         "m1_focused_local_tests_passed": 43,
-        "development_npz_loads": 0,
+        "development_npz_loads_at_authorization_commit": 0,
         "held_out_path_or_file_accesses": 0,
         "signal_reevaluations": 0,
-        "trajectory_samples": 0,
-        "circuits_built": 0,
-        "compiler_invocations": 0,
-        "full_wrappers_compiled": 0,
+        "completed_compile_map_cells": 210,
+        "completed_wrapper_records": 12448,
+        "unique_actual_circuit_transpiles": 12128,
         "quantum_shots": 0,
         "gpu_queries_allocations_kernels": 0,
         "current_machine_readable_ci_reports": 0
@@ -5710,7 +5763,57 @@
         "Allow only M1_B1_COMPILE_MAP_COMPLETE_AWAITING_REVIEW or IMPLEMENTATION_GATE_FAILED as terminal execution statuses; leave the research decision null.",
         "Stop after 32 trajectories and the actual compile map; keep additional 96 trajectories, held-out access, transfer, winner refinement, and S3 unauthorized.",
         "Require a separate source-bound zero-compute plan, result-prior authorization commit, and pre-execution review before science execution.",
-        "Classify the source and local tests as pre-execution evidence, not a scientific result, immutable CI, or independent external reproduction."
+        "Classify the source and local tests as implementation evidence; use the separately validated compile-map result for scientific interpretation and do not call either immutable CI or independent external reproduction."
+      ]
+    },
+    {
+      "id": "pr2_matched_accuracy_m1_b1_result_validation",
+      "status": "source_present_no_current_ci",
+      "summary": "The bounded H4 linear 1.00 Angstrom, STO-3G, DF-rank-12 M1-B1 compile map completed all 194 frozen random cells at 32 paired-axis trajectories and all 16 baselines. Read-only validation recomputed all 210 checkpoints, 210 candidate-scoped SQLite caches, 12,448 wrapper records, and every saved mean, variance, and standard error. It found 12,128 unique actual circuit transpiles and 320 within-cell semantically identical cache reuses with no cross-cell reuse. Among 206 accuracy-eligible cells, the six-metric actual Pareto set contains B2-rank3-q1-r4-K2 and B2-rank3-q1-r8-K2. The old sixteen-cell selector retained only one of these two points. Matched-accuracy q selection changes the fixed-q=8 design conclusion, and the nonnegative state-preparation sensitivity envelope remains entirely within B2 candidates. The research review therefore returns CONTINUE_RESOURCE_STUDY, while additional trajectories, held-out access, transfer, winner refinement, and S3 remain unauthorized.",
+      "counts": {
+        "compile_map_cells": 210,
+        "accuracy_eligible_cells": 206,
+        "b0_cells": 12,
+        "b0_accuracy_eligible": 8,
+        "b1_cells": 4,
+        "b1_accuracy_eligible": 4,
+        "b2_cells": 145,
+        "b2_accuracy_eligible": 145,
+        "b3_cells": 49,
+        "b3_accuracy_eligible": 49,
+        "random_cells": 194,
+        "baseline_cells": 16,
+        "random_trajectories": 6208,
+        "random_seed_collisions": 0,
+        "wrapper_records": 12448,
+        "random_full_wrappers": 12416,
+        "baseline_full_wrappers": 32,
+        "checkpoint_files": 210,
+        "candidate_scoped_sqlite_files": 210,
+        "unique_actual_circuit_transpiles": 12128,
+        "within_cell_semantically_identical_cache_reuses": 320,
+        "actual_six_metric_pareto_cells": 2,
+        "old_selector_actual_pareto_cells_retained": 1,
+        "process_workers": 6,
+        "blas_threads_per_worker": 1,
+        "extension_trajectories": 0,
+        "signal_reevaluations": 0,
+        "held_out_path_or_file_accesses": 0,
+        "transfer_runs": 0,
+        "s3_runs": 0,
+        "gpu_queries_allocations_kernels": 0,
+        "dedicated_local_tests_passed": 4,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Preserve M1-B1 result SHA-256 71278113c32b26af0dbf6144a626237a0087478212f8a93fc908de3d4d52aee4, result fingerprint 504d9c9089726800a291a8259e87b2d37c1fdea046263db6c9582bb659c77975, validation SHA-256 c9a05babed99cd1e80eaec5b58e47f25d74513c7ba2e5a00775cfd5959c37a0f, and validation fingerprint c3cf1c084ebfe343d576236de2803c9c69855e0247ca6a2d628c496ee0546214.",
+        "Treat the exact B2-rank3 q=1 r/K point ordering as unresolved at 32 trajectories; do not use the 0.741 percent RZ gap as a precision winner claim.",
+        "Retain the method/split conclusion that every candidate within ten percent of the primary RZ minimum is B2 rank 3 q=1 and that the six-metric Pareto set contains only the two reported B2 rank-3 candidates.",
+        "Preserve the old SELECTION_LIMITED audit: the proxy frontier contained both actual Pareto points, but the sixteen-cell selector retained only one.",
+        "Limit CONTINUE_RESOURCE_STUDY to the stated H4 development scope; do not claim general resource optimality, a new randomized algorithm, H12 behavior, final RPE total cost, or implemented state-preparation advantage.",
+        "Draft and review a separate result-prior held-out transfer contract before resolving, statting, hashing, loading, scoring, or ranking H4 1.30 Angstrom.",
+        "Keep the additional 96 trajectories, held-out execution, transfer, winner refinement, S3, and automatic continuation unauthorized.",
+        "Classify the result and four focused tests as local validation, not immutable CI or independent external reproduction."
       ]
     }
   ],

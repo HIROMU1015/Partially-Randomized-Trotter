@@ -13,17 +13,18 @@ S2後reviewでは新手法claimを外し、matched-accuracy resource-map研究�
 [M1前最終amendment](pr2_matched_accuracy_m1_preexecution_amendment_v2.md)は追加prior-art二件を照合し、
 `SELECTION_LIMITED`ならM1-B compile前に停止するhard barrierを固定した。M1-A v1実行は固定Kのconfig
 整合性でresult作成前に停止し、[v1.1再認可](pr2_matched_accuracy_m1_execution_authorization_v1_1.md)が
-同じ候補のcompile-free再実行を許可する。現行statusは
-再実行は210候補を評価したが、64 proxy-frontier候補中52件が16-cell cap外に残り、現行statusは
-`SELECTION_LIMITED`である。compile、held-out、M1-B、S3は未実行・未承認である。
+同じ候補のcompile-free再実行を許可した。再実行は210候補を評価したが、64 proxy-frontier候補中
+52件が16-cell cap外に残り、`SELECTION_LIMITED`で停止した。
 外部reviewは`PROCEED_BOUNDED_COMPILE_EXPANSION`を選び、
 [M1-B1 bounded compile契約](pr2_matched_accuracy_m1_b1_bounded_compile_contract_v1.md)とzero-compute planが
-random 194 cell、baseline 16 cell、計12,448 wrapperのidentityを固定した。M1-B1科学実行はまだ未承認である。
+random 194 cell、baseline 16 cell、計12,448 wrapperのidentityを固定した。
 [execution contract amendment v2](pr2_matched_accuracy_m1_b1_execution_contract_amendment_v2.md)は、外部reviewの
 修正要求に従いactual execution sourceをauthorizationより先に固定し、science runnerをcompile map完成・
 review待ちで停止させる。研究四分岐はrunnerが自動選択しない。
 [execution authorization v1](pr2_matched_accuracy_m1_b1_execution_authorization_v1.md)はsource commit `33f436b`と
-plan v2を固定したが、bundleの外部review前なので本計算は開始していない。
+planを固定して一回のM1-B1を認可した。12,448 wrapper mapは完了し、
+[M1-B1結果検証](../pr2_matched_accuracy_m1_b1_result_validation.md)はactual six-metric ParetoをB2 rank 3、q=1の
+2件と確認した。判断は`CONTINUE_RESOURCE_STUDY`だが、held-outと追加96は未承認である。
 
 初めてこの研究を確認する場合や、Codexを使って発表・共有資料を作る場合は、まず
 [研究概要・現状](研究概要・現状.md)を読む。この一冊で現在の研究段階、採用済みの
@@ -116,6 +117,8 @@ plan v2を固定したが、bundleの外部review前なので本計算は開始�
 | 55 | [PR-2 M1-B1 execution contract amendment v2](pr2_matched_accuracy_m1_b1_execution_contract_amendment_v2.md) | actual science module/runner/testを先にsource commit化し、result statusをcompile map完成review待ちまたはimplementation failureだけへ限定する。 |
 | 56 | [PR-2 M1-B1 execution authorization v1](pr2_matched_accuracy_m1_b1_execution_authorization_v1.md) | source commit `33f436b`とplan v2を結び、12,448 wrapper、最大6 workers、一回限り、held-out/追加96/研究自動判定禁止を結果前固定する。 |
 | 57 | [PR-2 M1-B1 authorization最終GPTレビュー依頼](pr2_m1_b1_execution_authorization_external_review_request_8fc2400.md) | bundle commit `8fc2400`を固定し、source-first順序、seed/cache/checkpoint、resource cap、2 terminal statusを本計算前に最終確認する。 |
+| 58 | [PR-2 M1-B1 GPUサーバーCPU高速化確認依頼](gpu_server_pr2_m1_b1_cpu_acceleration_feasibility_prompt.md) | 実runを変更せず、科学データ0・GPU 0のsynthetic CPU benchmarkだけで移行価値を判定する運用依頼。 |
+| 59 | [PR-2 M1-B1 actual compile map結果](../pr2_matched_accuracy_m1_b1_result_validation.md) | 210 cell、12,448 wrapper、全checkpoint/cacheを再検査し、B2 rank 3、q=1のactual frontierと`CONTINUE_RESOURCE_STUDY`、held-out前STOPを記録する。 |
 
 ## 研究ノート
 

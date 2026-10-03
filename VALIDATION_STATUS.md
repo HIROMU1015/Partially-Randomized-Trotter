@@ -1,5 +1,34 @@
 # Validation status
 
+## 2026-10-03 PR-2 M1-B1 actual compile map検証完了・`CONTINUE_RESOURCE_STUDY`
+
+H4 linear 1.00 Å、STO-3G、DF rank 12、8 qubits、`T=0.8`、`q={1,2,4,8}`の
+development-only M1-B1を、Qiskit 1.3.0、optimization level 1、最大6 workersで完了した。
+science runnerは予定どおり`M1_B1_COMPILE_MAP_COMPLETE_AWAITING_REVIEW`で停止し、研究判断、
+追加96、held-out、transfer、S3を実行していない。
+
+[結果検証](docs/pr2_matched_accuracy_m1_b1_result_validation.md)は、210 compile-map cell、210 checkpoint、
+210 candidate-scoped SQLite cache、12,448 wrapper recordを再検査した。6,208 seedの衝突0、
+12,128 unique actual circuit transpile、同一candidate内のsemantic cache reuse 320、cross-cell reuse 0を
+確認し、各axisの平均・分散・標準誤差を再集計した。validation statusは
+`M1_B1_RESULT_VALIDATED_RESEARCH_REVIEW_COMPLETE`、fingerprintは
+`c3cf1c084ebfe343d576236de2803c9c69855e0247ca6a2d628c496ee0546214`である。
+
+accuracy適格206 cellのactual six-metric Paretoは`B2-rank3-q1-r4-K2`と
+`B2-rank3-q1-r8-K2`の2件。primary RZ point minimumは前者の130,774,896.656で、RZ最小10%内は
+全てB2 rank 3、q=1だった。旧16-cell selectorはactual Paretoを1/2件しか保持しなかった。q=8固定の
+B2 rank 3最小からmatched-accuracy point minimumへの低下は約80.88%で、状態準備cost `P>=0`の
+lower envelopeも全てB2だったため、外部研究判断を`CONTINUE_RESOURCE_STUDY`とした。
+
+ただし1位と2位のRZ差0.741%は32 trajectoryで解像しておらず、厳密なr/K winnerを確定しない。
+本結果はlocal development evidenceで、immutable CIまたは外部再現ではない。次は別result-prior
+held-out transfer reviewのdraftであり、H4 1.30 Åをまだload、hash、stat、評価しない。
+
+主要identityはM1-B1 result SHA-256
+`71278113c32b26af0dbf6144a626237a0087478212f8a93fc908de3d4d52aee4`、result fingerprint
+`504d9c9089726800a291a8259e87b2d37c1fdea046263db6c9582bb659c77975`、validation artifact SHA-256
+`c9a05babed99cd1e80eaec5b58e47f25d74513c7ba2e5a00775cfd5959c37a0f`である。
+
 ## 2026-09-30 PR-2 M1-B1 execution source・authorization固定、本計算未実行
 
 実行前外部reviewの`REVISE_CONTRACT_BEFORE_AUTHORIZATION`を

@@ -75,6 +75,9 @@
 - `pr2_matched_accuracy_m1_b1_execution.py`：source commit固定後のplan/authorizationだけを受け、194 random
   cell×32 trajectory×二軸と16 baseline cell×二軸を最大6 spawned workersでcompileするM1-B1経路。
   candidate別cacheとexact checkpoint identityを用い、compile map完成後は研究判断をせずreview待ちで停止する
+- `pr2_matched_accuracy_m1_b1_result_validation.py`：保存済みM1-A/M1-B1 artifact、全checkpoint、
+  candidate別SQLite cacheをread-only検査し、全集約値、actual Pareto、fixed-q=8差、旧selector、proxy相関、
+  状態準備感度を再計算する結果検証。development/held-out分子snapshotを読まない
 - `pf_delta_validation.py`
 - `pf_c_system_size_validation.py`
 - `pauli_partial_cgs_validation.py`

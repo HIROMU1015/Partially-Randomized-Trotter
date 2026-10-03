@@ -33,6 +33,12 @@
 - [`pr2_v4_s2_development/2026-09-29/`](pr2_v4_s2_development/2026-09-29/)：
   別系列のV4通過後に実行したH4 1.00 Å development-only S2結果。引用対象は結果JSONだけで、
   SQLite cacheとlogは再開・監査用でGit管理しない。held-out NPZ loadは0、S3は未承認である
+- [`pr2_matched_accuracy_m1_b1_execution/2026-09-30/`](pr2_matched_accuracy_m1_b1_execution/2026-09-30/)：
+  M1-Aで固定した194 random＋16 baseline cellの12,448-wrapper compile mapと完了marker。`.runtime`の
+  checkpoint/cacheは監査用で、科学的な引用は軽量result JSONと検証報告を使う
+- [`pr2_matched_accuracy_m1_b1_result_validation/2026-10-03/`](pr2_matched_accuracy_m1_b1_result_validation/2026-10-03/)：
+  全checkpoint/cache再集計、actual frontier、旧selector、fixed-q=8、proxy、状態準備感度と
+  `CONTINUE_RESOURCE_STUDY`判断を含むlocal validation artifact。held-out accessは0
 manifestは次で検査できる。
 
 ```bash

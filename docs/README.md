@@ -4,8 +4,9 @@
 研究全体を初めて読む場合は、先に[`../PROJECT_MAP.md`](../PROJECT_MAP.md)と
 [`research/研究概要・現状.md`](research/研究概要・現状.md)を読む。
 
-PR-2別系列の最新計算結果は
-[`pr2_v4_s2_development_validation.md`](pr2_v4_s2_development_validation.md)。旧S0 STOPとS2結果を保持した
+PR-2別系列の最新結果は
+[`pr2_matched_accuracy_m1_b1_result_validation.md`](pr2_matched_accuracy_m1_b1_result_validation.md)。
+旧S0 STOPとS2結果を保持した
 S2後reviewでは、[`matched-accuracy先行研究gate`](research/pr2_matched_accuracy_prior_art_gate_v1.md)、
 [`M1前resource-map契約`](research/pr2_matched_accuracy_resource_contract_v1.md)、
 [`M1実装契約`](research/pr2_matched_accuracy_m1_implementation_contract_v1.md)、
@@ -14,13 +15,14 @@ S2後reviewでは、[`matched-accuracy先行研究gate`](research/pr2_matched_ac
 64 proxy-frontier候補中52件が16-cell cap外に残り、`SELECTION_LIMITED`でcompile 0のまま停止した。
 外部review後、[`M1-B1 bounded compile契約`](research/pr2_matched_accuracy_m1_b1_bounded_compile_contract_v1.md)で
 accuracy適格random 194 cell×32 trajectory×2軸とB0/B1 16 cell×2軸、計12,448 wrapperの有限grid、
-cache identity、B1後STOPをzero-compute固定した。winnerは未確定で、M1-B1科学実行、held-out、S3は未承認である。
+cache identity、B1後STOPをzero-compute固定した。
 実行前外部reviewの修正要求は、[`M1-B1 execution contract amendment v2`](research/pr2_matched_accuracy_m1_b1_execution_contract_amendment_v2.md)で
 科学実行sourceをauthorizationより先に固定し、runnerのterminal statusをcompile map完成review待ちまたは
 implementation failureだけに限定した。
 actual execution source commit `33f436b`、source-bound plan v2、
-[`M1-B1 execution authorization v1`](research/pr2_matched_accuracy_m1_b1_execution_authorization_v1.md)は固定済みだが、
-authorization bundleの外部review前であり科学実行は開始していない。
+[`M1-B1 execution authorization v1`](research/pr2_matched_accuracy_m1_b1_execution_authorization_v1.md)を固定して
+12,448-wrapper mapを完了した。検証後の判断は`CONTINUE_RESOURCE_STUDY`だが、held-out、追加96、S3は
+未実行・未承認である。
 
 ## 研究方針と現在地
 
@@ -61,6 +63,7 @@ authorization bundleの外部review前であり科学実行は開始していな
 - [`research/pr2_v4_s2_development_authorization_v5.md`](research/pr2_v4_s2_development_authorization_v5.md)：V4 correctness、development-only S2、S2後mandatory STOPを結果前固定
 - [`pr2_v4_s2_development_validation.md`](pr2_v4_s2_development_validation.md)：V4/S2の実行結果、B2/B3 frontier、rank control、方針review判断
 - [`pr2_matched_accuracy_m1_a_validation.md`](pr2_matched_accuracy_m1_a_validation.md)：210候補のcompile-free signal/selector、52未選択frontier、`SELECTION_LIMITED`、全compile counter 0を記録するM1-A結果
+- [`pr2_matched_accuracy_m1_b1_result_validation.md`](pr2_matched_accuracy_m1_b1_result_validation.md)：12,448 wrapper、全checkpoint/cache再集計、actual B2 rank-3 frontier、旧selector監査、fixed-q=8比較、状態準備感度と`CONTINUE_RESOURCE_STUDY`を記録するM1-B1結果
 - [`research/pr2_matched_accuracy_prior_art_gate_v1.md`](research/pr2_matched_accuracy_prior_art_gate_v1.md)：M1前のclaim-level先行研究比較と`PROCEED_RESOURCE_STUDY`判定
 - [`research/pr2_matched_accuracy_resource_contract_v1.md`](research/pr2_matched_accuracy_resource_contract_v1.md)：matched-accuracy baseline、可変q correctness、compile選抜、held-out前freezeを定める研究契約
 - [`research/pr2_matched_accuracy_m1_implementation_contract_v1.md`](research/pr2_matched_accuracy_m1_implementation_contract_v1.md)：M1の候補identity、seed、selector、schema、zero-compute guardと科学計算未承認を固定する実装契約
