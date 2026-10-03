@@ -1,6 +1,6 @@
 # Validation status
 
-## 2026-10-04 PR-2 M2 held-out transfer契約・zero-compute plan固定中
+## 2026-10-04 PR-2 M2 held-out transfer契約・zero-compute plan固定完了
 
 M1-B1の`CONTINUE_RESOURCE_STUDY`を受け、[M2 transfer契約](docs/research/pr2_matched_accuracy_m2_held_out_transfer_contract_v1.md)を
 追加した。development actual ParetoのB2二件とB0/B1/B3代表の計5構成、primary RZ、6指標point Pareto、
@@ -9,7 +9,9 @@ M1-B1の`CONTINUE_RESOURCE_STUDY`を受け、[M2 transfer契約](docs/research/p
 これはsource/schema/test段階のimplementation evidenceであり科学結果ではない。held-out H4 1.30 Åはpath literalを
 記録するだけで、resolve/stat/hash/load、signal、trajectory、circuit、compile、transfer、GPUは0に固定する。
 現行statusは`M2_TRANSFER_CONTRACT_FROZEN_EXECUTION_NOT_AUTHORIZED`。独立review、science source commit、
-result-prior authorization前にM2を実行しない。
+result-prior authorization前にM2を実行しない。contract source commitは`06b2c32528713a5270ee4915432bcd3898e0e5e1`、
+zero-compute plan fingerprintは`e6b6ae0bcf9ff7b97eb61b2703305d793f7d531460456baf2337960fb36fb198`、
+focused testsは30 passedである。
 
 ## 2026-10-03 PR-2 M1-B1 actual compile map検証完了・`CONTINUE_RESOURCE_STUDY`
 

@@ -3258,6 +3258,60 @@
         "kind": "file",
         "supports": ["pr2_matched_accuracy_m1_b1_result_validation"],
         "reason": "Dated M1-B1 validation and research-decision record with SHA-256 016c3913f536cb81728605fd922b6991d897406cede07db04537edd0ad0e1c41."
+      },
+      {
+        "path": "docs/research/pr2_matched_accuracy_m2_held_out_transfer_contract_v1.md",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_transfer_contract"],
+        "reason": "Result-prior held-out transfer contract with SHA-256 a78d70c493125ef5321a989468dc41961ee5d3e053e6879a75db4b68d73e2f67. It freezes five candidates, primary and secondary metrics, materiality, major underestimate, four statuses, and a mandatory stop without authorizing held-out access."
+      },
+      {
+        "path": "src/trotterlib/pr2_matched_accuracy_m2_transfer_contract.py",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_transfer_contract"],
+        "reason": "Standard-library-only M2 contract implementation with SHA-256 4a2e88b60a3292a31faf27cac90f86bc6a5e2bddd3ab944e1973ab9552bf8f50. It validates committed M1-B1 JSON and never opens a molecular snapshot."
+      },
+      {
+        "path": "scripts/run_pr2_matched_accuracy_m2_transfer_contract.py",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_transfer_contract"],
+        "reason": "Non-overwrite M2 zero-compute plan runner with SHA-256 be4e8980e125792e6a65ae82f32a357e1ef29ff00e00a9a824f1376df725e0ab."
+      },
+      {
+        "path": "tests/test_pr2_matched_accuracy_m2_transfer_contract.py",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_transfer_contract", "tests"],
+        "reason": "Dedicated candidate, seed, resource, prediction, underestimate, status, schema, and no-authorization tests with SHA-256 927c2674b50155a2d144956e3e053d7badff729bcf32a7e6a55ad37a3a5bd46e; nine local tests pass."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m2_transfer_contract/2026-10-04/pr2_matched_accuracy_m2_transfer_plan_schema_v1.json",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_transfer_contract"],
+        "reason": "M2 zero-compute plan schema with SHA-256 6c06764a9caaf3f21b95988dbde55c56893f47d3a8d24443eee53367992fc68c."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m2_transfer_contract/2026-10-04/pr2_matched_accuracy_m2_transfer_result_schema_v1.json",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_transfer_contract"],
+        "reason": "Reserved M2 result schema with SHA-256 2b653212377142070d61cd3e00a013fa5692ab3004b3d471454a2638bbd0c51d. It permits only four terminal statuses and keeps next-stage authorization false."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m2_transfer_contract/2026-10-04/pr2_matched_accuracy_m2_transfer_zero_compute_plan_v1.json",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_transfer_contract"],
+        "reason": "Source-bound M2 zero-compute plan with SHA-256 7b9a2c4e9fbf4e9c58b6a5e5402239b9527c49d27ccf8e8f0f1a5ae080097132 and fingerprint e6b6ae0bcf9ff7b97eb61b2703305d793f7d531460456baf2337960fb36fb198. It records five frozen configurations and 96 future random trajectory seeds while all science counters remain zero."
+      },
+      {
+        "path": "docs/research/研究ノート/2026-10-04.md",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_transfer_contract"],
+        "reason": "Dated M2 contract decision record with SHA-256 1c61e0adecdf2ea63aa3b97e7604767d4c9c0829057535952e5f2ec2dd3f2970; the held-out transfer remains unexecuted and unauthorized."
+      },
+      {
+        "path": "docs/research/pr2_m2_transfer_contract_external_review_request_06b2c32.md",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_transfer_contract"],
+        "reason": "Commit-fixed independent review request with SHA-256 e053ec314c49d7f868bacb50b4aab53c9d6ee74b3aa5ebde162572af9f02f462. It requests approval, revision, or stop before science source implementation and does not authorize held-out access."
       }
     ],
     "quarantined": [
@@ -5814,6 +5868,48 @@
         "Draft and review a separate result-prior held-out transfer contract before resolving, statting, hashing, loading, scoring, or ranking H4 1.30 Angstrom.",
         "Keep the additional 96 trajectories, held-out execution, transfer, winner refinement, S3, and automatic continuation unauthorized.",
         "Classify the result and four focused tests as local validation, not immutable CI or independent external reproduction."
+      ]
+    },
+    {
+      "id": "pr2_matched_accuracy_m2_transfer_contract",
+      "status": "source_present_no_current_ci",
+      "summary": "After the validated M1-B1 development map returned CONTINUE_RESOURCE_STUDY, this zero-compute M2 contract freezes exactly five transfer configurations: the two B2 rank-3 q=1 development Pareto points plus one B0, B1, and B3 reference. Primary work is analytic shots times expected compiled RZ; the same six compiled metrics define the point Pareto frontier. A 1.10 B2-to-endpoint materiality ratio, a greater-than-ten-percent one-sided primary cost underestimate, paired-trajectory 2SE engineering intervals, and exactly four terminal statuses are fixed before held-out access. The future cap is 196 full wrappers. The source-bound plan uses commit 06b2c32528713a5270ee4915432bcd3898e0e5e1 and does not authorize or perform held-out access or transfer execution.",
+      "counts": {
+        "frozen_candidates": 5,
+        "frozen_b2_candidates": 2,
+        "frozen_b0_candidates": 1,
+        "frozen_b1_candidates": 1,
+        "frozen_b3_candidates": 1,
+        "planned_random_candidates": 3,
+        "planned_random_trajectories": 96,
+        "planned_random_full_wrappers": 192,
+        "planned_deterministic_or_discard_full_wrappers": 4,
+        "planned_total_full_wrappers": 196,
+        "maximum_future_process_workers": 5,
+        "extension_trajectories": 0,
+        "candidate_searches": 0,
+        "development_npz_loads": 0,
+        "held_out_path_resolutions_stats_hashes_loads": 0,
+        "signal_evaluations": 0,
+        "trajectory_samples": 0,
+        "circuits_built": 0,
+        "compiler_invocations": 0,
+        "full_wrappers_compiled": 0,
+        "quantum_shots": 0,
+        "gpu_queries_allocations_kernels": 0,
+        "dedicated_local_tests_passed": 9,
+        "focused_local_tests_passed": 30,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Preserve M1-B1 evidence commit 8e0814e70c14ecf526444fac8a2142799610dc96, result SHA-256 71278113c32b26af0dbf6144a626237a0087478212f8a93fc908de3d4d52aee4, and validation SHA-256 c9a05babed99cd1e80eaec5b58e47f25d74513c7ba2e5a00775cfd5959c37a0f.",
+        "Transfer exactly the five frozen configurations; do not add, remove, replace, or retune method, rank, q, r, K, T, compiler, or trajectory cap on held-out data.",
+        "Use shots times expected compiled RZ as the primary metric, the same six metrics for point Pareto, 1.10 as the B2-to-endpoint materiality threshold, and greater than ten percent as the primary major-underestimate threshold.",
+        "Allow only TRANSFER_SUPPORTED, TRANSFER_NOT_SUPPORTED, TRANSFER_INCONCLUSIVE, or IMPLEMENTATION_GATE_FAILED as terminal result statuses, and stop after every status for full research-direction review.",
+        "Implement and commit the actual science module, runner, and tests before creating any result-prior execution authorization.",
+        "Keep held-out path resolution, stat, hash, load, signal, trajectory, circuit, compile, and transfer at zero until independent review and a separate source-bound authorization.",
+        "Keep the additional 96 trajectories, held-out optimization, H5/H6/H12, S3, long RPE, final total cost, and automatic continuation unauthorized.",
+        "Classify this plan and its local tests as pre-execution implementation evidence, not a scientific transfer result, immutable CI, or independent external reproduction."
       ]
     }
   ],

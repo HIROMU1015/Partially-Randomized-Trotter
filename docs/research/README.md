@@ -123,6 +123,7 @@ zero-compute固定した。現段階ではheld-out accessとM2科学実行を認
 | 58 | [PR-2 M1-B1 GPUサーバーCPU高速化確認依頼](gpu_server_pr2_m1_b1_cpu_acceleration_feasibility_prompt.md) | 実runを変更せず、科学データ0・GPU 0のsynthetic CPU benchmarkだけで移行価値を判定する運用依頼。 |
 | 59 | [PR-2 M1-B1 actual compile map結果](../pr2_matched_accuracy_m1_b1_result_validation.md) | 210 cell、12,448 wrapper、全checkpoint/cacheを再検査し、B2 rank 3、q=1のactual frontierと`CONTINUE_RESOURCE_STUDY`、held-out前STOPを記録する。 |
 | 60 | [PR-2 M2 held-out transfer契約 v1](pr2_matched_accuracy_m2_held_out_transfer_contract_v1.md) | developmentで固定した5構成だけをH4 1.30 Åへ移すため、primary/secondary判定、10% materiality、重大underestimate、4 terminal status、196-wrapper上限、全status後STOPをzero-compute固定する。 |
+| 61 | [PR-2 M2 transfer契約GPTレビュー依頼](pr2_m2_transfer_contract_external_review_request_06b2c32.md) | source commit `06b2c32`、plan hash/fingerprint、5構成、判定、resource capを固定し、science source実装前の独立reviewを依頼する。 |
 
 ## 研究ノート
 

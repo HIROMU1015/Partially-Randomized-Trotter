@@ -417,6 +417,7 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
   （保存済みM1-A/M1-B1 artifact、全checkpoint、candidate別SQLite cacheをread-onlyで検査し、
   actual Pareto、旧selector、fixed-q=8、proxy、状態準備感度を再集計する。分子snapshot/held-outは読まない）
 - `docs/research/pr2_matched_accuracy_m2_held_out_transfer_contract_v1.md`、
+  `docs/research/pr2_m2_transfer_contract_external_review_request_06b2c32.md`、
   `src/trotterlib/pr2_matched_accuracy_m2_transfer_contract.py`、
   `scripts/run_pr2_matched_accuracy_m2_transfer_contract.py`、
   `tests/test_pr2_matched_accuracy_m2_transfer_contract.py`、
