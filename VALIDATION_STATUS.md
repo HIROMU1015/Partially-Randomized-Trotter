@@ -1,5 +1,16 @@
 # Validation status
 
+## 2026-10-04 PR-2 M2 held-out transfer契約・zero-compute plan固定中
+
+M1-B1の`CONTINUE_RESOURCE_STUDY`を受け、[M2 transfer契約](docs/research/pr2_matched_accuracy_m2_held_out_transfer_contract_v1.md)を
+追加した。development actual ParetoのB2二件とB0/B1/B3代表の計5構成、primary RZ、6指標point Pareto、
+10% materiality、重大cost underestimate、4 terminal status、random各32 trajectory、計196 wrapper上限を固定する。
+
+これはsource/schema/test段階のimplementation evidenceであり科学結果ではない。held-out H4 1.30 Åはpath literalを
+記録するだけで、resolve/stat/hash/load、signal、trajectory、circuit、compile、transfer、GPUは0に固定する。
+現行statusは`M2_TRANSFER_CONTRACT_FROZEN_EXECUTION_NOT_AUTHORIZED`。独立review、science source commit、
+result-prior authorization前にM2を実行しない。
+
 ## 2026-10-03 PR-2 M1-B1 actual compile map検証完了・`CONTINUE_RESOURCE_STUDY`
 
 H4 linear 1.00 Å、STO-3G、DF rank 12、8 qubits、`T=0.8`、`q={1,2,4,8}`の

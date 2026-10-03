@@ -53,3 +53,7 @@ source hash、schema、全科学counter 0、非上書きrunnerを検査する。
 `test_pr2_matched_accuracy_m1_precompile_barrier.py`では、selector理由と未解決集合の整合性、limited時の
 compile-plan生成拒否、clear時の最大16+16 cell plan、source hash、non-overwrite dry-run、全科学counter 0を
 検査する。M1-A signalまたはM1-B compileを実行するtestではない。
+
+`test_pr2_matched_accuracy_m2_transfer_contract.py`では、M1-B1からの5構成固定、future seed衝突0、
+196-wrapper上限、primary予測と10%重大underestimate、4 terminal status、held-out/transfer未認可、schemaを
+検査する。held-out signalまたはcompileを実行するtestではない。

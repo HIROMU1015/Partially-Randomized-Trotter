@@ -1,6 +1,6 @@
 # プロジェクト案内
 
-最終更新：2026-10-03
+最終更新：2026-10-04
 
 このファイルは、人またはGPTがリポジトリ全体を読むときの入口である。研究内容の正本、
 実装、検証コード、結果データ、発表資料を区別し、古い研究経路を現在の結論として読まない
@@ -12,12 +12,15 @@ M1-B1を実行・検証した段階である。旧16-cell selectorは「proxyで
 監査結果として保存する。M1-Aでaccuracy適格だったB2/B3 194 cellを32 trajectory・Re/Im二軸、B0/B1 16 cellを
 二軸で測る12,448-wrapper mapは全件完了した。actual six-metric ParetoはB2 rank 3、q=1の2件で、
 primary RZ point minimumは`B2-rank3-q1-r4-K2`、状態準備cost感度のlower envelopeも全てB2だった。
-研究判断は`CONTINUE_RESOURCE_STUDY`。入口は
+研究判断は`CONTINUE_RESOURCE_STUDY`。その後、development actual Pareto 2件とB0/B1/B3代表を合わせた
+5構成、primary RZ、6指標Pareto、10% materiality、重大cost underestimate、4 terminal statusを
+M2 held-out transfer契約へzero-compute固定した。入口は
 `docs/research/pr2_matched_accuracy_m1_b1_bounded_compile_contract_v1.md`と
 `docs/research/pr2_matched_accuracy_m1_b1_execution_contract_amendment_v2.md`と
 `docs/research/pr2_matched_accuracy_m1_b1_execution_authorization_v1.md`と
-`docs/pr2_matched_accuracy_m1_b1_result_validation.md`。追加96 trajectory、held-out H4 1.30 Å、
-transfer、S3は未実行・未承認である。
+`docs/pr2_matched_accuracy_m1_b1_result_validation.md`と
+`docs/research/pr2_matched_accuracy_m2_held_out_transfer_contract_v1.md`。追加96 trajectory、held-out H4 1.30 Å、
+transfer、S3は未実行・未承認で、M2は独立review前のcontract段階である。
 
 ## 最初に読む順序
 
@@ -413,6 +416,13 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
   `tests/test_pr2_matched_accuracy_m1_b1_result_validation.py`
   （保存済みM1-A/M1-B1 artifact、全checkpoint、candidate別SQLite cacheをread-onlyで検査し、
   actual Pareto、旧selector、fixed-q=8、proxy、状態準備感度を再集計する。分子snapshot/held-outは読まない）
+- `docs/research/pr2_matched_accuracy_m2_held_out_transfer_contract_v1.md`、
+  `src/trotterlib/pr2_matched_accuracy_m2_transfer_contract.py`、
+  `scripts/run_pr2_matched_accuracy_m2_transfer_contract.py`、
+  `tests/test_pr2_matched_accuracy_m2_transfer_contract.py`、
+  `artifacts/pr2_matched_accuracy_m2_transfer_contract/2026-10-04/`
+  （M1-B1の5構成、判定量、重大underestimate、4 status、196-wrapper上限をzero-compute固定する。
+  held-outはpath literalだけで、M2科学実行は未認可）
 - `docs/research/pr2_s0_reproduction_stop_c644925.md`、
   `docs/research/pr2_s0_external_review_request_c644925.md`、
   `artifacts/pr2_s0_s1_validation/2026-09-28/`（development byte-level hash不一致による

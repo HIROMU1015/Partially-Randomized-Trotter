@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "additional_trajectories_executed": {"const": 0},
+    "automatic_next_stage": {"type": "null"},
+    "candidate_results": {
+      "items": {"type": "object"},
+      "maxItems": 5,
+      "minItems": 5,
+      "type": "array"
+    },
+    "held_out_candidate_searches": {"const": 0},
+    "held_out_reoptimized": {"const": false},
+    "next_stage_authorized": {"const": false},
+    "point_pareto_metrics": {
+      "const": ["rz_count", "rz_depth", "cx_count", "cx_depth", "total_depth", "circuit_size"]
+    },
+    "primary_metric": {"const": "rz_count"},
+    "schema_version": {"const": "pr2_matched_accuracy_m2_transfer_result_v1"},
+    "status": {
+      "enum": [
+        "TRANSFER_SUPPORTED",
+        "TRANSFER_NOT_SUPPORTED",
+        "TRANSFER_INCONCLUSIVE",
+        "IMPLEMENTATION_GATE_FAILED"
+      ]
+    },
+    "transfer_plan_fingerprint": {"pattern": "^[0-9a-f]{64}$", "type": "string"}
+  },
+  "required": [
+    "schema_version",
+    "status",
+    "transfer_plan_fingerprint",
+    "candidate_results",
+    "primary_metric",
+    "point_pareto_metrics",
+    "held_out_reoptimized",
+    "held_out_candidate_searches",
+    "additional_trajectories_executed",
+    "next_stage_authorized",
+    "automatic_next_stage"
+  ],
+  "title": "Reserved PR-2 M2 held-out transfer result v1",
+  "type": "object"
+}

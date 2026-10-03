@@ -39,6 +39,9 @@
 - [`pr2_matched_accuracy_m1_b1_result_validation/2026-10-03/`](pr2_matched_accuracy_m1_b1_result_validation/2026-10-03/)：
   全checkpoint/cache再集計、actual frontier、旧selector、fixed-q=8、proxy、状態準備感度と
   `CONTINUE_RESOURCE_STUDY`判断を含むlocal validation artifact。held-out accessは0
+- [`pr2_matched_accuracy_m2_transfer_contract/2026-10-04/`](pr2_matched_accuracy_m2_transfer_contract/2026-10-04/)：
+  5構成、primary/secondary判定、重大underestimate、4 terminal status、196-wrapper上限を固定する
+  zero-compute M2 transfer plan/schema。held-out accessと科学実行は未認可
 manifestは次で検査できる。
 
 ```bash

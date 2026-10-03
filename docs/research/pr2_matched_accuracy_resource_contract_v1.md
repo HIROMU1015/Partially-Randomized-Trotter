@@ -207,6 +207,19 @@ M2 authorizationは開封前に次を数値で固定する。
 多数candidateのpass rateを無理に作らず、固定した少数構成の再現性を見る。held-outで候補を選び直さず、
 失敗もそのまま報告する。同じheld-outを設計選択と最終評価の両方に使わない。
 
+### 7.1 M1-B1後に固定したM2契約
+
+M1-B1の`CONTINUE_RESOURCE_STUDY`後、上の別freezeを
+[M2 held-out transfer契約 v1](pr2_matched_accuracy_m2_held_out_transfer_contract_v1.md)として具体化した。
+transferするのはdevelopment actual ParetoのB2二件とB0/B1/B3代表、計5構成だけである。primaryは
+`shots × expected compiled RZ`、point Paretoは同じ6 compiled metrics、materialityはB2対best endpointの
+ratio 1.10、重大cost underestimateはdevelopment 1-shot costによる事前予測をheld-out actual RZが10%超
+上回る場合とした。terminal statusは`TRANSFER_SUPPORTED / TRANSFER_NOT_SUPPORTED /
+TRANSFER_INCONCLUSIVE / IMPLEMENTATION_GATE_FAILED`だけで、全statusが研究方針review前の強制停止である。
+
+この契約とzero-compute planはM2科学実行を認可しない。held-outを開く前に、science sourceを先にcommitし、
+独立reviewと別result-prior authorizationを必要とする。
+
 ## 8. 禁止事項
 
 - M1 source、runner、testまたはauthorizationの実装・実行を本書から自動開始しない。
