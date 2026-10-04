@@ -17,6 +17,11 @@ local implementation evidenceであり、immutable CI・外部再現・M2科学�
 held-out resolve/stat/hash/load、H4 signal/trajectory/compile、transfer、GPUは0。execution authorizationは未作成で、
 source commit・source-bound zero-compute plan固定の後、別authorizationと最終reviewを経るまで停止する。
 
+actual sourceは`2978e2fea672b7a1ff20cac74269ec9a610159dc`へ固定済み。execution plan SHA-256は
+`2aa09a927e5ac58ebe417397802ace0e70c0097e8d0c53c05457075a41e85527`、fingerprintは
+`ff7ed3d74bf4a0316adecdbac6b633978d71ca87bc1856d03db6fff9a2153276`。
+source/plan freezeは完了したが、別authorizationと最終review前で停止中である。
+
 ## 2026-10-04 PR-2 M2外部review修正：usable B2統一（未commit draft）
 
 外部reviewの`REVISE_M2_CONTRACT_BEFORE_IMPLEMENTATION`を受け、

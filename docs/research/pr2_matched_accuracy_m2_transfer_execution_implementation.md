@@ -4,6 +4,12 @@ M2の科学実行コードを結果前に実装した。対象はH4 linear 1.30 
 T=0.8への固定5構成のtransferだけである。本資料とコードの追加はheld-out開封や本計算を認可しない。
 次はactual execution source commitに結合した別authorizationと、最終pre-execution reviewである。
 
+actual science source commitは`2978e2fea672b7a1ff20cac74269ec9a610159dc`へ固定済み。
+source-bound [execution plan](../../artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/execution_plan_v1.json)の
+SHA-256は`2aa09a927e5ac58ebe417397802ace0e70c0097e8d0c53c05457075a41e85527`、fingerprintは
+`ff7ed3d74bf4a0316adecdbac6b633978d71ca87bc1856d03db6fff9a2153276`。
+statusは`M2_EXECUTION_PLAN_FROZEN_EXECUTION_NOT_AUTHORIZED`。execution authorizationは未作成である。
+
 ## 固定した契約とplan
 
 [v1契約](pr2_matched_accuracy_m2_held_out_transfer_contract_v1.md)は保存し、
