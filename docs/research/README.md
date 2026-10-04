@@ -1,5 +1,11 @@
 # 研究計画資料
 
+PM-1準備reviewは `APPROVE_PM1_RESULT_PRIOR_AUTHORIZATION_DRAFT`。
+[authorization draft](pr2_pm1_discard_execution_authorization_v1.md)と
+[最終review依頼](pr2_pm1_execution_authorization_external_review_request_b6175a0.md)を追加した。
+運用statusは `PM1_AUTHORIZATION_DRAFT_FROZEN_AWAITING_FINAL_REVIEW`、final boolean=falseで実行不可。
+科学source・plan・旧証拠を変更せず、承認後の一項目commitと利用者launch指示まで停止する。
+
 post-M2方針reviewに基づく[PM-0証拠帰属解析](pr2_post_m2_evidence_attribution.md)を完了した。
 現在のA claim/RQの限定は[PM-0報告](pr2_post_m2_evidence_attribution.md)と[研究概要](研究概要・現状.md)を参照する。
 旧S2からのq-only attribution、selector primary損失、異なる候補集合のP感度を限定し、PM-1以降は未認可。

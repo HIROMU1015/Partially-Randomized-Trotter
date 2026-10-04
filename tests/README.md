@@ -1,5 +1,10 @@
 # tests の役割
 
+PM-1 authorization draftの再検査も201 passed、fail/skip0。
+[最終review監査](../artifacts/resource_applicability/pr2_pm1_discard_authorization/2026-10-04/authorization_review_audit_v1.json)には
+actual draftの最終boolean=false拒否とconditional mock positive・9改変拒否を区別して保存した。
+追加監査をunit test件数へ水増しせず、production gate PASS・科学結果とは呼ばない。
+
 Track A PM-0は`tracks/resource_applicability/test_pm0_evidence_attribution.py`の18 local tests。
 synthetic bookkeeping・入力allowlist・改変拒否と保存JSON regressionだけを実行する。
 分子NPZ/runtime/cache、旧science/validation runner、compilerを呼ばず、immutable CIとはしない。

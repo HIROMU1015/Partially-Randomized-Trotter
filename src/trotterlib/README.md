@@ -1,5 +1,10 @@
 # trotterlib モジュール索引
 
+PM-1 source `fd7552e`と134 hashは変更せず、
+[別authorization draft](../../docs/research/pr2_pm1_discard_execution_authorization_v1.md)を固定した。
+final_review_approved=falseの現在は既存gateが拒否する。
+[最終review](../../docs/research/pr2_pm1_execution_authorization_external_review_request_b6175a0.md)と一項目commit・明示launch指示を待ち、科学import/data境界を越えない。
+
 Track A PM-0の純stdlib事後解析は[別namespaceのmodule](../trottertracks/resource_applicability/pm0_evidence_attribution.py)
 と[報告](../../docs/research/pr2_post_m2_evidence_attribution.md)に置く。
 既存M1/M2 collectorに追加sourceを混ぜないため`trotterlib`の科学コードは不変。

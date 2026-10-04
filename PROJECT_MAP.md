@@ -1,5 +1,13 @@
 # プロジェクト案内
 
+## Track A PM-1最終実行前レビュー待ち
+
+[authorization draft](docs/research/pr2_pm1_discard_execution_authorization_v1.md)を
+別commit `b6175a0`へ固定した。[最終レビュー依頼](docs/research/pr2_pm1_execution_authorization_external_review_request_b6175a0.md)と
+`artifacts/resource_applicability/pr2_pm1_discard_authorization/2026-10-04/`を読む。
+source `fd7552e`とsealed planは不変、final_review_approved=falseで実行gateは拒否する。
+201 local testsとzero-science監査を保存した。独立review→一項目の別commit→明示launch前でSTOP。
+
 最終更新：2026-10-04
 
 ## Track A post-M2レビュー資料

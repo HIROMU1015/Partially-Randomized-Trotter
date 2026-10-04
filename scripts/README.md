@@ -1,5 +1,9 @@
 # scripts 索引
 
+PM-1の[結果前authorization draft](../docs/research/pr2_pm1_discard_execution_authorization_v1.md)は
+final_review_approved=false。既存future runnerはgateで拒否し、今回は起動しない。
+[最終review依頼](../docs/research/pr2_pm1_execution_authorization_external_review_request_b6175a0.md)とguard付き限定suiteへ対応する。source変更・science runは0。
+
 `resource_applicability/run_pr2_post_m2_evidence_attribution.py`はTrack A PM-0の保存JSON/source再集計専用。
 stdlibのみ、artifact内pathを辿らず、bundleをstdoutへ出すだけでファイルを書き換えない。
 [報告・対応source/test/artifact](../docs/research/pr2_post_m2_evidence_attribution.md)を参照する。

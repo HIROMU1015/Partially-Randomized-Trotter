@@ -1,5 +1,24 @@
 # Validation status
 
+## 2026-10-04 Track A PM-1 authorization draft固定 最終review待ち
+
+準備reviewの `APPROVE_PM1_RESULT_PRIOR_AUTHORIZATION_DRAFT` を受け、
+[authorization draft](docs/research/pr2_pm1_discard_execution_authorization_v1.md)を別commit
+`b6175a0f4fdeb1d2f0cd61c09dce37675624b73a`へ固定した。SHA-256は
+`3916f1e050bf4d4174f0b2b5d4d1d82cdb12396f9eefe3a34a75e496e716377d`。
+運用statusは `PM1_AUTHORIZATION_DRAFT_FROZEN_AWAITING_FINAL_REVIEW`。
+final_review_approved=falseで現runnerは拒否し、最終承認済みとは記録しない。
+[最終review依頼](docs/research/pr2_pm1_execution_authorization_external_review_request_b6175a0.md)へ渡す。承認後もboolean一項目の別commit照合・利用者launch指示までSTOP。
+
+source134、sealed plan、固定8候補/16 wrapper、環境は一致し科学sourceは不変。
+H4 linear 1.00 Å、STO-3G、DF rank12、8 qubits、T=0.8、B0 rank4/5 × q=1/2/4/8、
+delta=0.8/0.4/0.2/0.1、r=K=0。将来の8 signal＋16 wrapper、CPU1、BLAS1上限を変更しない。
+限定201 local testsが再びpassed、fail/skip0。actual draft拒否、conditional mock positive、9改変拒否と
+uncommitted flag模擬変更拒否を別監査へ記録した。mockをproduction PASSと呼ばない。
+NPZ/runtime/cacheアクセス、H4 signal/build/compile、science runner、GPUは0。output/registryは未作成。
+過去4件stat/hash違反の監査を保持し、immutable CIや外部再現とはしない。
+成功/failureどちらもmandatory STOP、研究判断null、PM-2以降未認可。
+
 ## 2026-10-04 Track A PM-1：契約・実装準備完了、本実行未認可
 
 [PM-1契約](docs/research/pr2_pm1_nearby_discard_contract_v1.md)と
