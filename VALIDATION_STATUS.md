@@ -1,5 +1,27 @@
 # Validation status
 
+## 2026-10-04 PR-2 M2一回実行・結果照合完了：`TRANSFER_SUPPORTED`、mandatory STOP
+
+最終外部review承認と利用者の実行指示を受け、source/plan/authorizationを変更せず固定5構成のM2を一度実行した。
+H4 linear 1.30 Å、STO-3G、DF rank 12、8 system qubits、`T=0.8`。B2 `L_D=3,q=1,r=4/8,K=2`と
+B0 `L_D=6,q=1`、B1 `L_D=12,q=1`は`delta=0.8`、B3 `L_D=0,q=8,r=32,K=4`は`delta=0.1`。
+候補、threshold、32 trajectoryを再探索していない。
+
+[M2結果照合](docs/pr2_matched_accuracy_m2_transfer_result_validation.md)は196 unique wrappers/checkpoints、
+96 trajectories、128 source blobs、signal/cost identity、paired covariance、判定、manifest bytes/SHAを照合した。
+computed196、reused0、未解決予約0。5構成が全件accuracy適格、usable B2二件が6指標point Paretoに残った。
+primary最小B2／最小endpoint比は0.586090、engineering upper 2SEは0.593584で基準1.10以下。
+formal CIではない。result SHA-256は`f41a92beb57e59cddc8c063b061c40acd4da50cb76ac0698efc2bce004937931`、
+fingerprintは`d9003ac6e32b2888d69aa1fed226dbef48cf13e1a6f10829e137c136824bb320`。
+
+5 spawned CPU workers、各BLAS1でwall971.824秒、snapshot hash/load各1、GPU query/allocation/kernel0。
+pre/postともlocal focused84、helper134 passed、fail/skip0。結果照合は分子NPZを再度開かず、科学計算を追加していない。
+結果と監査をresult commitへ収録するlocal execution evidenceであり、immutable CIや外部再現、
+methodの一般的最適性、最終総cost評価ではない。
+`TRANSFER_SUPPORTED`は固定5構成のtransferだけを支持する。`next_stage_authorized=false`、mandatory STOPで
+研究方針の全面reviewへ戻る。追加96、retuning、別geometry/分子、S3、長RPEを自動実行しない。
+以下の未実行・未認可・access0の記述は各準備milestone当時の履歴であり、現在の実行状態ではない。
+
 ## 2026-10-04 PR-2 M2実行authorization固定 最終review待ち
 
 actual science source `2978e2fea672b7a1ff20cac74269ec9a610159dc`とsource-bound execution planに結合した

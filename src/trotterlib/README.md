@@ -85,7 +85,8 @@
 - `pr2_matched_accuracy_m2_transfer_execution.py`：別commitのsource-bound authorization照合後だけ、
   固定5構成のheld-out signal/paired-axis full-wrapper costを最大5 workers、196-wrapper上限で評価する。
   usable B2判定、paired covariance、checkpoint identityを検査し、全status後mandatory STOP。
-  現時点はsynthetic実装検証のみで、科学実行は未認可
+  最終review承認と利用者指示を得た一回実行は`TRANSFER_SUPPORTED`で完了し、
+  [保存済み結果照合](../../docs/pr2_matched_accuracy_m2_transfer_result_validation.md)後に停止した。追加計算・再実行は未認可
 - `pf_delta_validation.py`
 - `pf_c_system_size_validation.py`
 - `pauli_partial_cgs_validation.py`

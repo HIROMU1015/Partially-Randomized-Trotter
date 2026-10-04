@@ -24,10 +24,16 @@ review待ちで停止させる。研究四分岐はrunnerが自動選択しな�
 [execution authorization v1](pr2_matched_accuracy_m1_b1_execution_authorization_v1.md)はsource commit `33f436b`と
 planを固定して一回のM1-B1を認可した。12,448 wrapper mapは完了し、
 [M1-B1結果検証](../pr2_matched_accuracy_m1_b1_result_validation.md)はactual six-metric ParetoをB2 rank 3、q=1の
-2件と確認した。判断は`CONTINUE_RESOURCE_STUDY`だが、held-outと追加96は未承認である。
+2件と確認した。判断は`CONTINUE_RESOURCE_STUDY`で、その時点ではheld-outと追加96は未承認だった。
 [M2 held-out transfer契約](pr2_matched_accuracy_m2_held_out_transfer_contract_v1.md)は、その2件とB0/B1/B3代表の
 計5構成、primary RZ、6指標Pareto、10% materiality、重大underestimate、4 terminal status、196-wrapper上限を
-zero-compute固定した。現段階ではheld-out accessとM2科学実行を認可せず、独立review待ちである。
+zero-compute固定した。外部reviewの修正要求は
+[usable B2 amendment v2](pr2_matched_accuracy_m2_transfer_contract_amendment_v2.md)へ反映した。
+修正版契約と正式planをcommit固定し、[science実装](pr2_matched_accuracy_m2_transfer_execution_implementation.md)を
+追加し、source/planを固定した後の別authorization・最終review承認・利用者指示を経てM2を一度実行した。
+最新の[M2結果照合](../pr2_matched_accuracy_m2_transfer_result_validation.md)は`TRANSFER_SUPPORTED`。
+固定5構成、196 wrapper、B2二件のParetoとratioを確認したlocal execution evidenceをcommit保存し、一般的method最適性とはしない。
+現在はmandatory STOP、研究方針全面review待ち。追加96、retuning、S3等を認可しない。
 
 初めてこの研究を確認する場合や、Codexを使って発表・共有資料を作る場合は、まず
 [研究概要・現状](研究概要・現状.md)を読む。この一冊で現在の研究段階、採用済みの
@@ -124,6 +130,8 @@ zero-compute固定した。現段階ではheld-out accessとM2科学実行を認
 | 59 | [PR-2 M1-B1 actual compile map結果](../pr2_matched_accuracy_m1_b1_result_validation.md) | 210 cell、12,448 wrapper、全checkpoint/cacheを再検査し、B2 rank 3、q=1のactual frontierと`CONTINUE_RESOURCE_STUDY`、held-out前STOPを記録する。 |
 | 60 | [PR-2 M2 held-out transfer契約 v1](pr2_matched_accuracy_m2_held_out_transfer_contract_v1.md) | developmentで固定した5構成だけをH4 1.30 Åへ移すため、primary/secondary判定、10% materiality、重大underestimate、4 terminal status、196-wrapper上限、全status後STOPをzero-compute固定する。 |
 | 61 | [PR-2 M2 transfer契約GPTレビュー依頼](pr2_m2_transfer_contract_external_review_request_06b2c32.md) | source commit `06b2c32`、plan hash/fingerprint、5構成、判定、resource capを固定し、science source実装前の独立reviewを依頼する。 |
+| 62 | [PR-2 M2 usable B2 amendment v2](pr2_matched_accuracy_m2_transfer_contract_amendment_v2.md) | v1/draftを保存し、Pareto support・ratio・NOT_SUPPORTED/INCONCLUSIVEを同じusable B2集合へ統一したcommit固定済み結果前修正。契約自身は科学実行を認可しない。 |
+| 63 | [PR-2 M2結果照合](../pr2_matched_accuracy_m2_transfer_result_validation.md) | 固定5構成のH4 1.30 Å transfer、196 wrappers、source/manifest/checkpoint・pre/post tests照合、`TRANSFER_SUPPORTED`後のmandatory STOP。 |
 
 ## 研究ノート
 
@@ -164,7 +172,7 @@ zero-compute固定した。現段階ではheld-out accessとM2科学実行を認
 
 外部reviewの修正要求を[amendment v2](pr2_matched_accuracy_m2_transfer_contract_amendment_v2.md)へ反映した。
 Pareto supportとprimary ratioは共にaccuracy-eligibleかつprimary重大underestimateのないB2だけを使う。
-v1証拠・固定5構成・seed・196-wrapper上限を維持し、科学実行とheld-out accessは未認可である。
+v1証拠・固定5構成・seed・196-wrapper上限を維持した。この契約修正時点では科学実行とheld-out accessは未認可だった。
 moduleは`src/trotterlib/pr2_matched_accuracy_m2_transfer_contract.py`、runnerは
 `scripts/run_pr2_matched_accuracy_m2_transfer_contract.py`、testは
 `tests/test_pr2_matched_accuracy_m2_transfer_contract.py`、schema/planは

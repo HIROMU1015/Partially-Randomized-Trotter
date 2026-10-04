@@ -1,0 +1,281 @@
+{
+  "schema_version": "pr2_matched_accuracy_m2_post_execution_audit_v1",
+  "started_utc": "2026-10-04T06:14:20.393934+00:00",
+  "ended_utc": "2026-10-04T06:14:48.187220+00:00",
+  "validation": {
+    "status": "M2_RESULT_LEDGER_MANIFEST_VERIFIED",
+    "terminal_status": "TRANSFER_SUPPORTED",
+    "result_sha256": "f41a92beb57e59cddc8c063b061c40acd4da50cb76ac0698efc2bce004937931",
+    "result_fingerprint": "d9003ac6e32b2888d69aa1fed226dbef48cf13e1a6f10829e137c136824bb320",
+    "manifest_sha256": "fa6dad1b5c49c08ee4c6d96447847cc0ad357b17f67937a405f0550a4df12546",
+    "complete_sha256": "619c33cb7d3285216c51a8332627a15a8995abd061c54564e1cbc03ee446900a",
+    "unique_wrapper_keys_verified": 196,
+    "wrapper_checkpoint_audit": {
+      "complete_records": 196,
+      "unresolved_reservations": 0,
+      "unreadable_records": 0,
+      "successful_compiles_lower_bound": 196,
+      "not_a_complete_resource_count": true
+    },
+    "paired_axis_covariance_recomputed": true,
+    "source_files_verified": 128,
+    "execution": {
+      "blas_threads_per_worker": 1,
+      "counters": {
+        "candidate_searches": 0,
+        "circuits_built": 196,
+        "compiler_invocations": 196,
+        "development_npz_loads": 0,
+        "full_wrappers_compiled": 196,
+        "gpu_allocations": 0,
+        "gpu_kernels": 0,
+        "gpu_queries": 0,
+        "held_out_hash_reads": 1,
+        "held_out_npz_loads": 1,
+        "held_out_path_resolutions": 0,
+        "held_out_path_stats": 0,
+        "molecular_calculations": 0,
+        "occurrence_samples": 8576,
+        "quantum_shots_executed": 0,
+        "signal_evaluations": 5,
+        "trajectory_samples": 96
+      },
+      "ended_utc": "2026-10-04T06:10:40.444279+00:00",
+      "environment_identity": {
+        "compiler_identity": {
+          "backend_name": null,
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "coupling_map": null,
+          "layout_method": null,
+          "optimization_level": 1,
+          "qiskit_version": "1.3.0",
+          "routing_method": null,
+          "transpiler_seed": 17
+        },
+        "environment": {
+          "MKL_NUM_THREADS": "1",
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "PYTHONDONTWRITEBYTECODE": "1",
+          "PYTHONNOUSERSITE": "1"
+        },
+        "numpy": "1.26.4",
+        "python": "3.11.0rc1",
+        "qiskit": "1.3.0",
+        "scipy": "1.14.1"
+      },
+      "full_wrappers_computed_this_invocation": 196,
+      "full_wrappers_reused_this_invocation": 0,
+      "gpu_query_allocation_kernel": [
+        0,
+        0,
+        0
+      ],
+      "max_worker_peak_rss_kib": 1754368,
+      "parent_cpu_time_s": 55.692018011,
+      "parent_peak_rss_kib": 1291228,
+      "process_start_method": "spawn",
+      "process_workers": 5,
+      "started_utc": "2026-10-04T05:54:28.620222+00:00",
+      "unique_wrapper_evaluations": 196,
+      "wall_time_s": 971.8240538868122
+    },
+    "transfer_decision": {
+      "best_b2_candidate_id": "B2-rank3-q1-r4-K2",
+      "best_endpoint_candidate_id": "B0-rank6-q1-r0-K0",
+      "eligible_endpoint_candidate_ids": [
+        "B0-rank6-q1-r0-K0",
+        "B1-rank12-q1-r0-K0",
+        "B3-rank0-q8-r32-K4"
+      ],
+      "primary_ratio": {
+        "lower_2se": 0.5785955110933503,
+        "point": 0.5860898125394417,
+        "standard_error": 0.003747150723045706,
+        "upper_2se": 0.5935841139855331
+      },
+      "status": "TRANSFER_SUPPORTED",
+      "usable_b2_candidate_ids": [
+        "B2-rank3-q1-r4-K2",
+        "B2-rank3-q1-r8-K2"
+      ]
+    },
+    "candidate_summary": [
+      {
+        "candidate_id": "B2-rank3-q1-r4-K2",
+        "accuracy_eligible": true,
+        "axis_shots": {
+          "imag": 8026,
+          "real": 9876
+        },
+        "major_cost_underestimate": false,
+        "transfer_support_usable": true,
+        "primary_work": 111753794.4375,
+        "primary_standard_error": 714495.121174621,
+        "point_six_metric_pareto": true,
+        "underestimate_fraction_by_metric": {
+          "circuit_size": 0,
+          "cx_count": 0,
+          "cx_depth": 0,
+          "rz_count": 0,
+          "rz_depth": 0,
+          "total_depth": 0
+        }
+      },
+      {
+        "candidate_id": "B2-rank3-q1-r8-K2",
+        "accuracy_eligible": true,
+        "axis_shots": {
+          "imag": 7561,
+          "real": 9303
+        },
+        "major_cost_underestimate": false,
+        "transfer_support_usable": true,
+        "primary_work": 112153505,
+        "primary_standard_error": 1124290.264101313,
+        "point_six_metric_pareto": true,
+        "underestimate_fraction_by_metric": {
+          "circuit_size": 0,
+          "cx_count": 0,
+          "cx_depth": 0,
+          "rz_count": 0,
+          "rz_depth": 0,
+          "total_depth": 0
+        }
+      },
+      {
+        "candidate_id": "B0-rank6-q1-r0-K0",
+        "accuracy_eligible": true,
+        "axis_shots": {
+          "imag": 7267,
+          "real": 10943
+        },
+        "major_cost_underestimate": false,
+        "transfer_support_usable": false,
+        "primary_work": 190676910,
+        "primary_standard_error": 0,
+        "point_six_metric_pareto": false,
+        "underestimate_fraction_by_metric": {
+          "circuit_size": 0,
+          "cx_count": 0,
+          "cx_depth": 0,
+          "rz_count": 0,
+          "rz_depth": 0,
+          "total_depth": 0
+        }
+      },
+      {
+        "candidate_id": "B1-rank12-q1-r0-K0",
+        "accuracy_eligible": true,
+        "axis_shots": {
+          "imag": 7117,
+          "real": 8760
+        },
+        "major_cost_underestimate": false,
+        "transfer_support_usable": false,
+        "primary_work": 318175080,
+        "primary_standard_error": 0,
+        "point_six_metric_pareto": false,
+        "underestimate_fraction_by_metric": {
+          "circuit_size": 0,
+          "cx_count": 0,
+          "cx_depth": 0,
+          "rz_count": 0,
+          "rz_depth": 0,
+          "total_depth": 0
+        }
+      },
+      {
+        "candidate_id": "B3-rank0-q8-r32-K4",
+        "accuracy_eligible": true,
+        "axis_shots": {
+          "imag": 15183,
+          "real": 15218
+        },
+        "major_cost_underestimate": false,
+        "transfer_support_usable": false,
+        "primary_work": 1069452078.1875,
+        "primary_standard_error": 13718013.024001926,
+        "point_six_metric_pareto": false,
+        "underestimate_fraction_by_metric": {
+          "circuit_size": 0.08677487729534827,
+          "cx_count": 0.09418739848582969,
+          "cx_depth": 0.0838952645105473,
+          "rz_count": 0.09954062979528056,
+          "rz_depth": 0.09164386014272186,
+          "total_depth": 0.07517022841363996
+        }
+      }
+    ]
+  },
+  "test_runs": [
+    {
+      "name": "focused",
+      "command_argv": [
+        "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "-rs",
+        "tests/test_pr2_matched_accuracy_m2_transfer_execution.py",
+        "tests/test_pr2_matched_accuracy_m2_transfer_contract.py",
+        "tests/test_pr2_matched_accuracy_m1_b1_contract.py",
+        "tests/test_pr2_matched_accuracy_m1_b1_execution.py",
+        "tests/test_pr2_matched_accuracy_m1_b1_result_validation.py",
+        "-p",
+        "no:cacheprovider"
+      ],
+      "started_utc": "2026-10-04T06:14:22.057322+00:00",
+      "ended_utc": "2026-10-04T06:14:29.261241+00:00",
+      "wall_time_s": 7.203927061986178,
+      "returncode": 0,
+      "stdout": "........................................................................ [ 85%]\n............                                                             [100%]\n84 passed in 6.54s\n",
+      "stderr": "",
+      "scope": "local_synthetic_saved_JSON_and_mock_tests_not_immutable_CI_or_H4_science"
+    },
+    {
+      "name": "helper_regression",
+      "command_argv": [
+        "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "-rs",
+        "tests/test_df_partial_s2_repeated.py",
+        "tests/test_df_partial_s2_repeated_cost.py",
+        "tests/test_rpe_hadamard_interrogation.py",
+        "tests/test_df_rpe_hadamard_compiled_cost.py",
+        "tests/test_rpe_hadamard_compiled_cost_benchmark.py",
+        "-p",
+        "no:cacheprovider"
+      ],
+      "started_utc": "2026-10-04T06:14:29.261261+00:00",
+      "ended_utc": "2026-10-04T06:14:48.187203+00:00",
+      "wall_time_s": 18.925952543038875,
+      "returncode": 0,
+      "stdout": "........................................................................ [ 53%]\n..............................................................           [100%]\n134 passed in 18.37s\n",
+      "stderr": "",
+      "scope": "local_synthetic_saved_JSON_and_mock_tests_not_immutable_CI_or_H4_science"
+    }
+  ],
+  "additional_held_out_accesses": 0,
+  "additional_science_invocations": 0,
+  "forbidden_access_attempts": [],
+  "next_stage_authorized": false,
+  "mandatory_stop_reached": true,
+  "verification_command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. \"/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python\" /tmp/pr2-m2-execution-20261004.zwVgS8Wu/verify_result_and_tests.py",
+  "test_process_environment": {
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "PYTHONPATH": "src:."
+  },
+  "python_executable": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python"
+}

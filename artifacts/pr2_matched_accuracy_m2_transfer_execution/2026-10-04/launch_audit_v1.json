@@ -1,0 +1,173 @@
+{
+  "schema_version": "pr2_matched_accuracy_m2_launch_audit_v1",
+  "review_bundle_commit": "40a11d02a67954175686b2e532b83c7953ec8316",
+  "external_review": {
+    "decision": "APPROVE_M2_EXECUTION",
+    "source": "review supplied by user in this conversation",
+    "scientific_conditions_amended": false
+  },
+  "user_execution_instruction": "M2で実行して",
+  "review_approval_and_explicit_launch_instruction_received": true,
+  "source_commit": "2978e2fea672b7a1ff20cac74269ec9a610159dc",
+  "authorization_sha256": "dbc8b66fad5316004ef404fe8253d3f6cb0f29bf7065502ea995240e5fbd7ff1",
+  "execution_plan_sha256": "2aa09a927e5ac58ebe417397802ace0e70c0097e8d0c53c05457075a41e85527",
+  "project_root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/pr2-v4-s2-parallelization-20260928",
+  "launch_utc": {
+    "current_time": "2026-10-04 05:54:27 UTC"
+  },
+  "command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. \"/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python\" -u scripts/run_pr2_matched_accuracy_m2_transfer.py run --project-root \"$PWD\" --plan artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/execution_plan_v1.json --authorization artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/execution_authorization_v1.json --output-relative artifacts/pr2_matched_accuracy_m2_transfer_execution/2026-10-04 --workers 5",
+  "launch_count": 1,
+  "no_retry_or_resume": true,
+  "preflight_audit": {
+    "schema_version": "pr2_matched_accuracy_m2_authorization_audit_v1",
+    "status": "M2_AUTHORIZATION_GATE_PASS_AWAITING_FINAL_REVIEW",
+    "audit_date_jst": "2026-10-04",
+    "started_utc": "2026-10-04T05:53:34.081697+00:00",
+    "ended_utc": "2026-10-04T05:54:01.313407+00:00",
+    "audited_head": "40a11d02a67954175686b2e532b83c7953ec8316",
+    "source_commit": "2978e2fea672b7a1ff20cac74269ec9a610159dc",
+    "source_files_verified": 128,
+    "execution_plan_sha256": "2aa09a927e5ac58ebe417397802ace0e70c0097e8d0c53c05457075a41e85527",
+    "execution_plan_fingerprint": "ff7ed3d74bf4a0316adecdbac6b633978d71ca87bc1856d03db6fff9a2153276",
+    "authorization_path": "artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/execution_authorization_v1.json",
+    "authorization_sha256": "dbc8b66fad5316004ef404fe8253d3f6cb0f29bf7065502ea995240e5fbd7ff1",
+    "positive_authorization_gate_passed": true,
+    "rejected_authorization_mutations": [
+      "status",
+      "source_commit",
+      "execution_plan_sha256",
+      "permissions",
+      "resource_caps",
+      "execution_run_limit",
+      "fixed_output_relative"
+    ],
+    "environment_identity": {
+      "python": "3.11.0rc1",
+      "numpy": "1.26.4",
+      "scipy": "1.14.1",
+      "qiskit": "1.3.0",
+      "compiler_identity": {
+        "qiskit_version": "1.3.0",
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "transpiler_seed": 17,
+        "coupling_map": null,
+        "backend_name": null,
+        "layout_method": null,
+        "routing_method": null
+      },
+      "environment": {
+        "PYTHONNOUSERSITE": "1",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "OMP_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1"
+      }
+    },
+    "python_executable": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+    "test_process_environment": {
+      "PYTHONNOUSERSITE": "1",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "PYTHONPATH": "src:."
+    },
+    "unique_wrapper_keys": 196,
+    "unique_random_trajectory_seeds": 96,
+    "fixed_candidate_ids": [
+      "B2-rank3-q1-r4-K2",
+      "B2-rank3-q1-r8-K2",
+      "B0-rank6-q1-r0-K0",
+      "B1-rank12-q1-r0-K0",
+      "B3-rank0-q8-r32-K4"
+    ],
+    "fixed_output_not_created": true,
+    "registry_not_created": true,
+    "production_run_invocations": 0,
+    "forbidden_access_attempts": [],
+    "held_out_resolve_stat_hash_load": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "H4_signal_trajectory_compile_transfer": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "GPU_query_allocation_kernel": [
+      0,
+      0,
+      0
+    ],
+    "launch_permitted_in_this_task": false,
+    "final_pre_execution_review_required": true,
+    "next_stage_authorized": false,
+    "dirty_documentation_changes_excluded_from_evidence_commit": true,
+    "test_runs": [
+      {
+        "name": "focused",
+        "command_argv": [
+          "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+          "-m",
+          "pytest",
+          "-q",
+          "-rs",
+          "tests/test_pr2_matched_accuracy_m2_transfer_execution.py",
+          "tests/test_pr2_matched_accuracy_m2_transfer_contract.py",
+          "tests/test_pr2_matched_accuracy_m1_b1_contract.py",
+          "tests/test_pr2_matched_accuracy_m1_b1_execution.py",
+          "tests/test_pr2_matched_accuracy_m1_b1_result_validation.py",
+          "-p",
+          "no:cacheprovider"
+        ],
+        "started_utc": "2026-10-04T05:53:35.198231+00:00",
+        "ended_utc": "2026-10-04T05:53:42.355168+00:00",
+        "wall_time_s": 7.156938455067575,
+        "returncode": 0,
+        "stdout": "........................................................................ [ 85%]\n............                                                             [100%]\n84 passed in 6.49s\n",
+        "stderr": "",
+        "scope": "local_synthetic_saved_JSON_and_mock_tests_not_immutable_CI_or_H4_science"
+      },
+      {
+        "name": "helper_regression",
+        "command_argv": [
+          "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+          "-m",
+          "pytest",
+          "-q",
+          "-rs",
+          "tests/test_df_partial_s2_repeated.py",
+          "tests/test_df_partial_s2_repeated_cost.py",
+          "tests/test_rpe_hadamard_interrogation.py",
+          "tests/test_df_rpe_hadamard_compiled_cost.py",
+          "tests/test_rpe_hadamard_compiled_cost_benchmark.py",
+          "-p",
+          "no:cacheprovider"
+        ],
+        "started_utc": "2026-10-04T05:53:42.355184+00:00",
+        "ended_utc": "2026-10-04T05:54:01.313387+00:00",
+        "wall_time_s": 18.958213243167847,
+        "returncode": 0,
+        "stdout": "........................................................................ [ 53%]\n..............................................................           [100%]\n134 passed in 18.43s\n",
+        "stderr": "",
+        "scope": "local_synthetic_saved_JSON_and_mock_tests_not_immutable_CI_or_H4_science"
+      }
+    ]
+  },
+  "note": "The nested preflight status retains the historical audit script's pending-review label; operational approval and user launch permission are recorded separately above.",
+  "mandatory_stop_after_terminal": true,
+  "next_stage_authorized": false,
+  "run_completion": {
+    "exit_code": 0,
+    "combined_output": "{\"status\": \"TRANSFER_SUPPORTED\", \"result_fingerprint\": \"d9003ac6e32b2888d69aa1fed226dbef48cf13e1a6f10829e137c136824bb320\", \"next_stage_authorized\": false, \"mandatory_stop_reached\": true}\n"
+  }
+}

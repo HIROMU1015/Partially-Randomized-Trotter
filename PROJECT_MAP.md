@@ -20,7 +20,15 @@ M2 held-out transfer契約へzero-compute固定した。入口は
 `docs/research/pr2_matched_accuracy_m1_b1_execution_authorization_v1.md`と
 `docs/pr2_matched_accuracy_m1_b1_result_validation.md`と
 `docs/research/pr2_matched_accuracy_m2_held_out_transfer_contract_v1.md`。追加96 trajectory、held-out H4 1.30 Å、
-transfer、S3は未実行・未承認で、M2は独立review前のcontract段階である。
+transfer、S3は当時未実行・未承認だった。M2外部reviewの修正要求は
+`docs/research/pr2_matched_accuracy_m2_transfer_contract_amendment_v2.md`へ反映し、
+usable B2だけをsupportとratioに使うv2 source/planをcommit固定した。science実装の入口は
+`docs/research/pr2_matched_accuracy_m2_transfer_execution_implementation.md`である。
+actual source `2978e2f`、別authorization `90a9f24`、最終review承認と利用者指示を経て、M2を一度だけ実行した。
+最新は[結果照合](docs/pr2_matched_accuracy_m2_transfer_result_validation.md)：H4 1.30 Å、STO-3G、DF rank12、
+`T=0.8`の固定5構成、196 wrapperが完了し、B2二件がParetoに残って`TRANSFER_SUPPORTED`。
+result commitへ収録するlocal execution evidenceで、固定構成のtransfer以外へ一般化しない。現在はmandatory STOP、研究方針全面review待ち。
+追加96、held-out再探索、S3、別geometry/分子へ進まない。
 
 ## 最初に読む順序
 
@@ -410,20 +418,22 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
   `artifacts/pr2_matched_accuracy_m1_b1_result_validation/2026-10-03/`
   （候補列挙、synthetic barrier、development-only dense signal M1-A、194+16 cellのbounded compile
   plan/source/result/validation。science runnerはcompile map完成後に研究四分岐を自動判定せずreview待ちで
-  停止し、別validatorがcheckpoint/cache再集計と研究reviewを行う。held-outは未承認）
+  停止し、別validatorがcheckpoint/cache再集計と研究reviewを行う。このstageではheld-out未承認）
 - `src/trotterlib/pr2_matched_accuracy_m1_b1_result_validation.py`、
   `scripts/run_pr2_matched_accuracy_m1_b1_result_validation.py`、
   `tests/test_pr2_matched_accuracy_m1_b1_result_validation.py`
   （保存済みM1-A/M1-B1 artifact、全checkpoint、candidate別SQLite cacheをread-onlyで検査し、
   actual Pareto、旧selector、fixed-q=8、proxy、状態準備感度を再集計する。分子snapshot/held-outは読まない）
 - `docs/research/pr2_matched_accuracy_m2_held_out_transfer_contract_v1.md`、
+  `docs/research/pr2_matched_accuracy_m2_transfer_contract_amendment_v2.md`、
   `docs/research/pr2_m2_transfer_contract_external_review_request_06b2c32.md`、
   `src/trotterlib/pr2_matched_accuracy_m2_transfer_contract.py`、
   `scripts/run_pr2_matched_accuracy_m2_transfer_contract.py`、
   `tests/test_pr2_matched_accuracy_m2_transfer_contract.py`、
   `artifacts/pr2_matched_accuracy_m2_transfer_contract/2026-10-04/`
   （M1-B1の5構成、判定量、重大underestimate、4 status、196-wrapper上限をzero-compute固定する。
-  held-outはpath literalだけで、M2科学実行は未認可）
+  v1/draftは履歴として保存し、正式v2はusable B2にPareto support/ratioを統一してcommit固定した。
+  zero-compute contract runner自身はheld-outを開かず科学実行を認可しない。後続M2結果は下記の専用入口）
 - `docs/research/pr2_s0_reproduction_stop_c644925.md`、
   `docs/research/pr2_s0_external_review_request_c644925.md`、
   `artifacts/pr2_s0_s1_validation/2026-09-28/`（development byte-level hash不一致による
@@ -477,7 +487,7 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
 
 外部reviewの修正要求を[amendment v2](docs/research/pr2_matched_accuracy_m2_transfer_contract_amendment_v2.md)へ反映した。
 Pareto supportとprimary ratioは共にaccuracy-eligibleかつprimary重大underestimateのないB2だけを使う。
-v1証拠・固定5構成・seed・196-wrapper上限を維持し、科学実行とheld-out accessは未認可である。
+v1証拠・固定5構成・seed・196-wrapper上限を維持した。この契約修正時点では科学実行とheld-out accessは未認可だった。
 moduleは`src/trotterlib/pr2_matched_accuracy_m2_transfer_contract.py`、runnerは
 `scripts/run_pr2_matched_accuracy_m2_transfer_contract.py`、testは
 `tests/test_pr2_matched_accuracy_m2_transfer_contract.py`、schema/planは
@@ -491,12 +501,21 @@ moduleは`src/trotterlib/pr2_matched_accuracy_m2_transfer_contract.py`、runner�
 `tests/test_pr2_matched_accuracy_m2_transfer_execution.py`、
 `artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/`を対応させる。
 契約v2と正式planはcommit固定済み。source/authorization/環境gateはheld-out読み込みより前に置き、
-科学実行は未認可で停止する。旧draftは履歴だけであり、現行planはCOMMIT_BOUND。
+旧draftは履歴だけであり、正式planはCOMMIT_BOUND。source/plan固定後に別authorizationと最終reviewを経て
+一回のM2を実行した。科学sourceは変更せず、結果後のmandatory STOPを維持する。
 
 ## PR-2 M2最終実行前レビューの入口
 
 [実行authorization](docs/research/pr2_matched_accuracy_m2_transfer_execution_authorization_v1.md)と
 [最終review依頼](docs/research/pr2_m2_execution_authorization_external_review_request_90a9f24.md)、
 `artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/authorization_audit_v1.json`を一組として読む。
-actual science sourceとplanを変更せず別authorizationをcommitしたが、運用statusは
-`M2_AUTHORIZATION_FROZEN_AWAITING_FINAL_REVIEW`。review承認と利用者の実行指示までheld-outを開かない。
+actual science sourceとplanを変更せず別authorizationをcommitし、review待ちで一旦停止した。
+review承認と利用者指示を得た後に一度実行し、現在は`TRANSFER_SUPPORTED`後の研究方針review待ちである。
+
+## PR-2 M2 held-out結果の入口
+
+[結果照合](docs/pr2_matched_accuracy_m2_transfer_result_validation.md)と
+`artifacts/pr2_matched_accuracy_m2_transfer_execution/2026-10-04/`のresult、runner manifest、complete marker、
+launch/post-execution auditを対応させる。196 wrapper、5構成、source128、pre/post84＋134 testsを検査した
+result commitへ収録するlocal execution evidenceであり、immutable CIではない。`.runtime`とone-shot registryはcommit対象ではない。
+固定5構成のtransfer支持だけを解釈し、全status後STOP・追加科学計算未認可を維持する。

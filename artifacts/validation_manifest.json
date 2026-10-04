@@ -3305,7 +3305,7 @@
         "path": "docs/research/研究ノート/2026-10-04.md",
         "kind": "file",
         "supports": ["pr2_matched_accuracy_m2_transfer_contract"],
-        "reason": "Dated M2 decision history. The original contract section had file SHA-256 1c61e0adecdf2ea63aa3b97e7604767d4c9c0829057535952e5f2ec2dd3f2970 at commit 06b2c32528713a5270ee4915432bcd3898e0e5e1; later Markdown organization and the v2 review response are appended, not substituted for that history. Held-out transfer remains unexecuted and unauthorized."
+        "reason": "Dated M2 decision history. The original contract section had file SHA-256 1c61e0adecdf2ea63aa3b97e7604767d4c9c0829057535952e5f2ec2dd3f2970 at commit 06b2c32528713a5270ee4915432bcd3898e0e5e1; Markdown organization, the v2 review, source/authorization freeze and the later one-shot TRANSFER_SUPPORTED execution are appended, not substituted for prior history. The current stop is research-direction review with no next-stage authorization."
       },
       {
         "path": "docs/research/pr2_m2_transfer_contract_external_review_request_06b2c32.md",
@@ -3393,13 +3393,13 @@
         "path": "artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/execution_plan_v1.json",
         "kind": "file",
         "supports": ["pr2_matched_accuracy_m2_execution_source"],
-        "reason": "Actual-source-bound zero-compute execution plan, source commit 2978e2fea672b7a1ff20cac74269ec9a610159dc. SHA-256 2aa09a927e5ac58ebe417397802ace0e70c0097e8d0c53c05457075a41e85527; fingerprint ff7ed3d74bf4a0316adecdbac6b633978d71ca87bc1856d03db6fff9a2153276. The original creation status M2_EXECUTION_PLAN_FROZEN_EXECUTION_NOT_AUTHORIZED is preserved; the later separate authorization still awaits final review. No held-out/science execution."
+        "reason": "Actual-source-bound zero-compute execution plan, source commit 2978e2fea672b7a1ff20cac74269ec9a610159dc. SHA-256 2aa09a927e5ac58ebe417397802ace0e70c0097e8d0c53c05457075a41e85527; fingerprint ff7ed3d74bf4a0316adecdbac6b633978d71ca87bc1856d03db6fff9a2153276. Its original creation status M2_EXECUTION_PLAN_FROZEN_EXECUTION_NOT_AUTHORIZED and bytes remain unchanged. The later separate authorization, final review and user launch led to the one-shot result listed separately below."
       },
       {
         "path": "artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/execution_authorization_v1.json",
         "kind": "file",
         "supports": ["pr2_matched_accuracy_m2_execution_authorization"],
-        "reason": "Result-prior one-shot authorization committed at 90a9f24707ec439cd3618cc4ec2616a8caaf1148 after actual source and plan freeze. SHA-256 dbc8b66fad5316004ef404fe8253d3f6cb0f29bf7065502ea995240e5fbd7ff1. Binds 128 source hashes, plan, environment, five configurations, fixed output and 196-wrapper/5-worker caps. Operational launch is pending final review and a later user execution instruction."
+        "reason": "Result-prior one-shot authorization committed at 90a9f24707ec439cd3618cc4ec2616a8caaf1148 after actual source and plan freeze. SHA-256 dbc8b66fad5316004ef404fe8253d3f6cb0f29bf7065502ea995240e5fbd7ff1. Binds 128 source hashes, plan, environment, five configurations, fixed output and 196-wrapper/5-worker caps. Consumed once after the final review approval and user launch instruction; original bytes and historical pending-review fields remain unchanged. No retry/resume or next-stage authority."
       },
       {
         "path": "docs/research/pr2_matched_accuracy_m2_transfer_execution_authorization_v1.md",
@@ -3418,6 +3418,47 @@
         "kind": "file",
         "supports": ["pr2_matched_accuracy_m2_execution_authorization", "tests"],
         "reason": "Local committed-authorization positive gate, 128 source blobs, 196 unique wrapper keys, 96 unique seeds, seven rejected authorization mutations, and timed 84 focused plus 134 helper passes. Held-out/H4 science/GPU zero, fixed output and registry not created. Not immutable CI or a transfer result."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m2_transfer_execution/2026-10-04/pr2_matched_accuracy_m2_transfer_result_v2.json",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_transfer_execution"],
+        "sha256": "f41a92beb57e59cddc8c063b061c40acd4da50cb76ac0698efc2bce004937931",
+        "reason": "Source-bound local one-shot H4 linear 1.30 Angstrom, STO-3G, DF-rank-12 fixed-five-configuration result, included in the result commit with this manifest update. TRANSFER_SUPPORTED, result fingerprint d9003ac6e32b2888d69aa1fed226dbef48cf13e1a6f10829e137c136824bb320. Contains saved signals, all 196 wrapper metrics and paired trajectories, primary and six-metric matched work, decision and resource accounting. Not immutable CI or general method optimality."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m2_transfer_execution/2026-10-04/manifest.json",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_transfer_execution"],
+        "sha256": "fa6dad1b5c49c08ee4c6d96447847cc0ad357b17f67937a405f0550a4df12546",
+        "reason": "Original unchanged runner manifest listing the result JSON bytes and SHA-256. Supplemental operator and post-execution audits are intentionally outside this manifest."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m2_transfer_execution/2026-10-04/M2_COMPLETE.json",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_transfer_execution"],
+        "sha256": "619c33cb7d3285216c51a8332627a15a8995abd061c54564e1cbc03ee446900a",
+        "reason": "TRANSFER_SUPPORTED marker matching the saved result fingerprint, mandatory_stop_reached=true and next_stage_authorized=false. Does not authorize additional science."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m2_transfer_execution/2026-10-04/launch_audit_v1.json",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_transfer_execution", "tests"],
+        "sha256": "abdd63942d8be1f6927712ae84b623972453910b47335f980009cd8bca36b2d7",
+        "reason": "User-provided final review APPROVE_M2_EXECUTION, explicit user launch, exact command/root/source/authorization, one launch, exit code zero, and timed pre-run 84 focused plus 134 helper passes. Nested historical pending-review audit label is explicitly distinguished from the operator launch approval."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m2_transfer_execution/2026-10-04/post_execution_audit_v1.json",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_transfer_execution", "tests"],
+        "sha256": "6f737aefb3e22a09c3e8eca9f821d607059c08494cfbaa7a1f43e8cc0a612035",
+        "reason": "Read-only saved-result/checkpoint verification, 128 source identities, 196 unique keys, paired covariance, means/SE, decision, unchanged runner manifest/marker and timed post-run 84 focused plus 134 helper passes. Additional molecular data access and science invocations zero. Local evidence only."
+      },
+      {
+        "path": "docs/pr2_matched_accuracy_m2_transfer_result_validation.md",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_transfer_execution"],
+        "reason": "Bounded M2 result report: fixed-five transfer claim, candidate metrics and uncertainty, secondary state-preparation sensitivity, resources, pre/post tests, provenance and mandatory research-direction review. Leaves source, contract, plan, authorization and M1-B1 evidence unchanged."
       }
     ],
     "quarantined": [
@@ -6054,7 +6095,8 @@
     {
       "id": "pr2_matched_accuracy_m2_execution_source",
       "status": "source_present_no_current_ci",
-      "summary": "Result-prior M2 science module/runner/tests are implemented. Planning freezes the actual execution commit and all library Python blobs, compiler/package/environment identity, fixed configurations and trajectory schedules. A separately committed authorization must pass before a one-shot held-out load. The implementation preserves paired-axis covariance and usable-B2 support logic, enforces 196 wrappers and at most five workers, and stops after every terminal status. This initial implementation milestone created no authorization; the later separate authorization milestone is listed next and still awaits final review. No production M2 run.",
+      "summary": "Result-prior M2 science module/runner/tests were implemented before authorization. Planning froze the actual execution commit and all library Python blobs, compiler/package/environment identity, fixed configurations and trajectory schedules. A separately committed authorization must pass before a one-shot held-out load. The implementation preserves paired-axis covariance and usable-B2 support logic, enforces 196 wrappers and at most five workers, and stops after every terminal status. This initial implementation milestone created no authorization and performed no production M2 run; later separate authorization and execution milestones are listed below.",
+      "counts_scope": "Historical implementation milestone, not the current execution state.",
       "counts": {
         "frozen_candidates": 5,
         "planned_total_full_wrappers": 196,
@@ -6082,8 +6124,10 @@
     {
       "id": "pr2_matched_accuracy_m2_execution_authorization",
       "status": "source_present_no_current_ci",
-      "operational_status": "M2_AUTHORIZATION_FROZEN_AWAITING_FINAL_REVIEW",
-      "summary": "A separately committed result-prior authorization binds actual science source 2978e2fea672b7a1ff20cac74269ec9a610159dc and the unchanged execution plan. Authorization commit 90a9f24707ec439cd3618cc4ec2616a8caaf1148, SHA-256 dbc8b66fad5316004ef404fe8253d3f6cb0f29bf7065502ea995240e5fbd7ff1. Its zero-science gate passes, but final independent review and a subsequent user launch instruction are required. No held-out access, output/registry creation, or scientific execution.",
+      "operational_status": "M2_AUTHORIZATION_CONSUMED_ONCE_MANDATORY_STOP",
+      "authorization_creation_status": "M2_AUTHORIZATION_FROZEN_AWAITING_FINAL_REVIEW",
+      "counts_scope": "Historical result-prior authorization preparation audit; actual execution is in pr2_matched_accuracy_m2_transfer_execution.",
+      "summary": "A separately committed result-prior authorization binds actual science source 2978e2fea672b7a1ff20cac74269ec9a610159dc and the unchanged execution plan. Authorization commit 90a9f24707ec439cd3618cc4ec2616a8caaf1148, SHA-256 dbc8b66fad5316004ef404fe8253d3f6cb0f29bf7065502ea995240e5fbd7ff1. Preparation and review performed no held-out access, output/registry creation or science. After user-supplied final APPROVE_M2_EXECUTION and explicit launch instruction, the authorization was consumed by exactly one run. Original machine authorization bytes are preserved, and no retry/resume or next-stage science is authorized.",
       "counts": {
         "execution_authorizations_created": 1,
         "source_files_verified": 128,
@@ -6112,6 +6156,86 @@
         "Do not resume/retry failures or move the same authorization to another root/server/output; the exclusive registry is local to the fixed root, not a global fleet lock.",
         "Keep held-out access and scientific execution zero in preparation/review; retain existing M1-B1 evidence and historical v1/draft/plan bytes.",
         "After any future terminal status, STOP for full research-direction review before any additional trajectory, held-out retuning, geometry expansion, S3 or long RPE."
+      ]
+    },
+    {
+      "id": "pr2_matched_accuracy_m2_transfer_execution",
+      "status": "source_present_no_current_ci",
+      "terminal_status": "TRANSFER_SUPPORTED",
+      "operational_status": "M2_RESULT_VERIFIED_MANDATORY_STOP_AWAITING_RESEARCH_REVIEW",
+      "evidence_commit_status": "committed_local_execution_evidence",
+      "result_commit_reference": "commit_containing_this_manifest_update_and_M2_result_artifacts",
+      "branch": "pr2-v4-s2-parallelization-20260928",
+      "review_bundle_commit": "40a11d02a67954175686b2e532b83c7953ec8316",
+      "source_commit": "2978e2fea672b7a1ff20cac74269ec9a610159dc",
+      "authorization_commit": "90a9f24707ec439cd3618cc4ec2616a8caaf1148",
+      "result_sha256": "f41a92beb57e59cddc8c063b061c40acd4da50cb76ac0698efc2bce004937931",
+      "result_fingerprint": "d9003ac6e32b2888d69aa1fed226dbef48cf13e1a6f10829e137c136824bb320",
+      "manifest_sha256": "fa6dad1b5c49c08ee4c6d96447847cc0ad357b17f67937a405f0550a4df12546",
+      "summary": "The one authorized H4 linear 1.30 Angstrom, STO-3G, DF-rank-12 transfer ran exactly the five development-frozen configurations at T=0.8: B2 split3 q1 r4/r8 K2, B0 split6 q1, B1 split12 q1, and B3 split0 q8 r32 K4. Delta is 0.8 for q1 and 0.1 for q8; no sweep or held-out retuning. All five are accuracy eligible, both B2 configurations have no major primary underestimate and remain on the six-metric point Pareto frontier. The best usable-B2-to-eligible-endpoint primary RZ ratio is 0.5860898125394417, engineering upper 2SE 0.5935841139855331, satisfying 1.10. Original result/manifest/marker, 196 checkpoints, paired covariance and 128 source blobs are verified. This supports only transfer of five frozen configurations, not held-out method optimality, a strict r4/r8 winner, formal confidence coverage or final total cost. State-preparation sensitivity remains secondary and permits a B1 region at large P. Stop for full research-direction review with no automatic continuation.",
+      "scope": {
+        "hamiltonian": "H4 linear 1.30 Angstrom STO-3G DF rank12",
+        "system_qubits": 8,
+        "T": 0.8,
+        "candidate_ids": ["B2-rank3-q1-r4-K2", "B2-rank3-q1-r8-K2", "B0-rank6-q1-r0-K0", "B1-rank12-q1-r0-K0", "B3-rank0-q8-r32-K4"],
+        "compiler": "Qiskit1.3.0 basis rz/sx/x/cx opt1 seed17 no backend/coupling/layout/routing",
+        "formal_confidence_interval_claimed": false,
+        "held_out_reoptimized": false,
+        "next_stage_authorized": false,
+        "mandatory_stop_reached": true
+      },
+      "counts": {
+        "production_run_invocations": 1,
+        "frozen_candidates": 5,
+        "accuracy_eligible_candidates": 5,
+        "usable_b2_candidates": 2,
+        "point_six_metric_pareto_candidates": 2,
+        "source_files_verified": 128,
+        "held_out_npz_hash_reads": 1,
+        "held_out_npz_loads": 1,
+        "signal_evaluations": 5,
+        "random_trajectories": 96,
+        "occurrence_samples": 8576,
+        "unique_wrapper_keys": 196,
+        "full_wrappers_computed": 196,
+        "full_wrappers_reused": 0,
+        "complete_checkpoints_verified": 196,
+        "unresolved_reservations": 0,
+        "unreadable_records": 0,
+        "process_workers": 5,
+        "blas_threads_per_worker": 1,
+        "additional_held_out_accesses_in_result_verification": 0,
+        "additional_science_invocations": 0,
+        "candidate_searches": 0,
+        "additional_trajectories": 0,
+        "ground_state_solves": 0,
+        "molecular_calculations": 0,
+        "quantum_shots_executed": 0,
+        "gpu_queries_allocations_kernels": 0,
+        "pre_focused_local_tests_passed": 84,
+        "pre_helper_regression_tests_passed": 134,
+        "post_focused_local_tests_passed": 84,
+        "post_helper_regression_tests_passed": 134,
+        "test_failures": 0,
+        "test_skips": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "resources": {
+        "started_utc": "2026-10-04T05:54:28.620222+00:00",
+        "ended_utc": "2026-10-04T06:10:40.444279+00:00",
+        "wall_time_s": 971.8240538868122,
+        "parent_cpu_time_s": 55.692018011,
+        "parent_peak_rss_kib": 1291228,
+        "maximum_worker_peak_rss_kib": 1754368,
+        "aggregate_peak_rss_measured": false
+      },
+      "completion_criteria": [
+        "Keep frozen source/plan/authorization, contract history and M1-B1 evidence byte-identical; preserve runner-generated result/manifest/marker bytes.",
+        "Verify saved results and checkpoint identity without reopening or recompiling molecular data; keep pre/post test scopes bounded to the reviewed synthetic/saved-JSON/mock suites.",
+        "Limit TRANSFER_SUPPORTED to accuracy and resource competitiveness of development-frozen configurations on one held-out geometry; do not claim method optimality or a general rank3/q1 winner.",
+        "Do not change the strict greater-than-ten-percent major-underestimate rule, usable-B2 support sets or engineering-interval interpretation after seeing results.",
+        "Do not commit runtime/registry/matrices/state/NPZ or present local uncommitted evidence as immutable CI or independently reproduced results.",
+        "Mandatory STOP for full research-direction review before any new trajectory, retuning, geometry/molecule/PF expansion, S3, long RPE or final total-cost evaluation."
       ]
     }
   ],
