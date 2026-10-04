@@ -1,5 +1,24 @@
 # Validation status
 
+## 2026-10-05 Track A PM-1最終承認・一項目確定、明示launch待ち
+
+利用者提示review `APPROVE_PM1_EXECUTION`を受領し、
+[確定記録](docs/research/pr2_pm1_execution_finalization_20261005.md)を追加した。
+単独commit `bf9eaeec868361df0c8e05d06e9570a2bfc5a7a4`はauthorization JSONの`final_review_approved`だけをtrueにした。
+SHA-256は`2113978b360ca763071b860c7ea2d14b83eccc68a471510a98da5ea5c2282530`。
+source134、sealed plan、8候補/16 wrapper、他field・環境・資源上限・root/outputは不変。
+committed authorizationのscience-free実gate PASS、限定201 local tests passed、fail/skip0。
+H4 science、NPZ stat/hash/load、runtime/cache access、GPU操作は今回0。PM-1 output/registry未作成。
+
+運用statusは`PM1_FINAL_REVIEW_APPROVED_AUTHORIZATION_FINALIZED_AWAITING_USER_LAUNCH`。
+本計算は未実行。明示launch後もH4 linear 1.00 Å、STO-3G、DF rank12、8 qubits、T=0.8、
+B0 rank4/5 × q=1/2/4/8、delta=0.8/0.4/0.2/0.1、r=K=0、8 signals/16 wrappers、CPU1に固定。
+成功/failureでmandatory STOP、研究判断null、PM-2以降未認可。
+旧draft manifestはreview bundleのfalse blobへ照合する履歴として不変。
+新しいreceipt/gate/test/manifestは`artifacts/resource_applicability/pr2_pm1_finalization/2026-10-05/`。
+過去4件stat/hash違反を保持し、現在のaccess0やlocal testsをimmutable CIと混同しない。
+以下のdraft/準備statusは当時の履歴である。
+
 ## 2026-10-04 Track A PM-1 authorization draft固定 最終review待ち
 
 準備reviewの `APPROVE_PM1_RESULT_PRIOR_AUTHORIZATION_DRAFT` を受け、

@@ -1,14 +1,16 @@
 # プロジェクト案内
 
-## Track A PM-1最終実行前レビュー待ち
+## Track A PM-1最終承認済み：明示launch待ち
 
-[authorization draft](docs/research/pr2_pm1_discard_execution_authorization_v1.md)を
-別commit `b6175a0`へ固定した。[最終レビュー依頼](docs/research/pr2_pm1_execution_authorization_external_review_request_b6175a0.md)と
-`artifacts/resource_applicability/pr2_pm1_discard_authorization/2026-10-04/`を読む。
-source `fd7552e`とsealed planは不変、final_review_approved=falseで実行gateは拒否する。
-201 local testsとzero-science監査を保存した。独立review→一項目の別commit→明示launch前でSTOP。
+`APPROVE_PM1_EXECUTION`を受領し、[authorization確定記録](docs/research/pr2_pm1_execution_finalization_20261005.md)へ保存した。
+commit `bf9eaeec868361df0c8e05d06e9570a2bfc5a7a4`は`final_review_approved`一項目だけをtrueにした。
+source `fd7552e`、sealed plan、134 source、8候補/16 wrapper、compiler/caps/root/outputは不変。
+committed authorizationのscience-free実gate PASS、限定201 local tests passed、fail/skip0。
+**PM-1本計算は0。利用者の明示launch指示までSTOP。** 旧draft manifestはhistorical commit照合用に保存し、
+現在の照合は`artifacts/resource_applicability/pr2_pm1_finalization/2026-10-05/`を使う。
+以下の準備・未認可記述は過去milestone時点の履歴であり、現在地はこの節を優先する。
 
-最終更新：2026-10-04
+最終更新：2026-10-05
 
 ## Track A post-M2レビュー資料
 

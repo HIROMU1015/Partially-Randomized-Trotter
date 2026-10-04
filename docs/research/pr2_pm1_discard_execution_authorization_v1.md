@@ -3,7 +3,16 @@
 2026-10-04。準備レビューの `APPROVE_PM1_RESULT_PRIOR_AUTHORIZATION_DRAFT` を受け、
 PM-1だけの結果前authorization条件を固定します。今回はscience runを開始しません。
 
-## 現在のbarrierと承認後の手順
+## 2026-10-05の追記：最終承認・明示launch待ち
+
+最終review `APPROVE_PM1_EXECUTION`を受領し、
+[確定記録](pr2_pm1_execution_finalization_20261005.md)どおり`final_review_approved`だけをtrueへ変更した。
+別commit `bf9eaeec868361df0c8e05d06e9570a2bfc5a7a4`、他field/source/planは不変。
+science-free実gate PASS、限定201 local tests passed、fail/skip0。本計算は0、利用者の明示launchまでSTOP。
+以下のfalse・draft記述は2026-10-04の結果前記録として保持する。旧manifestもdraft時点のblobに対する履歴であり、
+確定後の照合は別finalization manifestを使う。固定command/outputを含む実行条件は変更しない。
+
+## draft時点のbarrierと承認後の手順
 
 [authorization JSON](../../artifacts/resource_applicability/pr2_pm1_discard_authorization/2026-10-04/execution_authorization_v1.json)は
 `final_review_approved=false` です。既存runnerはこの値がtrueでなければ

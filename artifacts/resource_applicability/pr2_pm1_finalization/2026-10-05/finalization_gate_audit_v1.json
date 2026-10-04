@@ -1,0 +1,95 @@
+{
+  "schema_version": "track_a_pm1_finalization_gate_audit_v1",
+  "status": "PM1_FINAL_REVIEW_APPROVED_AUTHORIZATION_FINALIZED_AWAITING_USER_LAUNCH",
+  "started_utc": "2026-10-04T15:12:11.589758+00:00",
+  "finished_utc": "2026-10-04T15:12:12.016724+00:00",
+  "local_date": "2026-10-05",
+  "timezone": "Asia/Tokyo",
+  "checked_head": "bf9eaeec868361df0c8e05d06e9570a2bfc5a7a4",
+  "authorization_finalization_commit": "bf9eaeec868361df0c8e05d06e9570a2bfc5a7a4",
+  "review_bundle_commit": "234369f45e3fea7c825a1b4af85fba6c1edf98c3",
+  "authorization_draft_commit": "b6175a0f4fdeb1d2f0cd61c09dce37675624b73a",
+  "changed_authorization_fields": [
+    "final_review_approved"
+  ],
+  "single_file_single_boolean_commit": true,
+  "authorization_relative": "artifacts/resource_applicability/pr2_pm1_discard_authorization/2026-10-04/execution_authorization_v1.json",
+  "authorization_sha256": "2113978b360ca763071b860c7ea2d14b83eccc68a471510a98da5ea5c2282530",
+  "authorization_schema_match": true,
+  "actual_committed_finalization_gate": "PASS_NO_SCIENCE",
+  "source_commit": "fd7552edc0334ccf57ecf501a128c85c8d22822a",
+  "source_count": 134,
+  "source_commit_blob_identical": true,
+  "plan_sha256": "cae692bee2be748ddbf17bace2a5652613537a244fe94238cdf669f5d2ca5624",
+  "plan_fingerprint": "144824b70264dd3d7d1d22898afbb1f9e1c248f105ecac8096f31a2c8f78ec9e",
+  "candidate_count": 8,
+  "unique_wrapper_keys": 16,
+  "environment": {
+    "python": "3.11.0rc1",
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "openfermion": "1.6.1",
+    "openfermionpyscf": "0.5",
+    "pyscf": "2.7.0"
+  },
+  "python_executable": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+  "preparation_and_pm0_manifests": [
+    {
+      "path": "artifacts/resource_applicability/pr2_pm1_discard_preparation/2026-10-04/manifest.json",
+      "sha256": "28509755c6a753d66d1717c80290920c6bad5ae4c1b6c1869a47f44c159268fa",
+      "files_verified": 7
+    },
+    {
+      "path": "artifacts/resource_applicability/pr2_post_m2_evidence_attribution/2026-10-04/manifest.json",
+      "sha256": "18e7e6a4ecd99f8c09e2fb373354659c8d7728279c496bbe17aca472b3afdcaa",
+      "files_verified": 7
+    }
+  ],
+  "draft_manifest": {
+    "path": "artifacts/resource_applicability/pr2_pm1_discard_authorization/2026-10-04/manifest.json",
+    "sha256": "72326ad83878a4cc28d9c9483170b5520964bd6454ea093eba62f57bc1bf59db",
+    "semantics": "Historical draft snapshot, verify against review bundle commit, not finalized current authorization.",
+    "historical_blob_files_verified": 3,
+    "unchanged": true
+  },
+  "prospective_pm1_output_absent": true,
+  "prospective_pm1_registry_absent": true,
+  "counts": {
+    "production_backend_invocations": 0,
+    "production_science_runs": 0,
+    "H4_signal_build_compile": 0,
+    "npz_stat_hash_load": 0,
+    "runtime_cache_access": 0,
+    "random_sampling": 0,
+    "gpu_operations": 0,
+    "quantum_shots": 0,
+    "blocked_protected_access_attempts": 0
+  },
+  "explicit_user_launch_received": false,
+  "execution_launch_authorized": false,
+  "mandatory_stop": true,
+  "next_stage_authorized": false,
+  "research_decision": null,
+  "prior_preparation_incident_preserved": {
+    "npz_stat_hash_accesses": 4,
+    "npz_loads": 0,
+    "distinct_from_current_scope": true
+  },
+  "evidence_kind": "LOCAL_ZERO_SCIENCE_DIAGNOSTIC_NOT_IMMUTABLE_CI",
+  "verification_harness_attempts": [
+    {
+      "attempt": 1,
+      "result": "HARNESS_ERROR_AFTER_EXECUTION_GATE_PASS",
+      "reason": "PM0 manifest files is a mapping, not a list; no production runner or backend invoked.",
+      "scientific_sources_modified": false,
+      "production_science_runs": 0
+    },
+    {
+      "attempt": 2,
+      "result": "PASS",
+      "scope": "Corrected read-only harness accepts each frozen manifest format; production source/plan/authorization unchanged."
+    }
+  ],
+  "command": "PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=src \"/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python\" - <<'PY'\nfrom datetime import datetime, timezone\nimport importlib.util, json, hashlib, subprocess, sys\nfrom pathlib import Path\nstarted=datetime.now(timezone.utc).isoformat()\nspec=importlib.util.spec_from_file_location(\"pm1_guard\", \"scripts/resource_applicability/run_pr2_pm1_preparation_tests.py\")\nguard=importlib.util.module_from_spec(spec); spec.loader.exec_module(guard)\naccess=guard.install_boundary()\nfrom trottertracks.resource_applicability import pm1_discard_contract as c, pm1_discard_execution as e\nroot=Path.cwd()\nauthp=\"artifacts/resource_applicability/pr2_pm1_discard_authorization/2026-10-04/execution_authorization_v1.json\"\nplanp=\"artifacts/resource_applicability/pr2_pm1_discard_preparation/2026-10-04/zero_science_plan_v1.json\"\nab,pb=c.read_text_bytes(root,authp),c.read_text_bytes(root,planp)\nauth,plan=json.loads(ab),json.loads(pb)\nschema=json.loads(c.read_text_bytes(root,\"artifacts/resource_applicability/pr2_pm1_discard_authorization/2026-10-04/authorization_schema_v1.json\"))\nassert set(auth)==set(schema[\"required\"])==set(schema[\"properties\"])\nassert schema[\"additionalProperties\"] is False\nfor key,rule in schema[\"properties\"].items():\n    if key==\"final_review_approved\":\n        assert rule=={\"type\":\"boolean\"} and auth[key] is True\n    else:\n        assert auth[key]==rule[\"const\"],key\nbackend_calls=[]\ndef forbidden_backend(*args,**kwargs):\n    backend_calls.append(1)\n    raise AssertionError(\"production backend must not be constructed\")\ne._DevelopmentBackend=forbidden_backend\nout=e.validate_execution_gate(root,plan,auth,pb,authp)\nassert not (root/out).exists()\nassert not (root/\"artifacts/resource_applicability/pr2_pm1_discard_execution_registry\").exists()\nassert not backend_calls\nold=c.git(root,\"show\",\"b6175a0f4fdeb1d2f0cd61c09dce37675624b73a:\"+authp)\nassert ab==old.replace(b'\"final_review_approved\": false',b'\"final_review_approved\": true')\nbefore=json.loads(old)\nassert set(before)==set(auth) and [k for k in auth if before[k]!=auth[k]]==[\"final_review_approved\"]\nhead=c.git(root,\"rev-parse\",\"HEAD\").decode().strip()\nassert head==\"bf9eaeec868361df0c8e05d06e9570a2bfc5a7a4\"\nassert c.git(root,\"diff-tree\",\"--no-commit-id\",\"--name-only\",\"-r\",head).decode().splitlines()==[authp]\nassert c.git(root,\"diff-tree\",\"--no-commit-id\",\"--numstat\",\"-r\",head).decode().strip()==f\"1\\t1\\t{authp}\"\nassert auth[\"source_sha256\"]==plan[\"source_sha256\"] and len(plan[\"source_sha256\"])==134\nassert auth[\"candidate_fingerprints\"]==[r[\"candidate_fingerprint\"] for r in plan[\"candidates\"]]\nassert auth[\"wrapper_keys\"]==[c.wrapper_key(plan,r,axis) for r in plan[\"candidates\"] for axis in c.AXES]\nmanifests=[]\nfor directory in (\n \"artifacts/resource_applicability/pr2_pm1_discard_preparation/2026-10-04\",\n \"artifacts/resource_applicability/pr2_post_m2_evidence_attribution/2026-10-04\"):\n    mbytes=c.read_text_bytes(root,directory+\"/manifest.json\")\n    manifest=json.loads(mbytes)\n    rows=manifest[\"files\"]\n    if isinstance(rows,dict):\n        rows=[{\"path\":name,**record} for name,record in rows.items()]\n    for row in rows:\n        relative=Path(directory)/row[\"path\"]\n        assert not relative.is_absolute() and \"..\" not in relative.parts and \".runtime\" not in relative.parts\n        assert relative.suffix in {\".json\",\".md\",\".csv\",\".py\"}\n        data=(root/relative).read_bytes()\n        assert len(data)==row[\"bytes\"] and hashlib.sha256(data).hexdigest()==row[\"sha256\"]\n        assert data==c.git(root,\"show\",\"234369f45e3fea7c825a1b4af85fba6c1edf98c3:\"+directory+\"/\"+row[\"path\"])\n    manifests.append({\"path\":directory+\"/manifest.json\",\"sha256\":hashlib.sha256(mbytes).hexdigest(),\"files_verified\":len(manifest[\"files\"])})\ndraft_dir=\"artifacts/resource_applicability/pr2_pm1_discard_authorization/2026-10-04\"\ndraft_bytes=c.read_text_bytes(root,draft_dir+\"/manifest.json\")\ndraft_manifest=json.loads(draft_bytes)\nassert draft_bytes==c.git(root,\"show\",\"234369f45e3fea7c825a1b4af85fba6c1edf98c3:\"+draft_dir+\"/manifest.json\")\nfor row in draft_manifest[\"files\"]:\n    historical=c.git(root,\"show\",\"234369f45e3fea7c825a1b4af85fba6c1edf98c3:\"+draft_dir+\"/\"+row[\"path\"])\n    assert len(historical)==row[\"bytes\"] and hashlib.sha256(historical).hexdigest()==row[\"sha256\"]\n    if row[\"path\"]!=\"execution_authorization_v1.json\":\n        assert c.read_text_bytes(root,draft_dir+\"/\"+row[\"path\"])==historical\nassert access[\"blocked_protected_access_attempts\"]==0\nprint(json.dumps({\n \"schema_version\":\"track_a_pm1_finalization_gate_audit_v1\",\n \"status\":\"PM1_FINAL_REVIEW_APPROVED_AUTHORIZATION_FINALIZED_AWAITING_USER_LAUNCH\",\n \"started_utc\":started,\"finished_utc\":datetime.now(timezone.utc).isoformat(),\n \"local_date\":\"2026-10-05\",\"timezone\":\"Asia/Tokyo\",\n \"checked_head\":head,\"authorization_finalization_commit\":head,\n \"review_bundle_commit\":\"234369f45e3fea7c825a1b4af85fba6c1edf98c3\",\n \"authorization_draft_commit\":\"b6175a0f4fdeb1d2f0cd61c09dce37675624b73a\",\n \"changed_authorization_fields\":[\"final_review_approved\"],\n \"single_file_single_boolean_commit\":True,\n \"authorization_relative\":authp,\"authorization_sha256\":hashlib.sha256(ab).hexdigest(),\n \"authorization_schema_match\":True,\"actual_committed_finalization_gate\":\"PASS_NO_SCIENCE\",\n \"source_commit\":plan[\"source_commit\"],\"source_count\":134,\"source_commit_blob_identical\":True,\n \"plan_sha256\":hashlib.sha256(pb).hexdigest(),\"plan_fingerprint\":plan[\"plan_fingerprint\"],\n \"candidate_count\":8,\"unique_wrapper_keys\":len(set(auth[\"wrapper_keys\"])),\n \"environment\":e.environment_identity(),\"python_executable\":sys.executable,\n \"preparation_and_pm0_manifests\":manifests,\n \"draft_manifest\":{\"path\":draft_dir+\"/manifest.json\",\"sha256\":hashlib.sha256(draft_bytes).hexdigest(),\n \"semantics\":\"Historical draft snapshot, verify against review bundle commit, not finalized current authorization.\",\n \"historical_blob_files_verified\":len(draft_manifest[\"files\"]),\"unchanged\":True},\n \"prospective_pm1_output_absent\":True,\"prospective_pm1_registry_absent\":True,\n \"counts\":{\"production_backend_invocations\":len(backend_calls),\"production_science_runs\":0,\n \"H4_signal_build_compile\":0,\"npz_stat_hash_load\":0,\"runtime_cache_access\":0,\n \"random_sampling\":0,\"gpu_operations\":0,\"quantum_shots\":0,**access},\n \"explicit_user_launch_received\":False,\"execution_launch_authorized\":False,\n \"mandatory_stop\":True,\"next_stage_authorized\":False,\"research_decision\":None,\n \"prior_preparation_incident_preserved\":{\"npz_stat_hash_accesses\":4,\"npz_loads\":0,\"distinct_from_current_scope\":True},\n \"evidence_kind\":\"LOCAL_ZERO_SCIENCE_DIAGNOSTIC_NOT_IMMUTABLE_CI\"\n},ensure_ascii=False))\nPY"
+}

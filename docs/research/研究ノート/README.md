@@ -35,6 +35,7 @@
 
 | 日付 | 主題 | 基準commit | 到達点 | 次の主要課題 |
 |---|---|---|---|---|
+| [2026-10-05](2026-10-05.md) | Track A PM-1最終承認・一項目authorization確定 | `bf9eaee` | final_review_approvedのみtrue、source/plan不変、science-free gate PASS、201 local tests passed | 利用者の明示launch待ち。本計算0、実行後もmandatory STOP |
 | [2026-10-03](2026-10-03.md) | PR-2 M1-B1 actual compile map検証 | source `33f436b` + local result | 12,448 wrapperと全checkpoint/cacheを再検査。B2 rank 3、q=1のactual frontierを確認し`CONTINUE_RESOURCE_STUDY` | result-prior held-out transfer reviewを別freeze。H4 1.30 Åは未開封 |
 | [2026-09-30](2026-09-30.md) | PR-2 M1-A result-prior authorization | authorization commitで固定 | development-only最大212 signal、compile 0、held-out access 0を結果前固定 | M1-Aを一度実行し、limitedなら停止、clearならartifact freeze後に別M1-B authorization |
 | [2026-09-29](2026-09-29.md) | PR-2 V4/S2完了とmatched-accuracy再設計 | `61bbaad` | 旧S2を保持し、M1前研究契約とzero-compute実装契約を固定。208候補・16-cell selector、専用test通過、M1科学計算未承認 | 独立review後、必要ならM1 execution authorizationを別freeze |

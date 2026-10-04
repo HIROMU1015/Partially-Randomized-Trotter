@@ -1,8 +1,8 @@
 # 文書索引
 
-Track A PM-1は[結果前authorization draft](research/pr2_pm1_discard_execution_authorization_v1.md)を固定し、
-[最終実行前レビュー依頼](research/pr2_pm1_execution_authorization_external_review_request_b6175a0.md)で停止中。
-source/plan不変、final_review_approved=false、本実行0。承認後の一項目commitも明示launch指示とは別である。
+Track A PM-1は`APPROVE_PM1_EXECUTION`を受領し、[一項目だけのauthorization確定](research/pr2_pm1_execution_finalization_20261005.md)を完了した。
+source/plan不変、final_review_approved=true、science-free実gate PASS、限定201 local tests passed。
+本実行0、明示launch指示待ちでSTOP。旧draft/preparationの未認可記述は当時の履歴として保持する。
 
 最新のTrack A claim限定は[PM-0 POSTHOC証拠帰属・機構解析](research/pr2_post_m2_evidence_attribution.md)。
 元のM1/M2結果と区別し、同一domain、selector指標別regret、N×cost、same-R、欠測の表を辿る。
