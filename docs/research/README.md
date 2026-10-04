@@ -175,3 +175,9 @@ moduleは`src/trotterlib/pr2_matched_accuracy_m2_transfer_contract.py`、runner�
 [実装資料](pr2_matched_accuracy_m2_transfer_execution_implementation.md)は、科学実行module/runner/testと
 契約v2正式planの関係、結果前identity、196-wrapper cap、全status後STOPを説明する。
 local implementation testは科学transfer結果ではない。別authorizationと最終review前にheld-outを開かない。
+
+## PR-2 M2最終実行前レビュー
+
+- [実行authorization](pr2_matched_accuracy_m2_transfer_execution_authorization_v1.md)：source `2978e2f`、plan、候補/seed/compiler/fixed output、一回制限と全status後STOP。
+- [最終review依頼](pr2_m2_execution_authorization_external_review_request_90a9f24.md)：authorization commit `90a9f24`をレビューする。承認と利用者の実行指示前はheld-outを開かない。
+- [authorization監査](../../artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/authorization_audit_v1.json)：128 source、196 keys、96 seeds、local focused84＋helper134 pass。M2科学結果ではない。

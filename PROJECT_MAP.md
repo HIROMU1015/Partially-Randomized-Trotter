@@ -492,3 +492,11 @@ moduleは`src/trotterlib/pr2_matched_accuracy_m2_transfer_contract.py`、runner�
 `artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/`を対応させる。
 契約v2と正式planはcommit固定済み。source/authorization/環境gateはheld-out読み込みより前に置き、
 科学実行は未認可で停止する。旧draftは履歴だけであり、現行planはCOMMIT_BOUND。
+
+## PR-2 M2最終実行前レビューの入口
+
+[実行authorization](docs/research/pr2_matched_accuracy_m2_transfer_execution_authorization_v1.md)と
+[最終review依頼](docs/research/pr2_m2_execution_authorization_external_review_request_90a9f24.md)、
+`artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/authorization_audit_v1.json`を一組として読む。
+actual science sourceとplanを変更せず別authorizationをcommitしたが、運用statusは
+`M2_AUTHORIZATION_FROZEN_AWAITING_FINAL_REVIEW`。review承認と利用者の実行指示までheld-outを開かない。

@@ -3393,7 +3393,31 @@
         "path": "artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/execution_plan_v1.json",
         "kind": "file",
         "supports": ["pr2_matched_accuracy_m2_execution_source"],
-        "reason": "Actual-source-bound zero-compute execution plan, source commit 2978e2fea672b7a1ff20cac74269ec9a610159dc. SHA-256 2aa09a927e5ac58ebe417397802ace0e70c0097e8d0c53c05457075a41e85527; fingerprint ff7ed3d74bf4a0316adecdbac6b633978d71ca87bc1856d03db6fff9a2153276. Status M2_EXECUTION_PLAN_FROZEN_EXECUTION_NOT_AUTHORIZED, no held-out/science execution or authorization."
+        "reason": "Actual-source-bound zero-compute execution plan, source commit 2978e2fea672b7a1ff20cac74269ec9a610159dc. SHA-256 2aa09a927e5ac58ebe417397802ace0e70c0097e8d0c53c05457075a41e85527; fingerprint ff7ed3d74bf4a0316adecdbac6b633978d71ca87bc1856d03db6fff9a2153276. The original creation status M2_EXECUTION_PLAN_FROZEN_EXECUTION_NOT_AUTHORIZED is preserved; the later separate authorization still awaits final review. No held-out/science execution."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/execution_authorization_v1.json",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_execution_authorization"],
+        "reason": "Result-prior one-shot authorization committed at 90a9f24707ec439cd3618cc4ec2616a8caaf1148 after actual source and plan freeze. SHA-256 dbc8b66fad5316004ef404fe8253d3f6cb0f29bf7065502ea995240e5fbd7ff1. Binds 128 source hashes, plan, environment, five configurations, fixed output and 196-wrapper/5-worker caps. Operational launch is pending final review and a later user execution instruction."
+      },
+      {
+        "path": "docs/research/pr2_matched_accuracy_m2_transfer_execution_authorization_v1.md",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_execution_authorization"],
+        "reason": "Normative fixed command/root/output, one-run/no-resume/no-retry policy, review-before-launch operational barrier, and mandatory STOP after every terminal status. Does not claim that the science runner machine-verifies external review approval or a global cross-checkout lock."
+      },
+      {
+        "path": "docs/research/pr2_m2_execution_authorization_external_review_request_90a9f24.md",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_execution_authorization"],
+        "reason": "Independent final pre-execution review request covering fixed science source, authorization, usable-B2 rules, paired uncertainty and bounded resource/access gates. Prohibits held-out data access and scientific execution during review."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/authorization_audit_v1.json",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_execution_authorization", "tests"],
+        "reason": "Local committed-authorization positive gate, 128 source blobs, 196 unique wrapper keys, 96 unique seeds, seven rejected authorization mutations, and timed 84 focused plus 134 helper passes. Held-out/H4 science/GPU zero, fixed output and registry not created. Not immutable CI or a transfer result."
       }
     ],
     "quarantined": [
@@ -6030,7 +6054,7 @@
     {
       "id": "pr2_matched_accuracy_m2_execution_source",
       "status": "source_present_no_current_ci",
-      "summary": "Result-prior M2 science module/runner/tests are implemented. Planning freezes the actual execution commit and all library Python blobs, compiler/package/environment identity, fixed configurations and trajectory schedules. A separately committed authorization must pass before a one-shot held-out load. The implementation preserves paired-axis covariance and usable-B2 support logic, enforces 196 wrappers and at most five workers, and stops after every terminal status. No production M2 run or execution authorization has been created.",
+      "summary": "Result-prior M2 science module/runner/tests are implemented. Planning freezes the actual execution commit and all library Python blobs, compiler/package/environment identity, fixed configurations and trajectory schedules. A separately committed authorization must pass before a one-shot held-out load. The implementation preserves paired-axis covariance and usable-B2 support logic, enforces 196 wrappers and at most five workers, and stops after every terminal status. This initial implementation milestone created no authorization; the later separate authorization milestone is listed next and still awaits final review. No production M2 run.",
       "counts": {
         "frozen_candidates": 5,
         "planned_total_full_wrappers": 196,
@@ -6053,6 +6077,41 @@
         "Keep partial/unresolved failure counts distinct from zero and never automatically retry an unresolved compiler attempt.",
         "Retain all five configurations; use only usable B2 for both support routes; keep state-preparation sensitivity secondary.",
         "After any terminal status, STOP before extra trajectories, retuning, geometry expansion, S3 or research-direction decisions."
+      ]
+    },
+    {
+      "id": "pr2_matched_accuracy_m2_execution_authorization",
+      "status": "source_present_no_current_ci",
+      "operational_status": "M2_AUTHORIZATION_FROZEN_AWAITING_FINAL_REVIEW",
+      "summary": "A separately committed result-prior authorization binds actual science source 2978e2fea672b7a1ff20cac74269ec9a610159dc and the unchanged execution plan. Authorization commit 90a9f24707ec439cd3618cc4ec2616a8caaf1148, SHA-256 dbc8b66fad5316004ef404fe8253d3f6cb0f29bf7065502ea995240e5fbd7ff1. Its zero-science gate passes, but final independent review and a subsequent user launch instruction are required. No held-out access, output/registry creation, or scientific execution.",
+      "counts": {
+        "execution_authorizations_created": 1,
+        "source_files_verified": 128,
+        "frozen_candidates": 5,
+        "planned_full_wrappers": 196,
+        "unique_wrapper_keys": 196,
+        "planned_unique_random_trajectory_seeds": 96,
+        "maximum_process_workers": 5,
+        "authorization_gate_passes": 1,
+        "authorization_mutations_rejected": 7,
+        "focused_local_tests_passed": 84,
+        "helper_regression_local_tests_passed": 134,
+        "test_failures": 0,
+        "test_skips": 0,
+        "held_out_accesses": 0,
+        "production_run_invocations": 0,
+        "science_wrapper_compiles": 0,
+        "transfer_executions": 0,
+        "gpu_queries_allocations_kernels": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Wait for APPROVE_M2_EXECUTION from final independent pre-execution review and a subsequent user execution instruction; freezing the machine authorization alone does not permit launch.",
+        "Bind the unchanged 128 source blobs, exact plan/environment/candidate/seed identities, fixed project root and output, one-run limit and 196-wrapper/5-worker cap.",
+        "Apply usable B2 to both support routes; retain paired-axis covariance and treat point plus/minus 2SE as an engineering interval, not a formal confidence interval.",
+        "Do not resume/retry failures or move the same authorization to another root/server/output; the exclusive registry is local to the fixed root, not a global fleet lock.",
+        "Keep held-out access and scientific execution zero in preparation/review; retain existing M1-B1 evidence and historical v1/draft/plan bytes.",
+        "After any future terminal status, STOP for full research-direction review before any additional trajectory, held-out retuning, geometry expansion, S3 or long RPE."
       ]
     }
   ],

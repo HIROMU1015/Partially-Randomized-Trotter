@@ -2,13 +2,18 @@
 
 M2の科学実行コードを結果前に実装した。対象はH4 linear 1.30 Å、STO-3G、DF rank 12、8 qubits、
 T=0.8への固定5構成のtransferだけである。本資料とコードの追加はheld-out開封や本計算を認可しない。
-次はactual execution source commitに結合した別authorizationと、最終pre-execution reviewである。
+actual execution source commitに結合した
+[別authorization](pr2_matched_accuracy_m2_transfer_execution_authorization_v1.md)を固定した。
+次は[最終pre-execution review](pr2_m2_execution_authorization_external_review_request_90a9f24.md)であり、
+承認と利用者の実行指示までheld-outを開かない。
 
 actual science source commitは`2978e2fea672b7a1ff20cac74269ec9a610159dc`へ固定済み。
 source-bound [execution plan](../../artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/execution_plan_v1.json)の
 SHA-256は`2aa09a927e5ac58ebe417397802ace0e70c0097e8d0c53c05457075a41e85527`、fingerprintは
 `ff7ed3d74bf4a0316adecdbac6b633978d71ca87bc1856d03db6fff9a2153276`。
-statusは`M2_EXECUTION_PLAN_FROZEN_EXECUTION_NOT_AUTHORIZED`。execution authorizationは未作成である。
+plan作成時のstatusは`M2_EXECUTION_PLAN_FROZEN_EXECUTION_NOT_AUTHORIZED`のまま保存する。
+authorizationは別commit `90a9f24707ec439cd3618cc4ec2616a8caaf1148`へ固定済みだが、
+運用statusは`M2_AUTHORIZATION_FROZEN_AWAITING_FINAL_REVIEW`であり、launchしていない。
 
 ## 固定した契約とplan
 
@@ -94,4 +99,6 @@ scripts/run_pr2_matched_accuracy_m2_transfer.py plan \
   --output artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/execution_plan_v1.json
 ```
 
-ここで停止する。別commitのresult-prior execution authorizationと最終reviewを経る前に`run`を呼ばない。
+planは生成・commit済みのため上記commandを再実行して上書きしない。
+別commitのresult-prior execution authorizationを固定した後も、最終review承認と利用者の実行指示まで停止し、
+`run`を呼ばない。authorization JSONの固定だけではreview承認を代替しない。

@@ -1,5 +1,23 @@
 # Validation status
 
+## 2026-10-04 PR-2 M2実行authorization固定 最終review待ち
+
+actual science source `2978e2fea672b7a1ff20cac74269ec9a610159dc`とsource-bound execution planに結合した
+[authorization](docs/research/pr2_matched_accuracy_m2_transfer_execution_authorization_v1.md)を別commit
+`90a9f24707ec439cd3618cc4ec2616a8caaf1148`へ固定した。JSON SHA-256は
+`dbc8b66fad5316004ef404fe8253d3f6cb0f29bf7065502ea995240e5fbd7ff1`。
+固定5構成、196 wrappers、最大5 workers、32 paired trajectories、一回限り、全status後STOPを維持する。
+
+運用statusは`M2_AUTHORIZATION_FROZEN_AWAITING_FINAL_REVIEW`。
+[最終review依頼](docs/research/pr2_m2_execution_authorization_external_review_request_90a9f24.md)へ渡し、
+独立review承認と利用者の実行指示までheld-outを開かない。machine JSONの`M2_EXECUTION_AUTHORIZED_ONCE`は
+固定条件の定義であり、このturnのlaunch許可ではない。review待ちは運用barrierで、runnerがreview artifactを
+機械検査するとは主張しない。128 source blob一致、plan/authorization/環境identityのzero-science gateを検査する。
+
+local focused84件とhelper回帰134件がpassed、fail/skip 0。分子NPZを読まないsynthetic/保存JSON/mock検査であり、
+immutable CI、外部再現、科学transfer結果ではない。held-out resolve/stat/hash/load、H4 science、GPU操作は0。
+固定result outputとregistryは未作成である。旧v1/draft/planおよびM1-B1科学artifactを上書きしない。
+
 ## 2026-10-04 PR-2 M2契約v2正式freezeと科学実行sourceの実装
 
 usable B2修正をcommit `a529e9434d2e62fe752fdab5bd4c9a63fb15e830`へ固定し、正式contract planを`40888b8`へ保存した。

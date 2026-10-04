@@ -176,3 +176,9 @@ moduleは`src/trotterlib/pr2_matched_accuracy_m2_transfer_contract.py`、runner�
 [実装資料](research/pr2_matched_accuracy_m2_transfer_execution_implementation.md)に、固定5構成・196-wrapper
 上限、usable B2、paired-axis covariance、one-shot停止、source-bound planと別authorizationを記録した。
 sourceとsynthetic検証を固定する段階であり、held-out開封・科学実行・次段階は未認可である。
+
+## PR-2 M2最終実行前レビュー
+
+- [実行authorization](research/pr2_matched_accuracy_m2_transfer_execution_authorization_v1.md)：actual source/plan、固定5構成、196 wrappers、最大5 workers、一回限りを固定する。
+- [最終review依頼](research/pr2_m2_execution_authorization_external_review_request_90a9f24.md)：最終承認と利用者の実行指示までheld-out未開封・本計算未実行で停止する。
+- `artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/authorization_audit_v1.json`：local zero-science gateとtimed tests。科学結果・immutable CIではない。
