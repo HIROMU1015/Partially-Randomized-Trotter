@@ -1,5 +1,9 @@
 # scripts 索引
 
+Track Bの`tracks/algorithm_codesign/prepare_bf1.py`はformula-only domain列挙と限定synthetic testsの入口。
+`run_bf1.py`は別authorization・commit-bound sourceを必要とする将来のone-shot runner。
+[BF-1規範](../docs/tracks/algorithm_codesign/bf1_preregistration_v1.md)。現在のdraftでは科学実行を許さない。
+
 `scripts/` はコマンドラインから実行する入口を置く。研究ロジックの本体は原則として
 `src/trotterlib/` にあり、runnerは条件の読込み、呼出し、成果物保存を担当する。
 

@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+Track Bのexperimental codeは共有APIを変更せず、`../trottertracks/algorithm_codesign/`へ置く。
+[BF-1 preparation](../../docs/tracks/algorithm_codesign/README.md)のCPU mean adapterであり、
+DF controlled wrapperの検証・scientific run・algorithm採択は未実施。
+
 このディレクトリが実装本体である。`scripts/` は主にここにある関数を呼び出す実行入口、
 `tests/` は回帰検査である。研究全体の入口は[`../../PROJECT_MAP.md`](../../PROJECT_MAP.md)を参照する。
 

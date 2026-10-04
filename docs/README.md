@@ -1,5 +1,8 @@
 # 文書索引
 
+Track Bの入口は[Algorithm Co-design](tracks/algorithm_codesign/README.md)。
+BF-1 preregistration/source-content preparationとsynthetic検証のみで、科学実行は未認可。
+
 このディレクトリには、研究方針の正本、実装規約、検証報告、発表資料の案内が共存する。
 研究全体を初めて読む場合は、先に[`../PROJECT_MAP.md`](../PROJECT_MAP.md)と
 [`research/研究概要・現状.md`](research/研究概要・現状.md)を読む。

@@ -1,0 +1,452 @@
+{
+  "BF1_executed": false,
+  "BF2_authorized": false,
+  "K": [
+    2,
+    "4 only via frozen trigger"
+  ],
+  "R_bud": [
+    5,
+    10,
+    20,
+    40,
+    80
+  ],
+  "arms": [
+    "O",
+    "L",
+    "F"
+  ],
+  "automatic_next_stage": null,
+  "branch": "track-b-algorithm-codesign",
+  "bridge": {
+    "epsilon": 0.05,
+    "new_coefficient_search": false
+  },
+  "domain_fingerprint": "bc8f635e2515e8552aec9778bbc181d459fad4709602f05d22bded236aa6a87a",
+  "environment": {
+    "executable": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+    "packages": {
+      "mpmath": "1.3.0",
+      "numba": "0.60.0",
+      "numpy": "1.26.4",
+      "openfermion": "1.6.1",
+      "openfermionpyscf": "0.5",
+      "pytest": "9.0.3",
+      "qiskit": "1.3.0",
+      "scipy": "1.14.1"
+    },
+    "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
+    "python": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+    "threads": {
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "evaluations_per_arm": 32,
+  "execution_id": "bf1-20261005-development-v1",
+  "input": {
+    "L_D": 3,
+    "coefficient_atol": 0.0,
+    "deterministic_generator_order": [
+      "one_body",
+      "fragment_0",
+      "fragment_1",
+      "fragment_2"
+    ],
+    "diagonal_sort": "descending_abs",
+    "documented_hamiltonian_hash": "de7a549238e3a21f15a84018bef28440c345b31030282c01cf874f3d1d212424",
+    "documented_raw_sha256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a",
+    "documented_state_hash": "31e63b0104126c85136ee173f1dce7642aee2d272924e70e8b120ac340ab45bd",
+    "documented_state_vector_hash": "c9aca811b5c023772d148d0331c82958bac6824b593a367cb65a5f89937f4f63",
+    "held_out": false,
+    "identity_policy": "extract_identity_phase",
+    "identity_reference": "src/trotterlib/pr2_matched_accuracy_m1_contract.py at b6e65c6123475add5e620ec1064f361378bead95",
+    "model": "linear H4 1.00 Angstrom STO-3G 8 qubits DF rank12",
+    "partition_policy": "explicit_ordered_partition_generation_prefix",
+    "random_fragment_indices": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "raw_bytes": null,
+    "raw_bytes_reason": "No byte count found in selected normative text; immutable raw SHA is the identity. No stat performed.",
+    "relative_path_literal": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz",
+    "role": "known_development_I2",
+    "source_worktree_literal": "/home/abe/Project/Partially Randomized Trotter/.worktrees/pr2-v4-s2-parallelization-20260928",
+    "state_policy": "saved state; preserve recorded phase and identity, convert endian, normalize roundoff only; no new solve",
+    "target_policy": "spectral exp(-i T H) on saved state; do not substitute an eigenvalue phase"
+  },
+  "mandatory_stop": true,
+  "output_relative": "artifacts/track_b_bf1_execution/2026-10-05/v1",
+  "preparation_head": "15465b0b856d80f9cfde495fd3d22434825f1cc8",
+  "primary": {
+    "alpha": 0.05,
+    "comparator": "all O/L evaluations plus four fixed references",
+    "epsilon": 0.01,
+    "materiality_ratio": 0.95
+  },
+  "q": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "resource_caps": {
+    "aggregate_rss_bytes": 8589934592,
+    "blas_threads": 1,
+    "cpu_seconds": 28800,
+    "finite_cells": 4000,
+    "ideal_cells": 400,
+    "output_bytes": 134217728,
+    "rss_bytes": 4294967296,
+    "science_retries": 0,
+    "wall_seconds": 14400,
+    "workers": 1
+  },
+  "reviewed_BF0_commit": "15465b0b856d80f9cfde495fd3d22434825f1cc8",
+  "schema": "bf1_preregistration_source_plan_v1",
+  "science_execution_authorized": false,
+  "scientific_results_present": false,
+  "sources": [
+    {
+      "bytes": 3694,
+      "path": "AGENTS.md",
+      "sha256": "3e1e4a8aaab395fc9aca03d1f925f45a73502b8d47588c9588c0d5ab368bcbd5"
+    },
+    {
+      "bytes": 41329,
+      "path": "PROJECT_MAP.md",
+      "sha256": "bc31d7ff59ef812d5879a78a3e974a34a48317cc22aa784ff2264228949d668a"
+    },
+    {
+      "bytes": 21115,
+      "path": "docs/README.md",
+      "sha256": "c66e72f4a012228a592b8310423f9838df3100916c7c8bb7d54f09b3f66dad1d"
+    },
+    {
+      "bytes": 1413,
+      "path": "docs/research/研究ノート/2026-10-05_track_b_bf1_preregistration.md",
+      "sha256": "728fd58705f416524b1e65936beeb812e6fcc22ba1c337e89d27d5e724635cdf"
+    },
+    {
+      "bytes": 119132,
+      "path": "docs/research/研究概要・現状.md",
+      "sha256": "8f67f68a632b05e8007d989d32d84c6546b60b35c555088ab9a5605c1aa6966a"
+    },
+    {
+      "bytes": 1287,
+      "path": "docs/tracks/algorithm_codesign/README.md",
+      "sha256": "3ee2e6a48f39ef72109edcbf4c7f4ff98862444d4f895e19bf5f427836ea3b63"
+    },
+    {
+      "bytes": 12916,
+      "path": "docs/tracks/algorithm_codesign/bf0_external_review_request_20261004.md",
+      "sha256": "dc7dbd21bcf36dbac1cc3e89ce2aac29d8264f82ac081203a3b0fb5733c8ad47"
+    },
+    {
+      "bytes": 16092,
+      "path": "docs/tracks/algorithm_codesign/bf0_mathematical_contract.md",
+      "sha256": "b34f251e0332dc90f4206e00327853b6463ee61d7884392bbb06b8d51992a79a"
+    },
+    {
+      "bytes": 26547,
+      "path": "docs/tracks/algorithm_codesign/bf0_prior_art_claim_matrix.md",
+      "sha256": "ba011ecde71df6f4b584bf3659b8a7e68abf284ed9b445a61f6444c7472e98af"
+    },
+    {
+      "bytes": 4357,
+      "path": "docs/tracks/algorithm_codesign/bf1_implementation_and_review_20261005.md",
+      "sha256": "3d3a0b49e8b99eebcf188e2367577541717a65795b519fe46fa3ccd34232d4b5"
+    },
+    {
+      "bytes": 22335,
+      "path": "docs/tracks/algorithm_codesign/bf1_minimal_pilot_proposal.md",
+      "sha256": "4ba9bdad46b8e5ec195e551ea5f62e4bcbf854347d9dee7873c196365ad831a6"
+    },
+    {
+      "bytes": 14416,
+      "path": "docs/tracks/algorithm_codesign/bf1_preregistration_v1.md",
+      "sha256": "91cf0c404bc1ec4a4d52d53667ca309f35f24436ee6f5b6193a7c7f0112f6322"
+    },
+    {
+      "bytes": 1048,
+      "path": "pyproject.toml",
+      "sha256": "b2d04ae06cf88e670aafed8f70409bc477479b63f83410fb89768dcc32464047"
+    },
+    {
+      "bytes": 16561,
+      "path": "scripts/README.md",
+      "sha256": "7567f94c80c3ac4acb7f76538240b7949000ebc068a5e13413cc1df82515cf2b"
+    },
+    {
+      "bytes": 5229,
+      "path": "scripts/tracks/algorithm_codesign/prepare_bf1.py",
+      "sha256": "0b188b242a344ce5d34ce6fcc077df0ecd917dbbbe313412d56cb6a85685a0ce"
+    },
+    {
+      "bytes": 6115,
+      "path": "scripts/tracks/algorithm_codesign/run_bf1.py",
+      "sha256": "a4308e648651afec3fd9153dec0a084d46eeaffc0d2b2123a231dc0143f35131"
+    },
+    {
+      "bytes": 42859,
+      "path": "src/trotterlib/Almost_optimal_grouping.py",
+      "sha256": "5eae25459c7a1895d1a3715b8aa747b36965a65b198ebeb78d6e52e461cf3874"
+    },
+    {
+      "bytes": 10869,
+      "path": "src/trotterlib/README.md",
+      "sha256": "31eb74c26f0fcbf53530f86e8f29eded9ec0dc0cbf1f59f1238a6e6e225d958e"
+    },
+    {
+      "bytes": 3467,
+      "path": "src/trotterlib/analysis_utils.py",
+      "sha256": "28613830f12f7762454c06e5be2ae864c6c29ffb464b5ac02fdc1351848af2bf"
+    },
+    {
+      "bytes": 19851,
+      "path": "src/trotterlib/chemistry_hamiltonian.py",
+      "sha256": "dd4c87d3a35a551710c0f9f1945e3b2abf5c5594501b92e0616860dad488cf56"
+    },
+    {
+      "bytes": 12783,
+      "path": "src/trotterlib/config.py",
+      "sha256": "15e12517f82ed3e9d56eac8a272693ced87226a8ae5e97351e1c2c9b4e3415ca"
+    },
+    {
+      "bytes": 40951,
+      "path": "src/trotterlib/df_hamiltonian.py",
+      "sha256": "7d711e1c3c093079ae890ffc1907813d55d211a4fb622e4f36edee05fdea0c52"
+    },
+    {
+      "bytes": 75107,
+      "path": "src/trotterlib/df_partial_randomized_pf.py",
+      "sha256": "53609655d47cabf4b8086e7992f91f77ad8d67443cce3401203430809d43cbcb"
+    },
+    {
+      "bytes": 42929,
+      "path": "src/trotterlib/df_partial_s2.py",
+      "sha256": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e"
+    },
+    {
+      "bytes": 26982,
+      "path": "src/trotterlib/df_partial_s2_cost.py",
+      "sha256": "55e779228da08a2a0a0ef595637c941de38e6208449e4df18460a6b5a1fc1433"
+    },
+    {
+      "bytes": 30013,
+      "path": "src/trotterlib/df_partial_s2_repeated.py",
+      "sha256": "65b5ebd842a972735c7aa1e7ba4d11d8265ab586119f29bf5acc8631700c7d6d"
+    },
+    {
+      "bytes": 45898,
+      "path": "src/trotterlib/df_partial_s2_repeated_cost.py",
+      "sha256": "94171fe3b4d0f9215c624196a7b16181455c77f1da758df78da583dbfa16cd71"
+    },
+    {
+      "bytes": 51549,
+      "path": "src/trotterlib/df_rpe_hadamard_compiled_cost.py",
+      "sha256": "2e6a026e3fbf6c6a6a91115dbba69018fdbb2b5eb5f36af90773e906b4c87715"
+    },
+    {
+      "bytes": 22205,
+      "path": "src/trotterlib/df_rte_circuit.py",
+      "sha256": "8e2fec0c3577f5fb264b574bd1984b41abdc4ce5bb2536481bafd11a5e5c1c76"
+    },
+    {
+      "bytes": 20313,
+      "path": "src/trotterlib/df_rte_qiskit.py",
+      "sha256": "c710de23b7bfef525199ab28b897c21b2a78723a01b29da6067ff64354dcd436"
+    },
+    {
+      "bytes": 41702,
+      "path": "src/trotterlib/df_rte_tail.py",
+      "sha256": "47d9514630196ff2d74c89c013ca36a2e0b7ba1d709e61cb41180393152dcf45"
+    },
+    {
+      "bytes": 1680,
+      "path": "src/trotterlib/df_trotter/__init__.py",
+      "sha256": "5f9ad43aa005669821b7e8739ca04a46c2482fc19aae8be6ba5ed52677ee98d2"
+    },
+    {
+      "bytes": 2632,
+      "path": "src/trotterlib/df_trotter/circuit.py",
+      "sha256": "28040c96b0622cd069be9c373c285dc5a679c3686f6be5ebab2f9e09b7c4f3d6"
+    },
+    {
+      "bytes": 8368,
+      "path": "src/trotterlib/df_trotter/decompose.py",
+      "sha256": "e31e116075ba9bd65e3072369c0c69c6f99c91315572e70d8c487bb024b71e51"
+    },
+    {
+      "bytes": 2880,
+      "path": "src/trotterlib/df_trotter/model.py",
+      "sha256": "ca8aa933fcbd5f7c2a0c1bb867a76bbd5b09a13cbddf5a2fda159f4adf625947"
+    },
+    {
+      "bytes": 13557,
+      "path": "src/trotterlib/df_trotter/ops.py",
+      "sha256": "3801eafca014b0df6533172582887e3b345f65833505409cdd375dcd11925689"
+    },
+    {
+      "bytes": 62653,
+      "path": "src/trotterlib/partial_randomized_pf.py",
+      "sha256": "c824c242d25dba77744b02c2416359c88ecc10cfd76f062b49bd7a80f0d1bf8d"
+    },
+    {
+      "bytes": 2339,
+      "path": "src/trotterlib/pf_decomposition.py",
+      "sha256": "d6dd0024e5312d69e43b2a498773dc8529bd5f50da39cb3df28fa9f7652e2e26"
+    },
+    {
+      "bytes": 28596,
+      "path": "src/trotterlib/pr2_matched_accuracy_m1_contract.py",
+      "sha256": "aea16dd8e2d4602bc8ac143b9cd2beac3636008f24f26be53a5a02410631797b"
+    },
+    {
+      "bytes": 30027,
+      "path": "src/trotterlib/pr2_matched_accuracy_m1_execution.py",
+      "sha256": "7528ebae754e14ee623d28212a668e4edc237575775a78d0d2bf4d34dc53c293"
+    },
+    {
+      "bytes": 7615,
+      "path": "src/trotterlib/pr2_matched_accuracy_m1_precompile_barrier.py",
+      "sha256": "2a533ffc7f1311db12b063f10a156c9f3d0cf9786910f21b38a7b52e75c56430"
+    },
+    {
+      "bytes": 30634,
+      "path": "src/trotterlib/pr2_new_series_validation.py",
+      "sha256": "fdfe7f35f357a3651c6b378b61c4d5525a10ded704733f7af942d84690b1bade"
+    },
+    {
+      "bytes": 53567,
+      "path": "src/trotterlib/pr2_s0_s1_validation.py",
+      "sha256": "1ccf6505d2933699504db187e3849251d1fef7bc58d8dca0b5f19871896ca6fe"
+    },
+    {
+      "bytes": 4572,
+      "path": "src/trotterlib/product_formula.py",
+      "sha256": "39c4e03748fcab03ea7e64936a19372cb5f1bd1bc9f72a4f09cef58c3c202eca"
+    },
+    {
+      "bytes": 6602,
+      "path": "src/trotterlib/qiskit_time_evolution_pyscf.py",
+      "sha256": "bf72e257f4e5884192d27a3a25d22016586b481d79bd839392f15140d1233d45"
+    },
+    {
+      "bytes": 2514,
+      "path": "src/trotterlib/qiskit_time_evolution_ungrouped.py",
+      "sha256": "1b75e3f9be116ebaa0e8f7c3292a57f9a2ded079fdea4c57f45e4a5cac45bd3f"
+    },
+    {
+      "bytes": 1787,
+      "path": "src/trotterlib/qiskit_time_evolution_utils.py",
+      "sha256": "65496e75af4c8320faea7464bfb351081e3fca495a6103145c8de588fb7a3625"
+    },
+    {
+      "bytes": 87378,
+      "path": "src/trotterlib/rpe_hadamard_compiled_cost_benchmark.py",
+      "sha256": "38cdd6f13fd8201516b455e6a167586cc5755f198d949e1a83d9ebe4e7345eca"
+    },
+    {
+      "bytes": 15498,
+      "path": "src/trotterlib/rpe_hadamard_interrogation.py",
+      "sha256": "f1519d406c33465a7c0e42555d226b19237a87b464137bc7acfae80b8eae311d"
+    },
+    {
+      "bytes": 41206,
+      "path": "src/trotterlib/rpe_resource_accounting.py",
+      "sha256": "09c570a847ced735ae62cd4fb323a97caa2afb32fc548d41eed7a1c72ca52781"
+    },
+    {
+      "bytes": 77103,
+      "path": "src/trotterlib/rte.py",
+      "sha256": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618"
+    },
+    {
+      "bytes": 64937,
+      "path": "src/trotterlib/rte_compiled_cost.py",
+      "sha256": "567e3477d47e0b65442d48b8c55567e8cc231de05cfbeb74eb91f587bc1dfa3d"
+    },
+    {
+      "bytes": 24903,
+      "path": "src/trotterlib/uwc.py",
+      "sha256": "24107639fd4768eae39e1717b637c9c321874bd6685e7be5904cd7ec01cdf880"
+    },
+    {
+      "bytes": 75,
+      "path": "src/trottertracks/__init__.py",
+      "sha256": "2d51bfa08b2b1e000b86ec53bd463e786529307a7270078600e3b03995e90285"
+    },
+    {
+      "bytes": 81,
+      "path": "src/trottertracks/algorithm_codesign/__init__.py",
+      "sha256": "b6503716cfd51d52ca9038e6de5a411eb78380d30451f81df9b81c31b1be090f"
+    },
+    {
+      "bytes": 4243,
+      "path": "src/trottertracks/algorithm_codesign/adapter.py",
+      "sha256": "9ccf54e28c87e385e963662127792a5d7fbfcdc0ae84f0aac7ef13f8978b5ad0"
+    },
+    {
+      "bytes": 11844,
+      "path": "src/trottertracks/algorithm_codesign/domain.py",
+      "sha256": "33a754d8bf5f96ada07a19bd372b32aae1622069033edd6a9d2bda646b742898"
+    },
+    {
+      "bytes": 1252,
+      "path": "src/trottertracks/algorithm_codesign/formal_check.py",
+      "sha256": "0cc981219906d48659a16158a08e74e2776c9bd1c5eea7edd4082935ad6fbaa1"
+    },
+    {
+      "bytes": 6714,
+      "path": "src/trottertracks/algorithm_codesign/freeze.py",
+      "sha256": "2d97a21ef0e5ce0b07b4efcb1a862876a5e301671b1d7ae0b4de258ac943edd8"
+    },
+    {
+      "bytes": 1700,
+      "path": "src/trottertracks/algorithm_codesign/input_contract.py",
+      "sha256": "d06da3c81748f6fe55eed99872192549a795cc5f0aaeedd971af18786c1f18ab"
+    },
+    {
+      "bytes": 5575,
+      "path": "src/trottertracks/algorithm_codesign/numerics.py",
+      "sha256": "d7b182117a8a9c25c407d429ad775fc9cc7da0dfc392ff6a00e891d0f44f16e8"
+    },
+    {
+      "bytes": 15661,
+      "path": "src/trottertracks/algorithm_codesign/pilot.py",
+      "sha256": "288c862d98b9cf646bf8530fc4284a219b4bf654efd2464fb96506478580caf4"
+    },
+    {
+      "bytes": 4101,
+      "path": "src/trottertracks/algorithm_codesign/science_input.py",
+      "sha256": "63d2591286037f60292a7cbb34a12c0fd1be0ac33a732c34611b11f2008dfadc"
+    },
+    {
+      "bytes": 1282,
+      "path": "src/trottertracks/algorithm_codesign/shared_cpu.py",
+      "sha256": "a22007ba2a0fd6d014e9da2ac86d58fb4a1e6333afc63f0964a1442195501e4a"
+    },
+    {
+      "bytes": 999,
+      "path": "tests/tracks/algorithm_codesign/test_bf1_authorization.py",
+      "sha256": "a4433c020de45483fcc2908dc633a2c1e785b87d5c716775e6ab7c34343fece9"
+    },
+    {
+      "bytes": 11020,
+      "path": "tests/tracks/algorithm_codesign/test_bf1_semantics.py",
+      "sha256": "4797380ec2e15880306a8467df5053cf70a6044801cc433114ff246224cacb9d"
+    }
+  ],
+  "status": "CONTENT_SEALED_UNCOMMITTED_EXECUTION_NOT_AUTHORIZED"
+}
