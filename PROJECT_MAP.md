@@ -483,3 +483,12 @@ moduleは`src/trotterlib/pr2_matched_accuracy_m2_transfer_contract.py`、runner�
 `tests/test_pr2_matched_accuracy_m2_transfer_contract.py`、schema/planは
 `artifacts/pr2_matched_accuracy_m2_transfer_contract/2026-10-04/`から辿れる。
 
+## PR-2 M2科学実行コードの入口
+
+[実装資料](docs/research/pr2_matched_accuracy_m2_transfer_execution_implementation.md)と
+`src/trotterlib/pr2_matched_accuracy_m2_transfer_execution.py`、
+`scripts/run_pr2_matched_accuracy_m2_transfer.py`、
+`tests/test_pr2_matched_accuracy_m2_transfer_execution.py`、
+`artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/`を対応させる。
+契約v2と正式planはcommit固定済み。source/authorization/環境gateはheld-out読み込みより前に置き、
+科学実行は未認可で停止する。旧draftは履歴だけであり、現行planはCOMMIT_BOUND。

@@ -3319,7 +3319,7 @@
         "supports": [
           "pr2_matched_accuracy_m2_transfer_contract_revision_v2"
         ],
-        "reason": "Result-prior review correction defining usable B2 consistently for Pareto support, the primary ratio, and all terminal statuses. SHA-256 5f3c40358d8c51b4289ad1b9f4d6aa44ad6da1da566553a8d62b83f9e30b2416; uncommitted local implementation evidence only."
+        "reason": "Result-prior review correction defining usable B2 consistently for Pareto support, the primary ratio, and all terminal statuses. SHA-256 5f3c40358d8c51b4289ad1b9f4d6aa44ad6da1da566553a8d62b83f9e30b2416, committed at a529e9434d2e62fe752fdab5bd4c9a63fb15e830. This is contract evidence, not scientific transfer evidence."
       },
       {
         "path": "artifacts/pr2_matched_accuracy_m2_transfer_contract/2026-10-04/pr2_matched_accuracy_m2_transfer_plan_schema_v2.json",
@@ -3343,7 +3343,7 @@
         "supports": [
           "pr2_matched_accuracy_m2_transfer_contract_revision_v2"
         ],
-        "reason": "Uncommitted zero-compute draft with fingerprint 3ec1a1deb56c51da3ff5e6fd103c3a52fe0c5b40efa4fc4ed9ca47820911c77e and SHA-256 d0cff0e08619c7cae9391918a53d01998dbefab4a0695ceb85723fd292fdf6e0. It preserves all five configurations, seeds, and caps; not an execution-authorizing or officially frozen plan."
+        "reason": "Preserved pre-freeze worktree draft with fingerprint 3ec1a1deb56c51da3ff5e6fd103c3a52fe0c5b40efa4fc4ed9ca47820911c77e and SHA-256 d0cff0e08619c7cae9391918a53d01998dbefab4a0695ceb85723fd292fdf6e0. Its original WORKTREE_DRAFT semantics remain intact; the current official plan is the separate commit-bound v2 file."
       },
       {
         "path": "artifacts/pr2_matched_accuracy_m2_transfer_contract/2026-10-04/pr2_matched_accuracy_m2_transfer_contract_revision_audit_v2.json",
@@ -3352,6 +3352,42 @@
           "pr2_matched_accuracy_m2_transfer_contract_revision_v2"
         ],
         "reason": "Local review-response audit records 28 dedicated / 49 focused tests, original v1 hashes, the counterexample exclusion, source-freeze requirement, and zero scientific/held-out/GPU activity."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m2_transfer_contract/2026-10-04/pr2_matched_accuracy_m2_transfer_zero_compute_plan_v2.json",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_transfer_contract_revision_v2"],
+        "reason": "Official COMMIT_BOUND v2 plan generated from a529e9434d2e62fe752fdab5bd4c9a63fb15e830 and saved at 40888b84b680ca726a603b677296cc97ec3534c4. SHA-256 d2bb5c5e57002fac5e8045f89a048913f4dadd5177d6f6d1465cc40a8755af7c; fingerprint 7880c8fed57a02f30a07ff7463eb65e423098ad9420e38410f365fad2e24cc4f. Held-out/science activity and execution authorization remain zero."
+      },
+      {
+        "path": "src/trotterlib/pr2_matched_accuracy_m2_transfer_execution.py",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_execution_source"],
+        "reason": "Actual M2 science implementation with source/authorization/environment gates before held-out access, paired covariance-aware cost aggregation, usable B2 decisions, one-shot registry, and mandatory STOP. Only synthetic implementation checks have been executed."
+      },
+      {
+        "path": "scripts/run_pr2_matched_accuracy_m2_transfer.py",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_execution_source"],
+        "reason": "Separates zero-science source-bound plan generation from later separately authorized one-shot execution. No resume, candidate retuning or automatic continuation."
+      },
+      {
+        "path": "tests/test_pr2_matched_accuracy_m2_transfer_execution.py",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_execution_source", "tests"],
+        "reason": "35 local synthetic/source/access/checkpoint/threshold/orchestration tests; NPZ load and held-out path open/stat/resolve are prohibited by an autouse fixture. Includes two small synthetic Qiskit baseline axis compiles, not H4 science."
+      },
+      {
+        "path": "docs/research/pr2_matched_accuracy_m2_transfer_execution_implementation.md",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_execution_source"],
+        "reason": "Implementation and pre-execution guide, scope restrictions, artifact semantics, resource accounting, source freeze and later separate authorization/review requirements."
+      },
+      {
+        "path": "artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/source_implementation_audit_v1.json",
+        "kind": "file",
+        "supports": ["pr2_matched_accuracy_m2_execution_source"],
+        "reason": "Local source hashes, command/environment identities, 84 focused plus 134 helper regression passes, and zero held-out/scientific/GPU activity. Not immutable CI or a transfer result."
       }
     ],
     "quarantined": [
@@ -5955,7 +5991,7 @@
     {
       "id": "pr2_matched_accuracy_m2_transfer_contract_revision_v2",
       "status": "source_present_no_current_ci",
-      "summary": "The external REVISE_M2_CONTRACT_BEFORE_IMPLEMENTATION review is incorporated without changing the research question, five configurations, seeds, resource caps, thresholds, or mandatory STOP. Both Pareto support and the primary ratio exclusively use accuracy-eligible B2 without a major primary RZ cost underestimate. V1 contract/schema/plan bytes remain intact. V2 is an uncommitted WORKTREE_DRAFT based on reviewed HEAD 622834832d371c7cc7b4ca3e4371d1ab0805c47f, not an officially frozen source-bound plan and not scientific transfer evidence.",
+      "summary": "The external REVISE_M2_CONTRACT_BEFORE_IMPLEMENTATION review is incorporated without changing the research question, five configurations, seeds, resource caps, thresholds, or mandatory STOP. Both Pareto support and the primary ratio exclusively use accuracy-eligible B2 without a major primary RZ cost underestimate. V1 and the original worktree draft remain intact. The corrected contract is committed at a529e9434d2e62fe752fdab5bd4c9a63fb15e830, and the official COMMIT_BOUND plan is saved at 40888b84b680ca726a603b677296cc97ec3534c4; scientific execution remains unauthorized.",
       "counts": {
         "frozen_candidates": 5,
         "planned_random_trajectories": 96,
@@ -5979,10 +6015,38 @@
         "Define usable B2 as method B2, accuracy_eligible=true, and primary major_cost_underestimate=false. Both Pareto-support witnesses and the primary ratio numerator use only this set.",
         "If usable B2 is empty, return TRANSFER_NOT_SUPPORTED before checking endpoint availability; if usable B2 exists but eligible endpoints are empty, return TRANSFER_INCONCLUSIVE and keep the ratio null.",
         "Keep original v1 contract/schema/plan and M1-B1 result/validation artifacts byte-identical, and preserve all five candidate configurations, trajectory seeds, thresholds, and the 196-wrapper cap.",
-        "Generate an officially frozen v2 plan only after a source commit whose required blobs match the current source bytes; do not authorize execution from this WORKTREE_DRAFT.",
+        "Use the official commit-bound v2 plan; the preserved historical WORKTREE_DRAFT is never an execution-authorizing plan.",
         "Implement and commit actual science module/runner/tests before separate result-prior execution authorization and final pre-execution review.",
         "Keep all held-out path resolution/stat/hash/load, scientific signal, trajectory, circuit compile, and transfer at zero until authorized.",
         "Interpret any future support as transfer of five development-frozen configurations, not held-out method optimality. Stop after every terminal status for full research-direction review."
+      ]
+    },
+    {
+      "id": "pr2_matched_accuracy_m2_execution_source",
+      "status": "source_present_no_current_ci",
+      "summary": "Result-prior M2 science module/runner/tests are implemented. Planning freezes the actual execution commit and all library Python blobs, compiler/package/environment identity, fixed configurations and trajectory schedules. A separately committed authorization must pass before a one-shot held-out load. The implementation preserves paired-axis covariance and usable-B2 support logic, enforces 196 wrappers and at most five workers, and stops after every terminal status. No production M2 run or execution authorization has been created.",
+      "counts": {
+        "frozen_candidates": 5,
+        "planned_total_full_wrappers": 196,
+        "maximum_process_workers": 5,
+        "dedicated_local_tests_passed": 35,
+        "focused_local_tests_passed": 84,
+        "helper_regression_tests_passed": 134,
+        "test_failures": 0,
+        "test_skips": 0,
+        "held_out_accesses": 0,
+        "science_wrapper_compiles": 0,
+        "transfer_executions": 0,
+        "execution_authorizations_created": 0,
+        "gpu_queries_allocations_kernels": 0,
+        "current_machine_readable_ci_reports": 0
+      },
+      "completion_criteria": [
+        "Commit actual science module/runner/tests before freezing their execution plan or drafting an authorization.",
+        "Review a separate result-prior authorization bound to the actual source, plan, compiler, candidate, seed, fixed output and one-run budget before held-out access.",
+        "Keep partial/unresolved failure counts distinct from zero and never automatically retry an unresolved compiler attempt.",
+        "Retain all five configurations; use only usable B2 for both support routes; keep state-preparation sensitivity secondary.",
+        "After any terminal status, STOP before extra trajectories, retuning, geometry expansion, S3 or research-direction decisions."
       ]
     }
   ],

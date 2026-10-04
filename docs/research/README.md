@@ -170,3 +170,8 @@ moduleは`src/trotterlib/pr2_matched_accuracy_m2_transfer_contract.py`、runner�
 `tests/test_pr2_matched_accuracy_m2_transfer_contract.py`、schema/planは
 `artifacts/pr2_matched_accuracy_m2_transfer_contract/2026-10-04/`から辿れる。
 
+## PR-2 M2科学実行コードの入口
+
+[実装資料](pr2_matched_accuracy_m2_transfer_execution_implementation.md)は、科学実行module/runner/testと
+契約v2正式planの関係、結果前identity、196-wrapper cap、全status後STOPを説明する。
+local implementation testは科学transfer結果ではない。別authorizationと最終review前にheld-outを開かない。

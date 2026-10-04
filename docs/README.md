@@ -171,3 +171,8 @@ moduleは`src/trotterlib/pr2_matched_accuracy_m2_transfer_contract.py`、runner�
 `tests/test_pr2_matched_accuracy_m2_transfer_contract.py`、schema/planは
 `artifacts/pr2_matched_accuracy_m2_transfer_contract/2026-10-04/`から辿れる。
 
+## PR-2 M2科学実行コードの入口
+
+[実装資料](research/pr2_matched_accuracy_m2_transfer_execution_implementation.md)に、固定5構成・196-wrapper
+上限、usable B2、paired-axis covariance、one-shot停止、source-bound planと別authorizationを記録した。
+sourceとsynthetic検証を固定する段階であり、held-out開封・科学実行・次段階は未認可である。

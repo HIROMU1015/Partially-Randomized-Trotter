@@ -82,6 +82,10 @@
   B0/B1/B3代表を固定し、primary RZ、6指標Pareto、10% materiality、重大underestimate、4 terminal status、
   future seedと196-wrapper上限をzero-compute固定する。v2はusable B2だけでPareto support/ratioを判定し、
   v1証拠を保存する。held-out snapshotは開かず、M2実行を認可しない
+- `pr2_matched_accuracy_m2_transfer_execution.py`：別commitのsource-bound authorization照合後だけ、
+  固定5構成のheld-out signal/paired-axis full-wrapper costを最大5 workers、196-wrapper上限で評価する。
+  usable B2判定、paired covariance、checkpoint identityを検査し、全status後mandatory STOP。
+  現時点はsynthetic実装検証のみで、科学実行は未認可
 - `pf_delta_validation.py`
 - `pf_c_system_size_validation.py`
 - `pauli_partial_cgs_validation.py`

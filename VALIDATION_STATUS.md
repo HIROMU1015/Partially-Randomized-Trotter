@@ -1,5 +1,22 @@
 # Validation status
 
+## 2026-10-04 PR-2 M2契約v2正式freezeと科学実行sourceの実装
+
+usable B2修正をcommit `a529e9434d2e62fe752fdab5bd4c9a63fb15e830`へ固定し、正式contract planを`40888b8`へ保存した。
+plan SHA-256は`d2bb5c5e57002fac5e8045f89a048913f4dadd5177d6f6d1465cc40a8755af7c`、fingerprintは
+`7880c8fed57a02f30a07ff7463eb65e423098ad9420e38410f365fad2e24cc4f`。
+旧v1と明示的draftは保持するが、現行planはCOMMIT_BOUND、科学実行未認可である。
+
+[実装資料](docs/research/pr2_matched_accuracy_m2_transfer_execution_implementation.md)に対応するscience module/runner/testを
+追加した。source/plan/authorization/環境gateはheld-out読み込みより前、source commitは全library Pythonへ結合する。
+signal/cost candidate identity、32 paired trajectories、196-wrapper上限、usable B2、相関を保持するSE、全status後STOPを
+synthetic検証した。one-shot registryで同じauthorizationの再実行を拒否し、snapshot load一回のためresumeは設けない。
+
+execution専用35 passed、関連focused全84 passed、fail/skip 0。小型synthetic baselineのQiskit compile二軸を含む
+local implementation evidenceであり、immutable CI・外部再現・M2科学結果ではない。
+held-out resolve/stat/hash/load、H4 signal/trajectory/compile、transfer、GPUは0。execution authorizationは未作成で、
+source commit・source-bound zero-compute plan固定の後、別authorizationと最終reviewを経るまで停止する。
+
 ## 2026-10-04 PR-2 M2外部review修正：usable B2統一（未commit draft）
 
 外部reviewの`REVISE_M2_CONTRACT_BEFORE_IMPLEMENTATION`を受け、
