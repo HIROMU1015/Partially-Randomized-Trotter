@@ -1,5 +1,13 @@
 # scripts 索引
 
+`resource_applicability/run_pr2_post_m2_evidence_attribution.py`はTrack A PM-0の保存JSON/source再集計専用。
+stdlibのみ、artifact内pathを辿らず、bundleをstdoutへ出すだけでファイルを書き換えない。
+[報告・対応source/test/artifact](../docs/research/pr2_post_m2_evidence_attribution.md)を参照する。
+PM-1準備は`resource_applicability/run_pr2_pm1_discard_contract.py`（stdoutのみのsealed plan生成）、
+`resource_applicability/run_pr2_pm1_preparation_tests.py`（科学データguard付き限定7-file tests）。
+`resource_applicability/run_pr2_pm1_discard.py`は別committed authorization後のfuture科学入口であり、今回は呼ばない。
+[契約・source・preparation audit](../docs/research/pr2_pm1_nearby_discard_contract_v1.md)を参照する。本実行未認可。
+
 `scripts/` はコマンドラインから実行する入口を置く。研究ロジックの本体は原則として
 `src/trotterlib/` にあり、runnerは条件の読込み、呼出し、成果物保存を担当する。
 

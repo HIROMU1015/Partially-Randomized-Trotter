@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "PM1_DISCARD_MAP_COMPLETE_AWAITING_REVIEW"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "candidate_records": {
+            "maxItems": 8,
+            "minItems": 8
+          }
+        }
+      }
+    }
+  ],
+  "properties": {
+    "mandatory_stop_reached": {
+      "const": true
+    },
+    "next_stage_authorized": {
+      "const": false
+    },
+    "research_decision": {
+      "type": "null"
+    },
+    "schema_version": {
+      "const": "track_a_pm1_discard_result_v1"
+    },
+    "status": {
+      "enum": [
+        "PM1_DISCARD_MAP_COMPLETE_AWAITING_REVIEW",
+        "IMPLEMENTATION_GATE_FAILED"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "status",
+    "candidate_records",
+    "execution_audit",
+    "mandatory_stop_reached",
+    "next_stage_authorized",
+    "research_decision",
+    "result_fingerprint"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,140 @@
+{
+  "schema_version": "pr2_pm0_execution_audit_v1",
+  "kind": "LOCAL_UNCOMMITTED_POSTHOC",
+  "started_utc": "2026-10-04T08:53:51.079494+00:00",
+  "ended_utc": "2026-10-04T08:53:52.582906+00:00",
+  "wall_seconds": 1.5034080450423062,
+  "python": {
+    "executable": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+    "version": "3.11.0rc1"
+  },
+  "branch": "pr2-v4-s2-parallelization-20260928",
+  "HEAD": "b6e65c6123475add5e620ec1064f361378bead95",
+  "environment": {
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "PYTHONPATH": "src"
+  },
+  "test_command": [
+    "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-rs",
+    "tests/tracks/resource_applicability/test_pm0_evidence_attribution.py",
+    "-p",
+    "no:cacheprovider"
+  ],
+  "tests": {
+    "pass": 18,
+    "fail": 0,
+    "skip": 0,
+    "exit_code": 0,
+    "stdout": "..................                                                       [100%]\n18 passed in 0.57s\n",
+    "stderr": ""
+  },
+  "runner_command": [
+    "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+    "scripts/resource_applicability/run_pr2_post_m2_evidence_attribution.py",
+    "--project-root",
+    "/home/abe/Project/Partially Randomized Trotter/.worktrees/pr2-v4-s2-parallelization-20260928"
+  ],
+  "generated_bundle_byte_identical": true,
+  "input_identity_before_after": {
+    "m1a": {
+      "path": "artifacts/pr2_matched_accuracy_m1_execution/2026-09-30/pr2_matched_accuracy_m1_a_result_v1.json",
+      "bytes": 872226,
+      "sha256": "1f960d7a33296e2dcb74d497e360572b26409dc9aeae01522335e7b91ed81086",
+      "commit_blob_identical": true
+    },
+    "m1b": {
+      "path": "artifacts/pr2_matched_accuracy_m1_b1_execution/2026-09-30/pr2_matched_accuracy_m1_b1_compile_map_result_v2.json",
+      "bytes": 14917348,
+      "sha256": "71278113c32b26af0dbf6144a626237a0087478212f8a93fc908de3d4d52aee4",
+      "commit_blob_identical": true
+    },
+    "validation": {
+      "path": "artifacts/pr2_matched_accuracy_m1_b1_result_validation/2026-10-03/pr2_matched_accuracy_m1_b1_result_validation_v1.json",
+      "bytes": 33733,
+      "sha256": "c9a05babed99cd1e80eaec5b58e47f25d74513c7ba2e5a00775cfd5959c37a0f",
+      "commit_blob_identical": true
+    },
+    "m2": {
+      "path": "artifacts/pr2_matched_accuracy_m2_transfer_execution/2026-10-04/pr2_matched_accuracy_m2_transfer_result_v2.json",
+      "bytes": 170061,
+      "sha256": "f41a92beb57e59cddc8c063b061c40acd4da50cb76ac0698efc2bce004937931",
+      "commit_blob_identical": true
+    },
+    "s2": {
+      "path": "artifacts/pr2_v4_s2_development/2026-09-29/pr2_s2_development_resource_result_parallel_v1.json",
+      "bytes": 425754,
+      "sha256": "bbe665724af438d242569b020ab6148dacce84716a75681949bea22c632dd27c",
+      "commit_blob_identical": true
+    },
+    "signal_source": {
+      "path": "src/trotterlib/pr2_matched_accuracy_m1_execution.py",
+      "bytes": 30027,
+      "sha256": "7528ebae754e14ee623d28212a668e4edc237575775a78d0d2bf4d34dc53c293",
+      "commit_blob_identical": true
+    },
+    "contract_source": {
+      "path": "src/trotterlib/pr2_matched_accuracy_m1_contract.py",
+      "bytes": 28596,
+      "sha256": "aea16dd8e2d4602bc8ac143b9cd2beac3636008f24f26be53a5a02410631797b",
+      "commit_blob_identical": true
+    },
+    "block_source": {
+      "path": "src/trotterlib/df_partial_s2.py",
+      "bytes": 42929,
+      "sha256": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e",
+      "commit_blob_identical": true
+    },
+    "repeated_source": {
+      "path": "src/trotterlib/df_partial_s2_repeated.py",
+      "bytes": 30013,
+      "sha256": "65b5ebd842a972735c7aa1e7ba4d11d8265ab586119f29bf5acc8631700c7d6d",
+      "commit_blob_identical": true
+    }
+  },
+  "protected_science_diff": [
+    "artifacts/validation_manifest.json",
+    "src/trotterlib/README.md"
+  ],
+  "source_files": {
+    "src/trottertracks/__init__.py": {
+      "sha256": "107d4f39888dc644314fc079d41ccdc56333ae46a72f3346a499d4dfc17a543f",
+      "bytes": 77
+    },
+    "src/trottertracks/resource_applicability/__init__.py": {
+      "sha256": "b39349f5462f08c5dc1b4c8b89891444ff2d4be90e9f153edc146ae02ecedfcd",
+      "bytes": 77
+    },
+    "src/trottertracks/resource_applicability/pm0_evidence_attribution.py": {
+      "sha256": "df4bccf4e18e008c1ee05fc672fab71d49d367ea1bc594a6dae70be6f8b8c07c",
+      "bytes": 22964
+    },
+    "scripts/resource_applicability/run_pr2_post_m2_evidence_attribution.py": {
+      "sha256": "8dd9f2930ae6fb1493b5ef947fe4c0d7679ba7b61f75b7fc19820a1206219f24",
+      "bytes": 531
+    },
+    "tests/tracks/resource_applicability/test_pm0_evidence_attribution.py": {
+      "sha256": "7f33cf21c7f0d7c6489db4891a9c73c8a342b17ad1b1f06a90cd1a7613106b6a",
+      "bytes": 6348
+    }
+  },
+  "source_commit_fixed": false,
+  "full_suite_executed": false,
+  "runtime_cache_access": 0,
+  "npz_access": 0,
+  "science_sampling_build_compile": 0,
+  "gpu_operations": 0,
+  "commit_push": 0,
+  "mandatory_stop": true,
+  "next_stage_authorized": false,
+  "parent_peak_rss_kib": 132332,
+  "aggregate_peak_rss_measured": false,
+  "manifest_change": "Only new PM0 entry; all existing result_sets byte-semantically unchanged."
+}

@@ -2,6 +2,24 @@
 
 最終更新：2026-10-04
 
+## Track A post-M2レビュー資料
+
+Track Aの最新解析は[PM-0 POSTHOC証拠帰属](docs/research/pr2_post_m2_evidence_attribution.md)。
+`src/trottertracks/resource_applicability/pm0_evidence_attribution.py`、
+`scripts/resource_applicability/run_pr2_post_m2_evidence_attribution.py`、
+`tests/tracks/resource_applicability/test_pm0_evidence_attribution.py`、
+`artifacts/resource_applicability/pr2_post_m2_evidence_attribution/2026-10-04/`を一組として読む。
+保存JSON/sourceだけを再集計し、source-bound科学コードや旧M1/M2証拠は変更しない。PM-1以降は未認可。
+
+Track Aの次段準備は[PM-1近接discard契約](docs/research/pr2_pm1_nearby_discard_contract_v1.md)。
+`src/trottertracks/resource_applicability/pm1_discard_contract.py / pm1_discard_execution.py`、
+`scripts/resource_applicability/run_pr2_pm1_discard_contract.py / run_pr2_pm1_discard.py`、
+`tests/tracks/resource_applicability/test_pm1_discard.py`、
+`artifacts/resource_applicability/pr2_pm1_discard_preparation/2026-10-04/`を一組とする。
+sourceはcommit `fd7552e`、sealed planと134 source blobの照合まで。本計算・authorizationは未認可。
+[GPTへの準備bundleレビュー依頼](docs/research/pr2_pm1_preparation_external_review_request_fd7552e.md)に
+固定identity、読む資料、停止条件をまとめた。利用者の別指示によりレビュー資料のみcommit/pushする。
+
 このファイルは、人またはGPTがリポジトリ全体を読むときの入口である。研究内容の正本、
 実装、検証コード、結果データ、発表資料を区別し、古い研究経路を現在の結論として読まない
 ための案内をまとめる。

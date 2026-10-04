@@ -1,0 +1,169 @@
+{
+  "schema_version": "track_a_pm1_preparation_verification_v1",
+  "status": "PM1_DISCARD_PREPARED_EXECUTION_NOT_AUTHORIZED",
+  "source_commit": "fd7552edc0334ccf57ecf501a128c85c8d22822a",
+  "source_binding": "COMMIT_BLOB_BOUND",
+  "execution_authorized": false,
+  "plan_sha256": "cae692bee2be748ddbf17bace2a5652613537a244fe94238cdf669f5d2ca5624",
+  "plan_fingerprint": "144824b70264dd3d7d1d22898afbb1f9e1c248f105ecac8096f31a2c8f78ec9e",
+  "test_run": {
+    "command": "PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=src \"/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python\" scripts/resource_applicability/run_pr2_pm1_preparation_tests.py",
+    "environment": {
+      "environment": {
+        "python": "3.11.0rc1",
+        "numpy": "1.26.4",
+        "scipy": "1.14.1",
+        "qiskit": "1.3.0",
+        "openfermion": "1.6.1",
+        "openfermionpyscf": "0.5",
+        "pyscf": "2.7.0"
+      },
+      "executable": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python"
+    },
+    "started_utc": "2026-10-04T14:03:19.110850+00:00",
+    "finished_utc": "2026-10-04T14:03:41.363424+00:00",
+    "exit_code": 0,
+    "blocked_protected_access_attempts": 0,
+    "passed": 201,
+    "failed": 0,
+    "skipped": 0,
+    "dedicated_PM1_tests": 49,
+    "PM0_regression_tests": 18,
+    "helper_regression_tests": 134,
+    "stdout_stderr": "........................................................................ [ 35%]\n........................................................................ [ 71%]\n.........................................................                [100%]\n201 passed in 21.86s\nPM1_PREPARATION_DATA_BOUNDARY: {'blocked_protected_access_attempts': 0}\nPM1_TEST_RUN_AUDIT: {\"started_utc\": \"2026-10-04T14:03:19.110850+00:00\", \"finished_utc\": \"2026-10-04T14:03:41.363424+00:00\", \"exit_code\": 0, \"blocked_protected_access_attempts\": 0}\n",
+    "qualification": "LOCAL synthetic/mock/saved-JSON tests; includes tiny nonmolecular Qiskit compile; not immutable CI or H4 science"
+  },
+  "implementation_test_history": [
+    {
+      "phase": "initial_PM1",
+      "passed": 34,
+      "failed": 1,
+      "reason": "Benign tuple/list compiler serialization mismatch; fixed canonical JSON comparison",
+      "exact_utc_not_retained": true
+    },
+    {
+      "phase": "PM1_plus_PM0",
+      "passed": 56,
+      "failed": 1,
+      "reason": "Test expected boolean False rather than integer quantum_shots_executed=0; test corrected and production zero/backend guard added",
+      "exact_utc_not_retained": true,
+      "stdout_stderr": null
+    },
+    {
+      "phase": "guarded_before_final_coverage",
+      "passed": 191,
+      "failed": 0,
+      "stdout_stderr": null,
+      "exact_utc_not_retained": true
+    },
+    {
+      "phase": "aborted_turn_final_test_session",
+      "session_id": 10147,
+      "final_result": "NOT_RETRIEVED_NOT_COUNTED_AS_PASS",
+      "production_science_run": false
+    }
+  ],
+  "identity_verification": {
+    "source_commit": "fd7552edc0334ccf57ecf501a128c85c8d22822a",
+    "source_count": 134,
+    "source_blobs_identical": true,
+    "plan_validated": true,
+    "saved_evidence_text": {
+      "artifacts/pr2_matched_accuracy_m1_execution/2026-09-30/pr2_matched_accuracy_m1_a_result_v1.json": {
+        "sha256": "1f960d7a33296e2dcb74d497e360572b26409dc9aeae01522335e7b91ed81086",
+        "bytes": 872226,
+        "base_commit_blob_identical": true
+      },
+      "artifacts/pr2_matched_accuracy_m1_b1_execution/2026-09-30/pr2_matched_accuracy_m1_b1_compile_map_result_v2.json": {
+        "sha256": "71278113c32b26af0dbf6144a626237a0087478212f8a93fc908de3d4d52aee4",
+        "bytes": 14917348,
+        "base_commit_blob_identical": true
+      },
+      "artifacts/pr2_matched_accuracy_m1_b1_result_validation/2026-10-03/pr2_matched_accuracy_m1_b1_result_validation_v1.json": {
+        "sha256": "c9a05babed99cd1e80eaec5b58e47f25d74513c7ba2e5a00775cfd5959c37a0f",
+        "bytes": 33733,
+        "base_commit_blob_identical": true
+      },
+      "artifacts/pr2_matched_accuracy_m1_b1_execution/2026-09-30/M1_B1_COMPLETE.json": {
+        "sha256": "c076d80bd584e646bce7877df3b13dac9aec5e93a52f7ed9b1464fa6a1e0e52c",
+        "bytes": 144,
+        "base_commit_blob_identical": true
+      },
+      "artifacts/pr2_matched_accuracy_m2_transfer_execution/2026-10-04/pr2_matched_accuracy_m2_transfer_result_v2.json": {
+        "sha256": "f41a92beb57e59cddc8c063b061c40acd4da50cb76ac0698efc2bce004937931",
+        "bytes": 170061,
+        "base_commit_blob_identical": true
+      },
+      "artifacts/pr2_matched_accuracy_m2_transfer_execution/2026-10-04/manifest.json": {
+        "sha256": "fa6dad1b5c49c08ee4c6d96447847cc0ad357b17f67937a405f0550a4df12546",
+        "bytes": 162,
+        "base_commit_blob_identical": true
+      },
+      "artifacts/pr2_matched_accuracy_m2_transfer_execution/2026-10-04/M2_COMPLETE.json": {
+        "sha256": "619c33cb7d3285216c51a8332627a15a8995abd061c54564e1cbc03ee446900a",
+        "bytes": 180,
+        "base_commit_blob_identical": true
+      }
+    },
+    "test_sources": {
+      "tests/tracks/resource_applicability/test_pm1_discard.py": {
+        "sha256": "cfc30de9557831c03e499654718e7093cd03b9a7633de58ed5d53f68ac2f252a",
+        "bytes": 16636
+      },
+      "tests/tracks/resource_applicability/test_pm0_evidence_attribution.py": {
+        "sha256": "7f33cf21c7f0d7c6489db4891a9c73c8a342b17ad1b1f06a90cd1a7613106b6a",
+        "bytes": 6348
+      },
+      "tests/test_df_partial_s2_repeated.py": {
+        "sha256": "ff109f027b88344c2af1ec362a26742f0b6dbca8b4d44cec16efa6f79f05f772",
+        "bytes": 18711
+      },
+      "tests/test_df_partial_s2_repeated_cost.py": {
+        "sha256": "b31dc9aa76aba7f16228613cf4c5ab212afc10d4ce0ae378a24436c63a1774f5",
+        "bytes": 36984
+      },
+      "tests/test_rpe_hadamard_interrogation.py": {
+        "sha256": "e8ae07e0dce9579258ea8033c0dac4ec0cc472993966bceeba1b6fd17ac90571",
+        "bytes": 16718
+      },
+      "tests/test_df_rpe_hadamard_compiled_cost.py": {
+        "sha256": "39a4217f042c1b7e1ecbaef352ebf4bf3f1d5c9502424c2f0c0150b45f19aee0",
+        "bytes": 22083
+      },
+      "tests/test_rpe_hadamard_compiled_cost_benchmark.py": {
+        "sha256": "44bdfdc25d0c0ce7fda76f08950e66784fef61eaf78c519d5fd0545215d22c70",
+        "bytes": 29874
+      }
+    },
+    "boundary": {
+      "blocked_protected_access_attempts": 0
+    }
+  },
+  "access_summary": {
+    "current_resumed_npz_stat_hash_load": 0,
+    "current_production_H4_signal_build_compile": 0,
+    "current_random_sampling": 0,
+    "current_held_out_access": 0,
+    "current_runtime_cache_access": 0,
+    "current_GPU_operations": 0,
+    "prior_incident_npz_stat_hash_accesses": 4,
+    "prior_incident_npz_loads": 0,
+    "prior_incident_disclosed": true
+  },
+  "resource_caps_future_only": {
+    "candidate_signals": 8,
+    "full_wrappers": 16,
+    "development_loads": 1,
+    "cpu_processes": 1,
+    "random_trajectories": 0,
+    "held_out_access": 0,
+    "gpu_operations": 0,
+    "quantum_shots": 0,
+    "cache_reuse": 0,
+    "execution_run_limit": 1
+  },
+  "automatic_research_decision": false,
+  "mandatory_stop": true,
+  "next_stage_authorized": false,
+  "pushed": false
+}

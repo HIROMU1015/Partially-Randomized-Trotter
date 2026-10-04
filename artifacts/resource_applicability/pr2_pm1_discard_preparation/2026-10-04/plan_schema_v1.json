@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "candidates": {
+      "maxItems": 8,
+      "minItems": 8,
+      "type": "array"
+    },
+    "execution_authorized": {
+      "const": false
+    },
+    "resource_caps": {
+      "const": {
+        "cache_reuse": 0,
+        "candidate_signals": 8,
+        "cpu_processes": 1,
+        "development_loads": 1,
+        "execution_run_limit": 1,
+        "full_wrappers": 16,
+        "gpu_operations": 0,
+        "held_out_access": 0,
+        "quantum_shots": 0,
+        "random_trajectories": 0
+      }
+    },
+    "schema_version": {
+      "const": "track_a_pm1_discard_plan_v1"
+    },
+    "source_commit": {
+      "pattern": "^[0-9a-f]{40}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "const": "PM1_DISCARD_PREPARED_EXECUTION_NOT_AUTHORIZED"
+    }
+  },
+  "required": [
+    "schema_version",
+    "status",
+    "execution_authorized",
+    "source_commit",
+    "source_sha256",
+    "candidates",
+    "resource_caps",
+    "plan_fingerprint"
+  ],
+  "type": "object"
+}

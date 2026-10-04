@@ -1,5 +1,14 @@
 # 研究計画資料
 
+post-M2方針reviewに基づく[PM-0証拠帰属解析](pr2_post_m2_evidence_attribution.md)を完了した。
+現在のA claim/RQの限定は[PM-0報告](pr2_post_m2_evidence_attribution.md)と[研究概要](研究概要・現状.md)を参照する。
+旧S2からのq-only attribution、selector primary損失、異なる候補集合のP感度を限定し、PM-1以降は未認可。
+続く[PM-1近接discard契約](pr2_pm1_nearby_discard_contract_v1.md)は契約・science source・synthetic testsまで固定した。
+local source commit `fd7552e`とsealed preparation planに結合するが、実行認可ではない。
+development B0 rank4/5の8候補、16 wrapperを超えず、次は別authorization/reviewでSTOPする。
+[GPTへの準備bundleレビュー依頼](pr2_pm1_preparation_external_review_request_fd7552e.md)は、
+authorizationを作る段階へ進めるかだけを確認し、科学実行を認可しない。
+
 このディレクトリには、DF部分ランダム化・有限RTE・RPE compiled cost研究の目的、背景、未解決点、解析手順および数値評価計画をまとめる。
 
 実装、runner、テスト、成果物を含むリポジトリ全体の区分は

@@ -1,5 +1,17 @@
 # tests の役割
 
+Track A PM-0は`tracks/resource_applicability/test_pm0_evidence_attribution.py`の18 local tests。
+synthetic bookkeeping・入力allowlist・改変拒否と保存JSON regressionだけを実行する。
+分子NPZ/runtime/cache、旧science/validation runner、compilerを呼ばず、immutable CIとはしない。
+
+PM-1は`tracks/resource_applicability/test_pm1_discard.py`の49 local tests。
+固定8候補、authorization-before-data gateのmock、上限・partial/null ledger・no retry、
+旧state-actionとのsynthetic q回帰、tiny2-qubit wrapper compileと保存JSONのみを検査する。
+`scripts/resource_applicability/run_pr2_pm1_preparation_tests.py`でPM-0 18＋helper134と合わせて
+201 passed、fail/skip0。NPZ/NPY/pickle/runtimeのopen/stat/lstatをimport前に拒否し、禁止アクセス試行0。
+guardは診断でありOS sandboxではない。H4 science、PM-1結果、immutable CIは0。
+[契約と監査資料](../docs/research/pr2_pm1_nearby_discard_contract_v1.md)へ対応する。
+
 `tests/` は、ライブラリAPI、数値恒等式、成果物schema、ガード条件の回帰検査を置く。
 基本的に `src/trotterlib/<name>.py`、`scripts/run_<name>.py`、
 `tests/test_<name>.py`、`docs/<name>.md`、`artifacts/<name>/`を一組として読む。

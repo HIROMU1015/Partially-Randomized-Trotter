@@ -1,5 +1,41 @@
 # Validation status
 
+## 2026-10-04 Track A PM-1：契約・実装準備完了、本実行未認可
+
+[PM-1契約](docs/research/pr2_pm1_nearby_discard_contract_v1.md)と
+`artifacts/resource_applicability/pr2_pm1_discard_preparation/2026-10-04/`にplan/schema/source/test auditを保存した。
+H4 linear 1.00 Å、STO-3G、DF rank12、8 system qubits、T=0.8、B0 rank4/5 × q=1/2/4/8、
+delta=0.8/0.4/0.2/0.1、r=K=0。将来8 signal＋16 full wrappers、CPU1、random追加0。
+保存済み5 development comparatorとのpoint比較だけで、general method最適性やheld-out再探索ではない。
+
+sourceはlocal commit `fd7552edc0334ccf57ecf501a128c85c8d22822a`、134 source hash/blobをplanに結合した。
+plan SHA-256は`cae692bee2be748ddbf17bace2a5652613537a244fe94238cdf669f5d2ca5624`、
+fingerprintは`144824b70264dd3d7d1d22898afbb1f9e1c248f105ecac8096f31a2c8f78ec9e`。
+statusは`PM1_DISCARD_PREPARED_EXECUTION_NOT_AUTHORIZED`。
+限定201 local tests（専用49、PM-0 18、helper134）がpassed、fail/skip0。
+synthetic2-qubit compileを含む実装検査で、H4 science、科学結果、immutable CIではない。
+前attemptのNPZ4件stat/hash、load0は違反として別記録。再開後のNPZ/runtimeアクセス・H4計算・GPUは0。
+M1/M2 evidence/正式statusは不変。利用者の別指示でprep artifactと関連索引をレビューbundleへ収録する。
+[GPTレビュー依頼](docs/research/pr2_pm1_preparation_external_review_request_fd7552e.md)から固定source/plan/監査へ辿れる。
+別authorization→最終review→明示launchまでmandatory STOP。PM-2以降も未認可。
+
+## 2026-10-04 Track A PM-0：POSTHOC保存値再解析、追加科学計算0
+
+[PM-0報告](docs/research/pr2_post_m2_evidence_attribution.md)と
+`artifacts/resource_applicability/pr2_post_m2_evidence_attribution/2026-10-04/`へ事後成果物を分離した。
+H4 linear 1.00/1.30 Å、STO-3G、DF rank12、8 system qubits、T=0.8、ε_complex=0.05。
+M1 L_D=0/3/6/9/12、q=1/2/4/8、delta=0.8/0.4/0.2/0.1。M2はdevelopment固定5構成だけ。
+登録集合のq8でもprimary最小はB2 rank3。旧16件selectorのRZ regret0、secondary regret最大2.2554%、
+actual six-metric Pareto2件中1件を落とすがproxy64件は両方保持する。
+共通5構成のP感度ではM1/M2とも大きいPでB1へ移り、候補domain差をgeometry効果と混同しない。
+B0のpure discard/PF分解はexact truncated-H signal欠測として保存した。
+
+入力JSON5件/source4件を基準commit `b6e65c6123475add5e620ec1064f361378bead95`と前後byte照合し、
+専用18 testsがlocal passed、fail/skip0。今回のレビューbundleへ収録するPOSTHOC bookkeepingで、新しいscience evidence、
+immutable CI、外部再現、formal CIではない。NPZ/runtime/cache access、signal、sampling、build/compile、GPUは0。
+M1/M2結果・正式status・科学source・manifestは不変、中央台帳にはPM-0 entryのみ追加する。
+PM-1近接discard試験案、PM-2 ε/P感度、PM-3構造/energy接続は未認可。mandatory STOP。
+
 ## 2026-10-04 PR-2 M2一回実行・結果照合完了：`TRANSFER_SUPPORTED`、mandatory STOP
 
 最終外部review承認と利用者の実行指示を受け、source/plan/authorizationを変更せず固定5構成のM2を一度実行した。

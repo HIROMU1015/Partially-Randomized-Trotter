@@ -6237,6 +6237,166 @@
         "Do not commit runtime/registry/matrices/state/NPZ or present local uncommitted evidence as immutable CI or independently reproduced results.",
         "Mandatory STOP for full research-direction review before any new trajectory, retuning, geometry/molecule/PF expansion, S3, long RPE or final total-cost evaluation."
       ]
+    },
+    {
+      "id": "pr2_track_a_pm0_evidence_attribution",
+      "status": "source_present_no_current_ci",
+      "terminal_status": "POSTHOC_PM0_COMPLETE_NO_NEW_SCIENCE_STOP",
+      "evidence_commit_status": "included_in_pm1_preparation_review_bundle",
+      "evidence_commit": "b6e65c6123475add5e620ec1064f361378bead95",
+      "track": "resource_applicability",
+      "summary_fingerprint": "578e2c71a5409e2cedf48b53ac5af86d1e456cf344dcfa418a25252539a8918f",
+      "module": "src/trottertracks/resource_applicability/pm0_evidence_attribution.py",
+      "runner": "scripts/resource_applicability/run_pr2_post_m2_evidence_attribution.py",
+      "test": "tests/tracks/resource_applicability/test_pm0_evidence_attribution.py",
+      "report": "docs/research/pr2_post_m2_evidence_attribution.md",
+      "artifact_directory": "artifacts/resource_applicability/pr2_post_m2_evidence_attribution/2026-10-04",
+      "summary": "Saved-JSON/source POSTHOC attribution only. In the same registered H4 development domain, B2 rank3 is primary-RZ competitive already at q8. Old random selector16 retains primary point minimum (RZ regret zero) but loses one of two six-metric Pareto candidates; proxy64 retains both. M1/M2 common-five P envelopes both reach B1 at large P. B0 discard/PF decomposition is missing its exact truncated-H reference. No new science, runtime/cache or molecular-data access; original statuses unchanged. Minimal future proposal is development B0 rank4/5, not authorized.",
+      "scope": {
+        "M1_splits": [
+          0,
+          3,
+          6,
+          9,
+          12
+        ],
+        "T": 0.8,
+        "axis_alpha": 0.025,
+        "axis_error": 0.035355339059327376,
+        "compiler": "Qiskit1.3.0 rz/sx/x/cx opt1 seed17 no coupling/backend",
+        "complex_signal_error": 0.05,
+        "delta": [
+          0.8,
+          0.4,
+          0.2,
+          0.1
+        ],
+        "epsilon_sweep_performed": false,
+        "evidence_kind": "LOCAL_POSTHOC_SAVED_VALUES_NOT_NEW_CI_OR_VALIDATION",
+        "formal_confidence_interval_claimed": false,
+        "geometries_angstrom": [
+          1,
+          1.3
+        ],
+        "model": "H4 linear STO-3G DF rank12; 8 system qubits",
+        "q": [
+          1,
+          2,
+          4,
+          8
+        ]
+      },
+      "counts": {
+        "saved_json_input_files": 5,
+        "source_input_files": 4,
+        "m1_candidates": 210,
+        "m1_eligible": 206,
+        "m2_fixed": 5,
+        "same_R_groups": 56,
+        "dedicated_local_tests_passed": 18,
+        "test_failures": 0,
+        "test_skips": 0,
+        "new_npz_accesses": 0,
+        "runtime_cache_accesses": 0,
+        "new_science_sampling_build_compile": 0,
+        "gpu_operations": 0,
+        "current_ci_reports": 0
+      },
+      "mandatory_stop": true,
+      "next_stage_authorized": false,
+      "pm1_authorized": false
+    },
+    {
+      "id": "pr2_track_a_pm1_nearby_discard_preparation",
+      "status": "source_present_no_current_ci",
+      "terminal_status": "PM1_DISCARD_PREPARED_EXECUTION_NOT_AUTHORIZED",
+      "track": "resource_applicability",
+      "evidence_kind": "LOCAL_IMPLEMENTATION_PREPARATION_NOT_SCIENCE",
+      "source_commit": "fd7552edc0334ccf57ecf501a128c85c8d22822a",
+      "preparation_commit_status": "included_in_pm1_preparation_review_bundle",
+      "review_request": "docs/research/pr2_pm1_preparation_external_review_request_fd7552e.md",
+      "source_count": 134,
+      "source_commit_blob_identical": true,
+      "plan_sha256": "cae692bee2be748ddbf17bace2a5652613537a244fe94238cdf669f5d2ca5624",
+      "plan_fingerprint": "144824b70264dd3d7d1d22898afbb1f9e1c248f105ecac8096f31a2c8f78ec9e",
+      "contract": "docs/research/pr2_pm1_nearby_discard_contract_v1.md",
+      "modules": [
+        "src/trottertracks/resource_applicability/pm1_discard_contract.py",
+        "src/trottertracks/resource_applicability/pm1_discard_execution.py"
+      ],
+      "planner": "scripts/resource_applicability/run_pr2_pm1_discard_contract.py",
+      "future_runner": "scripts/resource_applicability/run_pr2_pm1_discard.py",
+      "test_runner": "scripts/resource_applicability/run_pr2_pm1_preparation_tests.py",
+      "test": "tests/tracks/resource_applicability/test_pm1_discard.py",
+      "artifact_directory": "artifacts/resource_applicability/pr2_pm1_discard_preparation/2026-10-04",
+      "scope": {
+        "model": "H4 linear 1.00 Angstrom STO-3G DF rank12; 8 system qubits",
+        "T": 0.8,
+        "method": "B0 discard",
+        "ranks": [
+          4,
+          5
+        ],
+        "q": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "delta": [
+          0.8,
+          0.4,
+          0.2,
+          0.1
+        ],
+        "r": 0,
+        "K": 0,
+        "saved_comparator_count": 5,
+        "comparison": "eight new discard cells plus five frozen development comparators only",
+        "bias": "total discard plus PF against saved full-H target; pure components not separated",
+        "resource_caps_future_only": {
+          "candidate_signals": 8,
+          "full_wrappers": 16,
+          "development_loads": 1,
+          "cpu_processes": 1,
+          "random_trajectories": 0,
+          "held_out_access": 0,
+          "gpu_operations": 0,
+          "quantum_shots": 0,
+          "cache_reuse": 0,
+          "execution_run_limit": 1
+        }
+      },
+      "counts": {
+        "dedicated_local_tests_passed": 49,
+        "PM0_regression_passed": 18,
+        "helper_regression_passed": 134,
+        "total_local_tests_passed": 201,
+        "test_failures": 0,
+        "test_skips": 0,
+        "resumed_protected_data_access_attempts": 0,
+        "resumed_npz_stat_hash_load": 0,
+        "resumed_runtime_cache_access": 0,
+        "production_science_evaluations": 0,
+        "production_H4_wrapper_build_compile": 0,
+        "random_sampling": 0,
+        "gpu_operations": 0,
+        "quantum_shots": 0,
+        "current_ci_reports": 0
+      },
+      "prior_preparation_incident": {
+        "npz_stat_hash_accesses": 4,
+        "npz_loads": 0,
+        "disclosed": true,
+        "distinct_from_resumed_scope": true
+      },
+      "execution_authorized": false,
+      "authorization_created": false,
+      "mandatory_stop": true,
+      "next_stage_authorized": false,
+      "research_decision": null,
+      "publication_scope": "user_requested_preparation_review_bundle_only",
+      "historical_preparation_audits_preserved": true
     }
   ],
   "repository_completion_criteria": [

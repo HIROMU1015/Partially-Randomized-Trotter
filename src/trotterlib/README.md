@@ -1,5 +1,13 @@
 # trotterlib モジュール索引
 
+Track A PM-0の純stdlib事後解析は[別namespaceのmodule](../trottertracks/resource_applicability/pm0_evidence_attribution.py)
+と[報告](../../docs/research/pr2_post_m2_evidence_attribution.md)に置く。
+既存M1/M2 collectorに追加sourceを混ぜないため`trotterlib`の科学コードは不変。
+PM-1の[contract module](../trottertracks/resource_applicability/pm1_discard_contract.py)と
+[future science adapter](../trottertracks/resource_applicability/pm1_discard_execution.py)も同namespaceへ分離した。
+既存DF/PF/compile helperは変更せず再利用する。source固定・限定testsだけで、科学実行は未認可。
+条件とSTOPは[PM-1契約](../../docs/research/pr2_pm1_nearby_discard_contract_v1.md)を参照する。
+
 このディレクトリが実装本体である。`scripts/` は主にここにある関数を呼び出す実行入口、
 `tests/` は回帰検査である。研究全体の入口は[`../../PROJECT_MAP.md`](../../PROJECT_MAP.md)を参照する。
 

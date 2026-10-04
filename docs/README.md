@@ -1,5 +1,12 @@
 # 文書索引
 
+最新のTrack A claim限定は[PM-0 POSTHOC証拠帰属・機構解析](research/pr2_post_m2_evidence_attribution.md)。
+元のM1/M2結果と区別し、同一domain、selector指標別regret、N×cost、same-R、欠測の表を辿る。
+後続の[PM-1近接discard契約・実装](research/pr2_pm1_nearby_discard_contract_v1.md)は
+8 signal＋16 wrapperのfuture上限とsealed planを準備した段階。本計算・authorizationは未実施。
+[GPTへのPM-1準備bundleレビュー依頼](research/pr2_pm1_preparation_external_review_request_fd7552e.md)から
+PM-0の根拠、固定source、plan、監査へ辿れる。
+
 このディレクトリには、研究方針の正本、実装規約、検証報告、発表資料の案内が共存する。
 研究全体を初めて読む場合は、先に[`../PROJECT_MAP.md`](../PROJECT_MAP.md)と
 [`research/研究概要・現状.md`](research/研究概要・現状.md)を読む。
