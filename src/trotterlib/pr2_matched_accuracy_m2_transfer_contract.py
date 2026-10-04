@@ -16,8 +16,9 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 
-SCHEMA_VERSION = "pr2_matched_accuracy_m2_transfer_zero_compute_plan_v1"
+SCHEMA_VERSION = "pr2_matched_accuracy_m2_transfer_zero_compute_plan_v2"
 STATUS = "M2_TRANSFER_CONTRACT_FROZEN_EXECUTION_NOT_AUTHORIZED"
+DRAFT_STATUS = "M2_TRANSFER_CONTRACT_DRAFT_EXECUTION_NOT_AUTHORIZED"
 SERIES_ID = "pr2-rebaseline-de7a5492-v1"
 
 M1_B1_RESULT_RELATIVE = (
@@ -69,6 +70,54 @@ RATIO_INTERVAL_Z = 2.0
 TRAJECTORIES_PER_RANDOM_CELL = 32
 MASTER_SEED = 2026100401
 MAXIMUM_WORKERS = 5
+
+USABLE_B2_RULE = {
+    "method": "B2",
+    "accuracy_eligible": True,
+    "major_cost_underestimate": False,
+    "major_underestimate_metric": PRIMARY_METRIC,
+}
+MATERIALITY_RULE = {
+    "point_ratio_formula": "min_usable_B2_G_rz/min_eligible_B0_B1_B3_G_rz",
+    "numerator_candidate_set": "usable_B2",
+    "denominator_candidate_set": "accuracy_eligible_B0_B1_B3",
+    "materially_competitive_if_ratio_at_most": MATERIALITY_RATIO,
+    "ratio_interval_method": "delta_method_independent_candidate_2SE_engineering_interval",
+    "ratio_interval_z": RATIO_INTERVAL_Z,
+    "formal_confidence_interval_claimed": False,
+}
+TERMINAL_DECISION_RULE = {
+    "allowed_statuses": list(TRANSFER_STATUSES),
+    "usable_b2_predicate": USABLE_B2_RULE,
+    "pareto_support_candidate_set": "usable_B2",
+    "ratio_numerator_candidate_set": "usable_B2",
+    "ratio_denominator_candidate_set": "accuracy_eligible_B0_B1_B3",
+    "decision_order": [
+        "implementation_gate_failed",
+        "empty_usable_B2_not_supported",
+        "empty_eligible_endpoints_inconclusive",
+        "usable_B2_on_point_Pareto_supported",
+        "usable_B2_ratio_upper_2SE_at_most_1.10_supported",
+        "usable_B2_ratio_lower_2SE_above_1.10_not_supported",
+        "otherwise_inconclusive",
+    ],
+    "supported": (
+        "with a nonempty eligible endpoint set, at least one usable B2 is on the "
+        "point six-metric Pareto frontier, or the primary ratio computed exclusively "
+        "from usable B2 has upper 2SE <=1.10"
+    ),
+    "not_supported": (
+        "the usable B2 set is empty, or no usable B2 is point-Pareto and its "
+        "primary ratio has lower 2SE >1.10"
+    ),
+    "inconclusive": (
+        "usable B2 exists but eligible endpoints are unavailable, or no usable B2 "
+        "is point-Pareto and its primary ratio has lower 2SE <=1.10 < upper 2SE"
+    ),
+    "implementation_gate_failed": "any source, identity, numerical, or resource gate fails",
+    "runner_authorizes_next_stage": False,
+    "mandatory_stop_after_terminal_status": True,
+}
 
 FROZEN_CANDIDATES = (
     {
@@ -382,26 +431,33 @@ def classify_transfer(
         return {"status": "IMPLEMENTATION_GATE_FAILED", "primary_ratio": None}
     by_id = {str(item["candidate_id"]): item for item in candidate_results}
     expected_ids = {str(item["candidate_id"]) for item in FROZEN_CANDIDATES}
-    if set(by_id) != expected_ids:
+    if len(candidate_results) != len(expected_ids) or set(by_id) != expected_ids:
         raise ValueError("classification requires exactly the five frozen candidates")
-    eligible_b2 = [
+    for expected in FROZEN_CANDIDATES:
+        item = by_id[str(expected["candidate_id"])]
+        _require(item["method"] == expected["method"], "classification method differs")
+        for field in ("accuracy_eligible", "major_cost_underestimate", "point_six_metric_pareto"):
+            _require(type(item[field]) is bool, f"classification {field} must be boolean")
+    usable_b2 = [
         item
         for item in candidate_results
         if item["method"] == "B2" and item["accuracy_eligible"] is True
+        and item["major_cost_underestimate"] is False
     ]
-    if not eligible_b2:
-        return {"status": "TRANSFER_NOT_SUPPORTED", "primary_ratio": None}
     endpoints = [
         item
         for item in candidate_results
         if item["method"] in {"B0", "B1", "B3"}
         and item["accuracy_eligible"] is True
     ]
-    if not endpoints:
-        return {"status": "TRANSFER_INCONCLUSIVE", "primary_ratio": None}
-    usable_b2 = [item for item in eligible_b2 if not item["major_cost_underestimate"]]
+    selection = {
+        "usable_b2_candidate_ids": [item["candidate_id"] for item in usable_b2],
+        "eligible_endpoint_candidate_ids": [item["candidate_id"] for item in endpoints],
+    }
     if not usable_b2:
-        return {"status": "TRANSFER_NOT_SUPPORTED", "primary_ratio": None}
+        return {"status": "TRANSFER_NOT_SUPPORTED", "primary_ratio": None, **selection}
+    if not endpoints:
+        return {"status": "TRANSFER_INCONCLUSIVE", "primary_ratio": None, **selection}
     best_b2 = min(usable_b2, key=lambda item: float(item["primary_work"]))
     best_endpoint = min(endpoints, key=lambda item: float(item["primary_work"]))
     ratio = materiality_ratio_interval(
@@ -423,6 +479,7 @@ def classify_transfer(
         "primary_ratio": ratio,
         "best_b2_candidate_id": best_b2["candidate_id"],
         "best_endpoint_candidate_id": best_endpoint["candidate_id"],
+        **selection,
     }
 
 
@@ -434,6 +491,7 @@ def build_plan(
     validation_sha256: str,
     source_commit: str,
     source_hashes: Mapping[str, str],
+    source_committed: bool = True,
 ) -> dict[str, Any]:
     validate_inputs(
         result,
@@ -458,9 +516,11 @@ def build_plan(
     body: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "series_id": SERIES_ID,
-        "status": STATUS,
+        "status": STATUS if source_committed else DRAFT_STATUS,
         "source_commit": source_commit,
         "source_hashes": dict(sorted(source_hashes.items())),
+        "source_binding_status": "COMMIT_BOUND" if source_committed else "WORKTREE_DRAFT",
+        "source_commit_required_before_authorization": True,
         "input_identity": {
             "m1_b1_evidence_commit": M1_B1_EVIDENCE_COMMIT,
             "m1_b1_result_path": M1_B1_RESULT_RELATIVE,
@@ -482,6 +542,8 @@ def build_plan(
             "general_optimum_claimed": False,
             "rank3_q1_general_optimum_claimed": False,
             "r4_vs_r8_exact_winner_claimed": False,
+            "held_out_method_optimum_claimed": False,
+            "transfer_scope": "only_the_five_development_frozen_configurations",
         },
         "held_out_target": {
             "system": "H4 linear",
@@ -531,33 +593,8 @@ def build_plan(
             "secondary_metric_underestimates_reported_but_not_terminal": True,
             "major_underestimate_disqualifies_that_B2_candidate_from_support": True,
         },
-        "materiality_and_uncertainty_rule": {
-            "point_ratio_formula": "min_eligible_B2_G_rz/min_eligible_B0_B1_B3_G_rz",
-            "materially_competitive_if_ratio_at_most": MATERIALITY_RATIO,
-            "ratio_interval_method": "delta_method_independent_candidate_2SE_engineering_interval",
-            "ratio_interval_z": RATIO_INTERVAL_Z,
-            "formal_confidence_interval_claimed": False,
-        },
-        "terminal_decision_rule": {
-            "allowed_statuses": list(TRANSFER_STATUSES),
-            "supported": (
-                "at least one accuracy-eligible, non-majorly-underestimated B2 is on "
-                "the point six-metric Pareto frontier, or the upper 2SE primary ratio "
-                "is <=1.10"
-            ),
-            "not_supported": (
-                "no B2 remains accuracy-eligible, every eligible B2 has a major primary "
-                "cost underestimate, or no usable B2 is point-Pareto and the lower 2SE "
-                "primary ratio is >1.10"
-            ),
-            "inconclusive": (
-                "required endpoints are unavailable or the 2SE ratio straddles 1.10 "
-                "without a usable point-Pareto B2"
-            ),
-            "implementation_gate_failed": "any source, identity, numerical, or resource gate fails",
-            "runner_authorizes_next_stage": False,
-            "mandatory_stop_after_terminal_status": True,
-        },
+        "materiality_and_uncertainty_rule": dict(MATERIALITY_RULE),
+        "terminal_decision_rule": json.loads(canonical_json(TERMINAL_DECISION_RULE)),
         "seed_policy": {
             "name": "pr2_m2_transfer_configuration_trajectory_sha256_v1",
             "master_seed": MASTER_SEED,
@@ -613,7 +650,10 @@ def build_plan(
 
 def validate_plan(payload: Mapping[str, Any]) -> None:
     _require(payload.get("schema_version") == SCHEMA_VERSION, "unexpected plan schema")
-    _require(payload.get("status") == STATUS, "unexpected plan status")
+    _require(payload.get("status") in {STATUS, DRAFT_STATUS}, "unexpected plan status")
+    expected_binding = "COMMIT_BOUND" if payload["status"] == STATUS else "WORKTREE_DRAFT"
+    _require(payload.get("source_binding_status") == expected_binding, "source binding differs")
+    _require(payload.get("source_commit_required_before_authorization") is True, "source freeze not required")
     body = {key: value for key, value in payload.items() if key != "plan_fingerprint"}
     _require(fingerprint(body) == payload.get("plan_fingerprint"), "plan fingerprint mismatch")
     candidates = payload.get("frozen_candidates")
@@ -634,6 +674,8 @@ def validate_plan(payload: Mapping[str, Any]) -> None:
     _require(caps["total_full_wrappers"] == 196, "wrapper cap differs")
     _require(caps["additional_trajectories"] == 0, "extension trajectories enabled")
     decision = payload["terminal_decision_rule"]
+    _require(decision == TERMINAL_DECISION_RULE, "usable B2 terminal decision rule differs")
+    _require(payload["materiality_and_uncertainty_rule"] == MATERIALITY_RULE, "usable B2 ratio rule differs")
     _require(tuple(decision["allowed_statuses"]) == TRANSFER_STATUSES, "statuses differ")
     _require(decision["runner_authorizes_next_stage"] is False, "runner authorizes next stage")
     authorization = payload["authorization"]

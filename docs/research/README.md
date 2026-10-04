@@ -159,3 +159,14 @@ zero-compute固定した。現段階ではheld-out accessとM2科学実行を認
 - [H-chain系サイズ・実行可能delta窓におけるPF係数検証](../pf_c_system_size_validation.md)
 - [RPE resource accounting](../rpe_resource_accounting.md)
 - [RTE一次資料の版管理](../rte_source_versions.md)
+
+## M2 usable B2契約修正 v2（2026-10-04）
+
+外部reviewの修正要求を[amendment v2](pr2_matched_accuracy_m2_transfer_contract_amendment_v2.md)へ反映した。
+Pareto supportとprimary ratioは共にaccuracy-eligibleかつprimary重大underestimateのないB2だけを使う。
+v1証拠・固定5構成・seed・196-wrapper上限を維持し、科学実行とheld-out accessは未認可である。
+moduleは`src/trotterlib/pr2_matched_accuracy_m2_transfer_contract.py`、runnerは
+`scripts/run_pr2_matched_accuracy_m2_transfer_contract.py`、testは
+`tests/test_pr2_matched_accuracy_m2_transfer_contract.py`、schema/planは
+`artifacts/pr2_matched_accuracy_m2_transfer_contract/2026-10-04/`から辿れる。
+

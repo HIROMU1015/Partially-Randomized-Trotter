@@ -472,3 +472,14 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
 
 新しい検証を追加するときは、可能な限り同じ語幹で
 `src/trotterlib/`、`scripts/`、`tests/`、`docs/`、`artifacts/`を対応させる。
+
+## M2 usable B2契約修正 v2（2026-10-04）
+
+外部reviewの修正要求を[amendment v2](docs/research/pr2_matched_accuracy_m2_transfer_contract_amendment_v2.md)へ反映した。
+Pareto supportとprimary ratioは共にaccuracy-eligibleかつprimary重大underestimateのないB2だけを使う。
+v1証拠・固定5構成・seed・196-wrapper上限を維持し、科学実行とheld-out accessは未認可である。
+moduleは`src/trotterlib/pr2_matched_accuracy_m2_transfer_contract.py`、runnerは
+`scripts/run_pr2_matched_accuracy_m2_transfer_contract.py`、testは
+`tests/test_pr2_matched_accuracy_m2_transfer_contract.py`、schema/planは
+`artifacts/pr2_matched_accuracy_m2_transfer_contract/2026-10-04/`から辿れる。
+

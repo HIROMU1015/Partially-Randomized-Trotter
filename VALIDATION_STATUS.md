@@ -1,5 +1,20 @@
 # Validation status
 
+## 2026-10-04 PR-2 M2外部review修正：usable B2統一（未commit draft）
+
+外部reviewの`REVISE_M2_CONTRACT_BEFORE_IMPLEMENTATION`を受け、
+[amendment v2](docs/research/pr2_matched_accuracy_m2_transfer_contract_amendment_v2.md)を追加した。
+Pareto supportとprimary ratioは共にaccuracy-eligibleかつprimary重大underestimateのないB2だけを使う。
+usable集合が空ならNOT_SUPPORTED、usable集合がありendpointが空ならINCONCLUSIVEとする。
+20%過小評価でもactual ratioが良い反例、最安unusable B2の除外、schema/plan改変拒否を検査した。
+
+M2専用28 passed、関連focused全49 passed、fail/skip 0。これはdirty-worktreeのlocal implementation evidenceで、
+immutable CIまたはtransfer科学結果ではない。v1契約・schema・planのbyte identity、固定5構成・seed・196-wrapper
+上限を保存する。v2 zero-compute planは`M2_TRANSFER_CONTRACT_DRAFT_EXECUTION_NOT_AUTHORIZED` /
+`WORKTREE_DRAFT`。正式planはsource commitとのbyte照合後にだけfreezeする。
+held-out resolve/stat/hash/load、signal、trajectory、compile、transfer、GPUは0のままであり、science source、
+別result-prior authorization、最終reviewを経るまで科学実行しない。
+
 ## 2026-10-04 PR-2 M2 held-out transfer契約・zero-compute plan固定完了
 
 M1-B1の`CONTINUE_RESOURCE_STUDY`を受け、[M2 transfer契約](docs/research/pr2_matched_accuracy_m2_held_out_transfer_contract_v1.md)を

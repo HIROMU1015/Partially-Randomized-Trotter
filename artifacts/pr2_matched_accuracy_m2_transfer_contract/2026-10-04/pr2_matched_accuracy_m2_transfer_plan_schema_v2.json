@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "authorization": {
+      "properties": {
+        "automatic_next_stage": {
+          "type": "null"
+        },
+        "held_out_access_authorized": {
+          "const": false
+        },
+        "transfer_execution_authorized": {
+          "const": false
+        }
+      },
+      "required": [
+        "automatic_next_stage",
+        "held_out_access_authorized",
+        "transfer_execution_authorized"
+      ],
+      "type": "object"
+    },
+    "frozen_candidates": {
+      "items": {
+        "properties": {
+          "candidate_id": {
+            "enum": [
+              "B2-rank3-q1-r4-K2",
+              "B2-rank3-q1-r8-K2",
+              "B0-rank6-q1-r0-K0",
+              "B1-rank12-q1-r0-K0",
+              "B3-rank0-q8-r32-K4"
+            ]
+          }
+        },
+        "required": [
+          "candidate_id",
+          "candidate_fingerprint",
+          "transfer_configuration_fingerprint"
+        ],
+        "type": "object"
+      },
+      "maxItems": 5,
+      "minItems": 5,
+      "type": "array"
+    },
+    "plan_fingerprint": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "resource_caps": {
+      "properties": {
+        "additional_trajectories": {
+          "const": 0
+        },
+        "candidate_count": {
+          "const": 5
+        },
+        "random_full_wrappers": {
+          "const": 192
+        },
+        "deterministic_or_discard_full_wrappers": {
+          "const": 4
+        },
+        "total_full_wrappers": {
+          "const": 196
+        }
+      },
+      "required": [
+        "candidate_count",
+        "random_full_wrappers",
+        "deterministic_or_discard_full_wrappers",
+        "total_full_wrappers",
+        "additional_trajectories"
+      ],
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "pr2_matched_accuracy_m2_transfer_zero_compute_plan_v2"
+    },
+    "status": {
+      "enum": [
+        "M2_TRANSFER_CONTRACT_FROZEN_EXECUTION_NOT_AUTHORIZED",
+        "M2_TRANSFER_CONTRACT_DRAFT_EXECUTION_NOT_AUTHORIZED"
+      ]
+    },
+    "source_binding_status": {
+      "enum": [
+        "COMMIT_BOUND",
+        "WORKTREE_DRAFT"
+      ]
+    },
+    "source_commit_required_before_authorization": {
+      "const": true
+    },
+    "terminal_decision_rule": {
+      "const": {
+        "allowed_statuses": [
+          "TRANSFER_SUPPORTED",
+          "TRANSFER_NOT_SUPPORTED",
+          "TRANSFER_INCONCLUSIVE",
+          "IMPLEMENTATION_GATE_FAILED"
+        ],
+        "usable_b2_predicate": {
+          "method": "B2",
+          "accuracy_eligible": true,
+          "major_cost_underestimate": false,
+          "major_underestimate_metric": "rz_count"
+        },
+        "pareto_support_candidate_set": "usable_B2",
+        "ratio_numerator_candidate_set": "usable_B2",
+        "ratio_denominator_candidate_set": "accuracy_eligible_B0_B1_B3",
+        "decision_order": [
+          "implementation_gate_failed",
+          "empty_usable_B2_not_supported",
+          "empty_eligible_endpoints_inconclusive",
+          "usable_B2_on_point_Pareto_supported",
+          "usable_B2_ratio_upper_2SE_at_most_1.10_supported",
+          "usable_B2_ratio_lower_2SE_above_1.10_not_supported",
+          "otherwise_inconclusive"
+        ],
+        "supported": "with a nonempty eligible endpoint set, at least one usable B2 is on the point six-metric Pareto frontier, or the primary ratio computed exclusively from usable B2 has upper 2SE <=1.10",
+        "not_supported": "the usable B2 set is empty, or no usable B2 is point-Pareto and its primary ratio has lower 2SE >1.10",
+        "inconclusive": "usable B2 exists but eligible endpoints are unavailable, or no usable B2 is point-Pareto and its primary ratio has lower 2SE <=1.10 < upper 2SE",
+        "implementation_gate_failed": "any source, identity, numerical, or resource gate fails",
+        "runner_authorizes_next_stage": false,
+        "mandatory_stop_after_terminal_status": true
+      }
+    },
+    "materiality_and_uncertainty_rule": {
+      "const": {
+        "point_ratio_formula": "min_usable_B2_G_rz/min_eligible_B0_B1_B3_G_rz",
+        "numerator_candidate_set": "usable_B2",
+        "denominator_candidate_set": "accuracy_eligible_B0_B1_B3",
+        "materially_competitive_if_ratio_at_most": 1.1,
+        "ratio_interval_method": "delta_method_independent_candidate_2SE_engineering_interval",
+        "ratio_interval_z": 2,
+        "formal_confidence_interval_claimed": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "status",
+    "frozen_candidates",
+    "resource_caps",
+    "authorization",
+    "plan_fingerprint",
+    "source_binding_status",
+    "source_commit_required_before_authorization",
+    "terminal_decision_rule",
+    "materiality_and_uncertainty_rule"
+  ],
+  "title": "PR-2 M2 held-out transfer zero-compute plan v2",
+  "type": "object",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "M2_TRANSFER_CONTRACT_FROZEN_EXECUTION_NOT_AUTHORIZED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "source_binding_status": {
+            "const": "COMMIT_BOUND"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "source_binding_status": {
+            "const": "WORKTREE_DRAFT"
+          }
+        }
+      }
+    }
+  ]
+}
+

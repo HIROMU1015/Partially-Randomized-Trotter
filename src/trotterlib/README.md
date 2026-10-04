@@ -80,7 +80,8 @@
   状態準備感度を再計算する結果検証。development/held-out分子snapshotを読まない
 - `pr2_matched_accuracy_m2_transfer_contract.py`：検証済みM1-B1 JSONだけからB2 actual Pareto二件と
   B0/B1/B3代表を固定し、primary RZ、6指標Pareto、10% materiality、重大underestimate、4 terminal status、
-  future seedと196-wrapper上限をzero-compute固定する。held-out snapshotは開かず、M2実行を認可しない
+  future seedと196-wrapper上限をzero-compute固定する。v2はusable B2だけでPareto support/ratioを判定し、
+  v1証拠を保存する。held-out snapshotは開かず、M2実行を認可しない
 - `pf_delta_validation.py`
 - `pf_c_system_size_validation.py`
 - `pauli_partial_cgs_validation.py`
