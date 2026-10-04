@@ -1,8 +1,9 @@
 # scripts 索引
 
-PM-1の[結果前authorization draft](../docs/research/pr2_pm1_discard_execution_authorization_v1.md)は
-final_review_approved=false。既存future runnerはgateで拒否し、今回は起動しない。
-[最終review依頼](../docs/research/pr2_pm1_execution_authorization_external_review_request_b6175a0.md)とguard付き限定suiteへ対応する。source変更・science runは0。
+PM-1は最終review・authorization一項目確定・利用者launch後に一回完了した。
+[結果と照合](../docs/pr2_pm1_discard_result_validation.md)：8 signals/16 wrappers、pre/post201 local tests passed。
+source不変、`PM1_DISCARD_MAP_COMPLETE_AWAITING_REVIEW`でmandatory STOP、retry/resume/次段なし。
+下のdraft/future記述は実装・準備時点の履歴であり、現在の実行状態はこの節を優先する。
 
 `resource_applicability/run_pr2_post_m2_evidence_attribution.py`はTrack A PM-0の保存JSON/source再集計専用。
 stdlibのみ、artifact内pathを辿らず、bundleをstdoutへ出すだけでファイルを書き換えない。

@@ -1,9 +1,9 @@
 # trotterlib モジュール索引
 
-PM-1 source `fd7552e`と134 hashは変更せず、
-[別authorization draft](../../docs/research/pr2_pm1_discard_execution_authorization_v1.md)を固定した。
-final_review_approved=falseの現在は既存gateが拒否する。
-[最終review](../../docs/research/pr2_pm1_execution_authorization_external_review_request_b6175a0.md)と一項目commit・明示launch指示を待ち、科学import/data境界を越えない。
+PM-1 source `fd7552e`と134 hashは不変のまま、最終review・authorization確定・明示launchを経て一回実行した。
+[結果照合](../../docs/pr2_pm1_discard_result_validation.md)：H4 developmentの8 signals/16 wrappersが完了、
+pre/post201 local tests passed、mandatory STOP、次段未認可。科学module/共有helperは変更していない。
+下の準備・未認可記述は各milestone当時の履歴として保持する。
 
 Track A PM-0の純stdlib事後解析は[別namespaceのmodule](../trottertracks/resource_applicability/pm0_evidence_attribution.py)
 と[報告](../../docs/research/pr2_post_m2_evidence_attribution.md)に置く。

@@ -1,14 +1,17 @@
 # プロジェクト案内
 
-## Track A PM-1最終承認済み：明示launch待ち
+## Track A PM-1実行完了：研究方針review待ちSTOP
 
-`APPROVE_PM1_EXECUTION`を受領し、[authorization確定記録](docs/research/pr2_pm1_execution_finalization_20261005.md)へ保存した。
-commit `bf9eaeec868361df0c8e05d06e9570a2bfc5a7a4`は`final_review_approved`一項目だけをtrueにした。
-source `fd7552e`、sealed plan、134 source、8候補/16 wrapper、compiler/caps/root/outputは不変。
-committed authorizationのscience-free実gate PASS、限定201 local tests passed、fail/skip0。
-**PM-1本計算は0。利用者の明示launch指示までSTOP。** 旧draft manifestはhistorical commit照合用に保存し、
-現在の照合は`artifacts/resource_applicability/pr2_pm1_finalization/2026-10-05/`を使う。
-以下の準備・未認可記述は過去milestone時点の履歴であり、現在地はこの節を優先する。
+最終承認・利用者の明示launch後、[PM-1結果照合](docs/pr2_pm1_discard_result_validation.md)を完了した。
+H4 linear 1.00 Å、STO-3G、DF rank12、8 qubits、T=0.8、B0 rank4/5 × q=1/2/4/8、
+delta=0.8/0.4/0.2/0.1、r=K=0の8構成が全件accuracy適格。8 signals/16 wrappers、CPU1、wall141.614秒。
+最小の新B0 rank5・q1はG_RZ=229,718,060、保存B2 rank3・q1・r4・K2のpoint値の1.75659倍、
+旧B0 rank6・q1より9.34%低い。これは固定development比較でありgeneral method optimumではない。
+source134・plan・authorization・runner manifestを照合し、pre/post201 local tests passed、fail/skip0。
+random/held-out/GPU/quantum shots/retry0。結果・監査は
+`artifacts/resource_applicability/pr2_pm1_discard_execution/2026-10-04/`のlocal evidenceを利用者指示でresult commitへ収録する。
+**statusはPM1_DISCARD_MAP_COMPLETE_AWAITING_REVIEW。mandatory STOP、研究判断null、次段未認可。**
+旧draft/finalization/準備の記述はmilestone当時の履歴として保存し、現在地はこの節を優先する。
 
 最終更新：2026-10-05
 

@@ -1,5 +1,26 @@
 # Validation status
 
+## 2026-10-05 Track A PM-1一回実行・結果照合完了、mandatory STOP
+
+利用者の明示指示「PM-1を実行して」を受け、固定source/plan/true authorizationで一回だけ実行した。
+[PM-1結果照合](docs/pr2_pm1_discard_result_validation.md)は
+H4 linear 1.00 Å、STO-3G、DF rank12、8 system qubits、T=0.8、
+B0 rank4/5 × q=1/2/4/8、delta=0.8/0.4/0.2/0.1、r=K=0の8件が全件accuracy適格であることを記録する。
+最小の新B0 rank5・q1はprimary G_RZ=229,718,060、保存B2 rank3・q1・r4・K2点推定の1.75659倍、
+旧B0 rank6・q1より9.34%低い。比較は固定development集合内、pure discard/PF分解はnullのまま。
+
+134 source blobs、8 fingerprints、16 wrapper keys、signal/cost式、40 point ratios、
+manifest2件のbytes/SHAとcompletion markerを照合した。runner manifest/resultは不変。
+8 signal＋16 wrapper、CPU1/BLAS1、wall141.614秒、peak RSS2,145,856 KiB。
+development hash/load各1、random/held-out/GPU/quantum shots/retry0。
+pre/post限定201 local tests passed、fail/skip0、guard attempts0。result SHA-256：
+`9305857873602d6bc4f45fbc78c4903911d083156620df01e9b23f00e7fdf05b`。
+
+statusは`PM1_DISCARD_MAP_COMPLETE_AWAITING_REVIEW`、研究判断null、next-stage=false、
+mandatory STOP。次は研究方針reviewであり追加科学計算を認可しない。
+軽量result/audit/reportは利用者指示によるresult commitへ収録するlocal execution evidence。immutable CI・外部再現や最終総costではない。
+以前のdraft/finalization/準備entryはそれぞれの監査時点の状態として保持する。
+
 ## 2026-10-05 Track A PM-1最終承認・一項目確定、明示launch待ち
 
 利用者提示review `APPROVE_PM1_EXECUTION`を受領し、

@@ -1,8 +1,11 @@
 # 文書索引
 
-Track A PM-1は`APPROVE_PM1_EXECUTION`を受領し、[一項目だけのauthorization確定](research/pr2_pm1_execution_finalization_20261005.md)を完了した。
-source/plan不変、final_review_approved=true、science-free実gate PASS、限定201 local tests passed。
-本実行0、明示launch指示待ちでSTOP。旧draft/preparationの未認可記述は当時の履歴として保持する。
+Track Aの最新は[PM-1実行結果・照合](pr2_pm1_discard_result_validation.md)。
+H4 1.00 Å、STO-3G、DF rank12、T=0.8、B0 rank4/5 × q=1/2/4/8の8件がaccuracy適格、
+8 signals/16 wrappersを一回完了。pre/post201 local tests passed。
+新B0最小rank5・q1は保存B2 r4のprimary点推定の1.75659倍、旧rank6 discardより9.34%低い。
+`PM1_DISCARD_MAP_COMPLETE_AWAITING_REVIEW`、mandatory STOP、研究判断null。
+結果と監査は利用者指示によるresult commitへ収録するlocal evidence。旧draft/preparation/finalizationの未実行記述は当時の履歴として保持する。
 
 最新のTrack A claim限定は[PM-0 POSTHOC証拠帰属・機構解析](research/pr2_post_m2_evidence_attribution.md)。
 元のM1/M2結果と区別し、同一domain、selector指標別regret、N×cost、same-R、欠測の表を辿る。

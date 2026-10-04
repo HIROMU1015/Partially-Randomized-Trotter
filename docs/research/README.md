@@ -1,9 +1,11 @@
 # 研究計画資料
 
-PM-1最終reviewは`APPROVE_PM1_EXECUTION`。[authorization確定](pr2_pm1_execution_finalization_20261005.md)は
-`final_review_approved`だけをtrueにした独立commitで、科学source・plan・他field・旧証拠は不変。
-運用statusは`PM1_FINAL_REVIEW_APPROVED_AUTHORIZATION_FINALIZED_AWAITING_USER_LAUNCH`。
-science-free実gate PASS、限定201 local tests passed、fail/skip0。本実行0、利用者の明示launchまでSTOP。
+PM-1は最終review承認・明示launch後、一回だけ実行し[結果を照合](../pr2_pm1_discard_result_validation.md)した。
+H4 linear 1.00 Å、STO-3G、DF rank12、T=0.8、B0 rank4/5 × q=1/2/4/8が全件accuracy適格。
+8 signals/16 wrappers、source134不変、pre/post201 local tests passed、fail/skip0。
+新B0最小rank5・q1は旧rank6よりprimary RZ9.34%減だが、保存B2 r4点推定の1.75659倍。
+`PM1_DISCARD_MAP_COMPLETE_AWAITING_REVIEW`でmandatory STOP、次段未認可・研究判断null。
+利用者指示でlocal executionの結果と監査をresult commitへ収録し、次は研究方針reviewへ戻る。
 以下の準備・未認可記述は各milestone当時の履歴であり、この最新節と区別する。
 
 post-M2方針reviewに基づく[PM-0証拠帰属解析](pr2_post_m2_evidence_attribution.md)を完了した。
