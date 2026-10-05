@@ -1,5 +1,12 @@
 # scripts 索引
 
+Track B [SP-1 runner](tracks/algorithm_codesign/run_sp1_wrapper_pilot.py)を追加した。
+`plan --source-commit <full S>`は静的角度/key/fusionとsource identityだけを照合する。
+資源/信号採点・合成・marker作成は0。`run`は別の明示authorizationとclean direct-child Aを要求する。
+[採用契約](../docs/tracks/algorithm_codesign/sp1_wrapper_preregistration_v1.md)、
+[source manifest](../artifacts/track_b_sp1_wrapper_source/2026-10-06/source_manifest_v1.json)。
+focused testsは`test_sp1_wrapper_*.py`だけ。science未認可、最終source reviewへSTOP。以下は履歴。
+
 Track B [SP-1 wrapper契約案](../docs/tracks/algorithm_codesign/sp1_wrapper_preregistration_proposal_v1.md)は準備段階。
 science runnerはまだ作成していない。共通会計kernelと17 artificial focused testsだけを追加し、
 science sweep／SP-0.5 rerunを行わない。実adapter／fusion監査／source freeze／別authorization前にSTOP。

@@ -1,0 +1,262 @@
+{
+  "schema": "track_b_sp1_wrapper_contract_v1",
+  "status": "CONTRACT_ADOPTED_SOURCE_REVIEW_PENDING_EXECUTION_UNAUTHORIZED",
+  "date_jst": "2026-10-06",
+  "review_label": "APPROVE_SP1_CONTRACT_DIRECTION_WITH_REQUIRED_AMENDMENTS_BEFORE_SOURCE_FREEZE",
+  "review_raw_sha256": "60481446a066058e2cc10d01e6663031acdb8f688b36b88f042ed6fb2153d520",
+  "preparation_base_commit": "f974f8e7caa5a2769255c0483d7e40caae0a3930",
+  "science_execution_authorized": false,
+  "runs": 1,
+  "retries": 0,
+  "mandatory_STOP": true,
+  "purpose": "registered development/mechanism pilot; accumulation and selective placement, NOT novelty adjudication",
+  "domain": {
+    "sizes": [
+      8,
+      16,
+      32,
+      64
+    ],
+    "templates": [
+      "A",
+      "B",
+      "C"
+    ],
+    "template_specs": {
+      "A": {
+        "label": "same-angle, alternating-noncommuting-generator accumulation",
+        "angle_cycle": [
+          "pi:3/16"
+        ],
+        "pauli_cycle": [
+          "Z",
+          "X"
+        ],
+        "role": "D"
+      },
+      "B": {
+        "angle_cycle": [
+          "pi:1/16",
+          "pi:1/8",
+          "pi:3/16",
+          "rad:1/5"
+        ],
+        "angle_proportions": "1:1:1:1",
+        "pauli_cycle": [
+          "Z",
+          "X"
+        ],
+        "role": "D"
+      },
+      "C": {
+        "block": [
+          {
+            "role": "D",
+            "angle": "pi:1/16",
+            "pauli": "Z"
+          },
+          {
+            "role": "R",
+            "angle": "pi:1/8",
+            "pauli": "X"
+          },
+          {
+            "role": "R",
+            "angle": "pi:1/8",
+            "pauli": "Z"
+          },
+          {
+            "role": "R",
+            "angle": "pi:1/8",
+            "pauli": "X"
+          }
+        ],
+        "outer_coin": [
+          {
+            "sigma": 1,
+            "probability": "1/2",
+            "weight": "1"
+          },
+          {
+            "sigma": -1,
+            "probability": "1/2",
+            "weight": "1"
+          }
+        ],
+        "outer_coin_scope": "wrapper-level sign for all R-like gates; NOT finite RTE"
+      }
+    },
+    "masks": [
+      "NONE",
+      "D",
+      "R",
+      "DR"
+    ],
+    "wrappers": 12,
+    "mask_rows": 48,
+    "axis_rows": 96,
+    "outer_paths": 16,
+    "path_mask_records": 64,
+    "path_axis_records": 128,
+    "max_logical_gates_per_path": 64,
+    "max_native_rotations_per_path": 128,
+    "qubits": 2,
+    "system_state": "|0>",
+    "ancilla_state": "|+>",
+    "axes": [
+      "Re",
+      "Im"
+    ],
+    "logical_order": "left-to-right time order",
+    "fusion_order": [
+      "logical",
+      "joint_space_lowering",
+      "canonical_exact_fusion",
+      "placement_mask",
+      "PAI"
+    ],
+    "fusion_rule": "adjacent_identical_joint_generator_exact_signed_angle_addition_delete_zero",
+    "role_or_mask_dependent_fusion": false,
+    "commuting_reordering": false,
+    "cross_role_fusion_opportunities_required": 0,
+    "mixed_role_fusion_placement": "reject_unexpected_domain_not_choose_a_role",
+    "PAI_branch_sampling": false,
+    "PAI_full_branch_enumeration": false,
+    "outer_path_sampling": false,
+    "deterministic_outer_enumeration": true,
+    "seed": null,
+    "duplicates": {
+      "A": [
+        "R=NONE",
+        "DR=D"
+      ],
+      "B": [
+        "R=NONE",
+        "DR=D"
+      ]
+    },
+    "placement_evidence": "C only; D-like/R-like populations confound count, angle, sign, randomness"
+  },
+  "catalogue": {
+    "id": "SP05_exact_pi_over_4",
+    "count": 1,
+    "angles": [
+      "pi:0/4",
+      "pi:1/4",
+      "pi:2/4",
+      "pi:3/4",
+      "pi:4/4",
+      "pi:5/4",
+      "pi:6/4",
+      "pi:7/4"
+    ],
+    "new_target_synthesis_calls": 0,
+    "normalization": "canonical exact rational |g|/sum|g|",
+    "coefficient_representation": "midpoints of saved g1,g2; g3=1-g1-g2; charge full saved-enclosure displacement to u",
+    "shared_draws": false,
+    "channel_periodicity_only_after_joint_lowering_and_fusion": true
+  },
+  "saved_input": {
+    "commit": "e57c1fdd28589422e9c973e34e53f6c725b921e9",
+    "path": "artifacts/track_b_sp05_economics_result/2026-10-06/v1/result.json",
+    "sha256": "d92c3a3d618219f3f46c3cc8143a49b085772e3d1943036511bf39c792dfb759",
+    "use": [
+      "sequence bytes",
+      "T/Tdagger counts",
+      "operator error upper guards",
+      "saved PAI coefficient enclosures"
+    ],
+    "unused": [
+      "SP05 J",
+      "SP05 classification",
+      "SP05 aggregate moments or expected costs"
+    ],
+    "literal_key_rows": 23,
+    "known_development_input": true
+  },
+  "tool_identity": {
+    "path": "artifacts/track_b_sp05_economics_preparation/2026-10-06/tool_identity_v1.json",
+    "sha256": "803d902a18d925a9565749fbc64422dca4979bfa6c0bd8b438b28de18d3aa984",
+    "python": "3.10.12",
+    "mpmath": "1.3.0",
+    "saved_synthesizer": "pygridsynth 2.0.0",
+    "saved_wheel_sha256": "30b5b15e9383a8ea8510d54f28e2de0385d102cb54fd4440071abf4525027568",
+    "new_synthesis": false
+  },
+  "metric": {
+    "name": "fusion-normalized additive synthesized-primitive T cost",
+    "C_T_add": "per_shot_fixed_T + sum_postfusion_native(stored_sequence_T_count)",
+    "G_T_add": "batch_init_T + sum_axis(sufficient_shots * E[C_T_add])",
+    "cross_primitive_Clifford_T_simplification": false,
+    "actual_compiled_wrapper_T_claim": false,
+    "batch_init_T": 0,
+    "per_shot_fixed_T": 0,
+    "fixed_Clifford_prep_basis_measurement_T": 0,
+    "epsilon_complex": "1/20",
+    "alpha_familywise": "1/20",
+    "alpha_axis": "1/1920",
+    "epsilon_axis_lower": "0.0353553390593273762200422181052424519642417968844237018294169934497683119615",
+    "numerical_bias_cap": "1e-8",
+    "native_operator_error": "1e-6",
+    "model_PF_RTE_bias": "0 because target is ideal synthetic mean nu",
+    "synthesis_bias": "E_outer[abs(b)*Gamma*sum_native(E_branch_delta)]",
+    "coefficient_bias": "sum_outer[p*abs(b)*product(max_gamma)*sum_native(L1_coefficient_error/max_gamma)]",
+    "delta_generic": "max(saved_channel_delta_upper, 2*saved_operator_upper)",
+    "delta_exact_catalogue": "0 by exact channel identity proof common to baseline and PAI",
+    "shot_rule": "two_sided_Bernstein_Var<=V2_centered_range<=2M_integer_ceiling",
+    "log_bound": "range_reduced_rational_atanh_series_upper_256_terms",
+    "minimum_necessary_shots_claim": false,
+    "no_oracle_variance": true,
+    "materiality": "1/20",
+    "reference": "NONE same wrapper",
+    "gain": "ratio interval upper<=19/20",
+    "loss": "ratio interval lower>=21/20",
+    "no_material_separation": "19/20<lo<=hi<21/20",
+    "boundary_overlap": "NUMERIC_INCONCLUSIVE",
+    "zero_reference": "ratio null; not positive witness",
+    "interval_serialization": "70 significant decimal digits directed outward",
+    "shot_or_bias_ineligible": "preserve row; not numeric failure or model winner"
+  },
+  "diagnostics": {
+    "mpmath_dps": 80,
+    "residual_slack": "1e-50",
+    "point_signals_only": true,
+    "signal_used_for_primary_or_selection": false,
+    "conditional_signed_channel_composition": true,
+    "squared_quantum_outcome": 1,
+    "trace_guard": "point_trace_residual<=1e-50",
+    "signal_guard": "point_axis_residual<=certified_synthesis_plus_coefficient_bound+1e-50"
+  },
+  "caps": {
+    "wall_seconds": 1200,
+    "cpu_seconds": 900,
+    "RSS_MiB": 1024,
+    "virtual_address_MiB": 2048,
+    "output_bytes": 8388608,
+    "processes": 1,
+    "shot_cap_per_axis": 1000000000,
+    "retries": 0,
+    "watchdog_period_seconds": 0.1
+  },
+  "result_directory": "artifacts/track_b_sp1_wrapper_result/2026-10-06/v1",
+  "authorization_path": "artifacts/track_b_sp1_wrapper_source/2026-10-06/authorization.json",
+  "optional_receipt_path": "docs/tracks/algorithm_codesign/sp1_execution_authorization_receipt.md",
+  "source_manifest_path": "artifacts/track_b_sp1_wrapper_source/2026-10-06/source_manifest_v1.json",
+  "static_fusion_audit_path": "artifacts/track_b_sp1_wrapper_source/2026-10-06/static_fusion_audit_v1.json",
+  "terminal_statuses": [
+    "SP1_RESOURCE_MAP_COMPLETE_AWAITING_REVIEW",
+    "INCONCLUSIVE_MANDATORY_STOP_NO_RETRY"
+  ],
+  "next_stage_authorized": false,
+  "automatic_next_stage": null,
+  "prohibited": [
+    "new synthesis",
+    "new catalogue/target/precision",
+    "molecular NPZ access",
+    "Hamiltonian/DF generation",
+    "trajectory sampling",
+    "GPU",
+    "old 16-cell/BF/BM restart",
+    "automatic science continuation"
+  ]
+}

@@ -1,5 +1,14 @@
 # Track B — Algorithm Co-design
 
+最新は[SP-1採用済み結果前契約・source最終review](sp1_wrapper_preregistration_v1.md)（2026-10-06）。
+GPT reviewの必須2修正を反映：role/mask非依存pre-placement fusionと、加法的保存primitive T費用。
+12 wrappers/16 pathsのstatic fusion監査は全0。実adapter/runner・59 focused testsはlocal pass。
+[source manifest](../../../artifacts/track_b_sp1_wrapper_source/2026-10-06/source_manifest_v1.json)。
+branch `track-b-sp1-wrapper-source-review-20261006`、base `f974f8e7caa5a2769255c0483d7e40caae0a3930`。
+science resource/signal sweep0、RUN_READY=false、別SP-1実行authorization未認可。
+新source Sを公開後、GPTの最終source reviewへSTOP。review commitから実行しない。
+以下の提案・未完了記述とSP-0.5 consumed marker/closuresを履歴として保持する。
+
 最新は[SP-1 wrapper累積・placementの契約案](sp1_wrapper_preregistration_proposal_v1.md)（2026-10-06）。
 受領review `PROCEED_TO_WRAPPER_ACCUMULATION_AND_PLACEMENT_PILOT`に沿った準備。
 12 synthetic wrapper／4 mask／一π/4 catalogueの具体案、共通Fraction会計／17 focused testsのlocal pass。

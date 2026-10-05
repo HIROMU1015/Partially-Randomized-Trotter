@@ -1,5 +1,11 @@
 # trotterlib モジュール索引
 
+Track B [SP-1結果前契約](../../docs/tracks/algorithm_codesign/sp1_wrapper_preregistration_v1.md)の
+sequence/adapter/accounting/launch/result modulesは`../trottertracks/algorithm_codesign/synthesis_placement/`。
+共有trotterlibをimport/変更せず、保存B primitiveを入力にしたsynthetic adapterと59 focused tests。
+登録science sweep0、実行authorization pending。共通APIの採択やDF wrapper検証ではない。
+以下の未完成記述は前段履歴として保持する。
+
 Track B [SP-1準備](../../docs/tracks/algorithm_codesign/sp1_wrapper_preregistration_proposal_v1.md)の
 [wrapper_accounting.py](../trottertracks/algorithm_codesign/synthesis_placement/wrapper_accounting.py)は
 共通libraryから独立したexact Fraction会計fixture kernel。17 focused testsはlocal pass。

@@ -1,5 +1,12 @@
 # プロジェクト案内
 
+Track B最新は[SP-1結果前契約・source最終review](docs/tracks/algorithm_codesign/sp1_wrapper_preregistration_v1.md)。
+GPTがdomainを採用し、必須修正を反映した。role/mask非依存pre-placement fusion、加法的primitive T費用。
+16登録pathの静的監査はfusion candidate/actual/cross-roleすべて0。実adapter/runnerと59 focused testsを追加。
+[source manifest](artifacts/track_b_sp1_wrapper_source/2026-10-06/source_manifest_v1.json)。
+science sweep/合成/trajectory/GPUは0、RUN_READY=false、authorizationはpending。
+新Sを固定してGitHub公開後、最終source reviewへSTOP。以下の「未完了」は受領前の履歴。
+
 Track Bの最新準備は[SP-1 wrapper累積・placement契約案](docs/tracks/algorithm_codesign/sp1_wrapper_preregistration_proposal_v1.md)。
 GPT reviewを具体化した12 synthetic wrapper／4 mask案と、独立namespaceのFraction会計kernel／17 focused tests。
 science sweep・合成・trajectoryは0、RUN_READY=false。common fusion／実adapter／source freeze／別authorizationは未完了。

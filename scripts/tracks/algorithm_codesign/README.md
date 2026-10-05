@@ -1,5 +1,11 @@
 # Track B scripts
 
+[SP-1 runner](run_sp1_wrapper_pilot.py)は[採用契約](../../../docs/tracks/algorithm_codesign/sp1_wrapper_preregistration_v1.md)用。
+`plan --source-commit <full S>`はsource-bound静的ledgerだけで、coefficient/resource/signal採点を行わない。
+`run`は別review後の新S→direct authorization-only Aと明示指示を要求する。現在はpendingで拒否する。
+登録science sweep0、59 focused testsはlocal pass。全結果STOP、次stage自動認可なし。
+旧SP-0.5一回markerを再利用しない。
+
 [SP-0.5 one-shot結果・GPT handoff](../../../docs/tracks/algorithm_codesign/sp05_one_shot_result_validation_20261006.md)は
 PRIMITIVE_TRADEOFF_EXISTS、mandatory STOP。[audit_sp05_saved_result.py](audit_sp05_saved_result.py)は
 sourceのalgorithmをimportせず保存fieldを照合する。既存auditは同一性を確認して保持し、未保存時だけfresh出力を作る。

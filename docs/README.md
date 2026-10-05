@@ -1,5 +1,11 @@
 # 文書索引
 
+Track B最新は[SP-1採用済み結果前契約・source最終review](tracks/algorithm_codesign/sp1_wrapper_preregistration_v1.md)。
+fusionをrole/mask非依存へ修正し、費用を加法的な保存primitive T数に限定した。
+全16 pathの静的監査、B実adapter/runner、59 focused testsを公開。science sweep0、実行未認可。
+[source manifest](../artifacts/track_b_sp1_wrapper_source/2026-10-06/source_manifest_v1.json)。
+新source固定後にGPTの最終reviewへSTOP。以下は既存判断・提案段階の履歴。
+
 Track B最新は[SP-1結果前契約案・共通会計の技術検証](tracks/algorithm_codesign/sp1_wrapper_preregistration_proposal_v1.md)。
 wrapper累積・四placement／一catalogueを具体化。17 focused testsはlocal pass、science実行0、RUN_READY=false。
 新規性／DF優位は未確定、fusionとactual adapter等は未完了。別source／authorization前に契約案reviewへSTOP。

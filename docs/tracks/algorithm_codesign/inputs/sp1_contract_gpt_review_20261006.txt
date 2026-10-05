@@ -1,0 +1,428 @@
+レビューしました。結論は、
+
+> **`APPROVE_SP1_CONTRACT_DIRECTION_WITH_REQUIRED_AMENDMENTS_BEFORE_SOURCE_FREEZE`**
+
+です。
+
+**研究方針を再度練り直す必要はありません。**  
+SP-1の12 wrapper × 4 maskというdomainは、SP-0.5後に確認すべき「累積weightによる反転」と「selective placement」を判別するpilotとして妥当です。
+
+ただし、**science sourceをfreezeする前に2点だけ修正を必須**にした方がよいです。
+
+---
+
+## 1. 提案された具体条件は基本的に採用してよい
+
+以下はそのまま採用を推奨します。
+
+| 項目 | 判断 |
+|---|---|
+| template A/B/C | 採用 |
+| \(n=\{8,16,32,64\}\) | 採用 |
+| NONE / D / R / DR | 採用 |
+| SP-0.5と同じπ/4 catalogue 1個 | 採用 |
+| 新target synthesis 0 | 採用 |
+| 2-qubit synthetic wrapper | 採用 |
+| Cのwrapper-level \(\sigma=\pm1\) toy coin | 採用。ただしfinite RTEとは呼ばない |
+| complex \(\epsilon=0.05\) | 採用 |
+| familywise \(\alpha_{\rm tot}=0.05\) | 採用 |
+| 96 axesへ \(\alpha_a=1/1920\) | 採用 |
+| common Bernstein accounting | 採用 |
+| shot cap \(10^9\)/axis | 採用 |
+| NONE比5% materiality | 採用 |
+| wall 1200 s / CPU 900 s / RSS 1 GiB / retry 0 | 採用 |
+| 全outcome mandatory STOP | 採用 |
+
+特に \(n=\{8,16,32,64\}\) は適切です。SP-0.5の結果から予想される累積weightの反転域を挟んでおり、結果を見て後から選んだ細かいgridではなく、**前stageの結果を使った次stageの事前設計**として自然です。
+
+これは新しいblind evidenceではなく、development/mechanism pilotとして扱えば問題ありません。
+
+---
+
+# 2. Template Aの「交互Pauli修正」も採用
+
+元の
+
+\[
+R_P(\theta)^n=R_P(n\theta)
+\]
+
+という同一generator反復では、全部exact fusionできるため、PAI accumulationを見るpilotとして不適切です。
+
+したがって、
+
+\[
+Z,X,Z,X,\ldots
+\]
+
+と交互にする修正は妥当です。
+
+これによりAは、
+
+> **same-angle accumulation control**
+
+になります。
+
+ただし、文書上は
+
+> repeated identical primitive
+
+ではなく、
+
+> **same-angle, alternating-noncommuting-generator accumulation**
+
+と呼ぶ方が正確です。
+
+---
+
+# 3. 必須修正①：fusion policyを「role依存禁止」ではなく完全共通化する
+
+現在案には、
+
+> D/R横断fusionは禁止する
+
+という記述があります。
+
+これは避けた方がよいです。
+
+理由は、将来もしD/R境界で同一generatorが隣接した場合、
+
+- NONEでは融合可能
+- D/R placementではroleを守るため融合禁止
+
+となると、**placement labelそのものが回路費用差を人工的に作る**可能性があるためです。
+
+## 推奨する正式fusion rule
+
+science sourceでは次の順序に固定してください。
+
+\[
+\boxed{
+\text{logical sequence}
+\rightarrow
+\text{joint-space lowering}
+\rightarrow
+\text{canonical exact fusion}
+\rightarrow
+\text{placement mask}
+\rightarrow
+\text{PAI}
+}
+\]
+
+canonical fusionは、
+
+> **隣接する完全に同じjoint-space generatorだけをexactに融合し、signed angleを加算する。**
+
+とします。
+
+つまり、
+
+\[
+R_Q(\theta_1)R_Q(\theta_2)
+=
+R_Q(\theta_1+\theta_2)
+\]
+
+のみ。
+
+許可：
+
+- 同一generator
+- 隣接
+- exact angle addition
+- angle 0なら削除
+
+禁止：
+
+- commuting gateの並べ替え
+- D/R labelを理由とした順序変更
+- maskごとに異なるfusion
+- 結果を見てfusion strategy変更
+
+### 今回のregistered domainでは
+
+A/BはPauliを交互にしており、Cも
+
+\[
+D:Z,\quad R:X,\quad R:Z,\quad R:X
+\]
+
+なので、**おそらくcross-role exact fusion opportunityは0**になります。
+
+それをsource freeze前に機械的に監査してください。
+
+保存すべきものは各pathについて、
+
+- pre-fusion native sequence
+- fusion candidate count
+- actual fusion count
+- post-fusion sequence
+- D/R provenance
+
+です。
+
+理想的には今回、
+
+> `cross_role_fusion_opportunities = 0`
+
+が全registered pathsで成立するようにします。
+
+これならD/R fusion policy自体がscience resultへ混入しません。
+
+---
+
+# 4. 必須修正②：「whole-wrapper actual T count」という呼び方を狭める
+
+現在のproposalではSP-0.5で保存されたsingle-primitive gate stringsのT-countを足してwrapper costを作ります。
+
+しかし現段階では、
+
+- full wrapperをClifford+T列として組み立て
+- primitive境界を越えたT/T† cancellation
+- Clifford simplification
+- peephole optimization
+
+までは行っていません。
+
+したがってprimaryを、
+
+> **actual whole-wrapper T count**
+
+と呼ぶのは少し強すぎます。
+
+## SP-1では次の名前に固定することを推奨
+
+> **fusion-normalized additive synthesized-primitive T cost**
+
+数式的には、
+
+\[
+C_T^{\rm add}
+=
+C_{\rm fixed,T}
++
+\sum_i C_{T,i}^{\rm stored}
+\]
+
+です。
+
+これは、
+
+- logical exact fusionは先に済ませる
+- 各残存native rotationにはSP-0.5の実際の合成列/T-countを使う
+- ただし**異なるprimitiveのClifford+T sequence間の追加最適化はしない**
+
+というmetricです。
+
+この限定を入れればSP-1として十分です。
+
+### 代案
+
+もし「actual wrapper T count」と呼びたいなら、全maskについて実Clifford+T sequenceを連結し、同一のdeterministic reducerをかける必要があります。
+
+ただ、今回はそこまで広げる必要はありません。
+
+**SP-1はaccumulation mechanism pilotなので、additive synthesized costで十分**です。
+
+actual compiled/simplified wrapper costは、SP-1が有望だった場合の次stageで評価すればよいです。
+
+---
+
+# 5. Template Cも採用してよいが、解釈を限定する
+
+Cでは1 blockあたり、
+
+- D ×1
+- R ×3
+
+で、さらにRに \(\sigma=\pm1\) のouter randomnessがあります。
+
+これは良いmechanism testです。
+
+ただし、もし例えば
+
+> DだけPAIが有利、RだけPAIが不利
+
+となっても、
+
+> 「deterministic termにはPAI、random termにはPAIを使うべき」
+
+という一般法則にはしません。
+
+このtoyではD/Rに、
+
+- gate数
+- angle
+- sign distribution
+- outer randomness
+
+が同時に割り当てられているからです。
+
+SP-1から言えるのは、
+
+> **この登録されたD-like / R-like gate populationではselective placementによって資源順位が変わる**
+
+までです。
+
+これは十分です。
+
+実際のDF/RTEへ進む理由があるかを見るmechanism pilotだからです。
+
+---
+
+# 6. 会計kernelは妥当
+
+`wrapper_accounting.py`については、現在のscopeに対して大きな問題は見当たりません。
+
+特に正しいのは、
+
+\[
+V_2
+=
+\sum_\omega p_\omega
+b_\omega^2
+\Gamma_\omega^2
+\]
+
+とし、
+
+\[
+E[C]
+\]
+
+と
+
+\[
+E[W^2 C]
+\]
+
+を分離している点です。
+
+外側pathとcostの相関も保持されています。
+
+またbiasについて、
+
+\[
+b_{\rm synth}
+\lesssim
+E[|W|\,e]
+\]
+
+を使っており、PAI weightを付ける前の合成誤差だけを見る間違いも避けています。
+
+Bernsteinも、
+
+\[
+|Z-EZ|\le2M
+\]
+
+から
+
+\[
+n
+\ge
+\frac{
+2V_2+\frac43Ms
+}{
+s^2
+}
+\log\frac2\alpha
+\]
+
+という保守的十分条件として整合しています。
+
+このまま**minimum shot数ではなくsufficient bound-based resource**と呼べば問題ありません。
+
+---
+
+# 7. 5% materialityも採用してよい
+
+今回は5%を採用してよいです。
+
+ただし意味は、
+
+> **SP-1 synthetic resource model内で、NONE比に5%以上の分離があるか**
+
+です。
+
+統計的significanceでも、publication thresholdでもありません。
+
+結果分類は現在案どおり、
+
+- upper ratio \(\le0.95\): material gain
+- lower ratio \(\ge1.05\): material loss
+- 全区間が0.95–1.05内: no-material-separation
+- boundary跨ぎ: numeric inconclusive
+
+でよいです。
+
+---
+
+# 8. A/Bのduplicate maskはpositive countへ入れない
+
+これはproposalにも入っているので、そのままでよいです。
+
+A/BではR gateがないため、
+
+\[
+R=NONE,\qquad DR=D
+\]
+
+です。
+
+これらを、
+
+> 4 masks中3つで勝った
+
+のような数え方に使わないでください。
+
+A/Bは主にaccumulationのmechanism。
+
+**placementの主要証拠はC**です。
+
+---
+
+# 9. SP-1の正式な研究目的はこれで固定するとよい
+
+SP-1では新規性を判定しません。
+
+主目的を一文で固定するなら、
+
+> **SP-0.5で確認されたprimitive synthesis trade-offが、複数controlled rotationsへ累積したときに消失・維持・反転するか、また登録されたD-like/R-like gate populationへの選択的PAI placementによってその境界が変わるかを、共通finite-confidence accountingで判別する。**
+
+です。
+
+これならSparse Probabilistic Synthesisで既知のcrossoverそのものを新規claimにせず、次のactual finite-RTE/DF段階へ進む情報価値を測れます。
+
+---
+
+# 10. 最終判定
+
+したがって、今回のcontract proposalについては、
+
+> **方向性・domain・accuracy/confidence・materiality・capsを承認**
+
+します。
+
+science source freeze前に必要な修正は2件です。
+
+1. **fusionをrole/mask非依存のcanonical pre-placement passへ変更し、全registered pathでfusion opportunityを監査する。**
+2. **primary costを「actual whole-wrapper T」ではなく「fusion-normalized additive synthesized-primitive T cost」と明記する。**
+
+それ以外の、
+
+- A/B/C
+- \(n=\{8,16,32,64\}\)
+- 4 mask
+- toy outer coin
+- ε=.05
+- α=.05 familywise
+- 5% materiality
+- resource caps
+
+は採用してよいです。
+
+次は**この2点を契約へ反映 → actual adapter/runner/semantic tests → 新science source S固定 → source review**です。
+
+まだSP-1実行authorizationへは進まず、source freeze後にもう一度最終reviewするのが適切です。
