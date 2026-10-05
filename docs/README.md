@@ -1,5 +1,11 @@
 # 文書索引
 
+最新のTrack AはPM-2後reviewを採用した[主張・証拠対応表](research/track_a_post_pm2_claim_evidence_map.md)と
+[原稿・主要4図の設計](research/track_a_post_pm2_manuscript_design.md)。
+追加計算をせず限定case studyとして原稿化する。現在は設計までで、図生成・通し原稿は未実施。
+根拠path・固定commit・証拠階層・先行研究との差分・非claimを整理した。
+既存result/status/manifest不変、科学計算STOP、Track B変更0。以下のreview待ち等は各stage当時の履歴である。
+
 最新のTrack Aは[PM-2精度・資源境界結果と照合](pr2_pm2_precision_resource_result_validation.md)。
 保存JSONだけの302点・67,346行、元ε再現、paired uncertainty、P envelopeを照合し、研究方針review待ちSTOP。
 新しい科学計算0、利用者指示でresult commitへ収録するPOSTHOC local evidence。以下は各milestone当時の履歴として読む。

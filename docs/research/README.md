@@ -1,5 +1,11 @@
 # 研究計画資料
 
+PM-2後の方針reviewを採用し、Track Aを現在の証拠で閉じる限定資源比較研究として原稿化する。
+[主張・証拠対応表](track_a_post_pm2_claim_evidence_map.md)に固定commit・証拠階層・先行研究比較、
+[原稿設計](track_a_post_pm2_manuscript_design.md)に章構成・主要4図・補足・完成確認をまとめた。
+今回は文書設計まで。図生成・通し原稿は未実施、新科学計算0、旧status/manifest不変。
+PM-3やTrack B統合は認可せず、以下の準備・review待ち記述は各stage当時の履歴として保持する。
+
 最新は[PM-2保存値解析結果](../pr2_pm2_precision_resource_result_validation.md)。
 固定302点・67,346行とε=0.05の元結果再現を照合し、mandatory STOP・研究方針review待ち。
 POSTHOC local evidence、新しい科学計算0。利用者指示でresult commitへ収録する。以下の準備記述は当時の履歴である。

@@ -1,5 +1,15 @@
 # プロジェクト案内
 
+## Track A PM-2後review採用 原稿化へ
+
+現在の入口は[主張・証拠対応表](docs/research/track_a_post_pm2_claim_evidence_map.md)と
+[原稿・主要4図の設計](docs/research/track_a_post_pm2_manuscript_design.md)。
+PM-2結果commit 5a1adffad780f0ec4272f5e8bb94713f9ff0f2bcを根拠に、固定DF・二次PF・
+canonical finite-RTE・所定shot規則の有限signal事例研究として閉じる方針を採用した。
+近接discard反証、B2内の精度依存、元5構成のtransferを中心に、既存結果・POSTHOC・解釈を分ける。
+今回は対応表と図表設計まで。図生成・通し原稿は未実施、新科学計算0、Track B変更0。
+旧result/status/manifestは不変で、科学計算のmandatory STOPを維持する。以下は各stage当時の履歴である。
+
 ## Track A PM-2保存値解析完了 研究方針review待ちSTOP
 
 [PM-2結果と照合](docs/pr2_pm2_precision_resource_result_validation.md)から
