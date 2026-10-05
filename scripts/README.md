@@ -1,5 +1,11 @@
 # scripts 索引
 
+Track B [SP-1 wrapper契約案](../docs/tracks/algorithm_codesign/sp1_wrapper_preregistration_proposal_v1.md)は準備段階。
+science runnerはまだ作成していない。共通会計kernelと17 artificial focused testsだけを追加し、
+science sweep／SP-0.5 rerunを行わない。実adapter／fusion監査／source freeze／別authorization前にSTOP。
+限定test入口：`PYTHONPATH=src python3 -m unittest discover -s tests/tracks/algorithm_codesign -p test_sp1_wrapper_accounting.py -v`。
+以下のSP-0.5 runnerは別のconsumed one-shotで、SP-1の入口ではない。
+
 Track Bの[SP-0.5一回結果](../docs/tracks/algorithm_codesign/sp05_one_shot_result_validation_20261006.md)は
 mandatory STOP、retry0、wrapper pilot未認可。[audit_sp05_saved_result.py](tracks/algorithm_codesign/audit_sp05_saved_result.py)は
 保存field／hash／counts／分類predicate／provenanceだけをstdlibで照合する。

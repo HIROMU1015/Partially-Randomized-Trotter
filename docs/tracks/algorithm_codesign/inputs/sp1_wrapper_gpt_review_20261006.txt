@@ -1,0 +1,309 @@
+現段階では、**研究方針を全面的に練り直すより、次の小型wrapper-level検証を先に行うべき**です。
+
+判定を付けるなら、
+
+> **`PROCEED_TO_WRAPPER_ACCUMULATION_AND_PLACEMENT_PILOT`**
+
+です。
+
+SP-0.5は単なるぎりぎりのpositiveではありません。非exact targetではordinaryの \(J\) が約0.004–0.012、controlledでも約0.0023–0.0075で、±1/5 radでも成立しています。しかもcontrolled pairでは二つのnative primitiveのweight penaltyを入れた上でstrictです。したがって、**「cheap notchによるT削減がprimitive levelで存在するか」については十分に閉じた**と見てよいです。
+
+一方で、これはまだ新規性でもDF優位でもありません。結果資料自身が正しく限定している通り、既知PAI機構の実装確認です。
+
+## 次に調べるべきことはかなり明確になった
+
+SP-0.5の結果から、残る本質的な問いは、
+
+\[
+\boxed{
+\text{primitiveでは大きく得するが、
+多数gateへ積むとweight overheadがいつT削減を打ち消すか}
+}
+\]
+
+です。
+
+例えば同じ種類のPAI primitiveを \(n\) 回独立に使う単純化では、
+
+\[
+J_n
+\approx
+m_2^n
+\frac{\mathbb E[C_T]}{C_{T,\det}},
+\]
+
+ここで \(m_2\) は1 logical primitiveあたりのweight second momentです。
+
+保存値から単純に計算すると、損益反転の目安はかなり現実的な範囲にあります。
+
+| primitive例 | 約crossover |
+|---|---:|
+| \(+\pi/16\) ordinary | 47回 |
+| \(+\pi/16\) controlled | 44回 |
+| \(+\pi/8\) ordinary | 31回 |
+| \(+\pi/8\) controlled | 23回 |
+| \(3\pi/16\) ordinary | 38回 |
+| \(3\pi/16\) controlled | **17回** |
+| \(1/5\) rad ordinary | 46回 |
+| \(1/5\) rad controlled | 43回 |
+
+これはwhole-wrapperの結果ではなく、SP-0.5保存値からの単純な推定です。固定費、非PAI gate、finite bias、shot ceiling等はまだ含みません。
+
+ただ、この数字は重要です。
+
+**「全部PAI化すれば当然得」という状態ではない。十数〜数十個程度でも逆転し得る。**
+
+つまり、D / R / DR のplacementを調べる研究上の理由が実際に出ました。
+
+---
+
+# したがって、今は再設計しない
+
+BM-0.5のときはmethod deltaが消えたため、数値実験前に方針を変えるべきでした。
+
+今回は逆です。
+
+SP-0.5によって、
+
+1. primitive economicsは成立した
+2. controlled化しても成立した
+3. しかしweight second momentは確実に1より大きい
+4. accumulationで逆転するscaleが小さくない
+
+ことが分かりました。
+
+このため、
+
+> **どこにPAIを置くかによってwhole-wrapper economicsが変わる**
+
+という現在のRQには、実際に判別価値があります。
+
+よって、ここで別テーマを探すのは早いです。
+
+---
+
+# ただし旧「16-cell pilot」をそのまま走らせる必要はない
+
+次のpilotは、**placementそのものより「累積」を中心に少し整理した方がよい**です。
+
+推奨する次段を仮に **SP-1** とします。
+
+## SP-1の主RQ
+
+> PAI対象primitive数・角度分布・D/R placementを変えたとき、weight二次モーメント増加とT削減の競争により、whole-wrapperの総資源順位がどこで反転するか。
+
+### 初期mask
+
+そのまま、
+
+- NONE
+- D
+- R
+- DR
+
+でよいです。
+
+### catalogue
+
+**SP-0.5と同じπ/4 catalogue一つだけ**に固定します。
+
+positive resultを見て第二catalogueを追加しません。
+
+---
+
+# 次のsynthetic wrapperは3種類＋controlで十分
+
+以前の4 templatesの考え方は概ね良いです。ただしT1 single rotationはSP-0.5でほぼ目的を果たしたので、science evidenceではなく**integration smoke control**へ下げます。
+
+主な検証は次です。
+
+### A. accumulation sweep
+
+同じcontrolled primitiveを、
+
+\[
+n\in\{8,16,32,64\}
+\]
+
+程度で並べます。
+
+この値なら、SP-0.5から推定した17–47付近のcrossoverを結果前に挟めます。
+
+ここで目的はpositiveを探すことではなく、
+
+> primitive gain → accumulation loss
+
+の反転を実際の共通resource accountingで確認することです。
+
+### B. mixed-angle wrapper
+
+SP-0.5で使った複数角度を固定比率で混ぜます。
+
+実DF wrapperでは同じ角度だけが繰り返されるとは限らないので、
+
+\[
+\prod_i \gamma_i^2
+\]
+
+によるheterogeneous accumulationを見るためです。
+
+### C. D/R placement wrapper
+
+同じ総gate数でも、
+
+- D側だけPAI
+- R側だけPAI
+- 両方PAI
+
+で対象gate数とangle distributionを変えます。
+
+ここで初めて現在の研究RQであるplacement差を調べます。
+
+### D. phase/control semantic control
+
+relative phase、signed time、basis inverse、誤った乱数共有を検出するcontrolは残します。
+
+これはpositive evidenceではなくsemantic guardです。
+
+---
+
+# primary metricはwrapper-levelに上げる
+
+SP-0.5の
+
+\[
+J=\frac{\mathbb E[W^2C_T]}{C_{T,\det}}
+\]
+
+はprimitive screeningには適切でした。
+
+次は、設計仕様で既に用意しているfinite-confidence accountingまで戻す方がよいです。
+
+最終的なprimaryは、
+
+\[
+G_T
+=
+C_{\rm init,T}
++
+\sum_a n_a \mathbb E[C_{T,a}]
+\]
+
+とし、
+
+- weight second moment
+- range
+- finite synthesis bias
+- common \(\epsilon,\alpha\)
+- shot ceiling
+- initialization
+- deterministic non-PAI cost
+
+を全maskで同じ規則で入れます。
+
+ただしSP-1がまだsynthetic wrapperなら、state preparation等は「全arm共通の固定0」でも構いません。無料化する要素を結果前に共通化しておけばよいです。
+
+---
+
+# 新規性については、一つ重要な注意が増えた
+
+今回改めて確認したところ、**Sparse Probabilistic Synthesis of Quantum Operations** はかなり近い強い先行研究です。
+
+同研究は、低T-countのClifford+T近似回路のlibraryを作り、quasiprobability係数を最適化して、連続回転を平均としてexactに実装します。しかもmeasurement overheadを最小化する \(L_1\) 最適化まで扱っています。:chatgpt-content-reference{index="0"}
+
+さらに、複数probabilistic gateを入れるとshot overheadが指数的に増えることも明示されています。:chatgpt-content-reference{index="1"}
+
+したがって、
+
+> 「低T-count回路をランダム化し、measurement overheadと交換する」
+
+自体は完全に既知です。
+
+また、一般のrandomized quantum algorithmについて、costとvarianceを同時に最適化する枠組みも既にあります。:chatgpt-content-reference{index="2"}
+
+### つまり、次期Bの新規性候補はもっと狭い
+
+現時点で残る候補は、
+
+> **partially randomized Hamiltonian simulationのfull coherent-signal wrapperにおいて、Hamiltonian-level randomizationとgate-level probabilistic synthesisが重なるとき、D/Rのどこへ後者を配置すべきかを、finite bias・shot・T資源込みで定量化すること**
+
+です。
+
+これはまだ新規性確定ではありません。
+
+ただし、Sparse Probabilistic Synthesisが扱う単一gate library optimizationや、TE-PAIの時間発展全体とは異なり、
+
+- 既にRTEという外側のrandomnessがある
+- DとRでgate distributionが異なる
+- controlled Hadamard signalのrelative phaseが必要
+- finite-RTE normalizationも存在する
+- placementごとに累積weightが違う
+
+という具体的なco-design問題が残っています。
+
+この部分に論文価値があるかは、**wrapper-levelで順位反転や明確な有効域が本当に出るか**を見てから判断すべきです。
+
+---
+
+# SP-1後の分岐
+
+次の結果によって、研究Bの方向を決めるのがよいです。
+
+### ケースA：全PAI placementがすぐ不利
+
+例えばD/R/DRすべてで、短いwrapperでもweight overheadがT削減を上回る。
+
+→ **synthesis-placement主線をSTOPして再設計。**
+
+### ケースB：DRは不利だがDまたはRだけ有利
+
+これはかなり重要です。
+
+> 「確率的合成は全面適用ではなく、Hamiltonian-level役割によって選択的に置くべき」
+
+という設計知見になります。
+
+→ **研究Bの中心候補として継続。**
+
+### ケースC：広い範囲で全部有利
+
+この場合はplacement研究というより、
+
+> coarse exact catalogue自体が非常に強い
+
+可能性があります。
+
+→ Sparse Probabilistic Synthesis / TE-PAI等との強いbaseline比較を先に行い、独立貢献が残るか確認。
+
+### ケースD：結果がangle distributionに極端に依存
+
+→ 分子DF wrapperへ進む前に、angle histogram / role distributionを実際の既存H4から取得する価値が出ます。
+
+---
+
+# 今回の判断
+
+したがって、今回は
+
+\[
+\boxed{\textbf{検証をもう一段行ってから方針を練り直す}}
+\]
+
+です。
+
+ただし次は、旧SP-0.5の延長でtarget angleを増やすのではありません。
+
+**primitive → wrapper accumulationという新しい階層へ進む**べきです。
+
+SP-0.5は十分強く通っています。次に必要なのは「primitive trade-offがあるか」ではなく、
+
+\[
+\boxed{
+\text{どの程度積むと消え、
+D/Rのどこへ置けば残るのか}
+}
+\]
+
+の検証です。
+
+そのSP-1を一度だけ行い、mandatory STOPした後が、**研究Bを本格的に再設計・論文化判断する適切なタイミング**です。

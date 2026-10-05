@@ -1,5 +1,8 @@
 # 研究ノート
 
+- [2026-10-06 Track B SP-1契約案・会計fixture検証](2026-10-06_track_b_sp1_wrapper_preparation.md)：
+  science0、17 local focused tests、RUN_READY=false、契約案reviewへSTOP。
+
 このディレクトリには、研究実装を進めた時点の方針、判断、検証結果および
 未解決事項を日付順に記録する。後から「なぜこの実装になったか」「その時点で
 何が確認済みだったか」を、commitと検証コマンドまで含めて追跡できるようにする。

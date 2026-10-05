@@ -1,5 +1,10 @@
 # 文書索引
 
+Track B最新は[SP-1結果前契約案・共通会計の技術検証](tracks/algorithm_codesign/sp1_wrapper_preregistration_proposal_v1.md)。
+wrapper累積・四placement／一catalogueを具体化。17 focused testsはlocal pass、science実行0、RUN_READY=false。
+新規性／DF優位は未確定、fusionとactual adapter等は未完了。別source／authorization前に契約案reviewへSTOP。
+以下は既存判断・結果前履歴。
+
 Track B最新は[SP-0.5 one-shot結果・GPT handoff](tracks/algorithm_codesign/sp05_one_shot_result_validation_20261006.md)。
 PRIMITIVE_TRADEOFF_EXISTS、23 keys／16 rows完了、strict14／controls2。
 [元result・consumed marker・保存値監査](../artifacts/track_b_sp05_economics_result/2026-10-06/v1/)。

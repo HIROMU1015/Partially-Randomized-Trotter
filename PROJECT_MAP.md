@@ -1,5 +1,12 @@
 # プロジェクト案内
 
+Track Bの最新準備は[SP-1 wrapper累積・placement契約案](docs/tracks/algorithm_codesign/sp1_wrapper_preregistration_proposal_v1.md)。
+GPT reviewを具体化した12 synthetic wrapper／4 mask案と、独立namespaceのFraction会計kernel／17 focused tests。
+science sweep・合成・trajectoryは0、RUN_READY=false。common fusion／実adapter／source freeze／別authorizationは未完了。
+[準備manifest](artifacts/track_b_sp1_wrapper_preparation/2026-10-06/preparation_manifest_v1.json)。
+SP-0.5結果・marker、BF/BM closures、A証拠を保持し、公開後STOPして契約案reviewへ戻す。
+以下は受領前の履歴。
+
 Track B最新は[SP-0.5一回実行・保存値監査・GPT handoff](docs/tracks/algorithm_codesign/sp05_one_shot_result_validation_20261006.md)。
 source `65f6fcdb`、直下authorization `9477cd2f`のHEADで一回だけ実行し、PRIMITIVE_TRADEOFF_EXISTS。
 23/23 keys・16/16 rows、strict14、zero-cost1、J=1 control1、error/cap/runtime/numeric failureなし。

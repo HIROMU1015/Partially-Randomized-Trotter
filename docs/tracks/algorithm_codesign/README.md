@@ -1,5 +1,15 @@
 # Track B — Algorithm Co-design
 
+最新は[SP-1 wrapper累積・placementの契約案](sp1_wrapper_preregistration_proposal_v1.md)（2026-10-06）。
+受領review `PROCEED_TO_WRAPPER_ACCUMULATION_AND_PLACEMENT_PILOT`に沿った準備。
+12 synthetic wrapper／4 mask／一π/4 catalogueの具体案、共通Fraction会計／17 focused testsのlocal pass。
+Sparse PS本文ではwhole-circuit T費用とcrossoverも既知。SP-1結果・新規性・actual DF/RTE利益は未取得。
+[準備manifest](../../../artifacts/track_b_sp1_wrapper_preparation/2026-10-06/preparation_manifest_v1.json)。
+独立branch/worktree `track-b-sp1-wrapper-preparation-20261006`、base `e57c1fdd28589422e9c973e34e53f6c725b921e9`。
+common fusion／数値interval・ordered channel adapter／runnerは未完了。science execution unauthorized、RUN_READY=false。
+必要資料をGitHub公開後STOPしてGPTの具体契約案reviewへ戻す。SP-0.5一回結果・markerと過去closuresは保持する。
+以下は受領前の履歴。
+
 最新は[SP-0.5 one-shot結果・保存値監査・GPT handoff](sp05_one_shot_result_validation_20261006.md)（2026-10-06）。
 source `65f6fcdb3dc1ad8bfccfaee6e1413336aef91184`、direct authorization-only child `9477cd2fcfca69f3f24b801770a1f02805907eac`。
 別実行branch/worktree `track-b-sp05-one-shot-execution-20261006`でrun1。PRIMITIVE_TRADEOFF_EXISTS。

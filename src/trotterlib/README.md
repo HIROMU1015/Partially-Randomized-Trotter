@@ -1,5 +1,11 @@
 # trotterlib モジュール索引
 
+Track B [SP-1準備](../../docs/tracks/algorithm_codesign/sp1_wrapper_preregistration_proposal_v1.md)の
+[wrapper_accounting.py](../trottertracks/algorithm_codesign/synthesis_placement/wrapper_accounting.py)は
+共通libraryから独立したexact Fraction会計fixture kernel。17 focused testsはlocal pass。
+共有API変更なし、science入力／合成呼出し0。actual wrapper adapter／interval guard／science runnerは未完成。
+以下は元のSP-0.5準備履歴。現在のSP-0.5結果は別の固定result commitを参照する。
+
 Track Bの[SP-0.5経済性gate](../../docs/tracks/algorithm_codesign/sp05_synthesis_economics_preregistration_v1.md)は
 `../trottertracks/algorithm_codesign/synthesis_placement/`の新namespaceに置く。
 gate-string合成／interval guard／T×weight会計だけを扱い、共有library実装・DF wrapperをimportしない。
