@@ -1,5 +1,9 @@
 # 研究計画資料
 
+最新は[PM-2保存値解析結果](../pr2_pm2_precision_resource_result_validation.md)。
+固定302点・67,346行とε=0.05の元結果再現を照合し、mandatory STOP・研究方針review待ち。
+POSTHOC local evidence、新しい科学計算0。利用者指示でresult commitへ収録する。以下の準備記述は当時の履歴である。
+
 PM-2の[保存値解析実装](pr2_pm2_precision_analysis_implementation.md)をsource `324435d77b6642dbd44e8d1f178420daf62e77ed`で固定した。
 62 synthetic-only tests合格、real numerical gate/precision map未実行、利用者の明示解析指示待ち。
 [固定契約](pr2_pm2_precision_resource_contract_v1.md)は変更せず、準備stageの記述は当時の履歴として読む。

@@ -35,6 +35,7 @@
 
 | 日付 | 主題 | 基準commit | 到達点 | 次の主要課題 |
 |---|---|---|---|---|
+| [2026-10-05 PM-2結果](2026-10-05.md) | 保存値precision/resource map実行と照合 | source `324435d` / launch `bea4cf0` | 元223候補再現、302点・67,346行、pre/post62 tests、新しい科学計算0 | mandatory STOP、研究方針review。利用者指示でresult commitへ収録 |
 | [2026-10-05 source固定](2026-10-05.md) | PM-2保存値解析実装・synthetic検査 | `324435d` | source6 blobs・準備9 files一致、62 synthetic tests。本解析/real reference gate未実行 | 別の明示解析指示待ち。終了後mandatory STOP |
 | [2026-10-05追記](2026-10-05.md) | PM-1結果後方針を採用、PM-2精度・測定込み資源契約準備 | `194cc604` + local uncommitted preparation | 保存4 JSONのblob/hash、development218候補・M2元5構成別集合、専用21 local tests。precision解析0、新しい科学計算0 | 契約確認後、保存値解析の実装/source固定。実行は別指示、終了後STOP |
 | [2026-10-05](2026-10-05.md) | Track A PM-1最終承認・一項目authorization確定 | `bf9eaee` | final_review_approvedのみtrue、source/plan不変、science-free gate PASS、201 local tests passed | 利用者の明示launch待ち。本計算0、実行後もmandatory STOP |

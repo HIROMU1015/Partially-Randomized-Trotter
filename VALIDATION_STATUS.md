@@ -1,5 +1,16 @@
 # Validation status
 
+## 2026-10-05 Track A PM-2保存値解析完了 mandatory STOP
+
+[結果照合](docs/pr2_pm2_precision_resource_result_validation.md)はPOSTHOC保存値解析。
+source `324435d`の6 blobsと保存4 JSONが不変、ε=0.05の223候補の整数shots/eligibility・6費用が一致。
+固定302点・67,346行、適格境界223行、P envelope4,693行、代表2,334行を検査した。
+pre/post62 local synthetic tests passed、fail/skip0。CPU1、BLAS1、wall約2.92秒、peak RSS210,872 KiB。
+新signal/sampling/build/compile、分子データ/runtime/registry、量子shots、GPU access0。
+`PM2_PRECISION_RESOURCE_MAP_COMPLETE_AWAITING_REVIEW`、next-stage=false、research decision=null。
+利用者指示でresult commitへ収録するlocal resultでimmutable CIではない。point±2SEをformal CIや厳密winnerへ読み替えない。
+runner manifestは不変。研究方針reviewへ戻し、追加科学計算をしない。以下は各milestone時点の履歴である。
+
 ## 2026-10-05 Track A PM-2保存値解析source固定 STOP
 
 [解析実装](docs/research/pr2_pm2_precision_analysis_implementation.md)をsource commit `324435d77b6642dbd44e8d1f178420daf62e77ed`で固定。

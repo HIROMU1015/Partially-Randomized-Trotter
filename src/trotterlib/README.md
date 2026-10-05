@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+固定PM-2保存値解析sourceで一回の解析を完了し、[結果照合](../../docs/pr2_pm2_precision_resource_result_validation.md)へ記録した。
+共有science/sourceは変更していない。POSTHOC local evidence、研究方針review待ちSTOP、次段未認可。
+以下の未実行記述は実装・source固定時点の履歴である。
+
 PM-2保存値解析は共有science sourceを変更せず、
 `../trottertracks/resource_applicability/pm2_precision_analysis.py`に実装した。
 [実装資料](../../docs/research/pr2_pm2_precision_analysis_implementation.md)と専用synthetic tests、

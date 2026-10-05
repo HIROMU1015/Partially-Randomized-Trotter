@@ -1,5 +1,10 @@
 # scripts 索引
 
+`resource_applicability/run_pr2_pm2_precision_analysis.py`は明示指示後に一回完了し、
+[PM-2結果照合](../docs/pr2_pm2_precision_resource_result_validation.md)へ戻った。source不変、保存値解析のみ。
+固定outputは作成済みで、上書き/resume/retryはしない。追加science/次段は未認可。
+以下のsource固定・launch待ち記述は当時の履歴である。
+
 PM-2解析sourceの入口は`resource_applicability/run_pr2_pm2_precision_analysis.py`と
 `resource_applicability/run_pr2_pm2_implementation_tests.py`（synthetic-only、real saved evidenceも禁止）。
 [実装と停止条件](../docs/research/pr2_pm2_precision_analysis_implementation.md)を参照する。

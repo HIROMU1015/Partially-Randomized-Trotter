@@ -1,0 +1,1096 @@
+{
+  "status": "PM2_POST_EXECUTION_VALIDATION_PASS",
+  "started_utc": "2026-10-05T08:02:39.695896+00:00",
+  "finished_utc": "2026-10-05T08:02:41.864805+00:00",
+  "source_commit": "324435d77b6642dbd44e8d1f178420daf62e77ed",
+  "launch_head": "bea4cf00f08e1c2d5fba3649c6f58cc31490fd1e",
+  "source_hashes": {
+    "src/trottertracks/resource_applicability/pm2_precision_contract.py": "94c4c3f57713c0c793636c261d4f8b9c4fbab8d815ace99b3b57b621a899bb65",
+    "src/trottertracks/resource_applicability/pm2_precision_analysis.py": "fb09e5831fce94ea8a63d52d80b6500876b610f71ed65add6fb6a7cccfc9085e",
+    "scripts/resource_applicability/run_pr2_pm2_precision_analysis.py": "a038da5bf64a945c5763b184b3e8c90736ed51f5ab30b8cc3856ba207a9539e0",
+    "scripts/resource_applicability/run_pr2_pm2_implementation_tests.py": "ed4478f13269c4fc48109e610b35b11eb0ebefba38cc0343c0d6cbc11871a059",
+    "tests/tracks/resource_applicability/test_pm2_precision_analysis.py": "6d034ad700d2a371217b8454a6d0316053fc9242028b0e5afcf8a5aa81e37e1f",
+    "docs/research/pr2_pm2_precision_resource_contract_v1.md": "470f7bae47b2de9f849412c9c744d0dda1b54ef31e968c6aed6118775b8ff5ee"
+  },
+  "source_blobs_identical": 6,
+  "input_identity": {
+    "m1_signal": {
+      "path": "artifacts/pr2_matched_accuracy_m1_execution/2026-09-30/pr2_matched_accuracy_m1_a_result_v1.json",
+      "bytes": 872226,
+      "sha256": "1f960d7a33296e2dcb74d497e360572b26409dc9aeae01522335e7b91ed81086",
+      "evidence_commit": "194cc604b90c56a0e7e949b91b064a4bcfc846da",
+      "commit_blob_identical": true
+    },
+    "m1_compile": {
+      "path": "artifacts/pr2_matched_accuracy_m1_b1_execution/2026-09-30/pr2_matched_accuracy_m1_b1_compile_map_result_v2.json",
+      "bytes": 14917348,
+      "sha256": "71278113c32b26af0dbf6144a626237a0087478212f8a93fc908de3d4d52aee4",
+      "evidence_commit": "194cc604b90c56a0e7e949b91b064a4bcfc846da",
+      "commit_blob_identical": true
+    },
+    "pm1": {
+      "path": "artifacts/resource_applicability/pr2_pm1_discard_execution/2026-10-04/result.json",
+      "bytes": 146769,
+      "sha256": "9305857873602d6bc4f45fbc78c4903911d083156620df01e9b23f00e7fdf05b",
+      "evidence_commit": "194cc604b90c56a0e7e949b91b064a4bcfc846da",
+      "commit_blob_identical": true
+    },
+    "m2": {
+      "path": "artifacts/pr2_matched_accuracy_m2_transfer_execution/2026-10-04/pr2_matched_accuracy_m2_transfer_result_v2.json",
+      "bytes": 170061,
+      "sha256": "f41a92beb57e59cddc8c063b061c40acd4da50cb76ac0698efc2bce004937931",
+      "evidence_commit": "194cc604b90c56a0e7e949b91b064a4bcfc846da",
+      "commit_blob_identical": true
+    }
+  },
+  "runner_manifest_sha256": "546cdfaf8c77f349f6f55b346e93749ce5956c9a605281d169887257377c843f",
+  "summary_sha256": "7b026d4cc657cf43ad23fd7d6e10d5aa31cd58af555649b7a8e858ea12155845",
+  "runner_manifest_files_verified": 7,
+  "epsilon_points": 302,
+  "candidate_epsilon_rows": 67346,
+  "domain_counts": {
+    "development": 218,
+    "transfer_fixed_five": 5
+  },
+  "eligibility_counts": {
+    "development_ineligible": 6842,
+    "development_eligible": 58994,
+    "transfer_fixed_five_ineligible": 88,
+    "transfer_fixed_five_eligible": 1422
+  },
+  "boundaries_rows": 223,
+  "P_envelope_rows": 4693,
+  "representative_rows": 2334,
+  "checks": {
+    "integer_shots_all_rows": true,
+    "six_metrics_all_rows": true,
+    "paired_SE_all_rows": true,
+    "six_metric_Pareto_all_rows": true,
+    "P_interval_minimality": true,
+    "method_minimum_ties": true,
+    "grid_coverage_exact": true,
+    "old_input_blobs_identical": true,
+    "P_envelope_complete_no_gaps_on_all_604_domain_epsilon_pairs": true
+  },
+  "observations": {
+    "development": {
+      "primary_grid_regions": [
+        {
+          "first_grid_epsilon": 0.005,
+          "last_grid_epsilon": 0.005415818950400817,
+          "grid_points": 9,
+          "candidate_ids": [
+            "B2-rank3-q4-r4-K4"
+          ]
+        },
+        {
+          "first_grid_epsilon": 0.005470171017884717,
+          "last_grid_epsilon": 0.02350546436844801,
+          "grid_points": 147,
+          "candidate_ids": [
+            "B2-rank3-q2-r4-K4"
+          ]
+        },
+        {
+          "first_grid_epsilon": 0.0237413604715664,
+          "last_grid_epsilon": 0.1,
+          "grid_points": 146,
+          "candidate_ids": [
+            "B2-rank3-q1-r4-K2"
+          ]
+        }
+      ],
+      "selected_grid_points": [
+        {
+          "target_epsilon": 0.005,
+          "grid_epsilon": 0.005,
+          "eligible": 151,
+          "primary_point_minimum": {
+            "candidate_id": "B2-rank3-q4-r4-K4",
+            "N_total": "1678764",
+            "primary_RZ_P0": "40969763267.62501",
+            "primary_SE": "128356767.37378308"
+          },
+          "P_envelope": [
+            {
+              "candidate_id": "B2-rank3-q4-r4-K4",
+              "P_min": "0.0",
+              "P_max": "94968.69779674475"
+            },
+            {
+              "candidate_id": "B2-rank3-q4-r8-K4",
+              "P_min": "94968.69779674475",
+              "P_max": "158943.07239333855"
+            },
+            {
+              "candidate_id": "B2-rank3-q8-r4-K2",
+              "P_min": "158943.07239333855",
+              "P_max": "401820.76630883676"
+            },
+            {
+              "candidate_id": "B2-rank3-q8-r8-K2",
+              "P_min": "401820.76630883676",
+              "P_max": "1925542.8769503755"
+            },
+            {
+              "candidate_id": "B2-rank3-q8-r16-K4",
+              "P_min": "1925542.8769503755",
+              "P_max": "8005202.015826782"
+            },
+            {
+              "candidate_id": "B2-rank3-q8-r32-K2",
+              "P_min": "8005202.015826782",
+              "P_max": "9765338.921888852"
+            },
+            {
+              "candidate_id": "B2-rank6-q8-r1-K2",
+              "P_min": "9765338.921888852",
+              "P_max": "10007774.791667202"
+            },
+            {
+              "candidate_id": "B2-rank6-q8-r2-K4",
+              "P_min": "10007774.791667202",
+              "P_max": "27280716.249998365"
+            },
+            {
+              "candidate_id": "B2-rank6-q8-r4-K2",
+              "P_min": "27280716.249998365",
+              "P_max": "84665553.84821537"
+            },
+            {
+              "candidate_id": "B2-rank6-q8-r8-K4",
+              "P_min": "84665553.84821537",
+              "P_max": "361000089.62053573"
+            },
+            {
+              "candidate_id": "B2-rank6-q8-r16-K4",
+              "P_min": "361000089.62053573",
+              "P_max": "1138328123.0757809"
+            },
+            {
+              "candidate_id": "B0-rank9-q8-r0-K0",
+              "P_min": "1138328123.0757809",
+              "P_max": "MISSING"
+            }
+          ]
+        },
+        {
+          "target_epsilon": 0.01,
+          "grid_epsilon": 0.009958797539591653,
+          "eligible": 163,
+          "primary_point_minimum": {
+            "candidate_id": "B2-rank3-q2-r4-K4",
+            "N_total": "527382",
+            "primary_RZ_P0": "6527390533.312498",
+            "primary_SE": "33359226.947825816"
+          },
+          "P_envelope": [
+            {
+              "candidate_id": "B2-rank3-q2-r4-K4",
+              "P_min": "0.0",
+              "P_max": "22021.87333879523"
+            },
+            {
+              "candidate_id": "B2-rank3-q4-r4-K4",
+              "P_min": "22021.87333879523",
+              "P_max": "94967.65468661171"
+            },
+            {
+              "candidate_id": "B2-rank3-q4-r8-K4",
+              "P_min": "94967.65468661171",
+              "P_max": "377646.8753576064"
+            },
+            {
+              "candidate_id": "B2-rank3-q8-r4-K2",
+              "P_min": "377646.8753576064",
+              "P_max": "401891.8986144807"
+            },
+            {
+              "candidate_id": "B2-rank3-q8-r8-K2",
+              "P_min": "401891.8986144807",
+              "P_max": "1926965.2797497998"
+            },
+            {
+              "candidate_id": "B2-rank3-q8-r16-K4",
+              "P_min": "1926965.2797497998",
+              "P_max": "7999677.853267514"
+            },
+            {
+              "candidate_id": "B2-rank3-q8-r32-K2",
+              "P_min": "7999677.853267514",
+              "P_max": "9534680.669744318"
+            },
+            {
+              "candidate_id": "B2-rank6-q8-r1-K2",
+              "P_min": "9534680.669744318",
+              "P_max": "10089470.877232688"
+            },
+            {
+              "candidate_id": "B2-rank6-q8-r2-K4",
+              "P_min": "10089470.877232688",
+              "P_max": "27018143.281248365"
+            },
+            {
+              "candidate_id": "B2-rank6-q8-r4-K2",
+              "P_min": "27018143.281248365",
+              "P_max": "97842770.39583461"
+            },
+            {
+              "candidate_id": "B2-rank6-q8-r8-K4",
+              "P_min": "97842770.39583461",
+              "P_max": "312832851.046875"
+            },
+            {
+              "candidate_id": "B2-rank6-q8-r16-K4",
+              "P_min": "312832851.046875",
+              "P_max": "1133322635.4687462"
+            },
+            {
+              "candidate_id": "B2-rank6-q8-r32-K2",
+              "P_min": "1133322635.4687462",
+              "P_max": "2028246966.725"
+            },
+            {
+              "candidate_id": "B0-rank9-q8-r0-K0",
+              "P_min": "2028246966.725",
+              "P_max": "MISSING"
+            }
+          ]
+        },
+        {
+          "target_epsilon": 0.02,
+          "grid_epsilon": 0.020034595065207276,
+          "eligible": 204,
+          "primary_point_minimum": {
+            "candidate_id": "B2-rank3-q2-r4-K4",
+            "N_total": "107558",
+            "primary_RZ_P0": "1331242004.8124995",
+            "primary_SE": "6803515.7287397925"
+          },
+          "P_envelope": [
+            {
+              "candidate_id": "B2-rank3-q2-r4-K4",
+              "P_min": "0.0",
+              "P_max": "23056.50006512711"
+            },
+            {
+              "candidate_id": "B2-rank3-q2-r8-K2",
+              "P_min": "23056.50006512711",
+              "P_max": "74572.17479416168"
+            },
+            {
+              "candidate_id": "B2-rank3-q4-r4-K4",
+              "P_min": "74572.17479416168",
+              "P_max": "94947.23609175955"
+            },
+            {
+              "candidate_id": "B2-rank3-q4-r8-K4",
+              "P_min": "94947.23609175955",
+              "P_max": "513435.8377713007"
+            },
+            {
+              "candidate_id": "B2-rank3-q4-r16-K2",
+              "P_min": "513435.8377713007",
+              "P_max": "796417.13690538"
+            },
+            {
+              "candidate_id": "B2-rank3-q8-r8-K2",
+              "P_min": "796417.13690538",
+              "P_max": "1926841.6017441892"
+            },
+            {
+              "candidate_id": "B2-rank3-q8-r16-K4",
+              "P_min": "1926841.6017441892",
+              "P_max": "7965899.6324503375"
+            },
+            {
+              "candidate_id": "B2-rank3-q8-r32-K2",
+              "P_min": "7965899.6324503375",
+              "P_max": "9515141.043402791"
+            },
+            {
+              "candidate_id": "B2-rank6-q8-r2-K4",
+              "P_min": "9515141.043402791",
+              "P_max": "23145549.87499857"
+            },
+            {
+              "candidate_id": "B2-rank6-q8-r4-K2",
+              "P_min": "23145549.87499857",
+              "P_max": "112517743.31250048"
+            },
+            {
+              "candidate_id": "B2-rank6-q8-r16-K4",
+              "P_min": "112517743.31250048",
+              "P_max": "MISSING"
+            }
+          ]
+        },
+        {
+          "target_epsilon": 0.05,
+          "grid_epsilon": 0.05,
+          "eligible": 214,
+          "primary_point_minimum": {
+            "candidate_id": "B2-rank3-q1-r4-K2",
+            "N_total": "20563",
+            "primary_RZ_P0": "130774896.65625",
+            "primary_SE": "940780.0103771728"
+          },
+          "P_envelope": [
+            {
+              "candidate_id": "B2-rank3-q1-r4-K2",
+              "P_min": "0.0",
+              "P_max": "1796.4232134543483"
+            },
+            {
+              "candidate_id": "B2-rank3-q1-r8-K2",
+              "P_min": "1796.4232134543483",
+              "P_max": "16208.513015345092"
+            },
+            {
+              "candidate_id": "B2-rank3-q2-r4-K4",
+              "P_min": "16208.513015345092",
+              "P_max": "23061.164062500284"
+            },
+            {
+              "candidate_id": "B2-rank3-q2-r8-K2",
+              "P_min": "23061.164062500284",
+              "P_max": "101322.0489130432"
+            },
+            {
+              "candidate_id": "B2-rank3-q2-r16-K4",
+              "P_min": "101322.0489130432",
+              "P_max": "231515.84365384624"
+            },
+            {
+              "candidate_id": "B2-rank3-q4-r8-K4",
+              "P_min": "231515.84365384624",
+              "P_max": "517626.4300902049"
+            },
+            {
+              "candidate_id": "B2-rank3-q4-r16-K2",
+              "P_min": "517626.4300902049",
+              "P_max": "1792988.5950255115"
+            },
+            {
+              "candidate_id": "B2-rank3-q4-r32-K4",
+              "P_min": "1792988.5950255115",
+              "P_max": "2119372.720833333"
+            },
+            {
+              "candidate_id": "B2-rank3-q8-r16-K4",
+              "P_min": "2119372.720833333",
+              "P_max": "8356706.014945663"
+            },
+            {
+              "candidate_id": "B2-rank3-q8-r32-K2",
+              "P_min": "8356706.014945663",
+              "P_max": "8883555.63671875"
+            },
+            {
+              "candidate_id": "B2-rank6-q8-r1-K2",
+              "P_min": "8883555.63671875",
+              "P_max": "MISSING"
+            }
+          ]
+        },
+        {
+          "target_epsilon": 0.1,
+          "grid_epsilon": 0.1,
+          "eligible": 214,
+          "primary_point_minimum": {
+            "candidate_id": "B2-rank3-q1-r4-K2",
+            "N_total": "4428",
+            "primary_RZ_P0": "28160834.625",
+            "primary_SE": "202585.90117930854"
+          },
+          "P_envelope": [
+            {
+              "candidate_id": "B2-rank3-q1-r4-K2",
+              "P_min": "0.0",
+              "P_max": "1806.603084415552"
+            },
+            {
+              "candidate_id": "B2-rank3-q1-r8-K2",
+              "P_min": "1806.603084415552",
+              "P_max": "21296.54811946909"
+            },
+            {
+              "candidate_id": "B2-rank3-q1-r16-K4",
+              "P_min": "21296.54811946909",
+              "P_max": "49096.39423076927"
+            },
+            {
+              "candidate_id": "B2-rank3-q2-r8-K2",
+              "P_min": "49096.39423076927",
+              "P_max": "104269.0637755099"
+            },
+            {
+              "candidate_id": "B2-rank3-q2-r16-K4",
+              "P_min": "104269.0637755099",
+              "P_max": "466268.32875"
+            },
+            {
+              "candidate_id": "B2-rank3-q2-r32-K4",
+              "P_min": "466268.32875",
+              "P_max": "508665.46521226445"
+            },
+            {
+              "candidate_id": "B2-rank3-q4-r8-K4",
+              "P_min": "508665.46521226445",
+              "P_max": "519645.0677083321"
+            },
+            {
+              "candidate_id": "B2-rank3-q4-r16-K2",
+              "P_min": "519645.0677083321",
+              "P_max": "1818704.947916668"
+            },
+            {
+              "candidate_id": "B2-rank3-q4-r32-K4",
+              "P_min": "1818704.947916668",
+              "P_max": "2352635.6145833335"
+            },
+            {
+              "candidate_id": "B2-rank6-q4-r1-K2",
+              "P_min": "2352635.6145833335",
+              "P_max": "7399429.428571428"
+            },
+            {
+              "candidate_id": "B2-rank3-q8-r16-K4",
+              "P_min": "7399429.428571428",
+              "P_max": "7994042.54687501"
+            },
+            {
+              "candidate_id": "B2-rank3-q8-r32-K2",
+              "P_min": "7994042.54687501",
+              "P_max": "8870191.078125"
+            },
+            {
+              "candidate_id": "B2-rank6-q8-r1-K2",
+              "P_min": "8870191.078125",
+              "P_max": "MISSING"
+            }
+          ]
+        }
+      ],
+      "rank5_eligibility_boundaries": [
+        {
+          "dataset": "development",
+          "candidate_id": "PM1-B0-rank5-q1-r0-K0",
+          "epsilon_min": "0.018630514795286126",
+          "strict_boundary": "True",
+          "inside_display_range": "True"
+        },
+        {
+          "dataset": "development",
+          "candidate_id": "PM1-B0-rank5-q2-r0-K0",
+          "epsilon_min": "0.026438615441419528",
+          "strict_boundary": "True",
+          "inside_display_range": "True"
+        },
+        {
+          "dataset": "development",
+          "candidate_id": "PM1-B0-rank5-q4-r0-K0",
+          "epsilon_min": "0.028275542793104184",
+          "strict_boundary": "True",
+          "inside_display_range": "True"
+        },
+        {
+          "dataset": "development",
+          "candidate_id": "PM1-B0-rank5-q8-r0-K0",
+          "epsilon_min": "0.02872799770607166",
+          "strict_boundary": "True",
+          "inside_display_range": "True"
+        }
+      ]
+    },
+    "transfer_fixed_five": {
+      "primary_grid_regions": [
+        {
+          "first_grid_epsilon": 0.005,
+          "last_grid_epsilon": 0.006679381313664138,
+          "grid_points": 30,
+          "candidate_ids": [
+            "B3-rank0-q8-r32-K4"
+          ]
+        },
+        {
+          "first_grid_epsilon": 0.006746414238367818,
+          "last_grid_epsilon": 0.1,
+          "grid_points": 272,
+          "candidate_ids": [
+            "B2-rank3-q1-r4-K2"
+          ]
+        }
+      ],
+      "selected_grid_points": [
+        {
+          "target_epsilon": 0.005,
+          "grid_epsilon": 0.005,
+          "eligible": 1,
+          "primary_point_minimum": {
+            "candidate_id": "B3-rank0-q8-r32-K4",
+            "N_total": "3077683",
+            "primary_RZ_P0": "108267309639.5625",
+            "primary_SE": "1388760089.3967083"
+          },
+          "P_envelope": [
+            {
+              "candidate_id": "B3-rank0-q8-r32-K4",
+              "P_min": "0.0",
+              "P_max": "MISSING"
+            }
+          ]
+        },
+        {
+          "target_epsilon": 0.01,
+          "grid_epsilon": 0.009958797539591653,
+          "eligible": 4,
+          "primary_point_minimum": {
+            "candidate_id": "B2-rank3-q1-r4-K2",
+            "N_total": "1108987",
+            "primary_RZ_P0": "6922886003.34375",
+            "primary_SE": "44261300.466209345"
+          },
+          "P_envelope": [
+            {
+              "candidate_id": "B2-rank3-q1-r4-K2",
+              "P_min": "0.0",
+              "P_max": "377.3909454032809"
+            },
+            {
+              "candidate_id": "B2-rank3-q1-r8-K2",
+              "P_min": "377.3909454032809",
+              "P_max": "73543.01980401769"
+            },
+            {
+              "candidate_id": "B3-rank0-q8-r32-K4",
+              "P_min": "73543.01980401769",
+              "P_max": "MISSING"
+            }
+          ]
+        },
+        {
+          "target_epsilon": 0.02,
+          "grid_epsilon": 0.020034595065207276,
+          "eligible": 5,
+          "primary_point_minimum": {
+            "candidate_id": "B2-rank3-q1-r4-K2",
+            "N_total": "141640",
+            "primary_RZ_P0": "884192126.25",
+            "primary_SE": "5653060.493976837"
+          },
+          "P_envelope": [
+            {
+              "candidate_id": "B2-rank3-q1-r4-K2",
+              "P_min": "0.0",
+              "P_max": "383.89544527635746"
+            },
+            {
+              "candidate_id": "B2-rank3-q1-r8-K2",
+              "P_min": "383.89544527635746",
+              "P_max": "210864.9497948171"
+            },
+            {
+              "candidate_id": "B1-rank12-q1-r0-K0",
+              "P_min": "210864.9497948171",
+              "P_max": "MISSING"
+            }
+          ]
+        },
+        {
+          "target_epsilon": 0.05,
+          "grid_epsilon": 0.05,
+          "eligible": 5,
+          "primary_point_minimum": {
+            "candidate_id": "B2-rank3-q1-r4-K2",
+            "N_total": "17902",
+            "primary_RZ_P0": "111753794.4375",
+            "primary_SE": "714495.1211746212"
+          },
+          "P_envelope": [
+            {
+              "candidate_id": "B2-rank3-q1-r4-K2",
+              "P_min": "0.0",
+              "P_max": "385.07761319845855"
+            },
+            {
+              "candidate_id": "B2-rank3-q1-r8-K2",
+              "P_min": "385.07761319845855",
+              "P_max": "208735.13171225938"
+            },
+            {
+              "candidate_id": "B1-rank12-q1-r0-K0",
+              "P_min": "208735.13171225938",
+              "P_max": "MISSING"
+            }
+          ]
+        },
+        {
+          "target_epsilon": 0.1,
+          "grid_epsilon": 0.1,
+          "eligible": 5,
+          "primary_point_minimum": {
+            "candidate_id": "B2-rank3-q1-r4-K2",
+            "N_total": "4195",
+            "primary_RZ_P0": "26187418.59375",
+            "primary_SE": "167428.6131900087"
+          },
+          "P_envelope": [
+            {
+              "candidate_id": "B2-rank3-q1-r4-K2",
+              "P_min": "0.0",
+              "P_max": "391.909079218107"
+            },
+            {
+              "candidate_id": "B2-rank3-q1-r8-K2",
+              "P_min": "391.909079218107",
+              "P_max": "208043.73922413794"
+            },
+            {
+              "candidate_id": "B1-rank12-q1-r0-K0",
+              "P_min": "208043.73922413794",
+              "P_max": "MISSING"
+            }
+          ]
+        }
+      ],
+      "rank5_eligibility_boundaries": []
+    }
+  },
+  "guard": {
+    "protected_access_attempts": 0,
+    "saved_evidence_access_attempts": 0
+  },
+  "mandatory_stop": true,
+  "next_stage_authorized": false,
+  "research_decision": null,
+  "uncertainty": {
+    "development": {
+      "epsilon_points_with_multiple_overlapping_engineering_intervals": 302
+    },
+    "transfer_fixed_five": {
+      "epsilon_points_with_multiple_overlapping_engineering_intervals": 272
+    }
+  },
+  "selected_eligibility_boundaries": [
+    {
+      "dataset": "development",
+      "candidate_id": "PM1-B0-rank4-q1-r0-K0",
+      "epsilon_min": "0.036782811797386905",
+      "strict_boundary": "True",
+      "inside_display_range": "True"
+    },
+    {
+      "dataset": "development",
+      "candidate_id": "PM1-B0-rank4-q2-r0-K0",
+      "epsilon_min": "0.044537281673343955",
+      "strict_boundary": "True",
+      "inside_display_range": "True"
+    },
+    {
+      "dataset": "development",
+      "candidate_id": "PM1-B0-rank4-q4-r0-K0",
+      "epsilon_min": "0.046361105607036615",
+      "strict_boundary": "True",
+      "inside_display_range": "True"
+    },
+    {
+      "dataset": "development",
+      "candidate_id": "PM1-B0-rank4-q8-r0-K0",
+      "epsilon_min": "0.04681030316270501",
+      "strict_boundary": "True",
+      "inside_display_range": "True"
+    },
+    {
+      "dataset": "development",
+      "candidate_id": "PM1-B0-rank5-q1-r0-K0",
+      "epsilon_min": "0.018630514795286126",
+      "strict_boundary": "True",
+      "inside_display_range": "True"
+    },
+    {
+      "dataset": "development",
+      "candidate_id": "PM1-B0-rank5-q2-r0-K0",
+      "epsilon_min": "0.026438615441419528",
+      "strict_boundary": "True",
+      "inside_display_range": "True"
+    },
+    {
+      "dataset": "development",
+      "candidate_id": "PM1-B0-rank5-q4-r0-K0",
+      "epsilon_min": "0.028275542793104184",
+      "strict_boundary": "True",
+      "inside_display_range": "True"
+    },
+    {
+      "dataset": "development",
+      "candidate_id": "PM1-B0-rank5-q8-r0-K0",
+      "epsilon_min": "0.02872799770607166",
+      "strict_boundary": "True",
+      "inside_display_range": "True"
+    },
+    {
+      "dataset": "transfer_fixed_five",
+      "candidate_id": "B2-rank3-q1-r4-K2",
+      "epsilon_min": "0.005256376547101335",
+      "strict_boundary": "True",
+      "inside_display_range": "True"
+    },
+    {
+      "dataset": "transfer_fixed_five",
+      "candidate_id": "B2-rank3-q1-r8-K2",
+      "epsilon_min": "0.005256157396431461",
+      "strict_boundary": "True",
+      "inside_display_range": "True"
+    },
+    {
+      "dataset": "transfer_fixed_five",
+      "candidate_id": "B0-rank6-q1-r0-K0",
+      "epsilon_min": "0.009976267821590988",
+      "strict_boundary": "True",
+      "inside_display_range": "True"
+    },
+    {
+      "dataset": "transfer_fixed_five",
+      "candidate_id": "B1-rank12-q1-r0-K0",
+      "epsilon_min": "0.005265778433252583",
+      "strict_boundary": "True",
+      "inside_display_range": "True"
+    },
+    {
+      "dataset": "transfer_fixed_five",
+      "candidate_id": "B3-rank0-q8-r32-K4",
+      "epsilon_min": "6.247566909536482e-05",
+      "strict_boundary": "True",
+      "inside_display_range": "False"
+    }
+  ],
+  "representatives_selected": [
+    {
+      "dataset": "development",
+      "epsilon": "0.005",
+      "method": "B0",
+      "candidate_id": "B0-rank9-q4-r0-K0",
+      "N_total": "1634213",
+      "normalization_squared": "1.0",
+      "bias_real": "0.0004236958193258866",
+      "bias_imag": "6.864859276278779e-05",
+      "remaining_headroom_real": "0.0031118380866068506",
+      "remaining_headroom_imag": "0.0034668853131699495",
+      "mean_RZ_cosine": "61506.0",
+      "mean_RZ_sine": "61506.0",
+      "G_RZ_P0": "100513904778.0"
+    },
+    {
+      "dataset": "development",
+      "epsilon": "0.005",
+      "method": "B1",
+      "candidate_id": "B1-rank12-q4-r0-K0",
+      "N_total": "1634255",
+      "normalization_squared": "1.0",
+      "bias_real": "0.000423760069432344",
+      "bias_imag": "6.865908947362165e-05",
+      "remaining_headroom_real": "0.0031117738365003932",
+      "remaining_headroom_imag": "0.0034668748164591156",
+      "mean_RZ_cosine": "79678.0",
+      "mean_RZ_sine": "79678.0",
+      "G_RZ_P0": "130214169890.0"
+    },
+    {
+      "dataset": "development",
+      "epsilon": "0.005",
+      "method": "B2",
+      "candidate_id": "B2-rank3-q4-r4-K4",
+      "N_total": "1678764",
+      "normalization_squared": "1.0275768934365088",
+      "bias_real": "0.00042292355206086096",
+      "bias_imag": "6.852418488279e-05",
+      "remaining_headroom_real": "0.0031126103538718763",
+      "remaining_headroom_imag": "0.0034670097210499472",
+      "mean_RZ_cosine": "24404.718750000004",
+      "mean_RZ_sine": "24404.718750000004",
+      "G_RZ_P0": "40969763267.62501"
+    },
+    {
+      "dataset": "development",
+      "epsilon": "0.005",
+      "method": "B3",
+      "candidate_id": "B3-rank0-q8-r32-K4",
+      "N_total": "3703374",
+      "normalization_squared": "2.561873229890575",
+      "bias_real": "9.071241363531324e-05",
+      "bias_imag": "1.4812500512273452e-05",
+      "remaining_headroom_real": "0.003444821492297424",
+      "remaining_headroom_imag": "0.003520721405420464",
+      "mean_RZ_cosine": "31993.531250000007",
+      "mean_RZ_sine": "31993.531250000007",
+      "G_RZ_P0": "118484011799.43753"
+    },
+    {
+      "dataset": "development",
+      "epsilon": "0.05",
+      "method": "B0",
+      "candidate_id": "PM1-B0-rank5-q1-r0-K0",
+      "N_total": "25910",
+      "normalization_squared": "1.0",
+      "bias_real": "0.013173763348743123",
+      "bias_imag": "0.0024542199243681173",
+      "remaining_headroom_real": "0.022181575710584253",
+      "remaining_headroom_imag": "0.03290111913495926",
+      "mean_RZ_cosine": "8866.0",
+      "mean_RZ_sine": "8866.0",
+      "G_RZ_P0": "229718060.0"
+    },
+    {
+      "dataset": "development",
+      "epsilon": "0.05",
+      "method": "B1",
+      "candidate_id": "B1-rank12-q1-r0-K0",
+      "N_total": "18471",
+      "normalization_squared": "1.0",
+      "bias_real": "0.007201629911613522",
+      "bias_imag": "0.0009729624794152514",
+      "remaining_headroom_real": "0.028153709147713854",
+      "remaining_headroom_imag": "0.034382376579912124",
+      "mean_RZ_cosine": "20168.0",
+      "mean_RZ_sine": "20168.0",
+      "G_RZ_P0": "372523128.0"
+    },
+    {
+      "dataset": "development",
+      "epsilon": "0.05",
+      "method": "B2",
+      "candidate_id": "B2-rank3-q1-r4-K2",
+      "N_total": "20563",
+      "normalization_squared": "1.1140371013171204",
+      "bias_real": "0.007186839917625337",
+      "bias_imag": "0.0009698292933906227",
+      "remaining_headroom_real": "0.02816849914170204",
+      "remaining_headroom_imag": "0.03438550976593675",
+      "mean_RZ_cosine": "6359.71875",
+      "mean_RZ_sine": "6359.71875",
+      "G_RZ_P0": "130774896.65625"
+    },
+    {
+      "dataset": "development",
+      "epsilon": "0.05",
+      "method": "B3",
+      "candidate_id": "B3-rank0-q8-r32-K4",
+      "N_total": "36032",
+      "normalization_squared": "2.561873229890575",
+      "bias_real": "9.071241363531324e-05",
+      "bias_imag": "1.4812500512273452e-05",
+      "remaining_headroom_real": "0.03526462664569206",
+      "remaining_headroom_imag": "0.0353405265588151",
+      "mean_RZ_cosine": "31993.531250000007",
+      "mean_RZ_sine": "31993.531250000007",
+      "G_RZ_P0": "1152790918.0000002"
+    },
+    {
+      "dataset": "development",
+      "epsilon": "0.1",
+      "method": "B0",
+      "candidate_id": "PM1-B0-rank5-q1-r0-K0",
+      "N_total": "4530",
+      "normalization_squared": "1.0",
+      "bias_real": "0.013173763348743123",
+      "bias_imag": "0.0024542199243681173",
+      "remaining_headroom_real": "0.05753691476991163",
+      "remaining_headroom_imag": "0.06825645819428663",
+      "mean_RZ_cosine": "8866.0",
+      "mean_RZ_sine": "8866.0",
+      "G_RZ_P0": "40162980.0"
+    },
+    {
+      "dataset": "development",
+      "epsilon": "0.1",
+      "method": "B1",
+      "candidate_id": "B1-rank12-q1-r0-K0",
+      "N_total": "3976",
+      "normalization_squared": "1.0",
+      "bias_real": "0.007201629911613522",
+      "bias_imag": "0.0009729624794152514",
+      "remaining_headroom_real": "0.06350904820704123",
+      "remaining_headroom_imag": "0.0697377156392395",
+      "mean_RZ_cosine": "20168.0",
+      "mean_RZ_sine": "20168.0",
+      "G_RZ_P0": "80187968.0"
+    },
+    {
+      "dataset": "development",
+      "epsilon": "0.1",
+      "method": "B2",
+      "candidate_id": "B2-rank3-q1-r4-K2",
+      "N_total": "4428",
+      "normalization_squared": "1.1140371013171204",
+      "bias_real": "0.007186839917625337",
+      "bias_imag": "0.0009698292933906227",
+      "remaining_headroom_real": "0.06352383820102941",
+      "remaining_headroom_imag": "0.06974084882526413",
+      "mean_RZ_cosine": "6359.71875",
+      "mean_RZ_sine": "6359.71875",
+      "G_RZ_P0": "28160834.625"
+    },
+    {
+      "dataset": "development",
+      "epsilon": "0.1",
+      "method": "B3",
+      "candidate_id": "B3-rank0-q8-r32-K4",
+      "N_total": "8996",
+      "normalization_squared": "2.561873229890575",
+      "bias_real": "9.071241363531324e-05",
+      "bias_imag": "1.4812500512273452e-05",
+      "remaining_headroom_real": "0.07061996570501944",
+      "remaining_headroom_imag": "0.07069586561814248",
+      "mean_RZ_cosine": "31993.531250000007",
+      "mean_RZ_sine": "31993.531250000007",
+      "G_RZ_P0": "287813807.12500006"
+    },
+    {
+      "dataset": "transfer_fixed_five",
+      "epsilon": "0.005",
+      "method": "B3",
+      "candidate_id": "B3-rank0-q8-r32-K4",
+      "N_total": "3077683",
+      "normalization_squared": "2.1650464347641196",
+      "bias_real": "4.417696927649928e-05",
+      "bias_imag": "3.5948699160792685e-06",
+      "remaining_headroom_real": "0.003491356936656238",
+      "remaining_headroom_imag": "0.003531939036016658",
+      "mean_RZ_cosine": "35178.1875",
+      "mean_RZ_sine": "35178.1875",
+      "G_RZ_P0": "108267309639.5625"
+    },
+    {
+      "dataset": "transfer_fixed_five",
+      "epsilon": "0.05",
+      "method": "B0",
+      "candidate_id": "B0-rank6-q1-r0-K0",
+      "N_total": "18210",
+      "normalization_squared": "1.0",
+      "bias_real": "0.007054286627580134",
+      "bias_imag": "0.0006265786540605722",
+      "remaining_headroom_real": "0.028301052431747242",
+      "remaining_headroom_imag": "0.034728760405266804",
+      "mean_RZ_cosine": "10471.0",
+      "mean_RZ_sine": "10471.0",
+      "G_RZ_P0": "190676910.0"
+    },
+    {
+      "dataset": "transfer_fixed_five",
+      "epsilon": "0.05",
+      "method": "B1",
+      "candidate_id": "B1-rank12-q1-r0-K0",
+      "N_total": "15877",
+      "normalization_squared": "1.0",
+      "bias_real": "0.0037234676383787746",
+      "bias_imag": "0.0002615994585534187",
+      "remaining_headroom_real": "0.0316318714209486",
+      "remaining_headroom_imag": "0.03509373960077396",
+      "mean_RZ_cosine": "20040.0",
+      "mean_RZ_sine": "20040.0",
+      "G_RZ_P0": "318175080.0"
+    },
+    {
+      "dataset": "transfer_fixed_five",
+      "epsilon": "0.05",
+      "method": "B2",
+      "candidate_id": "B2-rank3-q1-r4-K2",
+      "N_total": "17902",
+      "normalization_squared": "1.1279095157845584",
+      "bias_real": "0.0037168195009252836",
+      "bias_imag": "0.00026014045149713727",
+      "remaining_headroom_real": "0.03163851955840209",
+      "remaining_headroom_imag": "0.03509519860783024",
+      "mean_RZ_cosine": "6242.53125",
+      "mean_RZ_sine": "6242.53125",
+      "G_RZ_P0": "111753794.4375"
+    },
+    {
+      "dataset": "transfer_fixed_five",
+      "epsilon": "0.05",
+      "method": "B3",
+      "candidate_id": "B3-rank0-q8-r32-K4",
+      "N_total": "30401",
+      "normalization_squared": "2.1650464347641196",
+      "bias_real": "4.417696927649928e-05",
+      "bias_imag": "3.5948699160792685e-06",
+      "remaining_headroom_real": "0.03531116209005088",
+      "remaining_headroom_imag": "0.0353517441894113",
+      "mean_RZ_cosine": "35178.1875",
+      "mean_RZ_sine": "35178.1875",
+      "G_RZ_P0": "1069452078.1875"
+    },
+    {
+      "dataset": "transfer_fixed_five",
+      "epsilon": "0.1",
+      "method": "B0",
+      "candidate_id": "B0-rank6-q1-r0-K0",
+      "N_total": "3948",
+      "normalization_squared": "1.0",
+      "bias_real": "0.007054286627580134",
+      "bias_imag": "0.0006265786540605722",
+      "remaining_headroom_real": "0.06365639149107462",
+      "remaining_headroom_imag": "0.07008409946459418",
+      "mean_RZ_cosine": "10471.0",
+      "mean_RZ_sine": "10471.0",
+      "G_RZ_P0": "41339508.0"
+    },
+    {
+      "dataset": "transfer_fixed_five",
+      "epsilon": "0.1",
+      "method": "B1",
+      "candidate_id": "B1-rank12-q1-r0-K0",
+      "N_total": "3720",
+      "normalization_squared": "1.0",
+      "bias_real": "0.0037234676383787746",
+      "bias_imag": "0.0002615994585534187",
+      "remaining_headroom_real": "0.06698721048027598",
+      "remaining_headroom_imag": "0.07044907866010133",
+      "mean_RZ_cosine": "20040.0",
+      "mean_RZ_sine": "20040.0",
+      "G_RZ_P0": "74548800.0"
+    },
+    {
+      "dataset": "transfer_fixed_five",
+      "epsilon": "0.1",
+      "method": "B2",
+      "candidate_id": "B2-rank3-q1-r4-K2",
+      "N_total": "4195",
+      "normalization_squared": "1.1279095157845584",
+      "bias_real": "0.0037168195009252836",
+      "bias_imag": "0.00026014045149713727",
+      "remaining_headroom_real": "0.06699385861772947",
+      "remaining_headroom_imag": "0.07045053766715761",
+      "mean_RZ_cosine": "6242.53125",
+      "mean_RZ_sine": "6242.53125",
+      "G_RZ_P0": "26187418.59375"
+    },
+    {
+      "dataset": "transfer_fixed_five",
+      "epsilon": "0.1",
+      "method": "B3",
+      "candidate_id": "B3-rank0-q8-r32-K4",
+      "N_total": "7596",
+      "normalization_squared": "2.1650464347641196",
+      "bias_real": "4.417696927649928e-05",
+      "bias_imag": "3.5948699160792685e-06",
+      "remaining_headroom_real": "0.07066650114937825",
+      "remaining_headroom_imag": "0.07070708324873867",
+      "mean_RZ_cosine": "35178.1875",
+      "mean_RZ_sine": "35178.1875",
+      "G_RZ_P0": "267213512.25"
+    }
+  ],
+  "numerical_checker_note": {
+    "first_checker_status": "ASSERTION_FAILED_ON_REORDERED_FLOAT_SHOT_FORMULA",
+    "affected_axis_rows": 24,
+    "reason": "The independent diagnostic reordered multiplication/division before ceil. At very large bounds, binary64 ULP differences alter integer results. All saved shots match the frozen source evaluation order; source/contract/artifacts were not changed and production was not rerun.",
+    "interpretation": "Fixed float bookkeeping, not arbitrary-precision or rigorous minimal integer shot certification.",
+    "production_retry": 0,
+    "source_changes": 0
+  },
+  "validation_command": "PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=src '/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python' - <<'PY'\nfrom pathlib import Path\nimport csv,json,hashlib,math,subprocess,collections\nfrom datetime import datetime,timezone\nfrom trottertracks.resource_applicability import pm2_precision_analysis as a\nfrom trottertracks.resource_applicability import pm2_precision_contract as c\nstart=datetime.now(timezone.utc).isoformat()\nguard=a.install_boundary()\nroot=Path.cwd(); output=root/a.OUTPUT; source=\"324435d77b6642dbd44e8d1f178420daf62e77ed\"\nsource_hashes={}\nfor name in a.SOURCE_FILES:\n    data=(root/name).read_bytes()\n    assert data==subprocess.check_output([\"git\",\"show\",source+\":\"+name])\n    source_hashes[name]=hashlib.sha256(data).hexdigest()\nmanifest=json.loads((output/\"manifest.json\").read_bytes())\nassert manifest[\"status\"]==c.COMPLETE and manifest[\"mandatory_stop\"] and not manifest[\"next_stage_authorized\"]\nassert manifest[\"research_decision\"] is None and not manifest[\"partial_output_must_not_be_used\"]\nassert {r[\"path\"] for r in manifest[\"files\"]}==set(c.contract_settings()[\"future_outputs\"])-{\"manifest.json\"}\nfor item in manifest[\"files\"]:\n    data=(output/item[\"path\"]).read_bytes()\n    assert len(data)==item[\"bytes\"] and hashlib.sha256(data).hexdigest()==item[\"sha256\"]\nsummary=json.loads((output/\"summary.json\").read_bytes()); a.validate_summary(summary)\nassert summary[\"reference_reproduction\"][\"candidates_checked\"]==223\nvalues,identities=c.load_inputs(root)\ninventory=c.candidate_inventory(values)\nprepared=json.loads((root/a.PREPARATION/\"candidate_inventory_v1.json\").read_bytes())\nassert c.fingerprint(inventory)==prepared[\"inventory_fingerprint\"]\ncatalog={}\nfor dataset,entries in inventory.items():\n    for entry in entries:\n        si,ci=entry[\"signal_row_index\"],entry[\"compile_row_index\"]\n        if entry[\"signal_source\"]==\"m1_signal\":\n            signal=values[\"m1_signal\"][\"signal_records\"][si]\n            axes=values[\"m1_compile\"][\"compile_map\"][ci][\"compiled_axes\"]\n        elif entry[\"signal_source\"]==\"pm1\":\n            item=values[\"pm1\"][\"candidate_records\"][si]; signal=item[\"signal\"]; axes=item[\"axes\"]\n        else:\n            item=values[\"m2\"][\"candidate_results\"][si]; signal=item[\"signal\"]\n            means=item[\"axis_one_shot_compiled_means\"]\n            pairs=[(p[\"axes\"][\"cosine\"][\"metrics\"],p[\"axes\"][\"sine\"][\"metrics\"]) for p in item[\"compiled\"][\"paired_trajectory_rows\"]]\n            catalog[dataset,entry[\"candidate_id\"]]=(entry,signal,means,pairs)\n            continue\n        means={axis:{m:axes[axis][\"metric_statistics\"][m][\"mean\"] for m in c.METRICS} for axis in (\"cosine\",\"sine\")}\n        pairs=list(zip([p[\"cost\"] for p in axes[\"cosine\"][\"retained_trajectory_records\"]],[p[\"cost\"] for p in axes[\"sine\"][\"retained_trajectory_records\"]]))\n        catalog[dataset,entry[\"candidate_id\"]]=(entry,signal,means,pairs)\ndef read_csv(name):\n    with (output/name).open(newline=\"\") as stream:\n        return list(csv.DictReader(stream))\nrows=read_csv(\"precision_ledger.csv\"); grouped=collections.defaultdict(list)\npoints=[0.005*(20.0**(i/300)) for i in range(301)]; points[0]=0.005;points[-1]=0.1; points=sorted(set(points+[0.05]))\nassert len(points)==302 and len(rows)==67346\nexpected={(d,cid,e) for d,cid in catalog for e in points}\nassert len({(r[\"dataset\"],r[\"candidate_id\"],float(r[\"epsilon\"])) for r in rows})==len(rows)\nassert {(r[\"dataset\"],r[\"candidate_id\"],float(r[\"epsilon\"])) for r in rows}==expected\ncounts=collections.Counter()\nfor row in rows:\n    dataset,cid,e=row[\"dataset\"],row[\"candidate_id\"],float(row[\"epsilon\"])\n    entry,signal,means,pairs=catalog[dataset,cid]\n    assert row[\"candidate_fingerprint\"]==entry[\"candidate_fingerprint\"]\n    bias=signal[\"axis_bias\"]; B=signal[\"normalization_multiplier\"]\n    assert float(row[\"axis_bias_real\"])==bias[\"real\"] and float(row[\"axis_bias_imag\"])==bias[\"imag\"] and float(row[\"normalization\"])==B\n    threshold=math.sqrt(2)*max(bias.values()); assert float(row[\"epsilon_min\"])==threshold\n    shots={}\n    for axis in (\"real\",\"imag\"):\n        margin=e/math.sqrt(2)-bias[axis]\n        n=None if margin<=0 or e<=math.sqrt(2)*bias[axis] else math.ceil(2*B**2/margin**2*math.log(2/0.025))\n        shots[axis]=n\n        assert row[\"N_\"+axis]==(\"MISSING\" if n is None else str(n))\n        assert math.isclose(float(row[\"allowance_\"+axis]),margin,rel_tol=1e-12,abs_tol=1e-15)\n    eligible=e>threshold and all(n is not None for n in shots.values())\n    assert row[\"accuracy_eligible\"]==str(eligible)\n    counts[dataset+(\"_eligible\" if eligible else \"_ineligible\")]+=1\n    if not eligible:\n        assert all(row[m]==\"MISSING\" for m in c.METRICS)\n        assert row[\"N_total\"]==row[\"primary_SE\"]==row[\"primary_RZ_P0\"]==\"MISSING\" and row[\"point_frontier\"]==\"False\"\n    else:\n        nc,ns=shots[\"real\"],shots[\"imag\"]\n        assert int(row[\"N_total\"])==nc+ns\n        for m in c.METRICS:\n            work=nc*means[\"cosine\"][m]+ns*means[\"sine\"][m]\n            assert math.isclose(float(row[m]),work,rel_tol=1e-12,abs_tol=1e-6)\n        assert row[\"primary_RZ_P0\"]==row[\"rz_count\"]\n        samples=[nc*x[\"rz_count\"]+ns*y[\"rz_count\"] for x,y in pairs]\n        se=0.0 if len(samples)==1 else math.sqrt(math.fsum((v-math.fsum(samples)/len(samples))**2 for v in samples)/(len(samples)-1)/len(samples))\n        assert math.isclose(float(row[\"primary_SE\"]),se,rel_tol=1e-10,abs_tol=1e-6)\n        if e==0.05:\n            assert signal[\"axis_shots\"]==shots\n    grouped[dataset,e].append(row)\nfor group in grouped.values():\n    eligible=[r for r in group if r[\"accuracy_eligible\"]==\"True\"]\n    for row in eligible:\n        frontier=not any(all(float(o[m])<=float(row[m]) for m in c.METRICS) and any(float(o[m])<float(row[m]) for m in c.METRICS) for o in eligible)\n        assert row[\"point_frontier\"]==str(frontier)\nboundaries=read_csv(\"eligibility_boundaries.csv\")\nassert len(boundaries)==223 and {(r[\"dataset\"],r[\"candidate_id\"]) for r in boundaries}==set(catalog)\nenvelope=read_csv(\"P_envelope.csv\")\nfor row in envelope:\n    d,e=row[\"dataset\"],float(row[\"epsilon\"])\n    eligible={r[\"candidate_id\"]:r for r in grouped[d,e] if r[\"accuracy_eligible\"]==\"True\"}\n    active=eligible[row[\"candidate_id\"]]; lo=float(row[\"P_min\"]); hi=None if row[\"P_max\"]==\"MISSING\" else float(row[\"P_max\"])\n    assert lo>=0 and (hi is None or hi>=lo)\n    assert float(row[\"G_RZ_P0\"])==float(active[\"primary_RZ_P0\"]) and int(row[\"N_total\"])==int(active[\"N_total\"])\n    for other in eligible.values():\n        slope=int(active[\"N_total\"])-int(other[\"N_total\"]); rhs=float(other[\"primary_RZ_P0\"])-float(active[\"primary_RZ_P0\"])\n        for p in [lo]+([] if hi is None else [hi]):\n            assert slope*p<=rhs+max(1e-6,abs(rhs)*1e-12)\n        if hi is None: assert slope<=0\ndecomp=read_csv(\"representative_decomposition.csv\")\nexpected_reps=set()\nfor (d,e),group in grouped.items():\n    methods=collections.defaultdict(list)\n    for row in group:\n        if row[\"accuracy_eligible\"]==\"True\": methods[catalog[d,row[\"candidate_id\"]][0][\"parameters\"][\"method\"]].append(row)\n    for method,group2 in methods.items():\n        best=min(float(r[\"primary_RZ_P0\"]) for r in group2)\n        expected_reps.update((d,e,method,r[\"candidate_id\"]) for r in group2 if float(r[\"primary_RZ_P0\"])==best)\nassert {(r[\"dataset\"],float(r[\"epsilon\"]),r[\"method\"],r[\"candidate_id\"]) for r in decomp}==expected_reps\ndetails={}\nfor dataset in inventory:\n    segments=[]\n    for e in points:\n        eligible=[r for r in grouped[dataset,e] if r[\"accuracy_eligible\"]==\"True\"]\n        minimum=min(float(r[\"primary_RZ_P0\"]) for r in eligible)\n        ids=sorted(r[\"candidate_id\"] for r in eligible if float(r[\"primary_RZ_P0\"])==minimum)\n        if segments and segments[-1][\"candidate_ids\"]==ids: segments[-1][\"last_grid_epsilon\"]=e; segments[-1][\"grid_points\"]+=1\n        else: segments.append({\"first_grid_epsilon\":e,\"last_grid_epsilon\":e,\"grid_points\":1,\"candidate_ids\":ids})\n    selected=[]\n    for target in (0.005,0.01,0.02,0.05,0.1):\n        e=min(points,key=lambda p:abs(p-target))\n        eligible=[r for r in grouped[dataset,e] if r[\"accuracy_eligible\"]==\"True\"]\n        best=min(eligible,key=lambda r:float(r[\"primary_RZ_P0\"]))\n        selected.append({\"target_epsilon\":target,\"grid_epsilon\":e,\"eligible\":len(eligible),\"primary_point_minimum\":{k:best[k] for k in (\"candidate_id\",\"N_total\",\"primary_RZ_P0\",\"primary_SE\")},\"P_envelope\":[r for r in envelope if r[\"dataset\"]==dataset and float(r[\"epsilon\"])==e]})\n    rank5=[r for r in boundaries if r[\"dataset\"]==dataset and \"rank5\" in r[\"candidate_id\"]]\n    details[dataset]={\"primary_grid_regions\":segments,\"selected_grid_points\":selected,\"rank5_eligibility_boundaries\":rank5,\"primary_minimum_methods\":sorted({cid.split(\"-\")[0] for s in segments for cid in s[\"candidate_ids\"]})}\nout={\"status\":\"PM2_POST_EXECUTION_VALIDATION_PASS\",\"started_utc\":start,\"finished_utc\":datetime.now(timezone.utc).isoformat(),\"source_commit\":source,\"launch_head\":subprocess.check_output([\"git\",\"rev-parse\",\"HEAD\"],text=True).strip(),\"source_hashes\":source_hashes,\"source_blobs_identical\":6,\"input_identity\":identities,\"runner_manifest_sha256\":hashlib.sha256((output/\"manifest.json\").read_bytes()).hexdigest(),\"summary_sha256\":hashlib.sha256((output/\"summary.json\").read_bytes()).hexdigest(),\"runner_manifest_files_verified\":len(manifest[\"files\"]),\"epsilon_points\":len(points),\"candidate_epsilon_rows\":len(rows),\"domain_counts\":{\"development\":218,\"transfer_fixed_five\":5},\"eligibility_counts\":dict(counts),\"boundaries_rows\":len(boundaries),\"P_envelope_rows\":len(envelope),\"representative_rows\":len(decomp),\"checks\":{\"integer_shots_all_rows\":True,\"six_metrics_all_rows\":True,\"paired_SE_all_rows\":True,\"six_metric_Pareto_all_rows\":True,\"P_interval_minimality\":True,\"method_minimum_ties\":True,\"grid_coverage_exact\":True,\"old_input_blobs_identical\":True},\"observations\":details,\"guard\":guard,\"mandatory_stop\":True,\"next_stage_authorized\":False,\"research_decision\":None}\nprint(json.dumps(out,ensure_ascii=False))\nPY",
+  "runner_manifest_unchanged": true,
+  "local_results_not_committed": true
+}

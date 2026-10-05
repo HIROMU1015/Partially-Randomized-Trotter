@@ -1,5 +1,14 @@
 # Track A PM-2 保存値解析の実装と停止条件
 
+## 2026-10-05 実行後の現在地
+
+利用者の明示指示を受け、この固定sourceを一回だけ実行し、
+[結果照合](../pr2_pm2_precision_resource_result_validation.md)を完了した。
+元ε=0.05の223候補を再現し、302点・67,346行を保存。source・契約・準備manifestは不変。
+pre/post62 local synthetic tests passed、新しい科学計算0。
+statusは`PM2_PRECISION_RESOURCE_MAP_COMPLETE_AWAITING_REVIEW`、mandatory STOP、研究判断null、次段未認可。
+結果は利用者指示でresult commitへ収録するlocal POSTHOC evidenceである。以下の未実行記述はsource固定時点の履歴として保持する。
+
 2026-10-05 JST。利用者が承認した「解析module・runner・testsの実装とsource固定」までを扱う。
 [固定契約](pr2_pm2_precision_resource_contract_v1.md)は変更しない。
 実データのprecision sweep、費用順位、P envelope、ε=0.05での数値再現検査はまだ実行していない。

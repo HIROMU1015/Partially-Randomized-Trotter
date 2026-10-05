@@ -1,5 +1,15 @@
 # プロジェクト案内
 
+## Track A PM-2保存値解析完了 研究方針review待ちSTOP
+
+[PM-2結果と照合](docs/pr2_pm2_precision_resource_result_validation.md)から
+`artifacts/resource_applicability/pr2_pm2_precision_analysis/2026-10-05/`の結果・監査へ辿れる。
+source `324435d`不変、ε=0.05の223候補を再現し、302点・67,346行を照合した。
+developmentのprimary点最小は精度要求によりB2 q4/q2/q1へ変わる。M2元5構成は別domainで、厳密winnerは認定しない。
+pre/post62 local tests passed、新しい科学計算0。利用者指示でresult commitへ収録するPOSTHOC local evidence。
+`PM2_PRECISION_RESOURCE_MAP_COMPLETE_AWAITING_REVIEW`、mandatory STOP、研究判断null、次段未認可。
+以下の準備・source固定・旧stageの記述はmilestone当時の履歴である。
+
 ## Track A PM-2解析source固定 本解析は明示指示待ち
 
 [保存値解析実装](docs/research/pr2_pm2_precision_analysis_implementation.md)のsourceを

@@ -1,5 +1,9 @@
 # tests の役割
 
+PM-2保存値解析実行のpre/postでsynthetic-only 62 testsがそれぞれpassed、fail/skip0。
+[実データの保存値照合](../docs/pr2_pm2_precision_resource_result_validation.md)は別監査で、
+test件数へ水増しせず、immutable CIや新しいscience evidenceとはしない。
+
 PM-2解析の`tracks/resource_applicability/test_pm2_precision_analysis.py`はsynthetic-only 62 tests。
 `scripts/resource_applicability/run_pr2_pm2_implementation_tests.py`のguardはreal saved evidenceのaccessも禁止する。
 起動gate・ε境界・軸別cost・paired covariance・ties・CSV/schema・STOPを検査し、実データgate PASSとは区別する。
