@@ -1,10 +1,43 @@
 {
-  "status": "PENDING_FINAL_SOURCE_REVIEW",
+  "schema": "track-b-sp05-source-bound-authorization-preparation-v1",
+  "status": "SOURCE_REVIEW_PASSED_AWAITING_EXPLICIT_EXECUTION_INSTRUCTION",
+  "source_review_decision": "APPROVE_SP05_FOR_SEPARATE_ONE_SHOT_AUTHORIZATION",
+  "source_commit": "65f6fcdb3dc1ad8bfccfaee6e1413336aef91184",
+  "source_commit_bound": true,
+  "contract_sha256": "ee126a0fcde4aa5eff96dfb5835647deec42150c27703e86a3023164b888d09f",
   "science_execution_authorized": false,
-  "source_commit": null,
-  "contract_sha256": null,
   "explicit_execution_instruction": null,
   "runs": 1,
   "retries": 0,
-  "mandatory_STOP": true
+  "mandatory_STOP": true,
+  "wrapper_pilot_authorized": false,
+  "review_receipt": {
+    "path": "docs/tracks/algorithm_codesign/sp05_execution_authorization_receipt.md",
+    "sha256": "4c9a44339b5b1221506b76cfd52734f6c0aabc8eda567cdc87fa29f5fd22ea2d"
+  },
+  "fixed_scope": {
+    "synthesizer": "pygridsynth==2.0.0",
+    "catalogues": 1,
+    "targets": 8,
+    "planned_unique_synthesis_keys": 23,
+    "primitive_rows": 16,
+    "primary": "strict interval upper J<1 existence only",
+    "materiality_percent": null,
+    "caps": {
+      "synthesis_keys": 32,
+      "per_key_wall_seconds": 30,
+      "per_key_cpu_seconds": 20,
+      "total_wall_seconds": 1200,
+      "total_cpu_seconds": 900,
+      "combined_RSS_MiB": 1024,
+      "child_virtual_address_MiB": 2048,
+      "output_bytes": 2097152,
+      "sequence_characters": 8192,
+      "external_retries": 0
+    }
+  },
+  "finalization_policy": "After actual explicit execution instruction, create a separate run branch from the same source S. Commit only authorization JSON and optional receipt as direct child A of S. Preserve this preparation commit; no amend/force-push or grandchild launch.",
+  "registered_target_synthesis_calls_at_preparation": 0,
+  "registered_economics_rows_at_preparation": 0,
+  "one_shot_marker_created": false
 }
