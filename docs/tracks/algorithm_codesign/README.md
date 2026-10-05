@@ -1,5 +1,8 @@
 # Track B — Algorithm Co-design
 
+研究Bの全面再設計をGPTへ渡す入口は[固定資料handoff index](research_redesign_handoff_20261005.md)。
+最新R0・過去STOP・構造結果・最新Aの別commit・既存提案入力を辿る。docs-only公開、研究方針の採否はGPT側、mandatory STOP。
+
 最新は[BF1-R0復元結果・GPT handoff](bf1_read_only_recovery_result_validation_20261005.md)。
 `BF1_READ_ONLY_RECOVERY_COMPLETE`、事後のpreregistered primary復元はBF-A。F/L有限最小値は同一。
 新science data/rerunは0、bridgeは不足cellを記録し、mandatory STOP。原resultはINCONCLUSIVEのまま保持する。

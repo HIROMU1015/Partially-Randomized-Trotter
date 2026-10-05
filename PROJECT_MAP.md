@@ -1,5 +1,8 @@
 # プロジェクト案内
 
+GPTによる研究Bの全面再設計は[固定資料handoff index](docs/tracks/algorithm_codesign/research_redesign_handoff_20261005.md)から読む。
+BF-A・過去STOP・最新Aの別commit参照・未公開既存文書snapshotをまとめたdocs-only入口。新科学計算・方針採択なし、mandatory STOP。
+
 Track B worktreeの現在の入口は[Algorithm Co-design](docs/tracks/algorithm_codesign/README.md)。
 最新は[BF1-R0復元結果](docs/tracks/algorithm_codesign/bf1_read_only_recovery_result_validation_20261005.md)：
 read-only recovery complete、事後にpreregistered primary BF-Aを復元。全結果後mandatory STOP、研究判断はGPT側。
