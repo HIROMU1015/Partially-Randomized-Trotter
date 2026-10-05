@@ -1,5 +1,11 @@
 # tests の役割
 
+原稿用の[表示tests](tracks/resource_applicability/test_manuscript_figures.py)（12件）と
+[bundle helper tests](tracks/resource_applicability/test_manuscript_bundle.py)（9件）は合計21 passed、fail/skip0。
+合成値・一時Markdown/CSV・sourceだけでmissing、identity、固定集合、affine描画、unsafe link拒否を検査する。
+元artifactの表示値照合は別の[原稿audit](../artifacts/resource_applicability/track_a_manuscript_audit/2026-10-05/verification.json)。
+local testsであり科学run再実行・immutable CI・独立投稿可レビューではない。full suiteは実行しない。
+
 PM-2保存値解析実行のpre/postでsynthetic-only 62 testsがそれぞれpassed、fail/skip0。
 [実データの保存値照合](../docs/pr2_pm2_precision_resource_result_validation.md)は別監査で、
 test件数へ水増しせず、immutable CIや新しいscience evidenceとはしない。

@@ -1,5 +1,12 @@
 # 研究計画資料
 
+2026-10-05の最新状態は[Track A通し原稿v0.1](../manuscripts/track_a_resource_study_v0_1.md)。
+[補足](../manuscripts/track_a_resource_study_supplement_v0_1.md)、
+[claim audit](../manuscripts/track_a_resource_study_claim_audit_v0_1.md)、
+[独立review依頼](../manuscripts/track_a_publication_readiness_review_request_v0_1.md)を分離した。
+4主図・補足図1は保存値からの再表示で、新科学計算0。研究方針・旧result/manifestは変えず科学STOP。
+以下の設計のみ・未実施記述は各milestone当時の履歴である。
+
 PM-2後の方針reviewを採用し、Track Aを現在の証拠で閉じる限定資源比較研究として原稿化する。
 [主張・証拠対応表](track_a_post_pm2_claim_evidence_map.md)に固定commit・証拠階層・先行研究比較、
 [原稿設計](track_a_post_pm2_manuscript_design.md)に章構成・主要4図・補足・完成確認をまとめた。

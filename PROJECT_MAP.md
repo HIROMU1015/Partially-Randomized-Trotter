@@ -1,5 +1,15 @@
 # プロジェクト案内
 
+## Track A 通し原稿v0.1・主図完成（2026-10-05）
+
+最新は[原稿・補足・監査の入口](docs/manuscripts/README.md)。保存証拠だけから4主図と補足図1、
+日本語通し原稿、再現性付録、claim audit、投稿可能性review依頼を作成した。
+[表示script](scripts/resource_applicability/build_track_a_manuscript_figures.py)と
+[bundle照合script](scripts/resource_applicability/verify_track_a_manuscript_bundle.py)、専用21 synthetic/local testsで追跡する。
+9入力のcommit blob/hashと22生成assetを照合。新科学計算0、旧result/status/manifest・Track B不変。
+原稿作成時点はlocal uncommitted。利用者の指示で原稿bundleのみをcommit/pushする。
+投稿可判定は未実施。次は完成原稿review、科学計算STOP。以下は各milestone当時の履歴。
+
 ## Track A PM-2後review採用 原稿化へ
 
 現在の入口は[主張・証拠対応表](docs/research/track_a_post_pm2_claim_evidence_map.md)と

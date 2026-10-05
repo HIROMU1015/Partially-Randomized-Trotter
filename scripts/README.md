@@ -1,5 +1,15 @@
 # scripts 索引
 
+原稿用の表示・照合script：
+
+- [build_track_a_manuscript_figures.py](resource_applicability/build_track_a_manuscript_figures.py)：
+  固定9 CSV/JSONのcommit blob/SHAを照合して4主図・補足図1と表示CSVを新規outputへ生成する。
+- [verify_track_a_manuscript_bundle.py](resource_applicability/verify_track_a_manuscript_bundle.py)：
+  22assetのmanifest、表示値、原稿リンク・hashと専用21 synthetic/local testsを検査する。
+
+[原稿付録の再表示手順](../docs/manuscripts/track_a_resource_study_supplement_v0_1.md)を参照。
+科学module、分子snapshot、sampler、compiler、GPUは使わない。新しい科学runnerではない。
+
 `resource_applicability/run_pr2_pm2_precision_analysis.py`は明示指示後に一回完了し、
 [PM-2結果照合](../docs/pr2_pm2_precision_resource_result_validation.md)へ戻った。source不変、保存値解析のみ。
 固定outputは作成済みで、上書き/resume/retryはしない。追加science/次段は未認可。

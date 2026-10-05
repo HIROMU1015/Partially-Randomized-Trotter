@@ -1,5 +1,9 @@
 # 文書索引
 
+Track Aの現在の入口は[原稿v0.1・Supplement・claim audit・review依頼](manuscripts/README.md)。
+固定artifactから4主図と補足図1を生成し、日本語通し原稿を作成した。科学計算0、科学STOPを維持する。
+原稿のscope監査は執筆者によるもので、独立投稿可能性reviewは次の段階。以下は各stage当時の履歴。
+
 最新のTrack AはPM-2後reviewを採用した[主張・証拠対応表](research/track_a_post_pm2_claim_evidence_map.md)と
 [原稿・主要4図の設計](research/track_a_post_pm2_manuscript_design.md)。
 追加計算をせず限定case studyとして原稿化する。現在は設計までで、図生成・通し原稿は未実施。
