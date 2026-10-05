@@ -1,5 +1,10 @@
 # scripts 索引
 
+Track B [BM-0.5](../docs/tracks/algorithm_codesign/bm05_review_packet_20261005.md)の
+[形式word監査](tracks/algorithm_codesign/audit_bm05_symbolic_equivalence.py)は抽象非可換letters／Fractionだけの
+degree3比較。physical inputやscience runnerを呼ばない。保存reportとscopeは[専用索引](tracks/algorithm_codesign/README.md)。
+現adapterは同値でnew-method gate不通過、BM-1は実行しない。以下のBF記述は既存履歴。
+
 Track Bの[BF1-R0一回replay結果](../docs/tracks/algorithm_codesign/bf1_read_only_recovery_result_validation_20261005.md)は
 recovery complete、事後primary BF-A。R0 markerもconsumed、retryなし。以下のR0準備説明は結果前履歴。
 

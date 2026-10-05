@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+Track Bの[BM-0.5記号監査](../../docs/tracks/algorithm_codesign/bm05_review_packet_20261005.md)は
+共有libraryをimportせず、[専用script](../../scripts/tracks/algorithm_codesign/audit_bm05_symbolic_equivalence.py)の
+抽象words／Fractionだけで実施する。library module・API・science runnerの変更なし、BM-1未認可。
+
 Track Bのexperimental codeは共有APIを変更せず、`../trottertracks/algorithm_codesign/`へ置く。
 [BF-1 preparation](../../docs/tracks/algorithm_codesign/README.md)のCPU mean adapterであり、
 DF controlled wrapperの検証・scientific run・algorithm採択は未実施。

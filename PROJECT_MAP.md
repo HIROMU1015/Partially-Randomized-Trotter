@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+Track B最新は[BM-0.5同値性監査](docs/tracks/algorithm_codesign/bm05_review_packet_20261005.md)。
+固定nested列のcompact BCHとBM分解は三次で同値。同backend／同集約ならscoreも一致、現new-method gateは不通過。
+BM-1未実行・未認可。applicationの必要性／別deltaはGPTへ返してmandatory STOP。以下はBM-0までの履歴。
+
 Track Bの最新文書は[BF-A後review・BM-0 packet](docs/tracks/algorithm_codesign/bm0_review_packet_20261005.md)。
 GPT reviewのB-F限定closureを記録し、B-M native列・DF評価・小型pilotを具体化した設計案。
 新scienceは0、B-M新規性／BM-1 scopeはreview待ち、実行未認可、mandatory STOP。以下は既存履歴を保持する。

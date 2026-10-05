@@ -1,5 +1,8 @@
 # 文書索引
 
+Track Bの最新は[BM-0.5同値性監査・GPT handoff](tracks/algorithm_codesign/bm05_review_packet_20261005.md)。
+固定nestedの三次係数と同policy scoreにmethod deltaなし。BM-1を実行せずSTOPし、applicationの価値はGPT判断。
+
 Track Bの最新は[BF-A後review・BM-0 packet](tracks/algorithm_codesign/bm0_review_packet_20261005.md)。
 B-F限定closure、B-Mのnative列／DF情報／小型pilot案を収録。科学実行0、BM-1未認可、review待ちでSTOP。
 

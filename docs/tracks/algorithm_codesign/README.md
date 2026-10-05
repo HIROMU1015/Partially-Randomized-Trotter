@@ -1,5 +1,11 @@
 # Track B — Algorithm Co-design
 
+最新は[BM-0.5同値性監査・GPT packet](bm05_review_packet_20261005.md)。
+compact再帰=BM floor/internal三次係数。同backend／同集約のscoreは同じ、共通項reuseも強い対照に可能。
+現adapterのnew-method gateは不通過。BM-1は実行せず、application／別deltaの採否はGPTへ戻してSTOP。
+[BM-1 v2 amendment](bm1_pilot_scope_amendment_v2.md)はleading heuristic／I2、primary count／secondary人工costを記録する。
+独立branch/worktree `track-b-bm05-equivalence-20261005`。以下のBM-0原文・manifestは固定commitの履歴として保持する。
+
 最新は[BF-A後GPT review・BM-0設計packet](bm0_review_packet_20261005.md)。
 [B-F現行仮説を限定negativeとして閉じる](bf_current_hypothesis_closure_20261005.md)review判断を記録する。
 B-Mはnative列・DF評価・小型pilotの**未実証の候補**。新scienceは0、BM-1実行は未認可、mandatory STOP。
