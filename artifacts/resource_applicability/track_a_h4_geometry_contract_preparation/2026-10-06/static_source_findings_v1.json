@@ -1,0 +1,51 @@
+{
+  "science_source_imports": 0,
+  "findings": [
+    {
+      "source": "src/trotterlib/chemistry_hamiltonian.py",
+      "line": 116,
+      "finding": "centered z_i=(i-1.5)*d Angstrom; charge=0, multiplicity=1 for H4"
+    },
+    {
+      "source": "src/trotterlib/df_hamiltonian.py",
+      "line": 513,
+      "finding": "run_pyscf(run_scf=1,run_fci=0) leaves SCF controls implicit"
+    },
+    {
+      "source": "src/trotterlib/pr2_s0_s1_validation.py",
+      "line": 267,
+      "finding": "generation_ranked_fragments preserves OpenFermion generated order"
+    },
+    {
+      "source": "src/trotterlib/df_partial_randomized_pf.py",
+      "line": 217,
+      "finding": "generic ranking sorts |lambda|*||G||_F^2 descending, tie original_index; different from generated order"
+    },
+    {
+      "source": "src/trotterlib/pr2_new_series_validation.py",
+      "line": 75,
+      "finding": "static frozen layout has 36 sector amplitudes; consistent with alpha=beta=2"
+    },
+    {
+      "source": "src/trotterlib/pr2_s0_s1_validation.py",
+      "line": 159,
+      "finding": "first maximum-absolute sector amplitude phase pivot"
+    },
+    {
+      "source": "src/trotterlib/pr2_matched_accuracy_m1_execution.py",
+      "line": 208,
+      "finding": "dense Hermitian eigh, block residual 1e-9; target Rayleigh residual 1e-9 and imaginary energy 1e-11"
+    },
+    {
+      "source": "docs/research/pr2_pm2_precision_resource_contract_v1.md",
+      "finding": "strict headroom, 302 display points, paired covariance, exact point ties, null ineligible; no winner GO"
+    }
+  ],
+  "dependency_source_findings": {
+    "openfermionpyscf/_run_pyscf.py:58-60": "RHF for spin0; ROHF otherwise",
+    "openfermion/circuits/low_rank.py:137-153": "generation order uses |lambda|*(sum|G|)^2 with numpy.argsort reversed; rank overrides tolerance",
+    "pyscf/scf/hf.py:1664-1667": "config-sensitive defaults conv_tol=1e-9,max_cycle=50"
+  },
+  "old_guard_preserved": true,
+  "new_server_native_science_source_required": true
+}

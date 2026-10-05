@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "entries",
+    "reservations",
+    "mandatory_stop"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "h4-external-completion-ledger-v1"
+    },
+    "mandatory_stop": {
+      "const": true
+    },
+    "entries": {
+      "type": "object",
+      "maxProperties": 74784,
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status",
+          "record_sha256"
+        ],
+        "properties": {
+          "status": {
+            "const": "COMPLETE"
+          },
+          "record_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    },
+    "reservations": {
+      "type": "object",
+      "maxProperties": 74784,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status",
+          "wrapper_key"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "RESERVED",
+              "COMPLETE",
+              "AMBIGUOUS_AWAITING_REVIEW",
+              "FAILED_STOP"
+            ]
+          },
+          "wrapper_key": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    }
+  }
+}

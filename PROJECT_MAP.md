@@ -612,3 +612,10 @@ review承認と利用者指示を得た後に一度実行し、現在は`TRANSFE
 launch/post-execution auditを対応させる。196 wrapper、5構成、source128、pre/post84＋134 testsを検査した
 result commitへ収録するlocal execution evidenceであり、immutable CIではない。`.runtime`とone-shot registryはcommit対象ではない。
 固定5構成のtransfer支持だけを解釈し、全status後STOP・追加科学計算未認可を維持する。
+
+
+## H4 geometry 契約準備 v1（2026-10-06・local未commit）
+
+[準備bundle](artifacts/resource_applicability/track_a_h4_geometry_contract_preparation/2026-10-06/README.md)は契約schema・zero-compute plan・pure JSON validatorと129合成検査の入口。
+6距離、218 template/点、74,784 wrapper、最大12 workersを固定し、生成/seed/memory/wall/outputはreview待ち。
+science source/runnerの追加ではなく、旧公開draft・source・科学結果は不変。本計算・port・commit/pushは未認可、STOP。
