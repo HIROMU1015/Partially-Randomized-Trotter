@@ -1,5 +1,16 @@
 # Track B — Algorithm Co-design
 
+最新は[SP-0.5 one-shot結果・保存値監査・GPT handoff](sp05_one_shot_result_validation_20261006.md)（2026-10-06）。
+source `65f6fcdb3dc1ad8bfccfaee6e1413336aef91184`、direct authorization-only child `9477cd2fcfca69f3f24b801770a1f02805907eac`。
+別実行branch/worktree `track-b-sp05-one-shot-execution-20261006`でrun1。PRIMITIVE_TRADEOFF_EXISTS。
+23 keys・16 rows、ordinary/control各strict7、zero-cost ordinaryとJ=1 controlledを保持。
+[元result／marker／logs／監査manifest](../../../artifacts/track_b_sp05_economics_result/2026-10-06/v1/)。
+cap／runtime／numeric failureなし、retry0、科学run後mandatory STOP、追加scienceなし。
+known PAIのprimitive交換関係の実装確認。新規性／DF-native／D-R placement／wrapper GOを意味しない。
+結果・方針判断はGPTへ返す。source review準備 `b0fa5af`は実行HEADに使用せず保存した。
+以下の未実行・authorization待ちは結果前の履歴として保持する。
+
+
 現段階は[SP-0.5経済性gate・source review](sp05_synthesis_economics_preregistration_v1.md)（2026-10-06）。
 GPT review `PROCEED_TO_SYNTHESIS_ECONOMICS_GATE_BEFORE_PRIMITIVE_PILOT`を受領。
 pygridsynth 2.0.0、exact π/4 catalogue一つ、8 target／23 keys、strict J<1の存在可能性判定を結果前固定。

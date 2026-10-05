@@ -1,5 +1,14 @@
 # プロジェクト案内
 
+Track B最新は[SP-0.5一回実行・保存値監査・GPT handoff](docs/tracks/algorithm_codesign/sp05_one_shot_result_validation_20261006.md)。
+source `65f6fcdb`、直下authorization `9477cd2f`のHEADで一回だけ実行し、PRIMITIVE_TRADEOFF_EXISTS。
+23/23 keys・16/16 rows、strict14、zero-cost1、J=1 control1、error/cap/runtime/numeric failureなし。
+[元resultとmarker／監査manifest](artifacts/track_b_sp05_economics_result/2026-10-06/v1/)、
+[保存field専用監査script](scripts/tracks/algorithm_codesign/audit_sp05_saved_result.py)。J再評価・science rerunなし。
+mandatory STOP、retry0、wrapper pilot未認可。cheap exact notchのprimitive確認のみ、研究方針はGPTへ戻す。
+以下の準備・未実行の記述は結果前履歴として保持する。
+
+
 Track Bの現段階は[SP-0.5経済性gate・結果前source review](docs/tracks/algorithm_codesign/sp05_synthesis_economics_preregistration_v1.md)。
 GPT reviewに従い16-cell wrapper pilotの前に、合成器一つ・exact π/4 catalogue一つ・8 target／23 keysを固定する。
 B専用実装と34 focused technical testsは準備済み。登録target合成・J採点0、RUN_READY=false、別実行承認待ち。

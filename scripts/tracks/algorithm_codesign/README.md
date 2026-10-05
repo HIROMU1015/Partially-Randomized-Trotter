@@ -1,5 +1,11 @@
 # Track B scripts
 
+[SP-0.5 one-shot結果・GPT handoff](../../../docs/tracks/algorithm_codesign/sp05_one_shot_result_validation_20261006.md)は
+PRIMITIVE_TRADEOFF_EXISTS、mandatory STOP。[audit_sp05_saved_result.py](audit_sp05_saved_result.py)は
+sourceのalgorithmをimportせず保存fieldを照合する。既存auditは同一性を確認して保持し、未保存時だけfresh出力を作る。
+23 keys／16 rowsの科学計算は完了。旧run／PAI／Jの再評価やwrapper pilotを実行しない。
+
+
 [SP-0.5 runner](run_sp05_synthesis_economics.py)はplan（合成0）と、別承認後のみのrunを分離する。
 [結果前source review](../../../docs/tracks/algorithm_codesign/sp05_synthesis_economics_preregistration_v1.md)、
 [contract／preparation](../../../artifacts/track_b_sp05_economics_preparation/2026-10-06/)。

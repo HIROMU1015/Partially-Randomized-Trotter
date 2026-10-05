@@ -1,5 +1,11 @@
 # scripts 索引
 
+Track Bの[SP-0.5一回結果](../docs/tracks/algorithm_codesign/sp05_one_shot_result_validation_20261006.md)は
+mandatory STOP、retry0、wrapper pilot未認可。[audit_sp05_saved_result.py](tracks/algorithm_codesign/audit_sp05_saved_result.py)は
+保存field／hash／counts／分類predicate／provenanceだけをstdlibで照合する。
+synthesis／PAI／J／error-guard関数を再実行しない。旧runner runは一回consumed、追加runしない。
+
+
 Track Bの[SP-0.5専用runner](tracks/algorithm_codesign/run_sp05_synthesis_economics.py)は
 [結果前契約](../docs/tracks/algorithm_codesign/sp05_synthesis_economics_preregistration_v1.md)に沿ったprimitive合成経済性gateの入口。
 planは合成0、runはsource S→別authorization-only child A・明示指示・fresh one-shot markerを要求する。

@@ -1,5 +1,12 @@
 # 文書索引
 
+Track B最新は[SP-0.5 one-shot結果・GPT handoff](tracks/algorithm_codesign/sp05_one_shot_result_validation_20261006.md)。
+PRIMITIVE_TRADEOFF_EXISTS、23 keys／16 rows完了、strict14／controls2。
+[元result・consumed marker・保存値監査](../artifacts/track_b_sp05_economics_result/2026-10-06/v1/)。
+primitive実装確認のlocal evidence。retry0・mandatory STOP、wrapper pilot未認可。次の研究判断はGPT側。
+以下は結果前／既存判断の履歴。
+
+
 Track Bの現段階は[SP-0.5 synthesis-economics preregistration／source review](tracks/algorithm_codesign/sp05_synthesis_economics_preregistration_v1.md)。
 合成器一つ・catalogue一つ・8 targetを固定し、B専用実装／34 focused testsを準備した。登録target合成0、実行未認可。
 [preparation manifest](../artifacts/track_b_sp05_economics_preparation/2026-10-06/preparation_manifest_v1.json)。
