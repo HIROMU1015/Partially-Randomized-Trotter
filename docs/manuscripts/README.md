@@ -1,5 +1,10 @@
 # Track A 原稿・図・reviewの入口
 
+最新の利用者指示により、原稿作成・投稿先検討はいったん保留。
+v0.1/v0.2・図・監査はそのまま保存し、[H4 geometry拡張の設計準備](../research/track_a_geometry_precision_extension_proposal_v0.md)へ移る。
+追加scienceはまだ実行せず、距離・実行場所・新source/authorizationの固定を先に行う。
+以下の原稿完成・投稿先検討はその時点の記録であり、原稿を削除したり科学値を書き換えたりしない。
+
 2026-10-05。保存済みlocal evidenceによる日本語通し原稿v0.1。新科学計算0、科学STOP。
 研究設計は[固定claim/evidence map](../research/track_a_post_pm2_claim_evidence_map.md)と
 [原稿設計](../research/track_a_post_pm2_manuscript_design.md)に従う。

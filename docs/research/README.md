@@ -1,5 +1,13 @@
 # 研究計画資料
 
+現在は[Track A H4 geometryと要求精度の拡張設計案](track_a_geometry_precision_extension_proposal_v0.md)と
+[別JSON](track_a_geometry_precision_extension_proposal_v0.json)を優先する。
+[GPUサーバー側準備指示](gpu_server_track_a_h4_geometry_resource_preparation_prompt.md)はserver既存環境を優先し、
+科学計算を開始せずinventory・synthetic CPU benchmark・契約草案までを依頼する。
+利用者の新しい指示により原稿作成を一旦保留。追加6点候補・218 templateの資源mapを提案したが、
+距離・host・worker・新実行source/authorizationは未固定。科学STOP、本計算・性能benchmark未実行。
+既存原稿と結果を保持し、H6/H8や追加96は今回に含めない。以下の収束判断は当時の履歴。
+
 2026-10-05の最新状態は[Track A通し原稿v0.1](../manuscripts/track_a_resource_study_v0_1.md)。
 [補足](../manuscripts/track_a_resource_study_supplement_v0_1.md)、
 [claim audit](../manuscripts/track_a_resource_study_claim_audit_v0_1.md)、

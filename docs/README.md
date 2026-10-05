@@ -1,5 +1,13 @@
 # 文書索引
 
+最新のTrack Aは、利用者の新しい意向により原稿作成を保留し、
+[H4 geometryと要求精度の全候補map](research/track_a_geometry_precision_extension_proposal_v0.md)を準備する段階。
+設計案・予算・未確定条件は[別JSON](research/track_a_geometry_precision_extension_proposal_v0.json)へ分離した。
+[GPUサーバー側準備指示](research/gpu_server_track_a_h4_geometry_resource_preparation_prompt.md)は既存server環境を優先し、
+環境inventory・synthetic CPU benchmark・契約草案まで。本計算はこのhandoffだけでは起動しない。
+距離・実行場所・worker・新science source/authorizationは未固定で、本計算は未実行。
+旧原稿・証拠・STOPは保存する。以下は各milestone当時の履歴。
+
 Track Aの現在の入口は[原稿v0.1・Supplement・claim audit・review依頼](manuscripts/README.md)。
 固定artifactから4主図と補足図1を生成し、日本語通し原稿を作成した。科学計算0、科学STOPを維持する。
 原稿のscope監査は執筆者によるもので、独立投稿可能性reviewは次の段階。以下は各stage当時の履歴。

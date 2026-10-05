@@ -1,5 +1,17 @@
 # プロジェクト案内
 
+## Track A 原稿保留とH4 geometry拡張の準備
+
+利用者の新しい指示により原稿作成・投稿先検討はいったん保留。
+[H4 geometryと要求精度の全候補map設計案](docs/research/track_a_geometry_precision_extension_proposal_v0.md)と
+[別JSON](docs/research/track_a_geometry_precision_extension_proposal_v0.json)を現在の準備入口とする。
+218 template、1点12,464 wrapper、追加6点74,784 wrapperの案。距離・host・worker・新source/authorizationは未固定。
+サーバーCPUを第一候補に同一synthetic fixtureで比較する設計で、性能確認・本計算はまだ実行していない。
+[サーバー側への準備指示](docs/research/gpu_server_track_a_h4_geometry_resource_preparation_prompt.md)は既存server環境を優先し、
+環境確認・CPU benchmark・契約草案までを依頼する。旧local version一致を強制せず、compiler差を別layerにする。
+原稿v0.1/v0.2・図・旧結果/STOPは保存し、科学計算STOP。H6/H8・追加96・Track B統合は別判断。
+以下は各milestone当時の履歴であり、旧認可を新条件へ使い回さない。
+
 ## Track A 通し原稿v0.1・主図完成（2026-10-05）
 
 最新は[原稿・補足・監査の入口](docs/manuscripts/README.md)。保存証拠だけから4主図と補足図1、
