@@ -1,0 +1,370 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "hamiltonian_sha256",
+    "df_sha256",
+    "state_sha256",
+    "candidate_fingerprint",
+    "compiler_fingerprint",
+    "environment_fingerprint",
+    "wrapper_key",
+    "schema_version",
+    "artifact_scope",
+    "geometry",
+    "candidate_template",
+    "axis",
+    "trajectory_seed",
+    "trajectory_index",
+    "source_commit",
+    "wrapper_semantics",
+    "numerical_circuit_fingerprint",
+    "status",
+    "metrics",
+    "cache_reuse",
+    "cache_owner_wrapper_key",
+    "actual_transpile_invocation_id",
+    "sample_weight",
+    "mandatory_stop"
+  ],
+  "properties": {
+    "hamiltonian_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "df_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "state_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "candidate_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "compiler_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "environment_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "wrapper_key": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "schema_version": {
+      "const": "h4-wrapper-record-v1"
+    },
+    "artifact_scope": {
+      "enum": [
+        "SYNTHETIC_CONTRACT_TEST_ONLY",
+        "FUTURE_SCIENCE_RECORD"
+      ]
+    },
+    "geometry": {
+      "enum": [
+        "0.70",
+        "0.80",
+        "0.90",
+        "1.10",
+        "1.40",
+        "1.60"
+      ]
+    },
+    "candidate_template": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "template_id",
+        "method",
+        "L_D",
+        "q",
+        "r",
+        "K"
+      ],
+      "properties": {
+        "template_id": {
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "B0",
+            "B1",
+            "B2",
+            "B3"
+          ]
+        },
+        "L_D": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "q": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "r": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "K": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "axis": {
+      "enum": [
+        "cosine",
+        "sine"
+      ]
+    },
+    "trajectory_seed": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 18446744073709551615
+    },
+    "trajectory_index": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 31
+    },
+    "source_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "wrapper_semantics": {
+      "const": "ordinary_controlled_diag(I,U);T=0.8;DF-prefix-S2;canonical-finite-RTE;no-state-prep;bit0=+1;bit1=-1;real=cosine;imag=sine"
+    },
+    "numerical_circuit_fingerprint": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "status": {
+      "enum": [
+        "REGISTERED",
+        "RESERVED",
+        "COMPLETE",
+        "AMBIGUOUS_AWAITING_REVIEW",
+        "FAILED_STOP"
+      ]
+    },
+    "metrics": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "rz_count",
+            "rz_depth",
+            "cx_count",
+            "cx_depth",
+            "total_depth",
+            "circuit_size"
+          ],
+          "properties": {
+            "rz_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "rz_depth": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cx_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cx_depth": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "total_depth": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "circuit_size": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      ]
+    },
+    "cache_reuse": {
+      "type": "boolean"
+    },
+    "cache_owner_wrapper_key": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "actual_transpile_invocation_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "sample_weight": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "numerator",
+        "denominator"
+      ],
+      "properties": {
+        "numerator": {
+          "const": 1
+        },
+        "denominator": {
+          "enum": [
+            1,
+            32
+          ]
+        }
+      }
+    },
+    "mandatory_stop": {
+      "const": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "COMPLETE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "numerical_circuit_fingerprint": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "metrics": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "REGISTERED",
+              "RESERVED",
+              "AMBIGUOUS_AWAITING_REVIEW",
+              "FAILED_STOP"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "metrics": {
+            "type": "null"
+          },
+          "cache_reuse": {
+            "const": false
+          },
+          "cache_owner_wrapper_key": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "cache_reuse": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "const": "COMPLETE"
+          },
+          "cache_owner_wrapper_key": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "actual_transpile_invocation_id": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "cache_reuse": {
+            "const": false
+          },
+          "status": {
+            "const": "COMPLETE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "cache_owner_wrapper_key": {
+            "type": "null"
+          },
+          "actual_transpile_invocation_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "RESERVED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "actual_transpile_invocation_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
+}

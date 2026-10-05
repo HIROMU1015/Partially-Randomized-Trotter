@@ -1,0 +1,100 @@
+{
+  "schema_version": "h4-two-stage-authorization-contract-v2",
+  "artifact_scope": "REVIEW_CONTRACT_ONLY_NOT_AUTHORIZATION",
+  "stages": [
+    "CONTRACT_V2_AWAITING_REVIEW",
+    "CONTRACT_CONDITIONS_APPROVED",
+    "SCIENCE_SOURCE_IMPLEMENTED",
+    "SCIENCE_SOURCE_FROZEN",
+    "INPUT_GENERATION_PLAN_READY",
+    "INPUT_GENERATION_AUTHORIZATION_REVIEWED",
+    "INPUT_GENERATION_LAUNCH_APPROVED",
+    "INPUTS_FROZEN_STOP",
+    "INPUT_BOUND_SIGNAL_PLAN_SEALED",
+    "SIGNAL_AUTHORIZATION_REVIEWED",
+    "SIGNAL_LAUNCH_APPROVED",
+    "MAP_COMPLETE_STOP"
+  ],
+  "transitions": [
+    {
+      "from": "CONTRACT_V2_AWAITING_REVIEW",
+      "action": "approve_contract",
+      "to": "CONTRACT_CONDITIONS_APPROVED"
+    },
+    {
+      "from": "CONTRACT_CONDITIONS_APPROVED",
+      "action": "implement_source",
+      "to": "SCIENCE_SOURCE_IMPLEMENTED"
+    },
+    {
+      "from": "SCIENCE_SOURCE_IMPLEMENTED",
+      "action": "freeze_source",
+      "to": "SCIENCE_SOURCE_FROZEN"
+    },
+    {
+      "from": "SCIENCE_SOURCE_FROZEN",
+      "action": "prepare_generation_plan",
+      "to": "INPUT_GENERATION_PLAN_READY"
+    },
+    {
+      "from": "INPUT_GENERATION_PLAN_READY",
+      "action": "review_generation_authorization",
+      "to": "INPUT_GENERATION_AUTHORIZATION_REVIEWED"
+    },
+    {
+      "from": "INPUT_GENERATION_AUTHORIZATION_REVIEWED",
+      "action": "explicit_generation_launch",
+      "to": "INPUT_GENERATION_LAUNCH_APPROVED"
+    },
+    {
+      "from": "INPUT_GENERATION_LAUNCH_APPROVED",
+      "action": "generate_freeze_inputs_then_stop",
+      "to": "INPUTS_FROZEN_STOP"
+    },
+    {
+      "from": "INPUTS_FROZEN_STOP",
+      "action": "seal_input_bound_signal_plan",
+      "to": "INPUT_BOUND_SIGNAL_PLAN_SEALED"
+    },
+    {
+      "from": "INPUT_BOUND_SIGNAL_PLAN_SEALED",
+      "action": "review_signal_authorization",
+      "to": "SIGNAL_AUTHORIZATION_REVIEWED"
+    },
+    {
+      "from": "SIGNAL_AUTHORIZATION_REVIEWED",
+      "action": "explicit_signal_launch",
+      "to": "SIGNAL_LAUNCH_APPROVED"
+    },
+    {
+      "from": "SIGNAL_LAUNCH_APPROVED",
+      "action": "signal_compile_map_then_stop",
+      "to": "MAP_COMPLETE_STOP"
+    }
+  ],
+  "input_generation": {
+    "separate_source_bound_plan": true,
+    "new_input_hashes_required_before_generation": false,
+    "separate_authorization": true,
+    "review_and_explicit_launch_required": true,
+    "only_six_distances": true,
+    "freeze_bytes_then_STOP": true,
+    "signal_sampling_build_compile_permitted": false
+  },
+  "signal_compile": {
+    "input_hashes_required_for_seal": true,
+    "all_six_frozen_inputs_required": true,
+    "separate_result_prior_authorization": true,
+    "review_and_explicit_launch_required": true,
+    "must_not_reuse_generation_authorization": true,
+    "mandatory_STOP_after_map": true
+  },
+  "semantic_gates": {
+    "source_stage": "synthetic semantic tests only, no molecular import or actual signal/cost",
+    "generation_stage": "SCF/DF/state/sector/order/coordinate gates only under generation authorization; no signal/cost",
+    "science_stage": "actual input-bound signal/cost gates only after signal authorization and explicit launch; never before authorization"
+  },
+  "authorization_issued_now": 0,
+  "current_stage": "CONTRACT_V2_AWAITING_REVIEW",
+  "synthetic_validator_is_an_execution_controller": false
+}

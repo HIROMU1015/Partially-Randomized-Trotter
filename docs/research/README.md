@@ -1,5 +1,15 @@
 # 研究計画資料
 
+## 2026-10-06 H4 geometry契約v2・レビュー待ちSTOP
+
+現在の入口は[契約v2 bundle](../../artifacts/resource_applicability/track_a_h4_geometry_contract_preparation/2026-10-06-v2/README.md)。v1 commit `7c1a3d43f61c5501a9e79206b7c60933f94b1077`を保存し、
+D1〜D4を具体的な採用案、memory admissionを8+8w+16 GiB、認可を入力生成→freeze STOP→別signal/compile認可へ分離した。
+H4 linear/STO-3G/DF rank12、6距離・218 template・32 paired trajectories・74,784上限は不変。8 system＋ancilla1(index8)、合計9 qubits。
+[pure JSON validator](../../artifacts/resource_applicability/track_a_h4_geometry_contract_preparation/2026-10-06-v2/contract_validator_v2.py)と[専用合成検査](../../artifacts/resource_applicability/track_a_h4_geometry_contract_preparation/2026-10-06-v2/run_contract_tests_v2.py)はreview用で、science source/runnerではない。
+新規320件pass（fail/skip0）、旧129件は保存・runner再実行0。旧v1 manifestはbase blobで照合し書き換えない。
+D1〜D4レビュー承認は未解決、science/source port/input generation/next stage認可false、plan未seal、mandatory STOP。
+今回の公開指示は軽量契約bundleと関連文書だけのcommit/non-force push。以下は各段階当時の履歴。
+
 現在は[Track A H4 geometryと要求精度の拡張設計案](track_a_geometry_precision_extension_proposal_v0.md)と
 [別JSON](track_a_geometry_precision_extension_proposal_v0.json)を優先する。
 [GPUサーバー側準備指示](gpu_server_track_a_h4_geometry_resource_preparation_prompt.md)はserver既存環境を優先し、
