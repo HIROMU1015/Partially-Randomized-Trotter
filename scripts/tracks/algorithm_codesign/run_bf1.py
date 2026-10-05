@@ -16,21 +16,25 @@ ROOT = Path(__file__).absolute().parents[3]
 sys.path.insert(0, str(ROOT/'src'))
 
 from trottertracks.algorithm_codesign.domain import Domain, Point
-from trottertracks.algorithm_codesign.freeze import (EXECUTION_ID, PREPARATION_REL, canonical, git,
+from trottertracks.algorithm_codesign.freeze import (AUTHORIZATION_REL, DOMAIN_REL, EXECUTION_ID, PREPARATION_REL, canonical, git,
     sha, verify_launch, write_new)
 from trottertracks.algorithm_codesign.pilot import Evaluator, Limits, classify, search, secondary_frontier
+from trottertracks.algorithm_codesign.cross_objectives import cross_score, attribute_F_winner
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--authorization', type=Path, required=True)
     arguments = parser.parse_args()
+    if arguments.authorization.absolute() != (ROOT/AUTHORIZATION_REL).absolute():
+        raise PermissionError('B publication scheme requires the fixed committed authorization JSON path')
     prep = ROOT/PREPARATION_REL
     plan = json.loads((prep/'source_plan.json').read_text())
     authorization = json.loads(arguments.authorization.read_text())
-    domain_bytes = (prep/'domain_manifest.json').read_bytes()
+    domain_bytes = (ROOT/DOMAIN_REL).read_bytes()
     tests_bytes = (prep/'synthetic_semantic_report.json').read_bytes()
-    source_commit = verify_launch(ROOT, plan, authorization, domain_bytes, tests_bytes)
+    publication = verify_launch(ROOT, plan, authorization, domain_bytes, tests_bytes)
+    source_commit = publication['source_commit']
     if plan['domain_fingerprint'] != sha(canonical(json.loads(domain_bytes))):
         raise ValueError('Domain manifest modified')
     common = Path(git(ROOT, 'rev-parse', '--git-common-dir'))
@@ -41,7 +45,7 @@ def main():
     # A global repository marker prevents repeating this execution from a
     # second worktree. Its namespace is separate from A's runtime registry.
     write_new(registry/(EXECUTION_ID+'.json'), dict(execution_id=EXECUTION_ID,
-              source_commit=source_commit, consumed=True, retry_authorized=False))
+              publication=publication, consumed=True, retry_authorized=False))
     output = ROOT/plan['output_relative']
     limits = Limits()
     output.mkdir(parents=True, exist_ok=False)
@@ -65,6 +69,8 @@ def main():
         limits.check()
     result = dict(schema='bf1_one_shot_result_v1', execution_id=EXECUTION_ID,
                   source_commit=source_commit, plan_fingerprint=sha(canonical(plan)),
+                  authorization_commit=publication['authorization_commit'],
+                  publication_scheme=publication['publication_scheme'],
                   mandatory_stop=True, automatic_next_stage=None, BF2_authorized=False,
                   retry_authorized=False, counters=dict(molecular_generation=0, trajectories=0,
                                                         circuits=0, compilations=0, gpu_queries=0))
@@ -90,6 +96,10 @@ def main():
         decision = classify(finite, reference, leading)
         frontier = secondary_frontier(finite+reference)
         all_points = {p.identity: p for p in list(reference_points.values())+list(F_points.values())}
+        cross = cross_score(evaluator, points, fixed, on_row=on_cell)
+        attribution = attribute_F_winner(cross, decision)
+        result['cross_objectives'] = cross
+        result['objective_attribution'] = attribution
         bridge = evaluator.rescore(list(all_points.values()), .05)
         result.update(status='BF1_COMPLETE_MANDATORY_STOP', decision=decision, searches=searches,
                       primary_F=finite, primary_reference=reference, bridge=bridge,
@@ -107,7 +117,7 @@ def main():
         result['peak_rss_bytes'] = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024
         data = canonical(result)
         if len(data)+written > caps['output_bytes']:
-            result = {k: v for k, v in result.items() if k not in ('primary_F', 'primary_reference', 'bridge', 'searches', 'coefficients')}
+            result = {k: v for k, v in result.items() if k not in ('primary_F', 'primary_reference', 'bridge', 'searches', 'coefficients', 'cross_objectives')}
             result.update(status='BF1_INCOMPLETE_OUTPUT_CAP_MANDATORY_STOP', outcome='INCONCLUSIVE')
         write_new(output/'result.json', result)
         print(result['status'])

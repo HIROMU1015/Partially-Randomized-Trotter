@@ -1,6 +1,7 @@
 """Bounded BF-1 objectives/search. Importing this module performs no run."""
 from __future__ import annotations
 from dataclasses import dataclass
+from contextlib import contextmanager
 from fractions import Fraction
 import math
 import time
@@ -83,6 +84,18 @@ class Evaluator:
         self.ideal = {}
         self.finite = {}
         self.coefficients = {}
+        self._cache_only = False
+
+    @contextmanager
+    def cached_diagnostics(self):
+        """Post-search diagnostics cannot compute a new signal/cell."""
+        if self._cache_only:
+            raise RuntimeError('Nested diagnostic phase is not allowed')
+        self._cache_only = True
+        try:
+            yield
+        finally:
+            self._cache_only = False
 
     def _signal(self, point, q, allocation=None, K=2):
         self.limits.check()
@@ -117,6 +130,8 @@ class Evaluator:
     def ideal_cell(self, point, q):
         key = point.identity, q
         if key not in self.ideal:
+            if self._cache_only:
+                raise RuntimeError('MISSING_POSTSEARCH_IDEAL_CELL')
             if len(self.ideal) >= 400:
                 raise RuntimeError("STOP_IDEAL_CELL_CAP")
             self.ideal[key] = self._signal(point, q)
@@ -126,6 +141,8 @@ class Evaluator:
     def finite_cell(self, point, q, budget, K):
         key = point.identity, q, budget, K
         if key not in self.finite:
+            if self._cache_only:
+                raise RuntimeError('MISSING_POSTSEARCH_FINITE_CELL')
             if len(self.finite) >= 4000:
                 raise RuntimeError("STOP_FINITE_CELL_CAP")
             one, _ = stationary_template(point, self.deterministic_count, q)
@@ -175,28 +192,52 @@ class Evaluator:
                     yield q, budget, K, ideal, stats, actual
 
     def objective(self, point, arm):
+        record = self.objective_record(point, arm)
+        return record['value'] if record['feasible'] else math.inf
+
+    def objective_record(self, point, arm):
+        """The original design objective, with its minimizing cell preserved."""
+        if arm not in ('O', 'L', 'F'):
+            raise ValueError('Unknown design objective')
+        rows, rejected = [], []
         if arm == 'O':
-            rows = []
             for q in Q_VALUES:
                 ideal = self.ideal_cell(point, q)
                 score = parameter_score(ideal['bias'], ideal['u_signal'], 0., ideal['ideal_actions'], 0., PRIMARY_EPSILON)
                 if score['feasible']:
-                    rows.append((score['value'], q))
-            return min(rows)[0] if rows else math.inf
-        scores = []
-        for q, budget, K, ideal, stats, actual in self.cells(point, PRIMARY_EPSILON, finite=arm == 'F'):
-            if arm == 'L':
-                bias = [b+stats['tail_bound'] for b in ideal['bias']]
-                score = parameter_score(bias, ideal['u_signal'], stats['log_b_leading'],
-                                        ideal['deterministic_actions'], q*budget, PRIMARY_EPSILON)
-            elif actual and actual['valid']:
-                score = parameter_score(actual['bias'], actual['u_signal'], actual['log_b'],
-                                        actual['deterministic_actions'], actual['random_actions'], PRIMARY_EPSILON)
-            else:
-                continue
-            if score['feasible']:
-                scores.append((score['value'], q, budget, K))
-        return min(scores)[0] if scores else math.inf
+                    rows.append(dict(value=score['value'], lower=score['lower'], q=q, R_bud=None, K=None,
+                                     bias=ideal['bias'], u_signal=ideal['u_signal'], log_b=0.,
+                                     deterministic_actions=ideal['ideal_actions'], random_actions=0.,
+                                     work_definition='ideal formula length including exact tail factors', shots=score['shots']))
+                else:
+                    rejected.append(score['reason'])
+        else:
+            for q, budget, K, ideal, stats, actual in self.cells(point, PRIMARY_EPSILON, finite=arm == 'F'):
+                if arm == 'L':
+                    bias = [b+stats['tail_bound'] for b in ideal['bias']]
+                    log_b = stats['log_b_leading']
+                    u_signal = ideal['u_signal']
+                    deterministic = ideal['deterministic_actions']
+                    random = q*budget
+                elif actual and actual['valid']:
+                    bias, u_signal, log_b = actual['bias'], actual['u_signal'], actual['log_b']
+                    deterministic, random = actual['deterministic_actions'], actual['random_actions']
+                else:
+                    rejected.append(actual['reason'] if actual else 'missing_finite_cell')
+                    continue
+                score = parameter_score(bias, u_signal, log_b, deterministic, random, PRIMARY_EPSILON)
+                if score['feasible']:
+                    rows.append(dict(value=score['value'], lower=score['lower'], q=q, R_bud=budget, K=K,
+                                     bias=bias, u_signal=u_signal, log_b=log_b, shots=score['shots'],
+                                     ideal_bias=ideal['bias'], tail_bound=stats['tail_bound'],
+                                     deterministic_actions=deterministic, random_actions=random,
+                                     work_definition='leading work' if arm == 'L' else 'finite expected event work'))
+                else:
+                    rejected.append(score['reason'])
+        winner = min(rows, key=lambda r: (r['value'], r['q'], r['R_bud'] or 0, r['K'] or 0)) if rows else None
+        return dict(arm=arm, feasible=winner is not None, value=winner['value'] if winner else None,
+                    best_cell=winner, feasible_cell_count=len(rows), rejected_cell_count=len(rejected),
+                    rejected_reasons=sorted(set(rejected)))
 
     def rescore(self, points, epsilon):
         rows = []
