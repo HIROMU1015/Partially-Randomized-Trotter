@@ -1,5 +1,10 @@
 # 文書索引
 
+Track B最新は[BM-0.5後review・合成placement設計仕様案](tracks/algorithm_codesign/synthesis_placement_design_review_20261006.md)。
+B-F限定closure／B-M現new-method closureを維持し、四placement・full wrapper mean・有限合成／測定costを具体化する。
+小さい[設計JSON](../artifacts/track_b_synthesis_placement_design/2026-10-06/design_contract_v1.json)はauthorizationではない。
+新利益・新規性は未実証、pilot未実行・未認可。以下の「最新」は当時の記録として保持する。
+
 Track Bの最新は[BM-0.5同値性監査・GPT handoff](tracks/algorithm_codesign/bm05_review_packet_20261005.md)。
 固定nestedの三次係数と同policy scoreにmethod deltaなし。BM-1を実行せずSTOPし、applicationの価値はGPT判断。
 

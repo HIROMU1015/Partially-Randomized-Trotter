@@ -1,0 +1,275 @@
+{
+  "schema_version": "track_b_synthesis_placement_design_contract_v1",
+  "date_jst": "2026-10-06",
+  "status": "DESIGN_REVIEW_PENDING",
+  "evidence_class": "documentation_and_static_inventory_only",
+  "base_commit": "d55de044b8e956ba6292209a94bb081014dfdae2",
+  "branch": "track-b-synthesis-placement-design-20261006",
+  "worktree": "/home/abe/Project/prt-worktrees/track-b-synthesis-placement-design-20261006",
+  "specification": "docs/tracks/algorithm_codesign/synthesis_placement_design_review_20261006.md",
+  "research_source_commit": null,
+  "run_ready": false,
+  "implementation_authorized": false,
+  "pilot_execution_authorized": false,
+  "next_stage_authorized": false,
+  "mandatory_stop": true,
+  "fixed_references": {
+    "bf_r0": "6d2645a09440f50e5b869ef42a1b73a1b625a1af",
+    "bm05": "d55de044b8e956ba6292209a94bb081014dfdae2",
+    "track_a": "4c23453c541700c6a41ba71fc5ec9323b53858d6"
+  },
+  "closure_scope": {
+    "bf": "current_fixed_hypothesis_closed_as_limited_negative",
+    "bm": "current_adapter_new_method_route_closed",
+    "bm_application": "on_hold",
+    "old_bm1": "not_executed_and_not_authorized",
+    "other_stops": "preserved"
+  },
+  "candidate": "synthesis_aware_randomization_for_coherent_signal_estimation",
+  "new_algorithm_or_performance_claim_established": false,
+  "inputs": [
+    {
+      "source_path": "/home/abe/Project/Partially Randomized Trotter/track_b_post_bm05_research_redesign_20261005.md",
+      "published_path": "docs/tracks/algorithm_codesign/inputs/track_b_post_bm05_research_redesign_20261005.md",
+      "source_kind": "uncommitted_user_supplied_plan",
+      "root_branch": "all-r-coherent-opt2-reoptimization",
+      "root_head_at_receipt": "e098c54c78f589055082f9cfc2b13de50c90ca94",
+      "raw_sha256": "0d3969d9dff676604f04fde98c3a686f8cde3a0b24d41ee42419de9db7bb787e",
+      "bytes": 36986,
+      "byte_preserving_copy": true
+    },
+    {
+      "source_path": "/home/abe/.codex/attachments/9f36559c-fe1a-43fe-8c86-a36eb4b8297f/貼り付けたテキスト.txt",
+      "published_path": "docs/tracks/algorithm_codesign/inputs/post_bm05_gpt_review_20261006.txt",
+      "source_kind": "user_supplied_gpt_review_attachment",
+      "raw_sha256": "a1ee4fc66a783a7b95d6083161f5e3f5e6c6f7852bf6ede0551718dd88c1c312",
+      "bytes": 27778,
+      "byte_preserving_copy": true
+    }
+  ],
+  "placement_masks": [
+    "NONE",
+    "D",
+    "R",
+    "DR"
+  ],
+  "basis_policy": "common_deterministic_synthesis_including_inverse_and_cost",
+  "conditional_mean_target": "full_ancilla_wrapper_channel_then_observable",
+  "sampling_policy_proposed": "canonical_gate_QPD_conditionally_independent_fresh_outer_trajectory_per_shot",
+  "shot_rule_proposed": "common_two_sided_Bernstein_V2_upper_bound_range_2M_complex_union_bound",
+  "primary_resource_proposed": "actual_T_plus_Tdag_sequence_count_with_initialization_and_all_wrapper_costs",
+  "angle_inventory_status": "ANGLE_INVENTORY_NOT_ESTABLISHED_IN_INSPECTED_RECORDS",
+  "inventory_access": "selected_fixed_commit_text_and_JSON_keys_only_no_numeric_rescoring",
+  "inventory_blobs": [
+    {
+      "commit": "4c23453c541700c6a41ba71fc5ec9323b53858d6",
+      "path": "src/trotterlib/df_trotter/ops.py",
+      "git_blob_oid": "f950b0f7950042229de60ecd728f17638bbd265b"
+    },
+    {
+      "commit": "4c23453c541700c6a41ba71fc5ec9323b53858d6",
+      "path": "src/trotterlib/rte.py",
+      "git_blob_oid": "53601b7c524653f5e1966b3955b9f51373e54002"
+    },
+    {
+      "commit": "4c23453c541700c6a41ba71fc5ec9323b53858d6",
+      "path": "src/trotterlib/df_rte_qiskit.py",
+      "git_blob_oid": "da3c7c68e6ee66e28a599a28fe087b4c272e8504"
+    },
+    {
+      "commit": "4c23453c541700c6a41ba71fc5ec9323b53858d6",
+      "path": "src/trotterlib/rte_compiled_cost.py",
+      "git_blob_oid": "f081f6f1053e7769e47d6deaa435980df67c62e0"
+    },
+    {
+      "commit": "4c23453c541700c6a41ba71fc5ec9323b53858d6",
+      "path": "src/trotterlib/pr2_matched_accuracy_m1_b1_execution.py",
+      "git_blob_oid": "eacc892d293f328185b99ea0704a519a1d25a9f9"
+    },
+    {
+      "commit": "4c23453c541700c6a41ba71fc5ec9323b53858d6",
+      "path": "src/trotterlib/pr2_matched_accuracy_m2_transfer_execution.py",
+      "git_blob_oid": "35837cf00e725423cb13dd34a394fe1e92247618"
+    },
+    {
+      "commit": "4c23453c541700c6a41ba71fc5ec9323b53858d6",
+      "path": "artifacts/pr2_matched_accuracy_m1_b1_contract/2026-09-30/pr2_matched_accuracy_m1_b1_result_schema_v2.json",
+      "git_blob_oid": "98f76aadfad3df062ba75de842dbcb158eaf6d58"
+    },
+    {
+      "commit": "4c23453c541700c6a41ba71fc5ec9323b53858d6",
+      "path": "artifacts/pr2_matched_accuracy_m2_transfer_execution/2026-10-04/pr2_matched_accuracy_m2_transfer_result_v2.json",
+      "git_blob_oid": "b469428f6058b36ca159bbf87d969ff87dc0e978"
+    },
+    {
+      "commit": "4c23453c541700c6a41ba71fc5ec9323b53858d6",
+      "path": "artifacts/resource_applicability/pr2_post_m2_evidence_attribution/2026-10-04/summary.json",
+      "git_blob_oid": "742b15018aff55aa3878d022333b9a3b9e30ca0b"
+    }
+  ],
+  "inventory_not_inspected": [
+    "NPZ",
+    "SQLite contents",
+    "QPY/circuit deserialization",
+    "untracked runtime data",
+    "external storage"
+  ],
+  "primitive_record_required_fields": {
+    "identity": [
+      "template",
+      "axis",
+      "mask",
+      "source_role",
+      "native_position",
+      "signed_angle_exact_encoding",
+      "pauli_support",
+      "control_phase_semantics",
+      "fusion_lineage"
+    ],
+    "sampling": [
+      "outer_finite_distribution_identity",
+      "B",
+      "notch_angle_encoding",
+      "Delta",
+      "g",
+      "p",
+      "sign",
+      "gamma",
+      "Gamma",
+      "W",
+      "population_V2_upper_bound_identity",
+      "range_bound_identity"
+    ],
+    "synthesis": [
+      "tool_version_and_source",
+      "precision_and_norm",
+      "sequence_identity",
+      "diamond_error_bound",
+      "numerical_guard",
+      "wrapper_bias_bound"
+    ],
+    "resource": [
+      "T_count",
+      "Tdag_count",
+      "Clifford_count",
+      "depth",
+      "workspace",
+      "state_preparation",
+      "initialization_cost",
+      "reuse_scope",
+      "classical_generation_cost",
+      "shots",
+      "G_T"
+    ]
+  },
+  "catalogue_proposal": {
+    "implementation": "unselected_ancilla_free_Clifford_T_RZ_synthesizer",
+    "notch_catalogues_maximum": 2,
+    "notch_bits": null,
+    "RUS_or_catalyst_in_initial_scope": false
+  },
+  "pilot_proposal": {
+    "molecular_input": false,
+    "templates": [
+      "single_controlled_Pauli",
+      "two_noncommuting_rotations",
+      "finite_length_moment_pair",
+      "phase_and_basis_inverse_control"
+    ],
+    "template_maximum": 4,
+    "basic_mask_comparisons": 16,
+    "catalogue_cells_maximum": 32,
+    "interpolated_native_positions_per_template_maximum": 4,
+    "all_rotation_positions_per_template_maximum": 6,
+    "outer_paths_per_template_maximum": 4,
+    "branch_axis_evaluations_upper_proposal": 20736,
+    "synthesis_keys_per_catalogue_upper_proposal": 384,
+    "synthesis_keys_all_catalogues_upper_proposal": 768,
+    "additional_countercontrol_probes": null,
+    "wall_seconds": null,
+    "CPU_seconds": null,
+    "RSS_bytes": null,
+    "output_bytes": null,
+    "materiality": null,
+    "numeric_guards": null,
+    "seed": null,
+    "retry_policy": "no_automatic_scope_expansion_or_science_retry"
+  },
+  "prior_art_confirmed_sections": [
+    {
+      "id": "2503.05647v2",
+      "url": "https://arxiv.org/pdf/2503.05647v2",
+      "sections": [
+        "Appendix E.1b",
+        "E.2",
+        "E.3a,c"
+      ],
+      "rounding_locator": "printed p43 E24-E25; not equation E3"
+    },
+    {
+      "id": "2305.19881v2",
+      "url": "https://arxiv.org/html/2305.19881v2",
+      "sections": [
+        "II.2",
+        "II.3",
+        "II.4",
+        "Appendix A"
+      ]
+    },
+    {
+      "id": "2410.16850v2",
+      "url": "https://arxiv.org/html/2410.16850v2",
+      "sections": [
+        "I",
+        "II",
+        "IV",
+        "Appendix A",
+        "Appendix B"
+      ]
+    },
+    {
+      "id": "2603.13495v1",
+      "url": "https://arxiv.org/html/2603.13495v1",
+      "sections": [
+        "II",
+        "Theorem 1",
+        "II.1"
+      ]
+    },
+    {
+      "id": "2606.23544v1",
+      "url": "https://arxiv.org/html/2606.23544v1",
+      "sections": [
+        "II",
+        "IV.4",
+        "shot_noise_scope"
+      ]
+    }
+  ],
+  "operational_audit_this_task": {
+    "NPZ_resolve_stat_hash_load": 0,
+    "Hamiltonian_generation": 0,
+    "science_signal_evaluations": 0,
+    "trajectory_sampling": 0,
+    "circuit_build_compile_synthesis": 0,
+    "GPU_queries_or_use": 0,
+    "tests_run": 0,
+    "old_artifact_changes": 0
+  },
+  "future_source_namespace": "src/trottertracks/algorithm_codesign/synthesis_placement/",
+  "review_required": [
+    "native_lowering_and_PAI_semantics",
+    "actual_synthesizer_and_catalogue",
+    "concrete_four_template_inputs_and_complete_budget",
+    "common_confidence_bias_guard_and_materiality",
+    "necessity_and_research_scope"
+  ],
+  "known_principles_not_claimed_new": [
+    "RTE_plus_PAI",
+    "tower_property",
+    "weight_second_moment",
+    "cost_times_variance",
+    "resource_optimal_importance_sampling"
+  ],
+  "new_route_STOP_requires_more_than_same_score_or_split": true
+}

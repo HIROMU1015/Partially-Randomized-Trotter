@@ -1,5 +1,11 @@
 # プロジェクト案内
 
+Track B最新は[BM-0.5後の合成・placement設計仕様案](docs/tracks/algorithm_codesign/synthesis_placement_design_review_20261006.md)。
+GPT reviewに従いB-F限定仮説とB-M現adapterのnew-method路線を閉じ、旧BM-1は未実行のまま保持する。
+新候補の四mask、ancilla込みPAI、有限bias／weight／shot／T会計、原始pilot案を一文書と小さいJSONへ整理した。
+一般原理は既知、利益・新規性は未実証。angle inventoryは確認した保存記録では未確立。
+科学実行・実装・testsは0、次段未認可、利用者/GPT reviewへSTOP。以下のBM-0.5以前は履歴として読む。
+
 Track B最新は[BM-0.5同値性監査](docs/tracks/algorithm_codesign/bm05_review_packet_20261005.md)。
 固定nested列のcompact BCHとBM分解は三次で同値。同backend／同集約ならscoreも一致、現new-method gateは不通過。
 BM-1未実行・未認可。applicationの必要性／別deltaはGPTへ返してmandatory STOP。以下はBM-0までの履歴。

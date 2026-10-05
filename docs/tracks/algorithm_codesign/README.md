@@ -1,5 +1,14 @@
 # Track B — Algorithm Co-design
 
+最新は[BM-0.5後review・合成placement設計仕様案](synthesis_placement_design_review_20261006.md)（2026-10-06）。
+GPT側の方針reviewを受領し、B-F現仮説／B-M現adapterのnew-method路線を閉じる。旧BM-1は未実行を維持する。
+新候補は固定DF/PF/finite-RTE wrapperの合成cost・測定負担を含むrandomization placement設計。
+四mask、ancilla込みmean、weight／bias／shot／T、限定inventory、原始pilot案を一文書へ集約する。
+一般原理は既知、利益・独立新規性は未実証、実装／pilot未認可、science操作・testsは0、STOP。
+[設計状態・provenance JSON](../../../artifacts/track_b_synthesis_placement_design/2026-10-06/design_contract_v1.json)、
+[dated note](../../research/研究ノート/2026-10-06_track_b_synthesis_placement_design.md)。
+独立branch/worktreeは `track-b-synthesis-placement-design-20261006`。以下は元の固定結果・判断履歴として保持する。
+
 最新は[BM-0.5同値性監査・GPT packet](bm05_review_packet_20261005.md)。
 compact再帰=BM floor/internal三次係数。同backend／同集約のscoreは同じ、共通項reuseも強い対照に可能。
 現adapterのnew-method gateは不通過。BM-1は実行せず、application／別deltaの採否はGPTへ戻してSTOP。
