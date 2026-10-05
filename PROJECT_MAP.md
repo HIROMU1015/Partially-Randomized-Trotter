@@ -2,6 +2,8 @@
 
 Track B worktreeの現在の入口は[Algorithm Co-design](docs/tracks/algorithm_codesign/README.md)。
 最新は[BF-1一回実行の結果照合](docs/tracks/algorithm_codesign/bf1_one_shot_result_validation_20261005.md)。
+別branchの[JSON保存修正と限定検証](docs/tracks/algorithm_codesign/bf1_serialization_repair_review_20261005.md)は
+技術作業のみ。研究方針全体の修正はGPT側で扱い、科学再実行は認可しない。
 JSON保存例外により`INCONCLUSIVE`、mandatory STOP、retryなし。B code/runner/test/preparation/result artifactは
 同READMEから辿る。以下のA記録はこのbranchのM2 result snapshotであり、並行Aの最新状態へは更新しない。
 

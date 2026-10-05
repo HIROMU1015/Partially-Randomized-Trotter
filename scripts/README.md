@@ -5,6 +5,8 @@ Track Bの`tracks/algorithm_codesign/prepare_bf1.py`はformula-only domain列挙
 [BF-1規範](../docs/tracks/algorithm_codesign/bf1_preregistration_v1.md)。固定source/authorizationで一回実行後、
 JSON保存例外により[INCONCLUSIVEで停止](../docs/tracks/algorithm_codesign/bf1_one_shot_result_validation_20261005.md)。
 one-shot markerはconsumed、retryなし。
+[別branchの保存型修正](../docs/tracks/algorithm_codesign/bf1_serialization_repair_review_20261005.md)では
+runnerを変更・実行せず、限定synthetic testsのみを行う。
 [v2 amendment](../docs/tracks/algorithm_codesign/bf1_execution_gate_revision_v2.md)はpost-search cross-scoreと
 authorization-only child commit方式を固定する。
 [v3 amendment](../docs/tracks/algorithm_codesign/bf1_assembly_guard_revision_v3.md)はassemblyの逐次誤差伝播を固定する。

@@ -1,0 +1,34 @@
+{
+  "command": [
+    "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/tracks/algorithm_codesign/test_bf1_cross_objectives.py",
+    "-k",
+    "parameter_score_cross_rows_and_result_are_json_serializable",
+    "--tb=short",
+    "-p",
+    "no:cacheprovider"
+  ],
+  "created_at_utc": "2026-10-05T10:50:57.767768+00:00",
+  "environment_overrides": {
+    "MKL_NUM_THREADS": "1",
+    "NUMBA_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "src"
+  },
+  "exit_code": 1,
+  "parent_result_commit": "09c9e89555032213b52a6a60b38f55563d07a34d",
+  "phase": "BEFORE_FIX",
+  "schema": "bf1_serialization_repair_synthetic_test_v1",
+  "science_execution_authorized": false,
+  "scope": "synthetic scalar scores and JSON; no science evaluator or science input",
+  "source_sha256": "6730952f87a6cf126752e653990ccff1fe5a3a858ffbc882181e06d3d0ad64a2",
+  "stderr": "",
+  "stdout": "FFF                                                                      [100%]\n=================================== FAILURES ===================================\n__ test_parameter_score_cross_rows_and_result_are_json_serializable[ordered] ___\ntests/tracks/algorithm_codesign/test_bf1_cross_objectives.py:117: in test_parameter_score_cross_rows_and_result_are_json_serializable\n    result = cross_score(scorer, points, fixed, on_row=lambda row: emitted.append(canonical(row)))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsrc/trottertracks/algorithm_codesign/cross_objectives.py:58: in cross_score\n    on_row(dict(kind='cross_objective', **row))\ntests/tracks/algorithm_codesign/test_bf1_cross_objectives.py:117: in <lambda>\n    result = cross_score(scorer, points, fixed, on_row=lambda row: emitted.append(canonical(row)))\n                                                                                  ^^^^^^^^^^^^^^\nsrc/trottertracks/algorithm_codesign/freeze.py:29: in canonical\n    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/usr/lib/python3.11/json/__init__.py:238: in dumps\n    **kw).encode(obj)\n          ^^^^^^^^^^^\n/usr/lib/python3.11/json/encoder.py:200: in encode\n    chunks = self.iterencode(o, _one_shot=True)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/usr/lib/python3.11/json/encoder.py:258: in iterencode\n    return _iterencode(o, 0)\n           ^^^^^^^^^^^^^^^^^\n/usr/lib/python3.11/json/encoder.py:180: in default\n    raise TypeError(f'Object of type {o.__class__.__name__} '\nE   TypeError: Object of type int64 is not JSON serializable\n____ test_parameter_score_cross_rows_and_result_are_json_serializable[ties] ____\ntests/tracks/algorithm_codesign/test_bf1_cross_objectives.py:117: in test_parameter_score_cross_rows_and_result_are_json_serializable\n    result = cross_score(scorer, points, fixed, on_row=lambda row: emitted.append(canonical(row)))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsrc/trottertracks/algorithm_codesign/cross_objectives.py:58: in cross_score\n    on_row(dict(kind='cross_objective', **row))\ntests/tracks/algorithm_codesign/test_bf1_cross_objectives.py:117: in <lambda>\n    result = cross_score(scorer, points, fixed, on_row=lambda row: emitted.append(canonical(row)))\n                                                                                  ^^^^^^^^^^^^^^\nsrc/trottertracks/algorithm_codesign/freeze.py:29: in canonical\n    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/usr/lib/python3.11/json/__init__.py:238: in dumps\n    **kw).encode(obj)\n          ^^^^^^^^^^^\n/usr/lib/python3.11/json/encoder.py:200: in encode\n    chunks = self.iterencode(o, _one_shot=True)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/usr/lib/python3.11/json/encoder.py:258: in iterencode\n    return _iterencode(o, 0)\n           ^^^^^^^^^^^^^^^^^\n/usr/lib/python3.11/json/encoder.py:180: in default\n    raise TypeError(f'Object of type {o.__class__.__name__} '\nE   TypeError: Object of type int64 is not JSON serializable\n_ test_parameter_score_cross_rows_and_result_are_json_serializable[infeasible] _\ntests/tracks/algorithm_codesign/test_bf1_cross_objectives.py:117: in test_parameter_score_cross_rows_and_result_are_json_serializable\n    result = cross_score(scorer, points, fixed, on_row=lambda row: emitted.append(canonical(row)))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsrc/trottertracks/algorithm_codesign/cross_objectives.py:58: in cross_score\n    on_row(dict(kind='cross_objective', **row))\ntests/tracks/algorithm_codesign/test_bf1_cross_objectives.py:117: in <lambda>\n    result = cross_score(scorer, points, fixed, on_row=lambda row: emitted.append(canonical(row)))\n                                                                                  ^^^^^^^^^^^^^^\nsrc/trottertracks/algorithm_codesign/freeze.py:29: in canonical\n    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/usr/lib/python3.11/json/__init__.py:238: in dumps\n    **kw).encode(obj)\n          ^^^^^^^^^^^\n/usr/lib/python3.11/json/encoder.py:200: in encode\n    chunks = self.iterencode(o, _one_shot=True)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/usr/lib/python3.11/json/encoder.py:258: in iterencode\n    return _iterencode(o, 0)\n           ^^^^^^^^^^^^^^^^^\n/usr/lib/python3.11/json/encoder.py:180: in default\n    raise TypeError(f'Object of type {o.__class__.__name__} '\nE   TypeError: Object of type int64 is not JSON serializable\n=========================== short test summary info ============================\nFAILED tests/tracks/algorithm_codesign/test_bf1_cross_objectives.py::test_parameter_score_cross_rows_and_result_are_json_serializable[ordered]\nFAILED tests/tracks/algorithm_codesign/test_bf1_cross_objectives.py::test_parameter_score_cross_rows_and_result_are_json_serializable[ties]\nFAILED tests/tracks/algorithm_codesign/test_bf1_cross_objectives.py::test_parameter_score_cross_rows_and_result_are_json_serializable[infeasible]\n3 failed, 6 deselected in 0.16s\n",
+  "test_sha256": "3c0cfa4558817398c3edce10b03d63064206a7df6c5c5720e2e98b8db8336f89"
+}

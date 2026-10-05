@@ -51,7 +51,8 @@ def cross_score(evaluator, search_points, fixed_points, on_row=None):
         for row in rows:
             score = row['scores'][arm]
             value = score['value']
-            score['union_rank'] = 1+sum(v < value for v in values) if score['feasible'] else None
+            # NumPy comparisons can promote the count to int64; JSON needs int.
+            score['union_rank'] = int(1+sum(v < value for v in values)) if score['feasible'] else None
             score['relative_regret_to_union_minimum'] = value/minimum-1 if score['feasible'] else None
     if on_row:
         for row in rows:

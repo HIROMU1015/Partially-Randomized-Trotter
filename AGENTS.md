@@ -1,5 +1,31 @@
 # Repository guidance for Codex
 
+## GPTとCodexの担当分担
+
+1. **GPT側**：研究全体の方針、RQ、新規性、論文着地点、追加検証の必要性・範囲の判断。
+2. **Codex側**：承認済み仕様に沿った検証、保存値の再集計、実装・テスト、provenance監査、レビュー資料の整理。
+
+Codexは承認済みscope内の技術作業を進める。研究条件・比較対象・判定基準を変更する必要や、
+追加検証の必要性・範囲を決める必要が生じたら、事実・制約・未決事項を整理してGPT側へ戻す。
+保存値の再集計も承認済みscopeに従い、禁止されている再採点・結果再分類を自動で行わない。
+この分担は既存のauthorization、one-shot制限、mandatory STOP、Track間の証拠境界を解除しない。
+
+## GPTへ渡す前のGitHub公開
+
+GPTはGitHub repositoryから資料を確認する。GPT側へレビュー・判断を引き継ぐ際は、
+必要資料を必ずcommit・pushしてから渡す。利用者のこの指示を、引き継ぎに必要な資料の
+commit・pushに対する継続的な承認として扱い、毎回の追加確認は求めない。
+
+- レビュー文書、根拠となる実装・tests、検証記録・provenance等の必要pathを明示して選ぶ。
+  既に公開された根拠は固定commitへの参照でよい。未commit資料の一括copy・stage・commitは行わない。
+- 対象remoteが`HIROMU1015/*`であることを確認し、担当Trackの独立branch/worktreeから公開する。
+  他Trackのworktreeや無関係な変更を含めず、mainへの直接push、force-push、qurationへのcommit・pushを行わない。
+- push後にremote branchのcommitを照合し、branch名、完全なcommit SHA、GitHub上の必要資料への
+  固定commit URL、レビュー対象と未決事項を提示する。ローカルpathだけで引き継ぎを完了しない。
+- 公開できなければ理由と未公開の範囲を報告し、GPTから確認できる状態だと表現しない。
+
+資料の公開は科学実行、新しい入力の取得・開封、再実行、追加検証の認可を意味しない。
+
 ## Repository entry point
 
 Before interpreting files by name, read `PROJECT_MAP.md`. It classifies the

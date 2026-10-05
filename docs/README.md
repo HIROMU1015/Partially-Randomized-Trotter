@@ -3,6 +3,8 @@
 Track Bの入口は[Algorithm Co-design](tracks/algorithm_codesign/README.md)。
 最新は[BF-1一回実行の結果照合](tracks/algorithm_codesign/bf1_one_shot_result_validation_20261005.md)。
 JSON保存例外で`INCONCLUSIVE`、mandatory STOP、retryなし。結果前契約とpreparationは履歴として保持する。
+別branchの[JSON保存修正・限定検証](tracks/algorithm_codesign/bf1_serialization_repair_review_20261005.md)は
+Codex側の技術作業記録。研究方針全体の修正はGPT側で扱う。
 
 このディレクトリには、研究方針の正本、実装規約、検証報告、発表資料の案内が共存する。
 研究全体を初めて読む場合は、先に[`../PROJECT_MAP.md`](../PROJECT_MAP.md)と

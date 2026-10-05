@@ -2,10 +2,13 @@
 from contextlib import contextmanager
 from dataclasses import dataclass
 import copy
+import json
+import numpy as np
 import pytest
 
 from trottertracks.algorithm_codesign.cross_objectives import cross_score, attribute_F_winner
-from trottertracks.algorithm_codesign.pilot import Evaluator
+from trottertracks.algorithm_codesign.freeze import canonical
+from trottertracks.algorithm_codesign.pilot import Evaluator, parameter_score
 
 
 @dataclass(frozen=True)
@@ -78,6 +81,59 @@ def test_cached_diagnostic_phase_never_acquires_a_missing_signal():
         with pytest.raises(RuntimeError, match='MISSING_POSTSEARCH_FINITE_CELL'):
             evaluator.finite_cell(point, 1, 5, 2)
     assert not evaluator._cache_only and not evaluator.ideal and not evaluator.finite
+
+
+class ParameterScoreScorer(SyntheticScorer):
+    """Real score scalar types, with synthetic costs and no signal acquisition."""
+    def __init__(self, case, native_floats=False):
+        super().__init__()
+        self.case, self.native_floats = case, native_floats
+
+    def objective_record(self, point, arm):
+        assert self.cached
+        self.calls.append((point.identity, arm))
+        index = int(point.identity)
+        ordinal = index//2 if self.case == 'ties' else index
+        bias = [.1, .1] if self.case == 'infeasible' and index == 3 else [.001, .002]
+        score = parameter_score(bias, 1e-8, 0., 100+ordinal, 5, .01)
+        if score['feasible']:
+            assert isinstance(score['value'], np.float64)
+            if self.native_floats:
+                score = dict(score, value=float(score['value']), lower=float(score['lower']))
+        cell = dict(q=1, R_bud=None if arm == 'O' else 5,
+                    K=None if arm == 'O' else 2, **score) if score['feasible'] else None
+        return dict(arm=arm, feasible=score['feasible'], value=score['value'], best_cell=cell)
+
+
+@pytest.mark.parametrize('case', ['ordered', 'ties', 'infeasible'])
+def test_parameter_score_cross_rows_and_result_are_json_serializable(case):
+    points = completed_sets()
+    before = copy.deepcopy(points)
+    fixed = [SyntheticPoint(str(i)) for i in range(30, 34)]
+    scorer = ParameterScoreScorer(case)
+    emitted = []
+    # Use the runner's actual encoder at the callback boundary, then on the
+    # complete payload. Python-float-only mocks did not exercise this boundary.
+    result = cross_score(scorer, points, fixed, on_row=lambda row: emitted.append(canonical(row)))
+    decoded = json.loads(canonical(result))
+    native = cross_score(ParameterScoreScorer(case, native_floats=True), points, fixed)
+    assert decoded == json.loads(canonical(native))
+    assert [json.loads(row) for row in emitted] == [dict(kind='cross_objective', **row) for row in decoded['rows']]
+    assert len(emitted) == 34 and len(scorer.calls) == len(set(scorer.calls)) == 102
+    assert points == before and result['cell_counts_before'] == result['cell_counts_after']
+    assert result['added_search_evaluations'] == result['added_ideal_cells'] == result['added_finite_cells'] == 0
+    assert not result['primary_route_changed'] and not scorer.cached
+    for row in result['rows']:
+        index = int(row['coefficient'])
+        expected = 2*(index//2)+1 if case == 'ties' else index+1
+        if case == 'infeasible':
+            expected = None if index == 3 else expected-int(index > 3)
+        for score in row['scores'].values():
+            assert score['union_rank'] == expected
+            if expected is None:
+                assert score['relative_regret_to_union_minimum'] is None
+            else:
+                assert type(score['union_rank']) is int
 
 
 @pytest.mark.parametrize('L_value, expected', [
