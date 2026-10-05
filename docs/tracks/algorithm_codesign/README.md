@@ -1,5 +1,9 @@
 # Track B — Algorithm Co-design
 
+[SP-1固定sourceの最終review依頼](sp1_final_source_review_request_0d01ed9.md)を公開。
+source S=`0d01ed9a332ebc5b66ed08acf56214a9b9c0236d`。review-only HEADは実行用ではない。
+source-bound static planの資源/信号採点0、science未認可。最終reviewへSTOP。
+
 最新は[SP-1採用済み結果前契約・source最終review](sp1_wrapper_preregistration_v1.md)（2026-10-06）。
 GPT reviewの必須2修正を反映：role/mask非依存pre-placement fusionと、加法的保存primitive T費用。
 12 wrappers/16 pathsのstatic fusion監査は全0。実adapter/runner・59 focused testsはlocal pass。

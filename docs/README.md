@@ -1,5 +1,8 @@
 # 文書索引
 
+[SP-1固定source最終review依頼](tracks/algorithm_codesign/sp1_final_source_review_request_0d01ed9.md)がGPT向け入口。
+S=`0d01ed9a332ebc5b66ed08acf56214a9b9c0236d`、別authorization前にSTOP。
+
 Track B最新は[SP-1採用済み結果前契約・source最終review](tracks/algorithm_codesign/sp1_wrapper_preregistration_v1.md)。
 fusionをrole/mask非依存へ修正し、費用を加法的な保存primitive T数に限定した。
 全16 pathの静的監査、B実adapter/runner、59 focused testsを公開。science sweep0、実行未認可。

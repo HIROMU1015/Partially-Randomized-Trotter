@@ -1,5 +1,8 @@
 # プロジェクト案内
 
+[SP-1固定source最終review依頼](docs/tracks/algorithm_codesign/sp1_final_source_review_request_0d01ed9.md)：
+S=`0d01ed9a332ebc5b66ed08acf56214a9b9c0236d`。science未実行・未認可、review-only HEADから実行しない。
+
 Track B最新は[SP-1結果前契約・source最終review](docs/tracks/algorithm_codesign/sp1_wrapper_preregistration_v1.md)。
 GPTがdomainを採用し、必須修正を反映した。role/mask非依存pre-placement fusion、加法的primitive T費用。
 16登録pathの静的監査はfusion candidate/actual/cross-roleすべて0。実adapter/runnerと59 focused testsを追加。
