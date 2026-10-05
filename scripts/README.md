@@ -1,5 +1,8 @@
 # scripts 索引
 
+Track Bの[BF1-R0一回replay結果](../docs/tracks/algorithm_codesign/bf1_read_only_recovery_result_validation_20261005.md)は
+recovery complete、事後primary BF-A。R0 markerもconsumed、retryなし。以下のR0準備説明は結果前履歴。
+
 Track Bの`tracks/algorithm_codesign/run_bf1_read_only_recovery.py`は[BF1-R0契約](../docs/tracks/algorithm_codesign/bf1_read_only_recovery_contract_v1.md)
 に沿った一回の保存値replay専用入口。科学runnerを呼ばず、cache不足で停止する。
 

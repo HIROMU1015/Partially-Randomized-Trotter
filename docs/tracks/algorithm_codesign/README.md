@@ -1,5 +1,10 @@
 # Track B — Algorithm Co-design
 
+最新は[BF1-R0復元結果・GPT handoff](bf1_read_only_recovery_result_validation_20261005.md)。
+`BF1_READ_ONLY_RECOVERY_COMPLETE`、事後のpreregistered primary復元はBF-A。F/L有限最小値は同一。
+新science data/rerunは0、bridgeは不足cellを記録し、mandatory STOP。原resultはINCONCLUSIVEのまま保持する。
+result/audit: `artifacts/track_b_bf1_read_only_recovery/2026-10-05/v1/`。以下のR0準備記述は履歴。
+
 新たな利用者指示は[BF1-R0契約](bf1_read_only_recovery_contract_v1.md)。別branch `track-b-bf1-read-only-recovery`で
 既存1269 cellだけの一回のdeterministic replayを準備し、全outcome後STOPする。science rerunは未認可。
 module: `src/trottertracks/algorithm_codesign/recovery.py`、runner: `scripts/tracks/algorithm_codesign/run_bf1_read_only_recovery.py`、
@@ -9,7 +14,7 @@ B worktree: `/home/abe/Project/prt-worktrees/track-b-algorithm-codesign`。
 branch: `track-b-algorithm-codesign`。Aの最新worktreeとは分離する。
 このcheckoutのA文書はM2 result commitのsnapshotであり、並行して進むAの現在状態を更新する場所ではない。
 
-現在はBF-1一回実行後の`BF1_INCOMPLETE_MANDATORY_STOP_NO_RETRY`、`INCONCLUSIVE`で停止。
+原BF-1は一回実行後の`BF1_INCOMPLETE_MANDATORY_STOP_NO_RETRY`、`INCONCLUSIVE`を保持する。
 source `e59344a`、authorization-only child `cc971e4`を固定して実行したが、NumPy整数のJSON保存例外で中断した。
 入口は[BF-1結果照合](bf1_one_shot_result_validation_20261005.md)。retry、BF-2は未認可。
 利用者指示により、研究方針全体の修正はGPT側、細かな検証はCodex側で扱う。
