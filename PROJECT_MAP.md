@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+Track Bの最新文書は[BF-A後review・BM-0 packet](docs/tracks/algorithm_codesign/bm0_review_packet_20261005.md)。
+GPT reviewのB-F限定closureを記録し、B-M native列・DF評価・小型pilotを具体化した設計案。
+新scienceは0、B-M新規性／BM-1 scopeはreview待ち、実行未認可、mandatory STOP。以下は既存履歴を保持する。
+
 GPTによる研究Bの全面再設計は[固定資料handoff index](docs/tracks/algorithm_codesign/research_redesign_handoff_20261005.md)から読む。
 BF-A・過去STOP・最新Aの別commit参照・未公開既存文書snapshotをまとめたdocs-only入口。新科学計算・方針採択なし、mandatory STOP。
 

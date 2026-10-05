@@ -1,5 +1,8 @@
 # 文書索引
 
+Track Bの最新は[BF-A後review・BM-0 packet](tracks/algorithm_codesign/bm0_review_packet_20261005.md)。
+B-F限定closure、B-Mのnative列／DF情報／小型pilot案を収録。科学実行0、BM-1未認可、review待ちでSTOP。
+
 Track Bの入口は[Algorithm Co-design](tracks/algorithm_codesign/README.md)。
 [BF1-R0復元結果](tracks/algorithm_codesign/bf1_read_only_recovery_result_validation_20261005.md)は事後のprimary BF-A、
 F/L finite最小値同一を保存する。science rerunは0、mandatory STOP。

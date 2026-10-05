@@ -1,5 +1,10 @@
 # Track B — Algorithm Co-design
 
+最新は[BF-A後GPT review・BM-0設計packet](bm0_review_packet_20261005.md)。
+[B-F現行仮説を限定negativeとして閉じる](bf_current_hypothesis_closure_20261005.md)review判断を記録する。
+B-Mはnative列・DF評価・小型pilotの**未実証の候補**。新scienceは0、BM-1実行は未認可、mandatory STOP。
+文書作業は独立branch/worktree `track-b-bm0-design-20261005`。以下は過去のhandoff・実行履歴として保持する。
+
 研究Bの全面再設計をGPTへ渡す入口は[固定資料handoff index](research_redesign_handoff_20261005.md)。
 最新R0・過去STOP・構造結果・最新Aの別commit・既存提案入力を辿る。docs-only公開、研究方針の採否はGPT側、mandatory STOP。
 
