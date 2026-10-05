@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "analysis_label",
+    "preparation_manifest_sha256",
+    "input_identity",
+    "domain_counts",
+    "reference_reproduction",
+    "output_files",
+    "failure_reason",
+    "new_science_counts",
+    "mandatory_stop",
+    "next_stage_authorized",
+    "research_decision"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "track_a_pm2_precision_result_v1"
+    },
+    "status": {
+      "enum": [
+        "PM2_PRECISION_RESOURCE_MAP_COMPLETE_AWAITING_REVIEW",
+        "IMPLEMENTATION_GATE_FAILED"
+      ]
+    },
+    "analysis_label": {
+      "const": "POSTHOC_SAVED_VALUES_ONLY"
+    },
+    "preparation_manifest_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "input_identity": {
+      "type": "object"
+    },
+    "domain_counts": {
+      "const": {
+        "development": 218,
+        "transfer_fixed_five": 5
+      }
+    },
+    "reference_reproduction": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "output_files": {
+      "type": "array"
+    },
+    "failure_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "new_science_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "new_signal_evaluations",
+        "trajectory_sampling",
+        "circuit_build",
+        "compile",
+        "molecular_data_access",
+        "runtime_cache_access",
+        "ground_state_solves",
+        "quantum_shots",
+        "gpu_operations"
+      ],
+      "properties": {
+        "new_signal_evaluations": {
+          "const": 0
+        },
+        "trajectory_sampling": {
+          "const": 0
+        },
+        "circuit_build": {
+          "const": 0
+        },
+        "compile": {
+          "const": 0
+        },
+        "molecular_data_access": {
+          "const": 0
+        },
+        "runtime_cache_access": {
+          "const": 0
+        },
+        "ground_state_solves": {
+          "const": 0
+        },
+        "quantum_shots": {
+          "const": 0
+        },
+        "gpu_operations": {
+          "const": 0
+        }
+      }
+    },
+    "mandatory_stop": {
+      "const": true
+    },
+    "next_stage_authorized": {
+      "const": false
+    },
+    "research_decision": {
+      "const": null
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "PM2_PRECISION_RESOURCE_MAP_COMPLETE_AWAITING_REVIEW"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "failure_reason": {
+            "const": null
+          },
+          "reference_reproduction": {
+            "type": "object",
+            "required": [
+              "passed"
+            ],
+            "properties": {
+              "passed": {
+                "const": true
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "failure_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
+}
