@@ -1,8 +1,10 @@
 # scripts 索引
 
 Track Bの`tracks/algorithm_codesign/prepare_bf1.py`はformula-only domain列挙と限定synthetic testsの入口。
-`run_bf1.py`は別authorization・commit-bound sourceを必要とする将来のone-shot runner。
-[BF-1規範](../docs/tracks/algorithm_codesign/bf1_preregistration_v1.md)。現在のdraftでは科学実行を許さない。
+`run_bf1.py`は別authorization・commit-bound sourceを必要とするone-shot runner。
+[BF-1規範](../docs/tracks/algorithm_codesign/bf1_preregistration_v1.md)。固定source/authorizationで一回実行後、
+JSON保存例外により[INCONCLUSIVEで停止](../docs/tracks/algorithm_codesign/bf1_one_shot_result_validation_20261005.md)。
+one-shot markerはconsumed、retryなし。
 [v2 amendment](../docs/tracks/algorithm_codesign/bf1_execution_gate_revision_v2.md)はpost-search cross-scoreと
 authorization-only child commit方式を固定する。
 [v3 amendment](../docs/tracks/algorithm_codesign/bf1_assembly_guard_revision_v3.md)はassemblyの逐次誤差伝播を固定する。

@@ -1,7 +1,8 @@
 # プロジェクト案内
 
 Track B worktreeの現在の入口は[Algorithm Co-design](docs/tracks/algorithm_codesign/README.md)。
-BF-0 review後のBF-1結果前準備で、science executionは未認可。B code/runner/test/preparation artifactは
+最新は[BF-1一回実行の結果照合](docs/tracks/algorithm_codesign/bf1_one_shot_result_validation_20261005.md)。
+JSON保存例外により`INCONCLUSIVE`、mandatory STOP、retryなし。B code/runner/test/preparation/result artifactは
 同READMEから辿る。以下のA記録はこのbranchのM2 result snapshotであり、並行Aの最新状態へは更新しない。
 
 最終更新：2026-10-04
