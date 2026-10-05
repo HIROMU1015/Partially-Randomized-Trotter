@@ -1,5 +1,12 @@
 # プロジェクト案内
 
+Track Bの現段階は[SP-0.5経済性gate・結果前source review](docs/tracks/algorithm_codesign/sp05_synthesis_economics_preregistration_v1.md)。
+GPT reviewに従い16-cell wrapper pilotの前に、合成器一つ・exact π/4 catalogue一つ・8 target／23 keysを固定する。
+B専用実装と34 focused technical testsは準備済み。登録target合成・J採点0、RUN_READY=false、別実行承認待ち。
+[preparation manifest](artifacts/track_b_sp05_economics_preparation/2026-10-06/preparation_manifest_v1.json)。
+B-F限定closure／BM現new-method closure／旧BM-1未実行／過去STOPを保持する。以下の「最新」は受領前の履歴。
+
+
 Track B最新は[BM-0.5後の合成・placement設計仕様案](docs/tracks/algorithm_codesign/synthesis_placement_design_review_20261006.md)。
 GPT reviewに従いB-F限定仮説とB-M現adapterのnew-method路線を閉じ、旧BM-1は未実行のまま保持する。
 新候補の四mask、ancilla込みPAI、有限bias／weight／shot／T会計、原始pilot案を一文書と小さいJSONへ整理した。

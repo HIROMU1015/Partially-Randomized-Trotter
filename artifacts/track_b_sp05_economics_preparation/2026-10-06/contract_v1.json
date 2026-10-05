@@ -1,0 +1,174 @@
+{
+  "schema": "track-b-sp05-contract-v1",
+  "base_commit": "3861e6b941745e43863f6a62cd25fe36f3b3e108",
+  "decision": "PROCEED_TO_SYNTHESIS_ECONOMICS_GATE_BEFORE_PRIMITIVE_PILOT",
+  "scope": "primitive_only_no_molecular_DF_or_wrapper_inputs",
+  "review_input": {
+    "path": "docs/tracks/algorithm_codesign/inputs/sp05_synthesis_economics_review_20261006.txt",
+    "sha256": "6a1082cca3922c99134d2e0f499ba585502912aea8f47eb83233a39e43c438c1",
+    "bytes": 10220
+  },
+  "catalogue": {
+    "id": "exact_clifford_T_pi_over_4",
+    "count": 1,
+    "angles": [
+      {
+        "unit": "pi",
+        "numerator": 0,
+        "denominator": 4
+      },
+      {
+        "unit": "pi",
+        "numerator": 1,
+        "denominator": 4
+      },
+      {
+        "unit": "pi",
+        "numerator": 2,
+        "denominator": 4
+      },
+      {
+        "unit": "pi",
+        "numerator": 3,
+        "denominator": 4
+      },
+      {
+        "unit": "pi",
+        "numerator": 4,
+        "denominator": 4
+      },
+      {
+        "unit": "pi",
+        "numerator": 5,
+        "denominator": 4
+      },
+      {
+        "unit": "pi",
+        "numerator": 6,
+        "denominator": 4
+      },
+      {
+        "unit": "pi",
+        "numerator": 7,
+        "denominator": 4
+      }
+    ],
+    "spacing": {
+      "unit": "pi",
+      "numerator": 1,
+      "denominator": 4
+    },
+    "exactness": "channel_exact_with_explicit_full_joint_global_phase_only"
+  },
+  "targets": [
+    {
+      "id": "pi16_pos",
+      "angle": {
+        "unit": "pi",
+        "numerator": 1,
+        "denominator": 16
+      }
+    },
+    {
+      "id": "pi16_neg",
+      "angle": {
+        "unit": "pi",
+        "numerator": -1,
+        "denominator": 16
+      }
+    },
+    {
+      "id": "pi8_pos",
+      "angle": {
+        "unit": "pi",
+        "numerator": 1,
+        "denominator": 8
+      }
+    },
+    {
+      "id": "pi8_neg",
+      "angle": {
+        "unit": "pi",
+        "numerator": -1,
+        "denominator": 8
+      }
+    },
+    {
+      "id": "3pi16",
+      "angle": {
+        "unit": "pi",
+        "numerator": 3,
+        "denominator": 16
+      }
+    },
+    {
+      "id": "rad_1_5_pos",
+      "angle": {
+        "unit": "rad",
+        "numerator": 1,
+        "denominator": 5
+      }
+    },
+    {
+      "id": "rad_1_5_neg",
+      "angle": {
+        "unit": "rad",
+        "numerator": -1,
+        "denominator": 5
+      }
+    },
+    {
+      "id": "clifford_control",
+      "angle": {
+        "unit": "pi",
+        "numerator": 1,
+        "denominator": 2
+      }
+    }
+  ],
+  "primitives": [
+    "ordinary_Rz",
+    "controlled_Pauli_lowered_pair_positive_and_negative_half_angle"
+  ],
+  "operator_epsilon": "1e-6",
+  "norm": "projective_operator_norm_upper_via_interval_Frobenius_witness_after_joint_lowering",
+  "synthesizer_options": {
+    "dps": 80,
+    "seed": 0,
+    "dloop": 10,
+    "floop": 10,
+    "dtimeout": 500,
+    "ftimeout": 500,
+    "verbose": 0,
+    "measure_time": false,
+    "show_graph": false,
+    "up_to_phase": true
+  },
+  "interval_dps": 90,
+  "error_rule": "both arms: operator upper<=1e-6; diamond upper<=2e-6 per native primitive; generic requests epsilon/4",
+  "cost_rule": "logical T and Tdagger each1; Clifford and full-joint global scalar0; common exact fast path in both arms; no RUS/catalyst",
+  "sampling": "canonical independent g/p gamma per native gate; no trajectory sampling",
+  "classification": "strict outward upper J<1; lower J>=1 no gain; interval overlaps1 INCONCLUSIVE; zero deterministic T baseline excluded",
+  "materiality_percent": null,
+  "final_GO": false,
+  "mandatory_STOP": true,
+  "caps": {
+    "synthesis_keys": 32,
+    "per_key_wall_seconds": 30,
+    "per_key_cpu_seconds": 20,
+    "total_wall_seconds": 1200,
+    "total_cpu_seconds": 900,
+    "combined_RSS_MiB": 1024,
+    "child_virtual_address_MiB": 2048,
+    "output_bytes": 2097152,
+    "sequence_characters": 8192,
+    "external_retries": 0
+  },
+  "authorization_path": "artifacts/track_b_sp05_economics_preparation/2026-10-06/authorization.json",
+  "optional_receipt_path": "docs/tracks/algorithm_codesign/sp05_execution_authorization_receipt.md",
+  "result_directory": "artifacts/track_b_sp05_economics_result/2026-10-06/v1",
+  "launch_policy": "source S -> direct authorization-only child A; explicit instruction receipt; clean tracked source; exclusive new marker before first measurement",
+  "source_commit_bound": false,
+  "science_execution_authorized": false,
+  "wrapper_pilot_authorized": false
+}

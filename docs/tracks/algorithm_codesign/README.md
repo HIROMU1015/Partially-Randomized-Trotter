@@ -1,5 +1,16 @@
 # Track B — Algorithm Co-design
 
+現段階は[SP-0.5経済性gate・source review](sp05_synthesis_economics_preregistration_v1.md)（2026-10-06）。
+GPT review `PROCEED_TO_SYNTHESIS_ECONOMICS_GATE_BEFORE_PRIMITIVE_PILOT`を受領。
+pygridsynth 2.0.0、exact π/4 catalogue一つ、8 target／23 keys、strict J<1の存在可能性判定を結果前固定。
+新namespace `src/trottertracks/algorithm_codesign/synthesis_placement/`、専用runner／34 focused testsがlocal passed。
+登録target合成／J採点0、science authorization=false、wrapper pilot未認可。
+[preparation manifest](../../../artifacts/track_b_sp05_economics_preparation/2026-10-06/preparation_manifest_v1.json)、
+[dated note](../../research/研究ノート/2026-10-06_track_b_sp05_economics_preparation.md)。
+独立branch/worktree `track-b-sp05-economics-preparation-20261006`。公開後STOPしてsource reviewへ戻す。
+B-F／BM現route closure、旧BM-1未実行と過去STOPは維持。以下は受領前の履歴として読む。
+
+
 最新は[BM-0.5後review・合成placement設計仕様案](synthesis_placement_design_review_20261006.md)（2026-10-06）。
 GPT側の方針reviewを受領し、B-F現仮説／B-M現adapterのnew-method路線を閉じる。旧BM-1は未実行を維持する。
 新候補は固定DF/PF/finite-RTE wrapperの合成cost・測定負担を含むrandomization placement設計。

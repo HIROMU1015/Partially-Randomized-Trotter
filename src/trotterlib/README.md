@@ -1,5 +1,11 @@
 # trotterlib モジュール索引
 
+Track Bの[SP-0.5経済性gate](../../docs/tracks/algorithm_codesign/sp05_synthesis_economics_preregistration_v1.md)は
+`../trottertracks/algorithm_codesign/synthesis_placement/`の新namespaceに置く。
+gate-string合成／interval guard／T×weight会計だけを扱い、共有library実装・DF wrapperをimportしない。
+34 focused technical tests pass、登録target計測は未実行・未認可。
+
+
 Track Bの[BM-0.5記号監査](../../docs/tracks/algorithm_codesign/bm05_review_packet_20261005.md)は
 共有libraryをimportせず、[専用script](../../scripts/tracks/algorithm_codesign/audit_bm05_symbolic_equivalence.py)の
 抽象words／Fractionだけで実施する。library module・API・science runnerの変更なし、BM-1未認可。

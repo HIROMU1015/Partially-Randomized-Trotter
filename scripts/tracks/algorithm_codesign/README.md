@@ -1,5 +1,11 @@
 # Track B scripts
 
+[SP-0.5 runner](run_sp05_synthesis_economics.py)はplan（合成0）と、別承認後のみのrunを分離する。
+[結果前source review](../../../docs/tracks/algorithm_codesign/sp05_synthesis_economics_preregistration_v1.md)、
+[contract／preparation](../../../artifacts/track_b_sp05_economics_preparation/2026-10-06/)。
+pygridsynth一つ、catalogue一つ、8 target／23 keys。登録計測未実行。全outcomeでSTOP、retry0。
+
+
 BM-0.5の限定記号監査は[audit_bm05_symbolic_equivalence.py](audit_bm05_symbolic_equivalence.py)。
 standard-library Fractionと抽象非可換wordsだけを使い、degree3までの三経路を比較する。
 physical inputs、行列、Hamiltonian、state、science provider、circuitは扱わない。

@@ -1,5 +1,11 @@
 # scripts 索引
 
+Track Bの[SP-0.5専用runner](tracks/algorithm_codesign/run_sp05_synthesis_economics.py)は
+[結果前契約](../docs/tracks/algorithm_codesign/sp05_synthesis_economics_preregistration_v1.md)に沿ったprimitive合成経済性gateの入口。
+planは合成0、runはsource S→別authorization-only child A・明示指示・fresh one-shot markerを要求する。
+準備tests34件pass、登録target合成0、現在run未認可。16-cell wrapper／DF／分子／trajectoryは扱わない。
+
+
 Track B [BM-0.5](../docs/tracks/algorithm_codesign/bm05_review_packet_20261005.md)の
 [形式word監査](tracks/algorithm_codesign/audit_bm05_symbolic_equivalence.py)は抽象非可換letters／Fractionだけの
 degree3比較。physical inputやscience runnerを呼ばない。保存reportとscopeは[専用索引](tracks/algorithm_codesign/README.md)。

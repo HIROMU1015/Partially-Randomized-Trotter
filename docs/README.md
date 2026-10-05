@@ -1,5 +1,11 @@
 # 文書索引
 
+Track Bの現段階は[SP-0.5 synthesis-economics preregistration／source review](tracks/algorithm_codesign/sp05_synthesis_economics_preregistration_v1.md)。
+合成器一つ・catalogue一つ・8 targetを固定し、B専用実装／34 focused testsを準備した。登録target合成0、実行未認可。
+[preparation manifest](../artifacts/track_b_sp05_economics_preparation/2026-10-06/preparation_manifest_v1.json)。
+16-cell wrapper pilotは先行させず、source reviewと別authorizationへSTOP。以下の「最新」は当時の履歴。
+
+
 Track B最新は[BM-0.5後review・合成placement設計仕様案](tracks/algorithm_codesign/synthesis_placement_design_review_20261006.md)。
 B-F限定closure／B-M現new-method closureを維持し、四placement・full wrapper mean・有限合成／測定costを具体化する。
 小さい[設計JSON](../artifacts/track_b_synthesis_placement_design/2026-10-06/design_contract_v1.json)はauthorizationではない。
