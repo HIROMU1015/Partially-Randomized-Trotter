@@ -1,10 +1,50 @@
 {
-  "status": "PENDING_FINAL_SOURCE_REVIEW",
-  "science_execution_authorized": false,
-  "source_commit": null,
-  "contract_sha256": null,
-  "explicit_execution_instruction": null,
+  "schema": "track-b-sp05-one-shot-execution-authorization-v1",
+  "status": "APPROVED_FOR_ONE_SP05_RUN",
+  "source_review_decision": "APPROVE_SP05_FOR_SEPARATE_ONE_SHOT_AUTHORIZATION",
+  "source_commit": "65f6fcdb3dc1ad8bfccfaee6e1413336aef91184",
+  "source_commit_bound": true,
+  "contract_sha256": "ee126a0fcde4aa5eff96dfb5835647deec42150c27703e86a3023164b888d09f",
+  "science_execution_authorized": true,
+  "explicit_execution_instruction": "source `65f6fcdb3dc1ad8bfccfaee6e1413336aef91184` の固定契約に基づき、SP-0.5 synthesis-economics gateを**一回だけ実行してください**。\n\n実行にあたっては、以下を厳守してください。\n\n- `b0fa5afefd437aa0953593af2e5981c0826363a7` はsource review・authorization準備の記録として保持し、実行HEADには使用しない。\n- source `65f6fcdb3dc1ad8bfccfaee6e1413336aef91184` から別の実行用branch/worktreeを作る。\n- source Sの**直接の子**としてauthorization-only commit Aを作る。\n- Aで変更してよいのは、\n  - `artifacts/track_b_sp05_economics_preparation/2026-10-06/authorization.json`\n  - 必要なら `docs/tracks/algorithm_codesign/sp05_execution_authorization_receipt.md`\\\n    のみ。\n- authorization JSONを\n  - `status = APPROVED_FOR_ONE_SP05_RUN`\n  - `science_execution_authorized = true`\n  - `source_commit = 65f6fcdb3dc1ad8bfccfaee6e1413336aef91184`\n  - `runs = 1`\n  - `retries = 0`\n  - `mandatory_STOP = true`\\\n    とし、この明示実行指示をreceiptとJSONへ正確に記録する。\n- contract、source、pygridsynth identity、target、catalogue、operator error、J判定、資源上限を変更しない。\n- 8 target／23 planned synthesis keys、exact π/4 catalogue一つだけを使用する。\n- 第二catalogue、target追加、precision変更、threshold変更を行わない。\n- registered target synthesisとSP-0.5 J評価は**一回だけ**行う。\n- partial failure、timeout、memory cap、numeric inconclusiveの場合もretryしない。\n- 分子入力、DF Hamiltonian、trajectory sampling、wrapper pilot、16-cell pilot、GPU処理へ進まない。\n\n実行終了後は、結果が\n\n- `PRIMITIVE_TRADEOFF_EXISTS`\n- `NO_PRIMITIVE_TRADEOFF_IN_REGISTERED_SET`\n- `INCONCLUSIVE`\n\nのいずれであっても、**mandatory STOP**してください。\n\n`PRIMITIVE_TRADEOFF_EXISTS`の場合も、wrapper-level pilot、新規性成立、DF-native improvement、D/R placement advantageを自動認可しないでください。\n\n結果については、少なくとも以下を保存・照合してください。\n\n- 全synthesis keyのsequence identity、T/T† count、error guard\n- 全16 primitive row\n- ordinary / controlled pair別のJ intervalとclassification\n- weight second moment\n- expected T count\n- zero-cost baselineの扱い\n- π-rational targetと±1/5 rad targetの結果\n- controlled pairでのmoment penalty\n- resource cap / runtime / error / numeric failure\n- source・authorization・contract・tool identity\n- one-shot marker\n- retry=0、wrapper pilot unauthorized\n\n結果・監査・GPT向けreview資料を必要最小限commit・pushし、branchとfull commit SHAを報告してください。\n\n**SP-0.5終了後は次の研究方針判断をGPT側へ戻し、それ以上の科学実行を行わないでください。**",
   "runs": 1,
   "retries": 0,
-  "mandatory_STOP": true
+  "mandatory_STOP": true,
+  "wrapper_pilot_authorized": false,
+  "review_receipt": {
+    "path": "docs/tracks/algorithm_codesign/sp05_execution_authorization_receipt.md",
+    "sha256": "ef8aadcc3df170e2c7bcfdcef2dc47f05781d9ff0c8db14548a979d4ecf3b9dd"
+  },
+  "fixed_scope": {
+    "synthesizer": "pygridsynth==2.0.0",
+    "catalogues": 1,
+    "targets": 8,
+    "planned_unique_synthesis_keys": 23,
+    "primitive_rows": 16,
+    "primary": "strict interval upper J<1 existence only",
+    "materiality_percent": null,
+    "caps": {
+      "synthesis_keys": 32,
+      "per_key_wall_seconds": 30,
+      "per_key_cpu_seconds": 20,
+      "total_wall_seconds": 1200,
+      "total_cpu_seconds": 900,
+      "combined_RSS_MiB": 1024,
+      "child_virtual_address_MiB": 2048,
+      "output_bytes": 2097152,
+      "sequence_characters": 8192,
+      "external_retries": 0
+    }
+  },
+  "finalization_policy": "Explicit execution instruction received. Execute at clean direct authorization-only child A of S once; all outcomes STOP; retry0; no further science.",
+  "registered_target_synthesis_calls_at_preparation": 0,
+  "registered_economics_rows_at_preparation": 0,
+  "one_shot_marker_created": false,
+  "explicit_execution_instruction_sha256": "b9a33434aaa327183d7dfe2e0912739568d32d7692e4791261bbfa5feb8ceae7",
+  "authorization_preparation_reference": {
+    "commit": "b0fa5afefd437aa0953593af2e5981c0826363a7",
+    "path": "artifacts/track_b_sp05_economics_preparation/2026-10-06/authorization.json",
+    "blob_sha256": "424ef98e323ba4e1fa62946de78dc3247a46053dbf8fc85b664ab3f53379d846",
+    "used_as_execution_HEAD": false
+  }
 }
