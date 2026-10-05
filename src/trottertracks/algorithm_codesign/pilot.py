@@ -58,6 +58,20 @@ class Task:
     lambda_r: float
     state: np.ndarray
     matrix_assembly_bound: float = 0.
+    # A uniform bound on EACH generator and scalar, not only their sum.
+    # Explicit per-generator/scalar budgets can replace this fallback.
+    generator_assembly_bounds: dict | None = None
+    scalar_assembly_bound: float | None = None
+
+    def assembly_errors(self):
+        bounds = (dict.fromkeys(self.matrices, self.matrix_assembly_bound)
+                  if self.generator_assembly_bounds is None else dict(self.generator_assembly_bounds))
+        scalar = (self.matrix_assembly_bound if self.scalar_assembly_bound is None
+                  else self.scalar_assembly_bound)
+        if set(bounds) != set(self.matrices) or any(
+                not math.isfinite(x) or x < 0 for x in [*bounds.values(), scalar]):
+            raise ValueError('Assembly budgets must cover each generator and the scalar')
+        return bounds, scalar
 
 
 class Evaluator:
@@ -65,6 +79,7 @@ class Evaluator:
         self.task = task
         self.limits = limits or Limits()
         self.on_cell = on_cell or (lambda row: None)
+        self.generator_assembly_bounds, self.scalar_assembly_bound = task.assembly_errors()
         self.spectra = {key: Spectrum(matrix) for key, matrix in task.matrices.items()}
         self.deterministic_count = len(task.matrices)-1
         if self.deterministic_count < 1:
@@ -77,10 +92,17 @@ class Evaluator:
             raise ValueError("Frozen state normalization gate failed")
         self.state = self.state/norm
         h = sum(task.matrices.values(), task.scalar*np.eye(len(self.state), dtype=complex))
+        # Triangle bound: errors in separate generators need not cancel.
+        # Include binary64 summation when assembling the supplied full matrix.
+        h_sum_scale = abs(task.scalar)*math.sqrt(len(self.state))
+        h_sum_scale += math.fsum(float(np.linalg.norm(m, 'fro')) for m in task.matrices.values())
+        h_sum_error = gamma(8*(len(task.matrices)+2))*max(1., h_sum_scale)
+        self.target_assembly_bound = (math.fsum(self.generator_assembly_bounds.values())
+                                      +self.scalar_assembly_bound+h_sum_error)
         full = Spectrum(h)
-        action, error, _ = full.action(self.state, .8)
+        action, error, _ = full.action(self.state, .8, assembly_error=self.target_assembly_bound)
         self.target = complex(np.vdot(self.state, action))
-        self.target_error = error+.8*task.matrix_assembly_bound+gamma(8*len(self.state))*float(np.linalg.norm(action))
+        self.target_error = error+gamma(8*len(self.state))*float(np.linalg.norm(action))
         self.ideal = {}
         self.finite = {}
         self.coefficients = {}
@@ -112,7 +134,9 @@ class Evaluator:
             if factor.generator == "R" and allocation is not None:
                 r = allocation[tail_index % len(allocation)]
                 tail_index += 1
-            vector, action_error, op_norm = self.spectra[factor.generator].action(vector, t, lowering_error, r, K)
+            vector, action_error, op_norm = self.spectra[factor.generator].action(
+                vector, t, lowering_error, r, K,
+                assembly_error=self.generator_assembly_bounds[factor.generator])
             error = op_norm*error+action_error
             if not math.isfinite(error):
                 raise ValueError("UNRESOLVED_NUMERICAL_MARGIN")
@@ -121,7 +145,7 @@ class Evaluator:
         value = complex(phase[0]*np.vdot(self.state, vector))
         error += phase_error*float(np.linalg.norm(vector))+gamma(8*len(vector)+16)*float(np.linalg.norm(vector))
         error += gamma(2)*abs(self.task.scalar*.8)*float(np.linalg.norm(vector))
-        error += .8*self.task.matrix_assembly_bound*max(1, float(np.linalg.norm(vector)))
+        error += .8*self.scalar_assembly_bound*float(np.linalg.norm(vector))
         return dict(signal=[value.real, value.imag], u_signal=error+self.target_error,
                     bias=[abs(value.real-self.target.real), abs(value.imag-self.target.imag)],
                     deterministic_actions=sum(f.generator != 'R' for f in factors),

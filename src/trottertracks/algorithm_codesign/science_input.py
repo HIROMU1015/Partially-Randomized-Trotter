@@ -42,11 +42,12 @@ def load_authorized_task():
     # no basis-change circuit or dense_extracted_df_tail helper is called.
     for index in range(3, 12):
         g = np.asarray(hamiltonian.g_matrices[index])
-        _, eta = decomposition.diag_hermitian(g, sort='descending_abs', assume_hermitian=True)
+        vectors, eta = decomposition.diag_hermitian(g, sort='descending_abs', assume_hermitian=True)
         items = tail_source.exact_df_diagonal_coefficients(eta, float(hamiltonian.lambdas[index]))
         identities.extend(value for support, value in items if not support)
         coefficients.extend(value for support, value in items if support and abs(value) > 0.)
-        eigen_error += Spectrum(g).matrix_error*max(1., np.linalg.norm(g, 'fro'))*abs(hamiltonian.lambdas[index])*256
+        eigensystem_error = Spectrum(g, eigensystem=(eta, vectors)).matrix_error
+        eigen_error += eigensystem_error*max(1., np.linalg.norm(g, 'fro')+eigensystem_error)*abs(hamiltonian.lambdas[index])*256
     extracted_identity = math.fsum(identities)
     scalar = float(hamiltonian.constant)+extracted_identity
     dimension = len(state)
@@ -55,14 +56,22 @@ def load_authorized_task():
     assembly_scale = abs(float(hamiltonian.constant))+float(np.sum(np.abs(hamiltonian.one_body)))
     assembly_scale += math.fsum(abs(float(lam))*float(np.sum(np.abs(g)))**2
                                for lam, g in zip(hamiltonian.lambdas, hamiltonian.g_matrices))
-    # Conservative forward-operation allowance for reconstruction from the
-    # binary64 DF snapshot, in addition to the observed source discrepancy.
+    # Uniform forward budget on EACH assembled generator and scalar. The
+    # operation allowance covers selected-minus-base, Hermitian symmetrizing,
+    # tail summation and identity subtraction; it is not inferred solely
+    # from the full-H reconstruction discrepancy. See the v3 derivation.
     assembly_bound = reconstruction['absolute_operator_norm_error']+gamma(65536)*math.sqrt(dimension)*max(1., assembly_scale)+eigen_error
-    return Task(matrices, scalar, math.fsum(abs(c) for c in coefficients), state, assembly_bound), dict(
+    generator_bounds = dict.fromkeys(matrices, assembly_bound)
+    return Task(matrices, scalar, math.fsum(abs(c) for c in coefficients), state, assembly_bound,
+                generator_bounds, assembly_bound), dict(
         input=INPUT, input_raw_sha256=digest.hexdigest(), metadata_identities={k: metadata[k] for k in
           ('hamiltonian_hash', 'state_hash', 'state_vector_hash')}, layout=layout,
         native_generator_count=4, extracted_identity=extracted_identity,
         lambda_r=math.fsum(abs(c) for c in coefficients), scalar=scalar,
-        matrix_assembly_bound=assembly_bound, partition_indices=[0, 1, 2],
+        matrix_assembly_bound=assembly_bound,
+        assembly_budget_policy='uniform_per_generator_and_scalar_v1',
+        generator_assembly_bounds=generator_bounds, scalar_assembly_bound=assembly_bound,
+        full_target_generator_budget=math.fsum(generator_bounds.values())+assembly_bound,
+        partition_indices=[0, 1, 2],
         source_reconstruction=reconstruction, new_state_solve=False,
         circuits_built=0, trajectories=0, gpu_queries=0)

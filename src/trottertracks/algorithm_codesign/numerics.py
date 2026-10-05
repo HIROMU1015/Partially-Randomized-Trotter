@@ -65,7 +65,7 @@ def finite_values(eigenvalues, time, r, K):
 
 
 class Spectrum:
-    def __init__(self, matrix):
+    def __init__(self, matrix, *, eigensystem=None):
         matrix = np.asarray(matrix, dtype=complex)
         if matrix.ndim != 2 or matrix.shape[0] != matrix.shape[1] or not np.all(np.isfinite(matrix)):
             raise ValueError("Invalid finite square generator")
@@ -73,7 +73,17 @@ class Spectrum:
         hermitian_error = float(np.linalg.norm(matrix-matrix.conj().T, 'fro'))/2
         if hermitian_error > 1e-10*max(1., float(np.linalg.norm(matrix, 'fro'))):
             raise ValueError("Generator is not Hermitian within source tolerance")
-        self.values, self.vectors = np.linalg.eigh(.5*(matrix+matrix.conj().T))
+        if eigensystem is None:
+            self.values, self.vectors = np.linalg.eigh(.5*(matrix+matrix.conj().T))
+        else:
+            # Guard the eigenvalues actually used for DF identity extraction,
+            # rather than the output of a different diagonalization.
+            values, vectors = eigensystem
+            self.values = np.asarray(values, dtype=float)
+            self.vectors = np.asarray(vectors, dtype=complex)
+            if (self.values.shape != (n,) or self.vectors.shape != (n, n)
+                    or not np.all(np.isfinite(self.values)) or not np.all(np.isfinite(self.vectors))):
+                raise ValueError('Invalid supplied eigensystem')
         q = self.vectors
         gram = float(np.linalg.norm(q.conj().T@q-np.eye(n), 'fro')) + gamma(8*n)*float(np.linalg.norm(q, 'fro'))**2
         if gram >= .01:
@@ -87,24 +97,38 @@ class Spectrum:
         self.norm = float(np.max(np.abs(self.values), initial=0))+self.matrix_error
         self.dimension = n
 
-    def action(self, state, time, time_error=0., r=None, K=2):
+    def action(self, state, time, time_error=0., r=None, K=2, *, assembly_error=0.):
+        """Act on a computed vector, guarding a perturbed Hermitian generator.
+
+        assembly_error bounds the operator distance between the supplied
+        matrix and the reference generator. It is distinct from the
+        eigensystem residual. The returned norm bounds the reference factor
+        as well, so a caller can propagate earlier errors through a product.
+        """
+        if not math.isfinite(assembly_error) or assembly_error < 0:
+            raise ValueError('Invalid generator assembly error budget')
+        matrix_distance = self.matrix_error+assembly_error
+        reference_norm = self.norm+assembly_error
         if r is None:
             diagonal, scalar_error = phase_values(time*self.values)
             # Argument multiplication, supplied time lowering and Hermitian
             # perturbation each receive an explicit Lipschitz contribution.
-            operator_error = scalar_error + self.gram_error + abs(time)*self.matrix_error
-            operator_error += (time_error+gamma(2)*abs(time))*self.norm
+            operator_error = scalar_error + self.gram_error + abs(time)*matrix_distance
+            operator_error += (time_error+gamma(2)*abs(time))*reference_norm
             operator_norm = 1.
         else:
-            diagonal, scalar_error, derivative = finite_values(self.values, time, r, K)
+            diagonal, scalar_error, _ = finite_values(self.values, time, r, K)
             operator_norm = max(1., float(np.max(np.abs(diagonal), initial=0))+scalar_error)
-            operator_error = scalar_error+self.gram_error*operator_norm+derivative*self.matrix_error
-            micro_radius = (abs(time)+time_error)*self.norm/r
+            # Every Hermitian matrix on the perturbation segment has norm
+            # <= reference_norm. P_(K+1) has norm <= 1 + Taylor remainder;
+            # its r-th power has Lipschitz constant <= |t| exp(mu) M^(r-1).
+            micro_radius = (abs(time)+time_error)*reference_norm/r*(1+gamma(8))
             micro_bound = 1+math.exp(micro_radius)*micro_radius**(K+2)/math.factorial(K+2)
-            operator_norm = max(operator_norm, micro_bound**r)
-            derivative_upper = (abs(time)+time_error)*math.exp(micro_radius)*micro_bound**max(0, r-1)
-            operator_error = max(operator_error, scalar_error+self.gram_error*operator_norm+derivative_upper*self.matrix_error)
-            operator_error += (time_error+gamma(2)*abs(time))*self.norm*math.exp(micro_radius)*micro_bound**max(0, r-1)
+            micro_bound *= 1+gamma(32)
+            operator_norm = max(operator_norm, micro_bound**r*(1+gamma(32)))
+            derivative_upper = (abs(time)+time_error)*math.exp(micro_radius)*micro_bound**max(0, r-1)*(1+gamma(32))
+            operator_error = scalar_error+self.gram_error*operator_norm+derivative_upper*matrix_distance
+            operator_error += (time_error+gamma(2)*abs(time))*reference_norm*math.exp(micro_radius)*micro_bound**max(0, r-1)
         q = self.vectors
         result = q@(diagonal*(q.conj().T@state))
         multiply_error = gamma(16*self.dimension+8)*self.dimension*operator_norm*float(np.linalg.norm(state))

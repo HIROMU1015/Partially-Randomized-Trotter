@@ -13,12 +13,13 @@ import sys
 from .input_contract import INPUT
 
 EXECUTION_ID = 'bf1-20261005-development-v1'
-PREPARATION_REL = 'artifacts/track_b_bf1_preparation/2026-10-05/v2'
+PREPARATION_REL = 'artifacts/track_b_bf1_preparation/2026-10-05/v3'
 DOMAIN_REL = 'artifacts/track_b_bf1_preparation/2026-10-05/v1/domain_manifest.json'
 DOMAIN_SHA256 = 'caece92bd2d9f827b0f1f17281865869420bf923273ff294fd30cabd24b51efe'
 SCIENCE_OUTPUT_REL = 'artifacts/track_b_bf1_execution/2026-10-05/v1'
 REVIEWED_COMMIT = '15465b0b856d80f9cfde495fd3d22434825f1cc8'
 REVISION_REVIEWED_COMMIT = '2d0ddafa95aefb272a36a13f259ee0b45bcc80ef'
+ASSEMBLY_REVIEWED_COMMIT = '296ec7e4c025f09e4bfda96e56e08d32388b81c5'
 AUTHORIZATION_REL = 'artifacts/track_b_bf1_authorization/2026-10-05/authorization_v1.json'
 AUTHORIZATION_DOC_REL = 'docs/tracks/algorithm_codesign/bf1_execution_authorization_v1.md'
 PUBLICATION_SCHEME = 'source_plus_single_authorization_only_child_v1'
@@ -96,6 +97,7 @@ def source_inventory(root):
       'scripts/README.md', 'src/trotterlib/README.md', 'docs/research/研究概要・現状.md',
       'docs/research/研究ノート/2026-10-05_track_b_bf1_preregistration.md',
       'docs/research/研究ノート/2026-10-05_track_b_bf1_execution_gate_revision.md',
+      'docs/research/研究ノート/2026-10-05_track_b_bf1_assembly_guard_revision.md',
       'docs/tracks/algorithm_codesign/README.md',
       'docs/tracks/algorithm_codesign/bf0_mathematical_contract.md',
       'docs/tracks/algorithm_codesign/bf0_prior_art_claim_matrix.md',
@@ -103,7 +105,12 @@ def source_inventory(root):
       'docs/tracks/algorithm_codesign/bf0_external_review_request_20261004.md',
       'docs/tracks/algorithm_codesign/bf1_preregistration_v1.md',
       'docs/tracks/algorithm_codesign/bf1_implementation_and_review_20261005.md',
-      'docs/tracks/algorithm_codesign/bf1_execution_gate_revision_v2.md']
+      'docs/tracks/algorithm_codesign/bf1_execution_gate_revision_v2.md',
+      'docs/tracks/algorithm_codesign/bf1_final_source_review_296ec7e.md',
+      'docs/tracks/algorithm_codesign/bf1_assembly_guard_revision_v3.md',
+      'artifacts/track_b_bf1_preexecution_review/2026-10-05/296ec7e/assembly_guard_witness.py',
+      'artifacts/track_b_bf1_preexecution_review/2026-10-05/296ec7e/assembly_guard_witness.json',
+      'artifacts/track_b_bf1_preexecution_review/2026-10-05/296ec7e/source_review_audit.json']
     return [dict(path=p, bytes=len(data), sha256=sha(data))
             for p in sorted(set(b_files+documents+shared_sources(root)))
             for data in [(root/p).read_bytes()]]
