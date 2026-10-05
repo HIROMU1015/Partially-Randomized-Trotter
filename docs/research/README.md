@@ -1,5 +1,11 @@
 # 研究計画資料
 
+2026-10-06のTrack A入口は[サーバー側への正式契約準備指示](gpu_server_track_a_h4_geometry_contract_preparation_prompt.md)と
+[確認済みscope JSON](track_a_h4_geometry_contract_preparation_scope_v1.json)。
+server preparation `c2ab34f`を基に追加6距離・最大12 workersを契約条件とし、218 template/点・74,784 wrapper上限を記録する。
+checkpoint数値回路identityと合成record検査を補強する。本計算・science source port・追加benchmarkは未認可。
+旧証拠・原稿・Track B不変。利用者指示で今回の契約準備資料だけをcommit/pushする。以下は各milestone当時の履歴。
+
 現在は[Track A H4 geometryと要求精度の拡張設計案](track_a_geometry_precision_extension_proposal_v0.md)と
 [別JSON](track_a_geometry_precision_extension_proposal_v0.json)を優先する。
 [GPUサーバー側準備指示](gpu_server_track_a_h4_geometry_resource_preparation_prompt.md)はserver既存環境を優先し、

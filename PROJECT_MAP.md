@@ -1,5 +1,16 @@
 # プロジェクト案内
 
+## Track A H4追加6距離と最大12 workersの契約準備
+
+2026-10-06 JST、利用者は0.70/0.80/0.90/1.10/1.40/1.60 Åの6点と最大12 CPU workers・各thread1を確認した。
+[契約準備scope JSON](docs/research/track_a_h4_geometry_contract_preparation_scope_v1.json)と
+[サーバー側への正式契約準備指示](docs/research/gpu_server_track_a_h4_geometry_contract_preparation_prompt.md)が現在の入口。
+公開server preparationは`c2ab34fed49bb1fb104d39fe83b36858a2c92c2a`。218 template/点、計74,784 wrapperは将来契約の上限。
+数値回路fingerprintとwrapper keyを含む新checkpoint schema・合成record検査を依頼する。
+snapshot生成規約・seed・memory/output・新source/authorizationは未固定。本計算・science port・新benchmarkは未認可。
+旧1.00/1.30 Å証拠は別layer、anchorは追加しない。旧manifest/result/原稿・Track Bは不変。
+利用者指示で今回の契約準備資料だけをcommit/pushする。以下は各milestone当時の履歴であり、科学STOPを維持する。
+
 ## Track A 原稿保留とH4 geometry拡張の準備
 
 利用者の新しい指示により原稿作成・投稿先検討はいったん保留。
