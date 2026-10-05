@@ -35,6 +35,8 @@
 
 | 日付 | 主題 | 基準commit | 到達点 | 次の主要課題 |
 |---|---|---|---|---|
+| [2026-10-05 source固定](2026-10-05.md) | PM-2保存値解析実装・synthetic検査 | `324435d` | source6 blobs・準備9 files一致、62 synthetic tests。本解析/real reference gate未実行 | 別の明示解析指示待ち。終了後mandatory STOP |
+| [2026-10-05追記](2026-10-05.md) | PM-1結果後方針を採用、PM-2精度・測定込み資源契約準備 | `194cc604` + local uncommitted preparation | 保存4 JSONのblob/hash、development218候補・M2元5構成別集合、専用21 local tests。precision解析0、新しい科学計算0 | 契約確認後、保存値解析の実装/source固定。実行は別指示、終了後STOP |
 | [2026-10-05](2026-10-05.md) | Track A PM-1最終承認・一項目authorization確定 | `bf9eaee` | final_review_approvedのみtrue、source/plan不変、science-free gate PASS、201 local tests passed | 利用者の明示launch待ち。本計算0、実行後もmandatory STOP |
 | [2026-10-03](2026-10-03.md) | PR-2 M1-B1 actual compile map検証 | source `33f436b` + local result | 12,448 wrapperと全checkpoint/cacheを再検査。B2 rank 3、q=1のactual frontierを確認し`CONTINUE_RESOURCE_STUDY` | result-prior held-out transfer reviewを別freeze。H4 1.30 Åは未開封 |
 | [2026-09-30](2026-09-30.md) | PR-2 M1-A result-prior authorization | authorization commitで固定 | development-only最大212 signal、compile 0、held-out access 0を結果前固定 | M1-Aを一度実行し、limitedなら停止、clearならartifact freeze後に別M1-B authorization |

@@ -1,5 +1,13 @@
 # 研究計画資料
 
+PM-2の[保存値解析実装](pr2_pm2_precision_analysis_implementation.md)をsource `324435d77b6642dbd44e8d1f178420daf62e77ed`で固定した。
+62 synthetic-only tests合格、real numerical gate/precision map未実行、利用者の明示解析指示待ち。
+[固定契約](pr2_pm2_precision_resource_contract_v1.md)は変更せず、準備stageの記述は当時の履歴として読む。
+
+2026-10-05のPM-1後reviewを採用し、[PM-2精度と測定込み資源境界契約](pr2_pm2_precision_resource_contract_v1.md)を固定した。
+全218候補とM2元5構成、POSTHOC、軸別費用、ε範囲、共通P、schema/input identity、全status後STOPが対象。
+解析は未認可で、保存JSON/input coverageだけを確認した。現行RQの限定と完成条件はこの契約を優先する。
+
 PM-1は最終review承認・明示launch後、一回だけ実行し[結果を照合](../pr2_pm1_discard_result_validation.md)した。
 H4 linear 1.00 Å、STO-3G、DF rank12、T=0.8、B0 rank4/5 × q=1/2/4/8が全件accuracy適格。
 8 signals/16 wrappers、source134不変、pre/post201 local tests passed、fail/skip0。

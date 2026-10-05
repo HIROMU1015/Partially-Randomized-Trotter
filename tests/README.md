@@ -1,5 +1,15 @@
 # tests の役割
 
+PM-2解析の`tracks/resource_applicability/test_pm2_precision_analysis.py`はsynthetic-only 62 tests。
+`scripts/resource_applicability/run_pr2_pm2_implementation_tests.py`のguardはreal saved evidenceのaccessも禁止する。
+起動gate・ε境界・軸別cost・paired covariance・ties・CSV/schema・STOPを検査し、実データgate PASSとは区別する。
+[実装監査](../docs/research/pr2_pm2_precision_analysis_implementation.md)を参照する。full suite・旧science testsは実行しない。
+
+PM-2は`tracks/resource_applicability/test_pm2_precision_contract.py`のcontract/schema・保存JSON inventory tests。
+`scripts/resource_applicability/run_pr2_pm2_preparation_tests.py`で分子データ/runtime/registryのguardをpytest import前に入れる。
+precision sweep、新signal/trajectory/circuit/compile、旧科学tests、full repository suiteは呼ばない。
+[契約](../docs/research/pr2_pm2_precision_resource_contract_v1.md)にscopeとSTOPを固定する。
+
 PM-1 authorization draftの再検査も201 passed、fail/skip0。
 [最終review監査](../artifacts/resource_applicability/pr2_pm1_discard_authorization/2026-10-04/authorization_review_audit_v1.json)には
 actual draftの最終boolean=false拒否とconditional mock positive・9改変拒否を区別して保存した。

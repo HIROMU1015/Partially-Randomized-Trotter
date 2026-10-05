@@ -6592,6 +6592,140 @@
       "mandatory_stop": true,
       "next_stage_authorized": false,
       "research_decision": null
+    },
+    {
+      "id": "pr2_track_a_pm2_precision_resource_preparation",
+      "status": "source_present_no_current_ci",
+      "terminal_status": "PM2_PRECISION_CONTRACT_FROZEN_ANALYSIS_NOT_AUTHORIZED",
+      "track": "resource_applicability",
+      "evidence_kind": "LOCAL_POSTHOC_CONTRACT_SCHEMA_AND_SAVED_JSON_INVENTORY_NOT_ANALYSIS_RESULT",
+      "basis_evidence_commit": "194cc604b90c56a0e7e949b91b064a4bcfc846da",
+      "source_commit": null,
+      "source_status": "local_uncommitted_preparation",
+      "documentation": "docs/research/pr2_pm2_precision_resource_contract_v1.md",
+      "source": "src/trottertracks/resource_applicability/pm2_precision_contract.py",
+      "runner": "scripts/resource_applicability/run_pr2_pm2_precision_contract.py",
+      "tests": [
+        "tests/tracks/resource_applicability/test_pm2_precision_contract.py",
+        "scripts/resource_applicability/run_pr2_pm2_preparation_tests.py"
+      ],
+      "artifact_directory": "artifacts/resource_applicability/pr2_pm2_precision_preparation/2026-10-05",
+      "preparation_manifest_sha256": "da30a1d3b91f44dbe4847a158e86abb1302f0ea14160ca1f77c780e0cabc488e",
+      "domain_counts": {
+        "development": 218,
+        "reference_eligible_development": 214,
+        "transfer_fixed_five": 5
+      },
+      "model_scope": {
+        "molecule": "H4 linear",
+        "geometry_angstrom": {
+          "development": 1,
+          "transfer_fixed_five": 1.3
+        },
+        "basis": "STO-3G",
+        "DF_rank": 12,
+        "system_qubits": 8,
+        "T": 0.8,
+        "L_D_development": [
+          0,
+          3,
+          4,
+          5,
+          6,
+          9,
+          12
+        ],
+        "q": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "delta": [
+          0.8,
+          0.4,
+          0.2,
+          0.1
+        ],
+        "transfer_domain": "original M2 five only, not a held-out reoptimization"
+      },
+      "epsilon_design": {
+        "reference": 0.05,
+        "minimum": 0.005,
+        "maximum": 0.1,
+        "maximum_display_points": 302,
+        "adaptive": false
+      },
+      "counts": {
+        "input_jsons_blob_hash_verified": 4,
+        "precision_sweep": 0,
+        "precision_work_evaluations": 0,
+        "P_envelope_evaluations": 0,
+        "rankings": 0,
+        "new_signal_evaluations": 0,
+        "trajectory_sampling": 0,
+        "circuit_build_compile": 0,
+        "protected_data_access": 0,
+        "gpu_operations": 0,
+        "quantum_shots": 0,
+        "tests_passed": 21,
+        "tests_failed": 0,
+        "tests_skipped": 0,
+        "current_ci_reports": 0
+      },
+      "preparation_only": true,
+      "precision_analysis_authorized": false,
+      "previous_evidence_unchanged": true,
+      "mandatory_stop": true,
+      "next_stage_authorized": false,
+      "research_decision": null
+    },
+    {
+      "id": "pr2_track_a_pm2_precision_analysis_source",
+      "status": "source_present_no_current_ci",
+      "terminal_status": "PM2_ANALYSIS_SOURCE_FROZEN_AWAITING_USER_LAUNCH",
+      "track": "resource_applicability",
+      "evidence_kind": "LOCAL_SYNTHETIC_IMPLEMENTATION_TESTS_AND_SOURCE_FREEZE_NOT_ANALYSIS_RESULT",
+      "source_commit": "324435d77b6642dbd44e8d1f178420daf62e77ed",
+      "evidence_commit": "194cc604b90c56a0e7e949b91b064a4bcfc846da",
+      "documentation": "docs/research/pr2_pm2_precision_analysis_implementation.md",
+      "source": "src/trottertracks/resource_applicability/pm2_precision_analysis.py",
+      "runner": "scripts/resource_applicability/run_pr2_pm2_precision_analysis.py",
+      "tests": [
+        "tests/tracks/resource_applicability/test_pm2_precision_analysis.py",
+        "scripts/resource_applicability/run_pr2_pm2_implementation_tests.py"
+      ],
+      "artifact_directory": "artifacts/resource_applicability/pr2_pm2_precision_implementation/2026-10-05",
+      "source_freeze_audit_sha256": "08b7f38425f72acb6086c156ca6f00f6cc01abf4758578663b3f666618d074c5",
+      "preparation_manifest_sha256": "da30a1d3b91f44dbe4847a158e86abb1302f0ea14160ca1f77c780e0cabc488e",
+      "counts": {
+        "source_blobs_identical": 6,
+        "preparation_files_blob_hash_verified": 9,
+        "synthetic_tests_passed": 62,
+        "synthetic_tests_failed": 0,
+        "synthetic_tests_skipped": 0,
+        "post_source_synthetic_tests_passed": 62,
+        "real_analysis_runs": 0,
+        "production_runner_invocations": 0,
+        "real_reference_gate_executed": 0,
+        "new_signal_sampling_compile": 0,
+        "protected_data_access_attempts_in_tests": 0,
+        "real_saved_evidence_access_attempts_in_tests": 0,
+        "gpu_operations": 0,
+        "quantum_shots": 0,
+        "current_ci_reports": 0
+      },
+      "domain_counts": {
+        "development": 218,
+        "transfer_fixed_five": 5
+      },
+      "analysis_execution_authorized": false,
+      "new_science_authorized": false,
+      "real_numeric_gate": "UNVERIFIED_UNTIL_LAUNCH",
+      "mandatory_stop": true,
+      "next_stage_authorized": false,
+      "research_decision": null,
+      "previous_evidence_unchanged": true
     }
   ],
   "repository_completion_criteria": [

@@ -1,5 +1,25 @@
 # Validation status
 
+## 2026-10-05 Track A PM-2保存値解析source固定 STOP
+
+[解析実装](docs/research/pr2_pm2_precision_analysis_implementation.md)をsource commit `324435d77b6642dbd44e8d1f178420daf62e77ed`で固定。
+62 local synthetic tests passed、fail/skip0、testsのreal evidence/保護データaccess試行0。
+実データpositive numerical gate・precision mapはまだ未検証。準備契約・旧証拠・sourceは不変。
+`PM2_ANALYSIS_SOURCE_FROZEN_AWAITING_USER_LAUNCH`、本解析は別の明示指示待ち、new science/次段認可false。
+固定後hash/blobとpost-source testは[監査](artifacts/resource_applicability/pr2_pm2_precision_implementation/2026-10-05/source_freeze_v1.json)に保存。
+以下のlocal-uncommitted/未実装記述は準備時点の履歴である。
+
+## 2026-10-05 Track A PM-2保存値解析の契約準備 STOP
+
+[PM-2契約](docs/research/pr2_pm2_precision_resource_contract_v1.md)とschema/input identityを固定した。
+evidence commit `194cc604b90c56a0e7e949b91b064a4bcfc846da`の保存JSON4件だけを読み、全218 development候補と
+M2元5構成の別集合、保存axis field・paired cost samplesを照合する。基準適格214件を記録するが候補除外はしない。
+POSTHOC、ε=0.005〜0.1、α_axis=0.025、軸別compile平均、common P>=0、strict適格境界、元ε再現を契約化した。
+local未commitの準備であり科学結果ではない。precision sweep、shot/work再評価、順位、P envelope、
+新signal/trajectory/build/compile、分子データ/runtime/cache/GPU accessは0。
+`PM2_PRECISION_CONTRACT_FROZEN_ANALYSIS_NOT_AUTHORIZED`、mandatory STOP、next-stage=false。
+旧PM-1/M2 result/status/source/manifestは不変。解析実装・source固定と別の利用者指示が次のbarrierである。
+
 ## 2026-10-05 Track A PM-1一回実行・結果照合完了、mandatory STOP
 
 利用者の明示指示「PM-1を実行して」を受け、固定source/plan/true authorizationで一回だけ実行した。

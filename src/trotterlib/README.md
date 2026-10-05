@@ -1,5 +1,16 @@
 # trotterlib モジュール索引
 
+PM-2保存値解析は共有science sourceを変更せず、
+`../trottertracks/resource_applicability/pm2_precision_analysis.py`に実装した。
+[実装資料](../../docs/research/pr2_pm2_precision_analysis_implementation.md)と専用synthetic tests、
+`artifacts/resource_applicability/pr2_pm2_precision_implementation/2026-10-05/`を一組にする。
+source `324435d77b6642dbd44e8d1f178420daf62e77ed`、本解析未実行・明示指示待ち。
+
+PM-2契約・保存JSON入力inventoryは共有science sourceを変更せず、
+`../trottertracks/resource_applicability/pm2_precision_contract.py`へ分離する。
+[契約](../../docs/research/pr2_pm2_precision_resource_contract_v1.md)にmodule/runner/test/artifactをまとめた。
+準備だけで、精度別shot/work解析やscience実行の認可ではない。
+
 PM-1 source `fd7552e`と134 hashは不変のまま、最終review・authorization確定・明示launchを経て一回実行した。
 [結果照合](../../docs/pr2_pm1_discard_result_validation.md)：H4 developmentの8 signals/16 wrappersが完了、
 pre/post201 local tests passed、mandatory STOP、次段未認可。科学module/共有helperは変更していない。

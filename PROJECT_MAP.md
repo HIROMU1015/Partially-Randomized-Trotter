@@ -1,5 +1,25 @@
 # プロジェクト案内
 
+## Track A PM-2解析source固定 本解析は明示指示待ち
+
+[保存値解析実装](docs/research/pr2_pm2_precision_analysis_implementation.md)のsourceを
+`324435d77b6642dbd44e8d1f178420daf62e77ed`で固定した。stdlib-only解析module、future runner、専用synthetic testsの一組で読む。
+`PM2_ANALYSIS_SOURCE_FROZEN_AWAITING_USER_LAUNCH`、62 local synthetic tests passed、fail/skip0。
+実データのreference gate・精度走査・順位・P envelope、新signal/sampling/compileは未実行。
+source/準備blobを照合した[固定後監査](artifacts/resource_applicability/pr2_pm2_precision_implementation/2026-10-05/source_freeze_v1.json)を参照する。
+以下の準備・旧stage記述は各milestone当時の履歴として保持する。
+
+## Track A PM-2契約準備完了 解析は未認可
+
+[PM-2精度と資源境界契約](docs/research/pr2_pm2_precision_resource_contract_v1.md)を固定した。
+`src/trottertracks/resource_applicability/pm2_precision_contract.py`、
+`scripts/resource_applicability/run_pr2_pm2_precision_contract.py / run_pr2_pm2_preparation_tests.py`、
+`tests/tracks/resource_applicability/test_pm2_precision_contract.py`、
+`artifacts/resource_applicability/pr2_pm2_precision_preparation/2026-10-05/`を一組として読む。
+全218 development候補とM2元5構成を別集合にし、POSTHOC、ε=0.005〜0.1、α_axis=0.025、軸別費用、共通P>=0を固定する。
+保存JSON4件のidentity・field coverageだけを検査した。precision sweep/ranking/P envelopeは0。
+`PM2_PRECISION_CONTRACT_FROZEN_ANALYSIS_NOT_AUTHORIZED`でSTOP。以下はmilestone当時の履歴として保持する。
+
 ## Track A PM-1実行完了：研究方針review待ちSTOP
 
 最終承認・利用者の明示launch後、[PM-1結果照合](docs/pr2_pm1_discard_result_validation.md)を完了した。

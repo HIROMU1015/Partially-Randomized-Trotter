@@ -1,5 +1,16 @@
 # scripts 索引
 
+PM-2解析sourceの入口は`resource_applicability/run_pr2_pm2_precision_analysis.py`と
+`resource_applicability/run_pr2_pm2_implementation_tests.py`（synthetic-only、real saved evidenceも禁止）。
+[実装と停止条件](../docs/research/pr2_pm2_precision_analysis_implementation.md)を参照する。
+source `324435d77b6642dbd44e8d1f178420daf62e77ed`、62 synthetic tests passed。本解析は明示launch待ち、固定outputは未作成。
+以下の契約準備・未実装記述は当時の履歴である。
+
+PM-2の入口は`resource_applicability/run_pr2_pm2_precision_contract.py`（保存JSON4件の準備bundleをstdoutへ出すのみ）と
+`resource_applicability/run_pr2_pm2_preparation_tests.py`（保護path guard付き専用contract tests）。
+[契約/schema/input inventory](../docs/research/pr2_pm2_precision_resource_contract_v1.md)を参照する。
+精度解析runnerは未実装、ε sweep・順位・P envelope・新signal/compileは未実行、解析は未認可。
+
 PM-1は最終review・authorization一項目確定・利用者launch後に一回完了した。
 [結果と照合](../docs/pr2_pm1_discard_result_validation.md)：8 signals/16 wrappers、pre/post201 local tests passed。
 source不変、`PM1_DISCARD_MAP_COMPLETE_AWAITING_REVIEW`でmandatory STOP、retry/resume/次段なし。

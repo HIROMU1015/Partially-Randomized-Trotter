@@ -1,5 +1,14 @@
 # 文書索引
 
+現在は[PM-2保存値解析実装](research/pr2_pm2_precision_analysis_implementation.md)と
+[source固定監査](../artifacts/resource_applicability/pr2_pm2_precision_implementation/2026-10-05/source_freeze_v1.json)の段階。
+62 local synthetic tests合格、source `324435d77b6642dbd44e8d1f178420daf62e77ed`、本解析は未実行。
+研究契約は不変で、別の明示解析指示後も全statusでmandatory STOPする。
+
+最新のTrack A準備は[PM-2精度と資源境界契約](research/pr2_pm2_precision_resource_contract_v1.md)。
+全218 development候補とM2元5構成を別集合で固定し、schema・input identity・成果物・STOP条件まで準備した。
+保存JSON/input coverageだけを照合し、精度解析は未実施・未認可。旧結果は変更しない。
+
 Track Aの最新は[PM-1実行結果・照合](pr2_pm1_discard_result_validation.md)。
 H4 1.00 Å、STO-3G、DF rank12、T=0.8、B0 rank4/5 × q=1/2/4/8の8件がaccuracy適格、
 8 signals/16 wrappersを一回完了。pre/post201 local tests passed。
