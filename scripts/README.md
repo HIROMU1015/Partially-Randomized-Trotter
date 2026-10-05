@@ -1,5 +1,8 @@
 # scripts 索引
 
+Track Bの`tracks/algorithm_codesign/run_bf1_read_only_recovery.py`は[BF1-R0契約](../docs/tracks/algorithm_codesign/bf1_read_only_recovery_contract_v1.md)
+に沿った一回の保存値replay専用入口。科学runnerを呼ばず、cache不足で停止する。
+
 Track Bの`tracks/algorithm_codesign/prepare_bf1.py`はformula-only domain列挙と限定synthetic testsの入口。
 `run_bf1.py`は別authorization・commit-bound sourceを必要とするone-shot runner。
 [BF-1規範](../docs/tracks/algorithm_codesign/bf1_preregistration_v1.md)。固定source/authorizationで一回実行後、

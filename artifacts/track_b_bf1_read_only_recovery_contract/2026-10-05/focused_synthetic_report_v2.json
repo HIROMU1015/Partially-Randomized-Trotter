@@ -1,0 +1,45 @@
+{
+  "command": [
+    "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/tracks/algorithm_codesign/test_bf1_recovery.py",
+    "tests/tracks/algorithm_codesign/test_bf1_cross_objectives.py",
+    "--tb=short",
+    "-p",
+    "no:cacheprovider"
+  ],
+  "created_at_utc": "2026-10-05T11:45:16.273494+00:00",
+  "environment_overrides": {
+    "MKL_NUM_THREADS": "1",
+    "NUMBA_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "src"
+  },
+  "exit_code": 0,
+  "original_recovery_executed": false,
+  "revision_reason": "Final runner now checks all sealed source bytes after replay and measures actual formatted JSON output bytes",
+  "schema": "bf1_r0_focused_synthetic_report_v1",
+  "science_execution_authorized": false,
+  "scope": "invented scalar cells, original-rule parity, missing-cell rejection, optional-bridge separation, physical-provider denial, input/draft gates; no original BF-1 replay yet",
+  "source_identities": [
+    {
+      "path": "src/trottertracks/algorithm_codesign/recovery.py",
+      "sha256": "c19c76a6020271e1fb634fd51b6693ab62f1620e4f5709886b800ce20342e90c"
+    },
+    {
+      "path": "scripts/tracks/algorithm_codesign/run_bf1_read_only_recovery.py",
+      "sha256": "a96a78ca2e8376638a757becef74db0f2ddd7860f54c2f018082b3fc41e4fead"
+    },
+    {
+      "path": "tests/tracks/algorithm_codesign/test_bf1_recovery.py",
+      "sha256": "9b0f27f7da6d7dc0ef6ac3b2bbfa380e2788cacca9733f381099e5c0d16c7af6"
+    }
+  ],
+  "stderr": "",
+  "stdout": ".......................                                                  [100%]\n23 passed in 4.11s\n"
+}

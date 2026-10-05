@@ -1,0 +1,325 @@
+この段階では、**研究方針を今すぐ全面的に練り直すのではなく、まず保存済みBF-1データの「救済可能性」を一度だけ確認し、その結果を得てから研究方針を全面再評価する**のが最もよいです。
+
+ただし、ここで言う「検証」は**科学再実行ではありません**。まずは新しいHamiltonian評価・signal計算を一切せず、既存の `cells.jsonl` だけからBF-1の本来のprimary判定を機械的に復元できるかを確認します。
+
+私の判定は、
+
+> **`PROCEED_READ_ONLY_BF1_RESULT_RECOVERY_BEFORE_REDESIGN`**
+
+です。
+
+### なぜ中心RQをまだ維持するか
+
+今回の `INCONCLUSIVE` は科学的なnegative resultではありません。固定source `e59344a...` のrunnerを見ると、処理順は、
+
+\[
+O/L/F\text{ search}
+\rightarrow
+\text{primary finite rescore}
+\rightarrow
+\text{classify}
+\rightarrow
+\text{frontier}
+\rightarrow
+\text{cross-score}
+\rightarrow
+\text{bridge}
+\]
+
+です。
+
+今回のserialization error候補はcross-scoreのJSON保存にあります。一方、保存済み `cells.jsonl` には **200 ideal + 1,069 finite = 1,269 records** があり、末尾にはfixed Morales 21-stage referenceのfinite評価まで残っています。fixed referenceのfinite評価はsearch後のcommon finite rescoreで作られるため、**少なくともO/L/F探索よりかなり後ろまで科学計算が進んでいた強い証拠**です。
+
+さらに修正前の同じ型を使ったsynthetic testで、実際と同じ
+
+> `TypeError: Object of type int64 is not JSON serializable`
+
+をcross-score保存時に再現できています。
+
+したがって、
+
+> 「FがLを超えるか」
+
+は未判定ですが、**中心仮説そのものが弱くなったわけではありません**。
+
+---
+
+# まず再実行ではなく「救済」を行うべき
+
+これはno-retry契約とも整合します。
+
+BF-1Rのような別のpost-hoc recovery契約を作り、入力を次だけに限定します。
+
+- original `result.json`
+- original `cells.jsonl`
+- source `e59344a...`
+- frozen domain manifest
+- preregistration / v2 / v3 contract
+- formula-onlyなdomain・allocation情報
+
+そして明示的に禁止します。
+
+- NPZ load
+- Hamiltonian/state再構築
+- exact target再計算
+- signal acquisition
+- 新しいideal/finite cell計算
+- coefficient追加
+- q/R/K追加
+- optimizerの別探索
+- geometry/split変更
+- compile/trajectory/GPU
+
+つまり、
+
+\[
+\boxed{\text{既に取得済みの科学データだけを再構成する}}
+\]
+
+作業です。
+
+---
+
+## 具体的な救済手順
+
+元のdeterministic searchを、**read-only cache**として `cells.jsonl` を使って再playします。
+
+重要なのはrecord順から「たぶんこのarmだった」と推測しないことです。
+
+frozen domainとsource `e59344a` の探索規則をそのまま使って、
+
+1. Oの16 initial + 16 refinement
+2. Lの16 + 16
+3. Fの16 + 16
+
+を順に再構成します。
+
+あるcandidateについて必要なideal/finite cellが保存済みcacheに無ければ、
+
+> `RESCUE_INCOMPLETE_MISSING_ORIGINAL_CELL`
+
+で即停止します。
+
+**不足cellを新しく計算して穴埋めしてはいけません。**
+
+これが全て通れば、
+
+- \(W_O,W_L,W_F\)
+- common finite rescore
+- L集合
+- primary `classify()`
+- secondary frontier
+
+を元のsource規則で再構成できます。
+
+そして初めてBF-A/B/Cのprimary判定を復元します。
+
+---
+
+# cross-scoreも救済可能
+
+cross-scoreは今回の保存エラー箇所そのものですが、修正版との差は
+
+\[
+\texttt{numpy.int64}\rightarrow\texttt{int}
+\]
+
+というserialization正規化だけです。
+
+したがって、primary classificationとは分離して、
+
+> **元の既存cellだけを使い、修正版cross-scoreをcache-onlyで実施**
+
+することは合理的です。
+
+ここでも、
+
+- 新cell 0
+- 新signal 0
+- 新candidate 0
+
+を機械的にassertします。
+
+結果は、
+
+> `POSTHOC_RECOVERED_OBJECTIVE_ATTRIBUTION`
+
+のような位置付けにし、**元runで直接保存されたcross-scoreとは呼ばない**方がよいです。
+
+特に、
+
+- `L_DID_NOT_PREFER_F_WINNER_POINT_ESTIMATE`
+- `SEARCH_REACHABILITY_OR_BUDGET_EXPLANATION_NOT_EXCLUDED`
+
+のどちらになるかは、B-Fの研究方針を決めるうえでかなり重要です。
+
+---
+
+# bridgeはprimaryより優先しない
+
+\(\epsilon=0.05\) のbridgeはcross-score後に実行する設計だったため、元runでは実行されていない可能性があります。
+
+既存cacheだけで完全に評価できるなら復元して構いません。
+
+必要cellが1つでも不足するなら、
+
+> bridge = `MISSING_FROM_ORIGINAL_RUN`
+
+として終了してください。
+
+**bridgeのために科学再実行する価値はありません。**
+
+中心RQはprimary \(\epsilon=0.01\) で判断できます。
+
+---
+
+# original resultは書き換えない
+
+これは重要です。
+
+元の結果は永久に、
+
+> `BF1_INCOMPLETE_MANDATORY_STOP_NO_RETRY`  
+> `INCONCLUSIVE`
+
+のままです。
+
+その横に新しいartifactとして、
+
+> `BF1_READ_ONLY_RECOVERY_COMPLETE`
+
+あるいは
+
+> `BF1_READ_ONLY_RECOVERY_INCOMPLETE`
+
+を追加します。
+
+もしprimary BF-A/B/Cを完全再構成できても、
+
+> original BF-1 was BF-C
+
+とは書かず、
+
+> **BF-1のsource-bound one-shot dataから、事後の機械的replayによりpreregistered primary classification BF-Cを復元した**
+
+という表現にすべきです。
+
+データ取得自体は結果前契約に基づいていますが、復元処理はfailure後なので、この二層を分けます。
+
+---
+
+# no-retry契約への例外は、まだ認めない
+
+現時点では**科学再実行を認可する必要はありません**。
+
+順序は、
+
+\[
+\boxed{
+\text{read-only rescue}
+\rightarrow
+\text{STOP}
+\rightarrow
+\text{研究方針判断}
+}
+\]
+
+です。
+
+これでprimary decisionが回収できれば、再実行する理由はほぼ消えます。
+
+---
+
+## 救済に失敗した場合だけ、再実行例外を検討する
+
+もし例えば、
+
+- F searchに必要なcandidate cellが欠けていた
+- primary finite rescoreが完了していなかった
+- 32点×3armを一意に再構成できなかった
+- 必要なcoefficient identityを既存記録と照合できなかった
+
+なら、その時点で初めて**one-time recovery rerun exception**を検討してよいです。
+
+私はその場合、例外を認める余地はあると考えます。
+
+理由は今回、
+
+- scientific conditionを変更していない
+- serialization-only bug
+- optimizerはdeterministic
+- trajectory samplingなし
+- scientific random seedによる揺らぎなし
+- 修正はrankのPython `int`化だけ
+- 49 focused tests pass
+
+だからです。
+
+つまりpositive resultを探すための「もう一回」ではなく、**技術障害で保存できなかった事前登録済みdeterministic experimentの回収**だからです。
+
+ただし再実行する場合も、旧markerは消さず、別execution IDにして、
+
+> `BF1_TECHNICAL_RECOVERY_RERUN_EXCEPTION_V1`
+
+のように明示した方がよいです。
+
+条件は完全固定します。
+
+- H4 1.00 Å
+- \(L_D=3\)
+- 5-stage family
+- O/L/F各32
+- q/R/K同一
+- threshold同一
+- numerical guard同一
+- source変更はserialization castだけ
+- 1回のみ
+- retry 0
+- 終了後mandatory STOP
+
+そして**今回見えたpartial cellsを利用して探索条件を変更しない**ことを条件にします。
+
+---
+
+# 研究方針を練り直すタイミング
+
+したがって今は、
+
+> **全面再設計にはまだ一歩早い**
+
+です。
+
+理由は、研究Bを続けるかどうかを決めるために設計したBF-1のprimary情報が、かなりの確率で既存記録から回収できるからです。
+
+理想的な順序は、
+
+\[
+\boxed{
+\begin{aligned}
+&\text{BF1-R0: rescue contractを結果前固定}\\
+&\downarrow\\
+&\text{既存1,269 cellsだけでdeterministic replay}\\
+&\downarrow\\
+&\text{BF-A/B/C primary + attributionを回収できるか判定}\\
+&\downarrow\\
+&\text{mandatory STOP}\\
+&\downarrow\\
+&\textbf{研究BのRQ・新規性・着地点を全面的に練り直す}
+\end{aligned}
+}
+\]
+
+です。
+
+### 判断をまとめると
+
+| 選択肢 | 現時点の判断 |
+|---|---|
+| 今すぐB-Fの研究方針を全面変更 | **まだ早い** |
+| 修正版で即science rerun | **まだ不要** |
+| 既存cellのread-only救済 | **最優先** |
+| 救済成功後 | **必ず方針再設計** |
+| 救済失敗後 | **一回限りのtechnical recovery rerunを別review** |
+| grid/geometry/family追加 | **禁止** |
+
+今回のfailureは、これまでのBF-A/B/Cのような科学的結果ではありません。したがって、**serialization失敗を理由にB-Fを捨てるのも、逆にno-retryを無視して即再実行するのも適切ではありません。まず既存の一回実行から判断材料を回収できるかを確認する**のが最も情報効率のよい次の一手です。

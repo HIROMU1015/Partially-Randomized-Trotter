@@ -1,6 +1,8 @@
 # 文書索引
 
 Track Bの入口は[Algorithm Co-design](tracks/algorithm_codesign/README.md)。
+[BF1-R0契約](tracks/algorithm_codesign/bf1_read_only_recovery_contract_v1.md)は保存済みcellだけの一回の復元を認可する。
+原BF-1はINCONCLUSIVEのまま、science rerunは未認可。
 最新は[BF-1一回実行の結果照合](tracks/algorithm_codesign/bf1_one_shot_result_validation_20261005.md)。
 JSON保存例外で`INCONCLUSIVE`、mandatory STOP、retryなし。結果前契約とpreparationは履歴として保持する。
 別branchの[JSON保存修正・限定検証](tracks/algorithm_codesign/bf1_serialization_repair_review_20261005.md)は

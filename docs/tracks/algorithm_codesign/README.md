@@ -1,5 +1,10 @@
 # Track B — Algorithm Co-design
 
+新たな利用者指示は[BF1-R0契約](bf1_read_only_recovery_contract_v1.md)。別branch `track-b-bf1-read-only-recovery`で
+既存1269 cellだけの一回のdeterministic replayを準備し、全outcome後STOPする。science rerunは未認可。
+module: `src/trottertracks/algorithm_codesign/recovery.py`、runner: `scripts/tracks/algorithm_codesign/run_bf1_read_only_recovery.py`、
+test: `tests/tracks/algorithm_codesign/test_bf1_recovery.py`、contract: `artifacts/track_b_bf1_read_only_recovery_contract/2026-10-05/`。
+
 B worktree: `/home/abe/Project/prt-worktrees/track-b-algorithm-codesign`。
 branch: `track-b-algorithm-codesign`。Aの最新worktreeとは分離する。
 このcheckoutのA文書はM2 result commitのsnapshotであり、並行して進むAの現在状態を更新する場所ではない。
