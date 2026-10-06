@@ -1,3 +1,15 @@
+## Track B R1.5保存値帰属・mandatory STOP（2026-10-06）
+
+input R1 commit `24bfeb84a4ce87b56985d174dd98d1d5e1702a2b` の保存値だけを用いたPOSTHOC attribution / design input。
+[帰属報告](docs/tracks/algorithm_codesign/r1p5_saved_value_attribution_v1.md)と[GPT handoff](docs/tracks/algorithm_codesign/r1p5_gpt_handoff_20261006.md)：新science/synthesis/compile/候補追加0、R1科学分類は不変。
+primaryは2-qubit finite P₃、distinct-basis controlled、x={1/8,1/4}、登録native三precision。
+Aは登録(G_T,G_CX,G_1Q) frontにx=1/8の1e-4、x=1/4の1e-3/1e-4で残る。
+normalizationだけでなくnative費用とbias/shotの関係を整理し、固定合成列への依存も保存した。
+[stdlib保存値解析](scripts/tracks/algorithm_codesign/analyze_r1p5_saved_attribution.py)、[全summary](artifacts/track_b_r1p5_saved_attribution/2026-10-06/attribution_summary_v1.json)、[provenance manifest](artifacts/track_b_r1p5_saved_attribution/2026-10-06/evidence_manifest_v1.json)、
+[日付note](docs/research/研究ノート/2026-10-06_track_b_r1p5_saved_attribution.md)。共通library変更・独立validation・新algorithm採択はない。
+限定診断SUPPORTS_RA_RTE_DESIGNは設計入力のみ。eta探索/R2/DF接続/追加scienceは未認可。
+**mandatory STOP。次の数学設計・研究方針判断はGPT側。以下の既存本文を全文保持する。**
+
 ## Track B R1一回結果・mandatory STOP（2026-10-06）
 
 固定S `d43d64a821a0249a0dfab12a2472bd3a72fdee74` →直接子authorization-only A

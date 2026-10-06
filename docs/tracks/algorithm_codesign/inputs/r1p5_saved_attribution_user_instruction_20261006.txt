@@ -1,0 +1,512 @@
+Track Bの次段階として、**R1.5 saved-value attribution audit**を実施してください。
+
+目的は、新しい科学結果を追加することではなく、**R1で既に保存された結果だけを用いて、Aのresource差が何に由来したかを整理し、次のGPT側のresource-aware RTE（RA-RTE）設計に必要な情報を返すこと**です。
+
+新しいalgorithm設計・R2/R1再実行・追加synthesisは行わないでください。
+
+## 0. 固定基点
+
+R1結果commit：
+
+`24bfeb84a4ce87b56985d174dd98d1d5e1702a2b`
+
+主な入力：
+
+- `docs/tracks/algorithm_codesign/r1_one_shot_result_validation_20261006.md`
+- `docs/tracks/algorithm_codesign/r1_post_run_gpt_review_request_20261006.md`
+- `artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/result.json`
+- `artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/descriptive_summary_v1.json`
+- `artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/resource_rows_display_v1.csv`
+- `artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/saved_field_audit_v1.json`
+- source S:
+  `d43d64a821a0249a0dfab12a2472bd3a72fdee74`
+- authorization A:
+  `411f08f768244fe87b600d82308c3851847fe9e4`
+
+R0/R0.5の数学・新規性境界も保持してください。
+
+特に：
+
+- `61dd534567fda5c7348fdc688814089eb26a3561`
+- `672d6bc667eaa7b9ca4979b012f1530499d701b8`
+
+既存result、marker、authorization、source、Track A、BF/BM/SP/BSの証拠は変更しないでください。
+
+---
+
+# 1. 今回のscope
+
+**保存済みR1データだけを解析してください。**
+
+許可：
+
+- result JSON / CSV / summaryの読み取り
+- exact fraction / 保存intervalの再集計
+- 保存された126 synthesis sequence / T-count / angle identityの読み取り
+- 新しいdocs-only / post-hoc attribution artifactの生成
+- saved-valueだけを使うstdlib等の解析script
+- Pareto判定・比率分解
+
+禁止：
+
+- R1 runner再実行
+- synthesis再実行
+- 新angle synthesis
+- 新precision追加
+- 新しいx / sigma / context / arm追加
+- eta中間点生成
+- trajectory sampling
+- matrix science evaluation
+- DF / molecule / Hamiltonian / NPZ
+- GPU
+- compile
+- IS / PAI optimization追加
+- thresholdやmaterialityの新規導入
+- result後のwinner探索
+
+本解析は**POSTHOC attribution / design input**であり、独立validationや新しいscience runとは扱わないでください。
+
+---
+
+# 2. 問いA：precision-envelope Pareto
+
+R1で登録済みの
+
+\[
+\epsilon_{\rm synth}\in
+\{10^{-3},10^{-4},10^{-6}\}
+\]
+
+だけを使います。
+
+primary scopeは：
+
+- context = `distinct_basis`
+- controlled = `true`
+- arm =
+  - ordinary
+  - PTSC_K0
+  - A
+
+です。
+
+sigma=±1は同じ条件の符号controlであり、独立replicationとして数えないでください。
+
+xごとに：
+
+\[
+x\in\{1/8,1/4\}
+\]
+
+について、全
+
+\[
+\{\text{arm}\}\times
+\{\epsilon_{\rm synth}\}
+\]
+
+の登録点を一覧化してください。
+
+## 2.1 resource coordinates
+
+最低限：
+
+- implemented \(B^2\)
+- sufficient shots / axis
+- \(E[C_T]\)
+- \(E[C_{\rm CX}]\)
+- \(E[C_{1Q}]\)
+- \(G_T\)
+- \(G_{\rm CX}\)
+- \(G_{1Q}\)
+- coherent measurement bias upper
+- workspace
+
+を保存してください。
+
+## 2.2 Pareto
+
+新しいscalar scoreは作らず、
+
+\[
+(G_T,G_{\rm CX},G_{1Q})
+\]
+
+を中心にPareto frontを求めてください。
+
+必要なら
+
+\[
+(B^2,E[C_T],E[C_{\rm CX}],E[C_{1Q}])
+\]
+
+についても別のmechanism-level Paretoを保存してください。
+
+dominanceは、
+
+- 全座標でnon-worse
+- 少なくとも1座標でstrict better
+
+としてください。
+
+intervalが存在する座標は保存intervalを優先し、point表示だけでrobust dominanceを作らないでください。
+
+## 2.3 必ず答えること
+
+- Aはprecision envelope上でPareto frontに残るか。
+- \(x=1/8\) と \(x=1/4\) で結果が違うか。
+- ordinary / PTSC-K0のどのprecision点がAをdominateするか、しないか。
+- Aの有利条件が単一precisionだけか、複数登録precisionでtrade-offとして残るか。
+
+これはalgorithm winnerの判定ではなく、**次の設計自由度としてprecisionを考える必要性の診断**です。
+
+---
+
+# 3. 問いB：\(G_Q\) 改善要因の分解
+
+R1で保存された値について、
+
+\[
+G_Q = N_{\rm total}\,E[C_Q]
+\]
+
+の関係を利用し、A / ordinary、A / PTSC-K0を分解してください。
+
+対象：
+
+\[
+Q\in\{T,CX,1Q\}.
+\]
+
+各登録条件について、少なくとも
+
+\[
+\frac{G_Q^A}{G_Q^B}
+=
+\frac{N_A}{N_B}
+\frac{E[C_Q]^A}{E[C_Q]^B}
+\]
+
+を保存してください。
+
+ここでBはordinaryまたはPTSC-K0。
+
+これにより、
+
+- shot-count側の改善
+- per-shot native cost側の改善
+
+を厳密に分離してください。
+
+## 3.1 shot側の入力も保存
+
+shot数は非線形なので、
+
+\[
+N_A/N_B
+\]
+
+をさらに恣意的に一意分解しないでください。
+
+代わりに、shot ruleの入力として：
+
+- \(B^2\)
+- \(B\)
+- synthesis/coefficient bias upper
+- remaining axis budget
+  \[
+  s=\epsilon_{\rm axis}-b
+  \]
+- sufficient shot count
+
+を並べてください。
+
+必要なら「B²が低い」「biasが低い」などの方向だけを記述してください。
+
+**結果後に独自のcausal percentage attributionを作らないでください。**
+
+## 3.2 特に見る登録条件
+
+最低限、以下を詳しく比較してください。
+
+### x = 1/4, epsilon = 1e-3
+
+A / ordinary:
+
+\[
+G_T \approx 0.796
+\]
+
+A / PTSC-K0:
+
+\[
+G_T \approx 0.823
+\]
+
+となった条件。
+
+ここで、
+
+- normalization差
+- shot差
+- \(E[C_T]\)差
+- bias差
+
+のどれがどの程度の方向に効いているかを明示してください。
+
+### x = 1/8, epsilon = 1e-4
+
+AがT側では有利だが、CX側ではtrade-offになる条件。
+
+ここでは、
+
+- T-count reduction
+- shot数
+- CX event cost
+
+の競合を整理してください。
+
+---
+
+# 4. 問いC：synthesis precision resonance / angle sensitivity
+
+**保存済み126 synthesis rowsだけ**を使用してください。
+
+新しいsynthesisは行わないでください。
+
+目的は、
+
+> Aのresource gainがrepresentationの構造によるものか、pygridsynthの特定angle/precisionにおける離散T-countの跳びによって増幅されているか
+
+を診断することです。
+
+## 4.1 angle table
+
+保存済みangle keyごとに：
+
+- symbolic angle identity
+- armでの利用箇所
+- ordinary / controlled
+- precision
+- T count
+- T† count
+- 1Q count
+- strict operator error upper
+- sequence length/hash
+
+を整理してください。
+
+同じsymbolic angleについて、
+
+\[
+10^{-3},10^{-4},10^{-6}
+\]
+
+でT-countがどう変化するかを保存してください。
+
+## 4.2 resonance diagnostic
+
+以下を探してください。
+
+- precisionを一段厳しくした際のT-countの大きな離散jump
+- A固有angle
+  \[
+  \atan(\rho)
+  \]
+  がordinary/PTSCの
+  \[
+  \atan(x),\quad \atan(x/3)
+  \]
+  より偶然安い／高い条件
+- controlled half-angleで同様のjumpがあるか
+- \(x=1/4,10^{-3}\) の大きなA gainが、少数angle keyの安価なsequenceで主に説明できるか
+
+ただし「resonance」のthresholdを結果後に勝手に固定しないでください。
+
+まず：
+
+- raw T-count差
+- relative差
+- event probabilityで重み付けした寄与
+
+を保存し、記述的にまとめてください。
+
+## 4.3 counterfactualは禁止
+
+以下は行わない：
+
+- 未登録precisionで補間
+- angleを少し動かして再synthesis
+- T-count curveの補間をscience結果として利用
+- 別synthesizerを試す
+
+R1.5で言えるのは、
+
+> 登録されたpygridsynth設定の離散列にどの程度依存して見えるか
+
+までです。
+
+---
+
+# 5. precisionごとのbias / shotの関係
+
+登録precisionが厳しくなると、
+
+- synthesis errorは減る
+- bias marginは増える
+- shotsは減り得る
+- 一方でT-countは増える
+
+というtrade-offがあります。
+
+各arm/xについて、
+
+\[
+\epsilon_{\rm synth}
+\rightarrow
+(
+b_{\rm synth},
+N,
+E[C_T],
+G_T
+)
+\]
+
+を一覧化してください。
+
+特に、
+
+> 最も厳しいnative precisionが必ず最小 \(G_T\) ではない
+
+ことを、保存値が支持するか確認してください。
+
+これはRA-RTEで
+
+\[
+\text{representation parameter}
++
+\text{synthesis precision}
+\]
+
+を共同設計する必要性を判断する材料です。
+
+ただし新しいprecision optimizationは今回行いません。
+
+---
+
+# 6. R1.5で答えてほしい研究判断用質問
+
+最終handoffでは以下へ明示的に答えてください。
+
+### Q1
+
+AのR1 gainは、
+
+- normalization低下中心
+- native synthesis cost中心
+- bias / shot中心
+- 複数要因の相互作用
+
+のどれとして最も整合的に説明できるか。
+
+断定できない場合はそのまま書く。
+
+### Q2
+
+Aは登録precision envelope上でPareto pointとして残るか。
+
+### Q3
+
+Aの有利性は単一precisionのpygridsynth離散効果だけに依存しているように見えるか。
+
+### Q4
+
+representation parameterとsynthesis precisionを共同最適化する
+**RA-RTE型の次アルゴリズム設計に情報価値があるか**。
+
+これはCodexが研究方向を採択する質問ではなく、
+
+- `SUPPORTS_RA_RTE_DESIGN`
+- `WEAK_SUPPORT_PRECISION_SPECIFIC`
+- `NO_CLEAR_RESOURCE_DESIGN_SIGNAL`
+
+程度の限定的診断で返してください。
+
+### Q5
+
+R1保存値だけでは判断できず、GPT側で新しい数学設計が必要な点は何か。
+
+---
+
+# 7. 成果物
+
+新しいdocs/posthoc-analysis branchを作成してください。
+
+推奨名：
+
+`track-b-r1p5-saved-attribution-20261006`
+
+最低限：
+
+1. `docs/tracks/algorithm_codesign/r1p5_saved_value_attribution_v1.md`
+2. `artifacts/track_b_r1p5_saved_attribution/2026-10-06/attribution_summary_v1.json`
+3. precision-envelope Pareto CSV/JSON
+4. factorization table
+5. synthesis-angle / T-count table
+6. evidence/provenance manifest
+7. GPT handoff document
+
+必要ならstdlib等の解析scriptも保存してください。
+
+全artifactには、
+
+- input R1 commit
+- original result SHA256
+- analysis script SHA256
+- no science rerun
+- no synthesis rerun
+- no new candidates
+- POSTHOC attribution
+
+を明記してください。
+
+---
+
+# 8. 過去証拠の扱い
+
+以下は変更しない：
+
+- R1 source S
+- R1 authorization A
+- R1 original result
+- R1 one-shot marker
+- R0/R0.5
+- SP-0.5/SP-1
+- BF/BM/BS
+- Track A
+
+保存値のscientific classificationを上書きしないでください。
+
+R1は元契約どおりresource map complete awaiting GPT reviewです。
+
+R1.5はその**原因帰属・次設計入力**であり、R1を再分類するものではありません。
+
+---
+
+# 9. STOP
+
+作業完了後はcommit・pushし、
+
+- branch
+- full commit SHA
+- remote一致
+- R1 original result/markerのhash不変
+- 最終Q1〜Q5の回答
+
+を報告してください。
+
+その後mandatory STOP。
+
+**RA-RTEの新しいeta最適化、R2、DF接続、追加scienceへは進まないでください。**
+
+次のアルゴリズム設計・研究方針判断はGPT側へ戻してください。
