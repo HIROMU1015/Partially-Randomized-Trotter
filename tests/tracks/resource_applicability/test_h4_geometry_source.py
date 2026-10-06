@@ -16,6 +16,7 @@ from trottertracks.resource_applicability.h4_geometry import identity as ident
 from trottertracks.resource_applicability.h4_geometry import gates,inputs,signal,circuits,resources,ledger,execution
 from trottertracks.resource_applicability.h4_geometry import review as sensitivity
 from trottertracks.resource_applicability.h4_geometry import workers
+from trottertracks.resource_applicability.h4_geometry import parallel
 
 COUNTS={}
 OPTIONS=dict(basis_gates=['rz','sx','x','cx'],optimization_level=1,seed_transpiler=17,num_processes=1)
@@ -629,6 +630,333 @@ class LedgerTests(unittest.TestCase):
                 p=b.root/('record-'+a['wrapper_key']+'.json');changed=json.loads(p.read_text());changed['metrics']['rz_count']=2;p.write_text(json.dumps(changed))
                 with self.assertRaises(ident.Stop):l.read(a['wrapper_key'])
             finally:l.close();b.close()
+
+
+class FakeCompilePool:
+    """Manually completed futures; no worker, thread, transpile or authorization."""
+    def __init__(self, ledger):
+        self.ledger, self.jobs, self.submissions = ledger, {}, []
+        self.max_unfinished = 0
+        self.first_wait_submissions = None
+        self.fail_submit = False
+
+    def submit(self, function, circuit, options):
+        from concurrent.futures import Future
+        key = circuit['key']
+        assert self.ledger.reservations[key]['status'] == 'RESERVED'
+        durable = json.loads((self.ledger.budget.root/('ledger-%06d.json'%(self.ledger.version-1))).read_bytes())
+        assert durable['reservations'][key]['status'] == 'RESERVED'
+        self.submissions.append(key)
+        if self.fail_submit:
+            raise BrokenPipeError('synthetic submit/worker death')
+        future = Future()
+        self.jobs[future] = (key, circuit['metrics'])
+        self.max_unfinished = max(self.max_unfinished, sum(not f.done() for f in self.jobs))
+        return future
+
+
+class FakeCompileRun:
+    def __init__(self, ledger, workers=3):
+        self.workers, self.pool = workers, FakeCompilePool(ledger)
+        self.completed, self.aborts = [], 0
+        self.fail_wait = False
+        self.fail_compile = False
+        self.fail_monitor = False
+        self.before_complete = None
+
+    def pulse(self):
+        if self.fail_monitor:
+            raise ident.Stop('synthetic monitor failure')
+
+    def wait_any(self, futures):
+        if self.pool.first_wait_submissions is None:
+            self.pool.first_wait_submissions = len(self.pool.submissions)
+        if self.fail_wait:
+            raise BrokenPipeError('synthetic worker death')
+        self.pulse()
+        # Deliberately complete the newest outstanding job first.
+        future = next(f for f in reversed(list(self.pool.jobs)) if f in futures and not f.done())
+        if self.before_complete:
+            self.before_complete()
+        key, metrics = self.pool.jobs[future]
+        if self.fail_compile:
+            future.set_exception(MemoryError('synthetic compile/allocation failure'))
+        else:
+            future.set_result(metrics)
+        self.completed.append(key)
+        return {future}
+
+    def abort(self):
+        self.aborts += 1
+
+
+def synthetic_compile_jobs(samples=32, duplicate_mod=None):
+    fields = fake_identity()
+    seeds = signal.trajectory_seeds(fields)
+    for index in range(samples):
+        component = index if duplicate_mod is None else index % duplicate_mod
+        for axis in ('cosine', 'sine'):
+            numerical = hashlib.sha256(('ARTIFICIAL:'+axis+':'+str(component)).encode()).hexdigest()
+            expected = ledger.wire(fields, axis, seeds[index], index, numerical)
+            metrics = {name: 3*component+j+1+(10 if axis=='sine' else 0) for j,name in enumerate(ledger.METRICS)}
+            yield expected, {'key':expected['wrapper_key'], 'metrics':metrics}
+
+
+class ParallelCompileTests(unittest.TestCase):
+    def fixture(self, workers=3, cap=74784):
+        from contextlib import contextmanager
+        @contextmanager
+        def context():
+            with tempfile.TemporaryDirectory(prefix='h4-synthetic-') as t:
+                budget = resources.OutputBudget(Path(t)/'own')
+                journal = ledger.Ledger(budget,cap=cap)
+                try:
+                    yield FakeCompileRun(journal,workers),journal
+                finally:
+                    journal.close();budget.close()
+        return context()
+
+    def compile(self, run, journal, jobs, count, reuse=None):
+        return parallel.compile_wrappers(run,journal,jobs,execution._compile_worker,OPTIONS,
+                                         {} if reuse is None else reuse,expected_count=count)
+
+    def test_admitted_workers_bound_and_multiple_initial_submits(self):
+        for w in (1,2,5,12):
+            with self.fixture(w) as (run,journal):
+                generated=[]
+                def jobs():
+                    for job in synthetic_compile_jobs(8):
+                        generated.append(job[0]['wrapper_key']);yield job
+                def before_complete():
+                    if not run.completed:self.assertEqual(len(generated),w)
+                run.before_complete=before_complete
+                records=self.compile(run,journal,jobs(),16)
+                self.assertEqual(len(records),16)
+                self.assertEqual(run.pool.first_wait_submissions,w)
+                self.assertEqual(run.pool.max_unfinished,w)
+                self.assertEqual(journal.audit(),{'logical_wrappers':16,'actual_invocations':16})
+
+    def test_out_of_order_trajectory_axis_and_weight(self):
+        jobs=list(synthetic_compile_jobs())
+        with self.fixture() as (run,journal):
+            records=self.compile(run,journal,iter(jobs),64)
+            self.assertNotEqual(run.completed,[e['wrapper_key'] for e,c in jobs])
+            self.assertEqual([r['wrapper_key'] for r in records],[e['wrapper_key'] for e,c in jobs])
+            self.assertEqual([r['metrics'] for r in records],[c['metrics'] for e,c in jobs])
+            self.assertEqual([r['axis'] for r in records],['cosine','sine']*32)
+            self.assertEqual([r['trajectory_index'] for r in records],[i for i in range(32) for a in range(2)])
+            self.assertEqual(sum(r['sample_weight'] for r in records),2.)
+
+    def test_pending_duplicates_wait_for_COMPLETE_no_double_reservation(self):
+        jobs=[job for job in synthetic_compile_jobs(3,1) if job[0]['axis']=='cosine']
+        with self.fixture() as (run,journal):
+            def before_complete():
+                self.assertEqual(len(journal.expected),3)
+                self.assertEqual(len(journal.reservations),1)
+                self.assertEqual(journal.entries,{})
+                self.assertEqual(next(iter(journal.reservations.values()))['status'],'RESERVED')
+            run.before_complete=before_complete
+            records=self.compile(run,journal,iter(jobs),3)
+            self.assertEqual(len(run.pool.submissions),1)
+            self.assertEqual([r['cache_reuse'] for r in records],[False,True,True])
+            self.assertEqual([r['sample_weight'] for r in records],[1/32]*3)
+            self.assertEqual(journal.audit(),{'logical_wrappers':3,'actual_invocations':1})
+
+    def test_paired_duplicate_32_logical_samples_per_axis(self):
+        with self.fixture() as (run,journal):
+            records=self.compile(run,journal,synthetic_compile_jobs(32,1),64)
+            self.assertEqual(journal.audit(),{'logical_wrappers':64,'actual_invocations':2})
+            self.assertEqual(sum(not r['cache_reuse'] for r in records),2)
+            for axis in ('cosine','sine'):
+                self.assertEqual(sum(r['sample_weight'] for r in records if r['axis']==axis),1.)
+
+    def test_pending_identity_mismatch_is_STOP(self):
+        jobs=[job for job in synthetic_compile_jobs(2,1) if job[0]['axis']=='cosine']
+        jobs[1][0]['source_commit']='0'*40
+        with self.fixture() as (run,journal):
+            with self.assertRaises(ident.Stop):self.compile(run,journal,iter(jobs),2)
+            self.assertEqual(len(run.pool.submissions),1)
+            self.assertEqual(run.aborts,1)
+            self.assertEqual(journal.entries,{})
+            with self.assertRaises(ident.Stop):journal.audit()
+
+    def test_no_cross_axis_cell_or_geometry_reuse(self):
+        base=list(synthetic_compile_jobs(2,1))
+        jobs=[base[0],base[1]]
+        for field,value in (('template','other'),('geometry','0.80')):
+            fields={**fake_identity(),field:value}
+            e=ledger.wire(fields,'cosine',123,1,base[0][0]['numerical_circuit_fingerprint'])
+            jobs.append((e,{'key':e['wrapper_key'],'metrics':base[0][1]['metrics']}))
+        with self.fixture() as (run,journal):
+            records=self.compile(run,journal,iter(jobs),4)
+            self.assertTrue(all(not r['cache_reuse'] for r in records))
+            self.assertEqual(journal.audit(),{'logical_wrappers':4,'actual_invocations':4})
+
+    def test_reserved_owner_and_cache_chain_are_not_reused(self):
+        jobs=[job for job in synthetic_compile_jobs(3,1) if job[0]['axis']=='cosine']
+        for cached in (False,True):
+            with self.fixture() as (run,journal):
+                owner=jobs[0][0];key=owner['wrapper_key'];journal.register(owner);journal.reserve(key)
+                scope=(owner['geometry'],owner['candidate_template'],owner['axis'],owner['numerical_circuit_fingerprint'])
+                if cached:
+                    journal.complete(key,jobs[0][1]['metrics'])
+                    follower=jobs[1][0];journal.register(follower)
+                    journal.complete(follower['wrapper_key'],{},owner_key=key)
+                    key=follower['wrapper_key'];request=jobs[2]
+                else:request=jobs[1]
+                with self.assertRaises(ident.Stop):self.compile(run,journal,iter([request]),1,{scope:key})
+                self.assertEqual(run.pool.submissions,[])
+                self.assertEqual(run.aborts,1)
+
+    def test_compile_failure_preserves_charged_reservations_no_followers(self):
+        jobs=[job for job in synthetic_compile_jobs(3,1) if job[0]['axis']=='cosine']
+        with self.fixture() as (run,journal):
+            run.fail_compile=True
+            with self.assertRaises(MemoryError):self.compile(run,journal,iter(jobs),3)
+            self.assertEqual(len(run.pool.submissions),1)
+            self.assertEqual(len(journal.reservations),1)
+            self.assertEqual(journal.entries,{})
+            self.assertEqual(run.aborts,1)
+            with self.assertRaises(ident.Stop):journal.audit()
+
+    def test_worker_death_monitor_and_submit_failure_stop_new_jobs(self):
+        for failure in ('wait','monitor','submit'):
+            with self.fixture() as (run,journal):
+                if failure=='wait':run.fail_wait=True
+                elif failure=='submit':run.pool.fail_submit=True
+                else:
+                    original=run.pool.submit
+                    def submit(*args):
+                        result=original(*args);run.fail_monitor=True;return result
+                    run.pool.submit=submit
+                with self.assertRaises((BrokenPipeError,ident.Stop)):
+                    self.compile(run,journal,synthetic_compile_jobs(8),16)
+                self.assertEqual(len(run.pool.submissions),3 if failure=='wait' else 1)
+                self.assertEqual(run.aborts,1)
+                self.assertTrue(all(r['status']=='RESERVED' for r in journal.reservations.values()))
+                self.assertEqual(journal.entries,{})
+                with self.assertRaises(ident.Stop):journal.audit()
+
+    def test_completed_failure_outside_wait_batch_stops_refill(self):
+        with self.fixture() as (run,journal):
+            original=run.wait_any
+            def wait_any(futures):
+                done=original(futures)
+                other=next(f for f in futures if f not in done)
+                other.set_exception(BrokenPipeError('other worker failed'))
+                return done
+            run.wait_any=wait_any
+            with self.assertRaises(BrokenPipeError):self.compile(run,journal,synthetic_compile_jobs(8),16)
+            self.assertEqual(len(run.pool.submissions),3)
+            self.assertEqual(journal.entries,{})
+
+    def test_reservation_cap_partial_ledger_and_no_refund(self):
+        with self.fixture(1,cap=2) as (run,journal):
+            with self.assertRaises(ident.Stop):self.compile(run,journal,synthetic_compile_jobs(3),6)
+            self.assertEqual(len(run.pool.submissions),2)
+            self.assertEqual(len(journal.reservations),2)
+            self.assertEqual(len(journal.entries),2)
+            self.assertEqual(run.aborts,1)
+            with self.assertRaises(ident.Stop):journal.audit()  # registered incomplete logical request
+
+    def test_incomplete_count_or_generator_failure_is_STOP(self):
+        with self.fixture() as (run,journal):
+            with self.assertRaises(ident.Stop):self.compile(run,journal,synthetic_compile_jobs(1),4)
+            self.assertEqual(run.aborts,1)
+        with self.fixture() as (run,journal):
+            def jobs():
+                yield next(synthetic_compile_jobs(1))
+                raise ValueError('synthetic build boundary failed')
+            with self.assertRaises(ValueError):self.compile(run,journal,jobs(),2)
+            self.assertEqual(len(run.pool.submissions),1)
+            self.assertEqual(next(iter(journal.reservations.values()))['status'],'RESERVED')
+
+    def test_owner_digest_checked_before_pending_followers(self):
+        jobs=[job for job in synthetic_compile_jobs(2,1) if job[0]['axis']=='cosine']
+        with self.fixture() as (run,journal):
+            original=journal.complete
+            def complete(*args,**kw):
+                record=original(*args,**kw)
+                path=journal.budget.root/('record-'+record['wrapper_key']+'.json')
+                altered=dict(record);altered['metrics']={**record['metrics'],'rz_count':999}
+                path.write_bytes(ledger.json_bytes(altered))
+                return record
+            journal.complete=complete
+            with self.assertRaises(ident.Stop):self.compile(run,journal,iter(jobs),2)
+            self.assertEqual(len(journal.entries),1)
+            self.assertEqual(len(run.pool.submissions),1)
+            self.assertEqual(run.aborts,1)
+
+    def test_serial_parallel_same_synthetic_signal_and_metric_aggregation(self):
+        jobs=list(synthetic_compile_jobs(32,7))
+        serial=[];reuse={}
+        with self.fixture(1) as (run,journal):
+            # Reference is the former reserve -> immediate complete -> next loop.
+            for expected,circuit in jobs:
+                journal.register(expected);key=expected['wrapper_key']
+                scope=(expected['geometry'],expected['candidate_template'],expected['axis'],expected['numerical_circuit_fingerprint'])
+                owner=reuse.get(scope)
+                if owner is None:
+                    journal.reserve(key);record=journal.complete(key,circuit['metrics']);reuse[scope]=key
+                else:record=journal.complete(key,{},owner_key=owner)
+                serial.append(record)
+            serial_counts=journal.audit()
+        with self.fixture(5) as (run,journal):
+            concurrent=self.compile(run,journal,iter(jobs),64)
+            self.assertEqual(journal.audit(),serial_counts)
+        def aggregate(records):
+            Z=np.diag([1.,-1.]);state=np.array([1.,0.])
+            template={'q':2,'T':.8,'delta':.4,'r':2,'K':2,'method':'B2'}
+            value=signal.corrected_signal([.2*Z],(.3,Z),.1,state,template)
+            pairs=[[records[2*i]['metrics'],records[2*i+1]['metrics']] for i in range(32)]
+            saved={'normalization':value['normalization'],'bias':{'cosine':.001,'sine':.002},
+                   'paired_costs':[[m['rz_count'] for m in pair] for pair in pairs]}
+            return {'signal':value,'paired_metrics':pairs,'display':signal.display_map(saved),
+                    'P':signal.resource_point(saved,.05,3),'weights':[r['sample_weight'] for r in records]}
+        self.assertEqual(aggregate(serial),aggregate(concurrent))
+
+    def test_lazy_candidate_axes_share_one_evolution_and_seed(self):
+        run=Mock();seeds=[7,8,9];preparation={'components':[]};template={'q':1}
+        with patch.object(signal,'sample_events',return_value=([[]],1)) as sample,\
+             patch.object(circuits,'build_evolution',side_effect=lambda *a:object()) as build,\
+             patch.object(circuits,'wrapper',side_effect=lambda evolution,axis:(evolution,axis)) as wrap,\
+             patch.object(circuits,'numerical_fingerprint',return_value=FAKE):
+            jobs=execution.candidate_wrapper_jobs(run,fake_identity(),seeds,preparation,template)
+            self.assertEqual(build.call_count,0)
+            first=next(jobs);second=next(jobs)
+            self.assertIs(first[1][0],second[1][0])
+            self.assertEqual(first[0]['trajectory_seed'],second[0]['trajectory_seed'])
+            self.assertEqual(build.call_count,1);self.assertEqual(sample.call_count,1)
+            self.assertNotEqual(first[0]['wrapper_key'],second[0]['wrapper_key'])
+
+    def test_source_gate_reads_new_audit_only(self):
+        root=Path(__file__).absolute().parents[3]
+        plan,auth,rev=fake_stage();plan['source_root']=str(root)
+        permit=gates.Permit('input_generation',plan,str(root),FAKE)
+        with patch.object(Path,'read_bytes',autospec=True,side_effect=ident.Stop('synthetic audit boundary')) as read:
+            with self.assertRaises(ident.Stop):gates.checkout_gate(permit)
+            read.assert_called_once()
+            self.assertEqual(read.call_args.args[0],root/gates.SOURCE_AUDIT)
+        self.assertEqual(gates.SOURCE_AUDIT,'artifacts/resource_applicability/track_a_h4_geometry_parallel_source/2026-10-06/source_freeze_v1.json')
+
+    def test_owned_pool_uses_available_worker_and_latches_death(self):
+        import queue,threading
+        pool=workers.OwnedPool.__new__(workers.OwnedPool)
+        pool.assignment_lock=threading.Lock();pool.failure=None;pool.counter=0
+        pool.available=queue.Queue();pool.available.put(1)
+        pool.processes=[Mock(),Mock()];pool.monitor=Mock();pool.budget=Mock();pool.io=Mock()
+        for process in pool.processes:process.poll.return_value=None
+        with patch.object(workers,'write_frame') as write,patch.object(workers,'read_frame',return_value={'result':{'rz_count':1},'log':'','error':None}):
+            result=pool._call(0,'_compile_worker',(None,OPTIONS))
+            self.assertEqual(result,{'rz_count':1})
+            self.assertIs(write.call_args.args[0],pool.processes[1].stdin)
+            self.assertEqual(pool.available.get_nowait(),1)
+        pool.available.put(0);pool.processes[0].poll.return_value=2
+        with self.assertRaises(ident.Stop):pool._call(1,'_compile_worker',(None,OPTIONS))
+        pool.monitor.stop_children.assert_called_once()
+        with self.assertRaises(ident.Stop):pool.submit(execution._compile_worker,None,OPTIONS)
+        pool.io.submit.assert_not_called()
+        self.assertEqual(pool.counter,0)
 
 
 def reject_number(value):

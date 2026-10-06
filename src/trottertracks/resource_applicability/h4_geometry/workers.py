@@ -7,6 +7,7 @@ import io
 import os
 from pathlib import Path
 import pickle
+import queue
 import subprocess
 import sys
 import threading
@@ -88,9 +89,10 @@ class OwnedPool:
         from concurrent.futures import ThreadPoolExecutor
         from trottertracks.resource_applicability.h4_geometry.gates import PYTHON
         self.monitor,self.budget,self.processes=monitor,budget,[]
-        self.index,self.counter,self.assignment_lock=0,0,threading.Lock()
+        self.counter,self.assignment_lock,self.failure=0,threading.Lock(),None
+        self.available=queue.Queue()
+        for index in range(workers):self.available.put(index)
         self.io=ThreadPoolExecutor(max_workers=workers,thread_name_prefix='owned-pipe-io')
-        self.locks=[threading.Lock() for _ in range(workers)]
         try:
             for _ in range(workers):
                 process=subprocess.Popen([PYTHON,'-B',__file__,'--owned-worker',str(os.getpid())],
@@ -113,12 +115,18 @@ class OwnedPool:
         from trottertracks.resource_applicability.h4_geometry.identity import require
         require(function.__name__ in ('_generate_worker','_compile_worker'),'closed worker job set')
         with self.assignment_lock:
-            index=self.index;self.index=(index+1)%len(self.processes);serial=self.counter;self.counter+=1
-        return self.io.submit(self._call,index,serial,function.__name__,args)
+            require(self.failure is None,'owned pool failed; no additional submit')
+            serial=self.counter;self.counter+=1
+        return self.io.submit(self._call,serial,function.__name__,args)
 
-    def _call(self,index,serial,name,args):
+    def _call(self,serial,name,args):
         from trottertracks.resource_applicability.h4_geometry.identity import require
-        with self.locks[index]:
+        try:
+            with self.assignment_lock:
+                require(self.failure is None,'owned pool failed; no queued dispatch')
+            index=self.available.get()
+            with self.assignment_lock:
+                require(self.failure is None,'owned pool failed; no queued dispatch')
             process=self.processes[index]
             require(process.poll() is None,'owned worker died STOP')
             write_frame(process.stdin,{'name':name,'args':args})
@@ -127,7 +135,13 @@ class OwnedPool:
             if response['log']:
                 self.budget.write('worker-log-%06d.txt'%serial,response['log'].encode())
             require(response['error'] is None,'owned worker failure STOP: '+str(response['error']))
-            return response['result']
+        except BaseException as exc:
+            with self.assignment_lock:
+                if self.failure is None:self.failure=exc
+            self.monitor.stop_children()
+            raise
+        self.available.put(index)  # refill the worker that actually finished
+        return response['result']
 
     def shutdown(self,wait=True,cancel_futures=True):
         self.monitor.stop_children()

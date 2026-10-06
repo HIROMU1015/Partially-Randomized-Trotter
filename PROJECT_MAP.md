@@ -1,5 +1,15 @@
 # プロジェクト案内
 
+## 2026-10-06 H4 geometry compile並列source再固定・科学未実行
+
+compileの逐次waitをadmitted worker数以下のbounded投入・回収へ変更した。処理中ownerを追跡し、
+COMPLETEとidentity/digest検査後だけ再利用する。trajectory/axis順・weight、科学scope・seed/compilerは不変。
+[実装資料](docs/research/track_a_h4_geometry_parallel_source_implementation.md)と[new bundle](artifacts/resource_applicability/track_a_h4_geometry_parallel_source/2026-10-06/README.md)を現在の入口とする。
+既存94＋並列回帰17＝111 synthetic tests PASS、fail/error/skip0。今回transpile3、旧25＋新3＝28/64。
+fake futures/mock workersだけで制御を検査し、実worker/production性能は未検証。旧bundle/audit/契約・保存証拠は不変。
+SOURCEとsourceを変更しないREVIEWの2 commitを分ける。分子アクセス/科学処理/GPU/本番起動/認可発行/共有環境・他job変更0。
+`H4_GEOMETRY_PARALLEL_SOURCE_FROZEN_AWAITING_REVIEW`で公開後STOP。入力生成plan/auth作成・本計算・H6/Track Bへ進まない。
+
 ## 2026-10-06 H4 geometry server-native source固定・科学未実行
 
 利用者の新指示で契約v2 D1〜D4を実装条件へ採用し、旧未承認履歴を保存した。

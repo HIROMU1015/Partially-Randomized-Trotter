@@ -63,6 +63,7 @@ class OwnedRun:
 
     def pulse(self):
         require(self.failure is None,'owned monitoring failed STOP')
+        require(getattr(getattr(self,'pool',None),'failure',None) is None,'owned pool failed STOP')
         self.wall.consumed()
 
     def wait(self,future):
@@ -73,6 +74,19 @@ class OwnedRun:
                 return future.result(timeout=1)
             except TimeoutError:
                 pass
+
+    def wait_any(self,futures):
+        from concurrent.futures import wait,FIRST_COMPLETED
+        while True:
+            self.pulse()
+            done,_=wait(futures,timeout=1,return_when=FIRST_COMPLETED)
+            if done:
+                self.pulse()
+                return done
+
+    def abort(self):
+        self.finished.set()
+        self.monitor.stop_children()
 
     def close(self):
         self.finished.set();self.thread.join(timeout=2)
@@ -130,14 +144,28 @@ def load_new_input(permit,distance,freeze):
     return arrays
 
 
+def candidate_wrapper_jobs(run,identity,seeds,preparation,template):
+    """Generate one evolution and its two axes lazily in trajectory order."""
+    from .signal import sample_events
+    from .circuits import build_evolution,wrapper,numerical_fingerprint
+    for index,seed in enumerate(seeds):
+        run.pulse()
+        events=sample_events(preparation['components'],template,seed)[0] if seed is not None else [[] for _ in range(template['q'])]
+        evolution=build_evolution(preparation,template,events)
+        for axis in ('cosine','sine'):
+            run.pulse();circuit=wrapper(evolution,axis)
+            numerical=numerical_fingerprint(circuit,axis)
+            yield wire(identity,axis,seed,index if seed is not None else None,numerical),circuit
+
+
 def signal_stage(permit,authorization,options):
     require(permit.stage=='signal_compile','separate signal stage')
     # The freeze and file access occur only after authorize + checkout_gate.
     freeze=input_boundary(permit)
     run=OwnedRun(permit,authorization,prior_wall=freeze['consumed_seconds'],handoff=True)
     ledger=None
-    from .signal import prepare,corrected_signal,candidate_identity,trajectory_seeds,sample_events,display_map
-    from .circuits import build_evolution,wrapper,numerical_fingerprint
+    from .signal import prepare,corrected_signal,candidate_identity,trajectory_seeds,display_map
+    from .parallel import compile_wrappers
     from .inputs import validate_frozen_state
     signals=[];reuse={}
     try:
@@ -155,26 +183,10 @@ def signal_stage(permit,authorization,options):
                 signal_record=corrected_signal(det,tail,preparation['constant'],arrays['qiskit_state'],template)
                 target=complex(np.exp(-1j*float(arrays['energy'])*template['T']))
                 seeds=trajectory_seeds(identity) if template['method'] in ('B2','B3') else [None]
-                costs=[];all_metrics=[]
-                for index,seed in enumerate(seeds):
-                    events=sample_events(preparation['components'],template,seed)[0] if seed is not None else [[] for _ in range(template['q'])]
-                    evolution=build_evolution(preparation,template,events)  # shared by both axes
-                    paired=[];paired_metrics=[]
-                    for axis in ('cosine','sine'):
-                        run.pulse();circuit=wrapper(evolution,axis)
-                        numerical=numerical_fingerprint(circuit,axis)
-                        expected=wire(identity,axis,seed,index if seed is not None else None,numerical)
-                        ledger.register(expected);key=expected['wrapper_key']
-                        reuse_key=(distance,identity['template'],axis,numerical)
-                        owner=reuse.get(reuse_key)
-                        if owner is None:
-                            ledger.reserve(key)  # durable before actual invocation
-                            measured=run.wait(run.pool.submit(_compile_worker,circuit,options))
-                            record=ledger.complete(key,measured);reuse[reuse_key]=key
-                        else:
-                            record=ledger.complete(key,{},owner_key=owner)
-                        paired.append(record['metrics']['rz_count']);paired_metrics.append(record['metrics'])
-                    costs.append(paired);all_metrics.append(paired_metrics)
+                records=compile_wrappers(run,ledger,candidate_wrapper_jobs(run,identity,seeds,preparation,template),
+                                         _compile_worker,options,reuse,expected_count=2*len(seeds))
+                all_metrics=[[records[2*i]['metrics'],records[2*i+1]['metrics']] for i in range(len(seeds))]
+                costs=[[m['rz_count'] for m in pair] for pair in all_metrics]
                 saved={'normalization':signal_record['normalization'],
                     'bias':{'cosine':abs(signal_record['corrected'].real-target.real),'sine':abs(signal_record['corrected'].imag-target.imag)},
                     'paired_costs':costs}

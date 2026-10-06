@@ -34,14 +34,19 @@ def validate_complete(record,expected,registry,external_digest):
             all(type(v) is int and v>=0 for v in record['metrics'].values()),'complete metrics')
 
 
-def reuse_owner(owner,owner_expected,request,registry,external_digest):
-    validate_complete(owner,owner_expected,registry,external_digest)
-    require(owner.get('cache_reuse') is False and owner.get('cache_owner_wrapper_key') is None,'cache owner chain')
+def validate_reuse_identity(owner,request):
+    """Identity comparison only; this never permits reuse of RESERVED results."""
     require(owner['wrapper_key']!=request['wrapper_key'],'self cache link')
     fields=('geometry','candidate_template','hamiltonian_sha256','df_sha256','state_sha256','input_fingerprint',
             'candidate_fingerprint','source_commit','compiler_fingerprint','environment_fingerprint','wrapper_semantics',
             'axis','numerical_circuit_fingerprint')
     require(all(owner[k]==request[k] for k in fields),'cross geometry/cell/axis cache')
+
+
+def reuse_owner(owner,owner_expected,request,registry,external_digest):
+    validate_complete(owner,owner_expected,registry,external_digest)
+    require(owner.get('cache_reuse') is False and owner.get('cache_owner_wrapper_key') is None,'cache owner chain')
+    validate_reuse_identity(owner,request)
     require(owner.get('actual_transpile_invocation_id') is not None,'owner invocation missing')
     require(registry.get(request['wrapper_key'])==request['numerical_circuit_fingerprint'],'request numerical registry')
     return owner['metrics']
@@ -143,6 +148,7 @@ class Ledger:
             chain=fingerprint('h4-ledger-delta-v1',payload)
             entries.update(payload['entries']);reservations.update(payload['reservations'])
         require(chain==self.chain and entries==self.entries and reservations==self.reservations,'external ledger head/state')
+        require(set(self.entries)==set(self.expected)==set(self.registry),'unresolved logical wrapper STOP')
         require(all(r['status']=='COMPLETE' for r in self.reservations.values()),'unresolved consumed reservation STOP')
         actual={p.name[7:-5] for p in self.budget.root.glob('record-*.json')}
         require(actual==set(self.entries),'orphan record STOP')

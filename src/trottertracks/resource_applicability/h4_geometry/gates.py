@@ -14,6 +14,7 @@ CONTRACT = 'artifacts/resource_applicability/track_a_h4_geometry_contract_prepar
 PLAN_SHA = '18aa36a2776d38852657f154a88c381b3299fbc009007f20a2d95fcb865d9f7a'
 PLAN_FP = 'c76e8f1f6de5a2625affde38cc471b8214b299f343da2817aadbb3ebabc7d933'
 MANIFEST_SHA = '14cc5d0cc4da2b82168a0640cf8ff70ddf382b79810842bab1d7fedfae029f70'
+SOURCE_AUDIT = 'artifacts/resource_applicability/track_a_h4_geometry_parallel_source/2026-10-06/source_freeze_v1.json'
 DISTANCES = ('0.70', '0.80', '0.90', '1.10', '1.40', '1.60')
 ARTIFACT_ANCHOR = '/home/AbeHiromu/projects/partially-randomized-trotter'
 RUN_ID = 'track-a-h4-geometry-v2-20261006-run01'
@@ -142,7 +143,7 @@ def authorize(stage, plan, authorization, review, *, explicit_launch):
 def checkout_gate(permit):
     root, plan = Path(permit.source_root), permit.plan
     require(Path(__file__).absolute() == root/'src/trottertracks/resource_applicability/h4_geometry/gates.py', 'loaded source checkout')
-    audit_bytes=(root/'artifacts/resource_applicability/track_a_h4_geometry_source/2026-10-06/source_freeze_v1.json').read_bytes()
+    audit_bytes=(root/SOURCE_AUDIT).read_bytes()
     require(sha(audit_bytes)==plan['source_audit_sha256'],'independent source audit binding')
     audit=json.loads(audit_bytes)
     require(audit['source_commit']==plan['source_commit'] and audit['status']=='SOURCE_BLOBS_VERIFIED','actual frozen source audit')
