@@ -73,3 +73,8 @@ stage_review_user_approved_v1.jsonにabsolute pathで固定し、fresh preflight
 
 [bundle](../../artifacts/resource_applicability/track_a_h4_cross_candidate_run03/2026-10-06/README.md)。
 科学NPZ・実runtime・checkpoint・cacheはcommit対象に含めない。
+
+
+## run03実行停止とrun04へ続く固定資料
+
+run03はfresh検査PASS後12 workersを起動し、3 invocations投入後monitor STOPとなった。完成compile0/signal0、全owned process終了、旧全証跡保持。[run04の監視機構修正と予算引継ぎ](track_a_h4_streaming_monitor_run04.md)を次の実行状態の入口とする。run03の元のmonitor例外は保存されておらず原因の断定はしない。
