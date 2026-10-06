@@ -1,5 +1,8 @@
 # 研究ノート
 
+- [2026-10-06 Track B SP-1一回結果・GPTへのSTOP](2026-10-06_track_b_sp1_one_shot_result.md)：
+  48 rows／96 axes完了、保存値audit PASS、retry0／mandatory STOP、研究判断はGPT側。
+
 - [2026-10-06 Track B SP-1契約案・会計fixture検証](2026-10-06_track_b_sp1_wrapper_preparation.md)：
   science0、17 local focused tests、RUN_READY=false、契約案reviewへSTOP。
 

@@ -1,5 +1,14 @@
 # Track B — Algorithm Co-design
 
+最新は[SP-1一回結果・保存値監査](sp1_one_shot_result_validation_20261006.md)（2026-10-06）。
+S `0d01ed9a332ebc5b66ed08acf56214a9b9c0236d`→direct authorization-only A `9630e06122172af238ac5219bec6dfc8b01ca837`。
+独立branch/worktree `track-b-sp1-one-shot-execution-20261006`でrun1、48 rows／96 axes完了。
+SP1_RESOURCE_MAP_COMPLETE_AWAITING_REVIEW、適格42／モデルshot cap6、technical failureなし。
+[raw result／consumed marker／audit／manifest](../../../artifacts/track_b_sp1_wrapper_result/2026-10-06/v1/)。
+CのDRはn=8/16でgain、32でloss、64でcap。CのD-only/R-only material gainは0。
+mandatory STOP、retry0、追加science未認可。[GPT研究再評価依頼](sp1_post_run_gpt_review_request_20261006.md)へ戻す。
+actual DF/RTE／compiled費用／新規性は未実証。以下のsource準備・未実行statusと旧closuresを履歴として保持する。
+
 最新は[SP-1採用済み結果前契約・source最終review](sp1_wrapper_preregistration_v1.md)（2026-10-06）。
 GPT reviewの必須2修正を反映：role/mask非依存pre-placement fusionと、加法的保存primitive T費用。
 12 wrappers/16 pathsのstatic fusion監査は全0。実adapter/runner・59 focused testsはlocal pass。

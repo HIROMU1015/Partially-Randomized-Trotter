@@ -1,5 +1,13 @@
 # 文書索引
 
+Track B最新は[SP-1一回結果・保存値監査](tracks/algorithm_codesign/sp1_one_shot_result_validation_20261006.md)。
+SP1_RESOURCE_MAP_COMPLETE_AWAITING_REVIEW、48 rows／96 axes完了、保存値audit PASS。
+[raw result／marker／evidence manifest](../artifacts/track_b_sp1_wrapper_result/2026-10-06/v1/)。
+CのDRのみn=8/16でgain、32でloss、64でshot cap。Cのselective-only material gainは0。
+local synthetic mechanism evidence。mandatory STOP、retry0、次stage未認可。
+[GPT研究再評価依頼](tracks/algorithm_codesign/sp1_post_run_gpt_review_request_20261006.md)へ戻す。
+以下のsource/preparation statusは結果前履歴として保持する。
+
 Track B最新は[SP-1採用済み結果前契約・source最終review](tracks/algorithm_codesign/sp1_wrapper_preregistration_v1.md)。
 fusionをrole/mask非依存へ修正し、費用を加法的な保存primitive T数に限定した。
 全16 pathの静的監査、B実adapter/runner、59 focused testsを公開。science sweep0、実行未認可。

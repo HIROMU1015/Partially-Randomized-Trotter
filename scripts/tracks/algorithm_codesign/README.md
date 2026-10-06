@@ -1,5 +1,12 @@
 # Track B scripts
 
+SP-1の[一回結果とGPT handoff](../../../docs/tracks/algorithm_codesign/sp1_one_shot_result_validation_20261006.md)を公開。
+science run1／retry0、mandatory STOP、marker consumed。旧runnerは再実行しない。
+[audit_sp1_saved_result.py](audit_sp1_saved_result.py)はstdlibだけで保存identity/field/predicateを照合する。
+matrix/guard/coefficients/Bernstein/resourceを再計算せず、source/runnerのimport・新合成は0。
+[保存audit／evidence manifest](../../../artifacts/track_b_sp1_wrapper_result/2026-10-06/v1/)、PASS。
+追加scienceは未認可。以下のpending/preparation記述は結果前履歴として保持する。
+
 [SP-1 runner](run_sp1_wrapper_pilot.py)は[採用契約](../../../docs/tracks/algorithm_codesign/sp1_wrapper_preregistration_v1.md)用。
 `plan --source-commit <full S>`はsource-bound静的ledgerだけで、coefficient/resource/signal採点を行わない。
 `run`は別review後の新S→direct authorization-only Aと明示指示を要求する。現在はpendingで拒否する。

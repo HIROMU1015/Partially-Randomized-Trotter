@@ -1,5 +1,14 @@
 # プロジェクト案内
 
+Track B最新は[SP-1一回結果・保存値監査](docs/tracks/algorithm_codesign/sp1_one_shot_result_validation_20261006.md)。
+固定S `0d01ed9a`→direct authorization-only A `9630e061`でrun1、SP1_RESOURCE_MAP_COMPLETE_AWAITING_REVIEW。
+48 rows／96 axes完了、42 rows適格／6 rowsモデルshot cap。technical failureなし、保存値監査PASS。
+CのDRはn=8/16でgain、32でloss、64でcap。CのD-only/R-only material gainは0。
+[結果・marker・evidence manifest](artifacts/track_b_sp1_wrapper_result/2026-10-06/v1/)、
+[保存field専用監査](scripts/tracks/algorithm_codesign/audit_sp1_saved_result.py)、
+[GPT側の研究再評価依頼](docs/tracks/algorithm_codesign/sp1_post_run_gpt_review_request_20261006.md)。
+mandatory STOP、retry0、追加science未認可。以下のsource準備・未実行statusは当時の履歴として保持する。
+
 Track B最新は[SP-1結果前契約・source最終review](docs/tracks/algorithm_codesign/sp1_wrapper_preregistration_v1.md)。
 GPTがdomainを採用し、必須修正を反映した。role/mask非依存pre-placement fusion、加法的primitive T費用。
 16登録pathの静的監査はfusion candidate/actual/cross-roleすべて0。実adapter/runnerと59 focused testsを追加。

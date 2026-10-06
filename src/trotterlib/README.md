@@ -1,5 +1,12 @@
 # trotterlib モジュール索引
 
+Track B [SP-1一回結果・保存値監査](../../docs/tracks/algorithm_codesign/sp1_one_shot_result_validation_20261006.md)は
+固定`../trottertracks/algorithm_codesign/synthesis_placement/`の実行記録。
+48 rows／96 axesを完了、mandatory STOP、retry0。共有trotterlib実装/APIは変更していない。
+[保存field audit](../../scripts/tracks/algorithm_codesign/audit_sp1_saved_result.py)はscience moduleをimportせず照合する。
+actual DF/RTE wrapperやcompiled費用の検証ではない。次の研究判断はGPT側。
+以下のsource準備・未実行記述は結果前履歴として保持する。
+
 Track B [SP-1結果前契約](../../docs/tracks/algorithm_codesign/sp1_wrapper_preregistration_v1.md)の
 sequence/adapter/accounting/launch/result modulesは`../trottertracks/algorithm_codesign/synthesis_placement/`。
 共有trotterlibをimport/変更せず、保存B primitiveを入力にしたsynthetic adapterと59 focused tests。

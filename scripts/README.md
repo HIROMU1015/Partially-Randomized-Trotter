@@ -1,5 +1,13 @@
 # scripts 索引
 
+Track B [SP-1一回結果](../docs/tracks/algorithm_codesign/sp1_one_shot_result_validation_20261006.md)は
+SP1_RESOURCE_MAP_COMPLETE_AWAITING_REVIEW、mandatory STOP、retry0。science runnerのone-shotはconsumed。
+[audit_sp1_saved_result.py](tracks/algorithm_codesign/audit_sp1_saved_result.py)はstdlibの保存field照合専用。
+source/authorization/hash/inventory、保存interval算術／分類predicate／duplicate／capを監査する。
+science moduleやrunnerをimportせず、matrix・guard・係数・Bernstein shots・resourceを再評価しない。
+[audit／evidence manifest](../artifacts/track_b_sp1_wrapper_result/2026-10-06/v1/)。保存値監査PASS、次stage未認可。
+以下のrunner準備・pending記述は結果前履歴。
+
 Track B [SP-1 runner](tracks/algorithm_codesign/run_sp1_wrapper_pilot.py)を追加した。
 `plan --source-commit <full S>`は静的角度/key/fusionとsource identityだけを照合する。
 資源/信号採点・合成・marker作成は0。`run`は別の明示authorizationとclean direct-child Aを要求する。
