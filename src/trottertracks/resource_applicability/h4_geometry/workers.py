@@ -95,7 +95,7 @@ class OwnedPool:
         self.io=ThreadPoolExecutor(max_workers=workers,thread_name_prefix='owned-pipe-io')
         try:
             for _ in range(workers):
-                process=subprocess.Popen([PYTHON,'-B',__file__,'--owned-worker',str(os.getpid())],
+                process=subprocess.Popen([PYTHON,'-P','-B',__file__,'--owned-worker',str(os.getpid())],
                     stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,
                     cwd=permit.source_root,env=dict(os.environ),close_fds=True)
                 self.processes.append(process);monitor.own_child(process.pid)
