@@ -1,5 +1,14 @@
 # Track B scripts
 
+## R0.5 technical verification only
+
+[check_rte_reallocation_r05_symbolic.py](check_rte_reallocation_r05_symbolic.py)：
+Aを固定したexact equivalence/norm/support比較。自由wordとPauli fixtureを区別する。
+[事前protocol](../../../artifacts/track_b_rte_reallocation_r05/2026-10-06/result_prior_protocol_v1.json)、
+[readout](../../../docs/tracks/algorithm_codesign/rte_reallocation_r05_symbolic_comparison_readout_v1.md)。
+一回実施済み、R1 science runnerではない。mandatory STOP。
+
+
 ## R0 fixed exact symbolic checks
 
 [check_rte_reallocation_symbolic.py](check_rte_reallocation_symbolic.py): standalone stdlib Fraction/free-word checker, A80/B9 fixtures and negative witnesses, 15s CPU/256 MiB AS/30s wall cap. [R0 packet](../../../docs/tracks/algorithm_codesign/rte_reallocation_r0_review_packet_20261006.md). No sampling/science/circuit operations.

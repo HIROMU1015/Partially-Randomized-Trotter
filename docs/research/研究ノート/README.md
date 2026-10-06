@@ -1,5 +1,11 @@
 # 研究ノート
 
+## 2026-10-06 Track B R0.5
+
+[Equivalence / novelty closure audit](2026-10-06_track_b_rte_reallocation_r05.md)：
+限定method-delta候補、CONDITIONAL-R1をGPTへ返す。R1未認可、mandatory STOP。
+
+
 ## 2026-10-06 Track B R0
 
 [有限mean再配分の独立数学・文献監査](2026-10-06_track_b_rte_reallocation_r0.md)。記号検査一回、科学実行なし、GPT review待ち。

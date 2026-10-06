@@ -1,5 +1,14 @@
 # scripts 索引
 
+## Track B R0.5 symbolic checker
+
+[check_rte_reallocation_r05_symbolic.py](tracks/algorithm_codesign/check_rte_reallocation_r05_symbolic.py)：
+固定9条件/18 signのexact Fraction/Pauli比較を一回実施。science runnerではない。
+[監査](../docs/tracks/algorithm_codesign/rte_reallocation_r05_equivalence_novelty_audit_v1.md)、
+[保存artifact](../artifacts/track_b_rte_reallocation_r05/2026-10-06/exact_symbolic_comparison_v1.json)。
+追加比較・再実行・科学実行の認可なし、mandatory STOP。
+
+
 ## Track B R0 technical checker
 
 [check_rte_reallocation_symbolic.py](tracks/algorithm_codesign/check_rte_reallocation_symbolic.py) verifies fixed free-word/Fraction identities. It is not a sampler, solver or science runner; no trotterlib imports. [Review/provenance](../docs/tracks/algorithm_codesign/rte_reallocation_r0_review_packet_20261006.md) records one local technical execution and STOP.

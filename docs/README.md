@@ -1,5 +1,13 @@
 # 文書索引
 
+## Track B R0.5 audit — 2026-10-06
+
+[Equivalence/novelty audit](tracks/algorithm_codesign/rte_reallocation_r05_equivalence_novelty_audit_v1.md)、
+[GPT handoff](tracks/algorithm_codesign/rte_reallocation_r05_gpt_handoff_20261006.md)、
+[dated note](research/研究ノート/2026-10-06_track_b_rte_reallocation_r05.md)。
+限定 `METHOD_DELTA_CANDIDATE` / `CONDITIONAL-R1`、科学実行なし、R1未認可、mandatory STOP。
+
+
 ## Track B R0 technical review (2026-10-06)
 
 [Finite-mean reallocation review packet](tracks/algorithm_codesign/rte_reallocation_r0_review_packet_20261006.md) links the independent proof, primary-text claim audit, one conditional R1 proposal and exact-check provenance. This is symbolic evidence, not an executed science pilot; mandatory STOP.

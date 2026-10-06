@@ -1,5 +1,16 @@
 # Track B — Algorithm Co-design
 
+## Latest: R0.5 result-prior equivalence audit — 2026-10-06
+
+[監査](rte_reallocation_r05_equivalence_novelty_audit_v1.md)、
+[一次資料表](rte_reallocation_r05_primary_source_locator_table_v1.md)、
+[symbolic readout](rte_reallocation_r05_symbolic_comparison_readout_v1.md)、
+[GPT handoff](rte_reallocation_r05_gpt_handoff_20261006.md)。
+指定P0–P3内の限定 `METHOD_DELTA_CANDIDATE` / `CONDITIONAL-R1`。
+同I0 ordinary/PTSC K0のnorm差とI1 collected CTSの優位を分離。R1必要性はGPTへ返す。
+科学/synthesis/compile/分子/DF/NPZ/GPUなし、旧証拠/STOP保持、R1未認可、mandatory STOP。
+
+
 ## Current: R0 finite-mean RTE reallocation audit (2026-10-06)
 
 - [Review packet](rte_reallocation_r0_review_packet_20261006.md): claim status, independent proof, primary passages, fixed exact fixtures and source identity.

@@ -1,0 +1,82 @@
+{
+  "schema": "track_b_rte_reallocation_r05_result_prior_protocol_v1",
+  "recorded_before_checker_execution": true,
+  "base_commit": "672d6bc667eaa7b9ca4979b012f1530499d701b8",
+  "checker_path": "scripts/tracks/algorithm_codesign/check_rte_reallocation_r05_symbolic.py",
+  "checker_sha256": "0eb6b56c04af19e1e0c0f22f32df4da3de1e452d0101d90ec9b3ae62553d12df",
+  "scope": "docs/symbolic only; A frozen R0 formula; no optimizations or new science",
+  "domain": {
+    "m": [
+      3,
+      5,
+      7
+    ],
+    "x_rational": [
+      "1/8",
+      "1/4",
+      "1"
+    ],
+    "sigma": [
+      -1,
+      1
+    ],
+    "normalization_domain_count": 9,
+    "sign_mean_comparisons": 18,
+    "p": [
+      "1/2",
+      "1/3",
+      "1/6"
+    ]
+  },
+  "information_models": {
+    "I0": "general Hermitian involutions; p and involution sampling/implementation access, Q_i^2=I; no Pauli closure/full enumeration/dense M for algorithm generation",
+    "I1": "Pauli algebra and collection allowed; exact fixture uses X,Y,Z on one qubit; evaluator may enumerate fixed small words",
+    "implementation_caveat": "event description generation is distinguished from native controlled involution/rotation availability; no free controlled oracle assumed"
+  },
+  "comparators_fixed_before_results": [
+    "A ordinary endpoint",
+    "A analytic optimum",
+    "Zeng/PTSC K=0 finite same-target specialization",
+    "CTS free formula E-1+sqrt(1+O^2): formal I0 candidate, constructive I1 per-word padded realization only",
+    "CTS literal collected finite specialization with zeroth identity separate"
+  ],
+  "CTS_free_formula_validation": "do not presume generic I0 words are Hermitian; validate atom unitarity separately; I1 padding uses uniform -i rephasing of anti-Hermitian zero-sum subensemble",
+  "support_fields": [
+    "labelled support before merging",
+    "distinct phase-preserving Pauli atoms",
+    "collected coefficients"
+  ],
+  "semantic_witnesses_fixed": [
+    "free Q0Q1Q2 is neither Hermitian nor anti-Hermitian; I-iW is not sqrt(2) times unitary",
+    "Wan positive-time event adjoint matches ordinary event orientation",
+    "A odd X/Z event has two nonidentity Pauli axes; not a literal CTS Pauli/Pauli-rotation atom"
+  ],
+  "normalization_guard": {
+    "sqrt_outward_exact_rational_bits": 96,
+    "display_decimal_digits": 40,
+    "decision": "disjoint exact rational intervals; overlap recorded without extra precision"
+  },
+  "resource_caps": {
+    "CPU_seconds": 30,
+    "address_space_MiB": 256,
+    "wall_seconds": 60
+  },
+  "gate_rules": {
+    "STOP-A": "EQUIVALENT/SPECIAL_CASE/DIRECT_COROLLARY and no information/access/implementation delta: stop A new-method route, no R1",
+    "STOP-B": "restricted theorem only, framework known, no rational implementation hypothesis: return theory/technical-note option to GPT, no automatic R1",
+    "CONDITIONAL-R1": "scoped independent restricted theorem and at least one concrete access/generation/same-access normalization/native-complexity delta: return R1 necessity to GPT, no execution"
+  },
+  "classification_labels": [
+    "EQUIVALENT",
+    "SPECIAL_CASE",
+    "DIRECT_COROLLARY",
+    "MATHEMATICALLY_DISTINCT_BUT_FRAMEWORK_KNOWN",
+    "METHOD_DELTA_CANDIDATE",
+    "INCOMPARABLE_TARGET"
+  ],
+  "no_comparison_or_grid_addition_after_results": true,
+  "science_execution_authorized": false,
+  "RUN_READY": false,
+  "mandatory_STOP": true,
+  "R1_execution_authorized": false
+}

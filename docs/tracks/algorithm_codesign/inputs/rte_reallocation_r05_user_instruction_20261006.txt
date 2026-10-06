@@ -1,0 +1,525 @@
+Track Bの次段階として、**RTE reallocation candidate Aのresult-prior equivalence / novelty closure audit（R0.5）**をdocs/symbolic-onlyで実施してください。
+
+科学実行、R1、synthesis、compile、分子計算は行わないでください。
+
+基点は以下です。
+
+- R0 result/review commit:
+  `672d6bc667eaa7b9ca4979b012f1530499d701b8`
+- R0 review packet:
+  `docs/tracks/algorithm_codesign/rte_reallocation_r0_review_packet_20261006.md`
+- independent proof:
+  `docs/tracks/algorithm_codesign/rte_reallocation_r0_independent_proof_v1.md`
+- prior-art audit:
+  `docs/tracks/algorithm_codesign/rte_reallocation_r0_prior_art_v1.md`
+- conditional R1 proposal:
+  `docs/tracks/algorithm_codesign/rte_reallocation_r1_proposal_for_review_v1.md`
+
+既存のSP-0.5/SP-1、BF/BM、BS-0.5、Track Aの固定証拠・marker・authorizationは変更しないでください。
+
+# 1. 今回固定するcandidate A
+
+以下のcandidateを比較対象Aとします。
+
+\[
+\widehat R=\sum_\ell p_\ell Q_\ell,\qquad
+p_\ell\ge0,\quad \sum_\ell p_\ell=1,\quad
+Q_\ell^\dagger=Q_\ell,\quad Q_\ell^2=I.
+\]
+
+**相互可換性、Pauli closure、Pauli wordへの効率的集約を仮定しません。**
+
+\[
+M=P_m(-i\sigma x\widehat R),\qquad
+m=2d+1.
+\]
+
+\[
+t_k=x^k/k!.
+\]
+
+A-familyは
+
+\[
+b_{-1}=0,\qquad
+a_k+b_{k-1}=t_k,\qquad
+b_m=0,\qquad
+a_k,b_k\ge0
+\]
+
+とし、
+
+\[
+c_k=\sqrt{a_k^2+b_k^2},\qquad
+\phi_k=\operatorname{atan2}(b_k,a_k),
+\]
+
+\[
+U_k=(-i\sigma)^k
+e^{-i\sigma\phi_kQ_0}Q_k\cdots Q_1.
+\]
+
+有限平均は
+
+\[
+\sum_k c_k\,\mathbb E[U_k]
+=
+P_m(-i\sigma x\widehat R).
+\]
+
+R0で証明済みの限定class optimumは
+
+\[
+B_A^\star
+=
+\sqrt{E_d^2+O_d^2},
+\]
+
+\[
+E_d=\sum_{j=0}^{d}t_{2j},
+\qquad
+O_d=\sum_{j=0}^{d}t_{2j+1}.
+\]
+
+この数学を再発明せず、prior artとの関係を監査してください。
+
+# 2. 必ず比較する一次文献
+
+## P0: Wan–Berta–Campbell
+
+arXiv:2110.12071v2
+
+ordinary adjacent paired Taylor/RTE endpointの既知baseline。
+Aのeta=0 ordinary endpointとの対応だけを確認する。
+
+## P1: Günther et al. / PR
+
+arXiv:2503.05647v2
+
+現repo finite-RTEの直接baseline。
+Aを「new RTE一般」などと広く呼ばない。
+
+## P2: Zeng et al.
+
+Pei Zeng, Jinzhao Sun, Liang Jiang, Qi Zhao,
+
+“Simple and high-precision Hamiltonian simulation by compensating Trotter error with linear combination of unitary operations”
+
+arXiv:2212.04566v2 / PRX Quantum 6, 010359 (2025)
+
+最低限、
+
+- Sec. IV.A Eqs. (42)–(50)
+- Sec. IV.B Eqs. (73)–(79)
+- higher-order generalization / appendices where relevant
+
+を確認する。
+
+特に、
+
+- identityとTaylor orderのpairing
+- 複数leading orderへのidentity配分
+- common rotation parameter
+- normalization reduction
+- sampling implementation
+
+をAへ写像する。
+
+## P3: Peetz–Smart–Narang
+
+Joseph Peetz, Scott E. Smart, Prineha Narang,
+
+“Quantum simulation via stochastic combination of unitaries”
+
+arXiv:2407.21095v2
+/ npj Quantum Information 12, 52 (2026)
+
+最低限、
+
+- Theorem 1 / Eqs. (5)–(8)
+- Convex Taylor Sampling procedure
+- Supplementary Note 3（Markov sampling）
+- Supplementary Note 5（Theorem 1 proof）
+
+を確認する。
+
+CTSのoperator decomposition
+
+\[
+e^{-iHt}
+=
+L_c\sum_jp_jP_j'
++
+\sqrt{1+L_s^2}
+\sum_kp_ke^{i\theta P_k'}
+\]
+
+と、
+
+\[
+\mu_{\rm CTS}=L_c+\sqrt{1+L_s^2}
+\]
+
+をAと同じfinite truncated targetへ制限して比較する。
+
+# 3. 比較は二つのinformation modelで分ける
+
+これを必須にしてください。
+
+## I0: involution-sampling access
+
+利用可能情報：
+
+- \(x,m,\sigma\)
+- \(p_\ell\)
+- \(Q_\ell\)をsampleして実装するoracle
+- \(Q_\ell^2=I\)
+
+利用不可：
+
+- 全Taylor word列挙
+- Pauli closure
+- 全wordのPauli係数集約
+- dense \(M\)
+
+AはこのI0で生成可能である。
+
+Zeng/PTSCまたはPeetz/CTSを同じI0で実装できるかを調べる。
+可能なら、その生成法・normalization・classical costを明示する。
+
+## I1: Pauli-collection access
+
+さらに、
+
+- 全Taylor wordsをPauli algebraで集約
+- 同じPauli word間のcancellation
+- real/imag coefficient collection
+
+を許す。
+
+Peetz CTSはこちらを自然に利用する。
+
+**I1でCTSがAより強いことと、I0で同じ構成が利用できることを混同しないこと。**
+
+# 4. Zeng/PTSCに対する必須監査命題
+
+以下をYES/NO/INCOMPARABLEで答える。
+
+### Z1
+
+Aの
+
+\[
+a_k+b_{k-1}=t_k
+\]
+
+という全adjacent-order reallocation familyを、
+ZengのPTSC式のparameter choiceとして直接得られるか。
+
+### Z2
+
+Zengのidentity redistributionとcommon \(\eta_\Sigma\) rotationから、
+Aの全奇数次数closed-form attaining solutionを、
+新しい最適化・構成なしに直接導けるか。
+
+### Z3
+
+\[
+B_A^\star=\sqrt{E_d^2+O_d^2}
+\]
+
+というA-class lower boundとattainmentが、
+Zengの定理・propositionの直接corollaryか。
+
+### Z4
+
+targetの違いを明示する。
+
+Zengの
+
+\[
+V_K(x)=U(x)S_K(x)^\dagger
+\]
+
+というTrotter remainder compensationと、
+
+Aの固定finite mean
+
+\[
+P_m(-i\sigma x\widehat R)
+\]
+
+を同じものとして扱わない。
+
+K=0等で同じtargetへ落ちる場合だけ、そのscopeで比較する。
+
+### Z5
+
+Zengの構成がPauli product closureを必要とする一方、
+Aがgeneral Hermitian involution accessで成立するなら、
+その差が本物か、それともZengの証明をそのまま一般involutionへ拡張できるか確認する。
+
+# 5. Peetz/CTSに対する必須監査命題
+
+### C1: free-word / no-cancellation comparator
+
+Pauli cancellationを一切使わず、
+degree \(m=2d+1\) のtruncated Taylor coefficientsをそのままCTS型に分けた場合、
+
+候補として
+
+\[
+L_c^{\rm free}=E_d-1,\qquad
+L_s^{\rm free}=O_d
+\]
+
+になるかを**独立に導出して確認**する。
+
+正しければ
+
+\[
+\mu_{\rm CTS}^{\rm free}
+=
+(E_d-1)+\sqrt{1+O_d^2}.
+\]
+
+Aは
+
+\[
+B_A^\star=\sqrt{E_d^2+O_d^2}.
+\]
+
+この場合、
+
+\[
+\mu_{\rm CTS}^{\rm free}-B_A^\star
+\]
+
+の符号を解析的に比較する。
+
+上記式がCTSの定義と一致しなければ、修正して理由を記録する。
+GPT側の推測を正解として扱わない。
+
+### C2: collected comparator
+
+Pauli collection/cancellationを許したCTSについて、
+
+\[
+L_c^{\rm coll},L_s^{\rm coll}
+\]
+
+を使ったnormalizationがAより小さくなり得るか確認する。
+
+これはAの反証ではなく、
+
+- A: I0 construction
+- CTS collected: I1 construction
+
+というinformation-access差として記録する。
+
+### C3: Markov sampling
+
+Peetz Supplementary Note 3のMarkov samplingが、
+
+- full Pauli collectionを不要にするだけなのか
+- \(L_c,L_s\)やcommon-angle distribution自体もI0だけでexact生成できるのか
+- 同じfinite truncated target・同じnormalizationを保てるのか
+
+を確認する。
+
+もしI0だけでCTSがAと同等以上のnormalizationを達成できるなら、
+Aのinformation-access deltaは消える。
+
+### C4: atom-level equivalence
+
+Aの各event
+
+\[
+e^{-i\sigma\phi_kQ_0}Q_k\cdots Q_1
+\]
+
+をCTS atomの特殊ケースとして直接表せるか確認する。
+
+「一般LCUなら何でも表せる」はequivalence判定に使わない。
+**CTSの具体的algorithmic constructionから直接生成されるか**を判定する。
+
+### C5: general involution access
+
+Peetz CTSはPauli algebraを前提としている。
+
+Aの
+
+\[
+Q_\ell^\dagger=Q_\ell,\quad Q_\ell^2=I
+\]
+
+だけのaccessへCTSをそのまま拡張できるか確認する。
+
+特に、DFで
+
+\[
+Q_\ell=V_\ell^\dagger Z_i V_\ell
+\]
+
+のようにbasisが異なる場合を念頭に、
+
+- Pauli word collection
+- basis multiplication
+- common-angle atom生成
+
+がAと同等の情報・古典処理で可能かを監査する。
+
+# 6. exact symbolic comparisons
+
+scienceではない小さいexact comparisonを許可する。
+
+少なくとも
+
+\[
+m=3,5,7
+\]
+
+および
+
+\[
+x\in\{1/8,1/4,1\}
+\]
+
+について、
+
+- A ordinary
+- A analytic optimum
+- Zeng/PTSCのsame-target specializationが存在する場合
+- CTS free-word
+- CTS collectedがexactに構築可能なsmall Pauli fixture
+
+のnormalizationとsupportを比較する。
+
+ただし結果を見てtargetやgridを追加しない。
+
+free-word fixtureとPauli-cancellation fixtureを分けること。
+
+# 7. novelty classificationを固定する
+
+各claimを以下のどれかへ分類する。
+
+### EQUIVALENT
+
+同じtarget・同じinformation accessで、
+weight、event distribution、unitariesまでreparameterizationで一致。
+
+### SPECIAL_CASE
+
+Aが既知法の固定parameter choiceとして得られる。
+
+### DIRECT_COROLLARY
+
+event distributionは完全一致しないが、
+Aの構成・closed-form optimum・boundが既知定理から
+新しい主要アイデアなしに直接導かれる。
+
+### MATHEMATICALLY_DISTINCT_BUT_FRAMEWORK_KNOWN
+
+広い原理は既知だが、
+Aのrestricted family theorem / explicit solutionは独立している。
+ただしalgorithm noveltyは弱い。
+
+### METHOD_DELTA_CANDIDATE
+
+同じtargetに対して、少なくとも一つ：
+
+- weaker information access
+- closed-form acquisition avoiding prior classical construction
+- provably different event family
+- lower normalization in the same access model
+- different implementation complexity
+
+が残る。
+
+### INCOMPARABLE_TARGET
+
+target自体が異なり、noveltyの優劣を直接判定できない。
+
+# 8. R1へ進むためのresult-prior gate
+
+以下を固定する。
+
+## STOP-A
+
+Aが `EQUIVALENT` / `SPECIAL_CASE` / `DIRECT_COROLLARY`
+で、information/access/implementation deltaもない。
+
+→ A new-method route STOP。
+→ R1 scienceは実行しない。
+
+## STOP-B
+
+restricted theoremだけが
+`MATHEMATICALLY_DISTINCT_BUT_FRAMEWORK_KNOWN`
+として残るが、実装差を調べる合理的仮説がない。
+
+→ theory/technical-note候補としてGPTへ返す。
+→ R1は自動実行しない。
+
+## CONDITIONAL-R1
+
+restricted theoremが独立し、さらに
+
+- I0 vs I1 access差
+- closed-form generation差
+- same-access normalization差
+- native event complexity差
+
+の少なくとも一つが具体的に残る。
+
+→ R1の必要性をGPTへ返す。
+→ R1そのものは実行しない。
+
+# 9. deliverables
+
+新しいdocs-only branch/worktreeで実施する。
+
+最低限：
+
+1. `rte_reallocation_r05_equivalence_novelty_audit_v1.md`
+2. machine-readable comparison JSON
+3. exact symbolic comparison artifact
+4. primary-source locator table
+5. GPT handoff packet
+
+を作る。
+
+各一次資料について、
+
+- title
+- authors
+- arXiv/version
+- journal version if relevant
+- sections/equations actually read
+- target
+- information access
+- decomposition
+- normalization
+- atom class
+- classical preprocessing
+- sampling semantics
+
+を表にする。
+
+citation network全体の不存在証明は不要。
+「見つからなかった」を新規性証明にしない。
+
+# 10. 禁止事項
+
+- R1 science execution
+- synthesis / compile
+- molecule / DF / NPZ
+- GPU
+- q/r/K/geometry expansion
+- new dictionary search
+- resultを見た後のcomparison追加
+- Aを「世界初」「新アルゴリズム成立」と先に記述
+- SP/BF/BM/BSのSTOP解除
+
+全作業後mandatory STOPし、branchとfull commit SHA、
+最終classificationとblocking issueをGPTへ返してください。

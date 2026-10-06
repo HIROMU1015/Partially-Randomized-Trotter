@@ -1,5 +1,13 @@
 # trotterlib モジュール索引
 
+## Track B R0.5: shared API unchanged
+
+[R0.5監査](../../docs/tracks/algorithm_codesign/rte_reallocation_r05_equivalence_novelty_audit_v1.md)と
+[GPT handoff](../../docs/tracks/algorithm_codesign/rte_reallocation_r05_gpt_handoff_20261006.md)を追加。
+新checkerはdocs/symbolic技術監査専用。library/共通API/既存RTE実装は変更しない。
+odd eventのnative/controlled実装は未検証。R1未認可、mandatory STOP。
+
+
 ## Track B R0 boundary (2026-10-06)
 
 [Finite-mean reallocation audit](../../docs/tracks/algorithm_codesign/rte_reallocation_r0_review_packet_20261006.md) uses a standalone exact checker. Shared RTE/DF APIs are unchanged; RTEEvent remains even-order only. Odd-event algebra is not a validated builder. No track-specific copy of trotterlib is created.

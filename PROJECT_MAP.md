@@ -1,5 +1,17 @@
 # プロジェクト案内
 
+## Track B R0.5: scoped equivalence audit / GPT review
+
+2026-10-06のdocs/symbolic-only [監査](docs/tracks/algorithm_codesign/rte_reallocation_r05_equivalence_novelty_audit_v1.md)と
+[GPT handoff](docs/tracks/algorithm_codesign/rte_reallocation_r05_gpt_handoff_20261006.md)を追加。
+指定P0–P3内の限定classification `METHOD_DELTA_CANDIDATE`、gate `CONDITIONAL-R1`。
+R1の必要性はGPT判断、実行は未認可。固定9条件/18 signのtechnical比較のみ一回。
+[checker](scripts/tracks/algorithm_codesign/check_rte_reallocation_r05_symbolic.py)、
+[manifest](artifacts/track_b_rte_reallocation_r05/2026-10-06/audit_manifest_v1.json)、
+[dated note](docs/research/研究ノート/2026-10-06_track_b_rte_reallocation_r05.md)を参照。
+旧R0/科学証拠・Track Aは保持し、下記の旧本文はそのまま残す。mandatory STOP。
+
+
 ## Track B R0: finite-mean RTE representation audit (2026-10-06)
 
 - [Review packet](docs/tracks/algorithm_codesign/rte_reallocation_r0_review_packet_20261006.md), independent all-odd proof, scoped prior art and conditional R1 proposal.

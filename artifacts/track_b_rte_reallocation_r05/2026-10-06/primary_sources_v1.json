@@ -1,0 +1,154 @@
+{
+  "schema": "track_b_rte_reallocation_r05_primary_sources_v1",
+  "read_date_JST": "2026-10-06",
+  "sources": {
+    "P0": {
+      "title": "A randomized quantum algorithm for statistical phase estimation",
+      "authors": [
+        "K. Wan",
+        "M. Berta",
+        "E. T. Campbell"
+      ],
+      "arxiv": "2110.12071",
+      "version": "v2",
+      "URL": "https://arxiv.org/pdf/2110.12071v2",
+      "journal": "Physical Review Letters 129, 030503 (2022)",
+      "sections_equations_actually_read_this_stage": [
+        "Appendix C C4-C5 and adjacent normalization/phase equations"
+      ],
+      "same_version_read_in_R0": [
+        "Appendix F.2 finite cutoff"
+      ],
+      "target": "infinite exp(+i sigma x R); ordinary finite cutoff and whole-event adjoint gives P_m(-i sigma x R)",
+      "information_access": "Pauli in source; elementary Euler pairing directly extends to general Hermitian involutions I0",
+      "decomposition": "even-order adjacent Taylor pairs",
+      "normalization": "sum_even sqrt(t_n^2+t_(n+1)^2)",
+      "atom_class": "phased unitary word followed by single-involution rotation; adjoint reverses order to A convention",
+      "classical_preprocessing": "O(m) order table; p sampler setup and precision separate",
+      "sampling_semantics": "positive coefficient/B and IID word indices; operator first mean",
+      "audit_scope": "ordinary endpoint only; no claim about full A family",
+      "PDF_bytes_archived": false,
+      "byte_level_paper_identity_verified": false
+    },
+    "P1": {
+      "title": "Phase estimation with partially randomized time evolution",
+      "authors": [
+        "Jakob Günther",
+        "Freek Witteveen",
+        "Alexander Schmidhuber",
+        "Marek Miller",
+        "Matthias Christandl",
+        "Aram W. Harrow"
+      ],
+      "arxiv": "2503.05647",
+      "version": "v2",
+      "URL": "https://arxiv.org/pdf/2503.05647v2",
+      "journal": null,
+      "sections_equations_actually_read_this_stage": [
+        "Appendix A.2 A18-A27; finite paired normalization and sample order/angle"
+      ],
+      "same_version_read_in_R0": [
+        "Appendix A.2 A18-A29"
+      ],
+      "target": "finite RTE P_(K+1) as an approximation to exponential; compared at same odd m",
+      "information_access": "source Pauli decomposition; repo DF elementary-involution contract is a separate implementation assumption",
+      "decomposition": "ordinary even adjacent pairing",
+      "normalization": "finite B_K = sum_even sqrt(t_n^2+t_(n+1)^2)",
+      "atom_class": "left elementary rotation times even word with signed relative phase",
+      "classical_preprocessing": "finite order table and IID index generation; current builder rejects odd-event generalization",
+      "sampling_semantics": "coherent Hadamard first moment with normalization correction; independent occurrences",
+      "audit_scope": "notation interpreted with R0 explicit signed convention; no published erratum claim",
+      "PDF_bytes_archived": false,
+      "byte_level_paper_identity_verified": false
+    },
+    "P2": {
+      "title": "Simple and high-precision Hamiltonian simulation by compensating Trotter error with linear combination of unitary operations",
+      "authors": [
+        "Pei Zeng",
+        "Jinzhao Sun",
+        "Liang Jiang",
+        "Qi Zhao"
+      ],
+      "arxiv": "2212.04566",
+      "version": "v2",
+      "URL": "https://arxiv.org/pdf/2212.04566v2",
+      "journal": "PRX Quantum 6, 010359 (2025)",
+      "PDF_page_count": 44,
+      "PDF_display_date": "March 31, 2025",
+      "sections_equations_actually_read_this_stage": [
+        "IV.A Eqs.42-47 with R0 reading of 42-50",
+        "IV.B Eqs.66-79",
+        "IV.C sampling/generation explanation",
+        "Appendix A Eqs.A1-A8, Proposition 10 and adjoining proof"
+      ],
+      "same_version_read_in_R0": [
+        "IV.A Eqs.42-50",
+        "IV.B Eqs.73-75"
+      ],
+      "target": "V_K=U S_K dagger for compensation; K=0 and finite Taylor cutoff s_c=m yield exactly P_m",
+      "information_access": "K=0 I0 extension needs only elementary Q^2=I; higher PTSC uses sampled Pauli product phase/Hermiticity classification",
+      "decomposition": "identity paired with leading orders using common etaSigma, plus higher tail; K=0 pairs order 0/1 only",
+      "normalization": "K=0 finite: sqrt(1+x^2)+sum_(n=2)^m t_n; K>0 remainder bounds are not same-target competitors",
+      "atom_class": "common-angle elementary/Pauli rotations and phased words/Pauli products",
+      "classical_preprocessing": "order/multinomial sampling tables and per-word phase/classification; K=0 O(m) table and O(m) event generation; no full collection required",
+      "sampling_semantics": "canonical positive coefficients/normalization; paper observable protocol has independent forward/backward samples",
+      "audit_scope": "Z1-Z5 direct construction/proposition audit; not a no-generalization theorem",
+      "PDF_bytes_archived": false,
+      "byte_level_paper_identity_verified": false
+    },
+    "P3": {
+      "title": "Quantum Simulation via Stochastic Combination of Unitaries",
+      "authors": [
+        "Joseph Peetz",
+        "Scott E. Smart",
+        "Prineha Narang"
+      ],
+      "arxiv": "2407.21095",
+      "version": "v2",
+      "URL": "https://arxiv.org/pdf/2407.21095v2",
+      "metadata_URL": "https://arxiv.org/abs/2407.21095v2",
+      "journal": "npj Quantum Information 12, 52 (2026)",
+      "DOI": "10.1038/s41534-025-01168-w",
+      "publisher_PDF_URL": "https://www.nature.com/articles/s41534-025-01168-w.pdf",
+      "publisher_read_scope": "bibliographic header only; no journal/supplement full-text equivalence audit",
+      "publisher_article_page_fetch_succeeded": false,
+      "explicit_v2_arxiv_PDF_fetch_succeeded_this_stage": true,
+      "explicit_v2_arxiv_PDF_fetch_failed_in_R0_history_not_rewritten": true,
+      "PDF_page_count": 16,
+      "PDF_display_date": "July 8, 2026",
+      "sections_equations_actually_read_this_stage": [
+        "Theorem 1 and Eqs.5-8",
+        "Methods IV.B CTS procedure",
+        "Supplementary Note 3 complete Markov sampling description",
+        "Supplementary Note 5 complete Theorem 1 proof including S13-S15"
+      ],
+      "target": "exponential with real/imaginary Pauli expansion; same finite P_m obtained by separating zeroth identity and collecting finite even/odd powers",
+      "information_access": "I1 Pauli coefficients and norms; Markov layering uses partial expansions, not generic I0 closure-free CTS",
+      "decomposition": "C+I+iS; real signed Pauli atoms plus identity/imaginary common-angle Euler group",
+      "normalization": "Lc+sqrt(1+Ls^2), Lc=sum_P abs(C_P), Ls=sum_P abs(S_P); Markov layers can increase norm vs full collection",
+      "atom_class": "signed Pauli or common-angle signed-Pauli rotation; Markov extension uses products of lower-block atoms",
+      "classical_preprocessing": "literal full word collection upper bound O(L^m); sparse dynamic programming or partial blocks can reduce it, so exhaustive expansion is not an intrinsic requirement",
+      "sampling_semantics": "positive coefficient/mu distribution; left and right samples independent for observable/channel use; exact finite block layering preserves first mean but not generally collected normalization",
+      "audit_scope": "C1-C5; no impossibility claim for future CTS extensions",
+      "PDF_bytes_archived": false,
+      "byte_level_paper_identity_verified": false
+    }
+  },
+  "derived_comparator": {
+    "name": "CTS per-word padded finite specialization",
+    "printed_P3_sampler_claim": false,
+    "components": "P2 Hermitian-zero-sum rephasing plus P3 identity/Euler grouping",
+    "target": "same finite P_m",
+    "access": "I1 per-word Pauli closure; no full coefficient collection; not generic I0",
+    "masses": "Lc_pad=E-1, Ls_pad=O",
+    "normalization": "E-1+sqrt(1+O^2)",
+    "registered_before_results": true
+  },
+  "limitations": [
+    "no citation-network absence proof",
+    "no first-ever algorithm or priority claim",
+    "bibliographic identity and actual read locators only; no archived-paper SHA claim"
+  ],
+  "science_execution_authorized": false,
+  "mandatory_STOP": true
+}
