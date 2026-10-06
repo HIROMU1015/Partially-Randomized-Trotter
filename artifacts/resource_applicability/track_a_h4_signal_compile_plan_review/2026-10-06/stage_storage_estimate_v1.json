@@ -1,0 +1,120 @@
+{
+  "JSON_assumptions": {
+    "float_JSON_numeric_characters_allowance": 25,
+    "metadata_only_extreme_width_signal_specimen_bytes": 263198,
+    "metric_integer_decimal_digits_allowance": 20,
+    "metric_width_basis": "counts/depth/size of in-memory transpiled circuit under8GiB per role; 20digits generous planning assumption, not a new production gate",
+    "record_and_delta_JSON_bytes_each": 4096,
+    "shot_integer_digits_ceiling_for_finite_binary64_math_ceil": 309,
+    "signal_payload_allowance_each": 524288,
+    "source_does_not_enforce_these_per_file_JSON_limits": true
+  },
+  "actual_transpile_cap": 74784,
+  "baseline_templates": 24,
+  "cache_storage_policy": "in-memory identity/reuse/registry; persisted wrapper records and ledger deltas counted; no circuit cache file",
+  "charge_cap_requires_10GiB_free_before_stage": false,
+  "combined_cumulative_charge_bound": 4737395180,
+  "components": [
+    {
+      "allocated_final_bytes_bound": 306315264,
+      "basis": "ledger.complete publishes one record per logical wrapper; 4 KiB allowance",
+      "count_bound": 74784,
+      "output": "wrapper_checkpoint_JSON",
+      "payload_bytes_allowance_each": 4096
+    },
+    {
+      "allocated_final_bytes_bound": 612634624,
+      "basis": "initial delta plus reserve/complete deltas; no reuse assumed; 4 KiB allowance",
+      "count_bound": 149569,
+      "output": "ledger_delta_JSON",
+      "payload_bytes_allowance_each": 4096
+    },
+    {
+      "allocated_final_bytes_bound": 612630528,
+      "basis": "at most one log per actual compile; hard UTF-8 bytes cap8192; assume all nonempty",
+      "count_bound": 74784,
+      "output": "worker_log_text",
+      "payload_bytes_allowance_each": 8192
+    },
+    {
+      "allocated_final_bytes_bound": 685768704,
+      "basis": "extreme-width metadata specimen plus allowance; no science results",
+      "count_bound": 1308,
+      "output": "signal_JSON_with_302_display_points",
+      "payload_bytes_allowance_each": 524288
+    },
+    {
+      "allocated_final_bytes_bound": 1061683200,
+      "basis": "1-second watcher across remaining cumulative72h; two boundary allowance",
+      "count_bound": 259200,
+      "output": "monitor_wall_JSON",
+      "payload_bytes_allowance_each": 128
+    },
+    {
+      "allocated_final_bytes_bound": 0,
+      "basis": "fresh signal-stage ledger lock; separate from input-stage byte journal",
+      "count_bound": 1,
+      "output": "ledger_lock",
+      "payload_bytes_allowance_each": 0
+    },
+    {
+      "allocated_final_bytes_bound": 4096,
+      "basis": "fixed completion metadata allowance",
+      "count_bound": 1,
+      "output": "map_complete_JSON",
+      "payload_bytes_allowance_each": 4096
+    }
+  ],
+  "directory_entry_allowance_bytes": 256,
+  "display_points_per_signal": 302,
+  "filesystem_block_bytes": 4096,
+  "inode_table_policy": "ext4 fixed-size inode tables already occupy allocated filesystem blocks; inode count checked separately. No extra4KiB per inode double charge; directory/extent/ACL/journal margins included.",
+  "inode_table_primary_reference": "https://www.kernel.org/doc/html/latest/filesystems/ext4/inodes.html",
+  "known_not_written": {
+    "NPZ_NPY_arrays": true,
+    "SQLite_cache": true,
+    "circuits_QPY_QASM": true,
+    "old_runtime_cache_checkpoint": true
+  },
+  "logical_wrappers": 74784,
+  "max_concurrent_temporary_publishers": 8,
+  "maximum_wall_JSON_files": 259200,
+  "new_inode_count_bound": 559657,
+  "other_physical_components_bytes": {
+    "byte_budget_journal_growth": 71634944,
+    "concurrent_temporary_files_extra_allowance": 4194304,
+    "directory_entries_indexes_allowance": 143273984,
+    "directory_initial_blocks": 8192,
+    "driver_control_log_margin": 8388608,
+    "filesystem_extent_ACL_journal_misc_margin": 67108864
+  },
+  "physical_planning_bound_bytes": 3573645312,
+  "prior_byte_budget_journal_bytes": 1152,
+  "prior_cumulative_charge_bytes": 164698732,
+  "prior_wall_seconds": 2.679710050113499,
+  "production_stage_executed": false,
+  "publication_count_bound": 559647,
+  "random_paired_trajectories": 32,
+  "random_templates": 194,
+  "remaining_cumulative_wall_seconds": 259197.3202899499,
+  "required_available_bytes": 3758096384,
+  "required_available_inodes": 560000,
+  "schema_version": "h4-signal-compile-stage-storage-estimate-v1",
+  "scientific_arrays_generated": 0,
+  "scientific_metadata_specimens_saved_as_results": false,
+  "scope": "SIX_FROZEN_INPUTS_SIGNAL_COMPILE_THEN_MAP_COMPLETE_STOP",
+  "signal_records": 1308,
+  "source_commit": "049e69919af16ad29a67a217dc7a407d6b1754a6",
+  "source_hashes_used": {
+    "src/trottertracks/resource_applicability/h4_geometry/circuits.py": "1702b843cce65ae05b5ca0482a46e66cf39a6a8133af36a4ecd0f147821fec82",
+    "src/trottertracks/resource_applicability/h4_geometry/execution.py": "2349edfc30247f22f15363487b3e83595239936d456b8ce4f0ac781cbb94895a",
+    "src/trottertracks/resource_applicability/h4_geometry/ledger.py": "7846f89d0ef488cad3779ac1447349f710c938d8c3b4e5499ea31883dd1f3bfe",
+    "src/trottertracks/resource_applicability/h4_geometry/resources.py": "ac8eb909393c621825044dff4c6629f8954a1b5f92a18cda37fa1e433343fb17",
+    "src/trottertracks/resource_applicability/h4_geometry/signal.py": "04717292e8a6e5c100a4d27657e3580efba38cf5ec7d1a4962bbd75c3183dce3",
+    "src/trottertracks/resource_applicability/h4_geometry/workers.py": "34f66153e478d2dbb0481338262db815f48ec275dc067467e910d573ab5a4b22"
+  },
+  "source_total_campaign_charge_cap_bytes": 10737418240,
+  "stage_cumulative_charge_bound": 4572696448,
+  "temp_final_relation": "hard-link publication aliases same inode/data; additionally8 full512KiB temp copies allowed conservatively",
+  "templates_per_geometry": 218
+}

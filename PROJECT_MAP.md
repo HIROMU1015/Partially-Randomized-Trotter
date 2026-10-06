@@ -1,5 +1,16 @@
 # プロジェクト案内
 
+## 2026-10-06 H4 signal/compile INPUT_BOUND草案・容量不足STOP
+
+run02の6凍結入力へplanを結合し、source19/218 templates/compiler/run ID/outputを不変に保った。
+stage必要3.5 GiB/560000 inodesに対しavailable3.419376 GiB、約82.6 MiB不足。CPU候補6 core/memory/quota観測はPASS。
+全72h監視・74784 records・149569 ledger deltas・全8KiB worker logs・1308 signal files・journal/temp/directory余裕を含む。
+CPU [3,5,6,7,8,9]・6 worker・own-run mask0x3e8は次段の提案、review=false、利用者の別stage承認/明示launch未取得。
+signal/seed/sampling/build/compile/transpile/taskset/worker/GPU/共有環境・他job変更0、入力再生成0。
+[次段scope・容量](docs/research/track_a_h4_signal_compile_plan_review.md)と[資料入口・承認対象](artifacts/resource_applicability/track_a_h4_signal_compile_plan_review/2026-10-06/README.md)を参照する。
+`H4_SIGNAL_COMPILE_PLAN_PREPARED_STORAGE_BLOCKED_STOP`。容量と別認可成立後もfresh検査不合格なら起動せず、map後MAP_COMPLETE_STOP。
+scientific runtimeはcommitしない。旧10GiB案/旧source/旧bundle/入力生成完了と以下の履歴は保持する。
+
 ## 2026-10-06 H4入力生成run02・6入力freeze完了STOP
 
 利用者の明示再実行指示でworker bootstrapのstdlib signal shadowを-Pで修正し、run01を保存してrun02を別固定した。
