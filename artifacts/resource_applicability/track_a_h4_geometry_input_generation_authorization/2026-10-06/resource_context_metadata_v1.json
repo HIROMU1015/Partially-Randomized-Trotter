@@ -1,0 +1,48 @@
+{
+  "additional_transpile": 0,
+  "cgroup_mountinfo_lines": [
+    "35 25 0:30 / /sys/fs/cgroup rw,nosuid,nodev,noexec,relatime shared:10 - cgroup2 cgroup2 rw,nsdelegate,memory_recursiveprot"
+  ],
+  "frozen_observer_selected_memory_paths": [
+    {
+      "path": "/sys/fs/cgroup/user.slice/user-30038.slice/session-92748.scope",
+      "v2": true
+    },
+    {
+      "path": "/sys/fs/cgroup/user.slice/user-30038.slice",
+      "v2": true
+    },
+    {
+      "path": "/sys/fs/cgroup/user.slice",
+      "v2": true
+    },
+    {
+      "path": "/sys/fs/cgroup",
+      "v2": true
+    }
+  ],
+  "mandatory_stop": true,
+  "memory_controller_reads": {
+    "/sys/fs/cgroup/cgroup.controllers": {
+      "status": "READ_METADATA",
+      "text": "cpuset cpu io memory hugetlb pids rdma misc\n"
+    },
+    "/sys/fs/cgroup/user.slice/cgroup.controllers": {
+      "status": "READ_METADATA",
+      "text": "cpuset cpu io memory hugetlb pids rdma misc\n"
+    },
+    "/sys/fs/cgroup/user.slice/user-30038.slice/cgroup.controllers": {
+      "status": "READ_METADATA",
+      "text": "cpu memory pids\n"
+    },
+    "/sys/fs/cgroup/user.slice/user-30038.slice/session-92748.scope/cgroup.controllers": {
+      "status": "READ_METADATA",
+      "text": "cpu memory pids\n"
+    }
+  },
+  "metadata_only": true,
+  "observed_utc": "2026-10-06T05:50:56.717592+00:00",
+  "own_cgroup_membership": "0::/user.slice/user-30038.slice/session-92748.scope\n",
+  "production_controller_modified": false,
+  "production_observation_succeeded": false
+}
