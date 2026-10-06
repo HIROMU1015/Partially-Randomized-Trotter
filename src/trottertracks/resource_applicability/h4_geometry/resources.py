@@ -1,9 +1,11 @@
 """Owned resource accounting. No host/cgroup/job mutations."""
 import fcntl
 import json
+import math
 import os
 from pathlib import Path, PurePosixPath
 import resource
+import re
 import signal
 import time
 import threading
@@ -14,6 +16,9 @@ ROLE_CAP = 8 * GiB
 HEADROOM = 16 * GiB
 OUTPUT_CAP = 10 * GiB
 WALL_CAP = 72 * 3600
+# Linux v6.8 include/linux/proc_ns.h: PROC_CGROUP_INIT_INO.
+# Unknown/private cgroup namespaces remain blocked rather than hiding ancestors.
+INITIAL_CGROUP_NS_INO = 0xEFFFFFFB
 
 
 def cpus(text):
@@ -51,62 +56,141 @@ def effective_available(host_available, limits):
     return effective
 
 
-def cgroup_directories(cgroup_text, mountinfo):
-    """Resolve every applicable v1 memory/v2 mount and ancestors to its mount root."""
+def cgroup_hierarchy(cgroup_text, mountinfo, namespace_link):
+    """Prove visible hierarchy roots; return every member/non-root ancestor/root.
+
+    '/' in mountinfo alone is insufficient inside a private cgroup namespace.
+    The initial namespace marker plus full-root mounts and no shadow mounts is
+    required. No ENOENT-based root inference or host-only fallback is used.
+    """
+    require(namespace_link == 'cgroup:[%d]' % INITIAL_CGROUP_NS_INO,
+            'initial cgroup namespace not proven; hidden ancestors need review')
     memberships = []
     for line in cgroup_text.splitlines():
-        _hierarchy, controllers, path = line.split(':', 2)
+        parts = line.split(':', 2)
+        require(len(parts) == 3 and parts[0].isdigit(), 'cgroup membership format')
+        _hierarchy, controllers, path = parts
         if controllers == '' or 'memory' in controllers.split(','):
+            member = PurePosixPath(path)
+            require(member.is_absolute() and str(member) == path and '..' not in member.parts
+                    and '\\' not in path, 'cgroup membership path visibility')
             memberships.append((controllers == '', PurePosixPath(path)))
-    directories = []
+    require(memberships and len({v2 for v2, member in memberships}) == len(memberships), 'ambiguous memory membership')
+    mounts = []
     for line in mountinfo.splitlines():
-        before, after = line.split(' - ', 1)
+        parts = line.split(' - ', 1)
+        require(len(parts) == 2, 'mountinfo format')
+        before, after = parts
         fields, suffix = before.split(), after.split()
-        kind, options = suffix[0], suffix[2]
-        for v2, member in memberships:
-            if (v2 and kind != 'cgroup2') or (not v2 and (kind != 'cgroup' or 'memory' not in options.split(','))):
+        require(len(fields) >= 6 and len(suffix) >= 3, 'mountinfo fields')
+        mounts.append((fields, suffix))
+    directories = []
+    for v2, member in memberships:
+        matching = []
+        for fields, suffix in mounts:
+            kind, options = suffix[0], suffix[2]
+            if (v2 and kind == 'cgroup2') or (not v2 and kind == 'cgroup' and 'memory' in options.split(',')):
+                matching.append((fields, suffix))
+        require(len(matching) == 1, 'missing/ambiguous cgroup memory mount')
+        fields, suffix = matching[0]
+        root, mount = PurePosixPath(fields[3]), Path(fields[4])
+        require(root == PurePosixPath('/'), 'hidden upstream cgroup limits need review')
+        require('\\' not in fields[3]+fields[4] and mount.is_absolute()
+                and str(mount) == fields[4] and '..' not in mount.parts, 'escaped cgroup mount needs review')
+        for other_fields, _other_suffix in mounts:
+            if other_fields is fields:
                 continue
-            root, mount = PurePosixPath(fields[3]), Path(fields[4])
-            require(root==PurePosixPath('/'), 'hidden upstream cgroup limits need review')
-            require('\\' not in fields[3]+fields[4], 'escaped cgroup mount needs review')
-            require(member.is_relative_to(root), 'cgroup namespace/mount mismatch')
-            p = mount / str(member.relative_to(root))
-            while True:
-                directories.append((p, v2))
-                if p == mount:
-                    break
-                p = p.parent
-    require(bool(directories), 'missing cgroup memory hierarchy')
-    return list(dict.fromkeys(directories))
+            other_mount = Path(other_fields[4])
+            require(not other_mount.is_relative_to(mount), 'shadow cgroup mount hides limits/interfaces')
+        p = mount / str(member.relative_to(root))
+        while True:
+            directories.append({'path':p, 'v2':v2, 'hierarchy_root':mount, 'is_root':p == mount})
+            if p == mount:
+                break
+            p = p.parent
+    return directories
+
+
+def cgroup_directories(cgroup_text, mountinfo, *, namespace_link=None):
+    """Compatibility inventory; root-aware observer uses cgroup_hierarchy."""
+    if namespace_link is None:
+        namespace_link = os.readlink('/proc/self/ns/cgroup')
+    return [(item['path'], item['v2']) for item in cgroup_hierarchy(cgroup_text, mountinfo, namespace_link)]
+
+
+def nonnegative_integer(text, label):
+    value = text.strip()
+    require(re.fullmatch(r'[0-9]+', value) is not None, 'invalid nonnegative '+label)
+    return int(value)
+
+
+def psi_full_average(text):
+    rows = [line.split() for line in text.splitlines() if line.startswith('full ')]
+    require(len(rows) == 1, 'memory PSI full record')
+    pairs = [word.split('=') for word in rows[0][1:]]
+    require(all(len(pair) == 2 for pair in pairs), 'memory PSI fields')
+    fields = dict(pairs)
+    require(len(fields) == len(pairs) and {'avg10','avg60','avg300','total'} <= set(fields), 'memory PSI fields')
+    for key in ('avg10','avg60','avg300'):
+        try:
+            value = float(fields[key])
+        except ValueError as exc:
+            raise Stop('invalid memory PSI average') from exc
+        require(math.isfinite(value) and 0 <= value <= 100, 'invalid memory PSI average')
+    nonnegative_integer(fields['total'], 'PSI total')
+    return float(fields['avg10'])
+
+
+def memory_oom_events(text):
+    pairs = [line.split() for line in text.splitlines()]
+    require(pairs and all(len(pair) == 2 for pair in pairs), 'memory.events fields')
+    fields = dict(pairs)
+    require(len(fields) == len(pairs) and {'oom','oom_kill'} <= set(fields), 'missing/duplicate memory OOM fields')
+    values = {key:nonnegative_integer(value, 'memory.events '+key) for key,value in fields.items()}
+    return values['oom'] + values['oom_kill']
 
 
 def observe_memory():
     started = time.monotonic()
-    fields = {l.split(':')[0]: l.split(':')[1].strip() for l in Path('/proc/meminfo').read_text().splitlines()}
-    available = int(fields['MemAvailable'].split()[0]) * 1024
+    membership = Path('/proc/self/cgroup').read_text()
+    mountinfo = Path('/proc/self/mountinfo').read_text()
+    namespace = os.readlink('/proc/self/ns/cgroup')
+    dirs = cgroup_hierarchy(membership, mountinfo, namespace)
+    meminfo = [line.split() for line in Path('/proc/meminfo').read_text().splitlines() if line.startswith('MemAvailable:')]
+    require(len(meminfo) == 1 and len(meminfo[0]) == 3 and meminfo[0][2] == 'kB', 'host MemAvailable fields/unit')
+    available = nonnegative_integer(meminfo[0][1], 'host MemAvailable') * 1024
     allowed = next(l.split(':',1)[1] for l in Path('/proc/self/status').read_text().splitlines() if l.startswith('Cpus_allowed_list:'))
-    dirs = cgroup_directories(Path('/proc/self/cgroup').read_text(), Path('/proc/self/mountinfo').read_text())
-    limits, events = [], {}
-    for p, v2 in dirs:
+    # Host PSI covers global/root pressure. Every non-root pressure is also read.
+    avg10 = psi_full_average(Path('/proc/pressure/memory').read_text())
+    limits, events, hierarchy = [], {}, []
+    for entry in dirs:
+        p, v2 = entry['path'], entry['v2']
+        item = {'path':str(p), 'v2':v2, 'is_root':entry['is_root'], 'maximum':None, 'current':None}
+        if v2 and entry['is_root']:
+            require('memory' in (p/'cgroup.controllers').read_text().split(), 'root memory controller unavailable')
+            item['interface_policy'] = 'TRUE_V2_ROOT_NO_MEMORY_CONTROL_INTERFACES_HOST_PSI'
+            hierarchy.append(item)
+            continue  # proven root only; non-root ENOENT/permission errors propagate
         if v2:
-            maximum = (p/'memory.max').read_text().strip()
-            limits.append((None if maximum == 'max' else int(maximum), int((p/'memory.current').read_text())))
-            e = dict(line.split() for line in (p/'memory.events').read_text().splitlines())
-            events[str(p)] = int(e.get('oom', 0)) + int(e.get('oom_kill', 0))
+            raw_maximum = (p/'memory.max').read_text().strip()
+            maximum = None if raw_maximum == 'max' else nonnegative_integer(raw_maximum, 'memory.max')
+            current = nonnegative_integer((p/'memory.current').read_text(), 'memory.current')
+            events[str(p)] = memory_oom_events((p/'memory.events').read_text())
+            avg10 = max(avg10, psi_full_average((p/'memory.pressure').read_text()))
         else:
-            # Kernel v1 unlimited sentinel is not a usable physical reservation.
-            maximum = int((p/'memory.limit_in_bytes').read_text())
-            limits.append((None if maximum >= 2**60 else maximum, int((p/'memory.usage_in_bytes').read_text())))
-            events[str(p)] = int((p/'memory.failcnt').read_text())
-    psi = Path('/proc/pressure/memory').read_text()
-    full = next(l for l in psi.splitlines() if l.startswith('full '))
-    avg10 = float(dict(x.split('=') for x in full.split()[1:])['avg10'])
-    for p, v2 in dirs:
-        if v2:
-            local = next(l for l in (p/'memory.pressure').read_text().splitlines() if l.startswith('full '))
-            avg10 = max(avg10, float(dict(x.split('=') for x in local.split()[1:])['avg10']))
+            raw_maximum = nonnegative_integer((p/'memory.limit_in_bytes').read_text(), 'memory.limit_in_bytes')
+            maximum = None if raw_maximum >= 2**60 else raw_maximum
+            current = nonnegative_integer((p/'memory.usage_in_bytes').read_text(), 'memory.usage_in_bytes')
+            events[str(p)] = nonnegative_integer((p/'memory.failcnt').read_text(), 'memory.failcnt')
+        limits.append((maximum, current))
+        item.update(maximum=maximum, current=current, interface_policy='ALL_REQUIRED_MEMORY_INTERFACES_CHECKED')
+        hierarchy.append(item)
+    require(Path('/proc/self/cgroup').read_text() == membership and Path('/proc/self/mountinfo').read_text() == mountinfo
+            and os.readlink('/proc/self/ns/cgroup') == namespace, 'cgroup visibility changed during observation')
     return dict(available=effective_available(available, limits), observed_at=started,
-                process_cpus=cpus(allowed), oom_events=events, psi_full_avg10=avg10)
+                process_cpus=cpus(allowed), oom_events=events, psi_full_avg10=avg10,
+                host_available=available, cgroup_namespace=namespace, hierarchy=hierarchy,
+                root_pressure_policy='HOST_MEMORY_PSI_PLUS_ALL_NONROOT_MEMORY_PSI')
 
 
 def limit_owned_address_space():
