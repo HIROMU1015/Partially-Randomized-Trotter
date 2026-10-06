@@ -1,5 +1,20 @@
 # プロジェクト案内
 
+## Track B R1 source preparation — source review / mandatory STOP
+
+2026-10-06の[preregistration v2](docs/tracks/algorithm_codesign/rte_reallocation_r1_preregistration_v2.md)、
+[native semantics](docs/tracks/algorithm_codesign/rte_reallocation_r1_native_semantics_v1.md)、
+[GPT source review](docs/tracks/algorithm_codesign/rte_reallocation_r1_source_review_request_20261006.md)。
+ordinary/PTSC-K0/A、PauliだけCTS control、distinct-basis controlled primary。canonical/resource vector。
+[B専用source](src/trottertracks/algorithm_codesign/rte_reallocation/)、
+[runner](scripts/tracks/algorithm_codesign/run_r1_rte_reallocation.py)、
+[semantic tests](tests/tracks/algorithm_codesign/test_r1_rte_reallocation_semantics.py)、
+[accounting/launch tests](tests/tracks/algorithm_codesign/test_r1_rte_reallocation_accounting_launch.py)、
+[source manifest](artifacts/track_b_rte_reallocation_r1_source/2026-10-06/source_manifest_v1.json)。
+27 focused tests PASS、42 static angles/126 keys、264予定rows。登録synthesis/resource取得0、R1未認可。
+旧R0/R0.5/科学証拠・共通API・Track A保持。以下の本文は履歴を含めそのまま保存。
+
+
 ## Track B R0.5: scoped equivalence audit / GPT review
 
 2026-10-06のdocs/symbolic-only [監査](docs/tracks/algorithm_codesign/rte_reallocation_r05_equivalence_novelty_audit_v1.md)と

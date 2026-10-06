@@ -1,5 +1,11 @@
 # 研究ノート
 
+## 2026-10-06 Track B R1 source preparation
+
+[Narrowed R1 source / preregistration](2026-10-06_track_b_r1_source_preparation.md)。
+27 focused tests、static126 keys。R1 science未認可、GPT source reviewへmandatory STOP。
+
+
 ## 2026-10-06 Track B R0.5
 
 [Equivalence / novelty closure audit](2026-10-06_track_b_rte_reallocation_r05.md)：

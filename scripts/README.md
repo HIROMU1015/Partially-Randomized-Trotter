@@ -1,5 +1,14 @@
 # scripts 索引
 
+## Track B R1 native-resource runner: source review only
+
+[run_r1_rte_reallocation.py](tracks/algorithm_codesign/run_r1_rte_reallocation.py)のplanはstatic key inventory照合だけ。
+runはsource Sのdirect authorization-only child Aと新明示指示を要求する。現在pending、科学実行なし。
+[契約/source review](../docs/tracks/algorithm_codesign/rte_reallocation_r1_source_review_request_20261006.md)、
+[source manifest](../artifacts/track_b_rte_reallocation_r1_source/2026-10-06/source_manifest_v1.json)。
+27 focused tests、126 planned keys、mandatory STOP。
+
+
 ## Track B R0.5 symbolic checker
 
 [check_rte_reallocation_r05_symbolic.py](tracks/algorithm_codesign/check_rte_reallocation_r05_symbolic.py)：

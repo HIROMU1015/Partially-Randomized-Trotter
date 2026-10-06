@@ -1,5 +1,15 @@
 # Track B — Algorithm Co-design
 
+## Latest: R1 v2 source preparation / GPT source review
+
+[Preregistration v2](rte_reallocation_r1_preregistration_v2.md)、
+[native semantics](rte_reallocation_r1_native_semantics_v1.md)、
+[GPT source review](rte_reallocation_r1_source_review_request_20261006.md)。
+ordinary/PTSC-K0/A、PauliのみCTS control。canonical、distinct-basis controlled primary、resource vector。
+27 focused tests、42角度/126 keys、264予定resource rows。実synthesis/cost取得0。
+authorization pending、RUN_READY=false、旧証拠/STOP保持、mandatory STOP。以下は判断履歴。
+
+
 ## Latest: R0.5 result-prior equivalence audit — 2026-10-06
 
 [監査](rte_reallocation_r05_equivalence_novelty_audit_v1.md)、

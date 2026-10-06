@@ -1,0 +1,32 @@
+{
+  "schema": "track_b_R1_focused_verification_v1",
+  "tests_passed": 27,
+  "test_runtime_seconds": "1.437",
+  "test_files": [
+    "tests/tracks/algorithm_codesign/test_r1_rte_reallocation_semantics.py",
+    "tests/tracks/algorithm_codesign/test_r1_rte_reallocation_accounting_launch.py"
+  ],
+  "scope": "off-domain x=1/3 synthetic semantic matrices and pure accounting/temporary launch fixtures; no registered R1 resource/synthesis/mean scoring",
+  "test_command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 <pinned-python> -m unittest discover -s tests/tracks/algorithm_codesign -p 'test_r1_rte_reallocation*.py' -v",
+  "python_executable": "/home/abe/Project/prt-worktrees/track-b-sp05-economics-preparation-20261006/.venv/bin/python",
+  "source_bound_test_hashes": {
+    "tests/tracks/algorithm_codesign/test_r1_rte_reallocation_accounting_launch.py": "f956f84d89eabcd936a5aaace088a9ba84ecb50574db25fbec6e133d61507968",
+    "tests/tracks/algorithm_codesign/test_r1_rte_reallocation_semantics.py": "c30c0af1cea5d6da164948976d0a7590e9119d5be5b66dfe3908048651481a0d"
+  },
+  "log_sha256": "6827ffab1e33594e73829ee047c431c4eb3df9a5bce96d1972b93de72de0516c",
+  "focused_test_invocations_this_preparation": 3,
+  "earlier_pass_counts": [
+    25,
+    26
+  ],
+  "reason_for_final_repeat": "group-rounding factorization, failure-invocation reporting and nonfinite guard added before source freeze",
+  "registered_synthesizer_calls": 0,
+  "smoke_synthesizer_calls": 0,
+  "registered_resource_rows": 0,
+  "trajectory_sampling_calls": 0,
+  "matrix_tests": "synthetic local technical semantics only; not a science input",
+  "full_test_suite_runs": 0,
+  "local_not_immutable_CI_or_external_replication": true,
+  "science_execution_authorized": false,
+  "mandatory_STOP": true
+}

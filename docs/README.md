@@ -1,5 +1,13 @@
 # 文書索引
 
+## Track B R1 v2 source review — 2026-10-06
+
+[Preregistration](tracks/algorithm_codesign/rte_reallocation_r1_preregistration_v2.md)、
+[native semantics](tracks/algorithm_codesign/rte_reallocation_r1_native_semantics_v1.md)、
+[GPT source review request](tracks/algorithm_codesign/rte_reallocation_r1_source_review_request_20261006.md)。
+27 focused tests PASS、static126 keys、実synthesis/resource取得0。R1 science未認可、mandatory STOP。
+
+
 ## Track B R0.5 audit — 2026-10-06
 
 [Equivalence/novelty audit](tracks/algorithm_codesign/rte_reallocation_r05_equivalence_novelty_audit_v1.md)、

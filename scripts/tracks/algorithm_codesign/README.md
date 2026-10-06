@@ -1,5 +1,13 @@
 # Track B scripts
 
+## R1 v2 source preparation
+
+[run_r1_rte_reallocation.py](run_r1_rte_reallocation.py)：static plan / separately authorized native-resource run。
+[preregistration](../../../docs/tracks/algorithm_codesign/rte_reallocation_r1_preregistration_v2.md)、
+[source review](../../../docs/tracks/algorithm_codesign/rte_reallocation_r1_source_review_request_20261006.md)。
+plan126 keys、27 focused tests。registered synthesis/cost取得0、R1未認可、mandatory STOP。
+
+
 ## R0.5 technical verification only
 
 [check_rte_reallocation_r05_symbolic.py](check_rte_reallocation_r05_symbolic.py)：

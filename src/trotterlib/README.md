@@ -1,5 +1,13 @@
 # trotterlib モジュール索引
 
+## Track B R1 builder is a separate namespace
+
+[R1専用実装](../trottertracks/algorithm_codesign/rte_reallocation/)を新設し、共有library/既存even RTE invariantを変更しない。
+[preregistration/source review](../../docs/tracks/algorithm_codesign/rte_reallocation_r1_source_review_request_20261006.md)。
+27 focused synthetic semantic/accounting/launch tests。DF controlled wrapperのvalidationではない。
+登録synthesis/resource取得0、science未認可、mandatory STOP。
+
+
 ## Track B R0.5: shared API unchanged
 
 [R0.5監査](../../docs/tracks/algorithm_codesign/rte_reallocation_r05_equivalence_novelty_audit_v1.md)と
