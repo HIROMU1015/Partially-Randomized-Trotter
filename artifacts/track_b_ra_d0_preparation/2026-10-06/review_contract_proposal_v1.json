@@ -1,0 +1,88 @@
+{
+  "schema": "ra_d0_review_contract_proposal_v1",
+  "status": "REQUIRES_GPT_REVIEW_AMENDMENTS",
+  "input_design_sha256": "e7bee165c8e241dd2ac8ec3858e9d145a08c947b8d146408c2d67bc3b6d1828b",
+  "fixed_inputs": {
+    "R1": "24bfeb84a4ce87b56985d174dd98d1d5e1702a2b",
+    "R1p5": "af3d014d0a0cfcbbd25bb544f6544652fec92942",
+    "math_audit": "8a04c148a66d23dbc1f045086a95a5e19a6372dc"
+  },
+  "context": "distinct_basis controlled 2-qubit P3",
+  "x": [
+    "1/8",
+    "1/4"
+  ],
+  "sigma_primary": 1,
+  "sigma_minus_role": "saved sign equality control, not replication",
+  "degree": 3,
+  "internal_law": [
+    "3/4",
+    "1/4"
+  ],
+  "prototype_ids": [
+    "O0",
+    "O2",
+    "P2",
+    "P3",
+    "A0",
+    "A1",
+    "A2"
+  ],
+  "synthesis_precision": [
+    "1e-3",
+    "1e-4",
+    "1e-6"
+  ],
+  "workspace_peak_cap": 1,
+  "epsilon_axis": "1/200",
+  "alpha_axis": "1/5280",
+  "coherent_measurement_error_factor": 2,
+  "delta_num": "1/1000000000000",
+  "sampler_denominator": "1152921504606846976",
+  "sampler_quantization": "largest remainder; index tie; y nearest half-up",
+  "primary_resource_vector": [
+    "G_T",
+    "G_CX",
+    "G_1Q"
+  ],
+  "one_Q_readout_per_total_shot": "5/2",
+  "materiality_threshold": null,
+  "grid_recurrence": "ceil(201*n/200)",
+  "primary_points": "saved B0 anchors",
+  "coverage_guarantee": "integer shots, core feasible set, not epsilon-query cap preservation",
+  "query_budget_source": [
+    "same-n feasible B0",
+    "B2 single-resource minima"
+  ],
+  "query_B3_budget_feedback": false,
+  "strict_witness": "certified B3 primal upper < certified B2 dual lower",
+  "future_classifications": [
+    "D0_STRONG_DEGREE_LOCAL_SIGNAL",
+    "D0_LOCAL_DEGREE_LOCAL_SIGNAL",
+    "D0_NO_REGISTERED_WITNESS",
+    "D0_TECHNICAL_INCONCLUSIVE"
+  ],
+  "unresolved": [
+    "B0_saved vs B0_ideal naming and inclusion",
+    "B1/B2 quantified membership residual and symmetric numerical baseline",
+    "certified B2 feasible upper for budget construction before B3",
+    "B2 infeasibility ray verification/failure policy and auxiliary-call budget",
+    "full grid versus narrowed query scope",
+    "execution wall/CPU/RSS/output/per-call caps",
+    "future runtime source freeze and separate source-bound authorization/marker"
+  ],
+  "registered_optimization_calls": 0,
+  "budget_values_fixed": false,
+  "LP_kernel_implemented": true,
+  "B2_dyadic_primal_membership_implemented": false,
+  "authorization_created": false,
+  "one_shot_marker_created": false,
+  "RUN_READY": false,
+  "development_execution_authorized": false,
+  "science_execution_authorized": false,
+  "synthesis_authorized": false,
+  "mandatory_STOP": true,
+  "Farkas_certificate_acquisition_implemented": true,
+  "primary_minimum_LP_upper_bound": 444411,
+  "optional_one_Farkas_auxiliary_per_LP_combined_upper_bound": 888822
+}

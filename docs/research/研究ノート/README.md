@@ -1,3 +1,8 @@
+## Track B RA-D0準備（2026-10-06）
+
+[dated note](2026-10-06_track_b_ra_d0_preparation.md)：静的table、LP/certificate kernel、30 tests。
+数値baselineとquery実行契約をGPT reviewへ返しmandatory STOP。以下の既存本文を全文保持。
+
 ## Track B RA-RTE統合数学監査・mandatory STOP（2026-10-06）
 
 R1.5 `af3d014d0a0cfcbbd25bb544f6544652fec92942` 基点、GPT設計案へのDOCS_SYMBOLIC_ONLY_MATHEMATICAL_AUDIT。

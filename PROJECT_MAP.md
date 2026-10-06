@@ -1,3 +1,12 @@
+## Track B RA-D0 static preparation / mandatory STOP（2026-10-06）
+
+[source review](docs/tracks/algorithm_codesign/ra_d0_source_preparation_review_v1.md)：21 columns/x、18 sign pairs一致、35 focused tests PASS。
+B専用namespace `src/trottertracks/algorithm_codesign/ra_d0/`、static generator／verifier、
+`artifacts/track_b_ra_d0_preparation/2026-10-06/`に候補・grid・semantic audit・provenanceを保存。
+ideal nestingと数値membershipを区別し、query実行scope／資源上限をGPTへ返す。
+登録最適化／新合成／新science0、RUN_READY=false、既存分類・Track A・旧STOP保持。
+**mandatory STOP。以下の既存本文を全文保持する。**
+
 ## Track B RA-RTE統合数学監査・mandatory STOP（2026-10-06）
 
 R1.5 `af3d014d0a0cfcbbd25bb544f6544652fec92942` 基点、GPT設計案へのDOCS_SYMBOLIC_ONLY_MATHEMATICAL_AUDIT。
