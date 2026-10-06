@@ -4,6 +4,7 @@
     network input. Only two fixed job names are dispatched after checkout gates.
 """
 import io
+import gc
 import os
 from pathlib import Path
 import pickle
@@ -81,6 +82,13 @@ def owned_worker_main(parent_pid):
         except BaseException as exc:
             write_frame(outgoing,{'result':None,'log':logs.getvalue(),'error':type(exc).__name__+': '+str(exc)})
             return  # failed invocation consumed; never another job or restart
+        finally:
+            # Drop the previous circuit before blocking on the next IPC frame.
+            # Compiler reference cycles must not consume the next job's AS budget.
+            result = None
+            del job
+            logs.close()
+            gc.collect()
 
 
 class OwnedPool:

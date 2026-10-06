@@ -3,7 +3,7 @@ from .identity import require
 from .ledger import validate_reuse_identity
 
 
-def compile_wrappers(run, ledger, jobs, compile_worker, options, reuse, *, expected_count):
+def compile_wrappers(run, ledger, jobs, compile_worker, options, reuse, *, expected_count, on_complete=None):
     """Consume lazy (expected identity, circuit) jobs and return logical order.
 
     At most the admitted worker count has an outstanding invocation. Pending
@@ -13,6 +13,11 @@ def compile_wrappers(run, ledger, jobs, compile_worker, options, reuse, *, expec
     pending, in_flight, followers, records = {}, {}, {}, []
     require(type(run.workers) is int and 1 <= run.workers <= 12, 'admitted compile workers')
     iterator = iter(jobs)
+
+    def record_ready(position, record):
+        records[position] = record
+        if on_complete is not None:
+            on_complete(position, record)
 
     def healthy():
         run.pulse()
@@ -35,11 +40,11 @@ def compile_wrappers(run, ledger, jobs, compile_worker, options, reuse, *, expec
             metrics = future.result()
             record = ledger.complete(key, metrics)
             ledger.read(key)  # independently check the durable COMPLETE owner
-            records[position] = record
+            record_ready(position, record)
             reuse[scope] = key
             del in_flight[scope]
             for follower_position, follower_key in followers.pop(key, []):
-                records[follower_position] = ledger.complete(follower_key, {}, owner_key=key)
+                record_ready(follower_position, ledger.complete(follower_key, {}, owner_key=key))
             del pending[future]
 
     try:
@@ -61,7 +66,7 @@ def compile_wrappers(run, ledger, jobs, compile_worker, options, reuse, *, expec
                      expected['numerical_circuit_fingerprint'])
             owner = reuse.get(scope)
             if owner is not None:
-                records[position] = ledger.complete(key, {}, owner_key=owner)
+                record_ready(position, ledger.complete(key, {}, owner_key=owner))
             elif scope in in_flight:
                 owner = in_flight[scope]
                 # Tracking a pending dependency is not RESERVED cache reuse.
@@ -83,4 +88,59 @@ def compile_wrappers(run, ledger, jobs, compile_worker, options, reuse, *, expec
         return records
     except BaseException:
         run.abort()  # owned children only; charged reservations are never refunded
+        raise
+
+
+def compile_candidates(run, ledger, candidates, compile_worker, options, reuse, *,
+                       expected_candidates, expected_wrappers, on_candidate):
+    """Fill one bounded compile queue across candidate boundaries.
+
+    Candidate/trajectory/axis generation order is unchanged. Completion callbacks
+    publish candidates in that same order, even when workers finish out of order.
+    No circuit is retained by candidate bookkeeping.
+    """
+    contexts, positions = {}, {}
+    generated = candidate_count = published = 0
+
+    def jobs():
+        nonlocal generated, candidate_count
+        for metadata, iterator, count in candidates:
+            require(candidate_count < expected_candidates and type(count) is int and count > 0,
+                    'candidate count before registration')
+            ordinal = candidate_count
+            candidate_count += 1
+            contexts[ordinal] = {'metadata':metadata, 'records':[None]*count, 'remaining':count}
+            actual = 0
+            for expected, circuit in iterator:
+                require(actual < count, 'candidate wrapper overflow')
+                positions[generated] = (ordinal,actual)
+                generated += 1
+                actual += 1
+                yield expected,circuit
+                del circuit
+            require(actual == count, 'candidate wrapper underflow')
+        require(candidate_count == expected_candidates, 'complete candidate stream')
+
+    def ready(position, record):
+        nonlocal published
+        require(position in positions, 'candidate completion position')
+        ordinal,index = positions.pop(position)
+        context = contexts[ordinal]
+        require(context['records'][index] is None, 'duplicate candidate completion')
+        context['records'][index] = record
+        context['remaining'] -= 1
+        while published in contexts and contexts[published]['remaining'] == 0:
+            context = contexts.pop(published)
+            require(all(r is not None for r in context['records']), 'complete candidate metrics')
+            on_candidate(context['metadata'],context['records'])
+            published += 1
+
+    try:
+        compile_wrappers(run,ledger,jobs(),compile_worker,options,reuse,
+                         expected_count=expected_wrappers,on_complete=ready)
+        require(published == expected_candidates and not contexts and not positions,
+                'all candidates published in logical order')
+        return published
+    except BaseException:
+        run.abort()
         raise

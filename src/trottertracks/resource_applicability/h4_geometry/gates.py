@@ -14,11 +14,13 @@ CONTRACT = 'artifacts/resource_applicability/track_a_h4_geometry_contract_prepar
 PLAN_SHA = '18aa36a2776d38852657f154a88c381b3299fbc009007f20a2d95fcb865d9f7a'
 PLAN_FP = 'c76e8f1f6de5a2625affde38cc471b8214b299f343da2817aadbb3ebabc7d933'
 MANIFEST_SHA = '14cc5d0cc4da2b82168a0640cf8ff70ddf382b79810842bab1d7fedfae029f70'
-SOURCE_AUDIT = 'artifacts/resource_applicability/track_a_h4_worker_bootstrap_run02/2026-10-06/source_freeze_v1.json'
+SOURCE_AUDIT = 'artifacts/resource_applicability/track_a_h4_cross_candidate_run03/2026-10-06/source_freeze_v1.json'
 DISTANCES = ('0.70', '0.80', '0.90', '1.10', '1.40', '1.60')
 ARTIFACT_ANCHOR = '/home/AbeHiromu/projects/partially-randomized-trotter'
-RUN_ID = 'track-a-h4-geometry-v2-20261006-run02'
+RUN_ID = 'track-a-h4-geometry-v2-20261006-run03'
 OUTPUT = ARTIFACT_ANCHOR + '/artifacts/resource_applicability/track_a_h4_geometry_execution/' + RUN_ID
+REUSE_MANIFEST = 'artifacts/resource_applicability/track_a_h4_cross_candidate_run03/2026-10-06/input_reuse_and_prior_budget_v1.json'
+REUSE_ROOT = ARTIFACT_ANCHOR + '/artifacts/resource_applicability/track_a_h4_geometry_execution/track-a-h4-geometry-v2-20261006-run02'
 PYTHON = '/home/AbeHiromu/venvs/trotter-common/bin/python'
 THREAD_ENV = {k: '1' for k in ('PYTHONNOUSERSITE', 'PYTHONDONTWRITEBYTECODE', 'OPENBLAS_NUM_THREADS',
               'OMP_NUM_THREADS', 'MKL_NUM_THREADS', 'NUMEXPR_NUM_THREADS', 'RAYON_NUM_THREADS', 'QISKIT_NUM_PROCS')}
@@ -94,6 +96,8 @@ def structural_gate(plan,authorization,review):
         (review,'h4-native-stage-review-v1',{'schema_version':str,'stage':str,'run_id':str,'approved':bool,
           'plan_fingerprint':str,'authorization_digest':str}))
     for document,version,schema in specifications:
+        if document is plan and 'reexecution' in document:
+            schema = {**schema, 'reexecution':dict}
         require(type(document) is dict and set(document)==set(schema),'production schema fields')
         require(document['schema_version']==version,'production schema version')
         for key,expected in schema.items():
@@ -130,6 +134,7 @@ def authorize(stage, plan, authorization, review, *, explicit_launch):
     require(len(set(authorization['allowed_cpus'])) == len(authorization['allowed_cpus']), 'duplicate CPU permission')
     if stage == 'input_generation':
         require(plan.get('inputs') is None and plan.get('generation_freeze_digest') is None, 'no placeholder inputs')
+        require('reexecution' not in plan, 'reuse is signal-only')
     else:
         require(set(plan.get('inputs', {})) == set(DISTANCES), 'all frozen inputs required')
         hash_id(plan.get('generation_freeze_digest'))
@@ -137,7 +142,33 @@ def authorize(stage, plan, authorization, review, *, explicit_launch):
             require(set(inp) == {'file', 'bytes_sha256', 'input', 'H', 'DF', 'state'}, 'input closure')
             for k in ('bytes_sha256', 'input', 'H', 'DF', 'state'):
                 hash_id(inp[k])
+        if 'reexecution' in plan:
+            reuse = plan['reexecution']
+            require(set(reuse) == {'manifest_path','manifest_sha256'} and
+                    reuse['manifest_path'] == REUSE_MANIFEST, 'reexecution manifest scope')
+            hash_id(reuse['manifest_sha256'])
     return Permit(stage, plan, plan['source_root'], fingerprint('h4-review-v1', review))
+
+
+def reexecution_metadata(permit):
+    require(permit.stage == 'signal_compile', 'input reuse signal-only')
+    ref = permit.plan['reexecution']
+    data = (Path(permit.source_root)/ref['manifest_path']).read_bytes()
+    require(sha(data) == ref['manifest_sha256'], 'input reuse/prior budget binding')
+    manifest = json.loads(data)
+    require(manifest['schema_version'] == 'h4-input-reuse-and-prior-budget-v1' and
+            manifest['input_root'] == REUSE_ROOT and manifest['new_run_id'] == RUN_ID and
+            manifest['old_run_stopped'] is True and manifest['authorization_authority'] == 'USER_EXPLICIT_MESSAGE',
+            'explicit new run from stopped predecessor')
+    require(manifest['generation_freeze_fingerprint'] == permit.plan['generation_freeze_digest'] and
+            manifest['generation_source_commit'] == '049e69919af16ad29a67a217dc7a407d6b1754a6', 'original generation lineage')
+    require(type(manifest['prior_cumulative_charge_bytes']) is int and 0 <= manifest['prior_cumulative_charge_bytes'] < 10*2**30,
+            'prior output charge')
+    require(type(manifest['prior_actual_invocations']) is int and 0 <= manifest['prior_actual_invocations'] < 74784,
+            'prior invocation charge')
+    require(type(manifest['prior_wall_seconds']) in (int,float) and 0 <= manifest['prior_wall_seconds'] < 72*3600,
+            'prior wall charge')
+    return manifest
 
 
 def checkout_gate(permit):
@@ -171,4 +202,6 @@ def checkout_gate(permit):
     require(plan.get('compiler_fingerprint') == contract['compiler_environment_reference']['compiler_fingerprint'] and
             plan.get('environment_fingerprint') == contract['compiler_environment_reference']['environment_fingerprint'], 'environment plan binding')
     require(plan.get('templates') == contract['templates'], 'template substitution')
+    if 'reexecution' in plan:
+        reexecution_metadata(permit)
     return contract, options

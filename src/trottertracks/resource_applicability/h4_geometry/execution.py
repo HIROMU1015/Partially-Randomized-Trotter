@@ -6,7 +6,7 @@ from pathlib import Path
 import time
 import threading
 from .identity import require, Stop, sha, fingerprint
-from .gates import authorize, checkout_gate, DISTANCES, OUTPUT, Permit
+from .gates import authorize, checkout_gate, reexecution_metadata, DISTANCES, OUTPUT, Permit
 from .resources import OutputBudget, WallBudget, Monitor, admission, observe_memory, limit_owned_address_space
 from .ledger import Ledger, wire, json_bytes
 
@@ -24,7 +24,7 @@ def _compile_worker(circuit,options):
 
 
 class OwnedRun:
-    def __init__(self,permit,authorization,*,prior_wall=0,handoff=False):
+    def __init__(self,permit,authorization,*,prior_wall=0,handoff=False,prior_charge=0):
         observation=observe_memory()
         self.workers=admission(observation['available'],observation['observed_at'],permit.plan['requested_workers'],
                                authorization['allowed_cpus'],observation['process_cpus'])
@@ -33,7 +33,7 @@ class OwnedRun:
         self.monitor=Monitor(self.workers,observation)
         self.wall=WallBudget(prior_wall)
         limit_owned_address_space()
-        self.budget=OutputBudget(OUTPUT,handoff=handoff)
+        self.budget=OutputBudget(OUTPUT,handoff=handoff,prior_charge=prior_charge)
         self.finished=threading.Event();self.failure=None
         self.stage=permit.stage
         self.wall_index=0
@@ -63,7 +63,8 @@ class OwnedRun:
 
     def pulse(self):
         require(self.failure is None,'owned monitoring failed STOP')
-        require(getattr(getattr(self,'pool',None),'failure',None) is None,'owned pool failed STOP')
+        pool_failure = getattr(getattr(self,'pool',None),'failure',None)
+        require(pool_failure is None,'owned pool failed STOP: '+str(pool_failure))
         self.wall.consumed()
 
     def wait(self,future):
@@ -118,12 +119,21 @@ def generation_stage(permit,authorization,options):
 
 def input_boundary(permit):
     require(permit.stage=='signal_compile','separate signal permit')
-    freeze_path=Path(OUTPUT)/'generation-freeze.json'
+    reuse = reexecution_metadata(permit) if 'reexecution' in permit.plan else None
+    input_root = Path(reuse['input_root']) if reuse else Path(OUTPUT)
+    require(not any(p.is_symlink() for p in [input_root,*input_root.parents]), 'input root symlink')
+    freeze_path=input_root/'generation-freeze.json'
     require(not freeze_path.is_symlink(),'freeze symlink')
     freeze=json.loads(freeze_path.read_bytes())
     require(fingerprint('h4-generation-freeze-v1',freeze)==permit.plan['generation_freeze_digest'],'generation freeze binding')
+    expected_source = reuse['generation_source_commit'] if reuse else permit.plan['source_commit']
     require(freeze['stage']=='INPUTS_FROZEN_STOP' and freeze['inputs']==permit.plan['inputs'] and
-            freeze['source_commit']==permit.plan['source_commit'] and freeze['mandatory_stop'] is True,'frozen inputs')
+            freeze['source_commit']==expected_source and freeze['mandatory_stop'] is True,'frozen inputs')
+    if reuse:
+        require(sha(freeze_path.read_bytes()) == reuse['generation_freeze_file_sha256'], 'original freeze bytes')
+        require(sha((input_root/'byte-budget.journal').read_bytes()) == reuse['prior_journal_sha256'], 'stopped predecessor budget bytes')
+        return {**freeze, 'input_root':str(input_root), 'consumed_seconds':reuse['prior_wall_seconds'],
+                'prior_charge':reuse['prior_cumulative_charge_bytes'], 'prior_invocations':reuse['prior_actual_invocations']}
     return freeze
 
 
@@ -133,7 +143,7 @@ def load_new_input(permit,distance,freeze):
     from .inputs import array_identity
     entry=permit.plan['inputs'][distance]
     require(entry['file']=='input-'+distance+'.npz','input path scope')
-    path=Path(OUTPUT)/entry['file']
+    path=Path(freeze.get('input_root',OUTPUT))/entry['file']
     require(not path.is_symlink(),'input symlink')
     data=path.read_bytes();require(sha(data)==entry['bytes_sha256'],'frozen input bytes')
     with np.load(io.BytesIO(data),allow_pickle=False) as archive:
@@ -160,20 +170,21 @@ def candidate_wrapper_jobs(run,identity,seeds,preparation,template):
 
 def signal_stage(permit,authorization,options):
     require(permit.stage=='signal_compile','separate signal stage')
-    # The freeze and file access occur only after authorize + checkout_gate.
     freeze=input_boundary(permit)
-    run=OwnedRun(permit,authorization,prior_wall=freeze['consumed_seconds'],handoff=True)
+    reused='reexecution' in permit.plan
+    run=OwnedRun(permit,authorization,prior_wall=freeze['consumed_seconds'],handoff=not reused,
+                 prior_charge=freeze.get('prior_charge',0))
     ledger=None
     from .signal import prepare,corrected_signal,candidate_identity,trajectory_seeds,display_map
-    from .parallel import compile_wrappers
+    from .parallel import compile_candidates
     from .inputs import validate_frozen_state
     signals=[];reuse={}
-    try:
-        ledger=Ledger(run.budget)
+
+    def candidates():
+        import numpy as np
         for distance in DISTANCES:
             run.pulse();arrays=load_new_input(permit,distance,freeze)
             validate_frozen_state(arrays)
-            import numpy as np
             inp={'geometry':distance,**{k:permit.plan['inputs'][distance][k] for k in ('input','H','DF','state')}}
             for template in permit.plan['templates']:
                 run.pulse()
@@ -183,31 +194,42 @@ def signal_stage(permit,authorization,options):
                 signal_record=corrected_signal(det,tail,preparation['constant'],arrays['qiskit_state'],template)
                 target=complex(np.exp(-1j*float(arrays['energy'])*template['T']))
                 seeds=trajectory_seeds(identity) if template['method'] in ('B2','B3') else [None]
-                records=compile_wrappers(run,ledger,candidate_wrapper_jobs(run,identity,seeds,preparation,template),
-                                         _compile_worker,options,reuse,expected_count=2*len(seeds))
-                all_metrics=[[records[2*i]['metrics'],records[2*i+1]['metrics']] for i in range(len(seeds))]
-                costs=[[m['rz_count'] for m in pair] for pair in all_metrics]
-                saved={'normalization':signal_record['normalization'],
-                    'bias':{'cosine':abs(signal_record['corrected'].real-target.real),'sine':abs(signal_record['corrected'].imag-target.imag)},
-                    'paired_costs':costs}
-                result={'geometry':distance,'template_id':template['template_id'],'identity':identity,
-                        'candidate_fingerprint':fingerprint('h4-candidate-v1',identity),
-                        'signal':{'corrected':[signal_record['corrected'].real,signal_record['corrected'].imag],
-                                  'raw':[signal_record['raw'].real,signal_record['raw'].imag],'normalization':saved['normalization']},
-                        'saved':saved,'paired_metrics':all_metrics,'display':display_map(saved),
-                        'research_decision':None,'next_stage_authorized':False}
-                signals.append(result)
-                run.budget.write('signal-'+distance+'-'+template['template_id']+'.json',json_bytes(result))
+                metadata={'geometry':distance,'template':template,'identity':identity,
+                          'signal_record':signal_record,'target':target}
+                yield metadata,candidate_wrapper_jobs(run,identity,seeds,preparation,template),2*len(seeds)
+
+    def publish(metadata,records):
+        distance,template,identity=(metadata[k] for k in ('geometry','template','identity'))
+        signal_record,target=metadata['signal_record'],metadata['target']
+        all_metrics=[[records[i]['metrics'],records[i+1]['metrics']] for i in range(0,len(records),2)]
+        costs=[[m['rz_count'] for m in pair] for pair in all_metrics]
+        saved={'normalization':signal_record['normalization'],
+               'bias':{'cosine':abs(signal_record['corrected'].real-target.real),
+                       'sine':abs(signal_record['corrected'].imag-target.imag)},'paired_costs':costs}
+        result={'geometry':distance,'template_id':template['template_id'],'identity':identity,
+                'candidate_fingerprint':fingerprint('h4-candidate-v1',identity),
+                'signal':{'corrected':[signal_record['corrected'].real,signal_record['corrected'].imag],
+                          'raw':[signal_record['raw'].real,signal_record['raw'].imag],'normalization':saved['normalization']},
+                'saved':saved,'paired_metrics':all_metrics,'display':display_map(saved),
+                'research_decision':None,'next_stage_authorized':False}
+        run.budget.write('signal-'+distance+'-'+template['template_id']+'.json',json_bytes(result))
+        signals.append(result)
+        print('H4 candidate COMPLETE %d/1308 %s %s'%(len(signals),distance,template['template_id']),flush=True)
+
+    try:
+        ledger=Ledger(run.budget,prior_invocations=freeze.get('prior_invocations',0))
+        compile_candidates(run,ledger,candidates(),_compile_worker,options,reuse,
+                           expected_candidates=1308,expected_wrappers=74784,on_candidate=publish)
         accounting=ledger.audit()
         require(len(signals)==1308 and accounting['logical_wrappers']==74784 and accounting['actual_invocations']<=74784,'fixed campaign accounting')
         final={'status':'MAP_COMPLETE_STOP','signal_records':len(signals),**accounting,
+               'prior_actual_invocations':freeze.get('prior_invocations',0),
                'ledger_head_digest':ledger.chain,'consumed_seconds':run.wall.consumed(),
                'research_decision':None,'next_stage_authorized':False,'mandatory_stop':True}
         run.budget.write('map-complete.json',json_bytes(final))
         return final
     finally:
-        if ledger is not None:
-            ledger.close()
+        if ledger is not None:ledger.close()
         run.close()
 
 

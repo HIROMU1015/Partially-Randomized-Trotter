@@ -63,7 +63,9 @@ class Ledger:
     writer lock. A record is published before its ledger completion; a crash in
     either window leaves the durable invocation charged and requires review.
     """
-    def __init__(self,budget,*,cap=74784):
+    def __init__(self,budget,*,cap=74784,prior_invocations=0):
+        require(type(prior_invocations) is int and 0 <= prior_invocations < cap, 'prior invocation accounting')
+        self.prior_invocations = prior_invocations
         self.budget,self.cap,self.version=budget,cap,0
         self.entries,self.reservations,self.registry,self.expected={},{},{},{}
         self.saved_entries,self.saved_reservations,self.chain={},{},None
@@ -102,8 +104,8 @@ class Ledger:
     def reserve(self,key):
         with self.locked():
             require(key in self.expected and key not in self.entries and key not in self.reservations,'duplicate reservation')
-            require(len(self.reservations)<self.cap,'actual invocation cap before compile')
-            invocation='science-%06d'%(len(self.reservations)+1)
+            require(self.prior_invocations+len(self.reservations)<self.cap,'actual invocation cap before compile')
+            invocation='science-%06d'%(self.prior_invocations+len(self.reservations)+1)
             self.reservations[key]={'status':'RESERVED','invocation':invocation}
             self._save()
         return invocation
@@ -159,4 +161,4 @@ class Ledger:
             if owner is not None:
                 require(owner in self.entries,'missing owner')
                 reuse_owner(self.read(owner),self.expected[owner],self.expected[key],self.registry,self.entries[owner]['digest'])
-        return {'logical_wrappers':len(self.entries),'actual_invocations':len(self.reservations)}
+        return {'logical_wrappers':len(self.entries),'actual_invocations':self.prior_invocations+len(self.reservations)}

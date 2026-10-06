@@ -262,8 +262,11 @@ class OutputBudget:
     Rewrites never reclaim budget. Stage handoff consumes existing budget only
     through a separately reviewed launch; no automatic resume is supported.
     """
-    def __init__(self, root, *, cap=OUTPUT_CAP, handoff=False):
+    def __init__(self, root, *, cap=OUTPUT_CAP, handoff=False, prior_charge=0):
         self.root, self.cap = Path(root), cap
+        require(type(prior_charge) is int and 0 <= prior_charge < cap and
+                (not handoff or prior_charge == 0), 'explicit fresh-run prior charge')
+        require(not prior_charge or prior_charge+128 <= cap, 'prior charge plus new journal row')
         self.thread_lock=threading.Lock()
         require(self.root.is_absolute(), 'absolute own output root')
         require(not any(p.is_symlink() for p in [self.root, *self.root.parents]), 'output symlink')
@@ -271,6 +274,10 @@ class OutputBudget:
         fsync_directory(self.root.parent)
         self.fd = os.open(self.root/'byte-budget.journal', os.O_RDWR | os.O_APPEND | os.O_NOFOLLOW |
                           (0 if handoff else os.O_CREAT | os.O_EXCL), 0o600)
+        if prior_charge:
+            require(prior_charge+128 <= self.cap, 'prior charge plus new journal row')
+            os.write(self.fd, (str(prior_charge+128)+'\n').encode().ljust(128, b' '))
+            os.fsync(self.fd)
 
     def close(self):
         os.close(self.fd)

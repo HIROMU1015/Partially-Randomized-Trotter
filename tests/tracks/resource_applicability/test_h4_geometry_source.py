@@ -702,6 +702,133 @@ def synthetic_compile_jobs(samples=32, duplicate_mod=None):
             yield expected, {'key':expected['wrapper_key'], 'metrics':metrics}
 
 
+class CrossCandidateTests(unittest.TestCase):
+    def groups(self, counts=(2,2,2,2,2,2)):
+        for candidate,count in enumerate(counts):
+            fields={**fake_identity(),'template':hashlib.sha256(str(candidate).encode()).hexdigest()}
+            jobs=[]
+            for position in range(count):
+                axis=('cosine','sine')[position%2]
+                numerical=hashlib.sha256((str(candidate)+':'+str(position)).encode()).hexdigest()
+                seed,index=(None,None) if count==2 else (100+position//2,position//2)
+                expected=ledger.wire(fields,axis,seed,index,numerical)
+                metrics={name:candidate*100+position+j for j,name in enumerate(ledger.METRICS)}
+                jobs.append((expected,{'key':expected['wrapper_key'],'metrics':metrics}))
+            yield candidate,iter(jobs),count
+
+    def evaluate(self, workers_count, counts=(2,2,2,2,2,2)):
+        with tempfile.TemporaryDirectory(prefix='h4-synthetic-') as t:
+            budget=resources.OutputBudget(Path(t)/'own');journal=ledger.Ledger(budget)
+            run=FakeCompileRun(journal,workers_count);published=[]
+            try:
+                n=parallel.compile_candidates(run,journal,self.groups(counts),execution._compile_worker,OPTIONS,{},
+                    expected_candidates=len(counts),expected_wrappers=sum(counts),
+                    on_candidate=lambda candidate,records:published.append((candidate,records)))
+                self.assertEqual(n,len(counts))
+                self.assertEqual(journal.audit(),{'logical_wrappers':sum(counts),'actual_invocations':sum(counts)})
+                return run,published
+            finally:journal.close();budget.close()
+
+    def test_twelve_initial_jobs_span_six_baseline_candidates(self):
+        run,published=self.evaluate(12)
+        self.assertEqual(run.pool.first_wait_submissions,12)
+        self.assertEqual(run.pool.max_unfinished,12)
+        self.assertEqual([candidate for candidate,_ in published],list(range(6)))
+        self.assertNotEqual(run.completed,run.pool.submissions)
+        self.assertTrue(all([r['axis'] for r in records]==['cosine','sine'] for _,records in published))
+
+    def test_completed_worker_releases_previous_circuit_before_next_read(self):
+        import io,weakref
+        from types import SimpleNamespace
+        permit=gates.Permit('signal_compile',{},'/tmp/artificial-source',FAKE)
+        references=[];calls=[0]
+        class FakeCircuit:pass
+        def read(_stream):
+            calls[0]+=1
+            if calls[0]==1:return permit
+            if calls[0]==2:
+                circuit=FakeCircuit();circuit.cycle=circuit;references.append(weakref.ref(circuit))
+                return {'name':'_compile_worker','args':(circuit,{})}
+            self.assertIsNone(references[0]())
+            raise ident.Stop('artificial end-of-stream')
+        with patch.object(workers,'read_frame',read),patch.object(workers,'write_frame',lambda *_:None),\
+             patch.object(workers,'private_dispatch',lambda *_:{}),\
+             patch.object(gates,'checkout_gate',return_value=({},{})),\
+             patch.object(resources,'limit_owned_address_space'),\
+             patch.object(workers.sys,'stdin',SimpleNamespace(buffer=io.BytesIO())),\
+             patch.object(workers.sys,'stdout',SimpleNamespace(buffer=io.BytesIO())):
+            with self.assertRaisesRegex(ident.Stop,'artificial end-of-stream'):
+                workers.owned_worker_main(os.getppid())
+
+    def test_serial_and_twelve_workers_identical_order_metrics_and_seeds(self):
+        _,serial=self.evaluate(1,(2,64,2))
+        _,parallel_result=self.evaluate(12,(2,64,2))
+        self.assertEqual(serial,parallel_result)
+
+    def test_callback_failure_aborts_without_additional_dispatch(self):
+        with tempfile.TemporaryDirectory(prefix='h4-synthetic-') as t:
+            b=resources.OutputBudget(Path(t)/'own');j=ledger.Ledger(b);run=FakeCompileRun(j,12)
+            try:
+                def fail(*args):raise OSError('synthetic publication failure')
+                with self.assertRaises(OSError):
+                    parallel.compile_candidates(run,j,self.groups(),execution._compile_worker,OPTIONS,{},
+                        expected_candidates=6,expected_wrappers=12,on_candidate=fail)
+                self.assertGreaterEqual(run.aborts,1)
+                self.assertEqual(run.pool.first_wait_submissions,12)
+            finally:j.close();b.close()
+
+    def test_prior_output_charge_and_invocations_are_not_reset(self):
+        with tempfile.TemporaryDirectory(prefix='h4-synthetic-') as t:
+            b=resources.OutputBudget(Path(t)/'own',cap=100000,prior_charge=1000)
+            self.assertEqual(sum(int(x.strip()) for x in (b.root/'byte-budget.journal').read_bytes().splitlines() if x.strip()),1128)
+            j=ledger.Ledger(b,cap=5,prior_invocations=4)
+            try:
+                jobs=list(next(self.groups())[1]);a,c=[e for e,_ in jobs]
+                j.register(a);j.register(c)
+                self.assertEqual(j.reserve(a['wrapper_key']),'science-000005')
+                j.complete(a['wrapper_key'],jobs[0][1]['metrics'])
+                with self.assertRaises(ident.Stop):j.reserve(c['wrapper_key'])
+                self.assertNotIn(c['wrapper_key'],j.reservations)
+            finally:j.close();b.close()
+
+    def test_reuse_requires_signal_binding_and_valid_manifest_scope(self):
+        p,a,r=fake_stage()
+        p['reexecution']={'manifest_path':gates.REUSE_MANIFEST,'manifest_sha256':FAKE}
+        a['plan_fingerprint']=r['plan_fingerprint']=ident.fingerprint('h4-execution-plan-v1',p)
+        r['authorization_digest']=ident.fingerprint('h4-authorization-v1',a)
+        with self.assertRaisesRegex(ident.Stop,'signal-only'):gates.authorize('input_generation',p,a,r,explicit_launch=True)
+        p,a,r=fake_stage('signal_compile')
+        p['reexecution']={'manifest_path':'../old-runtime','manifest_sha256':FAKE}
+        a['plan_fingerprint']=r['plan_fingerprint']=ident.fingerprint('h4-execution-plan-v1',p)
+        r['authorization_digest']=ident.fingerprint('h4-authorization-v1',a)
+        with self.assertRaisesRegex(ident.Stop,'scope'):gates.authorize('signal_compile',p,a,r,explicit_launch=True)
+
+    def test_original_input_freeze_preserved_with_separate_prior_budget(self):
+        p,a,r=fake_stage('signal_compile')
+        with tempfile.TemporaryDirectory(prefix='h4-synthetic-') as t:
+            root=Path(t)
+            original={'stage':'INPUTS_FROZEN_STOP','source_commit':SOURCE,'inputs':p['inputs'],
+                      'mandatory_stop':True,'consumed_seconds':2.5,'run_id':'old-generation'}
+            data=ledger.json_bytes(original);(root/'generation-freeze.json').write_bytes(data)
+            journal=b'128\n'.ljust(128,b' ');(root/'byte-budget.journal').write_bytes(journal)
+            p['generation_freeze_digest']=ident.fingerprint('h4-generation-freeze-v1',original)
+            p['reexecution']={'manifest_path':gates.REUSE_MANIFEST,'manifest_sha256':FAKE}
+            a['plan_fingerprint']=r['plan_fingerprint']=ident.fingerprint('h4-execution-plan-v1',p)
+            r['authorization_digest']=ident.fingerprint('h4-authorization-v1',a)
+            permit=gates.authorize('signal_compile',p,a,r,explicit_launch=True)
+            reuse={'input_root':str(root),'generation_source_commit':SOURCE,
+                   'generation_freeze_file_sha256':ident.sha(data),'prior_journal_sha256':ident.sha(journal),
+                   'prior_wall_seconds':42.,'prior_cumulative_charge_bytes':128,'prior_actual_invocations':4}
+            with patch.object(execution,'reexecution_metadata',return_value=reuse):
+                boundary=execution.input_boundary(permit)
+                self.assertEqual(boundary['consumed_seconds'],42.)
+                self.assertEqual(boundary['source_commit'],SOURCE)
+                self.assertEqual(boundary['prior_invocations'],4)
+                self.assertEqual((root/'generation-freeze.json').read_bytes(),data)
+                (root/'byte-budget.journal').write_bytes(b'changed')
+                with self.assertRaises(ident.Stop):execution.input_boundary(permit)
+
+
 class ParallelCompileTests(unittest.TestCase):
     def fixture(self, workers=3, cap=74784):
         from contextlib import contextmanager
@@ -937,7 +1064,7 @@ class ParallelCompileTests(unittest.TestCase):
             with self.assertRaises(ident.Stop):gates.checkout_gate(permit)
             read.assert_called_once()
             self.assertEqual(read.call_args.args[0],root/gates.SOURCE_AUDIT)
-        self.assertEqual(gates.SOURCE_AUDIT,'artifacts/resource_applicability/track_a_h4_geometry_parallel_source/2026-10-06/source_freeze_v1.json')
+        self.assertEqual(gates.SOURCE_AUDIT,'artifacts/resource_applicability/track_a_h4_cross_candidate_run03/2026-10-06/source_freeze_v1.json')
 
     def test_owned_pool_uses_available_worker_and_latches_death(self):
         import queue,threading
