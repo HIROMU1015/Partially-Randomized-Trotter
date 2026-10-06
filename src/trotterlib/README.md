@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+Track B [SP-1後block合成の数学/API仕様](../../docs/tracks/algorithm_codesign/block_synthesis_design_review_20261006.md)はdocs-only。
+channel用Gateとoperator LCUを別型にする設計案。新namespace/コードは未作成、共有library/API変更なし。
+current rte.pyは固定git blobのtext参照だけで呼び出さない。実装/science/tests0、mandatory STOP。以下は既存履歴。
+
 Track B [SP-1一回結果・保存値監査](../../docs/tracks/algorithm_codesign/sp1_one_shot_result_validation_20261006.md)は
 固定`../trottertracks/algorithm_codesign/synthesis_placement/`の実行記録。
 48 rows／96 axesを完了、mandatory STOP、retry0。共有trotterlib実装/APIは変更していない。

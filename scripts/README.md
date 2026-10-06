@@ -1,5 +1,9 @@
 # scripts 索引
 
+Track B [block合成の次仕様案](../docs/tracks/algorithm_codesign/block_synthesis_design_review_20261006.md)はdocs-only。
+新runner/solver/library生成/合成/testsは追加・実行していない。旧SP one-shotを再使用しない。
+API/対照/pilot案の採否はGPT reviewへ戻し、RUN_READY=false／mandatory STOP。以下は既存実行履歴。
+
 Track B [SP-1一回結果](../docs/tracks/algorithm_codesign/sp1_one_shot_result_validation_20261006.md)は
 SP1_RESOURCE_MAP_COMPLETE_AWAITING_REVIEW、mandatory STOP、retry0。science runnerのone-shotはconsumed。
 [audit_sp1_saved_result.py](tracks/algorithm_codesign/audit_sp1_saved_result.py)はstdlibの保存field照合専用。

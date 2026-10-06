@@ -1,5 +1,13 @@
 # Track B — Algorithm Co-design
 
+最新は[SP-1後GPT reviewのblock合成・数学/API仕様](block_synthesis_design_review_20261006.md)（2026-10-06）。
+[claim/対照表](block_synthesis_claim_and_baseline_matrix_v1.md)、[小型pilot未承認案](block_synthesis_small_pilot_proposal_v1.md)。
+branch/worktree `track-b-post-sp1-block-synthesis-design-20261006`、base `9d2bb1fa439748b02084bd9fbc9b10a705328f8a`。
+有限精度coherent対象とphase/誤差/資源をそろえる設計。短いfinite-RTE平均Mは未実証の構成候補。
+[設計manifest](../../../artifacts/track_b_block_synthesis_design/2026-10-06/preparation_manifest_v1.json)はauthorizationではない。
+実装/science/tests0、RUN_READY=false、mandatory STOP。具体domain/辞書/metric/予算採否はGPT reviewへ戻す。
+既存SP結果・BF/BM closure・A証拠境界を維持。以下は判断履歴。
+
 最新は[SP-1一回結果・保存値監査](sp1_one_shot_result_validation_20261006.md)（2026-10-06）。
 S `0d01ed9a332ebc5b66ed08acf56214a9b9c0236d`→direct authorization-only A `9630e06122172af238ac5219bec6dfc8b01ca837`。
 独立branch/worktree `track-b-sp1-one-shot-execution-20261006`でrun1、48 rows／96 axes完了。

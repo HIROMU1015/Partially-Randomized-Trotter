@@ -1,5 +1,12 @@
 # プロジェクト案内
 
+Track B最新は[SP-1後GPT reviewのblock合成仕様化](docs/tracks/algorithm_codesign/block_synthesis_design_review_20261006.md)。
+数学/API、claim/強い対照、小型pilot未承認案を一つの入口へ整理したdocs-only準備。
+有限精度coherent対象・block単位・誤差配分を比較するRQ案。finite-RTE平均Mの直接合成は未実証候補。
+[input identity／設計manifest](artifacts/track_b_block_synthesis_design/2026-10-06/)。実装/新science/tests0、RUN_READY=false。
+既存SP-1 result/marker・BF/BM closure・A証拠を保持。資料公開後STOPし、具体domain/辞書/対照/会計の採否はGPTへ戻す。
+以下の「最新」は当時の履歴。
+
 Track B最新は[SP-1一回結果・保存値監査](docs/tracks/algorithm_codesign/sp1_one_shot_result_validation_20261006.md)。
 固定S `0d01ed9a`→direct authorization-only A `9630e061`でrun1、SP1_RESOURCE_MAP_COMPLETE_AWAITING_REVIEW。
 48 rows／96 axes完了、42 rows適格／6 rowsモデルshot cap。technical failureなし、保存値監査PASS。

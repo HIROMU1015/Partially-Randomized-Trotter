@@ -1,5 +1,11 @@
 # 文書索引
 
+Track B最新は[SP-1後のblock合成・数学/実装仕様](tracks/algorithm_codesign/block_synthesis_design_review_20261006.md)。
+[claim/対照表](tracks/algorithm_codesign/block_synthesis_claim_and_baseline_matrix_v1.md)、
+[小型pilotの未承認案](tracks/algorithm_codesign/block_synthesis_small_pilot_proposal_v1.md)。
+GPT reviewをdocs-onlyで具体化。新science/実装/tests0、RUN_READY=false、mandatory STOP。
+以下のSP-1以前は固定結果と判断履歴として保持する。
+
 Track B最新は[SP-1一回結果・保存値監査](tracks/algorithm_codesign/sp1_one_shot_result_validation_20261006.md)。
 SP1_RESOURCE_MAP_COMPLETE_AWAITING_REVIEW、48 rows／96 axes完了、保存値audit PASS。
 [raw result／marker／evidence manifest](../artifacts/track_b_sp1_wrapper_result/2026-10-06/v1/)。

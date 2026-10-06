@@ -1,0 +1,146 @@
+{
+  "schema": "track_b_block_synthesis_design_proposal_v1",
+  "date_jst": "2026-10-06",
+  "status": "UNAPPROVED_PROPOSAL_NOT_PREREGISTRATION",
+  "fixed_evidence_commit": "9d2bb1fa439748b02084bd9fbc9b10a705328f8a",
+  "science_execution_authorized": false,
+  "implementation_authorized": false,
+  "RUN_READY": false,
+  "mandatory_STOP": true,
+  "next_stage_authorized": false,
+  "research_decision_owner": "GPT",
+  "mathematics_api_scope": "documentation only; no new namespace or source implementation",
+  "target_kinds": [
+    "finite_coherent_mean_operator",
+    "scaled_full_controlled_channel",
+    "phase_bearing_sampled_unitary"
+  ],
+  "operator_coefficient_sum_equals_one_required": false,
+  "primary_candidate": "sparse Pauli-algebra finite mean extraction followed by phase-aware finite-dictionary operator LCU; independent delta unproved",
+  "performance_domain_proposal": {
+    "approved": false,
+    "system_qubits": 2,
+    "control_ancillas": 1,
+    "extra_workspace": 0,
+    "ratio_u": [
+      "1",
+      "3"
+    ],
+    "dimensionless_time_tau": [
+      "1/8",
+      "1/4"
+    ],
+    "even_cutoff_K": 2,
+    "steps_r": 1,
+    "paired_Taylor_degree": 3,
+    "target_count_proposed": 12,
+    "families": [
+      {
+        "id": "commuting",
+        "normalized_tail": "(ZI+u IZ)/(1+u)",
+        "mean": "P3(-i tau Rc)",
+        "ideal": "exp(-i tau Rc)"
+      },
+      {
+        "id": "noncommuting",
+        "normalized_tail": "(ZI+u XX)/(1+u)",
+        "mean": "P3(-i tau R1)",
+        "ideal": "exp(-i tau R1)"
+      },
+      {
+        "id": "boundary",
+        "second_tail": "(IZ+u XX)/(1+u)",
+        "boundary": "R_XZ(pi/2)",
+        "mean": "P3(-i tau R2/2) W P3(-i tau R1/2)",
+        "ideal": "exp(-i tau R2/2) W exp(-i tau R1/2)"
+      }
+    ],
+    "actual_targets_generated": 0,
+    "semantic_controls": "known single rotation, identity/exact Clifford, SP1-type coin, signed time/phase/composability; exact fixture inventory not fixed"
+  },
+  "dictionary_proposal": {
+    "approved": false,
+    "D0": "zeta P; all two-qubit Pauli strings, zeta in {1,-1,i,-i}",
+    "D1": "zeta R_P(sigma pi/2); nonidentity P, sigma in {-1,+1}",
+    "literal_atom_cap_proposed": 184,
+    "controlled_atom_T_cap_proposed": 2,
+    "extra_workspace_proposed": 0,
+    "phase_preserving_merging_for_all_arms": true,
+    "actual_gate_manifest": null,
+    "new_dictionary_generated": false,
+    "semantic_tests_passed": null
+  },
+  "comparison_profiles_proposed": [
+    "candidate operator LCU",
+    "task-tuned ordinary RTE",
+    "gatewise PAI or Sparse PS (select one)",
+    "positive joint-space mixture with retained outer correction",
+    "block full-controlled-channel Sparse PS",
+    "same-dictionary standard operator LCU",
+    "Pauli LCU"
+  ],
+  "unitary_direct_resynthesis": "control within ordinary/event unitary baseline; not direct unitary synthesis of nonunitary M",
+  "DF_rounding_to_residual": "required review before future DF superiority claim; outside current proposed small pilot",
+  "precision_candidates_proposed": [
+    "1e-3",
+    "1e-4",
+    "1e-6"
+  ],
+  "sampling_policy_proposed": "canonical q=abs(a)/gamma for all arms; zero-support rules; no cost-aware full grid",
+  "task_accuracy_proposal": {
+    "approved": false,
+    "complex_epsilon": "1/20",
+    "familywise_alpha": "1/20",
+    "confidence_rule": "common Bernstein sufficient count; oracle point/variance diagnostic only",
+    "bias_and_axis_allocation": null,
+    "primary": null,
+    "materiality": null,
+    "numerical_guard": null,
+    "shot_cap": null
+  },
+  "finite_RTE_normalization": "B_K(x)=sum_even_k<=K |x|^k/k! sqrt(1+x^2/(k+1)^2); corrected mean differs from raw mean by product of B_K",
+  "resource_vector": [
+    "G_T",
+    "Nshots",
+    "G_Clifford_CX",
+    "workspace",
+    "C_classical"
+  ],
+  "preparation_context_policy": "common explicit costs/sensitivity; no T-only zero-atom victory",
+  "resource_caps_proposed": {
+    "approved": false,
+    "wall_seconds": 2400,
+    "cpu_seconds": 1800,
+    "RSS_MiB": 1024,
+    "output_bytes": 16777216,
+    "processes": 1,
+    "runs": 1,
+    "retries": 0,
+    "seed": null,
+    "solver_or_synthesis_call_cap": null
+  },
+  "unfixed": [
+    "exact control fixtures",
+    "gate sequences and source identities",
+    "primitive unique-key cap",
+    "baseline PAI/Sparse choice",
+    "solver/version/objective/tolerance/budget/seed",
+    "accuracy/bias/alpha allocation",
+    "primary/materiality/zero-reference/numeric guards/shot cap",
+    "final resource and call caps",
+    "future source and separate authorization"
+  ],
+  "outcome_policy": "all outcomes mandatory STOP; decisions on implementation/science/DF/independent validation go to GPT",
+  "new_science_runs": 0,
+  "operator_matrix_evaluations": 0,
+  "solver_calls": 0,
+  "new_synthesis_calls": 0,
+  "trajectory_sampling": 0,
+  "compile_calls": 0,
+  "tests_run": 0,
+  "GPU_query_use": 0,
+  "molecular_NPZ_access": 0,
+  "Hamiltonian_DF_generation": 0,
+  "authorization": null,
+  "source_commit_for_future_implementation": null
+}

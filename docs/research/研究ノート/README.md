@@ -1,5 +1,8 @@
 # 研究ノート
 
+- [2026-10-06 Track B SP-1後GPT review・block合成仕様](2026-10-06_track_b_post_sp1_block_synthesis_design.md)：
+  docs-only、三仕様資料・12 target未承認案、実装/science/tests0、mandatory STOP。
+
 - [2026-10-06 Track B SP-1一回結果・GPTへのSTOP](2026-10-06_track_b_sp1_one_shot_result.md)：
   48 rows／96 axes完了、保存値audit PASS、retry0／mandatory STOP、研究判断はGPT側。
 
