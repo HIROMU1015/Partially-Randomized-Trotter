@@ -1,0 +1,119 @@
+{
+  "base_R1p5_commit": "af3d014d0a0cfcbbd25bb544f6544652fec92942",
+  "input_design_sha256": "4d8e448fa7d2386a545fdc7b9204a4738b917605bb4a7c240dd07f0c196b6826",
+  "analysis_script_sha256": "c6aa6cbc2848921080fae154f85fc766e5e70f7763834e56720492b26305d56e",
+  "classification": "DOCS_SYMBOLIC_ONLY_MATHEMATICAL_AUDIT",
+  "no_science_run": true,
+  "no_synthesis_run": true,
+  "no_resource_rescoring": true,
+  "no_new_algorithm_candidates": true,
+  "mandatory_STOP": true,
+  "status": "IDEAL_SINGLE_BLOCK_LP_SUPPORTED_WITH_REQUIRED_SCOPE_AND_CERTIFICATE_AMENDMENTS",
+  "propositions": [
+    {
+      "id": "M1",
+      "claim": "mixed-column mean, signs, phase and terminal",
+      "classification": "PROVED_UNDER_ASSUMPTIONS",
+      "assumptions": "Fixed independent index law; ordered products; terminal pure word; controlled scalar phase retained."
+    },
+    {
+      "id": "M2",
+      "claim": "one-angle vs mixed family; endpoints; normalization lower bound",
+      "classification": "PROVED_UNDER_ASSUMPTIONS",
+      "assumptions": "Compatible endpoint implementations must be included; mixed angles are a distinct class. No resource optimum from normalization."
+    },
+    {
+      "id": "M3",
+      "claim": "two-angle decomposition and sec bound",
+      "classification": "PROVED_UNDER_ASSUMPTIONS",
+      "assumptions": "0<Delta<pi and bracketing. Delta=0 needs direct same-column branch; quotient is undefined."
+    },
+    {
+      "id": "M4",
+      "claim": "fixed-n normalized canonical LP",
+      "classification": "PROVED_UNDER_ASSUMPTIONS",
+      "assumptions": "e>0,d>=0,n>=1,0<alpha<1; fixed D/t/d/C and exact real arithmetic; sufficient-shot model only."
+    },
+    {
+      "id": "M5",
+      "claim": "numerical residual and interval certificate",
+      "classification": "PROVED_UNDER_ASSUMPTIONS",
+      "assumptions": "Certified D/t/d/C/log/root; actual normalized probability law; residual budget fixed before execution; numerical implementation remains unfixed."
+    },
+    {
+      "id": "M6",
+      "claim": "dual, support bound, integer-grid coverage",
+      "classification": "PROVED_UNDER_ASSUMPTIONS",
+      "assumptions": "Basic LP only for stated dual/support count; factor-r coverage excludes preservation of unchanged n-dependent total caps."
+    },
+    {
+      "id": "M7",
+      "claim": "fixed-ensemble IS and constrained joint SOCP",
+      "classification": "PROVED_UNDER_ASSUMPTIONS",
+      "assumptions": "Fixed range and bias budgets; positive active support or perspective closure; no joint free-budget global convexity claim."
+    },
+    {
+      "id": "M8",
+      "claim": "adjoint-paired controlled form",
+      "classification": "PROVED_UNDER_ASSUMPTIONS",
+      "assumptions": "Same exact implementation adjoint and exact CX; joint phase preserved. No native implementation or synthesis performed."
+    },
+    {
+      "id": "M9",
+      "claim": "mean vs channel multi-block bounds",
+      "classification": "PROVED_UNDER_ASSUMPTIONS",
+      "assumptions": "Mean product needs exact controlled form and ideal contractions; channel product needs diamond bounds and independent samples."
+    },
+    {
+      "id": "M10",
+      "claim": "method delta and publication novelty",
+      "classification": "UNRESOLVED",
+      "assumptions": "Known dictionary/IS/LP/common-angle components; no citation-network absence proof or science evidence for integrated resource advantage."
+    }
+  ],
+  "counterexamples": [
+    {
+      "id": "C_GRID_CAP",
+      "classification": "COUNTEREXAMPLE",
+      "refutes": "unqualified preservation of an unchanged total-resource cap after shot-grid rounding",
+      "fixture": "n=4 -> 8; ell=h=C=1; two-axis G=8 ->16; hard cap=8; core confidence remains feasible",
+      "does_not_refute": "core LP or factor-2 resource approximation"
+    },
+    {
+      "id": "C_DELTA_ZERO",
+      "classification": "COUNTEREXAMPLE",
+      "refutes": "using the sine-quotient formula for Delta=0",
+      "fixture": "phi_minus=phi=phi_plus=0; denominator sin(Delta)=0",
+      "repair": "direct single-column coefficient c"
+    },
+    {
+      "id": "C_WORKSPACE_EXPECTATION",
+      "classification": "COUNTEREXAMPLE",
+      "refutes": "using expected workspace as an unchanged physical peak capacity",
+      "fixture": "probability=1/100; workspace=100; expectation=1 but capacity=2 cannot execute the column",
+      "repair": "support-level peak capacity rule"
+    },
+    {
+      "id": "C_CHANNEL_FIRST_MEAN",
+      "classification": "COUNTEREXAMPLE",
+      "refutes": "identifying a channel dictionary target with a coherent operator first moment",
+      "fixture": "I/-I: first mean=0, channel=identity",
+      "repair": "match formal operator mean and preserve controlled phase"
+    }
+  ],
+  "required_before_execution_contract": [
+    "Distinguish shot-grid approximation from unchanged hard-total-cap feasibility.",
+    "Certify outward log/root/kappa and actual rational q/y plus sampler law or law-error bound.",
+    "Restrict two-angle quotient to 0<Delta<pi and handle Delta=0 directly.",
+    "Use peak workspace feasibility; define acquisition/once costs and uncertain costs explicitly."
+  ],
+  "minimal_model": "one block; fixed finite dictionary and conditional IID law; phase-preserving native table; nonnegative canonical weights; fixed n, e, alpha and additive nonnegative resources; ideal and certified numerical models separated",
+  "unapproved_pilot_question": "At equal finite dictionary/confidence/access/acquisition budgets, does degree reallocation add a resource point beyond precision-only and whole-ensemble mixture fronts?",
+  "pilot_fixed_ensemble_IS_and_available_CTS_needed_before_resource_advantage_claim": true,
+  "algorithm_adopted": false,
+  "RQ_or_paper_direction_redefined_by_Codex": false,
+  "next_implementation_or_science_authorized": false,
+  "research_decision_owner": "GPT",
+  "bookkeeping_check_count": 50,
+  "general_proofs_are_in_document_not_finite_fixture_extrapolation": true
+}
