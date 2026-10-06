@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="8" time="0.747" timestamp="2026-10-06T23:15:23.036591+09:00" hostname="GPUA100-gleap-01"><testcase classname="tests.tracks.resource_applicability.test_h4_geometry_source.CircuitTests" name="test_custom_control_full_roundtrip" time="0.007"><failure message="KeyError: 'synthetic_operator_checks'">self = &lt;test_h4_geometry_source.CircuitTests testMethod=test_custom_control_full_roundtrip&gt;
+
+    def test_custom_control_full_roundtrip(self):
+        q=QuantumCircuit(1);q.global_phase=.14;q.rx(.29,0)
+        outer=QuantumCircuit(2);outer.append(q.to_gate(label='fake').control(ctrl_state=0),[1,0])
+        record=circuits.serialize(outer,'sine');new=circuits.deserialize(record)
+&gt;       self.assertEqual(record,circuits.serialize(new,'sine'));self.compare(outer,new)
+                                                                ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tracks/resource_applicability/test_h4_geometry_source.py:271: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;test_h4_geometry_source.CircuitTests testMethod=test_custom_control_full_roundtrip&gt;
+left = &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0xca52f026660&gt;
+right = &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0xca52ef623c0&gt;
+
+    def compare(self,left,right):
+&gt;       COUNTS['synthetic_operator_checks']+=1
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'synthetic_operator_checks'
+
+tests/tracks/resource_applicability/test_h4_geometry_source.py:283: KeyError</failure></testcase><testcase classname="tests.tracks.resource_applicability.test_h4_geometry_source.CircuitTests" name="test_roundtrip_exact_parameters_phase" time="0.001"><failure message="KeyError: 'synthetic_operator_checks'">self = &lt;test_h4_geometry_source.CircuitTests testMethod=test_roundtrip_exact_parameters_phase&gt;
+
+    def test_roundtrip_exact_parameters_phase(self):
+        q=QuantumCircuit(2);q.global_phase=-0.125;q.rz(.17,0);q.cx(0,1);q.rzz(-.31,0,1)
+        record=circuits.serialize(q,'cosine');rebuilt=circuits.deserialize(record)
+&gt;       self.assertEqual(record,circuits.serialize(rebuilt,'cosine'));self.compare(q,rebuilt)
+                                                                      ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tracks/resource_applicability/test_h4_geometry_source.py:299: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;test_h4_geometry_source.CircuitTests testMethod=test_roundtrip_exact_parameters_phase&gt;
+left = &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0xca53a8e9f70&gt;
+right = &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0xca53a8e9d00&gt;
+
+    def compare(self,left,right):
+&gt;       COUNTS['synthetic_operator_checks']+=1
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'synthetic_operator_checks'
+
+tests/tracks/resource_applicability/test_h4_geometry_source.py:283: KeyError</failure></testcase><testcase classname="tests.tracks.resource_applicability.test_h4_geometry_source.CircuitTests" name="test_custom_definition_closure" time="0.001"><failure message="KeyError: 'synthetic_operator_checks'">self = &lt;test_h4_geometry_source.CircuitTests testMethod=test_custom_definition_closure&gt;
+
+    def test_custom_definition_closure(self):
+        child=QuantumCircuit(1);child.rx(.13,0);child.global_phase=.07
+        q=QuantumCircuit(2);q.append(child.to_gate(label='fake-custom'),[0]);q.h(1)
+        record=circuits.serialize(q,'cosine');rebuilt=circuits.deserialize(record)
+&gt;       self.assertEqual(record,circuits.serialize(rebuilt,'cosine'));self.compare(q,rebuilt)
+                                                                      ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tracks/resource_applicability/test_h4_geometry_source.py:305: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;test_h4_geometry_source.CircuitTests testMethod=test_custom_definition_closure&gt;
+left = &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0xca53a45f830&gt;
+right = &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0xca52ef9e1b0&gt;
+
+    def compare(self,left,right):
+&gt;       COUNTS['synthetic_operator_checks']+=1
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'synthetic_operator_checks'
+
+tests/tracks/resource_applicability/test_h4_geometry_source.py:283: KeyError</failure></testcase><testcase classname="tests.tracks.resource_applicability.test_h4_geometry_source.CircuitTests" name="test_controlled_relative_phase" time="0.003"><failure message="KeyError: 'synthetic_operator_checks'">self = &lt;test_h4_geometry_source.CircuitTests testMethod=test_controlled_relative_phase&gt;
+
+    def test_controlled_relative_phase(self):
+        child=QuantumCircuit(1);child.global_phase=.28;child.rz(.21,0)
+        q=QuantumCircuit(2);q.append(child.to_gate().control(),[1,0])
+&gt;       rebuilt=circuits.deserialize(circuits.serialize(q,'cosine'));self.compare(q,rebuilt)
+                                                                     ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tracks/resource_applicability/test_h4_geometry_source.py:310: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;test_h4_geometry_source.CircuitTests testMethod=test_controlled_relative_phase&gt;
+left = &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0xca52ef9d010&gt;
+right = &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0xca52ef9fb30&gt;
+
+    def compare(self,left,right):
+&gt;       COUNTS['synthetic_operator_checks']+=1
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'synthetic_operator_checks'
+
+tests/tracks/resource_applicability/test_h4_geometry_source.py:283: KeyError</failure></testcase><testcase classname="tests.tracks.resource_applicability.test_h4_geometry_source.CircuitTests" name="test_condition_measurement_and_bits" time="0.001" /><testcase classname="tests.tracks.resource_applicability.test_h4_geometry_source.CircuitTests" name="test_nonfinite_symbolic_unsupported" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_h4_geometry_source.CircuitTests" name="test_unitary_array_parameter" time="0.001"><failure message="KeyError: 'synthetic_operator_checks'">self = &lt;test_h4_geometry_source.CircuitTests testMethod=test_unitary_array_parameter&gt;
+
+    def test_unitary_array_parameter(self):
+        q=QuantumCircuit(1);q.unitary(np.array([[0,1],[1,0]],complex),[0])
+&gt;       self.compare(q,circuits.deserialize(circuits.serialize(q,'cosine')))
+
+tests/tracks/resource_applicability/test_h4_geometry_source.py:329: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;test_h4_geometry_source.CircuitTests testMethod=test_unitary_array_parameter&gt;
+left = &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0xca52efbc080&gt;
+right = &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0xca5313f89b0&gt;
+
+    def compare(self,left,right):
+&gt;       COUNTS['synthetic_operator_checks']+=1
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'synthetic_operator_checks'
+
+tests/tracks/resource_applicability/test_h4_geometry_source.py:283: KeyError</failure></testcase><testcase classname="tests.tracks.resource_applicability.test_h4_geometry_source.CircuitTests" name="test_open_control_state" time="0.001"><failure message="KeyError: 'synthetic_operator_checks'">self = &lt;test_h4_geometry_source.CircuitTests testMethod=test_open_control_state&gt;
+
+    def test_open_control_state(self):
+        from qiskit.circuit.library import XGate
+        q=QuantumCircuit(2);q.append(XGate().control(ctrl_state=0),[0,1])
+&gt;       record=circuits.serialize(q,'cosine');self.compare(q,circuits.deserialize(record))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tracks/resource_applicability/test_h4_geometry_source.py:334: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;test_h4_geometry_source.CircuitTests testMethod=test_open_control_state&gt;
+left = &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0xca52efbc710&gt;
+right = &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0xca52efbcd40&gt;
+
+    def compare(self,left,right):
+&gt;       COUNTS['synthetic_operator_checks']+=1
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'synthetic_operator_checks'
+
+tests/tracks/resource_applicability/test_h4_geometry_source.py:283: KeyError</failure></testcase></testsuite></testsuites>

@@ -70,3 +70,8 @@ control入口：/home/AbeHiromu/projects/partially-randomized-trotter/.server-pr
 科学NPZ・production runtime/checkpoint/cacheはcommitしない。
 
 [bundle入口](../../artifacts/resource_applicability/track_a_h4_streaming_monitor_run04/2026-10-06/README.md)。
+
+
+## run04結果とrun05の修正
+
+run04は5compileを投入後monitor interval/freshness STOPとなり完成record/signal0。全own process終了、旧全証跡保持。巨大exact-tree変換中の停止を[run05のlazy変換と入力/予算binding](track_a_h4_lazy_identity_run05.md)で補修する。
