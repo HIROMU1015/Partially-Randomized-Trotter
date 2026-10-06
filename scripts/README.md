@@ -1,5 +1,9 @@
 # scripts 索引
 
+Track B [BS-0.5設計監査](../docs/tracks/algorithm_codesign/bs05_method_target_design_audit_v1.md)はdocs-only。
+runner/solver/synthesis/testsを追加・実行していない。ordinaryの式とledgerは実装済みsourceではない。
+RUN_READY=false、mandatory STOP、次実装/検証scopeはGPT判断。以下は既存実行履歴。
+
 Track B [block合成の次仕様案](../docs/tracks/algorithm_codesign/block_synthesis_design_review_20261006.md)はdocs-only。
 新runner/solver/library生成/合成/testsは追加・実行していない。旧SP one-shotを再使用しない。
 API/対照/pilot案の採否はGPT reviewへ戻し、RUN_READY=false／mandatory STOP。以下は既存実行履歴。

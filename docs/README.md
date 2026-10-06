@@ -1,5 +1,11 @@
 # 文書索引
 
+Track B最新は[BS-0.5設計監査](tracks/algorithm_codesign/bs05_method_target_design_audit_v1.md)。
+[ordinary形式仕様](tracks/algorithm_codesign/bs05_ordinary_finite_rte_baseline_v1.md)、
+[pilot案v2 amendment](tracks/algorithm_codesign/block_synthesis_pilot_amendment_v2.md)。
+candidate独立delta未定義、O/Cを分けてmulti-resource Pareto。実装/science/tests0、mandatory STOP、GPT判断待ち。
+以下は固定結果・判断履歴。
+
 Track B最新は[SP-1後のblock合成・数学/実装仕様](tracks/algorithm_codesign/block_synthesis_design_review_20261006.md)。
 [claim/対照表](tracks/algorithm_codesign/block_synthesis_claim_and_baseline_matrix_v1.md)、
 [小型pilotの未承認案](tracks/algorithm_codesign/block_synthesis_small_pilot_proposal_v1.md)。

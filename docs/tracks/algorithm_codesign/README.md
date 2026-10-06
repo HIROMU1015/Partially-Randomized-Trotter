@@ -1,5 +1,13 @@
 # Track B — Algorithm Co-design
 
+最新は[BS-0.5設計監査](bs05_method_target_design_audit_v1.md)（2026-10-06）。
+[ordinary有限RTE形式仕様](bs05_ordinary_finite_rte_baseline_v1.md)、[pilot案v2](block_synthesis_pilot_amendment_v2.md)。
+branch `track-b-bs05-design-audit-20261006`、base `2c8c022db39c3582d6175fcf25a6752037727a21`。
+現candidateのnew-method deltaなし、専用armを外す。O/C別、多資源Pareto、control4/performance8。
+[監査manifest](../../../artifacts/track_b_bs05_design_audit/2026-10-06/audit_manifest_v1.json)。
+実装/science/tests0、RUN_READY=false、mandatory STOP。application/closureはGPT reviewへ戻す。旧v1と証拠は維持。
+以下は判断履歴。
+
 最新は[SP-1後GPT reviewのblock合成・数学/API仕様](block_synthesis_design_review_20261006.md)（2026-10-06）。
 [claim/対照表](block_synthesis_claim_and_baseline_matrix_v1.md)、[小型pilot未承認案](block_synthesis_small_pilot_proposal_v1.md)。
 branch/worktree `track-b-post-sp1-block-synthesis-design-20261006`、base `9d2bb1fa439748b02084bd9fbc9b10a705328f8a`。

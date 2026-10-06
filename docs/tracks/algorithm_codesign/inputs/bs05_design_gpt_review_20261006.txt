@@ -1,0 +1,277 @@
+次は**科学pilotではなく、もう一段だけdocs-onlyの設計監査を入れる**のがよいです。
+
+判定は、
+
+> **`REVISE_BLOCK_SYNTHESIS_DESIGN_BEFORE_IMPLEMENTATION`**
+
+です。
+
+方向そのものを捨てる必要はありません。ただし、現在の「12 target × 7 profile」をそのまま実装すると、結果が出ても**新しいmethodの効果・制約緩和の効果・既知LCU最適化の効果**を分離できない可能性があります。
+
+## 1. 一番重要：candidate と standard operator LCU の差がまだない
+
+現在の第一候補は、
+
+> sparse Pauli algebraでfinite mean \(M\) を作る → phase-aware dictionaryへ渡す → LCU係数を求める
+
+です。
+
+一方、強いbaselineは、
+
+> 同じ \(M\)、同じdictionary、同じresidualでstandard operator LCUを解く
+
+です。
+
+現時点ではこの二つに、**異なる最適化問題が定義されていません**。
+
+したがって、BMのときと同じ問題を避けるため、
+
+> candidate固有のmethod deltaを数値計算前に一文で固定する
+
+必要があります。
+
+例えばmethod論文を狙うなら、
+
+> **finite-RTEのsparse Pauli構造から、dense \(M\) や全trajectoryを構成せずにdictionary/係数問題を生成し、同じdictionaryを使うgeneric LCUより少ない古典計算量・memory・情報accessで同じresidualを達成する**
+
+といった差が必要です。
+
+これをgeneric sparse LCUでも同様にできるなら、**new-method claimはここで落とし、design/application studyへ縮小**します。
+
+ここはscience run不要です。BM-0.5と同様、先に監査できます。
+
+---
+
+## 2. operator target と channel target を同じ「勝者表」に入れない
+
+これは必須修正です。
+
+現在、
+
+\[
+M=\sum_\omega p_\omega b_\omega U_\omega
+\]
+
+という**coherent first-moment operator**と、
+
+\[
+\Phi=\sum_\omega p_\omega\mathcal C(\mathrm{Ctrl}\,U_\omega)
+\]
+
+という**controlled channel**が候補にあります。
+
+後者の方が強い制約です。
+
+したがって次は二層に分けます。
+
+| 層 | 同じtargetで比較するもの |
+|---|---|
+| **O：operator layer** | ordinary finite-RTE、gatewise PAI/Sparse、operator-LCU、Pauli-LCU、candidateが本当に別ならcandidate |
+| **C：channel layer** | full-channel Sparse PS、positive probabilistic synthesis等 |
+
+OとCの間では、
+
+> 「どちらがwinnerか」
+
+ではなく、
+
+> **full-channel制約を要求する追加costはいくらか**
+
+を診断します。
+
+Sparse Probabilistic Synthesisはexact/approximate分解と \(L_1\) overheadのtrade-offを既に扱っています。:chatgpt-content-reference{index="0"}
+
+さらに、2025年にはLCUのunitary集合をgroup化して、sampling overheadと回路サイズを連続的に交換する方法も既に提案されています。したがって「block化」そのものも新規性にはできません。:chatgpt-content-reference{index="1"}
+
+---
+
+## 3. ordinary finite-RTE baselineを完全に定義する
+
+現在のpilot案では、
+
+\[
+M=P_3(-i\tau\hat R)
+\]
+
+等のtargetは具体化されています。
+
+しかし資源比較の基準となる**元finite-RTEの実際のestimator/circuit distribution**を、同じ粒度でまだ完全には閉じていません。
+
+次のdocsで最低限固定すべきなのは、
+
+- \(K=2,r=1\) のevent probability
+- component sampling
+- event phase
+- normalization \(B_K\)
+- corrected estimator weight
+- controlled primitive列
+- synthesis precision
+- T / Clifford / CX / workspace
+- sufficient-shot会計
+
+です。
+
+これがないと、
+
+> 新しいblock LCUは精密に費用計算したが、ordinary RTEは弱いbaseline
+
+になる危険があります。
+
+---
+
+## 4. Tだけをprimary winnerにしない
+
+D0にはPauli atomが含まれるため、Pauli-LCUはT-countだけなら非常に安く、場合によっては
+
+\[
+G_T=0
+\]
+
+に近い退化が起こります。
+
+しかしshot数やClifford/CXは大きくなり得ます。
+
+したがって今回は**scalar winnerを最初から作らない**方がよいです。
+
+primary outcomeは、
+
+\[
+\boxed{
+(G_T,\;N_{\rm shots},\;G_{\rm CX/Clifford},\;
+\mathrm{workspace},\;C_{\rm classical})
+}
+\]
+
+のresource vectorとします。
+
+基本判断は**Pareto**で行います。
+
+- 全主要資源で悪くない＋少なくとも一つ改善 → dominance
+- Tは減るがshots/CX増 → trade-off
+- Pauli-LCU T=0だけを理由にwinner認定しない
+
+ハードウェア依存の1本の重み付きcostを後付けしない方が安全です。
+
+Resource-optimal importance samplingもcostとvarianceの共同最適化を一般論として既に扱っているため、単一のcost×moment objective自体を貢献にはしません。:chatgpt-content-reference{index="2"}
+
+---
+
+# 次のdocs-only段階：BS-0.5
+
+ここまでを**一回の非science review**として閉じることを勧めます。
+
+### BS-0.5で決めること
+
+1. **研究のモード**
+   - method paper候補か
+   - design/application studyか
+
+2. **method delta**
+   - candidateがstandard sparse/operator LCUと何が違うか
+   - 情報access / classical time / memory / dictionary generationのどれに差があるか
+
+3. **target strata**
+   - operator \(M\)
+   - controlled channel \(\Phi\)
+   を分離
+
+4. **ordinary finite-RTE baseline**
+   - 実estimatorと回路費用まで完全固定
+
+5. **resource判定**
+   - multi-resource Pareto
+   - zero-T degeneracyの扱い
+
+6. **prior-art追加**
+   - 2025年のgrouped/randomized LCUを強いbaseline候補へ追加 :chatgpt-content-reference{index="3"}
+   - positive probabilistic synthesisはchannel側対照として整理。単一qubitではprobabilistic Clifford+T synthesisでdeterministicより低いT scalingが既に示されています。:chatgpt-content-reference{index="4"}
+   - TE-PAIも時間発展をrandom circuitで直接扱うため、「randomized time evolution＋probabilistic synthesis」だけでは差になりません。:chatgpt-content-reference{index="5"}
+
+---
+
+# pilot domainは大きく変えなくてよい
+
+現在の12 targetは、計算量としては小さいので維持できます。
+
+ただし役割を分けます。
+
+- commuting 4件 → **control**
+- noncommuting 4件 → performance
+- boundary 4件 → performance
+
+つまり、研究上のperformance evidenceは主に**8件**です。
+
+commutingで勝ったことをmethod成功数には入れません。
+
+辞書D0/D1も今の案でよいです。ただし、D0のPauli-LCUがzero-Tに近くなることを見越して、Clifford/CXとshotsを必ず同列に保存します。
+
+---
+
+# profile数は7から整理する
+
+実行時は以下くらいに絞るのがよいです。
+
+### Operator layer
+
+1. ordinary finite-RTE + task-tuned deterministic synthesis
+2. gatewise probabilistic synthesis（PAI/Sparseの一つを固定）
+3. standard operator LCU
+4. Pauli-LCU
+5. structured candidate — **method deltaがBS-0.5で残った場合だけ**
+
+### Channel layer
+
+6. full-channel Sparse PS
+7. positive probabilistic synthesis
+
+ただし6/7はoperator layerのwinner競争には入れません。
+
+これなら「7 arm」は残っても、意味が明確になります。
+
+---
+
+# その次の進行
+
+順序はこれがよいです。
+
+\[
+\boxed{
+\text{BS-0.5 docs-only method/target audit}
+\rightarrow
+\text{実装＋semantic tests}
+\rightarrow
+\text{source freeze}
+\rightarrow
+\text{one-shot small pilot}
+\rightarrow
+\text{mandatory STOP}
+}
+\]
+
+BS-0.5でcandidateのmethod deltaが消えた場合でも、すぐ研究全体を捨てる必要はありません。
+
+その場合は、
+
+> **finite-RTEのfirst-moment operatorを、channelより弱い制約でblock合成したときのresource trade-offを定量化するdesign study**
+
+として価値があるかを判断します。
+
+逆に、
+
+> candidate = standard LCUそのもの  
+> resource差も既知制約緩和だけ  
+> classical acquisition差もなし
+
+まで判明したら、**科学pilotを走らせずにこのrouteを閉じる**のがよいです。
+
+### 現時点の最終判断
+
+今すぐ84-row science pilotへ進むのは早いです。しかし、研究B全体をまたゼロから練り直す必要もありません。
+
+次は、
+
+> **「block synthesis」という方向を維持したまま、method delta・target class・ordinary baseline・multi-resource判定を結果前に閉じるBS-0.5**
+
+です。
+
+ここを通過してから実装へ進むのが、今回最も効率的です。

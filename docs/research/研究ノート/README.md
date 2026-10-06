@@ -1,5 +1,8 @@
 # 研究ノート
 
+- [2026-10-06 Track B BS-0.5 docs-only設計監査](2026-10-06_track_b_bs05_design_audit.md)：
+  candidate独立delta未定義、O/C分離・ordinary形式仕様・多資源Pareto。新science0、GPTへSTOP。
+
 - [2026-10-06 Track B SP-1後GPT review・block合成仕様](2026-10-06_track_b_post_sp1_block_synthesis_design.md)：
   docs-only、三仕様資料・12 target未承認案、実装/science/tests0、mandatory STOP。
 

@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+Track B [BS-0.5 ordinary形式仕様](../../docs/tracks/algorithm_codesign/bs05_ordinary_finite_rte_baseline_v1.md)はdocs-only。
+固定rte.pyをtext照合しただけで、共有implementation/APIを変更・実行していない。
+operator/channelは別target、現candidateの独立delta未定義。実装/science/tests0、mandatory STOP。以下は履歴。
+
 Track B [SP-1後block合成の数学/API仕様](../../docs/tracks/algorithm_codesign/block_synthesis_design_review_20261006.md)はdocs-only。
 channel用Gateとoperator LCUを別型にする設計案。新namespace/コードは未作成、共有library/API変更なし。
 current rte.pyは固定git blobのtext参照だけで呼び出さない。実装/science/tests0、mandatory STOP。以下は既存履歴。

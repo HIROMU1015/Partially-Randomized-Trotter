@@ -1,5 +1,8 @@
 # Track B scripts
 
+[BS-0.5設計監査](../../../docs/tracks/algorithm_codesign/bs05_method_target_design_audit_v1.md)はdocs-only。
+新runner/source/testsなし、old science replayなし、mandatory STOP。次scopeの判断はGPTへ戻す。
+
 [SP-1後block合成仕様](../../../docs/tracks/algorithm_codesign/block_synthesis_design_review_20261006.md)はAPI設計と未承認pilot案のみ。
 新script/科学runner/testsは作成・実行していない。既存SP-1/0.5はconsumed、追加run未認可。
 RUN_READY=false、mandatory STOP、具体domain/辞書/対照/会計はGPT review待ち。以下は既存履歴。

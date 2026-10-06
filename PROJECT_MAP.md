@@ -1,5 +1,12 @@
 # プロジェクト案内
 
+Track B最新は[BS-0.5 method/target設計監査](docs/tracks/algorithm_codesign/bs05_method_target_design_audit_v1.md)。
+現candidateは同じsparse/operator LCUと別delta未定義のため専用arm/new-method claimを外す。
+ordinary finite-RTEの形式仕様、O/C別比較、多資源Pareto、Wada grouped LCUをreviewへ戻す。
+12 targetはcommuting control4＋performance8。新実装/science/tests0、RUN_READY=false、mandatory STOP。
+[監査manifest](artifacts/track_b_bs05_design_audit/2026-10-06/audit_manifest_v1.json)。application採否・route closureはGPT判断。
+旧design v1、SP results/markers、BF/BM closure、A証拠は維持。以下の「最新」は判断履歴。
+
 Track B最新は[SP-1後GPT reviewのblock合成仕様化](docs/tracks/algorithm_codesign/block_synthesis_design_review_20261006.md)。
 数学/API、claim/強い対照、小型pilot未承認案を一つの入口へ整理したdocs-only準備。
 有限精度coherent対象・block単位・誤差配分を比較するRQ案。finite-RTE平均Mの直接合成は未実証候補。

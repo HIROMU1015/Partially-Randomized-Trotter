@@ -1,0 +1,234 @@
+{
+  "schema": "track_b_bs05_design_amendment_v2",
+  "date_jst": "2026-10-06",
+  "status": "DOCS_ONLY_AMENDMENT_AWAITING_GPT_RESEARCH_MODE_DECISION",
+  "base_design_commit": "2c8c022db39c3582d6175fcf25a6752037727a21",
+  "review_label": "REVISE_BLOCK_SYNTHESIS_DESIGN_BEFORE_IMPLEMENTATION",
+  "implementation_authorized": false,
+  "science_execution_authorized": false,
+  "RUN_READY": false,
+  "next_stage_authorized": false,
+  "mandatory_STOP": true,
+  "research_decision_owner": "GPT",
+  "candidate_audit": {
+    "finding": "NO_INDEPENDENT_DELTA_DEFINED_VS_SAME_INFORMATION_GENERIC_SPARSE_OPERATOR_LCU",
+    "basis": "same acquisition algorithm, dictionary, residual and optimization problem; no numerical comparison",
+    "candidate_profile_included": false,
+    "new_method_claim_retained": false,
+    "one_sentence": "finite Pauli polynomial acquisition followed by same-dictionary phase-aware operator LCU; known sparse implementation composition",
+    "new_method_reintroduction_requires": "result-prior independent algorithm/info/acquisition delta and separate GPT review",
+    "research_mode_recommendation": "ASK_GPT_IF_DESIGN_APPLICATION_VALUE_REMAINS_ELSE_CLOSE_ROUTE_WITHOUT_PILOT",
+    "research_mode_adopted": null
+  },
+  "ordinary_baseline": {
+    "source_commit": "0d01ed9a332ebc5b66ed08acf56214a9b9c0236d",
+    "source_path": "src/trotterlib/rte.py",
+    "source_access": "git blob text only",
+    "r": 1,
+    "K": 2,
+    "paired_Taylor_degree": 3,
+    "order_support": [
+      0,
+      2
+    ],
+    "order_weights": [
+      "sqrt(1+x^2)",
+      "x^2/2*sqrt(1+x^2/9)"
+    ],
+    "B2": "w0+w2",
+    "tuple_probability": "(w_k/B2)*product_j p_lj",
+    "signed_rotation_angle": "atan(x/(k+1))",
+    "event_phase": "(-1)^(k/2)",
+    "chronological_order": "product l1,...,lk then rotation l0 then controlled phase",
+    "corrected_weight": "B2; boundary B2(tau/2)^2",
+    "formal_spec_defined": true,
+    "actual_gate_manifest": null,
+    "actual_counts_and_error_guards": null,
+    "execution_contract_complete": false
+  },
+  "domain_proposal": {
+    "approved_for_execution": false,
+    "system_qubits": 2,
+    "control_ancillas": 1,
+    "extra_workspace": 0,
+    "lambda": "1",
+    "u": [
+      "1",
+      "3"
+    ],
+    "tau": [
+      "1/8",
+      "1/4"
+    ],
+    "target_count": 12,
+    "targets_generated": 0,
+    "strata": [
+      {
+        "id": "commuting",
+        "count": 4,
+        "role": "control",
+        "counts_as_method_success": false
+      },
+      {
+        "id": "noncommuting",
+        "count": 4,
+        "role": "performance"
+      },
+      {
+        "id": "boundary",
+        "count": 4,
+        "role": "performance"
+      }
+    ],
+    "performance_targets": 8,
+    "control_targets": 4,
+    "geometry_DF_split_LD": "not applicable; no molecular input",
+    "signed_time_fixtures": "semantic only, not additional performance targets"
+  },
+  "comparison_layers": {
+    "O": {
+      "target": "M=b E U, linear coherent signal for all rho",
+      "profiles": [
+        "ordinary finite RTE + task-tuned deterministic synthesis",
+        "gatewise PAI only (proposed, not adopted)",
+        "standard sparse/operator LCU using D0 union D1",
+        "Pauli LCU D0"
+      ],
+      "profile_count": 4,
+      "candidate_excluded": true
+    },
+    "C": {
+      "target": "Phi=E Ad(Ctrl(U)), measurement corrected by b",
+      "profiles": [
+        "full controlled-channel Sparse PS",
+        "positive probabilistic synthesis on same joint channel"
+      ],
+      "profile_count": 2
+    },
+    "cross_layer": "diagnostic difference from stronger channel requirement; no common winner or minimum additional cost claim"
+  },
+  "profile_target_records_proposed": {
+    "total": 72,
+    "O_performance": 32,
+    "C_performance": 16,
+    "O_control": 16,
+    "C_control": 8,
+    "not_synthesis_key_or_solver_call_count": true,
+    "actual_rows": 0
+  },
+  "gatewise_proposal": {
+    "method": "PAI",
+    "selection_status": "single review proposal; pending GPT adoption",
+    "native_grid_delta": "pi/4",
+    "angles": [
+      "theta0",
+      "theta0+pi/4",
+      "theta0+pi"
+    ],
+    "theta0": "pi/4 floor(theta/(pi/4))",
+    "coefficient_constraints": [
+      "sum g=1",
+      "sum g cos(theta_j)=cos(theta)",
+      "sum g sin(theta_j)=sin(theta)"
+    ],
+    "q": "abs(g)/sum abs(g)",
+    "corrected_weight": "outer b times product of signed local weights",
+    "outer_path_correlation_retained": true,
+    "semantic_tests_performed": false
+  },
+  "dictionary_proposal": {
+    "approved": false,
+    "inherited_from_v1": true,
+    "D0": "zeta P, zeta in {1,-1,i,-i}",
+    "D1": "zeta R_P(sigma pi/2), nonidentity P and sigma +/-1",
+    "literal_atom_cap": 184,
+    "controlled_atom_T_cap": 2,
+    "new_dictionary_generated": false,
+    "actual_sequence_identity": null
+  },
+  "primary": {
+    "type": "MULTI_RESOURCE_PARETO",
+    "coordinates": [
+      "G_T",
+      "Nshots",
+      "G_CX",
+      "G_1C",
+      "workspace",
+      "C_classical"
+    ],
+    "C_classical_components": [
+      "acquisition",
+      "sparse polynomial",
+      "dictionary",
+      "synthesis",
+      "solver",
+      "independent residual",
+      "sampling postprocessing"
+    ],
+    "classical_measures": [
+      "CPU",
+      "wall",
+      "peak memory",
+      "calls"
+    ],
+    "dominance": "same layer/target/accuracy/confidence/context/info/budget; all coordinates nonworse plus >=1 strict improvement",
+    "robust_dominance": "identical common terms explicit; otherwise all upper<=reference lower and at least one strict margin",
+    "unknown_coordinates": null,
+    "zero_T": "not a winner; no divide-by-zero ratios",
+    "hardware_scalar_weights": null,
+    "materiality": null,
+    "numeric_margin": null
+  },
+  "grouped_LCU_strong_baseline_review": {
+    "title": "Tradeoffs between quantum and classical resources in linear combination of unitaries",
+    "arxiv": "2512.06260v1",
+    "date": "2025-12-06",
+    "primary_url": "https://arxiv.org/pdf/2512.06260v1",
+    "reference_confirmed_by_user": true,
+    "known": "grouped coherent/randomized LCU and sampling/circuit tradeoff; refinement monotonicity",
+    "original_task": "observable of K rho Kdagger (numerator or normalized ratio)",
+    "BS_linear_task_adapter_defined": false,
+    "BS_fixed_channel_adapter_defined": false,
+    "extra_group_workspace_accounted": false,
+    "automatic_profile_addition": false
+  },
+  "precision_candidates_proposed": [
+    "1e-3",
+    "1e-4",
+    "1e-6"
+  ],
+  "ordinary_precision_selection": "all eligible registered precision resource vectors, Pareto envelope, no single T winner",
+  "task_accuracy_proposed": {
+    "epsilon_complex": "1/20",
+    "alpha_family": "1/20",
+    "approved": false,
+    "budget_allocation": null,
+    "shots": "common bounded-sample Bernstein sufficient count",
+    "shot_cap": null
+  },
+  "resource_caps_proposed": {
+    "approved": false,
+    "wall_seconds": 2400,
+    "cpu_seconds": 1800,
+    "RSS_MiB": 1024,
+    "output_bytes": 16777216,
+    "processes": 1,
+    "runs": 1,
+    "retries": 0,
+    "call_and_unique_key_cap": null
+  },
+  "unfixed": [
+    "GPT design/application value or route closure",
+    "PAI profile adoption and full joint semantics",
+    "positive/channel and grouped LCU adapters",
+    "actual synthesis sequences/counts/error and tool identities",
+    "same-dictionary LCU objective/frontier method and solver version/tolerance/budget/seed",
+    "accuracy and familywise allocation",
+    "numerical enclosure/margin and materiality",
+    "shot/call/unique-key/resource caps",
+    "source implementation, focused semantic verification, source freeze, review, separate authorization"
+  ],
+  "new_method_or_performance_established": false,
+  "science_source_commit": null,
+  "authorization": null
+}
