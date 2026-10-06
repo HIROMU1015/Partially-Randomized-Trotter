@@ -3,6 +3,7 @@ import hashlib
 import json
 import math
 import re
+import time
 
 
 class Stop(RuntimeError):
@@ -45,7 +46,22 @@ def canonical(value):
 
 
 def fingerprint(domain, payload):
-    return sha(canonical({'domain': domain, **payload}))
+    # The C encoder used by dumps can hold the GIL long enough to starve the
+    # existing five-second resource monitor on large dense circuit identities.
+    # iterencode emits the same JSON bytes, without one giant encoded string.
+    digest = hashlib.sha256()
+    encoder = json.JSONEncoder(sort_keys=True, ensure_ascii=False,
+                               separators=(',', ':'), allow_nan=False)
+    pending = bytearray()
+    for part in encoder.iterencode(exact({'domain': domain, **payload})):
+        pending.extend(part.encode())
+        if len(pending) >= 65536:
+            digest.update(pending)
+            pending.clear()
+            time.sleep(0)  # process-local cooperative scheduling only
+    if pending:
+        digest.update(pending)
+    return digest.hexdigest()
 
 
 def uint_seed(domain, payload):

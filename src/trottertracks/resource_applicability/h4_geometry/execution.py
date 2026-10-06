@@ -56,13 +56,16 @@ class OwnedRun:
                 self.wall_index+=1
         except BaseException as exc:
             self.failure=exc
+            # Retain the first cause before cleanup can replace it with a pipe
+            # or interrupt failure. This is the driver's existing bounded log.
+            print('H4 MONITOR STOP: '+type(exc).__name__+': '+str(exc),flush=True)
             self.monitor.stop_children()
             # The driver is owned by this run. Interrupt Python, not another job.
             import _thread
             _thread.interrupt_main()
 
     def pulse(self):
-        require(self.failure is None,'owned monitoring failed STOP')
+        require(self.failure is None,'owned monitoring failed STOP: '+str(self.failure))
         pool_failure = getattr(getattr(self,'pool',None),'failure',None)
         require(pool_failure is None,'owned pool failed STOP: '+str(pool_failure))
         self.wall.consumed()
@@ -94,7 +97,7 @@ class OwnedRun:
         self.monitor.stop_children()
         self.pool.shutdown(wait=True,cancel_futures=True)
         self.budget.close()
-        require(self.failure is None,'monitor STOP; no retry/resume')
+        require(self.failure is None,'monitor STOP; no retry/resume: '+str(self.failure))
 
 
 def generation_stage(permit,authorization,options):
