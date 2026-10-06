@@ -1,11 +1,70 @@
 {
-  "status": "PENDING_SOURCE_REVIEW_AND_SEPARATE_AUTHORIZATION",
-  "science_execution_authorized": false,
-  "source_commit": null,
+  "schema": "track_b_sp1_execution_authorization_v1",
+  "status": "APPROVED_FOR_ONE_SP1_RUN",
+  "source_review_decision": "PASS_FOR_SEPARATE_SP1_AUTHORIZATION",
+  "source_commit": "0d01ed9a332ebc5b66ed08acf56214a9b9c0236d",
+  "review_commit": "d0502f22039dc0b5de227ce4b7b5a229c55f1e74",
+  "source_commit_bound": true,
+  "contract_sha256": "f95931dbde2cfbba23c7585e851a26e3f3217d5820343f88b155b9a3a45093d1",
+  "science_execution_authorized": true,
+  "explicit_execution_instruction": "source `0d01ed9a332ebc5b66ed08acf56214a9b9c0236d` の固定契約でSP-1を一回だけ実行し、終了後はmandatory STOPしてください。  \n",
   "runs": 1,
   "retries": 0,
   "mandatory_STOP": true,
-  "explicit_execution_instruction": null,
-  "contract_sha256": "f95931dbde2cfbba23c7585e851a26e3f3217d5820343f88b155b9a3a45093d1",
-  "scope": "preparation only; final source review and separate explicit execution authorization required"
+  "next_stage_authorized": false,
+  "review_receipt": {
+    "path": "docs/tracks/algorithm_codesign/sp1_execution_authorization_receipt.md",
+    "sha256": "dffd42901554c31d6c727333c25182f1e77420f412b8ce9a8f04156e5ca939f3"
+  },
+  "review_boundary_quote": "これはSP-1の実行authorizationそのものではなく、source reviewを通過させ、別authorization-only childを作って一回実行してよい段階という意味です。",
+  "fixed_scope": {
+    "wrappers": 12,
+    "mask_rows": 48,
+    "axis_rows": 96,
+    "outer_paths": 16,
+    "templates": [
+      "A",
+      "B",
+      "C"
+    ],
+    "sizes": [
+      8,
+      16,
+      32,
+      64
+    ],
+    "masks": [
+      "NONE",
+      "D",
+      "R",
+      "DR"
+    ],
+    "catalogues": 1,
+    "new_synthesis_calls": 0,
+    "metric": "fusion-normalized additive synthesized-primitive T cost",
+    "caps": {
+      "wall_seconds": 1200,
+      "cpu_seconds": 900,
+      "RSS_MiB": 1024,
+      "virtual_address_MiB": 2048,
+      "output_bytes": 8388608,
+      "processes": 1,
+      "shot_cap_per_axis": 1000000000,
+      "retries": 0,
+      "watchdog_period_seconds": 0.1
+    }
+  },
+  "finalization_policy": "Exactly one fixed SP-1 run from clean direct authorization-only child A of S; then mandatory STOP, retry0, saved-field audit and GPT handoff only.",
+  "critical_source_identities_verified": 23,
+  "registered_resource_signal_evaluations_at_preparation": 0,
+  "new_synthesis_calls_at_preparation": 0,
+  "preparation_commit_is_execution_HEAD": false,
+  "full_test_suite_run": false,
+  "explicit_execution_instruction_sha256": "446f9ca1ef802d9a7a36847e813602f9a18054e4ab843b954950b8c8dbddd33b",
+  "preparation_commit": "c2a49f72eaffba4514743689eb8ccee02ca060a8",
+  "preparation_blob_sha256": {
+    "artifacts/track_b_sp1_wrapper_source/2026-10-06/authorization.json": "999159503f070014684b87a123b21dd045d5bb57a925ec62bef3f21775dce75b",
+    "docs/tracks/algorithm_codesign/sp1_execution_authorization_receipt.md": "8354374fd05e3abb919b12776d8a5542305cedcbcf82c5052c34b81793ae13a2"
+  },
+  "one_shot_marker_created_at_authorization": false
 }
