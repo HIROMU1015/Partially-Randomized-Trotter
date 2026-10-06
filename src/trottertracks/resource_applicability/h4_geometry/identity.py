@@ -45,15 +45,43 @@ def canonical(value):
     return json.dumps(exact(value), sort_keys=True, ensure_ascii=False, separators=(',', ':'), allow_nan=False).encode()
 
 
+def exact_json_parts(value):
+    """Yield canonical JSON without allocating a second exact container tree."""
+    if value is None:
+        yield 'null'
+    elif type(value) is bool:
+        yield 'true' if value else 'false'
+    elif type(value) is int:
+        yield str(value)
+    elif type(value) is str:
+        yield json.encoder.encode_basestring(value)
+    elif type(value) in (float,complex):
+        yield from exact_json_parts(exact(value))
+    elif isinstance(value,(list,tuple)):
+        yield '['
+        for index,item in enumerate(value):
+            if index:yield ','
+            yield from exact_json_parts(item)
+        yield ']'
+    elif isinstance(value,dict):
+        require(all(type(k) is str for k in value),'nonstring key')
+        yield '{'
+        for index,(key,item) in enumerate(sorted(value.items())):
+            if index:yield ','
+            yield json.encoder.encode_basestring(key)
+            yield ':'
+            yield from exact_json_parts(item)
+        yield '}'
+    else:
+        raise Stop('unsupported/symbolic identity value')
+
+
 def fingerprint(domain, payload):
-    # The C encoder used by dumps can hold the GIL long enough to starve the
-    # existing five-second resource monitor on large dense circuit identities.
-    # iterencode emits the same JSON bytes, without one giant encoded string.
+    # Both normalization and JSON encoding are lazy: the monitor must also
+    # run while traversing a large numerical circuit's container graph.
     digest = hashlib.sha256()
-    encoder = json.JSONEncoder(sort_keys=True, ensure_ascii=False,
-                               separators=(',', ':'), allow_nan=False)
     pending = bytearray()
-    for part in encoder.iterencode(exact({'domain': domain, **payload})):
+    for part in exact_json_parts({'domain': domain, **payload}):
         pending.extend(part.encode())
         if len(pending) >= 65536:
             digest.update(pending)

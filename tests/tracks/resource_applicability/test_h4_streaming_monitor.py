@@ -34,6 +34,23 @@ class StreamingIdentityTests(unittest.TestCase):
             with self.assertRaises(ident.Stop):
                 ident.fingerprint('ARTIFICIAL',{'value':value})
 
+    def test_whole_exact_tree_is_not_created_for_fingerprint(self):
+        value={'rows':[[{'complex128_hex':['0x1.0p+0','0x0.0p+0']}]*32]*32}
+        expected=hashlib.sha256(ident.canonical({'domain':'ARTIFICIAL',**value})).hexdigest()
+        with patch.object(ident,'exact',side_effect=AssertionError('whole tree copy')):
+            self.assertEqual(ident.fingerprint('ARTIFICIAL',value),expected)
+
+    def test_array_metadata_memo_is_call_local_and_preserves_exact_bytes(self):
+        import numpy as np
+        from trottertracks.resource_applicability.h4_geometry import circuits
+        array=np.array([[1.,-0.],[0.,1.]],dtype=np.complex128)
+        baseline=circuits.number(array);memo={}
+        first=circuits.number(array,memo);second=circuits.number(array,memo)
+        self.assertIs(first,second)
+        self.assertEqual(ident.canonical(first),ident.canonical(baseline))
+        array[0,0]=2
+        self.assertNotEqual(circuits.number(array),first)
+
     def test_first_monitor_exception_logged_before_owned_cleanup(self):
         run=execution.OwnedRun.__new__(execution.OwnedRun)
         class Event:

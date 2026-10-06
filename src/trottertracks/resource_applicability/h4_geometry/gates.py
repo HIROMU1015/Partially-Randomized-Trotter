@@ -14,12 +14,12 @@ CONTRACT = 'artifacts/resource_applicability/track_a_h4_geometry_contract_prepar
 PLAN_SHA = '18aa36a2776d38852657f154a88c381b3299fbc009007f20a2d95fcb865d9f7a'
 PLAN_FP = 'c76e8f1f6de5a2625affde38cc471b8214b299f343da2817aadbb3ebabc7d933'
 MANIFEST_SHA = '14cc5d0cc4da2b82168a0640cf8ff70ddf382b79810842bab1d7fedfae029f70'
-SOURCE_AUDIT = 'artifacts/resource_applicability/track_a_h4_streaming_monitor_run04/2026-10-06/source_freeze_v1.json'
+SOURCE_AUDIT = 'artifacts/resource_applicability/track_a_h4_lazy_identity_run05/2026-10-06/source_freeze_v1.json'
 DISTANCES = ('0.70', '0.80', '0.90', '1.10', '1.40', '1.60')
 ARTIFACT_ANCHOR = '/home/AbeHiromu/projects/partially-randomized-trotter'
-RUN_ID = 'track-a-h4-geometry-v2-20261006-run04'
+RUN_ID = 'track-a-h4-geometry-v2-20261006-run05'
 OUTPUT = ARTIFACT_ANCHOR + '/artifacts/resource_applicability/track_a_h4_geometry_execution/' + RUN_ID
-REUSE_MANIFEST = 'artifacts/resource_applicability/track_a_h4_streaming_monitor_run04/2026-10-06/input_reuse_and_prior_budget_v1.json'
+REUSE_MANIFEST = 'artifacts/resource_applicability/track_a_h4_lazy_identity_run05/2026-10-06/input_reuse_and_prior_budget_v1.json'
 REUSE_ROOT = ARTIFACT_ANCHOR + '/artifacts/resource_applicability/track_a_h4_geometry_execution/track-a-h4-geometry-v2-20261006-run02'
 PYTHON = '/home/AbeHiromu/venvs/trotter-common/bin/python'
 THREAD_ENV = {k: '1' for k in ('PYTHONNOUSERSITE', 'PYTHONDONTWRITEBYTECODE', 'OPENBLAS_NUM_THREADS',
@@ -170,7 +170,7 @@ def reexecution_metadata(permit):
             'prior wall charge')
     if 'predecessor_budget_journal' in manifest:
         previous = manifest['predecessor_budget_journal']
-        require(previous['root'] == ARTIFACT_ANCHOR+'/artifacts/resource_applicability/track_a_h4_geometry_execution/track-a-h4-geometry-v2-20261006-run03',
+        require(previous['root'] == ARTIFACT_ANCHOR+'/artifacts/resource_applicability/track_a_h4_geometry_execution/track-a-h4-geometry-v2-20261006-run04',
                 'stopped predecessor budget scope')
         data = (Path(previous['root'])/'byte-budget.journal').read_bytes()
         require(sha(data) == previous['sha256'] and len(data)%128 == 0, 'stopped predecessor budget binding')

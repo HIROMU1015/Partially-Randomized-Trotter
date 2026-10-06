@@ -1064,7 +1064,7 @@ class ParallelCompileTests(unittest.TestCase):
             with self.assertRaises(ident.Stop):gates.checkout_gate(permit)
             read.assert_called_once()
             self.assertEqual(read.call_args.args[0],root/gates.SOURCE_AUDIT)
-        self.assertEqual(gates.SOURCE_AUDIT,'artifacts/resource_applicability/track_a_h4_streaming_monitor_run04/2026-10-06/source_freeze_v1.json')
+        self.assertEqual(gates.SOURCE_AUDIT,'artifacts/resource_applicability/track_a_h4_lazy_identity_run05/2026-10-06/source_freeze_v1.json')
 
     def test_owned_pool_uses_available_worker_and_latches_death(self):
         import queue,threading

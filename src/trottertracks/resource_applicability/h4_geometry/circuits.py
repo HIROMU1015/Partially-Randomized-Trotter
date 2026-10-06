@@ -5,15 +5,21 @@ from .identity import Stop, require, exact, fingerprint
 LEAVES = frozenset('id x y z h s sdg t tdg sx sxdg rx ry rz p u cx cy cz ch crx cry crz cp cu swap cswap ccx rzx rxx ryy rzz dcx ecr'.split())
 
 
-def number(value):
+def number(value, _arrays=None):
     from qiskit.circuit import ParameterExpression
     require(not isinstance(value, ParameterExpression), 'symbolic parameter (even bound expressions must be numeric)')
     import numpy as np
     if isinstance(value, np.ndarray):
         require(value.dtype.kind in 'fciub', 'matrix parameter dtype')
-        return {'array':number(value.tolist()),'shape':list(value.shape),'dtype':value.dtype.str}
+        if _arrays is not None and id(value) in _arrays:
+            return _arrays[id(value)][1]
+        encoded = {'array':number(value.tolist(),_arrays),'shape':list(value.shape),'dtype':value.dtype.str}
+        if _arrays is not None:
+            # Retain the original array so an id cannot be recycled mid-call.
+            _arrays[id(value)] = (value,encoded)
+        return encoded
     if isinstance(value,(list,tuple)):
-        return [number(x) for x in value]
+        return [number(x,_arrays) for x in value]
     if isinstance(value,np.generic):
         value = value.item()
     return exact(value)
@@ -33,7 +39,9 @@ def decode(value):
     return value
 
 
-def serialize(circuit, axis, _stack=()):
+def serialize(circuit, axis, _stack=(), _arrays=None):
+    if _arrays is None:
+        _arrays = {}
     require(axis in ('cosine','sine'), 'measurement axis')
     require(id(circuit) not in _stack and len(_stack)<64, 'recursive custom definition')
     stack = (*_stack,id(circuit))
@@ -55,7 +63,7 @@ def serialize(circuit, axis, _stack=()):
         op=item.operation
         base=op.base_class
         entry=dict(name=op.name, num_qubits=op.num_qubits, num_clbits=op.num_clbits,
-                   parameters=[number(p) for p in op.params],
+                   parameters=[number(p,_arrays) for p in op.params],
                    qubits=[circuit.find_bit(b).index for b in item.qubits],
                    clbits=[circuit.find_bit(b).index for b in item.clbits],
                    condition=condition(op), ctrl_state=getattr(op,'ctrl_state',None),
@@ -78,13 +86,13 @@ def serialize(circuit, axis, _stack=()):
                 closed=op.copy().to_mutable()
                 closed.ctrl_state=2**op.num_ctrl_qubits-1
                 entry['closed_name']=closed.name
-                entry['definition']=serialize(closed.definition,axis,stack)
-                entry['effective_definition']=serialize(op.definition,axis,stack)
+                entry['definition']=serialize(closed.definition,axis,stack,_arrays)
+                entry['effective_definition']=serialize(op.definition,axis,stack,_arrays)
                 base_qc=QuantumCircuit(op.base_gate.num_qubits)
                 base_qc.append(op.base_gate,range(op.base_gate.num_qubits))
-                entry['base_gate']=serialize(base_qc,axis,stack)
+                entry['base_gate']=serialize(base_qc,axis,stack,_arrays)
             else:
-                entry['definition']=serialize(op.definition,axis,stack)
+                entry['definition']=serialize(op.definition,axis,stack,_arrays)
         instructions.append(entry)
     return dict(format='ordered-numerical-full-circuit-v1',axis=axis,
                 qubits=list(range(circuit.num_qubits)),clbits=list(range(circuit.num_clbits)),
