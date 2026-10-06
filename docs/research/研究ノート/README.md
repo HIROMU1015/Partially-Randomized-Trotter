@@ -158,3 +158,8 @@ D1〜D4レビュー承認は未解決、science/source port/input generation/nex
 | [2026-08-18](2026-08-18.md) | finite-RTEとPF・摂動・QPE分枝誤差の検証 | `8fdc6b3` | H4全$L_D$の単一位相条件、H2--H5のdense比較、H6のstate-action係数までlocal確認 | GPU経路をH8/H10で確認し、H12の候補$L_D$ごとに$C$を決定 |
 
 - [2026-10-06](2026-10-06.md)：H4追加6距離・最大12 workersの契約確認と、サーバー側local契約案/schema/129合成検査。4判断待ち、科学・port・commit/push未認可でSTOP。
+
+
+## H4候補間compile投入・12 worker明示再実行
+
+利用者の増員再実行指示により[run03 source・認可・検査記録](../track_a_h4_cross_candidate_run03.md)を追加した。候補内2回路の完了待ちで4 workerがidleとなる問題を、候補間bounded queueで修正。旧run02はworker failure STOPで全証跡を保持し、旧6入力を再生成せず利用する。49人工job/metadata testsはlocal PASSで科学的結果ではない。12 workerのfresh CPU/memory/容量/hash検査後だけ一度起動しMAP_COMPLETE_STOP。旧累積bytes/wall/actual invocationsを引継ぎ、科学条件・compiler・上限は不変。
