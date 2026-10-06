@@ -1,5 +1,15 @@
 # Validation status
 
+## 2026-10-07 H4 run05 monitor STOP・新hostへの移行準備のみ
+
+[引継ぎ資料](docs/research/track_a_h4_new_server_handoff_20261007.md)にrun05停止後の状態を追加した。
+run05完成compile records0、signal0/1308、全owned processes終了。75 local人工testsはproduction成功を示さない。
+H4 linear/STO-3G/DF12、追加6距離、T0.8、L_D0/3/4/5/6/9/12、q1/2/4/8、delta0.8/0.4/0.2/0.1のmapは未完了。
+消費/予約actual invocations20、charge165214360 bytes、保守的wall carry5466.188392877579 sを引き継ぐ。
+既存source19とplan/auth/reviewは不変。今回の追加は軽量引継ぎ資料/索引のみで新科学処理・追加transpile0。
+NPZ/runtime/controlは別転送対象。新hostのCPU利用・最終review・明示launchは未承認、本計算前STOP。
+以下の旧状態表・manifest entryは各時点の履歴として保持する。
+
 ## 2026-10-05 Track A PM-2保存値解析完了 mandatory STOP
 
 [結果照合](docs/pr2_pm2_precision_resource_result_validation.md)はPOSTHOC保存値解析。

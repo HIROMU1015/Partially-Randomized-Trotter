@@ -732,3 +732,8 @@ science source/runnerの追加ではなく、旧公開draft・source・科学結
 ## H4 run05：identity hash分割・5秒監視維持
 
 [run05固定sourceと再実行binding](docs/research/track_a_h4_lazy_identity_run05.md)を追加した。run04はmonitor STOPで旧全証跡を保持。人工JSONで旧一括encoderのmonitor interval/freshnessを再現し、新streaming encoderは同じdigestで全監視PASS。75 local tests PASSは実装証拠で科学結果ではない。旧6入力を再生成せず、bytes/wall/12 consumed invocationsをcarryし、CPU12件・12 workerのfresh検査後に一度実行してMAP_COMPLETE_STOP。
+
+
+## H4 新サーバー引継ぎ（2026-10-07）
+
+[引継ぎ資料入口](docs/research/track_a_h4_new_server_handoff_20261007.md)に、固定sourceの取得手順、run05監視STOP、累積予算、入力・証拠の別転送、新hostの未承認事項をまとめた。今回の追加は軽量資料のみ。本計算・入力再生成・GPU・共有環境変更を開始しない。

@@ -173,3 +173,8 @@ D1〜D4レビュー承認は未解決、science/source port/input generation/nex
 ## H4 run05：identity hash分割・5秒監視維持
 
 [run05固定sourceと再実行binding](../track_a_h4_lazy_identity_run05.md)を追加した。run04はmonitor STOPで旧全証跡を保持。人工JSONで旧一括encoderのmonitor interval/freshnessを再現し、新streaming encoderは同じdigestで全監視PASS。75 local tests PASSは実装証拠で科学結果ではない。旧6入力を再生成せず、bytes/wall/12 consumed invocationsをcarryし、CPU12件・12 workerのfresh検査後に一度実行してMAP_COMPLETE_STOP。
+
+
+## 2026-10-07 H4 引継ぎ資料公開の記録
+
+[当日ノート](2026-10-07.md)に、Git公開を試す理由と、run05停止・未追跡入力の別転送・新hostの未承認事項を記録した。旧時点の記載は保持する。

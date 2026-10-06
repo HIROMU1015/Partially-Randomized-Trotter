@@ -26,3 +26,12 @@ candidate間bounded compileはmax12 outstanding、候補/trajectory/axis集計�
 実起動前source/plan/auth/reviewは本bundleに固定し、runnerはこのcheckoutのscripts/resource_applicability/run_h4_geometry_signal_compile.py。fresh検査後だけabsolute pathで一度execする。control入口：/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/executions/h4-signal-compile-run05-lazy-identity/README.md。sourceはlocal実装検査済みでproduction成功・全campaign完了は未確定。科学NPZ/runtime/cache/checkpointはcommitしない。
 
 [bundle入口](../../artifacts/resource_applicability/track_a_h4_lazy_identity_run05/2026-10-06/README.md)。
+
+## 2026-10-07 停止後の補足（既存固定資料は保持）
+
+上記は起動前の固定資料である。run05は2026-10-06 23:28 JSTにmonitor interval/freshnessでSTOPし、
+全owned processesは終了した。run05完成compile0、signal0/1308。累積消費/予約actual invocationsは20、
+charge165214360 bytes、次attemptへの保守的wall carry5466.188392877579 s。75 local人工testsはproduction成功ではない。
+行列parameter serializationを含む監視干渉が未解決で、[新サーバー引継ぎ](track_a_h4_new_server_handoff_20261007.md)へ進む。
+今回source19・plan・auth/review・旧保存証拠を変えず、資料だけを公開候補に追加した。
+新hostではCPU使用・最終review・明示launchを別途確認するまで、本計算前STOP。
