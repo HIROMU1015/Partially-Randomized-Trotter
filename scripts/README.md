@@ -1,3 +1,16 @@
+## Track B R1一回結果・mandatory STOP（2026-10-06）
+
+固定S `d43d64a821a0249a0dfab12a2472bd3a72fdee74` →直接子authorization-only A
+`411f08f768244fe87b600d82308c3851847fe9e4`からrun1/retry0。
+[結果照合](../docs/tracks/algorithm_codesign/r1_one_shot_result_validation_20261006.md)：126 keys / 264 rows / 132 controlled tasks完了、全task適格。
+terminal R1_RESOURCE_MAP_COMPLETE_AWAITING_GPT_REVIEW、[保存field専用監査](tracks/algorithm_codesign/audit_r1_saved_result.py) PASS。
+primary distinct-basis controlledではB²改善とnative/shot資源のtrade-offを保存し、自動研究GOはない。
+[全264 rows CSV](../artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/resource_rows_display_v1.csv)、[evidence manifest](../artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/evidence_manifest_v1.json)、
+[GPT判断への入口](../docs/tracks/algorithm_codesign/r1_post_run_gpt_review_request_20261006.md)。原result/marker/source、既存証拠・共通API・Track A保持。
+science終了後mandatory STOP、追加合成/target/grid/分子/DF/trajectory/GPUは行わない。
+研究方針・RQ・新規性・着地点・追加検証の必要性/範囲はGPT側。
+以下のpending/最新記述は当時の履歴として本文をそのまま保持する。
+
 # scripts 索引
 
 ## Track B R1 native-resource runner: source review only

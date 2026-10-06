@@ -1,0 +1,333 @@
+{
+  "schema": "track_b_R1_one_shot_evidence_manifest_v1",
+  "date_JST": "2026-10-06",
+  "status": "R1_RESOURCE_MAP_COMPLETE_AWAITING_GPT_REVIEW",
+  "evidence_status": "source-bound local one-shot execution plus saved-field audit; not immutable CI or external replication",
+  "branch": "track-b-r1-one-shot-execution-20261006",
+  "worktree": "/home/abe/Project/prt-worktrees/track-b-r1-one-shot-execution-20261006",
+  "remote": "git@github.com:HIROMU1015/Partially-Randomized-Trotter.git",
+  "source_commit": "d43d64a821a0249a0dfab12a2472bd3a72fdee74",
+  "authorization_commit": "411f08f768244fe87b600d82308c3851847fe9e4",
+  "preparation_reference_commit": "09fe527274e8de5c0d808ada5890fa06a59f78ea",
+  "result_commit_binding": "containing publication commit; full SHA and fixed GitHub URLs reported after push",
+  "clean_direct_child_launch": true,
+  "authorization_only_changed_paths": [
+    "artifacts/track_b_rte_reallocation_r1_source/2026-10-06/authorization.json",
+    "docs/tracks/algorithm_codesign/r1_execution_authorization_receipt.md"
+  ],
+  "contract_sha256": "e8a4201203dc8d2fbb35c7f3025079d7f0f1dce270be55afd1b17f2505717025",
+  "authorization_sha256": "9d30dd6cbe5b4d47d4b9080db656564fec6503d9e77a4f08442a39c8f30a582f",
+  "tool_identity_sha256": "803d902a18d925a9565749fbc64422dca4979bfa6c0bd8b438b28de18d3aa984",
+  "key_inventory_sha256": "fd5e8e35dcda12cb9a070bf63cefca31052642a43a7f648802942440035373e4",
+  "source_manifest_sha256": "797b1fb0e31ae1c3b264303899e7f3a6a1e21613e3b76cc1717f4b40cc5783a9",
+  "original_result_sha256": "f726ad70cb2643533f0d037b518cde1b702724adb4e6571fea25e26e4bfdd61e",
+  "one_shot_marker_sha256": "f25000ee5e3b94eb499b4a89bb28814e3de1aea641b249bcbb9d953d427c2ced",
+  "one_shot_marker_exclusive_create_before_registered_synthesis": true,
+  "one_shot_authorization_consumed": true,
+  "science_completed_and_stopped": true,
+  "run_mode_invocations": 1,
+  "synthesis_attempts": 126,
+  "pygridsynth_invocations": 126,
+  "synthesis_rows": 126,
+  "resource_rows": 264,
+  "comparison_groups": 72,
+  "comparison_pairs": 192,
+  "event_records": 2904,
+  "controlled_tasks": 132,
+  "controlled_axes": 264,
+  "controlled_eligible_tasks": 132,
+  "controlled_bias_ineligible": 0,
+  "controlled_shot_cap_ineligible": 0,
+  "primary_distinct_basis_controlled_rows": 36,
+  "primary_comparison_groups": 12,
+  "input_scope": {
+    "target": "P_3(-i sigma x (3 Q0/4+Q1/4)), K=2; finite target, not exponential or a channel mixture",
+    "domain": {
+      "contexts": [
+        "pauli_commuting",
+        "pauli_noncommuting",
+        "distinct_basis"
+      ],
+      "x": [
+        "1/8",
+        "1/4"
+      ],
+      "sigma": [
+        -1,
+        1
+      ],
+      "p": [
+        "3/4",
+        "1/4"
+      ],
+      "m": 3,
+      "K": 2,
+      "native_contexts": [
+        "ordinary_diagnostic",
+        "controlled"
+      ]
+    },
+    "contexts": {
+      "pauli_commuting": {
+        "Q0": "Z0",
+        "Q1": "Z1",
+        "role": "Pauli collection control"
+      },
+      "pauli_noncommuting": {
+        "Q0": "Z0",
+        "Q1": "X0 X1",
+        "role": "Pauli collection and phase control"
+      },
+      "distinct_basis": {
+        "Q0": "Z0",
+        "Q1": "V dagger Z1 V",
+        "V": "exp(-i pi X0 X1/16)",
+        "role": "primary performance context, controlled rows only",
+        "known_basis_circuit_required": true
+      }
+    },
+    "arms_by_context": {
+      "pauli_commuting": [
+        "ordinary",
+        "PTSC_K0",
+        "A",
+        "CTS_collected"
+      ],
+      "pauli_noncommuting": [
+        "ordinary",
+        "PTSC_K0",
+        "A",
+        "CTS_collected"
+      ],
+      "distinct_basis": [
+        "ordinary",
+        "PTSC_K0",
+        "A"
+      ]
+    },
+    "native_operator_epsilons": [
+      "1e-3",
+      "1e-4",
+      "1e-6"
+    ],
+    "canonical_only": true,
+    "molecular_geometry_basis_DF_rank_split": "not applicable: synthetic 2-qubit involution task"
+  },
+  "finite_confidence": {
+    "role": "secondary controlled one-block complex coherent-signal forecast; ordinary rows diagnostic only",
+    "epsilon_complex": "1/100",
+    "epsilon_axis": "1/200",
+    "alpha_familywise": "1/20",
+    "controlled_task_rows": 132,
+    "axes_per_controlled_task": 2,
+    "alpha_axis": "1/5280",
+    "variance": "B_mid^2 upper, no exact signal use",
+    "centered_range": "2 B_mid",
+    "shot_rule": "ceil((2 B_mid^2+(4/3) B_mid epsilon_stat)*ln(2/alpha_axis)/epsilon_stat^2) with outward rational upper",
+    "coefficient_bias_cap": "1e-25",
+    "shot_cap_per_axis": 1000000000,
+    "state": "fixed computational |00>, preparation T/CX=0; Hadamard preparation/readout 1Q Re=2, Im=3 per shot",
+    "accuracy_target": "same finite polynomial M; exponential truncation bias outside task, no physical Hamiltonian claim"
+  },
+  "native_cost_metric": "native IR after shared exact cancellation with additive synthesized-primitive Clifford+T counts",
+  "caps": {
+    "synthesis_keys": 126,
+    "wall_seconds": 1200,
+    "cpu_seconds": 900,
+    "RSS_MiB": 512,
+    "virtual_address_MiB": 1536,
+    "watchdog_period_seconds": 0.2,
+    "per_key_wall_seconds": 30,
+    "per_key_cpu_seconds": 20,
+    "sequence_characters": 20000,
+    "output_bytes": 16777216,
+    "runs": 1,
+    "retries": 0,
+    "processes": 1
+  },
+  "resource_usage_as_saved": {
+    "wall_seconds": 5.277212269604206,
+    "cpu_seconds": 5.277025999999999,
+    "peak_RSS_KiB": 295188,
+    "processes": 1
+  },
+  "runtime_identity_as_saved": {
+    "python": "3.10.12",
+    "packages_match": true,
+    "source_py_tree_sha256": {
+      "pygridsynth": "16fb23eafea463e49bcc9e90238e2082e6fe8a9bec334a758129b6ab943372ad",
+      "mpmath": "c79b951276c7b79ea48114fdc169b9c180fcf398d0314433ba73518beb649a26"
+    },
+    "synthesizer_calls": 0
+  },
+  "science_failure": null,
+  "retry_count": 0,
+  "original_result_bytes": 7824519,
+  "audit_status": "PASS_SAVED_FIELDS_ONLY",
+  "audit_script_path": "scripts/tracks/algorithm_codesign/audit_r1_saved_result.py",
+  "audit_script_sha256": "e528592cd6dd1fc68e27fd4ad9265a60f030966e427e148a4550c144eab1cd22",
+  "audit_science_imports": 0,
+  "audit_science_calls": 0,
+  "audit_scope": "saved identities, inventories, exact rational bookkeeping and saved labels only",
+  "audit_not_recomputed": [
+    "strict matrix guard",
+    "native circuits/IR hashes",
+    "Bernstein logarithm or sufficient-shot ceiling",
+    "finite first-moment matrices or signals"
+  ],
+  "protected_prior_evidence_hashes_verified": 66,
+  "reviewed_critical_hashes_verified": 26,
+  "source_tests_preserved": {
+    "focused_local_tests_passed_at_S": 27,
+    "new_focused_test_invocations": 0,
+    "full_suite_runs": 0
+  },
+  "science_operations_after_completion": {
+    "synthesis": 0,
+    "registered_resource_or_signal_evaluations": 0,
+    "circuit_build_compile": 0,
+    "trajectory_sampling": 0,
+    "IS_PAI_optimization": 0,
+    "molecule_DF_Hamiltonian_NPZ": 0,
+    "GPU_query_use": 0,
+    "new_candidates_or_cells": 0,
+    "old_science_reclassification": 0
+  },
+  "index_old_complete_bodies_preserved": true,
+  "shared_API_changes": 0,
+  "Track_A_worktree_writes": 0,
+  "root_worktree_writes": 0,
+  "old_marker_authorization_changes": 0,
+  "past_STOP_automatic_reversal": false,
+  "interpretation_boundaries": [
+    "distinct-basis toy is Pauli-expandable: implementation mechanism only, not I0-only acquisition advantage",
+    "additive primitive counts after shared cancellation, not optimized whole-circuit or DF cost",
+    "common sufficient-shot forecast, not measurement or independent validation",
+    "no B-squared-only GO, scalar threshold, algorithm adoption or novelty claim"
+  ],
+  "research_decision_owner": "GPT",
+  "science_GO": false,
+  "next_stage_authorized": false,
+  "RUN_READY": false,
+  "runs": 1,
+  "retries": 0,
+  "mandatory_STOP": true,
+  "file_inventory": {
+    "PROJECT_MAP.md": {
+      "sha256": "38b6054d348e6eb523d3deb13c043e575b790f0e6cc3463260a9b11a0e77c7f7",
+      "bytes": 52994
+    },
+    "docs/README.md": {
+      "sha256": "866469193862ed2eaf281415201928436805adaeec863148e341616915d19f4b",
+      "bytes": 29153
+    },
+    "docs/research/研究概要・現状.md": {
+      "sha256": "02b06dc1619b652b0e15e06fe646e99a6f7bc1efcbc46e98a4ccbb1d60329292",
+      "bytes": 139914
+    },
+    "docs/research/研究ノート/README.md": {
+      "sha256": "56325407220a4491c6638ebddd6d6d51e7016f2e7b365f8e413948bc869a3342",
+      "bytes": 11263
+    },
+    "docs/tracks/algorithm_codesign/README.md": {
+      "sha256": "b411bdd44aa6ffc39aa2eb2056bc6f039825a80219fc52589c57f42bd0eb1506",
+      "bytes": 14895
+    },
+    "scripts/README.md": {
+      "sha256": "48b918c8b3846e8caa254dee3a418c2031a0e7eb76fc651f6f458466e46a92bf",
+      "bytes": 24753
+    },
+    "scripts/tracks/algorithm_codesign/README.md": {
+      "sha256": "a645d67a52e34521cb16c16142c0269a255ff0fcc3ff0135b2550c0cbd3b6352",
+      "bytes": 6245
+    },
+    "src/trotterlib/README.md": {
+      "sha256": "52a8a21ac6c42aad6f016c4a50cd18c0d8a4758352e037b60d8b98d7211e0a91",
+      "bytes": 16723
+    },
+    "docs/tracks/algorithm_codesign/r1_one_shot_result_validation_20261006.md": {
+      "sha256": "e585ec099b99581973df1e7f8514066688efe780249cbbe3e20e96fd60c198f5",
+      "bytes": 11376
+    },
+    "docs/tracks/algorithm_codesign/r1_post_run_gpt_review_request_20261006.md": {
+      "sha256": "26953cc27ea29a477bf0a0044a24f4d4002d42cc5670f20b40b8d5072b97bcf3",
+      "bytes": 5514
+    },
+    "docs/research/研究ノート/2026-10-06_track_b_r1_one_shot.md": {
+      "sha256": "3f3eef642bd18970821d89d8b550befb4bffd4ae1f9ca4539afd68b99a3b19bf",
+      "bytes": 2129
+    },
+    "scripts/tracks/algorithm_codesign/audit_r1_saved_result.py": {
+      "sha256": "e528592cd6dd1fc68e27fd4ad9265a60f030966e427e148a4550c144eab1cd22",
+      "bytes": 23644
+    },
+    "artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/result.json": {
+      "sha256": "f726ad70cb2643533f0d037b518cde1b702724adb4e6571fea25e26e4bfdd61e",
+      "bytes": 7824519
+    },
+    "artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/one_shot_consumed.json": {
+      "sha256": "f25000ee5e3b94eb499b4a89bb28814e3de1aea641b249bcbb9d953d427c2ced",
+      "bytes": 596
+    },
+    "artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/saved_field_audit_v1.json": {
+      "sha256": "a4289d235599838bcd227657503f23f073e7794713aa4c5604e6929bcbb38850",
+      "bytes": 2130
+    },
+    "artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/descriptive_summary_v1.json": {
+      "sha256": "55ef1360d3a9f7373e70b850615b73bbc02740c90118036746de414ae71e5b34",
+      "bytes": 245921
+    },
+    "artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/resource_rows_display_v1.csv": {
+      "sha256": "bdf9d35fe18a8835cae03cd704551ba56dcb92a973e198126e41a64f4db8a26d",
+      "bytes": 76579
+    },
+    "artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/runner_stdout.txt": {
+      "sha256": "293d5c03b88fb928b415c90e1728fc880bfb955590140afb32983398df571fa8",
+      "bytes": 238
+    },
+    "artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/invocation_receipt_v1.json": {
+      "sha256": "9096564a5e735419083ac3a6b6ba7e42a29857ad7fb8eaef4adf1e7ad808fcf3",
+      "bytes": 1291
+    },
+    "artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/index_prefix_identity_v1.json": {
+      "sha256": "01bd37ac2f05f0826f93b85dda96f16d8bd7a299632ef02d308841e708874187",
+      "bytes": 3086
+    }
+  },
+  "manifest_self_hash_excluded": true,
+  "publication_paths": [
+    "PROJECT_MAP.md",
+    "docs/README.md",
+    "docs/research/研究概要・現状.md",
+    "docs/research/研究ノート/README.md",
+    "docs/tracks/algorithm_codesign/README.md",
+    "scripts/README.md",
+    "scripts/tracks/algorithm_codesign/README.md",
+    "src/trotterlib/README.md",
+    "docs/tracks/algorithm_codesign/r1_one_shot_result_validation_20261006.md",
+    "docs/tracks/algorithm_codesign/r1_post_run_gpt_review_request_20261006.md",
+    "docs/research/研究ノート/2026-10-06_track_b_r1_one_shot.md",
+    "scripts/tracks/algorithm_codesign/audit_r1_saved_result.py",
+    "artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/result.json",
+    "artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/one_shot_consumed.json",
+    "artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/saved_field_audit_v1.json",
+    "artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/descriptive_summary_v1.json",
+    "artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/resource_rows_display_v1.csv",
+    "artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/runner_stdout.txt",
+    "artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/invocation_receipt_v1.json",
+    "artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/index_prefix_identity_v1.json",
+    "artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1/evidence_manifest_v1.json"
+  ],
+  "publication_verification": {
+    "explicit_publication_paths": 21,
+    "file_inventory_hashes_checked": 20,
+    "authored_links_checked": 66,
+    "all_primary_table_groups_checked": 12,
+    "CSV_row_identities_checked": 264,
+    "eight_index_old_complete_bodies_preserved": true,
+    "audit_imports_stdlib_only": true,
+    "original_result_marker_unchanged": true,
+    "git_diff_check_passed": true,
+    "extra_science_test_runs": 0
+  }
+}
