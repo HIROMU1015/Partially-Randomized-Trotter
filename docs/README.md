@@ -1,5 +1,10 @@
 # 文書索引
 
+## Track B R0 technical review (2026-10-06)
+
+[Finite-mean reallocation review packet](tracks/algorithm_codesign/rte_reallocation_r0_review_packet_20261006.md) links the independent proof, primary-text claim audit, one conditional R1 proposal and exact-check provenance. This is symbolic evidence, not an executed science pilot; mandatory STOP.
+
+
 Track B最新は[BS-0.5設計監査](tracks/algorithm_codesign/bs05_method_target_design_audit_v1.md)。
 [ordinary形式仕様](tracks/algorithm_codesign/bs05_ordinary_finite_rte_baseline_v1.md)、
 [pilot案v2 amendment](tracks/algorithm_codesign/block_synthesis_pilot_amendment_v2.md)。

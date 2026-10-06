@@ -1,5 +1,10 @@
 # trotterlib モジュール索引
 
+## Track B R0 boundary (2026-10-06)
+
+[Finite-mean reallocation audit](../../docs/tracks/algorithm_codesign/rte_reallocation_r0_review_packet_20261006.md) uses a standalone exact checker. Shared RTE/DF APIs are unchanged; RTEEvent remains even-order only. Odd-event algebra is not a validated builder. No track-specific copy of trotterlib is created.
+
+
 Track B [BS-0.5 ordinary形式仕様](../../docs/tracks/algorithm_codesign/bs05_ordinary_finite_rte_baseline_v1.md)はdocs-only。
 固定rte.pyをtext照合しただけで、共有implementation/APIを変更・実行していない。
 operator/channelは別target、現candidateの独立delta未定義。実装/science/tests0、mandatory STOP。以下は履歴。

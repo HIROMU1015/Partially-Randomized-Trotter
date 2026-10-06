@@ -1,5 +1,10 @@
 # 研究ノート
 
+## 2026-10-06 Track B R0
+
+[有限mean再配分の独立数学・文献監査](2026-10-06_track_b_rte_reallocation_r0.md)。記号検査一回、科学実行なし、GPT review待ち。
+
+
 - [2026-10-06 Track B BS-0.5 docs-only設計監査](2026-10-06_track_b_bs05_design_audit.md)：
   candidate独立delta未定義、O/C分離・ordinary形式仕様・多資源Pareto。新science0、GPTへSTOP。
 

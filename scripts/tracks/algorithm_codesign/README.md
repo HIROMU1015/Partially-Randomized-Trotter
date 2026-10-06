@@ -1,5 +1,10 @@
 # Track B scripts
 
+## R0 fixed exact symbolic checks
+
+[check_rte_reallocation_symbolic.py](check_rte_reallocation_symbolic.py): standalone stdlib Fraction/free-word checker, A80/B9 fixtures and negative witnesses, 15s CPU/256 MiB AS/30s wall cap. [R0 packet](../../../docs/tracks/algorithm_codesign/rte_reallocation_r0_review_packet_20261006.md). No sampling/science/circuit operations.
+
+
 [BS-0.5設計監査](../../../docs/tracks/algorithm_codesign/bs05_method_target_design_audit_v1.md)はdocs-only。
 新runner/source/testsなし、old science replayなし、mandatory STOP。次scopeの判断はGPTへ戻す。
 

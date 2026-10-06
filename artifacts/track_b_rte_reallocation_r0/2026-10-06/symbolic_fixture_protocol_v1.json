@@ -1,0 +1,76 @@
+{
+  "schema": "track_b_rte_reallocation_r0_symbolic_fixture_protocol_v1",
+  "recorded_before_checker_execution": true,
+  "scope": "exact free-word/Fraction technical verification only; not trajectory sampling, matrix or resource science",
+  "authorization": "user plan section 13 supplied in current task",
+  "checker_path": "scripts/tracks/algorithm_codesign/check_rte_reallocation_symbolic.py",
+  "checker_sha256": "84abc3ab24bc7bbe8caa4bd72ae7d735306c9c379950f64210d674e66797114a",
+  "A_domain": {
+    "odd_degrees": [
+      1,
+      3,
+      5,
+      7
+    ],
+    "x_rational": [
+      "1/8",
+      "1",
+      "8"
+    ],
+    "sigma": [
+      -1,
+      1
+    ],
+    "eta_rational": [
+      "0",
+      "1/2",
+      "1"
+    ],
+    "p": [
+      "1/2",
+      "1/3",
+      "1/6"
+    ],
+    "zero_time_endpoint": true,
+    "expected_mean_fixtures": 80
+  },
+  "B_domain": {
+    "p": [
+      [
+        "1/2",
+        "1/3",
+        "1/6"
+      ],
+      [
+        "99/100",
+        "1/100",
+        "0"
+      ],
+      [
+        "1",
+        "0",
+        "0"
+      ]
+    ],
+    "x_rational": [
+      "1/8",
+      "1",
+      "8"
+    ],
+    "both_signs": true,
+    "expected_fixtures": 9,
+    "random_draws": 0
+  },
+  "expected_negative_witnesses": 5,
+  "formal_series_max_degree": 6,
+  "general_odd_degree_proof": "separate handwritten independent derivation; finite fixtures are not the proof",
+  "resource_caps": {
+    "CPU_seconds": 15,
+    "address_space_MiB": 256,
+    "wall_seconds": 30
+  },
+  "science_execution_authorized": false,
+  "RUN_READY": false,
+  "mandatory_STOP": true,
+  "no_next_stage_automatic_authorization": true
+}

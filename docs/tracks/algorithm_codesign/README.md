@@ -1,5 +1,12 @@
 # Track B — Algorithm Co-design
 
+## Current: R0 finite-mean RTE reallocation audit (2026-10-06)
+
+- [Review packet](rte_reallocation_r0_review_packet_20261006.md): claim status, independent proof, primary passages, fixed exact fixtures and source identity.
+- Broad reallocation/common-angle principle is known; specific class theorem priority and resource value remain unresolved. R1 proposal is conditional only.
+- Existing BF/BM/FR/BS/SP conclusions stay fixed. RUN_READY=false; no science authorization; mandatory STOP and GPT research review.
+
+
 最新は[BS-0.5設計監査](bs05_method_target_design_audit_v1.md)（2026-10-06）。
 [ordinary有限RTE形式仕様](bs05_ordinary_finite_rte_baseline_v1.md)、[pilot案v2](block_synthesis_pilot_amendment_v2.md)。
 branch `track-b-bs05-design-audit-20261006`、base `2c8c022db39c3582d6175fcf25a6752037727a21`。

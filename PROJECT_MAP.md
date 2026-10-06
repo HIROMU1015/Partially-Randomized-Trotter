@@ -1,5 +1,12 @@
 # プロジェクト案内
 
+## Track B R0: finite-mean RTE representation audit (2026-10-06)
+
+- [Review packet](docs/tracks/algorithm_codesign/rte_reallocation_r0_review_packet_20261006.md), independent all-odd proof, scoped prior art and conditional R1 proposal.
+- [Technical checker](scripts/tracks/algorithm_codesign/check_rte_reallocation_symbolic.py) and [R0 provenance](artifacts/track_b_rte_reallocation_r0/2026-10-06/audit_manifest_v1.json). A80/B9 exact fixtures; one technical run, science 0.
+- R0 math checked; new-method priority/resource value unresolved. Existing STOPs remain; RUN_READY=false; GPT review required.
+
+
 Track B最新は[BS-0.5 method/target設計監査](docs/tracks/algorithm_codesign/bs05_method_target_design_audit_v1.md)。
 現candidateは同じsparse/operator LCUと別delta未定義のため専用arm/new-method claimを外す。
 ordinary finite-RTEの形式仕様、O/C別比較、多資源Pareto、Wada grouped LCUをreviewへ戻す。

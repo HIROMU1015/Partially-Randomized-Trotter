@@ -1,5 +1,10 @@
 # scripts 索引
 
+## Track B R0 technical checker
+
+[check_rte_reallocation_symbolic.py](tracks/algorithm_codesign/check_rte_reallocation_symbolic.py) verifies fixed free-word/Fraction identities. It is not a sampler, solver or science runner; no trotterlib imports. [Review/provenance](../docs/tracks/algorithm_codesign/rte_reallocation_r0_review_packet_20261006.md) records one local technical execution and STOP.
+
+
 Track B [BS-0.5設計監査](../docs/tracks/algorithm_codesign/bs05_method_target_design_audit_v1.md)はdocs-only。
 runner/solver/synthesis/testsを追加・実行していない。ordinaryの式とledgerは実装済みsourceではない。
 RUN_READY=false、mandatory STOP、次実装/検証scopeはGPT判断。以下は既存実行履歴。
