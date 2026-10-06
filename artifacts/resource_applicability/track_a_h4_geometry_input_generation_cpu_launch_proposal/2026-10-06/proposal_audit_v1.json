@@ -1,0 +1,178 @@
+{
+  "CPU_use_approved": false,
+  "NUMA_node": 0,
+  "actual_launch_admission_performed": false,
+  "additional_transpile": 0,
+  "approval_status": "利用者承認未取得",
+  "authorization_changed_fields": [
+    "allowed_cpus"
+  ],
+  "authorization_digest": "86d689c5dbdf496e0393b1a6442bcb975ffb0bbde4d0ea959962dd87353fbc1c",
+  "benchmark_run": false,
+  "branch": "track-a-h4-geometry-input-generation-cpu-launch-proposal-20261006",
+  "branch_base_commit": "a1b0ba5e1ae14c2fd7c345a4d979b85b1eff2538",
+  "effective_execution_authorizations": 0,
+  "execution_ready": false,
+  "explicit_launch_performed": false,
+  "failed_observation_logs_preserved": true,
+  "gate_test_attempts": 1,
+  "gate_test_failures": 0,
+  "gate_tests": {
+    "CPU_permission": "利用者承認未取得",
+    "additional_transpile": 0,
+    "command_argv": [
+      "/tmp/h4_cpu_launch_proposal.py",
+      "draft-tests"
+    ],
+    "errors": 0,
+    "failures": 0,
+    "guard_counts": {
+      "GPU": 0,
+      "molecular_access": 0,
+      "molecular_import": 0,
+      "other_job_changes": 0,
+      "production_launch_worker_taskset": 0,
+      "science_processing": 0,
+      "seed_generation": 0,
+      "shared_environment_changes": 0,
+      "transpile": 0
+    },
+    "mandatory_stop": true,
+    "metadata_only_simulated_approval_in_memory": true,
+    "observed_utc": "2026-10-06T07:07:09.434590+00:00",
+    "private_science_output_runner_worker_boundaries_mocked": true,
+    "production_launch_executed": false,
+    "protected_attempts": [],
+    "python_executable": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+    "python_version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "saved_review_approved": false,
+    "schema_version": "h4-cpu-launch-metadata-gate-tests-v1",
+    "series_transpile_cumulative": 28,
+    "skipped": 0,
+    "status": "PASS",
+    "taskset_executed": false,
+    "tests": 12,
+    "thread_environment": {
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "QISKIT_NUM_PROCS": "1",
+      "QISKIT_PARALLEL": "false",
+      "RAYON_NUM_THREADS": "1"
+    },
+    "wall_seconds": 0.3996987156569958
+  },
+  "independent_final_review_completed": false,
+  "launch_unresolved_conditions": [
+    "Explicit user CPU-use approval for this candidate",
+    "Independent final review and authorized review document update",
+    "User explicit launch instruction",
+    "Fresh online/cpuset/topology/load/context and memory/pressure/OOM checks",
+    "Existing admission under the six-CPU mask; 72GiB is required for six workers",
+    "Fresh fixed-filesystem capacity check and resolution of current below-full-output-cap space"
+  ],
+  "live_taskset_worker_affinity_inheritance_verified": false,
+  "mandatory_stop": true,
+  "metadata_tests_positive_review_in_memory_only": true,
+  "new_source_commit_created": false,
+  "observation_attempts": [
+    {
+      "attempt": 1,
+      "log": "cpu-observation-attempt-01.log",
+      "status": "FAIL_METADATA_PARENT_PATH_NOT_CREATED"
+    },
+    {
+      "attempt": 2,
+      "log": "cpu-observation-attempt-02.log",
+      "status": "FAIL_CONSERVATIVE_FULL_OUTPUT_CAP_SPACE_CHECK"
+    },
+    {
+      "attempt": 3,
+      "log": "cpu-observation-attempt-03.log",
+      "status": "READ_ONLY_OBSERVATION_SAVED_WITH_CAPACITY_UNRESOLVED"
+    }
+  ],
+  "old_bundle_scientific_evidence_main_worktree_modified": false,
+  "physical_core_count": 6,
+  "plan_SHA256": "8d4ee43c3d7d74ba30cbd495a4c49dd0798ca27d5935df9df97125f3c069a256",
+  "plan_fingerprint": "8514368280d33bd89aff09891bbb25204d5f6e41acc7adcd176b317c0e5d6a5d",
+  "plan_v2_bytes_identical": true,
+  "preparation_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/track-a-h4-geometry-input-generation-cpu-launch-proposal-20261006",
+  "production_JSON_extra_approval_fields_added": false,
+  "proposed_CPUs": [
+    3,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "recorded_JST": "2026-10-06T16:10:10.427137+09:00",
+  "remote_base_SHA_verified": "a1b0ba5e1ae14c2fd7c345a4d979b85b1eff2538",
+  "remote_proposal_publication_at_creation": "NOT_YET_ATTEMPTED",
+  "requested_workers": 6,
+  "resource_context_checks": {
+    "CPU_cpuset_usable_count": 128,
+    "OOM_events": {
+      "/sys/fs/cgroup/user.slice": 0,
+      "/sys/fs/cgroup/user.slice/user-30038.slice": 0,
+      "/sys/fs/cgroup/user.slice/user-30038.slice/session-92748.scope": 0
+    },
+    "all_nonroot_ancestors_read": true,
+    "effective_available_bytes": 1054293114880,
+    "filesystem_available_bytes": 3991597056,
+    "full_output_cap_capacity_ready": false,
+    "initial_namespace": "cgroup:[4026531835]",
+    "memory_observer": "SUCCEEDED_READ_ONLY",
+    "pressure_full_avg10": 0.0
+  },
+  "review_changed_fields": [
+    "authorization_digest"
+  ],
+  "review_digest": "f583dec002a674193e1605ca1af6f37e06ec67985ea02fd19049c902a949b684",
+  "saved_review_approved": false,
+  "schema_version": "h4-cpu-launch-proposal-audit-v1",
+  "science_SOURCE_COMMIT": "9ab38665920dfb5ac0a9d038233e1f3bf5d8fe5a",
+  "science_source_and_parent_hashes": {
+    "scripts/resource_applicability/audit_h4_geometry_source.py": "9f8afe9fdf31d724d5eb1ebf84593efea198579559d28e65c5a35bc073e92c26",
+    "scripts/resource_applicability/run_h4_geometry_input_generation.py": "3fef6304a66bdb1d8594456e79f0490f86d9172112359bf810c93b96c8aa4bb1",
+    "scripts/resource_applicability/run_h4_geometry_signal_compile.py": "6e9f5a5fcdb745281cb0128e12f3912bfc7ff4008f30c432f2df05dd4bc750a4",
+    "scripts/resource_applicability/run_h4_geometry_source_tests.py": "904a198967ed226eff35d418afbea9185577823c8935ca6244ddec6c94512237",
+    "src/trottertracks/__init__.py": "107d4f39888dc644314fc079d41ccdc56333ae46a72f3346a499d4dfc17a543f",
+    "src/trottertracks/resource_applicability/__init__.py": "b39349f5462f08c5dc1b4c8b89891444ff2d4be90e9f153edc146ae02ecedfcd",
+    "src/trottertracks/resource_applicability/h4_geometry/__init__.py": "febca5fbd46dd775bd8ba6d930b650eac1dc09e18811894dda5b4f98aa8b14fa",
+    "src/trottertracks/resource_applicability/h4_geometry/circuits.py": "1702b843cce65ae05b5ca0482a46e66cf39a6a8133af36a4ecd0f147821fec82",
+    "src/trottertracks/resource_applicability/h4_geometry/execution.py": "2349edfc30247f22f15363487b3e83595239936d456b8ce4f0ac781cbb94895a",
+    "src/trottertracks/resource_applicability/h4_geometry/gates.py": "1ce7a01c53db0e414104bdabfbf25ff7127b1475c773bfa73f28ed83b124f6e1",
+    "src/trottertracks/resource_applicability/h4_geometry/identity.py": "886d005d6db532d5249e013bc0f868871d474098ee4600a608bb0f60c233902f",
+    "src/trottertracks/resource_applicability/h4_geometry/inputs.py": "f7d722edafef14c2feeb6d04f267b3402370e550e78da278b15b3cab6b5309b9",
+    "src/trottertracks/resource_applicability/h4_geometry/ledger.py": "7846f89d0ef488cad3779ac1447349f710c938d8c3b4e5499ea31883dd1f3bfe",
+    "src/trottertracks/resource_applicability/h4_geometry/parallel.py": "7e7f4eaddd34819d78fc7eeecf6a552803643700eb9582ef88b9e5c820506a54",
+    "src/trottertracks/resource_applicability/h4_geometry/resources.py": "ac8eb909393c621825044dff4c6629f8954a1b5f92a18cda37fa1e433343fb17",
+    "src/trottertracks/resource_applicability/h4_geometry/review.py": "080329f8cfa7dde4798275d0ed665740ada72dd7f16f5a836ed9e6e7282329c5",
+    "src/trottertracks/resource_applicability/h4_geometry/signal.py": "04717292e8a6e5c100a4d27657e3580efba38cf5ec7d1a4962bbd75c3183dce3",
+    "src/trottertracks/resource_applicability/h4_geometry/workers.py": "9a49cbcb9557aff2179e31b4196f7f87c7eba52d28f086153957aca046d1aacc",
+    "tests/tracks/resource_applicability/test_h4_geometry_source.py": "55ccc1d5a6066c4569546a1590802237e069761c16471fbe74f869d66c393b22"
+  },
+  "science_source_paths_unchanged": 19,
+  "science_source_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/track-a-h4-geometry-resource-observer-fix-20261006",
+  "scientific_conditions_changed": false,
+  "source_audit_sha256": "40e3e811326715270a86e22a33dd4fe57f80e07a4f544a0a4449d20c5dde91da",
+  "source_series_transpile_cumulative": 28,
+  "status": "H4_INPUT_GENERATION_CPU_LAUNCH_PROPOSAL_FROZEN_AWAITING_APPROVAL",
+  "taskset_command_run": false,
+  "zero_counts": {
+    "GPU": 0,
+    "molecular_access": 0,
+    "molecular_import": 0,
+    "other_job_changes": 0,
+    "production_launch_worker_taskset": 0,
+    "science_processing": 0,
+    "seed_generation": 0,
+    "shared_environment_changes": 0,
+    "transpile": 0
+  }
+}
