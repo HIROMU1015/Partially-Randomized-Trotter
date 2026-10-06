@@ -1,11 +1,64 @@
 {
-  "status": "PENDING_SOURCE_REVIEW_AND_SEPARATE_AUTHORIZATION",
+  "schema": "track_b_sp1_source_bound_authorization_preparation_v1",
+  "status": "SOURCE_REVIEW_PASSED_AWAITING_EXPLICIT_EXECUTION_INSTRUCTION",
+  "source_review_decision": "PASS_FOR_SEPARATE_SP1_AUTHORIZATION",
+  "source_commit": "0d01ed9a332ebc5b66ed08acf56214a9b9c0236d",
+  "review_commit": "d0502f22039dc0b5de227ce4b7b5a229c55f1e74",
+  "source_commit_bound": true,
+  "contract_sha256": "f95931dbde2cfbba23c7585e851a26e3f3217d5820343f88b155b9a3a45093d1",
   "science_execution_authorized": false,
-  "source_commit": null,
+  "explicit_execution_instruction": null,
   "runs": 1,
   "retries": 0,
   "mandatory_STOP": true,
-  "explicit_execution_instruction": null,
-  "contract_sha256": "f95931dbde2cfbba23c7585e851a26e3f3217d5820343f88b155b9a3a45093d1",
-  "scope": "preparation only; final source review and separate explicit execution authorization required"
+  "next_stage_authorized": false,
+  "review_receipt": {
+    "path": "docs/tracks/algorithm_codesign/sp1_execution_authorization_receipt.md",
+    "sha256": "8354374fd05e3abb919b12776d8a5542305cedcbcf82c5052c34b81793ae13a2"
+  },
+  "review_boundary_quote": "これはSP-1の実行authorizationそのものではなく、source reviewを通過させ、別authorization-only childを作って一回実行してよい段階という意味です。",
+  "fixed_scope": {
+    "wrappers": 12,
+    "mask_rows": 48,
+    "axis_rows": 96,
+    "outer_paths": 16,
+    "templates": [
+      "A",
+      "B",
+      "C"
+    ],
+    "sizes": [
+      8,
+      16,
+      32,
+      64
+    ],
+    "masks": [
+      "NONE",
+      "D",
+      "R",
+      "DR"
+    ],
+    "catalogues": 1,
+    "new_synthesis_calls": 0,
+    "metric": "fusion-normalized additive synthesized-primitive T cost",
+    "caps": {
+      "wall_seconds": 1200,
+      "cpu_seconds": 900,
+      "RSS_MiB": 1024,
+      "virtual_address_MiB": 2048,
+      "output_bytes": 8388608,
+      "processes": 1,
+      "shot_cap_per_axis": 1000000000,
+      "retries": 0,
+      "watchdog_period_seconds": 0.1
+    }
+  },
+  "finalization_policy": "After an actual explicit execution instruction, create a separate execution branch/worktree from the SAME S. Commit authorization JSON and optional receipt only as direct child A of S. Preserve this preparation child P and review R; never launch from either or their grandchildren.",
+  "critical_source_identities_verified": 23,
+  "registered_resource_signal_evaluations_at_preparation": 0,
+  "new_synthesis_calls_at_preparation": 0,
+  "one_shot_marker_created": false,
+  "preparation_commit_is_execution_HEAD": false,
+  "full_test_suite_run": false
 }
