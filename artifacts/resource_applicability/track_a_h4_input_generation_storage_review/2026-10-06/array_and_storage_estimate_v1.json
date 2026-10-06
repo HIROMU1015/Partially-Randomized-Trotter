@@ -1,0 +1,470 @@
+{
+  "H_and_12_blocks_payload_bytes_per_input": 13631488,
+  "NPZ_bytes_ceiling_per_input_from_shapes": 13751872,
+  "NPZ_space_bound_uses_frame_ceiling": true,
+  "all_array_payload_bytes_ceiling_per_input": 13718848,
+  "array_count": 32,
+  "arrays": [
+    {
+      "NPZ_shape": [
+        4,
+        3
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "float64",
+      "elements": 12,
+      "itemsize_ceiling": 8,
+      "name": "coordinates",
+      "payload_bytes_ceiling": 96,
+      "source_basis": "generate_input: four coordinate triples"
+    },
+    {
+      "NPZ_shape": [
+        4,
+        4
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "float64 expected; complex128 ceiling",
+      "elements": 16,
+      "itemsize_ceiling": 16,
+      "name": "hAO",
+      "payload_bytes_ceiling": 256,
+      "source_basis": "generate_input: four AO hcore; conservative dtype ceiling"
+    },
+    {
+      "NPZ_shape": [
+        4,
+        4
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "float64 expected; complex128 ceiling",
+      "elements": 16,
+      "itemsize_ceiling": 16,
+      "name": "overlap",
+      "payload_bytes_ceiling": 256,
+      "source_basis": "generate_input: four AO overlap"
+    },
+    {
+      "NPZ_shape": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "float64 expected; complex128 ceiling",
+      "elements": 256,
+      "itemsize_ceiling": 16,
+      "name": "eriAO",
+      "payload_bytes_ceiling": 4096,
+      "source_basis": "generate_input: int2e four AO"
+    },
+    {
+      "NPZ_shape": [
+        4,
+        4
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "float64",
+      "elements": 16,
+      "itemsize_ceiling": 8,
+      "name": "MOs",
+      "payload_bytes_ceiling": 128,
+      "source_basis": "canonical_mos: explicit real 4x4"
+    },
+    {
+      "NPZ_shape": [
+        4
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "float64",
+      "elements": 4,
+      "itemsize_ceiling": 8,
+      "name": "MO_energies",
+      "payload_bytes_ceiling": 32,
+      "source_basis": "canonical_mos: four energies"
+    },
+    {
+      "NPZ_shape": [
+        4,
+        4
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "float64 expected; complex128 ceiling",
+      "elements": 16,
+      "itemsize_ceiling": 16,
+      "name": "hMO",
+      "payload_bytes_ceiling": 256,
+      "source_basis": "C.T @ hAO @ C"
+    },
+    {
+      "NPZ_shape": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "float64 expected; complex128 ceiling",
+      "elements": 256,
+      "itemsize_ceiling": 16,
+      "name": "eriMO",
+      "payload_bytes_ceiling": 4096,
+      "source_basis": "ao2mo.restore(1,...,4), transpose"
+    },
+    {
+      "NPZ_shape": [
+        8,
+        8
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "float64",
+      "elements": 64,
+      "itemsize_ceiling": 8,
+      "name": "hspin",
+      "payload_bytes_ceiling": 512,
+      "source_basis": "installed spinorb_from_spatial numpy.zeros"
+    },
+    {
+      "NPZ_shape": [
+        8,
+        8,
+        8,
+        8
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "float64",
+      "elements": 4096,
+      "itemsize_ceiling": 8,
+      "name": "twospin",
+      "payload_bytes_ceiling": 32768,
+      "source_basis": "installed spinorb_from_spatial numpy.zeros"
+    },
+    {
+      "NPZ_shape": [
+        8,
+        8
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "complex128",
+      "elements": 64,
+      "itemsize_ceiling": 16,
+      "name": "one",
+      "payload_bytes_ceiling": 1024,
+      "source_basis": "hspin plus complex one_body_correction"
+    },
+    {
+      "NPZ_shape": [],
+      "actual_array_generated": false,
+      "dtype_basis": "float64",
+      "elements": 1,
+      "itemsize_ceiling": 8,
+      "name": "nuclear",
+      "payload_bytes_ceiling": 8,
+      "source_basis": "np.asarray(float energy_nuc)"
+    },
+    {
+      "NPZ_shape": [
+        256,
+        256
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "complex128",
+      "elements": 65536,
+      "itemsize_ceiling": 16,
+      "name": "H",
+      "payload_bytes_ceiling": 1048576,
+      "source_basis": "one_body_operator/summed blocks, ground_state dimension gate"
+    },
+    {
+      "NPZ_shape": [
+        12,
+        256,
+        256
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "complex128",
+      "elements": 786432,
+      "itemsize_ceiling": 16,
+      "name": "blocks",
+      "payload_bytes_ceiling": 12582912,
+      "source_basis": "returned DF count12; eight-spin operators"
+    },
+    {
+      "NPZ_shape": [
+        12
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "float64",
+      "elements": 12,
+      "itemsize_ceiling": 8,
+      "name": "lambdas",
+      "payload_bytes_ceiling": 96,
+      "source_basis": "factorize eigh real eigenvalues, first12"
+    },
+    {
+      "NPZ_shape": [
+        12,
+        8,
+        8
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "float64",
+      "elements": 768,
+      "itemsize_ceiling": 8,
+      "name": "G",
+      "payload_bytes_ceiling": 6144,
+      "source_basis": "factorize canonical_squares.real, first12"
+    },
+    {
+      "NPZ_shape": [
+        8,
+        8
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "complex128",
+      "elements": 64,
+      "itemsize_ceiling": 16,
+      "name": "correction",
+      "payload_bytes_ceiling": 1024,
+      "source_basis": "installed low_rank: zeros(...,complex)"
+    },
+    {
+      "NPZ_shape": [
+        16
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "float64",
+      "elements": 16,
+      "itemsize_ceiling": 8,
+      "name": "raw_eigenvalues",
+      "payload_bytes_ceiling": 128,
+      "source_basis": "full interaction eigh16"
+    },
+    {
+      "NPZ_shape": [
+        16,
+        16
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "float64 expected; complex128 ceiling",
+      "elements": 256,
+      "itemsize_ceiling": 16,
+      "name": "raw_eigenvectors",
+      "payload_bytes_ceiling": 4096,
+      "source_basis": "full eigh16; conservative ceiling"
+    },
+    {
+      "NPZ_shape": [
+        16,
+        16
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "float64",
+      "elements": 256,
+      "itemsize_ceiling": 8,
+      "name": "canonical_eigenvectors",
+      "payload_bytes_ceiling": 2048,
+      "source_basis": "vectors.real times real signs"
+    },
+    {
+      "NPZ_shape": [
+        16
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "int64",
+      "elements": 16,
+      "itemsize_ceiling": 8,
+      "name": "permutation",
+      "payload_bytes_ceiling": 128,
+      "source_basis": "64bit pinned numpy argsort"
+    },
+    {
+      "NPZ_shape": [
+        12
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "int64",
+      "elements": 12,
+      "itemsize_ceiling": 8,
+      "name": "raw_indices",
+      "payload_bytes_ceiling": 96,
+      "source_basis": "permutation first12"
+    },
+    {
+      "NPZ_shape": [
+        16
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "float64",
+      "elements": 16,
+      "itemsize_ceiling": 8,
+      "name": "signs",
+      "payload_bytes_ceiling": 128,
+      "source_basis": "np.ones(16)"
+    },
+    {
+      "NPZ_shape": [
+        16
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "float64",
+      "elements": 16,
+      "itemsize_ceiling": 8,
+      "name": "weights",
+      "payload_bytes_ceiling": 128,
+      "source_basis": "abs(real eigenvalues), squared real norms"
+    },
+    {
+      "NPZ_shape": [],
+      "actual_array_generated": false,
+      "dtype_basis": "float64",
+      "elements": 1,
+      "itemsize_ceiling": 8,
+      "name": "truncation_value",
+      "payload_bytes_ceiling": 8,
+      "source_basis": "real weight cumsum difference"
+    },
+    {
+      "NPZ_shape": [
+        36
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "int64",
+      "elements": 36,
+      "itemsize_ceiling": 8,
+      "name": "sector",
+      "payload_bytes_ceiling": 288,
+      "source_basis": "explicit np.int64 sector_indices"
+    },
+    {
+      "NPZ_shape": [
+        36,
+        36
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "complex128",
+      "elements": 1296,
+      "itemsize_ceiling": 16,
+      "name": "sector_H",
+      "payload_bytes_ceiling": 20736,
+      "source_basis": "H sector selection after dtype=np.complex128"
+    },
+    {
+      "NPZ_shape": [
+        36
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "complex128",
+      "elements": 36,
+      "itemsize_ceiling": 16,
+      "name": "sector_state",
+      "payload_bytes_ceiling": 576,
+      "source_basis": "explicit astype(np.complex128)"
+    },
+    {
+      "NPZ_shape": [
+        256
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "complex128",
+      "elements": 256,
+      "itemsize_ceiling": 16,
+      "name": "state",
+      "payload_bytes_ceiling": 4096,
+      "source_basis": "explicit np.zeros(256,dtype=np.complex128)"
+    },
+    {
+      "NPZ_shape": [
+        256
+      ],
+      "actual_array_generated": false,
+      "dtype_basis": "complex128",
+      "elements": 256,
+      "itemsize_ceiling": 16,
+      "name": "qiskit_state",
+      "payload_bytes_ceiling": 4096,
+      "source_basis": "permutation of full state"
+    },
+    {
+      "NPZ_shape": [],
+      "actual_array_generated": false,
+      "dtype_basis": "float64",
+      "elements": 1,
+      "itemsize_ceiling": 8,
+      "name": "energy",
+      "payload_bytes_ceiling": 8,
+      "source_basis": "np.asarray(real Rayleigh)"
+    },
+    {
+      "NPZ_shape": [],
+      "actual_array_generated": false,
+      "dtype_basis": "float64",
+      "elements": 1,
+      "itemsize_ceiling": 8,
+      "name": "gap",
+      "payload_bytes_ceiling": 8,
+      "source_basis": "np.asarray(real eigenvalue gap)"
+    }
+  ],
+  "budget_journal_record_bytes_source": 128,
+  "campaign_cap_not_a_full_free_space_start_requirement": true,
+  "components_bytes": {
+    "all_72h_monitor_JSON_blocks": 1061691392,
+    "ancestor_directory_initial_blocks": 12288,
+    "append_only_byte_budget_journal": 33181696,
+    "conservative_inode_metadata_one_block_per_new_inode": 1061793792,
+    "directory_entries_and_index_allowance_256_bytes_each": 66363392,
+    "filesystem_extent_journal_misc_margin": 67108864,
+    "generation_freeze_JSON_temp_final_allowance": 262144,
+    "six_input_NPZ_IPC64MiB_ceiling_plus_full_temp_final_double_allowance": 805306368,
+    "six_input_NPZ_shape_dtype_bound_final_bytes": 82526208,
+    "six_worker_text_logs_temp_final_allowance": 98304
+  },
+  "directory_metadata_allowance": "256 bytes per final/temporary directory entry plus directory blocks and 64MiB miscellaneous metadata margin; assumption, not measured production footprint.",
+  "generation_freeze_JSON_allowance": 131072,
+  "inode_metadata_allowance": "4096 bytes per new inode is conservative planning overhead; ext4 inode tables are normally already allocated. Actual inode size was not measured and is not assumed to be 256.",
+  "installed_serialization_static_hashes": {
+    "/home/AbeHiromu/venvs/trotter-common/lib/python3.12/site-packages/numpy/lib/format.py": "4fca893321b60c35638d834da54bc181f03db42a36dc84b4c3d6f2441eadc304",
+    "/home/AbeHiromu/venvs/trotter-common/lib/python3.12/site-packages/numpy/lib/npyio.py": "3548ed16f0263dd4e3c0943e89afb16c2afce3d33f33a36294fe481df90a6918",
+    "/home/AbeHiromu/venvs/trotter-common/lib/python3.12/site-packages/openfermion/chem/molecular_data.py": "f6489483082534354131466f92c43eb726a39082bc514977475d36ddb7e57e38",
+    "/home/AbeHiromu/venvs/trotter-common/lib/python3.12/site-packages/openfermion/circuits/low_rank.py": "de74fb802550417788362845515ed9e56a180e4ff85ab21ab43ba8445156dbbe"
+  },
+  "journal_bytes_ceiling": 33179520,
+  "max_publications": 259215,
+  "max_wall_records_with_two_boundary_allowance": 259202,
+  "max_worker_log_files": 6,
+  "maximum_wall_seconds": 259200,
+  "monitor_record_bytes_allowance": 128,
+  "monitor_wait_seconds_source": 1,
+  "monitoring_72h_executed": false,
+  "new_inode_count_bound": 259227,
+  "physical_planning_bound_bytes": 3095818240,
+  "required_available_bytes_rounded": 3221225472,
+  "required_available_inodes_rounded": 260000,
+  "runtime_generation_response_frame_ceiling": 67108864,
+  "schema_version": "h4-generation-stage-storage-estimate-v1",
+  "science_SOURCE_COMMIT": "9ab38665920dfb5ac0a9d038233e1f3bf5d8fe5a",
+  "science_checkout_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/track-a-h4-geometry-resource-observer-fix-20261006",
+  "scientific_arrays_NPZ_NPY_generated": 0,
+  "scope": "SIX_INPUTS_GENERATE_FREEZE_STOP_ONLY",
+  "scope_beyond_generation_approved": false,
+  "serialization": "np.savez ZIP_STORED; 32 NPY members; ZIP64 local headers; no external scientific file generated",
+  "serialization_allowance": {
+    "archive_tail_bytes": 256,
+    "assumption_not_measured_file": true,
+    "per_NPY_and_ZIP_member_bytes": 1024
+  },
+  "shape_bound_component_excluded_from_sum_as_replaced_by_IPC_bound": true,
+  "source_budget_cumulative_charge_ceiling": 905202048,
+  "source_campaign_output_cap": 10737418240,
+  "source_hashes_used": {
+    "execution.py": "2349edfc30247f22f15363487b3e83595239936d456b8ce4f0ac781cbb94895a",
+    "inputs.py": "f7d722edafef14c2feeb6d04f267b3402370e550e78da278b15b3cab6b5309b9",
+    "ledger.py": "7846f89d0ef488cad3779ac1447349f710c938d8c3b4e5499ea31883dd1f3bfe",
+    "resources.py": "ac8eb909393c621825044dff4c6629f8954a1b5f92a18cda37fa1e433343fb17",
+    "workers.py": "9a49cbcb9557aff2179e31b4196f7f87c7eba52d28f086153957aca046d1aacc"
+  },
+  "temporary_final_source_relation": "os.link(.pending,final) aliases same inode; no second data copy in actual write. Capacity estimate nevertheless double-charges all six full 64MiB input files and ancillary large outputs conservatively.",
+  "worker_log_bytes_source_cap": 8192
+}

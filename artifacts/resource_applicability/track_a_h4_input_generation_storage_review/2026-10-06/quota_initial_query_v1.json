@@ -1,0 +1,41 @@
+{
+  "fd_existing_parent": "/home/AbeHiromu/projects/partially-randomized-trotter/artifacts",
+  "fixed_output_accessed_created": false,
+  "group_ids": [
+    30038
+  ],
+  "observed_utc": "2026-10-06T07:45:11.250564+00:00",
+  "queries": [
+    {
+      "data": null,
+      "errno": 3,
+      "error": "No such process",
+      "id": 30038,
+      "query": "Q_GETQUOTA",
+      "return": -1,
+      "type": "user"
+    },
+    {
+      "data": null,
+      "errno": 3,
+      "error": "No such process",
+      "id": 30038,
+      "query": "Q_GETQUOTA",
+      "return": -1,
+      "type": "group"
+    },
+    {
+      "data": null,
+      "errno": 1,
+      "error": "Operation not permitted",
+      "id": 0,
+      "query": "Q_GETQUOTA",
+      "return": -1,
+      "type": "project"
+    }
+  ],
+  "query": "quotactl_fd READ_ONLY Q_GETQUOTA only",
+  "quota_settings_changed": false,
+  "syscall_number_from_installed_header": 443,
+  "user_id": 30038
+}
