@@ -1,12 +1,61 @@
 {
-  "status": "PENDING_R1_SOURCE_REVIEW_AND_SEPARATE_ONE_SHOT_AUTHORIZATION",
-  "science_execution_authorized": false,
-  "source_commit": null,
+  "status": "APPROVED_FOR_ONE_R1_RUN",
+  "science_execution_authorized": true,
+  "source_commit": "d43d64a821a0249a0dfab12a2472bd3a72fdee74",
   "contract_sha256": "e8a4201203dc8d2fbb35c7f3025079d7f0f1dce270be55afd1b17f2505717025",
   "runs": 1,
   "retries": 0,
   "mandatory_STOP": true,
-  "explicit_execution_instruction": null,
-  "current_user_instruction_scope": "preparation only, not execution",
-  "review_instruction_snapshot_sha256": "9b0db060c0508334e61ea395dbe90e156b8377fafec9eaf3b3d8029f73ebd406"
+  "explicit_execution_instruction": "source `d43d64a821a0249a0dfab12a2472bd3a72fdee74` の固定契約でR1を一回だけ実行し、終了後はmandatory STOPしてください。",
+  "current_user_instruction_scope": "one R1 run under the fixed source contract, then mandatory STOP; no additional science",
+  "review_instruction_snapshot_sha256": "9b0db060c0508334e61ea395dbe90e156b8377fafec9eaf3b3d8029f73ebd406",
+  "review_instruction_snapshot_role": "prior R1 preparation instruction at source S, not the newly received source review",
+  "source_review": {
+    "status": "PASS_FOR_SEPARATE_R1_AUTHORIZATION",
+    "received_date_JST": "2026-10-06",
+    "basis": "GPT review returned by the user in this conversation",
+    "reviewed_source_commit": "d43d64a821a0249a0dfab12a2472bd3a72fdee74",
+    "blocking_source_revision_required": false,
+    "receipt_path": "docs/tracks/algorithm_codesign/r1_execution_authorization_receipt.md",
+    "distinct_basis_scope": "registered native-implementation mechanism test without Pauli reduction; no practical I0-only access or DF-scale classical acquisition advantage claim",
+    "primary_interpretation": "normalization versus native controlled event cost, descriptive resource vector and trade-offs; no B-squared-only GO or automatic method adoption",
+    "research_decision_owner_after_run": "GPT"
+  },
+  "preparation_record": {
+    "branch": "track-b-r1-authorization-preparation-20261006",
+    "worktree": "/home/abe/Project/prt-worktrees/track-b-r1-authorization-preparation-20261006",
+    "role": "review/preparation record P, not executable authorization A",
+    "parent_commit": "d43d64a821a0249a0dfab12a2472bd3a72fdee74",
+    "future_authorization_rule": "after explicit instruction, create a separate execution branch from S and a direct authorization-only child A; do not execute from P or append A to P",
+    "source_manifest_sha256": "797b1fb0e31ae1c3b264303899e7f3a6a1e21613e3b76cc1717f4b40cc5783a9",
+    "reviewed_critical_hashes_verified": 26,
+    "protected_prior_evidence_hashes_verified": 66,
+    "existing_local_focused_tests_passed": 27,
+    "new_focused_test_invocations": 0,
+    "registered_R1_run_invocations": 0,
+    "registered_R1_synthesis_calls": 0,
+    "registered_R1_resource_or_signal_evaluations": 0,
+    "result_directory_or_one_shot_marker_created": false,
+    "contract_source_tool_and_prior_evidence_changed": false,
+    "additional_science_authorized": false
+  },
+  "execution_authorization_record": {
+    "date_JST": "2026-10-06",
+    "recorded_at_UTC": "2026-10-06T08:25:58.528830+00:00",
+    "branch": "track-b-r1-one-shot-execution-20261006",
+    "worktree": "/home/abe/Project/prt-worktrees/track-b-r1-one-shot-execution-20261006",
+    "direct_parent_source_commit": "d43d64a821a0249a0dfab12a2472bd3a72fdee74",
+    "preparation_reference_commit": "09fe527274e8de5c0d808ada5890fa06a59f78ea",
+    "copied_paths_only": [
+      "artifacts/track_b_rte_reallocation_r1_source/2026-10-06/authorization.json",
+      "docs/tracks/algorithm_codesign/r1_execution_authorization_receipt.md"
+    ],
+    "preparation_authorization_sha256": "61e1a7f1890515e53360df2bec46faa60bededef53c3a0fc655111aee5f11c26",
+    "preparation_receipt_sha256": "a1cfd41ea4416eaf0617ad0a6027900fe60905aa6e3db56f21b44082179a8656",
+    "explicit_execution_instruction_sha256": "5b1767414fc6181984bdd95a01ca0e3da5640ee2e121ef95b0e12838cc4d7f6c",
+    "authorization_basis": "separate user-provided explicit one-shot instruction following source-review PASS",
+    "retries_after_partial_failure_timeout_or_guard_failure": 0,
+    "next_stage_authorized": false,
+    "research_decision_owner_after_run": "GPT"
+  }
 }
