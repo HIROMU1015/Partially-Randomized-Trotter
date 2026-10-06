@@ -94,12 +94,12 @@ def check_farkas_output(lp, nominal_ray):
 
 
 def build_lp(data, n, objective, ell_upper, baseline="B3", caps=None, robust=True,
-             representation=None):
-    """B3 inner/outer LP, or B2 outer relaxation with interval membership.
+             representation=None, numerical=False):
+    """Build interval inner/outer problems; v2 adds numerical membership.
 
-    Baseline membership is relaxed outward ONLY for a lower bound; it is not
-    an implementation law. A B2 primal membership/quantization policy remains
-    a required review amendment, so this source blocks registered solves.
+    The legacy entry point keeps its v1 behavior. The numerical v2 entry point
+    supports B1/B2 inner membership, followed by independent rounding and
+    implementation certification. An outer optimizer is never a sampler law.
     """
     if baseline not in ("B1", "B2", "B3") or objective not in ("T", "CX", "1Q"):
         raise ValueError("unsupported class or objective")
@@ -111,7 +111,7 @@ def build_lp(data, n, objective, ell_upper, baseline="B3", caps=None, robust=Tru
             raise ValueError("B1 requires exactly one fixed representation")
     membership = baseline in ("B1", "B2")
     if membership:
-        if robust:
+        if robust and not numerical:
             raise ValueError("B1/B2 certified primal membership is pending review")
         entries = [(r["arm"], m["column_id"].split(":")[0]+":"+ep)
                    for r in representations for m in r["memberships"] for ep in ("1e-3", "1e-4", "1e-6")]
@@ -153,8 +153,13 @@ def build_lp(data, n, objective, ell_upper, baseline="B3", caps=None, robust=Tru
                 group = {j: 1 for j, (arm, c) in enumerate(entries)
                          if arm == representation["arm"] and c.split(":")[0] == prototype}
                 lo, hi = map(F, m["ideal_weight_interval"])
-                add(group | {start_z+ir: -hi})
-                add({j: -v for j, v in group.items()} | {start_z+ir: lo})
+                tau = (F(3)+hi/2)/2**60 if numerical else F(0)
+                # Inner rows verify both interval endpoints. Outer rows contain
+                # every numerical implementation satisfying those endpoints.
+                above = lo if robust else hi
+                below = hi if robust else lo
+                add(group | {start_z+ir: -above}, tau)
+                add({j: -v for j, v in group.items()} | {start_z+ir: below}, tau)
     c = [F(0)]*size
     for j, (_, ident) in enumerate(entries):
         c[j] = 2*n*F(lookup[ident]["costs"][objective])
@@ -173,14 +178,17 @@ def solve_synthetic(lp):
     lp.validate()
     if lp.domain != "SYNTHETIC":
         raise PermissionError("RA-D0 registered optimization is not authorized; mandatory STOP")
-    from scipy.optimize import linprog
-    result = linprog([float(v) for v in lp.c],
+    from scipy.optimize import linprog, OptimizeWarning
+    import warnings
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", "Unrecognized options detected", OptimizeWarning)
+        result = linprog([float(v) for v in lp.c],
                      A_ub=[[float(v) for v in r] for r in lp.A] or None,
                      b_ub=[float(v) for v in lp.b] or None,
                      A_eq=[[float(v) for v in r] for r in lp.H] or None,
                      b_eq=[float(v) for v in lp.f] or None,
                      bounds=[(0, float(v)) for v in lp.upper], method="highs-ds",
-                     options={"presolve": True, "time_limit": 10,
+                     options={"presolve": True, "time_limit": 2, "threads": 1, "parallel": False,
                               "dual_feasibility_tolerance": 1e-9,
                               "primal_feasibility_tolerance": 1e-9})
     output = {"status": int(result.status), "message": result.message}

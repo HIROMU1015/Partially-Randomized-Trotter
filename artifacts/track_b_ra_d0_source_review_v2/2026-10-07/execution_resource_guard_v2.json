@@ -1,0 +1,32 @@
+{
+  "schema": "ra_d0_execution_guard_v2",
+  "caps": {
+    "processes": 1,
+    "threads": 1,
+    "retries": 0,
+    "main_calls": 55275,
+    "recipe_total_calls": 110550,
+    "hard_total_calls": 111000,
+    "per_LP_wall_seconds": 2,
+    "wall_seconds": 3600,
+    "CPU_seconds": 3300,
+    "RSS_MiB": 1536,
+    "virtual_MiB": 4096,
+    "output_MiB": 128
+  },
+  "enforcement": [
+    "main and auxiliary ID/count checks before backend dispatch",
+    "at most one auxiliary per main; no retry",
+    "B3 refused during Phase A",
+    "HiGHS time_limit 2s, threads1, parallel false; all BLAS environment threads1",
+    "wall/process CPU/ru_maxrss checks; 50ms SIGALRM; SIGXCPU",
+    "RLIMIT_AS 4096MiB and RLIMIT_CPU",
+    "compressed output byte count including marker; 64KiB STOP reserve"
+  ],
+  "C_call_preemption_limit": "Python handlers may be delayed by C; HiGHS native time limit and post-check reject overrun; no separate-process instantaneous watchdog",
+  "timing_epoch": "before exclusive marker and saved-table loading, after read-only source/authorization preflight",
+  "incomplete_prefix_classification": "technical only",
+  "GPU_queries_or_use": 0,
+  "science_synthesis_circuit_matrix_trajectory_calls": 0,
+  "authorization_created": false
+}

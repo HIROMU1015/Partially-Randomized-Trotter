@@ -1,3 +1,10 @@
+> 2026-10-07 Track B RA-D0 v2：**READY_FOR_SEPARATE_RA_D0_ONE_SHOT_REVIEW**。
+> [source review](ra_d0_source_review_v2_20261007.md) / [GPT handoff](ra_d0_gpt_handoff_20261007.md) / [evidence manifest](../../../artifacts/track_b_ra_d0_source_review_v2/2026-10-07/evidence_manifest_v2.json)。
+> [future runner](../../../scripts/tracks/algorithm_codesign/run_ra_d0_one_shot.py) / [focused verifier](../../../scripts/tracks/algorithm_codesign/verify_ra_d0_source_review_v2.py) / [v2 tests](../../../tests/tracks/algorithm_codesign/test_ra_d0_source_review_v2.py)。
+> B0_saved/ideal分離、数値B1⊂B2⊂B3、profile-paired budget、batch freeze-before-B3、
+> anchor-first、main LP 55,275 / auxiliary込み110,550、resource/launch guardを固定。
+> 登録最適化・実budget/minimum/witness取得0、authorizationなし。旧本文・旧STOP・Track Aは保持。mandatory STOP。
+
 ## Track B RA-D0 static preparation / mandatory STOP（2026-10-06）
 
 [source review](ra_d0_source_preparation_review_v1.md)：21 columns/x、18 sign pairs一致、35 focused tests PASS。
