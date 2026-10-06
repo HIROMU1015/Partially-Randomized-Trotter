@@ -737,3 +737,8 @@ science source/runnerの追加ではなく、旧公開draft・source・科学結
 ## H4 新サーバー引継ぎ（2026-10-07）
 
 [引継ぎ資料入口](docs/research/track_a_h4_new_server_handoff_20261007.md)に、固定sourceの取得手順、run05監視STOP、累積予算、入力・証拠の別転送、新hostの未承認事項をまとめた。今回の追加は軽量資料のみ。本計算・入力再生成・GPU・共有環境変更を開始しない。
+
+
+## 2026-10-07 H4新host source取得・環境解決案
+
+[H4新host source取得・環境解決案](docs/research/track_a_h4_new_server_preparation_20261007.md)。指定commit/source19照合済み、環境18 version/45 RECORD差の解決案でSTOP。source修正・新tests・production未実施、入力/停止証拠別送待ち、allowed_cpus=[]/approved=false。旧科学結果・原稿・Track Bは保持。

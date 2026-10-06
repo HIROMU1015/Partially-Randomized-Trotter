@@ -1,0 +1,121 @@
+{
+  "status": "H4_NEW_HOST_SOURCE_RECEIVED_ENVIRONMENT_DECISION_REQUIRED_STOP",
+  "observed_utc": "2026-10-06T18:12:11.029159+00:00",
+  "approved": false,
+  "selected_python": null,
+  "version_differences": [
+    {
+      "name": "certifi",
+      "expected_version": "2026.4.22",
+      "observed_version": "2026.7.22"
+    },
+    {
+      "name": "charset-normalizer",
+      "expected_version": "3.4.7",
+      "observed_version": "3.5.1"
+    },
+    {
+      "name": "fonttools",
+      "expected_version": "4.62.1",
+      "observed_version": "4.64.0"
+    },
+    {
+      "name": "idna",
+      "expected_version": "3.13",
+      "observed_version": "3.19"
+    },
+    {
+      "name": "kiwisolver",
+      "expected_version": "1.5.0",
+      "observed_version": "1.5.1"
+    },
+    {
+      "name": "packaging",
+      "expected_version": "26.1",
+      "observed_version": "26.3"
+    },
+    {
+      "name": "pillow",
+      "expected_version": "12.2.0",
+      "observed_version": "12.3.0"
+    },
+    {
+      "name": "pygments",
+      "expected_version": "2.20.0",
+      "observed_version": "2.21.0"
+    },
+    {
+      "name": "pytest",
+      "expected_version": "9.0.3",
+      "observed_version": "9.1.1"
+    },
+    {
+      "name": "pytz",
+      "expected_version": "2026.1.post1",
+      "observed_version": "2026.3.post1"
+    },
+    {
+      "name": "requests",
+      "expected_version": "2.33.1",
+      "observed_version": "2.34.2"
+    },
+    {
+      "name": "rustworkx",
+      "expected_version": "0.17.1",
+      "observed_version": "0.18.1"
+    },
+    {
+      "name": "setuptools",
+      "expected_version": "82.0.1",
+      "observed_version": "84.0.0"
+    },
+    {
+      "name": "stevedore",
+      "expected_version": "5.7.0",
+      "observed_version": "5.9.1"
+    },
+    {
+      "name": "tqdm",
+      "expected_version": "4.67.3",
+      "observed_version": "4.70.0"
+    },
+    {
+      "name": "typing-extensions",
+      "expected_version": "4.15.0",
+      "observed_version": "4.16.0"
+    },
+    {
+      "name": "tzdata",
+      "expected_version": "2026.2",
+      "observed_version": "2026.3"
+    },
+    {
+      "name": "urllib3",
+      "expected_version": "2.6.3",
+      "observed_version": "2.7.0"
+    }
+  ],
+  "record_hash_differences": 45,
+  "installed_source_matches": 11,
+  "old_environment_fingerprint": "7d397d409aa05efac027463b671cfe5608f554e09e464fa1e87eed1965b41cd1",
+  "new_environment_fingerprint": null,
+  "options": [
+    {
+      "id": "reuse_existing_private_environment",
+      "candidate_python": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+      "mutations_to_existing_environment": false,
+      "proposal": "Use the existing private environment read-only for bounded artificial tests; explicitly freeze its new dependency/compiler/environment profile and paths. Do not claim equivalence to the old profile. Production acceptance remains a separate review.",
+      "requires": "Decision to accept the observed environment differences; new profile/source/plan binding and synthetic equivalence evidence."
+    },
+    {
+      "id": "dedicated_h4_private_environment",
+      "proposed_prefix": "/home/AbeHiromu/venvs/h4-monitor-preparation-20261007",
+      "created": false,
+      "package_installs_performed": false,
+      "proposal": "Prepare a separate H4 environment from the 45 pinned versions; verify availability/package artifacts, RECORD and installed sources before selecting it. Matching versions alone is insufficient.",
+      "requires": "Explicit change to the current no-install/upgrade scope, limited to this new private environment; no system/shared-venv changes."
+    }
+  ],
+  "stop_instruction": "Differences must be saved machine-readably; select an existing private environment or present a resolution proposal and STOP.",
+  "instruction_entry": "docs/research/handoffs/h4-new-server-20261007/NEW_SERVER_CODEX_INSTRUCTIONS.md"
+}

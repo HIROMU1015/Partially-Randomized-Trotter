@@ -35,3 +35,8 @@ charge165214360 bytes、次attemptへの保守的wall carry5466.188392877579 s�
 行列parameter serializationを含む監視干渉が未解決で、[新サーバー引継ぎ](track_a_h4_new_server_handoff_20261007.md)へ進む。
 今回source19・plan・auth/review・旧保存証拠を変えず、資料だけを公開候補に追加した。
 新hostではCPU使用・最終review・明示launchを別途確認するまで、本計算前STOP。
+
+
+## 2026-10-07 新host取得・監査の追記
+
+[新host取得・環境解決案](track_a_h4_new_server_preparation_20261007.md)で指定source19の不変性と11 installed source一致を確認。45 dependenciesの18 version/45 RECORD差を保存し解決案でSTOP。新host source修正・tests・production未実施、入力/停止証拠は別送待ち。旧run05監視STOP・完成compile0/signal0、20 invocations/165214360 bytes/5466.188392877579 s carryを維持する。
