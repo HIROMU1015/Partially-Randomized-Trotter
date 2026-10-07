@@ -81,6 +81,23 @@ class OwnedIdentity:
         signal.pidfd_send_signal(self.fd, sig)
         return True
 
+    def terminate_after_parent_exit(self, parent_owner):
+        """A registered worker remains owned after kernel reparenting.
+
+        Relax only parent equality, only with the original parent's stable
+        pidfd proving exit. PID/starttime/UID and the child's pidfd still match.
+        """
+        if (parent_owner.fd is None or self.expected['parent'] != parent_owner.expected['pid'] or
+                not select.select([parent_owner.fd], [], [], 0)[0]):
+            return self.terminate()
+        try:
+            require(self.fd is not None and not select.select([self.fd], [], [], 0)[0], 'owned process exited')
+            current = self.sampler(self.expected['pid'])
+            require(all(current[k] == self.expected[k] for k in ('pid','start','uid')), 'orphan ownership lost')
+        except (Stop, OSError, KeyError):return False
+        signal.pidfd_send_signal(self.fd, signal.SIGTERM)
+        return True
+
     def close(self):
         if self.fd is not None:
             os.close(self.fd)
@@ -247,7 +264,7 @@ def observer_main(sock_fd, trace_fd):
         try:
             trace.write({'kind': 'first_stop', 'first_failure': failure}, terminal=True)
         finally:
-            for owner in workers.values(): owner.terminate()
+            for owner in workers.values(): owner.terminate_after_parent_exit(driver)
             if not synthetic: driver.terminate()
     finally:
         for owner in workers.values(): owner.close()

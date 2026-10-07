@@ -214,6 +214,33 @@ class PolicyTests(unittest.TestCase):
         with patch.object(obs.select,'select',return_value=([],[],[])),patch.object(obs.signal,'pidfd_send_signal') as kill:
             self.assertTrue(owner.terminate());kill.assert_called_once_with(100,signal.SIGTERM)
 
+    def test_twelve_owned_orphans_stop_only_after_original_parent_exit(self):
+        driver=obs.OwnedIdentity.__new__(obs.OwnedIdentity)
+        driver.fd=900;driver.expected=obs.identity(sample(500))
+        owners=[]
+        for pid in range(501,513):
+            owner=obs.OwnedIdentity.__new__(obs.OwnedIdentity)
+            owner.fd=pid;owner.expected=obs.identity({**sample(pid),'parent':500})
+            owner.sampler=lambda _,p=pid:{**sample(p),'parent':1};owners.append(owner)
+        def exited(read,*_):return (read if read==[900] else [],[],[])
+        with patch.object(obs.select,'select',side_effect=exited),patch.object(obs.signal,'pidfd_send_signal') as kill:
+            for owner in owners:self.assertTrue(owner.terminate_after_parent_exit(driver))
+            self.assertEqual(kill.call_count,12)
+        with patch.object(obs.select,'select',return_value=([],[],[])),patch.object(obs.signal,'pidfd_send_signal') as kill:
+            for owner in owners:self.assertFalse(owner.terminate_after_parent_exit(driver))
+            kill.assert_not_called()
+
+    def test_orphan_reuse_or_foreign_uid_still_never_signalled(self):
+        driver=obs.OwnedIdentity.__new__(obs.OwnedIdentity)
+        driver.fd=900;driver.expected=obs.identity(sample(500))
+        owner=obs.OwnedIdentity.__new__(obs.OwnedIdentity)
+        owner.fd=501;owner.expected=obs.identity({**sample(501),'parent':500})
+        def exited(read,*_):return (read if read==[900] else [],[],[])
+        for change in ({'uid':os.getuid()+1},{'start':'reused'},{'pid':999}):
+            owner.sampler=lambda _,c=change:{**sample(501),'parent':1,**c}
+            with patch.object(obs.select,'select',side_effect=exited),patch.object(obs.signal,'pidfd_send_signal') as kill:
+                self.assertFalse(owner.terminate_after_parent_exit(driver));kill.assert_not_called()
+
     def test_failure_durable_before_own_stop_and_no_foreign_stop(self):
         # Runtime child setup is mocked; no production process is spawned.
         events=[]
