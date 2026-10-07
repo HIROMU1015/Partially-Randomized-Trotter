@@ -76,3 +76,11 @@ carry20 actual invocations/165214360 bytes/5466.188392877579 s、残74764。
 今回production・入力生成・GPU query/use・taskset・共有環境/他job変更・install/upgradeは全て0。報告後STOP。
 科学scopeはH4 linear neutral singlet/STO-3G/DF12、8system+ancilla1、6固定距離、T0.8、218templates、32paired、1308signals/74784logical wrappersを維持。
 new source/environment結合でseedが変わる場合を隠さず、old partial/random結果と混ぜない。
+
+
+## 2026-10-07 H4新host A案 source/人工検証固定・本計算未認可
+
+[監視修正・32人工tests](track_a_h4_new_server_monitor_fix_a_20261007.md)。既存private venv不変で準備用A案採用。
+旧source19は3変更/16不変、新module込み25 closure。256×256人工matrix＋9-qubitの旧/new byte/digest一致、独立observerのGIL/GC観測・I/O delay/EOF/所有・資源境界を検証。
+SOURCE `b2a5ad89e8b39d72716f7ddb17d263bd0cdedb45`、production/追加transpile0、旧28/64・benchmark128保持。環境18 version差、旧45 raw-reference RECORD差保持・normalized22差を明記。入力6/freeze/runtime/control未受領。
+observer AS256MiB/RSS64MiB/admission120.25GiB、容量5.5625GiB案は未承認。allowed_cpus=[]/approved=false/runtime_authorization=false/launch=null、STOP。科学成果/原稿/Track Bと旧資料を保持。

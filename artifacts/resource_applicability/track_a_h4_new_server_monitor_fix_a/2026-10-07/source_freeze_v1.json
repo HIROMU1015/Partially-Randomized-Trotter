@@ -1,0 +1,466 @@
+{
+  "base_commit": "814212cb1c25f27e3300294e72fef452d953fbc9",
+  "changed_source19_paths": [
+    "src/trottertracks/resource_applicability/h4_geometry/circuits.py",
+    "src/trottertracks/resource_applicability/h4_geometry/execution.py",
+    "src/trottertracks/resource_applicability/h4_geometry/identity.py"
+  ],
+  "closure": {
+    "scripts/resource_applicability/audit_h4_geometry_source.py": {
+      "blob": "a04d3e3ca7d8e133ce85f137d536a61ee41377f3",
+      "changed": false,
+      "imports": [
+        "argparse",
+        "ast",
+        "datetime",
+        "hashlib",
+        "importlib.metadata",
+        "json",
+        "pathlib",
+        "subprocess",
+        "sys",
+        "trottertracks.resource_applicability.h4_geometry",
+        "trottertracks.resource_applicability.h4_geometry.identity"
+      ],
+      "old_blob": "a04d3e3ca7d8e133ce85f137d536a61ee41377f3",
+      "old_sha256": "9f8afe9fdf31d724d5eb1ebf84593efea198579559d28e65c5a35bc073e92c26",
+      "sha256": "9f8afe9fdf31d724d5eb1ebf84593efea198579559d28e65c5a35bc073e92c26"
+    },
+    "scripts/resource_applicability/audit_h4_monitor_fix_a.py": {
+      "added": true,
+      "blob": "f7d29c8546fab9c43e946fc145ae3d6ff83d0cb1",
+      "change_reason": "Dedicated lazy traversal/observer or artificial validation/audit source.",
+      "imports": [
+        "argparse",
+        "ast",
+        "hashlib",
+        "importlib.metadata",
+        "json",
+        "pathlib",
+        "re",
+        "subprocess",
+        "sys"
+      ],
+      "sha256": "32c8f37d0dd635abff69efc2c421c203b1afc4b7a72224c17c83f9b9f7dc3068"
+    },
+    "scripts/resource_applicability/run_h4_geometry_input_generation.py": {
+      "blob": "7fd00a70fa650e0e33e8713209458713db3dd3bf",
+      "changed": false,
+      "imports": [
+        "argparse",
+        "json",
+        "pathlib",
+        "sys",
+        "trottertracks.resource_applicability.h4_geometry.execution"
+      ],
+      "old_blob": "7fd00a70fa650e0e33e8713209458713db3dd3bf",
+      "old_sha256": "3fef6304a66bdb1d8594456e79f0490f86d9172112359bf810c93b96c8aa4bb1",
+      "sha256": "3fef6304a66bdb1d8594456e79f0490f86d9172112359bf810c93b96c8aa4bb1"
+    },
+    "scripts/resource_applicability/run_h4_geometry_signal_compile.py": {
+      "blob": "8b46c905ae9dc501752005748ae834e6d1a4f96d",
+      "changed": false,
+      "imports": [
+        "argparse",
+        "json",
+        "pathlib",
+        "sys",
+        "trottertracks.resource_applicability.h4_geometry.execution"
+      ],
+      "old_blob": "8b46c905ae9dc501752005748ae834e6d1a4f96d",
+      "old_sha256": "6e9f5a5fcdb745281cb0128e12f3912bfc7ff4008f30c432f2df05dd4bc750a4",
+      "sha256": "6e9f5a5fcdb745281cb0128e12f3912bfc7ff4008f30c432f2df05dd4bc750a4"
+    },
+    "scripts/resource_applicability/run_h4_geometry_source_tests.py": {
+      "blob": "e81276e393287f45a1e525e387f91eba85a81b15",
+      "changed": false,
+      "imports": [
+        "argparse",
+        "builtins",
+        "functools",
+        "hashlib",
+        "importlib.util",
+        "json",
+        "os",
+        "pathlib",
+        "qiskit",
+        "sys",
+        "time",
+        "trottertracks.resource_applicability.h4_geometry",
+        "trottertracks.resource_applicability.h4_geometry.identity",
+        "unittest"
+      ],
+      "old_blob": "e81276e393287f45a1e525e387f91eba85a81b15",
+      "old_sha256": "904a198967ed226eff35d418afbea9185577823c8935ca6244ddec6c94512237",
+      "sha256": "904a198967ed226eff35d418afbea9185577823c8935ca6244ddec6c94512237"
+    },
+    "scripts/resource_applicability/run_h4_monitor_fix_a_tests.py": {
+      "added": true,
+      "blob": "ad8d2940287d45c0507f0f24519637d33ce3e427",
+      "change_reason": "Dedicated lazy traversal/observer or artificial validation/audit source.",
+      "imports": [
+        "builtins",
+        "hashlib",
+        "importlib.metadata",
+        "importlib.util",
+        "inspect",
+        "json",
+        "os",
+        "pathlib",
+        "qiskit",
+        "resource",
+        "signal",
+        "sys",
+        "tempfile",
+        "time",
+        "trottertracks.resource_applicability.h4_geometry",
+        "trottertracks.resource_applicability.h4_geometry.identity",
+        "unittest"
+      ],
+      "sha256": "a8e167b91ad4254bb0dc5bfd7c1c8080f34a746126f82a2098876297775d19eb"
+    },
+    "src/trottertracks/__init__.py": {
+      "blob": "99208f18b3022f27c1c8ef1e6e297dda1c127a39",
+      "changed": false,
+      "imports": [],
+      "old_blob": "99208f18b3022f27c1c8ef1e6e297dda1c127a39",
+      "old_sha256": "107d4f39888dc644314fc079d41ccdc56333ae46a72f3346a499d4dfc17a543f",
+      "sha256": "107d4f39888dc644314fc079d41ccdc56333ae46a72f3346a499d4dfc17a543f"
+    },
+    "src/trottertracks/resource_applicability/__init__.py": {
+      "blob": "2520332eca1a85459a2437acbb580ce278a25103",
+      "changed": false,
+      "imports": [],
+      "old_blob": "2520332eca1a85459a2437acbb580ce278a25103",
+      "old_sha256": "b39349f5462f08c5dc1b4c8b89891444ff2d4be90e9f153edc146ae02ecedfcd",
+      "sha256": "b39349f5462f08c5dc1b4c8b89891444ff2d4be90e9f153edc146ae02ecedfcd"
+    },
+    "src/trottertracks/resource_applicability/h4_geometry/__init__.py": {
+      "blob": "3dc821158f64fc78a5dac2cbba783240a647fb65",
+      "changed": false,
+      "imports": [],
+      "old_blob": "3dc821158f64fc78a5dac2cbba783240a647fb65",
+      "old_sha256": "febca5fbd46dd775bd8ba6d930b650eac1dc09e18811894dda5b4f98aa8b14fa",
+      "sha256": "febca5fbd46dd775bd8ba6d930b650eac1dc09e18811894dda5b4f98aa8b14fa"
+    },
+    "src/trottertracks/resource_applicability/h4_geometry/circuits.py": {
+      "blob": "625e46a162a127606dead76a153d07d2a5f25147",
+      "change_reason": "Replace ndarray.tolist/exact matrix tree and circuit-wide instruction allocation with call-local lazy traversal. Preserve readonly canonical bytes; validation occurs at streaming consumption. No scientific builder/metrics changes.",
+      "changed": true,
+      "imports": [
+        "identity",
+        "inputs",
+        "math",
+        "numpy",
+        "qiskit",
+        "qiskit.circuit",
+        "qiskit.circuit.library",
+        "qiskit.circuit.library.standard_gates",
+        "scipy.linalg",
+        "streaming"
+      ],
+      "old_blob": "84325a306d100dbbf87a2806b792f03f610d1f08",
+      "old_sha256": "b15f1a86ff3185e01d79bd96c42d853ce6de5879533c0aca54f7915e2726ad06",
+      "sha256": "a391ab0f1687c9a94625dbef75d9c3bcb48ee35d1d0b6fc221e66b9de84fa15b"
+    },
+    "src/trottertracks/resource_applicability/h4_geometry/execution.py": {
+      "blob": "caa929515f3e59cdab011066d42b664623569470",
+      "change_reason": "Require separately approved observer role, add reserved independent trace/wall accounting and driver phase boundaries. Old environment/source/authorization gates remain closed; no new production adoption.",
+      "changed": true,
+      "imports": [
+        "_thread",
+        "circuits",
+        "concurrent.futures",
+        "gates",
+        "identity",
+        "inputs",
+        "io",
+        "json",
+        "ledger",
+        "numpy",
+        "observer",
+        "os",
+        "parallel",
+        "pathlib",
+        "qiskit",
+        "resources",
+        "signal",
+        "sys",
+        "threading",
+        "time",
+        "workers"
+      ],
+      "old_blob": "d8ba72cc9f32cc3e72c633ae2cf37d241abc4ebf",
+      "old_sha256": "7d8984dbdd35a5c3be1b7a6159b245b1756de60386dfd051d3811ce2ef645f59",
+      "sha256": "fa55b23418ee6921b8db41ad8e5eb1338fa3a060ba245b84c3ca690e531beb7e"
+    },
+    "src/trottertracks/resource_applicability/h4_geometry/gates.py": {
+      "blob": "c5f7124400bba894d0f7c888f45653cb3c598f24",
+      "changed": false,
+      "imports": [
+        "dataclasses",
+        "hashlib",
+        "identity",
+        "importlib.metadata",
+        "inspect",
+        "json",
+        "os",
+        "pathlib",
+        "qiskit",
+        "subprocess",
+        "sys"
+      ],
+      "old_blob": "c5f7124400bba894d0f7c888f45653cb3c598f24",
+      "old_sha256": "db2fd52914ac71ac331c16374571193f0b809bc712a5bab5efcb66845bc7ca93",
+      "sha256": "db2fd52914ac71ac331c16374571193f0b809bc712a5bab5efcb66845bc7ca93"
+    },
+    "src/trottertracks/resource_applicability/h4_geometry/identity.py": {
+      "blob": "9744ccc56dd674f0f3e8101b1c17c34f76727c4c",
+      "change_reason": "Accept lazy sequences; bound encode/hash chunks to 64KiB. Canonical scalar representation/order unchanged.",
+      "changed": true,
+      "imports": [
+        "hashlib",
+        "json",
+        "math",
+        "re",
+        "streaming",
+        "time"
+      ],
+      "old_blob": "cdabc0999129427eeffbdf6d90ff31b8d21deed5",
+      "old_sha256": "3c9e4ac4494205a4423d0776e4fd5bb1b869e52377e276a29b213bb90a9adc21",
+      "sha256": "1e92647bbdf01c9192cfd3cfbc6da21b207b91d34fc1b74176306cb87fbdc377"
+    },
+    "src/trottertracks/resource_applicability/h4_geometry/inputs.py": {
+      "blob": "ebe5c1dfc8a13a106619f0df7ee9a39bb2bb2f20",
+      "changed": false,
+      "imports": [
+        "gates",
+        "identity",
+        "io",
+        "json",
+        "math",
+        "numpy",
+        "openfermion",
+        "openfermion.chem.molecular_data",
+        "openfermion.circuits.low_rank",
+        "pyscf"
+      ],
+      "old_blob": "ebe5c1dfc8a13a106619f0df7ee9a39bb2bb2f20",
+      "old_sha256": "f7d722edafef14c2feeb6d04f267b3402370e550e78da278b15b3cab6b5309b9",
+      "sha256": "f7d722edafef14c2feeb6d04f267b3402370e550e78da278b15b3cab6b5309b9"
+    },
+    "src/trottertracks/resource_applicability/h4_geometry/ledger.py": {
+      "blob": "a4ca8aff7a1e1d992e5c59d972c3c3e04de0d800",
+      "changed": false,
+      "imports": [
+        "contextlib",
+        "copy",
+        "fcntl",
+        "identity",
+        "json",
+        "os"
+      ],
+      "old_blob": "a4ca8aff7a1e1d992e5c59d972c3c3e04de0d800",
+      "old_sha256": "6f87a7aa0a7c72d0838760ee3f30f56ee3bbe0416cc4079ebb9b0cc128ec98de",
+      "sha256": "6f87a7aa0a7c72d0838760ee3f30f56ee3bbe0416cc4079ebb9b0cc128ec98de"
+    },
+    "src/trottertracks/resource_applicability/h4_geometry/observer.py": {
+      "added": true,
+      "blob": "38920b4b2525d011f57abae5ba16a721e88c2b58",
+      "change_reason": "Dedicated lazy traversal/observer or artificial validation/audit source.",
+      "imports": [
+        "identity",
+        "json",
+        "math",
+        "os",
+        "pathlib",
+        "resource",
+        "resources",
+        "select",
+        "signal",
+        "socket",
+        "subprocess",
+        "sys",
+        "threading",
+        "time"
+      ],
+      "sha256": "c7af2dd76a0e187799d5f77b1dac9076e6cac4adac584c4b3a971f1c5afc7c9a"
+    },
+    "src/trottertracks/resource_applicability/h4_geometry/parallel.py": {
+      "blob": "c8029af6d6eec5268b80e92020a13c08d73021ea",
+      "changed": false,
+      "imports": [
+        "identity",
+        "ledger"
+      ],
+      "old_blob": "c8029af6d6eec5268b80e92020a13c08d73021ea",
+      "old_sha256": "4d68f91dce75ca8110899fb6f092a4dc0717b7460f2b38bf365a3e0563f9445a",
+      "sha256": "4d68f91dce75ca8110899fb6f092a4dc0717b7460f2b38bf365a3e0563f9445a"
+    },
+    "src/trottertracks/resource_applicability/h4_geometry/resources.py": {
+      "blob": "e52acb0ea2329cd9599f80834825801d1eb68f7e",
+      "changed": false,
+      "imports": [
+        "fcntl",
+        "identity",
+        "json",
+        "math",
+        "os",
+        "pathlib",
+        "re",
+        "resource",
+        "signal",
+        "threading",
+        "time"
+      ],
+      "old_blob": "e52acb0ea2329cd9599f80834825801d1eb68f7e",
+      "old_sha256": "0fc762ea2951c36567d8497c2d8721a2ed94bd83462f134be0d7815d1132b9f2",
+      "sha256": "0fc762ea2951c36567d8497c2d8721a2ed94bd83462f134be0d7815d1132b9f2"
+    },
+    "src/trottertracks/resource_applicability/h4_geometry/review.py": {
+      "blob": "09b47bf9e05b309d477632d36ea82e9e87915ea8",
+      "changed": false,
+      "imports": [
+        "identity",
+        "math",
+        "signal"
+      ],
+      "old_blob": "09b47bf9e05b309d477632d36ea82e9e87915ea8",
+      "old_sha256": "080329f8cfa7dde4798275d0ed665740ada72dd7f16f5a836ed9e6e7282329c5",
+      "sha256": "080329f8cfa7dde4798275d0ed665740ada72dd7f16f5a836ed9e6e7282329c5"
+    },
+    "src/trottertracks/resource_applicability/h4_geometry/signal.py": {
+      "blob": "f868c45270e5c3290a7d0b882876c4f9e4a19e46",
+      "changed": false,
+      "imports": [
+        "circuits",
+        "identity",
+        "inputs",
+        "math",
+        "numpy",
+        "qiskit.quantum_info",
+        "scipy.linalg"
+      ],
+      "old_blob": "f868c45270e5c3290a7d0b882876c4f9e4a19e46",
+      "old_sha256": "04717292e8a6e5c100a4d27657e3580efba38cf5ec7d1a4962bbd75c3183dce3",
+      "sha256": "04717292e8a6e5c100a4d27657e3580efba38cf5ec7d1a4962bbd75c3183dce3"
+    },
+    "src/trottertracks/resource_applicability/h4_geometry/streaming.py": {
+      "added": true,
+      "blob": "881f8f91f9c957d79de18bcdaf416fb739c95c2d",
+      "change_reason": "Dedicated lazy traversal/observer or artificial validation/audit source.",
+      "imports": [
+        "itertools"
+      ],
+      "sha256": "a0afacb3653f94e278f2f0d4682e95fa564c796b2c003cf430dc74be0ed5b6ed"
+    },
+    "src/trottertracks/resource_applicability/h4_geometry/workers.py": {
+      "blob": "05ce83bb83a3674b7baabdb208feb715bea60422",
+      "changed": false,
+      "imports": [
+        "concurrent.futures",
+        "contextlib",
+        "gc",
+        "io",
+        "os",
+        "pathlib",
+        "pickle",
+        "queue",
+        "subprocess",
+        "sys",
+        "threading",
+        "trottertracks.resource_applicability.h4_geometry",
+        "trottertracks.resource_applicability.h4_geometry.gates",
+        "trottertracks.resource_applicability.h4_geometry.identity",
+        "trottertracks.resource_applicability.h4_geometry.resources"
+      ],
+      "old_blob": "05ce83bb83a3674b7baabdb208feb715bea60422",
+      "old_sha256": "7f4c1895681d0b8b1666ba27a76d67c5d864d0671d5f3285a626d8b67e20d934",
+      "sha256": "7f4c1895681d0b8b1666ba27a76d67c5d864d0671d5f3285a626d8b67e20d934"
+    },
+    "tests/tracks/resource_applicability/h4_run05_serializer_reference.py": {
+      "added": true,
+      "blob": "253f9782c13bedd26a79379dd4ee382cf7919994",
+      "change_reason": "Dedicated lazy traversal/observer or artificial validation/audit source.",
+      "imports": [
+        "math",
+        "numpy",
+        "qiskit",
+        "qiskit.circuit",
+        "trottertracks.resource_applicability.h4_geometry.identity"
+      ],
+      "sha256": "8bba5edf84e875cb1b8278e047268d320d18922418012bb2d552983a65368fae"
+    },
+    "tests/tracks/resource_applicability/test_h4_geometry_source.py": {
+      "blob": "631ab93ff4762055e7b5d43b948d66a262646ae6",
+      "changed": false,
+      "imports": [
+        "concurrent.futures",
+        "contextlib",
+        "copy",
+        "hashlib",
+        "io",
+        "itertools",
+        "json",
+        "math",
+        "numpy",
+        "os",
+        "pathlib",
+        "qiskit",
+        "qiskit.circuit",
+        "qiskit.circuit.library",
+        "qiskit.quantum_info",
+        "queue",
+        "scipy.linalg",
+        "tempfile",
+        "threading",
+        "trottertracks.resource_applicability.h4_geometry",
+        "types",
+        "unittest",
+        "unittest.mock",
+        "weakref"
+      ],
+      "old_blob": "631ab93ff4762055e7b5d43b948d66a262646ae6",
+      "old_sha256": "85164ecbdca3f283e23207576eef49f366f48e0c751aa8b973055bf5e7d2348b",
+      "sha256": "85164ecbdca3f283e23207576eef49f366f48e0c751aa8b973055bf5e7d2348b"
+    },
+    "tests/tracks/resource_applicability/test_h4_monitor_fix_a.py": {
+      "added": true,
+      "blob": "6dbe9222acc413811563792146ffb762eaa628f1",
+      "change_reason": "Dedicated lazy traversal/observer or artificial validation/audit source.",
+      "imports": [
+        "copy",
+        "gc",
+        "hashlib",
+        "importlib.util",
+        "json",
+        "numpy",
+        "os",
+        "pathlib",
+        "qiskit",
+        "qiskit.circuit",
+        "qiskit.circuit.library",
+        "signal",
+        "sys",
+        "time",
+        "trottertracks.resource_applicability.h4_geometry",
+        "trottertracks.resource_applicability.h4_geometry.execution",
+        "trottertracks.resource_applicability.h4_geometry.streaming",
+        "unittest",
+        "unittest.mock"
+      ],
+      "sha256": "e14c70b11ce2e70401d3a0f9aff9e9a49fcfe1df157d53e65adf609b4f294c9b"
+    }
+  },
+  "closure_count": 25,
+  "old_random_partial_results_reused": false,
+  "old_source19_count": 19,
+  "old_source_commit": "6d365257770e99022b91d6a38dbee49ee0077503",
+  "production_authorized": false,
+  "schema_version": "h4-monitor-fix-a-source-closure-v1",
+  "scientific_conditions_compiler_options_unchanged": true,
+  "seed_rebinding_required": true,
+  "source_checkout_root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-monitor-fix-a-20261007-02",
+  "source_commit": "b2a5ad89e8b39d72716f7ddb17d263bd0cdedb45",
+  "unchanged_source19_count": 16
+}
