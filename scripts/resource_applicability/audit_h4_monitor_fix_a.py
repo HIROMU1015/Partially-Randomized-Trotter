@@ -89,18 +89,29 @@ def main():
     diffs=[]
     for name,expected in old['dependency_observations'].items():
         dist=metadata.distribution(name)
-        actual=dict(version=dist.version,installed_record_sha256=sha(dist.read_text('RECORD').encode()))
+        # Old source freeze hashes metadata.read_text(), which normalizes CRLF.
+        # The previous new-host audit compared new raw bytes to that old hash.
+        # Preserve its 45 differences and also freeze the like-for-like content.
+        record_path=Path(dist._path)/'RECORD'
+        actual=dict(version=dist.version,installed_record_sha256=sha(dist.read_text('RECORD').encode()),
+                    raw_RECORD_sha256=sha(record_path.read_bytes()),raw_RECORD_path=str(record_path))
         diffs.append(dict(name=name,old=expected,new=actual,
             version_differs=expected['version']!=actual['version'],
-            RECORD_differs=expected['installed_record_sha256']!=actual['installed_record_sha256']))
+            old_reference_vs_new_raw_RECORD_differs=expected['installed_record_sha256']!=actual['raw_RECORD_sha256'],
+            normalized_RECORD_differs=expected['installed_record_sha256']!=actual['installed_record_sha256']))
     require(len(diffs)==45 and sum(d['version_differs'] for d in diffs)==18 and
-            sum(d['RECORD_differs'] for d in diffs)==45,'accepted18/45 environment differences')
+            sum(d['old_reference_vs_new_raw_RECORD_differs'] for d in diffs)==45 and
+            sum(d['normalized_RECORD_differs'] for d in diffs)==22,'18 version/45 raw-reference/22 normalized differences')
     for item in profile['installed_source11']:
         require(sha(Path(item['new_absolute_path']).read_bytes())==item['observed_sha256']==item['expected_sha256'],
                 'installed source changed')
     write(bundle/'environment_profile_v1.json',profile)
     write(bundle/'environment_differences_v1.json',dict(dependencies=diffs,version_difference_count=18,
-        RECORD_difference_count=45,installed_source_matches=11,environment_equivalence_established=False,
+        historical_old_reference_vs_new_raw_RECORD_difference_count=45,
+        normalized_RECORD_difference_count=22,
+        historical_45_record_difference_evidence_preserved=exact['environment_comparisons'],
+        hash_methods='old source uses metadata.read_text + UTF-8; historical new-host raw read_bytes comparison differs from normalized content comparison. Old raw bytes are unavailable.',
+        installed_source_matches=11,environment_equivalence_established=False,
         production_environment_adopted=False,install_upgrade_settings_changes=0))
     require(re.fullmatch('attempt-[0-9]{2}',args.attempt),'final synthetic attempt name')
     result=json.loads((evidence/args.attempt/'test_result_v1.json').read_text())
@@ -118,7 +129,8 @@ def main():
         plan_sha256=sha((evidence/'ARTIFICIAL_TEST_PLAN_v1.json').read_bytes())))
     write(bundle/'ARTIFICIAL_TEST_PLAN_v1.json',json.loads((evidence/'ARTIFICIAL_TEST_PLAN_v1.json').read_text()))
     print(json.dumps(dict(source_commit=args.source_commit,closure_count=len(closure),
-        changed_old19=len(changed),tests=result['tests'],environment_versions_differ=18,records_differ=45)))
+        changed_old19=len(changed),tests=result['tests'],environment_versions_differ=18,
+        historical_raw_reference_records_differ=45,normalized_records_differ=22)))
 
 
 if __name__=='__main__':main()
