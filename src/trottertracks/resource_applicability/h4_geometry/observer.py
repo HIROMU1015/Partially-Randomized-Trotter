@@ -190,6 +190,10 @@ def observer_main(sock_fd, trace_fd):
     config = receive(sock)
     synthetic = config['scope'] == 'SYNTHETIC_ONLY'
     require(synthetic or config['runtime_authorization'] is True, 'production observer unapproved')
+    if not synthetic and config.get('role_cpus') is not None:
+        require(len(config['role_cpus'])==1 and set(config['role_cpus'])<=set(config['allowed_cpus']), 'observer CPU approval')
+        os.sched_setaffinity(0,set(config['role_cpus']))
+        require(set(os.sched_getaffinity(0))==set(config['role_cpus']), 'observer own CPU binding')
     soft, hard = resource.getrlimit(resource.RLIMIT_AS)
     cap = AS_CAP if hard == resource.RLIM_INFINITY else min(AS_CAP, hard)
     resource.setrlimit(resource.RLIMIT_AS, (cap, cap))
@@ -274,7 +278,7 @@ def observer_main(sock_fd, trace_fd):
 class IndependentObserver:
     """Spawned only from explicitly scoped synthetic cases or reviewed new role."""
     def __init__(self, python, trace_path, *, scope, workers=12, prior_wall=0,
-                 output_cap=4*2**20, runtime_authorization=False, wall_started=None):
+                 output_cap=4*2**20, runtime_authorization=False, wall_started=None,allowed_cpus=None,role_cpus=None):
         wall_started = time.monotonic() if wall_started is None else wall_started
         require(scope == 'SYNTHETIC_ONLY' or (scope == 'PRODUCTION' and runtime_authorization is True),
                 'independent observer production role not approved')
@@ -303,7 +307,7 @@ class IndependentObserver:
             parent.settimeout(DEADLINE)
             send(parent, dict(scope=scope, runtime_authorization=runtime_authorization,
                  driver=identity(process_sample(os.getpid())), workers=workers, prior_wall=prior_wall,
-                 wall_started=wall_started, output_cap=output_cap))
+                 wall_started=wall_started, output_cap=output_cap,allowed_cpus=allowed_cpus,role_cpus=role_cpus))
             response = receive(parent)
             require(response == {'kind': 'ready', 'identity': self.owner.expected}, 'observer ready ownership')
         except BaseException as exc:

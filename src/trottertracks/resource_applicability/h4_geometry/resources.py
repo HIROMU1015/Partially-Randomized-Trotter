@@ -19,6 +19,7 @@ WALL_CAP = 72 * 3600
 # Linux v6.8 include/linux/proc_ns.h: PROC_CGROUP_INIT_INO.
 # Unknown/private cgroup namespaces remain blocked rather than hiding ancestors.
 INITIAL_CGROUP_NS_INO = 0xEFFFFFFB
+MANAGED_WRITE_CONTEXT=threading.local()
 
 
 def cpus(text):
@@ -262,25 +263,27 @@ class OutputBudget:
     Rewrites never reclaim budget. Stage handoff consumes existing budget only
     through a separately reviewed launch; no automatic resume is supported.
     """
-    def __init__(self, root, *, cap=OUTPUT_CAP, handoff=False, prior_charge=0):
+    def __init__(self, root, *, cap=OUTPUT_CAP, handoff=False, prior_charge=0,file_limits=None):
         self.root, self.cap = Path(root), cap
         require(type(prior_charge) is int and 0 <= prior_charge < cap and
                 (not handoff or prior_charge == 0), 'explicit fresh-run prior charge')
         require(not prior_charge or prior_charge+128 <= cap, 'prior charge plus new journal row')
         self.thread_lock=threading.Lock()
+        self.file_limits=file_limits
+        self.cached_charge=None;self.cached_offset=0
         require(self.root.is_absolute(), 'absolute own output root')
         require(not any(p.is_symlink() for p in [self.root, *self.root.parents]), 'output symlink')
-        self.root.mkdir(parents=True,exist_ok=handoff)
+        self.root.mkdir(parents=True,exist_ok=handoff,mode=0o700)
         fsync_directory(self.root.parent)
         self.fd = os.open(self.root/'byte-budget.journal', os.O_RDWR | os.O_APPEND | os.O_NOFOLLOW |
                           (0 if handoff else os.O_CREAT | os.O_EXCL), 0o600)
         if prior_charge:
             require(prior_charge+128 <= self.cap, 'prior charge plus new journal row')
-            os.write(self.fd, (str(prior_charge+128)+'\n').encode().ljust(128, b' '))
+            require(os.write(self.fd, (str(prior_charge+128)+'\n').encode().ljust(128, b' '))==128,'prior carry journal write')
             os.fsync(self.fd)
 
     def close(self):
-        os.close(self.fd)
+        if self.fd is not None:os.close(self.fd);self.fd=None
 
     def reserve(self, size):
         require(type(size) is int and size >= 0, 'byte reservation')
@@ -290,16 +293,24 @@ class OutputBudget:
     def _reserve_locked(self,size):
         fcntl.flock(self.fd, fcntl.LOCK_EX)
         try:
-            os.lseek(self.fd, 0, os.SEEK_SET)
-            raw = b''
-            while part := os.read(self.fd, 65536):
-                raw += part
-            require(len(raw) % 128 == 0, 'ambiguous byte reservation STOP')
-            used = sum(int(raw[i:i+128].strip()) for i in range(0, len(raw), 128))
+            journal_size=os.fstat(self.fd).st_size
+            if self.cached_charge is None:
+                os.lseek(self.fd,0,os.SEEK_SET);raw=b''
+                while part:=os.read(self.fd,65536):raw+=part
+                require(len(raw)%128==0,'ambiguous byte reservation STOP')
+                charges=[int(raw[i:i+128].strip()) for i in range(0,len(raw),128)]
+                require(all(v>=128 for v in charges),'invalid/refunded byte-journal row')
+                self.cached_charge=sum(charges)
+                self.cached_offset=len(raw)
+            # This object is the only writer; foreign append/truncation stops.
+            # No O(N^2) whole-journal reread for hundreds of thousands of rows.
+            require(journal_size==self.cached_offset,'foreign byte-journal writer/size change STOP')
+            used=self.cached_charge
             charge = 2*size + 128  # temp + final, journal itself
             require(used + charge <= self.cap, 'output budget before write')
-            os.write(self.fd, (str(charge)+'\n').encode().ljust(128, b' '))
+            require(os.write(self.fd, (str(charge)+'\n').encode().ljust(128, b' '))==128,'byte reservation journal write')
             os.fsync(self.fd)
+            self.cached_charge+=charge;self.cached_offset+=128
         finally:
             fcntl.flock(self.fd, fcntl.LOCK_UN)
 
@@ -307,9 +318,13 @@ class OutputBudget:
         require(type(data) is bytes and isinstance(name, str), 'output type')
         relative = PurePosixPath(name)
         require(not relative.is_absolute() and '..' not in relative.parts and len(relative.parts)==1, 'output escape')
+        if self.file_limits is not None:
+            matches=[cap for prefix,cap in self.file_limits.items() if name.startswith(prefix)]
+            require(len(matches)==1 and len(data)<=matches[0],'sealed per-file output cap')
         self.reserve(len(data))
         directory = os.open(self.root, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
         tmp = name + '.pending'
+        MANAGED_WRITE_CONTEXT.root=self.root
         try:
             fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600, dir_fd=directory)
             with os.fdopen(fd, 'wb') as stream:
@@ -322,6 +337,7 @@ class OutputBudget:
             os.unlink(tmp, dir_fd=directory)
             os.fsync(directory)
         finally:
+            MANAGED_WRITE_CONTEXT.root=None
             os.close(directory)
 
 

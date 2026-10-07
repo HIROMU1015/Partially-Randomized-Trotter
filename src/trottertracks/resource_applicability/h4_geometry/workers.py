@@ -59,7 +59,7 @@ class CappedText(io.StringIO):
         return super().write(value)
 
 
-def owned_worker_main(parent_pid):
+def owned_worker_main(parent_pid,index=None):
     from contextlib import redirect_stdout,redirect_stderr
     from trottertracks.resource_applicability.h4_geometry.identity import require
     from trottertracks.resource_applicability.h4_geometry.gates import checkout_gate,Permit
@@ -69,6 +69,9 @@ def owned_worker_main(parent_pid):
     incoming,outgoing=sys.stdin.buffer,sys.stdout.buffer
     permit=read_frame(incoming)
     require(isinstance(permit,Permit),'owned permit')
+    if permit.plan.get('schema_version')=='h4-newhost-plan-v2':
+        from trottertracks.resource_applicability.h4_geometry.launch_binding import role_affinity
+        role_affinity(permit,'worker',index)
     _contract,options=checkout_gate(permit)
     write_frame(outgoing,{'ready':os.getpid()})
     while True:
@@ -96,14 +99,20 @@ class OwnedPool:
     def __init__(self,workers,permit,monitor,budget):
         from concurrent.futures import ThreadPoolExecutor
         from trottertracks.resource_applicability.h4_geometry.gates import PYTHON
+        python=PYTHON
+        if permit.plan.get('schema_version')=='h4-newhost-plan-v2':
+            from trottertracks.resource_applicability.h4_geometry.launch_binding import reference
+            python=reference(Path(permit.source_root),permit.plan['environment_profile'])['python']
         self.monitor,self.budget,self.processes=monitor,budget,[]
         self.counter,self.assignment_lock,self.failure=0,threading.Lock(),None
         self.available=queue.Queue()
         for index in range(workers):self.available.put(index)
         self.io=ThreadPoolExecutor(max_workers=workers,thread_name_prefix='owned-pipe-io')
         try:
-            for _ in range(workers):
-                process=subprocess.Popen([PYTHON,'-P','-B',__file__,'--owned-worker',str(os.getpid())],
+            for index in range(workers):
+                argv=[python,'-P','-B',__file__,'--owned-worker',str(os.getpid())]
+                if permit.plan.get('schema_version')=='h4-newhost-plan-v2':argv.append(str(index))
+                process=subprocess.Popen(argv,
                     stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,
                     cwd=permit.source_root,env=dict(os.environ),close_fds=True)
                 self.processes.append(process);monitor.own_child(process.pid)
@@ -167,6 +176,6 @@ class OwnedPool:
 if __name__=='__main__':
     # Direct private worker entry, only started by OwnedPool after launch gates.
     sys.path.insert(0,str(Path(__file__).absolute().parents[3]))
-    if len(sys.argv)!=3 or sys.argv[1]!='--owned-worker':
+    if len(sys.argv) not in (3,4) or sys.argv[1]!='--owned-worker':
         raise SystemExit('private owned-worker entry only')
-    owned_worker_main(int(sys.argv[2]))
+    owned_worker_main(int(sys.argv[2]),int(sys.argv[3]) if len(sys.argv)==4 else None)

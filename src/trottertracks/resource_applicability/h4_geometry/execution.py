@@ -24,7 +24,7 @@ def _compile_worker(circuit,options):
 
 
 class OwnedRun:
-    def __init__(self,permit,authorization,*,prior_wall=0,handoff=False,prior_charge=0):
+    def __init__(self,permit,authorization,*,prior_wall=0,handoff=False,prior_charge=0,prepared_budget=None):
         run_started=time.monotonic()
         # A new role cannot inherit old-host approval. This is a future path;
         # all new-host preparation drafts keep runtime_authorization=false.
@@ -34,23 +34,41 @@ class OwnedRun:
                 role.get('AS_bytes') == AS_CAP and role.get('RSS_bytes') == RSS_CAP,
                 'new independent observer role needs separate production approval')
         observation=observe_memory()
-        self.workers=admission(observation['available']-AS_CAP,observation['observed_at'],permit.plan['requested_workers'],
-                               authorization['allowed_cpus'],observation['process_cpus'])
+        newhost=permit.plan.get('schema_version')=='h4-newhost-plan-v2'
+        if newhost:
+            from .launch_binding import authorize as authorize_new, FILE_LIMITS, CONTROL_LOG_CAP, roles
+            authorize_new(permit.plan,authorization,permit.review,explicit_launch=True)
+            self.workers=permit.plan['requested_workers']
+            require(permit.launch_observation is not None and
+                    observation['oom_events']==permit.launch_observation['memory']['oom_events'] and
+                    0<=time.monotonic()-permit.launch_observation['observed_monotonic']<=5,
+                    'OOM/cgroup changed or startup observation stale')
+            require(observation['available'] >= (8+8*self.workers+16)*2**30+AS_CAP,'newhost observer admission')
+            require(set(os.sched_getaffinity(0))==set(permit.plan['cpu_proposal']['driver']),'newhost driver CPU binding')
+        else:
+            self.workers=admission(observation['available']-AS_CAP,observation['observed_at'],permit.plan['requested_workers'],
+                                   authorization['allowed_cpus'],observation['process_cpus'])
         # No affinity edits. A narrower CPU permission requires a separately scoped launch context.
-        require(observation['process_cpus'] <= set(authorization['allowed_cpus']), 'process can use unpermitted CPU')
+        require(set(os.sched_getaffinity(0)) <= set(authorization['allowed_cpus']), 'process can use unpermitted CPU')
         self.wall=WallBudget(prior_wall)
         self.wall.start=run_started
         limit_owned_address_space()
-        self.budget=OutputBudget(OUTPUT,handoff=handoff,prior_charge=prior_charge)
+        self.budget=prepared_budget or OutputBudget(permit.plan['output_root'] if newhost else OUTPUT,handoff=handoff,prior_charge=prior_charge,
+                                file_limits=FILE_LIMITS if newhost else None)
+        self.close_budget=prepared_budget is None
         trace_cap = (72*3600+2)*FRAME_CAP+TERMINAL_RESERVE
         # Full append-only trace is reserved before the observer can write;
         # reserve conservatively charges temp+final+journal even for one file.
         import sys
         try:
-            self.budget.reserve(trace_cap+FRAME_CAP)  # includes driver first-stop file
+            if prepared_budget is None:
+                self.budget.reserve(trace_cap+FRAME_CAP)  # includes driver first-stop file
+                if newhost:self.budget.reserve(CONTROL_LOG_CAP+65536)
             self.monitor=IndependentObserver(sys.executable, self.budget.root/'observer.jsonl',
                 scope='PRODUCTION', runtime_authorization=True, workers=self.workers,
-                prior_wall=prior_wall, wall_started=self.wall.start, output_cap=trace_cap)
+                prior_wall=prior_wall, wall_started=self.wall.start, output_cap=trace_cap,
+                allowed_cpus=authorization['allowed_cpus'] if newhost else None,
+                role_cpus=permit.plan['cpu_proposal']['observer'] if newhost else None)
         except BaseException:
             self.budget.close(); raise
         self.finished=threading.Event();self.failure=None
@@ -79,11 +97,12 @@ class OwnedRun:
             self.failure=exc
             # Retain the first cause before cleanup can replace it with a pipe
             # or interrupt failure. This is the driver's existing bounded log.
-            print('H4 MONITOR STOP: '+type(exc).__name__+': '+str(exc),flush=True)
-            self.monitor.stop_children()
-            # The driver is owned by this run. Interrupt Python, not another job.
-            import _thread
-            _thread.interrupt_main()
+            try:print('H4 MONITOR STOP: '+type(exc).__name__+': '+str(exc),flush=True)
+            finally:
+                self.monitor.stop_children()
+                # Cleanup still occurs if the bounded driver log is exhausted.
+                import _thread
+                _thread.interrupt_main()
 
     def pulse(self):
         require(self.failure is None,'owned monitoring failed STOP: '+str(self.failure))
@@ -127,7 +146,8 @@ class OwnedRun:
             finally:self.monitor.close()
             self.wall.consumed()  # charge through pool + observer reap and FD cleanup
             require(not self.thread.is_alive(), 'owned monitor watchdog did not end')
-        finally:self.budget.close()
+        finally:
+            if self.close_budget:self.budget.close()
         require(self.failure is None,'monitor STOP; no retry/resume: '+str(self.failure))
 
 
@@ -153,6 +173,9 @@ def generation_stage(permit,authorization,options):
 
 def input_boundary(permit):
     require(permit.stage=='signal_compile','separate signal permit')
+    if permit.plan.get('schema_version')=='h4-newhost-plan-v2':
+        from .launch_binding import verify_frozen_receipts
+        return verify_frozen_receipts(permit.plan)
     reuse = reexecution_metadata(permit) if 'reexecution' in permit.plan else None
     input_root = Path(reuse['input_root']) if reuse else Path(OUTPUT)
     require(not any(p.is_symlink() for p in [input_root,*input_root.parents]), 'input root symlink')
@@ -207,12 +230,14 @@ def candidate_wrapper_jobs(run,identity,seeds,preparation,template):
             yield wire(identity,axis,seed,index if seed is not None else None,numerical),circuit
 
 
-def signal_stage(permit,authorization,options):
+def signal_stage(permit,authorization,options,*,launch_started=None,prepared_budget=None):
     require(permit.stage=='signal_compile','separate signal stage')
     freeze=input_boundary(permit)
     reused='reexecution' in permit.plan
-    run=OwnedRun(permit,authorization,prior_wall=freeze['consumed_seconds'],handoff=not reused,
-                 prior_charge=freeze.get('prior_charge',0))
+    newhost=permit.plan.get('schema_version')=='h4-newhost-plan-v2'
+    if launch_started is not None:freeze={**freeze,'consumed_seconds':freeze['consumed_seconds']+time.monotonic()-launch_started}
+    run=OwnedRun(permit,authorization,prior_wall=freeze['consumed_seconds'],handoff=not reused and not newhost,
+                 prior_charge=freeze.get('prior_charge',0),prepared_budget=prepared_budget)
     ledger=None
     from .signal import prepare,corrected_signal,candidate_identity,trajectory_seeds,display_map
     from .parallel import compile_candidates
@@ -256,11 +281,12 @@ def signal_stage(permit,authorization,options):
         print('H4 candidate COMPLETE %d/1308 %s %s'%(len(signals),distance,template['template_id']),flush=True)
 
     try:
-        ledger=Ledger(run.budget,prior_invocations=freeze.get('prior_invocations',0))
+        invocation_cap=permit.plan['caps']['actual_invocations'] if newhost else 74784
+        ledger=Ledger(run.budget,cap=invocation_cap,prior_invocations=freeze.get('prior_invocations',0))
         compile_candidates(run,ledger,candidates(),_compile_worker,options,reuse,
                            expected_candidates=1308,expected_wrappers=74784,on_candidate=publish)
         accounting=ledger.audit()
-        require(len(signals)==1308 and accounting['logical_wrappers']==74784 and accounting['actual_invocations']<=74784,'fixed campaign accounting')
+        require(len(signals)==1308 and accounting['logical_wrappers']==74784 and accounting['actual_invocations']<=invocation_cap,'fixed campaign accounting')
         final={'status':'MAP_COMPLETE_STOP','signal_records':len(signals),**accounting,
                'prior_actual_invocations':freeze.get('prior_invocations',0),
                'ledger_head_digest':ledger.chain,'consumed_seconds':run.wall.consumed(),
@@ -273,6 +299,10 @@ def signal_stage(permit,authorization,options):
 
 
 def launch(stage,plan,authorization,review,*,explicit_launch=False):
+    if plan.get('schema_version')=='h4-newhost-plan-v2':
+        require(stage=='signal_compile','newhost frozen-input signal stage only')
+        from .launch_binding import launch as new_launch
+        return new_launch(plan,authorization,review,explicit_launch=explicit_launch)
     permit=authorize(stage,plan,authorization,review,explicit_launch=explicit_launch)
     contract,options=checkout_gate(permit)
     if stage=='input_generation':

@@ -180,6 +180,9 @@ def reexecution_metadata(permit):
 
 
 def checkout_gate(permit):
+    if permit.plan.get('schema_version')=='h4-newhost-plan-v2':
+        from .launch_binding import verify_runtime
+        return verify_runtime(permit)
     root, plan = Path(permit.source_root), permit.plan
     require(Path(__file__).absolute() == root/'src/trottertracks/resource_applicability/h4_geometry/gates.py', 'loaded source checkout')
     audit_bytes=(root/SOURCE_AUDIT).read_bytes()
