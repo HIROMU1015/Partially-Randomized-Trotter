@@ -1,0 +1,74 @@
+{
+  "schema": "ra_d0_output_policy_v3",
+  "result_directory": "artifacts/track_b_ra_d0_development_result/2026-10-07/v3",
+  "marker": "one_shot_consumed.json",
+  "query_records": "paired_queries.jsonl.gz; concatenated deterministic gzip members, one compact JSON row per paired query",
+  "paired_query_required_fields": [
+    "query_id",
+    "x",
+    "n",
+    "tag",
+    "objective",
+    "budget_id",
+    "caps",
+    "B2_status",
+    "B2_lower",
+    "B3_status",
+    "B3_upper",
+    "strict_witness",
+    "classification",
+    "certificate_hashes",
+    "certified_comparison"
+  ],
+  "exact_bound_type": "Fraction string or null",
+  "certificate_hash_type": "lowercase SHA256",
+  "full_records": "certificates.jsonl.gz",
+  "full_records_required_for": [
+    "B2 single-resource minima",
+    "strict witnesses",
+    "certified infeasible query",
+    "technical certificate failure with returned vectors"
+  ],
+  "compact_regular_queries": "bound/status/certificate hashes only; discarded full-vector preimages are not recoverable from hash alone",
+  "interrupted_solver": "record last task and reason; no fabricated unavailable vector",
+  "freeze": "per-stage budget_freeze.json and SHA receipt",
+  "failure": "technical_failure.json plus terminal result.json",
+  "final_classification": "result.json; all outcomes mandatory STOP, no automatic next stage",
+  "resource_usage_boundary": "sampled before terminal result serialization; output guard applies to final write too",
+  "output_cap_MiB": 128,
+  "terminal_reserve_bytes": 65536,
+  "no_registered_outputs_in_source_review": true,
+  "point_records": "point_outcomes.jsonl.gz; ready and skipped-point completion descriptors",
+  "skipped_point_required_fields": [
+    "x",
+    "n",
+    "tag",
+    "point_status",
+    "minima",
+    "certified_infeasible_objectives",
+    "same_n_feasible_B0_profile_IDs",
+    "B3_feasibility_executed",
+    "paired_queries",
+    "primary_comparison_eligible",
+    "strict_witness"
+  ],
+  "skipped_point_flags": {
+    "B3_feasibility_executed": false,
+    "paired_queries": 0,
+    "primary_comparison_eligible": false,
+    "strict_witness": false
+  },
+  "minimum_record_statuses": [
+    "B2_MINIMUM_CERTIFIED_FEASIBLE",
+    "B2_CERTIFIED_INFEASIBLE_AT_N",
+    "TECHNICAL_INCONCLUSIVE_BUDGET_GENERATION"
+  ],
+  "result_additional_fields": [
+    "certified_comparable_queries",
+    "B2_certified_infeasible_points",
+    "completed_budget_ready_points",
+    "NO_REGISTERED_WITNESS_scope"
+  ],
+  "infeasibility_not_negative_evidence": true,
+  "zero_comparable_queries": "report count0 and scoped NO_REGISTERED_WITNESS; no inference of global improvement absence"
+}

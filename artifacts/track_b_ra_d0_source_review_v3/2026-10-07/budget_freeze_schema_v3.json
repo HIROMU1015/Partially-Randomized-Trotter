@@ -1,0 +1,106 @@
+{
+  "schema": "ra_d0_budget_freeze_policy_v3",
+  "batch_order": [
+    "P1_ANCHORS",
+    "P2_CONDITIONAL_COVERAGE if prescribed by anchor outcomes"
+  ],
+  "freeze_scope": "all points in selected batch; independent Phase A/B per batch",
+  "Phase_A": "BUDGET_FREEZE",
+  "Phase_A_B3_solver_calls": 0,
+  "sources": [
+    "up to 9 same-n confidence-feasible B0_saved complete vectors",
+    "complete vectors of 3 certified B2 single-resource minimum solve candidates"
+  ],
+  "maximum_vectors_per_point_before_dedup": 12,
+  "vector_fields": [
+    "T",
+    "CX",
+    "1Q"
+  ],
+  "dedup": "exact rational complete tuple; keep all source IDs",
+  "Cartesian_product": false,
+  "required_minima": [
+    "T",
+    "CX",
+    "1Q"
+  ],
+  "minimum_pipeline": [
+    "nominal inner solve",
+    "fixed q/y rounding",
+    "B2 membership",
+    "mean",
+    "confidence",
+    "workspace peak",
+    "resource upper"
+  ],
+  "uncertified_minimum": "Case C -> TECHNICAL_INCONCLUSIVE_BUDGET_GENERATION or existing specific technical failure; STOP; no rescue/retry",
+  "freeze_file": "<stage>/budget_freeze.json",
+  "receipt_file": "<stage>/budget_freeze.receipt.json",
+  "freeze_required_fields": [
+    "schema",
+    "stage",
+    "input_identities",
+    "points",
+    "number_of_vectors",
+    "number_of_queries",
+    "B3_solver_calls_in_this_phase",
+    "number_of_budget_ready_points",
+    "number_of_B2_certified_infeasible_points"
+  ],
+  "point_required_fields": [
+    "x",
+    "n",
+    "tag",
+    "minima",
+    "budget_vectors",
+    "queries",
+    "point_status",
+    "certified_infeasible_objectives",
+    "same_n_feasible_B0_profile_IDs",
+    "descriptive_B3_feasibility_query_scheduled"
+  ],
+  "minimum_required_fields": [
+    "objective",
+    "certificate_sha256",
+    "resources",
+    "status"
+  ],
+  "budget_vector_required_fields": [
+    "budget_id",
+    "resources",
+    "sources"
+  ],
+  "query_required_fields": [
+    "query_id",
+    "x",
+    "n",
+    "tag",
+    "objective",
+    "budget_id",
+    "caps"
+  ],
+  "canonical_identity": "SHA256 of sorted compact JSON + newline; exact resource Fraction strings",
+  "write_policy": "exclusive create; both freeze and SHA receipt saved before any B3 in batch",
+  "Phase_B": "hash/input/status/count/derived-query checks; process only BUDGET_READY points, persist skipped-point descriptors without B3 calls; recheck hash after batch",
+  "feedback": "no budget/grid/settings additions or deletions; P2 context selection only through fixed anchor gate",
+  "actual_registered_freeze_created": false,
+  "point_statuses": [
+    "BUDGET_READY",
+    "B2_POINT_CERTIFIED_INFEASIBLE"
+  ],
+  "minimum_statuses": [
+    "B2_MINIMUM_CERTIFIED_FEASIBLE",
+    "B2_CERTIFIED_INFEASIBLE_AT_N"
+  ],
+  "minimum_resource_type": "complete vector for certified feasible; null for certified infeasible",
+  "certified_infeasible_minimum": "exact rational Farkas proof from maximum one auxiliary; reverify the returned ray against that minimum LP",
+  "certified_infeasible_point": {
+    "condition": "one or more certified infeasible objective",
+    "budget_vectors": [],
+    "queries": [],
+    "B0_saved_alone_may_set_budgets": false,
+    "new_descriptive_B3_query": false,
+    "continue_to_next_shot": true
+  },
+  "technical_point": "no completed batch freeze; full returned vectors/last task in certificates and technical_failure.json/result.json"
+}

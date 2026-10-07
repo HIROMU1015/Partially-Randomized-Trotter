@@ -40,10 +40,12 @@ def query_recipe(x, n, tag, vectors):
 def write_freeze(path, stage, points, input_identities, guard):
     if guard.current_phase != "BUDGET_FREEZE":
         raise TechnicalFailure("freeze written outside Phase A")
-    body = {"schema": "ra_d0_budget_freeze_v2", "stage": stage,
+    body = {"schema": "ra_d0_budget_freeze_v3", "stage": stage,
             "input_identities": input_identities, "points": points,
             "number_of_vectors": sum(len(p["budget_vectors"]) for p in points),
             "number_of_queries": sum(len(p["queries"]) for p in points),
+            "number_of_budget_ready_points": sum(p["point_status"] == "BUDGET_READY" for p in points),
+            "number_of_B2_certified_infeasible_points": sum(p["point_status"] == "B2_POINT_CERTIFIED_INFEASIBLE" for p in points),
             "B3_solver_calls_in_this_phase": 0}
     raw = guard.write(path, body)
     digest = sha256(raw).hexdigest()
@@ -58,14 +60,35 @@ def load_freeze(path, expected_sha256, input_identities):
     if sha256(raw).hexdigest() != expected_sha256:
         raise TechnicalFailure("budget freeze SHA256 mismatch")
     body = json.loads(raw)
-    if body["input_identities"] != input_identities or body["B3_solver_calls_in_this_phase"] != 0:
+    if (body["schema"] != "ra_d0_budget_freeze_v3" or body["input_identities"] != input_identities
+            or body["B3_solver_calls_in_this_phase"] != 0):
         raise TechnicalFailure("budget freeze identity/phase mismatch")
     for point in body["points"]:
+        if {m["objective"] for m in point["minima"]} != set(RESOURCES) or len(point["minima"]) != 3:
+            raise TechnicalFailure("budget freeze requires three minimum outcomes")
+        if any(m["status"] not in {"B2_MINIMUM_CERTIFIED_FEASIBLE", "B2_CERTIFIED_INFEASIBLE_AT_N"}
+               for m in point["minima"]):
+            raise TechnicalFailure("technical minimum cannot enter a completed freeze")
+        certified = [m["objective"] for m in point["minima"] if m["status"] == "B2_CERTIFIED_INFEASIBLE_AT_N"]
+        if certified != point["certified_infeasible_objectives"]:
+            raise TechnicalFailure("infeasible objective/status mismatch")
+        if point["point_status"] == "B2_POINT_CERTIFIED_INFEASIBLE":
+            if not certified or point["budget_vectors"] or point["queries"]:
+                raise TechnicalFailure("certified infeasible point must not generate budgets/paired queries")
+            continue
+        if point["point_status"] != "BUDGET_READY" or certified or not point["budget_vectors"]:
+            raise TechnicalFailure("invalid frozen point status")
         vectors = [{"resources": v["resources"], "source": v["sources"][0]}
                    for v in point["budget_vectors"]]
         _, expected_queries = query_recipe(point["x"], point["n"], point["tag"], vectors)
         if point["queries"] != expected_queries:
             raise TechnicalFailure("budget/query derivation mismatch")
+    for key, actual in (("number_of_vectors", sum(len(p["budget_vectors"]) for p in body["points"])),
+                        ("number_of_queries", sum(len(p["queries"]) for p in body["points"])),
+                        ("number_of_budget_ready_points", sum(p["point_status"] == "BUDGET_READY" for p in body["points"])),
+                        ("number_of_B2_certified_infeasible_points", sum(p["point_status"] == "B2_POINT_CERTIFIED_INFEASIBLE" for p in body["points"]))):
+        if body[key] != actual:
+            raise TechnicalFailure("budget freeze count mismatch")
     return body
 
 

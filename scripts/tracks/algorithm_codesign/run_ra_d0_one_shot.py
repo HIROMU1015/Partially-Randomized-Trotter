@@ -18,14 +18,14 @@ def main():
     try:
         with guard.enforce_OS_limits():
             from trottertracks.algorithm_codesign.ra_d0.engine import OneShotEngine
-            manifest = json.loads((ROOT/SOURCE_DIR/"source_manifest_v2.json").read_text())
+            manifest = json.loads((ROOT/SOURCE_DIR/"source_manifest_v3.json").read_text())
             table_path = "artifacts/track_b_ra_d0_preparation/2026-10-06/candidate_table_v1.json"
             grid_path = "artifacts/track_b_ra_d0_preparation/2026-10-06/shot_grid_query_recipe_v1.json"
             inputs = {"source_commit": permit.source_commit, "authorization_commit": permit.authorization_commit,
                       "authorization_sha256": permit.authorization_sha256,
                       "candidate_table_sha256": manifest["critical_sha256"][table_path],
                       "shot_grid_sha256": manifest["critical_sha256"][grid_path],
-                      "contract_sha256": manifest["critical_sha256"][SOURCE_DIR+"/execution_contract_v2.json"]}
+                      "contract_sha256": manifest["critical_sha256"][SOURCE_DIR+"/execution_contract_v3.json"]}
             engine = OneShotEngine(json.loads((ROOT/table_path).read_text()), json.loads((ROOT/grid_path).read_text()), output, inputs, permit)
             engine.guard = guard
         result = engine.run()

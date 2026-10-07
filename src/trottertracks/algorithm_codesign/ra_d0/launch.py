@@ -6,11 +6,11 @@ from pathlib import Path
 import re
 import subprocess
 
-SOURCE_DIR = "artifacts/track_b_ra_d0_source_review_v2/2026-10-07"
+SOURCE_DIR = "artifacts/track_b_ra_d0_source_review_v3/2026-10-07"
 AUTH_PATH = SOURCE_DIR+"/authorization.json"
 RECEIPT_PATH = "docs/tracks/algorithm_codesign/ra_d0_execution_authorization_receipt.md"
-MANIFEST_PATH = SOURCE_DIR+"/source_manifest_v2.json"
-OUTPUT_PATH = "artifacts/track_b_ra_d0_development_result/2026-10-07/v2"
+MANIFEST_PATH = SOURCE_DIR+"/source_manifest_v3.json"
+OUTPUT_PATH = "artifacts/track_b_ra_d0_development_result/2026-10-07/v3"
 
 
 @dataclass
@@ -58,7 +58,7 @@ def verify_launch(root):
     parents = git("show", "-s", "--format=%P", "HEAD").decode().strip().split()
     changed = git("diff-tree", "--no-commit-id", "--name-only", "-r", "-z", "HEAD").decode().split("\0")
     changed = [p for p in changed if p]
-    contract = root/SOURCE_DIR/"execution_contract_v2.json"
+    contract = root/SOURCE_DIR/"execution_contract_v3.json"
     validate_authorization(auth, head, parents, changed, hashlib.sha256(contract.read_bytes()).hexdigest())
     if git("status", "--porcelain", "--untracked-files=normal").strip():
         raise PermissionError("execution HEAD must start clean")
