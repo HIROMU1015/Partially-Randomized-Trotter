@@ -4,6 +4,7 @@ import json
 import math
 import re
 import time
+from .streaming import LazyList
 
 
 class Stop(RuntimeError):
@@ -33,7 +34,7 @@ def exact(value):
     if type(value) is complex:
         require(math.isfinite(value.real) and math.isfinite(value.imag), 'nonfinite complex')
         return {'complex128_hex': [value.real.hex(), value.imag.hex()]}
-    if isinstance(value, (list, tuple)):
+    if isinstance(value, (list, tuple, LazyList)):
         return [exact(v) for v in value]
     if isinstance(value, dict):
         require(all(type(k) is str for k in value), 'nonstring key')
@@ -57,7 +58,7 @@ def exact_json_parts(value):
         yield json.encoder.encode_basestring(value)
     elif type(value) in (float,complex):
         yield from exact_json_parts(exact(value))
-    elif isinstance(value,(list,tuple)):
+    elif isinstance(value,(list,tuple,LazyList)):
         yield '['
         for index,item in enumerate(value):
             if index:yield ','
@@ -76,19 +77,28 @@ def exact_json_parts(value):
         raise Stop('unsupported/symbolic identity value')
 
 
-def fingerprint(domain, payload):
-    # Both normalization and JSON encoding are lazy: the monitor must also
-    # run while traversing a large numerical circuit's container graph.
-    digest = hashlib.sha256()
+def canonical_chunks(value, chunk_size=65536):
+    """Bound retained encoding bytes, including a single long JSON string."""
+    require(type(chunk_size) is int and 0 < chunk_size <= 65536, 'encoding chunk budget')
     pending = bytearray()
-    for part in exact_json_parts({'domain': domain, **payload}):
-        pending.extend(part.encode())
-        if len(pending) >= 65536:
-            digest.update(pending)
-            pending.clear()
-            time.sleep(0)  # process-local cooperative scheduling only
+    for part in exact_json_parts(value):
+        for start in range(0, len(part), chunk_size // 4 or 1):
+            encoded = part[start:start + (chunk_size // 4 or 1)].encode()
+            while encoded:
+                count = min(chunk_size - len(pending), len(encoded))
+                pending.extend(encoded[:count]); encoded = encoded[count:]
+                if len(pending) == chunk_size:
+                    yield bytes(pending)
+                    pending.clear()
+                    time.sleep(0)
     if pending:
-        digest.update(pending)
+        yield bytes(pending)
+
+
+def fingerprint(domain, payload):
+    digest = hashlib.sha256()
+    for chunk in canonical_chunks({'domain': domain, **payload}):
+        digest.update(chunk)
     return digest.hexdigest()
 
 

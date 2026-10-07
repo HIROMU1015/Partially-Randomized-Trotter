@@ -25,15 +25,34 @@ def _compile_worker(circuit,options):
 
 class OwnedRun:
     def __init__(self,permit,authorization,*,prior_wall=0,handoff=False,prior_charge=0):
+        run_started=time.monotonic()
+        # A new role cannot inherit old-host approval. This is a future path;
+        # all new-host preparation drafts keep runtime_authorization=false.
+        from .observer import IndependentObserver, AS_CAP, RSS_CAP, FRAME_CAP, TERMINAL_RESERVE
+        role = authorization.get('observer_role', {})
+        require(role.get('runtime_authorization') is True and role.get('approved') is True and
+                role.get('AS_bytes') == AS_CAP and role.get('RSS_bytes') == RSS_CAP,
+                'new independent observer role needs separate production approval')
         observation=observe_memory()
-        self.workers=admission(observation['available'],observation['observed_at'],permit.plan['requested_workers'],
+        self.workers=admission(observation['available']-AS_CAP,observation['observed_at'],permit.plan['requested_workers'],
                                authorization['allowed_cpus'],observation['process_cpus'])
         # No affinity edits. A narrower CPU permission requires a separately scoped launch context.
         require(observation['process_cpus'] <= set(authorization['allowed_cpus']), 'process can use unpermitted CPU')
-        self.monitor=Monitor(self.workers,observation)
         self.wall=WallBudget(prior_wall)
+        self.wall.start=run_started
         limit_owned_address_space()
         self.budget=OutputBudget(OUTPUT,handoff=handoff,prior_charge=prior_charge)
+        trace_cap = (72*3600+2)*FRAME_CAP+TERMINAL_RESERVE
+        # Full append-only trace is reserved before the observer can write;
+        # reserve conservatively charges temp+final+journal even for one file.
+        import sys
+        try:
+            self.budget.reserve(trace_cap+FRAME_CAP)  # includes driver first-stop file
+            self.monitor=IndependentObserver(sys.executable, self.budget.root/'observer.jsonl',
+                scope='PRODUCTION', runtime_authorization=True, workers=self.workers,
+                prior_wall=prior_wall, wall_started=self.wall.start, output_cap=trace_cap)
+        except BaseException:
+            self.budget.close(); raise
         self.finished=threading.Event();self.failure=None
         self.stage=permit.stage
         self.wall_index=0
@@ -43,16 +62,18 @@ class OwnedRun:
             from .workers import OwnedPool
             self.pool=OwnedPool(self.workers,permit,self.monitor,self.budget)
         except BaseException:
-            self.finished.set();self.thread.join(timeout=2)
+            self.finished.set();self.thread.join(timeout=6)
             self.monitor.stop_children()
+            self.monitor.close(abort=True)
             self.budget.close();raise
 
     def _watch(self):
         try:
             while not self.finished.wait(1):
                 self.monitor.poll()
-                used=self.wall.consumed()
-                self.budget.write(self.stage+'-wall-%06d.json'%self.wall_index,json_bytes({'consumed_seconds':used}))
+                self.wall.consumed()
+                # Independent trace records cumulative wall, including observer
+                # startup/shutdown; no second one-file-per-tick wall inventory.
                 self.wall_index+=1
         except BaseException as exc:
             self.failure=exc
@@ -69,6 +90,12 @@ class OwnedRun:
         pool_failure = getattr(getattr(self,'pool',None),'failure',None)
         require(pool_failure is None,'owned pool failed STOP: '+str(pool_failure))
         self.wall.consumed()
+        if hasattr(self.monitor, 'poll'):
+            self.monitor.poll()
+
+    def phase(self, name):
+        self.pulse()
+        self.monitor.phase(name)
 
     def wait(self,future):
         from concurrent.futures import TimeoutError
@@ -93,10 +120,14 @@ class OwnedRun:
         self.monitor.stop_children()
 
     def close(self):
-        self.finished.set();self.thread.join(timeout=2)
+        self.finished.set();self.thread.join(timeout=6)
         self.monitor.stop_children()
-        self.pool.shutdown(wait=True,cancel_futures=True)
-        self.budget.close()
+        try:
+            try:self.pool.shutdown(wait=True,cancel_futures=True)
+            finally:self.monitor.close()
+            self.wall.consumed()  # charge through pool + observer reap and FD cleanup
+            require(not self.thread.is_alive(), 'owned monitor watchdog did not end')
+        finally:self.budget.close()
         require(self.failure is None,'monitor STOP; no retry/resume: '+str(self.failure))
 
 
@@ -163,11 +194,16 @@ def candidate_wrapper_jobs(run,identity,seeds,preparation,template):
     from .circuits import build_evolution,wrapper,numerical_fingerprint
     for index,seed in enumerate(seeds):
         run.pulse()
+        if hasattr(run,'phase'):run.phase('candidate_events_build')
         events=sample_events(preparation['components'],template,seed)[0] if seed is not None else [[] for _ in range(template['q'])]
         evolution=build_evolution(preparation,template,events)
         for axis in ('cosine','sine'):
+            if hasattr(run,'phase'):run.phase('wrapper_build:'+axis)
             run.pulse();circuit=wrapper(evolution,axis)
+            if hasattr(run,'phase'):run.phase('numerical_serialization:'+axis)
             numerical=numerical_fingerprint(circuit,axis)
+            run.pulse()
+            if hasattr(run,'phase'):run.phase('wrapper_ready:'+axis)
             yield wire(identity,axis,seed,index if seed is not None else None,numerical),circuit
 
 
