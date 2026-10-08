@@ -178,3 +178,7 @@ D1〜D4レビュー承認は未解決、science/source port/input generation/nex
 ## 2026-10-07 H4 引継ぎ資料公開の記録
 
 [当日ノート](2026-10-07.md)に、Git公開を試す理由と、run05停止・未追跡入力の別転送・新hostの未承認事項を記録した。旧時点の記載は保持する。
+
+## 2026-10-09 H4 cleanup ESRCH修正・独立再review PASS
+
+[当日ノート](2026-10-09.md)：旧P1の限定修正、新SOURCE、人工39件と独立13件PASS、binding更新、受領待ち/未承認でSTOP。

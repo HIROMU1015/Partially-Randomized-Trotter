@@ -1,0 +1,49 @@
+{
+  "additional_transpile": 0,
+  "affinity_syscalls_mocked_only": true,
+  "all_attempts_wall_seconds": 600,
+  "cases": [
+    "both stop paths first/middle/all ESRCH",
+    "nonESRCH EPERM/EBADF/EINVAL propagate",
+    "ownership mismatch/no signal",
+    "double cleanup",
+    "first STOP reason persists",
+    "observer terminal wait/FD close",
+    "pool wait/pipe/executor close",
+    "existing minimal4 process exit/reap"
+  ],
+  "checkout": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-cleanup-esrch-fix-20261009",
+  "cleanup_max_processes_including_test": 4,
+  "cleanup_roles": [
+    "test/subreaper",
+    "minimal_driver",
+    "stdlib_observer",
+    "minimal_sleep_worker"
+  ],
+  "forbidden": [
+    "scientific input array loads/generation",
+    "SCF/DF/signal/sampling/build/compile",
+    "GPU/CuPy",
+    "install/new venv/shared settings",
+    "other-job manipulation",
+    "/tmp"
+  ],
+  "minimal_driver_worker_AS_bytes": 67108864,
+  "normal_test_processes": 1,
+  "observer_AS_bytes": 268435456,
+  "observer_RSS_bytes": 67108864,
+  "observer_trace_cap_bytes": 65536,
+  "output_bytes_cap": 16777216,
+  "ownership": "UID/PID/starttime/parent/pidfd; own test subreaper prctl only, restored; original driver exit permits registered reparented child stop, never other jobs",
+  "per_attempt_wall_seconds": 180,
+  "process_thread_limits": 1,
+  "production": false,
+  "python": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+  "real_worker_launches": 0,
+  "schema_version": "h4-prelaunch-artificial-plan-v2",
+  "science": false,
+  "scope": "P1_ESRCH_ONLY_FIX_AND_FOCUSED_REGRESSION",
+  "test_AS_bytes": 2147483648,
+  "test_RSS_bytes": 536870912,
+  "transpose_or_stress": false
+}

@@ -64,3 +64,9 @@ allowed_cpus=[]、approved=false、runtime_authorization=false、sealed=false。
 入力未受領・P1不合格があるためplan再sealは行わない。未実行absolute commandは従来資料の提案として保持し、実行しない。
 残る手順は受領/停止proof確認→P1修正SOURCE・限定回帰・再binding→独立再review→環境/CPU/observer/+20契約変更を一括承認→利用者の明示launch。
 その先の許可範囲もH4 map一度だけ、完了またはfail-closed STOP後に停止、自動retryなし。
+
+## 2026-10-09 H4 cleanup ESRCH修正・独立再review PASS
+
+この報告のP1は[new SOURCE・限定回帰・独立再review](track_a_h4_cleanup_esrch_fix_20261009.md)で修正済み。
+新SOURCE `6bd1ba01cd71ec3e2071082963c9f07478dada9a`、author39件/独立13件PASS、draft binding PASS。
+上記の旧SOURCE/P1不合格は当時の証拠として保持する。入力・native停止証拠未受領、実行未承認は継続し再seal/本計算なし。
