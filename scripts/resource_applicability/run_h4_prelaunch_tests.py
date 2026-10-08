@@ -42,10 +42,13 @@ def main():
                     argv[4]=='driver','only minimal synthetic cleanup driver')
         if event in ('os.system','os.posix_spawn','os.exec'):raise RuntimeError('external command forbidden')
     sys.addaudithook(audit)
-    file=ROOT/'tests/tracks/resource_applicability/test_h4_prelaunch.py'
-    spec=importlib.util.spec_from_file_location('h4_prelaunch_synthetic',file)
-    module=importlib.util.module_from_spec(spec);sys.modules[spec.name]=module;spec.loader.exec_module(module)
-    started=time.monotonic();result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromModule(module))
+    suite=unittest.TestSuite()
+    for name in ('test_h4_prelaunch','test_h4_cleanup_esrch'):
+        file=ROOT/'tests/tracks/resource_applicability'/(name+'.py')
+        spec=importlib.util.spec_from_file_location(name+'_synthetic',file)
+        module=importlib.util.module_from_spec(spec);sys.modules[spec.name]=module;spec.loader.exec_module(module)
+        suite.addTests(unittest.defaultTestLoader.loadTestsFromModule(module))
+    started=time.monotonic();result=unittest.TextTestRunner(verbosity=2).run(suite)
     self_usage=resource.getrusage(resource.RUSAGE_SELF);child_usage=resource.getrusage(resource.RUSAGE_CHILDREN)
     total=sum(p.stat().st_size for p in root.rglob('*') if p.is_file())
     payload=dict(status='PASS' if result.wasSuccessful() and not denied else 'FAIL',tests=result.testsRun,

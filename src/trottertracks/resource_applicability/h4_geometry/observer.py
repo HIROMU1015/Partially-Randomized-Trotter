@@ -4,6 +4,7 @@ The private socket carries bounded JSON, never pickle or external data. Only
 the exact registered identities are signalled, through pidfds. No affinity,
 cgroup, host settings, or foreign processes are changed.
 """
+import errno
 import json
 import math
 import os
@@ -78,7 +79,17 @@ class OwnedIdentity:
             self.sample()
         except (Stop, OSError, KeyError):
             return False  # never signal a missing/reused/foreign process
-        signal.pidfd_send_signal(self.fd, sig)
+        return self._send_owned_signal(sig)
+
+    def _send_owned_signal(self, sig):
+        # The stable pidfd still identifies only this registered process, but
+        # it may exit after sampling and before the kernel handles the signal.
+        try:
+            signal.pidfd_send_signal(self.fd, sig)
+        except OSError as exc:
+            if exc.errno == errno.ESRCH:
+                return False  # already exited; keep cleaning subsequent owners
+            raise  # permission/invalid-fd/other errors are never success
         return True
 
     def terminate_after_parent_exit(self, parent_owner):
@@ -95,8 +106,7 @@ class OwnedIdentity:
             current = self.sampler(self.expected['pid'])
             require(all(current[k] == self.expected[k] for k in ('pid','start','uid')), 'orphan ownership lost')
         except (Stop, OSError, KeyError):return False
-        signal.pidfd_send_signal(self.fd, signal.SIGTERM)
-        return True
+        return self._send_owned_signal(signal.SIGTERM)
 
     def close(self):
         if self.fd is not None:
