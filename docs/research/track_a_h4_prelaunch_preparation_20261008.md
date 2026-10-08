@@ -92,3 +92,11 @@ env PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_
 
 残る承認は candidate environment/compiler採用、12worker＋driver/observer CPU/role、最小actual+20変更、receipt/stop proof完成とplan再seal、独立最終review、利用者の明示launch。
 承認範囲は冒頭の一回限りmapだけ。完了/FAIL_CLOSED_STOP後にSTOPし、自動retry/研究判断/条件追加へ進まない。
+
+
+## 2026-10-08 H4受領監査・独立最終review TECHNICAL FAIL
+
+[統合入口](track_a_h4_receipt_final_review_20261008.md)。origin79827016/SOURCEad57d163照合、source32不変、read-only live profile/資源/quotaを確認。
+凍結NPZ6/freeze/native stop/controlは未受領、producer bytes/SHA manifestを含む最小転送手順を具体化。科学array読込/再生成0。
+独立reviewはpidfd送信時ESRCH競合で後続cleanupが中断するP1を純mock再現しTECHNICAL FAIL。57人工PASSはこの競合を覆わない。
+未受領NOT_EVALUABLE、CPU/env/observer/74804案のUNAPPROVEDと技術FAILを区別。sourceは修正せず再sealなし、flags false、carry20/165214360/5466.188392877579を保持し本計算STOP。

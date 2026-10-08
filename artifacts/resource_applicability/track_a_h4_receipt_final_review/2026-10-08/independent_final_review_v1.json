@@ -1,0 +1,90 @@
+{
+  "approved": false,
+  "component_results": {
+    "CPU_proposal": "PASS_AS_PROPOSAL",
+    "cumulative_actual_74804_proposal": "PASS_AS_UNAPPROVED_MINIMUM_CHANGE",
+    "environment_profile": "PASS_WITH_OLD_OUTPUT_EQUIVALENCE_UNVERIFIED",
+    "fresh_gate_and_false_flags": "PASS_STATIC",
+    "input_native_stop_binding": "NOT_EVALUABLE",
+    "observer_resource_budget": "PASS",
+    "own_run_cleanup": "FAIL",
+    "production_success": "NOT_TESTED",
+    "storage_inode_quota_planning": "PASS_WITH_FRESH_LAUNCH_REQUIRED"
+  },
+  "evidence": {
+    "live_environment_compiler_profile": "PASS",
+    "prior_artificial_evidence25": "PASS",
+    "review_artifacts19": "PASS",
+    "source32_blob_SHA": "PASS"
+  },
+  "findings": [
+    {
+      "file": "src/trottertracks/resource_applicability/h4_geometry/observer.py",
+      "fixed": false,
+      "id": "P1_ESRCH_CLEANUP_ABORT",
+      "impact": "First stop exception aborts loop; following registered owned workers, driver stop, wait/pipe/executor cleanup may be skipped.",
+      "lines": [
+        76,
+        82,
+        98,
+        270,
+        272,
+        400,
+        401
+      ],
+      "minimum_fix": "Handle only ESRCH as already-exited in both pidfd send paths and continue cleanup; preserve fail-closed for other errors; add bounded mocked race regression.",
+      "related_file": "src/trottertracks/resource_applicability/h4_geometry/workers.py",
+      "related_line": 168,
+      "reproduction": {
+        "actual_signals": 0,
+        "outcome": "cleanup_aborted_by_ESRCH",
+        "production_processes": 0,
+        "scientific_access": 0,
+        "second_owned_child_visited": false,
+        "signals_attempted": 1,
+        "source": "ad57d1639133f7158cce58d767b8e0aa179bf044"
+      },
+      "severity": "blocking",
+      "source_changed": false,
+      "trigger": "Owned process exits between successful sample() and pidfd_send_signal(); ESRCH propagates."
+    }
+  ],
+  "next_actions": [
+    "receive bytes/native stop proof",
+    "correct cleanup source, freeze newSOURCE, bounded regression, rebind plan and independent rereview",
+    "then user approvals and launch instruction"
+  ],
+  "not_technical_failures": [
+    "CPU permission pending",
+    "new environment adoption pending",
+    "observer role pending",
+    "actual cap74804 amendment pending",
+    "user launch pending"
+  ],
+  "read_paths": [
+    "AGENTS.md",
+    "PROJECT_MAP.md",
+    "docs/research/研究概要・現状.md",
+    "docs/research/track_a_h4_new_server_monitor_fix_a_20261007.md",
+    "docs/research/track_a_h4_prelaunch_preparation_20261008.md",
+    "artifacts/resource_applicability/track_a_h4_prelaunch_preparation/2026-10-08",
+    "src/trottertracks/resource_applicability/h4_geometry/launch_binding.py",
+    "src/trottertracks/resource_applicability/h4_geometry/execution.py",
+    "src/trottertracks/resource_applicability/h4_geometry/observer.py",
+    "src/trottertracks/resource_applicability/h4_geometry/resources.py",
+    "src/trottertracks/resource_applicability/h4_geometry/workers.py",
+    "src/trottertracks/resource_applicability/h4_geometry/prelaunch_audit.py",
+    "src/trottertracks/resource_applicability/h4_geometry/gates.py",
+    "src/trottertracks/resource_applicability/h4_geometry/ledger.py",
+    "src/trottertracks/resource_applicability/h4_geometry/parallel.py",
+    "tests/tracks/resource_applicability/test_h4_prelaunch.py",
+    "tests/tracks/resource_applicability/test_h4_monitor_fix_a.py"
+  ],
+  "receipt_verdict": "NOT_EVALUABLE",
+  "review_bundle": "798270161d85af6361a4b08cdee9e4c879e6ffd7",
+  "reviewer": "/root/independent_final_review",
+  "reviewer_is_implementation_author": false,
+  "runtime_authorization": false,
+  "source_commit": "ad57d1639133f7158cce58d767b8e0aa179bf044",
+  "verdict": "TECHNICAL_FAIL"
+}
