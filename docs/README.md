@@ -356,3 +356,14 @@ sourceとsynthetic検証を固定する段階であり、held-out開封・科学
 [artifact manifest](../artifacts/track_b_g3_finite_law/2026-10-09/evidence_manifest_v1.json)。
 post-hoc/developmentの有限sampling・controlled mean・confidenceと固定12 return合成を完了。
 旧結果を変更せずmandatory STOP。研究採否・CTS等の追加scopeはGPT G3へ返す。
+
+
+## Track B G4（2026-10-09）
+
+[G4結果/GPT handoff](tracks/algorithm_codesign/g4_results_and_gpt_handoff_20261009.md)から
+[独立証明](tracks/algorithm_codesign/g4_A_independent_proof_20261009.md)、
+[CTS仕様](tracks/algorithm_codesign/g4_B_matched_CTS_contract_20261009.md)、
+[次scope設計のみ](tracks/algorithm_codesign/g4_C_next_validation_design_20261009.md)、
+[GPT再レビューv2](research/track_b_G3_scientific_review_20261009_rereview_v2.md)、
+[dated note](research/研究ノート/2026-10-09_track_b_g4_certificate_CTS.md)へ辿る。
+known toyの限定class認証とmatched CTSを完了、mandatory STOP、科学判断はGPT。

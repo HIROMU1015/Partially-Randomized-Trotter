@@ -338,3 +338,12 @@ It imports no old execution controller or shared library and performs no solver/
 [仕様と結果](../docs/tracks/algorithm_codesign/g3_finite_law_handoff_20261009.md)、
 [manifest](../artifacts/track_b_g3_finite_law/2026-10-09/evidence_manifest_v1.json)。
 各Phase一回/retry0。full suite/旧run/registered LP/CTS/DFへの自動進行なし、mandatory STOP。
+
+
+## Track B G4
+
+`tracks/algorithm_codesign/g4_independent_certificate.py`（旧helperなしsaved-value認証）、
+`g4_cts_specialization.py`（exact Pauli代数）、`g4_matched_cts.py`（条件付き12合成one-shot）、
+`audit_g4_saved_outputs.py`（STOP後の保存値照合）。
+[G4 handoff](../docs/tracks/algorithm_codesign/g4_results_and_gpt_handoff_20261009.md)を先に読む。
+両marker consumed、retry不可。Cは設計のみ。次science stage未認可。

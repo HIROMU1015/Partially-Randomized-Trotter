@@ -138,3 +138,12 @@ stdoutのJSONが[保存report](../../../artifacts/track_b_bm05_equivalence/2026-
 `audit_g3_saved_outputs.py`は保存sequence/count/complete lawと限定winner poolのみの照合。
 [結果と制約](../../../docs/tracks/algorithm_codesign/g3_finite_law_handoff_20261009.md)。
 新solver/synthesis/circuit/matrix/LP/DFをpost-auditへ混ぜず、mandatory STOP/GPT G3を維持する。
+
+
+## G4 independent certificate / matched CTS
+
+`g4_independent_certificate.py`、`g4_cts_specialization.py`、`g4_matched_cts.py`、
+`audit_g4_saved_outputs.py`を追加。
+[結果/GPT handoff](../../../docs/tracks/algorithm_codesign/g4_results_and_gpt_handoff_20261009.md)、
+[manifest](../../../artifacts/track_b_g4_conditional_separation/2026-10-09/evidence_manifest_v1.json)。
+exclusive A/B markersは消費済み。科学runnerは再実行不可、STOP後の保存値照合だけ。

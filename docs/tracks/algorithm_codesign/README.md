@@ -236,3 +236,14 @@ known return/CTSの総費用とlaw認証は未完。旧結果/class/STOPを保�
 developmentの有限law288 profiles/6,912候補と、認可されたreturn12合成/12 native event/162候補を完了。
 旧source/contract/result/markerを維持。全B2混合の最適性未認証、CTS比較未取得。
 mandatory STOP、研究採否・次scopeはGPT G3。共有src/trotterlib API変更なし。
+
+
+## 2026-10-09：G4結果・GPT判断待ち（最新追記）
+
+[G4 handoff](g4_results_and_gpt_handoff_20261009.md)、[独立証明](g4_A_independent_proof_20261009.md)、
+[CTS結果前contract](g4_B_matched_CTS_contract_20261009.md)、
+[G4-C設計比較](g4_C_next_validation_design_20261009.md)、
+[artifact manifest](../../../artifacts/track_b_g4_conditional_separation/2026-10-09/evidence_manifest_v1.json)。
+G3の旧statusを保持し、新G4でx1/4の限定B2 digital class分離を認証。
+I1 CTSの一lawは指定J1 lawのT/CX/1Qを下回る。新規性・採用・全method最適性は未判定。
+新条件の本実行なし。mandatory STOP、次判断はGPT。

@@ -722,3 +722,15 @@ result commitへ収録するlocal execution evidenceであり、immutable CIで�
 `artifacts/track_b_g3_finite_law/2026-10-09/evidence_manifest_v1.json`を対応させる。
 承認されたdevelopment保存値288 profile/6,912 lawsと、条件付きreturn12合成/12 native event/162 lawsを完了。
 限定poolでT/1Q差を記録、全B2任意混合の最適性・旧RA-D0 witnessではない。mandatory STOP、次判断はGPT G3。
+
+
+## Track B G4条件付き分離・matched CTS（2026-10-09）
+
+[G4結果/GPT handoff](docs/tracks/algorithm_codesign/g4_results_and_gpt_handoff_20261009.md)、
+[独立証明](docs/tracks/algorithm_codesign/g4_A_independent_proof_20261009.md)、
+[CTS結果前仕様](docs/tracks/algorithm_codesign/g4_B_matched_CTS_contract_20261009.md)、
+[G4-C設計のみ](docs/tracks/algorithm_codesign/g4_C_next_validation_design_20261009.md)、
+`scripts/tracks/algorithm_codesign/g4_independent_certificate.py`、`g4_cts_specialization.py`、
+`g4_matched_cts.py`、`audit_g4_saved_outputs.py`、2 focused test files、
+`artifacts/track_b_g4_conditional_separation/2026-10-09/evidence_manifest_v1.json`を対応させる。
+固定class分離とI1 CTS対照を分け、全工程STOP・研究採否はGPT。共有API変更なし。

@@ -320,3 +320,11 @@ The saved-table diagnostic is complete and STOPped; it is not a new registered R
 [結果/handoff](../../docs/tracks/algorithm_codesign/g3_finite_law_handoff_20261009.md)、
 [manifest](../../artifacts/track_b_g3_finite_law/2026-10-09/evidence_manifest_v1.json)から辿る。
 旧R1 native/numeric/accountingをidentity固定して再利用。288 finite profilesと固定return12合成を完了、mandatory STOP。
+
+
+## Track B G4との境界
+
+[G4 handoff](../../docs/tracks/algorithm_codesign/g4_results_and_gpt_handoff_20261009.md)。
+独立certificateとCTS specializationは`scripts/tracks/algorithm_codesign/g4_*.py`。
+CTS native/numeric/accountingは既存`src/trottertracks/algorithm_codesign/rte_reallocation/`をreadonly共用。
+共有`src/trotterlib`実装/APIに変更なし。両one-shot完了・mandatory STOP。
