@@ -1906,3 +1906,12 @@ sealed/approved/runtime_authorization=true、allowed_cpusはexact14role集合。
 ## 2026-10-09 H4一度起動・Matplotlib run外設定write拒否STOP
 
 [実結果](docs/research/track_a_h4_authorized_launch_20261009.md)。immutable認可/fresh gate PASS後driver2740551/observer/12 workersを一度起動したが、第一candidate準備のOpenFermion→Cirq→Matplotlib config mkdirが保護guardに拒否されFAIL_CLOSED_STOP。実exit1、14 own identities残存0。newtranspile0/累積actual20、charged4428938712 bytes/wall5472.345380863175秒は返却せず維持。retry/入力再生成/次stage/GPU/共有設定変更なし。
+
+## 2026-10-09 H4 library cache保存先修正・再実行予算不合格
+
+[修正・再実行条件](docs/research/track_a_h4_library_cache_fix_20261009.md)。前回のOpenFermion→Matplotlib mkdir拒否を、homeの新private library cacheへprocess限定MPLCONFIGDIRを結合して修正。
+driver/workerとも既存directoryのEEXIST probe以外のcache writeを拒否、29816BのSHA固定。47限定回帰＋3 import case PASS、科学array/transpile/実worker/affinity/GPU0。
+SOURCE `b8b3ce6e8c98f1ec0419a7af79c5d7c5f3a3b9bb`、36 closure、science/compiler/options不変。前回費用を返却せずcarry20/4428938712B/5472.345380863175sへ結合。
+累積worst charge13165893832B=12.261694GiB>承認10GiBで未seal/approved=false/runtime_authorization=false、再起動0。13GiBは未承認proposalのみ。
+既承認environment/CPU/observer/actual74804を保持。cap改定・新SOURCE/gate binding/review・fresh gate後の一度再実行が残る。
+private homeは共有systemと区別し、旧run/one-shot/失敗証拠・全予約課金を保持する。

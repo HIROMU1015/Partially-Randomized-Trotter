@@ -65,3 +65,9 @@ Sourceの科学条件/guardを緩めず、SOURCE・venv・共有設定・他job�
 累積byte chargeは4428938712、recorded conservative wallは5472.345380863175秒。Sourceのcontrol/observer事前reserveを含むため、実file小でもchargeを返却/resetしない。
 認可済みactual cap74804は維持し、remaining actual74784。ただし一度の実行権は消費済みで、既存output/one-shotを保存してretryしない。
 このSTOPを修正成功・map完了・旧compilerとの同一性とは扱わない。次stageへ進行しない。
+
+## 2026-10-09 H4 library cache保存先修正・再実行予算不合格
+
+[修正・新SOURCE・再実行予算確認](track_a_h4_library_cache_fix_20261009.md)へ継続した。前回runはFAIL_CLOSED_STOPとしてそのまま保持。
+homeは利用者のprivate領域であり、二つのrun root制限は実装が追加した課金管理制限だった。
+新SOURCEのlibrary import回帰PASS。既存10GiB累積capでは再実行worst boundが超過し、本体は再起動していない。

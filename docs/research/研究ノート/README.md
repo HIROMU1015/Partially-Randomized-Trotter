@@ -194,3 +194,7 @@ D1〜D4レビュー承認は未解決、science/source port/input generation/nex
 ## 2026-10-09 H4一度のmap実行を利用者承認・最終artifact固定
 
 [当日ノート](2026-10-09.md)：明示実行認可、only+20 cap改定、v8独立reviewとfixedrunner直接exec/freshgate、一度のみ。
+
+## 2026-10-09 H4 library cache保存先修正・再実行予算不合格
+
+[当日ノート](2026-10-09.md)：library cache修正、47＋3限定人工PASS、前回課金carry、再実行10GiB budget FAIL。
