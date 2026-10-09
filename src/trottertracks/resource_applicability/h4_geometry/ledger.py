@@ -3,7 +3,6 @@ from contextlib import contextmanager
 import fcntl
 import json
 import os
-import copy
 from .identity import Stop, require, fingerprint, wrapper_key,hash_id
 
 METRICS=('rz_count','rz_depth','cx_count','cx_depth','total_depth','circuit_size')
@@ -68,7 +67,7 @@ class Ledger:
         self.prior_invocations = prior_invocations
         self.budget,self.cap,self.version=budget,cap,0
         self.entries,self.reservations,self.registry,self.expected={},{},{},{}
-        self.saved_entries,self.saved_reservations,self.chain={},{},None
+        self.chain=None
         budget.write('ledger.lock',b'')
         self.fd=os.open(budget.root/'ledger.lock',os.O_RDWR|os.O_NOFOLLOW)
         self._save()
@@ -84,16 +83,16 @@ class Ledger:
         finally:
             fcntl.flock(self.fd,fcntl.LOCK_UN)
 
-    def _save(self):
+    def _save(self,*,entry_keys=(),reservation_keys=()):
+        # The single locked writer supplies only keys changed by this operation.
+        # Keep the same canonical delta bytes without scanning the session history.
         payload={'schema_version':'h4-completion-ledger-delta-v1','version':self.version,
                  'previous_digest':self.chain,
-                 'entries':{k:v for k,v in self.entries.items() if self.saved_entries.get(k)!=v},
-                 'reservations':{k:v for k,v in self.reservations.items() if self.saved_reservations.get(k)!=v},
+                 'entries':{k:self.entries[k] for k in entry_keys},
+                 'reservations':{k:self.reservations[k] for k in reservation_keys},
                  'mandatory_stop':True}
         self.budget.write('ledger-%06d.json'%self.version,json_bytes(payload))
         self.chain=fingerprint('h4-ledger-delta-v1',payload)
-        self.saved_entries.update(copy.deepcopy(payload['entries']))
-        self.saved_reservations.update(copy.deepcopy(payload['reservations']))
         self.version+=1
 
     def register(self,expected):
@@ -107,7 +106,7 @@ class Ledger:
             require(self.prior_invocations+len(self.reservations)<self.cap,'actual invocation cap before compile')
             invocation='science-%06d'%(self.prior_invocations+len(self.reservations)+1)
             self.reservations[key]={'status':'RESERVED','invocation':invocation}
-            self._save()
+            self._save(reservation_keys=(key,))
         return invocation
 
     def complete(self,key,metrics,*,owner_key=None,interrupt_after_record=False):
@@ -131,7 +130,7 @@ class Ledger:
             self.entries[key]={'status':'COMPLETE','digest':digest,'cache_owner_wrapper_key':owner_key}
             if owner_key is None:
                 self.reservations[key]['status']='COMPLETE'
-            self._save()
+            self._save(entry_keys=(key,),reservation_keys=(key,) if owner_key is None else ())
             return record
 
     def read(self,key):

@@ -239,7 +239,7 @@ def signal_stage(permit,authorization,options,*,launch_started=None,prepared_bud
     run=OwnedRun(permit,authorization,prior_wall=freeze['consumed_seconds'],handoff=not reused and not newhost,
                  prior_charge=freeze.get('prior_charge',0),prepared_budget=prepared_budget)
     ledger=None
-    from .signal import prepare,corrected_signal,candidate_identity,trajectory_seeds,display_map
+    from .signal import GeometryPreparation,prepare,corrected_signal,candidate_identity,trajectory_seeds,display_map
     from .parallel import compile_candidates
     from .inputs import validate_frozen_state
     signals=[];reuse={}
@@ -249,12 +249,13 @@ def signal_stage(permit,authorization,options,*,launch_started=None,prepared_bud
         for distance in DISTANCES:
             run.pulse();arrays=load_new_input(permit,distance,freeze)
             validate_frozen_state(arrays)
+            common=GeometryPreparation(arrays)
             inp={'geometry':distance,**{k:permit.plan['inputs'][distance][k] for k in ('input','H','DF','state')}}
             for template in permit.plan['templates']:
                 run.pulse()
                 identity=candidate_identity(inp,template,permit.plan['source_commit'],
                     permit.plan['compiler_fingerprint'],permit.plan['environment_fingerprint'])
-                preparation,det,tail=prepare(arrays,template)
+                preparation,det,tail=prepare(arrays,template,common=common)
                 signal_record=corrected_signal(det,tail,preparation['constant'],arrays['qiskit_state'],template)
                 target=complex(np.exp(-1j*float(arrays['energy'])*template['T']))
                 seeds=trajectory_seeds(identity) if template['method'] in ('B2','B3') else [None]

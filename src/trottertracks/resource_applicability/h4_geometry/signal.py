@@ -82,15 +82,69 @@ def corrected_signal(deterministic,tail,constant,state,template):
     return {'corrected':corrected,'raw':corrected/B,'normalization':B}
 
 
-def prepare(arrays,template):
+class GeometryPreparation:
+    """Private, one-geometry driver cache; never loaded from another run.
+
+    Only method and split rank affect prepare(). The frozen input arrays stay
+    read-only while this object is alive. Cached basis circuits are read by the
+    builder, which composes copies rather than modifying the basis itself.
+    """
+    def __init__(self,arrays):
+        from types import MappingProxyType
+        from .circuits import diagonalize_block
+        self._arrays=arrays
+        self._inputs={k:arrays[k] for k in ('one','G','lambdas','nuclear','H')}
+        for value in self._inputs.values():
+            value.setflags(write=False)
+        def block(matrix,lam=None):
+            value=diagonalize_block(matrix,lam)
+            return MappingProxyType({**value,'coefficients':MappingProxyType(dict(value['coefficients']))})
+        self.one=block(arrays['one'])
+        self.df=[block(g,float(lam)) for lam,g in zip(arrays['lambdas'],arrays['G'],strict=True)]
+        self._operators={};self._dense={};self._prepared={}
+
+    def check(self,arrays):
+        require(arrays is self._arrays and all(arrays.get(k) is value and not value.flags.writeable
+                for k,value in self._inputs.items()),'geometry preparation input changed')
+
+    def operator(self,block):
+        from qiskit.quantum_info import Operator
+        key=id(block)
+        if key not in self._operators:
+            value=Operator(block['basis']).data.copy();value.setflags(write=False)
+            self._operators[key]=value
+        return self._operators[key]
+
+    @staticmethod
+    def result(value):
+        preparation,det,tail=value
+        return ({**preparation,'deterministic':list(preparation['deterministic']),
+                 'components':[dict(c) for c in preparation['components']]},list(det),tail)
+
+
+def prepare(arrays,template,*,common=None):
+    if common is None:
+        return _prepare(arrays,template)
+    common.check(arrays)
+    key=(template['method'],template['L_D'])
+    require(key[0] in ('B0','B1','B2','B3') and type(key[1]) is int and 0<=key[1]<=len(common.df),
+            'geometry preparation template')
+    if key not in common._prepared:
+        result=_prepare(arrays,template,common=common)
+        if result[2] is not None:result[2][1].setflags(write=False)
+        common._prepared[key]=result
+    return common.result(common._prepared[key])
+
+
+def _prepare(arrays,template,*,common=None):
     import numpy as np
     from qiskit.quantum_info import Operator
     from .circuits import diagonalize_block
     from .inputs import reverse_bits
     perm=[reverse_bits(i) for i in range(256)]
-    base=arrays['one']
-    one=diagonalize_block(base)
-    df=[diagonalize_block(g,float(lam)) for lam,g in zip(arrays['lambdas'],arrays['G'],strict=True)]
+    one=diagonalize_block(arrays['one']) if common is None else common.one
+    df=([diagonalize_block(g,float(lam)) for lam,g in zip(arrays['lambdas'],arrays['G'],strict=True)]
+        if common is None else common.df)
     rank=template['L_D'];det=[one,*df[:rank]]
     constant=float(arrays['nuclear']);components=[]
     if template['method'] in ('B2','B3'):
@@ -102,16 +156,20 @@ def prepare(arrays,template):
         require(bool(components), 'random candidate has empty tail; review required')
     # Deterministic dense action from exactly the same Gaussian diagonal coefficients.
     def dense(block):
-        U=Operator(block['basis']).data
+        if common is not None and id(block) in common._dense:return common._dense[id(block)]
+        U=Operator(block['basis']).data if common is None else common.operator(block)
         diagonal=np.zeros(256)
         for support,c in block['coefficients'].items():
             diagonal+=c*np.asarray([(-1)**sum((i>>p)&1 for p in support) for i in range(256)])
-        return (U*diagonal)@U.conj().T
+        value=(U*diagonal)@U.conj().T
+        if common is not None:
+            value.setflags(write=False);common._dense[id(block)]=value
+        return value
     det_dense=[dense(b) for b in det]
     lam=math.fsum(c['abs_coefficient'] for c in components)
     tail=np.zeros((256,256),dtype=complex)
     for c in components:
-        U=Operator(c['block']['basis']).data
+        U=Operator(c['block']['basis']).data if common is None else common.operator(c['block'])
         diagonal=np.asarray([(-1)**sum((i>>p)&1 for p in c['support']) for i in range(256)])
         tail+=c['sign']*c['abs_coefficient']*(U*diagonal)@U.conj().T
     modeled=constant*np.eye(256)+sum(det_dense,np.zeros_like(tail))+tail
