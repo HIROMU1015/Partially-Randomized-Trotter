@@ -1,0 +1,72 @@
+{
+  "id": "echo_B2_inner_verify",
+  "launched": true,
+  "retries": 0,
+  "accounting": "UNIQUE_PID_RSS_SUM_CONSERVATIVE",
+  "CPU_accounting": "kernel wait4 with PR_SET_CHILD_SUBREAPER",
+  "failure": null,
+  "returncode": 0,
+  "samples": [
+    {
+      "elapsed_seconds": 0.007907390128821135,
+      "parts": [
+        {
+          "pid": 1786812,
+          "state": "R",
+          "ppid": 1786811,
+          "pgrp": 1786812,
+          "start_ticks": 275077166,
+          "RSS_bytes": 7864320
+        },
+        {
+          "pid": 1786811,
+          "state": "R",
+          "ppid": 1786789,
+          "pgrp": 1786811,
+          "start_ticks": 275077165,
+          "RSS_bytes": 12320768
+        }
+      ],
+      "PID_count": 2,
+      "RSS_sum_bytes": 20185088,
+      "output_bytes": 855572
+    },
+    {
+      "elapsed_seconds": 0.03979476494714618,
+      "parts": [
+        {
+          "pid": 1786811,
+          "state": "R",
+          "ppid": 1786789,
+          "pgrp": 1786811,
+          "start_ticks": 275077165,
+          "RSS_bytes": 12320768
+        }
+      ],
+      "PID_count": 1,
+      "RSS_sum_bytes": 12320768,
+      "output_bytes": 855779
+    }
+  ],
+  "wait4_records": [
+    {
+      "pid": 1786812,
+      "returncode": 0,
+      "CPU_seconds": 0.020288999999999998,
+      "ru_maxrss_KiB": 10496
+    }
+  ],
+  "remaining_members": [],
+  "effective_wall_seconds": 30,
+  "subreaper_enabled": true,
+  "root_pid": 1786812,
+  "wall_seconds": 0.03980327723547816,
+  "CPU_seconds": 0.020288999999999998,
+  "peak_RSS_sum_bytes": 20185088,
+  "peak_output_bytes": 855779,
+  "known_target_PIDs": [
+    1786812
+  ],
+  "residual_processes": 0,
+  "final_output_bytes": 857415
+}
