@@ -80,3 +80,30 @@ runner内でも同じsource/input/fresh gateを再検査し、合格後だけcla
 完了またはfail-closed STOP後にown childrenをcleanupし停止する。自動retry、入力再生成、次stage、GPU query/useは行わない。
 共有環境・venv・他jobを変更しない。公開は軽量資料のみでNPZ/raw runtime/checkpoint/cache/log/credential/内部SSHはGit外。
 認証失敗時は設定を変えずmanual push commandを報告し、local immutable artifactと独立reviewに基づく一度の起動条件を維持する。
+
+## 実起動結果：worker/IPC処理でfail-closed STOP
+
+固定artifact `1a9e920b13f29ee0cb7e38c1f79ae16f775e78f3`と独立reviewの後、
+fresh gateはPASS（memory465.986GiB、filesystem411.341GiB、inodes220457784、quota KNOWN、選択core最大busy4.984%）。
+runner自身でも再検査し、driver2865403/observer2865493/12 workersを一度起動した。
+
+最初のcosine wrapperのreservation後、driverがsineのnumerical serialization中に、
+observerは「Stop: owned process exited」を記録し、own driver/childrenをfail-closedで停止した。
+driver実exit code143。直前の監視interval約1.007秒、観測所要約0.0056秒で、容量超過や5秒監視違反としては記録されていない。
+新reserved1（science-000021）、完了wrapper0、signal record0、MAP未完了。
+actual compiler呼出開始の独立証拠はないため、実transpile成功/開始を推測せず、reservation1を消費として保持する。
+
+worker/IPCの元例外は停止前の永続資料に残っていない。worker stderrはDEVNULLで、
+親I/O futureのfailureはメモリ内のままdriverが停止した可能性があり、根本原因を断定しない。
+今回の一度起動は終了しており、自動retry・追加science campaignや次stageへ進まない。
+次の修正では元例外を停止前に永続保存できる経路が必要である。このSTOP後にsourceを変更して再実行していない。
+
+[停止・予約・native identity監査](../../artifacts/resource_applicability/track_a_h4_approved_relaunch/2026-10-09/runtime_stop_summary_v2.json)で全14own identitiesの残存0を2回確認した。
+one-shotと全失敗費用を保持。累積消費/予約21、残actual74783、charged8692723164 bytes。
+正確なdriver終了時刻・compiler終了時刻は未記録。
+今回のwallは、process開始clock tickから2回目の残存0監査までを加えた
+保守的upper5766.582514658794秒として記録し、post-stop監査待ち時間を含むと明記する。
+実行時間とこの保守的upperを同一視せず、過去wallを返却しない。
+
+共有環境・venv・他job・GPUは変更なし。raw runtime/observer trace/NPZ/科学cacheはGit外。
+この追記は結果commit用の軽量STOP summaryで、上記認可artifactの起動前snapshotは保持する。
