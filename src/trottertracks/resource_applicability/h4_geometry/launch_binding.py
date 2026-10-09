@@ -16,8 +16,9 @@ from .prelaunch_audit import private_path, receipt_inventory, environment_profil
 from .resources import GiB, ROLE_CAP, HEADROOM, OUTPUT_CAP, WALL_CAP, fsync_directory
 from .observer import AS_CAP, RSS_CAP, FRAME_CAP, TERMINAL_RESERVE
 
-RUN_ID='h4-newhost-signal-compile-20261007-run01'
-CARRY={'actual_invocations':20,'charged_bytes':165214360,'wall_seconds':5466.188392877579}
+RUN_ID='h4-newhost-signal-compile-20261009-run02'
+ORIGINAL_CARRY={'actual_invocations':20,'charged_bytes':165214360,'wall_seconds':5466.188392877579}
+CARRY={'actual_invocations':20,'charged_bytes':4428938712,'wall_seconds':5472.345380863175}
 EXPECTED_FREEZE='75d7ddc8dc71ebeec03a6c173397a9b941b492b74e4dc80814d613d83ce56c69'
 EXPECTED_JOURNAL='6b68368565cc336d283bc094f844a37ceb1966838ca5482f1f12347d0c5d669e'
 EXPECTED_LOG='7108181a3b295ca92d4a73de7e7420d160898270d45a95657a34e7c6526947b1'
@@ -26,7 +27,7 @@ FILE_LIMITS={'record-':4096,'ledger-':4096,'signal-':524288,'worker-log-':8192,'
 
 STRUCTURES={
  'plan':{'schema_version':str,'stage':str,'run_id':str,'source_commit':str,'source_root':str,
-         'source_hashes':dict,'source_audit':dict,'environment_profile':dict,'compiler_profile':dict,
+         'source_hashes':dict,'source_audit':dict,'environment_profile':dict,'compiler_profile':dict,'library_cache_profile':dict,
          'input_root':str,'stop_evidence_root':str,'stop_evidence_receipt':dict,'output_root':str,'control_root':str,
          'inputs':dict,'generation_freeze_digest':str,'templates':list,'contract_plan_fingerprint':str,
          'compiler_fingerprint':str,'environment_fingerprint':str,'requested_workers':int,
@@ -138,6 +139,8 @@ def verify_runtime(permit):
     require(sys.executable==env['python'] and environment_profile(env['dependencies'],env['installed_sources'])==env,'candidate environment changed')
     require(compiler_profile(comp['explicit_options'],comp['inherited_defaults'])==comp,'candidate compiler profile changed')
     require(env['fingerprint']==plan['environment_fingerprint'] and comp['fingerprint']==plan['compiler_fingerprint'],'plan profile fingerprints')
+    from .library_cache import verify
+    verify(reference(root,plan['library_cache_profile']))
     contract=gates.verify_contract(root)
     require(plan['templates']==contract['templates'] and comp['explicit_options']==contract['compiler_environment_reference']['compiler']['explicit_options'],
             'scientific templates/compiler options unchanged')
@@ -162,10 +165,44 @@ def verify_frozen_receipts(plan):
             freeze['source_commit']=='049e69919af16ad29a67a217dc7a407d6b1754a6' and freeze['stage']=='INPUTS_FROZEN_STOP' and
             freeze['mandatory_stop'] is True,'original generation lineage')
     data=(private_path(plan['stop_evidence_root'])/'byte-budget.journal').read_bytes()
-    require(len(data)%128==0 and sum(int(data[i:i+128].strip()) for i in range(0,len(data),128))==CARRY['charged_bytes'],
-            'predecessor byte carry proof')
+    require(len(data)%128==0 and sum(int(data[i:i+128].strip()) for i in range(0,len(data),128))==ORIGINAL_CARRY['charged_bytes'],
+            'old-host predecessor byte carry proof')
+    verify_newhost_stop(evidence)
     return {**freeze,'input_root':str(root),'consumed_seconds':CARRY['wall_seconds'],
             'prior_charge':CARRY['charged_bytes'],'prior_invocations':CARRY['actual_invocations']}
+
+
+def verify_newhost_stop(evidence):
+    """Keep the failed first launch's journal/identities; never refund it."""
+    from .prelaunch_audit import streaming_sha
+    from .observer import process_sample
+    predecessor=evidence['newhost_predecessor']
+    require(predecessor['run_id']=='h4-newhost-signal-compile-20261007-run01' and
+            predecessor['source_commit']=='6bd1ba01cd71ec3e2071082963c9f07478dada9a' and
+            predecessor['carry']==CARRY and predecessor['all_owned_processes_ended'] is True and
+            predecessor['new_actual_invocations']==0, 'failed newhost launch carry/stop')
+    root=private_path(predecessor['output_root'])
+    require(root.name==predecessor['run_id'], 'predecessor output scope')
+    for row in predecessor['files']:
+        require(Path(row['file']).name==row['file'], 'predecessor receipt basename')
+        actual=streaming_sha(root/row['file'])
+        require(actual['bytes']==row['bytes'] and actual['sha256']==row['sha256'], 'predecessor receipt bytes/hash')
+    require({'byte-budget.journal','launch-stop.json','observer.jsonl'} <= {r['file'] for r in predecessor['files']},
+            'newhost journal/STOP/observer receipts')
+    data=(root/'byte-budget.journal').read_bytes()
+    require(sha(data)=='5482824c1b84da80c99acad1437eeeb21a40b7ee8ec32eb77c9c5a45599acee6' and
+            len(data)%128==0 and sum(int(data[i:i+128].strip()) for i in range(0,len(data),128))==CARRY['charged_bytes'],
+            'newhost charge cannot be reset/refunded')
+    stop=json.loads((root/'launch-stop.json').read_bytes())
+    require(stop['status']=='FAIL_CLOSED_STOP' and stop['automatic_retry'] is False and
+            stop['consumed_seconds']==CARRY['wall_seconds'], 'newhost STOP wall carry')
+    identities=predecessor['identities']
+    require(len(identities)==14 and len({row['pid'] for row in identities})==14, 'newhost14 owned identities')
+    for row in identities:
+        require(row['classification']=='ABSENT', 'predecessor native receipt not terminal')
+        try:current=process_sample(row['pid'])
+        except FileNotFoundError:continue
+        require(current['start']!=row['expected_start'], 'predecessor owned identity still exists')
 
 
 def fresh_gate(plan,observation, *, now=None):
@@ -207,8 +244,8 @@ def role_affinity(permit,role,index=None):
     if role=='worker':install_write_guard(permit.plan,worker=True)
 
 
-def write_guard(plan,event,args, *, worker=False):
-    """Prevent package cache/temp writes and any shared-directory mutation."""
+def write_guard(plan,event,args, *, worker=False,library_cache=None):
+    """Keep runtime writes budgeted; a user's home is not a shared system path."""
     if event not in ('open','os.mkdir','os.remove','os.rename','os.rmdir'):return
     if not args or not isinstance(args[0],(str,bytes,os.PathLike)):return
     writing=event!='open'
@@ -225,14 +262,20 @@ def write_guard(plan,event,args, *, worker=False):
             require(managed is not None and len(path.parts)==1 and '..' not in path.parts,'unbound relative write forbidden')
             path=Path(managed)/path
         if path==Path('/dev/null'):continue
+        if library_cache is not None:
+            from .library_cache import existing_directory_probe
+            if existing_directory_probe(library_cache,event,path):continue
         require(not worker,'unbudgeted worker disk/cache/temp write forbidden')
         output=Path(plan['output_root']);control=Path(plan['control_root'])
-        require(path.is_relative_to(output) or path.is_relative_to(control),'shared/outside run write forbidden')
+        require(path.is_relative_to(output) or path.is_relative_to(control),'outside budgeted run write forbidden')
         require(not path.is_relative_to(control/'private-temp'),'unbudgeted compiler temporary file forbidden')
 
 
 def install_write_guard(plan, *, worker=False):
-    sys.addaudithook(lambda event,args:write_guard(plan,event,args,worker=worker))
+    cache=reference(Path(plan['source_root']),plan['library_cache_profile'])
+    from .library_cache import configure
+    configure(cache)
+    sys.addaudithook(lambda event,args:write_guard(plan,event,args,worker=worker,library_cache=cache))
 
 
 def claim_once(permit):
@@ -282,6 +325,8 @@ def launch(plan,authorization,review, *, explicit_launch=False):
     try:
         # Reserve all control/observer expenses before log/observer startup.
         budget.reserve(CONTROL_LOG_CAP+65536);budget.reserve(trace_cap+FRAME_CAP)
+        cache=reference(Path(plan['source_root']),plan['library_cache_profile'])
+        budget.reserve(cache['bytes'])  # include the new dependency cache, no refund
         role_affinity(permit,'driver')
         install_write_guard(plan)
         from .execution import signal_stage

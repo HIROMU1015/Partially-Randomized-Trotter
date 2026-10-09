@@ -43,7 +43,7 @@ def main():
         if event in ('os.system','os.posix_spawn','os.exec'):raise RuntimeError('external command forbidden')
     sys.addaudithook(audit)
     suite=unittest.TestSuite()
-    for name in ('test_h4_prelaunch','test_h4_cleanup_esrch'):
+    for name in ('test_h4_prelaunch','test_h4_cleanup_esrch','test_h4_library_cache'):
         file=ROOT/'tests/tracks/resource_applicability'/(name+'.py')
         spec=importlib.util.spec_from_file_location(name+'_synthetic',file)
         module=importlib.util.module_from_spec(spec);sys.modules[spec.name]=module;spec.loader.exec_module(module)
@@ -58,7 +58,7 @@ def main():
        actual_science_invocations=0,additional_transpile=0,real_workers=0,production_launched=False,
        maximum_minimal_processes_including_test=4,output_bytes=total,denied_attempts=denied,
        CPU_affinity_changes=0,own_test_process_subreaper_used_and_restored=True,shared_settings_changed=False,
-       preserved_science_carry=dict(actual_invocations=20,bytes=165214360,wall_seconds=5466.188392877579),
+       preserved_science_carry=dict(actual_invocations=20,bytes=4428938712,wall_seconds=5472.345380863175),
        immutable_CI_evidence=False)
     require(payload['driver_peak_RSS_bytes']<=512*2**20 and total<=16*2**20,'synthetic RSS/output bounds')
     with (root/'test_result_v2.json').open('x') as f:json.dump(payload,f,indent=2);f.write('\n')

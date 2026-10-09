@@ -195,7 +195,7 @@ def static_invocations(templates):
         guarantee_reason='Reuse is within geometry/template/axis and requires an already COMPLETE identical numerical circuit. Random K2/K4 with draw-dependent circuits admits no static >=20 saving guarantee; no actual trajectories or circuits evaluated.')
 
 
-def storage_projection(block=4096):
+def storage_projection(block=4096, *, library_cache_bytes=0, prior_charge=None):
     """Hard per-file formats plus worst-case zero reuse; no runtime execution."""
     from .launch_binding import FILE_LIMITS,CONTROL_LOG_CAP,CARRY
     rows=[('record',74784,FILE_LIMITS['record-']),('ledger',149569,FILE_LIMITS['ledger-']),
@@ -210,12 +210,17 @@ def storage_projection(block=4096):
     temp=14*524288
     observer_charge=2*(trace+8192)+128
     control_charge=2*(CONTROL_LOG_CAP+65536)+128
-    charge=CARRY['charged_bytes']+128+observer_charge+control_charge+sum(r['charged_bytes'] for r in components)
-    physical=sum(r['allocated_bytes'] for r in components)+trace+8192+CONTROL_LOG_CAP+65536+journal+directory+temp+64*2**20
+    prior_charge=CARRY['charged_bytes'] if prior_charge is None else prior_charge
+    require(type(prior_charge) is int and prior_charge>=0 and type(library_cache_bytes) is int and library_cache_bytes>=0,
+            'nonnegative storage carry/cache')
+    cache_charge=2*library_cache_bytes+128 if library_cache_bytes else 0
+    charge=prior_charge+128+observer_charge+control_charge+cache_charge+sum(r['charged_bytes'] for r in components)
+    physical=sum(r['allocated_bytes'] for r in components)+trace+8192+CONTROL_LOG_CAP+65536+journal+directory+temp+64*2**20+library_cache_bytes
     required=((physical+2**30-1)//2**30)*2**30
     inodes=publications+14+16  # live exclusive temp files + control/trace/directory margin
     return dict(block_bytes=block,components=components,observer_trace_cap_bytes=trace,
-       observer_charge_bytes=observer_charge,control_charge_bytes=control_charge,journal_bytes=journal,
+       observer_charge_bytes=observer_charge,control_charge_bytes=control_charge,library_cache_charge_bytes=cache_charge,
+       prior_charge_bytes=prior_charge,journal_bytes=journal,
        temporary_publishers=14,temporary_files_bytes=temp,directory_bytes=directory,
        metadata_margin_bytes=64*2**20,physical_bound_bytes=physical,required_bytes=required,
        required_inodes=((inodes+999)//1000)*1000,cumulative_charge_bound=charge,

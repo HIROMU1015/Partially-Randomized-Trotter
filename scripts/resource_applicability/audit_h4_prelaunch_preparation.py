@@ -97,6 +97,7 @@ def main():
        source_audit=dict(path=str((bundle/'source_freeze_v2.json').relative_to(ROOT)),sha256=sha((bundle/'source_freeze_v2.json').read_bytes())),
        environment_profile=dict(path=str((bundle/'environment_profile_v2.json').relative_to(ROOT)),sha256=sha((bundle/'environment_profile_v2.json').read_bytes())),
        compiler_profile=dict(path=str((bundle/'compiler_profile_v2.json').relative_to(ROOT)),sha256=sha((bundle/'compiler_profile_v2.json').read_bytes())),
+       library_cache_profile={},  # unsealed historical preparation; fixed cache required for runtime
        stop_evidence_receipt=dict(path=str((bundle/'stop_receipt_v2.json').relative_to(ROOT)),sha256=sha((bundle/'stop_receipt_v2.json').read_bytes())),
        input_root=incoming,stop_evidence_root=str(stop_root),output_root=str(evidence/bind.RUN_ID),
        control_root=str(evidence/'control'/bind.RUN_ID),inputs=inputs,generation_freeze_digest=oldbinding['expected_inputs']['expected_generation_freeze_fingerprint'],

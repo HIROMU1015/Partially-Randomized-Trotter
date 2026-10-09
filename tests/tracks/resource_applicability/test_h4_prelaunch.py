@@ -26,7 +26,8 @@ def documents(case='case'):
     plan=dict(schema_version=bind.VERSIONS['plan'],stage='signal_compile',run_id=bind.RUN_ID,
        source_commit='a'*40,source_root=str(root),source_hashes={'a.py':'a'*64},
        source_audit={'path':'audit.json','sha256':'a'*64},environment_profile={'path':'env.json','sha256':'a'*64},
-       compiler_profile={'path':'compiler.json','sha256':'a'*64},stop_evidence_receipt={'path':'stop.json','sha256':'a'*64},
+       compiler_profile={'path':'compiler.json','sha256':'a'*64},library_cache_profile={'path':'cache.json','sha256':'a'*64},
+       stop_evidence_receipt={'path':'stop.json','sha256':'a'*64},
        input_root=str(root/'inputs'),stop_evidence_root=str(root/'stop'),output_root=str(root/'output'/bind.RUN_ID),
        control_root=str(root/'control'/bind.RUN_ID),inputs=OLD['expected_inputs']['expected_npz'],
        generation_freeze_digest=OLD['expected_inputs']['expected_generation_freeze_fingerprint'],
@@ -35,7 +36,7 @@ def documents(case='case'):
        cpu_proposal=dict(driver=[13],workers=[[i] for i in range(1,13)],observer=[14]),
        carry=dict(bind.CARRY),caps=dict(actual_invocations=74804,wall_seconds=259200,output_bytes=10*2**30,
           driver_AS_RSS=8*2**30,worker_AS_RSS=8*2**30,headroom=16*2**30,monitor_seconds=5,observer_AS=256*2**20,observer_RSS=64*2**20),
-       storage=audit.storage_projection(),sealed=True)
+       storage=audit.storage_projection(prior_charge=bind.ORIGINAL_CARRY['charged_bytes']),sealed=True)
     auth=dict(schema_version=bind.VERSIONS['authorization'],stage='signal_compile',run_id=bind.RUN_ID,source_commit=plan['source_commit'],
        plan_fingerprint='',approved=True,runtime_authorization=True,allowed_cpus=list(range(1,15)),one_shot=True,
        permission='signal_compile',result_prior=True,environment_accepted=True,
@@ -125,7 +126,7 @@ class BindingTests(unittest.TestCase):
     def test_static_actual_calls_and_capacity_formats(self):
         counts=audit.static_invocations(CONTRACT['templates']);self.assertEqual(counts['cumulative_actual_worst_case'],74804)
         self.assertEqual(counts['guaranteed_cache_savings'],0)
-        storage=audit.storage_projection();self.assertLess(storage['cumulative_charge_bound'],10*2**30)
+        storage=audit.storage_projection();self.assertGreater(storage['cumulative_charge_bound'],10*2**30)
         self.assertEqual(storage['temporary_publishers'],14)
 
     def test_fresh_launch_cpu_memory_load_quota_capacity(self):
@@ -160,6 +161,7 @@ class BindingTests(unittest.TestCase):
              patch.object(bind,'fresh_gate',side_effect=lambda *_:order.append('fresh')),\
              patch.object(bind,'role_affinity',side_effect=lambda *_:order.append('CPU_MOCK')),\
              patch.object(bind,'install_write_guard'),\
+             patch.object(bind,'reference',return_value={'bytes':100}),\
              patch.object(execution,'signal_stage',side_effect=lambda *_a,**_kw:(order.append('SCIENCE_STUB') or {'status':'MAP_COMPLETE_STOP'})):
             result=bind.launch(p,a,r,explicit_launch=True)
         self.assertEqual(result['status'],'MAP_COMPLETE_STOP')
