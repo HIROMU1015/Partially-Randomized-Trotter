@@ -7,7 +7,7 @@ import time
 import threading
 from .identity import require, Stop, sha, fingerprint
 from .gates import authorize, checkout_gate, reexecution_metadata, DISTANCES, OUTPUT, Permit
-from .resources import OutputBudget, WallBudget, Monitor, admission, observe_memory, limit_owned_address_space
+from .resources import OutputBudget, OUTPUT_CAP, WallBudget, Monitor, admission, observe_memory, limit_owned_address_space
 from .ledger import Ledger, wire, json_bytes
 
 
@@ -54,6 +54,7 @@ class OwnedRun:
         self.wall.start=run_started
         limit_owned_address_space()
         self.budget=prepared_budget or OutputBudget(permit.plan['output_root'] if newhost else OUTPUT,handoff=handoff,prior_charge=prior_charge,
+                                cap=permit.plan['caps']['output_bytes'] if newhost else OUTPUT_CAP,
                                 file_limits=FILE_LIMITS if newhost else None)
         self.close_budget=prepared_budget is None
         trace_cap = (72*3600+2)*FRAME_CAP+TERMINAL_RESERVE

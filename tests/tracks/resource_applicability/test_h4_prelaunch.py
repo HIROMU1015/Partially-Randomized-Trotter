@@ -41,7 +41,8 @@ def documents(case='case'):
        plan_fingerprint='',approved=True,runtime_authorization=True,allowed_cpus=list(range(1,15)),one_shot=True,
        permission='signal_compile',result_prior=True,environment_accepted=True,
        observer_role=dict(approved=True,runtime_authorization=True,AS_bytes=256*2**20,RSS_bytes=64*2**20),
-       budget_amendment=dict(approved=True,**{'from':74784,'to':74804},authority_reference='SYNTHETIC_MEMORY_ONLY'))
+       budget_amendment=dict(approved=True,**{'from':74784,'to':74804},authority_reference='SYNTHETIC_MEMORY_ONLY'),
+       output_budget_amendment=dict(approved=False,**{'from':10*2**30,'to':13*2**30},authority_reference=''))
     review=dict(schema_version=bind.VERSIONS['review'],stage='signal_compile',run_id=bind.RUN_ID,source_commit=plan['source_commit'],
        plan_fingerprint='',authorization_digest='',approved=True,runtime_authorization=True,reviewer='SYNTHETIC_FIXTURE',mandatory_stop=True)
     rebind(plan,auth,review);return plan,auth,review
@@ -61,6 +62,57 @@ def observed(p):
 
 
 class BindingTests(unittest.TestCase):
+    def test_output_amendment_requires_explicit_exact_binding(self):
+        p,a,r=documents('output-amended')
+        p['caps']['output_bytes']=13*2**30
+        p['storage']=audit.storage_projection(output_cap=13*2**30)
+        self.assertEqual(p['storage']['remaining_charge_margin_bytes'],13*2**30-p['storage']['cumulative_charge_bound'])
+        rebind(p,a,r)
+        with self.assertRaisesRegex(Stop,'explicit13GiB'):bind.authorize(p,a,r,explicit_launch=True)
+        a['output_budget_amendment'].update(approved=True,authority_reference='ARTIFICIAL_USER_AUTHORITY')
+        rebind(p,a,r);bind.authorize(p,a,r,explicit_launch=True)
+        bind.fresh_gate(p,observed(p),now=1.1)
+        for key,value in [('approved',False),('approved',1),('from',0),('to',14*2**30),('authority_reference','')]:
+            bad=copy.deepcopy(a);bad['output_budget_amendment'][key]=value
+            rr=copy.deepcopy(r);rebind(p,bad,rr)
+            with self.assertRaises(Stop):bind.authorize(p,bad,rr,explicit_launch=True)
+        for value in (12*2**30,14*2**30,True,13.*2**30):
+            pp=copy.deepcopy(p);pp['caps']['output_bytes']=value
+            aa=copy.deepcopy(a);rr=copy.deepcopy(r);rebind(pp,aa,rr)
+            with self.assertRaises(Stop):bind.authorize(pp,aa,rr,explicit_launch=True)
+        pp=copy.deepcopy(p);pp['caps']['output_bytes']=10*2**30
+        aa=copy.deepcopy(a);rr=copy.deepcopy(r);rebind(pp,aa,rr)
+        with self.assertRaisesRegex(Stop,'disagree'):bind.authorize(pp,aa,rr,explicit_launch=True)
+
+    def test_output_cap_enforced_with_carry_without_refund(self):
+        root=EVIDENCE/'output-cap-13'
+        budget=resources.OutputBudget(root,cap=13*2**30,prior_charge=bind.CARRY['charged_bytes'])
+        try:
+            budget.reserve((12*2**30-bind.CARRY['charged_bytes']-256)//2)
+            self.assertGreater(budget.cached_charge,10*2**30)
+            before=budget.cached_charge
+            with self.assertRaises(Stop):budget.reserve(2*2**30)
+            self.assertEqual(before,budget.cached_charge)
+            self.assertEqual(budget.cap,13*2**30)
+        finally:budget.close()
+        legacy=resources.OutputBudget(EVIDENCE/'legacy-cap-10')
+        try:self.assertEqual(legacy.cap,10*2**30)
+        finally:legacy.close()
+
+    def test_launch_passes_amended_cap_to_runtime_budget(self):
+        p,a,r=documents('output-launch')
+        p['caps']['output_bytes']=13*2**30
+        a['output_budget_amendment'].update(approved=True,authority_reference='ARTIFICIAL_USER_AUTHORITY')
+        rebind(p,a,r);Path(p['output_root']).parent.mkdir()
+        def science(_permit,_auth,_options,**kw):
+            self.assertEqual(kw['prepared_budget'].cap,13*2**30)
+            return {'status':'MAP_COMPLETE_STOP'}
+        with patch.object(bind,'verify_runtime',return_value=(CONTRACT,{})),\
+             patch.object(bind,'verify_frozen_receipts'),patch.object(bind,'host_readonly',return_value=observed(p)),\
+             patch.object(bind,'fresh_gate'),patch.object(bind,'role_affinity'),patch.object(bind,'install_write_guard'),\
+             patch.object(bind,'reference',return_value={'bytes':100}),patch.object(execution,'signal_stage',side_effect=science):
+            self.assertEqual(bind.launch(p,a,r,explicit_launch=True)['status'],'MAP_COMPLETE_STOP')
+
     def test_positive_pure_fixture(self):
         p,a,r=documents('pure');permit=bind.authorize(p,a,r,explicit_launch=True)
         self.assertEqual(permit.authorization,a)

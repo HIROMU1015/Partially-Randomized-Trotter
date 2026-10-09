@@ -142,7 +142,8 @@
         "result_prior",
         "environment_accepted",
         "observer_role",
-        "budget_amendment"
+        "budget_amendment",
+        "output_budget_amendment"
       ],
       "additionalProperties": false,
       "properties": {
@@ -188,6 +189,17 @@
         },
         "budget_amendment": {
           "type": "object"
+        },
+        "output_budget_amendment": {
+          "type": "object",
+          "required": ["approved", "from", "to", "authority_reference"],
+          "additionalProperties": false,
+          "properties": {
+            "approved": {"type": "boolean"},
+            "from": {"type": "integer", "const": 10737418240},
+            "to": {"type": "integer", "const": 13958643712},
+            "authority_reference": {"type": "string"}
+          }
         }
       }
     },

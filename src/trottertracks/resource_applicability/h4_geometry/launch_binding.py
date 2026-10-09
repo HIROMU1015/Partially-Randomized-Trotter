@@ -23,6 +23,7 @@ EXPECTED_FREEZE='75d7ddc8dc71ebeec03a6c173397a9b941b492b74e4dc80814d613d83ce56c6
 EXPECTED_JOURNAL='6b68368565cc336d283bc094f844a37ceb1966838ca5482f1f12347d0c5d669e'
 EXPECTED_LOG='7108181a3b295ca92d4a73de7e7420d160898270d45a95657a34e7c6526947b1'
 CONTROL_LOG_CAP=8*2**20
+AMENDED_OUTPUT_CAP=13*GiB  # Explicit new-host amendment; legacy default stays10GiB.
 FILE_LIMITS={'record-':4096,'ledger-':4096,'signal-':524288,'worker-log-':8192,'map-complete':4096,'launch-stop':4096,'ledger.lock':0}
 
 STRUCTURES={
@@ -34,7 +35,8 @@ STRUCTURES={
          'cpu_proposal':dict,'carry':dict,'caps':dict,'storage':dict,'sealed':bool},
  'authorization':{'schema_version':str,'stage':str,'run_id':str,'source_commit':str,'plan_fingerprint':str,
          'approved':bool,'runtime_authorization':bool,'allowed_cpus':list,'one_shot':bool,
-         'permission':str,'result_prior':bool,'environment_accepted':bool,'observer_role':dict,'budget_amendment':dict},
+         'permission':str,'result_prior':bool,'environment_accepted':bool,'observer_role':dict,'budget_amendment':dict,
+         'output_budget_amendment':dict},
  'review':{'schema_version':str,'stage':str,'run_id':str,'source_commit':str,'plan_fingerprint':str,
          'authorization_digest':str,'approved':bool,'runtime_authorization':bool,'reviewer':str,'mandatory_stop':bool}}
 VERSIONS={k:'h4-newhost-'+k+'-v2' for k in STRUCTURES}
@@ -84,9 +86,20 @@ def authorize(plan,authorization,review, *, explicit_launch):
             'CPU proposal is not permission; exact separate role approval required')
     caps=plan['caps']
     require(set(caps)=={'actual_invocations','wall_seconds','output_bytes','driver_AS_RSS','worker_AS_RSS','headroom','monitor_seconds','observer_AS','observer_RSS'},'cap schema')
-    fixed=dict(wall_seconds=WALL_CAP,output_bytes=OUTPUT_CAP,driver_AS_RSS=ROLE_CAP,worker_AS_RSS=ROLE_CAP,
+    fixed=dict(wall_seconds=WALL_CAP,driver_AS_RSS=ROLE_CAP,worker_AS_RSS=ROLE_CAP,
                headroom=HEADROOM,monitor_seconds=5,observer_AS=AS_CAP,observer_RSS=RSS_CAP)
     require(all(type(caps[k]) is int and caps[k]==v for k,v in fixed.items()),'existing caps / observer candidates')
+    change=authorization['output_budget_amendment']
+    require(set(change)=={'approved','from','to','authority_reference'} and type(change['approved']) is bool and
+            type(change['from']) is int and change['from']==OUTPUT_CAP and
+            type(change['to']) is int and change['to']==AMENDED_OUTPUT_CAP and
+            type(change['authority_reference']) is str,'output amendment schema')
+    output_cap=caps['output_bytes']
+    require(type(output_cap) is int and output_cap in (OUTPUT_CAP,AMENDED_OUTPUT_CAP),'closed output caps')
+    if output_cap==AMENDED_OUTPUT_CAP:
+        require(change['approved'] is True and bool(change['authority_reference'].strip()),'explicit13GiB output amendment')
+    else:
+        require(change['approved'] is False,'output amendment and plan cap disagree')
     role=authorization['observer_role']
     require(role==dict(approved=True,runtime_authorization=True,AS_bytes=AS_CAP,RSS_bytes=RSS_CAP),'observer extra role needs approval')
     counts=static_invocations(plan['templates'])
@@ -224,7 +237,7 @@ def fresh_gate(plan,observation, *, now=None):
         if row['status']=='ACTIVE':
             require((row['available_bytes'] is None or row['available_bytes']>=storage['required_bytes']) and
                     (row['available_inodes'] is None or row['available_inodes']>=storage['required_inodes']),'launch quota capacity')
-    require(storage['cumulative_charge_bound']<=OUTPUT_CAP,'cumulative output budget including observer/control')
+    require(storage['cumulative_charge_bound']<=plan['caps']['output_bytes'],'cumulative output budget including observer/control')
 
 
 def role_affinity(permit,role,index=None):
@@ -321,7 +334,8 @@ def launch(plan,authorization,review, *, explicit_launch=False):
     os.environ['TMPDIR']=str(temp)  # this owned process and its children only
     from .resources import OutputBudget
     trace_cap=(72*3600+2)*FRAME_CAP+TERMINAL_RESERVE
-    budget=OutputBudget(plan['output_root'],prior_charge=CARRY['charged_bytes'],file_limits=FILE_LIMITS)
+    budget=OutputBudget(plan['output_root'],cap=plan['caps']['output_bytes'],
+                        prior_charge=CARRY['charged_bytes'],file_limits=FILE_LIMITS)
     try:
         # Reserve all control/observer expenses before log/observer startup.
         budget.reserve(CONTROL_LOG_CAP+65536);budget.reserve(trace_cap+FRAME_CAP)
