@@ -91,3 +91,9 @@ fresh output/controlとone-shot lockの未使用、SOURCE33/profile/input/receip
 今回は追加transpile・旧benchmark再実行・分子アクセス/SCF/DF生成・科学array読込・本番runner/worker・GPU/CuPy/taskset・共有環境/既存venv/他job変更0。
 前P1の39人工/独立13件PASSを保持し、今回のmetadata監査をproduction検証へ読み替えない。
 軽量資料だけを固定・non-force pushし、最終報告後STOPする。
+
+## 2026-10-09 H4一度のmap実行を利用者承認・最終artifact固定
+
+[新実行認可入口](track_a_h4_authorized_launch_20261009.md)へ最新利用者指示・v8認可・独立reviewを固定した。
+上記未承認は以前のsnapshotとして保持。SOURCE/carry/他capsは不変、actual74804だけ明示改定。
+実起動はimmutable commit後のfresh gateに従い一度のみ。旧proof・歴史unknownの扱いは変えない。

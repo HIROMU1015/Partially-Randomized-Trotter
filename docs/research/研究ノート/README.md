@@ -190,3 +190,7 @@ D1〜D4レビュー承認は未解決、science/source port/input generation/nex
 ## 2026-10-09 H4追加native停止proof合格・technical再seal
 
 [当日ノート](2026-10-09.md)：追加native証拠の現在停止条件PASS、未記録の歴史条件はnull維持、technical再sealと実行承認を分離してSTOP。
+
+## 2026-10-09 H4一度のmap実行を利用者承認・最終artifact固定
+
+[当日ノート](2026-10-09.md)：明示実行認可、only+20 cap改定、v8独立reviewとfixedrunner直接exec/freshgate、一度のみ。
