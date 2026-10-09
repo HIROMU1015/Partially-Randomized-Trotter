@@ -840,3 +840,8 @@ worst13165893832B <= 新cap13958643712B、余裕792749880B。sealed/approved/run
 
 [実結果・native停止監査](docs/research/track_a_h4_approved_relaunch_20261009.md)。13GiB認可・独立review・fresh gate PASS後driver2865403/observer/12 workersを一度起動。最初のwrapper reservation後observerがowned process exitedを記録しFAIL_CLOSED_STOP、driver exit143、14own identities残存0を2回確認。
 新reserved1/完了0/signal0。元worker/IPC例外は未永続化で根本原因未確定。carry21/8692723164B、残74783、wall保守的upper5766.582514658794s（post-stop監査待ちを含む）、正確な終了時刻未記録。one-shot/全課金保持、retry/次stage/共有設定変更/GPUなし。
+
+
+## 2026-10-09 H4 worker例外保存・cleanup競合修正
+
+[修正・39限定人工・未確認事項](docs/research/track_a_h4_worker_error_fix_20261009.md)。SOURCE d3bb388401bfd25d31c53e7f785b533a7753ddb3/closure41。bootstrap/unpickle/GC/IPC例外を保存→observer report→own STOP順へ固定し、driver pulseのpublication reader競合も修正。元production例外は未記録で原因未特定。人工IPC/cold import合格、追加transpile/科学入力読込/本体/実worker/GPU/affinity0。carry21・現13GiB/74804を保持、新runtime認可false・未sealでSTOP。

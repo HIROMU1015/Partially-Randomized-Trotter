@@ -206,3 +206,8 @@ D1〜D4レビュー承認は未解決、science/source port/input generation/nex
 ## 2026-10-09 H4利用者が13GiB累積charge・一度の再実行を明示認可
 
 [当日ノート](2026-10-09.md)：利用者13GiB/一度再実行承認、限定22 gate PASS、新SOURCE/binding/独立reviewとfresh gate。
+
+
+## 2026-10-09 H4 worker原因保存・cleanup競合修正
+
+[当日ノート](2026-10-09.md)：39人工PASSと元production原因未特定を区別。publication reader競合とGC前成功通知を修正、本体再起動0。

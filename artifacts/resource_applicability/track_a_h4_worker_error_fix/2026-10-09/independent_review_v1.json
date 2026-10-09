@@ -1,0 +1,203 @@
+{
+  "author_artificial_tests": {
+    "actual_child_processes": 0,
+    "errors": 0,
+    "failures": 0,
+    "log_sha256": "87edd5b049cbff77c375ab95d02aefe87c7c184110774ef4617842261b09fd31",
+    "mock_workers": 12,
+    "peak_RSS_bytes": 98566144,
+    "result_sha256": "3fc9f414e0a5be63a96343995e58876aaf8c60e4b198c9bf559280f76e7e4bfa",
+    "scientific_array_reads": 0,
+    "scope": "LOCAL_ARTIFICIAL_FAILURE_PATH_AND_CLEANUP_ONLY",
+    "status": "PASS",
+    "tests": 39,
+    "transpiles": 0,
+    "wall_seconds": 0.08820794709026814
+  },
+  "author_diagnostic_probes": {
+    "guarded_cold_Qiskit_import": {
+      "science_or_transpile": 0,
+      "status": "PASS_SAVED_EVIDENCE",
+      "wall_seconds": 0.3626013360917568
+    },
+    "synthetic_9_qubit_256_matrix_IPC": {
+      "axis_count": 2,
+      "digest_match": true,
+      "frame_bytes": [
+        11795303,
+        11795390
+      ],
+      "scientific_inputs": 0,
+      "status": "PASS_SAVED_EVIDENCE",
+      "transpiles": 0
+    }
+  },
+  "base_review_commit": "ab86c31155c600f24552766ccd9d1505c5fb1de4",
+  "binding": {
+    "absolute_launch_command": null,
+    "allowed_cpus": [],
+    "approved": false,
+    "carry": {
+      "actual_invocations": 21,
+      "charged_bytes": 8692723164,
+      "wall_seconds": 5766.582514658794
+    },
+    "input_byte_only_count": 6,
+    "input_bytes_each": 13720266,
+    "preparation_binding_sha256": "dea8bb3d32dc8878a465b1e699e3cd28ac7f70a33e1ba3b0d35df317dca8d4c5",
+    "profiles_and_private_plot_cache_match": true,
+    "references": [
+      {
+        "bytes": 12266,
+        "path": "artifacts/resource_applicability/track_a_h4_native_proof_seal/2026-10-09/compiler_profile_v2.json",
+        "role": "compiler_profile",
+        "sha256": "eb847bc422eb17e7e8afa8de774b483c9b8e92274d584894179cd26cb45db4a6"
+      },
+      {
+        "bytes": 14418,
+        "path": "artifacts/resource_applicability/track_a_h4_native_proof_seal/2026-10-09/environment_profile_v2.json",
+        "role": "environment_profile",
+        "sha256": "b882b1e4cc6153a52294f761141057ea6a71623b287caa116e0bf44ff95d635f"
+      },
+      {
+        "bytes": 443,
+        "path": "artifacts/resource_applicability/track_a_h4_approved_relaunch/2026-10-09/library_cache_profile_v1.json",
+        "role": "library_cache_profile",
+        "sha256": "e4314b6b2e53b7b422635ee15dd8a6068066d54e48e00852a0dcd02933eb3f15"
+      },
+      {
+        "bytes": 22987,
+        "path": "artifacts/resource_applicability/track_a_h4_worker_error_fix/2026-10-09/source_freeze_v1.json",
+        "role": "source_closure",
+        "sha256": "3d15dc708bbe0f985e5d4ea5013a3e270a5395f33115f8e4eb6bc5783c9be072"
+      },
+      {
+        "bytes": 59574,
+        "path": "artifacts/resource_applicability/track_a_h4_approved_relaunch/2026-10-09/plan_authorized_v11.json",
+        "role": "previous_launch_plan",
+        "sha256": "631a33dc4aa7b356c1830396534501d6166b0accd0c00e16368c3e680db57399"
+      },
+      {
+        "bytes": 10279,
+        "path": "artifacts/resource_applicability/track_a_h4_approved_relaunch/2026-10-09/runtime_stop_summary_v2.json",
+        "role": "stop_carry_receipt",
+        "sha256": "a02a059674c57c3b16d015181db11e62418b2f393bc99a2236493b41f3ff447c"
+      }
+    ],
+    "runtime_authorization": false,
+    "sealed": false,
+    "single_link": true,
+    "status": "PASS_PREPARATION_ONLY",
+    "stop_evidence_files_byte_sha_match": true,
+    "two_native_audits_14_identities_each_all_ABSENT": true
+  },
+  "blocking_implementation_findings": [],
+  "checks": [
+    {
+      "check": "worker initialization/unpickle/schema/dispatch/response/GC exceptions",
+      "evidence": "workers.py:85-122 and WorkerBoundaryTests; failure frame then drain until parent STOP/EOF; no retry/new dispatch",
+      "status": "PASS_ARTIFICIAL_SCOPE"
+    },
+    {
+      "check": "GC before success and prior job/circuit lifetime",
+      "evidence": "workers.py:105-109 removes job before collect; execution._compile_worker returns metrics, not circuit; prior cycle weakref test passes",
+      "status": "PASS_ARTIFICIAL_SCOPE"
+    },
+    {
+      "check": "first bounded durable parent cause and output budget",
+      "evidence": "workers.py:167-199; 8192-byte exclusive budgeted worker-log-first-stop.txt; original cause retained through write/report failures; one extra16512-byte charge in storage_projection",
+      "status": "PASS"
+    },
+    {
+      "check": "observer first STOP precedes own signals",
+      "evidence": "observer.py:139-151,250-258,297-311; first_failure preserved, registered worker PID only, Trace fsync before signals; owned identity attached for process exit",
+      "status": "PASS_REVIEW_AND_MOCK"
+    },
+    {
+      "check": "five-second fail-closed ownership and cleanup",
+      "evidence": "observer request DEADLINE, verified pidfds/ESRCH-only idempotence, pool wait/kill/wait/pipe-close/executor shutdown; 14 existing artificial cleanup tests. No real process/signal test by reviewer",
+      "status": "PASS_UNCHANGED_CONTRACT_REVIEW_AND_MOCK"
+    },
+    {
+      "check": "same-process journal serialization",
+      "evidence": "resources.py:271,289-292 has thread_lock around _reserve_locked; flock-only race hypothesis does not apply. Barrier negative probe did not reproduce bypass and is not a positive concurrent-reservation success test",
+      "status": "PASS_STATIC"
+    },
+    {
+      "check": "scientific math/compiler options/cap constants",
+      "evidence": "source closure diff only worker/observer diagnostic, storage model, artificial runner/tests; execution/circuits/signal/ledger/resources/launch schema unchanged",
+      "status": "PASS_UNCHANGED"
+    }
+  ],
+  "conclusion_ja": "診断経路の改善と準備bindingは独立レビューPASS。元の本番例外原因は未特定。carry21・8692723164bytes・5766.582514658794秒を保持し、再起動の予算/認可はFAIL。科学本計算は開始していない。",
+  "future_launch_requirements": [
+    "Resolve or explicitly bound original production failure hypothesis; artificial diagnostic PASS is not root-cause proof.",
+    "New explicit one-shot launch instruction and cumulative byte/actual amendment are required; existing environment/CPU/observer adoption approvals remain historical and are not being re-requested.",
+    "Current SOURCE launch_binding still fixes consumed run02 and old carry20; any future run needs reviewed new SOURCE/run ID/carry21, updated permitted caps and source-derived seed, byte receipts, plan/auth/review digests, unused output/control/one-shot and fresh gates.",
+    "Never merge old random/partial/cache records or refund the failed attempt."
+  ],
+  "independent_checks": {
+    "GPU_query_use": false,
+    "actual_worker_observer_children": 0,
+    "affinity_changes": 0,
+    "artificial_event_and_small_journal_proof_sha256": "87b81aa3e2cd323f6cea7496bb8e2155c2c53207ae6382d9fc4da5ad853ae04f",
+    "maximum_fixture_threads": 2,
+    "process_signals": 0,
+    "scientific_array_reads": 0,
+    "single_process": true,
+    "source_edits": 0,
+    "transpiles": 0
+  },
+  "launch_budget": {
+    "carry_actual": 21,
+    "current_actual_cap": 74804,
+    "current_output_cap_bytes": 13958643712,
+    "exceeds_cap_bytes": 3471051084,
+    "future_full_map_worst_charge_bytes": 17429694796,
+    "logical_wrappers": 74784,
+    "minimum_future_cumulative_actual": 74805,
+    "proposals_applied": false,
+    "refund_or_reset": false,
+    "remaining_actual": 74783,
+    "status": "FAIL_CURRENT_CUMULATIVE_CONTRACT"
+  },
+  "old_source_commit": "a7b617600cd7063f7870f2059d5694ef00283f0e",
+  "resolved_finding": {
+    "events": [
+      "write_enter",
+      "write_done",
+      "report_enter",
+      "report_done",
+      "cleanup"
+    ],
+    "final_source_core_blobs_unchanged_from_fix": true,
+    "fixed_in_source": "ccd540838ffd47de156ef741c73b8e5738860211",
+    "id": "P1_POOL_FAILURE_VISIBLE_BEFORE_PUBLICATION",
+    "independent_Event_result": "PASS",
+    "resolution": "workers.py:169-199 retains assignment_lock and publishes pool.failure only in finally after durable write attempt and observer report.",
+    "trigger": "Driver pulse reads pool.failure while worker pipe thread is blocked in first-cause budget.write or observer report. Original proposal exposed failure early, permitting cleanup first."
+  },
+  "review_scope": "Read-only source/evidence and byte-only frozen-input/profile/stop verification plus one bounded pure-control/small-journal artificial review process. No production launch or scientific work.",
+  "reviewer": "independent_final_review (not source author)",
+  "root_cause": {
+    "new_diagnostics_success_does_not_prove_original_production_cause_fixed": true,
+    "previous_compile_start_confirmed": false,
+    "previous_production_worker_or_IPC_exception_not_persisted": true,
+    "status": "NOT_PROVEN",
+    "uncovered_cases": [
+      "native SIGKILL/OOM/interpreter crash cannot send Python traceback; observer can identify owner and measured native facts",
+      "bootstrap imports before worker try can still yield generic process-exit evidence",
+      "actual Gaussian input/actual Qiskit compile production path not rerun in this review"
+    ]
+  },
+  "schema_version": "h4-independent-worker-failure-review-v1",
+  "source_closure": {
+    "all_git_blobs_checkout_and_old_new_SHA_match": true,
+    "changed_files": 6,
+    "count": 41,
+    "source_freeze_sha256": "3d15dc708bbe0f985e5d4ea5013a3e270a5395f33115f8e4eb6bc5783c9be072",
+    "status": "PASS"
+  },
+  "source_commit": "d3bb388401bfd25d31c53e7f785b533a7753ddb3",
+  "status": "DIAGNOSTIC_PATH_IMPLEMENTATION_PASS_NO_RUNTIME_AUTHORIZATION"
+}
