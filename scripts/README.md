@@ -414,3 +414,8 @@ worst13165893832B <= 新cap13958643712B、余裕792749880B。sealed/approved/run
 ## H4 worker failure限定回帰
 
 [run_h4_worker_failure_tests.py](resource_applicability/run_h4_worker_failure_tests.py)はhomeの事前人工plan/evidenceを要求する単一process検査。実child/科学入力/transpile/affinity0、12workersはmock、publication raceだけ2fixture threads。[scopeと上限](../docs/research/track_a_h4_worker_error_fix_20261009.md)。
+
+
+## H4 run03純粋binding検証
+
+[run_h4_retry_binding_tests.py](resource_applicability/run_h4_retry_binding_tests.py)は1 process/内部thread1、事前home planの資源上限で予算・carry・draft拒否だけを検査する。[scope](../docs/research/track_a_h4_production_run03_20261009.md)。人工回路/compile/実childなし。

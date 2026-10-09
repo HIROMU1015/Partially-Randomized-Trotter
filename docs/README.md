@@ -451,3 +451,8 @@ worst13165893832B <= 新cap13958643712B、余裕792749880B。sealed/approved/run
 ## H4 worker error修正（2026-10-09）
 
 [原因保存・独立review・限定検証](research/track_a_h4_worker_error_fix_20261009.md)：39人工PASS、元production例外未特定、新launch未認可。
+
+
+## H4 run03準備（2026-10-09）
+
+[人工compileを省略・carry結合・追加上限2件](research/track_a_h4_production_run03_20261009.md)。本体未起動。

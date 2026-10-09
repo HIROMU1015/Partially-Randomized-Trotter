@@ -845,3 +845,12 @@ worst13165893832B <= 新cap13958643712B、余裕792749880B。sealed/approved/run
 ## 2026-10-09 H4 worker例外保存・cleanup競合修正
 
 [修正・39限定人工・未確認事項](docs/research/track_a_h4_worker_error_fix_20261009.md)。SOURCE d3bb388401bfd25d31c53e7f785b533a7753ddb3/closure41。bootstrap/unpickle/GC/IPC例外を保存→observer report→own STOP順へ固定し、driver pulseのpublication reader競合も修正。元production例外は未記録で原因未特定。人工IPC/cold import合格、追加transpile/科学入力読込/本体/実worker/GPU/affinity0。carry21・現13GiB/74804を保持、新runtime認可false・未sealでSTOP。
+
+
+## 2026-10-09 H4 run03：人工compile省略・本計算で診断する方針
+
+[新run準備・累積上限2件の追加承認案](docs/research/track_a_h4_production_run03_20261009.md)。利用者が追加人工compileを省略し、実本計算で問題を保存・停止して修正する方針を指示。元compiler原因未特定は受容済みの未検証事項として保持。
+SOURCE6e68fd9bcc68e788db6f5d43eaa6a03866e53d3b/closure44、32 pure binding tests PASS、回路build/compile/transpile/科学array/実worker/affinity/GPU/本体0。
+run02 native14identity×2ABSENT・7原本hash・ledger予約1件/journalを結合。carry21/8692723164B/5766.582514658794s upper保持、失敗返却/resetなし。
+次全mapworst16.232668GiB/74805、現承認13GiB/74804は不変。追加承認案は累積17GiBと74805だけ、environment/CPU/observer採用認可を再要求しない。
+未使用run03/output/control/one-shot、draft approved/runtime false・allowed[]・未seal・commandnull。承認後最終binding/fresh gates合格なら一度map起動、完了/STOP後終了・retry/次stageなし。

@@ -406,3 +406,8 @@ worst13165893832B <= 新cap13958643712B、余裕792749880B。sealed/approved/run
 ## H4実行基盤のworker error監査
 
 本libraryの科学関数は変更せず、別namespaceの[workers](../trottertracks/resource_applicability/h4_geometry/workers.py)と[observer](../trottertracks/resource_applicability/h4_geometry/observer.py)で例外保存とown cleanup順を修正した。[限定検証・未確認事項](../../docs/research/track_a_h4_worker_error_fix_20261009.md)。科学結果ではない。
+
+
+## H4 run03 STOP/carry binding
+
+科学libraryは不変。別namespaceの[retry receipt validator](../trottertracks/resource_applicability/h4_geometry/retry_receipt.py)がrun02の消費済み予約・byte journal・native STOPを保持する。[scope](../../docs/research/track_a_h4_production_run03_20261009.md)。
