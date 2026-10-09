@@ -263,3 +263,14 @@ GPT [G4 scientific review](../../research/track_b_G4_scientific_review_20261010.
 [tests](../../../tests/tracks/algorithm_codesign/test_g5_fixed_dictionary_closure.py) /
 [manifest](../../../artifacts/track_b_g5_fixed_dictionary_closure/2026-10-10/evidence_manifest_v1.json)。
 mandatory STOP、次の研究判断はGPT/利用者へ戻す。旧pending/最新記述は履歴として保持する。
+
+
+## 2026-10-10 Track B G6（最新追記）
+
+[採用GPT G5 review](../../research/track_b_G5_research_direction_review_20261010.md) §19の技術作業を完了。
+[G6結果/GPT引継ぎ](g6_results_and_gpt_handoff_20261010.md) /
+[独立数学証明](g6_independent_mathematical_audit_20261010.md) /
+[prior-art](g6_prior_art_and_method_delta_20261010.md) /
+[finite-bit/access](g6_finite_bit_and_access_audit_20261010.md)。
+状態`G6_IDEAL_IDENTITIES_VERIFIED_NATIVE_AND_METHOD_VALUE_UNRESOLVED`。16 off-domain tests。
+理想式・局所生成を確認、母関数は既知式、native費用・新規性未確定。science0、G5閉鎖保持、mandatory STOP。

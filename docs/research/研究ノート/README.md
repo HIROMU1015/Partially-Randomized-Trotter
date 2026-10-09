@@ -151,3 +151,7 @@ science終了後mandatory STOP、追加合成/target/grid/分子/DF/trajectory/G
 
 
 - [2026-10-10 Track B G5固定辞書終了認証](2026-10-10_track_b_g5_fixed_dictionary_closure.md)：限定digital class確認、成果・access整理、mandatory STOP。
+
+
+- [2026-10-10 Track B G6 return generator数学監査](2026-10-10_track_b_g6_return_generator_audit.md)：
+  採用G5 review §19、独立一般証明・既知components対応・有限bit局所prototype、native/new-method価値未確定、mandatory STOP。

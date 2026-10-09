@@ -339,3 +339,10 @@ Track B verifierはstdlibのみ、shared libraryのimport・変更・copyなし�
 [runner](../../scripts/tracks/algorithm_codesign/g5_fixed_dictionary_closure.py)、
 [tests](../../tests/tracks/algorithm_codesign/test_g5_fixed_dictionary_closure.py)、
 [manifest](../../artifacts/track_b_g5_fixed_dictionary_closure/2026-10-10/evidence_manifest_v1.json)。mandatory STOP。
+
+
+## 2026-10-10 Track B G6との境界
+
+shared library/API実装は変更しない。[新局所formal prototype](../trottertracks/algorithm_codesign/return_aggregation.py)はTrack B namespace。
+[一般証明・access・停止記録](../../docs/tracks/algorithm_codesign/g6_results_and_gpt_handoff_20261010.md)を参照。
+controlled native実装、Hamiltonian、PR/QPE接続の検証ではない。

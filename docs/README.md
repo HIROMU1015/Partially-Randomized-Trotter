@@ -378,3 +378,13 @@ known toyの限定class認証とmatched CTSを完了、mandatory STOP、科学�
 [受領GPT G4 review](research/track_b_G4_scientific_review_20261010.md)。
 保存表のみ、x1/4の6頂点digital class終了認証。現固定toy同辞書主線の区切り・限定成果保持、mandatory STOP。
 [manifest](../artifacts/track_b_g5_fixed_dictionary_closure/2026-10-10/evidence_manifest_v1.json)。
+
+
+## 2026-10-10 Track B G6（最新追記）
+
+[G6引継ぎ](tracks/algorithm_codesign/g6_results_and_gpt_handoff_20261010.md)から
+[証明](tracks/algorithm_codesign/g6_independent_mathematical_audit_20261010.md)、
+[文献監査](tracks/algorithm_codesign/g6_prior_art_and_method_delta_20261010.md)、
+[有限bit/access](tracks/algorithm_codesign/g6_finite_bit_and_access_audit_20261010.md)へ。
+[採用GPT G5 review](research/track_b_G5_research_direction_review_20261010.md) §19の独立形式監査のみ。
+G5固定toy閉鎖を維持。新規性・native総費用未確定、次science未認可、mandatory STOP。

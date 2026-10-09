@@ -17,3 +17,12 @@ registered table/lawをtestsで開かず、source-bound local PASS。full suite�
 [record](../../../artifacts/track_b_g5_fixed_dictionary_closure/2026-10-10/focused_tests.json)、
 [scope](../../../docs/tracks/algorithm_codesign/g5_fixed_dictionary_closure_scope_20261010.md)、
 [handoff](../../../docs/tracks/algorithm_codesign/g5_results_and_gpt_handoff_20261010.md)。mandatory STOP。
+
+
+## G6 independent return aggregation tests（2026-10-10）
+
+[test_g6_return_aggregation.py](test_g6_return_aggregation.py)：16 focused stdlib tests。
+独立adjacent-pair deletion oracle、GF/挿入/非負/符号mean、mutation controls、dyadic proposal/weights。
+独立に選ぶoff-domain形式値のみ、registered science table/cost reads0。新performance結果ではない。
+[保存log・scope](../../../artifacts/track_b_g6_return_generator_audit/2026-10-10/)、
+[一般証明](../../../docs/tracks/algorithm_codesign/g6_independent_mathematical_audit_20261010.md)。

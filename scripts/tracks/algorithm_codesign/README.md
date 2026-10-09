@@ -157,3 +157,10 @@ fixed x1/4、252 profiles/756 prices、L1-charge digital classまで確認。run
 [handoff](../../../docs/tracks/algorithm_codesign/g5_results_and_gpt_handoff_20261010.md)、
 [tests](../../../tests/tracks/algorithm_codesign/test_g5_fixed_dictionary_closure.py)、
 [manifest](../../../artifacts/track_b_g5_fixed_dictionary_closure/2026-10-10/evidence_manifest_v1.json)。mandatory STOP。
+
+
+## G6 return generator（2026-10-10）
+
+[g6_return_generator_audit.py](g6_return_generator_audit.py)：bounded stdlib formal technical checks。
+[G6 handoff](../../../docs/tracks/algorithm_codesign/g6_results_and_gpt_handoff_20261010.md) §19認可範囲のみ。
+一束完了、science0、旧run retry0、technical marker消費済み、mandatory STOP。
