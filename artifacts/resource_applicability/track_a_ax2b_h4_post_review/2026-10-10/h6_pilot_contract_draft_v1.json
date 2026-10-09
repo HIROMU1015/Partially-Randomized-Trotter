@@ -1,0 +1,593 @@
+{
+  "GPU": false,
+  "H4_rerun_tasks": [],
+  "H8_tasks": [],
+  "action_path_proposal": "sector finite Horner plus full-vector native deterministic complete primitives",
+  "assigned_resources": null,
+  "automatic_main_campaign_GO": false,
+  "automatic_rank_tol_sector_quota_GPU_change": false,
+  "backend_proposal": "CPU Python baseline; no GPU; no automatic Numba switch",
+  "caps_proposed_not_adopted": {
+    "BLAS_threads": 1,
+    "address_space_bytes": 8589934592,
+    "compile_calls": 36,
+    "control_probe_actions": 256,
+    "deterministic_actions_per_cell": 100000,
+    "input_generation_solver_matvecs": 10000,
+    "input_generation_wall_seconds": null,
+    "logical_CPUs": 1,
+    "maximum_diagnostic_records": 1024,
+    "outer_occurrence_samples": 8,
+    "output_bytes": 536870912,
+    "phase_wall_seconds": {
+      "correctness": 1800,
+      "input_reference": 1800,
+      "wrapper_cost": 3600
+    },
+    "primitive_validation_actions": 2000,
+    "reference_matvecs_per_action": 20000,
+    "reference_matvecs_total": 20000,
+    "science_workers": 1,
+    "tail_matvecs_corrected_plus_raw_per_cell": {
+      "H6_B2_K2_q2_R4": 24,
+      "H6_B3_K6_q2_R4": 56
+    },
+    "total_wall_seconds": 7200,
+    "trajectory_samples": 4,
+    "transpiled_instructions_per_wrapper": 5000000,
+    "untranspiled_instructions_per_wrapper": 1000000,
+    "worker_log_bytes": 65536
+  },
+  "cells": [
+    {
+      "K": null,
+      "R": null,
+      "cost_replicas": 1,
+      "id": "H6_B0_S2_q2",
+      "method": "B0",
+      "order": "2nd",
+      "prefix": "p",
+      "q": 2,
+      "r": null
+    },
+    {
+      "K": null,
+      "R": null,
+      "cost_replicas": 1,
+      "id": "H6_B1_S2_q1",
+      "method": "B1",
+      "order": "2nd",
+      "prefix": "L",
+      "q": 1,
+      "r": null
+    },
+    {
+      "K": null,
+      "R": null,
+      "cost_replicas": 1,
+      "id": "H6_B1_S2_q2",
+      "method": "B1",
+      "order": "2nd",
+      "prefix": "L",
+      "q": 2,
+      "r": null
+    },
+    {
+      "K": null,
+      "R": null,
+      "cost_replicas": 1,
+      "id": "H6_B1_S4_q1",
+      "method": "B1",
+      "order": "4th",
+      "prefix": "L",
+      "q": 1,
+      "r": null
+    },
+    {
+      "K": null,
+      "R": null,
+      "cost_replicas": 1,
+      "id": "H6_B1_S4_q2",
+      "method": "B1",
+      "order": "4th",
+      "prefix": "L",
+      "q": 2,
+      "r": null
+    },
+    {
+      "K": 2,
+      "R": 4,
+      "cost_replicas": 2,
+      "id": "H6_B2_K2_q2_R4",
+      "method": "B2",
+      "order": "2nd",
+      "prefix": "p",
+      "q": 2,
+      "r": 2
+    },
+    {
+      "K": 6,
+      "R": 4,
+      "cost_replicas": 2,
+      "id": "H6_B3_K6_q2_R4",
+      "method": "B3",
+      "order": "2nd",
+      "prefix": 0,
+      "q": 2,
+      "r": 2
+    }
+  ],
+  "compiler_proposal": {
+    "backend": null,
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "coupling_map": null,
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "version_fixed": null
+  },
+  "cost_primary_control_proposal": "symmetric_directional",
+  "cost_primary_unit": "RZ_count_per_measured_wrapper_without_state_preparation",
+  "cost_samples_are_quantum_shots": false,
+  "cost_secondary_units": [
+    "CX_count",
+    "RZ_depth",
+    "CX_depth",
+    "total_depth",
+    "size"
+  ],
+  "created_JST": "2026-10-10",
+  "engineering_gates_proposed_not_numerical_allowance": {
+    "leakage_tolerance": 1e-12,
+    "native_reference_agreement_tolerance": 1e-09,
+    "norm_tolerance": 1e-12,
+    "reference_cross_discrepancy_tolerance": 1e-10
+  },
+  "identities": {
+    "DF_provenance": null,
+    "actual_df_rank": null,
+    "assigned_host_CPU_RAM": null,
+    "basis_order_certificate": null,
+    "environment_compiler_identity": null,
+    "exclusive_output": null,
+    "generation_budget_and_authorization": null,
+    "hamiltonian_hash": null,
+    "pilot_authorization_sha256": null,
+    "reference_uncertainty_evidence": null,
+    "sector_certificate": null,
+    "seed_task_freeze_sha256": null,
+    "snapshot_sha256": null,
+    "source_freeze_sha256": null,
+    "state_hash": null,
+    "state_vector_hash": null
+  },
+  "information_scope": "all exposed H6 outputs are development; old H4 FEW remains frozen; H8 truth inaccessible before freeze",
+  "input_generation_authorized": false,
+  "launch_allowed": false,
+  "launcher_implemented": false,
+  "mandatory_stop": true,
+  "next_stage_authorized": false,
+  "numerical_policy_requires_review": {
+    "accuracy_eligibility": "UNDETERMINED",
+    "alpha_axis_proposal": {
+      "imag": 0.025,
+      "real": 0.025
+    },
+    "bias_uncertainty": null,
+    "empirical_u_is_not_certified_u": true,
+    "primary_axis_split_proposal": "epsilon_signal/sqrt(2)",
+    "shots": null,
+    "technical_only_without_certified_u_requires_explicit_new_contract": true,
+    "total_numerical_allowance_certified": false,
+    "total_quantum_cost": null
+  },
+  "planned_cell_replica_groups": 9,
+  "planned_compile_calls": 36,
+  "planned_random_outer_occurrences": 8,
+  "planned_random_trajectories": 4,
+  "quantum_shots_planned": 0,
+  "reference_path_proposal": "one 400x400 sector matrix from bounded DF matvec; no full many-body fragment matrix cache",
+  "resume": false,
+  "retry": false,
+  "schema": "track_a_h6_technical_pilot_contract_draft_v1",
+  "science_authorized": false,
+  "sealed": false,
+  "source_implementation_authorized": false,
+  "status": "DRAFT_NOT_AUTHORIZATION",
+  "target_proposal": {
+    "T": 0.8,
+    "actual_df_rank": null,
+    "basis": "sto-3g",
+    "df_tol_adopted": false,
+    "df_tol_proposed": 1e-08,
+    "epsilon_signal_diagnostic_only": 0.001,
+    "final_rank_override": null,
+    "geometry_angstrom": 1.0,
+    "model": "linear_H6",
+    "n_system_qubits": 12,
+    "prefix_mid_rule": "p=(L+1)//2; L>=2",
+    "prefix_order": "generation-prefix",
+    "reference": "direct sector exponential; phase surrogate diagnostic only",
+    "sector": {
+      "expected_dimension": 400,
+      "nelec_alpha": 3,
+      "nelec_beta": 3
+    },
+    "solver_proposal": {
+      "failure": "STOP",
+      "maxiter": 1000,
+      "ncv": 40,
+      "solver": "eigsh",
+      "tol": 1e-12,
+      "v0": "Hartree-Fock sector vector",
+      "which": "SA"
+    },
+    "state_policy": "serialized normalized low-energy DF sector state; no certified ground-state claim"
+  },
+  "wrapper_tasks": [
+    {
+      "axis": "cosine",
+      "cell_id": "H6_B0_S2_q2",
+      "control_policy": "ordinary",
+      "id": "H6_B0_S2_q2_rep0_ordinary_cosine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "sine",
+      "cell_id": "H6_B0_S2_q2",
+      "control_policy": "ordinary",
+      "id": "H6_B0_S2_q2_rep0_ordinary_sine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "cosine",
+      "cell_id": "H6_B0_S2_q2",
+      "control_policy": "symmetric_directional",
+      "id": "H6_B0_S2_q2_rep0_symmetric_directional_cosine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "sine",
+      "cell_id": "H6_B0_S2_q2",
+      "control_policy": "symmetric_directional",
+      "id": "H6_B0_S2_q2_rep0_symmetric_directional_sine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "cosine",
+      "cell_id": "H6_B1_S2_q1",
+      "control_policy": "ordinary",
+      "id": "H6_B1_S2_q1_rep0_ordinary_cosine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "sine",
+      "cell_id": "H6_B1_S2_q1",
+      "control_policy": "ordinary",
+      "id": "H6_B1_S2_q1_rep0_ordinary_sine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "cosine",
+      "cell_id": "H6_B1_S2_q1",
+      "control_policy": "symmetric_directional",
+      "id": "H6_B1_S2_q1_rep0_symmetric_directional_cosine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "sine",
+      "cell_id": "H6_B1_S2_q1",
+      "control_policy": "symmetric_directional",
+      "id": "H6_B1_S2_q1_rep0_symmetric_directional_sine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "cosine",
+      "cell_id": "H6_B1_S2_q2",
+      "control_policy": "ordinary",
+      "id": "H6_B1_S2_q2_rep0_ordinary_cosine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "sine",
+      "cell_id": "H6_B1_S2_q2",
+      "control_policy": "ordinary",
+      "id": "H6_B1_S2_q2_rep0_ordinary_sine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "cosine",
+      "cell_id": "H6_B1_S2_q2",
+      "control_policy": "symmetric_directional",
+      "id": "H6_B1_S2_q2_rep0_symmetric_directional_cosine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "sine",
+      "cell_id": "H6_B1_S2_q2",
+      "control_policy": "symmetric_directional",
+      "id": "H6_B1_S2_q2_rep0_symmetric_directional_sine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "cosine",
+      "cell_id": "H6_B1_S4_q1",
+      "control_policy": "ordinary",
+      "id": "H6_B1_S4_q1_rep0_ordinary_cosine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "sine",
+      "cell_id": "H6_B1_S4_q1",
+      "control_policy": "ordinary",
+      "id": "H6_B1_S4_q1_rep0_ordinary_sine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "cosine",
+      "cell_id": "H6_B1_S4_q1",
+      "control_policy": "symmetric_directional",
+      "id": "H6_B1_S4_q1_rep0_symmetric_directional_cosine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "sine",
+      "cell_id": "H6_B1_S4_q1",
+      "control_policy": "symmetric_directional",
+      "id": "H6_B1_S4_q1_rep0_symmetric_directional_sine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "cosine",
+      "cell_id": "H6_B1_S4_q2",
+      "control_policy": "ordinary",
+      "id": "H6_B1_S4_q2_rep0_ordinary_cosine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "sine",
+      "cell_id": "H6_B1_S4_q2",
+      "control_policy": "ordinary",
+      "id": "H6_B1_S4_q2_rep0_ordinary_sine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "cosine",
+      "cell_id": "H6_B1_S4_q2",
+      "control_policy": "symmetric_directional",
+      "id": "H6_B1_S4_q2_rep0_symmetric_directional_cosine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "sine",
+      "cell_id": "H6_B1_S4_q2",
+      "control_policy": "symmetric_directional",
+      "id": "H6_B1_S4_q2_rep0_symmetric_directional_sine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": null
+    },
+    {
+      "axis": "cosine",
+      "cell_id": "H6_B2_K2_q2_R4",
+      "control_policy": "ordinary",
+      "id": "H6_B2_K2_q2_R4_rep0_ordinary_cosine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": 544126806
+    },
+    {
+      "axis": "sine",
+      "cell_id": "H6_B2_K2_q2_R4",
+      "control_policy": "ordinary",
+      "id": "H6_B2_K2_q2_R4_rep0_ordinary_sine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": 544126806
+    },
+    {
+      "axis": "cosine",
+      "cell_id": "H6_B2_K2_q2_R4",
+      "control_policy": "symmetric_directional",
+      "id": "H6_B2_K2_q2_R4_rep0_symmetric_directional_cosine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": 544126806
+    },
+    {
+      "axis": "sine",
+      "cell_id": "H6_B2_K2_q2_R4",
+      "control_policy": "symmetric_directional",
+      "id": "H6_B2_K2_q2_R4_rep0_symmetric_directional_sine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": 544126806
+    },
+    {
+      "axis": "cosine",
+      "cell_id": "H6_B2_K2_q2_R4",
+      "control_policy": "ordinary",
+      "id": "H6_B2_K2_q2_R4_rep1_ordinary_cosine",
+      "replica": 1,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": 2896260860
+    },
+    {
+      "axis": "sine",
+      "cell_id": "H6_B2_K2_q2_R4",
+      "control_policy": "ordinary",
+      "id": "H6_B2_K2_q2_R4_rep1_ordinary_sine",
+      "replica": 1,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": 2896260860
+    },
+    {
+      "axis": "cosine",
+      "cell_id": "H6_B2_K2_q2_R4",
+      "control_policy": "symmetric_directional",
+      "id": "H6_B2_K2_q2_R4_rep1_symmetric_directional_cosine",
+      "replica": 1,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": 2896260860
+    },
+    {
+      "axis": "sine",
+      "cell_id": "H6_B2_K2_q2_R4",
+      "control_policy": "symmetric_directional",
+      "id": "H6_B2_K2_q2_R4_rep1_symmetric_directional_sine",
+      "replica": 1,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": 2896260860
+    },
+    {
+      "axis": "cosine",
+      "cell_id": "H6_B3_K6_q2_R4",
+      "control_policy": "ordinary",
+      "id": "H6_B3_K6_q2_R4_rep0_ordinary_cosine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": 2042713449
+    },
+    {
+      "axis": "sine",
+      "cell_id": "H6_B3_K6_q2_R4",
+      "control_policy": "ordinary",
+      "id": "H6_B3_K6_q2_R4_rep0_ordinary_sine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": 2042713449
+    },
+    {
+      "axis": "cosine",
+      "cell_id": "H6_B3_K6_q2_R4",
+      "control_policy": "symmetric_directional",
+      "id": "H6_B3_K6_q2_R4_rep0_symmetric_directional_cosine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": 2042713449
+    },
+    {
+      "axis": "sine",
+      "cell_id": "H6_B3_K6_q2_R4",
+      "control_policy": "symmetric_directional",
+      "id": "H6_B3_K6_q2_R4_rep0_symmetric_directional_sine",
+      "replica": 0,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": 2042713449
+    },
+    {
+      "axis": "cosine",
+      "cell_id": "H6_B3_K6_q2_R4",
+      "control_policy": "ordinary",
+      "id": "H6_B3_K6_q2_R4_rep1_ordinary_cosine",
+      "replica": 1,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": 2416534881
+    },
+    {
+      "axis": "sine",
+      "cell_id": "H6_B3_K6_q2_R4",
+      "control_policy": "ordinary",
+      "id": "H6_B3_K6_q2_R4_rep1_ordinary_sine",
+      "replica": 1,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": 2416534881
+    },
+    {
+      "axis": "cosine",
+      "cell_id": "H6_B3_K6_q2_R4",
+      "control_policy": "symmetric_directional",
+      "id": "H6_B3_K6_q2_R4_rep1_symmetric_directional_cosine",
+      "replica": 1,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": 2416534881
+    },
+    {
+      "axis": "sine",
+      "cell_id": "H6_B3_K6_q2_R4",
+      "control_policy": "symmetric_directional",
+      "id": "H6_B3_K6_q2_R4_rep1_symmetric_directional_sine",
+      "replica": 1,
+      "scope": "measured_wrapper_without_state_preparation",
+      "trajectory_reuse": "same explicit draws across both axes and controls",
+      "trajectory_seed_proposed": 2416534881
+    }
+  ]
+}

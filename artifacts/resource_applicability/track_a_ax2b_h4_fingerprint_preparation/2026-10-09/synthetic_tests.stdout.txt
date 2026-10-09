@@ -1,0 +1,158 @@
+......................F......F.......................................... [ 43%]
+........................................................................ [ 86%]
+.......................                                                  [100%]
+=================================== FAILURES ===================================
+_ test_call_local_reuse_cannot_hide_mutations_between_hash_calls[nested_parameter] _
+
+change = 'nested_parameter'
+
+    @pytest.mark.parametrize('change', ['phase', 'definition', 'nested_parameter', 'array', 'layout', 'recursive'])
+    def test_call_local_reuse_cannot_hide_mutations_between_hash_calls(change):
+        definition = QuantumCircuit(1)
+        definition.rz(.13, 0)
+        matrix = np.diag([1., 1j]).astype(complex)
+        definition.append(UnitaryGate(matrix), [0])
+        gate = Gate('shared_definition', 1, [])
+        gate.definition = definition
+        circuit = QuantumCircuit(1)
+        for _ in range(6): circuit.append(gate, [0], copy=False)
+        before = streaming(circuit)
+        assert before == legacy(circuit)
+        if change == 'phase': definition.global_phase += .017
+        elif change == 'definition': definition.x(0)
+        elif change == 'nested_parameter': definition.data[0].operation.params[0] += .021
+        elif change == 'array': definition.data[1].operation.params[0][0, 0] = -1
+        elif change == 'layout': definition._layout = object()
+        else: definition.append(gate, [0], copy=False)
+        if change in ('layout', 'recursive'):
+            for fn in (streaming, legacy):
+                with pytest.raises((ValueError, TypeError, CircuitError)): fn(circuit)
+        else:
+            after = streaming(circuit)
+>           assert after == legacy(circuit) and after != before
+E           AssertionError: assert ('c524da84bfcc...306d45695e891' == 'c524da84bfcc...306d45695e891'
+E             
+E             Skipping 53 identical leading characters in diff, use -v to show
+E               6d45695e891 and 'c524da84bfccc5f3cacd5e30593e6a0fc3e0602ef0fc2023439306d45695e891' != 'c524da84bfccc5f3cacd5e30593e6a0fc3e0602ef0fc2023439306d45695e891')
+
+tests/tracks/resource_applicability/test_ax2b_stream_fingerprint_v5.py:172: AssertionError
+____________ test_control_flow_blocks_preserve_all_canonical_bytes _____________
+
+value = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x734e621ea6d0>
+
+    def _numeric_parameter_payload(value: Any, *, allow_symbolic: bool = False) -> Any:
+        if isinstance(value, np.generic):
+            value = value.item()
+        if value is None or isinstance(value, (bool, int, str)):
+            return value
+        if isinstance(value, float):
+            if not math.isfinite(value):
+                raise ValueError("Circuit parameters must be finite.")
+            return {"float_hex": value.hex()}
+        if isinstance(value, complex):
+            if not math.isfinite(value.real) or not math.isfinite(value.imag):
+                raise ValueError("Circuit parameters must be finite.")
+            return {"complex_hex": [value.real.hex(), value.imag.hex()]}
+        if isinstance(value, np.ndarray):
+            array = np.ascontiguousarray(value)
+            if array.dtype.hasobject:
+                raise TypeError("Object-array circuit parameters are not cacheable.")
+            return {
+                "array_dtype": str(array.dtype),
+                "array_shape": list(array.shape),
+                "array_sha256": hashlib.sha256(array.view(np.uint8).tobytes()).hexdigest(),
+            }
+        if isinstance(value, (tuple, list)):
+            return [
+                _numeric_parameter_payload(item, allow_symbolic=allow_symbolic)
+                for item in value
+            ]
+        parameters = getattr(value, "parameters", None)
+        if parameters:
+            if not allow_symbolic:
+                raise ValueError(
+                    "Symbolic circuits are not cacheable; bind all parameters first."
+                )
+            return {
+                "symbolic_expression": str(value),
+                "symbolic_parameters": sorted(str(parameter.name) for parameter in parameters),
+            }
+        try:
+>           numeric = complex(value)
+                      ^^^^^^^^^^^^^^
+E           TypeError: complex() first argument must be a string or a number, not 'QuantumCircuit'
+
+src/trotterlib/rte_compiled_cost.py:255: TypeError
+
+The above exception was the direct cause of the following exception:
+
+    def test_control_flow_blocks_preserve_all_canonical_bytes():
+        circuit = QuantumCircuit(1, 1)
+        with circuit.if_test((circuit.clbits[0], 1)):
+            circuit.rz(.23, 0)
+>       expected = json.dumps(_circuit_payload(circuit), sort_keys=True, separators=(',', ':')).encode()
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tracks/resource_applicability/test_ax2b_stream_fingerprint_v5.py:224: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trotterlib/rte_compiled_cost.py:354: in _circuit_payload
+    "operation": _operation_payload(
+src/trotterlib/rte_compiled_cost.py:291: in _operation_payload
+    "params": [
+src/trotterlib/rte_compiled_cost.py:292: in <listcomp>
+    _numeric_parameter_payload(parameter, allow_symbolic=allow_symbolic)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x734e621ea6d0>
+
+    def _numeric_parameter_payload(value: Any, *, allow_symbolic: bool = False) -> Any:
+        if isinstance(value, np.generic):
+            value = value.item()
+        if value is None or isinstance(value, (bool, int, str)):
+            return value
+        if isinstance(value, float):
+            if not math.isfinite(value):
+                raise ValueError("Circuit parameters must be finite.")
+            return {"float_hex": value.hex()}
+        if isinstance(value, complex):
+            if not math.isfinite(value.real) or not math.isfinite(value.imag):
+                raise ValueError("Circuit parameters must be finite.")
+            return {"complex_hex": [value.real.hex(), value.imag.hex()]}
+        if isinstance(value, np.ndarray):
+            array = np.ascontiguousarray(value)
+            if array.dtype.hasobject:
+                raise TypeError("Object-array circuit parameters are not cacheable.")
+            return {
+                "array_dtype": str(array.dtype),
+                "array_shape": list(array.shape),
+                "array_sha256": hashlib.sha256(array.view(np.uint8).tobytes()).hexdigest(),
+            }
+        if isinstance(value, (tuple, list)):
+            return [
+                _numeric_parameter_payload(item, allow_symbolic=allow_symbolic)
+                for item in value
+            ]
+        parameters = getattr(value, "parameters", None)
+        if parameters:
+            if not allow_symbolic:
+                raise ValueError(
+                    "Symbolic circuits are not cacheable; bind all parameters first."
+                )
+            return {
+                "symbolic_expression": str(value),
+                "symbolic_parameters": sorted(str(parameter.name) for parameter in parameters),
+            }
+        try:
+            numeric = complex(value)
+        except (TypeError, ValueError) as exc:
+>           raise TypeError(
+                "Unsupported circuit parameter type: "
+                f"{type(value).__module__}.{type(value).__qualname__}"
+            ) from exc
+E           TypeError: Unsupported circuit parameter type: qiskit.circuit.quantumcircuit.QuantumCircuit
+
+src/trotterlib/rte_compiled_cost.py:257: TypeError
+=========================== short test summary info ============================
+FAILED tests/tracks/resource_applicability/test_ax2b_stream_fingerprint_v5.py::test_call_local_reuse_cannot_hide_mutations_between_hash_calls[nested_parameter]
+FAILED tests/tracks/resource_applicability/test_ax2b_stream_fingerprint_v5.py::test_control_flow_blocks_preserve_all_canonical_bytes
+2 failed, 165 passed in 11.64s

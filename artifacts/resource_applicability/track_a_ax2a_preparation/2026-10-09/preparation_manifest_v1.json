@@ -1,0 +1,180 @@
+{
+  "schema_version": "track_a_ax2a_preparation_v1",
+  "status": "AX2A_PREPARED_AX2B_NOT_AUTHORIZED",
+  "base_commit": "b2e1bf65e21893b6c617223b42313623d3186f12",
+  "review_sha256": "0ca70130c1fe1901ae928e136ea85b89962674321799b89b661f3ecb740e7b4d",
+  "existing_source_and_contract_hashes": {
+    "src/trotterlib/df_hamiltonian.py": "7d711e1c3c093079ae890ffc1907813d55d211a4fb622e4f36edee05fdea0c52",
+    "src/trotterlib/pf_c_system_size_validation.py": "723ecdac081689b99483deea37268f16b8980e926b5fe5ce5257b5dc5fa23df0",
+    "src/trotterlib/df_gpu_statevector.py": "a200e7ef474091de1026c4d586e725da006540a7dc04654a09cf276164c51032",
+    "src/trotterlib/rte.py": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618",
+    "src/trotterlib/product_formula.py": "39c4e03748fcab03ea7e64936a19372cb5f1bd1bc9f72a4f09cef58c3c202eca",
+    "src/trotterlib/pf_decomposition.py": "d6dd0024e5312d69e43b2a498773dc8529bd5f50da39cb3df28fa9f7652e2e26",
+    "src/trotterlib/df_partial_s2.py": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e",
+    "src/trotterlib/df_partial_s2_repeated.py": "65b5ebd842a972735c7aa1e7ba4d11d8265ab586119f29bf5acc8631700c7d6d",
+    "src/trotterlib/df_rpe_hadamard_compiled_cost.py": "2e6a026e3fbf6c6a6a91115dbba69018fdbb2b5eb5f36af90773e906b4c87715",
+    "src/trotterlib/pr2_matched_accuracy_m1_execution.py": "7528ebae754e14ee623d28212a668e4edc237575775a78d0d2bf4d34dc53c293",
+    "src/trotterlib/research_direction_energy_tail_pareto.py": "c9a3c5c4488be88bdb10b50d260939bfb7a1caf1f8699e3f45d6747c668558be",
+    "src/trotterlib/df_partial_randomized_pf.py": "53609655d47cabf4b8086e7992f91f77ad8d67443cce3401203430809d43cbcb",
+    "src/trotterlib/rpe_hadamard_compiled_cost_proxy.py": "9c65a61b12d9f622734d37e13f3b8e49cee0822733d891705379c20a3c356067",
+    "artifacts/resource_applicability/track_a_ax1b_saved_model_audit/2026-10-09/run_v1/model_fits.json": "fd2bd49e6e6615b9128f2efc802c79fef43dfa9408d589addeb14428ebbebcd8",
+    "docs/research/track_a_ax0_research_contract.md": "2d194af4f00b4012a704fea1a7d685671f4d9076e8b3a78b1eed90b09541a665",
+    "docs/research/track_a_ax0_benchmark_protocol.md": "fa6ae4bf374bac76b670b885395de1e412e0ae8e2f8cd96d1626ac5bc9034811",
+    "docs/research/track_a_ax0_compute_budget.md": "f239a84d9b8a90b36f059b734f8b5e5bf6053273a42a3118f28288d183c4531c",
+    "docs/research/track_a_ax1a_preanalysis_contract.md": "340aae4253fad7769743567176c21872adfcd0ff452839319cc1b8d8cc407059"
+  },
+  "frozen_H4_model": {
+    "path": "artifacts/resource_applicability/track_a_ax1b_saved_model_audit/2026-10-09/run_v1/model_fits.json",
+    "sha256": "fd2bd49e6e6615b9128f2efc802c79fef43dfa9408d589addeb14428ebbebcd8",
+    "model": "PRED_BASE_FEW_PARAM",
+    "fold": "full210",
+    "refit": false
+  },
+  "primary_RQ": "RQ-R",
+  "secondary_RQ": "RQ-P1",
+  "operational_required": false,
+  "science_authorized": false,
+  "ax2b_authorized": false,
+  "next_stage_authorized": false,
+  "mandatory_stop": true,
+  "new_scientific_calculation_count": 0,
+  "validation_scope": "synthetic implementation only; native DF full wrapper remains unvalidated",
+  "pilot_draft": {
+    "schema_version": "track_a_ax2b_technical_pilot_draft_v1",
+    "status": "DRAFT_NOT_AUTHORIZATION",
+    "science_authorized": false,
+    "ax2b_authorized": false,
+    "next_stage_authorized": false,
+    "mandatory_stop": true,
+    "task_selection": "structural/model-independent before reference results",
+    "H4_tasks": [
+      {
+        "id": "H4_LEGACY_STATE_ACTION",
+        "scope": "legacy rank12 saved snapshot",
+        "checks": [
+          "dense versus action",
+          "Qiskit/OpenFermion ordering",
+          "scalar phase",
+          "primitive sector"
+        ]
+      },
+      {
+        "id": "H4_FINITE_AND_B0",
+        "scope": "same legacy target",
+        "checks": [
+          "K2/K4/K6",
+          "corrected/raw",
+          "signed discard/PF decomposition",
+          "empty tail"
+        ]
+      },
+      {
+        "id": "H4_STRONG_BASELINES",
+        "scope": "same legacy target",
+        "checks": [
+          "global S4",
+          "negative time",
+          "ordinary control versus directional IR",
+          "B2 backbone fairness"
+        ]
+      }
+    ],
+    "H6_tasks": [
+      {
+        "id": "H6_B1_2nd_q1",
+        "method": "B1",
+        "order": "2nd",
+        "prefix_fraction": 1.0,
+        "q": 1,
+        "R": null,
+        "K": null
+      },
+      {
+        "id": "H6_B1_2nd_q8",
+        "method": "B1",
+        "order": "2nd",
+        "prefix_fraction": 1.0,
+        "q": 8,
+        "R": null,
+        "K": null
+      },
+      {
+        "id": "H6_B1_4th_q1",
+        "method": "B1",
+        "order": "4th",
+        "prefix_fraction": 1.0,
+        "q": 1,
+        "R": null,
+        "K": null
+      },
+      {
+        "id": "H6_B1_4th_q8",
+        "method": "B1",
+        "order": "4th",
+        "prefix_fraction": 1.0,
+        "q": 8,
+        "R": null,
+        "K": null
+      },
+      {
+        "id": "H6_B2_short",
+        "method": "B2",
+        "order": "2nd",
+        "prefix_fraction": 0.5,
+        "q": 1,
+        "R": 1,
+        "K": 2
+      },
+      {
+        "id": "H6_B3_long",
+        "method": "B3",
+        "order": "2nd",
+        "prefix_fraction": 0.0,
+        "q": 8,
+        "R": 64,
+        "K": 6
+      }
+    ],
+    "H8_tasks": [],
+    "proposed_target": {
+      "model": "linear H-chain",
+      "basis": "STO-3G",
+      "geometry_angstrom": 1.0,
+      "T": 0.8,
+      "epsilon_min": 0.001,
+      "H6_df_rank": null,
+      "H6_df_tol": null,
+      "state_identity": null
+    },
+    "proposed_caps": {
+      "cpu_cores": 1,
+      "blas_threads": 1,
+      "processes": 1,
+      "gpu": false,
+      "address_space_bytes": 8589934592,
+      "wall_seconds_per_H4_task": 900,
+      "wall_seconds_per_H6_task": 1800,
+      "total_wall_seconds": 14400,
+      "output_bytes": 536870912,
+      "total_wrappers": 64,
+      "cost_trajectories_per_random_cell": 2,
+      "tail_matvecs_per_signal_path": 448,
+      "tail_matvecs_corrected_and_raw_total": 896
+    },
+    "assigned_resources": null,
+    "unresolved_before_launch": [
+      "snapshot hash and creation allowance",
+      "DF tolerance semantics and actual rank",
+      "primitive sector certification",
+      "H4 callback/wrapper lowering",
+      "reference numerical allowance",
+      "state and seed identities",
+      "actual CPU/RAM allocation",
+      "per-circuit gate and matvec caps",
+      "source/plan freeze",
+      "separate explicit launch authorization"
+    ],
+    "information_scope": "all exposed H6 science values are development; no H8 truth access",
+    "cap_scope": "technical profiling only; not an adequate main-campaign search bound"
+  }
+}
