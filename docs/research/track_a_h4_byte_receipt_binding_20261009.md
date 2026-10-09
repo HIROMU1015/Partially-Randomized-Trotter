@@ -114,3 +114,9 @@ SOURCE/profile/input/plan/auth/review/carry/own PID/start/pidfd/fresh output/con
 
 今回source/tests/schemaの変更0、新科学actual/追加transpile/本番runner・worker/分子アクセス/array生成/GPU/CuPy/taskset/共有環境・venv・他job変更0。
 軽量資料だけをcommit/non-force pushし、最終報告後STOPする。
+
+## 2026-10-09 H4追加native停止proof合格・technical再seal
+
+[追加proofと新technical seal](track_a_h4_native_proof_seal_20261009.md)で旧hostの13identity・2回残存0・元証拠hashの照合を完了し、現在の停止条件のgapを解消した。
+上記の不足・未sealは以前のsnapshotとして保持する。新planはsealed=trueだがapproval/runtime falseで本計算STOP。
+歴史exitcode/正確なexit-reap時刻は依然未記録であり、今回のproofから補完しない。
