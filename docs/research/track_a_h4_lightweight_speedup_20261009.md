@@ -99,3 +99,7 @@ SOURCEと軽量REVIEW_BUNDLE commitを分離し、[commit対象一覧](../../art
 NPZ、実runtime/checkpoint/cache、raw test log、credential・内部SSH情報・home準備utilityをcommitしない。
 originはnon-force pushを試み、認証失敗時は設定を変更せず手動commandを最終報告する。
 actual REVIEW_BUNDLE/remote SHAは自己参照を避けhome publication receiptと最終報告で記録する。
+
+## 2026-10-09 H4利用者が13GiB累積charge・一度の再実行を明示認可
+
+[13GiB改定と一度の再実行認可](track_a_h4_approved_relaunch_20261009.md)へ継続。利用者が再実行budget問題を承認し、新SOURCE/output改定schemaを固定した。上記の10GiB不合格はその時点の履歴として保持する。

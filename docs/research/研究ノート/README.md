@@ -202,3 +202,7 @@ D1〜D4レビュー承認は未解決、science/source port/input generation/nex
 ## 2026-10-09 H4軽量高速化・限定同等性確認
 
 [当日ノート](2026-10-09.md)：距離内prepare再利用、ledger全件走査除去、限定48人工PASS、launch budget FAIL保持。
+
+## 2026-10-09 H4利用者が13GiB累積charge・一度の再実行を明示認可
+
+[当日ノート](2026-10-09.md)：利用者13GiB/一度再実行承認、限定22 gate PASS、新SOURCE/binding/独立reviewとfresh gate。
