@@ -182,3 +182,7 @@ D1〜D4レビュー承認は未解決、science/source port/input generation/nex
 ## 2026-10-09 H4 cleanup ESRCH修正・独立再review PASS
 
 [当日ノート](2026-10-09.md)：旧P1の限定修正、新SOURCE、人工39件と独立13件PASS、binding更新、受領待ち/未承認でSTOP。
+
+## 2026-10-09 H4全byte受領・carry合格・native終端proof待ち
+
+[当日ノート](2026-10-09.md)：全2150file byte受領、carry/source binding、草案整合修正、旧run05 native終了proof不足と未承認を区別してSTOP。

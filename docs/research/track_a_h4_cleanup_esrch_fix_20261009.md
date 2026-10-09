@@ -92,3 +92,9 @@ resource観測5秒以内と3秒CPU低負荷sampleの条件を満たさなけれ�
 受領・契約変更・利用者承認後はfingerprintを再結合し、新承認に対応したcommandへ更新する。今回の技術PASSはlaunch認可ではない。
 
 本計算・追加transpile・分子アクセス・GPU query/use・CuPy import・taskset・共有環境/venv/他job変更は行っていない。資料を固定・公開し、最終報告後STOPする。
+
+## 2026-10-09 H4全byte受領・carry合格・native終端proof待ち
+
+[新受領監査・v6 binding](track_a_h4_byte_receipt_binding_20261009.md)で全2150files/既知9SHA/6入力freeze/carryの照合を完了した。
+この報告の「未受領」は以前のsnapshotとして保持する。新SOURCEは不変、P1合格も維持。
+run05全owned終了のnative proofが不足しているため再sealせず、実行認可falseで本計算STOPを継続する。
