@@ -120,8 +120,13 @@ class OwnedIdentity:
 
 class ObservationState:
     """Pure policy; timings, phase and the first failure are separate fields."""
-    def __init__(self, baseline, started, *, prior_wall=0, workers=12, wall_started=None):
-        self.baseline = baseline['oom_events']
+    def __init__(self, baseline, started, *, prior_wall=0, workers=12, wall_started=None,
+                 pressure_profile=None, pressure_baseline=None):
+        self.pressure_guard = None
+        if pressure_profile is not None:
+            from .pressure_policy import PressureGuard
+            self.pressure_guard=PressureGuard(baseline if pressure_baseline is None else pressure_baseline,pressure_profile)
+        self.baseline = dict(baseline['oom_events'] if self.pressure_guard is None else self.pressure_guard.baseline_oom)
         self.last = started
         self.started = started if wall_started is None else wall_started
         self.prior_wall, self.workers = prior_wall, workers
@@ -150,6 +155,7 @@ class ObservationState:
         return self.first_failure
 
     def evaluate(self, observation, samples, observer_sample, begun, ended):
+        pressure = None if observation is None or self.pressure_guard is None else self.pressure_guard.decision(observation,now=ended)
         record = dict(kind='observation', monotonic=ended, interval_seconds=ended-self.last,
                       observation_started=begun,
                       observation_duration_seconds=ended-begun,
@@ -162,7 +168,8 @@ class ObservationState:
                           host_available=observation.get('host_available', observation['available']),
                           psi_full_avg10=observation['psi_full_avg10'],
                           psi_full_by_scope=dict(observation.get('psi_full_by_scope', {})),
-                          oom_events=dict(observation['oom_events'])))
+                          oom_events=dict(observation['oom_events'])),
+                      pressure_policy=pressure)
         reason = None
         interval, duration, stale = (record[k] for k in
                                      ('interval_seconds', 'observation_duration_seconds', 'staleness_seconds'))
@@ -172,7 +179,8 @@ class ObservationState:
         elif not 0 <= stale <= DEADLINE: reason = 'observation_staleness'
         elif not 0 <= record['wall_seconds'] <= WALL_CAP: reason = 'cumulative_wall'
         elif observation['available'] < HEADROOM: reason = 'memory_headroom'
-        elif observation['psi_full_avg10'] != 0: reason = 'memory_pressure'
+        elif pressure is not None and pressure['reason'] is not None: reason = pressure['reason']
+        elif pressure is None and observation['psi_full_avg10'] != 0: reason = 'memory_pressure'
         elif observation['oom_events'] != self.baseline: reason = 'oom_or_changed_cgroup'
         elif not 1 <= len(samples) <= self.workers+1: reason = 'owned_process_count'
         elif any(not 0 <= s['rss'] <= ROLE_CAP or not 0 <= s['address_space'] <= ROLE_CAP for s in samples):
@@ -239,7 +247,8 @@ def observer_main(sock_fd, trace_fd):
         start = time.monotonic()
         baseline = observe_memory()
         state = ObservationState(baseline, start, prior_wall=config['prior_wall'], workers=config['workers'],
-                                 wall_started=config['wall_started'])
+                                 wall_started=config['wall_started'],pressure_profile=config.get('pressure_profile'),
+                                 pressure_baseline=config.get('pressure_baseline'))
         record = state.evaluate(baseline, [driver.sample()], process_sample(os.getpid()), start, time.monotonic())
         require(state.first_failure is None, 'observer initial observation')
         trace.write(record)
@@ -320,10 +329,14 @@ def observer_main(sock_fd, trace_fd):
 class IndependentObserver:
     """Spawned only from explicitly scoped synthetic cases or reviewed new role."""
     def __init__(self, python, trace_path, *, scope, workers=12, prior_wall=0,
-                 output_cap=4*2**20, runtime_authorization=False, wall_started=None,allowed_cpus=None,role_cpus=None):
+                 output_cap=4*2**20, runtime_authorization=False, wall_started=None,allowed_cpus=None,role_cpus=None,
+                 pressure_profile=None,pressure_baseline=None):
         wall_started = time.monotonic() if wall_started is None else wall_started
         require(scope == 'SYNTHETIC_ONLY' or (scope == 'PRODUCTION' and runtime_authorization is True),
                 'independent observer production role not approved')
+        if pressure_profile is not None:
+            from .pressure_policy import PressureGuard
+            PressureGuard(pressure_baseline,pressure_profile)
         path = Path(trace_path)
         require(path.is_absolute() and path.is_relative_to('/home/AbeHiromu') and
                 not any(p.is_symlink() for p in [path, *path.parents]) and
@@ -349,7 +362,8 @@ class IndependentObserver:
             parent.settimeout(DEADLINE)
             send(parent, dict(scope=scope, runtime_authorization=runtime_authorization,
                  driver=identity(process_sample(os.getpid())), workers=workers, prior_wall=prior_wall,
-                 wall_started=wall_started, output_cap=output_cap,allowed_cpus=allowed_cpus,role_cpus=role_cpus))
+                 wall_started=wall_started, output_cap=output_cap,allowed_cpus=allowed_cpus,role_cpus=role_cpus,
+                 pressure_profile=pressure_profile,pressure_baseline=pressure_baseline))
             response = receive(parent)
             require(response == {'kind': 'ready', 'identity': self.owner.expected}, 'observer ready ownership')
         except BaseException as exc:

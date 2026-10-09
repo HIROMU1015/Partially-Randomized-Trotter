@@ -16,7 +16,7 @@ from .prelaunch_audit import private_path, receipt_inventory, environment_profil
 from .resources import GiB, ROLE_CAP, HEADROOM, OUTPUT_CAP, WALL_CAP, fsync_directory
 from .observer import AS_CAP, RSS_CAP, FRAME_CAP, TERMINAL_RESERVE
 
-RUN_ID='h4-newhost-signal-compile-20261010-run06'
+RUN_ID='h4-newhost-signal-compile-20261010-run07'
 ORIGINAL_CARRY={'actual_invocations':20,'charged_bytes':165214360,'wall_seconds':5466.188392877579}
 PRIOR_CARRY={'actual_invocations':20,'charged_bytes':4428938712,'wall_seconds':5472.345380863175}
 RUN02_CARRY={'actual_invocations':21,'charged_bytes':8692723164,'wall_seconds':5766.582514658794}
@@ -36,11 +36,11 @@ STRUCTURES={
          'input_root':str,'stop_evidence_root':str,'stop_evidence_receipt':dict,'output_root':str,'control_root':str,
          'inputs':dict,'generation_freeze_digest':str,'templates':list,'contract_plan_fingerprint':str,
          'compiler_fingerprint':str,'environment_fingerprint':str,'requested_workers':int,
-         'cpu_proposal':dict,'carry':dict,'caps':dict,'storage':dict,'sealed':bool},
+         'cpu_proposal':dict,'carry':dict,'caps':dict,'storage':dict,'sealed':bool,'memory_pressure_profile':dict},
  'authorization':{'schema_version':str,'stage':str,'run_id':str,'source_commit':str,'plan_fingerprint':str,
          'approved':bool,'runtime_authorization':bool,'allowed_cpus':list,'one_shot':bool,
          'permission':str,'result_prior':bool,'environment_accepted':bool,'observer_role':dict,'budget_amendment':dict,
-         'output_budget_amendment':dict,'budget_accounting':dict,'recovery_policy':dict},
+         'output_budget_amendment':dict,'budget_accounting':dict,'recovery_policy':dict,'pressure_amendment':dict},
  'review':{'schema_version':str,'stage':str,'run_id':str,'source_commit':str,'plan_fingerprint':str,
          'authorization_digest':str,'approved':bool,'runtime_authorization':bool,'reviewer':str,'mandatory_stop':bool}}
 VERSIONS={k:'h4-newhost-'+k+'-v2' for k in STRUCTURES}
@@ -94,6 +94,17 @@ def authorize(plan,authorization,review, *, explicit_launch):
                 not Path(authority['path']).is_absolute() and '..' not in Path(authority['path']).parts,
                 'relative user-authority reference')
         hash_id(authority['sha256'])
+    pressure=authorization['pressure_amendment']
+    require(set(pressure)=={'approved','from_host_stop_percent','to_host_stop_percent','profile','authority'} and
+            pressure['approved'] is True and type(pressure['from_host_stop_percent']) is float and
+            pressure['from_host_stop_percent']==0.0 and type(pressure['to_host_stop_percent']) is float and
+            pressure['to_host_stop_percent']==1.0 and pressure['profile']==plan['memory_pressure_profile'],
+            'explicit bounded host-pressure contract amendment')
+    for entry in (pressure['profile'],pressure['authority']):
+        require(type(entry) is dict and set(entry)=={'path','sha256'} and type(entry['path']) is str and
+                bool(entry['path']) and not Path(entry['path']).is_absolute() and '..' not in Path(entry['path']).parts,
+                'relative pressure profile/authority reference')
+        hash_id(entry['sha256'])
     require(plan['contract_plan_fingerprint']==gates.PLAN_FP,'science contract unchanged')
     require(set(plan['inputs'])==set(gates.DISTANCES),'six inputs')
     for distance,entry in plan['inputs'].items():
@@ -159,6 +170,11 @@ def reference(root,entry):
     return json.loads(data)
 
 
+def read_pressure_profile(plan):
+    from .pressure_policy import verify
+    return verify(reference(Path(plan['source_root']),plan['memory_pressure_profile']))
+
+
 def verify_runtime(permit):
     plan=permit.plan
     authorize(plan,permit.authorization,permit.review,explicit_launch=True)
@@ -177,6 +193,13 @@ def verify_runtime(permit):
     require(env['fingerprint']==plan['environment_fingerprint'] and comp['fingerprint']==plan['compiler_fingerprint'],'plan profile fingerprints')
     from .library_cache import verify
     verify(reference(root,plan['library_cache_profile']))
+    pressure_profile=read_pressure_profile(plan)
+    pressure_authority=reference(root,permit.authorization['pressure_amendment']['authority'])
+    require(pressure_authority['schema_version']=='h4-user-pressure-authority-v1' and
+            pressure_authority['instruction']=='この条件を承認して再実行' and
+            pressure_authority['pressure_amendment_approved'] is True and
+            pressure_authority['accepted_profile']==pressure_profile,
+            'user-approved pressure profile/authority binding')
     for section in ('budget_accounting','recovery_policy'):
         authority=reference(root,permit.authorization[section]['authority'])
         require(authority['schema_version']=='h4-user-recovery-authority-v1' and
@@ -220,6 +243,8 @@ def verify_frozen_receipts(plan):
     verify_run04_stop(evidence)
     from .stopped_attempt_receipt import verify_stopped_attempt
     verify_stopped_attempt(evidence)
+    from .run06_receipt import verify_run06_stop
+    verify_run06_stop(evidence)
     return {**freeze,'input_root':str(root),'consumed_seconds':CARRY['wall_seconds'],
             'prior_charge':CARRY['charged_bytes'],'prior_invocations':CARRY['actual_invocations']}
 
@@ -257,10 +282,14 @@ def verify_newhost_stop(evidence):
         require(current['start']!=row['expected_start'], 'predecessor owned identity still exists')
 
 
-def fresh_gate(plan,observation, *, now=None):
+def fresh_gate(plan,observation, *, now=None,pressure_profile=None):
     now=time.monotonic() if now is None else now
     require(0<=now-observation['observed_monotonic']<=5,'fresh launch observation')
-    memory=observation['memory'];require(memory['psi_full_avg10']==0,'launch memory pressure')
+    memory=observation['memory']
+    from .pressure_policy import PressureGuard
+    profile=read_pressure_profile(plan) if pressure_profile is None else pressure_profile
+    pressure=PressureGuard(memory,profile).decision(memory,now=now)
+    require(pressure['reason'] is None,'launch memory pressure: '+str(pressure['reason']))
     require(0<=now-memory['observed_at']<=5,'fresh memory sample')
     require(memory['available']>=max(120,8+8*plan['requested_workers']+16)*GiB+AS_CAP,'observer-inclusive admission')
     needed=set(roles(plan));require(needed<=set(observation['scheduler_affinity']) & set(observation['online_cpus']),'role CPUs unavailable')

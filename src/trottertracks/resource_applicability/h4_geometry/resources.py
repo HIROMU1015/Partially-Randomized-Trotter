@@ -205,10 +205,15 @@ def limit_owned_address_space():
 
 class Monitor:
     """Only explicitly registered children, identified by PID + starttime + parent."""
-    def __init__(self, workers, observation, *, clock=time.monotonic):
+    def __init__(self, workers, observation, *, clock=time.monotonic,pressure_profile=None,pressure_baseline=None):
         self.workers, self.clock = workers, clock
         self.last = observation['observed_at']
         self.baseline = observation['oom_events']
+        self.pressure_guard=None
+        if pressure_profile is not None:
+            from .pressure_policy import PressureGuard
+            self.pressure_guard=PressureGuard(observation if pressure_baseline is None else pressure_baseline,pressure_profile)
+            self.baseline=self.pressure_guard.baseline_oom
         self.children = {}
         self.check(observation, [0])
 
@@ -231,7 +236,10 @@ class Monitor:
         require(0 <= now-self.last <= 5 and 0 <= now-observation['observed_at'] <= 5, 'monitor interval/freshness')
         self.last = now
         require(observation['available'] >= HEADROOM, 'memory headroom pressure')
-        require(observation['psi_full_avg10'] == 0, 'memory PSI pressure')
+        if self.pressure_guard is None:require(observation['psi_full_avg10'] == 0, 'memory PSI pressure')
+        else:
+            decision=self.pressure_guard.decision(observation,now=now)
+            require(decision['reason'] is None,'memory PSI pressure: '+str(decision['reason']))
         require(observation['oom_events'].keys() == self.baseline.keys() and
                 all(observation['oom_events'][k] == v for k, v in self.baseline.items()), 'OOM or changed cgroup')
         require(len(rss) <= self.workers+1 and all(0 <= v <= ROLE_CAP for v in rss) and

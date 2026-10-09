@@ -35,8 +35,9 @@ class OwnedRun:
                 'new independent observer role needs separate production approval')
         observation=observe_memory()
         newhost=permit.plan.get('schema_version')=='h4-newhost-plan-v2'
+        pressure_profile=pressure_baseline=None
         if newhost:
-            from .launch_binding import authorize as authorize_new, FILE_LIMITS, CONTROL_LOG_CAP, roles
+            from .launch_binding import authorize as authorize_new, FILE_LIMITS, CONTROL_LOG_CAP, roles,read_pressure_profile
             authorize_new(permit.plan,authorization,permit.review,explicit_launch=True)
             self.workers=permit.plan['requested_workers']
             require(permit.launch_observation is not None and
@@ -44,6 +45,11 @@ class OwnedRun:
                     0<=time.monotonic()-permit.launch_observation['observed_monotonic']<=5,
                     'OOM/cgroup changed or startup observation stale')
             require(observation['available'] >= max(120,8+8*self.workers+16)*2**30+AS_CAP,'newhost observer admission')
+            from .pressure_policy import PressureGuard
+            pressure_profile=read_pressure_profile(permit.plan)
+            pressure_baseline=permit.launch_observation['memory']
+            pressure=PressureGuard(pressure_baseline,pressure_profile).decision(observation)
+            require(pressure['reason'] is None,'newhost startup pressure: '+str(pressure['reason']))
             require(set(os.sched_getaffinity(0))==set(permit.plan['cpu_proposal']['driver']),'newhost driver CPU binding')
         else:
             self.workers=admission(observation['available']-AS_CAP,observation['observed_at'],permit.plan['requested_workers'],
@@ -69,7 +75,8 @@ class OwnedRun:
                 scope='PRODUCTION', runtime_authorization=True, workers=self.workers,
                 prior_wall=prior_wall, wall_started=self.wall.start, output_cap=trace_cap,
                 allowed_cpus=authorization['allowed_cpus'] if newhost else None,
-                role_cpus=permit.plan['cpu_proposal']['observer'] if newhost else None)
+                role_cpus=permit.plan['cpu_proposal']['observer'] if newhost else None,
+                pressure_profile=pressure_profile,pressure_baseline=pressure_baseline)
         except BaseException:
             self.budget.close(); raise
         self.finished=threading.Event();self.failure=None
