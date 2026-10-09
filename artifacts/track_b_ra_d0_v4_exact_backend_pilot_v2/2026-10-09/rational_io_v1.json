@@ -1,0 +1,277 @@
+{
+  "coefficient_echo_passed_LP_count": 16,
+  "echo_only_gate_passed_before_any_optimization": true,
+  "echo_only_optimize_calls": 0,
+  "echo_only_record": {
+    "backend": {
+      "echo": {
+        "A": [],
+        "H": [
+          [
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "1",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "1",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "1"
+          ]
+        ],
+        "U": [
+          "2",
+          "2",
+          "2",
+          "2",
+          "2"
+        ],
+        "b": [],
+        "c": [
+          "1/3",
+          "2/7",
+          "1/1152921504606846976",
+          "1/1000000000000000000",
+          "1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000123456789/1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000987654321"
+        ],
+        "c0": "-2/7",
+        "equal_lhs": [
+          "1/3",
+          "2/7",
+          "1/1152921504606846976",
+          "1/1000000000000000000",
+          "1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000123456789/1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000987654321"
+        ],
+        "f": [
+          "1/3",
+          "2/7",
+          "1/1152921504606846976",
+          "1/1000000000000000000",
+          "1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000123456789/1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000987654321"
+        ],
+        "lower": [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      },
+      "exact_config_accepted": true,
+      "status": "ECHO_ONLY"
+    },
+    "bit_length": {
+      "maximum_denominator_bits": 329,
+      "maximum_numerator_bits": 329
+    },
+    "certificate": "PASS",
+    "dimensions": {
+      "equality_rows": 5,
+      "inequality_rows": 0,
+      "variables": 5
+    },
+    "exact_input_path": "/tmp/ra-d0-v4-exact-backend-pilot-v2-20261009/phase_b_inputs/rational_io.input.json",
+    "gate": "I/O",
+    "id": "rational_roundtrip",
+    "solver_guard": {
+      "CPU_accounting": "kernel wait4 with PR_SET_CHILD_SUBREAPER",
+      "CPU_seconds": 0.001844,
+      "accounting": "UNIQUE_PID_RSS_SUM_CONSERVATIVE",
+      "effective_wall_seconds": 30,
+      "failure": null,
+      "final_output_bytes": 5714428,
+      "id": "rational_io",
+      "known_target_PIDs": [
+        16
+      ],
+      "launched": true,
+      "peak_RSS_sum_bytes": 13369344,
+      "peak_output_bytes": 5712887,
+      "remaining_members": [],
+      "residual_processes": 0,
+      "retries": 0,
+      "returncode": 0,
+      "root_pid": 16,
+      "samples": [
+        {
+          "PID_count": 2,
+          "RSS_sum_bytes": 13369344,
+          "elapsed_seconds": 0.006742200348526239,
+          "output_bytes": 5712887,
+          "parts": [
+            {
+              "RSS_bytes": 1310720,
+              "pgrp": 16,
+              "pid": 16,
+              "ppid": 15,
+              "start_ticks": 273682813,
+              "state": "R"
+            },
+            {
+              "RSS_bytes": 12058624,
+              "pgrp": 1,
+              "pid": 15,
+              "ppid": 2,
+              "start_ticks": 273682811,
+              "state": "R"
+            }
+          ]
+        },
+        {
+          "PID_count": 1,
+          "RSS_sum_bytes": 12058624,
+          "elapsed_seconds": 0.03479745704680681,
+          "output_bytes": 5712887,
+          "parts": [
+            {
+              "RSS_bytes": 12058624,
+              "pgrp": 1,
+              "pid": 15,
+              "ppid": 2,
+              "start_ticks": 273682811,
+              "state": "R"
+            }
+          ]
+        }
+      ],
+      "subreaper_enabled": true,
+      "wait4_records": [
+        {
+          "CPU_seconds": 0.001844,
+          "pid": 16,
+          "returncode": 0,
+          "ru_maxrss_KiB": 7904
+        }
+      ],
+      "wall_seconds": 0.03480932395905256
+    },
+    "solver_output_path": "/tmp/ra-d0-v4-exact-backend-pilot-v2-20261009/phase_b_output/rational_io.stdout.json",
+    "verification": {
+      "PASS": true,
+      "dual": null,
+      "failures": [],
+      "farkas": null,
+      "id": "rational_roundtrip",
+      "primal": null,
+      "rational_io": "PASS",
+      "status": "ECHO_ONLY",
+      "verification_seconds": 0.0001700371503829956
+    },
+    "verifier_guard": {
+      "CPU_accounting": "kernel wait4 with PR_SET_CHILD_SUBREAPER",
+      "CPU_seconds": 0.01666,
+      "accounting": "UNIQUE_PID_RSS_SUM_CONSERVATIVE",
+      "effective_wall_seconds": 30,
+      "failure": null,
+      "final_output_bytes": 5720474,
+      "id": "rational_io_verify",
+      "known_target_PIDs": [
+        18
+      ],
+      "launched": true,
+      "peak_RSS_sum_bytes": 13107200,
+      "peak_output_bytes": 5718925,
+      "remaining_members": [],
+      "residual_processes": 0,
+      "retries": 0,
+      "returncode": 0,
+      "root_pid": 18,
+      "samples": [
+        {
+          "PID_count": 2,
+          "RSS_sum_bytes": 13107200,
+          "elapsed_seconds": 0.0035615740343928337,
+          "output_bytes": 5718707,
+          "parts": [
+            {
+              "RSS_bytes": 1048576,
+              "pgrp": 18,
+              "pid": 18,
+              "ppid": 17,
+              "start_ticks": 273682819,
+              "state": "R"
+            },
+            {
+              "RSS_bytes": 12058624,
+              "pgrp": 1,
+              "pid": 17,
+              "ppid": 2,
+              "start_ticks": 273682817,
+              "state": "R"
+            }
+          ]
+        },
+        {
+          "PID_count": 1,
+          "RSS_sum_bytes": 12058624,
+          "elapsed_seconds": 0.029990654904395342,
+          "output_bytes": 5718925,
+          "parts": [
+            {
+              "RSS_bytes": 12058624,
+              "pgrp": 1,
+              "pid": 17,
+              "ppid": 2,
+              "start_ticks": 273682817,
+              "state": "R"
+            }
+          ]
+        }
+      ],
+      "subreaper_enabled": true,
+      "wait4_records": [
+        {
+          "CPU_seconds": 0.01666,
+          "pid": 18,
+          "returncode": 0,
+          "ru_maxrss_KiB": 10496
+        }
+      ],
+      "wall_seconds": 0.02999786613509059
+    }
+  },
+  "float_roundtrip_used": false,
+  "offset": "exact external Rational; solver objective independently checked on acquired primal cases",
+  "readback_fields": [
+    "c",
+    "A",
+    "b",
+    "H",
+    "f",
+    "equality_lhs",
+    "lower",
+    "upper"
+  ],
+  "status": "PASS",
+  "values_verified": [
+    "1/3",
+    "2/7",
+    "1/1152921504606846976",
+    "1/1000000000000000000",
+    "100-digit numerator/denominator rational"
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "id": "upper_induced_infeasible",
+  "launched": true,
+  "retries": 0,
+  "accounting": "UNIQUE_PID_RSS_SUM_CONSERVATIVE",
+  "CPU_accounting": "kernel wait4 with PR_SET_CHILD_SUBREAPER",
+  "failure": null,
+  "returncode": 0,
+  "samples": [
+    {
+      "elapsed_seconds": 0.004756640177220106,
+      "parts": [
+        {
+          "pid": 52,
+          "state": "R",
+          "ppid": 51,
+          "pgrp": 52,
+          "start_ticks": 273682922,
+          "RSS_bytes": 1048576
+        },
+        {
+          "pid": 51,
+          "state": "R",
+          "ppid": 2,
+          "pgrp": 1,
+          "start_ticks": 273682921,
+          "RSS_bytes": 12058624
+        }
+      ],
+      "PID_count": 2,
+      "RSS_sum_bytes": 13107200,
+      "output_bytes": 5901014
+    },
+    {
+      "elapsed_seconds": 0.03173003904521465,
+      "parts": [
+        {
+          "pid": 51,
+          "state": "R",
+          "ppid": 2,
+          "pgrp": 1,
+          "start_ticks": 273682921,
+          "RSS_bytes": 12058624
+        }
+      ],
+      "PID_count": 1,
+      "RSS_sum_bytes": 12058624,
+      "output_bytes": 5901014
+    }
+  ],
+  "wait4_records": [
+    {
+      "pid": 52,
+      "returncode": 0,
+      "CPU_seconds": 0.002032,
+      "ru_maxrss_KiB": 7632
+    }
+  ],
+  "remaining_members": [],
+  "effective_wall_seconds": 30,
+  "subreaper_enabled": true,
+  "root_pid": 52,
+  "wall_seconds": 0.03173639019951224,
+  "CPU_seconds": 0.002032,
+  "peak_RSS_sum_bytes": 13107200,
+  "peak_output_bytes": 5901014,
+  "known_target_PIDs": [
+    52
+  ],
+  "residual_processes": 0,
+  "final_output_bytes": 5902568
+}

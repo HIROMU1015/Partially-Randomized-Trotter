@@ -1,0 +1,63 @@
+{
+  "phase": "A",
+  "frozen_before_execution_epoch": 1791513545.1684415,
+  "implementation_and_test_SHA256": {
+    "scripts/tracks/algorithm_codesign/exact_backend_pilot_v2/guard.py": "a52cdbef6c21f6debaab360ec273744816fb2247f308f746ccc3d98713a88f4a",
+    "scripts/tracks/algorithm_codesign/exact_backend_pilot_v2/process_fixture.py": "08ccd8cf9cbaa09911628d81424d8bc4bcc93772138eff876caf70cd0250185b",
+    "scripts/tracks/algorithm_codesign/exact_backend_pilot_v2/test_guard.py": "9df077421a38b79c124b86846ef863698bd7f51328d1859977bf6c2a8a8ede9b"
+  },
+  "pilot_start_epoch": 1791513335.4131405,
+  "pilot_deadline_epoch": 1791516935.4131405,
+  "sample_seconds_production": 0.025,
+  "test_sample_seconds": 0.02,
+  "RSS_measurement": "UNIQUE_PID_RSS_SUM_CONSERVATIVE",
+  "RSS_bytes": 1610612736,
+  "address_space_bytes": 1610612736,
+  "output_bytes": 67108864,
+  "wall_seconds_total": 3600,
+  "wall_seconds_LP": 30,
+  "wall_seconds_harness_compile": 1200,
+  "wall_seconds_library_build": 1800,
+  "concurrent_compilers": 1,
+  "solver_threads": 1,
+  "solver_calls": 30,
+  "retry": 0,
+  "cgroup_inventory": {
+    "path": "0::/user.slice/user-1001.slice/session-1737.scope",
+    "dedicated_cgroup_writable_without_escalation": false
+  },
+  "CPU_method": "PR_SET_CHILD_SUBREAPER + os.wait4 on each direct or adopted child; no Popen.poll() before wait4",
+  "output_roots": [
+    "/tmp/ra-d0-v4-exact-backend-pilot-v2-20261009",
+    "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-ra-d0-v4-exact-backend-pilot-v2-20261009/artifacts/track_b_ra_d0_v4_exact_backend_pilot_v2/2026-10-09",
+    "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-ra-d0-v4-exact-backend-pilot-v2-20261009/scripts/tracks/algorithm_codesign/exact_backend_pilot_v2",
+    "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-ra-d0-v4-exact-backend-pilot-v2-20261009/docs/tracks/algorithm_codesign/ra_d0_v4_exact_backend_pilot_v2_20261009.md",
+    "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-ra-d0-v4-exact-backend-pilot-v2-20261009/docs/tracks/algorithm_codesign/ra_d0_v4_exact_backend_pilot_v2_gpt_handoff_20261009.md",
+    "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-ra-d0-v4-exact-backend-pilot-v2-20261009/docs/research/研究ノート/2026-10-09_track_b_ra_d0_v4_exact_backend_pilot_v2.md"
+  ],
+  "output_input_exclusions": [
+    "read-only predecessor private source, dependencies, archives and static library under /tmp/ra-d0-v4-exact-backend-20261009",
+    "181 immutable protected files"
+  ],
+  "compiler_intermediates": "TMPDIR in new private area; final binary and all logs/JSON in output_roots",
+  "deduplication": "(st_dev,st_ino) exactly once across overlapping roots/hardlinks",
+  "termination": "SIGKILL process group and tracked descendants; subreaper wait4; no remaining target PID required",
+  "test_specification": "single, grandchild, multiple, orphan, wall, RSS, aggregate output, kill_tree, refused relaunch, remaining total wall, expired-before-launch, unrelated-process exclusion, hardlink/overlap dedup",
+  "Phase_A_nonPASS": "mandatory STOP; Phase B NOT_RUN",
+  "classification_rules": [
+    "V4_EXACT_BACKEND_PILOT_V2_PASS",
+    "V4_EXACT_BACKEND_GUARD_UNVERIFIED",
+    "V4_EXACT_BACKEND_BUILD_BLOCKED",
+    "V4_EXACT_BACKEND_PARTIAL",
+    "V4_EXACT_BACKEND_CERTIFICATE_FAIL",
+    "V4_EXACT_BACKEND_RESOURCE_INCONCLUSIVE",
+    "V4_EXACT_BACKEND_TECHNICAL_INCONCLUSIVE"
+  ],
+  "test_small_caps": "intentional per-case limits; expected termination is acceptance success, not production cap modification",
+  "measurement_limits": [
+    "RSS shared pages count across PIDs",
+    "sampling cannot enforce an instantaneous peak",
+    "wait4 measures terminated descendants under cooperative wait/reparent contract",
+    "output sampling can overshoot across files; RLIMIT_FSIZE bounds each child file"
+  ]
+}
