@@ -2,7 +2,7 @@
 
 利用者の指示に従い、追加の人工回路compile検査を省く。本計算で問題が発生した場合は原因を保存し、
 own-runをfail-closed STOPして、その証拠から修正する。元run02の科学compiler/IPC原因は未特定で、完走を保証しない。
-**最新状態：上限2件と一度の本計算起動を利用者が明示承認。最終artifact・fresh gateを確認して起動する。**
+**最新状態：承認済みrun03を一度起動し、plugin cache書込み拒否でFAIL_CLOSED_STOP。全14process退出確認済み。**
 
 今回の資料入口は本書。詳細は[固定bundle](../../artifacts/resource_applicability/track_a_h4_production_run03/2026-10-09/README.md)を参照する。
 
@@ -111,3 +111,16 @@ SOURCE6e68fd9bcc68e788db6f5d43eaa6a03866e53d3b/closure44・科学/compiler/optio
 独立最終認可review：`PASS_READY_FOR_IMMUTABLE_ARTIFACT_AND_FRESH_ONE_SHOT_LAUNCH`、blocking implementation findingsなし。
 plan/auth/review digestとexact14CPU許可・17GiB/74805・SOURCE44/profile/input/carryを別担当で照合。
 最終review SHA256 `b8ad34f772211291fb99fc5c8e18499aef0555bba820c06c6921f5c257fa4fc4`。artifact固定後のfresh gateは未実施で、直前に行う。
+
+## 2026-10-09 run03を一度実行、plugin cache書込み拒否でSTOP
+
+直前fresh gate PASS後driver2930049/observer2930256/12workersを一度起動した。memory465.892GiB、FS412.393GiB、inodes220471919、quota KNOWN、14role physical coresの最大busy4.67%。
+SOURCE6e68fd9bcc68e788db6f5d43eaa6a03866e53d3b、最終認可artifact4e8d113533fd880840bb8f6570ae6a636e916615。
+最初のscience-000022 reservation後、Qiskit generate_preset_pass_manager→level1→PassManagerStagePluginManagerでworker write guardが未予算cache/temp writeを拒否した。
+worker-log-first-stop.txtに元worker errorとphase/PID/serialを保存し、observerへreport/fsync後にown-runをfail-closed停止。driver exit143。
+全14identityを2回ABSENT確認、新予約1/完了wrapper0/signal0。exact終了時刻は未記録、worker exit codeは元原因保存時点nullのまま。
+carry22/12956511264B/保守的wall upper6004.111340102032sへ更新、残actual74783。上限17GiB/74805は承認済みだが費用返却/resetなし。
+first STOPはresource cap/5秒違反ではなくworker_responseでのwrite guard拒否。観測interval0.668673s、duration/stalenessはcommand STOPのためnull、driver phase numerical_serialization:sine。
+既存venvのstevedore._cacheはcache missで~/.cache/python-entrypointsへmkdir/writeする。ディスクcacheを無効にしてメモリcacheだけを使うprocess限定修正を検討する。
+停止原本/one-shot/journal/ledger/observer/worker原因logはprivate home evidenceに保持し、NPZ/科学runtime/cacheをcommitしない。
+自動retry/次stage/入力再生成/共有環境・venv・他job変更/GPUなし。今回の一度の実行はFAIL_CLOSED_STOPで終了した。

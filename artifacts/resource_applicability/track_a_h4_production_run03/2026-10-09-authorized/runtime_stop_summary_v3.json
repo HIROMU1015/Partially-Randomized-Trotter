@@ -1,0 +1,387 @@
+{
+  "status": "FAIL_CLOSED_STOP",
+  "source_commit": "6e68fd9bcc68e788db6f5d43eaa6a03866e53d3b",
+  "artifact_commit": "4e8d113533fd880840bb8f6570ae6a636e916615",
+  "run_id": "h4-newhost-signal-compile-20261009-run03",
+  "driver_pid": 2930049,
+  "observer_pid": 2930256,
+  "worker_pids": [
+    2930258,
+    2930259,
+    2930260,
+    2930261,
+    2930262,
+    2930263,
+    2930264,
+    2930265,
+    2930266,
+    2930267,
+    2930268,
+    2930269
+  ],
+  "first_stop": {
+    "driver_phase": {
+      "monotonic": 12490647.205404412,
+      "name": "numerical_serialization:sine",
+      "sequence": 6
+    },
+    "interval_seconds": 0.6686725709587336,
+    "monotonic": 12490647.403401475,
+    "observation_duration_seconds": null,
+    "reason": "Stop: owned worker failure STOP: Stop: unbudgeted worker disk/cache/temp write forbidden",
+    "staleness_seconds": null,
+    "worker_failure": {
+      "phase": "worker_response",
+      "reason": "Stop: owned worker failure STOP: Stop: unbudgeted worker disk/cache/temp write forbidden",
+      "serial": 0,
+      "worker_pid": 2930258
+    }
+  },
+  "worker_failure": {
+    "error": "Stop: owned worker failure STOP: Stop: unbudgeted worker disk/cache/temp write forbidden\nworker_phase=dispatch\n  File \"/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/lib/python3.12/site-packages/qiskit/transpiler/preset_passmanagers/generate_preset_pass_manager.py\", line 445, in generate_preset_pass_manager\n    pm = level_1_pass_manager(pm_config)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/lib/python3.12/site-packages/qiskit/transpiler/preset_passmanagers/level1.py\", line 47, in level_1_pass_manager\n    plugin_manager = PassManagerStagePluginManager()\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/lib/python3.12/site-packages/qiskit/transpiler/preset_passmana\nworker_phase=worker_response\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-production-run03-20261009/src/trottertracks/resource_applicability/h4_geometry/workers.py\", line 228, in _call\n    require(response['error'] is None,'owned worker failure STOP: '+str(response['error']))\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-production-run03-20261009/src/trottertracks/resource_applicability/h4_geometry/identity.py\", line 16, in require\n    raise Stop(reason)\n",
+    "kind": "owned_worker_first_failure",
+    "log": "",
+    "monotonic": 12490647.381910278,
+    "observed_exit_code": null,
+    "phase": "worker_response",
+    "serial": 0,
+    "worker_pid": 2930258
+  },
+  "driver_exit_code": 143,
+  "driver_exit_exact_time": null,
+  "one_shot_retained": true,
+  "automatic_retry": false,
+  "new_reserved_invocations": 1,
+  "actual_compiler_start_confirmed": true,
+  "actual_compiler_start_evidence": "Worker bounded traceback reached Qiskit generate_preset_pass_manager/level1 plugin manager; failure precedes successful compilation.",
+  "completed_wrappers": 0,
+  "signal_records": 0,
+  "actual_invocations_consumed_or_reserved": 22,
+  "cumulative_charged_bytes": 12956511264,
+  "budget_journal_rows": 8,
+  "budget_journal_sha256": "c87dbd1c8a50ef75315091f8f67b4255cbcc604c9b770a63efd6b8e0fab8f307",
+  "conservative_wall_upper_seconds": 6004.111340102032,
+  "wall_upper_method": "Prior carry plus earliest observed own process-start tick to second zero-remaining audit plus one tick; includes post-stop audit delay, not exact stop time.",
+  "remaining_actual": 74783,
+  "native_identity_audits": [
+    {
+      "monotonic": 12490856.808189545,
+      "duration_seconds": 0.0002803988754749298,
+      "identities": [
+        {
+          "expected": {
+            "pid": 2930049,
+            "start": "1249062129",
+            "parent": 2923661,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930256,
+            "start": "1249062849",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930258,
+            "start": "1249062855",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930259,
+            "start": "1249062856",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930260,
+            "start": "1249062856",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930261,
+            "start": "1249062857",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930262,
+            "start": "1249062857",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930263,
+            "start": "1249062859",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930264,
+            "start": "1249062860",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930265,
+            "start": "1249062862",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930266,
+            "start": "1249062864",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930267,
+            "start": "1249062866",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930268,
+            "start": "1249062869",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930269,
+            "start": "1249062871",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        }
+      ],
+      "same_owned_remaining": []
+    },
+    {
+      "monotonic": 12490858.808825444,
+      "duration_seconds": 0.0005642157047986984,
+      "identities": [
+        {
+          "expected": {
+            "pid": 2930049,
+            "start": "1249062129",
+            "parent": 2923661,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930256,
+            "start": "1249062849",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930258,
+            "start": "1249062855",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930259,
+            "start": "1249062856",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930260,
+            "start": "1249062856",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930261,
+            "start": "1249062857",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930262,
+            "start": "1249062857",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930263,
+            "start": "1249062859",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930264,
+            "start": "1249062860",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930265,
+            "start": "1249062862",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930266,
+            "start": "1249062864",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930267,
+            "start": "1249062866",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930268,
+            "start": "1249062869",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        },
+        {
+          "expected": {
+            "pid": 2930269,
+            "start": "1249062871",
+            "parent": 2930049,
+            "uid": 30038
+          },
+          "classification": "ABSENT"
+        }
+      ],
+      "same_owned_remaining": []
+    }
+  ],
+  "all_owned_processes_ended": true,
+  "diagnostic_original_error_persisted": true,
+  "shared_settings_changed": false,
+  "GPU_query_use": false,
+  "files": [
+    {
+      "file": "one-shot.json",
+      "bytes": 264,
+      "sha256": "a6edc4f14d9d176eecb105219ecbabc83582237bba10f1c3525e7c75ef2af705"
+    },
+    {
+      "file": "runner.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "byte-budget.journal",
+      "bytes": 1024,
+      "sha256": "c87dbd1c8a50ef75315091f8f67b4255cbcc604c9b770a63efd6b8e0fab8f307"
+    },
+    {
+      "file": "ledger-000000.json",
+      "bytes": 139,
+      "sha256": "ea7505567bf8f80a22ff0ca3ae1f16c5de81472ac69b6e171458a23d46d5cb17"
+    },
+    {
+      "file": "ledger-000001.json",
+      "bytes": 319,
+      "sha256": "b30730f43413fd48b8f736989fe2d6466ddb4ff6d777fba2e057c0e94e4ce8ad"
+    },
+    {
+      "file": "ledger.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "observer.jsonl",
+      "bytes": 35873,
+      "sha256": "0d918ca5ee2d5b1bdb4442ab87ea1df3464bd7c5f559d524a7c1b3587168bb98"
+    },
+    {
+      "file": "worker-log-first-stop.txt",
+      "bytes": 1760,
+      "sha256": "452350df0491af8bf5c7e37c83c412999a8ca007c05bb89caeda11575feea94d"
+    }
+  ],
+  "private_native_receipt": {
+    "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261009/h4-production-run03-20261009/RUNTIME_STOP_RECEIPT_v3.json",
+    "bytes": 12527,
+    "sha256": "420f270a65e9c178581bfaa5d61e4eeae281ffbfdc474022ecfca23a458cac4a"
+  },
+  "raw_runtime_committed": false,
+  "next_attempt_authorized": false
+}
