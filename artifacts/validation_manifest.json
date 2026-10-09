@@ -7849,5 +7849,76 @@
     "second_startup_admission_floor_preserved": true,
     "independent_review": "PASS_READY_FOR_IMMUTABLE_ARTIFACT_AND_FRESH_RUN06_LAUNCH",
     "review_digest": "1105f1a3591f7756a2f6555a1b92fae5e3c4ffb608a59ff718168ba9a5a42d18"
+  },
+  "track_a_h4_production_run06_stop_20261010": {
+    "all_owned_processes_ended": true,
+    "all_raw_files_bytes_sha_match": true,
+    "artifact_commit": "00cc443636bef01583a8e61370bae0e390657f62",
+    "attempt_charged_bytes": 4263786622,
+    "completed_records": 0,
+    "driver_exit_code": 143,
+    "driver_pid": 2974322,
+    "exact_exit_time": null,
+    "first_stop_reason": "memory_pressure",
+    "memory_at_STOP": {
+      "available": 478155976704,
+      "host_available": 478155976704,
+      "oom_events": {
+        "/sys/fs/cgroup/user.slice": 1,
+        "/sys/fs/cgroup/user.slice/user-30038.slice": 0,
+        "/sys/fs/cgroup/user.slice/user-30038.slice/session-105501.scope": 0
+      },
+      "psi_full_avg10": 0.18,
+      "psi_full_by_scope": {
+        "/sys/fs/cgroup/user.slice": 0.0,
+        "/sys/fs/cgroup/user.slice/user-30038.slice": 0.0,
+        "/sys/fs/cgroup/user.slice/user-30038.slice/session-105501.scope": 0.0,
+        "host": 0.18
+      }
+    },
+    "native_zero_audits": 2,
+    "new_actual_reservations": 4,
+    "next_attempt_carry": {
+      "actual_invocations": 0,
+      "charged_bytes": 0,
+      "wall_seconds": 0.0
+    },
+    "observer_pid": 2974619,
+    "raw_files_count": 10,
+    "raw_receipt": {
+      "bytes": 8476,
+      "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-production-run06-20261010/RUNTIME_STOP_RECEIPT_v6.json",
+      "sha256": "0448c31ab20416b47142c3877816e0e3aa4e66c20d9f0e9b0bf04fc69ac43fe6"
+    },
+    "run_id": "h4-newhost-signal-compile-20261010-run06",
+    "signal_records": 0,
+    "source_commit": "697843fbbd2a2aa7224261aa26f8da141ca57687",
+    "status": "FAIL_CLOSED_STOP",
+    "stop_observation_wall_seconds": 856.5852410756052,
+    "worker_pids": [
+      2974621,
+      2974622,
+      2974623,
+      2974624
+    ]
+  },
+  "track_a_h4_host_pressure_policy_fix_20261010": {
+    "status": "INACTIVE_PROPOSAL_TESTED_CONTRACT_AMENDMENT_REQUIRED",
+    "source_commit": "41d2b61f640937255c5fa6cab9549ae67b83c462",
+    "source_closure": 58,
+    "old_source55_unchanged": true,
+    "report": "docs/research/track_a_h4_host_pressure_policy_fix_20261010.md",
+    "bundle": "artifacts/resource_applicability/track_a_h4_host_pressure_policy_fix/2026-10-10",
+    "tests": 16,
+    "proposed_host_PSI_stop_percent": 1.0,
+    "nonroot_PSI_zero_required": true,
+    "host_only_min_available_bytes": 129117454336,
+    "approved": false,
+    "runtime_authorization": false,
+    "production_wiring_present": false,
+    "production_launches": 0,
+    "additional_transpiles": 0,
+    "scientific_array_reads": 0,
+    "independent_review": "PASS_INACTIVE_PROPOSAL_UNAPPROVED_NO_PRODUCTION_LAUNCH"
   }
 }
