@@ -345,3 +345,14 @@ sourceとsynthetic検証を固定する段階であり、held-out開封・科学
 [一般式の独立監査](tracks/algorithm_codesign/g2_independent_math_audit_20261009.md)、
 [artifact manifest](../artifacts/track_b_g2_saved_diagnostic/2026-10-09/evidence_manifest_v1.json)。
 504 profileのpost-hoc/development診断を完了しSTOP。研究判断はGPTへ返す。
+
+
+## Track B G3（2026-10-09）
+
+[G3有限law・既知return結果/handoff](tracks/algorithm_codesign/g3_finite_law_handoff_20261009.md)、
+[Phase A結果前仕様](tracks/algorithm_codesign/g3_finite_law_design_20261009.md)、
+[Phase B固定準備](tracks/algorithm_codesign/g3_return_comparator_preparation_20261009.md)、
+[GPT G2 review](research/track_b_G2_scientific_review_20261009.md)、
+[artifact manifest](../artifacts/track_b_g3_finite_law/2026-10-09/evidence_manifest_v1.json)。
+post-hoc/developmentの有限sampling・controlled mean・confidenceと固定12 return合成を完了。
+旧結果を変更せずmandatory STOP。研究採否・CTS等の追加scopeはGPT G3へ返す。

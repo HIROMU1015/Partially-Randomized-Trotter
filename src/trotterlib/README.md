@@ -311,3 +311,12 @@ G1のexact symbolic kernel・audit・controllerは
 [Saved-value diagnosis](../../docs/tracks/algorithm_codesign/g2_saved_diagnostic_handoff_20261009.md)
 is isolated in `scripts/tracks/algorithm_codesign/g2_saved_diagnostic.py`; no shared library API was changed.
 The saved-table diagnostic is complete and STOPped; it is not a new registered RA-D0 certificate.
+
+
+## Track B G3への参照（2026-10-09）
+
+共有library APIは変更していない。Track B限定scripts
+`../../scripts/tracks/algorithm_codesign/g3_finite_law.py`、`g3_return_comparator.py`と
+[結果/handoff](../../docs/tracks/algorithm_codesign/g3_finite_law_handoff_20261009.md)、
+[manifest](../../artifacts/track_b_g3_finite_law/2026-10-09/evidence_manifest_v1.json)から辿る。
+旧R1 native/numeric/accountingをidentity固定して再利用。288 finite profilesと固定return12合成を完了、mandatory STOP。

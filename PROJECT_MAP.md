@@ -711,3 +711,14 @@ result commitへ収録するlocal execution evidenceであり、immutable CIで�
 `artifacts/track_b_g2_saved_diagnostic/2026-10-09/evidence_manifest_v1.json`を対応させる。
 固定保存表504 profileのpost-hoc/development診断。旧G1/RA-D0結果・markerは保持し、
 新registered LP/science/synthesisは0。完了後STOPし研究価値・次scopeをGPT G2へ返す。
+
+
+## Track B G3有限law・known return比較（2026-10-09）
+
+[GPT G3 handoff](docs/tracks/algorithm_codesign/g3_finite_law_handoff_20261009.md)、
+[GPT G2 review](docs/research/track_b_G2_scientific_review_20261009.md)、
+`scripts/tracks/algorithm_codesign/g3_finite_law.py`、`g3_return_comparator.py`、`audit_g3_saved_outputs.py`、
+`tests/tracks/algorithm_codesign/test_g3_finite_law.py`、`test_g3_return_comparator.py`、
+`artifacts/track_b_g3_finite_law/2026-10-09/evidence_manifest_v1.json`を対応させる。
+承認されたdevelopment保存値288 profile/6,912 lawsと、条件付きreturn12合成/12 native event/162 lawsを完了。
+限定poolでT/1Q差を記録、全B2任意混合の最適性・旧RA-D0 witnessではない。mandatory STOP、次判断はGPT G3。

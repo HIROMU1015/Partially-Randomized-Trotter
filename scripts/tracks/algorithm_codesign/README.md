@@ -130,3 +130,11 @@ stdoutのJSONが[保存report](../../../artifacts/track_b_bm05_equivalence/2026-
 [59 focused tests](../../../tests/tracks/algorithm_codesign/test_g1_source_preparation.py)。
 本構造監査・固定8人工LPは未実行。旧v2 controllerを起動せず、旧guard/verifier/binaryをbyte不変で利用する。
 別source-bound明示指示の後も一回のみ、全outcomeでSTOPしGPT G1へ戻す。
+
+
+## G3有限law・known return（2026-10-09）
+
+`g3_finite_law.py`と`g3_return_comparator.py`は各一回消費済み、再起動禁止。
+`audit_g3_saved_outputs.py`は保存sequence/count/complete lawと限定winner poolのみの照合。
+[結果と制約](../../../docs/tracks/algorithm_codesign/g3_finite_law_handoff_20261009.md)。
+新solver/synthesis/circuit/matrix/LP/DFをpost-auditへ混ぜず、mandatory STOP/GPT G3を維持する。

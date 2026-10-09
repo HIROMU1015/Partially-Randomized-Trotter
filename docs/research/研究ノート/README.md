@@ -139,3 +139,7 @@ science終了後mandatory STOP、追加合成/target/grid/分子/DF/trajectory/G
 - [2026-10-06 Track B SP-1必須修正・source最終review](2026-10-06_track_b_sp1_source_review.md)：
   共通fusion全16 path監査、加法的primitive費用、実adapter/runnerと59 focused tests。
   science sweep0、RUN_READY=false。新source固定後の最終reviewへSTOP。
+
+
+- [2026-10-09 Track B G3有限law・return結果](2026-10-09_track_b_g3_finite_law.md)：
+  GPT G2認可範囲の技術作業、限定比較・旧証拠保存・mandatory STOP/GPT G3。

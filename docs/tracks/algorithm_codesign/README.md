@@ -225,3 +225,14 @@ packetを実行した場合も全outcomeでSTOPしGPT G1へ戻す。登録B2/B3�
 [G2 handoff](g2_saved_diagnostic_handoff_20261009.md)に、独立一般証明と固定504 profileをまとめた。
 同IS条件のideal目的ではJ1に小さいT/1Q差が残る。Tのzero-cost infimumを実装改善とは呼ばない。
 known return/CTSの総費用とlaw認証は未完。旧結果/class/STOPを保持し、追加実行はGPT判断後の別指示を待つ。
+
+
+## 2026-10-09：最新G3有限law・known return比較
+
+[G3結果/GPT handoff](g3_finite_law_handoff_20261009.md)、[Phase A仕様](g3_finite_law_design_20261009.md)、
+[Phase B準備](g3_return_comparator_preparation_20261009.md)、
+[GPT G2科学review](../../research/track_b_G2_scientific_review_20261009.md)、
+[artifact manifest](../../../artifacts/track_b_g3_finite_law/2026-10-09/evidence_manifest_v1.json)。
+developmentの有限law288 profiles/6,912候補と、認可されたreturn12合成/12 native event/162候補を完了。
+旧source/contract/result/markerを維持。全B2混合の最適性未認証、CTS比較未取得。
+mandatory STOP、研究採否・次scopeはGPT G3。共有src/trotterlib API変更なし。

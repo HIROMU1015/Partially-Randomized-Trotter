@@ -66,3 +66,12 @@ off-domain testsで、generic algebra、mock proof分類、source gate、marker�
 固定8入力のsolve・実backend呼出しは0。
 [source review](../docs/tracks/algorithm_codesign/g1_source_review_20261009.md)と
 [保存結果](../artifacts/track_b_g1_source_preparation/2026-10-09/focused_test_results_v1.json)を対応させる。
+
+
+## Track B G3 focused tests（2026-10-09）
+
+`tracks/algorithm_codesign/test_g3_finite_law.py`は17 PASS、
+`tracks/algorithm_codesign/test_g3_return_comparator.py`は10 PASS。
+synthetic/off-domain mean、finite reweight/confidence、zero-cost、controlled phaseとsource reuseだけを検査。
+testsでregistered profile採点やsynthesisを行わず、full suite未実行。
+[結果](../docs/tracks/algorithm_codesign/g3_finite_law_handoff_20261009.md)。

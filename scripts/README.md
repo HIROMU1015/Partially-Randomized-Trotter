@@ -328,3 +328,13 @@ artifacts/<validation_name>/
 21-column tables, 252 profiles/x. See [handoff](../docs/tracks/algorithm_codesign/g2_saved_diagnostic_handoff_20261009.md).
 Completed; exclusive diagnostic markers are retained. Do not rerun or infer production authorization.
 It imports no old execution controller or shared library and performs no solver/synthesis/circuit work.
+
+
+## Track B G3（2026-10-09）
+
+`tracks/algorithm_codesign/g3_finite_law.py`（消費済みPhase A）、
+`tracks/algorithm_codesign/g3_return_comparator.py`（消費済みPhase B）、
+`tracks/algorithm_codesign/audit_g3_saved_outputs.py`（保存値のread-only照合）。
+[仕様と結果](../docs/tracks/algorithm_codesign/g3_finite_law_handoff_20261009.md)、
+[manifest](../artifacts/track_b_g3_finite_law/2026-10-09/evidence_manifest_v1.json)。
+各Phase一回/retry0。full suite/旧run/registered LP/CTS/DFへの自動進行なし、mandatory STOP。
