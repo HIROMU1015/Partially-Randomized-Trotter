@@ -701,3 +701,13 @@ result commitへ収録するlocal execution evidenceであり、immutable CIで�
 [準備artifact](artifacts/track_b_g1_source_preparation/2026-10-09/evidence_manifest_v1.json)へ辿る。
 59件のlocal off-domain testsが通過。本構造監査・固定8人工LPは未実行で、別のsource-bound明示指示を待つ。
 既存source/contract/result/marker/STOPと共有APIを保持する。全outcomeでSTOPしGPT G1へ戻す。
+
+## Track B G2保存値診断（2026-10-09）
+
+[GPT G2 handoff](docs/tracks/algorithm_codesign/g2_saved_diagnostic_handoff_20261009.md)と
+[独立数学監査](docs/tracks/algorithm_codesign/g2_independent_math_audit_20261009.md)、
+`scripts/tracks/algorithm_codesign/g2_saved_diagnostic.py`、
+`tests/tracks/algorithm_codesign/test_g2_saved_diagnostic.py`、
+`artifacts/track_b_g2_saved_diagnostic/2026-10-09/evidence_manifest_v1.json`を対応させる。
+固定保存表504 profileのpost-hoc/development診断。旧G1/RA-D0結果・markerは保持し、
+新registered LP/science/synthesisは0。完了後STOPし研究価値・次scopeをGPT G2へ返す。

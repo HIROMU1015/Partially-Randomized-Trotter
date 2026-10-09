@@ -1,0 +1,53 @@
+{
+  "claims": {
+    "G1_linear_price": {
+      "restriction": "fixed affine prices only",
+      "status": "PROVED_USING_PRIOR_G1_CONVEX_HULL"
+    },
+    "IS_linear_fractional": {
+      "global_finite_confidence_proposal_optimum": false,
+      "restriction": "fixed internal law, nonnegative native axis cost and linear saved bias upper; positive stat budget",
+      "status": "PROVED",
+      "zero_cost": "infimum vs full-support attained law distinguished"
+    },
+    "pure_precision_profiles": {
+      "numeric_K3_or_quantized_sampler_completeness": false,
+      "original_vertices_profiles_per_x": 63,
+      "profiles_per_x": 252,
+      "restriction": "ideal degree matching, affine nonnegative K and linear bias upper, no other resource caps",
+      "status": "PROVED_USING_PRIOR_G1_CONVEX_HULL"
+    },
+    "return_operator_identity": {
+      "assumptions": [
+        "sum p=1,p>=0",
+        "Q Hermitian involutions",
+        "sigma=+-1",
+        "RD order retained",
+        "controlled scalar phase retained"
+      ],
+      "new_method_priority": false,
+      "status": "PROVED"
+    },
+    "return_threshold": {
+      "domain": "x>0,0<=chi<=1",
+      "global_cost_claim": false,
+      "small_x_expansion": "x^2/9-25*x^4/162+O(x^6)",
+      "status": "PROVED",
+      "threshold_in_0_1": true
+    }
+  },
+  "general_proof_not_only_finite_point_tests": true,
+  "old_result_reclassified": false,
+  "overall": "PASS_FOR_STATED_IDEAL_DIAGNOSTIC_ONLY",
+  "schema": "g2_independent_theorem_audit_v1",
+  "source": "docs/tracks/algorithm_codesign/g2_independent_math_audit_20261009.md",
+  "unresolved": [
+    "zero-cost finite proposal/sufficient-shot admissibility",
+    "dyadic weights/mean/membership",
+    "multi-resource caps",
+    "known return new zero-degree native costs/errors",
+    "same target CTS acquisition/implementation",
+    "classical acquisition cost",
+    "priority/novelty"
+  ]
+}

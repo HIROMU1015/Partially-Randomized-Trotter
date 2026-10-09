@@ -305,3 +305,9 @@ G1のexact symbolic kernel・audit・controllerは
 [focused tests](../../tests/tracks/algorithm_codesign/test_g1_source_preparation.py)、
 [準備artifact](../../artifacts/track_b_g1_source_preparation/2026-10-09/evidence_manifest_v1.json)を参照する。
 本構造監査・固定8人工LPは別明示指示まで未実行。科学的B2/B3比較、backend採用は認可しない。
+
+## Track B G2 evidence entry (2026-10-09)
+
+[Saved-value diagnosis](../../docs/tracks/algorithm_codesign/g2_saved_diagnostic_handoff_20261009.md)
+is isolated in `scripts/tracks/algorithm_codesign/g2_saved_diagnostic.py`; no shared library API was changed.
+The saved-table diagnostic is complete and STOPped; it is not a new registered RA-D0 certificate.

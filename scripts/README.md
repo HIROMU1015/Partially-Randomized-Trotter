@@ -321,3 +321,10 @@ artifacts/<validation_name>/
 [focused tests](../tests/tracks/algorithm_codesign/test_g1_source_preparation.py)、
 [証拠manifest](../artifacts/track_b_g1_source_preparation/2026-10-09/evidence_manifest_v1.json)。
 旧guard/verifier/binaryは不変。本構造監査・固定8人工LPは未実行。全outcomeでSTOP、retry=0。
+
+## Track B G2 saved-value diagnosis (2026-10-09)
+
+`tracks/algorithm_codesign/g2_saved_diagnostic.py` is stdlib-only post-hoc arithmetic for the fixed
+21-column tables, 252 profiles/x. See [handoff](../docs/tracks/algorithm_codesign/g2_saved_diagnostic_handoff_20261009.md).
+Completed; exclusive diagnostic markers are retained. Do not rerun or infer production authorization.
+It imports no old execution controller or shared library and performs no solver/synthesis/circuit work.

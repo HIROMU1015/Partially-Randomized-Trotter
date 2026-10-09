@@ -338,3 +338,10 @@ sourceとsynthetic検証を固定する段階であり、held-out開封・科学
 [test](../tests/tracks/algorithm_codesign/test_g1_source_preparation.py)、
 [artifact manifest](../artifacts/track_b_g1_source_preparation/2026-10-09/evidence_manifest_v1.json)。
 本構造監査・固定8人工LPは未実行。別の明示指示後も全outcomeでSTOPし、GPT G1へ戻す。
+
+## Track B G2（2026-10-09）
+
+[G2保存表診断・handoff](tracks/algorithm_codesign/g2_saved_diagnostic_handoff_20261009.md)、
+[一般式の独立監査](tracks/algorithm_codesign/g2_independent_math_audit_20261009.md)、
+[artifact manifest](../artifacts/track_b_g2_saved_diagnostic/2026-10-09/evidence_manifest_v1.json)。
+504 profileのpost-hoc/development診断を完了しSTOP。研究判断はGPTへ返す。

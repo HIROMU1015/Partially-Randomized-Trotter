@@ -219,3 +219,9 @@ repair reports/audit: `artifacts/track_b_bf1_serialization_repair/2026-10-05/`�
 [証拠manifest](../../../artifacts/track_b_g1_source_preparation/2026-10-09/evidence_manifest_v1.json)を追加した。
 local tests PASSであり、本構造監査・固定8人工LPは未実行。資料公開後STOPして別の明示指示を待つ。
 packetを実行した場合も全outcomeでSTOPしGPT G1へ戻す。登録B2/B3、production、旧run再試行は認可しない。
+
+## 2026-10-09：G2限定保存値診断完了・研究判断待ち
+
+[G2 handoff](g2_saved_diagnostic_handoff_20261009.md)に、独立一般証明と固定504 profileをまとめた。
+同IS条件のideal目的ではJ1に小さいT/1Q差が残る。Tのzero-cost infimumを実装改善とは呼ばない。
+known return/CTSの総費用とlaw認証は未完。旧結果/class/STOPを保持し、追加実行はGPT判断後の別指示を待つ。
