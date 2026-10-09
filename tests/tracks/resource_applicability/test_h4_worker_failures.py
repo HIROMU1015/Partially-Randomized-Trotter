@@ -18,6 +18,13 @@ EVIDENCE=Path(os.environ['H4_WORKER_FAILURE_EVIDENCE'])
 
 
 class FailureTests(unittest.TestCase):
+    def test_durable_diagnostic_included_in_storage_projection(self):
+        from trottertracks.resource_applicability.h4_geometry import prelaunch_audit
+        projection=prelaunch_audit.storage_projection(prior_charge=8692723164,library_cache_bytes=29816,output_cap=13*2**30)
+        diagnostic=next(row for row in projection['components'] if row['name']=='worker_first_stop')
+        self.assertEqual(diagnostic['count'],1);self.assertEqual(diagnostic['charged_bytes'],2*8192+128)
+        self.assertEqual(projection['cumulative_charge_bound'],17429694796)
+
     def pool(self):
         root=EVIDENCE/self.id().rsplit('.',1)[-1]
         pool=workers.OwnedPool.__new__(workers.OwnedPool)

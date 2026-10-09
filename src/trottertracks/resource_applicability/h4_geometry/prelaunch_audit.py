@@ -200,6 +200,7 @@ def storage_projection(block=4096, *, library_cache_bytes=0, prior_charge=None, 
     from .launch_binding import FILE_LIMITS,CONTROL_LOG_CAP,CARRY
     rows=[('record',74784,FILE_LIMITS['record-']),('ledger',149569,FILE_LIMITS['ledger-']),
           ('worker_log',74784,FILE_LIMITS['worker-log-']),('signal',1308,FILE_LIMITS['signal-']),
+          ('worker_first_stop',1,FILE_LIMITS['worker-log-']),
           ('map_complete',1,4096),('launch_stop',1,4096),('lock',1,0)]
     components=[dict(name=n,count=c,payload_cap=size,allocated_bytes=c*((size+block-1)//block)*block,
                      charged_bytes=c*(2*size+128)) for n,c,size in rows]
