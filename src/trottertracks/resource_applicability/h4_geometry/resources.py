@@ -163,6 +163,7 @@ def observe_memory():
     allowed = next(l.split(':',1)[1] for l in Path('/proc/self/status').read_text().splitlines() if l.startswith('Cpus_allowed_list:'))
     # Host PSI covers global/root pressure. Every non-root pressure is also read.
     avg10 = psi_full_average(Path('/proc/pressure/memory').read_text())
+    pressure_scopes = {'host': avg10}
     limits, events, hierarchy = [], {}, []
     for entry in dirs:
         p, v2 = entry['path'], entry['v2']
@@ -177,7 +178,8 @@ def observe_memory():
             maximum = None if raw_maximum == 'max' else nonnegative_integer(raw_maximum, 'memory.max')
             current = nonnegative_integer((p/'memory.current').read_text(), 'memory.current')
             events[str(p)] = memory_oom_events((p/'memory.events').read_text())
-            avg10 = max(avg10, psi_full_average((p/'memory.pressure').read_text()))
+            pressure_scopes[str(p)] = psi_full_average((p/'memory.pressure').read_text())
+            avg10 = max(avg10, pressure_scopes[str(p)])
         else:
             raw_maximum = nonnegative_integer((p/'memory.limit_in_bytes').read_text(), 'memory.limit_in_bytes')
             maximum = None if raw_maximum >= 2**60 else raw_maximum
@@ -190,7 +192,8 @@ def observe_memory():
             and os.readlink('/proc/self/ns/cgroup') == namespace, 'cgroup visibility changed during observation')
     return dict(available=effective_available(available, limits), observed_at=started,
                 process_cpus=cpus(allowed), oom_events=events, psi_full_avg10=avg10,
-                host_available=available, cgroup_namespace=namespace, hierarchy=hierarchy,
+                host_available=available, psi_full_by_scope=pressure_scopes,
+                cgroup_namespace=namespace, hierarchy=hierarchy,
                 root_pressure_policy='HOST_MEMORY_PSI_PLUS_ALL_NONROOT_MEMORY_PSI')
 
 

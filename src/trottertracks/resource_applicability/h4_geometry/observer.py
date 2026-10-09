@@ -156,7 +156,13 @@ class ObservationState:
                       staleness_seconds=None if observation is None else ended-observation['observed_at'],
                       driver_phase=dict(self.phase), phase_age_seconds=ended-self.phase['monotonic'],
                       wall_seconds=self.prior_wall+ended-self.started, processes=samples,
-                      observer=observer_sample)
+                      observer=observer_sample,
+                      memory=None if observation is None else dict(
+                          available=observation['available'],
+                          host_available=observation.get('host_available', observation['available']),
+                          psi_full_avg10=observation['psi_full_avg10'],
+                          psi_full_by_scope=dict(observation.get('psi_full_by_scope', {})),
+                          oom_events=dict(observation['oom_events'])))
         reason = None
         interval, duration, stale = (record[k] for k in
                                      ('interval_seconds', 'observation_duration_seconds', 'staleness_seconds'))
