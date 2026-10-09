@@ -27,7 +27,7 @@ def install_boundary():
         parts=name.split("/")
         if name.lower().endswith((".npz",".npy",".pkl",".pickle")) or any(x in {".runtime","runtime","cache","registry"} or x.endswith("_registry") for x in parts):return True
         if "artifacts" in parts:
-            return not any(x in {"track_a_ax1a","track_a_ax1b_preparation"} for x in parts)
+            return not any(x in {"track_a_ax1a","track_a_ax1b_preparation","track_a_ax1b_prelaunch"} for x in parts)
         return False
     def wrap(fn):
         def guarded(path,*args,**kwargs):
@@ -70,11 +70,16 @@ def main():
     isolated_temp=tempfile.mkdtemp(prefix="ax1b_synthetic_")
     command=["-q","-rs","-p","no:cacheprovider","--noconftest","--collect-in-virtualenv","--ignore=artifacts","--basetemp="+isolated_temp,TEST]
     code=pytest.main(command,plugins=[audit])
+    from trottertracks.resource_applicability.ax1b_execution import environment
+    import hashlib
+    sources=sorted([*ROOT.glob("src/trottertracks/resource_applicability/ax1b_*.py"),
+                    ROOT/"scripts/resource_applicability/run_track_a_ax1b.py",Path(__file__).resolve(),ROOT/TEST])
     result=dict(schema_version="track_a_ax1b_synthetic_test_audit_v1",scope="SYNTHETIC_ONLY_NO_SAVED_SCIENCE_VALUES",
                 started_utc=started,finished_utc=datetime.now(timezone.utc).isoformat(),wall_seconds=time.monotonic()-clock,
                 command=[sys.executable,*sys.argv],pytest_arguments=command,python=platform.python_version(),python_full=sys.version,
                 python_releaselevel=sys.version_info.releaselevel,numpy=importlib.metadata.version("numpy"),scipy=importlib.metadata.version("scipy"),pytest=pytest.__version__,
                 passed=audit.passed,failed=audit.failed,skipped=audit.skipped,exit_code=int(code),processes=1,blas_threads=1,
+                environment=environment(),source_files_after_successful_test=[dict(path=str(p.relative_to(ROOT)),sha256=hashlib.sha256(p.read_bytes()).hexdigest()) for p in sources],
                 legacy_science_inputs_read=0,real_data_fit_executed=False,**counters)
     args.audit_output.parent.mkdir(parents=True,exist_ok=True)
     args.audit_output.write_text(json.dumps(result,indent=2,sort_keys=True)+"\n")

@@ -573,3 +573,163 @@ def test_registered_new_output_schemas_on_synthetic_rows():
 def test_analysis_environment_needs_same_source_synthetic_success(approved):
     root,bundle,auth=approved;auth["analysis_environment_synthetic_audit"]=None
     with pytest.raises(c.Stop,match="ENVIRONMENT"):ex.authorize(root,bundle,auth,True,c.digest(auth))
+
+
+@pytest.mark.parametrize("unknown_cost",[None,1e-200,1e200])
+def test_prelaunch_unknown_reference_blocks_full_set_optimum(unknown_cost):
+    values=refs();values["u"]=dict(candidate=dict(candidate_fingerprint="u"),eligible_ref=None,G_ref=unknown_cost)
+    result=selection(values,dict(a=30,b=10,u=0),"INTERNAL_GROUP")
+    assert result["status"]=="REF_ELIGIBILITY_UNDETERMINED"
+    assert result["selected"]=="b" and result["regret"] is None
+    assert result["full_set_min_G_ref"] is None and result["common_support_regret"] is None
+    assert result["known_eligible_subset_regret"]==1
+    assert result["known_eligible_prediction_subset_regret"]==1
+    assert result["undetermined_reference_candidates"]==["u"]
+    assert result["registered_direct_count"]==4
+
+
+@pytest.mark.parametrize("states,status",[
+    ([True,True],"VALID_CONDITIONAL_ORACLE"),
+    ([False,False],"REF_ELIGIBLE_EMPTY"),
+    ([None,None],"REF_ELIGIBILITY_UNDETERMINED"),
+    ([False,None],"REF_ELIGIBILITY_UNDETERMINED"),
+])
+def test_prelaunch_empty_vs_unknown_and_normal_regret(states,status):
+    values={k:dict(candidate=dict(candidate_fingerprint=k),eligible_ref=state,G_ref=cost) for k,state,cost in zip(["a","b"],states,[10,20])}
+    result=selection(values,dict(a=30,b=10),"SYNTHETIC")
+    assert result["status"]==status
+    assert result["regret"]==(1 if status=="VALID_CONDITIONAL_ORACLE" else None)
+
+
+def test_prelaunch_selected_unknown_and_false_acceptance_priority():
+    values=refs();values["u"]=dict(candidate={},eligible_ref=None,G_ref=.0001)
+    assert selection(values,{},"SYNTHETIC",chosen="u")["status"]=="SELECTED_ELIGIBILITY_UNDETERMINED"
+    result=selection(values,{},"SYNTHETIC",chosen="bad")
+    assert result["status"]=="SELECTED_REFERENCE_INELIGIBLE" and result["false_acceptance"] is True
+    assert result["regret"] is None and result["undetermined_reference_candidates"]==["u"]
+
+
+def test_prelaunch_unknown_survives_complete_common_cost_support():
+    values=refs();values["u"]=dict(candidate={},eligible_ref=None,G_ref=.001)
+    models={"simple":dict(a=3,b=1,u=None),"few":dict(a=4,b=2,u=None)}
+    support={m:set(values) for m in models}
+    results=common_support_selection(values,models,support,"CROSS_FITTED_INTERNAL_GROUP")
+    for result in results:
+        assert result["undetermined_reference_candidates_in_common_support"]==["u"]
+        assert result["excluded_direct_candidates"]==[]
+        assert result["common_set_diagnostic"]["status"]=="REF_ELIGIBILITY_UNDETERMINED"
+        assert result["common_set_diagnostic"]["regret"] is None
+        assert result["common_set_diagnostic"]["known_eligible_subset_regret"]==1
+
+
+def test_prelaunch_excluded_unknown_only_certifies_explicit_common_subset():
+    values=refs();values["u"]=dict(candidate={},eligible_ref=None,G_ref=.001)
+    result=common_support_selection(values,{"simple":dict(a=3,b=1)},{"simple":{"a","b","bad"}},"SYNTHETIC")[0]
+    assert result["excluded_direct_candidates"]==["u"]
+    assert result["full_set_diagnostic"]["regret"] is None
+    assert result["common_set_diagnostic"]["regret"]==1
+    assert result["common_set_diagnostic"]["registered_direct_count"]==3
+
+
+def test_prelaunch_unknown_and_incomplete_predictions_both_retained():
+    values=refs();values["u"]=dict(candidate={},eligible_ref=None,G_ref=1e-200)
+    result=selection(values,dict(a=3),"SYNTHETIC")
+    assert result["status"]=="REF_ELIGIBILITY_UNDETERMINED" and result["regret"] is None
+    assert result["missing_candidates"]==["b"] and result["known_eligible_subset_regret"] is None
+    assert result["known_eligible_prediction_subset_regret"]==0
+
+
+def test_prelaunch_reference_shot_overflow_propagates_to_selection():
+    overflow=reference_shots(dict(real=0,imag=0),1e308,.05)
+    assert overflow["eligible_ref"] is None and overflow["status"]=="NUMERICAL_UNDEFINED"
+    result=selection({"u":dict(candidate={},G_ref=None,**overflow)},dict(u=None),"SYNTHETIC")
+    assert result["status"]=="REF_ELIGIBILITY_UNDETERMINED" and result["regret"] is None
+
+
+def test_prelaunch_unknown_prediction_eligibility_is_not_all_rejected():
+    result=selection(refs(),dict(a=1,b=2),"SYNTHETIC",predicted_eligible=dict(a=False,b=None))
+    assert result["status"]=="PREDICTED_ELIGIBILITY_UNDETERMINED"
+    assert result["undetermined_predicted_candidates"]==["b"] and result["regret"] is None
+
+
+@pytest.mark.parametrize("bad",[0,"True",float("nan")])
+def test_prelaunch_invalid_eligibility_state_stops(bad):
+    values=refs();values["a"]["eligible_ref"]=bad
+    with pytest.raises(c.Stop,match="SCHEMA"):selection(values,dict(a=1),"SYNTHETIC")
+
+
+def test_prelaunch_all_callers_csv_status_summary_and_operational_na(monkeypatch):
+    from trottertracks.resource_applicability import ax1b_analysis as analysis
+    from trottertracks.resource_applicability.ax1b_evaluation import selection_status_summary
+    rows=[saved_candidate(i) for i in range(210)]+[saved_candidate(1000+i,"DIAG_PM1_8",method="B0") for i in range(8)]+[saved_candidate(2000+i,"DIAG_M2_5") for i in range(5)]
+    for index,marker in [(0,.123),(210,.124),(218,.125)]:rows[index].reference_bias["real"]=marker
+    original=analysis.reference_shots
+    def overflow_marked(bias,B,epsilon):
+        return original(dict(real=0,imag=0),1e308,epsilon) if bias["real"] in {.123,.124,.125} else original(bias,B,epsilon)
+    monkeypatch.setattr(analysis,"reference_shots",overflow_marked)
+    result=analysis.analyze(rows,dict(metrics=dict(epsilon_anchors=[.05,.01,.005,.001])),{},dict(entries=[]))
+    records=result["conditional_oracle_selection.csv"]
+    for epsilon in [.05,.01,.005,.001]:
+        diagnostic=[r for r in records if r.get("epsilon")==epsilon and r.get("row_kind")=="selection_diagnostic"]
+        assert all(r["status"]=="REF_ELIGIBILITY_UNDETERMINED" and r["regret"] is None for r in diagnostic if r["fold_id"]=="full210")
+        pooled=[r for r in diagnostic if r["fold_id"]=="POOLED_Q_CROSS_FITTED"]
+        assert pooled and all(r["status"]=="REF_ELIGIBILITY_UNDETERMINED" and r["single_frozen_model"] is False for r in pooled)
+        fold=[r for r in diagnostic if r["fold_id"]=="leave_one_q_out:1"]
+        assert fold and all(r["status"]=="REF_ELIGIBILITY_UNDETERMINED" for r in fold)
+    counts=selection_status_summary(records)
+    assert counts["registered_set"]["REF_ELIGIBILITY_UNDETERMINED"]>0
+    assert counts["common_support"]["REF_ELIGIBILITY_UNDETERMINED"]>0
+    assert result["shot_availability.json"]["selection_status_counts"]==counts
+    csv_text=ex.encode_output("conditional_oracle_selection.csv",records).decode()
+    assert "REF_ELIGIBILITY_UNDETERMINED" in csv_text and "known_eligible_subset_regret" in csv_text
+    assert all(p["G_operational_pred"] is None for p in result["predictions.jsonl"])
+
+
+def test_prelaunch_unknown_status_and_forged_success_are_rejected():
+    from trottertracks.resource_applicability.ax1b_evaluation import validate_selection_record
+    result=selection(refs(),dict(a=3,b=1),"SYNTHETIC")
+    validate_selection_record(result)
+    for bad in [dict(result,status="UNREGISTERED_STATUS"),dict(result,undetermined_reference_candidates=["u"]),dict(result,status="REF_ELIGIBILITY_UNDETERMINED")]:
+        with pytest.raises(c.Stop,match="SCHEMA"):validate_selection_record(bad)
+
+
+def test_prelaunch_schemas_reject_unknown_status_and_accept_amendment():
+    schemas=json.loads((Path(__file__).resolve().parents[3]/"artifacts/resource_applicability/track_a_ax1b_prelaunch/2026-10-09/schemas_v2.json").read_text())["schemas"]
+    values=refs();values["u"]=dict(candidate={},eligible_ref=None,G_ref=None)
+    result=selection(values,dict(a=3,b=1),"SYNTHETIC")
+    c.check_schema(result,schemas["selection_diagnostic"])
+    with pytest.raises(c.Stop):c.check_schema(dict(result,status="UNKNOWN"),schemas["selection_diagnostic"])
+    with pytest.raises(c.Stop):c.check_schema(dict(status="UNKNOWN",mandatory_stop=True,next_stage_authorized=False),schemas["terminal"])
+
+
+def test_prelaunch_dependency_origin_fingerprint_is_required(approved):
+    root,bundle,auth=approved;bundle["schema_version"]="track_a_ax1b_prelaunch_manifest_v1"
+    auth["preparation_manifest_sha256"]=c.digest(bundle)
+    auth["analysis_environment_synthetic_audit"]["environment"]={"wrong":"dependency origin"}
+    with pytest.raises(c.Stop,match="ENVIRONMENT"):ex.authorize(root,bundle,auth,True,c.digest(auth))
+
+
+def test_prelaunch_resource_enforcement_without_changing_test_process(monkeypatch):
+    calls=[];handlers={}
+    monkeypatch.setattr(ex.os,"environ",{})
+    monkeypatch.setattr(ex.os,"sched_setaffinity",lambda pid,cpus:calls.append(("affinity",pid,cpus)))
+    monkeypatch.setattr(ex.resource,"setrlimit",lambda kind,limits:calls.append(("rlimit",kind,limits)))
+    monkeypatch.setattr(ex.signal,"signal",lambda sig,handler:handlers.update({sig:handler}))
+    monkeypatch.setattr(ex.signal,"setitimer",lambda kind,value:calls.append(("alarm",kind,value)))
+    ex._limits(dict(resources=dict(cpu_affinity=[2],ram_limit_bytes=123456,wall_time_limit_seconds=30)))
+    assert calls==[("affinity",0,[2]),("rlimit",ex.resource.RLIMIT_AS,(123456,123456)),("alarm",ex.signal.ITIMER_REAL,30)]
+    assert all(ex.os.environ[var]=="1" for var in ex.THREAD_VARS)
+    with pytest.raises(c.Stop,match="BUDGET"):handlers[ex.signal.SIGALRM](0,None)
+
+
+def test_prelaunch_cannot_report_empty_while_reference_members_unknown():
+    from trottertracks.resource_applicability.ax1b_evaluation import validate_selection_record
+    result=selection({"u":dict(candidate={},eligible_ref=None,G_ref=None)}, {},"SYNTHETIC")
+    with pytest.raises(c.Stop,match="SCHEMA"):validate_selection_record(dict(result,status="REF_ELIGIBLE_EMPTY"))
+
+
+@pytest.mark.parametrize("error",[ex.importlib.metadata.PackageNotFoundError("scipy"),OSError("missing dependency file")])
+def test_prelaunch_missing_dependency_identity_has_environment_stop(monkeypatch,error):
+    def fail(name):raise error
+    monkeypatch.setattr(ex.importlib.metadata,"distribution",fail)
+    with pytest.raises(c.Stop,match="ENVIRONMENT"):ex.environment()

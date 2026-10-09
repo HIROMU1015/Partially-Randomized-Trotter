@@ -22,15 +22,31 @@ THREAD_VARS=("OMP_NUM_THREADS","OPENBLAS_NUM_THREADS","MKL_NUM_THREADS","NUMEXPR
 
 
 def environment():
-    return dict(python=platform.python_version(),python_releaselevel=sys.version_info.releaselevel,
+    try:
+        return _environment_identity()
+    except (importlib.metadata.PackageNotFoundError,OSError,AttributeError) as exc:
+        raise Stop("ENVIRONMENT","dependency identity unavailable: "+str(exc)) from exc
+
+
+def _environment_identity():
+    packages={}
+    for name in ("numpy","scipy","pytest"):
+        dist=importlib.metadata.distribution(name)
+        packages[name]=dict(version=dist.version,root=str(Path(dist.locate_file("")).resolve()),
+                            metadata_sha256=sha256(dist.read_text("METADATA").encode()))
+    identity=dict(python=platform.python_version(),python_releaselevel=sys.version_info.releaselevel,
                 executable=sys.executable,numpy=importlib.metadata.version("numpy"),scipy=importlib.metadata.version("scipy"),
-                platform=platform.platform())
+                pytest=importlib.metadata.version("pytest"),platform=platform.platform(),prefix=sys.prefix,base_prefix=sys.base_prefix,
+                pythonpath=os.environ.get("PYTHONPATH"),packages=packages,
+                executable_sha256=sha256(Path(sys.executable).resolve().read_bytes()),
+                nnls_source_sha256=sha256(Path(importlib.metadata.distribution("scipy").locate_file("scipy/optimize/_nnls.py")).read_bytes()))
+    return dict(identity,environment_fingerprint_sha256=digest(identity))
 
 
 def validate_preparation(root,bundle):
     """Contract/new source bytes only. No reader of the 45 science inputs."""
     allow,plan=load_contract(root)
-    require(bundle["schema_version"]=="track_a_ax1b_preparation_manifest_v1","SCHEMA","preparation schema")
+    require(bundle["schema_version"] in {"track_a_ax1b_preparation_manifest_v1","track_a_ax1b_prelaunch_manifest_v1"},"SCHEMA","preparation schema")
     require(bundle["ax1a_commit"]==AX1A_COMMIT,"CONTRACT_CONFLICT","wrong AX1a commit")
     require(all(bundle[k] is v for k,v in FLAGS.items()),"AUTHORIZATION","preparation must remain unauthorized")
     require(bundle["model_configuration_sha256"]==plan["model_configuration_sha256"],"CONTRACT_CONFLICT","changed model configuration")
@@ -76,6 +92,8 @@ def authorize(root,bundle,authorization,execute_saved_analysis=False,launch_auth
             and all(proof.get(k)==0 for k in ["failed","skipped","protected_access_attempts","scientific_import_attempts"])
             and proof.get("real_data_fit_executed") is False,"ENVIRONMENT","same-source synthetic success in analysis environment unconfirmed")
     require(all(proof.get(k)==observed[k] for k in ["python","numpy","scipy"]),"ENVIRONMENT","synthetic proof belongs to another environment")
+    if bundle.get("schema_version")=="track_a_ax1b_prelaunch_manifest_v1":
+        require(proof.get("environment")==observed,"ENVIRONMENT","synthetic proof dependency origins/fingerprint differ")
     expected_source={f["path"]:f["sha256"] for f in bundle["frozen_files"] if f["path"].endswith(".py")}
     require({f["path"]:f["sha256"] for f in proof.get("source_files_after_successful_test",[])}==expected_source,
             "IMPLEMENTATION","analysis-environment test proof source hashes differ")
@@ -140,6 +158,12 @@ def execute(root,bundle,authorization,execute_saved_analysis=False,launch_author
         if name=="predictions.jsonl":
             for row in value:check_schema(row,schemas["prediction"])
         if name=="terminal_status.json":check_schema(value,schemas["terminal"])
+        if name=="conditional_oracle_selection.csv":
+            from .ax1b_evaluation import validate_selection_record
+            for row in value:
+                validate_selection_record(row)
+                diagnostics=[row["full_set_diagnostic"],row["common_set_diagnostic"]] if row.get("row_kind")=="common_support_selection" else [row] if row.get("row_kind")=="selection_diagnostic" else []
+                for diagnostic in diagnostics:check_schema(diagnostic,schemas["selection_diagnostic"])
         raw=encode_output(name,value)
         used=sum(p.stat().st_size for p in destination.iterdir() if p.is_file())
         require(used+len(raw)<=permit["resources"]["output_disk_limit_bytes"],"BUDGET","output disk cap")

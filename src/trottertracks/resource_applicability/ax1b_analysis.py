@@ -8,7 +8,7 @@ import math
 from .ax1b_contract import AXES, METRICS, CASE_CONDITIONAL, canonical, digest, operational_na, require
 from .ax1b_data import folds
 from .ax1b_models import fit_cost,structural_na,finite_normalization,complexity_gate
-from .ax1b_evaluation import cost_error,error_summary,rank_index,reference_shots,conditional_work,selection,paired_statistics,paired_total,common_support_selection
+from .ax1b_evaluation import cost_error,error_summary,rank_index,reference_shots,conditional_work,selection,paired_statistics,paired_total,common_support_selection,selection_status_summary
 
 CALIBRATED=("PRED_BASE_SINGLE_COEFF","PRED_BASE_FEW_PARAM")
 
@@ -158,6 +158,6 @@ def analyze(rows,plan,values,allowlist):
     return {"feature_provenance.json":[dict(candidate_fingerprint=r.fingerprint,**r.feature_provenance) for r in rows],
             "model_fits.json":dict(fits=fits,complexity_gate=adopted,index_diagnostics=rank_diagnostics),"predictions.jsonl":predictions,
             "cost_metrics.csv":[dict(row_kind="candidate_axis_error",**e) for e in errors]+[dict(row_kind="group_summary",**s) for s in summaries],
-            "normalization_audit.csv":normalization,"shot_availability.json":dict(**operational_na(),reference_reproduced_rows=reproduction_count,structural_model=structural_na()),
+            "normalization_audit.csv":normalization,"shot_availability.json":dict(**operational_na(),reference_reproduced_rows=reproduction_count,structural_model=structural_na(),selection_status_counts=selection_status_summary(selections)),
             "conditional_oracle_selection.csv":selections,"paired_cost_statistics.csv":statistics,
-            "report.md":"# AX-1b saved H4 model development diagnostics\n\nRQ-P1 and CONDITIONAL_ORACLE only. H4 internal/observed/cross-fitted results are development diagnostics. Operational shots/work/regret and full structural model remain N/A. Engineering intervals are not formal CI; rare-event cost tail and cross-candidate covariance remain unresolved.\n\nMandatory STOP; next stage not authorized."}
+            "report.md":"# AX-1b saved H4 model development diagnostics\n\nRQ-P1 and CONDITIONAL_ORACLE only. H4 internal/observed/cross-fitted results are development diagnostics. Operational shots/work/regret and full structural model remain N/A. Undetermined reference eligibility blocks full-set regret; known-eligible subset diagnostics have separate fields. Common-support membership retains undetermined candidates and its regret is scoped to that registered support. Engineering intervals are not formal CI; rare-event cost tail and cross-candidate covariance remain unresolved.\n\nMandatory STOP; next stage not authorized."}

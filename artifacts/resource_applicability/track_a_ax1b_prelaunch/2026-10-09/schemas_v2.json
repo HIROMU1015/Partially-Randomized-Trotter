@@ -1,0 +1,419 @@
+{
+  "schema_version": "track_a_ax1b_prelaunch_schemas_v2",
+  "validator_scope": "explicit supported subset: type/required/properties/items/const/enum/minimum/pattern; not a general JSON Schema engine",
+  "schemas": {
+    "preparation_manifest": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "status",
+        "ax1a_commit",
+        "source_commit",
+        "frozen_files",
+        "schemas",
+        "synthetic_test_audit",
+        "ax1b_analysis_authorized",
+        "science_authorized",
+        "explicit_user_launch_required",
+        "mandatory_stop",
+        "next_stage_authorized"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "const": "track_a_ax1b_prelaunch_manifest_v1"
+        },
+        "status": {
+          "type": "string",
+          "const": "AX1B_PRELAUNCH_HARDENING_PARTIAL_EXECUTION_NOT_AUTHORIZED"
+        },
+        "ax1a_commit": {
+          "type": "string",
+          "const": "6b6959b9e76ead049a9a247dadfc1f85161916e8"
+        },
+        "source_commit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "frozen_files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "sha256"
+            ],
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        },
+        "schemas": {
+          "type": "object",
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "synthetic_test_audit": {
+          "type": "object",
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "ax1b_analysis_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "science_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "explicit_user_launch_required": {
+          "type": "boolean",
+          "const": true
+        },
+        "mandatory_stop": {
+          "type": "boolean",
+          "const": true
+        },
+        "next_stage_authorized": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "synthetic_test_audit": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "passed",
+        "failed",
+        "skipped",
+        "exit_code",
+        "protected_access_attempts",
+        "scientific_import_attempts",
+        "real_data_fit_executed"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "const": "track_a_ax1b_synthetic_test_audit_v1"
+        },
+        "passed": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "failed": {
+          "type": "integer",
+          "const": 0
+        },
+        "skipped": {
+          "type": "integer",
+          "const": 0
+        },
+        "exit_code": {
+          "type": "integer",
+          "const": 0
+        },
+        "protected_access_attempts": {
+          "type": "integer",
+          "const": 0
+        },
+        "scientific_import_attempts": {
+          "type": "integer",
+          "const": 0
+        },
+        "real_data_fit_executed": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "execution_authorization_draft": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "status",
+        "source_commit",
+        "environment",
+        "resources",
+        "preparation_manifest_sha256",
+        "ax1b_analysis_authorized",
+        "science_authorized",
+        "explicit_user_launch_required",
+        "mandatory_stop",
+        "next_stage_authorized",
+        "analysis_environment_synthetic_audit"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "const": "track_a_ax1b_execution_authorization_draft_v2"
+        },
+        "status": {
+          "type": "string",
+          "const": "DRAFT_NOT_AUTHORIZED"
+        },
+        "source_commit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "environment": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "resources": {
+          "type": "object"
+        },
+        "preparation_manifest_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ax1b_analysis_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "science_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "explicit_user_launch_required": {
+          "type": "boolean",
+          "const": true
+        },
+        "mandatory_stop": {
+          "type": "boolean",
+          "const": true
+        },
+        "next_stage_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "analysis_environment_synthetic_audit": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      }
+    },
+    "prediction": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "dataset_id",
+        "candidate_fingerprint",
+        "model_id",
+        "model_version",
+        "fold_id",
+        "diagnostic_kind",
+        "C_pred_by_axis",
+        "N_pred_by_axis",
+        "G_operational_pred",
+        "G_conditional_oracle"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "const": "track_a_ax1b_prediction_v1"
+        },
+        "model_version": {
+          "type": "integer",
+          "const": 1
+        },
+        "model_id": {
+          "type": "string",
+          "enum": [
+            "PRED_BASE_SINGLE_COEFF",
+            "PRED_BASE_FEW_PARAM"
+          ]
+        },
+        "C_pred_by_axis": {
+          "type": "object",
+          "required": [
+            "cosine",
+            "sine"
+          ],
+          "properties": {
+            "cosine": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "sine": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0
+            }
+          }
+        },
+        "N_pred_by_axis": {
+          "type": "null"
+        },
+        "G_operational_pred": {
+          "type": "null"
+        },
+        "G_conditional_oracle": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "terminal": {
+      "type": "object",
+      "required": [
+        "status",
+        "mandatory_stop",
+        "next_stage_authorized"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "pattern": "^AX1B_(COMPLETE_WITH_DECLARED_NA|STOP_[A-Z_]+)$"
+        },
+        "mandatory_stop": {
+          "type": "boolean",
+          "const": true
+        },
+        "next_stage_authorized": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "selection_diagnostic": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "status",
+        "regret",
+        "common_support_regret",
+        "full_set_min_G_ref",
+        "known_eligible_subset_regret",
+        "known_eligible_prediction_subset_regret",
+        "undetermined_reference_candidates",
+        "registered_direct_sha256",
+        "information_class",
+        "reference_eligibility_status"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "track_a_ax1b_selection_v2"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "SELECTED_OUTSIDE_DIRECT_SET",
+            "SELECTED_REFERENCE_INELIGIBLE",
+            "SELECTED_ELIGIBILITY_UNDETERMINED",
+            "REF_ELIGIBLE_EMPTY",
+            "REF_ELIGIBILITY_UNDETERMINED",
+            "PREDICTED_ELIGIBILITY_UNDETERMINED",
+            "MODEL_ALL_REJECTED",
+            "NO_PREDICTIONS",
+            "MISSING_COST_PREDICTIONS",
+            "REFERENCE_COST_UNDEFINED",
+            "ZERO_REGRET_DENOMINATOR",
+            "INCOMPLETE_PREDICTION_COVERAGE",
+            "VALID_CONDITIONAL_ORACLE"
+          ]
+        },
+        "reference_eligibility_status": {
+          "enum": [
+            "ALL_REFERENCE_ELIGIBILITY_DETERMINED",
+            "REF_ELIGIBILITY_UNDETERMINED"
+          ]
+        },
+        "information_class": {
+          "const": "I4_CONDITIONAL_ORACLE"
+        },
+        "regret": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "common_support_regret": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "full_set_min_G_ref": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "known_eligible_subset_regret": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "known_eligible_prediction_subset_regret": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "undetermined_reference_candidates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "registered_direct_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    }
+  }
+}

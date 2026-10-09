@@ -99,10 +99,32 @@ def conditional_work(shots, costs):
     return math.fsum(number(shots[s], "N_ref") * number(costs[c], "one-shot cost") for s,c in [("real","cosine"),("imag","sine")])
 
 
+SELECTION_STATUSES = (
+    "SELECTED_OUTSIDE_DIRECT_SET", "SELECTED_REFERENCE_INELIGIBLE",
+    "SELECTED_ELIGIBILITY_UNDETERMINED", "REF_ELIGIBLE_EMPTY",
+    "REF_ELIGIBILITY_UNDETERMINED", "PREDICTED_ELIGIBILITY_UNDETERMINED",
+    "MODEL_ALL_REJECTED", "NO_PREDICTIONS", "MISSING_COST_PREDICTIONS",
+    "REFERENCE_COST_UNDEFINED", "ZERO_REGRET_DENOMINATOR",
+    "INCOMPLETE_PREDICTION_COVERAGE", "VALID_CONDITIONAL_ORACLE",
+)
+
+
 def selection(refs, predicted_G, diagnostic_kind, chosen=None, predicted_eligible=None):
-    """Fixed direct set. Explicit chosen is an audit path for failure statuses."""
+    """Three-state reference eligibility; subset diagnostics never certify the full set."""
+    for ref in refs.values():
+        require(ref["eligible_ref"] is None or type(ref["eligible_ref"]) is bool,
+                "SCHEMA", "reference eligibility must be True/False/None")
+    eligible = {k:r for k,r in refs.items() if r["eligible_ref"] is True}
+    unknown = sorted(k for k,r in refs.items() if r["eligible_ref"] is None)
     base = dict(evaluation_case_id=CASE_CONDITIONAL, diagnostic_kind=diagnostic_kind,
+                row_kind="selection_diagnostic", schema_version="track_a_ax1b_selection_v2",
                 information_class="I4_CONDITIONAL_ORACLE", regret=None, common_support_regret=None,
+                known_eligible_subset_regret=None, known_eligible_prediction_subset_regret=None,
+                full_set_min_G_ref=None, known_eligible_subset_min_G_ref=None,
+                registered_direct_count=len(refs), registered_direct_sha256=digest(sorted(refs)),
+                reference_eligibility_status="REF_ELIGIBILITY_UNDETERMINED" if unknown else "ALL_REFERENCE_ELIGIBILITY_DETERMINED",
+                undetermined_reference_candidates=unknown, coverage_denominator_reference_eligible=len(eligible),
+                known_eligible_subset_sha256=digest(sorted(eligible)),
                 selected=None, false_acceptance="NOT_APPLICABLE_ORACLE_ELIGIBILITY", independent_test=False)
     if chosen is not None:
         if chosen not in refs:
@@ -111,12 +133,16 @@ def selection(refs, predicted_G, diagnostic_kind, chosen=None, predicted_eligibl
             return {**base,"status":"SELECTED_REFERENCE_INELIGIBLE","selected":chosen,"false_acceptance":True}
         if refs[chosen]["eligible_ref"] is None:
             return {**base,"status":"SELECTED_ELIGIBILITY_UNDETERMINED","selected":chosen}
-    eligible = {k:r for k,r in refs.items() if r["eligible_ref"] is True}
     if not eligible:
-        return {**base,"status":"REF_ELIGIBLE_EMPTY"}
+        return {**base,"status":"REF_ELIGIBILITY_UNDETERMINED" if unknown else "REF_ELIGIBLE_EMPTY"}
+    if predicted_eligible is not None:
+        require(all(v is None or type(v) is bool for v in predicted_eligible.values()),
+                "SCHEMA", "prediction eligibility must be True/False/None")
     candidates = [k for k in eligible if predicted_eligible is None or predicted_eligible.get(k) is True]
     if not candidates:
-        return {**base,"status":"MODEL_ALL_REJECTED"}
+        unresolved = sorted(k for k in eligible if predicted_eligible.get(k) is None)
+        return {**base,"status":"PREDICTED_ELIGIBILITY_UNDETERMINED" if unresolved else "MODEL_ALL_REJECTED",
+                "undetermined_predicted_candidates":unresolved}
     present = {k:predicted_G.get(k) for k in candidates if predicted_G.get(k) is not None}
     if not present:
         return {**base,"status":"NO_PREDICTIONS","missing_candidates":sorted(candidates)}
@@ -138,12 +164,18 @@ def selection(refs, predicted_G, diagnostic_kind, chosen=None, predicted_eligibl
     missing = sorted(set(eligible)-set(present))
     support_min = min(eligible[k]["G_ref"] for k in present)
     support_regret = eligible[chosen]["G_ref"]/support_min-1 if support_min else None
-    return {**base,"status":"INCOMPLETE_PREDICTION_COVERAGE" if missing else "VALID_CONDITIONAL_ORACLE",
-            "selected":chosen,"regret":None if missing else eligible[chosen]["G_ref"]/denominator-1,
-            "selected_G_conditional_oracle":predicted_G.get(chosen),"selected_G_ref":eligible[chosen]["G_ref"],"full_set_min_G_ref":denominator,
-            "common_support_regret":support_regret, "common_support_sha256":digest(sorted(present)),
-            "missing_candidates":missing,"coverage_denominator_reference_eligible":len(eligible),
-            "covered_reference_eligible":len(present),"registered_direct_count":len(refs)}
+    known_regret = eligible[chosen]["G_ref"]/denominator-1
+    return {**base,"status":"REF_ELIGIBILITY_UNDETERMINED" if unknown else "INCOMPLETE_PREDICTION_COVERAGE" if missing else "VALID_CONDITIONAL_ORACLE",
+            "selected":chosen,"regret":None if missing or unknown else known_regret,
+            "selected_G_conditional_oracle":predicted_G.get(chosen),"selected_G_ref":eligible[chosen]["G_ref"],
+            "full_set_min_G_ref":None if unknown else denominator,
+            "known_eligible_subset_min_G_ref":denominator,
+            "known_eligible_subset_regret":None if missing else known_regret,
+            "known_eligible_prediction_subset_regret":support_regret,
+            "common_support_regret":None if unknown else support_regret,
+            "common_support_sha256":None if unknown else digest(sorted(present)),
+            "known_eligible_prediction_subset_sha256":digest(sorted(present)),
+            "missing_candidates":missing,"covered_reference_eligible":len(present)}
 
 
 def paired_statistics(left, right, random=True, expected_count=None):
@@ -180,10 +212,57 @@ def common_support_selection(refs,models,cost_support,diagnostic_kind):
     for model in models:
         support.intersection_update(cost_support[model])
     return [dict(model_id=model,metric_name="regret_conditional_oracle_common_support",
+                 row_kind="common_support_selection",
                  direct_support_sha256=digest(sorted(support)),excluded_direct_candidates=sorted(set(refs)-support),
+                 undetermined_reference_candidates_in_common_support=sorted(k for k in support if refs[k]["eligible_ref"] is None),
+                 common_support_scope="REGISTERED_COMPLETE_COST_PREDICTION_INTERSECTION",
                  full_set_diagnostic=selection(refs,prediction,diagnostic_kind),
                  common_set_diagnostic=selection({fp:refs[fp] for fp in support},{fp:prediction.get(fp) for fp in support},diagnostic_kind+"_COMMON_SUPPORT"))
             for model,prediction in models.items()]
+
+
+def validate_selection_record(record):
+    """Reject unknown statuses and invalid success claims before output serialization."""
+    if record.get("row_kind") == "candidate_conditional_oracle_work":
+        require(record["reference_eligible"] is None or type(record["reference_eligible"]) is bool,
+                "SCHEMA", "candidate eligibility state")
+        return
+    if record.get("row_kind") == "common_support_selection":
+        validate_selection_record(record["full_set_diagnostic"])
+        validate_selection_record(record["common_set_diagnostic"])
+        return
+    require(record.get("status") in SELECTION_STATUSES, "SCHEMA", "unknown selection status")
+    unknown = record["undetermined_reference_candidates"]
+    require(record["reference_eligibility_status"] == ("REF_ELIGIBILITY_UNDETERMINED" if unknown else "ALL_REFERENCE_ELIGIBILITY_DETERMINED"),
+            "SCHEMA", "reference eligibility status/list disagree")
+    if record["status"] == "REF_ELIGIBLE_EMPTY":
+        require(not unknown and record["coverage_denominator_reference_eligible"]==0,
+                "SCHEMA", "empty eligible set must be established")
+    if record["status"] == "REF_ELIGIBILITY_UNDETERMINED":
+        require(bool(unknown), "SCHEMA", "undetermined status needs undetermined members")
+    require(not unknown or (record["regret"] is None and record["full_set_min_G_ref"] is None
+                            and record["common_support_regret"] is None),
+            "SCHEMA", "undetermined eligibility cannot certify full/support regret")
+    if record["status"] == "VALID_CONDITIONAL_ORACLE":
+        require(not unknown and record["regret"] is not None, "SCHEMA", "invalid valid-regret claim")
+        number(record["regret"], "regret")
+    else:
+        require(record["regret"] is None, "SCHEMA", "undefined regret must remain null")
+
+
+def selection_status_summary(records):
+    """Count every status in its scope; do not flatten nested support diagnostics."""
+    groups = {"registered_set":{}, "common_support":{}, "standalone":{}}
+    for record in records:
+        validate_selection_record(record)
+        if record.get("row_kind") == "candidate_conditional_oracle_work":
+            continue
+        diagnostics = [("registered_set",record["full_set_diagnostic"]),
+                       ("common_support",record["common_set_diagnostic"])] if record.get("row_kind") == "common_support_selection" else [("standalone",record)]
+        for scope, diagnostic in diagnostics:
+            status = diagnostic["status"]
+            groups[scope][status] = groups[scope].get(status,0)+1
+    return groups
 
 
 def paired_total(stats, N_real, N_imag):
