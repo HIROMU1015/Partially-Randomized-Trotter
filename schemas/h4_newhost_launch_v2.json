@@ -115,8 +115,22 @@
         "caps": {
           "type": "object",
           "properties": {
-            "actual_invocations": {"type": "integer", "enum": [74784, 74804, 74805]},
-            "output_bytes": {"type": "integer", "enum": [10737418240, 13958643712, 18253611008]}
+            "actual_invocations": {
+              "type": "integer",
+              "enum": [
+                74784,
+                74804,
+                74805
+              ]
+            },
+            "output_bytes": {
+              "type": "integer",
+              "enum": [
+                10737418240,
+                13958643712,
+                18253611008
+              ]
+            }
           }
         },
         "storage": {
@@ -147,7 +161,9 @@
         "environment_accepted",
         "observer_role",
         "budget_amendment",
-        "output_budget_amendment"
+        "output_budget_amendment",
+        "budget_accounting",
+        "recovery_policy"
       ],
       "additionalProperties": false,
       "properties": {
@@ -196,18 +212,55 @@
         },
         "output_budget_amendment": {
           "type": "object",
-          "required": ["approved", "from", "to", "authority_reference"],
+          "required": [
+            "approved",
+            "from",
+            "to",
+            "authority_reference"
+          ],
           "additionalProperties": false,
           "properties": {
-            "approved": {"type": "boolean"},
-            "from": {"type": "integer"},
-            "to": {"type": "integer"},
-            "authority_reference": {"type": "string"}
+            "approved": {
+              "type": "boolean"
+            },
+            "from": {
+              "type": "integer"
+            },
+            "to": {
+              "type": "integer"
+            },
+            "authority_reference": {
+              "type": "string"
+            }
           },
           "oneOf": [
-            {"properties": {"from": {"const": 10737418240}, "to": {"const": 13958643712}}},
-            {"properties": {"from": {"const": 13958643712}, "to": {"const": 18253611008}}}
+            {
+              "properties": {
+                "from": {
+                  "const": 10737418240
+                },
+                "to": {
+                  "const": 13958643712
+                }
+              }
+            },
+            {
+              "properties": {
+                "from": {
+                  "const": 13958643712
+                },
+                "to": {
+                  "const": 18253611008
+                }
+              }
+            }
           ]
+        },
+        "budget_accounting": {
+          "type": "object"
+        },
+        "recovery_policy": {
+          "type": "object"
         }
       }
     },

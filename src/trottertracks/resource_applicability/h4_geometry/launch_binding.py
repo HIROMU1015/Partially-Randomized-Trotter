@@ -16,10 +16,12 @@ from .prelaunch_audit import private_path, receipt_inventory, environment_profil
 from .resources import GiB, ROLE_CAP, HEADROOM, OUTPUT_CAP, WALL_CAP, fsync_directory
 from .observer import AS_CAP, RSS_CAP, FRAME_CAP, TERMINAL_RESERVE
 
-RUN_ID='h4-newhost-signal-compile-20261009-run03'
+RUN_ID='h4-newhost-signal-compile-20261009-run04'
 ORIGINAL_CARRY={'actual_invocations':20,'charged_bytes':165214360,'wall_seconds':5466.188392877579}
 PRIOR_CARRY={'actual_invocations':20,'charged_bytes':4428938712,'wall_seconds':5472.345380863175}
-CARRY={'actual_invocations':21,'charged_bytes':8692723164,'wall_seconds':5766.582514658794}
+RUN02_CARRY={'actual_invocations':21,'charged_bytes':8692723164,'wall_seconds':5766.582514658794}
+HISTORICAL_CARRY={'actual_invocations':22,'charged_bytes':12956511264,'wall_seconds':6004.111340102032}
+CARRY={'actual_invocations':0,'charged_bytes':0,'wall_seconds':0.0}
 EXPECTED_FREEZE='75d7ddc8dc71ebeec03a6c173397a9b941b492b74e4dc80814d613d83ce56c69'
 EXPECTED_JOURNAL='6b68368565cc336d283bc094f844a37ceb1966838ca5482f1f12347d0c5d669e'
 EXPECTED_LOG='7108181a3b295ca92d4a73de7e7420d160898270d45a95657a34e7c6526947b1'
@@ -38,7 +40,7 @@ STRUCTURES={
  'authorization':{'schema_version':str,'stage':str,'run_id':str,'source_commit':str,'plan_fingerprint':str,
          'approved':bool,'runtime_authorization':bool,'allowed_cpus':list,'one_shot':bool,
          'permission':str,'result_prior':bool,'environment_accepted':bool,'observer_role':dict,'budget_amendment':dict,
-         'output_budget_amendment':dict},
+         'output_budget_amendment':dict,'budget_accounting':dict,'recovery_policy':dict},
  'review':{'schema_version':str,'stage':str,'run_id':str,'source_commit':str,'plan_fingerprint':str,
          'authorization_digest':str,'approved':bool,'runtime_authorization':bool,'reviewer':str,'mandatory_stop':bool}}
 VERSIONS={k:'h4-newhost-'+k+'-v2' for k in STRUCTURES}
@@ -76,7 +78,22 @@ def authorize(plan,authorization,review, *, explicit_launch):
     p=fingerprint('h4-newhost-plan-v2',plan)
     require(authorization['plan_fingerprint']==p and review['plan_fingerprint']==p and
             review['authorization_digest']==fingerprint('h4-newhost-authorization-v2',authorization),'newhost plan/auth/review binding')
-    require(plan['carry']==CARRY,'carry cannot be reset or refunded')
+    require(plan['carry']==CARRY and all(type(plan['carry'][k]) is type(v) for k,v in CARRY.items()),
+            'explicit per-attempt carry0 binding')
+    accounting=authorization['budget_accounting']
+    recovery=authorization['recovery_policy']
+    require(set(accounting)=={'scope','exclude_failed_carry','authority'} and
+            accounting['scope']=='per_attempt' and accounting['exclude_failed_carry'] is True,
+            'explicit failed-carry exclusion required')
+    require(set(recovery)=={'approved','mode','scope','authority'} and recovery['approved'] is True and
+            recovery['mode']=='investigate_fix_fresh_restart' and recovery['scope']=='signal_compile_only',
+            'explicit bounded recovery policy required')
+    for authority in (accounting['authority'],recovery['authority']):
+        require(type(authority) is dict and set(authority)=={'path','sha256'} and
+                type(authority['path']) is str and bool(authority['path']) and
+                not Path(authority['path']).is_absolute() and '..' not in Path(authority['path']).parts,
+                'relative user-authority reference')
+        hash_id(authority['sha256'])
     require(plan['contract_plan_fingerprint']==gates.PLAN_FP,'science contract unchanged')
     require(set(plan['inputs'])==set(gates.DISTANCES),'six inputs')
     for distance,entry in plan['inputs'].items():
@@ -160,6 +177,14 @@ def verify_runtime(permit):
     require(env['fingerprint']==plan['environment_fingerprint'] and comp['fingerprint']==plan['compiler_fingerprint'],'plan profile fingerprints')
     from .library_cache import verify
     verify(reference(root,plan['library_cache_profile']))
+    for section in ('budget_accounting','recovery_policy'):
+        authority=reference(root,permit.authorization[section]['authority'])
+        require(authority['schema_version']=='h4-user-recovery-authority-v1' and
+                authority['budget_reset_approved'] is True and authority['recovery_approved'] is True and
+                authority['next_stage_authorized'] is False and
+                authority['budget_instruction']=='失敗した過去分は残さなくてよい' and
+                authority['launch_instruction']=='では本計算を行って',
+                'user budget/recovery/launch authority binding')
     contract=gates.verify_contract(root)
     require(plan['templates']==contract['templates'] and comp['explicit_options']==contract['compiler_environment_reference']['compiler']['explicit_options'],
             'scientific templates/compiler options unchanged')
@@ -188,7 +213,9 @@ def verify_frozen_receipts(plan):
             'old-host predecessor byte carry proof')
     verify_newhost_stop(evidence)
     from .retry_receipt import verify_retry_stop
-    verify_retry_stop(evidence,PRIOR_CARRY,CARRY)
+    verify_retry_stop(evidence,PRIOR_CARRY,RUN02_CARRY)
+    from .run03_receipt import verify_run03_stop
+    verify_run03_stop(evidence,RUN02_CARRY,HISTORICAL_CARRY)
     return {**freeze,'input_root':str(root),'consumed_seconds':CARRY['wall_seconds'],
             'prior_charge':CARRY['charged_bytes'],'prior_invocations':CARRY['actual_invocations']}
 
@@ -300,7 +327,7 @@ def install_write_guard(plan, *, worker=False):
 
 
 def claim_once(permit):
-    """No auto retry: an existing marker survives every failed/complete attempt."""
+    """Every attempt has one exclusive marker; recovery uses a new bound run."""
     authorize(permit.plan,permit.authorization,permit.review,explicit_launch=True)
     root=private_path(permit.plan['control_root'])
     require(not private_path(permit.plan['output_root']).exists(),'existing output forbids retry/resume')
