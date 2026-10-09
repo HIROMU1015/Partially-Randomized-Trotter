@@ -1,6 +1,6 @@
 """Bounded pressure diagnostics and saved run04 proof metadata; no science."""
 import copy,json,unittest
-from trottertracks.resource_applicability.h4_geometry import observer as obs,stopped_attempt_receipt as proof
+from trottertracks.resource_applicability.h4_geometry import observer as obs,run04_receipt as proof
 from trottertracks.resource_applicability.h4_geometry.identity import Stop
 
 def memory(psi=0):

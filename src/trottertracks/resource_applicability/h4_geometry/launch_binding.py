@@ -16,7 +16,7 @@ from .prelaunch_audit import private_path, receipt_inventory, environment_profil
 from .resources import GiB, ROLE_CAP, HEADROOM, OUTPUT_CAP, WALL_CAP, fsync_directory
 from .observer import AS_CAP, RSS_CAP, FRAME_CAP, TERMINAL_RESERVE
 
-RUN_ID='h4-newhost-signal-compile-20261009-run05'
+RUN_ID='h4-newhost-signal-compile-20261010-run06'
 ORIGINAL_CARRY={'actual_invocations':20,'charged_bytes':165214360,'wall_seconds':5466.188392877579}
 PRIOR_CARRY={'actual_invocations':20,'charged_bytes':4428938712,'wall_seconds':5472.345380863175}
 RUN02_CARRY={'actual_invocations':21,'charged_bytes':8692723164,'wall_seconds':5766.582514658794}
@@ -216,6 +216,8 @@ def verify_frozen_receipts(plan):
     verify_retry_stop(evidence,PRIOR_CARRY,RUN02_CARRY)
     from .run03_receipt import verify_run03_stop
     verify_run03_stop(evidence,RUN02_CARRY,HISTORICAL_CARRY)
+    from .run04_receipt import verify_stopped_attempt as verify_run04_stop
+    verify_run04_stop(evidence)
     from .stopped_attempt_receipt import verify_stopped_attempt
     verify_stopped_attempt(evidence)
     return {**freeze,'input_root':str(root),'consumed_seconds':CARRY['wall_seconds'],
@@ -260,7 +262,7 @@ def fresh_gate(plan,observation, *, now=None):
     require(0<=now-observation['observed_monotonic']<=5,'fresh launch observation')
     memory=observation['memory'];require(memory['psi_full_avg10']==0,'launch memory pressure')
     require(0<=now-memory['observed_at']<=5,'fresh memory sample')
-    require(memory['available']>=(8+8*plan['requested_workers']+16)*GiB+AS_CAP,'observer-inclusive admission')
+    require(memory['available']>=max(120,8+8*plan['requested_workers']+16)*GiB+AS_CAP,'observer-inclusive admission')
     needed=set(roles(plan));require(needed<=set(observation['scheduler_affinity']) & set(observation['online_cpus']),'role CPUs unavailable')
     topology={x['cpu']:(x['package'],x['core']) for x in observation['topology']}
     require(len({topology[c] for c in needed})==len(needed),'distinct physical role cores')
