@@ -882,3 +882,12 @@ first STOPはresource cap/5秒違反ではなくworker_responseでのwrite guard
 stevedore disk mkdir拒否を同guardで再現し、private .disableをown-process XDGへ固定。8 tests/6 plugin metadata順序一致・write0、科学compile/回路/Qiskit import/実worker/追加本体0。
 run03全14×2ABSENT、carry22/12956511264B/6004.111340102032s upper・現17GiB/74805保持。次全map20.203GiB/74806に対する21GiB/74806は未承認proposal。
 次run/carry22/native proof/SOURCE seed/profile/binding/fresh gate未結合、false/allowed[]/未seal/commandnull、自動retryなし。
+
+
+## 2026-10-09 H4：失敗分を次回の予算に加算しない
+
+利用者の「失敗した過去分は残さなくてよい」により、次回の新規mapはcarry0（actual/charge/wall）で実行単体を上限の対象とする。
+旧carry22/12956511264B/6004.111340102032sと停止証拠・入力は履歴として保持。全map静的見積り8.136939GiB/74784件は承認済み17GiB/74805以内、旧21GiB/74806増額案は不要。
+SOURCE cd162e9305143d81c28908b9732f8eef12cd6b89は不変で、現validatorは消費済みrun03/CARRY21。次の新SOURCE/seed/plan/auth/reviewと未使用runをcarry0へ再結合する必要がある。
+予算方針のみ承認済み、新one-shot指示/本体起動なし。flagsfalse/allowed[]/未seal/commandnull、科学/追加transpile/GPU/共有環境変更0。
+[最新の予算方針・見積り](docs/research/track_a_h4_per_attempt_budget_20261009.md)。

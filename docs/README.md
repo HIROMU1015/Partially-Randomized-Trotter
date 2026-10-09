@@ -468,3 +468,12 @@ SOURCE6e68fd9bcc68e788db6f5d43eaa6a03866e53d3b/closure44・科学/compiler/optio
 ## H4 entrypoint cache修正（2026-10-09）
 
 [原因保存・private memory cache・8限定metadata検証](research/track_a_h4_entrypoint_cache_fix_20261009.md)。別namespaceのlibrary_cache v2 policy、runner run_h4_entrypoint_cache_tests.py。科学compile/追加本計算なし。
+
+
+## 2026-10-09 H4：失敗分を次回の予算に加算しない
+
+利用者の「失敗した過去分は残さなくてよい」により、次回の新規mapはcarry0（actual/charge/wall）で実行単体を上限の対象とする。
+旧carry22/12956511264B/6004.111340102032sと停止証拠・入力は履歴として保持。全map静的見積り8.136939GiB/74784件は承認済み17GiB/74805以内、旧21GiB/74806増額案は不要。
+SOURCE cd162e9305143d81c28908b9732f8eef12cd6b89は不変で、現validatorは消費済みrun03/CARRY21。次の新SOURCE/seed/plan/auth/reviewと未使用runをcarry0へ再結合する必要がある。
+予算方針のみ承認済み、新one-shot指示/本体起動なし。flagsfalse/allowed[]/未seal/commandnull、科学/追加transpile/GPU/共有環境変更0。
+[最新の予算方針・見積り](research/track_a_h4_per_attempt_budget_20261009.md)。
