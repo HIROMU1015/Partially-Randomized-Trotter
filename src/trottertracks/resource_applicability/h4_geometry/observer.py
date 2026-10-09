@@ -69,10 +69,14 @@ class OwnedIdentity:
             raise
 
     def sample(self):
-        require(self.fd is not None and not select.select([self.fd], [], [], 0)[0], 'owned process exited')
-        result = self.sampler(self.expected['pid'])
-        require(identity(result) == self.expected, 'owned identity lost')
-        return result
+        try:
+            require(self.fd is not None and not select.select([self.fd], [], [], 0)[0], 'owned process exited')
+            result = self.sampler(self.expected['pid'])
+            require(identity(result) == self.expected, 'owned identity lost')
+            return result
+        except (Stop,OSError,KeyError) as exc:
+            exc.owned_identity=dict(self.expected)
+            raise
 
     def terminate(self, sig=signal.SIGTERM):
         try:
@@ -131,6 +135,19 @@ class ObservationState:
                 type(phase['monotonic']) in (float, int) and math.isfinite(phase['monotonic']) and
                 0 <= now - phase['monotonic'] <= DEADLINE, 'driver phase sequence/timestamp')
         self.phase = phase
+
+    def worker_failure(self,report,now):
+        require(type(report) is dict and set(report)=={'reason','serial','worker_pid','phase'},'worker failure wire')
+        require(type(report['reason']) is str and 0<len(report['reason'].encode())<=1536 and
+                type(report['phase']) is str and len(report['phase'])<=128 and
+                (report['serial'] is None or type(report['serial']) is int and report['serial']>=0) and
+                (report['worker_pid'] is None or type(report['worker_pid']) is int and report['worker_pid']>0),
+                'bounded worker failure fields')
+        if self.first_failure is None:
+            self.first_failure=dict(reason=report['reason'],worker_failure=dict(report),
+                driver_phase=dict(self.phase),monotonic=now,interval_seconds=now-self.last,
+                observation_duration_seconds=None,staleness_seconds=None)
+        return self.first_failure
 
     def evaluate(self, observation, samples, observer_sample, begun, ended):
         record = dict(kind='observation', monotonic=ended, interval_seconds=ended-self.last,
@@ -230,6 +247,15 @@ def observer_main(sock_fd, trace_fd):
                 message = receive(sock)
                 command = message.get('command')
                 if command == 'phase': state.set_phase(message['phase'], time.monotonic())
+                elif command == 'worker_failure':
+                    report=message['failure']
+                    require(type(report) is dict and
+                            (report.get('worker_pid') is None or report.get('worker_pid') in workers),
+                            'unregistered worker failure')
+                    state.worker_failure(report,time.monotonic())
+                    # The common exception path fsyncs this first cause before
+                    # any worker/driver signal; do not acknowledge a healthy run.
+                    raise Stop(state.first_failure['reason'])
                 elif command == 'own':
                     expected = message['identity']
                     require(expected['pid'] not in workers and len(workers) < config['workers'] and
@@ -274,7 +300,7 @@ def observer_main(sock_fd, trace_fd):
             'monotonic': time.monotonic(),
             'interval_seconds': time.monotonic()-state.last if state else None,
             'observation_duration_seconds': time.monotonic()-begun if 'begun' in locals() else None,
-            'staleness_seconds': None}
+            'staleness_seconds': None,'owned_identity':getattr(exc,'owned_identity',None)}
         try:
             trace.write({'kind': 'first_stop', 'first_failure': failure}, terminal=True)
         finally:
@@ -409,6 +435,10 @@ class IndependentObserver:
 
     def stop_children(self, *, local_only=False):
         for owner in self.children.values(): owner.terminate()
+
+    def report_failure(self,report):
+        # request() recovers the observer's durable cause on terminal EOF.
+        self.request('worker_failure',failure=report)
 
     def close(self, *, abort=False):
         self.stop_children(local_only=True)

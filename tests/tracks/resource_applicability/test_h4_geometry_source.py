@@ -740,7 +740,7 @@ class CrossCandidateTests(unittest.TestCase):
     def test_completed_worker_releases_previous_circuit_before_next_read(self):
         import io,weakref
         from types import SimpleNamespace
-        permit=gates.Permit('signal_compile',{},'/tmp/artificial-source',FAKE)
+        permit=gates.Permit('signal_compile',{},'/home/AbeHiromu/artificial-source',FAKE)
         references=[];calls=[0]
         class FakeCircuit:pass
         def read(_stream):
@@ -751,14 +751,15 @@ class CrossCandidateTests(unittest.TestCase):
                 return {'name':'_compile_worker','args':(circuit,{})}
             self.assertIsNone(references[0]())
             raise ident.Stop('artificial end-of-stream')
-        with patch.object(workers,'read_frame',read),patch.object(workers,'write_frame',lambda *_:None),\
+        responses=[]
+        with patch.object(workers,'read_frame',read),patch.object(workers,'write_frame',lambda _,value:responses.append(value)),\
              patch.object(workers,'private_dispatch',lambda *_:{}),\
              patch.object(gates,'checkout_gate',return_value=({},{})),\
              patch.object(resources,'limit_owned_address_space'),\
              patch.object(workers.sys,'stdin',SimpleNamespace(buffer=io.BytesIO())),\
              patch.object(workers.sys,'stdout',SimpleNamespace(buffer=io.BytesIO())):
-            with self.assertRaisesRegex(ident.Stop,'artificial end-of-stream'):
-                workers.owned_worker_main(os.getppid())
+            workers.owned_worker_main(os.getppid())
+        self.assertIn('artificial end-of-stream',responses[-1]['error'])
 
     def test_serial_and_twelve_workers_identical_order_metrics_and_seeds(self):
         _,serial=self.evaluate(1,(2,64,2))
@@ -1072,7 +1073,8 @@ class ParallelCompileTests(unittest.TestCase):
         pool.assignment_lock=threading.Lock();pool.failure=None;pool.counter=0
         pool.available=queue.Queue();pool.available.put(1)
         pool.processes=[Mock(),Mock()];pool.monitor=Mock();pool.budget=Mock();pool.io=Mock()
-        for process in pool.processes:process.poll.return_value=None
+        for index,process in enumerate(pool.processes):
+            process.poll.return_value=None;process.pid=5000+index
         with patch.object(workers,'write_frame') as write,patch.object(workers,'read_frame',return_value={'result':{'rz_count':1},'log':'','error':None}):
             result=pool._call(0,'_compile_worker',(None,OPTIONS))
             self.assertEqual(result,{'rz_count':1})

@@ -5,6 +5,7 @@
 """
 import io
 import gc
+import json
 import os
 from pathlib import Path
 import pickle
@@ -12,8 +13,24 @@ import queue
 import subprocess
 import sys
 import threading
+import time
+import traceback
 
 MAX_FRAME=64*2**20
+FAILURE_CAP=8192
+
+
+def bounded_text(value,limit):
+    return value.encode('utf-8',errors='replace')[:limit].decode('utf-8',errors='ignore')
+
+
+def exception_text(exc,phase):
+    try:message=str(exc)
+    except BaseException:message='<exception message unavailable>'
+    # Never inspect locals (which can include large circuit/matrix objects).
+    frames=traceback.format_list(traceback.extract_tb(exc.__traceback__,limit=-12))
+    return bounded_text(type(exc).__name__+': '+bounded_text(message,1024)+
+                        '\nworker_phase='+phase+'\n'+''.join(frames),6144)
 
 
 def write_frame(stream,value):
@@ -64,34 +81,45 @@ def owned_worker_main(parent_pid,index=None):
     from trottertracks.resource_applicability.h4_geometry.identity import require
     from trottertracks.resource_applicability.h4_geometry.gates import checkout_gate,Permit
     from trottertracks.resource_applicability.h4_geometry.resources import limit_owned_address_space
-    require(os.getppid()==parent_pid,'owned parent handshake')
-    limit_owned_address_space()
     incoming,outgoing=sys.stdin.buffer,sys.stdout.buffer
-    permit=read_frame(incoming)
-    require(isinstance(permit,Permit),'owned permit')
-    if permit.plan.get('schema_version')=='h4-newhost-plan-v2':
-        from trottertracks.resource_applicability.h4_geometry.launch_binding import role_affinity
-        role_affinity(permit,'worker',index)
-    _contract,options=checkout_gate(permit)
-    write_frame(outgoing,{'ready':os.getpid()})
-    while True:
-        job=read_frame(incoming)
-        require(isinstance(job,dict) and set(job)=={'name','args'},'owned worker job wire')
-        logs=CappedText()
-        try:
+    phase='bootstrap';logs=None;completed_log=''
+    try:
+        require(os.getppid()==parent_pid,'owned parent handshake')
+        limit_owned_address_space()
+        phase='permit_decode';permit=read_frame(incoming)
+        require(isinstance(permit,Permit),'owned permit')
+        if permit.plan.get('schema_version')=='h4-newhost-plan-v2':
+            from trottertracks.resource_applicability.h4_geometry.launch_binding import role_affinity
+            phase='worker_binding';role_affinity(permit,'worker',index)
+        phase='checkout';_contract,options=checkout_gate(permit)
+        phase='ready';write_frame(outgoing,{'ready':os.getpid()})
+        while True:
+            phase='job_decode';job=read_frame(incoming)
+            require(isinstance(job,dict) and set(job)=={'name','args'},'owned worker job wire')
+            logs=CappedText();phase='dispatch'
             with redirect_stdout(logs),redirect_stderr(logs):
                 result=private_dispatch(permit,job['name'],job['args'],options)
-            write_frame(outgoing,{'result':result,'log':logs.getvalue(),'error':None})
-        except BaseException as exc:
-            write_frame(outgoing,{'result':None,'log':logs.getvalue(),'error':type(exc).__name__+': '+str(exc)})
-            return  # failed invocation consumed; never another job or restart
-        finally:
             # Drop the previous circuit before blocking on the next IPC frame.
-            # Compiler reference cycles must not consume the next job's AS budget.
-            result = None
-            del job
-            logs.close()
-            gc.collect()
+            # Collect before publishing success: a GC failure must not release
+            # this worker back to the parent's available queue.
+            completed_log=logs.getvalue();del job;logs.close();logs=None
+            phase='gc';gc.collect()
+            phase='response_encode'
+            write_frame(outgoing,{'result':result,'log':completed_log,'error':None})
+            result=None;completed_log=''
+    except BaseException as exc:
+        # Includes bootstrap, unpickle/schema, response encoding and GC failures.
+        # Stay alive after reporting: an exited worker would let the observer
+        # SIGTERM the driver before its pipe thread has fsynced the original error.
+        try:
+            write_frame(outgoing,{'result':None,'log':logs.getvalue() if logs else completed_log,
+                                 'error':exception_text(exc,phase)})
+            while incoming.read(65536):
+                pass  # wait for parent STOP/EOF; discard, never dispatch another job
+        except (OSError,ValueError):
+            pass  # broken parent pipe; independent ownership monitoring stops
+        finally:
+            if logs is not None:logs.close()
 
 
 class OwnedPool:
@@ -105,6 +133,7 @@ class OwnedPool:
             python=reference(Path(permit.source_root),permit.plan['environment_profile'])['python']
         self.monitor,self.budget,self.processes=monitor,budget,[]
         self.counter,self.assignment_lock,self.failure=0,threading.Lock(),None
+        self.failure_record=None;self.failure_publication_error=None
         self.available=queue.Queue()
         for index in range(workers):self.available.put(index)
         self.io=ThreadPoolExecutor(max_workers=workers,thread_name_prefix='owned-pipe-io')
@@ -117,16 +146,57 @@ class OwnedPool:
                     cwd=permit.source_root,env=dict(os.environ),close_fds=True)
                 self.processes.append(process);monitor.own_child(process.pid)
             def init(process):
-                write_frame(process.stdin,permit)
-                response=read_frame(process.stdout)
-                from trottertracks.resource_applicability.h4_geometry.identity import require
-                require(response=={'ready':process.pid},'owned worker handshake')
+                try:
+                    write_frame(process.stdin,permit)
+                    response=read_frame(process.stdout)
+                    from trottertracks.resource_applicability.h4_geometry.identity import require
+                    if isinstance(response,dict) and response.get('error'):
+                        raise RuntimeError(response['error'])
+                    require(response=={'ready':process.pid},'owned worker handshake')
+                except BaseException as exc:
+                    self._record_failure(exc,None,process,'worker_handshake')
+                    raise
             futures=[self.io.submit(init,p) for p in self.processes]
             for future in futures:
                 future.result(timeout=5)
-        except BaseException:
+        except BaseException as exc:
+            self._record_failure(exc,None,None,'pool_bootstrap')
             self.shutdown(wait=True,cancel_futures=True)
             raise
+
+    def _record_failure(self,exc,serial,process,phase,logs=''):
+        """First bounded cause is durable before any own-child cleanup signal."""
+        with self.assignment_lock:
+            if self.failure is not None:return
+            self.failure_publication_error=None
+            record={'kind':'owned_worker_first_failure','serial':serial,
+                    'worker_pid':process.pid if process is not None else None,
+                    'observed_exit_code':process.poll() if process is not None else None,
+                    'phase':phase,'monotonic':time.monotonic(),
+                    'error':exception_text(exc,phase),'log':bounded_text(logs,512)}
+            # JSON escaping can enlarge text; keep the existing sealed 8KiB cap.
+            while True:
+                data=json.dumps(record,ensure_ascii=False,sort_keys=True).encode()+b'\n'
+                if len(data)<=FAILURE_CAP:break
+                record['error']=bounded_text(record['error'],len(record['error'].encode())//2)
+            self.failure_record=record
+            try:self.budget.write('worker-log-first-stop.txt',data)
+            except BaseException as publication_error:
+                self.failure_publication_error=publication_error
+            # Keep the latch lock until reporting: a simultaneous second failure
+            # must not signal children before the first cause reaches the observer.
+            report={k:record[k] for k in ('serial','worker_pid','phase')}
+            report['reason']=bounded_text(record['error'].split('\n',1)[0],1024)
+            if self.failure_publication_error is not None:
+                report['reason']+='; failure publication: '+bounded_text(str(self.failure_publication_error),256)
+            try:self.monitor.report_failure(report)
+            except BaseException:
+                # Original cause remains latched; terminal EOF is secondary.
+                pass
+            finally:
+                # pulse()/abort() can signal children as soon as they see this
+                # field. Publish it only after the durable/reporting steps.
+                self.failure=exc
 
     def submit(self,function,*args):
         from trottertracks.resource_applicability.h4_geometry.identity import require
@@ -138,6 +208,7 @@ class OwnedPool:
 
     def _call(self,serial,name,args):
         from trottertracks.resource_applicability.h4_geometry.identity import require
+        process=None;phase='assignment';logs=''
         try:
             with self.assignment_lock:
                 require(self.failure is None,'owned pool failed; no queued dispatch')
@@ -146,16 +217,20 @@ class OwnedPool:
                 require(self.failure is None,'owned pool failed; no queued dispatch')
             process=self.processes[index]
             require(process.poll() is None,'owned worker died STOP')
+            phase='job_encode'
             write_frame(process.stdin,{'name':name,'args':args})
+            phase='worker_response'
             response=read_frame(process.stdout)
             require(isinstance(response,dict) and set(response)=={'result','log','error'},'owned worker response')
-            if response['log']:
-                self.budget.write('worker-log-%06d.txt'%serial,response['log'].encode())
+            require(type(response['log']) is str and len(response['log'].encode())<=8192 and
+                    (response['error'] is None or type(response['error']) is str),'owned worker response types')
+            logs=response['log']
             require(response['error'] is None,'owned worker failure STOP: '+str(response['error']))
+            if logs:
+                phase='worker_log_publish';self.budget.write('worker-log-%06d.txt'%serial,logs.encode())
         except BaseException as exc:
-            with self.assignment_lock:
-                if self.failure is None:self.failure=exc
-            self.monitor.stop_children()
+            try:self._record_failure(exc,serial,process,phase,logs)
+            finally:self.monitor.stop_children()
             raise
         self.available.put(index)  # refill the worker that actually finished
         return response['result']
