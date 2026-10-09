@@ -1,0 +1,48 @@
+{
+  "AS_limit_bytes": 8589934592,
+  "additional_transpiles_in_audit": 0,
+  "approval_or_launch_emitted": false,
+  "failed_worker_pid": 2994886,
+  "failed_wrapper": "distance0.70/B0/L_D3/q2/T0.8/delta0.4/cosine/science-000003",
+  "immediate_observed_failure": "EOF while parent waits for worker response; first cause saved as interrupted owned worker pipe STOP",
+  "independent_review": "PASS_STOP_CAUSE_AUDIT",
+  "independent_review_sha256": "8110ee1eb95f4ce16d300c4bc100dcdb22f384a8a0ce6834d0d2067159f72273",
+  "last_AS_bytes": 8589639680,
+  "last_AS_headroom_bytes": 294912,
+  "likely_primary_trigger": "Per-worker8GiB RLIMIT_AS allocation limit during larger q2 circuit processing",
+  "mock_confirmed_diagnostic_gap": "Injected formatterMemoryError produces zero error response frames and propagates MemoryError; normal injected MemoryError produces one error frame",
+  "near7_point9GiB_sample_count": 66,
+  "next_repair_targets": [
+    "Capture bounded native stderr and actual owned-worker exit evidence before own-run cleanup",
+    "Make allocation-failure reporting avoid or survive traceback/serialization allocation failures",
+    "Address per-circuit memory cost under8GiB or explicitly amend worker budgets/compiled representation; no such change applied"
+  ],
+  "not_established": [
+    "Memory leak",
+    "Pressure policy failure",
+    "Host/cgroup OOM kill",
+    "Other user caused the worker exit",
+    "q2 scientific success",
+    "Larger memory cap sufficient for all74784 wrappers"
+  ],
+  "production_launches_in_audit": 0,
+  "resource_load_origin": "Dense256x2568qubit UnitaryGate Gaussian representation routes generic Quantum Shannon synthesis; q1 successful compiled wrappers already2.732million operations. q2 expands additional PF steps.",
+  "science_equations_compiler_options_memory_caps_changed": false,
+  "scientific_arrays_read_in_audit": 0,
+  "source_commit": "1dbdd1be2133a59ab81c7b81a6074af0880f72a3",
+  "source_confirmed_diagnostic_gaps": [
+    "stderr=subprocess.DEVNULL loses native FD2 diagnostics",
+    "Python redirect_stderr changes sys.stderr only",
+    "exception_text traceback extraction can itself raise MemoryError; worker reporting handler does not catch that secondary failure",
+    "worker exit code at first failure is unrecorded null; later driver exit143 does not identify worker native signal"
+  ],
+  "status": "STRONGLY_SUPPORTED_AS_LIMIT_EXHAUSTION_NOT_FORENSICALLY_PROVEN",
+  "unknowns": [
+    "Exact historical native/Python exception and signal",
+    "Failed allocation size",
+    "Exact phase: transpile versus metrics versus other worker-side operation",
+    "Failed q2 compiled gate counts",
+    "Peak VM between1s observations",
+    "Whether native abort or secondary Python formatter failure occurred"
+  ]
+}

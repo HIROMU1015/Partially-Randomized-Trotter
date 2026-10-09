@@ -1,0 +1,58 @@
+{
+  "actual_worker_stress_or_compile": false,
+  "plan": {
+    "AS_bytes": 268435456,
+    "RSS_bytes": 67108864,
+    "additional_transpiles": 0,
+    "checkout": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-run07-stop-cause-audit-20261010",
+    "children": 0,
+    "output_bytes": 131072,
+    "processes": 1,
+    "production_launches": 0,
+    "python": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+    "scientific_internal_threads": 1,
+    "scope": "Two injected Python MemoryError formatter/control-flow cases only. Worker resource limit, private dispatch and IPC mocked; no real child/compiler/scientific array.",
+    "wall_seconds": 10
+  },
+  "raw_log": {
+    "bytes": 1877,
+    "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-run07-stop-cause-audit-20261010/FORMATTER_FAULT_PROBE_v1.log",
+    "sha256": "0d4a72d856ffabab63223908cb97f2ee0bc91b27773e0587e0fcb741f2e3acb6"
+  },
+  "raw_probe": {
+    "bytes": 4135,
+    "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-run07-stop-cause-audit-20261010/FORMATTER_FAULT_PROBE_v1.py",
+    "sha256": "0b724d84b1b8971782fcac8e72ee0b817ce97453c947885153eeb2e2f33ca895"
+  },
+  "result": {
+    "actual_RLIMIT_tested_on_worker": false,
+    "additional_transpiles": 0,
+    "affinity_changes": 0,
+    "cases": [
+      {
+        "error_frames": 1,
+        "error_payload": "MemoryError: synthetic allocation failure\nworker_phase=dispatch\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-run07-stop-cause-audit-20261010/src/trottertracks/resource_applicability/h4_geometry/workers.py\", line 101, in owned_worker_main\n    result=private_dispatch(permit,job['name'],job['args'],options)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/unittest/mock.py\", line 1134, in __call__\n    return self._mock_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/unittest/mock.py\", line 1138, in _mock_call\n    return self._execute_mock_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/unittest/mock.py\", line 1193, in _execute_mock_call\n    raise effect\n",
+        "injected_formatter_MemoryError": false,
+        "ready_frames": 1,
+        "uncaught_MemoryError": null
+      },
+      {
+        "error_frames": 0,
+        "error_payload": null,
+        "injected_formatter_MemoryError": true,
+        "ready_frames": 1,
+        "uncaught_MemoryError": "synthetic formatter allocation failure"
+      }
+    ],
+    "children_started": 0,
+    "peak_RSS_bytes": 28311552,
+    "production_launches": 0,
+    "proof_limit": "Injected Python formatter failure demonstrates lost-error control flow, not the historical native exit cause or signal.",
+    "scientific_arrays_read": 0,
+    "scientific_imports": 0,
+    "source_file": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-run07-stop-cause-audit-20261010/src/trottertracks/resource_applicability/h4_geometry/workers.py",
+    "source_sha256": "144435f986491577f5ccc305a9a8c8c49f8d0e7a5f14edeb8cce28e83aaa9e7f",
+    "status": "PASS_MOCK_FAULT_PATH_CONFIRMED",
+    "wall_seconds": 0.03125261142849922
+  }
+}

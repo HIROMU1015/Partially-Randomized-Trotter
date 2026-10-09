@@ -1,0 +1,505 @@
+{
+  "VM_observation": {
+    "AS_at_least_7_9GiB_samples": 66,
+    "failed_pid": 2994886,
+    "first_stops": 1,
+    "last_AS_bytes": 8589639680,
+    "last_AS_headroom_KiB": 288,
+    "last_AS_headroom_bytes": 294912,
+    "last_RSS_bytes": 8212467712,
+    "last_all_PSI_zero": true,
+    "last_host_effective_available_bytes": 471050002432,
+    "last_observation_to_first_stop_seconds": 0.6452993024140596,
+    "observations": 1258,
+    "observed_driver_exit_code": 143,
+    "observed_worker_exit_code": null,
+    "peak_between_observations_unknown": true,
+    "prelaunch_last_poststop_same_scope_OOM_counters_unchanged": true,
+    "worker_AS_cap_bytes": 8589934592
+  },
+  "accepted_inference": "Per-worker address-space allocation exhaustion is strongly supported by 288KiB headroom below the 8GiB ceiling and 66 near-limit samples, with recorded PSI zero and unchanged OOM counters. EOF and binary strings do not prove the historical exception/native signal.",
+  "allowed_cpus": [],
+  "approved": false,
+  "audit_material_blocking_findings": [],
+  "base_review": "84cea869cfb03b3312b52e23946256bd7ab62ba1",
+  "blocking_implementation_findings": [],
+  "bounded_fault_probe_review": {
+    "actual_RLIMIT_worker_or_native_failure_reproduced": false,
+    "additional_execution_by_reviewer": 0,
+    "cases_error_frames": [
+      1,
+      0
+    ],
+    "original_result_and_probe_log_SHA256_match": true,
+    "proof_refs": [
+      {
+        "bytes": 1877,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-run07-stop-cause-audit-20261010/FORMATTER_FAULT_PROBE_v1.log",
+        "sha256": "0d4a72d856ffabab63223908cb97f2ee0bc91b27773e0587e0fcb741f2e3acb6",
+        "single_link": true
+      },
+      {
+        "bytes": 4135,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-run07-stop-cause-audit-20261010/FORMATTER_FAULT_PROBE_v1.py",
+        "sha256": "0b724d84b1b8971782fcac8e72ee0b817ce97453c947885153eeb2e2f33ca895",
+        "single_link": true
+      }
+    ],
+    "pure_mock_scope_only": true
+  },
+  "bundle_files_reviewed": [
+    {
+      "bytes": 6042,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-run07-stop-cause-audit-20261010/artifacts/resource_applicability/track_a_h4_run07_stop_cause_audit/2026-10-10/baseline_and_VM_evidence_v1.json",
+      "sha256": "0352314e74aa522091132b1bc97f0f4aa3eff4cdcbb9d0795f35a078a0bd1b76",
+      "single_link": true
+    },
+    {
+      "bytes": 2622,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-run07-stop-cause-audit-20261010/artifacts/resource_applicability/track_a_h4_run07_stop_cause_audit/2026-10-10/cause_conclusion_v1.json",
+      "sha256": "94f5a987feaf7ee5536c52f52bcb0fc8a0bbd5b2376ab8f851d75c5ea2f78d2f",
+      "single_link": true
+    },
+    {
+      "bytes": 3335,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-run07-stop-cause-audit-20261010/artifacts/resource_applicability/track_a_h4_run07_stop_cause_audit/2026-10-10/formatter_fault_probe_v1.json",
+      "sha256": "bc41b059df6e4ae70f010c84ee85213d5d1f7f5424e0374a19696d9e3c61a710",
+      "single_link": true
+    },
+    {
+      "bytes": 2830,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-run07-stop-cause-audit-20261010/artifacts/resource_applicability/track_a_h4_run07_stop_cause_audit/2026-10-10/implementation_evidence_v1.json",
+      "sha256": "fdfbda2e6dee0b72bf7cde5169cf5f10f7869fc52b865cac8b4ef1405864fd75",
+      "single_link": true
+    },
+    {
+      "bytes": 726,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-run07-stop-cause-audit-20261010/artifacts/resource_applicability/track_a_h4_run07_stop_cause_audit/2026-10-10/post_stop_memory_v1.json",
+      "sha256": "727136dd4464f1cfc3f796f98c843d028666e59ed6cf1c15eb96be43c7797264",
+      "single_link": true
+    },
+    {
+      "bytes": 2931,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-run07-stop-cause-audit-20261010/artifacts/resource_applicability/track_a_h4_run07_stop_cause_audit/2026-10-10/run07_stop_receipt_summary_v1.json",
+      "sha256": "bb2c6e96c16b4a280ae3784f34c21c7e609e021bfbf55938587843ec2cc195c0",
+      "single_link": true
+    },
+    {
+      "bytes": 8933,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-run07-stop-cause-audit-20261010/artifacts/resource_applicability/track_a_h4_run07_stop_cause_audit/2026-10-10/source_unchanged_v1.json",
+      "sha256": "9d7f3a19a89aaa2704e6e5c1701acd6c339a077d62675ff4a4dca84221afe817",
+      "single_link": true
+    }
+  ],
+  "cause_assessment": "STRONGLY_SUPPORTED_AS_LIMIT_EXHAUSTION_NOT_FORENSICALLY_PROVEN",
+  "claims_not_established": [
+    "Memory leak",
+    "Pressure policy failure",
+    "Host/cgroup OOM kill",
+    "Other user caused the worker exit",
+    "q2 scientific success",
+    "Larger memory cap sufficient for all74784 wrappers"
+  ],
+  "completed_records": {
+    "external_completion_digest_match": true,
+    "failed_q2_gate_counts_inferred": false,
+    "identity_matches_fixed_plan": true,
+    "numerical_circuit_fingerprint_limit": "Existing digest externally completion-bound; circuits and their numerical hashes were not independently regenerated.",
+    "records": [
+      {
+        "cache_reuse": false,
+        "external_digest": "173c2c9ad22910d56795b2859a2e6c1331a4af29b2f51ed2cc04f924e7334fff",
+        "invocation": "science-000002",
+        "key": "2e3453f6486cd7f3d19676443b2c6a040c8a2a6fea9d2eecbf7dcaf3ec519f1d",
+        "metrics": {
+          "circuit_size": 2732009,
+          "cx_count": 436728,
+          "cx_depth": 426611,
+          "rz_count": 1387383,
+          "rz_depth": 840701,
+          "total_depth": 1754199
+        }
+      },
+      {
+        "cache_reuse": false,
+        "external_digest": "529549382dc1364e3fd27a4ff76df62b792bc6141544fc4a6970510a4a91abd2",
+        "invocation": "science-000001",
+        "key": "7cb258ab73d078525a54099cde53b3c190a8f5fb6216064568cb886bc2ff0bea",
+        "metrics": {
+          "circuit_size": 2732010,
+          "cx_count": 436728,
+          "cx_depth": 426611,
+          "rz_count": 1387384,
+          "rz_depth": 840701,
+          "total_depth": 1754199
+        }
+      }
+    ]
+  },
+  "confirmed_diagnostic_gaps": [
+    {
+      "future_repair_target": "Bounded own-worker native stderr plus actual exit-status evidence before cleanup.",
+      "id": "NATIVE_STDERR_NOT_RETAINED",
+      "impact": "stderr=DEVNULL discards native diagnostics; Python redirect_stderr changes sys.stderr only. Historical native exception/signal cannot be recovered from these artifacts.",
+      "location": "src/trottertracks/resource_applicability/h4_geometry/workers.py:145",
+      "trigger": "Native FD2 diagnostic on worker allocation failure or abort"
+    },
+    {
+      "future_repair_target": "Reporting fallback that survives formatter/serialization allocation failure.",
+      "id": "SECONDARY_FORMATTER_MEMORYERROR_NOT_CAUGHT",
+      "impact": "Secondary MemoryError escapes OSError/ValueError reporting handler. Mock sends zero error frames, without proving historical execution of this path.",
+      "location": "src/trottertracks/resource_applicability/h4_geometry/workers.py:31",
+      "trigger": "Allocation failure while extracting/formatting traceback during exception reporting"
+    }
+  ],
+  "future_repair_candidates_not_applied": [
+    "Capture bounded native stderr and actual owned-worker exit evidence before own-run cleanup",
+    "Make allocation-failure reporting avoid or survive traceback/serialization allocation failures",
+    "Address per-circuit memory cost under8GiB or explicitly amend worker budgets/compiled representation; no such change applied"
+  ],
+  "implementation_or_launch_signoff": "Evidence/cause audit PASS only; original diagnostic completeness and full-map success are not certified, and no new launch/source/cap authorization is issued.",
+  "independent_of_author": true,
+  "installed_source_evidence": {
+    "actual_failed_function_or_Rust_handler_execution_proven": false,
+    "binary_imported_or_executed": false,
+    "files_SHA256_match": true,
+    "generic_dense_unitary_QSD_supported_by_source": true,
+    "native_binary_strings_presence_only": true,
+    "network_access_in_this_completion": 0,
+    "primary_documentation_refs_previously_reviewed": [
+      {
+        "title": "Linux getrlimit(2): RLIMIT_AS and ENOMEM",
+        "url": "https://man7.org/linux/man-pages/man2/getrlimit.2.html"
+      },
+      {
+        "title": "Rust handle_alloc_error: default stderr message and abort",
+        "url": "https://doc.rust-lang.org/alloc/alloc/fn.handle_alloc_error.html"
+      }
+    ],
+    "refs": [
+      {
+        "bytes": 45663,
+        "path": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/lib/python3.12/site-packages/qiskit/transpiler/passes/synthesis/unitary_synthesis.py",
+        "sha256": "d18f7b06522f5e0475f8fa10b1cc061c58980d1f1fc93d92d51f4330b41afb7d",
+        "single_link": true
+      },
+      {
+        "bytes": 10930,
+        "path": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/lib/python3.12/site-packages/qiskit/synthesis/unitary/qsd.py",
+        "sha256": "fcbe42862b61ebc09adcf64d87a5dcc6372df59a1ee3d4dcba40f518ccba5de4",
+        "single_link": true
+      },
+      {
+        "bytes": 294247,
+        "path": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/lib/python3.12/site-packages/qiskit/circuit/quantumcircuit.py",
+        "sha256": "e4ae7cc1bf0430a099b019a8619a0aaa38d5a96d9636007a3ed54b4a6ac7b632",
+        "single_link": true
+      },
+      {
+        "bytes": 10432672,
+        "path": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/lib/python3.12/site-packages/qiskit/_accelerate.abi3.so",
+        "sha256": "b4cb2ebbf8fba43f86ffc44e14cc554cadde2d90cfb9c378eaf57687c9289396",
+        "single_link": true
+      },
+      {
+        "bytes": 27637,
+        "path": "/usr/lib/python3.12/contextlib.py",
+        "sha256": "8b7a477f978a8532852fd81e241c78182516bc4975d672d580a5848a76e11eb6",
+        "single_link": true
+      }
+    ]
+  },
+  "launch_authorization_issued": false,
+  "ledger_and_accounting": {
+    "actual_consumed_or_reserved": 6,
+    "all_map_success": false,
+    "charged_bytes": 4263870068,
+    "complete": 2,
+    "delta_versions": 9,
+    "head_digest": "6b180e291dc8c70f842f72942cca7960ee4305ff9beb1fb57e4a9129c3ebaf4b",
+    "historical_cost_retained": true,
+    "journal_record_width_bytes": 128,
+    "journal_rows": 17,
+    "journal_sha256": "36e92092962e36ee102322d45a201f339442bd38d0a04c0d14a35e36532ad3e0",
+    "next_attempt_carry_authorized_policy": {
+      "actual_invocations": 0,
+      "charged_bytes": 0,
+      "wall_seconds": 0.0
+    },
+    "previous_digest_chain_valid": true,
+    "reserved": 4,
+    "signals": 1
+  },
+  "materials_read": [
+    "AGENTS.md",
+    "PROJECT_MAP.md",
+    "docs/research/研究概要・現状.md",
+    "docs/research/track_a_h4_run07_stop_cause_audit_20261010.md",
+    "src/trottertracks/resource_applicability/h4_geometry/workers.py",
+    "src/trottertracks/resource_applicability/h4_geometry/resources.py",
+    "src/trottertracks/resource_applicability/h4_geometry/circuits.py",
+    "src/trottertracks/resource_applicability/h4_geometry/execution.py",
+    "src/trottertracks/resource_applicability/h4_geometry/identity.py",
+    "src/trottertracks/resource_applicability/h4_geometry/signal.py",
+    "src/trottertracks/resource_applicability/h4_geometry/ledger.py"
+  ],
+  "own_process_stop_verification": {
+    "current_proc_read_only_check": [
+      {
+        "pid": 2994564,
+        "proc_absent_at_review": true
+      },
+      {
+        "pid": 2994884,
+        "proc_absent_at_review": true
+      },
+      {
+        "pid": 2994885,
+        "proc_absent_at_review": true
+      },
+      {
+        "pid": 2994886,
+        "proc_absent_at_review": true
+      },
+      {
+        "pid": 2994887,
+        "proc_absent_at_review": true
+      },
+      {
+        "pid": 2994882,
+        "proc_absent_at_review": true
+      }
+    ],
+    "driver_exit143_does_not_identify_worker_native_signal": true,
+    "each_audit_identity_count": 6,
+    "exact_exit_reap_time_backfilled": false,
+    "historical_ABSENT_audits": 2,
+    "historical_same_owned_remaining": 0,
+    "matches_started_and_last_observation": true,
+    "registered_identity_count": 6
+  },
+  "raw_evidence_validation": {
+    "all_bytes_SHA256_match": true,
+    "all_regular_single_link": true,
+    "files": 18,
+    "files_checked": [
+      {
+        "bytes": 264,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-production-run07-20261010/control/h4-newhost-signal-compile-20261010-run07/one-shot.json",
+        "sha256": "a79b4b1e8532958f14f1de1b0b6c68c19d8e361f48f59b26f101b6171585c7b9",
+        "single_link": true
+      },
+      {
+        "bytes": 52,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-production-run07-20261010/control/h4-newhost-signal-compile-20261010-run07/runner.log",
+        "sha256": "50e056973cfb51133a80f5cf5d28b77fc346c8e07e92c1df889ce1e7e64b81cd",
+        "single_link": true
+      },
+      {
+        "bytes": 2176,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-production-run07-20261010/h4-newhost-signal-compile-20261010-run07/byte-budget.journal",
+        "sha256": "36e92092962e36ee102322d45a201f339442bd38d0a04c0d14a35e36532ad3e0",
+        "single_link": true
+      },
+      {
+        "bytes": 139,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-production-run07-20261010/h4-newhost-signal-compile-20261010-run07/ledger-000000.json",
+        "sha256": "ea7505567bf8f80a22ff0ca3ae1f16c5de81472ac69b6e171458a23d46d5cb17",
+        "single_link": true
+      },
+      {
+        "bytes": 319,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-production-run07-20261010/h4-newhost-signal-compile-20261010-run07/ledger-000001.json",
+        "sha256": "2fdd3b23a21cc46c11b2c256c497d16160c11957b873cc91e5c7ec8a0be1507e",
+        "single_link": true
+      },
+      {
+        "bytes": 319,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-production-run07-20261010/h4-newhost-signal-compile-20261010-run07/ledger-000002.json",
+        "sha256": "2f5978d77e0bdbf1b77fd874384886be640bc9acce7a48940b1b92e99974b800",
+        "single_link": true
+      },
+      {
+        "bytes": 319,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-production-run07-20261010/h4-newhost-signal-compile-20261010-run07/ledger-000003.json",
+        "sha256": "5a76883bba73fd5ff8e170a3ec6956f97cd0dd79f6d5686b8482ad47c7c62106",
+        "single_link": true
+      },
+      {
+        "bytes": 319,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-production-run07-20261010/h4-newhost-signal-compile-20261010-run07/ledger-000004.json",
+        "sha256": "10337b9791cf061766aaf9ebdc0eac8611db129feb41e0a111ab0f57ed1c54bd",
+        "single_link": true
+      },
+      {
+        "bytes": 514,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-production-run07-20261010/h4-newhost-signal-compile-20261010-run07/ledger-000005.json",
+        "sha256": "7a9c2f642f421a3d1c95988bf7d77731fbfa27551153f41cd891076d1ac69be9",
+        "single_link": true
+      },
+      {
+        "bytes": 319,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-production-run07-20261010/h4-newhost-signal-compile-20261010-run07/ledger-000006.json",
+        "sha256": "74d9a2ef136cd537c3ca30ee55fb5b39be70b2ce65d08b8de4a8e45ac1a65ef9",
+        "single_link": true
+      },
+      {
+        "bytes": 514,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-production-run07-20261010/h4-newhost-signal-compile-20261010-run07/ledger-000007.json",
+        "sha256": "164e6de4526816b0a8b94661c0cb857c752e9e8e919c444d157ead714dc1cd62",
+        "single_link": true
+      },
+      {
+        "bytes": 319,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-production-run07-20261010/h4-newhost-signal-compile-20261010-run07/ledger-000008.json",
+        "sha256": "caeb692d47a109687e5e4fd59120ee244ae41baa3e1c369ab9fbceaa9aea7179",
+        "single_link": true
+      },
+      {
+        "bytes": 0,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-production-run07-20261010/h4-newhost-signal-compile-20261010-run07/ledger.lock",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "single_link": true
+      },
+      {
+        "bytes": 2150270,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-production-run07-20261010/h4-newhost-signal-compile-20261010-run07/observer.jsonl",
+        "sha256": "9110782f57b021057980b26c287dea4a574da3893b8f11d80138c5fdad027b75",
+        "single_link": true
+      },
+      {
+        "bytes": 1454,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-production-run07-20261010/h4-newhost-signal-compile-20261010-run07/record-2e3453f6486cd7f3d19676443b2c6a040c8a2a6fea9d2eecbf7dcaf3ec519f1d.json",
+        "sha256": "8ef57143be9ad32289a3316f59abd219f96838132c80f07db2138b2dbc1e3ade",
+        "single_link": true
+      },
+      {
+        "bytes": 1456,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-production-run07-20261010/h4-newhost-signal-compile-20261010-run07/record-7cb258ab73d078525a54099cde53b3c190a8f5fb6216064568cb886bc2ff0bea.json",
+        "sha256": "afb7b55f3eeb9311953d9122d99a962e5ff607d9efef62e5561b82922e52a553",
+        "single_link": true
+      },
+      {
+        "bytes": 35352,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-production-run07-20261010/h4-newhost-signal-compile-20261010-run07/signal-0.70-B0-rank3-q1-r0-K0.json",
+        "sha256": "dcfe92c2d9694db95ddf61453fa6d4a6e83475a9996c0f5863b346db392e51c5",
+        "single_link": true
+      },
+      {
+        "bytes": 1283,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-production-run07-20261010/h4-newhost-signal-compile-20261010-run07/worker-log-first-stop.txt",
+        "sha256": "13020a4158e4c2f928ae0eab5f479b06680be1423abbb8795109fda292b1c09a",
+        "single_link": true
+      }
+    ],
+    "streaming_chunk_bytes": 65536
+  },
+  "receipt": {
+    "bytes": 13094,
+    "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-run07-stop-cause-audit-20261010/RUNTIME_STOP_RECEIPT_v7.json",
+    "sha256": "3156efe49c02a091067c95337a444c8b2ca9a391006f43b72299370a8ca0559f",
+    "single_link": true
+  },
+  "remaining_unknowns": [
+    "Exact historical native/Python exception and signal",
+    "Failed allocation size",
+    "Exact phase: transpile versus metrics versus other worker-side operation",
+    "Failed q2 compiled gate counts",
+    "Peak VM between1s observations",
+    "Whether native abort or secondary Python formatter failure occurred"
+  ],
+  "review_scope": "Local read-only source/hash, metadata, receipts, ledger, checkpoint metrics, recorded trace and installed-source/binary-byte evidence. No scientific arrays/circuit generation/compiler execution or new runtime.",
+  "reviewed_utc": "2026-10-09T17:52:33.149680+00:00",
+  "reviewer": "independent_final_review",
+  "run_id": "h4-newhost-signal-compile-20261010-run07",
+  "runtime_authorization": false,
+  "schema_version": "h4-independent-run07-stop-cause-review-v1",
+  "scope_counters": {
+    "GPU_queries_or_use": 0,
+    "additional_transpiles": 0,
+    "affinity_changes": 0,
+    "circuits_built": 0,
+    "network_requests": 0,
+    "new_scientific_array_reads": 0,
+    "new_scientific_imports": 0,
+    "new_trajectory_seeds": 0,
+    "production_launches": 0,
+    "real_workers_started": 0,
+    "regression_campaigns_reexecuted": 0,
+    "runtime_edits": 0,
+    "source_edits": 0
+  },
+  "source_commit": "1dbdd1be2133a59ab81c7b81a6074af0880f72a3",
+  "source_validation": {
+    "closure_paths": 62,
+    "git_blob_SHA256_checkout_SHA256_match": true,
+    "scientific_equations_compiler_options_caps_pressure_policy_unchanged": true,
+    "source_paths_changed": []
+  },
+  "static_baseline_mapping": {
+    "baseline_only": true,
+    "failed_invocation": "science-000003",
+    "failed_serial": 2,
+    "fixed_template_identity_and_wrapper_hash_match": true,
+    "mapped": [
+      {
+        "axis": "cosine",
+        "delta": 0.8,
+        "invocation": "science-000001",
+        "key": "7cb258ab73d078525a54099cde53b3c190a8f5fb6216064568cb886bc2ff0bea",
+        "q": 1,
+        "status": "COMPLETE"
+      },
+      {
+        "axis": "sine",
+        "delta": 0.8,
+        "invocation": "science-000002",
+        "key": "2e3453f6486cd7f3d19676443b2c6a040c8a2a6fea9d2eecbf7dcaf3ec519f1d",
+        "q": 1,
+        "status": "COMPLETE"
+      },
+      {
+        "axis": "cosine",
+        "delta": 0.4,
+        "invocation": "science-000003",
+        "key": "45857d3d405c3a69e08b616c893c623b4e8fd8162e9f7b6ae9b30574454fc351",
+        "q": 2,
+        "status": "RESERVED"
+      },
+      {
+        "axis": "sine",
+        "delta": 0.4,
+        "invocation": "science-000004",
+        "key": "f0d81cbbf16f7e4680172f5d149e40e978e08b6bbc30e62839071e0eac3d8df4",
+        "q": 2,
+        "status": "RESERVED"
+      },
+      {
+        "axis": "cosine",
+        "delta": 0.2,
+        "invocation": "science-000005",
+        "key": "f392911144e985dd846a5fd2fdd6575dc62f88fbb58b0fce56a11502f3c2fe6a",
+        "q": 4,
+        "status": "RESERVED"
+      },
+      {
+        "axis": "sine",
+        "delta": 0.2,
+        "invocation": "science-000006",
+        "key": "a76846f0f1ba048015a362bfcb69869d3df5914d6ba12e730611b1647a12eebf",
+        "q": 4,
+        "status": "RESERVED"
+      }
+    ],
+    "mapping_limit": "Submission serial/reservation order identify fixed baseline metadata; exact failed native function is not recorded.",
+    "new_candidate_fingerprints_generated": 0,
+    "new_trajectory_seeds_generated": 0,
+    "plan": {
+      "bytes": 62996,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-production-run07-20261010/artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/plan_authorized_v17.json",
+      "sha256": "c3847a4fe868bd4500dcbd5284d470657456844b8de31828fa4f54f1c633e6f2",
+      "single_link": true
+    }
+  },
+  "status": "PASS_STOP_CAUSE_AUDIT"
+}

@@ -7963,5 +7963,111 @@
     "next_stage_authorized": false,
     "independent_review": "PASS_READY_FOR_IMMUTABLE_ARTIFACT_AND_FRESH_RUN07_LAUNCH",
     "review_digest": "f99f871ce3db9fd936babe323d55488732b92ae2b11f627ae382591b858c0f14"
+  },
+  "track_a_h4_production_run07_stop_20261010": {
+    "actual_invocations_consumed_or_reserved": 6,
+    "all_owned_processes_ended": true,
+    "artifact_commit": "84cea869cfb03b3312b52e23946256bd7ab62ba1",
+    "charged_bytes": 4263870068,
+    "completed_wrappers": 2,
+    "driver_exit_code": 143,
+    "exact_driver_worker_exit_time": null,
+    "first_stop": {
+      "driver_phase": {
+        "monotonic": 12502972.580953885,
+        "name": "wrapper_ready:sine",
+        "sequence": 21
+      },
+      "interval_seconds": 0.6452993024140596,
+      "monotonic": 12502983.937657634,
+      "observation_duration_seconds": null,
+      "reason": "Stop: interrupted owned worker pipe STOP",
+      "staleness_seconds": null,
+      "worker_failure": {
+        "phase": "worker_response",
+        "reason": "Stop: interrupted owned worker pipe STOP",
+        "serial": 2,
+        "worker_pid": 2994886
+      }
+    },
+    "journal_rows": 17,
+    "journal_sha256": "36e92092962e36ee102322d45a201f339442bd38d0a04c0d14a35e36532ad3e0",
+    "ledger_head_digest": "6b180e291dc8c70f842f72942cca7960ee4305ff9beb1fb57e4a9129c3ebaf4b",
+    "ledger_versions": 9,
+    "native_owned_identity_count": 6,
+    "native_zero_audits": 2,
+    "next_attempt_carry": {
+      "actual_invocations": 0,
+      "charged_bytes": 0,
+      "wall_seconds": 0.0
+    },
+    "past_missing_exit_data_not_inferred": true,
+    "raw_files_count": 18,
+    "raw_receipt": {
+      "bytes": 13094,
+      "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-run07-stop-cause-audit-20261010/RUNTIME_STOP_RECEIPT_v7.json",
+      "sha256": "3156efe49c02a091067c95337a444c8b2ca9a391006f43b72299370a8ca0559f"
+    },
+    "raw_record_checkpoint_files_not_committed": true,
+    "record_completion_digest_verification": [
+      {
+        "actual_invocation": "science-000002",
+        "axis": "sine",
+        "external_completion_digest_verified": true,
+        "file": "record-2e3453f6486cd7f3d19676443b2c6a040c8a2a6fea9d2eecbf7dcaf3ec519f1d.json",
+        "geometry": "0.70",
+        "metrics": {
+          "circuit_size": 2732009,
+          "cx_count": 436728,
+          "cx_depth": 426611,
+          "rz_count": 1387383,
+          "rz_depth": 840701,
+          "total_depth": 1754199
+        },
+        "wrapper_key": "2e3453f6486cd7f3d19676443b2c6a040c8a2a6fea9d2eecbf7dcaf3ec519f1d"
+      },
+      {
+        "actual_invocation": "science-000001",
+        "axis": "cosine",
+        "external_completion_digest_verified": true,
+        "file": "record-7cb258ab73d078525a54099cde53b3c190a8f5fb6216064568cb886bc2ff0bea.json",
+        "geometry": "0.70",
+        "metrics": {
+          "circuit_size": 2732010,
+          "cx_count": 436728,
+          "cx_depth": 426611,
+          "rz_count": 1387384,
+          "rz_depth": 840701,
+          "total_depth": 1754199
+        },
+        "wrapper_key": "7cb258ab73d078525a54099cde53b3c190a8f5fb6216064568cb886bc2ff0bea"
+      }
+    ],
+    "run_id": "h4-newhost-signal-compile-20261010-run07",
+    "signal_records": 1,
+    "source_commit": "1dbdd1be2133a59ab81c7b81a6074af0880f72a3",
+    "status": "FAIL_CLOSED_STOP",
+    "worker_exit_code": null
+  },
+  "track_a_h4_run07_stop_cause_audit_20261010": {
+    "additional_transpiles": 0,
+    "bundle": "artifacts/resource_applicability/track_a_h4_run07_stop_cause_audit/2026-10-10",
+    "failed_L_D": 3,
+    "failed_geometry": "0.70",
+    "failed_method": "B0",
+    "failed_q": 2,
+    "formatter_mock_cases": 2,
+    "historical_worker_exit_code": null,
+    "independent_review": "PASS_STOP_CAUSE_AUDIT",
+    "independent_review_path": "artifacts/resource_applicability/track_a_h4_run07_stop_cause_audit/2026-10-10/independent_run07_stop_cause_review_v1.json",
+    "independent_review_sha256": "8110ee1eb95f4ce16d300c4bc100dcdb22f384a8a0ce6834d0d2067159f72273",
+    "last_AS_headroom_bytes": 294912,
+    "production_launches": 0,
+    "report": "docs/research/track_a_h4_run07_stop_cause_audit_20261010.md",
+    "runtime_authorization_emitted": false,
+    "scientific_array_reads": 0,
+    "source_commit": "1dbdd1be2133a59ab81c7b81a6074af0880f72a3",
+    "source_unchanged": true,
+    "status": "STRONGLY_SUPPORTED_AS_LIMIT_EXHAUSTION_NOT_FORENSICALLY_PROVEN"
   }
 }

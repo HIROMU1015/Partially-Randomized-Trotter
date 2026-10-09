@@ -528,3 +528,13 @@ SOURCE1dbdd1be2133a59ab81c7b81a6074af0880f72a3/closure62、33pure tests PASS、�
 run06原STOP/費用/6×2ABSENT/10filesSHAを保持し、新run07/carry0/CPU4subset[2,4,5,6]/driver16/observer18で再実行。17GiB/74805/72h・科学/compiler/凍結6入力不変。
 独立review・immutable artifact・直前fresh/未使用lock PASS後に起動。共有環境/venv/他job/GPU変更0。開始確認後chat終了可、observer監視は継続。
 [最新入口](research/track_a_h4_production_run07_20261010.md)。
+
+
+## 2026-10-10 H4 run07 STOP原因監査：q2 workerのAS8GiB枯渇が最有力
+
+run07はgeometry0.70/B0/L_D3/q1/delta0.8の2wrapperをcompile COMPLETEしsignal1保存後、q2/delta0.4/cosine workerのresponse EOFでSTOP。
+last AS7.999725GiB/残288KiB、RSS7.648GiB、hostavailable438.6995GiB/PSI0/OOM増分なし。full dense256x2568qUnitaryGateのgenericQSDでq1すでに約273万operation。
+AS制限による割当失敗が強く支持されるが、元native error/signal/compile-vsmetrics phaseは未記録。stderrDEVNULLとformatter二次MemoryErrorによるerrorframe欠落をsource/mock2caseで確認。
+SOURCE1dbdd1be2133a59ab81c7b81a6074af0880f72a3/closure62不変。6予約(2COMPLETE4RESERVED)/signal1/charge4263870068B/6identities×2ABSENT・raw18fileSHAを保存。
+新science/input/compile/worker/affinity/GPU/source/caps変更・再起動0。全map成功やmemory leakは断定せず、原partialは次attemptへ混合しない。
+[原因監査入口](research/track_a_h4_run07_stop_cause_audit_20261010.md)。
