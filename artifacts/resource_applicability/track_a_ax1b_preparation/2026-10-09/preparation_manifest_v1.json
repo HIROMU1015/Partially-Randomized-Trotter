@@ -1,0 +1,530 @@
+{
+  "schema_version": "track_a_ax1b_preparation_manifest_v1",
+  "status": "AX1B_PREPARATION_COMPLETE_EXECUTION_NOT_AUTHORIZED",
+  "created_date_jst": "2026-10-09",
+  "repository": "HIROMU1015/Partially-Randomized-Trotter",
+  "branch": "pr2-v4-s2-parallelization-20260928",
+  "ax1a_commit": "6b6959b9e76ead049a9a247dadfc1f85161916e8",
+  "ax1a_review_decision": "APPROVE_AX1A_WITH_MINOR_AMENDMENTS",
+  "source_commit": null,
+  "source_commit_binding": "external completion report, then future separate authorization; no self-referential commit field",
+  "frozen_files": [
+    {
+      "path": "src/trottertracks/resource_applicability/ax1b_analysis.py",
+      "sha256": "927509cbccd8647bb0fcfeb6d8d9fd45ab05c84d0bdbebaf90f34753d9e67c36"
+    },
+    {
+      "path": "src/trottertracks/resource_applicability/ax1b_contract.py",
+      "sha256": "1ddd3b64d15e48dc936d47200207a193dc4de51af9e7067a5281412193929c07"
+    },
+    {
+      "path": "src/trottertracks/resource_applicability/ax1b_data.py",
+      "sha256": "f3388ccb0254ab2b7abb11515f0338795c42fe468be0ba1352847ad2d4e0b5e9"
+    },
+    {
+      "path": "src/trottertracks/resource_applicability/ax1b_evaluation.py",
+      "sha256": "36ad5a3fa78988e23fe36187b11acba2f989dde41ab60354d7dc2836ac83374d"
+    },
+    {
+      "path": "src/trottertracks/resource_applicability/ax1b_execution.py",
+      "sha256": "a3e6cd315d6d76d99fd2af3aa5b2ae5d2e02aeea069e1ce683cf6024973890df"
+    },
+    {
+      "path": "src/trottertracks/resource_applicability/ax1b_models.py",
+      "sha256": "19faaa26d1aa3c40a805db5681d44b55a4429a31d27375b64db80d4b618528ce"
+    },
+    {
+      "path": "scripts/resource_applicability/run_track_a_ax1b.py",
+      "sha256": "c3ce6c1442d3f0ff3e613cbe4efe3c3a446830a0a04779424d418148c688e649"
+    },
+    {
+      "path": "scripts/resource_applicability/run_track_a_ax1b_preparation_tests.py",
+      "sha256": "6f11035dc032665f9a259c2123d42393ddce27b5502e4886f7d8a62c252d70c4"
+    },
+    {
+      "path": "tests/tracks/resource_applicability/test_ax1b_preparation.py",
+      "sha256": "8ef8104d6ed2a7d335919b6347185922e71cbaadca05ae96ffde3c5348e9b5c7"
+    },
+    {
+      "path": "docs/research/track_a_ax1b_implementation.md",
+      "sha256": "3ff8dd8da5d2ac8b94cacd66b61865136a54ddbe590719eb815f05585bc9436e"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_ax1b_preparation/2026-10-09/schemas_v1.json",
+      "sha256": "271d5918ddb2a8c82ea6d035eb902e0e59e4da7c2cc4f8856c87e204adf868e8"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_ax1b_preparation/2026-10-09/synthetic_test_audit_v1.json",
+      "sha256": "37f20e1f46077db187d72c10482414ebf290bfe361e6f6e4a500886be6afb6a1"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_ax1b_preparation/2026-10-09/blockers_v1.json",
+      "sha256": "7e760d23d5a83727d42fb065bcd8cc78fd3080e05aeb4f559cae2aebce54b6ba"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_ax1b_preparation/2026-10-09/execution_authorization_draft_v1.json",
+      "sha256": "3ec50ab2250e7390b16c77059b53c30e0c0203ecfece4b0e3a9684e4153b8ea6"
+    }
+  ],
+  "schemas": {
+    "path": "artifacts/resource_applicability/track_a_ax1b_preparation/2026-10-09/schemas_v1.json",
+    "sha256": "271d5918ddb2a8c82ea6d035eb902e0e59e4da7c2cc4f8856c87e204adf868e8"
+  },
+  "synthetic_test_audit": {
+    "path": "artifacts/resource_applicability/track_a_ax1b_preparation/2026-10-09/synthetic_test_audit_v1.json",
+    "sha256": "37f20e1f46077db187d72c10482414ebf290bfe361e6f6e4a500886be6afb6a1"
+  },
+  "authorization_draft": {
+    "path": "artifacts/resource_applicability/track_a_ax1b_preparation/2026-10-09/execution_authorization_draft_v1.json",
+    "sha256": "3ec50ab2250e7390b16c77059b53c30e0c0203ecfece4b0e3a9684e4153b8ea6"
+  },
+  "blockers": {
+    "path": "artifacts/resource_applicability/track_a_ax1b_preparation/2026-10-09/blockers_v1.json",
+    "sha256": "7e760d23d5a83727d42fb065bcd8cc78fd3080e05aeb4f559cae2aebce54b6ba"
+  },
+  "input_allowlist": {
+    "path": "artifacts/resource_applicability/track_a_ax1a/2026-10-09/input_allowlist_v1.json",
+    "sha256": "1a36c78bc70ea9d9e7b52f7a8ee04e9639ea9f488cf7ae27892710615a4bf44b"
+  },
+  "input_entry_count": 45,
+  "model_configuration_sha256": "9767e008b7a7c5f09cbab9abe8b768fafab5add76cd72ac7c3347cb7b234733d",
+  "model_configuration": {
+    "models": [
+      {
+        "model_id": "PRED_BASE_ACTION_INDEX",
+        "version": 1,
+        "layer": "AX_M1_ACTION_ACCOUNTING",
+        "calibration": "none",
+        "inputs": [
+          "n_det",
+          "E_rand",
+          "n_fixed"
+        ],
+        "output": "A_ceil",
+        "unit": "action_count_per_shot",
+        "fit": false,
+        "availability": "AVAILABLE_INDEX_ONLY",
+        "rz_relative_error_allowed": false,
+        "oracle_work_index": "N_ref_total*A_ceil"
+      },
+      {
+        "model_id": "PRED_BASE_SINGLE_COEFF",
+        "version": 1,
+        "layer": "AX_M2_CALIBRATED_BASELINE",
+        "calibration": "H4_training_fold_only",
+        "inputs": [
+          "A_exact"
+        ],
+        "output": "beta_axis*A_exact",
+        "unit": "native_rz_count_per_shot",
+        "axis_separate": true,
+        "constraint": "beta>=0; no intercept",
+        "fit": "nonnegative_least_squares_closed_form",
+        "weight": "equal_candidate",
+        "availability": "AVAILABLE_PENDING_IMPLEMENTATION_AND_LAUNCH"
+      },
+      {
+        "model_id": "PRED_BASE_STRUCT_ACCOUNT",
+        "version": 1,
+        "layer": "AX_M1_UNCALIBRATED_NATIVE_STRUCTURE",
+        "calibration": "none",
+        "inputs": [
+          "wrapper",
+          "actual_basis_relative_transitions",
+          "det_diagonal",
+          "typed_ordered_events",
+          "control_category",
+          "scalar_phase",
+          "boundary_cancellation"
+        ],
+        "output": "nonoverlapping native RZ accounting terms summed minus registered cancellations",
+        "unit": "native_rz_count_per_shot",
+        "fit": false,
+        "availability": "REGISTERED_INPUTS_UNAVAILABLE_N_A",
+        "no_generic_or_local_compiled_fill": true
+      },
+      {
+        "model_id": "PRED_BASE_FEW_PARAM",
+        "version": 1,
+        "layer": "AX_M2_CALIBRATED_FEW_PARAMETERS",
+        "calibration": "H4_training_fold_only",
+        "inputs": [
+          "intercept",
+          "n_det",
+          "E_rand",
+          "n_fixed",
+          "q"
+        ],
+        "output": "theta0+thetaD*n_det+thetaR*E_rand+thetaF*n_fixed+thetaq*q",
+        "unit": "native_rz_count_per_shot",
+        "axis_separate": true,
+        "constraint": "all retained theta>=0",
+        "fit": "NNLS",
+        "weight": "equal_candidate",
+        "max_parameters_per_axis": 5,
+        "no_method_specific_fit": true,
+        "availability": "AVAILABLE_PENDING_IMPLEMENTATION_AND_LAUNCH"
+      },
+      {
+        "model_id": "AXM1_FINITE_NORMALIZATION",
+        "version": 1,
+        "layer": "AX_M1_SOURCE_ACCOUNTING",
+        "calibration": "none",
+        "inputs": [
+          "lambda_R",
+          "T",
+          "q",
+          "r",
+          "K",
+          "finite_orders_probabilities_weights"
+        ],
+        "output": [
+          "b_K",
+          "log_B",
+          "B_when_finite"
+        ],
+        "unit": "dimensionless",
+        "fit": false,
+        "availability": "AVAILABLE_SOURCE_ACCOUNTING_ONLY",
+        "supplies_axis_bias": false
+      },
+      {
+        "model_id": "AXM0_ORIGINAL_QPE_TOTAL",
+        "version": 1,
+        "layer": "AX_M0_ORIGINAL_TASK",
+        "calibration": "none",
+        "fit": false,
+        "output": "paper original QPE/FT accounting",
+        "unit": "original_gate_unit",
+        "availability": "N_A_TASK_UNIT_AND_SCHEDULE_MISMATCH",
+        "direct_comparison_with_signal_rz_work": false
+      }
+    ],
+    "fit": {
+      "training_membership": "TRAIN_M1_210",
+      "no_pm1_or_m2_training": true,
+      "no_precision_duplicate_training": true,
+      "include_accuracy_ineligible": true,
+      "feature_formula": {
+        "n_det": "2*q*L_D",
+        "E_rand": "q*r*sum(p_n*(n+1)) for B2/B3; 0 for B0/B1",
+        "n_fixed": "2+2*q*n_one_body_blocks+q*(constant_nonzero+extracted_identity_nonzero)",
+        "A_exact": "n_det+E_rand+n_fixed",
+        "A_ceil": "n_det+ceil(E_rand-1e-15)+n_fixed"
+      },
+      "pm1_derivation": {
+        "n_det": "source all-fragments invariant 2*q*prefix",
+        "n_fixed": "all same-q M1 B0 anchors must agree; same Hamiltonian/state/identity/compiler; source preserves full one-body/constant and empty-tail identity",
+        "if_unproven": "N_A_PM1_PREDICTION; no fitted imputation"
+      },
+      "backend_reference": {
+        "package": "scipy",
+        "version": "1.14.1",
+        "api": "scipy.optimize.nnls",
+        "maxiter": 10000,
+        "atol": 1e-12,
+        "installed_environment_verified": false,
+        "fallback_solver_allowed": false,
+        "adapter_requires_reviewed_conformance": true
+      },
+      "numeric_dtype": "binary64",
+      "train_column_scale": "RMS; intercept1; drop all-zero columns",
+      "train_target_scale": "RMS; all-zero target => scale1 and all coefficients0",
+      "collinearity": {
+        "method": "greedy retain if SVD rank increases on train-only scaled X",
+        "relative_rank_tolerance": 1e-12,
+        "retain_priority": [
+          "intercept",
+          "E_rand",
+          "n_det",
+          "q",
+          "n_fixed"
+        ],
+        "drop_priority": [
+          "n_fixed",
+          "q",
+          "n_det",
+          "E_rand",
+          "intercept"
+        ],
+        "target_cost_used_in_feature_drop": false,
+        "test_relation_violation": "keep frozen coefficients; OUTSIDE_TRAIN_FEATURE_RELATION; do not refit"
+      },
+      "min_training_rows": "2*retained_parameters",
+      "full_rank_required_after_drop": true,
+      "kkt_residual_tolerance_scaled": 1e-08,
+      "negative_nonfinite_cost_or_feature": "STOP",
+      "missing_active_feature": "INPUT_MISSING_N_A; no zero imputation",
+      "zero_reference_cost": "include fit; relative/log metrics N_A",
+      "ineligible_cost": "include fit and RQ_P1 diagnosis",
+      "method_groups": [
+        "B0",
+        "B1",
+        "B2",
+        "B3"
+      ],
+      "prefix_groups": [
+        0,
+        3,
+        6,
+        9,
+        12
+      ],
+      "q_groups": [
+        1,
+        2,
+        4,
+        8
+      ],
+      "random_K_groups": [
+        2,
+        4
+      ],
+      "primary_diagnostic": "leave_one_q_out_all_methods_prefixes_K",
+      "secondary_diagnostics": [
+        "leave_one_prefix_out",
+        "leave_one_method_out",
+        "leave_one_random_K_out_keep_deterministic_training"
+      ],
+      "other_diagnostics": [
+        "full210_in_sample",
+        "PM1_observed_prefix8",
+        "M2_observed_geometry5"
+      ],
+      "complexity": {
+        "default": "PRED_BASE_SINGLE_COEFF",
+        "primary_score": "q-fold balanced mean positive-reference axis absolute-relative cost error",
+        "require_all_four_q_folds": true,
+        "require_identical_full_prediction_coverage": true,
+        "min_relative_improvement": 0.1,
+        "min_absolute_improvement": 0.01,
+        "max_any_q_fold_worsening": 0.02,
+        "baseline_zero_score": "keep_single",
+        "missing_or_unidentifiable": "keep_single; gate undetermined",
+        "secondary_or_regret_override_allowed": false,
+        "no_extra_features_or_method_coefficients": true
+      },
+      "tolerances": {
+        "saved_cost_abs": 1e-09,
+        "saved_cost_rel": 1e-10,
+        "B_abs": 1e-12,
+        "B_rel": 1e-10,
+        "log_B_abs": 1e-10,
+        "boundary_sensitive_abs_epsilon": 1e-12,
+        "identity_match": "exact",
+        "consistency_formula": "abs(diff)<=abs_tol+rel_tol*abs(reference)"
+      },
+      "kkt_residual_definition": "g=X.T@(X@theta-y); active theta>1e-12; max(max_active(abs(g)),max_inactive(max(-g,0)),max(abs(theta*g))); empty max=0",
+      "kkt_active_cutoff_scaled": 1e-12,
+      "negative_coefficient": "STOP_NUMERICAL_FIT; no clipping"
+    },
+    "primary_metric": "native_rz_count_per_shot_by_axis",
+    "scope": "measured full Hadamard wrapper, no state preparation, no backend execution",
+    "compiler_identity": {
+      "qiskit": "1.3.0",
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "optimization_level": 1,
+      "seed_transpiler": 17,
+      "coupling_map": null
+    },
+    "source_forms_classified_separately": [
+      "accounting",
+      "upper_bound",
+      "empirical_prediction",
+      "index"
+    ],
+    "bias_predictor": {
+      "model_id": null,
+      "availability": "N_A_NO_OPERATIONAL_BIAS_PREDICTOR",
+      "no_reference_bias_in_operational": true
+    }
+  },
+  "evaluation_cases": [
+    {
+      "case_id": "REF_SHOT_DIRECT_COST",
+      "information_class": "REFERENCE",
+      "availability": "SAVED_REFERENCE"
+    },
+    {
+      "case_id": "REF_SHOT_PRED_COST_CONDITIONAL_ORACLE",
+      "information_class": "I4_CONDITIONAL_ORACLE",
+      "availability": "AVAILABLE_FOR_DEFINED_COST_PREDICTIONS"
+    },
+    {
+      "case_id": "PRED_SHOT_DIRECT_COST",
+      "information_class": "ORACLE_COST_ONLY",
+      "availability": "N_A_NO_OPERATIONAL_BIAS_PREDICTOR"
+    },
+    {
+      "case_id": "PRED_SHOT_PRED_COST_OPERATIONAL",
+      "information_class": "OPERATIONAL",
+      "availability": "N_A_NO_OPERATIONAL_BIAS_PREDICTOR"
+    }
+  ],
+  "tolerances": {
+    "saved_cost_abs": 1e-09,
+    "saved_cost_rel": 1e-10,
+    "B_abs": 1e-12,
+    "B_rel": 1e-10,
+    "log_B_abs": 1e-10,
+    "boundary_sensitive_abs_epsilon": 1e-12,
+    "identity_match": "exact",
+    "consistency_formula": "abs(diff)<=abs_tol+rel_tol*abs(reference)"
+  },
+  "datasets": {
+    "TRAIN_M1_210": {
+      "count": 210,
+      "information_scope": "legacy H4 1.00 A STO-3G DF rank12 T=0.8; all methods and eligibility states",
+      "membership_sha256": "3ca7967e730d4c923b6a0a7d6b76ee6f0a01e1b51616decdb500d8de82f5df53"
+    },
+    "DIAG_PM1_8": {
+      "count": 8,
+      "information_scope": "observed nearby discard prefixes4/5; never fit",
+      "membership_sha256": "6d5c86cc8d133b15f6fb770fccff6bc7a1efa7f32471e95f436b9ba9c0c8651f"
+    },
+    "DIRECT_DEV_218": {
+      "count": 218,
+      "component_sets": [
+        "TRAIN_M1_210",
+        "DIAG_PM1_8"
+      ],
+      "membership_sha256": "600d98bb29c39f40232ba9bef578c32f91c744aca9f016e293bc46c5dd71de2e"
+    },
+    "DIAG_M2_5": {
+      "count": 5,
+      "information_scope": "observed H4 1.30 A geometry fixed five; never fit; no full-search optimality",
+      "membership_sha256": "b46e042d944dd7b41053da0a4a8235247789e9695045862218d5e19b726d4294"
+    }
+  },
+  "output": {
+    "directory": "artifacts/resource_applicability/track_a_ax1b_saved_model_audit/2026-10-09/run_v1",
+    "directory_created": false,
+    "require_absent_directory": true,
+    "legacy_overwrite_allowed": false,
+    "planned_files": [
+      "input_identity_audit.json",
+      "feature_provenance.json",
+      "model_fits.json",
+      "predictions.jsonl",
+      "cost_metrics.csv",
+      "normalization_audit.csv",
+      "shot_availability.json",
+      "conditional_oracle_selection.csv",
+      "paired_cost_statistics.csv",
+      "report.md",
+      "terminal_status.json",
+      "output_manifest.json"
+    ],
+    "sha256_policy": "manifest every completed output except manifest itself; record input/model/source/document hashes; bind final manifest hash in external completion record",
+    "source_hashes_before_after_required": true,
+    "input_hashes_before_after_required": true,
+    "operational_predictions_must_be_null_without_bias_model": true
+  },
+  "read_policy": {
+    "denial_precedes_contract_and_science_reads": true,
+    "preparation_validation": "AX1a contracts plus frozen NEW preparation files only",
+    "exact_science_read_allowlist": [
+      "artifacts/pr2_matched_accuracy_m1_execution/2026-09-30/pr2_matched_accuracy_m1_a_result_v1.json",
+      "artifacts/pr2_matched_accuracy_m1_b1_execution/2026-09-30/pr2_matched_accuracy_m1_b1_compile_map_result_v2.json",
+      "artifacts/pr2_matched_accuracy_m2_transfer_execution/2026-10-04/pr2_matched_accuracy_m2_transfer_result_v2.json",
+      "artifacts/resource_applicability/pr2_pm1_discard_execution/2026-10-04/result.json",
+      "artifacts/pr2_matched_accuracy_m1_execution/2026-09-30/pr2_matched_accuracy_m1_execution_authorization_v1_1.json",
+      "artifacts/resource_applicability/pr2_post_m2_evidence_attribution/2026-10-04/summary.json",
+      "artifacts/resource_applicability/pr2_post_m2_evidence_attribution/2026-10-04/manifest.json",
+      "artifacts/resource_applicability/pr2_post_m2_evidence_attribution/2026-10-04/execution_audit.json",
+      "artifacts/resource_applicability/pr2_post_m2_evidence_attribution/2026-10-04/candidate_decomposition.csv",
+      "artifacts/resource_applicability/pr2_post_m2_evidence_attribution/2026-10-04/same_R_candidate_comparison.csv",
+      "artifacts/resource_applicability/pr2_post_m2_evidence_attribution/2026-10-04/fixed_q_r_K_rank_presence.csv",
+      "artifacts/resource_applicability/pr2_post_m2_evidence_attribution/2026-10-04/selector_metric_regret.csv",
+      "artifacts/resource_applicability/pr2_post_m2_evidence_attribution/2026-10-04/endpoint_N_cost_ratios.csv",
+      "artifacts/resource_applicability/pr2_pm2_precision_analysis/2026-10-05/summary.json",
+      "artifacts/resource_applicability/pr2_pm2_precision_analysis/2026-10-05/manifest.json",
+      "artifacts/resource_applicability/pr2_pm2_precision_analysis/2026-10-05/execution_audit_v1.json",
+      "artifacts/resource_applicability/pr2_pm2_precision_analysis/2026-10-05/validation_audit_v1.json",
+      "artifacts/resource_applicability/pr2_pm2_precision_analysis/2026-10-05/claim_audit.json",
+      "artifacts/resource_applicability/pr2_pm2_precision_analysis/2026-10-05/precision_ledger.csv",
+      "artifacts/resource_applicability/pr2_pm2_precision_analysis/2026-10-05/eligibility_boundaries.csv",
+      "artifacts/resource_applicability/pr2_pm2_precision_analysis/2026-10-05/P_envelope.csv",
+      "artifacts/resource_applicability/pr2_pm2_precision_analysis/2026-10-05/representative_decomposition.csv",
+      "src/trotterlib/pr2_matched_accuracy_m1_execution.py",
+      "src/trotterlib/pr2_matched_accuracy_m1_contract.py",
+      "src/trotterlib/pr2_matched_accuracy_m1_b1_execution.py",
+      "src/trotterlib/pr2_matched_accuracy_m2_transfer_execution.py",
+      "src/trotterlib/pr2_matched_accuracy_m2_transfer_contract.py",
+      "src/trottertracks/resource_applicability/pm0_evidence_attribution.py",
+      "src/trottertracks/resource_applicability/pm1_discard_contract.py",
+      "src/trottertracks/resource_applicability/pm1_discard_execution.py",
+      "src/trottertracks/resource_applicability/pm2_precision_contract.py",
+      "src/trottertracks/resource_applicability/pm2_precision_analysis.py",
+      "src/trotterlib/df_partial_s2.py",
+      "src/trotterlib/df_partial_s2_repeated.py",
+      "src/trotterlib/df_partial_randomized_pf.py",
+      "src/trotterlib/df_hamiltonian.py",
+      "src/trotterlib/rte.py",
+      "src/trotterlib/df_rpe_hadamard_compiled_cost.py",
+      "src/trotterlib/rpe_hadamard_compiled_cost_proxy.py",
+      "pyproject.toml",
+      "docs/research/track_a_ax0_research_contract.md",
+      "docs/research/track_a_ax0_model_correspondence.md",
+      "docs/research/track_a_ax0_evidence_inventory.md",
+      "docs/research/track_a_ax0_benchmark_protocol.md",
+      "docs/research/track_a_ax0_compute_budget.md"
+    ],
+    "no_embedded_paths_no_science_imports_no_seed_replay": true
+  },
+  "validation": {
+    "test_scope": "synthetic only",
+    "test_audit_matches_source_hashes": true,
+    "real_saved_value_model_fit": false,
+    "real_regret_evaluation": false,
+    "operational_shot_available": false,
+    "structural_model_available": false
+  },
+  "environment": {
+    "synthetic_observation": {
+      "python": "3.11.0rc1",
+      "python_releaselevel": "candidate",
+      "numpy": "1.26.4",
+      "scipy": "1.14.1",
+      "pytest": "9.0.3"
+    },
+    "analysis_environment_confirmed": false,
+    "stable_python_required": true,
+    "exact_scipy_required": "1.14.1",
+    "analysis_environment_synthetic_audit_confirmed": false
+  },
+  "resources": {
+    "assigned_cpu_cores": null,
+    "cpu_affinity": null,
+    "processes": 1,
+    "blas_threads": 1,
+    "ram_limit_bytes": null,
+    "wall_time_limit_seconds": null,
+    "output_disk_limit_bytes": null
+  },
+  "cross_fitted_amendment": {
+    "original_metric_name_retained": true,
+    "single_frozen_model": false,
+    "distinct_records": [
+      "fold_cost",
+      "fold_conditional_selection",
+      "pooled_OOF_cost",
+      "pooled_cross_fitted_conditional_regret"
+    ],
+    "independent_prediction_performance": false
+  },
+  "identity_hash_convention": {
+    "file_hash": "SHA256(raw bytes)",
+    "authorization_and_manifest_binding": "SHA256(sorted compact JSON UTF-8 payload)"
+  },
+  "ax1b_analysis_authorized": false,
+  "science_authorized": false,
+  "explicit_user_launch_required": true,
+  "mandatory_stop": true,
+  "next_stage_authorized": false
+}
