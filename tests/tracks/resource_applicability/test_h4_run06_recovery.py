@@ -1,5 +1,7 @@
 """Lower own concurrency, same limits and byte/native predecessor proof."""
 import copy,importlib.util,json,unittest
+from unittest.mock import patch
+from trottertracks.resource_applicability.h4_geometry import execution
 from pathlib import Path
 from trottertracks.resource_applicability.h4_geometry import launch_binding as bind,stopped_attempt_receipt as proof
 from trottertracks.resource_applicability.h4_geometry.identity import Stop
@@ -28,3 +30,14 @@ class Run06RecoveryTests(unittest.TestCase):
             with self.assertRaises(Stop):proof.validate_metadata(bad)
         bad=copy.deepcopy(r);bad['first_stop']['memory']['psi_full_by_scope']['host']=0
         with self.assertRaises(Stop):proof.validate_metadata(bad)
+
+    def test_owned_startup_second_observation_rejects64GiB_before_workers(self):
+        p,a,r=base.documents();p['requested_workers']=4;p['cpu_proposal']['workers']=p['cpu_proposal']['workers'][:4]
+        a['allowed_cpus']=sorted(bind.roles(p));base.rebound(p,a,r)
+        from dataclasses import replace
+        import time
+        observation={'available':64*2**30,'observed_at':time.monotonic(),'oom_events':{'fixture':0},'psi_full_avg10':0,'process_cpus':set(a['allowed_cpus'])}
+        permit=replace(bind.authorize(p,a,r,explicit_launch=True),launch_observation={'observed_monotonic':time.monotonic(),'memory':dict(observation)})
+        with patch.object(execution,'limit_owned_address_space'),patch.object(execution,'observe_memory',return_value=observation),patch('trottertracks.resource_applicability.h4_geometry.observer.IndependentObserver') as observer,patch('trottertracks.resource_applicability.h4_geometry.workers.OwnedPool') as pool:
+            with self.assertRaisesRegex(Stop,'newhost observer admission'):execution.OwnedRun(permit,a)
+            observer.assert_not_called();pool.assert_not_called()

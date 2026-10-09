@@ -43,7 +43,7 @@ class OwnedRun:
                     observation['oom_events']==permit.launch_observation['memory']['oom_events'] and
                     0<=time.monotonic()-permit.launch_observation['observed_monotonic']<=5,
                     'OOM/cgroup changed or startup observation stale')
-            require(observation['available'] >= (8+8*self.workers+16)*2**30+AS_CAP,'newhost observer admission')
+            require(observation['available'] >= max(120,8+8*self.workers+16)*2**30+AS_CAP,'newhost observer admission')
             require(set(os.sched_getaffinity(0))==set(permit.plan['cpu_proposal']['driver']),'newhost driver CPU binding')
         else:
             self.workers=admission(observation['available']-AS_CAP,observation['observed_at'],permit.plan['requested_workers'],
