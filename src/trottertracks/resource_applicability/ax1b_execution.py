@@ -46,7 +46,8 @@ def _environment_identity():
 def validate_preparation(root,bundle):
     """Contract/new source bytes only. No reader of the 45 science inputs."""
     allow,plan=load_contract(root)
-    require(bundle["schema_version"] in {"track_a_ax1b_preparation_manifest_v1","track_a_ax1b_prelaunch_manifest_v1"},"SCHEMA","preparation schema")
+    require(bundle["schema_version"] in {"track_a_ax1b_preparation_manifest_v1","track_a_ax1b_prelaunch_manifest_v1",
+            "track_a_ax1b_identity_compatibility_manifest_v1"},"SCHEMA","preparation schema")
     require(bundle["ax1a_commit"]==AX1A_COMMIT,"CONTRACT_CONFLICT","wrong AX1a commit")
     require(all(bundle[k] is v for k,v in FLAGS.items()),"AUTHORIZATION","preparation must remain unauthorized")
     require(bundle["model_configuration_sha256"]==plan["model_configuration_sha256"],"CONTRACT_CONFLICT","changed model configuration")
@@ -92,7 +93,7 @@ def authorize(root,bundle,authorization,execute_saved_analysis=False,launch_auth
             and all(proof.get(k)==0 for k in ["failed","skipped","protected_access_attempts","scientific_import_attempts"])
             and proof.get("real_data_fit_executed") is False,"ENVIRONMENT","same-source synthetic success in analysis environment unconfirmed")
     require(all(proof.get(k)==observed[k] for k in ["python","numpy","scipy"]),"ENVIRONMENT","synthetic proof belongs to another environment")
-    if bundle.get("schema_version")=="track_a_ax1b_prelaunch_manifest_v1":
+    if bundle.get("schema_version") in {"track_a_ax1b_prelaunch_manifest_v1","track_a_ax1b_identity_compatibility_manifest_v1"}:
         require(proof.get("environment")==observed,"ENVIRONMENT","synthetic proof dependency origins/fingerprint differ")
     expected_source={f["path"]:f["sha256"] for f in bundle["frozen_files"] if f["path"].endswith(".py")}
     require({f["path"]:f["sha256"] for f in proof.get("source_files_after_successful_test",[])}==expected_source,

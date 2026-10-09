@@ -17,7 +17,7 @@ def main(argv=None):
     parser.add_argument("--execute-saved-analysis",action="store_true")
     parser.add_argument("--authorization",type=Path)
     parser.add_argument("--launch-authorization-sha256")
-    parser.add_argument("--preparation-manifest",type=Path,default=ROOT/"artifacts/resource_applicability/track_a_ax1b_prelaunch/2026-10-09/prelaunch_manifest_v1.json")
+    parser.add_argument("--preparation-manifest",type=Path,default=ROOT/"artifacts/resource_applicability/track_a_ax1b_identity_compatibility/2026-10-09/identity_compatibility_manifest_v1.json")
     args=parser.parse_args(argv)
     try:
         if not args.validate_preparation and (not args.execute_saved_analysis or args.authorization is None):

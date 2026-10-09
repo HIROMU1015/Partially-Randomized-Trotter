@@ -12,7 +12,7 @@ import pytest
 from trottertracks.resource_applicability import ax1b_contract as c
 from trottertracks.resource_applicability import ax1b_execution as ex
 from trottertracks.resource_applicability.ax1b_models import Features,fit_cost,kkt_residual,finite_normalization,complexity_gate,structural_na
-from trottertracks.resource_applicability.ax1b_data import VerifiedReader,SavedCandidate,join_m1,check_membership,pm1_features,features_from_signal,folds,project_saved,validate_candidate_scope
+from trottertracks.resource_applicability.ax1b_data import VerifiedReader,SavedCandidate,join_m1,check_membership,pm1_features,features_from_signal,folds,project_saved,validate_candidate_scope,canonical_compiler_identity
 from trottertracks.resource_applicability.ax1b_evaluation import cost_error,error_summary,reference_shots,conditional_work,selection,paired_statistics,paired_total,rank_index,common_support_selection
 
 SINGLE="PRED_BASE_SINGLE_COEFF"
@@ -733,3 +733,252 @@ def test_prelaunch_missing_dependency_identity_has_environment_stop(monkeypatch,
     def fail(name):raise error
     monkeypatch.setattr(ex.importlib.metadata,"distribution",fail)
     with pytest.raises(c.Stop,match="ENVIRONMENT"):ex.environment()
+
+# Results-prior compatibility coverage: all values below are synthetic.
+OPTIONAL_COMPILER = ("backend_name", "layout_method", "routing_method")
+
+
+def pm1_compiler_form():
+    return dict(candidate()["compiler_identity"], **{k: None for k in OPTIONAL_COMPILER})
+
+
+def test_identity_compatibility_both_forms_scope_and_raw_preserved():
+    base = candidate()["compiler_identity"]
+    extended = pm1_compiler_form()
+    before = deepcopy((base, extended))
+    assert canonical_compiler_identity(base) == canonical_compiler_identity(extended) == base
+    row = candidate(800, rank=4)
+    row["compiler_identity"] = extended
+    row["candidate_fingerprint"] = c.digest({k: v for k, v in row.items() if k != "candidate_fingerprint"})
+    frozen = deepcopy(row)
+    validate_candidate_scope(row)
+    a, b = toy_join()
+    f, provenance = pm1_features(row, join_m1(a, b))
+    assert f.n_fixed == 5 and provenance["n_fixed_status"] == "SOURCE_INVARIANT_SHARED"
+    assert row == frozen and (base, extended) == before
+    view = canonical_compiler_identity(extended)
+    view["basis_gates"].append("mutation")
+    assert (base, extended) == before
+
+
+@pytest.mark.parametrize("key", OPTIONAL_COMPILER)
+@pytest.mark.parametrize("value", ["specified", False, 0])
+def test_identity_compatibility_optional_nonnull_rejected(key, value):
+    raw = pm1_compiler_form(); raw[key] = value
+    with pytest.raises(c.Stop, match="INPUT_IDENTITY"):
+        canonical_compiler_identity(raw)
+
+
+@pytest.mark.parametrize("present", [1, 2, 3, 4, 5, 6])
+def test_identity_compatibility_partial_optional_keys_rejected(present):
+    raw = candidate()["compiler_identity"]
+    raw.update({k: None for i, k in enumerate(OPTIONAL_COMPILER) if present & (1 << i)})
+    with pytest.raises(c.Stop, match="INPUT_IDENTITY"):
+        canonical_compiler_identity(raw)
+
+
+@pytest.mark.parametrize("key,value", [
+    ("unknown_field", None), ("qiskit_version", "1.3.1"), ("basis_gates", ["rz", "sx", "cx", "x"]),
+    ("optimization_level", 2), ("transpiler_seed", 18), ("coupling_map", [[0, 1]]),
+    ("qiskit_version", 1.3), ("basis_gates", ("rz", "sx", "x", "cx")), ("basis_gates", "rz,sx,x,cx"),
+    ("basis_gates", ["rz", "sx", 1, "cx"]), ("optimization_level", True), ("optimization_level", 1.0),
+    ("transpiler_seed", 17.0), ("transpiler_seed", "17"), ("coupling_map", False),
+])
+def test_identity_compatibility_values_and_exact_types_rejected(key, value):
+    raw = pm1_compiler_form(); raw[key] = value
+    with pytest.raises(c.Stop, match="INPUT_IDENTITY"):
+        canonical_compiler_identity(raw)
+
+
+@pytest.mark.parametrize("value", [None, [], "compiler"])
+def test_identity_compatibility_non_dictionary_rejected(value):
+    with pytest.raises(c.Stop, match="INPUT_IDENTITY"):
+        canonical_compiler_identity(value)
+
+
+def test_identity_compatibility_missing_base_and_wrapper_still_rejected():
+    for key in candidate()["compiler_identity"]:
+        raw = pm1_compiler_form(); del raw[key]
+        with pytest.raises(c.Stop): canonical_compiler_identity(raw)
+    row = candidate(); row["compiler_identity"] = pm1_compiler_form(); row["wrapper_semantics"] = "other"
+    with pytest.raises(c.Stop): validate_candidate_scope(row)
+
+
+@pytest.mark.parametrize("key,value", [
+    ("hamiltonian_hash", "other"), ("state_hash", "other"), ("state_vector_hash", "other"),
+    ("snapshot_sha256", "other"), ("identity_policy", "other"), ("outer_formula", "other"),
+    ("coefficient_atol", 1e-12), ("wrapper_semantics", "other"), ("T", 1.6), ("q", 2),
+])
+def test_identity_compatibility_other_anchor_conditions_not_relaxed(key, value):
+    row = candidate(801, rank=4); row["compiler_identity"] = pm1_compiler_form(); row[key] = value
+    a, b = toy_join()
+    f, provenance = pm1_features(row, join_m1(a, b))
+    assert f.n_fixed is None and provenance["n_fixed_status"] == "N_A_ANCHOR_INVARIANT_UNPROVEN"
+
+
+def test_identity_compatibility_all_same_q_anchors_must_agree():
+    a, b = toy_join(); anchors = join_m1(a, b)
+    other = candidate(802, rank=6)
+    row = candidate(803, rank=4); row["compiler_identity"] = pm1_compiler_form()
+    anchors.append((other, dict(candidate_fingerprint=other["candidate_fingerprint"], n_fixed=6), {}))
+    assert pm1_features(row, anchors)[0].n_fixed is None
+    anchors[-1][1]["n_fixed"] = None
+    assert pm1_features(row, anchors)[0].n_fixed is None
+    anchors[-1][1]["n_fixed"] = 5
+    assert pm1_features(row, anchors)[0].n_fixed == 5
+    assert pm1_features(row, [])[0].n_fixed is None
+
+
+def test_identity_compatibility_foreign_geometry_m2_and_non_b0_excluded():
+    row = candidate(804, rank=4); row["compiler_identity"] = pm1_compiler_form()
+    foreign = candidate(805, geometry="toy_m2")
+    non_b0 = candidate(806, method="B1")
+    anchors = [(x, dict(candidate_fingerprint=x["candidate_fingerprint"], n_fixed=99), {}) for x in (foreign, non_b0)]
+    f, provenance = pm1_features(row, anchors)
+    assert f.n_fixed is None and provenance["anchor_fingerprints"] == []
+
+
+def test_identity_compatibility_anchor_uses_only_fixed_action_metadata():
+    class FixedOnly(dict):
+        def get(self, key, default=None):
+            assert key == "n_fixed"
+            return super().get(key, default)
+    anchor = candidate(807)
+    signal = FixedOnly(n_fixed=5, candidate_fingerprint=anchor["candidate_fingerprint"],
+                       reference_bias="FORBIDDEN", axis_shots="FORBIDDEN", compiled_cost="FORBIDDEN")
+    row = candidate(808, rank=4); row["compiler_identity"] = pm1_compiler_form()
+    f, provenance = pm1_features(row, [(anchor, signal, {"cost": "FORBIDDEN"})])
+    assert f.n_fixed == 5 and provenance["no_truth_or_cost_imputation"]
+
+
+def test_identity_compatibility_synthetic_210_and_5_scope_regression():
+    for count, geometry in ((210, "toy_m1"), (5, "toy_m2")):
+        rows = [candidate(900+i, geometry=geometry, q=[1, 2, 4, 8][i % 4], method=["B0", "B1", "B2", "B3"][i % 4]) for i in range(count)]
+        for row in rows: validate_candidate_scope(row)
+        check_membership(rows, deepcopy(rows), geometry)
+        changed = deepcopy(rows); changed[0]["compiler_identity"]["transpiler_seed"] = 18
+        with pytest.raises(c.Stop): check_membership(changed, rows, geometry)
+        with pytest.raises(c.Stop): validate_candidate_scope(changed[0])
+
+
+def test_identity_compatibility_raw_join_remains_exact():
+    a, b = toy_join(); b["compile_map"][0]["candidate"]["compiler_identity"] = pm1_compiler_form()
+    # Only scope/anchor comparison canonicalizes; stored full identity joins remain exact.
+    with pytest.raises(c.Stop): join_m1(a, b)
+
+
+def test_identity_compatibility_saved_projection_pm1_extended_form():
+    values, allow = toy_saved_values()
+    row = values["track_a_pm1_discard_result_v1"]["candidate_records"][0]["candidate"]
+    row["compiler_identity"] = pm1_compiler_form()
+    frozen = deepcopy(values)
+    projected = project_saved(values, allow)
+    assert next(r for r in projected if r.dataset == "DIAG_PM1_8").features.n_fixed == 5
+    assert values == frozen
+
+
+def test_identity_preflight_shapes_only_no_projection_fit_or_reference_calculation(monkeypatch):
+    from trottertracks.resource_applicability import ax1b_preflight as pf, ax1b_data as data, ax1b_models as models
+    def forbidden(*args, **kwargs): raise AssertionError("preflight attempted numerical analysis")
+    for module, names in [(data, ["project_saved", "features_from_signal"]), (models, ["fit_cost"]), (ex, ["execute"])]:
+        for name in names: monkeypatch.setattr(module, name, forbidden)
+    values, allow = toy_saved_values()
+    values["track_a_pm1_discard_result_v1"]["candidate_records"][0]["candidate"]["compiler_identity"] = pm1_compiler_form()
+    frozen = deepcopy(values)
+    audit = pf.inspect_metadata(values, allow)
+    assert audit["precheck_status"] == "PRECHECK_PASS"
+    assert [v["count"] for v in audit["datasets"].values()] == [2, 1, 1]
+    assert audit["pm1_anchor_audit"][0]["n_fixed_shared"]
+    assert all(x["status"] == "PRECHECK_UNVERIFIED" for x in audit["declared_unverified"])
+    assert not audit["actual_feature_values_exported"] and values == frozen
+
+
+def test_identity_preflight_missing_action_metadata_stays_na():
+    from trottertracks.resource_applicability import ax1b_preflight as pf
+    values, allow = toy_saved_values()
+    values["pr2_matched_accuracy_m1_a_result_v2"]["signal_records"][0]["n_fixed"] = None
+    audit = pf.inspect_metadata(values, allow)
+    assert not audit["pm1_anchor_audit"][0]["n_fixed_shared"]
+    assert audit["pm1_anchor_audit"][0]["n_fixed_status"] == "N_A_ANCHOR_INVARIANT_UNPROVEN"
+
+
+@pytest.mark.parametrize("failure", ["compiler", "wrapper", "fingerprint", "field"])
+def test_identity_preflight_failures_stop_without_fit(failure, monkeypatch):
+    from trottertracks.resource_applicability import ax1b_preflight as pf, ax1b_models as models
+    monkeypatch.setattr(models, "fit_cost", lambda *a, **k: pytest.fail("fit after preflight failure"))
+    values, allow = toy_saved_values()
+    pm = values["track_a_pm1_discard_result_v1"]["candidate_records"][0]
+    if failure == "compiler": pm["candidate"]["compiler_identity"] = dict(pm1_compiler_form(), routing_method="sabre")
+    elif failure == "wrapper": pm["candidate"]["wrapper_semantics"] = "other"
+    elif failure == "fingerprint": pm["signal_cost_candidate_fingerprint"] = "other"
+    else: del pm["signal"]["axis_bias"]
+    with pytest.raises(c.Stop): pf.inspect_metadata(values, allow)
+
+
+def test_identity_metadata_reader_requires_explicit_mode_and_hash_schema(tmp_path):
+    from trottertracks.resource_applicability import ax1b_preflight as pf
+    value = dict(schema_version="toy", required=None)
+    entry = allow_entry("toy.json", value)
+    (tmp_path/"toy.json").write_text(c.canonical(value)+"\n")
+    with pytest.raises(c.Stop): pf.MetadataReader(tmp_path, dict(entries=[entry]))
+    reader = pf.MetadataReader(tmp_path, dict(entries=[entry]), metadata_only=True)
+    assert reader.read("toy.json") == value
+    assert reader.audit[0]["schema_checked"]
+    with pytest.raises(c.Stop): reader.read("outside.json")
+    (tmp_path/"toy.json").write_text("{}")
+    with pytest.raises(c.Stop): reader.read("toy.json")
+
+
+def test_identity_preflight_cli_default_denial_without_reads(monkeypatch, capsys):
+    import importlib.util
+    path = Path(__file__).resolve().parents[3]/"scripts/resource_applicability/run_track_a_ax1b_identity_preflight.py"
+    spec = importlib.util.spec_from_file_location("synthetic_identity_cli", path)
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    reads = []
+    monkeypatch.setattr(Path, "read_bytes", lambda p: reads.append(str(p)))
+    assert module.main([]) == 2
+    assert reads == [] and "AX1B_STOP_AUTHORIZATION" in capsys.readouterr().out
+
+
+def test_identity_new_manifest_requires_exact_synthetic_environment(approved):
+    root, bundle, auth = approved
+    bundle["schema_version"] = "track_a_ax1b_identity_compatibility_manifest_v1"
+    auth["preparation_manifest_sha256"] = c.digest(bundle)
+    with pytest.raises(c.Stop, match="ENVIRONMENT"):
+        ex.authorize(root, bundle, auth, True, c.digest(auth))
+
+
+def test_identity_preflight_request_denies_analysis_flags_before_any_input(monkeypatch):
+    from trottertracks.resource_applicability import ax1b_preflight as pf
+    attempts = []
+    monkeypatch.setattr(pf.MetadataReader, "read", lambda *a: attempts.append(a))
+    request = dict(schema_version="track_a_ax1b_metadata_precheck_request_v1", metadata_only_preflight_authorized=True, **c.FLAGS)
+    request["ax1b_analysis_authorized"] = True
+    with pytest.raises(c.Stop, match="AUTHORIZATION"): pf.run_preflight(Path("/tmp"), request, [])
+    assert attempts == []
+
+
+def test_identity_preflight_request_bad_source_stops_before_science_reader(tmp_path, monkeypatch):
+    from trottertracks.resource_applicability import ax1b_preflight as pf
+    attempts = []
+    monkeypatch.setattr(pf.MetadataReader, "read", lambda *a: attempts.append(a))
+    (tmp_path/"toy.py").write_text("synthetic source")
+    request = dict(schema_version="track_a_ax1b_metadata_precheck_request_v1", metadata_only_preflight_authorized=True,
+                   source_files=[dict(path="toy.py", sha256="0"*64)], **c.FLAGS)
+    with pytest.raises(c.Stop, match="IMPLEMENTATION"): pf.run_preflight(tmp_path, request, [])
+    assert attempts == []
+
+
+def test_identity_preflight_boundary_rejects_imports_and_real_calculation_entry():
+    import importlib.util
+    path = Path(__file__).resolve().parents[3]/"scripts/resource_applicability/run_track_a_ax1b_identity_preflight.py"
+    spec = importlib.util.spec_from_file_location("synthetic_identity_boundary", path)
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    boundary = module.NumericalBoundary()
+    with pytest.raises(c.Stop): boundary.find_spec("trotterlib.rte", None)
+    with pytest.raises(c.Stop): boundary.find_spec("trottertracks.resource_applicability.ax1b_analysis", None)
+    assert boundary.import_attempts == 2
+    frame = SimpleNamespace(f_globals={"__name__": "trottertracks.resource_applicability.ax1b_evaluation"},
+                            f_code=SimpleNamespace(co_name="reference_shots"))
+    with pytest.raises(c.Stop): boundary.profile(frame, "call", None)
+    assert boundary.call_attempts == 1

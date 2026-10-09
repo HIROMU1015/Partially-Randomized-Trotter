@@ -27,7 +27,7 @@ def install_boundary():
         parts=name.split("/")
         if name.lower().endswith((".npz",".npy",".pkl",".pickle")) or any(x in {".runtime","runtime","cache","registry"} or x.endswith("_registry") for x in parts):return True
         if "artifacts" in parts:
-            return not any(x in {"track_a_ax1a","track_a_ax1b_preparation","track_a_ax1b_prelaunch"} for x in parts)
+            return not any(x in {"track_a_ax1a","track_a_ax1b_preparation","track_a_ax1b_prelaunch","track_a_ax1b_identity_compatibility"} for x in parts)
         return False
     def wrap(fn):
         def guarded(path,*args,**kwargs):
@@ -73,7 +73,8 @@ def main():
     from trottertracks.resource_applicability.ax1b_execution import environment
     import hashlib
     sources=sorted([*ROOT.glob("src/trottertracks/resource_applicability/ax1b_*.py"),
-                    ROOT/"scripts/resource_applicability/run_track_a_ax1b.py",Path(__file__).resolve(),ROOT/TEST])
+                    ROOT/"scripts/resource_applicability/run_track_a_ax1b.py",
+                    ROOT/"scripts/resource_applicability/run_track_a_ax1b_identity_preflight.py",Path(__file__).resolve(),ROOT/TEST])
     result=dict(schema_version="track_a_ax1b_synthetic_test_audit_v1",scope="SYNTHETIC_ONLY_NO_SAVED_SCIENCE_VALUES",
                 started_utc=started,finished_utc=datetime.now(timezone.utc).isoformat(),wall_seconds=time.monotonic()-clock,
                 command=[sys.executable,*sys.argv],pytest_arguments=command,python=platform.python_version(),python_full=sys.version,

@@ -1,4 +1,4 @@
-"""Allowlisted saved-value projection. Called only after execution authorization."""
+"""Saved-value projection and identity-only helpers shared with preflight."""
 from __future__ import annotations
 
 import csv
@@ -91,6 +91,27 @@ def check_membership(candidates, expected_rows, label):
                 require(c.get(key)==value,"INPUT_IDENTITY",f"{label} identity {key} differs")
 
 
+COMPILER_BASE_KEYS = frozenset(("basis_gates", "coupling_map", "optimization_level", "qiskit_version", "transpiler_seed"))
+COMPILER_NULL_KEYS = frozenset(("backend_name", "layout_method", "routing_method"))
+
+
+def canonical_compiler_identity(raw):
+    """Comparison-only view of the two registered representations; never mutate raw."""
+    require(type(raw) is dict, "INPUT_IDENTITY", "compiler identity must be a dictionary")
+    require(set(raw) == COMPILER_BASE_KEYS or set(raw) == COMPILER_BASE_KEYS | COMPILER_NULL_KEYS,
+            "INPUT_IDENTITY", "unregistered/partial compiler fields")
+    require(all(raw[k] is None for k in COMPILER_NULL_KEYS if k in raw),
+            "INPUT_IDENTITY", "compiler optional fields must all be null")
+    require(type(raw["basis_gates"]) is list and all(type(x) is str for x in raw["basis_gates"])
+            and type(raw["qiskit_version"]) is str and type(raw["optimization_level"]) is int
+            and type(raw["transpiler_seed"]) is int and raw["coupling_map"] is None,
+            "INPUT_IDENTITY", "compiler field type differs")
+    expected=dict(basis_gates=["rz","sx","x","cx"],coupling_map=None,optimization_level=1,qiskit_version="1.3.0",transpiler_seed=17)
+    require(all(raw[k] == expected[k] for k in COMPILER_BASE_KEYS),
+            "INPUT_IDENTITY", "compiler policy differs")
+    return expected
+
+
 def validate_candidate_scope(c):
     require(type(c["q"]) is int and c["q"]>0 and type(c["r"]) is int and c["r"]>=0,"INPUT_IDENTITY","invalid q/r identity")
     require(type(c["K"]) is int and c["K"]>=0 and c["K"]%2==0,"INPUT_IDENTITY","invalid cutoff identity")
@@ -101,8 +122,8 @@ def validate_candidate_scope(c):
         number(c[key],key,positive=True)
         if c.get(key+"_hex") is not None:
             require(c[key+"_hex"]==float(c[key]).hex(),"INPUT_IDENTITY","literal/hex identity differs")
-    expected=dict(basis_gates=["rz","sx","x","cx"],coupling_map=None,optimization_level=1,qiskit_version="1.3.0",transpiler_seed=17)
-    require(c.get("compiler_identity")==expected and c.get("wrapper_semantics")=="full_measured_hadamard_wrapper_without_state_preparation",
+    canonical_compiler_identity(c.get("compiler_identity"))
+    require(c.get("wrapper_semantics")=="full_measured_hadamard_wrapper_without_state_preparation",
             "INPUT_IDENTITY","compiler/full wrapper identity differs")
 
 
@@ -124,8 +145,10 @@ def features_from_signal(c,s):
 
 
 def pm1_features(c,anchors):
-    keys=("hamiltonian_hash","state_hash","state_vector_hash","snapshot_sha256","identity_policy","outer_formula","coefficient_atol","compiler_identity","wrapper_semantics","q","T")
-    matches=[s for ac,s,_ in anchors if ac["method"]=="B0" and all(ac.get(k)==c.get(k) for k in keys)]
+    compiler=canonical_compiler_identity(c.get("compiler_identity"))
+    keys=("hamiltonian_hash","state_hash","state_vector_hash","snapshot_sha256","identity_policy","outer_formula","coefficient_atol","wrapper_semantics","q","T")
+    matches=[s for ac,s,_ in anchors if ac["method"]=="B0" and all(ac.get(k)==c.get(k) for k in keys)
+             and canonical_compiler_identity(ac.get("compiler_identity"))==compiler]
     fixed=[s.get("n_fixed") for s in matches]
     value=fixed[0] if fixed and None not in fixed and len(set(fixed))==1 else None
     return Features(2*c["q"]*c["rank"],0.0,value,c["q"]),dict(information_class="I1",source="frozen _prepare_discard invariant: full one-body/constant; empty tail",

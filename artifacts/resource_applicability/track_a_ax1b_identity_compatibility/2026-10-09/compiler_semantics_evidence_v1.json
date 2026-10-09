@@ -1,0 +1,97 @@
+{
+  "ax1b_analysis_authorized": false,
+  "base_commit": "5412375e0e57cf3e114d5f68ed9ddbd433cfc4bc",
+  "comparison_rule": "Only exact five-key form or exact eight-key form with all optional values None; strict basic value/type policy; no partial or unknown keys",
+  "decision": "APPROVE_TARGETED_IDENTITY_COMPATIBILITY_FIX",
+  "evidence_chain": [
+    {
+      "observation": "M1 candidate ledger serializes five compiler fields",
+      "path": "src/trotterlib/pr2_matched_accuracy_m1_contract.py",
+      "symbol": "candidate compiler_identity"
+    },
+    {
+      "observation": "Actual M1-B1 compiler includes all three optional fields, each None",
+      "path": "src/trotterlib/pr2_matched_accuracy_m1_b1_contract.py",
+      "symbol": "COMPILER_IDENTITY"
+    },
+    {
+      "observation": "Passes all eight fields explicitly to CompilerSettings",
+      "path": "src/trotterlib/pr2_matched_accuracy_m1_b1_execution.py",
+      "symbol": "_compiler"
+    },
+    {
+      "observation": "PM1 uses the same eight fields and values",
+      "path": "src/trottertracks/resource_applicability/pm1_discard_contract.py",
+      "symbol": "COMPILER"
+    },
+    {
+      "observation": "Same CompilerSettings and measured Hadamard benchmark; boundary_optimized; no backend supplied",
+      "path": "src/trottertracks/resource_applicability/pm1_discard_execution.py",
+      "symbol": "_DevelopmentBackend.compile"
+    },
+    {
+      "observation": "No backend object permitted with backend_name None; None layout/routing/coupling fields omitted from transpile kwargs",
+      "path": "src/trotterlib/rte_compiled_cost.py",
+      "symbol": "_validate_transpile_context / transpile_circuit_cost"
+    },
+    {
+      "observation": "PM1 reuses discard preparation and preserves one-body/scalar action policy; n_fixed requires all same-q matching M1 B0 anchors to agree",
+      "path": "src/trotterlib/pr2_matched_accuracy_m1_execution.py",
+      "symbol": "_prepare_discard / _fixed_action_count"
+    }
+  ],
+  "explicit_user_launch_required": true,
+  "mandatory_stop": true,
+  "next_stage_authorized": false,
+  "not_verified": "No independent circuit rebuild/transpile or gate-sequence equality test",
+  "schema_version": "track_a_ax1b_compiler_semantics_evidence_v1",
+  "science_authorized": false,
+  "scope": "STATIC_SOURCE_ONLY_NO_BUILD_TRANSPILE_IMPORT",
+  "sources": [
+    {
+      "base_commit_blob_identical": true,
+      "path": "src/trotterlib/pr2_matched_accuracy_m1_contract.py",
+      "sha256": "aea16dd8e2d4602bc8ac143b9cd2beac3636008f24f26be53a5a02410631797b"
+    },
+    {
+      "base_commit_blob_identical": true,
+      "path": "src/trotterlib/pr2_matched_accuracy_m1_b1_contract.py",
+      "sha256": "3523a2fc27c3a39e6db46cf70fb985dbc93ee8b9028bddca2bff2a013adb643e"
+    },
+    {
+      "base_commit_blob_identical": true,
+      "path": "src/trotterlib/pr2_matched_accuracy_m1_b1_execution.py",
+      "sha256": "b7a3a479cbebdd3ff7a93de75c4ba030343769c308401395e208754c3d566987"
+    },
+    {
+      "base_commit_blob_identical": true,
+      "path": "src/trottertracks/resource_applicability/pm1_discard_contract.py",
+      "sha256": "08b3acbbd47f10196da19560e36f06ded4fb6f69f6679548aebd68274248a7ad"
+    },
+    {
+      "base_commit_blob_identical": true,
+      "path": "src/trottertracks/resource_applicability/pm1_discard_execution.py",
+      "sha256": "62f356010c9a1b81c6828dc87230ff37a79a15541ceefe8f552ee0b0e59adbed"
+    },
+    {
+      "base_commit_blob_identical": true,
+      "path": "src/trotterlib/rte.py",
+      "sha256": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618"
+    },
+    {
+      "base_commit_blob_identical": true,
+      "path": "src/trotterlib/rte_compiled_cost.py",
+      "sha256": "567e3477d47e0b65442d48b8c55567e8cc231de05cfbeb74eb91f587bc1dfa3d"
+    },
+    {
+      "base_commit_blob_identical": true,
+      "path": "src/trotterlib/rpe_hadamard_compiled_cost_benchmark.py",
+      "sha256": "38cdd6f13fd8201516b455e6a167586cc5755f198d949e1a83d9ebe4e7345eca"
+    },
+    {
+      "base_commit_blob_identical": true,
+      "path": "src/trotterlib/pr2_matched_accuracy_m1_execution.py",
+      "sha256": "7528ebae754e14ee623d28212a668e4edc237575775a78d0d2bf4d34dc53c293"
+    }
+  ]
+}
