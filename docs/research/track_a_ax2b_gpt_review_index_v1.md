@@ -1,5 +1,7 @@
 # Track A AX-2B H4後：GPT独立科学レビュー資料索引 v1
 
+**source公開追記（2026-10-10）**：v5必須24件と旧監査source16件を追加公開した。現在の対応は[第7節](#source-completion)を参照する。以下の「未公開24件／46件」は初回公開commit時点の履歴で、最新の公開状態ではない。H6未採用・未認可と科学的認定状態は変わらない。
+
 2026-10-10 JST。今回の作業は既存資料の公開・リンク補修・静的照合だけである。
 **独立科学レビューは未実施。3つの中心文書はCodex作成の案であり、GPTの判断・承認を表さない。H6案は未採用・未認可。**
 
@@ -164,3 +166,94 @@ actual rank、source/input identity等は未確定。`H6_NOT_AUTHORIZED`を維�
 他branch/worktreeの内容は取り込まず、8つの既存tracked dirty文書はそのままunstagedに残す。
 新しい分子計算、入力生成、signal評価、trajectory sampling、回路build/transpile/compile、benchmark、再fit、GPU実行、tests再実行はない。
 公開後はSTOP。H6/H8や次の科学段階へ自動進行しない。
+
+<a id="source-completion"></a>
+## 7. v5 exact source公開の追記（2026-10-10）
+
+必須24件のsource公開commit：[`31cdff47f3282d2898c153a1af22f90e500be4c6`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/commit/31cdff47f3282d2898c153a1af22f90e500be4c6)。
+旧監査source16件の公開commit：[`3e9358421c072af970a9a37025e7fdc9c51ce8ea`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/commit/3e9358421c072af970a9a37025e7fdc9c51ce8ea)。
+実行時base HEADは`b2e1bf65e21893b6c617223b42313623d3186f12`のままである。新しい公開commitを実行時HEADに置き換えない。
+v5は当時のbase HEADと未commitのfrozen bytesで実行された。今回のcommitはそのexact bytesの公開来歴であり、新しい実行・再現試験・科学的認定ではない。
+
+[全163 frozen sourceのpath・SHA256・commit・URL](../../artifacts/resource_applicability/track_a_ax2b_gpt_review_publication/2026-10-10/source_completion_v1/source_publication_manifest_v1.json)、
+[実行／準備／レビューworktreeでのbytes照合](../../artifacts/resource_applicability/track_a_ax2b_gpt_review_publication/2026-10-10/source_completion_v1/source_bytes_check_v1.json)、
+[公開内容の確認](../../artifacts/resource_applicability/track_a_ax2b_gpt_review_publication/2026-10-10/source_completion_v1/source_publication_content_check_v1.json)、
+[保全・公開前静的照合](../../artifacts/resource_applicability/track_a_ax2b_gpt_review_publication/2026-10-10/source_completion_v1/source_publication_static_audit_v1.json)を正本とする。
+既存dependency_registry_v1.jsonとsource_freeze_v5.json、過去の実行監査・inventoryは改変していない。
+
+### 新たに公開したv5必須24件
+
+science18件・validation6件は、レビューworktree／v5実行worktree／v5準備worktreeの3箇所でfreezeのSHA256に一致した。
+Gitのstaged blobとcommit blobも同じbytesである。sourceの再実装・修正・代用はない。
+
+| sourceへの固定commitリンク | 区分 |
+|---|---|
+| [scripts/resource_applicability/profile_track_a_ax2b_fingerprint_v5.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/scripts/resource_applicability/profile_track_a_ax2b_fingerprint_v5.py) | validation |
+| [scripts/resource_applicability/run_track_a_ax2b_h4_v5.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/scripts/resource_applicability/run_track_a_ax2b_h4_v5.py) | science |
+| [scripts/resource_applicability/verify_track_a_ax2b_h4_pilot_v5.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/scripts/resource_applicability/verify_track_a_ax2b_h4_pilot_v5.py) | validation |
+| [src/trottertracks/resource_applicability/ax2a_control_plan.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/src/trottertracks/resource_applicability/ax2a_control_plan.py) | science |
+| [src/trottertracks/resource_applicability/ax2a_native_df.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/src/trottertracks/resource_applicability/ax2a_native_df.py) | science |
+| [src/trottertracks/resource_applicability/ax2a_preparation.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/src/trottertracks/resource_applicability/ax2a_preparation.py) | science |
+| [src/trottertracks/resource_applicability/ax2a_state_action.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/src/trottertracks/resource_applicability/ax2a_state_action.py) | science |
+| [src/trottertracks/resource_applicability/ax2b_diagnostics_v4.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/src/trottertracks/resource_applicability/ax2b_diagnostics_v4.py) | science |
+| [src/trottertracks/resource_applicability/ax2b_h4_contract.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/src/trottertracks/resource_applicability/ax2b_h4_contract.py) | science |
+| [src/trottertracks/resource_applicability/ax2b_h4_contract_v4.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/src/trottertracks/resource_applicability/ax2b_h4_contract_v4.py) | science |
+| [src/trottertracks/resource_applicability/ax2b_h4_contract_v5.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/src/trottertracks/resource_applicability/ax2b_h4_contract_v5.py) | science |
+| [src/trottertracks/resource_applicability/ax2b_h4_science.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/src/trottertracks/resource_applicability/ax2b_h4_science.py) | science |
+| [src/trottertracks/resource_applicability/ax2b_h4_science_v4.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/src/trottertracks/resource_applicability/ax2b_h4_science_v4.py) | science |
+| [src/trottertracks/resource_applicability/ax2b_h4_science_v5.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/src/trottertracks/resource_applicability/ax2b_h4_science_v5.py) | science |
+| [src/trottertracks/resource_applicability/ax2b_limits.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/src/trottertracks/resource_applicability/ax2b_limits.py) | science |
+| [src/trottertracks/resource_applicability/ax2b_native_df_v4.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/src/trottertracks/resource_applicability/ax2b_native_df_v4.py) | science |
+| [src/trottertracks/resource_applicability/ax2b_native_df_v5.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/src/trottertracks/resource_applicability/ax2b_native_df_v5.py) | science |
+| [src/trottertracks/resource_applicability/ax2b_preflight.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/src/trottertracks/resource_applicability/ax2b_preflight.py) | science |
+| [src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v4.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v4.py) | science |
+| [src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v5.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v5.py) | science |
+| [tests/tracks/resource_applicability/test_ax2b_h4_runner_v5.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/tests/tracks/resource_applicability/test_ax2b_h4_runner_v5.py) | validation |
+| [tests/tracks/resource_applicability/test_ax2b_h4_saved_audit_v5.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/tests/tracks/resource_applicability/test_ax2b_h4_saved_audit_v5.py) | validation |
+| [tests/tracks/resource_applicability/test_ax2b_native_df_v5.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/tests/tracks/resource_applicability/test_ax2b_native_df_v5.py) | validation |
+| [tests/tracks/resource_applicability/test_ax2b_stream_fingerprint_v5.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/31cdff47f3282d2898c153a1af22f90e500be4c6/tests/tracks/resource_applicability/test_ax2b_stream_fingerprint_v5.py) | validation |
+
+既公開science139件はbase commit上のbytesを再利用し、再commitしていない。
+旧139件と新science18件、validation6件の全freeze項目が追加source公開後のtreeに一致する。
+実行時環境・入力・結果の来歴は第2〜4節と保存artifactを参照する。新しい公開HEADに合わせてlaunch契約を変更していない。
+
+### 旧runner・tests・監査helper 22件の扱い
+
+16件を公開した。旧v3/v4 entrypoint・保存verifier4件、v4/v5保存解析とpost-review静的監査helper3件、
+過去のsynthetic検証の前提・probe coverage・failure/cap処理を読むためのtests9件である。
+各ファイルは初回dependency registryのhashと公開済み歴史inventory等のhashに一致する。科学的判断は行わず、いずれのrunner・tests・helperも起動していない。
+
+| 公開した監査source |
+|---|
+| [artifacts/resource_applicability/track_a_ax2b_h4_pilot_v4/2026-10-09/launch_v1/analyze_saved_records_v4.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3e9358421c072af970a9a37025e7fdc9c51ce8ea/artifacts/resource_applicability/track_a_ax2b_h4_pilot_v4/2026-10-09/launch_v1/analyze_saved_records_v4.py) |
+| [artifacts/resource_applicability/track_a_ax2b_h4_pilot_v5/2026-10-10/launch_v1/analyze_saved_records_v5.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3e9358421c072af970a9a37025e7fdc9c51ce8ea/artifacts/resource_applicability/track_a_ax2b_h4_pilot_v5/2026-10-10/launch_v1/analyze_saved_records_v5.py) |
+| [artifacts/resource_applicability/track_a_ax2b_h4_post_review/2026-10-10/audit_saved_review_inputs_v1.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3e9358421c072af970a9a37025e7fdc9c51ce8ea/artifacts/resource_applicability/track_a_ax2b_h4_post_review/2026-10-10/audit_saved_review_inputs_v1.py) |
+| [scripts/resource_applicability/run_track_a_ax2b_h4.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3e9358421c072af970a9a37025e7fdc9c51ce8ea/scripts/resource_applicability/run_track_a_ax2b_h4.py) |
+| [scripts/resource_applicability/run_track_a_ax2b_h4_v4.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3e9358421c072af970a9a37025e7fdc9c51ce8ea/scripts/resource_applicability/run_track_a_ax2b_h4_v4.py) |
+| [scripts/resource_applicability/verify_track_a_ax2b_h4_pilot.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3e9358421c072af970a9a37025e7fdc9c51ce8ea/scripts/resource_applicability/verify_track_a_ax2b_h4_pilot.py) |
+| [scripts/resource_applicability/verify_track_a_ax2b_h4_pilot_v4.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3e9358421c072af970a9a37025e7fdc9c51ce8ea/scripts/resource_applicability/verify_track_a_ax2b_h4_pilot_v4.py) |
+| [tests/tracks/resource_applicability/test_ax2a_native_df.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3e9358421c072af970a9a37025e7fdc9c51ce8ea/tests/tracks/resource_applicability/test_ax2a_native_df.py) |
+| [tests/tracks/resource_applicability/test_ax2a_preparation.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3e9358421c072af970a9a37025e7fdc9c51ce8ea/tests/tracks/resource_applicability/test_ax2a_preparation.py) |
+| [tests/tracks/resource_applicability/test_ax2b_h4_runner.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3e9358421c072af970a9a37025e7fdc9c51ce8ea/tests/tracks/resource_applicability/test_ax2b_h4_runner.py) |
+| [tests/tracks/resource_applicability/test_ax2b_h4_runner_v4.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3e9358421c072af970a9a37025e7fdc9c51ce8ea/tests/tracks/resource_applicability/test_ax2b_h4_runner_v4.py) |
+| [tests/tracks/resource_applicability/test_ax2b_h4_saved_audit.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3e9358421c072af970a9a37025e7fdc9c51ce8ea/tests/tracks/resource_applicability/test_ax2b_h4_saved_audit.py) |
+| [tests/tracks/resource_applicability/test_ax2b_h4_saved_audit_v4.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3e9358421c072af970a9a37025e7fdc9c51ce8ea/tests/tracks/resource_applicability/test_ax2b_h4_saved_audit_v4.py) |
+| [tests/tracks/resource_applicability/test_ax2b_native_df_v4.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3e9358421c072af970a9a37025e7fdc9c51ce8ea/tests/tracks/resource_applicability/test_ax2b_native_df_v4.py) |
+| [tests/tracks/resource_applicability/test_ax2b_preflight.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3e9358421c072af970a9a37025e7fdc9c51ce8ea/tests/tracks/resource_applicability/test_ax2b_preflight.py) |
+| [tests/tracks/resource_applicability/test_ax2b_stream_fingerprint_v4.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3e9358421c072af970a9a37025e7fdc9c51ce8ea/tests/tracks/resource_applicability/test_ax2b_stream_fingerprint_v4.py) |
+
+残る補助6件は未公開のまま。全path・hash・個別理由は上記manifestに保存した。
+
+| 残すsource | 理由 |
+|---|---|
+| `artifacts/resource_applicability/track_a_ax2b_h4_fingerprint_preparation/2026-10-09/toy_profile_before_v5.py` | 変更前toy profile補助。H4実行／停止理由の監査経路ではない。 |
+| `artifacts/resource_applicability/track_a_ax2b_h4_fingerprint_preparation/2026-10-09/verify_preservation_v5.py` | 旧準備worktreeの保全操作。保存済みreport/hashを参照する。 |
+| `artifacts/resource_applicability/track_a_ax2b_h4_pilot_v4/2026-10-09/launch_v1/verify_preservation_v4.py` | 旧v4 worktreeの保全操作。STOPを判定するrunner/verifierは公開した。 |
+| `artifacts/resource_applicability/track_a_ax2b_h4_pilot_v5/2026-10-10/launch_v1/verify_preservation_execution_v5.py` | 旧実行worktreeの保全操作。今回のbytes照合は独立した静的操作で行う。 |
+| `scripts/resource_applicability/prepare_track_a_ax2a.py` | metadata CLI。実装moduleと保存manifestは公開済み。 |
+| `scripts/resource_applicability/prepare_track_a_ax2b_preflight.py` | preflight metadata CLI。実装module、旧tests、保存reportは公開済み。 |
+
+補助6件の過去writer／保全手順まで完全に再実行できるとするものではない。source公開だけで外部再現・CI認定を主張しない。
+総数値allowance未認定、accuracy UNDETERMINED、shot／総費用／winner未評価という科学的限定は変わらない。
+`H6_NOT_AUTHORIZED`、`DRAFT_NOT_AUTHORIZATION`、`mandatory_stop=true`を維持する。H6入力作成・pilot・H8独立評価を認可しない。
+push後のremote取得・hash照合結果は作業完了報告で確認する。独立科学判断はGPTへ戻す。
