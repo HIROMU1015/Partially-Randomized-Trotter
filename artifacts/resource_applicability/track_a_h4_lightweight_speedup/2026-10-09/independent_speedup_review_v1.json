@@ -1,0 +1,141 @@
+{
+  "schema_version": "h4-lightweight-speedup-independent-review-v1",
+  "reviewer": "/root/independent_final_review",
+  "review_mode": "Independent author-separated source review and read-only metadata/byte audit; no test rerun or runtime launch",
+  "status": "IMPLEMENTATION_SCOPE_PASS_LAUNCH_BUDGET_FAIL",
+  "blocking_implementation_findings": [],
+  "source_commit": "4d2d1492fc23d0736c305533d78967cc1db8a7c8",
+  "old_source_commit": "b8b3ce6e8c98f1ec0419a7af79c5d7c5f3a3b9bb",
+  "base_review_commit": "f25284607fd5d52da3b7fbddebee3005a22f57de",
+  "source_root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-lightweight-speedup-20261009",
+  "source_integrity": {
+    "closure_count": 38,
+    "git_blob_checkout_SHA_match": true,
+    "all_live_runtime_modules_listed": true,
+    "old_new_blob_inventory_match": true,
+    "changed_runtime_files": 3,
+    "added_test_runner_files": 2,
+    "unchanged_closure_files": 33,
+    "changed_paths": [
+      "src/trottertracks/resource_applicability/h4_geometry/signal.py",
+      "src/trottertracks/resource_applicability/h4_geometry/execution.py",
+      "src/trottertracks/resource_applicability/h4_geometry/ledger.py"
+    ]
+  },
+  "digests": {
+    "plan_fingerprint": "6f1cdbd172a89c67fa4a6d132814dc2897d5c974ce5d8152f3261cef9ddda135",
+    "authorization_digest": "8fb3e3b474abcc6349cc7c7c72b416ad0d1de2b53b096fce8a1c8d15dd07aade",
+    "review_digest": "ca6e86a2bc688dadacbb80717cdeb1951cce893a2c283f4c78f64f904583da2b",
+    "source_freeze_SHA256": "323b0090b85475df8915c95f0cd7ff56d36df5172ac175658ddf237fdba013ff",
+    "plan_file_SHA256": "7b0f660ff359981c0d3a4743c37ade54f45f1ded4dc31207758158d4c44f1e13",
+    "authorization_file_SHA256": "355a226db390b149898a3cfea76caf93a78b1293d8fde326a10fbe394fcbf764",
+    "review_file_SHA256": "032a349e9cba36269c3ecac654f69a622a1c31165a704336567a91aa3e3f780f",
+    "library_cache_profile_SHA256": "e4314b6b2e53b7b422635ee15dd8a6068066d54e48e00852a0dcd02933eb3f15",
+    "stop_receipt_SHA256": "2223696543c30a7119e8012567d213744dd8eaa0f0e65084766ca551234b8561",
+    "limited_tests_file_SHA256": "a2607dc3cecadf98d4413b150b144b26d6ca16b84190b0187b9ac36528eb00aa"
+  },
+  "preparation_review": {
+    "status": "PASS_IN_REVIEWED_DRIVER_PATH",
+    "key_dependencies": "The old prepare implementation reads only method and L_D from the template; the new cache uses exactly those keys and the identical frozen geometry arrays.",
+    "arithmetic_and_iteration_order": "Eigenvalue ordering, coefficient insertion/accumulation, dense action, tail accumulation, reconstruction check and corrected-signal operations retain the old formulas and order.",
+    "mutability": "Input references and read-only flags are checked; cached dense/operator/tail arrays are read-only, coefficient mappings are protected, and returned lists/component dictionaries are fresh. Qiskit basis circuits remain mutable objects confined to the driver; reviewed builders compose copies and the artificial parameter/basis checks detect no mutation.",
+    "lifetime": "One common object is local to each geometry in the candidate generator. No persistent scientific cache or cross-run reuse is introduced. A previous geometry may briefly overlap next-geometry construction; the 30 MiB figure is a per-geometry cached-array bound, excluding basis metadata, scratch, original inputs and transition overlap.",
+    "concurrency": "Preparation and candidate generation run in the single driver. Worker futures receive circuits, not GeometryPreparation objects; queue bounds and publication order are unchanged.",
+    "validation_failure_not_cached": true,
+    "old_random_partial_cache_reused": false,
+    "new_SOURCE_seed_rebinding_required": true
+  },
+  "ledger_review": {
+    "status": "PASS_UNDER_EXISTING_SINGLE_DRIVER_WRITER",
+    "save_paths_reviewed": [
+      "Initialization emits an empty version-0 delta.",
+      "reserve emits the one new RESERVED reservation key before worker submission.",
+      "complete publishes the record first, then the one COMPLETE entry and its own reservation change; cache reuse emits only the entry."
+    ],
+    "whole_history_iteration_removed_from_each_save": true,
+    "canonical_format_chain_and_publication_order_unchanged": true,
+    "full_final_audit_retained": true,
+    "crash_or_publish_failure_requires_STOP": true,
+    "charged_reservations_never_refunded": true,
+    "general_concurrent_writer_support_claimed": false
+  },
+  "limited_evidence": {
+    "status": "PASS_LOCAL_ARTIFICIAL_EVIDENCE_REVIEWED",
+    "author_tests_passed": 48,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "old_reference_git_blob_SHA_match": true,
+    "published_result_and_log_match_private_originals": true,
+    "failed_and_previous_attempts_preserved": true,
+    "templates_with_prepared_array_coefficient_comparison": 218,
+    "distinct_method_split_preparations": 10,
+    "representative_standard_gate_wrapper_pairs": 8,
+    "representative_corrected_signal_methods": 4,
+    "dense_256_complex_UnitaryGate_wrapper_pairs": 1,
+    "identical_ledger_files": 13,
+    "no_history_iteration_fixture_rows": 10000,
+    "evidence_scope": "LOCAL_ARTIFICIAL_IMPLEMENTATION_ONLY",
+    "reviewer_test_reruns": 0,
+    "production_speedup_factor": null
+  },
+  "binding_review": {
+    "status": "PASS",
+    "plan_authorization_review_digests_match": true,
+    "live_environment_compiler_metadata_match": true,
+    "fixed_library_cache_bytes_match": true,
+    "fixed_input_receipts_count": 6,
+    "native_control_receipts_count": 83,
+    "fixed_verify_frozen_receipts": "PASS_BYTE_AND_METADATA_ONLY",
+    "first_newhost_STOP_and_carry_match": true,
+    "old_host_unrecorded_exit_history_remains_null": true,
+    "scientific_templates_inputs_caps_storage_and_CPU_roles_unchanged_from_v9": true,
+    "old_output_and_one_shot_retained": true,
+    "new_output_control_unused": true,
+    "prior_environment_CPU_observer_actual_cap_approvals_preserved": true,
+    "repeat_approval_for_those_unchanged_conditions_required": false,
+    "sealed": false,
+    "approved": false,
+    "runtime_authorization": false
+  },
+  "carry": {
+    "actual_invocations": 20,
+    "charged_bytes": 4428938712,
+    "wall_seconds": 5472.345380863175,
+    "refund_or_reset": false
+  },
+  "launch_budget": {
+    "status": "FAIL_CUMULATIVE_CHARGE_EXCEEDS_APPROVED_10_GiB",
+    "approved_output_cap_bytes": 10737418240,
+    "worst_case_cumulative_charge_bytes": 13165893832,
+    "shortfall_bytes": 2428475592,
+    "current_SOURCE_output_cap_unchanged": true,
+    "13_GiB_proposal_approved": false,
+    "actual_cumulative_cap": 74804,
+    "remaining_actual": 74784,
+    "absolute_launch_command": null,
+    "launch_authorized_by_this_review": false
+  },
+  "limits_and_not_evaluated": [
+    "The 218-template array comparison uses ten old method/split preparations, consistent with the reviewed old dependency set; it is not 218 full production wrapper executions.",
+    "Wrapper and signal equality use representative artificial templates and fixed seeds, including one dense complex 256x256 parameter case. Real Gaussian/OpenFermion preparation and actual molecular inputs were not executed.",
+    "Production compiler output equivalence, worker occupancy, end-to-end runtime and measured production speedup remain unverified.",
+    "Changing SOURCE changes source-bound candidate/trajectory identities; artificial same-seed equality does not authorize mixing old/new-SOURCE random results.",
+    "Fresh CPU, memory, PSI/OOM, filesystem, inode and quota launch observations were not performed by this review."
+  ],
+  "remaining_approval_and_gates": [
+    "Explicit cumulative output-cap amendment and authorization for one fixed-new-SOURCE attempt remain required; unchanged prior environment/CPU/observer/actual-cap approvals are retained.",
+    "After any approved cap amendment: update its enforcement gate, freeze a new SOURCE, rebind and independently review before a fresh one-shot launch.",
+    "No refund/reset, automatic retry, input regeneration or next stage is authorized."
+  ],
+  "reviewer_actions": {
+    "scientific_array_reads": 0,
+    "scientific_calls_or_transpiles": 0,
+    "tests_or_artificial_processes_started": 0,
+    "runtime_or_workers_started": 0,
+    "GPU_query_use": 0,
+    "affinity_changes_or_process_signals": 0,
+    "source_or_test_edits": 0,
+    "written_files": ["independent_speedup_review_v1.json"]
+  }
+}

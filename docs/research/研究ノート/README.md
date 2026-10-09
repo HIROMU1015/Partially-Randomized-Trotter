@@ -198,3 +198,7 @@ D1〜D4レビュー承認は未解決、science/source port/input generation/nex
 ## 2026-10-09 H4 library cache保存先修正・再実行予算不合格
 
 [当日ノート](2026-10-09.md)：library cache修正、47＋3限定人工PASS、前回課金carry、再実行10GiB budget FAIL。
+
+## 2026-10-09 H4軽量高速化・限定同等性確認
+
+[当日ノート](2026-10-09.md)：距離内prepare再利用、ledger全件走査除去、限定48人工PASS、launch budget FAIL保持。

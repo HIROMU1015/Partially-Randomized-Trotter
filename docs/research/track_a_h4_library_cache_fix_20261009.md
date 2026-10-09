@@ -100,3 +100,7 @@ draft拒否、現SOURCEで13GiB拒否、10GiB累積budget拒否がone-shot/affin
 source/testsのSOURCE commitと、sourceを変更しない軽量REVIEW_BUNDLE commitを分離する。
 cache file、NPZ、raw runtime/checkpoint/log、credential・内部SSH情報をcommitしない。
 最終REVIEWのactual40文字SHA・remote状態は最終報告とhome外部publication receiptで確認する。
+
+## 2026-10-09 H4軽量高速化・限定同等性確認
+
+[軽量高速化SOURCE/binding](track_a_h4_lightweight_speedup_20261009.md)へ継続。距離内prepare再利用とledger変更keys保存のみ変更し、旧停止/carry/cache/profileと累積10GiB予算FAILを保持する。本体再実行0。
