@@ -1,0 +1,181 @@
+# Track A AX-2B：H4限定pilotの部分結果とMemoryError停止
+
+2026-10-09 JST。現在の状態は **`H4_CORRECTNESS_PASS_COST_PARTIAL_MEMORY_STOP`**。
+runnerの原終端は `H4_TECHNICAL_PILOT_STOP` のまま保持する。
+登録8 cellの数値的一致検査は通過したが、測定付きwrapper費用は24/28件で停止した。
+完了したpilot、accuracy適格性、PRの資源的優位を意味しない。
+
+## 1. 指示・入力・固定範囲
+
+直前の[H4限定runner準備v3](track_a_ax2b_h4_runner_preparation_v3.md)で、
+8 correctness cell、28 wrapper、上限、終了後STOPを具体化済みだった。
+利用者の継続指示「次の作業に進んで」をこのH4第一phaseの一回実行として受け取り、
+CPUと新規outputを固定して実行した。H6/H8/main campaignの認可には広げない。
+[authorization](../../artifacts/resource_applicability/track_a_ax2b_h4_pilot/2026-10-09/launch_v1/authorization_v1.json)
+にこの指示、範囲、再実行不可、準備docのhashを記録した。
+旧未認可draftは上書きせず、その時点の履歴として保存する。
+
+対象はlinear H4、1.00 Å、STO-3G、legacy DF rank12、8 system qubits、
+generation順prefix、`T=0.8`、保存normalized state、N=4/Nα=Nβ=2の36-dimensional sector。
+Hamiltonian/integral/stateを生成・再最適化せず、既存development snapshotを一回loadした。
+snapshot SHA-256は `3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a`。
+H4 denseは小規模oracle用で、H6/H8の計算経路を検証した結果ではない。
+
+準備manifest digestは `ae1d99333e48fba508eeaa991c7e3b21c2c733e150a9ce9255dc1c7147b63768`。
+v3 inventoryの15 entriesと148 science source hashesを実行前・保存結果監査で照合した。
+Python 3.11.1、NumPy 1.26.4、SciPy 1.14.1、Qiskit 1.3.0、OpenFermion 1.6.1を使用。
+base `b2e1bf65e21893b6c617223b42313623d3186f12` の隔離branchによる未commitのlocal evidenceである。
+immutable CIや独立外部再現として扱わない。
+
+## 2. 実行上限と実際の終了
+
+logical CPU 3へのaffinity、science worker 1、BLAS/OMP/MKL等thread 1、
+child address space `RLIMIT_AS=8 GiB`、phase 900秒、総wall 2700秒、output 512 MiBを固定した。
+CPU affinityは共有host上の割当であり、物理coreの専有予約ではない。
+compile 28、random trajectory 4、outer occurrence 16の上限も変更しなかった。
+
+| 保存済み内容 | 実績 | 登録上限・予定 |
+|---|---:|---:|
+| correctness cell | 8 | 8 |
+| 測定付きcompiled wrapper | 24 | 28 |
+| random trajectory | 4 | 4 |
+| random outer occurrence | 16 | 16 |
+| primitive validation action | 962 | 2,000 |
+| control probe action | 96 | 200 |
+| reference matvec | 3,621 | 10,000 |
+
+parent wallは591.867752秒、worker exit codeは1。
+[worker terminal](../../artifacts/resource_applicability/track_a_ax2b_h4_pilot/2026-10-09/launch_v1/run_v1/worker_terminal.json)
+は `MemoryError:`、[parent terminal](../../artifacts/resource_applicability/track_a_ax2b_h4_pilot/2026-10-09/launch_v1/run_v1/terminal_status.json)
+は `WORKER_FAILED_OR_INCOMPLETE` を記録した。
+global四次B1・prefix12・q4の最初のcontrol probeより前、25件目のcompileより前の回路準備中に停止した。
+残るordinary/directional × cosine/sineの4件は未測定で、`wrapper_cost_summary.json`も未生成である。
+これらを0 costや完了として補完しない。
+
+address-space cap下でのMemoryErrorであり、RSSが8 GiBに達したという記録はない。
+完成したcost recordに残る累積最大RSSは3.34634 GiBで、**失敗時のpeak RSSは未記録**。
+保存24件のfingerprint・transpile・metrics処理時間の合計は219.421937秒、最大は21.649856秒。
+native回路準備、参照計算、import時間はこの合計に含まれない。
+終端書込み前のoutputは722,488 bytes。量子shots/backend job、GPU、retry/resumeは0。
+
+## 3. 数値検査で確認した範囲
+
+以下は全て上記H4/model/geometry/basis/rank/stateに限るengineering diagnosticsである。
+norm/leakage 1e-12、native/dense・control/legacy一致1e-9、expm/eigh差1e-10という登録gateを使った。
+浮動小数点法同士の一致を総数値誤差保証へ読み替えない。
+
+| 診断 | 保存値 |
+|---|---:|
+| full/sector全column作用の最大差 | 1.33292e-15 |
+| 保存stateのRayleigh residual ρ | 9.42398e-16 |
+| exact Hermitian phase-surrogate allowance `abs(T)ρ` | 7.53918e-16 |
+| expm/eigh state差 | 1.61125e-15 |
+| phase surrogateと直接exponentialのsignal差 | 1.39111e-15 |
+| native primitive state差の最大値 | 2.25425e-13 |
+
+primitiveはone-body＋12 DF blocks、正負時間±0.2、保存state＋36 sector columnsの計962作用。
+Gaussian gateの中間にprojectionを挿入せずfull Qiskit vectorで検査した。
+8 cellのnative actionを独立dense oracleと比較し、B0 signed discard/PF分解、
+B2/B3 raw/corrected/log B・signed finite/outer-PF分解も保存した。
+control比較は保存stateとfirst/last sector columns、両ancilla branchに限る。
+全Hilbert空間の分子unitary等価性を証明したという主張ではない。
+
+次は保存signed total errorの絶対値を表示しただけで、認定済み誤差上限ではない。
+`δ=T/q` はq1で0.8、q4で0.2。B2/B3はR=8、r=R/q=2。
+prefixは決定論的に残すDF block数であり、one-bodyはprefix0でも残る。
+
+| cell | prefix（DF block数） | q | K | abs(signal − reference) | log B |
+|---|---:|---:|---:|---:|---:|
+| B1 global二次 | 12 | 1 | — | 7.26706e-3 | — |
+| B1 global二次 | 12 | 4 | — | 4.29286e-4 | — |
+| B0 二次discard | 6 | 4 | — | 1.88093e-2 | — |
+| B2 二次finite-RTE | 6 | 4 | 2 | 4.29286e-4 | 3.89982e-5 |
+| B2 二次finite-RTE | 6 | 4 | 4 | 4.29286e-4 | 3.89982e-5 |
+| B3 二次finite-RTE | 0 | 4 | 6 | 3.68757e-4 | 8.50757 |
+| B1 global四次 | 12 | 1 | — | 2.25723e-3 | — |
+| B1 global四次 | 12 | 4 | — | 9.70940e-6 | — |
+
+全cellで `numerical_allowance_certified=false`、`accuracy_eligibility=UNDETERMINED`。
+主参照は保存stateへの直接dense exponentialであり、固有stateという仮定でphaseだけに置換していない。
+B3のBは約4,952で、少ないgate数だけから測定込み利益を主張できない。
+化学的energy accuracy、必要shots、方式winner、最終total costは評価していない。
+
+## 4. 保存できた回路費用
+
+測定付きfull Hadamard wrapper、state preparationを除く。compilerは
+`rz,sx,x,cx`、optimization 1、seed 17、coupling/backend指定なし。
+下表はcosine axisの記述統計で、sine axisも個別JSONへ保存済み。
+B0/B1はn=1、B2/B3は同じ2 trajectoryをcontrol/axis間で共有するn=2のsample meanである。
+random費用期待値の精密推定や方式順位には用いない。
+cellのprefix/q/r/K/δ/modelは前節と同じ。
+
+| cell | control | n | RZ count | CX count | circuit size |
+|---|---|---:|---:|---:|---:|
+| B0 q4 | ordinary | 1 | 41,321 | 23,840 | 78,956 |
+| B0 q4 | symmetric_directional | 1 | 17,753 | 8,800 | 37,180 |
+| B2 K2 | ordinary | 2 | 44,367.5 | 24,787 | 84,900 |
+| B2 K2 | symmetric_directional | 2 | 20,851.5 | 9,747 | 43,192 |
+| B3 K6 | ordinary | 2 | 3,859 | 1,267.5 | 7,371.5 |
+| B3 K6 | symmetric_directional | 2 | 3,791 | 1,203.5 | 7,239.5 |
+| B1 global四次 q1 | ordinary | 1 | 59,918 | 34,724 | 114,563 |
+| B1 global四次 q1 | symmetric_directional | 1 | 22,514 | 10,994 | 46,865 |
+
+同一event/近似に対するcontrol loweringの局所的な費用差は観察できる。
+一方、global四次q4の費用が欠け、accuracy適格性とshot計算も未確定のため、
+strong deterministic baselineを含むmatched-accuracy比較は成立していない。
+H6へのGOやPRの優位をこの部分表から推論しない。
+
+## 5. 保存証拠監査と再現の入口
+
+[saved-record verifier](../../scripts/resource_applicability/verify_track_a_ax2b_h4_pilot.py)
+はstdlibだけでJSON、hash、登録task、signed decomposition、normalization、
+event/seedの共有、compiler identity、6整数指標、上限、欠落taskを照合する。
+分子配列・signal・sampler・compilerを再実行しない。
+[15 synthetic tests](../../tests/tracks/resource_applicability/test_ax2b_h4_saved_audit.py)
+は改変検出と8-cell/24-wrapper STOP形状を検証し、15 passed、fail/skip0。
+実行直前の凍結source用testsも174 passed、fail/skip0。
+これは保存記録の整合性監査であり、独立した数値再計算ではない。
+
+主要artifactは
+[launch_v1](../../artifacts/resource_applicability/track_a_ax2b_h4_pilot/2026-10-09/launch_v1/)。
+raw `run_v1/` の50 filesを保持し、
+[保存監査](../../artifacts/resource_applicability/track_a_ax2b_h4_pilot/2026-10-09/launch_v1/saved_evidence_audit_v1.json)、
+[部分結果表示](../../artifacts/resource_applicability/track_a_ax2b_h4_pilot/2026-10-09/launch_v1/partial_result_summary_v1.json)、
+[保護照合](../../artifacts/resource_applicability/track_a_ax2b_h4_pilot/2026-10-09/launch_v1/preservation_report_v1.json)、
+[別inventory](../../artifacts/resource_applicability/track_a_ax2b_h4_pilot/2026-10-09/launch_v1/pilot_evidence_inventory_v1.json)
+を追加する。旧scientific manifest、v1/v2/v3 inventory、raw terminalを上書きしない。
+
+既存outputへの上書きを避け、監査だけを再表示する場合は新規outputを指定する。
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src \
+  /home/abe/.pyenv/versions/3.11.1/bin/python \
+  scripts/resource_applicability/verify_track_a_ax2b_h4_pilot.py \
+  --run artifacts/resource_applicability/track_a_ax2b_h4_pilot/2026-10-09/launch_v1/run_v1 \
+  --output /tmp/track_a_h4_saved_audit_new.json
+```
+
+## 6. 原因候補と次の作業
+
+現行exception記録はtype/messageだけでtracebackがなく、正確なallocation箇所は未確定。
+静的監査では次の二点がmemory圧力の候補となる。これは原因の実証ではない。
+
+- `Pilot.costs`は完了済み6 cell-replicaの両control circuitをcacheへ保持する。
+  最後のq4回路を作る前に12 native evolution circuitが残る構造である。
+- native `_finish`は数値回路fingerprintを生成する。
+  既存`canonical_qiskit_circuit_fingerprint`はgate definition/base gateを再帰展開した
+  payload全体、canonical JSON文字列、encoded bytesを作る。
+  繰り返しdefinitionの展開と複数表現の同時保持は一時allocationを大きくし得る。
+
+次はCodexで扱える**実装修正・合成検証・v4準備**を先に具体化する。
+完了cell-replicaの回路を両control/axis終了後に解放し、コンパクトな記録だけを保持する。
+回路準備/fingerprint/control probe/transpileのphaseとRSS/VmSize、例外tracebackを保存する。
+fingerprintをstream処理するなら、既存`qiskit_recursive_numeric_circuit_v2`のcanonical bytesとの
+完全一致をsynthetic testsで証明し、phase・parameter・nested definition・control意味論を保つ。
+単にsub-definition hashへ置換してidentityを変えない。
+
+修正は別versionのsource/manifest/outputとして用意し、今回の凍結sourceと部分結果を保持する。
+最初からmemory capを上げたり、S4 q4を比較から外したりしない。
+修正sourceと計画を確認してから、同じH4範囲の再実行を別途判断する。
+今回の一回実行はここで終了し、retry/resume、H6/H8、main campaignは開始しない。
+総数値allowance・matched-accuracy/shot資源評価の科学判断は別途必要である。

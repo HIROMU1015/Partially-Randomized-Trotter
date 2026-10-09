@@ -1,0 +1,133 @@
+# Track A AX-2B：H4 pilot v4の部分結果・時間上限STOP
+
+公開時のリンク補修（2026-10-10）：未公開sourceへの参照は[公開依存関係](track_a_ax2b_gpt_review_index_v1.md)。原文と補修一覧を保存し、科学的主張・数値は変更していない。
+
+2026-10-09 JST。**`H4_CORRECTNESS_PASS_COST_PARTIAL_PHASE_WALL_STOP`**。
+利用者の「ではそのまま進めて」に基づき、[固定v4](track_a_ax2b_h4_memory_preparation_v4.md)で
+登録H4 pilotを一回実行した。8/8 correctness cellの検査を通過し、16/28 wrapperの費用を保存した。
+wrapper phaseの900秒上限によりparent watchdogがworkerを停止した。全28件完了・分子memory問題の解消は未確認。
+保存監査と記録まででSTOPし、retry/resume、cap拡大、H6/H8/GPU、main campaignには進めていない。
+
+## 1. 実行と証拠の所在
+
+- 作業branch：`track-a-ax2b-h4-v4-execution-20261009`。
+- worktree：`.worktrees/track-a-ax2b-h4-v4-execution-20261009`。
+- base HEAD：`b2e1bf65e21893b6c617223b42313623d3186f12`。未commitのlocal証拠、immutable CIではない。
+- 元v4準備worktreeの1,721既存ファイルをbyte一致でコピーして使用。準備正本は変更していない。
+- 153 science source hashesと保存NPZを実行前後に照合。manifest digestは
+  `de1a9624a683f4de49d5eac83755c4676040ed74b25f64d867680a5ec38e3006`。
+- [新しい認可](../../artifacts/resource_applicability/track_a_ax2b_h4_pilot_v4/2026-10-09/launch_v1/authorization_v4.json)を
+  CPU3・新規exclusive output・一回実行へ束縛。旧v3認可やpartial outputを転用していない。
+- Python3.11.1、NumPy1.26.4、SciPy1.14.1、Qiskit1.3.0、OpenFermion1.6.1。
+  1 worker、CPU affinity `{3}`、各thread1、RLIMIT_AS8 GiB、phase900秒/total2700秒。
+  affinityは共有host上の論理CPUへの割当であり、物理CPUを占有した実験ではない。
+- 新しい実行前検査は155 local synthetic tests passed、fail/error/skip0、22.33秒。
+
+保存先は[launch_v1](../../artifacts/resource_applicability/track_a_ax2b_h4_pilot_v4/2026-10-09/launch_v1/)。
+runnerの[raw出力](../../artifacts/resource_applicability/track_a_ax2b_h4_pilot_v4/2026-10-09/launch_v1/run_v1/)は変更していない。
+[保存結果解析](../../artifacts/resource_applicability/track_a_ax2b_h4_pilot_v4/2026-10-09/launch_v1/partial_result_analysis_v4.json)、
+[保存専用解析script](track_a_ax2b_gpt_review_index_v1.md#unpublished-source)、
+[別inventory](../../artifacts/resource_applicability/track_a_ax2b_h4_pilot_v4/2026-10-09/launch_v1/pilot_evidence_inventory_v4.json)を併置する。
+旧v3・旧pilotの正本は旧worktree、元v4 preparation inventoryの正本は元v4準備worktree上で照合する。
+コピーした旧inventory内の絶対path・entrypoint hashは当時の履歴で、新実行worktreeに対する再認定ではない。
+
+## 2. 科学条件と8 cell検査
+
+linear H4、隣接距離1.00 Å、STO-3G、legacy DF rank12、generation-prefix、T=0.8。
+既存normalized stateを使用し、N=4/Nα=Nβ=2の36-dimensional sectorとfull Qiskit状態を照合した。
+入力NPZ SHA256は`3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a`。
+新Hamiltonian・integral・stateは生成していない。
+
+| 登録cell | 決定論的DF prefix | q / δ=T/q | 残差設定 | 検査 |
+|---|---:|---|---|---|
+| B1 global二次 | 12 | 1 / 0.8、4 / 0.2 | 全決定論 | 2件pass |
+| B0二次 | 6 | 4 / 0.2 | discard | 1件pass |
+| B2二次 | 6 | 4 / 0.2 | R=8、r=2、K=2/4 | 2件pass |
+| B3二次 | 0 | 4 / 0.2 | R=8、r=2、K=6 | 1件pass |
+| B1 global四次 | 12 | 1 / 0.8、4 / 0.2 | 全決定論 | 2件pass |
+
+prefixはDF block数で、prefix0でもone-bodyは決定論的に残す。
+norm/leakage 1e-12、agreement 1e-9、reference cross-check 1e-10の登録gateを通過。
+保存8 correctness JSONは旧v3と**byte単位で完全一致**した。
+sector全36列の誤差1.333e-15、expm/eigh state差1.611e-15、exact phase surrogate診断7.539e-16、
+native primitive最大state差2.254e-13も保存されている。
+これらは当該入力・delta・検査範囲のlocal一致証拠で、総数値allowanceの証明ではない。
+stateのground-state認定、要求精度への適格性、化学的精度のenergy estimationを結論していない。
+
+## 3. 実際の量子回路費用の保存範囲
+
+測定付きfull Hadamard wrapper、state preparationを除く。
+ordinary/symmetric_directional × cosine/sine、同一explicit eventを共有。
+compilerは`rz,sx,x,cx`、optimization1、seed17、backend/coupling指定なし。
+
+| cell-replica | 保存wrapper | 登録wrapper | 状態 |
+|---|---:|---:|---|
+| B0 prefix6/q4 | 4 | 4 | group完了・解放 |
+| B2 prefix6/q4/R8/K2、replica0/1 | 8 | 8 | 2 group完了・解放 |
+| B3 prefix0/q4/R8/K6、replica0 | 4 | 4 | group完了・解放 |
+| B3同条件、replica1 | 0 | 4 | control比較・trajectory保存後、最初のwrapper準備中にSTOP |
+| B1四次prefix12/q1 | 0 | 4 | 未到達 |
+| B1四次prefix12/q4 | 0 | 4 | 未到達 |
+
+共通する16 wrapperのtask、event digest、numeric circuit fingerprint、compiler hash、6整数metrics、
+untranspiled/transpiled instruction数は旧v3と一致した。保存trajectory5件も旧v3とbyte一致。
+random trajectoryは4件分のeventが保存されたが、B3の費用は1 trajectory分だけである。
+worker終端counterが欠けるため、保存event件数を完了compile数やterminal call counterの代用にしない。
+B2のn=2は技術的費用sampleで、母平均・分位点・方式順位の推定ではない。
+完全なwrapper summaryは存在せず、partial解析で得た群統計を全登録28件の統計に見せない。
+
+## 4. 評価のための古典時間・メモリと停止理由
+
+[parent terminal](../../artifacts/resource_applicability/track_a_ax2b_h4_pilot_v4/2026-10-09/launch_v1/run_v1/terminal_status.json)は
+`H4_TECHNICAL_PILOT_STOP / PHASE_WALL_CAP`、worker exit `-9`、parent wall921.208770秒。
+watchdogが外部からSIGKILLしたため、`worker_terminal.json`とexception tracebackは生成されていない。
+これはMemoryErrorの報告ではなく、登録時間上限による停止である。
+最後の保存markerはworker elapsed918.158316秒、B3 replica1/ordinary/cosineの
+`hadamard_wrapper_build`内`numeric_fingerprint`、1,055 instructions。
+markerは停止時のPython実行位置を厳密に保証するstack traceではない。
+
+246診断JSONの連番・時刻・begin/end nesting・memory値を照合した。4 groupの解放記録あり。
+保存最大RSS/cumulative peak RSSは1,031,835,648 bytes（約0.961 GiB）、最大VmSizeは1,509,986,304 bytes（約1.406 GiB）。
+旧v3は24件保存までの記録最大RSS約3.346 GiBだったが、coverage・保持順序・測定方式が異なる。
+今回16件のpartial記録から全28件の必要メモリ、旧失敗allocationのpeak、H6/H8を推論しない。
+
+| 完了したstage区間 | 件数 | 保存wall区間の合計 |
+|---|---:|---:|
+| numeric_fingerprint | 42 | 845.846秒 |
+| transpile_and_metrics | 16 | 15.420秒 |
+| hadamard_wrapper_build（内部hashを含む） | 16 | 311.037秒 |
+| native_build（内部hashを含む） | 10 | 175.904秒 |
+
+同じstageの完了区間を合計し、未完了区間は除外した。異なるstageはnestedで重なるので合算しない。
+`classical_compile_wall_seconds`もpre-compile fingerprintを含み、純粋なtranspile時間ではない。
+記録はfingerprint stageが今回の古典wall時間を支配したことを示す。
+内部のJSON encoding、generator、Qiskit definition構築のどれが支配するかは未profileである。
+native作成時、wrapper作成前のmutation検査、wrapper自身のcompile前に完全hashするsource経路を静的に確認した。
+これは量子gate費用の増加ではなく、その費用を評価・同定する古典処理の問題である。
+
+## 5. 保存監査の強さと保護
+
+凍結[verifier](track_a_ax2b_gpt_review_index_v1.md#unpublished-source)は
+`SAVED_PARTIAL_STOP_PRESERVED`を返した。source/snapshot/認可/parent bindingを照合後、
+worker終端がないためearly partial pathを通る。**このverifierが16件の詳細を検査したとは主張しない。**
+追加のstdlib保存専用scriptで8 cell、16費用、5 trajectory、246診断、旧v3との一致とraw286ファイルのhashを照合した。
+独立のsignal再計算・sampling・compileではない。raw科学出力、停止terminal、失敗状態は編集していない。
+
+[保護報告](../../artifacts/resource_applicability/track_a_ax2b_h4_pilot_v4/2026-10-09/launch_v1/preservation_report_v4.json)に
+元v4準備1,721ファイル、元v3/pilot1,699ファイル、元dirty worktree1,614ファイル、root reviewの照合を収録する。
+元worktreeのHEAD/status/diffを保持し、新実行worktreeでは7 documentation entrypointへ現在結果を追記した。
+共有science・既存原稿・M1〜PM-2/AX-1b・旧manifest/inventory・Track Bは変更していない。commit/pushなし。
+
+## 6. 結論と次の一段階
+
+現時点では**H4技術pilot未完了**である。8 cellと保存16費用の旧v3互換性は確認できたが、
+strong baselineである四次B1のwrapperへ到達していない。全28件を通すGO条件は満たさない。
+総数値allowance未認定、accuracy `UNDETERMINED`、shots/total cost/winner未評価、研究上の最終判断は未確定。
+
+次の候補は、同じcanonical bytesとmutation拒否を保ったfingerprint処理の性能改善・合成検証・新しい実行前固定である。
+まず固定toyでstage内部をprofileし、scalar/keyの反復JSON encodingとchunk/generator処理、
+同一definitionの反復走査を調べる。改善ではhash byte列を変えず、memoryを再び全payloadへ戻さない。
+sub-definition hashへの置換、phase/numeric metadataの省略、mutation検査の削除で速くする案は採用しない。
+memory解放・diagnostics・科学plan/cell/seed/compiler/capを維持し、非科学検証で効果を確認してから判断する。
+四次baselineの削除、欠落12件だけのresume、時間上限の拡大によって今回を完了扱いにしない。
+今回の認可で新実装や追加pilotを開始せず、保存監査完了後の**mandatory STOP**を維持する。

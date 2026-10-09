@@ -1,0 +1,150 @@
+# Track A AX-2B：H4限定runner・実行前固定v3
+
+2026-10-09 JST。**`AX2B_H4_RUNNER_PREPARED_SCIENCE_NOT_AUTHORIZED`**。
+利用者の継続指示に基づく実装・synthetic検証・準備資料である。科学実行の認可ではない。
+[研究追補v1](track_a_ax2a_research_amendment_v1.md)のRQ・公平性・旧FEW凍結は変更しない。
+[native準備v2](track_a_ax2a_native_df_preparation_v2.md)と旧source/artifactは、その時点の履歴として保持する。
+H4/H6の新しい分子signal評価・trajectory sampling・回路compile・GPU実行は0件。
+
+## 1. 今回の範囲とsource
+
+科学runnerの将来入口をH4第一phaseへ限定した。v2の60-wrapper案のうちH4の28件だけを実装する。
+H6 32件のrunner、H6 snapshot生成、H8、main campaignは今回の入口に含めない。
+H4 pilotが終わってもmandatory STOPとし、H6へ自動的に進めない。
+
+| ファイル | 役割 |
+|---|---|
+| [ax2b_h4_contract.py](../../src/trottertracks/resource_applicability/ax2b_h4_contract.py) | stdlibのみ。保存metadata・byte hash・task/cap・環境・sourceを束縛し、未認可launchを拒否 |
+| [ax2b_limits.py](../../src/trottertracks/resource_applicability/ax2b_limits.py) | 独立parent watchdog、childのCPU affinity/RLIMIT、呼び出し上限、exclusive output、終端記録 |
+| [ax2b_h4_science.py](../../src/trottertracks/resource_applicability/ax2b_h4_science.py) | 将来の認可後にだけimportするH4 correctness/profile処理。既存DF/PF/RTE/compilerを再利用 |
+| [run_track_a_ax2b_h4.py](../../scripts/resource_applicability/run_track_a_ax2b_h4.py) | defaultはmetadata保存。科学入口は明示flagと別認可・そのSHA・manifest照合後のみ |
+| [test_ax2b_h4_runner.py](../../tests/tracks/resource_applicability/test_ax2b_h4_runner.py) | 新規57 tests。固定toy、ダミーcompiler/sampler、科学処理をしないsubprocess |
+
+共有`trotterlib`科学sourceとv1/v2実装は変更していない。新しいHamiltonian/integral/stateの生成器を加えない。
+各taskはモデル予測・新signal・費用順位から選ばず、v2の構造cellをそのまま使う。
+
+## 2. H4入力を数値配列のload前に固定
+
+H4 linear、1.00 Å、STO-3G、legacy DF rank12、8 system qubits、T=0.8、generation順prefixを対象とする。
+保存stateの再生成・再最適化・再normalizationは行わない。
+対象は[保存development snapshot](../../artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz)。
+file SHA-256は`3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a`。
+M1契約のHamiltonian/state/vector hashを照合した。
+
+今回読んだのはfile bytesと、NPZ内`metadata_json.npy`のscalar Unicodeだけである。
+stdlib ZIP/NPY header parserはサイズ上限、重複entry、dtype/shape、pickle不要性を検査する。
+`np.load`は呼ばず、保存数値配列に新しい計算をしていない。
+metadataに記録されたN=4、Nα=Nβ=2、36-dimensional sectorと保存hashを準備manifestへ転記した。
+これはsector/basis/referenceの数値的証明ではなく、実行前の入力identityである。
+
+認可後のchildでは既存`pr2_new_series_validation._load_snapshot_once`を一回だけ利用し、
+配列layout、全内部hash、model/stateの一致を再検査する。
+既存H4 rank12は共通DF tol政策の検証には用いず、H6 tolの採用を今回決定しない。
+
+## 3. 将来の処理順序とGO/STOP
+
+| phase | 入力と処理 | 次へ進む条件 |
+|---|---|---|
+| input_reference | 保存snapshot。sector完全性、各a†Gaの保存性、state/bit順、full/sector全column、DF再構成、expm/eigh参照 | identity・norm・sector・参照の登録gateが全てpass |
+| correctness | 全DF blockについて正負時間、保存state＋36 sector column。登録8 cellのnative actionと独立dense oracle | primitive lowering、global S2/S4、finite corrected/raw・B、B0 signed分解が全てpass |
+| wrapper_cost | 既存samplerの4 trajectoryを共有replay。ordinary/directional、legacy replay、測定付きwrapper 28件 | 全件照合・compile・出力が上限内で完了。終端後STOP |
+
+spin sectorの証明はfull Hamiltonianのnet保存性だけに依存しない。
+one-bodyと全Gについてcross-spin coefficientが**厳密に0**であることを要求する。
+近似0でもSTOPし、係数を落としたりsector政策を自動変更したりしない。
+保存sectorは既存`PhysicalSector`の完全な列挙と一致させる。
+native Gaussian gateの途中にはprojectionを挿入せず、full Qiskit vectorで一つのblockを作用させた後にleakageを検査する。
+この区別により、basisの中間gateまでspin保存を仮定する誤りを避ける。
+
+norm/leakageは1e-12、native/dense・control/legacy一致は1e-9、expm/eigh state差は1e-10をtechnical gateにする。
+保存stateのexact phase-surrogate residual allowance `|T|ρ`にも1e-9 gateを置く。
+thresholdはengineering条件で、精度保証の定理として扱わない。
+
+主参照は保存stateへのdense exponentialで、Rayleigh phaseを無条件にexact targetへ代入しない。
+expm/eigh差、Rayleigh residual、phase-surrogateとのsignal差を別々に保存する。
+`|T|ρ`はexact Hermitian evolutionについてのsurrogate allowanceで、floating-point誤差を含まない。
+二つの浮動小数点法の一致も、共通誤差を除いた証明にはならない。
+したがってpilot outputは常に`numerical_allowance_certified=false`、accuracy eligibilityは`UNDETERMINED`とする。
+**精度適格・必要shot・総資源の順位を主張するには、別段階で総数値allowanceとheadroomを確定する必要がある。**
+
+## 4. 登録cellと量子資源の範囲
+
+correctnessはB1二次prefix12/q1,q4、B0 prefix6/q4、B2 prefix6/q4/R8/K2,K4、
+B3 prefix0/q4/R8/K6、B1標準global四次prefix12/q1,q4の8 cell。randomのrはR/q=2。
+B0 exact truncated signal、signed discard error、signed PF errorを分離する。
+B2/B3はfinite numeratorのHorner actionとM1の独立spectral polynomialを照合し、raw・corrected・log Bを分離する。
+finite corrected numeratorをunitary circuitへ変換する実装は作らない。
+
+compileはB0とB1四次q1/q4の3 cell×2 control×2 axis=12件、
+B2 K2とB3 K6の2 cell×2 trajectory×2 control×2 axis=16件、計28件。
+seedはv2のcell/replica規則を継承し、4 unique trajectory・16 outer-step occurrenceを生成する設計である。
+同じexplicit eventを両control・両axisへ使い、再samplingしない。
+controlの分子検査は保存stateとfirst/last sector columnの両ancilla branch。
+全Hilbert空間のunitary等価性を分子で証明したと主張しない。
+randomはnative ordinaryと旧raw-concatenation replayも比較してからcompileする。
+
+scopeは測定付きfull Hadamard wrapper、state準備を除く。
+既存`transpile_and_measure_cost`でRZ/CX count/depth、total depth、circuit sizeの6指標を保存する。
+compilerは`rz,sx,x,cx`、optimization 1、seed 17、coupling/backend指定なしのv2案を継承する。
+個別record、sample mean/min/max/sample SDを出すが、random n=2は負荷・実装profile用である。
+費用期待値の精密推定、PR利益、方式順位、chemical energy accuracyの結論には使わない。
+量子shots/backend jobは0。classical compile wall/RSSを量子gate資源と別fieldに保存する。
+
+## 5. 実行上限とenforcement
+
+これは認可を求める際の**H4限定上限案**で、今回のCPU/RAM割当ではない。
+H6を除いた3 phase×900sとして総wallを2700sへ縮小し、v2全体14,400sを使い回さない。
+
+| 上限案 | 値・enforcement |
+|---|---|
+| science worker / CPU / threads | child 1、割当CPU 1、BLAS/OMP/MKL/Numba/Qiskit等1。parentは監視のみ |
+| address space | child RLIMIT_AS 8 GiB。RSS上界とは呼ばない |
+| wall | phase 900s、総2700s。独立parentが0.05s間隔で監視しprocess groupをkill |
+| output | 512 MiB。結果write前に総byteを検査、親終端分をreserve。child RLIMIT_FSIZE、aggregate監視、logは64 KiB以内 |
+| compile / trajectory / occurrence | 28 / 4 / 16。呼び出し前counter、成功済みrecord数を別に保持 |
+| signal action | tail corrected＋raw計896、deterministic 100,000、各action前にcounter |
+| reference | per dense reconstruction 20,000 matvec、全linear-operator matvec 10,000、呼び出し前counter |
+| validation action | primitive 2,000、control probe 200。各callback前にcounter |
+| wrapper size | untranspiled 1,000,000、transpiled 5,000,000 Qiskit instructions |
+
+schedule/circuitのallocation前に既存native構造上界を使い、作成後に実sizeを再検査する。
+legacy replay oracleも作成前・後に上限を検査する。
+transpiled-sizeは既存cost APIが戻った後の検査であり、compiler中のnative memory/timeはRLIMIT/watchdogで制限する。
+dense eigensolver内部の演算をlinear-operator matvec数へ偽って加算せず、wall/address-space制限を適用する。
+aggregate disk監視とwallはpollingのため、外部native処理には一監視間隔内のovershootがあり得る。
+OS filesystem quotaとしての絶対aggregate disk保証は今回実装していない。
+自分の結果writerとparent logはwrite前に制限し、途中記録を消さずSTOPする。
+
+H4 complex128 full dense matrixは1 MiB、system stateは4 KiB、ancilla込みstateは8 KiBである。
+これは配列の理論サイズで、実測peak memoryではない。library import・Gaussian gate展開・compilerには別の費用がある。
+今回H4 denseを使うのは小規模correctness oracleだけで、H6/H8のdense拡張を認可・実装していない。
+
+## 6. 検証・証拠・保護
+
+新規57＋旧117=**174 local tests passed**、fail/skip 0、5.98s。
+固定2 orbitalのDF toyで全8 method cellの作用一致とsigned B0分解を検査した。
+sampling/compilerをダミーへ置換し、28 call、4 trajectory/16 occurrence、共有event identity、最初の失敗でのSTOPを検査した。
+別の小さなstdlib processでCPU affinity/RLIMIT_AS/RLIMIT_FSIZE、memory exhaustion、wall/disk/log超過、
+起動失敗・不正終端・phase順序・partial record保持を検査した。
+未認可CLIは科学libraryのimportとoutput作成より前に拒否した。
+これらは分子signal/compile、immutable CI、外部再現の証拠ではない。
+
+[準備artifact](../../artifacts/resource_applicability/track_a_ax2b_h4_runner_preparation/2026-10-09/)に
+metadata manifest、JUnit/stdout、検証記録、未認可launch request草案、source freeze、保護照合を収録する。
+[別inventory](../../artifacts/resource_applicability/track_a_ax2b_h4_runner_preparation/2026-10-09/h4_runner_preparation_inventory_v3.json)を追加し、
+旧`artifacts/validation_manifest.json`は変更しない。
+baseは`b2e1bf65e21893b6c617223b42313623d3186f12`、隔離branchの未commit byte hashで固定する。
+元dirty worktree、rootの利用者review、旧M1〜PM-2/AX-1b/原稿、v1/v2 source/docs/artifact、Track Bは保持する。
+
+## 7. 次に必要なことと停止位置
+
+今回は科学認可を発行せず、`assigned_cpu=null`、`science_authorized=false`、`launch_allowed=false`で終了する。
+準備入口のdefaultに実行機能はなく、`--execute`には別の利用者認可document、そのfile SHA、
+manifest digest、実割当CPU、新規exclusive outputが必要となる。
+parentとchildがsource・package version・snapshot・planを照合し、childはexclusive claimを作ってから科学moduleをimportする。
+source/inputが途中で変わった場合もSTOPし、同じoutputのresume/retryを認めない。
+
+次の具体的段階は、このH4限定task・実CPU割当・上限・結果出力先を確認した上での別の明示実行指示である。
+その場合もinput/reference→8 correctness→28 wrapperの順を守り、失敗・上限で停止する。
+H4 technical pilotの結果を見てH6 port、総数値allowanceの検証方法、H6科学実行の意義と範囲を判断する。
+H6/H8やmain campaignへ自動移行しない。細かな実装のための形式的GPT reviewは要求しない。
