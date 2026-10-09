@@ -1936,3 +1936,11 @@ worst13165893832B <= 新cap13958643712B、余裕792749880B。sealed/approved/run
 
 [実結果・native停止監査](docs/research/track_a_h4_approved_relaunch_20261009.md)。13GiB認可・独立review・fresh gate PASS後driver2865403/observer/12 workersを一度起動。最初のwrapper reservation後observerがowned process exitedを記録しFAIL_CLOSED_STOP、driver exit143、14own identities残存0を2回確認。
 新reserved1/完了0/signal0。元worker/IPC例外は未永続化で根本原因未確定。carry21/8692723164B、残74783、wall保守的upper5766.582514658794s（post-stop監査待ちを含む）、正確な終了時刻未記録。one-shot/全課金保持、retry/次stage/共有設定変更/GPUなし。
+
+## 2026-10-09 累積17GiB・74805を明示承認、一度のrun03起動へ
+
+[認可・起動入口](docs/research/track_a_h4_production_run03_20261009.md)。利用者の「上限の変更を承認するので本計算に入って」に基づき、累積output13→17GiBとactual74804→74805を承認済みとして反映。
+SOURCE6e68fd9bcc68e788db6f5d43eaa6a03866e53d3b/closure44・科学/compiler/options不変。carry21/8692723164B/5766.582514658794s upper保持、消費/予約返却なし。
+人工compile省略、既存32 pure gateと独立技術review/proof/benchmark campaignを再実行しない。environment/CPU/observer・72h/他caps採用済条件を保持。
+新plan sealed/auth approved/runtime true・exact14CPUsへ再結合。別担当の最終review、immutable artifact、直前fresh gate/未使用one-shotの合格後、一度mapを起動する。
+完了/STOP後終了、自動retry/次stage/入力再生成/旧partial-cache混合/GPU/共有環境・venv・他job変更なし。起動/PID/結果は外部runtime receiptで別記録。

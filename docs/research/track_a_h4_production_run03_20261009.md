@@ -2,6 +2,8 @@
 
 利用者の指示に従い、追加の人工回路compile検査を省く。本計算で問題が発生した場合は原因を保存し、
 own-runをfail-closed STOPして、その証拠から修正する。元run02の科学compiler/IPC原因は未特定で、完走を保証しない。
+**最新状態：上限2件と一度の本計算起動を利用者が明示承認。最終artifact・fresh gateを確認して起動する。**
+
 今回の資料入口は本書。詳細は[固定bundle](../../artifacts/resource_applicability/track_a_h4_production_run03/2026-10-09/README.md)を参照する。
 
 ## 固定sourceと次のrun
@@ -94,3 +96,18 @@ git -C /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-produc
 ```
 
 この固定準備時点で本計算起動0。上限2件の明示改定待ち。
+
+## 2026-10-09 累積17GiB・74805を明示承認、一度のrun03起動へ
+
+利用者の「上限の変更を承認するので本計算に入って」に基づき、累積output13→17GiBとactual74804→74805を承認済みとして反映。
+SOURCE6e68fd9bcc68e788db6f5d43eaa6a03866e53d3b/closure44・科学/compiler/options不変。carry21/8692723164B/5766.582514658794s upper保持、消費/予約返却なし。
+人工compile省略、既存32 pure gateと独立技術review/proof/benchmark campaignを再実行しない。environment/CPU/observer・72h/他caps採用済条件を保持。
+新plan sealed/auth approved/runtime true・exact14CPUsへ再結合。別担当の最終review、immutable artifact、直前fresh gate/未使用one-shotの合格後、一度mapを起動する。
+完了/STOP後終了、自動retry/次stage/入力再生成/旧partial-cache混合/GPU/共有環境・venv・他job変更なし。起動/PID/結果は外部runtime receiptで別記録。
+
+最終承認bundle：[plan/auth/reviewと起動command](../../artifacts/resource_applicability/track_a_h4_production_run03/2026-10-09-authorized/README.md)。以前の未承認草案と固定snapshotは履歴として保持する。
+
+
+独立最終認可review：`PASS_READY_FOR_IMMUTABLE_ARTIFACT_AND_FRESH_ONE_SHOT_LAUNCH`、blocking implementation findingsなし。
+plan/auth/review digestとexact14CPU許可・17GiB/74805・SOURCE44/profile/input/carryを別担当で照合。
+最終review SHA256 `b8ad34f772211291fb99fc5c8e18499aef0555bba820c06c6921f5c257fa4fc4`。artifact固定後のfresh gateは未実施で、直前に行う。

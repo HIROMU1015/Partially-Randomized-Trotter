@@ -854,3 +854,11 @@ SOURCE6e68fd9bcc68e788db6f5d43eaa6a03866e53d3b/closure44、32 pure binding tests
 run02 native14identity×2ABSENT・7原本hash・ledger予約1件/journalを結合。carry21/8692723164B/5766.582514658794s upper保持、失敗返却/resetなし。
 次全mapworst16.232668GiB/74805、現承認13GiB/74804は不変。追加承認案は累積17GiBと74805だけ、environment/CPU/observer採用認可を再要求しない。
 未使用run03/output/control/one-shot、draft approved/runtime false・allowed[]・未seal・commandnull。承認後最終binding/fresh gates合格なら一度map起動、完了/STOP後終了・retry/次stageなし。
+
+## 2026-10-09 累積17GiB・74805を明示承認、一度のrun03起動へ
+
+[認可・起動入口](docs/research/track_a_h4_production_run03_20261009.md)。利用者の「上限の変更を承認するので本計算に入って」に基づき、累積output13→17GiBとactual74804→74805を承認済みとして反映。
+SOURCE6e68fd9bcc68e788db6f5d43eaa6a03866e53d3b/closure44・科学/compiler/options不変。carry21/8692723164B/5766.582514658794s upper保持、消費/予約返却なし。
+人工compile省略、既存32 pure gateと独立技術review/proof/benchmark campaignを再実行しない。environment/CPU/observer・72h/他caps採用済条件を保持。
+新plan sealed/auth approved/runtime true・exact14CPUsへ再結合。別担当の最終review、immutable artifact、直前fresh gate/未使用one-shotの合格後、一度mapを起動する。
+完了/STOP後終了、自動retry/次stage/入力再生成/旧partial-cache混合/GPU/共有環境・venv・他job変更なし。起動/PID/結果は外部runtime receiptで別記録。
