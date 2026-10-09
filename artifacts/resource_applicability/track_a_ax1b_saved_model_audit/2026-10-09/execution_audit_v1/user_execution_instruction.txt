@@ -1,0 +1,561 @@
+# Track A：AX-1b保存値解析・モデル比較の本実行指示
+
+## 1. 今回の目的
+
+Track A拡張研究のAX-1bについて、compiler identity互換性修正とmetadata-only preflightを完了しました。
+
+前回のGPT独立レビュー判定：
+
+**`APPROVE_AX1B_EXECUTION_CONDITIONAL_ON_FINAL_BINDING`**
+
+今回の目的は、残る実行条件を確定させたうえで、**AX-1aで事前登録したH4保存値のモデル比較・条件付き資源解析を1回だけ実行し、結果を保存・検証すること**です。
+
+新しい研究方針の探索やアルゴリズム改良ではありません。
+
+本指示は、以下の条件に限定した**AX-1bの明示的launch依頼**です。
+
+ただし、source、環境、入力、authorization、資源、出力先のいずれかのgateが不成立なら、本解析を起動せず停止してください。
+
+---
+
+## 2. 対象リポジトリと固定source
+
+Repository：
+
+`HIROMU1015/Partially-Randomized-Trotter`
+
+Branch：
+
+`pr2-v4-s2-parallelization-20260928`
+
+Compiler identity修正source commit：
+
+`fe312600191cbed33fcf9626d2cde8dbb2270820`
+
+監査記録を含む最終HEAD：
+
+`fc297cd9ab840018c4f35b2764d0b8be07c57285`
+
+**今回のlaunch source commitには、最終HEADの`fc297cd9ab840018c4f35b2764d0b8be07c57285`を使用してください。**
+
+Runnerは実行時HEADとauthorizationの`source_commit`の一致を要求します。
+
+修正source commit `fe312600...` は、実装を作成・テストしたsource provenanceとして維持してください。
+
+今回のlaunchでは、両commit間で対象source、test、bundleのbytesが一致することを検証してください。
+
+既存sourceを再編集したり、HEADを古いcommitへ戻したりしないでください。
+
+作業開始時にbranch、HEAD、remote、dirty差分、index、未追跡ファイルを確認してください。
+
+既存のAX-0／AX-1a契約、M1〜PM-2結果、原稿v0.1、Track B、未コミット変更をすべて保護してください。
+
+---
+
+## 3. 今回の正本
+
+以下を実行契約として使用してください。
+
+### AX-1a
+
+- `docs/research/track_a_ax1a_preanalysis_contract.md`
+- `docs/research/track_a_ax1a_model_comparison_and_fit.md`
+- `docs/research/track_a_ax1a_evaluation_protocol.md`
+- `artifacts/resource_applicability/track_a_ax1a/2026-10-09/input_allowlist_v1.json`
+- `artifacts/resource_applicability/track_a_ax1a/2026-10-09/execution_plan_draft_v1.json`
+
+### AX-1b Preparation／Prelaunch
+
+- `docs/research/track_a_ax1b_implementation.md`
+- `docs/research/track_a_ax1b_prelaunch_amendment_20261009.md`
+
+### 最新Identity Compatibility Fix
+
+- `docs/research/track_a_ax1b_identity_compatibility_fix_20261009.md`
+- `artifacts/resource_applicability/track_a_ax1b_identity_compatibility/2026-10-09/identity_compatibility_manifest_v1.json`
+- 同directoryの`source_freeze_v1.json`
+- `metadata_preflight_audit_v1.json`
+- `synthetic_test_audit_v3.json`
+- `execution_authorization_draft_v3.json`
+- `environment_resource_audit_v2.json`
+- `schemas_v3.json`
+
+古いPreparation／Prelaunch manifestは履歴として保存し、今回のlaunchには最新の互換性修正済みmanifestを使用してください。
+
+---
+
+## 4. 前回の停止とpreflightの扱い
+
+以前の`AX1B_STOP_INPUT_IDENTITY`は、PM-1とM1のcompiler identity表現差によるlaunch前停止でした。
+
+その後、次の修正が完了しています。
+
+- M1基本5項目のcompiler identity
+- 基本5項目＋追加3項目すべて`None`のPM-1形式
+
+この2形式だけを比較上同一視し、その他の差は拒否します。
+
+PM-1の8候補は、各3件のM1 B0 anchorと対応することが確認されています。
+
+最新preflightでは、
+
+- 45入力hash/schema：PASS
+- M1 210候補：PASS
+- PM-1 8候補：PASS
+- M2 5候補：PASS
+- identity/scope/membership：PASS
+- 必要action featureの構造的利用可能性：223候補で確認
+- synthetic tests：170 passed／0 failed／0 skipped
+
+となっています。
+
+これらを現在のsource・入力・環境と照合してください。
+
+ただし、**PRECHECK_PASSは、normalizationの数値照合、モデルfit、regret計算等の成功を保証しません。**
+
+これらはAX-1b本解析で初めて検証します。
+
+旧STOP記録を削除・変更しないでください。
+
+---
+
+## 5. 実行環境
+
+前回確認したstable環境を使用してください。
+
+- Python 3.11.1 final
+- NumPy 1.26.4
+- SciPy 1.14.1
+- pytest 9.0.3
+
+Environment fingerprint：
+
+`314b059957876f54e3e82d97d0368ccd3ef9157aec335bb04d057123c2fc10f5`
+
+Python executable：
+
+`/home/abe/.pyenv/versions/3.11.1/bin/python`
+
+既存site-packages：
+
+`/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages`
+
+実行時には、登録済みの環境変数・package origin・executable hash・NNLS source hashを照合してください。
+
+環境が完全一致していれば、保存済み170件のsynthetic auditを利用して構いません。
+
+一致しない場合は、勝手にpackageをinstall・upgradeしたり、solverやtoleranceを変更したりせず停止してください。
+
+---
+
+## 6. 今回承認する計算資源上限
+
+今回のAX-1bだけに対し、以下のプロセス上限を維持します。
+
+| 資源 | 上限 |
+|---|---|
+| CPU | 1 core |
+| Affinity | `[0]` |
+| Processes | 1 |
+| BLAS threads | 1 |
+| Address-space | 8 GiB |
+| Wall time | 300秒 |
+| Output disk | 512 MiB |
+| GPU | 使用禁止 |
+
+機械可読値：
+
+```text
+assigned_cpu_cores = 1
+cpu_affinity = [0]
+processes = 1
+blas_threads = 1
+ram_limit_bytes = 8589934592
+wall_time_limit_seconds = 300
+output_disk_limit_bytes = 536870912
+```
+
+これはサーバーの専有予約ではなく、**今回のプロセスが超えてはいけない上限**です。
+
+直前にCPU affinity、共有サーバーの利用規則、利用可能メモリ、disk、出力先の状態を再確認してください。
+
+Scheduler経由の割当が必要と判明した場合、未確認のまま起動しないでください。
+
+また、実行途中に上限を変更・拡大してはいけません。
+
+---
+
+## 7. Execution authorizationの作成
+
+最新の`execution_authorization_draft_v3.json`を参照し、新しいAX-1b専用authorizationを作成してください。
+
+既存draftを直接上書きせず、別の実行記録として作成してください。
+
+### Source binding
+
+次を厳密に区別してください。
+
+- 実装・検証source：`fe312600191cbed33fcf9626d2cde8dbb2270820`
+- 実行時HEAD／authorization source：`fc297cd9ab840018c4f35b2764d0b8be07c57285`
+- 実行結果を後から保存するcommit：未確定
+
+現在のHEADと実行時source commitが一致することを確認してください。
+
+新authorizationを同じbranchへcommitしてから実行するとHEADが変わるため、**authorizationは固定HEADを変更しない場所で管理してください。**
+
+### Authorizationに必要な情報
+
+- 正確なsource commit
+- Frozen source/test/schema hash
+- 最新identity compatibility manifestのcanonical SHA-256
+- AX-1a allowlistとmodel configuration hash
+- Stable environment fingerprintとenvironment identity
+- 170 synthetic testsのaudit
+- Metadata-only preflight結果
+- 承認された計算資源上限
+- 出力directory
+- 今回のGPT独立レビュー判定
+- 最終gateの成立記録
+- 本指示による明示的AX-1b launch記録
+
+前回のGPT判定は条件付き承認です。
+
+**最終gateがすべて成立した場合にのみ、runnerが要求する`APPROVE_AX1B_EXECUTION`を実行用authorizationへ記録してください。**
+
+条件が残っている状態で、無条件承認が得られたことにしてはいけません。
+
+### 実行用flags
+
+すべてのgateが通過した場合に限り、今回のAX-1b解析専用authorizationで次を設定できます。
+
+```text
+ax1b_analysis_authorized=true
+science_authorized=false
+explicit_user_launch_required=true
+mandatory_stop=true
+next_stage_authorized=false
+```
+
+`science_authorized=false`は、新しいHamiltonian生成、signal計算、trajectory sampling、回路compile等を引き続き禁止することを意味します。
+
+Authorizationのcanonical JSON SHA-256を計算し、runnerへ渡すhashと一致させてください。
+
+---
+
+## 8. Launch前の最終gate
+
+以下をすべて確認してください。
+
+1. 指定branch・最終HEAD・remote identityが一致
+2. Frozen source/test/schemaのbyte hash一致
+3. AX-0/AX-1aの契約とmodel configurationが不変
+4. 最新identity compatibility manifestを使用
+5. 45入力allowlistのidentity/hash/schema一致
+6. M1 210、PM-1 8、M2 5のmembershipとscope一致
+7. Compiler identity canonical comparisonが成立
+8. PM-1のanchor共有が成立
+9. Stable Pythonとpackage originが一致
+10. Synthetic auditが同一source・環境に対応
+11. CPU/RAM/wall/disk制限を適用できる
+12. 出力directoryが存在しない
+13. Authorizationのcanonical hash一致
+14. 実行用authorizationに今回の明示的launchが記録されている
+15. 既存dirty差分・Track B変更が保護されている
+
+**1項目でも不成立なら、本解析を起動せず停止してください。**
+
+Runnerのgateを無効化したり、入力を変更して通過させたりしてはいけません。
+
+---
+
+## 9. AX-1bの本解析
+
+全gateを通過した場合、AX-1a契約に従って**保存値解析を1回だけ実行してください。**
+
+使用するのは既存allowlist内の保存データです。
+
+新しいHamiltonian、state、quantum signal、random trajectory、回路を生成してはいけません。
+
+### 9.1 モデル比較：RQ-P1
+
+以下を評価してください。
+
+- `PRED_BASE_ACTION_INDEX`
+- `PRED_BASE_SINGLE_COEFF`
+- `PRED_BASE_FEW_PARAM`
+- `AXM1_FINITE_NORMALIZATION`
+
+詳細basis/event入力を必要とする`PRED_BASE_STRUCT_ACCOUNT`はN/Aを維持します。
+
+各モデルについて、
+
+- one-shot RZ prediction
+- signed relative error
+- absolute relative error
+- log error
+- 過小評価
+- coverage
+- method/prefix/q/R/K別診断
+- モデルの入力情報と取得費用
+
+を評価します。
+
+Action countをRZと同一単位として扱わないでください。
+
+### 9.2 Training・NNLS
+
+TrainingはM1の210候補のみです。
+
+PM-1の8候補とM2の5候補は診断専用とし、fitには使用しません。
+
+- AX-1aのNNLS仕様を維持
+- Train-only scaling
+- 固定されたfeature列削除順序
+- KKT検査
+- 固定tolerance
+- 欠測N/A
+- Fold別trainingの情報分離
+
+を厳守してください。
+
+結果を見てfeature、weight、solver、toleranceを変更しないでください。
+
+### 9.3 Complexity gate
+
+SINGLE_COEFFをdefaultとし、FEW_PARAMはAX-1aの固定基準を満たした場合だけ採用します。
+
+- 主leave-one-q-outの4foldを使用
+- Coverage一致
+- 相対10%以上、絶対0.01以上の改善
+- 各foldの悪化が0.02以内
+
+などの既登録条件を変更しないでください。
+
+Gate不通過の場合、新featureの追加やmethod別fitで救済しないでください。
+
+### 9.4 Group・cross-fitted診断
+
+次を区別してください。
+
+- Full210 in-sample
+- Leave-one-q-out
+- Leave-one-prefix-out
+- Leave-one-method-out
+- Leave-one-random-K-out
+- PM-1 observed-prefix
+- M2 observed-geometry
+- Pooled cross-fitted diagnostics
+
+Pooled OOFの結果は、異なるtraining foldに基づく内部診断であり、単一の凍結モデルの独立予測性能ではありません。
+
+### 9.5 Conditional-oracle資源評価
+
+\[
+G_{\mathrm{conditional}}
+=
+\sum_a N_a^{\mathrm{reference}}
+C_a^{\mathrm{predicted}}
+\]
+
+を評価してください。
+
+対象には、
+
+- 条件付き資源予測
+- 候補集合内のregret
+- Accuracy eligibility
+- Common support
+- Known-eligible subset
+- Precision anchor別の結果
+
+を含めます。
+
+ただし、reference shotsを使っているため、これは**CONDITIONAL_ORACLE**です。
+
+Operational bias predictorがない以上、
+
+- predicted shot数
+- operational eligibility
+- operational total resource
+- operational selection regret
+
+はN/Aのままにしてください。
+
+### 9.6 Normalization・既存保存値の照合
+
+以下を評価・検証してください。
+
+- Finite RTE normalization
+- Exact finite distribution
+- 解析上界とのslack
+- PM-2のshot・eligibility・RZ-work再現
+- Paired cosine/sine cost統計
+- Input identityとsource provenance
+
+既存保存値との不一致が生じた場合、契約・科学値・数値toleranceを変更して救済しないでください。
+
+### 9.7 不確かさ
+
+以下を維持してください。
+
+- Reference eligibilityはTrue/False/Noneの三状態
+- 未確定候補があるfull-set regretはN/A
+- Known-eligible subsetとfull setを分離
+- Paired covarianceを保持
+- 点±2SEはengineering interval
+- Formal simultaneous CIを主張しない
+- Rare-event寄与とcross-candidate covarianceは未解決のまま保持
+
+---
+
+## 10. 実行回数・STOP条件
+
+**本解析の起動は最大1回です。**
+
+前回の`AX1B_STOP_INPUT_IDENTITY`はlaunch前停止であり、今回の新しいauthorizationによる実行とは区別してください。
+
+今回、正常に起動した後は、成功・失敗にかかわらずmandatory STOPしてください。
+
+以下は禁止します。
+
+- 自動retry
+- Resume
+- 予算拡大
+- Model/feature変更
+- Candidate削除
+- Seed再生成
+- 解析sourceの途中修正
+- 数値toleranceの変更
+- 結果を改善するための再実行
+
+INPUT_IDENTITY、SCHEMA、NUMERICAL_FIT、BUDGET、OUTPUT_COLLISION等のSTOPが発生した場合は、原因と実行段階、利用した入力、既に書き出したファイル、監査状態を報告してください。
+
+Partial outputを完成済み科学結果として扱わないでください。
+
+---
+
+## 11. 結果の検証・保存
+
+正常完了した場合、AX-1aで登録済みの出力directoryを使用してください。
+
+`artifacts/resource_applicability/track_a_ax1b_saved_model_audit/2026-10-09/run_v1/`
+
+登録された12ファイルを生成し、source commit・authorization・input identity・output manifestを照合してください。
+
+結果の読み取り専用検証は行って構いませんが、新しいfitや性能評価を別条件で実行し直してはいけません。
+
+成功した出力と、必要な実行監査だけを新しいresult commitへ収録してください。
+
+Git操作では、
+
+- 対象pathを明示指定してstage
+- Staged diffを確認
+- 既存dirty差分を含めない
+- Track Bを変更しない
+- `git add .`、`git add -A`禁止
+- Force push禁止
+- Remote競合時は停止
+
+を厳守してください。
+
+実行時source commitと結果保存commitを区別してください。
+
+---
+
+## 12. Codexから報告してほしい内容
+
+### A. Launchと検証
+
+- 実行できたか
+- Launch回数
+- Authorizationとそのhash
+- 実行時source commit
+- Environment fingerprint
+- CPU/RAM/wall/disk上限
+- 成功またはSTOP status
+- Input/output hash
+
+### B. モデル性能
+
+SINGLE_COEFFとFEW_PARAMについて、
+
+- In-sample予測誤差
+- Leave-one-q-outの予測誤差
+- Group別の特徴
+- 過小評価率
+- Coverage
+- Complexity gateの結果
+- 採用モデル
+
+を報告してください。
+
+主な指標は、比較対象モデルを並べた表で示してください。
+
+### C. 条件付き資源・selection
+
+- Precision anchorごとのconditional regret
+- Fold別とpooled cross-fittedの区別
+- PM-1の追加discard候補の影響
+- M2の固定5構成での診断
+- Common support
+- 未確定eligibleと欠測の状況
+- Paired costの不確かさ
+
+### D. 研究上の制約
+
+次の内容を明示してください。
+
+- Operational shot/eligibility/total workはN/A
+- STRUCT_ACCOUNTはN/A
+- H4でのfit結果は独立移送の証拠ではない
+- M2は既観測の固定5構成診断
+- 32 trajectoryのrare-event寄与は未解決
+- 原論文QPE総資源との直接比較ではない
+
+### E. 成果物とGit
+
+- 登録12出力の有無
+- Manifestとhash
+- Terminal status
+- Source commit
+- Result commit
+- Push結果
+- 既存dirty差分の保護状況
+
+---
+
+## 13. 必須終了状態
+
+正常完了の場合：
+
+**`AX1B_COMPLETE_WITH_DECLARED_NA`**
+
+失敗した場合：
+
+該当する`AX1B_STOP_*`をそのまま記録してください。
+
+いずれの場合も、
+
+```text
+mandatory_stop=true
+next_stage_authorized=false
+```
+
+を維持してください。
+
+**AX-2の実装、H4 common-policy bridge、H6/H8のHamiltonian生成、signal評価、trajectory sampling、回路compile、大規模計算は開始しないでください。**
+
+AX-1b完了後は、結果を報告して必ず停止してください。
+
+次の段階はGPTで実施します。
+
+その際には単なるコードのPASS/FAILではなく、以下を中心にTrack A全体を本格的に分析します。
+
+1. RQ-P1の予測モデル研究としての価値
+2. RQ-Rの具体的資源評価としての価値
+3. 原論文・関連研究に対する新規性
+4. H6/H8で検証すべき科学的な問い
+5. 強いdeterministic baselineと高精度条件の必要性
+6. 今後のTrack Aの中心研究方針とGO/STOP
+
+**このGPT研究レビューが完了するまで、AX-2以降は未認可とします。**
