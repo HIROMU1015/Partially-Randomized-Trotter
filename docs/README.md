@@ -477,3 +477,13 @@ SOURCE6e68fd9bcc68e788db6f5d43eaa6a03866e53d3b/closure44・科学/compiler/optio
 SOURCE cd162e9305143d81c28908b9732f8eef12cd6b89は不変で、現validatorは消費済みrun03/CARRY21。次の新SOURCE/seed/plan/auth/reviewと未使用runをcarry0へ再結合する必要がある。
 予算方針のみ承認済み、新one-shot指示/本体起動なし。flagsfalse/allowed[]/未seal/commandnull、科学/追加transpile/GPU/共有環境変更0。
 [最新の予算方針・見積り](research/track_a_h4_per_attempt_budget_20261009.md)。
+
+
+## 2026-10-09 H4 run04：carry0で本計算、STOP後も修正・再実行を継続
+
+利用者が過去失敗分を次回へ加算しない方針と、STOP後チャットを終了せず原因調査・修正・再実行の継続、本体起動を明示認可。
+新SOURCE d31b51080665a7eea806ff1adc17f3e0d19151fc/closure49、library cache v2保持、新run04。純粋11 tests PASS、人工compile/追加transpile0。
+carry0（actual/charge/wall）・既承認17GiB/74805/72h、全map8.136939GiB/74784。環境/CPU12workers/driver16/observer18/資源caps/科学compiler不変。
+旧証拠・入力・one-shotを保持し、各fresh attemptを独立認可binding。停止した同一runのresumeと旧partial科学cache混合は禁止。
+独立review・immutable artifact・直前fresh gatesを経て本計算、一度のSTOPで作業を終了せず必要修正とfresh再起動を続ける。次stage未認可。
+[最新入口](research/track_a_h4_production_run04_20261009.md)。

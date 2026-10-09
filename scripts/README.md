@@ -423,3 +423,13 @@ worst13165893832B <= 新cap13958643712B、余裕792749880B。sealed/approved/run
 ## H4 entrypoint cache修正（2026-10-09）
 
 [原因保存・private memory cache・8限定metadata検証](../docs/research/track_a_h4_entrypoint_cache_fix_20261009.md)。別namespaceのlibrary_cache v2 policy、runner run_h4_entrypoint_cache_tests.py。科学compile/追加本計算なし。
+
+
+## 2026-10-09 H4 run04：carry0で本計算、STOP後も修正・再実行を継続
+
+利用者が過去失敗分を次回へ加算しない方針と、STOP後チャットを終了せず原因調査・修正・再実行の継続、本体起動を明示認可。
+新SOURCE d31b51080665a7eea806ff1adc17f3e0d19151fc/closure49、library cache v2保持、新run04。純粋11 tests PASS、人工compile/追加transpile0。
+carry0（actual/charge/wall）・既承認17GiB/74805/72h、全map8.136939GiB/74784。環境/CPU12workers/driver16/observer18/資源caps/科学compiler不変。
+旧証拠・入力・one-shotを保持し、各fresh attemptを独立認可binding。停止した同一runのresumeと旧partial科学cache混合は禁止。
+独立review・immutable artifact・直前fresh gatesを経て本計算、一度のSTOPで作業を終了せず必要修正とfresh再起動を続ける。次stage未認可。
+[最新入口](../docs/research/track_a_h4_production_run04_20261009.md)。
