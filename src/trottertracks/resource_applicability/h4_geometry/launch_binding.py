@@ -286,7 +286,7 @@ def write_guard(plan,event,args, *, worker=False,library_cache=None):
         if library_cache is not None:
             from .library_cache import existing_directory_probe
             if existing_directory_probe(library_cache,event,path):continue
-        require(not worker,'unbudgeted worker disk/cache/temp write forbidden')
+        require(not worker,'unbudgeted worker disk/cache/temp write forbidden: '+event+' '+str(path)[:512])
         output=Path(plan['output_root']);control=Path(plan['control_root'])
         require(path.is_relative_to(output) or path.is_relative_to(control),'outside budgeted run write forbidden')
         require(not path.is_relative_to(control/'private-temp'),'unbudgeted compiler temporary file forbidden')
