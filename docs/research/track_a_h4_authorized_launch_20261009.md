@@ -47,3 +47,21 @@ launch前stdout/stderrはtool sessionで回収し、保存diagnosticは合計64K
 raw runtime/NPZ/checkpoint/cache/logはGitへ入れない。実行中でもSOURCE/認可artifactを変更せず、軽量な起動/停止観測だけを別記録にする。
 
 起動結果は最終報告・外部runtime receiptへ保存する。起動確認後もSOURCEの既定監視下で完了またはSTOPまで継続し、自動retryせず終了する。
+
+
+## 実起動・fail-closed STOP（同日）
+
+最終artifact `c0e421904eefad1ebeeb9474aa40d1498594618d` を固定し、SOURCE/profile/input/carry一致とfresh gateをPASS確認後、一度だけ直接execした。
+run ID `h4-newhost-signal-compile-20261007-run01`、driver PID2740551/start1245841630、observer2740638、12 worker2740640–2740651。
+fresh sampleはmemory約466.12GiB（必要120.25GiB）、PSI0、quota KNOWN、FS443504128000 bytes/inodes220485166、role CPU負荷最大約4.99%。SOURCE内部fresh gate/one-shotも通過した。
+
+**第一candidateのgaussian basis準備中、OpenFermion→Cirq→matplotlib.pyplot importが設定directory作成を要求し、SOURCE write_guardがrun外writeを拒否してFAIL_CLOSED_STOP。**
+Sourceの科学条件/guardを緩めず、SOURCE・venv・共有設定・他jobを変更していない。Matplotlibを再importしたりfix/retryしたりしていない。
+元stderr traceは[外部tool記録](/home/AbeHiromu/projects/h4-handoff-evidence/20261009/authorized-launch/RUNNER_TOOL_STDERR_v1.log)。このtool出力には一部truncationがある。
+[軽量STOP監査](../../artifacts/resource_applicability/track_a_h4_authorized_launch/2026-10-09/runtime_stop_summary_v1.json)へ実結果を保存する。driver logは0B、first-stop理由はoutputのlaunch-stop.json、監視はobserver.jsonlへ記録された。
+
+実tool exit code1。observerの正常shutdown記録とdriver/worker/observer全14登録identityのABSENTを確認、own残存0。
+新transpile予約0・COMPLETE0・signal0・map0、累積actual20。第一凍結入力のarrayをsignal準備用に読んだが入力再生成なし。
+累積byte chargeは4428938712、recorded conservative wallは5472.345380863175秒。Sourceのcontrol/observer事前reserveを含むため、実file小でもchargeを返却/resetしない。
+認可済みactual cap74804は維持し、remaining actual74784。ただし一度の実行権は消費済みで、既存output/one-shotを保存してretryしない。
+このSTOPを修正成功・map完了・旧compilerとの同一性とは扱わない。次stageへ進行しない。
