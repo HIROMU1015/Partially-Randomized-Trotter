@@ -328,3 +328,13 @@ sourceとsynthetic検証を固定する段階であり、held-out開封・科学
 - [実行authorization](research/pr2_matched_accuracy_m2_transfer_execution_authorization_v1.md)：actual source/plan、固定5構成、196 wrappers、最大5 workers、一回限りを固定する。
 - [最終review依頼](research/pr2_m2_execution_authorization_external_review_request_90a9f24.md)：最終承認と利用者の実行指示までheld-out未開封・本計算未実行で停止する。
 - `artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/authorization_audit_v1.json`：local zero-science gateとtimed tests。科学結果・immutable CIではない。
+
+## Track B G1限定source review
+
+[G1 source review](tracks/algorithm_codesign/g1_source_review_20261009.md)は固定契約を変えず、
+独立構造監査・one-shot controller・59 off-domain testsのsourceとlocal証拠を整理する。
+[module](../scripts/tracks/algorithm_codesign/g1_decision_packet/README.md)、
+[runner](../scripts/tracks/algorithm_codesign/run_g1_decision_packet.py)、
+[test](../tests/tracks/algorithm_codesign/test_g1_source_preparation.py)、
+[artifact manifest](../artifacts/track_b_g1_source_preparation/2026-10-09/evidence_manifest_v1.json)。
+本構造監査・固定8人工LPは未実行。別の明示指示後も全outcomeでSTOPし、GPT G1へ戻す。

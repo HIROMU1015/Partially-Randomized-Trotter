@@ -691,3 +691,13 @@ review承認と利用者指示を得た後に一度実行し、現在は`TRANSFE
 launch/post-execution auditを対応させる。196 wrapper、5構成、source128、pre/post84＋134 testsを検査した
 result commitへ収録するlocal execution evidenceであり、immutable CIではない。`.runtime`とone-shot registryはcommit対象ではない。
 固定5構成のtransfer支持だけを解釈し、全status後STOP・追加科学計算未認可を維持する。
+
+## Track B G1限定source準備（2026-10-09）
+
+[G1 source review](docs/tracks/algorithm_codesign/g1_source_review_20261009.md)から、
+[独立構造監査・controller](scripts/tracks/algorithm_codesign/g1_decision_packet/README.md)、
+[入口](scripts/tracks/algorithm_codesign/run_g1_decision_packet.py)、
+[focused tests](tests/tracks/algorithm_codesign/test_g1_source_preparation.py)、
+[準備artifact](artifacts/track_b_g1_source_preparation/2026-10-09/evidence_manifest_v1.json)へ辿る。
+59件のlocal off-domain testsが通過。本構造監査・固定8人工LPは未実行で、別のsource-bound明示指示を待つ。
+既存source/contract/result/marker/STOPと共有APIを保持する。全outcomeでSTOPしGPT G1へ戻す。

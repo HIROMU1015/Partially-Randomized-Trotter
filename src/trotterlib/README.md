@@ -294,3 +294,14 @@ DF部分ランダム化研究と混同しない。
 - `eig_error.py`、`qpe_beta.py`：固有値誤差・位相推定の旧来支援
 
 新しい機能は、runnerへ直接大きな処理を書くのではなく、ここへテスト可能な関数として置く。
+
+## Track B G1限定技術sourceへの参照
+
+G1のexact symbolic kernel・audit・controllerは
+[専用script namespace](../../scripts/tracks/algorithm_codesign/g1_decision_packet/README.md)へ置いた。
+共有library/APIを変更する機能ではない。
+[source review](../../docs/tracks/algorithm_codesign/g1_source_review_20261009.md)、
+[入口](../../scripts/tracks/algorithm_codesign/run_g1_decision_packet.py)、
+[focused tests](../../tests/tracks/algorithm_codesign/test_g1_source_preparation.py)、
+[準備artifact](../../artifacts/track_b_g1_source_preparation/2026-10-09/evidence_manifest_v1.json)を参照する。
+本構造監査・固定8人工LPは別明示指示まで未実行。科学的B2/B3比較、backend採用は認可しない。

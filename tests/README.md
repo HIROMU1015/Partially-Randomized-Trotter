@@ -57,3 +57,12 @@ compile-plan生成拒否、clear時の最大16+16 cell plan、source hash、non-
 `test_pr2_matched_accuracy_m2_transfer_contract.py`では、M1-B1からの5構成固定、future seed衝突0、
 196-wrapper上限、primary予測と10%重大underestimate、4 terminal status、held-out/transfer未認可、schemaを
 検査する。held-out signalまたはcompileを実行するtestではない。
+
+## Track B G1 source準備の限定tests
+
+[test_g1_source_preparation.py](tracks/algorithm_codesign/test_g1_source_preparation.py)は59件のlocal
+off-domain testsで、generic algebra、mock proof分類、source gate、marker、順序、cap、初回STOP、
+旧guardによる模擬process、grandchild回収を確認する。本構造監査の呼出しは禁止patchで0と確認し、
+固定8入力のsolve・実backend呼出しは0。
+[source review](../docs/tracks/algorithm_codesign/g1_source_review_20261009.md)と
+[保存結果](../artifacts/track_b_g1_source_preparation/2026-10-09/focused_test_results_v1.json)を対応させる。

@@ -208,3 +208,14 @@ BF-1の具体化は新preregistrationへ記録し、review対象の本文を無�
 code: `src/trottertracks/algorithm_codesign/`、runner: `scripts/tracks/algorithm_codesign/`、
 test: `tests/tracks/algorithm_codesign/`。`src/trotterlib`の共有API・Aのartifact/status/contractは変更しない。
 repair reports/audit: `artifacts/track_b_bf1_serialization_repair/2026-10-05/`。
+
+## G1 source準備（2026-10-09）
+
+現入口は[G1 source review](g1_source_review_20261009.md)。
+[固定結果前契約](g1_result_prior_preparation_20261009.md)を変更せず、
+[専用module](../../../scripts/tracks/algorithm_codesign/g1_decision_packet/README.md)、
+[runner](../../../scripts/tracks/algorithm_codesign/run_g1_decision_packet.py)、
+[59 focused tests](../../../tests/tracks/algorithm_codesign/test_g1_source_preparation.py)、
+[証拠manifest](../../../artifacts/track_b_g1_source_preparation/2026-10-09/evidence_manifest_v1.json)を追加した。
+local tests PASSであり、本構造監査・固定8人工LPは未実行。資料公開後STOPして別の明示指示を待つ。
+packetを実行した場合も全outcomeでSTOPしGPT G1へ戻す。登録B2/B3、production、旧run再試行は認可しない。

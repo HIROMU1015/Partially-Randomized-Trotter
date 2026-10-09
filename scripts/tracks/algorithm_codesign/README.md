@@ -121,3 +121,12 @@ stdoutのJSONが[保存report](../../../artifacts/track_b_bm05_equivalence/2026-
 既存BF science/recovery runnerの契約・result・STOPは
 [Track B index](../../../docs/tracks/algorithm_codesign/README.md)を参照する。
 過去のone-shot markerやauthorizationをBMへ流用しない。
+
+## G1 source準備（2026-10-09）
+
+[専用module](g1_decision_packet/README.md)、[runner](run_g1_decision_packet.py)、
+[guard専用audit入口](audit_g1_structure.py)、
+[source review](../../../docs/tracks/algorithm_codesign/g1_source_review_20261009.md)、
+[59 focused tests](../../../tests/tracks/algorithm_codesign/test_g1_source_preparation.py)。
+本構造監査・固定8人工LPは未実行。旧v2 controllerを起動せず、旧guard/verifier/binaryをbyte不変で利用する。
+別source-bound明示指示の後も一回のみ、全outcomeでSTOPしGPT G1へ戻す。

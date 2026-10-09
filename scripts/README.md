@@ -311,3 +311,13 @@ artifacts/<validation_name>/
 
 結果を研究上の証拠へ加える場合は、`VALIDATION_STATUS.md`、研究概要、研究ノート、
 `artifacts/validation_manifest.json`も更新する。
+
+## Track B G1限定診断のsource
+
+[run_g1_decision_packet.py](tracks/algorithm_codesign/run_g1_decision_packet.py)はread-only source確認と、
+別明示指示後の一回だけのdecision packetを分離する。
+[専用module](tracks/algorithm_codesign/g1_decision_packet/README.md)、
+[source review](../docs/tracks/algorithm_codesign/g1_source_review_20261009.md)、
+[focused tests](../tests/tracks/algorithm_codesign/test_g1_source_preparation.py)、
+[証拠manifest](../artifacts/track_b_g1_source_preparation/2026-10-09/evidence_manifest_v1.json)。
+旧guard/verifier/binaryは不変。本構造監査・固定8人工LPは未実行。全outcomeでSTOP、retry=0。
