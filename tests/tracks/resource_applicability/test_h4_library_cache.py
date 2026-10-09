@@ -60,13 +60,15 @@ class LibraryCacheTests(unittest.TestCase):
         self.assertFalse(cache.existing_directory_probe(profile,'os.mkdir',p))
 
     def test_carry_and_observer_reservations_exceed_ten_GiB_without_refund(self):
-        self.assertEqual(bind.CARRY,{'actual_invocations':20,'charged_bytes':4428938712,'wall_seconds':5472.345380863175})
+        self.assertEqual(bind.PRIOR_CARRY,{'actual_invocations':20,'charged_bytes':4428938712,'wall_seconds':5472.345380863175})
+        self.assertEqual(bind.CARRY['actual_invocations'],21)
         projection=audit.storage_projection(library_cache_bytes=1234)
         original=audit.storage_projection(prior_charge=bind.ORIGINAL_CARRY['charged_bytes'])
         self.assertEqual(projection['cumulative_charge_bound']-original['cumulative_charge_bound'],
                          bind.CARRY['charged_bytes']-bind.ORIGINAL_CARRY['charged_bytes']+2*1234+128)
         self.assertGreater(projection['cumulative_charge_bound'],10*2**30)
-        self.assertLess(projection['cumulative_charge_bound'],13*2**30)
+        self.assertGreater(projection['cumulative_charge_bound'],13*2**30)
+        self.assertLess(projection['cumulative_charge_bound'],17*2**30)
 
     def test_budget_gate_fails_before_one_shot_output_affinity_or_science(self):
         import test_h4_prelaunch_synthetic as fixtures

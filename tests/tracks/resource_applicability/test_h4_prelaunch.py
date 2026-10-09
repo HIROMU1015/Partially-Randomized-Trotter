@@ -34,14 +34,14 @@ def documents(case='case'):
        templates=CONTRACT['templates'],contract_plan_fingerprint=bind.gates.PLAN_FP,
        compiler_fingerprint='b'*64,environment_fingerprint='c'*64,requested_workers=12,
        cpu_proposal=dict(driver=[13],workers=[[i] for i in range(1,13)],observer=[14]),
-       carry=dict(bind.CARRY),caps=dict(actual_invocations=74804,wall_seconds=259200,output_bytes=10*2**30,
+       carry=dict(bind.CARRY),caps=dict(actual_invocations=74805,wall_seconds=259200,output_bytes=10*2**30,
           driver_AS_RSS=8*2**30,worker_AS_RSS=8*2**30,headroom=16*2**30,monitor_seconds=5,observer_AS=256*2**20,observer_RSS=64*2**20),
        storage=audit.storage_projection(prior_charge=bind.ORIGINAL_CARRY['charged_bytes']),sealed=True)
     auth=dict(schema_version=bind.VERSIONS['authorization'],stage='signal_compile',run_id=bind.RUN_ID,source_commit=plan['source_commit'],
        plan_fingerprint='',approved=True,runtime_authorization=True,allowed_cpus=list(range(1,15)),one_shot=True,
        permission='signal_compile',result_prior=True,environment_accepted=True,
        observer_role=dict(approved=True,runtime_authorization=True,AS_bytes=256*2**20,RSS_bytes=64*2**20),
-       budget_amendment=dict(approved=True,**{'from':74784,'to':74804},authority_reference='SYNTHETIC_MEMORY_ONLY'),
+       budget_amendment=dict(approved=True,**{'from':74804,'to':74805},authority_reference='SYNTHETIC_MEMORY_ONLY'),
        output_budget_amendment=dict(approved=False,**{'from':10*2**30,'to':13*2**30},authority_reference=''))
     review=dict(schema_version=bind.VERSIONS['review'],stage='signal_compile',run_id=bind.RUN_ID,source_commit=plan['source_commit'],
        plan_fingerprint='',authorization_digest='',approved=True,runtime_authorization=True,reviewer='SYNTHETIC_FIXTURE',mandatory_stop=True)
@@ -65,10 +65,11 @@ class BindingTests(unittest.TestCase):
     def test_output_amendment_requires_explicit_exact_binding(self):
         p,a,r=documents('output-amended')
         p['caps']['output_bytes']=13*2**30
-        p['storage']=audit.storage_projection(output_cap=13*2**30)
+        # Legacy 13GiB gate case uses its original pre-run02 byte carry fixture.
+        p['storage']=audit.storage_projection(output_cap=13*2**30,prior_charge=bind.PRIOR_CARRY['charged_bytes'])
         self.assertEqual(p['storage']['remaining_charge_margin_bytes'],13*2**30-p['storage']['cumulative_charge_bound'])
         rebind(p,a,r)
-        with self.assertRaisesRegex(Stop,'explicit13GiB'):bind.authorize(p,a,r,explicit_launch=True)
+        with self.assertRaisesRegex(Stop,'explicit output amendment'):bind.authorize(p,a,r,explicit_launch=True)
         a['output_budget_amendment'].update(approved=True,authority_reference='ARTIFICIAL_USER_AUTHORITY')
         rebind(p,a,r);bind.authorize(p,a,r,explicit_launch=True)
         bind.fresh_gate(p,observed(p),now=1.1)
@@ -147,7 +148,7 @@ class BindingTests(unittest.TestCase):
 
     def test_74784_cap_insufficient_without_guaranteed_reuse(self):
         d=list(documents('insufficient'));d[0]['caps']['actual_invocations']=74784;rebind(*d)
-        with self.assertRaisesRegex(Stop,'74764 remaining'):bind.authorize(*d,explicit_launch=True)
+        with self.assertRaisesRegex(Stop,'remaining actual'):bind.authorize(*d,explicit_launch=True)
 
     def test_amendment_must_be_explicit_and_exact_plus20(self):
         for key,value in [('approved',False),('from',0),('to',74900),('authority_reference','')]:
@@ -206,6 +207,9 @@ class BindingTests(unittest.TestCase):
 
     def test_full_launch_order_stub_science_and_no_real_affinity(self):
         p,a,r=documents('pipeline');Path(p['output_root']).parent.mkdir()
+        p['caps']['output_bytes']=17*2**30
+        a['output_budget_amendment'].update(approved=True,**{'from':13*2**30,'to':17*2**30},authority_reference='SYNTHETIC_MEMORY_ONLY')
+        rebind(p,a,r)
         order=[]
         with patch.object(bind,'verify_runtime',side_effect=lambda _: (order.append('source_profile') or (CONTRACT,{}))),\
              patch.object(bind,'verify_frozen_receipts',side_effect=lambda _:order.append('receipt')),\

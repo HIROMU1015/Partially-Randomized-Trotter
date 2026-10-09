@@ -16,14 +16,16 @@ from .prelaunch_audit import private_path, receipt_inventory, environment_profil
 from .resources import GiB, ROLE_CAP, HEADROOM, OUTPUT_CAP, WALL_CAP, fsync_directory
 from .observer import AS_CAP, RSS_CAP, FRAME_CAP, TERMINAL_RESERVE
 
-RUN_ID='h4-newhost-signal-compile-20261009-run02'
+RUN_ID='h4-newhost-signal-compile-20261009-run03'
 ORIGINAL_CARRY={'actual_invocations':20,'charged_bytes':165214360,'wall_seconds':5466.188392877579}
-CARRY={'actual_invocations':20,'charged_bytes':4428938712,'wall_seconds':5472.345380863175}
+PRIOR_CARRY={'actual_invocations':20,'charged_bytes':4428938712,'wall_seconds':5472.345380863175}
+CARRY={'actual_invocations':21,'charged_bytes':8692723164,'wall_seconds':5766.582514658794}
 EXPECTED_FREEZE='75d7ddc8dc71ebeec03a6c173397a9b941b492b74e4dc80814d613d83ce56c69'
 EXPECTED_JOURNAL='6b68368565cc336d283bc094f844a37ceb1966838ca5482f1f12347d0c5d669e'
 EXPECTED_LOG='7108181a3b295ca92d4a73de7e7420d160898270d45a95657a34e7c6526947b1'
 CONTROL_LOG_CAP=8*2**20
 AMENDED_OUTPUT_CAP=13*GiB  # Explicit new-host amendment; legacy default stays10GiB.
+RETRY_OUTPUT_CAP=17*GiB  # Proposal only: runtime still requires explicit amendment approval.
 FILE_LIMITS={'record-':4096,'ledger-':4096,'signal-':524288,'worker-log-':8192,'map-complete':4096,'launch-stop':4096,'ledger.lock':0}
 
 STRUCTURES={
@@ -91,25 +93,29 @@ def authorize(plan,authorization,review, *, explicit_launch):
     require(all(type(caps[k]) is int and caps[k]==v for k,v in fixed.items()),'existing caps / observer candidates')
     change=authorization['output_budget_amendment']
     require(set(change)=={'approved','from','to','authority_reference'} and type(change['approved']) is bool and
-            type(change['from']) is int and change['from']==OUTPUT_CAP and
-            type(change['to']) is int and change['to']==AMENDED_OUTPUT_CAP and
+            type(change['from']) is int and type(change['to']) is int and
+            (change['from'],change['to']) in ((OUTPUT_CAP,AMENDED_OUTPUT_CAP),(AMENDED_OUTPUT_CAP,RETRY_OUTPUT_CAP)) and
             type(change['authority_reference']) is str,'output amendment schema')
     output_cap=caps['output_bytes']
-    require(type(output_cap) is int and output_cap in (OUTPUT_CAP,AMENDED_OUTPUT_CAP),'closed output caps')
-    if output_cap==AMENDED_OUTPUT_CAP:
-        require(change['approved'] is True and bool(change['authority_reference'].strip()),'explicit13GiB output amendment')
+    require(type(output_cap) is int and output_cap in (OUTPUT_CAP,AMENDED_OUTPUT_CAP,RETRY_OUTPUT_CAP),'closed output caps')
+    if output_cap!=OUTPUT_CAP:
+        require(change['to']==output_cap and change['approved'] is True and bool(change['authority_reference'].strip()),
+                'explicit output amendment matching selected cap')
     else:
         require(change['approved'] is False,'output amendment and plan cap disagree')
     role=authorization['observer_role']
     require(role==dict(approved=True,runtime_authorization=True,AS_bytes=AS_CAP,RSS_bytes=RSS_CAP),'observer extra role needs approval')
-    counts=static_invocations(plan['templates'])
-    cap=caps['actual_invocations'];require(type(cap) is int and cap in (74784,74804),'no arbitrary invocation cap')
+    counts=static_invocations(plan['templates'],carry_actual=CARRY['actual_invocations'])
+    cap=caps['actual_invocations'];require(type(cap) is int and cap in (74784,74804,74805),'no arbitrary invocation cap')
     change=authorization['budget_amendment']
     require(set(change)=={'approved','from','to','authority_reference'},'budget amendment schema')
     if cap!=74784:
-        require(change['approved'] is True and change['from']==74784 and change['to']==74804 and
-                isinstance(change['authority_reference'],str) and bool(change['authority_reference'].strip()),'explicit +20 contract amendment')
-    require(cap>=counts['cumulative_actual_worst_case'],'74764 remaining cannot guarantee all74784 logical wrappers; +20 amendment required')
+        expected_from=74784 if cap==74804 else 74804
+        require(type(change['approved']) is bool and change['approved'] is True and
+                type(change['from']) is int and change['from']==expected_from and
+                type(change['to']) is int and change['to']==cap and
+                type(change['authority_reference']) is str and bool(change['authority_reference'].strip()),'explicit actual contract amendment')
+    require(cap>=counts['cumulative_actual_worst_case'],'remaining actual cannot guarantee all74784 logical wrappers including carry')
     for key in ('source_root','input_root','stop_evidence_root','output_root','control_root'):
         path=Path(plan[key]);require(path.is_absolute() and path.is_relative_to('/home/AbeHiromu') and '..' not in path.parts,'home-local binding')
     require(plan['output_root']!=plan['input_root'] and RUN_ID in Path(plan['output_root']).parts and RUN_ID in Path(plan['control_root']).parts,
@@ -181,6 +187,8 @@ def verify_frozen_receipts(plan):
     require(len(data)%128==0 and sum(int(data[i:i+128].strip()) for i in range(0,len(data),128))==ORIGINAL_CARRY['charged_bytes'],
             'old-host predecessor byte carry proof')
     verify_newhost_stop(evidence)
+    from .retry_receipt import verify_retry_stop
+    verify_retry_stop(evidence,PRIOR_CARRY,CARRY)
     return {**freeze,'input_root':str(root),'consumed_seconds':CARRY['wall_seconds'],
             'prior_charge':CARRY['charged_bytes'],'prior_invocations':CARRY['actual_invocations']}
 
@@ -192,7 +200,7 @@ def verify_newhost_stop(evidence):
     predecessor=evidence['newhost_predecessor']
     require(predecessor['run_id']=='h4-newhost-signal-compile-20261007-run01' and
             predecessor['source_commit']=='6bd1ba01cd71ec3e2071082963c9f07478dada9a' and
-            predecessor['carry']==CARRY and predecessor['all_owned_processes_ended'] is True and
+            predecessor['carry']==PRIOR_CARRY and predecessor['all_owned_processes_ended'] is True and
             predecessor['new_actual_invocations']==0, 'failed newhost launch carry/stop')
     root=private_path(predecessor['output_root'])
     require(root.name==predecessor['run_id'], 'predecessor output scope')
@@ -204,11 +212,11 @@ def verify_newhost_stop(evidence):
             'newhost journal/STOP/observer receipts')
     data=(root/'byte-budget.journal').read_bytes()
     require(sha(data)=='5482824c1b84da80c99acad1437eeeb21a40b7ee8ec32eb77c9c5a45599acee6' and
-            len(data)%128==0 and sum(int(data[i:i+128].strip()) for i in range(0,len(data),128))==CARRY['charged_bytes'],
+            len(data)%128==0 and sum(int(data[i:i+128].strip()) for i in range(0,len(data),128))==PRIOR_CARRY['charged_bytes'],
             'newhost charge cannot be reset/refunded')
     stop=json.loads((root/'launch-stop.json').read_bytes())
     require(stop['status']=='FAIL_CLOSED_STOP' and stop['automatic_retry'] is False and
-            stop['consumed_seconds']==CARRY['wall_seconds'], 'newhost STOP wall carry')
+            stop['consumed_seconds']==PRIOR_CARRY['wall_seconds'], 'newhost STOP wall carry')
     identities=predecessor['identities']
     require(len(identities)==14 and len({row['pid'] for row in identities})==14, 'newhost14 owned identities')
     for row in identities:

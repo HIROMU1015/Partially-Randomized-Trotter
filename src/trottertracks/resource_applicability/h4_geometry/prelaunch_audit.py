@@ -183,16 +183,17 @@ def cpu_proposal(observation, workers=12):
         rationale='Distinct available physical cores with lowest passive sample load; no reservation or affinity change.')
 
 
-def static_invocations(templates):
+def static_invocations(templates, *, carry_actual=20):
+    require(type(carry_actual) is int and carry_actual>=0,'nonnegative actual carry')
     require(len(templates)==218,'registered templates')
     random=[t for t in templates if t['method'] in ('B2','B3')]
     baseline=[t for t in templates if t['method'] in ('B0','B1')]
     logical=6*(len(random)*32*2+len(baseline)*2)
     require(len(random)==194 and len(baseline)==24 and logical==74784,'fixed logical map')
     return dict(random_templates=194,baseline_templates=24,logical_wrappers=logical,
-        prior_actual_consumed_or_reserved=20,new_actual_worst_case=logical,cumulative_actual_worst_case=logical+20,
-        existing_cumulative_actual_cap=74784,guaranteed_cache_savings=0,minimum_cap_amendment=20,
-        guarantee_reason='Reuse is within geometry/template/axis and requires an already COMPLETE identical numerical circuit. Random K2/K4 with draw-dependent circuits admits no static >=20 saving guarantee; no actual trajectories or circuits evaluated.')
+        prior_actual_consumed_or_reserved=carry_actual,new_actual_worst_case=logical,cumulative_actual_worst_case=logical+carry_actual,
+        existing_cumulative_actual_cap=74784,guaranteed_cache_savings=0,minimum_cap_amendment=carry_actual,
+        guarantee_reason='Reuse is within geometry/template/axis and requires an already COMPLETE identical numerical circuit. No static savings sufficient to offset carry are guaranteed; no actual trajectories or circuits evaluated.')
 
 
 def storage_projection(block=4096, *, library_cache_bytes=0, prior_charge=None, output_cap=10*2**30):
@@ -213,7 +214,7 @@ def storage_projection(block=4096, *, library_cache_bytes=0, prior_charge=None, 
     control_charge=2*(CONTROL_LOG_CAP+65536)+128
     prior_charge=CARRY['charged_bytes'] if prior_charge is None else prior_charge
     require(type(prior_charge) is int and prior_charge>=0 and type(library_cache_bytes) is int and library_cache_bytes>=0 and
-            type(output_cap) is int and output_cap in (10*2**30,13*2**30),
+            type(output_cap) is int and output_cap in (10*2**30,13*2**30,17*2**30),
             'nonnegative storage carry/cache')
     cache_charge=2*library_cache_bytes+128 if library_cache_bytes else 0
     charge=prior_charge+128+observer_charge+control_charge+cache_charge+sum(r['charged_bytes'] for r in components)
