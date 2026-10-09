@@ -148,3 +148,6 @@ science終了後mandatory STOP、追加合成/target/grid/分子/DF/trajectory/G
 - [2026-10-09 Track B G4限定class認証・matched CTS](2026-10-09_track_b_g4_certificate_CTS.md)：
   独立算術でx1/4のB2 digital class分離、同toyでCTS対照の保存lawが指定J1 lawより低費用。
   G4-Cは設計のみ、科学判断へmandatory STOP。
+
+
+- [2026-10-10 Track B G5固定辞書終了認証](2026-10-10_track_b_g5_fixed_dictionary_closure.md)：限定digital class確認、成果・access整理、mandatory STOP。

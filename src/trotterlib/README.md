@@ -328,3 +328,14 @@ The saved-table diagnostic is complete and STOPped; it is not a new registered R
 独立certificateとCTS specializationは`scripts/tracks/algorithm_codesign/g4_*.py`。
 CTS native/numeric/accountingは既存`src/trottertracks/algorithm_codesign/rte_reallocation/`をreadonly共用。
 共有`src/trotterlib`実装/APIに変更なし。両one-shot完了・mandatory STOP。
+
+
+## 2026-10-10 Track B G5：shared APIは変更しない
+
+[G5保存値終了認証](../../docs/tracks/algorithm_codesign/g5_results_and_gpt_handoff_20261010.md)と
+[static access inventory](../../docs/tracks/algorithm_codesign/g5_static_access_inventory_20261010.md)。
+Track B verifierはstdlibのみ、shared libraryのimport・変更・copyなし。
+既存even paired DF wrapperの存在をodd/complement/reallocationの検証済み能力として転用しない。
+[runner](../../scripts/tracks/algorithm_codesign/g5_fixed_dictionary_closure.py)、
+[tests](../../tests/tracks/algorithm_codesign/test_g5_fixed_dictionary_closure.py)、
+[manifest](../../artifacts/track_b_g5_fixed_dictionary_closure/2026-10-10/evidence_manifest_v1.json)。mandatory STOP。

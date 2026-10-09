@@ -367,3 +367,14 @@ post-hoc/developmentの有限sampling・controlled mean・confidenceと固定12 
 [GPT再レビューv2](research/track_b_G3_scientific_review_20261009_rereview_v2.md)、
 [dated note](research/研究ノート/2026-10-09_track_b_g4_certificate_CTS.md)へ辿る。
 known toyの限定class認証とmatched CTSを完了、mandatory STOP、科学判断はGPT。
+
+
+## 2026-10-10 Track B G5（最新追記）
+
+[G5 handoff](tracks/algorithm_codesign/g5_results_and_gpt_handoff_20261010.md)、
+[結果前scope/proof](tracks/algorithm_codesign/g5_fixed_dictionary_closure_scope_20261010.md)、
+[claim/evidence map](tracks/algorithm_codesign/g5_claim_evidence_map_20261010.md)、
+[static access inventory](tracks/algorithm_codesign/g5_static_access_inventory_20261010.md)、
+[受領GPT G4 review](research/track_b_G4_scientific_review_20261010.md)。
+保存表のみ、x1/4の6頂点digital class終了認証。現固定toy同辞書主線の区切り・限定成果保持、mandatory STOP。
+[manifest](../artifacts/track_b_g5_fixed_dictionary_closure/2026-10-10/evidence_manifest_v1.json)。

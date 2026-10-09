@@ -147,3 +147,13 @@ stdoutのJSONが[保存report](../../../artifacts/track_b_bm05_equivalence/2026-
 [結果/GPT handoff](../../../docs/tracks/algorithm_codesign/g4_results_and_gpt_handoff_20261009.md)、
 [manifest](../../../artifacts/track_b_g4_conditional_separation/2026-10-09/evidence_manifest_v1.json)。
 exclusive A/B markersは消費済み。科学runnerは再実行不可、STOP後の保存値照合だけ。
+
+
+## G5（2026-10-10）：保存証拠の終了認証
+
+[g5_fixed_dictionary_closure.py](g5_fixed_dictionary_closure.py)：G4 rational primitives/source bindingを共有し、頂点・価格・CTS scalar verifierを独立実装。
+fixed x1/4、252 profiles/756 prices、L1-charge digital classまで確認。run1/retry0、G5 marker消費済み。
+[scope](../../../docs/tracks/algorithm_codesign/g5_fixed_dictionary_closure_scope_20261010.md)、
+[handoff](../../../docs/tracks/algorithm_codesign/g5_results_and_gpt_handoff_20261010.md)、
+[tests](../../../tests/tracks/algorithm_codesign/test_g5_fixed_dictionary_closure.py)、
+[manifest](../../../artifacts/track_b_g5_fixed_dictionary_closure/2026-10-10/evidence_manifest_v1.json)。mandatory STOP。

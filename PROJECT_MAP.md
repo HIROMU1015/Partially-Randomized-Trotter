@@ -734,3 +734,19 @@ result commitへ収録するlocal execution evidenceであり、immutable CIで�
 `g4_matched_cts.py`、`audit_g4_saved_outputs.py`、2 focused test files、
 `artifacts/track_b_g4_conditional_separation/2026-10-09/evidence_manifest_v1.json`を対応させる。
 固定class分離とI1 CTS対照を分け、全工程STOP・研究採否はGPT。共有API変更なし。
+
+
+## 2026-10-10 Track B G5：固定辞書の終了認証（最新追記）
+
+GPT G4 reviewを利用者が採用し、現固定toy・同辞書の実用優位実験主線を区切る。
+[R0/G1/G4/G5 claim map](docs/tracks/algorithm_codesign/g5_claim_evidence_map_20261010.md)、
+[G5 handoff](docs/tracks/algorithm_codesign/g5_results_and_gpt_handoff_20261010.md)、
+[結果前scope](docs/tracks/algorithm_codesign/g5_fixed_dictionary_closure_scope_20261010.md)、
+[static access inventory](docs/tracks/algorithm_codesign/g5_static_access_inventory_20261010.md)。
+[stdlib saved-only verifier](scripts/tracks/algorithm_codesign/g5_fixed_dictionary_closure.py)、
+[off-domain tests](tests/tracks/algorithm_codesign/test_g5_fixed_dictionary_closure.py)、
+[manifest](artifacts/track_b_g5_fixed_dictionary_closure/2026-10-10/evidence_manifest_v1.json)、
+[研究note](docs/research/研究ノート/2026-10-10_track_b_g5_fixed_dictionary_closure.md)を入口とする。
+x1/4・7 prototypes/3 precision・6頂点252 profiles、同Bernstein/L1-charge digital classへの保守的三下界を同CTS lawが下回る。
+新LP/synthesis/circuit/matrix/DF/分子/NPZ/GPUは0。限定理論成果は保持、Track B全体の終了・次method採択ではない。
+mandatory STOP。上記より前のpending/最新記述は当時の履歴としてそのまま保持する。

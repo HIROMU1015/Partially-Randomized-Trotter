@@ -247,3 +247,19 @@ mandatory STOP、研究採否・次scopeはGPT G3。共有src/trotterlib API変�
 G3の旧statusを保持し、新G4でx1/4の限定B2 digital class分離を認証。
 I1 CTSの一lawは指定J1 lawのT/CX/1Qを下回る。新規性・採用・全method最適性は未判定。
 新条件の本実行なし。mandatory STOP、次判断はGPT。
+
+
+## 2026-10-10 Track B G5（最新追記）
+
+[G5結果・引継ぎ](g5_results_and_gpt_handoff_20261010.md) /
+[結果前scope・proof](g5_fixed_dictionary_closure_scope_20261010.md) /
+[claim/evidence map](g5_claim_evidence_map_20261010.md) /
+[static access inventory](g5_static_access_inventory_20261010.md)。
+GPT [G4 scientific review](../../research/track_b_G4_scientific_review_20261010.md) §13の限定作業完了。
+`G5_DIGITAL_SIX_VERTEX_CLASS_EXCLUDED_BY_SAVED_CTS_LAW`：既知development x1/4、252 profiles/756 prices、任意full-support ISとL1-charge digital class、同confidence規則のみ。
+原G4/G3/G1/R0と失敗記録保持。現固定toy同辞書の実用優位実験主線は区切り、限定理論成果保持。
+新LP/angle/synthesis/DF/分子/GPU/science inputなし。Track B全体終了・次method採択・投稿可否は未判断。
+[runner](../../../scripts/tracks/algorithm_codesign/g5_fixed_dictionary_closure.py) /
+[tests](../../../tests/tracks/algorithm_codesign/test_g5_fixed_dictionary_closure.py) /
+[manifest](../../../artifacts/track_b_g5_fixed_dictionary_closure/2026-10-10/evidence_manifest_v1.json)。
+mandatory STOP、次の研究判断はGPT/利用者へ戻す。旧pending/最新記述は履歴として保持する。

@@ -347,3 +347,12 @@ It imports no old execution controller or shared library and performs no solver/
 `audit_g4_saved_outputs.py`（STOP後の保存値照合）。
 [G4 handoff](../docs/tracks/algorithm_codesign/g4_results_and_gpt_handoff_20261009.md)を先に読む。
 両marker consumed、retry不可。Cは設計のみ。次science stage未認可。
+
+
+## Track B G5 fixed-dictionary closure（2026-10-10）
+
+[Saved-only stdlib verifier](tracks/algorithm_codesign/g5_fixed_dictionary_closure.py)：fixed G5 sourceで一回完了。
+x1/4・6頂点252 profiles、strict rational/dyadic CTS照合とdigital bridge。新LP/synthesis/matrix/circuitなし。
+[scope](../docs/tracks/algorithm_codesign/g5_fixed_dictionary_closure_scope_20261010.md)、
+[result](../docs/tracks/algorithm_codesign/g5_results_and_gpt_handoff_20261010.md)、
+[manifest](../artifacts/track_b_g5_fixed_dictionary_closure/2026-10-10/evidence_manifest_v1.json)。marker消費済み、再実行しない。mandatory STOP。
