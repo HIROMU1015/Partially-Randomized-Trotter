@@ -411,3 +411,7 @@ worst13165893832B <= 新cap13958643712B、余裕792749880B。sealed/approved/run
 ## H4 run03 STOP/carry binding
 
 科学libraryは不変。別namespaceの[retry receipt validator](../trottertracks/resource_applicability/h4_geometry/retry_receipt.py)がrun02の消費済み予約・byte journal・native STOPを保持する。[scope](../../docs/research/track_a_h4_production_run03_20261009.md)。
+
+## H4 entrypoint cache修正（2026-10-09）
+
+[原因保存・private memory cache・8限定metadata検証](../../docs/research/track_a_h4_entrypoint_cache_fix_20261009.md)。別namespaceのlibrary_cache v2 policy、runner run_h4_entrypoint_cache_tests.py。科学compile/追加本計算なし。

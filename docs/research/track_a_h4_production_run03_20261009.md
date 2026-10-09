@@ -2,7 +2,7 @@
 
 利用者の指示に従い、追加の人工回路compile検査を省く。本計算で問題が発生した場合は原因を保存し、
 own-runをfail-closed STOPして、その証拠から修正する。元run02の科学compiler/IPC原因は未特定で、完走を保証しない。
-**最新状態：承認済みrun03を一度起動し、plugin cache書込み拒否でFAIL_CLOSED_STOP。全14process退出確認済み。**
+**最新状態：承認済みrun03を一度起動し、plugin manager中のwrite guard拒否でFAIL_CLOSED_STOP。全14process退出確認済み。**
 
 今回の資料入口は本書。詳細は[固定bundle](../../artifacts/resource_applicability/track_a_h4_production_run03/2026-10-09/README.md)を参照する。
 
@@ -124,3 +124,8 @@ first STOPはresource cap/5秒違反ではなくworker_responseでのwrite guard
 既存venvのstevedore._cacheはcache missで~/.cache/python-entrypointsへmkdir/writeする。ディスクcacheを無効にしてメモリcacheだけを使うprocess限定修正を検討する。
 停止原本/one-shot/journal/ledger/observer/worker原因logはprivate home evidenceに保持し、NPZ/科学runtime/cacheをcommitしない。
 自動retry/次stage/入力再生成/共有環境・venv・他job変更/GPUなし。今回の一度の実行はFAIL_CLOSED_STOPで終了した。
+
+
+必要bugfix：[stevedore disk cacheをprocess限定で停止するsource修正](track_a_h4_entrypoint_cache_fix_20261009.md)。run03はSTOP済み、追加本体起動0。
+
+[軽量run03停止結果](../../artifacts/resource_applicability/track_a_h4_production_run03/2026-10-09-authorized/runtime_stop_summary_v3.json)。最終認可bundleの固定README bytesはlaunch artifact時点を保持する。

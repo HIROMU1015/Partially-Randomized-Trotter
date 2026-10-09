@@ -14,6 +14,3 @@ SOURCE `6e68fd9bcc68e788db6f5d43eaa6a03866e53d3b`、closure44。
 SOURCE/profile/input/carry一致・独立review・固定artifact・直前fresh資源/容量/quota・未使用one-shotが合格後、一度起動。
 driver16/observer18、worker12 CPU2/4–6/8–15、own-run affinity・内部thread1。observer AS256MiB/RSS64MiB、admission120.25GiB。
 完了/STOP後終了、自動retry/次stage/旧partial-cache混合なし。runtime原本はhomeのprivate evidenceに保持してcommitしない。
-
-
-実結果：[run03 STOP・native二回監査・消費](runtime_stop_summary_v3.json)。driver2930049/observer2930256/12workers、Qiskit plugin cache write拒否。全14退出、新予約1/完了0、自動retryなし。
