@@ -1,0 +1,70 @@
+{
+  "CPU_roles": {
+    "driver": [
+      16
+    ],
+    "observer": [
+      18
+    ],
+    "workers": [
+      [
+        2
+      ],
+      [
+        4
+      ],
+      [
+        5
+      ],
+      [
+        6
+      ]
+    ]
+  },
+  "absolute_launch_command": "env MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 QISKIT_NUM_PROCS=1 QISKIT_PARALLEL=false RAYON_NUM_THREADS=1 /home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python -P -B /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-production-run06-20261010/scripts/resource_applicability/run_h4_geometry_signal_compile.py --plan /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-production-run06-20261010/artifacts/resource_applicability/track_a_h4_production_run06/2026-10-10/plan_authorized_v16.json --authorization /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-production-run06-20261010/artifacts/resource_applicability/track_a_h4_production_run06/2026-10-10/authorization_v16.json --review /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-production-run06-20261010/artifacts/resource_applicability/track_a_h4_production_run06/2026-10-10/review_v16.json --explicit-launch-signal-compile",
+  "actual_cap": 74805,
+  "actual_worst_case": 74784,
+  "additional_transpiles": 0,
+  "allowed_cpus": [
+    2,
+    4,
+    5,
+    6,
+    16,
+    18
+  ],
+  "approved": true,
+  "authorization_digest": "1d54195293f3fa1a6baad9c9f18a1a5382d78596f8c4a09ac50308c385d62713",
+  "base_review": "34c3fd46cd5dede93473f14187b3e92471f315ea",
+  "carry": {
+    "actual_invocations": 0,
+    "charged_bytes": 0,
+    "wall_seconds": 0.0
+  },
+  "charge_bound_bytes": 8736971632,
+  "closure_count": 55,
+  "fresh_gate_required_at_launch": true,
+  "historical_carry_preserved_excluded": {
+    "actual_invocations": 22,
+    "charged_bytes": 12956511264,
+    "wall_seconds": 6004.111340102032
+  },
+  "independent_review": {
+    "path": "artifacts/resource_applicability/track_a_h4_production_run06/2026-10-10/independent_authorized_run06_review_v1.json",
+    "sha256": "2202a3d7b37422acc9b4ad1a57a0c83e26fc112c94103b8389bdde1f5be489e7",
+    "status": "PASS_READY_FOR_IMMUTABLE_ARTIFACT_AND_FRESH_RUN06_LAUNCH"
+  },
+  "next_stage_authorized": false,
+  "old_partial_cache_reuse": false,
+  "output_cap_bytes": 18253611008,
+  "plan_fingerprint": "940b70af97e06fa2ebf16f72390e5c4eca976778d2149d13c72032a9b0e7e805",
+  "production_launches_at_artifact": 0,
+  "review_digest": "1105f1a3591f7756a2f6555a1b92fae5e3c4ffb608a59ff718168ba9a5a42d18",
+  "runtime_authorization": true,
+  "sealed": true,
+  "source_commit": "697843fbbd2a2aa7224261aa26f8da141ca57687",
+  "source_seed_rebinding_required": true,
+  "status": "PASS_AUTHORIZED_CARRY0_FRESH_GATE_REQUIRED",
+  "supervised_recovery_approved": true,
+  "unused_output_control_one_shot": true
+}

@@ -7751,5 +7751,103 @@
       "bytes": 15988,
       "sha256": "30e76ba2a7c69bd4ef57cb1c82d579f5a913df68286ff4f477f421dba412596f"
     }
+  },
+  "track_a_h4_production_run05_stop_20261010": {
+    "status": "FAIL_CLOSED_STOP",
+    "run_id": "h4-newhost-signal-compile-20261009-run05",
+    "source_commit": "9d1471aff5840a76fa1579f4e14e71e62b8497a3",
+    "artifact_commit": "34c3fd46cd5dede93473f14187b3e92471f315ea",
+    "driver_pid": 2961556,
+    "observer_pid": 2961840,
+    "worker_pids": [
+      2961843,
+      2961844,
+      2961845,
+      2961846,
+      2961847,
+      2961848,
+      2961849,
+      2961850,
+      2961851,
+      2961852,
+      2961853,
+      2961854
+    ],
+    "driver_exit_code": 143,
+    "exact_exit_time": null,
+    "all_owned_processes_ended": true,
+    "next_attempt_carry": {
+      "actual_invocations": 0,
+      "charged_bytes": 0,
+      "wall_seconds": 0.0
+    },
+    "attempt_charged_bytes": 4263792756,
+    "new_actual_reservations": 12,
+    "completed_records": 0,
+    "signal_records": 0,
+    "first_stop_reason": "memory_pressure",
+    "memory_at_STOP": {
+      "available": 428727332864,
+      "host_available": 428727332864,
+      "oom_events": {
+        "/sys/fs/cgroup/user.slice": 1,
+        "/sys/fs/cgroup/user.slice/user-30038.slice": 0,
+        "/sys/fs/cgroup/user.slice/user-30038.slice/session-105501.scope": 0
+      },
+      "psi_full_avg10": 0.18,
+      "psi_full_by_scope": {
+        "/sys/fs/cgroup/user.slice": 0.0,
+        "/sys/fs/cgroup/user.slice/user-30038.slice": 0.0,
+        "/sys/fs/cgroup/user.slice/user-30038.slice/session-105501.scope": 0.0,
+        "host": 0.18
+      }
+    },
+    "native_audits": 2,
+    "raw_receipt": {
+      "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261009/h4-production-run05-20261009/RUNTIME_STOP_RECEIPT_v5.json",
+      "bytes": 15688,
+      "sha256": "4cc89cb8bfb0034427b527af9a666680336961f313247c9ef1accc921b6cf64a"
+    }
+  },
+  "track_a_h4_production_run06_authorization_20261010": {
+    "status": "AUTHORIZED_INDEPENDENT_REVIEW_PASS_FRESH_PENDING",
+    "source_commit": "697843fbbd2a2aa7224261aa26f8da141ca57687",
+    "source_closure": 55,
+    "report": "docs/research/track_a_h4_production_run06_20261010.md",
+    "bundle": "artifacts/resource_applicability/track_a_h4_production_run06/2026-10-10",
+    "carry": {
+      "actual_invocations": 0,
+      "charged_bytes": 0,
+      "wall_seconds": 0.0
+    },
+    "current_caps": {
+      "actual_invocations": 74805,
+      "output_bytes": 18253611008,
+      "wall_seconds": 259200
+    },
+    "charge_bound_bytes": 8736971632,
+    "actual_worst_case": 74784,
+    "tests": 21,
+    "additional_transpiles": 0,
+    "production_launches_at_preparation": 0,
+    "supervised_recovery_approved": true,
+    "approved": true,
+    "runtime_authorization": true,
+    "next_stage_authorized": false,
+    "shared_or_venv_changes": false,
+    "workers": 4,
+    "approved_CPU_subset": [
+      2,
+      4,
+      5,
+      6,
+      16,
+      18
+    ],
+    "admission_floor_bytes": 129117454336,
+    "pressure_policy_unchanged": true,
+    "second_startup_admission_floor_preserved": true,
+    "independent_review": "PASS_READY_FOR_IMMUTABLE_ARTIFACT_AND_FRESH_RUN06_LAUNCH",
+    "review_digest": "1105f1a3591f7756a2f6555a1b92fae5e3c4ffb608a59ff718168ba9a5a42d18"
   }
 }
