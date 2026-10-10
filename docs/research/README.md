@@ -1,5 +1,14 @@
 # 研究計画資料
 
+## 2026-10-10 Track A：H4限定science manifest固定・seal
+
+最新入口は[H4限定seal報告](track_a_ax2b_h4_limited_seal_v1.md)。保存再監査済みboundsと旧8 cell・capsを固定する。
+science source/input/env・CPU3/worker1/BLAS1・専用future outputをmetadataとして結合。
+35合成tests pass。新科学計算/array decode/native準備/probe/sampling/build/compile0。
+execution_plan_sealed=trueは条件固定だけ。science_authorized=false / launch_allowed=false。
+H4_LIMITED_NOT_AUTHORIZED / H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、mandatory STOP。
+旧source/freezes/STOP/結果・dirty差分を保持。以下は各段階当時の履歴。
+
 ## 2026-10-10 Track A：H4-P保存read gate v2・再監査
 
 最新入口は[H4-P保存再監査](track_a_ax2b_h4_native_receipt_reaudit_v2.md)。新gate/runner・36合成testsを追加。
