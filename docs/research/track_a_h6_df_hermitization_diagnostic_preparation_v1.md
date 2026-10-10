@@ -73,6 +73,9 @@ normal-orderの符号とantisymmetrizationは独立2-mode Fockの**合成代数f
 ## Source・seal・予算・合成検証
 
 新診断source commit：`ff24de4bc410234472a416186b773fc7875ae373`。
+準備資料commit：`905ee89eb814ca6b2be2c24727101ec991589f54`。
+[GitHub再取得・bytes照合記録](../../artifacts/resource_applicability/track_a_ax2b_h6_df_diagnostic_preparation/2026-10-10/remote_verification_v1.json)は、この資料commitの187 science / 2 validation sources、旧source183件・旧raw20件、旧baseline4051件の保全とrepository相対リンクを確認した。
+本記録とこの索引追記だけを後続commitで公開する。rootの別作業による新しい未追跡review文書1件を観測したが、本作業では変更・stageしていない。
 [source freeze](../../artifacts/resource_applicability/track_a_ax2b_h6_df_diagnostic_preparation/2026-10-10/source_freeze_v1.json)はscience187件・validation2件。
 [sealed preparation](../../artifacts/resource_applicability/track_a_ax2b_h6_df_diagnostic_preparation/2026-10-10/sealed_diagnostic_preparation_v1.json)と[preflight](../../artifacts/resource_applicability/track_a_ax2b_h6_df_diagnostic_preparation/2026-10-10/prelaunch_seal_audit_v1.json)で旧入力・新source・plan・環境・CPU2を固定した。
 source/input/環境の変更は新sealを要し、sealとdraftだけでは実行できない。
