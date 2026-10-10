@@ -1,5 +1,16 @@
 # プロジェクト案内
 
+## 2026-10-10 独立Hamiltonian表現探索
+
+[初期検証・GPTレビュー資料](docs/research/representation_exploration_initial_validation_20261010.md)と
+[固定scope](docs/research/representation_exploration_scope.md)が本系列の入口。
+moduleは`src/trottertracks/representation_exploration/mechanisms.py`、runnerは
+`scripts/run_representation_exploration.py`、testsは`tests/test_representation_exploration.py`。
+artifactは`artifacts/representation_exploration/2026-10-10/`、保存値だけの監査は
+`scripts/verify_representation_exploration.py`。A/B/Cのtoy機構比較、local evidence、GPT review待ちSTOP。
+基点b2e1bf6上の独立branchの追加で、後続Track A/Bのsource・契約・STOPは変更しない。
+以下のTrack A/B索引は基点までの履歴として保持する。
+
 ## Track A H4追加6距離と最大12 workersの契約準備
 
 2026-10-06 JST、利用者は0.70/0.80/0.90/1.10/1.40/1.60 Åの6点と最大12 CPU workers・各thread1を確認した。

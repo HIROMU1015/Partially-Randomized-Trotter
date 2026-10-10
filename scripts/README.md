@@ -1,5 +1,12 @@
 # scripts 索引
 
+独立Hamiltonian表現探索（2026-10-10）は
+[run_representation_exploration.py](run_representation_exploration.py)で小規模機構検証を完了しSTOP。
+[verify_representation_exploration.py](verify_representation_exploration.py)はstdlib保存値監査で科学sourceをimportしない。
+[scope/結果](../docs/research/representation_exploration_initial_validation_20261010.md)、
+module `src/trottertracks/representation_exploration/`、専用tests、
+`artifacts/representation_exploration/2026-10-10/`を一組にする。既存Track A/Bのrunnerは不変。
+
 原稿用の表示・照合script：
 
 - [build_track_a_manuscript_figures.py](resource_applicability/build_track_a_manuscript_figures.py)：

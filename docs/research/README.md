@@ -1,5 +1,11 @@
 # 研究計画資料
 
+2026-10-10、別branchの[Hamiltonian表現探索初期結果](representation_exploration_initial_validation_20261010.md)を追加。
+[scope](representation_exploration_scope.md)と
+[利用者入力/GPT初期レビュー](representation_exploration_inputs/)を区別する。
+正のfactor混合、生成子反射、THRIFT mixed oracleをtoyで検証。中心仮説未採択、GPTレビュー待ちSTOP。
+既存Track A/Bの契約・科学source・STOPは変更しない。以下の状態記述は基点までの履歴。
+
 2026-10-06のTrack A入口は[サーバー側への正式契約準備指示](gpu_server_track_a_h4_geometry_contract_preparation_prompt.md)と
 [確認済みscope JSON](track_a_h4_geometry_contract_preparation_scope_v1.json)。
 server preparation `c2ab34f`を基に追加6距離・最大12 workersを契約条件とし、218 template/点・74,784 wrapper上限を記録する。

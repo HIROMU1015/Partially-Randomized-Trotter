@@ -1,5 +1,12 @@
 # trotterlib モジュール索引
 
+2026-10-10の独立Hamiltonian表現探索は共有scienceを変更せず、
+[別module](../trottertracks/representation_exploration/mechanisms.py)で既存DF/RTEを再利用する。
+[結果・scope・証拠索引](../../docs/research/representation_exploration_initial_validation_20261010.md)、
+`scripts/run_representation_exploration.py`、`tests/test_representation_exploration.py`、
+`artifacts/representation_exploration/2026-10-10/`を参照。local toy evidence、GPT review待ちSTOP。
+このREADMEの索引追加だけで、既存trotterlib科学source・Track A/Bは変更しない。
+
 固定PM-2保存値解析sourceで一回の解析を完了し、[結果照合](../../docs/pr2_pm2_precision_resource_result_validation.md)へ記録した。
 共有science/sourceは変更していない。POSTHOC local evidence、研究方針review待ちSTOP、次段未認可。
 以下の未実行記述は実装・source固定時点の履歴である。

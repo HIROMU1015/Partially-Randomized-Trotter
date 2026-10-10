@@ -1,5 +1,16 @@
 # Validation status
 
+## 2026-10-10 独立Hamiltonian表現探索：初期機構検証完了・GPTレビュー待ちSTOP
+
+[結果と証拠索引](docs/research/representation_exploration_initial_validation_20261010.md)は
+synthetic exact-data developmentのA20/B9/C3行、B全24,678イベント、compiled circuits19件。
+source `25d7135f7a0285b6cf415349191b00c00acfb75f`、39 local tests passed、2 warnings、
+stdlib保存監査74,389 checks/3改変拒否PASS。run1 technical failureは別sourceで保存し、run2と混同しない。
+CPU1/各thread1、run2 wall3.84725秒・peak RSS約427 MiB。分子/GPU/ground-state/量子shots0。
+`INITIAL_MECHANISMS_COMPLETE_AWAITING_GPT_REVIEW`、next-stage=false、central hypothesis=null。
+immutable CI・外部科学再現・精度一致総費用評価・新規性認定ではない。旧Track A/Bの結果・STOPは不変。
+このbranchの旧statusは基点までの履歴で、後続branchの最新状態を上書きしない。
+
 ## 2026-10-05 Track A PM-2保存値解析完了 mandatory STOP
 
 [結果照合](docs/pr2_pm2_precision_resource_result_validation.md)はPOSTHOC保存値解析。

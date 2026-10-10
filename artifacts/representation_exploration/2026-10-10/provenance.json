@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "branch": "representation-exploration-20261010",
+  "base_commit": "b2e1bf65e21893b6c617223b42313623d3186f12",
+  "source_commits": {
+    "run1": "451bfa523f548ad5e1563428474f62d44e7a3366",
+    "run2": "25d7135f7a0285b6cf415349191b00c00acfb75f"
+  },
+  "audited_external_refs": {
+    "main": "0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf",
+    "track_a_read_only": "8a3189e69dd461724fa9e2c01ea08562c1c35f8d",
+    "track_b_read_only": "f9d2665283c707e5a025a2c92c1a051153eaf2e1"
+  },
+  "inputs": [
+    {
+      "repository_path": "docs/research/representation_exploration_inputs/PR_representation_codesign_research_review_2026-10-10.md",
+      "sha256": "1e6b6963c614f406be4daa9284372bfb5d7cfa5cb9fde1804f1c07a6091f35d4",
+      "original_copy_identical": true,
+      "input_provenance": "user supplied, first committed in this exploration"
+    },
+    {
+      "repository_path": "docs/research/representation_exploration_inputs/user_request_20261010.txt",
+      "sha256": "f6cb697eefd365bb5d9db692adae83d9908af858db82fa123aa6675d34c56e90",
+      "original_copy_identical": true,
+      "input_provenance": "user supplied, first committed in this exploration"
+    }
+  ],
+  "root_worktree_protection": {
+    "baseline_receipt_sha256": "4bc610363e299a9e9870ce26dca21e85da0eea43ddf7ef1cb047b3f3d0890018",
+    "paths_checked": 1312,
+    "changed_protected_paths": [],
+    "removed_initial_status_entries": 0,
+    "new_unrelated_untracked_entries": 1,
+    "all_initial_tracked_and_missing_states_preserved": true,
+    "whole_status_identical": false,
+    "note": "A separate untracked Track A review appeared during this task; it was not edited, staged or copied."
+  },
+  "validation": {
+    "command": "PYTHONPATH=src /tmp/prt-representation-venv/bin/python -m pytest -q tests/test_representation_exploration.py tests/test_rte.py",
+    "passed": 39,
+    "failed": 0,
+    "skipped": 0,
+    "warnings": 2,
+    "warning_scope": "qiskit-nature real casts; real toy inputs, independent DF/JW matrix checks passed",
+    "immutable_ci": false,
+    "external_scientific_replication": false
+  },
+  "science_attempts": {
+    "run1": "TECHNICAL_STOP",
+    "run2": "INITIAL_MECHANISMS_COMPLETE_AWAITING_GPT_REVIEW",
+    "new_science_runs_after_run2": 0
+  },
+  "central_hypothesis_adopted": null,
+  "next_stage_authorized": false
+}

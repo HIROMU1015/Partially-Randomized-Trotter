@@ -1,5 +1,11 @@
 # 文書索引
 
+2026-10-10の独立Hamiltonian表現探索は
+[初期検証結果・GPTレビュー資料](research/representation_exploration_initial_validation_20261010.md)、
+[固定scope](research/representation_exploration_scope.md)、[dated note](research/研究ノート/2026-10-10_representation_exploration.md)。
+source/runner/test/artifact/監査は報告書の証拠表に対応する。A/B/Cの小規模比較を完了してSTOP。
+中心仮説・新規性・精度一致総costは未確定。以下は基点までの既存Track A/Bの履歴で、変更しない。
+
 2026-10-06のTrack Aは[H4正式契約準備指示](research/gpu_server_track_a_h4_geometry_contract_preparation_prompt.md)と
 [scope JSON](research/track_a_h4_geometry_contract_preparation_scope_v1.json)。
 利用者確認済みの追加6距離・最大12 workers、将来74,784-wrapper上限を契約準備へ反映する。

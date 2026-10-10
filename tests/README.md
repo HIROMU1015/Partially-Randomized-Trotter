@@ -1,5 +1,11 @@
 # tests の役割
 
+独立表現探索の[test_representation_exploration.py](test_representation_exploration.py)は23 local tests。
+非可換square恒等式、独立JW参照、反射finite-RTE平均、制御位相、mixed oracleを検査し、
+既存[test_rte.py](test_rte.py)16件と合計39 passed（real入力に関するComplexWarning2件をlogへ保存）。
+[結果・限界](../docs/research/representation_exploration_initial_validation_20261010.md)を参照。
+全イベントの保存値照合と3改変拒否は別監査で、科学実験数やtest件数に加算しない。full suiteは実行しない。
+
 原稿用の[表示tests](tracks/resource_applicability/test_manuscript_figures.py)（12件）と
 [bundle helper tests](tracks/resource_applicability/test_manuscript_bundle.py)（9件）は合計21 passed、fail/skip0。
 合成値・一時Markdown/CSV・sourceだけでmissing、identity、固定集合、affine描画、unsafe link拒否を検査する。
