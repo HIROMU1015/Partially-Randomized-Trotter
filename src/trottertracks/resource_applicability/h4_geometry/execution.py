@@ -237,6 +237,8 @@ def candidate_wrapper_jobs(run,identity,seeds,preparation,template):
     """Generate one evolution and its two axes lazily in trajectory order."""
     from .signal import sample_events
     from .circuits import build_evolution,wrapper,numerical_fingerprint
+    from .encoding_memo import ArrayEncodingMemo
+    encoding_memo = ArrayEncodingMemo()
     for index,seed in enumerate(seeds):
         run.pulse()
         if hasattr(run,'phase'):run.phase('candidate_events_build')
@@ -246,7 +248,7 @@ def candidate_wrapper_jobs(run,identity,seeds,preparation,template):
             if hasattr(run,'phase'):run.phase('wrapper_build:'+axis)
             run.pulse();circuit=wrapper(evolution,axis)
             if hasattr(run,'phase'):run.phase('numerical_serialization:'+axis)
-            numerical=numerical_fingerprint(circuit,axis)
+            numerical=numerical_fingerprint(circuit,axis,encoding_memo=encoding_memo)
             run.pulse()
             if hasattr(run,'phase'):run.phase('wrapper_ready:'+axis)
             yield wire(identity,axis,seed,index if seed is not None else None,numerical),circuit

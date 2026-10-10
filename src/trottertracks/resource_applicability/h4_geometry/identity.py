@@ -4,6 +4,7 @@ import json
 import math
 import re
 import time
+from dataclasses import dataclass
 from .streaming import LazyList
 
 
@@ -26,6 +27,8 @@ def hash_id(value):
 
 
 def exact(value):
+    if isinstance(value, EncodedValue):
+        return json.loads(value.text)
     if value is None or type(value) in (str, bool, int):
         return value
     if type(value) is float:
@@ -48,7 +51,9 @@ def canonical(value):
 
 def exact_json_parts(value):
     """Yield canonical JSON without allocating a second exact container tree."""
-    if value is None:
+    if isinstance(value, EncodedValue):
+        yield value.text
+    elif value is None:
         yield 'null'
     elif type(value) is bool:
         yield 'true' if value else 'false'
@@ -75,6 +80,19 @@ def exact_json_parts(value):
         yield '}'
     else:
         raise Stop('unsupported/symbolic identity value')
+
+
+@dataclass(frozen=True, init=False)
+class EncodedValue:
+    """Immutable output of this exact encoder, never an arbitrary JSON string.
+
+    Only small numeric parameters use this shortcut. Large circuits and arrays
+    still stream; constructing this value validates finite numbers first.
+    """
+    text: str
+
+    def __init__(self, value):
+        object.__setattr__(self, 'text', ''.join(exact_json_parts(value)))
 
 
 def canonical_chunks(value, chunk_size=65536):
