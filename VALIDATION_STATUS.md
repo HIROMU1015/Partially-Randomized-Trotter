@@ -1,5 +1,18 @@
 # Validation status
 
+2026-10-11整理：A寄与分解・B′物理pairの限定batch（計算系列日付2026-10-10）を完了。
+[結果とGPT判断事項](docs/research/representation_attribution_pair_results_20261010.md)、[scope](docs/research/representation_attribution_pair_scope.md)を入口とする。
+Aは3-mode JW全Fock8、synthetic exact DF rank2、native L_D0/1/2＋whole-Pauli＋旧/完全占有core、T=.4、delta=.4/.2/.1。
+Bはphysical3+aux1 isometry fixture、JW、L_D0/r1/K2、T=.2、delta=.2/.1/.05。geometry/化学basis/分子fittingなし。
+費用は固定q1、meanはq1/2/4、epsilon=.05/.02、full-physical-Fock bias診断で揃える。
+Aは安いwhole-Pauliを加えるとcore改善を支持せず、完全占有coreの追加効果はRZ約.452%減・CX約.202%増。
+B′はlambda/shot数を下げてもbasis/native費用でdirect-Pauliより高い。C追加scan0。
+source3975650、85 focused local tests、1558 compiles、177 source/input blobsと全IRの別保存監査PASS。
+local開発証拠でimmutable CI/外部科学再現/新規性認定ではない。
+`ATTRIBUTION_PAIR_COMPLETE_AWAITING_GPT_REVIEW`、中心仮説null、次段false、mandatory STOP。
+以下の旧stage/Track A/Bの履歴・science/契約/STOPを変更しない。
+
+
 ## 2026-10-10 独立表現探索：限定構成・同一信号精度比較完了 STOP
 
 [結果と全証拠](docs/research/representation_construction_comparison_results_20261010.md)、

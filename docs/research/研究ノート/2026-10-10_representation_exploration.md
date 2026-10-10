@@ -33,3 +33,13 @@
 12. Qiskit/project importsなしの別保存verifierで全374 IR/176 source blobs/会計/有限平均を照合し、3改変を拒否した。
     local開発証拠として新[結果報告](../representation_construction_comparison_results_20261010.md)とmanifestへ追加する。
     元結果・Track A/Bは保持し、公開後はGitHub別取得でblob照合する。中心仮説null、次段false、mandatory STOP。
+
+## 2026-10-11追加：10-10科学reviewに従うA寄与分解・B′比較
+
+13. 利用者のreview採用指示でc24dced基点の新独立branch/worktreeを作成。比較scopeとsource3975650を先に固定した。
+14. Aにwhole-H係数収集all-Pauliと全占有対角core、Bにphysical pair Z/Z/ZZとQを追加。旧library/RTE sampler/source/resultは保持。
+15. 初回専用testは14 pass/1 fail（RTEEvent field名誤り）を通常修正、focused85 pass/18既存warnings。1科学batchのみを実行し1558 wrappers/30 meanを保存。
+16. 次数0全列挙＋次数2条件付き96（Qは64全列挙）、共通uniform couplingで費用と候補差SEを評価。A core改善は安いwhole-Pauli対照で支持されず、B pairはbasis費用でdirectより高かった。C追加scan0。
+17. 別保存verifierが177 blobs/1558 IR/933 draw/会計をPASS、最大位相差3.1303e−14。提供有理数algebraも再照合。
+18. [新報告](../representation_attribution_pair_results_20261010.md)とmanifestへ追加し、中心仮説null/次段falseでSTOP。科学run retry0、分子/GPU/ground-state/量子shot0。
+19. global manifest checkerは基点でもrelevant_commits[7]のdescription欠測で失敗。既存entriesを修正せず、その同一失敗と新entryだけのschema検査を別auditに残す。
