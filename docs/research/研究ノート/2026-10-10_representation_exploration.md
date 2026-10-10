@@ -70,3 +70,11 @@ Qiskitの既定qubits_initially_zero=Trueが全入力を真空と仮定する点
 個別gate分解は全て一致し、全回路のancilla借用時の入力仮定が問題だった。
 全対照にFalseを適用し、sourceを再固定する。科学fixture・予算・q・selectorは変更せず、
 run2の失敗・完了checkpoint・診断とともに技術再実行の履歴を残す。
+
+## 2026-10-11追記：run3完了checkpointからの保存復旧
+
+source ed335a0で9 contextの計算とcheckpoint/result保存を完了。集約native_irだけが
+pretty JSONの64MiB上限に達したためrun auditはTECHNICAL_STOPを記録した。
+計算を繰り返さず、別source固定のstdlib集約器が親hashと全checkpoint/result一致を確認し、
+同じ数値・gate順序をcompact JSONとしてrun3_recoveredへ保存する。上限は保持する。
+失敗run3も保持し、計算source ed335a0とexport sourceを分けて記録する。
