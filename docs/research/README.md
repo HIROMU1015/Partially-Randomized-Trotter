@@ -1,5 +1,16 @@
 # 研究計画資料
 
+## 2026-10-10 Track A：H6 DF診断準備・未実行
+
+最新入口は[Hermitization STOP後の診断仕様/source/seal](track_a_h6_df_hermitization_diagnostic_preparation_v1.md)。
+既存48,794 artifact paths/配列116件を検索。失敗rawは回収できず、旧integrals/STOP/source identityを確認。
+保存integralsだけでtol-only1e-8の一回診断を準備。全raw先保存、lambda/非Hermiticity/係数整合性を分離。
+新source ff24de4・43 local synthetic tests pass、CPU2/worker1/BLAS1、total480秒/AS8GiB/output32MiBをseal。
+今回runner起動・実DF call0、旧source/integrals/STOPとdirty/untracked・Track Bを保全。
+新grantなし・実行未認可、H6_DF_DIAGNOSTIC_NOT_AUTHORIZED / H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION。
+診断後も別identity/保存監査/公開/mandatory STOP。DF政策変更・H6 GOはGPT判断へ戻す。
+以下は段階当時の履歴。
+
 ## 2026-10-10 Track A：H6入力生成・DF検査STOP v1
 
 最新入口は[H6一回実行のSTOP・一次証拠・欠測](track_a_ax2b_h6_input_generation_stop_v1.md)。
