@@ -1,5 +1,15 @@
 # scripts 索引
 
+独立表現探索の限定構成比較は
+[run_representation_construction_comparison.py](run_representation_construction_comparison.py)、
+[verify_representation_construction_comparison.py](verify_representation_construction_comparison.py)。
+前者は固定sourceで一回完了してSTOP。後者は保存IR/mean/費用とcommit blobsのみを照合し、Qiskit・project scienceをimportしない。
+[scope/結果](../docs/research/representation_construction_comparison_results_20261010.md)、
+module `src/trottertracks/representation_exploration/construction_comparison.py`、
+tests `tests/test_representation_construction_comparison.py`、
+`artifacts/representation_construction_comparison/2026-10-10/`と一組に読む。次段science未認可。
+以下は各milestone当時の履歴。
+
 独立Hamiltonian表現探索（2026-10-10）は
 [run_representation_exploration.py](run_representation_exploration.py)で小規模機構検証を完了しSTOP。
 [verify_representation_exploration.py](verify_representation_exploration.py)はstdlib保存値監査で科学sourceをimportしない。

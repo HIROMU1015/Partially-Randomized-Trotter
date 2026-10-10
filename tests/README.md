@@ -1,5 +1,12 @@
 # tests の役割
 
+限定構成比較の[test_representation_construction_comparison.py](test_representation_construction_comparison.py)は新31件。
+analytic JW、input構成とcore不変性、有限RTE列挙、Gaussian/controlled位相、degree2 mixed access、
+invalid graph拒否、反復境界、isometry quartic接続、shots/paired SE、保存IRを検査する。
+旧探索23＋既存finite-RTE16と合計70 local tests passed、fail/skip0、18 warnings（Qiskit16、旧ComplexWarning2）。
+[結果・限界・pre-freeze failure log](../docs/research/representation_construction_comparison_results_20261010.md)を参照。
+保存された全374 IRの別実装照合と3改変拒否は別監査で、pytest件数には加算しない。full suiteは実行しない。
+
 独立表現探索の[test_representation_exploration.py](test_representation_exploration.py)は23 local tests。
 非可換square恒等式、独立JW参照、反射finite-RTE平均、制御位相、mixed oracleを検査し、
 既存[test_rte.py](test_rte.py)16件と合計39 passed（real入力に関するComplexWarning2件をlogへ保存）。

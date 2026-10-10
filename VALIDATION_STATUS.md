@@ -1,5 +1,20 @@
 # Validation status
 
+## 2026-10-10 独立表現探索：限定構成・同一信号精度比較完了 STOP
+
+[結果と全証拠](docs/research/representation_construction_comparison_results_20261010.md)、
+[実行前scope](docs/research/representation_construction_comparison_scope.md)を参照。
+Aは3-mode JW synthetic exact DF rank2、native L_D0/1/2＋shared frame core3件、T=.4、delta=.4/.2/.1。
+Cは2/3qubit Ising＋X、alpha=.1/.2、delta=.2/.1/.05/.025と.4/.2/.1/.05、DF rank/L_D該当なし。
+Bはphysical3＋aux1 isometry構造fixture、JW、L_D0、T=.2、delta=.2/.1/.05、K2（cost q1のみ）。
+geometry・化学basis・分子compression fittingなし。epsilon_complex=.05/.02、exact小系bias条件付きshot会計。
+source ce99b57、70 local tests passed、18 warnings、fail/skip0、実374 wrappers、wall16.9223秒、RSS535.5 MiB。
+別実装保存監査は176 source/input blobsと全374 IR・費用/mean/位相をPASS、3改変拒否。
+分子/GPU/ground-state/量子shots0、科学run1後は保存監査のみ。
+`LIMITED_CONSTRUCTION_COMPARISON_COMPLETE_AWAITING_GPT_REVIEW`、mandatory STOP、next-stage=false、central-hypothesis=null。
+CI・外部科学再現・厳密bias certificate・energy/QPE/RPE最終総費用・新規性認定ではない。
+旧結果・Track A/Bのsource/契約/STOPは不変。以下は各milestone時点の履歴として保持する。
+
 ## 2026-10-10 独立Hamiltonian表現探索：初期機構検証完了・GPTレビュー待ちSTOP
 
 [結果と証拠索引](docs/research/representation_exploration_initial_validation_20261010.md)は

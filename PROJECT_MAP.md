@@ -1,5 +1,18 @@
 # プロジェクト案内
 
+## 2026-10-10 独立表現探索：限定構成・同一精度比較完了
+
+[最新結果・GPTレビュー資料](docs/research/representation_construction_comparison_results_20261010.md)と
+[固定scope](docs/research/representation_construction_comparison_scope.md)を現在の入口とする。
+module `src/trottertracks/representation_exploration/construction_comparison.py`、
+runner `scripts/run_representation_construction_comparison.py`、tests `tests/test_representation_construction_comparison.py`、
+保存監査 `scripts/verify_representation_construction_comparison.py`、
+artifact `artifacts/representation_construction_comparison/2026-10-10/`を一組に読む。
+source ce99b57、70 local tests、A18/C48/B6 mean診断・374 compiles。
+Aはnative全endpointとRZ/CXの利害分岐、Cは対称S2対照でTHRIFT利益なし、Bはisometry接続のみで圧縮利益未実証。
+local exact-data evidence、GPT review待ちSTOP、中心仮説null、次段false。
+旧初期系列・Track A/Bのscience/契約/STOP、元root dirty状態は不変。以下は各milestone時点の履歴。
+
 ## 2026-10-10 独立Hamiltonian表現探索
 
 [初期検証・GPTレビュー資料](docs/research/representation_exploration_initial_validation_20261010.md)と

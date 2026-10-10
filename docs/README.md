@@ -1,5 +1,13 @@
 # 文書索引
 
+2026-10-10の独立系列第2 batchは
+[限定構成・同一信号精度比較の結果](research/representation_construction_comparison_results_20261010.md)、
+[固定scope](research/representation_construction_comparison_scope.md)、
+[利用者提供独立reviewとZIP inputs](research/representation_construction_inputs/)。
+Aの入力-derived core/実finite-RTE、Cの対称S2対照、Bのisometry接続を小系で閉じ、GPTレビュー待ちSTOP。
+全136 precision rowsと374 native IR、source/runner/tests/保存監査は報告書の証拠表から辿れる。
+中心仮説null、次段false、旧初期探索・Track A/Bのscience/契約/STOPは不変。以下は各milestone時点の履歴。
+
 2026-10-10の独立Hamiltonian表現探索は
 [初期検証結果・GPTレビュー資料](research/representation_exploration_initial_validation_20261010.md)、
 [固定scope](research/representation_exploration_scope.md)、[dated note](research/研究ノート/2026-10-10_representation_exploration.md)。

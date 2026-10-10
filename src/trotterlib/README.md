@@ -1,5 +1,13 @@
 # trotterlib モジュール索引
 
+独立表現探索の第2 batchは共有scienceを変更せず、
+[construction_comparison.py](../trottertracks/representation_exploration/construction_comparison.py)でnative DF/finite-RTE helperを再利用した。
+[結果・scope・証拠](../../docs/research/representation_construction_comparison_results_20261010.md)、
+`scripts/run_representation_construction_comparison.py`、`scripts/verify_representation_construction_comparison.py`、
+`tests/test_representation_construction_comparison.py`、
+`artifacts/representation_construction_comparison/2026-10-10/`を参照。70 local tests、374 wrappers、GPT review待ちSTOP。
+このREADMEへの追加は索引のみ。以下の旧source/科学状態は各milestone当時の履歴。
+
 2026-10-10の独立Hamiltonian表現探索は共有scienceを変更せず、
 [別module](../trottertracks/representation_exploration/mechanisms.py)で既存DF/RTEを再利用する。
 [結果・scope・証拠索引](../../docs/research/representation_exploration_initial_validation_20261010.md)、

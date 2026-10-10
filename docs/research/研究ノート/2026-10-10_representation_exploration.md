@@ -18,3 +18,18 @@
    bounded-support可解core＋正確残差は新しい検討候補として記述するだけで、追加実装や採択はしない。
 7. 追跡可能なsource/入力/raw結果/失敗/log/環境/監査を公開し、別取得でGitHubの実branch・commit・blobを確認する。
    中心仮説、新規性、研究方針はGPTへ戻す。next-stage=false、central-hypothesis=null、mandatory STOP。
+
+## 追加履歴：独立review後の限定構成・比較batch
+
+8. 利用者の「こんな感じで進める」と独立review第9節を受け、3934583基点の新branch/worktreeを作成した。
+   A/Cの小系構成と同一精度比較、Bのisometry接続だけを扱い、元root1316 pathsとdirty状態を保護した。
+9. 固定frameの全factor coreはlabel回転不変なのでO-angle走査を除いた。
+   [P,Hbar]=0は第一moment保存の十分条件で、一般の必要条件ではないというreviewの訂正を採用した。
+   既存二準位toyだけに限定せず、3-mode connected square入力とdegree2 chainを固定した。
+10. source/test/scope/inputをce99b57に固定し、native DF全endpoint、actual finite-RTE、対称S2対照、実isometry fixtureを一度実行した。
+    pre-freeze引数名不一致の2 test failureと修正後67/70 passesを保存。科学run1は成功しretry0。
+11. Aはlambda最小と資源最小が一致せずall-RとのRZ/CX tradeoff、Cは対称S2よりTHRIFTが高費用、
+    Bはisometry接続成立だがdirect小系Pauli RTEより高費用。重要な判別結果が得られたので科学計算を停止した。
+12. Qiskit/project importsなしの別保存verifierで全374 IR/176 source blobs/会計/有限平均を照合し、3改変を拒否した。
+    local開発証拠として新[結果報告](../representation_construction_comparison_results_20261010.md)とmanifestへ追加する。
+    元結果・Track A/Bは保持し、公開後はGitHub別取得でblob照合する。中心仮説null、次段false、mandatory STOP。

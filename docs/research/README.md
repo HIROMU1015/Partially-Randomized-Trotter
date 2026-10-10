@@ -1,5 +1,13 @@
 # 研究計画資料
 
+2026-10-10の独立系列最新は
+[限定構成・同一信号精度比較結果とGPTへの判断事項](representation_construction_comparison_results_20261010.md)。
+[固定scope](representation_construction_comparison_scope.md)と
+[提供独立review/ZIP inputs](representation_construction_inputs/)を区別する。
+3-mode rank2 core生成とnative全endpoint比較、2/3qubit Isingの対称S2/THRIFT比較、isometry構造接続を完了。
+source ce99b57、374 compiles、70 tests、保存監査PASS。local開発証拠、中心仮説null、次段false、mandatory STOP。
+旧初期結果・Track A/Bは変更しない。以下は各milestone当時の履歴。
+
 2026-10-10、別branchの[Hamiltonian表現探索初期結果](representation_exploration_initial_validation_20261010.md)を追加。
 [scope](representation_exploration_scope.md)と
 [利用者入力/GPT初期レビュー](representation_exploration_inputs/)を区別する。
