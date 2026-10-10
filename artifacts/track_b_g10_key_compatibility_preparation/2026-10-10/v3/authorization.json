@@ -1,12 +1,25 @@
 {
-  "status": "PENDING_SEPARATE_G10_V3_AUTHORIZATION",
-  "science_execution_authorized": false,
-  "source_commit": null,
-  "contract_sha256": null,
-  "explicit_execution_instruction": null,
+  "status": "APPROVED_FOR_ONE_G10_RUN",
+  "science_execution_authorized": true,
+  "source_commit": "b9ed01455351628c9073748f5ba5751aa794b789",
+  "contract_sha256": "f50e9b99a25f859556631c47916dc346295b3d80dd22139ae9cd7af0da0bc7b4",
+  "explicit_execution_instruction": "利用者の原文指示：次の作業を進めて。直前に提示した固定S3 b9ed01455351628c9073748f5ba5751aa794b789 のG10 v3 one-shot実行、authorization-only直接子A3作成・push、launch gate、retry=0、旧結果・marker保持、外側process/保存provenance監査・公開、mandatory STOPを進める指示として記録する。",
   "runs": 1,
   "retries": 0,
   "mandatory_STOP": true,
-  "preparation_only": true,
-  "note": "This instruction authorizes compatibility preparation only, not A3 or any production marker/run."
+  "preparation_only": false,
+  "note": "Separate post-review user continuation of the immediately preceding source-bound G10 v3 one-shot scope. No scientific condition, cap, retry or next-stage change.",
+  "user_instruction_verbatim": "次の作業を進めて",
+  "date_JST": "2026-10-10",
+  "instruction_context": {
+    "previous_response_fixed_source": "b9ed01455351628c9073748f5ba5751aa794b789",
+    "previous_response_steps": [
+      "S3の直接子としてauthorization-only A3を作成・push。",
+      "launch gateを確認し、G10 v3を一回だけ実行。retry=0。",
+      "保存結果と外側processのstatus・provenanceを監査し、commit・push。",
+      "mandatory STOPし、科学的解釈・研究方針判断をGPTへ戻す。"
+    ],
+    "source_review_reference_commit": "56af9c768e096d23e48b03fde397b47724385123",
+    "reference_is_not_execution_parent": true
+  }
 }
