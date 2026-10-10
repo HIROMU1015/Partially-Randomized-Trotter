@@ -1,0 +1,96 @@
+{
+  "allowed_cpus": [
+    2,
+    4,
+    5,
+    6,
+    16,
+    18
+  ],
+  "approved": true,
+  "budget_accounting": {
+    "authority": {
+      "path": "artifacts/resource_applicability/track_a_h4_production_run10/2026-10-10/USER_AUTHORITY_v10.json",
+      "sha256": "aa0236f16ec5a5fe7fbd9d08d06c654e88eecdf11598223c1283e8aed29c61cb"
+    },
+    "exclude_failed_carry": true,
+    "scope": "per_attempt"
+  },
+  "budget_amendment": {
+    "approved": true,
+    "authority_reference": "artifacts/resource_applicability/track_a_h4_production_run10/2026-10-10/USER_AUTHORITY_v10.json",
+    "from": 74804,
+    "to": 74805
+  },
+  "environment_accepted": true,
+  "gaussian_amendment": {
+    "approved": true,
+    "authority": {
+      "path": "artifacts/resource_applicability/track_a_h4_production_run10/2026-10-10/USER_GAUSSIAN_AUTHORITY_v10.json",
+      "sha256": "f283ca74fa7cd2c2df28f4745c84c1ad0ac9bbe1a92a8ba9eb5a9c5c0405adfc"
+    },
+    "from_semantics": "h4-full-gaussian-paired-wrapper-v1",
+    "old_partial_cache_reuse": false,
+    "profile": {
+      "path": "artifacts/resource_applicability/track_a_h4_production_run10/2026-10-10/gaussian_synthesis_profile_v2.json",
+      "sha256": "84ea10ed09f403406e3d8e321c7fa741ccc48d09c0e4cb90776314a906df4ea5"
+    },
+    "to_semantics": "h4-full-gaussian-givens-paired-wrapper-v2"
+  },
+  "memory_budget_amendment": {
+    "approved": true,
+    "authority": {
+      "path": "artifacts/resource_applicability/track_a_h4_worker_memory32_fix/2026-10-10/USER_MEMORY_AUTHORITY_v1.json",
+      "sha256": "a81d93093aca37a150963d70e141fa401a2958467f35f9a69b09dc3078b8d827"
+    },
+    "from": 8589934592,
+    "profile": {
+      "path": "artifacts/resource_applicability/track_a_h4_worker_memory32_fix/2026-10-10/worker_memory_profile_v1.json",
+      "sha256": "0556abcce2205af3ec26e530199dfb728b2a9503f8de8d8a5170feda33b2f690"
+    },
+    "to": 34359738368
+  },
+  "observer_role": {
+    "AS_bytes": 268435456,
+    "RSS_bytes": 67108864,
+    "approved": true,
+    "runtime_authorization": true
+  },
+  "one_shot": true,
+  "output_budget_amendment": {
+    "approved": true,
+    "authority_reference": "artifacts/resource_applicability/track_a_h4_production_run10/2026-10-10/USER_AUTHORITY_v10.json",
+    "from": 13958643712,
+    "to": 18253611008
+  },
+  "permission": "signal_compile",
+  "plan_fingerprint": "5a19686e938a58a776d4d648ddfa75417fed8e3035bdf2f3c79bae7e4862b955",
+  "pressure_amendment": {
+    "approved": true,
+    "authority": {
+      "path": "artifacts/resource_applicability/track_a_h4_production_run09/2026-10-10/USER_PRESSURE_AUTHORITY_v9.json",
+      "sha256": "9a00971c089c07c94060f47a195a541f2b060989272eb8cf266aa71ed495e61c"
+    },
+    "from_host_stop_percent": 1.0,
+    "profile": {
+      "path": "artifacts/resource_applicability/track_a_h4_production_run09/2026-10-10/memory_pressure_profile_v2.json",
+      "sha256": "4a615e45d535a0ee60db0b76eb440c38691a6c223d44d31288394ab4143bd938"
+    },
+    "to_host_stop_percent": 5.0
+  },
+  "recovery_policy": {
+    "approved": true,
+    "authority": {
+      "path": "artifacts/resource_applicability/track_a_h4_production_run10/2026-10-10/USER_AUTHORITY_v10.json",
+      "sha256": "aa0236f16ec5a5fe7fbd9d08d06c654e88eecdf11598223c1283e8aed29c61cb"
+    },
+    "mode": "investigate_fix_fresh_restart",
+    "scope": "signal_compile_only"
+  },
+  "result_prior": true,
+  "run_id": "h4-newhost-signal-compile-20261010-run10",
+  "runtime_authorization": true,
+  "schema_version": "h4-newhost-authorization-v2",
+  "source_commit": "5aa6c3685afb9c3afcfbdc36f80244da0a7fe525",
+  "stage": "signal_compile"
+}

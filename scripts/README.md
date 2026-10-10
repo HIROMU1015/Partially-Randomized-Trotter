@@ -520,3 +520,12 @@ SOURCE251993785ef1dab2a3891bdbb5d079f5d2184f4d/closure72、新16pure回帰PASS�
 SOURCE0cfdca65ed4a19d05e0cd886c9bbfe2bc26bee57/closure74、旧production72不変、新2files。12人工数値PASS、fullFock256/exterior-minors/oldlog-expm/fermionic signs/controlledphase1e-12一致、Qiskitbuild/transpile/NPZ/worker0。
 compiledgatecountsは旧denseと変わる新cost系列案、実speedupと全map72hは未保証。adoption未承認/flagsfalse、run09に接続しない。科学/compileroptions/資源・共有環境不変案。
 [候補・数値検証・採用範囲](../docs/research/track_a_h4_gaussian_structure_proposal_20261010.md)。
+
+
+## 2026-10-10 H4 run10：Gaussian新cost系列の明示承認・切替再実行
+
+利用者が「新方式へ切替・再実行」と承認。ownrun09を停止し8予約/4complete/2signal/charge4263948142B・26fileSHA・6identity×2ABSENTを保持、旧partial再利用0。
+SOURCE5aa6c3685afb9c3afcfbdc36f80244da0a7fe525/closure77、新7paths接続12tests PASS、旧数学12campaign反復0。structured Gaussian最大28two-mode+8numberphase、vacuum/JW/相対位相保持、新semantics/seed/cost系列へ分離。
+科学H4/PF/RTE/compileroptions/input/環境/CPU4/32GiB/pressure1/5/30/17GiB/74805/72h/carry0不変。実Qiskit/compile速度・72h完走は未測定、人工compileは省略して実本計算で確認。
+限定差分review・immutable artifact・freshgates全合格後一度run10起動、開始確認後chat終了可、監視継続。共有/venv/他job/GPU変更0。
+[承認・新cost系列・起動資料](../docs/research/track_a_h4_production_run10_20261010.md)。
