@@ -58,3 +58,9 @@ GPTには、tol-only・係数order/cutoff・DF target・sector/state意味論を
 [結果inventory](../../artifacts/resource_applicability/track_a_ax2b_h6_input_generation_execution_v1/2026-10-10/stop_evidence_inventory_v1.json)に欠測と全raw SHAを記録。
 N/Gnull・UNDETERMINED・総u/ground-state未認定を維持。sampling/回路build/transpile/compile/H6 pilot0。
 grant/outputは一回消費済み。retry/resumeせず、旧H4/source/freezes/dirty・Track Bを保全して停止する。
+
+## 公開後の確認
+
+結果保存commit：`422ca599c568ad56ec36f504379af816da22fb45`。
+[remote照合](../../artifacts/resource_applicability/track_a_ax2b_h6_input_generation_execution_v1/2026-10-10/stop_remote_verification_v1.json)で公開49 path、raw20件、science183/validation3、資料相対リンク28件を確認した。
+既存4,010ファイル・元dirty差分・root review bytesを保全。原STOP、欠測、H6未認可を維持する。
