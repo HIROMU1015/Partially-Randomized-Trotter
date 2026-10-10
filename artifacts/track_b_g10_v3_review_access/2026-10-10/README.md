@@ -10,6 +10,7 @@ Original result commit: `fcd3ea6217bc00b667180cec149a70102d75f07e`. This package
 - [Top-level result metadata](result_metadata.json): all non-row fields, synthesis sequences/errors, inventory and provenance.
 - [Extraction verification](extraction_verification.json) and [protected provenance](protected_provenance_verification.json).
 - [Publication inventory](publication_manifest.json): all new files; excludes its own hash.
+- [GitHub reacquisition receipt](github_reacquisition_verification.json): all 240 data-publication files at `12c320f948f5a93298cc9cc8e13139a9c481401c` were downloaded/hash-matched, including byte-exact reconstruction of all 136 raw fragments. The final documentation commit retains identical data partitions.
 - [Full access report](../../../../docs/tracks/algorithm_codesign/g10_v3_primary_data_access_20261010.md).
 
 ## Row and event navigation

@@ -24,6 +24,7 @@ GitHub commit. The final chat handoff supplies the full published commit SHA.
 - [Extraction identity verification](../../../artifacts/track_b_g10_v3_review_access/2026-10-10/extraction_verification.json)
 - [Protected-source/result audit](../../../artifacts/track_b_g10_v3_review_access/2026-10-10/protected_provenance_verification.json)
 - [All newly published file identities](../../../artifacts/track_b_g10_v3_review_access/2026-10-10/publication_manifest.json)
+- [GitHub reacquisition receipt](../../../artifacts/track_b_g10_v3_review_access/2026-10-10/github_reacquisition_verification.json)
 
 ## Exact row values and normalization fields
 
@@ -95,7 +96,12 @@ The existing final saved-completion audit remains unchanged and passes all
 57,021 checks, including 180 critical paths and 1,352 protected paths.
 
 GitHub raw downloads of the published files are checked against their local
-identities after push. This verifies delivery from GitHub; it does not emulate
+identities after push. All 240 files at data-publication commit
+`12c320f948f5a93298cc9cc8e13139a9c481401c` were downloaded and matched.
+The 136 downloaded raw fragments also reproduce the complete original byte
+count and SHA256. A subsequent documentation-only commit records this receipt
+and updates the publication inventory; data partitions remain unchanged.
+This verifies delivery from GitHub; it does not emulate
 every GPT connector implementation or lift any connector-specific aggregate
 request limit. The small per-row/index path is available if a combined table
 still exceeds a particular reader's limit.
