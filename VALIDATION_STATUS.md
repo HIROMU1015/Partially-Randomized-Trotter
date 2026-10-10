@@ -1,5 +1,15 @@
 # Validation status
 
+## 2026-10-10 Track A：H4限定一回実行・coverage interface STOP
+
+最新入口は[H4限定実行報告](docs/research/track_a_ax2b_h4_limited_execution_v1.md)。固定source/manifestの一回実行はACTUAL_COVERAGE_CHANGEDでSTOP。
+correctness0/8、reference/primitive/control/sampling/compile counter0。input/native準備は制御フローから推論。
+保存schedule list対runtime tupleの静的interface差を確認。actual bounds全体は未保存。
+source/manifest/旧証拠を編集せず、raw STOPと欠測・保存監査を別inventoryへ公開する。
+grantは消費済み、retry/resume0。次の修正・新manifest/科学実行は今回未実施。
+H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、N/Gnull・u未認定、mandatory STOP。
+既存dirty/未追跡・Track Bを保全。以下は各段階当時の履歴。
+
 ## 2026-10-10 Track A：H4限定science manifest固定・seal
 
 最新入口は[H4限定seal報告](docs/research/track_a_ax2b_h4_limited_seal_v1.md)。保存再監査済みboundsと旧8 cell・capsを固定する。
