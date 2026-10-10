@@ -1,5 +1,16 @@
 # Validation status
 
+## 2026-10-10 Track A：保存DF入力完成source・synthetic・実行前固定完了
+
+最新入口は[新policy入力完成の準備/認可対象](docs/research/track_a_h6_saved_df_completion_preparation_v1.md)。
+旧sourceを変更せずweighted gate/独立再構成/read-only importer/policy-bound loader/port/runner/auditorを追加。
+19fragment・signed lambda/order・tol-only1e-8/cutoff0維持。追加予算1e-10 Ha、判定余裕1%、工程PASSと厳密certificateを区別。
+ローカルsynthetic122 passed（新41/旧38/旧43）。real H6の数値評価・受理/state/sampling/compileは未実行。
+新source/parent/environment/CPU2/exclusive outputと60/120/900秒・total1080秒/AS8GiB/output32MiB/matvec10000を固定。
+新grantなし。H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、N/Gnull・u未認定・UNDETERMINED、mandatory STOP。
+次は新対象への明示認可後に一回入力完成。その後公開・remote照合・STOP。H6 pilotはさらに別認可。
+以下は段階当時の履歴。
+
 ## 2026-10-10 Track A：GPT独立Hermitizationレビュー取り込み・新policy準備へ
 
 最新入口は[独立レビュー採用・次のCodex準備契約](docs/research/track_a_h6_weighted_hermitization_preparation_contract_v1.md)。
