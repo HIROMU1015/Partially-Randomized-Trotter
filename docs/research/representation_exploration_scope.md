@@ -60,7 +60,19 @@ Exact-data開発例であり、未知データholdoutや外部再現ではない
 - [library](../../src/trottertracks/representation_exploration/mechanisms.py)
 - [runner](../../scripts/run_representation_exploration.py)
 - [tests](../../tests/test_representation_exploration.py)
-- result出力先 `artifacts/representation_exploration/2026-10-10/run1/`
+- result出力先 `artifacts/representation_exploration/2026-10-10/run2/`
 
 sourceをcommit固定してからrunnerを実行し、実source SHA、依存package版、時間、peak RSS、output SHAを保存する。
 旧DF screeningやUWC prose数値は根拠に使用しない。
+
+## 初回technical STOPと修正版の範囲
+
+source451bfa5のrun1はBのcontrolled-X primitive compile同値検査で停止した。
+残差sqrt(2)はscalar phaseのみで、独立したRX/RY/CRX/CRY minimal circuitにも再現した。
+phase lossの一般的原因や他環境への影響は未確定で、既存研究の証拠に一般化しない。
+run1のfailure/auditを保持し、入力・角度・delta・候補・資源上限を変えずrun2へ進む。
+
+修正はtoy compile監査に限定する。built circuitとcompiled matrixの差がunit-modulus scalarだけであることを
+行列normで認証した場合に限りcompiled.global_phaseを補償し、補償後と追加control後の絶対同値性を検査する。
+non-scalar/relative-branch errorは拒否する。native gate countはこのscalar metadata変更で変わらない。
+このdense certificateは小系検証用であり、truth-freeな大規模compiler修正アルゴリズムではない。

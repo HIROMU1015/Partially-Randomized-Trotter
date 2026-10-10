@@ -7,7 +7,7 @@ from qiskit.quantum_info import Operator
 from scipy.linalg import expm
 
 from trottertracks.representation_exploration.mechanisms import (
-    I, X, Z, conditional_mixed, controlled, lie_dimension,
+    I, X, Z, CircuitAudit, conditional_mixed, controlled, lie_dimension,
     reflected_dictionary, rotate_factors, rotation,
     second_quantize_one_body, vacuum_reflection,
 )
@@ -89,3 +89,23 @@ def test_known_lie_algebras_and_generic_two_qubit_failure_control():
     assert lie_dimension([np.kron(I,Z),np.kron(Z,I)])==2
     a=np.kron(I,Z)+.7*np.kron(Z,I)+.3*np.kron(Z,Z)
     assert lie_dimension([a,np.kron(I,X),np.kron(X,I)])==15
+
+
+def test_small_toy_compiler_phase_certificate_remains_control_sensitive():
+    from qiskit import QuantumCircuit
+    qc=QuantumCircuit(2)
+    qc.h(0);qc.crx(.36,0,1);qc.h(0)
+    reference=Operator(qc).data
+    record=CircuitAudit().compile(qc,reference)
+    assert record["certified_scalar_residual"]<1e-12
+    assert record["compiled_operator_residual"]<1e-12
+    assert record["control_sensitive_repaired_residual"]<1e-12
+
+
+def test_compile_certificate_does_not_hide_wrong_controlled_branch():
+    from qiskit import QuantumCircuit
+    qc=QuantumCircuit(2)
+    qc.crz(.3,0,1)
+    wrong=controlled(expm(-.4j*Z))
+    with pytest.raises(AssertionError):
+        CircuitAudit().compile(qc,wrong)

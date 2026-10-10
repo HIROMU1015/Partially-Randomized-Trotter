@@ -97,6 +97,20 @@ class CircuitAudit:
         built_residual = norm(Operator(circuit).data - reference)
         compiled = transpile(circuit, basis_gates=list(BASIS), optimization_level=1,
                              seed_transpiler=SEED, num_processes=1)
+        raw_matrix = Operator(compiled).data
+        original_matrix = Operator(circuit).data
+        raw_residual = norm(raw_matrix-reference)
+        overlap = np.trace(original_matrix.conj().T@raw_matrix)/len(raw_matrix)
+        scalar_residual = norm(raw_matrix-overlap*original_matrix)
+        phase_repair = 0.
+        # This environment's RX/RY-to-ZSX translation can lose a scalar phase.
+        # Repair only a certified *global* phase, never a controlled-branch or
+        # non-scalar error. Dense verification is strictly a small-toy diagnostic.
+        if raw_residual > ATOL:
+            if scalar_residual > ATOL or abs(abs(overlap)-1) > ATOL:
+                raise AssertionError("Compiler error is not a certified global phase")
+            phase_repair = -float(np.angle(overlap))
+            compiled.global_phase += phase_repair
         compiled_residual = norm(Operator(compiled).data - reference)
         if max(built_residual, compiled_residual) > ATOL:
             raise AssertionError(f"Circuit equivalence failed: {built_residual}, {compiled_residual}")
@@ -107,6 +121,10 @@ class CircuitAudit:
                 "size": compiled.size(), "depth": compiled.depth(),
                 "build_operator_residual": built_residual,
                 "compiled_operator_residual": compiled_residual,
+                "raw_compiler_operator_residual":raw_residual,
+                "certified_scalar_residual":scalar_residual,
+                "global_phase_repair_radians":phase_repair,
+                "control_sensitive_repaired_residual":norm(controlled(Operator(compiled).data)-controlled(reference)),
                 "qasm": compiled.qasm() if hasattr(compiled, "qasm") else None}
 
 
