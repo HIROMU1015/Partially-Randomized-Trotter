@@ -241,3 +241,13 @@ dated note: `docs/research/研究ノート/2026-10-10_track_b_g10_rss_repair_sou
 
 
 - [2026-10-10 G10 S3 JSON-key compatibility preparation](2026-10-10_track_b_g10_v3_key_compatibility_preparation.md)：76 focused tests、17 artificial equality cases、IO memory確認、pending authority、旧marker保持、mandatory STOP。
+
+
+## Track B G10 v3 completed / mandatory STOP（2026-10-10、最新追記）
+
+[結果/GPT handoff](../../tracks/algorithm_codesign/g10_v3_results_and_gpt_handoff_20261010.md)：`G10_DEGREE_MATCHED_NATIVE_RESOURCE_MAP_COMPLETE`。
+S3 b9ed014→直接authorization-only A3 53a7bc4、一回/retry0。17rows/34axes、46keys（new27/reuse19）、10,936bindings。
+stream/token/STOPとouter正常COMPLETE status一致。outer wall22.2261s/CPU20.0291s/peak240.015625MiB、512MiB cap不変。
+保存監査のfield仮定/report組立の訂正と初回記録を保存、本番再実行0。旧結果/marker/STOP、critical180/protected1352保持。
+`artifacts/track_b_g10_degree_result/2026-10-10/v3/evidence_manifest_v3.json` とsaved-only `audit_g10_v3_saved_outputs.py` を参照。
+known synthetic providerの次数内有限operator比較のみ、science完了後mandatory STOP、追加科学/採択/新規性判断はGPTへ返す。

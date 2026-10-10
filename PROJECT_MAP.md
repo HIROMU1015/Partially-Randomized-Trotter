@@ -886,3 +886,13 @@ typed streaming/lifetime/failure保存の限定scopeをGPTへ返し、mandatory 
 
 [S3 source review/GPT](docs/tracks/algorithm_codesign/g10_v3_key_compatibility_source_and_gpt_review_20261010.md) / [payload type/key audit](docs/tracks/algorithm_codesign/g10_v3_payload_type_and_key_audit_20261010.md)。旧str(key)・衝突/順序を局所正規化で保存、科学event不変。76 focused tests、17人工bytes/hash、saved/typed IO低メモリを確認。本番完了保証なし。
 [future v3 runner](scripts/tracks/algorithm_codesign/g10_degree_matched_native_v3.py) / [static verifier](scripts/tracks/algorithm_codesign/verify_g10_key_compatibility_preparation_v3.py) / [tests](tests/tracks/algorithm_codesign/test_g10_key_compatibility_v3.py) / [artifact](artifacts/track_b_g10_key_compatibility_preparation/2026-10-10/v3/)。pending authorization、A3/本番markerなし、science0、旧v1/v2証拠保護、mandatory STOP。
+
+
+## Track B G10 v3 completed / mandatory STOP（2026-10-10、最新追記）
+
+[結果/GPT handoff](docs/tracks/algorithm_codesign/g10_v3_results_and_gpt_handoff_20261010.md)：`G10_DEGREE_MATCHED_NATIVE_RESOURCE_MAP_COMPLETE`。
+S3 b9ed014→直接authorization-only A3 53a7bc4、一回/retry0。17rows/34axes、46keys（new27/reuse19）、10,936bindings。
+stream/token/STOPとouter正常COMPLETE status一致。outer wall22.2261s/CPU20.0291s/peak240.015625MiB、512MiB cap不変。
+保存監査のfield仮定/report組立の訂正と初回記録を保存、本番再実行0。旧結果/marker/STOP、critical180/protected1352保持。
+`artifacts/track_b_g10_degree_result/2026-10-10/v3/evidence_manifest_v3.json` とsaved-only `audit_g10_v3_saved_outputs.py` を参照。
+known synthetic providerの次数内有限operator比較のみ、science完了後mandatory STOP、追加科学/採択/新規性判断はGPTへ返す。

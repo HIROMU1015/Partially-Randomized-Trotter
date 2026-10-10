@@ -270,3 +270,13 @@ typed streaming/lifetime/failure保存の限定scopeをGPTへ返し、mandatory 
 ## G10 v3 key compatibility source preparation
 
 Future `g10_degree_matched_native_v3.py` とpure preparation verifier `verify_g10_key_compatibility_preparation_v3.py` を分ける。`validate_g10_key_compatibility_io_v3.py` / `g10_json_compatibility_fixtures.py` はsaved/artificial IO-only。new science/synthesis/production markerなし、pending authorization。資料 `docs/tracks/algorithm_codesign/g10_v3_key_compatibility_source_and_gpt_review_20261010.md`、mandatory STOP。
+
+
+## Track B G10 v3 completed / mandatory STOP（2026-10-10、最新追記）
+
+[結果/GPT handoff](../../../docs/tracks/algorithm_codesign/g10_v3_results_and_gpt_handoff_20261010.md)：`G10_DEGREE_MATCHED_NATIVE_RESOURCE_MAP_COMPLETE`。
+S3 b9ed014→直接authorization-only A3 53a7bc4、一回/retry0。17rows/34axes、46keys（new27/reuse19）、10,936bindings。
+stream/token/STOPとouter正常COMPLETE status一致。outer wall22.2261s/CPU20.0291s/peak240.015625MiB、512MiB cap不変。
+保存監査のfield仮定/report組立の訂正と初回記録を保存、本番再実行0。旧結果/marker/STOP、critical180/protected1352保持。
+`artifacts/track_b_g10_degree_result/2026-10-10/v3/evidence_manifest_v3.json` とsaved-only `audit_g10_v3_saved_outputs.py` を参照。
+known synthetic providerの次数内有限operator比較のみ、science完了後mandatory STOP、追加科学/採択/新規性判断はGPTへ返す。
