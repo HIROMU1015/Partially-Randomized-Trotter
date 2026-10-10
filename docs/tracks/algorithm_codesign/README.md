@@ -331,3 +331,11 @@ on-demand strict Rzと対称bounded cache。G7のstatus/point comparison/consume
 known P5/指定3-qubit providerの登録direct6方式でclosed P5のT intercept/Kが小さく、CTSのCXは小さい。
 1,866 event accounting、saved-only25 checks PASS。旧v1結果/marker、critical80/protected982は不変。
 実量子shots/trajectory/DF/分子/NPZ/GPU/LPは0、source-bound local evidence。次の科学実行・採択はGPT判断、mandatory STOP。
+
+
+## G9 v2科学review受領とG10 scope（2026-10-10）
+
+[採用review](../../research/track_b_G9_v2_scientific_review_20261010.md) / [受領・G10 bundle範囲](g9_v2_review_intake_and_g10_scope_20261010.md)。
+return集約family限定継続、closed P5を低次数の標準実装、同p/x/providerのm3/5/7が次の比較。
+今回docs-only、G10 contract/source freeze/実行未実施、CTS review下界は独立再検証前。
+旧G9 result/marker/STOP不変。[manifest](../../../artifacts/track_b_g9_v2_review_intake/2026-10-10/intake_manifest_v1.json)。bundle後mandatory STOP、科学判断はGPT。

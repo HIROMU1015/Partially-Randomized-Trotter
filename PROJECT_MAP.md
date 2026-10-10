@@ -828,3 +828,12 @@ artifacts：`artifacts/track_b_g8_on_demand_preparation/2026-10-10/` と新resul
 known P5/指定3-qubit providerの登録direct6方式でclosed P5のT intercept/Kが小さく、CTSのCXは小さい。
 1,866 event accounting、saved-only25 checks PASS。旧v1結果/marker、critical80/protected982は不変。
 実量子shots/trajectory/DF/分子/NPZ/GPU/LPは0、source-bound local evidence。次の科学実行・採択はGPT判断、mandatory STOP。
+
+
+## Track B G9 v2科学review受領（2026-10-10）
+
+[採用review](docs/research/track_b_G9_v2_scientific_review_20261010.md) / [G10 bundle範囲](docs/tracks/algorithm_codesign/g9_v2_review_intake_and_g10_scope_20261010.md)。
+return集約family限定継続、closed P5を低次数の標準実装へ。
+同p/x/providerのm=3/5/7比較が次のscope、m5は保存anchor。
+今回はdocs-only受領、CTS下界独立検証/G10実装・契約・実行は未実施。旧G9 result/marker/STOP不変。
+[受領manifest](artifacts/track_b_g9_v2_review_intake/2026-10-10/intake_manifest_v1.json)。G10一束後mandatory STOP、科学判断はGPT。
