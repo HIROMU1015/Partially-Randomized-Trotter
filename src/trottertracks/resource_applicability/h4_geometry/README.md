@@ -119,3 +119,11 @@ SOURCE251993785ef1dab2a3891bdbb5d079f5d2184f4d/closure72、新16pure回帰PASS�
 最新run08原17fileSHA/6identity×2ABSENT/cost6・complete2保持、carry0/17GiB/74805/72h/科学/compiler/凍結6入力維持。新run09、旧partial/one-shot/control/output混合なし。
 限定差分review・固定artifact・直前freshgates合格後一度map、開始確認後chat終了可。共有/venv/他job/GPU変更0。
 [認可・検証・起動資料](../../../../docs/research/track_a_h4_production_run09_20261010.md)。
+
+
+## 2026-10-10 H4 realistic runtime：Gaussian構造化の未承認候補
+
+現dense256×256/8qgenericQSDで初期q1/q2回路273万/507万operations、全map72h完走は現速度で厳しい。run09を維持した別worktreeで最大28two-mode Givens+8numberphase候補を実装。
+SOURCE0cfdca65ed4a19d05e0cd886c9bbfe2bc26bee57/closure74、旧production72不変、新2files。12人工数値PASS、fullFock256/exterior-minors/oldlog-expm/fermionic signs/controlledphase1e-12一致、Qiskitbuild/transpile/NPZ/worker0。
+compiledgatecountsは旧denseと変わる新cost系列案、実speedupと全map72hは未保証。adoption未承認/flagsfalse、run09に接続しない。科学/compileroptions/資源・共有環境不変案。
+[候補・数値検証・採用範囲](../../../../docs/research/track_a_h4_gaussian_structure_proposal_20261010.md)。
