@@ -466,3 +466,11 @@ SOURCE1dbdd1be2133a59ab81c7b81a6074af0880f72a3/closure62、33pure tests PASS、�
 run06原STOP/費用/6×2ABSENT/10filesSHAを保持し、新run07/carry0/CPU4subset[2,4,5,6]/driver16/observer18で再実行。17GiB/74805/72h・科学/compiler/凍結6入力不変。
 独立review・immutable artifact・直前fresh/未使用lock PASS後に起動。共有環境/venv/他job/GPU変更0。開始確認後chat終了可、observer監視は継続。
 [最新入口](../../docs/research/track_a_h4_production_run07_20261010.md)。
+
+
+## 2026-10-10 H4 worker上限32GiB修正
+
+現在の4workersのAS/RSS上限を利用者承認により32GiBへ修正。driver8GiB、observer256MiB/64MiB、headroom16GiBを維持し、起動前available条件は152.25GiB。
+SOURCE b652fff9d2907015d3b8b7b23ce8bf0fe4fce33a/closure65、53限定mock回帰と独立review PASS。科学/compiler/profile/凍結入力/pressure/17GiB/74805/72h不変。
+今回の修正では本体再起動0。次回はfresh runとSOURCE/profile/input/carry/plan/auth/reviewの再結合・直前資源検査が必要。
+[変更・検証・次回条件](../../docs/research/track_a_h4_worker_memory32_fix_20261010.md)。

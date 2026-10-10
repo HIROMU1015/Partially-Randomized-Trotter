@@ -1,0 +1,426 @@
+{
+  "absolute_launch_command": null,
+  "allowed_cpus": [],
+  "approved": false,
+  "base_review": "b1c2e746eee9a50e642eff59ff2c5178c75a4809",
+  "blocking_implementation_findings": [],
+  "branch": "track-a-h4-worker-memory32-fix-20261010",
+  "bundle_files_reviewed": [
+    {
+      "bytes": 568,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-worker-memory32-fix-20261010/artifacts/resource_applicability/track_a_h4_worker_memory32_fix/2026-10-10/USER_MEMORY_AUTHORITY_v1.json",
+      "sha256": "a81d93093aca37a150963d70e141fa401a2958467f35f9a69b09dc3078b8d827"
+    },
+    {
+      "bytes": 7329,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-worker-memory32-fix-20261010/artifacts/resource_applicability/track_a_h4_worker_memory32_fix/2026-10-10/preparation_binding_v1.json",
+      "sha256": "9b74238b7f31afa0f096074ad3900cd76c3b37c55c8cfd610aaa1a0306b694d5"
+    },
+    {
+      "bytes": 39395,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-worker-memory32-fix-20261010/artifacts/resource_applicability/track_a_h4_worker_memory32_fix/2026-10-10/source_audit_v1.json",
+      "sha256": "1e42b22a4d47af6ed766941def9b4d2262b65feef1cc704d83d9426895e329ff"
+    },
+    {
+      "bytes": 1092,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-worker-memory32-fix-20261010/artifacts/resource_applicability/track_a_h4_worker_memory32_fix/2026-10-10/source_commit_inventory_v1.json",
+      "sha256": "e1d2c0a0feb7fa77578586653d4806f3386b3bf21397dd10c1e5c0d5e94bac40"
+    },
+    {
+      "bytes": 1390,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-worker-memory32-fix-20261010/artifacts/resource_applicability/track_a_h4_worker_memory32_fix/2026-10-10/test_history_v1.json",
+      "sha256": "31d9c28a2125e31ef6329414a7dd3d166116a3f6d9fcde328326306b941c62b0"
+    },
+    {
+      "bytes": 2547,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-worker-memory32-fix-20261010/artifacts/resource_applicability/track_a_h4_worker_memory32_fix/2026-10-10/test_plan_v1.json",
+      "sha256": "1a06eafe2e553c8a570a32ace1e5203834600feceeb702d016ab5f222de2c451"
+    },
+    {
+      "bytes": 373,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-worker-memory32-fix-20261010/artifacts/resource_applicability/track_a_h4_worker_memory32_fix/2026-10-10/test_result_v1.json",
+      "sha256": "1a02ba4853b454f7647690d3a87b3c9212c47d08a77b9ff8814e4220a55576fb"
+    },
+    {
+      "bytes": 250,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-worker-memory32-fix-20261010/artifacts/resource_applicability/track_a_h4_worker_memory32_fix/2026-10-10/worker_memory_profile_v1.json",
+      "sha256": "0556abcce2205af3ec26e530199dfb728b2a9503f8de8d8a5170feda33b2f690"
+    }
+  ],
+  "cleanup_review": {
+    "P2_found_on_superseded_SOURCE": "Post-pool driver limit failure plus non-ESRCH stop_children error skipped waits/FDs/executor/observer/budget cleanup.",
+    "P2_resolution_SOURCE": "b652fff9d2907015d3b8b7b23ce8bf0fe4fce33a",
+    "P2_resolved": true,
+    "cleanup_error_not_success": true,
+    "foreign_process_signal_prohibition_and_owned_Popen_wait_kill_fallback_preserved": true,
+    "pool_first_error_retained_and_raised_after_each_child_wait_pipe_and_executor_attempt": true,
+    "resource_cleanup_attempts_do_not_prove_success_if_OS_refuses_termination": true,
+    "startup_original_exception_preserved": true,
+    "watch_join_stop_pool_observer_budget_actions_attempted_despite_prior_errors": true
+  },
+  "historical_run07_cause_audit": {
+    "assessment": "STRONGLY_SUPPORTED_AS_LIMIT_EXHAUSTION_NOT_FORENSICALLY_PROVEN",
+    "native_exception_signal_exact_phase_not_proven": true,
+    "new_cap_not_a_forensic_confirmation_of_old_failure": true,
+    "prior_observations_not_replayed_or_backfilled": true,
+    "ref": {
+      "bytes": 22737,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-worker-memory32-fix-20261010/artifacts/resource_applicability/track_a_h4_run07_stop_cause_audit/2026-10-10/independent_run07_stop_cause_review_v1.json",
+      "sha256": "8110ee1eb95f4ce16d300c4bc100dcdb22f384a8a0ce6834d0d2067159f72273"
+    }
+  },
+  "independent_of_author": true,
+  "inheritance_and_bootstrap_review": {
+    "actual_32GiB_kernel_worker_spawn_not_exercised": true,
+    "actual_RLIMIT_get_confirmation_required_before_ready": true,
+    "driver_hard8_after_pool_ready": true,
+    "driver_hard_retained_until_all_children_ready": true,
+    "driver_soft8_kept_during_child_spawn": true,
+    "inherited_hard_below_requested_cap_rejected": true,
+    "ready_binding_sequence_verified_by_source_and_mock": true,
+    "silent_min_clamp_removed": true,
+    "worker_bootstrap_soft8_hard_preserved": true,
+    "worker_raise32_after_authorize_role_parent_index_checkout": true
+  },
+  "known_unfixed_diagnostic_limits": [
+    {
+      "issue": "Native worker stderr remains subprocess.DEVNULL; actual historical worker native exception/signal remains unrecorded.",
+      "location": "src/trottertracks/resource_applicability/h4_geometry/workers.py:149"
+    },
+    {
+      "issue": "exception_text traceback formatting/serialization can raise a secondary MemoryError. Prior pure mock diagnostic gap remains uncorrected.",
+      "location": "src/trottertracks/resource_applicability/h4_geometry/workers.py:31"
+    }
+  ],
+  "limited_test_evidence": {
+    "actual_scientific_or_native_worker_success_proven": false,
+    "latest20_new_memory_cleanup_plus33_pressure_pure_mock_tests": 53,
+    "plan_ref": {
+      "bytes": 2547,
+      "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-worker-memory32-fix-20261010/BINDING_TEST_PLAN_v1.json",
+      "sha256": "1a06eafe2e553c8a570a32ace1e5203834600feceeb702d016ab5f222de2c451"
+    },
+    "previous51_PASS_retained": true,
+    "result": {
+      "additional_transpiles": 0,
+      "affinity_changes": 0,
+      "artificial_circuit_builds": 0,
+      "child_processes": 0,
+      "denied_attempts": [],
+      "errors": 0,
+      "failures": 0,
+      "output_bytes": 8836,
+      "peak_RSS_bytes": 30932992,
+      "production_launches": 0,
+      "scientific_array_reads": 0,
+      "skips": 0,
+      "status": "PASS",
+      "tests": 53,
+      "wall_seconds": 1.4814377836883068
+    },
+    "result_ref": {
+      "bytes": 373,
+      "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-worker-memory32-fix-20261010/tests-03/test_result_v1.json",
+      "sha256": "1a02ba4853b454f7647690d3a87b3c9212c47d08a77b9ff8814e4220a55576fb"
+    },
+    "reviewer_reran_campaigns": 0,
+    "working_source_hashes10_match_fixed_SOURCE": true
+  },
+  "materials_read": [
+    "AGENTS.md",
+    "PROJECT_MAP.md",
+    "src/trottertracks/resource_applicability/h4_geometry/resources.py",
+    "src/trottertracks/resource_applicability/h4_geometry/workers.py",
+    "src/trottertracks/resource_applicability/h4_geometry/execution.py",
+    "src/trottertracks/resource_applicability/h4_geometry/observer.py",
+    "src/trottertracks/resource_applicability/h4_geometry/launch_binding.py",
+    "src/trottertracks/resource_applicability/h4_geometry/memory_budget.py",
+    "schemas/h4_newhost_launch_v2.json",
+    "tests/tracks/resource_applicability/test_h4_worker_memory32.py",
+    "tests/tracks/resource_applicability/test_h4_pressure_integration.py",
+    "scripts/resource_applicability/run_h4_worker_memory32_tests.py"
+  ],
+  "memory_amendment": {
+    "amendment_approved": true,
+    "driver_AS_RSS": 8589934592,
+    "headroom": 17179869184,
+    "legacy8_generation_defaults_retained": true,
+    "observer_AS": 268435456,
+    "observer_RSS": 67108864,
+    "profile_exact_and_source_bound": true,
+    "required_available_GiB": 152.25,
+    "required_available_bytes": 163477192704,
+    "user_instruction": "上限を３２Gで修正して",
+    "worker_AS_RSS": 34359738368,
+    "workers": 4
+  },
+  "monitoring_and_admission_review": {
+    "both_admission_boundaries_152_25GiB_covered": true,
+    "fresh_and_secondary_admission_same_formula": true,
+    "headroom16GiB_and_deadline5_seconds_preserved": true,
+    "legacy_admission_floor120_25GiB_retained": true,
+    "observer_caps_unchanged": true,
+    "pressure_hierarchy_initial_namespace_OOM_and_freshness_checks_preserved": true,
+    "pressure_host_only_min_available_bytes": 129117454336,
+    "pressure_host_threshold_percent": 1.0,
+    "pressure_nonroot_threshold_percent": 0.0,
+    "pressure_profile_bytes_unchanged": true,
+    "registered_worker_PID_cap32": true,
+    "sample_order_independent": true,
+    "trusted_driver_PID_cap8": true,
+    "unregistered_missing_duplicate_roles_fail_closed": true
+  },
+  "new_launch_signoff_issued": false,
+  "nonblocking_implementation_findings": [],
+  "preparation_binding_review": {
+    "SOURCE_source_root_closure_profile_input6_freeze_and_carry_match": true,
+    "binding_status": "MEMORY_SOURCE_BOUND_FRESH_LAUNCH_BINDING_REQUIRED",
+    "caps": {
+      "actual_invocations": 74805,
+      "driver_AS_RSS": 8589934592,
+      "headroom": 17179869184,
+      "monitor_seconds": 5,
+      "observer_AS": 268435456,
+      "observer_RSS": 67108864,
+      "output_bytes": 18253611008,
+      "wall_seconds": 259200,
+      "worker_AS_RSS": 34359738368
+    },
+    "carry_policy": {
+      "actual_invocations": 0,
+      "charged_bytes": 0,
+      "wall_seconds": 0.0
+    },
+    "command_null": true,
+    "consumed_run07_one_shot_auth_output_control_not_reused": true,
+    "cpu_proposal": {
+      "driver": [
+        16
+      ],
+      "observer": [
+        18
+      ],
+      "workers": [
+        [
+          2
+        ],
+        [
+          4
+        ],
+        [
+          5
+        ],
+        [
+          6
+        ]
+      ]
+    },
+    "input_bytes_or_arrays_not_reread_in_this_review": true,
+    "input_receipt_metadata_matches_approved_run07_plan": true,
+    "latest_run07_lineage": {
+      "actual6_complete2_charge4263870068_retained": true,
+      "driver_exit143_recorded": true,
+      "exact_exit_reap_time_unknown": true,
+      "historical_ABSENT_audits": 2,
+      "historical_SOURCE": "1dbdd1be2133a59ab81c7b81a6074af0880f72a3",
+      "historical_missing_data_backfilled": false,
+      "historical_native_identity_count": 6,
+      "latest_stop_must_be_integrated_into_future_new_run_seal": true,
+      "prior_pre_run07_stop_receipt_v17_retained": true,
+      "raw18_campaign_not_repeated_for_this_addendum": true,
+      "summary_and_raw_receipt_byte_SHA256_match": true,
+      "worker_native_exit_code_unknown": true
+    },
+    "old_environment_compiler_library_cache_pressure_profiles_byte_SHA256_unchanged": true,
+    "overall_flags_false_and_CPU_permissions_empty": true,
+    "refs": {
+      "compiler_profile": {
+        "bytes": 12266,
+        "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-worker-memory32-fix-20261010/artifacts/resource_applicability/track_a_h4_native_proof_seal/2026-10-09/compiler_profile_v2.json",
+        "sha256": "eb847bc422eb17e7e8afa8de774b483c9b8e92274d584894179cd26cb45db4a6"
+      },
+      "current_preparation_binding": {
+        "bytes": 7329,
+        "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-worker-memory32-fix-20261010/artifacts/resource_applicability/track_a_h4_worker_memory32_fix/2026-10-10/preparation_binding_v1.json",
+        "sha256": "9b74238b7f31afa0f096074ad3900cd76c3b37c55c8cfd610aaa1a0306b694d5"
+      },
+      "environment_profile": {
+        "bytes": 14418,
+        "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-worker-memory32-fix-20261010/artifacts/resource_applicability/track_a_h4_native_proof_seal/2026-10-09/environment_profile_v2.json",
+        "sha256": "b882b1e4cc6153a52294f761141057ea6a71623b287caa116e0bf44ff95d635f"
+      },
+      "latest_native_run07_raw_receipt": {
+        "bytes": 13094,
+        "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-run07-stop-cause-audit-20261010/RUNTIME_STOP_RECEIPT_v7.json",
+        "sha256": "3156efe49c02a091067c95337a444c8b2ca9a391006f43b72299370a8ca0559f"
+      },
+      "latest_stopped_attempt_summary": {
+        "bytes": 2931,
+        "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-worker-memory32-fix-20261010/artifacts/resource_applicability/track_a_h4_run07_stop_cause_audit/2026-10-10/run07_stop_receipt_summary_v1.json",
+        "sha256": "bb2c6e96c16b4a280ae3784f34c21c7e609e021bfbf55938587843ec2cc195c0"
+      },
+      "library_cache_profile": {
+        "bytes": 793,
+        "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-worker-memory32-fix-20261010/artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/library_cache_profile_v2.json",
+        "sha256": "9052559ad9e8af2e9f1823a8641170964cffd1d3376d8b90cf9771f006691a07"
+      },
+      "memory_authority": {
+        "bytes": 568,
+        "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-worker-memory32-fix-20261010/artifacts/resource_applicability/track_a_h4_worker_memory32_fix/2026-10-10/USER_MEMORY_AUTHORITY_v1.json",
+        "sha256": "a81d93093aca37a150963d70e141fa401a2958467f35f9a69b09dc3078b8d827"
+      },
+      "memory_pressure_profile": {
+        "bytes": 295,
+        "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-worker-memory32-fix-20261010/artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/memory_pressure_profile_v1.json",
+        "sha256": "0d3f7742ea5ba722381cae5d622f70193471989801c7d4dfadfccfb33b8556e5"
+      },
+      "memory_profile": {
+        "bytes": 250,
+        "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-worker-memory32-fix-20261010/artifacts/resource_applicability/track_a_h4_worker_memory32_fix/2026-10-10/worker_memory_profile_v1.json",
+        "sha256": "0556abcce2205af3ec26e530199dfb728b2a9503f8de8d8a5170feda33b2f690"
+      },
+      "source_audit": {
+        "bytes": 39395,
+        "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-worker-memory32-fix-20261010/artifacts/resource_applicability/track_a_h4_worker_memory32_fix/2026-10-10/source_audit_v1.json",
+        "sha256": "1e42b22a4d47af6ed766941def9b4d2262b65feef1cc704d83d9426895e329ff"
+      },
+      "stop_evidence_receipt": {
+        "bytes": 30686,
+        "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-worker-memory32-fix-20261010/artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/stop_receipt_v17.json",
+        "sha256": "39dcf326489c49000ca252e11d72c07a288836dce89071a623717a359239b927"
+      }
+    }
+  },
+  "previous_review_snapshot_retained": {
+    "bytes": 25573,
+    "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-worker-memory32-fix-20261010/independent-review/review-01/independent_worker_memory32_review_v1.json",
+    "sha256": "7a65d780dca4531a318cc1add2a09f0cc5163434845ef0c6997f5edfba1a399e"
+  },
+  "prior_source": "1dbdd1be2133a59ab81c7b81a6074af0880f72a3",
+  "remaining_launch_requirements": [
+    "Fresh unique run ID/output/control/one-shot and final SOURCE rebind; old run07 one-shot is consumed.",
+    "Bind latest run07 terminal proof and original historical cost evidence to the new run; preparation stop_receipt_v17 is the prior pre-run07 receipt.",
+    "SOURCE/profile/input/carry/plan/auth/final independent review binding and technical seal for the new run.",
+    "Immediately fresh CPU/memory/pressure/OOM/filesystem/inode/quota checks plus actual inherited hard>=32GiB before any child launch."
+  ],
+  "reviewed_utc": "2026-10-10T03:22:57.754610+00:00",
+  "reviewer": "independent_final_review",
+  "revision_reason": "Author added latest historical run07 STOP lineage after the exclusive v1 snapshot; SOURCE and cap implementation unchanged.",
+  "runtime_authorization": false,
+  "schema_version": "h4-independent-worker-memory32-review-v2",
+  "scientific_and_runtime_limits": [
+    "53 tests are bounded pure metadata/mocks and do not prove actual worker32 kernel behavior or successful compilation.",
+    "Dense Gaussian representation/compiler options remain unchanged.",
+    "32GiB sufficiency for all74784 logical wrappers is unproven.",
+    "No production launch or cap beyond32GiB is approved by this independent source/preparation review."
+  ],
+  "scope": "Independent read-only review of memory cap amendment, inheritance, owned-process bootstrap/cleanup, observer roles, admission and preparation metadata. No source edits, production, actual workers, scientific imports/arrays or compiler/transpile tests.",
+  "scope_counters": {
+    "GPU_query_or_use": 0,
+    "additional_transpiles": 0,
+    "affinity_changes": 0,
+    "circuits_built": 0,
+    "input_byte_hash_campaigns_reexecuted": 0,
+    "new_scientific_array_reads": 0,
+    "new_scientific_imports": 0,
+    "production_launches": 0,
+    "real_worker_processes": 0,
+    "regression_campaigns_rerun_by_reviewer": 0,
+    "shared_host_venv_other_jobs_changes": 0,
+    "source_edits_by_reviewer": 0
+  },
+  "sealed": false,
+  "source_commit": "b652fff9d2907015d3b8b7b23ce8bf0fe4fce33a",
+  "source_validation": {
+    "all_Git_blob_IDs_and_SHA256_match_checkout": true,
+    "circuits_signal_inputs_parallel_ledger_identity_cache_algorithms_unchanged": true,
+    "closure_paths": 65,
+    "future_random_seeds_rebound_by_SOURCE_identity": true,
+    "module_level_scientific_execution_function_text_unchanged": true,
+    "new_paths": 3,
+    "old_partial_random_results_must_not_be_mixed": true,
+    "old_paths_changed": 7,
+    "old_paths_unchanged": 55,
+    "source_commit_paths": [
+      "schemas/h4_newhost_launch_v2.json",
+      "scripts/resource_applicability/run_h4_worker_memory32_tests.py",
+      "src/trottertracks/resource_applicability/h4_geometry/execution.py",
+      "src/trottertracks/resource_applicability/h4_geometry/launch_binding.py",
+      "src/trottertracks/resource_applicability/h4_geometry/memory_budget.py",
+      "src/trottertracks/resource_applicability/h4_geometry/observer.py",
+      "src/trottertracks/resource_applicability/h4_geometry/resources.py",
+      "src/trottertracks/resource_applicability/h4_geometry/workers.py",
+      "tests/tracks/resource_applicability/test_h4_pressure_integration.py",
+      "tests/tracks/resource_applicability/test_h4_worker_memory32.py"
+    ],
+    "source_hashes": {
+      "schemas/h4_newhost_launch_v2.json": "61dc14c350d946c01b5917404d41abba45344fd06df23be067517c4d1139f81f",
+      "scripts/resource_applicability/audit_h4_geometry_source.py": "9f8afe9fdf31d724d5eb1ebf84593efea198579559d28e65c5a35bc073e92c26",
+      "scripts/resource_applicability/audit_h4_monitor_fix_a.py": "32c8f37d0dd635abff69efc2c421c203b1afc4b7a72224c17c83f9b9f7dc3068",
+      "scripts/resource_applicability/audit_h4_prelaunch_preparation.py": "abfd8c58df0596536bf12fabd02ee3a9fd9b94b800dda05867afbd76f3e847a2",
+      "scripts/resource_applicability/run_h4_entrypoint_cache_tests.py": "98bfa1a42298260d12eb94746a6258261825b6002355c0444fd2abbc4b8d1982",
+      "scripts/resource_applicability/run_h4_geometry_input_generation.py": "3fef6304a66bdb1d8594456e79f0490f86d9172112359bf810c93b96c8aa4bb1",
+      "scripts/resource_applicability/run_h4_geometry_signal_compile.py": "6e9f5a5fcdb745281cb0128e12f3912bfc7ff4008f30c432f2df05dd4bc750a4",
+      "scripts/resource_applicability/run_h4_geometry_source_tests.py": "904a198967ed226eff35d418afbea9185577823c8935ca6244ddec6c94512237",
+      "scripts/resource_applicability/run_h4_host_pressure_proposal_tests.py": "7a8e38c7885fd8186e312fad409e9b64cbfafa32b607f8459834071e3620dc6a",
+      "scripts/resource_applicability/run_h4_library_cache_smoke.py": "e9f1410fb40aeeec5df315e6b6e110398d071b2aaae936d1edfe17d6edbe458e",
+      "scripts/resource_applicability/run_h4_lightweight_speedup_tests.py": "195c5e5216f31af29730d38abe562a0d7532de5117b62034f0fa5af2c9fd5101",
+      "scripts/resource_applicability/run_h4_monitor_fix_a_tests.py": "a8e167b91ad4254bb0dc5bfd7c1c8080f34a746126f82a2098876297775d19eb",
+      "scripts/resource_applicability/run_h4_output_amendment_tests.py": "13d6a0d16ba593398b7c201259bbc7839bb1e4a68bfae96a4f5856c09f13c23f",
+      "scripts/resource_applicability/run_h4_prelaunch_tests.py": "a853918456240e92308818d216c540c45a68ba6ce1204f5f09f54648122258e7",
+      "scripts/resource_applicability/run_h4_pressure_integration_tests.py": "45c51082d3ac9e7c26d52877102abe3a03c1417a8252833c278f711f76e6ea2a",
+      "scripts/resource_applicability/run_h4_retry_binding_tests.py": "4a5aab30055d1075ca1364b39de49b5b18902e29f350f72e2555d46e45ce2a1b",
+      "scripts/resource_applicability/run_h4_run04_binding_tests.py": "f4195f130abc806223d50c1fce221d6fb7008045c8595086f97ce9f55acdaa1b",
+      "scripts/resource_applicability/run_h4_run05_binding_tests.py": "cb80c21c9aa6d816b322c276538917ae49e0e5f08768f9eb019987659fade294",
+      "scripts/resource_applicability/run_h4_run06_binding_tests.py": "d060569eaf7e9837ded037132e1f2b3edd7f46eae73faf52ef9bfdeaf37c3ac3",
+      "scripts/resource_applicability/run_h4_worker_failure_tests.py": "167dd3f096471071b97c5ce390d5350d2883167ffca389449deb9e35e0dbabf8",
+      "scripts/resource_applicability/run_h4_worker_memory32_tests.py": "e559ed0e0f3d507c5be7b40da4dbb4b74029dfa656f5bfbc96608259b812cea6",
+      "src/trottertracks/__init__.py": "107d4f39888dc644314fc079d41ccdc56333ae46a72f3346a499d4dfc17a543f",
+      "src/trottertracks/resource_applicability/__init__.py": "b39349f5462f08c5dc1b4c8b89891444ff2d4be90e9f153edc146ae02ecedfcd",
+      "src/trottertracks/resource_applicability/h4_geometry/__init__.py": "febca5fbd46dd775bd8ba6d930b650eac1dc09e18811894dda5b4f98aa8b14fa",
+      "src/trottertracks/resource_applicability/h4_geometry/circuits.py": "a391ab0f1687c9a94625dbef75d9c3bcb48ee35d1d0b6fc221e66b9de84fa15b",
+      "src/trottertracks/resource_applicability/h4_geometry/execution.py": "6724e74cbdc5e49319e42c7fb1671bbd138c360c593241e39d8ff18019f62d12",
+      "src/trottertracks/resource_applicability/h4_geometry/gates.py": "2e4f99fa0923c0d19f104addef5a516cf44a0b1281c640f452fd932701202def",
+      "src/trottertracks/resource_applicability/h4_geometry/identity.py": "1e92647bbdf01c9192cfd3cfbc6da21b207b91d34fc1b74176306cb87fbdc377",
+      "src/trottertracks/resource_applicability/h4_geometry/inputs.py": "f7d722edafef14c2feeb6d04f267b3402370e550e78da278b15b3cab6b5309b9",
+      "src/trottertracks/resource_applicability/h4_geometry/launch_binding.py": "2630386790642bb42bb91dad4794b74e357aad7cde7bff943a0f7fd1e5f15bc8",
+      "src/trottertracks/resource_applicability/h4_geometry/ledger.py": "01ba36070ef90c828272fe56ebf64748f3498f5d96ea3fa5baa257e0ff404919",
+      "src/trottertracks/resource_applicability/h4_geometry/library_cache.py": "5e718793ee540d33c65eae7b76055356591760473849013d90b0caa0e1a0f903",
+      "src/trottertracks/resource_applicability/h4_geometry/memory_budget.py": "77e839ba3b434e9924148edfb91b74f5ec352e8d7fffc9c5664a62d2e2b618b9",
+      "src/trottertracks/resource_applicability/h4_geometry/observer.py": "cdff92850db8f88b1f850bf49a9a514212693df142109ec7281e648e69686007",
+      "src/trottertracks/resource_applicability/h4_geometry/parallel.py": "4d68f91dce75ca8110899fb6f092a4dc0717b7460f2b38bf365a3e0563f9445a",
+      "src/trottertracks/resource_applicability/h4_geometry/prelaunch_audit.py": "480e727f57833a026ce6086c769cf24b35b5ab8e9e8039219abf06429e47360b",
+      "src/trottertracks/resource_applicability/h4_geometry/pressure_policy.py": "10114b1b7e4d0edae6189a61af78e112cc37f99f8af2dbb6b88d7a1c0efe1f47",
+      "src/trottertracks/resource_applicability/h4_geometry/pressure_proposal.py": "7e8bbc091c2b9caa453d4e08a1bbcf41482393d1b80ceba92bba8fe0c6e5c079",
+      "src/trottertracks/resource_applicability/h4_geometry/resources.py": "b7660bd25f73c8026629cd4a97b7a461e8c478d8f07948d31f58374075e53701",
+      "src/trottertracks/resource_applicability/h4_geometry/retry_receipt.py": "758c74ad5c42ff59b1f503cb064d0137e8c6cb044862d506d334a5d11264b6c0",
+      "src/trottertracks/resource_applicability/h4_geometry/review.py": "080329f8cfa7dde4798275d0ed665740ada72dd7f16f5a836ed9e6e7282329c5",
+      "src/trottertracks/resource_applicability/h4_geometry/run03_receipt.py": "503b433fb49256ab8d9eacf2ca2d16b9b76f3bd4bd1eef7d310afb616ec956c4",
+      "src/trottertracks/resource_applicability/h4_geometry/run04_receipt.py": "2393d0dedd89086ca09041cf2ca9c5aea8ddd9ed754f7457e58b7e3683b2d7dd",
+      "src/trottertracks/resource_applicability/h4_geometry/run06_receipt.py": "41b0f5ad75df81fc7d8bff374c628ec8ab1e42fe486d1ebbcbf6e7dd9d4e97ed",
+      "src/trottertracks/resource_applicability/h4_geometry/signal.py": "324b16986a08abee20773df148834ba47e64f9cb2a27092894443d68fa660724",
+      "src/trottertracks/resource_applicability/h4_geometry/stopped_attempt_receipt.py": "e833f7f25b868805c2330cdbc0b4631cba30975c73cfd3035c62d1be2152346e",
+      "src/trottertracks/resource_applicability/h4_geometry/streaming.py": "a0afacb3653f94e278f2f0d4682e95fa564c796b2c003cf430dc74be0ed5b6ed",
+      "src/trottertracks/resource_applicability/h4_geometry/workers.py": "b85b70deebaba57e8f9336484a0fd04639841c771a500b30eed01cfcb7d6b830",
+      "tests/tracks/resource_applicability/h4_prelaunch_minimal_process.py": "36be8d81a32b5054defef4512c463525dc216a0f7ac2fe3b00a3db3d68395864",
+      "tests/tracks/resource_applicability/h4_run05_serializer_reference.py": "8bba5edf84e875cb1b8278e047268d320d18922418012bb2d552983a65368fae",
+      "tests/tracks/resource_applicability/test_h4_cleanup_esrch.py": "43f06711775725703c583d3448af6aab27eecff7ef6dc932e4a4e033582a5531",
+      "tests/tracks/resource_applicability/test_h4_entrypoint_cache.py": "180d161c9a4a369916aab96ee6dca6ee803da58275e53f2de1c5fee2b60d0076",
+      "tests/tracks/resource_applicability/test_h4_geometry_source.py": "b8bd0702d6e02f2a532a8fec77aa31df42318220c1d84873c9eb7c647796f9ee",
+      "tests/tracks/resource_applicability/test_h4_host_pressure_proposal.py": "b8e45422c5cff06ac2b47d0b6b8f15e4ebb2cfcd685a55bc73e7f0aa1a7b7f00",
+      "tests/tracks/resource_applicability/test_h4_library_cache.py": "66fcbe32fc8227fc7345fd1c3b4cef9c75d97412bb8263f810bec9fc4a733586",
+      "tests/tracks/resource_applicability/test_h4_lightweight_speedup.py": "7b4e871ce1de73d9fbbc151909af78ce5ed66a000ad5c8e0a0911628696e44c8",
+      "tests/tracks/resource_applicability/test_h4_monitor_fix_a.py": "e14c70b11ce2e70401d3a0f9aff9e9a49fcfe1df157d53e65adf609b4f294c9b",
+      "tests/tracks/resource_applicability/test_h4_prelaunch.py": "0a14b99eab1475ad32e987451b3ece861f88511a35f44d50fdf361fe35833664",
+      "tests/tracks/resource_applicability/test_h4_pressure_diagnostics.py": "9a1f11cdae80d5c04767d4639bb53798eb02afc58e6a3890b3635b78becbbd88",
+      "tests/tracks/resource_applicability/test_h4_pressure_integration.py": "c5dd858f48b2624eba26a783ec1c7a91a1f4d26c7236ec96aa7e38939da092f3",
+      "tests/tracks/resource_applicability/test_h4_retry_binding.py": "4d67fae61b142bc4ed74ba074763a0f767c6fd0c804cc58105f191350abf50c5",
+      "tests/tracks/resource_applicability/test_h4_run04_binding.py": "889a31f57414f5ed8966956843c3871654ed7f5a809cde7347ab04164ff1bab2",
+      "tests/tracks/resource_applicability/test_h4_run06_recovery.py": "08d732624953b005a7fb226b23ec3be9d0c373a77c6c1c1aae54d3b1c3e09152",
+      "tests/tracks/resource_applicability/test_h4_worker_failures.py": "1467104c71c6b0627a7ad7d44f5c35ebed8cc4e67077925d78c5b96d2788e88c",
+      "tests/tracks/resource_applicability/test_h4_worker_memory32.py": "49ea8be11d3a2c776251181afde3065bdc37cd0fc8a68eaf34ec5a173457fb79"
+    }
+  },
+  "status": "PASS_WORKER_MEMORY32_IMPLEMENTATION_AND_PREPARATION_BINDING",
+  "superseded_source": "5b0e671a7a5993fe75bfb9f09dff4e77595c5f5d"
+}
