@@ -1,0 +1,39 @@
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/home/abe/.pyenv/versions/3.12.3/lib/python3.12/concurrent/futures/process.py", line 263, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.12.3/lib/python3.12/concurrent/futures/process.py", line 212, in _process_chunk
+    return [fn(*args) for args in chunk]
+            ^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/hamiltonian-construction-feasibility-20261011/src/trottertracks/representation_exploration/algorithm_design.py", line 573, in run_job
+    result=run_n1(context) if kind=='N1' else run_n2(context) if kind=='N2' else run_n3()
+           ^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/hamiltonian-construction-feasibility-20261011/src/trottertracks/representation_exploration/algorithm_design.py", line 328, in run_n1
+    c['basis_cost'] = audit.compile(qc,fock_frame(c['frame']),n,f'N1/{kind}/basis/{factor}/{i}',controlled=False)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/hamiltonian-construction-feasibility-20261011/src/trottertracks/representation_exploration/algorithm_design.py", line 258, in compile
+    raise AssertionError((label, 'absolute native/clean-workspace action', error))
+AssertionError: ('N1/planted_local_gauge/basis/0/0', 'absolute native/clean-workspace action', 2.0000000000000004)
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/hamiltonian-construction-feasibility-20261011/scripts/run_hamiltonian_algorithm_design.py", line 56, in main
+    for task,result in zip(TASKS,pool.map(run_job,TASKS),strict=True):
+  File "/home/abe/.pyenv/versions/3.12.3/lib/python3.12/concurrent/futures/process.py", line 642, in _chain_from_iterable_of_lists
+    for element in iterable:
+  File "/home/abe/.pyenv/versions/3.12.3/lib/python3.12/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.12.3/lib/python3.12/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.12.3/lib/python3.12/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.12.3/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+AssertionError: ('N1/planted_local_gauge/basis/0/0', 'absolute native/clean-workspace action', 2.0000000000000004)

@@ -253,6 +253,22 @@ class Audit:
                    'parameters':[float(v) for v in x.operation.params]} for x in compiled.data],
               'system':system, 'workspace':workspace, 'controlled':controlled,
               'logical_reference':matrix(logical)}
+        raw_action = native_action(ir, initial)
+        raw_error = opnorm(raw_action-target)
+        # Qiskit 1.3 can lose a scalar phase in optimization. Only a scalar
+        # mismatch against the independently checked built action is repairable;
+        # relative controlled phase or workspace leakage must still fail.
+        overlap = np.vdot(built, raw_action)/initial.shape[1]
+        scalar_residual = opnorm(raw_action-overlap*built)
+        phase_repair = 0.
+        if raw_error > TOL:
+            if abs(abs(overlap)-1) > TOL or scalar_residual > TOL:
+                raise AssertionError((label, 'non-scalar compiler discrepancy', raw_error))
+            phase_repair = -float(np.angle(overlap))
+            ir['global_phase'] += phase_repair
+        ir['compiler_phase_audit'] = {'raw_absolute_error':raw_error,
+                                     'scalar_residual':scalar_residual,
+                                     'global_phase_correction':phase_repair}
         error = opnorm(native_action(ir, initial)-target)
         if error > TOL:
             raise AssertionError((label, 'absolute native/clean-workspace action', error))
@@ -261,7 +277,8 @@ class Audit:
         counts = compiled.count_ops()
         return {'label':label, 'ir_sha256':ir['sha256'], **{m:int(counts.get(m,0)) for m in METRICS[:4]},
                 'size':compiled.size(), 'depth':compiled.depth(), 'qubits':qc.num_qubits,
-                'workspace':workspace, 'built_residual':built_error, 'native_residual':error}
+                'workspace':workspace, 'built_residual':built_error, 'native_residual':error,
+                'raw_native_residual':raw_error,'compiler_global_phase_correction':phase_repair}
 
 
 def rotation(n, i, j, angle):

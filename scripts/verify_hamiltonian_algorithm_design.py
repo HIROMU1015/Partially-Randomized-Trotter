@@ -84,6 +84,13 @@ def native(ir):
             out=np.moveaxis(moved,0,axis).reshape(out.shape)
     out*=np.exp(1j*ir['global_phase'])
     error=close(out,target,'native absolute clean-workspace action:')
+    phase=ir['compiler_phase_audit'];correction=phase['global_phase_correction']
+    require(math.isfinite(correction),'compiler correction finite')
+    raw=out*np.exp(-1j*correction);rawerror=float(np.linalg.norm(raw-target,2))
+    overlap=np.vdot(target,raw)/len(logical)
+    scalar=float(np.linalg.norm(raw-overlap*target,2))
+    require(abs(rawerror-phase['raw_absolute_error'])<TOL,'raw compiler phase audit')
+    require(abs(scalar-phase['scalar_residual'])<TOL and scalar<TOL,'scalar-only compiler correction')
     return error,{**{m:counts[m] for m in ('rz','cx','sx','x')},'size':sum(counts.values()),'depth':max(layers)}
 
 

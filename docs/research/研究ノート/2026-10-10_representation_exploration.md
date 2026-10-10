@@ -52,3 +52,11 @@ N1縮退生成と群frame、N2 J-only signed chargeと加算込み費用、N3係
 新sourceはf98050e基点の独立branchで固定する。前処理83 tests passed、失敗修正ログも保存。
 中心テーマ・新規性・一般優位は未確定。結果公開・別取得の後はGPT判断に戻す。
 以下の既存の日付内履歴は変更しない。
+
+## 2026-10-11追記：run1の技術停止とscalar位相修正
+
+source d0be140のrun1は最初の基底compileの絶対位相検査で停止。失敗/auditを保持。
+Qiskit native Operatorと別IR作用は一致したがbuilt回路とscalar −1で相違した。
+raw residual2、scalar residual約2.16e−15。built action全列と照合し純粋scalarだけを補正する
+監査を今回module内へ追加し、全raw誤差・補正を記録する。相対位相・漏れは修正不可。
+同一科学条件で別source/別runへ技術再実行する。run1の結果を成功扱いしない。

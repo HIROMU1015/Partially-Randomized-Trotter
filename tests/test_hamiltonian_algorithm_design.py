@@ -8,7 +8,7 @@ from qiskit import QuantumCircuit
 from qiskit.quantum_info import Operator, Statevector
 
 from trottertracks.representation_exploration.algorithm_design import (
-    active_certificate, charge_circuit, charges, density_bound, embed,
+    Audit, active_certificate, charge_circuit, charges, density_bound, embed, n1_input,
     fock_frame, gaussian_circuit, increment, n2_input, ordered_frame, sector_indices,
     sector_norm, spectral_candidates, square_bound, subspace_frame, second_quantize_one_body,
 )
@@ -43,6 +43,14 @@ def test_near_degeneracy_is_model_change_and_not_exact_gauge():
         f=second_quantize_one_body(c['g']);idx=sector_indices(4,nu)
         actual=.7*np.linalg.norm((original@original-f@f)[np.ix_(idx,idx)],2)
         assert actual<=c['bound']+1e-12
+
+
+def test_compiler_scalar_phase_is_audited_and_absolute_reference_preserved():
+    gs,weights,_,_=n1_input('planted_local_gauge')
+    frame=spectral_candidates(gs[0],2,weights[0],.02)[0]['frame']
+    audit=Audit();cost=audit.compile(gaussian_circuit(frame),fock_frame(frame),4,'phase-regression',controlled=False)
+    assert cost['built_residual']<1e-12 and cost['native_residual']<1e-12
+    assert audit.records[0]['compiler_phase_audit']['scalar_residual']<1e-12
 
 
 @pytest.mark.parametrize('sign',[-1,1])

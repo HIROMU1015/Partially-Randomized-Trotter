@@ -69,6 +69,9 @@ worker AS4GiB、合計8GiB budget、per-file64MiB、aggregate compile768、per-c
 新しい計算にはphase/total wall-timeとCPU-time capを設けない。tool polling timeoutは科学実行上限ではない。
 大系full Operatorを作らず、N2はclean embeddingの全列への作用を検査し、native行列作用をvectorizeする。
 初期referenceはQiskit Operator（小系）/Statevector（workspace系）で別検査する。
+run1の技術停止後、compilerの純粋global phase誤差だけをbuilt actionとのscalar照合で補正する。
+raw誤差・scalar residual・補正値を全IRに記録し、補正後も絶対全列作用を検査する。
+controlled相対位相やworkspace漏れをglobal補正で救済しない。科学入力・選択規則・native gate条件は同一。
 速度向上率は未測定。古いcompiler/サイズの時間からその倍率を主張しない。
 
 失敗はfailure.json・完了済みcheckpoint・auditを保持する。通常の実装ミスを修正する場合は別source/別runとして履歴を残し、silent retryしない。
