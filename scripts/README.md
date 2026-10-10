@@ -460,3 +460,8 @@ future runner: `scripts/tracks/algorithm_codesign/g10_degree_matched_native_v2.p
 ## G10 v2 post-STOP saved failure audit
 
 `tracks/algorithm_codesign/audit_g10_v2_saved_failure.py`：stdlib-only、原failure/marker/IO telemetry、outer process、source/protected identityを確認する。科学再実行・再採点なし、既存receipt上書きなし。資料は `docs/tracks/algorithm_codesign/g10_v2_results_and_gpt_handoff_20261010.md`、raw evidenceは `artifacts/track_b_g10_degree_result/2026-10-10/v2/`。mandatory STOP。
+
+
+## G10 S3 preparation entry points
+
+`tracks/algorithm_codesign/g10_degree_matched_native_v3.py` は未認可future runner。`verify_g10_key_compatibility_preparation_v3.py` はstatic/saved-only verifier、`validate_g10_key_compatibility_io_v3.py` と `g10_json_compatibility_fixtures.py` は非科学temporary IO検査専用。source reviewは `docs/tracks/algorithm_codesign/g10_v3_key_compatibility_source_and_gpt_review_20261010.md`、artifactは `artifacts/track_b_g10_key_compatibility_preparation/2026-10-10/v3/`。mandatory STOP、production実行禁止。

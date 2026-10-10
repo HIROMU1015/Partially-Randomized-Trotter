@@ -381,3 +381,8 @@ typed streaming/lifetime/failure保存の限定scopeをGPTへ返し、mandatory 
 ## G10 v2 one-shot / mandatory STOP（2026-10-10）
 
 [結果・技術監査・GPT](g10_v2_results_and_gpt_handoff_20261010.md)。固定S2→直接子A2、一回/retry0で `G10_TECHNICAL_INCONCLUSIVE`。integer/string keyの出力境界不一致、RSS cap未超過、usable rows0。source/contract/auth/旧証拠/marker保持。追加repair/science/次stage未認可。
+
+
+## G10 S3 preparation / mandatory STOP
+
+[S3 source/GPT review](g10_v3_key_compatibility_source_and_gpt_review_20261010.md) / [payload type audit](g10_v3_payload_type_and_key_audit_20261010.md)。integer label keyを旧serializerと同じ文字列・衝突規約へ出力境界だけで変換。science/caps不変、76 tests、saved/typed IO検証。A3/result/production marker未作成、science0、別review/明示認可待ち。

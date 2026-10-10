@@ -432,3 +432,8 @@ Track B固有の `trottertracks.algorithm_codesign.g10_io` を追加。既存tro
 
 報告: `docs/tracks/algorithm_codesign/g10_rss_repair_source_and_gpt_review_20261010.md`。契約・根拠: `artifacts/track_b_g10_rss_repair_preparation/2026-10-10/v2/`。
 旧source・結果・marker・STOPを保護する。科学実行/A2/fresh production markerは未認可・未実施。mandatory STOP。
+
+
+## Track B G10 S3 IO-only compatibility preparation
+
+Shared scientific APIs are unchanged. The repair is confined to `src/trottertracks/algorithm_codesign/g10_io.py`; future v3 runner and preparation/IO verifiers live in `scripts/tracks/algorithm_codesign/`. Source review: `docs/tracks/algorithm_codesign/g10_v3_key_compatibility_source_and_gpt_review_20261010.md`; tests: `tests/tracks/algorithm_codesign/test_g10_key_compatibility_v3.py`; artifacts: `artifacts/track_b_g10_key_compatibility_preparation/2026-10-10/v3/`. No production execution authorized, mandatory STOP.

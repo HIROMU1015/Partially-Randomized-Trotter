@@ -493,3 +493,8 @@ typed streaming/lifetime/failure保存の限定scopeをGPTへ返し、mandatory 
 ## Track B G10 v2 technical STOP（2026-10-10）
 
 [結果・外側process・provenance/GPT](tracks/algorithm_codesign/g10_v2_results_and_gpt_handoff_20261010.md)。固定S2一回でstring-key TypeError、RSS cap未超過。正式payloadなし、科学比較0。旧証拠と消費済markerを保持、retry0、mandatory STOP。
+
+
+## G10 S3 key compatibility / STOP
+
+[実行前source review](tracks/algorithm_codesign/g10_v3_key_compatibility_source_and_gpt_review_20261010.md)、[型/key監査](tracks/algorithm_codesign/g10_v3_payload_type_and_key_audit_20261010.md)、`artifacts/track_b_g10_key_compatibility_preparation/2026-10-10/v3/`。局所key文字列化・旧JSON互換、科学設定/caps不変。本番実行未認可、mandatory STOP。

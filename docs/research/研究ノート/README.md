@@ -238,3 +238,6 @@ dated note: `docs/research/研究ノート/2026-10-10_track_b_g10_rss_repair_sou
 
 
 - [2026-10-10 G10 v2 one-shot technical STOP](2026-10-10_track_b_g10_v2_one_shot_technical_stop.md)：string-key boundary failure、正式payload0、retry0、外側process/保存provenance確認、mandatory STOP。
+
+
+- [2026-10-10 G10 S3 JSON-key compatibility preparation](2026-10-10_track_b_g10_v3_key_compatibility_preparation.md)：76 focused tests、17 artificial equality cases、IO memory確認、pending authority、旧marker保持、mandatory STOP。

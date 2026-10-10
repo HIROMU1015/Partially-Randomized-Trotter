@@ -265,3 +265,8 @@ typed streaming/lifetime/failure保存の限定scopeをGPTへ返し、mandatory 
 ## G10 v2 saved-failure audit
 
 `audit_g10_v2_saved_failure.py` はpost-STOP stdlib audit専用。元failure分類を保存し、exit0とscientific completionを区別する。原結果/marker保護、science/matrix/synthesis/budget/lower再実行0、exclusive新監査保存。G10 v2 runnerを呼び出さない。
+
+
+## G10 v3 key compatibility source preparation
+
+Future `g10_degree_matched_native_v3.py` とpure preparation verifier `verify_g10_key_compatibility_preparation_v3.py` を分ける。`validate_g10_key_compatibility_io_v3.py` / `g10_json_compatibility_fixtures.py` はsaved/artificial IO-only。new science/synthesis/production markerなし、pending authorization。資料 `docs/tracks/algorithm_codesign/g10_v3_key_compatibility_source_and_gpt_review_20261010.md`、mandatory STOP。

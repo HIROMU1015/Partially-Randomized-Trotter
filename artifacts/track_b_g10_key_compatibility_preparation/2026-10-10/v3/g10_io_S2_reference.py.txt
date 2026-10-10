@@ -1,8 +1,6 @@
-"""G10 bounded output only; no scientific imports or calculations.
+"""G10 v2 bounded output only; no scientific imports or calculations.
 
-Values are JSON scalars/dict/list/tuple/Fraction. Dictionary keys use the old
-serial()'s str(key), first-position/last-value rule. Only active dictionaries
-are shallow-normalized; the original graph is never copied or mutated.
+The supported tree is JSON scalars/string-key dict/list/tuple/Fraction.
 Do not mutate it during validation/encoding. A final JSON alone is insufficient:
 a matching successful terminal STOP receipt is required for scientific use.
 """
@@ -56,13 +54,7 @@ class FractionEncoder(json.JSONEncoder):
 
 
 def validate_tree(value, check=lambda: None):
-    """Validate original values, including overwritten ones; no graph copy.
-
-Keys are converted during encoding, once per dictionary occurrence. This
-preserves str(key) rather than json's native bool/None/float-key conversions.
-Cycles, unsupported values and nonfinite values remain rejected even if a
-later colliding key would overwrite their value in the old serial() result.
-"""
+    """Depth-sized ancestor set, no graph copy; permit shared acyclic subtrees."""
     ancestors = set()
     visited = 0
 
@@ -78,7 +70,9 @@ later colliding key would overwrite their value in the old serial() result.
             ancestors.add(ident)
             try:
                 if isinstance(item, dict):
-                    for child in item.values():
+                    for key, child in item.items():
+                        if not isinstance(key, str):
+                            raise TypeError('G10 JSON keys must be strings')
                         walk(child)
                 else:
                     for child in item:
@@ -95,59 +89,14 @@ later colliding key would overwrite their value in the old serial() result.
     check()
 
 
-def _compatible_tokens(value, check):
-    """Old JSON formatting with one shallow key map per active dictionary.
-
-The map holds original child references, not converted child trees. Python
-dict assignment keeps the first normalized key's insertion position and the
-last value. Keys must have stable, side-effect-free str() for equivalence;
-the scientific schema uses integer labels and strings. Scalar encoding is
-delegated to CPython's JSON encoder (including float/int subclass handling).
-"""
-    encoder = FractionEncoder(indent=2, ensure_ascii=False, allow_nan=False)
-
-    def walk(item, level):
-        if isinstance(item, dict):
-            normalized = {}
-            for index, (key, child) in enumerate(item.items()):
-                if index % 1024 == 0:
-                    check()
-                normalized[str(key)] = child
-            if not normalized:
-                yield '{}'
-                return
-            yield '{\n'
-            padding = '  ' * (level+1)
-            for index, (key, child) in enumerate(normalized.items()):
-                yield (',\n' if index else '') + padding
-                yield encoder.encode(key)
-                yield ': '
-                yield from walk(child, level+1)
-            yield '\n' + '  '*level + '}'
-        elif isinstance(item, (list, tuple)):
-            if not item:
-                yield '[]'
-                return
-            yield '[\n'
-            padding = '  ' * (level+1)
-            for index, child in enumerate(item):
-                yield (',\n' if index else '') + padding
-                yield from walk(child, level+1)
-            yield '\n' + '  '*level + ']'
-        else:
-            yield encoder.encode(item)
-
-    yield from walk(value, 0)
-
-
 def iter_json_bytes(value, check=lambda: None):
     validate_tree(value, check)
-    # Token iteration does not materialize a recursive serial() copy or the
-    # all-result list(chunks)/join used by CPython encode() on a container.
+    encoder = FractionEncoder(indent=2, ensure_ascii=False, allow_nan=False)
+    # iterencode does not materialize CPython encode()'s list(chunks)/join.
     # CPython may still construct one entire escaped string token. G10 fields
     # contain short strings; this is not a general bound on arbitrary tokens.
     buffer = bytearray()
-    for index, token in enumerate(_compatible_tokens(value, check)):
+    for index, token in enumerate(encoder.iterencode(value)):
         if index % 256 == 0:
             check()
         for start in range(0, len(token), CHUNK_CHARACTERS):

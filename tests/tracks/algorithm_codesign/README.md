@@ -108,3 +108,8 @@ focused test: `test_g10_streaming_io.py`。人工JSON/typed fixtures、I/O/guard
 
 報告: `docs/tracks/algorithm_codesign/g10_rss_repair_source_and_gpt_review_20261010.md`。契約・根拠: `artifacts/track_b_g10_rss_repair_preparation/2026-10-10/v2/`。
 旧source・結果・marker・STOPを保護する。科学実行/A2/fresh production markerは未認可・未実施。mandatory STOP。
+
+
+## G10 S3 key compatibility focused tests
+
+`test_g10_key_compatibility_v3.py` loads46 unchanged applicable S2 IO/guard tests plus30 compatibility/pending-launch tests (76 PASS). The old blanket non-string-key rejection is explicitly superseded; original test file is preserved. Artificial data and metadata only, no scientific imports/runner/matrix/synthesis/sampling/LP. Source review: `docs/tracks/algorithm_codesign/g10_v3_key_compatibility_source_and_gpt_review_20261010.md`.

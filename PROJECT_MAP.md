@@ -880,3 +880,9 @@ typed streaming/lifetime/failure保存の限定scopeをGPTへ返し、mandatory 
 
 [結果/GPT引継ぎ](docs/tracks/algorithm_codesign/g10_v2_results_and_gpt_handoff_20261010.md)：`G10_TECHNICAL_INCONCLUSIVE`、JSON string-key validation failure、RSS237.33984375 MiB。S2 a139b91→authorization-only A2 1a2cd26、一回/retry0。正式payload/tokenなし、usable rows0。旧結果/marker/STOP・critical143/protected1300は保持。
 [保存失敗監査](scripts/tracks/algorithm_codesign/audit_g10_v2_saved_failure.py) / [新資料](artifacts/track_b_g10_degree_result/2026-10-10/v2/)。mandatory STOP、追加science/repair未認可、科学判断はGPT。
+
+
+## G10 S3 JSON-key compatibility preparation（2026-10-10、最新追記）
+
+[S3 source review/GPT](docs/tracks/algorithm_codesign/g10_v3_key_compatibility_source_and_gpt_review_20261010.md) / [payload type/key audit](docs/tracks/algorithm_codesign/g10_v3_payload_type_and_key_audit_20261010.md)。旧str(key)・衝突/順序を局所正規化で保存、科学event不変。76 focused tests、17人工bytes/hash、saved/typed IO低メモリを確認。本番完了保証なし。
+[future v3 runner](scripts/tracks/algorithm_codesign/g10_degree_matched_native_v3.py) / [static verifier](scripts/tracks/algorithm_codesign/verify_g10_key_compatibility_preparation_v3.py) / [tests](tests/tracks/algorithm_codesign/test_g10_key_compatibility_v3.py) / [artifact](artifacts/track_b_g10_key_compatibility_preparation/2026-10-10/v3/)。pending authorization、A3/本番markerなし、science0、旧v1/v2証拠保護、mandatory STOP。
