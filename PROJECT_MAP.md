@@ -857,3 +857,12 @@ source `05c5ef23` / authorization-only child `f5cd0755`、一回のみ、retry0�
 technical prefixは科学判断に使用せず、原結果/marker/STOPと旧1241 pathを保持。
 保存hash/sequence/会計45,605条件の監査PASS。critical113のfull source prefix保持、追記のみ。
 追加science/matrix/synthesis/sampler/budget/lower処理なし。mandatory STOP、次の研究/実行scopeはGPT判断。
+
+
+## G10 RSS技術調査・STOP（2026-10-10、最新追記）
+
+[技術報告/GPT引継ぎ](docs/tracks/algorithm_codesign/g10_rss_failure_technical_investigation_20261010.md)。原分類 `G10_TECHNICAL_INCONCLUSIVE` は不変。
+保存JSONのI/O検算で全serial copy＋JSON chunk list/joinのメモリ増幅を確認。
+同原bytes/hashのmaterialized peak508.90625 MiB / stream253.25 MiB。元G10 heap/例外位置の完全再現ではない。
+独立調査branch、既存source/result/audit/marker/STOP保持。production修正・cap変更・science再実行0。
+typed streaming/lifetime/failure保存の限定scopeをGPTへ返し、mandatory STOP。
