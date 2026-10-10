@@ -181,7 +181,16 @@ root statusには同時に追加された別Track B review一件が増えたが�
 
 global manifest checkerは基点からの`relevant_commits[7]`のdescription欠落で失敗する。
 当stageの追加entryとinventory、旧85 entryの保持を別確認し、global checkerをPASSとは報告しない。
-公開commitと別Git取得の確認は公開receiptを正本とする。
+公開結果commitは`10fa5f97cf7e58ea351772bb02bfe8afa82e3806`。
+[GitHub結果](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/10fa5f97cf7e58ea351772bb02bfe8afa82e3806/docs/research/hamiltonian_algorithm_design_results_20261011.md)、
+[科学source](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ed335a007bee6966a37f3026ac188534e526b5b9/src/trottertracks/representation_exploration/algorithm_design.py)、
+[証拠・失敗・audit](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/10fa5f97cf7e58ea351772bb02bfe8afa82e3806/artifacts/hamiltonian_algorithm_design/2026-10-11)。
+local object alternatesを持たない別Git storeへshallow fetchし、変更75 filesとsource177 blobsの全bytes/hashを照合した。
+取得したverifier/source/result/native IR/auditで保存検証を再実行し、同じ280 IR/120 rows/177 blobsと改変拒否を確認した。
+[取得receipt](../../artifacts/hamiltonian_algorithm_design/2026-10-11/remote_retrieval_receipt.json)、
+[取得データの保存検証](../../artifacts/hamiltonian_algorithm_design/2026-10-11/remote_saved_evidence_verification.json)。
+最初の取得手順は日本語Git pathのquote処理で止まり、未exportのverifier起動失敗も記録した。
+NUL区切りpathに修正して全取得を完了した。科学再計算0。
 
 `FINITE_CONSTRUCTION_FEASIBILITY_COMPLETE_AWAITING_GPT_REVIEW`。
 `mandatory_stop=true`、`next_stage_authorized=false`、`central_hypothesis_adopted=null`。

@@ -87,3 +87,10 @@ pretty JSONの64MiB上限に達したためrun auditはTECHNICAL_STOPを記録�
 N3 gapped例の係数δ=.001549636、小gapは全6modeへ戻す。
 結果・反例・既知手法との関係を結果文書に記録し、中心テーマnull・次段false・mandatory STOPを保持する。
 公開と別取得だけを完了させ、追加科学batchを実行しない。
+
+## 2026-10-11追記：公開・別取得の完了
+
+結果10fa5f9をHIROMU1015独立branchへ通常push。別Git storeの変更75files/source177blobsを照合し、
+取得verifierとevidenceでも280IR/120rows/177blobsの保存検証PASS。receiptを保存した。
+日本語path quoteの取得手順不具合はNUL区切りで修正、未export verifierの起動失敗ログも保持。
+科学再計算0。中心テーマnull・次段false・mandatory STOPを保持し、GPT判断へ返す。
