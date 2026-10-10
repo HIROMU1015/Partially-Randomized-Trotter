@@ -244,10 +244,11 @@ class Audit:
         if built_error > TOL:
             raise AssertionError((label, 'built', built_error))
         compiled = transpile(qc, basis_gates=['rz','sx','x','cx'], optimization_level=1,
-                             seed_transpiler=SEED, num_processes=1)
+                             seed_transpiler=SEED, num_processes=1, qubits_initially_zero=False)
         if compiled.size() > 20000:
             raise ValueError('native gate cap')
         ir = {'label':label, 'qubits':qc.num_qubits,
+              'qubits_initially_zero':False,
               'global_phase':float(compiled.global_phase), 'operations':[
                   {'name':x.operation.name, 'qubits':[compiled.find_bit(q).index for q in x.qubits],
                    'parameters':[float(v) for v in x.operation.params]} for x in compiled.data],

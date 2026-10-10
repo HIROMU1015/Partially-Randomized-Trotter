@@ -60,3 +60,13 @@ Qiskit native Operatorと別IR作用は一致したがbuilt回路とscalar −1�
 raw residual2、scalar residual約2.16e−15。built action全列と照合し純粋scalarだけを補正する
 監査を今回module内へ追加し、全raw誤差・補正を記録する。相対位相・漏れは修正不可。
 同一科学条件で別source/別runへ技術再実行する。run1の結果を成功扱いしない。
+
+## 2026-10-11追記：run2の技術停止と入力仮定の修正
+
+source b684ba3のrun2はN1三contextのcheckpointを保存した後、N2でnon-scalar差を検出し停止。
+Qiskitの既定qubits_initially_zero=Trueが全入力を真空と仮定する点が原因。
+任意system/ancilla入力を要求する本契約ではFalseが必要であり、設定変更により
+全clean embedding32列のnative対built差は約4.49e−14となった。
+個別gate分解は全て一致し、全回路のancilla借用時の入力仮定が問題だった。
+全対照にFalseを適用し、sourceを再固定する。科学fixture・予算・q・selectorは変更せず、
+run2の失敗・完了checkpoint・診断とともに技術再実行の履歴を残す。

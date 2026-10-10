@@ -72,6 +72,9 @@ worker AS4GiB、合計8GiB budget、per-file64MiB、aggregate compile768、per-c
 run1の技術停止後、compilerの純粋global phase誤差だけをbuilt actionとのscalar照合で補正する。
 raw誤差・scalar residual・補正値を全IRに記録し、補正後も絶対全列作用を検査する。
 controlled相対位相やworkspace漏れをglobal補正で救済しない。科学入力・選択規則・native gate条件は同一。
+run2の技術停止後、全対照に`qubits_initially_zero=False`を適用する。
+Qiskit 1.3の既定Trueはsystemも初期真空と仮定してancillaを借用できるため、
+今回の任意system入力の全列契約とは一致しない。Falseの全列native作用を検査し、run2のcheckpointと診断を保持する。
 速度向上率は未測定。古いcompiler/サイズの時間からその倍率を主張しない。
 
 失敗はfailure.json・完了済みcheckpoint・auditを保持する。通常の実装ミスを修正する場合は別source/別runとして履歴を残し、silent retryしない。

@@ -59,6 +59,7 @@ def wrapped(op,axis):
 
 def native(ir):
     require(digest({k:v for k,v in ir.items() if k!='sha256'})==ir['sha256'],'IR hash')
+    require(ir['qubits_initially_zero'] is False,'arbitrary system input compiler contract')
     n=ir['qubits'];ns=ir['system'];nw=ir['workspace'];anc=int(ir['controlled']);logical=mat(ir['logical_reference'])
     require(n==ns+nw+anc and 1<=n<=13,'IR dimensions')
     require(logical.shape==(1<<(ns+anc),)*2,'reference dimensions')

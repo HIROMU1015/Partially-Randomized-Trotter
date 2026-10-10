@@ -53,6 +53,17 @@ def test_compiler_scalar_phase_is_audited_and_absolute_reference_preserved():
     assert audit.records[0]['compiler_phase_audit']['scalar_residual']<1e-12
 
 
+def test_charge_native_compile_preserves_arbitrary_system_inputs():
+    con=charges(n2_input('signed_overlap'))
+    qc,workspace,_=charge_circuit(con['S'],con['K'],con['widths'],.7)
+    bits=np.array([[s>>i&1 for i in range(4)] for s in range(16)])
+    q=bits@np.asarray(con['S']);values=np.einsum('bi,ij,bj->b',q,np.asarray(con['K']),q)
+    phase=np.diag(np.exp(-.7j*values));reference=np.block([[np.eye(16),np.zeros((16,16))],[np.zeros((16,16)),phase]])
+    audit=Audit();cost=audit.compile(qc,reference,4,'signed-native-regression',workspace)
+    assert cost['native_residual']<1e-11
+    assert audit.records[0]['qubits_initially_zero'] is False
+
+
 @pytest.mark.parametrize('sign',[-1,1])
 def test_modular_increment_all_register_values(sign):
     qc=QuantumCircuit(4);increment(qc,0,[1,2,3],sign)
