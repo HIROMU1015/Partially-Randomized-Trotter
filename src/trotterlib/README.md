@@ -1,5 +1,19 @@
 # trotterlib モジュール索引
 
+## 2026-10-11 Track A H6精度一致資源比較 v1：準備・未認可STOP
+
+[結果前実行契約](../../docs/research/track_a_h6_matched_accuracy_execution_contract_v1.md)とsealed manifestを次の入口とする。
+linear H6/1.00Å/STO-3G/tol-only rank19/sector400/T0.8、保存state不変。B0共通prefix5/10/15、B1 S2/S4、B2 q/r/Kの92有限候補と4精度。
+signal先行、全適格候補の費用探索8 trajectory、B2精度別上位2の独立確認32 trajectory。empirical u/shot-inclusive RZ/paired統計・rare-order限界を保存する設計。
+コンパクトstageとsector/prefix cache、2 disposable cost process。phase/total wall cap=null、メモリ・出力・call/instruction guardは有限。
+synthetic/injected/dummy検査159件PASS。準備で新H6 signal/sampling/compile0。旧7cell/32wrapper・原STOP・欠測・凍結sourceを保全。
+H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION。新grant未発行、別の明示認可後に一回実行。次の主要GPTレビューはH6 map/確認後、H8設計前。
+以下は各段階当時の履歴。
+
+- Track A orchestrationは[contract](../trottertracks/resource_applicability/h6_matched_contract_v1.py)、[accounting](../trottertracks/resource_applicability/h6_matched_accounting_v1.py)、[native/sector port](../trottertracks/resource_applicability/h6_matched_port_v1.py)、[no-wall supervisor](../trottertracks/resource_applicability/h6_matched_execution_v1.py)。既存libraryは変更しない。
+
+
+
 ## 2026-10-11 Track A：固定H6技術pilot v2結果・GPTレビュー待ち
 
 最新入口は[H6 pilot v2一次結果・監査・欠測・レビュー論点](../../docs/research/track_a_h6_technical_pilot_result_v2.md)。
