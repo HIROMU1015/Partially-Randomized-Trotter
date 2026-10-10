@@ -63,3 +63,11 @@ B2/B3はR8・r2・K2/4/6、B1はglobal S2/S4。保存binary64 Hamiltonianと指�
 再監査後にmandatory STOP。**H4 science manifestの組込み・source更新・sealはこの作業で行わない**。
 receiptはfuture manifest reviewの入力として使用できるが、H4限定科学検証launchには別認可が必要。
 `H4_LIMITED_NOT_AUTHORIZED` / `H6_NOT_AUTHORIZED` / `DRAFT_NOT_AUTHORIZATION`、N/G=null、accuracy UNDETERMINED、総allowance未認定を維持する。
+
+## 再監査完了の記録
+
+監査source commitは `941eda0b22bfedda10ece5ed4cdefad77cf3d2b2`、新audit closure172件、旧closure170件、新audit freeze187件。旧実行sourceと別にlocal/Git bytesを固定した。
+保存再監査は `H4P_SAVED_RECEIPT_REAUDIT_PASS`。原16 file・9,821,513 bytes、8 cell・全179 time組/537予定probeのmetadata/digest/構造式が一致した。
+原親の `H4_NATIVE_RECEIPT_STOP` / `TERMINAL_INVALID:JSON_INPUT_SIZE` はbytes不変。新PASSは元の一回launchの再判定ではない。
+[source対応監査](../../artifacts/resource_applicability/track_a_ax2b_h4_native_receipt_reaudit/2026-10-10/metadata_binding_audit_v2.json)と[保全監査](../../artifacts/resource_applicability/track_a_ax2b_h4_native_receipt_reaudit/2026-10-10/preservation_audit_v2.json)へ来歴を記録した。
+旧2,644 fileとroot側5 review文書を保全。科学manifest未seal・別認可なし。次はreceiptを用いたH4限定science manifest固定の検討であり、今回自動開始しない。
