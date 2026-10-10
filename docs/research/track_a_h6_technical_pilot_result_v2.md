@@ -92,3 +92,10 @@ representation/u/ground-state未認定を踏まえ、必要な追加検証と主
 Codexは科学GO/STOPや表現・Hermitization政策の変更を決定しない。
 `H6_NOT_AUTHORIZED` / `DRAFT_NOT_AUTHORIZATION`、N/Gnull、u/ground-state未認定、`UNDETERMINED`、next_stage_authorized=false。
 mandatory STOPを維持。H6本検証・H8・追加pilotを自動開始しない。
+
+## GitHub再取得・公開bytes確認
+
+結果保存commit `735475b3cb11a8214eefcf14826bacd90ed528fa` を独立bare repositoryへGitHubから再取得し、[remote照合記録](../../artifacts/resource_applicability/track_a_h6_technical_pilot_execution_v2/2026-10-10/remote_verification_v2.json)を保存した。
+science source206・validation source3・親入力33・raw142件のGit blob SHA256/ローカルbytesが一致。旧v1 STOP raw14件も旧結果commitと同じbytes。
+相対リンク37件をremote treeで確認。保全対象4266ファイル・root独立レビュー原本43件、既存dirty/untrackedのstatusを保全。
+この照合は公開bytesの確認で、数値再評価・sampling・build/compile・科学再実行・科学GOではない。原STOP/欠測を維持しmandatory STOP。
