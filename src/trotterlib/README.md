@@ -484,3 +484,11 @@ worker4 AS/RSS32GiB、driver8GiB、observer256MiB/64MiB、admission152.25GiB、C
 独立reviewとimmutable artifact・直前SOURCE/profile/input/carry/CPU/memory/pressure/OOM/容量/inode/quota/未使用lock合格後、一度mapを起動。実状態はruntime receiptへ別記録。
 共有環境/既存venv/他job/GPU変更0、home内だけ。全map完走は未検証、次stage未認可。
 [起動資料入口](../../docs/research/track_a_h4_production_run08_20261010.md)。
+
+
+## 2026-10-10 H4 run08 host1.26% STOP・限定猶予の未承認案
+
+run08は約32分でhostPSI1.26%によりSTOP、全nonroot0/OOM増分なし/available約426GiB/role32GiB内。compile2/signal1、6 owned identities×2ABSENT、旧費用保持・次carry0。
+SOURCE736bdc15ccfec6b2a715e1723850a481f0f2ff6b/closure69、旧production67不変、新inactive2files/14pure PASS。毎秒監視は維持しhost1〜5%だけ152.25GiB/nonroot0/OOM0/fresh5秒の下で最大30秒猶予、5%以上等は即STOP案。
+既承認1%即STOPの変更なので利用者承認前は本番接続/再起動しない。flagsfalse/allowed[]/未seal/commandnull。科学/compiler/worker4・32GiB/共有環境/venv/GPU変更0。
+[限定修正案・検査](../../docs/research/track_a_h4_host_pressure_grace_fix_20261010.md)。

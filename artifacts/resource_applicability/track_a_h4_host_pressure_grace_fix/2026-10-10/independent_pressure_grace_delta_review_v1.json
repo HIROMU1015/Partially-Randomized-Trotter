@@ -1,0 +1,128 @@
+{
+  "accepted_evidence_limits": [
+    "Test named recorded_run08_pressure_values_short_spike_get_grace includes synthetic1s timing and a hypothetical later0% sample; it does not prove historical run08 recovered after1.26%.",
+    "5% and30s candidate values are not proven optimal or universally safe; future pressure and originating workload are unknown.",
+    "Pure evaluator does not inspect live ownership, process AS/RSS32GiB, CPU, quota or runner; these remain separate unchanged production guards and must stay immediate on any future wiring.",
+    "Only14 existing pure test results were read; no broad campaign, production success or new fresh-launch gate is claimed."
+  ],
+  "affinity_changes": 0,
+  "approved": false,
+  "blocking_implementation_findings": [],
+  "changed_implementation_paths": [
+    "src/trottertracks/resource_applicability/h4_geometry/pressure_grace_proposal.py",
+    "tests/tracks/resource_applicability/test_h4_pressure_grace_proposal.py"
+  ],
+  "compile_build_transpile": 0,
+  "existing_production_pressure_threshold_percent": 1.0,
+  "launch_review_performed": false,
+  "network_used": false,
+  "nonblocking_test_scope_notes": [
+    "Timer-reset test uses0%; code resets at all valid host<1% values. Exact5s interval acceptance is apparent from<=5 but not asserted as a standalone positive boundary case. Neither is an implementation blocker for this inactive proposal."
+  ],
+  "old_production_files_unchanged": "PASS_NAME_ONLY_GIT_DIFF_AND_DIRECT_OLD_PRESSURE_HELPER_BLOB_EQUALITY",
+  "previous_source_commit": "8c917a5af7943969d4abede8b0bb012880efeee0",
+  "production_wiring_present": false,
+  "proposal_parameters": {
+    "host_immediate_stop_percent": 5.0,
+    "host_only_min_available_bytes": 163477192704,
+    "host_warning_continuous_seconds": 30.0,
+    "host_warning_percent": 1.0,
+    "nonroot_stop_percent": 0.0,
+    "observation_interval_max_seconds": 5,
+    "observation_max_age_seconds": 5
+  },
+  "real_workers_observers": 0,
+  "remaining_authorization": [
+    {
+      "approved": false,
+      "note": "This is a pressure contract amendment proposal only. Current production still stops at1% and no fresh run is bound or authorized by this review.",
+      "scope": "Adopt host PSI1% warning with maximum30s grace and immediate5% STOP under the stated unchanged local/OOM/freshness/ownership/32GiB guards."
+    }
+  ],
+  "review_scope": "Only two newly added files, their directly delegated validation helper and small original14-test metadata. Existing source/environment/compiler/input/proof campaigns not reread or rerun.",
+  "reviewer": "/root/independent_final_review",
+  "runtime_authorization": false,
+  "schema_version": "h4-independent-pressure-grace-delta-review-v1",
+  "scientific_array_reads": 0,
+  "scientific_imports": 0,
+  "source_commit": "736bdc15ccfec6b2a715e1723850a481f0f2ff6b",
+  "source_docs_modified": false,
+  "source_files": [
+    {
+      "bytes": 3799,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-host-pressure-grace-fix-20261010/src/trottertracks/resource_applicability/h4_geometry/pressure_grace_proposal.py",
+      "sha256": "461a6ac9733daf59ced9751677a641be86c17d1a927d354446c5010be2c59656"
+    },
+    {
+      "bytes": 5641,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-host-pressure-grace-fix-20261010/tests/tracks/resource_applicability/test_h4_pressure_grace_proposal.py",
+      "sha256": "e4d27f395b0a9a46b75c40169fb27896e503b3289a4faff59df2459a6fb01dc1"
+    }
+  ],
+  "status": "PASS_INACTIVE_PROPOSAL_DELTA_ONLY",
+  "test_execution_by_reviewer": 0,
+  "test_log_reference": {
+    "bytes": 2553,
+    "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-host-pressure-grace-fix-20261010/tests-01/test.log",
+    "sha256": "ce6bcf4810fee560ce071087a5d1dd68fc75725e6c81fb61479bfafb93aca0a9"
+  },
+  "test_plan_reference": {
+    "bytes": 1095,
+    "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-host-pressure-grace-fix-20261010/BINDING_TEST_PLAN_v1.json",
+    "sha256": "643ae82b04030b6f004b0f30bf31ac0a0ae5bb1328e7404657b3afda74780aa6"
+  },
+  "test_result": {
+    "additional_transpiles": 0,
+    "affinity_changes": 0,
+    "artificial_circuit_builds": 0,
+    "child_processes": 0,
+    "denied_attempts": [],
+    "errors": 0,
+    "failures": 0,
+    "output_bytes": 2209,
+    "peak_RSS_bytes": 24117248,
+    "production_launches": 0,
+    "scientific_array_reads": 0,
+    "skips": 0,
+    "status": "PASS",
+    "tests": 14,
+    "wall_seconds": 0.0031457189470529556
+  },
+  "test_result_reference": {
+    "bytes": 376,
+    "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-host-pressure-grace-fix-20261010/tests-01/test_result_v1.json",
+    "sha256": "2acade7a18908b2443278206ffa5eaf682538d3dde6ff9658ae363d6c079f955"
+  },
+  "verified_behavior": [
+    {
+      "finding": "Original evaluator validates sample freshness, scope/namespace/hierarchy coverage, available-memory type, OOM baseline and nonroot PSI first. Only its host_memory_pressure outcome is eligible for grace.",
+      "line": 36,
+      "path": "src/trottertracks/resource_applicability/h4_geometry/pressure_grace_proposal.py"
+    },
+    {
+      "finding": "Each evaluation after the first requires strictly increasing monotonic now and gap<=5s. Invalid gap/time latches STOP; no sleep or writes in evaluator.",
+      "line": 33,
+      "path": "src/trottertracks/resource_applicability/h4_geometry/pressure_grace_proposal.py"
+    },
+    {
+      "finding": "Any positive host PSI requires effective available>=152.25GiB; zero host PSI retains delegated16GiB headroom. Exact admission boundary is included.",
+      "line": 43,
+      "path": "src/trottertracks/resource_applicability/h4_geometry/pressure_grace_proposal.py"
+    },
+    {
+      "finding": "Host>=5% STOP immediately; host1% inclusive and below5% starts or continues warning; continuous warning elapsed>=30s STOP; host<1% resets warning timer.",
+      "line": 45,
+      "path": "src/trottertracks/resource_applicability/h4_geometry/pressure_grace_proposal.py"
+    },
+    {
+      "finding": "First failure is latched and subsequent evaluations return it; caller observation is not mutated; no resume of failed guard.",
+      "line": 29,
+      "path": "src/trottertracks/resource_applicability/h4_geometry/pressure_grace_proposal.py"
+    },
+    {
+      "finding": "All result flags remain false and there is no import from a production runtime path into this new module.",
+      "line": 67,
+      "path": "src/trottertracks/resource_applicability/h4_geometry/pressure_grace_proposal.py"
+    }
+  ]
+}
