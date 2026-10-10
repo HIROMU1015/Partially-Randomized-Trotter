@@ -1,5 +1,14 @@
 # 研究計画資料
 
+## 2026-10-10 Track A：H4限定v3一回実行・GPT引渡し
+
+最新入口は[H4 v3実行結果・レビュー索引](track_a_ax2b_h4_limited_execution_v2.md)。原status H4_LIMITED_STOP、reason PHASE_WALL_CAP:correctness。
+correctness6/8、MP12/16、explicit event0/4。coverage一致・actual全体保存。
+source b228f23、seal d2b1511、別認可a699a74を結果前に公開。一回grant消費済み、retry/resumeなし。
+原結果/欠測・保存監査を引渡し、科学GO/STOP・u/shot/総費用・H6をCodexは承認しない。
+H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、N/Gnull・UNDETERMINED、mandatory STOP。
+旧source/freezes/STOP・既存dirty/未追跡・Track Bを保全。以下は各段階当時の履歴。
+
 ## 2026-10-10 Track A：coverage serialization準備v3
 
 最新入口は[coverage修正・準備v3](track_a_ax2b_h4_coverage_preparation_v3.md)。旧v2/source/freeze/STOPを保持し新versionを追加。
