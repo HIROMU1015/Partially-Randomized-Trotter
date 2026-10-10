@@ -183,3 +183,10 @@ science終了後mandatory STOP、追加合成/target/grid/分子/DF/trajectory/G
 46科学条件・同19-key inventory・旧v1 source/result/markerは保持。
 新実合成・登録matrix/予算/科学実行0、v2 marker absent、別authorization pending。
 独立branchで資料公開後STOPし、新source-bound明示認可を待つ。
+
+## G9 v2 one-shot completed / STOP（2026-10-10）
+
+[G9 v2 results/GPT handoff](2026-10-10_track_b_g9_v2_one_shot_result.md)。`G9_MATCHED_NATIVE_RESOURCE_MAP_COMPLETE`、11 rows/22 axes、19 keys（new1/reuse18）、retry0。
+known P5/指定3-qubit providerの登録direct6方式でclosed P5のT intercept/Kが小さく、CTSのCXは小さい。
+1,866 event accounting、saved-only25 checks PASS。旧v1結果/marker、critical80/protected982は不変。
+実量子shots/trajectory/DF/分子/NPZ/GPU/LPは0、source-bound local evidence。次の科学実行・採択はGPT判断、mandatory STOP。
