@@ -62,12 +62,16 @@ class Ledger:
     writer lock. A record is published before its ledger completion; a crash in
     either window leaves the durable invocation charged and requires review.
     """
-    def __init__(self,budget,*,cap=74784,prior_invocations=0):
+    def __init__(self,budget,*,cap=74784,prior_invocations=0,resume=None,execution_source=None):
         require(type(prior_invocations) is int and 0 <= prior_invocations < cap, 'prior invocation accounting')
         self.prior_invocations = prior_invocations
         self.budget,self.cap,self.version=budget,cap,0
         self.entries,self.reservations,self.registry,self.expected={},{},{},{}
         self.chain=None
+        self.resume,self.execution_source=resume,execution_source
+        self.imported=set();self.registered=set()
+        if resume is not None:
+            require(prior_invocations==len(resume.state['reservations']), 'continuation actual carry into ledger')
         budget.write('ledger.lock',b'')
         self.fd=os.open(budget.root/'ledger.lock',os.O_RDWR|os.O_NOFOLLOW)
         self._save()
@@ -97,8 +101,42 @@ class Ledger:
 
     def register(self,expected):
         key=expected['wrapper_key']
-        require(key not in self.expected,'duplicate logical wrapper')
+        require(key not in self.registered,'duplicate logical wrapper')
+        require(key not in self.expected or key in self.imported and self.expected[key]==expected,
+                'continuation expected identity changed')
+        self.registered.add(key)
         self.registry[key]=expected['numerical_circuit_fingerprint'];self.expected[key]=dict(expected)
+
+    def import_complete(self,expected):
+        """Copy only acknowledged, verified parent bytes; reserve no new call."""
+        if self.resume is None:return None
+        key=expected['wrapper_key']
+        record=self.resume.recover(expected)
+        if record is None:return None
+        if key in self.entries:
+            require(key in self.imported,'continuation duplicates new completion')
+            return self.read(key)
+        owner=record['cache_owner_wrapper_key']
+        if owner is not None and owner not in self.entries:
+            owner_expected=self.resume.state['expected'][owner]
+            # Materialize the durable cache owner without consuming its future
+            # logical stream position. It must still appear in the full map.
+            self.registry[owner]=owner_expected['numerical_circuit_fingerprint']
+            self.expected[owner]=dict(owner_expected)
+            self.import_complete(owner_expected)
+        with self.locked():
+            require(key in self.expected and key not in self.entries and key not in self.reservations,
+                    'continuation import state')
+            if owner is not None:
+                reuse_owner(self.read(owner),self.expected[owner],expected,self.registry,self.entries[owner]['digest'])
+            digest=completion_digest(record)
+            validate_complete(record,expected,self.registry,digest)
+            self.budget.write('record-'+key+'.json',json_bytes(record))
+            self.entries[key]={'status':'COMPLETE','digest':digest,'cache_owner_wrapper_key':owner,
+                               'continuation_receipt_sha256':self.resume.digest}
+            self.imported.add(key)
+            self._save(entry_keys=(key,))
+            return record
 
     def reserve(self,key):
         with self.locked():
@@ -122,6 +160,10 @@ class Ledger:
                 invocation=None
             record={**expected,'status':'COMPLETE','metrics':dict(metrics),'cache_reuse':owner_key is not None,
                     'cache_owner_wrapper_key':owner_key,'actual_transpile_invocation_id':invocation}
+            if self.resume is not None:
+                require(isinstance(self.execution_source,str) and len(self.execution_source)==40,
+                        'continuation actual execution SOURCE')
+                record['execution_source_commit']=self.execution_source
             digest=completion_digest(record)
             validate_complete(record,expected,self.registry,digest)
             self.budget.write('record-'+key+'.json',json_bytes(record))
@@ -150,6 +192,7 @@ class Ledger:
             entries.update(payload['entries']);reservations.update(payload['reservations'])
         require(chain==self.chain and entries==self.entries and reservations==self.reservations,'external ledger head/state')
         require(set(self.entries)==set(self.expected)==set(self.registry),'unresolved logical wrapper STOP')
+        require(set(self.entries)==self.registered, 'continuation owner missing from logical map')
         require(all(r['status']=='COMPLETE' for r in self.reservations.values()),'unresolved consumed reservation STOP')
         actual={p.name[7:-5] for p in self.budget.root.glob('record-*.json')}
         require(actual==set(self.entries),'orphan record STOP')
@@ -160,4 +203,8 @@ class Ledger:
             if owner is not None:
                 require(owner in self.entries,'missing owner')
                 reuse_owner(self.read(owner),self.expected[owner],self.expected[key],self.registry,self.entries[owner]['digest'])
-        return {'logical_wrappers':len(self.entries),'actual_invocations':self.prior_invocations+len(self.reservations)}
+        result={'logical_wrappers':len(self.entries),'actual_invocations':self.prior_invocations+len(self.reservations)}
+        if self.resume is not None:
+            result.update(imported_wrappers=len(self.imported),new_actual_invocations=len(self.reservations),
+                continuation_receipt_sha256=self.resume.digest,execution_source_commit=self.execution_source)
+        return result

@@ -49,11 +49,14 @@ VERSIONS={k:'h4-newhost-'+k+'-v2' for k in STRUCTURES}
 def structural(plan,authorization,review):
     for label,doc in [('plan',plan),('authorization',authorization),('review',review)]:
         schema=STRUCTURES[label]
-        optional={'memory_budget_amendment'} if label=='authorization' and type(doc) is dict and 'memory_budget_amendment' in doc else set()
+        allowed={'continuation'} if label=='plan' else ({'memory_budget_amendment','continuation_amendment'} if label=='authorization' else set())
+        optional=allowed&set(doc) if type(doc) is dict else set()
         require(type(doc) is dict and set(doc)==set(schema)|optional,'newhost '+label+' schema fields')
-        if optional:require(type(doc['memory_budget_amendment']) is dict,'memory amendment field type')
+        for key in optional:require(type(doc[key]) is dict,'newhost optional field type')
         require(doc['schema_version']==VERSIONS[label],'newhost schema version')
         for key,kind in schema.items():require(type(doc[key]) is kind,'newhost field type: '+key)
+    from .continuation_binding import structural as continuation_structure
+    continuation_structure(plan,authorization)
 
 
 def roles(plan):
@@ -71,7 +74,10 @@ def authorize(plan,authorization,review, *, explicit_launch):
     structural(plan,authorization,review)
     require(plan['sealed'] and authorization['approved'] and authorization['runtime_authorization'] and
             review['approved'] and review['runtime_authorization'],'unsealed/unapproved newhost launch')
-    require(all(d['stage']=='signal_compile' and d['run_id']==RUN_ID and d['source_commit']==plan['source_commit']
+    continued='continuation' in plan
+    from .continuation_binding import RESUME_RUN_ID
+    run_id=RESUME_RUN_ID if continued else RUN_ID
+    require(all(d['stage']=='signal_compile' and d['run_id']==run_id and d['source_commit']==plan['source_commit']
                 for d in (plan,authorization,review)),'newhost stage/run/source')
     require(re.fullmatch('[0-9a-f]{40}',plan['source_commit']) is not None,'actual source SHA')
     require(authorization['one_shot'] and authorization['result_prior'] and authorization['permission']=='signal_compile' and
@@ -80,15 +86,18 @@ def authorize(plan,authorization,review, *, explicit_launch):
     p=fingerprint('h4-newhost-plan-v2',plan)
     require(authorization['plan_fingerprint']==p and review['plan_fingerprint']==p and
             review['authorization_digest']==fingerprint('h4-newhost-authorization-v2',authorization),'newhost plan/auth/review binding')
-    require(plan['carry']==CARRY and all(type(plan['carry'][k]) is type(v) for k,v in CARRY.items()),
+    if continued:
+        from .continuation_binding import authorize as continuation_authorize
+        continuation_authorize(plan,authorization)
+    require((continued or plan['carry']==CARRY) and all(type(plan['carry'][k]) is type(v) for k,v in CARRY.items()),
             'explicit per-attempt carry0 binding')
     accounting=authorization['budget_accounting']
     recovery=authorization['recovery_policy']
     require(set(accounting)=={'scope','exclude_failed_carry','authority'} and
-            accounting['scope']=='per_attempt' and accounting['exclude_failed_carry'] is True,
+            accounting['scope']==('run10_continuation' if continued else 'per_attempt') and accounting['exclude_failed_carry'] is True,
             'explicit failed-carry exclusion required')
     require(set(recovery)=={'approved','mode','scope','authority'} and recovery['approved'] is True and
-            recovery['mode']=='investigate_fix_fresh_restart' and recovery['scope']=='signal_compile_only',
+            recovery['mode']==('investigate_fix_continuation' if continued else 'investigate_fix_fresh_restart') and recovery['scope']=='signal_compile_only',
             'explicit bounded recovery policy required')
     for authority in (accounting['authority'],recovery['authority']):
         require(type(authority) is dict and set(authority)=={'path','sha256'} and
@@ -160,7 +169,7 @@ def authorize(plan,authorization,review, *, explicit_launch):
         require(change['approved'] is False,'output amendment and plan cap disagree')
     role=authorization['observer_role']
     require(role==dict(approved=True,runtime_authorization=True,AS_bytes=AS_CAP,RSS_bytes=RSS_CAP),'observer extra role needs approval')
-    counts=static_invocations(plan['templates'],carry_actual=CARRY['actual_invocations'])
+    counts=static_invocations(plan['templates'],carry_actual=plan['carry']['actual_invocations'])
     cap=caps['actual_invocations'];require(type(cap) is int and cap in (74784,74804,74805),'no arbitrary invocation cap')
     change=authorization['budget_amendment']
     require(set(change)=={'approved','from','to','authority_reference'},'budget amendment schema')
@@ -170,10 +179,11 @@ def authorize(plan,authorization,review, *, explicit_launch):
                 type(change['from']) is int and change['from']==expected_from and
                 type(change['to']) is int and change['to']==cap and
                 type(change['authority_reference']) is str and bool(change['authority_reference'].strip()),'explicit actual contract amendment')
-    require(cap>=counts['cumulative_actual_worst_case'],'remaining actual cannot guarantee all74784 logical wrappers including carry')
+    worst=counts['cumulative_actual_worst_case']-(plan['continuation']['imported_wrappers'] if continued else 0)
+    require(cap>=worst,'remaining actual cannot guarantee all74784 logical wrappers including carry')
     for key in ('source_root','input_root','stop_evidence_root','output_root','control_root'):
         path=Path(plan[key]);require(path.is_absolute() and path.is_relative_to('/home/AbeHiromu') and '..' not in path.parts,'home-local binding')
-    require(plan['output_root']!=plan['input_root'] and RUN_ID in Path(plan['output_root']).parts and RUN_ID in Path(plan['control_root']).parts,
+    require(plan['output_root']!=plan['input_root'] and run_id in Path(plan['output_root']).parts and run_id in Path(plan['control_root']).parts,
             'fresh dedicated run output/control')
     require(bool(plan['source_hashes']),'source closure missing')
     for path,value in plan['source_hashes'].items():
@@ -305,8 +315,9 @@ def verify_frozen_receipts(plan):
     verify_run08_stop(evidence)
     from .run09_receipt import verify_run09_stop
     verify_run09_stop(evidence)
-    return {**freeze,'input_root':str(root),'consumed_seconds':CARRY['wall_seconds'],
-            'prior_charge':CARRY['charged_bytes'],'prior_invocations':CARRY['actual_invocations']}
+    carry=plan['carry']
+    return {**freeze,'input_root':str(root),'consumed_seconds':carry['wall_seconds'],
+            'prior_charge':carry['charged_bytes'],'prior_invocations':carry['actual_invocations']}
 
 
 def verify_newhost_stop(evidence):
@@ -431,7 +442,7 @@ def claim_once(permit):
     root.mkdir(parents=True,exist_ok=True,mode=0o700);fsync_directory(root.parent)
     fd=os.open(root/'one-shot.json',os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
     try:
-        data=json.dumps(dict(run_id=RUN_ID,source=permit.plan['source_commit'],review=permit.review_digest,
+        data=json.dumps(dict(run_id=permit.plan['run_id'],source=permit.plan['source_commit'],review=permit.review_digest,
                              driver_pid=os.getpid(),uid=os.getuid(),started_monotonic=time.monotonic())).encode()
         require(os.write(fd,data)==len(data),'one-shot write');os.fsync(fd)
     finally:os.close(fd)
@@ -458,6 +469,10 @@ def launch(plan,authorization,review, *, explicit_launch=False):
     started=time.monotonic()
     _contract,options=verify_runtime(permit)
     verify_frozen_receipts(plan)  # bytes+metadata only before science stage
+    resume=None
+    if 'continuation' in plan:
+        from .continuation_binding import verify_runtime as verify_continuation
+        resume=verify_continuation(permit)
     observation=host_readonly(private_path(plan['output_root']).parent,sample_seconds=3)
     fresh_gate(plan,observation)
     permit=replace(permit,launch_observation=observation)
@@ -467,7 +482,7 @@ def launch(plan,authorization,review, *, explicit_launch=False):
     from .resources import OutputBudget
     trace_cap=(72*3600+2)*FRAME_CAP+TERMINAL_RESERVE
     budget=OutputBudget(plan['output_root'],cap=plan['caps']['output_bytes'],
-                        prior_charge=CARRY['charged_bytes'],file_limits=FILE_LIMITS)
+                        prior_charge=plan['carry']['charged_bytes'],file_limits=FILE_LIMITS)
     try:
         # Reserve all control/observer expenses before log/observer startup.
         budget.reserve(CONTROL_LOG_CAP+65536);budget.reserve(trace_cap+FRAME_CAP)
@@ -478,12 +493,12 @@ def launch(plan,authorization,review, *, explicit_launch=False):
         from .execution import signal_stage
         with CappedDriverLog(Path(plan['control_root'])/'runner.log') as log,redirect_stdout(log),redirect_stderr(log):
             try:
-                result=signal_stage(permit,authorization,options,launch_started=started,prepared_budget=budget)
+                result=signal_stage(permit,authorization,options,launch_started=started,prepared_budget=budget,resume=resume)
             except BaseException as exc:
                 budget.write('launch-stop.json',json.dumps({'status':'FAIL_CLOSED_STOP','reason':type(exc).__name__+': '+str(exc)[:1024],
-                    'consumed_seconds':CARRY['wall_seconds']+time.monotonic()-started,'automatic_retry':False}).encode())
+                    'consumed_seconds':plan['carry']['wall_seconds']+time.monotonic()-started,'automatic_retry':False}).encode())
                 raise
-            budget.write('launch-stop.json',json.dumps({'status':result['status'],'consumed_seconds':CARRY['wall_seconds']+time.monotonic()-started,
+            budget.write('launch-stop.json',json.dumps({'status':result['status'],'consumed_seconds':plan['carry']['wall_seconds']+time.monotonic()-started,
                 'automatic_retry':False}).encode())
             return result
     finally:budget.close()

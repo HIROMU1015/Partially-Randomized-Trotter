@@ -62,6 +62,12 @@ def compile_wrappers(run, ledger, jobs, compile_worker, options, reuse, *, expec
             position, key = len(records), expected['wrapper_key']
             records.append(None)
             ledger.register(expected)
+            imported=ledger.import_complete(expected)
+            if imported is not None:
+                record_ready(position,imported)
+                del circuit
+                continue
+            require(circuit is not None,'missing circuit for unacknowledged continuation work')
             scope = (expected['geometry'], expected['candidate_template'], expected['axis'],
                      expected['numerical_circuit_fingerprint'])
             owner = reuse.get(scope)

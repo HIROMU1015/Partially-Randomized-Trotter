@@ -233,7 +233,7 @@ def load_new_input(permit,distance,freeze):
     return arrays
 
 
-def candidate_wrapper_jobs(run,identity,seeds,preparation,template):
+def candidate_wrapper_jobs(run,identity,seeds,preparation,template,*,resume=None):
     """Generate one evolution and its two axes lazily in trajectory order."""
     from .signal import sample_events
     from .circuits import build_evolution,wrapper,numerical_fingerprint
@@ -241,10 +241,19 @@ def candidate_wrapper_jobs(run,identity,seeds,preparation,template):
     encoding_memo = ArrayEncodingMemo()
     for index,seed in enumerate(seeds):
         run.pulse()
-        if hasattr(run,'phase'):run.phase('candidate_events_build')
-        events=sample_events(preparation['components'],template,seed)[0] if seed is not None else [[] for _ in range(template['q'])]
-        evolution=build_evolution(preparation,template,events)
+        recovered={axis:resume.expected(identity,axis,seed,index if seed is not None else None)
+                   if resume is not None else None for axis in ('cosine','sine')}
+        evolution=None
+        if not all(recovered.values()):
+            if hasattr(run,'phase'):run.phase('candidate_events_build')
+            events=sample_events(preparation['components'],template,seed)[0] if seed is not None else [[] for _ in range(template['q'])]
+            evolution=build_evolution(preparation,template,events)
         for axis in ('cosine','sine'):
+            if recovered[axis] is not None:
+                if hasattr(run,'phase'):run.phase('continuation_import:'+axis)
+                run.pulse()
+                yield recovered[axis],None
+                continue
             if hasattr(run,'phase'):run.phase('wrapper_build:'+axis)
             run.pulse();circuit=wrapper(evolution,axis)
             if hasattr(run,'phase'):run.phase('numerical_serialization:'+axis)
@@ -254,8 +263,9 @@ def candidate_wrapper_jobs(run,identity,seeds,preparation,template):
             yield wire(identity,axis,seed,index if seed is not None else None,numerical),circuit
 
 
-def signal_stage(permit,authorization,options,*,launch_started=None,prepared_budget=None):
+def signal_stage(permit,authorization,options,*,launch_started=None,prepared_budget=None,resume=None):
     require(permit.stage=='signal_compile','separate signal stage')
+    require(('continuation' in permit.plan)==(resume is not None), 'continuation verified before science')
     freeze=input_boundary(permit)
     reused='reexecution' in permit.plan
     newhost=permit.plan.get('schema_version')=='h4-newhost-plan-v2'
@@ -269,26 +279,41 @@ def signal_stage(permit,authorization,options,*,launch_started=None,prepared_bud
     signals=[];reuse={}
 
     def candidates():
-        import numpy as np
         for distance in DISTANCES:
-            run.pulse();arrays=load_new_input(permit,distance,freeze)
-            validate_frozen_state(arrays)
-            common=GeometryPreparation(arrays)
+            run.pulse();arrays=common=None
             inp={'geometry':distance,**{k:permit.plan['inputs'][distance][k] for k in ('input','H','DF','state')}}
             for template in permit.plan['templates']:
                 run.pulse()
-                identity=candidate_identity(inp,template,permit.plan['source_commit'],
+                identity_source=permit.plan['continuation']['identity_source_commit'] if resume is not None else permit.plan['source_commit']
+                identity=candidate_identity(inp,template,identity_source,
                     permit.plan['compiler_fingerprint'],permit.plan['environment_fingerprint'])
+                seeds=trajectory_seeds(identity) if template['method'] in ('B2','B3') else [None]
+                saved=resume.complete_signal(identity,template,seeds) if resume is not None else None
+                if saved is not None:
+                    metadata={'geometry':distance,'template':template,'identity':identity,'continued_signal':saved}
+                    yield metadata,candidate_wrapper_jobs(run,identity,seeds,None,template,resume=resume),2*len(seeds)
+                    continue
+                import numpy as np
+                if arrays is None:
+                    arrays=load_new_input(permit,distance,freeze);validate_frozen_state(arrays)
+                    common=GeometryPreparation(arrays)
                 preparation,det,tail=prepare(arrays,template,common=common)
                 signal_record=corrected_signal(det,tail,preparation['constant'],arrays['qiskit_state'],template)
                 target=complex(np.exp(-1j*float(arrays['energy'])*template['T']))
-                seeds=trajectory_seeds(identity) if template['method'] in ('B2','B3') else [None]
                 metadata={'geometry':distance,'template':template,'identity':identity,
                           'signal_record':signal_record,'target':target}
-                yield metadata,candidate_wrapper_jobs(run,identity,seeds,preparation,template),2*len(seeds)
+                yield metadata,candidate_wrapper_jobs(run,identity,seeds,preparation,template,resume=resume),2*len(seeds)
 
     def publish(metadata,records):
         distance,template,identity=(metadata[k] for k in ('geometry','template','identity'))
+        if 'continued_signal' in metadata:
+            result=metadata['continued_signal']
+            require(result['paired_metrics']==[[records[i]['metrics'],records[i+1]['metrics']] for i in range(0,len(records),2)],
+                    'continued signal aggregation matches imported records')
+            run.budget.write('signal-'+distance+'-'+template['template_id']+'.json',json_bytes(result))
+            signals.append(result)
+            print('H4 candidate IMPORTED %d/1308 %s %s'%(len(signals),distance,template['template_id']),flush=True)
+            return
         signal_record,target=metadata['signal_record'],metadata['target']
         all_metrics=[[records[i]['metrics'],records[i+1]['metrics']] for i in range(0,len(records),2)]
         costs=[[m['rz_count'] for m in pair] for pair in all_metrics]
@@ -307,7 +332,8 @@ def signal_stage(permit,authorization,options,*,launch_started=None,prepared_bud
 
     try:
         invocation_cap=permit.plan['caps']['actual_invocations'] if newhost else 74784
-        ledger=Ledger(run.budget,cap=invocation_cap,prior_invocations=freeze.get('prior_invocations',0))
+        ledger=Ledger(run.budget,cap=invocation_cap,prior_invocations=freeze.get('prior_invocations',0),
+                      resume=resume,execution_source=permit.plan['source_commit'])
         compile_candidates(run,ledger,candidates(),_compile_worker,options,reuse,
                            expected_candidates=1308,expected_wrappers=74784,on_candidate=publish)
         accounting=ledger.audit()
