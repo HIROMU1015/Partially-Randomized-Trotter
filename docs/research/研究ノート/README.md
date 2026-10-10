@@ -1,5 +1,14 @@
 # 研究ノート
 
+## 2026-10-10 Track A：独立レビュー後の準備
+
+[GPT独立レビュー](../track_a_ax2b_h4_post_independent_scientific_review_2026-10-10.md)を受け、[準備追補](../track_a_ax2b_post_independent_review_amendment_v1.md)と[H6準備契約 v2](../track_a_ax2b_h6_pilot_preparation_contract_v2.md)を追加。
+H4-N/A/E/Mの限定計画、独立small reference・u-aware会計・tol-only adapter、別H6 controller/caps/watchdogを準備した。
+専用49 local synthetic tests pass。分子H4/H6検証の新結果・総u認定ではない。
+H6 molecular backend/science launcher、H4全stage検証port、input/CPU/別認可は未完了。
+旧source/results/freeze/manifestと既存dirty差分を保全。`H6_NOT_AUTHORIZED` / `DRAFT_NOT_AUTHORIZATION`、mandatory STOP。
+以下は各stage当時の履歴。
+
 このディレクトリには、研究実装を進めた時点の方針、判断、検証結果および
 未解決事項を日付順に記録する。後から「なぜこの実装になったか」「その時点で
 何が確認済みだったか」を、commitと検証コマンドまで含めて追跡できるようにする。
