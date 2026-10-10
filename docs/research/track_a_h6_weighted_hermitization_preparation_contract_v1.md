@@ -74,3 +74,10 @@ RQ-R/補助RQ-P1、旧H4 legacy結果、比較契約・Track Bを変更しない
 現在は研究方針の取り込み完了、実装準備が次。H6_input_accepted=false、N/Gnull、u未認定・UNDETERMINED。
 [別intake inventory](../../artifacts/resource_applicability/track_a_h6_weighted_hermitization_review_intake_v1/2026-10-10/review_intake_inventory_v1.json)をこの段階の正本とし、旧科学結果/manifestを上書きしない。
 H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、mandatory STOP。
+
+## 公開後の確認
+
+研究方針取り込みcommit：`9714208929bdc3fb0722d7fa3c638b584f777360`。
+[remote取得後の検証記録](../../artifacts/resource_applicability/track_a_h6_weighted_hermitization_review_intake_v1/2026-10-10/remote_verification_v1.json)で、レビュー原文のbytes一致、診断science187件・validation2件・raw25件、旧source183件・旧結果20件とrepositoryリンクを確認した。
+既存4111パスとdirty/untracked、元のレビュー・root Markdownを保全した。新しい科学計算・source実装・grantなし。
+H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、mandatory STOP。
