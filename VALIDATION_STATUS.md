@@ -1,5 +1,15 @@
 # Validation status
 
+## 2026-10-10 Track A：H4補完準備 v1（未実行）
+
+最新入口は[補完準備・source/予算索引](docs/research/track_a_ax2b_h4_supplement_preparation_v1.md)。
+[GPT独立レビュー](docs/research/track_a_ax2b_h4_limited_stop_independent_review_2026-10-10.md)に従い、旧6 correctness/12 MP/STOPを保持。
+cell/dps-local MP cache、S4 2 cellとexplicit 4群の独立単位、atomic進捗を新versionで準備。
+122 local synthetic/metadata tests pass。分子load/signal/sampling/circuit build/compileは今回0。
+source 67aa6bb、180 science/2 validation freeze。対象・予算・新outputを固定、CPU/grant/sealは未確定。
+H4_SUPPLEMENT_NOT_AUTHORIZED / H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、mandatory STOP。
+N/Gnull・UNDETERMINED・u未認定。旧source/freezes/結果・既存dirty/未追跡・Track Bを保全。以下は段階当時の履歴。
+
 ## 2026-10-10 Track A：H4限定v3一回実行・GPT引渡し
 
 最新入口は[H4 v3実行結果・レビュー索引](docs/research/track_a_ax2b_h4_limited_execution_v2.md)。原status H4_LIMITED_STOP、reason PHASE_WALL_CAP:correctness。
