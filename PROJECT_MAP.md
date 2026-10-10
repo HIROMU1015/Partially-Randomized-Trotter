@@ -1,5 +1,13 @@
 # プロジェクト案内
 
+2026-10-11 N1/N2構成・N3係数下界の限定feasibilityを準備。
+[結果前scope](docs/research/hamiltonian_algorithm_design_scope.md)に入力、誤差・対照・性能構成を固定する。
+module `src/trottertracks/representation_exploration/algorithm_design.py`、runner `scripts/run_hamiltonian_algorithm_design.py`、
+tests `tests/test_hamiltonian_algorithm_design.py`、保存verifier `scripts/verify_hamiltonian_algorithm_design.py`、
+artifacts `artifacts/hamiltonian_algorithm_design/2026-10-11/`を一組に読む。
+N1優先、N2算術とJ-only生成、N3小さい係数下界取得。旧A-core/B′の同型探索は一区切り、旧B/C保留。
+中心テーマ・新規性は未確定。以下は旧stage/Track A/Bの履歴であり、science・契約・結果・STOPは保持する。
+
 2026-10-11整理：A寄与分解・B′物理pairの限定batch（計算系列日付2026-10-10）を完了。
 [結果とGPT判断事項](docs/research/representation_attribution_pair_results_20261010.md)、[scope](docs/research/representation_attribution_pair_scope.md)を入口とする。
 Aは3-mode JW全Fock8、synthetic exact DF rank2、native L_D0/1/2＋whole-Pauli＋旧/完全占有core、T=.4、delta=.4/.2/.1。

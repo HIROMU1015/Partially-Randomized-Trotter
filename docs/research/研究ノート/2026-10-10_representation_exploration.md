@@ -43,3 +43,12 @@
 17. 別保存verifierが177 blobs/1558 IR/933 draw/会計をPASS、最大位相差3.1303e−14。提供有理数algebraも再照合。
 18. [新報告](../representation_attribution_pair_results_20261010.md)とmanifestへ追加し、中心仮説null/次段falseでSTOP。科学run retry0、分子/GPU/ground-state/量子shot0。
 19. global manifest checkerは基点でもrelevant_commits[7]のdescription欠測で失敗。既存entriesを修正せず、その同一失敗と新entryだけのschema検査を別auditに残す。
+# 2026-10-11追記：新設計の限定feasibility準備
+
+利用者は`hamiltonian_algorithm_design_2026-10-11.md`に沿う進行を指示した。
+N1縮退生成と群frame、N2 J-only signed chargeと加算込み費用、N3係数下界取得を
+[固定scope](../hamiltonian_algorithm_design_scope.md)で一回の小系batchへまとめる。
+旧A-core/B′同型探索は一区切り、旧B/Cおよび他Trackのsource・契約・科学結果・STOPは保持する。
+新sourceはf98050e基点の独立branchで固定する。前処理83 tests passed、失敗修正ログも保存。
+中心テーマ・新規性・一般優位は未確定。結果公開・別取得の後はGPT判断に戻す。
+以下の既存の日付内履歴は変更しない。
