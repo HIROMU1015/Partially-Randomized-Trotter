@@ -96,3 +96,10 @@ H6本検証・H8・政策変更・scientific GOを自動認可しない。今回
 
 [準備inventory](../../artifacts/resource_applicability/track_a_h6_technical_pilot_preparation_v2/2026-10-10/preparation_inventory_v2.json)、[保全監査](../../artifacts/resource_applicability/track_a_h6_technical_pilot_preparation_v2/2026-10-10/preservation_audit_v2.json)。
 旧4244ファイル/rootレビュー42原本・既存dirty/untracked・Track B/別representation探索を保全し、新しい証拠だけをstage/publicationする。
+
+## GitHub公開確認
+
+[remote bytes照合記録](../../artifacts/resource_applicability/track_a_h6_technical_pilot_preparation_v2/2026-10-10/remote_verification_v2.json)。
+公開commit `5eb66998f663e7cf8242b4839492532a65d4a2a9`を独立bare repositoryへGitHubから再取得し、science206/validation3・親入力33・旧v1 science202/raw14を照合した。
+文書相対リンク23件、旧4244ファイル/rootレビュー42原本・dirty/untrackedの保全を確認。未認可template・未作成v2 outputも確認した。
+この追記とremote記録を含む最終commitも再取得して照合する。科学再実行・認可は追加しない。
