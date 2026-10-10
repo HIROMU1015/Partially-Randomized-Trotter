@@ -70,3 +70,10 @@ H6の7 cell/36 wrapper pilot、H6本検証/H8、GO/STOPの代行へ進まない�
 現在H6_input_accepted=false、N/Gnull、u未認定・UNDETERMINED。
 [別段階inventory](../../artifacts/resource_applicability/track_a_h6_saved_df_completion_preparation_v1/2026-10-10/preparation_inventory_v1.json)を現在の正本とし、過去の科学的manifest/STOPを上書きしない。
 H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、mandatory STOP。
+
+## 公開後確認
+
+準備公開commit：`9dea896cf295d88d470da474ffbb2f8ec06e968a`。
+[独立remote取得後の確認](../../artifacts/resource_applicability/track_a_h6_saved_df_completion_preparation_v1/2026-10-10/remote_verification_v1.json)でscience194件・validation3件、親raw25件、旧science183件・旧raw20件、repositoryリンクを照合した。
+既存4119パス・dirty/untracked・rootのレビュー原文を保全し、新しい実計算0、新grantなし、実行output未作成を確認した。
+H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、mandatory STOP。
