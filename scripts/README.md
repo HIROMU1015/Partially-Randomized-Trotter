@@ -390,3 +390,8 @@ on-demand strict Rzと対称bounded cache。G7のstatus/point comparison/consume
 
 
 - `scripts/tracks/algorithm_codesign/audit_g8_saved_outputs.py`: stdlib saved-output/hash audit; no generator/native reacquisition. [G8 handoff](../docs/tracks/algorithm_codesign/g8_results_and_gpt_handoff_20261010.md).
+
+
+## Track B G9 source preparation（2026-10-10）
+
+[Fixed proof/scope](../docs/tracks/algorithm_codesign/g9_p5_matched_native_contract_20261010.md)：GPT G8 review §14を採用。known P5/指定3-qubit provider、6 direct+5 helper診断、19 keys/新CTS1 key、23 focused tests。source固定後一束のみ、終了後mandatory STOP。

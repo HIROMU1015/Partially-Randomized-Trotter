@@ -802,3 +802,8 @@ artifacts：`artifacts/track_b_g8_on_demand_preparation/2026-10-10/` と新resul
 
 - [Results and GPT handoff](docs/tracks/algorithm_codesign/g8_results_and_gpt_handoff_20261010.md): on-demand20/8rows, hypothetical provider budget, saved-only14checks.
 - [G8 result inventory](artifacts/track_b_g8_on_demand_result/2026-10-10/v1/evidence_manifest_v1.json); mandatory STOP, no native-method adoption.
+
+
+## Track B G9 source preparation（2026-10-10）
+
+[Fixed proof/scope](docs/tracks/algorithm_codesign/g9_p5_matched_native_contract_20261010.md)：GPT G8 review §14を採用。known P5/指定3-qubit provider、6 direct+5 helper診断、19 keys/新CTS1 key、23 focused tests。source固定後一束のみ、終了後mandatory STOP。

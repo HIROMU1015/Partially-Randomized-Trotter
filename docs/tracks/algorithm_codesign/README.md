@@ -305,3 +305,8 @@ on-demand strict Rzと対称bounded cache。G7のstatus/point comparison/consume
 ## G8 completed bundle
 
 [Result and GPT handoff](g8_results_and_gpt_handoff_20261010.md): 20 strict live-miss acquisitions / 8 rows, provider delta hypothetical; 17 focused tests and 14 saved-only checks. Mandatory STOP; no next-stage authority.
+
+
+## Track B G9 source preparation（2026-10-10）
+
+[Fixed proof/scope](g9_p5_matched_native_contract_20261010.md)：GPT G8 review §14を採用。known P5/指定3-qubit provider、6 direct+5 helper診断、19 keys/新CTS1 key、23 focused tests。source固定後一束のみ、終了後mandatory STOP。

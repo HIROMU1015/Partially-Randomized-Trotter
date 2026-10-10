@@ -164,3 +164,8 @@ science終了後mandatory STOP、追加合成/target/grid/分子/DF/trajectory/G
 
 
 - [2026-10-10 G8 on-demand completion](2026-10-10_track_b_g8_on_demand_provider_budget.md): conditional provider budget and saved-only audit; STOP.
+
+
+## Track B G9 source preparation（2026-10-10）
+
+[Fixed proof/scope](2026-10-10_track_b_g9_p5_matched_native.md)：GPT G8 review §14を採用。known P5/指定3-qubit provider、6 direct+5 helper診断、19 keys/新CTS1 key、23 focused tests。source固定後一束のみ、終了後mandatory STOP。
