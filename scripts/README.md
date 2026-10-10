@@ -363,3 +363,10 @@ x1/4・6頂点252 profiles、strict rational/dyadic CTS照合とdigital bridge�
 [G6 checker](tracks/algorithm_codesign/g6_return_generator_audit.py)は独立off-domain形式testsのみ。
 本回technical bundle完了、science runnerではない。新technical marker/STOPを保存し、再呼出ししない。
 [結果・認可境界](../docs/tracks/algorithm_codesign/g6_results_and_gpt_handoff_20261010.md)。
+
+
+## Track B G7（2026-10-10）
+
+[限定費用runner](tracks/algorithm_codesign/g7_budget_control_economics.py)、
+[契約](../docs/tracks/algorithm_codesign/g7_mathematical_and_execution_contract_20261010.md)。
+fixed source/full SHA/clean HEAD/new marker/24 keysのみ。再実行不可、bundle後STOP。

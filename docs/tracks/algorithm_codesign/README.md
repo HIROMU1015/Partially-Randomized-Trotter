@@ -274,3 +274,12 @@ mandatory STOP、次の研究判断はGPT/利用者へ戻す。旧pending/最新
 [finite-bit/access](g6_finite_bit_and_access_audit_20261010.md)。
 状態`G6_IDEAL_IDENTITIES_VERIFIED_NATIVE_AND_METHOD_VALUE_UNRESOLVED`。16 off-domain tests。
 理想式・局所生成を確認、母関数は既知式、native費用・新規性未確定。science0、G5閉鎖保持、mandatory STOP。
+
+
+## 2026-10-10 Track B G7：source preparation
+
+[採用G6 review](../../research/track_b_G6_scientific_review_20261010.md) §12、
+[G7 mathematical/execution contract](g7_mathematical_and_execution_contract_20261010.md)、
+[machine contract](../../../artifacts/track_b_g7_budget_control_preparation/2026-10-10/contract_v1.json)。
+U、finite-bit N、三次strong control、controlled-Q/Rz/CPUを同じ契約に接続。
+18 focused tests、24固定symbolic keys。source freeze前の結果未取得。oldG5/G6不変、STOP後GPT判断。

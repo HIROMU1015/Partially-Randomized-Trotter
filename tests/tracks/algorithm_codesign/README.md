@@ -26,3 +26,9 @@ registered table/lawをtestsで開かず、source-bound local PASS。full suite�
 独立に選ぶoff-domain形式値のみ、registered science table/cost reads0。新performance結果ではない。
 [保存log・scope](../../../artifacts/track_b_g6_return_generator_audit/2026-10-10/)、
 [一般証明](../../../docs/tracks/algorithm_codesign/g6_independent_mathematical_audit_20261010.md)。
+
+
+## G7 focused tests（2026-10-10）
+
+[test_g7_budget_and_control.py](test_g7_budget_and_control.py)：18 off-domain formal/digital/control/launch tests。
+registered synthesis結果を先に取得せず、matrixは8×8 synthetic semantic確認のみ。fullsuiteなし。

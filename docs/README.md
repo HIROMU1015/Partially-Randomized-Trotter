@@ -388,3 +388,11 @@ known toyの限定class認証とmatched CTSを完了、mandatory STOP、科学�
 [有限bit/access](tracks/algorithm_codesign/g6_finite_bit_and_access_audit_20261010.md)へ。
 [採用GPT G5 review](research/track_b_G5_research_direction_review_20261010.md) §19の独立形式監査のみ。
 G5固定toy閉鎖を維持。新規性・native総費用未確定、次science未認可、mandatory STOP。
+
+
+## Track B G7（2026-10-10）
+
+[採用G6科学review](research/track_b_G6_scientific_review_20261010.md) §12、
+[G7数学・実行契約](tracks/algorithm_codesign/g7_mathematical_and_execution_contract_20261010.md)。
+既知developmentのみ、ordinary/partial/P3+tail/full、有限bit budgetとconditional controlled-Q cost。
+source preparation時点のscience/synthesis結果なし。全bundle後STOP。

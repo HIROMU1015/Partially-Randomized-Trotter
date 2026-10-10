@@ -155,3 +155,6 @@ science終了後mandatory STOP、追加合成/target/grid/分子/DF/trajectory/G
 
 - [2026-10-10 Track B G6 return generator数学監査](2026-10-10_track_b_g6_return_generator_audit.md)：
   採用G5 review §19、独立一般証明・既知components対応・有限bit局所prototype、native/new-method価値未確定、mandatory STOP。
+
+
+- [2026-10-10 Track B G7](2026-10-10_track_b_g7_budget_control_economics.md)：U予算、P3対照、controlled-Q、固定24keyの限定費用取得。完了/失敗後STOP。

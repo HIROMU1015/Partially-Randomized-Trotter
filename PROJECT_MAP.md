@@ -764,3 +764,15 @@ mandatory STOP。上記より前のpending/最新記述は当時の履歴とし�
 [16 focused tests](tests/tracks/algorithm_codesign/test_g6_return_aggregation.py)、
 [記録](artifacts/track_b_g6_return_generator_audit/2026-10-10/)。
 ideal数式を確認、母関数/zero-fillは既知components。native費用・独立新規性は未確定。科学実行0、mandatory STOP。
+
+
+## Track B G7（2026-10-10、source preparation）
+
+GPT G6 review §12の限定予算/control/implementation economics。
+[数学・実行契約](docs/tracks/algorithm_codesign/g7_mathematical_and_execution_contract_20261010.md)、
+[source](src/trottertracks/algorithm_codesign/g7_generator.py)、
+[runner](scripts/tracks/algorithm_codesign/g7_budget_control_economics.py)、
+[tests](tests/tracks/algorithm_codesign/test_g7_budget_and_control.py)、
+[contract](artifacts/track_b_g7_budget_control_preparation/2026-10-10/contract_v1.json)。
+2 known development inputs/4 arms/24 fixed keys、conditional controlled-Q/Rz/CPU vector、18 focused tests。
+この追記はsource preparation。結果は別manifestへ追加し、完了/失敗後mandatory STOP。

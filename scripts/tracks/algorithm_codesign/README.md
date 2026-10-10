@@ -164,3 +164,10 @@ fixed x1/4、252 profiles/756 prices、L1-charge digital classまで確認。run
 [g6_return_generator_audit.py](g6_return_generator_audit.py)：bounded stdlib formal technical checks。
 [G6 handoff](../../../docs/tracks/algorithm_codesign/g6_results_and_gpt_handoff_20261010.md) §19認可範囲のみ。
 一束完了、science0、旧run retry0、technical marker消費済み、mandatory STOP。
+
+
+## G7 budget/control economics（2026-10-10）
+
+[g7_budget_control_economics.py](g7_budget_control_economics.py)：G6 review §12の委譲範囲。
+--source-commit FULL_SHAを要求、固定環境/contract/キー/保護hash検査、exclusive marker。
+24 native-Rz keys一度のみ、2 inputs×4 arms、conditional T/query/CPU vector。retry0、mandatory STOP。

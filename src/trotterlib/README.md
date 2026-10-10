@@ -346,3 +346,13 @@ Track B verifierはstdlibのみ、shared libraryのimport・変更・copyなし�
 shared library/API実装は変更しない。[新局所formal prototype](../trottertracks/algorithm_codesign/return_aggregation.py)はTrack B namespace。
 [一般証明・access・停止記録](../../docs/tracks/algorithm_codesign/g6_results_and_gpt_handoff_20261010.md)を参照。
 controlled native実装、Hamiltonian、PR/QPE接続の検証ではない。
+
+
+## Track B G7（2026-10-10）
+
+共有API変更なし。実験実装は別namespaceの
+[g7_generator.py](../trottertracks/algorithm_codesign/g7_generator.py)、
+[g7_provider.py](../trottertracks/algorithm_codesign/g7_provider.py)、
+[g7_reference.py](../trottertracks/algorithm_codesign/g7_reference.py)、
+[g7_launch.py](../trottertracks/algorithm_codesign/g7_launch.py)。
+productionと小support referenceを分離。conditional controlled-Q前提、一般分子実装ではない。
