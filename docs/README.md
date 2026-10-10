@@ -1,5 +1,16 @@
 # 文書索引
 
+## 2026-10-10 Track A：H6 pilot v2 coverage接続準備・未認可STOP
+
+最新入口は[登録時間の固定/実runtime接続synthetic/新seal](research/track_a_h6_technical_pilot_preparation_v2.md)。linear H6/1Å/STO-3G/rank19/p10/sector400/T0.8。
+旧v1 source/STOP/rawを保全し別versionを追加。登録validation timesを全field込みで照合し、actual bounds/差分をgate前保存する。
+156 local synthetic（v2 70/旧pilot37/coverage49）PASS。実runtime actual_boundsをsynthetic metadataで直接接続。real H6数値PASSではない。
+7 cell/36 wrapper・245 keys/735 probes・科学plan/政策/seed/caps不変。CPU [0,2,5,6]/Numba4/BLAS1、total7200秒/AS8GiB/output512MiB。
+science206/validation3 source・親33ファイル・環境/新outputをseal。実H6 decode/prepare/signal/sampling/build/compile0、新grant未発行。
+旧v1 grantは消費済み。H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、N/Gnull・u未認定・UNDETERMINED、next_stage_authorized=false、mandatory STOP。
+次は別の明示認可後にv2一回run。科学判断を自動承認しない。以下は段階当時の履歴。
+
+
 ## 2026-10-10 Track A：H6技術pilot v1・coverage schema STOP
 
 最新入口は[H6 pilot原STOP/欠測/監査/静的診断](research/track_a_h6_technical_pilot_stop_v1.md)。linear H6/1Å/STO-3G/rank19/p10/sector400/T0.8。
