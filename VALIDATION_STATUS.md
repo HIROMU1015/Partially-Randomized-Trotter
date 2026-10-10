@@ -1957,3 +1957,12 @@ first STOPはresource cap/5秒違反ではなくworker_responseでのwrite guard
 既存venvのstevedore._cacheはcache missで~/.cache/python-entrypointsへmkdir/writeする。ディスクcacheを無効にしてメモリcacheだけを使うprocess限定修正を検討する。
 停止原本/one-shot/journal/ledger/observer/worker原因logはprivate home evidenceに保持し、NPZ/科学runtime/cacheをcommitしない。
 自動retry/次stage/入力再生成/共有環境・venv・他job変更/GPUなし。今回の一度の実行はFAIL_CLOSED_STOPで終了した。
+
+
+## 2026-10-11 H4 encoding再利用：run10を継続
+
+run10は変更せず、独立worktreeで小行列の値をkeyにcanonical textを再利用する実装を固定。
+SOURCE 3beb3870369eeb8ef76b4ead965c886eba7d16e9 / closure80、candidate内cosine/sine・trajectoryで共有しcache最大4MiB/1024 entries。
+12限定人工tests PASS、全bytes/digest・同じ回路のgate counts/depth一致。人工encodingのみ0.310→0.135秒（約2.29倍）、production全体の速度は未測定。
+科学/compiler/回路構成/資源契約不変、追加transpile・実NPZ読込・新本番起動0。将来の新SOURCE採用ではseed/binding再結合が必要。
+[実装・限定検証・差分review・資料入口](docs/research/track_a_h4_encoding_speedup_20261010.md)。

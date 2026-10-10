@@ -529,3 +529,12 @@ SOURCE5aa6c3685afb9c3afcfbdc36f80244da0a7fe525/closure77、新7paths接続12test
 科学H4/PF/RTE/compileroptions/input/環境/CPU4/32GiB/pressure1/5/30/17GiB/74805/72h/carry0不変。実Qiskit/compile速度・72h完走は未測定、人工compileは省略して実本計算で確認。
 限定差分review・immutable artifact・freshgates全合格後一度run10起動、開始確認後chat終了可、監視継続。共有/venv/他job/GPU変更0。
 [承認・新cost系列・起動資料](../docs/research/track_a_h4_production_run10_20261010.md)。
+
+
+## 2026-10-11 H4 encoding再利用：run10を継続
+
+run10は変更せず、独立worktreeで小行列の値をkeyにcanonical textを再利用する実装を固定。
+SOURCE 3beb3870369eeb8ef76b4ead965c886eba7d16e9 / closure80、candidate内cosine/sine・trajectoryで共有しcache最大4MiB/1024 entries。
+12限定人工tests PASS、全bytes/digest・同じ回路のgate counts/depth一致。人工encodingのみ0.310→0.135秒（約2.29倍）、production全体の速度は未測定。
+科学/compiler/回路構成/資源契約不変、追加transpile・実NPZ読込・新本番起動0。将来の新SOURCE採用ではseed/binding再結合が必要。
+[実装・限定検証・差分review・資料入口](../docs/research/track_a_h4_encoding_speedup_20261010.md)。
