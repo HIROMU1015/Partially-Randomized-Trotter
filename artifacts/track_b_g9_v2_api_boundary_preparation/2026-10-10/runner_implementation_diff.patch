@@ -1,0 +1,44 @@
+--- frozen_g9_v1
++++ future_g9_v2
+@@ -1 +1 @@
+-"""Delegated G9 one-shot. No retries, new inputs or automatic next stage."""
++"""G9 v2 future runner; pending separate authorization, no execution in preparation."""
+@@ -5 +5,2 @@
+-from trottertracks.algorithm_codesign.g7_launch import verify_source,protected_check,consume_marker,sha
++from trottertracks.algorithm_codesign.g7_launch import protected_check,consume_marker,sha
++from trottertracks.algorithm_codesign.g9_v2_launch import verify_launch
+@@ -15 +16 @@
+-PREP=ROOT/'artifacts/track_b_g9_p5_native_preparation/2026-10-10'
++PREP=ROOT/'artifacts/track_b_g9_v2_api_boundary_preparation/2026-10-10'
+@@ -24,0 +26,10 @@
++def acquire_fixed_primitive(angle,contract):
++    # Reuse validation uses Fraction; the fixed synthesis API accepts a string.
++    # Preserve the exact registered value and key identity; do not use float.
++    epsilon=contract['primitive_error']
++    if not isinstance(epsilon,str):
++        raise TypeError('fixed primitive_error must remain the contract string')
++    return synthesize(angle,epsilon,contract['synthesizer_options'],
++                      max_characters=contract['caps']['sequence_characters'])
++
++
+@@ -26,2 +37,2 @@
+-    c=json.loads((PREP/'contract_v1.json').read_text());out=ROOT/c['result_directory']
+-    before=verify_source(ROOT,source,c);runtime=verify_runtime(ROOT,c)
++    c,auth,head,before=verify_launch(ROOT,PREP/'contract_v2.json',source)
++    out=ROOT/c['result_directory'];runtime=verify_runtime(ROOT,c)
+@@ -30,3 +41,3 @@
+-    inventory=json.loads((PREP/'synthesis_inventory_v1.json').read_text())
+-    marker=consume_marker(out,{'kind':'G9_DELEGATED_MATCHED_NATIVE_ONE_SHOT','source_commit':source,
+-        'contract_sha256':sha(PREP/'contract_v1.json'),'review_authorization':c['authorization'],
++    inventory=json.loads((ROOT/c['synthesis_inventory']).read_text())
++    marker=consume_marker(out,{'kind':'G9_V2_SEPARATELY_AUTHORIZED_MATCHED_NATIVE_ONE_SHOT','source_commit':source,
++        'contract_sha256':sha(PREP/'contract_v2.json'),'execution_HEAD':head,'authorization':auth,'authorization_sha256':sha(ROOT/c['authorization_path']),
+@@ -34,2 +45,3 @@
+-    result={'status':'G9_TECHNICAL_INCONCLUSIVE','technical_reason':None,'source_commit':source,
+-        'contract_sha256':sha(PREP/'contract_v1.json'),'marker_sha256':sha(marker),'runtime':runtime,
++    result={'status':'G9_TECHNICAL_INCONCLUSIVE','technical_reason':None,'source_commit':source,'execution_HEAD':head,'authorization_commit':head,
++        'authorization_sha256':sha(ROOT/c['authorization_path']),
++        'contract_sha256':sha(PREP/'contract_v2.json'),'marker_sha256':sha(marker),'runtime':runtime,
+@@ -55 +67 @@
+-                    acquired=synthesize(angle,eps,c['synthesizer_options'],max_characters=c['caps']['sequence_characters'])
++                    acquired=acquire_fixed_primitive(angle,c)

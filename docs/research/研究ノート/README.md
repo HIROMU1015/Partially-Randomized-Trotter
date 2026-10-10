@@ -176,3 +176,10 @@ science終了後mandatory STOP、追加合成/target/grid/分子/DF/trajectory/G
 新規helper attempts1 / 新規sequence取得0 / retry0。source・contract・過去941pathは不変。
 23 focused testsと23 saved-output checksは準備/整合証拠で、native資源の科学結果ではない。
 [G9 failure・GPT handoff](2026-10-10_track_b_g9_p5_matched_native.md)。mandatory STOP、次の研究判断はGPTへ返す。
+
+## G9 v2 API-boundary source preparation（2026-10-10）
+
+[G9 v2準備/入口](2026-10-10_track_b_g9_v2_api_boundary_preparation.md)。精度値の型接続を最小修正、19 stub-only/launch tests PASS。
+46科学条件・同19-key inventory・旧v1 source/result/markerは保持。
+新実合成・登録matrix/予算/科学実行0、v2 marker absent、別authorization pending。
+独立branchで資料公開後STOPし、新source-bound明示認可を待つ。
