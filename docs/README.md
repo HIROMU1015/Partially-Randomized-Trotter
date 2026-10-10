@@ -488,3 +488,8 @@ typed streaming/lifetime/failure保存の限定scopeをGPTへ返し、mandatory 
 
 報告: `docs/tracks/algorithm_codesign/g10_rss_repair_source_and_gpt_review_20261010.md`。契約・根拠: `artifacts/track_b_g10_rss_repair_preparation/2026-10-10/v2/`。
 旧source・結果・marker・STOPを保護する。科学実行/A2/fresh production markerは未認可・未実施。mandatory STOP。
+
+
+## Track B G10 v2 technical STOP（2026-10-10）
+
+[結果・外側process・provenance/GPT](tracks/algorithm_codesign/g10_v2_results_and_gpt_handoff_20261010.md)。固定S2一回でstring-key TypeError、RSS cap未超過。正式payloadなし、科学比較0。旧証拠と消費済markerを保持、retry0、mandatory STOP。

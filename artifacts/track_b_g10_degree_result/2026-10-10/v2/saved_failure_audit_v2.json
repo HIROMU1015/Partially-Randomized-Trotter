@@ -1,0 +1,122 @@
+{
+  "kind": "G10_V2_POST_STOP_SAVED_FAILURE_AUDIT",
+  "status": "SAVED_FAILURE_AND_OUTER_PROCESS_PROVENANCE_PASS",
+  "checks_passed": 1654,
+  "source_commit": "a139b91f119d109430ae3154a045d0fdcf722233",
+  "authorization_commit": "1a2cd261ebe0cf097e71026a9150756dc8c9acc3",
+  "original_classification": "G10_TECHNICAL_INCONCLUSIVE",
+  "technical_reason": "TypeError: G10 JSON keys must be strings",
+  "failure_stage": "before_result_stream",
+  "failure_phase": "validate_encode_write",
+  "raw_output_identity": {
+    "STOP.json": {
+      "bytes": 211,
+      "sha256": "02873e41488a7006ec2352b442485851b4547bb45862af015f3b999d58e10315"
+    },
+    "failure_receipt_v2.json": {
+      "bytes": 2122,
+      "sha256": "e21879bcf1543c2b84c726d33495be9cab6e3bbadb5b379b93a99603786a10dd"
+    },
+    "io_stages_v2.jsonl": {
+      "bytes": 10218,
+      "sha256": "a09324fee807c49a5c60b12ee70477d8926a0c54384fc3a46658612bcd743b37"
+    },
+    "one_shot_consumed.json": {
+      "bytes": 1522,
+      "sha256": "64dc3cb83a47b9c2ca5bfad14aaee84f88c4bbcc5e65cdeb35e70f39fc17b5e9"
+    },
+    "result_v1.json.partial": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "raw_runner_output_bytes": 14073,
+  "marker_sha256": "64dc3cb83a47b9c2ca5bfad14aaee84f88c4bbcc5e65cdeb35e70f39fc17b5e9",
+  "completed_payload": false,
+  "scientifically_usable_rows": 0,
+  "rows_retained_diagnostic_only": 17,
+  "new_synthesis_calls_reported": 27,
+  "reused_keys_reported": 19,
+  "cache_and_sequences_saved": false,
+  "row_sequence_or_error_reaudit_possible": false,
+  "outer_process": {
+    "start_UTC": "2026-10-10T10:55:06.965052+00:00",
+    "end_UTC": "2026-10-10T10:55:22.942069+00:00",
+    "command": [
+      "/home/abe/Project/prt-worktrees/track-b-sp05-economics-preparation-20261006/.venv/bin/python",
+      "-B",
+      "scripts/tracks/algorithm_codesign/g10_degree_matched_native_v2.py",
+      "--source-commit",
+      "a139b91f119d109430ae3154a045d0fdcf722233"
+    ],
+    "cwd": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-g10-v2-one-shot-execution-20261010",
+    "environment_overrides": {
+      "PYTHONPATH": "src",
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "pid": 1931516,
+    "wait_status": 0,
+    "exit_code": 0,
+    "normal_exit": true,
+    "termination_signal": null,
+    "wall_seconds": 15.977114358916879,
+    "CPU_seconds": 13.706302,
+    "user_CPU_seconds": 13.589375,
+    "system_CPU_seconds": 0.11692699999999999,
+    "peak_RSS_KiB": 243036,
+    "peak_RSS_MiB": 237.33984375,
+    "stdout_bytes": 113,
+    "stdout_sha256": "2d0a3b2c6dca132e63f725c6a1fe3864c7546b69a4a5108b1c03f70a97d0e098",
+    "stderr_bytes": 0,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "terminal_status_records": [
+      {
+        "status": "G10_TECHNICAL_INCONCLUSIVE",
+        "retries": 0,
+        "mandatory_STOP": true,
+        "next_science_authorized": false
+      }
+    ],
+    "runner_invocations": 1,
+    "retries": 0,
+    "mandatory_STOP": true,
+    "next_science_authorized": false,
+    "resource_scope": "outer wait4 covers runner startup, launch/runtime checks, guard body, terminal IO and shutdown; runner guard receipts have narrower scopes"
+  },
+  "guard_failure_resource": {
+    "wall_seconds": 13.455659988801926,
+    "cpu_seconds": 13.454465,
+    "peak_RSS_KiB": 243036,
+    "processes": 1
+  },
+  "telemetry_records": 41,
+  "critical_paths": 143,
+  "protected_paths": 1300,
+  "protected_violations": [],
+  "append_only_index_paths": [],
+  "source_code_contract_authorization_marker_unchanged": true,
+  "static_compatibility_issue": {
+    "field": "rows[new_degree].events[*].event.provider_calls",
+    "producer": "g7_generator._event: dict(Counter(label_word)); integer child labels",
+    "old_boundary": "g10_saved.serial converts each dict key using str",
+    "S2_boundary": "g10_io.validate_tree requires existing string keys",
+    "confidence": "high: static incompatibility confirmed; exact first failing key/path not saved",
+    "no_scientific_inputs_recomputed": true
+  },
+  "run_count": 1,
+  "retries": 0,
+  "post_STOP_science_calls": 0,
+  "matrix_synthesis_sampler_budget_lower_rerun": false,
+  "outcome_reclassified": false,
+  "method_or_novelty_adopted": false,
+  "mandatory_STOP": true,
+  "next_science_authorized": false,
+  "limits": [
+    "No result payload, native rows, new sequences or per-key resource/error records survived.",
+    "Runtime synthesizer_calls=0 describes metadata verification, not the 27 reported actual calls.",
+    "RSS below cap in this failed attempt does not prove successful full JSON output within cap.",
+    "No scientific comparison or winner can be inferred from retained-row counters."
+  ]
+}

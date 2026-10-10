@@ -874,3 +874,9 @@ typed streaming/lifetime/failure保存の限定scopeをGPTへ返し、mandatory 
 
 報告: `docs/tracks/algorithm_codesign/g10_rss_repair_source_and_gpt_review_20261010.md`。契約・根拠: `artifacts/track_b_g10_rss_repair_preparation/2026-10-10/v2/`。
 旧source・結果・marker・STOPを保護する。科学実行/A2/fresh production markerは未認可・未実施。mandatory STOP。
+
+
+## G10 v2 one-shot technical STOP（2026-10-10、最新追記）
+
+[結果/GPT引継ぎ](docs/tracks/algorithm_codesign/g10_v2_results_and_gpt_handoff_20261010.md)：`G10_TECHNICAL_INCONCLUSIVE`、JSON string-key validation failure、RSS237.33984375 MiB。S2 a139b91→authorization-only A2 1a2cd26、一回/retry0。正式payload/tokenなし、usable rows0。旧結果/marker/STOP・critical143/protected1300は保持。
+[保存失敗監査](scripts/tracks/algorithm_codesign/audit_g10_v2_saved_failure.py) / [新資料](artifacts/track_b_g10_degree_result/2026-10-10/v2/)。mandatory STOP、追加science/repair未認可、科学判断はGPT。

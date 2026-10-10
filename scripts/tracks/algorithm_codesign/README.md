@@ -260,3 +260,8 @@ typed streaming/lifetime/failure保存の限定scopeをGPTへ返し、mandatory 
 
 報告: `docs/tracks/algorithm_codesign/g10_rss_repair_source_and_gpt_review_20261010.md`。契約・根拠: `artifacts/track_b_g10_rss_repair_preparation/2026-10-10/v2/`。
 旧source・結果・marker・STOPを保護する。科学実行/A2/fresh production markerは未認可・未実施。mandatory STOP。
+
+
+## G10 v2 saved-failure audit
+
+`audit_g10_v2_saved_failure.py` はpost-STOP stdlib audit専用。元failure分類を保存し、exit0とscientific completionを区別する。原結果/marker保護、science/matrix/synthesis/budget/lower再実行0、exclusive新監査保存。G10 v2 runnerを呼び出さない。

@@ -235,3 +235,6 @@ dated note: `docs/research/研究ノート/2026-10-10_track_b_g10_rss_repair_sou
 
 報告: `docs/tracks/algorithm_codesign/g10_rss_repair_source_and_gpt_review_20261010.md`。契約・根拠: `artifacts/track_b_g10_rss_repair_preparation/2026-10-10/v2/`。
 旧source・結果・marker・STOPを保護する。科学実行/A2/fresh production markerは未認可・未実施。mandatory STOP。
+
+
+- [2026-10-10 G10 v2 one-shot technical STOP](2026-10-10_track_b_g10_v2_one_shot_technical_stop.md)：string-key boundary failure、正式payload0、retry0、外側process/保存provenance確認、mandatory STOP。

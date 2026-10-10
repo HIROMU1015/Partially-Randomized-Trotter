@@ -1,0 +1,16 @@
+import hashlib,json,subprocess,sys
+from pathlib import Path
+from datetime import datetime,timezone
+from trottertracks.algorithm_codesign.g10_launch import verify_launch
+from trottertracks.algorithm_codesign.synthesis_placement.wrapper_launch import verify_runtime
+from trottertracks.algorithm_codesign.g7_launch import sha
+root=Path.cwd(); p=root/'artifacts/track_b_g10_rss_repair_preparation/2026-10-10/v2'
+source='a139b91f119d109430ae3154a045d0fdcf722233'
+c,a,head,before=verify_launch(root,p/'contract_v2.json',source)
+runtime=verify_runtime(root,c)
+assert sha(Path(sys.executable).resolve())==c['runtime_executable_sha256']
+def git(*args):return subprocess.check_output(['git',*args],text=True).strip()
+d=root/c['result_directory']; assert not d.exists(), 'fresh result directory required'
+r={'status':'PREFLIGHT_PASS','time_UTC':datetime.now(timezone.utc).isoformat(),'source_commit':source,'authorization_commit':head,'parents':git('show','-s','--format=%P',head).split(),'remote':git('ls-remote','origin','refs/heads/'+git('branch','--show-current')),'branch':git('branch','--show-current'),'worktree_clean':not git('status','--porcelain','--untracked-files=all'),'authorization_only_paths':git('diff','--name-only',source,head).splitlines(),'contract_sha256':sha(p/'contract_v2.json'),'authorization_sha256':sha(p/'authorization.json'),'source_manifest_sha256':sha(p/'source_manifest_v2.json'),'source_manifest_paths':len(json.loads((p/'source_manifest_v2.json').read_text())['sha256']),'protected_before':before,'runtime':runtime,'runtime_executable':sys.executable,'runtime_executable_sha256':sha(Path(sys.executable).resolve()),'result_directory_absent':True,'marker_absent':True,'runner_invocations':0,'science':0}
+Path('/tmp/g10_v2_preflight_receipt.json').write_text(json.dumps(r,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps({'status':r['status'],'head':head,'parents':r['parents'],'critical_paths':r['source_manifest_paths'],'protected_before':before,'marker_absent':True},ensure_ascii=False))

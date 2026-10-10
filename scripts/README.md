@@ -455,3 +455,8 @@ future runner: `scripts/tracks/algorithm_codesign/g10_degree_matched_native_v2.p
 
 報告: `docs/tracks/algorithm_codesign/g10_rss_repair_source_and_gpt_review_20261010.md`。契約・根拠: `artifacts/track_b_g10_rss_repair_preparation/2026-10-10/v2/`。
 旧source・結果・marker・STOPを保護する。科学実行/A2/fresh production markerは未認可・未実施。mandatory STOP。
+
+
+## G10 v2 post-STOP saved failure audit
+
+`tracks/algorithm_codesign/audit_g10_v2_saved_failure.py`：stdlib-only、原failure/marker/IO telemetry、outer process、source/protected identityを確認する。科学再実行・再採点なし、既存receipt上書きなし。資料は `docs/tracks/algorithm_codesign/g10_v2_results_and_gpt_handoff_20261010.md`、raw evidenceは `artifacts/track_b_g10_degree_result/2026-10-10/v2/`。mandatory STOP。
