@@ -95,3 +95,11 @@ output `artifacts/resource_applicability/track_a_h6_technical_pilot_v1/2026-10-1
 
 H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、mandatory STOP、next_stage_authorized=falseを維持する。
 次の科学的GPT checkpointはH4補完＋H6 pilot結果。準備のみで研究意味論/target/coefficient/独立性を変更していないため、追加科学承認を代行しない。
+
+## GitHub公開確認
+
+[remote bytes照合記録](../../artifacts/resource_applicability/track_a_h6_technical_pilot_preparation_v1/2026-10-10/remote_verification_v1.json)。
+公開commit `dbaed646d5369f19c2431668cd5c7a49c6340daa`をGitHubから独立bare repositoryへ再取得し、
+source202/validation3、親入力33、親frozen source/tests202、相対リンク22件を確認した。
+旧4188ファイル/root review原本42件・dirty/untracked保全、未認可template・未作成pilot outputを確認。
+この追記とremote記録を公開した最終commitも再取得して照合する。新しい科学結果・実行認可は追加しない。
