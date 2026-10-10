@@ -1,5 +1,14 @@
 # 文書索引
 
+## 2026-10-10 Track A：coverage serialization準備v3
+
+最新入口は[coverage修正・準備v3](research/track_a_ax2b_h4_coverage_preparation_v3.md)。旧v2/source/freeze/STOPを保持し新versionを追加。
+tuple/listだけ正規化し、数値・型・順序・coverage変更を拒否。actual/差分をbounded保存。
+49 local metadata/mock tests pass、分子load/prepare/signal/sampling/build/compile0。
+同じH4 8 cell/capsの新固定・別認可付き一回実行を今回指示の範囲とする。旧grant/output再利用なし。
+この段階は準備で分子PASSではない。H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、N/Gnull・u未認定。
+実行後はmandatory STOP。既存dirty/未追跡・Track B・旧証拠を保全。以下は各段階当時の履歴。
+
 ## 2026-10-10 Track A：H4限定一回実行・coverage interface STOP
 
 最新入口は[H4限定実行報告](research/track_a_ax2b_h4_limited_execution_v1.md)。固定source/manifestの一回実行はACTUAL_COVERAGE_CHANGEDでSTOP。
