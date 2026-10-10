@@ -1,5 +1,14 @@
 # tests の役割
 
+## 2026-10-10 Track A：H4実行前契約・metadata固定 v3
+
+最新入口は[H4契約・metadata preflight](../docs/research/track_a_ax2b_h4_prelaunch_contract_v3.md)。
+保存入力/source/旧8 cellを照合し、179 primitive-time組/537 probesを固定した。
+専用metadata tests12 passed。新科学計算/array load/sampling/circuit/compile0。
+native instruction receipt、CPU実割当、別grantは未固定。manifestは未sealを維持。
+`H4_LIMITED_NOT_AUTHORIZED` / `H6_NOT_AUTHORIZED` / `DRAFT_NOT_AUTHORIZATION`、mandatory STOP。
+以下は各stage当時の履歴。旧結果・sourceと既存dirty差分を保全する。
+
 ## 2026-10-10 Track A：H4/H6 backend接続準備 v2
 
 最新入口は[接続・実行gate・合成検証の報告](../docs/research/track_a_ax2b_bound_ports_preparation_v2.md)。
