@@ -49,7 +49,9 @@ VERSIONS={k:'h4-newhost-'+k+'-v2' for k in STRUCTURES}
 def structural(plan,authorization,review):
     for label,doc in [('plan',plan),('authorization',authorization),('review',review)]:
         schema=STRUCTURES[label]
-        require(type(doc) is dict and set(doc)==set(schema),'newhost '+label+' schema fields')
+        optional={'memory_budget_amendment'} if label=='authorization' and type(doc) is dict and 'memory_budget_amendment' in doc else set()
+        require(type(doc) is dict and set(doc)==set(schema)|optional,'newhost '+label+' schema fields')
+        if optional:require(type(doc['memory_budget_amendment']) is dict,'memory amendment field type')
         require(doc['schema_version']==VERSIONS[label],'newhost schema version')
         for key,kind in schema.items():require(type(doc[key]) is kind,'newhost field type: '+key)
 
@@ -116,7 +118,20 @@ def authorize(plan,authorization,review, *, explicit_launch):
             'CPU proposal is not permission; exact separate role approval required')
     caps=plan['caps']
     require(set(caps)=={'actual_invocations','wall_seconds','output_bytes','driver_AS_RSS','worker_AS_RSS','headroom','monitor_seconds','observer_AS','observer_RSS'},'cap schema')
-    fixed=dict(wall_seconds=WALL_CAP,driver_AS_RSS=ROLE_CAP,worker_AS_RSS=ROLE_CAP,
+    from .memory_budget import WORKER_CAP, validate_cap, required_available
+    worker_cap=validate_cap(caps['worker_AS_RSS'],plan['requested_workers'])
+    if worker_cap==WORKER_CAP:
+        memory=authorization.get('memory_budget_amendment')
+        require(type(memory) is dict and set(memory)=={'approved','from','to','profile','authority'} and
+                memory['approved'] is True and type(memory['from']) is int and memory['from']==ROLE_CAP and
+                type(memory['to']) is int and memory['to']==WORKER_CAP,'explicit worker memory amendment')
+        for entry in (memory['profile'],memory['authority']):
+            require(type(entry) is dict and set(entry)=={'path','sha256'} and type(entry['path']) is str and
+                    bool(entry['path']) and not Path(entry['path']).is_absolute() and '..' not in Path(entry['path']).parts,
+                    'relative worker memory profile/authority reference')
+            hash_id(entry['sha256'])
+    else:require('memory_budget_amendment' not in authorization,'legacy memory amendment mismatch')
+    fixed=dict(wall_seconds=WALL_CAP,driver_AS_RSS=ROLE_CAP,worker_AS_RSS=worker_cap,
                headroom=HEADROOM,monitor_seconds=5,observer_AS=AS_CAP,observer_RSS=RSS_CAP)
     require(all(type(caps[k]) is int and caps[k]==v for k,v in fixed.items()),'existing caps / observer candidates')
     change=authorization['output_budget_amendment']
@@ -194,6 +209,19 @@ def verify_runtime(permit):
     from .library_cache import verify
     verify(reference(root,plan['library_cache_profile']))
     pressure_profile=read_pressure_profile(plan)
+    if plan['caps']['worker_AS_RSS']!=ROLE_CAP:
+        from .memory_budget import verify as verify_memory, WORKER_CAP
+        memory=permit.authorization['memory_budget_amendment']
+        memory_profile=verify_memory(reference(root,memory['profile']))
+        memory_authority=reference(root,memory['authority'])
+        require(memory_authority['schema_version']=='h4-user-worker-memory-authority-v1' and
+                memory_authority['instruction']=='上限を３２Gで修正して' and
+                memory_authority['worker_memory_amendment_approved'] is True and
+                memory_authority['accepted_profile']==memory_profile and
+                plan['requested_workers']==memory_profile['workers'] and
+                plan['caps']['worker_AS_RSS']==WORKER_CAP,'user-approved worker memory/profile binding')
+        from .resources import require_inherited_address_space
+        require_inherited_address_space(WORKER_CAP)
     pressure_authority=reference(root,permit.authorization['pressure_amendment']['authority'])
     require(pressure_authority['schema_version']=='h4-user-pressure-authority-v1' and
             pressure_authority['instruction']=='この条件を承認して再実行' and
@@ -291,7 +319,8 @@ def fresh_gate(plan,observation, *, now=None,pressure_profile=None):
     pressure=PressureGuard(memory,profile).decision(memory,now=now)
     require(pressure['reason'] is None,'launch memory pressure: '+str(pressure['reason']))
     require(0<=now-memory['observed_at']<=5,'fresh memory sample')
-    require(memory['available']>=max(120,8+8*plan['requested_workers']+16)*GiB+AS_CAP,'observer-inclusive admission')
+    from .memory_budget import required_available
+    require(memory['available']>=required_available(plan['requested_workers'],plan['caps']['worker_AS_RSS']),'observer-inclusive admission')
     needed=set(roles(plan));require(needed<=set(observation['scheduler_affinity']) & set(observation['online_cpus']),'role CPUs unavailable')
     topology={x['cpu']:(x['package'],x['core']) for x in observation['topology']}
     require(len({topology[c] for c in needed})==len(needed),'distinct physical role cores')

@@ -103,7 +103,7 @@ class PressureIntegrationTests(unittest.TestCase):
     def test_secondary_startup_forwards_profile_and_original_baseline(self):
         p,a,r=documents();baseline=fixture.memory();baseline['observed_at']=time.monotonic();current=copy.deepcopy(baseline);current['psi_full_avg10']=current['psi_full_by_scope']['host']=.18
         permit=replace(bind.authorize(p,a,r,explicit_launch=True),launch_observation=observation(baseline))
-        with patch.object(execution,'observe_memory',return_value=current),patch.object(bind,'read_pressure_profile',return_value=dict(pp.PARAMETERS)),patch.object(execution.os,'sched_getaffinity',return_value={16}),patch.object(execution,'limit_owned_address_space'),patch.object(execution.threading,'Thread'),patch('trottertracks.resource_applicability.h4_geometry.observer.IndependentObserver') as observer,patch('trottertracks.resource_applicability.h4_geometry.workers.OwnedPool') as pool:
+        with patch.object(execution,'observe_memory',return_value=current),patch.object(bind,'read_pressure_profile',return_value=dict(pp.PARAMETERS)),patch.object(execution.os,'sched_getaffinity',return_value={16}),patch.object(execution,'limit_owned_address_space'),patch.object(execution,'require_inherited_address_space'),patch.object(execution.threading,'Thread'),patch('trottertracks.resource_applicability.h4_geometry.observer.IndependentObserver') as observer,patch('trottertracks.resource_applicability.h4_geometry.workers.OwnedPool') as pool:
             run=execution.OwnedRun(permit,a,prepared_budget=Mock(root=Path(p['output_root'])))
             self.assertEqual(observer.call_args.kwargs['pressure_profile'],pp.PARAMETERS)
             self.assertEqual(observer.call_args.kwargs['pressure_baseline'],baseline)

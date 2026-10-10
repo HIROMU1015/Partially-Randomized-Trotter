@@ -131,6 +131,17 @@
                 13958643712,
                 18253611008
               ]
+            },
+            "driver_AS_RSS": {
+              "type": "integer",
+              "const": 8589934592
+            },
+            "worker_AS_RSS": {
+              "type": "integer",
+              "enum": [
+                8589934592,
+                34359738368
+              ]
             }
           }
         },
@@ -269,6 +280,64 @@
         },
         "pressure_amendment": {
           "type": "object"
+        },
+        "memory_budget_amendment": {
+          "type": "object",
+          "required": [
+            "approved",
+            "from",
+            "to",
+            "profile",
+            "authority"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "approved": {
+              "const": true
+            },
+            "from": {
+              "type": "integer",
+              "const": 8589934592
+            },
+            "to": {
+              "type": "integer",
+              "const": 34359738368
+            },
+            "profile": {
+              "type": "object",
+              "required": [
+                "path",
+                "sha256"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            },
+            "authority": {
+              "type": "object",
+              "required": [
+                "path",
+                "sha256"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -321,5 +390,42 @@
         }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "plan": {
+            "properties": {
+              "caps": {
+                "properties": {
+                  "worker_AS_RSS": {
+                    "const": 34359738368
+                  }
+                },
+                "required": [
+                  "worker_AS_RSS"
+                ]
+              }
+            },
+            "required": [
+              "caps"
+            ]
+          }
+        },
+        "required": [
+          "plan"
+        ]
+      },
+      "then": {
+        "properties": {
+          "authorization": {
+            "required": [
+              "memory_budget_amendment"
+            ]
+          }
+        }
+      }
+    }
+  ]
 }

@@ -7,7 +7,7 @@ import time
 import threading
 from .identity import require, Stop, sha, fingerprint
 from .gates import authorize, checkout_gate, reexecution_metadata, DISTANCES, OUTPUT, Permit
-from .resources import OutputBudget, OUTPUT_CAP, WallBudget, Monitor, admission, observe_memory, limit_owned_address_space
+from .resources import OutputBudget, OUTPUT_CAP, WallBudget, Monitor, admission, observe_memory, limit_owned_address_space, require_inherited_address_space
 from .ledger import Ledger, wire, json_bytes
 
 
@@ -36,15 +36,19 @@ class OwnedRun:
         observation=observe_memory()
         newhost=permit.plan.get('schema_version')=='h4-newhost-plan-v2'
         pressure_profile=pressure_baseline=None
+        worker_cap=8*2**30
         if newhost:
             from .launch_binding import authorize as authorize_new, FILE_LIMITS, CONTROL_LOG_CAP, roles,read_pressure_profile
             authorize_new(permit.plan,authorization,permit.review,explicit_launch=True)
             self.workers=permit.plan['requested_workers']
+            worker_cap=permit.plan['caps']['worker_AS_RSS']
+            from .memory_budget import required_available
+            require_inherited_address_space(worker_cap)
             require(permit.launch_observation is not None and
                     observation['oom_events']==permit.launch_observation['memory']['oom_events'] and
                     0<=time.monotonic()-permit.launch_observation['observed_monotonic']<=5,
                     'OOM/cgroup changed or startup observation stale')
-            require(observation['available'] >= max(120,8+8*self.workers+16)*2**30+AS_CAP,'newhost observer admission')
+            require(observation['available'] >= required_available(self.workers,worker_cap),'newhost observer admission')
             from .pressure_policy import PressureGuard
             pressure_profile=read_pressure_profile(permit.plan)
             pressure_baseline=permit.launch_observation['memory']
@@ -58,7 +62,7 @@ class OwnedRun:
         require(set(os.sched_getaffinity(0)) <= set(authorization['allowed_cpus']), 'process can use unpermitted CPU')
         self.wall=WallBudget(prior_wall)
         self.wall.start=run_started
-        limit_owned_address_space()
+        limit_owned_address_space(preserve_hard=worker_cap>8*2**30)
         self.budget=prepared_budget or OutputBudget(permit.plan['output_root'] if newhost else OUTPUT,handoff=handoff,prior_charge=prior_charge,
                                 cap=permit.plan['caps']['output_bytes'] if newhost else OUTPUT_CAP,
                                 file_limits=FILE_LIMITS if newhost else None)
@@ -76,7 +80,8 @@ class OwnedRun:
                 prior_wall=prior_wall, wall_started=self.wall.start, output_cap=trace_cap,
                 allowed_cpus=authorization['allowed_cpus'] if newhost else None,
                 role_cpus=permit.plan['cpu_proposal']['observer'] if newhost else None,
-                pressure_profile=pressure_profile,pressure_baseline=pressure_baseline)
+                pressure_profile=pressure_profile,pressure_baseline=pressure_baseline,
+                worker_cap=worker_cap)
         except BaseException:
             self.budget.close(); raise
         self.finished=threading.Event();self.failure=None
@@ -87,11 +92,18 @@ class OwnedRun:
         try:
             from .workers import OwnedPool
             self.pool=OwnedPool(self.workers,permit,self.monitor,self.budget)
+            # Each ready child has bound its own approved cap. Now lower the
+            # driver's hard ceiling without imposing8GiB on future child setup.
+            limit_owned_address_space()
         except BaseException:
             self.finished.set();self.thread.join(timeout=6)
             self.monitor.stop_children()
-            self.monitor.close(abort=True)
-            self.budget.close();raise
+            try:
+                if hasattr(self,'pool'):self.pool.shutdown(wait=True,cancel_futures=True)
+            finally:
+                try:self.monitor.close(abort=True)
+                finally:self.budget.close()
+            raise
 
     def _watch(self):
         try:

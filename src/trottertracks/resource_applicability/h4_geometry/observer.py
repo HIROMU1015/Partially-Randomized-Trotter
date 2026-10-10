@@ -121,7 +121,12 @@ class OwnedIdentity:
 class ObservationState:
     """Pure policy; timings, phase and the first failure are separate fields."""
     def __init__(self, baseline, started, *, prior_wall=0, workers=12, wall_started=None,
-                 pressure_profile=None, pressure_baseline=None):
+                 pressure_profile=None, pressure_baseline=None, worker_cap=ROLE_CAP, driver_pid=None):
+        from .memory_budget import validate_cap
+        self.worker_cap=validate_cap(worker_cap,workers)
+        require(driver_pid is None or type(driver_pid) is int and driver_pid>0, 'driver memory identity')
+        require(worker_cap==ROLE_CAP or driver_pid is not None, 'amended cap needs trusted driver identity')
+        self.driver_pid,self.worker_pids=driver_pid,set()
         self.pressure_guard = None
         if pressure_profile is not None:
             from .pressure_policy import PressureGuard
@@ -132,6 +137,11 @@ class ObservationState:
         self.prior_wall, self.workers = prior_wall, workers
         self.phase = dict(sequence=0, name='observer_start', monotonic=started)
         self.first_failure = None
+
+    def own_worker(self, pid):
+        require(type(pid) is int and pid>0 and pid!=self.driver_pid and
+                pid not in self.worker_pids and len(self.worker_pids)<self.workers, 'worker memory identity')
+        self.worker_pids.add(pid)
 
     def set_phase(self, phase, now):
         require(set(phase) == {'sequence', 'name', 'monotonic'} and
@@ -183,7 +193,10 @@ class ObservationState:
         elif pressure is None and observation['psi_full_avg10'] != 0: reason = 'memory_pressure'
         elif observation['oom_events'] != self.baseline: reason = 'oom_or_changed_cgroup'
         elif not 1 <= len(samples) <= self.workers+1: reason = 'owned_process_count'
-        elif any(not 0 <= s['rss'] <= ROLE_CAP or not 0 <= s['address_space'] <= ROLE_CAP for s in samples):
+        elif self.driver_pid is not None and {s['pid'] for s in samples}!={self.driver_pid,*self.worker_pids}:
+            reason = 'owned_memory_identity'
+        elif any(not 0 <= s['rss'] <= (ROLE_CAP if self.driver_pid is None or s['pid']==self.driver_pid else self.worker_cap) or
+                 not 0 <= s['address_space'] <= (ROLE_CAP if self.driver_pid is None or s['pid']==self.driver_pid else self.worker_cap) for s in samples):
             reason = 'owned_role_rss_as'
         elif len({s['pid'] for s in samples}) != len(samples): reason = 'duplicate_owned_process'
         elif not 0 <= observer_sample['rss'] <= RSS_CAP or not 0 <= observer_sample['address_space'] <= AS_CAP:
@@ -248,7 +261,8 @@ def observer_main(sock_fd, trace_fd):
         baseline = observe_memory()
         state = ObservationState(baseline, start, prior_wall=config['prior_wall'], workers=config['workers'],
                                  wall_started=config['wall_started'],pressure_profile=config.get('pressure_profile'),
-                                 pressure_baseline=config.get('pressure_baseline'))
+                                 pressure_baseline=config.get('pressure_baseline'),
+                                 worker_cap=config.get('worker_cap',ROLE_CAP),driver_pid=driver.expected['pid'])
         record = state.evaluate(baseline, [driver.sample()], process_sample(os.getpid()), start, time.monotonic())
         require(state.first_failure is None, 'observer initial observation')
         trace.write(record)
@@ -276,6 +290,7 @@ def observer_main(sock_fd, trace_fd):
                     require(expected['pid'] not in workers and len(workers) < config['workers'] and
                             expected['pid'] != os.getpid(), 'observer worker registration')
                     workers[expected['pid']] = OwnedIdentity(expected, driver.expected['pid'])
+                    state.own_worker(expected['pid'])
                 elif command == 'shutdown':
                     require(not workers, 'shutdown with live registered workers')
                     trace.write({'kind': 'shutdown', 'written_before_final': trace.written,
@@ -289,6 +304,7 @@ def observer_main(sock_fd, trace_fd):
                             'cannot release live registered workers')
                     for owner in workers.values(): owner.close()
                     workers.clear()
+                    state.worker_pids.clear()
                 elif command == 'synthetic_fault':
                     require(synthetic and message['fault'] in ('io_delay', 'fast_period'), 'synthetic-only fault')
                     value = message['value']
@@ -330,7 +346,9 @@ class IndependentObserver:
     """Spawned only from explicitly scoped synthetic cases or reviewed new role."""
     def __init__(self, python, trace_path, *, scope, workers=12, prior_wall=0,
                  output_cap=4*2**20, runtime_authorization=False, wall_started=None,allowed_cpus=None,role_cpus=None,
-                 pressure_profile=None,pressure_baseline=None):
+                 pressure_profile=None,pressure_baseline=None,worker_cap=ROLE_CAP):
+        from .memory_budget import validate_cap
+        validate_cap(worker_cap,workers)
         wall_started = time.monotonic() if wall_started is None else wall_started
         require(scope == 'SYNTHETIC_ONLY' or (scope == 'PRODUCTION' and runtime_authorization is True),
                 'independent observer production role not approved')
@@ -363,7 +381,7 @@ class IndependentObserver:
             send(parent, dict(scope=scope, runtime_authorization=runtime_authorization,
                  driver=identity(process_sample(os.getpid())), workers=workers, prior_wall=prior_wall,
                  wall_started=wall_started, output_cap=output_cap,allowed_cpus=allowed_cpus,role_cpus=role_cpus,
-                 pressure_profile=pressure_profile,pressure_baseline=pressure_baseline))
+                 pressure_profile=pressure_profile,pressure_baseline=pressure_baseline,worker_cap=worker_cap))
             response = receive(parent)
             require(response == {'kind': 'ready', 'identity': self.owner.expected}, 'observer ready ownership')
         except BaseException as exc:

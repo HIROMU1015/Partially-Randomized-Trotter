@@ -85,13 +85,17 @@ def owned_worker_main(parent_pid,index=None):
     phase='bootstrap';logs=None;completed_log=''
     try:
         require(os.getppid()==parent_pid,'owned parent handshake')
-        limit_owned_address_space()
+        # Soft8 protects bootstrap while retaining the inherited ceiling until
+        # the private permit has been authorized and its source/profile verified.
+        limit_owned_address_space(preserve_hard=True)
         phase='permit_decode';permit=read_frame(incoming)
         require(isinstance(permit,Permit),'owned permit')
         if permit.plan.get('schema_version')=='h4-newhost-plan-v2':
             from trottertracks.resource_applicability.h4_geometry.launch_binding import role_affinity
             phase='worker_binding';role_affinity(permit,'worker',index)
         phase='checkout';_contract,options=checkout_gate(permit)
+        cap = permit.plan['caps']['worker_AS_RSS'] if permit.plan.get('schema_version')=='h4-newhost-plan-v2' else 8*2**30
+        phase='worker_memory_binding';limit_owned_address_space(cap)
         phase='ready';write_frame(outgoing,{'ready':os.getpid()})
         while True:
             phase='job_decode';job=read_frame(incoming)

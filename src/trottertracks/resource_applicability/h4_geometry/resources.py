@@ -197,10 +197,19 @@ def observe_memory():
                 root_pressure_policy='HOST_MEMORY_PSI_PLUS_ALL_NONROOT_MEMORY_PSI')
 
 
-def limit_owned_address_space():
+def require_inherited_address_space(cap):
+    require(type(cap) is int and cap in (ROLE_CAP, 32*GiB), 'closed owned AS cap')
+    _soft, hard = resource.getrlimit(resource.RLIMIT_AS)
+    require(hard == resource.RLIM_INFINITY or hard >= cap, 'inherited AS hard limit too small')
+
+
+def limit_owned_address_space(cap=ROLE_CAP, *, preserve_hard=False):
+    require_inherited_address_space(cap)
+    require(type(preserve_hard) is bool, 'AS hard-limit mode')
     soft, hard = resource.getrlimit(resource.RLIMIT_AS)
-    cap = ROLE_CAP if hard == resource.RLIM_INFINITY else min(ROLE_CAP, hard)
-    resource.setrlimit(resource.RLIMIT_AS, (cap, cap))
+    selected = (cap, hard if preserve_hard else cap)
+    resource.setrlimit(resource.RLIMIT_AS, selected)
+    require(resource.getrlimit(resource.RLIMIT_AS) == selected, 'owned AS limit did not bind')
 
 
 class Monitor:
