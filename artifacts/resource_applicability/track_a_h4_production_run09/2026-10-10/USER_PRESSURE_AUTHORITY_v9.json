@@ -1,0 +1,27 @@
+{
+  "accepted_profile": {
+    "fresh_launch_host_required_below_percent": 1.0,
+    "host_full_avg10_stop_percent": 5.0,
+    "host_only_min_available_bytes": 163477192704,
+    "host_warning_continuous_seconds": 30.0,
+    "host_warning_percent": 1.0,
+    "mode": "bounded_host_only_grace",
+    "nonroot_full_avg10_stop_percent": 0.0,
+    "observation_interval_max_seconds": 5,
+    "observation_max_age_seconds": 5,
+    "schema_version": "h4-memory-pressure-policy-v2",
+    "zero_host_headroom_bytes": 17179869184
+  },
+  "instruction": "猶予案を承認して再実行",
+  "next_stage_authorized": false,
+  "pressure_amendment_approved": true,
+  "previous_profile_reference": {
+    "path": "artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/memory_pressure_profile_v1.json",
+    "sha256": "0d3f7742ea5ba722381cae5d622f70193471989801c7d4dfadfccfb33b8556e5"
+  },
+  "question": "全cgroup pressureが0・OOM増加なし・有効空きメモリ152.25GiB以上・5秒以内の監視を満たす場合だけ、host pressureが1%以上5%未満の状態に最大30秒の猶予を与え、30秒継続または5%以上ならSTOPする案を採用して、本番接続・軽量検査・再実行まで進めてよいですか？worker32GiBと共有環境・他jobを変更しない条件は維持します。",
+  "runtime_relaunch_authorized": true,
+  "schema_version": "h4-user-pressure-authority-v2",
+  "shared_environment_other_jobs_unchanged": true,
+  "worker_memory_amendment_preserved": true
+}
