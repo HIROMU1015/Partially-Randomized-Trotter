@@ -158,3 +158,6 @@ science終了後mandatory STOP、追加合成/target/grid/分子/DF/trajectory/G
 
 
 - [2026-10-10 Track B G7](2026-10-10_track_b_g7_budget_control_economics.md)：U予算、P3対照、controlled-Q、固定24keyの限定費用取得。完了/失敗後STOP。
+
+
+- [2026-10-10 Track B G8](2026-10-10_track_b_g8_on_demand_provider_budget.md)：on-demand native取得/finite-provider条件付き予算。G7原証拠保持、bundle後STOP。

@@ -785,3 +785,14 @@ GPT G6 review §12の限定予算/control/implementation economics。
 固定P5では登録3対照後にもconditional期待T減少、P3ではclosed-form対照が小さい。
 hard shot cap・classical generation/angle acquisition・未指定provider costを併記。
 新規性/主method/次stage未採択、G5閉鎖/G6原証拠とmarker保持、GPT判断へ戻す。
+
+
+## Track B G8（2026-10-10、source preparation）
+
+[G8 proof/contract](docs/tracks/algorithm_codesign/g8_proof_contract_and_on_demand_scope_20261010.md)：採用GPT G7 review §11に基づく限定確認。
+2 known development inputs/4 same production laws、finite-provider parameter、分離failure配分、
+on-demand strict Rzと対称bounded cache。G7のstatus/point comparison/consumed markerを保持。
+17 off-domain focused tests、source preparation時点のnew native acquisition0。一束後mandatory STOP。
+source：`src/trottertracks/algorithm_codesign/g8_bounds.py`、`g8_pipeline.py`、`g8_reference_audit.py`。
+runner：`scripts/tracks/algorithm_codesign/g8_on_demand_provider_budget.py`、tests：`tests/tracks/algorithm_codesign/test_g8_on_demand_and_bounds.py`。
+artifacts：`artifacts/track_b_g8_on_demand_preparation/2026-10-10/` と新result directory。

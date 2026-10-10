@@ -379,3 +379,11 @@ fixed source/full SHA/clean HEAD/new marker/24 keysのみ。再実行不可、bu
 固定P5では登録3対照後にもconditional期待T減少、P3ではclosed-form対照が小さい。
 hard shot cap・classical generation/angle acquisition・未指定provider costを併記。
 新規性/主method/次stage未採択、G5閉鎖/G6原証拠とmarker保持、GPT判断へ戻す。
+
+
+## Track B G8（2026-10-10、source preparation）
+
+[G8 proof/contract](../docs/tracks/algorithm_codesign/g8_proof_contract_and_on_demand_scope_20261010.md)：採用GPT G7 review §11に基づく限定確認。
+2 known development inputs/4 same production laws、finite-provider parameter、分離failure配分、
+on-demand strict Rzと対称bounded cache。G7のstatus/point comparison/consumed markerを保持。
+17 off-domain focused tests、source preparation時点のnew native acquisition0。一束後mandatory STOP。
