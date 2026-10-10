@@ -47,3 +47,9 @@ representation_error_certified=false、ground_state_certified=false、numerical_
 H6の7 cell/36 wrapper pilot、H6本検証/H8、科学GO/STOPを今回認可・実行していない。
 独立レビューの前提から政策/表現を変更せず、今後のpilot接続・実行は別の固定・認可対象。
 H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、mandatory STOP、next_stage_authorized=false。
+
+## 公開後の照合
+
+結果保存commit `554fc52add39c2c1b45b765a3135df76fda6f15a`。[GitHubから独立再取得したremote照合](../../artifacts/resource_applicability/track_a_h6_saved_df_completion_parallel_execution_v2/2026-10-10/remote_verification_v2.json)でsource198件・validation4件・raw33件のSHA-256一致、親raw25件・旧raw20件、保護対象4127パスとrootレビュー原文、repositoryリンクを確認した。
+
+H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、mandatory STOP。
