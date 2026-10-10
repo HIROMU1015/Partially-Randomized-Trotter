@@ -1,5 +1,14 @@
 # 研究計画資料
 
+## 2026-10-10 Track A：H4-P runner・実行前固定 v1
+
+最新入口は[H4-P準備契約](track_a_ax2b_h4_native_receipt_preparation_v1.md)。専用source・runner・48合成testsを追加した。
+CPU3・900秒・AS8GiB・output16MiB・load1/prepare8を未来の計画へ指定する。
+今回の実分子load/native準備/signal/sampling/wrapper build/compileは0。
+H4-P取得planのsealは認可ではなく、H4 science manifestは未sealのまま。
+`H4_NATIVE_RECEIPT_NOT_AUTHORIZED` / `H4_LIMITED_NOT_AUTHORIZED` / `H6_NOT_AUTHORIZED`。
+`DRAFT_NOT_AUTHORIZATION`、mandatory STOP。以下は各段階当時の履歴。
+
 ## 2026-10-10 Track A：H4実行前契約・metadata固定 v3
 
 最新入口は[H4契約・metadata preflight](track_a_ax2b_h4_prelaunch_contract_v3.md)。
