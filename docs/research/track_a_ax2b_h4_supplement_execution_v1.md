@@ -26,7 +26,8 @@ GPTレビューや準備manifestから認可を推論しない。
 | 今回の実行source | `67aa6bb54dd5385eb3c56def1b6052da12643447` / [180 science・2 validation freeze](../../artifacts/resource_applicability/track_a_ax2b_h4_supplement_preparation_v1/2026-10-10/source_freeze_v1.json) |
 | 実行前seal・2 grant | `5bbebb4d562ba9812eaf0838ba6419518c21d529` / [metadata preflight](../../artifacts/resource_applicability/track_a_ax2b_h4_supplement_execution_v1/2026-10-10/seal_preflight_v1.json) |
 | 実行前remote bytes照合 | [prelaunch receipt](../../artifacts/resource_applicability/track_a_ax2b_h4_supplement_execution_v1/2026-10-10/prelaunch_remote_verification_v1.json) |
-| 今回の結果保存 | この文書と下記raw pathsを追加したcommit。固定SHAは後続のremote照合receiptに記録する |
+| 今回の結果保存 | `1c2ad5a2c0d704e4b4758fd4c07672d9f3fb3be8` / この文書・新raw・保存監査・union |
+| 公開後のremote照合 | [remote receipt](../../artifacts/resource_applicability/track_a_ax2b_h4_supplement_execution_v1/2026-10-10/remote_verification_v1.json) / 新raw1212件、science180・validation2、旧science173・prep195・raw30、主要34リンクを照合 |
 
 source/予算/精度/stage/probe条件の変更、retry/resumeは0。
 CPU1・worker1・BLAS1、AS8GiB、output128MiB、log64KiB。
