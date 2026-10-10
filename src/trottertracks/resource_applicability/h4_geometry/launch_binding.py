@@ -16,7 +16,7 @@ from .prelaunch_audit import private_path, receipt_inventory, environment_profil
 from .resources import GiB, ROLE_CAP, HEADROOM, OUTPUT_CAP, WALL_CAP, fsync_directory
 from .observer import AS_CAP, RSS_CAP, FRAME_CAP, TERMINAL_RESERVE
 
-RUN_ID='h4-newhost-signal-compile-20261010-run07'
+RUN_ID='h4-newhost-signal-compile-20261010-run08'
 ORIGINAL_CARRY={'actual_invocations':20,'charged_bytes':165214360,'wall_seconds':5466.188392877579}
 PRIOR_CARRY={'actual_invocations':20,'charged_bytes':4428938712,'wall_seconds':5472.345380863175}
 RUN02_CARRY={'actual_invocations':21,'charged_bytes':8692723164,'wall_seconds':5766.582514658794}
@@ -273,6 +273,8 @@ def verify_frozen_receipts(plan):
     verify_stopped_attempt(evidence)
     from .run06_receipt import verify_run06_stop
     verify_run06_stop(evidence)
+    from .run07_receipt import verify_run07_stop
+    verify_run07_stop(evidence)
     return {**freeze,'input_root':str(root),'consumed_seconds':CARRY['wall_seconds'],
             'prior_charge':CARRY['charged_bytes'],'prior_invocations':CARRY['actual_invocations']}
 
