@@ -31,3 +31,5 @@ supervisor terminalは `H6_MATCHED_RESOURCE_STOP`、reasonは `RuntimeError:WORK
 signal CPU [0,2,5,6]・Numba/OMP4/BLAS1、費用は2 disposable worker・各thread1の計画を変更しなかった。coordinator AS2 GiB、worker AS8 GiB、aggregate RSS18 GiB、output2 GiB・log1 MiB・call guardを維持。費用workerはdispatchされていない。[保全記録](../../artifacts/resource_applicability/track_a_h6_matched_execution_v1/2026-10-11/preservation_v1.json)は既存4474 pathのbytesを今回の明示的な文書追記だけを除いて照合し、旧dirty・未追跡差分、凍結source、保存入力、旧pilot142 raw fileの保全を確認した。旧pilotの7 cell・32/36 wrapper・STOP・欠測はそのまま保持する。
 
 **mandatory STOP。** `H6_NOT_AUTHORIZED` / `DRAFT_NOT_AUTHORIZATION`、`next_stage_authorized=false`、H8・追加探索未認可を維持する。今回のgrantで再実行しない。以後の資源limit継承修正、process境界のsynthetic検査、別source/seal/出力identityの準備、再実行認可は別作業とする。GPTへは数値比較結果が未取得であることと、この技術的停止・監査scopeを引き渡す。科学的GO/STOPをCodexで代行しない。
+
+公開確認：原STOP出力・外部監査の保存commitは `274b984971f9afc3425f3b3d1ce36e1c478150ea`。[GitHub再取得照合](../../artifacts/resource_applicability/track_a_h6_matched_execution_v1/2026-10-11/remote_result_verification_v1.json)で419 path（source211、入力33、旧pilot142、新公開32 pathと元manifest）をSHA-256照合し、重要な相対リンクの存在を確認した。実行時sourceは上記057ba97のままである。
