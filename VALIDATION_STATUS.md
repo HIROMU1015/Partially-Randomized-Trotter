@@ -1,5 +1,14 @@
 # Validation status
 
+## 2026-10-10 Track A：保存DF入力完成の並列一回実行seal v2
+
+最新入口は[並列source/認可/seal](docs/research/track_a_h6_saved_df_completion_parallel_execution_seal_v2.md)。ユーザーの並列計算開始指示を保存DF受理＋state/snapshot一回へ結合。
+旧source/freezes/入力/STOPを保全し別versionを追加。CPU IDs [0, 2, 5, 6]・Numba4/OMP4/BLAS1、worker1。旧CPU2は一論理CPUのID2指定。
+local synthetic92 passed（新51/旧41）、toy serial/parallel一致。科学政策・19fragment・tol-only1e-8/cutoff0維持。
+total1080秒/AS8GiB/output32MiB/matvec10000、retry/resumeなし。実行前段階でH6入力受理/state結果はまだない。
+結果公開・remote照合後mandatory STOP。H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、N/Gnull・u未認定・UNDETERMINED。H6 pilotは別認可。
+以下は段階当時の履歴。
+
 ## 2026-10-10 Track A：保存DF入力完成source・synthetic・実行前固定完了
 
 最新入口は[新policy入力完成の準備/認可対象](docs/research/track_a_h6_saved_df_completion_preparation_v1.md)。
