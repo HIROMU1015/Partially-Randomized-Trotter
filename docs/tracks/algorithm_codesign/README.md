@@ -404,3 +404,11 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 [構成・native資源限界ノート初稿](../../manuscripts/track_b_return_aggregation_native_resource_note_v0_1.md)を参照する。
 一般fullの追加native利益は固定比較で不支持。一般数理構成と低次数成果は保持する。
 原COMPLETEは不変、独立新規性・投稿十分性未確定、m9/新条件/sampling最適化/G11未認可、mandatory STOP維持。
+
+## Return集約系列の技術ノート完成（2026-10-11）
+
+[論文化/着地点レビュー](../../research/track_b_G10_v3_publication_and_endpoint_review_20261011.md)を採用し、
+[完成ノートv1.0](../../manuscripts/track_b_return_aggregation_native_resource_note_v1_0.md)を追加。
+[完了対応表](g10_publication_endpoint_completion_20261011.md)は一般証明/finite-bit/P5/固定native限界と来歴を対応付ける。
+一般full性能探索を拡張せず現系列を区切る。原COMPLETEと旧v0.1保持、new science0、
+独立原著採択/投稿承認/次stageなし、同一着地点review反復不要、mandatory STOP。

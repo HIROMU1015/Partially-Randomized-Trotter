@@ -517,3 +517,11 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 [資料化の研究ノート](research/研究ノート/2026-10-11_track_b_g10_v3_scientific_review_intake.md)。
 一般full性能探索を固定入力で区切り、低次数成果・一般構成の数理的成立・native限界を分ける。
 原結果statusはCOMPLETEのまま。新規科学run/m9/入力探索/合成/sampling最適化/G11は未認可、mandatory STOP維持。
+
+## Track B技術ノート完成（2026-10-11）
+
+[形式return集約ノートv1.0](manuscripts/track_b_return_aggregation_native_resource_note_v1_0.md)はG6の一般証明/finite-bit、
+G9のP5少数群、G10の固定native事例/下界classを一つの読者向け文書へ統合した。
+[採用レビュー](research/track_b_G10_v3_publication_and_endpoint_review_20261011.md)と
+[完了対応表](tracks/algorithm_codesign/g10_publication_endpoint_completion_20261011.md)を参照。
+既存v0.1/結果/markerを保持、現系列を区切る技術ノート完成。独立原著/次stage認可ではない、new science0/STOP。

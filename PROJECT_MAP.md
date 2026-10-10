@@ -904,3 +904,12 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 [claim/evidence表](docs/tracks/algorithm_codesign/g10_v3_claim_evidence_map_20261010.md)へ整理した。
 保存値照合と図のscriptは`scripts/tracks/algorithm_codesign/{summarize_g10_v3_review_saved_values,plot_g10_v3_saved_review_figures}.py`。
 新資料は`artifacts/track_b_g10_v3_scientific_review_intake/2026-10-10/`。原COMPLETEとmandatory STOPを保持し、m9/新入力/G11は未認可。
+
+## Track B：return集約技術ノート完成・現系列の区切り（2026-10-11）
+
+[採用した論文化/着地点レビュー](docs/research/track_b_G10_v3_publication_and_endpoint_review_20261011.md)に沿い、
+[G6/G9/G10の自己完結的技術ノートv1.0](docs/manuscripts/track_b_return_aggregation_native_resource_note_v1_0.md)を完成。
+[完了対応表](docs/tracks/algorithm_codesign/g10_publication_endpoint_completion_20261011.md)、
+[新資料manifest](artifacts/track_b_return_aggregation_note_completion/2026-10-11/evidence_manifest.json)を参照。
+一般構成/有限bit/P5少数群/固定native限界を統合し、一般full性能探索と同一着地点review反復は区切る。
+原COMPLETE・科学source・旧証拠保持、新science0、投稿承認/新規性採択/次実行なし、mandatory STOP。

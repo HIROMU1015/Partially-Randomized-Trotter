@@ -257,3 +257,8 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 [G10 v3構成ノート整理](2026-10-11_track_b_g10_v3_scientific_review_intake.md)。
 一般fullの固定入力性能探索を区切り、既存構成・低次数成果・native限界を本文・図へ整理。
 原COMPLETE、過去の証拠境界、mandatory STOPを保持し、追加科学実行を認可しない。
+
+## 2026-10-11：return集約技術ノート完成
+
+[採用判断と完了記録](2026-10-11_track_b_return_aggregation_endpoint.md)。
+G6/G9/G10を自己完結的ノートv1.0へ統合し現系列を区切る。旧記録/証拠保持、new science0、mandatory STOP。
