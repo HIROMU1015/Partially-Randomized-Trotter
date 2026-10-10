@@ -1,5 +1,16 @@
 # 文書索引
 
+## 2026-10-11 Track A H6精度一致比較 v1：固定run一回の認可・実行前seal
+
+利用者が公開12183dbの固定契約に従う科学run一回を明示認可。[新grantと実行前seal](research/track_a_h6_matched_accuracy_execution_seal_v1.md)。
+linear H6/1.00Å/STO-3G/tol-only rank19/sector400/保存state/T0.8、B0/B1 S2・S4/B2の92候補・4精度を変更しない。
+source057ba97・211件/親33件/環境/planを再照合。CPU [0,2,5,6]、費用2 process、phase/total wall cap=null、資源guard維持。
+grant/source/入力/sealを先に公開・remote照合後一回launch。実行後は原結果と監査を公開してmandatory STOP。旧pilot STOP/partial証拠を保持。
+H8・追加探索・入力再生成は未認可。retry/resumeなし。一般のH6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、next_stage_authorized=falseを維持。
+以下は実行前までを含む各段階当時の履歴。
+
+
+
 ## 2026-10-11 Track A H6精度一致資源比較 v1：準備・未認可STOP
 
 [結果前実行契約](research/track_a_h6_matched_accuracy_execution_contract_v1.md)とsealed manifestを次の入口とする。
