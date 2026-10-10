@@ -181,10 +181,11 @@ def _prepare(arrays,template,*,common=None):
 
 
 def candidate_identity(input_identity,template,source_hash,compiler,environment):
+    from .gaussian_structure import SEMANTICS
     require(input_identity['geometry'] in ('0.70','0.80','0.90','1.10','1.40','1.60'), 'candidate geometry')
     return {'geometry':input_identity['geometry'],**{k:input_identity[k] for k in ('H','DF','state','input')},
             'template':fingerprint('h4-template-v1',template),'source':source_hash,
-            'compiler':compiler,'environment':environment,'wrapper_semantics':'h4-full-gaussian-paired-wrapper-v1'}
+            'compiler':compiler,'environment':environment,'wrapper_semantics':SEMANTICS}
 
 
 def epsilon_grid():

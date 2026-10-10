@@ -163,19 +163,9 @@ def numerical_fingerprint(circuit, axis):
 
 
 def gaussian_basis(U):
-    """Pinned server's dense JW Gaussian fallback; no alternate compiler policy."""
-    import numpy as np
-    from scipy.linalg import logm, expm
-    from .inputs import one_body_operator, reverse_bits
-    from qiskit import QuantumCircuit
-    from qiskit.circuit.library import UnitaryGate
-    require(U.shape[0] <= 8, 'Gaussian dense scope')
-    anti=logm(U);anti=(anti-anti.conj().T)*0.5
-    mat=expm(one_body_operator(anti))
-    perm=[reverse_bits(i,U.shape[0]) for i in range(2**U.shape[0])]
-    qc=QuantumCircuit(U.shape[0])
-    qc.append(UnitaryGate(mat[np.ix_(perm,perm)]),range(U.shape[0]))
-    return qc
+    """Approved structured JW basis; same Gaussian operator, new cost series."""
+    from .gaussian_structure import build_basis
+    return build_basis(U)
 
 
 def diagonal_coefficients(eta, lam=None):

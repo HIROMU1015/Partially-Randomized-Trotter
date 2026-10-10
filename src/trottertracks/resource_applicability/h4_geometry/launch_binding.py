@@ -16,7 +16,7 @@ from .prelaunch_audit import private_path, receipt_inventory, environment_profil
 from .resources import GiB, ROLE_CAP, HEADROOM, OUTPUT_CAP, WALL_CAP, fsync_directory
 from .observer import AS_CAP, RSS_CAP, FRAME_CAP, TERMINAL_RESERVE
 
-RUN_ID='h4-newhost-signal-compile-20261010-run09'
+RUN_ID='h4-newhost-signal-compile-20261010-run10'
 ORIGINAL_CARRY={'actual_invocations':20,'charged_bytes':165214360,'wall_seconds':5466.188392877579}
 PRIOR_CARRY={'actual_invocations':20,'charged_bytes':4428938712,'wall_seconds':5472.345380863175}
 RUN02_CARRY={'actual_invocations':21,'charged_bytes':8692723164,'wall_seconds':5766.582514658794}
@@ -36,11 +36,11 @@ STRUCTURES={
          'input_root':str,'stop_evidence_root':str,'stop_evidence_receipt':dict,'output_root':str,'control_root':str,
          'inputs':dict,'generation_freeze_digest':str,'templates':list,'contract_plan_fingerprint':str,
          'compiler_fingerprint':str,'environment_fingerprint':str,'requested_workers':int,
-         'cpu_proposal':dict,'carry':dict,'caps':dict,'storage':dict,'sealed':bool,'memory_pressure_profile':dict},
+         'cpu_proposal':dict,'carry':dict,'caps':dict,'storage':dict,'sealed':bool,'memory_pressure_profile':dict,'gaussian_synthesis_profile':dict},
  'authorization':{'schema_version':str,'stage':str,'run_id':str,'source_commit':str,'plan_fingerprint':str,
          'approved':bool,'runtime_authorization':bool,'allowed_cpus':list,'one_shot':bool,
          'permission':str,'result_prior':bool,'environment_accepted':bool,'observer_role':dict,'budget_amendment':dict,
-         'output_budget_amendment':dict,'budget_accounting':dict,'recovery_policy':dict,'pressure_amendment':dict},
+         'output_budget_amendment':dict,'budget_accounting':dict,'recovery_policy':dict,'pressure_amendment':dict,'gaussian_amendment':dict},
  'review':{'schema_version':str,'stage':str,'run_id':str,'source_commit':str,'plan_fingerprint':str,
          'authorization_digest':str,'approved':bool,'runtime_authorization':bool,'reviewer':str,'mandatory_stop':bool}}
 VERSIONS={k:'h4-newhost-'+k+'-v2' for k in STRUCTURES}
@@ -107,6 +107,17 @@ def authorize(plan,authorization,review, *, explicit_launch):
         require(type(entry) is dict and set(entry)=={'path','sha256'} and type(entry['path']) is str and
                 bool(entry['path']) and not Path(entry['path']).is_absolute() and '..' not in Path(entry['path']).parts,
                 'relative pressure profile/authority reference')
+        hash_id(entry['sha256'])
+    from .gaussian_structure import SEMANTICS
+    gaussian=authorization['gaussian_amendment']
+    require(set(gaussian)=={'approved','from_semantics','to_semantics','profile','authority','old_partial_cache_reuse'} and
+            gaussian['approved'] is True and gaussian['from_semantics']=='h4-full-gaussian-paired-wrapper-v1' and
+            gaussian['to_semantics']==SEMANTICS and gaussian['profile']==plan['gaussian_synthesis_profile'] and
+            gaussian['old_partial_cache_reuse'] is False,'explicit structured Gaussian/new cost adoption')
+    for entry in (gaussian['profile'],gaussian['authority']):
+        require(type(entry) is dict and set(entry)=={'path','sha256'} and type(entry['path']) is str and
+                bool(entry['path']) and not Path(entry['path']).is_absolute() and '..' not in Path(entry['path']).parts,
+                'relative Gaussian profile/authority reference')
         hash_id(entry['sha256'])
     require(plan['contract_plan_fingerprint']==gates.PLAN_FP,'science contract unchanged')
     require(set(plan['inputs'])==set(gates.DISTANCES),'six inputs')
@@ -209,6 +220,15 @@ def verify_runtime(permit):
     require(env['fingerprint']==plan['environment_fingerprint'] and comp['fingerprint']==plan['compiler_fingerprint'],'plan profile fingerprints')
     from .library_cache import verify
     verify(reference(root,plan['library_cache_profile']))
+    from .gaussian_structure import verify as verify_gaussian
+    gaussian_profile=verify_gaussian(reference(root,plan['gaussian_synthesis_profile']))
+    gaussian_authority=reference(root,permit.authorization['gaussian_amendment']['authority'])
+    require(gaussian_authority['schema_version']=='h4-user-gaussian-authority-v1' and
+            gaussian_authority['instruction']=='新方式へ切替・再実行' and
+            gaussian_authority['gaussian_cost_amendment_approved'] is True and
+            gaussian_authority['accepted_profile']==gaussian_profile and
+            gaussian_authority['old_partial_cache_reuse'] is False,
+            'user structured Gaussian/new cost authority binding')
     pressure_profile=read_pressure_profile(plan)
     if plan['caps']['worker_AS_RSS']!=ROLE_CAP:
         from .memory_budget import verify as verify_memory, WORKER_CAP
@@ -283,6 +303,8 @@ def verify_frozen_receipts(plan):
     verify_run07_stop(evidence)
     from .run08_receipt import verify_run08_stop
     verify_run08_stop(evidence)
+    from .run09_receipt import verify_run09_stop
+    verify_run09_stop(evidence)
     return {**freeze,'input_root':str(root),'consumed_seconds':CARRY['wall_seconds'],
             'prior_charge':CARRY['charged_bytes'],'prior_invocations':CARRY['actual_invocations']}
 
