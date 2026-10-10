@@ -536,3 +536,12 @@ COMPLETEのみledger/bytes/nativeで照合し、完了wrapperのbuild/compileと
 18限定mock PASS、独立差分review PASS、3件のbinding/root検証漏れ修正。実worker/transpile/科学array/新launch0。
 run10は継続し変更0。最終停止proof/carry/receiptは未確定、allowed[]/approvedfalse/runtimefalse/未seal/commandnull。
 [資料入口](../../docs/research/track_a_h4_resume_preparation_20261011.md)。
+
+
+## 2026-10-11 H4 run10→resume01：完了分を保持した高速化継続
+
+利用者「引き継いで」でown run10停止・native6×2残存0を確認。SOURCE 941749b8d4aedb43fd5f47b824116082493df393 / closure85、dataset seed SOURCE5aa保持。
+COMPLETE8150/signal142、carry7878/4320481456B/35474.12562095933s、未完了2を保持。worst74512≤74805、chargebound約12.16GiB≤17GiB。
+既知sealed停止ログ名の限定修正と19mock PASS。科学/compiler/CPU4/32GiB/observer/pressure/17GiB/74805/72h不変。
+最終binding独立差分review・artifact固定・fresh gate後、一度mapを再開する。実状態はprivate receiptへ記録。
+[資料入口](../../docs/research/track_a_h4_production_resume01_20261011.md)。
