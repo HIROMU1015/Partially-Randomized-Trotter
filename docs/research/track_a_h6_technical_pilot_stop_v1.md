@@ -67,3 +67,10 @@ fieldを無条件に捨ててgateを緩和せず、登録validation timesその�
 数値schedule/probe/gate/primary target/coefficient/独立性を変える必要が出た場合はGPTへ戻す。修正後の科学実行には別の明示認可が必要。
 今回は修正・新seal・再実行を行わず、原証拠公開とremote照合まででmandatory STOP。
 H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、N/Gnull・u/ground-state未認定・UNDETERMINED、next_stage_authorized=false。
+
+## 公開後のremote照合
+
+[remote照合記録](../../artifacts/resource_applicability/track_a_h6_technical_pilot_execution_v1/2026-10-10/remote_verification_v1.json)。
+commit `01ecd3db299d93301d64e351c39e9587f16f9f09`を独立bare repositoryへGitHubから再取得し、原raw14件/source202件/親入力33件のhashを確認。
+欠測59件、文書相対リンク30件、旧4209ファイル/rootレビュー原本42件・dirty/untracked保全を確認した。
+この公開確認追記と記録を含む最終commitも再取得して照合する。計算再実行・source修正・科学承認は追加しない。
