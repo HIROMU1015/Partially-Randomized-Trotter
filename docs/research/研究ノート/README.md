@@ -1,5 +1,16 @@
 # 研究ノート
 
+## 2026-10-10 Track A：保存integrals H6 DF診断一回・GPTレビュー待ち
+
+最新入口は[診断結果・raw/監査/source索引](../track_a_h6_df_diagnostic_result_v1.md)。
+別grant/固定source ff24de4で一回実行し、原status H6_DF_DIAGNOSTIC_RECORDED、保存bytes監査PASS。
+linear H6/1Å/STO-3G/tol-only1e-8、actual rank19、元Hermitization許容1e-10違反index15–18。
+raw25件・要約欠測0。lambda/g非Hermiticity/weighted係数差を別保存。parent wall約2.1秒、再試行なし。
+これは新runの診断証拠で、旧未保存rawの復元・H6入力受理・政策PASSではない。
+旧source/integrals/STOP/freezesとdirty/untracked・Track Bを保全。DF政策変更・state/pilot/sampling/compileなし。
+grantは一回消費済み。N/Gnull・u未認定・UNDETERMINED、H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION。
+mandatory STOP。根本原因/政策の科学判断はGPT独立レビューへ戻す。以下は段階当時の履歴。
+
 ## 2026-10-10 Track A：H6 DF診断準備・未実行
 
 最新入口は[Hermitization STOP後の診断仕様/source/seal](../track_a_h6_df_hermitization_diagnostic_preparation_v1.md)。
