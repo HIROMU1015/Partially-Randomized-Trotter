@@ -10,6 +10,8 @@ H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、mandatory STOP。独立科学判�
 - [診断準備](track_a_h6_df_hermitization_diagnostic_preparation_v1.md) / [認可文書](track_a_h6_df_diagnostic_execution_authorization_v1.md)。
 - 新diagnostic source：`ff24de4bc410234472a416186b773fc7875ae373`、[source freeze](../../artifacts/resource_applicability/track_a_ax2b_h6_df_diagnostic_preparation/2026-10-10/source_freeze_v1.json) science187件・validation2件。
 - 新grant公開commit：`a99e6ba28d0cf26c9d63d131c2d0f620e2880c5f`。execution identity：`h6_df_diagnostic_20261010_launch_v1`。
+- raw/結果保存commit：`c4bf9de3af1580dc54ad055f8e3153477aecf6b1`。
+- [GitHub再取得・保存bytes再監査記録](../../artifacts/resource_applicability/track_a_ax2b_h6_df_diagnostic_execution_v1/2026-10-10/remote_verification_v1.json)：この結果commitのraw25件・source187件、旧source183件/旧raw20件と既存4075 pathの保全を確認。数値診断やDFは再実行していない。
 - [grant](../../artifacts/resource_applicability/track_a_ax2b_h6_df_diagnostic_execution_v1/2026-10-10/authorization_v1.json) SHA-256：`5249805956780614c2421994a701caaff300ab05cfe50ecfd9431b5d290ec4e4`。
 - [seal](../../artifacts/resource_applicability/track_a_ax2b_h6_df_diagnostic_preparation/2026-10-10/sealed_diagnostic_preparation_v1.json) digest：`59ff0f13202e25731ad63cb0c47bc5f9600aff9f671b412999279508b3631bd0`。source/input/env/CPU/capsを変更していない。
 - [実行前remote照合](../../artifacts/resource_applicability/track_a_ax2b_h6_df_diagnostic_execution_v1/2026-10-10/prelaunch_remote_verification_v1.json)と[exclusive起動意図](../../artifacts/resource_applicability/track_a_ax2b_h6_df_diagnostic_execution_v1/2026-10-10/launch_attempt_v1.json)を保存した。
@@ -81,4 +83,4 @@ DF attempted1/returned1、fragment診断19、retry/resumeなし。新分子生�
 DFの根本原因、representationの適切性、truncationと数値誤差の区別、weighted量の科学的な意味、政策変更の可否はGPTの独立レビュー事項。
 H6入力受理false、all_original_hermitization_checks_satisfied=false。
 N/G null・u未認定・UNDETERMINED。grantは一回消費済み、追加診断/変更/H6 pilotの自動認可なし。
-raw/監査/source identityをGitHubへ公開・再取得確認してmandatory STOPする。
+raw/監査/source identityをGitHubへ公開・再取得確認した。上記remote記録とこの索引追記だけを後続commitへ公開し、mandatory STOPを維持する。
