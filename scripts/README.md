@@ -1,5 +1,16 @@
 # scripts 索引
 
+## 2026-10-10 Track A：H6技術pilot v1・coverage schema STOP
+
+最新入口は[H6 pilot原STOP/欠測/監査/静的診断](../docs/research/track_a_h6_technical_pilot_stop_v1.md)。linear H6/1Å/STO-3G/rank19/p10/sector400/T0.8。
+science worker一回、ACTUAL_PRIMITIVE_COVERAGEでinput-reference段階STOP。correctness0/7・wrapper0/36、参照/probe/sampling/compile全counter0。
+actual_boundsのregistered_validation_times_v2追加fieldとfixed coverageのschema差を静的確認。actual bounds/準備receiptは未保存、後から再計算で代用しない。
+raw14件・保存bytes監査STOP記録、原source/STOP/旧入力/科学結果・dirty/untrackedを保全。初回infra未起動も保存、startup2/science1/retry0。
+一回認可消費済み。新source修正・新科学計算・再実行なし。H6のPR/精度/費用結論はまだない。次の候補は別versionのinterface修正と再準備。
+H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、N/Gnull・u未認定・UNDETERMINED、next_stage_authorized=false、mandatory STOP。
+以下は段階当時の履歴。
+
+
 ## 2026-10-10 Track A：H6技術pilot一回実行認可・実行前seal
 
 最新入口は[固定pilot一回grant/source/予算](../docs/research/track_a_h6_technical_pilot_execution_seal_v1.md)。ユーザー「次の作業に進んで」を直前説明のH6 pilot一回へ結合。
