@@ -16,7 +16,7 @@ from .prelaunch_audit import private_path, receipt_inventory, environment_profil
 from .resources import GiB, ROLE_CAP, HEADROOM, OUTPUT_CAP, WALL_CAP, fsync_directory
 from .observer import AS_CAP, RSS_CAP, FRAME_CAP, TERMINAL_RESERVE
 
-RUN_ID='h4-newhost-signal-compile-20261010-run08'
+RUN_ID='h4-newhost-signal-compile-20261010-run09'
 ORIGINAL_CARRY={'actual_invocations':20,'charged_bytes':165214360,'wall_seconds':5466.188392877579}
 PRIOR_CARRY={'actual_invocations':20,'charged_bytes':4428938712,'wall_seconds':5472.345380863175}
 RUN02_CARRY={'actual_invocations':21,'charged_bytes':8692723164,'wall_seconds':5766.582514658794}
@@ -99,8 +99,9 @@ def authorize(plan,authorization,review, *, explicit_launch):
     pressure=authorization['pressure_amendment']
     require(set(pressure)=={'approved','from_host_stop_percent','to_host_stop_percent','profile','authority'} and
             pressure['approved'] is True and type(pressure['from_host_stop_percent']) is float and
-            pressure['from_host_stop_percent']==0.0 and type(pressure['to_host_stop_percent']) is float and
-            pressure['to_host_stop_percent']==1.0 and pressure['profile']==plan['memory_pressure_profile'],
+            type(pressure['to_host_stop_percent']) is float and
+            (pressure['from_host_stop_percent'],pressure['to_host_stop_percent']) in ((0.0,1.0),(1.0,5.0)) and
+            pressure['profile']==plan['memory_pressure_profile'],
             'explicit bounded host-pressure contract amendment')
     for entry in (pressure['profile'],pressure['authority']):
         require(type(entry) is dict and set(entry)=={'path','sha256'} and type(entry['path']) is str and
@@ -223,10 +224,15 @@ def verify_runtime(permit):
         from .resources import require_inherited_address_space
         require_inherited_address_space(WORKER_CAP)
     pressure_authority=reference(root,permit.authorization['pressure_amendment']['authority'])
-    require(pressure_authority['schema_version']=='h4-user-pressure-authority-v1' and
-            pressure_authority['instruction']=='この条件を承認して再実行' and
+    grace=pressure_profile['schema_version']=='h4-memory-pressure-policy-v2'
+    expected_instruction='猶予案を承認して再実行' if grace else 'この条件を承認して再実行'
+    expected_version='h4-user-pressure-authority-v2' if grace else 'h4-user-pressure-authority-v1'
+    require(pressure_authority['schema_version']==expected_version and
+            pressure_authority['instruction']==expected_instruction and
             pressure_authority['pressure_amendment_approved'] is True and
-            pressure_authority['accepted_profile']==pressure_profile,
+            pressure_authority['accepted_profile']==pressure_profile and
+            (permit.authorization['pressure_amendment']['from_host_stop_percent'],
+             permit.authorization['pressure_amendment']['to_host_stop_percent'])==((1.0,5.0) if grace else (0.0,1.0)),
             'user-approved pressure profile/authority binding')
     for section in ('budget_accounting','recovery_policy'):
         authority=reference(root,permit.authorization[section]['authority'])
@@ -275,6 +281,8 @@ def verify_frozen_receipts(plan):
     verify_run06_stop(evidence)
     from .run07_receipt import verify_run07_stop
     verify_run07_stop(evidence)
+    from .run08_receipt import verify_run08_stop
+    verify_run08_stop(evidence)
     return {**freeze,'input_root':str(root),'consumed_seconds':CARRY['wall_seconds'],
             'prior_charge':CARRY['charged_bytes'],'prior_invocations':CARRY['actual_invocations']}
 
@@ -318,6 +326,9 @@ def fresh_gate(plan,observation, *, now=None,pressure_profile=None):
     memory=observation['memory']
     from .pressure_policy import PressureGuard
     profile=read_pressure_profile(plan) if pressure_profile is None else pressure_profile
+    if profile.get('schema_version')=='h4-memory-pressure-policy-v2':
+        require(memory['psi_full_by_scope']['host']<profile['fresh_launch_host_required_below_percent'],
+                'fresh launch host pressure must remain below1%')
     pressure=PressureGuard(memory,profile).decision(memory,now=now)
     require(pressure['reason'] is None,'launch memory pressure: '+str(pressure['reason']))
     require(0<=now-memory['observed_at']<=5,'fresh memory sample')

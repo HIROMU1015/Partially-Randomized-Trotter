@@ -279,7 +279,20 @@
           "type": "object"
         },
         "pressure_amendment": {
-          "type": "object"
+          "type": "object",
+          "required": ["approved", "from_host_stop_percent", "to_host_stop_percent", "profile", "authority"],
+          "additionalProperties": false,
+          "properties": {
+            "approved": {"const": true},
+            "from_host_stop_percent": {"enum": [0.0, 1.0]},
+            "to_host_stop_percent": {"enum": [1.0, 5.0]},
+            "profile": {"type": "object"},
+            "authority": {"type": "object"}
+          },
+          "oneOf": [
+            {"properties": {"from_host_stop_percent": {"const": 0.0}, "to_host_stop_percent": {"const": 1.0}}},
+            {"properties": {"from_host_stop_percent": {"const": 1.0}, "to_host_stop_percent": {"const": 5.0}}}
+          ]
         },
         "memory_budget_amendment": {
           "type": "object",
