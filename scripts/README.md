@@ -475,3 +475,11 @@ stream/token/STOPとouter正常COMPLETE status一致。outer wall22.2261s/CPU20.
 保存監査のfield仮定/report組立の訂正と初回記録を保存、本番再実行0。旧結果/marker/STOP、critical180/protected1352保持。
 `artifacts/track_b_g10_degree_result/2026-10-10/v3/evidence_manifest_v3.json` とsaved-only `audit_g10_v3_saved_outputs.py` を参照。
 known synthetic providerの次数内有限operator比較のみ、science完了後mandatory STOP、追加科学/採択/新規性判断はGPTへ返す。
+
+## Track B G10 v3：文書化の保存値照合・静的図（2026-10-11）
+
+`tracks/algorithm_codesign/summarize_g10_v3_review_saved_values.py`は固定exact fieldの差・比・affine境界だけをstdoutへ出すstdlib helper。
+`tracks/algorithm_codesign/plot_g10_v3_saved_review_figures.py`はその保存出力からmatplotlib/Aggで静的図を作る。
+どちらもscience runnerではなく、sampling/budget/lower/合成/行列を再生成しない。表示h範囲は新しい科学条件ではない。
+資料は`artifacts/track_b_g10_v3_scientific_review_intake/2026-10-10/`、説明は`docs/manuscripts/track_b_return_aggregation_native_resource_note_v0_1.md`。
+新規本番実行・G11は未認可、mandatory STOP維持。

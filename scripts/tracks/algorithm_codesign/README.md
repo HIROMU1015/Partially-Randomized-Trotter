@@ -280,3 +280,11 @@ stream/token/STOPとouter正常COMPLETE status一致。outer wall22.2261s/CPU20.
 保存監査のfield仮定/report組立の訂正と初回記録を保存、本番再実行0。旧結果/marker/STOP、critical180/protected1352保持。
 `artifacts/track_b_g10_degree_result/2026-10-10/v3/evidence_manifest_v3.json` とsaved-only `audit_g10_v3_saved_outputs.py` を参照。
 known synthetic providerの次数内有限operator比較のみ、science完了後mandatory STOP、追加科学/採択/新規性判断はGPTへ返す。
+
+## G10 v3採用レビューの文書化helper（2026-10-11）
+
+- `summarize_g10_v3_review_saved_values.py`：保存exact tableと二event partsから差・比・境界を照合。既存lowerを再評価しない。
+- `plot_g10_v3_saved_review_figures.py`：保存照合値の静的PNG/SVG。浮動小数点は表示だけに使用する。
+
+同じ演算子のscienceを追加した結果ではない。原source・contract・authorization・marker・STOPは保持。
+構成ノートの整理までが採用scopeで、m9/入力探索/sampling最適化/G11は未認可。

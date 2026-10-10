@@ -396,3 +396,11 @@ stream/token/STOPとouter正常COMPLETE status一致。outer wall22.2261s/CPU20.
 保存監査のfield仮定/report組立の訂正と初回記録を保存、本番再実行0。旧結果/marker/STOP、critical180/protected1352保持。
 `artifacts/track_b_g10_degree_result/2026-10-10/v3/evidence_manifest_v3.json` とsaved-only `audit_g10_v3_saved_outputs.py` を参照。
 known synthetic providerの次数内有限operator比較のみ、science完了後mandatory STOP、追加科学/採択/新規性判断はGPTへ返す。
+
+## G10 v3科学レビュー採用（2026-10-11）
+
+[GPTレビュー原文](../../research/track_b_G10_v3_scientific_review_20261010.md)に沿い、G9の条件付き次数拡張をG10で区切った。
+[claim/evidence表](g10_v3_claim_evidence_map_20261010.md)と
+[構成・native資源限界ノート初稿](../../manuscripts/track_b_return_aggregation_native_resource_note_v0_1.md)を参照する。
+一般fullの追加native利益は固定比較で不支持。一般数理構成と低次数成果は保持する。
+原COMPLETEは不変、独立新規性・投稿十分性未確定、m9/新条件/sampling最適化/G11未認可、mandatory STOP維持。
