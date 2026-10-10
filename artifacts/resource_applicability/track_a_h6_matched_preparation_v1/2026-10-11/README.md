@@ -39,5 +39,7 @@ H8 and any next scientific stage remain unauthorized.
 
 After explicit approval of this fixed one-run scope, publish raw output and the
 static execution audit, then return to GPT for the scientific judgment.
-Remote byte verification is recorded separately as `remote_verification_v1.json`
-after the preparation commit is pushed; no science grant is issued by that record.
+[Remote byte verification](remote_verification_v1.json) records independent GitHub
+re-fetch of preparation commit `cdc592c5255f0d68cdf1e24c270fe06bb2183060`:
+211 runtime sources, 33 parent inputs, 33 publication paths and 142 legacy raw
+records matched. No science grant is issued by this verification.
