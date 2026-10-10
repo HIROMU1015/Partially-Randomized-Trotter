@@ -1,5 +1,14 @@
 # Validation status
 
+## 2026-10-11 Track A H6精度一致比較 v1：起動時STOP・科学結果未取得
+
+[結果・証拠索引](docs/research/track_a_h6_matched_accuracy_result_v1.md)。
+固定source057ba97・公開12183dbの契約を新grant cf52918で一回起動。signal workerのRLIMIT_AS設定でSTOP、全92 signal・168 B3 scalar・wrapper費用は未取得。
+親AS hard2 GiBを継承したworkerが8 GiBへ設定できず、数値port import前に失敗。原ログ・terminal・10 raw file・外部静的監査・欠測を保存。
+source211・入力33・旧pilot142はbytes一致。原inventoryの事後照合falseとRSS peak0は保持し、監査scopeと欠測を別記録で説明。
+一回grant消費済み、retry/resumeなし、mandatory STOP。H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION / next_stage_authorized=false、H8・追加探索未認可。
+以下の未起動・準備statusは各段階当時の履歴。
+
 ## 2026-10-11 Track A H6精度一致比較 v1：固定run一回の認可・実行前seal
 
 利用者が公開12183dbの固定契約に従う科学run一回を明示認可。[新grantと実行前seal](docs/research/track_a_h6_matched_accuracy_execution_seal_v1.md)。
