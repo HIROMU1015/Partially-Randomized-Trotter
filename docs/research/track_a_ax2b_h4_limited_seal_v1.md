@@ -98,3 +98,12 @@ future outputの親directoryは未作成でよく、実行時の限定準備で�
 
 現在のSTOP：`H4_LIMITED_NOT_AUTHORIZED` / `H6_NOT_AUTHORIZED` / `DRAFT_NOT_AUTHORIZATION`。
 次の科学実行はこの固定manifestを対象とする別の明示認可後に一回だけ。H6入力生成・pilot、本検証、H8/GPUや科学GO/STOPは今回開始・代行しない。
+
+## 固定完了の記録
+
+science/工具source commit：`61091c2cb00eb871d7a692b125219d34d99cc923`。future science closure170件とmetadata工具2件、継承187件＋新2件の準備freeze189件をlocal/Git bytesまで確認した。
+旧native execution closureも170件だが、現在のclosureとはfile集合が異なる。同じ件数を同じ実行sourceの意味にしない。
+manifest file SHA-256：`679511b859630992870be50e2ec4d15fa24c4794ddec2bc8b6d127f3e65a58c2`、semantic digest：`4dc632f579e69b9aa98a97522169846a1653ffbb4680036c76823d6993d3907d`。
+seal statusは`H4_LIMITED_PLAN_SEALED_NOT_AUTHORIZED`。未認可gateは`SEPARATE_EXPLICIT_USER_GRANT_REQUIRED`でI/O前拒否。専用science output・approved grant・worker claimは作成していない。
+[source対応](../../artifacts/resource_applicability/track_a_ax2b_h4_limited_seal/2026-10-10/source_binding_audit_v1.json)、[準備freeze](../../artifacts/resource_applicability/track_a_ax2b_h4_limited_seal/2026-10-10/preparation_source_freeze_v1.json)、[保全監査](../../artifacts/resource_applicability/track_a_ax2b_h4_limited_seal/2026-10-10/preservation_audit_v1.json)へ照合結果を保存する。
+旧2,656 fileとroot側5 review文書を保全。新科学計算・H4-P再実行0、既存dirty/未追跡はcommit対象外。mandatory STOPで別の科学実行指示へ戻す。

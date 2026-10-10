@@ -8,3 +8,6 @@
 専用outputはmetadataとして固定し、凍結v2 launcherの別grantへ同じpathを結び付ける後続作業は残る。今回grantを作らない。
 新分子計算/native準備/数値array decode/probe/sampling/circuit build/compile0、H4-P再実行0。
 公開後mandatory STOP。H4 scienceは別の明示認可、H6/H8/GPUは未認可。H6_NOT_AUTHORIZED、DRAFT_NOT_AUTHORIZATIONを維持する。
+
+固定完了：source `61091c2cb00eb871d7a692b125219d34d99cc923`、science closure170件、準備freeze189件。旧native closure170件とは別集合として記録。
+manifest SHA-256 `679511b859630992870be50e2ec4d15fa24c4794ddec2bc8b6d127f3e65a58c2`。seal済み・science/launch未認可、旧STOP不変、新science0でmandatory STOP。
