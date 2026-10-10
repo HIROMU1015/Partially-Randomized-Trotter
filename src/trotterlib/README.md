@@ -1,5 +1,14 @@
 # trotterlib モジュール索引
 
+## 2026-10-10 Track A：H4-P一回実行・親監査STOP
+
+最新入口は[H4-P実行報告](../../docs/research/track_a_ax2b_h4_native_receipt_execution_v1.md)。保存H4 load1/native準備8とreceipt保存を実施。
+親はB3 JSON4,443,419 bytesを4MiB読込gateで拒否しSTOP。総output9,821,513 bytesは16MiB以内。
+保存JSONのstdlib補助監査は一致。原STOP・source・結果のbytesを維持する。
+signal/probe/sampling/wrapper build/compile0。retry/resume/source修正/science sealなし。
+`H4_NATIVE_RECEIPT_STOP` / `H4_LIMITED_NOT_AUTHORIZED` / `H6_NOT_AUTHORIZED`。
+`DRAFT_NOT_AUTHORIZATION`、mandatory STOP。以下は各段階当時の履歴。
+
 ## 2026-10-10 Track A：H4-P runner・実行前固定 v1
 
 最新入口は[H4-P準備契約](../../docs/research/track_a_ax2b_h4_native_receipt_preparation_v1.md)。専用source・runner・48合成testsを追加した。
