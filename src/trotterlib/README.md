@@ -1,5 +1,16 @@
 # trotterlib モジュール索引
 
+## 2026-10-10 Track A：H6技術pilot実行前固定・未認可STOP
+
+最新入口は[保存snapshot接続/7 cell・36 wrapper準備](../../docs/research/track_a_h6_technical_pilot_preparation_v1.md)。linear H6/1Å/STO-3G、rank19/p10、sector400、T0.8。
+新weighted policy・signed generation order・tol-only1e-8/cutoff0を維持。新port/gate/runnerを追加し旧source/結果/STOPを保全。
+local synthetic129 passed（新37/旧51/旧41）。登録245 times×3 probes=735回。actual prepared representation/instruction boundsは将来のpre-action gateで検査し今回は未計算。
+CPU IDs [0, 2, 5, 6]・Numba4/OMP4/BLAS1、worker1、total7200秒/AS8GiB/output512MiB、compile36/trajectory4/occurrence8の上限をseal。
+準備だけでH6 signal/sampling/量子回路build/compile0。N/Gnull・u未認定・UNDETERMINED。別pilot grantなし、旧入力完成grant消費済み。
+H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、next_stage_authorized=false、mandatory STOP。
+以下は段階当時の履歴。
+
+
 ## 2026-10-10 Track A：H6保存DF入力完成の並列一回実行完了・mandatory STOP
 
 最新入口は[並列一回結果/source/raw/監査](../../docs/research/track_a_h6_saved_df_completion_parallel_result_v2.md)。linear H6/1Å/STO-3G、tol-only1e-8/cutoff0、全19 signed fragments/order保持、sector400。
