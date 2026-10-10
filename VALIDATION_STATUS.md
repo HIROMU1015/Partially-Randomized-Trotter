@@ -1,5 +1,14 @@
 # Validation status
 
+## 2026-10-10 Track A：H4-P保存read gate v2・再監査
+
+最新入口は[H4-P保存再監査](docs/research/track_a_ax2b_h4_native_receipt_reaudit_v2.md)。新gate/runner・36合成testsを追加。
+原16MiB aggregate budget内で4MiB超JSONを読める保存専用経路。凍結v1は変更しない。
+元source/STOP/receiptのbytesを保持し、実行時sourceと新audit sourceを別に固定する。
+新分子計算/native準備/signal/probe/sampling/wrapper build/compile0。H4-P再実行なし。
+science manifestのseal/launchなし。`H4_LIMITED_NOT_AUTHORIZED` / `H6_NOT_AUTHORIZED`。
+`DRAFT_NOT_AUTHORIZATION`、mandatory STOP。以下は各段階当時の履歴。
+
 ## 2026-10-10 Track A：H4-P一回実行・親監査STOP
 
 最新入口は[H4-P実行報告](docs/research/track_a_ax2b_h4_native_receipt_execution_v1.md)。保存H4 load1/native準備8とreceipt保存を実施。
