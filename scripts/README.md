@@ -1,5 +1,15 @@
 # scripts 索引
 
+## 2026-10-10 Track A：H6入力生成準備 v1（未実行）
+
+最新入口は[H6入力生成契約・source/合成検証索引](../docs/research/track_a_ax2b_h6_input_preparation_v1.md)。
+既存tol-only adapter/solver/matrix-free/H6 loaderを再利用し、入力生成専用gate・watchdog・snapshot・stdlib保存監査を追加。
+87 local synthetic/metadata tests pass（新38・既存49）、実H6入力/state/signal・sampling/circuit build/compile0。
+source67312f3、183 science/3 validation freeze。予算・新outputを固定、CPU null・unsealed・新grantなし。
+H6_INPUT_GENERATION_NOT_AUTHORIZED / H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、N/Gnull・u未認定、mandatory STOP。
+入力生成の別指示後にresource/seal/grantを固定し、一回生成・保存監査後STOP。H6 pilotはさらに別認可。
+旧H4 source/freezes/結果・既存dirty/untracked・Track Bを保全。以下は段階当時の履歴。
+
 ## 2026-10-10 Track A：H4補完実行 v1・STOP
 
 最新入口は[H4補完結果・source/raw/監査索引](../docs/research/track_a_ax2b_h4_supplement_execution_v1.md)。

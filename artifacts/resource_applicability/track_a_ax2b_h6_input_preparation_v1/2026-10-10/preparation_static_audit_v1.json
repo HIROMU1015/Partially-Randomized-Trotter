@@ -1,0 +1,59 @@
+{
+  "schema": "track_a_ax2b_h6_input_preparation_static_audit_v1",
+  "source_commit": "67312f3195aede26e8ba4f5727d89c236772f82e",
+  "review": {
+    "path": "docs/research/track_a_ax2b_h4_limited_stop_independent_review_2026-10-10.md",
+    "sha256": "46a9e46f77c8079efe3aa91237d90e10b81258b423419d924eee7ddf8b33bddb",
+    "sections": [
+      "16.2",
+      "16.3",
+      "16.4",
+      "19"
+    ]
+  },
+  "reused_implementation": [
+    "ax2b_h6_input.tol_only_df_from_integrals",
+    "ax2b_h6_controller.bounded_solver",
+    "df_hamiltonian.df_linear_operator",
+    "df_hamiltonian._hartree_fock_initial_vector",
+    "ax2b_h4_science_v5.primitive_sector_certificate",
+    "pr2_s0_s1_validation state/sector hash and canonical phase",
+    "ax2b_molecular_ports_v3.load_h6_snapshot",
+    "ax2b_supplement_records_v1.AtomicWriter",
+    "ax2b_limits.install_worker_limits"
+  ],
+  "existing_H6_backend_available": true,
+  "old_pilot_gate_still_H4_only": true,
+  "old_source_edits": 0,
+  "new_source_test_files": 7,
+  "status": "IMPLEMENTATION_AND_SYNTHETIC_PREPARATION_ONLY",
+  "memory_layout_bounds": {
+    "system_qubits": 12,
+    "sector_dimension": 400,
+    "full_vector_complex128_bytes": 65536,
+    "sector_vector_complex128_bytes": 6400,
+    "one_body_complex128_bytes": 2304,
+    "g_stack_complex128_bytes_at_rank_144": 331776,
+    "input_two_body_complex128_bytes": 331776,
+    "solver_400_by_40_complex128_bytes": 256000,
+    "full_4096_by_4096_matrices_planned": 0
+  },
+  "memory_scope": "array arithmetic only; not measured RSS or a bound on library/JIT/SCF workspace",
+  "progress_count_upper_bound": 220,
+  "progress_policy": "phase/record boundaries and first/every100 matvec before+after; no periodic heartbeat within one expensive call",
+  "pending": [
+    "host CPU assignment and resource observation",
+    "new explicit input-generation grant",
+    "metadata seal after assignment",
+    "one-shot actual input and scientific diagnostics",
+    "actual-rank-dependent pilot coverage/instruction bounds",
+    "separate H6 pilot gate/source/input/environment/resource/grant"
+  ],
+  "numerical_allowance_certified": false,
+  "accuracy_eligibility": "UNDETERMINED",
+  "N": null,
+  "G": null,
+  "H6_status": "H6_NOT_AUTHORIZED",
+  "contract_status": "DRAFT_NOT_AUTHORIZATION",
+  "mandatory_stop": true
+}
