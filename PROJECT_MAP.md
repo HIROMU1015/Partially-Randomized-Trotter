@@ -866,3 +866,11 @@ technical prefixは科学判断に使用せず、原結果/marker/STOPと旧1241
 同原bytes/hashのmaterialized peak508.90625 MiB / stream253.25 MiB。元G10 heap/例外位置の完全再現ではない。
 独立調査branch、既存source/result/audit/marker/STOP保持。production修正・cap変更・science再実行0。
 typed streaming/lifetime/failure保存の限定scopeをGPTへ返し、mandatory STOP。
+
+
+## 2026-10-10 Track B G10 RSS修正source S2準備
+
+新sourceは `src/trottertracks/algorithm_codesign/g10_io.py`、future runnerは `scripts/tracks/algorithm_codesign/g10_degree_matched_native_v2.py`。
+
+報告: `docs/tracks/algorithm_codesign/g10_rss_repair_source_and_gpt_review_20261010.md`。契約・根拠: `artifacts/track_b_g10_rss_repair_preparation/2026-10-10/v2/`。
+旧source・結果・marker・STOPを保護する。科学実行/A2/fresh production markerは未認可・未実施。mandatory STOP。

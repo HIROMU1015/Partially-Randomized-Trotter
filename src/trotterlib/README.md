@@ -424,3 +424,11 @@ technical prefixは科学判断に使用せず、原結果/marker/STOPと旧1241
 保存hash/sequence/会計45,605条件の監査PASS。critical113のfull source prefix保持、追記のみ。
 追加science/matrix/synthesis/sampler/budget/lower処理なし。mandatory STOP、次の研究/実行scopeはGPT判断。
 shared API code変更なし。G10実験source/contractを保持。
+
+
+## 2026-10-10 Track B G10 RSS修正source S2準備
+
+Track B固有の `trottertracks.algorithm_codesign.g10_io` を追加。既存trotterlib API・scientific modulesは変更していない。
+
+報告: `docs/tracks/algorithm_codesign/g10_rss_repair_source_and_gpt_review_20261010.md`。契約・根拠: `artifacts/track_b_g10_rss_repair_preparation/2026-10-10/v2/`。
+旧source・結果・marker・STOPを保護する。科学実行/A2/fresh production markerは未認可・未実施。mandatory STOP。
