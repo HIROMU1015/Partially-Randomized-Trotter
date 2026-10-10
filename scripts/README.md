@@ -1,5 +1,16 @@
 # scripts 索引
 
+## 2026-10-10 Track A：H6入力生成・DF検査STOP v1
+
+最新入口は[H6一回実行のSTOP・一次証拠・欠測](../docs/research/track_a_ax2b_h6_input_generation_stop_v1.md)。
+linear H6/1Å/STO-3G、tol-only1e-8、source67312f3/seal affa3f3、CPU2/worker1/BLAS1。
+integrals保存後HERMITIZATION_POLICY:fragment_15でSTOP（parent wall約1.7秒）。DF receipt/state未生成。
+integral1完了、DF adapter1試行/0完了、matvec/signal/sampling/build/compile0。actual rank/失敗raw/差は未保存。
+原STOP/raw20件・保存bytes監査・静的source監査を公開。旧source/H4/freezes/dirty/untracked・Track Bを保全。
+閾値/rank救済・source修正・再実行なし。GPTへ早期差戻し、mandatory STOP。
+H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、N/Gnull・u/ground-state未認定・UNDETERMINED。
+以下は段階当時の履歴。
+
 ## 2026-10-10 Track A：H6入力生成一回実行のseal v1
 
 最新入口は[H6入力生成seal・認可・確認先](../docs/research/track_a_ax2b_h6_input_generation_execution_seal_v1.md)。
