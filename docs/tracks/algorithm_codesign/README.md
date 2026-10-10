@@ -300,3 +300,8 @@ hard shot cap・classical generation/angle acquisition・未指定provider cost�
 2 known development inputs/4 same production laws、finite-provider parameter、分離failure配分、
 on-demand strict Rzと対称bounded cache。G7のstatus/point comparison/consumed markerを保持。
 17 off-domain focused tests、source preparation時点のnew native acquisition0。一束後mandatory STOP。
+
+
+## G8 completed bundle
+
+[Result and GPT handoff](g8_results_and_gpt_handoff_20261010.md): 20 strict live-miss acquisitions / 8 rows, provider delta hypothetical; 17 focused tests and 14 saved-only checks. Mandatory STOP; no next-stage authority.

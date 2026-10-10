@@ -190,3 +190,8 @@ hard shot cap・classical generation/angle acquisition・未指定provider cost�
 on-demand strict Rzと対称bounded cache。G7のstatus/point comparison/consumed markerを保持。
 17 off-domain focused tests、source preparation時点のnew native acquisition0。一束後mandatory STOP。
 [g8_on_demand_provider_budget.py](g8_on_demand_provider_budget.py)：--source-commit FULL_SHA、fixed runtime、fresh exclusive marker。再実行不可。
+
+
+## G8 after one-shot
+
+`audit_g8_saved_outputs.py` checks saved rational budgets, sequences, source/protected hashes and scope only. The native runner has consumed its marker; do not rerun. [Results](../../../docs/tracks/algorithm_codesign/g8_results_and_gpt_handoff_20261010.md).

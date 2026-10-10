@@ -796,3 +796,9 @@ on-demand strict Rzと対称bounded cache。G7のstatus/point comparison/consume
 source：`src/trottertracks/algorithm_codesign/g8_bounds.py`、`g8_pipeline.py`、`g8_reference_audit.py`。
 runner：`scripts/tracks/algorithm_codesign/g8_on_demand_provider_budget.py`、tests：`tests/tracks/algorithm_codesign/test_g8_on_demand_and_bounds.py`。
 artifacts：`artifacts/track_b_g8_on_demand_preparation/2026-10-10/` と新result directory。
+
+
+## Track B G8 completed evidence (2026-10-10)
+
+- [Results and GPT handoff](docs/tracks/algorithm_codesign/g8_results_and_gpt_handoff_20261010.md): on-demand20/8rows, hypothetical provider budget, saved-only14checks.
+- [G8 result inventory](artifacts/track_b_g8_on_demand_result/2026-10-10/v1/evidence_manifest_v1.json); mandatory STOP, no native-method adoption.

@@ -50,3 +50,6 @@ hard shot cap・classical generation/angle acquisition・未指定provider cost�
 on-demand strict Rzと対称bounded cache。G7のstatus/point comparison/consumed markerを保持。
 17 off-domain focused tests、source preparation時点のnew native acquisition0。一束後mandatory STOP。
 [test_g8_on_demand_and_bounds.py](test_g8_on_demand_and_bounds.py)：source freeze前のstub/backend0確認のみ、fullsuiteなし。
+
+
+- G8: 17 focused off-domain tests passed before source freeze; saved-output audit14 passed after one-shot. [Scope/results](../../../docs/tracks/algorithm_codesign/g8_results_and_gpt_handoff_20261010.md). No post-STOP acquisition/testing extension.

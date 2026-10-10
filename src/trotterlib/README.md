@@ -374,3 +374,6 @@ hard shot cap・classical generation/angle acquisition・未指定provider cost�
 on-demand strict Rzと対称bounded cache。G7のstatus/point comparison/consumed markerを保持。
 17 off-domain focused tests、source preparation時点のnew native acquisition0。一束後mandatory STOP。
 共有API変更なし。実験namespaceは `src/trottertracks/algorithm_codesign/g8_*.py`。
+
+
+- Track B G8 evidence: [conditional on-demand result](../../docs/tracks/algorithm_codesign/g8_results_and_gpt_handoff_20261010.md). Library code unchanged; experimental modules remain in `trottertracks.algorithm_codesign`.
