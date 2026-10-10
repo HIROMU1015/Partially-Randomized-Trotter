@@ -1,5 +1,11 @@
 # tests の役割
 
+2026-10-10 A寄与分解・B′物理pair限定batchの[固定scope](../docs/research/representation_attribution_pair_scope.md)。
+module `src/trottertracks/representation_exploration/attribution_pair.py`、runner `scripts/run_representation_attribution_pair.py`、
+tests `tests/test_representation_attribution_pair.py`、保存監査 `scripts/verify_representation_attribution_pair.py`、
+artifacts `artifacts/representation_attribution_pair/2026-10-10/`を一組に読む。旧系列は当時の履歴として保持する。
+
+
 限定構成比較の[test_representation_construction_comparison.py](test_representation_construction_comparison.py)は新31件。
 analytic JW、input構成とcore不変性、有限RTE列挙、Gaussian/controlled位相、degree2 mixed access、
 invalid graph拒否、反復境界、isometry quartic接続、shots/paired SE、保存IRを検査する。

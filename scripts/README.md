@@ -1,5 +1,11 @@
 # scripts 索引
 
+2026-10-10 A寄与分解・B′物理pair限定batchの[固定scope](../docs/research/representation_attribution_pair_scope.md)。
+module `src/trottertracks/representation_exploration/attribution_pair.py`、runner `scripts/run_representation_attribution_pair.py`、
+tests `tests/test_representation_attribution_pair.py`、保存監査 `scripts/verify_representation_attribution_pair.py`、
+artifacts `artifacts/representation_attribution_pair/2026-10-10/`を一組に読む。旧系列は当時の履歴として保持する。
+
+
 独立表現探索の限定構成比較は
 [run_representation_construction_comparison.py](run_representation_construction_comparison.py)、
 [verify_representation_construction_comparison.py](verify_representation_construction_comparison.py)。

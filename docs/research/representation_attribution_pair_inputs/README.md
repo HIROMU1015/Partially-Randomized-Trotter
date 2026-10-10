@@ -1,0 +1,1 @@
+利用者提供reviewは入力資料。inline Pythonは原文から抽出、supplied JSONは原文の別保存。実行batch結果や事前登録結果ではない。原稿SHA/計算環境の違いは区別する。

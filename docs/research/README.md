@@ -1,5 +1,11 @@
 # 研究計画資料
 
+2026-10-10 A寄与分解・B′物理pair限定batchの[固定scope](../../docs/research/representation_attribution_pair_scope.md)。
+module `src/trottertracks/representation_exploration/attribution_pair.py`、runner `scripts/run_representation_attribution_pair.py`、
+tests `tests/test_representation_attribution_pair.py`、保存監査 `scripts/verify_representation_attribution_pair.py`、
+artifacts `artifacts/representation_attribution_pair/2026-10-10/`を一組に読む。旧系列は当時の履歴として保持する。
+
+
 2026-10-10の独立系列最新は
 [限定構成・同一信号精度比較結果とGPTへの判断事項](representation_construction_comparison_results_20261010.md)。
 [固定scope](representation_construction_comparison_scope.md)と
