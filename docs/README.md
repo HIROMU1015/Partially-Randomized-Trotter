@@ -462,3 +462,13 @@ ordinary/partial/closed P3/CTSは保存closed P5と分離、general full/closed 
 実synthesis0、G10 marker absent、authorization pending。旧source/result/auth/marker/STOP・Track Aを保持。
 [evidence manifest](../artifacts/track_b_g10_degree_preparation/2026-10-10/evidence_manifest_v1.json) / [contract](../artifacts/track_b_g10_degree_preparation/2026-10-10/contract_v1.json) / [future runner](../scripts/tracks/algorithm_codesign/g10_degree_matched_native.py) / [focused tests](../tests/tracks/algorithm_codesign/test_g10_degree_preparation.py)。
 次は固定source review→別authorization-only child→新one-shot指示。全結果STOP、研究判断はGPT。
+
+
+## G10固定source最終レビュー採用（2026-10-10）
+
+[採用GPT review](research/track_b_G10_source_final_review_20261010.md) / [受領・実行境界](tracks/algorithm_codesign/g10_final_review_intake_and_execution_boundary_20261010.md)。
+固定S `05c5ef23fce775a822ab5686f5da2f0d77675864`に必須source修正なし。別途明示one-shot認可へ進める判定。
+本追記はdocs-only受領、実行承認ではない。source/contract/pending authorizationと旧result/marker/STOPは保持。
+実行AはSの直接子authorization-onlyとして別途作成。本受領commitを実行HEADに使わない。
+登録科学run/合成/marker作成0、次は明示実行指示待ち。全結果STOP、科学判断はGPT。
+[受領manifest](../artifacts/track_b_g10_final_review_intake/2026-10-10/intake_manifest_v1.json)。
