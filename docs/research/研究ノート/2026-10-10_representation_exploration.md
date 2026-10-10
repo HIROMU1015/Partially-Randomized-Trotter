@@ -78,3 +78,12 @@ pretty JSONの64MiB上限に達したためrun auditはTECHNICAL_STOPを記録�
 計算を繰り返さず、別source固定のstdlib集約器が親hashと全checkpoint/result一致を確認し、
 同じ数値・gate順序をcompact JSONとしてrun3_recoveredへ保存する。上限は保持する。
 失敗run3も保持し、計算source ed335a0とexport sourceを分けて記録する。
+
+## 2026-10-11追記：保存照合PASSと研究判断への返却
+
+85 local tests、全280 IR/120 rows/177 blobsの保存照合PASS。N1 frame回路削減は
+元H誤差を含むshot負担でexactに負け、N2は加算込みでdirectに負けた。
+摂動Jは許容S/Kが存在してもFrobenius fitのentry-L1 boundが予算を外れ取りこぼす。
+N3 gapped例の係数δ=.001549636、小gapは全6modeへ戻す。
+結果・反例・既知手法との関係を結果文書に記録し、中心テーマnull・次段false・mandatory STOPを保持する。
+公開と別取得だけを完了させ、追加科学batchを実行しない。

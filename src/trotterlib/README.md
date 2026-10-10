@@ -1,12 +1,17 @@
 # trotterlib モジュール索引
 
-2026-10-11 N1/N2構成・N3係数下界の限定feasibilityを準備。
-[結果前scope](../../docs/research/hamiltonian_algorithm_design_scope.md)に入力、誤差・対照・性能構成を固定する。
+2026-10-11 N1/N2構成・N3係数下界の限定feasibilityを完了。
+[結果・GPT判断事項](../../docs/research/hamiltonian_algorithm_design_results_20261011.md)、[固定scope](../../docs/research/hamiltonian_algorithm_design_scope.md)を入口とする。
+N1：JW4・ν2・signed DF rank2・決定論S2、T=.6、delta=.6/.3/.15/.075、εH<=.02。
+N2：occupation4・full-ij J・k<=2 signed charge、T=.7、係数予算.0021。共通εcomplex=.04。
+N1はframe費用を減らせたが元H精度のshot負担でexactより高く、N2は加算込みでdirectより高い。
+N3：6 modes・ν2・初期active4、gapped例で係数δ=.001549636、小gapではfull spaceへ戻す。
+science source ed335a0、85 local tests、280 native IR/120 rows/177 source blobsの保存照合PASS。immutable CIではない。
 module `src/trottertracks/representation_exploration/algorithm_design.py`、runner `scripts/run_hamiltonian_algorithm_design.py`、
-tests `tests/test_hamiltonian_algorithm_design.py`、保存verifier `scripts/verify_hamiltonian_algorithm_design.py`、
-artifacts `artifacts/hamiltonian_algorithm_design/2026-10-11/`を一組に読む。
-N1優先、N2算術とJ-only生成、N3小さい係数下界取得。旧A-core/B′の同型探索は一区切り、旧B/C保留。
-中心テーマ・新規性は未確定。以下は旧stage/Track A/Bの履歴であり、science・契約・結果・STOPは保持する。
+保存集約器 `scripts/finalize_hamiltonian_algorithm_design.py`、verifier `scripts/verify_hamiltonian_algorithm_design.py`、
+構成・選択・保存監査 `scripts/audit_hamiltonian_algorithm_design_construction.py`、
+tests `tests/test_hamiltonian_algorithm_design.py`、artifacts `artifacts/hamiltonian_algorithm_design/2026-10-11/`。
+中心テーマnull・次段false・mandatory STOP、GPT判断待ち。以下の旧stage/他Trackの履歴・契約・STOPは保持する。
 
 2026-10-11整理：A寄与分解・B′物理pairの限定batch（計算系列日付2026-10-10）を完了。
 [結果とGPT判断事項](../../docs/research/representation_attribution_pair_results_20261010.md)、[scope](../../docs/research/representation_attribution_pair_scope.md)を入口とする。
