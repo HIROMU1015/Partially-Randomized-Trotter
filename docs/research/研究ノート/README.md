@@ -196,3 +196,14 @@ known P5/指定3-qubit providerの登録direct6方式でclosed P5のT intercept/
 
 [受領note](2026-10-10_track_b_g9_v2_review_intake.md)：family限定継続とG10 scopeを記録。
 新科学run/合成/下界独立検証なし。原G9 result/marker/STOP保持。
+
+
+## G10 saved-policy audit / degree-comparison source preparation（2026-10-10）
+
+[G10 source review / GPT入口](../../tracks/algorithm_codesign/g10_source_review_20261010.md)。保存P5 direct945 bindingsのT再計数と任意proposal固定policy下界を独立確認。
+ordinary/partial/closed P3/CTSは保存closed P5と分離、general full/closed P5はこの下界では未分離。原G9分類は不変。
+同p/x/3-qubit providerのm3/5/7（17 rows/34 axes）を固定。m5はsaved-only共通policy再会計、
+登録P3/P7は未取得。41 off-domain focused tests PASS、固定runtime/未認可拒否を確認。
+実synthesis0、G10 marker absent、authorization pending。旧source/result/auth/marker/STOP・Track Aを保持。
+[evidence manifest](../../../artifacts/track_b_g10_degree_preparation/2026-10-10/evidence_manifest_v1.json) / [contract](../../../artifacts/track_b_g10_degree_preparation/2026-10-10/contract_v1.json) / [future runner](../../../scripts/tracks/algorithm_codesign/g10_degree_matched_native.py) / [focused tests](../../../tests/tracks/algorithm_codesign/test_g10_degree_preparation.py)。
+次は固定source review→別authorization-only child→新one-shot指示。全結果STOP、研究判断はGPT。
