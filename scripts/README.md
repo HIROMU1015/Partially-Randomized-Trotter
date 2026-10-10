@@ -1,5 +1,14 @@
 # scripts 索引
 
+## 2026-10-10 Track A：H4補完実行 v1・STOP
+
+最新入口は[H4補完結果・source/raw/監査索引](../docs/research/track_a_ax2b_h4_supplement_execution_v1.md)。
+別grantでEVENT_CONTROL 4群、S4 2 correctness/4 MPを一回ずつ完了。旧6 correctness/12 MP/STOPを保持し、複数runのunionを記録。
+各reference36/primitive537、control100（event単位）、sampling/compile0。保存監査PASS、補完欠測0。
+source67aa6bb・seal/grant5bbebb4、CPU1/worker1/BLAS1、予算・精度・stage/probe変更なし。
+N/Gnull・UNDETERMINED・u未認定、H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、mandatory STOP。
+H6入力・pilotは別指示を要する。旧証拠・dirty/untracked・Track Bを保全。以下は段階当時の履歴。
+
 ## 2026-10-10 Track A：H4補完準備 v1（未実行）
 
 最新入口は[補完準備・source/予算索引](../docs/research/track_a_ax2b_h4_supplement_preparation_v1.md)。
