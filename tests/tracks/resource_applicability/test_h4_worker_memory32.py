@@ -120,14 +120,17 @@ class WorkerMemory32Tests(unittest.TestCase):
         self.assertEqual(s.first_failure,first)
     def test_bootstrap_boundaries_order_and_post_pool_failure_cleanup(self):
         minimum=mem.required_available(4,mem.WORKER_CAP)
-        for mode in ('under','pass','pool_fail','driver_clamp_fail','hard8'):
+        for mode in ('under','pass','pool_fail','driver_clamp_fail','cleanup_fail','hard8'):
             p,a,r=documents();m=fx.fixture.memory(0,minimum-(mode=='under'));m['observed_at']=time.monotonic()
             permit=replace(bind.authorize(p,a,r,explicit_launch=True),launch_observation=fx.observation(m))
             monitor,pool,budget=Mock(),Mock(),Mock(root=Path(p['output_root']))
+            if mode=='cleanup_fail':
+                monitor.stop_children.side_effect=PermissionError('synthetic pidfd EPERM')
+                pool.shutdown.side_effect=PermissionError('synthetic second cleanup EPERM')
             state=[(-1,8*2**30 if mode=='hard8' else -1)];events=[]
             def setter(_kind,value):
                 events.append(('limit',value))
-                if mode=='driver_clamp_fail' and value==(mem.DRIVER_CAP,mem.DRIVER_CAP):raise OSError('synthetic clamp failure')
+                if mode in ('driver_clamp_fail','cleanup_fail') and value==(mem.DRIVER_CAP,mem.DRIVER_CAP):raise OSError('synthetic clamp failure')
                 state[0]=value
             def spawn(*x):
                 events.append(('pool',state[0]));self.assertEqual(state[0],(mem.DRIVER_CAP,-1))
@@ -141,10 +144,11 @@ class WorkerMemory32Tests(unittest.TestCase):
                     self.assertEqual(state[0],(mem.DRIVER_CAP,mem.DRIVER_CAP))
                     self.assertEqual(observer.call_args.kwargs['worker_cap'],mem.WORKER_CAP)
                 else:
-                    with self.assertRaises((Stop,OSError)):ex.OwnedRun(permit,a,prepared_budget=budget)
+                    with self.assertRaises((Stop,OSError)) as error:ex.OwnedRun(permit,a,prepared_budget=budget)
+                    if mode=='cleanup_fail':self.assertIn('synthetic clamp failure',str(error.exception))
                     if mode in ('under','hard8'):observer.assert_not_called();factory.assert_not_called()
                     else:monitor.close.assert_called_once_with(abort=True);budget.close.assert_called_once()
-                    if mode=='driver_clamp_fail':pool.shutdown.assert_called_once_with(wait=True,cancel_futures=True)
+                    if mode in ('driver_clamp_fail','cleanup_fail'):pool.shutdown.assert_called_once_with(wait=True,cancel_futures=True)
     def test_worker_foreign_parent_and_invalid_index_before_affinity(self):
         p,a,r=documents();permit=bind.authorize(p,a,r,explicit_launch=True)
         for parent,index in [(permit.driver_pid+1,0),(permit.driver_pid,-1),(permit.driver_pid,4)]:
@@ -166,3 +170,25 @@ class WorkerMemory32Tests(unittest.TestCase):
         schema=json.loads((fx.ROOT/'schemas/h4_newhost_launch_v2.json').read_text())
         self.assertIn('memory_budget_amendment',schema['properties']['authorization']['properties'])
         self.assertEqual(schema['properties']['plan']['properties']['caps']['properties']['driver_AS_RSS']['const'],mem.DRIVER_CAP)
+
+    def test_signal_error_keeps_wait_pipe_and_executor_cleanup(self):
+        pool=wk.OwnedPool.__new__(wk.OwnedPool);pool.monitor=Mock();pool.io=Mock()
+        initial=PermissionError('synthetic pidfd EPERM');pool.monitor.stop_children.side_effect=initial
+        pool.processes=[Mock(stdin=io.BytesIO(),stdout=io.BytesIO()) for _ in range(4)]
+        with self.assertRaises(PermissionError) as error:pool.shutdown()
+        self.assertIs(error.exception,initial)
+        for child in pool.processes:
+            child.wait.assert_called_once_with(timeout=2)
+            self.assertTrue(child.stdin.closed and child.stdout.closed)
+        pool.io.shutdown.assert_called_once_with(wait=True,cancel_futures=True)
+
+    def test_wait_and_pipe_errors_do_not_skip_later_children(self):
+        pool=wk.OwnedPool.__new__(wk.OwnedPool);pool.monitor=Mock();pool.io=Mock()
+        initial=OSError('synthetic wait error');children=[Mock(stdin=Mock(),stdout=Mock()) for _ in range(4)]
+        children[0].wait.side_effect=initial;children[0].stdin.close.side_effect=OSError('synthetic FD error')
+        pool.processes=children
+        with self.assertRaises(OSError) as error:pool.shutdown()
+        self.assertIs(error.exception,initial)
+        for child in children:
+            child.wait.assert_called_once_with(timeout=2);child.stdin.close.assert_called_once();child.stdout.close.assert_called_once()
+        pool.io.shutdown.assert_called_once_with(wait=True,cancel_futures=True)

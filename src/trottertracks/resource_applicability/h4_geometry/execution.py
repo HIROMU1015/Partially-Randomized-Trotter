@@ -95,14 +95,16 @@ class OwnedRun:
             # Each ready child has bound its own approved cap. Now lower the
             # driver's hard ceiling without imposing8GiB on future child setup.
             limit_owned_address_space()
-        except BaseException:
-            self.finished.set();self.thread.join(timeout=6)
-            self.monitor.stop_children()
-            try:
-                if hasattr(self,'pool'):self.pool.shutdown(wait=True,cancel_futures=True)
-            finally:
-                try:self.monitor.close(abort=True)
-                finally:self.budget.close()
+        except BaseException as initial:
+            self.finished.set()
+            actions=[lambda:self.thread.join(timeout=6),self.monitor.stop_children]
+            if hasattr(self,'pool'):actions.append(lambda:self.pool.shutdown(wait=True,cancel_futures=True))
+            actions.extend((lambda:self.monitor.close(abort=True),self.budget.close))
+            cleanup_errors=[]
+            for action in actions:
+                try:action()
+                except BaseException as cleanup:cleanup_errors.append(type(cleanup).__name__)
+            if cleanup_errors:initial.add_note('owned startup cleanup errors: '+','.join(cleanup_errors))
             raise
 
     def _watch(self):

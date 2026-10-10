@@ -240,16 +240,26 @@ class OwnedPool:
         return response['result']
 
     def shutdown(self,wait=True,cancel_futures=True):
-        self.monitor.stop_children()
+        first=None
+        try:self.monitor.stop_children()
+        except BaseException as exc:first=exc
         for process in self.processes:
             try:
-                process.wait(timeout=2)
-            except subprocess.TimeoutExpired:
-                # Popen retains this child's PID and start ownership, never a foreign process.
-                process.kill();process.wait(timeout=2)
-            for stream in (process.stdin,process.stdout):
-                stream.close()
-        self.io.shutdown(wait=wait,cancel_futures=cancel_futures)
+                try:process.wait(timeout=2)
+                except subprocess.TimeoutExpired:
+                    # Popen retains this child's PID and start ownership, never a foreign process.
+                    process.kill();process.wait(timeout=2)
+            except BaseException as exc:
+                if first is None:first=exc
+            finally:
+                for stream in (process.stdin,process.stdout):
+                    try:stream.close()
+                    except BaseException as exc:
+                        if first is None:first=exc
+        try:self.io.shutdown(wait=wait,cancel_futures=cancel_futures)
+        except BaseException as exc:
+            if first is None:first=exc
+        if first is not None:raise first
 
 
 if __name__=='__main__':
