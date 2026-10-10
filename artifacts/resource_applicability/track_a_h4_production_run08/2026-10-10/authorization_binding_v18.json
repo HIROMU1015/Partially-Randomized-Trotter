@@ -1,0 +1,100 @@
+{
+  "CPU_roles": {
+    "driver": [
+      16
+    ],
+    "observer": [
+      18
+    ],
+    "workers": [
+      [
+        2
+      ],
+      [
+        4
+      ],
+      [
+        5
+      ],
+      [
+        6
+      ]
+    ]
+  },
+  "absolute_launch_command": "env MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 QISKIT_NUM_PROCS=1 QISKIT_PARALLEL=false RAYON_NUM_THREADS=1 /home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python -P -B /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-production-run08-20261010/scripts/resource_applicability/run_h4_geometry_signal_compile.py --plan /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-production-run08-20261010/artifacts/resource_applicability/track_a_h4_production_run08/2026-10-10/plan_authorized_v18.json --authorization /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-production-run08-20261010/artifacts/resource_applicability/track_a_h4_production_run08/2026-10-10/authorization_v18.json --review /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-production-run08-20261010/artifacts/resource_applicability/track_a_h4_production_run08/2026-10-10/review_v18.json --explicit-launch-signal-compile",
+  "actual_cap": 74805,
+  "actual_worst_case": 74784,
+  "additional_transpiles_at_artifact": 0,
+  "allowed_cpus": [
+    2,
+    4,
+    5,
+    6,
+    16,
+    18
+  ],
+  "approved": true,
+  "authorization_digest": "91d1b37b74c739ee671a4a285b142c98c3edd5634d24da7e938a761afdc0893a",
+  "base_review": "4fa8f9c48a14fd585b32e08984125abd02572054",
+  "carry": {
+    "actual_invocations": 0,
+    "charged_bytes": 0,
+    "wall_seconds": 0.0
+  },
+  "charge_bound_bytes": 8736971632,
+  "closure_count": 67,
+  "driver_AS_RSS": 8589934592,
+  "fresh_gate_required_at_launch": true,
+  "historical_carry_preserved_excluded": true,
+  "independent_review": {
+    "path": "artifacts/resource_applicability/track_a_h4_production_run08/2026-10-10/independent_authorized_run08_review_v1.json",
+    "sha256": "bf8bac696fc3275120837cfe2af2c5687692903f33807c31244f9dceb14214bf",
+    "status": "PASS_READY_FOR_FRESH_ONE_SHOT_LAUNCH"
+  },
+  "latest_run07_native_stop_bound": true,
+  "memory_amendment": {
+    "approved": true,
+    "authority": {
+      "path": "artifacts/resource_applicability/track_a_h4_worker_memory32_fix/2026-10-10/USER_MEMORY_AUTHORITY_v1.json",
+      "sha256": "a81d93093aca37a150963d70e141fa401a2958467f35f9a69b09dc3078b8d827"
+    },
+    "from": 8589934592,
+    "profile": {
+      "path": "artifacts/resource_applicability/track_a_h4_worker_memory32_fix/2026-10-10/worker_memory_profile_v1.json",
+      "sha256": "0556abcce2205af3ec26e530199dfb728b2a9503f8de8d8a5170feda33b2f690"
+    },
+    "to": 34359738368
+  },
+  "memory_pressure_profile": {
+    "path": "artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/memory_pressure_profile_v1.json",
+    "sha256": "0d3f7742ea5ba722381cae5d622f70193471989801c7d4dfadfccfb33b8556e5"
+  },
+  "next_stage_authorized": false,
+  "old_partial_cache_reuse": false,
+  "output_cap_bytes": 18253611008,
+  "plan_fingerprint": "a39385b1583bcc1c14080a961b769d1e51c578576c004a6f8a3fa52f86fc51df",
+  "pressure_amendment": {
+    "approved": true,
+    "authority": {
+      "path": "artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/USER_PRESSURE_AUTHORITY_v7.json",
+      "sha256": "a4daf128221c61180ad0bc20476cd8b1779090535f5aa85907fedba7546a3662"
+    },
+    "from_host_stop_percent": 0.0,
+    "profile": {
+      "path": "artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/memory_pressure_profile_v1.json",
+      "sha256": "0d3f7742ea5ba722381cae5d622f70193471989801c7d4dfadfccfb33b8556e5"
+    },
+    "to_host_stop_percent": 1.0
+  },
+  "production_launches_at_artifact": 0,
+  "required_available_bytes": 163477192704,
+  "review_digest": "ae95c1ece739d3ba67db1b1f725ce62b2a3a931fdb5fc1b9412d16d593ce5614",
+  "runtime_authorization": true,
+  "sealed": true,
+  "source_commit": "8c917a5af7943969d4abede8b0bb012880efeee0",
+  "source_seed_rebinding_required": true,
+  "status": "PASS_AUTHORIZED_WORKER32_CARRY0_FRESH_GATE_REQUIRED",
+  "supervised_recovery_approved": true,
+  "unused_output_control_one_shot": true,
+  "worker_AS_RSS": 34359738368
+}
