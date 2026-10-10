@@ -1,5 +1,14 @@
 # 研究ノート
 
+## 2026-10-10 Track A：H4/H6 backend接続準備 v2
+
+最新入口は[接続・実行gate・合成検証の報告](../track_a_ax2b_bound_ports_preparation_v2.md)。
+H4独立MP/stage/event port、専用H6 sector/native backendと別grant必須launcherを追加した。
+新39＋前回49の88 local synthetic/mock tests pass。分子の正しさ・総u・CI証拠ではない。
+source固定のみ。actual input/coverage、CPU/別認可は未seal。新科学計算/sampling/circuit/compile0。
+`H6_NOT_AUTHORIZED` / `DRAFT_NOT_AUTHORIZATION`、mandatory STOP。旧証拠・既存dirty差分を保全。
+以下は各stage当時の履歴。
+
 ## 2026-10-10 Track A：独立レビュー後の準備
 
 [GPT独立レビュー](../track_a_ax2b_h4_post_independent_scientific_review_2026-10-10.md)を受け、[準備追補](../track_a_ax2b_post_independent_review_amendment_v1.md)と[H6準備契約 v2](../track_a_ax2b_h6_pilot_preparation_contract_v2.md)を追加。

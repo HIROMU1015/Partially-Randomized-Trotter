@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="81" time="3.296" timestamp="2026-10-10T12:57:05.957092+09:00" hostname="abe-Precision-3260"><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_native_action_endpoint_vs_independent_mp[1-2nd]" time="0.008" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_native_action_endpoint_vs_independent_mp[1-4th]" time="0.013" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_native_action_endpoint_vs_independent_mp[2-2nd]" time="0.011" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_native_action_endpoint_vs_independent_mp[2-4th]" time="0.021" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_finite_stage_endpoint_pairing_raw_and_corrected[0.7-0]" time="0.031" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_finite_stage_endpoint_pairing_raw_and_corrected[0.7-2]" time="0.033" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_finite_stage_endpoint_pairing_raw_and_corrected[0.7-6]" time="0.034" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_finite_stage_endpoint_pairing_raw_and_corrected[-0.7-0]" time="0.031" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_finite_stage_endpoint_pairing_raw_and_corrected[-0.7-2]" time="0.033" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_finite_stage_endpoint_pairing_raw_and_corrected[-0.7-6]" time="0.034" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_mp_precision_difference_keeps_decimal_digits" time="0.014" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_full_occupation_squared_before_projection" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_local_little_endian_action[qubits0]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_local_little_endian_action[qubits1]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_local_little_endian_action[qubits2]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_local_little_endian_action[qubits3]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_event_relative_phase_signed_identity_and_y_axis" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_separate_grant_and_all_bound_fields[H4_LIMITED]" time="0.002" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_separate_grant_and_all_bound_fields[H6_TECHNICAL]" time="0.005" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_no_grant_stops_before_any_input_or_source_access" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_commit_blob_and_local_byte_binding" time="0.005" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_bound_gate_caps_are_before_action" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_cli_default_stdlib_only_and_execute_without_grant" time="0.070" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_watchdog_dummy_workers[complete]" time="0.022" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_watchdog_dummy_workers[missing]" time="0.021" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_watchdog_dummy_workers[wall]" time="0.204" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_watchdog_dummy_workers[completed_phase_overrun]" time="0.022" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_watchdog_dummy_workers[claim]" time="0.021" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_h6_setup_synthetic_sector_reference_only" time="0.003"><failure message="KeyError: 'T'">tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-308/test_h6_setup_synthetic_sector0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7e8d1680b210&gt;
+
+    def test_h6_setup_synthetic_sector_reference_only(tmp_path,monkeypatch):
+        from trottertracks.resource_applicability import ax2b_molecular_ports_v2 as ports
+        from trotterlib.df_hamiltonian import PhysicalSector
+        sector=PhysicalSector.spin_sector(n_qubits=12,nelec_alpha=3,nelec_beta=3)
+        state=np.zeros(400,dtype=complex);state[0]=1
+        full=np.zeros(4096,dtype=complex);full[sector.basis_indices[0]]=1
+        ham=NS(n_qubits=12,n_blocks=2,constant=.125,one_body=np.zeros((12,12)),
+               lambdas=np.zeros(2),g_matrices=(np.zeros((12,12)),)*2)
+        manifest=launch.preparation();manifest['plan']=launch.scope_plan('H6_TECHNICAL',2)
+        manifest['input_binding']={'path':'fake.fixture','metadata':{}}
+        bounds={'primitive_actions':0,'cells':[]}
+        manifest['coverage_binding']={'expected_bounds':bounds}
+        monkeypatch.setattr(ports,'verify_input',lambda *a:2)
+        monkeypatch.setattr(ports,'load_h6_snapshot',lambda *a:(ham,sector,full,state,{},{}))
+        monkeypatch.setattr(ports,'_prepare',lambda *a:NS())
+        monkeypatch.setattr(ports,'_prepare_discard',lambda *a:NS())
+        monkeypatch.setattr(ports,'actual_bounds',lambda *a,**kw:bounds)
+        class FakeOperator:
+            def __matmul__(self,v):return .125*v
+        monkeypatch.setattr(ports,'df_linear_operator',lambda *a,**kw:(FakeOperator(),{}))
+        port=MolecularPort(tmp_path,manifest,BoundedWriter(tmp_path,byte_cap=2**20))
+&gt;       port.setup()
+
+tests/tracks/resource_applicability/test_ax2b_bound_ports_v2.py:256: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;trottertracks.resource_applicability.ax2b_molecular_ports_v2.MolecularPort object at 0x7e8d16621650&gt;
+
+    def setup(self):
+        self.phase('input_reference')
+        verify_input(self.root,self.manifest['input_binding'],self.kind)
+        path = safe_path(self.root,self.manifest['input_binding']['path'])
+        if self.kind == 'H4_LIMITED':
+            loaded = _load_snapshot_once(path)
+        else:
+            loaded = load_h6_snapshot(path,self.manifest['input_binding']['metadata'])
+        self.ham,self.sector,full,state,metadata,_ = loaded
+        if self.kind == 'H4_LIMITED' and (self.ham.n_qubits,self.ham.n_blocks,self.sector.dimension) != (8,12,36):
+            raise ValueError('H4_SCOPE')
+        if self.kind == 'H6_TECHNICAL' and (self.ham.n_qubits,self.ham.n_blocks,self.sector.dimension) != (12,self.plan['actual_rank'],400):
+            raise ValueError('H6_SCOPE')
+        certificate = primitive_sector_certificate(self.ham,self.sector)
+        self.qindices,self.qstate = checked_basis_bridge(self.ham,self.sector,full,state,1e-12)
+        self.saved_state = state.copy()
+        self.state = state/np.linalg.norm(state)
+        self.qstate /= np.linalg.norm(state)
+        self.preps = {cell['id']:(_prepare_discard if cell['method'] == 'B0' else _prepare)(self.ham,cell['prefix'])
+                      for cell in self.cells}
+&gt;       bounds = actual_bounds(self.cells,self.preps,T=self.plan['T'])
+                                                       ^^^^^^^^^^^^^^
+E       KeyError: 'T'
+
+src/trottertracks/resource_applicability/ax2b_molecular_ports_v2.py:239: KeyError</failure></testcase><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_h6_mock_backend_36_wrappers_same_prepared_group[None]" time="0.046"><failure message="KeyError: 'T'">tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-308/test_h6_mock_backend_36_wrappe0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7e8d16910550&gt;
+fail_at = None
+
+    @pytest.mark.parametrize('fail_at',[None,5])
+    def test_h6_mock_backend_36_wrappers_same_prepared_group(tmp_path,monkeypatch,fail_at):
+        from trottertracks.resource_applicability import ax2b_molecular_ports_v2 as ports
+        manifest=launch.preparation();manifest['plan']=launch.scope_plan('H6_TECHNICAL',2)
+        port=MolecularPort(tmp_path,manifest,BoundedWriter(tmp_path,byte_cap=2**20))
+        port.ham=NS(n_qubits=1);port.qstate=np.array([1.,0.],dtype=complex);port.qindices=(0,1)
+        port.completed=7
+        port.preps={c['id']:NS(deterministic_blocks=(),constant_coefficient=.125) for c in port.cells}
+        trajectories=[]
+        def fake_sample(cell,seed):
+            port.calls.take('trajectory');port.calls.take('occurrence',cell['q'])
+            events=[NS(to_dict=lambda:{'fake':'event'})]
+            steps=tuple(NS(rte_occurrence=NS(events=events)) for _ in range(cell['q']))
+            trajectories.append((cell['id'],seed,id(steps)));return steps
+        monkeypatch.setattr(port,'sampled_steps',fake_sample)
+        def evolution(*a,**kw):return NS(circuit=NS(role='evolution'))
+        monkeypatch.setattr(ports,'build_deterministic_native',evolution)
+        monkeypatch.setattr(ports,'partial_native_from_step_requests',evolution)
+        def wrapper(e,*,axis,**kw):return NS(role=axis,data=[1])
+        monkeypatch.setattr(ports,'build_native_hadamard_wrapper',wrapper)
+        def simulate(circuit,v):
+            z=np.exp(-.2j)
+            if circuit.role=='evolution':return np.concatenate((v[:2],z*v[2:]))
+            result=np.concatenate((v[:2],z*v[:2]))/math.sqrt(2)
+            if circuit.role=='sine':result[2:]*=-1j
+            return local_matrix_action(result,np.array([[1.,1.],[1.,-1.]])/math.sqrt(2),(1,))
+        monkeypatch.setattr(ports,'simulate_statevector',simulate)
+        monkeypatch.setattr(ports,'canonical_qiskit_circuit_fingerprint',lambda _: 'fake')
+        attempts=[]
+        def compile_(wrapper,compiler,**kw):
+            attempts.append(1)
+            if len(attempts)==fail_at:raise RuntimeError('FAKE_COMPILE_STOP')
+            return NS(transpiled_circuit=NS(data=[1]),actual_circuit_fingerprint='fake',compiler_settings_hash='fake',
+                      **dict.fromkeys(('rz_count','rz_depth','cx_count','cx_depth','total_depth','circuit_size'),1))
+        monkeypatch.setattr(ports,'transpile_and_measure_cost',compile_)
+        if fail_at:
+            with pytest.raises(RuntimeError,match='FAKE_COMPILE_STOP'):port.costs()
+            assert port.compiled==4 and port.calls.used['compile']==5
+            assert len(list(tmp_path.glob('wrapper_*.json')))==4
+        else:
+&gt;           port.costs()
+
+tests/tracks/resource_applicability/test_ax2b_bound_ports_v2.py:303: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;trottertracks.resource_applicability.ax2b_molecular_ports_v2.MolecularPort object at 0x7e8d169109d0&gt;
+
+    def costs(self):
+        self.phase('wrapper_cost')
+        if self.kind == 'H4_LIMITED':
+            self.explicit_estimator_probes()
+            return
+        if self.completed != 7:
+            raise ValueError('CORRECTNESS_REQUIRED')
+        import qiskit
+        cp = self.plan['compiler_proposed']
+        compiler = CompilerSettings(tuple(cp['basis_gates']),None,None,cp['optimization_level'],None,None,cp['seed_transpiler'],qiskit.__version__)
+        for raw in self.cells:
+            cell,prep = canonical_cell(raw),self.preps[raw['id']]
+            for replica in range(cell['replicas']):
+                group = [t for t in self.plan['wrapper_tasks'] if t['cell_id'] == cell['id'] and t['replica'] == replica]
+                steps = self.sampled_steps(cell,group[0]['seed']) if cell['R'] else None
+                events = [[e.to_dict() for e in s.rte_occurrence.events] for s in steps] if steps else None
+                event_digest = digest(events)
+                evolutions = {}
+                try:
+                    for policy in ('ordinary','symmetric_directional'):
+                        evolutions[policy] = (partial_native_from_step_requests(steps,control_policy=policy,
+                                      max_instructions=self.caps['untranspiled_instructions']) if steps else
+                           build_deterministic_native(prep.deterministic_blocks,num_system_qubits=self.ham.n_qubits,
+&gt;                              T=self.plan['T'],q=cell['q'],formula=cell['formula'],scalar=prep.constant_coefficient,
+                                 ^^^^^^^^^^^^^^
+                               control_policy=policy,max_instructions=self.caps['untranspiled_instructions']))
+E                              KeyError: 'T'
+
+src/trottertracks/resource_applicability/ax2b_molecular_ports_v2.py:438: KeyError</failure></testcase><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_h6_mock_backend_36_wrappers_same_prepared_group[5]" time="0.045"><failure message="KeyError: 'T'">tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-308/test_h6_mock_backend_36_wrappe1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7e8d16f628d0&gt;
+fail_at = 5
+
+    @pytest.mark.parametrize('fail_at',[None,5])
+    def test_h6_mock_backend_36_wrappers_same_prepared_group(tmp_path,monkeypatch,fail_at):
+        from trottertracks.resource_applicability import ax2b_molecular_ports_v2 as ports
+        manifest=launch.preparation();manifest['plan']=launch.scope_plan('H6_TECHNICAL',2)
+        port=MolecularPort(tmp_path,manifest,BoundedWriter(tmp_path,byte_cap=2**20))
+        port.ham=NS(n_qubits=1);port.qstate=np.array([1.,0.],dtype=complex);port.qindices=(0,1)
+        port.completed=7
+        port.preps={c['id']:NS(deterministic_blocks=(),constant_coefficient=.125) for c in port.cells}
+        trajectories=[]
+        def fake_sample(cell,seed):
+            port.calls.take('trajectory');port.calls.take('occurrence',cell['q'])
+            events=[NS(to_dict=lambda:{'fake':'event'})]
+            steps=tuple(NS(rte_occurrence=NS(events=events)) for _ in range(cell['q']))
+            trajectories.append((cell['id'],seed,id(steps)));return steps
+        monkeypatch.setattr(port,'sampled_steps',fake_sample)
+        def evolution(*a,**kw):return NS(circuit=NS(role='evolution'))
+        monkeypatch.setattr(ports,'build_deterministic_native',evolution)
+        monkeypatch.setattr(ports,'partial_native_from_step_requests',evolution)
+        def wrapper(e,*,axis,**kw):return NS(role=axis,data=[1])
+        monkeypatch.setattr(ports,'build_native_hadamard_wrapper',wrapper)
+        def simulate(circuit,v):
+            z=np.exp(-.2j)
+            if circuit.role=='evolution':return np.concatenate((v[:2],z*v[2:]))
+            result=np.concatenate((v[:2],z*v[:2]))/math.sqrt(2)
+            if circuit.role=='sine':result[2:]*=-1j
+            return local_matrix_action(result,np.array([[1.,1.],[1.,-1.]])/math.sqrt(2),(1,))
+        monkeypatch.setattr(ports,'simulate_statevector',simulate)
+        monkeypatch.setattr(ports,'canonical_qiskit_circuit_fingerprint',lambda _: 'fake')
+        attempts=[]
+        def compile_(wrapper,compiler,**kw):
+            attempts.append(1)
+            if len(attempts)==fail_at:raise RuntimeError('FAKE_COMPILE_STOP')
+            return NS(transpiled_circuit=NS(data=[1]),actual_circuit_fingerprint='fake',compiler_settings_hash='fake',
+                      **dict.fromkeys(('rz_count','rz_depth','cx_count','cx_depth','total_depth','circuit_size'),1))
+        monkeypatch.setattr(ports,'transpile_and_measure_cost',compile_)
+        if fail_at:
+&gt;           with pytest.raises(RuntimeError,match='FAKE_COMPILE_STOP'):port.costs()
+                                                                       ^^^^^^^^^^^^
+
+tests/tracks/resource_applicability/test_ax2b_bound_ports_v2.py:299: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;trottertracks.resource_applicability.ax2b_molecular_ports_v2.MolecularPort object at 0x7e8d16f7c210&gt;
+
+    def costs(self):
+        self.phase('wrapper_cost')
+        if self.kind == 'H4_LIMITED':
+            self.explicit_estimator_probes()
+            return
+        if self.completed != 7:
+            raise ValueError('CORRECTNESS_REQUIRED')
+        import qiskit
+        cp = self.plan['compiler_proposed']
+        compiler = CompilerSettings(tuple(cp['basis_gates']),None,None,cp['optimization_level'],None,None,cp['seed_transpiler'],qiskit.__version__)
+        for raw in self.cells:
+            cell,prep = canonical_cell(raw),self.preps[raw['id']]
+            for replica in range(cell['replicas']):
+                group = [t for t in self.plan['wrapper_tasks'] if t['cell_id'] == cell['id'] and t['replica'] == replica]
+                steps = self.sampled_steps(cell,group[0]['seed']) if cell['R'] else None
+                events = [[e.to_dict() for e in s.rte_occurrence.events] for s in steps] if steps else None
+                event_digest = digest(events)
+                evolutions = {}
+                try:
+                    for policy in ('ordinary','symmetric_directional'):
+                        evolutions[policy] = (partial_native_from_step_requests(steps,control_policy=policy,
+                                      max_instructions=self.caps['untranspiled_instructions']) if steps else
+                           build_deterministic_native(prep.deterministic_blocks,num_system_qubits=self.ham.n_qubits,
+&gt;                              T=self.plan['T'],q=cell['q'],formula=cell['formula'],scalar=prep.constant_coefficient,
+                                 ^^^^^^^^^^^^^^
+                               control_policy=policy,max_instructions=self.caps['untranspiled_instructions']))
+E                              KeyError: 'T'
+
+src/trottertracks/resource_applicability/ax2b_molecular_ports_v2.py:438: KeyError</failure></testcase><testcase classname="tests.tracks.resource_applicability.test_ax2b_bound_ports_v2" name="test_fresh_shot_factory_is_called_every_time_before_cap" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_u_zero_legacy_integer_reproduction[0.005-1.0]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_u_zero_legacy_integer_reproduction[0.005-2.0]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_u_zero_legacy_integer_reproduction[0.005-100.0]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_u_zero_legacy_integer_reproduction[0.05-1.0]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_u_zero_legacy_integer_reproduction[0.05-2.0]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_u_zero_legacy_integer_reproduction[0.05-100.0]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_u_zero_legacy_integer_reproduction[0.1-1.0]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_u_zero_legacy_integer_reproduction[0.1-2.0]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_u_zero_legacy_integer_reproduction[0.1-100.0]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_three_state_boundary[0.0-0.0-ELIGIBLE]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_three_state_boundary[0.1-0.0-INELIGIBLE]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_three_state_boundary[0.07-0.01-UNDETERMINED]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_unknown_one_axis_and_large_normalization" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_invalid_allowance_rejected[True]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_invalid_allowance_rejected[-1.0]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_invalid_allowance_rejected[nan]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_invalid_allowance_rejected[inf]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_nonunitary_propagation" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_independent_occupation_sign_scalar_and_square" time="0.008" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_square_before_projection_and_sector_rejection" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_independent_reference_high_precision_fixture" time="0.003" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_tol_only_exact_kwargs_and_change_records" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_hermitization_over_policy_stops" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_seven_cells_and_thirty_six_wrappers[2]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_seven_cells_and_thirty_six_wrappers[11]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_seven_cells_and_thirty_six_wrappers[15]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_seven_cells_and_thirty_six_wrappers[25]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_actual_time_coverage_contains_s4_negative_and_merged_time" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_before_call_matvec_caps_shared_directions" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_solver_wraps_both_directions_and_postsolve_calls" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_scale_failures[710.0-OVERFLOW]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_scale_failures[709.0-SUBNORMAL]" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_scale_and_output_cap_no_overwrite" time="0.001" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_synthetic_controller_complete_and_no_real_port" time="0.007" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_synthetic_failures_are_partial_stop[True-False]" time="0.001" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_synthetic_failures_are_partial_stop[False-True]" time="0.004" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_watchdog_stops_dummy_worker_without_retry" time="0.083" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_watchdog_dummy_terminal_phase_and_log_gates[complete]" time="0.021" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_watchdog_dummy_terminal_phase_and_log_gates[missing_terminal]" time="0.021" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_watchdog_dummy_terminal_phase_and_log_gates[phase_skip]" time="0.021" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_watchdog_dummy_terminal_phase_and_log_gates[log_overflow]" time="0.042" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_log_shots_cancel_large_scales_without_float_overflow" time="0.000" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_preparation_cli_is_stdlib_and_rejects_execute" time="0.044" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_complete_finite_event_average_and_two_iid_occurrences[0--0.3]" time="0.001" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_complete_finite_event_average_and_two_iid_occurrences[0-0.3]" time="0.001" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_complete_finite_event_average_and_two_iid_occurrences[2--0.3]" time="0.002" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_complete_finite_event_average_and_two_iid_occurrences[2-0.3]" time="0.002" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_complete_finite_event_average_and_two_iid_occurrences[6--0.3]" time="0.423" /><testcase classname="tests.tracks.resource_applicability.test_ax2b_post_review_preparation" name="test_complete_finite_event_average_and_two_iid_occurrences[6-0.3]" time="0.430" /></testsuite></testsuites>

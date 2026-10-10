@@ -1,0 +1,444 @@
+{
+  "assigned_resources": null,
+  "contract_status": "DRAFT_NOT_AUTHORIZATION",
+  "coverage_binding": null,
+  "environment": null,
+  "execution_plan_sealed": false,
+  "input_binding": null,
+  "kind": "H6_TECHNICAL",
+  "launch_allowed": false,
+  "mandatory_stop": true,
+  "plan": {
+    "G": null,
+    "H8_tasks": [],
+    "T": 0.8,
+    "accuracy_eligibility": "UNDETERMINED",
+    "actual_rank": null,
+    "assigned_resources": null,
+    "authorization": null,
+    "caps_proposed": {
+      "address_space_bytes": 8589934592,
+      "compile": 36,
+      "control_probe": 256,
+      "deterministic_actions_per_cell": 100000,
+      "diagnostics": 1024,
+      "log_bytes": 65536,
+      "occurrence": 8,
+      "output_bytes": 536870912,
+      "phase_wall_seconds": {
+        "correctness": 1800,
+        "input_reference": 1800,
+        "wrapper_cost": 3600
+      },
+      "primitive": 2000,
+      "reference_matvec": 20000,
+      "reference_matvec_per_action": 20000,
+      "solver_matvec": 10000,
+      "tail_matvecs_corrected_and_raw": {
+        "B2": 24,
+        "B3": 56
+      },
+      "total_wall_seconds": 7200,
+      "trajectory": 4,
+      "transpiled_instructions": 5000000,
+      "untranspiled_instructions": 1000000
+    },
+    "cells": [
+      {
+        "K": null,
+        "R": null,
+        "formula": "2nd",
+        "id": "H6_B0_S2_q2",
+        "method": "B0",
+        "prefix": "(L+1)//2",
+        "q": 2,
+        "r": null,
+        "replicas": 1
+      },
+      {
+        "K": null,
+        "R": null,
+        "formula": "2nd",
+        "id": "H6_B1_S2_q1",
+        "method": "B1",
+        "prefix": "L",
+        "q": 1,
+        "r": null,
+        "replicas": 1
+      },
+      {
+        "K": null,
+        "R": null,
+        "formula": "2nd",
+        "id": "H6_B1_S2_q2",
+        "method": "B1",
+        "prefix": "L",
+        "q": 2,
+        "r": null,
+        "replicas": 1
+      },
+      {
+        "K": null,
+        "R": null,
+        "formula": "4th",
+        "id": "H6_B1_S4_q1",
+        "method": "B1",
+        "prefix": "L",
+        "q": 1,
+        "r": null,
+        "replicas": 1
+      },
+      {
+        "K": null,
+        "R": null,
+        "formula": "4th",
+        "id": "H6_B1_S4_q2",
+        "method": "B1",
+        "prefix": "L",
+        "q": 2,
+        "r": null,
+        "replicas": 1
+      },
+      {
+        "K": 2,
+        "R": 4,
+        "formula": "2nd",
+        "id": "H6_B2_K2_q2_R4",
+        "method": "B2",
+        "prefix": "(L+1)//2",
+        "q": 2,
+        "r": 2,
+        "replicas": 2
+      },
+      {
+        "K": 6,
+        "R": 4,
+        "formula": "2nd",
+        "id": "H6_B3_K6_q2_R4",
+        "method": "B3",
+        "prefix": 0,
+        "q": 2,
+        "r": 2,
+        "replicas": 2
+      }
+    ],
+    "compiler_proposed": {
+      "backend": null,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "coupling_map": null,
+      "optimization_level": 1,
+      "seed_transpiler": 17
+    },
+    "contract_status": "DRAFT_NOT_AUTHORIZATION",
+    "cost_primary": "symmetric_directional",
+    "cost_samples_per_random_cell": 2,
+    "df_policy": {
+      "cutoff": 0.0,
+      "df_tol": 1e-08,
+      "final_rank_supplied": false,
+      "name": "TOL_ONLY_NO_CONFIG_FALLBACK"
+    },
+    "gpu": false,
+    "implementation": "dedicated_sector_native_backend_v2",
+    "input_binding": null,
+    "input_generation_authorized": false,
+    "input_generation_budget": null,
+    "launch_allowed": false,
+    "mandatory_stop": true,
+    "next_stage_authorized": false,
+    "numerical_allowance_certified": false,
+    "ordinary_cost": "paired sensitivity",
+    "primitive_schedules": null,
+    "probe_policy_v2": "all actual unique primitive times; saved state + first/last sector columns",
+    "quantum_shots": null,
+    "resume": false,
+    "retry": false,
+    "review_repository_ref": "d6510db9326e9335bedd03d0d07c490561e23112",
+    "schema": "track_a_ax2b_post_review_preparation_v1",
+    "science_authorized": false,
+    "source_commit": null,
+    "status": "H6_NOT_AUTHORIZED",
+    "target": {
+      "T": 0.8,
+      "basis": "sto-3g",
+      "definition": "serialized binary64 H_DF and normalized saved designated state",
+      "epsilon_signal_diagnostic": 0.001,
+      "geometry_angstrom": 1.0,
+      "model": "linear_H6",
+      "n_qubits": 12,
+      "nelec_alpha": 3,
+      "nelec_beta": 3,
+      "sector_dimension": 400
+    },
+    "unresolved": [
+      "input-generation scope/budget/grant",
+      "input binding",
+      "assigned resources",
+      "pilot grant"
+    ],
+    "wrapper_tasks": [
+      {
+        "axis": "cosine",
+        "cell_id": "H6_B0_S2_q2",
+        "control": "ordinary",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "sine",
+        "cell_id": "H6_B0_S2_q2",
+        "control": "ordinary",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "cosine",
+        "cell_id": "H6_B0_S2_q2",
+        "control": "symmetric_directional",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "sine",
+        "cell_id": "H6_B0_S2_q2",
+        "control": "symmetric_directional",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "cosine",
+        "cell_id": "H6_B1_S2_q1",
+        "control": "ordinary",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "sine",
+        "cell_id": "H6_B1_S2_q1",
+        "control": "ordinary",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "cosine",
+        "cell_id": "H6_B1_S2_q1",
+        "control": "symmetric_directional",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "sine",
+        "cell_id": "H6_B1_S2_q1",
+        "control": "symmetric_directional",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "cosine",
+        "cell_id": "H6_B1_S2_q2",
+        "control": "ordinary",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "sine",
+        "cell_id": "H6_B1_S2_q2",
+        "control": "ordinary",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "cosine",
+        "cell_id": "H6_B1_S2_q2",
+        "control": "symmetric_directional",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "sine",
+        "cell_id": "H6_B1_S2_q2",
+        "control": "symmetric_directional",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "cosine",
+        "cell_id": "H6_B1_S4_q1",
+        "control": "ordinary",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "sine",
+        "cell_id": "H6_B1_S4_q1",
+        "control": "ordinary",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "cosine",
+        "cell_id": "H6_B1_S4_q1",
+        "control": "symmetric_directional",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "sine",
+        "cell_id": "H6_B1_S4_q1",
+        "control": "symmetric_directional",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "cosine",
+        "cell_id": "H6_B1_S4_q2",
+        "control": "ordinary",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "sine",
+        "cell_id": "H6_B1_S4_q2",
+        "control": "ordinary",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "cosine",
+        "cell_id": "H6_B1_S4_q2",
+        "control": "symmetric_directional",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "sine",
+        "cell_id": "H6_B1_S4_q2",
+        "control": "symmetric_directional",
+        "replica": 0,
+        "seed": null
+      },
+      {
+        "axis": "cosine",
+        "cell_id": "H6_B2_K2_q2_R4",
+        "control": "ordinary",
+        "replica": 0,
+        "seed": 544126806
+      },
+      {
+        "axis": "sine",
+        "cell_id": "H6_B2_K2_q2_R4",
+        "control": "ordinary",
+        "replica": 0,
+        "seed": 544126806
+      },
+      {
+        "axis": "cosine",
+        "cell_id": "H6_B2_K2_q2_R4",
+        "control": "symmetric_directional",
+        "replica": 0,
+        "seed": 544126806
+      },
+      {
+        "axis": "sine",
+        "cell_id": "H6_B2_K2_q2_R4",
+        "control": "symmetric_directional",
+        "replica": 0,
+        "seed": 544126806
+      },
+      {
+        "axis": "cosine",
+        "cell_id": "H6_B2_K2_q2_R4",
+        "control": "ordinary",
+        "replica": 1,
+        "seed": 2896260860
+      },
+      {
+        "axis": "sine",
+        "cell_id": "H6_B2_K2_q2_R4",
+        "control": "ordinary",
+        "replica": 1,
+        "seed": 2896260860
+      },
+      {
+        "axis": "cosine",
+        "cell_id": "H6_B2_K2_q2_R4",
+        "control": "symmetric_directional",
+        "replica": 1,
+        "seed": 2896260860
+      },
+      {
+        "axis": "sine",
+        "cell_id": "H6_B2_K2_q2_R4",
+        "control": "symmetric_directional",
+        "replica": 1,
+        "seed": 2896260860
+      },
+      {
+        "axis": "cosine",
+        "cell_id": "H6_B3_K6_q2_R4",
+        "control": "ordinary",
+        "replica": 0,
+        "seed": 2042713449
+      },
+      {
+        "axis": "sine",
+        "cell_id": "H6_B3_K6_q2_R4",
+        "control": "ordinary",
+        "replica": 0,
+        "seed": 2042713449
+      },
+      {
+        "axis": "cosine",
+        "cell_id": "H6_B3_K6_q2_R4",
+        "control": "symmetric_directional",
+        "replica": 0,
+        "seed": 2042713449
+      },
+      {
+        "axis": "sine",
+        "cell_id": "H6_B3_K6_q2_R4",
+        "control": "symmetric_directional",
+        "replica": 0,
+        "seed": 2042713449
+      },
+      {
+        "axis": "cosine",
+        "cell_id": "H6_B3_K6_q2_R4",
+        "control": "ordinary",
+        "replica": 1,
+        "seed": 2416534881
+      },
+      {
+        "axis": "sine",
+        "cell_id": "H6_B3_K6_q2_R4",
+        "control": "ordinary",
+        "replica": 1,
+        "seed": 2416534881
+      },
+      {
+        "axis": "cosine",
+        "cell_id": "H6_B3_K6_q2_R4",
+        "control": "symmetric_directional",
+        "replica": 1,
+        "seed": 2416534881
+      },
+      {
+        "axis": "sine",
+        "cell_id": "H6_B3_K6_q2_R4",
+        "control": "symmetric_directional",
+        "replica": 1,
+        "seed": 2416534881
+      }
+    ]
+  },
+  "schema": "track_a_ax2b_bound_preparation_v2",
+  "science_authorized": false,
+  "source_commit": null,
+  "source_hashes": null,
+  "status": "H6_NOT_AUTHORIZED"
+}
