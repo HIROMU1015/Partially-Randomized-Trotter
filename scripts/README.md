@@ -370,3 +370,12 @@ x1/4・6頂点252 profiles、strict rational/dyadic CTS照合とdigital bridge�
 [限定費用runner](tracks/algorithm_codesign/g7_budget_control_economics.py)、
 [契約](../docs/tracks/algorithm_codesign/g7_mathematical_and_execution_contract_20261010.md)。
 fixed source/full SHA/clean HEAD/new marker/24 keysのみ。再実行不可、bundle後STOP。
+
+
+## 2026-10-10 Track B G7：取得完了・mandatory STOP（最新追記）
+
+[G7結果/GPT引継ぎ](../docs/tracks/algorithm_codesign/g7_results_and_gpt_handoff_20261010.md)。
+`G7_LIMITED_IMPLEMENTATION_ECONOMICS_COMPLETE_AWAITING_GPT_REVIEW`。source ab2549f41b3546fb3940342a2162dd9ee93699c4、24 keys/8 rows、strict error PASS、retry0。
+固定P5では登録3対照後にもconditional期待T減少、P3ではclosed-form対照が小さい。
+hard shot cap・classical generation/angle acquisition・未指定provider costを併記。
+新規性/主method/次stage未採択、G5閉鎖/G6原証拠とmarker保持、GPT判断へ戻す。

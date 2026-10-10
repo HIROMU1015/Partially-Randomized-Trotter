@@ -171,3 +171,13 @@ fixed x1/4、252 profiles/756 prices、L1-charge digital classまで確認。run
 [g7_budget_control_economics.py](g7_budget_control_economics.py)：G6 review §12の委譲範囲。
 --source-commit FULL_SHAを要求、固定環境/contract/キー/保護hash検査、exclusive marker。
 24 native-Rz keys一度のみ、2 inputs×4 arms、conditional T/query/CPU vector。retry0、mandatory STOP。
+
+
+## 2026-10-10 Track B G7：取得完了・mandatory STOP（最新追記）
+
+[G7結果/GPT引継ぎ](../../../docs/tracks/algorithm_codesign/g7_results_and_gpt_handoff_20261010.md)。
+`G7_LIMITED_IMPLEMENTATION_ECONOMICS_COMPLETE_AWAITING_GPT_REVIEW`。source ab2549f41b3546fb3940342a2162dd9ee93699c4、24 keys/8 rows、strict error PASS、retry0。
+固定P5では登録3対照後にもconditional期待T減少、P3ではclosed-form対照が小さい。
+hard shot cap・classical generation/angle acquisition・未指定provider costを併記。
+新規性/主method/次stage未採択、G5閉鎖/G6原証拠とmarker保持、GPT判断へ戻す。
+[audit_g7_saved_outputs.py](audit_g7_saved_outputs.py)は保存metadata/有理再集計のみ。追加合成・matrix・generator呼出し0。
