@@ -1,5 +1,15 @@
 # プロジェクト案内
 
+## 2026-10-10 Track A：H6技術pilot v2一回実行認可・実行前seal
+
+最新入口は[固定pilot一回grant/source/予算](docs/research/track_a_h6_technical_pilot_execution_seal_v2.md)。ユーザー「認可するので作業を進めて」＋annotation 1を直前説明のH6 pilot v2一回へ結合。
+準備source 0b04886/manifest/保存snapshotを変更せず、新grantを保存。linear H6/1Å/STO-3G/rank19/sector400/T0.8、7 cell・36 wrapper。
+CPU IDs [0,2,5,6]・Numba4/BLAS1、wall上限7200秒/AS8GiB/output512MiB。実行前段階でpilotの科学結果はまだない。
+remote preflight後一回起動。原STOP/欠測も保存し、公開/監査/remote照合後mandatory STOP/GPT引渡し。retry/resume/source救済なし。
+旧source/freezes/入力/結果/dirty/untracked・Track Bを保全。N/Gnull・u未認定・UNDETERMINED、H6本検証/H8は未認可。
+H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、next_stage_authorized=false。以下は段階当時の履歴。
+
+
 ## 2026-10-10 Track A：H6 pilot v2 coverage接続準備・未認可STOP
 
 最新入口は[登録時間の固定/実runtime接続synthetic/新seal](docs/research/track_a_h6_technical_pilot_preparation_v2.md)。linear H6/1Å/STO-3G/rank19/p10/sector400/T0.8。
