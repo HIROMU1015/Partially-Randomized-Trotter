@@ -192,7 +192,7 @@ def inventory(plan):
                 require(label=='control' and path.name=='private-temp' and not list(path.iterdir()), 'continuation unexpected directory')
                 continue
             name=path.name.removesuffix('.pending')
-            allowed=(name in ('byte-budget.journal','observer.jsonl','driver-first-stop.json','ledger.lock','map-complete.json','launch-stop.json') or
+            allowed=(name in ('byte-budget.journal','observer.jsonl','driver-first-stop.json','worker-log-first-stop.txt','ledger.lock','map-complete.json','launch-stop.json') or
                      re.fullmatch(r'ledger-[0-9]{6}\.json|record-[0-9a-f]{64}\.json|signal-.+\.json|worker-log-.+\.json',name)) if label=='output' else name in ('one-shot.json','runner.log')
             require(allowed, 'unexpected continuation file')
             require(len(files)<MAX_FILES, 'continuation file count limit')

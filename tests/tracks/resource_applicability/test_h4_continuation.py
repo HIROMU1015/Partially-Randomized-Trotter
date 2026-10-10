@@ -317,3 +317,11 @@ class ContinuationTests(unittest.TestCase):
                 with self.assertRaises(Stop):cb.verify_roots(bad,self.f.parent)
         bad=copy.deepcopy(plan);bad['control_root']=str(Path(plan['output_root'])/'nested')
         with self.assertRaises(Stop):cb.verify_roots(bad,self.f.parent)
+
+    def test_existing_worker_first_stop_text_is_receipted_but_other_text_is_rejected(self):
+        path=self.f.budget.root/'worker-log-first-stop.txt'
+        path.write_bytes(b'bounded synthetic worker stop evidence\n')
+        files=c.inventory(self.f.parent)
+        self.assertEqual(files['output/worker-log-first-stop.txt'],c.file_receipt(path))
+        (self.f.budget.root/'unknown.txt').write_bytes(b'not a sealed runtime file')
+        with self.assertRaises(Stop):c.inventory(self.f.parent)
