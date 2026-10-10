@@ -1,0 +1,71 @@
+{
+  "H6_status": "H6_NOT_AUTHORIZED",
+  "argv": [
+    ".venv311/bin/python",
+    "scripts/resource_applicability/run_track_a_h6_saved_completion_v2.py",
+    "--execute",
+    "--manifest",
+    "artifacts/resource_applicability/track_a_h6_saved_df_completion_parallel_preparation_v2/2026-10-10/sealed_preparation_v2.json",
+    "--authorization",
+    "artifacts/resource_applicability/track_a_h6_saved_df_completion_parallel_execution_v2/2026-10-10/authorization_v2.json",
+    "--authorization-sha256",
+    "88f40be5643d0f2ea09ecc0398193ffefa2f6197e1f71f85daefd00124d84153",
+    "--output",
+    "artifacts/resource_applicability/track_a_h6_saved_df_completion_parallel_v2/2026-10-10/launch_v1"
+  ],
+  "authorized_instruction_exact": "並列化機能を使ったうえで計算を開始して",
+  "calls_attempted": {
+    "acceptance": 1,
+    "compile": 0,
+    "df_decomposition": 0,
+    "integral_build": 0,
+    "occurrence": 0,
+    "signal": 0,
+    "solver_matvec": 41,
+    "state_solver": 1,
+    "trajectory": 0
+  },
+  "calls_completed": {
+    "acceptance": 1,
+    "solver_matvec": 41,
+    "state_solver": 1
+  },
+  "contract_status": "DRAFT_NOT_AUTHORIZATION",
+  "execution_seal_commit": "f70416ec4f3a8fe1ab7ba4c02ccde7260a361d0e",
+  "launch_count": 1,
+  "mandatory_stop": true,
+  "new_DF_decomposition": 0,
+  "new_SCF": 0,
+  "new_signal": 0,
+  "new_trajectory": 0,
+  "next_stage_authorized": false,
+  "numba_JIT_cache_present": true,
+  "one_shot_authorization_consumed": true,
+  "parallel_runtime": {
+    "assigned_cpus": [
+      0,
+      2,
+      5,
+      6
+    ],
+    "block_chunk_size": 1,
+    "numba_threads": 4,
+    "operator_backend": "numba",
+    "science_workers": 1,
+    "thread_environment": {
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "4",
+      "OMP_NUM_THREADS": "4",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "quantum_circuit_compile": 0,
+  "resume": false,
+  "retry": false,
+  "schema": "track_a_h6_parallel_completion_execution_audit_v2",
+  "scientific_numeric_recomputation_in_byte_audit": false,
+  "source_commit": "f37005f01b2be38c5993d6e82df91abe9c643d21",
+  "wall_seconds": 3.8784506930969656,
+  "worker_exit_code": 0,
+  "worker_peak_rss_bytes": 411328512
+}

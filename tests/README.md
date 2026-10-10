@@ -1,5 +1,14 @@
 # tests の役割
 
+## 2026-10-10 Track A：H6保存DF入力完成の並列一回実行完了・mandatory STOP
+
+最新入口は[並列一回結果/source/raw/監査](../docs/research/track_a_h6_saved_df_completion_parallel_result_v2.md)。linear H6/1Å/STO-3G、tol-only1e-8/cutoff0、全19 signed fragments/order保持、sector400。
+新policyの構造・重み付き予算・独立係数/summary照合を通過、PASS_ENGINEERING。state/snapshot保存・loader roundtrip・保存bytes監査PASS。
+CPU IDs [0, 2, 5, 6]・Numba4/OMP4/BLAS1、solver1/matvec41、wall約3.9秒。新SCF/DF/signal/sampling/量子回路compile0、retry/resumeなし。
+旧source/入力/結果/STOP/freezes・dirty/untrackedを保全。一回認可消費済み。H6_input_accepted=trueは新工学政策での入力完成だけを表す。
+u/ground-state未認定、N/Gnull・UNDETERMINED。H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、next_stage_authorized=false、mandatory STOP。H6 pilotは別認可。
+以下は段階当時の履歴。
+
 ## 2026-10-10 Track A：保存DF入力完成の並列一回実行seal v2
 
 最新入口は[並列source/認可/seal](../docs/research/track_a_h6_saved_df_completion_parallel_execution_seal_v2.md)。ユーザーの並列計算開始指示を保存DF受理＋state/snapshot一回へ結合。
