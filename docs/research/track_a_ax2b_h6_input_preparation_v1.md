@@ -97,6 +97,7 @@ retry/resumeなし。結果後のtol/rank/initial vector/gate/予算変更によ
 ## Source・検証・監査索引
 
 source commit：`67312f3195aede26e8ba4f5727d89c236772f82e`。
+準備資料保存commit：`0201dc84bce60a86a1796f9c143105162f9915be`。
 [source freeze](../../artifacts/resource_applicability/track_a_ax2b_h6_input_preparation_v1/2026-10-10/source_freeze_v1.json)は
 今回のexecution closure183件とvalidation3件をlocal/Git blob SHA-256で照合した。
 旧H4 science180件と旧全結果/freezesのbytesを保全した。新closureを旧grant/manifestへ流用しない。
@@ -113,6 +114,7 @@ source commit：`67312f3195aede26e8ba4f5727d89c236772f82e`。
 | [static audit](../../artifacts/resource_applicability/track_a_ax2b_h6_input_preparation_v1/2026-10-10/preparation_static_audit_v1.json) | 再利用一覧、配列規模・進捗上界、未確認事項 |
 | [synthetic audit](../../artifacts/resource_applicability/track_a_ax2b_h6_input_preparation_v1/2026-10-10/synthetic_test_audit_v1.json) / [JUnit](../../artifacts/resource_applicability/track_a_ax2b_h6_input_preparation_v1/2026-10-10/synthetic_test_results_v1.xml) | 87 local tests pass（新38・既存49） |
 | [preparation inventory](../../artifacts/resource_applicability/track_a_ax2b_h6_input_preparation_v1/2026-10-10/preparation_inventory_v1.json) | 今回の証拠・未実行/未認可状態 |
+| [保全監査](../../artifacts/resource_applicability/track_a_ax2b_h6_input_preparation_v1/2026-10-10/preservation_audit_v1.json) / [remote照合](../../artifacts/resource_applicability/track_a_ax2b_h6_input_preparation_v1/2026-10-10/remote_verification_v1.json) | source183/validation3、新公開26 path、旧H4 raw1212＋30、旧prep195と既存3993ファイルの保全確認 |
 
 合成testsはfake chemistry/decomposer/solver/operatorとdummy processだけを使った。
 SCF provider wiring・two-body1/2・DF kwargs、shared matvec capとresidual、state phase規約、
