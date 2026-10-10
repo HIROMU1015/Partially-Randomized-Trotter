@@ -1,5 +1,17 @@
 # 研究計画資料
 
+## 2026-10-11 Track A：固定H6技術pilot v2結果・GPTレビュー待ち
+
+最新入口は[H6 pilot v2一次結果・監査・欠測・レビュー論点](track_a_h6_technical_pilot_result_v2.md)。
+linear H6/1Å/STO-3G/rank19、sector400、prefix10/full19/0、T0.8、q1/q2（delta0.8/0.4）。
+原status `H6_TECHNICAL_PILOT_STOP`、correctness7/7・wrapper32/36、missing7。
+明示認可されたscience worker一回、retry/resume0。全rawと原statusを保全、保存bytes/source/input/environmentを照合。
+これは技術的整合性と個別回路費用の証拠。matched accuracy・期待費用・PR winner・最終total-costを認定しない。
+旧v1 STOP/凍結source/旧結果/dirty/untracked/Track Bを保持。
+H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION、N/Gnull・u/ground-state未認定・UNDETERMINED、next_stage_authorized=false。
+一回認可消費済み、mandatory STOP、GPT独立科学レビューへ戻す。以下は段階当時の履歴。
+
+
 ## 2026-10-10 Track A：H6技術pilot v2一回実行認可・実行前seal
 
 最新入口は[固定pilot一回grant/source/予算](track_a_h6_technical_pilot_execution_seal_v2.md)。ユーザー「認可するので作業を進めて」＋annotation 1を直前説明のH6 pilot v2一回へ結合。
