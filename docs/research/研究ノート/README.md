@@ -169,3 +169,10 @@ science終了後mandatory STOP、追加合成/target/grid/分子/DF/trajectory/G
 ## Track B G9 source preparation（2026-10-10）
 
 [Fixed proof/scope](2026-10-10_track_b_g9_p5_matched_native.md)：GPT G8 review §14を採用。known P5/指定3-qubit provider、6 direct+5 helper診断、19 keys/新CTS1 key、23 focused tests。source固定後一束のみ、終了後mandatory STOP。
+
+## G9 one-shot STOP（2026-10-10）
+
+`G9_TECHNICAL_INCONCLUSIVE`：epsilon引数のFraction→mp.mpf変換で停止、native比較0 row。
+新規helper attempts1 / 新規sequence取得0 / retry0。source・contract・過去941pathは不変。
+23 focused testsと23 saved-output checksは準備/整合証拠で、native資源の科学結果ではない。
+[G9 failure・GPT handoff](2026-10-10_track_b_g9_p5_matched_native.md)。mandatory STOP、次の研究判断はGPTへ返す。
