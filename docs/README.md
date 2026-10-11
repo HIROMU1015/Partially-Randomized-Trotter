@@ -529,3 +529,7 @@ G9のP5少数群、G10の固定native事例/下界classを一つの読者向け�
 ## Track B DF希薄三次補正の独立監査（2026-10-11）
 
 [監査・証明](tracks/algorithm_codesign/df_sparse_correction_independent_audit_20261011.md)、[prior art](tracks/algorithm_codesign/df_sparse_correction_prior_art_comparison_20261011.md)、[GPT handoff](tracks/algorithm_codesign/df_sparse_correction_gpt_handoff_20261011.md)。理想数学と限定compileの技術証拠、production access/native T/新規性未確定、mandatory STOP。
+
+## Track B DF補正比較の結果前準備（2026-10-11）
+
+[事前契約](tracks/algorithm_codesign/df_correction_comparison_preregistration_20261011.md)、[native/T計画](tracks/algorithm_codesign/df_correction_comparison_execution_plan_20261011.md)、[handoff](tracks/algorithm_codesign/df_correction_comparison_gpt_handoff_20261011.md)。原本identity/取得性と条件を固定、比較計算・合成0、source未実装、実行authorizationなし、mandatory STOP。

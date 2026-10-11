@@ -1,0 +1,367 @@
+{
+  "kind": "DF_CORRECTION_WHOLE_VS_LOCAL_PAULI_PREREGISTRATION",
+  "version": 1,
+  "date_JST": "2026-10-11",
+  "status": "CONTRACT_PROPOSAL_PREPARATION_ONLY",
+  "base_commit": "8a5e21c8f6ecf98ee285ec1fad49079ffb5ed97f",
+  "input_commit": "f6a8f022947bb9efe1f2c4fffeb0eeda051b2903",
+  "science_execution_authorized": false,
+  "runner_implemented": false,
+  "future_source_commit": null,
+  "runs_authorized_now": 0,
+  "retries": 0,
+  "mandatory_STOP": true,
+  "inputs": {
+    "review": "docs/research/track_b_df_sparse_correction_post_audit_scientific_review_20261011.md",
+    "review_sha256": "d2b3fbd4de208981a2e04e3356b72bce52e059c428c736f101f4e3ab6cf3ffda",
+    "zip": "artifacts/track_b_df_correction_comparison_preparation/2026-10-11/inputs/track_b_df_sparse_correction_post_audit_review_20261011_reproducibility.zip",
+    "zip_bytes": 50156,
+    "zip_sha256": "bb14c641f9b7158cfdfd9efdc17d9c123f65b7ae1335c28c7847ba0ba4b951a4"
+  },
+  "arms": {
+    "A": {
+      "name": "whole_commutator",
+      "outer_coin": "eta",
+      "tuple_probability": "c_tau/A_mass",
+      "accepted_unitary": "exp(i u_delta T_tau)",
+      "accepted_weight": "1"
+    },
+    "B": {
+      "name": "coin_first_local_Pauli_pairing",
+      "outer_coin": "same eta",
+      "tuple_probability": "same c_tau/A_mass",
+      "Pauli_probability": "abs(beta_tau_j)/ell_tau",
+      "accepted_unitary": "exp(i sign(beta_tau_j) atan(u_delta ell_tau) P_j)",
+      "accepted_weight": "sqrt(1+(u_delta ell_tau)^2)"
+    },
+    "empty": {
+      "T_zero": "exact identity and weight 1",
+      "negative_time": "OUT_OF_SCOPE",
+      "independence": "left/right/steps/RTE independent",
+      "threshold_drop": false
+    }
+  },
+  "CD": {
+    "modes": 3,
+    "block_count": 3,
+    "L_D": 2,
+    "coefficients": [
+      "9/20",
+      "7/20",
+      "1/4"
+    ],
+    "primitive_ranks": [
+      1,
+      2,
+      1
+    ],
+    "primitive_signs": [
+      1,
+      -1,
+      -1
+    ],
+    "recipe_source": "scripts/tracks/algorithm_codesign/audit_df_sparse_correction.py:phase_c_d",
+    "RNG": "NumPy1.26.4 PCG64; exactly three sequential random_unitary(3) calls",
+    "seed": 6121107,
+    "t": "1",
+    "deltas": [
+      "1/8",
+      "1/16",
+      "1/32"
+    ],
+    "steps": [
+      8,
+      16,
+      32
+    ],
+    "gamma": "5/4",
+    "kappa": "4",
+    "RTE_microsteps": 1,
+    "paired_cutoff": 4,
+    "mean_degree": 5,
+    "A_mass": "4159/192000",
+    "B_mass": "4159/48000",
+    "tuple_labels": 8,
+    "initial_state": {
+      "basis": "little-endian Fock",
+      "indices": [
+        1,
+        2,
+        4,
+        3,
+        5,
+        6
+      ],
+      "amplitudes_before_division_sqrt6": [
+        "1",
+        "i",
+        "1",
+        "1",
+        "-i",
+        "1"
+      ],
+      "proposal_requires_contract_confirmation": true
+    },
+    "ideal_signal": "<psi|exp(-it(H0+H1+R))|psi>",
+    "exact_signal_use": "DIAGNOSTIC_ONLY_NOT_SHOT_REDUCTION",
+    "cost_policy": "UNKNOWN_SYMBOLIC_UNTIL_SAME_CD_INPUT_COST_AVAILABLE"
+  },
+  "confidence": {
+    "complex_epsilon": "1/10000",
+    "axis_epsilon": "1/20000",
+    "total_alpha": "1/20",
+    "X_family_alpha": "1/40",
+    "Y_family_alpha": "1/40",
+    "tasks": 6,
+    "axes": 2,
+    "axis_task_alpha": "1/240",
+    "alpha_interpretation": "Familywise across A/B x three deltas; preserve 0.025 per-axis family allocation",
+    "allocation_requires_contract_confirmation": true,
+    "Bernstein_sufficient_shots": "ceil(log(2/alpha_axis_task)*(2 nu/s_stat^2+4 Wmax/(3 s_stat)))",
+    "minimum_shots_claim": false,
+    "actual_quantum_shots_planned": 0
+  },
+  "error": {
+    "axis_maxima": {
+      "algorithmic_mean": "1/40000",
+      "finite_bit": "1/200000",
+      "native_synthesis": "1/200000",
+      "assembly_coefficient_arithmetic_angle": "1/1000000"
+    },
+    "x": "(21/20) delta",
+    "y": "B_mass delta^3",
+    "b_sym": "2*(exp(x)-sum(x^k/k!,k=0..4))+y*(exp(x)-1-x)+exp(x)*(exp(y)-1-y)",
+    "e_R": "exp(delta/4)*(delta/4)^6/720",
+    "e_A": "delta^6*(B_mass^2/eta+B_mass^2)/8",
+    "e_B": "delta^6*B_mass^2/8",
+    "b_A": "b_sym+2*e_A+e_R",
+    "b_B": "b_sym+2*e_B+e_B^2+e_R*(1+e_B)^2",
+    "global_algorithmic_mean": "(1+b_arm)^n-1",
+    "return_unused_rule": "Use preregistered certified algorithmic bound only; subtract full digital/native/numeric allowances even when observed errors are smaller",
+    "statistical_halfwidth": "axis_epsilon-beta_arm-1/200000-1/200000-1/1000000",
+    "native_signal_bound": "2 E[abs(W)*sum(gate strict_operator_errors)] with global original RTE weight retained",
+    "saved_A_CD_bound_reference_only": [
+      {
+        "delta": "1/8",
+        "global_bound": 1.8051980412979107e-05
+      },
+      {
+        "delta": "1/16",
+        "global_bound": 1.1017046072464509e-06
+      },
+      {
+        "delta": "1/32",
+        "global_bound": 6.805406627881078e-08
+      }
+    ],
+    "new_bounds_computed_now": false,
+    "new_operational_certificates_verified_now": false,
+    "failure_policy": "STOP_REPORT_REASON_AND_ALTERNATIVE; do not change epsilon/delta/gamma/source/tolerance"
+  },
+  "digital": {
+    "denominator_bits": 48,
+    "outer_coin_eta": "EXACT_DYADIC_NO_CHANGE_TO_ACCEPTANCE_MASS",
+    "conditional_sampler": "largest-remainder on complete tau/Pauli conditional law; lexicographic tie",
+    "RTE_sampler": "largest-remainder on complete paired order law",
+    "bias": "Wmax * sum(complete_draw_L1_distances) plus separately budgeted weight/angle/input roundoff",
+    "complete_draw_count": "3n",
+    "near_zero_drop": false,
+    "interval_decision_failure": "INCONCLUSIVE_NO_PRECISION_RETRY"
+  },
+  "moments": {
+    "Gamma": "B5(delta/4)^n",
+    "B5": "sum(v^k/k!*sqrt(1+(v/(k+1))^2),k=0,2,4)",
+    "A_second_moment": "Gamma^2",
+    "A_range": "Gamma",
+    "B_ideal_second_moment": "Gamma^2*(1+eta*u_delta^2*E_q(ell_tau^2))^(2n)",
+    "CD_ell_cap": "32",
+    "primary_B_second_moment_upper": "Gamma^2*(1+eta*u_delta^2*1024)^(2n)",
+    "primary_B_range": "Gamma*(1+u_delta^2*1024)^n",
+    "detailed_moment_policy": "secondary; primary universal cap fixed before results",
+    "invalid_involution_or_norm_proof": "STOP_NOT_SILENT_CAP_INCREASE"
+  },
+  "E": {
+    "recipe_source": "scripts/tracks/algorithm_codesign/audit_df_sparse_correction_native.py",
+    "seed": 7101107,
+    "generation_order": "consume random_unitary(4), then three rank2 frames at r3, then three rank2 frames at r6",
+    "active_modes": [
+      3,
+      6
+    ],
+    "primitive_ranks": [
+      2,
+      2,
+      2
+    ],
+    "primitive_signs": [
+      1,
+      -1,
+      1
+    ],
+    "theta": "1/32",
+    "kappa": "4",
+    "u": "1/128",
+    "controlled_masks": [
+      false,
+      true
+    ],
+    "controlled_ancilla": "MSB",
+    "embedding": "COMMON_ACTIVE_FRAME_IDENTITY; production Gaussian embedding cost unknown",
+    "outer_coin_from_review_0_1": "DIAGNOSTIC_NOT_REGISTERED_RATE",
+    "multiply_with_CD_frequency": false,
+    "A_native": "generic unitary; 4 calls; prior fingerprints must match before T stage",
+    "B_native": "fixed Pauli parity ladder, lexicographic first nonzero per support-weight class, both control masks; at most 18 calls",
+    "Pauli_IR_all_labels": true,
+    "compile_all_4096_Paulis": false,
+    "local_unitary_error_cap": "1/1000000",
+    "local_synthesis_allowance": "1/1250000",
+    "local_numeric_allowance": "1/5000000"
+  },
+  "compiler": {
+    "qiskit": "1.3.0",
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "python": "3.11.0rc1",
+    "basis": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 0,
+    "all_to_all": true,
+    "seed": 20261011,
+    "internal_parallel": false,
+    "new_compiler_development": false
+  },
+  "T": {
+    "synthesizer": "pygridsynth",
+    "version": "2.0.0",
+    "mpmath": "1.3.0",
+    "dps": 100,
+    "wheel_sha256": "30b5b15e9383a8ea8510d54f28e2de0385d102cb54fd4440071abf4525027568",
+    "runtime_identity": "artifacts/track_b_df_correction_comparison_preparation/2026-10-11/runtime_identity_preparation.json",
+    "gate_precision": "1/40000000000",
+    "synthesizer_requested_precision": "gate_precision/4",
+    "strict_guard": "interval Frobenius upper >= operator norm; no phase minimization",
+    "options": {
+      "up_to_phase": false,
+      "dloop": 10,
+      "floop": 10,
+      "verbose": 0,
+      "show_graph": false,
+      "measure_time": false
+    },
+    "seed_policy": "integer first 8 hex SHA256(\"20261011:\" + canonical angle key)",
+    "selection": {
+      "A_controlled": "16 positions per r: floor(j*(N_RZ-1)/15), j=0..15",
+      "A_uncontrolled": "8 positions per r: floor(j*(N_RZ-1)/7), j=0..7",
+      "B": "per r +/-atan(ell/128), +/-2atan(ell/128)",
+      "phase_reserve": "first 8 required phase RZ targets in fixed r/control/arm order; no replacements",
+      "maximum_logical_keys": 64,
+      "deduplicate": true,
+      "fill_empty_slots": false,
+      "inventory_freeze": "after fixed native generation, before any gridsynth invocation, exclusive artifact + sha256",
+      "literal_angles_available_now": false
+    },
+    "angle_representation": "exact IEEE binary64 dyadic radians plus semantic interval; B atan ell interval; 4pi strict period",
+    "exactfast": "arm-neutral, strict verified identity/Clifford; not phase-free pi/4 RZ -> 1T",
+    "RZ_occurrence_cap_per_circuit": 32000,
+    "synthesis_calls_cap": 64,
+    "full_T_policy": "actual only with all unique keys covered; otherwise T_INCONCLUSIVE_INCOMPLETE_COVERAGE",
+    "RZ_times_average_T": "ESTIMATE_ONLY_EXCLUDED_FROM_PRIMARY_ACTUAL_TOTAL",
+    "reuse_T_angles_across_CD_and_E": false,
+    "actual_synthesis_now": 0
+  },
+  "cost": {
+    "coordinates": [
+      "T",
+      "CX",
+      "1Q",
+      "depth",
+      "ancilla",
+      "workspace",
+      "classical_acquisition"
+    ],
+    "CD_G": "2 N_arm (h_x+C_base_x(delta)+c_arm_x(delta))",
+    "CD_c_A": "2n eta sum(q_tau C_A_tau_x)",
+    "CD_c_B": "2n eta sum(q_tau p_tau_j C_B_tau_j_x)",
+    "break_even_A": "N_A*(h+C_base+c_A) < N_B*(h+C_base+c_B)",
+    "unknown_cost_values": "SYMBOLIC_NOT_ZERO",
+    "automatic_scientific_winner": false,
+    "arbitrary_scalarization": false
+  },
+  "parallelism": {
+    "native_workers": 2,
+    "synthesis_workers": 2,
+    "matrix_workers": 1,
+    "library_threads": 1,
+    "overlap_phases": false,
+    "GPU": false,
+    "performance_speedup_claim": false
+  },
+  "caps": {
+    "wall_seconds_total": 2400,
+    "CPU_seconds_total": 1800,
+    "aggregate_RSS_MiB": 3072,
+    "CD": {
+      "wall_seconds": 300,
+      "CPU_seconds": 150,
+      "worker_RSS_MiB": 512,
+      "aggregate_RSS_MiB": 768
+    },
+    "native": {
+      "wall_seconds": 600,
+      "CPU_seconds": 450,
+      "worker_RSS_MiB": 1024,
+      "aggregate_RSS_MiB": 2560,
+      "compile_calls": 22,
+      "instructions_per_circuit": 200000
+    },
+    "synthesis": {
+      "wall_seconds": 1200,
+      "CPU_seconds": 900,
+      "worker_RSS_MiB": 512,
+      "aggregate_RSS_MiB": 1536,
+      "per_key_wall_seconds": 30,
+      "per_key_CPU_seconds": 20,
+      "keys": 64,
+      "sequence_characters": 20000
+    },
+    "output_bytes": 67108864,
+    "log_bytes": 4194304,
+    "review_file_bytes": 524288,
+    "wall_cap_reason": "Current user explicitly requested fixing CPU/RSS/wall upper limits; does not change project no-wall default or past caps",
+    "containment": "external parent process groups; aggregate sampling and per-key hard stop; not a postcheck-only guard",
+    "guard_implemented_now": false,
+    "retry": 0
+  },
+  "future_gate": {
+    "requires_contract_confirmation": true,
+    "requires_separate_source_preparation_scope": true,
+    "requires_focused_semantic_guard_validation": true,
+    "requires_new_frozen_source_commit": true,
+    "authorization": "only direct child of future frozen S, explicit one-shot instruction, unique new marker",
+    "old_authorizations_reused": false,
+    "marker_created_now": false
+  },
+  "outcomes": [
+    "COMPLETE_TECHNICAL_COMPARISON_NO_AUTOMATIC_GO",
+    "SYMBOLIC_CD_RESOURCE_COMPARISON",
+    "T_INCONCLUSIVE_INCOMPLETE_COVERAGE",
+    "TECHNICAL_INCONCLUSIVE",
+    "MATHEMATICAL_COUNTEREXAMPLE_STOP"
+  ],
+  "forbidden": [
+    "molecular production",
+    "G10/RA-D0 restart",
+    "new fixture or grid",
+    "parameter optimization",
+    "quantum shots or trajectories",
+    "GPU",
+    "LP",
+    "automatic next stage",
+    "unlimited RZ synthesis",
+    "precision/seed/tolerance retries"
+  ]
+}

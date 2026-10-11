@@ -488,3 +488,7 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 
 `tracks/algorithm_codesign/audit_df_sparse_correction.py --phase A|B|CD`はexact log／synthetic CAR／有限平均境界の検査。`audit_df_sparse_correction_native.py`はsource Gaussian bridgeと5代表compileのみ。
 [監査](../docs/tracks/algorithm_codesign/df_sparse_correction_independent_audit_20261011.md)、artifacts=`artifacts/track_b_df_sparse_correction_audit/2026-10-11/`。outputはexclusive create。本番runnerではなく、終了済みreceiptを上書きしない。新実行は今回で終了、mandatory STOP。
+
+## DF correction comparison planning metadata validator
+
+`tracks/algorithm_codesign/validate_df_correction_comparison_plan.py` はstdlibだけで入力hash/ZIP CRC/固定params/予算整合/source不変性を確認する。matrix/signal/compile/shot/T合成を行わず、新science PASSではない。receiptはexclusive create、既存receiptを上書きしない。 [契約](../docs/tracks/algorithm_codesign/df_correction_comparison_preregistration_20261011.md)。比較runner・実行認可は未準備、mandatory STOP。

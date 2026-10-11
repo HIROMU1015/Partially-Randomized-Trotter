@@ -417,3 +417,7 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 
 [監査](df_sparse_correction_independent_audit_20261011.md)、[先行法との具体比較](df_sparse_correction_prior_art_comparison_20261011.md)、[GPT handoff](df_sparse_correction_gpt_handoff_20261011.md)。原本固定・remote取得後の限定A〜F監査。
 数学的反例なし、production access/digital/T費用は未解決。positive sparse correction/first moment自体も既知、全体の独立新規性／総資源優位は認定しない。新artifact manifestに証拠を保存、旧成果保持、mandatory STOP。
+
+## DF whole / local Pauli 比較契約（2026-10-11）
+
+[比較事前契約](df_correction_comparison_preregistration_20261011.md)、[限定native/T案](df_correction_comparison_execution_plan_20261011.md)、[利用者/GPT handoff](df_correction_comparison_gpt_handoff_20261011.md)。CD/E別input、未取得費用symbolic、T全coverage不足はINCONCLUSIVE。最新原本は固定・remote取得済み。63 metadata checks、science/compile/synthesis0、初期状態/familywise案は確認対象、source/authorization未準備、mandatory STOP。

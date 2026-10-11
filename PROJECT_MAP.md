@@ -919,3 +919,7 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 [監査](docs/tracks/algorithm_codesign/df_sparse_correction_independent_audit_20261011.md)、[一次文献比較](docs/tracks/algorithm_codesign/df_sparse_correction_prior_art_comparison_20261011.md)、[GPT handoff](docs/tracks/algorithm_codesign/df_sparse_correction_gpt_handoff_20261011.md)。
 原本MD/ZIPを固定・remote取得後、77 audit checksと15 focused controls、5 representative compileを実施。production DF/digital/native T・独立新規性は未解決、科学的GOではない、mandatory STOP。
 新scriptsは`scripts/tracks/algorithm_codesign/audit_df_sparse_correction{,_native}.py`、testは`tests/test_df_sparse_correction_audit.py`、新artifactは`artifacts/track_b_df_sparse_correction_audit/2026-10-11/`。共有library/API・旧成果不変。
+
+## Track B DF補正 whole / local Pauli：比較事前契約（2026-10-11）
+
+[契約](docs/tracks/algorithm_codesign/df_correction_comparison_preregistration_20261011.md)、[実行案](docs/tracks/algorithm_codesign/df_correction_comparison_execution_plan_20261011.md)、[利用者/GPT handoff](docs/tracks/algorithm_codesign/df_correction_comparison_gpt_handoff_20261011.md)。最新GPT MD/ZIP原本を固定・remote照合。CD/Eの別domain、共通誤差/shot規則、最大22compile/64T-target案を結果前固定しただけで、science/compile/T合成0、runs0、source未実装、mandatory STOP。artifactは`artifacts/track_b_df_correction_comparison_preparation/2026-10-11/`。旧監査・共有API・結果/marker/STOP不変。
