@@ -1,5 +1,14 @@
 # trotterlib モジュール索引
 
+## 2026-10-11 Track A H6補完：起動準備v4・科学runner v3維持
+
+[output-parent修正・新identity・認可待ち契約](../../docs/research/track_a_h6_matched_launch_preparation_contract_v4.md)。旧起動STOPは保全し、科学source5a903aea/runtime224を変更せず、metadata-only helper2件とtest1件を追加。
+親の存在/作成/実write権限を検査し、必要な親2directoryだけ準備。新launch_v2と旧launch_v1のleafは未使用。20 local synthetic/process PASS、実H6科学runner0・新approved grant0。
+linear H6/1Å/STO-3G/tol-only rank19/sector400/T0.8、prefix5/10/15/full19・92候補/4精度・shot/compiler/AS政策・reuse digest・最大798新wrapperを維持。旧92 signal/84 B3/449 group/902 wrapperとmissing143を保全。
+metadata source48b489ca、新manifest/出力identityをseal。旧grantを使わず、別の明示認可・新grant・remote照合・起動直前preflightの後だけ一回実行する計画。科学runnerは準備で呼ばない。
+H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION / mandatory STOP / next_stage_authorized=false。H8未認可、q8の8GiB feasibility未検証。以下は各段階当時の履歴。
+
+
 ## 2026-10-11 Track A H6補完 v3：準備完了・新認可待ち
 
 [補完実行契約](../../docs/research/track_a_h6_matched_supplement_execution_contract_v3.md)、[sealed manifest・再利用証拠・検証](../../artifacts/resource_applicability/track_a_h6_matched_preparation_v3/2026-10-11/README.md)。
