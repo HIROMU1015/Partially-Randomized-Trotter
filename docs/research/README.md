@@ -1,5 +1,15 @@
 # 研究計画資料
 
+## 2026-10-11 Track A H6補完v3 launch_v2：一回実行・mandatory STOP
+
+[原結果・欠測・実行監査・GPT引渡し](track_a_h6_matched_supplement_result_launch_v2.md)。公開990ef294の起動準備v4、科学source5a903aea、新grant dc651bb8 をremote照合後に一回起動。
+linear H6/1Å/STO-3G/tol-only rank19/sector400/T0.8、prefix5/10/15/full19、92候補・4精度・shot/compiler/AS政策は不変。
+原status `H6_MATCHED_SUPPLEMENT_STOP`、旧449＋新0/592探索group、missing143。旧92 signal/84 B3/902 wrapperを再利用、新wrapper保存0・完了group受理0、確認完了0。
+原STOP/消費済みgrant/source/input/dirty/untrackedを保全。新input/signal/DF/state再生成なし、retry/resumeなし、H8・追加探索未認可。
+数値allowanceは経験的、population winner/PR優位/科学的GOは未認定。結果と監査を公開・remote再取得後mandatory STOP。
+H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION / next_stage_authorized=false。以下は各段階当時の履歴。
+
+
 ## 2026-10-11 Track A H6補完：起動準備v4・科学runner v3維持
 
 [output-parent修正・新identity・認可待ち契約](track_a_h6_matched_launch_preparation_contract_v4.md)。旧起動STOPは保全し、科学source5a903aea/runtime224を変更せず、metadata-only helper2件とtest1件を追加。
