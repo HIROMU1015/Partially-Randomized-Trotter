@@ -146,3 +146,15 @@ rootの既存dirty/untracked、旧Track A/B、旧representationのsource/input/r
 4. N2は補助修正として留め、回路資源の主張へ拡大しない判断が妥当か。
 
 **mandatory STOP。中心仮説null、次の科学batch認可false、他Track統合なし。**
+
+## GitHub公開・独立再取得（追記）
+
+結果commit: **`e8eff10260f337ad0e957f31e7f7d36bfb0be719`**。
+[結果・失敗・監査の固定tree](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/e8eff10260f337ad0e957f31e7f7d36bfb0be719/artifacts/n13_redesign/2026-10-11)、
+[科学source固定commit](https://github.com/HIROMU1015/Partially-Randomized-Trotter/commit/bbcb0176d43bfd1f7a10a87fa8f38e200d61ec46)、
+[公開branch](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/n13-redesign-preparation-20261011)。
+別のbare repositoryへGitHubから直接fetchし、local object alternatesなしで218 blobs・5335702bytesを取得して照合した。
+一次N3/N2、N1 failure/log、元scope、179 source/input bindings、新しい監査source・報告を含む。
+remote exportから保存監査660、別diagnostic監査411、new-entry manifest validatorが再度PASS。
+[取得receipt](../../artifacts/n13_redesign/2026-10-11/remote_retrieval_result_commit.json)に全blob OID/bytes/SHA-256と各checker出力を保存。
+この公開確認は科学再実行ではない。N1 decode修正・科学retry・次段の実行は行っていない。

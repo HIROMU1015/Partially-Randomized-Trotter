@@ -15,3 +15,5 @@ N2 fixed-S一件のweighted-L1を回復。量子回路/FT改善は認定しな�
 [新結果の報告](../n13_redesign_results_20261011.md)と保存一次結果をGitHubへ公開し、remote blob取得を確認する。
 N1の修正再実行・N3追加条件・中心テーマ採択・Track統合は開始しない。
 mandatory STOP、次段認可false、中心仮説null。GPTへ新結果の判断を戻す。
+
+公開確認追記：結果commit e8eff10260f337ad0e957f31e7f7d36bfb0be719 をpushし、別Git取得で218 blobsを照合。保存監査・別diagnostic・new-entry checker再確認PASS。N1 retry0、mandatory STOP。
