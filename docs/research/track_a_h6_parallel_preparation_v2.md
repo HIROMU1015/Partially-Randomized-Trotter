@@ -23,3 +23,7 @@ Native Phase A完了は旧proofを再使用。450/592 group・904 wrappersを保
 142探索の一回launchは未実行・別指示待ち。新exact grant・remote SHA・fresh resource/input/source/profile/carry gateを必要とする。
 完了/STOP後mandatory STOP、retry/resume・input再生成・selection/独立32確認/H8へ進まない。
 User push方針を維持する。既存H4・共有環境・既存venvへ変更なし。
+
+## 2026-10-12 実行承認追記
+
+利用者が固定4 workerによる残142 groupの計算を明示指示。新exact grant/source/profile/input/carryを照合し、fresh resource gate合格。起動を認可し、完了/STOP後mandatory STOP。Remoteの新branchは未公開だが、利用者push方針と提示済みlocal SOURCEでの最新起動指示に従う。旧draft/旧grantは保持。実際のgrant/command/検査は資料入口のlaunch_authorization_v1へ固定した。

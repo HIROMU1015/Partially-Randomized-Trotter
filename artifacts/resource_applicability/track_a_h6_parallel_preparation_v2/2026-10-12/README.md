@@ -83,3 +83,11 @@ git -C /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h6-four-w
   -c maintenance.auto=false -c gc.auto=0 \
   push origin HEAD:refs/heads/track-a-h6-four-worker-preparation-20261012
 ```
+
+## 2026-10-12 利用者の142 group実行承認
+
+利用者の「その並列化を使ったうえで 残り142 group を計算して」に基づき、4 worker案でindex450–591を一度実行する新grantを発行した。
+[承認根拠](launch_authorization_v1/user_approval_record_v1.json)、[approved grant](launch_authorization_v1/authorization_approved_v1.json)、[prelaunch gate](launch_authorization_v1/prelaunch_gate_v1.json)、[actual command](launch_authorization_v1/launch_request_v1.json)。
+SOURCE `df2976f05c97c8c777f9a6264e83a53b637fef65`、grant SHA `591be24a73cc42826b0df59af74cea81307895d470a8573a0dff4ace685ba139`。固定source/profile/input/旧449/Phase A/carryを照合し、fresh resource gateに合格。
+今回の明示指示は提示済みlocal SOURCEでの起動指示として扱う。Originの新branchは未公開。利用者push方針を維持し、remote SHA未確認を記録した。
+Static preparation manifestのfalse flagsは保持し、別のapproved grantだけが今回の142探索を認可する。完了/STOP後mandatory STOP、retry/resume・独立32確認/H8は認可しない。
