@@ -1,5 +1,15 @@
 # trotterlib モジュール索引
 
+2026-10-11 完了済みN13科学レビューを受領し、N3保証生成とN1decode復旧を別契約へ具体化した。
+[次作業の入口](../../docs/research/n3_generator_n1_recovery_preparation_20261011.md)。
+N3は一外部・実one-body・非負densityの一変数LMI案と未使用12有理係数入力を結果前固定。
+N1は元44 factor/178 pair・q/精度/対照を保つdecode修正・N1のみ一回実行のscope。N2は完了扱い。
+今回は文書・係数literal・metadata/hash検査のみ、実装・新科学tests・solver/対角化/compile0。
+準備監査 `scripts/verify_n3_generator_n1_recovery_preparation.py`、artifacts `artifacts/n3_generator_n1_recovery/2026-10-11/preparation/`。
+future module/runner/tests/checkerは契約JSONに記した未実装path。旧source/failure/結果は不変。
+`PREPARATION_ONLY_MANDATORY_STOP`、新batch未認可、中心テーマnull。以下は過去milestoneの履歴として保持する。
+
+
 2026-10-11 N1/N3再設計の一回の限定batchを利用者指示で認可。元scopeは凍結履歴として保持する。
 [実行条件と数学確認](../../docs/research/n13_redesign_execution_20261011.md)、[source-bound plan](../../docs/research/n13_redesign_execution_plan_20261011.json)。
 新module `src/trottertracks/representation_exploration/n13_redesign.py`、runner `scripts/run_n13_redesign.py`、

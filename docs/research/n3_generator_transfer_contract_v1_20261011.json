@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "date_jst": "2026-10-11",
+  "base_commit": "10d91e518520e6f3fd853c85d8eff078357b7edb",
+  "branch": "n3-generator-n1-recovery-preparation-20261011",
+  "mandatory_stop": true,
+  "science_execution_authorized": false,
+  "implementation_authorized_this_preparation": false,
+  "next_scientific_stage_authorized": false,
+  "central_theme": null,
+  "prior_gpt_scientific_review_complete": true,
+  "repeat_prior_review": false,
+  "review_input": "docs/research/n3_generator_n1_recovery_inputs/n13_direction_certificate_scientific_review_2026-10-11.md",
+  "review_sha256": "6bf3ea3300d465a7bbf88999e7cae6bceff448dde2ba26aa272a894863a6165b",
+  "counts_this_preparation": {
+    "scientific_batch_runs": 0,
+    "scientific_tests_run": 0,
+    "algebra_replays": 0,
+    "diagonalizations": 0,
+    "lp_solves": 0,
+    "sdp_solves": 0,
+    "compilations": 0,
+    "quantum_shots": 0,
+    "gpu_calls": 0
+  },
+  "future_launch_requires_separate_user_instruction": true,
+  "id": "n3_generator_transfer_contract_v1_20261011",
+  "status": "DESIGN_PREPARED_IMPLEMENTATION_AND_SCIENCE_NOT_AUTHORIZED",
+  "review_sections": [
+    7,
+    10,
+    12
+  ],
+  "class_description": "real number-preserving one-body plus nonnegative density, one external empty mode",
+  "energy_error_goal": [
+    1,
+    250
+  ],
+  "geometry": null,
+  "chemical_basis": null,
+  "DF_rank": null,
+  "L_D": null,
+  "time_delta_window": null,
+  "proof_precondition": "c>U, 1<=nu<=active_modes",
+  "certificate": "0<=kappa<=D; kappa*hA-mu*I-v*v.T PSD; kappa*U-nu*mu<=delta*D; D=c-U+delta",
+  "one_variable_reduction": "mu0=(kappa*U-delta*D)/nu; M=kappa*(hA-U/nu*I)+delta*D/nu*I-v*v.T PSD",
+  "generator": {
+    "numeric_role": "candidate_proposal_only",
+    "method": "golden-section concave minimum-eigenvalue search on x=kappa/D in [0,1]",
+    "matrix_dimension_max": 7,
+    "search_eigenvalue_calls_per_case_max": 128,
+    "x_bracket_stop": [
+      1,
+      1099511627776
+    ],
+    "dyadic_denominator_bits": [
+      16,
+      24,
+      32,
+      40
+    ],
+    "rational_witness_attempts_per_case_max": 10,
+    "old_five_point_fallback_in_direct_method": false,
+    "numerical_success_is_certificate": false,
+    "completeness_claim": false
+  },
+  "verifier": {
+    "backend": "exact rational symmetric Schur/LDL with explicit zero-row rule",
+    "negative_pivot_tolerance": 0,
+    "singular_PSD_allowed": true,
+    "mu0_affine_margin": "exactly zero; not positive safety margin",
+    "independent_checker_required": true
+  },
+  "coefficient_bounds": {
+    "trial_determinants_max": 35,
+    "trial_states_per_case_max": 128,
+    "trial_recipe": "all determinants and directly connected equal pairs, normalized state witness retained",
+    "old_lambda_rho": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        20
+      ],
+      [
+        1,
+        10
+      ],
+      [
+        3,
+        20
+      ],
+      [
+        1,
+        5
+      ]
+    ],
+    "old_lambda_trials_per_case_max": 5,
+    "refinement_one_body_eigenvalue_proposals_per_case_max": 1,
+    "refinement_step": "max(1,max(abs(hA entries)))/2^24",
+    "refinement_offsets": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ],
+    "refinement_candidates_per_case_max": 6,
+    "ell": "max(Gershgorin lower, verified old lambda, verified refined lower)",
+    "discarded_lower": "hdd+(nu-1)*ell",
+    "common_U_c_for_norm_five_point_direct_and_strengthened_scalar": true,
+    "bound_generation_cost_shared_by_same_accounting": true
+  },
+  "input_path": "artifacts/n3_generator_n1_recovery/2026-10-11/preparation/n3_transfer_inputs.json",
+  "input_sha256": "9e99bda0d98ede7a5eea97002f36ab00378655884f35b0b0aec9af7692078d12",
+  "input_count": 12,
+  "input_ids": [
+    "T1_amp_1_40_low_coordinates",
+    "T1_amp_1_40_high_coordinates",
+    "T1_amp_1_10_low_coordinates",
+    "T1_amp_1_10_high_coordinates",
+    "T2_amp_1_40_low_coordinates",
+    "T2_amp_1_40_high_coordinates",
+    "T2_amp_1_10_low_coordinates",
+    "T2_amp_1_10_high_coordinates",
+    "T3_amp_1_40_low_coordinates",
+    "T3_amp_1_40_high_coordinates",
+    "T3_amp_1_10_low_coordinates",
+    "T3_amp_1_10_high_coordinates"
+  ],
+  "primary_methods": [
+    "legacy_scalar",
+    "common_norm_only",
+    "strengthened_scalar",
+    "five_point_common",
+    "direct_one_variable"
+  ],
+  "secondary_methods": [
+    "five_point_legacy_c"
+  ],
+  "method_records_max": 72,
+  "active_candidates_per_input": 1,
+  "external_candidate_from_input": true,
+  "full_space_fallback": true,
+  "old_development_scientific_replays": 0,
+  "old_GPT_appendix_replays": 0,
+  "selector_forbidden": [
+    "full_or_active_many_body_ground_truth",
+    "true_gap",
+    "true_reduction_error",
+    "diagnostic_artifacts"
+  ],
+  "close_and_hash_all_certificate_ledger_before_truth": true,
+  "future_diagnostics": {
+    "ground_solves_max": 24,
+    "sector_dimension_max": 56,
+    "numeric_tolerance": 1e-10,
+    "tolerance_is_proof": false
+  },
+  "future_synthetic_fixture_count_max": 24,
+  "resources": {
+    "backend": "CPU",
+    "workers_max": 2,
+    "threads_per_worker": 1,
+    "worker_memory_bytes": 4294967296,
+    "aggregate_memory_bytes": 8589934592,
+    "json_shard_bytes": 33554432,
+    "output_bytes": 536870912,
+    "log_bytes": 16777216,
+    "rational_max_bits": 4096,
+    "wall_seconds": null,
+    "cpu_seconds": null,
+    "gpu_calls": 0,
+    "thread_environment": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "1",
+      "RAYON_NUM_THREADS": "1"
+    },
+    "speedup_claim_requires_same_condition_comparison": true
+  },
+  "terminal_statuses": [
+    "GENERATED_TRANSFER_GAIN",
+    "TRANSFER_CERTIFIED_NO_NEW_GRID_GAIN",
+    "NO_TRANSFER_ADVANTAGE_IN_FROZEN_SCOPE",
+    "TECHNICAL_STOP",
+    "SOUNDNESS_STOP"
+  ],
+  "gain_requires_norm_difference_in_base_groups": 2,
+  "gain_requires_common_five_point_difference": 1,
+  "implementation": {
+    "status": "not_implemented",
+    "module": "src/trottertracks/representation_exploration/n3_direction_generator_v1.py",
+    "runner": "scripts/run_n3_direction_generator_v1.py",
+    "test": "tests/test_n3_direction_generator_v1.py",
+    "saved_verifier": "scripts/verify_n3_direction_generator_v1.py",
+    "source_commit": null,
+    "source_bound_plan": null,
+    "execution_authorization": null
+  }
+}

@@ -1,5 +1,15 @@
 # 研究計画資料
 
+2026-10-11 完了済みN13科学レビューを受領し、N3保証生成とN1decode復旧を別契約へ具体化した。
+[次作業の入口](../../docs/research/n3_generator_n1_recovery_preparation_20261011.md)。
+N3は一外部・実one-body・非負densityの一変数LMI案と未使用12有理係数入力を結果前固定。
+N1は元44 factor/178 pair・q/精度/対照を保つdecode修正・N1のみ一回実行のscope。N2は完了扱い。
+今回は文書・係数literal・metadata/hash検査のみ、実装・新科学tests・solver/対角化/compile0。
+準備監査 `scripts/verify_n3_generator_n1_recovery_preparation.py`、artifacts `artifacts/n3_generator_n1_recovery/2026-10-11/preparation/`。
+future module/runner/tests/checkerは契約JSONに記した未実装path。旧source/failure/結果は不変。
+`PREPARATION_ONLY_MANDATORY_STOP`、新batch未認可、中心テーマnull。以下は過去milestoneの履歴として保持する。
+
+
 2026-10-11 現在の次段準備は[N1/N3再設計の限定scope v1](n13_redesign_limited_scope_v1_20261011.md)と[machine contract](n13_redesign_limited_scope_v1_20261011.json)。
 [提供科学レビュー](n13_redesign_inputs/n123_feasibility_scientific_review_2026-10-11.md)は完了済み。N1/N3を優先しN2を固定S修正に限定するが、中心テーマは採択していない。
 設計だけを具体化し、新science/compile/LP/対角化/tests0。`DESIGN_PREPARED_SCIENCE_NOT_AUTHORIZED`でSTOP。

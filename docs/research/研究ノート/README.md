@@ -1,5 +1,15 @@
 # 研究ノート
 
+2026-10-11 完了済みN13科学レビューを受領し、N3保証生成とN1decode復旧を別契約へ具体化した。
+[次作業の入口](../../../docs/research/n3_generator_n1_recovery_preparation_20261011.md)。
+N3は一外部・実one-body・非負densityの一変数LMI案と未使用12有理係数入力を結果前固定。
+N1は元44 factor/178 pair・q/精度/対照を保つdecode修正・N1のみ一回実行のscope。N2は完了扱い。
+今回は文書・係数literal・metadata/hash検査のみ、実装・新科学tests・solver/対角化/compile0。
+準備監査 `scripts/verify_n3_generator_n1_recovery_preparation.py`、artifacts `artifacts/n3_generator_n1_recovery/2026-10-11/preparation/`。
+future module/runner/tests/checkerは契約JSONに記した未実装path。旧source/failure/結果は不変。
+`PREPARATION_ONLY_MANDATORY_STOP`、新batch未認可、中心テーマnull。以下は過去milestoneの履歴として保持する。
+
+
 2026-10-11の[N1/N3再設計準備](2026-10-11_n13_redesign_preparation.md)を追記した。
 完了済みGPT科学レビューの受領・限定scope具体化だけで、新science/tests0、中心テーマ未採択、実行STOP。
 

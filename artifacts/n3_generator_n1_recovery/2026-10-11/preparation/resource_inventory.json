@@ -1,0 +1,36 @@
+{
+  "role": "read-only host metadata; no performance benchmark or GPU API calls",
+  "cpu_online": 32,
+  "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
+  "meminfo": {
+    "MemTotal": "65522480 kB",
+    "MemAvailable": "54201788 kB"
+  },
+  "gpu_device_nodes": [],
+  "packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "mpmath": "1.3.0",
+    "pytest": "8.3.5"
+  },
+  "future_backend": "bounded CPU two workers, each thread1; recheck resources before launch",
+  "scientific_calculations_run": 0,
+  "performance_benchmarks_run": 0,
+  "prior_timing_reference": {
+    "path": "artifacts/n13_redesign/2026-10-11/run1/run_audit.json",
+    "sha256": "f846041c840b1c3b91cb572ae71cf908c4434dc8e3eb2d1a7daff8dba26dcdfe",
+    "status": "TECHNICAL_STOP",
+    "wall_seconds": 2.7236933619715273,
+    "interpretation": "technical decode stop before native compilation; not an N1 runtime benchmark"
+  },
+  "static_performance_plan": {
+    "N1_source": "src/trottertracks/representation_exploration/n13_redesign.py:run_n1",
+    "N1_expected_bottleneck": "native transpilation and full-column semantics over fixed wrappers; actual successful N1 timings pending",
+    "N1_reuse": "existing Gaussian/frame/Pauli caches and independent context spawn workers, preserve comparison and precision",
+    "N3_expected_bottleneck": "bounded small-matrix eigenvalue proposals plus rational Schur arithmetic; bit growth measured separately",
+    "N3_reuse": "case-local immutable rational coefficients, common trial/bound/old-grid LDL caches, two independent cases in parallel",
+    "new_timing_or_acceleration_benchmarks": 0,
+    "speedup_factor_claim": null
+  }
+}
