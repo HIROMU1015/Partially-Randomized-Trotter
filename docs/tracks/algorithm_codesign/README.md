@@ -421,3 +421,8 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 ## DF whole / local Pauli 比較契約（2026-10-11）
 
 [比較事前契約](df_correction_comparison_preregistration_20261011.md)、[限定native/T案](df_correction_comparison_execution_plan_20261011.md)、[利用者/GPT handoff](df_correction_comparison_gpt_handoff_20261011.md)。CD/E別input、未取得費用symbolic、T全coverage不足はINCONCLUSIVE。最新原本は固定・remote取得済み。63 metadata checks、science/compile/synthesis0、初期状態/familywise案は確認対象、source/authorization未準備、mandatory STOP。
+
+
+## DF correction comparison v2 source preparation — 2026-10-11
+
+[contract](df_correction_comparison_preregistration_v2_20261011.md) / [plan](df_correction_comparison_execution_plan_v2_20261011.md) / [GPT review original](../../research/track_b_df_correction_comparison_preregistration_review_20261011.md)。M1–M7を新B namespaceへ反映。current science authorization=false、source/contract整合確認と別one-shot指示が必要。旧証拠・STOP保持、mandatory STOP。

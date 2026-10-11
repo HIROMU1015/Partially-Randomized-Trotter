@@ -533,3 +533,8 @@ G9のP5少数群、G10の固定native事例/下界classを一つの読者向け�
 ## Track B DF補正比較の結果前準備（2026-10-11）
 
 [事前契約](tracks/algorithm_codesign/df_correction_comparison_preregistration_20261011.md)、[native/T計画](tracks/algorithm_codesign/df_correction_comparison_execution_plan_20261011.md)、[handoff](tracks/algorithm_codesign/df_correction_comparison_gpt_handoff_20261011.md)。原本identity/取得性と条件を固定、比較計算・合成0、source未実装、実行authorizationなし、mandatory STOP。
+
+
+## Track B DF comparison v2 source preparation (2026-10-11)
+
+[contract](tracks/algorithm_codesign/df_correction_comparison_preregistration_v2_20261011.md) / [plan](tracks/algorithm_codesign/df_correction_comparison_execution_plan_v2_20261011.md)。GPT reviewを固定し、有限bit会計、数値/phase認証、限定T下界、外側guardを準備。登録実行なし、mandatory STOP。

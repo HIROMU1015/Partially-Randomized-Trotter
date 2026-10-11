@@ -923,3 +923,8 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 ## Track B DF補正 whole / local Pauli：比較事前契約（2026-10-11）
 
 [契約](docs/tracks/algorithm_codesign/df_correction_comparison_preregistration_20261011.md)、[実行案](docs/tracks/algorithm_codesign/df_correction_comparison_execution_plan_20261011.md)、[利用者/GPT handoff](docs/tracks/algorithm_codesign/df_correction_comparison_gpt_handoff_20261011.md)。最新GPT MD/ZIP原本を固定・remote照合。CD/Eの別domain、共通誤差/shot規則、最大22compile/64T-target案を結果前固定しただけで、science/compile/T合成0、runs0、source未実装、mandatory STOP。artifactは`artifacts/track_b_df_correction_comparison_preparation/2026-10-11/`。旧監査・共有API・結果/marker/STOP不変。
+
+
+## 2026-10-11 Track B DF補正比較 v2 source preparation
+
+[v2比較契約](docs/tracks/algorithm_codesign/df_correction_comparison_preregistration_v2_20261011.md) / [source計画](docs/tracks/algorithm_codesign/df_correction_comparison_execution_plan_v2_20261011.md)。GPTレビューM1–M7を実装。新namespace `src/trottertracks/algorithm_codesign/df_correction_comparison/`、runner `scripts/tracks/algorithm_codesign/run_df_correction_comparison_v2.py`、focused tests `tests/tracks/algorithm_codesign/test_df_correction_comparison_v2.py`、source/evidence `artifacts/track_b_df_correction_comparison_source_v2/2026-10-11/`。登録CD/E/Tは0、別途source整合確認・authorizationが必要。旧source/results/markers/STOP保持、mandatory STOP。

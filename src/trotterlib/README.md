@@ -459,3 +459,8 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 
 [限定独立監査](../../docs/tracks/algorithm_codesign/df_sparse_correction_independent_audit_20261011.md)は`df_partial_s2.py`/`rte.py`/`df_rte_tail.py`/`df_trotter/ops.py`/`rte_compiled_cost.py`をread-only照合した。
 新audit scripts/testsはlibrary外、API/code変更なし。Gaussian orbitalsとsmall controlled回転はsyntheticで照合、thin-isometry/digital/Clifford+T production経路は未実装。科学的GOなし、mandatory STOP。
+
+
+## Track B DF correction comparison source v2
+
+共有trotterlib実装/APIは変更していない。B固有sourceは `../trottertracks/algorithm_codesign/df_correction_comparison/`、文書は docs/tracks/algorithm_codesign/df_correction_comparison_preregistration_v2_20261011.md、runnerは scripts/tracks/algorithm_codesign/run_df_correction_comparison_v2.py、testsは tests/tracks/algorithm_codesign/test_df_correction_comparison_v2.py。登録実行は別authorizationが必要。

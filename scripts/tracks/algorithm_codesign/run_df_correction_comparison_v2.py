@@ -1,0 +1,124 @@
+"""Future one-shot coordinator. Preparation authorization cannot pass its gate."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import sys
+import time
+import subprocess
+
+ROOT=Path(__file__).resolve().parents[3]
+sys.path.insert(0,str(ROOT/'src'))
+from trottertracks.algorithm_codesign.df_correction_comparison.launch import ART,RESULT,verify_launch,sha
+from trottertracks.algorithm_codesign.df_correction_comparison.guard import Supervisor,Limits,exclusive_json
+
+
+def main():
+    # No CLI overrides for fixture, caps, precision, grid, resource coordinate.
+    if len(sys.argv)!=1:raise PermissionError('Runner takes no scientific overrides')
+    provenance=verify_launch(ROOT)  # Fails on current preparation source; marker stays absent.
+    contract=json.loads((ROOT/ART/'contract_v2.json').read_text())
+    runtime_env=dict(os.environ,PYTHONPATH=str(ROOT/'src'),PYTHONDONTWRITEBYTECODE='1')
+    for stage in ('CD','synthesis'):
+        section=contract['runtimes']['synthesis' if stage=='synthesis' else 'numeric']
+        code=('import json,sys;from trottertracks.algorithm_codesign.df_correction_comparison.worker import runtime_check;'
+              'runtime_check(json.load(open(sys.argv[1])),sys.argv[2])')
+        subprocess.run([section['python'],'-B','-c',code,str(ROOT/ART/'contract_v2.json'),stage],
+                       cwd=ROOT,env=runtime_env,check=True,timeout=30)
+    # Runtime/code identity is checked BEFORE consuming the science marker.
+    out=ROOT/RESULT;out.mkdir(parents=True,exist_ok=True)
+    marker=out/'one_shot_marker.json'
+    exclusive_json(marker,dict(provenance,runs=1,retries=0,mandatory_STOP=True,created_unix=time.time()))
+    marker_hash=sha(marker)
+    os.environ['PYTHONPATH']=str(ROOT/'src')
+    caps=contract['caps']
+    supervisor=Supervisor(Limits(caps['wall_seconds_total'],caps['CPU_seconds_total'],caps['aggregate_RSS_MiB'],caps['aggregate_RSS_MiB']),out,
+                          output_cap=caps['output_bytes']-262144,log_cap=caps['log_bytes'])
+    completed_stages=[];classification='TECHNICAL_INCONCLUSIVE';reason=None
+    def make(label,stage,**payload):
+        output=out/(label+'.json');job=out/(label+'.job.json')
+        exclusive_json(job,dict(payload,stage=stage,output=str(output),marker_sha256=marker_hash))
+        runtime=contract['runtimes']['synthesis' if stage=='synthesis' else 'numeric']['python']
+        return {'label':label,'output':str(output),'command':[runtime,'-B','-m','trottertracks.algorithm_codesign.df_correction_comparison.worker',str(job)]}
+    def run(jobs,phase,workers,per_key=False):
+        c=caps[phase]
+        limits=Limits(c['wall_seconds'],c['CPU_seconds'],c['aggregate_RSS_MiB'],c['worker_RSS_MiB'],c.get('per_key_wall_seconds',0),c.get('per_key_CPU_seconds',0))
+        return supervisor.phase(jobs,limits,workers,per_key=per_key)
+    try:
+        run([make('CD','CD')],'CD',1);completed_stages.append('CD')
+        # Native input generation is inside the same phase budget as compilation.
+        native_start_cpu=supervisor.cpu();native_start=time.monotonic()
+        run([make('E-inputs','E_inputs')],'native',1)
+        inputs=json.loads((out/'E-inputs.json').read_text())
+        # Shared phase caps must include the input-generation substage, not reset.
+        caps['native']['wall_seconds']-=time.monotonic()-native_start
+        caps['native']['CPU_seconds']-=supervisor.cpu()-native_start_cpu
+        run([make('E-r'+str(r),'native',r=r,frames=inputs[str(r)]) for r in (3,6)],'native',2)
+        completed_stages.append('E_NATIVE')
+        from fractions import Fraction as F
+        from trottertracks.algorithm_codesign.df_correction_comparison.intervals import configure
+        from trottertracks.algorithm_codesign.df_correction_comparison.angles import Angle
+        from trottertracks.algorithm_codesign.df_correction_comparison.native import select_synthesis_inventory,t_completion,local_t_separation
+        configure()
+        circuits={};bs={};native={}
+        for r in (3,6):
+            native[r]=json.loads((out/('E-r'+str(r)+'.json')).read_text())
+            if sum(native[k]['compile_calls'] for k in native)>22:raise RuntimeError('Compile call cap')
+            for row in native[r]['native']:
+                if row['arm']=='A':circuits[(r,row['controlled'])]=row['inventory']
+            bs[r]=[Angle.load(a) for a in native[r]['T_semantic_angles']]
+        inventory=select_synthesis_inventory(circuits,bs)
+        exclusive_json(out/'synthesis_inventory.json',inventory)  # Freeze before ANY synthesizer call.
+        jobs=[make('T-'+str(i),'synthesis',angle=a) for i,a in enumerate(inventory['unique_keys'])]
+        if len(jobs)>64:raise RuntimeError('Synthesis call cap')
+        key_by_label={j['label']:inventory['unique_keys'][i]['key'] for i,j in enumerate(jobs)}
+        bset=set(inventory['B_required_keys']);pset=set(inventory['phase_required_keys'])-bset
+        batches=[[j for j in jobs if key_by_label[j['label']] in bset],
+                 [j for j in jobs if key_by_label[j['label']] in pset],
+                 [j for j in jobs if key_by_label[j['label']] not in bset|pset]]
+        t_start_cpu=supervisor.cpu();t_start=time.monotonic()
+        original_wall=caps['synthesis']['wall_seconds'];original_cpu=caps['synthesis']['CPU_seconds']
+        for batch in batches:
+            if not batch:continue
+            caps['synthesis']['wall_seconds']=original_wall-(time.monotonic()-t_start)
+            caps['synthesis']['CPU_seconds']=original_cpu-(supervisor.cpu()-t_start_cpu)
+            run(batch,'synthesis',2,per_key=True)
+        completed_stages.append('T_KEYS')
+        sequences={}
+        for j in jobs:
+            row=json.loads(Path(j['output']).read_text());sequences[row['angle']['key']]=row
+        accounting=[]
+        for r in (3,6):
+            for control in (False,True):
+                a=t_completion(circuits[(r,control)],sequences)
+                # B arbitrary-angle keys are shared by ALL labels; basis/phase Clifford T=0.
+                rows=[]
+                for event in native[r]['all_B_event_costs']:
+                    if event['controlled']!=control:continue
+                    sign=event['sign'];ell=F(native[r]['ell_computational'])
+                    scales=(-sign,sign) if control else (-2*sign,)
+                    keys=[Angle('atan',ell/F(128),F(s)).key for s in scales]
+                    cost=sum(sequences[k]['T_count'] for k in keys) if all(k in sequences for k in keys) else None
+                    rows.append(dict(event,actual_T=cost))
+                complete=bool(rows) and all(x['actual_T'] is not None for x in rows)
+                expected=sum(F(x['executed_conditional_probability'])*x['actual_T'] for x in rows) if complete else None
+                b={'actual_total_T':max(x['actual_T'] for x in rows) if complete else None,
+                   'expected_conditional_T':str(expected) if complete else None,'all_B_events_covered':complete}
+                accounting.append({'r':r,'controlled':control,'A':a,'B':b,
+                    # A lower greater than the WORST B event gives a local fixed-plan separation.
+                    **local_t_separation(a,b)})
+        exclusive_json(out/'T_accounting.json',{'rows':accounting,'CD_PR_total_winner':None})
+        supervisor.check_total()
+        classification='COMPLETE_TECHNICAL_COMPARISON_NO_AUTOMATIC_GO'
+    except BaseException as exc:
+        reason=type(exc).__name__+': '+str(exc)
+    finally:
+        exclusive_json(out/'terminal_status.json',{'classification':classification,'technical_reason':reason,
+            'completed_stages':completed_stages,'provenance':provenance,'marker_SHA256':marker_hash,
+            'resource_receipt':supervisor.receipt(),'retries':0,'mandatory_STOP':True,
+            'scientific_winner':None,'G10_RA_D0_molecule_GPU_LP_trajectory_calls':0})
+        print(json.dumps({'classification':classification,'mandatory_STOP':True,'reason':reason}))
+    return 0 if classification.startswith('COMPLETE') else 2
+
+
+if __name__=='__main__':raise SystemExit(main())

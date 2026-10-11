@@ -492,3 +492,8 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 ## DF correction comparison planning metadata validator
 
 `tracks/algorithm_codesign/validate_df_correction_comparison_plan.py` はstdlibだけで入力hash/ZIP CRC/固定params/予算整合/source不変性を確認する。matrix/signal/compile/shot/T合成を行わず、新science PASSではない。receiptはexclusive create、既存receiptを上書きしない。 [契約](../docs/tracks/algorithm_codesign/df_correction_comparison_preregistration_20261011.md)。比較runner・実行認可は未準備、mandatory STOP。
+
+
+## DF correction comparison v2 (Track B)
+
+`tracks/algorithm_codesign/run_df_correction_comparison_v2.py`: future source-bound one-shot coordinator; current authorization false. `tracks/algorithm_codesign/verify_df_correction_comparison_source_v2.py`: stdlib metadata verifier, no registered fixture. See docs/tracks/algorithm_codesign/df_correction_comparison_execution_plan_v2_20261011.md.

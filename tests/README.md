@@ -80,3 +80,8 @@ testsでregistered profile採点やsynthesisを行わず、full suite未実行�
 
 `test_df_sparse_correction_audit.py`：15 PASS。可換quotient、pure-D、tiny η、exact階層確率、identity、controlled phase、非Gaussian basis、独立drawのnegative control。
 [監査](../docs/tracks/algorithm_codesign/df_sparse_correction_independent_audit_20261011.md)。新分子入力/本番run/full suiteなし、mandatory STOP。
+
+
+## Track B DF correction comparison v2
+
+`tracks/algorithm_codesign/test_df_correction_comparison_v2.py`: off-domain finite-bit accounting, Pauli mean/control phase, frame/proxy/angle enclosures, partial T multiplicity and external resource/launch guards. No registered CD/E recipe or gridsynth; one small off-domain native lowering compile per focused-suite invocation. Source-bound local checks, not immutable CI/scientific comparison.
