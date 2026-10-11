@@ -1,5 +1,15 @@
 # tests の役割
 
+## 2026-10-12 N3 occupation certificate preparation
+
+[数学検証・比較設計](../docs/research/n3_occupation_redesign_mathematical_audit_20261012.md)。新科学batch未認可。
+module `src/trottertracks/representation_exploration/n3_occupation_certificate_audit.py`;
+runner `scripts/verify_n3_occupation_redesign_preparation.py`;
+coefficient-only preparation `scripts/prepare_n3_occupation_transfer_inputs.py`;
+test `tests/test_n3_occupation_certificate_audit.py`;
+artifacts `artifacts/n3_occupation_redesign_preparation/2026-10-12/`.
+
+
 2026-10-11 N1/N2構成・N3係数下界の限定feasibilityを完了。
 [結果・GPT判断事項](../docs/research/hamiltonian_algorithm_design_results_20261011.md)、[固定scope](../docs/research/hamiltonian_algorithm_design_scope.md)を入口とする。
 N1：JW4・ν2・signed DF rank2・決定論S2、T=.6、delta=.6/.3/.15/.075、εH<=.02。

@@ -1,5 +1,14 @@
 # Validation status
 
+## 2026-10-12 N3 occupation redesign preparation
+
+[Mathematical audit](docs/research/n3_occupation_redesign_mathematical_audit_20261012.md) / [design](docs/research/n3_occupation_transfer_design_v1_20261012.md).
+Local exact review-witness audit: 756 checks, 7 PSD matrices; 9 new synthetic algebra/rejection tests.
+Development T3 only; no new transfer result, eigensolver/optimizer/ground/compile calls.
+Eight new rational inputs stored without predicate evaluation; execution not authorized; mandatory STOP.
+No immutable CI or external scientific reproduction. Existing global manifest description failure retained.
+
+
 2026-10-11 N3未使用12有理入力の一回移送を完了。直接生成5/12、共通norm/five-point各4/12。normとの差baseはT1のみで、事前2-base基準未達。NO_TRANSFER_ADVANTAGE_IN_FROZEN_SCOPE。
 [新結果・GPT判断事項](docs/research/n3_direction_generator_v1_results_20261011.md)。15 new synthetic tests、独立保存監査49016 checks PASS。
 module [n3_direction_generator_v1](src/trottertracks/representation_exploration/n3_direction_generator_v1.py)、[runner](scripts/run_n3_direction_generator_v1.py)、[tests](tests/test_n3_direction_generator_v1.py)、[保存checker](scripts/verify_n3_direction_generator_v1.py)、[artifacts](artifacts/n3_direction_generator_v1/2026-10-11)、[決定履歴](docs/research/研究ノート/2026-10-11_n3_direction_generator_v1_execution.md)。

@@ -1,5 +1,15 @@
 # 文書索引
 
+## 2026-10-12 N3 occupation certificate preparation
+
+[数学検証・比較設計](research/n3_occupation_redesign_mathematical_audit_20261012.md)。新科学batch未認可。
+module `src/trottertracks/representation_exploration/n3_occupation_certificate_audit.py`;
+runner `scripts/verify_n3_occupation_redesign_preparation.py`;
+coefficient-only preparation `scripts/prepare_n3_occupation_transfer_inputs.py`;
+test `tests/test_n3_occupation_certificate_audit.py`;
+artifacts `artifacts/n3_occupation_redesign_preparation/2026-10-12/`.
+
+
 2026-10-11 N3未使用12有理入力の一回移送を完了。直接生成5/12、共通norm/five-point各4/12。normとの差baseはT1のみで、事前2-base基準未達。NO_TRANSFER_ADVANTAGE_IN_FROZEN_SCOPE。
 [新結果・GPT判断事項](research/n3_direction_generator_v1_results_20261011.md)。15 new synthetic tests、独立保存監査49016 checks PASS。
 module [n3_direction_generator_v1](../src/trottertracks/representation_exploration/n3_direction_generator_v1.py)、[runner](../scripts/run_n3_direction_generator_v1.py)、[tests](../tests/test_n3_direction_generator_v1.py)、[保存checker](../scripts/verify_n3_direction_generator_v1.py), [公開metadata監査](../scripts/verify_n3_direction_generator_v1_publication.py)、[artifacts](../artifacts/n3_direction_generator_v1/2026-10-11)、[決定履歴](research/研究ノート/2026-10-11_n3_direction_generator_v1_execution.md)。

@@ -1,5 +1,15 @@
 # 研究計画資料
 
+## 2026-10-12 N3 occupation certificate preparation
+
+[数学検証・比較設計](n3_occupation_redesign_mathematical_audit_20261012.md)。新科学batch未認可。
+module `src/trottertracks/representation_exploration/n3_occupation_certificate_audit.py`;
+runner `scripts/verify_n3_occupation_redesign_preparation.py`;
+coefficient-only preparation `scripts/prepare_n3_occupation_transfer_inputs.py`;
+test `tests/test_n3_occupation_certificate_audit.py`;
+artifacts `artifacts/n3_occupation_redesign_preparation/2026-10-12/`.
+
+
 2026-10-11 完了済みN13科学レビューを受領し、N3保証生成とN1decode復旧を別契約へ具体化した。
 [次作業の入口](../../docs/research/n3_generator_n1_recovery_preparation_20261011.md)。
 N3は一外部・実one-body・非負densityの一変数LMI案と未使用12有理係数入力を結果前固定。
