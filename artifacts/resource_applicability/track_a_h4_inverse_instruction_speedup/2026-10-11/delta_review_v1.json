@@ -1,0 +1,24 @@
+{
+  "status": "PASS_LOCAL_LIGHTWEIGHT_DELTA_REVIEW",
+  "source_commit": "def7d48f4af6c07f2d4e361fae868f3b01db8915",
+  "reviewer": "implementation author",
+  "independent": false,
+  "scope": "only changed runtime modules, new bounded memo and artificial tests; no full review/campaign",
+  "blocking_findings": [],
+  "checks": [
+    "Old/new full canonical bytes and digest, paired axis, signed zero, phase/control state, labels/conditions/order",
+    "Value-key recomputed for every use; mutable object ids are never encoding keys",
+    "Cache 2MiB/2048 entries; key 16KiB/384 nodes; only <=16-instruction definitions with already encoded children",
+    "Large definitions/arrays stay lazy; no full exact tree and canonical 65536-byte chunks unchanged",
+    "Geometry cache owns basis/inverse; builder composes copies and fallback retains original inversion",
+    "Public serialize/deserialize without memo compatible",
+    "All signal/sampling/seed functions AST-identical; compiler, worker, IPC, observer, caps, binding files byte-identical",
+    "14 limited artificial tests PASS; transpile/real input/child process/affinity/production launch 0",
+    "Active run source closure85 unchanged"
+  ],
+  "limits": [
+    "No independent final launch review performed",
+    "Production speedup and compiled metrics not measured",
+    "Future adoption needs SOURCE/profile/seed/plan/auth/review binding and a fresh run; no hot patch"
+  ]
+}
