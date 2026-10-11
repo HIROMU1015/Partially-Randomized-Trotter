@@ -30,3 +30,9 @@ coordinator AS soft2 GiB／hard8 GiB、signal・cost AS soft/hard8 GiB。signal 
 旧[v1 STOP](track_a_h6_matched_accuracy_result_v1.md)／source／消費済みgrant、旧[pilot 7 cell・32/36 wrapper](track_a_h6_technical_pilot_result_v2.md)、保存入力と既存dirty/untrackedを保全。**mandatory STOP。`H6_NOT_AUTHORIZED`／`DRAFT_NOT_AUTHORIZATION`／`next_stage_authorized=false`。** 今回の一回grantを再使用しない。科学的判断と追加runの要否はGPT・利用者へ戻す。
 
 公開結果commitとGitHub再取得hash照合は[remote結果照合](../../artifacts/resource_applicability/track_a_h6_matched_execution_v2/2026-10-11/remote_result_verification_v2.json)で特定する。この文書はCodexによる事実と監査scopeの整理で、GPT独立科学レビューや承認済み次段階契約ではない。
+
+## 2026-10-11 公開後の静的補足：B3件数表記とexit code
+
+[追加観測](../../artifacts/resource_applicability/track_a_h6_matched_execution_v2/2026-10-11/post_publication_observation_v2.json)。原結果・契約・sealed manifest・原監査を保存したまま、上記記述とmetadataの件数不一致を明示する。**「B3 normalization-only 168組」という既存の件数表記は、固定gridのcardinalityと一致しない。** sealed manifestと固定sourceはq4個×r7個×K3個、計84組である。保存済み84 rowの(q,r,K)は全84組と重複なく一致し、この固定B3診断に未取得の組はない。「84/168が保存」は科学的な半数欠測として扱わない。元の168表記・欠測registryは履歴として保存し、科学gridや結果を変更しない。主比較の92候補・4精度・449/592探索group・902 wrapper・確認段階未開始はそのままである。
+
+executor sessionの終了値1を公開後に回収した。元の外部観測のrunner_exit_code=nullを上書きせず、この追加観測で区別する。最終公開commit d90f7bcから5,648 pathを独立再取得照合し、この結果文書の相対リンクにも欠落がないことを確認した。新科学計算・sampling・compile・retry/resumeは0、mandatory STOPを維持する。
