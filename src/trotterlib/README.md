@@ -1,5 +1,13 @@
 # trotterlib モジュール索引
 
+2026-10-11 N1/N3再設計の一回の限定batchを利用者指示で認可。元scopeは凍結履歴として保持する。
+[実行条件と数学確認](../../docs/research/n13_redesign_execution_20261011.md)、[source-bound plan](../../docs/research/n13_redesign_execution_plan_20261011.json)。
+新module `src/trottertracks/representation_exploration/n13_redesign.py`、runner `scripts/run_n13_redesign.py`、
+tests `tests/test_n13_redesign.py`、独立保存監査 `scripts/verify_n13_redesign.py`、artifacts `artifacts/n13_redesign/2026-10-11/`。
+合成検証18件PASS。新科学sourceを固定してから実行する。中心テーマnull、次段認可false、終了後mandatory STOP。
+以下は既存stageの記録として保持する。
+
+
 2026-10-11 N1/N3再設計の[限定scope v1](../../docs/research/n13_redesign_limited_scope_v1_20261011.md)を準備した。
 将来のmoduleは `src/trottertracks/representation_exploration/n13_redesign.py`（未実装）。runner、tests、保存auditorの予定pathはscope §6に対応する。
 今回旧library/frozen scienceを変更せず、新科学計算0、実行未認可、mandatory STOP。以下は旧stageの履歴。

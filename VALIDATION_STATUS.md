@@ -1,5 +1,13 @@
 # Validation status
 
+2026-10-11 N1/N3再設計の一回の限定batchを利用者指示で認可。元scopeは凍結履歴として保持する。
+[実行条件と数学確認](docs/research/n13_redesign_execution_20261011.md)、[source-bound plan](docs/research/n13_redesign_execution_plan_20261011.json)。
+新module `src/trottertracks/representation_exploration/n13_redesign.py`、runner `scripts/run_n13_redesign.py`、
+tests `tests/test_n13_redesign.py`、独立保存監査 `scripts/verify_n13_redesign.py`、artifacts `artifacts/n13_redesign/2026-10-11/`。
+合成検証18件PASS。新科学sourceを固定してから実行する。中心テーマnull、次段認可false、終了後mandatory STOP。
+以下は既存stageの記録として保持する。
+
+
 2026-10-11 完了済みGPT科学レビューを受領し、[N1/N3再設計の限定scope](docs/research/n13_redesign_limited_scope_v1_20261011.md)を具体化した。
 `DESIGN_PREPARED_SCIENCE_NOT_AUTHORIZED`。新科学結果・science source・科学testsは0、中心テーマ未採択、mandatory STOP。
 N1は旧44 factor候補と係数PF上界によるshot×full-wrapper費用、N3は一外部軌道の係数Schur条件、N2は固定S一件のweighted-L1修正案。

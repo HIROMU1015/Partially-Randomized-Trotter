@@ -1,5 +1,13 @@
 # 文書索引
 
+2026-10-11 N1/N3再設計の一回の限定batchを利用者指示で認可。元scopeは凍結履歴として保持する。
+[実行条件と数学確認](../docs/research/n13_redesign_execution_20261011.md)、[source-bound plan](../docs/research/n13_redesign_execution_plan_20261011.json)。
+新module `src/trottertracks/representation_exploration/n13_redesign.py`、runner `scripts/run_n13_redesign.py`、
+tests `tests/test_n13_redesign.py`、独立保存監査 `scripts/verify_n13_redesign.py`、artifacts `artifacts/n13_redesign/2026-10-11/`。
+合成検証18件PASS。新科学sourceを固定してから実行する。中心テーマnull、次段認可false、終了後mandatory STOP。
+以下は既存stageの記録として保持する。
+
+
 2026-10-11の現在の準備は[N1/N3限定scope v1](research/n13_redesign_limited_scope_v1_20261011.md)、[machine contract](research/n13_redesign_limited_scope_v1_20261011.json)、[提供済み科学レビュー](research/n13_redesign_inputs/)から読む。
 旧GPT科学レビューは完了、新scienceは未認可。source/最小検証はこれからで、今回science/compile/対角化/LP/tests0、中心テーマnull、mandatory STOP。
 以下は旧stage/他Trackの当時の履歴。
