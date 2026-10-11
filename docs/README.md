@@ -1,5 +1,12 @@
 # 文書索引
 
+2026-10-11 N1保存real/imag vector decodeを復旧し、旧条件の一回実行を完了。全3 contextのRZ/CX選択はexact fallback、certified objective改善0%。N1_RECOVERY_COMPLETE_AWAITING_SCIENTIFIC_REVIEW。
+[新結果・GPT判断事項](research/n1_decode_recovery_v1_results_20261011.md)。18 new synthetic tests、独立保存監査26575 checks PASS。
+module [n1_decode_recovery_v1](../src/trottertracks/representation_exploration/n1_decode_recovery_v1.py)、[runner](../scripts/run_n1_decode_recovery_v1.py)、[tests](../tests/test_n1_decode_recovery_v1.py)、[保存checker](../scripts/verify_n1_decode_recovery_v1.py), [公開metadata監査](../scripts/verify_n1_decode_recovery_v1_publication.py)、[artifacts](../artifacts/n1_decode_recovery_v1/2026-10-11)、[決定履歴](research/研究ノート/2026-10-11_n1_decode_recovery_v1_execution.md)。
+本branchはこのtaskの専用記録。中心テーマnull、次段認可false、mandatory STOP。local証拠でimmutable CI/外部科学再現ではない。
+projectの最終量子総資源評価完了とは主張しない。global manifestの既存description欠落FAILは別に保持。以下は当時の履歴。
+
+
 2026-10-11 完了済みN13科学レビューを受領し、N3保証生成とN1decode復旧を別契約へ具体化した。
 [次作業の入口](../docs/research/n3_generator_n1_recovery_preparation_20261011.md)。
 N3は一外部・実one-body・非負densityの一変数LMI案と未使用12有理係数入力を結果前固定。
