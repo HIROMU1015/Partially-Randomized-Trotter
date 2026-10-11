@@ -65,7 +65,7 @@ def identity_for(plan, geometry, template):
                               plan['compiler_fingerprint'], plan['environment_fingerprint'])
 
 
-def expected_record(plan, record, context=None):
+def expected_record(plan, record, context=None, *, execution_source=None):
     from .signal import trajectory_seeds
     if context is None:
         context=({fingerprint('h4-template-v1',t):t for t in plan['templates']},{},{})
@@ -84,8 +84,11 @@ def expected_record(plan, record, context=None):
         require(index is None, 'continuation baseline index')
         seed = None
     expected = wire(identity,record['axis'],seed,index,record['numerical_circuit_fingerprint'])
-    require(set(record)==set(expected)|{'status','metrics','cache_reuse','cache_owner_wrapper_key',
-                                      'actual_transpile_invocation_id'}, 'run10 completion fields')
+    extra={'status','metrics','cache_reuse','cache_owner_wrapper_key','actual_transpile_invocation_id'}
+    if execution_source is not None:
+        extra.add('execution_source_commit')
+        require(record.get('execution_source_commit')==execution_source, 'continuation execution SOURCE')
+    require(set(record)==set(expected)|extra, 'continuation completion fields')
     return expected
 
 
@@ -193,14 +196,21 @@ def inventory(plan):
                 continue
             name=path.name.removesuffix('.pending')
             allowed=(name in ('byte-budget.journal','observer.jsonl','driver-first-stop.json','worker-log-first-stop.txt','ledger.lock','map-complete.json','launch-stop.json') or
-                     re.fullmatch(r'ledger-[0-9]{6}\.json|record-[0-9a-f]{64}\.json|signal-.+\.json|worker-log-.+\.json',name)) if label=='output' else name in ('one-shot.json','runner.log')
+                     re.fullmatch(r'ledger-[0-9]{6}\.json|record-[0-9a-f]{64}\.json|signal-.+\.json|worker-log-.+\.json|worker-log-[0-9]{6}\.txt',name)) if label=='output' else name in ('one-shot.json','runner.log')
             require(allowed, 'unexpected continuation file')
             require(len(files)<MAX_FILES, 'continuation file count limit')
             files[label+'/'+path.name]=file_receipt(path)
     return files
 
 
-def replay(plan, files):
+def replay(plan, files, *, ancestor=None, execution_source=None, prior_invocations=0, prior_charge=0):
+    if ancestor is None:
+        require(execution_source is None and prior_invocations==prior_charge==0, 'run10 replay context')
+    else:
+        require(type(prior_invocations) is int and prior_invocations==ancestor.state.get('total_actual_invocations',len(ancestor.state['reservations'])) and
+                type(prior_charge) is int and prior_charge>=0 and execution_source is not None and
+                plan['carry']['actual_invocations']==prior_invocations and plan['carry']['charged_bytes']==prior_charge,
+                'continuation replay cumulative context')
     root=private_path(plan['output_root']);entries={};reservations={};chain=None
     names=sorted(n for n in files if re.fullmatch(r'output/ledger-[0-9]{6}\.json',n))
     require(names, 'continuation ledger missing')
@@ -219,35 +229,56 @@ def replay(plan, files):
                     (key not in reservations and value['status']=='RESERVED' or key in reservations and reservations[key]['status']=='RESERVED' and
                      value=={**reservations[key],'status':'COMPLETE'}), 'continuation reservation transition')
         entries.update(row['entries']);reservations.update(row['reservations']);chain=fingerprint('h4-ledger-delta-v1',row)
-    require(len(reservations)<=plan['caps']['actual_invocations'] and
-            {r['invocation'] for r in reservations.values()}=={'science-%06d'%i for i in range(1,len(reservations)+1)},
+    require(prior_invocations+len(reservations)<=plan['caps']['actual_invocations'] and
+            {r['invocation'] for r in reservations.values()}=={'science-%06d'%i for i in range(prior_invocations+1,prior_invocations+len(reservations)+1)},
             'continuation contiguous actual invocations')
     records={};registry={};expected={}
     for key,entry in entries.items():
         hash_id(key);name='output/record-'+key+'.json';require(name in files, 'acknowledged completion file missing')
         record=read_json(root/Path(name).name,limit=4096,expected=files[name])
         require(record['wrapper_key']==key and entry['status']=='COMPLETE', 'continuation completion key/state')
-        require(set(entry)=={'status','digest','cache_owner_wrapper_key'}, 'continuation completion entry fields')
-        expect=expected_record(plan,record,context);registry[key]=expect['numerical_circuit_fingerprint']
+        imported='continuation_receipt_sha256' in entry
+        fields={'status','digest','cache_owner_wrapper_key'}
+        if imported:
+            require(ancestor is not None and key in ancestor.records and key not in reservations and
+                    entry['continuation_receipt_sha256']==ancestor.digest and
+                    files[name]==ancestor.files[name], 'continuation imported lineage/bytes')
+            fields.add('continuation_receipt_sha256')
+            expect=ancestor.state['expected'][key]
+            require(record==ancestor.recover(expect), 'continuation imported record changed')
+        else:
+            expect=expected_record(plan,record,context,execution_source=execution_source)
+            require(ancestor is None or key not in ancestor.records, 'ancestor COMPLETE relabeled as new')
+        require(set(entry)==fields, 'continuation completion entry fields')
+        registry[key]=expect['numerical_circuit_fingerprint']
         validate_complete(record,expect,registry,entry['digest'])
         require(entry['cache_owner_wrapper_key']==record['cache_owner_wrapper_key'], 'continuation owner binding')
-        if record['cache_reuse']:
+        require(type(record['cache_reuse']) is bool and
+                (record['cache_owner_wrapper_key'] is None)==(record['cache_reuse'] is False), 'continuation cache flag/owner')
+        if imported:
+            pass  # Original reservation remains charged in the ancestor carry.
+        elif record['cache_reuse']:
             require(key not in reservations and record['actual_transpile_invocation_id'] is None, 'continuation reused invocation')
         else:
             require(key in reservations and reservations[key]==dict(status='COMPLETE',invocation=record['actual_transpile_invocation_id']),
                     'continuation completed reservation')
         records[key]=record;expected[key]=expect
+    require(ancestor is None or set(ancestor.records)<=set(records), 'acknowledged ancestor COMPLETE missing')
     for key,record in records.items():
         if record['cache_reuse']:
             owner=record['cache_owner_wrapper_key'];require(owner in records, 'continuation reuse owner missing')
             reuse_owner(records[owner],expected[owner],expected[key],registry,entries[owner]['digest'])
     require(all(r['status']!='COMPLETE' or k in entries for k,r in reservations.items()), 'completed reservation without record')
     journal=private_path(root/'byte-budget.journal');require('output/byte-budget.journal' in files,'continuation journal missing')
-    charged=0
+    charged=0;rows=0
     with journal.open('rb') as stream:
         while raw:=stream.read(128):
             require(len(raw)==128 and raw.strip().isdigit(), 'continuation ambiguous journal')
             value=int(raw.strip());require(value>=128,'continuation refunded journal');charged+=value
+            if rows==0 and prior_charge:
+                require(value==prior_charge+128, 'continuation first journal carry row')
+            rows+=1
+    require(not prior_charge or rows>0 and charged>=prior_charge+128, 'continuation byte carry missing')
     require(file_receipt(journal)==files['output/byte-budget.journal'] and charged<plan['caps']['output_bytes'], 'continuation byte carry')
     require('output/observer.jsonl' in files, 'continuation observer trace missing')
     last_wall=last_monotonic=0.
@@ -269,6 +300,7 @@ def replay(plan, files):
                 last_monotonic=row['monotonic']
     return dict(records=records,expected=expected,entries=entries,reservations=reservations,
                 ledger_head=chain,ledger_versions=len(names),charged_bytes=charged,
+                total_actual_invocations=prior_invocations+len(reservations),
                 observed_wall_floor=last_wall,observed_monotonic_floor=last_monotonic)
 
 
@@ -335,19 +367,24 @@ def load_receipt(root, descriptor):
             data['carry']==dict(actual_invocations=len(state['reservations']),charged_bytes=state['charged_bytes'],wall_seconds=wall),
             'continuation carry/ledger/imported binding')
     store=ResumeStore(plan,data['files'],state,descriptor['sha256'])
-    # Validate every saved candidate before it can skip scientific work.
+    validate_saved_signals(store)
+    audit_absence(proofs[1]['identities'])
+    return store,data
+
+
+def validate_saved_signals(store):
+    """Validate every saved candidate before it can skip scientific work."""
+    plan=store.parent
     from .signal import trajectory_seeds
-    for name in data['files']:
+    for name in store.files:
         if name.startswith('output/signal-') and not name.endswith('.pending'):
-            saved=read_json(Path(plan['output_root'])/Path(name).name,limit=524288,expected=data['files'][name])
+            saved=read_json(Path(plan['output_root'])/Path(name).name,limit=524288,expected=store.files[name])
             template=next((t for t in plan['templates'] if t['template_id']==saved['template_id']),None)
             require(template is not None, 'continuation signal template')
             identity=identity_for(plan,saved['geometry'],template)
             seeds=trajectory_seeds(identity) if template['method'] in ('B2','B3') else [None]
             require(Path(name).name=='signal-'+saved['geometry']+'-'+template['template_id']+'.json' and
                     store.complete_signal(identity,template,seeds) is not None, 'unacknowledged continuation signal')
-    audit_absence(proofs[1]['identities'])
-    return store,data
 
 
 class ResumeStore:

@@ -11,6 +11,14 @@ ENCODING_SOURCE='3beb3870369eeb8ef76b4ead965c886eba7d16e9'
 CHANGED_RUNTIME=frozenset(('identity.py','circuits.py','execution.py','ledger.py','parallel.py','launch_binding.py'))
 
 
+def resume_run_id(authorization):
+    scope=authorization['continuation_amendment']['scope']
+    if scope=='run10_encoding_only_resume':return RESUME_RUN_ID
+    from .continuation_resume01 import SCOPE, NEXT_RUN
+    require(scope==SCOPE, 'closed continuation generation')
+    return NEXT_RUN
+
+
 def structural(plan, authorization):
     present='continuation' in plan
     require(present==('continuation_amendment' in authorization), 'continuation plan/auth pair')
@@ -26,7 +34,7 @@ def structural(plan, authorization):
             'continuation fixed receipt reference')
     hash_id(ref['sha256'])
     require(type(change) is dict and set(change)=={'approved','scope','continuation','authority'} and
-            type(change['approved']) is bool and change['scope']=='run10_encoding_only_resume' and
+            type(change['approved']) is bool and change['scope'] in ('run10_encoding_only_resume','resume01_inverse_instruction_resume') and
             change['continuation']==value and type(change['authority']) is dict and
             set(change['authority'])=={'path','sha256'}, 'continuation amendment binding')
     authority=change['authority'];p=Path(authority['path'])
@@ -43,17 +51,18 @@ def structural(plan, authorization):
 def authorize(plan, authorization):
     structural(plan,authorization)
     require(authorization['continuation_amendment']['approved'] is True and
-            plan['run_id']==RESUME_RUN_ID and plan['source_commit']!=PARENT_SOURCE,
+            plan['run_id']==resume_run_id(authorization) and plan['source_commit']!=PARENT_SOURCE,
             'explicit continuation approval/fresh execution SOURCE')
     require(plan['caps']['actual_invocations']>=74784+plan['carry']['actual_invocations']-plan['continuation']['imported_wrappers'],
             'remaining actual cannot guarantee continuation')
 
 
-def verify_roots(plan, parent):
+def verify_roots(plan, parent, *, extra_readonly=()):
     new=[Path(plan[k]) for k in ('output_root','control_root')]
     old=[Path(parent[k]) for k in ('output_root','control_root')]
     readonly=[Path(plan[k]) for k in ('input_root','stop_evidence_root','source_root')]
     readonly.append(Path(plan['continuation']['receipt']['path']))
+    readonly.extend(Path(p) for p in extra_readonly)
     require(all(not a.is_relative_to(b) and not b.is_relative_to(a) for a in new for b in old+readonly) and
             not new[0].is_relative_to(new[1]) and not new[1].is_relative_to(new[0]),
             'continuation must use disjoint fresh roots')
@@ -64,6 +73,9 @@ def verify_runtime(permit):
     from . import gates
     from .launch_binding import reference
     plan=permit.plan;authorize(plan,permit.authorization)
+    if permit.authorization['continuation_amendment']['scope']=='resume01_inverse_instruction_resume':
+        from .continuation_resume01 import verify_runtime as verify_next
+        return verify_next(permit)
     parent=parent_plan(plan['source_root'])
     for field in ('inputs','input_root','generation_freeze_digest','templates','contract_plan_fingerprint',
                   'environment_fingerprint','compiler_fingerprint','environment_profile','compiler_profile',

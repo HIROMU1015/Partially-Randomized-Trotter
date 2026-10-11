@@ -16,22 +16,26 @@ from trottertracks.resource_applicability.h4_geometry.gates import THREAD_ENV
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('mode',choices=('capture-clock','capture-stop','receipt'))
+    parser.add_argument('--parent',choices=('run10','resume01'),default='run10')
     parser.add_argument('--started',required=True)
     parser.add_argument('--clock')
     parser.add_argument('--proof')
     parser.add_argument('--output',required=True)
     args=parser.parse_args()
+    protocol=c
+    if args.parent=='resume01':
+        from trottertracks.resource_applicability.h4_geometry import continuation_resume01 as protocol
     require(sys.flags.safe_path and sys.dont_write_bytecode and
             all(os.environ.get(k)==v for k,v in THREAD_ENV.items()),'receipt Python -P -B / thread1')
-    started=c.read_json(args.started,expected=c.STARTED_EXPECTED)
-    if args.mode=='capture-clock':value=c.capture_clock(started)
+    started=protocol.read_json(args.started,expected=protocol.STARTED_EXPECTED)
+    if args.mode=='capture-clock':value=protocol.capture_clock(started)
     else:
         require(args.clock is not None,'fixed live clock context needed')
-        clock=c.read_json(args.clock,expected=c.CLOCK_EXPECTED)
-        if args.mode=='capture-stop':value=c.capture_stop_proof(started,clock)
+        clock=protocol.read_json(args.clock,expected=protocol.CLOCK_EXPECTED)
+        if args.mode=='capture-stop':value=protocol.capture_stop_proof(started,clock)
         else:
             require(args.proof is not None,'native stop proof needed before snapshot')
-            value=c.make_receipt(ROOT,args.started,args.clock,args.proof)
+            value=protocol.make_receipt(ROOT,args.started,args.clock,args.proof)
     path=c.private_path(args.output)
     raw=(json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(',',':'))+'\n').encode()
     require(len(raw)<=c.MAX_RECEIPT and not path.exists(),'exclusive bounded receipt output')

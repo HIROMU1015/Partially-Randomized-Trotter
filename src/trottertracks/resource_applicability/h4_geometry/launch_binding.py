@@ -75,8 +75,8 @@ def authorize(plan,authorization,review, *, explicit_launch):
     require(plan['sealed'] and authorization['approved'] and authorization['runtime_authorization'] and
             review['approved'] and review['runtime_authorization'],'unsealed/unapproved newhost launch')
     continued='continuation' in plan
-    from .continuation_binding import RESUME_RUN_ID
-    run_id=RESUME_RUN_ID if continued else RUN_ID
+    from .continuation_binding import resume_run_id
+    run_id=resume_run_id(authorization) if continued else RUN_ID
     require(all(d['stage']=='signal_compile' and d['run_id']==run_id and d['source_commit']==plan['source_commit']
                 for d in (plan,authorization,review)),'newhost stage/run/source')
     require(re.fullmatch('[0-9a-f]{40}',plan['source_commit']) is not None,'actual source SHA')

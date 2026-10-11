@@ -71,7 +71,8 @@ class Ledger:
         self.resume,self.execution_source=resume,execution_source
         self.imported=set();self.registered=set()
         if resume is not None:
-            require(prior_invocations==len(resume.state['reservations']), 'continuation actual carry into ledger')
+            require(prior_invocations==resume.state.get('total_actual_invocations',len(resume.state['reservations'])),
+                    'continuation actual carry into ledger')
         budget.write('ledger.lock',b'')
         self.fd=os.open(budget.root/'ledger.lock',os.O_RDWR|os.O_NOFOLLOW)
         self._save()
