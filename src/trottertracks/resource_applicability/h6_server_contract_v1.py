@@ -15,8 +15,8 @@ KIND='H6_SERVER_PHASE_A_ONLY_V1'
 RUNNER='scripts/resource_applicability/run_track_a_h6_server_phase_a_v1.py'
 PREPARER='scripts/resource_applicability/prepare_track_a_h6_server_v1.py'
 AUDITOR='scripts/resource_applicability/audit_track_a_h6_server_v1.py'
-NAMESPACE='artifacts/resource_applicability/track_a_h6_server_phase_a_v1/2026-10-11/'
-PREPARATION='artifacts/resource_applicability/track_a_h6_server_preparation_v1/2026-10-11/'
+NAMESPACE='artifacts/resource_applicability/track_a_h6_server_phase_a_v2/2026-10-12/'
+PREPARATION='artifacts/resource_applicability/track_a_h6_server_preparation_v2/2026-10-12/'
 OLD_MANIFEST='artifacts/resource_applicability/track_a_h6_matched_preparation_v3/2026-10-11/sealed_manifest_v3.json'
 
 
@@ -26,7 +26,9 @@ def source_paths(root):
         'src/trottertracks/resource_applicability/h6_server_contract_v1.py',
         'src/trottertracks/resource_applicability/h6_server_execution_v1.py',
         'src/trottertracks/resource_applicability/h6_server_resources_v1.py',
-        'src/trottertracks/resource_applicability/h6_server_quota_v1.py'})
+        'src/trottertracks/resource_applicability/h6_server_quota_v1.py',
+        'src/trottertracks/resource_applicability/h6_server_native_dependencies_v2.py',
+        'scripts/resource_applicability/inspect_track_a_h6_environment_v1.py'})
 
 
 def verify_science(root):
@@ -83,6 +85,7 @@ def validate_grant(m,g,output):
 
 
 def verify_profile(root,m):
+    from .h6_server_native_dependencies_v2 import native_dependencies
     ref=m['profile'];path=safe_path(root,ref['repository_path'])
     if file_hash(path)!=ref['sha256']:raise ValueError('SERVER_PROFILE_CHANGED')
     p=json.loads(path.read_text())
@@ -93,6 +96,8 @@ def verify_profile(root,m):
         path=Path(item['path'])
         if not path.is_relative_to('/home/AbeHiromu') or file_hash(path)!=item['sha256']:
             raise ValueError('SERVER_NATIVE_BINARY_OR_SOURCE:'+str(path))
+    if p.get('native_lowering_dependencies')!=native_dependencies():
+        raise ValueError('SERVER_NATIVE_LOWERING_PROFILE')
     return p
 
 

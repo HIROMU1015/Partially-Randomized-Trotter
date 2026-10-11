@@ -22,7 +22,7 @@ def main():
     env=environment()
     if env!=old['environment'] or env!=registry['environment']:raise ValueError('EXACT_LEGACY_ENVIRONMENT_REQUIRED')
     verify_science(ROOT);scope=phase_scope(registry)
-    out=ROOT/NAMESPACE/'launch_server_v1';out.parent.mkdir(parents=True,exist_ok=True)
+    out=ROOT/NAMESPACE/'launch_server_v2';out.parent.mkdir(parents=True,exist_ok=True)
     if out.exists():raise ValueError('FRESH_OUTPUT_REQUIRED')
     profile=a.profile.resolve();profile.relative_to(ROOT)
     m=dict(schema='h6_server_phase_a_manifest_v1',kind=KIND,repository_root=str(ROOT),
@@ -33,7 +33,7 @@ def main():
         profile=dict(repository_path=str(profile.relative_to(ROOT)),sha256=file_hash(profile)),
         assigned_resources=resources(a.cpus),observation_policy=observation_policy(),
         exclusive_output=dict(repository_path=str(out.relative_to(ROOT)),absolute_path=str(out)),
-        one_shot_lock='.server-preparation/h6-server-phase-a-v1/phase-a.lock',
+        one_shot_lock='.server-preparation/h6-server-phase-a-v2/phase-a.lock',
         execution_plan_sealed=True,**flags())
     committed_hashes(ROOT,a.source_commit,m['source_hashes']);verify_bindings(ROOT,m)
     exclusive_json(base/'sealed_manifest_server_v1.json',m)

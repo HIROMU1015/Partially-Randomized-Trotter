@@ -157,6 +157,11 @@ def test_supervisor_minimal_process_cleanup(tmp_path,monkeypatch,mode):
     result=e.supervise_one([sys.executable,'-I','-P','-B','-c',code],tmp_path,m)
     assert result['process_reaped'] and result['log_and_journal_closed']
     if mode=='exit':assert result['worker_exit_code']==0 and result['first_stop_reason'] is None
+    if mode=='exit':
+        assert result['coordinator_peak_rss_bytes']>0
+        assert result['coordinator_peak_vmsize_bytes']>=result['coordinator_peak_rss_bytes']
+        rows=[json.loads(line) for line in (tmp_path.parent/(tmp_path.name+'_resource_observations.jsonl')).read_text().splitlines()]
+        assert rows and all({'VmRSS_bytes','VmSize_bytes','VmPeak_bytes','VmHWM_bytes'}<=set(row['coordinator']) for row in rows)
     if mode=='abort':assert result['worker_exit_code']==-6
     if mode=='rss':assert result['first_stop_reason']=='AGGREGATE_RSS_CAP'
     if mode=='missing':assert result['first_stop_reason']=='OBSERVATION_MISSING'

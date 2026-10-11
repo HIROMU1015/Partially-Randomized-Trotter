@@ -30,6 +30,7 @@ def supervise_one(command,output,m,*,progress=None):
     caps=m['plan']['caps_proposed'];baseline=host_memory();process=None;identity=None
     started=time.monotonic();last_sample=started;last_emit=0.;first=None;code=None
     peak_rss=peak_as=aggregate_peak=0;journal_bytes=0;cleanup_error=None
+    coordinator_peak_rss=coordinator_peak_as=0;coordinator_memory=None
     cache=output.parent/'.runtime_cache';cache.mkdir(exist_ok=True)
     temporary=cache/'tmp';temporary.mkdir(exist_ok=True)
     env=worker_environment(1,cache)
@@ -48,7 +49,8 @@ def supervise_one(command,output,m,*,progress=None):
                 try:
                     before=time.monotonic();current=process_identity(process.pid)
                     if current['start_ticks']!=identity['start_ticks']:raise ValueError('WORKER_IDENTITY_CHANGED')
-                    mem=process_memory(process.pid);host=host_memory();rss=process_tree_rss(os.getpid())
+                    mem=process_memory(process.pid);coordinator_memory=process_memory(os.getpid())
+                    host=host_memory();rss=process_tree_rss(os.getpid())
                     after=time.monotonic();duration=after-before;staleness=before-last_sample
                     last_sample=after
                     reason=memory_reason(host,baseline,policy)
@@ -61,11 +63,14 @@ def supervise_one(command,output,m,*,progress=None):
                     if (output/'worker.log').stat().st_size>caps['log_bytes']:reason=reason or 'WORKER_LOG_CAP'
                     peak_rss=max(peak_rss,mem['VmHWM_bytes'],mem['VmRSS_bytes'])
                     peak_as=max(peak_as,mem.get('VmPeak_bytes',mem['VmSize_bytes']));aggregate_peak=max(aggregate_peak,rss)
+                    coordinator_peak_rss=max(coordinator_peak_rss,coordinator_memory['VmHWM_bytes'])
+                    coordinator_peak_as=max(coordinator_peak_as,coordinator_memory['VmPeak_bytes'])
                     first=first or reason
                     if now-last_emit>=policy['journal_emit_seconds'] or first:
                         diagnostics=sorted(output.glob('diagnostic_*.json'))
                         phase=read(diagnostics[-1]).get('context',{}) if diagnostics else {'stage':'startup'}
-                        row=dict(monotonic=after,wall_seconds=after-started,worker=mem,aggregate_rss_bytes=rss,driver_phase=phase,
+                        row=dict(monotonic=after,wall_seconds=after-started,worker=mem,
+                            coordinator=coordinator_memory,aggregate_rss_bytes=rss,driver_phase=phase,
                             memory=host,interval_seconds=policy['interval_seconds'],observation_seconds=duration,
                             staleness_seconds=staleness,first_stop_reason=first)
                         payload=(json.dumps(row,sort_keys=True,separators=(',',':'))+'\n').encode()
@@ -91,6 +96,8 @@ def supervise_one(command,output,m,*,progress=None):
                 worker_exit_code=code,first_stop_reason=first,cleanup_error=cleanup_error)
     return dict(worker_exit_code=code,first_stop_reason=first,cleanup_error=cleanup_error,
         worker_peak_rss_bytes=peak_rss,worker_peak_vmsize_bytes=peak_as,
+        coordinator_peak_rss_bytes=coordinator_peak_rss,coordinator_peak_vmsize_bytes=coordinator_peak_as,
+        coordinator_last_memory=coordinator_memory,
         live_aggregate_peak_rss_bytes=aggregate_peak,wall_seconds=time.monotonic()-started,
         journal_bytes=journal_bytes,identity=identity,process_reaped=process is not None and process.returncode is not None,
         log_and_journal_closed=True,retry=False)
@@ -180,6 +187,7 @@ def admit_new_group(directory,task,source):
 
 
 def orchestrate(root,output,m,writer,fresh):
+    started=time.monotonic()
     root=Path(root);output=Path(output);r=m['assigned_resources'];status='H6_SERVER_PHASE_A_STOP';reason=None
     limits=install_limits(r['coordinator_cpu_set'],r['coordinator_address_space_bytes'],
         m['plan']['caps_proposed']['output_bytes'],hard_address_bytes=r['coordinator_hard_address_space_bytes'])
@@ -194,13 +202,17 @@ def orchestrate(root,output,m,writer,fresh):
         command=[sys.executable,'-I','-P','-B',str(root/RUNNER),'--worker',str(directory),'--run-root',str(output)]
         report=supervise_one(command,directory,m,progress=Progress(writer))
         writer.write('phase_a_resource_summary.json',report)
+        # A failed task can unwind before the next periodic sample. Preserve its
+        # native high-water marks too, without changing its first STOP reason.
+        terminal_path=directory/'worker_terminal.json'
+        if terminal_path.exists():
+            final_memory=read(terminal_path).get('memory',{})
+            report['worker_peak_rss_bytes']=max(report['worker_peak_rss_bytes'],final_memory.get('VmHWM_bytes',0))
+            report['worker_peak_vmsize_bytes']=max(report['worker_peak_vmsize_bytes'],final_memory.get('VmPeak_bytes',0))
+        writer.write('phase_a_resource_final_summary.json',report)
         if report['first_stop_reason'] or report['worker_exit_code']!=0:
             raise RuntimeError(report['first_stop_reason'] or 'WORKER_EXIT:'+str(report['worker_exit_code']))
         result=admit_new_group(directory,task,m['source_commit'])
-        final_memory=read(directory/'worker_terminal.json').get('memory',{})
-        report['worker_peak_rss_bytes']=max(report['worker_peak_rss_bytes'],final_memory.get('VmHWM_bytes',0))
-        report['worker_peak_vmsize_bytes']=max(report['worker_peak_vmsize_bytes'],final_memory.get('VmPeak_bytes',0))
-        writer.write('phase_a_resource_final_summary.json',report)
         verify_bindings(root,m)
         begin={};transpile=[]
         for path in sorted(directory.glob('diagnostic_*.json')):
@@ -223,5 +235,6 @@ def orchestrate(root,output,m,writer,fresh):
         output_bytes=output_size(output),science_source=m['science_source'],environment=m['environment'],
         phase_a_only=True,resource_summary=report),terminal=True)
     writer.write('execution_terminal.json',dict(status=status,reason=reason,source_commit=m['source_commit'],
+        coordinator_memory=process_memory(os.getpid()),coordinator_execution_wall_seconds=time.monotonic()-started,
         phase_b_authorized=False,confirmation_authorized=False,retry=False,resume=False,**flags()),terminal=True)
     return 0 if reason is None else 1

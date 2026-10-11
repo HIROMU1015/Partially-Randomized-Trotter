@@ -16,6 +16,7 @@ ROOT=Path(__file__).resolve().parents[2];sys.path.insert(0,str(ROOT/'src'))
 from trottertracks.resource_applicability.h6_matched_contract_v1 import environment,file_hash
 from trottertracks.resource_applicability.h6_matched_reuse_v3 import COMPILER_HASH
 from trottertracks.resource_applicability.ax2a_preparation import digest
+from trottertracks.resource_applicability.h6_server_native_dependencies_v2 import native_dependencies
 
 
 def main():
@@ -23,6 +24,7 @@ def main():
     p.add_argument('--build-dependencies',type=Path,required=True);a=p.parse_args()
     if not Path(sys.prefix).is_relative_to('/home/AbeHiromu/projects/h6-environments'):
         raise ValueError('H6_DEDICATED_ENVIRONMENT_REQUIRED')
+    native=native_dependencies()
     files={};dependencies=[];regenerated=[]
     def capture(path):
         path=Path(path).resolve()
@@ -75,6 +77,7 @@ def main():
         if x.group.startswith('qiskit.')],key=lambda x:(x['group'],x['name'],x['value']))
     profile=dict(schema='h6_server_environment_compiler_v1',python=sys.executable,venv=sys.prefix,
         python_full_version=sys.version,platform=platform.platform(),environment=environment(),
+        native_lowering_dependencies=native,
         dependencies=dependencies,critical_file_hashes=[dict(path=p,sha256=sha) for p,sha in sorted(files.items())],
         install_generated_bytecode_differences=regenerated,
         compiler=dict(settings_hash=COMPILER_HASH,qiskit_version=qiskit.__version__,
