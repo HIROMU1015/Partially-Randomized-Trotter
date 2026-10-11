@@ -1,5 +1,12 @@
 # 研究ノート
 
+2026-10-11 N3未使用12有理入力の一回移送を完了。直接生成5/12、共通norm/five-point各4/12。normとの差baseはT1のみで、事前2-base基準未達。NO_TRANSFER_ADVANTAGE_IN_FROZEN_SCOPE。
+[新結果・GPT判断事項](../n3_direction_generator_v1_results_20261011.md)。15 new synthetic tests、独立保存監査49016 checks PASS。
+module [n3_direction_generator_v1](../../../src/trottertracks/representation_exploration/n3_direction_generator_v1.py)、[runner](../../../scripts/run_n3_direction_generator_v1.py)、[tests](../../../tests/test_n3_direction_generator_v1.py)、[保存checker](../../../scripts/verify_n3_direction_generator_v1.py)、[artifacts](../../../artifacts/n3_direction_generator_v1/2026-10-11)、[決定履歴](2026-10-11_n3_direction_generator_v1_execution.md)。
+本branchはこのtaskの専用記録。中心テーマnull、次段認可false、mandatory STOP。local証拠でimmutable CI/外部科学再現ではない。
+projectの最終量子総資源評価完了とは主張しない。global manifestの既存description欠落FAILは別に保持。以下は当時の履歴。
+
+
 2026-10-11 完了済みN13科学レビューを受領し、N3保証生成とN1decode復旧を別契約へ具体化した。
 [次作業の入口](../../../docs/research/n3_generator_n1_recovery_preparation_20261011.md)。
 N3は一外部・実one-body・非負densityの一変数LMI案と未使用12有理係数入力を結果前固定。
