@@ -938,3 +938,8 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 ## Track B DF補正A/B比較 one-shot technical STOP（2026-10-12）
 
 [結果/GPT handoff](docs/tracks/algorithm_codesign/df_correction_comparison_results_and_gpt_handoff_20261012.md)：`TECHNICAL_INCONCLUSIVE`。固定S' 41349b7→直接authorization-only A a1f537b、一回/retry0。CD6task保存、E-r3 whole fingerprint guardで停止、E-r6はparallel termination、T0。prefixを科学的勝敗へ使わず、source216/contract/auth/marker保持。原結果は`artifacts/track_b_df_correction_comparison_result/2026-10-11/v2/`、[保存値監査](artifacts/track_b_df_correction_comparison_execution_audit/2026-10-12/saved_output_audit_v1.json)と[evidence manifest](artifacts/track_b_df_correction_comparison_execution_audit/2026-10-12/evidence_manifest_v1.json)。mandatory STOP、次scopeはGPT/利用者判断。
+
+
+## Track B DF補正比較 fingerprint原因監査（2026-10-12）
+
+[限定技術監査/GPT handoff](docs/tracks/algorithm_codesign/df_correction_fingerprint_cause_audit_and_gpt_handoff_20261012.md)：保存source/ASTのみ。input/recursive-definition hash guardを確認、float DAG/frame受渡しに構成差、actual hash/None未保存のため因果未確定。旧`TECHNICAL_INCONCLUSIVE`/source216/result28/auth/contract/marker不変。新matrix/compile/T合成/runner0、修正未採択、mandatory STOP。[監査manifest](artifacts/track_b_df_correction_fingerprint_cause_audit/2026-10-12/evidence_manifest_v1.json)。

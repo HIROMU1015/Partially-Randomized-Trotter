@@ -436,3 +436,8 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 ## DF whole / local Pauli comparison one-shot STOP（2026-10-12）
 
 [結果とGPT handoff](df_correction_comparison_results_and_gpt_handoff_20261012.md)：S'41349b7→直接子A a1f537b、一回のみ。`TECHNICAL_INCONCLUSIVE`、CD6保存、E-r3 fingerprint failure、T合成0、retry0。partial scientific winnerなし、source/contract/auth/marker保持、mandatory STOP。
+
+
+## DF comparison fingerprint technical audit（2026-10-12）
+
+[保存sourceによる原因監査](df_correction_fingerprint_cause_audit_and_gpt_handoff_20261012.md)：pre-transpile input/definition identity、float DAG差、actual/None未保存を区別。修正候補は未採択、旧technical STOP維持、追加science/compile/synthesis/runner0。
