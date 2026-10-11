@@ -1,0 +1,56 @@
+{
+  "context": {
+    "cell_id": "B1_p19_q8_4th",
+    "phase": "exploration",
+    "replica": 0,
+    "stage": "cost_task"
+  },
+  "exception_type": "ImportError",
+  "locals_recorded": false,
+  "memory_after_unwind": {
+    "VmHWM_bytes": 378368000,
+    "VmRSS_bytes": 378368000,
+    "VmSize_bytes": 812392448,
+    "cumulative_peak_rss_bytes": 378368000
+  },
+  "message": "qiskit-nature is required for fermionic Gaussian decomposition when num_qubits > 8.",
+  "scope": "diagnostic snapshot; allocation failure peak not inferred",
+  "traceback_frame_limit": 32,
+  "traceback_frames": [
+    {
+      "file": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h6-matched-server-preparation-20261011/src/trottertracks/resource_applicability/h6_server_execution_v1.py",
+      "function": "execute_worker",
+      "line": 140
+    },
+    {
+      "file": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h6-matched-server-preparation-20261011/src/trottertracks/resource_applicability/h6_matched_cost_port_v3.py",
+      "function": "cost_task",
+      "line": 24
+    },
+    {
+      "file": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h6-matched-server-preparation-20261011/src/trotterlib/pr2_matched_accuracy_m1_execution.py",
+      "function": "_prepare",
+      "line": 155
+    },
+    {
+      "file": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h6-matched-server-preparation-20261011/src/trotterlib/df_partial_s2.py",
+      "function": "prepare_df_partial_s2",
+      "line": 374
+    },
+    {
+      "file": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h6-matched-server-preparation-20261011/src/trotterlib/df_trotter/ops.py",
+      "function": "build_one_body_gaussian_block",
+      "line": 406
+    },
+    {
+      "file": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h6-matched-server-preparation-20261011/src/trotterlib/df_trotter/ops.py",
+      "function": "U_to_qiskit_ops_jw",
+      "line": 204
+    },
+    {
+      "file": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h6-matched-server-preparation-20261011/src/trotterlib/df_trotter/ops.py",
+      "function": "_dense_gaussian_unitary_ops",
+      "line": 133
+    }
+  ]
+}

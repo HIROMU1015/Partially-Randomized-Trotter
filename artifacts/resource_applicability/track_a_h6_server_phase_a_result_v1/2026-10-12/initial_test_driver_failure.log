@@ -1,0 +1,38 @@
+F..                                                                      [100%]
+=================================== FAILURES ===================================
+__________________ test_real_limit_inheritance_and_one_thread __________________
+
+tmp_path = PosixPath('/home/AbeHiromu/projects/h6-handoff-evidence/20261012/phase-a-execution-preflight-bnudlg67/test-tmp/test_real_limit_inheritance_an0')
+
+    def test_real_limit_inheritance_and_one_thread(tmp_path):
+        cpus=[20,21,22,23]
+        if not set(cpus)<=os.sched_getaffinity(0):pytest.skip('Proposed preparation CPUs unavailable')
+        code='''import os,resource,subprocess,sys,json
+    sys.path.insert(0,sys.argv[1])
+    from trottertracks.resource_applicability.h6_matched_execution_v2 import install_limits,worker_environment
+    install_limits(json.loads(sys.argv[2])[2:],2*2**30,2*2**30,hard_address_bytes=32*2**30)
+    assert resource.getrlimit(resource.RLIMIT_AS)==(2*2**30,32*2**30)
+    child="import os,resource,json,sys;sys.path.insert(0,sys.argv[1]);from trottertracks.resource_applicability.h6_matched_execution_v2 import install_limits;from trottertracks.resource_applicability.h6_server_resources_v1 import THREAD_KEYS;install_limits(json.loads(sys.argv[2])[:2],32*2**30,32*2**20);assert resource.getrlimit(resource.RLIMIT_AS)==(32*2**30,32*2**30);assert sorted(os.sched_getaffinity(0))==json.loads(sys.argv[2])[:2];assert all(os.environ[k]=='1' for k in THREAD_KEYS);assert os.environ['QISKIT_PARALLEL']=='FALSE';print('CHILD_LIMIT_PASS')"
+    r=subprocess.run([sys.executable,'-I','-P','-B','-c',child,sys.argv[1],sys.argv[2]],env=worker_environment(1,__import__('pathlib').Path(sys.argv[3])),capture_output=True,text=True,timeout=10)
+    assert r.returncode==0,r.stderr
+    assert resource.getrlimit(resource.RLIMIT_AS)==(2*2**30,32*2**30)
+    assert sorted(os.sched_getaffinity(0))==json.loads(sys.argv[2])[2:]
+    print(r.stdout)
+    '''
+        p=subprocess.run([sys.executable,'-I','-P','-B','-c',code,str(ROOT/'src'),json.dumps(cpus),str(tmp_path)],
+            capture_output=True,text=True,timeout=20)
+>       assert p.returncode==0,p.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "<string>", line 4, in <module>
+E           File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h6-matched-server-preparation-20261011/src/trottertracks/resource_applicability/h6_matched_execution_v2.py", line 40, in install_limits
+E             raise ValueError('MATCHED_FSIZE_INHERITED_HARD_TOO_SMALL')
+E         ValueError: MATCHED_FSIZE_INHERITED_HARD_TOO_SMALL
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python', '-I', '-P', '-B', '-c', 'i...   raise ValueError(\'MATCHED_FSIZE_INHERITED_HARD_TOO_SMALL\')\nValueError: MATCHED_FSIZE_INHERITED_HARD_TOO_SMALL\n').returncode
+
+tests/tracks/resource_applicability/test_h6_server_v1.py:103: AssertionError
+- generated xml file: /home/AbeHiromu/projects/h6-handoff-evidence/20261012/phase-a-execution-preflight-bnudlg67/limited-preflight-tests.xml -
+=========================== short test summary info ============================
+FAILED tests/tracks/resource_applicability/test_h6_server_v1.py::test_real_limit_inheritance_and_one_thread
+1 failed, 2 passed in 0.45s

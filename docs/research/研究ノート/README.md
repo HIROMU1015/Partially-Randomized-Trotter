@@ -1,5 +1,14 @@
 # 研究ノート
 
+## 2026-10-12 H6共用サーバーPhase A v1：dependency STOP
+
+[Phase A一回実行・依存不足STOP・未取得事項](2026-10-12_track_a_h6_server_phase_a_v1.md)。
+
+明示承認された447 `B1_p19_q8_4th`をworker1/AS32 GiB/CPU20–23で一度起動。qiskit-nature不足によりGaussian準備でImportError、transpile未到達。
+新group/wrapper0、旧449/592・902 wrapper・92 signal・84 B3を保全、missing143。q8の32 GiB feasibilityは未判定。
+worker peak RSS0.352 GiB/VmSize0.757 GiB、worker監視wall4.012秒、exit1。own cleanup残存0、H4継続・CPU重複なし。
+新grant消費済み、retry/resume/install/環境変更なし。H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION / next_stage_authorized=false、mandatory STOP。Phase B/確認32/H8は未認可。以下は過去段階の履歴。
+
 ## 2026-10-12 H6共用サーバー移行準備 v1：Phase A認可待ち
 
 [専用環境・資源制御・検査・公開方針の記録](2026-10-12_track_a_h6_server_migration_preparation_v1.md)。

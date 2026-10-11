@@ -1,5 +1,14 @@
 # scripts 索引
 
+## 2026-10-12 H6共用サーバーPhase A v1：dependency STOP
+
+[固定server runner](resource_applicability/run_track_a_h6_server_phase_a_v1.py)を一度起動。[原結果](../docs/research/track_a_h6_server_phase_a_result_v1.md)。sourceは変更していない。
+
+明示承認された447 `B1_p19_q8_4th`をworker1/AS32 GiB/CPU20–23で一度起動。qiskit-nature不足によりGaussian準備でImportError、transpile未到達。
+新group/wrapper0、旧449/592・902 wrapper・92 signal・84 B3を保全、missing143。q8の32 GiB feasibilityは未判定。
+worker peak RSS0.352 GiB/VmSize0.757 GiB、worker監視wall4.012秒、exit1。own cleanup残存0、H4継続・CPU重複なし。
+新grant消費済み、retry/resume/install/環境変更なし。H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION / next_stage_authorized=false、mandatory STOP。Phase B/確認32/H8は未認可。以下は過去段階の履歴。
+
 ## 2026-10-12 H6共用サーバー移行準備 v1：Phase A認可待ち
 
 [prepare](resource_applicability/prepare_track_a_h6_server_v1.py)、[audit](resource_applicability/audit_track_a_h6_server_v1.py)、[grant必須Phase A runner](resource_applicability/run_track_a_h6_server_phase_a_v1.py)。[環境inspect](resource_applicability/inspect_track_a_h6_environment_v1.py)、[再現helper](resource_applicability/reproduce_track_a_h6_environment_v1.py)。
