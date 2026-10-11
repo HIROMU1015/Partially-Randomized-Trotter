@@ -1,0 +1,67 @@
+{
+  "classification": "TECHNICAL_INCONCLUSIVE",
+  "technical_reason": "CapFailure: Child failed or output missing: E-r3",
+  "completed_stages": [
+    "CD"
+  ],
+  "provenance": {
+    "source": "41349b73157c7781e0b534cf0fe61e06bf439954",
+    "authorization": "a1f537b68f0f22419dff0202c553b7511653caa3",
+    "authorization_sha256": "30f21541c8ae90615fcc4a8a779815749b2f13eb0d8faf6686e014c9fe2b75f0",
+    "contract_sha256": "0079988b0e63ea7c62fec8e435bcf17313a3563d9480caf8aaf569e2e5972305",
+    "branch": "track-b-df-correction-comparison-one-shot-execution-20261012",
+    "remote_sha": "a1f537b68f0f22419dff0202c553b7511653caa3"
+  },
+  "marker_SHA256": "dd6b9d5ec96e9d34d7bea0277eadb03f031992e1010cfdb2c940a393b2242701",
+  "synthesis_inventory_binding": null,
+  "synthesis_inventory_integrity": null,
+  "resource_receipt": {
+    "wall_seconds": 2.7439750181511045,
+    "CPU_seconds_parent_and_reaped_children": 4.598258,
+    "peak_sampled_aggregate_RSS_MiB": 728.81640625,
+    "RSS_poll_seconds": 0.05,
+    "instantaneous_memory_ceiling_claim": false,
+    "overshoot_policy": "kill_process_groups_on_detection; record sampled peak",
+    "child_receipts": [
+      {
+        "label": "CD",
+        "exit_status": 0,
+        "wall_seconds": 0.7957858750596642,
+        "retry": 0
+      },
+      {
+        "label": "E-inputs",
+        "exit_status": 0,
+        "wall_seconds": 0.30904401233419776,
+        "retry": 0
+      },
+      {
+        "label": "E-r3",
+        "exit_status": 1,
+        "wall_seconds": 1.4976280159316957,
+        "retry": 0
+      },
+      {
+        "label": "E-r6",
+        "exit_status": -9,
+        "guard_terminated": true,
+        "retry": 0
+      }
+    ],
+    "completed_labels": [
+      "CD",
+      "E-inputs"
+    ],
+    "last_phase": {
+      "completed_labels": [],
+      "pending_not_launched": [],
+      "failure": "Child failed or output missing: E-r3",
+      "retry": 0
+    },
+    "retries": 0
+  },
+  "retries": 0,
+  "mandatory_STOP": true,
+  "scientific_winner": null,
+  "G10_RA_D0_molecule_GPU_LP_trajectory_calls": 0
+}

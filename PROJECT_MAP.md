@@ -933,3 +933,8 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 ## DF correction comparison integrity source v3 (2026-10-11)
 
 [限定修正・GPT引き継ぎ](docs/tracks/algorithm_codesign/df_correction_comparison_integrity_repairs_v3_20261011.md)：科学契約v2不変、512 KiB分割とinventory SHA結合、88 focused PASS。登録比較/T合成0、authorization=false、mandatory STOP。
+
+
+## Track B DF補正A/B比較 one-shot technical STOP（2026-10-12）
+
+[結果/GPT handoff](docs/tracks/algorithm_codesign/df_correction_comparison_results_and_gpt_handoff_20261012.md)：`TECHNICAL_INCONCLUSIVE`。固定S' 41349b7→直接authorization-only A a1f537b、一回/retry0。CD6task保存、E-r3 whole fingerprint guardで停止、E-r6はparallel termination、T0。prefixを科学的勝敗へ使わず、source216/contract/auth/marker保持。原結果は`artifacts/track_b_df_correction_comparison_result/2026-10-11/v2/`、[保存値監査](artifacts/track_b_df_correction_comparison_execution_audit/2026-10-12/saved_output_audit_v1.json)と[evidence manifest](artifacts/track_b_df_correction_comparison_execution_audit/2026-10-12/evidence_manifest_v1.json)。mandatory STOP、次scopeはGPT/利用者判断。

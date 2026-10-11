@@ -543,3 +543,8 @@ G9のP5少数群、G10の固定native事例/下界classを一つの読者向け�
 ## DF correction comparison integrity source v3 (2026-10-11)
 
 [限定修正・GPT引き継ぎ](tracks/algorithm_codesign/df_correction_comparison_integrity_repairs_v3_20261011.md)：科学契約v2不変、512 KiB分割とinventory SHA結合、88 focused PASS。登録比較/T合成0、authorization=false、mandatory STOP。
+
+
+## 2026-10-12 Track B DF correction comparison execution
+
+[結果とGPT handoff](tracks/algorithm_codesign/df_correction_comparison_results_and_gpt_handoff_20261012.md)：one-shot technical inconclusive、E-r3 fingerprint guard、CD6保存、T0/retry0、mandatory STOP。科学的勝敗/追加実行は未判定・未認可。

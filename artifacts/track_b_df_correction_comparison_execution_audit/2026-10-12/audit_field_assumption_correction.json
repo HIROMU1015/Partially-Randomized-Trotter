@@ -1,0 +1,13 @@
+{
+  "kind": "SAVED_AUDIT_FIELD_ASSUMPTION_CORRECTION",
+  "audit_attempt": 1,
+  "initial_auditor_sha256": "9b90a347d618de6bb999fe97325dd0fb079a9aba8e821f43b6b3daf9433dd5a0",
+  "failed_check": "started job hash CD",
+  "initial_assumption": "job_sha256 equals raw job-file SHA256",
+  "source_definition": "worker.claim_job: SHA256(json.dumps(job,sort_keys=True).encode())",
+  "resolution": "Match the frozen canonical parsed-job hash; keep raw job-file identity separately in result inventory",
+  "science_runner_reinvocations": 0,
+  "source_changes": 0,
+  "result_changes": 0,
+  "retries": 0
+}

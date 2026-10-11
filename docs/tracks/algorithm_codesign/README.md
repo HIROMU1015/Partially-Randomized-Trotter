@@ -431,3 +431,8 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 ## DF correction comparison integrity source v3 (2026-10-11)
 
 [限定修正・GPT引き継ぎ](df_correction_comparison_integrity_repairs_v3_20261011.md)：科学契約v2不変、512 KiB分割とinventory SHA結合、88 focused PASS。登録比較/T合成0、authorization=false、mandatory STOP。
+
+
+## DF whole / local Pauli comparison one-shot STOP（2026-10-12）
+
+[結果とGPT handoff](df_correction_comparison_results_and_gpt_handoff_20261012.md)：S'41349b7→直接子A a1f537b、一回のみ。`TECHNICAL_INCONCLUSIVE`、CD6保存、E-r3 fingerprint failure、T合成0、retry0。partial scientific winnerなし、source/contract/auth/marker保持、mandatory STOP。
