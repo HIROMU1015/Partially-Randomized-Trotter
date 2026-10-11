@@ -497,3 +497,8 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 ## DF correction comparison v2 (Track B)
 
 `tracks/algorithm_codesign/run_df_correction_comparison_v2.py`: future source-bound one-shot coordinator; current authorization false. `tracks/algorithm_codesign/verify_df_correction_comparison_source_v2.py`: stdlib metadata verifier, no registered fixture. See docs/tracks/algorithm_codesign/df_correction_comparison_execution_plan_v2_20261011.md.
+
+
+## DF correction comparison integrity source v3 (2026-10-11)
+
+[限定修正・GPT引き継ぎ](../docs/tracks/algorithm_codesign/df_correction_comparison_integrity_repairs_v3_20261011.md)：科学契約v2不変、512 KiB分割とinventory SHA結合、88 focused PASS。登録比較/T合成0、authorization=false、mandatory STOP。

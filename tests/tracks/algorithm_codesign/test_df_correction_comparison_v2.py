@@ -315,7 +315,8 @@ def _fake_authorized_source(tmp_path,monkeypatch):
     (art/'authorization.json').write_text(json.dumps({'status':'APPROVED_FOR_ONE_DF_CORRECTION_COMPARISON_V2_RUN',
         'science_execution_authorized':True,'runs':1,'retries':0,'mandatory_STOP':True,
         'source_commit':source,'contract_sha256':contract_hash}))
-    (art/'source_manifest_v2.json').write_text(json.dumps({'files':[{'path':'protected.py','bytes':4,'sha256':launch.sha(code)}]}))
+    manifest=tmp_path/launch.MANIFEST;manifest.parent.mkdir(parents=True,exist_ok=True)
+    manifest.write_text(json.dumps({'files':[{'path':'protected.py','bytes':4,'sha256':launch.sha(code)}]}))
     def git(root,*args):
         if args==('rev-parse','HEAD'):return head
         if args[:2]==('rev-list','--parents'):return head+' '+source

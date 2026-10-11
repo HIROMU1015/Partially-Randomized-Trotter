@@ -426,3 +426,8 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 ## DF correction comparison v2 source preparation — 2026-10-11
 
 [contract](df_correction_comparison_preregistration_v2_20261011.md) / [plan](df_correction_comparison_execution_plan_v2_20261011.md) / [GPT review original](../../research/track_b_df_correction_comparison_preregistration_review_20261011.md)。M1–M7を新B namespaceへ反映。current science authorization=false、source/contract整合確認と別one-shot指示が必要。旧証拠・STOP保持、mandatory STOP。
+
+
+## DF correction comparison integrity source v3 (2026-10-11)
+
+[限定修正・GPT引き継ぎ](df_correction_comparison_integrity_repairs_v3_20261011.md)：科学契約v2不変、512 KiB分割とinventory SHA結合、88 focused PASS。登録比較/T合成0、authorization=false、mandatory STOP。

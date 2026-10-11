@@ -464,3 +464,8 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 ## Track B DF correction comparison source v2
 
 共有trotterlib実装/APIは変更していない。B固有sourceは `../trottertracks/algorithm_codesign/df_correction_comparison/`、文書は docs/tracks/algorithm_codesign/df_correction_comparison_preregistration_v2_20261011.md、runnerは scripts/tracks/algorithm_codesign/run_df_correction_comparison_v2.py、testsは tests/tracks/algorithm_codesign/test_df_correction_comparison_v2.py。登録実行は別authorizationが必要。
+
+
+## DF correction comparison integrity source v3 (2026-10-11)
+
+[限定修正・GPT引き継ぎ](../../docs/tracks/algorithm_codesign/df_correction_comparison_integrity_repairs_v3_20261011.md)：科学契約v2不変、512 KiB分割とinventory SHA結合、88 focused PASS。登録比較/T合成0、authorization=false、mandatory STOP。

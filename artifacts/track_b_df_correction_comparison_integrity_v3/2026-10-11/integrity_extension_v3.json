@@ -1,0 +1,38 @@
+{
+  "kind": "IMPLEMENTATION_ONLY_INTEGRITY_EXTENSION_V3",
+  "science_contract": "artifacts/track_b_df_correction_comparison_source_v2/2026-10-11/contract_v2.json",
+  "science_contract_sha256": "0079988b0e63ea7c62fec8e435bcf17313a3563d9480caf8aaf569e2e5972305",
+  "base_source": "b4aba2b698cdc81710dbdbb5769a1686f716ffe2",
+  "review_limit_bytes": 524288,
+  "chunk_limit_bytes": 262144,
+  "serialization": "json default=str indent=2 ensure_ascii=True plus newline",
+  "large_artifact_storage": "chunks/index without retained duplicate raw",
+  "small_artifact_storage": "unchanged logical raw JSON path",
+  "reconstruction": "ordered exact bytes/SHA256 and each UTF-8 chunk identity; readers fail before returning altered data",
+  "prefix_commit": "atomic index; verify committed index before any leftover raw; replace only new-run prefix generations",
+  "inventory_binding": [
+    "inventory_sha256",
+    "inventory_receipt_sha256",
+    "marker_sha256",
+    "source/authorization/contract",
+    "ordered_keys"
+  ],
+  "worker_checks": [
+    "start",
+    "before synthesis",
+    "before output"
+  ],
+  "parent_checks": [
+    "each batch",
+    "before aggregation",
+    "result key/binding",
+    "before accounting",
+    "terminal"
+  ],
+  "unchanged_resource_caps": true,
+  "unchanged_algorithms_and_numerical_settings": true,
+  "science_execution_authorized": false,
+  "runs": 0,
+  "retries": 0,
+  "mandatory_STOP": true
+}

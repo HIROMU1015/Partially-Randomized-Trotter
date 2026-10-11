@@ -11,6 +11,8 @@ ROOT=Path(__file__).resolve().parents[3]
 sys.path.insert(0,str(ROOT/'src'))
 from trottertracks.algorithm_codesign.df_correction_comparison.launch import ART,RESULT,verify_launch,sha
 from trottertracks.algorithm_codesign.df_correction_comparison.guard import Supervisor,Limits,exclusive_json
+from trottertracks.algorithm_codesign.df_correction_comparison.storage import dump_json,load_json,artifact_identity
+from trottertracks.algorithm_codesign.df_correction_comparison.inventory_integrity import freeze_inventory,verify_inventory,verify_synthesis_result
 
 
 def main():
@@ -18,6 +20,8 @@ def main():
     if len(sys.argv)!=1:raise PermissionError('Runner takes no scientific overrides')
     provenance=verify_launch(ROOT)  # Fails on current preparation source; marker stays absent.
     contract=json.loads((ROOT/ART/'contract_v2.json').read_text())
+    from trottertracks.algorithm_codesign.df_correction_comparison.worker import runtime_check
+    runtime_check(contract,'CD')  # Coordinator itself uses the fixed numeric runtime.
     runtime_env=dict(os.environ,PYTHONPATH=str(ROOT/'src'),PYTHONDONTWRITEBYTECODE='1')
     for stage in ('CD','synthesis'):
         section=contract['runtimes']['synthesis' if stage=='synthesis' else 'numeric']
@@ -34,7 +38,7 @@ def main():
     caps=contract['caps']
     supervisor=Supervisor(Limits(caps['wall_seconds_total'],caps['CPU_seconds_total'],caps['aggregate_RSS_MiB'],caps['aggregate_RSS_MiB']),out,
                           output_cap=caps['output_bytes']-262144,log_cap=caps['log_bytes'])
-    completed_stages=[];classification='TECHNICAL_INCONCLUSIVE';reason=None
+    completed_stages=[];classification='TECHNICAL_INCONCLUSIVE';reason=None;binding=None
     def make(label,stage,**payload):
         output=out/(label+'.json');job=out/(label+'.job.json')
         exclusive_json(job,dict(payload,stage=stage,output=str(output),marker_sha256=marker_hash))
@@ -49,7 +53,7 @@ def main():
         # Native input generation is inside the same phase budget as compilation.
         native_start_cpu=supervisor.cpu();native_start=time.monotonic()
         run([make('E-inputs','E_inputs')],'native',1)
-        inputs=json.loads((out/'E-inputs.json').read_text())
+        inputs=load_json(out/'E-inputs.json')
         # Shared phase caps must include the input-generation substage, not reset.
         caps['native']['wall_seconds']-=time.monotonic()-native_start
         caps['native']['CPU_seconds']-=supervisor.cpu()-native_start_cpu
@@ -62,14 +66,14 @@ def main():
         configure()
         circuits={};bs={};native={}
         for r in (3,6):
-            native[r]=json.loads((out/('E-r'+str(r)+'.json')).read_text())
+            native[r]=load_json(out/('E-r'+str(r)+'.json'))
             if sum(native[k]['compile_calls'] for k in native)>22:raise RuntimeError('Compile call cap')
             for row in native[r]['native']:
                 if row['arm']=='A':circuits[(r,row['controlled'])]=row['inventory']
             bs[r]=[Angle.load(a) for a in native[r]['T_semantic_angles']]
         inventory=select_synthesis_inventory(circuits,bs)
-        exclusive_json(out/'synthesis_inventory.json',inventory)  # Freeze before ANY synthesizer call.
-        jobs=[make('T-'+str(i),'synthesis',angle=a) for i,a in enumerate(inventory['unique_keys'])]
+        binding=freeze_inventory(out,inventory,provenance,marker_hash)  # Original bytes before ANY call.
+        jobs=[make('T-'+str(i),'synthesis',angle=a,**binding) for i,a in enumerate(inventory['unique_keys'])]
         if len(jobs)>64:raise RuntimeError('Synthesis call cap')
         key_by_label={j['label']:inventory['unique_keys'][i]['key'] for i,j in enumerate(jobs)}
         bset=set(inventory['B_required_keys']);pset=set(inventory['phase_required_keys'])-bset
@@ -80,13 +84,20 @@ def main():
         original_wall=caps['synthesis']['wall_seconds'];original_cpu=caps['synthesis']['CPU_seconds']
         for batch in batches:
             if not batch:continue
+            verify_inventory(out,binding,marker_sha256=marker_hash,provenance=provenance)
             caps['synthesis']['wall_seconds']=original_wall-(time.monotonic()-t_start)
             caps['synthesis']['CPU_seconds']=original_cpu-(supervisor.cpu()-t_start_cpu)
             run(batch,'synthesis',2,per_key=True)
         completed_stages.append('T_KEYS')
+        verify_inventory(out,binding,marker_sha256=marker_hash,provenance=provenance)
         sequences={}
+        synthesis_result_identities=[]
         for j in jobs:
-            row=json.loads(Path(j['output']).read_text());sequences[row['angle']['key']]=row
+            row=load_json(j['output'])
+            expected=inventory['unique_keys'][int(j['label'].split('-')[1])]
+            verify_synthesis_result(row,expected,binding)
+            synthesis_result_identities.append(artifact_identity(j['output']))
+            sequences[row['angle']['key']]=row
         accounting=[]
         for r in (3,6):
             for control in (False,True):
@@ -107,14 +118,25 @@ def main():
                 accounting.append({'r':r,'controlled':control,'A':a,'B':b,
                     # A lower greater than the WORST B event gives a local fixed-plan separation.
                     **local_t_separation(a,b)})
-        exclusive_json(out/'T_accounting.json',{'rows':accounting,'CD_PR_total_winner':None})
+        verify_inventory(out,binding,marker_sha256=marker_hash,provenance=provenance)
+        dump_json(out/'T_accounting.json',{'rows':accounting,'CD_PR_total_winner':None,
+            **binding,'synthesis_result_identities':synthesis_result_identities})
         supervisor.check_total()
         classification='COMPLETE_TECHNICAL_COMPARISON_NO_AUTOMATIC_GO'
     except BaseException as exc:
         reason=type(exc).__name__+': '+str(exc)
     finally:
-        exclusive_json(out/'terminal_status.json',{'classification':classification,'technical_reason':reason,
+        inventory_integrity=None
+        if binding is not None:
+            try:
+                verify_inventory(out,binding,marker_sha256=marker_hash,provenance=provenance)
+                inventory_integrity=True
+            except BaseException as exc:
+                inventory_integrity=False;classification='TECHNICAL_INCONCLUSIVE'
+                reason=(reason+'; ' if reason else '')+'inventory final guard: '+type(exc).__name__+': '+str(exc)
+        dump_json(out/'terminal_status.json',{'classification':classification,'technical_reason':reason,
             'completed_stages':completed_stages,'provenance':provenance,'marker_SHA256':marker_hash,
+            'synthesis_inventory_binding':binding,'synthesis_inventory_integrity':inventory_integrity,
             'resource_receipt':supervisor.receipt(),'retries':0,'mandatory_STOP':True,
             'scientific_winner':None,'G10_RA_D0_molecule_GPU_LP_trajectory_calls':0})
         print(json.dumps({'classification':classification,'mandatory_STOP':True,'reason':reason}))

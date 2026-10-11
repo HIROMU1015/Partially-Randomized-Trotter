@@ -13,6 +13,7 @@ import resource
 import signal
 import subprocess
 import time
+from .storage import load_json, artifact_exists
 
 
 class CapFailure(RuntimeError):
@@ -127,10 +128,10 @@ class Supervisor:
                     receipt = {'label':row['job']['label'], 'exit_status':code,
                                'wall_seconds':time.monotonic()-row['start'], 'retry':0}
                     self.receipts.append(receipt)
-                    if code or not Path(row['job']['output']).is_file():
+                    if code or not artifact_exists(row['job']['output']):
                         raise CapFailure('Child failed or output missing: '+row['job']['label'])
                     if per_key:
-                        saved=json.loads(Path(row['job']['output']).read_text())
+                        saved=load_json(row['job']['output'])
                         cpu_receipt=saved.get('_process_receipt',{}).get('CPU_seconds')
                         if cpu_receipt is None or cpu_receipt>limits.per_key_cpu or receipt['wall_seconds']>limits.per_key_wall:
                             raise CapFailure('Completed per-key wall/CPU receipt failed')

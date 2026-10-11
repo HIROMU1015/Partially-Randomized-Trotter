@@ -85,3 +85,8 @@ testsでregistered profile採点やsynthesisを行わず、full suite未実行�
 ## Track B DF correction comparison v2
 
 `tracks/algorithm_codesign/test_df_correction_comparison_v2.py`: off-domain finite-bit accounting, Pauli mean/control phase, frame/proxy/angle enclosures, partial T multiplicity and external resource/launch guards. No registered CD/E recipe or gridsynth; one small off-domain native lowering compile per focused-suite invocation. Source-bound local checks, not immutable CI/scientific comparison.
+
+
+## DF correction comparison integrity source v3 (2026-10-11)
+
+[限定修正・GPT引き継ぎ](../docs/tracks/algorithm_codesign/df_correction_comparison_integrity_repairs_v3_20261011.md)：科学契約v2不変、512 KiB分割とinventory SHA結合、88 focused PASS。登録比較/T合成0、authorization=false、mandatory STOP。

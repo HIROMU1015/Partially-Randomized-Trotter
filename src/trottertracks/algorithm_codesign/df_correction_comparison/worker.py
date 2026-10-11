@@ -8,11 +8,13 @@ import sys
 import time
 from .launch import ART, RESULT, verify_child, sha
 from .guard import exclusive_json
+from .storage import dump_json, load_json, artifact_exists
+from .inventory_integrity import verify_inventory
 
 
 def claim_job(root,job):
     out=root/RESULT
-    if (out/'terminal_status.json').exists():raise PermissionError('Terminal STOP already saved')
+    if artifact_exists(out/'terminal_status.json'):raise PermissionError('Terminal STOP already saved')
     allowed={'stage','output','marker_sha256'}
     stage=job['stage']
     if stage=='CD':label='CD'
@@ -21,27 +23,25 @@ def claim_job(root,job):
         allowed|={'r','frames'}
         if job['r'] not in (3,6):raise PermissionError('Unregistered native fixture')
         label='E-r'+str(job['r'])
-        inputs=json.loads((out/'E-inputs.json').read_text())
+        inputs=load_json(out/'E-inputs.json')
         if job['frames']!=inputs[str(job['r'])]:raise PermissionError('Native input identity mismatch')
     elif stage=='synthesis':
-        allowed.add('angle')
-        inventory=json.loads((out/'synthesis_inventory.json').read_text())
+        allowed|={'angle','inventory_sha256','inventory_receipt_sha256'}
+        binding={k:job[k] for k in ('inventory_sha256','inventory_receipt_sha256')}
+        inventory=verify_inventory(out,binding,marker_sha256=job['marker_sha256'])
         matches=[i for i,a in enumerate(inventory['unique_keys']) if a==job['angle']]
         if len(matches)!=1:raise PermissionError('Synthesis key not in frozen inventory')
         label='T-'+str(matches[0])
     else:raise PermissionError('Unregistered worker stage')
     if set(job)!=allowed or Path(job['output']).resolve()!=(out/(label+'.json')).resolve():
         raise PermissionError('Worker payload/output path override')
-    exclusive_json(out/(label+'.started.json'),{'label':label,'job_sha256':hashlib.sha256(json.dumps(job,sort_keys=True).encode()).hexdigest(),'retries':0})
+    exclusive_json(out/(label+'.started.json'),{'label':label,'job_sha256':hashlib.sha256(json.dumps(job,sort_keys=True).encode()).hexdigest(),'retries':0,
+        **(binding if stage=='synthesis' else {})})
 
 
 def dump(path, data):
-    # New-run prefix only. Old evidence/source/authorization paths never passed.
-    p = Path(path)
-    temporary=p.with_suffix('.partial')
-    with temporary.open('w') as stream:
-        json.dump(data,stream,default=str,indent=2);stream.write('\n')
-    temporary.replace(p)
+    # Only repeated prefix paths replace a prior NEW-run generation.
+    return dump_json(path,data,replace_existing=str(path).endswith('.prefix.json'))
 
 
 def runtime_check(contract, stage):
@@ -62,6 +62,8 @@ def runtime_check(contract, stage):
 def execute(root, job, contract, capability):
     stage=job['stage'];runtime_check(contract,stage)
     if stage=='synthesis':
+        verify_inventory(root/RESULT,{k:job[k] for k in ('inventory_sha256','inventory_receipt_sha256')},
+            marker_sha256=job['marker_sha256'],provenance={k:capability[k] for k in ('source','authorization','authorization_sha256','contract_sha256')})
         from .angles import Angle,synthesize
         return synthesize(Angle.load(job['angle']),contract['T']['gate_precision'],contract['T']['options'])
     from .intervals import configure
@@ -101,6 +103,10 @@ def main():
     claim_job(root,job)  # Exclusive per-job receipt: no same-key retry within a consumed marker.
     contract=json.loads((root/ART/'contract_v2.json').read_text())
     result=execute(root,job,contract,capability)
+    if job['stage']=='synthesis':
+        binding={k:job[k] for k in ('inventory_sha256','inventory_receipt_sha256')}
+        verify_inventory(root/RESULT,binding,marker_sha256=job['marker_sha256'])
+        result.update(binding)
     result['_process_receipt']={'wall_seconds':time.monotonic()-start,'CPU_seconds':time.process_time()-cpu,
         'peak_RSS_MiB':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024,'retries':0}
     dump(job['output'],result)

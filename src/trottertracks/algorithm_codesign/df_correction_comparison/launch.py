@@ -7,6 +7,7 @@ import subprocess
 ART = Path('artifacts/track_b_df_correction_comparison_source_v2/2026-10-11')
 RESULT = Path('artifacts/track_b_df_correction_comparison_result/2026-10-11/v2')
 RECEIPT = Path('docs/tracks/algorithm_codesign/df_correction_comparison_execution_authorization_v2.md')
+MANIFEST = Path('artifacts/track_b_df_correction_comparison_integrity_v3/2026-10-11/source_manifest_v3.json')
 
 
 def sha(path):
@@ -37,7 +38,7 @@ def verify_local(root):
         raise PermissionError('Authorization-only path guard failed')
     if git(root,'diff','--name-only','HEAD') or git(root,'diff','--cached','--name-only','HEAD'):
         raise PermissionError('Tracked execution source changed after launch')
-    manifest = json.loads((root/ART/'source_manifest_v2.json').read_text())
+    manifest = json.loads((root/MANIFEST).read_text())
     for entry in manifest['files']:
         p = root/entry['path']
         if p.stat().st_size != entry['bytes'] or sha(p) != entry['sha256']:

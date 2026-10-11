@@ -928,3 +928,8 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 ## 2026-10-11 Track B DF補正比較 v2 source preparation
 
 [v2比較契約](docs/tracks/algorithm_codesign/df_correction_comparison_preregistration_v2_20261011.md) / [source計画](docs/tracks/algorithm_codesign/df_correction_comparison_execution_plan_v2_20261011.md)。GPTレビューM1–M7を実装。新namespace `src/trottertracks/algorithm_codesign/df_correction_comparison/`、runner `scripts/tracks/algorithm_codesign/run_df_correction_comparison_v2.py`、focused tests `tests/tracks/algorithm_codesign/test_df_correction_comparison_v2.py`、source/evidence `artifacts/track_b_df_correction_comparison_source_v2/2026-10-11/`。登録CD/E/Tは0、別途source整合確認・authorizationが必要。旧source/results/markers/STOP保持、mandatory STOP。
+
+
+## DF correction comparison integrity source v3 (2026-10-11)
+
+[限定修正・GPT引き継ぎ](docs/tracks/algorithm_codesign/df_correction_comparison_integrity_repairs_v3_20261011.md)：科学契約v2不変、512 KiB分割とinventory SHA結合、88 focused PASS。登録比較/T合成0、authorization=false、mandatory STOP。

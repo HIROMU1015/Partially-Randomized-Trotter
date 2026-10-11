@@ -538,3 +538,8 @@ G9のP5少数群、G10の固定native事例/下界classを一つの読者向け�
 ## Track B DF comparison v2 source preparation (2026-10-11)
 
 [contract](tracks/algorithm_codesign/df_correction_comparison_preregistration_v2_20261011.md) / [plan](tracks/algorithm_codesign/df_correction_comparison_execution_plan_v2_20261011.md)。GPT reviewを固定し、有限bit会計、数値/phase認証、限定T下界、外側guardを準備。登録実行なし、mandatory STOP。
+
+
+## DF correction comparison integrity source v3 (2026-10-11)
+
+[限定修正・GPT引き継ぎ](tracks/algorithm_codesign/df_correction_comparison_integrity_repairs_v3_20261011.md)：科学契約v2不変、512 KiB分割とinventory SHA結合、88 focused PASS。登録比較/T合成0、authorization=false、mandatory STOP。

@@ -15,3 +15,8 @@ shared across two native jobs, without worker reseeding. No GPU or cache of prio
 The future runner is `scripts/tracks/algorithm_codesign/run_df_correction_comparison_v2.py`.
 Source review plus a separate authorization-only direct child and explicit run instruction
 are required. Every terminal result has mandatory STOP.
+
+
+## DF correction comparison integrity source v3 (2026-10-11)
+
+[限定修正・GPT引き継ぎ](../../../../docs/tracks/algorithm_codesign/df_correction_comparison_integrity_repairs_v3_20261011.md)：科学契約v2不変、512 KiB分割とinventory SHA結合、88 focused PASS。登録比較/T合成0、authorization=false、mandatory STOP。
