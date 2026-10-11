@@ -1,6 +1,6 @@
 {
   "track_a_h6_four_worker_execution_v1": {
-    "status": "USER_AUTHORIZED_PRELAUNCH_GATE_PASSED",
+    "status": "ONE_SHOT_PARTIAL_EVENT_REGENERATION_STOP",
     "run_id": "h6-phase-b-142-four-workers-launch_parallel_v1",
     "source_commit": "df2976f05c97c8c777f9a6264e83a53b637fef65",
     "preparation_review": "b1adf5c83db61d52ddc7973b7ea3c69278906a85",
@@ -10,7 +10,7 @@
     "registered_group_count": 142,
     "worker_count": 4,
     "approved": true,
-    "runtime_authorization": true,
+    "runtime_authorization": false,
     "allowed_cpus": [
       20,
       21,
@@ -27,7 +27,36 @@
     "resume": false,
     "mandatory_stop": true,
     "confirmation_authorized": false,
-    "H8_authorized": false
+    "H8_authorized": false,
+    "run_active": false,
+    "grant_consumed": true,
+    "first_stop_reason": "WORKER_EXIT:1",
+    "worker_reason": "ValueError:PARTIAL_EVENT_REGENERATION_MISMATCH",
+    "completed_new_groups": 0,
+    "accepted_new_wrappers": 0,
+    "accepted_total_groups": 450,
+    "remaining_groups": 142,
+    "coordinator_pid": 3882461,
+    "worker_pids": [
+      3882681,
+      3882682,
+      3882683,
+      3882685
+    ],
+    "coordinator_exit_code": 1,
+    "all_dispatched_reaped": true,
+    "pids_absent": true,
+    "cleanup_errors": [],
+    "supervisor_wall_seconds": 5.303782546892762,
+    "aggregate_peak_RSS_bytes": 1974312960,
+    "actual_call_totals": null,
+    "actual_calls_not_inferred_zero": true,
+    "attempted_trajectory_lower_bound": 4,
+    "attempted_occurrence_lower_bound": 32,
+    "basis_component_metadata_compatibility": false,
+    "old_compiled_output_equivalence_verified": false,
+    "stop_receipt": "artifacts/resource_applicability/track_a_h6_parallel_preparation_v2/2026-10-12/launch_authorization_v1/launch_stop_receipt_v1.json",
+    "metadata_comparison": "artifacts/resource_applicability/track_a_h6_parallel_preparation_v2/2026-10-12/launch_authorization_v1/stop_metadata_comparison_v1.json"
   },
   "track_a_h6_four_worker_preparation_v2": {
     "status": "FOUR_WORKER_SELECTION_ADOPTED_TECHNICALLY_SEALED_NOT_LAUNCHED",

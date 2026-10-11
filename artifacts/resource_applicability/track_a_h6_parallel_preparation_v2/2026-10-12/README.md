@@ -91,3 +91,19 @@ git -C /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h6-four-w
 SOURCE `df2976f05c97c8c777f9a6264e83a53b637fef65`、grant SHA `591be24a73cc42826b0df59af74cea81307895d470a8573a0dff4ace685ba139`。固定source/profile/input/旧449/Phase A/carryを照合し、fresh resource gateに合格。
 今回の明示指示は提示済みlocal SOURCEでの起動指示として扱う。Originの新branchは未公開。利用者push方針を維持し、remote SHA未確認を記録した。
 Static preparation manifestのfalse flagsは保持し、別のapproved grantだけが今回の142探索を認可する。完了/STOP後mandatory STOP、retry/resume・独立32確認/H8は認可しない。
+
+## 2026-10-12 一回起動後：partial-event再現不一致でSTOP
+
+Run `h6-phase-b-142-four-workers-launch_parallel_v1`、coordinator PID3882461、workers PID3882681/3882682/3882683/3882685。CPU20/21/24/25、thread1、AS32GiBをnative claimで確認した。
+Index450 B2_p5_q8_2nd_r1_K2 replica2が `ValueError:PARTIAL_EVENT_REGENERATION_MISMATCH` で退出。Supervisorのfirst STOPは `WORKER_EXIT:1`、wall5.304秒、aggregate peak RSS1.839GiB。メモリ超過/pressure/OOMがSTOPの理由ではない。
+全4 workersをown groupで停止・wait/reapし、coordinatorもexit1、全5 PID残存0、cleanup errors0、log/journal閉鎖。
+新完了group0/受理wrapper0。旧449＋Phase A447の450/592 group・904 wrappersは保全、残り142は未完了。
+[Native STOP receipt](launch_authorization_v1/launch_stop_receipt_v1.json)、[保存metadata比較](launch_authorization_v1/stop_metadata_comparison_v1.json)。
+旧450と今回保存された451–453の同じcell/componentを比べると、DF fragment5のbasis hashが異なり、basis operation countは77→78、Z2Z6の係数符号は−1→+1。Lambda由来のtauにも末尾差がある。
+これは異なるreplica間のcomponent準備metadata比較であり、450の新event payload/digest値はSTOP前に保存されなかった。具体的なnative差の発生箇所は未確定。
+同一seed/task/input/source/version gateだけでは旧basis/componentのbyte再現を保証できていなかった。NumPy eigh/DF preparation/native loweringの環境間差が候補。Compiled output equivalenceは未検証。
+Exact digest検査は維持し、科学入力の変更・input再生成・旧結果の上書き・一致検査の緩和は行っていない。
+今回のattemptに全実呼出counterは保存されていない。固定sourceと到達traceからtrajectory4/occurrence32の下限だけを記録し、未記録を0に補わずbudget resetもしない。
+一回grant/lockは消費済み。自動retry・新grant・次stageは起動しない。
+次の修正は、旧保存basis/LCU componentとの対応を復元する方法、または旧native数値環境の再現を検討する。旧prepared basisを固定してcompiler/seed/operator条件を保つ案は実装/検証前。必要な科学条件変更は別判断へ戻す。
+H4は観測上継続（587 signals/33618 records/first STOPなし）。共有環境・既存venvは変更0。Real runtime/cache/trajectory payloadは元run directoryで保全し、軽量hash/receiptだけをcommitする。

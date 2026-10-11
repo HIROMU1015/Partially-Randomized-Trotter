@@ -27,3 +27,7 @@ User push方針を維持する。既存H4・共有環境・既存venvへ変更�
 ## 2026-10-12 実行承認追記
 
 利用者が固定4 workerによる残142 groupの計算を明示指示。新exact grant/source/profile/input/carryを照合し、fresh resource gate合格。起動を認可し、完了/STOP後mandatory STOP。Remoteの新branchは未公開だが、利用者push方針と提示済みlocal SOURCEでの最新起動指示に従う。旧draft/旧grantは保持。実際のgrant/command/検査は資料入口のlaunch_authorization_v1へ固定した。
+
+## 2026-10-12 実行結果：再現性gate STOP
+
+4 workerを一度起動したが、index450の旧partial-event digest再現不一致で停止。4 worker/coordinatorの全PID終了・reap/cleanupを確認。新受理0、残142。Source/hash/version一致でも保存basis/component metadataに差があり、環境間のnative numerical/basis再現性は未解決。一致検査を緩和せず、grant/lock消費済みを保持して自動retryしない。詳細・原証拠・未記録counterは資料入口末尾に記録した。
