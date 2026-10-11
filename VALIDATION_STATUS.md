@@ -1,5 +1,12 @@
 # Validation status
 
+2026-10-11 完了済みGPT科学レビューを受領し、[N1/N3再設計の限定scope](docs/research/n13_redesign_limited_scope_v1_20261011.md)を具体化した。
+`DESIGN_PREPARED_SCIENCE_NOT_AUTHORIZED`。新科学結果・science source・科学testsは0、中心テーマ未採択、mandatory STOP。
+N1は旧44 factor候補と係数PF上界によるshot×full-wrapper費用、N3は一外部軌道の係数Schur条件、N2は固定S一件のweighted-L1修正案。
+[準備metadata監査](artifacts/n13_redesign/2026-10-11/preparation/design_preparation_audit.json)はhash/件数/上限/旧86 manifest entriesの保持だけを確認する。
+数学・科学的有用性を実行検証したものではない。旧レビューは完了済みで、次GPTレビューは新結果取得後だけ。
+以下のreview待ち等は過去milestoneの状態として保持する。
+
 2026-10-11 N1/N2構成・N3係数下界の限定feasibilityを完了。
 [結果・GPT判断事項](docs/research/hamiltonian_algorithm_design_results_20261011.md)、[固定scope](docs/research/hamiltonian_algorithm_design_scope.md)を入口とする。
 N1：JW4・ν2・signed DF rank2・決定論S2、T=.6、delta=.6/.3/.15/.075、εH<=.02。

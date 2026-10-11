@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+2026-10-11 N1/N3再設計の[限定scope v1](../../docs/research/n13_redesign_limited_scope_v1_20261011.md)を準備した。
+将来のmoduleは `src/trottertracks/representation_exploration/n13_redesign.py`（未実装）。runner、tests、保存auditorの予定pathはscope §6に対応する。
+今回旧library/frozen scienceを変更せず、新科学計算0、実行未認可、mandatory STOP。以下は旧stageの履歴。
+
 2026-10-11 N1/N2構成・N3係数下界の限定feasibilityを完了。
 [結果・GPT判断事項](../../docs/research/hamiltonian_algorithm_design_results_20261011.md)、[固定scope](../../docs/research/hamiltonian_algorithm_design_scope.md)を入口とする。
 N1：JW4・ν2・signed DF rank2・決定論S2、T=.6、delta=.6/.3/.15/.075、εH<=.02。

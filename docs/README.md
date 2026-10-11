@@ -1,5 +1,9 @@
 # 文書索引
 
+2026-10-11の現在の準備は[N1/N3限定scope v1](research/n13_redesign_limited_scope_v1_20261011.md)、[machine contract](research/n13_redesign_limited_scope_v1_20261011.json)、[提供済み科学レビュー](research/n13_redesign_inputs/)から読む。
+旧GPT科学レビューは完了、新scienceは未認可。source/最小検証はこれからで、今回science/compile/対角化/LP/tests0、中心テーマnull、mandatory STOP。
+以下は旧stage/他Trackの当時の履歴。
+
 2026-10-11 N1/N2構成・N3係数下界の限定feasibilityを完了。
 [結果・GPT判断事項](research/hamiltonian_algorithm_design_results_20261011.md)、[固定scope](research/hamiltonian_algorithm_design_scope.md)を入口とする。
 N1：JW4・ν2・signed DF rank2・決定論S2、T=.6、delta=.6/.3/.15/.075、εH<=.02。

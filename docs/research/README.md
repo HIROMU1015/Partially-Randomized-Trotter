@@ -1,5 +1,10 @@
 # 研究計画資料
 
+2026-10-11 現在の次段準備は[N1/N3再設計の限定scope v1](n13_redesign_limited_scope_v1_20261011.md)と[machine contract](n13_redesign_limited_scope_v1_20261011.json)。
+[提供科学レビュー](n13_redesign_inputs/n123_feasibility_scientific_review_2026-10-11.md)は完了済み。N1/N3を優先しN2を固定S修正に限定するが、中心テーマは採択していない。
+設計だけを具体化し、新science/compile/LP/対角化/tests0。`DESIGN_PREPARED_SCIENCE_NOT_AUTHORIZED`でSTOP。
+[判断記録](研究ノート/2026-10-11_n13_redesign_preparation.md)。以下は旧stageの当時の履歴。
+
 2026-10-11 N1/N2構成・N3係数下界の限定feasibilityを完了。
 [結果・GPT判断事項](hamiltonian_algorithm_design_results_20261011.md)、[固定scope](hamiltonian_algorithm_design_scope.md)を入口とする。
 N1：JW4・ν2・signed DF rank2・決定論S2、T=.6、delta=.6/.3/.15/.075、εH<=.02。

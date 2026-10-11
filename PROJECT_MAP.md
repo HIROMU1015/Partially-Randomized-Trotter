@@ -1,5 +1,11 @@
 # プロジェクト案内
 
+2026-10-11 N1/N3再設計の[限定scope](docs/research/n13_redesign_limited_scope_v1_20261011.md)と[machine contract](docs/research/n13_redesign_limited_scope_v1_20261011.json)を準備した。
+[GPT科学レビュー](docs/research/n13_redesign_inputs/n123_feasibility_scientific_review_2026-10-11.md)は完了済み。同じ結果を再レビューせず、N1の誤差費用込み選択、N3の結合方向を保つ保証、N2の固定S修正を次の限定候補とする。
+新science/compile/LP/対角化/tests0、science source未実装、中心テーマnull、実行未認可、mandatory STOP。
+準備資料のread-only確認は `scripts/verify_n13_redesign_preparation.py`、監査は `artifacts/n13_redesign/2026-10-11/preparation/`。
+以下は旧stage/他Trackの当時の履歴として保持する。
+
 2026-10-11 N1/N2構成・N3係数下界の限定feasibilityを完了。
 [結果・GPT判断事項](docs/research/hamiltonian_algorithm_design_results_20261011.md)、[固定scope](docs/research/hamiltonian_algorithm_design_scope.md)を入口とする。
 N1：JW4・ν2・signed DF rank2・決定論S2、T=.6、delta=.6/.3/.15/.075、εH<=.02。
