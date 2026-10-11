@@ -913,3 +913,9 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 [新資料manifest](artifacts/track_b_return_aggregation_note_completion/2026-10-11/evidence_manifest.json)を参照。
 一般構成/有限bit/P5少数群/固定native限界を統合し、一般full性能探索と同一着地点review反復は区切る。
 原COMPLETE・科学source・旧証拠保持、新science0、投稿承認/新規性採択/次実行なし、mandatory STOP。
+
+## Track B DF希薄三次補正：限定独立監査（2026-10-11）
+
+[監査](docs/tracks/algorithm_codesign/df_sparse_correction_independent_audit_20261011.md)、[一次文献比較](docs/tracks/algorithm_codesign/df_sparse_correction_prior_art_comparison_20261011.md)、[GPT handoff](docs/tracks/algorithm_codesign/df_sparse_correction_gpt_handoff_20261011.md)。
+原本MD/ZIPを固定・remote取得後、77 audit checksと15 focused controls、5 representative compileを実施。production DF/digital/native T・独立新規性は未解決、科学的GOではない、mandatory STOP。
+新scriptsは`scripts/tracks/algorithm_codesign/audit_df_sparse_correction{,_native}.py`、testは`tests/test_df_sparse_correction_audit.py`、新artifactは`artifacts/track_b_df_sparse_correction_audit/2026-10-11/`。共有library/API・旧成果不変。

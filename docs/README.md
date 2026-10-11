@@ -525,3 +525,7 @@ G9のP5少数群、G10の固定native事例/下界classを一つの読者向け�
 [採用レビュー](research/track_b_G10_v3_publication_and_endpoint_review_20261011.md)と
 [完了対応表](tracks/algorithm_codesign/g10_publication_endpoint_completion_20261011.md)を参照。
 既存v0.1/結果/markerを保持、現系列を区切る技術ノート完成。独立原著/次stage認可ではない、new science0/STOP。
+
+## Track B DF希薄三次補正の独立監査（2026-10-11）
+
+[監査・証明](tracks/algorithm_codesign/df_sparse_correction_independent_audit_20261011.md)、[prior art](tracks/algorithm_codesign/df_sparse_correction_prior_art_comparison_20261011.md)、[GPT handoff](tracks/algorithm_codesign/df_sparse_correction_gpt_handoff_20261011.md)。理想数学と限定compileの技術証拠、production access/native T/新規性未確定、mandatory STOP。

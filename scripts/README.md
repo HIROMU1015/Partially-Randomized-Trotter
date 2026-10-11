@@ -483,3 +483,8 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 どちらもscience runnerではなく、sampling/budget/lower/合成/行列を再生成しない。表示h範囲は新しい科学条件ではない。
 資料は`artifacts/track_b_g10_v3_scientific_review_intake/2026-10-10/`、説明は`docs/manuscripts/track_b_return_aggregation_native_resource_note_v0_1.md`。
 新規本番実行・G11は未認可、mandatory STOP維持。
+
+## Track B DF sparse correction independent audit
+
+`tracks/algorithm_codesign/audit_df_sparse_correction.py --phase A|B|CD`はexact log／synthetic CAR／有限平均境界の検査。`audit_df_sparse_correction_native.py`はsource Gaussian bridgeと5代表compileのみ。
+[監査](../docs/tracks/algorithm_codesign/df_sparse_correction_independent_audit_20261011.md)、artifacts=`artifacts/track_b_df_sparse_correction_audit/2026-10-11/`。outputはexclusive create。本番runnerではなく、終了済みreceiptを上書きしない。新実行は今回で終了、mandatory STOP。

@@ -454,3 +454,8 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 `docs/manuscripts/track_b_return_aggregation_native_resource_note_v0_1.md`へ整理した。
 保存値照合・図のhelperは`scripts/tracks/algorithm_codesign/`にあり、library/API/source moduleは変更していない。
 過去の一般数学構成・finite-bit証拠、原COMPLETEとmandatory STOPを保持。新規科学実行・G11は未認可。
+
+## DF sparse correction audit source references（2026-10-11）
+
+[限定独立監査](../../docs/tracks/algorithm_codesign/df_sparse_correction_independent_audit_20261011.md)は`df_partial_s2.py`/`rte.py`/`df_rte_tail.py`/`df_trotter/ops.py`/`rte_compiled_cost.py`をread-only照合した。
+新audit scripts/testsはlibrary外、API/code変更なし。Gaussian orbitalsとsmall controlled回転はsyntheticで照合、thin-isometry/digital/Clifford+T production経路は未実装。科学的GOなし、mandatory STOP。

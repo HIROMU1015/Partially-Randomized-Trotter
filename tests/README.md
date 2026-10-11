@@ -75,3 +75,8 @@ off-domain testsで、generic algebra、mock proof分類、source gate、marker�
 synthetic/off-domain mean、finite reweight/confidence、zero-cost、controlled phaseとsource reuseだけを検査。
 testsでregistered profile採点やsynthesisを行わず、full suite未実行。
 [結果](../docs/tracks/algorithm_codesign/g3_finite_law_handoff_20261009.md)。
+
+## DF sparse correction audit focused controls
+
+`test_df_sparse_correction_audit.py`：15 PASS。可換quotient、pure-D、tiny η、exact階層確率、identity、controlled phase、非Gaussian basis、独立drawのnegative control。
+[監査](../docs/tracks/algorithm_codesign/df_sparse_correction_independent_audit_20261011.md)。新分子入力/本番run/full suiteなし、mandatory STOP。

@@ -1,0 +1,276 @@
+{
+  "phase": "CD",
+  "scope": "Independent mathematical and small synthetic technical audit only",
+  "source_sha256": "5b13247a292d704b65efcb68b3385bfda36302281da92c826b2664813aa32ee7",
+  "production_runner_calls": 0,
+  "molecule_NPZ_GPU_calls": 0,
+  "trajectory_or_quantum_shots": 0,
+  "result": {
+    "C": {
+      "status": "CONDITIONAL_PASS",
+      "rows": [
+        {
+          "delta": 0.125,
+          "local_error": 3.332435370102318e-07,
+          "local_bound": 2.256479730589252e-06,
+          "global_error": 2.359155236511242e-06,
+          "global_bound": 1.8051980412979107e-05,
+          "expected_requested_corrections": 2.5,
+          "A": 0.021661458333333328,
+          "B": 0.08664583333333331,
+          "eta": 0.15625,
+          "probability_sum": 1,
+          "error": 1.2186647309461825e-08,
+          "bound": 2.649092827406193e-08,
+          "added_weight_multiplier": 1
+        },
+        {
+          "delta": 0.0625,
+          "local_error": 1.0425663060959621e-08,
+          "local_bound": 6.885650239375735e-08,
+          "global_error": 1.474105665153266e-07,
+          "global_bound": 1.1017046072464509e-06,
+          "expected_requested_corrections": 2.5,
+          "A": 0.021661458333333328,
+          "B": 0.08664583333333331,
+          "eta": 0.078125,
+          "probability_sum": 1,
+          "error": 3.830433635187905e-10,
+          "bound": 7.719062714992708e-10,
+          "added_weight_multiplier": 1
+        },
+        {
+          "delta": 0.03125,
+          "local_error": 3.2591558753698044e-10,
+          "local_bound": 2.126689501109308e-09,
+          "global_error": 9.213308318087004e-09,
+          "global_bound": 6.805406627881078e-08,
+          "expected_requested_corrections": 2.5,
+          "A": 0.021661458333333328,
+          "B": 0.08664583333333331,
+          "eta": 0.0390625,
+          "probability_sum": 1,
+          "error": 1.2004562067184282e-11,
+          "bound": 2.3248082905209017e-11,
+          "added_weight_multiplier": 1
+        }
+      ],
+      "saturation": {
+        "A": 0.021661458333333328,
+        "B": 0.08664583333333331,
+        "eta": 1,
+        "probability_sum": 1,
+        "error": 1.7848881610849637e-09,
+        "bound": 7.159710344341063e-09,
+        "added_weight_multiplier": 1
+      },
+      "tiny_eta": "Algebraically eliminate theta/eta factors; log-domain probability needed for a future digital sampler; not implemented",
+      "finite_bit_bias": "Not zero: sum |p_tilde-p| min(2,|theta|)+sum p_tilde epsilon; residual budget must be preregistered",
+      "negative_time": "OUT_OF_SCOPE_UNPROVED",
+      "production_sampler": "NOT_IMPLEMENTED"
+    },
+    "D": {
+      "status": "CONDITIONAL_PASS",
+      "assumptions": [
+        "fixed positive gamma, fixed t/input, independent slots and steps",
+        "central paired cutoff>=4/P5",
+        "finite-bit/native/DF errors separately budgeted"
+      ],
+      "rows": [
+        {
+          "delta": 0.125,
+          "local_error": 3.332435370102318e-07,
+          "local_bound": 2.256479730589252e-06,
+          "global_error": 2.359155236511242e-06,
+          "global_bound": 1.8051980412979107e-05,
+          "expected_requested_corrections": 2.5,
+          "A": 0.021661458333333328,
+          "B": 0.08664583333333331,
+          "eta": 0.15625,
+          "probability_sum": 1,
+          "error": 1.2186647309461825e-08,
+          "bound": 2.649092827406193e-08,
+          "added_weight_multiplier": 1
+        },
+        {
+          "delta": 0.0625,
+          "local_error": 1.0425663060959621e-08,
+          "local_bound": 6.885650239375735e-08,
+          "global_error": 1.474105665153266e-07,
+          "global_bound": 1.1017046072464509e-06,
+          "expected_requested_corrections": 2.5,
+          "A": 0.021661458333333328,
+          "B": 0.08664583333333331,
+          "eta": 0.078125,
+          "probability_sum": 1,
+          "error": 3.830433635187905e-10,
+          "bound": 7.719062714992708e-10,
+          "added_weight_multiplier": 1
+        },
+        {
+          "delta": 0.03125,
+          "local_error": 3.2591558753698044e-10,
+          "local_bound": 2.126689501109308e-09,
+          "global_error": 9.213308318087004e-09,
+          "global_bound": 6.805406627881078e-08,
+          "expected_requested_corrections": 2.5,
+          "A": 0.021661458333333328,
+          "B": 0.08664583333333331,
+          "eta": 0.0390625,
+          "probability_sum": 1,
+          "error": 1.2004562067184282e-11,
+          "bound": 2.3248082905209017e-11,
+          "added_weight_multiplier": 1
+        }
+      ]
+    }
+  },
+  "status": "FOCUSED_CHECKS_PASS",
+  "checks": [
+    {
+      "name": "C.hierarchical_mass_exact",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "C.bound.0.125",
+      "pass": true,
+      "details": {
+        "A": 0.021661458333333328,
+        "B": 0.08664583333333331,
+        "eta": 0.15625,
+        "probability_sum": 1,
+        "error": 1.2186647309461825e-08,
+        "bound": 2.649092827406193e-08,
+        "added_weight_multiplier": 1
+      }
+    },
+    {
+      "name": "C.contraction.0.125",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "A.source_cutoff4_degree5.0.125",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "D.local_bound.0.125",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "D.global_bound.0.125",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "C.bound.0.0625",
+      "pass": true,
+      "details": {
+        "A": 0.021661458333333328,
+        "B": 0.08664583333333331,
+        "eta": 0.078125,
+        "probability_sum": 1,
+        "error": 3.830433635187905e-10,
+        "bound": 7.719062714992708e-10,
+        "added_weight_multiplier": 1
+      }
+    },
+    {
+      "name": "C.contraction.0.0625",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "A.source_cutoff4_degree5.0.0625",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "D.local_bound.0.0625",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "D.global_bound.0.0625",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "C.bound.0.03125",
+      "pass": true,
+      "details": {
+        "A": 0.021661458333333328,
+        "B": 0.08664583333333331,
+        "eta": 0.0390625,
+        "probability_sum": 1,
+        "error": 1.2004562067184282e-11,
+        "bound": 2.3248082905209017e-11,
+        "added_weight_multiplier": 1
+      }
+    },
+    {
+      "name": "C.contraction.0.03125",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "A.source_cutoff4_degree5.0.03125",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "D.local_bound.0.03125",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "D.global_bound.0.03125",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "C.saturation",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "C.A_zero",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "C.Lambda_zero_identity",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "A.pure_D_nonzero",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "A.cutoff.0.probability",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "A.cutoff.2.probability",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "A.cutoff.4.probability",
+      "pass": true,
+      "details": null
+    }
+  ],
+  "checks_passed": 23,
+  "wall_seconds": 1.2486408958211541,
+  "CPU_seconds": 1.235320966,
+  "peak_RSS_MiB": 351.23828125,
+  "python": "3.11.0rc1",
+  "threads": 1
+}
