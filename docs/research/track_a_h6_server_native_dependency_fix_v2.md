@@ -58,3 +58,10 @@ REVIEW自身のSHAはcommit後のgit rev-parse HEADまたはlaunch receiptを参
 
 資料入口は [準備v2](../../artifacts/resource_applicability/track_a_h6_server_preparation_v2/2026-10-12/README.md)。起動後のPID/時刻/状態はlaunch receiptとruntimeのprogress/ResourceTraceで確認する。
 未完了の143中447のみに着手し、成功後の残142と独立32確認は別認可を要する。
+
+## 起動確認
+
+一回run `h6-server-phase-a-447-launch_server_v2`、coordinator PID3855386、worker PID3855586。REVIEW `c71e493d0b23510626f79403117d317fdf89a26e`。
+前回のGaussian準備を通過し、evolution 345505 instructionsを構築、numeric fingerprintへ進行を観測。
+Worker32/32GiB、CPU20/21、coordinator22/23、監視first STOPなし。起動receiptの観測時点で実行中で、q8 transpile完走は未判定。
+CPU/メモリの継続監視下で完了またはfail-closed STOP後に終了。自動retry/残り142への進行なし。

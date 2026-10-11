@@ -1,6 +1,7 @@
 # H6 Phase A v2 — 資料入口
 
-最新利用者指示によるnative依存修正と、新しい一回index447実行。旧grant・旧run・旧環境は保全。
+最新利用者指示によるnative依存修正後、index447の一回実計算を起動。
+[起動receipt・PID・資源観測](launch_receipt_v2.json)。旧grant・旧run・旧環境は保全。
 [修正/固定環境/検査/資源/一回範囲/公開状態](../../../../docs/research/track_a_h6_server_native_dependency_fix_v2.md)。
 
 SOURCE `6a924e52cf1b6541e2780e9d1b756b8049683166`、science SOURCE `5a903aea2492c2d211c1e15e7737df0d50694c12`。REVIEWはこのbundleを固定したcommit（起動receipt参照）。
