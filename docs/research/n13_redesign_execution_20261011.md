@@ -72,3 +72,8 @@ binary64全列検査はcompiled回路の厳密機械certificateではない。
 科学再実行・compile・LP solveを行わず、immutable CIや外部再現とは区別する。
 結果は新run1へ保存し、GitHub公開・独立remote blob取得を確認した後mandatory STOP。
 中心テーマnull、次の科学段階falseを維持する。
+
+## 実行後の状態（追記）
+
+一回batchはN1入力decodeのKeyErrorでTECHNICAL_STOP。N3/N2は完了。
+[新結果・失敗・GPT判断事項](n13_redesign_results_20261011.md)を参照。source変更・科学retryは0。

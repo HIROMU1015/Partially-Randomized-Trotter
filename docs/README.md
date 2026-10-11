@@ -1,5 +1,12 @@
 # 文書索引
 
+2026-10-11 N1/N3限定batchは**TECHNICAL_STOP**。N3/N2完了、N1は保存vector入力decode不備で未評価、科学retry0。
+[新結果とGPT判断事項](../docs/research/n13_redesign_results_20261011.md)。N3小gap（JW6・ν2・固定hopping/density・δgoal=.004）で方向保証のみactive5、同じU/cのnorm-onlyは6。
+N2固定S一件でL1適格性を回復。N1科学selector・PF・compile・総資源差は未取得。18 synthetic tests、保存監査660＋別JW/有理数監査411 checks PASS。
+module/runner/test/verifierは前段の固定sourceに保持。追加保存diagnostic監査 `scripts/audit_n13_redesign_saved_diagnostics.py`、一次結果・failure・auditは `artifacts/n13_redesign/2026-10-11/`。
+中心テーマnull、次段認可false、mandatory STOP。以下は既存stageの当時の記録として保持する。
+
+
 2026-10-11 N1/N3再設計の一回の限定batchを利用者指示で認可。元scopeは凍結履歴として保持する。
 [実行条件と数学確認](../docs/research/n13_redesign_execution_20261011.md)、[source-bound plan](../docs/research/n13_redesign_execution_plan_20261011.json)。
 新module `src/trottertracks/representation_exploration/n13_redesign.py`、runner `scripts/run_n13_redesign.py`、
