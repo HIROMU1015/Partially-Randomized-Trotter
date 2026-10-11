@@ -1,5 +1,10 @@
 # プロジェクト案内
 
+## H6 4 worker準備 v2
+
+[設計](docs/research/track_a_h6_parallel_preparation_v2.md)、[source/seal/38限定tests](artifacts/resource_applicability/track_a_h6_parallel_preparation_v2/2026-10-12/README.md)。利用者指定4 workerを反映、CPU20/21/24/25、RSS9GiB/AS32、aggregate40/RAM64を維持。科学224不変、実142探索未起動。
+
+
 ## H6 Phase A完了・次回142 group並列化準備
 
 [設計](docs/research/track_a_h6_parallel_preparation_v1.md)、[SOURCE/seal/34限定tests/Phase A入口](artifacts/resource_applicability/track_a_h6_parallel_preparation_v1/2026-10-12/README.md)。science224/compiler不変、closure237、新2 modules・2 scripts・test1。次回worker2は未承認、実並列科学計算0。Phase A447完了、450/592受理、残142固定。

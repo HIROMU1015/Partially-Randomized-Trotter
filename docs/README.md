@@ -1,5 +1,8 @@
 # 文書索引
 
+H6次回4 worker：[設計](research/track_a_h6_parallel_preparation_v2.md)、[固定bundle](../artifacts/resource_applicability/track_a_h6_parallel_preparation_v2/2026-10-12/README.md)。38限定tests、4 worker指定を採用、142探索未起動。
+
+
 H6次回group並列化：[設計](research/track_a_h6_parallel_preparation_v1.md)、[固定bundle](../artifacts/resource_applicability/track_a_h6_parallel_preparation_v1/2026-10-12/README.md)。Phase A447完了、次の142探索を最大2 workerで処理する準備。34限定tests、technical seal、実行未認可。
 
 

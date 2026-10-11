@@ -1,5 +1,8 @@
 # scripts 索引
 
+H6並列v2：既存[preparer](resource_applicability/prepare_track_a_h6_parallel_v1.py)/[runner](resource_applicability/run_track_a_h6_parallel_v1.py)を4 workerへ設定。新v2 namespace/LOCK、SOURCEとexact grantで旧2 worker grantを拒否。[資料](../artifacts/resource_applicability/track_a_h6_parallel_preparation_v2/2026-10-12/README.md)。
+
+
 H6 group間並列化：[prepare_track_a_h6_parallel_v1.py](resource_applicability/prepare_track_a_h6_parallel_v1.py)はmetadata-only binding、[run_track_a_h6_parallel_v1.py](resource_applicability/run_track_a_h6_parallel_v1.py)はdefault dry/new exact grant必須。次回142 group・2 workerの未認可準備。[資料](../artifacts/resource_applicability/track_a_h6_parallel_preparation_v1/2026-10-12/README.md)。
 
 
