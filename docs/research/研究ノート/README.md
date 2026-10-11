@@ -1,5 +1,15 @@
 # 研究ノート
 
+## 2026-10-12 H6共用サーバー移行準備 v1：Phase A認可待ち
+
+[専用環境・資源制御・検査・公開方針の記録](2026-10-12_track_a_h6_server_migration_preparation_v1.md)。
+
+科学source224/凍結入力33/旧raw5220を照合、旧449 group/902 wrapper/92 signal/84 B3を再利用。missing143、Phase Aは447 `B1_p19_q8_4th` replica0だけ。
+専用Python3.11.0rc1の固定gate一致。新SOURCE `61cadec5b5b2c8f1138828f43f7780d36319ccc3`、56 distinct local synthetic/mock/minimal-process検査PASS。
+worker1/AS32 GiB、coordinator soft2/hard32 GiB、RSS40 GiB、job RAM予算64 GiB、CPU20–23は実行提案。実H6 q8 feasibilityと旧native binary bit同一性は未検証。
+H4を変更せず継続。新science run0/approved grant0/grant消費0。H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION / next_stage_authorized=false、retry/resumeなし、Phase A後mandatory STOP。
+SOURCEは公開済み、以降のREVIEWは利用者指示によりローカルcommitのみ。Phase B/独立32確認/H8は未認可。以下は過去段階の履歴。
+
 ## 2026-10-11 Track A H6精度一致比較 v2：一回実行・原結果公開・mandatory STOP
 
 [結果・欠測・実行監査](2026-10-11_track_a_h6_matched_execution_v2.md)。固定source54986a9・公開v2 manifestに対する一回grant2157da1をremote照合後起動。

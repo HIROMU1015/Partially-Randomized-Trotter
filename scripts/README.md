@@ -1,5 +1,16 @@
 # scripts 索引
 
+## 2026-10-12 H6共用サーバー移行準備 v1：Phase A認可待ち
+
+[prepare](resource_applicability/prepare_track_a_h6_server_v1.py)、[audit](resource_applicability/audit_track_a_h6_server_v1.py)、[grant必須Phase A runner](resource_applicability/run_track_a_h6_server_phase_a_v1.py)。[環境inspect](resource_applicability/inspect_track_a_h6_environment_v1.py)、[再現helper](resource_applicability/reproduce_track_a_h6_environment_v1.py)。
+[契約と未実行command](../docs/research/track_a_h6_server_migration_preparation_v1.md)。
+
+科学source224/凍結入力33/旧raw5220を照合、旧449 group/902 wrapper/92 signal/84 B3を再利用。missing143、Phase Aは447 `B1_p19_q8_4th` replica0だけ。
+専用Python3.11.0rc1の固定gate一致。新SOURCE `61cadec5b5b2c8f1138828f43f7780d36319ccc3`、56 distinct local synthetic/mock/minimal-process検査PASS。
+worker1/AS32 GiB、coordinator soft2/hard32 GiB、RSS40 GiB、job RAM予算64 GiB、CPU20–23は実行提案。実H6 q8 feasibilityと旧native binary bit同一性は未検証。
+H4を変更せず継続。新science run0/approved grant0/grant消費0。H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION / next_stage_authorized=false、retry/resumeなし、Phase A後mandatory STOP。
+SOURCEは公開済み、以降のREVIEWは利用者指示によりローカルcommitのみ。Phase B/独立32確認/H8は未認可。以下は過去段階の履歴。
+
 ## 2026-10-11 Track A H6補完v3 launch_v2：一回実行・mandatory STOP
 
 [原結果・欠測・実行監査・GPT引渡し](../docs/research/track_a_h6_matched_supplement_result_launch_v2.md)。公開990ef294の起動準備v4、科学source5a903aea、新grant dc651bb8 をremote照合後に一回起動。
