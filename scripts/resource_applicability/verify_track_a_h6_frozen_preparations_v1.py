@@ -48,6 +48,7 @@ def main():
     from trottertracks.resource_applicability.h6_server_contract_v1 import verify_bindings
     from trottertracks.resource_applicability import h6_frozen_preparation_v1 as frozen
     begun = time.monotonic(); reason = None; receipt = None
+    reserved_calls = {'trajectory': 0, 'occurrence': 0}; known_calls = dict(reserved_calls)
     try:
         base = json.loads((ROOT / BASE).read_bytes())
         source_hashes = {p: frozen.file_hash(ROOT / p) for p in sources(ROOT)}
@@ -63,7 +64,8 @@ def main():
                 or old_receipt['partial_450']['calls'] != {'trajectory': 1, 'occurrence': 8}
                 or any(old_receipt.get(k) != 0 for k in ('compile_calls', 'signal_calls', 'input_generation'))):
             raise ValueError('VERIFY_OLD_EXPORT_RECEIPT')
-        partial = frozen.verify_partial_450(ROOT, preparations)
+        reserved_calls = {'trajectory': 1, 'occurrence': 8}; known_calls = None
+        partial = frozen.verify_partial_450(ROOT, preparations); known_calls = partial['calls']
         comparison = frozen.verify_phase_a_wrappers(preparations, base)
         with (output / 'phase_a_wrapper_comparison_v1.json').open('x') as stream:
             json.dump(comparison, stream, indent=2); stream.write('\n')
@@ -97,6 +99,7 @@ def main():
     with (output / 'verification_terminal.json').open('x') as stream:
         json.dump(dict(status='VERIFY_COMPLETE' if reason is None else 'VERIFY_STOP', reason=reason,
                        receipt_created=receipt is not None, runner_started=False,
+                       reserved_diagnostic_calls=reserved_calls, known_diagnostic_calls=known_calls,
                        wall_seconds=time.monotonic()-begun), stream, indent=2)
         stream.write('\n')
     return 0 if reason is None else 1

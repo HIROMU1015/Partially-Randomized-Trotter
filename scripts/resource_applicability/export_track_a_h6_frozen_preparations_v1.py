@@ -50,6 +50,7 @@ def main():
     frozen = importlib.util.module_from_spec(spec); spec.loader.exec_module(frozen)
     sys.path.insert(0, str(root / 'src'))
     started = time.monotonic(); reason = None; receipt = None
+    reserved_calls = {'trajectory': 0, 'occurrence': 0}; known_calls = dict(reserved_calls)
     try:
         old = json.loads((root / frozen.OLD_MANIFEST).read_bytes())
         hashes = old['source_hashes']
@@ -79,7 +80,8 @@ def main():
         codec = frozen.encode_preparations(preparations)
         restored = frozen.decode_preparations(codec)
         frozen.verify_preparations(restored, expected, identity['hamiltonian_hash'])
-        partial = frozen.verify_partial_450(root, restored)
+        reserved_calls = {'trajectory': 1, 'occurrence': 8}; known_calls = None
+        partial = frozen.verify_partial_450(root, restored); known_calls = partial['calls']
         receipt = dict(status='OLD_PREPARATIONS_EXPORTED', all_seven_preparations_exact=True,
                        partial_450=partial, compile_calls=0, signal_calls=0, input_generation=0,
                        package_install_or_change=False, wall_seconds=time.monotonic()-started,
@@ -109,6 +111,7 @@ def main():
     with (output / 'export_terminal.json').open('x') as stream:
         json.dump(dict(status='EXPORT_COMPLETE' if reason is None else 'EXPORT_STOP', reason=reason,
                        receipt=receipt, scientific_runner_started=False, grant_issued=False,
+                       reserved_diagnostic_calls=reserved_calls, known_diagnostic_calls=known_calls,
                        wall_seconds=time.monotonic()-started), stream, indent=2)
         stream.write('\n')
     return 0 if reason is None else 1
