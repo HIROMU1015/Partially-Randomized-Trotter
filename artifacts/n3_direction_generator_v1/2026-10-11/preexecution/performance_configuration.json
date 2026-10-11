@@ -1,0 +1,42 @@
+{
+  "resources": {
+    "backend": "CPU",
+    "workers_max": 2,
+    "threads_per_worker": 1,
+    "worker_memory_bytes": 4294967296,
+    "aggregate_memory_bytes": 8589934592,
+    "json_shard_bytes": 33554432,
+    "output_bytes": 536870912,
+    "log_bytes": 16777216,
+    "rational_max_bits": 4096,
+    "wall_seconds": null,
+    "cpu_seconds": null,
+    "gpu_calls": 0,
+    "thread_environment": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "1",
+      "RAYON_NUM_THREADS": "1"
+    },
+    "speedup_claim_requires_same_condition_comparison": true
+  },
+  "cpu_online": 32,
+  "meminfo_before_tests": {
+    "MemTotal": "65522480 kB",
+    "MemAvailable": "54297880 kB"
+  },
+  "gpu_devices": [],
+  "packages": {
+    "numpy": "1.26.4",
+    "pytest": "8.3.5"
+  },
+  "bottleneck": "exact small rational Schur/LDL and proposal eigenvalues; cached sector tensor construction for diagnostics",
+  "parallelization": "12 independent coefficient cases in 2 spawn workers; shared bounds per case; cached sector operators per base in diagnostics",
+  "optimized_reference_check": "new synthetic occupation-list reference matches cached vectorized sector construction; PSD independently checked via original-matrix LDL recurrence",
+  "speedup_factor": null,
+  "tests_passed": 15,
+  "tests_failed_final": 0,
+  "prior_development_case_replays": 0,
+  "transfer_cases_preexecuted": 0
+}
