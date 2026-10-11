@@ -121,7 +121,11 @@ class OwnedIdentity:
 class ObservationState:
     """Pure policy; timings, phase and the first failure are separate fields."""
     def __init__(self, baseline, started, *, prior_wall=0, workers=12, wall_started=None,
-                 pressure_profile=None, pressure_baseline=None, worker_cap=ROLE_CAP, driver_pid=None):
+                 pressure_profile=None, pressure_baseline=None, worker_cap=ROLE_CAP, driver_pid=None,
+                 wall_cap=WALL_CAP, wall_unlimited_authorized=False):
+        require(wall_cap is None and wall_unlimited_authorized is True or type(wall_cap) is int and wall_cap==WALL_CAP,
+                'observer closed approved wall cap')
+        self.wall_cap=wall_cap
         from .memory_budget import validate_cap
         self.worker_cap=validate_cap(worker_cap,workers)
         require(driver_pid is None or type(driver_pid) is int and driver_pid>0, 'driver memory identity')
@@ -187,7 +191,8 @@ class ObservationState:
         elif not 0 <= interval <= DEADLINE: reason = 'observation_interval'
         elif stale is None: reason = 'missing_observation'
         elif not 0 <= stale <= DEADLINE: reason = 'observation_staleness'
-        elif not 0 <= record['wall_seconds'] <= WALL_CAP: reason = 'cumulative_wall'
+        elif not math.isfinite(record['wall_seconds']) or record['wall_seconds']<0 or (
+                self.wall_cap is not None and record['wall_seconds']>self.wall_cap): reason = 'cumulative_wall'
         elif observation['available'] < HEADROOM: reason = 'memory_headroom'
         elif pressure is not None and pressure['reason'] is not None: reason = pressure['reason']
         elif pressure is None and observation['psi_full_avg10'] != 0: reason = 'memory_pressure'
@@ -262,7 +267,8 @@ def observer_main(sock_fd, trace_fd):
         state = ObservationState(baseline, start, prior_wall=config['prior_wall'], workers=config['workers'],
                                  wall_started=config['wall_started'],pressure_profile=config.get('pressure_profile'),
                                  pressure_baseline=config.get('pressure_baseline'),
-                                 worker_cap=config.get('worker_cap',ROLE_CAP),driver_pid=driver.expected['pid'])
+                                 worker_cap=config.get('worker_cap',ROLE_CAP),driver_pid=driver.expected['pid'],
+                                 wall_cap=config.get('wall_cap',WALL_CAP),wall_unlimited_authorized=config.get('wall_unlimited_authorized',False))
         record = state.evaluate(baseline, [driver.sample()], process_sample(os.getpid()), start, time.monotonic())
         require(state.first_failure is None, 'observer initial observation')
         trace.write(record)
@@ -346,7 +352,10 @@ class IndependentObserver:
     """Spawned only from explicitly scoped synthetic cases or reviewed new role."""
     def __init__(self, python, trace_path, *, scope, workers=12, prior_wall=0,
                  output_cap=4*2**20, runtime_authorization=False, wall_started=None,allowed_cpus=None,role_cpus=None,
-                 pressure_profile=None,pressure_baseline=None,worker_cap=ROLE_CAP):
+                 pressure_profile=None,pressure_baseline=None,worker_cap=ROLE_CAP,
+                 wall_cap=WALL_CAP,wall_unlimited_authorized=False):
+        require(wall_cap is None and wall_unlimited_authorized is True or type(wall_cap) is int and wall_cap==WALL_CAP,
+                'observer closed approved wall cap')
         from .memory_budget import validate_cap
         validate_cap(worker_cap,workers)
         wall_started = time.monotonic() if wall_started is None else wall_started
@@ -381,7 +390,8 @@ class IndependentObserver:
             send(parent, dict(scope=scope, runtime_authorization=runtime_authorization,
                  driver=identity(process_sample(os.getpid())), workers=workers, prior_wall=prior_wall,
                  wall_started=wall_started, output_cap=output_cap,allowed_cpus=allowed_cpus,role_cpus=role_cpus,
-                 pressure_profile=pressure_profile,pressure_baseline=pressure_baseline,worker_cap=worker_cap))
+                 pressure_profile=pressure_profile,pressure_baseline=pressure_baseline,worker_cap=worker_cap,
+                 wall_cap=wall_cap,wall_unlimited_authorized=wall_unlimited_authorized))
             response = receive(parent)
             require(response == {'kind': 'ready', 'identity': self.owner.expected}, 'observer ready ownership')
         except BaseException as exc:

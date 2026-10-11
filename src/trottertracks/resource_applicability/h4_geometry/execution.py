@@ -60,14 +60,18 @@ class OwnedRun:
                                    authorization['allowed_cpus'],observation['process_cpus'])
         # No affinity edits. A narrower CPU permission requires a separately scoped launch context.
         require(set(os.sched_getaffinity(0)) <= set(authorization['allowed_cpus']), 'process can use unpermitted CPU')
-        self.wall=WallBudget(prior_wall)
+        wall_cap=72*3600;trace_override=None;unlimited=False
+        if newhost:
+            from .wall_time import settings
+            wall_cap,trace_override,unlimited=settings(permit.plan,authorization)
+        self.wall=WallBudget(prior_wall,cap=wall_cap)
         self.wall.start=run_started
         limit_owned_address_space(preserve_hard=worker_cap>8*2**30)
         self.budget=prepared_budget or OutputBudget(permit.plan['output_root'] if newhost else OUTPUT,handoff=handoff,prior_charge=prior_charge,
                                 cap=permit.plan['caps']['output_bytes'] if newhost else OUTPUT_CAP,
                                 file_limits=FILE_LIMITS if newhost else None)
         self.close_budget=prepared_budget is None
-        trace_cap = (72*3600+2)*FRAME_CAP+TERMINAL_RESERVE
+        trace_cap = trace_override if trace_override is not None else (72*3600+2)*FRAME_CAP+TERMINAL_RESERVE
         # Full append-only trace is reserved before the observer can write;
         # reserve conservatively charges temp+final+journal even for one file.
         import sys
@@ -81,7 +85,7 @@ class OwnedRun:
                 allowed_cpus=authorization['allowed_cpus'] if newhost else None,
                 role_cpus=permit.plan['cpu_proposal']['observer'] if newhost else None,
                 pressure_profile=pressure_profile,pressure_baseline=pressure_baseline,
-                worker_cap=worker_cap)
+                worker_cap=worker_cap,wall_cap=wall_cap,wall_unlimited_authorized=unlimited)
         except BaseException:
             self.budget.close(); raise
         self.finished=threading.Event();self.failure=None

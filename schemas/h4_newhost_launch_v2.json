@@ -143,6 +143,12 @@
                 8589934592,
                 34359738368
               ]
+            },
+            "wall_seconds": {
+              "enum": [
+                259200,
+                null
+              ]
             }
           }
         },
@@ -214,6 +220,23 @@
               "type": "integer",
               "minimum": 0,
               "maximum": 74784
+            }
+          }
+        },
+        "wall_time_profile": {
+          "type": "object",
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
             }
           }
         }
@@ -592,6 +615,62 @@
               }
             }
           }
+        },
+        "wall_time_amendment": {
+          "type": "object",
+          "required": [
+            "approved",
+            "from",
+            "to",
+            "profile",
+            "authority"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "approved": {
+              "type": "boolean"
+            },
+            "from": {
+              "const": 259200
+            },
+            "to": {
+              "type": "null"
+            },
+            "profile": {
+              "type": "object",
+              "required": [
+                "path",
+                "sha256"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            },
+            "authority": {
+              "type": "object",
+              "required": [
+                "path",
+                "sha256"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -709,6 +788,37 @@
             "not": {
               "required": [
                 "continuation_amendment"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "plan": {
+            "required": [
+              "wall_time_profile"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "authorization": {
+            "required": [
+              "wall_time_amendment"
+            ]
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "authorization": {
+            "not": {
+              "required": [
+                "wall_time_amendment"
               ]
             }
           }

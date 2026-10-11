@@ -45,7 +45,8 @@ def structural(plan, authorization):
             type(carry['actual_invocations']) is int and 0<=carry['actual_invocations']<plan['caps']['actual_invocations'] and
             type(carry['charged_bytes']) is int and 0<=carry['charged_bytes']<plan['caps']['output_bytes'] and
             type(carry['wall_seconds']) is float and math.isfinite(carry['wall_seconds']) and
-            0<=carry['wall_seconds']<WALL_CAP, 'continuation carry within unchanged caps')
+            0<=carry['wall_seconds'] and (plan['caps']['wall_seconds'] is None or carry['wall_seconds']<WALL_CAP),
+            'continuation carry within selected caps')
 
 
 def authorize(plan, authorization):

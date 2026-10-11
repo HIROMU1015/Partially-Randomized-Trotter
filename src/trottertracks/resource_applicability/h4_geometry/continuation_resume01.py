@@ -26,7 +26,32 @@ SPEEDUP_SOURCE = 'def7d48f4af6c07f2d4e361fae868f3b01db8915'
 STARTED_EXPECTED = {'bytes': 4968, 'sha256': 'e8f8efed65d697d4589d1d30b61c029732a9fa56266f6ba1bd04b4e6e57301d3'}
 CLOCK_EXPECTED = {'bytes': 630, 'sha256': '8f12b48a1bca3d6a257149fe438a93b6c85ec0268ebc43717d71129e18cbb73e'}
 CLOCK_PATH = '/home/AbeHiromu/projects/h4-handoff-evidence/20261011/h4-resume02-preparation-20261011/RESUME01_CLOCK_CONTEXT_v1.json'
-CONTROL_CHANGES = frozenset(('continuation.py', 'continuation_binding.py', 'ledger.py', 'launch_binding.py'))
+CONTROL_CHANGES = frozenset(('continuation.py', 'continuation_binding.py', 'ledger.py', 'launch_binding.py',
+                             'execution.py','resources.py','observer.py'))
+
+
+def verify_time_source(root, source, path):
+    """Only the reviewed time-control entry points may differ from resume01."""
+    import ast
+    from .gates import git_blob
+    name=Path(path).name
+    allowed={'execution.py':{'OwnedRun':{'__init__'}},'resources.py':{'WallBudget':{'__init__','consumed'}},
+             'observer.py':{'ObservationState':{'__init__','evaluate'},'IndependentObserver':{'__init__'}}}
+    old=ast.parse(git_blob(root,PARENT_SOURCE,path));new=ast.parse(git_blob(root,source,path))
+    def bodies(tree):
+        values={}
+        for node in tree.body:
+            if isinstance(node,ast.FunctionDef):
+                if name=='observer.py' and node.name=='observer_main':continue
+                values[node.name]=ast.dump(node,include_attributes=False)
+            elif isinstance(node,ast.ClassDef):
+                for method in node.body:
+                    if isinstance(method,ast.FunctionDef) and method.name not in allowed.get(name,{}).get(node.name,set()):
+                        values[node.name+'.'+method.name]=ast.dump(method,include_attributes=False)
+            elif isinstance(node,ast.Assign):
+                values['assign:'+','.join(t.id for t in node.targets if isinstance(t,ast.Name))]=ast.dump(node,include_attributes=False)
+        return values
+    require(bodies(old)==bodies(new), 'time amendment changed scientific/resource/ownership source')
 
 
 def parent_plan(root):
@@ -190,8 +215,13 @@ def verify_runtime(permit):
     parent = parent_plan(plan['source_root']);root = Path(plan['source_root'])
     for field in ('inputs','input_root','generation_freeze_digest','templates','contract_plan_fingerprint',
                   'environment_fingerprint','compiler_fingerprint','environment_profile','compiler_profile',
-                  'library_cache_profile','memory_pressure_profile','gaussian_synthesis_profile','requested_workers','cpu_proposal','caps'):
+                  'library_cache_profile','memory_pressure_profile','gaussian_synthesis_profile','requested_workers','cpu_proposal'):
         require(plan[field]==parent[field], 'resume02 changed science/compiler/resource binding: '+field)
+    from .wall_time import settings as wall_settings
+    _cap,trace_override,unlimited=wall_settings(plan,permit.authorization)
+    require({k:v for k,v in plan['caps'].items() if k!='wall_seconds'}==
+            {k:v for k,v in parent['caps'].items() if k!='wall_seconds'}, 'resume02 other resource caps unchanged')
+    if not unlimited:require(plan['caps']==parent['caps'],'resume02 unchanged legacy caps')
     authority = reference(root, permit.authorization['continuation_amendment']['authority'])
     require(authority.get('schema_version')=='h4-user-resume01-continuation-authority-v1' and
             authority.get('resume_launch_approved') is True and authority.get('preparation_only') is False and
@@ -203,12 +233,15 @@ def verify_runtime(permit):
     prefix = 'src/trottertracks/resource_applicability/h4_geometry/'
     inherited = {p for p in parent['source_hashes'] if p.startswith(prefix)}
     require({p for p in plan['source_hashes'] if p.startswith(prefix)}==
-            inherited|{prefix+'instruction_encoding.py',prefix+'continuation_resume01.py'}, 'closed resume02 runtime source set')
+            inherited|{prefix+'instruction_encoding.py',prefix+'continuation_resume01.py',prefix+'wall_time.py'}, 'closed resume02 runtime source set')
     for path in inherited:
         digest = parent['source_hashes'][path]
         require(sha(gates.git_blob(root,PARENT_SOURCE,path))==digest, 'resume01 SOURCE blob')
         name = Path(path).name
-        if name in CONTROL_CHANGES:continue
+        if name in CONTROL_CHANGES:
+            if name in ('execution.py','resources.py','observer.py'):
+                verify_time_source(root,plan['source_commit'],path)
+            continue
         expected = sha(gates.git_blob(root,SPEEDUP_SOURCE,path)) if name in ('circuits.py','signal.py') else digest
         require(plan['source_hashes'][path]==expected, 'resume02 changed validated scientific/monitor source')
     require(plan['source_hashes'][prefix+'instruction_encoding.py']==sha(gates.git_blob(root,SPEEDUP_SOURCE,prefix+'instruction_encoding.py')),
@@ -222,8 +255,10 @@ def verify_runtime(permit):
     readonly += [ancestor_data[k]['path'] for k in ('started','clock_context','native_stop_proof')]
     verify_roots(plan,parent,extra_readonly=readonly);verify_roots(plan,grandparent,extra_readonly=readonly)
     storage = plan['storage'];fresh = grandparent['storage']
+    from .observer import FRAME_CAP,TERMINAL_RESERVE
+    trace_delta=0 if trace_override is None else 2*(trace_override-((72*3600+2)*FRAME_CAP+TERMINAL_RESERVE))
     require(storage['prior_charge_bytes']==plan['carry']['charged_bytes'] and
-            storage['cumulative_charge_bound']>=fresh['cumulative_charge_bound']+plan['carry']['charged_bytes'] and
+            storage['cumulative_charge_bound']>=fresh['cumulative_charge_bound']+plan['carry']['charged_bytes']+trace_delta and
             storage['required_bytes']>=fresh['required_bytes'] and storage['required_inodes']>=fresh['required_inodes'],
             'resume02 storage includes cumulative carry and one fresh bound')
     return store

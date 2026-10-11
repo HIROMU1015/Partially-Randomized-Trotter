@@ -290,7 +290,11 @@ class Resume02Tests(unittest.TestCase):
     def runtime_context(self):
         plan,auth,review=bound_documents(self.f);store=self.f.store();_,data=self.receipt()
         prefix='src/trottertracks/resource_applicability/h4_geometry/'
-        def blob(root,commit,path):return (commit+':'+path).encode()
+        def blob(root,commit,path):
+            if Path(path).name in ('execution.py','resources.py','observer.py'):
+                checkout=ROOT.parent/'h4-production-resume01-20261011' if commit==nextgen.PARENT_SOURCE else ROOT
+                return (checkout/path).read_bytes()
+            return (commit+':'+path).encode()
         for path in self.f.plan['source_hashes']:
             if path.startswith(prefix):self.f.plan['source_hashes'][path]=sha(blob(ROOT,nextgen.PARENT_SOURCE,path))
         plan['source_hashes']=copy.deepcopy(self.f.plan['source_hashes'])
@@ -299,6 +303,7 @@ class Resume02Tests(unittest.TestCase):
                 plan['source_hashes'][path]=sha(blob(ROOT,nextgen.SPEEDUP_SOURCE,path))
         plan['source_hashes'][prefix+'instruction_encoding.py']=sha(blob(ROOT,nextgen.SPEEDUP_SOURCE,prefix+'instruction_encoding.py'))
         plan['source_hashes'][prefix+'continuation_resume01.py']='d'*64
+        plan['source_hashes'][prefix+'wall_time.py']='e'*64
         authority=dict(schema_version='h4-user-resume01-continuation-authority-v1',resume_launch_approved=True,preparation_only=False,
             parent_source=nextgen.PARENT_SOURCE,parent_review=nextgen.PARENT_REVIEW,dataset_source=c.PARENT_SOURCE,
             validated_speedup_source=nextgen.SPEEDUP_SOURCE,preserve_dataset_seeds=True,preserve_consumed_budget=True,instruction='artificial approval only')

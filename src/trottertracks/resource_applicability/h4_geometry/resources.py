@@ -362,11 +362,14 @@ class OutputBudget:
 
 
 class WallBudget:
-    def __init__(self, prior_consumed, *, clock=time.monotonic):
-        require(0 <= prior_consumed < WALL_CAP, 'cumulative wall budget')
+    def __init__(self, prior_consumed, *, clock=time.monotonic, cap=WALL_CAP):
+        require(cap is None or type(cap) is int and cap==WALL_CAP, 'closed wall cap selection')
+        require(type(prior_consumed) in (int,float) and math.isfinite(prior_consumed) and
+                0 <= prior_consumed and (cap is None or prior_consumed < cap), 'cumulative wall budget')
+        self.cap=cap
         self.prior, self.clock, self.start = prior_consumed, clock, clock()
 
     def consumed(self):
         used = self.prior + self.clock() - self.start
-        require(0 <= used <= WALL_CAP, 'cumulative 72h STOP')
+        require(math.isfinite(used) and 0 <= used and (self.cap is None or used <= self.cap), 'cumulative wall STOP')
         return used

@@ -49,7 +49,7 @@ VERSIONS={k:'h4-newhost-'+k+'-v2' for k in STRUCTURES}
 def structural(plan,authorization,review):
     for label,doc in [('plan',plan),('authorization',authorization),('review',review)]:
         schema=STRUCTURES[label]
-        allowed={'continuation'} if label=='plan' else ({'memory_budget_amendment','continuation_amendment'} if label=='authorization' else set())
+        allowed={'continuation','wall_time_profile'} if label=='plan' else ({'memory_budget_amendment','continuation_amendment','wall_time_amendment'} if label=='authorization' else set())
         optional=allowed&set(doc) if type(doc) is dict else set()
         require(type(doc) is dict and set(doc)==set(schema)|optional,'newhost '+label+' schema fields')
         for key in optional:require(type(doc[key]) is dict,'newhost optional field type')
@@ -57,6 +57,8 @@ def structural(plan,authorization,review):
         for key,kind in schema.items():require(type(doc[key]) is kind,'newhost field type: '+key)
     from .continuation_binding import structural as continuation_structure
     continuation_structure(plan,authorization)
+    from .wall_time import structural as wall_structure
+    wall_structure(plan,authorization)
 
 
 def roles(plan):
@@ -152,9 +154,12 @@ def authorize(plan,authorization,review, *, explicit_launch):
                     'relative worker memory profile/authority reference')
             hash_id(entry['sha256'])
     else:require('memory_budget_amendment' not in authorization,'legacy memory amendment mismatch')
-    fixed=dict(wall_seconds=WALL_CAP,driver_AS_RSS=ROLE_CAP,worker_AS_RSS=worker_cap,
+    from .wall_time import settings as wall_settings
+    wall_cap,_trace_cap,_unlimited=wall_settings(plan,authorization)
+    fixed=dict(driver_AS_RSS=ROLE_CAP,worker_AS_RSS=worker_cap,
                headroom=HEADROOM,monitor_seconds=5,observer_AS=AS_CAP,observer_RSS=RSS_CAP)
     require(all(type(caps[k]) is int and caps[k]==v for k,v in fixed.items()),'existing caps / observer candidates')
+    require(caps['wall_seconds']==wall_cap,'selected wall cap binding')
     change=authorization['output_budget_amendment']
     require(set(change)=={'approved','from','to','authority_reference'} and type(change['approved']) is bool and
             type(change['from']) is int and type(change['to']) is int and
@@ -216,6 +221,8 @@ def verify_runtime(permit):
     plan=permit.plan
     authorize(plan,permit.authorization,permit.review,explicit_launch=True)
     root=private_path(permit.source_root)
+    from .wall_time import verify_runtime as verify_wall
+    verify_wall(root,plan,permit.authorization,reference)
     require(Path(__file__).absolute()==root/'src/trottertracks/resource_applicability/h4_geometry/launch_binding.py','loaded newhost source root')
     audit=reference(root,plan['source_audit'])
     require(audit['source_commit']==plan['source_commit'] and audit['source_hashes']==plan['source_hashes'],'source closure audit binding')
@@ -480,7 +487,9 @@ def launch(plan,authorization,review, *, explicit_launch=False):
     temp=private_path(Path(plan['control_root'])/'private-temp');temp.mkdir(mode=0o700)
     os.environ['TMPDIR']=str(temp)  # this owned process and its children only
     from .resources import OutputBudget
-    trace_cap=(72*3600+2)*FRAME_CAP+TERMINAL_RESERVE
+    from .wall_time import settings as wall_settings
+    _wall_cap,trace_override,_unlimited=wall_settings(plan,authorization)
+    trace_cap=trace_override if trace_override is not None else (72*3600+2)*FRAME_CAP+TERMINAL_RESERVE
     budget=OutputBudget(plan['output_root'],cap=plan['caps']['output_bytes'],
                         prior_charge=plan['carry']['charged_bytes'],file_limits=FILE_LIMITS)
     try:
