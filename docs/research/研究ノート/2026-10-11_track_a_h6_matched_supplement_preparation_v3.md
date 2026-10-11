@@ -15,3 +15,8 @@ synthetic bridgeは実H6 q8成功の証明ではない。AS8 GiB・compiler・�
 local synthetic/process検査とsource/入力/保存rawの静的照合だけを行う。
 source、sealed manifest、証拠registry、検証・保全記録をcommit/push/remote照合後、実行認可待ちでmandatory STOP。
 H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION / next_stage_authorized=false、H8・追加探索未認可を維持。
+
+公開：source `5a903aea2492c2d211c1e15e7737df0d50694c12`、sealed準備 `77639ddae1a17b7a3f4bf6070e5a80dc5e002a72`。
+独立bare databaseへGitHub branchを再取得し、5,503 path/SHA（runtime224・validation5・旧raw5220・親入力33・今回文書等）を照合。
+重要なrepositoryリンク、旧source/結果commitの存在、新execution output未生成を確認。
+remote検証receiptを追加公開して認可待ちSTOP。新scienceやgrantの認可へ変更しない。

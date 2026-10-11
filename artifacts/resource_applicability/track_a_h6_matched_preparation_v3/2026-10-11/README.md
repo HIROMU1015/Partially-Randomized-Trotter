@@ -9,6 +9,7 @@ Repository `HIROMU1015/Partially-Randomized-Trotter`、branch `track-a-ax2b-h4-p
 - [sealed manifest](sealed_manifest_v3.json)：runtime224、validation5、親入力33、環境・資源・新output、旧raw5,220のhash、449受理と143未完了のexact task/seedを含む
 - [静的準備照合](preparation_verification_v3.json)、[synthetic検証](synthetic_validation_v3.json)、[log](synthetic_pytest_v3.log)、[JUnit](synthetic_pytest_v3.xml)
 - [host資源観測](host_resource_observation_v3.json)、[未承認grantテンプレート](authorization_request_template_v3.json)
+- [独立remote再取得照合](remote_preparation_verification_v3.json)：準備公開commit `77639ddae1a17b7a3f4bf6070e5a80dc5e002a72` の5,503 path/SHAを照合
 - [旧STOP・欠測・監査索引](../../../../docs/research/track_a_h6_matched_accuracy_result_v2.md)
 - [旧一次signal](../../track_a_h6_matched_accuracy_v2/2026-10-11/launch_v1/signal/signal_summary.json)、[原592探索登録](../../track_a_h6_matched_accuracy_v2/2026-10-11/launch_v1/exploration_tasks.json)
 
