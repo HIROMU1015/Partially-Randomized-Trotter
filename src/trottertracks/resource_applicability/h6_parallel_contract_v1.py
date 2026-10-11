@@ -1,4 +1,4 @@
-"""Two independent frozen cost groups; preparation is never authorization."""
+"""Four independent frozen cost groups; preparation is never authorization."""
 from pathlib import Path
 from copy import deepcopy
 from .ax2a_preparation import digest
@@ -9,12 +9,12 @@ from .h6_server_resources_v1 import observation_policy, fresh_resources, process
 from .h6_server_execution_v1 import admit_new_group
 
 BASE='artifacts/resource_applicability/track_a_h6_server_preparation_v2/2026-10-12/sealed_manifest_server_v1.json'
-PREPARATION='artifacts/resource_applicability/track_a_h6_parallel_preparation_v1/2026-10-12/'
-NAMESPACE='artifacts/resource_applicability/track_a_h6_parallel_exploration_v1/2026-10-12/'
+PREPARATION='artifacts/resource_applicability/track_a_h6_parallel_preparation_v2/2026-10-12/'
+NAMESPACE='artifacts/resource_applicability/track_a_h6_parallel_exploration_v2/2026-10-12/'
 RUNNER='scripts/resource_applicability/run_track_a_h6_parallel_v1.py'
 PREPARER='scripts/resource_applicability/prepare_track_a_h6_parallel_v1.py'
 KIND='H6_PARALLEL_EXPLORATION_ONLY_V1'
-LOCK='.server-preparation/h6-parallel-phase-b-v1/one-shot.lock'
+LOCK='.server-preparation/h6-parallel-phase-b-v2/one-shot.lock'
 
 
 def sources(root):
@@ -26,9 +26,9 @@ def sources(root):
 def proposed_resources():
     # RSS limits are sampled STOP thresholds, not kernel reservations. All old
     # host/cgroup, aggregate RSS40GiB and job RAM64GiB guards remain in force.
-    return dict(assigned_cpus=[20,21,22,23],coordinator_cpu_set=[22,23],
-        cost_cpu_sets=[[20],[21]],cost_workers=2,cost_threads=1,
-        cost_address_space_bytes=32*2**30,worker_rss_stop_bytes=18*2**30,
+    return dict(assigned_cpus=[20,21,22,23,24,25],coordinator_cpu_set=[22,23],
+        cost_cpu_sets=[[20],[21],[24],[25]],cost_workers=4,cost_threads=1,
+        cost_address_space_bytes=32*2**30,worker_rss_stop_bytes=9*2**30,
         coordinator_address_space_bytes=2*2**30,coordinator_hard_address_space_bytes=32*2**30,
         aggregate_rss_bytes=40*2**30,job_ram_budget_bytes=64*2**30,
         coordinator_rss_reserve_bytes=2*2**30,aggregate_margin_bytes=2*2**30,
@@ -98,7 +98,7 @@ def validate_plan(root,m, *, launch=False):
     if m['base_sha256']!=file_hash(root/BASE) or m['base_manifest']!=base:
         raise ValueError('PARALLEL_BASE_BINDING')
     if (m['proposed_resources']!=proposed_resources() or m['observation_policy']!=observation_policy()
-        or m['registrations']!=registrations(base) or slots(m['proposed_resources'])!=2):
+        or m['registrations']!=registrations(base) or slots(m['proposed_resources'])!=4):
         raise ValueError('PARALLEL_SCOPE_OR_RESOURCES')
     for k,v in dict(approved=False,runtime_authorization=False,allowed_cpus=[],
         confirmation_authorized=False,H8_authorized=False,retry=False,resume=False,mandatory_stop=True).items():

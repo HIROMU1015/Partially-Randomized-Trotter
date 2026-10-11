@@ -1,4 +1,4 @@
-"""Metadata/mocks and at most two tiny children; no science arrays/transpile."""
+"""Metadata/mocks and at most four tiny children; no science arrays/transpile."""
 from copy import deepcopy
 import errno
 import inspect
@@ -29,7 +29,7 @@ def no_real_arrays(monkeypatch):
 def candidate():
     return dict(proposed_resources=c.proposed_resources(),observation_policy=c.observation_policy(),
         base_manifest={'plan':{'caps_proposed':{'output_bytes':2*2**30,'log_bytes':2**20}}},
-        registrations=[dict(index=i,task={'cell_id':'SYNTHETIC_'+str(i),'seed':i}) for i in [450,451,452]],
+        registrations=[dict(index=i,task={'cell_id':'SYNTHETIC_'+str(i),'seed':i}) for i in range(450,455)],
         source_commit='a'*40,exclusive_output={'absolute_path':'/home/AbeHiromu/SYNTHETIC'},
         base_profile='fixture',approved=False,runtime_authorization=False)
 
@@ -40,8 +40,9 @@ def host():
 
 
 def test_memory_reservations_bound_slot_count():
-    r=c.proposed_resources();assert c.slots(r)==2
-    r['aggregate_rss_bytes']=22*2**30;assert c.slots(r)==1
+    r=c.proposed_resources();assert c.slots(r)==4
+    r['aggregate_rss_bytes']=22*2**30;assert c.slots(r)==2
+    r['aggregate_rss_bytes']=13*2**30;assert c.slots(r)==1
     r['aggregate_rss_bytes']=4*2**30
     with pytest.raises(ValueError):c.slots(r)
 
@@ -55,7 +56,7 @@ def test_exact_142_registration_and_seed_order():
     with pytest.raises(ValueError):c.registrations(base)
 
 
-@pytest.mark.parametrize('tamper',['draft','retry','source','cpus','phase','integer_approval','valid'])
+@pytest.mark.parametrize('tamper',['draft','retry','source','cpus','old_two_worker','phase','integer_approval','valid'])
 def test_new_grant_required_for_parallel_scope(tamper):
     m=candidate();m['base_manifest']['profile']={'sha256':'b'*64}
     g=c.grant_draft(m);g.update(approved_by_user=True,server_usage_approved_by_user=True)
@@ -63,6 +64,8 @@ def test_new_grant_required_for_parallel_scope(tamper):
     if tamper=='retry':g['retry']=True
     if tamper=='source':g['source_commit']='c'*40
     if tamper=='cpus':g['resources']['cost_cpu_sets']=[[0],[2]]
+    if tamper=='old_two_worker':
+        g['resources'].update(cost_workers=2,cost_cpu_sets=[[20],[21]],worker_rss_stop_bytes=18*2**30)
     if tamper=='phase':g['confirmation_authorized']=True
     if tamper=='integer_approval':g['approved_by_user']=1
     if tamper=='valid':c.validate_grant(m,g)
@@ -73,7 +76,7 @@ def test_new_grant_required_for_parallel_scope(tamper):
 def test_grant_resources_do_not_alias_manifest():
     m=candidate();m['base_manifest']['profile']={'sha256':'b'*64}
     g=c.grant_draft(m);g['resources']['cost_cpu_sets'][0][0]=0
-    assert m['proposed_resources']['cost_cpu_sets']==[[20],[21]]
+    assert m['proposed_resources']['cost_cpu_sets']==[[20],[21],[24],[25]]
 
 
 @pytest.mark.parametrize('tamper',['valid','unsealed','cpus','output','root','tasks','lock'])
@@ -134,12 +137,13 @@ def test_32g_result_admission_matches_frozen_metadata_contract(tmp_path,tamper):
         with pytest.raises(ValueError):e.admit_parallel_group(tmp_path,task,source=old.OLD_SOURCE)
 
 
-@pytest.mark.parametrize('mode',['overlap','worker_exit','rss','missing','stale'])
+@pytest.mark.parametrize('mode',['overlap','worker_exit','rss','worker_rss','missing','stale'])
 def test_two_tiny_children_overlap_and_cleanup(tmp_path,monkeypatch,mode):
     m=candidate();m['registrations']=m['registrations'][:2]
     m['observation_policy'].update(interval_seconds=.01,journal_emit_seconds=.01)
     monkeypatch.setattr(e,'host_memory',host)
     if mode=='rss':monkeypatch.setattr(e,'process_tree_rss',lambda pid:41*2**30)
+    if mode=='worker_rss':monkeypatch.setattr(e,'process_memory',lambda pid:{'VmSize_bytes':11*2**30,'VmRSS_bytes':10*2**30 if pid!=os.getpid() else 1})
     if mode=='missing':monkeypatch.setattr(e,'process_memory',lambda pid:(_ for _ in ()).throw(FileNotFoundError()))
     if mode=='stale':
         times=iter([0.,0.,6.,6.,6.,6.]);monkeypatch.setattr(e.time,'monotonic',lambda:next(times,6.))
@@ -156,6 +160,7 @@ def test_two_tiny_children_overlap_and_cleanup(tmp_path,monkeypatch,mode):
         assert (tmp_path/'ready_0').exists() and (tmp_path/'ready_1').exists()
     if mode=='worker_exit':assert report['first_stop_reason']=='WORKER_EXIT:1'
     if mode=='rss':assert report['first_stop_reason']=='AGGREGATE_RSS_CAP'
+    if mode=='worker_rss':assert report['first_stop_reason']=='WORKER_RSS_CAP'
     if mode=='missing':assert 'SUPERVISOR_ERROR:FileNotFoundError' in report['first_stop_reason']
     if mode=='stale':assert report['first_stop_reason']=='OBSERVATION_STALE'
 
@@ -179,6 +184,32 @@ def test_cleanup_error_keeps_first_reason_and_continues_other_slot(tmp_path,monk
     report=e.supervise(ROOT,tmp_path,m,command=lambda *a:['synthetic'])
     assert calls==[991,992] and report['first_stop_reason']=='MEMORY_PRESSURE:host'
     assert report['cleanup_errors'] and not report['all_dispatched_reaped']
+
+
+def test_four_tiny_children_overlap_and_cleanup(tmp_path,monkeypatch):
+    m=candidate();m['registrations']=m['registrations'][:4]
+    m['observation_policy'].update(interval_seconds=.01,journal_emit_seconds=.01)
+    monkeypatch.setattr(e,'host_memory',host)
+    def command(row,directory,slot):
+        # The barrier can open only while all four children are alive.
+        code='import time,os,sys,resource;from pathlib import Path;resource.setrlimit(resource.RLIMIT_CORE,(0,0));resource.setrlimit(resource.RLIMIT_AS,(128*2**20,128*2**20));os.sched_setaffinity(0,{int(sys.argv[3])});root=Path(sys.argv[1]);(root/("ready_"+sys.argv[2])).write_text(str(os.getpid()));end=time.monotonic()+3;\nwhile not all((root/("ready_"+str(i))).exists() for i in range(4)):\n assert time.monotonic()<end;time.sleep(.01)\ntime.sleep(.1)\n'
+        return [sys.executable,'-I','-P','-B','-c',code,str(tmp_path),str(slot),str(m['proposed_resources']['cost_cpu_sets'][slot][0])]
+    report=e.supervise(ROOT,tmp_path,m,command=command)
+    assert report['first_stop_reason'] is None and report['completed_indices']==[450,451,452,453]
+    assert {x['slot'] for x in report['dispatched']}=={0,1,2,3}
+    assert report['all_dispatched_reaped'] and report['log_and_journal_closed']
+    assert all((tmp_path/f'ready_{i}').exists() for i in range(4))
+    assert all(not Path(f'/proc/{x["pid"]}').exists() for x in report['dispatched'])
+
+
+def test_four_worker_cpu_and_rss_partition_is_consistent():
+    r=c.proposed_resources()
+    worker_cpus=[x[0] for x in r['cost_cpu_sets']]
+    assert len(set(worker_cpus))==4 and not set(worker_cpus)&set(r['coordinator_cpu_set'])
+    assert set(worker_cpus)|set(r['coordinator_cpu_set'])==set(r['assigned_cpus'])
+    assert r['worker_rss_stop_bytes']*4+r['coordinator_rss_reserve_bytes']+r['aggregate_margin_bytes']==r['aggregate_rss_bytes']
+    assert r['aggregate_rss_bytes']==40*2**30 and r['job_ram_budget_bytes']==64*2**30
+    assert r['cost_address_space_bytes']==32*2**30
 
 
 def test_frozen_port_is_only_scientific_dispatch_and_no_confirmation():

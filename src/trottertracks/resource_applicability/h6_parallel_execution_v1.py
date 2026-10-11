@@ -1,4 +1,4 @@
-"""Bounded two-process scheduling; frozen cost port and compiler unchanged."""
+"""Bounded four-process scheduling; frozen cost port and compiler unchanged."""
 from copy import deepcopy
 import json
 import os

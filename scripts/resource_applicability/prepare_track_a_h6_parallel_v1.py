@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Bind frozen scientific bytes and two-worker proposals. Issue no grant."""
+"""Bind frozen scientific bytes and four-worker proposals. Issue no grant."""
 import argparse
 from pathlib import Path
 import sys
 ROOT=Path(__file__).resolve().parents[2];sys.path.insert(0,str(ROOT/'src'))
 from trottertracks.resource_applicability.h6_parallel_contract_v1 import (BASE,PREPARATION,NAMESPACE,
     KIND,sources,file_hash,read,proposed_resources,registrations,phase_a_receipt,carry_calls,
-    observation_policy,validate_plan,grant_draft,static_demand)
+    observation_policy,validate_plan,grant_draft,static_demand,LOCK)
 from trottertracks.resource_applicability.ax2b_limits import exclusive_json
 
 
@@ -22,7 +22,7 @@ def main():
         static_demand=static_demand(registrations(base)),
         proposed_resources=proposed_resources(),observation_policy=observation_policy(),
         exclusive_output=dict(repository_path=str(out.relative_to(ROOT)),absolute_path=str(out)),
-        one_shot_lock='.server-preparation/h6-parallel-phase-b-v1/one-shot.lock',
+        one_shot_lock=LOCK,
         execution_plan_sealed=proof is not None,approved=False,runtime_authorization=False,allowed_cpus=[],
         confirmation_authorized=False,H8_authorized=False,retry=False,resume=False,mandatory_stop=True)
     validate_plan(ROOT,m);prep=ROOT/PREPARATION/a.bundle_name;prep.mkdir(parents=True,exist_ok=False)
