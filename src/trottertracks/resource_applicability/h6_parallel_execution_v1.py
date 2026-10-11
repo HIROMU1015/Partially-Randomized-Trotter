@@ -20,6 +20,21 @@ from .h6_server_resources_v1 import (THREAD_KEYS,host_memory,memory_reason,proce
 from .h6_server_contract_v1 import safe_path,environment
 
 
+def exiting_unreaped(child, *, grace_seconds=.02):
+    """RSS can disappear just before exit becomes waitable; never reap here.
+
+    A bounded 20ms wait accepts only a definitive WEXITED receipt. A live child
+    with missing memory still fails closed. Keep its unreaped leader identity
+    until stop_owned_group performs group cleanup and wait/reap.
+    """
+    deadline=time.monotonic()+grace_seconds
+    while True:
+        if os.waitid(os.P_PID,child.pid,os.WEXITED|os.WNOHANG|os.WNOWAIT) is not None:return True
+        remaining=deadline-time.monotonic()
+        if remaining<=0:return False
+        time.sleep(min(.001,remaining))
+
+
 def supervise(root,out,m,*,command=None,admission=None):
     """Only owned unreaped leaders are killed; later cleanups survive an error.
 
@@ -82,7 +97,7 @@ def supervise(root,out,m,*,command=None,admission=None):
                     if current['start_ticks']!=v['identity']['start_ticks']:raise ValueError('PARALLEL_WORKER_IDENTITY')
                     try:mem=process_memory(child.pid)
                     except (FileNotFoundError,ValueError):
-                        if os.waitid(os.P_PID,child.pid,os.WEXITED|os.WNOHANG|os.WNOWAIT) is not None:continue
+                        if exiting_unreaped(child):continue
                         raise
                     if mem['VmSize_bytes']>r['cost_address_space_bytes']:first=first or 'WORKER_AS_CAP'
                     if mem['VmRSS_bytes']>r['worker_rss_stop_bytes']:first=first or 'WORKER_RSS_CAP'
@@ -154,9 +169,15 @@ def worker(root,directory,run_root):
     try:
         with trace.bind(),trace.stage('cost_task',cell_id=b['task']['cell_id'],phase='exploration',replica=b['task']['replica']):
             from .h6_matched_cost_port_v3 import cost_task
+            from .h6_frozen_preparation_v1 import verify_archive,use_frozen_preparations
+            from .h6_parallel_contract_v1 import frozen_binding
+            frozen_binding(root,m)
+            ref=m['frozen_preparation_binding']
+            preparations,_=verify_archive(root,ref['archive_path'],sha256=ref['archive_sha256'])
             effective=deepcopy(base)
             effective['plan']['caps_proposed']['compile']=4 if b['task']['ordinary'] else 2
-            cost_task(root,effective,b['task'],writer,Progress(writer),trace)
+            with use_frozen_preparations(preparations):
+                cost_task(root,effective,b['task'],writer,Progress(writer),trace)
         for p,sha in m['source_hashes'].items():
             if file_hash(safe_path(root,p))!=sha:raise ValueError('PARALLEL_WORKER_SOURCE_AFTER')
     except Exception as exc:

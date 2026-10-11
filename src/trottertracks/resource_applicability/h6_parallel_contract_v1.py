@@ -9,18 +9,55 @@ from .h6_server_resources_v1 import observation_policy, fresh_resources, process
 from .h6_server_execution_v1 import admit_new_group
 
 BASE='artifacts/resource_applicability/track_a_h6_server_preparation_v2/2026-10-12/sealed_manifest_server_v1.json'
-PREPARATION='artifacts/resource_applicability/track_a_h6_parallel_preparation_v2/2026-10-12/'
-NAMESPACE='artifacts/resource_applicability/track_a_h6_parallel_exploration_v2/2026-10-12/'
+PREPARATION='artifacts/resource_applicability/track_a_h6_frozen_basis_preparation_v1/2026-10-12/'
+NAMESPACE='artifacts/resource_applicability/track_a_h6_parallel_frozen_basis_v1/2026-10-12/'
 RUNNER='scripts/resource_applicability/run_track_a_h6_parallel_v1.py'
 PREPARER='scripts/resource_applicability/prepare_track_a_h6_parallel_v1.py'
-KIND='H6_PARALLEL_EXPLORATION_ONLY_V1'
-LOCK='.server-preparation/h6-parallel-phase-b-v2/one-shot.lock'
+KIND='H6_PARALLEL_FROZEN_BASIS_EXPLORATION_V1'
+SCHEMA='h6_parallel_frozen_basis_manifest_v1'
+LOCK='.server-preparation/h6-parallel-frozen-basis-v1/one-shot.lock'
+VERIFIER='scripts/resource_applicability/verify_track_a_h6_frozen_preparations_v1.py'
 
 
 def sources(root):
     return sorted(set(base_sources(root))|{RUNNER,PREPARER,
         'src/trottertracks/resource_applicability/h6_parallel_contract_v1.py',
-        'src/trottertracks/resource_applicability/h6_parallel_execution_v1.py'})
+        'src/trottertracks/resource_applicability/h6_parallel_execution_v1.py',VERIFIER,
+        'scripts/resource_applicability/export_track_a_h6_frozen_preparations_v1.py',
+        'src/trottertracks/resource_applicability/h6_frozen_preparation_v1.py'})
+
+
+def frozen_binding(root,m):
+    """Metadata-only receipt gate; missing archive leaves the plan unsealed."""
+    ref=m.get('frozen_preparation_binding')
+    if ref is None:return False
+    if (type(ref) is not dict or set(ref)!={'archive_path','archive_sha256','archive_bytes',
+        'receipt_path','receipt_sha256'}):raise ValueError('PARALLEL_FROZEN_REFERENCE')
+    for key in ('archive_path','receipt_path'):
+        path=Path(ref[key])
+        if (not path.is_absolute() or not path.is_relative_to('/home/AbeHiromu')
+            or any(p.is_symlink() for p in (path,*path.parents))):
+            raise ValueError('PARALLEL_FROZEN_PATH')
+    archive=Path(ref['archive_path']);receipt=Path(ref['receipt_path'])
+    if (type(ref['archive_bytes']) is not int or not 0<ref['archive_bytes']<=16*2**20
+        or archive.stat().st_size!=ref['archive_bytes'] or file_hash(archive)!=ref['archive_sha256']
+        or receipt.stat().st_size>65536 or file_hash(receipt)!=ref['receipt_sha256']):
+        raise ValueError('PARALLEL_FROZEN_RECEIPT_BYTES')
+    proof=read(receipt)
+    expected=dict(schema='h6_server_frozen_preparation_receipt_v1',source_commit=m['source_commit'],
+        source_hashes_digest=digest(m['source_hashes']),archive_sha256=ref['archive_sha256'],
+        archive_bytes=ref['archive_bytes'],profile_sha256=m['base_manifest']['profile']['sha256'],
+        input_identity_digest=digest(m['base_manifest']['input_identity']),
+        all_seven_preparations_exact=True,partial_450_exact=True,
+        phase_a_full_wrapper_exact=True,phase_a_receipt_digest=digest(m['phase_a_receipt']),
+        partial_450_digest=next(x['partial_event_digest'] for x in m['base_manifest']['reuse_registry']['missing'] if x['index']==450),
+        compile_calls=0,signal_calls=0,input_generation=0,
+        server_diagnostic_calls={'trajectory':1,'occurrence':8},
+        old_host_diagnostic_calls={'trajectory':1,'occurrence':8})
+    if (any(type(proof.get(k)) is not type(v) or proof[k]!=v for k,v in expected.items())
+        or proof.get('status')!='PASS_EXACT_PREPARATIONS_AND_PARTIAL_450'):
+        raise ValueError('PARALLEL_FROZEN_RECEIPT_BINDING')
+    return True
 
 
 def proposed_resources():
@@ -75,12 +112,16 @@ def phase_a_receipt(base, *, require=False):
         completed_group=447,wrappers=2,mandatory_stop=True)
 
 
-def carry_calls(root,base,phase_a):
+def carry_calls(root,base,phase_a,*,frozen=False):
     counts=dict(base['reuse_registry']['original_signal_calls'])
     paths=[Path(root)/x['directory'] for x in base['reuse_registry']['accepted']]
     if phase_a:paths.append(Path(phase_a['run'])/'cost_exploration_0447')
     for p in paths:
         for k,v in read(p/'cost_result.json')['calls_attempted'].items():counts[k]+=v
+    # Both export and receipt diagnostics regenerate one original trajectory.
+    # They are counted even though neither compiles a production wrapper.
+    if frozen:
+        counts['trajectory']+=2;counts['occurrence']+=16
     return counts
 
 
@@ -93,7 +134,7 @@ def static_demand(rows):
 
 def validate_plan(root,m, *, launch=False):
     root=Path(root);base=read(safe_path(root,BASE))
-    if m.get('schema')!='h6_parallel_exploration_manifest_v1' or m.get('kind')!=KIND:
+    if m.get('schema')!=SCHEMA or m.get('kind')!=KIND:
         raise ValueError('PARALLEL_SCHEMA')
     if m['base_sha256']!=file_hash(root/BASE) or m['base_manifest']!=base:
         raise ValueError('PARALLEL_BASE_BINDING')
@@ -107,15 +148,16 @@ def validate_plan(root,m, *, launch=False):
     output_binding(root,m)
     if set(m['source_hashes'])!=set(sources(root)):raise ValueError('PARALLEL_SOURCE_CLOSURE')
     committed_hashes(root,m['source_commit'],m['source_hashes']);verify_bindings(root,base)
-    if m['carry_known_calls']!=carry_calls(root,base,m['phase_a_receipt']):raise ValueError('PARALLEL_CARRY_CHANGED')
+    ready=frozen_binding(root,m)
+    if m['carry_known_calls']!=carry_calls(root,base,m['phase_a_receipt'],frozen=ready):raise ValueError('PARALLEL_CARRY_CHANGED')
     demand=static_demand(m['registrations'])
     if m['static_demand']!=demand:raise ValueError('PARALLEL_STATIC_DEMAND')
     if any(m['carry_known_calls'][k]+v>base['plan']['caps_proposed'][k] for k,v in demand.items()):
         raise ValueError('PARALLEL_CUMULATIVE_CALL_CAP')
     if launch:
-        if not m['execution_plan_sealed']:raise ValueError('PARALLEL_NOT_TECHNICALLY_SEALED')
+        if not m['execution_plan_sealed'] or not ready:raise ValueError('PARALLEL_NOT_TECHNICALLY_SEALED')
         if phase_a_receipt(base,require=True)!=m['phase_a_receipt']:raise ValueError('PARALLEL_PHASE_A_CHANGED')
-    elif m['execution_plan_sealed']!=(m['phase_a_receipt'] is not None):
+    elif m['execution_plan_sealed']!=(m['phase_a_receipt'] is not None and ready):
         raise ValueError('PARALLEL_SEAL_STATE')
 
 
@@ -123,13 +165,14 @@ def grant_draft(m):
     return dict(schema='h6_parallel_authorization_v1',kind=KIND,approved_by_user=False,
         server_usage_approved_by_user=False,manifest_digest=digest(m),source_commit=m['source_commit'],
         profile_sha256=m['base_manifest']['profile']['sha256'],task_list_digest=digest(m['registrations']),
+        frozen_preparation_binding_digest=digest(m.get('frozen_preparation_binding')),
         resources=deepcopy(m['proposed_resources']),exclusive_output=m['exclusive_output']['absolute_path'],
         one_shot=True,retry=False,resume=False,confirmation_authorized=False,H8_authorized=False,mandatory_stop=True)
 
 
 def validate_grant(m,g):
     expected=grant_draft(m);expected.update(approved_by_user=True,server_usage_approved_by_user=True)
-    if g!=expected or any(type(g.get(k)) is not bool for k in (
+    if m.get('frozen_preparation_binding') is None or g!=expected or any(type(g.get(k)) is not bool for k in (
         'approved_by_user','server_usage_approved_by_user','one_shot','retry','resume',
         'confirmation_authorized','H8_authorized','mandatory_stop')):
         raise ValueError('NEW_PARALLEL_PHASE_B_GRANT_REQUIRED')
@@ -143,7 +186,7 @@ def output_binding(root,m):
 
 def worker_scope(root,out,m):
     """Cheap child-side scope check before any scientific import or affinity."""
-    if (m['schema']!='h6_parallel_exploration_manifest_v1' or m['kind']!=KIND
+    if (m['schema']!=SCHEMA or m['kind']!=KIND
         or m['execution_plan_sealed'] is not True or m['approved'] is not False
         or m['runtime_authorization'] is not False or m['allowed_cpus']!=[]
         or m['retry'] is not False or m['resume'] is not False
@@ -151,7 +194,8 @@ def worker_scope(root,out,m):
         or m['mandatory_stop'] is not True or m['repository_root']!=str(Path(root).resolve())
         or m['proposed_resources']!=proposed_resources()
         or m['observation_policy']!=observation_policy()
-        or m['registrations']!=registrations(m['base_manifest'])):
+        or m['registrations']!=registrations(m['base_manifest'])
+        or type(m.get('frozen_preparation_binding')) is not dict):
         raise ValueError('PARALLEL_WORKER_SCOPE')
     output_binding(root,m)
     if str(Path(out).resolve())!=m['exclusive_output']['absolute_path']:
