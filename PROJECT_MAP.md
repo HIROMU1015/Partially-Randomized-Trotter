@@ -943,3 +943,11 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 ## Track B DF補正比較 fingerprint原因監査（2026-10-12）
 
 [限定技術監査/GPT handoff](docs/tracks/algorithm_codesign/df_correction_fingerprint_cause_audit_and_gpt_handoff_20261012.md)：保存source/ASTのみ。input/recursive-definition hash guardを確認、float DAG/frame受渡しに構成差、actual hash/None未保存のため因果未確定。旧`TECHNICAL_INCONCLUSIVE`/source216/result28/auth/contract/marker不変。新matrix/compile/T合成/runner0、修正未採択、mandatory STOP。[監査manifest](artifacts/track_b_df_correction_fingerprint_cause_audit/2026-10-12/evidence_manifest_v1.json)。
+
+
+## Track B fingerprint診断source準備（2026-10-12）
+
+[GPT handoff](docs/tracks/algorithm_codesign/df_correction_fingerprint_diagnostics_preparation_and_gpt_handoff_20261012.md)：B-local観測adapter、lossless matrix bytes・recursive payload・None/exception保存、登録外2-mode旧/new controls。
+最終focused tests104 PASS。controlledで同じ行列でもrecursive自動名によるhash差を保存した。登録r3停止の原因は未確定。
+既存moduleの数式・guard・expected・contract不変。旧marker/result/auth/STOP保持、登録science/T合成0、RUN_READY=false。
+新source snapshotと全失敗test記録を公開し、mandatory STOP。次scopeの判断はGPT/利用者側。

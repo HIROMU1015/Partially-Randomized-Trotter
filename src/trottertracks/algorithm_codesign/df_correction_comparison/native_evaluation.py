@@ -34,7 +34,7 @@ def operator_numeric_guard(circuit, ideal, ideal_radius):
         'model':'IEEE_binary64_standard_BLAS_and_faithful_libm_4ulp_local_gate_Operator'}
 
 
-def native_fixture(r, frames, prior, on_compile):
+def native_fixture(r, frames, prior, on_compile, *, on_diagnostic):
     configure()
     from scipy.linalg import expm, block_diag
     import qiskit
@@ -42,6 +42,7 @@ def native_fixture(r, frames, prior, on_compile):
     from qiskit.circuit.library import UnitaryGate
     from trotterlib.rte import CompilerSettings
     from trotterlib.rte_compiled_cost import transpile_and_measure_cost
+    from .fingerprint_diagnostics import diagnostic_transpile_and_measure_cost
     if qiskit.__version__ != '1.3.0': raise PermissionError('Compiler version changed')
     qs, frame_certificates = certified_primitives(frames,(1,-1,1))
     t=comm(qs[0],comm(qs[1],qs[2]))
@@ -73,16 +74,23 @@ def native_fixture(r, frames, prior, on_compile):
         'outer_coin_rate':'UNSPECIFIED_LOCAL_CONDITIONAL_NOT_CD_RATE',
         'original_RTE_normalization':'NOT_AN_E_DOMAIN_QUANTITY',
         'PR_shot_count':None}
-    # Preserve the frozen whole source's exact float construction/fingerprint.
+    # Keep the current float DAG unchanged; observation does not repair identity.
     raw_u=expm(1j*.03125*t.value/4)
     reference=verified_rotation(t,F(1,128))
     for controlled in (False,True):
         target=block_diag(np.eye(1<<r),raw_u) if controlled else raw_u
         qc=QuantumCircuit(r+int(controlled));qc.append(UnitaryGate(target),qc.qubits)
         result['compile_calls']+=1;on_compile(result)
-        compiled=transpile_and_measure_cost(qc,compiler)
-        if len(compiled.transpiled_circuit.data)>200000:raise RuntimeError('Native instruction cap')
         expected=next(p for p in prior if p['active_modes']==r and p['controlled']==controlled)
+        compiled=diagnostic_transpile_and_measure_cost(qc,compiler,
+            expected=expected['circuit_fingerprint'],
+            arrays={**{f'frame_{i}':v for i,v in enumerate(frames)},
+                    **{f'Q_{i}':q.value for i,q in enumerate(qs)},
+                    'T':t.value,'raw_U':raw_u,'input_target':target},
+            context={'active_modes':r,'controlled':controlled,'arm':'A',
+                     'guard_location':'native_fixture.whole_input_identity'},
+            save=lambda record:on_diagnostic(controlled,record))
+        if len(compiled.transpiled_circuit.data)>200000:raise RuntimeError('Native instruction cap')
         if compiled.actual_circuit_fingerprint!=expected['circuit_fingerprint']:
             raise ArithmeticError('Frozen E whole fingerprint mismatch; no synthesis')
         ideal=block_diag(np.eye(1<<r),reference.value) if controlled else reference.value

@@ -553,3 +553,11 @@ G9のP5少数群、G10の固定native事例/下界classを一つの読者向け�
 ## 2026-10-12 Track B DF比較 fingerprint停止の技術原因監査
 
 [監査とGPT handoff](tracks/algorithm_codesign/df_correction_fingerprint_cause_audit_and_gpt_handoff_20261012.md)：input fingerprint guard、source構成差と未保存分岐を特定。因果未確定、原classification保持、科学実行/修正0、mandatory STOP。
+
+
+## Track B fingerprint診断source準備（2026-10-12）
+
+[GPT handoff](tracks/algorithm_codesign/df_correction_fingerprint_diagnostics_preparation_and_gpt_handoff_20261012.md)：B-local観測adapter、lossless matrix bytes・recursive payload・None/exception保存、登録外2-mode旧/new controls。
+最終focused tests104 PASS。controlledで同じ行列でもrecursive自動名によるhash差を保存した。登録r3停止の原因は未確定。
+既存moduleの数式・guard・expected・contract不変。旧marker/result/auth/STOP保持、登録science/T合成0、RUN_READY=false。
+新source snapshotと全失敗test記録を公開し、mandatory STOP。次scopeの判断はGPT/利用者側。

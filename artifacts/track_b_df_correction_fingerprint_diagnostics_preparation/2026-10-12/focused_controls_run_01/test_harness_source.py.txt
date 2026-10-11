@@ -1,0 +1,91 @@
+"""Run only source-bound focused OFF-DOMAIN controls, never a science worker.
+
+Output is exclusive. A failed test receipt is preserved; no production retry,
+registered recipe, prior expected-digest update or repair selection is made.
+"""
+import hashlib
+import importlib.metadata
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import xml.etree.ElementTree as ET
+
+ROOT = Path(__file__).resolve().parents[3]
+ART = ROOT / 'artifacts/track_b_df_correction_fingerprint_diagnostics_preparation/2026-10-12'
+sys.path.insert(0, str(ROOT / 'src'))
+
+
+def identity(p):
+    b = (ROOT / p).read_bytes()
+    return {'path': p, 'bytes': len(b), 'sha256': hashlib.sha256(b).hexdigest()}
+
+
+def main():
+    from trottertracks.algorithm_codesign.df_correction_comparison.guard import Supervisor, Limits
+    from trottertracks.algorithm_codesign.df_correction_comparison.worker import runtime_check
+    ART.mkdir(parents=True, exist_ok=True)
+    run = ART / 'focused_controls_run_01'
+    run.mkdir()  # no replacement of any old test/marker/result
+    contract = json.loads((ROOT / 'artifacts/track_b_df_correction_comparison_source_v2/2026-10-11/contract_v2.json').read_text())
+    runtime_check(contract, 'native')  # metadata/file bytes only, no launch/fixture
+    paths = ['tests/tracks/algorithm_codesign/test_df_correction_comparison_v2.py',
+             'tests/tracks/algorithm_codesign/test_df_correction_integrity_v3.py',
+             'tests/tracks/algorithm_codesign/test_df_correction_fingerprint_diagnostics.py']
+    source_paths = paths + [str(Path(__file__).relative_to(ROOT))] + [
+        'src/trottertracks/algorithm_codesign/df_correction_comparison/' + p
+        for p in ['fingerprint_diagnostics.py','native_evaluation.py','worker.py']]
+    binding = [identity(p) for p in source_paths]
+    xml = run / 'focused_tests.xml'
+    command = [sys.executable, '-B', '-m', 'pytest', '-q', '-p', 'no:cacheprovider',
+               *paths, '--junitxml=' + str(xml)]
+    env = os.environ
+    for k in ['OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS','RAYON_NUM_THREADS']:
+        env[k] = '1'
+    env['QISKIT_PARALLEL'] = 'FALSE'
+    env['PYTHONDONTWRITEBYTECODE'] = '1'
+    env['DF_DIAGNOSTIC_CONTROL_OUTPUT'] = str(run)
+    supervisor = Supervisor(Limits(float('inf'),90,512,448),run,
+                            output_cap=8*1024**2,log_cap=1024**2)
+    # pytest writes its XML and control files; supervisor verifies this completion
+    # receipt only. The wrapper process exits with pytest's original status.
+    child_code = ('import json,subprocess,sys; '
+                  'r=subprocess.run(sys.argv[2:]); '
+                  'open(sys.argv[1],"x").write(json.dumps({"pytest_exit":r.returncode})); '
+                  'sys.exit(r.returncode)')
+    done = run / 'pytest_exit.json'
+    wrapped = [sys.executable,'-B','-c',child_code,str(done),*command]
+    failure = None
+    try:
+        supervisor.phase([{'label':'focused-tests','command':wrapped,'output':done}],
+                         Limits(float('inf'),90,512,448),1)
+        supervisor.check_total()
+    except BaseException as exc:
+        failure = type(exc).__name__ + ': ' + str(exc)
+    suites = [] if not xml.exists() else list(ET.parse(xml).getroot().iter('testsuite'))
+    counts = {k:sum(int(s.get(k,0)) for s in suites) for k in ['tests','failures','errors','skipped']}
+    unchanged = binding == [identity(p) for p in source_paths]
+    report = {'kind':'SOURCE_BOUND_OFF_DOMAIN_FINGERPRINT_DIAGNOSTIC_PREPARATION_TESTS',
+              'command':command,'source_files':binding,'source_unchanged_during_tests':unchanged,
+              'pytest_counts':counts,'failure':failure,'process_receipt':supervisor.receipt(),
+              'runtime_identity_check':'fixed numeric contract metadata and code/binary trees passed',
+              'package_versions':{n:importlib.metadata.version(n) for n in ['numpy','scipy','qiskit','mpmath']},
+              'configuration':{'workers':1,'numeric_threads':1,'GPU':False,'wall_cap':None,
+                               'CPU_cap_seconds':90,'aggregate_RSS_cap_MiB':512,'child_RSS_cap_MiB':448,
+                               'output_cap_bytes':8*1024**2,'log_cap_bytes':1024**2,
+                               'rationale':'small bounded matrices; avoid oversubscription; no registered workload'},
+              'registered_CD_tasks':0,'registered_E_compile_calls':0,'registered_frame_generation':0,
+              'Clifford_T_synthesis_calls':0,'production_runner_calls':0,
+              'LP_molecule_NPZ_GPU_trajectory_shots_G10_RA_D0_calls':0,
+              'full_test_suite':False,'science_execution_authorized':False,
+              'repair_adopted':False,'mandatory_STOP':True}
+    report['passed'] = not failure and unchanged and counts['tests'] > 0 and not any(counts[k] for k in ['failures','errors','skipped'])
+    out=ART / 'focused_tests_v1.json'
+    with out.open('x') as f:
+        json.dump(report,f,ensure_ascii=False,indent=2);f.write('\n')
+    print(json.dumps({'passed':report['passed'],'counts':counts,'failure':failure,'mandatory_STOP':True}))
+    if not report['passed']:sys.exit(1)
+
+
+if __name__=='__main__':main()

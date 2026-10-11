@@ -91,7 +91,16 @@ def execute(root, job, contract, capability):
         prior=json.loads((root/'artifacts/track_b_df_sparse_correction_audit/2026-10-11/phase_E_checks.json').read_text())
         def on_compile(prefix):
             dump(job['output']+'.prefix.json',{'prefix':prefix,'partial_not_scientific_outcome':True})
-        return native_fixture(job['r'],deserialize_frames(job['frames']),prior['central_compilations'],on_compile)
+        saved_diagnostics=set()
+        def on_diagnostic(controlled,record):
+            record['provenance']={k:capability[k] for k in ('source','authorization',
+                'authorization_sha256','contract_sha256','marker_sha256')}
+            path=Path(job['output']+'.whole-fingerprint-'+str(int(controlled))+'.json')
+            receipt=dump_json(path,record,replace_existing=controlled in saved_diagnostics)
+            saved_diagnostics.add(controlled)
+            return receipt
+        return native_fixture(job['r'],deserialize_frames(job['frames']),prior['central_compilations'],on_compile,
+                              on_diagnostic=on_diagnostic)
     raise ValueError('Unknown fixed stage')
 
 

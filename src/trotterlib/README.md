@@ -469,3 +469,11 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 ## DF correction comparison integrity source v3 (2026-10-11)
 
 [限定修正・GPT引き継ぎ](../../docs/tracks/algorithm_codesign/df_correction_comparison_integrity_repairs_v3_20261011.md)：科学契約v2不変、512 KiB分割とinventory SHA結合、88 focused PASS。登録比較/T合成0、authorization=false、mandatory STOP。
+
+
+## Track B fingerprint診断source準備（2026-10-12）
+
+[GPT handoff](../../docs/tracks/algorithm_codesign/df_correction_fingerprint_diagnostics_preparation_and_gpt_handoff_20261012.md)：B-local観測adapter、lossless matrix bytes・recursive payload・None/exception保存、登録外2-mode旧/new controls。
+最終focused tests104 PASS。controlledで同じ行列でもrecursive自動名によるhash差を保存した。登録r3停止の原因は未確定。
+既存moduleの数式・guard・expected・contract不変。旧marker/result/auth/STOP保持、登録science/T合成0、RUN_READY=false。
+新source snapshotと全失敗test記録を公開し、mandatory STOP。次scopeの判断はGPT/利用者側。

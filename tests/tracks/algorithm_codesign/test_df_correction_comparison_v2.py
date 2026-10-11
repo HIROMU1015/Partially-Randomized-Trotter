@@ -202,10 +202,12 @@ def test_interval_upper_serialization_is_directed():
 
 def test_preparation_gate_and_registered_recipe_fail_before_input_access():
     from trottertracks.algorithm_codesign.df_correction_comparison.comparison import cd_recipe,e_recipe
+    marker=ROOT/launch.RESULT/'one_shot_marker.json'
+    before=marker.read_bytes() if marker.exists() else None
     with pytest.raises(PermissionError):launch.verify_launch(ROOT)
     with pytest.raises(PermissionError):cd_recipe({})
     with pytest.raises(PermissionError):e_recipe({})
-    assert not (ROOT/launch.RESULT/'one_shot_marker.json').exists()
+    assert (marker.read_bytes() if marker.exists() else None)==before
 
 
 def _job(tmp_path,label,code):

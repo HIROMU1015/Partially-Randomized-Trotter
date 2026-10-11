@@ -1,0 +1,122 @@
+{
+  "kind": "SOURCE_BOUND_OFF_DOMAIN_FINGERPRINT_DIAGNOSTIC_PREPARATION_TESTS",
+  "command": [
+    "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "tests/tracks/algorithm_codesign/test_df_correction_comparison_v2.py",
+    "tests/tracks/algorithm_codesign/test_df_correction_integrity_v3.py",
+    "tests/tracks/algorithm_codesign/test_df_correction_fingerprint_diagnostics.py",
+    "--junitxml=/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-df-correction-fingerprint-diagnostics-preparation-20261012/artifacts/track_b_df_correction_fingerprint_diagnostics_preparation/2026-10-12/focused_controls_run_03/focused_tests.xml"
+  ],
+  "source_files": [
+    {
+      "path": "tests/tracks/algorithm_codesign/test_df_correction_comparison_v2.py",
+      "bytes": 18281,
+      "sha256": "f1aa4241caaeab19c070d4e759b2ddc43ace23760c61a16b6d7482a3cc41cf3f"
+    },
+    {
+      "path": "tests/tracks/algorithm_codesign/test_df_correction_integrity_v3.py",
+      "bytes": 10716,
+      "sha256": "aab76c451dad1b47daca1e9e81abe2d2042d48cc0a9514877104399dd47dc147"
+    },
+    {
+      "path": "tests/tracks/algorithm_codesign/test_df_correction_fingerprint_diagnostics.py",
+      "bytes": 12697,
+      "sha256": "166609c26500e4e47cd2abd547e57ed13b1c75348167e6b84469010812bb0cae"
+    },
+    {
+      "path": "scripts/tracks/algorithm_codesign/verify_df_correction_fingerprint_diagnostics_preparation.py",
+      "bytes": 6460,
+      "sha256": "9798a77452b3f4a3270d29e1bd00e14d36597993a284f55e703b2db06151d841"
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/df_correction_comparison/fingerprint_diagnostics.py",
+      "bytes": 7223,
+      "sha256": "eb228f8c41deac3de35c2a72bd6020b5f791abac83e6ba1189257eddc66ae3af"
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/df_correction_comparison/native_evaluation.py",
+      "bytes": 9325,
+      "sha256": "5fbc0d006cbe17794a1f88642c35285d3c4ab765425ab823c74a5c11e1d32485"
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/df_correction_comparison/worker.py",
+      "bytes": 6819,
+      "sha256": "64676b3b4763098735bbb1dcf88eb0d0a7185a07b7a87de76e6f762a466f52db"
+    }
+  ],
+  "source_unchanged_during_tests": true,
+  "pytest_counts": {
+    "tests": 104,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "failure": null,
+  "process_receipt": {
+    "wall_seconds": 3.084505887236446,
+    "CPU_seconds_parent_and_reaped_children": 2.763006,
+    "peak_sampled_aggregate_RSS_MiB": 410.44921875,
+    "RSS_poll_seconds": 0.05,
+    "instantaneous_memory_ceiling_claim": false,
+    "overshoot_policy": "kill_process_groups_on_detection; record sampled peak",
+    "child_receipts": [
+      {
+        "label": "focused-tests",
+        "exit_status": 0,
+        "wall_seconds": 3.031963814049959,
+        "retry": 0
+      }
+    ],
+    "completed_labels": [
+      "focused-tests"
+    ],
+    "last_phase": {
+      "completed_labels": [
+        "focused-tests"
+      ],
+      "pending_not_launched": [],
+      "failure": null,
+      "retry": 0
+    },
+    "retries": 0
+  },
+  "runtime_identity_check": "fixed numeric contract metadata and code/binary trees passed",
+  "package_versions": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "mpmath": "1.3.0"
+  },
+  "configuration": {
+    "workers": 1,
+    "numeric_threads": 1,
+    "GPU": false,
+    "wall_cap": null,
+    "CPU_cap_seconds": 90,
+    "aggregate_RSS_cap_MiB": 512,
+    "child_RSS_cap_MiB": 448,
+    "output_cap_bytes": 8388608,
+    "log_cap_bytes": 1048576,
+    "inherited_test_RLIMIT_FSIZE_bytes": 67108864,
+    "rationale": "small bounded matrices; avoid oversubscription; no registered workload"
+  },
+  "registered_CD_tasks": 0,
+  "registered_E_compile_calls": 0,
+  "registered_frame_generation": 0,
+  "Clifford_T_synthesis_calls": 0,
+  "production_runner_calls": 0,
+  "LP_molecule_NPZ_GPU_trajectory_shots_G10_RA_D0_calls": 0,
+  "full_test_suite": false,
+  "science_execution_authorized": false,
+  "repair_adopted": false,
+  "mandatory_STOP": true,
+  "passed": true,
+  "test_preparation_run_index": 3,
+  "repeat_reason": "Second run 103 passed; child metadata test lacked source PYTHONPATH. Bind child imports to this worktree src; retain both failed runs."
+}
