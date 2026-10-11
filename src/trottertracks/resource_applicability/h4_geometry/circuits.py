@@ -44,7 +44,7 @@ def decode(value):
     return value
 
 
-def serialize(circuit, axis, _stack=(), _arrays=None, _encoding_memo=None):
+def serialize(circuit, axis, _stack=(), _arrays=None, _encoding_memo=None, _instruction_memo=None):
     if _arrays is None:
         _arrays = {}
     require(axis in ('cosine','sine'), 'measurement axis')
@@ -91,20 +91,23 @@ def serialize(circuit, axis, _stack=(), _arrays=None, _encoding_memo=None):
                     closed=op.copy().to_mutable()
                     closed.ctrl_state=2**op.num_ctrl_qubits-1
                     entry['closed_name']=closed.name
-                    entry['definition']=serialize(closed.definition,axis,stack,_arrays,_encoding_memo)
-                    entry['effective_definition']=serialize(op.definition,axis,stack,_arrays,_encoding_memo)
+                    entry['definition']=serialize(closed.definition,axis,stack,_arrays,_encoding_memo,_instruction_memo)
+                    entry['effective_definition']=serialize(op.definition,axis,stack,_arrays,_encoding_memo,_instruction_memo)
                     base_qc=QuantumCircuit(op.base_gate.num_qubits)
                     base_qc.append(op.base_gate,range(op.base_gate.num_qubits))
-                    entry['base_gate']=serialize(base_qc,axis,stack,_arrays,_encoding_memo)
+                    entry['base_gate']=serialize(base_qc,axis,stack,_arrays,_encoding_memo,_instruction_memo)
                 else:
-                    entry['definition']=serialize(op.definition,axis,stack,_arrays,_encoding_memo)
-            yield entry
+                    entry['definition']=serialize(op.definition,axis,stack,_arrays,_encoding_memo,_instruction_memo)
+            yield _instruction_memo.encode(entry) if _instruction_memo is not None else entry
     instructions=LazyList(entries)
-    return dict(format='ordered-numerical-full-circuit-v1',axis=axis,
+    record = dict(format='ordered-numerical-full-circuit-v1',axis=axis,
                 qubits=list(range(circuit.num_qubits)),clbits=list(range(circuit.num_clbits)),
                 qregs=[{'name':r.name,'bits':[circuit.find_bit(b).index for b in r]} for r in circuit.qregs],
                 cregs=[{'name':r.name,'bits':[circuit.find_bit(b).index for b in r]} for r in circuit.cregs],
                 global_phase=number(circuit.global_phase),instructions=instructions)
+    if _instruction_memo is not None and _stack:
+        return _instruction_memo.definition(record, len(circuit.data))
+    return record
 
 
 def deserialize(record):
@@ -162,8 +165,10 @@ def deserialize(record):
     return qc
 
 
-def numerical_fingerprint(circuit, axis, *, encoding_memo=None):
-    return fingerprint('h4-numerical-circuit-v1',serialize(circuit,axis,_encoding_memo=encoding_memo))
+def numerical_fingerprint(circuit, axis, *, encoding_memo=None, instruction_memo=None):
+    from .instruction_encoding import InstructionEncodingMemo
+    memo = InstructionEncodingMemo() if instruction_memo is None else instruction_memo
+    return fingerprint('h4-numerical-circuit-v1',serialize(circuit,axis,_encoding_memo=encoding_memo,_instruction_memo=memo))
 
 
 def gaussian_basis(U):
@@ -229,7 +234,8 @@ def build_evolution(preparation, template, events):
             return
         if active is not None:
             qc.compose(active,range(n),inplace=True)
-        qc.compose(basis.inverse(),range(n),inplace=True)
+        inverse = block.get('basis_inverse')
+        qc.compose(basis.inverse() if inverse is None else inverse,range(n),inplace=True)
         active=basis
     def apply_component(block,support,angle,product=False,sign=1):
         use_basis(block)

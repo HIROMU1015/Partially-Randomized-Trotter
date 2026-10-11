@@ -98,7 +98,10 @@ class GeometryPreparation:
             value.setflags(write=False)
         def block(matrix,lam=None):
             value=diagonalize_block(matrix,lam)
-            return MappingProxyType({**value,'coefficients':MappingProxyType(dict(value['coefficients']))})
+            # Geometry-owned basis circuits are read by builders, never mutated.
+            # Retain one inverse per basis instead of rebuilding it on each visit.
+            return MappingProxyType({**value,'basis_inverse':value['basis'].inverse(),
+                                     'coefficients':MappingProxyType(dict(value['coefficients']))})
         self.one=block(arrays['one'])
         self.df=[block(g,float(lam)) for lam,g in zip(arrays['lambdas'],arrays['G'],strict=True)]
         self._operators={};self._dense={};self._prepared={}
