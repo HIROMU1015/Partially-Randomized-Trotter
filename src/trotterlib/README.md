@@ -1,5 +1,8 @@
 # trotterlib モジュール索引
 
+H6 native依存修正・一回Phase A v2：[track_a_h6_server_native_dependency_fix_v2.md](../../docs/research/track_a_h6_server_native_dependency_fix_v2.md)、[資料入口](../../artifacts/resource_applicability/track_a_h6_server_preparation_v2/2026-10-12/README.md)。`h6_server_native_dependencies_v2.py`と限定testでimport/profileをgateし、science224不変。
+
+
 ## 2026-10-12 H6共用サーバーPhase A v1：dependency STOP
 
 [Phase A結果・12-mode dependency不足](../../docs/research/track_a_h6_server_phase_a_result_v1.md)。`df_trotter/ops.py`のqiskit-nature経路が必要で、旧sourceを変更していない。
