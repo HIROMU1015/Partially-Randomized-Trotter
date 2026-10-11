@@ -1,0 +1,81 @@
+{
+  "kind": "POST_AUDIT_REVIEW_INPUT_INTAKE",
+  "date_JST": "2026-10-11",
+  "base_commit": "8a5e21c8f6ecf98ee285ec1fad49079ffb5ed97f",
+  "branch": "track-b-df-correction-comparison-preregistration-20261011",
+  "inputs": [
+    {
+      "source_path": "/home/abe/Project/Partially Randomized Trotter/track_b_df_sparse_correction_post_audit_review_20261011_reproducibility.zip",
+      "repository_path": "artifacts/track_b_df_correction_comparison_preparation/2026-10-11/inputs/track_b_df_sparse_correction_post_audit_review_20261011_reproducibility.zip",
+      "bytes": 50156,
+      "sha256": "bb14c641f9b7158cfdfd9efdc17d9c123f65b7ae1335c28c7847ba0ba4b951a4"
+    },
+    {
+      "source_path": "/home/abe/Project/Partially Randomized Trotter/track_b_df_sparse_correction_post_audit_scientific_review_20261011.md",
+      "repository_path": "docs/research/track_b_df_sparse_correction_post_audit_scientific_review_20261011.md",
+      "bytes": 36306,
+      "sha256": "d2b3fbd4de208981a2e04e3356b72bce52e059c428c736f101f4e3ab6cf3ffda"
+    }
+  ],
+  "ZIP_CRC": "PASS",
+  "ZIP_internal_manifest": "ALL_MATCH",
+  "external_MD_matches_archived_MD": true,
+  "members": [
+    {
+      "path": "README.md",
+      "bytes": 1182,
+      "sha256": "65fe744061f0aa6ff56ca2a9d5c7474d4be9debd91f6902c2fc64206415063d4"
+    },
+    {
+      "path": "local_r3_reconstruction.npz",
+      "bytes": 795,
+      "sha256": "61cdca19b5af7afb49d04e83a29c91f2882db5d34763459328bbeac1869767f9"
+    },
+    {
+      "path": "local_r6_reconstruction.npz",
+      "bytes": 22108,
+      "sha256": "0b3868166c08a8754038653883595b539a4b7e71e61603580dabd1e3b6503cf8"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 1627,
+      "sha256": "e5cc355f925d8c8b00e420520eaa242300def256ecee149ba1554d2159babc38"
+    },
+    {
+      "path": "review_checks.json",
+      "bytes": 4591,
+      "sha256": "569f1be75454b5053e44f258673001fe2229d878b7ac6616e5535f97b9d9030e"
+    },
+    {
+      "path": "review_checks.py",
+      "bytes": 7459,
+      "sha256": "3b729171d82856058b79d27652e02522af5a3b954edd7de8a1ef8d047bba6f85"
+    },
+    {
+      "path": "review_checks_initial.py",
+      "bytes": 7001,
+      "sha256": "74e428a139fa637b052b2b745ef0043235526f955b4af418fc0b2c9b12d561a9"
+    },
+    {
+      "path": "review_checks_stdout.json",
+      "bytes": 4591,
+      "sha256": "569f1be75454b5053e44f258673001fe2229d878b7ac6616e5535f97b9d9030e"
+    },
+    {
+      "path": "track_b_df_sparse_correction_post_audit_scientific_review_20261011.md",
+      "bytes": 36306,
+      "sha256": "d2b3fbd4de208981a2e04e3356b72bce52e059c428c736f101f4e3ab6cf3ffda"
+    }
+  ],
+  "GPT_self_check_history": {
+    "readme": "# GPT post-audit scientific review reproducibility\n\nFixed source commit: `8a5e21c8f6ecf98ee285ec1fad49079ffb5ed97f`.\n\nThis archive contains the detailed Japanese scientific review and review-only checks. It does not contain molecular production results, quantum shots, compiled circuits, or new T-gate synthesis. The Codex 77 checks and 15 focused tests were NOT rerun.\n\nRun `python review_checks.py` to reproduce the review-only calculations (NumPy, SciPy, SymPy required). Local r3/r6 matrices are reconstructed from the RNG recipe published in `audit_df_sparse_correction_native.py`; compilation fingerprints were not reproduced. Float Pauli coefficients/norms are diagnostics, not certified operational inputs.\n\n`review_checks_initial.py` preserves the first passing version (17 checks). The final version adds the explicit coin-first second-moment check and extra explanatory fields, giving 18 passing checks. There were no failing self-checks in this run. Both versions remain in the archive.\n\nNo source repository was modified. No published paper full text or font is included. See the scientific review for source links, proof assumptions and literature-access limitations.\n",
+    "initial_code_sha256": "74e428a139fa637b052b2b745ef0043235526f955b4af418fc0b2c9b12d561a9",
+    "final_code_sha256": "3b729171d82856058b79d27652e02522af5a3b954edd7de8a1ef8d047bba6f85",
+    "saved_self_checks": 18,
+    "code_executed_or_imported": false,
+    "synthetic_NPZ_payloads_loaded": false
+  },
+  "original_evidence_unmodified": true,
+  "science_execution_authorized": false,
+  "comparison_or_synthesis_calls": 0
+}
