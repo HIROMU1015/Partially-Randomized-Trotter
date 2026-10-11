@@ -65,3 +65,7 @@ REVIEW自身のSHAはcommit後のgit rev-parse HEADまたはlaunch receiptを参
 前回のGaussian準備を通過し、evolution 345505 instructionsを構築、numeric fingerprintへ進行を観測。
 Worker32/32GiB、CPU20/21、coordinator22/23、監視first STOPなし。起動receiptの観測時点で実行中で、q8 transpile完走は未判定。
 CPU/メモリの継続監視下で完了またはfail-closed STOP後に終了。自動retry/残り142への進行なし。
+
+## 2026-10-12 完了追記
+
+index447は正常完了、2 wrapper受理、worker/coordinator exit0、cleanup/first STOPなし、PID残存0。worker peak RSS7.929GiB、coordinator wall2756.640秒。32GiB AS下で当該q8の完走を確認した。次の142 groupへ自動進行していない。[完了監査と次回並列準備](../research/track_a_h6_parallel_preparation_v1.md)を参照。

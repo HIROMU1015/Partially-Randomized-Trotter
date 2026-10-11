@@ -1,5 +1,8 @@
 # scripts 索引
 
+H6 group間並列化：[prepare_track_a_h6_parallel_v1.py](resource_applicability/prepare_track_a_h6_parallel_v1.py)はmetadata-only binding、[run_track_a_h6_parallel_v1.py](resource_applicability/run_track_a_h6_parallel_v1.py)はdefault dry/new exact grant必須。次回142 group・2 workerの未認可準備。[資料](../artifacts/resource_applicability/track_a_h6_parallel_preparation_v1/2026-10-12/README.md)。
+
+
 H6 native依存修正・一回Phase A v2：[track_a_h6_server_native_dependency_fix_v2.md](../docs/research/track_a_h6_server_native_dependency_fix_v2.md)、[資料入口](../artifacts/resource_applicability/track_a_h6_server_preparation_v2/2026-10-12/README.md)。`h6_server_native_dependencies_v2.py`と限定testでimport/profileをgateし、science224不変。
 
 

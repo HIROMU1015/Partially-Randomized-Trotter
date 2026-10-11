@@ -1,5 +1,10 @@
 # プロジェクト案内
 
+## H6 Phase A完了・次回142 group並列化準備
+
+[設計](docs/research/track_a_h6_parallel_preparation_v1.md)、[SOURCE/seal/34限定tests/Phase A入口](artifacts/resource_applicability/track_a_h6_parallel_preparation_v1/2026-10-12/README.md)。science224/compiler不変、closure237、新2 modules・2 scripts・test1。次回worker2は未承認、実並列科学計算0。Phase A447完了、450/592受理、残142固定。
+
+
 ## H6 native依存修正・Phase A一回起動 v2
 
 [資料入口](artifacts/resource_applicability/track_a_h6_server_preparation_v2/2026-10-12/README.md)、[修正・科学条件保全](docs/research/track_a_h6_server_native_dependency_fix_v2.md)。source224/compiler不変、限定51検査PASS、新専用venvのNature0.7.2 import gate。worker1/AS32GiB、index447後mandatory STOP。

@@ -1,5 +1,8 @@
 # 文書索引
 
+H6次回group並列化：[設計](research/track_a_h6_parallel_preparation_v1.md)、[固定bundle](../artifacts/resource_applicability/track_a_h6_parallel_preparation_v1/2026-10-12/README.md)。Phase A447完了、次の142探索を最大2 workerで処理する準備。34限定tests、technical seal、実行未認可。
+
+
 H6 native依存修正・一回Phase A v2：[track_a_h6_server_native_dependency_fix_v2.md](../docs/research/track_a_h6_server_native_dependency_fix_v2.md)、[資料入口](../artifacts/resource_applicability/track_a_h6_server_preparation_v2/2026-10-12/README.md)。`h6_server_native_dependencies_v2.py`と限定testでimport/profileをgateし、science224不変。
 
 

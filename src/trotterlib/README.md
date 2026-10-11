@@ -1,5 +1,8 @@
 # trotterlib モジュール索引
 
+H6 group間並列化：[contract](../trottertracks/resource_applicability/h6_parallel_contract_v1.py)と[execution](../trottertracks/resource_applicability/h6_parallel_execution_v1.py)。固定科学cost_taskへ2 processから独立taskをdispatch。science224/compiler不変、[tests](../../tests/tracks/resource_applicability/test_h6_parallel_v1.py)34限定PASS、実科学parallel0。[資料](../../artifacts/resource_applicability/track_a_h6_parallel_preparation_v1/2026-10-12/README.md)。
+
+
 H6 native依存修正・一回Phase A v2：[track_a_h6_server_native_dependency_fix_v2.md](../../docs/research/track_a_h6_server_native_dependency_fix_v2.md)、[資料入口](../../artifacts/resource_applicability/track_a_h6_server_preparation_v2/2026-10-12/README.md)。`h6_server_native_dependencies_v2.py`と限定testでimport/profileをgateし、science224不変。
 
 

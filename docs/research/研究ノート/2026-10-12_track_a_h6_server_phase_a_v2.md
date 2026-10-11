@@ -7,3 +7,7 @@ Coordinater個別memoryと失敗worker high-waterを記録する。H4は変更�
 結果後mandatory STOP。Phase B/確認32/H8は未認可。公開状態と原証拠は[資料入口](../../../artifacts/resource_applicability/track_a_h6_server_preparation_v2/2026-10-12/README.md)を参照。
 
 一回起動を確認。coordinator PID3855386/worker PID3855586、Gaussian準備を通過しnumeric fingerprintへ進行。原trace/起動receiptを保存。q8 transpile完走・32GiB feasibilityは未判定。
+
+## 2026-10-12 完了追記
+
+index447は正常完了、2 wrapper受理、worker/coordinator exit0、cleanup/first STOPなし、PID残存0。worker peak RSS7.929GiB、coordinator wall2756.640秒。32GiB AS下で当該q8の完走を確認した。次の142 groupへ自動進行していない。[完了監査と次回並列準備](../track_a_h6_parallel_preparation_v1.md)を参照。
