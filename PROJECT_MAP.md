@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+H6旧DF準備固定：[設計](docs/research/track_a_h6_frozen_basis_preparation_v1.md)、[SOURCE/69限定tests/旧環境export・受領入口](artifacts/resource_applicability/track_a_h6_frozen_basis_preparation_v1/2026-10-12/README.md)。science224不変、240 closure、archive受領待ち・未seal・実再起動0。
+
 ## H6 4 worker準備 v2
 
 [設計](docs/research/track_a_h6_parallel_preparation_v2.md)、[source/seal/38限定tests](artifacts/resource_applicability/track_a_h6_parallel_preparation_v2/2026-10-12/README.md)。利用者指定4 workerを反映、CPU20/21/24/25、RSS9GiB/AS32、aggregate40/RAM64を維持。科学224不変、実142探索未起動。
