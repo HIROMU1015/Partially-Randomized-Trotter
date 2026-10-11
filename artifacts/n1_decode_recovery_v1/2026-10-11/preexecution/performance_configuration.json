@@ -1,0 +1,54 @@
+{
+  "resources": {
+    "backend": "CPU",
+    "workers_max": 2,
+    "threads_per_worker": 1,
+    "worker_memory_bytes": 4294967296,
+    "aggregate_memory_bytes": 8589934592,
+    "json_shard_bytes": 33554432,
+    "output_bytes": 536870912,
+    "log_bytes": 16777216,
+    "rational_max_bits": 4096,
+    "wall_seconds": null,
+    "cpu_seconds": null,
+    "gpu_calls": 0,
+    "thread_environment": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "1",
+      "RAYON_NUM_THREADS": "1"
+    },
+    "speedup_claim_requires_same_condition_comparison": true,
+    "transpile_num_processes": 1,
+    "qubits_initially_zero": false,
+    "QISKIT_PARALLEL": "FALSE",
+    "native_operations_per_circuit_max": 20000,
+    "pauli_dictionary_max": 256,
+    "interval_bits": [
+      128,
+      256
+    ]
+  },
+  "cpu_online": 32,
+  "meminfo": {
+    "MemTotal": "65522480 kB",
+    "MemAvailable": "54051820 kB"
+  },
+  "gpu_devices": [],
+  "packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "qiskit-nature": "0.7.2",
+    "mpmath": "1.3.0",
+    "pytest": "8.3.5"
+  },
+  "bottleneck": "native compilation and absolute all-column circuit action; static Compiler/run_n1 inspection and prior construction timing",
+  "prior_timing_proxy": "280 native IR, 38.32 seconds in prior construction batch; prior decode-stop 2.72 seconds is not a N1 performance baseline",
+  "optimization": "reuse frozen full emitted-circuit/setting fingerprint cache, vectorized native action and coefficient Pauli cache; parallel 3 independent contexts in 2 spawn workers, transpile num_processes=1; kernels unchanged",
+  "optimized_reference_check": "new N1 synthetic verifies cached/vectorized native action against independent scalar-index full-column replay and Qiskit Operator; real/imag vector end-to-end passes",
+  "tests_passed": 18,
+  "speedup_factor": null,
+  "old_N3_N2_science_tests": 0
+}
