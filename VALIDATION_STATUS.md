@@ -1,5 +1,16 @@
 # Validation status
 
+## 2026-10-11 Track A H6補完 v3：準備完了・新認可待ち
+
+[補完実行契約](docs/research/track_a_h6_matched_supplement_execution_contract_v3.md)、[sealed manifest・再利用証拠・検証](artifacts/resource_applicability/track_a_h6_matched_preparation_v3/2026-10-11/README.md)。
+利用者がGPT MemoryError後レビューを採用。linear H6/1Å/STO-3G/tol-only rank19/sector400/保存state/T0.8、92候補・4精度・shot/compiler/AS8GiB不変。
+旧92 signal・84 B3組・449探索group・902 wrapperをGit blob/SHA/terminal/task/seed/両軸で受理。未完了143 groupだけを別一回契約へ固定。
+single-owner wrapper・入力circuit解放・既存streaming fingerprint/ResourceTraceを再利用。原447を単独で最初に取得し、全592探索後に原最大8候補×独立32確認。
+新wrapper最大798・統合最大1700、原上限1708維持。wall capなし、cost最大2 disposable worker。189 local synthetic/process検査PASS、実H6 q8 feasibilityは未検証。
+新source224/validation5・旧source216/旧raw5220/入力33をseal。新H6科学計算0、新approved grant0、旧STOP・消費済みgrant・凍結sourceを保全。
+H6_NOT_AUTHORIZED / DRAFT_NOT_AUTHORIZATION / mandatory STOP / next_stage_authorized=false。H8・追加探索未認可。以下は各段階当時の履歴。
+
+
 ## 2026-10-11 Track A H6精度一致比較 v2：一回実行・原結果公開・mandatory STOP
 
 [結果・欠測・実行監査](docs/research/track_a_h6_matched_accuracy_result_v2.md)。固定source54986a9・公開v2 manifestに対する一回grant2157da1をremote照合後起動。
