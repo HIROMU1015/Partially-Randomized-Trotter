@@ -27,3 +27,7 @@ payload08ffe034をGitHubから取得し、81 blobs/34,729,649 bytes一致、sour
 保存216path/432event/696候補のscalar/timer整理、指定保存3証拠のexact再認証を完了。attempt1/retry0、新science/eig/solver/search/input0。posthoc wall約.205秒、sampled RSS約100.9MiB、budget違反0。
 全候補ROOT、kernel rep0の12 same-modeでOCC q/幅が同値SDPより小さい。SOS banded6/ext5は保存eがqの約98.9%。最終算術の説明を得たが未保存proposal/r・専用反証timerは依然欠落し、原因別帰属/同品質費用は未確定。
 SOS正/理想OCC負のsame-queryと他modeOCC正を再認証。原追加H縮約0を変更せず、中心テーマを採択しない。[結果](../n3_saved_attribution_v1_results_20261013.md)と[GPT引継ぎ](../n3_saved_attribution_v1_results_review_handoff_20261013.md)。公開・remote保存照合後に科学判断開始認可待ちSTOP。全体manifest既存description欠落FAIL保持。
+
+## 結果公開・再取得確認
+
+結果payload `4b12efc6dc7086cfb4838adeb561167f4d03e230`、GitHub85blobs/39,106,692bytes一致、source9・保存40filesidentity PASS、取得scriptの保存scalar/timer監査byte一致。remote execute/追加PSD再認証0。日本語path exportをNUL区切りへ修正したmetadata作業で科学retryなし。[公開receipt](../n3_saved_attribution_v1_results_publication_20261013.md)。次はGPT科学判断開始認可待ち、Mandatory STOP。
