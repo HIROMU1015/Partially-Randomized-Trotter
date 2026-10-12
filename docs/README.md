@@ -1,5 +1,7 @@
 # 文書索引
 
+H6再開135：[実行契約](research/track_a_h6_resume01_execution_v1.md)、[source/70tests/保存7reuse/fresh gate](../artifacts/resource_applicability/track_a_h6_resume01_preparation_v1/2026-10-12/README.md)。旧結果と消費を保全。
+
 H6退出時RSS欠測：[修正報告](research/track_a_h6_exit_observation_fix_v1.md)、[保存7group・残135・58tests](../artifacts/resource_applicability/track_a_h6_exit_observation_fix_v1/2026-10-12/README.md)。再起動未実行。
 
 H6丸め差許容：[新実行計画](research/track_a_h6_roundoff_execution_v1.md)、[source/診断/67tests/一回認可入口](../artifacts/resource_applicability/track_a_h6_roundoff_preparation_v1/2026-10-12/README.md)。旧科学条件と資源上限を保持。
