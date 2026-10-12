@@ -12,3 +12,10 @@ scope/文献との関係を資料化し、中心テーマや新規性を採択�
 [準備報告](../n3_saved_width_v1_preparation_20261012.md)、[比較仕様](../n3_saved_width_v1_comparison_specification_20261012.md)。
 source/plan固定・HIROMU1015公開・remote再取得後もMandatory STOP。次は別の明示事後評価認可。
 N1追加探索停止、N2保留、他Track不変。新結果の科学的判断は後段のGPTへ戻す。
+
+## source/plan固定・公開確認後
+
+source11を3f295df0、source-bound planとpreflightをd0fcf12fへ固定しHIROMU1015へpush。
+別bareへGitHubからfetchし949blobs/12,455,820 bytesを照合。remote1250 pointer checks PASS。
+新payloadは別bareへfetch前に存在せず、local object copy/alternatesなし。実8入力の幅・E_forced計算0。
+[公開記録](../n3_saved_width_v1_publication_20261012.md)。別の事後評価認可を待つMandatory STOP。
