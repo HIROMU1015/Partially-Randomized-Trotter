@@ -1,5 +1,11 @@
 # Validation status
 
+## 2026-10-12 N3 saved-width v1 evaluation complete
+
+[一回結果・scope・費用](docs/research/n3_saved_width_v1_results_20261012.md)：有限保存集合のOCC strict2/8（S1の1base）、BASE strict6/8、有理独立saved audit全8PASS。
+module/runner/checker/testsは準備sourceのまま、artifacts `artifacts/n3_saved_width_v1/2026-10-12/evaluation1/` と `evaluation_audit/`。
+posthoc development、元primary/2-base未達不変、Mandatory STOP、次段未認可、中心テーマnull。以下は過去milestone。
+
 ## 2026-10-12 N3 saved-width preparation only
 
 [Preparation](docs/research/n3_saved_width_v1_preparation_20261012.md): lossless evidence views, 1250 JSON-pointer checks; 24 synthetic tests PASS.
