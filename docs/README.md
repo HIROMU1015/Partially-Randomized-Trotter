@@ -1,5 +1,7 @@
 # 文書索引
 
+H6独立32確認：[準備契約](research/track_a_h6_independent_confirmation_preparation_v1.md)、[候補/seed/source/seal/監査](../artifacts/resource_applicability/track_a_h6_confirmation_preparation_v1/2026-10-12/README.md)。8構成×32、未承認。
+
 H6探索結果：[報告](research/track_a_h6_exploration_result_v1.md)、[CSV/map/order/監査](../artifacts/resource_applicability/track_a_h6_exploration_summary_v1/2026-10-12/README.md)。592探索完了・確認前。
 
 H6再開135：[実行契約](research/track_a_h6_resume01_execution_v1.md)、[source/70tests/保存7reuse/fresh gate](../artifacts/resource_applicability/track_a_h6_resume01_preparation_v1/2026-10-12/README.md)。旧結果と消費を保全。
