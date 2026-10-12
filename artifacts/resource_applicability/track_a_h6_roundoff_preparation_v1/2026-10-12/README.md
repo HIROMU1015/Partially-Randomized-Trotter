@@ -46,3 +46,8 @@ git -C /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h6-roundo
   -c maintenance.auto=false -c gc.auto=0 \
   push origin HEAD:refs/heads/track-a-h6-roundoff-execution-20261012
 ```
+
+## 一回起動確認
+
+[起動receipt](launch_authorization_v1/started_receipt_v1.json)。CoPID4085189、worker4085412/4085413/4085414/4085418。旧450 gateを通過し全4workerが実H6回路処理中。STOP理由null、完了を主張しない。計算は既定監視下で継続し、完了/STOP後終了する。
+Read-only status: `/home/AbeHiromu/projects/h6-handoff-evidence/20261012/roundoff-execution-v1/MONITOR_STATUS.py`。

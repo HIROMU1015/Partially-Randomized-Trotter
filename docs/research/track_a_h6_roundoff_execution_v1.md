@@ -11,3 +11,5 @@ Deterministic preparation4種は同native hashで、server447を含む受理450g
 新exact grant/source/profile/input/archive/carry/fresh-resource/output/controlにbinding。CPU4worker/AS32/RSS9/aggregate40/RAM64と既存PSI/OOM/5秒guardを維持。
 過去actual total=null、停止下限4/32は独立予約として保持、今回の診断2trajectory/16occurrenceは確定消費へ追加。旧消費の返却/resetとcap拡張なし。
 一回142の完了/STOP後終了、自動retry・selection/独立32確認/H8へ進まない。
+
+2026-10-12 一回起動確認：coordinator4085189、4worker4085412/4085413/4085414/4085418、450旧partial gate通過。起動直後のresource STOP理由なし。SOURCE0365f0a0、起動REVIEWc613a617。監視下で継続し、完了/STOP後終了。
