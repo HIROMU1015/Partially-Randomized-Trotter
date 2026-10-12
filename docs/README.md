@@ -603,3 +603,8 @@ TECHNICAL_INCONCLUSIVE、r6 controlled numerical upper認証失敗、native10/T0
 ## E/T numerical observer v6
 
 [技術準備・継続認可](tracks/algorithm_codesign/df_correction_et_numeric_v6_preparation_20261012.md)、[contract/manifest/tests](../artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/)。旧source・結果・STOP/marker保持。
+
+
+## E/T phase v7
+
+[技術修正・検証](tracks/algorithm_codesign/df_correction_et_phase_v7_preparation_20261012.md)、[contract/manifest/tests](../artifacts/track_b_df_correction_et_phase_preparation/2026-10-12/v7/)。

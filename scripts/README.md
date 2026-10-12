@@ -552,3 +552,8 @@ source固定前の最終確認：profiler context違反のtechnical STOPを追�
 ## E/T numerical observer v6
 
 `tracks/algorithm_codesign/run_df_correction_et_resumption_v6.py`：source-bound fresh version、guard式不変、失敗前観測情報保存。既定native22/T64、caps不変。[準備記録](../docs/tracks/algorithm_codesign/df_correction_et_numeric_v6_preparation_20261012.md)。
+
+
+## E/T v7
+
+`tracks/algorithm_codesign/run_df_correction_et_resumption_v7.py`：raw-phase accounting修正、新result v4。native22/T64/caps不変。

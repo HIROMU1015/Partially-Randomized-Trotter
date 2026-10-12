@@ -992,3 +992,8 @@ TECHNICAL_INCONCLUSIVE、r6 controlled wholeのnumerical upper 2e-7認証失敗�
 ## Track B E/T numerical observer v6（2026-10-12）
 
 [準備・technical continuation](docs/tracks/algorithm_codesign/df_correction_et_numeric_v6_preparation_20261012.md)：same numerical guard/caps、分岐前upper/ledger/IR保存、134 local focused PASS。namespace `df_correction_et_numeric_v6`、runner `run_df_correction_et_resumption_v6.py`、new result v3。旧source/結果/marker保持。利用者の追加認可により技術修正・新versionを継続し、science変更時はGPTへ戻す。
+
+
+## Track B E/T phase v7
+
+[raw phase会計修正](docs/tracks/algorithm_codesign/df_correction_et_phase_v7_preparation_20261012.md)：非対応Wへの未実施置換誤差を除きraw位相/strict保証を保持、unsupported Tはunknown。91 focused PASS、新namespace df_correction_et_phase_v7、新result v4。旧marker/結果不変、利用者の技術継続認可内。

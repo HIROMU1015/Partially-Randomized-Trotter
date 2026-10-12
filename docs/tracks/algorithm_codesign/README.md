@@ -489,3 +489,8 @@ S5 d0a12bae/A5 0e147e27で一回実行。TECHNICAL_INCONCLUSIVE、r6 controlled 
 ## E/T v6 technical continuation
 
 [準備](df_correction_et_numeric_v6_preparation_20261012.md)：既定numerical guardとcapsを保持し、判定前のupper/ledger/IRを保存する。134 local focused PASS。利用者の技術継続認可に基づきfresh source/authorization/runへ進める。科学保証変更・比較完了時はSTOP。
+
+
+## E/T phase v7 continuation
+
+[raw phase会計修正](df_correction_et_phase_v7_preparation_20261012.md)：strict Operator/2e-7/caps不変、unsupported Tはunknown。91 focused PASS。旧結果とmarker保持、新sourceで継続する。
