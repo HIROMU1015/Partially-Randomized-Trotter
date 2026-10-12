@@ -7,8 +7,10 @@ import hashlib
 import importlib.metadata
 import json
 import os
+import platform
 from pathlib import Path
 import signal
+import subprocess
 import threading
 import time
 
@@ -31,9 +33,20 @@ def preflight(root,plan):
     root=Path(root)
     if plan['scope']!=SCOPE or plan['methods']!=list(METHODS) or plan['caps']!=CAPS or plan['resources']!=RESOURCES:
         raise ValueError('FROZEN_COMPARISON_CONTRACT')
+    expected_solver={'eps_abs':1e-6,'eps_rel':1e-6,'max_iters':20000,'normalize':True,
+                     'acceleration_lookback':10,'warm_start':False,'use_indirect':False}
+    if (plan['python']!=platform.python_version() or plan['comparison_layers']!=['kernel','cold']
+            or type(plan['timing_repetitions']) is not int or plan['timing_repetitions']!=3
+            or plan['delta_tiers']!=[[1,1],[1,2],[1,4]] or plan['solver']!='SCS'
+            or plan['solver_configuration']!=expected_solver or plan['method_mode_records']!=504
+            or plan['managed_solver_call_upper_limit']!=432):
+        raise ValueError('FROZEN_SEMANTICS_OR_PYTHON')
     for rel,sha in plan['source_sha256'].items():
         p=root/rel
         if not p.resolve().is_relative_to(root.resolve()) or file_sha(p)!=sha:raise ValueError('FROZEN_SOURCE_BYTES')
+        if (root/'.git').exists():
+            frozen=subprocess.check_output(['git','show',plan['source_commit']+':'+rel],cwd=root)
+            if hashlib.sha256(frozen).hexdigest()!=sha:raise ValueError('SOURCE_COMMIT_BLOB_BINDING')
     if digest(plan['source_sha256'])!=plan['source_fingerprint']:raise ValueError('SOURCE_FINGERPRINT')
     for name,version in plan['environment_packages'].items():
         if importlib.metadata.version(name)!=version:raise ValueError('FROZEN_ENVIRONMENT:'+name)
@@ -42,6 +55,8 @@ def preflight(root,plan):
     pack=json.loads(p.read_bytes())
     if set(pack)!={'schema_version','recipe','cases'} or pack['schema_version']!=2:raise ValueError('INPUT_PACK_SCHEMA')
     if [c['id'] for c in pack['cases']]!=plan['input_ids']:raise ValueError('INPUT_IDS')
+    if len(pack['cases'])!=6 or len({c['id'] for c in pack['cases']})!=6 or sum(len(c['candidate_modes']) for c in pack['cases'])!=12:
+        raise ValueError('SIX_H_TWELVE_MODE_SCOPE')
     for case in pack['cases']:
         decode_case(case)
         if digest(case)!=plan['case_sha256'][case['id']]:raise ValueError('CASE_SHA')

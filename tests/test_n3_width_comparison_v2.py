@@ -229,13 +229,28 @@ def script_module(name):
 
 def test_preflight_is_identity_only_and_detects_mutation(tmp_path,monkeypatch):
     import json
+    import platform
     from trottertracks.representation_exploration.n3_width_execution_v2 import preflight,SCOPE,RESOURCES,file_sha
     monkeypatch.setattr(np.linalg,'eigh',lambda *a,**k:(_ for _ in ()).throw(AssertionError('No eig in preflight')))
-    case=fixture();pack={'schema_version':2,'recipe':{},'cases':[case]};path=tmp_path/'fixture.json';path.write_text(json.dumps(pack))
+    cases=[]
+    for i in range(6):
+        c=fixture();c.update(id='synthetic_'+str(i),candidate_modes=[2,3]);cases.append(c)
+    pack={'schema_version':2,'recipe':{},'cases':cases};path=tmp_path/'fixture.json';path.write_text(json.dumps(pack))
     plan={'scope':SCOPE,'methods':list(METHODS),'caps':CAPS,'resources':RESOURCES,'source_sha256':{},'source_fingerprint':digest({}),
-          'environment_packages':{},'input_path':'fixture.json','input_sha256':file_sha(path),'input_ids':[case['id']],
-          'case_sha256':{case['id']:digest(case)}}
+          'environment_packages':{},'input_path':'fixture.json','input_sha256':file_sha(path),'input_ids':[c['id'] for c in cases],
+          'case_sha256':{c['id']:digest(c) for c in cases},'python':platform.python_version(),'comparison_layers':['kernel','cold'],
+          'timing_repetitions':3,'delta_tiers':[[1,1],[1,2],[1,4]],'solver':'SCS','solver_configuration':{
+            'eps_abs':1e-6,'eps_rel':1e-6,'max_iters':20000,'normalize':True,'acceleration_lookback':10,'warm_start':False,'use_indirect':False},
+          'method_mode_records':504,'managed_solver_call_upper_limit':432}
     result=preflight(tmp_path,plan);assert result['new_solver_calls']==0 and result['new_eigensolver_calls']==0
+    changed=deepcopy(plan);changed['timing_repetitions']=4
+    with pytest.raises(ValueError):preflight(tmp_path,changed)
+    source=tmp_path/'dummy.py';source.write_text('# synthetic source\n');plan['source_sha256']={'dummy.py':file_sha(source)};plan['source_fingerprint']=digest(plan['source_sha256']);plan['source_commit']='a'*40
+    (tmp_path/'.git').mkdir()
+    import trottertracks.representation_exploration.n3_width_execution_v2 as gate
+    monkeypatch.setattr(gate.subprocess,'check_output',lambda *a,**k:b'wrong commit blob')
+    with pytest.raises(ValueError,match='SOURCE_COMMIT_BLOB_BINDING'):preflight(tmp_path,plan)
+    (tmp_path/'.git').rmdir();plan['source_sha256']={};plan['source_fingerprint']=digest({})
     path.write_text(json.dumps({'mutated':True}))
     with pytest.raises(ValueError):preflight(tmp_path,plan)
 
