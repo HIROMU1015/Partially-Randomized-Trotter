@@ -1,0 +1,34 @@
+{
+  "python": "3.12.3",
+  "cpu_count": 32,
+  "available_memory_bytes": 55397462016,
+  "selected": {
+    "workers": 2,
+    "threads_per_worker": 1,
+    "worker_AS_bytes": 1073741824,
+    "aggregate_sampled_RSS_bytes": 6442450944,
+    "minimum_available_bytes": 8589934592,
+    "input_total_bytes": 67108864,
+    "input_file_bytes": 8388608,
+    "output_total_bytes": 33554432,
+    "output_file_bytes": 4194304,
+    "log_bytes": 4194304,
+    "failure_bytes": 65536,
+    "rational_bits": 4096,
+    "maximum_candidates": 1000,
+    "selected_proof_rechecks": 3,
+    "wall_time_cap_seconds": null,
+    "cpu_time_cap_seconds": null
+  },
+  "dominant_workload": "Saved JSON parsing and exact Fraction arithmetic; each case read once and independent cases distributed to two spawn workers.",
+  "optimization_validation": "Frozen 23 synthetic tests include two AS1GiB spawn workers versus serial equality. No new tests required for unchanged source.",
+  "GPU": "Not selected; stdlib exact arithmetic backend. Prior preparation GPU driver query unavailable.",
+  "speedup_factor_claimed": false,
+  "thread_environment_on_launch": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "NUMBA_NUM_THREADS": "1",
+    "RAYON_NUM_THREADS": "1"
+  }
+}

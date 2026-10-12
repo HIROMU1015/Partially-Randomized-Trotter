@@ -17,3 +17,7 @@ identity preflight PASS、新登録数値評価/PSD再認証0。公開・再取�
 
 payload08ffe034をGitHubから取得し、81 blobs/34,729,649 bytes一致、source9 blob一致。remote identity PASS、数値/PSD関数guard下の3literal出力byte一致。
 [公開記録](../n3_saved_attribution_v1_publication_20261013.md)。新登録数値事後評価/PSD再認証0のまま、明示posthoc認可前で停止した。
+
+## 明示実行指示の受領
+
+ユーザー「次の作業に進んで大丈夫」により固定保存数値事後評価＋既存3証拠再認証一回を認可。source/plan/registry不変、専用branch、Python3.12.3、2spawn、attempt1/retry0。新scienceとGPTレビュー開始は別。実行前identity PASS、新計算0。
