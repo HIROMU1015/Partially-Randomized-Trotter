@@ -767,3 +767,11 @@ review承認と利用者指示を得た後に一度実行し、現在は`TRANSFE
 launch/post-execution auditを対応させる。196 wrapper、5構成、source128、pre/post84＋134 testsを検査した
 result commitへ収録するlocal execution evidenceであり、immutable CIではない。`.runtime`とone-shot registryはcommit対象ではない。
 固定5構成のtransfer支持だけを解釈し、全status後STOP・追加科学計算未認可を維持する。
+
+## 2026-10-12 N3理論・幅指向縮約taskの統合準備
+
+文書入口：`docs/research/n3_theory_task_integration_v1_20261012.md`。
+数学：`docs/research/n3_theory_claim_map_v1_20261012.md`、文献：`docs/research/n3_literature_correspondence_v1_20261012.md`、将来仕様：`docs/research/n3_width_reduction_v2_spec_20261012.md`。
+保存帰結checker：`src/trottertracks/representation_exploration/n3_theory_implications_v1.py`、CLI：`scripts/verify_n3_theory_implications_v1.py`、合成tests：`tests/test_n3_theory_implications_v1.py`。
+証拠・review/identity：`artifacts/n3_theory_task_integration_v1/2026-10-12/`。
+30 synthetic PASS／保存全幅補題二例を独立照合。新science0、幅generator未実装、次はGPT研究判断、Mandatory STOP。

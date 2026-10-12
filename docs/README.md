@@ -368,3 +368,11 @@ sourceとsynthetic検証を固定する段階であり、held-out開封・科学
 - [実行authorization](research/pr2_matched_accuracy_m2_transfer_execution_authorization_v1.md)：actual source/plan、固定5構成、196 wrappers、最大5 workers、一回限りを固定する。
 - [最終review依頼](research/pr2_m2_execution_authorization_external_review_request_90a9f24.md)：最終承認と利用者の実行指示までheld-out未開封・本計算未実行で停止する。
 - `artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/authorization_audit_v1.json`：local zero-science gateとtimed tests。科学結果・immutable CIではない。
+
+## 2026-10-12 N3理論・幅指向縮約taskの統合準備
+
+文書入口：`docs/research/n3_theory_task_integration_v1_20261012.md`。
+数学：`docs/research/n3_theory_claim_map_v1_20261012.md`、文献：`docs/research/n3_literature_correspondence_v1_20261012.md`、将来仕様：`docs/research/n3_width_reduction_v2_spec_20261012.md`。
+保存帰結checker：`src/trottertracks/representation_exploration/n3_theory_implications_v1.py`、CLI：`scripts/verify_n3_theory_implications_v1.py`、合成tests：`tests/test_n3_theory_implications_v1.py`。
+証拠・review/identity：`artifacts/n3_theory_task_integration_v1/2026-10-12/`。
+30 synthetic PASS／保存全幅補題二例を独立照合。新science0、幅generator未実装、次はGPT研究判断、Mandatory STOP。

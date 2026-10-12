@@ -356,3 +356,11 @@ local implementation testは科学transfer結果ではない。別authorization�
 - [実行authorization](pr2_matched_accuracy_m2_transfer_execution_authorization_v1.md)：source `2978e2f`、plan、候補/seed/compiler/fixed output、一回制限と全status後STOP。
 - [最終review依頼](pr2_m2_execution_authorization_external_review_request_90a9f24.md)：authorization commit `90a9f24`をレビューする。承認と利用者の実行指示前はheld-outを開かない。
 - [authorization監査](../../artifacts/pr2_matched_accuracy_m2_execution/2026-10-04/authorization_audit_v1.json)：128 source、196 keys、96 seeds、local focused84＋helper134 pass。M2科学結果ではない。
+
+## 2026-10-12 N3理論・幅指向縮約taskの統合準備
+
+文書入口：`docs/research/n3_theory_task_integration_v1_20261012.md`。
+数学：`docs/research/n3_theory_claim_map_v1_20261012.md`、文献：`docs/research/n3_literature_correspondence_v1_20261012.md`、将来仕様：`docs/research/n3_width_reduction_v2_spec_20261012.md`。
+保存帰結checker：`src/trottertracks/representation_exploration/n3_theory_implications_v1.py`、CLI：`scripts/verify_n3_theory_implications_v1.py`、合成tests：`tests/test_n3_theory_implications_v1.py`。
+証拠・review/identity：`artifacts/n3_theory_task_integration_v1/2026-10-12/`。
+30 synthetic PASS／保存全幅補題二例を独立照合。新science0、幅generator未実装、次はGPT研究判断、Mandatory STOP。

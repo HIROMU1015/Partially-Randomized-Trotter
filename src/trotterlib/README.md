@@ -329,3 +329,11 @@ DF部分ランダム化研究と混同しない。
 - `eig_error.py`、`qpe_beta.py`：固有値誤差・位相推定の旧来支援
 
 新しい機能は、runnerへ直接大きな処理を書くのではなく、ここへテスト可能な関数として置く。
+
+## 2026-10-12 N3理論・幅指向縮約taskの統合準備
+
+文書入口：`docs/research/n3_theory_task_integration_v1_20261012.md`。
+数学：`docs/research/n3_theory_claim_map_v1_20261012.md`、文献：`docs/research/n3_literature_correspondence_v1_20261012.md`、将来仕様：`docs/research/n3_width_reduction_v2_spec_20261012.md`。
+保存帰結checker：`src/trottertracks/representation_exploration/n3_theory_implications_v1.py`、CLI：`scripts/verify_n3_theory_implications_v1.py`、合成tests：`tests/test_n3_theory_implications_v1.py`。
+証拠・review/identity：`artifacts/n3_theory_task_integration_v1/2026-10-12/`。
+30 synthetic PASS／保存全幅補題二例を独立照合。新science0、幅generator未実装、次はGPT研究判断、Mandatory STOP。
