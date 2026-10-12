@@ -77,7 +77,9 @@ Fraction内部temporary integer・RSS sample間の瞬間peakは完全監視し�
 
 ## 6. Freeze・公開・次の手順
 
-source11ファイルのfingerprint `b190ea508afb9a10fad3d3dbfeb92d50f46ad5813baadd70965aa6fc5ad044d1`。sourceをcommitした後、別source-bound execution planへcommit SHAを固定する。
+source11ファイルをcommit `3f295df0263059ce16d866f84c1132f8bace0670`へ固定した。fingerprint `b190ea508afb9a10fad3d3dbfeb92d50f46ad5813baadd70965aa6fc5ad044d1`。
+[source-bound plan](n3_saved_width_v1_execution_plan_20261012.json)のSHAは`bd3f5f4a21deafb227a6794d3277ca3eab1d9a30c610236d42294103e91e53dd`、別実行認可はfalse。
+[固定source preflight](../../artifacts/n3_saved_width_v1/2026-10-12/preparation/source_bound_preflight.json)はlossless1250 pointer checksだけ、幅/PSD/eig計算0。
 既存pack/ledger/source/STOPとroot dirty内容の保全を監査し、必要な新しい小view/source/docsだけをHIROMU1015へ公開・remote再取得する。
 旧global manifestのdescription欠落FAILは残し、今回の局所entry/保存view検査と区別する。
 
