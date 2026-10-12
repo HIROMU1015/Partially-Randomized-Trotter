@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-13 H6：s2条件付きpilot準備・実科学計算未承認
+
+[契約](docs/research/track_a_h6_conditional_s2_pilot_execution_contract_v1.md)、[SOURCE843265b6/257 closure/58限定人工mock/seal](artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_preparation_v1/2026-10-13/README.md)。H6/1Å/STO-3G/DF19/sector400/T.8・prefix5/q8/delta.1/r2/K2、whole-trajectory order2ありの条件付き8本/16 wrapper案。既存runtime251/science224/592探索/256確認/profile/input保全。local58 PASS、入力33 streaming SHA・native carry・3744旧seed/80新stream衝突0、default dry/read-only binding合格。実trajectory/transpile/grant0、CI/母平均bound/科学的winnerのPASSではない。1736/852・worker1 CPU20 AS32/RSS9・co22/23は未承認、approved=false/allowed=[]/command=null。共有/venv/H4/他job変更0、公開後mandatory STOP。以下は過去履歴。
+
 ## 2026-10-13 H6：保存希少次数・費用層の局所解析
 
 [報告](docs/research/track_a_h6_rare_order_cost_reliability_v1.md)、[832保存group/320公開抽出/48別算術/10人工tests](artifacts/resource_applicability/track_a_h6_rare_order_cost_analysis_v1/2026-10-13/README.md)。H6/1Å/STO-3G/DF19/T.8・prefix5/10/15/full19・delta.1–.8。確率層・費用感度は局所metadata証拠。compiler後population cost bound/正式winnerは未証明、CI/独立科学reviewのPASSではない。既存source251/結果保全、新science/compile/grant0・追加計算未承認。公開抽出からのscalar再計算と全分子/compile再現を区別。以下は過去履歴。

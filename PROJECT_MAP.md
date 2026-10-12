@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+H6条件付きs2 pilot：[契約](docs/research/track_a_h6_conditional_s2_pilot_execution_contract_v1.md)、[SOURCE/58人工mock/seal/未承認1736・852案](artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_preparation_v1/2026-10-13/README.md)。q8/r2/K2の条件付き8本/16 compile準備、実科学計算0。旧592探索/256確認/runtime251保全。
+
 H6希少次数費用：[技術解析](docs/research/track_a_h6_rare_order_cost_reliability_v1.md)、[832次数/320公開抽出/層確率/感度/監査](artifacts/resource_applicability/track_a_h6_rare_order_cost_analysis_v1/2026-10-13/README.md)、[H4/H6/H8対応](docs/research/track_a_h4_h6_h8_comparison_readiness_20261013.md)。保存解析のみ・追加科学計算未認可。
 
 H6独立32確認完了：[研究結果](docs/research/track_a_h6_independent_confirmation_result_v1.md)、[256 group/512回路/CSV/536行算術/来歴](artifacts/resource_applicability/track_a_h6_confirmation_summary_v1/2026-10-12/README.md)。SOURCE87b6b9f4、exit0/mandatory STOP。以下の準備・起動資料は各段階の履歴。

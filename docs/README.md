@@ -1,5 +1,7 @@
 # 文書索引
 
+H6条件付きs2限定pilot：[実行準備契約](research/track_a_h6_conditional_s2_pilot_execution_contract_v1.md)、[SOURCE/58tests/byte binding/未承認予算](../artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_preparation_v1/2026-10-13/README.md)。実8 trajectory/16 compileは別承認。
+
 H6希少費用：[解析](research/track_a_h6_rare_order_cost_reliability_v1.md)、[完了済み科学レビュー](research/track_a_h6_independent_confirmation_scientific_review_20261013.md)、[比較条件](research/track_a_h4_h6_h8_comparison_readiness_20261013.md)、[証拠入口](../artifacts/resource_applicability/track_a_h6_rare_order_cost_analysis_v1/2026-10-13/README.md)。
 
 H6独立32確認完了：[研究結果](research/track_a_h6_independent_confirmation_result_v1.md)、[256/512・CSV・費用map・536行照合・来歴](../artifacts/resource_applicability/track_a_h6_confirmation_summary_v1/2026-10-12/README.md)。以下の未起動/稼働の記載は各段階の履歴。
