@@ -1,5 +1,14 @@
 # Validation status
 
+## 2026-10-13 N3保存帰属v1：完了レビューを採用、数値事後評価の認可前
+
+[準備資料](docs/research/n3_saved_attribution_v1_preparation_20261013.md)、[限定契約](docs/research/n3_saved_attribution_v1_posthoc_contract_20261013.md)。
+元6H（非負density、full5/6・ν2/3、一外部mode、候補2mode/H、元ε=.01、geometry/basis/DF/L_D/PF窓なし）の216 path/432event/696候補をliteral/pointer索引化した。
+18 inaccurateは全てSOS/V2_banded_6/external5。修復前proposal/r・専用refutation timerは未保存。既存3証拠を丸めず接続し、原監査を参照。
+新source・gate・posthoc runner、synthetic23 PASS、2spawnとserialの合成一致。登録データの新数値事後評価・PSD再認証0。
+レビュー第12.6節に従い、次は固定source/registry/planの保存事後評価一回の明示認可。通常技術作業ごとのGPT詳細レビューは不要。
+新batch/新入力/新ε/solver変更/再試行0、旧source/results/STOP、N1停止/N2保留、中心テーマnullを保持。以下は過去milestone。
+
 ## 2026-10-13 N3幅比較v2：固定6H pilot完了・GPT科学判断待ち
 
 [一次結果](docs/research/n3_width_comparison_v2_results_20261013.md)、[GPTへの引継ぎ](docs/research/n3_width_comparison_v2_results_review_handoff_20261013.md)。

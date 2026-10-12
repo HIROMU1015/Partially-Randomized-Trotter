@@ -393,3 +393,5 @@ N3幅比較v2：[GitHub公開・再取得確認](research/n3_width_comparison_v2
 2026-10-13 N3幅比較v2：[一回pilotの一次結果](research/n3_width_comparison_v2_results_20261013.md)。固定source13不変、science6H/504 rows、independent1224証拠PASS、認可消費済み・Mandatory STOP・GPT科学判断待ち。
 
 N3幅比較v2の[結果公開・GitHub再取得](research/n3_width_comparison_v2_results_publication_20261013.md)：payload6d8f769b、59 blobs一致、remote独立1224証拠/36反証と4集計file一致。認可消費済み・GPT科学レビュー開始承認待ち・Mandatory STOP。
+
+N3保存帰属v1：[資料・事後評価準備](research/n3_saved_attribution_v1_preparation_20261013.md)。module n3_saved_attribution_v1/n3_saved_attribution_execution_v1、runner run_n3_saved_attribution_v1、tests test_n3_saved_attribution_v1、artifacts/n3_saved_attribution_v1/2026-10-13/preparation。23 synthetic PASS、新登録数値評価/PSD再認証0、明示posthoc認可待ち。

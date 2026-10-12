@@ -117,3 +117,5 @@ future module/runner/tests/checkerは契約JSONに記した未実装path。旧so
 - [N3幅比較v2準備](2026-10-12_n3_width_comparison_v2_preparation.md)
 
 2026-10-13 N3幅比較v2：[固定pilot実行認可](2026-10-13_n3_width_comparison_v2_execution.md)。6H、source/input/plan不変、attempt1/retry0、結果・監査公開後STOP。
+
+- [2026-10-13 N3保存帰属v1の準備](2026-10-13_n3_saved_attribution_v1_preparation.md)：未評価literal索引、証拠接続、synthetic23、明示posthoc認可待ち。

@@ -346,3 +346,5 @@ runner `scripts/run_n3_width_comparison_v2.py`、保存verifier `scripts/verify_
 artifacts `artifacts/n3_width_comparison_v2/2026-10-12/preparation/`。32 synthetic PASS、科学入力の数値評価0、実行認可待ち・Mandatory STOP。
 
 2026-10-13 N3幅比較v2：[一回pilotの一次結果](../../docs/research/n3_width_comparison_v2_results_20261013.md)。固定source13不変、science6H/504 rows、independent1224証拠PASS、認可消費済み・Mandatory STOP・GPT科学判断待ち。
+
+N3保存帰属v1：[資料・事後評価準備](../../docs/research/n3_saved_attribution_v1_preparation_20261013.md)。module n3_saved_attribution_v1/n3_saved_attribution_execution_v1、runner run_n3_saved_attribution_v1、tests test_n3_saved_attribution_v1、artifacts/n3_saved_attribution_v1/2026-10-13/preparation。23 synthetic PASS、新登録数値評価/PSD再認証0、明示posthoc認可待ち。
