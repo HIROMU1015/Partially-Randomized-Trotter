@@ -1,0 +1,151 @@
+"""Thin identity-only numerical path. Never native-transpile or evaluate PR cost."""
+import ast
+import hashlib
+import re
+import sys
+
+import numpy as np
+from scipy.linalg import expm
+
+from ..df_correction_comparison import certification as cert
+from ..df_correction_comparison.fingerprint_diagnostics import array_record,payload_digest,exception_record,_definition_index
+
+
+class DefinitionCalls:
+    """Count Python definition/QSD entries and block native transpile entry.
+
+    Observer is active only during the SINGLE payload call. It neither resets
+    counters nor touches gate definitions. C/Rust internal work is not counted
+    as individual Python calls; all elapsed resources remain supervised.
+    """
+    def __init__(self):
+        self.counts={'recursive_payload_attempts':1,'UnitaryGate_define_entries':0,
+                     'qs_decomposition_python_entries':0,'native_transpile_blocked_entries':0}
+    def trace(self,frame,event,arg):
+        if event!='call':return
+        module=frame.f_globals.get('__name__','');name=frame.f_code.co_name
+        if module=='qiskit.circuit.library.generalized_gates.unitary' and name=='_define':
+            self.counts['UnitaryGate_define_entries']+=1
+        if module=='qiskit.synthesis.unitary.qsd' and name=='qs_decomposition':
+            self.counts['qs_decomposition_python_entries']+=1
+        if module=='qiskit.compiler.transpiler' and name=='transpile':
+            self.counts['native_transpile_blocked_entries']+=1
+            raise PermissionError('Native transpile API is outside identity-only scope')
+    def __enter__(self):
+        self.previous=sys.getprofile()
+        if self.previous is not None:raise PermissionError('Fresh unprofiled diagnostic context required')
+        sys.setprofile(self.trace);return self
+    def __exit__(self,*args):sys.setprofile(self.previous)
+
+
+def legacy_helpers(source):
+    tree=ast.parse(source.read_bytes())
+    selected=[n for n in tree.body if isinstance(n,ast.FunctionDef)
+              and n.name in {'primitive','jw_annihilate','comm'}]
+    if {n.name for n in selected}!={'primitive','jw_annihilate','comm'}:
+        raise PermissionError('Frozen legacy helper definitions absent')
+    scope={};exec(compile(ast.Module(body=selected,type_ignores=[]),str(source),'exec'),scope)
+    return scope
+
+
+def observe_path(label,frames,expected,legacy,save,provenance):
+    """One fixed path; same matrix expressions, callback before every new stage."""
+    from qiskit import QuantumCircuit
+    from qiskit.circuit.library import UnitaryGate
+    from trotterlib.rte_compiled_cost import _circuit_payload
+    if label not in {'current','legacy'}:raise PermissionError('Unregistered path label')
+    record={'kind':'E_R3_IDENTITY_ONLY_PATH_OBSERVATION','path':label,'provenance':provenance,
+        'historical_expected_fingerprint':expected,'actual_fingerprint':None,'fingerprint_exception':None,
+        'input_arrays':{f'frame_{i}':array_record(v) for i,v in enumerate(frames)},
+        'phase':'FRAMES_BEFORE_RECONSTRUCTION','primitive_signs':[1,-1,1],
+        'controlled':False,'RNG_calls':0,'native_transpile_calls':0,
+        'context':'fresh process, current runtime, saved reconstructed frames; NOT historical replay'}
+    save(record)
+    try:
+        qs=[];certificates=[]
+        for i,(v,sign) in enumerate(zip(frames,(1,-1,1))):
+            record['phase']='BEFORE_Q_'+str(i);save(record)
+            if label=='current':
+                q,c=cert.primitive(v,sign);certificates.append(c)
+            else:q=legacy['primitive'](v,sign)
+            qs.append(q);record['input_arrays']['Q_'+str(i)]=array_record(q.value if label=='current' else q)
+        record['phase']='BEFORE_NESTED_COMMUTATOR';save(record)
+        t=cert.comm(qs[0],cert.comm(qs[1],qs[2])) if label=='current' else legacy['comm'](qs[0],legacy['comm'](qs[1],qs[2]))
+        raw_t=t.value if label=='current' else t
+        record['input_arrays']['T']=array_record(raw_t)
+        if label=='current':record['current_certificates']={'frames':certificates,'T_assembly_radius':str(t.error)}
+        record['phase']='BEFORE_EXPM';save(record)
+        u=expm(1j*.03125*raw_t/4)
+        record['input_arrays']['U']=array_record(u)
+        record['phase']='BEFORE_INPUT_CIRCUIT';save(record)
+        n=frames[0].shape[0];qc=QuantumCircuit(n);qc.append(UnitaryGate(u),qc.qubits)
+        record['input_arrays']['input_target']=array_record(u)
+        record['input_arrays']['actual_gate_parameter']=array_record(qc.data[0].operation.params[0])
+        record['circuit_context']={'root_name':qc.name,'root_operation':qc.data[0].operation.name,
+            'num_qubits':n,'QuantumCircuit_instances_before_payload':getattr(QuantumCircuit,'instances',None),
+            'root_definition_cached_before':vars(qc.data[0].operation).get('_definition') is not None,
+            'counter_reset':False,'construction_order':provenance.get('path_order')}
+        record['phase']='BEFORE_RECURSIVE_PAYLOAD';save(record)
+    except Exception as exc:
+        record['construction_exception']=exception_record(exc);save(record);raise
+    calls=DefinitionCalls()
+    try:
+        with calls:payload=_circuit_payload(qc)
+        actual=payload_digest(payload)
+    except Exception as exc:
+        record['fingerprint_exception']=exception_record(exc)
+        record['recursive_payload']=None;record['recursive_definition_index']=None
+        record['observation']='EXCEPTION'
+        record['shared_None_fallback']=isinstance(exc,(TypeError,ValueError))
+    else:
+        record['recursive_payload']=payload;record['recursive_definition_index']=_definition_index(payload)
+        record['actual_fingerprint']=actual
+        record['observation']='MATCH' if record['actual_fingerprint']==expected else 'MISMATCH'
+        record['shared_None_fallback']=False
+    record['definition_work']=dict(calls.counts,observer='Python call entries during one payload request; C/Rust not individually counted')
+    record['circuit_context']['QuantumCircuit_instances_after_payload']=getattr(QuantumCircuit,'instances',None)
+    record['circuit_context']['root_definition_cached_after']=vars(qc.data[0].operation).get('_definition') is not None
+    record['phase']='IDENTITY_OBSERVATION_SAVED'
+    save(record)
+    if getattr(calls,'previous',None) is not None:
+        raise PermissionError('Preexisting profiler violates fresh diagnostic context; technical STOP')
+    if calls.counts['native_transpile_blocked_entries']:
+        raise PermissionError('Prohibited native transpile entry blocked; technical STOP')
+    return record
+
+
+def payload_differences(a,b,path=''):
+    """Full diagnostic field differences; never canonicalize names or accept them."""
+    if type(a)!=type(b):return [{'path':path,'current':a,'legacy':b}]
+    if isinstance(a,dict):
+        out=[]
+        for k in sorted(a.keys()|b.keys()):
+            if k not in a or k not in b:out.append({'path':path+'/'+k,'current':a.get(k),'legacy':b.get(k)})
+            else:out.extend(payload_differences(a[k],b[k],path+'/'+k))
+        return out
+    if isinstance(a,list):
+        if len(a)!=len(b):return [{'path':path+'/length','current':len(a),'legacy':len(b)}]
+        return [d for i,(x,y) in enumerate(zip(a,b)) for d in payload_differences(x,y,path+'/'+str(i))]
+    return [] if a==b else [{'path':path,'current':a,'legacy':b}]
+
+
+def compare_observations(current,legacy):
+    stages=['frame_0','frame_1','frame_2','Q_0','Q_1','Q_2','T','U','input_target','actual_gate_parameter']
+    equal={k:all(current['input_arrays'][k][f]==legacy['input_arrays'][k][f]
+             for f in ('dtype_str','shape','raw_bytes_hex')) for k in stages}
+    a,b=current.get('recursive_payload'),legacy.get('recursive_payload')
+    differences=payload_differences(a,b) if a is not None and b is not None else None
+    if differences is not None and len(differences)>25000:raise RuntimeError('Diagnostic difference record cap')
+    def category(d):
+        p=d['path']
+        if p.endswith('/operation/name') and all(isinstance(d[k],str) and re.fullmatch(r'circuit-\d+',d[k]) for k in ('current','legacy')):
+            return 'AUTOGENERATED_OPERATION_NAME'
+        if 'array_sha256' in p:return 'MATRIX_PARAMETER_BYTES'
+        if 'global_phase' in p or '/params/' in p:return 'PHASE_OR_PARAMETER'
+        if '/qubits' in p or '/clbits' in p:return 'WIRE_ORDER'
+        return 'OTHER_REPRESENTATION_FIELD'
+    if differences is not None:
+        for d in differences:d['diagnostic_category']=category(d)
+    return {'matrix_stage_bytes_equal':equal,'first_different_stage':next((k for k in stages if not equal[k]),None),
+        'payload_differences':differences,'automatic_names_only':bool(differences) and all(d['diagnostic_category']=='AUTOGENERATED_OPERATION_NAME' for d in differences),
+        'historical_execution_reproduced':False,'acceptance_guard_changed':False,'scientific_winner':None}

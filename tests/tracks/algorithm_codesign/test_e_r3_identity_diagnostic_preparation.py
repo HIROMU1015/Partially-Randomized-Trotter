@@ -1,0 +1,217 @@
+"""New off-domain/metadata controls only; no registered identity evaluation."""
+import copy
+import hashlib
+import json
+from pathlib import Path
+import sys
+
+import numpy as np
+import pytest
+
+ROOT=Path(__file__).resolve().parents[3]
+sys.path.insert(0,str(ROOT/'src'))
+from trottertracks.algorithm_codesign.e_r3_identity_diagnostic import launch
+from trottertracks.algorithm_codesign.e_r3_identity_diagnostic import evaluation as ev
+from trottertracks.algorithm_codesign.e_r3_identity_diagnostic import worker
+from trottertracks.algorithm_codesign.df_correction_comparison.storage import dump_json,load_json
+from trottertracks.algorithm_codesign.df_correction_comparison.intervals import configure
+
+
+def frames():
+    # New analytic 2-mode rank1 fixture, no seed/RNG, no saved E input.
+    return [np.array([[3/5],[4j/5]],complex),np.array([[5/13],[12/13]],complex),
+            np.array([[8/17],[15j/17]],complex)]
+
+
+def sink(path):
+    calls=[]
+    def save(record):
+        dump_json(path,record,replace_existing=bool(calls))
+        calls.append(record['phase'])
+    return calls,save
+
+
+def fake_source(root,monkeypatch):
+    art=root/launch.ART;art.mkdir(parents=True)
+    code=root/'protected.py';code.write_text('x=1\n')
+    contract=art/'contract_v1.json';contract.write_text('{}')
+    manifest=art/'source_manifest_v1.json'
+    manifest.write_text(json.dumps({'files':[{'path':'protected.py','bytes':4,'sha256':launch.sha(code)}]}))
+    auth={'status':'APPROVED_FOR_ONE_E_R3_IDENTITY_ONLY_DIAGNOSTIC','diagnostic_execution_authorized':True,
+        'science_execution_authorized':False,'runs':1,'retries':0,'mandatory_STOP':True,
+        'source_commit':'a'*40,'contract_sha256':launch.sha(contract),'manifest_sha256':launch.sha(manifest),
+        'explicit_user_instruction':'Off-domain metadata test only'}
+    (art/'authorization.json').write_text(json.dumps(auth))
+    def git(root,*args):
+        if args==('rev-parse','HEAD'):return 'b'*40
+        if args[:2]==('rev-list','--parents'):return 'b'*40+' '+'a'*40
+        if args[:4]==('-c','core.quotePath=false','diff','--name-only'):return str(launch.ART/'authorization.json')
+        if args[:2]==('diff','--name-only') or args[:3]==('diff','--cached','--name-only'):return ''
+        if args==('status','--porcelain=v1'):return ''
+        if args==('branch','--show-current'):return 'off-domain-mock-execution'
+        if args==('remote','get-url','origin'):return 'git@github.com:HIROMU1015/Partially-Randomized-Trotter.git'
+        if args[:2]==('ls-remote','origin'):return 'b'*40+' refs/heads/off-domain-mock-execution'
+        raise AssertionError(args)
+    monkeypatch.setattr(launch,'git',git)
+    return auth,git
+
+
+def test_current_pending_authorization_fails_without_creating_result():
+    assert not (ROOT/launch.RESULT).exists()
+    with pytest.raises(PermissionError,match='Separate explicit'):launch.verify_launch(ROOT)
+    assert not (ROOT/launch.RESULT).exists()
+
+
+@pytest.mark.parametrize('field,value',[('diagnostic_execution_authorized',False),
+    ('science_execution_authorized',True),('runs',2),('retries',1),('mandatory_STOP',False),
+    ('source_commit',None),('status','APPROVED_FOR_ONE_DF_CORRECTION_COMPARISON_V2_RUN'),
+    ('contract_sha256','0'*64),('manifest_sha256','0'*64),('explicit_user_instruction',None)])
+def test_wrong_authority_or_binding_rejected_before_fixture_access(tmp_path,monkeypatch,field,value):
+    auth,_=fake_source(tmp_path,monkeypatch);auth[field]=value
+    (tmp_path/launch.ART/'authorization.json').write_text(json.dumps(auth))
+    with pytest.raises(PermissionError):launch.verify_launch(tmp_path)
+    assert not (tmp_path/launch.RESULT).exists()
+
+
+@pytest.mark.parametrize('failure',['parent','diff','remote','dirty','repository','branch','source'])
+def test_direct_child_source_remote_and_clean_guards(tmp_path,monkeypatch,failure):
+    auth,original=fake_source(tmp_path,monkeypatch)
+    def changed(root,*args):
+        if failure=='parent' and args[:2]==('rev-list','--parents'):return 'b'*40+' '+'c'*40
+        if failure=='diff' and args[:4]==('-c','core.quotePath=false','diff','--name-only'):return 'protected.py'
+        if failure=='remote' and args[:2]==('ls-remote','origin'):return 'c'*40+' refs/heads/mock'
+        if failure=='dirty' and args==('status','--porcelain=v1'):return '?? unrelated'
+        if failure=='repository' and args==('remote','get-url','origin'):return 'git@github.com:quration/forbidden.git'
+        if failure=='branch' and args==('branch','--show-current'):return 'main'
+        return original(root,*args)
+    monkeypatch.setattr(launch,'git',changed)
+    if failure=='source':(tmp_path/'protected.py').write_text('x=2\n')
+    with pytest.raises(PermissionError):launch.verify_launch(tmp_path)
+
+
+def test_old_marker_neither_authorizes_nor_is_modified(tmp_path,monkeypatch):
+    fake_source(tmp_path,monkeypatch)
+    old=tmp_path/'artifacts/old_result/one_shot_marker.json';old.parent.mkdir(parents=True);old.write_text('old-consumed')
+    launch.verify_launch(tmp_path)
+    assert old.read_text()=='old-consumed'
+    (tmp_path/launch.RESULT).mkdir(parents=True)
+    with pytest.raises(PermissionError,match='already exists'):launch.verify_launch(tmp_path)
+    assert old.read_text()=='old-consumed'
+
+
+def test_child_provenance_matches_parent_and_exclusive_claim(tmp_path,monkeypatch):
+    fake_source(tmp_path,monkeypatch);info=launch.verify_launch(tmp_path)
+    out=tmp_path/launch.RESULT;out.mkdir(parents=True)
+    marker=out/'one_shot_marker.json';marker.write_text(json.dumps(dict(info,runs=1,retries=0,mandatory_STOP=True)))
+    child=worker.claim_child(tmp_path)
+    assert all(child[k]==v for k,v in info.items())
+    assert child['marker_sha256']==launch.sha(marker)
+    with pytest.raises(FileExistsError):worker.claim_child(tmp_path)
+    (out/'terminal_status.json').write_text('{}')
+    with pytest.raises(PermissionError,match='Terminal STOP'):launch.verify_child(tmp_path)
+
+
+@pytest.mark.parametrize('key',['source','manifest_sha256','branch','remote_SHA'])
+def test_marker_tampering_rejected(tmp_path,monkeypatch,key):
+    fake_source(tmp_path,monkeypatch);info=launch.verify_launch(tmp_path)
+    out=tmp_path/launch.RESULT;out.mkdir(parents=True)
+    saved=dict(info,runs=1,retries=0,mandatory_STOP=True);saved[key]='tampered'
+    (out/'one_shot_marker.json').write_text(json.dumps(saved))
+    with pytest.raises(PermissionError):launch.verify_child(tmp_path)
+
+
+def test_profile_counts_internal_QSD_and_restores_observer_without_native_compile(tmp_path):
+    from qiskit import QuantumCircuit
+    from qiskit.circuit.library import UnitaryGate
+    from trotterlib.rte_compiled_cost import _circuit_payload
+    from trottertracks.algorithm_codesign.df_correction_comparison.fingerprint_diagnostics import payload_digest,_definition_index
+    # Pure 8x8 diagonal synthetic control, not registered E-r3 Q/T/U.
+    diagonal=np.diag(np.exp(1j*np.arange(8)/37));q=QuantumCircuit(3);q.append(UnitaryGate(diagonal),q.qubits)
+    previous=sys.getprofile();counter=ev.DefinitionCalls()
+    with counter:payload=_circuit_payload(q)
+    assert sys.getprofile() is previous
+    assert counter.counts['UnitaryGate_define_entries']>0
+    assert counter.counts['qs_decomposition_python_entries']>0
+    assert counter.counts['native_transpile_blocked_entries']==0
+    path=tmp_path/'QSD-observer-control.json'
+    dump_json(path,{'definition_work':counter.counts,'payload':payload,'fingerprint':payload_digest(payload),'definition_index':_definition_index(payload)})
+    assert load_json(path)['definition_work']==counter.counts
+
+
+def test_native_transpile_entry_is_blocked_before_body_and_profile_restored():
+    import qiskit
+    q=qiskit.QuantumCircuit(1);previous=sys.getprofile();counter=ev.DefinitionCalls()
+    with pytest.raises(PermissionError,match='outside identity-only'):
+        with counter:qiskit.transpile(q)
+    assert sys.getprofile() is previous and counter.counts['native_transpile_blocked_entries']==1
+
+
+def test_one_new_off_domain_old_current_control_with_lossless_payload(tmp_path):
+    configure();legacy=ev.legacy_helpers(ROOT/'scripts/tracks/algorithm_codesign/audit_df_sparse_correction.py')
+    observations={}
+    for label in ('current','legacy'):
+        path=tmp_path/(label+'.json');calls,save=sink(path)
+        observations[label]=ev.observe_path(label,frames(),'unchanged-historical-placeholder',legacy,save,{'path_order':['current','legacy'],'off_domain':True})
+        assert load_json(path)==observations[label]
+        assert observations[label]['observation']=='MISMATCH'
+        assert observations[label]['definition_work']['recursive_payload_attempts']==1
+        assert observations[label]['definition_work']['native_transpile_blocked_entries']==0
+        assert calls[0]=='FRAMES_BEFORE_RECONSTRUCTION' and calls[-1]=='IDENTITY_OBSERVATION_SAVED'
+    comparison=ev.compare_observations(observations['current'],observations['legacy'])
+    assert all(comparison['matrix_stage_bytes_equal'].values())
+    assert comparison['scientific_winner'] is None and not comparison['acceptance_guard_changed']
+    # Save the new off-domain result for review if the test driver supplies a sink.
+    import os
+    folder=Path(os.environ.get('E_R3_OFF_DOMAIN_TEST_OUTPUT',str(tmp_path)))
+    dump_json(folder/'off_domain_current_legacy_control.json',{'observations':observations,'comparison':comparison})
+
+
+@pytest.mark.parametrize('error',[TypeError('parameter unsupported'),ValueError('recursive definition'),RuntimeError('other payload error')])
+def test_payload_exceptions_are_completed_observations_not_retries(tmp_path,monkeypatch,error):
+    from trotterlib import rte_compiled_cost as shared
+    configure();calls=[]
+    def fail(q):calls.append(1);raise error
+    monkeypatch.setattr(shared,'_circuit_payload',fail)
+    legacy=ev.legacy_helpers(ROOT/'scripts/tracks/algorithm_codesign/audit_df_sparse_correction.py')
+    _,save=sink(tmp_path/'path.json')
+    observed=ev.observe_path('legacy',frames(),'fixed',legacy,save,{})
+    assert calls==[1] and observed['observation']=='EXCEPTION' and observed['actual_fingerprint'] is None
+    assert observed['shared_None_fallback']==isinstance(error,(TypeError,ValueError))
+    assert observed['fingerprint_exception']['message']==str(error)
+    assert load_json(tmp_path/'path.json')==observed
+
+
+def test_save_failure_stops_before_matrix_work(monkeypatch):
+    def fail(record):raise OSError('storage unavailable')
+    monkeypatch.setattr(ev.cert,'primitive',lambda *a:pytest.fail('must not construct'))
+    with pytest.raises(OSError):ev.observe_path('current',frames(),'fixed',{},fail,{})
+
+
+def test_preexisting_profiler_is_saved_then_technical_STOP_not_path_completion(tmp_path,monkeypatch):
+    configure();monkeypatch.setattr(sys,'getprofile',lambda:object())
+    helper=ev.legacy_helpers(ROOT/'scripts/tracks/algorithm_codesign/audit_df_sparse_correction.py')
+    _,save=sink(tmp_path/'profile-context.json')
+    with pytest.raises(PermissionError,match='technical STOP'):
+        ev.observe_path('legacy',frames(),'fixed',helper,save,{})
+    record=load_json(tmp_path/'profile-context.json')
+    assert record['observation']=='EXCEPTION'
+    assert 'Fresh unprofiled' in record['fingerprint_exception']['message']
+    assert record['definition_work']['qs_decomposition_python_entries']==0
+
+
+def test_payload_names_are_diagnostic_only_and_first_stage_difference_is_exact():
+    base={'input_arrays':{k:{'dtype_str':'<c16','shape':[2,2],'raw_bytes_hex':'aa'}
+        for k in ['frame_0','frame_1','frame_2','Q_0','Q_1','Q_2','T','U','input_target','actual_gate_parameter']},
+          'recursive_payload':{'instructions':[{'operation':{'name':'circuit-1'}}]}}
+    other=copy.deepcopy(base);other['recursive_payload']['instructions'][0]['operation']['name']='circuit-2'
+    result=ev.compare_observations(base,other)
+    assert result['automatic_names_only'] and not result['acceptance_guard_changed']
+    other['input_arrays']['Q_1']['raw_bytes_hex']='bb'
+    assert ev.compare_observations(base,other)['first_different_stage']=='Q_1'
+
+
+def test_metadata_parser_rejects_wrong_domain_without_array_construction(tmp_path):
+    job={'r':6,'stage':'native','frames':[], 'marker_sha256':'old'}
+    (tmp_path/'job.json').write_text(json.dumps(job));(tmp_path/'inputs.json').write_text('{"3":[]}')
+    contract={'inputs':{'saved_job':{'path':'job.json'},'saved_inputs':{'path':'inputs.json'}},'old_marker_sha256':'old'}
+    with pytest.raises(PermissionError):worker.saved_frame_rows(tmp_path,contract)

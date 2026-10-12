@@ -98,3 +98,13 @@ testsでregistered profile採点やsynthesisを行わず、full suite未実行�
 最終focused tests104 PASS。controlledで同じ行列でもrecursive自動名によるhash差を保存した。登録r3停止の原因は未確定。
 既存moduleの数式・guard・expected・contract不変。旧marker/result/auth/STOP保持、登録science/T合成0、RUN_READY=false。
 新source snapshotと全失敗test記録を公開し、mandatory STOP。次scopeの判断はGPT/利用者側。
+
+
+## Track B E-r3 identity-only診断準備（2026-10-12）
+
+[scope/source handoff](../docs/tracks/algorithm_codesign/e_r3_identity_diagnostic_source_review_and_gpt_handoff_20261012.md)：保存r3 uncontrolledのみ、current→legacy各一回の診断専用runner・新launch/manifest/result namespaceを準備。
+native transpile/CD/r6/Tなし。definition内部計算はobserverとCPU/RSS/output guardで会計。新off-domain tests33 PASS。
+registered診断0、旧source/authorization/marker/result/STOP保持。新authorization pending・runs0。
+source/scope確認と別明示one-shot承認までmandatory STOP。旧科学分類TECHNICAL_INCONCLUSIVE不変。
+
+source固定前の最終確認：profiler context違反のtechnical STOPを追加し、new focused testsは34 PASS。初回33 PASSとdraft checkpointは保持。
