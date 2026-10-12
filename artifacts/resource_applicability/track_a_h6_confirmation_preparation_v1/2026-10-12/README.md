@@ -1,5 +1,7 @@
 # H6独立32 trajectory確認：準備完了・実行未承認
 
+**最新：利用者が開始と840上限を承認し、4workerで実行中。** [認可・起動・引継ぎ入口](launch_authorization_v1/README.md)。以下は準備時の履歴。
+
 **公開待ち：** local準備は完了しましたが、Git pushはサーバーのGitHub認証不足で失敗しました。新remote branchは未作成です。[公開状態と手動push](publication_status_v1.json)。認証設定変更なし、確認計算未起動。
 
 [実行準備契約・科学条件・次の承認案](../../../../docs/research/track_a_h6_independent_confirmation_preparation_v1.md)。

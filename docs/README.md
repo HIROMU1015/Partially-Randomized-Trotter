@@ -1,5 +1,7 @@
 # 文書索引
 
+H6独立32確認一回起動：[起動と将来の高速化版への引継ぎ](research/track_a_h6_confirmation_launch_v1.md)。
+
 H6独立32確認：[準備契約](research/track_a_h6_independent_confirmation_preparation_v1.md)、[候補/seed/source/seal/監査](../artifacts/resource_applicability/track_a_h6_confirmation_preparation_v1/2026-10-12/README.md)。8構成×32、未承認。
 
 H6探索結果：[報告](research/track_a_h6_exploration_result_v1.md)、[CSV/map/order/監査](../artifacts/resource_applicability/track_a_h6_exploration_summary_v1/2026-10-12/README.md)。592探索完了・確認前。

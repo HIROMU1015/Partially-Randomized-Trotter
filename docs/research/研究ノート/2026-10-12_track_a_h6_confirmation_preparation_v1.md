@@ -121,3 +121,7 @@ launchには新 `h6_confirmation_authorization_v1` が必要。SOURCE/profile、
 local SOURCE/準備資料固定後のnon-force pushはGitHub username認証を取得できずexit128。新remote branchはls-remoteで未存在、remote SHAはnull。
 認証/共有/Git設定を変更せず、[公開状態・手動push command](../../../artifacts/resource_applicability/track_a_h6_confirmation_preparation_v1/2026-10-12/publication_status_v1.json)を記録した。
 実確認0、approved=false/runtime_authorization=false/allowed_cpus=[]・commandnullを維持し、公開待ちでSTOPする。利用者の手動push後にremote SHA照合が残る。
+
+## 追記：利用者承認による一回起動
+
+開始およびtrajectory840を明示承認。SOURCE73018cbcを維持し4workerで起動、CoPID20241・STOP理由null。[起動契約](../track_a_h6_confirmation_launch_v1.md)にfresh gateと将来のcomplete-only引継ぎ条件を記録。hash/8worker未実装、自動切替なし、partialの追加予約を移行時に再評価。Git認証設定を変えず公開待ち、共有/venv/H4変更なし。

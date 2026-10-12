@@ -1,5 +1,8 @@
 # プロジェクト案内
 
+H6独立32確認一回起動：[契約](docs/research/track_a_h6_confirmation_launch_v1.md)、[grant/fresh gate/native観測/将来の引継ぎ](artifacts/resource_applicability/track_a_h6_confirmation_preparation_v1/2026-10-12/launch_authorization_v1/README.md)。4worker・trajectory840承認、SOURCE73018cbc不変。
+
+
 H6独立32確認準備：[契約](docs/research/track_a_h6_independent_confirmation_preparation_v1.md)、[union8/256seed/seal/69tests/840案](artifacts/resource_applicability/track_a_h6_confirmation_preparation_v1/2026-10-12/README.md)。原探索592を保全、実確認未起動。
 
 H6探索結果：[研究報告](docs/research/track_a_h6_exploration_result_v1.md)、[全候補CSV・map・592来歴・metadata監査](artifacts/resource_applicability/track_a_h6_exploration_summary_v1/2026-10-12/README.md)。592/592・1188 wrapper完了、独立確認未実施。

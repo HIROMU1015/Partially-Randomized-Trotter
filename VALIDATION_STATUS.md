@@ -1,5 +1,10 @@
 # Validation status
 
+## 2026-10-12 H6：独立32確認一回起動
+
+[認可・fresh gate・初期native観測](artifacts/resource_applicability/track_a_h6_confirmation_preparation_v1/2026-10-12/launch_authorization_v1/README.md)。SOURCE73018cbc、256 group/512 wrapper・4worker・trajectory840承認、CoPID20241・STOP理由null。既存69限定test維持、runtime SOURCE変更なし。実確認完了/科学的合格ではない。未来のhash再利用/8workerとcomplete-only migrationは未実装。公開は認証待ち、H4/venv/共有変更なし。以下は過去段階の履歴。
+
+
 ## 2026-10-12 H6：独立32確認準備・未承認STOP
 
 Git pushは認証不足で失敗。準備はlocal固定済み、新remote branch未作成・remote SHA null。手動push後のremote照合が残る。
