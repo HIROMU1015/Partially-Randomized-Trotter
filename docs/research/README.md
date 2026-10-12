@@ -206,3 +206,8 @@ science0、新authorization0、旧closure/結果/marker/STOPは不変、mandator
 [終了記録](../tracks/algorithm_codesign/gaussian_product_generation_closure_20261013.md)。
 候補の自動延長を止める判断は完了。期待資源の改善/非改善は未確定。応用研究を自動採択しない。
 [dated note](研究ノート/2026-10-13_track_b_gaussian_product_generation_closure.md)。同じレビューの反復不要、mandatory STOP。
+
+
+## Track B全体方針：新規手法探索の一時休止（2026-10-13）
+
+[GPT判断原本](track_b_overall_direction_and_research_pause_review_20261013.md)／[休止記録](../tracks/algorithm_codesign/track_b_research_pause_record_20261013.md)／[dated note](研究ノート/2026-10-13_track_b_research_pause.md)。判断済み、同じレビューの反復不要。既存成果は保持し、新実装・科学実行なし、mandatory STOP。

@@ -1,3 +1,5 @@
+> **現在のTrack B（2026-10-13）：新規手法探索を一時休止。** [GPT判断原本](docs/research/track_b_overall_direction_and_research_pause_review_20261013.md)／[休止記録](docs/tracks/algorithm_codesign/track_b_research_pause_record_20261013.md)。既存成果・終了判断は保持し、closed P5は将来候補のみ。新実装・科学実行へ進まずmandatory STOP。以下の過去の承認待ち・最新表記は判断履歴。
+
 > 2026-10-07 Track B RA-D0 v3：**READY_FOR_RA_D0_ONE_SHOT_AUTHORIZATION**（実行承認ではない）。
 > [source review](docs/tracks/algorithm_codesign/ra_d0_source_review_v3_20261007.md) / [GPT handoff](docs/tracks/algorithm_codesign/ra_d0_gpt_handoff_v3_20261007.md) / [manifest](artifacts/track_b_ra_d0_source_review_v3/2026-10-07/evidence_manifest_v3.json)。
 > [focused verifier](scripts/tracks/algorithm_codesign/verify_ra_d0_source_review_v3.py) / [v3 tests](tests/tracks/algorithm_codesign/test_ra_d0_source_review_v3.py)。
