@@ -1011,3 +1011,14 @@ TECHNICAL_INCONCLUSIVE、r6 controlled wholeのnumerical upper 2e-7認証失敗�
 元v7のTECHNICAL_INCONCLUSIVE／markerは不変。復元で新science0、815 saved-output checks PASS、全Aのactual Tはunknownを維持する。
 CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない。研究継続・新規性・資源的意義はGPT判断、mandatory STOP。
 復元結果：`artifacts/track_b_df_correction_et_saved_recovery_result/2026-10-12/v2/`、監査／manifest：`artifacts/track_b_df_correction_et_saved_recovery_audit/2026-10-12/v2/`。
+
+
+## Track B DF三次補正 E/T：GPT科学判断・現系列の区切り（2026-10-12）
+
+[採択済みGPTレビュー](docs/research/track_b_df_correction_et_scientific_review_20261012.md)／[系列の区切り・証拠索引](docs/tracks/algorithm_codesign/df_correction_et_series_closure_20261012.md)。
+現generic whole実装を新規PRアルゴリズムの主線として拡張せず、この検証系列を区切る。
+3条件の局所固定加法planでA completion下界>B完全event T上界を保持。A全T、4行目、全PR優劣、一般whole優劣は未確定。
+有限stepのA指数平均とB weighted線形平均は区別する。Bの自動採択・Track B全体の終了を意味しない。
+元v7 TECHNICAL_INCONCLUSIVE／復元SAVED_E_T_ACCOUNTING_COMPLETE／旧結果・marker・sourceは不変。
+今回のCodex作業は文書・索引・provenance・公開確認のみ、新科学計算0、mandatory STOP。
+同じ科学レビューは反復しない。新候補の研究判断・scope採択はGPT側、新実行は別途明示認可が必要。
