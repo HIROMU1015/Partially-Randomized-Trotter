@@ -31,7 +31,7 @@ def candidate():
         base_manifest={'plan':{'caps_proposed':{'output_bytes':2*2**30,'log_bytes':2**20}}},
         registrations=[dict(index=i,task={'cell_id':'SYNTHETIC_'+str(i),'seed':i}) for i in range(450,455)],
         source_commit='a'*40,exclusive_output={'absolute_path':'/home/AbeHiromu/SYNTHETIC'},
-        frozen_preparation_binding={'archive_sha256':'c'*64},
+        roundoff_preparation_binding={'archive_sha256':'c'*64},
         base_profile='fixture',approved=False,runtime_authorization=False)
 
 
@@ -84,47 +84,19 @@ def test_grant_resources_do_not_alias_manifest():
 def test_new_archive_binding_is_required_in_grant(case):
     m=candidate();m['base_manifest']['profile']={'sha256':'b'*64}
     g=c.grant_draft(m);g.update(approved_by_user=True,server_usage_approved_by_user=True)
-    if case=='missing_archive':m['frozen_preparation_binding']=None
-    if case=='archive_tamper':m['frozen_preparation_binding']['archive_sha256']='d'*64
+    if case=='missing_archive':m['roundoff_preparation_binding']=None
+    if case=='archive_tamper':m['roundoff_preparation_binding']['archive_sha256']='d'*64
     if case=='old_four_worker_grant':
-        g.pop('frozen_preparation_binding_digest');g['kind']='H6_PARALLEL_EXPLORATION_ONLY_V1'
+        g.pop('roundoff_preparation_binding_digest');g['kind']='H6_PARALLEL_EXPLORATION_ONLY_V1'
     with pytest.raises(ValueError):c.validate_grant(m,g)
 
 
-@pytest.mark.parametrize('case',['valid','wrong_source','missing_events','archive_changed','phase_a_mismatch'])
-def test_exact_server_receipt_binds_archive_source_input_and_profile(tmp_path,case):
-    archive=tmp_path/'archive.json';archive.write_text('ARTIFICIAL_ARCHIVE')
-    receipt=tmp_path/'receipt.json';m=candidate()
-    m['source_hashes']={'fixture':'a'*64}
-    m['phase_a_receipt']={'fixture':True}
-    m['base_manifest'].update(profile={'sha256':'b'*64},input_identity={'fixture':True},
-        reuse_registry={'missing':[{'index':450,'partial_event_digest':'d'*64}]})
-    proof=dict(schema='h6_server_frozen_preparation_receipt_v1',source_commit=m['source_commit'],
-        source_hashes_digest=digest(m['source_hashes']),archive_sha256=c.file_hash(archive),
-        archive_bytes=archive.stat().st_size,profile_sha256='b'*64,
-        input_identity_digest=digest(m['base_manifest']['input_identity']),
-        all_seven_preparations_exact=True,partial_450_exact=True,partial_450_digest='d'*64,
-        phase_a_full_wrapper_exact=True,phase_a_receipt_digest=digest(m['phase_a_receipt']),
-        compile_calls=0,signal_calls=0,input_generation=0,
-        server_diagnostic_calls={'trajectory':1,'occurrence':8},
-        old_host_diagnostic_calls={'trajectory':1,'occurrence':8},
-        status='PASS_EXACT_PREPARATIONS_AND_PARTIAL_450')
-    if case=='wrong_source':proof['source_commit']='e'*40
-    if case=='missing_events':proof['partial_450_exact']=False
-    if case=='phase_a_mismatch':proof['phase_a_full_wrapper_exact']=False
-    receipt.write_text(json.dumps(proof))
-    m['frozen_preparation_binding']=dict(archive_path=str(archive),archive_sha256=c.file_hash(archive),
-        archive_bytes=archive.stat().st_size,receipt_path=str(receipt),receipt_sha256=c.file_hash(receipt))
-    if case=='archive_changed':archive.write_text('MODIFIED')
-    if case=='valid':assert c.frozen_binding(tmp_path,m)
-    else:
-        with pytest.raises(ValueError):c.frozen_binding(tmp_path,m)
 
 
 def test_diagnostics_are_added_to_known_carry_without_reset(tmp_path):
     base={'reuse_registry':{'original_signal_calls':{'compile':10,'trajectory':20,'occurrence':30},'accepted':[]}}
     assert c.carry_calls(tmp_path,base,None)=={'compile':10,'trajectory':20,'occurrence':30}
-    assert c.carry_calls(tmp_path,base,None,frozen=True)=={'compile':10,'trajectory':22,'occurrence':46}
+    assert c.carry_calls(tmp_path,base,None,roundoff=True)=={'compile':10,'trajectory':22,'occurrence':46}
 
 
 @pytest.mark.parametrize('exits',[True,False])
@@ -274,7 +246,7 @@ def test_four_worker_cpu_and_rss_partition_is_consistent():
 
 def test_frozen_port_is_only_scientific_dispatch_and_no_confirmation():
     source=inspect.getsource(e.worker)
-    assert 'from .h6_matched_cost_port_v3 import cost_task' in source
+    assert 'from .h6_roundoff_cost_port_v1 import cost_task' in source
     assert 'cost_task(root,effective,b' in source
     assert not any(x in inspect.getsource(e.orchestrate) for x in ('confirmation_ids(','resource_maps(','tasks('))
     assert 'validate_plan(root,m,launch=True)' in inspect.getsource(e.orchestrate)

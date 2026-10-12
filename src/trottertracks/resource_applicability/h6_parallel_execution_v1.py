@@ -168,15 +168,18 @@ def worker(root,directory,run_root):
     reserve=bytearray(2**20);reason=None;status='TASK_COMPLETE'
     try:
         with trace.bind(),trace.stage('cost_task',cell_id=b['task']['cell_id'],phase='exploration',replica=b['task']['replica']):
-            from .h6_matched_cost_port_v3 import cost_task
-            from .h6_frozen_preparation_v1 import verify_archive,use_frozen_preparations
-            from .h6_parallel_contract_v1 import frozen_binding
-            frozen_binding(root,m)
-            ref=m['frozen_preparation_binding']
-            preparations,_=verify_archive(root,ref['archive_path'],sha256=ref['archive_sha256'])
+            from .h6_roundoff_cost_port_v1 import cost_task
+            from .h6_roundoff_preparation_v1 import read_preparations,use_preparations
+            from .h6_parallel_contract_v1 import roundoff_binding
+            roundoff_binding(root,m)
+            ref=m['roundoff_preparation_binding']
+            preparations,archive=read_preparations(ref['archive_path'],ref['archive_sha256'])
+            if (archive['binding']['input_identity']!=base['input_identity'] or
+                archive['binding']['profile_sha256']!=base['profile']['sha256'] or
+                archive['binding']['compiler']!=base['plan']['compiler_proposed']):raise ValueError('ROUNDING_WORKER_BINDING')
             effective=deepcopy(base)
             effective['plan']['caps_proposed']['compile']=4 if b['task']['ordinary'] else 2
-            with use_frozen_preparations(preparations):
+            with use_preparations(preparations):
                 cost_task(root,effective,b['task'],writer,Progress(writer),trace)
         for p,sha in m['source_hashes'].items():
             if file_hash(safe_path(root,p))!=sha:raise ValueError('PARALLEL_WORKER_SOURCE_AFTER')
@@ -208,13 +211,15 @@ def orchestrate(root,out,m,writer,fresh):
             result=admit_parallel_group(Path(out)/f'cost_exploration_{x["index"]:04d}',x['task'],source=m['source_commit'])
             groups[x['index']]=result
             for k,v in result['calls_attempted'].items():calls[k]+=v
-        if any(v>base['plan']['caps_proposed'][k] for k,v in calls.items()):raise ValueError('PARALLEL_TOTAL_CALL_CAP')
+        reserved=m['prior_stop_accounting']['conservative_reservation']
+        if any(v+reserved.get(k,0)>base['plan']['caps_proposed'][k] for k,v in calls.items()):raise ValueError('PARALLEL_TOTAL_CALL_CAP')
         rows=complete_exploration(base['reuse_registry']['original_tasks'],groups)
         # Recheck profile/input/source and the accepted parent before publishing
         # completion. The launch lock/output have already been consumed here.
         validate_plan(root,m,launch=True)
         writer.write('exploration_complete_receipt.json',dict(group_count=len(groups),wrapper_count=len(rows),
             known_calls=calls,old_aborted_attempts=None,old_aborted_attempts_not_inferred=True,
+            prior_stop_accounting=m['prior_stop_accounting'],
             new_group_indices=report['completed_indices'],selection_not_performed=True,confirmation_not_started=True))
     except Exception as exc:reason=type(exc).__name__+':'+str(exc)[:512]
     writer.write('execution_terminal.json',dict(status='H6_PARALLEL_COMPLETE_MANDATORY_STOP' if reason is None else 'H6_PARALLEL_STOP',
