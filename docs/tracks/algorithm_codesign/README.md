@@ -499,3 +499,12 @@ S5 d0a12bae/A5 0e147e27で一回実行。TECHNICAL_INCONCLUSIVE、r6 controlled 
 ## E/T saved recovery
 
 [追加scienceなしの会計復元](df_correction_et_saved_recovery_preparation_20261012.md)。元source ASTと保存native22/T39、lossless blob修復。原v7分類保持。復元後mandatory STOP、科学判断はGPT側。
+
+
+## Track B E/T 限定計算・保存値集計の完了（2026-10-12）
+
+[最終技術監査・GPT handoff](../../../docs/tracks/algorithm_codesign/df_correction_et_completed_saved_accounting_and_gpt_handoff_20261012.md)：`SAVED_E_T_ACCOUNTING_COMPLETE`。
+元v7でnative22／T key39（backend33、Clifford fast path6）を取得。大きい辞書の保存停止後、同じpost-T ASTをsaved-onlyで復元した。
+元v7のTECHNICAL_INCONCLUSIVE／markerは不変。復元で新science0、815 saved-output checks PASS、全Aのactual Tはunknownを維持する。
+CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない。研究継続・新規性・資源的意義はGPT判断、mandatory STOP。
+復元結果：`artifacts/track_b_df_correction_et_saved_recovery_result/2026-10-12/v2/`、監査／manifest：`artifacts/track_b_df_correction_et_saved_recovery_audit/2026-10-12/v2/`。

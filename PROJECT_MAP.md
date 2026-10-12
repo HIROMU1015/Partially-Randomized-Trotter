@@ -1002,3 +1002,12 @@ TECHNICAL_INCONCLUSIVE、r6 controlled wholeのnumerical upper 2e-7認証失敗�
 ## E/T saved accounting recovery
 
 [準備](docs/tracks/algorithm_codesign/df_correction_et_saved_recovery_preparation_20261012.md)：v7全E/T完了後の保存修復、large unknown dictionaryをlossless blob化、元ASTのsaved-only会計を復元する。追加science/native/T0、原630file/marker保持、新classificationはSAVED_E_T_ACCOUNTING_COMPLETE。
+
+
+## Track B E/T 限定計算・保存値集計の完了（2026-10-12）
+
+[最終技術監査・GPT handoff](docs/tracks/algorithm_codesign/df_correction_et_completed_saved_accounting_and_gpt_handoff_20261012.md)：`SAVED_E_T_ACCOUNTING_COMPLETE`。
+元v7でnative22／T key39（backend33、Clifford fast path6）を取得。大きい辞書の保存停止後、同じpost-T ASTをsaved-onlyで復元した。
+元v7のTECHNICAL_INCONCLUSIVE／markerは不変。復元で新science0、815 saved-output checks PASS、全Aのactual Tはunknownを維持する。
+CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない。研究継続・新規性・資源的意義はGPT判断、mandatory STOP。
+復元結果：`artifacts/track_b_df_correction_et_saved_recovery_result/2026-10-12/v2/`、監査／manifest：`artifacts/track_b_df_correction_et_saved_recovery_audit/2026-10-12/v2/`。
