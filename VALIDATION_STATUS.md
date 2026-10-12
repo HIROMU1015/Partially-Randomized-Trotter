@@ -1,5 +1,15 @@
 # Validation status
 
+## 2026-10-12 N3 OCC v1 source preparation
+
+[Source report](docs/research/n3_occupation_transfer_v1_source_preparation_20261012.md).
+24 synthetic tests PASS; 87765 independent stdlib checks on three synthetic fixtures PASS.
+New eight inputs: coefficient identity/schema only; zero predicates/ground/compile/scientific batches.
+Generator/runner/checker source and reserved budgets fixed; separate one-shot authorization required.
+Mandatory STOP, central theme null; no current CI/external scientific reproduction.
+Existing global manifest description failure retained.
+
+
 ## 2026-10-12 N3 occupation redesign preparation
 
 [Mathematical audit](docs/research/n3_occupation_redesign_mathematical_audit_20261012.md) / [design](docs/research/n3_occupation_transfer_design_v1_20261012.md).

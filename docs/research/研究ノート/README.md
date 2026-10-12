@@ -1,5 +1,14 @@
 # 研究ノート
 
+## 2026-10-12 N3 OCC v1 implementation preparation
+
+[実装・検証・実行前STOP](2026-10-12_n3_occupation_transfer_v1_source_preparation.md)。新8入力batch未認可。
+module `src/trottertracks/representation_exploration/n3_occupation_transfer_v1.py`;
+independent `n3_occupation_transfer_check_v1.py`; runner `scripts/run_n3_occupation_transfer_v1.py`;
+saved verifier `scripts/verify_n3_occupation_transfer_v1.py`; tests `tests/test_n3_occupation_transfer_v1.py`;
+artifacts `artifacts/n3_occupation_transfer_v1/2026-10-12/preparation/`.
+
+
 ## 2026-10-12 N3 occupation certificate preparation
 
 [数学検証・比較設計](2026-10-12_n3_occupation_redesign_preparation.md)。新科学batch未認可。
