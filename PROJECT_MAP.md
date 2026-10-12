@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+H6丸め実行：[計画/67限定tests/元450数値一致](docs/research/track_a_h6_roundoff_execution_v1.md)、[source/grant/fresh gate入口](artifacts/resource_applicability/track_a_h6_roundoff_preparation_v1/2026-10-12/README.md)。旧science224維持、元142の4worker一回実行。
+
 H6旧DF準備固定：[設計](docs/research/track_a_h6_frozen_basis_preparation_v1.md)、[SOURCE/69限定tests/旧環境export・受領入口](artifacts/resource_applicability/track_a_h6_frozen_basis_preparation_v1/2026-10-12/README.md)。science224不変、240 closure、archive受領待ち・未seal・実再起動0。
 
 ## H6 4 worker準備 v2

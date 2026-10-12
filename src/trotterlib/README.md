@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+H6丸めbridge：[preparation](../trottertracks/resource_applicability/h6_roundoff_preparation_v1.py)、[cost port](../trottertracks/resource_applicability/h6_roundoff_cost_port_v1.py)、[tests](../../tests/tracks/resource_applicability/test_h6_roundoff_v1.py)、[資料](../../artifacts/resource_applicability/track_a_h6_roundoff_preparation_v1/2026-10-12/README.md)。科学trotterlibを変えずroundoffとdiscrete choicesを区別する。
+
 H6旧DF準備archive：[codec/adapter](../trottertracks/resource_applicability/h6_frozen_preparation_v1.py)、[tests](../../tests/tracks/resource_applicability/test_h6_frozen_preparation_v1.py)、[資料](../../artifacts/resource_applicability/track_a_h6_frozen_basis_preparation_v1/2026-10-12/README.md)。trotterlib科学sourceは変更せず準備値を厳密固定。旧環境artifact受領待ち。
 
 H6並列control v2：[contract](../trottertracks/resource_applicability/h6_parallel_contract_v1.py)/[execution](../trottertracks/resource_applicability/h6_parallel_execution_v1.py)。4 worker/internal thread1、RSS9GiB/aggregate40、科学source224不変。[38限定tests](../../tests/tracks/resource_applicability/test_h6_parallel_v1.py)、[資料](../../artifacts/resource_applicability/track_a_h6_parallel_preparation_v2/2026-10-12/README.md)。
