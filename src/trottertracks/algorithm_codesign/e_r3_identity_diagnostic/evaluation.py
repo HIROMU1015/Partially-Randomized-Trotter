@@ -11,6 +11,10 @@ from ..df_correction_comparison import certification as cert
 from ..df_correction_comparison.fingerprint_diagnostics import array_record,payload_digest,exception_record,_definition_index
 
 
+class ObserverFailure(PermissionError):
+    """Observer lifecycle failure is technical, not a fingerprint observation."""
+
+
 class DefinitionCalls:
     """Count Python definition/QSD entries and block native transpile entry.
 
@@ -19,8 +23,14 @@ class DefinitionCalls:
     as individual Python calls; all elapsed resources remain supervised.
     """
     def __init__(self):
-        self.counts={'recursive_payload_attempts':1,'UnitaryGate_define_entries':0,
+        self.counts={'recursive_payload_attempts':0,'UnitaryGate_define_entries':0,
                      'qs_decomposition_python_entries':0,'native_transpile_blocked_entries':0}
+        self.hook=self.trace
+        self.previous=None
+        self.payload_exception=None
+        self.lifecycle={'installation_attempted':False,'installation_verified':False,
+                        'restoration_attempted':False,'restoration_verified':False,
+                        'exceptions':{}}
     def trace(self,frame,event,arg):
         if event!='call':return
         module=frame.f_globals.get('__name__','');name=frame.f_code.co_name
@@ -31,11 +41,40 @@ class DefinitionCalls:
         if module=='qiskit.compiler.transpiler' and name=='transpile':
             self.counts['native_transpile_blocked_entries']+=1
             raise PermissionError('Native transpile API is outside identity-only scope')
+    def fail(self,stage,exc):
+        self.lifecycle['exceptions'][stage]=exception_record(exc)
+        return ObserverFailure('Observer '+stage+' failed; technical STOP: '+str(exc))
+    def restore(self):
+        # Exactly one cleanup attempt, even when __enter__ failed after installing.
+        self.lifecycle['restoration_attempted']=True
+        try:
+            sys.setprofile(self.previous)
+            if sys.getprofile() is not self.previous:
+                raise RuntimeError('Previous profile hook was not restored')
+        except Exception as exc:
+            raise self.fail('restoration',exc) from exc
+        self.lifecycle['restoration_verified']=True
     def __enter__(self):
-        self.previous=sys.getprofile()
-        if self.previous is not None:raise PermissionError('Fresh unprofiled diagnostic context required')
-        sys.setprofile(self.trace);return self
-    def __exit__(self,*args):sys.setprofile(self.previous)
+        try:self.previous=sys.getprofile()
+        except Exception as exc:raise self.fail('context_read',exc) from exc
+        if self.previous is not None:
+            exc=PermissionError('Fresh unprofiled diagnostic context required')
+            raise self.fail('context',exc) from exc
+        self.lifecycle['installation_attempted']=True
+        try:
+            sys.setprofile(self.hook)
+            if sys.getprofile() is not self.hook:
+                raise RuntimeError('Definition observer hook was not installed')
+        except Exception as exc:
+            failure=self.fail('installation',exc)
+            try:self.restore()
+            except ObserverFailure:pass  # both failures retained; no cleanup retry
+            raise failure from exc
+        self.lifecycle['installation_verified']=True
+        return self
+    def __exit__(self,exc_type,exc,tb):
+        self.payload_exception=exc
+        self.restore()
 
 
 def legacy_helpers(source):
@@ -89,26 +128,40 @@ def observe_path(label,frames,expected,legacy,save,provenance):
     except Exception as exc:
         record['construction_exception']=exception_record(exc);save(record);raise
     calls=DefinitionCalls()
+    payload=None;payload_obtained=False;fingerprint_error=None;observer_error=None
     try:
-        with calls:payload=_circuit_payload(qc)
-        actual=payload_digest(payload)
+        with calls:
+            calls.counts['recursive_payload_attempts']+=1
+            payload=_circuit_payload(qc)
+            payload_obtained=True
+    except ObserverFailure as exc:
+        observer_error=exc;fingerprint_error=calls.payload_exception
     except Exception as exc:
-        record['fingerprint_exception']=exception_record(exc)
-        record['recursive_payload']=None;record['recursive_definition_index']=None
+        fingerprint_error=exc
+    if payload_obtained:
+        try:actual=payload_digest(payload)
+        except Exception as exc:fingerprint_error=exc
+        else:
+            record['actual_fingerprint']=actual
+            record['recursive_definition_index']=_definition_index(payload)
+    record['recursive_payload']=payload
+    record.setdefault('recursive_definition_index',None)
+    record['fingerprint_exception']=exception_record(fingerprint_error) if fingerprint_error is not None else None
+    record['observer_exception']=exception_record(observer_error) if observer_error is not None else None
+    record['observer_lifecycle']=calls.lifecycle
+    record['shared_None_fallback']=isinstance(fingerprint_error,(TypeError,ValueError))
+    if observer_error is not None:
+        record['observation']='TECHNICAL_OBSERVER_FAILURE'
+    elif fingerprint_error is not None:
         record['observation']='EXCEPTION'
-        record['shared_None_fallback']=isinstance(exc,(TypeError,ValueError))
     else:
-        record['recursive_payload']=payload;record['recursive_definition_index']=_definition_index(payload)
-        record['actual_fingerprint']=actual
         record['observation']='MATCH' if record['actual_fingerprint']==expected else 'MISMATCH'
-        record['shared_None_fallback']=False
     record['definition_work']=dict(calls.counts,observer='Python call entries during one payload request; C/Rust not individually counted')
     record['circuit_context']['QuantumCircuit_instances_after_payload']=getattr(QuantumCircuit,'instances',None)
     record['circuit_context']['root_definition_cached_after']=vars(qc.data[0].operation).get('_definition') is not None
-    record['phase']='IDENTITY_OBSERVATION_SAVED'
+    record['phase']='TECHNICAL_OBSERVER_FAILURE_SAVED' if observer_error is not None else 'IDENTITY_OBSERVATION_SAVED'
     save(record)
-    if getattr(calls,'previous',None) is not None:
-        raise PermissionError('Preexisting profiler violates fresh diagnostic context; technical STOP')
+    if observer_error is not None:raise observer_error
     if calls.counts['native_transpile_blocked_entries']:
         raise PermissionError('Prohibited native transpile entry blocked; technical STOP')
     return record

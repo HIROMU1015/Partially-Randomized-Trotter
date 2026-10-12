@@ -5,9 +5,9 @@ from pathlib import Path
 import re
 import subprocess
 
-ART=Path('artifacts/track_b_e_r3_identity_diagnostic_preparation/2026-10-12')
-RESULT=Path('artifacts/track_b_e_r3_identity_diagnostic_result/2026-10-12/v1')
-RECEIPT=Path('docs/tracks/algorithm_codesign/e_r3_identity_diagnostic_execution_authorization_v1.md')
+ART=Path('artifacts/track_b_e_r3_identity_diagnostic_preparation/2026-10-12/v2')
+RESULT=Path('artifacts/track_b_e_r3_identity_diagnostic_result/2026-10-12/v2')
+RECEIPT=Path('docs/tracks/algorithm_codesign/e_r3_identity_diagnostic_execution_authorization_v2.md')
 MANIFEST=ART/'source_manifest_v1.json'
 
 

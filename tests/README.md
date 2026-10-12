@@ -108,3 +108,8 @@ registered診断0、旧source/authorization/marker/result/STOP保持。新author
 source/scope確認と別明示one-shot承認までmandatory STOP。旧科学分類TECHNICAL_INCONCLUSIVE不変。
 
 source固定前の最終確認：profiler context違反のtechnical STOPを追加し、new focused testsは34 PASS。初回33 PASSとdraft checkpointは保持。
+
+
+## E-r3 identity-only observer修正 v2（2026-10-12）
+
+[限定修正・技術検証](../docs/tracks/algorithm_codesign/e_r3_identity_observer_repair_preparation_20261012.md)：observer設置／復元失敗をtechnical STOPへ伝播。77 focused PASS、contract全bytes・expected・capsは不変。新sourceとv2 namespaceを固定し、READY_FOR_SEPARATE_ONE_SHOT_AUTHORIZATION。旧S/科学結果/marker/authorization/STOP保持、登録診断/A作成0。追加GPT詳細研究レビューは不要、別明示one-shot承認までmandatory STOP。

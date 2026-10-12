@@ -194,8 +194,10 @@ def test_preexisting_profiler_is_saved_then_technical_STOP_not_path_completion(t
     with pytest.raises(PermissionError,match='technical STOP'):
         ev.observe_path('legacy',frames(),'fixed',helper,save,{})
     record=load_json(tmp_path/'profile-context.json')
-    assert record['observation']=='EXCEPTION'
-    assert 'Fresh unprofiled' in record['fingerprint_exception']['message']
+    assert record['observation']=='TECHNICAL_OBSERVER_FAILURE'
+    assert record['fingerprint_exception'] is None
+    assert 'Fresh unprofiled' in record['observer_exception']['message']
+    assert record['definition_work']['recursive_payload_attempts']==0
     assert record['definition_work']['qs_decomposition_python_entries']==0
 
 
