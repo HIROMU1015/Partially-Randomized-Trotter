@@ -9,6 +9,17 @@
 - [保存literal索引](../../artifacts/n3_saved_attribution_v1/2026-10-13/preparation/saved_literal_index.json)、[18 inaccurateの元pointer](../../artifacts/n3_saved_attribution_v1/2026-10-13/preparation/inaccurate_event_pointers.json)
 - [既存SOS/OCC/他modeの小型証拠接続](../../artifacts/n3_saved_attribution_v1/2026-10-13/preparation/SOS_OCC_existing_proof_connection.json)
 - [module](../../src/trottertracks/representation_exploration/n3_saved_attribution_v1.py)、[gate](../../src/trottertracks/representation_exploration/n3_saved_attribution_execution_v1.py)、[runner](../../scripts/run_n3_saved_attribution_v1.py)、[synthetic tests](../../tests/test_n3_saved_attribution_v1.py)
+- [固定plan](n3_saved_attribution_v1_execution_plan_20261013.json)、[source freeze](../../artifacts/n3_saved_attribution_v1/2026-10-13/preparation/source_freeze.json)、[未認可template](../../artifacts/n3_saved_attribution_v1/2026-10-13/preparation/authorization_template_NOT_AUTHORIZED.json)、[STOP](../../artifacts/n3_saved_attribution_v1/2026-10-13/preparation/MANDATORY_STOP.json)、[preflight](../../artifacts/n3_saved_attribution_v1/2026-10-13/preparation/preflight.json)
+
+## 最終freeze
+
+source commit：`a7a9f42d53d5efaca8715bee26edd9f1a0bad999`。新source4＋共有stdlib依存5の9 blobをcommitとSHA照合。
+source fingerprint：`2ef6f58a0a3ac560b2e1aa2212dc7ee44a53bbb2cf7babf170b4dc11574d2d46`。
+保存registry SHA：`d23d165ffebf1bb5bdfa542841cd678becc78dcae9b9e36bcd19733cd869023c`。
+plan SHA：`a5f3fd39e47372e277365d9873f234cbd882ae1a84b6ca25a4f051e339f0c61f`。
+Python3.12.3を指定し、source/40保存files/準備証拠のidentity preflight PASS。数値評価を含まない。
+シェル既定3.10.12を記録した初期draftはpreflightで拒否され、未実行の[history](../../artifacts/n3_saved_attribution_v1/2026-10-13/preparation/history/python310_plan_NOT_EXECUTABLE.json)へ保存した。
+科学条件・source・原結果を変更せず、テスト済みruntimeへplanを訂正した。
 
 ## 完了したこと
 
