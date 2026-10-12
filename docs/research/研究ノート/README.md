@@ -1,5 +1,11 @@
 # 研究ノート
 
+## 2026-10-12 N3 OCC v1 fixed eight-input result
+
+[一回結果・監査・STOP](2026-10-12_n3_occupation_transfer_v1_execution.md)。強対照/OCC各8/8、固有gain0、保存check5,008,702 PASS。
+Frozen generator/runner/checker/tests are unchanged; artifacts `artifacts/n3_occupation_transfer_v1/2026-10-12/run1/` and `execution_audit/`.
+
+
 ## 2026-10-12 N3 OCC v1 implementation preparation
 
 [実装・検証・実行前STOP](2026-10-12_n3_occupation_transfer_v1_source_preparation.md)。新8入力batch未認可。

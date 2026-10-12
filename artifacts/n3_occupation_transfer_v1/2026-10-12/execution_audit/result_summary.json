@@ -1,0 +1,940 @@
+{
+  "status": "NO_ADDITIONAL_ACCEPTANCE_OBSERVED",
+  "source_commit": "83f51cd8a4848572c66a5535c67d0d0a5f3868cd",
+  "execution_commit": "a4311eece09275e4a27259db3fe12e98974dbadc",
+  "source_fingerprint": "41b951dae4968a2b679e61c9e61e761dc8253babeb2c610ccc1886fe3646fcb6",
+  "input_sha256": "c8df923eebfd999bf389ece2eb1728e7897c90e0950b51137785c708404489f4",
+  "primary_seal": "8b1e75e89da78c13b82f24896db387adec6e76597ec12669a7549279592d0d69",
+  "scientific_attempts": 1,
+  "scientific_retries": 0,
+  "denominator_inputs": 8,
+  "bases": 4,
+  "raw_method_records": 96,
+  "raw_acceptance_by_bound": {
+    "c0": {
+      "NORM": 6,
+      "FIVE": 3,
+      "OLD_DIRECT": 4,
+      "OCC": 6
+    },
+    "c_occ": {
+      "NORM": 8,
+      "FIVE": 4,
+      "OLD_DIRECT": 6,
+      "OCC": 8
+    },
+    "c_star": {
+      "NORM": 8,
+      "FIVE": 4,
+      "OLD_DIRECT": 6,
+      "OCC": 8
+    }
+  },
+  "strong_baseline_OR_inputs": 8,
+  "raw_OCC_at_c_star_inputs": 8,
+  "OCC_additional_gain_inputs": 0,
+  "OCC_additional_gain_bases": 0,
+  "norm_only_at_c_star_inputs": 8,
+  "whole_case_unresolved": 0,
+  "raw_unaccepted_reason_counts": {
+    "NORM_CONDITION_FALSE": 2,
+    "UNRESOLVED_FINITE_SEARCH": 23
+  },
+  "raw_unaccepted_reasons_by_bound": {
+    "c0": {
+      "UNRESOLVED_FINITE_SEARCH": 11,
+      "NORM_CONDITION_FALSE": 2
+    },
+    "c_occ": {
+      "UNRESOLVED_FINITE_SEARCH": 6
+    },
+    "c_star": {
+      "UNRESOLVED_FINITE_SEARCH": 6
+    }
+  },
+  "secondary_eligible_inputs": 0,
+  "secondary_eigensolver_calls": 0,
+  "secondary_PSD_calls": 0,
+  "producer_primitive_totals": {
+    "bound_spectral_pairs": 96,
+    "cache_hits": 1299,
+    "eig": 2272,
+    "eig_requests": 3042,
+    "occ_spectral_pairs": 142,
+    "psd": 719,
+    "psd_requests": 1248
+  },
+  "producer_max_monitored_rational_bits": 1156,
+  "checker_audit": {
+    "checks": 5008702,
+    "gain_bases": [],
+    "ground_solves": 0,
+    "inputs": 8,
+    "mandatory_stop": true,
+    "max_checker_rational_bits": 1167,
+    "next_scientific_stage_authorized": false,
+    "numerical_eigensolver_calls": 0,
+    "optimizer_calls": 0,
+    "separator_bases": [],
+    "status": "INDEPENDENT_SAVED_WITNESSES_PASS"
+  },
+  "standalone_reconstructed_cost_totals": {
+    "BASE_OR": {
+      "reconstructed_wall_seconds": 0.27248681290075183,
+      "reconstructed_cpu_seconds": 0.2724805899999998,
+      "unique_primitives": 275
+    },
+    "OCC_OPERATIONAL": {
+      "reconstructed_wall_seconds": 0.8657458461821079,
+      "reconstructed_cpu_seconds": 0.8657414189999999,
+      "unique_primitives": 645
+    }
+  },
+  "standalone_cost_qualification": "Reconstructed from event dependencies and first-observed primitive costs; not cold standalone benchmarks or quantum resource costs.",
+  "run_directory_bytes": 11673420,
+  "run_audit": {
+    "aggregate_memory": {
+      "aggregate_budget_bytes": 8589934592,
+      "aggregate_peak_sampled_rss_bytes": 173293568,
+      "budget_violation": false,
+      "max_observed_sample_gap_seconds": 0.43461345601826906,
+      "observed_pids": [
+        2,
+        17,
+        18,
+        21,
+        22,
+        25
+      ],
+      "qualification": "sampled watchdog; between-sample peaks are not measured",
+      "sample_count": 45,
+      "sampling_period_seconds": 0.05,
+      "scope": "runner parent and all live descendants including workers/resource tracker"
+    },
+    "attempt": 1,
+    "authorization_sha256": "825723cf7ae7a95d9770233d699286e07628c5f112d0272a2f604afe5eb63f57",
+    "children_cpu_seconds": 2.2003939999999997,
+    "environment": {
+      "numeric_precision": "binary64 proposals, exact rational acceptance",
+      "numpy": "1.26.4",
+      "python": "3.12.3",
+      "python_executable_preparation": "/tmp/prt-representation-venv/bin/python",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "1",
+        "NUMBA_NUM_THREADS": "1",
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "RAYON_NUM_THREADS": "1"
+      }
+    },
+    "execution_commit": "a4311eece09275e4a27259db3fe12e98974dbadc",
+    "gpu_calls": 0,
+    "ground_solves": 0,
+    "input_sha256": "c8df923eebfd999bf389ece2eb1728e7897c90e0950b51137785c708404489f4",
+    "largest_child_peak_rss_bytes_linux": 74432512,
+    "mandatory_stop": true,
+    "mem_available_before_bytes": 55619198976,
+    "next_scientific_stage_authorized": false,
+    "parent_cpu_seconds": 6.870775,
+    "parent_peak_rss_bytes_linux": 74432512,
+    "plan_sha256": "a825ece44d9bf8266a9c83d390572139d3799b748419b644515d79230e5c0d0f",
+    "quantum_compiles": 0,
+    "resources": {
+      "aggregate_rss_budget_bytes": 8589934592,
+      "bound_spectral_pairs_per_case": 12,
+      "cpu_time_cap_seconds": null,
+      "gpu_calls": 0,
+      "json_shard_bytes": 33554432,
+      "log_bytes": 8388608,
+      "numeric_eig_calls_per_case": 850,
+      "numeric_threads_per_worker": 1,
+      "occ_spectral_pairs_per_case": 180,
+      "producer_PSD_calls_per_case": 512,
+      "rational_bit_cap": 4096,
+      "total_output_bytes": 67108864,
+      "wall_time_cap_seconds": null,
+      "worker_address_space_bytes": 4294967296,
+      "workers": 2
+    },
+    "retry": 0,
+    "source_commit": "83f51cd8a4848572c66a5535c67d0d0a5f3868cd",
+    "source_fingerprint": "41b951dae4968a2b679e61c9e61e761dc8253babeb2c610ccc1886fe3646fcb6",
+    "source_sha256": {
+      "scripts/prepare_n3_occupation_transfer_v1_source.py": "68a762b0cef57a0c2bb0e2a2f1c9cb4df3b11751e56aa53c7e55f26244d11630",
+      "scripts/run_n3_occupation_transfer_v1.py": "0290397ee52b89f233c29ccbca22587b246e69f2b38dd63c7d81f2e69e403e8d",
+      "scripts/verify_n3_occupation_transfer_v1.py": "49141705ad82db3997d2cb9ea1f0c953b07a5d5df64932677c574078efc53fa8",
+      "src/trottertracks/__init__.py": "107d4f39888dc644314fc079d41ccdc56333ae46a72f3346a499d4dfc17a543f",
+      "src/trottertracks/representation_exploration/__init__.py": "694c999a971c12252f4d56d19cd73f8d574fe59545ab4104dc99d73271fb85e2",
+      "src/trottertracks/representation_exploration/n3_occupation_transfer_check_v1.py": "f72e1be56cf4f9f7e5967e4fe7aa2af8bb646648212723783867a2db0310c9d5",
+      "src/trottertracks/representation_exploration/n3_occupation_transfer_v1.py": "dab9ffa90596e00d2a81abca3aa5e24b154a478ca34ed7b273095da1ce827ac7",
+      "tests/test_n3_occupation_transfer_v1.py": "243d1c705881900d8b8adcf784a36e8ac2bc600d49fa440af45da741c895bea9"
+    },
+    "status": "NO_ADDITIONAL_ACCEPTANCE_OBSERVED",
+    "wall_seconds": 7.660212818067521
+  },
+  "cases": [
+    {
+      "input_id": "C1_edge_pair",
+      "base": "C1",
+      "full_modes": 7,
+      "active_modes": 6,
+      "particles": 2,
+      "external_mode": 1,
+      "scale": [
+        1,
+        1
+      ],
+      "delta": [
+        1,
+        250
+      ],
+      "U": [
+        -15961,
+        18648
+      ],
+      "bounds": {
+        "c0": [
+          6694733,
+          83886080
+        ],
+        "c_occ": [
+          234243125709,
+          2748779069440
+        ],
+        "c_dh": [
+          1352373114665,
+          30511447670784
+        ]
+      },
+      "c_star": [
+        234243125709,
+        2748779069440
+      ],
+      "raw_c_star": {
+        "NORM": true,
+        "FIVE": true,
+        "OLD_DIRECT": true,
+        "OCC": true
+      },
+      "strong_baseline_OR": true,
+      "raw_OCC": true,
+      "OCC_gain": false,
+      "trial_determinants": 15,
+      "trial_pairs": 20,
+      "resources": {
+        "bit_monitor_scope": "explicit rational operands/results, not Fraction internal integer temporaries",
+        "counts": {
+          "bound_spectral_pairs": 12,
+          "cache_hits": 221,
+          "eig": 251,
+          "eig_requests": 378,
+          "occ_spectral_pairs": 3,
+          "psd": 61,
+          "psd_requests": 155
+        },
+        "cpu_seconds": 0.099948721,
+        "matrix_dimension": 6,
+        "max_monitored_rational_bits": 697,
+        "rational_operations": 19191,
+        "wall_seconds": 0.09995893016457558,
+        "worker_peak_rss_bytes_linux": 41943040
+      },
+      "standalone_reconstructed_cost": {
+        "BASE_OR": {
+          "event_ids": [
+            "C0",
+            "U",
+            "c0.NORM"
+          ],
+          "qualification": "path reconstruction from factor-event overhead and first observed primitive costs; not a measured cold standalone run",
+          "reconstructed_cpu_seconds": 0.007295524999999997,
+          "reconstructed_wall_seconds": 0.007304919883608818,
+          "unique_primitives": 12
+        },
+        "OCC_OPERATIONAL": {
+          "event_ids": [
+            "C0",
+            "FALLBACK.c0.c0.NORM.0",
+            "TRANSPORT.c0.c0.NORM.0",
+            "U",
+            "c0.NORM"
+          ],
+          "qualification": "path reconstruction from factor-event overhead and first observed primitive costs; not a measured cold standalone run",
+          "reconstructed_cpu_seconds": 0.008156978999999981,
+          "reconstructed_wall_seconds": 0.008166186977177858,
+          "unique_primitives": 14
+        }
+      }
+    },
+    {
+      "input_id": "C1_distributed_three",
+      "base": "C1",
+      "full_modes": 7,
+      "active_modes": 6,
+      "particles": 2,
+      "external_mode": 1,
+      "scale": [
+        1,
+        1
+      ],
+      "delta": [
+        1,
+        250
+      ],
+      "U": [
+        -15961,
+        18648
+      ],
+      "bounds": {
+        "c0": [
+          6694733,
+          83886080
+        ],
+        "c_occ": [
+          234243125709,
+          2748779069440
+        ],
+        "c_dh": [
+          1352373114665,
+          30511447670784
+        ]
+      },
+      "c_star": [
+        234243125709,
+        2748779069440
+      ],
+      "raw_c_star": {
+        "NORM": true,
+        "FIVE": true,
+        "OLD_DIRECT": true,
+        "OCC": true
+      },
+      "strong_baseline_OR": true,
+      "raw_OCC": true,
+      "OCC_gain": false,
+      "trial_determinants": 15,
+      "trial_pairs": 20,
+      "resources": {
+        "bit_monitor_scope": "explicit rational operands/results, not Fraction internal integer temporaries",
+        "counts": {
+          "bound_spectral_pairs": 12,
+          "cache_hits": 221,
+          "eig": 251,
+          "eig_requests": 378,
+          "occ_spectral_pairs": 3,
+          "psd": 61,
+          "psd_requests": 155
+        },
+        "cpu_seconds": 0.101668078,
+        "matrix_dimension": 6,
+        "max_monitored_rational_bits": 703,
+        "rational_operations": 19162,
+        "wall_seconds": 0.10166977904736996,
+        "worker_peak_rss_bytes_linux": 41418752
+      },
+      "standalone_reconstructed_cost": {
+        "BASE_OR": {
+          "event_ids": [
+            "C0",
+            "U",
+            "c0.NORM"
+          ],
+          "qualification": "path reconstruction from factor-event overhead and first observed primitive costs; not a measured cold standalone run",
+          "reconstructed_cpu_seconds": 0.007384891000000018,
+          "reconstructed_wall_seconds": 0.007383931428194046,
+          "unique_primitives": 12
+        },
+        "OCC_OPERATIONAL": {
+          "event_ids": [
+            "C0",
+            "FALLBACK.c0.c0.NORM.0",
+            "TRANSPORT.c0.c0.NORM.0",
+            "U",
+            "c0.NORM"
+          ],
+          "qualification": "path reconstruction from factor-event overhead and first observed primitive costs; not a measured cold standalone run",
+          "reconstructed_cpu_seconds": 0.00815914700000002,
+          "reconstructed_wall_seconds": 0.008157950360327959,
+          "unique_primitives": 14
+        }
+      }
+    },
+    {
+      "input_id": "R1_edge_pair",
+      "base": "R1",
+      "full_modes": 8,
+      "active_modes": 7,
+      "particles": 3,
+      "external_mode": 4,
+      "scale": [
+        3,
+        2
+      ],
+      "delta": [
+        3,
+        500
+      ],
+      "U": [
+        -243,
+        140
+      ],
+      "bounds": {
+        "c0": [
+          -5179397,
+          5242880
+        ],
+        "c_occ": [
+          -4505299267497,
+          5497558138880
+        ],
+        "c_dh": [
+          -194280374475197,
+          211655988346880
+        ]
+      },
+      "c_star": [
+        -4505299267497,
+        5497558138880
+      ],
+      "raw_c_star": {
+        "NORM": true,
+        "FIVE": false,
+        "OLD_DIRECT": true,
+        "OCC": true
+      },
+      "strong_baseline_OR": true,
+      "raw_OCC": true,
+      "OCC_gain": false,
+      "trial_determinants": 35,
+      "trial_pairs": 70,
+      "resources": {
+        "bit_monitor_scope": "explicit rational operands/results, not Fraction internal integer temporaries",
+        "counts": {
+          "bound_spectral_pairs": 12,
+          "cache_hits": 179,
+          "eig": 251,
+          "eig_requests": 378,
+          "occ_spectral_pairs": 3,
+          "psd": 61,
+          "psd_requests": 113
+        },
+        "cpu_seconds": 0.12158846199999998,
+        "matrix_dimension": 7,
+        "max_monitored_rational_bits": 752,
+        "rational_operations": 24470,
+        "wall_seconds": 0.12160643516108394,
+        "worker_peak_rss_bytes_linux": 42729472
+      },
+      "standalone_reconstructed_cost": {
+        "BASE_OR": {
+          "event_ids": [
+            "C0",
+            "U",
+            "c0.NORM"
+          ],
+          "qualification": "path reconstruction from factor-event overhead and first observed primitive costs; not a measured cold standalone run",
+          "reconstructed_cpu_seconds": 0.012135760000000023,
+          "reconstructed_wall_seconds": 0.012134875170886517,
+          "unique_primitives": 12
+        },
+        "OCC_OPERATIONAL": {
+          "event_ids": [
+            "C0",
+            "FALLBACK.c0.c0.NORM.0",
+            "TRANSPORT.c0.c0.NORM.0",
+            "U",
+            "c0.NORM"
+          ],
+          "qualification": "path reconstruction from factor-event overhead and first observed primitive costs; not a measured cold standalone run",
+          "reconstructed_cpu_seconds": 0.01324723700000005,
+          "reconstructed_wall_seconds": 0.013246068265289068,
+          "unique_primitives": 14
+        }
+      }
+    },
+    {
+      "input_id": "R1_distributed_three",
+      "base": "R1",
+      "full_modes": 8,
+      "active_modes": 7,
+      "particles": 3,
+      "external_mode": 4,
+      "scale": [
+        3,
+        2
+      ],
+      "delta": [
+        3,
+        500
+      ],
+      "U": [
+        -243,
+        140
+      ],
+      "bounds": {
+        "c0": [
+          -5179397,
+          5242880
+        ],
+        "c_occ": [
+          -4505299267497,
+          5497558138880
+        ],
+        "c_dh": [
+          -194280374475197,
+          211655988346880
+        ]
+      },
+      "c_star": [
+        -4505299267497,
+        5497558138880
+      ],
+      "raw_c_star": {
+        "NORM": true,
+        "FIVE": true,
+        "OLD_DIRECT": true,
+        "OCC": true
+      },
+      "strong_baseline_OR": true,
+      "raw_OCC": true,
+      "OCC_gain": false,
+      "trial_determinants": 35,
+      "trial_pairs": 70,
+      "resources": {
+        "bit_monitor_scope": "explicit rational operands/results, not Fraction internal integer temporaries",
+        "counts": {
+          "bound_spectral_pairs": 12,
+          "cache_hits": 184,
+          "eig": 251,
+          "eig_requests": 378,
+          "occ_spectral_pairs": 3,
+          "psd": 61,
+          "psd_requests": 118
+        },
+        "cpu_seconds": 0.123466674,
+        "matrix_dimension": 7,
+        "max_monitored_rational_bits": 752,
+        "rational_operations": 24565,
+        "wall_seconds": 0.12346970103681087,
+        "worker_peak_rss_bytes_linux": 42205184
+      },
+      "standalone_reconstructed_cost": {
+        "BASE_OR": {
+          "event_ids": [
+            "C0",
+            "U",
+            "c0.NORM"
+          ],
+          "qualification": "path reconstruction from factor-event overhead and first observed primitive costs; not a measured cold standalone run",
+          "reconstructed_cpu_seconds": 0.012388213000000009,
+          "reconstructed_wall_seconds": 0.012387355323880911,
+          "unique_primitives": 12
+        },
+        "OCC_OPERATIONAL": {
+          "event_ids": [
+            "C0",
+            "FALLBACK.c0.c0.NORM.0",
+            "TRANSPORT.c0.c0.NORM.0",
+            "U",
+            "c0.NORM"
+          ],
+          "qualification": "path reconstruction from factor-event overhead and first observed primitive costs; not a measured cold standalone run",
+          "reconstructed_cpu_seconds": 0.013375158999999998,
+          "reconstructed_wall_seconds": 0.01337412092834711,
+          "unique_primitives": 14
+        }
+      }
+    },
+    {
+      "input_id": "L1_edge_pair",
+      "base": "L1",
+      "full_modes": 9,
+      "active_modes": 8,
+      "particles": 3,
+      "external_mode": 0,
+      "scale": [
+        3,
+        4
+      ],
+      "delta": [
+        3,
+        1000
+      ],
+      "U": [
+        -3993,
+        4480
+      ],
+      "bounds": {
+        "c0": [
+          -3660545,
+          8388608
+        ],
+        "c_occ": [
+          -193188339867,
+          549755813888
+        ],
+        "c_dh": [
+          -2312690039339,
+          5497558138880
+        ]
+      },
+      "c_star": [
+        -193188339867,
+        549755813888
+      ],
+      "raw_c_star": {
+        "NORM": true,
+        "FIVE": false,
+        "OLD_DIRECT": true,
+        "OCC": true
+      },
+      "strong_baseline_OR": true,
+      "raw_OCC": true,
+      "OCC_gain": false,
+      "trial_determinants": 56,
+      "trial_pairs": 128,
+      "resources": {
+        "bit_monitor_scope": "explicit rational operands/results, not Fraction internal integer temporaries",
+        "counts": {
+          "bound_spectral_pairs": 12,
+          "cache_hits": 203,
+          "eig": 251,
+          "eig_requests": 378,
+          "occ_spectral_pairs": 3,
+          "psd": 61,
+          "psd_requests": 137
+        },
+        "cpu_seconds": 0.173722502,
+        "matrix_dimension": 8,
+        "max_monitored_rational_bits": 872,
+        "rational_operations": 35356,
+        "wall_seconds": 0.17372263921424747,
+        "worker_peak_rss_bytes_linux": 42946560
+      },
+      "standalone_reconstructed_cost": {
+        "BASE_OR": {
+          "event_ids": [
+            "C0",
+            "U",
+            "c0.NORM"
+          ],
+          "qualification": "path reconstruction from factor-event overhead and first observed primitive costs; not a measured cold standalone run",
+          "reconstructed_cpu_seconds": 0.018222404000000025,
+          "reconstructed_wall_seconds": 0.018221627920866013,
+          "unique_primitives": 12
+        },
+        "OCC_OPERATIONAL": {
+          "event_ids": [
+            "C0",
+            "FALLBACK.c0.c0.NORM.0",
+            "TRANSPORT.c0.c0.NORM.0",
+            "U",
+            "c0.NORM"
+          ],
+          "qualification": "path reconstruction from factor-event overhead and first observed primitive costs; not a measured cold standalone run",
+          "reconstructed_cpu_seconds": 0.01960951700000002,
+          "reconstructed_wall_seconds": 0.019608499947935343,
+          "unique_primitives": 14
+        }
+      }
+    },
+    {
+      "input_id": "L1_distributed_three",
+      "base": "L1",
+      "full_modes": 9,
+      "active_modes": 8,
+      "particles": 3,
+      "external_mode": 0,
+      "scale": [
+        3,
+        4
+      ],
+      "delta": [
+        3,
+        1000
+      ],
+      "U": [
+        -3993,
+        4480
+      ],
+      "bounds": {
+        "c0": [
+          -3660545,
+          8388608
+        ],
+        "c_occ": [
+          -193188339867,
+          549755813888
+        ],
+        "c_dh": [
+          -2312690039339,
+          5497558138880
+        ]
+      },
+      "c_star": [
+        -193188339867,
+        549755813888
+      ],
+      "raw_c_star": {
+        "NORM": true,
+        "FIVE": true,
+        "OLD_DIRECT": true,
+        "OCC": true
+      },
+      "strong_baseline_OR": true,
+      "raw_OCC": true,
+      "OCC_gain": false,
+      "trial_determinants": 56,
+      "trial_pairs": 128,
+      "resources": {
+        "bit_monitor_scope": "explicit rational operands/results, not Fraction internal integer temporaries",
+        "counts": {
+          "bound_spectral_pairs": 12,
+          "cache_hits": 209,
+          "eig": 251,
+          "eig_requests": 378,
+          "occ_spectral_pairs": 3,
+          "psd": 61,
+          "psd_requests": 143
+        },
+        "cpu_seconds": 0.179017019,
+        "matrix_dimension": 8,
+        "max_monitored_rational_bits": 876,
+        "rational_operations": 35711,
+        "wall_seconds": 0.17901713075116277,
+        "worker_peak_rss_bytes_linux": 42434560
+      },
+      "standalone_reconstructed_cost": {
+        "BASE_OR": {
+          "event_ids": [
+            "C0",
+            "U",
+            "c0.NORM"
+          ],
+          "qualification": "path reconstruction from factor-event overhead and first observed primitive costs; not a measured cold standalone run",
+          "reconstructed_cpu_seconds": 0.01877699899999996,
+          "reconstructed_wall_seconds": 0.018775935750454664,
+          "unique_primitives": 12
+        },
+        "OCC_OPERATIONAL": {
+          "event_ids": [
+            "C0",
+            "FALLBACK.c0.c0.NORM.0",
+            "TRANSPORT.c0.c0.NORM.0",
+            "U",
+            "c0.NORM"
+          ],
+          "qualification": "path reconstruction from factor-event overhead and first observed primitive costs; not a measured cold standalone run",
+          "reconstructed_cpu_seconds": 0.020035736000000026,
+          "reconstructed_wall_seconds": 0.020034512039273977,
+          "unique_primitives": 14
+        }
+      }
+    },
+    {
+      "input_id": "S1_edge_pair",
+      "base": "S1",
+      "full_modes": 10,
+      "active_modes": 9,
+      "particles": 4,
+      "external_mode": 8,
+      "scale": [
+        5,
+        4
+      ],
+      "delta": [
+        1,
+        200
+      ],
+      "U": [
+        -1951,
+        1064
+      ],
+      "bounds": {
+        "c0": [
+          -83629837,
+          50331648
+        ],
+        "c_occ": [
+          -2126205760535,
+          1649267441664
+        ],
+        "c_dh": [
+          -233352716459809,
+          183068686024704
+        ]
+      },
+      "c_star": [
+        -233352716459809,
+        183068686024704
+      ],
+      "raw_c_star": {
+        "NORM": true,
+        "FIVE": false,
+        "OLD_DIRECT": false,
+        "OCC": true
+      },
+      "strong_baseline_OR": true,
+      "raw_OCC": true,
+      "OCC_gain": false,
+      "trial_determinants": 126,
+      "trial_pairs": 128,
+      "resources": {
+        "bit_monitor_scope": "explicit rational operands/results, not Fraction internal integer temporaries",
+        "counts": {
+          "bound_spectral_pairs": 12,
+          "cache_hits": 40,
+          "eig": 383,
+          "eig_requests": 387,
+          "occ_spectral_pairs": 62,
+          "psd": 177,
+          "psd_requests": 213
+        },
+        "cpu_seconds": 0.49125842200000003,
+        "matrix_dimension": 9,
+        "max_monitored_rational_bits": 1124,
+        "rational_operations": 97661,
+        "wall_seconds": 0.4912613844498992,
+        "worker_peak_rss_bytes_linux": 44724224
+      },
+      "standalone_reconstructed_cost": {
+        "BASE_OR": {
+          "event_ids": [
+            "C0",
+            "COCC",
+            "TRANSPORT.c_occ.c0.NORM.0",
+            "U",
+            "c0.FIVE",
+            "c0.NORM",
+            "c0.OLD_DIRECT"
+          ],
+          "qualification": "path reconstruction from factor-event overhead and first observed primitive costs; not a measured cold standalone run",
+          "reconstructed_cpu_seconds": 0.09683714399999982,
+          "reconstructed_wall_seconds": 0.09683810593560338,
+          "unique_primitives": 101
+        },
+        "OCC_OPERATIONAL": {
+          "event_ids": [
+            "C0",
+            "COCC",
+            "FALLBACK.c_occ.c0.NORM.0",
+            "TRANSPORT.c_occ.c0.NORM.0",
+            "U",
+            "c0.FIVE",
+            "c0.NORM",
+            "c0.OCC",
+            "c0.OLD_DIRECT"
+          ],
+          "qualification": "path reconstruction from factor-event overhead and first observed primitive costs; not a measured cold standalone run",
+          "reconstructed_cpu_seconds": 0.3908012309999999,
+          "reconstructed_wall_seconds": 0.39080186001956463,
+          "unique_primitives": 281
+        }
+      }
+    },
+    {
+      "input_id": "S1_distributed_three",
+      "base": "S1",
+      "full_modes": 10,
+      "active_modes": 9,
+      "particles": 4,
+      "external_mode": 8,
+      "scale": [
+        5,
+        4
+      ],
+      "delta": [
+        1,
+        200
+      ],
+      "U": [
+        -1951,
+        1064
+      ],
+      "bounds": {
+        "c0": [
+          -83629837,
+          50331648
+        ],
+        "c_occ": [
+          -2126205760535,
+          1649267441664
+        ],
+        "c_dh": [
+          -233352716459809,
+          183068686024704
+        ]
+      },
+      "c_star": [
+        -233352716459809,
+        183068686024704
+      ],
+      "raw_c_star": {
+        "NORM": true,
+        "FIVE": false,
+        "OLD_DIRECT": false,
+        "OCC": true
+      },
+      "strong_baseline_OR": true,
+      "raw_OCC": true,
+      "OCC_gain": false,
+      "trial_determinants": 126,
+      "trial_pairs": 128,
+      "resources": {
+        "bit_monitor_scope": "explicit rational operands/results, not Fraction internal integer temporaries",
+        "counts": {
+          "bound_spectral_pairs": 12,
+          "cache_hits": 42,
+          "eig": 383,
+          "eig_requests": 387,
+          "occ_spectral_pairs": 62,
+          "psd": 176,
+          "psd_requests": 214
+        },
+        "cpu_seconds": 0.5004870910000001,
+        "matrix_dimension": 9,
+        "max_monitored_rational_bits": 1156,
+        "rational_operations": 99040,
+        "wall_seconds": 0.5004900647327304,
+        "worker_peak_rss_bytes_linux": 44011520
+      },
+      "standalone_reconstructed_cost": {
+        "BASE_OR": {
+          "event_ids": [
+            "C0",
+            "COCC",
+            "TRANSPORT.c_occ.c0.NORM.0",
+            "U",
+            "c0.FIVE",
+            "c0.NORM",
+            "c0.OLD_DIRECT"
+          ],
+          "qualification": "path reconstruction from factor-event overhead and first observed primitive costs; not a measured cold standalone run",
+          "reconstructed_cpu_seconds": 0.09943965399999993,
+          "reconstructed_wall_seconds": 0.09944006148725748,
+          "unique_primitives": 102
+        },
+        "OCC_OPERATIONAL": {
+          "event_ids": [
+            "C0",
+            "COCC",
+            "FALLBACK.c_occ.c0.NORM.0",
+            "TRANSPORT.c_occ.c0.NORM.0",
+            "U",
+            "c0.FIVE",
+            "c0.NORM",
+            "c0.OCC",
+            "c0.OLD_DIRECT"
+          ],
+          "qualification": "path reconstruction from factor-event overhead and first observed primitive costs; not a measured cold standalone run",
+          "reconstructed_cpu_seconds": 0.39235641299999985,
+          "reconstructed_wall_seconds": 0.392356647644192,
+          "unique_primitives": 280
+        }
+      }
+    }
+  ],
+  "mandatory_stop": true,
+  "next_scientific_stage_authorized": false,
+  "central_theme": null
+}

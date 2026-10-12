@@ -1,5 +1,13 @@
 # Validation status
 
+## 2026-10-12 N3 OCC v1 fixed eight-input batch complete
+
+[Result/scope](docs/research/n3_occupation_transfer_v1_results_20261012.md): strong baseline OR, NORM and raw OCC certify 8/8; OCC-only additional acceptance 0 inputs/0 bases.
+96 raw records sealed before secondary (all 8 NOT_ELIGIBLE); independent saved rational audit 5,008,702 checks PASS.
+NO_ADDITIONAL_ACCEPTANCE_OBSERVED, attempt1/retry0, Mandatory STOP, theme null. No current CI or external scientific rerun.
+Existing global manifest missing-description failure retained. Previous preparation states are historical.
+
+
 ## 2026-10-12 N3 OCC v1 source preparation
 
 [Source report](docs/research/n3_occupation_transfer_v1_source_preparation_20261012.md).
