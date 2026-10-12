@@ -1,5 +1,11 @@
 # Validation status
 
+## 2026-10-12 H6：独立32確認完了・局所保存結果監査
+
+[研究結果](docs/research/track_a_h6_independent_confirmation_result_v1.md)、[536費用行/保存shot/CSV/来歴/完了証拠](artifacts/resource_applicability/track_a_h6_confirmation_summary_v1/2026-10-12/README.md)。H6/1Å/STO-3G/DF19/sector400/T0.8・prefix5/10/15/full19・delta0.1–0.8、事前選択8×32＝256 group/512 wrapper。SOURCE87b6b9f4・closure251・native exit0・全新97reap/cleanup0。
+P=0・経験的uの点推定PR/full PF RZ比0.459978/0.399630/0.372105/0.387006。K2/K4差は記述的2SE内、3/8でnonzero次数・全K4でorder4未観測。population winner/strict certificate/最終総費用は未認定、全grid独立確認ではない。
+local metadataと別CSV算術の536行一致であり、独立科学review/CI/旧host/compiler bit同一性のPASSではない。rawなしのGit単独再集計は未対応。今回のscience/transpile0・source/tests/環境変更0、agent push0・公開未照合、完了後mandatory STOP・次stageなし。以下は過去段階の履歴。
+
 ## 2026-10-12 H6：hash再利用8workerへ引継ぎ起動
 
 [159 reuse/残97/seal/grant/fresh/native起動](artifacts/resource_applicability/track_a_h6_confirmation_fast_preparation_v1/2026-10-12/launch_authorization_v1/README.md)。SOURCE87b6b9f4、CoPID39637・8worker稼働・STOP理由null。元run all reaped/cleanup0、partial4予約と1720/844承認保持。source251/science224/profile/input/compiler/元seed維持、既存101tests繰返しなし。実確認完了/科学的PASSではない。H4/共有/venv変更なし。以下は過去段階の履歴。

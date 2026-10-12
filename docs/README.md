@@ -1,5 +1,7 @@
 # 文書索引
 
+H6独立32確認完了：[研究結果](research/track_a_h6_independent_confirmation_result_v1.md)、[256/512・CSV・費用map・536行照合・来歴](../artifacts/resource_applicability/track_a_h6_confirmation_summary_v1/2026-10-12/README.md)。以下の未起動/稼働の記載は各段階の履歴。
+
 H6確認hash再利用8worker引継ぎ：[起動・159再利用・残97](research/track_a_h6_confirmation_fast_handoff_v1.md)。
 
 

@@ -44,3 +44,9 @@ metadata-only auditで新worktreeの固定profile/input bytes・保存探索592�
 ## 追記：利用者指示と上限承認による一回引継ぎ
 
 159 complete group/318 wrapperを保持、元4workerをSTOP・全163reap/cleanup0で終了。partial4を別予約し、利用者がcompile1720/trajectory844を承認。[新起動契約](../track_a_h6_confirmation_fast_handoff_v1.md)で残97のtask/seed/source/profile/input/carry/reuse/resourcesをseal。CoPID39637・8worker起動・first STOP=null。source87b6b9f4不変、101人工testsは再実行しない。H4/共有/venv変更なし、公開は認証待ち。
+
+## 追記：独立32確認の完了と保存結果集約
+
+[結果報告](../track_a_h6_independent_confirmation_result_v1.md)。新97はexit0/全reaped/cleanup0で終了、159 reuseと統合して256 group/512 wrapper。独立32のみで平均し、探索8は混ぜない。linear H6/1Å/STO-3G/DF19/T0.8・prefix5/10/15/full19・delta0.1–0.8、P0/経験的uのPR/full PF RZ比0.459978/0.399630/0.372105/0.387006。K2/K4点順位は3精度で入れ替わったが全4精度の差は記述的2SE内、希少次数と母平均tail未認定を保持。
+
+保存JSONからsource251/256task/512digest/native退出、整数CSV/Fractionと保存signal shotから536行一致を確認。新science/transpile/grant0、source/tests/環境/H4変更0。新run wall16分12.793秒/RSS4.973911GiB、hash operation-byte hit93.4459%だが実全体倍率未評価。known1700/834＋予約20/10＝承認1720/844内、unknown null・返却/resetなし。軽量報告local commit、agent push0/公開未照合、mandatory STOP・追加stageなし。

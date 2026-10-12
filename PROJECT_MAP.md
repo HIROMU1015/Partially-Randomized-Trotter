@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+H6独立32確認完了：[研究結果](docs/research/track_a_h6_independent_confirmation_result_v1.md)、[256 group/512回路/CSV/536行算術/来歴](artifacts/resource_applicability/track_a_h6_confirmation_summary_v1/2026-10-12/README.md)。SOURCE87b6b9f4、exit0/mandatory STOP。以下の準備・起動資料は各段階の履歴。
+
 H6確認8worker引継ぎ：[契約](docs/research/track_a_h6_confirmation_fast_handoff_v1.md)、[159 reuse/残97/seal/grant/fresh/稼働入口](artifacts/resource_applicability/track_a_h6_confirmation_fast_preparation_v1/2026-10-12/launch_authorization_v1/README.md)。SOURCE87b6b9f4、hash再利用・8worker起動済み。
 
 
