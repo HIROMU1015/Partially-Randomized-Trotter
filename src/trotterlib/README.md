@@ -512,3 +512,8 @@ lossless blob/snapshot codecとversion-specific実行保護を追加した。
 
 [新結果・saved-only監査](../../docs/tracks/algorithm_codesign/df_correction_et_v5_results_and_gpt_handoff_20261012.md)：r6 controlled numerical guard失敗、TECHNICAL_INCONCLUSIVE。
 共有library・frozen algorithmは変更していない。native attempts10、T0、一回/retry0、旧/新marker保持、mandatory STOP。
+
+
+## E/T observer v6
+
+共有libraryは変更せず、`../trottertracks/algorithm_codesign/df_correction_et_numeric_v6/`で既存guardの観測を追加。[準備](../../docs/tracks/algorithm_codesign/df_correction_et_numeric_v6_preparation_20261012.md)、focused testsはv6 observer/integration。科学条件・caps不変。

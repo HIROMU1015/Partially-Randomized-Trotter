@@ -1,0 +1,676 @@
+{
+  "kind": "DF_CORRECTION_E_T_RESUMPTION_LAYERED_ACCEPTANCE",
+  "version": 6,
+  "date_JST": "2026-10-12",
+  "status": "NUMERIC_OBSERVER_PREPARATION_NOT_EXECUTED",
+  "base_commit": "062ed4125dbd6fa3c7f085f3962ae8128c168be1",
+  "input_commit": "f6a8f022947bb9efe1f2c4fffeb0eeda051b2903",
+  "science_execution_authorized": false,
+  "runner_implemented": true,
+  "future_source_commit": null,
+  "runs_authorized_now": 0,
+  "retries": 0,
+  "mandatory_STOP": true,
+  "inputs": {
+    "review": "docs/research/track_b_df_sparse_correction_post_audit_scientific_review_20261011.md",
+    "review_sha256": "d2b3fbd4de208981a2e04e3356b72bce52e059c428c736f101f4e3ab6cf3ffda",
+    "zip": "artifacts/track_b_df_correction_comparison_preparation/2026-10-11/inputs/track_b_df_sparse_correction_post_audit_review_20261011_reproducibility.zip",
+    "zip_bytes": 50156,
+    "zip_sha256": "bb14c641f9b7158cfdfd9efdc17d9c123f65b7ae1335c28c7847ba0ba4b951a4"
+  },
+  "arms": {
+    "A": {
+      "name": "whole_commutator",
+      "outer_coin": "eta",
+      "tuple_probability": "c_tau/A_mass",
+      "accepted_unitary": "exp(i u_delta T_tau)",
+      "accepted_weight": "1"
+    },
+    "B": {
+      "name": "coin_first_local_Pauli_pairing",
+      "outer_coin": "same eta",
+      "tuple_probability": "same c_tau/A_mass",
+      "Pauli_probability": "abs(beta_tau_j)/ell_tau",
+      "accepted_unitary": "exp(i sign(beta_tau_j) atan(u_delta ell_tau) P_j)",
+      "accepted_weight": "sqrt(1+(u_delta ell_tau)^2)"
+    },
+    "empty": {
+      "T_zero": "exact identity and weight 1",
+      "negative_time": "OUT_OF_SCOPE",
+      "independence": "left/right/steps/RTE independent",
+      "threshold_drop": false
+    }
+  },
+  "CD": {
+    "modes": 3,
+    "block_count": 3,
+    "L_D": 2,
+    "coefficients": [
+      "9/20",
+      "7/20",
+      "1/4"
+    ],
+    "primitive_ranks": [
+      1,
+      2,
+      1
+    ],
+    "primitive_signs": [
+      1,
+      -1,
+      -1
+    ],
+    "recipe_source": "scripts/tracks/algorithm_codesign/audit_df_sparse_correction.py:phase_c_d",
+    "RNG": "NumPy1.26.4 PCG64; exactly three sequential random_unitary(3) calls",
+    "seed": 6121107,
+    "t": "1",
+    "deltas": [
+      "1/8",
+      "1/16",
+      "1/32"
+    ],
+    "steps": [
+      8,
+      16,
+      32
+    ],
+    "gamma": "5/4",
+    "kappa": "4",
+    "RTE_microsteps": 1,
+    "paired_cutoff": 4,
+    "mean_degree": 5,
+    "A_mass": "4159/192000",
+    "B_mass": "4159/48000",
+    "tuple_labels": 8,
+    "initial_state": {
+      "basis": "little-endian Fock",
+      "indices": [
+        1,
+        2,
+        4,
+        3,
+        5,
+        6
+      ],
+      "amplitudes_before_division_sqrt6": [
+        "1",
+        "i",
+        "1",
+        "1",
+        "-i",
+        "1"
+      ],
+      "proposal_requires_contract_confirmation": false
+    },
+    "ideal_signal": "<psi|exp(-it(H0+H1+R))|psi>",
+    "exact_signal_use": "DIAGNOSTIC_ONLY_NOT_SHOT_REDUCTION",
+    "cost_policy": "UNKNOWN_SYMBOLIC_UNTIL_SAME_CD_INPUT_COST_AVAILABLE"
+  },
+  "confidence": {
+    "complex_epsilon": "1/10000",
+    "axis_epsilon": "1/20000",
+    "total_alpha": "1/20",
+    "X_family_alpha": "1/40",
+    "Y_family_alpha": "1/40",
+    "tasks": 6,
+    "axes": 2,
+    "axis_task_alpha": "1/240",
+    "alpha_interpretation": "Familywise across A/B x three deltas; preserve 0.025 per-axis family allocation",
+    "allocation_requires_contract_confirmation": false,
+    "Bernstein_sufficient_shots": "ceil(log(2/alpha_axis_task)*(2 nu/s_stat^2+4 Wmax/(3 s_stat)))",
+    "minimum_shots_claim": false,
+    "actual_quantum_shots_planned": 0
+  },
+  "error": {
+    "axis_maxima": {
+      "algorithmic_mean": "1/40000",
+      "finite_bit": "1/200000",
+      "native_synthesis": "1/200000",
+      "assembly_coefficient_arithmetic_angle": "1/1000000"
+    },
+    "x": "(21/20) delta",
+    "y": "B_mass delta^3",
+    "b_sym": "2*(exp(x)-sum(x^k/k!,k=0..4))+y*(exp(x)-1-x)+exp(x)*(exp(y)-1-y)",
+    "e_R": "exp(delta/4)*(delta/4)^6/720",
+    "e_A": "delta^6*(B_mass^2/eta+B_mass^2)/8",
+    "e_B": "delta^6*B_mass^2/8",
+    "b_A": "b_sym+2*e_A+e_R",
+    "b_B": "b_sym+2*e_B+e_B^2+e_R*(1+e_B)^2",
+    "global_algorithmic_mean": "(1+b_arm)^n-1",
+    "return_unused_rule": "Use preregistered certified algorithmic bound only; subtract full digital/native/numeric allowances even when observed errors are smaller",
+    "statistical_halfwidth": "axis_epsilon-beta_arm-1/200000-1/200000-1/1000000",
+    "native_signal_bound": "2 sum_event p_exec abs(W_exec) sum_event strict_gate_error, retaining original RTE normalization and all correlations",
+    "saved_A_CD_bound_reference_only": [
+      {
+        "delta": "1/8",
+        "global_bound": 1.8051980412979107e-05
+      },
+      {
+        "delta": "1/16",
+        "global_bound": 1.1017046072464509e-06
+      },
+      {
+        "delta": "1/32",
+        "global_bound": 6.805406627881078e-08
+      }
+    ],
+    "new_bounds_computed_now": false,
+    "new_operational_certificates_verified_now": false,
+    "failure_policy": "STOP_REPORT_REASON_AND_ALTERNATIVE; do not change epsilon/delta/gamma/source/tolerance"
+  },
+  "digital": {
+    "denominator_bits": 48,
+    "outer_coin_eta": "EXACT_DYADIC_NO_CHANGE_TO_ACCEPTANCE_MASS",
+    "conditional_sampler": "48-bit exact LRM per tuple node and conditional Pauli node; store complete multiplied law and parent-weighted L1 distance; exact outer eta",
+    "RTE_sampler": "100dps certified ideal probabilities -> normalized exact rational interval-midpoint computational law -> 48-bit exact LRM; both distances charged",
+    "bias": "Wmax * sum(complete_draw_L1_distances) plus separately budgeted weight/angle/input roundoff",
+    "complete_draw_count": "3n",
+    "near_zero_drop": false,
+    "interval_decision_failure": "INCONCLUSIVE_NO_PRECISION_RETRY",
+    "Pauli_computational_table": "Exact dyadic Hermitian Pauli proxy of original binary64 T, with proven trace/parity projection. Operator assembly distance is charged; exact computational zero is not an ideal-zero claim. No threshold drop.",
+    "executed_accounting": "E_p_exec C, E_p_exec W_exec^2, max_p_exec>0 |W_exec|; conditional probabilities and weights explicit; ideal fields separate"
+  },
+  "moments": {
+    "Gamma": "B5(delta/4)^n",
+    "B5": "sum(v^k/k!*sqrt(1+(v/(k+1))^2),k=0,2,4)",
+    "A_second_moment": "Gamma_exec^2",
+    "A_range": "Gamma_exec",
+    "B_ideal_second_moment": "Gamma^2*(1+eta*u_delta^2*E_q(ell_tau^2))^(2n)",
+    "CD_ell_cap": "32",
+    "primary_B_second_moment_upper": "upward max(executed detailed moment, Gamma_exec^2*(1-eta+eta*w_exec_cap^2)^(2n))",
+    "primary_B_range": "upward max(executed detailed range,Gamma_exec*w_exec_cap^(2n))",
+    "detailed_moment_policy": "secondary; primary universal cap fixed before results",
+    "invalid_involution_or_norm_proof": "STOP_NOT_SILENT_CAP_INCREASE",
+    "executed_weights": "Original RTE per-slot normalization and B accepted sqrt(1+(u ell_proxy)^2) rounded once to fixed 80-bit dyadic points; point weight errors separately charged",
+    "primary_B_exec_enclosure": "Retain ideal ell_cap=32; computational ell_cap=32+8*certified_proxy_operator_radius, plus weight rounding; primary never tightened by observed signal",
+    "A_ideal_second_moment": "Gamma^2",
+    "A_ideal_range": "Gamma",
+    "ideal_reference_primary_B_second_moment_upper": "Gamma^2*(1+eta*u_delta^2*1024)^(2n)",
+    "ideal_reference_primary_B_range": "Gamma*(1+u_delta^2*1024)^n",
+    "Gamma_exec": "80-bit dyadic per-step B5 point raised to n; ideal interval distance separately charged"
+  },
+  "E": {
+    "recipe_source": "scripts/tracks/algorithm_codesign/audit_df_sparse_correction_native.py",
+    "seed": 7101107,
+    "generation_order": "consume random_unitary(4), then three rank2 frames at r3, then three rank2 frames at r6",
+    "active_modes": [
+      3,
+      6
+    ],
+    "primitive_ranks": [
+      2,
+      2,
+      2
+    ],
+    "primitive_signs": [
+      1,
+      -1,
+      1
+    ],
+    "theta": "1/32",
+    "kappa": "4",
+    "u": "1/128",
+    "controlled_masks": [
+      false,
+      true
+    ],
+    "controlled_ancilla": "MSB",
+    "embedding": "COMMON_ACTIVE_FRAME_IDENTITY; production Gaussian embedding cost unknown",
+    "outer_coin_from_review_0_1": "DIAGNOSTIC_NOT_REGISTERED_RATE",
+    "multiply_with_CD_frequency": false,
+    "A_native": "generic unitary; four fixed calls; layered strict operator acceptance; historical raw fingerprint is provenance only",
+    "B_native": "fixed Pauli parity ladder, lexicographic first nonzero per support-weight class, both control masks; at most 18 calls",
+    "Pauli_IR_all_labels": true,
+    "compile_all_4096_Paulis": false,
+    "local_unitary_error_cap": "1/1000000",
+    "local_synthesis_allowance": "1/1250000",
+    "local_numeric_allowance": "1/5000000",
+    "input_policy": "Read saved E-inputs exact hex columns in original order; no seed/regeneration"
+  },
+  "compiler": {
+    "qiskit": "1.3.0",
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "python": "3.11.0rc1",
+    "basis": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 0,
+    "all_to_all": true,
+    "seed": 20261011,
+    "internal_parallel": false,
+    "new_compiler_development": false
+  },
+  "T": {
+    "synthesizer": "pygridsynth",
+    "version": "2.0.0",
+    "mpmath": "1.3.0",
+    "dps": 100,
+    "wheel_sha256": "30b5b15e9383a8ea8510d54f28e2de0385d102cb54fd4440071abf4525027568",
+    "runtime_identity": "artifacts/track_b_df_correction_comparison_preparation/2026-10-11/runtime_identity_preparation.json",
+    "gate_precision": "1/40000000000",
+    "synthesizer_requested_precision": "gate_precision/4",
+    "strict_guard": "interval Frobenius upper >= operator norm; no phase minimization",
+    "options": {
+      "up_to_phase": false,
+      "dloop": 10,
+      "floop": 10,
+      "verbose": 0,
+      "show_graph": false,
+      "measure_time": false
+    },
+    "seed_policy": "integer first 8 hex SHA256(\"20261011:\" + canonical angle key)",
+    "selection": {
+      "A_controlled": "16 positions per r: floor(j*(N_RZ-1)/15), j=0..15",
+      "A_uncontrolled": "8 positions per r: floor(j*(N_RZ-1)/7), j=0..7",
+      "B": "per r +/-atan(ell/128), +/-2atan(ell/128)",
+      "phase_reserve": "first 8 required phase RZ targets in fixed r/control/arm order; no replacements",
+      "maximum_logical_keys": 64,
+      "deduplicate": true,
+      "fill_empty_slots": false,
+      "inventory_freeze": "exclusive artifact + SHA256 before ANY synthesis; B complete -> required phase complete -> A fixed positions; unchanged <=64 slots no refill",
+      "literal_angles_available_now": false
+    },
+    "angle_representation": "exact IEEE binary64 dyadic radians plus semantic interval; B atan ell interval; 4pi strict period",
+    "exactfast": "arm-neutral, strict verified identity/Clifford; not phase-free pi/4 RZ -> 1T",
+    "RZ_occurrence_cap_per_circuit": 32000,
+    "synthesis_calls_cap": 64,
+    "full_T_policy": "actual only with all unique keys covered; otherwise T_INCONCLUSIVE_INCOMPLETE_COVERAGE",
+    "RZ_times_average_T": "ESTIMATE_ONLY_EXCLUDED_FROM_PRIMARY_ACTUAL_TOTAL",
+    "reuse_T_angles_across_CD_and_E": false,
+    "actual_synthesis_now": 0,
+    "fixed_plan_completion_lower": "Known exact Clifford T plus multiplicity-weighted strict-valid saved sequence T; unknown costs nonnegative. Only this fixed additive completion, not optimal/compiler/global lower bound.",
+    "fields": [
+      "A_TOTAL_T_UNKNOWN",
+      "FIXED_PLAN_LOCAL_T_SEPARATION",
+      "all_keys_covered",
+      "actual_total_T",
+      "fixed_plan_completion_T_lower",
+      "unknown_multiplicities"
+    ],
+    "coverage_separation": "Only if fixed A completion lower > certified complete B upper; CD_PR_total_winner=null",
+    "backend_precision": "Explicit GridsynthConfig.dps=100, mp.dps=100, iv.dps=100; suppress backend automatic dps choice; no retry"
+  },
+  "cost": {
+    "coordinates": [
+      "T",
+      "CX",
+      "1Q",
+      "depth",
+      "ancilla",
+      "workspace",
+      "classical_acquisition"
+    ],
+    "CD_G": "2 N_arm (h_x+C_base_x(delta)+c_arm_x(delta))",
+    "CD_c_A": "2n sum(p_exec_complete_event C_A_event_x)",
+    "CD_c_B": "2n sum(p_exec_complete_event C_B_event_x)",
+    "break_even_A": "N_A*(h+C_base+c_A) < N_B*(h+C_base+c_B)",
+    "unknown_cost_values": "SYMBOLIC_NOT_ZERO",
+    "automatic_scientific_winner": false,
+    "arbitrary_scalarization": false,
+    "native_bias": "2 sum(p_exec abs(W_exec) sum_event_gate_error), no weight/cost factorization",
+    "scope": "CD conditional envelope and symbolic additive completion, E separate local implementation screening; no measured PR winner"
+  },
+  "parallelism": {
+    "native_workers": 2,
+    "synthesis_workers": 2,
+    "matrix_workers": 1,
+    "library_threads": 1,
+    "overlap_phases": false,
+    "GPU": false,
+    "performance_speedup_claim": false
+  },
+  "caps": {
+    "wall_seconds_total": 2400,
+    "CPU_seconds_total": 1800,
+    "aggregate_RSS_MiB": 3072,
+    "CD": {
+      "wall_seconds": 300,
+      "CPU_seconds": 150,
+      "worker_RSS_MiB": 512,
+      "aggregate_RSS_MiB": 768
+    },
+    "native": {
+      "wall_seconds": 600,
+      "CPU_seconds": 450,
+      "worker_RSS_MiB": 1024,
+      "aggregate_RSS_MiB": 2560,
+      "compile_calls": 22,
+      "instructions_per_circuit": 200000
+    },
+    "synthesis": {
+      "wall_seconds": 1200,
+      "CPU_seconds": 900,
+      "worker_RSS_MiB": 512,
+      "aggregate_RSS_MiB": 1536,
+      "per_key_wall_seconds": 30,
+      "per_key_CPU_seconds": 20,
+      "keys": 64,
+      "sequence_characters": 20000
+    },
+    "output_bytes": 67108864,
+    "log_bytes": 4194304,
+    "review_file_bytes": 524288,
+    "wall_cap_reason": "Current user explicitly requested fixing CPU/RSS/wall upper limits; does not change project no-wall default or past caps",
+    "containment": "External Linux parent, process groups SIGKILL on detected cap; kernel per-child RLIMIT_CPU; aggregate parent/live/reaped CPU; sampled aggregate RSS. Poll50ms, overshoot possible and reported; no instantaneous-ceiling claim.",
+    "guard_implemented_now": true,
+    "retry": 0,
+    "guard_poll_seconds": 0.05,
+    "identity_preflight_timeout_seconds_per_runtime": 30
+  },
+  "future_gate": {
+    "requires_contract_confirmation": false,
+    "requires_separate_source_preparation_scope": false,
+    "requires_focused_semantic_guard_validation": true,
+    "requires_new_frozen_source_commit": true,
+    "authorization": "only direct child of future frozen S, explicit one-shot instruction, unique new marker",
+    "old_authorizations_reused": false,
+    "marker_created_now": false,
+    "requires_source_contract_consistency_review": true,
+    "source_contract_consistency_review_assigned_to": "CODEX_TECHNICAL_VALIDATION_PER_ACCEPTED_GPT_REVIEW_20261012"
+  },
+  "outcomes": [
+    "COMPLETE_TECHNICAL_COMPARISON_NO_AUTOMATIC_GO",
+    "SYMBOLIC_CD_RESOURCE_COMPARISON",
+    "T_INCONCLUSIVE_INCOMPLETE_COVERAGE",
+    "TECHNICAL_INCONCLUSIVE",
+    "MATHEMATICAL_COUNTEREXAMPLE_STOP"
+  ],
+  "forbidden": [
+    "molecular production",
+    "G10/RA-D0 restart",
+    "new fixture or grid",
+    "parameter optimization",
+    "quantum shots or trajectories",
+    "GPU",
+    "LP",
+    "automatic next stage",
+    "unlimited RZ synthesis",
+    "precision/seed/tolerance retries"
+  ],
+  "previous_contract_commit": "73b2102a305f018d22348418adc7939cae63f0b2",
+  "review_original": "docs/research/track_b_df_correction_comparison_preregistration_review_20261011.md",
+  "review_sha256": "8c3bd4d712c37f60038bad1f6256385cabcdb97cc43d2ee993c35dee36a1984f",
+  "review_input_commit": "7dbbc0b098231446aebd4c97302dd62a5ab87a70",
+  "numerical_certification": {
+    "dps": 100,
+    "interval_export_upper_bits": 256,
+    "ideal_frame": "Exact ordered Gram-Schmidt, positive square-root norms, of exact binary64 recipe columns; seed/draw order unchanged",
+    "input_assembly": "Frame interval distance + compositional Ball forward-error propagation; radius charged to every primitive/corrector",
+    "Pauli": "Exact dyadic Hermitian/symmetry-projected computational proxy; ideal Hermitian real coefficients enclosed by proxy distance, exact computational zeros charged",
+    "zero_policy": "Ideal trace/parity zero by proof; all other computational zeros unresolved ideal value covered in assembly radius; no threshold; rank-uncertain STOP",
+    "guard_model": "IEEE binary64 standard complex BLAS; numerical native Operator additionally assumes faithful libm <=4ulp; not a physical DF bound",
+    "mean_and_concentration": "Separate certified mean perturbation and executed-weight range/moment; native envelope conditional if full CD native costs/errors unknown",
+    "uncertain_decision": "TECHNICAL_INCONCLUSIVE_NO_DPS_OR_TOLERANCE_RETRY",
+    "computational_Pauli_proxy_amendment": "This is a result-prior numerical approximation to the SAME ideal generator; operator distance is charged. No claim of exact ideal coefficient identity, exact ideal zero, or a changed algorithm target.",
+    "radius_storage": "fixed outward256-bit dyadic upper, immutable matrices/cached Frobenius bounds; exact rational moment factorization plus outward intervals preserves executed values"
+  },
+  "runtimes": {
+    "numeric": {
+      "python": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+      "executable_sha256": "320707a1d684b043661306d508d1a8655f507c0bb8e827398cb53680054aa7c8",
+      "packages": {
+        "numpy": "1.26.4",
+        "scipy": "1.14.1",
+        "qiskit": "1.3.0",
+        "mpmath": "1.3.0"
+      },
+      "source_trees": {
+        "numpy": "357db50cd85bea1dc80602c3bdb6040082eea3885e141488990ac04e46930cb2",
+        "scipy": "df7a097c15a7c4f08228571790deef94e221832217bc1087467be0d77a6de5d8",
+        "qiskit": "36f5daf62c595fdba5130a4383d8d4aa004ce7d5cab1ef94f86a628cc8a7aaa2",
+        "mpmath": "c79b951276c7b79ea48114fdc169b9c180fcf398d0314433ba73518beb649a26"
+      },
+      "tree_policy": "python_and_shared_libraries"
+    },
+    "synthesis": {
+      "python": "/home/abe/Project/prt-worktrees/track-b-sp05-economics-preparation-20261006/.venv/bin/python",
+      "executable_sha256": "b94e9b56bc1f96b18d36a0f1d14308575bb7b5960eda94ae0520f0376e95d12d",
+      "packages": {
+        "clarabel": "0.11.1",
+        "pip": "22.0.2",
+        "llvmlite": "0.50.0",
+        "setuptools": "59.6.0",
+        "cycler": "0.12.1",
+        "numba": "0.68.0",
+        "cloudpickle": "3.1.2",
+        "joblib": "1.6.0",
+        "mpmath": "1.3.0",
+        "cvxpy": "1.7.5",
+        "Jinja2": "3.1.6",
+        "pygridsynth": "2.0.0",
+        "scipy": "1.15.3",
+        "pycparser": "3.0",
+        "cffi": "2.1.1",
+        "scs": "3.3.1",
+        "packaging": "26.3",
+        "fonttools": "4.65.0",
+        "matplotlib": "3.10.9",
+        "osqp": "1.1.3",
+        "MarkupSafe": "3.0.4",
+        "contourpy": "1.3.2",
+        "pyparsing": "3.3.3",
+        "numpy": "2.2.6",
+        "pillow": "12.3.0",
+        "kiwisolver": "1.5.1",
+        "python-dateutil": "2.9.0.post0",
+        "six": "1.17.0"
+      },
+      "source_trees": {
+        "pygridsynth": "16fb23eafea463e49bcc9e90238e2082e6fe8a9bec334a758129b6ab943372ad",
+        "mpmath": "c79b951276c7b79ea48114fdc169b9c180fcf398d0314433ba73518beb649a26"
+      },
+      "tree_policy": "python_source"
+    }
+  },
+  "source_commit": null,
+  "old_contract_identity": {
+    "path": "artifacts/track_b_df_correction_comparison_source_v2/2026-10-11/contract_v2.json",
+    "bytes": 18976,
+    "sha256": "0079988b0e63ea7c62fec8e435bcf17313a3563d9480caf8aaf569e2e5972305"
+  },
+  "accepted_review": {
+    "path": "docs/research/track_b_e_r3_identity_acceptance_and_resumption_review_20261012.md",
+    "bytes": 34446,
+    "sha256": "b3342726c5d353a122393faa15c685a7ea0314922a613e0a648d4eccdb8e76b7"
+  },
+  "source_review_policy": {
+    "scientific_policy_review": "COMPLETED_BY_GPT",
+    "decision": "ADOPT_LAYERED_ACCEPTANCE_AND_PREPARE_E_T_REEVALUATION",
+    "routine_final_source_validation": "DELEGATED_TO_CODEX_FOCUSED_TESTS_AND_PROVENANCE_AUDIT",
+    "additional_GPT_review_required": "ONLY_NEW_SCIENTIFIC_SEMANTICS_ERROR_PHASE_OR_COMPARISON_ISSUES",
+    "separate_user_one_shot_authorization_required": true,
+    "old_source_review_requirement": "Superseded only for this accepted amendment preparation; historical contracts unchanged"
+  },
+  "resumption": {
+    "run_stages": [
+      "E_NATIVE",
+      "T_KEYS"
+    ],
+    "CD": "READ_ONLY_COMPLETED_SUBSTAGE_FROM_INCOMPLETE_OLD_RUN",
+    "CD_scientific_status": "CONDITIONAL_SAVED_SUBSTAGE_NOT_RECLASSIFIED_OLD_RUN",
+    "old_science_result_commit": "ce0e286430a2a23869cb9417c82113c98064c72c",
+    "old_source": "41349b73157c7781e0b534cf0fe61e06bf439954",
+    "old_authorization": "a1f537b68f0f22419dff0202c553b7511653caa3",
+    "old_marker": {
+      "path": "artifacts/track_b_df_correction_comparison_result/2026-10-11/v2/one_shot_marker.json",
+      "bytes": 534,
+      "sha256": "dd6b9d5ec96e9d34d7bea0277eadb03f031992e1010cfdb2c940a393b2242701"
+    },
+    "old_terminal": {
+      "path": "artifacts/track_b_df_correction_comparison_result/2026-10-11/v2/terminal_status.json",
+      "bytes": 2051,
+      "sha256": "4b880645640854319a37e61e0f078b68cc5443633e2ceb47da4de19121a314a8"
+    },
+    "saved_CD_summary": {
+      "path": "artifacts/track_b_df_correction_comparison_execution_audit/2026-10-12/CD_saved_summary_v1.json",
+      "bytes": 64584,
+      "sha256": "722680be3e254ae6560ffa1be1bdc61f79ff305f282fdccc31ed4969211beb27"
+    },
+    "saved_CD_logical_path": "artifacts/track_b_df_correction_comparison_result/2026-10-11/v2/CD.json",
+    "saved_CD_bytes": 1118571,
+    "saved_CD_sha256": "98f62b87107681a931d0502f37b81eea9806c890ef278c64532b7d5d60dbd075",
+    "saved_E_inputs": {
+      "path": "artifacts/track_b_df_correction_comparison_result/2026-10-11/v2/E-inputs.json",
+      "bytes": 5500,
+      "sha256": "71494102a896c53f3666d6a58ce4ec76a9b1e882e7d6dd5ca81ea03d00f010aa"
+    },
+    "historical_phase_E": {
+      "path": "artifacts/track_b_df_sparse_correction_audit/2026-10-11/phase_E_checks.json",
+      "bytes": 6354,
+      "sha256": "1751a7fd410410291d1f13e48e628fc00311021827be32e20cd1199500108b47"
+    },
+    "interpretation": "POST_DIAGNOSTIC_RESULT_PRIOR_AMENDMENT_NOT_UNMODIFIED_OLD_CONTRACT_COMPLETION",
+    "old_science_classification": "TECHNICAL_INCONCLUSIVE",
+    "retry_of_old_run": false,
+    "frame_identities": {
+      "3": [
+        {
+          "index": 0,
+          "dtype_str": "<c16",
+          "shape": [
+            3,
+            2
+          ],
+          "order": "C",
+          "bytes": 96,
+          "sha256": "ef7b2869450e6b027d0e0fecea76dcb2fe180ea015e3378f203ff5011ddcc59f"
+        },
+        {
+          "index": 1,
+          "dtype_str": "<c16",
+          "shape": [
+            3,
+            2
+          ],
+          "order": "C",
+          "bytes": 96,
+          "sha256": "3fbe907777b16bad2966bb23f82abd4908b81ac3e1e4aadfce5134c52dfefcfd"
+        },
+        {
+          "index": 2,
+          "dtype_str": "<c16",
+          "shape": [
+            3,
+            2
+          ],
+          "order": "C",
+          "bytes": 96,
+          "sha256": "dfd4c0b2c31ea52eccced73a6455f4e6bf13cb185d763a0276bb4d70b2d2653d"
+        }
+      ],
+      "6": [
+        {
+          "index": 0,
+          "dtype_str": "<c16",
+          "shape": [
+            6,
+            2
+          ],
+          "order": "C",
+          "bytes": 192,
+          "sha256": "4ccad42c48d0139131259c97366506f7103899d08916381726b55bf72d831a45"
+        },
+        {
+          "index": 1,
+          "dtype_str": "<c16",
+          "shape": [
+            6,
+            2
+          ],
+          "order": "C",
+          "bytes": 192,
+          "sha256": "62c5155e4110f95d28f1461b48820150146be422d413156020fa4523b96c02ad"
+        },
+        {
+          "index": 2,
+          "dtype_str": "<c16",
+          "shape": [
+            6,
+            2
+          ],
+          "order": "C",
+          "bytes": 192,
+          "sha256": "496565d0ee4eb604d91db12204b4c4a04800f7293363c2fadb4dafa532edd88a"
+        }
+      ]
+    }
+  },
+  "acceptance": {
+    "input": "saved-file bytes SHA plus exact binary64 frame order/dtype/shape/digest; exact rank2 x3; ideal ordered Gram-Schmidt as old",
+    "operator": "same Ball assembly + independent verified_rotation + strict phase Operator guard; raw matrix is NOT ideal target",
+    "native": "ordered complete native gate/wire/raw binary64 angle/global phase digest; counts and RZ inventory must match",
+    "historical_fingerprint": "raw payload and hash unchanged, including operation names; mismatch alone is NOT rejection",
+    "payload_exception": "TECHNICAL_INCONCLUSIVE before transpile; no null/missing payload acceptance",
+    "numeric_allowance": "1/5000000",
+    "synthesis_allowance": "1/1250000",
+    "full_allowance": "1/1000000",
+    "controlled": "MSB ancilla; strict full diag(I,U) comparison; no phase minimization",
+    "no_name_counter_reset": true,
+    "no_new_expected_hash": true,
+    "no_global_name_stripping": true
+  },
+  "parallelization": {
+    "native_workers": 2,
+    "synthesis_workers": 2,
+    "numeric_threads": 1,
+    "QISKIT_PARALLEL": "FALSE",
+    "dominant_workload": "r6 generic QSD/Operator and rational Pauli transform; synthesis keys; inspected statically only",
+    "immutable_inputs": "one saved frame blob per rank; no recipe call",
+    "cache": "no historical native-cost or synthesis-sequence reuse; dedup only within fresh frozen inventory",
+    "speedup_claim": null,
+    "wall_limits": "Preserve explicit frozen limits adopted by this GPT review; no enlargement"
+  },
+  "storage_amendment": {
+    "reason": "v4 output guard failure, unchanged science; duplicate immutable payload/native data and large generation overlap",
+    "logical_JSON": "Exactly legacy json default=str indent=2 + final newline; lossless bytes and SHA256 reconstructable",
+    "physical_JSON": "Immutable compact JSON blobs shared across records; typed snapshots with SHA256 references; small atomic latest pointers",
+    "shared_fields": [
+      "recursive_payload",
+      "recursive_definition_index",
+      "Pauli_coefficients",
+      "all_B_event_costs"
+    ],
+    "shared_records": [
+      "individual input_arrays",
+      "each native row"
+    ],
+    "states": "Retain immutable state snapshots; no large payload rewrite for stage metadata; prefix and final refer to same immutable content",
+    "verification": "Validate snapshot, every referenced blob/chunk, closed content graph and original logical JSON identity before returning values",
+    "write_budget_bytes": 66846720,
+    "per_review_file_bytes": 524288,
+    "chunk_bytes": 262144,
+    "cross_worker_storage_lock": "POSIX flock, immutable blob publication, no scientific backend/order/seed change",
+    "old_result_and_marker": "unchanged, v4 cannot retry; future run new v2 namespace with source-bound separate authorization",
+    "scope": "Storage/I-O and provenance only; no discarded keys, matrix bytes, names, signs, phases or errors"
+  },
+  "numerical_observation_amendment": {
+    "guard_calculation": "UNCHANGED",
+    "allowance": "UNCHANGED 1/5000000 numeric + 1/1250000 synthesis",
+    "save_before_decision": [
+      "Operator residual upper",
+      "forward arithmetic guard",
+      "reference radius",
+      "angle lowering upper",
+      "global phase upper",
+      "combined upper",
+      "full ordered native IR and inventory",
+      "pass/fail candidate status"
+    ],
+    "diagnostic_calls": "Use already computed upper/reference/inventory; no second Operator, fingerprint, transpile, or spectral action.",
+    "storage": "same immutable lossless v5 codec; candidate native row shared with later accepted row",
+    "B_uniform": "Record computed uniform bound before existing decision; no tighter model or dropped term"
+  },
+  "technical_continuation_authorization": {
+    "explicit_user_instruction": "次の作業に進んでよい。\n次も停止した場合についてもそのまま修正作業に入って、計算完了まで進めて",
+    "scope": "technical repair, validation and fresh source-bound versions of existing E/T comparison until completion; no same-marker retry or overwrite",
+    "per_version_runs": 1,
+    "per_version_retries": 0,
+    "retain_old_results_and_markers": true,
+    "scientific_condition_error_guarantee_cap_changes": "NOT_AUTHORIZED; return to GPT/user",
+    "final_completion": "mandatory STOP; scientific interpretation to GPT"
+  }
+}

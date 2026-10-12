@@ -1,0 +1,404 @@
+.................................FFFFFFFFF.............................. [ 53%]
+..............................................................           [100%]
+=================================== FAILURES ===================================
+____ test_new_launch_rejects_wrong_auth_source_namespace_or_remote[parent] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b1fd8aabb10>
+mutation = 'parent'
+
+    @pytest.mark.parametrize('mutation',['parent','diff','remote','contract','manifest','source','instruction','namespace'])
+    def test_new_launch_rejects_wrong_auth_source_namespace_or_remote(tmp_path,monkeypatch,mutation):
+        auth,git=fake_source(tmp_path,monkeypatch)
+>       assert launch.verify_launch(tmp_path)['authorization']=='b'*40
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tracks/algorithm_codesign/test_df_correction_et_v6_integration.py:204: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:61: in verify_launch
+    info = verify_local(root)
+           ^^^^^^^^^^^^^^^^^^
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:56: in verify_local
+    'contract_sha256':sha(root/ART/'contract_v5.json'),
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:14: in sha
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.11/pathlib.py:1051: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_0/artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/contract_v5.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_0/artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/contract_v5.json'
+
+/usr/lib/python3.11/pathlib.py:1045: FileNotFoundError
+_____ test_new_launch_rejects_wrong_auth_source_namespace_or_remote[diff] ______
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b1fd680d290>
+mutation = 'diff'
+
+    @pytest.mark.parametrize('mutation',['parent','diff','remote','contract','manifest','source','instruction','namespace'])
+    def test_new_launch_rejects_wrong_auth_source_namespace_or_remote(tmp_path,monkeypatch,mutation):
+        auth,git=fake_source(tmp_path,monkeypatch)
+>       assert launch.verify_launch(tmp_path)['authorization']=='b'*40
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tracks/algorithm_codesign/test_df_correction_et_v6_integration.py:204: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:61: in verify_launch
+    info = verify_local(root)
+           ^^^^^^^^^^^^^^^^^^
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:56: in verify_local
+    'contract_sha256':sha(root/ART/'contract_v5.json'),
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:14: in sha
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.11/pathlib.py:1051: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_1/artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/contract_v5.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_1/artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/contract_v5.json'
+
+/usr/lib/python3.11/pathlib.py:1045: FileNotFoundError
+____ test_new_launch_rejects_wrong_auth_source_namespace_or_remote[remote] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b1fd8b09dd0>
+mutation = 'remote'
+
+    @pytest.mark.parametrize('mutation',['parent','diff','remote','contract','manifest','source','instruction','namespace'])
+    def test_new_launch_rejects_wrong_auth_source_namespace_or_remote(tmp_path,monkeypatch,mutation):
+        auth,git=fake_source(tmp_path,monkeypatch)
+>       assert launch.verify_launch(tmp_path)['authorization']=='b'*40
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tracks/algorithm_codesign/test_df_correction_et_v6_integration.py:204: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:61: in verify_launch
+    info = verify_local(root)
+           ^^^^^^^^^^^^^^^^^^
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:56: in verify_local
+    'contract_sha256':sha(root/ART/'contract_v5.json'),
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:14: in sha
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.11/pathlib.py:1051: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_2/artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/contract_v5.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_2/artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/contract_v5.json'
+
+/usr/lib/python3.11/pathlib.py:1045: FileNotFoundError
+___ test_new_launch_rejects_wrong_auth_source_namespace_or_remote[contract] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b1fd8b53290>
+mutation = 'contract'
+
+    @pytest.mark.parametrize('mutation',['parent','diff','remote','contract','manifest','source','instruction','namespace'])
+    def test_new_launch_rejects_wrong_auth_source_namespace_or_remote(tmp_path,monkeypatch,mutation):
+        auth,git=fake_source(tmp_path,monkeypatch)
+>       assert launch.verify_launch(tmp_path)['authorization']=='b'*40
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tracks/algorithm_codesign/test_df_correction_et_v6_integration.py:204: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:61: in verify_launch
+    info = verify_local(root)
+           ^^^^^^^^^^^^^^^^^^
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:56: in verify_local
+    'contract_sha256':sha(root/ART/'contract_v5.json'),
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:14: in sha
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.11/pathlib.py:1051: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_3/artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/contract_v5.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_3/artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/contract_v5.json'
+
+/usr/lib/python3.11/pathlib.py:1045: FileNotFoundError
+___ test_new_launch_rejects_wrong_auth_source_namespace_or_remote[manifest] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b1fd680ca50>
+mutation = 'manifest'
+
+    @pytest.mark.parametrize('mutation',['parent','diff','remote','contract','manifest','source','instruction','namespace'])
+    def test_new_launch_rejects_wrong_auth_source_namespace_or_remote(tmp_path,monkeypatch,mutation):
+        auth,git=fake_source(tmp_path,monkeypatch)
+>       assert launch.verify_launch(tmp_path)['authorization']=='b'*40
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tracks/algorithm_codesign/test_df_correction_et_v6_integration.py:204: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:61: in verify_launch
+    info = verify_local(root)
+           ^^^^^^^^^^^^^^^^^^
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:56: in verify_local
+    'contract_sha256':sha(root/ART/'contract_v5.json'),
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:14: in sha
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.11/pathlib.py:1051: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_4/artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/contract_v5.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_4/artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/contract_v5.json'
+
+/usr/lib/python3.11/pathlib.py:1045: FileNotFoundError
+____ test_new_launch_rejects_wrong_auth_source_namespace_or_remote[source] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_5')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b1fd690c590>
+mutation = 'source'
+
+    @pytest.mark.parametrize('mutation',['parent','diff','remote','contract','manifest','source','instruction','namespace'])
+    def test_new_launch_rejects_wrong_auth_source_namespace_or_remote(tmp_path,monkeypatch,mutation):
+        auth,git=fake_source(tmp_path,monkeypatch)
+>       assert launch.verify_launch(tmp_path)['authorization']=='b'*40
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tracks/algorithm_codesign/test_df_correction_et_v6_integration.py:204: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:61: in verify_launch
+    info = verify_local(root)
+           ^^^^^^^^^^^^^^^^^^
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:56: in verify_local
+    'contract_sha256':sha(root/ART/'contract_v5.json'),
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:14: in sha
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.11/pathlib.py:1051: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_5/artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/contract_v5.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_5/artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/contract_v5.json'
+
+/usr/lib/python3.11/pathlib.py:1045: FileNotFoundError
+__ test_new_launch_rejects_wrong_auth_source_namespace_or_remote[instruction] __
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_6')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b1fd8b98f50>
+mutation = 'instruction'
+
+    @pytest.mark.parametrize('mutation',['parent','diff','remote','contract','manifest','source','instruction','namespace'])
+    def test_new_launch_rejects_wrong_auth_source_namespace_or_remote(tmp_path,monkeypatch,mutation):
+        auth,git=fake_source(tmp_path,monkeypatch)
+>       assert launch.verify_launch(tmp_path)['authorization']=='b'*40
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tracks/algorithm_codesign/test_df_correction_et_v6_integration.py:204: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:61: in verify_launch
+    info = verify_local(root)
+           ^^^^^^^^^^^^^^^^^^
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:56: in verify_local
+    'contract_sha256':sha(root/ART/'contract_v5.json'),
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:14: in sha
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.11/pathlib.py:1051: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_6/artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/contract_v5.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_6/artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/contract_v5.json'
+
+/usr/lib/python3.11/pathlib.py:1045: FileNotFoundError
+___ test_new_launch_rejects_wrong_auth_source_namespace_or_remote[namespace] ___
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_7')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b1fd8b3ea10>
+mutation = 'namespace'
+
+    @pytest.mark.parametrize('mutation',['parent','diff','remote','contract','manifest','source','instruction','namespace'])
+    def test_new_launch_rejects_wrong_auth_source_namespace_or_remote(tmp_path,monkeypatch,mutation):
+        auth,git=fake_source(tmp_path,monkeypatch)
+>       assert launch.verify_launch(tmp_path)['authorization']=='b'*40
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tracks/algorithm_codesign/test_df_correction_et_v6_integration.py:204: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:61: in verify_launch
+    info = verify_local(root)
+           ^^^^^^^^^^^^^^^^^^
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:56: in verify_local
+    'contract_sha256':sha(root/ART/'contract_v5.json'),
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:14: in sha
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.11/pathlib.py:1051: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_7/artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/contract_v5.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-abe/pytest-389/test_new_launch_rejects_wrong_7/artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/contract_v5.json'
+
+/usr/lib/python3.11/pathlib.py:1045: FileNotFoundError
+__________ test_new_child_marker_provenance_and_stop_flags_are_strict __________
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-389/test_new_child_marker_provenan0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b1fda8c9190>
+
+    def test_new_child_marker_provenance_and_stop_flags_are_strict(tmp_path,monkeypatch):
+>       fake_source(tmp_path,monkeypatch);info=launch.verify_local(tmp_path)
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tracks/algorithm_codesign/test_df_correction_et_v6_integration.py:218: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:56: in verify_local
+    'contract_sha256':sha(root/ART/'contract_v5.json'),
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py:14: in sha
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.11/pathlib.py:1051: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-abe/pytest-389/test_new_child_marker_provenan0/artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/contract_v5.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-abe/pytest-389/test_new_child_marker_provenan0/artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/contract_v5.json'
+
+/usr/lib/python3.11/pathlib.py:1045: FileNotFoundError
+=========================== short test summary info ============================
+FAILED tests/tracks/algorithm_codesign/test_df_correction_et_v6_integration.py::test_new_launch_rejects_wrong_auth_source_namespace_or_remote[parent]
+FAILED tests/tracks/algorithm_codesign/test_df_correction_et_v6_integration.py::test_new_launch_rejects_wrong_auth_source_namespace_or_remote[diff]
+FAILED tests/tracks/algorithm_codesign/test_df_correction_et_v6_integration.py::test_new_launch_rejects_wrong_auth_source_namespace_or_remote[remote]
+FAILED tests/tracks/algorithm_codesign/test_df_correction_et_v6_integration.py::test_new_launch_rejects_wrong_auth_source_namespace_or_remote[contract]
+FAILED tests/tracks/algorithm_codesign/test_df_correction_et_v6_integration.py::test_new_launch_rejects_wrong_auth_source_namespace_or_remote[manifest]
+FAILED tests/tracks/algorithm_codesign/test_df_correction_et_v6_integration.py::test_new_launch_rejects_wrong_auth_source_namespace_or_remote[source]
+FAILED tests/tracks/algorithm_codesign/test_df_correction_et_v6_integration.py::test_new_launch_rejects_wrong_auth_source_namespace_or_remote[instruction]
+FAILED tests/tracks/algorithm_codesign/test_df_correction_et_v6_integration.py::test_new_launch_rejects_wrong_auth_source_namespace_or_remote[namespace]
+FAILED tests/tracks/algorithm_codesign/test_df_correction_et_v6_integration.py::test_new_child_marker_provenance_and_stop_flags_are_strict
+9 failed, 125 passed, 1 deselected in 3.50s

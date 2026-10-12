@@ -547,3 +547,8 @@ source固定前の最終確認：profiler context違反のtechnical STOPを追�
 `artifacts/track_b_df_correction_et_execution_audit/2026-10-12/v2/audit_saved_outputs.py`は保存bytes/JSON/IRだけを照合する。
 [結果報告](../docs/tracks/algorithm_codesign/df_correction_et_v5_results_and_gpt_handoff_20261012.md)：numerical guard失敗でTECHNICAL_INCONCLUSIVE、native10/T0、retry0。
 旧/新consumed marker保持、runner再実行禁止、mandatory STOP。
+
+
+## E/T numerical observer v6
+
+`tracks/algorithm_codesign/run_df_correction_et_resumption_v6.py`：source-bound fresh version、guard式不変、失敗前観測情報保存。既定native22/T64、caps不変。[準備記録](../docs/tracks/algorithm_codesign/df_correction_et_numeric_v6_preparation_20261012.md)。

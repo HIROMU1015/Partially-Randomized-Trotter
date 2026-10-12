@@ -598,3 +598,8 @@ source固定前の最終確認：profiler context違反のtechnical STOPを追�
 [dated note](research/研究ノート/2026-10-12_track_b_et_v5_execution_stop.md)、
 [audit/result inventory](../artifacts/track_b_df_correction_et_execution_audit/2026-10-12/v2/)。
 TECHNICAL_INCONCLUSIVE、r6 controlled numerical upper認証失敗、native10/T0、retry0、mandatory STOP。
+
+
+## E/T numerical observer v6
+
+[技術準備・継続認可](tracks/algorithm_codesign/df_correction_et_numeric_v6_preparation_20261012.md)、[contract/manifest/tests](../artifacts/track_b_df_correction_et_numeric_preparation/2026-10-12/v6/)。旧source・結果・STOP/marker保持。

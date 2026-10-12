@@ -987,3 +987,8 @@ storage/integration focused tests、I/O replay/static provenance auditor、[新a
 [結果・技術監査・GPT handoff](docs/tracks/algorithm_codesign/df_correction_et_v5_results_and_gpt_handoff_20261012.md)：S5 d0a12bae→authorization-only A5 0e147e27、一回/retry0。
 TECHNICAL_INCONCLUSIVE、r6 controlled wholeのnumerical upper 2e-7認証失敗。CD再計算0、native10、T0、partial勝敗なし。
 原219file/24,075,195bytes、saved-only audit22,821 PASS。[新audit](artifacts/track_b_df_correction_et_execution_audit/2026-10-12/v2/)。旧source/results/markers/STOP保持、mandatory STOP。
+
+
+## Track B E/T numerical observer v6（2026-10-12）
+
+[準備・technical continuation](docs/tracks/algorithm_codesign/df_correction_et_numeric_v6_preparation_20261012.md)：same numerical guard/caps、分岐前upper/ledger/IR保存、134 local focused PASS。namespace `df_correction_et_numeric_v6`、runner `run_df_correction_et_resumption_v6.py`、new result v3。旧source/結果/marker保持。利用者の追加認可により技術修正・新versionを継続し、science変更時はGPTへ戻す。
