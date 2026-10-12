@@ -1,5 +1,6 @@
 """Two comparison layers and separate same-mode / Hamiltonian-level endpoints."""
 from fractions import Fraction as F
+import json
 import time
 
 from .n3_width_contract_v2 import METHODS,active_data,decode_case,enc,digest
@@ -48,7 +49,18 @@ def select_modes(case,mode_records):
 
 
 def summarize_block(case,methods):
-    answer={name:select_modes(case,rec['mode_records']) for name,rec in methods.items()}
+    answer={}
+    for name,rec in methods.items():
+        wall,cpu=time.perf_counter(),time.process_time();answer[name]=select_modes(case,rec['mode_records'])
+        rec['selector_wall_seconds']=time.perf_counter()-wall;rec['selector_cpu_seconds']=time.process_time()-cpu
+        wall,cpu=time.perf_counter(),time.process_time()
+        data=json.dumps({'method_path':rec,'endpoint':answer[name]},allow_nan=False).encode()
+        rec['method_output_serialization_wall_seconds']=time.perf_counter()-wall
+        rec['method_output_serialization_cpu_seconds']=time.process_time()-cpu
+        rec['serialized_measured_view_bytes']=len(data)
+        rec['task_wall_including_selector_serialization']=rec['wall_seconds']+rec['selector_wall_seconds']+rec['method_output_serialization_wall_seconds']
+        rec['task_cpu_including_selector_serialization']=rec['cpu_seconds']+rec['selector_cpu_seconds']+rec['method_output_serialization_cpu_seconds']
+        rec['output_qualification']='In-memory method/endpoint serialization measured; shared case-file disk IO belongs to runner harness'
     cheap=('NORM','FIVE','OLD','FULL_H_LOWER');cheap_rows=[];op_rows=[]
     for d in case['candidate_modes']:
         pool=[]

@@ -213,6 +213,10 @@ def test_saved_whole_pipeline_aggregation_and_adversarial_selection():
     spec=importlib.util.spec_from_file_location('saved_v2_checker',p);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
     case=fixture();record=acquire_case(case);audit=module.verify_record(case,record)
     assert record['status']=='FINITE_COMPARISON_COMPLETE' and audit['certificates']>0
+    for b in record['blocks']:
+        for path in b['methods'].values():
+            assert path['task_wall_including_selector_serialization']>=path['wall_seconds']
+            assert path['serialized_measured_view_bytes']>0
     bad=deepcopy(record);bad['blocks'][0]['endpoints']['OCC']['modes_removed']=2
     with pytest.raises(ValueError):module.verify_record(case,bad)
     bad=deepcopy(record);bad['blocks'][0]['endpoints']['OCC_OPERATIONAL_OR']['fallback_is_OCC_specific_gain']=True
