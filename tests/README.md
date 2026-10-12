@@ -1,5 +1,11 @@
 # tests の役割
 
+## 2026-10-12 N3 OLD-family v1 one-shot results
+
+[固定S1二例の有理dual分離・独立監査・STOP](../docs/research/n3_old_family_v1_results_20261012.md)。同じ保存U/c/OCC有理δでNORM＋全旧κ/μ族（FIVE包含）を分離。
+source/module/runner/checker/testsは凍結済み準備版のまま。artifacts `artifacts/n3_old_family_v1/2026-10-12/diagnostic1/` と `execution_audit/`。
+一回/retry0、posthoc development、元primary/gate/STOP不変、GPTの新結果判断へ。以下は過去milestone。
+
 ## 2026-10-12 N3 OLD-family v1 preparation
 +
 +[数学契約・実装・実行前STOP](../docs/research/n3_old_family_v1_preparation_20261012.md)。
