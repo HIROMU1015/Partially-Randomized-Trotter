@@ -191,3 +191,10 @@ compile-plan生成拒否、clear時の最大16+16 cell plan、source hash、non-
 保存帰結checker：`src/trottertracks/representation_exploration/n3_theory_implications_v1.py`、CLI：`scripts/verify_n3_theory_implications_v1.py`、合成tests：`tests/test_n3_theory_implications_v1.py`。
 証拠・review/identity：`artifacts/n3_theory_task_integration_v1/2026-10-12/`。
 30 synthetic PASS／保存全幅補題二例を独立照合。新science0、幅generator未実装、次はGPT研究判断、Mandatory STOP。
+
+## N3幅比較 v2：比較実装・未使用入力の科学実行準備
+
+文書入口 `docs/research/n3_width_comparison_v2_preparation_20261012.md`、数学 `n3_width_comparison_v2_contract_20261012.md`、結果前設計 `n3_width_comparison_v2_preregistration_20261012.md`、文献 `n3_width_comparison_v2_literature_amendment_20261012.md`（いずれもdocs/research）。
+module群 `src/trottertracks/representation_exploration/n3_width_{contract,algebra,generator,check,pipeline,execution}_v2.py`。
+runner `scripts/run_n3_width_comparison_v2.py`、保存verifier `scripts/verify_n3_width_comparison_v2.py`、入力literal `scripts/prepare_n3_width_inputs_v2.py`、tests `tests/test_n3_width_comparison_v2.py`。
+artifacts `artifacts/n3_width_comparison_v2/2026-10-12/preparation/`。32 synthetic PASS、科学入力の数値評価0、実行認可待ち・Mandatory STOP。

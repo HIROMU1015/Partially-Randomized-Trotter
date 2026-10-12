@@ -113,3 +113,5 @@ future module/runner/tests/checkerは契約JSONに記した未実装path。旧so
 | [2026-08-18](2026-08-18.md) | finite-RTEとPF・摂動・QPE分枝誤差の検証 | `8fdc6b3` | H4全$L_D$の単一位相条件、H2--H5のdense比較、H6のstate-action係数までlocal確認 | GPU経路をH8/H10で確認し、H12の候補$L_D$ごとに$C$を決定 |
 
 - [2026-10-12 N3統合準備](2026-10-12_n3_theory_task_integration_v1.md)
+
+- [N3幅比較v2準備](2026-10-12_n3_width_comparison_v2_preparation.md)
