@@ -385,3 +385,5 @@ N3統合資料のGitHub取得確認：`docs/research/n3_theory_task_integration_
 module群 `src/trottertracks/representation_exploration/n3_width_{contract,algebra,generator,check,pipeline,execution}_v2.py`。
 runner `scripts/run_n3_width_comparison_v2.py`、保存verifier `scripts/verify_n3_width_comparison_v2.py`、入力literal `scripts/prepare_n3_width_inputs_v2.py`、tests `tests/test_n3_width_comparison_v2.py`。
 artifacts `artifacts/n3_width_comparison_v2/2026-10-12/preparation/`。32 synthetic PASS、科学入力の数値評価0、実行認可待ち・Mandatory STOP。
+
+N3幅比較v2：[GitHub公開・再取得確認](research/n3_width_comparison_v2_publication_20261012.md)。payload9da12e27、52 blobs一致、remote preflight・保存合成90証拠PASS。科学実行0・明示認可待ち。

@@ -375,3 +375,5 @@ runner `scripts/run_n3_width_comparison_v2.py`、保存verifier `scripts/verify_
 artifacts `artifacts/n3_width_comparison_v2/2026-10-12/preparation/`。32 synthetic PASS、科学入力の数値評価0、実行認可待ち・Mandatory STOP。
 
 N3幅比較v2：[固定plan](n3_width_comparison_v2_execution_plan_20261012.json)。最終source3eba0814、synthetic32・保存90証拠、registered数値評価0、明示実行認可待ち。
+
+N3幅比較v2：[GitHub公開・再取得確認](n3_width_comparison_v2_publication_20261012.md)。payload9da12e27、52 blobs一致、remote preflight・保存合成90証拠PASS。科学実行0・明示認可待ち。

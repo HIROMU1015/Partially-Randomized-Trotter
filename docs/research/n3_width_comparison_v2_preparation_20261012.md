@@ -60,3 +60,5 @@ RSSはboundary／process highwater／sampled aggregate。孤立method peakや瞬
 同じ比較方針をsource修正・synthetic PASS・公開だけを理由に詳細GPTレビューへ戻さない。
 実行認可後はsource/input/planとcapsを維持しattempt1/retry0で実行、独立保存監査、結果公開後にMandatory STOP。
 その新結果を受けてGPTが取得効率・taskの価値・中心テーマを判断する。今回中心テーマ・新規性・量子総資源優位は未採択。
+
+GitHubへのpush・remote再取得確認は[公開記録](n3_width_comparison_v2_publication_20261012.md)に保存した。

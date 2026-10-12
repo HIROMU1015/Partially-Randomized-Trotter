@@ -16,3 +16,8 @@ source `3eba0814e690e95993db60809c4c3c96784b07c0`、13 blob一致。selector/ser
 32 synthetic PASSと最終sourceの保存90証拠検査を記録。未使用6入力はidentity/schemaのpreflightだけで数値適用0。
 [固定plan](../n3_width_comparison_v2_execution_plan_20261012.json) SHA `dc43a8d781e76ba4c3fc92f528c973f225861bf47160c5866bff2bebd9eb9d53`。
 旧manifest104件、root差分を保全。公開・再取得確認まで進め、明示科学実行認可前で停止する。
+
+## GitHub公開・再取得確認の追記
+
+payload9da12e27をGitHubから別cacheへ取得し、52 blobs一致を確認。remote preflight・保存合成90証拠の独立検査PASS。
+[公開記録](../n3_width_comparison_v2_publication_20261012.md)へ固定URLと証跡を保存。実行認可前に停止し、scientific launch0を維持した。

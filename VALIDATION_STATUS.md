@@ -1991,3 +1991,5 @@ artifacts `artifacts/n3_width_comparison_v2/2026-10-12/preparation/`。32 synthe
 N3幅比較v2の最終sourceは`3eba0814e690e95993db60809c4c3c96784b07c0`。
 [固定execution plan](docs/research/n3_width_comparison_v2_execution_plan_20261012.json)、source/input SHA、最終sourceの保存合成90証拠、zero-science preflightを固定した。
 新6入力の科学実行は未認可・Mandatory STOP。
+
+N3幅比較v2：[GitHub公開・再取得確認](docs/research/n3_width_comparison_v2_publication_20261012.md)。payload9da12e27、52 blobs一致、remote preflight・保存合成90証拠PASS。科学実行0・明示認可待ち。
