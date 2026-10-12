@@ -17,6 +17,7 @@ linear H6/1Å/STO-3G/tol-only DF19/sector400/T.8、prefix5/10/15/full19・delta.
 - [公開抽出からの別算術検査](public_consistency_v1.json)
 - [保存JSON限定解析script](analyze_saved_cost.py)、[公開scalar検査script](verify_public_analysis.py)
 - [10人工scalar tests](../../../../tests/tracks/resource_applicability/test_h6_rare_order_cost_analysis_v1.py)、[local結果](limited_tests_v1.txt)
+- [解析commit82028755・remote ref/tree/27fileの取得照合](publication_receipt_v1.json)
 - [固定した全軽量fileのSHA索引](artifact_inventory_v1.json)
 
 主に欠測しているq8/r2/K2のnonzero層は確率1.67%。zero層平均を保存点推定に固定すると、PFに追い付くにはrare条件付き費用約9.19百万RZ/shot（zeroの95.86倍）が必要。
