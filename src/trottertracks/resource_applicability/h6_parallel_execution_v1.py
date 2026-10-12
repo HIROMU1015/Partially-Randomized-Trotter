@@ -20,19 +20,39 @@ from .h6_server_resources_v1 import (THREAD_KEYS,host_memory,memory_reason,proce
 from .h6_server_contract_v1 import safe_path,environment
 
 
-def exiting_unreaped(child, *, grace_seconds=.02):
-    """RSS can disappear just before exit becomes waitable; never reap here.
+EXIT_PENDING_SECONDS=1.
+PF_EXITING=0x00000004  # This host's linux/sched.h: task is getting shut down.
 
-    A bounded 20ms wait accepts only a definitive WEXITED receipt. A live child
-    with missing memory still fails closed. Keep its unreaped leader identity
-    until stop_owned_group performs group cleanup and wait/reap.
+
+def owned_exit_flag(child, identity):
+    """Check kernel exit state AND stable owned unreaped group identity."""
+    raw=Path(f'/proc/{child.pid}/stat').read_text()
+    fields=raw[raw.rfind(')')+2:].split()
+    if (child.returncode is not None or identity is None
+        or identity['pid']!=child.pid or int(fields[19])!=identity['start_ticks']
+        or int(fields[2])!=child.pid or int(fields[3])!=child.pid):
+        raise ValueError('EXIT_PENDING_OWNERSHIP_MISMATCH')
+    return bool(int(fields[6])&PF_EXITING)
+
+
+def retain_exiting_memory(v, r, now):
+    """One nonblocking exit deadline, never reset by another missing sample.
+
+    The caller permits this ONLY after kernel PF_EXITING and identity checks.
+    Keep observed memory or the approved slot reservation, never invent zero.
+    No slot is retired/admitted until WEXITED; live missing data still STOPs.
     """
-    deadline=time.monotonic()+grace_seconds
-    while True:
-        if os.waitid(os.P_PID,child.pid,os.WEXITED|os.WNOHANG|os.WNOWAIT) is not None:return True
-        remaining=deadline-time.monotonic()
-        if remaining<=0:return False
-        time.sleep(min(.001,remaining))
+    if 'exit_pending_since' not in v:v['exit_pending_since']=now
+    age=now-v['exit_pending_since']
+    if age>EXIT_PENDING_SECONDS:raise ValueError('EXIT_PENDING_MEMORY_TIMEOUT:'+str(v['process'].pid))
+    if 'last_memory' in v:
+        memory=dict(v['last_memory']);kind='exit_pending_retained'
+    else:
+        memory=dict(VmRSS_bytes=r['worker_rss_stop_bytes'],VmSize_bytes=r['cost_address_space_bytes'],
+            VmHWM_bytes=r['worker_rss_stop_bytes'],VmPeak_bytes=r['cost_address_space_bytes'])
+        kind='exit_pending_reserved'
+    return memory,dict(kind=kind,kernel_exiting=True,exit_pending_seconds=age,
+        maximum_exit_pending_seconds=EXIT_PENDING_SECONDS,live_sample=False)
 
 
 def supervise(root,out,m,*,command=None,admission=None):
@@ -43,11 +63,12 @@ def supervise(root,out,m,*,command=None,admission=None):
     """
     root=Path(root);out=Path(out);r=m['proposed_resources'];policy=m['observation_policy']
     caps=m['base_manifest']['plan']['caps_proposed'];pending=list(m['registrations'])
-    active={};completed=[];dispatch=[];retired=[];errors=[];first=None;peak=0
+    active={};completed=[];dispatch=[];retired=[];errors=[];first=None;peak=0;transitions=[]
     begun=time.monotonic();last_sample=begun;last_emit=0.;written=0
     baseline=host_memory();max_slots=slots(r)
     if max_slots<1:raise ValueError('PARALLEL_NO_MEMORY_SLOT')
     journal_path=out/'resource_observations.jsonl'
+    observation_subject=None
     def retire(v):
         nonlocal first
         try:
@@ -86,26 +107,44 @@ def supervise(root,out,m,*,command=None,admission=None):
                 before=time.monotonic();samples=[]
                 for slot,v in list(active.items()):
                     child=v['process']
+                    observation_subject=dict(role='worker',index=v['row']['index'],pid=child.pid,slot=slot)
                     if os.waitid(os.P_PID,child.pid,os.WEXITED|os.WNOHANG|os.WNOWAIT) is not None:
                         code=retire(v);del active[slot]
                         if code!=0:first=first or 'WORKER_EXIT:'+str(code)
                         else:
                             if admission:admission(v['path'],v['row']['task'])
                             completed.append(v['row']['index'])
+                        if 'exit_pending_since' in v:transitions.append(dict(index=v['row']['index'],
+                            pid=child.pid,state='exit_confirmed',exit_code=code))
                         continue
                     current=process_identity(child.pid)
                     if current['start_ticks']!=v['identity']['start_ticks']:raise ValueError('PARALLEL_WORKER_IDENTITY')
-                    try:mem=process_memory(child.pid)
-                    except (FileNotFoundError,ValueError):
-                        if exiting_unreaped(child):continue
-                        raise
+                    observation=dict(kind='live',live_sample=True)
+                    try:
+                        mem=process_memory(child.pid);v['last_memory']=dict(mem)
+                        v.pop('exit_pending_since',None)
+                    except (FileNotFoundError,ValueError) as exc:
+                        if isinstance(exc,ValueError) and str(exc)!='PROCESS_MEMORY_MISSING':raise
+                        if os.waitid(os.P_PID,child.pid,os.WEXITED|os.WNOHANG|os.WNOWAIT) is not None:continue
+                        if not owned_exit_flag(child,v['identity']):raise
+                        initial='exit_pending_since' not in v
+                        mem,observation=retain_exiting_memory(v,r,time.monotonic())
+                        if initial:transitions.append(dict(index=v['row']['index'],pid=child.pid,
+                            state='kernel_exit_pending',retained_memory_kind=observation['kind']))
                     if mem['VmSize_bytes']>r['cost_address_space_bytes']:first=first or 'WORKER_AS_CAP'
                     if mem['VmRSS_bytes']>r['worker_rss_stop_bytes']:first=first or 'WORKER_RSS_CAP'
                     latest=sorted(v['path'].glob('diagnostic_*.json'))
                     phase=read(latest[-1]).get('context') if latest else {'stage':'startup'}
-                    samples.append(dict(index=v['row']['index'],slot=slot,pid=child.pid,memory=mem,phase=phase))
+                    samples.append(dict(index=v['row']['index'],slot=slot,pid=child.pid,memory=mem,
+                        phase=phase,memory_observation=observation))
+                observation_subject=dict(role='host',pid=os.getpid())
                 host=host_memory();rss=process_tree_rss(os.getpid());peak=max(peak,rss)
-                coordinator=process_memory(os.getpid());after=time.monotonic()
+                observation_subject=dict(role='coordinator',pid=os.getpid())
+                coordinator=process_memory(os.getpid())
+                # Aggregate includes retained/reserved dying-worker memory;
+                # kernel process_tree_rss may omit a task whose mm is gone.
+                rss=max(rss,coordinator['VmRSS_bytes']+sum(x['memory']['VmRSS_bytes'] for x in samples))
+                peak=max(peak,rss);after=time.monotonic()
                 first=first or memory_reason(host,baseline,policy)
                 if after-before>policy['maximum_observation_seconds'] or before-last_sample>policy['maximum_observation_seconds']:
                     first=first or 'OBSERVATION_STALE'
@@ -126,13 +165,18 @@ def supervise(root,out,m,*,command=None,admission=None):
                 if active:time.sleep(policy['interval_seconds'])
     except BaseException as exc:
         first=first or 'SUPERVISOR_ERROR:'+type(exc).__name__+':'+str(exc)[:256]
+        try:
+            AtomicWriter(out,byte_cap=caps['output_bytes']).write('supervisor_failure.json',dict(
+                first_stop_reason=first,error_type=type(exc).__name__,message=str(exc)[:256],
+                observation_subject=observation_subject,observation_transitions=transitions[-16:]),terminal=True)
+        except Exception:pass
     finally:
         for v in active.values():retire(v)
     return dict(completed_indices=sorted(completed),dispatched=dispatch,retired=retired,pending=len(pending),
         first_stop_reason=first,cleanup_errors=errors,all_dispatched_reaped=len(retired)==len(dispatch) and not errors,
         aggregate_peak_rss_bytes=peak,wall_seconds=time.monotonic()-begun,journal_bytes=written,
         ownership_cleanup_verified=len(retired)==len(dispatch) and not errors,
-        log_and_journal_closed=True,retry=False)
+        log_and_journal_closed=True,retry=False,exit_observation_transitions=transitions)
 
 
 def worker(root,directory,run_root):

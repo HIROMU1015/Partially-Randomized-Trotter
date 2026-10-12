@@ -99,18 +99,6 @@ def test_diagnostics_are_added_to_known_carry_without_reset(tmp_path):
     assert c.carry_calls(tmp_path,base,None,roundoff=True)=={'compile':10,'trajectory':22,'occurrence':46}
 
 
-@pytest.mark.parametrize('exits',[True,False])
-def test_rss_exit_race_requires_definitive_unreaped_exit(monkeypatch,exits):
-    from types import SimpleNamespace
-    calls=[]
-    def waitid(kind,pid,options):
-        calls.append(options)
-        return object() if exits and len(calls)>1 else None
-    monkeypatch.setattr(e.os,'waitid',waitid)
-    result=e.exiting_unreaped(SimpleNamespace(pid=999),grace_seconds=.002)
-    assert result is exits and all(x&os.WNOWAIT for x in calls)
-
-
 @pytest.mark.parametrize('tamper',['valid','unsealed','cpus','output','root','tasks','lock'])
 def test_child_rechecks_scope_before_scientific_dispatch(tmp_path,tamper):
     m=candidate();m.update(schema=c.SCHEMA,kind=c.KIND,
