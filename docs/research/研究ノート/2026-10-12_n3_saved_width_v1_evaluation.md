@@ -9,3 +9,8 @@
 OCC strict2/8（S1のみ）、BASE strict6/8。S1幅縮小20.424087%/0.343340%、selected-onlyも同じ最小。独立saved8件PASS。
 原primary/STOPは維持、旧LMI族の不可能性や中心研究採択は主張しない。[詳細結果](../n3_saved_width_v1_results_20261012.md)。
 新科学判断をGPTへ渡すため、結果と限界を保存してGitHub再取得へ進む。attempt1/retry0、新eig/optimizer/証拠提案0。
+
+## GitHub再取得・公開監査完了
+
+payload 652667187ce83c7c36041820a0a752669134865fをGitHubから取得、82 blobsのbyte一致、saved8件/5284307 checks PASS。
+旧source/原result/STOP/manifest96/root保全。producer rerun0。新結果をGPTへ渡しMandatory STOP。[receipt](../n3_saved_width_v1_evaluation_publication_20261012.md)。
