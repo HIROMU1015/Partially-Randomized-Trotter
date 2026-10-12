@@ -1,5 +1,7 @@
 # scripts 索引
 
+H6監視修正：[既存parallel runner](resource_applicability/run_track_a_h6_parallel_v1.py)のsourceを固定し、own kernel-exit pendingをnonblockingで扱う。[資料](../artifacts/resource_applicability/track_a_h6_exit_observation_fix_v1/2026-10-12/README.md)。科学run/grantは今回0。
+
 H6丸め実行：既存parallel preparer/runnerを新roundoff schemaへ結合。[資料](../artifacts/resource_applicability/track_a_h6_roundoff_preparation_v1/2026-10-12/README.md)。旧環境exportは待たず、元142と数値差受理をbound grantで固定。
 
 H6旧DF準備固定：[exporter](resource_applicability/export_track_a_h6_frozen_preparations_v1.py)、[server verifier](resource_applicability/verify_track_a_h6_frozen_preparations_v1.py)、[資料](../artifacts/resource_applicability/track_a_h6_frozen_basis_preparation_v1/2026-10-12/README.md)。信号/transpileなしの旧準備受領経路。archive/447互換未確認ではseal/起動しない。

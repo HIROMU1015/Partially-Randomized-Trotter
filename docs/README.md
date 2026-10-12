@@ -1,5 +1,7 @@
 # 文書索引
 
+H6退出時RSS欠測：[修正報告](research/track_a_h6_exit_observation_fix_v1.md)、[保存7group・残135・58tests](../artifacts/resource_applicability/track_a_h6_exit_observation_fix_v1/2026-10-12/README.md)。再起動未実行。
+
 H6丸め差許容：[新実行計画](research/track_a_h6_roundoff_execution_v1.md)、[source/診断/67tests/一回認可入口](../artifacts/resource_applicability/track_a_h6_roundoff_preparation_v1/2026-10-12/README.md)。旧科学条件と資源上限を保持。
 
 H6旧DF準備固定：[設計](research/track_a_h6_frozen_basis_preparation_v1.md)、[source/binding/69限定tests/export手順](../artifacts/resource_applicability/track_a_h6_frozen_basis_preparation_v1/2026-10-12/README.md)。受領・447互換・再seal・本計算再実行は未完了。
