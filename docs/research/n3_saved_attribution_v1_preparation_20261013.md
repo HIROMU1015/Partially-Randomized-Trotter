@@ -38,3 +38,5 @@ scopeはphase時間整理、保存q/box/SOS残差のexact算術、既存3証拠�
 通常source/test/公開のたびに同内容の詳細GPTレビューを要求しない。
 その新事後結果を整理・公開した後、同品質/同機能取得の研究価値、task、継続/縮小判断をGPTへ戻す。
 Mandatory STOP、N1停止、N2保留、旧primary/gateと中心テーマnullを維持する。既存global manifest description欠落FAILは別に残る。
+
+N3保存帰属v1の[GitHub公開・再取得確認](n3_saved_attribution_v1_publication_20261013.md)を完了。明示posthoc認可待ち。
