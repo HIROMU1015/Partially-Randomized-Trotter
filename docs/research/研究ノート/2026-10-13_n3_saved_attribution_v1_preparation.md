@@ -41,3 +41,7 @@ SOS正/理想OCC負のsame-queryと他modeOCC正を再認証。原追加H縮約0
 新しい科学計算・保存数値再解析・PSD再認証・テスト・benchmark・compile・sampling・文献調査・詳細再レビュー0。source/result/旧primary/gate/STOP・消費済み認可・過去の意思決定本文を保持し、根拠の大きな重複作成はしない。
 文書整理完了だけでは同じレビューを要求しない。新しい根拠、不整合、具体的な研究提案で次のGPT科学判断を検討する。新テーマ未採択、中心テーマnull、N1停止/N2保留、Mandatory STOP。global manifestの既存description欠落FAILは無断修正しない。
 [現在のclaimと再開条件](../n3_saved_attribution_v1_claim_and_observability_20261013.md)、[判断JSON](../../../artifacts/n3_achievements_closure/2026-10-13/research_decision.json)を参照。
+
+## 成果確定の公開確認・現行N3作業完了
+
+成果固定payload `afecaf591e62b8ab7ba5fb5c20f53f17a6d7be37` をGitHubから再取得。変更16blob、固定証拠14参照のSHA一致、追加relative links38件をremoteで解決した。source9/保存40files・既存114 manifest entries・旧本文を保全。新科学計算/benchmark/再認証/再レビュー0。文書整理完了、同じレビューの再実施は不要、新テーマ未採択、Mandatory STOP。[公開確認](../n3_saved_attribution_v1_claim_and_observability_20261013.md)。

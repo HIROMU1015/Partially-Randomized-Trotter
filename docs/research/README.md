@@ -2,6 +2,8 @@
 
 ## 2026-10-13 N3成果確定・現検証系列終了
 
+[公開・remote確認完了](n3_saved_attribution_v1_claim_and_observability_20261013.md)：変更16blob/証拠14blob/追加リンク38件確認。現行N3の文書作業完了、科学STOP。
+
 [確定claim・成立条件・再開条件](n3_saved_attribution_v1_claim_and_observability_20261013.md)、[理論claim map](n3_theory_claim_map_v1_20261012.md)、[完了GPTレビュー原本](n3_saved_attribution_v1_scientific_review_2026-10-13.md)。
 証拠は `artifacts/n3_achievements_closure/2026-10-13/existing_evidence_index.json` の固定commit参照。研究判断は同directoryの `research_decision.json`。
 現N3の追加benchmark・保存帰属診断系列を終了し、主研究としての採択を見送る。理論と厳密分離・有限prototype観測を条件付きで保持。具体的な有用taskまたは理論差分でのみ再検討する。

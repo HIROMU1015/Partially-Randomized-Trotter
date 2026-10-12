@@ -96,3 +96,12 @@ N1停止、N2保留、原primaryと旧gate、中心テーマnullを維持する�
 今回の成果確定・文書反映だけでは同じ詳細科学レビューを再要求しない。次テーマの比較・採択は今回行っていない。
 [研究判断記録](../../artifacts/n3_achievements_closure/2026-10-13/research_decision.json)は文書反映の別記録であり、元primary・gate・STOPを書き換えない。
 全体manifestのdescription欠落FAILは無断修正せず保持する。個別source-bound local audit、GitHub保存照合、immutable CI・外部science再現を区別する。
+
+## 成果確定の公開・remote確認完了
+
+成果確定payload `afecaf591e62b8ab7ba5fb5c20f53f17a6d7be37`、branch `n3-achievements-closure-20261013`。
+[確定claimと再開条件](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/afecaf591e62b8ab7ba5fb5c20f53f17a6d7be37/docs/research/n3_saved_attribution_v1_claim_and_observability_20261013.md)、[GPTレビュー原本](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/afecaf591e62b8ab7ba5fb5c20f53f17a6d7be37/docs/research/n3_saved_attribution_v1_scientific_review_2026-10-13.md)、[証拠索引](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/afecaf591e62b8ab7ba5fb5c20f53f17a6d7be37/artifacts/n3_achievements_closure/2026-10-13/existing_evidence_index.json)、[研究判断](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/afecaf591e62b8ab7ba5fb5c20f53f17a6d7be37/artifacts/n3_achievements_closure/2026-10-13/research_decision.json)を固定commitで参照できる。
+GitHubから変更16blobs/1,110,014bytes、固定既存証拠14blobs/503,878bytesを取得・SHA一致し、追加relative links38件をremoteで解決した。
+独立bare cacheはshallowだが、local object alternatesを使わず必要なcommit/blobを読み出した。新科学計算・証拠再認証・同レビュー再実施0。
+[公開receipt](../../artifacts/n3_achievements_closure/2026-10-13/publication/receipt.json)、[再取得一覧](../../artifacts/n3_achievements_closure/2026-10-13/publication/retrieval_inventory.json)。原レビューをbyte一致で保存し、旧結果・source・114 manifest entriesを保持した。
+現行N3の文書整理は完了。次テーマを採択せず、N1停止/N2保留、中心テーマnull、Mandatory STOP。global manifest既存description欠落FAILは無修正。
