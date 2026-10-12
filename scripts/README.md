@@ -1,5 +1,7 @@
 # scripts 索引
 
+H6保存費用層：[scalar解析](../artifacts/resource_applicability/track_a_h6_rare_order_cost_analysis_v1/2026-10-13/analyze_saved_cost.py)、[公開抽出のみの別算術](../artifacts/resource_applicability/track_a_h6_rare_order_cost_analysis_v1/2026-10-13/verify_public_analysis.py)、[資料](../artifacts/resource_applicability/track_a_h6_rare_order_cost_analysis_v1/2026-10-13/README.md)。科学runnerではない。
+
 H6独立32保存結果：[metadata集計](../artifacts/resource_applicability/track_a_h6_confirmation_summary_v1/2026-10-12/aggregate_saved_results.py)、[CSV別算術](../artifacts/resource_applicability/track_a_h6_confirmation_summary_v1/2026-10-12/verify_report.py)、[256/512完了結果](../docs/research/track_a_h6_independent_confirmation_result_v1.md)。新科学runnerは起動しない。以下の準備記載は各段階の履歴。
 
 H6 fast confirmation：`resource_applicability/{prepare,run,audit}_track_a_h6_confirmation_fast_v1.py`。現4workerは停止しない。親run終了後のcomplete-only receipt・新grantだけを受理。[設計](../docs/research/track_a_h6_hash_reuse_eight_worker_v1.md)。

@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+H6希少費用：[解析](../../docs/research/track_a_h6_rare_order_cost_reliability_v1.md)、[公開scalar証拠](../../artifacts/resource_applicability/track_a_h6_rare_order_cost_analysis_v1/2026-10-13/README.md)。既存科学libraryの変更0、構造instruction上界とcompiler後RZを区別する。
+
 H6独立32確認完了：[研究報告](../../docs/research/track_a_h6_independent_confirmation_result_v1.md)、[256/512・536行費用照合・来歴](../../artifacts/resource_applicability/track_a_h6_confirmation_summary_v1/2026-10-12/README.md)。科学library変更0。以下の実確認0/未起動記載は各段階の履歴。
 
 Track A H6 hash再利用・8worker実装：[設計](../../docs/research/track_a_h6_hash_reuse_eight_worker_v1.md)。実装は `trottertracks/resource_applicability/h6_{hash_reuse,confirmation_fast_contract,confirmation_fast_execution}_v1.py`。当libraryの科学sourceは変更しない。

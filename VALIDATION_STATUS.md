@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-13 H6：保存希少次数・費用層の局所解析
+
+[報告](docs/research/track_a_h6_rare_order_cost_reliability_v1.md)、[832保存group/320公開抽出/48別算術/10人工tests](artifacts/resource_applicability/track_a_h6_rare_order_cost_analysis_v1/2026-10-13/README.md)。H6/1Å/STO-3G/DF19/T.8・prefix5/10/15/full19・delta.1–.8。確率層・費用感度は局所metadata証拠。compiler後population cost bound/正式winnerは未証明、CI/独立科学reviewのPASSではない。既存source251/結果保全、新science/compile/grant0・追加計算未承認。公開抽出からのscalar再計算と全分子/compile再現を区別。以下は過去履歴。
+
 ## 2026-10-12 H6：独立32確認完了・局所保存結果監査
 
 [研究結果](docs/research/track_a_h6_independent_confirmation_result_v1.md)、[536費用行/保存shot/CSV/来歴/完了証拠](artifacts/resource_applicability/track_a_h6_confirmation_summary_v1/2026-10-12/README.md)。H6/1Å/STO-3G/DF19/sector400/T0.8・prefix5/10/15/full19・delta0.1–0.8、事前選択8×32＝256 group/512 wrapper。SOURCE87b6b9f4・closure251・native exit0・全新97reap/cleanup0。
