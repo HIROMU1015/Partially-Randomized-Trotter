@@ -41,3 +41,8 @@ git -C /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h6-roundo
   -c maintenance.auto=false -c gc.auto=0 \
   push origin HEAD:refs/heads/track-a-h6-roundoff-resume01-20261012
 ```
+
+## 一回起動確認
+
+[Native起動receipt](launch_authorization_v1/started_receipt_v1.json)。CoPID 4101124、先頭456/458/459/460を4workerで実処理中。保存7結果はdispatchしない。起動時STOP理由null。
+Read-only status: `/home/AbeHiromu/projects/h6-handoff-evidence/20261012/roundoff-resume01-v1/MONITOR_STATUS.py`。完了/STOP後終了。

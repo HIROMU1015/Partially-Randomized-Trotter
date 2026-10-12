@@ -13,3 +13,5 @@ CPU4workers20/21/24/25・coordinator22/23、AS32/RSS9/aggregate40/RAM64・thread
 完了/STOP後終了、自動retryなし。共有環境/venv/H4/他job/GPUを変更せず、user push方針を保持。
 
 旧STOP/修正SOURCE00b8d7e3/REVIEWce95a139を保全した。
+
+2026-10-12 一回起動確認：coordinator4101124、元135の先頭456/458/459/460が4workerで実処理中。新SOURCE78a39051、起動REVIEW4107286a。保存7結果は再計算せず、監視下で完了/STOP後終了する。
