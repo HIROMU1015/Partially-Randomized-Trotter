@@ -250,12 +250,17 @@ def orchestrate(root,out,m,writer,fresh):
             for x in base['reuse_registry']['accepted']}
         phase_a=Path(m['phase_a_receipt']['run'])/'cost_exploration_0447'
         groups[447]=admit_parallel_group(phase_a,base['phase_scope']['task'],source=base['source_commit'])
+        for row in m['verified_reuse']['accepted']:
+            index=row['index']
+            groups[index]=admit_parallel_group(Path(row['directory']),base['reuse_registry']['original_tasks'][index],
+                source=m['verified_reuse']['parent_source'])
         calls=dict(m['carry_known_calls'])
         for x in m['registrations']:
             result=admit_parallel_group(Path(out)/f'cost_exploration_{x["index"]:04d}',x['task'],source=m['source_commit'])
             groups[x['index']]=result
             for k,v in result['calls_attempted'].items():calls[k]+=v
-        reserved=m['prior_stop_accounting']['conservative_reservation']
+        from .h6_parallel_contract_v1 import total_reservations
+        reserved=total_reservations(m['prior_stop_accounting'],m['verified_reuse'])
         if any(v+reserved.get(k,0)>base['plan']['caps_proposed'][k] for k,v in calls.items()):raise ValueError('PARALLEL_TOTAL_CALL_CAP')
         rows=complete_exploration(base['reuse_registry']['original_tasks'],groups)
         # Recheck profile/input/source and the accepted parent before publishing
@@ -264,6 +269,7 @@ def orchestrate(root,out,m,writer,fresh):
         writer.write('exploration_complete_receipt.json',dict(group_count=len(groups),wrapper_count=len(rows),
             known_calls=calls,old_aborted_attempts=None,old_aborted_attempts_not_inferred=True,
             prior_stop_accounting=m['prior_stop_accounting'],
+            verified_reuse=m['verified_reuse'],reservations=reserved,reservations_are_not_actual_totals=True,
             new_group_indices=report['completed_indices'],selection_not_performed=True,confirmation_not_started=True))
     except Exception as exc:reason=type(exc).__name__+':'+str(exc)[:512]
     writer.write('execution_terminal.json',dict(status='H6_PARALLEL_COMPLETE_MANDATORY_STOP' if reason is None else 'H6_PARALLEL_STOP',

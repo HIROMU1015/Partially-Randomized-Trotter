@@ -32,6 +32,7 @@ def candidate():
         registrations=[dict(index=i,task={'cell_id':'SYNTHETIC_'+str(i),'seed':i}) for i in range(450,455)],
         source_commit='a'*40,exclusive_output={'absolute_path':'/home/AbeHiromu/SYNTHETIC'},
         roundoff_preparation_binding={'archive_sha256':'c'*64},
+        verified_reuse={'accepted':[{'index':i} for i in c.REUSED_INDICES]},
         base_profile='fixture',approved=False,runtime_authorization=False)
 
 
@@ -106,7 +107,7 @@ def test_child_rechecks_scope_before_scientific_dispatch(tmp_path,tamper):
         confirmation_authorized=False,H8_authorized=False,mandatory_stop=True,
         repository_root=str(tmp_path),one_shot_lock=c.LOCK)
     m['base_manifest']['reuse_registry']={'missing':[dict(index=i,task={'seed':i}) for i in [447,*range(450,592)]]}
-    m['registrations']=c.registrations(m['base_manifest'])
+    m['registrations']=c.registrations(m['base_manifest'],m['verified_reuse'])
     out=tmp_path/c.NAMESPACE/'launch_parallel_v1'
     m['exclusive_output']=dict(repository_path=c.NAMESPACE+'launch_parallel_v1',absolute_path=str(out))
     if tamper=='unsealed':m['execution_plan_sealed']=False

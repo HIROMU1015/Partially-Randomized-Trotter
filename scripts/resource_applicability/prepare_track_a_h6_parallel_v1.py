@@ -6,7 +6,7 @@ import sys
 ROOT=Path(__file__).resolve().parents[2];sys.path.insert(0,str(ROOT/'src'))
 from trottertracks.resource_applicability.h6_parallel_contract_v1 import (BASE,PREPARATION,NAMESPACE,
     KIND,sources,file_hash,read,proposed_resources,registrations,phase_a_receipt,carry_calls,
-    observation_policy,validate_plan,grant_draft,static_demand,LOCK,SCHEMA,prior_stop_accounting)
+    observation_policy,validate_plan,grant_draft,static_demand,LOCK,SCHEMA,prior_stop_accounting,saved_result_reuse)
 from trottertracks.resource_applicability.ax2b_limits import exclusive_json
 
 
@@ -22,13 +22,15 @@ def main():
             receipt_sha256=file_hash(a.roundoff_receipt))
     base=read(ROOT/BASE);proof=phase_a_receipt(base);out=ROOT/NAMESPACE/'launch_parallel_v1';out.parent.mkdir(parents=True,exist_ok=True)
     if out.exists():raise ValueError('PARALLEL_OUTPUT_USED')
+    reuse=saved_result_reuse(ROOT,base);rows=registrations(base,reuse)
     m=dict(schema=SCHEMA,kind=KIND,repository_root=str(ROOT),
         source_commit=a.source_commit,source_hashes={q:file_hash(ROOT/q) for q in sources(ROOT)},
         base_manifest=base,base_sha256=file_hash(ROOT/BASE),phase_a_receipt=proof,
-        registrations=registrations(base),carry_known_calls=carry_calls(ROOT,base,proof,roundoff=binding is not None),
+        registrations=rows,verified_reuse=reuse,
+        carry_known_calls=carry_calls(ROOT,base,proof,roundoff=binding is not None,reuse=reuse),
         roundoff_preparation_binding=binding,
         prior_stop_accounting=prior_stop_accounting(ROOT),
-        static_demand=static_demand(registrations(base)),
+        static_demand=static_demand(rows),
         proposed_resources=proposed_resources(),observation_policy=observation_policy(),
         exclusive_output=dict(repository_path=str(out.relative_to(ROOT)),absolute_path=str(out)),
         one_shot_lock=LOCK,
