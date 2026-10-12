@@ -357,3 +357,5 @@ artifacts/<validation_name>/
 module群 `src/trottertracks/representation_exploration/n3_width_{contract,algebra,generator,check,pipeline,execution}_v2.py`。
 runner `scripts/run_n3_width_comparison_v2.py`、保存verifier `scripts/verify_n3_width_comparison_v2.py`、入力literal `scripts/prepare_n3_width_inputs_v2.py`、tests `tests/test_n3_width_comparison_v2.py`。
 artifacts `artifacts/n3_width_comparison_v2/2026-10-12/preparation/`。32 synthetic PASS、科学入力の数値評価0、実行認可待ち・Mandatory STOP。
+
+2026-10-13 N3幅比較v2：[一回pilotの一次結果](../docs/research/n3_width_comparison_v2_results_20261013.md)。固定source13不変、science6H/504 rows、independent1224証拠PASS、認可消費済み・Mandatory STOP・GPT科学判断待ち。

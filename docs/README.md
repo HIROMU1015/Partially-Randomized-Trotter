@@ -389,3 +389,5 @@ artifacts `artifacts/n3_width_comparison_v2/2026-10-12/preparation/`。32 synthe
 N3幅比較v2：[GitHub公開・再取得確認](research/n3_width_comparison_v2_publication_20261012.md)。payload9da12e27、52 blobs一致、remote preflight・保存合成90証拠PASS。科学実行0・明示認可待ち。
 
 2026-10-13 N3幅比較v2：[固定pilot実行認可](research/n3_width_comparison_v2_execution_authorization_20261013.md)。6H、source/input/plan不変、attempt1/retry0、結果・監査公開後STOP。
+
+2026-10-13 N3幅比較v2：[一回pilotの一次結果](research/n3_width_comparison_v2_results_20261013.md)。固定source13不変、science6H/504 rows、independent1224証拠PASS、認可消費済み・Mandatory STOP・GPT科学判断待ち。

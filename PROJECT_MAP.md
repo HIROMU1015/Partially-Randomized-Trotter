@@ -1,5 +1,13 @@
 # プロジェクト案内
 
+## 2026-10-13 N3幅比較v2：固定6H pilot完了・GPT科学判断待ち
+
+[一次結果](docs/research/n3_width_comparison_v2_results_20261013.md)、[GPTへの引継ぎ](docs/research/n3_width_comparison_v2_results_review_handoff_20261013.md)。
+3stress family×full5/6、ν2/3、非負density、一外部mode、候補2mode/H、ε_proj=.01（化学geometry/basis/DF/L_D/PF窓なし）。
+source3eba0814で一回/retry0、504 mode-method records完了。独立saved auditは1224 certificate・36反証record PASS。
+NORM/OCC/同値SDP/SOSは6/6H・12/12modeで目標受理、追加H縮約0。OCCの有限幅はcheap ORよりH5/6で狭く、同値SDPより全6Hで狭い幅・短いcold medianを取得した。
+新しい科学結果の研究価値は未採択。認可消費済み、Mandatory STOP、次はGPT科学レビューの開始承認待ち。N1停止/N2保留、旧primary/gate/source/resultsを保持。以下は過去milestone。
+
 ## 2026-10-12 N3 OLD-family v1 one-shot results
 
 [固定S1二例の有理dual分離・独立監査・STOP](docs/research/n3_old_family_v1_results_20261012.md)。同じ保存U/c/OCC有理δでNORM＋全旧κ/μ族（FIVE包含）を分離。
