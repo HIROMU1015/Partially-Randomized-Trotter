@@ -31,3 +31,19 @@ S1ではlossless selectionとschemaだけを確認。[入力索引](../../artifa
 消費済みのsaved-width認可は流用しない。全結果・失敗後STOP、retry0、次段false、中心テーマnull。
 
 次に必要なのは固定S1二例の一回診断の明示実行指示。新しい証拠・未判定結果が得られた後、その科学的意味をGPTへ戻す。
+
+## 固定source・plan
+
+source13 `1aa12ab0b777b28f1428d9bb8417af93c4376aae`、fingerprint `46baa537269db923dd8b8c95e4788555471c60bad1572d3a01ec1e70245c6488`。
+[execution plan](n3_old_family_v1_execution_plan_20261012.json)、SHA `ef3c66d2e01e47027d9d382afc324aab9b7263aab3d550c3576c31e0f5bd6ff5`。
+input fingerprint `81e90cb760d6e6e9774aad808ed40953bae0b461c18532bff78d7ead6e4e584d`。新scopeの[authorization template（false）](../../artifacts/n3_old_family_v1/2026-10-12/preparation/authorization_template.json)。
+未認可templateを用いてlaunchせず、明示実行指示後に別execution branchで有効な認可を作成する。
+既存global manifestのdescription欠落FAILは保持し、今回entry schema/prefix保全を別に確認する。
+
+## 実行前監査・保全
+
+[source-bound preflight](../../artifacts/n3_old_family_v1/2026-10-12/preparation/source_bound_preflight.json) PASS、新S1診断/PSD/eigh/証拠提案0。
+[未認可・消費済み認可の拒否](../../artifacts/n3_old_family_v1/2026-10-12/preparation/authorization_rejection_audit.json)はoutput作成前にPASS。
+作業中rootでは外部の資料配置整理が入り、51文書は同じSHAの移動先を確認、5索引等の外部編集はそのまま保持した。
+同一path/statusを維持したとは主張しない。専用branchの旧source/result/STOP・保護tree2882entries・旧manifest98entriesは不変。
+[保全監査](../../artifacts/n3_old_family_v1/2026-10-12/preparation/preservation_audit.json)、[外部配置変更](../../artifacts/n3_old_family_v1/2026-10-12/preparation/root_external_relocation.json)。
