@@ -13,3 +13,9 @@ S1の弱下界行はNORM/OCCとも未採択、強下界行は両方通過し、�
 費用はproducerとchecker、全factorialとstandalone再構成を区別して記録。
 [結果報告](../n3_occupation_transfer_v1_results_20261012.md)。追加scan/retryなし、Mandatory STOP。
 新科学結果の意味は次のGPT判断事項。GitHub公開・再取得receiptを後続commitへ追加する。
+
+## GitHub公開・保存結果の再取得後
+
+payload `e36e37bf5413aeba1b94e31e1d7ea6dcbaaf297c` をHIROMU1015専用branchへpush。別bareへGitHubからfetchし42 blobsをSHA/size/byte照合。
+remote export exact checker5,008,702 checks PASS。新payloadはfetch前に別bareへ存在せず、local object/alternatesなし。
+[publication receipt](../n3_occupation_transfer_v1_publication_20261012.md)。科学batch再実行0、STOP維持。
