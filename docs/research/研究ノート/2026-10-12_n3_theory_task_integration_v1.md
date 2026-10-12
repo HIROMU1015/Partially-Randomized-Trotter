@@ -11,3 +11,5 @@ SQuISH全文を補充、Coleman公式全文401とOverton全文未取得を記録
 次はGPTが統合した研究差分と強対照・taskの採択を判断する段階。レビュー開始認可と新計算認可は別。
 
 入口：[統合準備](../n3_theory_task_integration_v1_20261012.md)。Mandatory STOP。
+
+公開追記：source370c42a6、payload2de3b26fをHIROMU1015専用branchへpush。GitHub再取得66 blobs／7,725,968 bytes一致、取得checker二例の出力がlocal archiveと同一。中断中のroot索引2件の外部編集を保持。新science0、GPT研究判断待ち、Mandatory STOP。

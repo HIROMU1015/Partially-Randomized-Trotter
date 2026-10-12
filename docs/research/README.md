@@ -364,3 +364,5 @@ local implementation testは科学transfer結果ではない。別authorization�
 保存帰結checker：`src/trottertracks/representation_exploration/n3_theory_implications_v1.py`、CLI：`scripts/verify_n3_theory_implications_v1.py`、合成tests：`tests/test_n3_theory_implications_v1.py`。
 証拠・review/identity：`artifacts/n3_theory_task_integration_v1/2026-10-12/`。
 30 synthetic PASS／保存全幅補題二例を独立照合。新science0、幅generator未実装、次はGPT研究判断、Mandatory STOP。
+
+N3統合資料のGitHub取得確認：`docs/research/n3_theory_task_integration_v1_publication_20261012.md`（payload 2de3b26f、66 blobs、一致PASS、科学STOP）。
