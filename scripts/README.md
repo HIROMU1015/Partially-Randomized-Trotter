@@ -557,3 +557,8 @@ source固定前の最終確認：profiler context違反のtechnical STOPを追�
 ## E/T v7
 
 `tracks/algorithm_codesign/run_df_correction_et_resumption_v7.py`：raw-phase accounting修正、新result v4。native22/T64/caps不変。
+
+
+## E/T saved recovery
+
+`tracks/algorithm_codesign/run_df_correction_et_saved_recovery.py`はv7の保存値だけをpostprocessする。新native/T/matrixを生成しない。元run分類/marker保持、別recovery namespaceで完了後STOP。

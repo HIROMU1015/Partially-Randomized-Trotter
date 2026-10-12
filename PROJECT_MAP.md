@@ -997,3 +997,8 @@ TECHNICAL_INCONCLUSIVE、r6 controlled wholeのnumerical upper 2e-7認証失敗�
 ## Track B E/T phase v7
 
 [raw phase会計修正](docs/tracks/algorithm_codesign/df_correction_et_phase_v7_preparation_20261012.md)：非対応Wへの未実施置換誤差を除きraw位相/strict保証を保持、unsupported Tはunknown。91 focused PASS、新namespace df_correction_et_phase_v7、新result v4。旧marker/結果不変、利用者の技術継続認可内。
+
+
+## E/T saved accounting recovery
+
+[準備](docs/tracks/algorithm_codesign/df_correction_et_saved_recovery_preparation_20261012.md)：v7全E/T完了後の保存修復、large unknown dictionaryをlossless blob化、元ASTのsaved-only会計を復元する。追加science/native/T0、原630file/marker保持、新classificationはSAVED_E_T_ACCOUNTING_COMPLETE。

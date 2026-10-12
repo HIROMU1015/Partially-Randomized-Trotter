@@ -608,3 +608,8 @@ TECHNICAL_INCONCLUSIVE、r6 controlled numerical upper認証失敗、native10/T0
 ## E/T phase v7
 
 [技術修正・検証](tracks/algorithm_codesign/df_correction_et_phase_v7_preparation_20261012.md)、[contract/manifest/tests](../artifacts/track_b_df_correction_et_phase_preparation/2026-10-12/v7/)。
+
+
+## E/T saved recovery
+
+[準備](tracks/algorithm_codesign/df_correction_et_saved_recovery_preparation_20261012.md)、[契約/validation](../artifacts/track_b_df_correction_et_saved_recovery_preparation/2026-10-12/)。元v7 one-shotは保存失敗を保持。

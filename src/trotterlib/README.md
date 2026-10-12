@@ -522,3 +522,8 @@ lossless blob/snapshot codecとversion-specific実行保護を追加した。
 ## E/T phase v7
 
 新namespace `../trottertracks/algorithm_codesign/df_correction_et_phase_v7/`内でraw/W phase会計を修正。共有API不変。phase/observer/integration/storage focused testsと[報告](../../docs/tracks/algorithm_codesign/df_correction_et_phase_v7_preparation_20261012.md)参照。
+
+
+## E/T saved recovery
+
+新namespace `../trottertracks/algorithm_codesign/df_correction_et_saved_recovery/`、metadata AST/accountingとlossless chunk fixだけ。共有library/元science source不変、追加science0。[準備](../../docs/tracks/algorithm_codesign/df_correction_et_saved_recovery_preparation_20261012.md)。

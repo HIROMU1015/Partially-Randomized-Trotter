@@ -494,3 +494,8 @@ S5 d0a12bae/A5 0e147e27で一回実行。TECHNICAL_INCONCLUSIVE、r6 controlled 
 ## E/T phase v7 continuation
 
 [raw phase会計修正](df_correction_et_phase_v7_preparation_20261012.md)：strict Operator/2e-7/caps不変、unsupported Tはunknown。91 focused PASS。旧結果とmarker保持、新sourceで継続する。
+
+
+## E/T saved recovery
+
+[追加scienceなしの会計復元](df_correction_et_saved_recovery_preparation_20261012.md)。元source ASTと保存native22/T39、lossless blob修復。原v7分類保持。復元後mandatory STOP、科学判断はGPT側。
