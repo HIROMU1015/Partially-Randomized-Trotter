@@ -1,0 +1,88 @@
+{
+  "kind": "OFF_DOMAIN_FOCUSED_VALIDATION_NOT_REGISTERED_SCIENCE",
+  "final_tests": 141,
+  "fail": 0,
+  "skip": 0,
+  "new_tests": 53,
+  "existing_regression_tests": 88,
+  "by_class": {
+    "tests.tracks.algorithm_codesign.test_df_correction_et_resumption": 53,
+    "tests.tracks.algorithm_codesign.test_df_correction_comparison_v2": 62,
+    "tests.tracks.algorithm_codesign.test_df_correction_integrity_v3": 26
+  },
+  "runtime": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+  "command": "python -B -m pytest tests/tracks/algorithm_codesign/test_df_correction_et_resumption.py tests/tracks/algorithm_codesign/test_df_correction_comparison_v2.py tests/tracks/algorithm_codesign/test_df_correction_integrity_v3.py -q -p no:cacheprovider --junitxml=/tmp/track-b-et-final-validation.xml",
+  "threads": "BLAS/OpenMP/MKL/Rayon=1; QISKIT_PARALLEL=FALSE",
+  "attempts": [
+    {
+      "scope": "initial new tests",
+      "PASS": 48,
+      "FAIL": 0
+    },
+    {
+      "scope": "combined before mock environment restoration",
+      "PASS": 138,
+      "FAIL": 1,
+      "reason": "mock coordinator changed process PYTHONPATH; following storage child could not import trottertracks; test isolation fixed, production/runtime untouched"
+    },
+    {
+      "scope": "combined after test isolation fix",
+      "PASS": 139,
+      "FAIL": 0
+    },
+    {
+      "scope": "final with wrong-target and terminal-storage controls",
+      "PASS": 141,
+      "FAIL": 0
+    }
+  ],
+  "registered_E_native_compile": 0,
+  "registered_T_synthesis": 0,
+  "registered_CD_recalculation": 0,
+  "registered_identity_diagnostic": 0,
+  "off_domain_native_and_matrix_work": "Performed on analytic 1/2-mode or fixed Pauli synthetic controls only; not claimed as registered science",
+  "full_test_suite": false,
+  "logs": [
+    {
+      "path": "artifacts/track_b_df_correction_et_resumption_preparation/2026-10-12/focused_validation/initial_new48.log",
+      "bytes": 99,
+      "sha256": "9e2069f60a79943095dad0ae4c1b549ecfb8b92098e05bae2c250d4a97668953"
+    },
+    {
+      "path": "artifacts/track_b_df_correction_et_resumption_preparation/2026-10-12/focused_validation/initial_new48.xml",
+      "bytes": 8833,
+      "sha256": "9044f94c216fba3cb60a92387f57934ab207bbb1162f45c819e9c836aacdf3b3"
+    },
+    {
+      "path": "artifacts/track_b_df_correction_et_resumption_preparation/2026-10-12/focused_validation/mock_environment_failure.log",
+      "bytes": 4626,
+      "sha256": "56ac7dc0cff80bdbc6f30069c5772bd0331dd1cdc1578cc30ab5f7efa331b1f6"
+    },
+    {
+      "path": "artifacts/track_b_df_correction_et_resumption_preparation/2026-10-12/focused_validation/mock_environment_failure.xml",
+      "bytes": 28627,
+      "sha256": "7b72f74479b081e379ec57f75711778836449892e38ee5b7151d34c57ead16ad"
+    },
+    {
+      "path": "artifacts/track_b_df_correction_et_resumption_preparation/2026-10-12/focused_validation/environment_fixed139.log",
+      "bytes": 180,
+      "sha256": "3d72437f45876e89794b710dd26b5cc1786ac957d7238613ddfe9ba46512d3aa"
+    },
+    {
+      "path": "artifacts/track_b_df_correction_et_resumption_preparation/2026-10-12/focused_validation/environment_fixed139.xml",
+      "bytes": 24389,
+      "sha256": "e13197f444b1b4711e44f657567cd95b335aa1829b3b5eefefe52e29934bf9d9"
+    },
+    {
+      "path": "artifacts/track_b_df_correction_et_resumption_preparation/2026-10-12/focused_validation/final141.log",
+      "bytes": 180,
+      "sha256": "b7c62bdfb04b4bcd43e56fc098c1d9d9c68648d1bca5f4902f2262843dfae756"
+    },
+    {
+      "path": "artifacts/track_b_df_correction_et_resumption_preparation/2026-10-12/focused_validation/final141.xml",
+      "bytes": 24760,
+      "sha256": "e3b2d0f4a4bcd99bac77dacb3ae9496625d0fe40a62dccedd5348f6fc242fc8c"
+    }
+  ],
+  "mandatory_STOP": true
+}

@@ -966,3 +966,8 @@ source固定前の最終確認：profiler context違反のtechnical STOPを追�
 ## E-r3 identity-only observer修正 v2（2026-10-12）
 
 [限定修正・技術検証](docs/tracks/algorithm_codesign/e_r3_identity_observer_repair_preparation_20261012.md)：observer設置／復元失敗をtechnical STOPへ伝播。77 focused PASS、contract全bytes・expected・capsは不変。新sourceとv2 namespaceを固定し、READY_FOR_SEPARATE_ONE_SHOT_AUTHORIZATION。旧S/科学結果/marker/authorization/STOP保持、登録診断/A作成0。追加GPT詳細研究レビューは不要、別明示one-shot承認までmandatory STOP。
+
+
+## Track B E/T resumption v4 preparation（2026-10-12）
+
+[Source/contract/validation report](docs/tracks/algorithm_codesign/df_correction_et_resumption_preparation_20261012.md)：accepted layered input/strict-target/native-IR/provenance gates; CD saved-only; native22/T64 unchanged; 141 focused PASS. New namespace `src/trottertracks/algorithm_codesign/df_correction_et_resumption/`、runner `scripts/tracks/algorithm_codesign/run_df_correction_et_resumption_v4.py`、artifact `artifacts/track_b_df_correction_et_resumption_preparation/2026-10-12/`。新authorization pending、登録E/T0、mandatory STOP。旧source/results/markers/STOP保持。
