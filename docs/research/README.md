@@ -198,3 +198,11 @@ local implementation testは科学transfer結果ではない。別authorization�
 [dated note](研究ノート/2026-10-13_track_b_df_rte_product_generation_audit.md)。
 新手法pilotの方法差は未定義、conditional expected cost未取得。次はGPTのscope/着地点判断。
 science0、新authorization0、旧closure/結果/marker/STOPは不変、mandatory STOP。
+
+
+## 2026-10-13 Track B：Gaussian積生成候補の科学判断完了
+
+[最新GPTレビュー原本](track_b_gaussian_product_generation_scope_review_20261013.md)／
+[終了記録](../tracks/algorithm_codesign/gaussian_product_generation_closure_20261013.md)。
+候補の自動延長を止める判断は完了。期待資源の改善/非改善は未確定。応用研究を自動採択しない。
+[dated note](研究ノート/2026-10-13_track_b_gaussian_product_generation_closure.md)。同じレビューの反復不要、mandatory STOP。

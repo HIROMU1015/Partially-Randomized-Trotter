@@ -529,3 +529,12 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 固有の追加手順は未定義。Gate 1新手法pilot条件未達、Gate 2 conditional cost未確定。
 STOP_FOR_GPT_SCOPE_DECISION。Gate 3の新fixture/runner/compile契約は未作成、science0、mandatory STOP。
 旧generic whole closure、G10/RA-D0、Track Aのsource/result/markerは保持。
+
+
+## 2026-10-13：Gaussian積生成候補の終了
+
+[GPT科学レビュー原本](../../research/track_b_gaussian_product_generation_scope_review_20261013.md)と
+[終了記録・証拠索引](gaussian_product_generation_closure_20261013.md)。
+現在のactive-span/反射積/partial Gaussian合成を独立新手法として採択せず、今回の候補を区切る。
+performance未確定、性能negativeではない。応用研究・新候補・Track B全体終了は未採択。
+旧監査/whole closure/G10/RA-D0/Track A/N3は不変、新science/authorization/marker0、mandatory STOP。

@@ -1032,3 +1032,11 @@ ideal Gaussian productは前提付きで成立。指定pipelineは既知部品�
 公開保存値だけではconditional population cost上限を認証できない。新行列/回路/compile/synthesis/NPZ/science0、
 STOP_FOR_GPT_SCOPE_DECISION。元whole補正closure、Track A/G10/RA-D0結果・source・marker・STOPは維持。
 [証拠manifest](artifacts/track_b_df_rte_product_generation_audit/2026-10-13/evidence_manifest_v1.json)。
+
+
+## 2026-10-13 Track B：Gaussian積生成候補の区切り
+
+[最新GPTレビュー原本](docs/research/track_b_gaussian_product_generation_scope_review_20261013.md)に従い、
+[終了記録・証拠索引](docs/tracks/algorithm_codesign/gaussian_product_generation_closure_20261013.md)を保存。
+現手順を独立新規アルゴリズムとして採択せず、候補監査を区切る。期待資源の改善/非改善は未確定、性能negativeではない。
+応用研究・新候補・Track B全体の終了は未採択。新science0、旧source/result/marker/STOP保持、mandatory STOP。

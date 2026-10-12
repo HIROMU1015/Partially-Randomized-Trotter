@@ -641,3 +641,10 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 既知手順への還元、primitive/control/source access、保存費用の不足を確認。新手法採択・registered実行なし、mandatory STOP。
 [入力レビュー](research/track_b_post_closure_research_direction_review_20261013.md)と
 [metadata証拠](../artifacts/track_b_df_rte_product_generation_audit/2026-10-13/evidence_manifest_v1.json)を参照。
+
+
+## Track B Gaussian積生成候補の終了記録（2026-10-13）
+
+[GPT判断原本](research/track_b_gaussian_product_generation_scope_review_20261013.md)、
+[終了記録・証拠索引](tracks/algorithm_codesign/gaussian_product_generation_closure_20261013.md)。
+現手順は新規アルゴリズムとして非採択。性能は未確定、追加実行なし、mandatory STOP。
