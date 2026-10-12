@@ -115,3 +115,5 @@ future module/runner/tests/checkerは契約JSONに記した未実装path。旧so
 - [2026-10-12 N3統合準備](2026-10-12_n3_theory_task_integration_v1.md)
 
 - [N3幅比較v2準備](2026-10-12_n3_width_comparison_v2_preparation.md)
+
+2026-10-13 N3幅比較v2：[固定pilot実行認可](2026-10-13_n3_width_comparison_v2_execution.md)。6H、source/input/plan不変、attempt1/retry0、結果・監査公開後STOP。

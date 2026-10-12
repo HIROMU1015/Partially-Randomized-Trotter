@@ -790,3 +790,5 @@ N3幅比較v2の最終sourceは`3eba0814e690e95993db60809c4c3c96784b07c0`。
 新6入力の科学実行は未認可・Mandatory STOP。
 
 N3幅比較v2：[GitHub公開・再取得確認](docs/research/n3_width_comparison_v2_publication_20261012.md)。payload9da12e27、52 blobs一致、remote preflight・保存合成90証拠PASS。科学実行0・明示認可待ち。
+
+2026-10-13 N3幅比較v2：[固定pilot実行認可](docs/research/n3_width_comparison_v2_execution_authorization_20261013.md)。6H、source/input/plan不変、attempt1/retry0、結果・監査公開後STOP。
