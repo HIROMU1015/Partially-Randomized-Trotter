@@ -469,3 +469,11 @@ source固定前の最終確認：profiler context違反のtechnical STOPを追�
 ## E/T resumption v4 preparation（2026-10-12）
 
 [Source/contract/technical validation](df_correction_et_resumption_preparation_20261012.md)。Layered acceptance amendment、CD saved-only、new native/T binding、141 focused PASS。Registered E/T execution0、separate authorization pending、mandatory STOP。
+
+
+## 2026-10-12 E/T storage v5：承認待ち
+
+[技術準備・provenance報告](df_correction_et_storage_v5_preparation_and_handoff_20261012.md)。
+v4 output guard失敗後のlossless保存修正。immutable blob共有、state history、native/T descriptor binding、
+64 MiB cap不変、164 local focused PASS。保存済み15recordのI/O検算だけで、登録E/T0。
+READY_FOR_SEPARATE_E_T_V5_ONE_SHOT_AUTHORIZATION、旧STOP/marker不変、new A0、mandatory STOP。

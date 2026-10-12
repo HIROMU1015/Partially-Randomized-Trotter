@@ -581,3 +581,12 @@ source固定前の最終確認：profiler context違反のtechnical STOPを追�
 ## Track B E/T resumption v4 preparation（2026-10-12）
 
 [Accepted review](research/track_b_e_r3_identity_acceptance_and_resumption_review_20261012.md) / [source report](tracks/algorithm_codesign/df_correction_et_resumption_preparation_20261012.md) / [pending contract and evidence](../artifacts/track_b_df_correction_et_resumption_preparation/2026-10-12/). Registered E/T0, mandatory STOP; old results unchanged.
+
+
+## Track B E/T storage v5 preparation（2026-10-12）
+
+[限定保存修正・承認待ち報告](tracks/algorithm_codesign/df_correction_et_storage_v5_preparation_and_handoff_20261012.md)、
+[dated technical note](research/研究ノート/2026-10-12_track_b_et_storage_v5_preparation.md)、
+[source/evidence manifest](../artifacts/track_b_df_correction_et_storage_preparation/2026-10-12/v5/source_manifest_v5.json)。
+164 local focused PASS、I/O-only元bytes/hash復元。科学条件・64 MiB cap不変、旧結果/marker保持、
+登録E/T0、別明示one-shot承認までmandatory STOP。

@@ -530,3 +530,13 @@ source固定前の最終確認：profiler context違反のtechnical STOPを追�
 ## Track B E/T resumption v4（2026-10-12）
 
 `tracks/algorithm_codesign/run_df_correction_et_resumption_v4.py` is a separately authorized E/T-only one-shot coordinator; CD saved-only, fresh marker/namespace, retry0/STOP. See [source report](../docs/tracks/algorithm_codesign/df_correction_et_resumption_preparation_20261012.md). No registered execution during preparation.
+
+
+## Track B E/T storage v5（2026-10-12）
+
+- `tracks/algorithm_codesign/run_df_correction_et_resumption_v5.py`：future source-bound E/T one-shot、別明示承認待ち。
+- `tracks/algorithm_codesign/verify_df_correction_et_v5_storage_replay.py`：保存値／literal controlのI/Oだけ。登録matrix/compile/synthesisなし。
+- `tracks/algorithm_codesign/verify_df_correction_et_v5_preparation.py`：contract/AST/旧証拠/pending拒否/source manifestのread-only照合。
+
+[固定上限・validation・未検証事項](../docs/tracks/algorithm_codesign/df_correction_et_storage_v5_preparation_and_handoff_20261012.md)。
+登録E/Tは未実行、旧v4 marker/STOP保持、mandatory STOP。

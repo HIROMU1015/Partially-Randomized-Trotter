@@ -497,3 +497,12 @@ source固定前の最終確認：profiler context違反のtechnical STOPを追�
 ## Track B E/T layered acceptance preparation（2026-10-12）
 
 Shared library APIs and fingerprint policy remain unchanged. The separate `src/trottertracks/algorithm_codesign/df_correction_et_resumption/` adapter reuses existing numeric/native/synthesis helpers. See [source report](../../docs/tracks/algorithm_codesign/df_correction_et_resumption_preparation_20261012.md). No registered E/T run in preparation.
+
+
+## Track B E/T storage v5 の実験namespace
+
+共有trotterlibは変更せず、[df_correction_et_storage_v5](../trottertracks/algorithm_codesign/df_correction_et_storage_v5/README.md)に
+lossless blob/snapshot codecとversion-specific実行保護を追加した。
+[技術報告](../../docs/tracks/algorithm_codesign/df_correction_et_storage_v5_preparation_and_handoff_20261012.md)と
+[証拠manifest](../../artifacts/track_b_df_correction_et_storage_preparation/2026-10-12/v5/source_manifest_v5.json)を参照。
+科学部分はv4と同一、登録E/Tは別承認まで未実行、mandatory STOP。

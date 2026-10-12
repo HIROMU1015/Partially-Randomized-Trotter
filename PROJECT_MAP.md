@@ -971,3 +971,12 @@ source固定前の最終確認：profiler context違反のtechnical STOPを追�
 ## Track B E/T resumption v4 preparation（2026-10-12）
 
 [Source/contract/validation report](docs/tracks/algorithm_codesign/df_correction_et_resumption_preparation_20261012.md)：accepted layered input/strict-target/native-IR/provenance gates; CD saved-only; native22/T64 unchanged; 141 focused PASS. New namespace `src/trottertracks/algorithm_codesign/df_correction_et_resumption/`、runner `scripts/tracks/algorithm_codesign/run_df_correction_et_resumption_v4.py`、artifact `artifacts/track_b_df_correction_et_resumption_preparation/2026-10-12/`。新authorization pending、登録E/T0、mandatory STOP。旧source/results/markers/STOP保持。
+
+
+## Track B E/T storage v5 preparation（2026-10-12）
+
+[保存方式限定修正・validation・承認待ち](docs/tracks/algorithm_codesign/df_correction_et_storage_v5_preparation_and_handoff_20261012.md)。
+namespace `src/trottertracks/algorithm_codesign/df_correction_et_storage_v5/`、runner `run_df_correction_et_resumption_v5.py`、
+storage/integration focused tests、I/O replay/static provenance auditor、[新artifact](artifacts/track_b_df_correction_et_storage_preparation/2026-10-12/v5/)を追加。
+164 local focused PASS、保存15recordのbytes/hash復元、旧284result/363非index source不変。
+科学条件・native22/T64・64 MiB cap不変、登録E/T0・new A0、READY_FOR_SEPARATE_E_T_V5_ONE_SHOT_AUTHORIZATION、mandatory STOP。
