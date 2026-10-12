@@ -32,7 +32,8 @@ CVXPY/NumPy/SCSのdependency importはworker setupに分離し全method timing�
 kernel、cold、warm primitive hits、全factorial harnessのwallを区別する。既存science証拠のwarm taskは今回測定しない。
 
 wall/CPUはbound、numerical proposal、rational repair、independent checker、width/output、SOS assemblyのexclusive timerを記録する。
-mode selectorの時間はHのmethod path totalに含むものとは別に集計し、OR coverageの再構成を独立運用測定と呼ばない。
+mode selectorとmethod/endpointのin-memory serializationの実測時間・bytesを別に保存し、Hのmethod path totalにも加える。
+共有のdisk IOはrunner harnessの費用に属する。OR coverageの再構成を独立運用測定と呼ばない。
 explicit NumPy eigh、solver calls/iterations、PSD probes/checks、有理演算／bit、証拠bytes、失敗理由を保存。
 SCS内部eigensolver数は未instrumentedで、managed NumPy callsへ加算／0認定しない。
 RSSはEngine開始/終了とprocess lifetime highwater、runner+descendantsの50ms目標sampleを記録。孤立したmethod allocation peakではない。

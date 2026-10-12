@@ -12,6 +12,22 @@
 - [source](../../src/trottertracks/representation_exploration/n3_width_generator_v2.py)、[独立checker](../../src/trottertracks/representation_exploration/n3_width_check_v2.py)、[pipeline](../../src/trottertracks/representation_exploration/n3_width_pipeline_v2.py)、[CAR assembly](../../src/trottertracks/representation_exploration/n3_width_algebra_v2.py)、[contract](../../src/trottertracks/representation_exploration/n3_width_contract_v2.py)、[実行gate](../../src/trottertracks/representation_exploration/n3_width_execution_v2.py)。
 - [runner](../../scripts/run_n3_width_comparison_v2.py)、[saved verifier](../../scripts/verify_n3_width_comparison_v2.py)、[literalのみの入力準備](../../scripts/prepare_n3_width_inputs_v2.py)、[tests](../../tests/test_n3_width_comparison_v2.py)。
 - [未使用係数pack](../../artifacts/n3_width_comparison_v2/2026-10-12/preparation/input_pack.json)、[identity](../../artifacts/n3_width_comparison_v2/2026-10-12/preparation/input_identity_audit.json)、[依存pin](../../scripts/n3_width_comparison_v2_requirements.txt)。
+- [固定execution plan](n3_width_comparison_v2_execution_plan_20261012.json)、[source freeze](../../artifacts/n3_width_comparison_v2/2026-10-12/preparation/source_freeze.json)、[未認可template](../../artifacts/n3_width_comparison_v2/2026-10-12/preparation/authorization_template_NOT_AUTHORIZED.json)、[Mandatory STOP](../../artifacts/n3_width_comparison_v2/2026-10-12/preparation/MANDATORY_STOP.json)。
+
+## 最終freezeと保存検査
+
+source commitは`3eba0814e690e95993db60809c4c3c96784b07c0`、13 source blobを独立にSHA照合した。
+source fingerprintは`9f7687e74fe93f4b238579ee70b846521f4ea296195491c9f22e536a60066d96`。
+input SHA-256は`4c59ba790c7a1faefa6e60dbfbde3d13b718e168bb6491fa71594103b3ac8395`、
+execution plan SHA-256は`dc43a8d781e76ba4c3fc92f528c973f225861bf47160c5866bff2bebd9eb9d53`。
+plan、template、STOPは同じsource/inputへ結合し、実行許可はfalseのまま。
+
+[合成テスト記録](../../artifacts/n3_width_comparison_v2/2026-10-12/preparation/synthetic_tests.txt)は32 passed、fail/skip 0。
+[保存合成証拠](../../artifacts/n3_width_comparison_v2/2026-10-12/preparation/synthetic_saved_proofs.json)は最終sourceに結合し、
+90 certificateを独立checkerで検証した。[費用記録](../../artifacts/n3_width_comparison_v2/2026-10-12/preparation/synthetic_resource_profile.json)は合成fixtureだけの実装検査で、登録6入力の科学成績に含めない。
+[preflight](../../artifacts/n3_width_comparison_v2/2026-10-12/preparation/preflight.json)はsource/input SHA、schema、環境と比較設定のみを確認し、数値評価0。
+[最終準備監査](../../artifacts/n3_width_comparison_v2/2026-10-12/preparation/final_preparation_audit.json)は旧manifest 104 entryの保全、root未変更、science出力ディレクトリなしも確認した。
+GitHub公開とremote再取得の証跡は別のpublication recordに保存する。
 
 ## 検証と費用設計
 
@@ -39,7 +55,7 @@ RSSはboundary／process highwater／sampled aggregate。孤立method peakや瞬
 
 ## 次の担当と認可地点
 
-完了済み科学レビュー第14節の「科学実行の直前には別途ユーザー認可を得る」に従って停止する。
+完了済み科学レビュー第14節の「新しい科学実行の明示承認が必要な位置で停止する」に従って停止する。
 次に必要なのは、固定source/input/planに対する**一回の新比較pilotの明示実行認可**。
 同じ比較方針をsource修正・synthetic PASS・公開だけを理由に詳細GPTレビューへ戻さない。
 実行認可後はsource/input/planとcapsを維持しattempt1/retry0で実行、独立保存監査、結果公開後にMandatory STOP。

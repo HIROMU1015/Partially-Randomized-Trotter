@@ -9,3 +9,10 @@ kernel/cold×3 timing repetition、2workers/thread1、call/bit/output/log/memory
 元source/S1/primary/2-base/STOP・N1停止/N2保留を維持。中心テーマ未採択。
 source/input/plan公開後も新scientific pilotの明示実行認可を待つ。新sourceだけを理由に同内容のGPTレビューを繰り返さない。
 入口：[準備](../n3_width_comparison_v2_preparation_20261012.md)。Mandatory STOP。
+
+## 最終source・plan固定の追記
+
+source `3eba0814e690e95993db60809c4c3c96784b07c0`、13 blob一致。selector/serializationの実測をtask費用へ加えた。
+32 synthetic PASSと最終sourceの保存90証拠検査を記録。未使用6入力はidentity/schemaのpreflightだけで数値適用0。
+[固定plan](../n3_width_comparison_v2_execution_plan_20261012.json) SHA `dc43a8d781e76ba4c3fc92f528c973f225861bf47160c5866bff2bebd9eb9d53`。
+旧manifest104件、root差分を保全。公開・再取得確認まで進め、明示科学実行認可前で停止する。
