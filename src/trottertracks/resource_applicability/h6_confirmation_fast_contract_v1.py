@@ -40,7 +40,8 @@ def hash_policy():
     return dict(policy='content_checked_canonical_v2_reuse_v1', payload_cache_bytes=32*2**20,
         entry_bytes=2**20, cache_entries=8192, per_call_guard_nodes=8192, digest_entries=1024,
         cross_call_object_identity_keys=False, guard_every_call=True, worker_group_scope=True,
-        numeric_array_nonfinite='STOP', old_canonical_bytes_and_digest=True)
+        numeric_array_nonfinite='STOP', old_canonical_bytes_and_digest=True,
+        call_local_pinned_lazy_standard_definition_memo=True)
 
 
 def proposed_resources():

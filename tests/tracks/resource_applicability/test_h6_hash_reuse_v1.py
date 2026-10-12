@@ -153,3 +153,26 @@ def test_worker_wraps_only_frozen_cost_port_and_emits_reuse_statistics():
     assert 'from .h6_roundoff_cost_port_v1 import cost_task' in text
     assert 'use_preparations(preparations), use_fingerprint_reuse()' in text
     assert "writer.write('hash_reuse_statistics.json',hash_cache.snapshot())" in text
+
+
+def test_lazy_standard_definition_memo_is_call_local_and_skips_explicit_override():
+    session=f.FingerprintReuse();guard=f._Guard(session.stats);c=QuantumCircuit(1)
+    a,b=RZGate(.17),RZGate(.17)
+    assert guard.operation(a,c)==guard.operation(b,c)
+    assert session.stats['guard_standard_definition_hits']>0
+    altered=RZGate(.17);d=QuantumCircuit(1);d.x(0);altered.definition=d
+    assert guard.operation(altered,c)!=guard.operation(a,c)
+    # A new call never reuses the prior call's definition guard.
+    fresh=f._Guard(session.stats);before=session.stats['guard_standard_definition_hits']
+    fresh.operation(RZGate(.17),c)
+    assert session.stats['guard_standard_definition_hits']==before
+
+
+def test_overridden_lazy_standard_method_is_walked(monkeypatch):
+    session=f.FingerprintReuse();guard=f._Guard(session.stats);c=QuantumCircuit(1)
+    before=guard.operation(RZGate(.17),c)
+    def alternate(op):
+        d=QuantumCircuit(1);d.x(0);op.definition=d
+    monkeypatch.setattr(RZGate,'_define',alternate)
+    assert guard.operation(RZGate(.17),c)!=before
+    assert f._Guard(session.stats).operation(RZGate(.17),c)!=before

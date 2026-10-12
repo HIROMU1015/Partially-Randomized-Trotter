@@ -16,6 +16,7 @@ import threading
 from .ax2b_stream_fingerprint_v5 import _Writer, _HashSink
 from .ax2b_diagnostics_v4 import fingerprint_stage
 from trotterlib.rte_compiled_cost import _numeric_parameter_payload, _condition_payload
+from qiskit.circuit.library import RZGate, RXGate, RYGate, PhaseGate, UGate, U1Gate, U2Gate, U3Gate, RGate
 
 CACHE_BYTES = 32 * 2**20
 ENTRY_BYTES = 2**20
@@ -24,6 +25,11 @@ GUARD_NODES = 8192
 DIGEST_ENTRIES = 1024
 _ENCODER = json.JSONEncoder(sort_keys=True, separators=(',', ':'))
 _ALIASES = ('ax2b_native_df_v5', 'h6_matched_memory_v3', 'h6_matched_port_v1')
+# These exact pinned built-ins define their lazy circuits from params only.
+# Explicit definitions, subclasses, and instance/class method overrides always
+# take the recursive path. Reuse below is per-call; nothing is trusted next call.
+_LAZY_STANDARD = {cls:getattr(cls,'_define') for cls in
+    (RZGate,RXGate,RYGate,PhaseGate,UGate,U1Gate,U2Gate,U3Gate,RGate)}
 
 
 def _numeric(value):
@@ -47,7 +53,7 @@ def _record(value):
 class _Guard:
     """Per-call strong references prevent lazy-node ID recycling; bounded memo."""
     def __init__(self, stats):
-        self.memo = {}; self.active = set(); self.stats = stats
+        self.memo = {}; self.active = set(); self.stats = stats; self.lazy_standard = {}
 
     def _node(self, key, references, build):
         if key in self.active:
@@ -88,7 +94,6 @@ class _Guard:
         def build():
             base = getattr(op, 'base_gate', None)
             blocks = getattr(op, 'blocks', ())
-            definition = getattr(op, 'definition', None)
             fields = dict(type=f'{type(op).__module__}.{type(op).__qualname__}', name=str(op.name),
                 num_qubits=int(op.num_qubits), num_clbits=int(op.num_clbits),
                 params=[_numeric(x) for x in op.params],
@@ -97,8 +102,24 @@ class _Guard:
                 if hasattr(op, name):fields[name] = int(getattr(op, name))
             if base is not None:fields['base_gate'] = self.operation(base, c)
             if blocks:fields['control_flow_blocks'] = [self.circuit(b) for b in blocks]
+            # Qiskit's packed standard instructions can expose a new Python
+            # gate/lazy definition on every read. Object-ID memo alone misses
+            # them. Reuse the *validated definition guard* for the same plain
+            # built-in numeric header in this call, not an unvalidated graph.
+            cls = type(op); standard_key = None
+            if (cls in _LAZY_STANDARD and getattr(cls,'_define') is _LAZY_STANDARD[cls]
+                    and '_define' not in vars(op) and vars(op).get('_definition') is None
+                    and base is None and not blocks):
+                standard_key = _record(fields)
+                if standard_key in self.lazy_standard:
+                    self.stats['guard_standard_definition_hits'] += 1
+                    return self.lazy_standard[standard_key]
+            definition = getattr(op, 'definition', None)
             if definition is not None:fields['definition'] = self.circuit(definition)
-            return hashlib.sha256(b'h6_current_graph_guard_v1/operation\0'+_record(fields)).hexdigest()
+            result = hashlib.sha256(b'h6_current_graph_guard_v1/operation\0'+_record(fields)).hexdigest()
+            if standard_key is not None and len(self.lazy_standard) < GUARD_NODES:
+                self.lazy_standard[standard_key] = result
+            return result
         # Conditions refer to the containing circuit's bit indices.
         return self._node(('operation', id(op), id(c)), (op, c), build)
 
@@ -151,7 +172,7 @@ class FingerprintReuse:
         self.cached_bytes = 0; self.reserved_bytes = 0
         self.stats = dict(hash_calls=0, final_digest_hits=0, operation_byte_hits=0,
             operation_byte_misses=0, guard_nodes_walked=0, guard_memo_hits=0,
-            payload_peak_reserved_bytes=0, evictions=0)
+            guard_standard_definition_hits=0,payload_peak_reserved_bytes=0, evictions=0)
 
     def _peak(self):
         self.stats['payload_peak_reserved_bytes'] = max(self.stats['payload_peak_reserved_bytes'],
