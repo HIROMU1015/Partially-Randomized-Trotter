@@ -817,3 +817,5 @@ N3保存帰属v1の[固定plan](docs/research/n3_saved_attribution_v1_execution_
 N3保存帰属v1：[公開・remote取得確認](docs/research/n3_saved_attribution_v1_publication_20261013.md)。payload08ffe034、81 blobs一致、identityと3 literal files byte一致。新数値事後評価・PSD再認証の明示認可前、Mandatory STOP。
 
 - 2026-10-13 N3保存帰属v1 [一回実行認可](docs/research/n3_saved_attribution_v1_execution_authorization_20261013.md)：固定保存データ事後評価＋3証拠再認証、結果後STOP。
+
+- 2026-10-13 N3保存帰属v1 [結果・限界](docs/research/n3_saved_attribution_v1_results_20261013.md)、[GPT判断引継ぎ](docs/research/n3_saved_attribution_v1_results_review_handoff_20261013.md)。保存データ限定の独立監査 `scripts/audit_n3_saved_attribution_v1_results.py`、artifact `artifacts/n3_saved_attribution_v1/2026-10-13/evaluation1{,_audit}`。新producer/solverなし、STOP。

@@ -35,3 +35,11 @@ Overton–Womersley/Coleman原典全文未取得も保持。先行性の網羅�
 sourceの欠落fieldを埋めるためだけに再実行、solver tuning、新ε、新入力を加えない。
 研究目的を「専用Python実装が汎用solverより速い」に置き換えず、次の科学判断で継続・縮小・技術記録化を評価する。
 N1停止、N2保留、原primaryと旧gate、中心テーマnullを維持する。
+
+## 2026-10-13 一回事後評価後の追記
+
+[結果](n3_saved_attribution_v1_results_20261013.md)により、保存幅のroot活性、最終q、SOSのe寄与、保存phase内訳の整理と、既存3証拠の厳密再認証を完了した。上の「未認証」「認可待ち」は準備時の履歴。
+全候補ROOT、same-mode kernel反復0のOCC最終q/幅が同値SDPより小さいことをexactに照合。原因の完全分離、理想最適性、同機能同品質費用、狭幅taskの用途価値は引き続き未確定。
+未保存のraw proposal/rや専用refutation timerは復元できず、新solver/再実行で補っていない。eを除いたSOS幅や反証無しの反実仮想費用を報告しない。
+理想族同値とSOS包含の理論、原εでの追加H縮約0、文献確認範囲、旧primary/gate、N1停止/N2保留は維持する。
+認可は一回分消費済み。次は研究継続/縮小/技術記録化とclaim範囲をGPTが判断する段階。中心テーマnull・Mandatory STOP。
