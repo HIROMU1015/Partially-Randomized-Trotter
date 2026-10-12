@@ -1,5 +1,12 @@
 # Validation status
 
+## 2026-10-12 N3 saved-width preparation only
+
+[Preparation](docs/research/n3_saved_width_v1_preparation_20261012.md): lossless evidence views, 1250 JSON-pointer checks; 24 synthetic tests PASS.
+New real-eight width/forced-energy/eigenvalue evaluations zero; old result and STOP retained. Separate posthoc execution authorization required.
+Source present/no current CI; local and remote saved verification are not external scientific reproduction. Existing global manifest description failure retained.
+
+
 ## 2026-10-12 N3 OCC v1 fixed eight-input batch complete
 
 [Result/scope](docs/research/n3_occupation_transfer_v1_results_20261012.md): strong baseline OR, NORM and raw OCC certify 8/8; OCC-only additional acceptance 0 inputs/0 bases.

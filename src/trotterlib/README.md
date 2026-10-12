@@ -1,5 +1,12 @@
 # trotterlib モジュール索引
 
+## 2026-10-12 N3 saved-width v1 preparation
+
+[証拠整理・式・synthetic・数値適用前STOP](../../docs/research/n3_saved_width_v1_preparation_20261012.md)。
+module `n3_saved_evidence_v1.py`/`n3_saved_width_v1.py`/`n3_saved_width_analysis_v1.py`; scripts `prepare_n3_saved_width_v1.py`/`run_n3_saved_width_v1.py`/`verify_n3_saved_width_v1.py`;
+tests `test_n3_saved_width_v1.py`; artifacts `artifacts/n3_saved_width_v1/2026-10-12/`. 実8入力の新幅は未評価。
+
+
 ## 2026-10-12 N3 OCC v1 fixed eight-input result
 
 [一回結果・監査・STOP](../../docs/research/n3_occupation_transfer_v1_results_20261012.md)。強対照/OCC各8/8、固有gain0、保存check5,008,702 PASS。
