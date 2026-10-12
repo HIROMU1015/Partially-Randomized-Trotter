@@ -2,6 +2,8 @@
 
 ## 2026-10-12 H6：独立32確認準備・未承認STOP
 
+Git pushは認証不足で失敗。準備はlocal固定済み、新remote branch未作成・remote SHA null。手動push後のremote照合が残る。
+
 [契約](docs/research/track_a_h6_independent_confirmation_preparation_v1.md)、[候補固定・245source・69tests・metadata整合監査](artifacts/resource_applicability/track_a_h6_confirmation_preparation_v1/2026-10-12/README.md)。
 全592探索後の原B2 top2/精度union8、各32独立seed/256group/512wrapperをseal。科学224/旧source240・compiler/input/environment不変。
 69 local限定tests合格、全保存groupとsource/profile/input byte binding・CSV別算術・seed式を照合。これは実確認/独立scientific review/CIのPASSではない。

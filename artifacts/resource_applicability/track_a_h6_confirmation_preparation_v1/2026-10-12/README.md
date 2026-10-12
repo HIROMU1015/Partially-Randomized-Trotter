@@ -1,5 +1,7 @@
 # H6独立32 trajectory確認：準備完了・実行未承認
 
+**公開待ち：** local準備は完了しましたが、Git pushはサーバーのGitHub認証不足で失敗しました。新remote branchは未作成です。[公開状態と手動push](publication_status_v1.json)。認証設定変更なし、確認計算未起動。
+
 [実行準備契約・科学条件・次の承認案](../../../../docs/research/track_a_h6_independent_confirmation_preparation_v1.md)。
 起点/result `df99d6ee28942df8d12aac3c4db7cd202df55d77`、SOURCE `73018cbcc39803890974c7ee51401063e6c8daf6`。
 原top2/精度のunion8を固定、各32 fresh trajectory＝256 group/512 wrapper。

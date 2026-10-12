@@ -115,3 +115,9 @@ launchには新 `h6_confirmation_authorization_v1` が必要。SOURCE/profile、
 次の承認案は「固定8構成それぞれ独立32 trajectory（256 group/512 wrapper）を、SOURCEと4worker資源に結んだ新grantで一度実行し、完了またはSTOP後に停止。trajectory累積上限832→840のみ承認、その他科学条件・compiler・上限・carryは維持。自動retry/追加sample/次stage/H8なし」。
 
 本段階ではgrant発行・実32計算を行わず、公開確認後にSTOPする。hash再利用・8workerの別依頼は保留のまま。
+
+## 公開試行の結果
+
+local SOURCE/準備資料固定後のnon-force pushはGitHub username認証を取得できずexit128。新remote branchはls-remoteで未存在、remote SHAはnull。
+認証/共有/Git設定を変更せず、[公開状態・手動push command](../../artifacts/resource_applicability/track_a_h6_confirmation_preparation_v1/2026-10-12/publication_status_v1.json)を記録した。
+実確認0、approved=false/runtime_authorization=false/allowed_cpus=[]・commandnullを維持し、公開待ちでSTOPする。利用者の手動push後にremote SHA照合が残る。
