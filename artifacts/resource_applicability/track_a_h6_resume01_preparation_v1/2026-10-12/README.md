@@ -46,3 +46,9 @@ git -C /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h6-roundo
 
 [Native起動receipt](launch_authorization_v1/started_receipt_v1.json)。CoPID 4101124、先頭456/458/459/460を4workerで実処理中。保存7結果はdispatchしない。起動時STOP理由null。
 Read-only status: `/home/AbeHiromu/projects/h6-handoff-evidence/20261012/roundoff-resume01-v1/MONITOR_STATUS.py`。完了/STOP後終了。
+
+## 完了・結果集約
+
+上のREADY/起動中記載は当時の履歴です。新135が完了、保存7と合わせ142/142、全探索592/592・1188 wrapper。
+[最新の結果入口](../../track_a_h6_exploration_summary_v1/2026-10-12/README.md)。exit0、cleanup error0、wall約4時間18分、aggregate peak11.1797GiB。
+独立32確認は未実施。新計算/grant/pushなし、原source/runtime/旧証拠は保持。

@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+H6探索結果：[研究報告](docs/research/track_a_h6_exploration_result_v1.md)、[全候補CSV・map・592来歴・metadata監査](artifacts/resource_applicability/track_a_h6_exploration_summary_v1/2026-10-12/README.md)。592/592・1188 wrapper完了、独立確認未実施。
+
 H6再開135：[設計](docs/research/track_a_h6_resume01_execution_v1.md)、[70tests/source/再利用/grant入口](artifacts/resource_applicability/track_a_h6_resume01_preparation_v1/2026-10-12/README.md)。完了7件だけ再利用、135元task/seed固定。
 
 H6退出時監視修正：[設計](docs/research/track_a_h6_exit_observation_fix_v1.md)、[58限定tests・保存7group/残135・binding](artifacts/resource_applicability/track_a_h6_exit_observation_fix_v1/2026-10-12/README.md)。runtime差分1件、再起動0。

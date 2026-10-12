@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+H6探索結果：[研究報告](../../docs/research/track_a_h6_exploration_result_v1.md)、[保存scalar/費用map/来歴](../../artifacts/resource_applicability/track_a_h6_exploration_summary_v1/2026-10-12/README.md)。科学library変更0、全探索完了・独立確認前。
+
 H6再開135：[contract](../trottertracks/resource_applicability/h6_parallel_contract_v1.py)、[reuse tests](../../tests/tracks/resource_applicability/test_h6_resume01_v1.py)、[資料](../../artifacts/resource_applicability/track_a_h6_resume01_preparation_v1/2026-10-12/README.md)。科学library/丸めportは変更しない。
 
 H6退出観測：[監視module](../trottertracks/resource_applicability/h6_parallel_execution_v1.py)、[専用tests](../../tests/tracks/resource_applicability/test_h6_exit_observation_v1.py)、[資料](../../artifacts/resource_applicability/track_a_h6_exit_observation_fix_v1/2026-10-12/README.md)。科学libraryは変更しない。

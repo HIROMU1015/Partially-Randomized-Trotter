@@ -1,5 +1,13 @@
 # Validation status
 
+## 2026-10-12 H6：探索592完了・保存metadata集約
+
+[結果報告](docs/research/track_a_h6_exploration_result_v1.md)、[全候補CSV/592来歴/費用map/局所metadata監査](artifacts/resource_applicability/track_a_h6_exploration_summary_v1/2026-10-12/README.md)。
+linear H6/1Å/STO-3G/DF19/sector400/T0.8・prefix5/10/15/full19・delta0.1–0.8。592/592 group・1188 wrapper・92 signal・84 B3組を受理。
+原resume01はexit0/mandatory STOP、135全worker回収・cleanup error0、wall4時間18分、aggregate peak11.1797GiB。
+P=0/経験的u/各PR8標本の探索点推定では全4精度でPR RZ費用がfull PFより約55–63%低い。独立32確認0、候補seal/新grant0、母平均winner/数値certificate/最終総費用は未認定。
+これはlocal保存JSON/precision算術検査であり、独立review・CI・旧host/compiler bit同一性のPASSではない。新science/compile0、science224/closure240維持、agent push0。以下は過去段階の履歴。
+
 ## 2026-10-12 H6共用サーバーPhase A v1：dependency STOP
 
 [Phase A原結果・監査](artifacts/resource_applicability/track_a_h6_server_phase_a_result_v1/2026-10-12/README.md)。

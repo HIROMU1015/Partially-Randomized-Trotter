@@ -1,5 +1,7 @@
 # scripts 索引
 
+H6保存結果集約：[stdlib metadata script](../artifacts/resource_applicability/track_a_h6_exploration_summary_v1/2026-10-12/aggregate_saved_results.py)、[結果入口](../artifacts/resource_applicability/track_a_h6_exploration_summary_v1/2026-10-12/README.md)。既存admission/accountingで全592/1188を集計、新科学計算0。
+
 H6再開135：既存[parallel preparer](resource_applicability/prepare_track_a_h6_parallel_v1.py)/[runner](resource_applicability/run_track_a_h6_parallel_v1.py)へcomplete-only7結果再利用をbinding。[資料](../artifacts/resource_applicability/track_a_h6_resume01_preparation_v1/2026-10-12/README.md)。
 
 H6監視修正：[既存parallel runner](resource_applicability/run_track_a_h6_parallel_v1.py)のsourceを固定し、own kernel-exit pendingをnonblockingで扱う。[資料](../artifacts/resource_applicability/track_a_h6_exit_observation_fix_v1/2026-10-12/README.md)。科学run/grantは今回0。
