@@ -62,6 +62,8 @@ case内の数値matrix・PSD・旧λ/LDL・trial diagonalをcache、独立case�
 BLAS/OMP/MKL/Numba/Rayon各1thread、spawnをsyntheticで確認。
 
 現在sourceの固定3fixture packet観測：wall約0.254秒、parent CPU約0.223秒、children CPU約0.240秒。
+計測fixtureは実one-body＋非負density、外部1mode、active2/3、ν1/2、full3/4、scale1、δ=.004。
+geometry・化学basis・DF rank・L_D・time-evolution/PF窓は適用なし。係数はsynthetic_packに全保存。
 parent max RSS 50,659,328 bytes、最大child max RSS 46,661,632 bytes。
 parent/helperを含むsampled aggregate peak 142,606,336 bytes。
 目標poll50ms、観測最大gap約95.0ms。瞬間peakやhard OS aggregate上限の実測とは呼ばない。
@@ -77,6 +79,9 @@ wall/CPU-time capはなし。raw/factor wallと経路再構成費用を分け、
 ## 5. 停止位置と次の手順
 
 source・契約・検証資料を固定し、source-bound plan、hash/schema preflight、公開・再取得を確認する。
+source commit `83f51cd8a4848572c66a5535c67d0d0a5f3868cd`、plan SHA
+`a825ece44d9bf8266a9c83d390572139d3799b748419b644515d79230e5c0d0f`。
+preflight1692 schema checks PASS、new8のpredicate/eigensolver/ground callsはいずれも0。
 本taskの終端は実行認可待ち。詳細科学レビューの同内容再実施は要求しない。
 次の判断は準備が揃ったかの確認と、一回の固定8入力batchへの明示認可。
 sourceに従った科学batchは未実行。run1 directoryは作成しない。
