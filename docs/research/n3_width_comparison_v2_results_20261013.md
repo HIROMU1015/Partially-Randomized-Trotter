@@ -100,3 +100,5 @@ max monitored rational bits1417/4096。Fractionの全temporary bit長を完全�
 
 [GPTへの引継ぎ論点](n3_width_comparison_v2_results_review_handoff_20261013.md)を準備する。新結果の研究上の価値・中心テーマ・次の範囲はGPTの判断事項。
 認可は一回消費済み。追加科学実行もGPT詳細レビュー開始も自動で認可せず、Mandatory STOP、N1停止、N2保留、原primary・旧2-base gate・中心テーマnullを維持する。
+
+固定GitHub URLとremote取得・保存照合の証跡は[結果公開記録](n3_width_comparison_v2_results_publication_20261013.md)に揃えた。

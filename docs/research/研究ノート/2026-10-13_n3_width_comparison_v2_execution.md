@@ -13,3 +13,8 @@ OCCの有限H幅はcheap ORより5/6で狭く、同等SDPより全6Hで狭い幅
 この有限費用と幅の価値をCodexで中心テーマ採択へ変換せず、[一次結果](../n3_width_comparison_v2_results_20261013.md)・[GPT引継ぎ](../n3_width_comparison_v2_results_review_handoff_20261013.md)を保存した。
 SCS上限20000iteration到達18call（optimal_inaccurate）も記録し、有理証拠チェックを通した。追加solver/入力/再試行0。
 認可消費済み・Mandatory STOP。GitHub公開/再取得後にGPT科学判断を待つ。rootのdocs/progress/README.mdに外部編集を観測し巻き込まず保持した。
+
+## 公開確認と引継ぎの追記
+
+payload6d8f769bをGitHubから取得し、59 blobs/31,864,153 bytes一致。再取得sourceの独立保存監査1224証拠/36反証、全4集計fileの再抽出byte一致。
+[結果公開記録](../n3_width_comparison_v2_results_publication_20261013.md)を保存し、新結果のGPT科学レビュー開始承認待ちへ移る。科学batch総数1、追加実行/solver/新入力0、認可消費済み・Mandatory STOP。

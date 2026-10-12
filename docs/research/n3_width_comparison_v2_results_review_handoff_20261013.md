@@ -30,3 +30,5 @@ NORMは目標.01で同じ採否を、OCCより短いcold取得medianで得た。
 
 GitHubへcommit/pushし、固定URLとremote取得証跡を別publication recordに揃える。local絶対pathだけを公開取得の証拠にしない。
 旧primary `NO_ADDITIONAL_ACCEPTANCE_OBSERVED`、旧2-base gate、N1停止、N2保留を保つ。今回の計算認可を追加実行やレビュー開始へ流用しない。
+
+固定GitHub URLとremote取得・保存照合の証跡は[結果公開記録](n3_width_comparison_v2_results_publication_20261013.md)に揃えた。
