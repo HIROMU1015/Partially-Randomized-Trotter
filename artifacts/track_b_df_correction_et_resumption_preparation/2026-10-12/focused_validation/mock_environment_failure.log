@@ -1,0 +1,69 @@
+........................................................................ [ 51%]
+.....................................................F.............      [100%]
+=================================== FAILURES ===================================
+______ test_guard_reads_successful_chunked_child_without_changing_limits _______
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-381/test_guard_reads_successful_ch0')
+
+    def test_guard_reads_successful_chunked_child_without_changing_limits(tmp_path):
+        p=tmp_path/'child.json'
+        code=('from trottertracks.algorithm_codesign.df_correction_comparison.storage import dump_json;'
+              'dump_json('+repr(str(p))+',{"text":"x"*600000,"_process_receipt":{"CPU_seconds":0.01}})')
+        sup=Supervisor(Limits(10,10,10000,10000),tmp_path)
+        job={'label':'metadata-child','output':str(p),'command':[sys.executable,'-B','-c',code]}
+>       assert len(sup.phase([job],Limits(5,5,10000,10000,5,5),1,per_key=True))==1
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tracks/algorithm_codesign/test_df_correction_integrity_v3.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <trottertracks.algorithm_codesign.df_correction_comparison.guard.Supervisor object at 0x788e9a700650>
+jobs = [{'command': ['/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python', '-B', '-c', 'from trottertracks.al...})'], 'label': 'metadata-child', 'output': '/tmp/pytest-of-abe/pytest-381/test_guard_reads_successful_ch0/child.json'}]
+limits = Limits(wall=5, cpu=5, rss_mib=10000, worker_rss_mib=10000, per_key_wall=5, per_key_cpu=5)
+workers = 1
+
+    def phase(self, jobs, limits, workers, *, per_key=False):
+        """Jobs are fixed commands/result paths; submission order never adapts."""
+        phase_start, cpu_start = time.monotonic(), self.cpu()
+        queue = list(jobs)
+        live = []
+        failure = None
+        phase_completed = []
+        try:
+            if limits.wall<=0 or limits.cpu<=0:
+                raise CapFailure('Phase budget already exhausted; no launch')
+            while queue or live:
+                self.check_total()
+                if time.monotonic()-phase_start>limits.wall or self.cpu()-cpu_start>limits.cpu:
+                    raise CapFailure('Phase budget exhausted before further submissions')
+                while queue and len(live) < workers:
+                    job = queue.pop(0)
+                    log = self.output_dir/(job['label']+'.log')
+                    stream = log.open('xb')
+                    env = dict(os.environ, **{k:'1' for k in ('OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS','RAYON_NUM_THREADS')})
+                    env.update(QISKIT_PARALLEL='FALSE', PYTHONDONTWRITEBYTECODE='1')
+                    cpu_limit = limits.per_key_cpu if per_key else limits.cpu
+                    def restrictions():
+                        if cpu_limit:
+                            limit = max(1, math.ceil(cpu_limit))
+                            resource.setrlimit(resource.RLIMIT_CPU, (limit, limit))
+                        resource.setrlimit(resource.RLIMIT_FSIZE, (self.output_cap, self.output_cap))
+                    p = subprocess.Popen(job['command'], stdout=stream, stderr=subprocess.STDOUT,
+                                         env=env, start_new_session=True, preexec_fn=restrictions)
+                    live.append({'process': p, 'job': job, 'start': time.monotonic(), 'stream': stream})
+                for row in list(live):
+                    code = row['process'].poll()
+                    if code is None: continue
+                    row['stream'].close()
+                    live.remove(row)
+                    receipt = {'label':row['job']['label'], 'exit_status':code,
+                               'wall_seconds':time.monotonic()-row['start'], 'retry':0}
+                    self.receipts.append(receipt)
+                    if code or not artifact_exists(row['job']['output']):
+>                       raise CapFailure('Child failed or output missing: '+row['job']['label'])
+E                       trottertracks.algorithm_codesign.df_correction_comparison.guard.CapFailure: Child failed or output missing: metadata-child
+
+src/trottertracks/algorithm_codesign/df_correction_comparison/guard.py:132: CapFailure
+=========================== short test summary info ============================
+FAILED tests/tracks/algorithm_codesign/test_df_correction_integrity_v3.py::test_guard_reads_successful_chunked_child_without_changing_limits
+1 failed, 138 passed in 2.57s
