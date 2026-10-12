@@ -3,7 +3,7 @@
 
 利用者の「ハッシュ再利用・8 workerの実装を入れて。今動かしている計算はそのままでよい」に従い、現4worker runを停止・変更せず、独立worktreeで実装した。
 
-SOURCE `87b6b9f46b7e8ba9abe132ee21478c114b6f46f7`、[一つの資料入口](../../artifacts/resource_applicability/track_a_h6_confirmation_fast_preparation_v1/2026-10-12/README.md)。旧確認SOURCE73018cbcの245 source/science224はblob/SHA不変。追加runtime6件でclosure251、test2件を固定した。
+SOURCE `87b6b9f46b7e8ba9abe132ee21478c114b6f46f7`、[一つの資料入口](../../../artifacts/resource_applicability/track_a_h6_confirmation_fast_preparation_v1/2026-10-12/README.md)。旧確認SOURCE73018cbcの245 source/science224はblob/SHA不変。追加runtime6件でclosure251、test2件を固定した。
 
 ## ハッシュ再利用
 
