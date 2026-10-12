@@ -13,3 +13,9 @@ S1二例ともCERTIFIED_NORM_AND_OLD_FAMILY_SEPARATION。coordinate/混合の有
 numeric eigh/primal probes0、analytic rays5/混合2。独立saved2件PASS、原OCC/U,cもreplayでPASS。
 元primary/gate/STOP保持、最適旧幅差率や新規性を採択しない。新分離結果の科学判断をGPTへ戻しMandatory STOP。
 [結果報告](../n3_old_family_v1_results_20261012.md)。
+
+## 公開・remote保存監査
+
+payload 86c69983544064d1ed7ee7910634c541c7b982b7をGitHub再取得、69 blobsのbyte一致、new dual236/原OCC2873507 conditions全2件PASS。
+producer rerun0、旧result/STOP/manifest100/root1354files保全。新科学判断をGPTへ戻しMandatory STOP。
+[publication](../n3_old_family_v1_diagnostic_publication_20261012.md)。
