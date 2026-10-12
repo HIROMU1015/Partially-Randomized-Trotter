@@ -1,5 +1,11 @@
 # tests の役割
 
+## 2026-10-12 N3 OLD-family v1 preparation
++
++[数学契約・実装・実行前STOP](../docs/research/n3_old_family_v1_preparation_20261012.md)。
++modules `n3_old_family_contract_v1` / `n3_old_family_v1` / `n3_old_family_check_v1` / `n3_old_family_inputs_v1`、scripts prepare/run/verify_n3_old_family_v1、tests test_n3_old_family_v1。
++artifacts `artifacts/n3_old_family_v1/2026-10-12/`。23 synthetic PASS、新S1診断0、別実行指示待ち。元結果/STOP不変。以下は過去milestone。
+
 ## 2026-10-12 N3 saved-width v1 preparation
 
 [証拠整理・式・synthetic・数値適用前STOP](../docs/research/n3_saved_width_v1_preparation_20261012.md)。
