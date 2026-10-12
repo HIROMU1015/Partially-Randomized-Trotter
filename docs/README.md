@@ -1,5 +1,14 @@
 # 文書索引
 
+## 2026-10-13 N3成果確定・現検証系列終了
+
+[確定claim・成立条件・再開条件](research/n3_saved_attribution_v1_claim_and_observability_20261013.md)、[理論claim map](research/n3_theory_claim_map_v1_20261012.md)、[完了GPTレビュー原本](research/n3_saved_attribution_v1_scientific_review_2026-10-13.md)。
+証拠は `artifacts/n3_achievements_closure/2026-10-13/existing_evidence_index.json` の固定commit参照。研究判断は同directoryの `research_decision.json`。
+現N3の追加benchmark・保存帰属診断系列を終了し、主研究としての採択を見送る。理論と厳密分離・有限prototype観測を条件付きで保持。具体的な有用taskまたは理論差分でのみ再検討する。
+文書整理のみ、新science/数値的事後評価/再認証/benchmark/テスト/再レビュー0。元source/result/primary/gate/STOP・消費済み認可を保持。N1停止/N2保留、中心テーマnull、新テーマ未採択、Mandatory STOP。
+同じ内容の科学レビューは完了済みで、文書整理だけで再要求しない。全体manifestの既存description欠落FAILを個別保存照合と区別し、無断修正しない。以下の旧stage記述は当時の履歴。
+
+
 ## 2026-10-12 N3 OLD-family v1 one-shot results
 
 [固定S1二例の有理dual分離・独立監査・STOP](research/n3_old_family_v1_results_20261012.md)。同じ保存U/c/OCC有理δでNORM＋全旧κ/μ族（FIVE包含）を分離。

@@ -1,5 +1,8 @@
 # N3保存帰属v1：GPT科学判断への引継ぎ
 
+**2026-10-13完了追記**：[GPT科学レビュー](n3_saved_attribution_v1_scientific_review_2026-10-13.md)は完了し、ユーザー指示により[確定claim・研究判断](n3_saved_attribution_v1_claim_and_observability_20261013.md)へ反映した。
+現追加benchmark・帰属診断系列は終了、主研究採択見送り。文書整理完了を理由とする同レビューの再実施は不要。以下の「開始認可待ち」は引継ぎ作成時の履歴。新しい研究方針・追加計算は未採択・未認可、Mandatory STOP。
+
 2026-10-13 JST。新しい数値事後結果が得られたため、研究上の判断をGPTへ戻す。**GPTレビュー開始は別認可・Mandatory STOP**。
 [結果](n3_saved_attribution_v1_results_20261013.md)、[独立保存scalar/timer audit](../../artifacts/n3_saved_attribution_v1/2026-10-13/evaluation1_audit/independent_saved_scalar_timing_audit.json)、[3証拠再認証](../../artifacts/n3_saved_attribution_v1/2026-10-13/evaluation1/selected_existing_proof_recheck.json)を一組で扱う。
 通常のsource/gate/testを再度詳細レビューする要請ではない。

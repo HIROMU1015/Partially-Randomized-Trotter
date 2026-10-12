@@ -1,5 +1,14 @@
 # Validation status
 
+## 2026-10-13 N3成果確定・現検証系列終了
+
+[確定claim・成立条件・再開条件](docs/research/n3_saved_attribution_v1_claim_and_observability_20261013.md)、[理論claim map](docs/research/n3_theory_claim_map_v1_20261012.md)、[完了GPTレビュー原本](docs/research/n3_saved_attribution_v1_scientific_review_2026-10-13.md)。
+証拠は `artifacts/n3_achievements_closure/2026-10-13/existing_evidence_index.json` の固定commit参照。研究判断は同directoryの `research_decision.json`。
+現N3の追加benchmark・保存帰属診断系列を終了し、主研究としての採択を見送る。理論と厳密分離・有限prototype観測を条件付きで保持。具体的な有用taskまたは理論差分でのみ再検討する。
+文書整理のみ、新science/数値的事後評価/再認証/benchmark/テスト/再レビュー0。元source/result/primary/gate/STOP・消費済み認可を保持。N1停止/N2保留、中心テーマnull、新テーマ未採択、Mandatory STOP。
+同じ内容の科学レビューは完了済みで、文書整理だけで再要求しない。全体manifestの既存description欠落FAILを個別保存照合と区別し、無断修正しない。以下の旧stage記述は当時の履歴。
+
+
 ## 2026-10-13 N3保存帰属v1：完了レビューを採用、数値事後評価の認可前
 
 [準備資料](docs/research/n3_saved_attribution_v1_preparation_20261013.md)、[限定契約](docs/research/n3_saved_attribution_v1_posthoc_contract_20261013.md)。

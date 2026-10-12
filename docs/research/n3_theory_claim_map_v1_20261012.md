@@ -1,5 +1,8 @@
 # N3：保証・条件族・算法の統合claim map v1
 
+**2026-10-13現在**：[成果確定claim・成立条件](n3_saved_attribution_v1_claim_and_observability_20261013.md)と[完了GPTレビュー](n3_saved_attribution_v1_scientific_review_2026-10-13.md)を参照。
+T1–T9とS1の厳密分離を保持し、現行N3の追加検証系列を終了、主研究としての採択を見送る。以下は2026-10-12時点の定理・準備履歴であり、A1の未実装記述は当時の状態。
+
 2026-10-12 JST。完了済み[科学レビュー原文](../../artifacts/n3_theory_task_integration_v1/2026-10-12/review_intake.md)第10.1節へのCodex技術追補。
 旧報告、source、primary ledger、gate、STOPを変更しない。中心テーマ・新規性の採択は行わない。
 
@@ -88,3 +91,13 @@ finite failureは不可行性にせずSUFFICIENT_LEMMA_NOT_ESTABLISHED。既存s
 これらはsource-bound local検証。immutable CI・外部環境での科学再現と表示しない。
 
 今回の帰結はレビューで導出済みの内容の独立照合。元の一点診断報告の最適幅未判定記述は当時の履歴として保存し、この追補を新しい根拠として参照する。
+
+## 2026-10-13 成果固定と後続実装の位置
+
+A1はその後のv2 generator・selector・同値SDP・固定SOS比較で実装され、[固定6H pilot](n3_width_comparison_v2_results_20261013.md)と[保存帰属事後評価](n3_saved_attribution_v1_results_20261013.md)を一回ずつ完了した。
+実装・限定観測の完了を、主研究としての採択・最適性・同機能同品質の速度優位とは扱わない。
+同じ前提と情報の理想条件族ではNORM/FIVE/OLD⊆OCC=同値SDP⊆固定density-aware SOS。左側のS1分離と右側の指定query分離は異なる保存例であり、同一queryで全層のstrict差を示していない。
+FULL_H_LOWERを含むv2 CHEAP_OR全体は、この包含鎖の左端に置かない。
+[小さい証拠索引](../../artifacts/n3_achievements_closure/2026-10-13/existing_evidence_index.json)から、旧族全幅下端、同値契約、SOS正/OCC負と他mode正、元task結果へ追える。
+文書反映で新たな証明・PSD/eigen/幅計算を行わず、T1–T9の成立条件と保存証拠を保持した。
+研究方針は追加benchmark・帰属診断系列終了、主研究採択見送り、N1停止/N2保留、Mandatory STOP。[再開条件](n3_saved_attribution_v1_claim_and_observability_20261013.md#再開条件と作業完了)を満たす具体的な用途または理論差分が提示された場合のみ再検討する。
