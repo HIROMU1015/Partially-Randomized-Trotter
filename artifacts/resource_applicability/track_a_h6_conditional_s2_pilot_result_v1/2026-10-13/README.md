@@ -14,3 +14,6 @@ s2平均RZ96,285.25（SE324.0004）vs既存s0確認32の95,863.78125。保存pi2
 全8本はM=1だった。8標本では複数order2/希少component列を覆えず母平均上界/正式winnerは未認定。探索/確認/pilotをpoolせず、旧compiler bit同一性未検証も維持。
 
 native wall698.894秒、aggregate peak RSS0.956207GiB、runtime logical7.91MB。known compile1716/trajectory842＋旧予約20/10＝1736/852、reset/返却0・unknown actual=null。runtime grantは消費済み。追加science/H8/retry/resume/次stageなし。H4/共有/他job/venv/GPU操作0。旧592探索/256確認・科学224/runtime251/profile/input/sourceを保全。
+
+
+[結果commitと28 fileのremote byte取得確認](publication_receipt_v1.json)。公開receiptは結果を変更しない別commitで固定する。
