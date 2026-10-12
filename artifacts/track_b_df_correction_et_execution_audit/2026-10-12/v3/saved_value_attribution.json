@@ -1,0 +1,82 @@
+{
+  "classification": "TECHNICAL_INCONCLUSIVE",
+  "source": "90ce36e3fc383fcb4988c4df86328a08b0fef789",
+  "authorization": "3462c2b436f43d495bf52d999794b3dcdb701cf1",
+  "marker": {
+    "path": "artifacts/track_b_df_correction_et_resumption_result/2026-10-12/v3/one_shot_marker.json",
+    "bytes": 616,
+    "sha256": "246754c19bfee2f6be3cb1498961ac6db58c639a5333e73180b1b08b0e674193"
+  },
+  "direct_reason": "Whole native numerical allowance not certified",
+  "failed_context": {
+    "active_modes": 6,
+    "controlled": true,
+    "arm": "A"
+  },
+  "components_exact": {
+    "Operator_residual_upper": "129424922457768038068100129683321575878187548060749749990368924090999710917725848237268219022949100944001015502599065/43322963970637712941651883543993879995569280404498205725447302790147077100335261568143266356504812053149542903246715572216397824",
+    "Operator_forward_guard": "5004069867037340711002728913079863445040362090598642873097102271600447643089889661911664039827525667468077/307828172967030401781758895459613327488914305791524086116982409751523220852814082309574554673876015812553882992640",
+    "reference_radius": "4629130271806635432774389237/166153499473114484112975882535043072",
+    "angle_lowering_error_upper": "133286881439152494873609485386998499906801270288919709153299487621478092181032396857623071/69992023193056381579920071267763883691301421788582797965624659405118495974380029543152421664737722368",
+    "global_phase_error_upper": "3435725404260539334911977470174091017293360315807594382039637757363259502687074413401248024729941963/34996011596528190789960035633881941845650710894291398982812329702559247987190014771576210832368861184"
+  },
+  "components_float_diagnostic": {
+    "Operator_residual_upper": 2.9874438541528742e-12,
+    "Operator_forward_guard": 1.6256049012035348e-08,
+    "reference_radius": 2.7860564396693197e-08,
+    "angle_lowering_error_upper": 1.904315311353585e-12,
+    "global_phase_error_upper": 0.09817477042444983
+  },
+  "combined_exact": "299294027876968871498195049178055908563717927494649406047310138475166940922247547954082022036210733145088848790644406262265684246502494332051/3048582564287618245508758444473278023685387310109156948519695674841963655921463822877878014913907610058420465004448153900161521710239391416320",
+  "allowance": "1/5000000",
+  "all_other_four_terms_exact": "134508051364967850203637511189537995704641798178143024506340803011966921781697596881072646588948943740265423446394375440581976848753811/3048582564287618245508758444473278023685387310109156948519695674841963655921463822877878014913907610058420465004448153900161521710239391416320",
+  "global_phase_raw": "829012236565963/562949953421312",
+  "phase_supported": false,
+  "native_IR_sha256": "f9f7c8169496d1ec14b35841b5688801435ac36f7973de381a5c9b662042f071",
+  "original_files": 292,
+  "original_bytes": 37120020,
+  "manifest_files_unchanged": 963,
+  "native_compile_calls": 10,
+  "T_calls": 0,
+  "retries": 0,
+  "scientific_winner": null,
+  "checks": [
+    {
+      "name": "component sum equals guard",
+      "PASS": true
+    },
+    {
+      "name": "failed threshold",
+      "PASS": true
+    },
+    {
+      "name": "unsupported phase retained",
+      "PASS": true
+    },
+    {
+      "name": "IR digest",
+      "PASS": true
+    },
+    {
+      "name": "source auth marker binding",
+      "PASS": true
+    },
+    {
+      "name": "outer exit2 agrees",
+      "PASS": true
+    },
+    {
+      "name": "T not reached",
+      "PASS": true
+    },
+    {
+      "name": "output within active cap",
+      "PASS": true
+    }
+  ],
+  "guard_ledger_values_saved": true,
+  "scope": "Read-only saved-value attribution; no new Operator/circuit/synthesis",
+  "next_technical_fix": "Charge W lowering distance only for a supported/selected substitution; otherwise keep raw scalar phase and T inconclusive. Retain strict full Operator residual and all other bounds/thresholds.",
+  "continuation_authorized_by_latest_user": true,
+  "mandatory_STOP_per_run": true
+}
