@@ -40,3 +40,7 @@ metadata-only auditで新worktreeの固定profile/input bytes・保存探索592�
 元runが継続しているため、ここで止めたり切替を行わない。利用者の切替指示後、旧run終了・own cleanup、最終receipt/remaining/carry、必要な予算変更と8worker資源の認可、fresh CPU/RAM/pressure/OOM/FS/inode/quota、未使用output/control・新one-shotを結合する。完了/STOP後mandatory STOP、自動retry/追加sample/H8/次stageなし。
 
 資料はlocal source/review commitに固定。GitHub認証待ちは既存状態のまま、認証/共有設定を変更せず、remote公開済みを主張しない。新commit対象はsource/testsと軽量準備資料だけ、実runtime/checkpoint/cache/NPZは追加しない。
+
+## 追記：利用者指示と上限承認による一回引継ぎ
+
+159 complete group/318 wrapperを保持、元4workerをSTOP・全163reap/cleanup0で終了。partial4を別予約し、利用者がcompile1720/trajectory844を承認。[新起動契約](../track_a_h6_confirmation_fast_handoff_v1.md)で残97のtask/seed/source/profile/input/carry/reuse/resourcesをseal。CoPID39637・8worker起動・first STOP=null。source87b6b9f4不変、101人工testsは再実行しない。H4/共有/venv変更なし、公開は認証待ち。

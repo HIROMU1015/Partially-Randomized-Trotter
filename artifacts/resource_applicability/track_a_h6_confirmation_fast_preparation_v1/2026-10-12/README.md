@@ -1,5 +1,7 @@
 # H6ハッシュ再利用・8worker：実装済み、現runは継続
 
+**最新：利用者承認後159 groupを再利用し、残97をhash再利用8workerで一回起動。** [認可・稼働入口](launch_authorization_v1/README.md)。以下は実装準備時の履歴。
+
 SOURCE `87b6b9f46b7e8ba9abe132ee21478c114b6f46f7`、branch `track-a-h6-hash-reuse-eight-worker-20261012`。
 [実装・科学条件・資源案・引継ぎ契約](../../../../docs/research/track_a_h6_hash_reuse_eight_worker_v1.md)。
 

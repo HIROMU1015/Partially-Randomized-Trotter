@@ -1,5 +1,8 @@
 # プロジェクト案内
 
+H6確認8worker引継ぎ：[契約](docs/research/track_a_h6_confirmation_fast_handoff_v1.md)、[159 reuse/残97/seal/grant/fresh/稼働入口](artifacts/resource_applicability/track_a_h6_confirmation_fast_preparation_v1/2026-10-12/launch_authorization_v1/README.md)。SOURCE87b6b9f4、hash再利用・8worker起動済み。
+
+
 H6 hash再利用・8worker：[設計](docs/research/track_a_h6_hash_reuse_eight_worker_v1.md)、[SOURCE/101人工tests/binding/未seal入口](artifacts/resource_applicability/track_a_h6_confirmation_fast_preparation_v1/2026-10-12/README.md)。現4worker runは継続、旧245 source不変。
 
 

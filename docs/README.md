@@ -1,5 +1,8 @@
 # 文書索引
 
+H6確認hash再利用8worker引継ぎ：[起動・159再利用・残97](research/track_a_h6_confirmation_fast_handoff_v1.md)。
+
+
 H6 hash再利用・8worker：[設計・101人工tests・未切替](research/track_a_h6_hash_reuse_eight_worker_v1.md)。
 
 

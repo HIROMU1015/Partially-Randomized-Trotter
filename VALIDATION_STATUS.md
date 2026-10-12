@@ -1,5 +1,10 @@
 # Validation status
 
+## 2026-10-12 H6：hash再利用8workerへ引継ぎ起動
+
+[159 reuse/残97/seal/grant/fresh/native起動](artifacts/resource_applicability/track_a_h6_confirmation_fast_preparation_v1/2026-10-12/launch_authorization_v1/README.md)。SOURCE87b6b9f4、CoPID39637・8worker稼働・STOP理由null。元run all reaped/cleanup0、partial4予約と1720/844承認保持。source251/science224/profile/input/compiler/元seed維持、既存101tests繰返しなし。実確認完了/科学的PASSではない。H4/共有/venv変更なし。以下は過去段階の履歴。
+
+
 ## 2026-10-12 H6：hash再利用・8workerの限定実装検証
 
 [設計](docs/research/track_a_h6_hash_reuse_eight_worker_v1.md)、[101人工tests/251 closure/人工hash/binding](artifacts/resource_applicability/track_a_h6_confirmation_fast_preparation_v1/2026-10-12/README.md)。旧245 source不変、valid canonical bytes/digest一致、mutation/override検出、8slotはmockのみ、実parent生存時のseal拒否を確認。hash-only人工7.28/9.75倍、実H6/8worker速度・科学的成功は未検証。新grant/science/transpile/GPU0、現4workerは継続。未seal/実行未認可。以下は過去段階の履歴。
