@@ -7,3 +7,8 @@
 worker1 CPU20/thread1/AS32GiB/RSS9GiB、coordinator22/23/ASsoft2-hard32/RSS2、aggregate40/RAM64。既定の5秒以内監視、pressure/OOM/headroom/output/call/instruction guard、own-run identity限定STOP・cleanup/reapを維持。ログはhome配下の新証跡directory、coordinatorを待つ小さなstdlib helperが新たなnative exit codeと時刻を記録する。helperは同じown-run CPU22/23、AS256MiB/file16MiB（子spawn後に適用）で科学処理をしない。
 
 このcommit時点では未起動。remote確認後にrunner自身が再度fresh gate・未使用output/lockを検査し、一度だけ起動する。実費用結果や完走はまだ未評価。自動retry/resume・入力再生成・H8・次science stageを認可しない。完了またはfail-closed STOP後に終了し、保存metadataだけで寄与を整理してmandatory STOPする。H4/共有/venv/他jobは変更しない。
+
+
+## 実行後の追記
+
+承認runは8/8・16/16完了、native exit0・全8reap/cleanup0・残存0。[結果入口](../../../track_a_h6_conditional_s2_pilot_result_v1/2026-10-13/README.md)。固定SOURCE/grant不変、一回runのgrantは消費済み。初回helper CPU-affinity preflight拒否（科学call/lock0）も[別receipt](prelaunch_rejection_receipt_v1.json)に保持。追加実行は認可せずmandatory STOP。

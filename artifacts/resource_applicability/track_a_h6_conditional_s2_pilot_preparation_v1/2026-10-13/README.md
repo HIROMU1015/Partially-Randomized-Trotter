@@ -22,3 +22,8 @@ SOURCE **843265b624eac8fbb9acea47ef21cab1207e1880**、専用branch `track-a-h6-c
 実H6のs2 compile・peak RSS/wallは未測定。8本では複数order2や希少componentを網羅できず、mean上界/正式winnerは未証明。新H6 science/actual transpile/grant、H4/他job/共有環境/venv変更0。NPZ/native runtime/checkpoint/cache/credential/SSH情報を今回commitしない。
 
 次回承認対象は **この固定SOURCE・8条件付きtrajectory/16 compileを一度だけ実行、compile1736/trajectory852と記載資源・STOP政策の採用**。承認後に新exact grant・byte SHA・remote/fresh/未使用output/lockを結合する。自動retry/resume・次stage/H8への進行なし。approved=false、runtime_authorization=false、allowed_cpus=[]、absolute_launch_command=null。
+
+
+## 実行後の追記
+
+利用者承認後の一回runは8/8・16/16完了、native exit0・cleanup/残存0。[結果入口](../../track_a_h6_conditional_s2_pilot_result_v1/2026-10-13/README.md)。上の未承認記載は準備時点の履歴。SOURCE/科学条件/旧消費・予約を保持し、追加実行なし・mandatory STOP。

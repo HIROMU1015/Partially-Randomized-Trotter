@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-13 H6：s2条件付き8/16完了・局所保存結果検証
+
+[結果](docs/research/track_a_h6_conditional_s2_pilot_result_v1.md)、[CSV/40別算術/native/cleanup/byte監査](artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_result_v1/2026-10-13/README.md)。H6/1Å/STO-3G/DF19/sector400/T.8/prefix5/q8/delta.1/r2/K2、SOURCE843265b6/closure257/source224不変。新8 trajectory/16 actual compile成功、exit0/全8reap/cleanup0/残存0。s2 RZ平均96285.25・pi2=.0166969、層別平均+0.00734086%、ε=.001対象PR/PF比.387033921。local40 metadata算術PASS、CI/母平均bound/正式winner/GPT科学reviewのPASSではない。known1716/842＋予約20/10＝1736/852、返却/reset0、grant消費済み・次stageなし、mandatory STOP。以下は過去履歴。
+
 ## 2026-10-13 H6：s2条件付きpilot準備・実科学計算未承認
 
 [契約](docs/research/track_a_h6_conditional_s2_pilot_execution_contract_v1.md)、[SOURCE843265b6/257 closure/58限定人工mock/seal](artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_preparation_v1/2026-10-13/README.md)。H6/1Å/STO-3G/DF19/sector400/T.8・prefix5/q8/delta.1/r2/K2、whole-trajectory order2ありの条件付き8本/16 wrapper案。既存runtime251/science224/592探索/256確認/profile/input保全。local58 PASS、入力33 streaming SHA・native carry・3744旧seed/80新stream衝突0、default dry/read-only binding合格。実trajectory/transpile/grant0、CI/母平均bound/科学的winnerのPASSではない。1736/852・worker1 CPU20 AS32/RSS9・co22/23は未承認、approved=false/allowed=[]/command=null。共有/venv/H4/他job変更0、公開後mandatory STOP。以下は過去履歴。

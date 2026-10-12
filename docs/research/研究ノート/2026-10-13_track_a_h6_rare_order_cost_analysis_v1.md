@@ -12,3 +12,8 @@ q8 K2 rare確率1.67%・zero層点平均固定で逆転には約9.19百万RZ/sho
 利用者が基点eee1343fからq8/r2/K2の条件付き8 trajectory/16 compileの実行準備を依頼。元Binomial(16,p2)|M>=1と一様subset、原component/quantum event weightsを保持した新sampling・contract・scoped cost adapterを専用worktree/branchへ実装。SOURCE843265b624eac8fbb9acea47ef21cab1207e1880、旧251/science224不変。58限定人工/mock合格、byte input/profile/native carry/law/seed衝突を照合して技術seal。known1700/834＋予約20/10＋新16/8＝1736/852案、変更は未承認。
 
 研究比較を変更せず、母平均上界や完走を認定しない。実科学trajectory/compile/new approved grant0、H4/他job/共有/venv操作0。軽量準備だけ公開してmandatory STOP、次回の明示承認後に新grant/fresh/one-shotを結合して一度だけ実行。詳細は[契約](../track_a_h6_conditional_s2_pilot_execution_contract_v1.md)と[資料入口](../../../artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_preparation_v1/2026-10-13/README.md)。
+
+
+## s2限定pilot実行・寄与解析（2026-10-13）
+
+利用者の次作業承認で新exact grantと1736/852/CPU20+22/23を固定して一回runを実行。初回receipt helperのpre-spawn CPU限定でfresh拒否（science0/lock未取得）となった証拠を保持し、helper限定の設定順序を修正。科学SOURCE843265b6不変、未開始の8/16一回runはnative exit0・全8cleanup/reap/残存0で完了。s2 RZ平均96285.25、pi2による層別平均増加.00734086%、ε=.001対象PR/PF比.3870339209・点削減61.2966%。全8本M1、tail上界は未証明。40公開scalar検査PASS、旧58人工campaignは再実行しない。known1716/842＋予約20/10保持、追加science/H8なし。結果公開後mandatory STOP、GPTへ判断を戻す。[結果](../track_a_h6_conditional_s2_pilot_result_v1.md)。

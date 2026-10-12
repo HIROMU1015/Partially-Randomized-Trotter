@@ -1,5 +1,7 @@
 # scripts 索引
 
+H6 s2 pilot保存解析：[metadata aggregate](../artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_result_v1/2026-10-13/analyze_pilot.py)、[公開CSV別算術](../artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_result_v1/2026-10-13/verify_public_result.py)、[結果](../artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_result_v1/2026-10-13/README.md)。解析の新science/compile0。
+
 H6条件付きs2：[metadata preparer](resource_applicability/prepare_track_a_h6_conditional_s2_pilot_v1.py)、[default dry runner](resource_applicability/run_track_a_h6_conditional_s2_pilot_v1.py)、[read-only auditor](resource_applicability/audit_track_a_h6_conditional_s2_pilot_v1.py)、[未承認準備入口](../artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_preparation_v1/2026-10-13/README.md)。新exact grantなしでは起動しない。
 
 H6保存費用層：[scalar解析](../artifacts/resource_applicability/track_a_h6_rare_order_cost_analysis_v1/2026-10-13/analyze_saved_cost.py)、[公開抽出のみの別算術](../artifacts/resource_applicability/track_a_h6_rare_order_cost_analysis_v1/2026-10-13/verify_public_analysis.py)、[資料](../artifacts/resource_applicability/track_a_h6_rare_order_cost_analysis_v1/2026-10-13/README.md)。科学runnerではない。
