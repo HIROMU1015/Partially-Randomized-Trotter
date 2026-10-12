@@ -47,3 +47,8 @@ input fingerprint `81e90cb760d6e6e9774aad808ed40953bae0b461c18532bff78d7ead6e4e5
 作業中rootでは外部の資料配置整理が入り、51文書は同じSHAの移動先を確認、5索引等の外部編集はそのまま保持した。
 同一path/statusを維持したとは主張しない。専用branchの旧source/result/STOP・保護tree2882entries・旧manifest98entriesは不変。
 [保全監査](../../artifacts/n3_old_family_v1/2026-10-12/preparation/preservation_audit.json)、[外部配置変更](../../artifacts/n3_old_family_v1/2026-10-12/preparation/root_external_relocation.json)。
+
+## 公開完了
+
+[GitHub公開・remote取得確認](n3_old_family_v1_publication_20261012.md)。59 blobsのbyte/source/input/plan照合とidentity-only preflight PASS。
+新S1診断0、同内容GPT再レビュー不要、次は固定S1二例の一回診断に対する明示実行指示。

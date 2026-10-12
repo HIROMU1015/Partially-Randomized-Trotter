@@ -18,3 +18,9 @@ S1の保存幅差を支持し、旧族の保存coverageを越えた回収／分�
 
 source 1aa12ab0b777b28f1428d9bb8417af93c4376aae、source fingerprint 46baa537269db923dd8b8c95e4788555471c60bad1572d3a01ec1e70245c6488、plan SHA ef3c66d2e01e47027d9d382afc324aab9b7263aab3d550c3576c31e0f5bd6ff5。
 S1新診断0、未認可template、Mandatory STOP。準備だけを公開・remoteでidentity確認する。
+
+## 公開・remote identity確認
+
+準備payload 23bf77c6cfffe798d54e5340d59ef5be26e9e9ae、source 1aa12ab0b777b28f1428d9bb8417af93c4376aae。59 blobsをGitHub取得・byte照合、preflight PASS、新S1診断0。
+元結果・STOP・manifest98保全。root外部配置整理は同byteの移動51件を確認し、5外部metadata編集を保持。
+次は固定一回診断の明示指示、科学レビューの同内容再実施は不要。[publication](../n3_old_family_v1_publication_20261012.md)。
