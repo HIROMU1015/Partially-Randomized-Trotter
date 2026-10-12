@@ -46,7 +46,7 @@ def main():
         raise PermissionError('No recovery overrides')
     provenance = verify_launch(ROOT)
     runtime_check(original,'native');check_original_files(contract)
-    out = ROOT/RESULT;out.mkdir()
+    out = ROOT/RESULT;out.mkdir(parents=True)
     exclusive_json(out/'one_shot_marker.json',dict(provenance,runs=1,retries=0,mandatory_STOP=True,created_unix=time.time()))
     marker_hash=hashlib.sha256((out/'one_shot_marker.json').read_bytes()).hexdigest()
     exclusive_json(out/'recovery.job.json',{'marker_sha256':marker_hash})

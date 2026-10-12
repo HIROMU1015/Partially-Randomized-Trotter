@@ -2,6 +2,7 @@
 import ast
 from fractions import Fraction as F
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import sys
@@ -67,3 +68,28 @@ def test_pending_recovery_launch_rejects_before_marker():
     assert not (ROOT/launch.RESULT).exists()
     with pytest.raises(PermissionError):launch.verify_local(ROOT)
     assert not (ROOT/launch.RESULT).exists()
+
+
+def test_coordinator_creates_missing_parents_before_marker(tmp_path, monkeypatch):
+    spec=importlib.util.spec_from_file_location('recovery_startup_test',ROOT/'scripts/tracks/algorithm_codesign/run_df_correction_et_saved_recovery.py')
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    monkeypatch.setattr(module,'ROOT',tmp_path)
+    monkeypatch.setattr(sys,'argv',['synthetic_recovery'])
+    art=tmp_path/module.ART;art.mkdir(parents=True)
+    (art/'recovery_contract.json').write_text(json.dumps({'original_contract_path':'original.json'}))
+    (tmp_path/'original.json').write_text(json.dumps({'caps':{'wall_seconds_total':2400,'CPU_seconds_total':1800,'aggregate_RSS_MiB':3072,'output_bytes':64*1024*1024,'log_bytes':4*1024*1024},'runtimes':{'numeric':{'python':'/no/actual/worker'}}}))
+    monkeypatch.setattr(module,'verify_launch',lambda root:{'source':'synthetic','authorization':'synthetic'})
+    monkeypatch.setattr(module,'check_original_files',lambda contract:None)
+    from trottertracks.algorithm_codesign.df_correction_et_phase_v7 import worker
+    monkeypatch.setattr(worker,'runtime_check',lambda *a:None)
+    class FakeGuard:
+        def __init__(self,*a,**k):pass
+        def phase(self,jobs,*a,**k):
+            assert (tmp_path/module.RESULT/'one_shot_marker.json').exists()
+            assert len(jobs)==1
+        def check_total(self):pass
+        def receipt(self):return {}
+    monkeypatch.setattr(module,'Supervisor',FakeGuard)
+    assert not (tmp_path/module.RESULT).parent.exists()
+    assert module.main()==0
+    assert storage.load_json(tmp_path/module.RESULT/'terminal_status.json')['classification']=='SAVED_E_T_ACCOUNTING_COMPLETE'

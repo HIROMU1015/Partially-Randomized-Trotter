@@ -4,10 +4,10 @@ import json
 from pathlib import Path
 import subprocess
 
-ART = Path('artifacts/track_b_df_correction_et_saved_recovery_preparation/2026-10-12')
-RESULT = Path('artifacts/track_b_df_correction_et_saved_recovery_result/2026-10-12/v1')
-RECEIPT = Path('docs/tracks/algorithm_codesign/df_correction_et_execution_saved_recovery_authorization.md')
-MANIFEST = Path('artifacts/track_b_df_correction_et_saved_recovery_preparation/2026-10-12/source_manifest.json')
+ART = Path('artifacts/track_b_df_correction_et_saved_recovery_preparation/2026-10-12/v2')
+RESULT = Path('artifacts/track_b_df_correction_et_saved_recovery_result/2026-10-12/v2')
+RECEIPT = Path('docs/tracks/algorithm_codesign/df_correction_et_execution_saved_recovery_v2_authorization.md')
+MANIFEST = Path('artifacts/track_b_df_correction_et_saved_recovery_preparation/2026-10-12/v2/source_manifest.json')
 
 
 def sha(path):
