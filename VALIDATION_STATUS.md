@@ -1,5 +1,10 @@
 # Validation status
 
+## 2026-10-12 H6：hash再利用・8workerの限定実装検証
+
+[設計](docs/research/track_a_h6_hash_reuse_eight_worker_v1.md)、[101人工tests/251 closure/人工hash/binding](artifacts/resource_applicability/track_a_h6_confirmation_fast_preparation_v1/2026-10-12/README.md)。旧245 source不変、valid canonical bytes/digest一致、mutation/override検出、8slotはmockのみ、実parent生存時のseal拒否を確認。hash-only人工7.28/9.75倍、実H6/8worker速度・科学的成功は未検証。新grant/science/transpile/GPU0、現4workerは継続。未seal/実行未認可。以下は過去段階の履歴。
+
+
 ## 2026-10-12 H6：独立32確認一回起動
 
 [認可・fresh gate・初期native観測](artifacts/resource_applicability/track_a_h6_confirmation_preparation_v1/2026-10-12/launch_authorization_v1/README.md)。SOURCE73018cbc、256 group/512 wrapper・4worker・trajectory840承認、CoPID20241・STOP理由null。既存69限定test維持、runtime SOURCE変更なし。実確認完了/科学的合格ではない。未来のhash再利用/8workerとcomplete-only migrationは未実装。公開は認証待ち、H4/venv/共有変更なし。以下は過去段階の履歴。

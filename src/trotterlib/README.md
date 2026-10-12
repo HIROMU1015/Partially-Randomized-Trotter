@@ -1,5 +1,8 @@
 # trotterlib モジュール索引
 
+Track A H6 hash再利用・8worker実装：[設計](../../docs/research/track_a_h6_hash_reuse_eight_worker_v1.md)。実装は `trottertracks/resource_applicability/h6_{hash_reuse,confirmation_fast_contract,confirmation_fast_execution}_v1.py`。当libraryの科学sourceは変更しない。
+
+
 H6独立32確認：[契約module](../trottertracks/resource_applicability/h6_confirmation_contract_v1.py)、[監視/execution](../trottertracks/resource_applicability/h6_confirmation_execution_v1.py)、[metadata限定test](../../tests/tracks/resource_applicability/test_h6_confirmation_v1.py)、[準備入口](../../artifacts/resource_applicability/track_a_h6_confirmation_preparation_v1/2026-10-12/README.md)。科学library/旧240不変、実確認0。
 
 H6探索結果：[研究報告](../../docs/research/track_a_h6_exploration_result_v1.md)、[保存scalar/費用map/来歴](../../artifacts/resource_applicability/track_a_h6_exploration_summary_v1/2026-10-12/README.md)。科学library変更0、全探索完了・独立確認前。

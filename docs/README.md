@@ -1,5 +1,8 @@
 # 文書索引
 
+H6 hash再利用・8worker：[設計・101人工tests・未切替](research/track_a_h6_hash_reuse_eight_worker_v1.md)。
+
+
 H6独立32確認一回起動：[起動と将来の高速化版への引継ぎ](research/track_a_h6_confirmation_launch_v1.md)。
 
 H6独立32確認：[準備契約](research/track_a_h6_independent_confirmation_preparation_v1.md)、[候補/seed/source/seal/監査](../artifacts/resource_applicability/track_a_h6_confirmation_preparation_v1/2026-10-12/README.md)。8構成×32、未承認。

@@ -1,5 +1,8 @@
 # プロジェクト案内
 
+H6 hash再利用・8worker：[設計](docs/research/track_a_h6_hash_reuse_eight_worker_v1.md)、[SOURCE/101人工tests/binding/未seal入口](artifacts/resource_applicability/track_a_h6_confirmation_fast_preparation_v1/2026-10-12/README.md)。現4worker runは継続、旧245 source不変。
+
+
 H6独立32確認一回起動：[契約](docs/research/track_a_h6_confirmation_launch_v1.md)、[grant/fresh gate/native観測/将来の引継ぎ](artifacts/resource_applicability/track_a_h6_confirmation_preparation_v1/2026-10-12/launch_authorization_v1/README.md)。4worker・trajectory840承認、SOURCE73018cbc不変。
 
 

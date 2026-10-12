@@ -1,5 +1,8 @@
 # scripts 索引
 
+H6 fast confirmation：`resource_applicability/{prepare,run,audit}_track_a_h6_confirmation_fast_v1.py`。現4workerは停止しない。親run終了後のcomplete-only receipt・新grantだけを受理。[設計](../docs/research/track_a_h6_hash_reuse_eight_worker_v1.md)。
+
+
 H6独立32確認：[preparer](resource_applicability/prepare_track_a_h6_confirmation_v1.py)、[default dry-run runner](resource_applicability/run_track_a_h6_confirmation_v1.py)、[read-only auditor](resource_applicability/audit_track_a_h6_confirmation_v1.py)、[資料](../artifacts/resource_applicability/track_a_h6_confirmation_preparation_v1/2026-10-12/README.md)。新exact grantなしに起動しない。
 
 H6保存結果集約：[stdlib metadata script](../artifacts/resource_applicability/track_a_h6_exploration_summary_v1/2026-10-12/aggregate_saved_results.py)、[結果入口](../artifacts/resource_applicability/track_a_h6_exploration_summary_v1/2026-10-12/README.md)。既存admission/accountingで全592/1188を集計、新科学計算0。
