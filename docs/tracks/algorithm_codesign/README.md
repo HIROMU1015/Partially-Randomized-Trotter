@@ -477,3 +477,10 @@ source固定前の最終確認：profiler context違反のtechnical STOPを追�
 v4 output guard失敗後のlossless保存修正。immutable blob共有、state history、native/T descriptor binding、
 64 MiB cap不変、164 local focused PASS。保存済み15recordのI/O検算だけで、登録E/T0。
 READY_FOR_SEPARATE_E_T_V5_ONE_SHOT_AUTHORIZATION、旧STOP/marker不変、new A0、mandatory STOP。
+
+
+## 2026-10-12 E/T v5 one-shot：mandatory STOP
+
+[結果・technical cause・GPT handoff](df_correction_et_v5_results_and_gpt_handoff_20261012.md)。
+S5 d0a12bae/A5 0e147e27で一回実行。TECHNICAL_INCONCLUSIVE、r6 controlled wholeの2e-7 numerical guard認証失敗。
+原219file、native10/T0、saved-only audit22,821 PASS。失敗上界/ledger未保存、partial科学勝敗なし。旧/新markerとSTOP保持、retry0。

@@ -980,3 +980,10 @@ namespace `src/trottertracks/algorithm_codesign/df_correction_et_storage_v5/`、
 storage/integration focused tests、I/O replay/static provenance auditor、[新artifact](artifacts/track_b_df_correction_et_storage_preparation/2026-10-12/v5/)を追加。
 164 local focused PASS、保存15recordのbytes/hash復元、旧284result/363非index source不変。
 科学条件・native22/T64・64 MiB cap不変、登録E/T0・new A0、READY_FOR_SEPARATE_E_T_V5_ONE_SHOT_AUTHORIZATION、mandatory STOP。
+
+
+## Track B E/T v5 one-shot結果（2026-10-12）
+
+[結果・技術監査・GPT handoff](docs/tracks/algorithm_codesign/df_correction_et_v5_results_and_gpt_handoff_20261012.md)：S5 d0a12bae→authorization-only A5 0e147e27、一回/retry0。
+TECHNICAL_INCONCLUSIVE、r6 controlled wholeのnumerical upper 2e-7認証失敗。CD再計算0、native10、T0、partial勝敗なし。
+原219file/24,075,195bytes、saved-only audit22,821 PASS。[新audit](artifacts/track_b_df_correction_et_execution_audit/2026-10-12/v2/)。旧source/results/markers/STOP保持、mandatory STOP。

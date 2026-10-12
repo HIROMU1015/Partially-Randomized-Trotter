@@ -590,3 +590,11 @@ source固定前の最終確認：profiler context違反のtechnical STOPを追�
 [source/evidence manifest](../artifacts/track_b_df_correction_et_storage_preparation/2026-10-12/v5/source_manifest_v5.json)。
 164 local focused PASS、I/O-only元bytes/hash復元。科学条件・64 MiB cap不変、旧結果/marker保持、
 登録E/T0、別明示one-shot承認までmandatory STOP。
+
+
+## Track B E/T v5結果（2026-10-12）
+
+[結果/GPT handoff](tracks/algorithm_codesign/df_correction_et_v5_results_and_gpt_handoff_20261012.md)、
+[dated note](research/研究ノート/2026-10-12_track_b_et_v5_execution_stop.md)、
+[audit/result inventory](../artifacts/track_b_df_correction_et_execution_audit/2026-10-12/v2/)。
+TECHNICAL_INCONCLUSIVE、r6 controlled numerical upper認証失敗、native10/T0、retry0、mandatory STOP。

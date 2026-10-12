@@ -540,3 +540,10 @@ source固定前の最終確認：profiler context違反のtechnical STOPを追�
 
 [固定上限・validation・未検証事項](../docs/tracks/algorithm_codesign/df_correction_et_storage_v5_preparation_and_handoff_20261012.md)。
 登録E/Tは未実行、旧v4 marker/STOP保持、mandatory STOP。
+
+
+## Track B E/T v5実行後監査（2026-10-12）
+
+`artifacts/track_b_df_correction_et_execution_audit/2026-10-12/v2/audit_saved_outputs.py`は保存bytes/JSON/IRだけを照合する。
+[結果報告](../docs/tracks/algorithm_codesign/df_correction_et_v5_results_and_gpt_handoff_20261012.md)：numerical guard失敗でTECHNICAL_INCONCLUSIVE、native10/T0、retry0。
+旧/新consumed marker保持、runner再実行禁止、mandatory STOP。

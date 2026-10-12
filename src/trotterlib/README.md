@@ -506,3 +506,9 @@ lossless blob/snapshot codecとversion-specific実行保護を追加した。
 [技術報告](../../docs/tracks/algorithm_codesign/df_correction_et_storage_v5_preparation_and_handoff_20261012.md)と
 [証拠manifest](../../artifacts/track_b_df_correction_et_storage_preparation/2026-10-12/v5/source_manifest_v5.json)を参照。
 科学部分はv4と同一、登録E/Tは別承認まで未実行、mandatory STOP。
+
+
+## Track B E/T v5の停止記録（2026-10-12）
+
+[新結果・saved-only監査](../../docs/tracks/algorithm_codesign/df_correction_et_v5_results_and_gpt_handoff_20261012.md)：r6 controlled numerical guard失敗、TECHNICAL_INCONCLUSIVE。
+共有library・frozen algorithmは変更していない。native attempts10、T0、一回/retry0、旧/新marker保持、mandatory STOP。
