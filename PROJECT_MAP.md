@@ -1022,3 +1022,13 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 元v7 TECHNICAL_INCONCLUSIVE／復元SAVED_E_T_ACCOUNTING_COMPLETE／旧結果・marker・sourceは不変。
 今回のCodex作業は文書・索引・provenance・公開確認のみ、新科学計算0、mandatory STOP。
 同じ科学レビューは反復しない。新候補の研究判断・scope採択はGPT側、新実行は別途明示認可が必要。
+
+
+## 2026-10-13 Track B：DF-RTE積生成の限定技術監査
+
+[受領GPT方針](docs/research/track_b_post_closure_research_direction_review_20261013.md)に基づく
+[方法差・source・費用監査](docs/tracks/algorithm_codesign/df_rte_product_generation_audit_v1_20261013.md)。
+ideal Gaussian productは前提付きで成立。指定pipelineは既知部品へ還元され、独立した追加手順は未定義。
+公開保存値だけではconditional population cost上限を認証できない。新行列/回路/compile/synthesis/NPZ/science0、
+STOP_FOR_GPT_SCOPE_DECISION。元whole補正closure、Track A/G10/RA-D0結果・source・marker・STOPは維持。
+[証拠manifest](artifacts/track_b_df_rte_product_generation_audit/2026-10-13/evidence_manifest_v1.json)。

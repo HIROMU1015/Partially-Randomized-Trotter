@@ -633,3 +633,11 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 元v7 TECHNICAL_INCONCLUSIVE／復元SAVED_E_T_ACCOUNTING_COMPLETE／旧結果・marker・sourceは不変。
 今回のCodex作業は文書・索引・provenance・公開確認のみ、新科学計算0、mandatory STOP。
 同じ科学レビューは反復しない。新候補の研究判断・scope採択はGPT側、新実行は別途明示認可が必要。
+
+
+## 2026-10-13 Track B：event-preserving DF-RTE積生成監査
+
+[技術監査・GPT判断への入口](tracks/algorithm_codesign/df_rte_product_generation_audit_v1_20261013.md)。
+既知手順への還元、primitive/control/source access、保存費用の不足を確認。新手法採択・registered実行なし、mandatory STOP。
+[入力レビュー](research/track_b_post_closure_research_direction_review_20261013.md)と
+[metadata証拠](../artifacts/track_b_df_rte_product_generation_audit/2026-10-13/evidence_manifest_v1.json)を参照。
