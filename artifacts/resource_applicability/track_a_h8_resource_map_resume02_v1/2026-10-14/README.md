@@ -1,3 +1,5 @@
+2026-10-14 03:19 JST、監視競合修正済みの8 worker版を再開。run ID `H8_CORE_RESOURCE_MAP_20261014_resume02`、coordinator PID643626。92 signal/126 complete groupを再利用し残466。8同時回路処理・8 memory grant・STOPなしを確認、原SOURCEと科学seedを固定。最新利用者指示でown-runの実行に必要な運用条件調整も認可され、compile1722/trajectory843/occurrence4219を採用。共有環境・他ユーザーへ変更なし。以下の承認待ち表記は旧REVIEW時点の履歴。
+
 利用者の最新指示により今回のown-run運用条件変更・再開を認可。最小上限 compile1722/trajectory843/occurrence4219を採用し、auth02のapproved=true/runtime_authorization=true、SOURCE/元seed/input/profile/carryの再結合とfresh検査PASS。未使用run01/control01で一度起動する。以下の承認待ち記述は先行REVIEW時点の履歴。
 
 # H8 8 worker：監視競合修正とcomplete-only再開02
