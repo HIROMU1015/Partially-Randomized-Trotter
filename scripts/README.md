@@ -1,5 +1,9 @@
 # scripts 索引
 
+## C1残存数学課題 v1：新形式多項式8等式のみ
+
+[限定技術調査](../docs/research/qc_c1_residual_math_technical_report_v1_20261014.md)、[新checker](../artifacts/qc_c1_residual_math_audit_v1/2026-10-14/audit_tools/check_new_polynomial_identities.py)、[結果](../artifacts/qc_c1_residual_math_audit_v1/2026-10-14/new_symbolic_checks.json)。stdlib Fraction、係数未代入、old checker/library/pilot import0。既存科学runner/module/testを変更せず、旧21checksを再実行しない。数値posthocは未認可案のみ、Mandatory STOP。
+
 ## C1 sign audit v1：静的代数の検査のみ
 
 [監査](../docs/research/qc_c1_sign_mechanism_technical_audit_v1_20261013.md)、[形式21恒等式](../artifacts/qc_c1_sign_mechanism_audit_v1/2026-10-13/symbolic_identity_checks.json)。checkerは `artifacts/qc_c1_sign_mechanism_audit_v1/2026-10-13/audit_tools/check_symbolic_identities.py`。

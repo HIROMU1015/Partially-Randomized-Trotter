@@ -1,5 +1,13 @@
 # 研究計画資料
 
+## 2026-10-14 C1残存数学課題：限定技術調査完了・GPT開始承認待ち
+
+[追加の数学・機構・posthoc情報価値](qc_c1_residual_math_technical_report_v1_20261014.md)、[GPT判断引継ぎ](qc_c1_residual_math_review_handoff_v1_20261014.md)、[scope/停止](../../artifacts/qc_c1_residual_math_audit_v1/2026-10-14/scope.json)。基準61d50b09、ユーザー添付による一回の静的残存課題調査。
+三代表のground和=(G_A+G_B+G_C)/8>=0、可換境界の非負性、同native族のa=b=s,p,q>j,(p−j)(q−j)>s²かつ十分弱いBの共通正符号を係数だけで導出。新coneの基準Bell groundは元|00>と直交し、weak-B overlapはO(ε²)。固定4点へ代入せず、現族全域の異符号存在/不存在はUNDETERMINED。
+現factoryの独立した共有/finite-step/同情報選択差は未特定。保存oracle/regretは失敗原因を分離し得るがknown-composition同値性を変えない。別認可の任意posthoc案だけで、runner/実行なし。
+新8多項式等式PASS、旧21check/旧集約の再実行0、新数値H/eig/登録代入/PF/費用再計算/posthoc/optimizer/compile/GPTレビュー/C4/科学retry0。既存294files/source20/一次9/旧136manifest entries/non-result fields/global FAIL/source/結果/認可/STOP/root既存131filesを保持。
+N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了、C1消費済みone-shotを保持。正式継続/終了/論文化/主研究採択を代行せず、公開後Mandatory STOP、GPT科学判断開始承認待ち。以下は履歴。
+
 ## 2026-10-13 C1符号・未達原因の静的技術監査：GPT判断開始承認待ち
 
 [数学・保存証拠の監査](qc_c1_sign_mechanism_technical_audit_v1_20261013.md)、[GPT引継ぎ](qc_c1_sign_mechanism_review_handoff_v1_20261013.md)、[scope/停止](../../artifacts/qc_c1_sign_mechanism_audit_v1/2026-10-13/scope.json)。ユーザー添付により、科学判断前のCodex技術疑問整理を実施した。

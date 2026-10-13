@@ -1,0 +1,104 @@
+{
+  "status": "PROPOSED_OPTIONAL_POSTHOC_NOT_AUTHORIZED_NOT_IMPLEMENTED_NOT_EXECUTED",
+  "purpose": "Distinguish selected-method failure from finite saved catalog-level failure;does not establish operational precision selection or novelty",
+  "base_commit": "61d50b09cd46eef8b2f570f65b34587e60ae5931",
+  "source_inspection_only": {
+    "path": "src/trottertracks/representation_exploration/c1_macrocycle_pilot_v1.py",
+    "function": "summaries",
+    "existing_fields": [
+      "rows.method",
+      "rows.h_index",
+      "rows.eligible",
+      "rows.conditional_quantum_cost",
+      "frontiers",
+      "coefficient_only_precision_choices"
+    ]
+  },
+  "proposed_readonly_inputs": {
+    "artifacts/qc_c1_macrocycle_pilot_v1/2026-10-13/attempt_1/comparisons.json": {
+      "SHA256": "49a2a8946bd90c907bc3c422393a655483f2d09fd3d7ef702d68ade6289a1dfc",
+      "bytes": 1986400,
+      "fixed_commit": "61d50b09cd46eef8b2f570f65b34587e60ae5931"
+    },
+    "artifacts/qc_c1_macrocycle_pilot_v1/2026-10-13/attempt_1/selector_seal.json": {
+      "SHA256": "1e77f1d7458746ae946cb2eee7bde87045d42ed49e4a0293a08f8d32e14a14ac",
+      "bytes": 541329,
+      "fixed_commit": "61d50b09cd46eef8b2f570f65b34587e60ae5931"
+    },
+    "artifacts/qc_c1_macrocycle_execution_v1/2026-10-13/saved_results_summary.json": {
+      "SHA256": "5d2f2ff3d376f6033d79c53ab734fa96fd43a778d5e63b787b4f548e7cfa3586",
+      "bytes": 27191,
+      "fixed_commit": "61d50b09cd46eef8b2f570f65b34587e60ae5931"
+    },
+    "artifacts/qc_c1_macrocycle_execution_v1/2026-10-13/execution_stop.json": {
+      "SHA256": "9b3bd46fc9e9ac9a20a24b37b73b61d3e34c3f4632de7ecab6ba330f4d9fee8a",
+      "bytes": 499,
+      "fixed_commit": "61d50b09cd46eef8b2f570f65b34587e60ae5931"
+    }
+  },
+  "fixed_scope": {
+    "Hamiltonians": "original4nonmolecular2qubit Pauli",
+    "macro_candidates": 24,
+    "h_points": 6,
+    "all_original_contexts": 32,
+    "primary_normal_state_contexts": 16,
+    "bad_state_contexts_retained": 16,
+    "geometry_basis_DF_rank_policy_L_D_particle_sector": "not applicable",
+    "h_grid": "1/(8Lambda2^s),s=0..5;Lambda fragment coefficient L1",
+    "model_energy_targets": [
+      "1e-5",
+      "1e-6"
+    ],
+    "CX_price_hypotheses": [
+      3,
+      6
+    ],
+    "advantage_gate": "macro_only_saved_oracle_cost / original_strong_baseline_cost <0.95",
+    "branch_overlap_precision": "preserve stored eligible boolean and original contract;do not change or recompute"
+  },
+  "metrics": {
+    "C_M": "min stored eligible positive conditional cost over macro24/h6",
+    "C_B": "min original eligible single/subdivision/S4/C2 stored cost",
+    "C_K": "min(C_single_subdivision,C_M),same C1 catalog36",
+    "macro_ratio": "C_M/C_B",
+    "method_regret": "C_saved_selector/C_K-1;selected method h already oracle,both finite required",
+    "unknowns": "null/nonfinite/no-eligible/schema mismatch or numerical-gate ambiguity preserved as UNDETERMINED"
+  },
+  "information_value": {
+    "oracle_no_advantage": "Selector improvement alone cannot reach original5%gate within this saved catalog/grid/model;not global impossibility",
+    "oracle_advantage_selector_failure": "Separates potential finite-template tradeoff from method selection failure;no cheap information or operational guarantee established",
+    "oracle_known_composition_same": "Same generated template implies no independent factory advantage",
+    "undetermined": "Save unresolved reason;do not alter grid/threshold/input or run a solver"
+  },
+  "limits": {
+    "workers": 1,
+    "threads": 1,
+    "max_saved_comparison_rows": 8064,
+    "max_contexts": 32,
+    "max_memory_MiB": 256,
+    "max_output_MiB": 2,
+    "max_log_MiB": 1,
+    "eigensolver_calls": 0,
+    "PF_calls": 0,
+    "compile_calls": 0,
+    "cost_source_reexecutions": 0,
+    "new_vector_observables": 0,
+    "attempts": 1,
+    "retry": 0,
+    "phase_total_wall_time_caps": null
+  },
+  "failure_stop": [
+    "SHA mismatch/missing schema or pointer",
+    "cap exceeded",
+    "unsupported saved value type",
+    "no silent repair/retry/new namespace circumvention"
+  ],
+  "next_requirements": [
+    "GPT decides information value before study extension",
+    "Fix separate future runner/checker/source and input SHA without science replay",
+    "Obtain explicit posthoc execution authorization;do not reuse consumed940-call approval",
+    "Save independent audit and results then Mandatory STOP"
+  ],
+  "current_executions": 0,
+  "mandatory_stop": true
+}
