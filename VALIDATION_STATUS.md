@@ -1,5 +1,12 @@
 # Validation status
 
+## 2026-10-13 相対時間発展block追加技術監査（新計算なし）
+
+[技術監査](docs/research/qc_relative_block_method_cost_audit_v1_20261013.md)、[判断引継ぎ](docs/research/qc_relative_block_method_cost_handoff_v1_20261013.md)、artifacts `artifacts/qc_relative_block_method_cost_audit/2026-10-13/`。
+current constructorのknown compositionへの対応と条件付き精度・資源境界を静的に整理。独立した方法/費用差未特定、function/full-task費用UNKNOWN。
+新科学計算・数値事後評価・eig・compile・synthetic・旧13再実行・GPTレビュー0。旧13 PASSは基準commitの保存証拠、immutable CIや新科学性能ではない。
+詳細backend Phase2未起動、pilot未認可、GPT重要判断の開始認可前・Mandatory STOP。旧118 manifest entries/source/results/auth、N1STOP/N2HOLD/N3CLOSED、global description欠落FAILは保持。
+
 ## 2026-10-13 N3成果確定・現検証系列終了
 
 [公開・remote確認完了](docs/research/n3_saved_attribution_v1_claim_and_observability_20261013.md)：変更16blob/証拠14blob/追加リンク38件確認。現行N3の文書作業完了、科学STOP。

@@ -423,3 +423,7 @@ N3保存帰属v1：[公開・remote取得確認](n3_saved_attribution_v1_publica
 ## 2026-10-13 量子化学relative blockの事前検証
 
 [構成・方法差・誤差・費用](qc_relative_block_prevalidation_v1_20261013.md)、[科学判断引継ぎ](qc_relative_block_review_handoff_v1_20261013.md)。module `src/trottertracks/representation_exploration/qc_relative_block_v1.py`、synthetic runner `scripts/check_qc_relative_block_synthetic_v1.py`、tests `tests/test_qc_relative_block_v1.py`、artifacts `artifacts/qc_relative_block_prevalidation/2026-10-13/`。13 fixed synthetic PASS、実分子/eig/compile0。可逆関数回路とmethod delta/具体費用は未確定。pilot未認可・Mandatory STOP、旧Track/N3 source/results保全。
+
+## 2026-10-13 相対時間発展block追加技術監査
+
+[方法・費用監査](qc_relative_block_method_cost_audit_v1_20261013.md)、[GPT判断用資料](qc_relative_block_method_cost_handoff_v1_20261013.md)。artifacts `artifacts/qc_relative_block_method_cost_audit/2026-10-13/`。基準25cbc6e7のsource/test/runnerと保存13件は変更・再実行なし。既知primitiveのread-only調査と静的数式/資源会計、function費用UNKNOWN、独立差未特定。新科学計算・compile・synthetic0、詳細backend Phase2未起動、GPT判断前Mandatory STOP。数値validation pathは追加しない。

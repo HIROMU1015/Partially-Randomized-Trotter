@@ -1,0 +1,56 @@
+{
+  "units_separate": [
+    "Toffoli",
+    "T",
+    "RZ",
+    "CX",
+    "CZ",
+    "logical_depth",
+    "ancilla_qubits",
+    "classical_preprocessing",
+    "coefficient_access"
+  ],
+  "design_only": true,
+  "not_compiled": true,
+  "detuning_known_constant_load": {
+    "conditions": "w>=3;twos-complement integer;range guards;adder restores loaded word;compute and uncompute included",
+    "Toffoli": "z*(4*w-6)",
+    "CX": "sum_l(10*w-14+4*hamming_weight(d_l));<=z*(14*w-14)",
+    "X": "z*(4*w-12)+<=2*w for delta0",
+    "serial_depth_upper": "22*z*w+2*w;before routing/Toffoli decomposition",
+    "ancilla_extra": "2*w+1 excluding flags/functions",
+    "shared_with_strong_baseline": true
+  },
+  "variable_rotations_bitwise": {
+    "RZ_upper": "8*a",
+    "CX_upper": "8*a",
+    "Toffoli_upper": "8*a",
+    "basis_Clifford": "additional",
+    "synthesis_T": null
+  },
+  "function_forward_F": {
+    "Toffoli": null,
+    "T": null,
+    "RZ": null,
+    "CX": null,
+    "depth": null,
+    "ancilla": null,
+    "status": "UNKNOWN",
+    "unitary_compute_plus_uncompute": "2*F",
+    "reason": "no domain-certified atan2/hypot full reversible backend;resource-only ArcSin is not a drop-in decomposition"
+  },
+  "complete_block": {
+    "T": null,
+    "CX": null,
+    "depth": null,
+    "ancilla": null,
+    "status": "UNKNOWN"
+  },
+  "precision": "f_j>=max(0,ceil(log2(bmax_j*(z_j+1)*sum(t_jl^2)/(4*epsilonD_j)))) for positive numerator;range/function guard separate",
+  "shared_theta_error": "<=min(1,abs(t*rho))*eta_theta;independent synthesis errors still summed",
+  "step_break_even": "Q_R+r_R*G_R < Q_B+r_B*G_B in one consistent quantum resource unit",
+  "function_break_even": "sum_j(2*m_j*F_j) < (r_B/r_R)*G_B+(Q_B-Q_R)/r_R-G_A-sum_j(m_j*H_j)",
+  "resource_lower_bounds_established": false,
+  "actual_numeric_break_even": null,
+  "ground_energy_total_cost": null
+}
