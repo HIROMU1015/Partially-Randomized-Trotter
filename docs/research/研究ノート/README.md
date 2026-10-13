@@ -211,3 +211,7 @@ D1〜D4レビュー承認は未解決、science/source port/input generation/nex
 ## 2026-10-09 H4 worker原因保存・cleanup競合修正
 
 [当日ノート](2026-10-09.md)：39人工PASSと元production原因未特定を区別。publication reader競合とGC前成功通知を修正、本体再起動0。
+
+## 2026-10-13 H4 map完了・結果公開
+
+[当日ノート](2026-10-13.md)：全6距離/1308候補/74784回路の完了、B2点最小、light saved-value projectionを結果専用branchへ保存。pushは利用者操作、次stage未認可。

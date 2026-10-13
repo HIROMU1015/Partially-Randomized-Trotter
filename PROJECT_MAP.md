@@ -1,5 +1,14 @@
 # プロジェクト案内
 
+## 2026-10-13 H4 geometry map 全件完了・軽量結果公開
+
+H4 linear/STO-3G/DF12、T=0.8、二次DF-prefix PF/finite RTE、6距離の1,308候補・74,784 wrappersがMAP_COMPLETE_STOPで完了。
+全record/signalの保存identity・paired metrics・coverageを照合。公開projectionだけから302精度点×6距離の点最小と18比較行を追跡できる。
+ε=0.05/P=0ではB2 L_D=3が全距離の点推定最小、最小deterministic候補比27.9〜42.7%低い。全302点でもB2点最小。
+近接B2の±2SEは重なり厳密winner未認定、energy/RPE/H6/noise/state prepへ一般化しない。旧dense/compiler系列と混合しない。
+累積wall74.53h、compile消費/予約73023/74805、charge12.68/17GiB。own6役退出、追加science0・次stage未認可。
+[完了結果・比較表・公開データ入口](docs/research/track_a_h4_geometry_results_20261013.md)。local事後保存値照合でありCI/独立最終scientific reviewではない。
+
 ## 2026-10-06 H4 signal/compile INPUT_BOUND草案・容量不足STOP
 
 run02の6凍結入力へplanを結合し、source19/218 templates/compiler/run ID/outputを不変に保った。
