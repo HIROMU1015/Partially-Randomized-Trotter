@@ -25,3 +25,11 @@ known-composition生成器同値性を維持し、全ground-energy量子資源�
 
 Codexは研究の正式継続/終了/新規性を採択していない。review開始承認前にこれらを深く比較・選定しない。
 GitHub commit/pushとremote取得確認を完了してから公開証拠の固定URLを追記する。
+
+## 公開・取得確認
+
+結果payload `86e75e3d5f61e2b3b3bcec482b9aef9207108639`、branch `qc-c1-macrocycle-preparation-20261013`。
+[固定commitの一次結果](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/86e75e3d5f61e2b3b3bcec482b9aef9207108639/artifacts/qc_c1_macrocycle_pilot_v1/2026-10-13/attempt_1)、[取得receipt](../../artifacts/qc_c1_macrocycle_execution_v1/2026-10-13/publication/receipt.json)。
+GitHubから34変更blobs/8,330,614bytes、一次9files/固定20files/旧229files、旧132manifest entries/non-result fields、追加47linksを照合した。
+これは資料byte取得性の確認で、外部科学再現ではない。追加science/eig/compile/GPTレビュー0。
+実行認可は消費済み、次の重要科学判断はGPT開始承認待ち、Mandatory STOP。

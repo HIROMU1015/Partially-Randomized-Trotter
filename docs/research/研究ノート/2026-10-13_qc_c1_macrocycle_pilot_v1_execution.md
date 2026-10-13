@@ -16,3 +16,6 @@ jointのexact coefficient-only PF precision hは6/32valid、26/32null。known-co
 20locked files/旧229files/planはbyte保持、既存global description FAILを無断修正しない。
 一回認可消費済み、結果・監査・remote取得公開後STOP。N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了を維持。
 新しい科学的継続判断は別のGPT開始承認へ戻し、C4や追加caseを自動起動しない。
+
+公開確認追記：payload `86e75e3d5f61e2b3b3bcec482b9aef9207108639` をGitHubから再取得し、34blobs/一次9files/固定20files/旧229files/47追加linksを照合した。
+[receipt](../../../artifacts/qc_c1_macrocycle_execution_v1/2026-10-13/publication/receipt.json)。追加計算0、成果保存・公開工程完了、一回認可消費済み、Mandatory STOP。
