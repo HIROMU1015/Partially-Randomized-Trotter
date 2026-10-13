@@ -110,3 +110,7 @@ Track AにはPRの費用改善を支持する限定証拠が存在する。一�
 N1 STOP、N2 HOLD、N3 CLOSED、THRIFT現template CLOSED、C1/C4旧結果・source・認可・STOPを保持。最新Track Bの固定本文をread-onlyで参照するだけで、別branchを変更・mergeしない。終了済み実行認可を流用しない。
 
 独立branch `qc-c2-c3-final-audit-integration-20261014` に二資料とmetadataをcommit/pushし、[GitHub再取得receipt](../../artifacts/qc_c2_c3_final_technical_audit_v1/2026-10-14/publication/receipt.json)でbytes/SHAを確認後Mandatory STOP。新数値・新production・新候補・C1/C4再調査を開始しない。今回の限定監査を反復せず、重要科学判断の別開始承認を待つ。
+
+## GitHub公開確認・最終STOP
+
+[再取得receipt](../../artifacts/qc_c2_c3_final_technical_audit_v1/2026-10-14/publication/receipt.json)：payload `d91991038b1a2b97fac52a00d8ed4ebb413e2214` の22変更blobs、374既存保護files、25固定参照本文をGitHubの独立cache（local alternatesなし）からbyte/SHA照合した。receiptと本追補は後続metadataとして公開し、最終取得で全リンクを照合する。新科学計算・保存数値事後評価・数学プログラム・C1/C4再監査・production・GPT科学レビューは0。正式採択/優先順位/継続/終了/論文化を決定せず、Mandatory STOP。

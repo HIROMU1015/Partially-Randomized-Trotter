@@ -184,3 +184,7 @@ C2・C3の現案に、既知法を超える操作列・情報取得則・生成�
 GPT判断を変え得る情報は、C2では同branch/剰余/状態情報を同品質で安く取得する具体的な手順、C3では利用可能windowと低normalization/低gate/少ancillaの明示access、同情報強対照を上回る全費用根拠。それらを今回の後続作業として取得する認可はない。科学的新規性・採否・終了は未判定のまま渡す。
 
 [既存374filesの保全](../../artifacts/qc_c2_c3_final_technical_audit_v1/2026-10-14/preservation_index.json)、旧144manifest entries/non-result fields/global description欠落FAILを維持する。N1 STOP、N2 HOLD、N3 CLOSED、THRIFT現template CLOSED、C1/C4旧STOP・結果・source・消費済み認可は不変。[公開再取得receipt](../../artifacts/qc_c2_c3_final_technical_audit_v1/2026-10-14/publication/receipt.json)の照合後Mandatory STOP。次はユーザーの別明示開始承認を受けたGPTの重要科学判断。
+
+## GitHub公開確認・最終STOP
+
+[再取得receipt](../../artifacts/qc_c2_c3_final_technical_audit_v1/2026-10-14/publication/receipt.json)：payload `d91991038b1a2b97fac52a00d8ed4ebb413e2214` の22変更blobs、374既存保護files、25固定参照本文をGitHubの独立cache（local alternatesなし）からbyte/SHA照合した。receiptと本追補は後続metadataとして公開し、最終取得で全リンクを照合する。新科学計算・保存数値事後評価・数学プログラム・C1/C4再監査・production・GPT科学レビューは0。正式採択/優先順位/継続/終了/論文化を決定せず、Mandatory STOP。

@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[C2/C3最終技術監査・統合資料のGitHub公開確認](artifacts/qc_c2_c3_final_technical_audit_v1/2026-10-14/publication/receipt.json)：payload `d91991038b1a2b97fac52a00d8ed4ebb413e2214`、22変更blobs/374保護files/25固定本文をremote byte/SHA照合。旧144manifest records/non-result fields/global FAIL/root132pathsを保持。新science/保存数値集計/C1・C4再監査/production/GPTレビュー0。Mandatory STOP、次はGPT重要科学判断の別明示開始承認。
+
 ## 2026-10-14 C2/C3最終限定技術監査・固定成果統合：GPT判断開始承認待ち
 
 [C2/C3の方法・誤差・access費用](docs/research/qc_c2_c3_final_technical_audit_v1_20261014.md)、[C1–C4/Track A–B/N1–N3/THRIFT/PF–RPEの統合資料](docs/research/qc_research_integrated_gpt_decision_handoff_v1_20261014.md)、[scope/status](artifacts/qc_c2_c3_final_technical_audit_v1/2026-10-14/method_status.json)、[一次文献](artifacts/qc_c2_c3_final_technical_audit_v1/2026-10-14/literature_registry.json)、[25固定本文identity](artifacts/qc_c2_c3_final_technical_audit_v1/2026-10-14/reference_identity.json)。
