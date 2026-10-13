@@ -20,9 +20,9 @@ local検証は公開CSVの32paired標本からのG/SE独立再計算、選択uni
 
 stdlibで表示CSV/JSONを再生成：`python3 -B build_evidence.py`。検証：`python3 -B verify_evidence.py`。図は既存Matplotlibを用い、thread1・home配下MPLCONFIGDIR/TMPDIRを指定して`python -I -P -B render_figures.py`。install/upgrade不要。旧NPZをdecodeせず、公開metadataだけを読む。
 
-## 未決事項と開始許可
+## 開始対象と残る準備
 
-利用者の「準備ができたら開始してよい」は受領済み。対象（H4補完、H8事前検証、本格H8）を確認中。H8の科学比較はまだdraft、実input/rank/source/profile未固定、primitive/reference予算未確定、技術sealなし、実行commandなし。したがって現在は準備完成や実行開始を宣言しない。
+利用者の「準備ができたら開始してよい」は受領済み。開始対象は利用者の回答「1と3」により、H8小規模事前検証とH4比較補完に確定した。本格H8は対象外。H8の科学比較はまだdraft、実input/rank/source/profile未固定、primitive/reference予算未確定、技術sealなし、実行commandなし。したがって現在は準備完成や実行開始を宣言しない。
 
 GPTへの次の判断はH8 primaryをresource-mapか固定transferにするか、prefix/q16 tier、state/reference/u、tail estimator範囲、H4補完panelの必要性。実装上の小修正はCodexで完結する。計算を行うときは科学条件を維持したhash/preparation再利用とgroup並列化を先に組み込み、heavy実測からworker数を決める。
 

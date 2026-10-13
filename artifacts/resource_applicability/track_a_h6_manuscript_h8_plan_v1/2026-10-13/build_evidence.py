@@ -191,7 +191,7 @@ def build():
          'matrix-free numerical allowance/reference validation','tail diagnostic vs estimator scope',
          'H4 common panel scope and DF policy'],
       'user_start_permission':{'received':True,'condition':'preparation complete',
-        'execution_target':'pending clarification','scientific_contract_adopted':False},
+        'execution_target':['H8 small preflight','H4 comparison supplement'],'H8_full_campaign_authorized':False,'scientific_contract_adopted':False},
       'mandatory_stop':True,'next_stage_authorized':False}
     plan['projected_compile_total_upper_core']=1716+20+plan['core_budget_upper']['new_compile_upper']
     plan['projected_trajectory_total_upper_core']=842+10+plan['core_budget_upper']['new_trajectories_upper']

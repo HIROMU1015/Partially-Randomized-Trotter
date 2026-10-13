@@ -2,7 +2,7 @@
 
 2026-10-13 JST。[machine-readable案](../../artifacts/resource_applicability/track_a_h6_manuscript_h8_plan_v1/2026-10-13/h8_plan_draft.json)。approved=false、grant=null、runtime_authorization=false、allowed_cpus=[]、technical_sealed=false、absolute_launch_command=null。H8実装・input・rank・性能は未確認。
 
-利用者は「計算する場合はできるだけ高速化・並列化して開始」と指示し、後に「準備できたら開始してよい」と許可した。開始対象の確認を依頼中であり、未確定のH8科学契約やCPU/RAMを自動採用したgrantではない。細かな実装判断・metadata検証はCodexで進める。
+利用者は「計算する場合はできるだけ高速化・並列化して開始」と指示し、後に「準備できたら開始してよい」と許可した。開始対象はH8小規模事前検証とH4比較補完に確定し、本格H8は対象外である。未確定のH8科学契約やCPU/RAMを自動採用したgrantではない。細かな実装判断・metadata検証はCodexで進める。
 
 ## 1. 研究目的を二つに分ける
 
@@ -75,6 +75,6 @@ output32GiB/storage admission64GiB/inode100000案。core892groups×32MiBは27.87
 
 ## 8. 次の研究判断と実行gate
 
-GPTで確定するもの：primaryをresource-mapかtransferにするか、prefix/q16 tier、state/reference/numerical allowance、tail diagnostic/estimator、H4 panelの範囲。研究条件確定後、Codexが専用worktree/source/profile/input/carry/budget/output/plan/authをbindingし、軽量差分review・必要tests・fresh gateを完了する。準備完了後の開始許可は受領済みだが、開始対象確認と実行値の固定が必要である。
+GPTで確定するもの：primaryをresource-mapかtransferにするか、prefix/q16 tier、state/reference/numerical allowance、tail diagnostic/estimator、H4 panelの範囲。研究条件確定後、Codexが専用worktree/source/profile/input/carry/budget/output/plan/authをbindingし、軽量差分review・必要tests・fresh gateを完了する。H8小規模事前検証とH4比較補完の準備完了後の開始許可は受領済みで、実行値の固定と技術的な準備を続ける。
 
 不適格（科学bias/normalization）、数値未解決、資源STOP、coverage boundaryを区別し、結果欠測を0cost・PR敗北・PF不可能へ置換しない。H8科学結果未取得、source未固定、input未受領、technical plan未seal、実行command未生成。新grantやscience runnerは今回作成・起動していない。
