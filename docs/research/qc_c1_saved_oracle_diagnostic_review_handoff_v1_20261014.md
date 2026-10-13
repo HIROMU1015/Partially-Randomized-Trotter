@@ -28,3 +28,7 @@ method内hは既にoracle最適化されており、このregretは運用precisi
 
 Branch `qc-c1-saved-oracle-execution-20261014`、固定source `657513ad06661aed84950d5907f3304dcdd5f1f7`、準備base `e82a5202098ad95f2eb7280279d2c97cc06190bc`。結果payload・remote SHA/byte照合・リンクは[公開receipt](../../artifacts/qc_c1_saved_oracle_execution_v1/2026-10-14/publication/receipt.json)で取得確認する。
 旧source/結果/認可/STOP/global FAIL、N1 STOP・N2 HOLD・N3 CLOSED・THRIFT現template終了を維持。今回認可は消費済み、保存posthoc再実行・新pilot・C4・新科学レビューは開始しない。Mandatory STOP、次のGPT科学判断にはユーザーの別明示開始承認が必要。
+
+## 公開確認・最終STOP
+
+[GitHub再取得receipt](../../artifacts/qc_c1_saved_oracle_execution_v1/2026-10-14/publication/receipt.json)：結果payload `899289dacf3c55e00917c8f3e89a27edf8071cbc` の31変更blobs、338保護files、固定source16/input25をremoteからbyte/SHA照合した。公開は独立branchのみ、原worktree・旧source/result/認可/STOP/global FAILを保全。receipt自体へのリンクは後続公開metadataで解決する。数値診断や独立metric auditは再実行せず、Mandatory STOP。

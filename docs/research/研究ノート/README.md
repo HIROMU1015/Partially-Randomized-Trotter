@@ -1,5 +1,7 @@
 # 研究ノート
 
+[C1保存診断の結果公開・GitHub再取得](../../../artifacts/qc_c1_saved_oracle_execution_v1/2026-10-14/publication/receipt.json)：payload `899289dacf3c55e00917c8f3e89a27edf8071cbc`、31変更blobs/338保護files/16固定source/25input identity一致、旧140manifest entries/non-result fields/global FAIL/root131paths保全。一回診断・独立audit PASS、通常16件A/bad16件未判定、eig/PF/compile0・retry0。認可消費済み、Mandatory STOP。
+
 ## 2026-10-14 C1固定保存oracle診断：一回完了・独立監査PASS
 
 [結果・scope・限界](../qc_c1_saved_oracle_diagnostic_v1_results_20261014.md)、[GPT判断資料](../qc_c1_saved_oracle_diagnostic_review_handoff_v1_20261014.md)、[明示承認](../../../artifacts/qc_c1_saved_oracle_execution_v1/2026-10-14/authorization.json)、[一次診断](../../../artifacts/qc_c1_saved_oracle_diagnostic_v1/2026-10-14/attempt_1/diagnostic.json)、[独立checker結果](../../../artifacts/qc_c1_saved_oracle_diagnostic_v1/2026-10-14/attempt_1/independent_audit.json)。

@@ -7,3 +7,7 @@
 [詳細scopeと一次結果](../qc_c1_saved_oracle_diagnostic_v1_results_20261014.md)、[GPT判断資料](../qc_c1_saved_oracle_diagnostic_review_handoff_v1_20261014.md)、[認可](../../../artifacts/qc_c1_saved_oracle_execution_v1/2026-10-14/authorization.json)、[公開receipt](../../../artifacts/qc_c1_saved_oracle_execution_v1/2026-10-14/publication/receipt.json)。
 
 過去の結果・source・認可・STOP、準備履歴、旧manifest140entriesと既存description FAIL、root既存変更を保全。研究継続/終了/再設計・新規性・C4移行は判断せず、GPT科学判断の別開始承認待ち。N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了を維持。新計算・追加探索をせず、公開/remote照合後Mandatory STOP。
+
+## 公開確認・最終STOP
+
+[GitHub再取得receipt](../../../artifacts/qc_c1_saved_oracle_execution_v1/2026-10-14/publication/receipt.json)：結果payload `899289dacf3c55e00917c8f3e89a27edf8071cbc` の31変更blobs、338保護files、固定source16/input25をremoteからbyte/SHA照合した。公開は独立branchのみ、原worktree・旧source/result/認可/STOP/global FAILを保全。receipt自体へのリンクは後続公開metadataで解決する。数値診断や独立metric auditは再実行せず、Mandatory STOP。
