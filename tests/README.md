@@ -1,5 +1,10 @@
 # tests の役割
 
+## C1 sign audit v1：静的代数の検査のみ
+
+[監査](../docs/research/qc_c1_sign_mechanism_technical_audit_v1_20261013.md)、[形式21恒等式](../artifacts/qc_c1_sign_mechanism_audit_v1/2026-10-13/symbolic_identity_checks.json)。checkerは `artifacts/qc_c1_sign_mechanism_audit_v1/2026-10-13/audit_tools/check_symbolic_identities.py`。
+旧science runner/module/tests/sourceは変更せず、数学的恒等式のみに使用した。登録係数/数値行列/solver/費用再計算/数値posthoc/compile0。GPT科学判断開始承認待ち、Mandatory STOP。
+
 ## C1固定pilot v1：結果・保存監査完了
 
 [結果](../docs/research/qc_c1_macrocycle_pilot_v1_results_20261013.md)、[保存証拠](../artifacts/qc_c1_macrocycle_execution_v1/2026-10-13/saved_results_summary.json)。runner/checker/module/sourceは準備版 `ddaa05d2`から不変。登録外18checksは前回準備時の証拠として保持。

@@ -1,5 +1,14 @@
 # 文書索引
 
+## 2026-10-13 C1符号・未達原因の静的技術監査：GPT判断開始承認待ち
+
+[数学・保存証拠の監査](research/qc_c1_sign_mechanism_technical_audit_v1_20261013.md)、[GPT引継ぎ](research/qc_c1_sign_mechanism_review_handoff_v1_20261013.md)、[scope/停止](../artifacts/qc_c1_sign_mechanism_audit_v1/2026-10-13/scope.json)。ユーザー添付により、科学判断前のCodex技術疑問整理を実施した。
+ground誤差をG_X/12>=0とinner commutatorへ分解。Pauli parityから2dABC+dACB>=0という部分符号制約、十分弱いcouplingの共通正二次項と保守的な十分条件を導出。固定4点がその十分条件に入るかは未代入・未判定。
+保存sealはS1/S4の近似BAC負と真BAC正、S4の近似macro zeroと真nonzeroを示す。一般三fragment辞書の形式的異符号例はpilot族/native template外。現Pauli族内の異符号存在、未選択macro全体のfinite-h最良性能、oracle regretはUNDETERMINED。
+保存pilotは非分子2qubit Pauli4H/39方法/6h,h=1/(8Λ2^s),s0…5,Λ=fragment係数L1、target10^-5/10^-6 model units/価格3,6（geometry/basis/DF rank-policy/L_D/粒子sectorなし）。旧16通常費用比較改善0と6/32precision validは別の結果として保持。
+21形式恒等式PASS、保存literalと一次文献の限定確認のみ。新H/eig/PF性能/費用再計算/数値posthoc/新物理量/compile/科学retry/C4/GPTレビュー0。C1継続/終了/中心研究の採択を行わない。
+既存280files/固定20files/一次9files、旧134manifest entries/non-result fields・global description FAIL・認可/STOP・N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了を保持。資料公開後Mandatory STOP、次はGPT科学判断の別開始承認。以下は履歴。
+
 ## 2026-10-13 C1固定pilot v1：一回完了・優位未観測・科学判断待ち
 
 [一次結果・scope・限界](research/qc_c1_macrocycle_pilot_v1_results_20261013.md)、[GPT判断引継ぎ](research/qc_c1_macrocycle_pilot_v1_review_handoff_20261013.md)、[保存監査・集約](../artifacts/qc_c1_macrocycle_execution_v1/2026-10-13/saved_results_summary.json)。固定source `ddaa05d2`、認可 `9c3b5c82`、attempt1/retry0で940eigを完了し、保存独立監査936unitary/8064比較行PASS（追加eig0）。
