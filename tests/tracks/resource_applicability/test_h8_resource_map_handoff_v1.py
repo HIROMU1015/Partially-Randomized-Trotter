@@ -96,6 +96,21 @@ def test_held_reservation_budget_not_refunded():
     assert h.compatibility(new,old)['extra_reservations']=={'compile':6,'trajectory':3}
 
 
+def test_only_minimum_budget_extension(tmp_path):
+    # Four ineligible deterministic cells leave compile headroom, no PR headroom.
+    old,_=manifests();pd=tmp_path/'exploration';pd.mkdir()
+    tasks=[]
+    for cell in c.cells():
+        if cell['method']=='B0' and cell['q']==8:continue
+        if cell['method']=='B0' and cell['q']==4 and cell['prefix']==21:continue
+        for replica in range(8 if cell['R'] else 1):
+            tasks.append(dict(cell=cell,ordinary=replica==0 and cell['id'] in c.plan()['sensitivity_cells'],validate=replica==0))
+    (pd/'registered_tasks.json').write_text(json.dumps({'registrations':[{'task':t} for t in tasks]}))
+    held=dict(compile=6,trajectory=3,occurrence=3,control_probe=0)
+    assert c.minimum_resume_extension(old,tmp_path,held)=={'trajectory':3,'occurrence':3}
+    assert held['compile']==6  # Retained even though the cap has sufficient headroom.
+
+
 def test_native_identity_required_and_signal_reused(monkeypatch,tmp_path):
     assert tmp_path.is_relative_to('/home/AbeHiromu')
     old,new=manifests();parent=tmp_path/'parent';parent.mkdir()

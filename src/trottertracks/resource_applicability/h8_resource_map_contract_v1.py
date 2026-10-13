@@ -234,8 +234,7 @@ def verify(root, m, g, *, committed=True):
             if file_hash(p)!=h:raise ValueError('H8_RESUME_PARENT_CHANGED')
         previous=json.loads(Path(ref['manifest_path']).read_text())
         compatibility(m,previous)
-        held=ref['parent_ledger']['reserved']
-        if extra!={k:held.get(k,0) for k in EXTRA_KEYS if held.get(k,0)}:
+        if extra!=minimum_resume_extension(previous,ref['directory'],ref['parent_ledger']['reserved']):
             raise ValueError('H8_RESUME_HELD_RESERVATION_BINDING')
         if committed and previous['source_commit']!=m['source_commit']:
             for p,h in previous['source_hashes'].items():
@@ -307,6 +306,20 @@ def resume_result(directory, task, source, receipt):
     return result
 
 
+def minimum_resume_extension(previous, directory, held):
+    """Only add the amount exceeding fixed caps, including worst union8 confirmation."""
+    registry=Path(directory)/'exploration/registered_tasks.json'
+    if not registry.is_file():
+        return {k:v for k in EXTRA_KEYS if (v:=held.get(k,0))}
+    tasks=[r['task'] for r in json.loads(registry.read_text())['registrations']]
+    full=dict(compile=sum(4 if t['ordinary'] else 2 for t in tasks)+512,
+        trajectory=sum(bool(t['cell']['R']) for t in tasks)+256,
+        occurrence=sum(t['cell']['q'] if t['cell']['R'] else 0 for t in tasks)+2048,
+        control_probe=sum((8 if t['ordinary'] else 4) if t['validate'] else 0 for t in tasks))
+    return {k:delta for k in EXTRA_KEYS
+            if (delta:=max(0,full[k]+held.get(k,0)-previous['call_budget'][k]))}
+
+
 def bind_resume_parent(m, directory, native_exit, *, budget_extension_approved=False):
     """Manual new-grant preparation only. Never resets held failed reservations."""
     parent=Path(directory).resolve();native_exit=Path(native_exit).resolve()
@@ -329,7 +342,7 @@ def bind_resume_parent(m, directory, native_exit, *, budget_extension_approved=F
     m['seed_source_commit']=old.get('seed_source_commit',old['source_commit'])
     m['handoff_authorization_basis']=HANDOFF_AUTHORIZATION
     held=end['ledger']['reserved']
-    extra={k:held.get(k,0) for k in EXTRA_KEYS if held.get(k,0)}
+    extra=minimum_resume_extension(old,parent,held)
     if any(v for k,v in held.items() if k not in EXTRA_KEYS):
         raise ValueError('H8_RESUME_UNEXPECTED_HELD_CALL')
     for k,v in extra.items():m['call_budget'][k]+=v
