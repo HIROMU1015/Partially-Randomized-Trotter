@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-13 H4固定anchor・H8入力/stateの実完了
+
+[統合入口](artifacts/resource_applicability/track_a_h48_preflight_result_v1/2026-10-13/README.md)。H4/1Å/STO-3G/rank12/T.8/delta.1–.8、16signal＋264group/532wrapper、actual532compile/256trajectory、cost wall1068.455秒、source217c971d、exit0/全reap/cleanup0。固定panel点PR/PF比.507/.472/.453/.511、51保存CSV G/SE別算術PASS、母平均/旧full-grid最良ではない。H8/1Å/STO-3G/16modes/sector4900/actualDF28、source2ff3fc9f・weighted etaN16=3.6595e-12・decision9.9e-11、SCF/DF追加0/0・state61matvecでsnapshot受領、exit0/cleanup0。26local人工/mockはCIでなく、ground-state/u/16-mode compiler/cost/full comparison未認定。旧failed exact matvecはnull/予約10000保持。共有/venv/旧H4変更0。
+
 ## 2026-10-13 H8保存raw stateの限定実行準備
 
 [資料](artifacts/resource_applicability/track_a_h8_saved_state_preflight_v1/2026-10-13/README.md)。linearH8/1Å/STO-3G/tol-only raw rank28/16modes/sector4900。SOURCE1d6b277d、24人工/mock、eta16≈3.6595e-12（gate9.9e-11）、SCF1/DF1を再計算せずstateのみ追加。native science未検証・CI/interval bound未認定、H8full未認可。H4稼働sourceを別worktreeで保全。

@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+H4補完/H8 state：[現在の統合結果入口](artifacts/resource_applicability/track_a_h48_preflight_result_v1/2026-10-13/README.md)。H4 16signal/264groups/532compile/256trajectory完了、H8 input/state rank28/sector4900/solver61完了、source217c/2ff3・native exit0/cleanup0。H8cost/full comparisonは未実行。
+
 H8 saved state：[準備](artifacts/resource_applicability/track_a_h8_saved_state_preflight_v1/2026-10-13/README.md)。SOURCE1d6b277d、24 artificial/mock、SCF/DF再実行0・weighted同9.9e-11 gate N16、stateのみ。本格H8未認可。
 
 H4固定16 anchor補完・H8入力事前検証：[準備入口](artifacts/resource_applicability/track_a_h48_preflight_preparation_v1/2026-10-13/README.md)、`{prepare,run}_track_a_h48_preflight_v1.py`、`h48_preflight_contract_v1.py`、18 scalar/mock tests。SOURCEb6d4bdd7、旧source257不変。開始許可は受領、各scopeを別grant/outputで起動し本格H8へ進まない。

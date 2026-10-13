@@ -1,5 +1,7 @@
 # 文書索引
 
+H4補完/H8 input-state：[現在の結果・source・carry・次判断](../artifacts/resource_applicability/track_a_h48_preflight_result_v1/2026-10-13/README.md)。完了scopeと未実行H8 cost/full comparisonを区別する。
+
 H8保存rawのstate preflight：[準備](../artifacts/resource_applicability/track_a_h8_saved_state_preflight_v1/2026-10-13/README.md)、SOURCE1d6b277d/24 tests。H6のweighted error gateをN16へ同じ数学式で適用、入力再生成なし。本格H8結果とはしない。
 
 H4 native anchorとH8 input：[SOURCEb6d4bdd7/18mock/plan・auth](../artifacts/resource_applicability/track_a_h48_preflight_preparation_v1/2026-10-13/README.md)。利用者が対象1と3を認可。新H4 cost最大532compile/256trajectory、H8入力はscience generationのみでcompile/trajectory0。

@@ -1,5 +1,7 @@
 # H8共通資源比較：科学判断前の実験・高速化・予算案
 
+2026-10-13事前検証追記：[入力/stateの実受領結果](../../artifacts/resource_applicability/track_a_h48_preflight_result_v1/2026-10-13/README.md)。linearH8/1Å/STO-3G/tol-only actual rank28/16modes/sector4900、weighted N16 decision gate9.9e-11を保持、eta3.6595e-12、snapshot SHA d4c4346127e97c241439ae1c4ae010962b0456b19f461cfd3d9b06e7d4a50955。提案のrelative prefixは7/14/21。H8 sourceのsolver dimension400 guardは別moduleで4900へ対応したが、signal/reference/native16-mode/compile feasibilityは未完了、full comparison未認可。以下は入力未受領時の設計案として保全。
+
 2026-10-13 JST。[machine-readable案](../../artifacts/resource_applicability/track_a_h6_manuscript_h8_plan_v1/2026-10-13/h8_plan_draft.json)。approved=false、grant=null、runtime_authorization=false、allowed_cpus=[]、technical_sealed=false、absolute_launch_command=null。H8実装・input・rank・性能は未確認。
 
 利用者は「計算する場合はできるだけ高速化・並列化して開始」と指示し、後に「準備できたら開始してよい」と許可した。開始対象はH8小規模事前検証とH4比較補完に確定し、本格H8は対象外である。未確定のH8科学契約やCPU/RAMを自動採用したgrantではない。細かな実装判断・metadata検証はCodexで進める。

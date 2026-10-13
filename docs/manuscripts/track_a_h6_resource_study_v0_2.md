@@ -81,6 +81,8 @@ M>=2の無条件確率は約0.000131461、s2条件付き確率は約0.00787336�
 
 共通比較には、同一DF政策・native/control・PF次数・shot会計の選択を事前に固定したH4 anchor panelが必要である。最小panel案と既存証拠の再利用範囲を[比較実施案](../research/track_a_h4_h6_common_comparison_plan_v1.md)へ記した。H8では移植設定の性能と、同じ候補生成規則で探索した系別最良の性能を別々に評価する。[H8計画](../research/track_a_h8_resource_comparison_plan_v1.md)は未確定の科学契約であり、結果によって候補を都合よく変えない。
 
+2026-10-13の追加anchorでは、旧H4 rank12を維持してnative/control/S2/S4 baselineを合わせた16構成の費用を取得した。固定panel内の4精度PR/PF点比は0.506631/0.471627/0.453431/0.510507である。[結果](../../artifacts/resource_applicability/track_a_h4_common_anchor_result_v1/2026-10-13/README.md)は旧H4全grid最良やH6と同じDF政策でのsize scalingとして扱わず、比較契約の不足を埋める限定証拠である。
+
 ## 7. 結論と限界
 
 固定H6実装について、signal biasとnormalizationを含むshot会計に、実compiled full wrapperを接続した。事前選択K4を独立32本で評価してもPRの点RZ資源はfull PFより約54–63%低く、確認後K順位の変更だけで効果を説明する必要はない。局所s2 pilotの点更新は小さかったが、未観測費用のpopulation bound、経験的uの厳密保証、完全な状態準備、エネルギー推定の最終資源、一般的分子・漸近優位は未解決である。

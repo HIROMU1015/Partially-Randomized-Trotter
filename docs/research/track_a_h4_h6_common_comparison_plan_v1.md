@@ -1,5 +1,7 @@
 # H4/H6：既存証拠の採用範囲と最小共通panel案
 
+2026-10-13実行追記：[固定16 anchorの補完結果](../../artifacts/resource_applicability/track_a_h4_common_anchor_result_v1/2026-10-13/README.md)。旧H4 rank12/stateを保持し、同compiler/primary symmetric control、S2/S4 baseline・PR32標本の532compileを取得済み。点PR/PF比.507/.472/.453/.511。DF tol-policyの一致とfull-grid optimumは依然未認定。以下の未取得記載は補完前の判断履歴。
+
 2026-10-13 JST。前の[対応表](track_a_h4_h6_h8_comparison_readiness_20261013.md)を実施判断へ具体化する。今回の科学再計算0。旧H4 source/結果/稼働runを保全する。
 
 ## 保存系列ごとの採用判断

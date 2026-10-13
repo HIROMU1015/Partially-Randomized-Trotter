@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+H4/H8結果：[資料](../../artifacts/resource_applicability/track_a_h48_preflight_result_v1/2026-10-13/README.md)。H4既存input/library不変、H8は別weighted/solver adapterでinput-stateだけ完了。science source217c/2ff3を結果bundle commitと区別。
+
 H8 saved state：[projection](../trottertracks/resource_applicability/h8_saved_projection_v1.py)、[port](../trottertracks/resource_applicability/h8_saved_state_port_v1.py)、[資料](../../artifacts/resource_applicability/track_a_h8_saved_state_preflight_v1/2026-10-13/README.md)。当library不変。
 
 H4/H8：[model/loader adapter](../trottertracks/resource_applicability/h4_common_panel_port_v1.py)、[H8 input port](../trottertracks/resource_applicability/h8_preflight_input_port_v1.py)、[資料](../../artifacts/resource_applicability/track_a_h48_preflight_preparation_v1/2026-10-13/README.md)。当library/旧257source不変。H4 rank12 inputは保存bytesを使用、H8入力は別preflight。
