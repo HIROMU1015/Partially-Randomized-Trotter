@@ -1,5 +1,7 @@
 # H8本格core resource-map：認可済み実装と一回起動入口
 
+**本格計算を21:19 JSTに起動済み。** coordinator PID524065、initial workers PID524339/524340/524341（CPU20/21/24）。保存inputからreference評価に到達し、primitive検証中、first STOP理由なし。[起動状況](launch_status.json)、[source/argv/identity](launch_receipt.json)。最大8はweighted admissionの条件付き上限、現初期phaseは3worker。完了や実全体倍率は未確認。
+
 SOURCE `cb8a56c6b2a772827275f9200b02638030f33f72`。branch `track-a-h8-resource-map-production-20261013`。最新ユーザー指示で準備後の本格core開始まで認可済み、科学的比較条件の変更はなし。
 
 - [実行契約・高速化・数値品質・予算・STOP](../../../../docs/research/track_a_h8_resource_map_production_v1.md)
