@@ -1,5 +1,11 @@
 # Validation status
 
+## 2026-10-13 H8本格core：41限定検証・明示起動認可
+
+H8本格core：[入口](artifacts/resource_applicability/track_a_h8_resource_map_production_v1/2026-10-13/README.md)、[契約](docs/research/track_a_h8_resource_map_production_v1.md)。SOURCEcb8a56c6、92候補/探索8/独立32・41local人工mock・旧257source/input5保持。最新指示で起動まで認可、max8 weighted admission・joint control fallback/LRU/sine copy、core1708/832・carry込み3997/1944。本格成功/厳密u/meanは未認定。
+
+人工小系/mockのみ、旧8signal/1164probe/20compile再実行0。16-mode joint/fallbackとcanonical/metric/compiler equivalence、B0 toy dense、cleanup/reservation/rotation/resume/JSON sealを検査。外部再現/CI・本格精度一致/母平均/旧host bit equivalenceではない。
+
 ## 2026-10-13 H8限定feasibility 20/20完了・mandatory STOP
 
 [完了結果](docs/research/track_a_h8_fast_feasibility_result_v1.md)：linear H8/1Å/STO-3G/tol-only DF28/16modes/sector4900/T=.8、SOURCE9bfea8bd。8/8ケース・20/20 full-wrapper/累積21actual、control40+old4=44、trajectory4/occurrence15。heavy約1時間59分・RSS6.815GiB、残7約50分・最大3worker。全exit0/reap/cleanup0・STOPなし。新解析はmetadata/streaming SHAだけでscience0、母平均/正式精度一致/本格mapは未認定。本格実行grantなし。

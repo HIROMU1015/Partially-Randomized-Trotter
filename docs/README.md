@@ -1,5 +1,7 @@
 # 文書索引
 
+[H8 core計算の固定契約](research/track_a_h8_resource_map_production_v1.md)。41local人工/mock、SOURCEcb8a56c6、最新user指示で一度のcore開始まで認可、共有/旧venv/旧H4不変。
+
 H8高速化版承認retry：[契約・seed/carry/caps・一回起動](research/track_a_h8_fast_retry21_v1.md)、[起動と新23検査](../artifacts/resource_applicability/track_a_h8_fast_retry21_v1/2026-10-13/README.md)。SOURCE9bfea8bd、heavy02起動・残7は成功条件付き、本格H8ではない。
 
 H8残7高速化引継ぎ：[設計と親instruction STOP](research/track_a_h8_remaining_fast_handoff_v1.md)、[source/tests/証拠入口](../artifacts/resource_applicability/track_a_h8_remaining_fast_handoff_v1/2026-10-13/README.md)。SOURCE507b6924、40metadata/mock、conditional実装完成・起動0。新cap/retryは未承認。

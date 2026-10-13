@@ -1,5 +1,7 @@
 # scripts 索引
 
+[H8 core実行：prepare/run/launch_track_a_h8_resource_map_v1.py](../docs/research/track_a_h8_resource_map_production_v1.md)。41local人工/mock、SOURCEcb8a56c6、最新user指示で一度のcore開始まで認可、共有/旧venv/旧H4不変。
+
 H8承認retry21：[prepare](resource_applicability/prepare_track_a_h8_fast_retry_v1.py)、[run](resource_applicability/run_track_a_h8_fast_retry_v1.py)、[継続controller](resource_applicability/continue_track_a_h8_fast_retry_v1.py)、[入口](../artifacts/resource_applicability/track_a_h8_fast_retry21_v1/2026-10-13/README.md)。一度のheavy再実行、成功後元7のみ、automatic retry/full H8なし。
 
 H8条件付き残7：[prepare](resource_applicability/prepare_track_a_h8_fast_handoff_v1.py)、[arm](resource_applicability/arm_track_a_h8_fast_handoff_v1.py)、[run](resource_applicability/run_track_a_h8_fast_handoff_v1.py)、[資料](../artifacts/resource_applicability/track_a_h8_remaining_fast_handoff_v1/2026-10-13/README.md)。元seed/parent成功/reap/fresh gateを満たす場合だけ18compileを一度実行する。実親STOPのため未起動。
