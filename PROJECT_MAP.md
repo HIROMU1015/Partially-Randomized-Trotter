@@ -1042,3 +1042,8 @@ STOP_FOR_GPT_SCOPE_DECISION。元whole補正closure、Track A/G10/RA-D0結果・
 [終了記録・証拠索引](docs/tracks/algorithm_codesign/gaussian_product_generation_closure_20261013.md)を保存。
 現手順を独立新規アルゴリズムとして採択せず、候補監査を区切る。期待資源の改善/非改善は未確定、性能negativeではない。
 応用研究・新候補・Track B全体の終了は未採択。新science0、旧source/result/marker/STOP保持、mandatory STOP。
+
+
+## Track B：時間方向相関の限定照合（2026-10-13）
+
+[GPT方向レビュー原本](docs/research/track_b_interstep_correlated_randomization_direction_review_20261013.md)／[一次資料・式・会計の技術報告](docs/tracks/algorithm_codesign/interstep_correlated_randomization_prior_art_audit_20261013.md)。PRHS本文取得、qSHIFT v1/v3の表示差と実測shotの会計を確認。既知手順への対応、追加の具体的方法差は未確立。新実装・科学実行なし、既存休止・closure保持、mandatory STOP。

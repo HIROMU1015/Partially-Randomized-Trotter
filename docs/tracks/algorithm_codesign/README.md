@@ -540,3 +540,8 @@ STOP_FOR_GPT_SCOPE_DECISION。Gate 3の新fixture/runner/compile契約は未作�
 現在のactive-span/反射積/partial Gaussian合成を独立新手法として採択せず、今回の候補を区切る。
 performance未確定、性能negativeではない。応用研究・新候補・Track B全体終了は未採択。
 旧監査/whole closure/G10/RA-D0/Track A/N3は不変、新science/authorization/marker0、mandatory STOP。
+
+
+## 2026-10-13：時間方向相関の文献・式・資源会計照合
+
+[方向レビュー原本](../../research/track_b_interstep_correlated_randomization_direction_review_20261013.md)、[技術照合報告](interstep_correlated_randomization_prior_art_audit_20261013.md)、[監査manifest](../../../artifacts/track_b_interstep_correlation_prior_art_audit/2026-10-13/audit_manifest_v1.json)。既知手順への対応、追加の具体的方法差未確立。既存実験立上げ休止は維持、新sampler/pilot未採択、新科学実行なし、mandatory STOP。

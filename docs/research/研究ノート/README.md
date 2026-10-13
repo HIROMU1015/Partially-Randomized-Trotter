@@ -262,3 +262,6 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 
 [採用判断と完了記録](2026-10-11_track_b_return_aggregation_endpoint.md)。
 G6/G9/G10を自己完結的ノートv1.0へ統合し現系列を区切る。旧記録/証拠保持、new science0、mandatory STOP。
+
+
+- [2026-10-13 Track B：時間方向相関の限定文献・式・会計照合](2026-10-13_track_b_interstep_correlation_prior_art_audit.md) — 取得状況更新と既知手順への対応。新実装・科学実行なし、既存休止維持、mandatory STOP。

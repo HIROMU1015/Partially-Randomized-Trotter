@@ -211,3 +211,8 @@ science0、新authorization0、旧closure/結果/marker/STOPは不変、mandator
 ## Track B全体方針：新規手法探索の一時休止（2026-10-13）
 
 [GPT判断原本](track_b_overall_direction_and_research_pause_review_20261013.md)／[休止記録](../tracks/algorithm_codesign/track_b_research_pause_record_20261013.md)／[dated note](研究ノート/2026-10-13_track_b_research_pause.md)。判断済み、同じレビューの反復不要。既存成果は保持し、新実装・科学実行なし、mandatory STOP。
+
+
+## 2026-10-13 Track B：時間方向相関の限定照合
+
+[GPT方向レビュー原本](track_b_interstep_correlated_randomization_direction_review_20261013.md)をbyte一致で保存。[技術報告](../tracks/algorithm_codesign/interstep_correlated_randomization_prior_art_audit_20261013.md)はPRHS/qSHIFT/全経路ISと現finite-RTEの対応、表示不整合、shot会計、移送の未解決条件を記録。方法採択・新科学実行なし、既存休止維持、mandatory STOP。

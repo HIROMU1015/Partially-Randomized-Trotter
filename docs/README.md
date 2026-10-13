@@ -653,3 +653,8 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## Track Bの新規手法探索を一時休止（2026-10-13）
 
 [GPT科学レビュー原本](research/track_b_overall_direction_and_research_pause_review_20261013.md)／[休止記録](tracks/algorithm_codesign/track_b_research_pause_record_20261013.md)。既存成果・終了判断は保持、closed P5は将来候補のみ。新実行なし、mandatory STOP。
+
+
+## Track B：時間方向相関の限定照合（2026-10-13）
+
+[方向レビュー原本](research/track_b_interstep_correlated_randomization_direction_review_20261013.md)、[技術照合・GPT判断への入口](tracks/algorithm_codesign/interstep_correlated_randomization_prior_art_audit_20261013.md)、[取得・source identity manifest](../artifacts/track_b_interstep_correlation_prior_art_audit/2026-10-13/audit_manifest_v1.json)。文献取得・手計算・静的source確認のみ。既存休止・closure維持、mandatory STOP。
