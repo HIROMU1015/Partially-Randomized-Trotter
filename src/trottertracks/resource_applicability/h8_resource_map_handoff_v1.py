@@ -16,6 +16,10 @@ CHANGED_SOURCE_PATHS = {PREFIX+'h8_resource_map_contract_v1.py',
                         PREFIX+'h8_resource_map_execution_v1.py',
                         PREFIX+'h8_resource_map_optimization_v1.py'}
 EXTRA_KEYS = ('compile', 'trajectory', 'occurrence', 'control_probe')
+REPAIR_PARENT_SOURCE = 'c6692964c948071ed00363b5b711fbca8930ad61'
+REPAIR_AUTHORIZATION = '修正して再開させて'
+REPAIR_CHANGED_PATHS = {PREFIX+'h8_resource_map_contract_v1.py',
+                       PREFIX+'h8_resource_map_execution_v1.py', NEW_SOURCE_PATH}
 
 
 def compatibility(current, previous):
@@ -27,6 +31,13 @@ def compatibility(current, previous):
     if current['source_commit'] == previous['source_commit']:
         if current['source_hashes'] != previous['source_hashes']:
             raise ValueError('H8_RESUME_SOURCE_HASHES')
+    elif previous['source_commit'] == REPAIR_PARENT_SOURCE:
+        if (current.get('seed_source_commit') != PARENT_SOURCE
+            or current.get('repair_authorization_basis') != REPAIR_AUTHORIZATION):
+            raise ValueError('H8_RESUME_REPAIR_AUTHORIZATION')
+        old,new=previous['source_hashes'],current['source_hashes']
+        if set(old)!=set(new) or {p for p in old if old[p]!=new[p]}!=REPAIR_CHANGED_PATHS:
+            raise ValueError('H8_RESUME_SCIENCE_SOURCE_CHANGED')
     else:
         if (previous['source_commit'] != PARENT_SOURCE
             or current.get('seed_source_commit') != PARENT_SOURCE

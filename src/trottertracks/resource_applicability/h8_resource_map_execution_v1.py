@@ -6,12 +6,14 @@ import math
 import os
 from pathlib import Path
 import resource
+import stat
 import subprocess
 import sys
 import time
 from .ax2a_preparation import digest
 from .ax2b_h4_contract_v5 import file_hash
-from .ax2b_supplement_records_v1 import AtomicWriter
+from .ax2b_supplement_records_v1 import AtomicWriter as OriginalAtomicWriter
+from .h4_common_panel_port_v1 import bound_function
 from .h6_matched_execution_v2 import Progress, worker_environment, install_limits
 from .h6_matched_execution_v3 import ResourceTraceV3
 from .h6_server_resources_v1 import (process_identity, process_memory, host_memory,
@@ -82,16 +84,36 @@ def demand(task):
 
 
 def inventory(output):
-    count=0;size=0;logs=0
-    for base,dirs,files in os.walk(output):
+    count=0;size=0;logs=0;vanished=0
+    def walk_error(error):raise error
+    for base,dirs,files in os.walk(output,onerror=walk_error):
         # Runtime caches count towards bytes/inodes too; no shared scans.
         count+=len(dirs)+len(files)
+        for name in dirs:
+            if stat.S_ISLNK((Path(base)/name).lstat().st_mode):
+                raise ValueError('OUTPUT_SYMLINK')
         for name in files:
             p=Path(base)/name
-            if p.is_symlink():raise ValueError('OUTPUT_SYMLINK')
-            n=p.stat().st_size;size+=n
+            try:info=p.lstat()
+            except FileNotFoundError:
+                # AtomicWriter unlinks this temporary only after exclusive
+                # publication (or aborted write). All other missing/error
+                # observations still fail closed. Keep inode overcount.
+                if not (name.startswith('.pending_') and name.endswith('.json')):
+                    raise
+                vanished+=1;continue
+            if stat.S_ISLNK(info.st_mode):raise ValueError('OUTPUT_SYMLINK')
+            n=info.st_size;size+=n
             if name.endswith('.log'):logs+=n
-    return dict(inodes=count,bytes=size,log_bytes=logs)
+    return dict(inodes=count,bytes=size,log_bytes=logs,
+                vanished_atomic_temporaries=vanished)
+
+
+class AtomicWriter(OriginalAtomicWriter):
+    """Use the same race-aware size walk for own-run write caps too."""
+    write=bound_function(OriginalAtomicWriter.write,
+        dict(output_size=lambda output:inventory(output)['bytes']))
+    write.__kwdefaults__=dict(OriginalAtomicWriter.write.__kwdefaults__)
 
 
 def supervisor(root,run,phase,registrations,m,g,ledger):

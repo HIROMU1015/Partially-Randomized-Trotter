@@ -16,7 +16,8 @@ from .h48_preflight_contract_v1 import profile, observation_policy
 from .h8_fast_retry_contract_v1 import source_paths as previous_sources
 from .h6_matched_accounting_v1 import eligible, confirmation_ids
 from .h8_resource_map_handoff_v1 import (compatibility, PARENT_SOURCE,
-    AUTHORIZATION as HANDOFF_AUTHORIZATION, EXTRA_KEYS)
+    AUTHORIZATION as HANDOFF_AUTHORIZATION, EXTRA_KEYS,
+    REPAIR_PARENT_SOURCE, REPAIR_AUTHORIZATION)
 
 RUNNER = 'scripts/resource_applicability/run_track_a_h8_resource_map_v1.py'
 PREPARER = 'scripts/resource_applicability/prepare_track_a_h8_resource_map_v1.py'
@@ -206,8 +207,9 @@ def verify(root, m, g, *, committed=True):
     root=Path(root)
     if g != grant(m,True) or m.get('authorization_basis') != AUTHORIZATION:
         raise ValueError('H8_CORE_EXPLICIT_GRANT')
-    expected_budget=call_budget()
     ref=m.get('resume_parent',{})
+    previous=json.loads(Path(ref['manifest_path']).read_text()) if ref else None
+    expected_budget=deepcopy(previous['call_budget']) if previous else call_budget()
     extra=ref.get('additional_held_reservations',{})
     for k,v in extra.items():
         if k not in EXTRA_KEYS or type(v) is not int or v<0:
@@ -238,7 +240,7 @@ def verify(root, m, g, *, committed=True):
             raise ValueError('H8_RESUME_HELD_RESERVATION_BINDING')
         if committed and previous['source_commit']!=m['source_commit']:
             for p,h in previous['source_hashes'].items():
-                if hashlib.sha256(subprocess.check_output(['git','show',PARENT_SOURCE+':'+p],cwd=root)).hexdigest()!=h:
+                if hashlib.sha256(subprocess.check_output(['git','show',previous['source_commit']+':'+p],cwd=root)).hexdigest()!=h:
                     raise ValueError('H8_RESUME_PARENT_SOURCE_COMMIT:'+p)
     out=Path(m['output'])
     if not out.is_absolute() or not out.is_relative_to('/home/AbeHiromu') or str(out.resolve())!=str(out):
@@ -341,10 +343,13 @@ def bind_resume_parent(m, directory, native_exit, *, budget_extension_approved=F
     except FileNotFoundError:pass
     m['seed_source_commit']=old.get('seed_source_commit',old['source_commit'])
     m['handoff_authorization_basis']=HANDOFF_AUTHORIZATION
+    if old['source_commit']==REPAIR_PARENT_SOURCE:
+        m['repair_authorization_basis']=REPAIR_AUTHORIZATION
     held=end['ledger']['reserved']
     extra=minimum_resume_extension(old,parent,held)
     if any(v for k,v in held.items() if k not in EXTRA_KEYS):
         raise ValueError('H8_RESUME_UNEXPECTED_HELD_CALL')
+    m['call_budget']=deepcopy(old['call_budget'])
     for k,v in extra.items():m['call_budget'][k]+=v
     m['resume_parent']=dict(additional_held_reservations=extra,
         budget_extension_approved=budget_extension_approved)
@@ -353,7 +358,11 @@ def bind_resume_parent(m, directory, native_exit, *, budget_extension_approved=F
         str(parent/'execution_terminal.json'):file_hash(parent/'execution_terminal.json'),
         str(parent/'coordinator_identity.json'):file_hash(parent/'coordinator_identity.json'),
         str(native_exit):file_hash(native_exit)}
-    accepted={}
+    inherited=old.get('resume_parent',{})
+    for path,h in inherited.get('file_hashes',{}).items():
+        if file_hash(path)!=h:raise ValueError('H8_RESUME_ANCESTOR_CHANGED')
+        inventory[path]=h
+    accepted=deepcopy(inherited.get('accepted',{}))
     for phase in ('signal','exploration','confirmation'):
         pd=parent/phase;terminal=pd/'execution_terminal.json'
         if not terminal.is_file():continue
@@ -364,9 +373,15 @@ def bind_resume_parent(m, directory, native_exit, *, budget_extension_approved=F
                 if process_identity(retired['pid'])['start_ticks']==retired['start_ticks']:
                     raise ValueError('H8_RESUME_WORKER_ALIVE')
             except FileNotFoundError:pass
-        inventory[str(terminal)]=file_hash(terminal);accepted[phase]={}
+        inventory[str(terminal)]=file_hash(terminal);accepted.setdefault(phase,{})
         inventory[str(pd/'registered_tasks.json')]=file_hash(pd/'registered_tasks.json')
         registrations=json.loads((pd/'registered_tasks.json').read_text())['registrations']
+        expected={str(row['index']):row['task'] for row in registrations}
+        for index,record in accepted[phase].items():
+            if index not in expected or record['task']!=expected[index]:
+                raise ValueError('H8_RESUME_INHERITED_REGISTRATION')
+            if record['directory'] not in {str(Path(p).parent) for p in inherited['file_hashes']}:
+                raise ValueError('H8_RESUME_INHERITED_DIRECTORY')
         for row in registrations:
             d=pd/f"group_{row['index']:04d}";reap=d/'native_reap_receipt.json'
             if not reap.is_file():continue
@@ -385,7 +400,10 @@ def bind_resume_parent(m, directory, native_exit, *, budget_extension_approved=F
                 if cp['native_receipt']!=nr:raise ValueError('H8_RESUME_NATIVE_RECEIPT')
                 result=resume_result(d,row['task'],old['source_commit'],cp)
             for p in d.glob('*.json'):inventory[str(p)]=file_hash(p)
+            if str(row['index']) in accepted[phase]:raise ValueError('H8_RESUME_DUPLICATE_COMPLETE')
             accepted[phase][str(row['index'])]=dict(task=row['task'],result=result,directory=str(d))
+        if sorted(map(int,accepted[phase]))!=t['completed_indices']:
+            raise ValueError('H8_RESUME_COMPLETE_COVERAGE')
     m['resume_parent'].update(directory=str(parent),manifest_path=str(parent/'manifest.json'),
         file_hashes=inventory,accepted=accepted,parent_ledger=end['ledger'],
         native_exit_path=str(native_exit),old_grant_reused=False,automatic_resume=False)

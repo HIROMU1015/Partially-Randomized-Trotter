@@ -126,7 +126,7 @@ def test_native_identity_required_and_signal_reused(monkeypatch,tmp_path):
     pd=parent/'signal';pd.mkdir();d=pd/'group_0000';d.mkdir()
     st={'kind':'SIGNAL','cell_ids':['toy']}
     files={'registered_tasks.json':{'registrations':[{'index':0,'task':st}]},
-        'execution_terminal.json':dict(all_dispatched_reaped=True,cleanup_errors=[],retired=[])}
+        'execution_terminal.json':dict(all_dispatched_reaped=True,cleanup_errors=[],retired=[],completed_indices=[0])}
     for n,v in files.items():(pd/n).write_text(json.dumps(v))
     for n,v in {'native_reap_receipt.json':{'exit_code':0,'reaped':True},
         'worker_terminal.json':{'status':'COMPLETE','source_commit':h.PARENT_SOURCE,'task':st},
