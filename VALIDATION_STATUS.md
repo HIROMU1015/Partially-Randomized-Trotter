@@ -1,5 +1,12 @@
 # Validation status
 
+## 2026-10-13 chemistry mixed-access feasibility計画・科学未実行
+
+[計画](docs/research/qc_mixed_access_feasibility_plan_v1_20261013.md)、[承認対象scope](docs/research/qc_mixed_access_feasibility_approval_scope_v1_20261013.md)、artifacts `artifacts/qc_mixed_access_feasibility/2026-10-13/`。
+完了GPT判断をユーザー経由で採用、current constructor独立算法非採択。one H4/7法/154以下の将来PF-error slotsとpartial resource/function budget評価を設計。
+計画準備完了、実行認可・science runner/source/env/input bindingは未完了。登録分子の新係数評価・eig/SVD・科学時間発展・compile・synthetic・GPTレビュー0。数値結果やCI証拠ではない。
+旧120 manifest entriesと全科学source/結果/旧pilot案/STOP、N1STOP/N2HOLD/N3CLOSED、既存description欠落FAILを保持。Mandatory STOP。
+
 ## 2026-10-13 相対時間発展block追加技術監査（新計算なし）
 
 [独立remote receipt](artifacts/qc_relative_block_method_cost_audit/2026-10-13/publication/receipt.json)：payload `eba04a87dc790d7688b0fce0b906ef12151b781a`の27変更blobs/1,246,362bytes、基準13優先blobs、生成source3件、追加リンク34件一致。科学再実行0、CIではない。

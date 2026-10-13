@@ -358,3 +358,7 @@ N3保存帰属v1：[資料・事後評価準備](../../docs/research/n3_saved_at
 ## 2026-10-13 相対時間発展block追加技術監査
 
 [方法・費用監査](../../docs/research/qc_relative_block_method_cost_audit_v1_20261013.md)、[GPT判断用資料](../../docs/research/qc_relative_block_method_cost_handoff_v1_20261013.md)。artifacts `artifacts/qc_relative_block_method_cost_audit/2026-10-13/`。基準25cbc6e7のsource/test/runnerと保存13件は変更・再実行なし。既知primitiveのread-only調査と静的数式/資源会計、function費用UNKNOWN、独立差未特定。新科学計算・compile・synthetic0、詳細backend Phase2未起動、GPT判断前Mandatory STOP。数値validation pathは追加しない。
+
+## 2026-10-13 chemistry mixed-access feasibility計画
+
+[最小計画](../../docs/research/qc_mixed_access_feasibility_plan_v1_20261013.md)、[次のscope承認](../../docs/research/qc_mixed_access_feasibility_approval_scope_v1_20261013.md)。artifacts `artifacts/qc_mixed_access_feasibility/2026-10-13/`。current constructor独立算法非採択をユーザー経由の完了GPT判断として反映。新数値0、science module/runner/checkerは将来技術準備・source未freeze、旧13再実行なし。7法/H4一入力の有限PF/残余function費用を設計、launch認可なしMandatory STOP。数値validation実装pathを追加したとはしない。

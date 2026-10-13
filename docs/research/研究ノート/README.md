@@ -123,3 +123,7 @@ future module/runner/tests/checkerは契約JSONに記した未実装path。旧so
 ## 2026-10-13 相対時間発展block追加技術監査
 
 [同日ノートへの追記](2026-10-13_qc_relative_block_prevalidation.md)。known compositionへの還元、固定primitive source、条件付き精度/費用・UNKNOWN、詳細backend未起動とGPT判断前STOP。新science/compile/synthetic/旧13再実行0。
+
+## 2026-10-13 chemistry mixed-access feasibility
+
+[準備ノート](2026-10-13_qc_mixed_access_feasibility.md)。完了GPT判断の伝達・現constructor独立算法非採択、one H4/7法/残余function予算の設計、新計算0・実行承認前Mandatory STOP。
