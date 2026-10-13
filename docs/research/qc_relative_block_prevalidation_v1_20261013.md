@@ -150,3 +150,12 @@ H4は既存projectで使われたdevelopment geometryでblindと呼ばない。H
 **現在の境界**：構成は既知部品へ対応し、独立した差を未特定。関数回路のuniform precision・具体T/depth/workspace費用も未閉鎖。単なるsource/testの追加ではなく、元レビュー第12節の方法差・coherent access/費用に関する重要判断の材料が揃った。
 次はGPTが、相殺に対応する精度・構成に独立寄与を求める価値があるか、既知法の特殊化として区切るか、別候補を検討するかを判断する段階。レビュー開始は改めて明示承認が必要で、Codexで主研究採択・第二候補の自動起動を行わない。
 科学batch/compileは未認可、Mandatory STOP。量子化学ground-energy低コスト化という研究目的は保持する。
+
+## 公開・再取得確認
+
+固定payload/source snapshot `c45e8a98cfa4bcdbe44c930fb96c15b6bea84eb9`、branch `qc-relative-evolution-prevalidation-20261013`。
+[技術結果](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c45e8a98cfa4bcdbe44c930fb96c15b6bea84eb9/docs/research/qc_relative_block_prevalidation_v1_20261013.md)、[判断引継ぎ](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c45e8a98cfa4bcdbe44c930fb96c15b6bea84eb9/docs/research/qc_relative_block_review_handoff_v1_20261013.md)、[source](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c45e8a98cfa4bcdbe44c930fb96c15b6bea84eb9/src/trottertracks/representation_exploration/qc_relative_block_v1.py)、[synthetic結果](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c45e8a98cfa4bcdbe44c930fb96c15b6bea84eb9/artifacts/qc_relative_block_prevalidation/2026-10-13/synthetic/report.json)、[未認可pilot案](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c45e8a98cfa4bcdbe44c930fb96c15b6bea84eb9/artifacts/qc_relative_block_prevalidation/2026-10-13/pilot_design_NOT_AUTHORIZED.json)。
+GitHub独立cacheから変更27blob/1,232,977bytesと旧source5blob、追加relative links31件を確認し、source/test/runnerのSHA3件がsynthetic生成時snapshotと一致した。
+[公開receipt](../../artifacts/qc_relative_block_prevalidation/2026-10-13/publication/receipt.json)。remoteで同じtestsを再実行する完了要件は加えず、科学計算/compile0。
+cacheはshallowだが必要なblobを取得でき、local object alternatesは使っていない。これは公開保存照合でimmutable CI/外部科学再現ではない。
+元116 manifest entries/科学artifact/STOPを保持し、global manifest既存description欠落FAILは修正していない。
