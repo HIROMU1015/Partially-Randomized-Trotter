@@ -215,3 +215,5 @@ D1〜D4レビュー承認は未解決、science/source port/input generation/nex
 ## 2026-10-13 H4 map完了・結果公開
 
 [当日ノート](2026-10-13.md)：全6距離/1308候補/74784回路の完了、B2点最小、light saved-value projectionを結果専用branchへ保存。pushは利用者操作、次stage未認可。
+
+[2026-10-13当日ノート](2026-10-13.md)：H4 scalar保持対照の感度で科学判断STOP。元登録結果は保持、実B0+I費用取得は別判断。

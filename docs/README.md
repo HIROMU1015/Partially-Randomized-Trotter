@@ -661,3 +661,11 @@ H4 linear/STO-3G/DF12、T=0.8、二次DF-prefix PF/finite RTE、6距離の1,308�
 近接B2の±2SEは重なり厳密winner未認定、energy/RPE/H6/noise/state prepへ一般化しない。旧dense/compiler系列と混合しない。
 累積wall74.53h、compile消費/予約73023/74805、charge12.68/17GiB。own6役退出、追加science0・次stage未認可。
 [結果・projection照合script](research/track_a_h4_geometry_results_20261013.md)。本体library/source/runnerの変更はなく、公開saved JSONのstdlib集計だけ。
+
+## 2026-10-13 H4 B0+I保存値診断・科学判断待ちSTOP
+
+優先Bでtail scalarのsource符号/UPLO=L規約と6入力SHA、120保存complex signalを照合し、13人工算術PASS。
+追加compiled RZ/shotをゼロと置いた参考モデルで397/1812点が登録B2点最小を下回り得る。ε=.05では0.70/0.80/1.40 Å。
+B0+Iの実compile費用は未測定。元登録集合の結果は不変で、主要claim変更の可能性という利用者停止条件に従いGPT判断へ戻す。
+原稿本体・A/C/Dの全面統合は未実施、新eigh/SCF/DF/state/量子signal/trajectory/build/compile0、H8/共有環境/他job変更0。
+[限定scalar解析と公開値照合の入口](research/track_a_h4_geometry_scalar_diagnostic_20261013.md)。本体science source/runnerは不変。
