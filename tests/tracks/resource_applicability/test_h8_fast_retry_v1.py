@@ -127,23 +127,28 @@ def test_task_caps_still_two_plus_eighteen_and_four_trajectories():
 def test_pipeline_failed_explicit_retry_never_starts_remaining(tmp_path,monkeypatch):
     module=load_script('continue_track_a_h8_fast_retry_v1.py')
     manifest=tmp_path/'m.json';grant=tmp_path/'g.json';control=tmp_path/'control';out=tmp_path/'out'
-    m=dict(scope='HEAVY_RETRY_FAST',source_commit='b'*40,output=str(out),old_parent={'directory':str(tmp_path/'old')})
+    m=dict(scope='HEAVY_RETRY_FAST',source_commit='b'*40,output=str(out),old_parent={'directory':str(tmp_path/'old')},
+           proposed_resources={'assigned_cpus':[30,31]})
     write(manifest,m);write(grant,{})
     monkeypatch.setattr(module,'verify_binding',lambda *a,**k:True)
     monkeypatch.setattr(module.resource,'setrlimit',lambda *a:None)
-    monkeypatch.setattr(module.os,'sched_setaffinity',lambda *a:None)
+    affinity=[]
+    monkeypatch.setattr(module.os,'sched_setaffinity',lambda pid,cpus:affinity.append((pid,cpus)))
     monkeypatch.setattr(module,'process_identity',lambda pid:dict(pid=pid,start_ticks=123))
     class Child:
         pid=9999999
         def wait(self):return 1
     starts=[]
-    monkeypatch.setattr(module.subprocess,'Popen',lambda *a,**k:starts.append(a[0]) or Child())
+    def spawn(*a,**k):
+        k['preexec_fn']();starts.append(a[0]);return Child()
+    monkeypatch.setattr(module.subprocess,'Popen',spawn)
     def forbidden(*a,**k):raise AssertionError('NO_REMAINING_DISPATCH_AFTER_FAILED_RETRY')
     monkeypatch.setattr(module.subprocess,'run',forbidden)
     monkeypatch.setattr(module.sys,'argv',['fixture','--heavy-manifest',str(manifest),'--heavy-grant',str(grant),
         '--manifest-sha256',module.file_hash(manifest),'--grant-sha256',module.file_hash(grant),
         '--start-heavy','--control',str(control),'--output',str(tmp_path/'remaining')])
     assert module.main()==1 and len(starts)==1
+    assert affinity==[(0,{31}),(0,{30,31})]
     assert read_json(control/'heavy_native_exit.json')['exit_code']==1
     assert 'EXPLICIT_HEAVY_RETRY_EXIT' in read_json(control/'terminal.json')['reason']
     assert not (control/'remaining_auth').exists()

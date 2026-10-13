@@ -60,7 +60,8 @@ def main():
                 '--grant',str(a.heavy_grant.resolve()),'--manifest-sha256',a.manifest_sha256,
                 '--grant-sha256',a.grant_sha256,'--execute']
             with (control/'heavy_coordinator.log').open('xb') as log:
-                child=subprocess.Popen(argv,cwd=ROOT,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
+                child=subprocess.Popen(argv,cwd=ROOT,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,
+                    start_new_session=True,preexec_fn=lambda:os.sched_setaffinity(0,set(m['proposed_resources']['assigned_cpus'])))
             identity=process_identity(child.pid)
             publish(control/'heavy_launch.json',dict(identity=identity,command=argv,SOURCE=m['source_commit']))
             code=child.wait()
@@ -80,8 +81,10 @@ def main():
         argv=[sys.executable,'-I','-P','-B',str(ROOT/RUNNER),'--manifest',str(bundle/'manifest.json'),
             '--grant',str(bundle/'grant.json'),'--manifest-sha256',file_hash(bundle/'manifest.json'),
             '--grant-sha256',file_hash(bundle/'grant.json'),'--execute']
+        remaining=read(bundle/'manifest.json')
         with (control/'coordinator.log').open('xb') as log:
-            child=subprocess.Popen(argv,cwd=ROOT,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
+            child=subprocess.Popen(argv,cwd=ROOT,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,
+                start_new_session=True,preexec_fn=lambda:os.sched_setaffinity(0,set(remaining['proposed_resources']['assigned_cpus'])))
         identity=process_identity(child.pid);publish(control/'launch.json',dict(identity=identity,command=argv,SOURCE=m['source_commit']))
         code=child.wait();publish(control/'native_exit.json',dict(identity=identity,exit_code=code,wait_reaped=True,
             exit_observed_utc=datetime.now(timezone.utc).isoformat(),exact_exit_timestamp=None))
