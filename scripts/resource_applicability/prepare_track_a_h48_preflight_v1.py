@@ -12,7 +12,7 @@ import sys
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'src'))
 from trottertracks.resource_applicability.h48_preflight_contract_v1 import (
-    PREP,h4_plan,h8_input_plan,source_paths,profile,resources,observation_policy,
+    PREP,h4_plan,h8_input_plan,phase_plan,phase_resources,source_paths,profile,resources,observation_policy,
     aggregate_caps,registrations,verify_binding)
 from trottertracks.resource_applicability.h4_common_panel_port_v1 import h4_parent
 from trottertracks.resource_applicability.ax2b_h4_contract_v5 import snapshot_binding,file_hash
@@ -23,9 +23,10 @@ def publish(path,data):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--scope',choices=('H4_SIGNAL','H4_COST','H8_INPUT'),required=True)
+    p.add_argument('--scope',choices=('H4_SIGNAL','H4_COST','H8_INPUT','H8_STATE'),required=True)
     p.add_argument('--source',required=True);p.add_argument('--output',type=Path,required=True)
     p.add_argument('--bundle',type=Path,required=True);p.add_argument('--signals',type=Path)
+    p.add_argument('--saved-parent',type=Path)
     args=p.parse_args()
     if len(args.source)!=40:raise ValueError('SOURCE_SHA')
     subprocess.run(['git','merge-base','--is-ancestor',args.source,'HEAD'],cwd=ROOT,check=True)
@@ -39,8 +40,8 @@ def main():
     scope=args.scope
     m={'schema':'h48_one_shot_bound_phase_v1','scope':scope,'kind':scope,
        'source_commit':args.source,'source_hashes':{name:file_hash(ROOT/name) for name in source_paths(ROOT)},
-       'profile':profile(),'plan':h8_input_plan() if scope=='H8_INPUT' else h4_plan(scope),
-       'proposed_resources':resources(8 if scope=='H4_COST' else 1),
+       'profile':profile(),'plan':phase_plan(scope),
+       'proposed_resources':phase_resources(scope),
        'observation_policy':observation_policy(),'base_manifest':{'plan':{'caps_proposed':aggregate_caps()}},
        'snapshot':snap,'input_identity':h4_parent(ROOT),'output':str(out),
        'registrations':[{'index':0,'task':{'kind':scope}}],
@@ -53,7 +54,19 @@ def main():
        'phase_new_budget':{'H4_SIGNAL':{'signal_candidates':16,'compile':0,'trajectory':0},
                            'H4_COST':{'compile_upper':532,'trajectory_upper':256,'occurrence_upper':960},
                            'H8_INPUT':{'integral_build':1,'df_decomposition':1,'solver_matvec':10000,
-                                       'compile':0,'trajectory':0}}[scope]}
+                                       'compile':0,'trajectory':0},
+                           'H8_STATE':{'integral_build':0,'df_decomposition':0,'solver_matvec':10000,
+                                       'compile':0,'trajectory':0,'prior_integral_build':1,'prior_df_decomposition':1}}[scope]}
+    if scope=='H8_STATE':
+        if args.saved_parent is None:raise ValueError('SAVED_RAW_REQUIRED')
+        parent=args.saved_parent.resolve();names=('integrals.npz','raw_df.npz','integral_receipt.json','raw_df_receipt.json','worker_terminal.json')
+        terminal=json.loads((parent/'worker_terminal.json').read_text())
+        original=json.loads((parent.parent/'manifest.json').read_text())
+        if original['scope']!='H8_INPUT' or original['plan']['target']!=h8_input_plan()['target'] or terminal['scope']!='H8_INPUT':
+            raise ValueError('FIXED_H8_PARENT_REQUIRED')
+        m['saved_parent']={'directory':str(parent),'file_hashes':{name:file_hash(parent/name) for name in names},
+            'parent_source_commit':terminal['source_commit'],'prior_integral_builds':1,'prior_df_decompositions':1,
+            'state_solver_matvecs_before_stop':0,'refund':0,'reset':False}
     if scope=='H4_COST':
         if args.signals is None:raise ValueError('COMPLETE_SIGNAL_PHASE_REQUIRED')
         f=args.signals.resolve();signal_data=json.loads(f.read_text())

@@ -53,7 +53,12 @@ def execute_worker(m,grant,directory):
     trace=make_resource_trace(writer,progress.start)
     status='COMPLETE';reason=None
     try:
-        if m['scope']=='H8_INPUT':
+        if m['scope']=='H8_STATE':
+            from trottertracks.resource_applicability.ax2b_h6_input_generation_watchdog_v1 import InputProgress
+            from trottertracks.resource_applicability.h8_saved_state_port_v1 import SavedStatePort
+            ip=InputProgress(writer,cap=m['plan']['caps_proposed']['progress_records'])
+            port=SavedStatePort(m,writer,ip,grant_sha256=digest(grant));port.execute()
+        elif m['scope']=='H8_INPUT':
             from trottertracks.resource_applicability.ax2b_h6_input_generation_watchdog_v1 import InputProgress
             from trottertracks.resource_applicability.h8_preflight_input_port_v1 import InputGenerationPort
             (directory/'scratch').mkdir(exist_ok=False)
@@ -109,8 +114,14 @@ def validate_result(directory,task,manifest):
         if bounded_json(directory/'signal_result.json')['signal_count']!=16:raise ValueError('SIGNAL_COVERAGE')
     else:
         r=bounded_json(directory/'snapshot_receipt.json')
-        if r['loader_roundtrip_checked'] is not True or r['calls_completed']['integral_build']!=1 or r['calls_completed']['df_decomposition']!=1:
+        expected=0 if manifest['scope']=='H8_STATE' else 1
+        if r['loader_roundtrip_checked'] is not True or r['calls_completed']['integral_build']!=expected or r['calls_completed']['df_decomposition']!=expected:
             raise ValueError('H8_INPUT_RECEIPT')
+        if manifest['scope']=='H8_STATE':
+            from decimal import Decimal
+            projection=bounded_json(directory/'projection_receipt.json')
+            if projection['status']!='PASS_ENGINEERING' or Decimal(projection['eta_N_hartree_decimal']['16'])>Decimal('9.9e-11'):
+                raise ValueError('H8_WEIGHTED_PROJECTION_GATE')
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)

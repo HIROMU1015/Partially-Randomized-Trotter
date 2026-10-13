@@ -87,6 +87,18 @@ def h8_input_plan():
     p['scope']='input/DF/saved-state feasibility only; no signal/trajectory/transpile'
     return p
 
+def h8_state_plan():
+    p=deepcopy(h8_input_plan())
+    p['schema']='h8_saved_raw_state_preflight_plan_v1'
+    p['scope']='saved SCF/raw DF -> bounded Hermitian projection -> state only'
+    p['caps_proposed'].update(integral_build=0,df_decomposition=0)
+    p['df_policy'].update(projection_scope='weighted same 9.9e-11 Hartree gate with primary N16',
+       projection_budget_hartree=1e-10,projection_decision_limit_hartree=9.9e-11,primary_N=16,secondary_N=8)
+    return p
+
+def phase_plan(scope):
+    return h8_state_plan() if scope=='H8_STATE' else h8_input_plan() if scope=='H8_INPUT' else h4_plan(scope)
+
 def bounded_h8_solver(action,dimension,initial,total_budget,*,solver):
     # Scientific imports only after the worker's launch binding and limits.
     import numpy as np
@@ -154,6 +166,13 @@ def resources(workers=8):
         coordinator_rss_reserve_bytes=2*2**30,aggregate_margin_bytes=2*2**30,
         gpu=False,memory_is_reservation=False)
 
+def phase_resources(scope):
+    r=resources(8 if scope=='H4_COST' else 1)
+    if scope=='H8_STATE':
+        r.update(assigned_cpus=[30,31],coordinator_cpu_set=[31],cost_cpu_sets=[[30]],
+                 aggregate_rss_bytes=16*2**30,job_ram_budget_bytes=16*2**30)
+    return r
+
 def observation_policy():
     return dict(interval_seconds=.2,maximum_observation_seconds=5.,journal_emit_seconds=5.,
         journal_bytes=32*2**20,host_full_psi_stop_percent=5.,cgroup_full_psi_stop_percent=0.,
@@ -192,15 +211,15 @@ def verify_binding(root,m,grant,*,worker=False):
           or grant.get('H8_full_campaign_authorized') is not False):raise ValueError('NEW_SCOPE_GRANT_REQUIRED')
     if grant.get('authorization_basis')!=['準備ができたら開始してよい','開始対象は1と3（H8小規模事前検証・H4比較補完）']:
         raise ValueError('USER_SCOPE_BINDING')
-    if m['scope'] not in ('H4_SIGNAL','H4_COST','H8_INPUT'):raise ValueError('SCOPE')
+    if m['scope'] not in ('H4_SIGNAL','H4_COST','H8_INPUT','H8_STATE'):raise ValueError('SCOPE')
     if m['profile']!=profile():raise ValueError('PROFILE_CHANGED')
     if len(m['source_commit'])!=40 or set(m['source_hashes'])!=set(source_paths(root)):raise ValueError('SOURCE_CLOSURE')
     for p,h in m['source_hashes'].items():
         if file_hash(root/p)!=h or (not worker and hashlib.sha256(subprocess.check_output(['git','show',m['source_commit']+':'+p],cwd=root)).hexdigest()!=h):
             raise ValueError('SOURCE_CHANGED:'+p)
     if m['scope'].startswith('H4') and snapshot_binding(root)!=m['snapshot']:raise ValueError('H4_SNAPSHOT_CHANGED')
-    if digest(m['plan'])!=digest(h8_input_plan() if m['scope']=='H8_INPUT' else h4_plan(m['scope'])):raise ValueError('PLAN_CHANGED')
-    if m['proposed_resources']!=resources(8 if m['scope']=='H4_COST' else 1):raise ValueError('RESOURCE_BINDING')
+    if digest(m['plan'])!=digest(phase_plan(m['scope'])):raise ValueError('PLAN_CHANGED')
+    if m['proposed_resources']!=phase_resources(m['scope']):raise ValueError('RESOURCE_BINDING')
     if m['observation_policy']!=observation_policy():raise ValueError('OBSERVATION_BINDING')
     if m['base_manifest']!={'plan':{'caps_proposed':aggregate_caps()}}:raise ValueError('AGGREGATE_CAPS')
     if m['scope']!='H4_COST' and m['registrations']!=[{'index':0,'task':{'kind':m['scope']}}]:
@@ -210,6 +229,13 @@ def verify_binding(root,m,grant,*,worker=False):
         if file_hash(signal_path)!=m['signal_summary_sha256']:raise ValueError('SIGNAL_RECEIPT_CHANGED')
         saved=json.loads(signal_path.read_text())
         if m['registrations']!=registrations(m,saved['signals']):raise ValueError('COST_REGISTRATION_CHANGED')
+    if m['scope']=='H8_STATE':
+        parent=Path(m['saved_parent']['directory'])
+        if str(parent.resolve())!=str(parent) or not str(parent).startswith('/home/AbeHiromu/'):raise ValueError('SAVED_PARENT_PATH')
+        if set(m['saved_parent']['file_hashes'])!={'integrals.npz','raw_df.npz','integral_receipt.json','raw_df_receipt.json','worker_terminal.json'}:
+            raise ValueError('SAVED_PARENT_CLOSURE')
+        for name,h in m['saved_parent']['file_hashes'].items():
+            if file_hash(parent/name)!=h:raise ValueError('SAVED_PARENT_CHANGED')
     if m['output']!=grant['output'] or not Path(m['output']).is_absolute():raise ValueError('OUTPUT_BINDING')
     out=Path(m['output'])
     if not str(out).startswith('/home/AbeHiromu/') or str(out.resolve())!=m['output']:raise ValueError('HOME_OUTPUT_REQUIRED')
