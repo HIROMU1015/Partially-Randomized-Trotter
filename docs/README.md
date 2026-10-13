@@ -1,5 +1,7 @@
 # 文書索引
 
+H8保存rawのstate preflight：[準備](../artifacts/resource_applicability/track_a_h8_saved_state_preflight_v1/2026-10-13/README.md)、SOURCE1d6b277d/24 tests。H6のweighted error gateをN16へ同じ数学式で適用、入力再生成なし。本格H8結果とはしない。
+
 H4 native anchorとH8 input：[SOURCEb6d4bdd7/18mock/plan・auth](../artifacts/resource_applicability/track_a_h48_preflight_preparation_v1/2026-10-13/README.md)。利用者が対象1と3を認可。新H4 cost最大532compile/256trajectory、H8入力はscience generationのみでcompile/trajectory0。
 
 H6原稿統合：[本文v0.2](manuscripts/track_a_h6_resource_study_v0_2.md)、[H4補完範囲](research/track_a_h4_h6_common_comparison_plan_v1.md)、[H8高速化・予算案](research/track_a_h8_resource_comparison_plan_v1.md)、[証拠入口](../artifacts/resource_applicability/track_a_h6_manuscript_h8_plan_v1/2026-10-13/README.md)。新科学計算0。以下は履歴。

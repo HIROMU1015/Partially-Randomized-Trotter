@@ -1,5 +1,7 @@
 # scripts 索引
 
+H8保存raw state：[準備](../artifacts/resource_applicability/track_a_h8_saved_state_preflight_v1/2026-10-13/README.md)。既存h48 preparer/runnerのH8_STATE scope、CPU30/31。H4 runtime sourceは別worktreeで保全。
+
 H4/H8 one-shot：[preparer](resource_applicability/prepare_track_a_h48_preflight_v1.py)、[runner](resource_applicability/run_track_a_h48_preflight_v1.py)、[準備入口](../artifacts/resource_applicability/track_a_h48_preflight_preparation_v1/2026-10-13/README.md)。H4 signal→固定panel costと、独立H8 inputだけの別grant。全H8 campaignを起動しない。
 
 H6原稿/H8計画：[stdlib metadata再生成・検証、Matplotlib図](../artifacts/resource_applicability/track_a_h6_manuscript_h8_plan_v1/2026-10-13/README.md)。科学runnerではなく、既存JSON/CSVのscalar解析だけ。H8 source/input/launchは未準備。

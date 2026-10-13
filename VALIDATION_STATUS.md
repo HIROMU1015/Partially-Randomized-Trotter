@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-13 H8保存raw stateの限定実行準備
+
+[資料](artifacts/resource_applicability/track_a_h8_saved_state_preflight_v1/2026-10-13/README.md)。linearH8/1Å/STO-3G/tol-only raw rank28/16modes/sector4900。SOURCE1d6b277d、24人工/mock、eta16≈3.6595e-12（gate9.9e-11）、SCF1/DF1を再計算せずstateのみ追加。native science未検証・CI/interval bound未認定、H8full未認可。H4稼働sourceを別worktreeで保全。
+
 ## 2026-10-13 H4固定panel・H8 inputの限定実行準備
 
 [準備](artifacts/resource_applicability/track_a_h48_preflight_preparation_v1/2026-10-13/README.md)。SOURCEb6d4bdd7、旧257source/既存venv/稼働H4不変、18 local scalar/mock合格（CI/実科学PASSではない）。H4/1Å/STO-3G/rank12/T.8/delta.1–.8の16 signalと最大532compile/256trajectory、H8/1Å/STO-3G/16modes/sector4900のinput/DF/state（1/1/10000、compile0）。SOURCE遠隔byte同一、profile/input/plan/auth/carry固定、実起動はfresh gate待ち。

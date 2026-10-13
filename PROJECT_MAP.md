@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+H8 saved state：[準備](artifacts/resource_applicability/track_a_h8_saved_state_preflight_v1/2026-10-13/README.md)。SOURCE1d6b277d、24 artificial/mock、SCF/DF再実行0・weighted同9.9e-11 gate N16、stateのみ。本格H8未認可。
+
 H4固定16 anchor補完・H8入力事前検証：[準備入口](artifacts/resource_applicability/track_a_h48_preflight_preparation_v1/2026-10-13/README.md)、`{prepare,run}_track_a_h48_preflight_v1.py`、`h48_preflight_contract_v1.py`、18 scalar/mock tests。SOURCEb6d4bdd7、旧source257不変。開始許可は受領、各scopeを別grant/outputで起動し本格H8へ進まない。
 
 H6原稿統合：[v0.2](docs/manuscripts/track_a_h6_resource_study_v0_2.md)、[claim/evidence](docs/manuscripts/track_a_h6_claim_evidence_v0_2.md)、[資料入口](artifacts/resource_applicability/track_a_h6_manuscript_h8_plan_v1/2026-10-13/README.md)。[H4共通panel](docs/research/track_a_h4_h6_common_comparison_plan_v1.md)、[H8計画](docs/research/track_a_h8_resource_comparison_plan_v1.md)は科学判断前の案。新science/grant0、H8事前検証とH4補完は準備後開始許可済み・本格H8対象外。以下は履歴。
