@@ -1,5 +1,11 @@
 # trotterlib モジュール索引
 
+## C1固定pilot v1：結果・保存監査完了
+
+[結果](../../docs/research/qc_c1_macrocycle_pilot_v1_results_20261013.md)、[保存証拠](../../artifacts/qc_c1_macrocycle_execution_v1/2026-10-13/saved_results_summary.json)。runner/checker/module/sourceは準備版 `ddaa05d2`から不変。登録外18checksは前回準備時の証拠として保持。
+940eig一回/retry0、保存独立監査936unitary/8064行PASS・追加eig0。通常16比較の5%改善0、bad-state16比較はineligible。
+非分子2qubit4H/39methods/6h/model target10^-5/10^-6/controlled価格3,6の限定観測。C4/追加計算/compile/GPT新レビューなし、認可消費済み・Mandatory STOP。
+
 ## C1 macrocycle v1：登録外技術検査と将来認可gate
 
 数学・固定scopeは [設計](../../docs/research/qc_c1_macrocycle_technical_design_v1_20261013.md) と [証拠](../../artifacts/qc_c1_macrocycle_preparation_v1/2026-10-13/off_domain_checks.json) から辿る。

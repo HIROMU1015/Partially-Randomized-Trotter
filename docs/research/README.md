@@ -1,5 +1,14 @@
 # 研究計画資料
 
+## 2026-10-13 C1固定pilot v1：一回完了・優位未観測・科学判断待ち
+
+[一次結果・scope・限界](qc_c1_macrocycle_pilot_v1_results_20261013.md)、[GPT判断引継ぎ](qc_c1_macrocycle_pilot_v1_review_handoff_20261013.md)、[保存監査・集約](../../artifacts/qc_c1_macrocycle_execution_v1/2026-10-13/saved_results_summary.json)。固定source `ddaa05d2`、認可 `9c3b5c82`、attempt1/retry0で940eigを完了し、保存独立監査936unitary/8064比較行PASS（追加eig0）。
+非分子2qubit Pauli4H/三非可換fragment、39methods/6h、Λ=fragment係数L1、h=1/(8Λ2^s),s0…5、model energy target10^-5/10^-6、controlled価格3/6。geometry/basis/DF rank/policy/L_D/粒子sectorなし。
+通常state16比較でempirical/joint/boxの登録5%改善0、bad state16比較はoverlap不適格。真kernel dは全4Hで同符号の正、joint coefficient-only hは6/32valid、26/32null。
+既知compositionと生成器同値性を維持。費用比は事後grid oracle・条件付きHeisenberg proxyで、運用QPE/RPE総費用/分子性能/独立新規性の実証ではない。
+20frozen files/旧229files/旧132manifest entries/non-result fields、global description欠落FAIL、N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了・他Trackを保持。新分子/optimizer/compile/sampling/C4/追加science/新GPTレビュー0。
+一回認可消費済み、結果公開・remote照合後Mandatory STOP。次は新結果のGPT科学判断の別開始承認待ち。以下は当時の履歴。
+
 ## 2026-10-13 C1固定macrocycle：技術準備完了・科学実行認可待ち
 
 [技術設計](qc_c1_macrocycle_technical_design_v1_20261013.md)、[固定最小契約](qc_c1_macrocycle_preregistration_v1_20261013.md)、[準備証拠](../../artifacts/qc_c1_macrocycle_preparation_v1/2026-10-13/off_domain_checks.json)。ユーザー指定の完了GPT選定レビューを採用し、C1を最初の成立可能性判別に準備した。新規算法・中心研究の正式採択なし。
