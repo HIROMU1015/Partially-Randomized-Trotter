@@ -27,6 +27,10 @@ def bounded_json(path):
     if path.is_symlink() or path.stat().st_size>8*2**20:raise ValueError('BOUND_JSON')
     return json.loads(path.read_text())
 
+def make_resource_trace(writer,started):
+    from trottertracks.resource_applicability.h6_matched_execution_v3 import ResourceTraceV3
+    return ResourceTraceV3(writer.write,lambda:time.monotonic()-started)
+
 def execute_worker(m,grant,directory):
     from trottertracks.resource_applicability.ax2b_limits import install_worker_limits
     expected=bounded_json(directory/'task_binding.json')
@@ -46,8 +50,7 @@ def execute_worker(m,grant,directory):
         'scope':m['scope'],'source_commit':m['source_commit'],'actual_affinity':sorted(os.sched_getaffinity(0)),
         'manifest_sha256':digest(m),'approved_by_user':grant['approved_by_user']})
     progress=Progress(writer,cap=m['plan']['caps_proposed']['progress_records'])
-    from trottertracks.resource_applicability.h6_matched_execution_v3 import ResourceTraceV3
-    trace=ResourceTraceV3(writer)
+    trace=make_resource_trace(writer,progress.start)
     status='COMPLETE';reason=None
     try:
         if m['scope']=='H8_INPUT':

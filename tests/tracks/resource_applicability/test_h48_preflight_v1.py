@@ -110,6 +110,19 @@ ADAPTER_MODEL='old-model-fixture'
 def fixture_callback():return ADAPTER_MODEL
 
 class AdapterTests(unittest.TestCase):
+    def test_existing_resource_trace_interface(self):
+        import importlib.util,time
+        from pathlib import Path
+        root=Path(__file__).resolve().parents[3]
+        spec=importlib.util.spec_from_file_location('h48_runner_fixture',root/'scripts/resource_applicability/run_track_a_h48_preflight_v1.py')
+        module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        records=[]
+        class Writer:
+            def write(self,name,row):records.append((name,row))
+        trace=module.make_resource_trace(Writer(),time.monotonic())
+        with trace.bind():trace.event('fixture')
+        self.assertEqual(len(records),1);self.assertEqual(records[0][1]['kind'],'fixture')
+        self.assertGreaterEqual(records[0][1]['elapsed_seconds'],0.)
     def test_frozen_module_globals_are_not_mutated(self):
         from trottertracks.resource_applicability.h4_common_panel_port_v1 import bound_function
         f=bound_function(fixture_callback,{'ADAPTER_MODEL':'new-model-fixture'})
