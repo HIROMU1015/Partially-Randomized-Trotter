@@ -1,3 +1,5 @@
+> **Track B D3 v1（2026-10-14）**：[一回実行の技術停止・保存監査・GPT引き継ぎ](tracks/algorithm_codesign/d3_failed_execution_and_gpt_handoff_20261014.md)。登録比較未取得、retry0、mandatory STOP。
+
 > [Track B D3実行sourceと承認待ち](tracks/algorithm_codesign/d3_source_preparation_and_execution_handoff_20261013.md)：63人工/mock tests PASS、科学実行0。
 
 > Track B D3の[比較計画](tracks/algorithm_codesign/d3_guarantee_price_preregistration_v1_20261013.md)と[数学確認](tracks/algorithm_codesign/d3_mathematical_confirmation_20261013.md)：準備のみ、登録再評価/合成0、mandatory STOP。

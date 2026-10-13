@@ -1,3 +1,5 @@
+> **D3失敗保存値監査**：[audit_d3_failed_saved_outputs.py](tracks/algorithm_codesign/audit_d3_failed_saved_outputs.py)。stdlibでraw bytes/identity/静的call順序を確認。runner/backend/scienceを実行しない。[報告](../docs/tracks/algorithm_codesign/d3_failed_execution_and_gpt_handoff_20261014.md)。
+
 > D3専用[owner/observer](tracks/algorithm_codesign/run_d3_one_shot.py)、[内部ledger](tracks/algorithm_codesign/run_d3_ledger_job.py)、[内部key worker](tracks/algorithm_codesign/run_d3_synthesis_key.py)、[静的source verifier](tracks/algorithm_codesign/verify_d3_source_preparation.py)。ownerもsource-bound別明示認可まで起動拒否。内部CLIを独立起動しない。[契約・報告](../docs/tracks/algorithm_codesign/d3_source_preparation_and_execution_handoff_20261013.md)。
 
 > Track B D3準備： [saved key/static word verifier](tracks/algorithm_codesign/prepare_d3_guarantee_price_plan.py) は保存metadataだけを読む。budget/price再会計、synthesis、pair評価、provider/circuit/matrix生成なし。[計画](../docs/tracks/algorithm_codesign/d3_guarantee_price_preregistration_v1_20261013.md)。本番runnerは未実装。

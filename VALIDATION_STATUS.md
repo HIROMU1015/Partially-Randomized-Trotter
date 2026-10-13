@@ -1,3 +1,5 @@
+> **2026-10-14 Track B D3 v1：technical inconclusive、retry0、mandatory STOP。** [保存値監査と技術原因](docs/tracks/algorithm_codesign/d3_failed_execution_and_gpt_handoff_20261014.md)。最初の2 keyでprecision型変換が停止、完成sequence0、登録rows0/48。999 checksは失敗証拠の整合確認であり科学比較成功ではない。旧D1/D2不変。
+
 # Validation status
 
 ## 2026-10-04 PR-2 M2一回実行・結果照合完了：`TRANSFER_SUPPORTED`、mandatory STOP
