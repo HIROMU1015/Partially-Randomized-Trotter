@@ -610,3 +610,10 @@ B0+Iの実compile費用は未測定。元登録集合の結果は不変で、主
 
 実行science runnerを追加せず、[bundle内解析・図・検証script](../artifacts/resource_applicability/track_a_h4_geometry_technical_integration/2026-10-13/README.md)を収録。
 stdlib保存スカラー解析、Matplotlib表示、Fraction照合、bounded event metadata読取。新trajectory/compileなし。
+
+## H4 B0+I preparation-only
+
+[新資料](../docs/research/track_a_h4_b0i_compile_preparation_20261013.md)。
+`prepare_h4_b0i_pilot6.py` はbyte/profile/hostだけの未承認草案、`run_h4_b0i_preparation_tests.py` は44限定人工/mock検査。
+`run_h4_b0i_pilot6.py` は新source-bound grant/reviewを要求するfuture runnerで、現在のdraftを実行しない。
+科学SOURCE・既存B0・H8を変更せず、実/人工transpile0。

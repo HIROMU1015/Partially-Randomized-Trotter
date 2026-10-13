@@ -599,3 +599,8 @@ B0+Iの実compile費用は未測定。元登録集合の結果は不変で、主
 
 [2026-10-13資料](../../docs/research/track_a_h4_geometry_technical_integration_20261013.md)は既存sourceを変更しない事後解析。
 新library APIや科学selectorは追加していない。元登録集合と未測定B0+I感度を分離する。
+
+## H4 B0+Iの独立検証adapter
+
+[新namespace h4_b0i](../trottertracks/resource_applicability/h4_b0i/README.md)と[未承認準備](../../docs/research/track_a_h4_b0i_compile_preparation_20261013.md)。
+既存B0を変えずtail identityだけを追加する検証用対照。正式科学baseline/既存selectorは変更していない。
