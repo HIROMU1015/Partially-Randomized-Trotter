@@ -605,3 +605,8 @@ H4 linear/STO-3G/DF12、T=0.8、二次DF-prefix PF/finite RTE、6距離の1,308�
 B0+Iの実compile費用は未測定。元登録集合の結果は不変で、主要claim変更の可能性という利用者停止条件に従いGPT判断へ戻す。
 原稿本体・A/C/Dの全面統合は未実施、新eigh/SCF/DF/state/量子signal/trajectory/build/compile0、H8/共有環境/他job変更0。
 [限定scalar解析と公開値照合の入口](../docs/research/track_a_h4_geometry_scalar_diagnostic_20261013.md)。本体science source/runnerは不変。
+
+## H4 geometry保存値の技術統合（2026-10-13）
+
+実行science runnerを追加せず、[bundle内解析・図・検証script](../artifacts/resource_applicability/track_a_h4_geometry_technical_integration/2026-10-13/README.md)を収録。
+stdlib保存スカラー解析、Matplotlib表示、Fraction照合、bounded event metadata読取。新trajectory/compileなし。

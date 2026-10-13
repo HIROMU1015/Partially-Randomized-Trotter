@@ -1,5 +1,12 @@
 # Track A 原稿・図・reviewの入口
 
+## 2026-10-13：保存値による統合草案v0.3
+
+新しい利用者指示で原稿統合を再開し、固定H6 v0.2を基礎にH4 geometry/anchorとH6確認を統合した。
+[通し草案v0.3](track_a_resource_study_geometry_native_v0_3.md)、[条件対応](../research/track_a_resource_comparison_conditions_20261013.md)、[技術入口](../research/track_a_h4_geometry_technical_integration_20261013.md)。
+4図・再生成script・14限定算術と公開Fraction照合を固定。B0+Iは未登録・未測定の感度で、元比較表を置き換えない。
+H8最終shot結果は未収録、H8への操作0。GPTによる科学的採否/投稿可判定は未実施。以下は旧版当時の履歴。
+
 最新の利用者指示により、原稿作成・投稿先検討はいったん保留。
 v0.1/v0.2・図・監査はそのまま保存し、[H4 geometry拡張の設計準備](../research/track_a_geometry_precision_extension_proposal_v0.md)へ移る。
 追加scienceはまだ実行せず、距離・実行場所・新source/authorizationの固定を先に行う。

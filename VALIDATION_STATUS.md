@@ -1,5 +1,15 @@
 # Validation status
 
+## 2026-10-13 H4 geometry：追加技術解析・原稿統合完成
+
+利用者の新指示により、前回保留したA〜Eを専用branchで完成した。元登録B0/B1/B2/B3内では全1812点でB2/prefix3の点最小を保持。
+B0+Iは正式baselineに採用せず、compiled費用未測定の追加感度として397点と候補/axis別Δを分離した。
+全1308×302の保存算術、15構成領域、shot×effective-RZ分解、4803近接候補のpaired SE、1164候補のrare-law診断、4図、原稿v0.3を公開bundleへ固定する。
+H4のevent次数/component観測はNOT_SAVEDであり0回観測と扱わない。H6補正の流用・新科学計算・compiler・H8/共有環境変更は0。
+14限定人工算術と公開Fraction照合PASS、local技術検証であり独立科学review/CIではない。
+[技術統合の入口](docs/research/track_a_h4_geometry_technical_integration_20261013.md)。B0+I採否・追加6/10/240 compile案・母平均/主要claimはGPTへ判断を戻し、成果報告後STOP。
+以下の保留・STOPは各時点の履歴である。
+
 ## 2026-10-13 H4 B0+I保存値診断・科学判断待ちSTOP
 
 優先Bでtail scalarのsource符号/UPLO=L規約と6入力SHA、120保存complex signalを照合し、13人工算術PASS。
