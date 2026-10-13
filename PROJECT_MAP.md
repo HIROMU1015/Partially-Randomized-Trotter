@@ -1,5 +1,17 @@
 # プロジェクト案内
 
+## 2026-10-14 H4 B0+I全面240回路 準備完成・新grant待ち
+
+代表6実測の公開commit c377b074から独立し、240 wrapper／234 new compile／6 verified reuseの閉じたregistryを実装した。
+SOURCE 0f84119302de869c904bfd0135af3880a6c16bf2、旧48 source不変・closure55。新19 stdlib/mock検査PASS、compile/scientific import/array/spawn/affinity0。
+6入力計82321596 bytesとfreezeのstreaming SHA・H/DF/state/input metadata binding・既存profile一致を確認した。
+既存6件の再利用は新buildのexact numeric FP一致が条件、不一致でSTOPし自動compile fallbackなし。
+累積actual案73029＋234＝73263／74805、carryと17GiB charge capは保持。
+1worker・CPU0/1/2候補・role8GiB維持、stage4h／observer log160MiB／1024 inodeへ拡張する具体的な未承認案を固定した。
+[全scope・予算・承認条件の入口](docs/research/track_a_h4_b0i_map_preparation_20261014.md)。approved=false、runtime_authorization=false、allowed_cpus=[]、absolute_launch_command=null。
+旧科学レビュー・44人工testsは繰り返さず、限定差分とbindingを確認した。共有環境/既存venv/H8変更0、計算未起動。
+以下は過去の各時点の記録。
+
 ## 2026-10-14 H4 B0+I代表6回路 実測完了・mandatory STOP
 
 科学レビューで追加対照に採択後、利用者が固定6回路とCPU/資源契約を承認した。

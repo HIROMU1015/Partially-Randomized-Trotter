@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 2026-10-14 H4 B0+I map240準備
+
+新namespace h4_b0i_map、future runner run_h4_b0i_map240.py、byte-only prepare_h4_b0i_map240.py、stdlib19 mock検査。[閉じた234 compile＋6 numeric照合再利用の準備](../docs/research/track_a_h4_b0i_map_preparation_20261014.md)。実行条件は新grant待ち、計算未起動。
+
 ## 2026-10-14 H4 B0+I pilot6結果
 
 固定SOURCEの代表6 wrapper実compile完了。[実測・保存shot再会計・終了監査](../docs/research/track_a_h4_b0i_pilot6_results_20261014.md)から公開verificationへ辿れる。科学source/既存テストの変更・追加compile・次stage起動はない。
