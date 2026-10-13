@@ -363,3 +363,7 @@ artifacts `artifacts/n3_width_comparison_v2/2026-10-12/preparation/`。32 synthe
 N3保存帰属v1：[資料・事後評価準備](../docs/research/n3_saved_attribution_v1_preparation_20261013.md)。module n3_saved_attribution_v1/n3_saved_attribution_execution_v1、runner run_n3_saved_attribution_v1、tests test_n3_saved_attribution_v1、artifacts/n3_saved_attribution_v1/2026-10-13/preparation。23 synthetic PASS、新登録数値評価/PSD再認証0、明示posthoc認可待ち。
 
 - 2026-10-13 N3保存帰属v1 [結果・限界](../docs/research/n3_saved_attribution_v1_results_20261013.md)、[GPT判断引継ぎ](../docs/research/n3_saved_attribution_v1_results_review_handoff_20261013.md)。保存データ限定の独立監査 `scripts/audit_n3_saved_attribution_v1_results.py`、artifact `artifacts/n3_saved_attribution_v1/2026-10-13/evaluation1{,_audit}`。新producer/solverなし、STOP。
+
+## 2026-10-13 量子化学relative blockの事前検証
+
+[構成・方法差・誤差・費用](../docs/research/qc_relative_block_prevalidation_v1_20261013.md)、[科学判断引継ぎ](../docs/research/qc_relative_block_review_handoff_v1_20261013.md)。module `src/trottertracks/representation_exploration/qc_relative_block_v1.py`、synthetic runner `scripts/check_qc_relative_block_synthetic_v1.py`、tests `tests/test_qc_relative_block_v1.py`、artifacts `artifacts/qc_relative_block_prevalidation/2026-10-13/`。13 fixed synthetic PASS、実分子/eig/compile0。可逆関数回路とmethod delta/具体費用は未確定。pilot未認可・Mandatory STOP、旧Track/N3 source/results保全。

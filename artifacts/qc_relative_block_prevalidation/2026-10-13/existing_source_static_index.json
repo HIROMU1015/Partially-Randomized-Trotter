@@ -1,0 +1,18 @@
+{
+  "commit": "ccc575ee339be091fd4031272c38bee13866f097",
+  "sha256": {
+    "src/trottertracks/representation_exploration/mechanisms.py": "1b64e5c53bb0658af6badf2151da13762dfee14aac9ee4711ef41c2bf01df8ae",
+    "src/trotterlib/df_trotter/ops.py": "3801eafca014b0df6533172582887e3b345f65833505409cdd375dcd11925689",
+    "src/trotterlib/df_trotter/two_body.py": "d5f678f2533554b4b7f2b09626c169e3ca1b6dbdf6ac4ab0e603a50c8fc7353e",
+    "src/trotterlib/df_trotter/decompose.py": "e31e116075ba9bd65e3072369c0c69c6f99c91315572e70d8c487bb024b71e51",
+    "src/trotterlib/df_rte_tail.py": "47d9514630196ff2d74c89c013ca36a2e0b7ba1d709e61cb41180393152dcf45"
+  },
+  "observations": [
+    "mechanisms.conditional_mixed explicitly enumerates two spectator branches and uses atan2/hypot with RY-RZ-RY;known toy construction.",
+    "df_trotter.ops.apply_df_block applies inverse basis,diagonal squared interaction,basis;controls/global phase require same comparison contract.",
+    "two_body.py uses normal_ordered and chemist/physicist ordering with explicit one-body/constant corrections;new adapter must preserve prefactors.",
+    "decompose.py calls eigensolver and low_rank_decomposition;not imported/executed.",
+    "df_rte_tail.basis_unitary is guarded dense small-system reference,not a free scalable access primitive."
+  ],
+  "imports_or_scientific_execution": 0
+}
