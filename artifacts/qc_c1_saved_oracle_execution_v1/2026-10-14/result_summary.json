@@ -1,0 +1,3372 @@
+{
+  "status": "SAVED_ORACLE_AUDITED_NO_5PCT_ADVANTAGE_IN_16_NORMAL_CONTEXTS",
+  "source_commit": "657513ad06661aed84950d5907f3304dcdd5f1f7",
+  "published_preparation_commit": "e82a5202098ad95f2eb7280279d2c97cc06190bc",
+  "authorization_commit": "a7139218",
+  "registered_rows": 8064,
+  "contexts": 32,
+  "normal_contexts": 16,
+  "bad_state_controls": 16,
+  "normal_classifications": {
+    "A_NO_ORACLE_5PCT_ADVANTAGE": 16
+  },
+  "bad_state_classifications": {
+    "UNDETERMINED": 16
+  },
+  "all_classifications": {
+    "A_NO_ORACLE_5PCT_ADVANTAGE": 16,
+    "UNDETERMINED": 16
+  },
+  "oracle_macro_5pct_advantage_contexts": 0,
+  "oracle_advantage_selector_miss_contexts": 0,
+  "known_composition_equivalent_oracle_advantage_contexts": 0,
+  "numeric_boundary_contexts": 0,
+  "normal_macro_ratio_min_exact": "7098233054045297/6556124562853839",
+  "normal_macro_ratio_max_exact": "7548319600261857/1415921608015796",
+  "normal_macro_ratio_min_display": 1.0826873385327325,
+  "normal_macro_ratio_max_display": 5.331029315132571,
+  "method_regret_ranges": {
+    "empirical": {
+      "min_exact": "3/7419173064391274",
+      "max_exact": "15504284982896859/5936096140587269",
+      "min_display": 4.043577328582162e-16,
+      "max_display": 2.6118655452509216,
+      "scope": "method-only,selected-method h already posthoc oracle;not operational precision regret"
+    },
+    "joint": {
+      "min_exact": "3/7419173064391274",
+      "max_exact": "15504291360809459/5936096140587269",
+      "min_display": 4.043577328582162e-16,
+      "max_display": 2.611866619679713,
+      "scope": "method-only,selected-method h already posthoc oracle;not operational precision regret"
+    },
+    "box": {
+      "min_exact": "0",
+      "max_exact": "2185374197533438/6556124562853839",
+      "min_display": 0.0,
+      "max_display": 0.3333332331596456,
+      "scope": "method-only,selected-method h already posthoc oracle;not operational precision regret"
+    }
+  },
+  "scope": {
+    "model": "4 nonmolecular 2-qubit Pauli Hamiltonians",
+    "input_ids": [
+      "S1_weak",
+      "S2_balanced",
+      "S3_signed",
+      "S4_strong"
+    ],
+    "macrocycles": 24,
+    "comparison_methods": 42,
+    "saved_h_points": 6,
+    "h_grid": "1/(8 Lambda 2^s),s=0..5;Lambda=fragment coefficient L1",
+    "energy_targets_model_units": [
+      1e-05,
+      1e-06
+    ],
+    "controlled_prices": [
+      3,
+      6
+    ],
+    "geometry_basis_DF_rank_policy_L_D_particle_sector": "not applicable",
+    "threshold": "strict macro_ratio < 19/20 with one-neighbor-ULP sensitivity guard",
+    "cost_model": "saved conditional Heisenberg cost proxy;not full QPE/RPE total cost"
+  },
+  "attempts": 1,
+  "retry": 0,
+  "independent_audit_attempts": 1,
+  "new_eigensolver_PF_compile_calls": 0,
+  "independent_audit": {
+    "status": "INDEPENDENT_SAVED_FIELD_AUDIT_PASS",
+    "contexts_checked": 32,
+    "mode": "REGISTERED_SAVED_POSTHOC",
+    "new_eigensolver_PF_compile_calls": 0,
+    "external_scientific_reproduction": false,
+    "mandatory_stop": true
+  },
+  "original_scientific_result_or_authorization_changed": false,
+  "eligibility_or_cost_or_selector_recomputed": false,
+  "full_ground_energy_cost": "UNKNOWN",
+  "external_scientific_reproduction": false,
+  "new_GPT_review_started": false,
+  "research_adoption_closure_decided": false,
+  "mandatory_stop": true,
+  "diagnostic_SHA256": "ab9f005819a6b37f7837411469ada60caca8757ff955dae743c647881ea25256",
+  "audit_SHA256": "490ae98b3468c84efdd169e2a1ba71f58a6fbadeebb130c5e439c662f13e8371",
+  "context_fields_copied_from_audited_output": [
+    {
+      "context": {
+        "input_id": "S1_weak",
+        "price": 3,
+        "state": "00",
+        "epsilon": 1e-05
+      },
+      "C_M": {
+        "row_index": 14,
+        "method": "M01_1_3",
+        "h_index": 0,
+        "cost": 1353880511.1017792,
+        "exact_cost": "5678586443236237/4194304",
+        "tied_row_indices": [
+          14
+        ]
+      },
+      "C_B": {
+        "row_index": 0,
+        "method": "S0_m1",
+        "h_index": 0,
+        "cost": 416827747.3404842,
+        "exact_cost": "6993209151924729/16777216",
+        "tied_row_indices": [
+          0
+        ]
+      },
+      "C_K": {
+        "row_index": 0,
+        "method": "S0_m1",
+        "h_index": 0,
+        "cost": 416827747.3404842,
+        "exact_cost": "6993209151924729/16777216",
+        "tied_row_indices": [
+          0
+        ]
+      },
+      "macro_ratio": {
+        "exact_ratio": "22714345772944948/6993209151924729",
+        "rounding_guard": [
+          "11357172886472472/3496604575962365",
+          "2839293221618119/874151143990591"
+        ],
+        "gate": "NO_ADVANTAGE",
+        "reason": null
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "M02_1_4",
+          "saved_oracle_h_point": {
+            "row_index": 17,
+            "method": "M02_1_4",
+            "h_index": 0,
+            "cost": 1489591010.4406443
+          },
+          "method_regret": "5999326993965405/2331069717308243",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "8330396711273648/2331069717308243",
+            "rounding_guard": [
+              "2499119013382094/699320915192473",
+              "6247797533455237/1748302287981182"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M02_1_3",
+          "saved_oracle_h_point": {
+            "row_index": 18,
+            "method": "M02_1_3",
+            "h_index": 0,
+            "cost": 1489591453.5522296
+          },
+          "method_regret": "17997988416074995/6993209151924729",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "24991197567999724/6993209151924729",
+            "rounding_guard": [
+              "2499119756799972/699320915192473",
+              "3123899695999966/874151143990591"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M02_1_3",
+            "h_index": 5
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 0,
+            "method": "S0_m1",
+            "h_index": 0,
+            "cost": 416827747.3404842
+          },
+          "method_regret": "0",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "1",
+            "rounding_guard": [
+              "3496604575962364/3496604575962365",
+              "3496604575962365/3496604575962364"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "A_NO_ORACLE_5PCT_ADVANTAGE"
+      ],
+      "unresolved_parts": [],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S1_weak",
+        "price": 3,
+        "state": "00",
+        "epsilon": 1e-06
+      },
+      "C_M": {
+        "row_index": 14,
+        "method": "M01_1_3",
+        "h_index": 0,
+        "cost": 13538805111.017794,
+        "exact_cost": "7098233054045297/524288",
+        "tied_row_indices": [
+          14
+        ]
+      },
+      "C_B": {
+        "row_index": 2,
+        "method": "S0_m3",
+        "h_index": 0,
+        "cost": 12504815221.507719,
+        "exact_cost": "6556124562853839/524288",
+        "tied_row_indices": [
+          2
+        ]
+      },
+      "C_K": {
+        "row_index": 2,
+        "method": "S0_m3",
+        "h_index": 0,
+        "cost": 12504815221.507719,
+        "exact_cost": "6556124562853839/524288",
+        "tied_row_indices": [
+          2
+        ]
+      },
+      "macro_ratio": {
+        "exact_ratio": "7098233054045297/6556124562853839",
+        "rounding_guard": [
+          "443639565877831/409757785178365",
+          "3549116527022649/3278062281426919"
+        ],
+        "gate": "NO_ADVANTAGE",
+        "reason": null
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "M02_1_4",
+          "saved_oracle_h_point": {
+            "row_index": 56,
+            "method": "M02_1_4",
+            "h_index": 1,
+            "cost": 29791826477.037186
+          },
+          "method_regret": "3021124185713011/2185374854284613",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "5206499039997624/2185374854284613",
+            "rounding_guard": [
+              "120149977846099/50431727406568",
+              "7809748559996437/3278062281426919"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M02_1_3",
+          "saved_oracle_h_point": {
+            "row_index": 18,
+            "method": "M02_1_3",
+            "h_index": 0,
+            "cost": 14895914535.522299
+          },
+          "method_regret": "1253624677146076/6556124562853839",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "7809749239999915/6556124562853839",
+            "rounding_guard": [
+              "3904874619999957/3278062281426920",
+              "3904874619999958/3278062281426919"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M02_1_3",
+            "h_index": 5
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 78,
+            "method": "S0_m1",
+            "h_index": 2,
+            "cost": 16673085709.356836
+          },
+          "method_regret": "2185374197533438/6556124562853839",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "8741498760387277/6556124562853839",
+            "rounding_guard": [
+              "168105745392063/126079318516420",
+              "4370749380193639/3278062281426919"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "A_NO_ORACLE_5PCT_ADVANTAGE"
+      ],
+      "unresolved_parts": [],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S1_weak",
+        "price": 3,
+        "state": "11",
+        "epsilon": 1e-05
+      },
+      "C_M": null,
+      "C_B": null,
+      "C_K": null,
+      "macro_ratio": {
+        "exact_ratio": null,
+        "rounding_guard": null,
+        "gate": "UNDETERMINED",
+        "reason": "NO_ELIGIBLE_POINT"
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "M02_1_4",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M02_1_3",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M02_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "UNDETERMINED"
+      ],
+      "unresolved_parts": [
+        "macro_ratio:NO_ELIGIBLE_POINT",
+        "method_regret:empirical:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:empirical:NO_ELIGIBLE_POINT",
+        "method_regret:joint:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:joint:NO_ELIGIBLE_POINT",
+        "method_regret:box:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:box:NO_ELIGIBLE_POINT"
+      ],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S1_weak",
+        "price": 3,
+        "state": "11",
+        "epsilon": 1e-06
+      },
+      "C_M": null,
+      "C_B": null,
+      "C_K": null,
+      "macro_ratio": {
+        "exact_ratio": null,
+        "rounding_guard": null,
+        "gate": "UNDETERMINED",
+        "reason": "NO_ELIGIBLE_POINT"
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "M02_1_4",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M02_1_3",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M02_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "UNDETERMINED"
+      ],
+      "unresolved_parts": [
+        "macro_ratio:NO_ELIGIBLE_POINT",
+        "method_regret:empirical:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:empirical:NO_ELIGIBLE_POINT",
+        "method_regret:joint:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:joint:NO_ELIGIBLE_POINT",
+        "method_regret:box:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:box:NO_ELIGIBLE_POINT"
+      ],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S1_weak",
+        "price": 6,
+        "state": "00",
+        "epsilon": 1e-05
+      },
+      "C_M": {
+        "row_index": 14,
+        "method": "M01_1_3",
+        "h_index": 0,
+        "cost": 2303858721.7555337,
+        "exact_cost": "4831541926047061/2097152",
+        "tied_row_indices": [
+          14
+        ]
+      },
+      "C_B": {
+        "row_index": 0,
+        "method": "S0_m1",
+        "h_index": 0,
+        "cost": 707637803.6245428,
+        "exact_cost": "5936096140587269/8388608",
+        "tied_row_indices": [
+          0
+        ]
+      },
+      "C_K": {
+        "row_index": 0,
+        "method": "S0_m1",
+        "h_index": 0,
+        "cost": 707637803.6245428,
+        "exact_cost": "5936096140587269/8388608",
+        "tied_row_indices": [
+          0
+        ]
+      },
+      "macro_ratio": {
+        "exact_ratio": "19326167704188244/5936096140587269",
+        "rounding_guard": [
+          "92029370019944/28267124478987",
+          "4831541926047062/1484024035146817"
+        ],
+        "gate": "NO_ADVANTAGE",
+        "reason": null
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "M02_1_4",
+          "saved_oracle_h_point": {
+            "row_index": 17,
+            "method": "M02_1_4",
+            "h_index": 0,
+            "cost": 2555892601.428524
+          },
+          "method_regret": "15504284982896859/5936096140587269",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "21440381123484128/5936096140587269",
+            "rounding_guard": [
+              "10720190561742062/2968048070293635",
+              "5360095280871033/1484024035146817"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M02_1_3",
+          "saved_oracle_h_point": {
+            "row_index": 18,
+            "method": "M02_1_3",
+            "h_index": 0,
+            "cost": 2555893361.734954
+          },
+          "method_regret": "15504291360809459/5936096140587269",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "21440387501396728/5936096140587269",
+            "rounding_guard": [
+              "510485416699922/141335622394935",
+              "5360096875349183/1484024035146817"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M02_1_3",
+            "h_index": 5
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 0,
+            "method": "S0_m1",
+            "h_index": 0,
+            "cost": 707637803.6245428
+          },
+          "method_regret": "0",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "1",
+            "rounding_guard": [
+              "2968048070293634/2968048070293635",
+              "2968048070293635/2968048070293634"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "A_NO_ORACLE_5PCT_ADVANTAGE"
+      ],
+      "unresolved_parts": [],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S1_weak",
+        "price": 6,
+        "state": "00",
+        "epsilon": 1e-06
+      },
+      "C_M": {
+        "row_index": 14,
+        "method": "M01_1_3",
+        "h_index": 0,
+        "cost": 23038587217.55534,
+        "exact_cost": "6039427407558827/262144",
+        "tied_row_indices": [
+          14
+        ]
+      },
+      "C_B": {
+        "row_index": 2,
+        "method": "S0_m3",
+        "h_index": 0,
+        "cost": 21229104910.93171,
+        "exact_cost": "2782541238885641/131072",
+        "tied_row_indices": [
+          2
+        ]
+      },
+      "C_K": {
+        "row_index": 2,
+        "method": "S0_m3",
+        "h_index": 0,
+        "cost": 21229104910.93171,
+        "exact_cost": "2782541238885641/131072",
+        "tied_row_indices": [
+          2
+        ]
+      },
+      "macro_ratio": {
+        "exact_ratio": "6039427407558827/5565082477771282",
+        "rounding_guard": [
+          "6039427407558826/5565082477771283",
+          "2013142469186276/1855027492590427"
+        ],
+        "gate": "NO_ADVANTAGE",
+        "reason": null
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "M02_1_4",
+          "saved_oracle_h_point": {
+            "row_index": 56,
+            "method": "M02_1_4",
+            "h_index": 1,
+            "cost": 51117862783.810005
+          },
+          "method_regret": "3917579271913904/2782541238885641",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "6700120510799545/2782541238885641",
+            "rounding_guard": [
+              "13400241021599088/5565082477771283",
+              "13400241021599092/5565082477771281"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M02_1_3",
+          "saved_oracle_h_point": {
+            "row_index": 18,
+            "method": "M02_1_3",
+            "h_index": 0,
+            "cost": 25558933617.349537
+          },
+          "method_regret": "1135038616415195/5565082477771282",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "6700121094186477/5565082477771282",
+            "rounding_guard": [
+              "6700121094186476/5565082477771283",
+              "6700121094186478/5565082477771281"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M02_1_3",
+            "h_index": 5
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 78,
+            "method": "S0_m1",
+            "h_index": 2,
+            "cost": 28305471087.977882
+          },
+          "method_regret": "927513467557796/2782541238885641",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "3710054706443437/2782541238885641",
+            "rounding_guard": [
+              "7420109412886873/5565082477771283",
+              "57520228006875/43140174246289"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "A_NO_ORACLE_5PCT_ADVANTAGE"
+      ],
+      "unresolved_parts": [],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S1_weak",
+        "price": 6,
+        "state": "11",
+        "epsilon": 1e-05
+      },
+      "C_M": null,
+      "C_B": null,
+      "C_K": null,
+      "macro_ratio": {
+        "exact_ratio": null,
+        "rounding_guard": null,
+        "gate": "UNDETERMINED",
+        "reason": "NO_ELIGIBLE_POINT"
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "M02_1_4",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M02_1_3",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M02_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "UNDETERMINED"
+      ],
+      "unresolved_parts": [
+        "macro_ratio:NO_ELIGIBLE_POINT",
+        "method_regret:empirical:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:empirical:NO_ELIGIBLE_POINT",
+        "method_regret:joint:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:joint:NO_ELIGIBLE_POINT",
+        "method_regret:box:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:box:NO_ELIGIBLE_POINT"
+      ],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S1_weak",
+        "price": 6,
+        "state": "11",
+        "epsilon": 1e-06
+      },
+      "C_M": null,
+      "C_B": null,
+      "C_K": null,
+      "macro_ratio": {
+        "exact_ratio": null,
+        "rounding_guard": null,
+        "gate": "UNDETERMINED",
+        "reason": "NO_ELIGIBLE_POINT"
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "M02_1_4",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M02_1_3",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M02_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "UNDETERMINED"
+      ],
+      "unresolved_parts": [
+        "macro_ratio:NO_ELIGIBLE_POINT",
+        "method_regret:empirical:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:empirical:NO_ELIGIBLE_POINT",
+        "method_regret:joint:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:joint:NO_ELIGIBLE_POINT",
+        "method_regret:box:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:box:NO_ELIGIBLE_POINT"
+      ],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S2_balanced",
+        "price": 3,
+        "state": "00",
+        "epsilon": 1e-05
+      },
+      "C_M": {
+        "row_index": 53,
+        "method": "M01_1_3",
+        "h_index": 1,
+        "cost": 3312528622.4978957,
+        "exact_cost": "6946876025728707/2097152",
+        "tied_row_indices": [
+          53
+        ]
+      },
+      "C_B": {
+        "row_index": 3,
+        "method": "S0_m4",
+        "h_index": 0,
+        "cost": 2039697189.0453968,
+        "exact_cost": "1069388759850233/524288",
+        "tied_row_indices": [
+          3,
+          40
+        ]
+      },
+      "C_K": {
+        "row_index": 3,
+        "method": "S0_m4",
+        "h_index": 0,
+        "cost": 2039697189.0453968,
+        "exact_cost": "1069388759850233/524288",
+        "tied_row_indices": [
+          3,
+          40
+        ]
+      },
+      "macro_ratio": {
+        "exact_ratio": "6946876025728707/4277555039400932",
+        "rounding_guard": [
+          "13893752051457412/8555110078801865",
+          "13893752051457416/8555110078801863"
+        ],
+        "gate": "NO_ADVANTAGE",
+        "reason": null
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S2_m1",
+          "saved_oracle_h_point": {
+            "row_index": 86,
+            "method": "S2_m1",
+            "h_index": 2,
+            "cost": 2308488722.4756327
+          },
+          "method_regret": "281848350958143/2138777519700466",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "2420625870658609/2138777519700466",
+            "rounding_guard": [
+              "9682503482634434/8555110078801865",
+              "3227501160878146/2851703359600621"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M02_1_3",
+          "saved_oracle_h_point": {
+            "row_index": 57,
+            "method": "M02_1_3",
+            "h_index": 1,
+            "cost": 3644570675.5860934
+          },
+          "method_regret": "3365663642045795/4277555039400932",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "7643218681446727/4277555039400932",
+            "rounding_guard": [
+              "15286437362893452/8555110078801865",
+              "15286437362893456/8555110078801863"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M02_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 78,
+            "method": "S0_m1",
+            "h_index": 2,
+            "cost": 2039697189.0453973
+          },
+          "method_regret": "1/4277555039400932",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "4277555039400933/4277555039400932",
+            "rounding_guard": [
+              "1",
+              "8555110078801867/8555110078801863"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "A_NO_ORACLE_5PCT_ADVANTAGE"
+      ],
+      "unresolved_parts": [],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S2_balanced",
+        "price": 3,
+        "state": "00",
+        "epsilon": 1e-06
+      },
+      "C_M": {
+        "row_index": 92,
+        "method": "M01_1_3",
+        "h_index": 2,
+        "cost": 66250537190.63265,
+        "exact_cost": "8683590410650603/131072",
+        "tied_row_indices": [
+          92
+        ]
+      },
+      "C_B": {
+        "row_index": 234,
+        "method": "C2_0",
+        "h_index": 0,
+        "cost": 24913194177.040764,
+        "exact_cost": "3265422187173087/131072",
+        "tied_row_indices": [
+          234
+        ]
+      },
+      "C_K": {
+        "row_index": 80,
+        "method": "S0_m3",
+        "h_index": 2,
+        "cost": 61190830129.9138,
+        "exact_cost": "4010202243394031/65536",
+        "tied_row_indices": [
+          80
+        ]
+      },
+      "macro_ratio": {
+        "exact_ratio": "8683590410650603/3265422187173087",
+        "rounding_guard": [
+          "17367180821301204/6530844374346175",
+          "17367180821301208/6530844374346173"
+        ],
+        "gate": "NO_ADVANTAGE",
+        "reason": null
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S2_m1",
+          "saved_oracle_h_point": {
+            "row_index": 164,
+            "method": "S2_m1",
+            "h_index": 4,
+            "cost": 92339629149.9847
+          },
+          "method_regret": "2041367692579366/4010202243394031",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "4034379957315598/1088474062391029",
+            "rounding_guard": [
+              "24206279743893584/6530844374346175",
+              "24206279743893592/6530844374346173"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M02_1_3",
+          "saved_oracle_h_point": {
+            "row_index": 96,
+            "method": "M02_1_3",
+            "h_index": 2,
+            "cost": 72891395550.77103
+          },
+          "method_regret": "766808255421299/4010202243394031",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "9554020997630660/3265422187173087",
+            "rounding_guard": [
+              "19108041995261316/6530844374346175",
+              "2729720285037332/932977767763739"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M02_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 156,
+            "method": "S0_m1",
+            "h_index": 4,
+            "cost": 81587767269.47173
+          },
+          "method_regret": "1336733672378068/4010202243394031",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "3564623943848066/1088474062391029",
+            "rounding_guard": [
+              "21387743663088392/6530844374346175",
+              "21387743663088400/6530844374346173"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "A_NO_ORACLE_5PCT_ADVANTAGE"
+      ],
+      "unresolved_parts": [],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S2_balanced",
+        "price": 3,
+        "state": "11",
+        "epsilon": 1e-05
+      },
+      "C_M": null,
+      "C_B": null,
+      "C_K": null,
+      "macro_ratio": {
+        "exact_ratio": null,
+        "rounding_guard": null,
+        "gate": "UNDETERMINED",
+        "reason": "NO_ELIGIBLE_POINT"
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S2_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M02_1_3",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M02_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "UNDETERMINED"
+      ],
+      "unresolved_parts": [
+        "macro_ratio:NO_ELIGIBLE_POINT",
+        "method_regret:empirical:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:empirical:NO_ELIGIBLE_POINT",
+        "method_regret:joint:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:joint:NO_ELIGIBLE_POINT",
+        "method_regret:box:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:box:NO_ELIGIBLE_POINT"
+      ],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S2_balanced",
+        "price": 3,
+        "state": "11",
+        "epsilon": 1e-06
+      },
+      "C_M": null,
+      "C_B": null,
+      "C_K": null,
+      "macro_ratio": {
+        "exact_ratio": null,
+        "rounding_guard": null,
+        "gate": "UNDETERMINED",
+        "reason": "NO_ELIGIBLE_POINT"
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S2_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M02_1_3",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M02_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "UNDETERMINED"
+      ],
+      "unresolved_parts": [
+        "macro_ratio:NO_ELIGIBLE_POINT",
+        "method_regret:empirical:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:empirical:NO_ELIGIBLE_POINT",
+        "method_regret:joint:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:joint:NO_ELIGIBLE_POINT",
+        "method_regret:box:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:box:NO_ELIGIBLE_POINT"
+      ],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S2_balanced",
+        "price": 6,
+        "state": "00",
+        "epsilon": 1e-05
+      },
+      "C_M": {
+        "row_index": 53,
+        "method": "M01_1_3",
+        "h_index": 1,
+        "cost": 5636832715.610978,
+        "exact_cost": "5910647501604497/1048576",
+        "tied_row_indices": [
+          53
+        ]
+      },
+      "C_B": {
+        "row_index": 3,
+        "method": "S0_m4",
+        "h_index": 0,
+        "cost": 3462741739.542185,
+        "exact_cost": "1815473941141093/524288",
+        "tied_row_indices": [
+          3,
+          40
+        ]
+      },
+      "C_K": {
+        "row_index": 3,
+        "method": "S0_m4",
+        "h_index": 0,
+        "cost": 3462741739.542185,
+        "exact_cost": "1815473941141093/524288",
+        "tied_row_indices": [
+          3,
+          40
+        ]
+      },
+      "macro_ratio": {
+        "exact_ratio": "5910647501604497/3630947882282186",
+        "rounding_guard": [
+          "11821295003208992/7261895764564373",
+          "3940431667736332/2420631921521457"
+        ],
+        "gate": "NO_ADVANTAGE",
+        "reason": null
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S2_m1",
+          "saved_oracle_h_point": {
+            "row_index": 86,
+            "method": "S2_m1",
+            "h_index": 2,
+            "cost": 4016137914.443908
+          },
+          "method_regret": "1160555894987499/7261895764564372",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "8422451659551871/7261895764564372",
+            "rounding_guard": [
+              "8422451659551870/7261895764564373",
+              "8422451659551872/7261895764564371"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M02_1_3",
+          "saved_oracle_h_point": {
+            "row_index": 57,
+            "method": "M02_1_3",
+            "h_index": 1,
+            "cost": 6253482439.020824
+          },
+          "method_regret": "1463151859848257/1815473941141093",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "3278625800989350/1815473941141093",
+            "rounding_guard": [
+              "13114503203957398/7261895764564373",
+              "13114503203957402/7261895764564371"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M02_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 78,
+            "method": "S0_m1",
+            "h_index": 2,
+            "cost": 3462741739.542186
+          },
+          "method_regret": "1/3630947882282186",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "3630947882282187/3630947882282186",
+            "rounding_guard": [
+              "1",
+              "7261895764564375/7261895764564371"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "A_NO_ORACLE_5PCT_ADVANTAGE"
+      ],
+      "unresolved_parts": [],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S2_balanced",
+        "price": 6,
+        "state": "00",
+        "epsilon": 1e-06
+      },
+      "C_M": {
+        "row_index": 92,
+        "method": "M01_1_3",
+        "h_index": 2,
+        "cost": 112736594312.46082,
+        "exact_cost": "923538180607679/8192",
+        "tied_row_indices": [
+          92
+        ]
+      },
+      "C_B": {
+        "row_index": 234,
+        "method": "C2_0",
+        "h_index": 0,
+        "cost": 42294492440.092445,
+        "exact_cost": "5543623713107797/131072",
+        "tied_row_indices": [
+          234
+        ]
+      },
+      "C_K": {
+        "row_index": 80,
+        "method": "S0_m3",
+        "h_index": 2,
+        "cost": 103882106964.73738,
+        "exact_cost": "6808017762041029/65536",
+        "tied_row_indices": [
+          80
+        ]
+      },
+      "macro_ratio": {
+        "exact_ratio": "14776610889722864/5543623713107797",
+        "rounding_guard": [
+          "7388305444861431/2771811856553899",
+          "7388305444861433/2771811856553898"
+        ],
+        "gate": "NO_ADVANTAGE",
+        "reason": null
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S2_m1",
+          "saved_oracle_h_point": {
+            "row_index": 164,
+            "method": "S2_m1",
+            "h_index": 4,
+            "cost": 160645656192.43915
+          },
+          "method_regret": "3720055962186663/6808017762041029",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "21056147448455384/5543623713107797",
+            "rounding_guard": [
+              "10528073724227690/2771811856553899",
+              "1754678954037949/461968642758983"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M02_1_3",
+          "saved_oracle_h_point": {
+            "row_index": 96,
+            "method": "M02_1_3",
+            "h_index": 2,
+            "cost": 125069617962.3859
+          },
+          "method_regret": "1388544720741893/6808017762041029",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "16393124965565844/5543623713107797",
+            "rounding_guard": [
+              "8196562482782921/2771811856553899",
+              "8196562482782923/2771811856553898"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M02_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 156,
+            "method": "S0_m1",
+            "h_index": 4,
+            "cost": 138509465364.452
+          },
+          "method_regret": "2269338560083697/6808017762041029",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "18154712644249452/5543623713107797",
+            "rounding_guard": [
+              "9077356322124724/2771811856553899",
+              "4538678161062364/1385905928276949"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "A_NO_ORACLE_5PCT_ADVANTAGE"
+      ],
+      "unresolved_parts": [],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S2_balanced",
+        "price": 6,
+        "state": "11",
+        "epsilon": 1e-05
+      },
+      "C_M": null,
+      "C_B": null,
+      "C_K": null,
+      "macro_ratio": {
+        "exact_ratio": null,
+        "rounding_guard": null,
+        "gate": "UNDETERMINED",
+        "reason": "NO_ELIGIBLE_POINT"
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S2_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M02_1_3",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M02_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "UNDETERMINED"
+      ],
+      "unresolved_parts": [
+        "macro_ratio:NO_ELIGIBLE_POINT",
+        "method_regret:empirical:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:empirical:NO_ELIGIBLE_POINT",
+        "method_regret:joint:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:joint:NO_ELIGIBLE_POINT",
+        "method_regret:box:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:box:NO_ELIGIBLE_POINT"
+      ],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S2_balanced",
+        "price": 6,
+        "state": "11",
+        "epsilon": 1e-06
+      },
+      "C_M": null,
+      "C_B": null,
+      "C_K": null,
+      "macro_ratio": {
+        "exact_ratio": null,
+        "rounding_guard": null,
+        "gate": "UNDETERMINED",
+        "reason": "NO_ELIGIBLE_POINT"
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S2_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M02_1_3",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M02_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "UNDETERMINED"
+      ],
+      "unresolved_parts": [
+        "macro_ratio:NO_ELIGIBLE_POINT",
+        "method_regret:empirical:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:empirical:NO_ELIGIBLE_POINT",
+        "method_regret:joint:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:joint:NO_ELIGIBLE_POINT",
+        "method_regret:box:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:box:NO_ELIGIBLE_POINT"
+      ],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S3_signed",
+        "price": 3,
+        "state": "00",
+        "epsilon": 1e-05
+      },
+      "C_M": {
+        "row_index": 53,
+        "method": "M01_1_3",
+        "h_index": 1,
+        "cost": 3384270975.4595647,
+        "exact_cost": "7097330644726977/2097152",
+        "tied_row_indices": [
+          53
+        ]
+      },
+      "C_B": {
+        "row_index": 3,
+        "method": "S0_m4",
+        "h_index": 0,
+        "cost": 2083872715.2107496,
+        "exact_cost": "2185098916224827/1048576",
+        "tied_row_indices": [
+          3,
+          40
+        ]
+      },
+      "C_K": {
+        "row_index": 3,
+        "method": "S0_m4",
+        "h_index": 0,
+        "cost": 2083872715.2107496,
+        "exact_cost": "2185098916224827/1048576",
+        "tied_row_indices": [
+          3,
+          40
+        ]
+      },
+      "macro_ratio": {
+        "exact_ratio": "7097330644726977/4370197832449654",
+        "rounding_guard": [
+          "14194661289453952/8740395664899309",
+          "14194661289453956/8740395664899307"
+        ],
+        "gate": "NO_ADVANTAGE",
+        "reason": null
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 78,
+            "method": "S0_m1",
+            "h_index": 2,
+            "cost": 2083872715.2107506
+          },
+          "method_regret": "1/2185098916224827",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "2185098916224828/2185098916224827",
+            "rounding_guard": [
+              "8740395664899311/8740395664899309",
+              "8740395664899313/8740395664899307"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 78,
+            "method": "S0_m1",
+            "h_index": 2,
+            "cost": 2083872715.2107506
+          },
+          "method_regret": "1/2185098916224827",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "2185098916224828/2185098916224827",
+            "rounding_guard": [
+              "8740395664899311/8740395664899309",
+              "8740395664899313/8740395664899307"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "S0_m1",
+            "h_index": 5
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 78,
+            "method": "S0_m1",
+            "h_index": 2,
+            "cost": 2083872715.2107506
+          },
+          "method_regret": "1/2185098916224827",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "2185098916224828/2185098916224827",
+            "rounding_guard": [
+              "8740395664899311/8740395664899309",
+              "8740395664899313/8740395664899307"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "A_NO_ORACLE_5PCT_ADVANTAGE"
+      ],
+      "unresolved_parts": [],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S3_signed",
+        "price": 3,
+        "state": "00",
+        "epsilon": 1e-06
+      },
+      "C_M": {
+        "row_index": 131,
+        "method": "M01_1_3",
+        "h_index": 3,
+        "cost": 135370751016.18475,
+        "exact_cost": "2217914384649171/16384",
+        "tied_row_indices": [
+          131
+        ]
+      },
+      "C_B": {
+        "row_index": 234,
+        "method": "C2_0",
+        "h_index": 0,
+        "cost": 25452759267.59452,
+        "exact_cost": "3336144062722149/131072",
+        "tied_row_indices": [
+          234
+        ]
+      },
+      "C_K": {
+        "row_index": 81,
+        "method": "S0_m4",
+        "h_index": 2,
+        "cost": 83354786758.84056,
+        "exact_cost": "5462739305027375/65536",
+        "tied_row_indices": [
+          81,
+          118
+        ]
+      },
+      "macro_ratio": {
+        "exact_ratio": "5914438359064456/1112048020907383",
+        "rounding_guard": [
+          "35486630154386732/6672288125444299",
+          "35486630154386740/6672288125444297"
+        ],
+        "gate": "NO_ADVANTAGE",
+        "reason": null
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 156,
+            "method": "S0_m1",
+            "h_index": 4,
+            "cost": 83354786758.84068
+          },
+          "method_regret": "8/5462739305027375",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "10925478610054766/3336144062722149",
+            "rounding_guard": [
+              "21850957220109528/6672288125444299",
+              "21850957220109536/6672288125444297"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 156,
+            "method": "S0_m1",
+            "h_index": 4,
+            "cost": 83354786758.84068
+          },
+          "method_regret": "8/5462739305027375",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "10925478610054766/3336144062722149",
+            "rounding_guard": [
+              "21850957220109528/6672288125444299",
+              "21850957220109536/6672288125444297"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "S0_m1",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 156,
+            "method": "S0_m1",
+            "h_index": 4,
+            "cost": 83354786758.84068
+          },
+          "method_regret": "8/5462739305027375",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "10925478610054766/3336144062722149",
+            "rounding_guard": [
+              "21850957220109528/6672288125444299",
+              "21850957220109536/6672288125444297"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "A_NO_ORACLE_5PCT_ADVANTAGE"
+      ],
+      "unresolved_parts": [],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S3_signed",
+        "price": 3,
+        "state": "11",
+        "epsilon": 1e-05
+      },
+      "C_M": null,
+      "C_B": null,
+      "C_K": null,
+      "macro_ratio": {
+        "exact_ratio": null,
+        "rounding_guard": null,
+        "gate": "UNDETERMINED",
+        "reason": "NO_ELIGIBLE_POINT"
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "S0_m1",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "UNDETERMINED"
+      ],
+      "unresolved_parts": [
+        "macro_ratio:NO_ELIGIBLE_POINT",
+        "method_regret:empirical:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:empirical:NO_ELIGIBLE_POINT",
+        "method_regret:joint:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:joint:NO_ELIGIBLE_POINT",
+        "method_regret:box:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:box:NO_ELIGIBLE_POINT"
+      ],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S3_signed",
+        "price": 3,
+        "state": "11",
+        "epsilon": 1e-06
+      },
+      "C_M": null,
+      "C_B": null,
+      "C_K": null,
+      "macro_ratio": {
+        "exact_ratio": null,
+        "rounding_guard": null,
+        "gate": "UNDETERMINED",
+        "reason": "NO_ELIGIBLE_POINT"
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "S0_m1",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "UNDETERMINED"
+      ],
+      "unresolved_parts": [
+        "macro_ratio:NO_ELIGIBLE_POINT",
+        "method_regret:empirical:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:empirical:NO_ELIGIBLE_POINT",
+        "method_regret:joint:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:joint:NO_ELIGIBLE_POINT",
+        "method_regret:box:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:box:NO_ELIGIBLE_POINT"
+      ],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S3_signed",
+        "price": 6,
+        "state": "00",
+        "epsilon": 1e-05
+      },
+      "C_M": {
+        "row_index": 53,
+        "method": "M01_1_3",
+        "h_index": 1,
+        "cost": 5758914571.605416,
+        "exact_cost": "6038659605835721/1048576",
+        "tied_row_indices": [
+          53
+        ]
+      },
+      "C_B": {
+        "row_index": 3,
+        "method": "S0_m4",
+        "h_index": 0,
+        "cost": 3537737400.2415056,
+        "exact_cost": "3709586532195637/1048576",
+        "tied_row_indices": [
+          3,
+          40
+        ]
+      },
+      "C_K": {
+        "row_index": 3,
+        "method": "S0_m4",
+        "h_index": 0,
+        "cost": 3537737400.2415056,
+        "exact_cost": "3709586532195637/1048576",
+        "tied_row_indices": [
+          3,
+          40
+        ]
+      },
+      "macro_ratio": {
+        "exact_ratio": "6038659605835721/3709586532195637",
+        "rounding_guard": [
+          "2415463842334288/1483834612878255",
+          "12077319211671444/7419173064391273"
+        ],
+        "gate": "NO_ADVANTAGE",
+        "reason": null
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 78,
+            "method": "S0_m1",
+            "h_index": 2,
+            "cost": 3537737400.241507
+          },
+          "method_regret": "3/7419173064391274",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "7419173064391277/7419173064391274",
+            "rounding_guard": [
+              "7419173064391276/7419173064391275",
+              "7419173064391278/7419173064391273"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 78,
+            "method": "S0_m1",
+            "h_index": 2,
+            "cost": 3537737400.241507
+          },
+          "method_regret": "3/7419173064391274",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "7419173064391277/7419173064391274",
+            "rounding_guard": [
+              "7419173064391276/7419173064391275",
+              "7419173064391278/7419173064391273"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "S0_m1",
+            "h_index": 5
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 78,
+            "method": "S0_m1",
+            "h_index": 2,
+            "cost": 3537737400.241507
+          },
+          "method_regret": "3/7419173064391274",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "7419173064391277/7419173064391274",
+            "rounding_guard": [
+              "7419173064391276/7419173064391275",
+              "7419173064391278/7419173064391273"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "A_NO_ORACLE_5PCT_ADVANTAGE"
+      ],
+      "unresolved_parts": [],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S3_signed",
+        "price": 6,
+        "state": "00",
+        "epsilon": 1e-06
+      },
+      "C_M": {
+        "row_index": 131,
+        "method": "M01_1_3",
+        "h_index": 3,
+        "cost": 230356433113.46,
+        "exact_cost": "7548319600261857/32768",
+        "tied_row_indices": [
+          131
+        ]
+      },
+      "C_B": {
+        "row_index": 234,
+        "method": "C2_0",
+        "h_index": 0,
+        "cost": 43210498291.49768,
+        "exact_cost": "353980402003949/8192",
+        "tied_row_indices": [
+          234
+        ]
+      },
+      "C_K": {
+        "row_index": 81,
+        "method": "S0_m4",
+        "h_index": 2,
+        "cost": 141509289148.72934,
+        "exact_cost": "4636976386825563/32768",
+        "tied_row_indices": [
+          81,
+          118
+        ]
+      },
+      "macro_ratio": {
+        "exact_ratio": "7548319600261857/1415921608015796",
+        "rounding_guard": [
+          "30193278401047424/5663686432063185",
+          "30193278401047432/5663686432063183"
+        ],
+        "gate": "NO_ADVANTAGE",
+        "reason": null
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 156,
+            "method": "S0_m1",
+            "h_index": 4,
+            "cost": 141509289148.72952
+          },
+          "method_regret": "2/1545658795608521",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "4636976386825569/1415921608015796",
+            "rounding_guard": [
+              "18547905547302272/5663686432063185",
+              "18547905547302280/5663686432063183"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 156,
+            "method": "S0_m1",
+            "h_index": 4,
+            "cost": 141509289148.72952
+          },
+          "method_regret": "2/1545658795608521",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "4636976386825569/1415921608015796",
+            "rounding_guard": [
+              "18547905547302272/5663686432063185",
+              "18547905547302280/5663686432063183"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "S0_m1",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 156,
+            "method": "S0_m1",
+            "h_index": 4,
+            "cost": 141509289148.72952
+          },
+          "method_regret": "2/1545658795608521",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "4636976386825569/1415921608015796",
+            "rounding_guard": [
+              "18547905547302272/5663686432063185",
+              "18547905547302280/5663686432063183"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "A_NO_ORACLE_5PCT_ADVANTAGE"
+      ],
+      "unresolved_parts": [],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S3_signed",
+        "price": 6,
+        "state": "11",
+        "epsilon": 1e-05
+      },
+      "C_M": null,
+      "C_B": null,
+      "C_K": null,
+      "macro_ratio": {
+        "exact_ratio": null,
+        "rounding_guard": null,
+        "gate": "UNDETERMINED",
+        "reason": "NO_ELIGIBLE_POINT"
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "S0_m1",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "UNDETERMINED"
+      ],
+      "unresolved_parts": [
+        "macro_ratio:NO_ELIGIBLE_POINT",
+        "method_regret:empirical:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:empirical:NO_ELIGIBLE_POINT",
+        "method_regret:joint:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:joint:NO_ELIGIBLE_POINT",
+        "method_regret:box:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:box:NO_ELIGIBLE_POINT"
+      ],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S3_signed",
+        "price": 6,
+        "state": "11",
+        "epsilon": 1e-06
+      },
+      "C_M": null,
+      "C_B": null,
+      "C_K": null,
+      "macro_ratio": {
+        "exact_ratio": null,
+        "rounding_guard": null,
+        "gate": "UNDETERMINED",
+        "reason": "NO_ELIGIBLE_POINT"
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "S0_m1",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "UNDETERMINED"
+      ],
+      "unresolved_parts": [
+        "macro_ratio:NO_ELIGIBLE_POINT",
+        "method_regret:empirical:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:empirical:NO_ELIGIBLE_POINT",
+        "method_regret:joint:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:joint:NO_ELIGIBLE_POINT",
+        "method_regret:box:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:box:NO_ELIGIBLE_POINT"
+      ],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S4_strong",
+        "price": 3,
+        "state": "00",
+        "epsilon": 1e-05
+      },
+      "C_M": {
+        "row_index": 53,
+        "method": "M01_1_3",
+        "h_index": 1,
+        "cost": 6089728921.16914,
+        "exact_cost": "1596385898310963/262144",
+        "tied_row_indices": [
+          53
+        ]
+      },
+      "C_B": {
+        "row_index": 78,
+        "method": "S0_m1",
+        "h_index": 2,
+        "cost": 3749783583.6717753,
+        "exact_cost": "7863866142064431/2097152",
+        "tied_row_indices": [
+          78
+        ]
+      },
+      "C_K": {
+        "row_index": 78,
+        "method": "S0_m1",
+        "h_index": 2,
+        "cost": 3749783583.6717753,
+        "exact_cost": "7863866142064431/2097152",
+        "tied_row_indices": [
+          78
+        ]
+      },
+      "macro_ratio": {
+        "exact_ratio": "4257029062162568/2621288714021477",
+        "rounding_guard": [
+          "6385543593243851/3931933071032216",
+          "6385543593243853/3931933071032215"
+        ],
+        "gate": "NO_ADVANTAGE",
+        "reason": null
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "M20_1_3",
+          "saved_oracle_h_point": {
+            "row_index": 69,
+            "method": "M20_1_3",
+            "h_index": 1,
+            "cost": 6947206053.107575
+          },
+          "method_regret": "6705480926622227/7863866142064431",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "14569347068686658/7863866142064431",
+            "rounding_guard": [
+              "910584191792916/491491633879027",
+              "1456934706868666/786386614206443"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M21_1_3",
+          "saved_oracle_h_point": {
+            "row_index": 73,
+            "method": "M21_1_3",
+            "h_index": 1,
+            "cost": 7412293581.798959
+          },
+          "method_regret": "7680840167592419/7863866142064431",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "15544706309656850/7863866142064431",
+            "rounding_guard": [
+              "971544144353553/491491633879027",
+              "7772353154828426/3931933071032215"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M21_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 78,
+            "method": "S0_m1",
+            "h_index": 2,
+            "cost": 3749783583.6717753
+          },
+          "method_regret": "0",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "1",
+            "rounding_guard": [
+              "3931933071032215/3931933071032216",
+              "3931933071032216/3931933071032215"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "A_NO_ORACLE_5PCT_ADVANTAGE"
+      ],
+      "unresolved_parts": [],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S4_strong",
+        "price": 3,
+        "state": "00",
+        "epsilon": 1e-06
+      },
+      "C_M": {
+        "row_index": 92,
+        "method": "M01_1_3",
+        "h_index": 2,
+        "cost": 121794089962.86623,
+        "exact_cost": "7981897479806401/65536",
+        "tied_row_indices": [
+          92
+        ]
+      },
+      "C_B": {
+        "row_index": 234,
+        "method": "C2_0",
+        "h_index": 0,
+        "cost": 45803185380.81439,
+        "exact_cost": "750439389279263/16384",
+        "tied_row_indices": [
+          234
+        ]
+      },
+      "C_K": {
+        "row_index": 80,
+        "method": "S0_m3",
+        "h_index": 2,
+        "cost": 112492383474.4289,
+        "exact_cost": "1843075210845043/16384",
+        "tied_row_indices": [
+          80
+        ]
+      },
+      "macro_ratio": {
+        "exact_ratio": "7981897479806401/3001757557117052",
+        "rounding_guard": [
+          "3192758991922560/1200703022846821",
+          "15963794959612804/6003515114234103"
+        ],
+        "gate": "NO_ADVANTAGE",
+        "reason": null
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "M20_1_3",
+          "saved_oracle_h_point": {
+            "row_index": 108,
+            "method": "M20_1_3",
+            "h_index": 2,
+            "cost": 138943960762.87134
+          },
+          "method_regret": "433382642293841/1843075210845043",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "2276457853138884/750439389279263",
+            "rounding_guard": [
+              "18211662825111068/6003515114234105",
+              "18211662825111076/6003515114234103"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M21_1_3",
+          "saved_oracle_h_point": {
+            "row_index": 112,
+            "method": "M21_1_3",
+            "h_index": 2,
+            "cost": 148245661533.27252
+          },
+          "method_regret": "585781707716094/1843075210845043",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "2428856918561137/750439389279263",
+            "rounding_guard": [
+              "19430855348489092/6003515114234105",
+              "6476951782829700/2001171704744701"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M21_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 156,
+            "method": "S0_m1",
+            "h_index": 4,
+            "cost": 149989762673.65237
+          },
+          "method_regret": "1228714121600155/3686150421690086",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "4914864543290241/1500878778558526",
+            "rounding_guard": [
+              "3931891634632192/1200703022846821",
+              "19659458173160968/6003515114234103"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "A_NO_ORACLE_5PCT_ADVANTAGE"
+      ],
+      "unresolved_parts": [],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S4_strong",
+        "price": 3,
+        "state": "11",
+        "epsilon": 1e-05
+      },
+      "C_M": null,
+      "C_B": null,
+      "C_K": null,
+      "macro_ratio": {
+        "exact_ratio": null,
+        "rounding_guard": null,
+        "gate": "UNDETERMINED",
+        "reason": "NO_ELIGIBLE_POINT"
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S2_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M21_1_3",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M21_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "UNDETERMINED"
+      ],
+      "unresolved_parts": [
+        "macro_ratio:NO_ELIGIBLE_POINT",
+        "method_regret:empirical:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:empirical:NO_ELIGIBLE_POINT",
+        "method_regret:joint:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:joint:NO_ELIGIBLE_POINT",
+        "method_regret:box:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:box:NO_ELIGIBLE_POINT"
+      ],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S4_strong",
+        "price": 3,
+        "state": "11",
+        "epsilon": 1e-06
+      },
+      "C_M": null,
+      "C_B": null,
+      "C_K": null,
+      "macro_ratio": {
+        "exact_ratio": null,
+        "rounding_guard": null,
+        "gate": "UNDETERMINED",
+        "reason": "NO_ELIGIBLE_POINT"
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S2_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M21_1_3",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M21_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "UNDETERMINED"
+      ],
+      "unresolved_parts": [
+        "macro_ratio:NO_ELIGIBLE_POINT",
+        "method_regret:empirical:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:empirical:NO_ELIGIBLE_POINT",
+        "method_regret:joint:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:joint:NO_ELIGIBLE_POINT",
+        "method_regret:box:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:box:NO_ELIGIBLE_POINT"
+      ],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S4_strong",
+        "price": 6,
+        "state": "00",
+        "epsilon": 1e-05
+      },
+      "C_M": {
+        "row_index": 53,
+        "method": "M01_1_3",
+        "h_index": 1,
+        "cost": 10362712937.454885,
+        "exact_cost": "5433046040552347/524288",
+        "tied_row_indices": [
+          53
+        ]
+      },
+      "C_B": {
+        "row_index": 78,
+        "method": "S0_m1",
+        "h_index": 2,
+        "cost": 6365911665.303247,
+        "exact_cost": "3337571095178509/524288",
+        "tied_row_indices": [
+          78
+        ]
+      },
+      "C_K": {
+        "row_index": 78,
+        "method": "S0_m1",
+        "h_index": 2,
+        "cost": 6365911665.303247,
+        "exact_cost": "3337571095178509/524288",
+        "tied_row_indices": [
+          78
+        ]
+      },
+      "macro_ratio": {
+        "exact_ratio": "776149434364621/476795870739787",
+        "rounding_guard": [
+          "3622030693701564/2225047396785673",
+          "10866092081104696/6675142190357017"
+        ],
+        "gate": "NO_ADVANTAGE",
+        "reason": null
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "M20_1_3",
+          "saved_oracle_h_point": {
+            "row_index": 69,
+            "method": "M20_1_3",
+            "h_index": 1,
+            "cost": 12005004602.231918
+          },
+          "method_regret": "2956508757716459/3337571095178509",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "6294079852894968/3337571095178509",
+            "rounding_guard": [
+              "12588159705789934/6675142190357019",
+              "12588159705789938/6675142190357017"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M21_1_3",
+          "saved_oracle_h_point": {
+            "row_index": 73,
+            "method": "M21_1_3",
+            "h_index": 1,
+            "cost": 12818907723.817022
+          },
+          "method_regret": "3383228397526070/3337571095178509",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "6720799492704579/3337571095178509",
+            "rounding_guard": [
+              "13441598985409156/6675142190357019",
+              "13441598985409160/6675142190357017"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M21_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 78,
+            "method": "S0_m1",
+            "h_index": 2,
+            "cost": 6365911665.303247
+          },
+          "method_regret": "0",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "1",
+            "rounding_guard": [
+              "6675142190357017/6675142190357019",
+              "6675142190357019/6675142190357017"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "A_NO_ORACLE_5PCT_ADVANTAGE"
+      ],
+      "unresolved_parts": [],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S4_strong",
+        "price": 6,
+        "state": "00",
+        "epsilon": 1e-06
+      },
+      "C_M": {
+        "row_index": 92,
+        "method": "M01_1_3",
+        "h_index": 2,
+        "cost": 207253427550.17572,
+        "exact_cost": "3395640156982079/16384",
+        "tied_row_indices": [
+          92
+        ]
+      },
+      "C_B": {
+        "row_index": 234,
+        "method": "C2_0",
+        "h_index": 0,
+        "cost": 77758896111.6151,
+        "exact_cost": "5096007015570807/65536",
+        "tied_row_indices": [
+          234
+        ]
+      },
+      "C_K": {
+        "row_index": 80,
+        "method": "S0_m3",
+        "h_index": 2,
+        "cost": 190975441712.40253,
+        "exact_cost": "3128941637016003/16384",
+        "tied_row_indices": [
+          80
+        ]
+      },
+      "macro_ratio": {
+        "exact_ratio": "13582560627928316/5096007015570807",
+        "rounding_guard": [
+          "6791280313964157/2548003507785404",
+          "6791280313964159/2548003507785403"
+        ],
+        "gate": "NO_ADVANTAGE",
+        "reason": null
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "M20_1_3",
+          "saved_oracle_h_point": {
+            "row_index": 108,
+            "method": "M20_1_3",
+            "h_index": 2,
+            "cost": 240099815042.11658
+          },
+          "method_regret": "804853732634035/3128941637016003",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "15735181478600152/5096007015570807",
+            "rounding_guard": [
+              "7867590739300075/2548003507785404",
+              "7867590739300077/2548003507785403"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M21_1_3",
+          "saved_oracle_h_point": {
+            "row_index": 112,
+            "method": "M21_1_3",
+            "h_index": 2,
+            "cost": 256377791122.24774
+          },
+          "method_regret": "1071552092730904/3128941637016003",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "16801974918987628/5096007015570807",
+            "rounding_guard": [
+              "8400987459493813/2548003507785404",
+              "8400987459493815/2548003507785403"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M21_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": {
+            "row_index": 156,
+            "method": "S0_m1",
+            "h_index": 4,
+            "cost": 254633783143.6424
+          },
+          "method_regret": "1042978266009434/3128941637016003",
+          "regret_null_reason": null,
+          "against_baseline": {
+            "exact_ratio": "16687679612101748/5096007015570807",
+            "rounding_guard": [
+              "8343839806050873/2548003507785404",
+              "8343839806050875/2548003507785403"
+            ],
+            "gate": "NO_ADVANTAGE",
+            "reason": null
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "A_NO_ORACLE_5PCT_ADVANTAGE"
+      ],
+      "unresolved_parts": [],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S4_strong",
+        "price": 6,
+        "state": "11",
+        "epsilon": 1e-05
+      },
+      "C_M": null,
+      "C_B": null,
+      "C_K": null,
+      "macro_ratio": {
+        "exact_ratio": null,
+        "rounding_guard": null,
+        "gate": "UNDETERMINED",
+        "reason": "NO_ELIGIBLE_POINT"
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S2_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M21_1_3",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M21_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "UNDETERMINED"
+      ],
+      "unresolved_parts": [
+        "macro_ratio:NO_ELIGIBLE_POINT",
+        "method_regret:empirical:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:empirical:NO_ELIGIBLE_POINT",
+        "method_regret:joint:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:joint:NO_ELIGIBLE_POINT",
+        "method_regret:box:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:box:NO_ELIGIBLE_POINT"
+      ],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    },
+    {
+      "context": {
+        "input_id": "S4_strong",
+        "price": 6,
+        "state": "11",
+        "epsilon": 1e-06
+      },
+      "C_M": null,
+      "C_B": null,
+      "C_K": null,
+      "macro_ratio": {
+        "exact_ratio": null,
+        "rounding_guard": null,
+        "gate": "UNDETERMINED",
+        "reason": "NO_ELIGIBLE_POINT"
+      },
+      "selectors": {
+        "empirical": {
+          "sealed_method": "S2_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        },
+        "joint": {
+          "sealed_method": "M21_1_3",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": {
+            "method": "M21_1_3",
+            "h_index": null
+          }
+        },
+        "box": {
+          "sealed_method": "S0_m1",
+          "saved_oracle_h_point": null,
+          "method_regret": null,
+          "regret_null_reason": "NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+          "against_baseline": {
+            "exact_ratio": null,
+            "rounding_guard": null,
+            "gate": "UNDETERMINED",
+            "reason": "NO_ELIGIBLE_POINT"
+          },
+          "misses_oracle_advantage": false,
+          "precision_choice_metadata": null
+        }
+      },
+      "classifications": [
+        "UNDETERMINED"
+      ],
+      "unresolved_parts": [
+        "macro_ratio:NO_ELIGIBLE_POINT",
+        "method_regret:empirical:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:empirical:NO_ELIGIBLE_POINT",
+        "method_regret:joint:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:joint:NO_ELIGIBLE_POINT",
+        "method_regret:box:NO_ELIGIBLE_SELECTED_OR_CATALOG_POINT",
+        "selector_ratio:box:NO_ELIGIBLE_POINT"
+      ],
+      "known_composition_equivalent": true,
+      "eligible_source": "stored_boolean_unchanged",
+      "method_regret_scope": "saved_method_only_h_already_oracle"
+    }
+  ]
+}

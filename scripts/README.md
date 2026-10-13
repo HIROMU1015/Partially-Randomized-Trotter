@@ -1,5 +1,13 @@
 # scripts 索引
 
+## 2026-10-14 C1固定保存oracle診断：一回完了・独立監査PASS
+
+[結果・scope・限界](../docs/research/qc_c1_saved_oracle_diagnostic_v1_results_20261014.md)、[GPT判断資料](../docs/research/qc_c1_saved_oracle_diagnostic_review_handoff_v1_20261014.md)、[明示承認](../artifacts/qc_c1_saved_oracle_execution_v1/2026-10-14/authorization.json)、[一次診断](../artifacts/qc_c1_saved_oracle_diagnostic_v1/2026-10-14/attempt_1/diagnostic.json)、[独立checker結果](../artifacts/qc_c1_saved_oracle_diagnostic_v1/2026-10-14/attempt_1/independent_audit.json)。
+固定source `657513ad06661aed84950d5907f3304dcdd5f1f7`、準備base `e82a5202098ad95f2eb7280279d2c97cc06190bc`、新規認可を用いたattempt1/retry0。8,064保存行/32contextを一回診断し、独立audit32context PASS。追加eigensolver/PF/compile0。
+通常|00>16contextは全てA（未選択macroを含むoracleにも登録5%費用優位なし）、macro_ratio 1.082687339〜5.331029315。bad|11>16contextはeligible不足でUNDETERMINED、B（oracle優位をselectorが未選択）は0。
+非分子2qubit Pauli4H/24macro/6h、h=1/(8Λ2^s),s0…5,Λ=fragment係数L1、target10^-5/10^-6 model units、controlled価格3/6。geometry/basis/DF rank-policy/L_D/固定粒子sector非該当。保存eligible/cost/selector不変、selected-method内hが既にoracleのmethod_regret。費用は条件付きHeisenberg proxyで、QPE/RPE最終総費用・分子利益・独立新規性は未実証。
+旧source/結果/認可/STOP、既存証拠・準備338files、旧140manifest entries/non-result fields/global FAIL/root既存131pathsを保全。N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了を維持。新数学/文献探索・GPTレビュー・C4/研究採否判断は開始しない。公開・remote照合後Mandatory STOP、次はGPT重要科学判断の別開始承認待ち。以下は準備時・過去milestoneの履歴。
+
 ## C1保存oracle診断 v1：準備のみ・登録集計未認可
 
 [契約・準備](../docs/research/qc_c1_saved_oracle_preparation_v1_20261014.md)、[runner](run_qc_c1_saved_oracle_diagnostic_v1.py)、[独立checker](verify_qc_c1_saved_oracle_diagnostic_v1.py)、[人工fixture tests](../tests/test_qc_c1_saved_oracle_preparation_v1.py)、[34tests結果](../artifacts/qc_c1_saved_oracle_preparation_v1/2026-10-14/synthetic_checks.json)。
