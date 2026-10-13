@@ -1,5 +1,13 @@
 # tests の役割
 
+## C1 macrocycle v1：登録外技術検査と将来認可gate
+
+数学・固定scopeは [設計](../docs/research/qc_c1_macrocycle_technical_design_v1_20261013.md) と [証拠](../artifacts/qc_c1_macrocycle_preparation_v1/2026-10-13/off_domain_checks.json) から辿る。
+module：`src/trottertracks/representation_exploration/c1_macrocycle_{algebra,contract,execution,pilot,checker}_v1.py`。
+準備検査：`scripts/check_qc_c1_macrocycle_preparation_v1.py`、tests：`tests/test_qc_c1_macrocycle_preparation_v1.py`（17 PASS、登録入力数値評価0）。
+将来runner：`scripts/run_qc_c1_macrocycle_pilot_v1.py`（別認可前にNumPy importを拒否）、保存監査：`scripts/verify_qc_c1_macrocycle_pilot_v1.py`（新eig0）。
+4 literal toy/39 methods/6h/940eigを固定、科学未実行、compileなし、正式新規性未認定、Mandatory STOP。
+
 ## 2026-10-13 mixed-access H4成果確定：現templateの投資見送り・系列終了
 
 [公開・remote取得確認](../artifacts/qc_mixed_access_closure/2026-10-13/publication/receipt.json)：payload `e54991ef2c80fe463de9cdb865b2c48d5b981607`、26変更blobs/旧229files/原レビューSHA/31追加リンク一致。成果固定・文書整理完了、次の新方向GPT比較は別途開始承認待ち、Mandatory STOP。

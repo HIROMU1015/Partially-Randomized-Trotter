@@ -1,0 +1,99 @@
+{
+  "scope_id": "QC_C1_FIXED_MACROCYCLE_PILOT_V1_20261013",
+  "status": "PREREGISTERED_NOT_AUTHORIZED",
+  "Hamiltonian": "4 fixed 2-qubit commuting-within-fragment Pauli models; three pairwise noncommuting fragments",
+  "molecular_geometry_basis_DF_rank_L_D": "not applicable",
+  "input_count": 4,
+  "information_states": [
+    "00",
+    "11"
+  ],
+  "h_levels": 6,
+  "h_denominator": 8,
+  "h_rule": "h=1/(8*Lambda*2^s), s=0..5; Lambda=coefficient L1 of A+B+C without cancellation",
+  "energy_targets": [
+    "1/100000",
+    "1/1000000"
+  ],
+  "PF_statistical_split": [
+    "1/2",
+    "1/2"
+  ],
+  "energy_units": "model units, not Hartree or chemical accuracy",
+  "CX_prices": [
+    3,
+    6
+  ],
+  "price_status": "hypothetical CX per one-qubit primitive price; one RZ/basis Clifford/X unit, not T count",
+  "minimum_overlap": 0.25,
+  "kernel_dictionary": "6 S2 orderings quotient by reverse isospectral pairs to 3 reps ABC/ACB/BAC",
+  "macro_count": 24,
+  "macro_rule": "j,k,j; j!=k; a=1/8,1/4,1/3,3/8; b=1-2a",
+  "unitary_methods": 39,
+  "derived_C2_methods": 3,
+  "eigensolver_expected": 940,
+  "finite_parameter_optimization": "none; select by exact fixed J2 scores only after separate execution approval",
+  "selector_modes": [
+    "empirical approximate expectation",
+    "joint trace-distance envelope",
+    "independent-box envelope"
+  ],
+  "strong_known_composition": "same catalog/information/sharing as C1; explicitly identical rule, an equivalence diagnostic, never evidence for independent novelty",
+  "comparators": [
+    "3 single S2",
+    "single-kernel subdivision m=2,3,4 for each rep; retain every subdivision fitting each macro gate budget",
+    "6 uniform known ordering mixtures (already part of 24 macros)",
+    "3 five-stage S4",
+    "3 two-point C2 outputs with -1/3,4/3 statistical weights",
+    "strong known-composition equivalence control"
+  ],
+  "selector_seal": "all state and price choices saved and hashed before reference jobs/eigensolver import",
+  "reference_uses": "branch/energy/gap/overlap and diagnostic oracle frontiers only; never feed selector",
+  "finite_step_status": "saved phase bias, residual, principal-branch and truth connection checks; numerical, not interval certification",
+  "numeric_tolerance": {
+    "bias_margin": 1e-10,
+    "eigen_residual": 1e-10,
+    "orthogonality": 1e-09,
+    "unitarity": 1e-10
+  },
+  "branch_policy": "principal phase |angle|<pi/4, ground-connected overlap>=1/2, selected principal minimum agrees with reference connection; otherwise unresolved",
+  "information_cost": "basis-state preparation X0 or X2, coefficient arithmetic and BCH preprocessing timed; quantum information measurements zero only for these product-state toys; molecular RDM/state/gap costs UNKNOWN",
+  "resource_model": "RZ,CX,basis Clifford separate static counts; optional one-qubit unit prices and price*CX; shared adjacent fragment stages applied to every method including across repeated macro boundaries; controlled scalar phase retained",
+  "conditional_energy_cost": "(g/h/epsilon_stat+state-preparation_X)/ground-branch overlap; Heisenberg-query proxy, confidence/branch protocol/T synthesis/routing not costed; C2 optimally allocates two precision widths using same proxy",
+  "full_ground_energy_cost": "UNKNOWN",
+  "primary_question": "Does a truth-free fixed-cycle selection exhibit a finite-step bias/cost tradeoff beyond best single/subdivision/S4/C2, and is it explained by known composition or information assumptions?",
+  "science_success": "no automatic algorithm adoption; all improvement conditional to fixed toy/model/information and strong baselines",
+  "STOP_labels": [
+    "KNOWN_COMPOSITION_EXPLAINS",
+    "SUBDIVISION_EXPLAINS",
+    "ORACLE_ONLY",
+    "INFO_OR_REMAINDER_ERASES",
+    "NO_ELIGIBLE_POINT",
+    "UNRESOLVED_BRANCH_OR_PRECISION",
+    "CONDITIONAL_TRADEOFF_REQUIRES_GPT_JUDGMENT"
+  ],
+  "attempts": 1,
+  "retries": 0,
+  "workers": 2,
+  "threads_per_worker": 1,
+  "acceleration": "4x4 Pauli closed-form exponentials, immutable primitive cache, independent cases process-spawn, serial exact selector seal before parallel reference jobs; no GPU useful at this size",
+  "limits": {
+    "eigensolver_calls": 1000,
+    "primitive_exponential_cache_entries_per_case": 2000,
+    "worker_address_space_bytes": 1073741824,
+    "aggregate_memory_bytes": 3221225472,
+    "output_bytes": 16777216,
+    "log_bytes": 1048576,
+    "scientific_instruction_scope": "only this fixed case/method/h grid, no candidate or input addition",
+    "phase_wall_seconds": null,
+    "total_wall_seconds": null
+  },
+  "mandatory_stop": true,
+  "N1": "STOP",
+  "N2": "HOLD",
+  "N3": "CLOSED",
+  "C4": "BACKUP_NOT_STARTED",
+  "prior_authorizations_reusable": false,
+  "conditional_tradeoff_threshold": "selected macro proxy at least 5% below every eligible single/subdivision/S4/C2 frontier; exploratory fixed-toy classification,not scientific adoption",
+  "coefficient_precision_selection": "exact rational bound picks largest eligible h before reference; null when no valid coefficient gap/bound; separate from posthoc oracle grid frontier"
+}
