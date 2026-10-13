@@ -2,6 +2,8 @@
 
 ## 2026-10-13 chemistry mixed-access feasibility計画・科学未実行
 
+[公開確認](artifacts/qc_mixed_access_feasibility/2026-10-13/publication/receipt.json)：payload `f8758419c128917848a68cd5eff5a47414515cca`、GitHub29変更blobs/基準12blobs/追加リンク32件一致。新科学計算0、scope認可前STOP。
+
 [計画](docs/research/qc_mixed_access_feasibility_plan_v1_20261013.md)、[承認対象scope](docs/research/qc_mixed_access_feasibility_approval_scope_v1_20261013.md)、artifacts `artifacts/qc_mixed_access_feasibility/2026-10-13/`。
 完了GPT判断をユーザー経由で採用、current constructor独立算法非採択。one H4/7法/154以下の将来PF-error slotsとpartial resource/function budget評価を設計。
 計画準備完了、実行認可・science runner/source/env/input bindingは未完了。登録分子の新係数評価・eig/SVD・科学時間発展・compile・synthetic・GPTレビュー0。数値結果やCI証拠ではない。

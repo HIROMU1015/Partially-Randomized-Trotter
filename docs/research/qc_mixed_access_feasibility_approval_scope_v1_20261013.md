@@ -16,3 +16,6 @@
 positive budgetは実backendがその費用に収まる証明ではない。negative budgetも指定model/有限scopeの結果。結果取得後の研究継続・詳細backend投資判断はGPTへ戻す。
 
 現時点：計画作成・保存のみ、科学計算0、実行承認待ち、Mandatory STOP。
+
+
+公開payload `f8758419c128917848a68cd5eff5a47414515cca`。[固定計画](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/f8758419c128917848a68cd5eff5a47414515cca/docs/research/qc_mixed_access_feasibility_plan_v1_20261013.md)、[公開receipt](../../artifacts/qc_mixed_access_feasibility/2026-10-13/publication/receipt.json)。GitHub再取得29blobs、旧source/証拠12blobs、追加リンク32件一致。計画scope承認対象として準備完了、launch認可なし。

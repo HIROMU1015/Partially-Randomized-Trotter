@@ -149,3 +149,10 @@ source固定前に新しい技術pipelineへ必要なfocused synthetic/reference
 ユーザーの明示承認は **H4 input生成＋上記有限PF/SVD/DF数値＋model/symbolic費用分析の一回scope** を対象とする。認可後でもsource/env/preflight未完了ならlaunch gateを閉じたまま通常技術準備を行う。source固定を記録し、認可scopeを変更しない。入力封印後のslotは事前固定の条件だけで実行する。
 現在は科学実行認可なし。GPTによる再レビューも不要・未開始。次はユーザーによる限定scopeの実行承認。旧source/results/auth・global manifest既存description欠落FAILとMandatory STOPを保持する。
 [計画metadata checker](../../artifacts/qc_mixed_access_feasibility/2026-10-13/audit_tools/check_plan_metadata.py)はslot数・JSON・source/証拠SHA・旧manifest・追加リンク・未認可gateだけを検査する。[保存検査結果](../../artifacts/qc_mixed_access_feasibility/2026-10-13/static_preparation_check.json)。科学sourceをimport/実行せず、旧13件も再実行しない。局所metadata PASSとglobal manifest既存FAILを区別する。
+
+
+## 公開・remote確認
+
+固定計画payload `f8758419c128917848a68cd5eff5a47414515cca`、branch `qc-mixed-access-feasibility-preparation-20261013`。
+[GitHub固定計画](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/f8758419c128917848a68cd5eff5a47414515cca/docs/research/qc_mixed_access_feasibility_plan_v1_20261013.md)、[認可scope固定版](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/f8758419c128917848a68cd5eff5a47414515cca/docs/research/qc_mixed_access_feasibility_approval_scope_v1_20261013.md)、[契約JSON](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/f8758419c128917848a68cd5eff5a47414515cca/artifacts/qc_mixed_access_feasibility/2026-10-13/feasibility_contract.json)。
+独立bare cacheから29変更blobs/1,272,449bytes、基準source/証拠12blobs、追加relative links32件を確認。[公開receipt](../../artifacts/qc_mixed_access_feasibility/2026-10-13/publication/receipt.json)。cacheはshallow、local object alternatesなし。これは公開保存の確認でCI/分子再現ではない。科学/test実行0、旧120 manifest entries/non-result-set fields/STOPと既存FAIL保持。scope承認前・source/env未ready、Mandatory STOP。
