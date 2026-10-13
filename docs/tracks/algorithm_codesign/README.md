@@ -1,3 +1,5 @@
+> **現在（2026-10-13）：[D1保存資源追加分析](d1_saved_resource_analysis_and_gpt_handoff_20261013.md)。** 90 within-r pair-metric、18 r-contrast、全6方式とjoint12の感度・量子Paretoを保存scalarだけで整理。人工scalar12 checks PASS、旧event/sequence監査は繰り返さず、原科学分類不変・新science0・mandatory STOP。
+
 > **現在（2026-10-13）：[D1結果・GPT引き継ぎ](rte_development_d1_results_and_gpt_handoff_20261013.md)。** 一回のみ正常完了、12 rows / 1890 events、全36 keysのidentity・strict-error記録・分割復元監査PASS。新規17合成、固定19reuse、retry=0、science STOP。scientific interpretation/次stageは未判断。以下の過去の準備状態は履歴。
 
 > **現在（2026-10-13）：[D1 source preparation](rte_development_d1_source_preparation_20261013.md)／[固定contract](../../../artifacts/track_b_rte_development_source/2026-10-13/v1/contract_v1.json)。** r=1,2・六方式・同physical time・有限confidence。57登録外tests PASS、登録比較・合成0、pending authorization、mandatory STOP。旧closure・STOPは保持。

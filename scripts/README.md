@@ -586,3 +586,7 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## Track B D1 development preparation（2026-10-13）
 
 `tracks/algorithm_codesign/verify_rte_development_d1_source.py`は登録外focused validation。将来の別承認実行入口は`tracks/algorithm_codesign/observe_rte_development_d1.py`（内部runner `run_rte_development_d1.py`、worker `run_rte_development_synthesis_key.py`）。[技術報告](../docs/tracks/algorithm_codesign/rte_development_d1_source_preparation_20261013.md)。pending authorizationのため登録評価・合成を実行しない。
+
+## D1保存scalar追加分析（2026-10-13）
+
+`tracks/algorithm_codesign/analyze_d1_saved_resources.py`はpinned D1 JSONのFraction演算だけで順位・Pareto・factor分解・r差・affine感度を保存。scientific generator/runner/compile/synthesisを呼ばない。[技術報告](../docs/tracks/algorithm_codesign/d1_saved_resource_analysis_and_gpt_handoff_20261013.md)。

@@ -671,3 +671,7 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## Track B D1結果（2026-10-13）
 
 [結果とGPT引き継ぎ](tracks/algorithm_codesign/rte_development_d1_results_and_gpt_handoff_20261013.md)、[exact資源表](../artifacts/track_b_rte_development_d1_result/2026-10-13/v1/saved_output_audit/native_resource_rows_exact_v1.json)、[監査](../artifacts/track_b_rte_development_d1_result/2026-10-13/v1/saved_output_audit/saved_output_audit_v1.json)。12 rows正常完了、旧成果保持、retry=0、mandatory STOP。重要な科学レビューは利用者の開始承認後。
+
+## D1 saved-resource analysis（2026-10-13）
+
+[全6方式の技術分析](tracks/algorithm_codesign/d1_saved_resource_analysis_and_gpt_handoff_20261013.md)、[exact scalar表](../artifacts/track_b_d1_saved_resource_analysis/2026-10-13/v1/all_12_saved_scalar_rows_v1.json)、[manifest](../artifacts/track_b_d1_saved_resource_analysis/2026-10-13/v1/analysis_manifest_v1.json)。元結果・分類を維持し、新science0、mandatory STOP。

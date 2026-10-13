@@ -117,3 +117,7 @@ focused test: `test_g10_streaming_io.py`。人工JSON/typed fixtures、I/O/guard
 ## D1 off-domain validation（2026-10-13）
 
 `test_rte_development_d1.py`：57 focused tests。2-label/1-qubit mean、別2-system control、invented accounting/mock acquisition、phase/zero-fill/guard/provenance/chunksを検証。登録provider/条件を生成せず、compile/synthesis/sampling0。[保存結果](../../../artifacts/track_b_rte_development_source/2026-10-13/v1/focused_tests_v1.json)。full suiteではなくlocal source-bound evidence。
+
+## D1 saved scalar analysis checks（2026-10-13）
+
+`test_d1_saved_resource_analysis.py`：人工有理数の12 checks。対称積配分、N差保存、交点/tie/独立h/Pareto/workspaceを検証。元の1890 event/36 keysやscience preparation57testsを繰り返さない。[結果](../../../artifacts/track_b_d1_saved_resource_analysis/2026-10-13/v1/scalar_validation_v1.json)。

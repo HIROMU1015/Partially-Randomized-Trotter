@@ -272,3 +272,5 @@ G6/G9/G10を自己完結的ノートv1.0へ統合し現系列を区切る。旧�
 - [2026-10-13 Track B D1 source preparation](2026-10-13_track_b_rte_development_source_preparation.md)：同physical taskのr=1,2比較準備、57登録外tests PASS、別one-shot実行承認待ち・STOP。
 
 - [2026-10-13 Track B D1一回結果](2026-10-13_track_b_d1_one_shot_result.md)：12行完了、保存値/provenance監査、exact資源表とchunks、GPT科学判断待ち・STOP。
+
+- [2026-10-13 D1保存資源追加分析](2026-10-13_track_b_d1_saved_resource_analysis.md)：全方式順位・対称factor/N分解・r差・感度・未知classical、原分類不変・新science0・STOP。

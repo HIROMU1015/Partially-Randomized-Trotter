@@ -292,3 +292,7 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 ## D1 finite-RTE development source（2026-10-13）
 
 [固定仕様と技術報告](../../../docs/tracks/algorithm_codesign/rte_development_d1_source_preparation_20261013.md)。off-domain verifier `verify_rte_development_d1_source.py`、将来のgate付きobserver/runner `observe_rte_development_d1.py` / `run_rte_development_d1.py`、key worker `run_rte_development_synthesis_key.py`。57 focused PASS、登録処理0、別実行承認待ち、mandatory STOP。
+
+## D1 saved resource factors（2026-10-13）
+
+`analyze_d1_saved_resources.py`：D1結果commit fc965718のscalar表と元budget式の会計。90 pair-metric、18 r-contrast、all-h sensitivity、quantum-only Pareto。原科学値/分類を更新しない。[報告](../../../docs/tracks/algorithm_codesign/d1_saved_resource_analysis_and_gpt_handoff_20261013.md)。

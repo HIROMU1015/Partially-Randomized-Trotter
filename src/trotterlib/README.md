@@ -551,3 +551,7 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## Track B D1実験用source（2026-10-13）
 
 B固有namespaceは`src/trottertracks/algorithm_codesign/rte_development/`。共有trotterlibの実装を変更せず、既存generator/native数学を参照。[技術報告](../../docs/tracks/algorithm_codesign/rte_development_d1_source_preparation_20261013.md)、[source manifest](../../artifacts/track_b_rte_development_source/2026-10-13/v1/source_manifest_v1.json)。57登録外tests PASS、登録計算・合成未実行。
+
+## D1保存値分析（2026-10-13）
+
+[追加技術報告](../../docs/tracks/algorithm_codesign/d1_saved_resource_analysis_and_gpt_handoff_20261013.md)。analyzerはscripts側のstdlib Fraction処理であり、共有library・既存Track B science実装を変更しない。新science/compile/synthesis0、mandatory STOP。
