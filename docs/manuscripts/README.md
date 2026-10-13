@@ -1,5 +1,7 @@
 # Track A 原稿・図・reviewの入口
 
+2026-10-13の利用者指示により、H6成果を[本文v0.2](track_a_h6_resource_study_v0_2.md)へ統合した。[claim/evidence](track_a_h6_claim_evidence_v0_2.md)、[資料入口](../../artifacts/resource_applicability/track_a_h6_manuscript_h8_plan_v1/2026-10-13/README.md)。H4 v0.1を保持し、新科学計算0。以下の原稿中断指示は当時の履歴で、現指示が原稿統合作業を再開している。
+
 最新の利用者指示により、原稿作成・投稿先検討はいったん保留。
 v0.1/v0.2・図・監査はそのまま保存し、[H4 geometry拡張の設計準備](../research/track_a_geometry_precision_extension_proposal_v0.md)へ移る。
 追加scienceはまだ実行せず、距離・実行場所・新source/authorizationの固定を先に行う。

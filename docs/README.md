@@ -1,5 +1,7 @@
 # 文書索引
 
+H6原稿統合：[本文v0.2](manuscripts/track_a_h6_resource_study_v0_2.md)、[H4補完範囲](research/track_a_h4_h6_common_comparison_plan_v1.md)、[H8高速化・予算案](research/track_a_h8_resource_comparison_plan_v1.md)、[証拠入口](../artifacts/resource_applicability/track_a_h6_manuscript_h8_plan_v1/2026-10-13/README.md)。新科学計算0。以下は履歴。
+
 H6 s2 pilot完了：[結果](research/track_a_h6_conditional_s2_pilot_result_v1.md)、[8/16・層別平均・CSV・局所監査](../artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_result_v1/2026-10-13/README.md)。
 
 H6条件付きs2限定pilot：[実行準備契約](research/track_a_h6_conditional_s2_pilot_execution_contract_v1.md)、[SOURCE/58tests/byte binding/未承認予算](../artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_preparation_v1/2026-10-13/README.md)。実8 trajectory/16 compileは別承認。

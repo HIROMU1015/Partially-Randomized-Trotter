@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+H6原稿統合：[v0.2](docs/manuscripts/track_a_h6_resource_study_v0_2.md)、[claim/evidence](docs/manuscripts/track_a_h6_claim_evidence_v0_2.md)、[資料入口](artifacts/resource_applicability/track_a_h6_manuscript_h8_plan_v1/2026-10-13/README.md)。[H4共通panel](docs/research/track_a_h4_h6_common_comparison_plan_v1.md)、[H8計画](docs/research/track_a_h8_resource_comparison_plan_v1.md)は科学判断前の案。新science/grant0、開始許可の対象確認中。以下は履歴。
+
 H6 s2限定pilot完了：[結果](docs/research/track_a_h6_conditional_s2_pilot_result_v1.md)、[8/16・寄与解析・40別算術・exit0/cleanup・carry](artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_result_v1/2026-10-13/README.md)。対象q8/K2の平均費用増加0.00734%、ε=.001点RZ削減61.30%。母平均上界は未証明、次scienceなし。
 
 H6条件付きs2 pilot：[契約](docs/research/track_a_h6_conditional_s2_pilot_execution_contract_v1.md)、[SOURCE/58人工mock/seal/未承認1736・852案](artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_preparation_v1/2026-10-13/README.md)。q8/r2/K2の条件付き8本/16 compile準備、実科学計算0。旧592探索/256確認/runtime251保全。

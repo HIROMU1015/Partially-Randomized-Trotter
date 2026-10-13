@@ -1,5 +1,7 @@
 # scripts 索引
 
+H6原稿/H8計画：[stdlib metadata再生成・検証、Matplotlib図](../artifacts/resource_applicability/track_a_h6_manuscript_h8_plan_v1/2026-10-13/README.md)。科学runnerではなく、既存JSON/CSVのscalar解析だけ。H8 source/input/launchは未準備。
+
 H6 s2 pilot保存解析：[metadata aggregate](../artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_result_v1/2026-10-13/analyze_pilot.py)、[公開CSV別算術](../artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_result_v1/2026-10-13/verify_public_result.py)、[結果](../artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_result_v1/2026-10-13/README.md)。解析の新science/compile0。
 
 H6条件付きs2：[metadata preparer](resource_applicability/prepare_track_a_h6_conditional_s2_pilot_v1.py)、[default dry runner](resource_applicability/run_track_a_h6_conditional_s2_pilot_v1.py)、[read-only auditor](resource_applicability/audit_track_a_h6_conditional_s2_pilot_v1.py)、[未承認準備入口](../artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_preparation_v1/2026-10-13/README.md)。新exact grantなしでは起動しない。

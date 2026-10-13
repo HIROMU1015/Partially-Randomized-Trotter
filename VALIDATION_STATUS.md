@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-13 H6原稿統合・H4共通panel・H8未確定計画
+
+[資料入口](artifacts/resource_applicability/track_a_h6_manuscript_h8_plan_v1/2026-10-13/README.md)。H6/1Å/STO-3G/tol-only DF19/T.8/delta.1–.8の592探索・256独立確認・8pilotを分離した原稿v0.2、保存scalarから3SVG/4CSV、H4最小528compile panelとH8 core1788compile/872trajectory案。旧科学/runtime257・元結果保全、local CSV G/SE・選択・budget・carry・memory・bindingだけを検査。H8回路/性能/入力/厳密bound/CIは未検証。実science/transpile/grant0、環境変更0。準備後開始許可は受領、対象と科学契約は未確定、runtime_authorization=false/allowed=[]/command=null。以下は履歴。
+
 ## 2026-10-13 H6：s2条件付き8/16完了・局所保存結果検証
 
 [結果](docs/research/track_a_h6_conditional_s2_pilot_result_v1.md)、[CSV/40別算術/native/cleanup/byte監査](artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_result_v1/2026-10-13/README.md)。H6/1Å/STO-3G/DF19/sector400/T.8/prefix5/q8/delta.1/r2/K2、SOURCE843265b6/closure257/source224不変。新8 trajectory/16 actual compile成功、exit0/全8reap/cleanup0/残存0。s2 RZ平均96285.25・pi2=.0166969、層別平均+0.00734086%、ε=.001対象PR/PF比.387033921。local40 metadata算術PASS、CI/母平均bound/正式winner/GPT科学reviewのPASSではない。known1716/842＋予約20/10＝1736/852、返却/reset0、grant消費済み・次stageなし、mandatory STOP。以下は過去履歴。

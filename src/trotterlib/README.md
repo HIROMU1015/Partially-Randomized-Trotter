@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+H6原稿統合・H8計画：[本文](../../docs/manuscripts/track_a_h6_resource_study_v0_2.md)、[資料](../../artifacts/resource_applicability/track_a_h6_manuscript_h8_plan_v1/2026-10-13/README.md)。当library/科学source変更0。H8はsector400 guard・native/input/reference portが必要で、実装能力をPASS扱いしない。
+
 H6 s2限定pilot：[8/16完了・寄与解析](../../docs/research/track_a_h6_conditional_s2_pilot_result_v1.md)、[CSV/40算術/監査](../../artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_result_v1/2026-10-13/README.md)。当library/科学224/旧runtime251は変更しない。母平均上界と点推定を区別。
 
 H6条件付きs2：[sampling](../trottertracks/resource_applicability/h6_conditional_s2_sampling_v1.py)、[contract](../trottertracks/resource_applicability/h6_conditional_s2_contract_v1.py)、[execution adapter](../trottertracks/resource_applicability/h6_conditional_s2_execution_v1.py)、[58人工/mock](../../tests/tracks/resource_applicability/test_h6_conditional_s2_pilot_v1.py)、[準備入口](../../artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_preparation_v1/2026-10-13/README.md)。当library/科学224/旧runtime251を変更せず元component/quantum weights/compilerを保持。実科学run0。
