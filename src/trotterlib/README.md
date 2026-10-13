@@ -612,3 +612,7 @@ B0+Iの実compile費用は未測定。元登録集合の結果は不変で、主
 
 [新namespace h4_b0i](../trottertracks/resource_applicability/h4_b0i/README.md)と[未承認準備](../../docs/research/track_a_h4_b0i_compile_preparation_20261013.md)。
 既存B0を変えずtail identityだけを追加する検証用対照。正式科学baseline/既存selectorは変更していない。
+
+## H4 B0+I原稿v0.4の保存値・図・照合
+
+科学library/sourceを変更せず、[保存値統合](../../scripts/resource_applicability/integrate_h4_b0i_manuscript.py)、[図生成](../../scripts/resource_applicability/plot_h4_b0i_manuscript.py)、[bundle読取照合](../../scripts/resource_applicability/verify_h4_b0i_manuscript_bundle.py)を分離した。入力は公開CSV/JSONのみ、新signal/trajectory/compile0。限定testは`tests/tracks/resource_applicability/test_h4_b0i_manuscript_integration.py`、条件と再生成は`docs/research/track_a_h4_b0i_manuscript_integration_20261014.md`から参照。

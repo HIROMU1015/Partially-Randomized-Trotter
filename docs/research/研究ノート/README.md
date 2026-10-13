@@ -1,5 +1,7 @@
 # 研究ノート
 
+- [2026-10-14 H4 B0+I原稿v0.4・GPT handoff](2026-10-14_H4_B0I_manuscript_v0_4.md)：実測結果の保存値統合。科学的採否待ち、科学計算STOP。
+
 ## 2026-10-06 H4 signal/compile INPUT_BOUND草案・容量不足STOP
 
 run02の6凍結入力へplanを結合し、source19/218 templates/compiler/run ID/outputを不変に保った。

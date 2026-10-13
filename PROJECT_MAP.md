@@ -1,5 +1,13 @@
 # プロジェクト案内
 
+## 2026-10-14 H4 B0+I実測原稿v0.4・科学review資料完成
+
+固定結果98cdb35cを専用worktreeで統合。v0.3/旧4図/SOURCE59/元結果を保全し、新通しdraft・4主図＋S1（PNG/SVG/PDF15 assets）、GPT handoff・claim対応・条件表・旧版変更一覧を作成。
+元集合1812点B2と、実測B0+I追加後397/1415を分離。費用因子1812・SE差1812・method12/template19区間・matched120・固定display216行を保存。
+374点がB2点推定−2SEも下回ることを再確認。same32選抜/推定、NOT_SAVED/172丸め、母平均/energy/RPE等の限界は保持する。
+8限定stdlib検査と保存算術/bytes/links照合PASS。主張の科学的採否・新規性・論文化・追加検証はGPT判断待ち。
+[統合入口・GPT handoff](docs/research/track_a_h4_b0i_manuscript_integration_20261014.md)。新科学計算/compile/sampling/NPZ読込/共有venv・H8変更0、旧grant再利用/reset0、整備後mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-14 H4 B0+I全240回路 実測完了・費用地図STOP
 
 12 workerで234新規compile＋6 numeric照合再利用、全240 COMPLETE、stage193.990秒。SOURCE924b779c2bc6f6e844d6283c355f91c73aed6445・closure59とimmutable launch artifactは不変。
