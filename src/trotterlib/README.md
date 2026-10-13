@@ -547,3 +547,7 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 元v7 TECHNICAL_INCONCLUSIVE／復元SAVED_E_T_ACCOUNTING_COMPLETE／旧結果・marker・sourceは不変。
 今回のCodex作業は文書・索引・provenance・公開確認のみ、新科学計算0、mandatory STOP。
 同じ科学レビューは反復しない。新候補の研究判断・scope採択はGPT側、新実行は別途明示認可が必要。
+
+## Track B D1実験用source（2026-10-13）
+
+B固有namespaceは`src/trottertracks/algorithm_codesign/rte_development/`。共有trotterlibの実装を変更せず、既存generator/native数学を参照。[技術報告](../../docs/tracks/algorithm_codesign/rte_development_d1_source_preparation_20261013.md)、[source manifest](../../artifacts/track_b_rte_development_source/2026-10-13/v1/source_manifest_v1.json)。57登録外tests PASS、登録計算・合成未実行。

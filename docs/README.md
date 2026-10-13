@@ -663,3 +663,7 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## Track B：既存成果の発展RQの技術具体化（2026-10-13）
 
 [GPT科学レビュー原本](research/track_b_existing_results_development_broad_scientific_review_20261013.md)／[比較計画v1](tracks/algorithm_codesign/existing_results_development_technical_plan_v1_20261013.md)／[準備manifest](../artifacts/track_b_existing_results_development_preparation/2026-10-13/preparation_manifest_v1.json)。G10・R1・SPの証拠境界、small-step解析、同target比較と未固定仕様。新実装・科学計算なし、旧closure保持、mandatory STOP。
+
+## Track B D1 source preparation（2026-10-13）
+
+[技術報告](tracks/algorithm_codesign/rte_development_d1_source_preparation_20261013.md)、[固定contract](../artifacts/track_b_rte_development_source/2026-10-13/v1/contract_v1.json)、[source manifest](../artifacts/track_b_rte_development_source/2026-10-13/v1/source_manifest_v1.json)。57登録外tests PASS。登録比較・合成0、別one-shot承認待ち、mandatory STOP。

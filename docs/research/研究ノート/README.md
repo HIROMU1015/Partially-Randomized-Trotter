@@ -268,3 +268,5 @@ G6/G9/G10を自己完結的ノートv1.0へ統合し現系列を区切る。旧�
 
 
 - [2026-10-13 Track B：既存成果の発展RQの技術具体化](2026-10-13_track_b_existing_results_development_preparation.md) — 後続GPT判断に基づく比較計画と未固定仕様。新科学計算・実装なし、旧closure/STOP保持。
+
+- [2026-10-13 Track B D1 source preparation](2026-10-13_track_b_rte_development_source_preparation.md)：同physical taskのr=1,2比較準備、57登録外tests PASS、別one-shot実行承認待ち・STOP。

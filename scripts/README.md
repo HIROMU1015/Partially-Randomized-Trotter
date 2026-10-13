@@ -582,3 +582,7 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 元v7 TECHNICAL_INCONCLUSIVE／復元SAVED_E_T_ACCOUNTING_COMPLETE／旧結果・marker・sourceは不変。
 今回のCodex作業は文書・索引・provenance・公開確認のみ、新科学計算0、mandatory STOP。
 同じ科学レビューは反復しない。新候補の研究判断・scope採択はGPT側、新実行は別途明示認可が必要。
+
+## Track B D1 development preparation（2026-10-13）
+
+`tracks/algorithm_codesign/verify_rte_development_d1_source.py`は登録外focused validation。将来の別承認実行入口は`tracks/algorithm_codesign/observe_rte_development_d1.py`（内部runner `run_rte_development_d1.py`、worker `run_rte_development_synthesis_key.py`）。[技術報告](../docs/tracks/algorithm_codesign/rte_development_d1_source_preparation_20261013.md)。pending authorizationのため登録評価・合成を実行しない。

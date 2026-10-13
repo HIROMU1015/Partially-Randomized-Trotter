@@ -113,3 +113,7 @@ focused test: `test_g10_streaming_io.py`。人工JSON/typed fixtures、I/O/guard
 ## G10 S3 key compatibility focused tests
 
 `test_g10_key_compatibility_v3.py` loads46 unchanged applicable S2 IO/guard tests plus30 compatibility/pending-launch tests (76 PASS). The old blanket non-string-key rejection is explicitly superseded; original test file is preserved. Artificial data and metadata only, no scientific imports/runner/matrix/synthesis/sampling/LP. Source review: `docs/tracks/algorithm_codesign/g10_v3_key_compatibility_source_and_gpt_review_20261010.md`.
+
+## D1 off-domain validation（2026-10-13）
+
+`test_rte_development_d1.py`：57 focused tests。2-label/1-qubit mean、別2-system control、invented accounting/mock acquisition、phase/zero-fill/guard/provenance/chunksを検証。登録provider/条件を生成せず、compile/synthesis/sampling0。[保存結果](../../../artifacts/track_b_rte_development_source/2026-10-13/v1/focused_tests_v1.json)。full suiteではなくlocal source-bound evidence。
