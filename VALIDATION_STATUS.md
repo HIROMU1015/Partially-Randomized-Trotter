@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-13 H8承認caps21・高速heavy retry起動
+
+[入口](artifacts/resource_applicability/track_a_h8_fast_retry21_v1/2026-10-13/README.md)。SOURCE9bfea8bd・closure257/test1、旧245不変、新23metadata/mock PASS8.60秒。利用者が1000万instructions/累積compile21/control44承認、failed1/4は保持。Source1d064749はsetup_CPU_UNAVAILABLEでscience worker/lock/call0、CPU継承復元を直して新SOURCE/auth/outputへ固定。heavy02 coordinator410647/worker410910/CPU31/30・thread1起動、source/input/profile/carry/fresh gate確認・firstSTOPnull。完了/速度倍率は未測定、成功後だけ残7最大3。science/CPU/RSS/AS/compiler条件不変・本格H8なし。
+
 ## 2026-10-13 H8残7handoff実装・親STOP
 
 [入口](artifacts/resource_applicability/track_a_h8_remaining_fast_handoff_v1/2026-10-13/README.md)。SOURCE507b6924/closure253＋test1、旧245不変、40人工metadata/mock PASS・新SCI0。旧heavy SOURCE5c207fb8はcosine transpile終了後500万instructions超でSTOP、wrapper0/20・actual compile1/control4、正確postcount/費用はnull。wall7007.756秒、HWM7.422GiB/VmPeak8.081GiB、workerexit1/全reap/cleanup0、coordinator正確exit/timestamp未知。旧pending controllerだけUSER_STOPで退役、heavy自体のSTOPと区別。新7/18接続はparent成功条件不成立で起動0、本格H8なし、1000万instruction/compile21/control44案は未承認。

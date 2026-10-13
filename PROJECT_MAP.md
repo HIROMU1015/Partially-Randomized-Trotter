@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+H8承認retry21：[入口](artifacts/resource_applicability/track_a_h8_fast_retry21_v1/2026-10-13/README.md)、[契約/21compile44control/1000万guard](docs/research/track_a_h8_fast_retry21_v1.md)。SOURCE9bfea8bd/23限定metadata mocks、旧failed1/4保持、original seed/CPU/RSS/AS/compiler維持。高速heavy02起動、成功後だけ残7/最大3へ接続。本格H8なし。
+
 H8残7高速化引継ぎ：[入口](artifacts/resource_applicability/track_a_h8_remaining_fast_handoff_v1/2026-10-13/README.md)、[契約/実親STOP/次判断](docs/research/track_a_h8_remaining_fast_handoff_v1.md)。SOURCE507b6924、40metadata/mock、元seed固定・条件付き7/18compile接続。旧heavyは500万instruction guardでSTOP、wrapper0/20、actual compile1保持・新起動0。
 
 H8重複処理削減：[資料入口](artifacts/resource_applicability/track_a_h8_duplicate_work_optimization_v1/2026-10-13/README.md)、[設計・適用条件](docs/research/track_a_h8_duplicate_work_optimization_v1.md)。SOURCEf7c46135、44人工/mock検査PASS、初回hash人工2.73倍・状態検証約2倍。旧245source保全、新4module・future cost adapter・normal最大8/heavy最大3のwave生成。現run未変更、実H8倍率未測定、新science0。

@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+H8承認retry契約：[metadata caps/binding](../trottertracks/resource_applicability/h8_fast_retry_contract_v1.py)、[入口](../../artifacts/resource_applicability/track_a_h8_fast_retry21_v1/2026-10-13/README.md)。当library/旧245source不変、1000万/21compile/44controlだけ承認変更、元seed・回路・compilerを維持。
+
 H8残7handoff：[metadata contract](../trottertracks/resource_applicability/h8_fast_handoff_contract_v1.py)、[資料](../../artifacts/resource_applicability/track_a_h8_remaining_fast_handoff_v1/2026-10-13/README.md)。当library/旧245runtime不変、40人工/mock、元task/seedとcompilerを保持、実親STOPで新run拒否。
 
 H8高速化adapter：[single-pass hash](../trottertracks/resource_applicability/h8_hash_stream_reuse_v1.py)、[control branch再利用](../trottertracks/resource_applicability/h8_control_reuse_v1.py)、[cost port](../trottertracks/resource_applicability/h8_fast_cost_port_v1.py)、[parallel wave](../trottertracks/resource_applicability/h8_fast_parallel_plan_v1.py)、[資料](../../artifacts/resource_applicability/track_a_h8_duplicate_work_optimization_v1/2026-10-13/README.md)。当library・旧245runtime不変、人工44検査、実H8切替なし。
