@@ -38,3 +38,9 @@ N1STOP/N2HOLD/N3CLOSED、他Track、旧結果/STOP/原契約、global manifest�
 [GitHub固定結果](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ae3975de24bff6ab6aec3494b522851db2a8f3dd/docs/research/qc_mixed_access_feasibility_v1_results_20261013.md)、[固定引継ぎ](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ae3975de24bff6ab6aec3494b522851db2a8f3dd/docs/research/qc_mixed_access_feasibility_v1_review_handoff_20261013.md)、[一次resource JSON](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ae3975de24bff6ab6aec3494b522851db2a8f3dd/artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/attempt_1/resource_evaluation.json)。
 [remote receipt](../../artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/publication/receipt.json)：GitHub196変更blobs/65,061,432bytes、生成索引182files、raw163files、source16locks、旧優先12blobs、追加relative links48件一致。local object alternatesなし。新しい科学計算・tests・GPTレビューを公開確認のために実行していない。
 これは資料の取得性・byte保全の確認。CI/外部科学再現とは異なる。次はGPT科学判断の開始承認待ち、Mandatory STOP。
+
+## 2026-10-13 完了GPTレビューの受領・成果固定への追補
+
+[完了GPT科学レビュー原文](../reviews/representation_exploration/qc_mixed_access_feasibility_v1_scientific_review_2026-10-13.md)、[成果固定・現系列終了](qc_mixed_access_feasibility_v1_closure_20261013.md)。ユーザーの採用・反映指示に従い、現templateの詳細function backendへの追加投資を見送り、現feasibility系列を終了する。ideal PFのstep改善と登録費用モデルの負remainingを保持し、THRIFT全般の不能へ広げない。
+
+元source/input/result/auth/raw/STOP・原statusは不変。本追補は原文保存・文書反映のみで、新科学レビュー/計算/再集計/証拠replayは行わない。同じレビューの再実施は不要。現時点の次は、別の開始承認を得た新研究方向のGPT比較。上のレビュー開始待ち記述は当時の履歴、現在状態はclosureを参照。Mandatory STOP。

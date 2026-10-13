@@ -1,5 +1,12 @@
 # trotterlib モジュール索引
 
+## 2026-10-13 mixed-access H4成果確定：現templateの投資見送り・系列終了
+
+[受領GPT判断の反映・claim・再開条件](../../docs/research/qc_mixed_access_feasibility_v1_closure_20261013.md)。完了レビュー原文をbyte保存し、現bitwise/occupation算術templateの詳細function backendへ進まず、現H4 feasibility系列を終了する。THRIFT量子化学適用全体の終了・一般的不能・最適回路lower boundの判断ではない。
+H4直線1Å/STO-3G/realRHF8mode・ν4、DF16全保持（rank10は1e−12 reportingのみ）、L_Dなし/PRなし、T1,4/r倍増1…1024・εU=.001のideal PF step改善と、登録template/κ3,6,12 hypothesisで全273frontierの予算不足を区別して保持。原status `NO_POSITIVE_BUDGET_IN_REGISTERED_MODEL`、function実費用とground-energy全cost未評価。
+今回文書整理のみ、新計算/再集計/証拠再認証/synthetic/compile/GPT再レビュー0。旧source/result/auth/STOP・126result sets/non-result fields・global description欠落FAILとN1STOP/N2HOLD/N3CLOSED、別Trackは保持。再開はknown費用/必要stepを変える具体的構成・適用根拠または結論を変える新証拠から検討し、別の科学レビュー/計算承認が必要。
+整理後は新しい研究方向のGPT比較・選定を別途開始承認待ち。基底固有位相向けPFも将来候補だが今回は未採択・未検討。研究目的は元量子化学Hのground-energy低コスト化を維持、Mandatory STOP。以下は過去milestone。
+
 ## 2026-10-13 mixed-access feasibility v1：H4一回完了・科学判断待ち
 
 [公開・GPT引継ぎ](../../docs/research/qc_mixed_access_feasibility_v1_review_handoff_20261013.md)：証拠payload `ae3975de24bff6ab6aec3494b522851db2a8f3dd`。GitHub196blobs/65,061,432bytes、生成182files/raw163files/source16locks/旧12blobs/48links一致。source/結果不変、科学再実行0。GPTレビュー開始承認待ち、Mandatory STOP。

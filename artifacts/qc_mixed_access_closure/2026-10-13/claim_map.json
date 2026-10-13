@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "scope": {
+    "model": "H4 linear1.00Angstrom/STO3G/realRHF",
+    "modes": 8,
+    "particles": 4,
+    "frozen_core": false,
+    "DF": "16 retained;rank10 at1e-12 reporting only",
+    "L_D": null,
+    "PR": false,
+    "T": [
+      1,
+      4
+    ],
+    "r": "1..1024 doubling11",
+    "operator_error_target": 0.001,
+    "PF_fractions": [
+      0.4,
+      0.6,
+      0.8
+    ],
+    "validation": "256 output rows x70 nu-input columns,phase/leakage retained;7methods154queries",
+    "resource": "registered templates and kappa3,6,12 hypothetical prices"
+  },
+  "claims": [
+    {
+      "id": "F1",
+      "claim": "Fixed H4 ideal PF has lower eligible r for R4 versus E4/D4 at both T,for common PF fraction.6;R2 improves r versus E2 at T4 only in that comparison",
+      "classification": "LOCALLY_VALIDATED_FIXED_GRID_IDEAL_OPERATOR_RESULT",
+      "evidence": [
+        "artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/execution_audit/descriptive_summary.json",
+        "artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/attempt_1/result.json",
+        "artifacts/qc_mixed_access_feasibility/2026-10-13/feasibility_contract.json"
+      ],
+      "review_sections": [
+        "4",
+        "12"
+      ],
+      "limits": "single development H4,finite grid,operator error;not compiled or total ground-energy cost"
+    },
+    {
+      "id": "F2",
+      "claim": "All273 eligible R frontiers have negative remaining budget under registered templates and kappa3,6,12 price hypotheses",
+      "classification": "LOCALLY_VALIDATED_REGISTERED_RESOURCE_MODEL_RESULT",
+      "evidence": [
+        "artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/attempt_1/result.json",
+        "artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/execution_audit/descriptive_summary.json",
+        "artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/execution_audit/saved_execution_integrity.json"
+      ],
+      "review_sections": [
+        "5.1",
+        "12"
+      ],
+      "limits": "envelopes and hypothetical synthesis prices,not achieved optimal circuit costs"
+    },
+    {
+      "id": "F3",
+      "claim": "Keeping registered known K fixed,adding an unknown nonnegative F cannot reverse its deficit versus the fixed baseline",
+      "classification": "CONDITIONAL_ALGEBRAIC_CONSEQUENCE_ADOPTED_FROM_REVIEW",
+      "evidence": [
+        "docs/reviews/representation_exploration/qc_mixed_access_feasibility_v1_scientific_review_2026-10-13.md",
+        "artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/execution_audit/descriptive_summary.json"
+      ],
+      "review_sections": [
+        "5.2",
+        "10.1"
+      ],
+      "limits": "does not establish optimal-circuit lower bounds or feasibility of F=0"
+    },
+    {
+      "id": "I1",
+      "claim": "Do not invest in current bitwise/occupation template detailed reversible function backend;close current feasibility series",
+      "classification": "ADOPTED_COMPLETED_GPT_INVESTMENT_JUDGMENT",
+      "evidence": [
+        "docs/reviews/representation_exploration/qc_mixed_access_feasibility_v1_scientific_review_2026-10-13.md"
+      ],
+      "review_sections": [
+        "0",
+        "10",
+        "11",
+        "14"
+      ],
+      "limits": "not a new Codex scientific judgment;does not close all THRIFT chemistry approaches"
+    },
+    {
+      "id": "U1",
+      "claim": "The actual unknown function cost was high and caused failure",
+      "classification": "UNSUPPORTED_FUNCTION_ACTUAL_COST_NOT_OBTAINED",
+      "evidence": [
+        "docs/reviews/representation_exploration/qc_mixed_access_feasibility_v1_scientific_review_2026-10-13.md",
+        "artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/attempt_1/result.json"
+      ],
+      "review_sections": [
+        "12"
+      ]
+    },
+    {
+      "id": "U2",
+      "claim": "All circuits,prices,molecules or THRIFT chemistry applications must fail",
+      "classification": "NOT_PROVEN_OR_SUPPORTED",
+      "evidence": [
+        "docs/reviews/representation_exploration/qc_mixed_access_feasibility_v1_scientific_review_2026-10-13.md"
+      ],
+      "review_sections": [
+        "5.3",
+        "6.3",
+        "12"
+      ]
+    },
+    {
+      "id": "U3",
+      "claim": "Ground-energy1mHa or total QPE/energy-cost superiority/defeat was established",
+      "classification": "NOT_EVALUATED",
+      "evidence": [
+        "docs/reviews/representation_exploration/qc_mixed_access_feasibility_v1_scientific_review_2026-10-13.md",
+        "artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/attempt_1/result.json"
+      ],
+      "review_sections": [
+        "8",
+        "12"
+      ]
+    },
+    {
+      "id": "U4",
+      "claim": "Current constructor is an independent new algorithm",
+      "classification": "PREVIOUS_NON_ADOPTION_RETAINED",
+      "evidence": [
+        "docs/reviews/representation_exploration/qc_mixed_access_feasibility_v1_scientific_review_2026-10-13.md"
+      ],
+      "review_sections": [
+        "9.3",
+        "12"
+      ]
+    },
+    {
+      "id": "U5",
+      "claim": "This one-molecule result completes an independent paper main contribution",
+      "classification": "NOT_RECOGNIZED",
+      "evidence": [
+        "docs/reviews/representation_exploration/qc_mixed_access_feasibility_v1_scientific_review_2026-10-13.md"
+      ],
+      "review_sections": [
+        "9.3",
+        "12"
+      ]
+    },
+    {
+      "id": "P1",
+      "claim": "A new research direction or the earlier ground-eigenphase PF candidate is adopted now",
+      "classification": "NOT_ADOPTED_REVIEW_NOT_STARTED",
+      "evidence": [
+        "artifacts/qc_mixed_access_closure/2026-10-13/research_decision.json"
+      ],
+      "limits": "future GPT selection requires a separate explicit start approval"
+    }
+  ],
+  "no_new_numeric_evaluation": true,
+  "mandatory_stop": true
+}
