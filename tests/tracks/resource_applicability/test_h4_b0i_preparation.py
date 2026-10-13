@@ -37,6 +37,7 @@ def fake_plan():
     for g,p in c.SELECTION:
         for axis in ('cosine','sine'):
             t=dict(geometry=g,prefix=p,axis=axis,template=a.template(p,1),tail_identity=.01,
+                source_commit='1'*40,original_science_source=a.ORIGINAL_SOURCE,
                 trajectory_seed=None,trajectory_index=None,numeric_circuit_fingerprint=None,compiled_cost='UNMEASURED',
                 input_file=dict(path='/home/AbeHiromu/fake.bin',bytes=123,sha256='1'*64),
                 input_identity={k:'1'*64 for k in ('H','DF','state','input','compiler','environment')})
@@ -221,7 +222,7 @@ class ContractTests(unittest.TestCase):
             with self.subTest(key=key),self.assertRaises(Stop):r.accept_result(p,task,{**result,key:value})
     def test_partial_pipe_timeout_preserves_monitoring(self):
         p=fake_plan();process=Mock();process.stdout.fileno.return_value=99;process.poll.return_value=None;monitor=Mock()
-        with patch.object(r,'disk_guard'),patch.object(r.time,'monotonic',side_effect=[10,10,11,611]),patch.object(r.select,'select',return_value=([process.stdout],[],[])),patch.object(r.os,'read',return_value=b'\0'):
+        with patch.object(r,'poll_owned',side_effect=lambda m,p:m.poll()),patch.object(r.time,'monotonic',side_effect=[10,10,11,611]),patch.object(r.select,'select',return_value=([process.stdout],[],[])),patch.object(r.os,'read',return_value=b'\0'):
             with self.assertRaises(Stop):r.receive_wait(process,monitor,p,0)
         self.assertGreater(monitor.poll.call_count,0)
     def test_signed_zero_semantic_fingerprint(self):
@@ -245,6 +246,21 @@ class ContractTests(unittest.TestCase):
         compiled=Mock();compiled.count_ops.return_value={};compiled.depth.return_value=0;compiled.size.return_value=0
         def compiler(circuit,**options):circuit.p(.1,2);return compiled
         with self.assertRaises(Stop):r._compile_task(plan,task,prep(),compiler)
+    def test_combined_inode_limit_and_terminal_reserve(self):
+        from types import SimpleNamespace
+        plan=fake_plan()
+        with patch.object(r,'owned_bytes',return_value=(0,128)),patch.object(Path,'stat',return_value=SimpleNamespace(st_blocks=0)),patch.object(r.os,'statvfs',return_value=SimpleNamespace(f_bavail=10**9,f_frsize=4096,f_favail=1000)):
+            with self.assertRaises(Stop):r.disk_guard(plan)
+        with patch.object(r,'owned_bytes',return_value=(plan['caps']['stage_output_bytes']//2,1)),patch.object(Path,'stat',return_value=SimpleNamespace(st_blocks=0)),patch.object(r.os,'statvfs',return_value=SimpleNamespace(f_bavail=10**9,f_frsize=4096,f_favail=1000)):
+            with self.assertRaises(Stop):r.disk_guard(plan)
+    def test_host_oom_change_fail_closed(self):
+        monitor=Mock();monitor.host_oom_baseline=7
+        with patch.object(r,'disk_guard'),patch.object(r,'host_oom_counter',return_value=8):
+            with self.assertRaises(Stop):r.poll_owned(monitor,fake_plan())
+    def test_worker_first_error_is_not_hidden_by_secondary_schema(self):
+        p=fake_plan()
+        with self.assertRaisesRegex(Stop,'original mock compiler failure'):
+            r.accept_result(p,p['tasks'][0],{'status':'ERROR','error':'original mock compiler failure'})
 
 
 class CleanupTests(unittest.TestCase):

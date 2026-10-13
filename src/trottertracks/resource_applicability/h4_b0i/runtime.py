@@ -13,6 +13,7 @@ from ..h4_geometry.identity import Stop, require
 from ..h4_geometry.prelaunch_audit import private_path, streaming_sha, host_readonly
 from .adapter import evolution, bound_fingerprint, tail_scalar_lower
 from .contract import authorize, validate_plan, fresh_gate, digest, claim_lock, CallLedger, FirstStop, cleanup
+WORKER_STATE={'phase':'bootstrap','task_id':None}
 
 
 def source_gate(repo,plan):
@@ -56,7 +57,8 @@ class Journal:
 
 
 def owned_bytes(root):
-    total=0;inodes=0
+    base=root.stat();require(base.st_uid==os.getuid(),'owned run root')
+    total=base.st_blocks*512;inodes=1
     for directory,dirs,files in os.walk(root,followlinks=False):
         for name in dirs+files:
             path=Path(directory)/name;require(not path.is_symlink(),'unexpected run symlink')
@@ -68,10 +70,24 @@ def owned_bytes(root):
 
 def disk_guard(plan):
     output=Path(plan['output']);control=Path(plan['control'])
-    count=sum(owned_bytes(p)[0] for p in (output,control))
-    require(count<=plan['caps']['stage_output_bytes'],'run block/output cap')
+    sizes=[owned_bytes(p) for p in (output,control)]
+    lock=Path(plan['one_shot_lock']).stat()
+    count=sum(v[0] for v in sizes)+lock.st_blocks*512
+    require(sum(v[1] for v in sizes)+1<=256,'combined output/control/lock inode cap')
+    require(count+65536<=plan['caps']['stage_output_bytes'],'run block/output cap and terminal metadata reserve')
     stat=os.statvfs(control)
     require(stat.f_bavail*stat.f_frsize>=64*2**20 and stat.f_favail>=16,'terminal free block/inode reserve')
+
+
+def host_oom_counter():
+    fields=[line.split() for line in Path('/proc/vmstat').read_text().splitlines() if line.startswith('oom_kill ')]
+    require(len(fields)==1 and len(fields[0])==2 and fields[0][1].isdigit(),'host OOM counter unavailable')
+    return int(fields[0][1])
+
+
+def poll_owned(monitor,plan):
+    monitor.poll();disk_guard(plan)
+    require(host_oom_counter()==monitor.host_oom_baseline,'host OOM kill counter changed')
 
 
 def receive_wait(process,monitor,plan,started):
@@ -79,8 +95,7 @@ def receive_wait(process,monitor,plan,started):
     data=bytearray();length=None
     while True:
         require(time.monotonic()<deadline,'bounded pilot task/stage wall')
-        monitor.poll()
-        disk_guard(plan)
+        poll_owned(monitor,plan)
         if select.select([process.stdout],[],[],max(.001,min(1,deadline-time.monotonic())))[0]:
             require(process.poll() is None,'worker exit before complete result')
             piece=os.read(process.stdout.fileno(),(8-len(data)) if length is None else length-len(data))
@@ -95,7 +110,7 @@ def send_wait(process,value,monitor,plan,started):
     pending=memoryview(len(payload).to_bytes(8,'big')+payload)
     deadline=min(started+plan['caps']['stage_wall_seconds'],time.monotonic()+plan['caps']['task_wall_seconds'])
     while pending:
-        require(time.monotonic()<deadline,'bounded command I/O wall');monitor.poll();disk_guard(plan)
+        require(time.monotonic()<deadline,'bounded command I/O wall');poll_owned(monitor,plan)
         if select.select([],[process.stdin],[],max(.001,min(1,deadline-time.monotonic())))[1]:
             require(process.poll() is None,'worker exit during command')
             try:count=os.write(process.stdin.fileno(),pending)
@@ -104,6 +119,7 @@ def send_wait(process,value,monitor,plan,started):
 
 
 def accept_result(plan,task,result):
+    require(result.get('status')!='ERROR','worker first error: '+str(result.get('error','missing error')))
     require(result.get('status')=='COMPLETE' and result.get('task_id')==task['task_id'] and
             result.get('source_commit')==plan['source_commit'] and result.get('old_cache_reuse') is False,'complete-only task/source/no-old-cache')
     require(result.get('plan_digest')==digest(plan),'complete-only plan binding')
@@ -140,7 +156,9 @@ def execute(repo,plan,auth,review):
     output=private_path(plan['output']);control=private_path(plan['control']);lock=private_path(plan['one_shot_lock'])
     require(not output.exists() and not control.exists() and not lock.exists(),'unused output/control/one-shot lock required')
     require(output.parent==control.parent==lock.parent and output.parent.is_dir(),'owned existing pilot parent')
+    host_oom_before=host_oom_counter()
     fresh=host_readonly(output.parent,sample_seconds=.5);fresh_gate(plan,auth,fresh)
+    require(host_oom_counter()==host_oom_before,'host OOM changed during fresh admission')
     claim_lock(lock,digest(plan));output.mkdir(mode=0o700);control.mkdir(mode=0o700)
     temp=control/'private-temp';temp.mkdir(mode=0o700)
     for name in ('mpl','cache'):(temp/name).mkdir()
@@ -161,6 +179,9 @@ def execute(repo,plan,auth,review):
             output_cap=plan['caps']['observer_output_bytes'],runtime_authorization=True,wall_started=started,
             prior_wall=0,allowed_cpus=auth['allowed_cpus'],role_cpus=[auth['role_cpus']['observer']],
             pressure_profile=PARAMETERS,pressure_baseline=fresh['memory'],worker_cap=plan['caps']['worker_AS_RSS'])
+        monitor.host_oom_baseline=host_oom_before
+        require(host_oom_counter()==host_oom_before,'host OOM changed during observer startup')
+        journal.write('host-oom-baseline.json',{'oom_kill':monitor.host_oom_baseline})
         monitor.phase('verify_frozen_bytes')
         for info in {t['input_file']['path']:t['input_file'] for t in plan['tasks']}.values():
             actual=streaming_sha(Path(info['path']))
@@ -175,7 +196,9 @@ def execute(repo,plan,auth,review):
         owner=OwnedIdentity(identity(process_sample(process.pid)),os.getpid());children[-1]=(process,owner);monitor.own_child(process.pid)
         os.set_blocking(process.stdin.fileno(),False);os.set_blocking(process.stdout.fileno(),False)
         send_wait(process,{'plan':plan,'auth':auth,'review':review,'repo':str(repo)},monitor,plan,started)
-        require(receive_wait(process,monitor,plan,started)=={'ready':process.pid},'new worker source/auth handshake')
+        ready=receive_wait(process,monitor,plan,started)
+        require(ready.get('status')!='ERROR','worker bootstrap first error: '+str(ready.get('error')))
+        require(ready=={'ready':process.pid},'new worker source/auth handshake')
         calls=CallLedger(plan['tasks'],reserve=lambda row:journal.write('reservation-%02d.json'%row['call'],row))
         for task in plan['tasks']:
             monitor.phase('compile_'+task['geometry']+'_'+task['axis'])
@@ -227,6 +250,7 @@ def execute(repo,plan,auth,review):
 def worker_main(parent):
     require(os.getppid()==parent,'private new worker parent handshake')
     from ..h4_geometry.workers import read_frame,write_frame,CappedText
+    WORKER_STATE['phase']='configuration_auth_source_profile'
     config=read_frame(sys.stdin.buffer);plan=config['plan'];auth=config['auth'];repo=Path(config['repo'])
     authorize(plan,auth,config['review']);source_gate(repo,plan);profile_gate(repo,plan)
     from ..h4_geometry.resources import limit_owned_address_space
@@ -234,21 +258,38 @@ def worker_main(parent):
     write_frame(sys.stdout.buffer,{'ready':os.getpid()})
     cached=None;cached_key=None;calls=CallLedger(plan['tasks'])
     while True:
+        WORKER_STATE['phase']='job_decode'
         job=read_frame(sys.stdin.buffer)
         if job=={'shutdown':True}:return
         require(set(job)=={'task_id'},'closed six-task worker command');calls.before_call(job['task_id'])
         task=next(t for t in plan['tasks'] if t['task_id']==job['task_id'])
+        WORKER_STATE['task_id']=task['task_id']
         from contextlib import redirect_stdout,redirect_stderr
         log=CappedText()
         with redirect_stdout(log),redirect_stderr(log):
             if cached_key!=(task['geometry'],task['prefix']):
+                WORKER_STATE['phase']='kept_circuit_preparation'
                 cached=prepare_kept_only(task);cached_key=(task['geometry'],task['prefix'])
             # Separate real invocation for each registered axis; never old B0 metric/cache.
             from qiskit import transpile
+            WORKER_STATE['phase']='build_fingerprint_compile_metrics'
             result=_compile_task(plan,task,cached,transpile)
         result['log']=log.getvalue()
         require(len(json.dumps(result))<=8192,'bounded worker metadata frame')
         write_frame(sys.stdout.buffer,result)
+
+
+def worker_entry(parent):
+    try:worker_main(parent)
+    except BaseException as exc:
+        from ..h4_geometry.workers import exception_text,write_frame
+        try:
+            write_frame(sys.stdout.buffer,dict(status='ERROR',task_id=WORKER_STATE['task_id'],
+                error=exception_text(exc,WORKER_STATE['phase'])))
+            if os.getppid()==parent:
+                while sys.stdin.buffer.read(65536):pass  # preserve cause before parent STOP/EOF, no further dispatch
+        except (OSError,ValueError):pass
+        raise SystemExit(1)
 
 
 def _compile_task(plan,task,b0,compiler):

@@ -40,6 +40,7 @@ def validate_plan(plan):
     require(len({t['task_id'] for t in tasks})==6,'unique task IDs')
     for task in tasks:
         require(task['template']==template(task['prefix'],1),'deterministic S2/q1 contract')
+        require(task['source_commit']==plan['source_commit'] and task['original_science_source']==ORIGINAL_SOURCE,'task source closure')
         require(task['trajectory_seed'] is None and task['trajectory_index'] is None,'no trajectory generation/seed reuse')
         require(task['numeric_circuit_fingerprint'] is None and task['compiled_cost']=='UNMEASURED','not measured in preparation')
         require(type(task['tail_identity']) is float and math.isfinite(task['tail_identity']),'bound saved scalar')

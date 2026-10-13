@@ -38,6 +38,7 @@ def main():
         candidate=next(v for v in projection['candidates'] if v['geometry']==g and v['template_id']==phase['original_template_id'])
         for index,axis in enumerate(('cosine','sine')):
             task=dict(geometry=g,prefix=prefix,axis=axis,template=a.template(prefix,1),input_file=input_file,
+                source_commit=args.source,original_science_source=a.ORIGINAL_SOURCE,
                 input_identity=entry['input_identity'],tail_identity=phase['tail_identity'],
                 phase_angle=phase['phase_angle'],original_B0_template=phase['original_template_id'],
                 old_B0_reference_RZ=candidate['saved']['paired_costs'][0][index],
