@@ -51,3 +51,8 @@ geometry/basis/DF rank-policy/L_D/固定粒子sectorは適用なし。
 Codex技術監査は二つのMarkdown、形式恒等式、literal/provenance/未決着表の公開・remote照合までで完了する。
 新しいGPT科学レビューは未開始。C1の正式継続・再設計・終了、C4への移行、中心テーマはGPT判断に残す。
 N1 STOP/N2 HOLD/N3 CLOSED/THRIFT現template終了、旧source/results/auth/STOP、既存global manifest FAILを保持する。
+
+## 公開・remote確認（2026-10-14 JST）
+
+監査本文のpayload `fb448c7d968edc7d90b8eac8b42e6f433b73c94b` をGitHubから独立bare cacheへ取得し、23変更blobs、既存280files、固定source/input20files、一次結果9files、追加38relative linksをbyte/SHAで照合した。[取得記録](../../artifacts/qc_c1_sign_mechanism_audit_v1/2026-10-13/publication/receipt.json)。旧134manifest records/non-result fields/global description FAIL、原指示CRLF/SHA、root側既存131filesの編集を保持した。
+これはGitHubからの取得一致で、外部科学再現・新しい数値評価・GPT科学レビューではない。新科学/posthoc/費用再計算/compile/retry/C4はzero、Mandatory STOP。

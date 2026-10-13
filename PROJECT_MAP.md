@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[C1技術監査の公開・GitHub再取得（2026-10-14 JST）](artifacts/qc_c1_sign_mechanism_audit_v1/2026-10-13/publication/receipt.json)：payload `fb448c7d968edc7d90b8eac8b42e6f433b73c94b`、23変更blobs/既存280files/固定20files/一次9files/追加38links一致。監査開始日の2026-10-13をファイル名・artifact日に維持。新科学/数値posthoc/費用再計算0、GPT判断開始承認待ち・Mandatory STOP。
+
 ## 2026-10-13 C1符号・未達原因の静的技術監査：GPT判断開始承認待ち
 
 [数学・保存証拠の監査](docs/research/qc_c1_sign_mechanism_technical_audit_v1_20261013.md)、[GPT引継ぎ](docs/research/qc_c1_sign_mechanism_review_handoff_v1_20261013.md)、[scope/停止](artifacts/qc_c1_sign_mechanism_audit_v1/2026-10-13/scope.json)。ユーザー添付により、科学判断前のCodex技術疑問整理を実施した。

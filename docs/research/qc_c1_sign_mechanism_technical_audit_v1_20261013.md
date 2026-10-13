@@ -315,3 +315,8 @@ ordering/basis sequenceの相殺構成は[Kronenberger et al., arXiv:2602.18913v
 今回のPauli縮約、partial sign condition、weak-cone十分条件、係数未代入の形式反例はCodexのstatic技術導出として保存する。
 独立新規性や論文claimを認定せず、完全なpilot族同符号定理/族内opposite example/資源優位を得たと主張しない。
 [GPT引継ぎ](qc_c1_sign_mechanism_review_handoff_v1_20261013.md)の材料が揃った段階でMandatory STOP。
+
+## 公開・remote確認（2026-10-14 JST）
+
+監査本文のpayload `fb448c7d968edc7d90b8eac8b42e6f433b73c94b` をGitHubから独立bare cacheへ取得し、23変更blobs、既存280files、固定source/input20files、一次結果9files、追加38relative linksをbyte/SHAで照合した。[取得記録](../../artifacts/qc_c1_sign_mechanism_audit_v1/2026-10-13/publication/receipt.json)。旧134manifest records/non-result fields/global description FAIL、原指示CRLF/SHA、root側既存131filesの編集を保持した。
+これはGitHubからの取得一致で、外部科学再現・新しい数値評価・GPT科学レビューではない。新科学/posthoc/費用再計算/compile/retry/C4はzero、Mandatory STOP。
