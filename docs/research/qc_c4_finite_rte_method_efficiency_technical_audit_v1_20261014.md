@@ -251,3 +251,7 @@ finite-RTEの対象は平均振幅Fであり、Σq UρU†のrandom-unitary chan
 361既存証拠/source/準備files、旧142manifest records/non-result fields、既存global description欠落FAIL、元worktreeの132paths、他branchのsource/結果/認可/STOPを維持する。N1 STOP・N2 HOLD・N3 CLOSED・THRIFT現template終了、C1 one-shot消費済みSTOPは変えない。
 [静的保全とリンク検査](../../artifacts/qc_c4_finite_rte_technical_audit_v1/2026-10-14/static_integrity.json)は文書/identity検査で、数学の外部再証明や新しいCI/科学結果ではない。commit・push後にGitHubの主要文書、source参照、保護証拠を再取得してbyte照合する。
 公開後Mandatory STOP。同じC4の候補探索を反復せず、GPT重要科学判断の別開始承認を待つ。新計算・benchmark・production実装には、別の固定scopeと明示実行認可が必要。
+
+## GitHub公開確認と最終STOP
+
+[再取得receipt](../../artifacts/qc_c4_finite_rte_technical_audit_v1/2026-10-14/publication/receipt.json)：監査資料payload `60da5738d48e0faaedd3de125b0350301935dc3a` の21変更blobs、361保護files、C4/D1固定参照10filesをGitHubからbyte/SHA照合した。独立cacheにlocal alternatesはなく、公開は指定repositoryの独立branchのみ。receiptは後続metadataとして保存し、最終remote取得で全リンクを照合する。新しい数値・数学プログラム・science source実行やGPTレビューは追加せずMandatory STOP。

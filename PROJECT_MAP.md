@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[C4技術監査のGitHub公開・再取得](artifacts/qc_c4_finite_rte_technical_audit_v1/2026-10-14/publication/receipt.json)：payload `60da5738d48e0faaedd3de125b0350301935dc3a`、21変更blobs/361保護files/固定参照10files一致。旧142manifest entries/non-result fields/global FAIL/root132paths保全。Phase Aの既知法還元監査完了、Phase B/production/新科学0。Mandatory STOP、GPT科学判断の別開始承認待ち。
+
 ## 2026-10-14 C4有限RTE proposal：限定技術監査完了・Phase A停止
 
 [方法差・効率class・D1会計](docs/research/qc_c4_finite_rte_method_efficiency_technical_audit_v1_20261014.md)、[GPT科学判断用引継ぎ](docs/research/qc_c4_finite_rte_gpt_handoff_v1_20261014.md)、[scope/status](artifacts/qc_c4_finite_rte_technical_audit_v1/2026-10-14/method_status.json)、[一次文献](artifacts/qc_c4_finite_rte_technical_audit_v1/2026-10-14/literature_registry.json)、[固定参照identity](artifacts/qc_c4_finite_rte_technical_audit_v1/2026-10-14/reference_identity.json)。
