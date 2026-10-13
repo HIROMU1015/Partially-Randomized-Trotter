@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+H8残7handoff：[metadata contract](../trottertracks/resource_applicability/h8_fast_handoff_contract_v1.py)、[資料](../../artifacts/resource_applicability/track_a_h8_remaining_fast_handoff_v1/2026-10-13/README.md)。当library/旧245runtime不変、40人工/mock、元task/seedとcompilerを保持、実親STOPで新run拒否。
+
 H8高速化adapter：[single-pass hash](../trottertracks/resource_applicability/h8_hash_stream_reuse_v1.py)、[control branch再利用](../trottertracks/resource_applicability/h8_control_reuse_v1.py)、[cost port](../trottertracks/resource_applicability/h8_fast_cost_port_v1.py)、[parallel wave](../trottertracks/resource_applicability/h8_fast_parallel_plan_v1.py)、[資料](../../artifacts/resource_applicability/track_a_h8_duplicate_work_optimization_v1/2026-10-13/README.md)。当library・旧245runtime不変、人工44検査、実H8切替なし。
 
 H8専用signal port：[疎reference/spin作用](../trottertracks/resource_applicability/h8_sparse_reference_v1.py)、[port](../trottertracks/resource_applicability/h8_signal_preflight_port_v1.py)、[資料](../../artifacts/resource_applicability/track_a_h8_signal_compile_preflight_v1/2026-10-13/README.md)。当libraryと旧H4/H6 runtimeは不変、dense4900/full16qubit unitaryを作らない。

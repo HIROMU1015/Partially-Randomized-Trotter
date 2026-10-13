@@ -1,5 +1,7 @@
 # scripts 索引
 
+H8条件付き残7：[prepare](resource_applicability/prepare_track_a_h8_fast_handoff_v1.py)、[arm](resource_applicability/arm_track_a_h8_fast_handoff_v1.py)、[run](resource_applicability/run_track_a_h8_fast_handoff_v1.py)、[資料](../artifacts/resource_applicability/track_a_h8_remaining_fast_handoff_v1/2026-10-13/README.md)。元seed/parent成功/reap/fresh gateを満たす場合だけ18compileを一度実行する。実親STOPのため未起動。
+
 H8重複処理削減：[人工benchmark](resource_applicability/benchmark_h8_duplicate_work_v1.py)、[資料](../artifacts/resource_applicability/track_a_h8_duplicate_work_optimization_v1/2026-10-13/README.md)。人工fixtureのみ・sampling/transpile禁止・single process/thread1、現H8 runnerは旧portのまま。
 
 H8 signal/8case compile：[preparer](resource_applicability/prepare_track_a_h8_signal_preflight_v1.py)、[runner](resource_applicability/run_track_a_h8_signal_preflight_v1.py)、[契約](../docs/research/track_a_h8_signal_compile_preflight_v1.md)。SIGNAL→単独HEAVY→REMAINING、各one-shot/grant/source/input/seed binding、20compile枠だけ。本格H8への自動進行なし。

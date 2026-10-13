@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-13 H8残7handoff実装・親STOP
+
+[入口](artifacts/resource_applicability/track_a_h8_remaining_fast_handoff_v1/2026-10-13/README.md)。SOURCE507b6924/closure253＋test1、旧245不変、40人工metadata/mock PASS・新SCI0。旧heavy SOURCE5c207fb8はcosine transpile終了後500万instructions超でSTOP、wrapper0/20・actual compile1/control4、正確postcount/費用はnull。wall7007.756秒、HWM7.422GiB/VmPeak8.081GiB、workerexit1/全reap/cleanup0、coordinator正確exit/timestamp未知。旧pending controllerだけUSER_STOPで退役、heavy自体のSTOPと区別。新7/18接続はparent成功条件不成立で起動0、本格H8なし、1000万instruction/compile21/control44案は未承認。
+
 ## 2026-10-13 H8重複処理削減・人工検証のみ
 
 [資料入口](artifacts/resource_applicability/track_a_h8_duplicate_work_optimization_v1/2026-10-13/README.md)。SOURCEf7c461356eacea091261388af58b44dbb96121c1、旧245runtime変更0、新4module/runtime closure249＋validation2。44local人工/mock検査8.70秒PASS、real input/trajectory/transpile0、CI/外部再現ではない。canonical v2 bytes/digest・変更検出・phase/control/order/dtype/shape/signed zero/nonfiniteを保全、人工16-mode full-X/Y比較とmock compiler input/metrics/seed/call一致。初回hash2.73倍・warm.95倍、状態検証約2倍は小人工fixtureのみ、実H8全体未測定。normal最大8/heavyまたはunknown最大3はwave/資源案、allowed_cpus=[]/approved=false/runtime_authorization=false。現H8 run・SOURCE5c207fb8/grant/lock/output・共有/venv・H4/他job変更0。
