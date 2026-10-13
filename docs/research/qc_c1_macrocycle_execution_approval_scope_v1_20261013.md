@@ -31,3 +31,9 @@ runtime SHA `b5400afece5e555164cf4ed9dbed9afaf87e17563e153e5156e7fffd055aeae1`�
 今回の最小判別は、既知対照を含むsigned/finite-h/information費用の条件付き機構を確認するためのもの。
 全QPE/RPE総費用UNKNOWN、運用certificate hと事後oracle frontierを分ける。
 性能や新規性の科学判断は結果後の別GPT開始承認で扱い、現在同じ選定レビューを繰り返さない。
+
+## GitHub公開・取得確認
+
+準備payload `75fde54db905bd4ce5aca56b9a57569c57ce66b5` をGitHubから独立cacheへ再取得し、37変更blobs/1,485,738bytes、固定20files、旧229files、旧130manifest entries/non-result fields、追加42relative linksを照合した。
+[取得receipt](../../artifacts/qc_c1_macrocycle_preparation_v1/2026-10-13/publication/receipt.json)。root既存130filesも保持した。
+これは資料byte identityの確認で、外部科学再現ではない。source/input/plan/runtime不変、科学実行未認可、現在の準備作業は完了しMandatory STOP。

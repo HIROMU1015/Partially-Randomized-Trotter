@@ -3,6 +3,8 @@
 
 [最終source・承認対象](docs/research/qc_c1_macrocycle_execution_approval_scope_v1_20261013.md)：source `ddaa05d2`、20files/環境identity-only preflight PASS、登録外18checks PASS。4toy/940eigの別実行承認待ち、science0。
 
+[GitHub公開・再取得確認](artifacts/qc_c1_macrocycle_preparation_v1/2026-10-13/publication/receipt.json)：payload `75fde54db905bd4ce5aca56b9a57569c57ce66b5`、37変更blobs/固定20files/旧229files/追加42links一致。準備完了、別実行認可待ち、science0・Mandatory STOP。
+
 ## 2026-10-13 C1固定macrocycle：技術準備完了・科学実行認可待ち
 
 [技術設計](docs/research/qc_c1_macrocycle_technical_design_v1_20261013.md)、[固定最小契約](docs/research/qc_c1_macrocycle_preregistration_v1_20261013.md)、[準備証拠](artifacts/qc_c1_macrocycle_preparation_v1/2026-10-13/off_domain_checks.json)。ユーザー指定の完了GPT選定レビューを採用し、C1を最初の成立可能性判別に準備した。新規算法・中心研究の正式採択なし。

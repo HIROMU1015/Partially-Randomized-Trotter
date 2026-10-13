@@ -20,3 +20,6 @@ NumPy import前のapproval gate、one-shot/retry0、2workers/1thread、runtime/s
 source/plan公開とremote再取得後Mandatory STOP。次はユーザーが固定非分子pilotの実行を別途明示承認する地点。
 重要な新結果・主要不整合の科学判断はその後のGPT開始承認が必要。軽微な準備source変更ごとの同じレビューは不要。
 N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了、旧source/results/auth/STOP/global manifest既存description FAILを保持する。
+
+公開確認追記：最終source `ddaa05d2b51d575c3cfea1194bbfdffa182f9636`、準備payload `75fde54db905bd4ce5aca56b9a57569c57ce66b5`。37変更blobs/固定20files/旧229files/42追加linksをGitHub再取得で確認した。
+[receipt](../../../artifacts/qc_c1_macrocycle_preparation_v1/2026-10-13/publication/receipt.json)。登録input科学0、old auth/STOPを保持し、一回の限定実行の別承認待ちで作業終了。
