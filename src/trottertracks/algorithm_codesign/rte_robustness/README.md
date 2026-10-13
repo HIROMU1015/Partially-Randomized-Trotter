@@ -16,6 +16,9 @@ The 512 KiB lossless evidence writer and scalar envelope/Pareto utilities are
 shared from frozen modules. Exact 48 resource rows preserve the affine inputs;
 compact envelope reports omit redundant pair tables, not their underlying data.
 
-Science execution is pending. See
-[source report](../../../../docs/tracks/algorithm_codesign/d3_source_preparation_and_execution_handoff_20261013.md)
-and [contract](../../../../artifacts/track_b_d3_source/2026-10-13/v1/execution_contract_v1.json).
+V2 source preparation repairs only the Fraction precision adapter and isolates
+the new pending authorization/result namespace. See
+[v2 source report](../../../../docs/tracks/algorithm_codesign/d3_v2_precision_repair_and_source_preparation_20261014.md)
+and [v2 contract](../../../../artifacts/track_b_d3_source/2026-10-14/v2/execution_contract_v2.json).
+V1 failure outputs and the consumed marker remain protected. No registered v2
+calculation or real synthesis was performed during preparation; mandatory STOP.

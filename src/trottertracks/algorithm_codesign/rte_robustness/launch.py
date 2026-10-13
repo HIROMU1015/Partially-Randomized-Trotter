@@ -1,15 +1,17 @@
 """Source-bound D3 gate. Pending authority rejects before input/runtime access."""
 import json
+import hashlib
 import os
 from pathlib import Path
 import re
+import subprocess
 
 from ..rte_development.evidence import digest, safe_relative
 from ..rte_development.launch import git
 
 DESIGN = 'artifacts/track_b_d3_preparation/2026-10-13/v1/comparison_design_contract_v1.json'
 DESIGN_SHA = '76b3e4d95df62a00f6e66bd9dacd3230a09025167d29de838c917de4722d726e'
-CONTRACT = 'artifacts/track_b_d3_source/2026-10-13/v1/execution_contract_v1.json'
+CONTRACT = 'artifacts/track_b_d3_source/2026-10-14/v2/execution_contract_v2.json'
 COMPLETE = 'D3_GUARANTEE_PRICE_MAP_COMPLETE_AWAITING_GPT_REVIEW'
 INCONCLUSIVE = 'D3_TECHNICAL_INCONCLUSIVE'
 
@@ -36,14 +38,14 @@ def validate_contract(root, c):
     for k,v in design.items():
         if k not in except_metadata and c[k] != v:
             raise PermissionError('scientific design changed: '+k)
-    if c['kind'] != 'D3_FIXED_EXECUTION_CONTRACT_V1' or c['status'] != 'SOURCE_PREPARED_SEPARATE_AUTHORIZATION_REQUIRED':
+    if c['kind'] != 'D3_FIXED_EXECUTION_CONTRACT_V2' or c['status'] != 'SOURCE_PREPARED_SEPARATE_AUTHORIZATION_REQUIRED':
         raise PermissionError('D3 fixed execution contract required')
     e = c['execution']
-    expected = {'authorization_path':'artifacts/track_b_d3_source/2026-10-13/v1/authorization.json',
-                'source_manifest':'artifacts/track_b_d3_source/2026-10-13/v1/source_manifest_v1.json',
-                'protected_ledger':'artifacts/track_b_d3_source/2026-10-13/v1/protected_hashes_v1.json',
-                'optional_receipt_path':'docs/tracks/algorithm_codesign/d3_execution_authorization_receipt.md',
-                'result_directory':'artifacts/track_b_d3_result/2026-10-13/v1',
+    expected = {'authorization_path':'artifacts/track_b_d3_source/2026-10-14/v2/authorization.json',
+                'source_manifest':'artifacts/track_b_d3_source/2026-10-14/v2/source_manifest_v2.json',
+                'protected_ledger':'artifacts/track_b_d3_source/2026-10-14/v2/protected_hashes_v2.json',
+                'optional_receipt_path':'docs/tracks/algorithm_codesign/d3_v2_execution_authorization_receipt.md',
+                'result_directory':'artifacts/track_b_d3_result/2026-10-14/v2',
                 'design_contract_sha256':DESIGN_SHA}
     if e != expected:
         raise PermissionError('D3 execution paths/design binding changed')
@@ -73,12 +75,22 @@ def check_identities(root, c):
     manifest = json.loads((root/e['source_manifest']).read_text())
     if manifest.get('focused_tests_passed') is not True:
         raise PermissionError('D3 focused validation incomplete')
-    for section in (manifest['critical_sha256'],
-                    json.loads((root/e['protected_ledger']).read_text())['sha256']):
+    protected=json.loads((root/e['protected_ledger']).read_text())
+    for section in (manifest['critical_sha256'],protected['sha256']):
         for p, h in section.items():
             safe_relative(p)
             if p.lower().endswith('.npz') or digest(root/p) != h:
                 raise PermissionError('D3 protected/source/input identity mismatch: '+p)
+    # Intentionally revised source paths have new current hashes in the v2
+    # manifest. Their frozen historical bytes remain protected at the old S.
+    for p,reference in protected.get('historical_source_blobs',{}).items():
+        safe_relative(p)
+        revision=reference['commit']
+        if not re.fullmatch('[0-9a-f]{40}',revision) or not p.endswith('.py'):
+            raise PermissionError('invalid historical source reference')
+        raw=subprocess.check_output(['git','show',revision+':'+p],cwd=root)
+        if len(raw)!=reference['bytes'] or hashlib.sha256(raw).hexdigest()!=reference['sha256']:
+            raise PermissionError('historical frozen source changed: '+p)
     return manifest
 
 

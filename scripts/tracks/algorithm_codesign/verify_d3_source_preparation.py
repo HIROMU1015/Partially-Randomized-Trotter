@@ -20,6 +20,11 @@ def verify(root):
         raise PermissionError('source preparation requires pending authority')
     if a['contract_sha256']!=digest(root/launch.CONTRACT):
         raise PermissionError('pending contract binding mismatch')
+    if (a['status']!='PENDING_SEPARATE_EXPLICIT_ONE_SHOT_AUTHORIZATION'
+        or a['design_contract_sha256']!=launch.DESIGN_SHA
+        or a['inventory_sha256']!=c['acquisition']['key_inventory']['sha256']
+        or a['explicit_execution_instruction'] is not None or a['mandatory_STOP'] is not True):
+        raise PermissionError('pending v2 authority provenance mismatch')
     manifest=launch.check_identities(root,c)
     if (root/c['execution']['result_directory']).exists():
         raise FileExistsError('production output namespace must remain absent')
@@ -40,9 +45,12 @@ def verify(root):
     except PermissionError as exc:
         if 'source preparation only' not in str(exc):raise
     else:raise AssertionError('pending runner launch accepted')
-    return dict(status='D3_SOURCE_PREPARATION_STATIC_VERIFICATION_PASS',
+    protected=json.loads((root/c['execution']['protected_ledger']).read_text())
+    return dict(status='D3_V2_SOURCE_PREPARATION_STATIC_VERIFICATION_PASS',
                 sources_compiled_without_execution=len(sources),AST_calls_inspected=calls,
                 critical_files=len(manifest['critical_sha256']),pending_authority_rejects=True,
+                protected_current_files=len(protected['sha256']),
+                historical_frozen_source_blobs=len(protected.get('historical_source_blobs',{})),
                 scientific_design_projection_unchanged=True,real_backend_calls=0,
                 registered_budget_or_price_evaluations=0,registered_pair_evaluations=0,
                 production_result_namespace_exists=False,mandatory_STOP=True)

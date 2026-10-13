@@ -1,3 +1,5 @@
+> **D3 v2現在（2026-10-14）：READY_FOR_SEPARATE_D3_V2_ONE_SHOT_AUTHORIZATION。** [型変換修正・新契約・81 focused tests](./d3_v2_precision_repair_and_source_preparation_20261014.md)。実backend/登録48行0、旧marker不変、pending authority、mandatory STOP。旧v1 failureは保持、以下は履歴。
+
 > **D3 v1現在（2026-10-14）：D3_TECHNICAL_INCONCLUSIVE / mandatory STOP。** [保存結果・型変換原因・監査](./d3_failed_execution_and_gpt_handoff_20261014.md)。一回起動、backend予約2件、完成sequence0、比較rows0/48。999保存値checks PASS、旧証拠不変。markerは消費済み、再実行なし。以下の承認待ち・準備状態は履歴。
 
 > **D3現在：READY_FOR_SEPARATE_D3_ONE_SHOT_AUTHORIZATION**。[source報告](d3_source_preparation_and_execution_handoff_20261013.md)／[新契約](../../../artifacts/track_b_d3_source/2026-10-13/v1/execution_contract_v1.json)。63登録外/mock tests、実合成・登録再会計0。旧証拠保持、mandatory STOP。

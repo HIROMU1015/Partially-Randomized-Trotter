@@ -1,3 +1,5 @@
+> **Track B D3 v2**：[型adapter限定修正と別実行承認待ち](tracks/algorithm_codesign/d3_v2_precision_repair_and_source_preparation_20261014.md)。81 local focused tests、旧証拠保持、科学実行0、mandatory STOP。
+
 > **Track B D3 v1（2026-10-14）**：[一回実行の技術停止・保存監査・GPT引き継ぎ](tracks/algorithm_codesign/d3_failed_execution_and_gpt_handoff_20261014.md)。登録比較未取得、retry0、mandatory STOP。
 
 > [Track B D3実行sourceと承認待ち](tracks/algorithm_codesign/d3_source_preparation_and_execution_handoff_20261013.md)：63人工/mock tests PASS、科学実行0。

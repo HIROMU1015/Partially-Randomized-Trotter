@@ -1,0 +1,207 @@
+test_backend_failure_does_not_retry (test_d3_precision_and_v2_protection.PrecisionConnectionTests) ... ERROR
+test_bad_argument_does_not_reserve_backend_token (test_d3_precision_and_v2_protection.PrecisionConnectionTests) ... ERROR
+test_counts_sequence_hash_and_phase_record_unchanged (test_d3_precision_and_v2_protection.PrecisionConnectionTests) ... ERROR
+test_fraction_identity_is_not_changed_to_decimal (test_d3_precision_and_v2_protection.PrecisionConnectionTests) ... ERROR
+test_frozen_old_helper_reproduces_type_failure_off_domain (test_d3_precision_and_v2_protection.PrecisionConnectionTests) ... ERROR
+test_legacy_decimal_string_path_and_identity (test_d3_precision_and_v2_protection.PrecisionConnectionTests) ... ERROR
+test_legacy_fraction_string_path_and_identity (test_d3_precision_and_v2_protection.PrecisionConnectionTests) ... ERROR
+test_no_float_round_trip_for_small_fraction (test_d3_precision_and_v2_protection.PrecisionConnectionTests) ... ERROR
+test_options_phase_seed_and_dps_unchanged (test_d3_precision_and_v2_protection.PrecisionConnectionTests) ... ERROR
+test_original_threshold_inclusive_and_excess_rejected (test_d3_precision_and_v2_protection.PrecisionConnectionTests) ... ERROR
+test_projective_option_rejected_before_backend_or_token (test_d3_precision_and_v2_protection.PrecisionConnectionTests) ... ERROR
+test_real_helper_accepts_fraction_with_mock_backend (test_d3_precision_and_v2_protection.PrecisionConnectionTests) ... ERROR
+test_token_immediately_precedes_one_backend_entry (test_d3_precision_and_v2_protection.PrecisionConnectionTests) ... ERROR
+test_worker_real_helper_mock_backend_success_and_restart_protection (test_d3_precision_and_v2_protection.PrecisionConnectionTests) ... ERROR
+test_historical_blob_tampering_is_rejected (test_d3_precision_and_v2_protection.V2IsolationTests) ... ok
+test_old_consumed_marker_is_separate_and_new_namespace_absent (test_d3_precision_and_v2_protection.V2IsolationTests) ... ok
+test_v1_authorization_cannot_authorize_v2 (test_d3_precision_and_v2_protection.V2IsolationTests) ... ok
+test_v1_science_projection_and_inventory_unchanged (test_d3_precision_and_v2_protection.V2IsolationTests) ... ok
+
+======================================================================
+ERROR: test_backend_failure_does_not_retry (test_d3_precision_and_v2_protection.PrecisionConnectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 113, in test_backend_failure_does_not_retry
+    with patch('pygridsynth.gridsynth.gridsynth_gates',
+  File "/usr/lib/python3.10/unittest/mock.py", line 1447, in __enter__
+    original, local = self.get_original()
+  File "/usr/lib/python3.10/unittest/mock.py", line 1420, in get_original
+    raise AttributeError(
+AttributeError: <function gridsynth at 0x754512a86b00> does not have the attribute 'gridsynth_gates'
+
+======================================================================
+ERROR: test_bad_argument_does_not_reserve_backend_token (test_d3_precision_and_v2_protection.PrecisionConnectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 106, in test_bad_argument_does_not_reserve_backend_token
+    with patch('pygridsynth.gridsynth.gridsynth_gates') as backend:
+  File "/usr/lib/python3.10/unittest/mock.py", line 1447, in __enter__
+    original, local = self.get_original()
+  File "/usr/lib/python3.10/unittest/mock.py", line 1420, in get_original
+    raise AttributeError(
+AttributeError: <function gridsynth at 0x754512a86b00> does not have the attribute 'gridsynth_gates'
+
+======================================================================
+ERROR: test_counts_sequence_hash_and_phase_record_unchanged (test_d3_precision_and_v2_protection.PrecisionConnectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 120, in test_counts_sequence_hash_and_phase_record_unchanged
+    saved, _, _ = self.acquire_mock()
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 36, in acquire_mock
+    with patch('pygridsynth.gridsynth.gridsynth_gates', return_value=SEQUENCE) as backend, \
+  File "/usr/lib/python3.10/unittest/mock.py", line 1447, in __enter__
+    original, local = self.get_original()
+  File "/usr/lib/python3.10/unittest/mock.py", line 1420, in get_original
+    raise AttributeError(
+AttributeError: <function gridsynth at 0x754512a86b00> does not have the attribute 'gridsynth_gates'
+
+======================================================================
+ERROR: test_fraction_identity_is_not_changed_to_decimal (test_d3_precision_and_v2_protection.PrecisionConnectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 50, in test_fraction_identity_is_not_changed_to_decimal
+    saved, _, _ = self.acquire_mock()
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 36, in acquire_mock
+    with patch('pygridsynth.gridsynth.gridsynth_gates', return_value=SEQUENCE) as backend, \
+  File "/usr/lib/python3.10/unittest/mock.py", line 1447, in __enter__
+    original, local = self.get_original()
+  File "/usr/lib/python3.10/unittest/mock.py", line 1420, in get_original
+    raise AttributeError(
+AttributeError: <function gridsynth at 0x754512a86b00> does not have the attribute 'gridsynth_gates'
+
+======================================================================
+ERROR: test_frozen_old_helper_reproduces_type_failure_off_domain (test_d3_precision_and_v2_protection.PrecisionConnectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 134, in test_frozen_old_helper_reproduces_type_failure_off_domain
+    with patch('pygridsynth.gridsynth.gridsynth_gates') as backend:
+  File "/usr/lib/python3.10/unittest/mock.py", line 1447, in __enter__
+    original, local = self.get_original()
+  File "/usr/lib/python3.10/unittest/mock.py", line 1420, in get_original
+    raise AttributeError(
+AttributeError: <function gridsynth at 0x754512a86b00> does not have the attribute 'gridsynth_gates'
+
+======================================================================
+ERROR: test_legacy_decimal_string_path_and_identity (test_d3_precision_and_v2_protection.PrecisionConnectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 56, in test_legacy_decimal_string_path_and_identity
+    saved, backend, _ = self.acquire_mock('1e-6')
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 36, in acquire_mock
+    with patch('pygridsynth.gridsynth.gridsynth_gates', return_value=SEQUENCE) as backend, \
+  File "/usr/lib/python3.10/unittest/mock.py", line 1447, in __enter__
+    original, local = self.get_original()
+  File "/usr/lib/python3.10/unittest/mock.py", line 1420, in get_original
+    raise AttributeError(
+AttributeError: <function gridsynth at 0x754512a86b00> does not have the attribute 'gridsynth_gates'
+
+======================================================================
+ERROR: test_legacy_fraction_string_path_and_identity (test_d3_precision_and_v2_protection.PrecisionConnectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 62, in test_legacy_fraction_string_path_and_identity
+    saved, backend, _ = self.acquire_mock('1/1000000')
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 36, in acquire_mock
+    with patch('pygridsynth.gridsynth.gridsynth_gates', return_value=SEQUENCE) as backend, \
+  File "/usr/lib/python3.10/unittest/mock.py", line 1447, in __enter__
+    original, local = self.get_original()
+  File "/usr/lib/python3.10/unittest/mock.py", line 1420, in get_original
+    raise AttributeError(
+AttributeError: <function gridsynth at 0x754512a86b00> does not have the attribute 'gridsynth_gates'
+
+======================================================================
+ERROR: test_no_float_round_trip_for_small_fraction (test_d3_precision_and_v2_protection.PrecisionConnectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 69, in test_no_float_round_trip_for_small_fraction
+    _, backend, _ = self.acquire_mock(epsilon)
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 36, in acquire_mock
+    with patch('pygridsynth.gridsynth.gridsynth_gates', return_value=SEQUENCE) as backend, \
+  File "/usr/lib/python3.10/unittest/mock.py", line 1447, in __enter__
+    original, local = self.get_original()
+  File "/usr/lib/python3.10/unittest/mock.py", line 1420, in get_original
+    raise AttributeError(
+AttributeError: <function gridsynth at 0x754512a86b00> does not have the attribute 'gridsynth_gates'
+
+======================================================================
+ERROR: test_options_phase_seed_and_dps_unchanged (test_d3_precision_and_v2_protection.PrecisionConnectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 81, in test_options_phase_seed_and_dps_unchanged
+    _, backend, _ = self.acquire_mock()
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 36, in acquire_mock
+    with patch('pygridsynth.gridsynth.gridsynth_gates', return_value=SEQUENCE) as backend, \
+  File "/usr/lib/python3.10/unittest/mock.py", line 1447, in __enter__
+    original, local = self.get_original()
+  File "/usr/lib/python3.10/unittest/mock.py", line 1420, in get_original
+    raise AttributeError(
+AttributeError: <function gridsynth at 0x754512a86b00> does not have the attribute 'gridsynth_gates'
+
+======================================================================
+ERROR: test_original_threshold_inclusive_and_excess_rejected (test_d3_precision_and_v2_protection.PrecisionConnectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 73, in test_original_threshold_inclusive_and_excess_rejected
+    saved, _, _ = self.acquire_mock(bound=self.epsilon)
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 36, in acquire_mock
+    with patch('pygridsynth.gridsynth.gridsynth_gates', return_value=SEQUENCE) as backend, \
+  File "/usr/lib/python3.10/unittest/mock.py", line 1447, in __enter__
+    original, local = self.get_original()
+  File "/usr/lib/python3.10/unittest/mock.py", line 1420, in get_original
+    raise AttributeError(
+AttributeError: <function gridsynth at 0x754512a86b00> does not have the attribute 'gridsynth_gates'
+
+======================================================================
+ERROR: test_projective_option_rejected_before_backend_or_token (test_d3_precision_and_v2_protection.PrecisionConnectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 90, in test_projective_option_rejected_before_backend_or_token
+    with patch('pygridsynth.gridsynth.gridsynth_gates') as backend:
+  File "/usr/lib/python3.10/unittest/mock.py", line 1447, in __enter__
+    original, local = self.get_original()
+  File "/usr/lib/python3.10/unittest/mock.py", line 1420, in get_original
+    raise AttributeError(
+AttributeError: <function gridsynth at 0x754512a86b00> does not have the attribute 'gridsynth_gates'
+
+======================================================================
+ERROR: test_real_helper_accepts_fraction_with_mock_backend (test_d3_precision_and_v2_protection.PrecisionConnectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 42, in test_real_helper_accepts_fraction_with_mock_backend
+    saved, backend, guard = self.acquire_mock()
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 36, in acquire_mock
+    with patch('pygridsynth.gridsynth.gridsynth_gates', return_value=SEQUENCE) as backend, \
+  File "/usr/lib/python3.10/unittest/mock.py", line 1447, in __enter__
+    original, local = self.get_original()
+  File "/usr/lib/python3.10/unittest/mock.py", line 1420, in get_original
+    raise AttributeError(
+AttributeError: <function gridsynth at 0x754512a86b00> does not have the attribute 'gridsynth_gates'
+
+======================================================================
+ERROR: test_token_immediately_precedes_one_backend_entry (test_d3_precision_and_v2_protection.PrecisionConnectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 97, in test_token_immediately_precedes_one_backend_entry
+    with patch('pygridsynth.gridsynth.gridsynth_gates',
+  File "/usr/lib/python3.10/unittest/mock.py", line 1447, in __enter__
+    original, local = self.get_original()
+  File "/usr/lib/python3.10/unittest/mock.py", line 1420, in get_original
+    raise AttributeError(
+AttributeError: <function gridsynth at 0x754512a86b00> does not have the attribute 'gridsynth_gates'
+
+======================================================================
+ERROR: test_worker_real_helper_mock_backend_success_and_restart_protection (test_d3_precision_and_v2_protection.PrecisionConnectionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-d3-v2-source-preparation-20261014/tests/tracks/algorithm_codesign/test_d3_precision_and_v2_protection.py", line 144, in test_worker_real_helper_mock_backend_success_and_restart_protection
+    with patch.object(worker, 'verify_job', return_value=(C, job, d)), \
+  File "/usr/lib/python3.10/unittest/mock.py", line 1447, in __enter__
+    original, local = self.get_original()
+  File "/usr/lib/python3.10/unittest/mock.py", line 1420, in get_original
+    raise AttributeError(
+AttributeError: <function gridsynth at 0x754512a86b00> does not have the attribute 'gridsynth_gates'
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.287s
+
+FAILED (errors=14)

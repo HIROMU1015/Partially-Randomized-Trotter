@@ -1,3 +1,5 @@
+> **2026-10-14 D3 v2 source preparation**：[型adapter・namespace/provenance・81 tests](docs/tracks/algorithm_codesign/d3_v2_precision_repair_and_source_preparation_20261014.md)。登録外/mock 81 PASS、static identity PASS。実合成/登録比較なし、旧v1のtechnical inconclusiveは変更しない。別実行承認待ち、mandatory STOP。
+
 > **2026-10-14 Track B D3 v1：technical inconclusive、retry0、mandatory STOP。** [保存値監査と技術原因](docs/tracks/algorithm_codesign/d3_failed_execution_and_gpt_handoff_20261014.md)。最初の2 keyでprecision型変換が停止、完成sequence0、登録rows0/48。999 checksは失敗証拠の整合確認であり科学比較成功ではない。旧D1/D2不変。
 
 # Validation status

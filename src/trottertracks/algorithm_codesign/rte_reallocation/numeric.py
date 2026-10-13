@@ -55,8 +55,13 @@ def synthesize(angle,epsilon,options,on_synthesis=None,max_characters=20000):
     from pygridsynth.config import GridsynthConfig
     from pygridsynth.gridsynth import gridsynth_gates
     theta=angle_value(angle,mp.mp);cfg=GridsynthConfig(**options)
+    # mpmath 1.3.0 does not accept Python Fraction directly. Keep epsilon
+    # itself unchanged for the exact threshold, cache key and saved identity.
+    # Convert before reserving a backend call; invalid arguments never enter it.
+    backend_epsilon=(mp.mpf(epsilon.numerator)/epsilon.denominator
+                     if isinstance(epsilon,F) else mp.mpf(epsilon))/4
     if on_synthesis is not None:on_synthesis()
-    sequence=gridsynth_gates(theta,mp.mpf(epsilon)/4,cfg=cfg)
+    sequence=gridsynth_gates(theta,backend_epsilon,cfg=cfg)
     if not isinstance(sequence,str) or any(g not in 'HTtSXW' for g in sequence):
         raise ValueError('invalid synthesizer sequence')
     if len(sequence)>max_characters:raise RuntimeError('sequence output cap hit')
