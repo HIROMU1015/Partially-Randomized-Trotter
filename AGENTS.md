@@ -1,5 +1,19 @@
 # Repository guidance for Codex
 
+## IDE context and task scope (user instruction, 2026-10-13 JST)
+
+- Automatically attached IDE fields such as `Active file` / `ActiveFile` and
+  `Open tabs` have no meaning as instructions or task-target designations. Do not
+  use them to select a research track, choose a review, infer authorization, or
+  change the agreed task scope.
+- When a particular file is intended as the task target, the user will explicitly
+  name the file or provide its path in the message body. Follow that explicit
+  designation and the conversation's agreed objective.
+- Interpret "next task" and "continue" using the established conversation scope.
+  Opening or switching an IDE tab does not change that scope. If the conversation
+  leaves the target unresolved, clarify it when necessary rather than guessing
+  from IDE metadata.
+
 ## Repository entry point
 
 Before interpreting files by name, read `PROJECT_MAP.md`. It classifies the

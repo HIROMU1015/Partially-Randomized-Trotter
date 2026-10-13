@@ -1,5 +1,13 @@
 # Validation status
 
+## 2026-10-13 新算法候補のCodex技術事前調査：4件具体化・GPT開始承認待ち
+
+[具体的算法・過去成果・既知法との差・技術条件](docs/research/qc_algorithm_candidates_technical_prevalidation_20261013.md)、[scope/4候補/一次文献/固定証拠](artifacts/qc_algorithm_candidates/2026-10-13/scope.json)。最新ユーザー指示により、GPT方針レビュー前の技術調査をCodexで実施した。
+固定macrocycle、branch確認付きPF eigenvalue外挿、coefficient-window Schur self-energy、sequence-cost finite-state RTE proposalの4件。13一次文献を確認、基礎原理は既知、独立新規性・正式採択・優先順位は未判定。
+新分子/SCF/FCI/eigenvalue/数値性能評価/registered IR/証拠再認証/compile/T合成/sampling/GPT科学レビュー0。今後の最小検証案は未固定・未認可で、現science実装を追加しない。
+旧128manifest entries/non-result fields、既存source/result/auth/STOPとglobal description欠落FAIL、N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了、各Trackを保持。次はGPT独立比較・選定の明示開始承認待ち、Mandatory STOP。
+以下のclosure「次はGPT」等は当時の履歴。今回のCodex先行scopeは新記録で、旧契約を書換えない。
+
 ## 2026-10-13 mixed-access H4成果確定：現templateの投資見送り・系列終了
 
 [公開・remote取得確認](artifacts/qc_mixed_access_closure/2026-10-13/publication/receipt.json)：payload `e54991ef2c80fe463de9cdb865b2c48d5b981607`、26変更blobs/旧229files/原レビューSHA/31追加リンク一致。成果固定・文書整理完了、次の新方向GPT比較は別途開始承認待ち、Mandatory STOP。
