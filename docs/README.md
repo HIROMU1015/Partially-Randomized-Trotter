@@ -667,3 +667,7 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## Track B D1 source preparation（2026-10-13）
 
 [技術報告](tracks/algorithm_codesign/rte_development_d1_source_preparation_20261013.md)、[固定contract](../artifacts/track_b_rte_development_source/2026-10-13/v1/contract_v1.json)、[source manifest](../artifacts/track_b_rte_development_source/2026-10-13/v1/source_manifest_v1.json)。57登録外tests PASS。登録比較・合成0、別one-shot承認待ち、mandatory STOP。
+
+## Track B D1結果（2026-10-13）
+
+[結果とGPT引き継ぎ](tracks/algorithm_codesign/rte_development_d1_results_and_gpt_handoff_20261013.md)、[exact資源表](../artifacts/track_b_rte_development_d1_result/2026-10-13/v1/saved_output_audit/native_resource_rows_exact_v1.json)、[監査](../artifacts/track_b_rte_development_d1_result/2026-10-13/v1/saved_output_audit/saved_output_audit_v1.json)。12 rows正常完了、旧成果保持、retry=0、mandatory STOP。重要な科学レビューは利用者の開始承認後。
