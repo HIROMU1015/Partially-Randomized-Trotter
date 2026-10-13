@@ -1,3 +1,5 @@
+> **D1〜D3一次文献照合（2026-10-14）：13 claimの固定証拠・既知原理・未確立部分を整理。8論文の関連本文を確認、旧G系列監査は参照のみ、新科学取得/再計算0。科学判断は未実施、mandatory STOP。** [引き継ぎ](d1_d3_prior_art_claim_evidence_and_gpt_handoff_20261014.md)。
+
 > **D3保存値の最終機構分析（2026-10-14）：36 keyの価格寄与をexactに分解し、保証によるr選択・primaryと全方式の差を整理。369追加算術checksと9人工tests PASS。旧分類/証拠は不変、新科学取得0、mandatory STOP。** [引き継ぎ](d3_final_saved_mechanisms_and_gpt_handoff_20261014.md)。以下は履歴。
 
 > **D3 v2現在：D3_GUARANTEE_PRICE_MAP_COMPLETE_AWAITING_GPT_REVIEW。** [一回結果・2579監査・全48行/chunks](./d3_v2_results_and_gpt_handoff_20261014.md)。36新sequence、outer exit0、retry0、旧marker/source保持、mandatory STOP。以下は準備・失敗の履歴。

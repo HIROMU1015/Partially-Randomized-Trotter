@@ -1,3 +1,5 @@
+> [D1〜D3先行研究・claim対応](tracks/algorithm_codesign/d1_d3_prior_art_claim_evidence_and_gpt_handoff_20261014.md)：一次本文の関連節、task/access/phase、三つの主張境界。新計算・科学判断なし。
+
 > [D3最終保存機構分析](tracks/algorithm_codesign/d3_final_saved_mechanisms_and_gpt_handoff_20261014.md)：新取得0、exact key寄与、保証/r、保存h領域、mandatory STOP。
 
 > **Track B D3 v2結果**：[四ケース・36 key・48行・監査/GPT引き継ぎ](tracks/algorithm_codesign/d3_v2_results_and_gpt_handoff_20261014.md)。old/new guarantee×price、retry0、mandatory STOP。
