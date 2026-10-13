@@ -223,7 +223,7 @@ def test_actual_rare_order_not_promoted():
  from trottertracks.resource_applicability.h8_resource_map_execution_v1 import zero_order_measured_class
  task=next(x['task'] for x in c.cost_tasks(signals(),'a'*40,'exploration') if x['task']['cell_id']=='B2_p7_q1_2nd_r4_K2')
  events=[[{'taylor_order':0} for _ in range(4)]];tr={'task':task,'events':events,'event_digest':c.digest(events),'observed_orders':[0]*4}
- assert rss_reservation(task)==24*2**30 and zero_order_measured_class(task,tr)
+ assert rss_reservation(task)==2**30 and zero_order_measured_class(task,tr)
  tr['observed_orders']=[2,0,0,0];assert not zero_order_measured_class(task,tr)
 
 def test_B0_truncated_reference_against_artificial_dense():

@@ -20,6 +20,7 @@ from .h6_parallel_execution_v1 import owned_exit_flag, retain_exiting_memory
 from .h8_resource_map_contract_v1 import (RUNNER, CPUS, verify, plan, resources,
     observation, signal_groups, cost_tasks, selection, admission, checkpoint,
     task_seed, coverage, cells)
+from .h8_resource_map_handoff_v1 import memory_request
 
 
 def read(path): return json.loads(Path(path).read_text())
@@ -51,9 +52,9 @@ class RotatingJournal:
 
 
 def rss_reservation(task):
-    # No unmeasured p14/p21, r/K, B0, or rare circuit is promoted automatically.
-    known={'B1_p28_q1_2nd','B1_p28_q1_4th','B1_p28_q8_2nd'}
-    return (9 if task.get('kind')=='COST' and task['cell_id'] in known else 24)*2**30
+    # Cost workers prepare/sample at 1GiB, then block before native circuit build.
+    # Coordinator must allocate 9/24GiB using their actual bound/event request.
+    return (1 if task.get('kind')=='COST' else 24)*2**30
 
 
 def zero_order_measured_class(task, trajectory):
@@ -200,22 +201,32 @@ def supervisor(root,run,phase,registrations,m,g,ledger):
                     continue
                 current=process_identity(child.pid)
                 if current['start_ticks']!=v['identity']['start_ticks']:raise ValueError('WORKER_OWNERSHIP')
-                tr=v['path']/'trajectory.json'
-                if v['rss_reservation']==24*2**30 and tr.is_file() and zero_order_measured_class(task,read(tr)):
-                    v['rss_reservation']=9*2**30
-                    w.write(f'normal_promotion_{v["row"]["index"]:04d}.json',dict(
-                        task_digest=digest(task),trajectory_sha256=file_hash(tr),
-                        rss_stop_bytes=9*2**30,policy='observed p7 cell and actual zero-order events only',
-                        new_source_peak_not_measured=True,retained_copy_margin='25 percent engineering headroom'))
                 try:
                     memory=process_memory(child.pid);v['last_memory']=memory
                 except (FileNotFoundError,ValueError):
                     if not owned_exit_flag(child,v['identity']):raise
                     limits=dict(r,worker_rss_stop_bytes=v['rss_reservation'])
                     memory,_=retain_exiting_memory(v,limits,time.monotonic())
+                ds=sorted(v['path'].glob('diagnostic_*.json'));ps=sorted(v['path'].glob('progress_*.json'))
+                request_path=v['path']/'memory_admission_request.json'
+                if task['kind']=='COST' and v['rss_reservation']==2**30 and request_path.is_file():
+                    request=read(request_path);tr=read(v['path']/'trajectory.json')
+                    if request!=memory_request(task,tr,request['wrapper_instruction_upper_bounds'],m['source_commit']):
+                        raise ValueError('MEMORY_ADMISSION_REQUEST_BINDING')
+                    wanted=request['requested_rss_bytes']
+                    used=sum(a['rss_reservation'] for a in active.values())
+                    if used-v['rss_reservation']+wanted<=72*2**30:
+                        v['rss_reservation']=wanted
+                        AtomicWriter(v['path'],byte_cap=32*2**20).write('memory_admission.json',dict(
+                            request_digest=digest(request),source_commit=m['source_commit'],
+                            task_digest=digest(task),rss_stop_bytes=wanted))
+                        w.write(f'memory_admission_{v["row"]["index"]:04d}.json',dict(request,
+                            total_reserved_rss_bytes=sum(a['rss_reservation'] for a in active.values()),
+                            startup_rss_bytes=2**30,trajectory_sha256=file_hash(v['path']/'trajectory.json')))
+                        if wanted==9*2**30:
+                            w.write(f'normal_promotion_{v["row"]["index"]:04d}.json',request)
                 if memory['VmSize_bytes']>r['cost_address_space_bytes']:first=first or 'WORKER_AS_CAP'
                 if memory['VmRSS_bytes']>v['rss_reservation']:first=first or 'WORKER_RSS_CAP'
-                ds=sorted(v['path'].glob('diagnostic_*.json'));ps=sorted(v['path'].glob('progress_*.json'))
                 context=read(ds[-1])['context'] if ds else read(ps[-1]) if ps else {'stage':'startup'}
                 samples.append(dict(pid=child.pid,index=v['row']['index'],slot=slot,memory=memory,phase=context))
             host=host_memory();co=process_memory(os.getpid());after=time.monotonic()
@@ -265,7 +276,7 @@ def worker(root,directory,run):
         or b['cpus']!=r['cost_cpu_sets'][b['slot']] or b['rss_stop_bytes']!=rss_reservation(task)
         or directory.parent.parent!=run or directory.name!=f'group_{b["index"]:04d}'):
         raise ValueError('CORE_WORKER_BINDING')
-    if task['kind']=='COST' and task['seed']!=task_seed(m['source_commit'],task['cell_id'],task['phase'],task['replica']):
+    if task['kind']=='COST' and task['seed']!=task_seed(m.get('seed_source_commit',m['source_commit']),task['cell_id'],task['phase'],task['replica']):
         raise ValueError('CORE_WORKER_SEED')
     if any(os.environ.get(k)!='1' for k in THREAD_KEYS) or os.environ.get('QISKIT_PARALLEL')!='FALSE':
         raise ValueError('CORE_WORKER_THREADS')
@@ -331,14 +342,15 @@ def orchestrate(root,m,g):
         signals.sort(key=lambda s:next(i for i,c in enumerate(cells()) if c['id']==s['cell']['id']))
         if len(signals)!=92:raise ValueError('CORE_SIGNAL_COVERAGE')
         w.write('signal_summary.json',dict(signals=signals,calls=deepcopy(ledger),empirical_allowance=True))
-        registrations=cost_tasks(signals,m['source_commit'],'exploration')
+        seed_source=m.get('seed_source_commit',m['source_commit'])
+        registrations=cost_tasks(signals,seed_source,'exploration')
         # The sole measured heavy baseline is completed in isolation first.
         registrations.sort(key=lambda x:x['task']['cell_id']!='B1_p28_q8_4th')
         groups,report=supervisor(root,run,'exploration',registrations,m,g,ledger)
         exploration=[row for i in sorted(groups) for row in groups[i]['rows']]
         resource_maps=full_resource_maps
         w.write('exploration_resource_map.json',resource_maps(signals,exploration,m['plan'],'exploration'))
-        selected=selection(signals,exploration,m['source_commit'])
+        selected=selection(signals,exploration,seed_source)
         w.write('selection_before_confirmation.json',selected)
         groups,report=supervisor(root,run,'confirmation',selected['registrations'],m,g,ledger)
         confirmation=[row for i in sorted(groups) for row in groups[i]['rows']]

@@ -15,12 +15,15 @@ from .h8_signal_preflight_contract_v1 import plan as preflight_plan, input_ident
 from .h48_preflight_contract_v1 import profile, observation_policy
 from .h8_fast_retry_contract_v1 import source_paths as previous_sources
 from .h6_matched_accounting_v1 import eligible, confirmation_ids
+from .h8_resource_map_handoff_v1 import (compatibility, PARENT_SOURCE,
+    AUTHORIZATION as HANDOFF_AUTHORIZATION, EXTRA_KEYS)
 
 RUNNER = 'scripts/resource_applicability/run_track_a_h8_resource_map_v1.py'
 PREPARER = 'scripts/resource_applicability/prepare_track_a_h8_resource_map_v1.py'
 LAUNCHER = 'scripts/resource_applicability/launch_track_a_h8_resource_map_v1.py'
 MODULES = ('h8_resource_map_contract_v1', 'h8_resource_map_port_v1',
-           'h8_resource_map_optimization_v1', 'h8_resource_map_execution_v1')
+           'h8_resource_map_optimization_v1', 'h8_resource_map_execution_v1',
+           'h8_resource_map_handoff_v1')
 AUTHORIZATION = '並列化高速化してから計算を始めてください。計算を実際に始めるところまで進めて大丈夫です'
 NAMESPACE = 'H8_CORE_RESOURCE_MAP_V1_20261013'
 COMPILER = '1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b'
@@ -203,8 +206,19 @@ def verify(root, m, g, *, committed=True):
     root=Path(root)
     if g != grant(m,True) or m.get('authorization_basis') != AUTHORIZATION:
         raise ValueError('H8_CORE_EXPLICIT_GRANT')
+    expected_budget=call_budget()
+    ref=m.get('resume_parent',{})
+    extra=ref.get('additional_held_reservations',{})
+    for k,v in extra.items():
+        if k not in EXTRA_KEYS or type(v) is not int or v<0:
+            raise ValueError('H8_RESUME_EXTRA_BUDGET')
+        expected_budget[k]+=v
+    if any(extra.values()) and ref.get('budget_extension_approved') is not True:
+        raise ValueError('H8_RESUME_BUDGET_APPROVAL_REQUIRED')
+    if m.get('seed_source_commit',m['source_commit'])!=m['source_commit'] and not ref:
+        raise ValueError('H8_RESUME_SEED_WITHOUT_PARENT')
     if (digest(m['plan']) != digest(plan()) or m['proposed_resources'] != resources()
-        or m['observation_policy'] != observation() or m['call_budget'] != call_budget()
+        or m['observation_policy'] != observation() or m['call_budget'] != expected_budget
         or m['cumulative_carry'] != carry() or m['profile'] != profile()
         or m['initial_registrations'] != signal_groups() or m['compiler_hash'] != COMPILER):
         raise ValueError('H8_CORE_FIXED_CONTRACT')
@@ -219,8 +233,14 @@ def verify(root, m, g, *, committed=True):
         for p,h in ref['file_hashes'].items():
             if file_hash(p)!=h:raise ValueError('H8_RESUME_PARENT_CHANGED')
         previous=json.loads(Path(ref['manifest_path']).read_text())
-        if any(previous[k]!=m[k] for k in ('source_commit','source_hashes','input_identity','profile','compiler_hash','plan','call_budget')):
-            raise ValueError('H8_RESUME_CONTRACT_CHANGED')
+        compatibility(m,previous)
+        held=ref['parent_ledger']['reserved']
+        if extra!={k:held.get(k,0) for k in EXTRA_KEYS if held.get(k,0)}:
+            raise ValueError('H8_RESUME_HELD_RESERVATION_BINDING')
+        if committed and previous['source_commit']!=m['source_commit']:
+            for p,h in previous['source_hashes'].items():
+                if hashlib.sha256(subprocess.check_output(['git','show',PARENT_SOURCE+':'+p],cwd=root)).hexdigest()!=h:
+                    raise ValueError('H8_RESUME_PARENT_SOURCE_COMMIT:'+p)
     out=Path(m['output'])
     if not out.is_absolute() or not out.is_relative_to('/home/AbeHiromu') or str(out.resolve())!=str(out):
         raise ValueError('H8_CORE_OUTPUT_PATH')
@@ -287,7 +307,7 @@ def resume_result(directory, task, source, receipt):
     return result
 
 
-def bind_resume_parent(m, directory, native_exit):
+def bind_resume_parent(m, directory, native_exit, *, budget_extension_approved=False):
     """Manual new-grant preparation only. Never resets held failed reservations."""
     parent=Path(directory).resolve();native_exit=Path(native_exit).resolve()
     if not parent.is_relative_to('/home/AbeHiromu') or not native_exit.is_relative_to('/home/AbeHiromu'):
@@ -297,15 +317,28 @@ def bind_resume_parent(m, directory, native_exit):
     if native.get('wait_reaped') is not True or type(native.get('exit_code')) is not int:
         raise ValueError('H8_RESUME_NATIVE_EXIT')
     identity=json.loads((parent/'coordinator_identity.json').read_text())
+    if any(native.get('identity',{}).get(k)!=identity[k] for k in ('pid','start_ticks','pgrp','session')):
+        raise ValueError('H8_RESUME_NATIVE_IDENTITY')
+    if end.get('SOURCE')!=old['source_commit']:
+        raise ValueError('H8_RESUME_TERMINAL_SOURCE')
     from .h6_server_resources_v1 import process_identity
     try:
         if process_identity(identity['pid'])['start_ticks']==identity['start_ticks']:
             raise ValueError('H8_RESUME_PARENT_ALIVE')
     except FileNotFoundError:pass
-    if any(old[k]!=m[k] for k in ('source_commit','source_hashes','input_identity','profile','compiler_hash','plan','call_budget')):
-        raise ValueError('H8_RESUME_SAME_SOURCE_REQUIRED')
+    m['seed_source_commit']=old.get('seed_source_commit',old['source_commit'])
+    m['handoff_authorization_basis']=HANDOFF_AUTHORIZATION
+    held=end['ledger']['reserved']
+    extra={k:held.get(k,0) for k in EXTRA_KEYS if held.get(k,0)}
+    if any(v for k,v in held.items() if k not in EXTRA_KEYS):
+        raise ValueError('H8_RESUME_UNEXPECTED_HELD_CALL')
+    for k,v in extra.items():m['call_budget'][k]+=v
+    m['resume_parent']=dict(additional_held_reservations=extra,
+        budget_extension_approved=budget_extension_approved)
+    compatibility(m,old)
     inventory={str(parent/'manifest.json'):file_hash(parent/'manifest.json'),
         str(parent/'execution_terminal.json'):file_hash(parent/'execution_terminal.json'),
+        str(parent/'coordinator_identity.json'):file_hash(parent/'coordinator_identity.json'),
         str(native_exit):file_hash(native_exit)}
     accepted={}
     for phase in ('signal','exploration','confirmation'):
@@ -313,7 +346,13 @@ def bind_resume_parent(m, directory, native_exit):
         if not terminal.is_file():continue
         t=json.loads(terminal.read_text())
         if not t['all_dispatched_reaped'] or t['cleanup_errors']:raise ValueError('H8_RESUME_CLEANUP')
+        for retired in t['retired']:
+            try:
+                if process_identity(retired['pid'])['start_ticks']==retired['start_ticks']:
+                    raise ValueError('H8_RESUME_WORKER_ALIVE')
+            except FileNotFoundError:pass
         inventory[str(terminal)]=file_hash(terminal);accepted[phase]={}
+        inventory[str(pd/'registered_tasks.json')]=file_hash(pd/'registered_tasks.json')
         registrations=json.loads((pd/'registered_tasks.json').read_text())['registrations']
         for row in registrations:
             d=pd/f"group_{row['index']:04d}";reap=d/'native_reap_receipt.json'
@@ -323,16 +362,18 @@ def bind_resume_parent(m, directory, native_exit):
             if phase=='signal':
                 wt=json.loads((d/'worker_terminal.json').read_text());sr=json.loads((d/'signal_result.json').read_text())
                 ss=json.loads((d/'signal_summary.json').read_text())
-                if (wt['status']!='COMPLETE' or wt['source_commit']!=m['source_commit'] or wt['task']!=row['task']
+                if (wt['status']!='COMPLETE' or wt['source_commit']!=old['source_commit'] or wt['task']!=row['task']
                     or {s['cell']['id'] for s in ss['signals']}!=set(row['task']['cell_ids'])):
                     raise ValueError('H8_RESUME_SIGNAL_BINDING')
                 result=dict(sr,signals=ss['signals'])
             else:
                 cp=json.loads((pd/f"checkpoint_{row['index']:04d}.json").read_text())
-                result=resume_result(d,row['task'],m['source_commit'],cp)
+                inventory[str(pd/f"checkpoint_{row['index']:04d}.json")]=file_hash(pd/f"checkpoint_{row['index']:04d}.json")
+                if cp['native_receipt']!=nr:raise ValueError('H8_RESUME_NATIVE_RECEIPT')
+                result=resume_result(d,row['task'],old['source_commit'],cp)
             for p in d.glob('*.json'):inventory[str(p)]=file_hash(p)
             accepted[phase][str(row['index'])]=dict(task=row['task'],result=result,directory=str(d))
-    m['resume_parent']=dict(directory=str(parent),manifest_path=str(parent/'manifest.json'),
+    m['resume_parent'].update(directory=str(parent),manifest_path=str(parent/'manifest.json'),
         file_hashes=inventory,accepted=accepted,parent_ledger=end['ledger'],
         native_exit_path=str(native_exit),old_grant_reused=False,automatic_resume=False)
     return m

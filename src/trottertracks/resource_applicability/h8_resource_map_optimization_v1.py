@@ -8,6 +8,7 @@ from dataclasses import replace
 import importlib
 import math
 import threading
+from pathlib import Path
 import numpy as np
 from . import h8_fast_cost_port_v1 as frozen
 from .h8_hash_stream_reuse_v1 import StreamingFingerprintReuse, _OnePassWriter, ALIASES
@@ -16,6 +17,7 @@ from .ax2b_stream_fingerprint_v5 import _HashSink, canonical_qiskit_circuit_fing
 from .ax2b_diagnostics_v4 import fingerprint_stage
 from .h8_control_reuse_v1 import validate_control as two_branch_control, hadamard_states_from_branches
 from .h4_common_panel_port_v1 import bound_function
+from .h8_resource_map_handoff_v1 import await_memory_admission
 
 
 class LRUWriter(_OnePassWriter):
@@ -163,6 +165,31 @@ def cost_port(root, manifest, task, writer, progress, trace):
     local = deepcopy(manifest)
     local['plan']['caps_proposed'] = task_caps(task, manifest['plan']['caps_proposed'])
     retained = {}
+    bound_data={}
+    def bounds(cells,preps,*,T):
+        result=frozen.actual_bounds(cells,preps,T=T)
+        bound_data.update(result=result,preps=preps)
+        return result
+    class AdmissionWriter:
+        def __getattr__(self,name):return getattr(writer,name)
+        def write(self,name,value,*args,**kwargs):
+            result=writer.write(name,value,*args,**kwargs)
+            # Mock equivalence fixtures have no run binding; real workers always do.
+            if name!='trajectory.json' or not getattr(writer,'output',None):return result
+            directory=Path(writer.output)
+            if not (directory/'task_binding.json').is_file():return result
+            b=deepcopy(bound_data['result']['cells'][0]['wrapper_instruction_upper_bounds'])
+            cell=task['cell']
+            if cell['R'] and all(type(x) is int and x==0 for x in value['observed_orders']):
+                from trotterlib.df_rte_qiskit import estimate_df_rte_structural_size_upper_bound
+                prep=bound_data['preps'][cell['id']]
+                def tail(order):
+                    return estimate_df_rte_structural_size_upper_bound(prep.rte_preparation.component_specs,
+                        maximum_taylor_order=order,event_count=cell['r'],controlled=True)*cell['q']
+                reduction=tail(cell['K'])-tail(0)
+                b={p:n-reduction for p,n in b.items()}
+            await_memory_admission(writer,progress,task,value,b,manifest['source_commit'])
+            return result
     def factory(name, original):
         def build(*args, **kwargs):
             policy = kwargs['control_policy']
@@ -177,11 +204,12 @@ def cost_port(root, manifest, task, writer, progress, trace):
             return value
         return build
     worker = bound_function(frozen.cost_task, dict(validate_control=validate_control,
+        actual_bounds=bounds,
         build_deterministic_native=factory('deterministic', frozen.build_deterministic_native),
         partial_native_from_step_requests=factory('partial', frozen.partial_native_from_step_requests)))
     with hashing() as cache:
         try:
-            worker(root, local, task, writer, progress, trace)
+            worker(root, local, task, AdmissionWriter(), progress, trace)
             writer.write('hash_reuse_receipt.json', dict(cache.snapshot(),
                 native_evolution_builds_per_control=1, retained_evolutions_max=1,
                 fallback_control_retained=True))
