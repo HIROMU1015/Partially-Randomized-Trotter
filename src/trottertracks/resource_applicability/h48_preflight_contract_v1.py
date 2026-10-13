@@ -199,7 +199,7 @@ def verify_binding(root,m,grant,*,worker=False):
         if file_hash(root/p)!=h or (not worker and hashlib.sha256(subprocess.check_output(['git','show',m['source_commit']+':'+p],cwd=root)).hexdigest()!=h):
             raise ValueError('SOURCE_CHANGED:'+p)
     if m['scope'].startswith('H4') and snapshot_binding(root)!=m['snapshot']:raise ValueError('H4_SNAPSHOT_CHANGED')
-    if m['plan']!=(h8_input_plan() if m['scope']=='H8_INPUT' else h4_plan(m['scope'])):raise ValueError('PLAN_CHANGED')
+    if digest(m['plan'])!=digest(h8_input_plan() if m['scope']=='H8_INPUT' else h4_plan(m['scope'])):raise ValueError('PLAN_CHANGED')
     if m['proposed_resources']!=resources(8 if m['scope']=='H4_COST' else 1):raise ValueError('RESOURCE_BINDING')
     if m['observation_policy']!=observation_policy():raise ValueError('OBSERVATION_BINDING')
     if m['base_manifest']!={'plan':{'caps_proposed':aggregate_caps()}}:raise ValueError('AGGREGATE_CAPS')

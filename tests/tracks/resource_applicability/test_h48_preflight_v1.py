@@ -68,6 +68,12 @@ class PlanTests(unittest.TestCase):
         self.assertTrue(json.dumps(h8_input_plan(),allow_nan=False))
 
 class BindingTests(unittest.TestCase):
+    def test_H4_json_roundtrip_preserves_registered_schedule(self):
+        raw,h,m,g=self.fixture();m['scope']='H4_SIGNAL';m['plan']=h4_plan('H4_SIGNAL')
+        m['snapshot']={'fixed':'H4 fixture'};m['registrations']=[{'index':0,'task':{'kind':'H4_SIGNAL'}}]
+        m=json.loads(json.dumps(m));g['manifest_sha256']=digest(m)
+        with patch.object(contract,'snapshot_binding',return_value=m['snapshot']):
+            self.assertTrue(self.verify(m,g,raw,h))
     def fixture(self):
         raw=b'fixture';import hashlib
         h=hashlib.sha256(raw).hexdigest()
