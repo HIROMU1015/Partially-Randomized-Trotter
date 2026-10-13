@@ -45,3 +45,9 @@ constructor同値性、真値なし選択、情報費用、分子移送、full Q
 C1継続/終了/再設計/C4/主研究採択をCodexは代行していない。
 この準備後、同C1の追加数学探索・一般的先行研究調査を繰り返さない。
 N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了、旧global FAIL、既存科学source/結果/認可/STOPを保持する。
+
+## Source固定・schema-only preflight完了
+
+source commit `657513ad06661aed84950d5907f3304dcdd5f1f7`、新source16files/固定入力identity25filesを固定した。[preflight](../../artifacts/qc_c1_saved_oracle_preparation_v1/2026-10-14/preflight.json)は32contexts/8064rowsのschema/pointerのみPASS、新しいmin/ratio/regret/eligibility/PF/cost評価0。[resource記録](../../artifacts/qc_c1_saved_oracle_preparation_v1/2026-10-14/preflight_resource_use.txt)は認可前検査の実測で、診断性能benchmarkではない。
+[実entry認可拒否](../../artifacts/qc_c1_saved_oracle_preparation_v1/2026-10-14/authorization_guard_checks.json)は承認なし・未発行targetを入力処理/attempt作成前に拒否した。旧940-call認可は人工検査でも拒否。
+[準備完了と次の承認境界](../../artifacts/qc_c1_saved_oracle_preparation_v1/2026-10-14/launch_readiness.json)、[具体的identityの承認対象](../../artifacts/qc_c1_saved_oracle_preparation_v1/2026-10-14/approval_target.json)。承認は未発行、launch_allowed=false。実登録診断は一度も実行していない。

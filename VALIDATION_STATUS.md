@@ -1,5 +1,7 @@
 # Validation status
 
+[C1保存診断のsource・schema準備完了](artifacts/qc_c1_saved_oracle_preparation_v1/2026-10-14/launch_readiness.json)：source `657513ad06661aed84950d5907f3304dcdd5f1f7`、16source/25input identity/32contexts・8064rows schema-only PASS、人工34tests。実entryは未承認/未発行targetを拒否。登録oracle/regret0、認可未発行、別明示実行承認待ち・Mandatory STOP。
+
 ## 2026-10-14 C1保存oracle・selector診断：実行前準備のみ
 
 [実装・人工検査・認可境界](docs/research/qc_c1_saved_oracle_preparation_v1_20261014.md)、[固定契約](docs/research/qc_c1_saved_oracle_diagnostic_contract_v1_20261014.md)、[GPT/実行承認資料](docs/research/qc_c1_saved_oracle_execution_handoff_v1_20261014.md)、[plan](artifacts/qc_c1_saved_oracle_preparation_v1/2026-10-14/execution_plan.json)。ユーザーの新しい準備指示、基準cc992b57。

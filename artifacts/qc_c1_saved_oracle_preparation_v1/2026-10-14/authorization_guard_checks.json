@@ -1,0 +1,28 @@
+{
+  "status": "ACTUAL_ENTRY_APPROVAL_GUARDS_PASS",
+  "checks": [
+    {
+      "case": "missing_approval",
+      "exit_code": 1,
+      "bounded_error": {
+        "error": "ApprovalError",
+        "message": "SEPARATE_EXPLICIT_POSTHOC_APPROVAL_REQUIRED",
+        "mandatory_stop": true
+      },
+      "output_directory_created": false
+    },
+    {
+      "case": "unissued_target",
+      "exit_code": 1,
+      "bounded_error": {
+        "error": "ApprovalError",
+        "message": "SEPARATE_EXPLICIT_POSTHOC_APPROVAL_REQUIRED",
+        "mandatory_stop": true
+      },
+      "output_directory_created": false
+    }
+  ],
+  "registered_metric_evaluations": 0,
+  "authorization_issued": false,
+  "mandatory_stop": true
+}

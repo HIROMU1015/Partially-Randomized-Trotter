@@ -5,3 +5,7 @@
 原C1のselected未達と未選択catalog性能を分離するC_M/C_B/C_Kと限定method_regretを固定した。known-control同等とselector missを排他的にしない。
 synthetic F_COST34tests PASS、registered new metrics0。schema/pointer/SHA確認をsource固定後に実施し、承認対象を未発行のまま公開する。
 数学探索・文献再調査・新H/eig/PF/compile・GPTレビュー・C4・研究採否0。旧source/結果/認可/STOP/globalFAILとN1STOP/N2HOLD/N3CLOSED/THRIFT現template終了を保持。公開後Mandatory STOP。
+
+## Source固定・preflight
+
+source `657513ad06661aed84950d5907f3304dcdd5f1f7` を固定し、32contexts/8064rowsのschema-only preflightがPASSした。新source16/input identity25files、未発行承認対象を固定。実entryの承認なし・draft拒否もPASS、登録diagnostic0/attempt作成0。次は公開とremote照合、Mandatory STOP。
