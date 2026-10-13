@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+H4/H8：[model/loader adapter](../trottertracks/resource_applicability/h4_common_panel_port_v1.py)、[H8 input port](../trottertracks/resource_applicability/h8_preflight_input_port_v1.py)、[資料](../../artifacts/resource_applicability/track_a_h48_preflight_preparation_v1/2026-10-13/README.md)。当library/旧257source不変。H4 rank12 inputは保存bytesを使用、H8入力は別preflight。
+
 H6原稿統合・H8計画：[本文](../../docs/manuscripts/track_a_h6_resource_study_v0_2.md)、[資料](../../artifacts/resource_applicability/track_a_h6_manuscript_h8_plan_v1/2026-10-13/README.md)。当library/科学source変更0。H8はsector400 guard・native/input/reference portが必要で、実装能力をPASS扱いしない。
 
 H6 s2限定pilot：[8/16完了・寄与解析](../../docs/research/track_a_h6_conditional_s2_pilot_result_v1.md)、[CSV/40算術/監査](../../artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_result_v1/2026-10-13/README.md)。当library/科学224/旧runtime251は変更しない。母平均上界と点推定を区別。

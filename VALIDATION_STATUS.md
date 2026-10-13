@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-13 H4固定panel・H8 inputの限定実行準備
+
+[準備](artifacts/resource_applicability/track_a_h48_preflight_preparation_v1/2026-10-13/README.md)。SOURCEb6d4bdd7、旧257source/既存venv/稼働H4不変、18 local scalar/mock合格（CI/実科学PASSではない）。H4/1Å/STO-3G/rank12/T.8/delta.1–.8の16 signalと最大532compile/256trajectory、H8/1Å/STO-3G/16modes/sector4900のinput/DF/state（1/1/10000、compile0）。SOURCE遠隔byte同一、profile/input/plan/auth/carry固定、実起動はfresh gate待ち。
+
 ## 2026-10-13 H6原稿統合・H4共通panel・H8未確定計画
 
 [資料入口](artifacts/resource_applicability/track_a_h6_manuscript_h8_plan_v1/2026-10-13/README.md)。H6/1Å/STO-3G/tol-only DF19/T.8/delta.1–.8の592探索・256独立確認・8pilotを分離した原稿v0.2、保存scalarから3SVG/4CSV、H4最小528compile panelとH8 core1788compile/872trajectory案。旧科学/runtime257・元結果保全、local CSV G/SE・選択・budget・carry・memory・bindingだけを検査。H8回路/性能/入力/厳密bound/CIは未検証。実science/transpile/grant0、環境変更0。準備後開始許可は受領、H8事前/H4補完に開始対象確定・科学契約/技術準備は未完了、runtime_authorization=false/allowed=[]/command=null。以下は履歴。

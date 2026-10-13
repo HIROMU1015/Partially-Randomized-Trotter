@@ -1,0 +1,7 @@
+# H4固定anchor・H8入力preflight
+
+利用者の準備後開始許可・対象1と3を根拠に、新SOURCEb6d4bdd7を固定。細かなsource判断はCodexが実施、完成済みGPTレビューは繰り返さない。18 mock合格、旧257sourceとvenv不変。H4はlegacy rank12を保全した16 anchor（H6と同じDF政策と認定しない）、H8は入力/DF/stateの技術feasibilityでfull campaign未認可。
+
+原稿のH4最小528compileはprimary16+512であり、ordinary感度4を追加した実枠532を明示。旧消費/予約返却・resetなし。H4phaseの履歴M1 actual12128/trajectory6208と他unknown actual、別稼働production予算を区別する。H6carry1716/842＋予約20/10を保持。
+
+通常source決定・light binding/testは自律実施。worker8/内部thread1/hash reuse、own-processのみaffinity/AS/core0を適用する準備。環境の大きな再監査campaignをせず、fixed native subsetをfreshに検査する。公開SOURCEの6file bytesをremote照合、plan/authは別REVIEW資料に保存。科学的なH8比較契約は未確定。
