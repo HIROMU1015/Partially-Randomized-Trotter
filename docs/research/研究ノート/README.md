@@ -1,3 +1,5 @@
+> **最新のTrack B統合記録（2026-10-14）**：[有限Taylor RTEのreturn集約：G系列〜D3](2026-10-14_track_b_return_aggregation_G_D_research_note.md)。GPT判断受領済み、構成と資源条件／限界を保持。今回はノートのみ、新計算・原稿・追加レビュー0、mandatory STOP。以下は履歴。
+
 > 2026-10-07 Track B RA-D0 v3：**READY_FOR_RA_D0_ONE_SHOT_AUTHORIZATION**（実行承認ではない）。
 > [source review](../../tracks/algorithm_codesign/ra_d0_source_review_v3_20261007.md) / [GPT handoff](../../tracks/algorithm_codesign/ra_d0_gpt_handoff_v3_20261007.md) / [manifest](../../../artifacts/track_b_ra_d0_source_review_v3/2026-10-07/evidence_manifest_v3.json)。
 > [focused verifier](../../../scripts/tracks/algorithm_codesign/verify_ra_d0_source_review_v3.py) / [v3 tests](../../../tests/tracks/algorithm_codesign/test_ra_d0_source_review_v3.py)。

@@ -1,3 +1,5 @@
+> **Track B研究引継ぎ**：[G系列〜D3の日本語研究ノート](research/研究ノート/2026-10-14_track_b_return_aggregation_G_D_research_note.md)。構成、代表結果、既知原理、未解決事項、最新GPT判断、固定資料入口を一つに整理。現在の数値探索は一区切り、mandatory STOP。
+
 > [D1〜D3先行研究・claim対応](tracks/algorithm_codesign/d1_d3_prior_art_claim_evidence_and_gpt_handoff_20261014.md)：一次本文の関連節、task/access/phase、三つの主張境界。新計算・科学判断なし。
 
 > [D3最終保存機構分析](tracks/algorithm_codesign/d3_final_saved_mechanisms_and_gpt_handoff_20261014.md)：新取得0、exact key寄与、保証/r、保存h領域、mandatory STOP。
