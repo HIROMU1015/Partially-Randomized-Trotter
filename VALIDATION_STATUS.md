@@ -1,5 +1,12 @@
 # Validation status
 
+## 2026-10-13 mixed-access feasibility v1：H4一回完了・科学判断待ち
+
+[一次結果・scope・限界](docs/research/qc_mixed_access_feasibility_v1_results_20261013.md)。H4直線1Å/STO-3G/realRHF8mode・ν4、DF16全保持（rank10は1e−12 reportingのみ）、L_Dなし/PRなし。T1,4・r倍増1…1024・εU=.001、固定7法154 PF queries完了。
+保存監査154件、1386 resource rows/273 frontierの整合性PASS。登録template/κ3,6,12 hypothesisでは正のremaining予算0、`NO_POSITIVE_BUDGET_IN_REGISTERED_MODEL`。R4のstepは同次数E4/D4より両Tで半減したが、指定modelの費用回収余白は得られなかった。
+source `102e6b31`・承認/preflight `214f9ab2`、artifacts `artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/attempt_1/`、監査 `execution_audit/`。runner/checker/module/testは準備版から不変。FCI/ground/gap・compile/T synthesis・shots/PR0、function/full ground-energy費用UNKNOWN、一般的不能や最適回路lower boundの結論ではない。
+一回消費済み、追加scan/backend自動起動なし。次はGPT重要科学判断の開始承認待ち、Mandatory STOP。N1STOP/N2HOLD/N3CLOSED・他Track・旧124entries/source/認可/原契約/non-result fields/global description欠落FAILを保持。以下は過去milestone。
+
 ## 2026-10-13 mixed-access v1 source・環境準備完了／科学認可前STOP
 
 [公開確認・具体的な次の承認scope](docs/research/qc_mixed_access_source_v1_execution_approval_20261013.md)：payload `102e6b31401356d6eea775169041ebdf2cfa6ba0`。GitHub35変更blobs/16locked files/旧12優先blobs/27追加リンク一致。22synthetic PASS、分子科学0、固定H4一回の明示実行承認待ち。
