@@ -1,5 +1,11 @@
 # 研究計画資料
 
+## 2026-10-13 mixed-access v1 source・環境準備完了／科学認可前STOP
+
+[技術準備・数式・資源template](qc_mixed_access_source_preparation_v1_20261013.md)、[次の認可境界](../../artifacts/qc_mixed_access_source_v1/2026-10-13/launch_readiness.json)。新runner/checker、dependency wheel hash lock、22登録外synthetic PASS。full-Fock/phase/DF/adjoint/2worker保存監査を検証。
+`src/trottertracks/representation_exploration/qc_mixed_access_{math,resource,execution,pipeline,checker}_v1.py`、`scripts/run_qc_mixed_access_feasibility_v1.py`、`scripts/verify_qc_mixed_access_feasibility_v1.py`、`scripts/check_qc_mixed_access_{synthetic,preparation}_v1.py`、`tests/test_qc_mixed_access_feasibility_v1.py`、artifacts `artifacts/qc_mixed_access_source_v1/2026-10-13/`。
+固定H4/7法/T1,4/r1…1024の契約は不変。今回分子生成・SCF・登録科学PF・compile・GPTレビュー0、function/full energy費用UNKNOWN。次はユーザーの固定一回実行承認。技術準備だけでGPT再レビューを要求しない。旧122 entries/科学source/認可/STOPとglobal description欠落FAIL、N1STOP/N2HOLD/N3CLOSEDを保持。以下は過去milestone。
+
 ## 2026-10-13 N3成果確定・現検証系列終了
 
 [公開・remote確認完了](n3_saved_attribution_v1_claim_and_observability_20261013.md)：変更16blob/証拠14blob/追加リンク38件確認。現行N3の文書作業完了、科学STOP。
