@@ -113,5 +113,14 @@ class Preparation(unittest.TestCase):
         names+=list((ROOT/'scripts').glob('*qc_c1_macrocycle*_v1.py'))
         for name in names: ast.parse(name.read_text(),filename=str(name))
 
+    def test_pipeline_direct_call_requires_launch_receipt(self):
+        code=('import sys;sys.path.insert(0,"src")\n'
+              'from trottertracks.representation_exploration.c1_macrocycle_pilot_v1 import run\n'
+              'try:\n run("/tmp","/tmp/not-the-fixed-output")\n'
+              'except ValueError as e:\n assert "AUTHORIZED_OUTPUT" in str(e); assert "numpy" not in sys.modules\n'
+              'else:\n raise AssertionError("pipeline gate failed")')
+        done=subprocess.run([sys.executable,'-c',code],cwd=ROOT,capture_output=True,text=True)
+        self.assertEqual(done.returncode,0,done.stderr)
+
 
 if __name__=='__main__': unittest.main()

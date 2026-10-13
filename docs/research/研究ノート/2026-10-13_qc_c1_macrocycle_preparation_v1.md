@@ -12,7 +12,7 @@ joint状態幅とsigned/finite-h mechanismを技術的に分けた。
 known compositionに同一catalog/情報を与えればselectorは同じで、独立生成優位をclaimしない。
 
 [数学・資源・限界](../qc_c1_macrocycle_technical_design_v1_20261013.md)、[最小契約](../qc_c1_macrocycle_preregistration_v1_20261013.md)。
-登録外17checks PASSはlocal技術証拠。4手書きtoyを結果前に固定し、39unitary/6h/940eig/C2対照を将来scopeにする。
+登録外18checks PASSはlocal技術証拠。4手書きtoyを結果前に固定し、39unitary/6h/940eig/C2対照を将来scopeにする。
 モデルgeometry/basis/DF/L_Dなし、目標10^-5/10^-6 model units。分子・科学性能・registered selector・eig・compile・samplingはzero。
 数値backendは今はsyntax検査のみで、有限h性能/reference/保存監査の科学実行検証は別認可後。
 NumPy import前のapproval gate、one-shot/retry0、2workers/1thread、runtime/source/input lock、wall capなしの資源制限を整備した。

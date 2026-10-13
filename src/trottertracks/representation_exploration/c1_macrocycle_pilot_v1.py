@@ -1,4 +1,4 @@
-"""Future, separately authorized numerical pilot. Do not import in preparation tests."""
+"""Future numerical pilot. Explicit launch receipt precedes any numerical work."""
 from concurrent.futures import ProcessPoolExecutor
 from fractions import Fraction as F
 import hashlib
@@ -10,7 +10,7 @@ import resource
 import time
 from .c1_macrocycle_algebra_v1 import REPRESENTATIVES,kernel,kernel_error,canonical_stages
 from .c1_macrocycle_contract_v1 import validate_input,select,methods,native_counts,l1,analytic_bound,substitute
-from .c1_macrocycle_execution_v1 import ARTIFACT
+from .c1_macrocycle_execution_v1 import ARTIFACT,OUTPUT,check_approval,sha
 
 
 def pack(a): return {'real':a.real.tolist(),'imag':a.imag.tolist()}
@@ -171,7 +171,16 @@ def summaries(records,plan):
 
 
 def run(root,out):
-    folder=root/ARTIFACT; plan=json.loads((folder/'pilot_contract.json').read_text())
+    root=Path(root).resolve();out=Path(out).resolve();folder=root/ARTIFACT
+    if out!=root/OUTPUT: raise ValueError('FIXED_AUTHORIZED_OUTPUT_REQUIRED')
+    receipt=json.loads((out/'launch_receipt.json').read_text())
+    execution=json.loads((folder/'execution_plan.json').read_text())
+    check_approval(receipt['approval'],{'source_commit':execution['source_commit'],
+        'source_manifest_SHA256':sha(folder/'source_manifest.json'),
+        'execution_plan_SHA256':sha(folder/'execution_plan.json'),
+        'runtime_lock_SHA256':sha(folder/'runtime_lock.json')})
+    if not receipt['attempt_consumed']: raise ValueError('CONSUMED_ATTEMPT_RECEIPT_REQUIRED')
+    plan=json.loads((folder/'pilot_contract.json').read_text())
     inputs=json.loads((folder/'inputs.json').read_text())['inputs']
     # Seal every selection, including bad-state controls, before creating reference jobs.
     started=time.perf_counter()

@@ -3,7 +3,7 @@
 ## 2026-10-13 C1固定macrocycle：技術準備完了・科学実行認可待ち
 
 [技術設計](docs/research/qc_c1_macrocycle_technical_design_v1_20261013.md)、[固定最小契約](docs/research/qc_c1_macrocycle_preregistration_v1_20261013.md)、[準備証拠](artifacts/qc_c1_macrocycle_preparation_v1/2026-10-13/off_domain_checks.json)。ユーザー指定の完了GPT選定レビューを採用し、C1を最初の成立可能性判別に準備した。新規算法・中心研究の正式採択なし。
-三fragment S2の6順序をreverse-isospectralな3classへquotient、24正時間palindromeを固定。自由代数BCH/独立Strang再帰、subdivision、周期sharing、認可拒否など登録外17tests PASS。係数由来state幅・有理finite-h bound・controlled scalar phaseを含む費用templateを用意した。
+三fragment S2の6順序をreverse-isospectralな3classへquotient、24正時間palindromeを固定。自由代数BCH/独立Strang再帰、subdivision、周期sharing、認可拒否など登録外18tests PASS。係数由来state幅・有理finite-h bound・controlled scalar phaseを含む費用templateを用意した。
 固定4件の2qubit toy（geometry/basis/DF/L_Dなし）・39 unitary×6h、reference込み940eig calls・C2導出72件を事前登録。真値なしの選択seal、2workers/各1thread、saved-only独立checker、attempt1/retry0。新しい科学実行は別の明示承認待ち。
 今回登録係数へのD代入/selector/PF/eig/分子/compile/sampling/GPT新レビュー0。最終ground-energy費用と独立新規性は未確定。このcatalogはknown compositionでも生成でき、同値性をC1固有の優位と数えない。同符号・単純sharingだけの利益は認めない。
 旧130manifest entries/non-result fields、229 protected files、source/result/auth/STOP/global description欠落FAIL、N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了・他Trackを保持。C4自動起動なし、Mandatory STOP。以下は当時の履歴。
