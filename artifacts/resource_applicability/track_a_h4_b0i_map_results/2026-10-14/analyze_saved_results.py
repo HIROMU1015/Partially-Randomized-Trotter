@@ -57,7 +57,7 @@ def paired_work(pairs, counts):
 
 def table(path, rows):
     with path.open('w', newline='') as f:
-        writer = csv.DictWriter(f, list(rows[0]))
+        writer = csv.DictWriter(f, list(rows[0]), lineterminator='\n')
         writer.writeheader()
         writer.writerows(rows)
 
