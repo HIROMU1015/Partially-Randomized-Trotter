@@ -1,5 +1,13 @@
 # 研究計画資料
 
+## 2026-10-14 C1保存oracle・selector診断：実行前準備のみ
+
+[実装・人工検査・認可境界](qc_c1_saved_oracle_preparation_v1_20261014.md)、[固定契約](qc_c1_saved_oracle_diagnostic_contract_v1_20261014.md)、[GPT/実行承認資料](qc_c1_saved_oracle_execution_handoff_v1_20261014.md)、[plan](../../artifacts/qc_c1_saved_oracle_preparation_v1/2026-10-14/execution_plan.json)。ユーザーの新しい準備指示、基準cc992b57。
+C_M/C_B/C_K、macro_ratio、selected-method内hが既にoracleのmethod_regretを固定。eligible/cost/選択/precisionを再生成せず保存fieldだけを使用。分類はcatalog/selector/known-control/未判定の軸で重複を許し、one-ULP丸め境界を明示する。
+新runner・別metric checker・schema/SHA/認可/一回guard、人工F_COST34tests PASS。新source16/input25files、既存307files/source20/一次9/旧138manifest entries/non-result fields/global FAIL/root131files保護。source固定後schema-only preflightを実施し、認可は発行しない。
+原scope非分子2qubit4H/24macro/6h/通常16+bad16/target1e-5,1e-6 model units/価格3,6（geometry/basis/DF rank-policy/L_D/粒子sectorなし）。8064rows/32contexts/1worker1thread/memory256MiB/output2MiB/log1MiB/attempt1retry0/eigPFcompile0/wall capなし。
+登録oracle/regret新集計・新H/eig/PF/compile・数学/一般文献探索・GPTレビュー・C4/採択/終了判断0。旧科学結果/source/消費済み940-call認可/STOP・N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了を維持。公開後Mandatory STOP、別明示posthoc実行承認またはGPT科学判断開始承認待ち。以下は履歴。
+
 ## 2026-10-14 C1残存数学課題：限定技術調査完了・GPT開始承認待ち
 
 [追加の数学・機構・posthoc情報価値](qc_c1_residual_math_technical_report_v1_20261014.md)、[GPT判断引継ぎ](qc_c1_residual_math_review_handoff_v1_20261014.md)、[scope/停止](../../artifacts/qc_c1_residual_math_audit_v1/2026-10-14/scope.json)。基準61d50b09、ユーザー添付による一回の静的残存課題調査。

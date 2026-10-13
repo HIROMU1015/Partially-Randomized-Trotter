@@ -1,5 +1,10 @@
 # scripts 索引
 
+## C1保存oracle診断 v1：準備のみ・登録集計未認可
+
+[契約・準備](../docs/research/qc_c1_saved_oracle_preparation_v1_20261014.md)、[runner](run_qc_c1_saved_oracle_diagnostic_v1.py)、[独立checker](verify_qc_c1_saved_oracle_diagnostic_v1.py)、[人工fixture tests](../tests/test_qc_c1_saved_oracle_preparation_v1.py)、[34tests結果](../artifacts/qc_c1_saved_oracle_preparation_v1/2026-10-14/synthetic_checks.json)。
+modulesは `src/trottertracks/representation_exploration/c1_saved_oracle_*_v1.py`。stdlibのみ、旧science module/tests変更なし。登録データの新metricsは別明示実行承認前に禁止。schema-only preflightと人工費用表だけ、Mandatory STOP。
+
 ## C1残存数学課題 v1：新形式多項式8等式のみ
 
 [限定技術調査](../docs/research/qc_c1_residual_math_technical_report_v1_20261014.md)、[新checker](../artifacts/qc_c1_residual_math_audit_v1/2026-10-14/audit_tools/check_new_polynomial_identities.py)、[結果](../artifacts/qc_c1_residual_math_audit_v1/2026-10-14/new_symbolic_checks.json)。stdlib Fraction、係数未代入、old checker/library/pilot import0。既存科学runner/module/testを変更せず、旧21checksを再実行しない。数値posthocは未認可案のみ、Mandatory STOP。

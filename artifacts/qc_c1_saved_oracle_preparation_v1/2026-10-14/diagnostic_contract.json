@@ -1,0 +1,105 @@
+{
+  "scope": "QC_C1_SAVED_ORACLE_POSTHOC_V1_20261014",
+  "base_commit": "cc992b579290233ab5a7d8408d4a81c6d295f36d",
+  "input_ids": [
+    "S1_weak",
+    "S2_balanced",
+    "S3_signed",
+    "S4_strong"
+  ],
+  "states": [
+    "00",
+    "11"
+  ],
+  "targets": [
+    1e-05,
+    1e-06
+  ],
+  "prices": [
+    3,
+    6
+  ],
+  "h_levels": 6,
+  "groups": {
+    "single": [
+      "S0_m1",
+      "S0_m2",
+      "S0_m3",
+      "S0_m4",
+      "S1_m1",
+      "S1_m2",
+      "S1_m3",
+      "S1_m4",
+      "S2_m1",
+      "S2_m2",
+      "S2_m3",
+      "S2_m4"
+    ],
+    "macro": [
+      "M01_1_8",
+      "M01_1_4",
+      "M01_1_3",
+      "M01_3_8",
+      "M02_1_8",
+      "M02_1_4",
+      "M02_1_3",
+      "M02_3_8",
+      "M10_1_8",
+      "M10_1_4",
+      "M10_1_3",
+      "M10_3_8",
+      "M12_1_8",
+      "M12_1_4",
+      "M12_1_3",
+      "M12_3_8",
+      "M20_1_8",
+      "M20_1_4",
+      "M20_1_3",
+      "M20_3_8",
+      "M21_1_8",
+      "M21_1_4",
+      "M21_1_3",
+      "M21_3_8"
+    ],
+    "s4": [
+      "S4_0",
+      "S4_1",
+      "S4_2"
+    ],
+    "c2": [
+      "C2_0",
+      "C2_1",
+      "C2_2"
+    ]
+  },
+  "limits": {
+    "rows": 8064,
+    "contexts": 32,
+    "workers": 1,
+    "threads": 1,
+    "memory_bytes": 268435456,
+    "output_bytes": 2097152,
+    "log_bytes": 1048576,
+    "eigensolver_calls": 0,
+    "PF_calls": 0,
+    "compile_calls": 0,
+    "attempts": 1,
+    "retry": 0,
+    "wall_time_cap": null
+  },
+  "metrics": {
+    "C_M": "macro saved eligible minimum",
+    "C_B": "single/subdivision/S4/C2 saved minimum",
+    "C_K": "same C1 catalog single/subdivision/macro minimum",
+    "macro_ratio": "C_M/C_B",
+    "method_regret": "saved selected-method oracle-h cost/C_K-1"
+  },
+  "strict_threshold": "19/20",
+  "tie": "first stored row;all equal-cost pointers",
+  "numerical_boundary": "one neighboring binary64 cost each side;not physical confidence",
+  "classification_axes": "catalog gate,selector miss,known-factory equivalence,and unresolved components may coexist",
+  "eligibility_recomputed": false,
+  "cost_recomputed": false,
+  "phase_total_wall_time_caps": null,
+  "scientific_adoption_or_closure_decided": false
+}

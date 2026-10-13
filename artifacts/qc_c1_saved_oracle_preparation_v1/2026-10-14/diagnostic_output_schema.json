@@ -1,0 +1,43 @@
+{
+  "schema": "C1_SAVED_ORACLE_DIAGNOSTIC_V1",
+  "top_level_exact_fields": [
+    "schema",
+    "mode",
+    "contexts",
+    "arithmetic",
+    "tie_rule",
+    "threshold",
+    "new_eigensolver_PF_compile_calls",
+    "full_ground_energy_cost",
+    "novelty_adopted",
+    "mandatory_stop"
+  ],
+  "context_exact_fields": [
+    "context",
+    "C_M",
+    "C_B",
+    "C_K",
+    "macro_ratio",
+    "selectors",
+    "classifications",
+    "unresolved_parts",
+    "known_composition_equivalent",
+    "eligible_source",
+    "method_regret_scope"
+  ],
+  "min_point": "null or row_index/method/h_index/cost/exact_cost/tied_row_indices",
+  "ratio": "exact_ratio rational string or null,rounding_guard rational strings or null,gate/reason",
+  "selector": "sealed_method,saved_oracle_h_point,method_regret rational string or null,regret_null_reason,against_baseline,misses_oracle_advantage,precision_choice_metadata",
+  "modes": [
+    "SYNTHETIC",
+    "REGISTERED_SAVED_POSTHOC"
+  ],
+  "unresolved": "reasons retained,never dropped",
+  "scientific_outputs_forbidden": [
+    "new physical values",
+    "new cost model",
+    "new PF eligibility",
+    "adoption/closure"
+  ],
+  "runtime_enforcement": "independent checker exact-field sets and full saved-field recomputation"
+}
