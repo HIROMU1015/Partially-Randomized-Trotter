@@ -1,3 +1,5 @@
+> [Track B D3実行sourceと承認待ち](tracks/algorithm_codesign/d3_source_preparation_and_execution_handoff_20261013.md)：63人工/mock tests PASS、科学実行0。
+
 > Track B D3の[比較計画](tracks/algorithm_codesign/d3_guarantee_price_preregistration_v1_20261013.md)と[数学確認](tracks/algorithm_codesign/d3_mathematical_confirmation_20261013.md)：準備のみ、登録再評価/合成0、mandatory STOP。
 
 > 2026-10-07 Track B RA-D0 v3：**READY_FOR_RA_D0_ONE_SHOT_AUTHORIZATION**（実行承認ではない）。

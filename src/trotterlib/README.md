@@ -1,3 +1,5 @@
+> Track B D3の新sourceは[専用namespace](../trottertracks/algorithm_codesign/rte_robustness/README.md)にある。共通API変更なし。[技術報告](../../docs/tracks/algorithm_codesign/d3_source_preparation_and_execution_handoff_20261013.md)、科学実行0、別指示までSTOP。
+
 > Track B D3は既存B sourceの静的照合と[結果前計画](../../docs/tracks/algorithm_codesign/d3_guarantee_price_preregistration_v1_20261013.md)のみ。共通library/Bの旧科学source変更なし、新execution codeは未実装。
 
 > 2026-10-07 Track B RA-D0 v3：**READY_FOR_RA_D0_ONE_SHOT_AUTHORIZATION**（実行承認ではない）。
