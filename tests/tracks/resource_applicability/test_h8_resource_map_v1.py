@@ -272,3 +272,13 @@ def test_all_six_cost_metrics_and_ineligible_status():
  for p in s['precision_rows'].values():p['10.0']=p['1.0'].copy()
  result=full_resource_maps([s],rows,c.plan(),'exploration')
  assert {r['metric'] for r in result['rows']}=={'RZ','CX','RZ_depth','CX_depth','depth','size'}
+
+def test_serialized_manifest_binding_and_plan_tamper(monkeypatch,home_tmp):
+ monkeypatch.setattr(c,'profile',lambda:{'fixture':'pinned'})
+ monkeypatch.setattr(c,'input_identity',lambda d:{'directory':d,'fixture':'input'})
+ monkeypatch.setattr(c,'source_paths',lambda root:[])
+ monkeypatch.setattr(c,'file_hash',lambda p:'b'*64)
+ m=c.make_manifest(home_tmp,'a'*40,str(home_tmp/'input'),home_tmp/'output')
+ m=json.loads(json.dumps(m));g=c.grant(m,True);c.verify(home_tmp,m,g,committed=False)
+ m['plan']['cells'][0]['q']=16
+ with pytest.raises(ValueError,match='FIXED_CONTRACT'):c.verify(home_tmp,m,c.grant(m,True),committed=False)

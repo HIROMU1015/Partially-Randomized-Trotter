@@ -203,7 +203,7 @@ def verify(root, m, g, *, committed=True):
     root=Path(root)
     if g != grant(m,True) or m.get('authorization_basis') != AUTHORIZATION:
         raise ValueError('H8_CORE_EXPLICIT_GRANT')
-    if (m['plan'] != plan() or m['proposed_resources'] != resources()
+    if (digest(m['plan']) != digest(plan()) or m['proposed_resources'] != resources()
         or m['observation_policy'] != observation() or m['call_budget'] != call_budget()
         or m['cumulative_carry'] != carry() or m['profile'] != profile()
         or m['initial_registrations'] != signal_groups() or m['compiler_hash'] != COMPILER):
