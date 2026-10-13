@@ -1,0 +1,76 @@
+{
+  "date_jst": "2026-10-13",
+  "purpose": "Small saved-H4 additive basis-cost attribution diagnostic, not a new algorithm or paused-series restart",
+  "user_execution_instruction": "その方針で検証してほしい。承認や規約とかはあまり気にしなくてよい",
+  "saved_wp06b": {
+    "path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+    "sha256": "cf35aa164a7af3a0c03823294c132c2f6988b370afbdea489d777250f02c7f5a"
+  },
+  "input_restore": "Same saved H4 snapshot and old 24 holdout seeds; require all four physical identity hashes and saved stream digest match before any compile. No new random seeds.",
+  "selection": {
+    "lengths": [
+      3,
+      6
+    ],
+    "indices_per_length": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "rows": 8,
+    "basis_policy": "default registered full basis with production adjacent-basis reuse"
+  },
+  "configuration": {
+    "molecule": "linear H4",
+    "geometry_angstrom": 1.0,
+    "basis": "STO-3G",
+    "system_qubits": 8,
+    "df_rank": 12,
+    "L_D": 3,
+    "delta_time": 0.02,
+    "K": 2,
+    "controlled": true,
+    "compiler": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "transpiler_seed": 17,
+    "qiskit_version": "1.3.0",
+    "coupling_map": null
+  },
+  "attribution": "Observe production append sites; group contiguous same-role spans after existing reuse. Compile each distinct exact-QPY component once within this run. Sum basis/central/other costs; separately compile unmodified full RTE circuit. Report ratio of sums and additive-minus-full gaps; no exact optimized lineage claim.",
+  "validation": "Off-domain semantic tests and strict full-compile checks on 3 fixed statevectors per selected row; no global phase alignment.",
+  "performance": {
+    "workers": 2,
+    "numeric_threads_per_process": 1,
+    "cpu_only": true,
+    "cache": "same-run exact QPY identity only",
+    "GPU_query_or_use": false
+  },
+  "limits": {
+    "maximum_native_compile_calls": 96,
+    "instructions_per_circuit": 6000,
+    "process_peak_rss_bytes": 805306368,
+    "process_address_space_bytes": 2147483648,
+    "maximum_processes_including_parent": 3,
+    "output_bytes": 16777216,
+    "log_bytes": 1048576,
+    "review_file_bytes": 524288,
+    "wall_time_cap": null
+  },
+  "excluded": [
+    "T synthesis",
+    "new molecule generation",
+    "new seeds or parameter grid",
+    "full PR resource winner",
+    "shots",
+    "LP",
+    "H6 or H8 runs",
+    "old runner or marker reuse"
+  ],
+  "mandatory_STOP": true
+}

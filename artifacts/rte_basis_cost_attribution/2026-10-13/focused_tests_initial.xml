@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="4" time="1.455" timestamp="2026-10-13T12:05:03.568337+09:00" hostname="abe-Precision-3260"><testcase classname="tests.diagnostics.test_rte_basis_cost_attribution" name="test_observer_retains_basis_reuse_and_controlled_operator" time="0.002" /><testcase classname="tests.diagnostics.test_rte_basis_cost_attribution" name="test_relative_phase_is_other_and_not_discarded" time="0.000"><failure message="ValueError: RTE event phase does not match its Taylor order.">def test_relative_phase_is_other_and_not_discarded():
+        registry, request = fixture()
+&gt;       event = replace(request.events[0], phase=-1.+0.j)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/diagnostics/test_rte_basis_cost_attribution.py:50: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.11/dataclasses.py:1492: in replace
+    return obj.__class__(**changes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;string&gt;:17: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = RTEEvent(taylor_order=0, rotation_component_id='toy', product_component_ids=(), selected_component_ids=('toy',), df_fr...068d56417fded4b2b15abdf2e552e2a3dee'),), basis_hash='c85f9c6bd8079339b6ff34506e484068d56417fded4b2b15abdf2e552e2a3dee')
+
+    def __post_init__(self) -&gt; None:
+        order = require_integer_count(self.taylor_order, name="taylor_order")
+        object.__setattr__(self, "taylor_order", order)
+        if order % 2:
+            raise ValueError("RTE event Taylor order must be even.")
+        if not self.rotation_component_id:
+            raise ValueError("rotation_component_id must not be empty.")
+        if len(self.product_component_ids) != order:
+            raise ValueError("RTE event product count must equal its Taylor order.")
+        expected_selected = (*self.product_component_ids, self.rotation_component_id)
+        if self.selected_component_ids != expected_selected:
+            raise ValueError("selected_component_ids must be product order then rotation.")
+        if len(self.df_fragment_ids) != order + 1:
+            raise ValueError("df_fragment_ids length must equal Taylor order plus one.")
+        if len(self.application_sequence) != order + 1:
+            raise ValueError("application sequence length must equal Taylor order plus one.")
+        if tuple(item.application_index for item in self.application_sequence) != tuple(
+            range(order + 1)
+        ):
+            raise ValueError("application indices must be contiguous in circuit order.")
+        expected_roles = ("product",) * order + ("rotation",)
+        if tuple(item.role for item in self.application_sequence) != expected_roles:
+            raise ValueError("application sequence must end in exactly one rotation.")
+        if tuple(item.component_id for item in self.application_sequence) != expected_selected:
+            raise ValueError("application component IDs disagree with event metadata.")
+        probability = float(self.event_probability)
+        coefficient = float(self.event_coefficient)
+        normalization = float(self.event_normalization)
+        if not math.isfinite(probability) or probability &lt; 0.0:
+            raise ValueError("event_probability must be finite and non-negative.")
+        if not math.isfinite(coefficient) or coefficient &lt; 0.0:
+            raise ValueError("event_coefficient must be finite and non-negative.")
+        if not math.isfinite(normalization) or normalization &lt;= 0.0:
+            raise ValueError("event_normalization must be finite and positive.")
+        if not math.isclose(
+            probability,
+            coefficient / normalization,
+            rel_tol=RTE_PARAMETER_REL_TOL,
+            abs_tol=PROBABILITY_ATOL,
+        ):
+            raise ValueError("event_probability does not match coefficient/normalization.")
+        phase = complex(self.phase)
+        if not math.isfinite(phase.real) or not math.isfinite(phase.imag):
+            raise ValueError("RTE event phase must be finite.")
+        expected_phase = complex((-1) ** (order // 2))
+        if abs(phase - expected_phase) &gt; RTE_PARAMETER_ABS_TOL:
+&gt;           raise ValueError("RTE event phase does not match its Taylor order.")
+E           ValueError: RTE event phase does not match its Taylor order.
+
+src/trotterlib/rte.py:613: ValueError</failure></testcase><testcase classname="tests.diagnostics.test_rte_basis_cost_attribution" name="test_overlapping_or_incomplete_segments_rejected" time="0.000" /><testcase classname="tests.diagnostics.test_rte_basis_cost_attribution" name="test_ratio_of_sums_instead_of_mean_row_percentages" time="0.000" /></testsuite></testsuites>
