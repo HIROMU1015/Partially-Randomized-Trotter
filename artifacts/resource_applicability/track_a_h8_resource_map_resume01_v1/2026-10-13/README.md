@@ -1,3 +1,5 @@
+最小上限補充 trajectory835/occurrence4211は利用者が明示承認済み。auth02を再結合しfresh検査PASS、approved=true/runtime_authorization=true。新run01の一回起動へ進む。以下の承認待ち記述は先行REVIEW時点の記録。
+
 # H8 core：8 workerへのcomplete-only引継ぎ
 
 SOURCE `c6692964c948071ed00363b5b711fbca8930ad61`、branch `track-a-h8-resource-map-resume01-20261013`。科学seedのsourceは元の `cb8a56c6b2a772827275f9200b02638030f33f72` を保持する。
