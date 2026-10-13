@@ -5,6 +5,29 @@ from trottertracks.resource_applicability.h48_preflight_contract_v1 import h8_st
 from trottertracks.resource_applicability.h8_saved_projection_v1 import accept,policy
 
 class SavedStateTests(unittest.TestCase):
+    def test_complete_mock_state_port_no_molecule_or_decomposer(self):
+        import tempfile,json
+        from pathlib import Path
+        from trottertracks.resource_applicability.h8_saved_state_port_v1 import SavedStatePort
+        from trottertracks.resource_applicability.ax2b_supplement_records_v1 import AtomicWriter
+        from trottertracks.resource_applicability.ax2b_h6_input_generation_watchdog_v1 import InputProgress
+        from trottertracks.resource_applicability.ax2b_h4_contract_v5 import file_hash
+        with tempfile.TemporaryDirectory() as tmp:
+            b=Path(tmp);parent=b/'parent';parent.mkdir();out=b/'out';out.mkdir();f=self.fixture(1e-8)
+            np.savez(parent/'integrals.npz',one_body=f['one_body'],two_body=f['two_body'],constant=np.array(0.))
+            np.savez(parent/'raw_df.npz',weights=f['lambdas'],blocks=f['g_matrices'],correction=f['correction'],truncation=np.array(0.))
+            m={'plan':h8_state_plan(),'source_commit':'a'*40,'saved_parent':{'directory':str(parent),'file_hashes':{n:file_hash(parent/n) for n in ('integrals.npz','raw_df.npz')}}}
+            writer=AtomicWriter(out,byte_cap=32*2**20);progress=InputProgress(writer,cap=256)
+            class Identity:
+                def __matmul__(self,v):return v.copy()
+            def solver(op,**kwargs):
+                x=kwargs['v0'];np.testing.assert_array_equal(op@x,x);return np.array([1.]),x[:,None]
+            port=SavedStatePort(m,writer,progress,grant_sha256='b'*64,solver=solver,operator_factory=lambda h,s:Identity())
+            port.execute()
+            r=json.loads((out/'snapshot_receipt.json').read_text())
+            self.assertTrue(r['loader_roundtrip_checked']);self.assertEqual(r['metadata']['sector']['dimension'],4900)
+            self.assertEqual(r['calls_attempted']['integral_build'],0);self.assertEqual(r['calls_attempted']['df_decomposition'],0)
+            self.assertEqual(r['calls_attempted']['solver_matvec'],2)
     def test_scalar_order_does_not_replace_independent_coefficients(self):
         from trottertracks.resource_applicability.h8_saved_state_port_v1 import scalar_summary,independent_coefficients
         from trottertracks.resource_applicability.h8_saved_projection_v1 import reconstruct,norm

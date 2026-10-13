@@ -1,6 +1,6 @@
 """Complete state from existing raw H8 inputs; no molecular/decomposer API."""
 from pathlib import Path
-import json,time,numpy as np
+import json,time,math,numpy as np
 from .h8_preflight_input_port_v1 import InputGenerationPort,atomic_npz
 from .h48_preflight_contract_v1 import bounded_h8_solver as bounded_solver
 from .ax2b_h4_science_v5 import primitive_sector_certificate

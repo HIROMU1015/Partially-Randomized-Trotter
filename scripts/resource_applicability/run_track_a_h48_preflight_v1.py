@@ -51,7 +51,7 @@ def execute_worker(m,grant,directory):
         'manifest_sha256':digest(m),'approved_by_user':grant['approved_by_user']})
     progress=Progress(writer,cap=m['plan']['caps_proposed']['progress_records'])
     trace=make_resource_trace(writer,progress.start)
-    status='COMPLETE';reason=None
+    status='COMPLETE';reason=None;port=None
     try:
         if m['scope']=='H8_STATE':
             from trottertracks.resource_applicability.ax2b_h6_input_generation_watchdog_v1 import InputProgress
@@ -87,7 +87,9 @@ def execute_worker(m,grant,directory):
     except Exception as e:
         status='STOP';reason=type(e).__name__+':'+str(e)[:512]
     writer.write('worker_terminal.json',{'status':status,'reason':reason,'scope':m['scope'],
-        'source_commit':m['source_commit'],'retry':False,'H8_full_campaign_authorized':False},terminal=True)
+        'source_commit':m['source_commit'],'retry':False,'H8_full_campaign_authorized':False,
+        'calls_attempted':dict(port.calls.used) if port is not None else None,
+        'calls_completed':dict(port.completed) if port is not None else None},terminal=True)
     return 0 if status=='COMPLETE' else 1
 
 def validate_result(directory,task,manifest):
