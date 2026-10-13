@@ -77,3 +77,14 @@ Kを変えず未知Fだけを安くする案と、K/step/精度/推定器を変�
 次に新しい研究方向を比較する場合は、研究全体の未解決課題へ戻り、以前の次点「基底固有位相向けPF」も含む候補をGPTで検討することをユーザーが推奨している。
 現THRIFT構成の継続最適化を前提にしない。既存PR/PF/DF/THRIFTで解決できていない問題と構成原理を問うが、この文書で問題・算法・候補を新規採択/詳細分析していない。
 新方向の比較・選定はGPTの別途開始承認、科学計算/compileはCodexの別途実行承認が必要。今回の作業は成果固定・終了記録・公開確認まで、Mandatory STOP。
+
+
+## GitHub公開・remote再取得確認
+
+成果固定payloadは`e54991ef2c80fe463de9cdb865b2c48d5b981607`、branchは`qc-mixed-access-feasibility-closure-20261013`。
+[固定commitの成果・終了記録](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/e54991ef2c80fe463de9cdb865b2c48d5b981607/docs/research/qc_mixed_access_feasibility_v1_closure_20261013.md)、[固定commitのGPTレビュー原文](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/e54991ef2c80fe463de9cdb865b2c48d5b981607/docs/reviews/representation_exploration/qc_mixed_access_feasibility_v1_scientific_review_2026-10-13.md)。
+
+[取得receipt](../../artifacts/qc_mixed_access_closure/2026-10-13/publication/receipt.json)：GitHubから取得した独立bare cache（local alternatesなし、shallow history）で26変更blobs/1,305,613bytes、レビュー原文32,157bytes/SHA、既存229files、旧126manifest entriesとnon-result fields、31追加relative linksを照合した。
+これは資料の取得性・byte保全確認であり、科学的再実行・外部科学再現・immutable CIではない。原文のMarkdown hard-break空白も保全し、原reviewを編集していない。
+
+今回の成果固定・文書整理は完了。同じGPTレビューの再実施は不要。現templateの詳細backendへ進まず現feasibility系列を終了し、次の新方向比較は別途GPT開始承認を待つ。新科学/再集計/再認証/compile/GPTレビュー0、Mandatory STOP。

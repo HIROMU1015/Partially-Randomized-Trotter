@@ -2,6 +2,8 @@
 
 ## 2026-10-13 mixed-access H4成果確定：現templateの投資見送り・系列終了
 
+[公開・remote取得確認](../../artifacts/qc_mixed_access_closure/2026-10-13/publication/receipt.json)：payload `e54991ef2c80fe463de9cdb865b2c48d5b981607`、26変更blobs/旧229files/原レビューSHA/31追加リンク一致。成果固定・文書整理完了、次の新方向GPT比較は別途開始承認待ち、Mandatory STOP。
+
 [受領GPT判断の反映・claim・再開条件](qc_mixed_access_feasibility_v1_closure_20261013.md)。完了レビュー原文をbyte保存し、現bitwise/occupation算術templateの詳細function backendへ進まず、現H4 feasibility系列を終了する。THRIFT量子化学適用全体の終了・一般的不能・最適回路lower boundの判断ではない。
 H4直線1Å/STO-3G/realRHF8mode・ν4、DF16全保持（rank10は1e−12 reportingのみ）、L_Dなし/PRなし、T1,4/r倍増1…1024・εU=.001のideal PF step改善と、登録template/κ3,6,12 hypothesisで全273frontierの予算不足を区別して保持。原status `NO_POSITIVE_BUDGET_IN_REGISTERED_MODEL`、function実費用とground-energy全cost未評価。
 今回文書整理のみ、新計算/再集計/証拠再認証/synthetic/compile/GPT再レビュー0。旧source/result/auth/STOP・126result sets/non-result fields・global description欠落FAILとN1STOP/N2HOLD/N3CLOSED、別Trackは保持。再開はknown費用/必要stepを変える具体的構成・適用根拠または結論を変える新証拠から検討し、別の科学レビュー/計算承認が必要。

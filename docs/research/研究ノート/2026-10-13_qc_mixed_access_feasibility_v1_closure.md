@@ -5,3 +5,8 @@
 H4直線1Å/STO-3G/realRHF8mode・ν4、DF16全保持/L_Dなし/PRなし、T1/4・r倍増1…1024・εU=.001での理想step低下と登録modelの負予算を保持。現bitwise occupation templateの詳細backend投資を見送り、現feasibility系列を終了。全THRIFT化学適用やground-energy目的を終了しない。
 
 科学source/result/auth/raw/元STOP/126result sets/non-result fields/global既存descriptionFAILを保全。N1STOP/N2HOLD/N3CLOSED、他Track不変。新科学/GPTレビュー/再集計/再認証/synthetic/compile0。同レビューの反復不要。再開は具体的known費用/必要stepを変える構成・適用根拠または新証拠から、別承認のGPT判断へ。新方向候補の比較・採択は今回始めず、元Hamiltonianのground-energy低コスト化を維持。Mandatory STOP。
+
+
+## 公開確認の追記
+
+成果固定payload `e54991ef2c80fe463de9cdb865b2c48d5b981607`をHIROMU1015 originへpushし、独立remote再取得で26変更blobs/1,305,613bytes、原review32157bytes/SHA、旧229files・126manifest entries/non-result fields・31リンクを照合した。[取得receipt](../../../artifacts/qc_mixed_access_closure/2026-10-13/publication/receipt.json)。成果固定・現系列終了の文書作業を完了し、同レビュー反復・新方向選定・新scienceは開始せず、Mandatory STOP。
