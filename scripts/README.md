@@ -1,5 +1,7 @@
 # scripts 索引
 
+H8 signal/8case compile：[preparer](resource_applicability/prepare_track_a_h8_signal_preflight_v1.py)、[runner](resource_applicability/run_track_a_h8_signal_preflight_v1.py)、[契約](../docs/research/track_a_h8_signal_compile_preflight_v1.md)。SIGNAL→単独HEAVY→REMAINING、各one-shot/grant/source/input/seed binding、20compile枠だけ。本格H8への自動進行なし。
+
 H4保存metadata集約：[script](../artifacts/resource_applicability/track_a_h4_common_anchor_result_v1/2026-10-13/aggregate_saved_metadata.py)、[結果](../artifacts/resource_applicability/track_a_h48_preflight_result_v1/2026-10-13/README.md)。新science0、532CSV/51G・SE行の独立確認。
 
 H8保存raw state：[準備](../artifacts/resource_applicability/track_a_h8_saved_state_preflight_v1/2026-10-13/README.md)。既存h48 preparer/runnerのH8_STATE scope、CPU30/31。H4 runtime sourceは別worktreeで保全。

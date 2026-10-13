@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+H8 signal/compile事前検証：[資料入口](artifacts/resource_applicability/track_a_h8_signal_compile_preflight_v1/2026-10-13/README.md)、[契約](docs/research/track_a_h8_signal_compile_preflight_v1.md)。保存rank28/sector4900入力、独立CSR/reference・spin primitive・native16mode、8case/20compile/4trajectoryのみ。SOURCE5c207fb8、15人工検査PASS。旧runtime238件不変、本格H8未起動。
+
 H4補完/H8 state：[現在の統合結果入口](artifacts/resource_applicability/track_a_h48_preflight_result_v1/2026-10-13/README.md)。H4 16signal/264groups/532compile/256trajectory完了、H8 input/state rank28/sector4900/solver61完了、source217c/2ff3・native exit0/cleanup0。H8cost/full comparisonは未実行。
 
 H8 saved state：[準備](artifacts/resource_applicability/track_a_h8_saved_state_preflight_v1/2026-10-13/README.md)。SOURCE1d6b277d、24 artificial/mock、SCF/DF再実行0・weighted同9.9e-11 gate N16、stateのみ。本格H8未認可。

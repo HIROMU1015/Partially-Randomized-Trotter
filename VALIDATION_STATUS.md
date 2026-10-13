@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-13 H8 signal/native実検証完了・8case compile実測中
+
+[入口](artifacts/resource_applicability/track_a_h8_signal_compile_preflight_v1/2026-10-13/README.md)。linearH8/1Å/STO-3G/tol-only rank28/16modes/sector4900/T.8、固定入力d4c43461不変。SOURCE5c207fb8、旧runtime238不変、人工15PASS。実signal8/8、native388時間点×3probe=1164、native/spin最大9.52e-15、spin/CSR9.75e-15、signal6.04e-14・vector4.55e-13以下、reference63717 calls。wall261.436秒、aggregate peak0.599GiB、exit0/全reap/cleanup0。新CSR/split-time/eigen-residualは経験的検証でH6 dense400証拠と同一視しない。SCF/DF/state再生成0、共有/venv/旧H4変更0、GPU0。20compile/4trajectory実測は進行中、本格H8契約/grant/性能保証なし。
+
 ## 2026-10-13 H4固定anchor・H8入力/stateの実完了
 
 [統合入口](artifacts/resource_applicability/track_a_h48_preflight_result_v1/2026-10-13/README.md)。H4/1Å/STO-3G/rank12/T.8/delta.1–.8、16signal＋264group/532wrapper、actual532compile/256trajectory、cost wall1068.455秒、source217c971d、exit0/全reap/cleanup0。固定panel点PR/PF比.507/.472/.453/.511、51保存CSV G/SE別算術PASS、母平均/旧full-grid最良ではない。H8/1Å/STO-3G/16modes/sector4900/actualDF28、source2ff3fc9f・weighted etaN16=3.6595e-12・decision9.9e-11、SCF/DF追加0/0・state61matvecでsnapshot受領、exit0/cleanup0。26local人工/mockはCIでなく、ground-state/u/16-mode compiler/cost/full comparison未認定。旧failed exact matvecはnull/予約10000保持。共有/venv/旧H4変更0。
