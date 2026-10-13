@@ -1,5 +1,7 @@
 """Pure mock pool/observer regressions; no live worker or scientific compilation."""
 import unittest
+import resource
+from unittest.mock import patch
 from trottertracks.resource_applicability.h4_b0i_map.pool import GroupQueue,FrameReader
 from trottertracks.resource_applicability.h4_b0i_map import observer
 from trottertracks.resource_applicability.h4_b0i_map.memory_budget import required_available
@@ -45,6 +47,16 @@ class ParallelTests(unittest.TestCase):
         memory=dict(observed_at=1.,available=63*2**30,psi_full_avg10=0.,oom_events={'fixture':0})
         row=state.evaluate(memory,[dict(pid=1,rss=1,address_space=1)],dict(rss=1,address_space=1),.9,1.)
         self.assertEqual(row['first_failure']['reason'],'memory_headroom')
+    def test_driver_soft_limit_preserves_larger_child_cap(self):
+        from trottertracks.resource_applicability.h4_geometry.resources import limit_owned_address_space
+        limits={'driver':(resource.RLIM_INFINITY,resource.RLIM_INFINITY)};role=['driver']
+        def get(which):return limits[role[0]]
+        def set_(which,value):limits[role[0]]=value
+        with patch.object(resource,'getrlimit',get),patch.object(resource,'setrlimit',set_):
+            limit_owned_address_space(8*2**30,preserve_hard=True)
+            limits['worker']=limits['driver'];role[0]='worker';limit_owned_address_space(32*2**30)
+        self.assertEqual(limits['driver'],(8*2**30,resource.RLIM_INFINITY))
+        self.assertEqual(limits['worker'],(32*2**30,32*2**30))
 
 
 if __name__=='__main__':unittest.main()

@@ -215,7 +215,7 @@ def execute(repo,plan_path,auth_path,review_path):
     old_alrm=signal.signal(signal.SIGALRM,lambda *_:(_ for _ in ()).throw(Stop('map stage wall deadline')))
     old_alarm=signal.alarm(plan['caps']['stage_wall_seconds'])
     try:
-        limit_owned_address_space(plan['caps']['driver_AS_RSS'])
+        limit_owned_address_space(plan['caps']['driver_AS_RSS'],preserve_hard=True)
         os.sched_setaffinity(0,{auth['role_cpus']['driver']})
         # Guard before importing NumPy/Qiskit or decoding scientific arrays.
         journal.write('started.json',dict(plan_digest=digest(plan),auth_digest=digest(auth),source=plan['source_commit'],

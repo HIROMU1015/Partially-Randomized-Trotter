@@ -7,7 +7,7 @@ from ..h4_b0i import adapter as science
 from ..h4_b0i.contract import FLAGS, claim_lock, FirstStop, cleanup
 import time
 
-NAMESPACE = 'h4-b0i-map240-parallel-run01-20261014'
+NAMESPACE = 'h4-b0i-map240-parallel-run02-20261014'
 GEOMETRIES = ('0.70','0.80','0.90','1.10','1.40','1.60')
 PREFIXES = (3,4,5,6,9)
 QS = (1,2,4,8)
@@ -21,8 +21,8 @@ CAPS = dict(logical_wrappers=240,new_compile_calls=234,verified_reuses=6,workers
     storage_required_bytes=320*2**20,storage_required_inodes=1024,
     run_inode_cap=1024,journal_bytes=8*2**20,bootstrap_frame_bytes=8192)
 CARRY = dict(actual_invocations=73029,actual_invocation_cap=74805,
-    charged_bytes=13615239890,charge_cap_bytes=17*2**30,
-    recorded_wall_seconds=268330.081695186,failed_calls_refunded=False)
+    charged_bytes=13615305426,charge_cap_bytes=17*2**30,
+    recorded_wall_seconds=268330.85143506527,failed_calls_refunded=False)
 PILOT_KEYS = {('0.70',5,1,a) for a in ('cosine','sine')} | {
     ('0.80',5,1,a) for a in ('cosine','sine')} | {
     ('1.40',3,1,a) for a in ('cosine','sine')}

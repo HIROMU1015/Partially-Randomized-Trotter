@@ -14,7 +14,7 @@ ROOT=Path(__file__).absolute().parents[2];sys.path.insert(0,str(ROOT/'src'))
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--source',required=True)
-    parser.add_argument('--output',type=Path,required=True);args=parser.parse_args()
+    parser.add_argument('--output',type=Path,required=True);parser.add_argument('--carry-receipt',type=Path);args=parser.parse_args()
     resource.setrlimit(resource.RLIMIT_AS,(512*2**20,512*2**20));resource.setrlimit(resource.RLIMIT_CPU,(90,90));signal.alarm(120)
     from trottertracks.resource_applicability.h4_b0i import adapter as science
     from trottertracks.resource_applicability.h4_b0i_map import contract as c,runtime as runtime
@@ -31,8 +31,13 @@ def main():
     prior=load(pilot/'plan.json');measured=load(pilot/'compiled_wrapper_metrics.json')
     native=load(pilot/'native_resource_receipt.json')
     assert native['budget']['cumulative_actual_consumed_or_reserved']==c.CARRY['actual_invocations']
-    assert native['budget']['charge_at_receipt_bytes']==c.CARRY['charged_bytes']
-    assert native['budget']['recorded_wall_seconds']==c.CARRY['recorded_wall_seconds']
+    if args.carry_receipt is None:
+        assert native['budget']['charge_at_receipt_bytes']==c.CARRY['charged_bytes']
+        assert native['budget']['recorded_wall_seconds']==c.CARRY['recorded_wall_seconds']
+    else:
+        stopped=load(args.carry_receipt)
+        assert stopped['carry_after_bootstrap_stop']==c.CARRY
+        assert stopped['native_terminal']['actual_consumed_or_reserved']==0 and stopped['native_terminal']['cleanup_complete']
     reuse={c.key(t):(t,next(r for r in measured['results'] if r['task_id']==t['task_id'])) for t in prior['tasks']}
     scalar=ROOT/'artifacts/resource_applicability/track_a_h4_geometry_scalar_diagnostic/2026-10-13'
     receipts=load(scalar/'source_input_provenance_v1.json')['inputs'];phases=load(scalar/'saved_b0_phase_sensitivity_v1.json')
@@ -92,7 +97,8 @@ def main():
     public=[ROOT/item['path'] for item in prior['bound_public_files']]
     public += [pilot/n for n in ('plan.json','authorization.json','review.json','binding.json','compiled_wrapper_metrics.json','native_resource_receipt.json','result_artifact_manifest.json')]
     public += [out/'frozen_inputs_byte_binding.json']
-    root=private_path('/home/AbeHiromu/projects/h4-handoff-evidence/20261014/h4-b0i-map-parallel-run01/future-map240');root.mkdir(exist_ok=True)
+    if args.carry_receipt is not None:public.append(args.carry_receipt)
+    root=private_path('/home/AbeHiromu/projects/h4-handoff-evidence/20261014/h4-b0i-map-parallel-run02/future-map240');root.mkdir(exist_ok=True)
     plan=dict(schema_version='h4-b0i-map240-plan-v2',namespace=c.NAMESPACE,method=science.METHOD,semantics=science.SEMANTICS,
         source_commit=args.source,original_science_source=science.ORIGINAL_SOURCE,tasks=tasks,
         source_closure=closure,bound_public_files=[stamp(path) for path in sorted(set(public))],
