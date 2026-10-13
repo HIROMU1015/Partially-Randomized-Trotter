@@ -5,3 +5,5 @@
 原稿のH4最小528compileはprimary16+512であり、ordinary感度4を追加した実枠532を明示。旧消費/予約返却・resetなし。H4phaseの履歴M1 actual12128/trajectory6208と他unknown actual、別稼働production予算を区別する。H6carry1716/842＋予約20/10を保持。
 
 通常source決定・light binding/testは自律実施。worker8/内部thread1/hash reuse、own-processのみaffinity/AS/core0を適用する準備。環境の大きな再監査campaignをせず、fixed native subsetをfreshに検査する。公開SOURCEの6file bytesをremote照合、plan/authは別REVIEW資料に保存。科学的なH8比較契約は未確定。
+
+起動前interface点検でResourceTrace(writer, elapsed)の引数を一つ誤って接続していたため訂正。SOURCE d5900669c9e58215b19c7addfc5760ff63a2ed00、19 mock/callback検査合格。新auth02へbinding、auth01未起動・科学call0。旧科学条件/入力/profile/予算不変。

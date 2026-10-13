@@ -1,5 +1,7 @@
 # H4 native anchor補完・H8入力事前検証：起動準備入口
 
+現在のSOURCE `d5900669c9e58215b19c7addfc5760ff63a2ed00`。監視writer/elapsed callbackの接続を起動前に訂正し、[19限定検査](local_tests_trace_fixed.json)に合格。計算call消費0、旧source・入力・compiler・予算条件不変。[新H4認可](h4-signal-auth-02/manifest.json)、[新H8入力認可](h8-input-auth-02/manifest.json)、[SOURCE closure](source_closure_trace_fixed.json)。旧auth01は未起動の履歴として保持する。以下のb6d4/18件は前段記録。
+
 2026-10-13 JST。利用者の「準備できたら開始してよい」と対象「1と3」により、H4比較補完とH8小規模事前検証を認可。H8本格比較は認可しない。
 
 SOURCE `b6d4bdd7f5e388dba6a386c94a0c8cfee8b105c1`、[closure](source_closure.json)、[18限定scalar/mock](local_tests.json)。旧257 runtime・科学library・既存H4 state/Hamiltonianは不変。既存private venvを使い、install/upgrade/共有設定変更0。SOURCEはGitHub取得byteを照合済み。
