@@ -82,7 +82,7 @@ def main():
     put('profile_audit.json',dict(environment_matches=True,compiler_matches=True,environment_fingerprint=env['fingerprint'],compiler_fingerprint=comp['fingerprint'],old_compiler_output_equivalence=False,shared_or_venv_changes=0))
     old_closure=prior['source_closure']
     new_paths=[*sorted((ROOT/'src/trottertracks/resource_applicability/h4_b0i_map').glob('*.py')),
-        ROOT/'tests/tracks/resource_applicability/test_h4_b0i_map.py',
+        ROOT/'tests/tracks/resource_applicability/test_h4_b0i_map.py',ROOT/'tests/tracks/resource_applicability/test_h4_b0i_parallel.py',
         *[ROOT/'scripts/resource_applicability'/n for n in ('run_h4_b0i_map240.py','prepare_h4_b0i_map240.py','run_h4_b0i_map_tests.py')]]
     closure=old_closure+[stamp(p) for p in new_paths]
     for item in closure:
@@ -92,8 +92,8 @@ def main():
     public=[ROOT/item['path'] for item in prior['bound_public_files']]
     public += [pilot/n for n in ('plan.json','authorization.json','review.json','binding.json','compiled_wrapper_metrics.json','native_resource_receipt.json','result_artifact_manifest.json')]
     public += [out/'frozen_inputs_byte_binding.json']
-    root=private_path('/home/AbeHiromu/projects/h4-handoff-evidence/20261014/h4-b0i-map-preparation/future-map240');root.mkdir(exist_ok=True)
-    plan=dict(schema_version='h4-b0i-map240-plan-v1',namespace=c.NAMESPACE,method=science.METHOD,semantics=science.SEMANTICS,
+    root=private_path('/home/AbeHiromu/projects/h4-handoff-evidence/20261014/h4-b0i-map-parallel-run01/future-map240');root.mkdir(exist_ok=True)
+    plan=dict(schema_version='h4-b0i-map240-plan-v2',namespace=c.NAMESPACE,method=science.METHOD,semantics=science.SEMANTICS,
         source_commit=args.source,original_science_source=science.ORIGINAL_SOURCE,tasks=tasks,
         source_closure=closure,bound_public_files=[stamp(path) for path in sorted(set(public))],
         environment_profile=env_path,compiler_profile=compiler_path,compiler_options=comp['explicit_options'],
@@ -103,9 +103,9 @@ def main():
         caps=c.CAPS,carry=c.CARRY,conservative_prior_stage_charge_bytes=native['budget']['conservative_charge_with_full_stage_cap'],
         output=str(root/c.NAMESPACE),control=str(root/(c.NAMESPACE+'-control')),one_shot_lock=str(root/(c.NAMESPACE+'.lock')),
         approved=False,runtime_authorization=False,allowed_cpus=[],absolute_launch_command=None,
-        proposed_role_cpus=dict(worker=0,driver=1,observer=2,permission=False),**c.FLAGS)
+        proposed_role_cpus=dict(workers=[],driver=None,observer=None,permission=False),**c.FLAGS)
     c.validate_plan(plan);runtime.source_gate(ROOT,plan);mapped=runtime.reuse_gate(ROOT,plan)
-    auth=dict(schema_version='h4-b0i-map240-authorization-v1',namespace=c.NAMESPACE,source_commit=args.source,
+    auth=dict(schema_version='h4-b0i-map240-authorization-v2',namespace=c.NAMESPACE,source_commit=args.source,
         plan_digest=c.digest(plan),approved=False,runtime_authorization=False,allowed_cpus=[],role_cpus={},absolute_launch_command=None,user_approval_evidence_sha256=None,**c.FLAGS)
     review=dict(schema_version='h4-b0i-map240-review-v1',approved=False,plan_digest=c.digest(plan),authorization_digest=c.digest(auth),scientific_scope='complete adopted comparison domain; final scope/claim judgment remains separate',launch_instruction_received=False)
     put('plan.json',plan);put('authorization_draft.json',auth);put('review_draft.json',review)

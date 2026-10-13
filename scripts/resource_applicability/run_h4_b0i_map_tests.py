@@ -37,11 +37,14 @@ def main():
     sys.addaudithook(audit)
     def no_affinity(*args):blocked['affinity_changes']+=1;raise AssertionError('affinity forbidden in preparation tests')
     os.sched_setaffinity=no_affinity
-    path=ROOT/'tests/tracks/resource_applicability/test_h4_b0i_map.py'
-    spec=importlib.util.spec_from_file_location('bounded_b0i_map_contract_tests',path);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    suite=unittest.TestSuite()
+    for name in ('test_h4_b0i_map.py','test_h4_b0i_parallel.py'):
+        path=ROOT/'tests/tracks/resource_applicability'/name
+        spec=importlib.util.spec_from_file_location(name[:-3],path);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        suite.addTests(unittest.defaultTestLoader.loadTestsFromModule(module))
     started=time.monotonic()
     with (args.output/'tests.txt').open('x') as log:
-        result=unittest.TextTestRunner(stream=log,verbosity=2).run(unittest.defaultTestLoader.loadTestsFromModule(module))
+        result=unittest.TextTestRunner(stream=log,verbosity=2).run(suite)
     status=dict(line.split(':',1) for line in Path('/proc/self/status').read_text().splitlines() if ':' in line)
     receipt=dict(tests=result.testsRun,failures=len(result.failures),errors=len(result.errors),skipped=len(result.skipped),
         passed=result.wasSuccessful(),wall_seconds=time.monotonic()-started,max_RSS_bytes=int(status['VmHWM'].split()[0])*1024,

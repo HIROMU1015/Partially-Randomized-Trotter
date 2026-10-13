@@ -25,7 +25,7 @@ def fake_plan():
                         original_B0_template='fake',action='VERIFY_REUSE' if (g,p,q,axis) in c.PILOT_KEYS else 'COMPILE',reuse_receipt=None)
                     if t['action']=='VERIFY_REUSE':t['reuse_receipt']=dict(old_task_id='b'*64,expected_numeric_fingerprint='a'*64)
                     t['task_id']=c.digest(t);tasks.append(t)
-    return dict(schema_version='h4-b0i-map240-plan-v1',namespace=c.NAMESPACE,method=science.METHOD,
+    return dict(schema_version='h4-b0i-map240-plan-v2',namespace=c.NAMESPACE,method=science.METHOD,
         semantics=science.SEMANTICS,source_commit='1'*40,original_science_source=science.ORIGINAL_SOURCE,
         tasks=tasks,caps=copy.deepcopy(c.CAPS),carry=copy.deepcopy(c.CARRY),
         approved=False,runtime_authorization=False,allowed_cpus=[],absolute_launch_command=None,
@@ -34,10 +34,10 @@ def fake_plan():
 
 
 def approval(plan):
-    plan.update(approved=True,runtime_authorization=True,allowed_cpus=[0,1,2],absolute_launch_command='SYNTHETIC_ONLY')
-    auth=dict(schema_version='h4-b0i-map240-authorization-v1',namespace=c.NAMESPACE,source_commit=plan['source_commit'],
-        plan_digest=c.digest(plan),approved=True,runtime_authorization=True,allowed_cpus=[0,1,2],
-        role_cpus=dict(worker=0,driver=1,observer=2),absolute_launch_command='SYNTHETIC_ONLY',user_approval_evidence_sha256='e'*64,**c.FLAGS)
+    plan.update(approved=True,runtime_authorization=True,allowed_cpus=list(range(14)),absolute_launch_command='SYNTHETIC_ONLY')
+    auth=dict(schema_version='h4-b0i-map240-authorization-v2',namespace=c.NAMESPACE,source_commit=plan['source_commit'],
+        plan_digest=c.digest(plan),approved=True,runtime_authorization=True,allowed_cpus=list(range(14)),
+        role_cpus=dict(workers=list(range(12)),driver=12,observer=13),absolute_launch_command='SYNTHETIC_ONLY',user_approval_evidence_sha256='e'*64,**c.FLAGS)
     return auth,dict(approved=True,plan_digest=c.digest(plan),authorization_digest=c.digest(auth))
 
 

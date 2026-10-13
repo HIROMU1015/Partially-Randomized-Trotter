@@ -4,17 +4,18 @@ from pathlib import Path
 from ..h4_geometry.identity import require, fingerprint, hash_id
 from ..h4_geometry.prelaunch_audit import private_path
 from ..h4_b0i import adapter as science
-from ..h4_b0i.contract import FLAGS, fresh_gate, claim_lock, FirstStop, cleanup
+from ..h4_b0i.contract import FLAGS, claim_lock, FirstStop, cleanup
+import time
 
-NAMESPACE = 'h4-b0i-map240-20261014'
+NAMESPACE = 'h4-b0i-map240-parallel-run01-20261014'
 GEOMETRIES = ('0.70','0.80','0.90','1.10','1.40','1.60')
 PREFIXES = (3,4,5,6,9)
 QS = (1,2,4,8)
 PILOT_SOURCE = '8f6c1bc8ceeeffddbecf170ef6ddb0fe6d18b63b'
 PILOT_RESULT_COMMIT = 'c377b074ab6cc442d6eb73ca4417bc56fa663d5c'
-CAPS = dict(logical_wrappers=240,new_compile_calls=234,verified_reuses=6,workers=1,
-    driver_AS_RSS=8*2**30,worker_AS_RSS=8*2**30,observer_AS=256*2**20,
-    observer_RSS=64*2**20,admission_bytes=int(120.25*2**30),threads=1,
+CAPS = dict(logical_wrappers=240,new_compile_calls=234,verified_reuses=6,workers=12,
+    driver_AS_RSS=8*2**30,worker_AS_RSS=32*2**30,observer_AS=256*2**20,
+    observer_RSS=64*2**20,admission_bytes=int(456.25*2**30),threads=1,
     observation_max_seconds=5,observer_period_seconds=1,stage_wall_seconds=14400,
     task_wall_seconds=600,stage_output_bytes=256*2**20,observer_output_bytes=160*2**20,
     storage_required_bytes=320*2**20,storage_required_inodes=1024,
@@ -36,7 +37,7 @@ def key(task):
 
 
 def validate_plan(plan):
-    require(plan['schema_version']=='h4-b0i-map240-plan-v1' and plan['namespace']==NAMESPACE,'full-map namespace/schema')
+    require(plan['schema_version']=='h4-b0i-map240-plan-v2' and plan['namespace']==NAMESPACE,'parallel full-map namespace/schema')
     require(plan['method']==science.METHOD and plan['semantics']==science.SEMANTICS and
             plan['original_science_source']==science.ORIGINAL_SOURCE,'unchanged B0+I science')
     require(plan['caps']==CAPS and plan['carry']==CARRY,'fixed proposed caps and conserved carry')
@@ -69,7 +70,7 @@ def validate_plan(plan):
 
 
 def authorize(plan,auth,review):
-    require(auth.get('schema_version')=='h4-b0i-map240-authorization-v1' and
+    require(auth.get('schema_version')=='h4-b0i-map240-authorization-v2' and
             auth.get('approved') is True and auth.get('runtime_authorization') is True,'new full-map explicit approval required')
     validate_plan(plan)
     require(plan.get('approved') is True and plan.get('runtime_authorization') is True and
@@ -78,14 +79,34 @@ def authorize(plan,auth,review):
     require(auth['plan_digest']==digest(plan) and auth['source_commit']==plan['source_commit'] and
             auth['namespace']==NAMESPACE and all(auth.get(k) is v for k,v in FLAGS.items()),'new grant binding')
     hash_id(auth['user_approval_evidence_sha256'])
-    roles=auth['role_cpus'];require(set(roles)=={'worker','driver','observer'},'three own roles')
-    selected=list(roles.values())
-    require(all(type(v) is int and v>=0 for v in selected) and len(set(selected))==3 and
+    roles=auth['role_cpus'];require(set(roles)=={'workers','driver','observer'},'own worker pool and driver/observer roles')
+    require(type(roles['workers']) is list and len(roles['workers'])==CAPS['workers'],'explicit worker CPU assignments')
+    selected=[*roles['workers'],roles['driver'],roles['observer']]
+    require(all(type(v) is int and v>=0 for v in selected) and len(set(selected))==CAPS['workers']+2 and
             sorted(selected)==sorted(auth['allowed_cpus']),'explicit distinct CPU permission')
     require(type(auth['absolute_launch_command']) is str and bool(auth['absolute_launch_command']),'explicit command')
     require(review.get('approved') is True and review['plan_digest']==digest(plan) and
             review['authorization_digest']==digest(auth),'final full-map binding review')
     return selected
+
+
+def fresh_gate(plan,auth,observation,*,now=None):
+    now=time.monotonic() if now is None else now
+    memory=observation['memory'];caps=plan['caps'];selected=auth['allowed_cpus']
+    require(0<=now-memory['observed_at']<=5 and observation['duration_seconds']<=5,'fresh observation within5s')
+    require(memory['available']>=caps['admission_bytes'],'parallel admitted available memory')
+    require(set(selected)<=set(observation['scheduler_affinity'])&set(memory['process_cpus'])&set(observation['online_cpus']),'fresh CPU availability')
+    topology={v['cpu']:v for v in observation['topology']};items=[topology[c] for c in selected]
+    require(len({(v['package'],v['core']) for v in items})==caps['workers']+2 and
+        all(v['busy_fraction'] is not None and v['busy_fraction']<=.2 for v in items),'distinct idle physical cores')
+    require(memory['psi_full_by_scope']['host']<1 and all(v==0 for k,v in memory['psi_full_by_scope'].items() if k!='host'),'fresh host/cgroup pressure')
+    fs=observation['filesystem'];require(fs['available_bytes']>=caps['storage_required_bytes'] and fs['available_inodes']>=caps['storage_required_inodes'],'block/inode capacity')
+    require(observation['quota']['status']=='KNOWN','quota unknown STOP')
+    for row in observation['quota']['items']:
+        require(row['status'] in ('ACTIVE','DISABLED'),'known quota scope')
+        if row['status']=='ACTIVE':
+            require(row['available_bytes'] is None or row['available_bytes']>=caps['storage_required_bytes'],'byte quota')
+            require(row['available_inodes'] is None or row['available_inodes']>=caps['storage_required_inodes'],'inode quota')
 
 
 def bound_fingerprint(task,source,numeric):

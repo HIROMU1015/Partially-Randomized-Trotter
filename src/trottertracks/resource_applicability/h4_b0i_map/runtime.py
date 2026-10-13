@@ -208,7 +208,7 @@ def execute(repo,plan_path,auth_path,review_path):
     temp=control/'private-temp';temp.mkdir(mode=0o700)
     for name in ('mpl','cache'):(temp/name).mkdir()
     journal=Journal(output);first=FirstStop();children=[];monitor=None;records=[];started=time.monotonic()
-    from ..h4_geometry.observer import IndependentObserver,OwnedIdentity,identity,process_sample
+    from .observer import IndependentObserver,OwnedIdentity,identity,process_sample
     from ..h4_geometry.resources import limit_owned_address_space
     from ..h4_geometry.pressure_policy import PARAMETERS
     old_term=signal.signal(signal.SIGTERM,lambda *_:(_ for _ in ()).throw(Stop('observer signalled owned driver')))
@@ -220,7 +220,7 @@ def execute(repo,plan_path,auth_path,review_path):
         # Guard before importing NumPy/Qiskit or decoding scientific arrays.
         journal.write('started.json',dict(plan_digest=digest(plan),auth_digest=digest(auth),source=plan['source_commit'],
             carry=plan['carry'],grant_namespace=plan['namespace'],roles=auth['role_cpus']))
-        monitor=IndependentObserver(sys.executable,control/'observer.jsonl',scope='PRODUCTION',workers=1,
+        monitor=IndependentObserver(sys.executable,control/'observer.jsonl',scope='PRODUCTION',workers=plan['caps']['workers'],
             output_cap=plan['caps']['observer_output_bytes'],runtime_authorization=True,wall_started=started,
             prior_wall=0,allowed_cpus=auth['allowed_cpus'],role_cpus=[auth['role_cpus']['observer']],
             pressure_profile=PARAMETERS,pressure_baseline=fresh['memory'],worker_cap=plan['caps']['worker_AS_RSS'])
@@ -231,34 +231,64 @@ def execute(repo,plan_path,auth_path,review_path):
         for info in {t['input_file']['path']:t['input_file'] for t in plan['tasks']}.values():
             actual=streaming_sha(Path(info['path']))
             require(actual=={'sha256':info['sha256'],'bytes':info['bytes']},'fresh frozen input SHA/bytes')
-        env=dict(os.environ,TMPDIR=str(temp),MPLCONFIGDIR=str(temp/'mpl'),XDG_CACHE_HOME=str(temp/'cache'),
-                 PYTHONNOUSERSITE='1',PYTHONDONTWRITEBYTECODE='1',QISKIT_PARALLEL='false')
-        monitor.phase('owned_worker_start')
-        process=subprocess.Popen([sys.executable,'-P','-B',str(repo/'scripts/resource_applicability/run_h4_b0i_map240.py'),
-            '--owned-worker',str(os.getpid())],stdin=subprocess.PIPE,stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,cwd=repo,env=env,close_fds=True,bufsize=0)
-        children.append((process,None))
-        owner=OwnedIdentity(identity(process_sample(process.pid)),os.getpid());children[-1]=(process,owner);monitor.own_child(process.pid)
-        os.set_blocking(process.stdin.fileno(),False);os.set_blocking(process.stdout.fileno(),False)
-        send_wait(process,{'plan_path':str(plan_path),'auth_path':str(auth_path),'review_path':str(review_path),'repo':str(repo),'plan_digest':digest(plan)},monitor,plan,started)
-        ready=receive_wait(process,monitor,plan,started)
-        require(ready.get('status')!='ERROR','worker bootstrap first error: '+str(ready.get('error')))
-        require(ready=={'ready':process.pid},'new worker source/auth handshake')
-        calls=CallLedger(plan['tasks'],reserve=lambda row:journal.write('reservation-%02d.json'%row['call'],row))
-        for task in plan['tasks']:
-            monitor.phase(task['action'].lower()+'_'+task['geometry']+'_p'+str(task['prefix'])+'_q'+str(task['template']['q'])+'_'+task['axis'])
+        from .pool import GroupQueue,FrameReader
+        pool=[]
+        monitor.phase('owned_parallel_workers_start')
+        for index,cpu in enumerate(auth['role_cpus']['workers']):
+            local=temp/('worker-%02d'%index);local.mkdir()
+            for name in ('mpl','cache'):(local/name).mkdir()
+            env=dict(os.environ,TMPDIR=str(local),MPLCONFIGDIR=str(local/'mpl'),XDG_CACHE_HOME=str(local/'cache'),
+                PYTHONNOUSERSITE='1',PYTHONDONTWRITEBYTECODE='1',QISKIT_PARALLEL='false')
+            process=subprocess.Popen([sys.executable,'-P','-B',str(repo/'scripts/resource_applicability/run_h4_b0i_map240.py'),
+                '--owned-worker',str(os.getpid())],stdin=subprocess.PIPE,stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,cwd=repo,env=env,close_fds=True,bufsize=0)
+            children.append((process,None))
+            owner=OwnedIdentity(identity(process_sample(process.pid)),os.getpid());children[-1]=(process,owner);monitor.own_child(process.pid)
+            os.set_blocking(process.stdin.fileno(),False);os.set_blocking(process.stdout.fileno(),False)
+            send_wait(process,{'plan_path':str(plan_path),'auth_path':str(auth_path),'review_path':str(review_path),
+                'repo':str(repo),'plan_digest':digest(plan),'worker_index':index},monitor,plan,started)
+            ready=receive_wait(process,monitor,plan,started)
+            require(ready.get('status')!='ERROR','worker bootstrap first error: '+str(ready.get('error')))
+            require(ready=={'ready':process.pid},'new worker source/auth handshake')
+            pool.append({'process':process,'reader':FrameReader(),'index':index,'deadline':None})
+        journal.write('workers.json',{'identities':[owner.expected for _,owner in children],'CPUs':auth['role_cpus']['workers']})
+        calls=CallLedger(plan['tasks'],reserve=lambda row:journal.write('reservation-%03d.json'%row['call'],row))
+        queue=GroupQueue(plan['tasks'])
+        def dispatch(slot):
+            task=queue.next(slot['index'])
+            if task is None:return
             if task['action']=='COMPILE':calls.before_call(task['task_id'])
-            send_wait(process,{'task_id':task['task_id']},monitor,plan,started)
-            result=accept_result(plan,task,receive_wait(process,monitor,plan,started))
-            journal.write('task-%s.json'%task['task_id'],result);records.append(result)
-            blocks,_=owned_bytes(control);require(blocks+journal.bytes<=plan['caps']['stage_output_bytes'],'stage cumulative block/metadata cap')
+            send_wait(slot['process'],{'task_id':task['task_id']},monitor,plan,started)
+            slot['deadline']=min(started+plan['caps']['stage_wall_seconds'],time.monotonic()+plan['caps']['task_wall_seconds'])
+        for slot in pool:dispatch(slot)
+        while queue.active:
+            monitor.phase('parallel active='+str(len(queue.active))+' complete='+str(len(queue.done)))
+            poll_owned(monitor,plan)
+            active=[slot for slot in pool if slot['index'] in queue.active]
+            require(all(time.monotonic()<slot['deadline'] for slot in active),'bounded parallel task/stage wall')
+            ready=select.select([slot['process'].stdout for slot in active],[],[],.25)[0]
+            for slot in active:
+                process=slot['process']
+                if process.stdout not in ready:continue
+                require(process.poll() is None,'owned parallel worker exited')
+                try:piece=os.read(process.stdout.fileno(),slot['reader'].wanted())
+                except BlockingIOError:continue
+                payload=slot['reader'].feed(piece)
+                if payload is None:continue
+                task=queue.active[slot['index']];result=accept_result(plan,task,pickle.loads(payload))
+                result['worker_index']=slot['index'];result['worker_PID']=process.pid
+                journal.write('task-'+task['task_id']+'.json',result);records.append(result)
+                queue.complete(slot['index'],task['task_id']);dispatch(slot)
+        require(queue.complete_map(),'complete 240 coverage before observer retirement')
+        records.sort(key=lambda row:next(i for i,t in enumerate(plan['tasks']) if t['task_id']==row['task_id']))
         retire_observer_after_map(monitor,journal,records)
         # No further computation is dispatched after observer retirement.
         # The final tiny shutdown frame cannot fill a drained idle worker pipe.
         from ..h4_geometry.workers import write_frame
-        os.set_blocking(process.stdin.fileno(),True)
-        write_frame(process.stdin,{'shutdown':True});process.stdin.close()
-        process.wait(timeout=2);require(process.returncode==0,'native worker completion exit')
+        for process,owner in children:
+            os.set_blocking(process.stdin.fileno(),True)
+            write_frame(process.stdin,{'shutdown':True});process.stdin.close()
+            process.wait(timeout=2);require(process.returncode==0,'native worker completion exit')
         # Completes are final only after registered workers exit/reap and all FDs close.
     except BaseException as exc:
         if monitor is not None:
@@ -279,13 +309,13 @@ def execute(repo,plan_path,auth_path,review_path):
             first_stop_reason=first.reason,cleanup_complete=clean,records=len(records),
             actual_consumed_or_reserved=len(calls.reserved) if 'calls' in locals() else 0,
             verified_pilot6_reuses=sum(v['verified_pilot6_reuse'] for v in records),
-            native_worker_exit_code=children[0][0].returncode if children else None,
+            native_worker_exit_codes=[process.returncode for process,_ in children],
             native_observer_exit_code=monitor.process.returncode if monitor is not None else None,
             stage_wall_seconds=time.monotonic()-started,stage_allocated_control_bytes=blocks,
             carry=plan['carry'],runtime_next_stage=False,mandatory_stop=True)
         try:journal.write('terminal.json',terminal)
         except BaseException as exc:
-            first.keep('terminal publication: '+str(exc));terminal.update(status='PILOT6_FAIL_CLOSED_STOP',
+            first.keep('terminal publication: '+str(exc));terminal.update(status='MAP240_FAIL_CLOSED_STOP',
                 first_stop_reason=first.reason,terminal_receipt_written=False)
         finally:
             signal.signal(signal.SIGALRM,old_alrm);signal.signal(signal.SIGTERM,old_term)
@@ -302,7 +332,8 @@ def worker_main(parent):
     require(digest(plan)==config['plan_digest'],'worker bootstrap plan digest')
     authorize(plan,auth,review);source_gate(repo,plan);profile_gate(repo,plan);reuse=reuse_gate(repo,plan)
     from ..h4_geometry.resources import limit_owned_address_space
-    limit_owned_address_space(plan['caps']['worker_AS_RSS']);os.sched_setaffinity(0,{auth['role_cpus']['worker']})
+    index=config['worker_index'];require(type(index) is int and 0<=index<plan['caps']['workers'],'owned worker index')
+    limit_owned_address_space(plan['caps']['worker_AS_RSS']);os.sched_setaffinity(0,{auth['role_cpus']['workers'][index]})
     write_frame(sys.stdout.buffer,{'ready':os.getpid()})
     cached=None;cached_key=None;calls=CallLedger(plan['tasks']);seen=set()
     while True:
