@@ -121,3 +121,7 @@ focused test: `test_g10_streaming_io.py`。人工JSON/typed fixtures、I/O/guard
 ## D1 saved scalar analysis checks（2026-10-13）
 
 `test_d1_saved_resource_analysis.py`：人工有理数の12 checks。対称積配分、N差保存、交点/tie/独立h/Pareto/workspaceを検証。元の1890 event/36 keysやscience preparation57testsを繰り返さない。[結果](../../../artifacts/track_b_d1_saved_resource_analysis/2026-10-13/v1/scalar_validation_v1.json)。
+
+## D2 key / boundary focused tests
+
+`test_d2_key_mechanisms_boundary.py`：人工Fraction、2-qubit gate列、mock runner/authorization、zero-fill、phase、保存/cap保護。最終45 PASS。登録D1 provider/pairは使用しない。

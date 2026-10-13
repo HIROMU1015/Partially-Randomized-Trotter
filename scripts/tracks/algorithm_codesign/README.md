@@ -296,3 +296,7 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 ## D1 saved resource factors（2026-10-13）
 
 `analyze_d1_saved_resources.py`：D1結果commit fc965718のscalar表と元budget式の会計。90 pair-metric、18 r-contrast、all-h sensitivity、quantum-only Pareto。原科学値/分類を更新しない。[報告](../../../docs/tracks/algorithm_codesign/d1_saved_resource_analysis_and_gpt_handoff_20261013.md)。
+
+## D1 key機構 / D2境界準備
+
+[報告](../../../docs/tracks/algorithm_codesign/d2_key_mechanisms_and_boundary_preparation_20261013.md)。saved-only analyzer、off-domain verifier、pending gated runner/outer observerを分離する。旧runnerの再開ではない。

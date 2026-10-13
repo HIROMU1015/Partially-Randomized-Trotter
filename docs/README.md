@@ -675,3 +675,7 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## D1 saved-resource analysis（2026-10-13）
 
 [全6方式の技術分析](tracks/algorithm_codesign/d1_saved_resource_analysis_and_gpt_handoff_20261013.md)、[exact scalar表](../artifacts/track_b_d1_saved_resource_analysis/2026-10-13/v1/all_12_saved_scalar_rows_v1.json)、[manifest](../artifacts/track_b_d1_saved_resource_analysis/2026-10-13/v1/analysis_manifest_v1.json)。元結果・分類を維持し、新science0、mandatory STOP。
+
+## Track B D1 key分析・D2境界準備（2026-10-13）
+
+[技術報告](tracks/algorithm_codesign/d2_key_mechanisms_and_boundary_preparation_20261013.md)／[GPT判断原本](research/track_b_d1_results_and_resource_mechanisms_scientific_review_20261013.md)／[pending contract](../artifacts/track_b_d2_boundary_source/2026-10-13/v1/contract_v1.json)。保存値分析と登録外45 testsのみ。新登録pair評価・compile・合成は未認可、mandatory STOP。
