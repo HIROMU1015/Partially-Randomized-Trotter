@@ -1,3 +1,5 @@
+> Track B D3準備： [saved key/static word verifier](tracks/algorithm_codesign/prepare_d3_guarantee_price_plan.py) は保存metadataだけを読む。budget/price再会計、synthesis、pair評価、provider/circuit/matrix生成なし。[計画](../docs/tracks/algorithm_codesign/d3_guarantee_price_preregistration_v1_20261013.md)。本番runnerは未実装。
+
 > 2026-10-07 Track B RA-D0 v3：**READY_FOR_RA_D0_ONE_SHOT_AUTHORIZATION**（実行承認ではない）。
 > [source review](../docs/tracks/algorithm_codesign/ra_d0_source_review_v3_20261007.md) / [GPT handoff](../docs/tracks/algorithm_codesign/ra_d0_gpt_handoff_v3_20261007.md) / [manifest](../artifacts/track_b_ra_d0_source_review_v3/2026-10-07/evidence_manifest_v3.json)。
 > [focused verifier](tracks/algorithm_codesign/verify_ra_d0_source_review_v3.py) / [v3 tests](../tests/tracks/algorithm_codesign/test_ra_d0_source_review_v3.py)。

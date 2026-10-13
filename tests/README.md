@@ -1,3 +1,5 @@
+> D3準備の[15人工scalar/word tests](tracks/algorithm_codesign/test_d3_preparation_bookkeeping.py)は積分係数、非unitary積の上界、key identity、R相殺可能性の検出を確認する。登録科学値・runner・合成を実行しない。
+
 # tests の役割
 
 `tests/` は、ライブラリAPI、数値恒等式、成果物schema、ガード条件の回帰検査を置く。

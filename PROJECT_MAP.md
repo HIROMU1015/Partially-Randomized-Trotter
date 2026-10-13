@@ -1,3 +1,5 @@
+> **Track B現在（2026-10-13）：D3数学確認・保証×価格の比較計画固定。登録再会計/新合成0、新execution source/authorizationは未作成、mandatory STOP。** [D3計画](docs/tracks/algorithm_codesign/d3_guarantee_price_preregistration_v1_20261013.md)。旧D1/D2保持、次はCodexの技術source準備。以下は履歴。
+
 > **現在のTrack B（2026-10-13）：D1/D2保存値の最終統合分析完了。** [全方式感度・Pareto・r選択・相殺構造/GPT引き継ぎ](docs/tracks/algorithm_codesign/d2_final_saved_integration_and_gpt_handoff_20261013.md)。D2 CX最小包絡線はCTS→partial→P5、joint12のT最小はr2 P5。exact支配領域と帰属限界を整理、16人工scalar checks PASS、新science/pair再評価0。旧証拠保持、mandatory STOP、次は開始承認後のGPT科学レビュー。以下は履歴。
 
 > **現在のTrack B（2026-10-13）：D2共通境界相殺一回実行完了。** [結果/保存値監査/GPT引き継ぎ](docs/tracks/algorithm_codesign/d2_boundary_results_and_gpt_handoff_20261013.md)。r=2・六方式219,303 pairs、retry0、outer exit0、saved-only1218 checks PASS。P5対partial T差は−5.8358%→−5.8557%（固定nativeモデル）。旧source/結果/markersを保持、新compile/合成/matrix0、mandatory STOP。研究判断はGPT側。以下は履歴。

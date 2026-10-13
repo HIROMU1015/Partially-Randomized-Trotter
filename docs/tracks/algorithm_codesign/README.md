@@ -1,3 +1,5 @@
+> **2026-10-13 D3：D3数学確認・保証×価格の比較計画固定。登録再会計/新合成0、新execution source/authorizationは未作成、mandatory STOP。** [計画](d3_guarantee_price_preregistration_v1_20261013.md)／[数学確認](d3_mathematical_confirmation_20261013.md)。36 key、静的literal証明、15人工tests。新しい勝敗/algorithm採択はない。以下は履歴。
+
 > **現在（2026-10-13）：[D2保存値の最終統合分析](d2_final_saved_integration_and_gpt_handoff_20261013.md)。** 六方式/12候補の全非負h最小包絡線・quantum Pareto、18同方式r関係、相殺深さと不足帰属を保存。原値/分類不変、16人工checks PASS、pair再評価/新科学0。mandatory STOP、次はGPT科学判断。
 
 > **現在（2026-10-13）：[D2境界相殺結果・監査](d2_boundary_results_and_gpt_handoff_20261013.md)。** 一回219,303 pairs完了、source/old results/marker保持、saved-only1218 checks PASS。固定r=2のT/CX/1Q順位はh=0で旧順序のまま。新科学実行へ進まずmandatory STOP、GPTの科学判断へ戻す。
