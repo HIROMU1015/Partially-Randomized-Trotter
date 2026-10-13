@@ -1042,3 +1042,8 @@ STOP_FOR_GPT_SCOPE_DECISION。元whole補正closure、Track A/G10/RA-D0結果・
 [終了記録・証拠索引](docs/tracks/algorithm_codesign/gaussian_product_generation_closure_20261013.md)を保存。
 現手順を独立新規アルゴリズムとして採択せず、候補監査を区切る。期待資源の改善/非改善は未確定、性能negativeではない。
 応用研究・新候補・Track B全体の終了は未採択。新science0、旧source/result/marker/STOP保持、mandatory STOP。
+
+
+## 2026-10-13：保存H4 RTEの基底変換費用診断
+
+[小規模内訳報告](docs/diagnostics/rte_basis_cost_attribution_20261013.md)：固定8列、compile24回、基底変換の加法的RZ84.8266%／CX68.9655%。全体compileとの差と共通global phaseの注意点を保存。母平均・T・全PR占有率ではない。旧成果とTrack B探索休止を保持しSTOP。

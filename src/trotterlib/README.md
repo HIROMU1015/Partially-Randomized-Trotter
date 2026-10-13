@@ -547,3 +547,8 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 元v7 TECHNICAL_INCONCLUSIVE／復元SAVED_E_T_ACCOUNTING_COMPLETE／旧結果・marker・sourceは不変。
 今回のCodex作業は文書・索引・provenance・公開確認のみ、新科学計算0、mandatory STOP。
 同じ科学レビューは反復しない。新候補の研究判断・scope採択はGPT側、新実行は別途明示認可が必要。
+
+
+## 保存H4 RTEの基底費用診断（2026-10-13）
+
+既存の`df_rte_qiskit` builderを変更せずappend地点を観測した[外部診断](../../scripts/diagnostics/rte_basis_cost_attribution.py)。[報告](../../docs/diagnostics/rte_basis_cost_attribution_20261013.md)では部分費用の加法的内訳と通常の全体compileを区別する。共通API・basis policyの変更なし。

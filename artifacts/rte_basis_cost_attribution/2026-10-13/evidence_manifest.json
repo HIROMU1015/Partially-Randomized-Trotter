@@ -1,0 +1,465 @@
+{
+  "repository": "HIROMU1015/Partially-Randomized-Trotter",
+  "date_jst": "2026-10-13",
+  "branch": "rte-basis-cost-attribution-diagnostic-20261013",
+  "base_commit": "7c3d59139febfc94749b7c2ffc74b4f0a882f539",
+  "measurement_source_commit": "1b60265345ed0772ec7d8949e54889b5146e606f",
+  "saved_audit_source_commit": "d4952b13c208db14702f82cc0fb512e72e16d566",
+  "status": "SAVED_COST_ATTRIBUTION_COMPLETE_WITH_COMMON_GLOBAL_PHASE_CAVEAT",
+  "original_strict_run_status": "TECHNICAL_INCONCLUSIVE",
+  "user_execution_authorized": true,
+  "new_algorithm_adopted": false,
+  "Track_B_new_method_exploration_pause_retained": true,
+  "native_compile_calls": 24,
+  "additional_native_compile_calls": 0,
+  "new_random_seeds": 0,
+  "original_saved_seed_replay_count": 24,
+  "T_synthesis": 0,
+  "new_molecule_generation": 0,
+  "GPU": 0,
+  "shots": 0,
+  "solver": 0,
+  "interpretation": "Additive basis RZ/CX fractions in eight selected saved short RTE columns; not exact optimized cost lineage or unconditional population/full PR/T resource share.",
+  "whole_operator_validation": "One common global phase for already-controlled entire 9-qubit operator; both ancilla branches together; original strict failure retained.",
+  "focused_tests": {
+    "focused_tests.xml": {
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "saved_phase_tests.xml": {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "focused_tests_initial.xml": {
+      "tests": 4,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "preservation_checks": {
+    "parent_head_unchanged": true,
+    "parent_index_unchanged": true,
+    "parent_tracked_diff_unchanged": true,
+    "only_existing_indexes_modified": true,
+    "original_failed_run_prefix_unchanged": true,
+    "main_runner_frozen_source_unchanged": true,
+    "saved_auditor_frozen_source_unchanged": true,
+    "old_snapshot_bytes_unchanged": true,
+    "saved_stream_digest_matches": true,
+    "all_native_jobs_saved": true,
+    "additional_compile_calls_zero": true,
+    "full_operator_relative_phase_checks_passed": true,
+    "original_strict_phase_failure_preserved": true,
+    "no_exact_optimized_lineage_claim": true,
+    "append_only:PROJECT_MAP.md": true,
+    "append_only:docs/README.md": true,
+    "append_only:scripts/README.md": true,
+    "append_only:src/trotterlib/README.md": true,
+    "append_only:tests/README.md": true,
+    "append_only:docs/research/研究概要・現状.md": true,
+    "focused_final_7_pass": true,
+    "new_report_local_links_exist": true
+  },
+  "links_checked": [
+    {
+      "from": "docs/diagnostics/rte_basis_cost_attribution_20261013.md",
+      "target": "../../artifacts/rte_basis_cost_attribution/2026-10-13/saved_audit_v1/resource_rows.csv",
+      "exists": true
+    },
+    {
+      "from": "docs/diagnostics/rte_basis_cost_attribution_20261013.md",
+      "target": "../../artifacts/rte_basis_cost_attribution/2026-10-13/saved_audit_v1/rows.json",
+      "exists": true
+    },
+    {
+      "from": "docs/diagnostics/rte_basis_cost_attribution_20261013.md",
+      "target": "../../artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/failure.json",
+      "exists": true
+    },
+    {
+      "from": "docs/diagnostics/rte_basis_cost_attribution_20261013.md",
+      "target": "../../artifacts/rte_basis_cost_attribution/2026-10-13/saved_audit_v1/summary.json",
+      "exists": true
+    },
+    {
+      "from": "docs/diagnostics/rte_basis_cost_attribution_20261013.md",
+      "target": "../../artifacts/rte_basis_cost_attribution/2026-10-13/run_plan.json",
+      "exists": true
+    },
+    {
+      "from": "docs/diagnostics/rte_basis_cost_attribution_20261013.md",
+      "target": "../../artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/input_identity.json",
+      "exists": true
+    },
+    {
+      "from": "docs/diagnostics/rte_basis_cost_attribution_20261013.md",
+      "target": "../../artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compile_inventory.json",
+      "exists": true
+    },
+    {
+      "from": "docs/diagnostics/rte_basis_cost_attribution_20261013.md",
+      "target": "../../artifacts/rte_basis_cost_attribution/2026-10-13/original_process_receipt.json",
+      "exists": true
+    },
+    {
+      "from": "docs/diagnostics/rte_basis_cost_attribution_20261013.md",
+      "target": "../../artifacts/rte_basis_cost_attribution/2026-10-13/saved_audit_process_receipt.json",
+      "exists": true
+    },
+    {
+      "from": "docs/research/研究ノート/2026-10-13_rte_basis_cost_attribution_diagnostic.md",
+      "target": "../../diagnostics/rte_basis_cost_attribution_20261013.md",
+      "exists": true
+    },
+    {
+      "from": "artifacts/rte_basis_cost_attribution/2026-10-13/README.md",
+      "target": "../../../docs/diagnostics/rte_basis_cost_attribution_20261013.md",
+      "exists": true
+    },
+    {
+      "from": "artifacts/rte_basis_cost_attribution/2026-10-13/README.md",
+      "target": "saved_audit_v1/summary.json",
+      "exists": true
+    },
+    {
+      "from": "artifacts/rte_basis_cost_attribution/2026-10-13/README.md",
+      "target": "saved_audit_v1/resource_rows.csv",
+      "exists": true
+    }
+  ],
+  "source_files": [
+    {
+      "path": "src/trotterlib/df_rte_qiskit.py",
+      "sha256": "c710de23b7bfef525199ab28b897c21b2a78723a01b29da6067ff64354dcd436"
+    },
+    {
+      "path": "src/trotterlib/df_rte_circuit.py",
+      "sha256": "8e2fec0c3577f5fb264b574bd1984b41abdc4ce5bb2536481bafd11a5e5c1c76"
+    },
+    {
+      "path": "src/trotterlib/df_partial_s2.py",
+      "sha256": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e"
+    },
+    {
+      "path": "src/trotterlib/rte.py",
+      "sha256": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618"
+    },
+    {
+      "path": "src/trotterlib/rte_compiled_cost.py",
+      "sha256": "567e3477d47e0b65442d48b8c55567e8cc231de05cfbeb74eb91f587bc1dfa3d"
+    },
+    {
+      "path": "src/trotterlib/research_direction_sequence_policy.py",
+      "sha256": "4d72aa3cbc5e9e487e94c327a8d6f331ddf18c9ece8ea38d62bf74f1084c9c3f"
+    }
+  ],
+  "files": [
+    {
+      "path": "PROJECT_MAP.md",
+      "bytes": 89778,
+      "sha256": "7df9957291f944591d7df4c308d1b885030acc32609ff3e392f4501f74c37833"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/README.md",
+      "bytes": 1010,
+      "sha256": "4c1b17ab03ee9df7d55303ae74b4d38ca580394e02ffc2e2b4b93d27e440e74c"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/focused_tests.xml",
+      "bytes": 835,
+      "sha256": "058c31506bb9af2163da0879f73c3f0be2fab7c1d973c573c6b4a43359b9e87d"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/focused_tests_initial.xml",
+      "bytes": 4847,
+      "sha256": "af255e4fd30aefb5e187d0ef72ed0d3e6327c5565b9fcc9e4da0269ccade9f50"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/original_process_receipt.json",
+      "bytes": 1333,
+      "sha256": "d66b091ff81cbd68ac53366a211b9fbdd1d0ec2a5573b2d8e38a6af59b770389"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compile_inventory.json",
+      "bytes": 2184,
+      "sha256": "4736a86e3256788cbc12ab4c2fd575742b19396466a064f8bed6462ea1ba8d81"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/1caba8ef1f3bdfa7f824b8002efe101e919e7becab7bba73e2f5fcede682ebe3.json",
+      "bytes": 16833,
+      "sha256": "3d904c091fef1b5c617230595b04b8933be0357884435214a7dce8fe74085778"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/2631397efd7648ca99c80efb67c5bf7b39b051cd0d5825debaa992c4a56210e9.json",
+      "bytes": 127841,
+      "sha256": "498bdf4a73a23cb93dba3168d0590f596c7c0aa6169785daa021f936be64fc98"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/2a373aa4f40c0015f9bfffa905e5826ba3602b89a809e816334a6ba53db9a97b.json",
+      "bytes": 16833,
+      "sha256": "f888bb5ff4b1894ade0133fa50135f981ca32937e9987c1f1b4bc69b89e14fe9"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/3c08dbf21d638b52f6892dfc74f05ff1ce17e29f04ab0f520d9bba287e1f6984.json",
+      "bytes": 129516,
+      "sha256": "26f0e40e34a4e8e9da8bef1b504f0c62d52b031525b3d4029b6f30752c326873"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/50b17cbab3e244734c194ed7a9eb8d64b054d38b2c8d2df38899c8c685fe15fb.json",
+      "bytes": 16185,
+      "sha256": "5ac013eb41f7ad764e6bcb21ac7d29f32691ee4879b6d1c3758388d4ef4b4ed1"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/706b92864930b657831b1ddd50839c68f041c7b0d96e3b0e595f89edb7d504b7.json",
+      "bytes": 6163,
+      "sha256": "d4f4dfa07fac1b2a546d3c6e70898527aeb389ffb44d47a5c2b76d3ab1c142e5"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/8311ff4b752d232283efe0895304e0be397640de41bec3c207bbba642fc0e2ce.json",
+      "bytes": 143070,
+      "sha256": "175d77f4482f3929cc7e8d97b58dc5c0c80b9d82cf28cd33a232ae077798eac6"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/8741f159782ff6d0f374cbe1e5ddd11c4a484f5aed0cf8c2a20f8150a2e53072.json",
+      "bytes": 94469,
+      "sha256": "504eea12970bf5dcc49075423dd1d3178dce6c32556ebd4039f77524fdea6808"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/8ca5194cb40c1e7daff7ecd4583bbaa314a02f4d74d42e207081ff400217cb20.json",
+      "bytes": 142567,
+      "sha256": "018dce06c36e4bfa060a89639ea39e9e9ca92b5186b5c9da41b0409b505a0f5c"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/8d6e91a19edff266726bd9d4f0a0218800544ed4bbcf973663c8d4530f065783.json",
+      "bytes": 214000,
+      "sha256": "110e1e14bf6dfb90e729162c4299dc067a6fb87c1d1cc88d59a99db02153f524"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/93e8995f25956ae85a9eeae0f1fcc2af77a493e6344fd9fae7773b14f9207dc3.json",
+      "bytes": 26860,
+      "sha256": "3eab6d12c71dc21780cc20f6b2bfbd35691bb51d81cca0f54b546fe6f9f103b6"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/958d2bc8de3ca3296f3b47c7272fcb55895dec7ed8a8cf37bf2bb7d9d1126f79.json",
+      "bytes": 31548,
+      "sha256": "520bb32a4c4de177357d654c06fd1cd9b6ea1fa5b6928be241f6b7839940ecd2"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/a06dcae9d90538344638b038eb31989aba69efd89cfb44d48afc5f85d9948237.json",
+      "bytes": 31548,
+      "sha256": "85b03dbde4de98a5d77cb98bd0b297170d0673e769afe3e7ef48261cfb38ddc0"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/a21940c87b8d2fb21ac47e39b22b2b73cce0098428668d2de5665cd25ea46949.json",
+      "bytes": 6162,
+      "sha256": "28c125e5adedf54b492e02ebf3c911ed68eaff57a6c344f350e5fce1c8882d2e"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/a2f01931b3468a2264a33d8dbe4a17240f88a847f207ade31650b90b9fcf2c44.json",
+      "bytes": 21523,
+      "sha256": "c7399681441861c7737b4bef392376772160f5fe0e7e516fb313f7940fa86c3d"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/afb4246790ee4ae04a6fa3406168dc49ffadaa7051c8adb008c41bbe906a1262.json",
+      "bytes": 6162,
+      "sha256": "4b71c8d56d1af5a10805198d6d204302e97a195eac83202b428414529cdd6f55"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/b0f5e7c530d0bda511cd47dce0a792c0b7a6dd4410b8c7cd5892b4b333ce5981.json",
+      "bytes": 123763,
+      "sha256": "fffd5e986c12dc57010b1d7932c48572eab9720afc1c1ec1b3e515fb421194c7"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/b1baa9941ee14c9c3599acdd45d5cc74eb54db1c199b81b06d08ff7f24c2b5a1.json",
+      "bytes": 16833,
+      "sha256": "a911f718d68032466173c53fd318b3c50f2b58bad2027d5c8525d369e0b18bf2"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/b69d12ed9761cc93d893ef075ef3ab3215a2bf5bb09f37f8b7fb14c1af7693b0.json",
+      "bytes": 58232,
+      "sha256": "c0927a2b36e3ccd74b4cb0fe3d7f9be6ea9bbebb3705b408df6e53a121ef7409"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/c7674d5782195c51e598e395ce06a1d9fb01bef0d7d6d33e97622964a7eeb827.json",
+      "bytes": 94481,
+      "sha256": "da81d27f0e6c14627eb30519d44a25e1d07bf001e80320f66e7d2b115a164949"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/c947b7fda0051d382b23c4a8fa168bc44fbc353d4a6aced58d029aabcd50dd76.json",
+      "bytes": 58197,
+      "sha256": "7f06d72cae04f8994e9fe18dd541f14058a874dc93018998f19828fba0e64fa4"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/cf682e1cb139fc08e47124820f965b1275299b595e000c7ab7bb95f8afdc148b.json",
+      "bytes": 42976,
+      "sha256": "cb25c3129b8003136addf9920d60fe32bb192fb9bc4d61557f8c496f26d03d30"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/e0ae9edc4ea8365f2a0ed0eb5cfc04095063c75637c5f3c79f993ce893f71963.json",
+      "bytes": 125203,
+      "sha256": "1898bc6534574b5d37c37ad9277b2c1134906eb90ef7dda481887b1f4235c6e6"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/compiled/e2a0fa11d92d7675806abb530d6057e3dea1c6e771c7a99e4ac76ebd81ce76ca.json",
+      "bytes": 289810,
+      "sha256": "2b44a1b45409a8d2a2477b2f43b3757322aebd7ea6ff8da98cbb0a289763c44a"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/failure.json",
+      "bytes": 707,
+      "sha256": "9e3a409b7d25cb6be0073f2673915cc8438dda03db59e3aad7baac7c5ff2787e"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/input_identity.json",
+      "bytes": 5048,
+      "sha256": "b47bdb4a5bfe875b51c00870749d5427cd46e5985db8f54e8bc47ebfc7a99342"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/inputs/length3_index0.json",
+      "bytes": 56033,
+      "sha256": "8bbd54ad7498cced246f2580be8cc470ef855e9cd207cdb2857c224b56b7f2db"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/inputs/length3_index1.json",
+      "bytes": 56038,
+      "sha256": "41522c916e9f603dbe4eb5bda33ee93c9ab19dac176a012c2b92769c5e5e206a"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/inputs/length3_index2.json",
+      "bytes": 56036,
+      "sha256": "e734e85540083eb54cf92bb108d5e9775ddf0b1c81bd671f20756716fd4f33cf"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/inputs/length3_index3.json",
+      "bytes": 56042,
+      "sha256": "44fe7707b8e6892d8236b08e9f86583898bcc1c3c69cc6a4bf97f6cefd479ecf"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/inputs/length6_index0.json",
+      "bytes": 97754,
+      "sha256": "4e1df9c9045d738f17d33912115424215925d1abaef80556570934a1e228c0f0"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/inputs/length6_index1.json",
+      "bytes": 119697,
+      "sha256": "1a97ffce3609d7a49b8c30fb00321ce00169b14b0aa2be4a46a311efef92da8e"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/inputs/length6_index2.json",
+      "bytes": 97757,
+      "sha256": "97ac8f908ad1b7d754c9794234945f4e900b7a445889a309bfd9120eeb7a997a"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/inputs/length6_index3.json",
+      "bytes": 106068,
+      "sha256": "9ff011ab166e56c61e508eb4121b6a3141534ca48ece411261d453c310abb2d8"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/result_v1/run_start.json",
+      "bytes": 219,
+      "sha256": "1289fee6aa76702dd62629cc9236f5b2ea1470c603fa4e977084a2732b3a5ebb"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/run_plan.json",
+      "bytes": 2578,
+      "sha256": "bc3592266a68a5826472cffc93721a8306f54920c30f3a9d2fca4fab5a532e05"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/run_v1.log",
+      "bytes": 799,
+      "sha256": "80dfa413a4bc19b8a75a23d838d5d8fe2e539e26d684c1f46bfd0a3d575e8de1"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/saved_audit_process_receipt.json",
+      "bytes": 1996,
+      "sha256": "1aa9da24297caa8b08abee90d7123b99603e1da7e6b87ee2847636133147efbe"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/saved_audit_v1.log",
+      "bytes": 1669,
+      "sha256": "58ab3f99f7d2bd226f22e27324bdfcd7387748c72aa308cce0828f9617bf977f"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/saved_audit_v1/resource_rows.csv",
+      "bytes": 1941,
+      "sha256": "51a29543706455413727097f8ac0a4ed895cf2c56b7b7d3e1457ecd779c103f4"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/saved_audit_v1/rows.json",
+      "bytes": 20944,
+      "sha256": "72d76883b8082ffea7ff5f249502be7018372a3d91a5711564ff272431929820"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/saved_audit_v1/summary.json",
+      "bytes": 6828,
+      "sha256": "0fd1aad8fa136d7a27b1e8a1e3e7b052c94ca2b72c3e071a6ab4e7c09af32ea7"
+    },
+    {
+      "path": "artifacts/rte_basis_cost_attribution/2026-10-13/saved_phase_tests.xml",
+      "bytes": 694,
+      "sha256": "e246e2ae6f8fda4c438e18ad0da2e6faeeec1d2c3b5cb59e6629e48e4ce8fb81"
+    },
+    {
+      "path": "docs/README.md",
+      "bytes": 58580,
+      "sha256": "c522fc6bea39aa97a89148430437ffbad60b01109cd6c26a0d16f8d4a8a01afb"
+    },
+    {
+      "path": "docs/diagnostics/rte_basis_cost_attribution_20261013.md",
+      "bytes": 7993,
+      "sha256": "5c92c060ef92286f38512149ead65415ed5732714eb5638677435dc1b15e77dc"
+    },
+    {
+      "path": "docs/research/研究ノート/2026-10-13_rte_basis_cost_attribution_diagnostic.md",
+      "bytes": 1031,
+      "sha256": "1c001756125c349a155487fd6d0b3d4688b617eb3b97377652e50c2ce901055b"
+    },
+    {
+      "path": "docs/research/研究概要・現状.md",
+      "bytes": 189863,
+      "sha256": "7547df9253751ec080698a2c4bb17ae033331579e3e09ace3ad48bfc59b08e20"
+    },
+    {
+      "path": "scripts/README.md",
+      "bytes": 51514,
+      "sha256": "090099e6e580fdc8b142002536100b625ea0d8a3496a1f23203933733122e269"
+    },
+    {
+      "path": "scripts/diagnostics/audit_saved_rte_basis_cost.py",
+      "bytes": 8178,
+      "sha256": "705ec037112c38af124fd0b08e7a4ea27de9c969347ca293838fa78918ce1cb7"
+    },
+    {
+      "path": "scripts/diagnostics/rte_basis_cost_attribution.py",
+      "bytes": 17145,
+      "sha256": "b46627c4e7bf4e771143a0a89f7fa62bab2e52e5aa0ea5b79283e6f3feeb6b7a"
+    },
+    {
+      "path": "src/trotterlib/README.md",
+      "bytes": 41995,
+      "sha256": "ff8d4acc52be454304c652e40192090a88746f1bae040783d6f78daa3894f9c6"
+    },
+    {
+      "path": "tests/README.md",
+      "bytes": 9456,
+      "sha256": "1bd92cb1dac938add47061537a2113b237fd5ae4d7481847945a37792bdcfc84"
+    },
+    {
+      "path": "tests/diagnostics/test_rte_basis_cost_attribution.py",
+      "bytes": 4148,
+      "sha256": "ed0eec04bb8c085e70bad1792330a8ef64c087d391a321b888405f2ff1858497"
+    },
+    {
+      "path": "tests/diagnostics/test_saved_rte_basis_phase.py",
+      "bytes": 1365,
+      "sha256": "31f70ebb02f983711bc3fe39e2625e0c68433af29e1a7d24e9625083a87ba7c1"
+    }
+  ],
+  "manifest_self_hash_policy": "Excluded from its own list; bound by publication commit and remote byte verification.",
+  "mandatory_STOP": true
+}

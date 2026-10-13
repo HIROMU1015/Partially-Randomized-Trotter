@@ -653,3 +653,8 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## Track Bの新規手法探索を一時休止（2026-10-13）
 
 [GPT科学レビュー原本](research/track_b_overall_direction_and_research_pause_review_20261013.md)／[休止記録](tracks/algorithm_codesign/track_b_research_pause_record_20261013.md)。既存成果・終了判断は保持、closed P5は将来候補のみ。新実行なし、mandatory STOP。
+
+
+## 保存H4 RTEの基底変換費用内訳（2026-10-13）
+
+[診断報告](diagnostics/rte_basis_cost_attribution_20261013.md)／[機械可読summary](../artifacts/rte_basis_cost_attribution/2026-10-13/saved_audit_v1/summary.json)。加法的内訳と最適化後全体費用を区別。新手法採択・他条件拡張なし、STOP。

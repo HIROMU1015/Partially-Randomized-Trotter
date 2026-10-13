@@ -582,3 +582,8 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 元v7 TECHNICAL_INCONCLUSIVE／復元SAVED_E_T_ACCOUNTING_COMPLETE／旧結果・marker・sourceは不変。
 今回のCodex作業は文書・索引・provenance・公開確認のみ、新科学計算0、mandatory STOP。
 同じ科学レビューは反復しない。新候補の研究判断・scope採択はGPT側、新実行は別途明示認可が必要。
+
+
+## 小規模RTE基底費用診断
+
+[測定runner](diagnostics/rte_basis_cost_attribution.py)／[保存値限定監査](diagnostics/audit_saved_rte_basis_cost.py)。[固定設定](../artifacts/rte_basis_cost_attribution/2026-10-13/run_plan.json)と[結果・位相注意点](../docs/diagnostics/rte_basis_cost_attribution_20261013.md)を参照。旧runnerの再実行ではない。保存済み結果あり、追加実行を自動で行わない。
