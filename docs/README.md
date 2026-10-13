@@ -1,5 +1,7 @@
 # 文書索引
 
+H8重複処理削減：[設計・44人工検査・速度と適用限界](research/track_a_h8_duplicate_work_optimization_v1.md)、[一つの入口](../artifacts/resource_applicability/track_a_h8_duplicate_work_optimization_v1/2026-10-13/README.md)。SOURCEf7c46135、現在のrun/grant/source/outputを保全。
+
 H8 signal/reference・native16mode・8case：[契約/予算/STOP](research/track_a_h8_signal_compile_preflight_v1.md)、[現状入口](../artifacts/resource_applicability/track_a_h8_signal_compile_preflight_v1/2026-10-13/README.md)。SOURCE5c207fb8、15人工tests・実reference確認、本格比較は対象外。
 
 H4補完/H8 input-state：[現在の結果・source・carry・次判断](../artifacts/resource_applicability/track_a_h48_preflight_result_v1/2026-10-13/README.md)。完了scopeと未実行H8 cost/full comparisonを区別する。

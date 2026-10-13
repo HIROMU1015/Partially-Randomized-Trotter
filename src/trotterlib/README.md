@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+H8高速化adapter：[single-pass hash](../trottertracks/resource_applicability/h8_hash_stream_reuse_v1.py)、[control branch再利用](../trottertracks/resource_applicability/h8_control_reuse_v1.py)、[cost port](../trottertracks/resource_applicability/h8_fast_cost_port_v1.py)、[parallel wave](../trottertracks/resource_applicability/h8_fast_parallel_plan_v1.py)、[資料](../../artifacts/resource_applicability/track_a_h8_duplicate_work_optimization_v1/2026-10-13/README.md)。当library・旧245runtime不変、人工44検査、実H8切替なし。
+
 H8専用signal port：[疎reference/spin作用](../trottertracks/resource_applicability/h8_sparse_reference_v1.py)、[port](../trottertracks/resource_applicability/h8_signal_preflight_port_v1.py)、[資料](../../artifacts/resource_applicability/track_a_h8_signal_compile_preflight_v1/2026-10-13/README.md)。当libraryと旧H4/H6 runtimeは不変、dense4900/full16qubit unitaryを作らない。
 
 H4/H8結果：[資料](../../artifacts/resource_applicability/track_a_h48_preflight_result_v1/2026-10-13/README.md)。H4既存input/library不変、H8は別weighted/solver adapterでinput-stateだけ完了。science source217c/2ff3を結果bundle commitと区別。

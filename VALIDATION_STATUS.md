@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-13 H8重複処理削減・人工検証のみ
+
+[資料入口](artifacts/resource_applicability/track_a_h8_duplicate_work_optimization_v1/2026-10-13/README.md)。SOURCEf7c461356eacea091261388af58b44dbb96121c1、旧245runtime変更0、新4module/runtime closure249＋validation2。44local人工/mock検査8.70秒PASS、real input/trajectory/transpile0、CI/外部再現ではない。canonical v2 bytes/digest・変更検出・phase/control/order/dtype/shape/signed zero/nonfiniteを保全、人工16-mode full-X/Y比較とmock compiler input/metrics/seed/call一致。初回hash2.73倍・warm.95倍、状態検証約2倍は小人工fixtureのみ、実H8全体未測定。normal最大8/heavyまたはunknown最大3はwave/資源案、allowed_cpus=[]/approved=false/runtime_authorization=false。現H8 run・SOURCE5c207fb8/grant/lock/output・共有/venv・H4/他job変更0。
+
 ## 2026-10-13 13:47 JST H8 feasibility部分監査
 
 [保存監査](artifacts/resource_applicability/track_a_h8_signal_compile_preflight_v1/2026-10-13/saved_evidence_audit_v1.json)。SOURCE245/固定入力5/native318fileのSHA一致、保存8signal/1164probeの対象時間・重複・数値不一致なし、再実行0。S4/q8 identity一致でRUNNING、完了compile0/20・transpile開始記録0、RZ/CX等null。HWM5.266GiB・VmPeak5.713GiBは途中観測値、最終peak/wall/cleanupは未確認。旧SOURCE/REVIEW806222e3 origin取得30file一致。本格H8未起動・未承認。
