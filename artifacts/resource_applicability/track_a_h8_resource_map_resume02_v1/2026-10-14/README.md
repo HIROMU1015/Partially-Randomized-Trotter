@@ -1,3 +1,5 @@
+利用者の最新指示により今回のown-run運用条件変更・再開を認可。最小上限 compile1722/trajectory843/occurrence4219を採用し、auth02のapproved=true/runtime_authorization=true、SOURCE/元seed/input/profile/carryの再結合とfresh検査PASS。未使用run01/control01で一度起動する。以下の承認待ち記述は先行REVIEW時点の履歴。
+
 # H8 8 worker：監視競合修正とcomplete-only再開02
 
 SOURCE `c31ef424175c02379eafebe8fc6c7548c1d9aabe`、branch `track-a-h8-resource-map-resume02-20261014`。利用者「修正して再開させて」により停止済みrunの監視バグを修正し再開準備を完成。科学seed source `cb8a56c6b2a772827275f9200b02638030f33f72` を保持。旧SOURCE `c6692964c948071ed00363b5b711fbca8930ad61` の265 closure中262 runtime不変、変更3はinventory/contract/technical-handoffだけ。科学adapter/compiler/input/state/DF/gates/shot/science-gridを変更しない。
