@@ -1,4 +1,4 @@
-H8 8 worker引継ぎ：[入口](artifacts/resource_applicability/track_a_h8_resource_map_resume01_v1/2026-10-13/README.md)、[契約](docs/research/track_a_h8_resource_map_resume01_v1.md)。SOURCEc6692964/元seed cb8a保持、92signal/75group受理、残517。二段階RSS1→9/24・72GiB予約・34限定mock PASS。trajectory835/occurrence4211の最小上限補充のみ承認待ち、実新run未起動。
+H8 8 worker引継ぎ：[入口](artifacts/resource_applicability/track_a_h8_resource_map_resume01_v1/2026-10-13/README.md)、[契約](docs/research/track_a_h8_resource_map_resume01_v1.md)。SOURCEc6692964/元seed cb8a保持、92signal/75group受理、残517。二段階RSS1→9/24・72GiB予約・34限定mock PASS。trajectory835/occurrence4211承認済み、23:42 JSTに8 worker版起動。coordinator572094、own-run監視下で継続。
 
 # プロジェクト案内
 

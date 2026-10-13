@@ -1,3 +1,5 @@
+2026-10-13 23:42 JST、8 worker版を起動済み。run ID `H8_CORE_RESOURCE_MAP_20261013_resume01`、coordinator PID572094。92 signal/75 complete group再利用、残517。8同時native circuit処理・9GiB grant8件を確認、初回合計RSS約4.35GiB、STOPなし。trajectory835/occurrence4211承認済み。最新の実状態はprivate監視journalを参照。
+
 最小上限補充 trajectory835/occurrence4211は利用者が明示承認済み。auth02を再結合しfresh検査PASS、approved=true/runtime_authorization=true。新run01の一回起動へ進む。以下の承認待ち記述は先行REVIEW時点の記録。
 
 # H8 core：8 workerへのcomplete-only引継ぎ

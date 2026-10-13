@@ -1,3 +1,5 @@
+2026-10-13 23:42 JST、8 worker版を起動済み。run ID `H8_CORE_RESOURCE_MAP_20261013_resume01`、coordinator PID572094。92 signal/75 complete group再利用、残517。8同時native circuit処理・9GiB grant8件を確認、初回合計RSS約4.35GiB、STOPなし。trajectory835/occurrence4211承認済み。最新の実状態はprivate監視journalを参照。
+
 # H8 core：8 workerへのcomplete-only引継ぎ
 
 SOURCE `c6692964c948071ed00363b5b711fbca8930ad61`、branch `track-a-h8-resource-map-resume01-20261013`。科学seedのsourceは元の `cb8a56c6b2a772827275f9200b02638030f33f72` を保持する。
