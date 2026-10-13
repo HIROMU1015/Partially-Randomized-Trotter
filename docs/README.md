@@ -1,3 +1,5 @@
+> [D3最終保存機構分析](tracks/algorithm_codesign/d3_final_saved_mechanisms_and_gpt_handoff_20261014.md)：新取得0、exact key寄与、保証/r、保存h領域、mandatory STOP。
+
 > **Track B D3 v2結果**：[四ケース・36 key・48行・監査/GPT引き継ぎ](tracks/algorithm_codesign/d3_v2_results_and_gpt_handoff_20261014.md)。old/new guarantee×price、retry0、mandatory STOP。
 
 > **Track B D3 v2**：[型adapter限定修正と別実行承認待ち](tracks/algorithm_codesign/d3_v2_precision_repair_and_source_preparation_20261014.md)。81 local focused tests、旧証拠保持、科学実行0、mandatory STOP。

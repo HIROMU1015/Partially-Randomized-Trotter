@@ -1,3 +1,5 @@
+> [D3 saved-mechanism 9人工tests](tracks/algorithm_codesign/test_d3_saved_mechanisms.py)：有理数配分・tie・固定入力改ざん検知。登録fixtureやscience moduleを使わない。
+
 > [D3専用63 tests](tracks/algorithm_codesign/test_d3_robustness_source.py)：人工scalar/word、mock48行/worker/observer、source/job/marker/cap/storageだけ。実backend・登録fixture評価0。
 
 > D3準備の[15人工scalar/word tests](tracks/algorithm_codesign/test_d3_preparation_bookkeeping.py)は積分係数、非unitary積の上界、key identity、R相殺可能性の検出を確認する。登録科学値・runner・合成を実行しない。

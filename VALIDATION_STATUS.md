@@ -1,3 +1,5 @@
+> **2026-10-14 D3最終保存機構分析**：[技術報告](docs/tracks/algorithm_codesign/d3_final_saved_mechanisms_and_gpt_handoff_20261014.md)。44固定remote入力、36 key/12係数行、369保存算術checks・9人工tests PASS。旧D3科学分類は不変、新科学取得0、mandatory STOP。
+
 > **2026-10-14 D3 v2：one-shot complete、GPT科学レビュー待ち。** [結果と監査](docs/tracks/algorithm_codesign/d3_v2_results_and_gpt_handoff_20261014.md)。36 strict synthesis、48 forecasts、2579 saved-only checks PASS、outer exit0。local technical/numerical evidenceで、独立再現・分子PR総優位を意味しない。旧v1保持、mandatory STOP。
 
 > **2026-10-14 D3 v2 source preparation**：[型adapter・namespace/provenance・81 tests](docs/tracks/algorithm_codesign/d3_v2_precision_repair_and_source_preparation_20261014.md)。登録外/mock 81 PASS、static identity PASS。実合成/登録比較なし、旧v1のtechnical inconclusiveは変更しない。別実行承認待ち、mandatory STOP。
