@@ -1,3 +1,5 @@
+H8 8 worker引継ぎ：`h8_resource_map_handoff_v1.py`、既存prepare/run/launchへtechnical SOURCE transition・二段階メモリadmissionを接続。資料は `docs/research/track_a_h8_resource_map_resume01_v1.md`。
+
 # trotterlib モジュール索引
 
 [H8 core adapter（既存libraryを保持）](../../docs/research/track_a_h8_resource_map_production_v1.md)。41local人工/mock、SOURCEcb8a56c6、最新user指示で一度のcore開始まで認可、共有/旧venv/旧H4不変。
