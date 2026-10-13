@@ -243,3 +243,13 @@ C4のD1 law/moment/IR/sequence源は別commitにある。現baseに存在しな�
 **重要な更新**：mixed-access closure文書の「次はGPT」は終了記録時点の履歴。最新ユーザー指示で、GPT開始前の本Codex技術調査を追加した。旧closure/STOP/source/resultを改変せず、この後続記録へ進行を反映する。
 IDEのActive file/Open tabsを対象・認可に使わず、明示された今回の研究全体の事前調査scopeに従った。
 現時点で新しい研究方針は未採択、GPT科学レビュー未開始、科学計算未認可、Mandatory STOP。
+
+
+## 11. 公開・取得確認と今回の作業完了
+
+技術資料payloadは`5caf8de4c45f120ce0ef5a8f96f05a5ed5cc8ad8`、branch `qc-algorithm-candidates-prevalidation-20261013`。
+[固定commitの候補比較資料](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/5caf8de4c45f120ce0ef5a8f96f05a5ed5cc8ad8/docs/research/qc_algorithm_candidates_technical_prevalidation_20261013.md)、[取得receipt](../../artifacts/qc_algorithm_candidates/2026-10-13/publication/receipt.json)。
+独立GitHub取得（shallow bare cache、local alternatesなし）で16変更blobs/1,160,390bytes、旧229files、旧128manifest entries/non-result fields、14追加relative linksを照合した。過去15固定資料は独立取得でSHA一致（H4結果文書はbounded raw取得）。
+これは文書・source/evidenceの取得性確認で、外部科学再現・数値性能結果・immutable CIではない。
+rootの既存127filesを保持し、別作業中に到着したH4レビュー/zipはstage・変更していない。旧global description欠落FAILも保持する。
+四候補の技術調査と比較資料作成は完了し、探索を停止。新規性・研究採否・優先順位のGPT判断は開始承認待ち。科学計算・compileは別の固定scope認可を必要とし、Mandatory STOP。
