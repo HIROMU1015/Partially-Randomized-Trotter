@@ -30,4 +30,11 @@ N1STOP/N2HOLD/N3CLOSED、他Track、旧結果/STOP/原契約、global manifest�
 - [集計](../../artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/execution_audit/descriptive_summary.json)、[実行性能](../../artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/attempt_1/execution_metrics.json)、[reference guard](../../artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/attempt_1/reference_checks.json)。
 - [原科学計画](qc_mixed_access_feasibility_plan_v1_20261013.md)、[固定実装契約](qc_mixed_access_source_preparation_v1_20261013.md)、[source manifest](../../artifacts/qc_mixed_access_source_v1/2026-10-13/source_manifest.json)、[承認](../../artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/execution_audit/user_authorization.json)。
 
-公開payload/remote receiptは公開確認後にこの引継ぎへ追記する。公開・byte照合はCIや外部科学再現とは別。今回の実行承認は消費済みで、科学レビュー開始や追加計算を認可しない。
+公開・byte照合はCIや外部科学再現とは別。今回の実行承認は消費済みで、科学レビュー開始や追加計算を認可しない。
+
+## 公開・remote取得確認
+
+固定証拠payload `ae3975de24bff6ab6aec3494b522851db2a8f3dd`。初回data commit `c23b3f1422fdf3956a823af6fc7197a9942194f8`へ、ignoreされていた保存済み実行logを追加して証拠索引を完成した。source・科学結果・raw seal・生成索引は変更せず、科学再実行0。[補完記録](../../artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/publication/retrieval_precheck_failure.json)。
+[GitHub固定結果](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ae3975de24bff6ab6aec3494b522851db2a8f3dd/docs/research/qc_mixed_access_feasibility_v1_results_20261013.md)、[固定引継ぎ](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ae3975de24bff6ab6aec3494b522851db2a8f3dd/docs/research/qc_mixed_access_feasibility_v1_review_handoff_20261013.md)、[一次resource JSON](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ae3975de24bff6ab6aec3494b522851db2a8f3dd/artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/attempt_1/resource_evaluation.json)。
+[remote receipt](../../artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/publication/receipt.json)：GitHub196変更blobs/65,061,432bytes、生成索引182files、raw163files、source16locks、旧優先12blobs、追加relative links48件一致。local object alternatesなし。新しい科学計算・tests・GPTレビューを公開確認のために実行していない。
+これは資料の取得性・byte保全の確認。CI/外部科学再現とは異なる。次はGPT科学判断の開始承認待ち、Mandatory STOP。

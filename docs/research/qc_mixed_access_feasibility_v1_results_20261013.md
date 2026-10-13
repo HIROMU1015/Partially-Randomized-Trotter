@@ -128,3 +128,10 @@ row/Gaussian kernels、13-h seed cache/method、binary power、2spawnを固定so
 [GPTへの引継ぎ](qc_mixed_access_feasibility_v1_review_handoff_20261013.md)。研究としての継続・詳細function backend投資・別用途/方向へ移るかは、新結果の重要科学判断としてGPTへ戻す。開始にはユーザーの明示承認を別に得る。
 Codexは同型scan、backend/compile、H2/H6/他geometry、PR、N1/N2/N3を自動起動しない。元量子化学Hのground-energy低コスト化という目的は維持し、中心テーマの採択や研究終了を代行しない。
 次の担当：GPTの科学判断開始承認待ち。Mandatory STOP。
+
+## 公開・remote取得確認
+
+固定証拠payload `ae3975de24bff6ab6aec3494b522851db2a8f3dd`。初回data commit `c23b3f1422fdf3956a823af6fc7197a9942194f8`へ、ignoreされていた保存済み実行logを追加して証拠索引を完成した。source・科学結果・raw seal・生成索引は変更せず、科学再実行0。[補完記録](../../artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/publication/retrieval_precheck_failure.json)。
+[GitHub固定結果](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ae3975de24bff6ab6aec3494b522851db2a8f3dd/docs/research/qc_mixed_access_feasibility_v1_results_20261013.md)、[固定引継ぎ](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ae3975de24bff6ab6aec3494b522851db2a8f3dd/docs/research/qc_mixed_access_feasibility_v1_review_handoff_20261013.md)、[一次resource JSON](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ae3975de24bff6ab6aec3494b522851db2a8f3dd/artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/attempt_1/resource_evaluation.json)。
+[remote receipt](../../artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/publication/receipt.json)：GitHub196変更blobs/65,061,432bytes、生成索引182files、raw163files、source16locks、旧優先12blobs、追加relative links48件一致。local object alternatesなし。新しい科学計算・tests・GPTレビューを公開確認のために実行していない。
+これは資料の取得性・byte保全の確認。CI/外部科学再現とは異なる。次はGPT科学判断の開始承認待ち、Mandatory STOP。

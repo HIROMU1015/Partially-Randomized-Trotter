@@ -2,6 +2,8 @@
 
 ## 2026-10-13 mixed-access feasibility v1：H4一回完了・科学判断待ち
 
+[公開・GPT引継ぎ](qc_mixed_access_feasibility_v1_review_handoff_20261013.md)：証拠payload `ae3975de24bff6ab6aec3494b522851db2a8f3dd`。GitHub196blobs/65,061,432bytes、生成182files/raw163files/source16locks/旧12blobs/48links一致。source/結果不変、科学再実行0。GPTレビュー開始承認待ち、Mandatory STOP。
+
 [一次結果・scope・限界](qc_mixed_access_feasibility_v1_results_20261013.md)。H4直線1Å/STO-3G/realRHF8mode・ν4、DF16全保持（rank10は1e−12 reportingのみ）、L_Dなし/PRなし。T1,4・r倍増1…1024・εU=.001、固定7法154 PF queries完了。
 保存監査154件、1386 resource rows/273 frontierの整合性PASS。登録template/κ3,6,12 hypothesisでは正のremaining予算0、`NO_POSITIVE_BUDGET_IN_REGISTERED_MODEL`。R4のstepは同次数E4/D4より両Tで半減したが、指定modelの費用回収余白は得られなかった。
 source `102e6b31`・承認/preflight `214f9ab2`、artifacts `artifacts/qc_mixed_access_feasibility_run_v1/2026-10-13/attempt_1/`、監査 `execution_audit/`。runner/checker/module/testは準備版から不変。FCI/ground/gap・compile/T synthesis・shots/PR0、function/full ground-energy費用UNKNOWN、一般的不能や最適回路lower boundの結論ではない。
