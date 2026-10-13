@@ -16,3 +16,8 @@ H2/H4のpilot草案はlaunch不可。次はmethod delta/費用backendへの投�
 一次論文と固定Qualtran sourceの対応を詰めた。現在のconstructorはknown compositionへ還元でき、強対照にも最適化を与えると独立差は未特定。known constant-load加算と共有θ誤差・全occurrence precision、全controlled費用のbreak-evenを静的に整理。
 ArcSin等の資源式と実回路分解を区別し、全function backend/資源はUNKNOWN。Phase1停止規則に従い詳細backendへ進まない。新科学・数値的事後評価・eig・compile・synthetic・旧13再実行・GPTレビュー0。
 これはCodexの技術照合で、研究継続/終了・新規性の最終判断ではない。次はGPT重要科学判断の開始承認、科学実行は別認可。Mandatory STOP、N1STOP/N2HOLD/N3CLOSED、旧source/results/authとglobal manifest既存description欠落FAIL保持。
+
+
+### 追加監査の公開確認
+
+固定payload `eba04a87dc790d7688b0fce0b906ef12151b781a`をGitHubから独立取得。変更27blobs/1,246,362bytes、基準優先13blobs・生成source3件・追加リンク34件一致。旧118 entries/source/results/auth/STOPとglobal description欠落FAIL保持。科学/test再実行0、GPTレビュー0、Mandatory STOP。

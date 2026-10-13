@@ -233,3 +233,11 @@ full taskはΣ_q N_rep,q(G_prep,q+G_controlled-evolution,q+G_measure,q)に初期
 global manifestの既存 `relevant_commits[7].description` 欠落FAILを保持し、本taskの保存照合PASSと区別する。独立CI・外部科学再現の証拠ではない。
 [static metadata checker](../../artifacts/qc_relative_block_method_cost_audit/2026-10-13/audit_tools/check_static_integrity.py)はsource/証拠SHA、旧manifest、変更scope、追加リンクを検査する。[保存結果](../../artifacts/qc_relative_block_method_cost_audit/2026-10-13/static_integrity_check.json)。科学sourceのimport・数値述語の評価・synthetic再実行を行わない。
 Mandatory STOP：次は方法差・追加投資に関するGPTの重要科学判断。そのレビュー開始は明示承認が必要で、計算実行承認とは別。現constructorの継続・終了、中心テーマ採択は本監査では決定しない。
+
+
+## 公開・独立remote取得確認
+
+固定監査payload `eba04a87dc790d7688b0fce0b906ef12151b781a`、branch `qc-relative-block-method-cost-audit-20261013`。
+[監査固定版](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/eba04a87dc790d7688b0fce0b906ef12151b781a/docs/research/qc_relative_block_method_cost_audit_v1_20261013.md)、[GPT判断用固定版](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/eba04a87dc790d7688b0fce0b906ef12151b781a/docs/research/qc_relative_block_method_cost_handoff_v1_20261013.md)、[primitive取得索引](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/eba04a87dc790d7688b0fce0b906ef12151b781a/artifacts/qc_relative_block_method_cost_audit/2026-10-13/external_primitive_source_index.json)。
+GitHubの独立bare cacheから変更27blobs/1,246,362bytes、基準優先13blobsと生成source3件、追加relative links34件を照合した。[保存receipt](../../artifacts/qc_relative_block_method_cost_audit/2026-10-13/publication/receipt.json)。local object alternatesなし、cacheはshallowだが必要blob取得済み。科学source/test/runnerと既存13結果・未認可pilotは基準と一致。
+これは公開byte照合でありCI/外部科学再現ではない。新計算0、旧118 manifest entriesとnon-result-set fields、既存description欠落FAILを保持。GPT詳細レビュー未開始、Mandatory STOP。

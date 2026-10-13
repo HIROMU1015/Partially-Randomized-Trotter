@@ -2,6 +2,8 @@
 
 ## 2026-10-13 相対時間発展block追加技術監査（新計算なし）
 
+[独立remote receipt](artifacts/qc_relative_block_method_cost_audit/2026-10-13/publication/receipt.json)：payload `eba04a87dc790d7688b0fce0b906ef12151b781a`の27変更blobs/1,246,362bytes、基準13優先blobs、生成source3件、追加リンク34件一致。科学再実行0、CIではない。
+
 [技術監査](docs/research/qc_relative_block_method_cost_audit_v1_20261013.md)、[判断引継ぎ](docs/research/qc_relative_block_method_cost_handoff_v1_20261013.md)、artifacts `artifacts/qc_relative_block_method_cost_audit/2026-10-13/`。
 current constructorのknown compositionへの対応と条件付き精度・資源境界を静的に整理。独立した方法/費用差未特定、function/full-task費用UNKNOWN。
 新科学計算・数値事後評価・eig・compile・synthetic・旧13再実行・GPTレビュー0。旧13 PASSは基準commitの保存証拠、immutable CIや新科学性能ではない。

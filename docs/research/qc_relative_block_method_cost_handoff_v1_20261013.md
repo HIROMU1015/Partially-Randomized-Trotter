@@ -13,3 +13,6 @@ Phase 1を完了し、独立差が見つからなかったため詳細function b
 既存H2/H4案は変更せず未認可。第二候補自動移行なし、N1 STOP/N2 HOLD/N3 CLOSED、旧source/results/auth/STOPと既存global manifest FAILを保持。
 
 **次の境界**：GPTによる継続・縮小・終了／追加投資の重要科学判断。レビュー開始には改めて明示承認が必要。Codexは今回その判断・レビューを代行せず、Mandatory STOPを維持する。量子化学ground-energy低コスト化という目的は変えない。
+
+
+公開済み固定資料：payload `eba04a87dc790d7688b0fce0b906ef12151b781a`。[GitHub監査](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/eba04a87dc790d7688b0fce0b906ef12151b781a/docs/research/qc_relative_block_method_cost_audit_v1_20261013.md)、[公開receipt](../../artifacts/qc_relative_block_method_cost_audit/2026-10-13/publication/receipt.json)。27変更blobsと基準13優先blobs、生成source3件、追加リンク34件をGitHub再取得で確認。新科学計算・GPTレビュー0、Mandatory STOP。
