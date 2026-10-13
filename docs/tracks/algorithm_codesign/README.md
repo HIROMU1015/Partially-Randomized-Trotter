@@ -1,3 +1,5 @@
+> **現在の優先作業（2026-10-13後続GPT判断）：既存成果の発展RQの技術具体化。** [レビュー原本](../../research/track_b_existing_results_development_broad_scientific_review_20261013.md)／[計画v1](existing_results_development_technical_plan_v1_20261013.md)／[機械可読draft](../../../artifacts/track_b_existing_results_development_preparation/2026-10-13/comparison_design_draft_v1.json)。partial/P5の同target比較を軸に、情報・proposal・finite-bit・native費用を分離。実行readyではなく、source実装・科学計算は未認可。旧closure/marker/STOPは不変。以下の同日休止記録は履歴。
+
 > **現在のTrack B（2026-10-13）：新規手法探索・新規実験主線を一時休止。** [GPT判断原本](../../research/track_b_overall_direction_and_research_pause_review_20261013.md)／[休止記録](track_b_research_pause_record_20261013.md)。既存closureとclosed P5等の限定positiveは保持。P5の発展は将来候補のみで、今回は未採択・未実行。mandatory STOP。以下の過去の最新・承認待ち表記は履歴。
 
 > 2026-10-07 Track B RA-D0 v3：**READY_FOR_RA_D0_ONE_SHOT_AUTHORIZATION**（実行承認ではない）。

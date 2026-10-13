@@ -658,3 +658,8 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## Track B：時間方向相関の限定照合（2026-10-13）
 
 [方向レビュー原本](research/track_b_interstep_correlated_randomization_direction_review_20261013.md)、[技術照合・GPT判断への入口](tracks/algorithm_codesign/interstep_correlated_randomization_prior_art_audit_20261013.md)、[取得・source identity manifest](../artifacts/track_b_interstep_correlation_prior_art_audit/2026-10-13/audit_manifest_v1.json)。文献取得・手計算・静的source確認のみ。既存休止・closure維持、mandatory STOP。
+
+
+## Track B：既存成果の発展RQの技術具体化（2026-10-13）
+
+[GPT科学レビュー原本](research/track_b_existing_results_development_broad_scientific_review_20261013.md)／[比較計画v1](tracks/algorithm_codesign/existing_results_development_technical_plan_v1_20261013.md)／[準備manifest](../artifacts/track_b_existing_results_development_preparation/2026-10-13/preparation_manifest_v1.json)。G10・R1・SPの証拠境界、small-step解析、同target比較と未固定仕様。新実装・科学計算なし、旧closure保持、mandatory STOP。

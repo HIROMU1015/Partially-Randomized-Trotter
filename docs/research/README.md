@@ -216,3 +216,8 @@ science0、新authorization0、旧closure/結果/marker/STOPは不変、mandator
 ## 2026-10-13 Track B：時間方向相関の限定照合
 
 [GPT方向レビュー原本](track_b_interstep_correlated_randomization_direction_review_20261013.md)をbyte一致で保存。[技術報告](../tracks/algorithm_codesign/interstep_correlated_randomization_prior_art_audit_20261013.md)はPRHS/qSHIFT/全経路ISと現finite-RTEの対応、表示不整合、shot会計、移送の未解決条件を記録。方法採択・新科学実行なし、既存休止維持、mandatory STOP。
+
+
+## 2026-10-13後続判断：Track B既存成果の発展
+
+[GPT科学レビュー原本](track_b_existing_results_development_broad_scientific_review_20261013.md)をbyte一致で保存。[技術計画v1](../tracks/algorithm_codesign/existing_results_development_technical_plan_v1_20261013.md)で同target・情報・誤差・native費用を対応させた。旧系列の再開ではなく新RQの設計のみ。実行仕様・sourceは未固定、新科学計算なし、mandatory STOP。

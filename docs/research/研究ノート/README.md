@@ -265,3 +265,6 @@ G6/G9/G10を自己完結的ノートv1.0へ統合し現系列を区切る。旧�
 
 
 - [2026-10-13 Track B：時間方向相関の限定文献・式・会計照合](2026-10-13_track_b_interstep_correlation_prior_art_audit.md) — 取得状況更新と既知手順への対応。新実装・科学実行なし、既存休止維持、mandatory STOP。
+
+
+- [2026-10-13 Track B：既存成果の発展RQの技術具体化](2026-10-13_track_b_existing_results_development_preparation.md) — 後続GPT判断に基づく比較計画と未固定仕様。新科学計算・実装なし、旧closure/STOP保持。

@@ -1,3 +1,5 @@
+> **現在のTrack B（2026-10-13、後続GPT判断）：既存成果の発展RQの技術設計を優先。** [科学レビュー原本](docs/research/track_b_existing_results_development_broad_scientific_review_20261013.md)／[比較計画v1](docs/tracks/algorithm_codesign/existing_results_development_technical_plan_v1_20261013.md)。同じfinite-RTE時間発展とconfidenceで表現・normalizer情報・finite-bit・native価格を比較する設計。新実装・科学実行は未認可、旧closureとSTOPは保持。以下の同日休止記録・過去の最新表記は判断履歴。
+
 > **現在のTrack B（2026-10-13）：新規手法探索を一時休止。** [GPT判断原本](docs/research/track_b_overall_direction_and_research_pause_review_20261013.md)／[休止記録](docs/tracks/algorithm_codesign/track_b_research_pause_record_20261013.md)。既存成果・終了判断は保持し、closed P5は将来候補のみ。新実装・科学実行へ進まずmandatory STOP。以下の過去の承認待ち・最新表記は判断履歴。
 
 > 2026-10-07 Track B RA-D0 v3：**READY_FOR_RA_D0_ONE_SHOT_AUTHORIZATION**（実行承認ではない）。
