@@ -42,3 +42,8 @@ geometry/basis/DF rank-policy/L_D/固定粒子sectorなし。元通常16比較�
 追加数値探索・posthoc・新pilot・C4を自動起動せず、GPT科学判断の開始承認待ちでMandatory STOP。
 C1の正式な継続/終了/再設計、論文化、主研究採択、C4への移行は未決定。
 N1 STOP/N2 HOLD/N3 CLOSED/THRIFT現template終了、既存source/結果/認可/STOPとglobal manifest FAILを保持する。
+
+## 公開・取得照合（2026-10-14 JST）
+
+payload `d3fd2958b43799f2d797231362eee23e96d7e174` をGitHubからlocal alternatesなしの独立bare cacheへ取得。22変更blobs、既存294files、source/input20files、一次結果9files、追加42relative linksが一致した。[取得記録](../../artifacts/qc_c1_residual_math_audit_v1/2026-10-14/publication/receipt.json)。原指示CRLF/SHA、旧136manifest entries/non-result fields/global description FAIL、root既存131filesの編集を保持。
+取得一致は外部科学再現・新しい数値結果・GPTレビューではない。限定技術調査完了、GPT科学判断の別開始承認待ち・Mandatory STOP。

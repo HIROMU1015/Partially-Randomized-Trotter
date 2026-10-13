@@ -8,3 +8,8 @@
 保存oracle/regretの情報価値と別認可の最小案を文書化したが、実装・実行・科学採否判断はしない。
 新8多項式等式PASSは形式代数のみ。新数値/H/eig/PF/費用/posthoc/optimizer/compile/retry/GPTレビュー/C4はzero。
 旧source/結果/認可/STOP/globalFAILとN1STOP/N2HOLD/N3CLOSED/THRIFT現template終了を保持。公開・remote確認後Mandatory STOP、GPT判断開始承認待ち。
+
+## 同日：GitHub公開と独立取得一致
+
+payload `d3fd2958b43799f2d797231362eee23e96d7e174`、22変更blobs/294既存files/source-input20files/一次9files/追加42links一致を確認した。[取得記録](../../../artifacts/qc_c1_residual_math_audit_v1/2026-10-14/publication/receipt.json)。旧136manifest entries/non-result fields/global FAILとroot131filesを保持。
+新数値・費用再計算・posthoc・科学retry・GPTレビューなし。調査を延長せず、GPT科学判断開始承認待ちでMandatory STOP。
