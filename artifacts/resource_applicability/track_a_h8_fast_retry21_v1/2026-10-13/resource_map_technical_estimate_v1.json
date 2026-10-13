@@ -1,0 +1,207 @@
+{
+  "schema": "h8_full_resource_map_technical_estimate_after_feasibility_v1",
+  "approved": false,
+  "runtime_authorization": false,
+  "allowed_cpus": [],
+  "grant": null,
+  "technical_sealed": false,
+  "absolute_launch_command": null,
+  "scientific_conditions": {
+    "input_rank": 28,
+    "prefixes": [
+      7,
+      14,
+      21
+    ],
+    "q": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "r": [
+      1,
+      2,
+      4
+    ],
+    "K": [
+      2,
+      4
+    ],
+    "full_PF": [
+      "S2",
+      "S4"
+    ],
+    "epsilons": [
+      0.05,
+      0.01,
+      0.005,
+      0.001
+    ],
+    "T": 0.8,
+    "primary": "finite-time complex-signal accuracy matching with measurement-inclusive full-wrapper RZ",
+    "transfer": "separate secondary; not included"
+  },
+  "static_upper": {
+    "B0": 12,
+    "B1": 8,
+    "B2": 72,
+    "signal_candidates": 92,
+    "exploration_groups": 596,
+    "confirmation_groups": 256,
+    "total_core_groups": 852,
+    "core_compile": 1708,
+    "core_trajectory": 832,
+    "core_occurrence_calls": 4208,
+    "core_event_draws_upper": 13232,
+    "optional_tail": {
+      "groups": 40,
+      "compile": 80,
+      "trajectory": 40,
+      "occurrence_calls_upper": 320,
+      "event_draws_upper": 1280
+    },
+    "primitive_calls": null,
+    "reference_matvec": null,
+    "control_calls": null,
+    "normalization_diagnostics": null,
+    "input_generation": 0
+  },
+  "carry_and_projection": {
+    "H6_known_and_reserved_compile": 1736,
+    "H6_known_and_reserved_trajectory": 852,
+    "H4_supplement_compile": 532,
+    "H4_supplement_trajectory": 256,
+    "H8_preflight_cumulative_compile": 21,
+    "H8_preflight_trajectory": 4,
+    "known_plus_reserved_listed_lineages_compile": 2289,
+    "known_plus_reserved_listed_lineages_trajectory": 1112,
+    "full_core_additional_no_reuse_compile": 1708,
+    "full_core_additional_no_reuse_trajectory": 832,
+    "projected_listed_lineages_compile_no_reuse": 3997,
+    "projected_listed_lineages_trajectory_no_reuse": 1944,
+    "optional_tail_projected_compile": 4077,
+    "optional_tail_projected_trajectory": 1984,
+    "production_H4_lineage_included": false,
+    "historical_unknown_actual": null,
+    "refund": 0,
+    "reset": false,
+    "preflight_reuse_savings_reserved": 0,
+    "guaranteed_reuse": false
+  },
+  "memory_proposal": {
+    "max_normal_workers": 8,
+    "normal_RSS_GiB": 9,
+    "heavy_or_unknown_RSS_GiB": 24,
+    "worker_AS_GiB": 32,
+    "coordinator_RSS_GiB": 2,
+    "margin_GiB": 2,
+    "aggregate_RSS_GiB": 76,
+    "job_admission_GiB": 96,
+    "mixed_wave_examples": {
+      "8_normal": 76,
+      "1_heavy_5_normal": 73,
+      "3_heavy": 76,
+      "1_heavy_6_normal_inadmissible": 82
+    },
+    "measured_max_worker_RSS_GiB": 6.815280914306641,
+    "measured_max_with_25_percent_headroom_GiB": 8.5191011428833,
+    "future_unmeasured_p14_p21_rare_events_class": "heavy/unknown; normal requires complete bound evidence",
+    "parallel8_measured": false,
+    "proposed_worker_cpus": [
+      20,
+      21,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29
+    ],
+    "proposed_coordinator_cpus": [
+      22,
+      23
+    ],
+    "internal_threads": 1
+  },
+  "wall_model": {
+    "scope": "conditional proxy only; excludes all 92 signal evaluations, reference/primitive validation, rare-order uplift and transfer",
+    "assumptions": [
+      "PR cost scales linearly with deterministic prefix p/7",
+      "r/K and random zero-order realization do not increase measured q-anchor wall",
+      "PF q2/q4 wall is q times q1 wall; B0 wall no greater than corresponding full S2",
+      "confirmation may range from measured p7 q1 to three times measured p7 q8",
+      "8 or 3 workers have sufficient admitted memory; utilization overhead factor 1.5 to 3"
+    ],
+    "PR_q_anchor_seconds": [
+      85.04602638073266,
+      137.5555888209492,
+      259.4063554722816,
+      465.14422957226634
+    ],
+    "explore_PR_worker_seconds": 272779.8336709142,
+    "confirmation_PR_worker_seconds_range": [
+      21771.78275346756,
+      357230.76831150055
+    ],
+    "deterministic_worker_seconds_proxy": 31284.103564653546,
+    "ordinary_extra_seconds_proxy": 2378.525879316032,
+    "total_cost_worker_hours_range": [
+      91.1706238523198,
+      184.35367539621785
+    ],
+    "8_worker_conditional_hours_range": [
+      17.094491972309964,
+      69.1326282735817
+    ],
+    "3_worker_conditional_hours_range": [
+      45.5853119261599,
+      184.35367539621785
+    ],
+    "completion_wall_guaranteed": false
+  },
+  "storage_proposal": {
+    "output_cap_GiB": 32,
+    "storage_admission_GiB": 64,
+    "inodes_admission": 100000,
+    "core_groups": 852,
+    "groups_including_optional_tail": 892,
+    "per_group_existing_cap_MiB": 32,
+    "892_groups_at_cap_GiB": 27.875,
+    "monitor_rotation_required": true,
+    "monitor_journal_budget_GiB": 1,
+    "global_index_checkpoint_budget_GiB": 1,
+    "scratch_cache_budget_GiB": 2,
+    "files_plan_ceiling": 100000,
+    "quota_fresh_required": true,
+    "preflight_measured": {
+      "scope": "heavy02 + remaining02 + control02 only; excludes input snapshot, setup01, publication caches and all other lineages",
+      "files": 493,
+      "bytes": 6129772,
+      "allocated_bytes": 7843840
+    },
+    "raw_full_circuit_dumps": false
+  },
+  "reuse_requirements": [
+    "same input/state/DF/profile/compiler/full-wrapper/control/canonical fingerprint",
+    "same task seed namespace source lineage and statistical selection binding",
+    "complete paired metric + owned exit/reap + content SHA only",
+    "preflight namespace is separate until an explicit accepted reuse mapping exists",
+    "never reuse partial output or consumed grant; preserve old failed compile1/control4"
+  ],
+  "resume_requirements": [
+    "completed results only; no automatic retry",
+    "fresh one-shot grant, source closure, carry reservations and output",
+    "new source optimizations require byte/control/compiler equivalence or explicit scientific change",
+    "parent exited and all owned workers reaped"
+  ],
+  "unresolved": [
+    "full-map runner and B0 + p14/p21 reference/signal integration",
+    "full 92-candidate numerical allowance and primitive/control/reference budgets",
+    "rare-order mean cost is not bounded; all feasibility RTE draws were order0",
+    "optional tail diagnostic versus estimator scope",
+    "formal seed mapping for preflight reuse",
+    "bounded rotated observation journal/cache and fresh quota/CPU/memory",
+    "full campaign execution approval is absent"
+  ]
+}

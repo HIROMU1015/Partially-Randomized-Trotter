@@ -1,5 +1,7 @@
 # H8共通資源比較：科学判断前の実験・高速化・予算案
 
+2026-10-13完了追記：限定8ケース20compileが正常完了。[実測結果と更新技術予算](track_a_h8_fast_feasibility_result_v1.md)を最新値とする。SOURCE9bfea8bd、heavywall7126.273秒/RSS6.815GiB、残7wall3012.395秒。core1708/832、carryはH4補完/既存H8failedを加えた既知lineageで3997/1944案、optional tail追加80/40。preflight reuse binding未確定で節約予約0。full-map runtime_authorization=false、grantなし。以下の古い未完了/未測定・H6外挿値は履歴として保持。
+
 2026-10-13最新指示追記：利用者はGPTレビューで採択したresource-mapを主評価と明示した。rank28・relative prefix7/14/21・q1/2/4/8・r1/2/4・K2/4・fullPF S2/S4・finite-time complex-signal accuracy matching・測定込みfull-wrapper RZ総費用を保持し、固定H6設定transferを副評価の別枠にする。本格実行承認は未取得。[限定feasibilityの保存監査](../../artifacts/resource_applicability/track_a_h8_signal_compile_preflight_v1/2026-10-13/README.md)は8signal/native1164完了、20compileは進行中。全件完了後にwall・RSS・容量・carryの技術的見積もりを更新し、未実測をPASSにしない。以下の古い「primary未決」やH6倍率仮定は当時の案として保持する。
 
 2026-10-13事前検証追記：[入力/stateの実受領結果](../../artifacts/resource_applicability/track_a_h48_preflight_result_v1/2026-10-13/README.md)。linearH8/1Å/STO-3G/tol-only actual rank28/16modes/sector4900、weighted N16 decision gate9.9e-11を保持、eta3.6595e-12、snapshot SHA d4c4346127e97c241439ae1c4ae010962b0456b19f461cfd3d9b06e7d4a50955。提案のrelative prefixは7/14/21。H8 sourceのsolver dimension400 guardは別moduleで4900へ対応したが、signal/reference/native16-mode/compile feasibilityは未完了、full comparison未認可。以下は入力未受領時の設計案として保全。

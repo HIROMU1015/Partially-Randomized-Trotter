@@ -1,5 +1,11 @@
 # Validation status
 
+## 2026-10-13 H8限定feasibility 20/20完了・mandatory STOP
+
+[完了結果](docs/research/track_a_h8_fast_feasibility_result_v1.md)：linear H8/1Å/STO-3G/tol-only DF28/16modes/sector4900/T=.8、SOURCE9bfea8bd。8/8ケース・20/20 full-wrapper/累積21actual、control40+old4=44、trajectory4/occurrence15。heavy約1時間59分・RSS6.815GiB、残7約50分・最大3worker。全exit0/reap/cleanup0・STOPなし。新解析はmetadata/streaming SHAだけでscience0、母平均/正式精度一致/本格mapは未認定。本格実行grantなし。
+
+保存source257/input5/profile/signal SHA一致。controls max1.85519e-13、既存signal8/1164・15/44/40/23 local tests再実行0。strict allowance/tail/population mean/旧host compiler bit等は未検証。外部再現/CIではない。
+
 ## 2026-10-13 H8承認caps21・高速heavy retry起動
 
 [入口](artifacts/resource_applicability/track_a_h8_fast_retry21_v1/2026-10-13/README.md)。SOURCE9bfea8bd・closure257/test1、旧245不変、新23metadata/mock PASS8.60秒。利用者が1000万instructions/累積compile21/control44承認、failed1/4は保持。Source1d064749はsetup_CPU_UNAVAILABLEでscience worker/lock/call0、CPU継承復元を直して新SOURCE/auth/outputへ固定。heavy02 coordinator410647/worker410910/CPU31/30・thread1起動、source/input/profile/carry/fresh gate確認・firstSTOPnull。完了/速度倍率は未測定、成功後だけ残7最大3。science/CPU/RSS/AS/compiler条件不変・本格H8なし。

@@ -1,3 +1,16 @@
+# H8高速化版：限定8ケース・20回路の完了結果
+
+2026-10-13 JST。**8/8ケース・20/20 compile正常完了、全worker/native coordinator exit0・wait/reap・cleanup error0、mandatory STOP。** SOURCE `9bfea8bde44cbb2ea9187476ddd496066a8853b3`。旧失敗1compile/4controlを含む累積21/44、trajectory4/occurrence15を保全。
+
+- [結果報告・全ケース表・資源計画](../../../../docs/research/track_a_h8_fast_feasibility_result_v1.md)
+- [20回路費用CSV](measured_wrapper_rows_v1.csv)、[JSON](measured_wrapper_rows_v1.json)
+- [終了・257source/5input SHA・監視・証拠hash・carry監査](completion_audit_v1.json)
+- [本格resource-map技術見積もり（未承認）](resource_map_technical_estimate_v1.json)
+
+S4/q8：wall7126.273秒/RSS6.815GiB/VmPeak7.476GiB/size5,115,015、RZ2,456,952・CX1,082,464（各axis）。残7は最大3worker・3012.395秒、順次合計約2時間49分。PR各1本・全44event次数0で、母平均/精度一致優位や本格完走は認定しない。本格H8 runtime_authorization=false・grantなし、今回追加science0。
+
+## 起動準備と経緯（保全）
+
 # H8高速化版・上限21一度再実行の入口
 
 2026-10-13 JST。利用者が1000万instructions・累積compile21/control44を承認。SOURCE `9bfea8bde44cbb2ea9187476ddd496066a8853b3`、branch `track-a-h8-fast-retry21-20261013`。
