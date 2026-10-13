@@ -629,3 +629,7 @@ stdlib保存スカラー解析、Matplotlib表示、Fraction照合、bounded eve
 ## H4 B0+I原稿v0.4の保存値・図・照合
 
 科学library/sourceを変更せず、[保存値統合](resource_applicability/integrate_h4_b0i_manuscript.py)、[図生成](resource_applicability/plot_h4_b0i_manuscript.py)、[bundle読取照合](resource_applicability/verify_h4_b0i_manuscript_bundle.py)を分離した。入力は公開CSV/JSONのみ、新signal/trajectory/compile0。限定testは`tests/tracks/resource_applicability/test_h4_b0i_manuscript_integration.py`、条件と再生成は`docs/research/track_a_h4_b0i_manuscript_integration_20261014.md`から参照。
+
+## Track Aサーバー研究情報の暫定共有索引
+
+[共通入口](../docs/research/track_a_shared_research_status.md)と`docs/research/track_a_server_inventory.md`から固定result/source/レビューへ辿れる。`scripts/resource_applicability/verify_track_a_shared_status.py`はGit blob/公開bytes・JSON単位・内部リンクの読取照合のみ。科学library/import/計算、H8操作を行わない。ローカル照合待ち。

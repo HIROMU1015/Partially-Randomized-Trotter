@@ -1,5 +1,7 @@
 # 研究ノート
 
+- [2026-10-14 サーバー情報統一・暫定初版](2026-10-14_track_a_server_information_sync.md)：固定証拠・Git棚卸し・read-only H8 snapshot。ローカル照合待ち。
+
 - [2026-10-14 H4 B0+I原稿v0.4・GPT handoff](2026-10-14_H4_B0I_manuscript_v0_4.md)：実測結果の保存値統合。科学的採否待ち、科学計算STOP。
 
 ## 2026-10-06 H4 signal/compile INPUT_BOUND草案・容量不足STOP
