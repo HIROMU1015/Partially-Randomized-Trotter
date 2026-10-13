@@ -598,3 +598,7 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## D2 saved-output audit
 
 `tracks/algorithm_codesign/audit_d2_saved_boundary_result.py`はD2保存スカラー・hash/来歴だけの監査。pair kernel/科学runnerを再呼出ししない。[結果報告](../docs/tracks/algorithm_codesign/d2_boundary_results_and_gpt_handoff_20261013.md)。
+
+## Track B D2 final saved integration
+
+`tracks/algorithm_codesign/analyze_d2_final_saved_integration.py`はD1r1/D2r2の保存scalar感度とPareto・depth分析だけ。[技術報告](../docs/tracks/algorithm_codesign/d2_final_saved_integration_and_gpt_handoff_20261013.md)。科学runner・boundary kernelを呼ばない。

@@ -304,3 +304,7 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 ## D2結果監査
 
 `audit_d2_saved_boundary_result.py`はexact費用恒等式・marker/source/outer整合をsaved-onlyで確認。[report](../../../docs/tracks/algorithm_codesign/d2_boundary_results_and_gpt_handoff_20261013.md)。追加実行認可なし。
+
+## D2 final saved integration
+
+`analyze_d2_final_saved_integration.py`：固定D1/D2 JSONから全h領域をFraction演算。追加pair/native取得なし。[report](../../../docs/tracks/algorithm_codesign/d2_final_saved_integration_and_gpt_handoff_20261013.md)。

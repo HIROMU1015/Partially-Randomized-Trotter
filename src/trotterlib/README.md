@@ -559,3 +559,7 @@ B固有namespaceは`src/trottertracks/algorithm_codesign/rte_development/`。共
 ## Track B D2専用kernel（2026-10-13）
 
 共有trotterlib APIを変更せず、`trottertracks.algorithm_codesign.rte_development.key_mechanisms`と`boundary`/`boundary_launch`へ保存価格・exact literal相殺を準備。[技術報告](../../docs/tracks/algorithm_codesign/d2_key_mechanisms_and_boundary_preparation_20261013.md)。登録費用取得は別明示one-shot認可、mandatory STOP。
+
+## D1/D2最終保存分析（2026-10-13）
+
+共有library・science sourceの変更なし。新analyzerはscripts側のstdlib exact affine処理。[技術報告](../../docs/tracks/algorithm_codesign/d2_final_saved_integration_and_gpt_handoff_20261013.md)。旧科学分類保持、mandatory STOP。

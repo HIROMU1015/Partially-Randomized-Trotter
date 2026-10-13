@@ -1,3 +1,5 @@
+> **現在のTrack B（2026-10-13）：D1/D2保存値の最終統合分析完了。** [全方式感度・Pareto・r選択・相殺構造/GPT引き継ぎ](docs/tracks/algorithm_codesign/d2_final_saved_integration_and_gpt_handoff_20261013.md)。D2 CX最小包絡線はCTS→partial→P5、joint12のT最小はr2 P5。exact支配領域と帰属限界を整理、16人工scalar checks PASS、新science/pair再評価0。旧証拠保持、mandatory STOP、次は開始承認後のGPT科学レビュー。以下は履歴。
+
 > **現在のTrack B（2026-10-13）：D2共通境界相殺一回実行完了。** [結果/保存値監査/GPT引き継ぎ](docs/tracks/algorithm_codesign/d2_boundary_results_and_gpt_handoff_20261013.md)。r=2・六方式219,303 pairs、retry0、outer exit0、saved-only1218 checks PASS。P5対partial T差は−5.8358%→−5.8557%（固定nativeモデル）。旧source/結果/markersを保持、新compile/合成/matrix0、mandatory STOP。研究判断はGPT側。以下は履歴。
 
 > **現在のTrack B（2026-10-13）：D1 key/event単価分析・D2境界相殺準備完了。** [技術報告・次の実行承認待ち](docs/tracks/algorithm_codesign/d2_key_mechanisms_and_boundary_preparation_20261013.md)。GPT科学レビュー採択に従い、12 row/1890 eventのliteral Tと合成key価格を分解。D2はr=2全六方式・旧law/N/bias/価格を固定するexact境界相殺対照。45登録外tests PASS、登録pair評価/compile/合成0、authorization pending、mandatory STOP。以下の過去表記は履歴。

@@ -125,3 +125,7 @@ focused test: `test_g10_streaming_io.py`。人工JSON/typed fixtures、I/O/guard
 ## D2 key / boundary focused tests
 
 `test_d2_key_mechanisms_boundary.py`：人工Fraction、2-qubit gate列、mock runner/authorization、zero-fill、phase、保存/cap保護。最終45 PASS。登録D1 provider/pairは使用しない。
+
+## D2 final saved scalar checks
+
+`test_d2_final_saved_integration.py`：人工affine/depth scalar、tie、支配、missing attribution、出力保護の16 checks。登録科学input・pairは使用しない。

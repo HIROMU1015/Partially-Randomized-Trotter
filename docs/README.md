@@ -683,3 +683,7 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## Track B D2一回結果（2026-10-13）
 
 [結果とGPT handoff](tracks/algorithm_codesign/d2_boundary_results_and_gpt_handoff_20261013.md)／[exact資源表](../artifacts/track_b_d2_saved_boundary_result/2026-10-13/v1/saved_output_audit/resource_rows_exact_v1.json)。登録pair一回完了、1218 saved-only audit PASS、mandatory STOP。
+
+## D1/D2保存値の最終統合分析（2026-10-13）
+
+[報告・GPT handoff](tracks/algorithm_codesign/d2_final_saved_integration_and_gpt_handoff_20261013.md)／[manifest](../artifacts/track_b_d2_final_saved_integration/2026-10-13/v1/final_evidence_manifest_v1.json)。全hの感度/Pareto、r選択とdepth構造を保存値で整理。旧原結果を変更せず新科学0、mandatory STOP。

@@ -278,3 +278,5 @@ G6/G9/G10を自己完結的ノートv1.0へ統合し現系列を区切る。旧�
 - [2026-10-13 D1 key機構・D2境界準備](2026-10-13_track_b_d2_key_mechanisms_boundary_preparation.md)：GPT判断受領、保存値の単価分析、登録pair未実行・明示実行指示待ち。
 
 - [2026-10-13 D2一回結果](2026-10-13_track_b_d2_boundary_one_shot_result.md)：219,303 pairs、retry0、固定価格での相殺費用、saved-only監査とSTOP。
+
+- [2026-10-13 D1/D2最終保存統合](2026-10-13_track_b_d2_final_saved_integration.md)：全感度/quantum Pareto、r比較、相殺帰属限界。科学レビュー未開始。
