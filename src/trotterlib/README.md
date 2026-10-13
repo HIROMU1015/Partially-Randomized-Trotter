@@ -1,3 +1,5 @@
+> **Track B D3 v2結果**：[独立trackの保証×価格resource map](../../docs/tracks/algorithm_codesign/d3_v2_results_and_gpt_handoff_20261014.md)。共有libraryのAPI/実装は変更せず、追加scienceなし、mandatory STOP。
+
 > **Track B D3 v2**：[独立track namespaceの型adapter/source準備](../../docs/tracks/algorithm_codesign/d3_v2_precision_repair_and_source_preparation_20261014.md)。この共有libraryのAPI/実装は変更していない。別明示実行承認待ち、mandatory STOP。
 
 > Track B D3の新sourceは[専用namespace](../trottertracks/algorithm_codesign/rte_robustness/README.md)にある。共通API変更なし。[技術報告](../../docs/tracks/algorithm_codesign/d3_source_preparation_and_execution_handoff_20261013.md)、科学実行0、別指示までSTOP。

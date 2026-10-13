@@ -1,3 +1,5 @@
+> **Track B現在（2026-10-14）：D3 v2一回実行・保存監査完了、GPT科学判断待ち。** [結果/一次データ/引き継ぎ](docs/tracks/algorithm_codesign/d3_v2_results_and_gpt_handoff_20261014.md)。36新合成・48行・四ケース、outer exit0、2579 saved-only checks PASS。native会計1e-6固定、旧証拠保持、retry0、mandatory STOP。以下は履歴。
+
 > **Track B現在（2026-10-14）：D3 v2型adapter修正・source準備完了、別one-shot承認待ち。** [限定差分・81 focused tests・実行条件](docs/tracks/algorithm_codesign/d3_v2_precision_repair_and_source_preparation_20261014.md)。科学条件/精度会計/36 keys/48行/資源上限は同じ。旧v1失敗とmarker保持、実合成/登録比較0、authorization pending、mandatory STOP。以下は履歴。
 
 > **Track B現在（2026-10-14）：D3 v1一回実行はD3_TECHNICAL_INCONCLUSIVE。** [原因・保存監査・GPT引き継ぎ](docs/tracks/algorithm_codesign/d3_failed_execution_and_gpt_handoff_20261014.md)。precisionのFraction→mpmath変換で最初の2 jobsが停止、完成sequence0、登録rows0/48。999 saved-only checks PASS、source/旧証拠保持、retry0、marker消費済み、mandatory STOP。以下は履歴。
