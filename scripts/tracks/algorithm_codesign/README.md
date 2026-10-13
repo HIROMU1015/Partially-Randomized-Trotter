@@ -300,3 +300,7 @@ known synthetic providerの次数内有限operator比較のみ、science完了�
 ## D1 key機構 / D2境界準備
 
 [報告](../../../docs/tracks/algorithm_codesign/d2_key_mechanisms_and_boundary_preparation_20261013.md)。saved-only analyzer、off-domain verifier、pending gated runner/outer observerを分離する。旧runnerの再開ではない。
+
+## D2結果監査
+
+`audit_d2_saved_boundary_result.py`はexact費用恒等式・marker/source/outer整合をsaved-onlyで確認。[report](../../../docs/tracks/algorithm_codesign/d2_boundary_results_and_gpt_handoff_20261013.md)。追加実行認可なし。

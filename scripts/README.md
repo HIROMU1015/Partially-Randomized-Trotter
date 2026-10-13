@@ -594,3 +594,7 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## Track B D2準備（2026-10-13）
 
 `tracks/algorithm_codesign/analyze_d1_saved_key_mechanisms.py`は保存event/keyのみのT単価分解。`verify_d2_boundary_source.py`は登録外tests。`run_d2_saved_boundary_one_shot.py`と`observe_d2_saved_boundary_one_shot.py`は別の明示指示とsource直接子authorizationが必要。[契約/報告](../docs/tracks/algorithm_codesign/d2_key_mechanisms_and_boundary_preparation_20261013.md)。登録D2未実行、mandatory STOP。
+
+## D2 saved-output audit
+
+`tracks/algorithm_codesign/audit_d2_saved_boundary_result.py`はD2保存スカラー・hash/来歴だけの監査。pair kernel/科学runnerを再呼出ししない。[結果報告](../docs/tracks/algorithm_codesign/d2_boundary_results_and_gpt_handoff_20261013.md)。

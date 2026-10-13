@@ -1,3 +1,5 @@
+> **現在（2026-10-13）：[D2境界相殺結果・監査](d2_boundary_results_and_gpt_handoff_20261013.md)。** 一回219,303 pairs完了、source/old results/marker保持、saved-only1218 checks PASS。固定r=2のT/CX/1Q順位はh=0で旧順序のまま。新科学実行へ進まずmandatory STOP、GPTの科学判断へ戻す。
+
 > **現在（2026-10-13）：[D1 key費用機構・D2共通境界相殺準備](d2_key_mechanisms_and_boundary_preparation_20261013.md)。** 保存価格・law/Nを固定した記号感度とevent索引、r=2全六方式の新contract/source、45登録外tests PASS。旧source/results/markers保持、登録pair費用0、READY_FOR_SEPARATE_D2_BOUNDARY_ONE_SHOT_AUTHORIZATION、mandatory STOP。
 
 > **現在（2026-10-13）：[D1保存資源追加分析](d1_saved_resource_analysis_and_gpt_handoff_20261013.md)。** 90 within-r pair-metric、18 r-contrast、全6方式とjoint12の感度・量子Paretoを保存scalarだけで整理。人工scalar12 checks PASS、旧event/sequence監査は繰り返さず、原科学分類不変・新science0・mandatory STOP。
