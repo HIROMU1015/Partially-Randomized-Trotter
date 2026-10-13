@@ -1,5 +1,18 @@
 # プロジェクト案内
 
+## 2026-10-14 H4 B0+I代表6回路 実測完了・mandatory STOP
+
+科学レビューで追加対照に採択後、利用者が固定6回路とCPU/資源契約を承認した。
+SOURCE 8f6c1bc8ceeeffddbecf170ef6ddb0fe6d18b63b不変、grant commit449614525d5de74daccf9f193e3199eb931fb388。
+.70/p5、.80/p5、1.40/p3のq1両軸を実compileし6/6 COMPLETE、全RZ増分0、stage11.73秒。
+ε=.05/P=0の保存shot会計でB0+Iは保存B2最小点推定比25.97%／10.75%／3.91%低い。
+固定3構成×302精度の906行で178／103／87点がB2点推定を下回る。全B0+I family/1812点のwinnerや母平均優劣は未確定。
+worker sampled RSS最大110.66MiB、最大監視interval1.0075秒、native driver/worker exit0・observer意図的−15、cleanup・残存0。
+累積73029/74805 actual、旧carry保持。科学arrayを再生成せず、H8/共有環境/既存venv変更0、追加compile0。
+[実測・結果監査の入口](docs/research/track_a_h4_b0i_pilot6_results_20261014.md)。既存科学レビュー・44人工testsは再実施せず、公開binding/Git blob/Fraction会計照合PASS。
+next_stage_authorized=false、mandatory_stop=true。全面240候補／条件付き追加234は別scope・別grant・別利用者承認が必要。
+以下は過去の各時点の記録。
+
 ## 2026-10-13 H4 B0+I検証用実装・限定compile準備
 
 新しい独立method/adapterを追加し、元B0の38 Python source・結果・原稿v0.3を保持した。

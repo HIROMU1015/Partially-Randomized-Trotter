@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 2026-10-14 H4 B0+I pilot6結果
+
+固定SOURCEの代表6 wrapper実compile完了。[実測・保存shot再会計・終了監査](../docs/research/track_a_h4_b0i_pilot6_results_20261014.md)から公開verificationへ辿れる。科学source/既存テストの変更・追加compile・次stage起動はない。
+
 ## 2026-10-06 H4 signal/compile INPUT_BOUND草案・容量不足STOP
 
 run02の6凍結入力へplanを結合し、source19/218 templates/compiler/run ID/outputを不変に保った。
