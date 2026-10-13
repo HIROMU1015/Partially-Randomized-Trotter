@@ -1,5 +1,10 @@
 # 文書索引
 
+## 2026-10-14 H4 B0+I12並列run02 起動
+
+利用者の並列高速化・memory上限見直し・起動承認を反映し、12worker/各32GiBで全240 wrapperを開始した。旧6件numeric照合再利用、234 new compile、科学条件とcompiler不変。SOURCE 924b779c2bc6f6e844d6283c355f91c73aed6445、25限定mock検査PASS。run01のhard AS継承bootstrap STOPは0 actualで修正し、bytes/wall carryを保持した。
+[起動記録・監視入口](research/track_a_h4_b0i_parallel_run02_20261014.md)。起動確認は最終完了ではなく、計算は監視下で継続。共有環境/既存venv/H8変更0。以下は過去の各時点の記録。
+
 ## 2026-10-14 H4 B0+I全面240回路 準備完成・新grant待ち
 
 代表6実測の公開commit c377b074から独立し、240 wrapper／234 new compile／6 verified reuseの閉じたregistryを実装した。
