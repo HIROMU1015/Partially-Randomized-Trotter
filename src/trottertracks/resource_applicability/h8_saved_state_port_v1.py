@@ -5,7 +5,7 @@ from .h8_preflight_input_port_v1 import InputGenerationPort,atomic_npz
 from .h48_preflight_contract_v1 import bounded_h8_solver as bounded_solver
 from .ax2b_h4_science_v5 import primitive_sector_certificate
 from .ax2a_preparation import digest
-from .h8_saved_projection_v1 import accept,norm,array_record
+from .h8_saved_projection_v1 import accept,norm,array_record,reconstruct,canonical_antisym
 from .ax2b_h4_contract_v5 import file_hash
 from trotterlib.df_hamiltonian import PhysicalSector,DFHamiltonian,df_linear_operator,_hartree_fock_initial_vector
 from trotterlib.df_partial_s2 import df_hamiltonian_hash
@@ -17,6 +17,16 @@ def antisym(t):
 def independent_coefficients(corrected,w,g):
     return (corrected+np.einsum('i,ipq,iqr->pr',w,g,g,optimize=False),
             antisym(-np.einsum('i,ipr,iqs->pqrs',w,g,g,optimize=False)))
+
+def scalar_summary(one,two,corrected,w,g,post):
+    # Near-zero norm summaries use the frozen evaluation order. The separate
+    # vectorized coefficient check still tests the entire arrays independently.
+    raw_c,raw_t=reconstruct(corrected,w,g)
+    post_c,post_t=reconstruct(corrected,w,post)
+    return {'raw_normal_order_one_body_residual_frobenius':norm(raw_c-one),
+        'raw_normal_order_antisym_two_body_residual_frobenius':norm(canonical_antisym(two)-raw_t),
+        'hypothetical_projection_one_body_change_frobenius':norm(raw_c-post_c),
+        'hypothetical_projection_antisym_two_body_change_frobenius':norm(raw_t-post_t)}
 
 class SavedStatePort(InputGenerationPort):
     def execute(self):
@@ -35,10 +45,7 @@ class SavedStatePort(InputGenerationPort):
           'truncation_value':float(truncation),'corrected_one_body_hermitization_change_frobenius':norm((corrected+corrected.conj().T)/2-corrected),
           'fragments':[{'index':i,'lambda':float(lam),'raw':array_record(a),'hypothetical_post':array_record(b),
              'raw_frobenius_norm':norm(a),'hermitization_change_frobenius':norm(a-b)} for i,(lam,a,b) in enumerate(zip(weights,g,post))],
-          'representation_diagnostics':{'raw_normal_order_one_body_residual_frobenius':norm(raw_c-one),
-            'raw_normal_order_antisym_two_body_residual_frobenius':norm(antisym(two)-raw_t),
-            'hypothetical_projection_one_body_change_frobenius':norm(raw_c-fragment_post_c),
-            'hypothetical_projection_antisym_two_body_change_frobenius':norm(raw_t-post_t)}}
+          'representation_diagnostics':scalar_summary(one,two,corrected,weights,g,post)}
         arrays,receipt,coeffs=accept(constant=constant,one_body=one,two_body=two,lambdas=weights,
            g_matrices=g,correction=correction,truncation=truncation,summary=summary,
            diagnostic_coefficients=(raw_c-one,raw_t,antisym(two)))

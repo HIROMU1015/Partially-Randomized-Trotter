@@ -5,6 +5,14 @@ from trottertracks.resource_applicability.h48_preflight_contract_v1 import h8_st
 from trottertracks.resource_applicability.h8_saved_projection_v1 import accept,policy
 
 class SavedStateTests(unittest.TestCase):
+    def test_scalar_order_does_not_replace_independent_coefficients(self):
+        from trottertracks.resource_applicability.h8_saved_state_port_v1 import scalar_summary,independent_coefficients
+        from trottertracks.resource_applicability.h8_saved_projection_v1 import reconstruct,norm
+        f=self.fixture(1e-8);c=f['one_body']+f['correction'];g=f['g_matrices'];w=f['lambdas'];post=(g+g.conj().transpose(0,2,1))/2
+        d=scalar_summary(f['one_body'],f['two_body'],c,w,g,post);a,b=reconstruct(c,w,g)
+        self.assertEqual(d['raw_normal_order_one_body_residual_frobenius'],norm(a-f['one_body']))
+        x,y=independent_coefficients(c,w,g)
+        self.assertLess(norm(a-x),1e-13);self.assertLess(norm(b-y),1e-13)
     def test_zero_input_reexecution_budget(self):
         p=h8_state_plan();self.assertEqual([p['caps_proposed'][k] for k in ('integral_build','df_decomposition','compile','trajectory')],[0,0,0,0])
         self.assertEqual(p['caps_proposed']['solver_matvec'],10000)
