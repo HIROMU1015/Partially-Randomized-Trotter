@@ -1,5 +1,14 @@
 # 文書索引
 
+## 2026-10-14 H4 B0+I全240回路 実測完了・費用地図STOP
+
+12 workerで234新規compile＋6 numeric照合再利用、全240 COMPLETE、stage193.990秒。SOURCE924b779c2bc6f6e844d6283c355f91c73aed6445・closure59とimmutable launch artifactは不変。
+実測B0+Iを加えた1812点の費用点最小はB0+I397/B2 1415、ties0。全240軸で旧B0との差はRZ/CX数・各depth・sizeとも0。
+ε=.05では.70/.80/1.40 ÅでB0+IがB2点推定比25.97/10.75/3.91%低く、他3距離ではB2が低い。ε=.005では6距離すべてB2が低い。
+保存shot×実compiled RZ、状態準備P=0のlocal事後解析。32 paired trajectoryの選抜・推定、希少event、母平均/同時保証、energy/RPE・実backend未評価を保持する。
+worker native exit12件全0、observer意図的−15、owned14残存0、monitor最大interval1.01093秒、PSI0/OOM増分0。累積actual73263/74805、旧carry返却なし。
+[結果・全地図・監査入口](research/track_a_h4_b0i_map_results_20261014.md)。公開projection/全候補再最小化/Fraction照合PASS。追加compile/NPZ decode/共有環境・venv・H8変更0、次stageなし。主要claim確定は結果reviewへ戻す。以下は過去の各時点の記録。
+
 ## 2026-10-14 H4 B0+I12並列run02 起動
 
 利用者の並列高速化・memory上限見直し・起動承認を反映し、12worker/各32GiBで全240 wrapperを開始した。旧6件numeric照合再利用、234 new compile、科学条件とcompiler不変。SOURCE 924b779c2bc6f6e844d6283c355f91c73aed6445、25限定mock検査PASS。run01のhard AS継承bootstrap STOPは0 actualで修正し、bytes/wall carryを保持した。
