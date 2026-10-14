@@ -4,7 +4,7 @@
 
 [修正・人工29tests](docs/research/qc_onebody_repartition_h_boundary_checker_v2_repair_20261015.md)、[別実行承認への引継ぎ](docs/research/qc_onebody_repartition_h_boundary_reaudit_v2_execution_handoff_20261015.md)、[runner](scripts/verify_qc_onebody_repartition_h_boundary_v2.py)、[固定契約](artifacts/qc_onebody_repartition_h_boundary_checker_v2_preparation/2026-10-15/contract.json)、[source freeze](artifacts/qc_onebody_repartition_h_boundary_checker_v2_preparation/2026-10-15/source_manifest.json)、[byte/header preflight](artifacts/qc_onebody_repartition_h_boundary_checker_v2_preparation/2026-10-15/preflight.json)。
 保存Uのself-report再現と独立Padé照合を分離し、failure cell/metrics/partial countersを追加。精度・branch・eligibility・価格・10%基準は保持。linear H4/1.00Å/STO-3G/保存DF rank12 generation順全12density、Nα=Nβ=2/36dim、v1 X/seal/state/frame/leading不変、PR L_D/delta変更なし。旧762h/4572cells/4572methods/18288costrowsを別認可後一回監査する新scope。今回H4 arrays decode/数値再監査0、人工testsのみ。旧NUMERICAL_ALLOWANCE停止/UNVALIDATED_PRODUCER_ONLY、実H4原因UNDETERMINEDのまま。
-旧5118files・158manifest prefix/non-result・global description FAIL・root434pathsを保全。未発行target false、attempt消費0。1worker1thread/RSS512MiB/output-log各2MiB/時間capなし、最大4572独立PF再構成/571500expm、新PF収集/eig/RDM/selector/compile0。N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了、TrackA/B/C1–C4/第二候補を維持。GitHub公開・再取得後Mandatory STOP、別明示数値再監査承認待ち。以下は履歴。
+旧5116files・158manifest prefix/non-result・global description FAIL・root434pathsを保全。未発行target false、attempt消費0。1worker1thread/RSS512MiB/output-log各2MiB/時間capなし、最大4572独立PF再構成/571500expm、新PF収集/eig/RDM/selector/compile0。N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了、TrackA/B/C1–C4/第二候補を維持。GitHub公開・再取得後Mandatory STOP、別明示数値再監査承認待ち。以下は履歴。
 
 ## 2026-10-15 h境界の一次データ・監査停止をGitHub照合／Mandatory STOP
 
