@@ -1,3 +1,5 @@
+> **Track B現在（2026-10-15）：[Parent allocation v2技術停止・保存監査](tracks/algorithm_codesign/parent_allocation_v2_results_and_gpt_handoff_20261015.md)。** Parent allocation v2は総CPU上限3600秒でTECHNICAL_INCONCLUSIVE。新合成16、root診断72、15構成/61 prefix行を保存、完成resource mapなし。148 read-only checks PASS、旧資料・親worktree保持、retry0、mandatory STOP。 以下は履歴。
+
 > [Parent allocation v2 owner PID修正・実行準備](tracks/algorithm_codesign/parent_allocation_v2_owner_repair_source_preparation_20261015.md)：78登録外tests、科学契約不変、新namespace pending、mandatory STOP。
 
 > [Parent allocation v1技術停止・保存監査](tracks/algorithm_codesign/parent_allocation_v1_failed_execution_and_gpt_handoff_20261015.md)：初回key metadata衝突、合成/比較0、23 read-only checks PASS、marker消費済み、mandatory STOP。

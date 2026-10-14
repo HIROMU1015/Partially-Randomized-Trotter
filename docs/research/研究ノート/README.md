@@ -1,3 +1,5 @@
+- [2026-10-15：Parent allocation v2 CPU技術停止](2026-10-15_track_b_parent_allocation_v2_cpu_stop.md)：15構成/61 prefix、148保存監査、完成比較なし、mandatory STOP。
+
 > [2026-10-15 Parent allocation v2 owner repair準備](2026-10-15_track_b_parent_allocation_v2_owner_repair_preparation.md)。
 
 > [2026-10-15 Parent allocation v1 one-shot技術停止](2026-10-15_track_b_parent_allocation_v1_technical_stop.md)。

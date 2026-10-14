@@ -1,0 +1,24 @@
+{
+  "stopping_cause_confirmed": "aggregate CPU cap",
+  "observed_CPU_seconds": 3600.0600000000004,
+  "completed_tree_CPU_seconds": 3285.188201,
+  "outer_process_CPU_seconds": 314.922547077,
+  "completed_CPU_sum_seconds": 3600.1107480769997,
+  "wall_seconds": 3284.2323729647323,
+  "fresh_worker_CPU_sum_seconds": 7.935340999999999,
+  "fresh_worker_peak_RSS_KiB": 165124,
+  "observed_peak_aggregate_RSS_bytes": 392511488,
+  "hypothesis": "JSON encoding/save with per-iterencode-fragment guard and repeated directory walks is the leading technical bottleneck; outer /proc and output-tree polling also consumes CPU.",
+  "confidence": "HIGH for CPU cap and save-phase termination; MODERATE for per-function CPU attribution; no profiler/call-count timing collected.",
+  "source_locations": [
+    "src/trottertracks/algorithm_codesign/rte_development/evidence.py:EvidenceWriter.write/check/permit_bytes",
+    "src/trottertracks/algorithm_codesign/rte_development/launch.py:Guard.check",
+    "src/trottertracks/algorithm_codesign/parent_experiment/runner.py:execute/process_tree"
+  ],
+  "last_incomplete_file": "laws/law_61.json.partial",
+  "inner_exception_not_available": true,
+  "source_repair_applied": false,
+  "resource_caps_changed": false,
+  "science_restarted": false,
+  "mandatory_STOP": true
+}
