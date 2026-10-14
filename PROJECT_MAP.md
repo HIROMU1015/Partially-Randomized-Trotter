@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-15 Track A 独立技術監査・最小修正
+
+[独立監査入口](docs/research/track_a_independent_technical_audit_20261015.md)。著者文脈を引き継がない別担当が監査し、6制御不具合を再現・最小修正。SOURCE20f89bc3…、新22＋既存41＋変更adapter旧12の75限定人工tests PASS。旧D0/shot/math/native科学SOURCE・73旧worktree/grant/venv不変、実科学/再会計/build/compile/新grant0。empirical u・実一致/native・監視/運用bindingの限界を残し、未認可・未seal、GPT科学判断へ戻してmandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-15 Track A D0 one-shot保存値再会計・完了STOP
 
 [結果・完全一致・6metric/P・終了監査](docs/research/track_a_d0_saved_value_reanalysis_result_20261014.md)。SOURCE fa75c799…、旧precision1,088/費用2,659件exact PASS後、5精度×factor1/10×6metric/Pを一度再会計。ε=.0005/P=0のPR/full-PF RZ点比はH4固定panel .429664、H6確認union8 .496333。未確認CX_depth/P候補と標本・政策差を明記。wall2.223秒/peak54.14MiB、exit0、SOURCE/入力/venv/他job/H8変更・新signal/trajectory/compile0、科学判断未採択・mandatory STOP。以下は各時点の履歴。

@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-15 Track A 独立技術監査・最小修正
+
+[独立監査入口](docs/research/track_a_independent_technical_audit_20261015.md)。著者文脈を引き継がない別担当が監査し、6制御不具合を再現・最小修正。SOURCE20f89bc3…、新22＋既存41＋変更adapter旧12の75限定人工tests PASS。旧D0/shot/math/native科学SOURCE・73旧worktree/grant/venv不変、実科学/再会計/build/compile/新grant0。empirical u・実一致/native・監視/運用bindingの限界を残し、未認可・未seal、GPT科学判断へ戻してmandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-14 Track A共通研究情報 サーバー暫定初版
 
 H4 B0+I/result98cdb35c・v0.4 47dc17a8、H6確認/pilot、H8最新resume02を固定SHAと読取metadataで索引化。

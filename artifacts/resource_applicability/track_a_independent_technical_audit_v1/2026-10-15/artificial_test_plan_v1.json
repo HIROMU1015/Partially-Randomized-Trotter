@@ -1,0 +1,23 @@
+{
+  "schema": "independent_audit_test_plan_v1",
+  "scope": "ARTIFICIAL_MOCK_ONLY",
+  "processes": 1,
+  "threads": 1,
+  "python": "/usr/bin/python3.12 -P -B",
+  "address_space_bytes": 536870912,
+  "CPU_seconds": 120,
+  "wall_seconds": 180,
+  "log_bytes_per_attempt": 1048576,
+  "fixture_file_bytes_cap": 67108864,
+  "scratch_bytes_cap": 536870912,
+  "scratch_inode_cap": 5000,
+  "real_science_reaccount_build_compile": 0,
+  "real_grants_created": 0,
+  "spawn_stress_affinity_environment_changes": 0,
+  "ownership": "foreground audit test PID, own RLIMIT only, no signals to existing PIDs; tempfile exclusive home directories removed on teardown",
+  "tests": [
+    "tests/test_independent_track_a_execution_audit_v1.py",
+    "tests/test_independent_track_a_numeric_audit_v1.py"
+  ],
+  "old_suite_policy": "run once after confirmed minimal corrections; do not run old benchmark/native fixtures"
+}
