@@ -1,5 +1,12 @@
 # プロジェクト案内
 
+## 2026-10-15 H4保存h境界：独立checker v2数値監査PASS
+
+[完了結果・費用境界](docs/research/qc_onebody_repartition_h_boundary_reaudit_v2_results_20261015.md)、[GPT科学判断引継ぎ](docs/research/qc_onebody_repartition_h_boundary_reaudit_v2_gpt_handoff_20261015.md)、[今回の明示認可](artifacts/qc_onebody_repartition_h_boundary_reaudit_v2_execution/2026-10-15/authorization.json)、[v2独立監査](artifacts/qc_onebody_repartition_h_boundary_reaudit_v2/2026-10-15/attempt_1/independent_audit.json)、[summary](artifacts/qc_onebody_repartition_h_boundary_reaudit_v2_execution/2026-10-15/saved_results_summary.json)、[保全・caps監査](artifacts/qc_onebody_repartition_h_boundary_reaudit_v2_execution/2026-10-15/execution_identity_caps_audit.json)。
+linearH4/1.00Å/STO3G/保存DF rank12 generation順全12density、Nα=Nβ=2/36dim、固定v1 X/seal/state/frame/leading、PR L_D/delta不変。source3953db12/59files、旧762追跡h/381比較点/4572cell/4572method/18288costrowsを一回監査しPASS。PF再構成4572/expm91401/arrayloads9294、wall31.49s/peak265728000bytes、1worker1thread、retry0、今回追加source修正不要。新PF収集/H-eig/RDM/selector/optimizer/compile0。
+固定target10^-4,10^-5Ha/P1,P2の4contextでCS2response対CS2knownの費用比.97090..97496、登録10%gate未達、離散/局所境界分類NO_UNIFORM_REGISTERED_COMPONENT_GAIN。sampled局所bracketは解決、連続global optimum・運用precision selector・情報取得/全QPE総費用・新規性は未確定。旧NUMERICAL_ALLOWANCE失敗/UNVALIDATED記録は履歴として不変、今回v2保存scopeのみINDEPENDENT_V2_NUMERICAL_AUDIT_PASS。
+旧5140files/160旧manifestprefix/nonresult/global description FAIL/root434pathsを保全。N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了、TrackA/B/C1–C4/第二候補を維持。結果公開・GitHub照合後Mandatory STOP。次はGPT重要科学判断（別開始承認）、採択/終了・新GPTレビューを今回開始していない。以下は履歴。
+
 ## 2026-10-15 checker v2修正・公開照合完了／別数値再監査承認待ち
 
 payload `9ff61f531c81a9ac914432eb4a52ca22e0a8b614` をGitHubから独立再取得し、30変更blobs/3,967,739bytes、59固定source/4,633入力identity/5,116旧protected files、158旧manifest prefix/non-result/global description FAIL/root434pathsをbyte/SHA照合した。[receipt](artifacts/qc_onebody_repartition_h_boundary_checker_v2_preparation/2026-10-15/publication/receipt.json)、[Mandatory STOP](artifacts/qc_onebody_repartition_h_boundary_checker_v2_preparation/2026-10-15/publication_stop.json)。保護索引のGit管理外cache2件を除外した訂正も記録済み、checker演算は変更せず固定source3953db12へ結び直した。
