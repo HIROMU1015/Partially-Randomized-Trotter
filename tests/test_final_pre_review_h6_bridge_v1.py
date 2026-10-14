@@ -42,6 +42,14 @@ class NativeBridgeTests(unittest.TestCase):
         self.assertGreaterEqual(Fraction(receipt['arithmetic_error_upper']),abs(Fraction(receipt['C'])-exact))
         self.assertFalse(receipt['new_scientific_certificate'])
 
+    def test_rotation_roundoff_recipe_explicit_empirical_not_certificate(self):
+        self.grant.contract['rotation_roundoff_policy']='EMPIRICAL_64_EPS_PHASE_SCALE_FLOOR_1E12'
+        self.grant.binding_digest=f.d0.digest((self.grant.contract,self.grant.authorization))
+        request=self.prepare(rotation_roundoff_upper=None)
+        self.assertGreaterEqual(request['scalar_receipt']['rotation_roundoff_upper'],1e-12)
+        self.assertTrue(request['scalar_receipt']['rotation_error_is_empirical'])
+        self.assertFalse(request['scalar_receipt']['new_scientific_certificate'])
+
     def test_full_reference_unchanged_and_b0_two_signals_rotate(self):
         old=copy.deepcopy(self.record);request=self.prepare()
         self.assertEqual(request['signal']['reference'],old['reference'])

@@ -192,7 +192,14 @@ def prepare(grant, *, prefix, q, binding, load_fragments, load_prepared,
     C = overlay['extracted_tail_identity']
     arithmetic_error = upper_float(abs(Fraction(C)-exact))
     input_error = p.finite(scalar_input_error_upper)
-    rounding = p.finite(rotation_roundoff_upper)
+    if rotation_roundoff_upper is None:
+        if grant.contract.get('rotation_roundoff_policy') != 'EMPIRICAL_64_EPS_PHASE_SCALE_FLOOR_1E12':
+            raise g.Stop('EXPLICIT_ROTATION_ROUNDOFF_POLICY_REQUIRED')
+        import sys
+        z = complex(effective_record['signals']['corrected']['real'],effective_record['signals']['corrected']['imag'])
+        rounding = max(1e-12,64*sys.float_info.epsilon*(1+abs(.8*C))*max(1.,abs(z)))
+    else:
+        rounding = p.finite(rotation_roundoff_upper)
     if min(input_error, rounding) < 0: raise g.Stop('NEGATIVE_ERROR_BOUND')
     C_error = upper_float(Fraction(arithmetic_error)+Fraction(input_error))
     # Rounding of original constant+C and -T*the combined scalar affects the
@@ -220,6 +227,7 @@ def prepare(grant, *, prefix, q, binding, load_fragments, load_prepared,
             exact_stored_scalar_denominator=str(exact.denominator), arithmetic_error_upper=arithmetic_error,
             declared_input_error_upper=input_error, combined_scalar_roundoff_upper=combined_error,
             native_phase_roundoff_upper=phase_rounding, scalar_error_upper=C_error,
+            rotation_roundoff_upper=rounding, rotation_error_is_empirical=True,
             full_Fock_identity=True, new_scientific_certificate=False),
         built=False, matched_B0=dict(status='NOT_ACQUIRED_BY_THIS_BRIDGE', automatic_build=False,
             cost_delta=None, fingerprint_kind='PREPARED_BLUEPRINT_NOT_COMPILED_CIRCUIT'))
