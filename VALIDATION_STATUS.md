@@ -1,3 +1,5 @@
+H8本格core完了：[結果](docs/research/track_a_h8_resource_map_result_v1.md)、[資料入口](artifacts/resource_applicability/track_a_h8_resource_map_result_v1/2026-10-14/README.md)。SOURCEc31ef424、92signal/592探索/192独立確認/1572wrapper。PR確認点RZ削減54.29–65.76%（fullPF比/P=0/経験的u）、母平均・stateprep込みは未保証。metadata36094 SHA/3576行算術一致、exit0/reap/cleanup0/残存0・mandatory STOP。以下running記録は履歴。
+
 H8監視競合修正・再開02：[入口](artifacts/resource_applicability/track_a_h8_resource_map_resume02_v1/2026-10-14/README.md)、[契約](docs/research/track_a_h8_resource_map_resume02_v1.md)。SOURCEc31ef424/44限定mock PASS、92signal/126group再利用、残466・8worker。上限1722/843/4219承認済み、03:19 JSTに8worker再開。coordinator643626、own-run監視下で継続。
 
 H8 8 worker引継ぎ：[入口](artifacts/resource_applicability/track_a_h8_resource_map_resume01_v1/2026-10-13/README.md)、[契約](docs/research/track_a_h8_resource_map_resume01_v1.md)。SOURCEc6692964/元seed cb8a保持、92signal/75group受理、残517。二段階RSS1→9/24・72GiB予約・34限定mock PASS。trajectory835/occurrence4211承認済み、23:42 JSTに8 worker版起動。coordinator572094、own-run監視下で継続。

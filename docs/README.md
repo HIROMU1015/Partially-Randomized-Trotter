@@ -1,3 +1,5 @@
+H8本格core完了：[結果](docs/research/track_a_h8_resource_map_result_v1.md)、[資料入口](artifacts/resource_applicability/track_a_h8_resource_map_result_v1/2026-10-14/README.md)。SOURCEc31ef424、92signal/592探索/192独立確認/1572wrapper。PR確認点RZ削減54.29–65.76%（fullPF比/P=0/経験的u）、母平均・stateprep込みは未保証。metadata36094 SHA/3576行算術一致、exit0/reap/cleanup0/残存0・mandatory STOP。以下running記録は履歴。
+
 H8再開02：`h8_resource_map_execution_v1.py` のinventory/own-run writer競合修正と2段階complete-only binding。入口 `docs/research/track_a_h8_resource_map_resume02_v1.md`。
 
 H8 8 worker引継ぎ：`h8_resource_map_handoff_v1.py`、既存prepare/run/launchへtechnical SOURCE transition・二段階メモリadmissionを接続。資料は `docs/research/track_a_h8_resource_map_resume01_v1.md`。
