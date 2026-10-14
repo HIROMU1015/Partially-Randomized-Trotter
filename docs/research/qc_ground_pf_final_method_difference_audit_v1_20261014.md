@@ -147,3 +147,9 @@ Phase Aの明示STOP条件に従いPhase Bを実施しない。scalar-corrected 
 [GPT引継ぎ](qc_ground_pf_final_method_difference_gpt_handoff_v1_20261014.md)、[status/停止](../../artifacts/qc_ground_pf_final_method_difference_audit_v1/2026-10-14/method_status.json)、[404旧files保全](../../artifacts/qc_ground_pf_final_method_difference_audit_v1/2026-10-14/preservation_index.json)。旧148manifest entries/non-result fields/global description欠落FAIL、元worktree135paths、旧source/results/認可/STOPを保持。N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了、Track A/B、C1–C4を変更・再実行しない。
 
 独立branch `qc-ground-pf-final-method-difference-audit-20261014` へcommit/pushし、[GitHub再取得receipt](../../artifacts/qc_ground_pf_final_method_difference_audit_v1/2026-10-14/publication/receipt.json)でbytes/SHAを照合後Mandatory STOP。同じ第一候補の追加技術監査を反復せず、GPTの研究継続判断の別明示開始承認を待つ。
+
+## 公開確認（追記、2026-10-14 JST）
+
+独立branchのpayload `df11cbe1f5a7084065efbaf3addff59993666c4e` をGitHub SSH経由で独立cacheへ再取得し、変更21blobs／1,597,973bytesをローカルcommit・worktreeとbyte/SHA照合した。[receipt](../../artifacts/qc_ground_pf_final_method_difference_audit_v1/2026-10-14/publication/receipt.json)。404旧files・固定9参照・148旧manifest records/non-result fields・既存global FAIL・元worktree135pathsも一致した。外部科学再現やcurrent CIのPASSではない。
+
+Phase Aの限定技術監査完了、Phase B未実施、Mandatory STOP。新計算・新形式検査・旧27再実行・pilot準備/実行・第二候補・GPTレビュー・正式研究判断を開始していない。同じ第一候補の追加技術監査へ進まず、GPT重要科学判断の別明示開始承認を待つ。

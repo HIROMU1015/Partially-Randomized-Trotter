@@ -1,5 +1,10 @@
 # trotterlib モジュール索引
 
+## 2026-10-14 最終方法差監査のGitHub再取得確認・Mandatory STOP
+
+独立branchのpayload `df11cbe1f5a7084065efbaf3addff59993666c4e` をGitHubから再取得し、変更21blobs／1,597,973bytesの本文・SHAを照合した。[再取得receipt](../../artifacts/qc_ground_pf_final_method_difference_audit_v1/2026-10-14/publication/receipt.json)。404旧files／固定9参照／148旧manifest recordsとnon-result fields／global description欠落FAIL／元worktree135pathsを保全。
+技術判定は固定equal-access first-pair classでREDUCES_TO_KNOWN。Phase A STOP、Phase B・旧27検査再実行・新形式program・科学数値・保存数値集計・production・pilot準備/実行・第二候補・GPT科学レビュー0。研究の正式継続/終了は未判断。Mandatory STOP、同じ第一候補の技術監査を反復せず、GPT重要科学判断の別明示開始承認待ち。以下は履歴。
+
 ## 2026-10-14 第一候補の最終方法差監査：同情報compact BCHへ還元・Phase A STOP
 
 [方法差・入力/出力・演算/情報会計](../../docs/research/qc_ground_pf_final_method_difference_audit_v1_20261014.md)、[GPT科学判断への最終引継ぎ](../../docs/research/qc_ground_pf_final_method_difference_gpt_handoff_v1_20261014.md)、[scope/status](../../artifacts/qc_ground_pf_final_method_difference_audit_v1/2026-10-14/method_status.json)、[固定9参照identity](../../artifacts/qc_ground_pf_final_method_difference_audit_v1/2026-10-14/reference_identity.json)、[直接一次本文](../../artifacts/qc_ground_pf_final_method_difference_audit_v1/2026-10-14/literature_registry.json)。
