@@ -1,0 +1,63 @@
+{
+  "schema": "track_a_expansion_resource_calibration_v1",
+  "measurements": {
+    "classical_wall_seconds": {
+      "samples": 1188,
+      "min": 3.8086761399172246,
+      "median": 21.234308013459668,
+      "max": 1037.1736733336002
+    },
+    "worker_peak_rss_bytes": {
+      "samples": 1188,
+      "min": 588607488.0,
+      "median": 1285255168.0,
+      "max": 8513949696.0
+    }
+  },
+  "H4_native_anchor": {
+    "groups": 264,
+    "wrappers": 532,
+    "workers": 8,
+    "supervisor_wall_seconds": 1068.455077368766,
+    "aggregate_peak_rss_bytes": 6940827648
+  },
+  "H6_confirmation_fast": {
+    "new_groups": 97,
+    "new_wrappers": 194,
+    "workers": 8,
+    "supervisor_wall_seconds": 972.7934046518058,
+    "aggregate_peak_rss_bytes": 5340696576,
+    "historical_two_supervisor_sum_seconds": 3881.370220625773
+  },
+  "conditional_arithmetic_scenarios": [
+    {
+      "compile_wrappers": 6,
+      "arithmetic_at_historical_wrapper_wall_median_seconds": 127.405848080758,
+      "is_forecast": false,
+      "scope": "Serial sum of historical wrapper section only; not H5/T prediction; excludes input/DF/state/reference/build and scheduling overhead"
+    },
+    {
+      "compile_wrappers": 40,
+      "arithmetic_at_historical_wrapper_wall_median_seconds": 849.3723205383867,
+      "is_forecast": false,
+      "scope": "Serial sum of historical wrapper section only; not H5/T prediction; excludes input/DF/state/reference/build and scheduling overhead"
+    },
+    {
+      "compile_wrappers": 48,
+      "arithmetic_at_historical_wrapper_wall_median_seconds": 1019.246784646064,
+      "is_forecast": false,
+      "scope": "Serial sum of historical wrapper section only; not H5/T prediction; excludes input/DF/state/reference/build and scheduling overhead"
+    },
+    {
+      "compile_wrappers": 12,
+      "arithmetic_at_historical_wrapper_wall_median_seconds": 254.811696161516,
+      "is_forecast": false,
+      "scope": "Optional matched B0+I pilot; historical wrapper section only"
+    }
+  ],
+  "future_H5_H7_T_actual_wall_seconds": null,
+  "future_H5_H7_T_actual_peak_RSS_bytes": null,
+  "full_map_memory_cannot_be_inferred_from_state_vector_size": true,
+  "new_scientific_calls": 0,
+  "exploration_measurement_origin": "Mixed preserved historical/source/host origins; not a current-host performance benchmark."
+}

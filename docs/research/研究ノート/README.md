@@ -1,5 +1,7 @@
 # 研究ノート
 
+- [2026-10-14 Track A追加検証の技術調査・設計](2026-10-14_track_a_resource_expansion_design.md)：保存解析→小pilot→限定拡張の未承認案。新科学計算0。
+
 - [2026-10-14 共通研究情報の正式統合](2026-10-14_track_a_canonical_information_integration.md)：server/localの固定情報を統合、H4全面結果後review原本取得。 [正式共通入口](../track_a_shared_research_status.md)。科学実行・H8変更・原稿改訂0、公開後STOP。
 
 - [2026-10-14 サーバー情報統一・暫定初版](2026-10-14_track_a_server_information_sync.md)：固定証拠・Git棚卸し・read-only H8 snapshot。ローカル照合待ち。
