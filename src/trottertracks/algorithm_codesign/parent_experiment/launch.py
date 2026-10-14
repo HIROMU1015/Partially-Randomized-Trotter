@@ -7,10 +7,10 @@ import re
 from ..rte_development.evidence import digest, safe_relative
 from ..rte_development.launch import git
 
-PREFIX='artifacts/track_b_parent_allocation_experiment_source/2026-10-15/v2'
-CONTRACT=PREFIX+'/execution_contract_v2.json'
+PREFIX='artifacts/track_b_parent_allocation_experiment_source/2026-10-15/v3'
+CONTRACT=PREFIX+'/execution_contract_v3.json'
 # Set by source-preparation script after the adopted contract is complete.
-CONTRACT_SHA='a197f8e92056fa8f6c33c8a2d4d4d653d711343a221c97e21ac78c7a686de896'
+CONTRACT_SHA='adf2a75ecaadbd012f1ec20bb6b741979e5542614f151da6988d26938dfd82ad'
 
 
 def read_contract(root):
@@ -37,6 +37,11 @@ def check_identities(root,c):
         raw=__import__('subprocess').check_output(['git','show',entry['commit']+':'+path],cwd=root)
         if len(raw)!=entry['bytes'] or hashlib.sha256(raw).hexdigest()!=entry['sha256']:
             raise PermissionError('historical v1 source blob changed: '+path)
+    for entry in protected.get('historical_source_versions',[]):
+        path=entry['path'];safe_relative(path)
+        raw=__import__('subprocess').check_output(['git','show',entry['commit']+':'+path],cwd=root)
+        if len(raw)!=entry['bytes'] or hashlib.sha256(raw).hexdigest()!=entry['sha256']:
+            raise PermissionError('historical v2 source blob changed: '+path)
     return m
 
 

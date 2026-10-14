@@ -1,0 +1,217 @@
+{
+  "kind": "PARENT_ALLOCATION_FIXED_EXECUTION_CONTRACT_V1",
+  "status": "PREPARATION_ONLY_SEPARATE_AUTHORIZATION_REQUIRED",
+  "review": {
+    "path": "docs/research/track_b_parent_allocation_scientific_design_review_20261014.md",
+    "bytes": 41911,
+    "sha256": "11d1e389190091221fd2a282e931c229a52bda1dcc8c8f30ec5d3bcf7aa853bf"
+  },
+  "input": {
+    "p": [
+      "1/5",
+      "3/10",
+      "1/2"
+    ],
+    "tau": "5/7",
+    "state": "000",
+    "sigma": 1,
+    "degree": 5,
+    "steps": 1,
+    "provider": "G9 exact three-qubit distinct basis",
+    "physical_target": "exp(-ixR)",
+    "finite_target": "P5(-ixR)"
+  },
+  "central_arms": [
+    "ordinary",
+    "closed_P5_full"
+  ],
+  "reference_arms": [
+    "partial_return_tail",
+    "closed_P3_tail",
+    "matched_CTS"
+  ],
+  "candidates": {
+    "policy": "common, all three vertices, rational KKT surrogate, halfway; duplicates removed without replacement",
+    "KKT": {
+      "iterations": 128,
+      "root_bits": 256,
+      "share_bits": 64
+    },
+    "proxy": "old revalidated full common root event T; freeze before new price",
+    "numerical_failure": "TECHNICAL_INCONCLUSIVE; no internal-negative inference"
+  },
+  "proposals": [
+    "canonical",
+    "analytic_global_IS_if_all_positive_T",
+    "regularized_Cstar_over_16",
+    "regularized_Cstar",
+    "regularized_16Cstar"
+  ],
+  "scale_policy": "max canonical expected T over five old-common baselines; frozen before new prices; no floor",
+  "precision": {
+    "root_bits": 256,
+    "probability_bits": 160,
+    "eta": "1/1000000000000",
+    "rho": "1/1000000000000"
+  },
+  "epsilon_axis": "1/200",
+  "alpha_axis": "1/40",
+  "alpha_complex": "1/20",
+  "confidence": "one selected complex task independent of quantum outcomes; no division by law count",
+  "primitive_error": "1/1000000",
+  "bias": "2*(|x|^6/6! + coefficient_L1_certificate + sum digital_c*strict_native_error)",
+  "primary": "h=0 sufficient-trial expected native T intercept; no minimum-shot or total PR claim",
+  "reuse": {
+    "inputs": {
+      "resource_map": {
+        "path": "artifacts/track_b_rte_development_d1_result/2026-10-13/v1/resource_map.json",
+        "bytes": 167402,
+        "sha256": "1f7210560d98f2bd0904568621d5f95d3d0cebfb2ee1fc3b460ff0237af3145d",
+        "commit": "fc96571881f301435a655f057709df4d6c1678e0"
+      },
+      "cache": {
+        "path": "artifacts/track_b_rte_development_d1_result/2026-10-13/v1/synthesis_cache.json",
+        "bytes": 30392,
+        "sha256": "77e35784673f187c9cb7b00eb74ba52a11a39c3c623ce63ce888bc33c12895d0",
+        "commit": "fc96571881f301435a655f057709df4d6c1678e0"
+      },
+      "inventory": {
+        "path": "artifacts/track_b_rte_development_d1_result/2026-10-13/v1/inventory.json",
+        "bytes": 6261,
+        "sha256": "d2e094abf2207b7779822eef4128009cb1ad1bbc9e190ce7e67693115e5395da",
+        "commit": "fc96571881f301435a655f057709df4d6c1678e0"
+      },
+      "guard_audit": {
+        "path": "artifacts/track_b_rte_development_d1_result/2026-10-13/v1/saved_output_audit/saved_output_audit_v1.json",
+        "bytes": 2154,
+        "sha256": "c4f8149e1d14e5bc9df2863372529ca2610d90ba3003a078ebc5375fece0325f",
+        "commit": "fc96571881f301435a655f057709df4d6c1678e0"
+      },
+      "old_contract": {
+        "path": "artifacts/track_b_rte_development_source/2026-10-13/v1/contract_v1.json",
+        "bytes": 5571,
+        "sha256": "afa174cc7aba9ff8a14ae1a77886e50792daaf8be342ea6c1f2d3024a4e543b8",
+        "commit": "874ca12d347f8f35e5d8d64f65f24abc4a2df523"
+      },
+      "events_0": {
+        "path": "artifacts/track_b_rte_development_d1_result/2026-10-13/v1/events/row_00.json",
+        "bytes": 554365,
+        "sha256": "795960ec0abafbe225d2cd197a5a69af5f24b7015c65140830f2b158a5341db9",
+        "commit": "fc96571881f301435a655f057709df4d6c1678e0"
+      },
+      "events_1": {
+        "path": "artifacts/track_b_rte_development_d1_result/2026-10-13/v1/events/row_01.json",
+        "bytes": 541550,
+        "sha256": "22bf8bf55cc258e2485a30d8d04e5c5c7a1d96f5bb9b086f6d1ae460aded3400",
+        "commit": "fc96571881f301435a655f057709df4d6c1678e0"
+      },
+      "events_2": {
+        "path": "artifacts/track_b_rte_development_d1_result/2026-10-13/v1/events/row_02.json",
+        "bytes": 528692,
+        "sha256": "7730fa602a105893a2582c140aeecb91677f5c76b9318c33e4ad2347dbe03228",
+        "commit": "fc96571881f301435a655f057709df4d6c1678e0"
+      },
+      "events_4": {
+        "path": "artifacts/track_b_rte_development_d1_result/2026-10-13/v1/events/row_04.json",
+        "bytes": 139289,
+        "sha256": "fafc46a5c1bb10c996f32b0d1d935cf991a06c8750c4ce77f501608e0f58304c",
+        "commit": "fc96571881f301435a655f057709df4d6c1678e0"
+      },
+      "events_5": {
+        "path": "artifacts/track_b_rte_development_d1_result/2026-10-13/v1/events/row_05.json",
+        "bytes": 30304,
+        "sha256": "381de773b15fec9ca49b46f70ddd68352b19087b76a2c41db7087e54bef66453",
+        "commit": "fc96571881f301435a655f057709df4d6c1678e0"
+      }
+    },
+    "old_source_commit": "874ca12d347f8f35e5d8d64f65f24abc4a2df523",
+    "old_result_commit": "fc96571881f301435a655f057709df4d6c1678e0",
+    "coefficient_mean_envelope": "8*rho for saved reference arms; new central interval sum",
+    "historical_guard_source": {
+      "commit": "874ca12d347f8f35e5d8d64f65f24abc4a2df523",
+      "path": "src/trottertracks/algorithm_codesign/rte_reallocation/numeric.py",
+      "bytes": 3670,
+      "sha256": "e2f2cbc0fb73cd4b3939e7cbf54865f652e23e819e614e447139dba5a8cd0e7e"
+    }
+  },
+  "acquisition": {
+    "tool_identity": {
+      "path": "artifacts/track_b_sp05_economics_preparation/2026-10-06/tool_identity_v1.json",
+      "bytes": 1691,
+      "sha256": "803d902a18d925a9565749fbc64422dca4979bfa6c0bd8b438b28de18d3aa984"
+    },
+    "runtime_executable": "/home/abe/Project/prt-worktrees/track-b-sp05-economics-preparation-20261006/.venv/bin/python",
+    "runtime_executable_sha256": "b94e9b56bc1f96b18d36a0f1d14308575bb7b5960eda94ae0520f0376e95d12d",
+    "options": {
+      "dloop": 10,
+      "dps": 100,
+      "dtimeout": 500,
+      "floop": 10,
+      "ftimeout": 500,
+      "measure_time": false,
+      "seed": 0,
+      "show_graph": false,
+      "up_to_phase": false,
+      "verbose": 0
+    },
+    "interval_dps": 100,
+    "signed_inverse": "actual sequence adjoint; W retained; up_to_phase=false",
+    "synthesis": "new positive root keys only; one backend entry per unique key",
+    "cache": "fixed D1 1e-6 only; required common/reference misses stop, no 1e-7 blend"
+  },
+  "execution": {
+    "authorization_path": "artifacts/track_b_parent_allocation_experiment_source/2026-10-15/v3/authorization.json",
+    "source_manifest": "artifacts/track_b_parent_allocation_experiment_source/2026-10-15/v3/source_manifest.json",
+    "protected_ledger": "artifacts/track_b_parent_allocation_experiment_source/2026-10-15/v3/protected_hashes.json",
+    "result_directory": "artifacts/track_b_parent_allocation_experiment_result/2026-10-15/v3",
+    "optional_receipt_path": "docs/tracks/algorithm_codesign/parent_allocation_v3_execution_authorization_receipt_20261015.md",
+    "runner": "scripts/tracks/algorithm_codesign/run_parent_allocation_one_shot.py",
+    "worker": "scripts/tracks/algorithm_codesign/run_parent_allocation_synthesis_key.py",
+    "json_write_block_bytes": 16384
+  },
+  "caps": {
+    "configurations": 15,
+    "laws": 75,
+    "new_synthesis_keys": 18,
+    "old_unique_guards": 36,
+    "all_unique_primitive_guards": 54,
+    "new_root_events": 36,
+    "new_root_matrix_checks": 72,
+    "event_bindings": 4096,
+    "workers": 2,
+    "numeric_threads": 1,
+    "per_key_CPU_seconds": 120,
+    "total_CPU_seconds": 3600,
+    "worker_RSS_MiB": 512,
+    "parent_RSS_MiB": 2048,
+    "aggregate_RSS_MiB": 3072,
+    "virtual_address_MiB": 4096,
+    "total_wall_seconds": null,
+    "per_key_wall_seconds": null,
+    "output_bytes": 67108864,
+    "per_key_log_bytes": 65536,
+    "cache_bytes": 4194304,
+    "sequence_characters": 32768,
+    "shot_cap_per_axis": 1000000000,
+    "chunk_bytes": 524288,
+    "max_integer_decimal_digits": 65536,
+    "events_per_configuration": 273
+  },
+  "matrix_tolerance": 1e-10,
+  "runs": 1,
+  "retries": 0,
+  "mandatory_STOP": true,
+  "future_science_authorized": false,
+  "forbidden": [
+    "D1/D2/D3 rerun",
+    "new input/provider/precision/r",
+    "D2 pair enumeration",
+    "LP",
+    "trajectory",
+    "molecule",
+    "DF",
+    "GPU",
+    "whole-circuit compile",
+    "actual quantum shots"
+  ]
+}

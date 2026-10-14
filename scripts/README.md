@@ -1,3 +1,5 @@
+> Parent allocationの既存one-shot入口はv3 sourceの固定contract/manifestを検査し、Parent専用buffered writerを使う。新S3/A3を固定後、一回実行・retry0・STOP。
+
 > Parent allocationの[preflight](tracks/algorithm_codesign/preflight_parent_allocation_experiment.py)はv2 contractを検査する。[限定修正・78 tests](../docs/tracks/algorithm_codesign/parent_allocation_v2_owner_repair_source_preparation_20261015.md)。登録runner/workerは今回未起動、別明示承認待ち。
 
 > [Parent allocation新zero-compute preflight](tracks/algorithm_codesign/preflight_parent_allocation_experiment.py)、[将来one-shot入口](tracks/algorithm_codesign/run_parent_allocation_one_shot.py)、[一key worker](tracks/algorithm_codesign/run_parent_allocation_synthesis_key.py)。[採択条件/71 tests/実行上限](../docs/tracks/algorithm_codesign/parent_allocation_execution_source_preparation_20261015.md)。pending authorityで登録処理を拒否、今回科学実行0。

@@ -9,7 +9,8 @@ import sys
 import time
 from .design import integer_io_limit
 from .launch import verify_launch,verify_worker,execution_identity,check_identities,read_contract
-from ..rte_development.evidence import atomic_json,digest,EvidenceWriter
+from ..rte_development.evidence import atomic_json,digest
+from .evidence import BatchedEvidenceWriter as EvidenceWriter
 from ..rte_development.launch import Guard,consume_marker,git
 
 COMPLETE='PARENT_ALLOCATION_RESOURCE_MAP_COMPLETE_AWAITING_GPT_REVIEW'
@@ -32,7 +33,8 @@ def ledger_job(root,path):
         with guard,integer_io_limit(c['caps']['max_integer_decimal_digits']):
             if any(os.environ.get(k)!='1' for k in ('OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS')):
                 raise PermissionError('ledger threads')
-            r=runtime(root,c);writer=EvidenceWriter(d,c['caps']['output_bytes'],guard.check,c['caps']['chunk_bytes'])
+            r=runtime(root,c);writer=EvidenceWriter(d,c['caps']['output_bytes'],guard.check,c['caps']['chunk_bytes'],
+                write_block_bytes=c['execution']['json_write_block_bytes'])
             writer.write('runtime_receipt.json',dict(**job,runtime=r))
             from .pipeline import run_pipeline
             coverage=run_pipeline(root,c,job,writer,guard)

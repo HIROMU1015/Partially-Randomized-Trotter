@@ -1,3 +1,5 @@
+> Parent allocation v3：`tests/tracks/algorithm_codesign/test_parent_experiment_buffered_evidence.py` の15 artificial bytes/guard controls＋既存78＝93 PASS。登録科学計算とは別。
+
 > [Parent allocation native focused tests](tracks/algorithm_codesign/test_parent_allocation_native.py)：新26件、人工2×2/4×4・mock・固定単価形式control。影響範囲の旧CacheControls 6件もPASS。旧62件全体/登録列guardは再実行せず。[履歴](../artifacts/track_b_parent_allocation_final_technical_preparation/2026-10-14/v1/focused_test_execution.json)。
 
 > [Parent allocation focused tests](tracks/algorithm_codesign/test_parent_allocation.py)：62件、stdlib独立2×2/4×4 mock、登録外p=(2/7,5/7), x=1/3。登録D1〜D3/実G9 provider/新合成は使わない。[検証記録](../artifacts/track_b_parent_allocation_source_preparation/2026-10-14/v1/focused_validation_receipt.json)。
