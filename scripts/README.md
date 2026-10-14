@@ -1,5 +1,11 @@
 # scripts 索引
 
+## 2026-10-15 一体再配分PF：h境界検証の準備・新科学実行未認可
+
+[受領科学レビュー原文](../docs/reviews/quantum_chemistry_pf/qc_onebody_repartition_finite_step_pilot_v1_scientific_review_2026-10-15.md)、[h探索・branch・強対照・会計・caps](../docs/research/qc_onebody_repartition_h_boundary_preparation_v1_20261015.md)、[別one-shot実行承認引継ぎ](../docs/research/qc_onebody_repartition_h_boundary_execution_handoff_v1_20261015.md)、[contract](../artifacts/qc_onebody_repartition_h_boundary_preparation_v1/2026-10-15/contract.json)、[source freeze](../artifacts/qc_onebody_repartition_h_boundary_preparation_v1/2026-10-15/source_manifest.json)、[runner](run_qc_onebody_repartition_h_boundary_v1.py)、[独立checker](verify_qc_onebody_repartition_h_boundary_v1.py)、[人工35tests](../tests/test_qc_onebody_repartition_h_boundary_v1.py)。
+完了GPT判断は第一候補の限定継続・h境界準備。旧v1NO_UNIFORM_REGISTERED_COMPONENT_GAINと旧source/results/消費済み認可/STOP不変。linear H4/1.00Å/STO-3G/保存DF rank12・全12generation順density、Nα=Nβ=2/36dim、v1shift/selector/frame/stateを凍結。PR L_D/delta探索変更なし。共通比較h0.0027451193..1Ha^-1、初期368比較/補助含736追跡点、2round全method union refinementで最大432/864点。S4 signed-stage coefficient bound・円上phase/projector continuation・1%局所bracket、上端/branch/数値/解像度不足は未判定。全強対照/target10^-4,10^-5Ha/P1,P2/予算/uniform10%gate維持。
+source `5e3341c12bd84f30f19072cefa590f4499c36c38`、42freeze files。新PF/Schur各5172・独立PF5184/expm648000上限、1worker1thread/RSS-output512MiB/log2MiB/時間capなし/attempt1retry0。新eig/RDM/selector/leading/optimizer/compile0。35登録外人工testsとsource/header/SHA preflightのみ、実入力array deserialize/新科学数値/旧数値集計0。480旧files/154旧manifest/non-result/既知globalFAIL/root138paths保持。新認可target未発行false、旧36-cell認可流用不可。N1STOP/N2HOLD/N3CLOSED/THRIFT現template CLOSED、C1–C4/TrackA–B/第二候補を再開しない。GitHub照合後Mandatory STOP、次は固定one-shot別明示実行承認。同じ完了科学レビューの反復は原則不要。以下は履歴。
+
 ## 2026-10-15 一回pilot結果のGitHub照合完了・Mandatory STOP
 
 payload `4ae95ac0b2f045218743babe69a95609c567ad1f` をGitHubから独立再取得し、35変更blobs/3756590bytes・固定source21files/450保護files・152旧manifest/non-result/既知global FAIL・root137pathsを照合した。[再取得receipt](../artifacts/qc_onebody_repartition_finite_step_execution_v1/2026-10-15/publication/receipt.json)。収集一回と独立数値監査一回が完了、retry0。固定窓でNO_UNIFORM_REGISTERED_COMPONENT_GAINという保存結果と、step削減frontier未到達の限界を保持。追加数値実行・GPT科学レビュー・正式採択/終了判断は行わずMandatory STOP。次は重要GPT科学判断の別開始承認。以下は履歴。

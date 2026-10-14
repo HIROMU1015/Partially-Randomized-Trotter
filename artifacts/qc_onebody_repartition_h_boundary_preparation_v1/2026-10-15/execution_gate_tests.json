@@ -1,0 +1,65 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "args": [
+        "scripts/run_qc_onebody_repartition_h_boundary_v1.py",
+        "--execute"
+      ],
+      "exit_code": 2,
+      "refusal": {
+        "status": "MANDATORY_STOP",
+        "reason": "NEW_EXPLICIT_EXECUTION_APPROVAL_REQUIRED",
+        "retry": 0,
+        "mandatory_stop": true
+      }
+    },
+    {
+      "args": [
+        "scripts/run_qc_onebody_repartition_h_boundary_v1.py",
+        "--execute",
+        "--authorization",
+        "artifacts/qc_onebody_repartition_h_boundary_preparation_v1/2026-10-15/authorization_target.json"
+      ],
+      "exit_code": 2,
+      "refusal": {
+        "status": "MANDATORY_STOP",
+        "reason": "UNISSUED_TARGET",
+        "retry": 0,
+        "mandatory_stop": true
+      }
+    },
+    {
+      "args": [
+        "scripts/run_qc_onebody_repartition_h_boundary_v1.py",
+        "--execute",
+        "--authorization",
+        "artifacts/qc_onebody_repartition_finite_step_execution_v1/2026-10-15/authorization.json"
+      ],
+      "exit_code": 2,
+      "refusal": {
+        "status": "MANDATORY_STOP",
+        "reason": "NEW_SCOPE_ONE_ATTEMPT_REQUIRED",
+        "retry": 0,
+        "mandatory_stop": true
+      }
+    },
+    {
+      "args": [
+        "scripts/verify_qc_onebody_repartition_h_boundary_v1.py",
+        "--directory",
+        "artifacts/qc_onebody_repartition_h_boundary_v1/2026-10-15/attempt_1"
+      ],
+      "exit_code": 2,
+      "refusal": {
+        "status": "INDEPENDENT_AUDIT_STOP_NO_RETRY",
+        "reason": "[Errno 2] No such file or directory: '/home/abe/Project/Partially Randomized Trotter/.worktrees/qc-onebody-repartition-h-boundary-preparation-v1-20261015/artifacts/qc_onebody_repartition_h_boundary_v1/2026-10-15/attempt_1/attempt_consumed.json'",
+        "mandatory_stop": true
+      }
+    }
+  ],
+  "registered_attempt_consumed": false,
+  "authorization_issued": false,
+  "registered_array_deserialization_or_numeric_calls": 0,
+  "mandatory_stop": true
+}
