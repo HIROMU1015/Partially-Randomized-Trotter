@@ -1,3 +1,5 @@
+> [Parent allocation近接先行研究対応](tracks/algorithm_codesign/parent_allocation_prior_art_correspondence_20261014.md)：Euler/IS既知部分、SPS embedding、限定class差、7領域への判断材料。科学的採択・新計算なし、mandatory STOP。
+
 > [Parent allocation科学設計Decision Packet](tracks/algorithm_codesign/parent_allocation_scientific_design_decision_packet_20261014.md)：native/cache/guard接続と7未採択領域。26新規＋6影響tests PASS、科学実行0、mandatory STOP。
 
 > [Track B parent配分source準備](tracks/algorithm_codesign/parent_allocation_source_preparation_and_gpt_handoff_20261014.md)：任意配分・両root・全端点、62登録外tests、[未採択技術案v2](tracks/algorithm_codesign/parent_allocation_comparison_technical_options_v2_20261014.md)。新科学実行0、mandatory STOP。

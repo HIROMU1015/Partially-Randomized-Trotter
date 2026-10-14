@@ -1,3 +1,5 @@
+> **Track B Parent allocation近接先行研究調査（2026-10-14）：PRIOR_ART_CORRESPONDENCE_COMPLETE_NO_PRIORITY_ADJUDICATION。** [関連本文・対応式・分類](docs/tracks/algorithm_codesign/parent_allocation_prior_art_correspondence_20261014.md)。既存数学/実装testsは参照のみ、新tests/科学取得0、旧source/結果/分類/STOP保持。7科学領域未採択、mandatory STOP。以下は履歴。
+
 > **Track B Parent allocation最終技術準備（2026-10-14）：TECHNICALLY_READY_FOR_SCIENTIFIC_DESIGN_REVIEW。** [Decision Packet](docs/tracks/algorithm_codesign/parent_allocation_scientific_design_decision_packet_20261014.md)、26新規＋6影響tests PASS。runtime metadata一致、local off-domainのみ。旧source/results/STOP保持、科学条件未採択、新科学0、mandatory STOP。以下は履歴。
 
 > **Track B Parent allocation（2026-10-14）：TECHNICALLY_READY_FOR_SCIENTIFIC_DESIGN_REVIEW。** [技術sourceと62登録外tests](docs/tracks/algorithm_codesign/parent_allocation_source_preparation_and_gpt_handoff_20261014.md)、zero-compute identity PASS。local focused evidenceのみ、科学GO・immutable CI・外部再現ではない。7科学条件pending、登録評価/合成/N/authority/marker0、mandatory STOP。以下は履歴。

@@ -1,3 +1,5 @@
+> [2026-10-14 Parent allocation先行研究対応](2026-10-14_track_b_parent_allocation_prior_art_correspondence.md)：5論文の関連本文・厳密対応、priority未認定、mandatory STOP。
+
 > [2026-10-14 Parent allocation最終技術準備](2026-10-14_track_b_parent_allocation_final_technical_preparation.md)：互換性sourceとDecision Packet、科学条件未採択、mandatory STOP。
 
 > [2026-10-14 Parent allocation source準備](2026-10-14_track_b_parent_allocation_source_preparation.md)：62登録外tests、science design待ち。登録資源/shot予算0、mandatory STOP。

@@ -1,3 +1,5 @@
+> **Track B現在（2026-10-14）：[Parent allocation近接先行研究対応](docs/tracks/algorithm_codesign/parent_allocation_prior_art_correspondence_20261014.md)調査完了。** 指定5本文の関連箇所、Euler/ISの直接帰結、SPS embedding、R0/G1/G5限定差を整理。完全な実装同値/priorityは未認定、科学条件7領域は不変、新science/source/tests0、mandatory STOP。以下は履歴。
+
 > **Track B現在（2026-10-14）：[Parent allocation科学設計Decision Packet](docs/tracks/algorithm_codesign/parent_allocation_scientific_design_decision_packet_20261014.md)完成。** native/cache/strict guard互換性を準備、新26＋既存影響6 tests PASS。内部配分とroot-local/global proposalの境界、7未採択領域を整理。runtime metadata一致、登録科学/保存列operator再検証0、mandatory STOP。以下は履歴。
 
 > **Track B現在（2026-10-14）：[Parent allocationの汎用source・技術検証](docs/tracks/algorithm_codesign/parent_allocation_source_preparation_and_gpt_handoff_20261014.md)完了。** ordinary/closed P5共通root・全端点・controlled位相・common-angle復帰、62登録外tests PASS。判定TECHNICALLY_READY_FOR_SCIENTIFIC_DESIGN_REVIEW。[比較技術案v2](docs/tracks/algorithm_codesign/parent_allocation_comparison_technical_options_v2_20261014.md)は未採択、本番worker/合成runtimeは未準備、新科学/authority/marker0、mandatory STOP。以下は履歴。

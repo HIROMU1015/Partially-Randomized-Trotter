@@ -186,3 +186,5 @@ finite-bit後は`q*w=tilde_c`をexactに保持し、`nu=sum tilde_c²/q`、`W=ma
 科学条件なしで解消可能なnative/cache/guardの互換性を実装し、登録外検証とruntime/read-only証拠を揃えた。さらに、頂点限定の解釈限界、内部候補のrational化・情報取得、root-local/global/finite-confidence最適性の境界を明確にした。7領域の判断に必要な選択肢・取得量・failure・公平性を本資料へまとめた。
 
 登録比較の価格・誤差・資源優位は取得しておらず、科学的な採否・新規性・研究GO/STOPをCodexが決定したものではない。重要科学レビューはユーザーの開始承認待ち、科学実行も別途明示承認待ち。**mandatory STOP。**
+
+> 後続の[近接先行研究との厳密対応調査](parent_allocation_prior_art_correspondence_20261014.md)：Euler/ISの既知部分、SPSのprojected/signed embedding、限定class差を整理。上記7領域の選択値・STOPを変更していない。
