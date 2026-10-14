@@ -1,3 +1,5 @@
+> **Parent allocation最終技術準備**：[Decision Packet](parent_allocation_scientific_design_decision_packet_20261014.md)。native/cache/guard bridge、26新規＋6影響regression tests、内部配分/proposalの境界。7科学条件pending、科学実行0、mandatory STOP。以下は履歴。
+
 > **parent配分source準備（2026-10-14）**：[実装・62登録外tests・引き継ぎ](parent_allocation_source_preparation_and_gpt_handoff_20261014.md)／[未採択技術案v2](parent_allocation_comparison_technical_options_v2_20261014.md)。ordinary/closed P5共通adapter、zero-compute identity PASS。本番worker/科学authorityなし、mandatory STOP。以下は履歴。
 
 > **parent配分技術監査（2026-10-14）**：[報告](parent_allocation_technical_audit_20261014.md)／[比較草案](parent_allocation_minimal_comparison_draft_20261014.md)。13登録外形式tests、root samplerと端点phaseの接続要件。新source・science authorityなし、native価値未取得、mandatory STOP。以下は履歴。

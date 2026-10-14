@@ -1,0 +1,76 @@
+{
+  "suites": [
+    {
+      "suite": "new_native_and_formal",
+      "exit_code": 0,
+      "wall_seconds": 0.06348965782672167,
+      "child_CPU_seconds": 0.06328899999999998,
+      "peak_child_RSS_KiB_cumulative_max": 22708,
+      "command": [
+        "/home/abe/Project/prt-worktrees/track-b-sp05-economics-preparation-20261006/.venv/bin/python",
+        "-B",
+        "-c",
+        "import builtins,runpy,sys\noriginal=builtins.__import__\ndef restricted(name,*args,**kwargs):\n    if name.split('.')[0] in ('pygridsynth','qiskit','numpy','scipy'):\n        raise RuntimeError('forbidden scientific/backend import: '+name)\n    return original(name,*args,**kwargs)\nbuiltins.__import__=restricted\nsys.argv=['tests/tracks/algorithm_codesign/test_parent_allocation_native.py']\nrunpy.run_path(sys.argv[0],run_name='__main__')\n"
+      ],
+      "stdout_sha256": "06265fe41b1577cc510b41ba950a72a712367f205a2f552b673f30515b00b1bf",
+      "tests": 24,
+      "evidence_scope": "intermediate preparation, before provider-neutral reference extension; use final 26 for frozen source"
+    },
+    {
+      "suite": "affected_cache_regression",
+      "exit_code": 0,
+      "wall_seconds": 0.05029888078570366,
+      "child_CPU_seconds": 0.05010500000000001,
+      "peak_child_RSS_KiB_cumulative_max": 25600,
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "tests/tracks/algorithm_codesign/test_parent_allocation.py",
+        "CacheControls"
+      ],
+      "stdout_sha256": "8e53c46ca3428fd965513525d20e3ae7ee708a6164d181d68082dcc63767b6eb",
+      "tests": 6,
+      "parent_allocation_source_sha256": "6ebecaf81a446dcdeaafa89b9bd0018ac8d11d23695da57d58b5683b99a4709d"
+    },
+    {
+      "suite": "new_native_and_formal_final",
+      "reason": "added provider-neutral signed endpoint reference connection and tests",
+      "tests": 26,
+      "exit_code": 0,
+      "wall_seconds": 0.08036045683547854,
+      "child_CPU_seconds": 0.080027,
+      "peak_child_RSS_KiB_cumulative_max": 27464,
+      "command": [
+        "/home/abe/Project/prt-worktrees/track-b-sp05-economics-preparation-20261006/.venv/bin/python",
+        "-B",
+        "-c",
+        "import builtins,runpy,sys\noriginal=builtins.__import__\ndef restricted(name,*args,**kwargs):\n    if name.split('.')[0] in ('pygridsynth','qiskit','numpy','scipy'):\n        raise RuntimeError('forbidden scientific/backend import: '+name)\n    return original(name,*args,**kwargs)\nbuiltins.__import__=restricted\nsys.path.insert(0,'tests/tracks/algorithm_codesign')\nsys.argv=['tests/tracks/algorithm_codesign/test_parent_allocation_native.py']\nrunpy.run_path(sys.argv[0],run_name='__main__')\n"
+      ],
+      "stdout_sha256": "a90e7649948a6618439c278989d35145138eab8edef0885593eb8d9a79bfc542",
+      "new_source_sha256": "f2a7ddbf313aaca7a7d7e9e9adeb991da00238c4a55aac5698112ba20844188e",
+      "new_test_source_sha256": "138d1ae08597d8d68a341248a48cca310af46a84dbc45a1b05f0d5efa15c0699"
+    }
+  ],
+  "worker_processes": 1,
+  "numeric_threads": 1,
+  "existing_62_test_full_suite_rerun": false,
+  "old_cache_regression_reason": "new schema supports valid empty identity sequence with strict guard",
+  "new_registered_science_synthesis_compile_or_forecast": 0,
+  "saved_scientific_sequence_operator_revalidation": 0,
+  "off_domain_2x2_interval_and_mock_checks_used": true,
+  "new_suite_import_blocks": [
+    "pygridsynth",
+    "qiskit",
+    "numpy",
+    "scipy"
+  ],
+  "mandatory_STOP": true,
+  "final_coverage": {
+    "new_native_and_formal_tests": 26,
+    "affected_old_cache_regression_tests": 6,
+    "new_unique_tests": 26,
+    "old_62_full_suite_rerun": false
+  },
+  "total_executed_test_cases_in_history": 56,
+  "maximum_technical_matrix_dimension": 4
+}

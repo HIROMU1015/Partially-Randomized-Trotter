@@ -478,7 +478,9 @@ def check_cache_metadata(entry, expected):
     if computed != expected['key'] or expected['spec'].get('up_to_phase') is not False:
         raise ValueError('key/spec binding or strict-phase policy was changed')
     sequence = entry.get('sequence')
-    if not isinstance(sequence, str) or not sequence:
+    # The empty product is a valid identity approximation for a tiny angle;
+    # its eligibility still requires the saved strict error and sequence hash.
+    if not isinstance(sequence, str):
         raise ValueError('saved raw sequence string required')
     if hashlib.sha256(sequence.encode()).hexdigest() != entry.get('sequence_sha256'):
         raise ValueError('saved sequence bytes changed')

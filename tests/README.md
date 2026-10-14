@@ -1,3 +1,5 @@
+> [Parent allocation native focused tests](tracks/algorithm_codesign/test_parent_allocation_native.py)：新26件、人工2×2/4×4・mock・固定単価形式control。影響範囲の旧CacheControls 6件もPASS。旧62件全体/登録列guardは再実行せず。[履歴](../artifacts/track_b_parent_allocation_final_technical_preparation/2026-10-14/v1/focused_test_execution.json)。
+
 > [Parent allocation focused tests](tracks/algorithm_codesign/test_parent_allocation.py)：62件、stdlib独立2×2/4×4 mock、登録外p=(2/7,5/7), x=1/3。登録D1〜D3/実G9 provider/新合成は使わない。[検証記録](../artifacts/track_b_parent_allocation_source_preparation/2026-10-14/v1/focused_validation_receipt.json)。
 
 > [D3 saved-mechanism 9人工tests](tracks/algorithm_codesign/test_d3_saved_mechanisms.py)：有理数配分・tie・固定入力改ざん検知。登録fixtureやscience moduleを使わない。

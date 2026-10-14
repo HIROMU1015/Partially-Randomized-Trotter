@@ -1,3 +1,5 @@
+> Parent allocationの[最終技術準備](../docs/tracks/algorithm_codesign/parent_allocation_scientific_design_decision_packet_20261014.md)でnative/cache/guardを接続。既存preflightはmetadata専用のまま。科学worker/launch authorityは作成していない。
+
 > [Parent allocation zero-compute preflight](tracks/algorithm_codesign/preflight_parent_allocation.py)：JSON/bytes/SHAのみ、algorithm sourceをimportしない。常にscience execution不可。実行launch gateではない。[引き継ぎ](../docs/tracks/algorithm_codesign/parent_allocation_source_preparation_and_gpt_handoff_20261014.md)。
 
 > [D3 saved-only analyzer](tracks/algorithm_codesign/analyze_d3_saved_mechanisms.py)：stdlibと固定commitから取得したscalar/既存incidenceだけ。budget/runner/event/pair再評価なし。

@@ -1,3 +1,5 @@
+> Track Bの[Parent allocation native bridge](../trottertracks/algorithm_codesign/parent_allocation_native.py)は別namespace。旧cache metadataとstrict phase/errorを接続し、登録sourceは変更しない。[Decision Packet](../../docs/tracks/algorithm_codesign/parent_allocation_scientific_design_decision_packet_20261014.md)。
+
 > Track Bの[Parent allocation adapter](../trottertracks/algorithm_codesign/parent_allocation.py)は別namespace `trottertracks.algorithm_codesign` にある。共通libraryは変更しない。ordinary/closed P5共通rootと登録外検証、科学runner/合成はなし。[技術報告](../../docs/tracks/algorithm_codesign/parent_allocation_source_preparation_and_gpt_handoff_20261014.md)。
 
 > **Track B D3 v2結果**：[独立trackの保証×価格resource map](../../docs/tracks/algorithm_codesign/d3_v2_results_and_gpt_handoff_20261014.md)。共有libraryのAPI/実装は変更せず、追加scienceなし、mandatory STOP。

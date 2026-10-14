@@ -1,3 +1,5 @@
+> **Track B Parent allocation最終技術準備（2026-10-14）：TECHNICALLY_READY_FOR_SCIENTIFIC_DESIGN_REVIEW。** [Decision Packet](docs/tracks/algorithm_codesign/parent_allocation_scientific_design_decision_packet_20261014.md)、26新規＋6影響tests PASS。runtime metadata一致、local off-domainのみ。旧source/results/STOP保持、科学条件未採択、新科学0、mandatory STOP。以下は履歴。
+
 > **Track B Parent allocation（2026-10-14）：TECHNICALLY_READY_FOR_SCIENTIFIC_DESIGN_REVIEW。** [技術sourceと62登録外tests](docs/tracks/algorithm_codesign/parent_allocation_source_preparation_and_gpt_handoff_20261014.md)、zero-compute identity PASS。local focused evidenceのみ、科学GO・immutable CI・外部再現ではない。7科学条件pending、登録評価/合成/N/authority/marker0、mandatory STOP。以下は履歴。
 
 > **2026-10-14 D3最終保存機構分析**：[技術報告](docs/tracks/algorithm_codesign/d3_final_saved_mechanisms_and_gpt_handoff_20261014.md)。44固定remote入力、36 key/12係数行、369保存算術checks・9人工tests PASS。旧D3科学分類は不変、新科学取得0、mandatory STOP。
