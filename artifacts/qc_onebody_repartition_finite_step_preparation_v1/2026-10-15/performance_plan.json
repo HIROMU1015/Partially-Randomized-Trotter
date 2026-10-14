@@ -1,0 +1,48 @@
+{
+  "hardware_inspection": {
+    "logical_CPU_count": 32,
+    "CPU": "Intel Core i9-13900",
+    "RAM_MB_observed": 63986,
+    "GPU": "nvidia-smi driver unavailable;no usable GPU asserted"
+  },
+  "backend": "single worker/single BLAS thread;36dim fixed spin-sector;NumPy/SciPy;no PySCF/Qiskit or molecule builder imports",
+  "acceleration": [
+    "reuse saved coefficient/state pack with raw SHA and component identities",
+    "cached sector CAR tensors and batched determinant exterior frames",
+    "shared12 density frames across3configs;only3 one-body diagonalizations",
+    "cached fragment spectral exp;fixed seed matrices rather than repeated microsteps",
+    "scalar repeated-query counts with exact boundary fusion,no exponential circuit expansion",
+    "independent checker caches Padé matrices across methods/h"
+  ],
+  "parallelization_decision": "one small36dim input;cache-sharing/IPC overhead dominates expected benefit;no independent large tasks requiring worker parallelism;record timings/RSS without claiming measured speedup",
+  "past_timing_reference": "existing qc_mixed_access input_seal SCF0.011925s,integral0.003406s;new run performs neither;not a speedup comparison",
+  "caps": {
+    "attempts": 1,
+    "retry": 0,
+    "workers": 1,
+    "threads": 1,
+    "aggregate_RSS_bytes": 536870912,
+    "output_bytes": 33554432,
+    "log_bytes": 2097152,
+    "wall_time_seconds": null,
+    "CPU_time_seconds": null,
+    "molecular_generation_calls": 0,
+    "new_ground_state_preparations": 0,
+    "registered_pack_loads": 1,
+    "spatial_eigh_calls": 15,
+    "H_truth_eigh_calls": 1,
+    "RDM_acquisitions": 1,
+    "direct_leading_evaluations": 3,
+    "PF_seed_evaluations": 36,
+    "PF_Schur_calls": 36,
+    "independent_PF_recompositions": 36,
+    "independent_expm_calls": 1024,
+    "independent_RDM_contractions": 1,
+    "independent_leading_evaluations": 3,
+    "compiler_calls": 0,
+    "T_synthesis_calls": 0,
+    "iterative_optimizer_calls": 0
+  },
+  "wall_time_cap": null,
+  "registered_science_started": false
+}
