@@ -1,5 +1,10 @@
 # Validation status
 
+## 2026-10-15 checker v2修正・公開照合完了／別数値再監査承認待ち
+
+payload `9ff61f531c81a9ac914432eb4a52ca22e0a8b614` をGitHubから独立再取得し、30変更blobs/3,967,739bytes、59固定source/4,633入力identity/5,116旧protected files、158旧manifest prefix/non-result/global description FAIL/root434pathsをbyte/SHA照合した。[receipt](artifacts/qc_onebody_repartition_h_boundary_checker_v2_preparation/2026-10-15/publication/receipt.json)、[Mandatory STOP](artifacts/qc_onebody_repartition_h_boundary_checker_v2_preparation/2026-10-15/publication_stop.json)。保護索引のGit管理外cache2件を除外した訂正も記録済み、checker演算は変更せず固定source3953db12へ結び直した。
+人工29tests/byte-header preflightはPASS、実H4 array decode/数値再監査/新認可/attempt消費0。旧NUMERICAL_ALLOWANCE失敗・UNVALIDATED_PRODUCER_ONLY、実H4原因UNDETERMINEDを保持。公開照合は科学数値audit PASSではない。旧source/input/threshold/結果/認可/STOP、N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了、TrackA/B/C1–C4/第二候補を維持。Mandatory STOP、次は固定checker v2保存データ再監査への別明示実行承認。同じ科学設計review・追加数学探索は開始しない。以下は履歴。
+
 ## 2026-10-15 h境界checker v2修正・保存数値再監査の別承認待ち
 
 [修正・人工29tests](docs/research/qc_onebody_repartition_h_boundary_checker_v2_repair_20261015.md)、[別実行承認への引継ぎ](docs/research/qc_onebody_repartition_h_boundary_reaudit_v2_execution_handoff_20261015.md)、[runner](scripts/verify_qc_onebody_repartition_h_boundary_v2.py)、[固定契約](artifacts/qc_onebody_repartition_h_boundary_checker_v2_preparation/2026-10-15/contract.json)、[source freeze](artifacts/qc_onebody_repartition_h_boundary_checker_v2_preparation/2026-10-15/source_manifest.json)、[byte/header preflight](artifacts/qc_onebody_repartition_h_boundary_checker_v2_preparation/2026-10-15/preflight.json)。
