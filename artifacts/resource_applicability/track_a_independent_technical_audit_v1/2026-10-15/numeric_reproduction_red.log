@@ -1,0 +1,58 @@
+test_allowlisted_cross_source_paired_axes_are_rejected (test_independent_track_a_numeric_audit_v1.IndependentNumericAuditTests.test_allowlisted_cross_source_paired_axes_are_rejected) ... 
+  test_allowlisted_cross_source_paired_axes_are_rejected (test_independent_track_a_numeric_audit_v1.IndependentNumericAuditTests.test_allowlisted_cross_source_paired_axes_are_rejected) (phase='exploration') ... FAIL
+  test_allowlisted_cross_source_paired_axes_are_rejected (test_independent_track_a_numeric_audit_v1.IndependentNumericAuditTests.test_allowlisted_cross_source_paired_axes_are_rejected) (phase='confirmation') ... FAIL
+test_anticorrelated_axis_costs_keep_paired_covariance (test_independent_track_a_numeric_audit_v1.IndependentNumericAuditTests.test_anticorrelated_axis_costs_keep_paired_covariance) ... ok
+test_copied_request_cannot_repeat_native_build (test_independent_track_a_numeric_audit_v1.IndependentNumericAuditTests.test_copied_request_cannot_repeat_native_build) ... FAIL
+test_entire_old_confirmation_map_is_required_before_new_epsilon (test_independent_track_a_numeric_audit_v1.IndependentNumericAuditTests.test_entire_old_confirmation_map_is_required_before_new_epsilon) ... ok
+test_final_confirmation_map_value_is_checked_before_new_epsilon (test_independent_track_a_numeric_audit_v1.IndependentNumericAuditTests.test_final_confirmation_map_value_is_checked_before_new_epsilon) ... ok
+test_ineligible_old_precision_is_checked_before_new_epsilon (test_independent_track_a_numeric_audit_v1.IndependentNumericAuditTests.test_ineligible_old_precision_is_checked_before_new_epsilon) ... ok
+test_production_branch_rejects_name_only_unverified_provider (test_independent_track_a_numeric_audit_v1.IndependentNumericAuditTests.test_production_branch_rejects_name_only_unverified_provider) ... FAIL
+test_reset_built_flag_cannot_repeat_native_build (test_independent_track_a_numeric_audit_v1.IndependentNumericAuditTests.test_reset_built_flag_cannot_repeat_native_build) ... FAIL
+test_saved_full_reference_is_not_rotated_or_certified (test_independent_track_a_numeric_audit_v1.IndependentNumericAuditTests.test_saved_full_reference_is_not_rotated_or_certified) ... ok
+test_signed_complex_identity_matches_full_fock_trace (test_independent_track_a_numeric_audit_v1.IndependentNumericAuditTests.test_signed_complex_identity_matches_full_fock_trace) ... ok
+
+======================================================================
+FAIL: test_allowlisted_cross_source_paired_axes_are_rejected (test_independent_track_a_numeric_audit_v1.IndependentNumericAuditTests.test_allowlisted_cross_source_paired_axes_are_rejected) (phase='exploration')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/independent-technical-audit-20261015/tests/test_independent_track_a_numeric_audit_v1.py", line 57, in test_allowlisted_cross_source_paired_axes_are_rejected
+    with self.subTest(phase=phase), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_allowlisted_cross_source_paired_axes_are_rejected (test_independent_track_a_numeric_audit_v1.IndependentNumericAuditTests.test_allowlisted_cross_source_paired_axes_are_rejected) (phase='confirmation')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/independent-technical-audit-20261015/tests/test_independent_track_a_numeric_audit_v1.py", line 57, in test_allowlisted_cross_source_paired_axes_are_rejected
+    with self.subTest(phase=phase), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_copied_request_cannot_repeat_native_build (test_independent_track_a_numeric_audit_v1.IndependentNumericAuditTests.test_copied_request_cannot_repeat_native_build)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/independent-technical-audit-20261015/tests/test_independent_track_a_numeric_audit_v1.py", line 64, in test_copied_request_cannot_repeat_native_build
+    with self.assertRaises(b.g.Stop):
+AssertionError: Stop not raised
+
+======================================================================
+FAIL: test_production_branch_rejects_name_only_unverified_provider (test_independent_track_a_numeric_audit_v1.IndependentNumericAuditTests.test_production_branch_rejects_name_only_unverified_provider)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/independent-technical-audit-20261015/tests/test_independent_track_a_numeric_audit_v1.py", line 82, in test_production_branch_rejects_name_only_unverified_provider
+    with self.assertRaises(b.g.Stop):
+AssertionError: Stop not raised
+
+======================================================================
+FAIL: test_reset_built_flag_cannot_repeat_native_build (test_independent_track_a_numeric_audit_v1.IndependentNumericAuditTests.test_reset_built_flag_cannot_repeat_native_build)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/independent-technical-audit-20261015/tests/test_independent_track_a_numeric_audit_v1.py", line 72, in test_reset_built_flag_cannot_repeat_native_build
+    with self.assertRaises(b.g.Stop):
+AssertionError: Stop not raised
+
+----------------------------------------------------------------------
+Ran 10 tests in 5.934s
+
+FAILED (failures=5)
+{'tests': 10, 'failures': 5, 'errors': 0, 'wall_seconds': 6.018904494121671, 'RSS_bytes': 60960768}
