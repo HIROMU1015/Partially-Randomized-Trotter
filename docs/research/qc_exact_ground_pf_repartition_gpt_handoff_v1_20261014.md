@@ -53,3 +53,7 @@ Phase Aで「FFFの再配分を数値的に試すだけ」より具体的な**�
 Branch `qc-exact-ground-pf-onebody-preaudit-20261014`、base `5f35988d3145641739fb83da98567772183046ef`。[原レビューSHA](../../artifacts/qc_exact_ground_pf_repartition_preaudit_v1/2026-10-14/received_review_identity.json)、[文献](../../artifacts/qc_exact_ground_pf_repartition_preaudit_v1/2026-10-14/literature_registry.json)、[scope/status](../../artifacts/qc_exact_ground_pf_repartition_preaudit_v1/2026-10-14/method_status.json)、[保全索引](../../artifacts/qc_exact_ground_pf_repartition_preaudit_v1/2026-10-14/preservation_index.json)、[再取得receipt](../../artifacts/qc_exact_ground_pf_repartition_preaudit_v1/2026-10-14/publication/receipt.json)。
 
 387旧files/146旧manifest entries/non-result fields/global FAIL/root135pathsを維持。受領レビューに記されたC1現系列終了・C2対照保持・C3/C4現構成投資見送り、N1STOP/N2HOLD/N3CLOSED/THRIFT現template CLOSEDを継承し、旧source/結果/認可/STOPを書換えない。今回の科学数値calls0、C1–C4再監査0、Track A/B科学作業0、GPTレビュー0。公開・GitHub bytes一致確認後Mandatory STOP。次は**GPT重要科学判断の別明示開始承認**。
+
+## GitHub公開確認・最終STOP
+
+[再取得receipt](../../artifacts/qc_exact_ground_pf_repartition_preaudit_v1/2026-10-14/publication/receipt.json)：payload `6711a709ad13144972474effe1faf3933cd7f7fb` の26変更blobs、387保護files、固定3参照、受領レビュー38821bytes/SHAをGitHubの独立cache（local alternatesなし）から一致照合した。形式checkerを再実行せず、新科学数値calls0。receiptと本追補を後続metadataとして公開し最終リンクを照合する。独立新規性・finite-h/総費用優位・正式採択は未判定。Mandatory STOP、次はGPT重要科学判断の別明示開始承認。

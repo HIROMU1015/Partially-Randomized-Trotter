@@ -9,3 +9,7 @@ FFF・既存partitioning/state-error・SPRINT/compact BCH/CPFの関連本文を�
 [監査](../qc_exact_ground_pf_repartition_technical_preaudit_v1_20261014.md)、[GPT引継ぎ](../qc_exact_ground_pf_repartition_gpt_handoff_v1_20261014.md)、[原レビュー](../../reviews/quantum_chemistry_pf/qc_exact_ground_state_pf_direction_rereview_2026-10-14.md)、[GitHub再取得receipt](../../../artifacts/qc_exact_ground_pf_repartition_preaudit_v1/2026-10-14/publication/receipt.json)。
 
 旧387files/146manifest entries/non-result fields/global FAIL/root135pathsと旧source/results/認可/STOPを保全。受領レビューの旧系列判断へのpointerを追加し、C1–C4/Track A/B/第二候補を起動しない。公開照合後Mandatory STOP、次はGPT重要科学判断の別明示開始承認。
+
+## GitHub公開確認・最終STOP
+
+[再取得receipt](../../../artifacts/qc_exact_ground_pf_repartition_preaudit_v1/2026-10-14/publication/receipt.json)：payload `6711a709ad13144972474effe1faf3933cd7f7fb` の26変更blobs、387保護files、固定3参照、受領レビュー38821bytes/SHAをGitHubの独立cache（local alternatesなし）から一致照合した。形式checkerを再実行せず、新科学数値calls0。receiptと本追補を後続metadataとして公開し最終リンクを照合する。独立新規性・finite-h/総費用優位・正式採択は未判定。Mandatory STOP、次はGPT重要科学判断の別明示開始承認。

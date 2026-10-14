@@ -122,7 +122,7 @@ Qは実対称。w_rs=−Re(a_rsγ_sr)/12（r<s）からQのLaplacian表示を生
 g_p=\tfrac1{12}\{(\gamma a^2)_{pp}+(a^2\gamma)_{pp}-2(a\gamma a)_{pp}\}.
 \]
 
-Hermitian誤差を丸めで隠さず、実部を適切に検証する。固定γをframeへ回転し、dense matrix積でgをO(n³)、QをO(n²)、保存O(n²)で作る。F1との再配分でaのoff-diagonalが変わらないのでQは一定、g(x)=g(0)+2Qx。H・exact state・F1 frameが同じ間、γを取り直す必要はない。これは具体的な応答表の生成・再利用規則であり、本番collector/optimizerの実装ではない。
+Hermitian誤差を丸めで隠さず、実部を適切に検証する。固定γをframeへ回転し、dense matrix積でgをO(n³)、QをO(n²)、保存O(n²)で作る。ここで時間は算術演算回数であり、bit長・精度・γ取得の費用は別に必要。F1との再配分でaのoff-diagonalが変わらないのでQは一定、g(x)=g(0)+2Qx。H・exact state・F1 frameが同じ間、γを取り直す必要はない。これは具体的な応答表の生成・再利用規則であり、本番collector/optimizerの実装ではない。
 
 d0は、**一度の**compact BCH期待値等で別取得する。二分割の無制約PSD更新と異なり、一般DFで|d(x)|を選択するにはd0の値またはintervalが必要。1-RDMから元二体HのE0やd0まで無償に復元できるとは仮定しない。
 
@@ -184,3 +184,7 @@ d0は、**一度の**compact BCH期待値等で別取得する。二分割の無
 既存387files、旧146manifest entries/non-result fields/global description欠落FAIL、元worktree135pathsを保全する。[保存索引](../../artifacts/qc_exact_ground_pf_repartition_preaudit_v1/2026-10-14/preservation_index.json)。受領レビューに記載されたC1現系列終了・C2対照保持・C3/C4現構成への投資見送り、N1 STOP/N2 HOLD/N3 CLOSED/THRIFT現template CLOSEDは新たにCodexが決定したものではない。旧source/結果/認可/STOPのbytesを変えず、受領判断へのpointerを追加する。
 
 数値科学calls0、C1–C4再監査0、Track A/B科学作業0、production0、GPTレビュー0。[GitHub再取得receipt](../../artifacts/qc_exact_ground_pf_repartition_preaudit_v1/2026-10-14/publication/receipt.json)で公開物を照合後Mandatory STOP。次はユーザーの別明示開始承認を受けたGPTの重要科学判断。同じ候補の一般文献探索や数値取得を自動延長しない。
+
+## GitHub公開確認・最終STOP
+
+[再取得receipt](../../artifacts/qc_exact_ground_pf_repartition_preaudit_v1/2026-10-14/publication/receipt.json)：payload `6711a709ad13144972474effe1faf3933cd7f7fb` の26変更blobs、387保護files、固定3参照、受領レビュー38821bytes/SHAをGitHubの独立cache（local alternatesなし）から一致照合した。形式checkerを再実行せず、新科学数値calls0。receiptと本追補を後続metadataとして公開し最終リンクを照合する。独立新規性・finite-h/総費用優位・正式採択は未判定。Mandatory STOP、次はGPT重要科学判断の別明示開始承認。
