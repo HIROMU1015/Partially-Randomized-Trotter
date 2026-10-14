@@ -1,5 +1,12 @@
 # 文書索引
 
+## 2026-10-14 厳密ground・一体再配分：第一候補の限定技術監査
+
+[受領方針レビュー原文](reviews/quantum_chemistry_pf/qc_exact_ground_state_pf_direction_rereview_2026-10-14.md)、[数学・先行法・具体応答・費用監査](research/qc_exact_ground_pf_repartition_technical_preaudit_v1_20261014.md)、[GPT判断引継ぎ](research/qc_exact_ground_pf_repartition_gpt_handoff_v1_20261014.md)、[形式27検査](../artifacts/qc_exact_ground_pf_repartition_preaudit_v1/2026-10-14/formal/word_identity_results.json)、[scope/status](../artifacts/qc_exact_ground_pf_repartition_preaudit_v1/2026-10-14/method_status.json)、[未固定・未認可pilot案](../artifacts/qc_exact_ground_pf_repartition_preaudit_v1/2026-10-14/minimal_pilot_design.json)。
+exact量子ground利用可/E0未入力/block encoding・qubitization除外を固定。二分割PSD/range/二重交換子、単一局所二次性/一般body-rank上限を確認。固定S2のF0一体と最初F1densityのground変化分を一体二重交換子へ還元し、1-RDM応答表の生成・再利用規則を閉じた。
+FFF自由度・state-specific BCH・solveは既知。特定1-RDM応答の明示記載は未確認、独立新規性・同情報compact BCHに対する速度・finite-h/controlled総費用優位はUNDETERMINED。具体的差分候補の静的費用とpilot案までで、production/数値実装・pilotは未実行、execution-readyではない。
+抽象有理数word27checks PASS、科学H/eig/数値expectation/optimizer/PF性能/compile/T合成/sampling/保存数値再集計0。原レビューbyte38821保存。387旧files/146旧manifest entries/non-result fields/global description FAIL/root135paths保護。Track A/B作業とC1–C4再監査を起動しない。受領GPT判断のC1現系列終了/C2対照保持/C3–C4現構成投資見送り、N1STOP/N2HOLD/N3CLOSED/THRIFT現template CLOSEDを記録し、旧source/結果/認可/STOPは変更しない。公開・GitHub一致後Mandatory STOP、次はGPT重要科学判断の別開始承認。以下は履歴。
+
 [C2/C3最終技術監査・統合資料のGitHub公開確認](../artifacts/qc_c2_c3_final_technical_audit_v1/2026-10-14/publication/receipt.json)：payload `d91991038b1a2b97fac52a00d8ed4ebb413e2214`、22変更blobs/374保護files/25固定本文をremote byte/SHA照合。旧144manifest records/non-result fields/global FAIL/root132pathsを保持。新science/保存数値集計/C1・C4再監査/production/GPTレビュー0。Mandatory STOP、次はGPT重要科学判断の別明示開始承認。
 
 ## 2026-10-14 C2/C3最終限定技術監査・固定成果統合：GPT判断開始承認待ち
