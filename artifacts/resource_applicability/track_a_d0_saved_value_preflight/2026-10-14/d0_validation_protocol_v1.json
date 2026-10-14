@@ -1,0 +1,81 @@
+{
+  "schema_version": "track_a_d0_validation_protocol_v1",
+  "synthetic_status": "PASS",
+  "synthetic_tests": 33,
+  "real_validation_status": "NOT_EXECUTED_REQUIRES_SEPARATE_APPROVAL",
+  "old_precision_reproduction": {
+    "epsilons": [
+      0.05,
+      0.01,
+      0.005,
+      0.001
+    ],
+    "factors": [
+      1.0,
+      10.0
+    ],
+    "compare": "complete precision_rows dict including axes, N_total, statuses, log bound, numerical guard; exact Python equality",
+    "scopes": [
+      "all H4 fixed16",
+      "all H6 exploration92",
+      "H6 union8 plus20 registered deterministic baselines"
+    ],
+    "maximum_scalar_cases": 1088
+  },
+  "real_examples_planned": [
+    {
+      "scope": "H4_NATIVE_FIXED16",
+      "cell": "B1_p12_q1_2nd",
+      "purpose": "deterministic integer N/G; n1 SE null"
+    },
+    {
+      "scope": "H4_NATIVE_FIXED16",
+      "cell": "B2_p3_q8_2nd_r2_K4",
+      "purpose": "32 pairs; mean of weighted integer totals"
+    },
+    {
+      "scope": "H6_EXPLORATION92",
+      "cell": "B0_p10_q1_2nd",
+      "purpose": "saved B/u and deterministic shots; factor1/10"
+    },
+    {
+      "scope": "H6_EXPLORATION92",
+      "cell": "B0_p5_q1_2nd",
+      "purpose": "original ineligible; no imputed costs"
+    },
+    {
+      "scope": "H6_EXPLORATION92",
+      "cell": "B1_p19_q8_4th",
+      "purpose": "full S4 independent family/formula display"
+    },
+    {
+      "scope": "H6_CONFIRMATION_UNION8",
+      "cell": "B2_p5_q8_2nd_r2_K2",
+      "purpose": "exact32 confirmation pairs; exploration8 excluded"
+    }
+  ],
+  "old_cost_reproduction": "all published H4 RZ rows and H6 exploration/confirmation RZ,CX,depth,size rows: exact N/G_point/paired SE equality; mismatch STOP before epsilon extension",
+  "ordering": "per scope: original epsilon equality gate first, then epsilon extension/6 metrics/P; publish derived outputs only after all scopes PASS",
+  "uncertain_runtime": "analysis Python3.12.3 vs recorded historical Python3.11.0rc1; identical frozen function AST is not bit-equivalence; full saved-value equality still pending",
+  "forbidden_actions": [
+    "real scalar arithmetic during preflight",
+    "new signals",
+    "new trajectory",
+    "new compile",
+    "NPZ load",
+    "H8 operation",
+    "new grant"
+  ],
+  "tests_coverage": [
+    "ceil/order/binary64/log-only",
+    "u/headroom",
+    "integer product and paired SE",
+    "axis duplicate/mismatch/missing",
+    "selection vs confirmation",
+    "RZ selection vs metric selection",
+    "P crossings/hull/ties",
+    "bytes/SHA/format gates",
+    "synthetic CLI one-shot/output STOP",
+    "mock pressure/OOM"
+  ]
+}

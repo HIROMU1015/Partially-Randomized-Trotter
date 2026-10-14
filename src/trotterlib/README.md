@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 2026-10-14 Track A D0：保存scalar再会計の技術準備
+
+[入力・code・人工検査・実行契約の入口](../../docs/research/track_a_d0_saved_value_reanalysis_preflight_20261014.md)。H4 native fixed16／H6 exploration92／確認union8を分離し、ε=.0005・6指標・P感度を準備した。33限定人工tests PASS、SOURCE fa75c7997e135da7b7a0c4e23949e47252bd7a2e。実データの新再会計・新科学計算・H8変更・新grant0、別実行承認待ちSTOP。以下は各時点の履歴。
+
 ## 2026-10-14 H4 B0+I map240準備
 
 新namespace h4_b0i_map、future runner run_h4_b0i_map240.py、byte-only prepare_h4_b0i_map240.py、stdlib19 mock検査。[閉じた234 compile＋6 numeric照合再利用の準備](../../docs/research/track_a_h4_b0i_map_preparation_20261014.md)。実行条件は新grant待ち、計算未起動。

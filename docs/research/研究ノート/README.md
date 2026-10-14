@@ -1,5 +1,7 @@
 # 研究ノート
 
+- [2026-10-14 D0保存値再会計の技術準備](2026-10-14_track_a_d0_saved_value_preflight.md)：入力固定・独立module・人工33検査。実データ再会計は未実行、別承認待ち。
+
 - [2026-10-14 Track A追加検証の技術調査・設計](2026-10-14_track_a_resource_expansion_design.md)：保存解析→小pilot→限定拡張の未承認案。新科学計算0。
 
 - [2026-10-14 共通研究情報の正式統合](2026-10-14_track_a_canonical_information_integration.md)：server/localの固定情報を統合、H4全面結果後review原本取得。 [正式共通入口](../track_a_shared_research_status.md)。科学実行・H8変更・原稿改訂0、公開後STOP。
