@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "scope_id": "QC_ONEBODY_REPARTITION_H_BOUNDARY_V1_20261015",
+  "base_commit": "31ea58449eb8e535b8f5d5f62956fb410d35f0ae",
+  "registered_execution_authorized": false,
+  "scientific_review": "docs/reviews/quantum_chemistry_pf/qc_onebody_repartition_finite_step_pilot_v1_scientific_review_2026-10-15.md",
+  "fixed_files": {
+    "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz": {
+      "SHA256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a",
+      "bytes": 8652
+    },
+    "artifacts/qc_onebody_repartition_finite_step_pilot_v1/2026-10-15/attempt_1/raw.npz": {
+      "SHA256": "815e31a4c305a7bf13b380c53f1e99808920aaaf72d03836ee5af76dd058c81c",
+      "bytes": 1498787
+    },
+    "artifacts/qc_onebody_repartition_finite_step_pilot_v1/2026-10-15/attempt_1/raw.json": {
+      "SHA256": "6c1e7a423185ad260aa822430f3251e105906bb9a4d9a095d2ca0a598402fdff",
+      "bytes": 703312
+    },
+    "artifacts/qc_onebody_repartition_finite_step_pilot_v1/2026-10-15/attempt_1/selector_seal.json": {
+      "SHA256": "98f6ff69923ceca02448f750cf387bfe443a8795cf66b45034a481e32e0bc008",
+      "bytes": 1961
+    },
+    "artifacts/qc_onebody_repartition_finite_step_pilot_v1/2026-10-15/attempt_1/independent_audit.json": {
+      "SHA256": "7841f972d2cc5063bcb74d32a1309eda987fe1558355c7eecae69479111b1a27",
+      "bytes": 299
+    },
+    "artifacts/qc_onebody_repartition_finite_step_pilot_v1/2026-10-15/attempt_1/result_identity.json": {
+      "SHA256": "80bcc1862fabe25e57cd1d776d4a7a8c00ffdb475bf71213ae95790b6b0631b3",
+      "bytes": 398
+    },
+    "artifacts/qc_onebody_repartition_finite_step_preparation_v1/2026-10-15/input_identity.json": {
+      "SHA256": "cd511a5487671dae962b8e255e353e2479da38d2593354313e4679694e4b891d",
+      "bytes": 6723
+    },
+    "artifacts/qc_onebody_repartition_finite_step_preparation_v1/2026-10-15/source_manifest.json": {
+      "SHA256": "8b4a3ed3034c0931dd33cff60cb27cdce974f8ca5dc316bab71d2d0ed29d8fe1",
+      "bytes": 4566
+    },
+    "artifacts/qc_onebody_repartition_finite_step_execution_v1/2026-10-15/authorization.json": {
+      "SHA256": "199544f787518ce12a0ace3fca10a8fad50c3df5ef63bfbd786f810ba7182d22",
+      "bytes": 2785
+    }
+  },
+  "saved_arrays": "artifacts/qc_onebody_repartition_finite_step_pilot_v1/2026-10-15/attempt_1/raw.npz",
+  "saved_raw": "artifacts/qc_onebody_repartition_finite_step_pilot_v1/2026-10-15/attempt_1/raw.json",
+  "saved_selector_seal": "artifacts/qc_onebody_repartition_finite_step_pilot_v1/2026-10-15/attempt_1/selector_seal.json",
+  "input": {
+    "path": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz",
+    "commit": "9e288089ca22e2729976ae75d096c4df00e49a7d",
+    "SHA256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a",
+    "Hamiltonian_hash": "de7a549238e3a21f15a84018bef28440c345b31030282c01cf874f3d1d212424",
+    "state_hash": "31e63b0104126c85136ee173f1dce7642aee2d272924e70e8b120ac340ab45bd",
+    "state_vector_hash": "c9aca811b5c023772d148d0331c82958bac6824b593a367cb65a5f89937f4f63",
+    "sector_state_vector_hash": "8a4b845362a63bd7d0352d7a02fbfb844e13d10ba6d5e6e451e626fa8804395d",
+    "molecule": "linear H4",
+    "distance_Angstrom": 1.0,
+    "basis": "STO-3G",
+    "DF_rank": 12,
+    "DF_policy": "Reuse exact saved rank12 Hermitian coefficients;no new DF or rank/order change;stored truncation value 0.0 is old metadata,not a new physical certification",
+    "fragment_order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "n_spin_orbitals": 8,
+    "n_spatial_orbitals": 4,
+    "N_alpha": 2,
+    "N_beta": 2,
+    "sector_dimension": 36,
+    "mode_order": "interleaved alpha,beta;OpenFermion most-significant-bit mode0",
+    "state_supply": "Cached sector_state_vector from fixed pack;no state preparation algorithm or reoptimization;ground/residual validation only after separate approval",
+    "existing_PR_STOP": "UNCHANGED;new independent experiment targets saved de7a Hamiltonian,not old d8b pilot;does not relax old S0 byte mismatch"
+  },
+  "model": {
+    "Hamiltonian": "constant I + dGamma(one_body) + sum_l lambda_l dGamma(g_l)^2;no extra 1/2 or repeated normal-order correction",
+    "update": "A outermost,B=lambda0 dGamma(g0)^2 adjacent first density only;A+=X,B-=X",
+    "frame": "Fixed ascending spatial eigenvectors of first g block;paired spin embedding;phase canonicalization;degenerate frame determinism fixed by source/environment",
+    "gauge": "spin-paired spatial x,mean(x)=0;preserve Nalpha,Nbeta and spin-paired structure",
+    "E0_to_candidate_generator": false,
+    "finite_step_truth_to_candidate_generator": false,
+    "exact_quantum_ground_available": true,
+    "information": "Ideal classical gamma,d0 mechanism layer only;not free-information operational advantage;gamma and d0 acquisition reported separately"
+  },
+  "selector": "NO_NEW_SELECTOR;byte-identical inherited v1 seal/shifts/leading/frames;no E0 or finite-h reselection",
+  "evaluation": {
+    "configurations": [
+      "original",
+      "response_selected",
+      "known_linear_extraction"
+    ],
+    "primitive_orders": [
+      2,
+      4
+    ],
+    "S2": "outermost A half,ordered density halves,central last full,reverse halves;rightmost chronological action convention fixed in source",
+    "S4": "five signed S2 composition:p,p,1-4p,p,p;p=1/(4-4^(1/3));same configurations;no S2 response claimed to optimize S4",
+    "h_grid": "NEW COMMON FROZEN DOMAIN_AND_REFINEMENT;v1 oldh unchanged",
+    "derived_controls": [
+      "scalar-corrected S2 for all3 configurations",
+      "two-point Richardson from neighboring original/selected/known S2 steps:(4E(h/2)-E(h))/3"
+    ],
+    "energy_targets_Ha": [
+      0.0001,
+      1e-05
+    ],
+    "budget_fractions": {
+      "deterministic": 0.5,
+      "statistical": 0.25,
+      "synthesis": 0.125,
+      "information": 0.125
+    },
+    "minimum_overlap": 0.99,
+    "branch": "NEW CIRCULAR_PROJECTOR_CONTINUATION;v1 oldbranch unchanged",
+    "energy_cluster_absolute_tolerance_Ha": 1e-09,
+    "overlap_tie_tolerance": 1e-06,
+    "numeric_absolute_tolerance": 1e-10,
+    "boundary": "Eligibility requires error upper allowance strictly below deterministic budget,overlap minus allowance >=0.99;near boundaries UNDETERMINED;no interpolation or extra h",
+    "registered_effect_fraction": 0.1,
+    "effect_reason": "New10percent material proxy threshold,fixed before results;not reuse of C1 5percent gate;two targets and both prices must agree for a positive pilot classification",
+    "comparisons": "Response S2/raw and corrected versus minimum eligible original S2/corrected,S4 for allconfigs,known linear S2/corrected,and Richardson for allconfigs;same h grid includes original subdivision",
+    "success_scope": "Conditional static controlled-primitive/Heisenberg accounting only;leading reduction alone not success;one molecular development input,no transfer or novelty certification",
+    "h_selection": "Posthoc fixed-grid diagnostic oracle for every method equally;no truth-free operational precision selector claim",
+    "numerical_status": "Declared double-precision safety margins and independent numerical residual checks,not outward interval or rigorous finite-step certification"
+  },
+  "resources": {
+    "compile": false,
+    "pricing": [
+      {
+        "id": "P1",
+        "controlled_Givens": 4,
+        "controlled_phase": 1,
+        "controlled_pair_phase": 2
+      },
+      {
+        "id": "P2",
+        "controlled_Givens": 8,
+        "controlled_phase": 1,
+        "controlled_pair_phase": 4
+      }
+    ],
+    "circuit": "Common fixed-N scalar extraction,scalar-fragment elision,adjacent relative-basis sharing and exact adjacent same-fragment fusion;spatial complex Givens duplicated by spin;linear and pair density phases counted;controlled scalar once;parity links visible and included in declared Givens primitive price;allcontrols same policy;not optimal or compiled gate counts;no tiny-angle synthesis elision benchmark",
+    "query_model": "ceil(pi/(h*epsilon_stat)) coherent seed queries;Richardson terms use epsilon_stat/sum_abs_weights separately and both experiment costs;no uncharged extrapolation or combined unitary",
+    "overlap": "Gate eligibility >=.99;no free amplitude amplification;repeat factor ceil(log(.01)/log(1-p)) with minimum1;Richardson uses union failure .005 each",
+    "synthesis": "logical phase occurrence count and uniform per-occurrence budget recorded;no T synthesis or compiled T cost claim",
+    "information_costs": "original raw S2/S4 use neither gamma nor d0;corrected original d0 only;known linear raw neither;response uses gamma+d0;corrected known can acquire its own single leading contraction rather than full gamma;no forced irrelevant common charge",
+    "outputs": "primitive vector,price totals,overlap/repeats,coherent queries,synthesis budget,state preparations,information acquisition labels,classical time/memory;positive component delta gives added-information break-even budget;no final QPE/RPE total superiority claim"
+  },
+  "schedule": {
+    "h_anchor": 0.002745119306432635,
+    "Lambda_common": 45.53536150763562,
+    "maximum_h": 1.0,
+    "coarse_ratio": 1.04,
+    "bridge_gap": "pi/(8*Lambda_common*(4p+abs(1-4p))),p=1/(4-4^(1/3))",
+    "minimum_h": "h_anchor/2;v1 cached h1",
+    "Richardson_half_point_closure": true,
+    "initial_h_cap": 736,
+    "total_h_cap": 864,
+    "refinement_rounds": 2,
+    "refinement_intervals_per_round": 32,
+    "boundary_relative_width": 0.01,
+    "selection": "union of all12method/all2target eligibility or branch transitions;sort descending relative interval width,then left h;common geometric midpoints+halves;no monotonicity assumption",
+    "maximum_new_h_from_refinement": 128,
+    "no_extension_after_boundary_or_cap_failure": true,
+    "assessment_h_rule": "all coarse/guard bridge points >=h_anchor,plus common refinement midpoints;half-points and h1 anchor support-only,never extra selection opportunities for a method"
+  },
+  "branch": {
+    "mode": "sampled circular-cluster projector continuation from hashed v1 h1 anchor;integer unwrap to nearest previous unwrapped phase,not nearest E0",
+    "minimum_projector_overlap": 0.95,
+    "maximum_spectral_defect": 1e-09,
+    "phase_increment_bound": "K*dh+1e-8, K=Lambda_common*signed-S4 absolute stage sum",
+    "projector_competitor_gap": 1e-06,
+    "rank_change": "UNDETERMINED",
+    "invalid_left": "NO_RESTART;other methods continue on common grid",
+    "refinement": "nearest previously evaluated left and valid right must agree on alias and projector;invalid right is not used as an anchor",
+    "near_wrap": "circular cluster grouping;never select alias to minimize bias",
+    "numerical_scope": "double precision safety allowance plus independent residual/Padé comparison;not outward interval or continuous-path theorem"
+  },
+  "cache": {
+    "exponential_entries": 512,
+    "imported_anchor_points": [
+      0.0013725596532163176,
+      0.002745119306432635
+    ],
+    "imported_anchor_cells_maximum": 12,
+    "binding": "full v1 raw NPZ/JSON/seal SHA;independent checker audits imported anchors in new path coverage;no old36batch,old27/37 test rerun"
+  },
+  "limits": {
+    "attempts": 1,
+    "retry": 0,
+    "workers": 1,
+    "threads": 1,
+    "aggregate_RSS_bytes": 536870912,
+    "output_bytes": 536870912,
+    "log_bytes": 2097152,
+    "wall_time_seconds": null,
+    "CPU_time_seconds": null,
+    "saved_science_array_loads": 1,
+    "PF_seed_evaluations": 5172,
+    "PF_Schur_calls": 5172,
+    "independent_PF_recompositions": 5184,
+    "independent_expm_calls": 648000,
+    "new_H_truth_eigh_calls": 0,
+    "spatial_eigh_calls": 0,
+    "RDM_acquisitions": 0,
+    "direct_leading_evaluations": 0,
+    "selector_calls": 0,
+    "iterative_optimizer_calls": 0,
+    "molecular_generation_calls": 0,
+    "new_ground_state_preparations": 0,
+    "compiler_calls": 0,
+    "T_synthesis_calls": 0,
+    "method_records": 5184,
+    "cost_rows": 20736
+  },
+  "classification": {
+    "primary_candidate": [
+      "S2:response_selected",
+      "CS2:response_selected"
+    ],
+    "strong_control": "all other eligible records including response S4 and EXT2;v1 classification unchanged",
+    "registered_effect_fraction": 0.1,
+    "uniform_contexts": 4,
+    "discrete_grid_gate": "ratio<0.9-1e-10",
+    "boundary_gate": "largest eligible and next demonstrably bias-ineligible sample bracket<=1percent for both winning methods;else UNDETERMINED_BOUNDARY_COVERAGE",
+    "no_global_optimum_claim": true,
+    "secondary": "predefined same-family original/response/known min on same points;not primary replacement"
+  },
+  "information": {
+    "ideal_d_gamma_assumption_maintained": true,
+    "quantum_acquisition_cost": "UNKNOWN_NOT_ZERO",
+    "CS2_required_d_precision": "epsilon_information/h^2",
+    "response_gamma": "inherited frozen ideal-state information;no new measurement-method development",
+    "strong_controls_not_forced_unneeded_gamma_d": true
+  },
+  "STOP": [
+    "New scope one-shot approval required;old36cell authorization consumed and unusable",
+    "No changed molecule/DF/order/shift/selector/targets/prices/budget/10percent criterion",
+    "No unregistered h or precision rescue;no retry after attempt/audit consumption",
+    "Domain cap/branch/precision unresolved recorded;no scientific impossibility/adoption/closure inferred",
+    "No compiler/second candidate/C1-C4/TrackA-B/N1-N3/THRIFT restart",
+    "Independent audit/publication/retrieval then Mandatory STOP;important new-result GPT judgment needs separate start approval"
+  ],
+  "mandatory_stop": true
+}
