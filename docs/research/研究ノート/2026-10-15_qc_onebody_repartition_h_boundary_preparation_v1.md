@@ -7,3 +7,7 @@ v1分子/shift/selector/frame/stateを凍結し、共通比較h0..1Ha^-1、初�
 限定source `5e3341c12bd84f30f19072cefa590f4499c36c38` と42filefreeze、runner、independent JW/Padé/phase/cost/policy checker、35人工fixture tests、identity-only preflight、未発行targetを保存。実入力array decode/registered eig/RDM/expectation/PF/compile0、旧27/37再実行0、attempt0/認可発行0。旧480files/154manifest/non-result/globalFAIL/root138pathsを保護した。
 
 [準備資料](../qc_onebody_repartition_h_boundary_preparation_v1_20261015.md)、[別実行承認引継ぎ](../qc_onebody_repartition_h_boundary_execution_handoff_v1_20261015.md)。GitHub公開・再取得後Mandatory STOP、次は新scopeの別明示one-shot実行承認。同じ詳細科学レビューをsource変更だけで繰り返さない。C1–C4/第二候補/TrackA–BとN1STOP/N2HOLD/N3CLOSED/THRIFT現template終了を自動再開しない。
+
+## GitHub公開・再取得
+
+payload `9745d9a70f553c77c41c42db7e0497df5be37b0e` をGitHubから再取得し、41変更blobs/1,730,128bytes、42freeze/480保護/9親入力/原文43818bytes、旧154manifest/non-result/globalFAIL/root138pathsを照合した。source/contract/input不変、新科学0・承認発行0・attempt0。receiptとMandatory STOPを保存し、最終metadata commitも再取得する。次は固定one-shotへの別明示科学実行承認。

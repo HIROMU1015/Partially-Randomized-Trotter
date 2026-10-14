@@ -1,5 +1,10 @@
 # プロジェクト案内
 
+## 2026-10-15 h境界準備のGitHub照合完了・科学実行承認待ち
+
+payload `9745d9a70f553c77c41c42db7e0497df5be37b0e` をGitHubから独立再取得し、41変更blobs/1,730,128bytes・42freeze files/480旧protected files/9固定親入力files・原レビュー43,818bytesを照合した。[receipt](artifacts/qc_onebody_repartition_h_boundary_preparation_v1/2026-10-15/publication/receipt.json)。旧154manifest/non-result/global description FAIL/root138paths保持。35登録外testsとheader/source/SHA preflightだけで、実入力array decode・新eig/RDM/expectation/PF/compile・旧数値の新規集計0。source5e3341c1、contract/source/input不変、認可target未発行false、attempt消費0。
+準備完了・Mandatory STOP。次は固定H4・許容h境界契約への別明示one-shot実行承認。旧36-cell認可を流用せず、同じ完了科学レビューは原則再実施不要。旧結果/STOP、N1STOP/N2HOLD/N3CLOSED/THRIFT現template CLOSED・C1–C4/Track A/B/第二候補は維持。以下は履歴。
+
 ## 2026-10-15 一体再配分PF：h境界検証の準備・新科学実行未認可
 
 [受領科学レビュー原文](docs/reviews/quantum_chemistry_pf/qc_onebody_repartition_finite_step_pilot_v1_scientific_review_2026-10-15.md)、[h探索・branch・強対照・会計・caps](docs/research/qc_onebody_repartition_h_boundary_preparation_v1_20261015.md)、[別one-shot実行承認引継ぎ](docs/research/qc_onebody_repartition_h_boundary_execution_handoff_v1_20261015.md)、[contract](artifacts/qc_onebody_repartition_h_boundary_preparation_v1/2026-10-15/contract.json)、[source freeze](artifacts/qc_onebody_repartition_h_boundary_preparation_v1/2026-10-15/source_manifest.json)、[runner](scripts/run_qc_onebody_repartition_h_boundary_v1.py)、[独立checker](scripts/verify_qc_onebody_repartition_h_boundary_v1.py)、[人工35tests](tests/test_qc_onebody_repartition_h_boundary_v1.py)。
