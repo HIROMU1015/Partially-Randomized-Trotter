@@ -628,3 +628,8 @@ B0+Iの実compile費用は未測定。元登録集合の結果は不変で、主
 ## Track Aサーバー研究情報の暫定共有索引
 
 [共通入口](../../docs/research/track_a_shared_research_status.md)と`docs/research/track_a_server_inventory.md`から固定result/source/レビューへ辿れる。`scripts/resource_applicability/verify_track_a_shared_status.py`はGit blob/公開bytes・JSON単位・内部リンクの読取照合のみ。科学library/import/計算、H8操作を行わない。ローカル照合待ち。
+
+
+## 2026-10-15 Track A：H8 D0 driver／H6 native B0+I bridge
+
+[独立H8 driver/H6 bridgeの技術資料](../../docs/research/track_a_final_pre_review_implementation_20261015.md)。新実装はscripts配下にあり、trotterlib科学SOURCEは変更していない。既存D0純粋会計/native builder/loaderへfixed-source bindingで将来接続。人工41件PASSは実Hamiltonian/費用のcorrectnessや科学採択ではない。

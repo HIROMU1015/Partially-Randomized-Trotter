@@ -1182,3 +1182,8 @@ SOURCE d0726e946f89f8c30a08d383fb8ff48b363629ec / closure95。利用者の明示
 12新mock PASS、旧24/人工compile/campaign反復0。独立最終binding・private launcher差分PASS、保守的actual74127、chargebound17573199062Bで承認内。
 SOURCE無変更のartifact固定後、直前freshCPU/memory/PSI/OOM/FS/inode/quota/未使用roots/one-shotを合格して一度mapへ。実開始状態はprivate receiptへ別記録。
 [資料入口・承認・独立review・起動条件](docs/research/track_a_h4_production_resume02_20261011.md)。
+
+
+## 2026-10-15 Track A：H8 D0 driver／H6 native B0+I bridge
+
+[最終技術実装](docs/research/track_a_final_pre_review_implementation_20261015.md)／[科学判断handoff](docs/research/track_a_final_pre_review_handoff_20261015.md)。SOURCE60eeb51c…、独立bounded H8 driverとnative B0+I bridge、人工41件PASS。元科学SOURCE/結果/grant/ledger/venv不変、実値再会計・科学build/compile0。future契約false/CPU[]/未seal/commandnull、採択・起動は別承認、mandatory STOP。
