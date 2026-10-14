@@ -1,3 +1,5 @@
+> Track Bの[Parent allocation v2準備](../../docs/tracks/algorithm_codesign/parent_allocation_v2_owner_repair_source_preparation_20261015.md)は別namespaceのowner metadata修正のみ。共通library・科学条件は不変。
+
 > Track Bの[Parent allocation実行source](../trottertracks/algorithm_codesign/parent_experiment/README.md)は別namespace。共通library・旧adapter/sourceは保持。[実行準備報告](../../docs/tracks/algorithm_codesign/parent_allocation_execution_source_preparation_20261015.md)、登録比較は別承認待ち。
 
 > Track Bの[Parent allocation native bridge](../trottertracks/algorithm_codesign/parent_allocation_native.py)は別namespace。旧cache metadataとstrict phase/errorを接続し、登録sourceは変更しない。[Decision Packet](../../docs/tracks/algorithm_codesign/parent_allocation_scientific_design_decision_packet_20261014.md)。

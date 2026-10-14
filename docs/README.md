@@ -1,3 +1,5 @@
+> [Parent allocation v2 owner PID修正・実行準備](tracks/algorithm_codesign/parent_allocation_v2_owner_repair_source_preparation_20261015.md)：78登録外tests、科学契約不変、新namespace pending、mandatory STOP。
+
 > [Parent allocation v1技術停止・保存監査](tracks/algorithm_codesign/parent_allocation_v1_failed_execution_and_gpt_handoff_20261015.md)：初回key metadata衝突、合成/比較0、23 read-only checks PASS、marker消費済み、mandatory STOP。
 
 > [Parent allocation採択条件の実行source準備](tracks/algorithm_codesign/parent_allocation_execution_source_preparation_20261015.md)：固定契約・71登録外tests・preflight。登録評価0、別実行承認待ち、mandatory STOP。

@@ -95,7 +95,8 @@ def acquire(root,c,identity,inventory,writer,guard):
             guard.check()
             while next_index<len(fresh) and len(active)<c['caps']['workers']:
                 key=fresh[next_index];index=next_index;next_index+=1
-                job=dict(**identity,key=key['key'],ratio=key['ratio'],parent_pid=os.getpid(),job_index=index)
+                # identity carries the outer owner PID; this key belongs to the ledger.
+                job=dict(identity,key=key['key'],ratio=key['ratio'],parent_pid=os.getpid(),job_index=index)
                 path=jobs/f'key_{index:03d}.json';atomic_json(path,job)
                 out=path.with_suffix('.stdout.log').open('xb');err=path.with_suffix('.stderr.log').open('xb')
                 env=dict(os.environ,PYTHONPATH=str(Path(root)/'src'),PYTHONDONTWRITEBYTECODE='1',

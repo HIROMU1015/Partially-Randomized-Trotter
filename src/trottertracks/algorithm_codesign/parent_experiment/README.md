@@ -1,3 +1,5 @@
+> [v2 owner PID修正準備](../../../../docs/tracks/algorithm_codesign/parent_allocation_v2_owner_repair_source_preparation_20261015.md)。現在launchはv2 contract/namespace、authority pending。v1結果・旧source blobsは保護。
+
 # Parent allocation fixed experiment source
 
 採択済み科学条件は[GPT原本](../../../../docs/research/track_b_parent_allocation_scientific_design_review_20261014.md)。

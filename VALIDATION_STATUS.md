@@ -1,3 +1,5 @@
+> **2026-10-15 Parent allocation v2 source:** owner job修正、新7＋既存71の78 tests PASS、science0、旧v1/STOP/marker保持。 [限定差分・契約・preflight](docs/tracks/algorithm_codesign/parent_allocation_v2_owner_repair_source_preparation_20261015.md)。READY_FOR_SEPARATE_ONE_SHOT_AUTHORIZATION、mandatory STOP。
+
 > **2026-10-15 Parent allocation v1:** PARENT_ALLOCATION_TECHNICAL_INCONCLUSIVE。source接続TypeError、合成0/比較0、内外exit/status整合、23 saved-only checks PASS。[報告](docs/tracks/algorithm_codesign/parent_allocation_v1_failed_execution_and_gpt_handoff_20261015.md)。原classification保持、retry0、mandatory STOP。
 
 > **2026-10-15 Parent allocation science-source preparation:** 新45＋既存native26の登録外71 tests PASS、zero-compute source/input/runtime照合。登録評価・新合成・authority/marker0。 [技術報告](docs/tracks/algorithm_codesign/parent_allocation_execution_source_preparation_20261015.md)。local evidence、別one-shot承認待ち、mandatory STOP。
