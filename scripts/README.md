@@ -1,5 +1,12 @@
 # scripts 索引
 
+## 2026-10-14 第一候補の最終方法差監査：同情報compact BCHへ還元・Phase A STOP
+
+[方法差・入力/出力・演算/情報会計](../docs/research/qc_ground_pf_final_method_difference_audit_v1_20261014.md)、[GPT科学判断への最終引継ぎ](../docs/research/qc_ground_pf_final_method_difference_gpt_handoff_v1_20261014.md)、[scope/status](../artifacts/qc_ground_pf_final_method_difference_audit_v1/2026-10-14/method_status.json)、[固定9参照identity](../artifacts/qc_ground_pf_final_method_difference_audit_v1/2026-10-14/reference_identity.json)、[直接一次本文](../artifacts/qc_ground_pf_final_method_difference_audit_v1/2026-10-14/literature_registry.json)。
+基準c0bb4350。同じground恒等式/1-RDM/再配分自由度/cache/precisionを使えるgrouped BCH対照B*を、expectation前の未変更tail除去・one-body簡約・matrix係数収集として具体化。先頭A/隣接density Bの現1-RDM表と同じ情報・演算列・O(n³) arithmetic/O(n²)追加storage・候補reuseに達する。REDUCES_TO_KNOWNはこの固定equal-access生成classの技術所見で、初出性/理論記録価値/研究終了の科学判断ではない。
+d0/γ取得費用は同じC0/Cγとして戻し、無料にしない。旧式/27保存検査のsupportを保持し、再証明/再実行0。独立した生成差が残らないPhase A条件で終了、Phase B/physical再分析/pilot準備・freeze・実行/第二候補へ進まない。旧未認可pilot案はbyte不変。
+新H/eig/RDM/数値expectation/optimizer/PF/compile/T合成/sampling/保存数値集計・新形式program・production/GPT科学レビュー0。404旧files/148旧manifest records/non-result fields/global description FAIL/root135pathsを保護。N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了、Track A/BとC1–C4の旧source/results/認可/STOP不変。公開・GitHub照合後Mandatory STOP、同じ第一候補の監査を反復せずGPT研究継続判断の別明示開始承認へ戻す。以下は履歴。
+
 [厳密ground・一体再配分の技術監査公開・再取得](../artifacts/qc_exact_ground_pf_repartition_preaudit_v1/2026-10-14/publication/receipt.json)：payload `6711a709ad13144972474effe1faf3933cd7f7fb`、26変更blobs/387保護files/固定3参照/受領原文38821bytes一致。旧146manifest records/non-result fields/global FAIL/root135paths保全。形式27checksの保存参照のみ、新science/数値expectation/最適化/PF性能/compile/GPTレビュー0。Mandatory STOP、次はGPT重要科学判断の別開始承認。
 
 ## 2026-10-14 厳密ground・一体再配分：第一候補の限定技術監査
