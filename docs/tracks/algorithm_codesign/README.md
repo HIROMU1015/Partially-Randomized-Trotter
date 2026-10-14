@@ -1,3 +1,5 @@
+> **parent配分技術監査（2026-10-14）**：[報告](parent_allocation_technical_audit_20261014.md)／[比較草案](parent_allocation_minimal_comparison_draft_20261014.md)。13登録外形式tests、root samplerと端点phaseの接続要件。新source・science authorityなし、native価値未取得、mandatory STOP。以下は履歴。
+
 > **現在の引継ぎ（2026-10-14）：[G系列〜D3研究ノート](../../research/研究ノート/2026-10-14_track_b_return_aggregation_G_D_research_note.md)。** 最新GPT科学レビューは完了、現在のD1〜D3数値探索は一区切り。構成・生成法と条件付き資源評価を保持。旧分類・source・marker・STOP不変、追加計算／レビューの自動開始なし、mandatory STOP。以下は履歴。
 
 > **D1〜D3一次文献照合（2026-10-14）：13 claimの固定証拠・既知原理・未確立部分を整理。8論文の関連本文を確認、旧G系列監査は参照のみ、新科学取得/再計算0。科学判断は未実施、mandatory STOP。** [引き継ぎ](d1_d3_prior_art_claim_evidence_and_gpt_handoff_20261014.md)。
