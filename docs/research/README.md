@@ -1,5 +1,11 @@
 # 研究計画資料
 
+## 2026-10-14 Track A ローカル照合・統合候補（未採択）
+
+server固定2298c4c…とローカル保存履歴を照合。265資料実体/93内容の所在・hash・scopeを整理し、M1/PM/AXと旧H6 STOP/export履歴を候補へ追加した。
+[統合候補](track_a_shared_research_status_candidate.md)、[差分](track_a_environment_sync_differences.md)、[local inventory](track_a_local_inventory.md)、[source/result参照](track_a_local_sync_reference_index.md)。
+server入口・科学原本・旧STOP/grantは不変。正式共通正本への採択なし、新科学計算/compile/sampling/H8変更/新grant0。公開後mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-06 H4 signal/compile INPUT_BOUND草案・容量不足STOP
 
 run02の6凍結入力へplanを結合し、source19/218 templates/compiler/run ID/outputを不変に保った。
