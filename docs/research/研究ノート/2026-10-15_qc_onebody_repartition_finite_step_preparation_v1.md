@@ -9,3 +9,9 @@ source19d5bd74、人工37tests PASS。real packから数値RDM/expectation/eigen
 [準備仕様](../qc_onebody_repartition_finite_step_preparation_v1_20261015.md)、[実行認可境界](../qc_onebody_repartition_finite_step_execution_handoff_v1_20261015.md)、[公開receipt](../../../artifacts/qc_onebody_repartition_finite_step_preparation_v1/2026-10-15/publication/receipt.json)。
 
 417旧files/150旧manifest/non-result/global FAIL/root137paths・旧science/source/認可/STOPを保持。N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了、C1–C4/Track A–B/第二候補を起動せず、公開照合後Mandatory STOP。次はこの固定一回の別明示実行承認。
+
+## 公開確認（2026-10-15追記）
+
+payload `fd44510328d8ab3068634a9906d40de16ca3ec43` を独立cacheへGitHub SSH depth3で再取得し、47変更blobs/1,859,892bytesをcommit/worktreeとbyte/SHA照合した。[receipt](../../../artifacts/qc_onebody_repartition_finite_step_preparation_v1/2026-10-15/publication/receipt.json)。source21files/旧417files/6固定参照/受領原文34,108bytes/150旧manifest records/non-result fields/global FAIL/root137pathsも一致。外部科学再現・current CIではない。
+
+実行前準備完了・Mandatory STOP。科学実行認可は未発行false、attempt未消費、実入力の新eig/RDM/expectation/PF/compile0。source/contract/inputは変更せず、次は固定one-shotの別明示実行承認。

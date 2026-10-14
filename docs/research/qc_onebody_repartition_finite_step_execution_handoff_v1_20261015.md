@@ -41,3 +41,9 @@ source preflightと37人工testsは通過しているが、今回のreal packに
 得られないのは、最適h/回路、truthなしprecision選択、有限shotのRDM取得法、T/depth/全confidence費用、実分子移送、独立新規性、全QPE/RPE総資源の優位である。leadingだけの改善は成功としない。bias floor/branch/numerical/eligible不足はUNDETERMINED、negativeも固定scopeの結果として保存し、追加scanで救済しない。
 
 重要な新結果の継続/縮小/終了/第二候補への移行判断は、結果取得後に別開始承認を受けたGPTへ戻す。現在は同じ設計の再レビュー不要。N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了、Track A/B、C1–C4、既存FAIL・認可・STOPを維持する。
+
+## 公開確認（2026-10-15追記）
+
+payload `fd44510328d8ab3068634a9906d40de16ca3ec43` を独立cacheへGitHub SSH depth3で再取得し、47変更blobs/1,859,892bytesをcommit/worktreeとbyte/SHA照合した。[receipt](../../artifacts/qc_onebody_repartition_finite_step_preparation_v1/2026-10-15/publication/receipt.json)。source21files/旧417files/6固定参照/受領原文34,108bytes/150旧manifest records/non-result fields/global FAIL/root137pathsも一致。外部科学再現・current CIではない。
+
+実行前準備完了・Mandatory STOP。科学実行認可は未発行false、attempt未消費、実入力の新eig/RDM/expectation/PF/compile0。source/contract/inputは変更せず、次は固定one-shotの別明示実行承認。

@@ -75,7 +75,7 @@ targetは10^-4、10^-5 Ha。予算をdeterministic/statistical/synthesis/informa
 
 資源部はcompileを行わない。spatial Givensをspin二つへ埋め込み、fermionic parity linksを記録する。固定Nによるscalarの抽出、scalar-only fragmentのbasis gate省略、隣接relative-basis共有、repeated-query境界の厳密fusionを全対照に適用する。densityのlinear/pair phase、known controlled scalarを数える。
 
-価格はcontrolled Givens/linear phase/pair phaseについてP1=(4,1,2)、P2=(8,1,4)の**登録価格仮説**。Givens価格にそのparity構造を含める。このvectorは実CX/T/depthのcompile値でも、最適回路の下界でもない。小角のT合成・精度依存のgate elisionはbenchmarkしない。
+価格はcontrolled Givens/linear phase/pair phaseについてP1=(4,1,2)、P2=(8,1,4)の**登録価格仮説**。Givens価格にそのparity構造を含める。このvectorは実CX/T/depthのcompile値でも、最適回路の下界でもない。`controlled_Givens` fieldはcontrolled wrapper内のGaussian primitiveの価格単位で、全basis gateへcontrolを付けることを義務化するものではない。conjugationのbasisをuncontrolledにしてcontrol-0側をuncomputeする合法な実装も対照から除外しない。その実単価や小角のT合成・精度依存のgate elisionはbenchmarkしない。
 
 coherent query数は `ceil(π/(h ε_stat))` のHeisenberg型会計仮説。Richardsonは二つの実験の費用を加え、|weight|和5/3をprecision allocationへ戻す。overlapに由来する入力ground branch抽選のrepeat数も別に戻す。QPE/RPEの具体的統計手順・全confidence overheadを構成した定理ではない。log/depth/ancilla/測定/state情報をゼロとした最終total-cost claimへ拡張しない。
 
@@ -118,3 +118,9 @@ libraryは [pilot kernels](../../src/trottertracks/ground_pf_repartition/qc_oneb
 旧417files、旧150manifest records/non-result fields、global description欠落FAIL、元worktree137paths、受領原文34,108bytesを保持する。N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了、C1–C4、Track A/B、第二候補を変更・再実行しない。global validator全体を通過したとはしない。
 
 GitHub commit/push・再取得byte/SHA照合後Mandatory STOP。**次はこの固定one-shotの別明示実行承認であり、同じ科学レビューの再実施ではない。** 実行認可後のデータ取得・独立監査・公開も一回で停止し、その重要科学結果の解釈はGPTの別開始承認後に戻す。
+
+## 公開確認（2026-10-15追記）
+
+payload `fd44510328d8ab3068634a9906d40de16ca3ec43` を独立cacheへGitHub SSH depth3で再取得し、47変更blobs/1,859,892bytesをcommit/worktreeとbyte/SHA照合した。[receipt](../../artifacts/qc_onebody_repartition_finite_step_preparation_v1/2026-10-15/publication/receipt.json)。source21files/旧417files/6固定参照/受領原文34,108bytes/150旧manifest records/non-result fields/global FAIL/root137pathsも一致。外部科学再現・current CIではない。
+
+実行前準備完了・Mandatory STOP。科学実行認可は未発行false、attempt未消費、実入力の新eig/RDM/expectation/PF/compile0。source/contract/inputは変更せず、次は固定one-shotの別明示実行承認。

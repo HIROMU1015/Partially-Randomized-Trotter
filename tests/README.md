@@ -1,5 +1,10 @@
 # tests の役割
 
+## 2026-10-15 finite-step準備のGitHub照合・Mandatory STOP
+
+payload `fd44510328d8ab3068634a9906d40de16ca3ec43` をGitHubから再取得し、47変更blobs/1,859,892bytes、固定source21files/417保護files/6参照/受領原文34,108bytesを照合した。[receipt](../artifacts/qc_onebody_repartition_finite_step_preparation_v1/2026-10-15/publication/receipt.json)。source19d5bd74、contract/source/inputは不変。旧150manifest/non-result/global FAIL/root137pathsを保持。人工37tests・identity-only preflightの技術証拠であり、分子eig/RDM/expectation/PF/compileの新規取得0、承認発行0、attempt消費0。
+準備を完了しMandatory STOP。次は一件H4・固定36PF cells/監査caps・attempt1/retry0の別明示科学実行承認。同じGPT設計レビューは不要。N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了・Track A/B/C1–C4/第二候補/旧結果・認可・STOP不変。以下は履歴。
+
 ## 2026-10-15 一体再配分PF：有限step一件pilotの準備・科学実行未認可
 
 [library](../src/trottertracks/ground_pf_repartition/qc_onebody_repartition_pilot_v1.py)、[runner](../scripts/run_qc_onebody_repartition_pilot_v1.py)、[独立checker](../scripts/verify_qc_onebody_repartition_pilot_v1.py)、[synthetic tests](test_qc_onebody_repartition_pilot_v1.py)。
