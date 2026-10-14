@@ -1,5 +1,11 @@
 # scripts 索引
 
+## 2026-10-15 H4 h境界：収集完了・独立監査NUMERICAL_ALLOWANCE停止
+
+[実行結果・未検証値](../docs/research/qc_onebody_repartition_h_boundary_v1_execution_results_20261015.md)、[技術停止引継ぎ](../docs/research/qc_onebody_repartition_h_boundary_v1_audit_stop_handoff_20261015.md)、[今回の別認可](../artifacts/qc_onebody_repartition_h_boundary_execution_v1/2026-10-15/authorization.json)、[一次JSON](../artifacts/qc_onebody_repartition_h_boundary_v1/2026-10-15/attempt_1/raw.json)、[audit stop](../artifacts/qc_onebody_repartition_h_boundary_v1/2026-10-15/attempt_1/independent_audit.json)、[summary](../artifacts/qc_onebody_repartition_h_boundary_execution_v1/2026-10-15/saved_results_summary.json)。
+linear H4/1.00Å/STO-3G/保存DF rank12・generation順全12density、Nα=Nβ=2/36dim、v1 shift/seal/state/frame/leading不変、PR L_D/delta変更なし。source5e3341c1/準備361cf233。共通比較h0.0027451193..1Ha^-1、比較381/補助含762点、4572cells（cached12）、新PF/Schur各4560、4572methods/18288cost rowsの収集完了。producerはNO_UNIFORM_REGISTERED_COMPONENT_GAINを保存したが、独立checker一回はNUMERICAL_ALLOWANCEで停止、数値監査未完了。新性能値はUNVALIDATED_PRODUCER_ONLY、科学的肯定/否定判断を確定しない。
+失敗cell・双方allowance・partialcounterはhandlerが保存せずUNKNOWN。静的source差を仮説として記録、追加数値diagnostic/再実行/許容差変更0。両attempt1消費済み/retry0、新H-eig/RDM/selector/optimizer/compile0。515旧files/42source/156旧manifest/non-result/globalFAIL/root138paths保持。N1STOP/N2HOLD/N3CLOSED/THRIFT現template CLOSED、TrackA–B/C1–C4/第二候補は維持。公開・GitHub照合後Mandatory STOP。次のchecker修正/限定診断は別scope、数値再監査には別明示承認が必要。新GPT科学レビュー・採択/終了判断は行っていない。以下は履歴。
+
 ## 2026-10-15 h境界準備のGitHub照合完了・科学実行承認待ち
 
 payload `9745d9a70f553c77c41c42db7e0497df5be37b0e` をGitHubから独立再取得し、41変更blobs/1,730,128bytes・42freeze files/480旧protected files/9固定親入力files・原レビュー43,818bytesを照合した。[receipt](../artifacts/qc_onebody_repartition_h_boundary_preparation_v1/2026-10-15/publication/receipt.json)。旧154manifest/non-result/global description FAIL/root138paths保持。35登録外testsとheader/source/SHA preflightだけで、実入力array decode・新eig/RDM/expectation/PF/compile・旧数値の新規集計0。source5e3341c1、contract/source/input不変、認可target未発行false、attempt消費0。

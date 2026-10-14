@@ -1,0 +1,19 @@
+{
+  "status": "INDEPENDENT_AUDIT_FAILED_NO_RETRY",
+  "reason": "NUMERICAL_ALLOWANCE",
+  "producer_exit_code": 0,
+  "checker_exit_code": 2,
+  "failed_check_source": "src/trottertracks/ground_pf_repartition/qc_onebody_repartition_h_boundary_checker_v1.py:64",
+  "failed_predicate": "abs(saved_numerical_allowance - independently_recomputed_allowance) < 1e-10",
+  "failed_cell_key": null,
+  "saved_allowance_at_failure": null,
+  "recomputed_allowance_at_failure": null,
+  "missing_diagnostics_reason": "Frozen exception handler saves status/reason only;does not save cell key,counter or local computed allowance",
+  "static_source_observation": "Producer allowance uses its spectral/cached U;checker allowance uses independent Pade U with saved eigenpairs. Both include residual/defect/orthogonality/h and circular cluster spread. This observation is a possible source of discrepancy,not a proved root cause.",
+  "root_cause": "UNDETERMINED_WITHIN_AUTHORIZED_FIXED_ATTEMPT",
+  "new_numeric_debug_calls": 0,
+  "audit_or_producer_retry": 0,
+  "frozen_source_or_tolerance_changed": false,
+  "scientific_results_status": "UNVALIDATED_PRODUCER_ONLY",
+  "mandatory_stop": true
+}
