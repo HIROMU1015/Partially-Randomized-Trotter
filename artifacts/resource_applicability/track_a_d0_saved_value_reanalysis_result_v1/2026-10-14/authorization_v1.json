@@ -1,0 +1,111 @@
+{
+  "schema_version": "track_a_d0_user_authorization_v1",
+  "approved_by_user": true,
+  "runtime_authorization": true,
+  "scope": "D0_SAVED_SCALAR_ONE_SHOT",
+  "analysis_source": "fa75c7997e135da7b7a0c4e23949e47252bd7a2e",
+  "review_commit": "b941565835c539fc414d3a75dcb8ca439561a4d5",
+  "contract_sha256": "8d9e908322aaf115861108fa698b13a994a2f0a676e1a48f80a2dbf77fd4a311",
+  "input_receipts": [
+    {
+      "alias": "h4_signals.json",
+      "bytes": 237007,
+      "sha256": "81adabc515701b28d0d55ea5c31a6de82747ddc37789ccce1dbd359add017045"
+    },
+    {
+      "alias": "h4_wrappers.csv",
+      "bytes": 182961,
+      "sha256": "e9a97c090f4788bba8174bd5d14510a640d1d0ca9a6db3c212e84a7d7a429776"
+    },
+    {
+      "alias": "h4_old_map.json",
+      "bytes": 15170,
+      "sha256": "2ecfd9a838327d1092ec6d735c3cc9dddc8634969aec20c5da1aaa00cdbd7955"
+    },
+    {
+      "alias": "h6_exploration_wrappers.csv",
+      "bytes": 472642,
+      "sha256": "3fd1148500d6d29976cf137af65de1420e081571b793ba657e012137d5e1a790"
+    },
+    {
+      "alias": "h6_exploration_old_map.json",
+      "bytes": 1904557,
+      "sha256": "e97dd2b6a77248c864b3c923ba794eab9a4e725cd3f771d3863090ac016d0e99"
+    },
+    {
+      "alias": "h6_confirmation_wrappers.csv",
+      "bytes": 160070,
+      "sha256": "fdac5a93ddcf122e6a4e1fc63eefa4cc527cce25756c2129f549f8b37a1bbb66"
+    },
+    {
+      "alias": "h6_confirmation_old_map.json",
+      "bytes": 629718,
+      "sha256": "b591fb061e11f0502f3a09e253f79a05b714deff95b05548841e6cbf9781cca0"
+    },
+    {
+      "alias": "h6_signals.json",
+      "bytes": 1382011,
+      "sha256": "b9f6cb3dc1a168ddc409833c78a617a7ddd05a3a41e0665e9dec47346d516dfe"
+    }
+  ],
+  "profile_path": "artifacts/resource_applicability/track_a_d0_saved_value_preflight/2026-10-14/d0_analysis_profile_v1.json",
+  "runtime_profile_sha256": "3f694d31b17adad240bffd2c4611df70711afad4b54e1744b3948d9971e35ecd",
+  "resource_limits": {
+    "status": "PROPOSED_NOT_AUTHORIZATION",
+    "processes": 1,
+    "threads": 1,
+    "cpu_cores_simultaneously": 1,
+    "affinity_policy": "no affinity change; scheduler under inherited mask; no taskset",
+    "allowed_cpus": [],
+    "address_space_bytes": 536870912,
+    "rss_bytes": 268435456,
+    "wall_seconds": 300,
+    "cpu_seconds": 240,
+    "output_bytes": 33554432,
+    "log_terminal_reserve_bytes": 2097152,
+    "maximum_output_files": 8,
+    "new_inodes_reserved": 64,
+    "fresh_available_bytes": 134217728,
+    "fresh_available_inodes": 128,
+    "fresh_memory_available_bytes": 2147483648,
+    "input_bytes": 4984136,
+    "input_file_cap_bytes": 16777216,
+    "wrapper_csv_row_cap": 4096,
+    "block_assumption_bytes": 4096,
+    "block_inode_accounting": "32MiB payload +2MiB logs/terminal +16MiB optional input copy +1MiB block/directory/lock overhead +77MiB reserve =128MiB fresh capacity",
+    "temporary_strategy": "stream JSON directly to exclusive output; retain partial on STOP; no temp/final duplicate; no /tmp",
+    "quota_policy": "current mount rw,relatime: quota not advertised; if enabled later, STOP pending read-only quota headroom receipt",
+    "observation": "host plus own visible cgroup ancestors read-only; no worker/observer process",
+    "pressure_gate": "host full avg10 <1%; all visible own cgroup full avg10=0",
+    "oom_gate": "host and own visible ancestor OOM counters unchanged from baseline; historical nonzero baseline not fabricated as new OOM",
+    "cleanup": "one foreground analysis process; no children; normal file contexts; retain one-shot marker/output on completion or failure",
+    "automatic_retry": false,
+    "new_science_calls": 0,
+    "scientific_ledger_consumption": 0,
+    "carry_reset_or_refund": false
+  },
+  "exclusive_output": "/home/AbeHiromu/projects/h4-handoff-evidence/20261015/d0-reanalysis-one-shot-01/output",
+  "one_shot_marker": "/home/AbeHiromu/projects/h4-handoff-evidence/20261015/d0-reanalysis-one-shot-01/output.oneshot",
+  "operational_driver_sha256": "a9ef060f1daf09b8aa13545efb5abe891dc030d7bb55c428da5b50dd24130c10",
+  "operational_driver_purpose": "uses immutable SOURCE API; user-requested global A then B then C; no formula/source/contract change",
+  "user_authorization": {
+    "kind": "EXPLICIT_USER_ATTACHMENT",
+    "attachment_sha256": "a6c3be08bb348772db67c8aa6405c0c7c10ba97482a8bf254a5f2ab5f96b6a7e",
+    "statement": "私は、固定D0 saved-scalar reanalysisを指定SOURCE・8入力・資源・STOP条件で1回だけ実行することを明示承認",
+    "requested_phase_gate": "ALL_PHASE_A_PASS_BEFORE_B_C",
+    "date_jst": "2026-10-15"
+  },
+  "STOP_conditions": [
+    "separate approval absent",
+    "source/Python/input SHA mismatch",
+    "original saved accounting mismatch",
+    "pair/phase/compiler/sample-count mismatch",
+    "nonfinite or unsafe integer conversion",
+    "capacity/inode/quota/headroom/pressure/OOM/RSS/AS/CPU/wall/output cap",
+    "output/one-shot marker already exists"
+  ],
+  "automatic_retry": false,
+  "next_stage_authorized": false,
+  "H8_included": false,
+  "new_science_calls": 0
+}

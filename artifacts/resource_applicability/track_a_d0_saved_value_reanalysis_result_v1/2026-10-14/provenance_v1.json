@@ -1,0 +1,214 @@
+{
+  "schema": "track_a_d0_reanalysis_result_v1",
+  "analysis_source": "fa75c7997e135da7b7a0c4e23949e47252bd7a2e",
+  "review_commit": "b941565835c539fc414d3a75dcb8ca439561a4d5",
+  "contract_sha256": "8d9e908322aaf115861108fa698b13a994a2f0a676e1a48f80a2dbf77fd4a311",
+  "authorization_sha256": "d9f5250150733e45f288b43864c178514cc189a533be14a029be04a35dc0307a",
+  "operational_driver_sha256": "a9ef060f1daf09b8aa13545efb5abe891dc030d7bb55c428da5b50dd24130c10",
+  "input_receipts": [
+    {
+      "alias": "h4_signals.json",
+      "bytes": 237007,
+      "sha256": "81adabc515701b28d0d55ea5c31a6de82747ddc37789ccce1dbd359add017045"
+    },
+    {
+      "alias": "h4_wrappers.csv",
+      "bytes": 182961,
+      "sha256": "e9a97c090f4788bba8174bd5d14510a640d1d0ca9a6db3c212e84a7d7a429776"
+    },
+    {
+      "alias": "h4_old_map.json",
+      "bytes": 15170,
+      "sha256": "2ecfd9a838327d1092ec6d735c3cc9dddc8634969aec20c5da1aaa00cdbd7955"
+    },
+    {
+      "alias": "h6_exploration_wrappers.csv",
+      "bytes": 472642,
+      "sha256": "3fd1148500d6d29976cf137af65de1420e081571b793ba657e012137d5e1a790"
+    },
+    {
+      "alias": "h6_exploration_old_map.json",
+      "bytes": 1904557,
+      "sha256": "e97dd2b6a77248c864b3c923ba794eab9a4e725cd3f771d3863090ac016d0e99"
+    },
+    {
+      "alias": "h6_confirmation_wrappers.csv",
+      "bytes": 160070,
+      "sha256": "fdac5a93ddcf122e6a4e1fc63eefa4cc527cce25756c2129f549f8b37a1bbb66"
+    },
+    {
+      "alias": "h6_confirmation_old_map.json",
+      "bytes": 629718,
+      "sha256": "b591fb061e11f0502f3a09e253f79a05b714deff95b05548841e6cbf9781cca0"
+    },
+    {
+      "alias": "h6_signals.json",
+      "bytes": 1382011,
+      "sha256": "b9f6cb3dc1a168ddc409833c78a617a7ddd05a3a41e0665e9dec47346d516dfe"
+    }
+  ],
+  "conditions": {
+    "H4_NATIVE_FIXED16": {
+      "geometry_angstrom": 1.0,
+      "basis": "sto-3g",
+      "T": 0.8,
+      "DF_rank": 12,
+      "DF_policy": "legacy explicit rank12 snapshot; not tol-policy equivalent",
+      "hamiltonian_sha256": "de7a549238e3a21f15a84018bef28440c345b31030282c01cf874f3d1d212424",
+      "state_sha256": "31e63b0104126c85136ee173f1dce7642aee2d272924e70e8b120ac340ab45bd",
+      "snapshot_sha256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a",
+      "science_source": "217c971dd537b1cc7fbc13742bc0f6c263ff7f45",
+      "result_commit": "0f96a2e45ba58bd916508e1b1f32e6ff1ff65f41",
+      "signal_alias": "h4_signals.json",
+      "wrapper_alias": "h4_wrappers.csv",
+      "old_map_alias": "h4_old_map.json",
+      "primary_phase": "fixed_anchor_panel",
+      "point_rule": "mean_paired_totals",
+      "control": "symmetric_directional",
+      "gaussian_lowering": "structured native number-conserving lowering",
+      "compiler": "Qiskit1.3.0 rz,sx,x,cx opt1 seed17 no topology",
+      "numerical_kind": "EMPIRICAL",
+      "numerical_certified": false,
+      "u_policy": "saved allowance values; floor1e-12 safety10 roundoff64; maximum u/headroom .01",
+      "alpha_axis": 0.025,
+      "wrappers": 532,
+      "primary_wrappers": 528,
+      "paired_groups": 264,
+      "compiler_hashes": [
+        "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b"
+      ]
+    },
+    "H6_EXPLORATION92": {
+      "geometry_angstrom": 1.0,
+      "basis": "sto-3g",
+      "T": 0.8,
+      "DF_rank": 19,
+      "DF_policy": "tol1e-8 cutoff0 signed generation-weighted projection",
+      "hamiltonian_sha256": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+      "state_sha256": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+      "snapshot_sha256": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+      "science_source": "5a903aea2492c2d211c1e15e7737df0d50694c12",
+      "execution_source": "78a39051d8b6d41c33d592ecfe172f8824adfaeb",
+      "result_commit": "df99d6ee28942df8d12aac3c4db7cd202df55d77",
+      "signal_alias": "h6_signals.json",
+      "wrapper_alias": "h6_exploration_wrappers.csv",
+      "old_map_alias": "h6_exploration_old_map.json",
+      "primary_phase": "exploration",
+      "point_rule": "sum_axis_products",
+      "control": "symmetric_directional",
+      "gaussian_lowering": "structured native number-conserving lowering",
+      "compiler": "Qiskit1.3.0 rz,sx,x,cx opt1 seed17 no topology",
+      "numerical_kind": "EMPIRICAL",
+      "numerical_certified": false,
+      "u_policy": "saved allowance values; floor1e-12 safety10 roundoff64; maximum u/headroom .01",
+      "alpha_axis": 0.025,
+      "wrappers": 1188,
+      "primary_wrappers": 1184,
+      "paired_groups": 592,
+      "compiler_hashes": [
+        "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b"
+      ]
+    },
+    "H6_CONFIRMATION_UNION8": {
+      "geometry_angstrom": 1.0,
+      "basis": "sto-3g",
+      "T": 0.8,
+      "DF_rank": 19,
+      "hamiltonian_sha256": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+      "state_sha256": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+      "snapshot_sha256": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+      "science_source": "87b6b9f46b7e8ba9abe132ee21478c114b6f46f7",
+      "result_commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+      "signal_alias": "h6_signals.json",
+      "wrapper_alias": "h6_confirmation_wrappers.csv",
+      "old_map_alias": "h6_confirmation_old_map.json",
+      "deterministic_baseline_wrapper_alias": "h6_exploration_wrappers.csv",
+      "primary_phase": "confirmation",
+      "point_rule": "sum_axis_products",
+      "confirmation_ids": [
+        "B2_p5_q1_2nd_r4_K2",
+        "B2_p5_q1_2nd_r4_K4",
+        "B2_p5_q2_2nd_r4_K2",
+        "B2_p5_q2_2nd_r4_K4",
+        "B2_p5_q4_2nd_r4_K2",
+        "B2_p5_q4_2nd_r4_K4",
+        "B2_p5_q8_2nd_r2_K2",
+        "B2_p5_q8_2nd_r2_K4"
+      ],
+      "selection_digest": "dace7b98e66ca2f0c166eb9a234d2ca97b3500ab75233996c5bf512e145f1019",
+      "baseline_note": "B0/B1 reuse exploration deterministic wrappers only; never B2 exploration samples",
+      "control": "symmetric_directional",
+      "gaussian_lowering": "structured native number-conserving lowering",
+      "compiler": "Qiskit1.3.0 rz,sx,x,cx opt1 seed17 no topology",
+      "numerical_kind": "EMPIRICAL",
+      "numerical_certified": false,
+      "u_policy": "saved allowance values; floor1e-12 safety10 roundoff64; maximum u/headroom .01",
+      "alpha_axis": 0.025,
+      "wrappers": 512,
+      "primary_wrappers": 512,
+      "paired_groups": 256,
+      "compiler_hashes": [
+        "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b"
+      ]
+    }
+  },
+  "runtime_profile_sha256": "3f694d31b17adad240bffd2c4611df70711afad4b54e1744b3948d9971e35ecd",
+  "global_phase_A_gate": "ALL_THREE_SCOPES_PASS_BEFORE_B_C",
+  "fresh_admission": {
+    "effective_available_bytes": 501544095744,
+    "host_full_psi_avg10": 0.0,
+    "host_oom_kill": 1,
+    "cgroups": [
+      {
+        "path": "/sys/fs/cgroup/user.slice/user-30038.slice/session-108384.scope",
+        "full_psi_avg10": 0.0,
+        "events": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0
+        }
+      },
+      {
+        "path": "/sys/fs/cgroup/user.slice/user-30038.slice",
+        "full_psi_avg10": 0.0,
+        "events": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0
+        }
+      },
+      {
+        "path": "/sys/fs/cgroup/user.slice",
+        "full_psi_avg10": 0.0,
+        "events": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 1,
+          "oom_group_kill": 0
+        }
+      }
+    ],
+    "quota_mount_options": "rw,relatime"
+  },
+  "wall_seconds": 2.22284316457808,
+  "cpu_seconds": 2.257039,
+  "peak_rss_bytes": 56774656,
+  "observations": 584,
+  "maximum_guard_interval_seconds": 0.39067395590245724,
+  "processes": 1,
+  "threads": 1,
+  "affinity_changed": false,
+  "new_science_calls": 0,
+  "H8_changes": 0,
+  "H8_included": false,
+  "new_independent_evidence": false,
+  "formal_winner_certified": false
+}

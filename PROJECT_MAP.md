@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-15 Track A D0 one-shot保存値再会計・完了STOP
+
+[結果・完全一致・6metric/P・終了監査](docs/research/track_a_d0_saved_value_reanalysis_result_20261014.md)。SOURCE fa75c799…、旧precision1,088/費用2,659件exact PASS後、5精度×factor1/10×6metric/Pを一度再会計。ε=.0005/P=0のPR/full-PF RZ点比はH4固定panel .429664、H6確認union8 .496333。未確認CX_depth/P候補と標本・政策差を明記。wall2.223秒/peak54.14MiB、exit0、SOURCE/入力/venv/他job/H8変更・新signal/trajectory/compile0、科学判断未採択・mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-14 Track A D0：保存scalar再会計の技術準備
 
 [入力・code・人工検査・実行契約の入口](docs/research/track_a_d0_saved_value_reanalysis_preflight_20261014.md)。H4 native fixed16／H6 exploration92／確認union8を分離し、ε=.0005・6指標・P感度を準備した。33限定人工tests PASS、SOURCE fa75c7997e135da7b7a0c4e23949e47252bd7a2e。実データの新再会計・新科学計算・H8変更・新grant0、別実行承認待ちSTOP。以下は各時点の履歴。
