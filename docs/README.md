@@ -768,3 +768,8 @@ H4 linear/STO-3G/DF12、T=0.8、二次DF-prefix PF/finite RTE、6距離の1,308�
 B0+Iの実compile費用は未測定。元登録集合の結果は不変で、主要claim変更の可能性という利用者停止条件に従いGPT判断へ戻す。
 原稿本体・A/C/Dの全面統合は未実施、新eigh/SCF/DF/state/量子signal/trajectory/build/compile0、H8/共有環境/他job変更0。
 [限定scalar解析と公開値照合の入口](research/track_a_h4_geometry_scalar_diagnostic_20261013.md)。本体science source/runnerは不変。
+
+
+## 2026-10-15 Track A：科学レビュー前の技術準備
+
+[技術入口](research/track_a_pre_review_technical_closure_20261015.md)／[科学判断handoff](research/track_a_pre_review_scientific_decision_handoff_20261015.md)／[比較matrix](research/track_a_pre_review_comparison_matrix_20261015.md)。native B0+I/H8 D0独立実装23人工検査PASS、H8保存6入力6,518,976Bのreceipt固定。rare compiled上界は未証明、必要な実装・科学判断・新数値runを区別。新科学/実再会計/compile/新grant/原稿改訂0、準備後STOP。

@@ -641,3 +641,8 @@ stdlib保存スカラー解析、Matplotlib表示、Fraction照合、bounded eve
 ## Track Aサーバー研究情報の暫定共有索引
 
 [共通入口](../docs/research/track_a_shared_research_status.md)と`docs/research/track_a_server_inventory.md`から固定result/source/レビューへ辿れる。`scripts/resource_applicability/verify_track_a_shared_status.py`はGit blob/公開bytes・JSON単位・内部リンクの読取照合のみ。科学library/import/計算、H8操作を行わない。ローカル照合待ち。
+
+
+## 2026-10-15 Track A：科学レビュー前の技術準備
+
+[native B0+I prototype](pre_review_native_b0i_prototype_v1.py)／[H8 D0 adapter](pre_review_h8_d0_adapter_v1.py)。科学module/runner/registryへ接続しないstdlib-only実装。frozen D02fileのSHAを保持、実H8解析entryは閉じる。[技術資料](../docs/research/track_a_pre_review_technical_closure_20261015.md)に23人工検査・SOURCE・入力索引・future未認可契約を記録。
