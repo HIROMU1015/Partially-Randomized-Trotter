@@ -1,3 +1,5 @@
+> [Parent allocation採択条件の実行source準備](tracks/algorithm_codesign/parent_allocation_execution_source_preparation_20261015.md)：固定契約・71登録外tests・preflight。登録評価0、別実行承認待ち、mandatory STOP。
+
 > [Parent allocation近接先行研究対応](tracks/algorithm_codesign/parent_allocation_prior_art_correspondence_20261014.md)：Euler/IS既知部分、SPS embedding、限定class差、7領域への判断材料。科学的採択・新計算なし、mandatory STOP。
 
 > [Parent allocation科学設計Decision Packet](tracks/algorithm_codesign/parent_allocation_scientific_design_decision_packet_20261014.md)：native/cache/guard接続と7未採択領域。26新規＋6影響tests PASS、科学実行0、mandatory STOP。

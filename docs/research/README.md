@@ -1,3 +1,5 @@
+> [Parent allocation採択済みGPT科学設計](track_b_parent_allocation_scientific_design_review_20261014.md)／[実行source準備](../tracks/algorithm_codesign/parent_allocation_execution_source_preparation_20261015.md)。科学実行は別承認までSTOP。
+
 # 研究計画資料
 
 このディレクトリには、DF部分ランダム化・有限RTE・RPE compiled cost研究の目的、背景、未解決点、解析手順および数値評価計画をまとめる。

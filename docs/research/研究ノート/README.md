@@ -1,3 +1,5 @@
+> [2026-10-15 Parent allocation採択条件のsource準備](2026-10-15_track_b_parent_allocation_execution_source_preparation.md)。
+
 > [2026-10-14 Parent allocation先行研究対応](2026-10-14_track_b_parent_allocation_prior_art_correspondence.md)：5論文の関連本文・厳密対応、priority未認定、mandatory STOP。
 
 > [2026-10-14 Parent allocation最終技術準備](2026-10-14_track_b_parent_allocation_final_technical_preparation.md)：互換性sourceとDecision Packet、科学条件未採択、mandatory STOP。

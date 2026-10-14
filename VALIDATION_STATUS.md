@@ -1,3 +1,5 @@
+> **2026-10-15 Parent allocation science-source preparation:** 新45＋既存native26の登録外71 tests PASS、zero-compute source/input/runtime照合。登録評価・新合成・authority/marker0。 [技術報告](docs/tracks/algorithm_codesign/parent_allocation_execution_source_preparation_20261015.md)。local evidence、別one-shot承認待ち、mandatory STOP。
+
 > **Track B Parent allocation近接先行研究調査（2026-10-14）：PRIOR_ART_CORRESPONDENCE_COMPLETE_NO_PRIORITY_ADJUDICATION。** [関連本文・対応式・分類](docs/tracks/algorithm_codesign/parent_allocation_prior_art_correspondence_20261014.md)。既存数学/実装testsは参照のみ、新tests/科学取得0、旧source/結果/分類/STOP保持。7科学領域未採択、mandatory STOP。以下は履歴。
 
 > **Track B Parent allocation最終技術準備（2026-10-14）：TECHNICALLY_READY_FOR_SCIENTIFIC_DESIGN_REVIEW。** [Decision Packet](docs/tracks/algorithm_codesign/parent_allocation_scientific_design_decision_packet_20261014.md)、26新規＋6影響tests PASS。runtime metadata一致、local off-domainのみ。旧source/results/STOP保持、科学条件未採択、新科学0、mandatory STOP。以下は履歴。

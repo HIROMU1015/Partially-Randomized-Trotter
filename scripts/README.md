@@ -1,3 +1,5 @@
+> [Parent allocation新zero-compute preflight](tracks/algorithm_codesign/preflight_parent_allocation_experiment.py)、[将来one-shot入口](tracks/algorithm_codesign/run_parent_allocation_one_shot.py)、[一key worker](tracks/algorithm_codesign/run_parent_allocation_synthesis_key.py)。[採択条件/71 tests/実行上限](../docs/tracks/algorithm_codesign/parent_allocation_execution_source_preparation_20261015.md)。pending authorityで登録処理を拒否、今回科学実行0。
+
 > Parent allocationの[最終技術準備](../docs/tracks/algorithm_codesign/parent_allocation_scientific_design_decision_packet_20261014.md)でnative/cache/guardを接続。既存preflightはmetadata専用のまま。科学worker/launch authorityは作成していない。
 
 > [Parent allocation zero-compute preflight](tracks/algorithm_codesign/preflight_parent_allocation.py)：JSON/bytes/SHAのみ、algorithm sourceをimportしない。常にscience execution不可。実行launch gateではない。[引き継ぎ](../docs/tracks/algorithm_codesign/parent_allocation_source_preparation_and_gpt_handoff_20261014.md)。
