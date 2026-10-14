@@ -7,10 +7,10 @@ import re
 from ..rte_development.evidence import digest, safe_relative
 from ..rte_development.launch import git
 
-PREFIX='artifacts/track_b_parent_allocation_experiment_source/2026-10-15/v3'
-CONTRACT=PREFIX+'/execution_contract_v3.json'
+PREFIX='artifacts/track_b_parent_allocation_experiment_source/2026-10-15/v4'
+CONTRACT=PREFIX+'/execution_contract_v4.json'
 # Set by source-preparation script after the adopted contract is complete.
-CONTRACT_SHA='adf2a75ecaadbd012f1ec20bb6b741979e5542614f151da6988d26938dfd82ad'
+CONTRACT_SHA='f76a10c6f04972494d5b7607a1a32f425f47c52b5bdb6083f8a983a827056e7d'
 
 
 def read_contract(root):

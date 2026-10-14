@@ -1,3 +1,5 @@
+> Track Bの[KKT訂正・S4補完](../../docs/tracks/algorithm_codesign/parent_allocation_s4_kkt_repair_and_supplement_preparation_20261015.md)は別namespace `parent_experiment/supplement.py`。共通libraryは不変、旧S3と全result保持、science承認待ち。
+
 > Track Bの[Parent allocation v3結果/監査](../../docs/tracks/algorithm_codesign/parent_allocation_v3_results_and_gpt_handoff_20261015.md)は別namespace。共通libraryは保持、科学的採否は未判断、mandatory STOP。
 
 > Track B実験のParent専用保存helperは `src/trottertracks/algorithm_codesign/parent_experiment/evidence.py`。既存共通writer/科学会計を保持する。

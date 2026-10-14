@@ -12,6 +12,12 @@ from ..rte_development.accounting import affine_relation
 
 
 def kkt_candidate(a, b, costs, *, iterations=128, root_bits=256, share_bits=64):
+    """Raw full-event T prices C, objective sum sqrt(C)*sqrt(z*z+b*b).
+
+    Bisect t=lambda**2 in (0,min C), using z=b*sqrt(t/(C-t)).
+    Every root enclosure is outward rational at the fixed root_bits. An
+    ambiguous interval never licenses a directional step or precision retry.
+    """
     a = rational(a); b = tuple(map(rational,b)); costs = tuple(map(rational,costs))
     if len(b) != len(costs) or not b:
         raise ValueError('one full-event frozen proxy price per child required')
@@ -21,17 +27,19 @@ def kkt_candidate(a, b, costs, *, iterations=128, root_bits=256, share_bits=64):
     if any(type(v) is not int or v < 1 for v in (iterations,root_bits,share_bits)):
         raise ValueError('fixed positive integer resolutions required')
     lo, hi = F(0), min(costs); performed=0
-    def enclosure(lam):
+    def enclosure(t):
         out=[]
         for bi,ci in zip(b,costs):
-            rt=root_interval(ci*ci-lam*lam,root_bits)
-            if rt.lo <= 0: raise ArithmeticError('fixed KKT root resolution exhausted')
-            out.append((lam*bi/rt.hi,lam*bi/rt.lo))
+            if not 0 <= t < ci: raise ArithmeticError('KKT squared multiplier outside pole')
+            rt=root_interval(t/(ci-t),root_bits)
+            out.append((bi*rt.lo,bi*rt.hi))
         return out
     for _ in range(iterations):
         mid=(lo+hi)/2; bounds=enclosure(mid); performed+=1
         lower=sum(v[0] for v in bounds); upper=sum(v[1] for v in bounds)
-        if upper < a: lo=mid
+        if lower == upper == a:
+            lo=hi=mid;break  # Exact certificate, not an overlap heuristic.
+        elif upper < a: lo=mid
         elif lower > a: hi=mid
         else:
             # Interval overlap does not license a directional update.
@@ -42,17 +50,22 @@ def kkt_candidate(a, b, costs, *, iterations=128, root_bits=256, share_bits=64):
     z_bounds=[(l[0],h[1]) for l,h in zip(at_lo,at_hi)]
     mid_bounds=enclosure((lo+hi)/2)
     mids=[(v[0]+v[1])/2 for v in mid_bounds]; total=sum(mids)
+    if total <= 0: raise ArithmeticError('fixed KKT root resolution exhausted')
     scale=1<<share_bits; exact=[v/total*scale for v in mids]
     counts=[v.numerator//v.denominator for v in exact]
     order=sorted(range(len(b)),key=lambda i:(-(exact[i]-counts[i]),i))
     for i in order[:scale-sum(counts)]: counts[i]+=1
     z=tuple(a*F(n,scale) for n in counts)
     distance=max(max(abs(zi-l),abs(zi-h)) for zi,(l,h) in zip(z,z_bounds))
+    lam_lo=root_interval(lo,root_bits).lo;lam_hi=root_interval(hi,root_bits).hi
+    if lam_hi*lam_hi >= min(costs):raise ArithmeticError('fixed KKT lambda enclosure crosses pole')
     return dict(status='RATIONAL_SURROGATE_CANDIDATE',allocation=z,
-                lambda_interval=(lo,hi),ideal_z_intervals=z_bounds,
+                lambda_squared_interval=(lo,hi),lambda_interval=(lam_lo,lam_hi),ideal_z_intervals=z_bounds,
                 L_infinity_distance_upper=distance,
                 simplex_residual=sum(z)-a,iterations_performed=performed,
                 fixed_share_denominator=scale,exact_KKT_optimum=False,
+                objective='sum sqrt(raw_event_T_C_i)*sqrt(z_i^2+b_i^2)',
+                solver_variable='t=lambda^2',
                 proxy_scope='old complete common root event T; no new-angle prices')
 
 

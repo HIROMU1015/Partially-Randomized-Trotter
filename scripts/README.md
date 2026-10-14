@@ -1,3 +1,5 @@
+> Parent allocation入口はS4補完contract/manifestを検査し、訂正KKT/halfway最大4構成のみを対象とする。pending authorityで拒否、登録実行0。[補完準備](../docs/tracks/algorithm_codesign/parent_allocation_s4_kkt_repair_and_supplement_preparation_20261015.md)、[zero-compute preflight](tracks/algorithm_codesign/preflight_parent_allocation_experiment.py)。以下は履歴。
+
 > Parent allocation v3は一回実行完了・marker消費済み。[結果/保存監査](../docs/tracks/algorithm_codesign/parent_allocation_v3_results_and_gpt_handoff_20261015.md)。追加runner起動は未認可、mandatory STOP。以下は準備履歴。
 
 > Parent allocationの既存one-shot入口はv3 sourceの固定contract/manifestを検査し、Parent専用buffered writerを使う。新S3/A3を固定後、一回実行・retry0・STOP。

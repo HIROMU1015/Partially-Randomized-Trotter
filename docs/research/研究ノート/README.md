@@ -1,3 +1,5 @@
+- [2026-10-15：採択KKT訂正・S4補完準備](2026-10-15_track_b_parent_allocation_s4_kkt_preparation.md)：20旧proxy記録保持、50対照reuse、114 tests、登録実行0、STOP。
+
 - [2026-10-15：Parent allocation v3完遂](2026-10-15_track_b_parent_allocation_v3_complete.md)：15構成/70 law、918保存監査、次は承認後のGPT科学判断、STOP。
 
 - [2026-10-15：Parent allocation v3保存処理修正](2026-10-15_track_b_parent_allocation_v3_buffered_preparation.md)：93 tests、科学条件保持、旧結果保護。

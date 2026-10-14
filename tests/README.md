@@ -1,3 +1,5 @@
+> [S4 KKT/補完tests](tracks/algorithm_codesign/test_parent_experiment_kkt_s4.py)：新21＋従来93（既存解析例1件のraw価格を訂正）＝114登録外PASS。登録candidate/新合成/登録matrix0。
+
 > Parent allocation v3：`tests/tracks/algorithm_codesign/test_parent_experiment_buffered_evidence.py` の15 artificial bytes/guard controls＋既存78＝93 PASS。登録科学計算とは別。
 
 > [Parent allocation native focused tests](tracks/algorithm_codesign/test_parent_allocation_native.py)：新26件、人工2×2/4×4・mock・固定単価形式control。影響範囲の旧CacheControls 6件もPASS。旧62件全体/登録列guardは再実行せず。[履歴](../artifacts/track_b_parent_allocation_final_technical_preparation/2026-10-14/v1/focused_test_execution.json)。

@@ -43,9 +43,9 @@ class CandidateControls(unittest.TestCase):
         self.assertGreaterEqual(r['kkt']['L_infinity_distance_upper'],0)
         self.assertEqual(r['kkt']['simplex_residual'],0)
     def test_kkt_known_interior(self):
-        # Exact rational witness: c=(1,3/4), lambda=3/5,
-        # z=(3,4) for b=(4,3), objective derivative C*z/c = 3/5.
-        r=kkt_candidate(F(7),[F(4),F(3)],[F(1),F(3,4)],**POLICY)
+        # Independent exact witness: raw C=(1,9/16), lambda=3/5,
+        # z=(3,4), b=(4,3); sqrt(C)*z/sqrt(z*z+b*b)=3/5.
+        r=kkt_candidate(F(7),[F(4),F(3)],[F(1),F(9,16)],**POLICY)
         lo,hi=r['lambda_interval'];self.assertLessEqual(lo,F(3,5));self.assertGreaterEqual(hi,F(3,5))
         z=r['allocation'];self.assertLess(abs(z[0]-3),F(1,10**8));self.assertFalse(r['exact_KKT_optimum'])
     def test_equal_costs_duplicate_not_refilled(self):

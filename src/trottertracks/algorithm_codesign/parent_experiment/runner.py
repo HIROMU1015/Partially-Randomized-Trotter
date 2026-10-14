@@ -13,8 +13,8 @@ from ..rte_development.evidence import atomic_json,digest
 from .evidence import BatchedEvidenceWriter as EvidenceWriter
 from ..rte_development.launch import Guard,consume_marker,git
 
-COMPLETE='PARENT_ALLOCATION_RESOURCE_MAP_COMPLETE_AWAITING_GPT_REVIEW'
-INCONCLUSIVE='PARENT_ALLOCATION_TECHNICAL_INCONCLUSIVE'
+COMPLETE='PARENT_ALLOCATION_KKT_SUPPLEMENT_COMPLETE_AWAITING_GPT_REVIEW'
+INCONCLUSIVE='PARENT_ALLOCATION_KKT_SUPPLEMENT_TECHNICAL_INCONCLUSIVE'
 
 
 def runtime(root,c):
@@ -36,7 +36,7 @@ def ledger_job(root,path):
             r=runtime(root,c);writer=EvidenceWriter(d,c['caps']['output_bytes'],guard.check,c['caps']['chunk_bytes'],
                 write_block_bytes=c['execution']['json_write_block_bytes'])
             writer.write('runtime_receipt.json',dict(**job,runtime=r))
-            from .pipeline import run_pipeline
+            from .supplement import run_pipeline
             coverage=run_pipeline(root,c,job,writer,guard)
             check_identities(root,c)
             read_contract(root)
@@ -90,10 +90,19 @@ def resource_reason(snapshot,caps,output_bytes,log_sizes):
 
 
 def final_status(code,inner,identity,reason,c):
+    minimum=0 if 'supplement' in c else 1
+    if 'supplement' in c and (not inner or inner.get('supplemental_scope_complete') is not True
+        or inner.get('inherited_rows')!=50 or inner.get('scope_slots')!=4
+        or type(inner.get('configurations')) is not int
+        or type(inner.get('omitted_configurations')) is not int
+        or not 0<=inner['omitted_configurations']<=4
+        or inner['configurations']+inner['omitted_configurations']!=4
+        or inner.get('old_guards')!=0
+        or inner.get('new_root_matrix_checks')!=6*inner['configurations']):return INCONCLUSIVE
     if (reason is None and code==0 and inner and inner.get('status')==COMPLETE
         and all(inner.get(k)==v for k,v in identity.items()) and inner.get('retries')==0
-        and type(inner.get('configurations')) is int and 1<=inner['configurations']<=c['caps']['configurations']
-        and type(inner.get('laws')) is int and 1<=inner['laws']<=c['caps']['laws']
+        and type(inner.get('configurations')) is int and minimum<=inner['configurations']<=c['caps']['configurations']
+        and type(inner.get('laws')) is int and minimum<=inner['laws']<=c['caps']['laws']
         and type(inner.get('new_synthesis_calls')) is int and 0<=inner['new_synthesis_calls']<=c['caps']['new_synthesis_keys']):return COMPLETE
     return INCONCLUSIVE
 

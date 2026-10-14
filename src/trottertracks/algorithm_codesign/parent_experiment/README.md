@@ -1,3 +1,5 @@
+> 現在は[S4採択KKT訂正・最大4構成の補完準備](../../../../docs/tracks/algorithm_codesign/parent_allocation_s4_kkt_repair_and_supplement_preparation_20261015.md)。`supplement.py`が50旧controlを再評価せず接続する。raw Cのsqrt重み、t=lambda^2区間。pending authorization、登録実行0、別明示承認待ち、STOP。以下は履歴。
+
 > [v2 owner PID修正準備](../../../../docs/tracks/algorithm_codesign/parent_allocation_v2_owner_repair_source_preparation_20261015.md)。現在launchはv2 contract/namespace、authority pending。v1結果・旧source blobsは保護。
 
 # Parent allocation fixed experiment source
