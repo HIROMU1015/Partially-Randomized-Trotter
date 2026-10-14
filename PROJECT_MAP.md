@@ -1,3 +1,5 @@
+> **Track B現在（2026-10-15）：Parent allocation v1 one-shotはtechnical inconclusive。** [停止原因・保存監査・引き継ぎ](docs/tracks/algorithm_codesign/parent_allocation_v1_failed_execution_and_gpt_handoff_20261015.md)。初回key jobのparent_pid重複で停止、新合成/比較law0、旧guard20・候補freeze保持、read-only23 checks PASS。marker消費済み、retry0、科学的勝敗未判断、mandatory STOP。以下は履歴。
+
 > **Track B現在（2026-10-15）：[Parent allocation実行source準備](docs/tracks/algorithm_codesign/parent_allocation_execution_source_preparation_20261015.md)完了。** GPT科学設計採択を固定contractへ反映、ordinary/P5と三参照・最大15構成/75 law、登録外71 tests PASS。科学実行・新authorization・marker0、READY_FOR_SEPARATE_ONE_SHOT_AUTHORIZATION、mandatory STOP。以下は履歴。
 
 > **Track B現在（2026-10-14）：[Parent allocation近接先行研究対応](docs/tracks/algorithm_codesign/parent_allocation_prior_art_correspondence_20261014.md)調査完了。** 指定5本文の関連箇所、Euler/ISの直接帰結、SPS embedding、R0/G1/G5限定差を整理。完全な実装同値/priorityは未認定、科学条件7領域は不変、新science/source/tests0、mandatory STOP。以下は履歴。

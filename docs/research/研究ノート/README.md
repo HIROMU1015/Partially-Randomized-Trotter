@@ -1,3 +1,5 @@
+> [2026-10-15 Parent allocation v1 one-shot技術停止](2026-10-15_track_b_parent_allocation_v1_technical_stop.md)。
+
 > [2026-10-15 Parent allocation採択条件のsource準備](2026-10-15_track_b_parent_allocation_execution_source_preparation.md)。
 
 > [2026-10-14 Parent allocation先行研究対応](2026-10-14_track_b_parent_allocation_prior_art_correspondence.md)：5論文の関連本文・厳密対応、priority未認定、mandatory STOP。

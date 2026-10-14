@@ -1,3 +1,5 @@
+> [Parent allocation v1技術停止・保存監査](tracks/algorithm_codesign/parent_allocation_v1_failed_execution_and_gpt_handoff_20261015.md)：初回key metadata衝突、合成/比較0、23 read-only checks PASS、marker消費済み、mandatory STOP。
+
 > [Parent allocation採択条件の実行source準備](tracks/algorithm_codesign/parent_allocation_execution_source_preparation_20261015.md)：固定契約・71登録外tests・preflight。登録評価0、別実行承認待ち、mandatory STOP。
 
 > [Parent allocation近接先行研究対応](tracks/algorithm_codesign/parent_allocation_prior_art_correspondence_20261014.md)：Euler/IS既知部分、SPS embedding、限定class差、7領域への判断材料。科学的採択・新計算なし、mandatory STOP。
