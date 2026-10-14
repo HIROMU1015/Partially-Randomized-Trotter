@@ -18,6 +18,8 @@
 
 全系列linear 1.0Å/STO-3G/T=.8。H4はlegacy explicit DF12、α2β2/8mode/sector36。H6はtol1e−8/cutoff0/signed generation-weighted projectionのDF19、α3β3/12mode/sector400。H/state/snapshot hashesは契約/provenanceへ固定した。六距離H4 geometryは混ぜず、DF政策を統一したstrict size-scaling比較と扱わない。
 
+登録q=1/2/4/8に対しδ=T/q=.8/.4/.2/.1、比較窓はδ=.1–.8。PRのsplit L_DはH4 fixed panelで3、H6探索で5/10/15（確認union8は5）、full PFは全DF rank12/19を保持する。global S4の内部Yoshida負時間は元契約のままで、このδ表示を新しいPF係数fit窓とは扱わない。
+
 symmetric directional full wrapper・structured native Gaussian lowering、保存compiler hash `1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b`、Qiskit1.3.0/rz,sx,x,cx/opt1/seed17/no topologyを維持。D0ではcompilerを実行していない。旧compilerのoutput bit完全同一性は未検証のまま。
 
 今回の利用者指示を[専用authorization](../../artifacts/resource_applicability/track_a_d0_saved_value_reanalysis_result_v1/2026-10-14/authorization_v1.json)に結合した。SOURCE・契約・入力・Python3.12.3/runtime file hash・output・資源・marker・STOPを固定し、旧grantを流用していない。解析SOURCEと契約はbyte不変。全系列Aを先行する[運用driver](../../artifacts/resource_applicability/track_a_d0_saved_value_reanalysis_result_v1/2026-10-14/execute_fixed_d0_once.py)は、固定moduleのaccounting/weighted_metric/verify_original/analyze_scope/family_selection/fixed_crossing/lower_envelope APIを使用する。新shot/cost/selection/P規則は導入していない。
