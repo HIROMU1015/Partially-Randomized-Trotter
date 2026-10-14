@@ -1,3 +1,5 @@
+> [Parent allocation zero-compute preflight](tracks/algorithm_codesign/preflight_parent_allocation.py)：JSON/bytes/SHAのみ、algorithm sourceをimportしない。常にscience execution不可。実行launch gateではない。[引き継ぎ](../docs/tracks/algorithm_codesign/parent_allocation_source_preparation_and_gpt_handoff_20261014.md)。
+
 > [D3 saved-only analyzer](tracks/algorithm_codesign/analyze_d3_saved_mechanisms.py)：stdlibと固定commitから取得したscalar/既存incidenceだけ。budget/runner/event/pair再評価なし。
 
 > **D3 v2保存値監査**：[audit_d3_v2_saved_outputs.py](tracks/algorithm_codesign/audit_d3_v2_saved_outputs.py)。stdlibでidentity・保存scalar・chunksを照合。backend/science/pairの再実行なし。[結果](../docs/tracks/algorithm_codesign/d3_v2_results_and_gpt_handoff_20261014.md)。

@@ -1,3 +1,5 @@
+> [2026-10-14 Parent allocation source準備](2026-10-14_track_b_parent_allocation_source_preparation.md)：62登録外tests、science design待ち。登録資源/shot予算0、mandatory STOP。
+
 > [2026-10-14 parent係数配分の監査](2026-10-14_track_b_parent_allocation_audit.md)：数理と静的source照合、13登録外形式tests、未採択比較案、科学実行0、mandatory STOP。
 
 > **最新のTrack B統合記録（2026-10-14）**：[有限Taylor RTEのreturn集約：G系列〜D3](2026-10-14_track_b_return_aggregation_G_D_research_note.md)。GPT判断受領済み、構成と資源条件／限界を保持。今回はノートのみ、新計算・原稿・追加レビュー0、mandatory STOP。以下は履歴。

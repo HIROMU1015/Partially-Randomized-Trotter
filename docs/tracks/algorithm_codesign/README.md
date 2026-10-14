@@ -1,3 +1,5 @@
+> **parent配分source準備（2026-10-14）**：[実装・62登録外tests・引き継ぎ](parent_allocation_source_preparation_and_gpt_handoff_20261014.md)／[未採択技術案v2](parent_allocation_comparison_technical_options_v2_20261014.md)。ordinary/closed P5共通adapter、zero-compute identity PASS。本番worker/科学authorityなし、mandatory STOP。以下は履歴。
+
 > **parent配分技術監査（2026-10-14）**：[報告](parent_allocation_technical_audit_20261014.md)／[比較草案](parent_allocation_minimal_comparison_draft_20261014.md)。13登録外形式tests、root samplerと端点phaseの接続要件。新source・science authorityなし、native価値未取得、mandatory STOP。以下は履歴。
 
 > **現在の引継ぎ（2026-10-14）：[G系列〜D3研究ノート](../../research/研究ノート/2026-10-14_track_b_return_aggregation_G_D_research_note.md)。** 最新GPT科学レビューは完了、現在のD1〜D3数値探索は一区切り。構成・生成法と条件付き資源評価を保持。旧分類・source・marker・STOP不変、追加計算／レビューの自動開始なし、mandatory STOP。以下は履歴。

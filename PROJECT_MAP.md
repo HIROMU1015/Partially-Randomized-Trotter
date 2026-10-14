@@ -1,3 +1,5 @@
+> **Track B現在（2026-10-14）：[Parent allocationの汎用source・技術検証](docs/tracks/algorithm_codesign/parent_allocation_source_preparation_and_gpt_handoff_20261014.md)完了。** ordinary/closed P5共通root・全端点・controlled位相・common-angle復帰、62登録外tests PASS。判定TECHNICALLY_READY_FOR_SCIENTIFIC_DESIGN_REVIEW。[比較技術案v2](docs/tracks/algorithm_codesign/parent_allocation_comparison_technical_options_v2_20261014.md)は未採択、本番worker/合成runtimeは未準備、新科学/authority/marker0、mandatory STOP。以下は履歴。
+
 > **Track B現在（2026-10-14）：parent係数のchild別配分を[限定技術監査](docs/tracks/algorithm_codesign/parent_allocation_technical_audit_20261014.md)。** 理想mean・位相・norm最小性・固定cost解析を確認、13登録外形式tests PASS。実行source未作成、native利益未取得、比較案は未採択、旧数値closure/marker保持、mandatory STOP。以下は履歴。
 
 > **Track B現在（2026-10-14）：最新GPT科学レビュー完了。G系列〜D1/D2/D3を[研究引継ぎノート](docs/research/研究ノート/2026-10-14_track_b_return_aggregation_G_D_research_note.md)へ統合。構成・生成法と資源条件／限界を保持し、現在の数値探索は一区切り。新計算・原稿作成・追加レビューは開始せずmandatory STOP。** 以下は履歴。

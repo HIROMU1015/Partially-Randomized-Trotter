@@ -1,3 +1,5 @@
+> [Track B parent配分source準備](tracks/algorithm_codesign/parent_allocation_source_preparation_and_gpt_handoff_20261014.md)：任意配分・両root・全端点、62登録外tests、[未採択技術案v2](tracks/algorithm_codesign/parent_allocation_comparison_technical_options_v2_20261014.md)。新科学実行0、mandatory STOP。
+
 > [Track B parent配分の技術監査](tracks/algorithm_codesign/parent_allocation_technical_audit_20261014.md)：mean・controlled phase・root接続・既知法の境界、[比較案](tracks/algorithm_codesign/parent_allocation_minimal_comparison_draft_20261014.md)。科学実行は未認可、mandatory STOP。
 
 > **Track B研究引継ぎ**：[G系列〜D3の日本語研究ノート](research/研究ノート/2026-10-14_track_b_return_aggregation_G_D_research_note.md)。構成、代表結果、既知原理、未解決事項、最新GPT判断、固定資料入口を一つに整理。現在の数値探索は一区切り、mandatory STOP。
