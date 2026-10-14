@@ -1,5 +1,11 @@
 # scripts 索引
 
+## 2026-10-15 一体再配分PF：固定一回pilot完了・独立監査PASS
+
+[結果と限界](../docs/research/qc_onebody_repartition_finite_step_pilot_v1_results_20261015.md)、[GPT科学判断用引継ぎ](../docs/research/qc_onebody_repartition_finite_step_pilot_v1_gpt_handoff_20261015.md)、[一次データ](../artifacts/qc_onebody_repartition_finite_step_pilot_v1/2026-10-15/attempt_1/raw.json)、[独立checker結果](../artifacts/qc_onebody_repartition_finite_step_pilot_v1/2026-10-15/attempt_1/independent_audit.json)、[今回の別実行認可](../artifacts/qc_onebody_repartition_finite_step_execution_v1/2026-10-15/authorization.json)、[保存summary](../artifacts/qc_onebody_repartition_finite_step_execution_v1/2026-10-15/saved_results_summary.json)。
+linear H4/1.00Å/STO-3G/保存DF rank12・generation順全12density、8spin/4spatial、Nα=Nβ=2/36dim、先頭pair一方向X、共通h=8.5784978e-5..0.0027451193。PR L_D/delta探索ではない。source19d5bd74/準備0f92af19・入力不変、E0/finite-h truthをselectorへ渡さずseal。36primitive PF cells/69records/276cost rowsを一回実行、独立JW/Pade再構成36/expm705/新audit eig0、retry0、compile0。登録判定NO_UNIFORM_REGISTERED_COMPONENT_GAIN、4/4条件10%gate未達。費用比約1.00039..1.00074はstatic controlled primitive/Heisenberg仮説のみ。
+leading/raw有限h誤差は減少したが、最大hでも元raw S2が両targetを満たし、step削減frontier未検証。CS2originalとraworiginalの回路価格tie・微小誤差/overlapの数値marginを記録。情報取得/compile/T/全ground-energy total利益・新規性は未確定。152旧manifest/non-result/globalFAIL、450旧protected files/source21/root137paths保持。N1STOP/N2HOLD/N3CLOSED/THRIFT現template終了、C1–C4/TrackA–B・旧結果/認可/STOP不変。公開・GitHub照合後Mandatory STOP。次は重要GPT科学判断の別明示開始承認、追加科学計算・第二候補を自動開始しない。以下は履歴。
+
 ## 2026-10-15 finite-step準備のGitHub照合・Mandatory STOP
 
 payload `fd44510328d8ab3068634a9906d40de16ca3ec43` をGitHubから再取得し、47変更blobs/1,859,892bytes、固定source21files/417保護files/6参照/受領原文34,108bytesを照合した。[receipt](../artifacts/qc_onebody_repartition_finite_step_preparation_v1/2026-10-15/publication/receipt.json)。source19d5bd74、contract/source/inputは不変。旧150manifest/non-result/global FAIL/root137pathsを保持。人工37tests・identity-only preflightの技術証拠であり、分子eig/RDM/expectation/PF/compileの新規取得0、承認発行0、attempt消費0。
