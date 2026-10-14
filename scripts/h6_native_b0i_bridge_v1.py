@@ -250,8 +250,14 @@ def build(grant, request, native_api, *, guard=lambda: None):
     if (blueprint(prepared, request['binding'], prefix=request['prefix'], q=request['q']) != request['blueprint'] or
             original_digest(prepared) != request['prepared_original_bytes_digest']):
         raise g.Stop('PREPARED_B0_CHANGED')
-    if not grant.synthetic and getattr(native_api, '__name__', None) != NATIVE_MODULE:
+    if not grant.synthetic and (getattr(native_api, '__name__', None) != NATIVE_MODULE or
+            native_api is not getattr(grant, '_verified_native_provider', None)):
         raise g.Stop('PINNED_NATIVE_PROVIDER_REQUIRED')
+    build_key = (request['prefix'], request['q'])
+    seen = getattr(grant, '_h6_build_reservations', set())
+    if build_key in seen:
+        raise g.Stop('OVERLAY_OR_REQUEST_REUSE')
+    seen.add(build_key); grant._h6_build_reservations = seen
     request['built'] = True  # reservation remains consumed on failure.
     guard()
     evolution = native_api.build_deterministic_native(deepcopy(prepared.deterministic_blocks),
@@ -298,6 +304,7 @@ def native_provider(grant, checkout):
         sys.path.pop(0)
     if Path(module.__file__).resolve() != checkout/'src/trottertracks/resource_applicability/ax2b_native_df_v5.py':
         raise g.Stop('NATIVE_PROVIDER_ORIGIN')
+    grant._verified_native_provider = module
     return module
 
 

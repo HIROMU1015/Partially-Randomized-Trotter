@@ -188,15 +188,52 @@ def filesystem_snapshot(parent):
 
 
 def check_filesystem(snapshot, budget, quota=None, *, now=None):
+    for field in ('available_bytes', 'available_inodes'):
+        if type(snapshot.get(field)) is not int or snapshot[field] < 0:
+            raise Stop('FILESYSTEM_OBSERVATION_REQUIRED:'+field)
+    if type(snapshot.get('quota_enabled')) is not bool:
+        raise Stop('QUOTA_STATE_OBSERVATION_REQUIRED')
     if snapshot['available_bytes'] < budget['fresh_available_bytes'] or snapshot['available_inodes'] < budget['fresh_available_inodes']:
         raise Stop('FILESYSTEM_BLOCK_OR_INODE_HEADROOM')
     if snapshot['quota_enabled']:
-        if (quota is None or quota.get('uid') != os.getuid() or quota.get('fsid') != snapshot['fsid'] or
+        if (quota is None or any(type(quota.get(k)) is not int or quota[k] < 0
+                for k in ('available_bytes', 'available_inodes')) or
+                not isinstance(now, (int, float)) or isinstance(now, bool) or not math.isfinite(now) or
+                not isinstance(quota.get('observed_monotonic'), (int, float)) or
+                isinstance(quota['observed_monotonic'], bool) or not math.isfinite(quota['observed_monotonic']) or
+                quota.get('uid') != os.getuid() or quota.get('fsid') != snapshot['fsid'] or
                 quota.get('mount') != snapshot['mount'] or quota.get('all_user_group_project_limits_checked') is not True or
                 now is None or not 0 <= now-quota.get('observed_monotonic', -math.inf) <= 5 or
                 quota.get('available_bytes', 0) < budget['fresh_available_bytes'] or
                 quota.get('available_inodes', 0) < budget['fresh_available_inodes']):
             raise Stop('FRESH_EFFECTIVE_QUOTA_RECEIPT_REQUIRED')
+
+
+def validate_memory_observation(snapshot, baseline=None):
+    """Do not let absent OOM counters or nonfinite PSI masquerade as zero.
+
+    Keep the frozen D0 policy and arithmetic unchanged. oom_group_kill may be
+    absent on older kernels, but its presence must stay consistent with admission.
+    """
+    if (type(snapshot.get('effective_available_bytes')) is not int or
+            type(snapshot.get('host_oom_kill')) is not int or snapshot['host_oom_kill'] < 0 or
+            type(snapshot.get('cgroups')) is not list):
+        raise Stop('MEMORY_OBSERVATION_REQUIRED')
+    def pressure(value):
+        return (type(value) in (int, float) and math.isfinite(value) and 0 <= value <= 100)
+    if not pressure(snapshot.get('host_full_psi_avg10')):
+        raise Stop('FINITE_HOST_PSI_OBSERVATION_REQUIRED')
+    for index, group in enumerate(snapshot['cgroups']):
+        events = group.get('events', {})
+        if (not group.get('path') or not pressure(group.get('full_psi_avg10')) or
+                any(type(events.get(k)) is not int or events[k] < 0 for k in ('oom', 'oom_kill')) or
+                ('oom_group_kill' in events and
+                    (type(events['oom_group_kill']) is not int or events['oom_group_kill'] < 0))):
+            raise Stop('CGROUP_PSI_OOM_OBSERVATION_REQUIRED')
+        if baseline is not None and index < len(baseline['cgroups']):
+            old = baseline['cgroups'][index]['events']
+            if ('oom_group_kill' in events) != ('oom_group_kill' in old):
+                raise Stop('CGROUP_OOM_COUNTER_COVERAGE_CHANGED')
 
 
 class Artifacts:
@@ -274,7 +311,8 @@ class Monitor:
         self.started = clock(); self.last = self.started; self.first_stop = None; self.phase = 'PRELAUNCH'
         self.max_interval = 0.; self.max_observation = 0.; self.observations = 0
         self.history = []
-        self.admission = memory(); self.affinity = os.sched_getaffinity(0)
+        self.admission = memory(); validate_memory_observation(self.admission)
+        self.affinity = os.sched_getaffinity(0)
         self.tick(force=True); self.handlers = {}; self.timer_installed = False
 
     def fail(self, reason):
@@ -300,6 +338,7 @@ class Monitor:
             self.fail('OWN_AFFINITY_OR_THREAD_CHANGED')
         try:
             memory = self.memory(); filesystem = self.filesystem(self.grant.output.parent)
+            validate_memory_observation(memory, self.admission)
             d0.check_memory_snapshot(memory, self.budget, self.admission)
             check_filesystem(filesystem, self.budget,
                 self.quota() if self.quota else None, now=now)
@@ -307,7 +346,9 @@ class Monitor:
             self.fail(type(error).__name__+':'+str(error))
         duration = self.clock()-now; self.max_observation = max(self.max_observation, duration)
         if duration > self.budget['monitor_max_seconds']: self.fail('OBSERVATION_IO_STALE')
-        self.last = self.clock(); self.observations += 1
+        # Start-to-start interval includes previous observation IO, so a slow
+        # observation followed by blocked Python cannot hide a >5-second gap.
+        self.last = now; self.observations += 1
         self.history.append(dict(phase=self.phase, monotonic=now, interval_seconds=gap,
             observation_seconds=duration, peak_RSS_bytes=usage.ru_maxrss*1024,
             CPU_seconds=usage.ru_utime+usage.ru_stime, effective_available_bytes=memory['effective_available_bytes'],

@@ -104,6 +104,7 @@ def validate_inputs(signals, wrappers, selection, binding):
     if set(registrations) != {(cid, i) for cid in selected for i in range(32)}:
         raise ValueError('CONFIRMATION_REGISTRATION_COVERAGE')
     seen = set()
+    pair_sources = {}
     for row in wrappers:
         if (row['cell_id'] not in expected or row['phase'] not in ('exploration', 'confirmation') or
                 row['source'] not in binding['allowed_wrapper_sources'] or
@@ -116,6 +117,10 @@ def validate_inputs(signals, wrappers, selection, binding):
         if key in seen:
             raise ValueError('DUPLICATE_WRAPPER')
         seen.add(key)
+        pair_key = key[:-2] + (row['control'],)
+        if pair_key in pair_sources and pair_sources[pair_key] != row['source']:
+            raise ValueError('PAIRED_WRAPPER_SOURCE_MISMATCH')
+        pair_sources[pair_key] = row['source']
         if row['phase'] == 'confirmation':
             if (row['control'] != 'symmetric_directional' or
                     registrations.get((row['cell_id'], row['replica'])) != row['seed']):
