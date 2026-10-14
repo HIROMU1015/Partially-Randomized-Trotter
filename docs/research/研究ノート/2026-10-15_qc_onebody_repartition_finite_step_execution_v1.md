@@ -5,3 +5,7 @@
 収集36PF seeds/Schur、69records/276cost rowsと独立36Pade再構成/705expmが完了し監査PASS。主要係数とraw finite-h biasは減少したが、4target×price条件の費用比約1.00039..1.00074、登録10%改善なし。最大hで元raw S2が既に精度を満たし、step削減frontierを測れていない点を報告した。微小overlap/補正biasは数値margin水準で性能gainと主張しない。
 
 [結果](../qc_onebody_repartition_finite_step_pilot_v1_results_20261015.md)、[GPT引継ぎ](../qc_onebody_repartition_finite_step_pilot_v1_gpt_handoff_20261015.md)。研究継続/終了/正式採択/第二候補移行は未判断。152旧manifest recordsと既知globalFAIL、450旧protected files/source21、root137dirtypathsを保持。結果公開・GitHub一致後Mandatory STOP。GPT重要科学判断には別開始承認が必要。
+
+## GitHub公開・再取得確認
+
+payload `4ae95ac0b2f045218743babe69a95609c567ad1f` をGitHubから再取得し、35変更blobs/3,756,590bytes、source21files/450旧protected files、152旧manifest records/non-result/既知globalFAIL/root137pathsを照合した。数値runner/checkerは再実行していない。receiptを保存し、final metadata commitも再取得する。Mandatory STOP、次はGPT重要科学判断の別開始承認。
