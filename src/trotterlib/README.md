@@ -1,3 +1,5 @@
+> Track Bの[Parent allocation v3結果/監査](../../docs/tracks/algorithm_codesign/parent_allocation_v3_results_and_gpt_handoff_20261015.md)は別namespace。共通libraryは保持、科学的採否は未判断、mandatory STOP。
+
 > Track B実験のParent専用保存helperは `src/trottertracks/algorithm_codesign/parent_experiment/evidence.py`。既存共通writer/科学会計を保持する。
 
 > Track Bの[Parent allocation v2準備](../../docs/tracks/algorithm_codesign/parent_allocation_v2_owner_repair_source_preparation_20261015.md)は別namespaceのowner metadata修正のみ。共通library・科学条件は不変。
