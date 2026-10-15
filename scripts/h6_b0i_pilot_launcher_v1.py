@@ -62,7 +62,7 @@ def _launch(contract_path, auth_path, mapping_path, output):
     resource.setrlimit(resource.RLIMIT_AS,(budget['address_space_bytes'],hard))
     command=[sys.executable,'-P','-B',str(Path(__file__).with_name('h6_b0i_pilot_runner_v1.py')),
         '--contract',str(contract_path),'--authorization',str(auth_path),'--inputs',str(mapping_path),'--output',str(output)]
-    started=time.monotonic();reason=None
+    started=time.monotonic();reason=None;observer=None
     log_path=control/'launch_stdout.log'
     with log_path.open('xb') as log:
         process=subprocess.Popen(command,stdout=log,stderr=subprocess.STDOUT)
@@ -72,7 +72,13 @@ def _launch(contract_path, auth_path, mapping_path, output):
             if identity is None:
                 status=process.wait(timeout=5)
             else:
+                if c.get('external_resource_monitor',{}).get('enabled'):
+                    external=r.load('h6_launcher_external_monitor','h6_external_resource_monitor_v1.py')
+                    observer=external.Observer(grant,identity,g.identity(),g)
                 while True:
+                    if observer is not None and process.poll() is None:
+                        try:observer.step()
+                        except Exception as error:reason=reason or 'EXTERNAL_OBSERVER:'+type(error).__name__+':'+str(error)[:700]
                     try:status=process.wait(timeout=1);break
                     except subprocess.TimeoutExpired:pass
                     if time.monotonic()-started>c['budget']['wall_seconds']:reason='OWN_WORKER_WALL_CAP'
@@ -104,6 +110,7 @@ def _launch(contract_path, auth_path, mapping_path, output):
     # This second invocation shares precisely the same parent as the worker.
     recorded=subprocess.run(command+['--record-wait-status',str(shell_status)],check=False,
         stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=30)
+    if observer is not None:observer.summary()
     receipt=dict(worker_wait_status=shell_status,recorder_status=recorded.returncode,
         original_worker_identity=identity,worker_identity_absent=g.identity(process.pid) is None,
         first_launcher_stop=reason,wall_seconds=time.monotonic()-started,

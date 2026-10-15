@@ -6,6 +6,7 @@ Only an already authorized parent may call compile_batch after all A/B pass.
 import ctypes
 import errno
 import json
+import importlib.util
 import os
 from pathlib import Path
 import resource
@@ -58,7 +59,13 @@ def worker_main(task,api,grant,g,write_fd,parent_pid,old_mask,other_read_fds):
             os.environ[key]=str(path)
         import tempfile
         tempfile.tempdir=str(temporary)
-        monitor=g.Monitor(grant);monitor.phase='C_COMPILE_'+task['name'];monitor.install()
+        monitor_factory=g.Monitor
+        if grant.contract.get('external_resource_monitor',{}).get('enabled'):
+            spec=importlib.util.spec_from_file_location('h6_compile_external_monitor',
+                Path(__file__).with_name('h6_external_resource_monitor_v1.py'))
+            external=importlib.util.module_from_spec(spec);spec.loader.exec_module(external)
+            monitor_factory=external.monitor_class(g)
+        monitor=monitor_factory(grant);monitor.phase='C_COMPILE_'+task['name'];monitor.install()
         api.guard=monitor.tick
         signal.pthread_sigmask(signal.SIG_SETMASK,old_mask)
         compile_entered=True;row=api.compile(task['wrapper'],task['fingerprint'])
@@ -238,6 +245,11 @@ def compile_batch(grant,cases,api,monitor,artifacts,calls,*,g,metrics_check,back
             config.get('max_workers')!=count or len(config.get('worker_cpus',[]))!=count or
             len(set(config['worker_cpus']))!=count):raise g.Stop('PARALLEL_HELPER_SCOPE')
     if grant.synthetic and backend_factory is ForkBackend:raise g.Stop('ARTIFICIAL_PARALLEL_REQUIRES_MOCK_BACKEND')
+    external=None
+    if grant.contract.get('external_resource_monitor',{}).get('enabled'):
+        spec=importlib.util.spec_from_file_location('h6_parent_external_monitor',
+            Path(__file__).with_name('h6_external_resource_monitor_v1.py'))
+        external=importlib.util.module_from_spec(spec);spec.loader.exec_module(external)
     tasks=[]
     for case in cases:
         if case['validation']['status']!='PASS':raise g.Stop('PARALLEL_REQUIRES_ALL_CORRECTNESS')
@@ -255,8 +267,12 @@ def compile_batch(grant,cases,api,monitor,artifacts,calls,*,g,metrics_check,back
                 used={h['task']['cpu'] for h in active}
                 task=tasks.pop(0);task['cpu']=next(cpu for cpu in config['worker_cpus'] if cpu not in used)
                 calls.take('compile');h=backend.start(task);active.append(h)
-                artifacts.write('compile_started_'+task['name']+'.json',dict(pid=h['pid'],
-                    identity=h['identity'],name=task['name'],reserved_before_fork=True),monitor.tick)
+                started=dict(pid=h['pid'],identity=h['identity'],name=task['name'],
+                    cpu=task['cpu'],reserved_before_fork=True)
+                artifacts.write('compile_started_'+task['name']+'.json',started,monitor.tick)
+                if external is not None:
+                    external.atomic(Path(grant.contract['control_directory'])/
+                        ('observed_compile_started_'+task['name']+'.json'),started)
             for h in backend.poll(active):
                 task=h['task']
                 try:payload=g.d0.strict_json(bytes(h['payload']))

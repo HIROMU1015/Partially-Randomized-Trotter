@@ -49,6 +49,10 @@ def validate_contract(grant):
     if c.get('compiler_options') != dict(basis_gates=['rz','sx','x','cx'], optimization_level=1, seed_transpiler=17):
         raise g.Stop('FIXED_COMPILER_OPTIONS')
     if c.get('control_tolerance') != 1e-8: raise g.Stop('FIXED_CONTROL_TOLERANCE')
+    if c.get('external_resource_monitor') is not None:
+        external = load('h6_external_monitor_contract', 'h6_external_resource_monitor_v1.py')
+        if c['external_resource_monitor'] != external.CONFIG:
+            raise g.Stop('FIXED_EXTERNAL_MONITOR_SCOPE')
     if not grant.synthetic:
         if c.get('execution_plan_sealed') is not True or not c.get('absolute_launch_command'):
             raise g.Stop('SEALED_FRESH_LAUNCH_BINDING_REQUIRED')
@@ -175,6 +179,9 @@ def run(contract, authorization, *, contract_sha, authorization_sha, output, roo
         artifacts.write(f'operation_{journal_count[0]:03d}.json',value,monitor.tick if monitor else lambda:None)
     calls = Calls(contract['operation_limits'], journal)
     try:
+        if not synthetic and contract.get('external_resource_monitor', {}).get('enabled'):
+            external = load('h6_external_monitor', 'h6_external_resource_monitor_v1.py')
+            monitor_factory = external.monitor_class(g)
         monitor = monitor_factory(grant)
         if not synthetic:
             monitor.install();prepare_private_temp(grant)
