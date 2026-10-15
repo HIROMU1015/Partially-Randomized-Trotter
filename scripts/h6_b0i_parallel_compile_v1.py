@@ -167,7 +167,26 @@ class ForkBackend:
                 h['affinity_confirmed']=True
             elif h['affinity_confirmed'] or time.monotonic()-h['started']>5:
                 raise self.g.Stop('COMPILE_WORKER_CPU_BINDING')
+            h['resource_last_seen']=time.monotonic()
+        except KeyError as error:
+            if error.args[0] not in ('VmRSS','VmSize'):raise
+            # exit_mm can remove memory fields before State becomes Z and
+            # before wait4(WNOHANG) reports exit. Never accept missing data as
+            # a successful sample: retry/reap within the original 5s bound.
+            self.reap(h)
+            if h['reaped']:return
+            current=self.g.identity(h['pid'])
+            if current is None:return
+            if current!=h['identity']:raise self.g.Stop('COMPILE_OWNERSHIP_CHANGED')
+            last=h.setdefault('resource_last_seen',h['started'])
+            if time.monotonic()-last>self.grant.contract['budget']['monitor_max_seconds']:
+                raise self.g.Stop('COMPILE_MEMORY_OBSERVATION_MISSING')
+            return
         except FileNotFoundError:return
+        except ProcessLookupError as error:
+            if error.errno!=errno.ESRCH:raise
+            self.reap(h)
+            return
 
     def poll(self,active):
         completed=[]

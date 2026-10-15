@@ -5,6 +5,7 @@ callback can be delayed only while this bound observer proves continuous <=5s
 observations. Compile children also wait for their own observed identity.
 """
 import json
+import errno
 import math
 import os
 from pathlib import Path
@@ -75,6 +76,7 @@ class Observer:
         self.maximum_gap = self.maximum_duration = 0.; self.first_stop = None
         self.worker_first_seen = {}
         self.worker_affinity_confirmed = set()
+        self.resource_last_seen = {}
         self.control = Path(grant.contract['control_directory'])
         self.baseline = grant.contract['external_monitor_memory_baseline']
         self.log = self.control/'external_observations_v1.jsonl'
@@ -84,6 +86,7 @@ class Observer:
         g = self.g; current = g.identity(expected['pid'])
         if current is None: return None
         if current != expected: raise g.Stop('OBSERVER_OWN_IDENTITY_CHANGED')
+        self.resource_last_seen.setdefault(expected['pid'],self.clock())
         root = Path('/proc')/str(expected['pid'])
         try:
             status = dict(line.split(':', 1) for line in (root/'status').read_text().splitlines() if ':' in line)
@@ -93,7 +96,17 @@ class Observer:
             fields = (root/'stat').read_text().rsplit(')', 1)[1].split()
             cpu = (int(fields[11])+int(fields[12]))/os.sysconf('SC_CLK_TCK')
             affinity = os.sched_getaffinity(expected['pid'])
-        except (FileNotFoundError, ProcessLookupError): return None
+        except KeyError as error:
+            if error.args[0] not in ('VmHWM','VmSize'):raise
+            current=g.identity(expected['pid'])
+            if current is not None and current!=expected:raise g.Stop('OBSERVER_OWN_IDENTITY_CHANGED')
+            if current is not None and self.clock()-self.resource_last_seen[expected['pid']]>5:
+                raise g.Stop('EXTERNAL_MEMORY_OBSERVATION_MISSING')
+            return None  # No fresh resource lease is issued for missing data.
+        except FileNotFoundError:return None
+        except ProcessLookupError as error:
+            if error.errno!=errno.ESRCH:raise
+            return None
         budget = self.grant.contract['budget']
         if rss > budget['rss_bytes']: raise g.Stop('EXTERNAL_RSS_CAP')
         if size > budget['address_space_bytes']: raise g.Stop('EXTERNAL_AS_CAP')
@@ -108,6 +121,7 @@ class Observer:
                 return None  # No lease/compile until this child is on its worker CPU.
             raise g.Stop('EXTERNAL_AFFINITY_OR_THREAD_CHANGED')
         if worker_bootstrap: self.worker_affinity_confirmed.add(expected['pid'])
+        self.resource_last_seen[expected['pid']]=self.clock()
         return dict(identity=expected, peak_RSS_bytes=rss, AS_bytes=size,
             CPU_seconds=cpu, affinity=sorted(affinity))
 
