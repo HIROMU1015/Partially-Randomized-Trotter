@@ -604,3 +604,7 @@ artifacts/<validation_name>/
 
 結果を研究上の証拠へ加える場合は、`VALIDATION_STATUS.md`、研究概要、研究ノート、
 `artifacts/validation_manifest.json`も更新する。
+
+## H5 neutral open-shell pilot
+
+`prepare_h5_open_shell_pilot.py` はmetadata/byte監査のみ、`run_h5_open_shell_pilot.py --execute` は新H5 grant必須。最大4通常group/1heavy、paired回路とhash再利用。[準備・未検証](../docs/research/track_a_h5_neutral_open_shell_readiness_20261016.md)。

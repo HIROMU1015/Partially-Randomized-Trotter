@@ -601,3 +601,7 @@ DF部分ランダム化研究と混同しない。
 - `eig_error.py`、`qpe_beta.py`：固有値誤差・位相推定の旧来支援
 
 新しい機能は、runnerへ直接大きな処理を書くのではなく、ここへテスト可能な関数として置く。
+
+## H5 unequal-spin adapter
+
+既存libraryを変更せず `src/trottertracks/resource_applicability/h5_open_shell/` にneutral ROHF・spin別sector/DF primitive・S²/native接続を追加。[32人工/mock testsと限定pilot準備](../../docs/research/track_a_h5_neutral_open_shell_readiness_20261016.md)。実H5未実行。
