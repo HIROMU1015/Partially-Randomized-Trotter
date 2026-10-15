@@ -1,0 +1,386 @@
+# Codexへの研究指示：SOS-PF候補AのK0技術事前検証
+
+## 1. 目的と背景
+
+量子化学Hamiltonian simulationにおいて、元の有限基底電子Hamiltonianの基底エネルギーを低費用で推定する新しいアルゴリズムを検討している。
+
+これまでの第一候補（一体項再配分PF）、H-E1、M-a/M-bは現構成での探索を終了・停止し、PF小改変探索系列はPAUSEDとなっている。
+
+Claudeによる新研究方向のレビューと、その後のGPT独立科学レビューでは、次の候補が相対的に最も検証価値が高いと判断された。
+
+**候補A：SOS表現に基づくPSD-fragment積公式（SOS-PF）**
+
+基本構想は、Hamiltonianを対象粒子数sector上で
+
+\[
+H=E_{\mathrm{SOS}}I+\sum_{\gamma=1}^{M}F_\gamma,
+\qquad F_\gamma\succeq0
+\]
+
+と分解し、PSD fragmentと基底状態の低エネルギー性を利用して、product formulaによる基底エネルギー誤差を小さく評価・制御することである。
+
+ただし、**候補Aは正式な研究テーマとして未採択**である。
+
+今回の目的は、K0段階で既知研究との差、数学的な成立性、PF回路への接続、計算費用上の改善機構を明確にし、次の研究段階へ進む科学的根拠が存在するかを判断できる材料を揃えることである。
+
+単にClaudeの案を実装するのではなく、必要なら前提や導出を否定・修正すること。
+
+## 2. 対象repository・資料
+
+Repository：
+
+`HIROMU1015/Partially-Randomized-Trotter`
+
+研究状態の固定commit：
+
+`78b50c515d9df9556f261e74ca7c57af461b7199`
+
+M案K0の固定commit：
+
+`155336b07ad0d5e6e9c6cad35736e9412060a299`
+
+主要資料：
+
+- `docs/research/研究ノート/2026-10-15_qc_pf_exploration_state_adoption.md`
+- `artifacts/qc_pf_exploration_state_adoption/2026-10-15/decision.json`
+- `docs/reviews/quantum_chemistry_pf/qc_m_k0_claude_scientific_rereview_and_direction_20261015.md`
+- `docs/reviews/quantum_chemistry_pf/qc_exact_ground_state_pf_direction_rereview_2026-10-14.md`
+- `docs/research/qc_research_integrated_gpt_decision_handoff_v1_20261014.md`
+- `docs/research/研究目的・研究課題.md`
+- `docs/research/qc_m_fixed_circuit_k0_technical_audit_20261015.md`
+
+今回のClaudeレビューおよびGPT独立科学レビューが追加資料として渡されている場合は、それらも参照する。
+
+ただし、レビューの結論や数式を確認済みの事実として扱わず、重要な主張は一次文献・数学的導出・既存sourceに戻って独立に検証すること。
+
+資料を取得できない場合は、その範囲を明示し、未取得資料の内容を推測で補わないこと。
+
+## 3. K0の実施範囲
+
+以下のK0-1〜K0-5を、可能な限り一つの作業として完了する。
+
+通常の技術的疑問・文献の取得・数式の修正・資料整理ごとにGPTへ戻る必要はない。
+
+ただし、研究の中心仮説、保証の意味、比較対象を実質的に変更する必要が生じた場合は、変更案と理由を記録し、科学的採択は行わない。
+
+### K0-1：先行研究と新規性
+
+特に以下の研究を確認する。
+
+- Hejazi et al., *Better product formulas for quantum phase estimation*
+- Hejazi et al., *Better bounds for low-energy product formulas*
+- Mizuta–Kuwahara, *Trotterization is substantially efficient for low-energy states*
+- Yi–Crosson, *Spectral analysis of product formulas for quantum simulation*
+- Low et al., *Fast quantum simulation of electronic structure by spectral amplification*
+- King et al., *Quantum simulation with sum-of-squares spectral amplification*
+- Rubin–Low–DePrince, *Near-frustration-free electronic structure Hamiltonian representations and lower-bound certificates*
+- Casares et al., *Theory and Practice of Trotter Product Formulas for Quantum Chemistry*
+
+関連文献や引用元まで必要に応じて調査してよい。
+
+確認すべき中心的な問いは以下である。
+
+1. PSD fragmentを用いた低エネルギーPF誤差評価は、どこまで既知か。
+2. 基底固有値誤差の主要係数がSOS gapに比例するという結果は既報か。
+3. その既知理論を非局所な量子化学Hamiltonianに適用すると、何が新しく残るか。
+4. 既存SOS・DF・BLISS・RDM/SDP構成から、提案するPF-native表現を直接得られるか。
+5. 既存手法と同じ入力情報・計算費用を許したとき、独立した生成規則や保証が残るか。
+
+**「同じ名称の方法が見つからない」ことを新規性の証明にしないこと。**
+
+同様に、既知の数学を組み合わせて導出可能であるというだけで、全体構成の新規性を否定しないこと。
+
+文献ごとに、固定版、参照箇所、数学的仮定、保証対象、計算費用、今回の候補との包含・同値・差分を整理する。
+
+### K0-2：数学的な独立検証
+
+以下の設定を対象とする。
+
+\[
+H'=H-E_{\mathrm{SOS}}I=\sum_\gamma F_\gamma,
+\quad F_\gamma\succeq0
+\]
+
+\[
+E_g=E_0-E_{\mathrm{SOS}}
+\]
+
+\[
+\phi_\gamma=\langle0|F_\gamma|0\rangle,
+\quad
+\sigma_\gamma^2=
+\langle0|F_\gamma^2|0\rangle-\phi_\gamma^2
+\]
+
+まず、PSD性から
+
+\[
+\sum_\gamma\phi_\gamma=E_g,
+\qquad
+\sigma_\gamma^2\le
+\|F_\gamma\|\phi_\gamma
+\]
+
+が成立することを確認する。
+
+次に、対称2次PFの実効Hamiltonian
+
+\[
+H_{\mathrm{eff}}
+=
+H+h^2D+h^4T+O(h^6)
+\]
+
+について、基底エネルギーの主要誤差係数
+
+\[
+d=\langle0|D|0\rangle
+\]
+
+を解析する。
+
+#### 二分割の場合
+
+\(H'=A+B\) について、BCHの符号・係数、二重交換子の恒等式を独立に確認する。
+
+直前のGPTレビューでは、基底状態の固有値方程式から
+
+\[
+(A-\langle A\rangle)|0\rangle
+=
+-(B-\langle B\rangle)|0\rangle
+\]
+
+を使い、二分割の主要係数について
+
+\[
+d=
+\frac1{12}
+\langle0|A(H'-E_g)A|0\rangle
+\]
+
+という強化された形と、その非負性を指摘している。
+
+**この式を結論として固定せず、BCHの規約と符号を含めて独立に検証すること。**
+
+#### 多fragmentの場合
+
+三重交換子のground-state期待値をfragmentの揺らぎで評価し、
+
+\[
+|\langle0|D|0\rangle|
+\le K_{\mathrm{SOS}}E_g
+\]
+
+の形の上界について、厳密な成立条件と計算可能な定数を導出・確認する。
+
+特に、
+
+- BCH係数と項数の依存
+- Fragment normとvarianceの扱い
+- 粒子数sectorへの制限
+- Fragment数の増加に対する上界の振る舞い
+- 古典的に取得できる情報だけで評価できるか
+
+を確認すること。
+
+さらに、\(h^4\) 項、スカラー補正後の残差、ground branchのoverlapについて、証明できる範囲を整理する。
+
+**最重要：漸近的な誤差係数への上界と、有限stepで有効な厳密保証を区別する。**
+
+現段階では、\(d\) の上界だけから「証明付きのstep数削減が成立した」とは結論しない。
+
+有限 \(h\) の剰余、spectral gap、縮退、branch選択、位相aliasなどについて、追加で何を示す必要があるか明確にする。
+
+### K0-3：PFで実装可能なSOS表現
+
+一般的なSOS表示と、量子回路上で効率的に指数化できるPSD fragmentの表示を区別する。
+
+次の3層を比較する。
+
+**A. 既存DFのPSD化**
+
+既存DF表現に必要なsector依存の定数シフトを加えるなどして、安価にPSD fragmentを構成できる場合を調べる。
+
+これは新手法を評価するための重要な安価な対照である。
+
+**B. 構造化PF-SOS**
+
+既存DFに近いfragment構造・回路形式・fragment数を保持したままSOS構造を利用する方法を調べる。
+
+**C. 一般PF-SOS**
+
+Hermitianな一体演算子 \(X_\gamma\) の平方
+
+\[
+F_\gamma=X_\gamma^2
+\]
+
+を利用する、より自由度の高いSOS表現を調べる。
+
+軌道回転、対角位相、制御付き回路への接続を検討する。
+
+特に次を検証する。
+
+- Gram行列のPSD条件と分解規則
+- 複素Hermitian Gramと実対称Gramの違い
+- \(\mathrm{rank}(\mathrm{Re}\,G)\le2\mathrm{rank}(G)\) の適用範囲
+- 実平方fragment数と元Gram rankの関係
+- 残余一体項をPSD化する際の下界悪化
+- Spin・粒子数・BLISS idealの扱い
+- 元Hamiltonianとの厳密な等価性
+- DF/CDF近似を使用する場合の別誤差
+
+一般SOSにおいて小さいSOS gapが得られることを、そのままPF-native SOSでも小さいgapが得られる根拠としないこと。
+
+また、Gram因子の直交回転探索は旧D案に関連するため、今回は新しい最適化研究として開始しない。
+
+### K0-4：費用機構と強い対照
+
+次を区別して静的に評価する。
+
+1. 保証付き誤差上界の改善
+2. 実際の基底固有値誤差の改善可能性
+3. Fragment数・step単価を含む回路費用の改善
+4. 古典的なSOS証拠生成・検証費用
+5. QPE/RPEに必要な制御、位相精度、overlap、成功確率
+
+比較対象には必要に応じて、
+
+- DF/CDF＋S2
+- PSD化したDF＋既存commutator bound
+- CS2
+- S4
+- 近可積分PF
+- その他、同じ保証目標を達成する強い既存方法
+
+を含める。
+
+**同一PSD分割で保証方法だけを変更した場合**と、**保証方法を固定して分割自体を変更した場合**を分けること。
+
+Claudeの損益分岐式は、記号的なscreening用模型として検証する。
+
+その際、SOS gapの縮小がfragment数、幅、Givens回路、RZ/RZZ、制御回路、FT synthesis、古典前処理の増加で打ち消されない条件を整理する。
+
+Claudeが提示した「2倍以上の総費用改善」という数値は、正式な採択gateとして固定しない。改善倍率は感度分析の参考値とし、研究上の成功基準は今後の科学レビューで決定する。
+
+### K0-5：研究上の価値とK1設計
+
+K0-1〜K0-4を統合し、次を明確にする。
+
+- どの部分が既存数学の直接利用か。
+- どこに独立した構成原理・保証・計算量上の貢献が残るか。
+- PF-native SOSを用いる必要性は何か。
+- SOS gapの改善と実際の基底エネルギー誤差改善を、どのように分離して検証できるか。
+- どのような結果なら研究を継続する価値があり、どのような結果なら停止すべきか。
+
+K1が必要と判断される場合は、検証する中心仮説、強いbaseline、比較指標、独立入力、実行上限、STOP条件を含む計画案を作成する。
+
+ただし、**K1の計算実行、研究テーマの正式採択、追加研究の開始をCodexが独断で行わないこと。**
+
+## 4. K0での禁止事項
+
+以下は許可しない。
+
+- 新規分子Hamiltonian生成
+- SDPの数値求解
+- 固有値・期待値計算
+- 保存科学数値の再集計・再ランキング
+- PFの新しい数値シミュレーション
+- Native回路compile、T合成、資源benchmark
+- 新しいoptimizerや数値的なcertificate探索
+- 候補B・Cの自動開始
+- 旧D案や閉じた研究系列の再開
+- 既存の科学source・results・認可・STOP・manifestの変更
+
+既存source・資料の読み取り、紙上の数学的導出、文献調査、静的な回路費用式の検討は実施してよい。
+
+新しい科学計算の実行が必要になった場合は、その目的・範囲・必要な承認を報告して停止すること。
+
+## 5. K0の判定
+
+結果は以下の状態を区別して整理する。
+
+| 状態 | 意味 |
+|---|---|
+| `REDUCES_TO_KNOWN` | 中核構成が既知手法へ還元され、独立した研究差分が確認できない |
+| `MATHEMATICALLY_UNCLOSED` | 必要な数学的条件・保証が成立または証明できていない |
+| `NO_COST_LEVER` | 計算費用上の改善機構が具体化できない |
+| `UNDETERMINED_DATA_REQUIRED` | 静的検証で判断できず、別途数値的証拠が必要 |
+| `K0_PROTOTYPE_CANDIDATE` | 数学・既報性・実装可能性・費用機構に一定の根拠があり、次の限定検証を検討する価値がある |
+
+単に文献値が不足していることを科学的な否定結果としないこと。
+
+また、**K0通過は研究テーマの正式採択でも、K1実行の承認でもない。**
+
+## 6. 成果物
+
+以下を一つのまとまったK0成果として整理する。
+
+1. **技術監査Markdown**
+   - 研究目的と検証した仮説
+   - 重要な数式の独立検証
+   - 先行研究との対応
+   - PF-native SOSの構成可能性
+   - 費用・情報条件
+   - 支持される主張と未確定事項
+   - K0結論と停止理由
+
+2. **文献registry**
+   - 論文名、著者、版、URL
+   - 実際に確認した節・定理
+   - 取得状況
+   - 今回の候補との関係
+
+3. **Method status**
+   - 各K0項目の判定
+   - 全体のgate状態
+   - 科学的未確定事項
+   - 次段階の認可状態
+
+4. **GPT向け引継ぎ**
+   - K0の最重要結論
+   - 新規性が残ったか
+   - 数学・費用のblocking issue
+   - 今後の選択肢
+   - GPTで判断すべき事項
+   - 新しい科学計算を実施していないこと
+
+既存成果を詳細に書き直す必要はない。既存資料への参照を利用すること。
+
+監査結果のローカル文書作成は実施してよいが、GitHubへのcommit・pushは今回の指示だけでは承認済みと扱わない。公開が必要な場合は、対象ファイルと変更範囲を示して別途承認を得ること。
+
+## 7. 作業上の原則
+
+- Codexが実施できる技術的検証・情報収集は、できるだけCodex側で完結する。
+- 軽微な数式修正、文献確認、仕様整理のたびにGPTレビューを要求しない。
+- ClaudeやGPTの過去の判断を無条件に正しいものとして扱わない。
+- 研究継続を前提とせず、既知法への還元や費用改善不能の根拠も積極的に調べる。
+- 数学的な不可能性と、現在の有限な構成では改善規則が特定できないことを区別する。
+- 未確認の仮定や必要資料を推測で補わない。
+- 既存の正式CLOSED・STOP・PAUSED・HOLDを維持する。
+- 新たな科学計算・実験の承認は別に必要とする。
+
+## 8. 完了条件とMandatory STOP
+
+K0-1〜K0-5の技術検証と必要な成果整理を、可能な限り一度の作業で完了する。
+
+ただし、中核構成が明確に既知法へ還元された場合や、科学的な前提の変更が必要になった場合は、その時点で追加作業の価値を判断し、必要以上に調査範囲を広げないこと。
+
+最終報告には以下を含める。
+
+- K0全体の結果
+- 新規性について確認できたこと
+- 数学的に成立したこと・未解決なこと
+- PF-native実装可能性
+- 費用改善機構の有無
+- K1の情報価値
+- 作成資料と未取得資料
+- 新しい科学計算・GitHub変更の実施有無
+- Mandatory STOPの状態
+
+**K0終了後はMandatory STOPする。**
+
+新研究候補の正式採択、K1への移行、追加科学計算は行わず、必要な科学的判断をGPTへ戻す。
+
+今回の目的は、SOS-PFを成功させることではなく、**SOS-PFに独立した新規性と計算上の価値が本当に残っているかを、計算前に可能な限り厳密に判別すること**である。
