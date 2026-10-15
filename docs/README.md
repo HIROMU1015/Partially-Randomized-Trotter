@@ -797,3 +797,9 @@ B0+Iの実compile費用は未測定。元登録集合の結果は不変で、主
 ## 2026-10-15 Track A：H8 D0 driver／H6 native B0+I bridge
 
 [最終技術実装](research/track_a_final_pre_review_implementation_20261015.md)／[GPT追加handoff](research/track_a_final_pre_review_handoff_20261015.md)。H8 D0のbounded one-shotとH6 native I bridgeを完成、人工41PASS。未認可実行・one-shot retry・旧値mismatchを拒否。fresh binding/科学採択/実実証を区別し、新科学/実再会計/compile/grant0、mandatory STOP。
+
+
+## 2026-10-15 H6 独立資源観測の修正
+
+H6 pilot run02はnative正しさ検証中のcallback stalenessでSTOP、compile0。既存metadata launcherの独立資源観測へ修正し、SOURCEb73580dd…/closure13、限定84testsとGIL保持C約12秒の2process実動作検査PASS。追加本番role/process0、5秒・資源・科学/compiler条件維持、旧消費/unknown保持、subagent0。新run03へ結合して再実行。
+[修正・検証・新実行binding](research/track_a_h6_external_monitor_fix_20261015.md)。

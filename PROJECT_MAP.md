@@ -1211,3 +1211,9 @@ SOURCE無変更のartifact固定後、直前freshCPU/memory/PSI/OOM/FS/inode/quo
 ## 2026-10-15 Track A：H8 D0 driver／H6 native B0+I bridge
 
 [最終技術実装](docs/research/track_a_final_pre_review_implementation_20261015.md)／[科学判断handoff](docs/research/track_a_final_pre_review_handoff_20261015.md)。SOURCE60eeb51c…、独立bounded H8 driverとnative B0+I bridge、人工41件PASS。元科学SOURCE/結果/grant/ledger/venv不変、実値再会計・科学build/compile0。future契約false/CPU[]/未seal/commandnull、採択・起動は別承認、mandatory STOP。
+
+
+## 2026-10-15 H6 独立資源観測の修正
+
+H6 pilot run02はnative正しさ検証中のcallback stalenessでSTOP、compile0。既存metadata launcherの独立資源観測へ修正し、SOURCEb73580dd…/closure13、限定84testsとGIL保持C約12秒の2process実動作検査PASS。追加本番role/process0、5秒・資源・科学/compiler条件維持、旧消費/unknown保持、subagent0。新run03へ結合して再実行。
+[修正・検証・新実行binding](docs/research/track_a_h6_external_monitor_fix_20261015.md)。

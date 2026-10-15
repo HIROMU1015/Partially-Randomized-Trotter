@@ -670,3 +670,9 @@ stdlib保存スカラー解析、Matplotlib表示、Fraction照合、bounded eve
 ## 2026-10-15 Track A：H8 D0 driver／H6 native B0+I bridge
 
 [H8 D0 driver](h8_d0_saved_execution_v1.py)、[逐次launcher](launch_h8_d0_saved_once_v1.sh)、[共通guard](final_pre_review_execution_v1.py)、[H6 bridge](h6_native_b0i_bridge_v1.py)を独立追加。未認可ではinput loader前に拒否し、旧944precision/3576map完全一致後だけ追加解析へ進む。H6はscalar/control phaseを一度だけ元builderへ渡す。[技術資料](../docs/research/track_a_final_pre_review_implementation_20261015.md)。人工41PASS、実H8再会計/実H6 build/compile0、原scientific module/runner変更0。
+
+
+## 2026-10-15 H6 独立資源観測の修正
+
+H6 pilot run02はnative正しさ検証中のcallback stalenessでSTOP、compile0。既存metadata launcherの独立資源観測へ修正し、SOURCEb73580dd…/closure13、限定84testsとGIL保持C約12秒の2process実動作検査PASS。追加本番role/process0、5秒・資源・科学/compiler条件維持、旧消費/unknown保持、subagent0。新run03へ結合して再実行。
+[修正・検証・新実行binding](../docs/research/track_a_h6_external_monitor_fix_20261015.md)。
