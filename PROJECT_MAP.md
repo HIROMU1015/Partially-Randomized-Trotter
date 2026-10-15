@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-15 H6 optimized run04再実行認可
+
+[再実行・binding・監視入口](docs/research/track_a_h6_family_optimized_run04_20261015.md)。SOURCEac6d28e3…、親重複走査削減/cleanup修正・61人工PASSを採用し、2worker/各thread1で新runへ。科学/compiler/資源/PSI条件不変、run03予約6/unknown保持。主担当照合/subagents0、直前fresh gate後だけ起動。以下は過去の各時点の記録。
+
 ## 2026-10-15 H6 fingerprint並列化・cleanup修正
 
 [修正・人工61件・再実行案](docs/research/track_a_h6_family_fingerprint_parallel_fix_20261015.md)。親の重複走査をworker前後SHA証跡へ集約し、停止後のsignal割込によるreap中断を修正。旧証拠保持、2worker案、資源/PSI条件不変、今回の再起動0。以下は過去の各時点の記録。
