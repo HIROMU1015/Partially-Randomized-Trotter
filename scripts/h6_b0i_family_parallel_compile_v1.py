@@ -54,7 +54,8 @@ def worker_main(task,api,grant,g,write_fd,parent_pid,old_mask,other_read_fds):
         for fd in other_read_fds:os.close(fd)
         os.sched_setaffinity(0,{task['cpu']})
         temporary=grant.output/'temp'/('compile_'+task['name']);temporary.mkdir(mode=0o700)
-        for key,path in dict(TMPDIR=temporary,MPLCONFIGDIR=temporary/'mpl',XDG_CACHE_HOME=temporary/'cache').items():
+        for key,path in dict(TMPDIR=temporary,MPLCONFIGDIR=temporary/'mpl',XDG_CACHE_HOME=temporary/'cache',
+                NUMBA_CACHE_DIR=temporary/'numba').items():
             if path!=temporary:path.mkdir(mode=0o700)
             os.environ[key]=str(path)
         import tempfile

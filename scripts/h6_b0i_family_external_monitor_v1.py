@@ -113,14 +113,16 @@ class Observer:
         if size > budget['address_space_bytes']: raise g.Stop('EXTERNAL_AS_CAP')
         if cpu > budget['cpu_seconds']: raise g.Stop('EXTERNAL_CPU_CAP')
         if int(status['Threads']) != 1:
-            raise g.Stop('EXTERNAL_AFFINITY_OR_THREAD_CHANGED')
+            raise g.Stop('EXTERNAL_THREAD_COUNT_CHANGED:threads='+status['Threads'].strip()+
+                ';state='+status['State'].strip()+';affinity='+str(sorted(affinity)))
         if len(affinity) != 1 or not affinity <= set(allowed):
             first = self.worker_first_seen.setdefault(expected['pid'], self.clock())
             if (worker_bootstrap and expected['pid'] not in self.worker_affinity_confirmed
                     and affinity == {self.grant.contract['parallel_compile']['driver_cpu']}
                     and self.clock()-first < 5):
                 return None  # No lease/compile until this child is on its worker CPU.
-            raise g.Stop('EXTERNAL_AFFINITY_OR_THREAD_CHANGED')
+            raise g.Stop('EXTERNAL_AFFINITY_CHANGED:actual='+str(sorted(affinity))+
+                ';allowed='+str(sorted(allowed)))
         if worker_bootstrap: self.worker_affinity_confirmed.add(expected['pid'])
         self.resource_last_seen[expected['pid']]=self.clock()
         return dict(identity=expected, peak_RSS_bytes=rss, AS_bytes=size,

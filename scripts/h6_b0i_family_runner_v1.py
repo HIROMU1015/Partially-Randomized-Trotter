@@ -84,7 +84,8 @@ def prepare_private_temp(grant):
     """Run only after authorization/exclusive output; prevent tempfile fallback."""
     grant.require(SCOPE)
     temporary=grant.output/'temp';temporary.mkdir(mode=0o700)
-    paths=dict(TMPDIR=temporary,MPLCONFIGDIR=temporary/'mpl',XDG_CACHE_HOME=temporary/'cache')
+    paths=dict(TMPDIR=temporary,MPLCONFIGDIR=temporary/'mpl',XDG_CACHE_HOME=temporary/'cache',
+        NUMBA_CACHE_DIR=temporary/'numba')
     for key,path in paths.items():
         if path!=temporary:path.mkdir(mode=0o700)
         os.environ[key]=str(path)

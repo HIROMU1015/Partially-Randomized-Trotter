@@ -37,7 +37,13 @@ class NativeAdapter:
         grant.require(b.SCOPE)
         if grant.synthetic: raise g.Stop('ARTIFICIAL_RUN_REQUIRES_MOCK_ADAPTER')
         self.grant, self.verified, self.mapping, self.calls, self.guard = grant, verified, mapping, calls, guard
+        owner=getattr(guard,'__self__',None);previous_phase=getattr(owner,'phase',None)
+        def phase(value):
+            if owner is not None and previous_phase is not None:owner.phase=value
+            guard()
+        phase('A_IMPORT_NATIVE_PROVIDER')
         self.provider = b.native_provider(grant, grant.contract['native_provider']['checkout'])
+        phase('A_IMPORT_NUMERICAL_PORT')
         self.np = importlib.import_module('numpy')
         self.port = importlib.import_module('trottertracks.resource_applicability.h6_matched_port_v1')
         self.cost_api = importlib.import_module('trotterlib.rte_compiled_cost')
@@ -48,6 +54,7 @@ class NativeAdapter:
         for key in ('hamiltonian', 'state'):
             if snapshot['metadata'][key+'_hash'] != grant.contract['binding'][key]:
                 raise g.Stop('SNAPSHOT_INTERNAL_IDENTITY')
+        phase('A_SNAPSHOT_LOAD')
         calls.take('snapshot_load')
         self.ham, sector, full, state, _, _ = loader.load_h6_snapshot(
             g.home_path(mapping['h6_input_snapshot.npz'], existing=True), snapshot,
@@ -62,6 +69,7 @@ class NativeAdapter:
             cp['optimization_level'], None, None, cp['seed_transpiler'], qiskit.__version__)
         if self.cost_api.compiler_settings_hash(self.compiler) != grant.contract['binding']['compiler']:
             raise g.Stop('COMPILER_SETTINGS_HASH')
+        if owner is not None and previous_phase is not None:owner.phase=previous_phase
         guard()
 
     def fingerprint(self, circuit):

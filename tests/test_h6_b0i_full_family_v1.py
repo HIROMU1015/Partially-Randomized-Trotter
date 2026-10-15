@@ -175,6 +175,17 @@ class FamilyTests(unittest.TestCase):
     def test_child_CPU_persists_after_successful_cleanup(self):
         self.assertEqual(self.execute(),0)
         self.assertAlmostEqual(self.read('parallel_cleanup_v1.json')['child_cpu_seconds'],.18)
+    def test_numba_cache_is_confined_to_exclusive_run_temp(self):
+        grant=g.authorization_gate(self.c,self.a,contract_sha=g.d0.digest(self.c),
+            authorization_sha=g.d0.digest(self.a),output=self.output,scope=r.SCOPE,synthetic=True)
+        self.output.mkdir()
+        previous=tempfile.tempdir
+        try:
+            with patch.dict(os.environ):
+                r.prepare_private_temp(grant)
+                self.assertEqual(Path(os.environ['NUMBA_CACHE_DIR']),self.output/'temp/numba')
+                self.assertTrue(Path(os.environ['NUMBA_CACHE_DIR']).is_dir())
+        finally:tempfile.tempdir=previous
     def test_unresolved_screen_is_not_ineligible_skip(self):
         rows=[dict(epsilon=e,factor=f,accounting=dict(cost_acquisition_eligible=False,
             eligibility_under_declared_allowance='NUMERICALLY_UNRESOLVED')) for e in r.family.EPS for f in r.family.FACTORS]
@@ -186,6 +197,20 @@ class FamilyTests(unittest.TestCase):
 
 
 class SmallIndependentTests(unittest.TestCase):
+    def test_thread_and_affinity_failures_have_distinct_diagnostics(self):
+        e=r.load('family_observer_error_test','h6_b0i_family_external_monitor_v1.py')
+        observer=object.__new__(e.Observer);observer.g=g;observer.clock=lambda:100.
+        observer.resource_last_seen={};observer.worker_first_seen={};observer.worker_affinity_confirmed=set()
+        observer.grant=SimpleNamespace(contract=dict(budget=dict(rss_bytes=2**30,address_space_bytes=2**30,cpu_seconds=100)))
+        identity=dict(pid=123456,uid=os.getuid(),start_ticks=1,parent_pid=123,boot_id='FIXTURE')
+        for threads,affinity,reason in ((2,{63},'EXTERNAL_THREAD_COUNT_CHANGED:threads=2'),
+                (1,{62},'EXTERNAL_AFFINITY_CHANGED')):
+            status=f'State:\tR\nVmHWM:\t16 kB\nVmSize:\t32 kB\nThreads:\t{threads}\n'
+            def read(path,*args,**kwargs):
+                return status if path.name=='status' else '123456 (fixture) '+' '.join(['R']+['0']*30)
+            with patch.object(g,'identity',return_value=identity),patch.object(e.Path,'read_text',read),\
+                    patch.object(e.os,'sched_getaffinity',return_value=affinity):
+                with self.assertRaisesRegex(g.Stop,reason):observer.process(identity,[63])
     def test_Phase_D_still_charges_completed_children(self):
         monitor=object.__new__(g.Monitor)
         monitor.clock=lambda:100.;monitor.last=100.;monitor.started=0.;monitor.max_interval=0.
