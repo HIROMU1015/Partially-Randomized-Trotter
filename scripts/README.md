@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 2026-10-15 H6 fingerprint並列化・cleanup修正
+
+[修正・人工61件・再実行案](../docs/research/track_a_h6_family_fingerprint_parallel_fix_20261015.md)。親の重複走査をworker前後SHA証跡へ集約し、停止後のsignal割込によるreap中断を修正。旧証拠保持、2worker案、資源/PSI条件不変、今回の再起動0。以下は過去の各時点の記録。
+
 ## 2026-10-15 H6 native B0+I 全12構成の実行準備
 
 [全12構成・旧6軸再利用・新規最大18軸の実装と契約案](../docs/research/track_a_h6_native_b0i_full_family_readiness_20261015.md)。SOURCE731826b3…、44人工tests PASS、別担当の限定技術監査PASS_WITH_LIMITS。旧3構成は元SOURCE2e733d8a…の実測としてREUSE_WITH_DECLARED_LIMITS。新9の全10条件screen後、全selected correctness合格時のみ最大6並列compileへ進む経路を準備した。旧4h実績を残し、新wall-null/CPU別予算・資源は未承認案。CPU[]/false/未seal/commandnull、新実H6数値・native build/probe/compile・grant・venv/他job変更0、mandatory STOP。以下は各時点の履歴。

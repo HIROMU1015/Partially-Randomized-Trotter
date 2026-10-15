@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-15 H6 fingerprint並列化・cleanup修正
+
+[修正・人工61件・再実行案](docs/research/track_a_h6_family_fingerprint_parallel_fix_20261015.md)。親の重複走査をworker前後SHA証跡へ集約し、停止後のsignal割込によるreap中断を修正。旧証拠保持、2worker案、資源/PSI条件不変、今回の再起動0。以下は過去の各時点の記録。
+
 ## 2026-10-15 H6 font-cache Timer起動STOP修正
 
 [原因・修正・binding](docs/research/track_a_h6_family_font_seed_fix_20261015.md)。SOURCE99abc20a…、空MPLCONFIGDIRのMatplotlib警告TimerでThreads2になる経路を特定。表示font metadataだけをbyte/hash固定してown-runへseedし、thread1/5s/科学条件を維持。人工49件＋seed済みprovider import診断PASS。前2回の科学予約/compile0を保全し、fresh gate後に修正one-shotを起動する。主担当のみ/subagents0。以下は各時点の履歴。
