@@ -8,7 +8,7 @@
 
 run03はSOURCE b73580dd…で全3構成のnative correctnessと12 probesが合格。最大discrepancyはp15q8の8.94286541500109e-14、既存主gate約1.1e-9以内。新しい独立観測は全期間継続し、最大開始間隔約1.024秒、最大所要約.012秒、observerのfirst STOPなしだった。
 
-6 compile childrenが全てactual callへ入った後、親の/proc status読取が`KeyError: VmRSS`となり停止。最初のp5q1 cosineはnative exit0/PASS payload、RZ10670・CX4764・depth4184、残る5 workerは親cleanupのOWN_SIGNAL15でexit2。これは部分worker payloadであり、受理済みpilot結果ではない。全6 reaped/errors[]、driver wait2/recorder0/元identity不存在、launcher wall1109.924569182098秒を固定した。
+6 childrenが全てworker compile APIへ入った後、親の/proc status読取が`KeyError: VmRSS`となり停止。最初のp5q1 cosineはnative exit0/PASS payload、RZ10670・CX4764・depth4184、残る5 workerは親cleanupのOWN_SIGNAL15でexit2。これは部分worker payloadであり、受理済みpilot結果ではない。全6 reaped/errors[]、driver wait2/recorder0/元identity不存在、launcher wall1109.924569182098秒を固定した。
 
 正常退出と同時にmemory fieldが欠けた観測は、退出時にmemory mapping情報が消える競合と整合する。kernel内の正確な関数・時系列のtraceは未取得で、exit_mmが今回の位置だったと証明したものではない。Stateやwait4(WNOHANG)の更新前にmemory fieldが欠ける場合を含め、混在した/proc snapshotを単なるKeyErrorにしないよう修正した。生存中の欠測を0や成功で補完してはならない。
 
@@ -20,7 +20,7 @@ run03はSOURCE b73580dd…で全3構成のnative correctnessと12 probesが合�
 
 新8＋既存84＝92限定tests PASS、wall約1.41秒、RSS32MiB、single process/thread1/science imports0/実compile0。mockは正常退出reap、live pending→5秒STOP、owner変更、非memory欠測、zombie/proc消滅、permission/IO errorを確認。さらに最小2child/全体3process/thread1、AS256MiB/RSS128MiB/CPU30秒/wall20秒/output1MiBの事前計画で、native exit0/wait4/reap/pipe EOFとFD閉鎖・元identity不存在を確認。wall約.21秒、compile0、科学import0。6実worker stressや新人工compileは行わない。
 
-source2 runtime files＋新2tests/fixture＋harness変更をSOURCE commitへ固定し、closure13を再結合。旧run01/run02/run03・診断のknown/unknown、run03 actual compile entered6/PASS payload1/accepted0をcarryへ保存。結果再利用・返却/reset0。
+source2 runtime files＋新2tests/fixture＋harness変更をSOURCE commitへ固定し、closure13を再結合。旧run01/run02/run03・診断のknown/unknown、run03 worker compile API entered6/PASS payload1/accepted0をcarryへ保存。結果再利用・返却/reset0。
 
 ## 新実行と現在状態
 
@@ -31,3 +31,5 @@ run04-v1/v2は直前CPU gateで混雑を検出し未起動。元grantはCANCELLE
 run04-v3は全SOURCE/profile/input/carry・memory/PSI/OOM/FS/inode/quota・未使用output/control/one-shotを再照合して起動。CPU driver62、workers61/60/59/56/49/47、内部thread1、metadata launcherは既存role。run ID `h6-native-b0i-pilot6-20261015-run04-v3`、launcher PID1470933。起動証跡はbundleの`run04_launcher_identity_v1.json`、実ログはhome配下のprivate evidence `h6-native-b0i-pilot6-run04-v3/control04/`、結果は同`run04/`。
 
 本資料は起動・修正の記録であり、本計算完了や6軸成功の主張ではない。全6軸完了またはfail-closed STOPで終了し、結果/native status/own cleanupを監査する。runner内部のautomatic_retry=falseと次stage未認可を維持し、必要修正と新grantの根拠は今回の明示指示に保持する。
+
+会計補足：worker payloadの`compile_call_entered`はadapter.compile APIへの進入を表す。その内部ではfingerprint後にQiskit transpileを呼ぶため、停止した5軸が実transpileへ到達したかは未記録/UNKNOWN。PASS1軸の完了だけが確認済み。予約6件は保守的に全保持し返却0。固定contractのcarry field `actual_compile_calls_entered=6`もこのworker APIの意味で保存しており、Qiskit全6完了を意味しない。
