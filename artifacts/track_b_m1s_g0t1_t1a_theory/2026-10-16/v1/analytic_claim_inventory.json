@@ -1,0 +1,71 @@
+{
+  "schema": "m1s_g0t1_t1a_analytic_claim_inventory_v1",
+  "date_jst": "2026-10-16",
+  "status": "T1A_ANALYTIC_PROOF_SUBMITTED_WITH_DOMAIN_CHECKPOINT1_PENDING_MANDATORY_STOP",
+  "proof_document": "docs/tracks/algorithm_codesign/m1s_g0t1_t1a_uniform_csec_signal_bound_and_proof_20261016.md",
+  "author_result_classification": "PROVED_WITH_DOMAIN",
+  "independent_scientific_acceptance": "PENDING_NOT_PERFORMED",
+  "novelty_adjudication": "NOT_PERFORMED",
+  "claims": [
+    {
+      "id": "HS_DISSIPATIVITY",
+      "location": "section_3_lemma_1",
+      "statement": "D=-E(J_j-L)^2/2; -2 Id <= D <= 0; b0 <= b <= 2"
+    },
+    {
+      "id": "LOCAL_HIGHER_ORDER",
+      "location": "section_4_lemma_3",
+      "statement": "norm(Phi_theta-exp(i theta L+theta^2 D))_2to2 <= 18 abs(theta)^3 for real abs(theta)<=1"
+    },
+    {
+      "id": "UNIFORM_SIGNAL",
+      "location": "sections_5_6_equations_S_O_T1a",
+      "statement": "abs(z-zsec)<=sqrt(n)*(18*tau*abs(theta)+tau*bnear(eta)+2*abs(theta)*kappafar(eta)*(1+tau*(b+b0)))",
+      "tau": "N*theta^2",
+      "N": "all integers >= 0 with tau<=D_cap",
+      "eta": "any nonnegative analysis cutoff, exact C_sec unchanged",
+      "norm": "Hilbert_Schmidt_induced_2_to_2",
+      "constants": "b0<=b<=2; kappafar is ordered coupling-norm/absolute-frequency-gap sum",
+      "uniformity": "fixed finite model and finite D_cap; not size/gap-family uniform"
+    },
+    {
+      "id": "PHASE_FLOOR",
+      "location": "section_7",
+      "statement": "if abs(zsec)>=r_star>0 and E<r_star then abs(z)>=r_star-E and abs(Arg(z/zsec))<=arcsin(E/r_star)",
+      "scope": "one signal principal relative phase, not RPE"
+    },
+    {
+      "id": "SCALAR_SINGLE_PAIR_BLOCK",
+      "location": "section_8",
+      "statement": "if 2e_k=e_a+e_b only for pair(k,k), zsec=exp(2iNtheta e_k)*exp(-tau*(V_k+v_kk))",
+      "scope": "sufficient condition, not general resonant blocks or finite event ratio"
+    },
+    {
+      "id": "NONCOMMUTING_NONEMPTY_DOMAIN",
+      "location": "section_9",
+      "statement": "P1=Z,P2=X,p1=p2=1/2; Cstar=18 sqrt(2) D_cap+1+2D_cap; 0<abs(theta)<min(1,exp(-D_cap/2)/Cstar)",
+      "method": "analytic hand derivation only",
+      "numerical_evaluation": false
+    },
+    {
+      "id": "CHANNEL_TARGET_CORRESPONDENCE",
+      "location": "section_9_1",
+      "statement": "same-law CPTP directional embedding; ideal-channel diamond norm >= abs(z-u), while signal-to-Csec bound may vanish at finite damping",
+      "scope": "different targets identified; no imported qDRIFT theorem constants, universal dominance, or novelty claim"
+    }
+  ],
+  "not_claimed": [
+    "T1b transfer",
+    "size-uniform bound",
+    "molecular validation",
+    "unconditional signal floor",
+    "RPE RMS/shots",
+    "finite event ratio",
+    "native cost advantage",
+    "independent novelty",
+    "Checkpoint1 GO"
+  ],
+  "scientific_numerical_runs": 0,
+  "scientific_test_runs": 0,
+  "mandatory_STOP": true
+}

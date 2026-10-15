@@ -1,3 +1,5 @@
+> **M1-S G0-T1 T1a（2026-10-16）：[一様C-sec上界・全証明](docs/tracks/algorithm_codesign/m1s_g0t1_t1a_uniform_csec_signal_bound_and_proof_20261016.md)／[Checkpoint 1資料](docs/tracks/algorithm_codesign/m1s_g0t1_t1a_checkpoint1_decision_packet_20261016.md)。** T1a実施承認に基づく解析的証明の著者提出。固定有限次元・有限減衰予算で全N一様O(abs(theta))、独立科学的受理・新規性・Checkpoint 1判断は未実施。数値/compile0、T1b未実施、mandatory STOP。以下は履歴・既存索引。
+
 > **Track B M1-S S0正式採択（2026-10-16）：[G0-T1正式理論契約](docs/tracks/algorithm_codesign/m1s_g0t1_s0_formal_theory_contract_20261016.md)。** ユーザーがG0-T1/A′・T1aのC-sec・T1bの固定r/小step系列を正式採択。契約採択と実施承認を分離し、T1a/T1b証明・Gate 0・Q4/Q5は未承認。新証明/科学計算/compile0、次はT1a実施の別途明示承認、mandatory STOP。以下は履歴・既存案内。
 
 > **Track B M1-S S0候補修正（2026-10-16）：[G0-T1理論契約候補](docs/tracks/algorithm_codesign/m1s_g0t1_s0_repaired_theory_contract_candidate_20261016.md)。** G0-T1/A′は暫定承認済み、契約最終採択・T1a/T1b証明実施は未承認。局所高次誤差・exact-half Ψ・joint scaling・dressing/相対誤差・Checkpointを整理。新証明/科学計算0、mandatory STOP。以下は履歴・既存案内。

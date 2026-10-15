@@ -1,3 +1,5 @@
+> **M1-S T1a（2026-10-16）：[一様上界・証明](../tracks/algorithm_codesign/m1s_g0t1_t1a_uniform_csec_signal_bound_and_proof_20261016.md)／[Checkpoint 1資料](../tracks/algorithm_codesign/m1s_g0t1_t1a_checkpoint1_decision_packet_20261016.md)。** T1aの解析的証明を著者提出。独立受理・新規性・科学GOはpending、数値0、T1b未実施。旧S0は当時の記録として保持、mandatory STOP。
+
 > **M1-S S0正式採択（2026-10-16）：[正式研究契約](../tracks/algorithm_codesign/m1s_g0t1_s0_formal_theory_contract_20261016.md)／[採択GPTレビュー原本](track_b_m1s_g0t1_s0_formal_adoption_gpt_scientific_review_20261016.md)。** G0-T1/A′、C-secと固定r小stepを正式採択。T1a/T1bの実施、Gate 0/Q4/Q5は未承認。旧候補・原本は保持し、mandatory STOP。
 
 > **M1-S G0-T1 S0候補（2026-10-16）：[候補契約](../tracks/algorithm_codesign/m1s_g0t1_s0_repaired_theory_contract_candidate_20261016.md)／[GPT独立科学レビュー原本](track_b_m1s_g0t1_claude_gpt_independent_scientific_review_20261016.md)。** G0-T1/A′はユーザー暫定承認済み。修正statementは未証明、契約最終採択・T1a/T1b実施未承認。mandatory STOP。

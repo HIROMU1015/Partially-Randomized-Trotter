@@ -1,3 +1,5 @@
+> **M1-S G0-T1 T1a（2026-10-16）：[定理と証明](tracks/algorithm_codesign/m1s_g0t1_t1a_uniform_csec_signal_bound_and_proof_20261016.md)／[Checkpoint 1資料](tracks/algorithm_codesign/m1s_g0t1_t1a_checkpoint1_decision_packet_20261016.md)。** 全N一様のC-sec複素信号上界を著者提出、固定モデル・有限減衰予算・明示gap/次元依存。独立科学レビューは未実施、数値/compile0、T1b未実施、mandatory STOP。以下は履歴。
+
 > **M1-S G0-T1 S0正式契約（2026-10-16）：[正式版](tracks/algorithm_codesign/m1s_g0t1_s0_formal_theory_contract_20261016.md)／[採択記録](../artifacts/track_b_m1s_g0t1_s0_formal_adoption/2026-10-16/v1/adoption_record.json)。** ユーザー採択済み、定理未証明・理論実施未承認。C-sec主比較／固定r小step、Checkpoint非自動進行、新science0、mandatory STOP。以下は履歴。
 
 > **M1-S G0-T1 S0（2026-10-16）：[修正理論契約候補](tracks/algorithm_codesign/m1s_g0t1_s0_repaired_theory_contract_candidate_20261016.md)。** [最新GPT原本](research/track_b_m1s_g0t1_claude_gpt_independent_scientific_review_20261016.md)をbyte保存。A′暫定承認と正式契約・実行承認を分離。新証明/科学計算0、mandatory STOP。以下は履歴・既存索引。

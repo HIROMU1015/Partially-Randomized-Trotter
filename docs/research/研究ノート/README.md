@@ -1,3 +1,5 @@
+- 2026-10-16: [Track B M1-S G0-T1 T1a解析的証明提出](2026-10-16_track_b_M1S_G0T1_T1a_theory.md)。固定有限次元・有限減衰で全N一様C-sec上界、独立科学的受理・新規性未判断。Checkpoint 1資料完成、T1b/数値未実施、mandatory STOP。
+
 - 2026-10-16: [Track B M1-S G0-T1 S0正式採択・最終固定](2026-10-16_track_b_M1S_G0T1_S0_formal_adoption.md)。C-sec主比較・固定r小step、契約採択済み/理論実施未承認、新science0、mandatory STOP。
 
 - 2026-10-16: [Track B M1-S G0-T1/A′暫定方針とS0修正候補](2026-10-16_track_b_M1S_G0T1_S0_contract_repair.md)。正式契約・証明実施は未承認、新science0、mandatory STOP。
