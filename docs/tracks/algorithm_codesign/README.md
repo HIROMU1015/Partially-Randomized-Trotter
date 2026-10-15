@@ -1,3 +1,5 @@
+> **M1-S G0実施前の候補契約（2026-10-15）：[証明義務・Gate 0 Decision Packet](m1s_g0_proof_and_gate0_precontract_20261015.md)。** [最新GPT原本](../../research/track_b_m1s_claude_final_gpt_independent_scientific_review_20261015.md)、[取得・identity索引](../../../artifacts/track_b_m1s_g0_contract_preparation/2026-10-15/v1/evidence_index.json)。契約未採択、rho単独GO/STOPなし、科学実行・新証明0、mandatory STOP。以下は履歴。
+
 > **M1-S G0-pre（2026-10-15）：[先行研究・ordered protocol・費用比較条件](m1s_g0_pre_prior_art_protocol_and_cost_decision_packet_20261015.md)。** 元M1の既知機構とM1-Sの未採択候補を区別。限定資料調査のみ、M1-S採択／G0／新証明／科学計算0、mandatory STOP。以下は履歴。
 
 > **Track B現在（2026-10-15・M1 P0完了）：[採択前の先行研究・制御実装・資源資料Decision Packet](m1_p0_prior_art_control_and_resource_decision_packet_20261015.md)。** 固定GitHub21資料・一次PDF9件の関連箇所を整理。M1正式採択・G0証明・V1科学計算は未開始、新規計算0。Parent allocation D＋Eを保持。次は明示開始承認後のGPT採択判断、mandatory STOP。[履歴](../../research/研究ノート/2026-10-15_track_b_M1_P0_evidence_preflight.md)。以下は過去の状態。
