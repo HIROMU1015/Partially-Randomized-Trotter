@@ -6,7 +6,7 @@
 
 対象はlinear H8/1Å/STO-3G、保存DF28、16 modes/sector4900、T=.8、S2、prefix7/14/21×q1/2/4/8。全12構成を保存signalから会計し、適格な構成を最大2件ずつnative correctness確認した後、cosine/sine最大4軸をcompileする。PR比較は保存確認union6/独立32 trajectoryに限定する。新SCF/DF/state/reference exponential action/PR trajectory生成、matched B0再測定、範囲拡張を行わない。
 
-driver CPU63、worker CPUs[62, 61, 59, 57]、内部thread1。初期gateで別々のidle physical coreを選んだ。affinityは新しいown-runと子孫だけに適用し、共有設定・他jobを変更しない。既存metadata launcherがdriver CPUを共有して1秒観測、最大5秒欠測STOPを維持する。
+driver CPU63、worker CPUs[61, 60, 56, 54]、内部thread1。初期gateで別々のidle physical coreを選んだ。affinityは新しいown-runと子孫だけに適用し、共有設定・他jobを変更しない。既存metadata launcherがdriver CPUを共有して1秒観測、最大5秒欠測STOPを維持する。
 
 数値role各AS64GiB/RSS32GiB、metadata AS512MiB/RSS256MiB、headroom16GiB。336.5GiBはAS上限の保守的な起動判定値であり、実際の確保・消費量ではない。stage累積CPU86,400秒、metadata CPU1,800秒、phase/total wallはnull。host full PSI>=1%、cgroup full PSI非zero、OOM増加、資源・容量・inode不足時はfail-closedとする。FS8GiB/40,000inodesと有効quotaをfresh gateで再確認する。現在の/home mountはquota無効のread-only記録を保存した。
 
@@ -17,3 +17,5 @@ driver CPU63、worker CPUs[62, 61, 59, 57]、内部thread1。初期gateで別々
 最終contract/auth/review/seal・launch wrapper hashを結合し、直前fresh CPU・memory/pressure/OOM・filesystem/inode/quota・SOURCE/profile/input/carry・未使用output/control・durable one-shot lockが合格した場合だけ一度起動する。完了またはfail-closed STOP後は証拠を保存してmandatory STOP、自動retry・次stage移行は行わない。
 
 privateな実行入口：`/home/AbeHiromu/projects/h6-handoff-evidence/20261015/h8-native-b0i-full-family-run01/`。`launcher_identity_v1.json`、`control01/external_resource_observation_v1.json`、`control01/launch_stdout.log`、`run01/terminal_v1.json`で実際の起動・進捗・終了を区別する。runtime/checkpoint/科学cache/venv/NPZはcommitしない。GitHub pushは今回未実施。
+
+追記：最初の起動前gateでCPU57が17% busyとなり、15%基準で起動を拒否した。実科学呼出・compile予約・one-shot消費はすべて0。旧contract/auth/sealと拒否証拠を`prelaunch-rejected01/`へ保全し、別idle CPUへ未使用の契約を再結合した。資源基準や科学条件を緩めず、profile/input/providerは直前gateで再照合する。科学runの再試行ではない。
