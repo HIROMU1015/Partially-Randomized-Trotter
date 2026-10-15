@@ -94,6 +94,9 @@ def grant_gate(config,grant,*,check_cpus=True):
         raise ValueError('EXACT_CPU_APPROVAL_REQUIRED')
     if grant.get('stage_maximum')!=config['plan']['demand']:
         raise ValueError('NEW_STAGE_BUDGET_APPROVAL')
+    if (grant.get('carry_digest')!=digest(config['carry']) or
+            grant.get('cumulative_caps')!=config['cumulative_caps']):
+        raise ValueError('CARRY_AND_CUMULATIVE_CAP_APPROVAL')
 
 
 def provider(config):

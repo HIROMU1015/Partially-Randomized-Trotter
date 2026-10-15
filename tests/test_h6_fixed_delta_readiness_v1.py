@@ -18,12 +18,14 @@ import h6_fixed_delta_runner_v1 as r
 
 def config():
     return dict(kind=p.KIND,SOURCE='a'*40,plan=p.preparation(),
+        carry={'synthetic_only':True},cumulative_caps=dict(compile=1910,trajectory=916,sampling_calls=3584),
         resources=dict(worker_cpus=list(range(20,28)),driver_cpu=28))
 
 
 def grant(c):
     return dict(kind=p.KIND,approved=True,runtime_authorization=True,user_approval='synthetic only',
         config_digest=p.digest(c),SOURCE=c['SOURCE'],one_shot=True,retry=False,next_stage_authorized=False,
+        carry_digest=p.digest(c['carry']),cumulative_caps=deepcopy(c['cumulative_caps']),
         allowed_cpus=list(range(20,29)),stage_maximum=c['plan']['demand'])
 
 
@@ -121,6 +123,12 @@ class GateTests(unittest.TestCase):
         with self.assertRaises(ValueError):r.grant_gate(c,g)
     def test_no_retry(self):
         c=config();g=grant(c);g['retry']=True
+        with self.assertRaises(ValueError):r.grant_gate(c,g)
+    def test_carry_change_rejected(self):
+        c=config();g=grant(c);g['carry_digest']='0'*64
+        with self.assertRaises(ValueError):r.grant_gate(c,g)
+    def test_cumulative_cap_change_rejected(self):
+        c=config();g=grant(c);g['cumulative_caps']['compile']=1909
         with self.assertRaises(ValueError):r.grant_gate(c,g)
     def test_concurrency_classification(self):
         self.assertEqual(r.resources(config(),'normal')['cost_workers'],8)

@@ -51,7 +51,10 @@ def main():
         r=receipt(name,mapping[name]);expected=next(x for x in old['input_receipts'] if x['logical_name']==name)
         if (r['bytes'],r['sha256'])!=(expected['bytes'],expected['sha256']):raise ValueError('INPUT_BYTES_SHA')
         files.append(r)
+    pilot_path=Path('/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h6-conditional-s2-pilot-preparation-20261013/artifacts/resource_applicability/track_a_h6_conditional_s2_pilot_result_v1/2026-10-13/aggregate_calls.json')
+    pilot=load(pilot_path)
     files.extend([receipt('old_preparation_archive',archive_path),receipt('tail_scalar_receipt',scalar_path),
+        receipt('completed_s2_pilot_cumulative_calls',pilot_path),
         receipt('carry_history',FAMILY/'carry_binding_evidence_v1.json'),receipt('completed_family_terminal',FAMILY/'run01/terminal_v1.json')])
     fonts=old['startup_font_cache'];files.append(receipt('font_seed',fonts['path']))
     profile=old['profile'];hashes={name:file_hash(ROOT/name) for name in SOURCE_PATHS}
@@ -64,7 +67,13 @@ def main():
         tail_scalar=dict(C=scalar['C'],C_error=scalar['scalar_error_upper']),
         font_seed=dict(path=fonts['path'],name=fonts['filename'],sha256=fonts['sha256']),
         compiler_hash=old['binding']['compiler'],profile_reference=profile['full_critical_hashes_reference'],
-        carry_policy='NO_RESET_NO_REFUND_UNKNOWN_RETAINED',carry=deepcopy(old['carry']),
+        carry_policy='NO_RESET_NO_REFUND_UNKNOWN_RETAINED',carry=dict(
+            s2_pilot_aggregate=pilot,native_b0i_history=deepcopy(old['carry']),
+            completed_family_calls=load(FAMILY/'run01/full_family_results_v1.json')['calls'],
+            native_compile_known_entered_or_completed=24,native_compile_unknown_held=6,
+            conservative_compile_carry=1766,conservative_trajectory_carry=852,
+            unknown_historical_actual=None,refund=0,reset=False),
+        cumulative_caps=dict(compile=1910,trajectory=916,sampling_calls=3584),
         completed_family_calls=load(FAMILY/'run01/full_family_results_v1.json')['calls'],
         resources=dict(worker_cpus=[20,21,24,25,26,27,28,29],driver_cpu=22),
         output=str(directory/'output01'),control=str(directory/'control01'),
