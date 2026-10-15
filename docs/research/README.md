@@ -1,3 +1,5 @@
+> **M1-S G0-T1 S0候補（2026-10-16）：[候補契約](../tracks/algorithm_codesign/m1s_g0t1_s0_repaired_theory_contract_candidate_20261016.md)／[GPT独立科学レビュー原本](track_b_m1s_g0t1_claude_gpt_independent_scientific_review_20261016.md)。** G0-T1/A′はユーザー暫定承認済み。修正statementは未証明、契約最終採択・T1a/T1b実施未承認。mandatory STOP。
+
 > **M1-S契約準備（2026-10-15）：[G0証明義務・Gate 0候補契約](../tracks/algorithm_codesign/m1s_g0_proof_and_gate0_precontract_20261015.md)。** 主要参照は[GPT完成レビュー原本](track_b_m1s_claude_final_gpt_independent_scientific_review_20261015.md)（46,341 bytes、byte保存）。条件付きBは科学的推奨で、正式採択・G0実行承認ではない。新証明・科学計算0、mandatory STOP。
 
 > [Parent allocation採択済みGPT科学設計](track_b_parent_allocation_scientific_design_review_20261014.md)／[実行source準備](../tracks/algorithm_codesign/parent_allocation_execution_source_preparation_20261015.md)。科学実行は別承認までSTOP。

@@ -1,3 +1,5 @@
+- 2026-10-16: [Track B M1-S G0-T1/A′暫定方針とS0修正候補](2026-10-16_track_b_M1S_G0T1_S0_contract_repair.md)。正式契約・証明実施は未承認、新science0、mandatory STOP。
+
 - 2026-10-15: [Track B M1-S：G0証明義務・Gate 0候補契約の技術整理](2026-10-15_track_b_M1S_G0_precontract.md)。原本保存・参照照合、未採択、科学実行0、mandatory STOP。
 
 - [2026-10-15：採択KKT訂正・S4補完準備](2026-10-15_track_b_parent_allocation_s4_kkt_preparation.md)：20旧proxy記録保持、50対照reuse、114 tests、登録実行0、STOP。

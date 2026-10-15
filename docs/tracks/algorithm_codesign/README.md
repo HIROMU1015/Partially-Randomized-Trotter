@@ -1,3 +1,5 @@
+> **G0-T1 S0候補修正（2026-10-16）：[Decision Packet](m1s_g0t1_s0_repaired_theory_contract_candidate_20261016.md)。** [最新GPT原本](../../research/track_b_m1s_g0t1_claude_gpt_independent_scientific_review_20261016.md)／[取得・同一性索引](../../../artifacts/track_b_m1s_g0t1_s0_contract_repair/2026-10-16/v1/evidence_index.json)。T1a→Checkpoint 1→T1b→重要GPTレビューのA′は暫定方針、契約最終採択・研究実行は未承認。新証明/科学計算0、mandatory STOP。以下は履歴。
+
 > **M1-S G0実施前の候補契約（2026-10-15）：[証明義務・Gate 0 Decision Packet](m1s_g0_proof_and_gate0_precontract_20261015.md)。** [最新GPT原本](../../research/track_b_m1s_claude_final_gpt_independent_scientific_review_20261015.md)、[取得・identity索引](../../../artifacts/track_b_m1s_g0_contract_preparation/2026-10-15/v1/evidence_index.json)。契約未採択、rho単独GO/STOPなし、科学実行・新証明0、mandatory STOP。以下は履歴。
 
 > **M1-S G0-pre（2026-10-15）：[先行研究・ordered protocol・費用比較条件](m1s_g0_pre_prior_art_protocol_and_cost_decision_packet_20261015.md)。** 元M1の既知機構とM1-Sの未採択候補を区別。限定資料調査のみ、M1-S採択／G0／新証明／科学計算0、mandatory STOP。以下は履歴。
