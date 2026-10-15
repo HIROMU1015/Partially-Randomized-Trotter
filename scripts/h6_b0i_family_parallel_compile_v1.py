@@ -58,6 +58,7 @@ def worker_main(task,api,grant,g,write_fd,parent_pid,old_mask,other_read_fds):
                 NUMBA_CACHE_DIR=temporary/'numba').items():
             if path!=temporary:path.mkdir(mode=0o700)
             os.environ[key]=str(path)
+        g.seed_font_cache(grant,temporary/'mpl')
         import tempfile
         tempfile.tempdir=str(temporary)
         monitor_factory=g.Monitor

@@ -130,6 +130,38 @@ def marker_path(output):
     return output.with_name(output.name+'.oneshot')
 
 
+def seed_font_cache(grant, directory):
+    """Byte-bound display metadata avoids Matplotlib's cold-cache Timer thread.
+
+    This is not a scientific result, circuit, JIT, or transpiler cache.
+    No Matplotlib import, font scan, or change to its installed files is needed.
+    """
+    grant.require('H6_NATIVE_B0I_FULL_FAMILY12_V1')
+    seed=grant.contract.get('startup_font_cache')
+    if not seed:
+        if grant.synthetic:return
+        raise Stop('BOUND_STARTUP_FONT_CACHE_REQUIRED')
+    if (seed.get('filename')!='fontlist-v3.11.0.json' or
+            seed.get('format_version')!='3.11.0' or
+            seed.get('scope')!='DISPLAY_FONT_METADATA_ONLY'):
+        raise Stop('STARTUP_FONT_CACHE_SCOPE')
+    raw=read_bytes(seed['path'],cap=65536)
+    if len(raw)!=seed['bytes'] or sha(raw)!=seed['sha256']:
+        raise Stop('STARTUP_FONT_CACHE_BYTES_SHA')
+    value=d0.strict_json(raw)
+    if (value.get('_version')!='3.11.0' or value.get('__class__')!='FontManager' or
+            not isinstance(value.get('afmlist'),list) or not isinstance(value.get('ttflist'),list)):
+        raise Stop('STARTUP_FONT_CACHE_FORMAT')
+    target=home_path(directory)/seed['filename']
+    fd=os.open(target,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
+    try:
+        view=memoryview(raw)
+        while view:
+            n=os.write(fd,view);view=view[n:]
+        os.fsync(fd)
+    finally:os.close(fd)
+
+
 def runtime_gate(grant, root):
     c = grant.contract
     root = home_path(root)

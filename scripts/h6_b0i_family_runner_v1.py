@@ -89,6 +89,7 @@ def prepare_private_temp(grant):
     for key,path in paths.items():
         if path!=temporary:path.mkdir(mode=0o700)
         os.environ[key]=str(path)
+    g.seed_font_cache(grant,paths['MPLCONFIGDIR'])
     tempfile.tempdir=str(temporary)
 
 

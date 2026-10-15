@@ -186,6 +186,26 @@ class FamilyTests(unittest.TestCase):
                 self.assertEqual(Path(os.environ['NUMBA_CACHE_DIR']),self.output/'temp/numba')
                 self.assertTrue(Path(os.environ['NUMBA_CACHE_DIR']).is_dir())
         finally:tempfile.tempdir=previous
+    def font_seed(self):
+        raw=json.dumps(dict(_version='3.11.0',__class__='FontManager',afmlist=[],ttflist=[])).encode()
+        path=self.base/'display-font-cache.json';path.write_bytes(raw)
+        self.c['startup_font_cache']=dict(path=str(path),filename='fontlist-v3.11.0.json',
+            format_version='3.11.0',scope='DISPLAY_FONT_METADATA_ONLY',bytes=len(raw),sha256=g.sha(raw))
+        self.refresh();return path,raw
+    def test_byte_bound_font_metadata_seed_without_science_import(self):
+        path,raw=self.font_seed()
+        grant=g.authorization_gate(self.c,self.a,contract_sha=g.d0.digest(self.c),
+            authorization_sha=g.d0.digest(self.a),output=self.output,scope=r.SCOPE,synthetic=True)
+        directory=self.base/'font-destination';directory.mkdir()
+        g.seed_font_cache(grant,directory)
+        self.assertEqual((directory/'fontlist-v3.11.0.json').read_bytes(),raw)
+    def test_changed_font_metadata_rejected_before_copy(self):
+        path,raw=self.font_seed();path.write_bytes(raw+b' ')
+        grant=g.authorization_gate(self.c,self.a,contract_sha=g.d0.digest(self.c),
+            authorization_sha=g.d0.digest(self.a),output=self.output,scope=r.SCOPE,synthetic=True)
+        directory=self.base/'font-destination';directory.mkdir()
+        with self.assertRaisesRegex(g.Stop,'BYTES_SHA'):g.seed_font_cache(grant,directory)
+        self.assertEqual(list(directory.iterdir()),[])
     def test_unresolved_screen_is_not_ineligible_skip(self):
         rows=[dict(epsilon=e,factor=f,accounting=dict(cost_acquisition_eligible=False,
             eligibility_under_declared_allowance='NUMERICALLY_UNRESOLVED')) for e in r.family.EPS for f in r.family.FACTORS]
@@ -197,6 +217,10 @@ class FamilyTests(unittest.TestCase):
 
 
 class SmallIndependentTests(unittest.TestCase):
+    def test_production_cannot_omit_bound_font_seed(self):
+        grant=SimpleNamespace(require=lambda scope:None,synthetic=False,contract={})
+        with self.assertRaisesRegex(g.Stop,'BOUND_STARTUP_FONT_CACHE_REQUIRED'):
+            g.seed_font_cache(grant,Path('/home/AbeHiromu/unused'))
     def test_thread_and_affinity_failures_have_distinct_diagnostics(self):
         e=r.load('family_observer_error_test','h6_b0i_family_external_monitor_v1.py')
         observer=object.__new__(e.Observer);observer.g=g;observer.clock=lambda:100.
