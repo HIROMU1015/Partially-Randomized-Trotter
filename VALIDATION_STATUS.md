@@ -1,3 +1,8 @@
+## 2026-10-15 H6固定δ T依存性：結果
+
+[全結果・図・終了監査](docs/research/track_a_h6_fixed_delta_t_dependence_results_20261015.md)。H6固定δ=.2/固定5構成、T=.4/.8/1.6。新144/144 compile・PR64完了、T=.8確認32再利用。ε=.05〜.005ではPR点費用約50〜55%削減、厳しい精度ではS4優位またはPR不適格。outer-PF biasが主因、希少次数・母平均未保証。wall3117.158秒、native exit0/全74 reap・残存0。保存314条件/7算術tests/900公開paired metrics PASS、新科学計算・共有変更0、mandatory STOP。
+以下は各時点の履歴。
+
 # Validation status
 
 ## 2026-10-15 H6 native B0+I全12構成：結果

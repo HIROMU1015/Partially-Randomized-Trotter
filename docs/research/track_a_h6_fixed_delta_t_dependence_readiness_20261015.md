@@ -162,3 +162,7 @@ B/shotの増加と平均回路費用の変化を分け、PR優位がなくなる
 初回CPU admission停止はscience0/one-shot未消費。後のbootstrapはsnapshotパスを文字列で渡し、NPZ array読込前のAttributeErrorで停止した。両workerのexit1/reap・native wait1と予約を保持し、Path変換の1行修正＋人工47件PASS後に新SOURCE/新outputへ結合した。数学・input/compiler・64trajectory/144compile・累積1910/916/3584は不変。
 
 最後のfresh CPU/memory/pressure/OOM/filesystem/inode/quotaとSOURCE230provider/34273environment/input/carry byte bindingに合格して起動した。[開始確認](../../artifacts/resource_applicability/track_a_h6_fixed_delta_readiness_v1/2026-10-15/execution_start_v1.json)。2signal worker/thread1/CPU時間増加・STOP理由なしを確認。完了証拠ではない。runtimeはprivate homeのmaterialized05、native logはlaunch02。旧grant/証拠を保持し、共有設定・他job・venv変更0。runnerの自動retry/次stageは無効のまま。
+
+## 完了結果
+
+この準備・起動記録は履歴として保持する。[最終結果・図・終了監査](track_a_h6_fixed_delta_t_dependence_results_20261015.md)に144/144 compile完了を記録した。新stage未起動、mandatory STOP。

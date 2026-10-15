@@ -694,3 +694,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## H6 fixed-delta T panel
 
 `prepare_h6_fixed_delta_v1.py` はbyte/metadataだけ、`h6_fixed_delta_runner_v1.py` は新grant必須。`h6_fixed_delta_plan_v1.py` / `h6_fixed_delta_science_v1.py` が固定15セル・lazy科学adapter。[準備資料](../docs/research/track_a_h6_fixed_delta_t_dependence_readiness_20261015.md)。
+
+## H6 fixed-delta saved-result audit
+
+`summarize_h6_fixed_delta_v1.py --verify <public-bundle>` は公開scalarのみからshot/paired6metricsを再計算する。`--run/--output` はprivate完了証拠からexclusiveな軽量bundleを作る。`plot_h6_fixed_delta_result_v1.py` は保存値のみでSVGを作成。[結果](../docs/research/track_a_h6_fixed_delta_t_dependence_results_20261015.md)。科学計算・compile0。

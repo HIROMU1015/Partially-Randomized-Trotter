@@ -11,3 +11,7 @@
 初回CPU admission停止はscience0/one-shot未消費。後のbootstrapはsnapshotパスを文字列で渡し、NPZ array読込前のAttributeErrorで停止した。両workerのexit1/reap・native wait1と予約を保持し、Path変換の1行修正＋人工47件PASS後に新SOURCE/新outputへ結合した。数学・input/compiler・64trajectory/144compile・累積1910/916/3584は不変。
 
 最後のfresh CPU/memory/pressure/OOM/filesystem/inode/quotaとSOURCE230provider/34273environment/input/carry byte bindingに合格して起動した。[開始確認](../../../artifacts/resource_applicability/track_a_h6_fixed_delta_readiness_v1/2026-10-15/execution_start_v1.json)。2signal worker/thread1/CPU時間増加・STOP理由なしを確認。完了証拠ではない。runtimeはprivate homeのmaterialized05、native logはlaunch02。旧grant/証拠を保持し、共有設定・他job・venv変更0。runnerの自動retry/次stageは無効のまま。
+
+## 完了結果
+
+[結果・図・終了監査](../track_a_h6_fixed_delta_t_dependence_results_20261015.md)。H6固定δ=.2/固定5構成、T=.4/.8/1.6。新144/144 compile・PR64完了、T=.8確認32再利用。ε=.05〜.005ではPR点費用約50〜55%削減、厳しい精度ではS4優位またはPR不適格。outer-PF biasが主因、希少次数・母平均未保証。wall3117.158秒、native exit0/全74 reap・残存0。保存314条件/7算術tests/900公開paired metrics PASS、新科学計算・共有変更0、mandatory STOP。
