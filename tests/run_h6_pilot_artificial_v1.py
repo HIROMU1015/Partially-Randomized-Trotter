@@ -27,8 +27,11 @@ if __name__=='__main__':
     suite=unittest.TestSuite();names=[]
     requested=sys.argv[2:] or ['test_h6_b0i_pilot_runner_v1.py','test_h6_pilot_independent_audit_v1.py',
             'test_final_pre_review_h6_bridge_v1.py']
-    allowed={'test_h6_b0i_pilot_runner_v1.py','test_h6_pilot_independent_audit_v1.py','test_final_pre_review_h6_bridge_v1.py'}
+    allowed={'test_h6_b0i_pilot_runner_v1.py','test_h6_pilot_independent_audit_v1.py','test_final_pre_review_h6_bridge_v1.py',
+        'test_h6_b0i_parallel_compile_v1.py'}
     if not set(requested)<=allowed:raise RuntimeError('ARTIFICIAL_TEST_SCOPE')
+    def no_real_fork():raise RuntimeError('ARTIFICIAL_HARNESS_FORBIDS_REAL_FORK')
+    os.fork=no_real_fork
     for filename in requested:
         spec=importlib.util.spec_from_file_location(filename[:-3],ROOT/'tests'/filename)
         module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)

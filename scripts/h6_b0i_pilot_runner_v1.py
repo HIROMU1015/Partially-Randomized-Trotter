@@ -23,13 +23,29 @@ LIMITS = dict(snapshot_load=1, analytic_overlay=3, native_evolution_build=3,
 
 def validate_contract(grant):
     grant.require(SCOPE); c = grant.contract
+    parallel=c.get('parallel_compile',{}).get('enabled') is True
     expected = [dict(prefix=p, q=q, formula='2nd', T=.8) for p,q in PILOT]
     if (c.get('candidates') != expected or c.get('control') != 'symmetric_directional' or
             c.get('operation_limits') != LIMITS or c.get('matched_B0', {}).get('automatic_build') is not False or
             c.get('matched_B0', {}).get('approved') is not False or
             c.get('precision_domain') != dict(epsilon=[.05,.01,.005,.001,.0005], factors=[1.,10.]) or
-            c.get('workers') != 1 or c.get('automatic_retry') is not False):
+            (c.get('workers') != 1 and not parallel) or c.get('automatic_retry') is not False):
         raise g.Stop('PILOT_REGISTRY_OPERATION_SCOPE')
+    if parallel:
+        cfg=c['parallel_compile'];workers=c['workers']
+        if (type(workers) is not int or not 2<=workers<=6 or cfg.get('max_workers')!=workers or
+                cfg.get('backend')!='OWNED_FORK_AFTER_ALL_AB_V1' or cfg.get('internal_threads')!=1 or
+                cfg.get('automatic_retry') is not False or cfg.get('parent_death_signal')!='SIGKILL'):
+            raise g.Stop('FIXED_PARALLEL_COMPILE_SCOPE')
+        if not grant.synthetic:
+            cpus=cfg['worker_cpus'];driver=cfg['driver_cpu']
+            if (len(cpus)!=workers or any(type(cpu) is not int or cpu<0 for cpu in cpus) or
+                    len(set(cpus))!=workers or type(driver) is not int or driver<0 or driver in cpus or
+                    set(c['allowed_cpus'])!=set(cpus+[driver]) or os.sched_getaffinity(0)!={driver}):
+                raise g.Stop('FRESH_PARALLEL_CPU_BINDING_REQUIRED')
+            minimum=(workers+1)*c['budget']['address_space_bytes']+c['launcher_budget']['address_space_bytes']+16*2**30
+            if c['budget']['fresh_memory_available_bytes']<minimum:
+                raise g.Stop('PARALLEL_ADMISSION_MUST_INCLUDE_ALL_ROLES')
     if c.get('compiler_options') != dict(basis_gates=['rz','sx','x','cx'], optimization_level=1, seed_transpiler=17):
         raise g.Stop('FIXED_COMPILER_OPTIONS')
     if c.get('control_tolerance') != 1e-8: raise g.Stop('FIXED_CONTROL_TOLERANCE')
@@ -73,7 +89,7 @@ def prepare_private_temp(grant):
     tempfile.tempdir=str(temporary)
 
 
-def pipeline(grant, verified, mapping, monitor, artifacts, calls, factory):
+def pipeline(grant, verified, mapping, monitor, artifacts, calls, factory, compile_batch=None):
     monitor.phase = 'A_INPUT_SCALAR_SIGNAL'
     api = factory(grant, verified, mapping, calls, monitor.tick)
     cases = []
@@ -102,6 +118,7 @@ def pipeline(grant, verified, mapping, monitor, artifacts, calls, factory):
             artifacts.write(f"case_{case['prefix']}_{case['q']}_correctness.json",validation,monitor.tick)
         # Every case passed A/B before the first compile reservation.
         monitor.phase = 'C_COMPILE_ACCOUNTING'
+        compiled_rows=compile_batch(grant,cases,api,monitor,artifacts,calls) if compile_batch else None
         results = []
         for case in cases:
             axes = {}
@@ -109,12 +126,15 @@ def pipeline(grant, verified, mapping, monitor, artifacts, calls, factory):
                 monitor.tick(force=True)
                 wrapper = case['built']['wrappers'][axis]; fingerprint = case['validation']['fingerprints'][axis]
                 if api.fingerprint(wrapper) != fingerprint: raise g.Stop('WRAPPER_CHANGED_BEFORE_COMPILE')
-                calls.take('compile'); row = api.compile(wrapper,fingerprint)
+                if compiled_rows is None:
+                    calls.take('compile'); row = api.compile(wrapper,fingerprint)
+                else:row=compiled_rows[(case['prefix'],case['q'],axis)]
                 adapter_module.metrics_checked(row['metrics'])
                 if row['fingerprint'] != fingerprint or row['compiler_hash'] != grant.contract['binding']['compiler']:
                     raise g.Stop('COMPILED_IDENTITY_MISMATCH')
                 axes[axis] = row
-                artifacts.write(f"case_{case['prefix']}_{case['q']}_{axis}_cost.json",row,monitor.tick)
+                if compiled_rows is None:
+                    artifacts.write(f"case_{case['prefix']}_{case['q']}_{axis}_cost.json",row,monitor.tick)
             costs = []
             for precision in case['accounting']:
                 account = precision['accounting']; eligible = account['cost_acquisition_eligible']
@@ -139,7 +159,8 @@ def pipeline(grant, verified, mapping, monitor, artifacts, calls, factory):
 
 
 def run(contract, authorization, *, contract_sha, authorization_sha, output, root,
-        mapping_loader, synthetic=False, monitor_factory=g.Monitor, factory=adapter_module.NativeAdapter):
+        mapping_loader, synthetic=False, monitor_factory=g.Monitor, factory=adapter_module.NativeAdapter,
+        compile_batch=None):
     grant = g.authorization_gate(contract,authorization,contract_sha=contract_sha,
         authorization_sha=authorization_sha,output=output,scope=SCOPE,synthetic=synthetic)
     validate_contract(grant)
@@ -155,7 +176,11 @@ def run(contract, authorization, *, contract_sha, authorization_sha, output, roo
         if not synthetic:
             monitor.install();prepare_private_temp(grant)
         g.runtime_gate(grant,root); mapping = mapping_loader(); verified = g.load_inputs(grant,mapping)
-        pipeline(grant,verified,mapping,monitor,artifacts,calls,factory)
+        if contract.get('parallel_compile',{}).get('enabled') is True and compile_batch is None:
+            if synthetic:raise g.Stop('ARTIFICIAL_PARALLEL_REQUIRES_MOCK_BACKEND')
+            parallel=load('h6_owned_parallel_compile','h6_b0i_parallel_compile_v1.py')
+            compile_batch=lambda *args:parallel.compile_batch(*args,g=g,metrics_check=adapter_module.metrics_checked)
+        pipeline(grant,verified,mapping,monitor,artifacts,calls,factory,compile_batch)
         monitor.phase = 'D_FINAL_BINDING_CLEANUP'
         g.load_inputs(grant,mapping); g.runtime_gate(grant,root); monitor.tick(force=True); result = 0
     except Exception as error:
@@ -166,9 +191,11 @@ def run(contract, authorization, *, contract_sha, authorization_sha, output, roo
         try:
             artifacts.write('terminal_v1.json',dict(status='COMPLETE_MANDATORY_STOP' if result==0 else 'FAIL_CLOSED_STOP',
                 first_stop=first_stop,intended_exit_code=result,native_exit_code=None,pid=g.identity(),
-                scientific_child_processes=0,worker_model='ONE_FOREGROUND_PROCESS_NO_POOL',
+                scientific_child_processes_max=contract['workers'] if contract.get('parallel_compile',{}).get('enabled') else 0,
+                worker_model='OWNED_FORK_COMPILE_AXES' if contract.get('parallel_compile',{}).get('enabled') else 'ONE_FOREGROUND_PROCESS_NO_POOL',
                 calls_reserved_before_operations=calls.used,automatic_retry=False,next_stage_authorized=False,
-                cleanup=dict(timer_removed=True,artifact_FDs_closed_on_return=True,child_wait_reap='NO_SCIENTIFIC_CHILDREN'),
+                cleanup=dict(timer_removed=True,artifact_FDs_closed_on_return=True,
+                    child_wait_reap='SEE_PARALLEL_CLEANUP_RECEIPT' if contract.get('parallel_compile',{}).get('enabled') else 'NO_SCIENTIFIC_CHILDREN'),
                 resource_observations=getattr(monitor,'history',[]),output_file_receipts=deepcopy(artifacts.receipts)),terminal=True)
         finally: artifacts.close()
     return result
