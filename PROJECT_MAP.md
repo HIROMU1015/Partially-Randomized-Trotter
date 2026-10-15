@@ -1,5 +1,10 @@
 # プロジェクト案内
 
+## 2026-10-16 Native DFモデル：H6/H8 metadata接続監査
+
+[主要報告](docs/research/track_a_native_df_h6_h8_metadata_binding_20261016.md)、[schema adapter](src/trotterlib/native_df_metadata_binding.py)、[人工runner](scripts/check_native_df_metadata_binding.py)、[tests](tests/test_native_df_metadata_binding.py)、[軽量証跡](artifacts/resource_applicability/track_a_native_df_metadata_binding/2026-10-16/README.md)。
+代表6trajectoryのbasis記述/hash・event identityを照合、20人工tests PASS。PFはA相当no-reuse、RTE tailはB相当reuseを区別。full PF primitive/registry・全component lawは未取得で、全実H6/H8費用への無条件適用は不可。新理論費用・期待値・数値再会計・科学計算・compile・grant・原稿改訂・subagents0、公開後mandatory STOP。
+
 ## 2026-10-16 Native DFモデル：Qiskit 1.3.0接続検証
 
 [主要資料](docs/research/track_a_native_df_qiskit_connection_validation_20261016.md)、[接続runner](scripts/check_native_df_qiskit_connection.py)、[参照loader](scripts/native_df_qiskit_validation_support.py)、[tests](tests/test_native_df_qiskit_connection.py)、[証跡](artifacts/resource_applicability/track_a_native_df_qiskit_validation/2026-10-16/README.md)。

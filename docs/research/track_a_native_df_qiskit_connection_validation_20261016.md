@@ -192,3 +192,8 @@ attempt01はwhole-partial unitary照合を追加する前の42件PASSであり�
 既存SOURCE/results/STOP・dirty/untrackedを保全し、公開後**MANDATORY_STOP**。
 **DRAFT_NOT_AUTHORIZATION / H6_NOT_AUTHORIZED / H8_NOT_AUTHORIZED / next_stage_authorized=false**。
 この表示は今回から派生する新実行についてのもので、別環境の既存jobや認可を変更しない。
+
+
+## 2026-10-16 後続metadata監査
+
+[H6/H8保存metadata接続監査](track_a_native_df_h6_h8_metadata_binding_20261016.md)。代表event記述は接続可能、PF primitive/registry・全lawは未取得。旧42人工結果と本書の限界を変更せず、実費用計算は行っていない。

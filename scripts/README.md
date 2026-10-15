@@ -1,3 +1,7 @@
+## 2026-10-16 H6/H8 metadata接続・人工schema検査
+
+`check_native_df_metadata_binding.py` は人工20件だけを実行。実データ引数なし、Gate/回路生成・cost評価・科学importなし。[報告](../docs/research/track_a_native_df_h6_h8_metadata_binding_20261016.md)。
+
 # scripts 索引
 
 ## 2026-10-16 Native DFモデル：Qiskit 1.3.0接続検証
