@@ -74,11 +74,17 @@ def draft():
 
 
 class Calls:
-    def __init__(self,caps):self.caps=dict(caps);self.used={k:0 for k in caps}
+    def __init__(self,caps):self.caps=dict(caps);self.used={k:0 for k in caps};self.recorder=None
+    @property
+    def limits(self):
+        # The pinned bounded_solver reads this interface before invoking a
+        # matvec. Keep it tied to caps after the actual-rank plan is installed.
+        return self.caps
     def take(self,key,number=1):
         if key not in self.caps or type(number) is not int or number<0:raise ValueError('CALL_CATEGORY')
         if self.used[key]+number>self.caps[key]:raise RuntimeError('CALL_CAP:'+key)
         self.used[key]+=number
+        if self.recorder is not None:self.recorder(key,self.used)
 
 
 def verify_grant(manifest,grant,source):

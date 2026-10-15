@@ -159,6 +159,18 @@ class ContractTests(unittest.TestCase):
         calls=c.Calls({'compile':1});calls.take('compile')
         with self.assertRaises(RuntimeError):calls.take('compile')
         self.assertEqual(calls.used['compile'],1)
+    def test_pinned_bounded_solver_counter_interface(self):
+        from trottertracks.resource_applicability.ax2b_h6_controller import bounded_solver
+        calls=c.Calls({'solver_matvec':10});recorded=[]
+        calls.recorder=lambda key,used:recorded.append((key,dict(used)))
+        def solver(op,**kwargs):
+            np.testing.assert_allclose(op@np.array([1.,0.,0.]),[1.,0.,0.])
+            return np.array([1.]),np.array([[1.],[0.],[0.]])
+        bounded_solver(lambda x:x,3,np.array([1.,0.,0.]),calls,solver=solver)
+        self.assertEqual(calls.used['solver_matvec'],1)
+        self.assertEqual(recorded[0][0],'solver_matvec')
+        calls.caps={'solver_matvec':1};self.assertEqual(calls.limits,calls.caps)
+        with self.assertRaises(RuntimeError):calls.take('solver_matvec')
 
 
 class NativeTests(unittest.TestCase):

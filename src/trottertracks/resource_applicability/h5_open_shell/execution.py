@@ -196,9 +196,19 @@ def input_worker(directory,task):
     from .science import solve_state,preparations,panel_signals,validate_primitives
     import numpy as np
     calls=Calls(call_limits(100))  # Admission cap, never a rank selection.
+    def record(key,used):
+        if used[key]==1 or used[key]%100==0:
+            path=directory/'call_reservations.jsonl'
+            if path.exists() and path.stat().st_size>4*2**20:raise RuntimeError('CALL_JOURNAL_CAP')
+            with path.open('a') as f:f.write(json.dumps(dict(before_operation=key,used=used))+'\n');f.flush()
+    calls.recorder=record
     scratch=directory/'scratch';scratch.mkdir()
     arrays,receipt=rohf_integrals(scratch,calls)
+    with (directory/'integrals.npz').open('xb') as f:np.savez(f,**arrays)
+    write_json(directory/'integral_receipt.json',receipt)
     ham,projection,raw=weighted_df(float(arrays['constant']),arrays['one_body'],arrays['two_body'],calls)
+    with (directory/'raw_df.npz').open('xb') as f:np.savez(f,**raw)
+    write_json(directory/'projection_receipt.json',projection)
     actual=call_limits(len(ham.lambdas))
     if any(calls.used[k]>actual[k] for k in calls.used):raise RuntimeError('ACTUAL_RANK_CALL_PLAN')
     calls.caps=actual
@@ -208,8 +218,6 @@ def input_worker(directory,task):
     checks['primitive_max_error']=primitives['max_error']
     records=panel_signals(ham,sector,state,matrix,checks,prepared,calls)
     # No hidden compressed cache or pickle; preserve the raw generation and state.
-    with (directory/'integrals.npz').open('xb') as f:np.savez(f,**arrays)
-    with (directory/'raw_df.npz').open('xb') as f:np.savez(f,**raw)
     snapshot=dict(constant=np.array(ham.constant),one_body=ham.one_body,lambdas=ham.lambdas,
         g_matrices=np.array(ham.g_matrices),sector_basis=sector.basis_indices,state=state,full=full)
     with (directory/'snapshot.npz').open('xb') as f:np.savez(f,**snapshot)
