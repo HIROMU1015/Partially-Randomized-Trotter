@@ -52,7 +52,7 @@ PREPARATION_COMPLETEは実行完了ではない。REVIEW_REQUIREDは新結果/�
 | H8 core resume02 | COMPLETE / RESULT_DOCUMENTED / SCIENTIFIC_REVIEWED / MANDATORY_STOP | signal92、探索592group、確認union6×独立32＝192group。探索8とpoolしない。旧203/592 snapshot、受領時556/592 snapshotを経た後続完了記録。 | [結果681ec23c](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/681ec23c93fdd1090d325908f4b155a79115afdf/docs/research/track_a_h8_resource_map_result_v1.md) / [サーバー受領2ef5ecbd](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/2ef5ecbdbdc222d73d9106618e20dc27b5466ea2/docs/research/track_a_cross_environment_server_acceptance_20261014.md) |
 | H4/H6 D0保存値解析 | COMPLETE / RESULT_DOCUMENTED / SCIENTIFIC_REVIEWED / MANDATORY_STOP | H4 native fixed16、H6探索92/確認union8。旧precision1088・cost2659一致後、ε=.0005を含む5精度・6指標・P解析。新signal/compileではない。 | [結果8dbdb682](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/8dbdb68293c988a999645e21a82b53966f9ef6cd/docs/research/track_a_d0_saved_value_reanalysis_result_20261014.md) |
 | H8 D0保存値解析 | COMPLETE / RESULT_DOCUMENTED / MANDATORY_STOP | 別承認・SOURCE20f89bc3。旧precision944・cost3576一致後に5精度/6指標/Pを再会計。H4/H6 D0再実行0。R10原reviewの「H8 .0005未知」は実行前の履歴。 | [結果3d910ee1](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3d910ee1de4597b8895e8506500553dbad5a5085/docs/research/track_a_h8_d0_saved_value_result_20261015.md) |
-| H6 native B0+I pilot | SCIENTIFIC_REVIEWED（方針） / AUTHORIZED / SEALED / COMPLETE_METADATA_RECEIVED | 準備Fの未認可状態から後続grantへ。run04-v3、SOURCE2e733d8a、3構成6軸。16:52 JST頃のpartial4/6後、17:03 JST以降に6軸結果・COMPLETE/driver wait0/全worker reapを受領。費用の新科学採択は未実施。 | [起動・修正d1fa0974](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/d1fa0974064ae4feeb1c8168a88b43f89fc58340/docs/research/track_a_h6_proc_exit_fix_20261015.md) / [認可・4h方針差の照合](track_a_server_information_update_20261015.md#h6の認可資源実行記録) |
+| H6 native B0+I pilot | SCIENTIFIC_REVIEWED（方針） / AUTHORIZED / SEALED / COMPLETE_METADATA_RECEIVED | 準備Fの未認可状態から後続grantへ。run04-v3、SOURCE2e733d8a、3構成6軸。16:52 JST頃のpartial4/6後、17:03 JST以降に6軸結果・COMPLETE/driver wait0/全worker reapを受領。[実測指標・精度会計・保存PRとの点比較](track_a_h6_native_b0i_pilot6_results_20261015.md)を結果資料へ固定。費用の新科学採択は未実施。 | [起動・修正d1fa0974](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/d1fa0974064ae4feeb1c8168a88b43f89fc58340/docs/research/track_a_h6_proc_exit_fix_20261015.md) / [認可・4h方針差の照合](track_a_server_information_update_20261015.md#h6の認可資源実行記録) |
 | 追加研究候補 | SCIENTIFICALLY_ADOPTED / EXECUTION_SEPARATE | R10がH5先行/H7後続、H6固定δのT比較、native対照拡張を採択。H6現pilotを超えるlaunch認可の根拠にはしない。 | 下記の採択と認可の区別 |
 
 旧H4/M1/PMの原稿v0.1とH4 B0+I/v0.4は保存draftとして保全。本作業では原稿・図表を改訂しない。
@@ -85,7 +85,7 @@ LOCAL_ONLY44実体/16内容のplan・dirty noteはhash索引で保全し、未�
 - H4同じ32標本での選抜/推定、NOT_SAVED Taylor/component履歴、B=1丸め172候補。H6局所補正をH4/H8に移送しない。
 - H6/H8経験的u/B_upper、希少order/component、有限標本期待費用・population winner。技術的PASSをcertificate/同時保証へ昇格しない。
 - H8 core最終結果681ec23cとR10、後続H8 D0結果3d910ee1は取得済み。旧203/592・8workerは2026-10-14の非atomic観測であり、完了結果で置き換えず時点履歴として保持する。
-- H6 pilotは認可・途中snapshotの後、全6軸の終端metadataを受領。詳細費用の公開・科学的解釈は未実施。H6/H8各24軸全面native B0+I比較の完了を意味しない。
+- H6 pilotは認可・途中snapshotの後、全6軸の終端metadataを受領。詳細費用と保存PRとの点比較は結果報告/CSVへ固定。公開用資料の整備であり新たな科学採否は未実施。H6/H8各24軸全面native B0+I比較の完了を意味しない。
 - 共通指示：server原本50,268 bytesは確認・exact copy追加。local申告48,223 bytes版は実体未受領で直接差分未確認。H6の既存sealed契約stage wall4hと将来wallなし既定方針には明示例外の確認待ちがある。[来歴・方針差](track_a_server_information_update_20261015.md)。
 - AX-1bが提案した凍結モデル・未観測予測によるH8検証artifactは未取得。資源map完成をRQ-Pの独立検証完了と自動認定しない。
 - H4/H6/H8のDF/control/state/基線探索/数値政策の条件差、旧export不一致、旧compiler bit再現性、最終energy/QPE/RPE費用は残る。

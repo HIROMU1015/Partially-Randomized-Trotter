@@ -1,5 +1,7 @@
 # 研究ノート
 
+- [2026-10-15 H6 native B0+I pilot6の結果](2026-10-15_h6_native_b0i_pilot6_results.md)：6軸COMPLETE、適格性・保存PRとの限定点比較。SOURCE/旧証拠不変、commitのみ。
+
 - [2026-10-15 共通ノートの公開資料追補](2026-10-15_track_a_shared_status_server_update.md)：H8完了/D0別scope/R10/H6後続認可、指示原本版差・wall方針差を記録。既存job不変、資料作業後STOP。
 
 - [2026-10-14 共通研究情報の正式統合](2026-10-14_track_a_canonical_information_integration.md)：server/localの固定情報を統合、H4全面結果後review原本取得。 [正式共通入口](../track_a_shared_research_status.md)。科学実行・H8変更・原稿改訂0、公開後STOP。
