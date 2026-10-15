@@ -188,6 +188,7 @@ def run(contract,authorization,*,contract_sha,authorization_sha,output,root,mapp
             first_stop=first,intended_exit_code=status,native_exit_code=None,pid=g.identity(),
             calls_reserved_before_operations=calls.used,child_CPU_seconds=getattr(monitor,'child_cpu_seconds',0.),
             cleanup_signal_deferral=getattr(monitor,'cleanup_signal_deferral',None),
+            output_file_receipts=deepcopy(artifacts.receipts),
             automatic_retry=False,next_stage_authorized=False),terminal=True)
         finally:artifacts.close()
     return status

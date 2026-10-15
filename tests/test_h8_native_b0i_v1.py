@@ -129,6 +129,13 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(self.execute(),0)
         self.assertEqual(len(list(self.out.glob('case_*_parallel_cleanup_v1.json'))),12)
         self.assertAlmostEqual(self.read('terminal_v1.json')['child_CPU_seconds'],.24)
+    def test_terminal_binds_final_result_and_completed_cost_bytes(self):
+        self.assertEqual(self.execute(),0);receipts=self.read('terminal_v1.json')['output_file_receipts']
+        self.assertIn('full_family_results_v1.json',{r['name'] for r in receipts})
+        self.assertEqual(sum(r['name'].endswith('_cost.json') for r in receipts),24)
+        for row in receipts:
+            raw=(self.out/row['name']).read_bytes()
+            self.assertEqual((len(raw),g.sha(raw)),(row['bytes'],row['sha256']))
     def test_worker_failure_and_cleanup_error_preserve_first_STOP(self):
         self.backend.failure='native';self.backend.cleanup_error=True
         self.assertEqual(self.execute(),2);self.assertEqual(len(self.backend.instances),1)
