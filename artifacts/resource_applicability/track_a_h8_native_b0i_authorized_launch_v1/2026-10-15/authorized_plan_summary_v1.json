@@ -182,18 +182,18 @@
   "max_cases_in_memory": 2,
   "internal_threads": 1,
   "allowed_cpus": [
-    63,
-    61,
-    60,
-    56,
-    54
+    3,
+    4,
+    5,
+    6,
+    8
   ],
-  "driver_cpu": 63,
+  "driver_cpu": 3,
   "worker_cpus": [
-    61,
-    60,
-    56,
-    54
+    4,
+    5,
+    6,
+    8
   ],
   "metadata_observer": "Existing launcher; driver CPU shared; 1s observation / maximum5s",
   "budget": {
@@ -222,11 +222,11 @@
   "resource_policy": {
     "approved": true,
     "allowed_cpus": [
-      63,
-      61,
-      60,
-      56,
-      54
+      3,
+      4,
+      5,
+      6,
+      8
     ],
     "driver": 1,
     "workers": 4,
@@ -289,8 +289,8 @@
   "output": "/home/AbeHiromu/projects/h6-handoff-evidence/20261015/h8-native-b0i-full-family-run01/run01",
   "control": "/home/AbeHiromu/projects/h6-handoff-evidence/20261015/h8-native-b0i-full-family-run01/control01",
   "absolute_launch_command": "bash /home/AbeHiromu/projects/h6-handoff-evidence/20261015/h8-native-b0i-full-family-run01/launch_once.sh",
-  "contract_sha256": "a1e69340fc3bcb26bb1f7efacc67c464ee5c9e3d2cdbe3a3dae41b08f8fe1532",
-  "canonical_contract_digest": "7b01ce0815de350fbf93a79d0c2bda7e5c0f641e00e2e2b6b0045ff788b82091",
+  "contract_sha256": "2c1e12d5e543a2038d2815a5a8a134a2b241b6aafba21514fd6502d6f5f16fad",
+  "canonical_contract_digest": "55e4909c1e4648091d997c152d19d1f70992d0047495cb421a4f4d5517249ef9",
   "approval_evidence_sha256": "e437a915c5489e9f44a817b870de2b3a8d4f8458e94735f8d68eeb97b9f1b36e",
   "runtime_authorization": true,
   "approved": true,
@@ -307,14 +307,38 @@
   "repeated_test_campaign": false,
   "real_speedup_memory_and_compile_success_not_yet_measured": true,
   "unused_prelaunch_CPU_binding_rejection": {
-    "reason": "AssertionError:('APPROVED_CORES_NO_LONGER_IDLE', {63: 0.0, 62: 0.0, 61: 0.0, 59: 0.0, 57: 0.17})",
+    "reason": "AssertionError:('APPROVED_CORES_NO_LONGER_IDLE', {63: 0.0, 61: 0.0, 60: 0.0, 56: 0.8585858585858586, 54: 0.0})",
     "scientific_calls": 0,
     "compile_reservations": 0,
     "one_shot_consumed": false,
-    "receipt_path": "/home/AbeHiromu/projects/h6-handoff-evidence/20261015/h8-native-b0i-full-family-run01/prelaunch-rejected01/prelaunch_failure_v1.json",
-    "receipt_sha256": "59c029afd32cfe08cfa52de4fe42512ca3e1920366d477b3b648a2dacded0a1a",
-    "old_contract_sha256": "088d057b2083bd01a50933d98e6d50aa7c85aa61149f5137bb6d107331a72858",
+    "receipt_path": "/home/AbeHiromu/projects/h6-handoff-evidence/20261015/h8-native-b0i-full-family-run01/prelaunch-rejected02/prelaunch_failure_v1.json",
+    "receipt_sha256": "eed3d258a22d7fa86c9ee18851b0889299175deaecf1b4879704490cba128b92",
+    "old_contract_sha256": "a1e69340fc3bcb26bb1f7efacc67c464ee5c9e3d2cdbe3a3dae41b08f8fe1532",
     "refund": 0,
     "reset": false
-  }
+  },
+  "unused_prelaunch_CPU_binding_rejections": [
+    {
+      "reason": "AssertionError:('APPROVED_CORES_NO_LONGER_IDLE', {63: 0.0, 62: 0.0, 61: 0.0, 59: 0.0, 57: 0.17})",
+      "scientific_calls": 0,
+      "compile_reservations": 0,
+      "one_shot_consumed": false,
+      "receipt_path": "/home/AbeHiromu/projects/h6-handoff-evidence/20261015/h8-native-b0i-full-family-run01/prelaunch-rejected01/prelaunch_failure_v1.json",
+      "receipt_sha256": "59c029afd32cfe08cfa52de4fe42512ca3e1920366d477b3b648a2dacded0a1a",
+      "old_contract_sha256": "088d057b2083bd01a50933d98e6d50aa7c85aa61149f5137bb6d107331a72858",
+      "refund": 0,
+      "reset": false
+    },
+    {
+      "reason": "AssertionError:('APPROVED_CORES_NO_LONGER_IDLE', {63: 0.0, 61: 0.0, 60: 0.0, 56: 0.8585858585858586, 54: 0.0})",
+      "scientific_calls": 0,
+      "compile_reservations": 0,
+      "one_shot_consumed": false,
+      "receipt_path": "/home/AbeHiromu/projects/h6-handoff-evidence/20261015/h8-native-b0i-full-family-run01/prelaunch-rejected02/prelaunch_failure_v1.json",
+      "receipt_sha256": "eed3d258a22d7fa86c9ee18851b0889299175deaecf1b4879704490cba128b92",
+      "old_contract_sha256": "a1e69340fc3bcb26bb1f7efacc67c464ee5c9e3d2cdbe3a3dae41b08f8fe1532",
+      "refund": 0,
+      "reset": false
+    }
+  ]
 }
