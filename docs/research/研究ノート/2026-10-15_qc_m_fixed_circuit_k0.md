@@ -7,3 +7,5 @@
 第一候補の終了推奨は保存するが正式状態は `AWAITING_USER_ADOPTION_DECISION`。H-E1現定義を独立算法として追究しないとの受領レビュー推奨を記録し、研究間移管は起動しない。M未採択、K1／M-b探索／pilot準備未実施。新H・eig・RDM／期待値・PF・数値射影／最適化・保存数値集計・compile／T合成・production・GPT科学レビュー0。
 
 base `0e923f73754d1ebd168bf21a1b9e73971946e603`、独立branch `qc-m-fixed-circuit-k0-audit-20261015`。5,177旧保護files、164旧manifest records/non-result/既存description欠落FAIL、親root baseline445path、旧科学source・結果・認可・STOPを保全する。N1 STOP／N2 HOLD／N3 CLOSED／THRIFT現template CLOSED、Track A/B/C1〜C4・DF等価回転は不変。commit・push・GitHub再取得照合後 **Mandatory STOP**。重要GPT科学判断の開始承認境界へ戻し、同様の技術探索・数値実行を自動で続けない。
+
+公開追記：payload `9d79967b4ff16addc0e82ad7ba05c62eb4673b03` を独立GitHub fetchで取得、23変更blobs／2,882,751 bytes・5,177旧保護files・12固定参照・レビュー原文byte/SHA一致。[receipt](../../../artifacts/qc_m_fixed_circuit_k0/2026-10-15/publication/receipt.json)。164旧manifest/non-result/既存FAILと親root445path一致。公開メタデータを別commitで保存・再取得してMandatory STOP。新科学実行・GPT判断・採択／正式終了変更なし。

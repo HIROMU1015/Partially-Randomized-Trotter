@@ -140,3 +140,7 @@ Dがsectorを保つcommutatorの和なら `τν(D)=0`。identity方向だけのH
 [文書identity・保全監査](../../artifacts/qc_m_fixed_circuit_k0/2026-10-15/document_identity_audit.json)はbyte/hash/JSON/linkの技術確認であり、数値結果の再認証やCIではない。係数生成の粗い演算回数では固定rankのnormal-order処理を定数として数え、辞書・sort等の管理費を別扱いする。旧sourceを実行して計測した上界ではない。
 
 今回は新H・分子・eig・RDM／期待値・PF・数値射影／最適化／比率計算・保存数値集計・compile/T合成・科学tests/checker・pilot/production・新GPT科学レビュー0。旧科学source・結果・消費済み認可・STOP、manifest既存FAIL、第一候補の正式状態、N1 STOP/N2 HOLD/N3 CLOSED/THRIFT現template CLOSED、Track A/B/C1〜C4を変更しない。独立branch `qc-m-fixed-circuit-k0-audit-20261015` へ公開・GitHub再取得照合後 **Mandatory STOP**。
+
+## 公開照合・停止
+
+Payload `9d79967b4ff16addc0e82ad7ba05c62eb4673b03` をGitHubから独立再取得し、23変更blobs／2,882,751 bytes、原文42,646 bytes／SHA、5,177旧保護files、12固定参照本文を照合した。[receipt](../../artifacts/qc_m_fixed_circuit_k0/2026-10-15/publication/receipt.json)、[Mandatory STOP](../../artifacts/qc_m_fixed_circuit_k0/2026-10-15/publication_stop.json)。164旧manifest/non-result/既存FAIL、親root baseline445pathのstatus・bytes一致。公開メタデータは別commitで保存・再取得し、科学計算・保存数値集計は再実行しない。K0 gate=false、K1未開始、第一候補正式状態とM未採択を維持して **Mandatory STOP**。

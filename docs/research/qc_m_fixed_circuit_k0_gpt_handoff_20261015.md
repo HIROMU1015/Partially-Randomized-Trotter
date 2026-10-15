@@ -21,3 +21,7 @@
 [固定資料identity](../../artifacts/qc_m_fixed_circuit_k0/2026-10-15/reference_identity.json)、[一次文献6本文・確認式](../../artifacts/qc_m_fixed_circuit_k0/2026-10-15/literature_registry.json)、[scope](../../artifacts/qc_m_fixed_circuit_k0/2026-10-15/scope.json)、[技術status](../../artifacts/qc_m_fixed_circuit_k0/2026-10-15/method_status.json)。新科学計算・数値射影・保存数値再集計・compile・pilot・production・GPTレビューは0。旧source/result/認可/STOP・manifest FAIL、N1 STOP/N2 HOLD/N3 CLOSED/THRIFT現template CLOSED、Track A/B/C1〜C4を保全する。
 
 独立branch `qc-m-fixed-circuit-k0-audit-20261015` でcommit・push・GitHub再取得照合後 **Mandatory STOP**。同様の候補探索を繰り返さず、科学判断の承認境界へ戻す。
+
+## 公開照合・停止
+
+Payload `9d79967b4ff16addc0e82ad7ba05c62eb4673b03` をGitHubから独立再取得し、23変更blobs／2,882,751 bytes、原文42,646 bytes／SHA、5,177旧保護files、12固定参照本文を照合した。[receipt](../../artifacts/qc_m_fixed_circuit_k0/2026-10-15/publication/receipt.json)、[Mandatory STOP](../../artifacts/qc_m_fixed_circuit_k0/2026-10-15/publication_stop.json)。164旧manifest/non-result/既存FAIL、親root baseline445pathのstatus・bytes一致。公開メタデータは別commitで保存・再取得し、科学計算・保存数値集計は再実行しない。K0 gate=false、K1未開始、第一候補正式状態とM未採択を維持して **Mandatory STOP**。
