@@ -813,3 +813,5 @@ H6 pilot run02はnative正しさ検証中のcallback stalenessでSTOP、compile0
 
 H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0・全6 reap。SOURCE2e733d8a…でlive欠測を成功扱いせず5秒内の再観測/reapへ修正、92限定＋最小2childの退出/FD検査PASS。旧消費保持。CPU gateで未起動2grantを廃止、5秒idle選定・fresh gate後にrun04-v3起動。科学/profile/compiler/資源上限不変、subagent0。完了は未主張。
 [修正・検証・新実行の入口](research/track_a_h6_proc_exit_fix_20261015.md)。
+
+- [H6 fixed δ・T依存性の実行直前準備](research/track_a_h6_fixed_delta_t_dependence_readiness_20261015.md)：最大8並列、T=.8再利用、新64 trajectory/144 compile案。未起動。
