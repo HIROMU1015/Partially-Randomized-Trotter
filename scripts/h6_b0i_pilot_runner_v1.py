@@ -66,6 +66,7 @@ def validate_contract(grant):
             raise g.Stop('SCIENTIFIC_PROVIDER_SOURCE')
         if not c['native_provider'].get('source_hashes') or not c['profile']['runtime_file_hashes']:
             raise g.Stop('MATERIALIZED_PROVIDER_PROFILE_REQUIRED')
+        adapter_module.identity_binding.validate_evidence(c,g,root)
 
 
 class Calls:
@@ -106,6 +107,7 @@ def pipeline(grant, verified, mapping, monitor, artifacts, calls, factory, compi
             case.update(prefix=prefix,q=q,accounting=rows)
             artifacts.write(f'case_{prefix}_{q}_scalar_signal.json',dict(prefix=prefix,q=q,
                 scalar=request['scalar_receipt'],signal=signal,blueprint=request['blueprint'],
+                preparation_binding=case.get('preparation_binding'),
                 independent_saved_reference=case['independent'],precision=rows),monitor.tick)
             cases.append(case)
         monitor.phase = 'B_NATIVE_CORRECTNESS'
@@ -165,6 +167,7 @@ def run(contract, authorization, *, contract_sha, authorization_sha, output, roo
         authorization_sha=authorization_sha,output=output,scope=SCOPE,synthetic=synthetic)
     validate_contract(grant)
     artifacts = g.Artifacts(grant); monitor = None; first_stop = None; result = 2; journal_count = [0]; journal_bytes = [0]
+    preparation_diagnostic_write_error=None
     def journal(value):
         journal_bytes[0] += len(json.dumps(value,ensure_ascii=False,allow_nan=False,separators=(',',':')).encode())+1
         if journal_bytes[0] > contract.get('journal_cap_bytes',64*2**20): raise g.Stop('OPERATION_JOURNAL_CAP')
@@ -186,6 +189,11 @@ def run(contract, authorization, *, contract_sha, authorization_sha, output, roo
     except Exception as error:
         first_stop = dict(reason=type(error).__name__+':'+str(error)[:1000],phase=monitor.phase if monitor else 'PRELAUNCH')
         if monitor is not None and monitor.first_stop is not None: first_stop = monitor.first_stop
+        diagnostic=getattr(error,'preparation_diagnostic',None)
+        if diagnostic is not None:
+            try:artifacts.write('preparation_mismatch_v1.json',diagnostic,terminal=True)
+            except Exception as evidence_error:
+                preparation_diagnostic_write_error=type(evidence_error).__name__+':'+str(evidence_error)[:300]
     finally:
         if monitor is not None: monitor.close()
         try:
@@ -194,6 +202,7 @@ def run(contract, authorization, *, contract_sha, authorization_sha, output, roo
                 scientific_child_processes_max=contract['workers'] if contract.get('parallel_compile',{}).get('enabled') else 0,
                 worker_model='OWNED_FORK_COMPILE_AXES' if contract.get('parallel_compile',{}).get('enabled') else 'ONE_FOREGROUND_PROCESS_NO_POOL',
                 calls_reserved_before_operations=calls.used,automatic_retry=False,next_stage_authorized=False,
+                preparation_diagnostic_write_error=preparation_diagnostic_write_error,
                 cleanup=dict(timer_removed=True,artifact_FDs_closed_on_return=True,
                     child_wait_reap='SEE_PARALLEL_CLEANUP_RECEIPT' if contract.get('parallel_compile',{}).get('enabled') else 'NO_SCIENTIFIC_CHILDREN'),
                 resource_observations=getattr(monitor,'history',[]),output_file_receipts=deepcopy(artifacts.receipts)),terminal=True)

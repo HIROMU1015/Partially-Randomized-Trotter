@@ -12,6 +12,9 @@ _spec = importlib.util.spec_from_file_location('h6_pilot_bridge',
     Path(__file__).with_name('h6_native_b0i_bridge_v1.py'))
 b = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(b)
 g = b.g
+_identity_spec=importlib.util.spec_from_file_location('h6_preparation_identity',
+    Path(__file__).with_name('h6_b0i_preparation_binding_v1.py'))
+identity_binding=importlib.util.module_from_spec(_identity_spec);_identity_spec.loader.exec_module(identity_binding)
 METRICS = dict(RZ='rz_count', CX='cx_count', RZ_depth='rz_depth', CX_depth='cx_depth',
     depth='total_depth', size='circuit_size')
 
@@ -78,15 +81,23 @@ class NativeAdapter:
         fragments = [dict(id=str(i), G=tuple(tuple(complex(z) for z in row) for row in matrix),
             **{'lambda':float(self.ham.lambdas[i])}) for i, matrix in enumerate(self.ham.g_matrices)]
         policy = self.grant.contract['scalar_error_policy'][f'{prefix}/{q}']
+        preparation_audit={}
+        def load_prepared(_):
+            prepared=self.prep._prepare_discard(self.ham,prefix)
+            if 'preparation_identity' in self.grant.contract:
+                prepared,audit=identity_binding.checked_prepared(self.grant,prepared,prefix=prefix,q=q,bridge=b)
+                preparation_audit.update(audit)
+            return prepared
         request = b.prepare(self.grant, prefix=prefix, q=q,
             binding=b.binding_for(self.grant, prefix, q), load_fragments=lambda _:fragments,
-            load_prepared=lambda _:self.prep._prepare_discard(self.ham, prefix), saved_record=record,
+            load_prepared=load_prepared, saved_record=record,
             scalar_input_error_upper=policy['stored_model_coefficient_error_upper'],
             rotation_roundoff_upper=policy['rotation_roundoff_upper'],
             input_mapping_loader=lambda:self.mapping, guard=self.guard)
         independent = b.p.rotate_saved_signal(z, total_time=.8,
             tail_identity=request['scalar_receipt']['C'])
-        return dict(request=request, independent=dict(real=independent.real, imag=independent.imag))
+        return dict(request=request, independent=dict(real=independent.real, imag=independent.imag),
+            preparation_binding=preparation_audit)
 
     def build(self, case):
         return b.build(self.grant, case['request'], self.provider, guard=self.guard)
