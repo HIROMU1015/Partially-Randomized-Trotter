@@ -193,3 +193,8 @@ H8 raw comparisonの歴史的field名`confirmed_PR_union8`をH6 union8の証拠�
 公開は新adapter/tests/runner・本書・索引/日付付きnote・軽量hash/metadata監査資料に限定する。NPZ・raw event/実runtime・profile全体・private locator・認証/内部接続情報は含めない。
 新SCF/DF/state/signal/reference/trajectory/native build/compile/transpile、実H6/H8理論費用・新再会計・新比/順位、新grant、原稿改訂、サブエージェントはすべて0。
 commit後にnon-force pushを試し、成否を区別して報告する。公開または認証によるpush待ち報告の後、**mandatory STOP**。次の科学計算・詳細レビューは自動開始しない。
+
+
+## 後続追補：H6 archiveの既存保存を発見
+
+[追加受領報告](track_a_native_df_h6_h8_metadata_completion_20261016.md)で、H6の7 preparation・完全component law・Gaussian列を取得した。本書のH6「未取得」はこの追補で更新する。H8 full metadataとprimitive数値列生成・理論費用評価は未実行。旧監査時点の記録は保全する。

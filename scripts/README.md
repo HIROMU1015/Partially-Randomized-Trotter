@@ -1,3 +1,11 @@
+## 2026-10-16 既存H6 frozen archiveの記述検査
+
+## 2026-10-16 Track A V2 実行準備
+
+[報告・実装・人工テスト・証跡](../docs/research/track_a_v2_h6_cost_binding_readiness_20261016.md)。科学計算未実施、未認可draft、mandatory STOP。
+
+`inspect_native_df_preparation_archive.py --archive <既存JSON> --sha256 <固定SHA>`。stdlibのみ、Gate/Operator/array復元と理論費用計算なし。[追加受領報告](../docs/research/track_a_native_df_h6_h8_metadata_completion_20261016.md)。
+
 ## 2026-10-16 H6/H8 metadata接続・人工schema検査
 
 `check_native_df_metadata_binding.py` は人工20件だけを実行。実データ引数なし、Gate/回路生成・cost評価・科学importなし。[報告](../docs/research/track_a_native_df_h6_h8_metadata_binding_20261016.md)。
