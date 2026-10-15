@@ -1,3 +1,5 @@
+> **Track B現在（2026-10-15・M1 P0完了）：[採択前の先行研究・制御実装・資源資料Decision Packet](m1_p0_prior_art_control_and_resource_decision_packet_20261015.md)。** 固定GitHub21資料・一次PDF9件の関連箇所を整理。M1正式採択・G0証明・V1科学計算は未開始、新規計算0。Parent allocation D＋Eを保持。次は明示開始承認後のGPT採択判断、mandatory STOP。[履歴](../../research/研究ノート/2026-10-15_track_b_M1_P0_evidence_preflight.md)。以下は過去の状態。
+
 > **Track B現在（2026-10-15・D＋E正式採択）：[Parent allocationの限定的成果と現在探索の区切り](track_b_parent_allocation_research_closure_20261015.md)。** [資源構造調査](track_b_resource_structure_and_bottlenecks_20261015.md)と[次期方向Decision Packet](track_b_next_algorithm_research_decision_packet_20261015.md)を追加。4候補群は未採択・順位未設定。新科学計算0、旧成果不変、GPTレビュー開始／科学実行は別途明示承認、mandatory STOP。[判断履歴](../../research/研究ノート/2026-10-15_track_b_D_plus_E_and_next_direction_preparation.md)。以下は過去の状態。
 
 > **Track B現在（2026-10-15）：[S4訂正KKT補完one-shot完了](parent_allocation_s4_supplement_results_and_gpt_handoff_20261015.md)。** 4構成/20新law・12合成・24root診断、旧50対照の保存値を再利用。371 saved-only checks PASS、S4/A4・旧20proxy結果/marker保持、retry0。分類PARENT_ALLOCATION_KKT_SUPPLEMENT_COMPLETE_AWAITING_GPT_REVIEW、科学的採否未判断、mandatory STOP。以下は履歴。
