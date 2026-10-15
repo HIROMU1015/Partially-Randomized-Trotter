@@ -154,3 +154,11 @@ env OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
 32標本で未観測の次数の費用を0扱いしない。旧s2 pilotはq8/r2で今回のr4とは異なり、その費用を流用しない。
 B/shotの増加と平均回路費用の変化を分け、PR優位がなくなる結果もそのまま報告する。
 新しい科学定義・候補最適化・H8計算・GPT詳細reviewは開始しない。準備公開後にSTOPする。
+
+## 2026-10-15 利用者の開始指示・実行中
+
+利用者「計算を開始して」を、直前のscope/資源/累積上限案の実行承認として固定した。SOURCE `669842c85e2c04a90dcdcfb774b323a2737cb8ba`、run `h6-fixed-delta-t-panel-20261015-run02`、coordinator1603119／signal workers1603135,1603136。承認済みCPU予算内で空いているworker34/35/36/37/39/40/41/43・driver44へ自runだけを配置した。
+
+初回CPU admission停止はscience0/one-shot未消費。後のbootstrapはsnapshotパスを文字列で渡し、NPZ array読込前のAttributeErrorで停止した。両workerのexit1/reap・native wait1と予約を保持し、Path変換の1行修正＋人工47件PASS後に新SOURCE/新outputへ結合した。数学・input/compiler・64trajectory/144compile・累積1910/916/3584は不変。
+
+最後のfresh CPU/memory/pressure/OOM/filesystem/inode/quotaとSOURCE230provider/34273environment/input/carry byte bindingに合格して起動した。[開始確認](../../artifacts/resource_applicability/track_a_h6_fixed_delta_readiness_v1/2026-10-15/execution_start_v1.json)。2signal worker/thread1/CPU時間増加・STOP理由なしを確認。完了証拠ではない。runtimeはprivate homeのmaterialized05、native logはlaunch02。旧grant/証拠を保持し、共有設定・他job・venv変更0。runnerの自動retry/次stageは無効のまま。
