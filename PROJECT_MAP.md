@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-15 既存成果引継ぎ・M案K0完了／Mandatory STOP
+
+[完了GPTレビュー原文](docs/reviews/quantum_chemistry_pf/qc_post_he1_research_direction_scientific_review_20261015.md)、Aの[簡潔な既存成果引継ぎ](docs/research/qc_onebody_he1_archival_handoff_20261015.md)、Bの[M案K0監査](docs/research/qc_m_fixed_circuit_k0_technical_audit_20261015.md)、[GPT判断引継ぎ](docs/research/qc_m_fixed_circuit_k0_gpt_handoff_20261015.md)、[技術status・証拠索引](artifacts/qc_m_fixed_circuit_k0/2026-10-15/method_status.json)。counterterm／係数fit／射影生成のcoreはREDUCES_TO_KNOWN、独立生成の優位はNOT_IDENTIFIED。M全体UNDETERMINED_NOT_READY、gate=falseでK1・M-b探索・pilot準備を開始しない。新科学計算・保存数値集計・GPT科学レビュー0。第一候補の正式状態AWAITING_USER_ADOPTION_DECISION、M未採択。旧source/結果/認可/STOP・manifest既存FAIL、N1 STOP/N2 HOLD/N3 CLOSED/THRIFT現template CLOSED・Track A/B/C1〜C4を保持。公開・GitHub再取得後Mandatory STOP。以下は履歴。
+
 ## 2026-10-15 完成版レビュー原文保存・H-E1 Stage 0のK0完了／STOP
 
 [完成版科学レビュー](docs/reviews/quantum_chemistry_pf/qc_onebody_repartition_h_boundary_final_scientific_review_20261015.md)を原文100,617 bytes/SHA a88a7db0…で保存。[H-E1技術監査](docs/research/qc_he1_stage0_technical_prevalidation_20261015.md)、[GPT判断引継ぎ](docs/research/qc_he1_stage0_gpt_handoff_20261015.md)、[参照・stage証拠](artifacts/qc_he1_stage0_prevalidation/2026-10-15/method_status.json)。第1・第2研究の専用branch本文、Track A/B、FFF/partitioning、誤差予測、compact BCH、SPRINT/CPF最新版、processing/外挿・測定費用を照合した。

@@ -1,5 +1,9 @@
 # Quantum chemistry PF reviews
 
+## 2026-10-15：Post-H-E1完成版レビュー保存・M K0
+
+[指定された完成版GPTレビュー原文](qc_post_he1_research_direction_scientific_review_20261015.md)を42,646 bytes／SHA256 326622956c9eca9d28fc8cc9d500ad3cf1d45e7b2809ab06eea23aac1c750fcaで保存。[A：短い既存成果引継ぎ](../../research/qc_onebody_he1_archival_handoff_20261015.md)、[B：M K0技術監査](../../research/qc_m_fixed_circuit_k0_technical_audit_20261015.md)、[GPT判断引継ぎ](../../research/qc_m_fixed_circuit_k0_gpt_handoff_20261015.md)。新しいGPT科学レビューではない。M全体UNDETERMINED_NOT_READY、gate=false。M未採択、第一候補正式CLOSED未採用、K1/数値pilot未実施。旧結果・認可・STOP・manifest FAIL維持、公開照合後Mandatory STOP。
+
 ## 2026-10-15 完成版レビュー原文保存・H-E1 Stage 0のK0完了／STOP
 
 [完成版科学レビュー](qc_onebody_repartition_h_boundary_final_scientific_review_20261015.md)を原文100,617 bytes/SHA a88a7db0…で保存。[H-E1技術監査](../../research/qc_he1_stage0_technical_prevalidation_20261015.md)、[GPT判断引継ぎ](../../research/qc_he1_stage0_gpt_handoff_20261015.md)、[参照・stage証拠](../../../artifacts/qc_he1_stage0_prevalidation/2026-10-15/method_status.json)。第1・第2研究の専用branch本文、Track A/B、FFF/partitioning、誤差予測、compact BCH、SPRINT/CPF最新版、processing/外挿・測定費用を照合した。
