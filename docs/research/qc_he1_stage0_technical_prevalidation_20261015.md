@@ -138,3 +138,7 @@ H-E1がこの処理系の候補名・目的関数・最適化変数を変更し�
 基準500ea6の既存5,161保護files、162旧manifest recordsとnon-result fields、既存 `relevant_commits[7].description` 欠落FAIL、親workspaceの442件の既存編集を[metadata-only監査](../../artifacts/qc_he1_stage0_prevalidation/2026-10-15/static_integrity.json)で照合し保全した。global validator PASS・新CI・外部科学再現とは呼ばない。N1 STOP、N2 HOLD、N3 CLOSED、THRIFT現template CLOSED、C1〜C4判断、旧結果・認可・STOP・Track A/Bの独立性を保持する。
 
 独立branch `qc-he1-stage0-prevalidation-20261015` に公開し、GitHubからのbyte再取得後 **Mandatory STOP**。第一候補の正式終了、H-E1採択、GPT重要科学レビュー、K1以降・数値pilotを自動開始しない。同じ一般調査を繰り返す作業にも進まない。
+
+## GitHub再取得照合・最終STOP
+
+payload `4c0e20861beda8ac261b2c90e30b2942f8f3a80b` の23変更blobs／2,989,896 bytesをGitHubから独立再取得し、原レビュー100,617 bytes・5,161既存保護files・当repo固定27本文・第1/第2研究14本文をbyte/SHA照合した。[receipt](../../artifacts/qc_he1_stage0_prevalidation/2026-10-15/publication/receipt.json)、[STOP記録](../../artifacts/qc_he1_stage0_prevalidation/2026-10-15/publication_stop.json)。旧162manifest records/non-result/既知FAIL、親workspace442件の既存編集も一致。新科学計算・保存数値集計・GPT科学レビュー0。K0のgate不成立でK1〜K3未実施、正式採否はユーザー判断待ち。receipt以降の公開metadataは別commitで再取得確認し、**Mandatory STOP**。
