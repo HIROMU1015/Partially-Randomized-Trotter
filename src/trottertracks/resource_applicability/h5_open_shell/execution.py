@@ -279,6 +279,14 @@ def execute(root,manifest,grant):
         if not np.array_equal(data['sector_basis'],sector.basis_indices):raise ValueError('SNAPSHOT_SECTOR')
         prepared=preparations(ham)  # Once in idle coordinator; forked read-only reuse.
         binding=digest(dict(snapshot=snapshot['sha256'],projection=saved['DF'],source=manifest['SOURCE']))
+        from .contract import registry
+        write_json(output/'realized_input_binding.json',dict(SOURCE=manifest['SOURCE'],
+            snapshot=snapshot,projection_digest=digest(saved['DF']),actual_rank=rank,
+            registry=registry(rank),call_caps=call_limits(rank),input_digest=binding,
+            compiler_hash=manifest['compiler_hash'],profile_digest=manifest['profile_digest'],
+            carry_digest=manifest['carry_digest'],authorization_digest=digest(grant),output=str(output),
+            initial_tasks=tasks(rank,manifest['SOURCE'],binding),technical_input_checks='PASS_ENGINEERING',
+            scientific_certificate=False))
         def cost(directory,task):
             caps=dict.fromkeys(call_limits(rank),0);caps.update(compile=2,trajectory=1 if task['cell']['R'] else 0,
                 sampling_call=1 if task['cell']['R'] else 0,occurrence=task['cell']['R'] or 0,control_probe=4 if task['validate'] else 0)

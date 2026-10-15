@@ -143,6 +143,18 @@ class ContractTests(unittest.TestCase):
     def test_old_grant_and_unapproved_rejected(self):
         for grant in (None,{},dict(kind='H6_TECHNICAL',approved=True)):
             with self.assertRaises(ValueError):c.verify_grant({},grant,'1'*40)
+    def test_new_grant_full_binding_and_mutations(self):
+        from copy import deepcopy
+        manifest=dict(SOURCE='1'*40,approved=True,runtime_authorization=True,profile_digest='2'*64,
+            carry_digest='3'*64,target_digest=c.digest(c.target()),compiler_hash=c.COMPILER_HASH,
+            contract_digest=c.digest(c.draft()),output='/home/AbeHiromu/projects/h5-handoff-evidence/UNUSED_TEST_ONLY')
+        grant=dict(kind='H5_NEUTRAL_OPEN_SHELL_ONE_SHOT_V1',SOURCE='1'*40,approved=True,
+            runtime_authorization=True,manifest_digest=c.digest(manifest),maximum_compile=40,
+            one_shot=True,automatic_retry=False,**{k:manifest[k] for k in ('profile_digest','carry_digest','target_digest','output')})
+        self.assertEqual(c.verify_grant(manifest,grant,'1'*40),Path(manifest['output']))
+        for key,value in (('SOURCE','4'*40),('approved',False),('maximum_compile',42),('carry_digest','5'*64),('automatic_retry',True)):
+            bad=deepcopy(grant);bad[key]=value
+            with self.assertRaises(ValueError):c.verify_grant(manifest,bad,'1'*40)
     def test_call_failures_are_not_refunded(self):
         calls=c.Calls({'compile':1});calls.take('compile')
         with self.assertRaises(RuntimeError):calls.take('compile')
