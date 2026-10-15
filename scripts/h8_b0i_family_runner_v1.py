@@ -1,4 +1,4 @@
-"""H8 B0+I: fixed twelve-case screen, then bounded per-case native/compile waves.
+"""H8 B0+I: fixed twelve-case screen, then at most two cases/four compile workers.
 
 No real operation is permitted by the checked-in draft. A future explicit
 grant binds this SOURCE, profile, inputs, resources and an unused output.
@@ -24,7 +24,9 @@ g=adapter_module.g
 family=load('h8_b0i_accounting','h8_b0i_family_accounting_v1.py')
 SCOPE=adapter_module.b.SCOPE
 LIMITS=family.LIMITS
-POLICY='ALL_SCREEN_THEN_FIRST_SELECTED_CORRECTNESS_THEN_CASE_WAVES_V1'
+POLICY='ALL_SCREEN_THEN_FIRST_SELECTED_CORRECTNESS_THEN_TWO_CASE_WAVES_V1'
+WORKERS=4
+CASES_PER_WAVE=2
 
 
 def validate_contract(grant):
@@ -32,7 +34,7 @@ def validate_contract(grant):
     candidates=[dict(prefix=p,q=q,formula='2nd',T=.8) for p,q in family.REGISTRY]
     if (c.get('candidates')!=candidates or c.get('new_candidates')!=candidates or
             c.get('operation_limits')!=LIMITS or c.get('execution_order')!=POLICY or
-            c.get('workers')!=2 or c.get('control')!='symmetric_directional' or
+            c.get('workers')!=WORKERS or c.get('control')!='symmetric_directional' or
             c.get('precision_domain')!=dict(epsilon=list(family.EPS),factors=list(family.FACTORS)) or
             c.get('preparation_policy')!=adapter_module.b.RECIPE_POLICY or
             c.get('automatic_retry') is not False or c.get('next_stage_authorized') is not False or
@@ -43,10 +45,11 @@ def validate_contract(grant):
     if c.get('control_tolerance')!=1e-8 or c['budget'].get('wall_seconds') is not None:
         raise g.Stop('H8_EXPLICIT_TOLERANCE_WALL_POLICY')
     cfg=c.get('parallel_compile',{})
-    if (cfg.get('enabled') is not True or cfg.get('max_workers')!=2 or
+    if (cfg.get('enabled') is not True or cfg.get('max_workers')!=WORKERS or
+            cfg.get('max_cases_in_memory')!=CASES_PER_WAVE or
             cfg.get('internal_threads')!=1 or cfg.get('automatic_retry') is not False or
-            cfg.get('backend')!='OWNED_FORK_AFTER_CASE_CORRECTNESS_V1'):
-        raise g.Stop('H8_TWO_AXIS_FORK_SCOPE')
+            cfg.get('backend')!='OWNED_FORK_AFTER_CASE_BATCH_CORRECTNESS_V1'):
+        raise g.Stop('H8_FOUR_WORKER_TWO_CASE_FORK_SCOPE')
     if c.get('external_resource_monitor')!=load('h8_external_config','h8_b0i_family_external_monitor_v1.py').CONFIG:
         raise g.Stop('H8_INDEPENDENT_OBSERVER_REQUIRED')
     for p,q in family.REGISTRY:
@@ -58,11 +61,11 @@ def validate_contract(grant):
                 c['binding'].get('source')!=c['native_provider']['SOURCE']):
             raise g.Stop('H8_PINNED_SCIENTIFIC_PROVIDER_REQUIRED')
         cpus=cfg.get('worker_cpus',[]);driver=cfg.get('driver_cpu')
-        if (len(cpus)!=2 or len(set(cpus))!=2 or any(type(x) is not int or x<0 for x in cpus) or
+        if (len(cpus)!=WORKERS or len(set(cpus))!=WORKERS or any(type(x) is not int or x<0 for x in cpus) or
                 type(driver) is not int or driver<0 or driver in cpus or
                 set(c['allowed_cpus'])!=set(cpus+[driver]) or os.sched_getaffinity(0)!={driver}):
             raise g.Stop('H8_FRESH_CPU_BINDING_REQUIRED')
-        minimum=3*c['budget']['address_space_bytes']+c['launcher_budget']['address_space_bytes']+16*2**30
+        minimum=(WORKERS+1)*c['budget']['address_space_bytes']+c['launcher_budget']['address_space_bytes']+16*2**30
         if c['budget']['fresh_memory_available_bytes']<minimum:raise g.Stop('H8_ALL_ROLE_ADMISSION')
         if (not c.get('execution_plan_sealed') or not c.get('absolute_launch_command') or
                 g.d0.digest(c['profile'])!=c['expected_profile_digest'] or
@@ -111,32 +114,40 @@ def pipeline(grant,verified,mapping,monitor,artifacts,calls,factory,compile_batc
             new_compile_axes=2*len(selected),maximum_new_compile_axes=24,
             first_native_correctness_case=None if not selected else [selected[0]['prefix'],selected[0]['q']],
             first_case_rule='FIRST_SELECTED_IN_FIXED_PREFIX_Q_REGISTRY_ORDER',all_screen_before_any_native=True,
-            execution_order=POLICY),monitor.tick)
-        # One case in parent RAM. Every case must pass all probes before either
-        # of its two worker compilations. A later failure retains earlier costs
-        # but can never produce a COMPLETE comparison.
+            max_workers=WORKERS,max_cases_in_memory=CASES_PER_WAVE,execution_order=POLICY),monitor.tick)
+        # Hold at most two cases in parent RAM. All probes in a wave pass before
+        # any of its up to four compilations; first selected is validated first.
+        # A later failure retains completed waves but never a COMPLETE comparison.
+        for offset in range(0,len(selected),CASES_PER_WAVE):
+            wave=selected[offset:offset+CASES_PER_WAVE]
+            try:
+                for case in wave:
+                    monitor.phase=f"B_H8_NATIVE_CORRECTNESS_{case['prefix']}_{case['q']}"
+                    if case.get('independent') is None:raise g.Stop('H8_SAVED_INDEPENDENT_REFERENCE_REQUIRED')
+                    calls.take('native_evolution_build');calls.take('measured_wrapper_build',2)
+                    case['built']=api.build(case);validation=api.validate(case,case['built'])
+                    if validation.get('status')!='PASS' or set(validation.get('fingerprints',{}))!={'cosine','sine'}:
+                        raise g.Stop('H8_NATIVE_CORRECTNESS_BEFORE_EITHER_AXIS')
+                    artifacts.write(f"case_{case['prefix']}_{case['q']}_correctness.json",validation,monitor.tick)
+                    case['validation']=validation
+                monitor.phase='C_H8_COMPILE_WAVE_'+'__'.join(f"{c['prefix']}_{c['q']}" for c in wave)
+                rows=compile_batch(grant,wave,api,monitor,artifacts,calls)
+                expected={(c['prefix'],c['q'],axis) for c in wave for axis in ('cosine','sine')}
+                if set(rows)!=expected:raise g.Stop('H8_WAVE_AXIS_COVERAGE')
+                for case in wave:
+                    axes={}
+                    for axis in ('cosine','sine'):
+                        row=rows[(case['prefix'],case['q'],axis)];fp=case['validation']['fingerprints'][axis]
+                        adapter_module.metrics_checked(row['metrics'])
+                        if (row['fingerprint']!=fp or row.get('input_fingerprint_check')!=dict(before=fp,after=fp) or
+                                row['compiler_hash']!=grant.contract['binding']['compiler']):raise g.Stop('H8_COMPILED_IDENTITY')
+                        axes[axis]=row
+                    case['axes']=axes
+            finally:
+                for case in wave:case.pop('built',None)
+                gc.collect()
         for case in cases:
-            axes=None
-            if case['selected']:
-                monitor.phase=f"B_H8_NATIVE_CORRECTNESS_{case['prefix']}_{case['q']}"
-                if case.get('independent') is None:raise g.Stop('H8_SAVED_INDEPENDENT_REFERENCE_REQUIRED')
-                calls.take('native_evolution_build');calls.take('measured_wrapper_build',2)
-                built=api.build(case);validation=api.validate(case,built)
-                if validation.get('status')!='PASS' or set(validation.get('fingerprints',{}))!={'cosine','sine'}:
-                    raise g.Stop('H8_NATIVE_CORRECTNESS_BEFORE_EITHER_AXIS')
-                artifacts.write(f"case_{case['prefix']}_{case['q']}_correctness.json",validation,monitor.tick)
-                case.update(built=built,validation=validation);monitor.phase=f"C_H8_COMPILE_{case['prefix']}_{case['q']}"
-                rows=compile_batch(grant,[case],api,monitor,artifacts,calls)
-                expected={(case['prefix'],case['q'],axis) for axis in ('cosine','sine')}
-                if set(rows)!=expected:raise g.Stop('H8_CASE_TWO_AXIS_COVERAGE')
-                axes={}
-                for axis in ('cosine','sine'):
-                    row=rows[(case['prefix'],case['q'],axis)];fp=validation['fingerprints'][axis]
-                    adapter_module.metrics_checked(row['metrics'])
-                    if (row['fingerprint']!=fp or row.get('input_fingerprint_check')!=dict(before=fp,after=fp) or
-                            row['compiler_hash']!=grant.contract['binding']['compiler']):raise g.Stop('H8_COMPILED_IDENTITY')
-                    axes[axis]=row
-                case.pop('built');del built,rows;gc.collect()
+            axes=case.get('axes')
             results.append(dict(prefix=case['prefix'],q=case['q'],accounting=case['accounting'],axes=axes,
                 acquisition='NEW_MEASURED' if axes is not None else 'SKIPPED_INELIGIBLE_UNMEASURED',
                 origin_SOURCE=grant.contract['SOURCE']))

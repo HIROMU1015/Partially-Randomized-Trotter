@@ -32,7 +32,7 @@ def setup(root,out):
     binding=dict(source='b'*40,hamiltonian='1'*64,df='2'*64,state='3'*64,input='4'*64,
         compiler='5'*64,fragment_order=[str(i) for i in range(28)],b0_fingerprints={})
     c=old.base_contract(r.SCOPE,root,out,binding)
-    c.update(operation_limits=deepcopy(r.LIMITS),execution_order=r.POLICY,workers=2,
+    c.update(operation_limits=deepcopy(r.LIMITS),execution_order=r.POLICY,workers=4,
         candidates=[dict(prefix=p,q=q,formula='2nd',T=.8) for p,q in r.family.REGISTRY],
         new_candidates=[dict(prefix=p,q=q,formula='2nd',T=.8) for p,q in r.family.REGISTRY],
         control='symmetric_directional',control_tolerance=1e-8,transpiled_instruction_cap=1000,max_instructions=1000,
@@ -43,8 +43,8 @@ def setup(root,out):
         matched_B0=dict(approved=False,automatic_build=False),
         error_component_policy='SAVED_COMBINED_EMPIRICAL_U_UPPER_FOR_EACH_CONTRIBUTION',
         external_resource_monitor=dict(enabled=True,role='EXISTING_METADATA_LAUNCHER',interval_seconds=1.,maximum_staleness_seconds=5.),
-        parallel_compile=dict(enabled=True,max_workers=2,internal_threads=1,automatic_retry=False,
-            backend='OWNED_FORK_AFTER_CASE_CORRECTNESS_V1',parent_death_signal='SIGKILL',worker_cpus=[2,4],driver_cpu=16),
+        parallel_compile=dict(enabled=True,max_workers=4,max_cases_in_memory=2,internal_threads=1,automatic_retry=False,
+            backend='OWNED_FORK_AFTER_CASE_BATCH_CORRECTNESS_V1',parent_death_signal='SIGKILL',worker_cpus=[2,4,5,6],driver_cpu=16),
         fixture_skip=[])
     c['budget']['wall_seconds']=None;c['budget']['output_inode_cap']=2000
     control=root.parent/'control';control.mkdir();c['control_directory']=str(control)

@@ -1,4 +1,4 @@
-"""Bounded artificial H8 scope, scalar, per-case scheduling and resource tests."""
+"""Bounded artificial H8 scope, scalar, four-worker waves and resource tests."""
 from copy import deepcopy
 import errno
 import importlib.util
@@ -10,6 +10,7 @@ import signal
 import tempfile
 from types import SimpleNamespace
 import unittest
+import weakref
 from unittest.mock import Mock,patch
 
 spec=importlib.util.spec_from_file_location('h8_tests_fixture',Path(__file__).with_name('h8_b0i_fixtures_v1.py'))
@@ -36,15 +37,16 @@ class PipelineTests(unittest.TestCase):
     def test_fixed_twelve_cases_twenty_four_new_axes_and_no_reuse(self):
         self.assertEqual(self.execute(),0);result=self.read('full_family_results_v1.json')
         self.assertEqual(result['calls'],r.LIMITS);self.assertEqual(len(result['accounting']),120)
-        self.assertEqual(len(self.backend.instances),12)
-        self.assertTrue(all(x.poll_widths==[2] for x in self.backend.instances))
+        self.assertEqual(len(self.backend.instances),6)
+        self.assertTrue(all(x.poll_widths==[4] for x in self.backend.instances))
+        self.assertTrue(all(len({h['task']['cpu'] for h in x.handles})==4 for x in self.backend.instances))
         self.assertTrue(all(c['acquisition']=='NEW_MEASURED' for c in result['cases']))
         self.assertEqual(len(result['comparison']['comparisons']),60)
     def test_all_screen_complete_before_first_native_case(self):
         execute=self.backend.start
         def start(backend,task):
             self.assertEqual(len(list(self.out.glob('case_*_screen.json'))),12)
-            self.assertEqual(len(list(self.out.glob('case_*_correctness.json'))),1+len(self.backend.instances)-1)
+            self.assertEqual(len(list(self.out.glob('case_*_correctness.json'))),2*len(self.backend.instances))
             return execute(backend,task)
         with patch.object(self.backend,'start',start):self.assertEqual(self.execute(),0)
     def test_all_ineligible_skip_build_and_compile_not_zero_measured_cost(self):
@@ -56,6 +58,7 @@ class PipelineTests(unittest.TestCase):
         self.c['fixture_skip']=[list(x) for x in r.family.REGISTRY[:5]];self.refresh()
         self.assertEqual(self.execute(),0);v=self.read('full_family_results_v1.json')
         self.assertEqual(v['calls']['compile'],14);self.assertEqual(v['calls']['control_probe'],28)
+        self.assertEqual([x.poll_widths for x in self.backend.instances],[[4],[4],[4],[2]])
         self.assertEqual(self.read('compile_plan_after_screen_v1.json')['first_native_correctness_case'],list(r.family.REGISTRY[5]))
     def test_last_screen_failure_starts_no_native_or_compile(self):
         class Fail(f.FakeAdapter):
@@ -68,6 +71,45 @@ class PipelineTests(unittest.TestCase):
             def validate(obj,*args):raise g.Stop('FIRST_NATIVE_FAILURE')
         self.assertEqual(self.execute(Fail),2)
         self.assertEqual(self.read('terminal_v1.json')['calls_reserved_before_operations']['compile'],0)
+    def test_second_case_failure_prevents_all_four_wave_compiles(self):
+        class Fail(f.FakeAdapter):
+            def validate(obj,case,built):
+                if (case['prefix'],case['q'])==r.family.REGISTRY[1]:raise g.Stop('SECOND_CASE_FAILURE')
+                return super().validate(case,built)
+        self.assertEqual(self.execute(Fail),2)
+        self.assertEqual(self.backend.instances,[])
+        self.assertEqual(self.read('terminal_v1.json')['calls_reserved_before_operations']['compile'],0)
+        self.assertTrue(f.FakeAdapter.instances[-1].closed)
+    def test_only_one_selected_case_launches_two_workers(self):
+        self.c['fixture_skip']=[list(x) for x in r.family.REGISTRY[1:]];self.refresh()
+        self.assertEqual(self.execute(),0)
+        self.assertEqual([x.poll_widths for x in self.backend.instances],[[2]])
+        self.assertEqual(self.read('full_family_results_v1.json')['calls']['compile'],2)
+    def test_at_most_two_native_cases_held_and_released_between_waves(self):
+        refs=[];held=[]
+        class Built(dict):pass
+        class Track(f.FakeAdapter):
+            def build(obj,case):
+                held.append(sum(ref() is not None for ref in refs))
+                value=Built(super().build(case));refs.append(weakref.ref(value));return value
+        self.assertEqual(self.execute(Track),0)
+        self.assertEqual(held,[0,1]*6)
+        self.assertTrue(all(ref() is None for ref in refs))
+    def test_four_worker_count_and_memory_batch_cannot_be_silently_changed(self):
+        for count in (2,6):
+            c=deepcopy(self.c);c['workers']=count
+            grant=SimpleNamespace(contract=c,synthetic=True,require=Mock())
+            with self.assertRaisesRegex(g.Stop,'FIXED_SCIENTIFIC'):r.validate_contract(grant)
+        c=deepcopy(self.c);c['parallel_compile']['max_cases_in_memory']=3
+        with self.assertRaisesRegex(g.Stop,'FOUR_WORKER_TWO_CASE'):
+            r.validate_contract(SimpleNamespace(contract=c,synthetic=True,require=Mock()))
+    def test_helper_rejects_three_cases_before_any_worker_starts(self):
+        grant=SimpleNamespace(contract=self.c,synthetic=True,require=Mock())
+        cases=[dict(prefix=prefix,q=q,validation=dict(status='PASS',fingerprints=dict(cosine='a',sine='b')),
+            built=dict(wrappers=dict(cosine='ARTIFICIAL',sine='ARTIFICIAL'))) for prefix,q in r.family.REGISTRY[:3]]
+        with self.assertRaisesRegex(g.Stop,'AT_MOST_TWO_CASES'):
+            self.batch(grant,cases,Mock(),f.FakeMonitor(grant),Mock(),Mock())
+        self.assertEqual(self.backend.instances,[])
     def test_late_native_failure_keeps_completed_costs_but_no_complete_result(self):
         class Fail(f.FakeAdapter):
             def validate(obj,case,built):
@@ -127,7 +169,7 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(calls.used['compile'],24);self.assertEqual(journal[-1]['refund'],0)
     def test_wave_cleanup_files_unique_and_total_CPU_not_reset(self):
         self.assertEqual(self.execute(),0)
-        self.assertEqual(len(list(self.out.glob('case_*_parallel_cleanup_v1.json'))),12)
+        self.assertEqual(len(list(self.out.glob('wave_*_parallel_cleanup_v1.json'))),6)
         self.assertAlmostEqual(self.read('terminal_v1.json')['child_CPU_seconds'],.24)
     def test_terminal_binds_final_result_and_completed_cost_bytes(self):
         self.assertEqual(self.execute(),0);receipts=self.read('terminal_v1.json')['output_file_receipts']
@@ -139,7 +181,47 @@ class PipelineTests(unittest.TestCase):
     def test_worker_failure_and_cleanup_error_preserve_first_STOP(self):
         self.backend.failure='native';self.backend.cleanup_error=True
         self.assertEqual(self.execute(),2);self.assertEqual(len(self.backend.instances),1)
+        self.assertEqual(len(self.backend.instances[0].handles),4)
+        self.assertTrue(self.backend.instances[0].cleaned)
+        self.assertTrue(all(h['reaped'] for h in self.backend.instances[0].handles))
         self.assertIn('ORIGINAL_COMPILE_FAILURE',self.read('terminal_v1.json')['first_stop']['reason'])
+    def test_fourth_worker_start_failure_cleans_all_preceding_workers(self):
+        start=self.backend.start;cleanup=self.backend.cleanup
+        def partial(backend,task):
+            if len(backend.handles)==3:raise g.Stop('FOURTH_START_FAILED')
+            return start(backend,task)
+        def reap(backend):
+            for h in backend.handles:h.update(reaped=True,exit_code=2)
+            return cleanup(backend)
+        with patch.object(self.backend,'start',partial),patch.object(self.backend,'cleanup',reap):
+            self.assertEqual(self.execute(),2)
+        backend=self.backend.instances[0]
+        self.assertTrue(backend.cleaned);self.assertEqual(len(backend.handles),3)
+        self.assertTrue(all(h['reaped'] for h in backend.handles))
+        terminal=self.read('terminal_v1.json')
+        self.assertIn('FOURTH_START_FAILED',terminal['first_stop']['reason'])
+        self.assertEqual(terminal['calls_reserved_before_operations']['compile'],4)
+        self.assertFalse((self.out/'full_family_results_v1.json').exists())
+    def test_observer_records_all_four_worker_identities(self):
+        c=self.c;c['external_monitor_memory_baseline']={};c['log_cap_bytes']=16*2**20
+        control=Path(c['control_directory']);(control/'launch_stdout.log').write_bytes(b'')
+        driver=dict(pid=1,uid=os.getuid(),parent_pid=99,start_ticks=1,boot_id='ARTIFICIAL')
+        identities=[]
+        for i,(prefix,q,axis) in enumerate((p,q,axis) for p,q in r.family.REGISTRY[:2] for axis in ('cosine','sine')):
+            identity=dict(driver,pid=i+2,parent_pid=1,start_ticks=i+2);identities.append(identity)
+            record=dict(identity=identity,cpu=c['parallel_compile']['worker_cpus'][i],name=f'{prefix}_{q}_{axis}')
+            (control/f'observed_compile_started_{prefix}_{q}_{axis}.json').write_text(json.dumps(record))
+        memory=dict(effective_available_bytes=10**12)
+        fakeg=SimpleNamespace(Stop=g.Stop,d0=SimpleNamespace(memory_snapshot=lambda:memory,check_memory_snapshot=Mock()),
+            validate_memory_observation=Mock(),filesystem_snapshot=lambda _:dict(available_bytes=10**12),check_filesystem=Mock())
+        grant=SimpleNamespace(contract=c,contract_sha='CONTRACT',authorization_sha='AUTH',output=self.out)
+        obs=observer.Observer(grant,driver,dict(pid=99),fakeg,clock=lambda:1.)
+        def process(identity,allowed,**kwargs):return dict(identity=identity,CPU_seconds=.01,peak_RSS_bytes=1024,AS_bytes=2048,affinity=allowed)
+        with patch.object(obs,'process',side_effect=process):self.assertTrue(obs.step())
+        record=json.loads((control/observer.HEARTBEAT).read_bytes())
+        self.assertEqual([row['identity'] for row in record['workers']],identities)
+        ticket=dict(parent_identity=dict(pid=99),identity=driver);c['SOURCE']=record['SOURCE']
+        for identity in identities:self.assertEqual(observer.verify_record(record,grant,ticket,identity,1.),record)
     def test_proof_tamper_blocks_final_comparison(self):
         poll=self.backend.poll
         def bad(backend,active):

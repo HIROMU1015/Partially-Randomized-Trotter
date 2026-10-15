@@ -298,7 +298,8 @@ class ForkBackend:
 def compile_batch(grant,cases,api,monitor,artifacts,calls,*,g,metrics_check,backend_factory=ForkBackend):
     grant.require('H8_NATIVE_B0I_FULL_FAMILY12_V1')
     config=grant.contract['parallel_compile'];count=grant.contract['workers']
-    if (config.get('enabled') is not True or type(count) is not int or count!=2 or
+    if (config.get('enabled') is not True or type(count) is not int or count!=4 or
+            config.get('max_cases_in_memory')!=2 or
             config.get('max_workers')!=count or len(config.get('worker_cpus',[]))!=count or
             len(set(config['worker_cpus']))!=count):raise g.Stop('PARALLEL_HELPER_SCOPE')
     if grant.synthetic and backend_factory is ForkBackend:raise g.Stop('ARTIFICIAL_PARALLEL_REQUIRES_MOCK_BACKEND')
@@ -318,11 +319,12 @@ def compile_batch(grant,cases,api,monitor,artifacts,calls,*,g,metrics_check,back
             tasks.append(dict(name=f"{case['prefix']}_{case['q']}_{axis}",prefix=case['prefix'],
                 q=case['q'],axis=axis,wrapper=wrapper,fingerprint=fp))
     allowed={(p,q) for p in (7,14,21) for q in (1,2,4,8)}
-    if (len(tasks)!=2 or len(tasks)%2 or len({t['name'] for t in tasks})!=len(tasks) or
+    if (not 1<=len(cases)<=2 or len(tasks)!=2*len(cases) or
+            len({t['name'] for t in tasks})!=len(tasks) or
             any((t['prefix'],t['q']) not in allowed for t in tasks)):
-        raise g.Stop('H8_SINGLE_CASE_TWO_AXES_REQUIRED')
+        raise g.Stop('H8_AT_MOST_TWO_CASES_FOUR_AXES_REQUIRED')
     expected_tasks=len(tasks)
-    cleanup_name=f"case_{cases[0]['prefix']}_{cases[0]['q']}_parallel_cleanup_v1.json"
+    cleanup_name=f"wave_{cases[0]['prefix']}_{cases[0]['q']}_parallel_cleanup_v1.json"
     prior_cpu=monitor.child_cpu_seconds
     backend=backend_factory(grant,api,monitor,g);active=[];rows={};first=None;cleanup=None
     cleanup_signals=CleanupSignals(enabled=not grant.synthetic)
