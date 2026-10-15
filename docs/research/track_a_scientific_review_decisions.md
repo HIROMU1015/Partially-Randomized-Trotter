@@ -1,6 +1,6 @@
 # Track A 科学レビュー判断の共有索引
 
-2026-10-14 JST。既存GPT科学レビューの判断を記録する。Codexの新しい科学レビュー・論文改訂・実行grantではない。
+2026-10-15 JST追補。既存GPT科学レビューの判断を記録する。Codexの新しい科学レビュー・論文改訂・実行grantではない。
 [正式共通ノート](track_a_shared_research_status.md) / [機械可読review registry](../../artifacts/resource_applicability/track_a_cross_environment_canonical_status/2026-10-14/scientific_review_registry_v1.json)。
 採択欄は各原reviewの対象scopeに限る。「採択しない/対象外」と、未検証ゆえ保留した事項を区別する。
 
@@ -15,6 +15,7 @@
 | R07 / 2026-10-13 | H6固定8構成の独立確認 | 探索8とfresh32を分離し、既知希少次数寄与の診断 | population winner、128/1024通常標本への自動増量 | 未観測order/component費用、H8 launch認可 | [原review](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0dd5c3d204dab9b731268a1aa2add621080f3d20/docs/research/track_a_h6_independent_confirmation_scientific_review_20261013.md) |
 | R08 / 2026-10-13 | H6条件付きs2 pilot後 | 留保付きbenchmark統合、追加H6 samplingを必須工程から一旦外しサイズ比較準備 | 全support上界、局所補正の他系移送、pilot scope自動拡張 | 他希少層・外部bit再現・H8最終結果 | [原review](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/38d386c8732295e6fab5d6fcbd47fbe586dc207d/docs/research/track_a_h6_s2_pilot_followup_scientific_review_20261013.md) |
 | R09 / 2026-10-14 | H4全面240軸・v0.4後 | claim B主・A補助・C別native事例。経験的資源研究として科学編集へ | PR全勝/new algorithm、追加32/全support/全面高次PFを必須化、H8待ちでH4編集停止 | 母平均・最良PF一般・連続境界・operational predictor・energy総費用・H8全体結論 | [原review](track_a_h4_b0i_v04_scientific_review_20261014.md) |
+| R10 / 2026-10-15 | H8完了・H4/H6 D0後の統合判断 | 既存結果を条件付きbenchmark採用、H8 D0先行、native B0+I強化、H5→H7中性ROHF、H6固定δ=.2のT比較、ε=.0005/6metric/P補助 | 高精度ほどPR有利という一般則、全support証明/一律sampling/新H4政策統一の必須化、q16/ε=.0001/H9以上/追加geometry/汎用監査campaign自動追加 | 母平均・未観測層費用・native対照実費用・確認外metric/P候補の主要claim・新実行認可 | [固定原review3d910ee1](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3d910ee1de4597b8895e8506500553dbad5a5085/docs/research/track_a_h8_d0_integrated_scientific_review_20261015.md) |
 
 ## 追補・更新関係
 
@@ -27,6 +28,17 @@
 - **R07**：R08 follows after conditional s2 evidence and changes additional-sampling priority.
 - **R08**：Revises R07 next-work priority after new evidence. Later H8 has separately authorized launch records; old not-started text remains historical.
 - **R09**：Follows R06 completed-cost evidence, refines R05 main claim. Scientific editing recommended but this information-only task does not revise any manuscript.
+- **R10**：R01–R09を維持し、H8完了681ec23c・H4/H6 D0 8dbdb682を追加証拠として追補。R09のH4採用を取り消さない。原稿化は後回し、研究ノート優先。H8 D0は後に別承認で完了したが、R10原本の「未実行・.0005未知」は実行前の履歴として不変。後続D0結果の新科学reviewを本追補で実施したとはしない。
+
+## R10の後続実行と未認可範囲
+
+H8 D0は[結果3d910ee1](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3d910ee1de4597b8895e8506500553dbad5a5085/docs/research/track_a_h8_d0_saved_value_result_20261015.md)で旧944 precision/3576費用一致、解析1回・exit0。H6 native B0+Iは[準備6baf246c](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/6baf246cb46cf69536db6c16872286e5ed12e85a/docs/research/track_a_h6_native_b0i_parallel_readiness_20261015.md)の後に、SOURCE2e733d8a・[grant/seal d8cdc1a7](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/d8cdc1a7141d65658308de0fb66a4ed67233023c/artifacts/resource_applicability/track_a_h6_proc_exit_fix_v1/2026-10-15/rebinding_v3/seal_v1.json)で6軸pilotのみ認可・起動済み。16:52 JST頃のpartial4/6 snapshot後、17:03 JST以降に全6軸結果・COMPLETE/driver wait0/全worker reapの[完了metadata受領](../../artifacts/resource_applicability/track_a_shared_status_server_update/2026-10-15/h6_completion_metadata_receipt_v1.json)を追補した。完了記録の確認であり、新しい科学的費用結論の採択ではない。
+
+H5/H7は中性doublet候補のROHF共通空間軌道＋DF sector solver stateを採択した。H5のcorrectness/実資源を見てH7へ進める科学的順序で、PR勝利を進行条件にしない。両系の新実行認可は本追補では取得していない。
+T比較は旧q2固定からδ=.2固定へ主比較を変更し、新2Tの48 compile/16 PR trajectory/320 occurrence案（controlと欠測anchor別）を記録した。native各系24軸、matched B0追加、厳しいε=.0001/q16も現H6 6軸grantへ含めない。
+希少層の母平均保証、確認union外のmetric/P候補を主要claimにする判断、native Iで中心的解釈が変わる場合等は原review§14.3へ戻す。今回その科学判断を先取りしない。
+
+[R10追補registry・受領監査](../../artifacts/resource_applicability/track_a_shared_status_server_update/2026-10-15/receipt_audit_v1.json)は既存R01–R09 registryを変更しない別記録。原reviewを再commitせず固定リンクで参照する。
 
 ## 10月14日 H4全面結果後レビューの取得
 
@@ -44,6 +56,6 @@ H4追加sampling・全support certificate・全面高次PF追加を現時点の�
 ## 権限と次の判断
 
 科学レビューの完了、technical PASS、計算の明示認可は別事項。旧grantやSTOPに遡及変更しない。
-H8は既存認可範囲で継続する方針を記録する。今回serverのlive状態は確認せず、停止/再起動/source/grant操作は0。
-H8最終結果の統合、新baseline/estimator/claim scopeの実質変更、重大な数値不整合が生じる場合はGPT判断へ戻す。
+H8はcore/D0完了資料を取得済み。今回H8のlive process・実行環境を操作せず、停止/再起動/source/grant操作は0。H6の認可/実行snapshotも履歴確認であり新grantではない。
+既存R10の採否を記録する通常の情報同期で同じreviewをやり直さない。新baseline/estimator/claim scopeの実質変更、重大な数値不整合等は原reviewの再判断条件に従う。
 通常の情報同期・hash・リンク検査だけで同じ科学レビューを再要求しない。新科学計算は今回未認可、公開後mandatory STOP。

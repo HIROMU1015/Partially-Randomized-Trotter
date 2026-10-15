@@ -1,6 +1,6 @@
 # Track A 正式共通研究情報の同期ルール
 
-2026-10-14 JST、研究情報共有 v1。server初版とlocal照合を利用者の指示で正式統合した。
+2026-10-15 JST追補、基準は正式共有v1 commit `4675730e7e40d25ba3618334a4a0e28b4bd2f145`。server初版とlocal照合の正式統合を保持し、後続公開資料の取得方法・指示原本の版差・時間上限の照合を追補した。
 [server元policy](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/2298c4cdbc81d81c6268fdb7bd80f0b29d5b4e8c/docs/research/track_a_environment_sync_policy.md)を履歴として保全。科学方針・実行grant・raw・SOURCEを変更するルールではない。
 **情報共有の統一であり、sourceや実験データの物理的な完全同期ではない。**
 
@@ -57,7 +57,18 @@ server固有データはserverが原本を保持し、local固有ノート/ZIP/�
 - dirty/untracked：HEAD/status・必要hashをread-only保存して保全。cleanup/一括commitしない。
 
 H8 RUNNINGは観測日時付きsnapshotに限る。2026-10-14初版の203/592・8 workerを現在進捗や最終resultとしない。
+後続のH8完了681ec23c、H4/H6 D0 8dbdb682、H8 D0 3d910ee1を取得済み。旧snapshotを消さず、結果・後続科学review・別scopeの再会計を順にリンクする。H6も未認可準備6baf246cと後続grant/seal/実行snapshotを別欄にする。
+固定commit内の`publication_status`が過去の認証失敗を記録していても、後のremote HEAD一致・固定file取得の証拠があれば現在の公開状態は後続受領記録で追補する。元失敗receiptは変更しない。
 原runner/observerの既存管理を尊重し、同期taskからserver process・SOURCE・grant・checkpointを操作しない。既存H8継続方針は新計算認可を含まない。
+
+## 共通指示原本と時間上限の照合（2026-10-15）
+
+共通指示は同名でもcontent identityを確認する。[server原本copy](provenance/research_project_instructions_server_original_20261012.md)は50,268 bytes/SHA `709524f856a3117c85042309c390a3697d9b2c8c8d79af6b6c290e9d20814bcf`、local申告版48,223 bytes/SHA `b00598003bf877116d9ef2e5ffb383b47c86b7ed1d855f80d815205052f894e8`はbytes未受領。旧公開1901b4b0は別の47,275 bytes版であり、local申告版の代用にしない。
+server原本を編集・改行変換せず公開copyと[差分](provenance/research_project_instructions_public1901_to_server.diff)に来歴を残した。local/serverの内容差・改行差の直接判定は実体受領後まで未確認。更新日時でどちらかを共通正本に選ばない。今回copy公開は指示版の統一/新規科学採択ではない。
+
+[将来契約の既定方針](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/735475b3cb11a8214eefcf14826bacd90ed528fa/artifacts/resource_applicability/track_a_h6_technical_pilot_execution_v2/2026-10-10/future_wall_time_policy_v1.json)はphase/total wall上限null。CPU時間・memory・出力・監視timeout等とは区別する。
+一方H6現sealed契約にはstage wall14,400秒・数値process合計CPU14,400秒がある。4hは元準備依頼の未承認案から後続契約に実採用されており、単なる古い案とは表示しない。調べた承認原文には「既定wallなしに対する4h例外」を明示した記録がなく、整合性は**OPEN_POLICY_CONTRACT_DISCREPANCY**として残す。個別scopeの実行認可の存在と、既定方針への明示例外の未確認は別事項。
+本同期作業は既存契約・source・grant・実行中jobを変更しない。将来の契約担当は新契約時にwall方針を照合し、既定外上限を黙って継承しない。今回この差を根拠に追加準備やgrant発行を開始しない。[根拠と未取得事項](track_a_server_information_update_20261015.md)。
 
 ## 次の同期条件と終了
 
