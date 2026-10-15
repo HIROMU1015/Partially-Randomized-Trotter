@@ -1,5 +1,7 @@
 # 第一候補・H-E1：既存成果の簡潔な引継ぎ
 
+**2026-10-15 ユーザー採用後の正式状態**：第一候補（一体項再配分PF）の**現固定構成を正式CLOSED**、H-E1の現定義探索を終了、M-a・M-bの現定義での追加探索をSTOP（K1未実施）、PF小改変探索系列をPAUSED。旧D案HOLD、他の独立研究の状態は不変。 [最新GPTレビュー](../reviews/quantum_chemistry_pf/qc_m_k0_claude_scientific_rereview_and_direction_20261015.md)／[採用記録](../../artifacts/qc_pf_exploration_state_adoption/2026-10-15/decision.json)。新計算・新レビューは行わずMandatory STOP。以下の本文はA／K0完了時点の履歴で、`AWAITING_USER_ADOPTION_DECISION` 等は採用前の状態を表す。成果の再整理・数値の再集計はしていない。
+
 2026-10-15 JST。ユーザー提供の[完了GPT科学レビュー](../reviews/quantum_chemistry_pf/qc_post_he1_research_direction_scientific_review_20261015.md)を原文保存し、今回のAとして既存成果だけを整理した。論文草稿、再集計、科学レビューの再実施ではない。
 
 | 系列 | 目的・確認済み成果 | 現構成を区切るレビュー理由 | 未解決事項・正式状態 |

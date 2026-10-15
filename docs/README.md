@@ -1,5 +1,9 @@
 # 文書索引
 
+## 2026-10-15 採用済み研究状態の最小反映
+
+[最新GPTレビュー原文](reviews/quantum_chemistry_pf/qc_m_k0_claude_scientific_rereview_and_direction_20261015.md)／[現行採用状態](../artifacts/qc_pf_exploration_state_adoption/2026-10-15/decision.json)。第一候補の現固定構成CLOSED、H-E1現定義終了、M-a/M-b追加探索STOP・K1未実施、PF小改変探索系列PAUSED、旧D案HOLD、他研究不変。既存成果整理Aを再作成せず、新科学計算・GPTレビュー0。旧結果・STOP・manifest FAIL維持。新方向レビューは別途明示開始承認待ち、公開照合後Mandatory STOP。
+
 ## 2026-10-15：既存成果引継ぎ・M案K0
 
 [完了レビュー原文](reviews/quantum_chemistry_pf/qc_post_he1_research_direction_scientific_review_20261015.md)、[A：短い引継ぎ](research/qc_onebody_he1_archival_handoff_20261015.md)、[B：K0監査](research/qc_m_fixed_circuit_k0_technical_audit_20261015.md)、[GPT判断引継ぎ](research/qc_m_fixed_circuit_k0_gpt_handoff_20261015.md)、[日付ノート](research/研究ノート/2026-10-15_qc_m_fixed_circuit_k0.md)。core REDUCES_TO_KNOWN／M全体UNDETERMINED_NOT_READY、gate=false。新科学計算なし、M未採択、K1/pilot未開始、第一候補正式CLOSED未採用。旧証拠・認可・STOP・manifest FAILを保持し、公開照合後Mandatory STOP。

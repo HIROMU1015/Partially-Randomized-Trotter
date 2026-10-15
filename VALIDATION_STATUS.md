@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-15 ユーザー採用：現構成の終了・探索系列pause
+
+第一候補（一体項再配分PF）の**現固定構成を正式CLOSED**、H-E1の現定義探索を終了、M-a・M-bの現定義での追加探索をSTOP（K1未実施）、PF小改変探索系列をPAUSED。旧D案HOLD、他の独立研究の状態は不変。 [採用元の完成GPTレビュー](docs/reviews/quantum_chemistry_pf/qc_m_k0_claude_scientific_rereview_and_direction_20261015.md)、[現行の採用済み状態](artifacts/qc_pf_exploration_state_adoption/2026-10-15/decision.json)、[日付ノート](docs/research/研究ノート/2026-10-15_qc_pf_exploration_state_adoption.md)。今回はユーザーが科学判断を採用した後の事務的反映であり、新しい科学レビュー・計算・再集計は0。一般的不能性や研究全体の終了を意味しない。新研究方向のGPTレビューは別途明示開始承認待ち。既存source・結果・認可・STOP・manifest既存FAILを保持し、公開・GitHub再取得照合後Mandatory STOP。以下は採用前の履歴。
+
 ## 2026-10-15 M fixed-circuit K0: static audit only; Mandatory STOP
 
 [Original completed review](docs/reviews/quantum_chemistry_pf/qc_post_he1_research_direction_scientific_review_20261015.md) archived byte-identically (42,646 bytes; SHA256 326622956c9eca9d28fc8cc9d500ad3cf1d45e7b2809ab06eea23aac1c750fca). [Brief A handoff](docs/research/qc_onebody_he1_archival_handoff_20261015.md), [M K0 report](docs/research/qc_m_fixed_circuit_k0_technical_audit_20261015.md), [GPT handoff](docs/research/qc_m_fixed_circuit_k0_gpt_handoff_20261015.md), [status](artifacts/qc_m_fixed_circuit_k0/2026-10-15/method_status.json). Counterterm/parameter-fit/projection core REDUCES_TO_KNOWN; independent generator advantage NOT_IDENTIFIED; whole M UNDETERMINED_NOT_READY, gate=false. No K1/pilot preparation, science, saved-numeric aggregation, compile or new GPT review. Metadata identity checks do not revalidate scientific results or constitute CI. Preserve 5,177 protected files, 164 old manifest records/non-result fields/known global FAIL and all old source/results/authorizations/STOP. First-candidate formal status AWAITING_USER_ADOPTION_DECISION; M not adopted. Publish/re-fetch, then Mandatory STOP. Earlier entries follow.

@@ -1,5 +1,7 @@
 # M案K0：固定回路のh²係数修正PF・限定技術監査
 
+**2026-10-15 ユーザー採用後の正式状態**：第一候補（一体項再配分PF）の**現固定構成を正式CLOSED**、H-E1の現定義探索を終了、M-a・M-bの現定義での追加探索をSTOP（K1未実施）、PF小改変探索系列をPAUSED。旧D案HOLD、他の独立研究の状態は不変。 [最新GPTレビュー](../reviews/quantum_chemistry_pf/qc_m_k0_claude_scientific_rereview_and_direction_20261015.md)／[採用記録](../../artifacts/qc_pf_exploration_state_adoption/2026-10-15/decision.json)。新計算・新レビューは行わずMandatory STOP。以下の本文はA／K0完了時点の履歴で、`AWAITING_USER_ADOPTION_DECISION` 等は採用前の状態を表す。成果の再整理・数値の再集計はしていない。
+
 2026-10-15 JST。Aの[既存成果引継ぎ](qc_onebody_he1_archival_handoff_20261015.md)を作成した後、ユーザー指定のBを一回実施した。**M-aのcounterterm・射影／係数生成の中核は既知手順へ還元できる。DFに限定した独立の生成上の優位とCS2後の費用利益は特定できず、M案全体は `UNDETERMINED_NOT_READY`、K0 gateは不成立で停止する。** K1、数値射影、pilot準備・本格実装へ進まない。M案の科学的採否・終了を決める報告ではない。
 
 ## 1. 入力、固定対象、調査範囲

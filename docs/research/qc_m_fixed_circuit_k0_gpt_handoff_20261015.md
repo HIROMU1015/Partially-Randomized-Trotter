@@ -1,5 +1,7 @@
 # M案K0：GPT科学判断用引継ぎ
 
+**2026-10-15 ユーザー採用後の正式状態**：第一候補（一体項再配分PF）の**現固定構成を正式CLOSED**、H-E1の現定義探索を終了、M-a・M-bの現定義での追加探索をSTOP（K1未実施）、PF小改変探索系列をPAUSED。旧D案HOLD、他の独立研究の状態は不変。 [最新GPTレビュー](../reviews/quantum_chemistry_pf/qc_m_k0_claude_scientific_rereview_and_direction_20261015.md)／[採用記録](../../artifacts/qc_pf_exploration_state_adoption/2026-10-15/decision.json)。新計算・新レビューは行わずMandatory STOP。以下の本文はA／K0完了時点の履歴で、`AWAITING_USER_ADOPTION_DECISION` 等は採用前の状態を表す。成果の再整理・数値の再集計はしていない。
+
 2026-10-15 JST。ユーザー指定のA→Bを完了した。Aは[短い既存成果引継ぎ](qc_onebody_he1_archival_handoff_20261015.md)、Bは[限定技術監査](qc_m_fixed_circuit_k0_technical_audit_20261015.md)。[完了GPTレビュー](../reviews/quantum_chemistry_pf/qc_post_he1_research_direction_scientific_review_20261015.md)を42,646 bytes／SHA256 `326622956c9eca9d28fc8cc9d500ad3cf1d45e7b2809ab06eea23aac1c750fca` の原文で保存した。新しいGPT科学レビューは開始していない。
 
 **M-aのcounterterm／射影生成coreは `REDUCES_TO_KNOWN`。M案固有の生成上の優位・CS2後の費用利益は未特定で、全体は `UNDETERMINED_NOT_READY`、K0 `gate_pass=false`。** K1、pilot準備・数値検証・M-b探索に進まず停止した。
