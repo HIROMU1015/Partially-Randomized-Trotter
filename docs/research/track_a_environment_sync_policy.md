@@ -1,5 +1,14 @@
 # Track A 正式共通研究情報の同期ルール
 
+## 2026-10-16 結果追補の来歴
+
+最新正式同期方針[6b78e5f3](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/6b78e5f39917d92d6c60694d3e0b0d06394d7eb5/docs/research/track_a_environment_sync_policy.md)を固定参照する。本result branchは共通祖先4675730e…からの別系統であり、無条件merge/cherry-pickはしていない。旧本文・inventory・原reviewを保全し、共通ノートへ日付付きのH6/H8完了結果を追加した。
+
+H8 runtime原本の誤った欄名`confirmed_PR_union8`は変更せず、byte/hashを残した公開projectionだけで`confirmed_PR_union6`へ訂正する。actualの入力はH8確認6候補/独立32で、H6のunion8と混合しない。[照合と訂正範囲](track_a_h8_native_b0i_full_family_results_20261016.md)。
+公開対象は軽量scalar/費用/適格性/P表、元証拠hash、終了・監視の要約と研究ノート。NPZ/実runtime/checkpoint/cache/ledger/venv/credentialは収録せず、原稿・共有環境・他job・旧grantを変更しない。新科学計算・実行認可を同期に含めない。
+
+以下は各時点の履歴として保全する。
+
 2026-10-14 JST、研究情報共有 v1。server初版とlocal照合を利用者の指示で正式統合した。
 [server元policy](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/2298c4cdbc81d81c6268fdb7bd80f0b29d5b4e8c/docs/research/track_a_environment_sync_policy.md)を履歴として保全。科学方針・実行grant・raw・SOURCEを変更するルールではない。
 **情報共有の統一であり、sourceや実験データの物理的な完全同期ではない。**

@@ -1,5 +1,11 @@
 # プロジェクト案内
 
+## 2026-10-16 H8 native B0+I全登録候補：結果
+
+[結果・比較表・終了監査](docs/research/track_a_h8_native_b0i_full_family_results_20261016.md)。H8 B0+I全12登録構成の必要取得完了。新8構成16軸、prefix7の8軸は不適格で未測定。SOURCE54ed98c5…、保存PR確認union6/n32のP=0/RZ点費用は5精度で28.77/52.72/52.73/56.12/23.83%低い。全60 metric条件、158出力SHA、16worker exit0/reap、保存算術612＋P有理数11,396検査PASS。wall8381.611秒、経験的u/母平均/旧compiler同一性等の限界保持。新科学/新grant/原稿改訂/subagents0、資料公開準備後STOP。
+
+以下は各時点の履歴として保全する。
+
 ## 2026-10-15 H8 native B0+I：起動確認
 
 [実行入口](docs/research/track_a_h8_native_b0i_authorized_launch_20261015.md)。run `h8-native-b0i-full-family-run01-20261015` を一度起動。driver PID1604569 / launcher PID1604548。全12構成screen済み、選択8構成・新16軸のcompile予定。観測時点は `B_H8_NATIVE_CORRECTNESS_14_1`、独立監視のSTOP理由なし。これは途中経過であり、最終費用比較ではない。SOURCE54ed98c5…、実行認可REVIEW e009b368ed424dead82aeb3a934edbaee5ed1626。 以下は各時点の記録。

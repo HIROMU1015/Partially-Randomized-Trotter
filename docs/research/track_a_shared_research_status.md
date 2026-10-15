@@ -1,5 +1,24 @@
 # Track A 正式共通研究ノート
 
+## 2026-10-16 追補：native強化対照の結果受領
+
+[今回のH8 B0+I結果・全表・終了監査](track_a_h8_native_b0i_full_family_results_20261016.md)を追補した。全12構成screen、必要8構成16軸を一度実compileし、全correctness PASS・driver/16worker exit0・全reap・first STOPなしで終了。P=0/factor1/RZでPR確認union6/独立32の点費用は登録B0/B0+I/full S2/full S4最良より5精度で28.77/52.72/52.73/56.12/23.83%低かった。経験的u・標本点選択・母平均未保証を保持し、新しい科学的採択とはしない。
+
+最新の正式共有版は[6b78e5f3固定共通ノート](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/6b78e5f39917d92d6c60694d3e0b0d06394d7eb5/docs/research/track_a_shared_research_status.md)。本result branchとは共通祖先4675730e…から分岐しているため、科学source/resultをmergeせず、固定参照＋日付付き追補とする。[来歴](../../artifacts/resource_applicability/track_a_h8_native_b0i_full_family_result_v1/2026-10-16/shared_note_update_provenance_v1.json)。
+
+|研究単位|現在確認した段階|根拠と区別|
+|---|---|---|
+|H8 core探索/独立確認|完了済み|[681ec23c](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/681ec23c93fdd1090d325908f4b155a79115afdf/docs/research/track_a_h8_resource_map_result_v1.md)。旧203/592・RUNNING snapshotは当時の履歴で、現在状態ではない|
+|H4/H6 D0|保存値再会計が完了|[8dbdb682](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/8dbdb68293c988a999645e21a82b53966f9ef6cd/docs/research/track_a_d0_saved_value_reanalysis_result_20261014.md)。H8 D0と別の解析、今回再実行0|
+|H8 D0|保存値再会計が完了|[3d910ee1](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3d910ee1de4597b8895e8506500553dbad5a5085/docs/research/track_a_h8_d0_saved_value_result_20261015.md)。旧944/3576一致、5精度・6metric/P。今回再実行0|
+|H6 native B0+I|全登録候補の必要取得完了|[34efc914](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/34efc914b2f485ec694c7d6016025d5c76829be6/docs/research/track_a_h6_native_b0i_full_family_results_20261015.md)。旧6軸pilot準備/認可/結果と別、9構成18軸の費用あり|
+|H8 native B0+I|登録適格範囲取得・正常終了|[track_a_h8_native_b0i_full_family_results_20261016.md](track_a_h8_native_b0i_full_family_results_20261016.md)。execution SOURCE54ed98c5…、launch REVIEW e009b368…、新8構成16軸。prefix7の8軸は全条件不適格で未測定|
+|H5/H7・H6 T比較|科学的方針は採択済み、次の実行認可は未取得|[R10固定原本](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3d910ee1de4597b8895e8506500553dbad5a5085/docs/research/track_a_h8_d0_integrated_scientific_review_20261015.md)。H5中性ROHF先行、H7はH5確認後、H6固定δ=.2/T比較は別scope|
+
+[H4/H6/H8の条件を分けた整理](track_a_h4_h6_h8_strengthened_baseline_status_20261016.md)。H4 geometryのlegacy DF/control/数値政策とnative H6/H8を統制size scalingへpoolしない。新科学レビュー・追加計算・grant・原稿改訂0。今回の資料更新後mandatory STOP。
+
+以下は各時点の履歴として保全する。
+
 2026-10-14 JST、研究情報の共通入口 v1。利用者の正式統合指示に基づき、server固定初版 `2298c4cdbc81d81c6268fdb7bd80f0b29d5b4e8c` とlocal照合版 `8e84398995bb162bc74018c1b66fbb14448c7d27` を統合した。
 **情報ノートとして正式採択**。原科学SOURCE・結果・review・grantの正本を置換せず、未検証事項や将来案を科学的に採択したことにはしない。
 初読は本書 → [科学レビュー判断](track_a_scientific_review_decisions.md) → [条件対応](track_a_resource_comparison_conditions_20261014_v0_4.md) → [source/result索引](track_a_local_sync_reference_index.md) → [同期ルール](track_a_environment_sync_policy.md)。

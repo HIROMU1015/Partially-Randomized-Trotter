@@ -1,5 +1,18 @@
 # Track A 科学レビュー判断の共有索引
 
+## 2026-10-16 R10後続実行の完了記録（新reviewではない）
+
+最新の共有判断索引は[6b78e5f3固定版](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/6b78e5f39917d92d6c60694d3e0b0d06394d7eb5/docs/research/track_a_scientific_review_decisions.md)。既存R01–R09を保持し、[R10の原本](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3d910ee1de4597b8895e8506500553dbad5a5085/docs/research/track_a_h8_d0_integrated_scientific_review_20261015.md)の判断と後続実行を区別する。
+
+|原判断|採択済み方針|今回追加する事実|未認可・未保証|
+|---|---|---|---|
+|R10 / 2026-10-15|H8 D0、H6/H8 native B0+I対照coverage、H5→H7中性ROHF、H6固定δ=.2のT比較、5精度・6metric/P|H8 D0とH6登録対照は固定公開済み。[今回のH8対照](track_a_h8_native_b0i_full_family_results_20261016.md)も必要16軸を完了し、保存union6/32とのP=0点比較を更新|母平均・希少層・厳密u、確認外候補の主要claim、新H5/H7/T実行認可、原稿化|
+
+H8でB0+Iを加えるとε=.05の分母が強くなりPR点低減率は約39.48%→28.77%へ縮小したが、登録内P=0/RZの全5精度ではPR点費用が低かった。これは既存方針に沿った結果整理であり、一般的PR優位の新採択ではない。新しいR11や詳細GPTレビューを作成していない。
+中心的解釈・reference/allowanceの意味が変わる場合、確認union外候補を主要claimにする場合等はR10§14.3へ戻す。通常の公開・hash照合だけで同じ科学reviewを反復しない。H5/H7/Tは別の実行承認が必要。
+
+以下は各時点の履歴として保全する。
+
 2026-10-14 JST。既存GPT科学レビューの判断を記録する。Codexの新しい科学レビュー・論文改訂・実行grantではない。
 [正式共通ノート](track_a_shared_research_status.md) / [機械可読review registry](../../artifacts/resource_applicability/track_a_cross_environment_canonical_status/2026-10-14/scientific_review_registry_v1.json)。
 採択欄は各原reviewの対象scopeに限る。「採択しない/対象外」と、未検証ゆえ保留した事項を区別する。
