@@ -1,3 +1,5 @@
+> **Track B現在（2026-10-15）：[S4訂正KKT補完one-shot完了](parent_allocation_s4_supplement_results_and_gpt_handoff_20261015.md)。** 4構成/20新law・12合成・24root診断、旧50対照の保存値を再利用。371 saved-only checks PASS、S4/A4・旧20proxy結果/marker保持、retry0。分類PARENT_ALLOCATION_KKT_SUPPLEMENT_COMPLETE_AWAITING_GPT_REVIEW、科学的採否未判断、mandatory STOP。以下は履歴。
+
 > **Parent allocation先行研究対応**：[技術報告](parent_allocation_prior_art_correspondence_20261014.md)。5関連本文、数学/生成/情報/費用ごとのA/B/C/D。7科学領域を採択せず、新計算・source・tests0、mandatory STOP。以下は履歴。
 
 > **Parent allocation最終技術準備**：[Decision Packet](parent_allocation_scientific_design_decision_packet_20261014.md)。native/cache/guard bridge、26新規＋6影響regression tests、内部配分/proposalの境界。7科学条件pending、科学実行0、mandatory STOP。以下は履歴。
