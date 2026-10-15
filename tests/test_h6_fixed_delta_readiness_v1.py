@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import sys
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -170,6 +171,22 @@ class ReceiptTests(unittest.TestCase):
         self.writer.write('worker_terminal.json',dict(status='COMPLETE',task=self.task))
         self.writer.write('cost_result.json',dict(task=self.task,rows=[dict(axis='cosine')]))
         with self.assertRaises(ValueError):r.admit(self.path,self.task)
+    def test_real_loader_path_adapter_without_science(self):
+        import h6_fixed_delta_science_v1 as s
+        (self.path/'snapshot_receipt.json').write_text('{}')
+        (self.path/'df_receipt.json').write_text('{}')
+        seen=[]
+        def loader(path,snapshot,df):
+            self.assertIsInstance(path,Path)
+            seen.append(path)
+            return SimpleNamespace(n_qubits=12,lambdas=[0]*19),SimpleNamespace(dimension=400),None,None,{},None
+        config=dict(input_mapping={k:str(self.path/k) for k in ('h6_input_snapshot.npz','snapshot_receipt.json','df_receipt.json')},
+            archive=dict(path='MOCK',sha256='MOCK',binding={'fixture':True}))
+        with patch.object(s,'modules',return_value=(SimpleNamespace(load_h6_snapshot=loader),None,
+                lambda *args:({},dict(binding={'fixture':True})))):
+            s.load_data(config)
+        self.assertEqual(seen,[self.path/'h6_input_snapshot.npz'])
+        self.assertFalse((self.path/'h6_input_snapshot.npz').exists())
 
 
 if __name__=='__main__':unittest.main(verbosity=2)

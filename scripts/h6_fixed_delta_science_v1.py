@@ -24,7 +24,7 @@ def load_data(config):
     m, codec, read = modules()
     mapping = config['input_mapping']
     ham, sector, full, state, metadata, _ = m.load_h6_snapshot(
-        mapping['h6_input_snapshot.npz'], json.loads(Path(mapping['snapshot_receipt.json']).read_bytes()),
+        Path(mapping['h6_input_snapshot.npz']), json.loads(Path(mapping['snapshot_receipt.json']).read_bytes()),
         json.loads(Path(mapping['df_receipt.json']).read_bytes()))
     if (ham.n_qubits, len(ham.lambdas), sector.dimension) != (12, 19, 400):
         raise ValueError('FIXED_H6_LAYOUT')
