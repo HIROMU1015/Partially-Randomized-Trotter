@@ -140,12 +140,14 @@ class NativeAdapter:
             reference_policy='SAVED_INDEPENDENT_FORWARD_OVERLAP_NOT_NEW_FULL_VECTOR_ORACLE', certified=False)
 
     def compile(self, wrapper, expected_fingerprint):
-        if self.fingerprint(wrapper) != expected_fingerprint: raise g.Stop('PRECOMPILE_FINGERPRINT_CHANGED')
+        before = self.fingerprint(wrapper)
+        if before != expected_fingerprint: raise g.Stop('PRECOMPILE_FINGERPRINT_CHANGED')
         started = time.monotonic()
         cost = self.cost_api.transpile_and_measure_cost(wrapper, self.compiler,
             actual_circuit_fingerprint=expected_fingerprint)
+        after = self.fingerprint(wrapper)
         if (cost.actual_circuit_fingerprint != expected_fingerprint or
-                self.fingerprint(wrapper) != expected_fingerprint or
+                after != expected_fingerprint or
                 cost.compiler_settings_hash != self.grant.contract['binding']['compiler']):
             raise g.Stop('COMPILED_INPUT_OR_COMPILER_BINDING')
         if len(cost.transpiled_circuit.data) > self.grant.contract['transpiled_instruction_cap']:
@@ -153,6 +155,7 @@ class NativeAdapter:
         metrics = metrics_checked({m:getattr(cost, attr) for m,attr in METRICS.items()})
         self.guard()
         return dict(metrics=metrics, fingerprint=expected_fingerprint,
+            input_fingerprint_check=dict(before=before,after=after),
             compiler_hash=cost.compiler_settings_hash, wall_seconds=time.monotonic()-started)
 
     def legacy_b0(self, prefix, q):

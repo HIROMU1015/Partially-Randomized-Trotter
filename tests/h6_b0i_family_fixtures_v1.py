@@ -2,6 +2,7 @@
 from copy import deepcopy
 import importlib.util
 import json
+from types import SimpleNamespace
 import os
 from pathlib import Path
 
@@ -31,7 +32,7 @@ def setup(root, output):
         old.h6_prepared(p), science_binding, prefix=p, q=q)) for p,q in r.family.REGISTRY}
     c.update(candidates=[dict(prefix=p,q=q,formula='2nd',T=.8) for p,q in r.family.REGISTRY],
         new_candidates=[dict(prefix=p,q=q,formula='2nd',T=.8) for p,q in r.family.NEW],
-        operation_limits=deepcopy(r.LIMITS), control_tolerance=1e-8,
+        operation_limits=deepcopy(r.LIMITS), control_tolerance=1e-8,transpiled_instruction_cap=100,
         compiler_options=dict(basis_gates=['rz','sx','x','cx'],optimization_level=1,seed_transpiler=17),
         precision_domain=dict(epsilon=list(r.family.EPS),factors=list(r.family.FACTORS)),
         matched_B0=dict(approved=False,automatic_build=False), workers=6,
@@ -131,7 +132,15 @@ class FakeAdapter:
     def fingerprint(self,w):return g.sha(w.encode())
     def compile(self,w,fp):
         self.compiles.append(w)
-        return dict(metrics={m:10 for m in r.family.METRICS},fingerprint=fp,
-            compiler_hash=self.grant.contract['binding']['compiler'])
+        # Exercise the production before/after checks with a fabricated cost
+        # provider. This imports no Qiskit and never transpiles a circuit.
+        self.compiler=None
+        self.cost_api=SimpleNamespace(transpile_and_measure_cost=self.fabricated_cost)
+        return r.adapter_module.NativeAdapter.compile(self,w,fp)
+    def fabricated_cost(self,w,compiler,*,actual_circuit_fingerprint):
+        values={attr:10 for attr in r.adapter_module.METRICS.values()}
+        return SimpleNamespace(**values,actual_circuit_fingerprint=actual_circuit_fingerprint,
+            compiler_settings_hash=self.grant.contract['binding']['compiler'],
+            transpiled_circuit=SimpleNamespace(data=[None]))
     def verify_bindings(self):pass
     def close(self):self.closed=True

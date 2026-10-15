@@ -15,6 +15,40 @@ import time
 
 MAX_MESSAGE=16384
 BLOCKED_SIGNALS={signal.SIGALRM,signal.SIGTERM,signal.SIGINT}
+CLEANUP_SIGNALS=BLOCKED_SIGNALS|{signal.SIGXCPU}
+# Fit both owned-child waits inside the launcher's existing 5s TERM window.
+CLEANUP_WAIT_SECONDS=((signal.SIGTERM,1.),(signal.SIGKILL,2.))
+
+
+class CleanupSignals:
+    """Defer Python STOP callbacks while reaping; never resume failed science.
+
+    The independent metadata observer remains active. On failure the process
+    keeps these signals blocked through terminal recording and exits; SIGKILL
+    and the external launcher's original deadline remain effective.
+    """
+    def __init__(self,enabled):
+        self.enabled=enabled;self.deferred=False
+
+    def defer(self):
+        if not self.enabled:return
+        self.mask=signal.pthread_sigmask(signal.SIG_BLOCK,CLEANUP_SIGNALS)
+        try:self.timer=signal.setitimer(signal.ITIMER_REAL,0)
+        except BaseException:
+            signal.pthread_sigmask(signal.SIG_SETMASK,self.mask)
+            raise
+        self.deferred=True
+
+    def finish(self,*,resume):
+        if self.deferred and resume:
+            signal.setitimer(signal.ITIMER_REAL,*self.timer)
+            self.deferred=False
+            signal.pthread_sigmask(signal.SIG_SETMASK,self.mask)
+
+    def receipt(self):
+        return dict(enabled=self.enabled,retained_until_process_exit=self.deferred,
+            TERM_wait_seconds=1.,KILL_wait_seconds=2.,
+            independent_observer_unchanged=True,science_during_cleanup=False)
 
 
 def parent_death_guard(parent_pid):
@@ -215,7 +249,7 @@ class ForkBackend:
                     except Exception as error:errors.append(str(error)[:200])
                 if all(h['reaped'] for h in self.handles):return
                 time.sleep(.05)
-        for sig in (signal.SIGTERM,signal.SIGKILL):
+        for sig,seconds in CLEANUP_WAIT_SECONDS:
             for h in self.handles:
                 if h['reaped']:continue
                 try:
@@ -228,7 +262,7 @@ class ForkBackend:
                         terminate_owned(h['pid'],h['identity'],sig,self.g)
                 except Exception as error:errors.append(type(error).__name__+':'+str(error)[:200])
             try:
-                if any(not h['reaped'] for h in self.handles):wait_until(time.monotonic()+5)
+                if any(not h['reaped'] for h in self.handles):wait_until(time.monotonic()+seconds)
             except BaseException as error:errors.append('CLEANUP_WAIT:'+type(error).__name__+':'+str(error)[:200])
         for h in self.handles:
             if h['fd'] is not None:
@@ -277,7 +311,9 @@ def compile_batch(grant,cases,api,monitor,artifacts,calls,*,g,metrics_check,back
         if case['validation']['status']!='PASS':raise g.Stop('PARALLEL_REQUIRES_ALL_CORRECTNESS')
         for axis in ('cosine','sine'):
             wrapper=case['built']['wrappers'][axis];fp=case['validation']['fingerprints'][axis]
-            if api.fingerprint(wrapper)!=fp:raise g.Stop('WRAPPER_CHANGED_BEFORE_PARALLEL')
+            # All native correctness checks already passed. A worker validates
+            # its inherited COW input against this exact digest before compile
+            # and rechecks it afterwards. Avoid the redundant parent pre-pass.
             tasks.append(dict(name=f"{case['prefix']}_{case['q']}_{axis}",prefix=case['prefix'],
                 q=case['q'],axis=axis,wrapper=wrapper,fingerprint=fp))
     allowed={(p,q) for p in (5,10,15) for q in (1,2,4,8)}-{(5,1),(10,2),(15,8)}
@@ -286,6 +322,7 @@ def compile_batch(grant,cases,api,monitor,artifacts,calls,*,g,metrics_check,back
         raise g.Stop('NEW_FAMILY_MAX_EIGHTEEN_AXES_REQUIRED')
     expected_tasks=len(tasks)
     backend=backend_factory(grant,api,monitor,g);active=[];rows={};first=None;cleanup=None
+    cleanup_signals=CleanupSignals(enabled=not grant.synthetic)
     try:
         while tasks or active:
             monitor.tick(force=True)
@@ -310,7 +347,9 @@ def compile_batch(grant,cases,api,monitor,artifacts,calls,*,g,metrics_check,back
                 if payload.get('name')!=task['name'] or payload.get('identity')!=h['identity']:
                     raise g.Stop('COMPILE_RESULT_OWNER_BINDING')
                 row=payload['row'];metrics_check(row['metrics'])
-                if row['fingerprint']!=task['fingerprint'] or row['compiler_hash']!=grant.contract['binding']['compiler']:
+                fp=task['fingerprint']
+                if (row['fingerprint']!=fp or row.get('input_fingerprint_check')!=dict(before=fp,after=fp) or
+                        row['compiler_hash']!=grant.contract['binding']['compiler']):
                     raise g.Stop('PARALLEL_COMPILED_IDENTITY')
                 row=dict(row,worker=dict(identity=h['identity'],native_exit_code=h['exit_code'],
                     cpu_seconds=h['cpu_seconds'],peak_rss_bytes=h['peak_rss_bytes']))
@@ -320,7 +359,9 @@ def compile_batch(grant,cases,api,monitor,artifacts,calls,*,g,metrics_check,back
         if len(rows)!=expected_tasks:raise g.Stop('PARALLEL_COVERAGE')
     except BaseException as error:first=error
     finally:
-        try:cleanup=backend.cleanup()
+        try:
+            cleanup_signals.defer()
+            cleanup=backend.cleanup()
         except BaseException as error:
             if first is None:first=error
             cleanup=dict(all_reaped=False,errors=['CLEANUP_EXCEPTION:'+type(error).__name__+':'+str(error)[:200]])
@@ -339,9 +380,17 @@ def compile_batch(grant,cases,api,monitor,artifacts,calls,*,g,metrics_check,back
                         child_cpu_seconds=monitor.child_cpu_seconds,all_reaped=cleanup.get('all_reaped') is True))
             except Exception as error:
                 if first is None:first=error
+        failed=first is not None or cleanup.get('all_reaped') is not True or bool(cleanup.get('errors'))
+        # Failure never restores a pending signal before terminal recording,
+        # so a later TERM/ALRM cannot replace the original STOP or skip wait4.
+        monitor.cleanup_signal_deferral=cleanup_signals.receipt()
+        cleanup['signal_deferral']=dict(monitor.cleanup_signal_deferral)
+        cleanup['signal_deferral']['retained_until_process_exit']=bool(cleanup_signals.deferred and failed)
         try:artifacts.write('parallel_cleanup_v1.json',cleanup,terminal=True)
         except Exception as error:
             if first is None:first=error
+        cleanup_signals.finish(resume=not failed and first is None)
+        monitor.cleanup_signal_deferral=cleanup_signals.receipt()
     if first is not None:raise first
     if not cleanup['all_reaped'] or cleanup['errors']:raise g.Stop('PARALLEL_CLEANUP_UNCONFIRMED')
     monitor.tick(force=True)

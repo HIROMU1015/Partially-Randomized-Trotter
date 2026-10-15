@@ -147,7 +147,11 @@ def pipeline(grant, verified, mapping, monitor, artifacts, calls, factory, compi
                 for axis in ('cosine','sine'):
                     row=rows[(case['prefix'],case['q'],axis)];adapter_module.metrics_checked(row['metrics'])
                     fp=case['validation']['fingerprints'][axis]
-                    if (row['fingerprint']!=fp or api.fingerprint(case['built']['wrappers'][axis])!=fp or
+                    # The inherited worker checks its actual input before and after
+                    # compilation. The parent never mutates or compiles this wrapper;
+                    # do not repeat a serial traversal of the parent's COW copy.
+                    if (row['fingerprint']!=fp or
+                            row.get('input_fingerprint_check')!=dict(before=fp,after=fp) or
                             row['compiler_hash']!=grant.contract['binding']['compiler']):
                         raise g.Stop('COMPILED_IDENTITY_MISMATCH')
                     axes[axis]=row
@@ -222,6 +226,7 @@ def run(contract, authorization, *, contract_sha, authorization_sha, output, roo
                 calls_reserved_before_operations=calls.used,automatic_retry=False,next_stage_authorized=False,
                 preparation_diagnostic_write_error=preparation_diagnostic_write_error,
                 cleanup=dict(timer_removed=True,artifact_FDs_closed_on_return=True,
+                    signal_deferral=getattr(monitor,'cleanup_signal_deferral',None),
                     child_wait_reap='SEE_PARALLEL_CLEANUP_RECEIPT' if contract.get('parallel_compile',{}).get('enabled') else 'NO_SCIENTIFIC_CHILDREN'),
                 resource_observations=getattr(monitor,'history',[]),output_file_receipts=deepcopy(artifacts.receipts)),terminal=True)
         finally: artifacts.close()

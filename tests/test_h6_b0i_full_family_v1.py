@@ -175,6 +175,90 @@ class FamilyTests(unittest.TestCase):
     def test_child_CPU_persists_after_successful_cleanup(self):
         self.assertEqual(self.execute(),0)
         self.assertAlmostEqual(self.read('parallel_cleanup_v1.json')['child_cpu_seconds'],.18)
+    def test_only_native_validation_and_worker_compile_traverse_inputs(self):
+        class WorkerChecks(f.FakeAdapter):
+            checking=False
+            def fingerprint(obj,w):
+                if not obj.checking:raise AssertionError('SERIAL_PARENT_FINGERPRINT')
+                return super().fingerprint(w)
+            def validate(obj,*args):
+                obj.checking=True
+                try:return super().validate(*args)
+                finally:obj.checking=False
+            def compile(obj,*args):
+                obj.checking=True
+                try:return super().compile(*args)
+                finally:obj.checking=False
+        self.assertEqual(self.execute(WorkerChecks),0)
+        for c in self.read('full_family_results_v1.json')['cases'][3:]:
+            for row in c['axes'].values():
+                self.assertEqual(row['input_fingerprint_check'],dict(before=row['fingerprint'],after=row['fingerprint']))
+    def test_worker_detects_input_mutation_after_all_native_validation(self):
+        start=self.backend.start
+        def changed(backend,task):
+            task['wrapper']+='MUTATION_AFTER_NATIVE_VALIDATION'
+            return start(backend,task)
+        with patch.object(self.backend,'start',changed):self.assertEqual(self.execute(),2)
+        self.assertIn('PRECOMPILE_FINGERPRINT_CHANGED',self.read('terminal_v1.json')['first_stop']['reason'])
+        self.assertFalse((self.output/'full_family_results_v1.json').exists())
+    def test_worker_detects_input_mutation_during_compile(self):
+        class Changed(f.FakeAdapter):
+            changed=False
+            def fingerprint(obj,w):return super().fingerprint(w+('MUTATED' if obj.changed else ''))
+            def fabricated_cost(obj,*args,**kwargs):
+                cost=super().fabricated_cost(*args,**kwargs);obj.changed=True;return cost
+        self.assertEqual(self.execute(Changed),2)
+        self.assertIn('COMPILED_INPUT_OR_COMPILER_BINDING',self.read('terminal_v1.json')['first_stop']['reason'])
+    def test_worker_result_requires_both_before_and_after_proofs(self):
+        poll=self.backend.poll
+        def missing(backend,active):
+            handles=poll(backend,active)
+            for h in handles:
+                obj=json.loads(h['payload']);obj['row'].pop('input_fingerprint_check')
+                h['payload']=bytearray(json.dumps(obj).encode())
+            return handles
+        with patch.object(self.backend,'poll',missing):self.assertEqual(self.execute(),2)
+        self.assertIn('PARALLEL_COMPILED_IDENTITY',self.read('terminal_v1.json')['first_stop']['reason'])
+    def test_tampered_worker_after_proof_blocks_completion(self):
+        poll=self.backend.poll
+        def tampered(backend,active):
+            handles=poll(backend,active)
+            for h in handles:
+                obj=json.loads(h['payload']);obj['row']['input_fingerprint_check']['after']='0'*64
+                h['payload']=bytearray(json.dumps(obj).encode())
+            return handles
+        with patch.object(self.backend,'poll',tampered):self.assertEqual(self.execute(),2)
+        self.assertIn('PARALLEL_COMPILED_IDENTITY',self.read('terminal_v1.json')['first_stop']['reason'])
+    def test_final_accounting_also_requires_input_proofs(self):
+        original=self.batch
+        def missing(*args):
+            rows=original(*args);next(iter(rows.values())).pop('input_fingerprint_check');return rows
+        self.batch=missing;self.assertEqual(self.execute(),2)
+        self.assertIn('COMPILED_IDENTITY_MISMATCH',self.read('terminal_v1.json')['first_stop']['reason'])
+    def test_two_worker_retry_configuration_retains_all_eighteen_axes(self):
+        self.c['workers']=2;self.c['parallel_compile'].update(max_workers=2,worker_cpus=[2,4]);self.refresh()
+        self.assertEqual(self.execute(),0)
+        self.assertEqual(self.backend.instances[-1].poll_widths,[2]*9)
+        self.assertEqual(self.read('full_family_results_v1.json')['calls']['compile'],18)
+    def test_repeated_STOP_signals_deferred_through_failed_cleanup(self):
+        self.backend.failure='native';original=self.backend.cleanup
+        real=p.CleanupSignals;blocked=set()
+        def mask(how,values):
+            previous=set(blocked)
+            if how==signal.SIG_BLOCK:blocked.update(values)
+            else:blocked.clear();blocked.update(values)
+            return previous
+        def cleanup(backend):
+            self.assertTrue(p.CLEANUP_SIGNALS.issubset(blocked))
+            return original(backend)
+        with patch.object(p,'CleanupSignals',lambda enabled:real(True)),\
+                patch.object(p.signal,'pthread_sigmask',side_effect=mask),\
+                patch.object(p.signal,'setitimer',return_value=(.5,0.)),\
+                patch.object(self.backend,'cleanup',cleanup):
+            self.assertEqual(self.execute(),2)
+        self.assertIn('ORIGINAL_COMPILE_FAILURE',self.read('terminal_v1.json')['first_stop']['reason'])
+        self.assertTrue(self.read('parallel_cleanup_v1.json')['all_reaped'])
+        self.assertTrue(self.read('terminal_v1.json')['cleanup']['signal_deferral']['retained_until_process_exit'])
     def test_numba_cache_is_confined_to_exclusive_run_temp(self):
         grant=g.authorization_gate(self.c,self.a,contract_sha=g.d0.digest(self.c),
             authorization_sha=g.d0.digest(self.a),output=self.output,scope=r.SCOPE,synthetic=True)
@@ -217,6 +301,52 @@ class FamilyTests(unittest.TestCase):
 
 
 class SmallIndependentTests(unittest.TestCase):
+    def test_cleanup_success_restores_timer_and_original_signal_mask(self):
+        calls=[];original_mask={signal.SIGINT}
+        def mask(how,values):calls.append(('mask',how,set(values)));return original_mask
+        def timer(*args):calls.append(('timer',args));return (.25,0.)
+        with patch.object(p.signal,'pthread_sigmask',side_effect=mask),patch.object(p.signal,'setitimer',side_effect=timer):
+            state=p.CleanupSignals(True);state.defer();state.finish(resume=True)
+        self.assertEqual(calls,[('mask',signal.SIG_BLOCK,p.CLEANUP_SIGNALS),
+            ('timer',(signal.ITIMER_REAL,0)),('timer',(signal.ITIMER_REAL,.25,0.)),
+            ('mask',signal.SIG_SETMASK,original_mask)])
+        self.assertFalse(state.receipt()['retained_until_process_exit'])
+    def test_cleanup_failure_does_not_restore_pending_signals_or_timer(self):
+        with patch.object(p.signal,'pthread_sigmask',return_value=set()) as mask,\
+                patch.object(p.signal,'setitimer',return_value=(.25,0.)) as timer:
+            state=p.CleanupSignals(True);state.defer();state.finish(resume=False)
+        mask.assert_called_once_with(signal.SIG_BLOCK,p.CLEANUP_SIGNALS)
+        timer.assert_called_once_with(signal.ITIMER_REAL,0)
+        self.assertTrue(state.receipt()['retained_until_process_exit'])
+    def test_cleanup_reap_all_after_TERM_and_KILL_and_close_pipes(self):
+        backend=object.__new__(p.ForkBackend);backend.parent=123;backend.g=g
+        backend.handles=[dict(pid=900000+i,identity=dict(pid=900000+i),fd=100+i,
+            task=dict(name=str(i)),reaped=False,exit_code=None,cpu_seconds=0.,peak_rss_bytes=0,payload=bytearray()) for i in range(6)]
+        sent={};clock=[0.];closed=[]
+        def terminate(pid,identity,sig,guard):sent[pid]=sig
+        def reap(h):
+            if sent.get(h['pid'])==(signal.SIGTERM if h['pid']%2 else signal.SIGKILL):
+                h.update(reaped=True,exit_code=-int(sent[h['pid']]),cpu_seconds=.25)
+        def drain(h):closed.append(h['fd']);h['fd']=None
+        backend.reap=reap;backend.drain=drain
+        with patch.object(p,'terminate_owned',side_effect=terminate),\
+                patch.object(p.time,'monotonic',side_effect=lambda:clock[0]),\
+                patch.object(p.time,'sleep',side_effect=lambda seconds:clock.__setitem__(0,clock[0]+seconds)):
+            receipt=backend.cleanup()
+        self.assertTrue(receipt['all_reaped']);self.assertEqual(receipt['errors'],[])
+        self.assertEqual(set(closed),set(range(100,106)));self.assertLess(clock[0],3.1)
+        self.assertEqual(sum(x['cpu_seconds'] for x in receipt['workers']),1.5)
+    def test_unreaped_cleanup_never_reports_success_after_bounded_waits(self):
+        backend=object.__new__(p.ForkBackend);backend.parent=123;backend.g=g
+        h=dict(pid=900000,identity=dict(pid=900000),fd=100,task=dict(name='fixture'),
+            reaped=False,exit_code=None,cpu_seconds=0.,peak_rss_bytes=0,payload=bytearray())
+        backend.handles=[h];backend.reap=lambda h:None;backend.drain=lambda h:None;clock=[0.]
+        with patch.object(p,'terminate_owned'),patch.object(p.os,'close') as close,\
+                patch.object(p.time,'monotonic',side_effect=lambda:clock[0]),\
+                patch.object(p.time,'sleep',side_effect=lambda seconds:clock.__setitem__(0,clock[0]+seconds)):
+            receipt=backend.cleanup()
+        self.assertFalse(receipt['all_reaped']);self.assertIsNone(receipt['workers'][0]['native_exit_code'])
+        close.assert_called_once_with(100);self.assertLess(clock[0],3.1)
     def test_production_cannot_omit_bound_font_seed(self):
         grant=SimpleNamespace(require=lambda scope:None,synthetic=False,contract={})
         with self.assertRaisesRegex(g.Stop,'BOUND_STARTUP_FONT_CACHE_REQUIRED'):
