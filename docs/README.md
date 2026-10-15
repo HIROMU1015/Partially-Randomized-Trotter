@@ -1,3 +1,5 @@
+> **Track B M1-S G0-pre（2026-10-15）：[採択前Decision Packet](tracks/algorithm_codesign/m1s_g0_pre_prior_art_protocol_and_cost_decision_packet_20261015.md)。** 最新GPT原本、近接8文献の固定版locator、protocolと費用比較の未決定事項。新証明・科学計算なし、M1-S未採択、mandatory STOP。
+
 > **Track B現在（2026-10-15・M1 P0完了）：[採択前の先行研究・制御実装・資源資料Decision Packet](tracks/algorithm_codesign/m1_p0_prior_art_control_and_resource_decision_packet_20261015.md)。** 固定GitHub21資料・一次PDF9件の関連箇所を整理。M1正式採択・G0証明・V1科学計算は未開始、新規計算0。Parent allocation D＋Eを保持。次は明示開始承認後のGPT採択判断、mandatory STOP。[履歴](research/研究ノート/2026-10-15_track_b_M1_P0_evidence_preflight.md)。以下は過去の状態。
 
 > **Track B現在（2026-10-15・D＋E正式採択）：[Parent allocationの限定的成果と現在探索の区切り](tracks/algorithm_codesign/track_b_parent_allocation_research_closure_20261015.md)。** [資源構造調査](tracks/algorithm_codesign/track_b_resource_structure_and_bottlenecks_20261015.md)と[次期方向Decision Packet](tracks/algorithm_codesign/track_b_next_algorithm_research_decision_packet_20261015.md)を追加。4候補群は未採択・順位未設定。新科学計算0、旧成果不変、GPTレビュー開始／科学実行は別途明示承認、mandatory STOP。[判断履歴](research/研究ノート/2026-10-15_track_b_D_plus_E_and_next_direction_preparation.md)。以下は過去の状態。
