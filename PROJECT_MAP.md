@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-15 H6 full-family startup STOP修正
+
+[停止証拠・修正・再結合](docs/research/track_a_h6_family_startup_cache_fix_20261015.md)。SOURCE84d236cf…、初回科学予約0/native wait2を保全。Numba cacheをown-run tempへ閉じ、thread/affinityの診断とimport phaseを分離。元停止の内訳は未確定、46人工tests PASS、主担当照合/subagents0。既存科学/provider/compiler/最大18compileと資源は維持し、新output/grant・fresh gateで起動確認する。以下は各時点の履歴。
+
 ## 2026-10-15 H6 B0+I 全12構成の実行承認
 
 [実行承認・最終binding](docs/research/track_a_h6_native_b0i_full_family_launch_20261015.md)。利用者の指示で新9構成のscreenと適格な最大18軸取得を承認、旧6軸を原SOURCEで再利用。SOURCE731826b3…は不変、主担当によるbyte/profile/input/carry照合PASS、subagents0。driver63/worker62,61,58,53,52,50、max6並列、AS32/RSS9GiB、wallnull・累積CPU24h。起動直前fresh gate合格時だけone-shot実行し、完了/STOP後に証拠を保持、失敗時は既定範囲内で修正。以下は各時点の履歴。
