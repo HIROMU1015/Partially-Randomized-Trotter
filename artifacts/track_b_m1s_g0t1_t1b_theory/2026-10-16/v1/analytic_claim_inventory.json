@@ -1,0 +1,97 @@
+{
+  "schema": "m1s_g0t1_t1b_analytic_claim_inventory_v1",
+  "date_jst": "2026-10-16",
+  "status": "T1B_ANALYTIC_TRANSFER_SUBMITTED_WITH_DOMAIN_CHECKPOINT2_PENDING_MANDATORY_STOP",
+  "proof_document": "docs/tracks/algorithm_codesign/m1s_g0t1_t1b_partial_randomized_transfer_theory_20261016.md",
+  "author_result_classification": "PROVED_WITH_DOMAIN_PLUS_COUNTEREXAMPLE_IN_DEFINED_CLASS",
+  "independent_scientific_acceptance": "PENDING_NOT_PERFORMED",
+  "novelty_adjudication": "NOT_PERFORMED",
+  "claims": [
+    {
+      "id": "EXACT_STEP_AND_SECOND_ORDER",
+      "location": "sections_2_4_equations_1_3",
+      "statement": "Psi_delta=D Phi_(c delta)^r(D X D) D; A=J_H/2; Q=beta D_R; beta=lambda^2/(4r); Psi=I+i delta A+delta^2(Q-A^2/2)+R",
+      "classification": "PROVED_WITH_DOMAIN"
+    },
+    {
+      "id": "LOCAL_REMAINDER_AND_CONTRACTION",
+      "location": "sections_3_4_equations_2_6",
+      "statement": "HS contractions; norm(R)<=m^3 abs(delta)^3/6; norm(Psi-exp(i delta A+delta^2 Q))<=K abs(delta)^3",
+      "K": "m^3/6+(a+delta0*q)^3/6+a*q+delta0*q^2/2",
+      "norm": "HS_induced_2_to_2",
+      "classification": "PROVED_WITH_DOMAIN"
+    },
+    {
+      "id": "UNIFORM_FULL_H_CSEC",
+      "location": "section_5_equation_9",
+      "statement": "abs(z-zHsec)<=sqrt(n)*(K*u*abs(delta)+u*qn+2*abs(delta)*kappaf*(1+u*(q+q0)))",
+      "domain": "fixed model,r; all integers s>=0; abs(delta)<=delta0; beta*u<=D_cap; u=s*delta^2",
+      "frequencies": "(E_a+E_b)/2 of full H; ordered weighted inverse-gap sum",
+      "classification": "PROVED_WITH_DOMAIN"
+    },
+    {
+      "id": "OUTER_AND_CUBIC_PHASE",
+      "location": "sections_6_8_equations_10_11_19",
+      "statement": "outer local cubic and accumulated Kout*u*abs(delta); log Psi=i delta A+delta^2 Q+i delta^3 T+O(delta^4); simple-mode cubic phase includes Q coupling/gaps",
+      "scope": "cubic analytic coefficient identification; uniform finite-delta error from separate explicit bounds",
+      "classification": "PROVED_WITH_DOMAIN"
+    },
+    {
+      "id": "MODE_WEIGHT_AND_DRESSING",
+      "location": "sections_7_9_equations_12_20",
+      "statement": "simple target pair-sum; Riesz projection perturbation <=4 abs(delta)Tstar/g; explicit weight,residual,lambda and log error; state dressing distinct from mode and relative-rate error",
+      "classification": "PROVED_WITH_DOMAIN"
+    },
+    {
+      "id": "RHO_CONDITIONAL",
+      "location": "section_10_equations_21_24",
+      "statement": "gamma_shared=beta(W+v); gamma_independent=beta W; gamma_ordinary=2 beta W; rho=(W+v)/(2W) in [1/2,1]",
+      "W": "1-<k|h_R^2|k>",
+      "v": "Var_j <k|P_j|k>",
+      "domain": "single target pair-sum block, W>0, specified same-time ordinary comparator, fixed r small delta",
+      "ratio_status": "HOLDS",
+      "finite_step_ratio_status": "HOLDS_WITH_CORRECTION",
+      "classification": "PROVED_WITH_DOMAIN"
+    },
+    {
+      "id": "NONCOMMUTING_TWO_LEVEL",
+      "location": "section_11_equation_25",
+      "statement": "P=Z/X equal, HR=(Z+X)/2, HD=(Z-X)/2, H=Z; W=1/2,v=1/4,rho=3/4; naive 1-<h>^2 substitution gives wrong 2/3; nonempty floor domain",
+      "method": "analytic hand derivation only",
+      "classification": "PROVED_WITH_DOMAIN"
+    },
+    {
+      "id": "RESONANT_SINGLE_RATE_COUNTEREXAMPLE",
+      "location": "section_12_equation_26",
+      "statement": "H=diag(-1,0,1), target0; P involution swapping0 and symmetric endpoint vector; signed P law probabilities(1+-xi)/2; HR=lambda xi P; Csec=(2/3)exp(-W Ddamp/2)+(1/3)exp(-2W Ddamp), W=1-xi^2",
+      "domain": "Hermitian involution class, nonzero HR, noncommuting HD; not a Pauli-only/nonredundant signed-table counterexample",
+      "refutes": "isolated H state alone implies single rate and universal scalar rho",
+      "ratio_status": "NOT_APPLICABLE_AS_SINGLE_RATE",
+      "classification": "COUNTEREXAMPLE_IN_DEFINED_CLASS"
+    },
+    {
+      "id": "ALIAS_AND_PHASE_FLOOR",
+      "location": "sections_13_14_equation_27",
+      "statement": "explicit shrinking step-gap perturbation ratio; conditional single-signal phase error arcsin(E/r_star)",
+      "scope": "not unconditional floor, RPE,shots,finite cost",
+      "classification": "PROVED_WITH_DOMAIN"
+    }
+  ],
+  "not_claimed": [
+    "size/gap-family uniformity",
+    "general resonant-block scalar rho",
+    "molecular resource advantage",
+    "RPE RMS/shots",
+    "PR-RTE law or price equivalence",
+    "independent novelty",
+    "Checkpoint2 scientific GO"
+  ],
+  "unresolved": [
+    "useful state-specific bounds in resonant blocks",
+    "nonredundant Pauli-only resonance obstruction scope",
+    "practical molecular constants/floors"
+  ],
+  "scientific_numerical_runs": 0,
+  "scientific_test_runs": 0,
+  "mandatory_STOP": true
+}

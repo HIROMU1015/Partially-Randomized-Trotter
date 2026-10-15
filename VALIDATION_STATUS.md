@@ -1,3 +1,5 @@
+> **2026-10-16 M1-S T1b：[解析的移送・証明](docs/tracks/algorithm_codesign/m1s_g0t1_t1b_partial_randomized_transfer_theory_20261016.md)／[Checkpoint 2資料](docs/tracks/algorithm_codesign/m1s_g0t1_t1b_checkpoint2_decision_packet_20261016.md)。** 著者のPROVED_WITH_DOMAINと定義class内の共鳴反例の提出。GPT1によるT1a限定受理を原本保存、T1b独立受理はpending。固定r・有限減衰、全H C-sec、条件付きrho、明示次元/gap依存。新数値/科学test/compile0、科学GOなし、mandatory STOP。以下は過去の検証記録。
+
 > **2026-10-16 M1-S G0-T1 T1a：[解析的な一様C-sec信号上界・全証明](docs/tracks/algorithm_codesign/m1s_g0t1_t1a_uniform_csec_signal_bound_and_proof_20261016.md)／[Checkpoint 1資料](docs/tracks/algorithm_codesign/m1s_g0t1_t1a_checkpoint1_decision_packet_20261016.md)。** 著者のPROVED_WITH_DOMAIN提出であり、独立科学的受理・数値validation・CI/外部再現ではない。固定有限次元・有限減衰予算で全N一様O(abs(theta))、次元/gap/weight依存を明示。新数値/科学test/compile0、T1b未実施、科学GOなし、mandatory STOP。以下は過去の検証記録。
 
 > **Track B現在（2026-10-15）：[KKT目的不一致のS4訂正・補完準備](docs/tracks/algorithm_codesign/parent_allocation_s4_kkt_repair_and_supplement_preparation_20261015.md)。** 採択sqrt(C)目的へ戻し、114登録外tests PASS。旧20 lawは別proxyの原記録として保持、50対照は保存再利用。新登録計算0、authorization pending、別S4 one-shot明示承認までmandatory STOP。以下は履歴。
