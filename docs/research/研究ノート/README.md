@@ -1,3 +1,5 @@
+- [2026-10-16 Native DF H6/H8 metadata補完・理論費用評価](2026-10-16_native_df_theory_evaluation.md)
+
 # 研究ノート
 
 ## 2026-10-16 Native DFモデル：Qiskit 1.3.0接続検証

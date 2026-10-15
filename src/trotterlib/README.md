@@ -1,3 +1,7 @@
+## 2026-10-16 Native DF grouped expectation
+
+[`native_df_grouped_expectation.py`](native_df_grouped_expectation.py) は元counterを引数に受け、同じbasis identityの確率/central costの線形和をまとめる。元law・phase bounds・closed occurrencesは不変。人工11件で元DPとFraction一致。[H6/H8での認可済み評価と限界](../../docs/research/track_a_native_df_theory_evaluation_20261016.md)。
+
 ## 2026-10-16 Frozen preparationのmetadata reader
 
 `native_df_archive_metadata.py` はtyped DAGの保存記述を検査する。元codecの実科学object decoderは呼ばない。[追加受領報告](../../docs/research/track_a_native_df_h6_h8_metadata_completion_20261016.md)。

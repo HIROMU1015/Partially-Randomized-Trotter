@@ -1,3 +1,8 @@
+## 2026-10-16 Native DF H6/H8：条件付き理論評価
+
+[結果・限界](docs/research/track_a_native_df_theory_evaluation_20261016.md)。H8の7 preparationを旧保存hashへ照合し、H6 archive7 rootを再利用。固定208候補・A/B両軸832理論行、保存shot/compiledへの10,480条件行を作成。人工17件PASS。モデルB/実native政策・H6旧variant・条件付きlaw/finite標本の限界を保持。新SCF/DF/state/signal/sampling/compile・新ranking・科学的採択・原稿改訂・subagents0。
+個別SOURCE `7e59df8ac3c356007d85bfd9218ce1a224a40d52` のローカル実行であり、CI再現・compiler出力同一性・研究全体の再現性を認定するものではない。
+
 ## 2026-10-16 Native DFモデル：Qiskit 1.3.0接続検証
 
 [42 local人工tests](artifacts/resource_applicability/track_a_native_df_qiskit_validation/2026-10-16/connection_validation_v1.json)／[適用範囲](docs/research/track_a_native_df_qiskit_connection_validation_20261016.md)。実Qiskit 1.3.0の小回路接続を確認。旧1ea counterのzero RZバグを訂正、旧receipt不変。実H6/H8・全環境互換性・compiled母平均は未認定。

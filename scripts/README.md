@@ -1,3 +1,7 @@
+## 2026-10-16 Native DF metadata・理論評価（個別認可済みrun）
+
+`run_native_df_theory_evaluation.py` は固定private manifestの7 H8 preparations＋208候補だけを評価する。`launch_native_df_theory_evaluation.py` は独立資源監視/own-child cleanup/one-shot lock、`connect_native_df_theory_saved_costs.py` は保存shot/compiled記録を同一候補へ接続する。新sampling/compile不可、旧grant再利用不可。[結果・条件](../docs/research/track_a_native_df_theory_evaluation_20261016.md)。
+
 ## 2026-10-16 既存H6 frozen archiveの記述検査
 
 `inspect_native_df_preparation_archive.py --archive <既存JSON> --sha256 <固定SHA>`。stdlibのみ、Gate/Operator/array復元と理論費用計算なし。[追加受領報告](../docs/research/track_a_native_df_h6_h8_metadata_completion_20261016.md)。

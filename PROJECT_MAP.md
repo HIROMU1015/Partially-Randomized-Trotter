@@ -1,3 +1,8 @@
+## 2026-10-16 Native DF：H6/H8理論費用評価完了
+
+[結果・条件と限界](docs/research/track_a_native_df_theory_evaluation_20261016.md)、[全表・binding](artifacts/resource_applicability/track_a_native_df_theory_evaluation/2026-10-16/README.md)、[grouped exact DP](src/trotterlib/native_df_grouped_expectation.py)、[数値runner](scripts/run_native_df_theory_evaluation.py)、[保存費用接続](scripts/connect_native_df_theory_saved_costs.py)。
+H8の7 preparationを旧保存hashへ照合し、H6 archive7 rootを再利用。固定208候補・A/B両軸832理論行、保存shot/compiledへの10,480条件行を作成。人工17件PASS。モデルB/実native政策・H6旧variant・条件付きlaw/finite標本の限界を保持。新SCF/DF/state/signal/sampling/compile・新ranking・科学的採択・原稿改訂・subagents0。
+
 # プロジェクト案内
 
 ## 2026-10-16 Native DF：H6 archive受領・H8補完準備
