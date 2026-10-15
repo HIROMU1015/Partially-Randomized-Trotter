@@ -255,7 +255,7 @@ def assemble(parts: Iterable[Sandwich | Circuit | Barrier], model="A") -> Circui
 
 
 def diagonal_from_primitives(primitives, mode="ordinary", ancilla=None) -> Circuit:
-    """Duck-type existing DiagonalEvolutionPrimitives; preserve exact-zero rule.
+    """Duck-type existing DiagonalEvolutionPrimitives; preserve source emission.
 
     Never recompute DF coefficients here: use the original producer's lists and
     phase, including its floating-point order and sign conventions.
@@ -282,8 +282,8 @@ def diagonal_from_primitives(primitives, mode="ordinary", ancilla=None) -> Circu
             word.append(Gate("rzz" if mode == "uncontrolled" else "crzz",
                              (left, right) if mode == "uncontrolled" else (ancilla, left, right), angle))
     for qubit, angle in rz:
-        if angle == 0:
-            continue
+        # Existing appenders retain every RZ entry, including explicit zero.
+        # Normal primitive producers already prune zero RZ entries upstream.
         if mode == "directional":
             control = (ancilla, qubit)
             word.extend((Gate("cx", control), Gate("rz", (qubit,), -angle), Gate("cx", control)))

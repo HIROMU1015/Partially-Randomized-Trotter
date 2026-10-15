@@ -1,3 +1,8 @@
+## 2026-10-16 Native DFモデル：Qiskit 1.3.0接続検証
+
+[42 local人工tests](artifacts/resource_applicability/track_a_native_df_qiskit_validation/2026-10-16/connection_validation_v1.json)／[適用範囲](docs/research/track_a_native_df_qiskit_connection_validation_20261016.md)。実Qiskit 1.3.0の小回路接続を確認。旧1ea counterのzero RZバグを訂正、旧receipt不変。実H6/H8・全環境互換性・compiled母平均は未認定。
+実分子評価・保存H6/H8再解析・sampling・transpile・server接続・新grant・原稿改訂0。公開後mandatory STOP。
+
 ## 2026-10-16 Native DF理論ゲート数モデル（人工検証のみ）
 
 [技術資料](docs/research/track_a_native_df_theoretical_gate_model_20261016.md)／[27件のlocal stdlib人工検証](artifacts/resource_applicability/track_a_native_df_gate_model/2026-10-16/synthetic_validation_v1.json)。解析unitary・相対位相・有限分布DPを人工値だけで確認。実Qiskit接続・compiled母平均・実分子適用は未検証。

@@ -1,5 +1,9 @@
 # Native DF理論ゲート数モデル A/B — 2026-10-16
 
+追補：同日の[Qiskit接続検証](track_a_native_df_qiskit_connection_validation_20261016.md)で、
+手入力metadataのzero RZを余分に除去するカウンタのバグを修正した。
+下記aの定義とzero規則を訂正。旧版commit 1ea42fbf…と元receiptは保存し、新検証と区別する。
+
 実装・数式・人工検証の技術資料。**実H6/H8への適用、科学的採用、実行認可ではない。**
 モデルAは構造最適化を無効にした構成、Bは明示したGaussian境界相殺だけを含む。
 固定した分解のRZ/CX数を数える。既存コンパイラの出力や母平均を保証しない。
@@ -90,9 +94,10 @@ runtime gate listを正本とする。opaque dense `unitary`や未知gateは費�
 
 ## 4. DF diagonalと制御
 
-primitiveを `(phase=phi, rz, rzz)` とし、exact nonzero RZ項数をa、RZZ項数をb、
-`g=1[phi != 0]` とする。もとのappend処理と同様、diagonalではexact zeroだけを省く。
-微小値を閾値で落とさない。Gaussianの明示zero gateやRTEのzero-angle rotationは保持する。
+primitiveを `(phase=phi, rz, rzz)` とし、RZリスト項数をa、exact nonzero RZZ項数をb、
+`g=1[phi != 0]` とする。元producerはzero RZを除去済みだが、append処理は渡されたRZ項をすべて保持する。
+手入力zero RZも保持し、RZZのexact zeroだけを省く。微小値を閾値で落とさない。
+Gaussianの明示zero gateやRTEのzero-angle rotationも保持する。
 
 Gaussian forwardをG、inverseをGinvと記す。どちらもuncontrolled。
 各blockの時間順序は `Ginv, diagonal, G`。

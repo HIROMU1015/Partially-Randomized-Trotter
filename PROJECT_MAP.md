@@ -1,5 +1,10 @@
 # プロジェクト案内
 
+## 2026-10-16 Native DFモデル：Qiskit 1.3.0接続検証
+
+[主要資料](docs/research/track_a_native_df_qiskit_connection_validation_20261016.md)、[接続runner](scripts/check_native_df_qiskit_connection.py)、[参照loader](scripts/native_df_qiskit_validation_support.py)、[tests](tests/test_native_df_qiskit_connection.py)、[証跡](artifacts/resource_applicability/track_a_native_df_qiskit_validation/2026-10-16/README.md)。
+実分子評価・保存H6/H8再解析・sampling・transpile・server接続・新grant・原稿改訂0。公開後mandatory STOP。
+
 ## 2026-10-16 Native DF理論ゲート数モデル（人工検証のみ）
 
 [数式・SOURCE・制限](docs/research/track_a_native_df_theoretical_gate_model_20261016.md)、[カウンタ](src/trotterlib/native_df_gate_model.py)、[人工runner](scripts/check_native_df_gate_model_synthetic.py)、[tests](tests/test_native_df_gate_model.py)、[証跡](artifacts/resource_applicability/track_a_native_df_gate_model/2026-10-16/README.md)。

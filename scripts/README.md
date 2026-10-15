@@ -1,5 +1,10 @@
 # scripts 索引
 
+## 2026-10-16 Native DFモデル：Qiskit 1.3.0接続検証
+
+[人工接続runner](check_native_df_qiskit_connection.py)／[固定SOURCE loader・独立Qiskit分解](native_df_qiskit_validation_support.py)。新規installなし。分子I/O・sampling・transpile入口を拒否する。
+実分子評価・保存H6/H8再解析・sampling・transpile・server接続・新grant・原稿改訂0。公開後mandatory STOP。
+
 ## 2026-10-16 Native DF理論ゲート数モデル（人工検証のみ）
 
 [standalone人工runner](check_native_df_gate_model_synthetic.py)。`python3 -B scripts/check_native_df_gate_model_synthetic.py`。標準ライブラリのみ。[設計](../docs/research/track_a_native_df_theoretical_gate_model_20261016.md)。

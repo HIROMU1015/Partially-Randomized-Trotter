@@ -1,5 +1,10 @@
 # trotterlib モジュール索引
 
+## 2026-10-16 Native DFモデル：Qiskit 1.3.0接続検証
+
+[counter](native_df_gate_model.py)の手入力zero RZ過剰除去を修正。[実Qiskit接続・修正前記録](../../docs/research/track_a_native_df_qiskit_connection_validation_20261016.md)。元native/common builderは変更0。
+実分子評価・保存H6/H8再解析・sampling・transpile・server接続・新grant・原稿改訂0。公開後mandatory STOP。
+
 ## 2026-10-16 Native DF理論ゲート数モデル（人工検証のみ）
 
 [独立カウンタ](native_df_gate_model.py)。既存primitive/runtime metadataを受け、compiler非依存の固定分解を数える。[数式・適用条件](../../docs/research/track_a_native_df_theoretical_gate_model_20261016.md)。

@@ -1,0 +1,114 @@
+{
+  "base_counter_commit": "1ea42fbf1bd1c8341ffd410b8067467b4ba4e170",
+  "native_reference_commit": "87b6b9f46b7e8ba9abe132ee21478c114b6f46f7",
+  "classification": "COUNTER_IMPLEMENTATION_BUG",
+  "cause": "Counter prunes explicit zero-angle RZ entries; existing appenders preserve entries. Normal producers already omit them.",
+  "synthetic_only": true,
+  "normal_zero_coefficient_producer_rz": [],
+  "cases": [
+    {
+      "mode": "uncontrolled",
+      "base_counter_cost": {
+        "raw": 0,
+        "rz": 0,
+        "cx": 0,
+        "sx": 0,
+        "x": 0
+      },
+      "actual_qiskit_fixed_cost": {
+        "raw": 1,
+        "rz": 1,
+        "cx": 0,
+        "sx": 0,
+        "x": 0
+      },
+      "actual_word": [
+        [
+          "rz",
+          [
+            0
+          ],
+          [
+            0.0
+          ]
+        ]
+      ],
+      "matched": false
+    },
+    {
+      "mode": "ordinary",
+      "base_counter_cost": {
+        "raw": 0,
+        "rz": 0,
+        "cx": 0,
+        "sx": 0,
+        "x": 0
+      },
+      "actual_qiskit_fixed_cost": {
+        "raw": 1,
+        "rz": 2,
+        "cx": 2,
+        "sx": 0,
+        "x": 0
+      },
+      "actual_word": [
+        [
+          "crz",
+          [
+            1,
+            0
+          ],
+          [
+            0.0
+          ]
+        ]
+      ],
+      "matched": false
+    },
+    {
+      "mode": "directional",
+      "base_counter_cost": {
+        "raw": 0,
+        "rz": 0,
+        "cx": 0,
+        "sx": 0,
+        "x": 0
+      },
+      "actual_qiskit_fixed_cost": {
+        "raw": 3,
+        "rz": 1,
+        "cx": 2,
+        "sx": 0,
+        "x": 0
+      },
+      "actual_word": [
+        [
+          "cx",
+          [
+            1,
+            0
+          ],
+          []
+        ],
+        [
+          "rz",
+          [
+            0
+          ],
+          [
+            -0.0
+          ]
+        ],
+        [
+          "cx",
+          [
+            1,
+            0
+          ],
+          []
+        ]
+      ],
+      "matched": false
+    }
+  ]
+}

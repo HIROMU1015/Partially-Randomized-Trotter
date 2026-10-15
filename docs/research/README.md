@@ -1,5 +1,10 @@
 # 研究計画資料
 
+## 2026-10-16 Native DFモデル：Qiskit 1.3.0接続検証
+
+[SOURCE対応・接続検証・適用範囲](track_a_native_df_qiskit_connection_validation_20261016.md)。
+実分子評価・保存H6/H8再解析・sampling・transpile・server接続・新grant・原稿改訂0。公開後mandatory STOP。
+
 ## 2026-10-16 Native DF理論ゲート数モデル（人工検証のみ）
 
 [モデルA/B・期待値・後段の比較設計](track_a_native_df_theoretical_gate_model_20261016.md)。

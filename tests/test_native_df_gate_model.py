@@ -169,9 +169,9 @@ class CountChecks(unittest.TestCase):
 
     def test_diagonal_modes_zero_rules_and_scalar(self):
         p = NS(rz=((0, .2), (1, 0.0)), rzz=((0, 1, -.7),), global_phase=.31)
-        self.assertEqual(m.count(m.diagonal_from_primitives(p, "uncontrolled")), m.Cost(2, 2, 2))
-        self.assertEqual(m.count(m.diagonal_from_primitives(p, "ordinary", 2)), m.Cost(3, 5, 6))
-        self.assertEqual(m.count(m.diagonal_from_primitives(p, "directional", 2)), m.Cost(9, 3, 6))
+        self.assertEqual(m.count(m.diagonal_from_primitives(p, "uncontrolled")), m.Cost(3, 3, 2))
+        self.assertEqual(m.count(m.diagonal_from_primitives(p, "ordinary", 2)), m.Cost(4, 7, 8))
+        self.assertEqual(m.count(m.diagonal_from_primitives(p, "directional", 2)), m.Cost(12, 4, 8))
         self.assertEqual(m.diagonal_from_primitives(p, "uncontrolled").global_phase, .31)
 
     def test_wrapper_axes(self):

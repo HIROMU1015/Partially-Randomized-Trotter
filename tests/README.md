@@ -1,5 +1,10 @@
 # tests の役割
 
+## 2026-10-16 Native DFモデル：Qiskit 1.3.0接続検証
+
+[実Qiskit接続15件](test_native_df_qiskit_connection.py)＋既存回帰27件＝42 PASS。[最終receipt](../artifacts/resource_applicability/track_a_native_df_qiskit_validation/2026-10-16/connection_validation_v1.json)。fallback27件は別環境の部分判定であり加算しない。
+実分子評価・保存H6/H8再解析・sampling・transpile・server接続・新grant・原稿改訂0。公開後mandatory STOP。
+
 ## 2026-10-16 Native DF理論ゲート数モデル（人工検証のみ）
 
 [27人工tests](test_native_df_gate_model.py)、[専用runner](../scripts/check_native_df_gate_model_synthetic.py)、[receipt](../artifacts/resource_applicability/track_a_native_df_gate_model/2026-10-16/synthetic_validation_v1.json)。解析unitary oracleとDP/全列挙を比較。local technical checksでありCI・独立科学レビューではない。
