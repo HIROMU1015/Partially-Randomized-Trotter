@@ -1,5 +1,17 @@
 # Repository guidance for Codex
 
+## No sub-agents (user instruction, 2026-10-15)
+
+Work in the primary agent only. Do not spawn sub-agents or delegate implementation,
+investigation, tests, or reviews to other AI agents. A request for an independent
+review or parallel work does not authorize delegation; only a later explicit user
+instruction permitting sub-agents can change this rule.
+
+Perform technical checks in the primary agent and describe them accurately. Do not
+present the author's own checks as an independent review by a separate reviewer.
+This rule concerns AI-agent delegation; computational workers and parallel
+scientific calculations remain subject to their separate execution authorization.
+
 ## Repository entry point
 
 Before interpreting files by name, read `PROJECT_MAP.md`. It classifies the
