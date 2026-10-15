@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-16 Track A V1 実行準備
+
+[報告・実装・人工テスト・証跡](docs/research/track_a_v1_h6_deterministic_readiness_20261016.md)。科学計算未実施、未認可draft、mandatory STOP。
+
 ## 2026-10-16 Native DFモデル：H6/H8 metadata接続監査
 
 [主要報告](docs/research/track_a_native_df_h6_h8_metadata_binding_20261016.md)、[schema adapter](src/trotterlib/native_df_metadata_binding.py)、[人工runner](scripts/check_native_df_metadata_binding.py)、[tests](tests/test_native_df_metadata_binding.py)、[軽量証跡](artifacts/resource_applicability/track_a_native_df_metadata_binding/2026-10-16/README.md)。

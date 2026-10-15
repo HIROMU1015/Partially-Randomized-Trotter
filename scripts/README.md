@@ -1,5 +1,9 @@
 ## 2026-10-16 H6/H8 metadata接続・人工schema検査
 
+## 2026-10-16 Track A V1 実行準備
+
+[報告・実装・人工テスト・証跡](../docs/research/track_a_v1_h6_deterministic_readiness_20261016.md)。科学計算未実施、未認可draft、mandatory STOP。
+
 `check_native_df_metadata_binding.py` は人工20件だけを実行。実データ引数なし、Gate/回路生成・cost評価・科学importなし。[報告](../docs/research/track_a_native_df_h6_h8_metadata_binding_20261016.md)。
 
 # scripts 索引

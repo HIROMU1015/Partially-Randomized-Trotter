@@ -1,5 +1,9 @@
 ## 2026-10-16 Native DF metadata schema adapter
 
+## 2026-10-16 Track A V1 実行準備
+
+[報告・実装・人工テスト・証跡](../../docs/research/track_a_v1_h6_deterministic_readiness_20261016.md)。科学計算未実施、未認可draft、mandatory STOP。
+
 `native_df_metadata_binding.py` は保存basisのordered-description hashとconnection envelopeを検査する。law/行列の数値認証や費用評価・実行認可はしない。[報告](../../docs/research/track_a_native_df_h6_h8_metadata_binding_20261016.md)。
 
 # trotterlib モジュール索引
