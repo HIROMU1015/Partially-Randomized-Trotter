@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 2026-10-15 H8 native B0+I実行準備
+
+[実装・入力・tests・契約案](../docs/research/track_a_h8_native_b0i_readiness_20261015.md)。H8 B0+I prefix7/14/21×q1/2/4/8の12構成/最大24軸を実装。SOURCE65a9d801…、人工38件と未承認CLI拒否PASS、provider265/input7 byte照合PASS。16 modes/DF28/sector4900、保存referenceと経験的u、caseごとの2軸並列・CPU carryを固定。実新scalar/signal/native/compile0、CPU[]/false/未seal/commandnull、資源案は承認待ち。subagents0、準備後STOP。 以下は各時点の記録。
+
 ## 2026-10-15 H6 fingerprint並列化・cleanup修正
 
 [修正・人工61件・再実行案](../docs/research/track_a_h6_family_fingerprint_parallel_fix_20261015.md)。親の重複走査をworker前後SHA証跡へ集約し、停止後のsignal割込によるreap中断を修正。旧証拠保持、2worker案、資源/PSI条件不変、今回の再起動0。以下は過去の各時点の記録。

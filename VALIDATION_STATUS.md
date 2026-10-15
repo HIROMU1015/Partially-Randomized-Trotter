@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-15 H8 native B0+I実行準備
+
+[実装・入力・tests・契約案](docs/research/track_a_h8_native_b0i_readiness_20261015.md)。H8 B0+I prefix7/14/21×q1/2/4/8の12構成/最大24軸を実装。SOURCE65a9d801…、人工38件と未承認CLI拒否PASS、provider265/input7 byte照合PASS。16 modes/DF28/sector4900、保存referenceと経験的u、caseごとの2軸並列・CPU carryを固定。実新scalar/signal/native/compile0、CPU[]/false/未seal/commandnull、資源案は承認待ち。subagents0、準備後STOP。 以下は各時点の記録。
+
 ## 2026-10-15 H6 native B0+I全12構成：結果
 
 [結果・全表・終了監査](docs/research/track_a_h6_native_b0i_full_family_results_20261015.md)。H6 native B0+I全12構成の必要取得が完了。新12軸＋旧6軸再利用、全条件不適格6軸は未測定。SOURCEac6d28e3…、P=0/RZのPR確認union8/n32点費用は登録B0/B0I/full S2/S4最良より5精度で29.35〜56.14%低い。経験的u・点選択・matched B0未取得の限界保持。wall2326.546秒、native wait0/12worker全exit0・reap、保存表2607条件PASS。新科学計算/新grant/原稿改訂/共有環境変更0、科学採否はGPTへ、mandatory STOP。 以下は各時点の履歴。

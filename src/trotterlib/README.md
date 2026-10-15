@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 2026-10-15 H8 native B0+I実行準備
+
+[実装・入力・tests・契約案](../../docs/research/track_a_h8_native_b0i_readiness_20261015.md)。H8 B0+I prefix7/14/21×q1/2/4/8の12構成/最大24軸を実装。SOURCE65a9d801…、人工38件と未承認CLI拒否PASS、provider265/input7 byte照合PASS。16 modes/DF28/sector4900、保存referenceと経験的u、caseごとの2軸並列・CPU carryを固定。実新scalar/signal/native/compile0、CPU[]/false/未seal/commandnull、資源案は承認待ち。subagents0、準備後STOP。 以下は各時点の記録。
+
 ## 2026-10-15 H6 native B0+I 全12構成の実行準備
 
 [全12構成・旧6軸再利用・新規最大18軸の実装と契約案](../../docs/research/track_a_h6_native_b0i_full_family_readiness_20261015.md)。SOURCE731826b3…、44人工tests PASS、別担当の限定技術監査PASS_WITH_LIMITS。旧3構成は元SOURCE2e733d8a…の実測としてREUSE_WITH_DECLARED_LIMITS。新9の全10条件screen後、全selected correctness合格時のみ最大6並列compileへ進む経路を準備した。旧4h実績を残し、新wall-null/CPU別予算・資源は未承認案。CPU[]/false/未seal/commandnull、新実H6数値・native build/probe/compile・grant・venv/他job変更0、mandatory STOP。以下は各時点の履歴。
