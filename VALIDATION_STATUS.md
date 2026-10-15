@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-15 H6 native B0+I全12構成：結果
+
+[結果・全表・終了監査](docs/research/track_a_h6_native_b0i_full_family_results_20261015.md)。H6 native B0+I全12構成の必要取得が完了。新12軸＋旧6軸再利用、全条件不適格6軸は未測定。SOURCEac6d28e3…、P=0/RZのPR確認union8/n32点費用は登録B0/B0I/full S2/S4最良より5精度で29.35〜56.14%低い。経験的u・点選択・matched B0未取得の限界保持。wall2326.546秒、native wait0/12worker全exit0・reap、保存表2607条件PASS。新科学計算/新grant/原稿改訂/共有環境変更0、科学採否はGPTへ、mandatory STOP。 以下は各時点の履歴。
+
 ## 2026-10-15 H6 B0+I blueprint結合修正
 
 [原因・修正・検査・契約案](docs/research/track_a_h6_b0i_blueprint_fix_20261015.md)。run01停止原因の旧preparation hashと現在profileの不一致を3caseで再現。旧hash保持＋現profile/input/providerに固定した3blueprintの厳密照合、実/期待field差の保存を実装。SOURCE6b4d3026…、新12＋影響70の82人工tests PASS。数学/compiler/最大6並列・合計6compileは維持。サブエージェント0、限定snapshot診断2/preparation6以外のsignal/native build/probe/compile・新grant・本計算再起動0。未認可draftへ再結合し、旧run/carryを返却せず保全。 以下は各時点の履歴。
