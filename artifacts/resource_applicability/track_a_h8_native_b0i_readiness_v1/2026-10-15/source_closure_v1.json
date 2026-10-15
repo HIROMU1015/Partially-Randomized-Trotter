@@ -1,5 +1,5 @@
 {
-  "SOURCE": "65a9d801d297ba5402a4fe647d1ece4d5a60ae93",
+  "SOURCE": "54ed98c5fa5b7190f77255271f4e3bec8db15630",
   "previous_H6_SOURCE": "ac6d28e35cf01398f169ce59577182a38da9b959",
   "files": [
     {
@@ -46,15 +46,15 @@
     },
     {
       "path": "scripts/h8_b0i_family_parallel_compile_v1.py",
-      "bytes": 21423,
-      "sha256": "d94c45c0acfa4df6547689242f37f686d55d67c76cbfd840f1686136b0262d9f",
-      "git_blob": "690b422101b402cc5fefd8ce5ac87da74f467783"
+      "bytes": 21513,
+      "sha256": "63f8358d5f0106a91b3a9b8ac31a04d6b863f5be81736b98362a86133022c981",
+      "git_blob": "cb93b6b82d58effddfa59e9c44d7bc8e0ea020be"
     },
     {
       "path": "scripts/h8_b0i_family_runner_v1.py",
-      "bytes": 14722,
-      "sha256": "66be016b6a54954ff99ee65498db7784f2acc96a8f7b5ec297ca636e72be5dd5",
-      "git_blob": "2e374803fe92a7d06a375a98e51dc783256e1433"
+      "bytes": 15328,
+      "sha256": "204b1fec4e4d27da452ea12866c5bea759c1c28635bc27292cd8631de9b0441d",
+      "git_blob": "95d44fa0f8d5d7d7528ea24aa2e757c3bbd89ece"
     },
     {
       "path": "scripts/h8_native_b0i_adapter_v1.py",
@@ -84,5 +84,61 @@
   "old_H6_code_changed": false,
   "scientific_provider_changed": false,
   "mathematical_overlay_convention_unchanged": true,
-  "earlier_preparation_SOURCE": "50766204ef89031201348745786390c021eea55b"
+  "earlier_preparation_SOURCE": "50766204ef89031201348745786390c021eea55b",
+  "previous_H8_SOURCE": "65a9d801d297ba5402a4fe647d1ece4d5a60ae93",
+  "previous_REVIEW_BUNDLE": "7a113b33d88c5862014f15ad4eb9bdf84e227a8a",
+  "test_files": [
+    {
+      "path": "tests/h8_b0i_fixtures_v1.py",
+      "bytes": 7749,
+      "sha256": "1993b13d1ceb254ab35676bb9a5f54ac63a5a06ad15caebdff540401d2550b6f",
+      "git_blob": "a52bb14b286df3fec47dd793392d5b0085956010"
+    },
+    {
+      "path": "tests/test_h8_native_b0i_v1.py",
+      "bytes": 20804,
+      "sha256": "186535922e60fe99b79d63c1f1b399898fa15ae17dd62147475a9d10fec69d22",
+      "git_blob": "7c2db028283c6aeae876f045bf41cc2c6faa52f9"
+    },
+    {
+      "path": "tests/run_h8_b0i_artificial_tests_v1.py",
+      "bytes": 3185,
+      "sha256": "b43b6d53d1c932e5f7c8640fcc8cc58dcae5ca1144c61fe1134fafc1082cd5cd",
+      "git_blob": "de6c1416284651e48b73e4d72ac24efa73cbc01b"
+    }
+  ],
+  "source_change_reasons": [
+    {
+      "path": "scripts/h8_b0i_family_runner_v1.py",
+      "reason": "Validate four workers/five CPUs; group at most two eligible cases, correctness barrier, release circuits after each wave; retain conservative AS-based admission formula.",
+      "old_sha256": "66be016b6a54954ff99ee65498db7784f2acc96a8f7b5ec297ca636e72be5dd5",
+      "new_sha256": "204b1fec4e4d27da452ea12866c5bea759c1c28635bc27292cd8631de9b0441d",
+      "old_blob": "2e374803fe92a7d06a375a98e51dc783256e1433",
+      "new_blob": "95d44fa0f8d5d7d7528ea24aa2e757c3bbd89ece"
+    },
+    {
+      "path": "scripts/h8_b0i_family_parallel_compile_v1.py",
+      "reason": "Schedule up to four distinct axis tasks from one or two validated cases; unique per-wave cleanup; keep unchanged ownership/FD/reap and CPU accounting.",
+      "old_sha256": "d94c45c0acfa4df6547689242f37f686d55d67c76cbfd840f1686136b0262d9f",
+      "new_sha256": "63f8358d5f0106a91b3a9b8ac31a04d6b863f5be81736b98362a86133022c981",
+      "old_blob": "690b422101b402cc5fefd8ce5ac87da74f467783",
+      "new_blob": "cb93b6b82d58effddfa59e9c44d7bc8e0ea020be"
+    },
+    {
+      "path": "tests/h8_b0i_fixtures_v1.py",
+      "reason": "Use four mock worker CPUs and two-case scheduling policy.",
+      "old_sha256": "39c4bd2d4ecba0a75f6a20f2c2b7df27d824dac04545184c6c2571e90e866a10",
+      "new_sha256": "1993b13d1ceb254ab35676bb9a5f54ac63a5a06ad15caebdff540401d2550b6f",
+      "old_blob": "94c33817f865809a22df24f0f107ca6d6addbc29",
+      "new_blob": "a52bb14b286df3fec47dd793392d5b0085956010"
+    },
+    {
+      "path": "tests/test_h8_native_b0i_v1.py",
+      "reason": "Retain previous regressions and cover four workers, partial startup cleanup, two-case lifetime, odd remainder and observer leases.",
+      "old_sha256": "fb245cd471702a7030f0572e12f05b80bb43d4b1e51de925c4b5543cb1b16080",
+      "new_sha256": "186535922e60fe99b79d63c1f1b399898fa15ae17dd62147475a9d10fec69d22",
+      "old_blob": "cf4e8d1e836dc4fbd5b6556b54f8f40fb69816f4",
+      "new_blob": "7c2db028283c6aeae876f045bf41cc2c6faa52f9"
+    }
+  ]
 }

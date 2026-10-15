@@ -2,7 +2,7 @@
   "schema": "H8_NATIVE_B0I_FULL_FAMILY_DRAFT_V1",
   "status": "TECHNICAL_PREPARATION_NOT_EXECUTION_AUTHORIZATION",
   "scope": "H8_NATIVE_B0I_FULL_FAMILY12_V1",
-  "SOURCE": "65a9d801d297ba5402a4fe647d1ece4d5a60ae93",
+  "SOURCE": "54ed98c5fa5b7190f77255271f4e3bec8db15630",
   "approved": false,
   "runtime_authorization": false,
   "grant_created": false,
@@ -14,7 +14,7 @@
     "approved": false,
     "automatic_build": false
   },
-  "execution_order": "ALL_SCREEN_THEN_FIRST_SELECTED_CORRECTNESS_THEN_CASE_WAVES_V1",
+  "execution_order": "ALL_SCREEN_THEN_FIRST_SELECTED_CORRECTNESS_THEN_TWO_CASE_WAVES_V1",
   "preparation_policy": "H8_PINNED_DISCARD_PREPARATION_RECIPE_V1",
   "candidates": [
     {
@@ -263,8 +263,8 @@
     "scripts/h8_b0i_family_execution_guard_v1.py": "bbaacf58321dd3d610943c815d62d9d4a1b1c9b0bda80bd5c12949d7d6981c34",
     "scripts/h8_b0i_family_external_monitor_v1.py": "ab3d749a595dd09c6eea6fa57973711bb6a86745ca45004202f8c9d2bca54bcc",
     "scripts/h8_b0i_family_launcher_v1.py": "6421a6154c7b93c2fa75608226ceb944bfa819ea218577f088a3916530cf17f0",
-    "scripts/h8_b0i_family_parallel_compile_v1.py": "d94c45c0acfa4df6547689242f37f686d55d67c76cbfd840f1686136b0262d9f",
-    "scripts/h8_b0i_family_runner_v1.py": "66be016b6a54954ff99ee65498db7784f2acc96a8f7b5ec297ca636e72be5dd5",
+    "scripts/h8_b0i_family_parallel_compile_v1.py": "63f8358d5f0106a91b3a9b8ac31a04d6b863f5be81736b98362a86133022c981",
+    "scripts/h8_b0i_family_runner_v1.py": "204b1fec4e4d27da452ea12866c5bea759c1c28635bc27292cd8631de9b0441d",
     "scripts/h8_native_b0i_adapter_v1.py": "6a9651ae108d059638788d716acd3d77d756dca9f72cb74c9de681891fcdc9f2",
     "scripts/h8_native_b0i_bridge_v1.py": "ed2aa1eee68accaa742d61a88659254097f1c099386d52c142ddf625c6e267a9",
     "scripts/launch_h8_b0i_family_once_v1.sh": "e2b3810fe7bb3fb6f4c9d41131929011a0cc56b83f263b06bbd7b2d30a147bcb",
@@ -725,16 +725,17 @@
     ],
     "P": "COMMON_HYPOTHETICAL_NOT_MEASURED"
   },
-  "workers": 2,
+  "workers": 4,
   "parallel_compile": {
     "enabled": true,
-    "max_workers": 2,
+    "max_workers": 4,
     "internal_threads": 1,
-    "backend": "OWNED_FORK_AFTER_CASE_CORRECTNESS_V1",
+    "backend": "OWNED_FORK_AFTER_CASE_BATCH_CORRECTNESS_V1",
     "automatic_retry": false,
     "parent_death_signal": "SIGKILL",
     "worker_cpus": [],
-    "driver_cpu": null
+    "driver_cpu": null,
+    "max_cases_in_memory": 2
   },
   "external_resource_monitor": {
     "enabled": true,
@@ -752,7 +753,7 @@
     "output_inode_cap": 20000,
     "terminal_inode_reserve": 4,
     "monitor_max_seconds": 5.0,
-    "fresh_memory_available_bytes": 223875170304,
+    "fresh_memory_available_bytes": 361314123776,
     "fresh_available_bytes": 8589934592,
     "fresh_available_inodes": 40000
   },
@@ -769,16 +770,25 @@
     "approved": false,
     "allowed_cpus": [],
     "driver": 1,
-    "workers": 2,
+    "workers": 4,
     "metadata_observer": 1,
     "internal_threads": 1,
-    "memory_formula": "3*64GiB + .5GiB +16GiB =208.5GiB",
+    "memory_formula": "5*64GiB + .5GiB +16GiB =336.5GiB",
     "host_full_PSI_STOP_at_or_above": 1.0,
     "cgroup_full_PSI_required": 0.0,
     "OOM_increase_allowed": false,
     "new_shared_environment_or_other_job_changes": false,
     "phase_wall_seconds": null,
-    "total_wall_seconds": null
+    "total_wall_seconds": null,
+    "physical_cores_required": 5,
+    "max_native_cases_in_parent": 2,
+    "memory_admission_kind": "CONSERVATIVE_SUM_OF_AS_CAPS_NOT_MEASURED_RAM_OR_KERNEL_RESERVATION",
+    "numerical_AS_GiB_per_process": 64,
+    "numerical_RSS_GiB_per_process": 32,
+    "sum_of_role_RSS_caps_GiB": 160.25,
+    "measured_H8_peak_RSS_GiB": null,
+    "worker_count_implementation_requested_by_user": true,
+    "execution_authorization": false
   },
   "max_instructions": 4000000,
   "transpiled_instruction_cap": 10000000,
@@ -826,5 +836,6 @@
     "font metadata byte seed",
     "new exclusive output/control/one-shot roots",
     "auth/review digest/seal and exact absolute command"
-  ]
+  ],
+  "previous_SOURCE": "65a9d801d297ba5402a4fe647d1ece4d5a60ae93"
 }

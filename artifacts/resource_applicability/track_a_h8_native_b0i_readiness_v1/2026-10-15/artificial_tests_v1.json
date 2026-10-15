@@ -102,7 +102,7 @@
       }
     }
   ],
-  "final_count": 38,
+  "final_count": 45,
   "real_children": 0,
   "real_scientific_imports": 0,
   "subagents": 0,
@@ -123,9 +123,126 @@
     "output_created": false,
     "one_shot_created": false,
     "real_science_started": false,
+    "SOURCE": "54ed98c5fa5b7190f77255271f4e3bec8db15630"
+  },
+  "SOURCE": "54ed98c5fa5b7190f77255271f4e3bec8db15630",
+  "source_fix": "Two-case/four-worker waves with bounded native circuit lifetime; science/compiler/call limits unchanged.",
+  "previous_SOURCE": "65a9d801d297ba5402a4fe647d1ece4d5a60ae93",
+  "four_worker_reports": [
+    {
+      "attempt": 1,
+      "bytes": 7961,
+      "sha256": "ace5ba5fe7eb02c6faa576ca5233b17bfa46f4f75c213207408159cc0cf8aaf7",
+      "result": {
+        "audit": {
+          "out_of_fixture_write_blocked": 0,
+          "process_creation_blocked": 0,
+          "science_files_blocked": 0,
+          "science_imports_blocked": 0
+        },
+        "errors": 1,
+        "executable": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+        "failures": 0,
+        "internal_threads": 1,
+        "one_process": true,
+        "passed": false,
+        "peak_RSS_bytes": 33554432,
+        "python": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+        "real_children": 0,
+        "real_science_operations": 0,
+        "tests": 45,
+        "wall_seconds": 5.3316430654376745
+      }
+    },
+    {
+      "attempt": 2,
+      "bytes": 7961,
+      "sha256": "afbf8567cfe0b0c2182a982376b5c12a4faf70e661f18dce7738cae743d4118d",
+      "result": {
+        "audit": {
+          "out_of_fixture_write_blocked": 0,
+          "process_creation_blocked": 0,
+          "science_files_blocked": 0,
+          "science_imports_blocked": 0
+        },
+        "errors": 1,
+        "executable": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+        "failures": 0,
+        "internal_threads": 1,
+        "one_process": true,
+        "passed": false,
+        "peak_RSS_bytes": 34078720,
+        "python": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+        "real_children": 0,
+        "real_science_operations": 0,
+        "tests": 45,
+        "wall_seconds": 5.214704971760511
+      }
+    },
+    {
+      "attempt": 3,
+      "bytes": 6837,
+      "sha256": "55806ce0ecef4b59017c2008cc3f7d53210609e035b9cf2d606fbcfa1d914018",
+      "result": {
+        "audit": {
+          "out_of_fixture_write_blocked": 0,
+          "process_creation_blocked": 0,
+          "science_files_blocked": 0,
+          "science_imports_blocked": 0
+        },
+        "errors": 0,
+        "executable": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+        "failures": 0,
+        "internal_threads": 1,
+        "one_process": true,
+        "passed": true,
+        "peak_RSS_bytes": 34078720,
+        "python": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+        "real_children": 0,
+        "real_science_operations": 0,
+        "tests": 45,
+        "wall_seconds": 5.2718329560011625
+      }
+    }
+  ],
+  "four_worker_initial_fixture_errors": [
+    "New observer fixture omitted log_cap_bytes; fixture corrected.",
+    "New observer fixture omitted grant.output; fixture corrected."
+  ],
+  "previous_draft_CLI_rejection": {
+    "status": "PASS",
+    "exit_code": 2,
+    "stdout_sha256": "6b34b96b9d24775b472312b4e9a9252f8241d6cd4a7fdd5c73a826404e55babd",
+    "output_created": false,
+    "one_shot_created": false,
+    "real_science_started": false,
     "earlier_relative_path_rejection": "CANONICAL_HOME_PATH_REQUIRED",
     "SOURCE": "65a9d801d297ba5402a4fe647d1ece4d5a60ae93"
   },
-  "SOURCE": "65a9d801d297ba5402a4fe647d1ece4d5a60ae93",
-  "source_fix": "Terminal retains scalar/cost output byte receipts; full completed-cost coverage regression added"
+  "four_worker_test_plan": {
+    "scope": "H8 four-worker source preparation only",
+    "processes": 1,
+    "internal_threads": 1,
+    "workers": "mock only; no fork or scientific execution",
+    "input": "tiny artificial matrices, fabricated string circuits and metadata",
+    "address_space_bytes": 2147483648,
+    "observed_RSS_limit_bytes": 536870912,
+    "CPU_seconds": 180,
+    "wall_seconds": 180,
+    "per_file_output_bytes": 16777216,
+    "writes": "exclusive fixture directory under this home evidence directory",
+    "checks": [
+      "four worker concurrency and distinct CPU assignments",
+      "two case correctness barrier; odd selected case count and zero selected cases",
+      "at most two native case objects held and released between waves",
+      "four worker observer identities and CPU carry",
+      "partial start failure, cleanup, first STOP preservation and no refund",
+      "unchanged scientific scope, compiler, call totals and authorization refusal"
+    ],
+    "new_real_scientific_operations": 0,
+    "real_child_processes": 0,
+    "new_grant": false,
+    "runtime_authorization": false,
+    "subagents": 0
+  }
 }

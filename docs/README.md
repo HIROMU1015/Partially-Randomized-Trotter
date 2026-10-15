@@ -1,5 +1,9 @@
 # 文書索引
 
+## 2026-10-15 H8 native B0+I：4 worker化
+
+[変更・契約案・検証](research/track_a_h8_native_b0i_readiness_20261015.md)。SOURCE54ed98c5…、2構成×cosine/sineの最大4 workerへ変更。人工45件PASS、回路保持最大2構成・奇数残り2軸・4 identity監視・途中起動失敗cleanupを検査。科学/compiler/最大24compileは不変。AS64GiB/RSS32GiBは各process上限案で実測消費量ではない。実科学/worker起動0、CPU[]/false/未sealを維持。 旧2 worker記録は以下に保全。
+
 ## 2026-10-15 H8 native B0+I実行準備
 
 [実装・入力・tests・契約案](research/track_a_h8_native_b0i_readiness_20261015.md)。H8 B0+I prefix7/14/21×q1/2/4/8の12構成/最大24軸を実装。SOURCE65a9d801…、人工38件と未承認CLI拒否PASS、provider265/input7 byte照合PASS。16 modes/DF28/sector4900、保存referenceと経験的u、caseごとの2軸並列・CPU carryを固定。実新scalar/signal/native/compile0、CPU[]/false/未seal/commandnull、資源案は承認待ち。subagents0、準備後STOP。 以下は各時点の記録。
