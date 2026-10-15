@@ -7,6 +7,7 @@ import math
 import os
 from pathlib import Path
 import sys
+import tempfile
 
 def load(name, filename):
     spec = importlib.util.spec_from_file_location(name, Path(__file__).with_name(filename))
@@ -59,6 +60,17 @@ class Calls:
             raise g.Stop('OPERATION_BUDGET:'+name)
         self.used[name] += count
         self.journal(dict(operation=name, reserved_before_call=count, used=deepcopy(self.used), refund=0))
+
+
+def prepare_private_temp(grant):
+    """Run only after authorization/exclusive output; prevent tempfile fallback."""
+    grant.require(SCOPE)
+    temporary=grant.output/'temp';temporary.mkdir(mode=0o700)
+    paths=dict(TMPDIR=temporary,MPLCONFIGDIR=temporary/'mpl',XDG_CACHE_HOME=temporary/'cache')
+    for key,path in paths.items():
+        if path!=temporary:path.mkdir(mode=0o700)
+        os.environ[key]=str(path)
+    tempfile.tempdir=str(temporary)
 
 
 def pipeline(grant, verified, mapping, monitor, artifacts, calls, factory):
@@ -140,7 +152,8 @@ def run(contract, authorization, *, contract_sha, authorization_sha, output, roo
     calls = Calls(contract['operation_limits'], journal)
     try:
         monitor = monitor_factory(grant)
-        if not synthetic: monitor.install()
+        if not synthetic:
+            monitor.install();prepare_private_temp(grant)
         g.runtime_gate(grant,root); mapping = mapping_loader(); verified = g.load_inputs(grant,mapping)
         pipeline(grant,verified,mapping,monitor,artifacts,calls,factory)
         monitor.phase = 'D_FINAL_BINDING_CLEANUP'

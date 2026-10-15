@@ -163,4 +163,14 @@ class PilotRunnerTests(unittest.TestCase):
         self.assertIn('JOURNAL_CAP',terminal['first_stop']['reason'])
         self.assertEqual(terminal['calls_reserved_before_operations']['compile'],0)
 
+    def test_private_temp_is_created_before_tempfile_can_fallback(self):
+        grant=r.g.authorization_gate(self.c,self.a,contract_sha=r.g.d0.digest(self.c),
+            authorization_sha=r.g.d0.digest(self.a),output=self.out,scope=r.SCOPE,synthetic=True)
+        self.out.mkdir()
+        with patch.dict(os.environ),patch.object(r.tempfile,'tempdir',None):
+            r.prepare_private_temp(grant)
+            self.assertEqual(r.tempfile.gettempdir(),str(self.out/'temp'))
+            for key,name in (('TMPDIR','temp'),('MPLCONFIGDIR','temp/mpl'),('XDG_CACHE_HOME','temp/cache')):
+                self.assertEqual(os.environ[key],str(self.out/name));self.assertTrue((self.out/name).is_dir())
+
 if __name__=='__main__':unittest.main()
