@@ -224,6 +224,22 @@ class NativeTests(unittest.TestCase):
             weights=[.17**k/math.factorial(k)*math.hypot(1.,.17/(k+1)) for k in range(0,K+1,2)]
             np.testing.assert_allclose(law.order_probabilities,np.array(weights)/sum(weights),atol=1e-15)
         self.assertEqual(self.prepared['partial'].coefficient_atol,0.)
+    def test_PR_registered_cutoff_above_default_residual(self):
+        from trotterlib.df_partial_s2 import make_df_partial_s2_step_request,QiskitDFPartialS2CircuitBuilder
+        from trotterlib.pr2_matched_accuracy_m1_execution import _explicit_cutoff_tolerance
+        from trotterlib.rte import step_taylor_truncation_residual_bound
+        ham=DFHamiltonian(self.ham.constant,self.ham.one_body,self.ham.lambdas*1000,self.ham.g_matrices,{})
+        prepared=self.science.preparations(ham);p=prepared['partial'];tau=p.exact_rte_lambda_r*.8/2
+        self.assertGreater(step_taylor_truncation_residual_bound(tau,2),1e-10)
+        for K in (2,4):
+            cell=next(x for x in c.registry(2) if x['K']==K)
+            task=dict(cell=cell,replica=0,seed=283,validate=True)
+            evolution,events=self.science.build_group(ham,prepared,task,c.Calls(c.call_limits(2)))
+            request=make_df_partial_s2_step_request(p,step_time=.8,rte_steps=2,finite_taylor_order=K,
+                truncation_tolerance=_explicit_cutoff_tolerance(tau,K),seed=283,controlled=True,ancilla_qubit=4)
+            self.assertEqual(events,[e.to_dict() for e in request.rte_occurrence.events])
+            legacy=QiskitDFPartialS2CircuitBuilder().build_step(request)
+            np.testing.assert_allclose(Operator(evolution.circuit).data,Operator(legacy.circuit).data,atol=2e-11)
     def test_wrapper_cos_sin_expected_signal_and_fingerprint(self):
         from qiskit.quantum_info import Statevector
         from trottertracks.resource_applicability.ax2b_native_df_v5 import build_native_hadamard_wrapper

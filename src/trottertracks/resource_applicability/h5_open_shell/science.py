@@ -13,7 +13,7 @@ from scipy.sparse.linalg import eigsh
 from scipy.linalg import expm
 
 from trotterlib.df_hamiltonian import df_linear_operator, _hartree_fock_initial_vector
-from trotterlib.pr2_matched_accuracy_m1_execution import _prepare, _prepare_discard
+from trotterlib.pr2_matched_accuracy_m1_execution import _prepare, _prepare_discard, _explicit_cutoff_tolerance
 from trotterlib.df_partial_s2 import DFDeterministicOneBodySpec, make_df_partial_s2_step_request
 from trotterlib.rte import CompilerSettings
 from trotterlib.rte_compiled_cost import transpile_and_measure_cost, compiler_settings_hash
@@ -187,7 +187,12 @@ def build_group(ham,prepared,task,calls):
     c=task['cell'];p=prepared['discard' if c['method'] in ('B0','B0I') else ('full' if c['method']=='B1' else 'partial')]
     if c['R']:
         calls.take('trajectory');calls.take('sampling_call');calls.take('occurrence',c['R'])
+        # K is fixed by the registered experiment, not selected to meet the
+        # request API's default tolerance. Use the same explicit-cutoff adapter
+        # as H6/H8; the finite law, signal bias and shot allowance stay intact.
+        tau=p.exact_rte_lambda_r*.8/2
         request=make_df_partial_s2_step_request(p,step_time=.8,rte_steps=2,finite_taylor_order=c['K'],
+            truncation_tolerance=_explicit_cutoff_tolerance(tau,c['K']),
             seed=task['seed'],controlled=True,ancilla_qubit=ham.n_qubits)
         events=[e.to_dict() for e in request.rte_occurrence.events]
         evolution=partial_native_from_step_requests([request],control_policy='symmetric_directional',max_instructions=4000000)
