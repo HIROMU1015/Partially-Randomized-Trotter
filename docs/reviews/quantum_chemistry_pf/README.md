@@ -1,5 +1,11 @@
 # Quantum chemistry PF reviews
 
+## 2026-10-15 完成版レビュー原文保存・H-E1 Stage 0のK0完了／STOP
+
+[完成版科学レビュー](qc_onebody_repartition_h_boundary_final_scientific_review_20261015.md)を原文100,617 bytes/SHA a88a7db0…で保存。[H-E1技術監査](../../research/qc_he1_stage0_technical_prevalidation_20261015.md)、[GPT判断引継ぎ](../../research/qc_he1_stage0_gpt_handoff_20261015.md)、[参照・stage証拠](../../../artifacts/qc_he1_stage0_prevalidation/2026-10-15/method_status.json)。第1・第2研究の専用branch本文、Track A/B、FFF/partitioning、誤差予測、compact BCH、SPRINT/CPF最新版、processing/外挿・測定費用を照合した。
+K0全体UNDETERMINED、具体化できる既知処理系REDUCES_TO_KNOWN、独立した生成規則NOT_IDENTIFIED。gate不成立でK1〜K3未実施。新科学計算・保存数値集計・pilot準備・GPT科学レビュー0。
+第一候補の終了はレビュー推奨CLOSE_CURRENT_CONFIGURATION_RECOMMENDEDで、正式状態AWAITING_USER_ADOPTION_DECISION。一体再配分一般の不能性NOT_ESTABLISHED、H-E1未採択。旧結果/source/認可/STOP、5,161保護files・162旧manifest/non-result/既存description欠落FAIL、N1STOP/N2HOLD/N3CLOSED/THRIFT現templateCLOSED・Track A/B/C1–C4を保持。GitHub公開・再取得照合後Mandatory STOP。正式採否・重要GPT判断・新計算へ自動進行しない。以下は過去履歴。
+
 ## 2026-10-15 finite-step準備のGitHub照合・Mandatory STOP
 
 payload `fd44510328d8ab3068634a9906d40de16ca3ec43` をGitHubから再取得し、47変更blobs/1,859,892bytes、固定source21files/417保護files/6参照/受領原文34,108bytesを照合した。[receipt](../../../artifacts/qc_onebody_repartition_finite_step_preparation_v1/2026-10-15/publication/receipt.json)。source19d5bd74、contract/source/inputは不変。旧150manifest/non-result/global FAIL/root137pathsを保持。人工37tests・identity-only preflightの技術証拠であり、分子eig/RDM/expectation/PF/compileの新規取得0、承認発行0、attempt消費0。
