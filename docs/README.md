@@ -1,3 +1,5 @@
+> **M1-S G0-T1 S0正式契約（2026-10-16）：[正式版](tracks/algorithm_codesign/m1s_g0t1_s0_formal_theory_contract_20261016.md)／[採択記録](../artifacts/track_b_m1s_g0t1_s0_formal_adoption/2026-10-16/v1/adoption_record.json)。** ユーザー採択済み、定理未証明・理論実施未承認。C-sec主比較／固定r小step、Checkpoint非自動進行、新science0、mandatory STOP。以下は履歴。
+
 > **M1-S G0-T1 S0（2026-10-16）：[修正理論契約候補](tracks/algorithm_codesign/m1s_g0t1_s0_repaired_theory_contract_candidate_20261016.md)。** [最新GPT原本](research/track_b_m1s_g0t1_claude_gpt_independent_scientific_review_20261016.md)をbyte保存。A′暫定承認と正式契約・実行承認を分離。新証明/科学計算0、mandatory STOP。以下は履歴・既存索引。
 
 > **M1-S G0契約準備（2026-10-15）：[Decision Packet](tracks/algorithm_codesign/m1s_g0_proof_and_gate0_precontract_20261015.md)。** [GPT完成レビュー原本](research/track_b_m1s_claude_final_gpt_independent_scientific_review_20261015.md)のbyte保存、Q1–Q5とGate 0未採択候補。新証明・科学計算0、mandatory STOP。以下は履歴・既存索引。

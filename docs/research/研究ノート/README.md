@@ -1,3 +1,5 @@
+- 2026-10-16: [Track B M1-S G0-T1 S0正式採択・最終固定](2026-10-16_track_b_M1S_G0T1_S0_formal_adoption.md)。C-sec主比較・固定r小step、契約採択済み/理論実施未承認、新science0、mandatory STOP。
+
 - 2026-10-16: [Track B M1-S G0-T1/A′暫定方針とS0修正候補](2026-10-16_track_b_M1S_G0T1_S0_contract_repair.md)。正式契約・証明実施は未承認、新science0、mandatory STOP。
 
 - 2026-10-15: [Track B M1-S：G0証明義務・Gate 0候補契約の技術整理](2026-10-15_track_b_M1S_G0_precontract.md)。原本保存・参照照合、未採択、科学実行0、mandatory STOP。

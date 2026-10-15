@@ -1,3 +1,5 @@
+> **Track B M1-S S0正式採択（2026-10-16）：[G0-T1正式理論契約](docs/tracks/algorithm_codesign/m1s_g0t1_s0_formal_theory_contract_20261016.md)。** ユーザーがG0-T1/A′・T1aのC-sec・T1bの固定r/小step系列を正式採択。契約採択と実施承認を分離し、T1a/T1b証明・Gate 0・Q4/Q5は未承認。新証明/科学計算/compile0、次はT1a実施の別途明示承認、mandatory STOP。以下は履歴・既存案内。
+
 > **Track B M1-S S0候補修正（2026-10-16）：[G0-T1理論契約候補](docs/tracks/algorithm_codesign/m1s_g0t1_s0_repaired_theory_contract_candidate_20261016.md)。** G0-T1/A′は暫定承認済み、契約最終採択・T1a/T1b証明実施は未承認。局所高次誤差・exact-half Ψ・joint scaling・dressing/相対誤差・Checkpointを整理。新証明/科学計算0、mandatory STOP。以下は履歴・既存案内。
 
 > **Track B M1-S契約準備（2026-10-15）：[G0証明義務・Gate 0候補契約](docs/tracks/algorithm_codesign/m1s_g0_proof_and_gate0_precontract_20261015.md)。** 最新GPT完成レビュー原本をbyte保存・remote照合。Q1–Q5、ordered protocol未決定欄、データ所在、rho適用域、理論先行／探索先行を整理。契約・M1-S未採択、新証明・科学計算0、mandatory STOP。以下は従来の案内。
