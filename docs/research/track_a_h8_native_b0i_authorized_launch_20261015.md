@@ -1,5 +1,10 @@
 # H8 native B0+I 全登録候補：4 worker one-shot実行認可
 
+## 起動確認（2026-10-15T13:14:55Z）
+
+run `h8-native-b0i-full-family-run01-20261015` を一度起動。driver PID1604569 / launcher PID1604548。全12構成screen済み、選択8構成・新16軸のcompile予定。観測時点は `B_H8_NATIVE_CORRECTNESS_14_1`、独立監視のSTOP理由なし。これは途中経過であり、最終費用比較ではない。SOURCE54ed98c5…、実行認可REVIEW e009b368ed424dead82aeb3a934edbaee5ed1626。
+[起動時点の軽量監査](../../artifacts/resource_applicability/track_a_h8_native_b0i_authorized_launch_v1/2026-10-15/launch_started_v1.json)。以下は認可・起動前の固定記録。
+
 利用者の「計算を開始して」を、直前の4 worker SOURCEと固定した全12構成・最大24軸の実行承認として受領した。SOURCE `54ed98c5fa5b7190f77255271f4e3bec8db15630`、準備REVIEW `b654e90e25a59011b1763dbf8ab29f7ae93f6e56`。このcommit時点は起動前であり、最終auth/sealとfresh gate合格後に一度だけ起動する。
 
 [承認plan・byte/profile/input/carry照合・主担当確認](../../artifacts/resource_applicability/track_a_h8_native_b0i_authorized_launch_v1/2026-10-15/README.md)。[実装と旧未承認準備の履歴](track_a_h8_native_b0i_readiness_20261015.md)。
