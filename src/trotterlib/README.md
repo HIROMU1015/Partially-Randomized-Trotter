@@ -1,3 +1,7 @@
+## 2026-10-16 Frozen preparationのmetadata reader
+
+`native_df_archive_metadata.py` はtyped DAGの保存記述を検査する。元codecの実科学object decoderは呼ばない。[追加受領報告](../../docs/research/track_a_native_df_h6_h8_metadata_completion_20261016.md)。
+
 ## 2026-10-16 Native DF metadata schema adapter
 
 `native_df_metadata_binding.py` は保存basisのordered-description hashとconnection envelopeを検査する。law/行列の数値認証や費用評価・実行認可はしない。[報告](../../docs/research/track_a_native_df_h6_h8_metadata_binding_20261016.md)。

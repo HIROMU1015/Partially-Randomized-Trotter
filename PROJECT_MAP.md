@@ -1,5 +1,10 @@
 # プロジェクト案内
 
+## 2026-10-16 Native DF：H6 archive受領・H8補完準備
+
+[追加受領報告](docs/research/track_a_native_df_h6_h8_metadata_completion_20261016.md)、[description reader](src/trotterlib/native_df_archive_metadata.py)、[検査CLI](scripts/inspect_native_df_preparation_archive.py)、[証跡](artifacts/resource_applicability/track_a_native_df_metadata_completion/2026-10-16/README.md)。
+既存H6 archiveの7 preparation・全component lawを取得し、旧欠測判定を更新。12人工tests PASS、208固有候補のscope/axis/SOURCE索引を作成。H8 full archiveは未取得、新生成/実費用/再会計/科学計算/grant/subagents0。未認可の後続案を固定して公開後STOP。
+
 ## 2026-10-16 Native DFモデル：H6/H8 metadata接続監査
 
 [主要報告](docs/research/track_a_native_df_h6_h8_metadata_binding_20261016.md)、[schema adapter](src/trotterlib/native_df_metadata_binding.py)、[人工runner](scripts/check_native_df_metadata_binding.py)、[tests](tests/test_native_df_metadata_binding.py)、[軽量証跡](artifacts/resource_applicability/track_a_native_df_metadata_binding/2026-10-16/README.md)。
