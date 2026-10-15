@@ -1,3 +1,8 @@
+## 2026-10-16 Native DF理論ゲート数モデル（人工検証のみ）
+
+[技術資料](docs/research/track_a_native_df_theoretical_gate_model_20261016.md)／[27件のlocal stdlib人工検証](artifacts/resource_applicability/track_a_native_df_gate_model/2026-10-16/synthetic_validation_v1.json)。解析unitary・相対位相・有限分布DPを人工値だけで確認。実Qiskit接続・compiled母平均・実分子適用は未検証。
+新しい実H6/H8数値評価・sampling・compile・server操作・grant発行は0。既存結果・科学SOURCEは保持し、公開後mandatory STOP。
+
 ## 2026-10-15 H6固定δ T依存性：結果
 
 [全結果・図・終了監査](docs/research/track_a_h6_fixed_delta_t_dependence_results_20261015.md)。H6固定δ=.2/固定5構成、T=.4/.8/1.6。新144/144 compile・PR64完了、T=.8確認32再利用。ε=.05〜.005ではPR点費用約50〜55%削減、厳しい精度ではS4優位またはPR不適格。outer-PF biasが主因、希少次数・母平均未保証。wall3117.158秒、native exit0/全74 reap・残存0。保存314条件/7算術tests/900公開paired metrics PASS、新科学計算・共有変更0、mandatory STOP。

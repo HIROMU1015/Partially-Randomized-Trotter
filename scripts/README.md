@@ -1,5 +1,10 @@
 # scripts 索引
 
+## 2026-10-16 Native DF理論ゲート数モデル（人工検証のみ）
+
+[standalone人工runner](check_native_df_gate_model_synthetic.py)。`python3 -B scripts/check_native_df_gate_model_synthetic.py`。標準ライブラリのみ。[設計](../docs/research/track_a_native_df_theoretical_gate_model_20261016.md)。
+新しい実H6/H8数値評価・sampling・compile・server操作・grant発行は0。既存結果・科学SOURCEは保持し、公開後mandatory STOP。
+
 ## 2026-10-15 H6 fingerprint並列化・cleanup修正
 
 [修正・人工61件・再実行案](../docs/research/track_a_h6_family_fingerprint_parallel_fix_20261015.md)。親の重複走査をworker前後SHA証跡へ集約し、停止後のsignal割込によるreap中断を修正。旧証拠保持、2worker案、資源/PSI条件不変、今回の再起動0。以下は過去の各時点の記録。

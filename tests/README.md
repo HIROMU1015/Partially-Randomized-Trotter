@@ -1,5 +1,10 @@
 # tests の役割
 
+## 2026-10-16 Native DF理論ゲート数モデル（人工検証のみ）
+
+[27人工tests](test_native_df_gate_model.py)、[専用runner](../scripts/check_native_df_gate_model_synthetic.py)、[receipt](../artifacts/resource_applicability/track_a_native_df_gate_model/2026-10-16/synthetic_validation_v1.json)。解析unitary oracleとDP/全列挙を比較。local technical checksでありCI・独立科学レビューではない。
+新しい実H6/H8数値評価・sampling・compile・server操作・grant発行は0。既存結果・科学SOURCEは保持し、公開後mandatory STOP。
+
 原稿用の[表示tests](tracks/resource_applicability/test_manuscript_figures.py)（12件）と
 [bundle helper tests](tracks/resource_applicability/test_manuscript_bundle.py)（9件）は合計21 passed、fail/skip0。
 合成値・一時Markdown/CSV・sourceだけでmissing、identity、固定集合、affine描画、unsafe link拒否を検査する。

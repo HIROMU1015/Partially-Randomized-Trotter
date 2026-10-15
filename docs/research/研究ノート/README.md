@@ -1,5 +1,10 @@
 # 研究ノート
 
+## 2026-10-16 Native DF理論ゲート数モデル（人工検証のみ）
+
+[2026-10-16: 理論モデルを追加した理由・残課題](2026-10-16_native_df_gate_model.md)。
+新しい実H6/H8数値評価・sampling・compile・server操作・grant発行は0。既存結果・科学SOURCEは保持し、公開後mandatory STOP。
+
 - [2026-10-15 D0 saved-scalar one-shot結果](2026-10-15_track_a_d0_reanalysis_one_shot_result.md)：全旧値一致後だけ5ε/6metric/Pを実行。探索/確認・未確認metric/P候補を分離、新科学/H8変更0、exit0・STOP。
 
 - [2026-10-14 D0保存値再会計の技術準備](2026-10-14_track_a_d0_saved_value_preflight.md)：入力固定・独立module・人工33検査。実データ再会計は未実行、別承認待ち。

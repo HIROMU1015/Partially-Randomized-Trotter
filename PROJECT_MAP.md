@@ -1,5 +1,10 @@
 # プロジェクト案内
 
+## 2026-10-16 Native DF理論ゲート数モデル（人工検証のみ）
+
+[数式・SOURCE・制限](docs/research/track_a_native_df_theoretical_gate_model_20261016.md)、[カウンタ](src/trotterlib/native_df_gate_model.py)、[人工runner](scripts/check_native_df_gate_model_synthetic.py)、[tests](tests/test_native_df_gate_model.py)、[証跡](artifacts/resource_applicability/track_a_native_df_gate_model/2026-10-16/README.md)。
+新しい実H6/H8数値評価・sampling・compile・server操作・grant発行は0。既存結果・科学SOURCEは保持し、公開後mandatory STOP。
+
 ## 2026-10-15 H6 native B0+I全12構成：結果
 
 [結果・全表・終了監査](docs/research/track_a_h6_native_b0i_full_family_results_20261015.md)。H6 native B0+I全12構成の必要取得が完了。新12軸＋旧6軸再利用、全条件不適格6軸は未測定。SOURCEac6d28e3…、P=0/RZのPR確認union8/n32点費用は登録B0/B0I/full S2/S4最良より5精度で29.35〜56.14%低い。経験的u・点選択・matched B0未取得の限界保持。wall2326.546秒、native wait0/12worker全exit0・reap、保存表2607条件PASS。新科学計算/新grant/原稿改訂/共有環境変更0、科学採否はGPTへ、mandatory STOP。 以下は各時点の履歴。
