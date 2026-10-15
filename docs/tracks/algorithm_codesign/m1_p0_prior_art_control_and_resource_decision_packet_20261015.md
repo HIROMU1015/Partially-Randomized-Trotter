@@ -73,7 +73,7 @@ Appendix BのThmB.2（pp27–29）は完全qDRIFT/RTEのguiding-state RPEを扱�
 
 Chapter2 pp47–119、特に§2.4/2.5、§2.9（qDRIFT pp77–79、partial RTE pp82–84、±制御p85）、§2.10 pp116–119を確認した。Ch2は主に初期PR preprintの再録であり、PR v2と別の独立再現や同じ版ではない。p85はUとU†へ独立乱数でRTEを適用することを明記する。
 
-§2.10はHWP ancilla、depth reduction、qDRIFT prefactorの修正履歴を記す。Table2.2（p119）にはFeMocoのPauli/HWP aggregate費用の\(G_{det}/G_{tot}\)が保存され、Reiher54oのξ=.314/.1/.05で.29/.16/.13、Li76oで.34/.21/.20である。これは外部のモデル値で、分子・active-space・分解・全roundの会計に条件付く。DF rankやTrack Aの\(L_D\)、δ窓に対応する値ではなく、**本プロジェクトの長round random割合ではない**。補数や新しいforecastは計算していない。
+§2.10はHWP ancilla、depth reduction、qDRIFT prefactorの修正履歴を記す。Table2.2（p119）にはFeMocoのPauli/HWP aggregate費用の\(G_{det}/G_{tot}\)が保存されている。これはReiher/Liの外部benchmarkに対する全roundのモデル値で、Track AのDF rank・split・geometry/basis・δ窓と対応を確定した値ではない。本Packetでは割合の数値を移し替えず、**本プロジェクトの長round random割合として使わない**。補数や新しいforecastも計算していない。
 
 ### 3.5 一次位相不変性・random-unitary QPEの近接保証
 
