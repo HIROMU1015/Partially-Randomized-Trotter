@@ -14,6 +14,15 @@ def _json(x):return json.dumps(x,sort_keys=True,ensure_ascii=False,indent=2,allo
 def _rational(x):return {'numerator_hex':hex(x.numerator),'denominator_hex':hex(x.denominator)}
 
 
+def _precision_target(name):
+    # Proposed metadata notation fix only: accept exactly the adopted literals.
+    targets={'eps_signal_abs':('2^-24',24),'eps_phase_rad':('2^-18',18)}
+    literal,exponent=targets[name]
+    if POLICY['precision'][name]!=literal:
+        raise RuntimeError('unsupported fixed precision literal; no relaxation')
+    return Fraction(1,1<<exponent)
+
+
 class Pilot:
     def __init__(self,root,permit,report):
         require_permit(permit)
@@ -41,7 +50,7 @@ class Pilot:
             out['phase_reason']='principal-angle branch cut';return out
         if qr>=abs(q):out['phase_reason']='phase ball includes zero';return out
         phase_error=k.up(math.asin(qr/abs(q))+2.0**-51)
-        if phase_error>float(Fraction(POLICY['precision']['eps_phase_rad'])):
+        if phase_error>float(_precision_target('eps_phase_rad')):
             out['phase_reason']='phase precision unresolved';return out
         out.update(phase_status='RESOLVED_PRINCIPAL_PHASE',phase_bias_rad=math.atan2(q.imag,q.real),phase_error_radius_rad=phase_error,
                    negative_log_visibility=-math.log(visibility),log_visibility_error_radius=k.up(vr/(visibility-vr)+2.0**-51))
@@ -101,7 +110,7 @@ class Pilot:
         accounting=self.model_accounting(descriptor,z,reference,metrics)
         row=dict(descriptor,**metrics,error_ledger=accounting,status='NUMERIC_DIAGNOSTIC_ONLY',evidence='CONDITIONAL_ENGINEERING_NOT_CERTIFIED')
         self.report['rows'].append(row)
-        if error>float(Fraction(POLICY['precision']['eps_signal_abs'])):
+        if error>float(_precision_target('eps_signal_abs')):
             row['status']='PRECISION_UNRESOLVED'
             raise RuntimeError('signal precision budget exceeded; no tolerance change or retry')
         return row
@@ -124,7 +133,7 @@ class Pilot:
         reference={'0':(1+0j,0.0)}
         for T in POLICY['grid']['T_rel_Ha_inverse']:
             reference[T]=k.signal(k.exp_i(full,Fraction(T)),state,norm)
-            if reference[T][1]>float(Fraction(POLICY['precision']['eps_signal_abs'])):
+            if reference[T][1]>float(_precision_target('eps_signal_abs')):
                 raise RuntimeError('ideal signal precision unresolved')
         self.report['reference_signals']={T:{'z':[v[0].real,v[0].imag],'error_radius':v[1]} for T,v in reference.items()}
         for split in ['G3','G6','G9']:
