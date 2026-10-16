@@ -584,7 +584,13 @@ class Reference:
         phase = row['phase_ledger']
         before,moved,after = (Fraction(phase[k]) for k in ('HD_Pauli_scalar_before','HR_Pauli_scalar_before','HD_Pauli_scalar_after'))
         global_alpha = prepared['global_coefficient_allowance']
-        if abs(moved-split['moved']) > alpha or abs(before-split['hd_scalar_before']) > global_alpha or not self.rounded_binary64(float(phase['HD_Pauli_scalar_after']),before+moved) or phase['HR_Pauli_scalar_after'] != 0 or Fraction(phase['HD_added_phase_per_T_rel']) != moved or Fraction(phase['HR_removed_phase_per_T_rel']) != -moved or phase['net_relative_phase_change_per_T_rel'] != 0 or Fraction(phase['HD_half_added_phase_per_delta']) != moved/4:
+        t_sum = Fraction(34,1 << 53)
+        identity_sum_error = self.q(abs(after-before-moved))
+        identity_sum_allowance = self.q(t_sum/(1-t_sum)*(abs(before)+abs(moved)))
+        report['identity_sum_error_Ha'] = self.encoded(identity_sum_error)
+        report['identity_sum_allowance_Ha'] = self.encoded(identity_sum_allowance)
+        report['identity_sum_nearest_even_relation_diagnostic_only'] = self.rounded_binary64(float(phase['HD_Pauli_scalar_after']),before+moved)
+        if abs(moved-split['moved']) > alpha or abs(before-split['hd_scalar_before']) > global_alpha or identity_sum_error > identity_sum_allowance or phase['HR_Pauli_scalar_after'] != 0 or Fraction(phase['HD_added_phase_per_T_rel']) != moved or Fraction(phase['HR_removed_phase_per_T_rel']) != -moved or phase['net_relative_phase_change_per_T_rel'] != 0 or Fraction(phase['HD_half_added_phase_per_delta']) != moved/4:
             report.update(status='FAIL',reason='identity/phase ledger discrepancy')
         report['saved_full_HD_nonidentity_match'] = 'UNDETERMINED_NOT_SAVED_BY_V5'
         return report

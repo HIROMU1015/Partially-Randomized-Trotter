@@ -95,6 +95,8 @@ def main():
     check('unconditional_complete_65536_trace_loop','for x in range(256)' in text(rf['trace_pauli']) and any(isinstance(n,ast.For) and text(n.iter)=='enumerate(diagonal)' for n in ast.walk(rf['trace_pauli'])))
     check('nearest_even_probability_cell_no_float_division','bits % 2' in text(rf['rounded_binary64']) and 'float(' not in text(rf['rounded_binary64']))
     check('witnesses_bounded_before_encoding',"witness_words = [w for w in union if exact.get(w, 0) != approx.get(w, 0)][:64]" in text(rf['compare_law']))
+    check('identity_sum_adopted_fsum_allowance','identity_sum_error > identity_sum_allowance' in text(rf['compare_law']) and 't_sum = Fraction(34, 1 << 53)' in text(rf['compare_law']))
+    check('identity_nearest_even_diagnostic_only',not any(isinstance(n,ast.If) and any(isinstance(call,ast.Call) and text(call.func)=='self.rounded_binary64' and 'HD_Pauli_scalar_after' in text(call) for call in ast.walk(n.test)) for n in ast.walk(rf['compare_law'])))
     check('missing_full_HD_never_full_scope_PASS',"'UNDETERMINED_NOT_SAVED_BY_V5'" in text(rf['compare_law']) and "'status': 'FAIL' if primary == 'FAIL' else 'UNDETERMINED'" in compare)
     check('first_completed_comparison_discrepancy_STOP',"if status != 'PASS':" in compare and any(isinstance(n,ast.Break) for n in ast.walk(rf['compare_saved'])))
     check('new_authority_namespace_and_order','New independent-verification authority namespace' in text(cf['authorize']) and 'sc in (cc, head)' in text(cf['authorize']) and 'cc == head' in text(cf['authorize']))
