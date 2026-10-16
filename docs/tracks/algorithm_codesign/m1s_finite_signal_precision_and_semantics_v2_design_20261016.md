@@ -93,5 +93,5 @@ shared−ordinary/independentのvisibility差は同一H_tilde内の直接対照�
 新namespace m1s_finite_signal_v2 はv1のnumerics.py、word_reference.py、__init__.pyをbytes不変でコピーした。共有・ordinary・independent平均写像の本体、指数・Walsh・correctness設計は不変。旧独立referenceの15 helperもAST一致を検査する。
 exact_input.targetsにはHD/HR/DeltaHのexact Hermiticity STOPを追加。pilotには数値参照計算前の全split/T台帳、各行の三分割会計、総bias名称、same-target対照注記を追加した。
 新scalar区間はbinary64 absのrelative2uという既存の未認証仮定からexact Fractionで導き、上下端を有理数保存する。モデル位相のasinは既存の絶対2^-51仮定と上向きscalar予算を使用する。
-IEEE RN、complex BLAS、math.fsumを使う継承経路、abs/hypot、trig/log、underflow/FTZなどの仮定は静的検査では実証できない。CONDITIONAL_ENGINEERING_NOT_CERTIFIEDのままである。
+IEEE RN、complex BLAS、abs/hypot、trig/log、underflow/FTZなどの仮定は静的検査では実証できない。v2の数値SOURCEはmath.fsumを呼ばず、旧v5のfsumに関する仮定を新pilotで検証したとも主張しない。CONDITIONAL_ENGINEERING_NOT_CERTIFIEDのままである。
 v2専用schema/authority/result namespace、SOURCE/hash/採択契約/別実施承認の順序guardを使う。採択契約だけでは計算しない。guard閉鎖、authorization/grant/marker0。mandatory STOP。
