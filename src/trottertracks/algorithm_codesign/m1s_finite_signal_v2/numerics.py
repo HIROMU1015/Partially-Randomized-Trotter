@@ -214,11 +214,18 @@ class Kernels:
         return value
 
     def phi(self, x, h, theta, plan):
+        # Exact Phi is a convex mean of X -> A_j X A_j with unitary A_j.
+        # It is Frobenius nonexpansive even though it is not a CPTP channel.
+        # Evaluate rounding/parameter errors at the stored centre Xhat, then
+        # transport the original X uncertainty once through exact Phi.
+        input_error, target_bound = x.e, x.b
+        x = Ball(x.m, 0.0, self.up(x.b+x.e))
         s, c, e = self.sincos(theta)
         scalar_error = self.up(2*e+e*e+self.gamma(8))
         hx = self.add(self.mul(h, x), self.mul(x, h))
         out = self.add(self.add(self.scale(x, c*c, scalar_error), self.scale(hx, 1j*c*s, scalar_error)), self.scale(self.twirl(x, plan), -s*s, scalar_error))
-        out.b = x.b  # E[A_j X A_j], not E[A_j X A_j^dagger].
+        out.e = self.up(input_error+out.e)
+        out.b = target_bound  # E[A_j X A_j], not E[A_j X A_j^dagger].
         return out
 
     def shared(self, x, d, h, theta, R, plan):
