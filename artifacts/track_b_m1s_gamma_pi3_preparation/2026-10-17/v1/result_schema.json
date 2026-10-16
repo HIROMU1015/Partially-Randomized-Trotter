@@ -1,0 +1,189 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:m1s:gamma-pi3:v1:result",
+  "type": "object",
+  "required": [
+    "schema",
+    "evidence",
+    "forecast_kind",
+    "mandatory_STOP",
+    "retry",
+    "rpe_success_guaranteed",
+    "resource_improvement_guaranteed",
+    "scientific_GO",
+    "absolute_shot_counts",
+    "native_costs",
+    "total_resources",
+    "provenance",
+    "science",
+    "resources",
+    "threshold",
+    "failure",
+    "status",
+    "comparisons"
+  ],
+  "properties": {
+    "schema": {
+      "const": "m1s_gamma_pi3_v1_result"
+    },
+    "evidence": {
+      "const": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    "forecast_kind": {
+      "const": "SAVED_BOUNDARY_PI_OVER_THREE_INTERSECTION_ONLY_NOT_RPE_SUCCESS"
+    },
+    "mandatory_STOP": {
+      "const": true
+    },
+    "retry": {
+      "const": false
+    },
+    "rpe_success_guaranteed": {
+      "const": false
+    },
+    "resource_improvement_guaranteed": {
+      "const": false
+    },
+    "scientific_GO": {
+      "type": "null"
+    },
+    "absolute_shot_counts": {
+      "type": "null"
+    },
+    "native_costs": {
+      "type": "null"
+    },
+    "total_resources": {
+      "type": "null"
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "science": {
+      "type": "object"
+    },
+    "resources": {
+      "type": "object"
+    },
+    "threshold": {
+      "type": "object"
+    },
+    "usage": {
+      "type": "object"
+    },
+    "comparison_counts": {
+      "type": "object"
+    },
+    "failure": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "status": {
+      "enum": [
+        "TECHNICAL_STOP",
+        "PI3_COMPARISON_COMPLETE_AWAITING_SCIENTIFIC_JUDGMENT"
+      ]
+    },
+    "comparisons": {
+      "type": "array",
+      "minItems": 48,
+      "maxItems": 48,
+      "items": {
+        "type": "object",
+        "required": [
+          "split",
+          "R",
+          "delta",
+          "T",
+          "comparator",
+          "status",
+          "boundary_interval_rad",
+          "scientific_GO"
+        ],
+        "properties": {
+          "split": {
+            "enum": [
+              "G3",
+              "G6",
+              "G9"
+            ]
+          },
+          "R": {
+            "enum": [
+              2,
+              4
+            ]
+          },
+          "delta": {
+            "enum": [
+              "1/8",
+              "1/16"
+            ]
+          },
+          "T": {
+            "enum": [
+              "1",
+              "4"
+            ]
+          },
+          "comparator": {
+            "enum": [
+              "ordinary",
+              "independent_pm"
+            ]
+          },
+          "status": {
+            "enum": [
+              "NOT_EVALUATED",
+              "SATISFIED",
+              "NOT_SATISFIED",
+              "UNRESOLVED",
+              "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED"
+            ]
+          },
+          "boundary_interval_rad": {
+            "type": [
+              "array",
+              "null"
+            ]
+          },
+          "scientific_GO": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "PI3_COMPARISON_COMPLETE_AWAITING_SCIENTIFIC_JUDGMENT"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "failure": {
+            "type": "null"
+          },
+          "comparisons": {
+            "items": {
+              "properties": {
+                "status": {
+                  "not": {
+                    "const": "NOT_EVALUATED"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
