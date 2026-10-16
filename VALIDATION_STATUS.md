@@ -1,3 +1,5 @@
+> **M1-S γ依存V1正式採択（2026-10-17）**：[正式契約](docs/tracks/algorithm_codesign/m1s_v1_gamma_formally_adopted_contract_20261017.md)。`CONTRACT_ADOPTED_EXECUTION_NOT_AUTHORIZED_MANDATORY_STOP`。SOURCE/入力不変、今回非数値の契約・保全監査のみ。登録H4のV1 correctness・runtimeは未検証。旧数値結果status不変。
+
 > **M1-S V1 γ依存準備（2026-10-17）**：[候補・SOURCE](docs/tracks/algorithm_codesign/m1s_v1_gamma_dependent_contract_candidate_20261017.md)。`GAMMA_SOURCE_PREPARED_OFFDOMAIN_TESTED_NOT_EXECUTABLE`。人工scalar kernel/停止testsのみPASS、保存H4のγ境界やshot解析は未実行。旧数値status不変、mandatory STOP。
 
 > **M1-S V1 V0（2026-10-17）**：[SOURCE・契約候補](docs/tracks/algorithm_codesign/m1s_v1_saved_signal_contract_candidate_20261017.md)。`SOURCE_PREPARED_SCIENTIFIC_FIELDS_OPEN_NOT_EXECUTABLE`。静的／metadata guardのみ検査し、数値correctness・forecast・runtimeは未検証。旧数値結果statusを変更せず、mandatory STOP。

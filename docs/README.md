@@ -1,3 +1,5 @@
+> **M1-S γ依存V1正式採択**：[正式契約](tracks/algorithm_codesign/m1s_v1_gamma_formally_adopted_contract_20261017.md)。新しいadopted契約と会話に基づく採択記録を固定。候補・SOURCE・結果は保持し、数値解析は別承認までSTOP。
+
 > **M1-S V1 γ依存準備**：[改訂候補](tracks/algorithm_codesign/m1s_v1_gamma_dependent_contract_candidate_20261017.md)／[精度・resource・引継ぎ](tracks/algorithm_codesign/m1s_v1_gamma_precision_resource_and_handoff_20261017.md)／[受領GPT原本](research/m1s_v1_scientific_conditions_independent_review_20261017.md)。γ境界の仮定・不適用・未解像とceil同数を区別。旧SOURCE/結果保持、新科学0、mandatory STOP。
 
 > **M1-S V1 V0**：[契約候補](tracks/algorithm_codesign/m1s_v1_saved_signal_contract_candidate_20261017.md)／[算術・coverage](tracks/algorithm_codesign/m1s_v1_arithmetic_coverage_and_resource_design_20261017.md)／[新GPT原本](research/m1s_rpe_applicability_scientific_design_review_20261017.md)。保存raw-H単一時刻phaseの仮説的十分shot設計SOURCEを準備。科学field null、未採択・未実行、mandatory STOP。

@@ -1,3 +1,5 @@
+> **M1-S γ依存V1採択監査**：[非数値checker](tracks/algorithm_codesign/check_m1s_gamma_adoption_static.py)／[正式契約](../docs/tracks/algorithm_codesign/m1s_v1_gamma_formally_adopted_contract_20261017.md)。既存runner/SOURCEは変更せず、正式machine契約のschema・許可差分・hash・authority未取得での拒否だけを検査。science runなし。
+
 > **M1-S V1 γ依存**：[runner](tracks/algorithm_codesign/run_m1s_saved_signal_gamma_v1.py)／[static checker](tracks/algorithm_codesign/check_m1s_gamma_preparation_static.py)／[登録外benchmark](tracks/algorithm_codesign/benchmark_m1s_gamma_offdomain.py)／[契約候補](../docs/tracks/algorithm_codesign/m1s_v1_gamma_dependent_contract_candidate_20261017.md)。`status`はmetadataのみ。未採択候補でrun拒否、別途C/Aが必要。benchmarkは旧artifactをopenしない。
 
 > **M1-S V1 V0**：[future runner](tracks/algorithm_codesign/run_m1s_saved_signal_v1.py)／[static checker](tracks/algorithm_codesign/check_m1s_v1_v0_static.py)／[契約候補](../docs/tracks/algorithm_codesign/m1s_v1_saved_signal_contract_candidate_20261017.md)。`status`はmetadataのみ。`run`は候補で拒否し、新しい採択Cと別途authority-only Aが必要。forecast未実行、mandatory STOP。
