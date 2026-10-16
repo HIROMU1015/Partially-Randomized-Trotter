@@ -1,3 +1,7 @@
+## 2026-10-16 Track A V1 Phase A並列準備・V2保存結果照合
+
+[track_a_v1_phase_a_parallel_readiness_20261016.md](docs/research/track_a_v1_phase_a_parallel_readiness_20261016.md)。V1は最大16worker・44限定人工tests PASS、SOURCE/input/profile静的照合一致。新科学計算・新grant0、未承認・mandatory STOP。V2は指定commit7e416705…のH6/H8計832理論行を読み取り専用照合し、重複生成・計算を保留。以下は各時点の履歴。
+
 # プロジェクト案内
 
 ## 2026-10-16 Track A V1 実行準備

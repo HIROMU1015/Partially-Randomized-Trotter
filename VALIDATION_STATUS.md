@@ -1,3 +1,7 @@
+## 2026-10-16 Track A V1 Phase A並列準備・V2保存結果照合
+
+[Phase A資料](docs/research/track_a_v1_phase_a_parallel_readiness_20261016.md)。V1は最大16worker・44限定人工tests PASS、SOURCE/input/profile静的照合一致。新科学計算・新grant0、未承認・mandatory STOP。V2は指定commit7e416705…のH6/H8計832理論行を読み取り専用照合し、重複生成・計算を保留。以下は各時点の履歴。
+
 ## 2026-10-16 Native DFモデル：Qiskit 1.3.0接続検証
 
 [42 local人工tests](artifacts/resource_applicability/track_a_native_df_qiskit_validation/2026-10-16/connection_validation_v1.json)／[適用範囲](docs/research/track_a_native_df_qiskit_connection_validation_20261016.md)。実Qiskit 1.3.0の小回路接続を確認。旧1ea counterのzero RZバグを訂正、旧receipt不変。実H6/H8・全環境互換性・compiled母平均は未認定。

@@ -127,6 +127,28 @@ def signal_envelopes(record):
     return usual, {a: sum(abs(x[a]) for x in parts.values()) for a in usual}
 
 
+def phase_a_plan():
+    """Parallel implementation proposal; no production execution authorized."""
+    original=plan()
+    caps=dict(original['demand'])
+    for key in ('native_compile_max','native_evolution_max','measured_wrappers_max','control_probes_max'):
+        caps[key]=0
+    caps['primitive']=20000
+    return dict(schema='track_a_v1_phase_a_parallel_plan_v1',scope='signal',
+        science_contract_sha256=digest(original),registrations=registrations(),
+        epsilons=list(EPSILONS),allowance_factors=list(FACTORS),call_caps=caps,
+        parallel=dict(max_workers=16,primitive_tasks=16,signal_prefix_tasks=9,PR_diagnostic_tasks=2,
+            snapshot_loads=1,archive_decodes=1,shared_reference=True,
+            prefix_exact_reference_once=True,blas_threads_per_process=1),
+        resources=dict(processes=18,max_workers=16,threads=1,AS_bytes=32*2**30,RSS_bytes=9*2**30,
+            observer_AS_bytes=512*2**20,observer_RSS_bytes=512*2**20,
+            aggregate_RSS_bytes=160*2**30,CPU_seconds=8*3600,worker_CPU_seconds=8*3600,
+            aggregate_CPU_seconds=96*3600,wall_seconds=12*3600,output_bytes=2*2**30,
+            stage_storage_bytes=4*2**30,estimate_kind='UNAPPROVED_STOP_CEILINGS_NOT_SPEEDUP_MEASUREMENTS'),
+        approved=False,runtime_authorization=False,allowed_cpus=[],absolute_launch_command=None,
+        one_shot=True,retry=False,resume=False,mandatory_stop=True,next_stage_authorized=False)
+
+
 def affine_fit(rows, *, stratum):
     """Exact rational least squares of SAVED compiled RZ metadata only."""
     if len(rows) < 3 or any(r['stratum'] != stratum or r['status'] != 'MEASURED_COMPLETE'

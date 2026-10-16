@@ -52,17 +52,26 @@ class Writer:
 
 
 def verify_grant(config, grant, *, config_sha256, source, fresh):
+    parallel=config.get('phase_a_parallel') is True
+    fixed=contract.phase_a_plan() if parallel else contract.plan()
+    schema='track_a_v1_phase_a_parallel_grant_v1' if parallel else 'track_a_v1_signal_grant_v1'
     if (grant.get('approved_by_user') is not True or grant.get('runtime_authorization') is not True
-            or grant.get('schema') != 'track_a_v1_signal_grant_v1'
+            or grant.get('schema') != schema
             or grant.get('one_shot') is not True or grant.get('retry') is not False
             or grant.get('resume') is not False or grant.get('scope') not in ('signal', 'compile_validation')
             or grant.get('SOURCE') != source or grant.get('config_sha256') != config_sha256
-            or grant.get('plan_sha256') != contract.digest(contract.plan())
-            or grant.get('call_caps') != contract.plan()['demand']
-            or grant.get('resources') != contract.plan()['resources']):
+            or grant.get('plan_sha256') != contract.digest(fixed)
+            or grant.get('call_caps') != (fixed['call_caps'] if parallel else fixed['demand'])
+            or grant.get('resources') != fixed['resources'] or (parallel and grant.get('scope')!='signal')):
         raise ValueError('NEW_SEALED_SIGNAL_GRANT_REQUIRED')
     cpus = grant.get('allowed_cpus')
-    if (not isinstance(cpus, list) or len(cpus) != 1 or type(cpus[0]) is not int
+    if parallel:
+        workers=grant.get('worker_cpus',[])
+        expected=[grant.get('driver_cpu'),grant.get('monitor_cpu'),*workers]
+        if (len(workers)!=16 or cpus!=expected or any(type(x) is not int for x in expected)
+                or len(set(expected))!=len(expected) or not set(expected)<=os.sched_getaffinity(0)):
+            raise ValueError('DISJOINT_DRIVER_MONITOR_SIXTEEN_WORKER_CPUS_REQUIRED')
+    elif (not isinstance(cpus, list) or len(cpus) != 1 or type(cpus[0]) is not int
             or cpus[0] not in os.sched_getaffinity(0)):
         raise ValueError('EXPLICIT_ONE_CPU_ASSIGNMENT_REQUIRED')
     if (fresh.get('resources_idle_verified') is not True or
@@ -74,7 +83,7 @@ def verify_grant(config, grant, *, config_sha256, source, fresh):
             type(fresh.get('monotonic_seconds')) not in (int, float) or
             not 0 <= time.monotonic()-fresh['monotonic_seconds'] <= 30):
         raise ValueError('FRESH_RESOURCE_PROFILE_MONITOR_GATE_REQUIRED')
-    if config.get('plan_sha256') != contract.digest(contract.plan()):
+    if config.get('plan_sha256') != contract.digest(fixed):
         raise ValueError('CONFIG_PLAN_CHANGED')
     if grant.get('scope') == 'compile_validation' and grant.get('frozen_model_sha256') != config.get('frozen_model_sha256'):
         raise ValueError('FROZEN_COST_MODEL_BINDING')
@@ -85,6 +94,9 @@ class Permit:
     def __init__(self, config, grant, output):
         self.config, self.grant, self.output = config, grant, output
         self.started = time.monotonic(); self.used = {}
+        self.reserved={};self.reserved_ids=set();self.child_CPU_seconds=0.;self.parent_pid=os.getpid()
+        self.call_caps=grant['call_caps']
+        self.worker_reserved=False
 
     def require(self, scope):
         if self.grant['scope'] != scope:
@@ -101,11 +113,36 @@ class Permit:
 
     def take(self, name):
         self.guard()
-        if name not in self.grant['call_caps'] or self.used.get(name, 0) >= self.grant['call_caps'][name]:
+        if name not in self.call_caps or self.used.get(name, 0) >= self.call_caps[name]:
             raise ValueError('CALL_CAP:'+name)
         self.used[name] = self.used.get(name, 0)+1
+        # The parent fsyncs the entire task reservation BEFORE fork. A failed
+        # worker retains that charge; per-probe filesystem syncs add no proof.
+        if self.worker_reserved:return
         with (self.output/'reservations.jsonl').open('a') as f:
             f.write(json.dumps(dict(call=name, reserved=self.used[name]))+'\n'); f.flush(); os.fsync(f.fileno())
+
+    def reserve(self,task_id,counts):
+        if os.getpid()!=self.parent_pid or task_id in self.reserved_ids:raise ValueError('PARENT_ONLY_UNIQUE_TASK_RESERVATION')
+        for name,value in counts.items():
+            held=sum(c.get(name,0) for c in self.reserved.values())
+            if type(value) is not int or value<0 or self.used.get(name,0)+held+value>self.call_caps.get(name,0):raise ValueError('GLOBAL_RESERVED_CALL_CAP')
+        self.reserved[task_id]=dict(counts)
+        self.reserved_ids.add(task_id)
+        with (self.output/'task_reservations.jsonl').open('a') as f:
+            f.write(json.dumps(dict(task_id=task_id,counts=counts,refund=False))+'\n');f.flush();os.fsync(f.fileno())
+
+    def merge_reserved(self,task_id,counts):
+        if counts!=self.reserved.get(task_id):raise ValueError('RESERVED_ACTUAL_CALL_BINDING')
+        for name,value in counts.items():self.used[name]=self.used.get(name,0)+value
+        # Remove only the in-memory pending allocation. Durable reservations
+        # above remain charged and can never be retried or refunded.
+        del self.reserved[task_id]
+
+    def child(self,directory,counts):
+        child=Permit(self.config,self.grant,directory);child.started=self.started;child.call_caps=dict(counts)
+        child.worker_reserved=True
+        return child
 
     def json_input(self, name): return read_json(self.config['input_mapping'][name])
     def read_output(self, name): return read_json(self.output/name)
@@ -131,7 +168,8 @@ def execute(config_path, grant_path, fresh_path, output):
             raise ValueError('INPUT_BYTES_CHANGED:'+receipt['logical_name'])
     for name, expected in config['runtime_file_hashes'].items():
         if sha(name) != expected: raise ValueError('RUNTIME_PROFILE_CHANGED')
-    cpus = set(grant['allowed_cpus']); os.sched_setaffinity(0, cpus)
+    cpus = {grant['driver_cpu']} if config.get('phase_a_parallel') is True else set(grant['allowed_cpus'])
+    os.sched_setaffinity(0, cpus)
     for name in ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS', 'NUMEXPR_NUM_THREADS', 'NUMBA_NUM_THREADS', 'QISKIT_NUM_PROCS', 'RAYON_NUM_THREADS'):
         if os.environ.get(name) != '1': raise ValueError('THREAD_ONE_ENV_REQUIRED:'+name)
     if Path(sys.executable).resolve() != Path(config['python']).resolve(): raise ValueError('PINNED_PYTHON_REQUIRED')
@@ -157,7 +195,8 @@ def execute(config_path, grant_path, fresh_path, output):
     ceiling = grant['resources']
     resource.setrlimit(resource.RLIMIT_AS, (ceiling['AS_bytes'], ceiling['AS_bytes']))
     resource.setrlimit(resource.RLIMIT_CPU, (ceiling['CPU_seconds'], ceiling['CPU_seconds']))
-    def timeout(*args): raise ValueError('WALL_CEILING')
+    def timeout(*args): raise ValueError('STOP_SIGNAL_OR_WALL_CEILING')
+    signal.signal(signal.SIGTERM, timeout);signal.signal(signal.SIGINT, timeout)
     signal.signal(signal.SIGALRM, timeout); signal.alarm(ceiling['wall_seconds'])
     permit = Permit(config, grant, output); writer = Writer(output, permit.guard)
     try:

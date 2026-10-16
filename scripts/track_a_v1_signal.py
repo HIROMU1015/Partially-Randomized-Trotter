@@ -73,6 +73,10 @@ def evaluate(config, permit, contract, writer):
     writer.write('reference.json', dict(reference=m.complex_record(port.reference), pair=pair,
         occupation_matrix_vs_saved_DF_action_error=error, metadata=metadata, certified=False))
     del matrix, operator
+    if config.get('phase_a_parallel') is True:
+        parallel = importlib.import_module('track_a_v1_parallel_signal')
+        return parallel.evaluate_prepared(config, permit, contract, writer, port, whole,
+                                         ham, state, overlay, m, schedules)
     permit.guard(); port.primitives()
     # Existing corrected/native and independent forward oracle, with exact
     # truncated references. The source port writes the ordinary signal rows.
@@ -87,6 +91,18 @@ def evaluate(config, permit, contract, writer):
     port.cell_signal, port.oracle_signal = counted_signal, counted_oracle
     port.correctness()
     saved = permit.read_output('signal_summary.json')['signals']
+    overlays = make_overlays(port, saved, permit, writer, ham, overlay, m)
+    diagnostics = outer_diagnostics(port, whole, ham, state, permit, m, contract.QS, (3, 4))
+    writer.write('outer_S2_diagnostics.json', dict(rows=diagnostics))
+    writer.write('V1_signal_complete.json', dict(status='COMPLETE_MANDATORY_STOP',
+        signals=saved+overlays, diagnostic_count=len(diagnostics), call_counts=permit.used,
+        primitive_calls=port.calls.used, conservative_bias_certificate=None,
+        new_native_full_wrapper=0, new_compile=0, new_sampling=0))
+
+
+def make_overlays(port, saved, permit, writer, ham, overlay, m):
+    np = m.np
+    p = port.plan
     overlays = []
     scalars = {}
     for record in saved:
@@ -113,17 +129,22 @@ def evaluate(config, permit, contract, writer):
                                      phase_roundoff_upper=phase_error, certified=False)
         out['precision_rows'] = m.precision_rows(out, p)
         writer.write(out['cell']['id']+'_signal.json', out); overlays.append(out)
+    return overlays
+
+
+def outer_diagnostics(port, whole, ham, state, permit, m, qs, prefixes):
+    np = m.np
     diagnostics = []
     # This split uses the unextracted tail and original scalar. Adding/removing
     # an identity from both pieces gives the same exact-tail evolution.
-    for prefix in (3, 4):
+    for prefix in prefixes:
         view = SimpleNamespace(deterministic_blocks=whole.deterministic_blocks[:prefix+1],
                                preparation_hash='V1_OUTER_DIAGNOSTIC_'+str(prefix))
         actual = port.actions(view)
         independent = port.actions(view, oracle=True)
         tail = np.asarray(m.occupation_df_matrix(0., np.zeros_like(ham.one_body),
-            ham.lambdas[prefix:], ham.g_matrices[prefix:], sector.basis_indices), dtype=complex)
-        for q in contract.QS:
+            ham.lambdas[prefix:], ham.g_matrices[prefix:], port.sector.basis_indices), dtype=complex)
+        for q in qs:
             permit.take('outer_S2_diagnostics'); permit.guard()
             vectors = []
             tail_step = m.expm(-1j*(.8/q)*tail)
@@ -144,8 +165,4 @@ def evaluate(config, permit, contract, writer):
                 independent_path_discrepancy=discrepancy, formal_candidate=False,
                 normalization_evaluated=False, shots_evaluated=False, cost_evaluated=False,
                 allowance_certified=False))
-    writer.write('outer_S2_diagnostics.json', dict(rows=diagnostics))
-    writer.write('V1_signal_complete.json', dict(status='COMPLETE_MANDATORY_STOP',
-        signals=saved+overlays, diagnostic_count=len(diagnostics), call_counts=permit.used,
-        primitive_calls=port.calls.used, conservative_bias_certificate=None,
-        new_native_full_wrapper=0, new_compile=0, new_sampling=0))
+    return diagnostics
