@@ -1,5 +1,7 @@
 # V1：B0+I p7/q1 S2の2軸実測検証・実行準備
 
+後続の利用者実行承認により、SOURCE `84b9ea22…`の登録2軸compileは正常終了した。[実測結果・終了監査](track_a_v1_p7_compile_results_20261016.md)：両軸14,492 RZ、各0.222191554%でPASS、mandatory STOP。総費用再会計は未実行・別承認待ち。以下は準備完了時点の記録。
+
 **実装・人工検証・入力照合・未承認grant案を準備した。新規compile・native build・control probe・signal再計算は0。**
 今回の利用者指示は準備と公開までであり、実計算の実行承認ではない。公開・remote SHA確認後にmandatory STOPし、別途の明示的な実行承認を待つ。
 
