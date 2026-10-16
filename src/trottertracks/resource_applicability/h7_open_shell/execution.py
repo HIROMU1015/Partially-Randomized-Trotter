@@ -5,7 +5,8 @@ import resource
 import time
 from pathlib import Path
 from .contract import Calls, call_limits, digest, tasks, verify_grant
-from ..h5_open_shell.execution import write_json, file_hash, verify_assets, supervise
+from ..h5_open_shell.execution import write_json, file_hash, verify_assets
+from .monitor import supervise
 
 
 def runtime_observer(output,limits,deadline,*,host=None,self_usage=None):
@@ -109,11 +110,21 @@ def execute(root,manifest,grant):
         coordinator_identity=None,all_workers_reaped=False)
     try:
         observe=runtime_observer(output,limits,time.monotonic()+limits['wall_seconds'])
-        initial=output/'input';initial.mkdir()
-        demand=call_limits(100)
-        write_json(output/'input_reservation.json',dict(reserved=demand,actual=None,refunded=False))
-        summary=supervise(initial,[dict(stage='input',SOURCE=manifest['SOURCE'])],input_worker,cpus[:1],limits,baseline,observe=observe)
-        saved=summary['completed'][0];snapshot=saved['snapshot'];rank=saved['DF']['actual_rank']
+        resume=None
+        if manifest.get('resume'):
+            from .resume import load_resume
+            resume=load_resume(root,manifest)
+            saved=resume['saved']
+            write_json(output/'reuse_receipt.json',dict(seed_source=resume['seed_source'],input_digest=resume['input_digest'],
+                accepted_references=resume['accepted_references'],remaining_tasks=resume['remaining_tasks'],
+                cumulative_caps=resume['cumulative_caps'],old_partial_actual=None,reset=False,refund=False))
+        else:
+            initial=output/'input';initial.mkdir()
+            demand=call_limits(100)
+            write_json(output/'input_reservation.json',dict(reserved=demand,actual=None,refunded=False))
+            summary=supervise(initial,[dict(stage='input',SOURCE=manifest['SOURCE'])],input_worker,cpus[:1],limits,baseline,observe=observe)
+            saved=summary['completed'][0]
+        snapshot=saved['snapshot'];rank=saved['DF']['actual_rank']
         if file_hash(snapshot['path'])!=snapshot['sha256']:raise ValueError('SNAPSHOT_BYTES')
         from .science import preparations,cost_group
         from .input import array_identity
@@ -126,41 +137,66 @@ def execute(root,manifest,grant):
         sector=sector_for(7,4,3)
         if not np.array_equal(data['sector_basis'],sector.basis_indices):raise ValueError('SNAPSHOT_SECTOR')
         prepared=preparations(ham)  # Once in idle coordinator; forked read-only reuse.
-        binding=digest(dict(snapshot=snapshot['sha256'],projection=saved['DF'],source=manifest['SOURCE']))
+        seed_source=resume['seed_source'] if resume else manifest['SOURCE']
+        binding=resume['input_digest'] if resume else digest(dict(snapshot=snapshot['sha256'],projection=saved['DF'],source=manifest['SOURCE']))
         from .contract import registry
         write_json(output/'realized_input_binding.json',dict(SOURCE=manifest['SOURCE'],
             snapshot=snapshot,projection_digest=digest(saved['DF']),actual_rank=rank,
             registry=registry(rank),call_caps=call_limits(rank),input_digest=binding,
             compiler_hash=manifest['compiler_hash'],profile_digest=manifest['profile_digest'],
             carry_digest=manifest['carry_digest'],authorization_digest=digest(grant),output=str(output),
-            initial_tasks=tasks(rank,manifest['SOURCE'],binding),technical_input_checks='PASS_ENGINEERING',
+            seed_source=seed_source,initial_tasks=tasks(rank,seed_source,binding),technical_input_checks='PASS_ENGINEERING',
             scientific_certificate=False))
         def cost(directory,task):
             caps=dict.fromkeys(call_limits(rank),0);caps.update(compile=2,trajectory=1 if task['cell']['R'] else 0,
                 sampling_call=1 if task['cell']['R'] else 0,occurrence=task['cell']['R'] or 0,control_probe=4 if task['validate'] else 0)
             expected=next(r['signals']['corrected'] for r in saved['signal_records'] if r['cell']['id']==task['cell']['id'])
-            return cost_group(ham,sector,data['full'],data['state'],prepared,task,Calls(caps),expected_signal=expected)
-        accepted=[]
-        for stage,registered in [('initial',tasks(rank,manifest['SOURCE'],binding))]:
-            # The first six groups finish correctness before extension selection.
-            heavy=[t for t in registered if t['heavy']];normal=[t for t in registered if not t['heavy']]
-            for label,group,assigned in ((stage+'_heavy',heavy,cpus[:1]),(stage+'_normal',normal,cpus)):
-                directory=output/label;directory.mkdir();write_json(directory/'reservations.json',dict(tasks=group,compile=2*len(group),refund=False))
-                accepted+=supervise(directory,group,cost,assigned,limits,baseline,observe=observe)['completed']
+            calls=Calls(caps)
+            def record(key,used):
+                with (directory/'call_reservations.jsonl').open('a') as stream:
+                    stream.write(json.dumps(dict(before_operation=key,used=used))+'\n');stream.flush()
+            calls.recorder=record
+            return cost_group(ham,sector,data['full'],data['state'],prepared,task,calls,expected_signal=expected)
+        accepted=list(resume['accepted']) if resume else []
+        reused_count=len(accepted)
         eligible=[r['cell']['id'] for r in saved['signal_records'] if r['cell']['R'] and
             any(v['1.0']['cost_acquisition_eligible'] for v in r['precision_rows'].values())]
-        group=tasks(rank,manifest['SOURCE'],binding,extension=True,eligible=eligible)
-        directory=output/'extension';directory.mkdir();write_json(directory/'reservations.json',dict(tasks=group,compile=2*len(group),refund=False))
-        accepted+=supervise(directory,group,cost,cpus,limits,baseline,observe=observe)['completed']
+        if resume:
+            group=resume['remaining_tasks'];directory=output/'resume_remaining';directory.mkdir()
+            write_json(directory/'reservations.json',dict(tasks=group,compile=2*len(group),refund=False))
+            accepted+=supervise(directory,group,cost,cpus,limits,baseline,observe=observe)['completed']
+        else:
+            for stage,registered in [('initial',tasks(rank,seed_source,binding))]:
+                # The first six groups finish correctness before extension selection.
+                heavy=[t for t in registered if t['heavy']];normal=[t for t in registered if not t['heavy']]
+                for label,group,assigned in ((stage+'_heavy',heavy,cpus[:1]),(stage+'_normal',normal,cpus)):
+                    directory=output/label;directory.mkdir();write_json(directory/'reservations.json',dict(tasks=group,compile=2*len(group),refund=False))
+                    accepted+=supervise(directory,group,cost,assigned,limits,baseline,observe=observe)['completed']
+            group=tasks(rank,seed_source,binding,extension=True,eligible=eligible)
+            directory=output/'extension';directory.mkdir();write_json(directory/'reservations.json',dict(tasks=group,compile=2*len(group),refund=False))
+            accepted+=supervise(directory,group,cost,cpus,limits,baseline,observe=observe)['completed']
         used=dict(saved['calls_attempted'])
         for result in accepted:
             if len(result['rows'])!=2 or {r['axis'] for r in result['rows']}!={'cosine','sine'}:raise ValueError('PAIRED_METRICS')
             for k,v in result['calls_attempted'].items():used[k]+=v
         if any(used[k]>call_limits(rank)[k] for k in used):raise ValueError('FINAL_CALL_ACCOUNTING')
-        write_json(output/'call_totals.json',dict(new_actual=used,old_carry_digest=manifest['carry_digest'],
-            reset=False,refund=False,reservations_are_not_actual=True))
+        new_used=dict.fromkeys(used,0)
+        for result in accepted[reused_count:]:
+            for k,v in result['calls_attempted'].items():new_used[k]+=v
+        if resume:
+            if new_used['compile']!=2*len(resume['remaining_tasks']):raise ValueError('RESUME_NEW_CALL_ACCOUNTING')
+            upper={k:used[k]+sum((2 if k in ('compile','occurrence') else 1) for _ in resume['failed_dispatched'])
+                for k in ('compile','trajectory','sampling_call','occurrence')}
+            if any(upper[k]>resume['cumulative_caps'][k] for k in upper):raise ValueError('CUMULATIVE_RETRY_CAP')
+            write_json(output/'call_totals.json',dict(new_actual=new_used,logical_completed=used,
+                cumulative_completed_plus_partial_upper=upper,prior_partial_actual=None,
+                cumulative_caps=resume['cumulative_caps'],carry_digest=manifest['carry_digest'],reset=False,refund=False))
+        else:
+            write_json(output/'call_totals.json',dict(new_actual=used,old_carry_digest=manifest['carry_digest'],
+                reset=False,refund=False,reservations_are_not_actual=True))
         verify_assets(root,manifest)
         terminal.update(status='COMPLETE_MANDATORY_STOP',groups=len(accepted),compiled=2*len(accepted),
+            reused_groups=reused_count,new_groups=len(accepted)-reused_count,seed_source=seed_source,
             skipped_extension_PR=[r['cell']['id'] for r in saved['signal_records'] if r['cell']['R'] and r['cell']['id'] not in eligible])
     except BaseException as e:terminal['first_stop']=repr(e);raise
     finally:

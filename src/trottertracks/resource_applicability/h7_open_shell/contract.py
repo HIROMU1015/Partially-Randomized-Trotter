@@ -99,6 +99,9 @@ class Calls:
 
 
 def verify_grant(manifest,grant,source):
+    if manifest.get('resume'):
+        from .resume import verify_resume_grant
+        return verify_resume_grant(manifest,grant,source)
     if not grant or grant.get('kind')!='H7_NEUTRAL_OPEN_SHELL_ONE_SHOT_V1':raise ValueError('NEW_H7_GRANT_REQUIRED')
     if manifest.get('SOURCE')!=source or grant.get('SOURCE')!=source or len(source)!=40:raise ValueError('SOURCE_BINDING')
     if not all(grant.get(k) is True and manifest.get(k) is True for k in ('approved','runtime_authorization')):raise ValueError('NOT_APPROVED')
