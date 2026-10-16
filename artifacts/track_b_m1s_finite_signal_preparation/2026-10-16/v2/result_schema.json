@@ -1,0 +1,296 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:m1s:finite-signal:result:v2",
+  "title": "Finite-step pilot v2; future unexecuted result schema; no numeric certificate",
+  "type": "object",
+  "required": [
+    "schema",
+    "status",
+    "audit",
+    "rows",
+    "mandatory_STOP"
+  ],
+  "properties": {
+    "schema": {
+      "const": "m1s_finite_signal_result_v2"
+    },
+    "mandatory_STOP": {
+      "const": true
+    },
+    "rows": {
+      "type": "array",
+      "minItems": 108,
+      "maxItems": 108,
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/completed_row"
+          },
+          {
+            "$ref": "#/$defs/uncomputed_row"
+          }
+        ]
+      }
+    },
+    "model_ledger": {
+      "type": "object",
+      "required": [
+        "raw_reference",
+        "method_target",
+        "full",
+        "splits"
+      ],
+      "properties": {}
+    },
+    "auxiliary_split_ideal_signal_evaluated": {
+      "const": false
+    },
+    "platform_certified": {
+      "const": false
+    },
+    "scientific_GO_or_no_GO_determined": {
+      "const": false
+    }
+  },
+  "$defs": {
+    "rational": {
+      "type": "object",
+      "required": [
+        "numerator_hex",
+        "denominator_hex"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "numerator_hex": {
+          "type": "string",
+          "pattern": "^-?0x[0-9a-f]+$"
+        },
+        "denominator_hex": {
+          "type": "string",
+          "pattern": "^0x[1-9a-f][0-9a-f]*$"
+        }
+      }
+    },
+    "completed_row": {
+      "type": "object",
+      "required": [
+        "split",
+        "R",
+        "delta",
+        "T",
+        "s",
+        "method",
+        "r_per_active_branch",
+        "conceptual_independent_labels",
+        "branch_Pauli_exp_events",
+        "deterministic_half_events",
+        "status",
+        "evidence",
+        "z",
+        "signal_error_radius",
+        "total_complex_discrepancy_to_raw_H",
+        "total_discrepancy_numerical_radius",
+        "phase_interpretation",
+        "error_ledger"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "NUMERIC_DIAGNOSTIC_ONLY",
+            "PRECISION_UNRESOLVED"
+          ]
+        },
+        "evidence": {
+          "const": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+        },
+        "phase_interpretation": {
+          "const": "TOTAL_PRINCIPAL_PHASE_DIFFERENCE_TO_RAW_H"
+        },
+        "error_ledger": {
+          "type": "object",
+          "required": [
+            "numerical_rounding",
+            "Hamiltonian_model_difference",
+            "finite_step_algorithm_error",
+            "total_discrepancy_interpretation"
+          ],
+          "properties": {
+            "numerical_rounding": {
+              "type": "object",
+              "required": [
+                "signal_radius",
+                "raw_reference_radius",
+                "total_discrepancy_radius",
+                "precision_gate_excludes_model_drift"
+              ],
+              "properties": {
+                "signal_radius": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "raw_reference_radius": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "total_discrepancy_radius": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "precision_gate_excludes_model_drift": {
+                  "const": true
+                }
+              }
+            },
+            "Hamiltonian_model_difference": {
+              "type": "object",
+              "required": [
+                "operator_bound_Ha_exact",
+                "signal_bound_abs_exact",
+                "signal_bound_abs_upper",
+                "bound_formula",
+                "reference",
+                "method_target",
+                "attribution_status",
+                "model_phase_status",
+                "model_phase_bound_rad",
+                "model_phase_reason"
+              ],
+              "properties": {
+                "operator_bound_Ha_exact": {
+                  "$ref": "#/$defs/rational"
+                },
+                "signal_bound_abs_exact": {
+                  "$ref": "#/$defs/rational"
+                },
+                "signal_bound_abs_upper": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "bound_formula": {
+                  "const": "abs(T)*B_j"
+                },
+                "reference": {
+                  "const": "H_full"
+                },
+                "method_target": {
+                  "const": "H_tilde_j=HD_j+HR_saved_j"
+                },
+                "attribution_status": {
+                  "enum": [
+                    "MODEL_TARGET_CONFOUNDED",
+                    "MODEL_TARGET_EQUAL_AT_THIS_TIME"
+                  ]
+                },
+                "model_phase_status": {
+                  "enum": [
+                    "UNDETERMINED",
+                    "CONDITIONAL_PRINCIPAL_MODEL_PHASE_BOUND"
+                  ]
+                },
+                "model_phase_bound_rad": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "minimum": 0
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "model_phase_status": {
+                        "const": "UNDETERMINED"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "model_phase_bound_rad": {
+                        "type": "null"
+                      }
+                    }
+                  },
+                  "else": {
+                    "properties": {
+                      "model_phase_bound_rad": {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "finite_step_algorithm_error": {
+              "type": "object",
+              "required": [
+                "target",
+                "magnitude_interval_exact",
+                "point_value",
+                "algorithm_only_error_measured",
+                "interpretation"
+              ],
+              "properties": {
+                "target": {
+                  "const": "H_tilde_j"
+                },
+                "magnitude_interval_exact": {
+                  "type": "object",
+                  "required": [
+                    "lower",
+                    "upper"
+                  ],
+                  "properties": {
+                    "lower": {
+                      "$ref": "#/$defs/rational"
+                    },
+                    "upper": {
+                      "$ref": "#/$defs/rational"
+                    }
+                  }
+                },
+                "point_value": {
+                  "type": "null"
+                },
+                "algorithm_only_error_measured": {
+                  "const": false
+                },
+                "interpretation": {
+                  "const": "TRIANGLE_INEQUALITY_ENCLOSURE_ONLY_NOT_EXACT_SEPARATION"
+                }
+              }
+            },
+            "total_discrepancy_interpretation": {
+              "const": "TOTAL_COMPLEX_DISCREPANCY_TO_RAW_H"
+            }
+          }
+        }
+      }
+    },
+    "uncomputed_row": {
+      "type": "object",
+      "required": [
+        "split",
+        "R",
+        "delta",
+        "T",
+        "s",
+        "method",
+        "r_per_active_branch",
+        "conceptual_independent_labels",
+        "branch_Pauli_exp_events",
+        "deterministic_half_events",
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "UNDETERMINED_NOT_EVALUATED_AFTER_STOP",
+            "UNDETERMINED_OUTPUT_LIMIT"
+          ]
+        }
+      }
+    }
+  }
+}
