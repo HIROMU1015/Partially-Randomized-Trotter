@@ -149,6 +149,32 @@ def phase_a_plan():
         one_shot=True,retry=False,resume=False,mandatory_stop=True,next_stage_authorized=False)
 
 
+def phase_b_plan():
+    """One-shot, serial per-axis validation; never start an axis after failure."""
+    caps={k:0 for k in plan()['demand']}
+    caps.update(snapshot_load=1,frozen_preparation_decode=1,native_evolution_max=2,
+                measured_wrappers_max=4,control_probes_max=8,native_compile_max=4)
+    return dict(schema='track_a_v1_phase_b_plan_v1',scope='compile_validation',
+        science_contract_sha256=digest(plan()),call_caps=caps,
+        resources=dict(processes=2,max_workers=0,threads=1,AS_bytes=32*2**30,RSS_bytes=9*2**30,
+            observer_AS_bytes=512*2**20,observer_RSS_bytes=512*2**20,
+            aggregate_RSS_bytes=9*2**30+512*2**20,CPU_seconds=8*3600,
+            aggregate_CPU_seconds=8*3600,wall_seconds=12*3600,output_bytes=512*2**20,
+            stage_storage_bytes=2*2**30),
+        native_instruction_cap=1000000,transpiled_instruction_cap=5000000,
+        axis_order='B0 then B0I; cosine then sine; check before next axis',
+        one_shot=True,retry=False,resume=False,refit=False,mandatory_stop=True,
+        next_stage_authorized=False)
+
+
+def axis_relative_error(prediction, measured):
+    """Exact threshold, using the frozen rational prediction, before next axis."""
+    if type(measured) is not int or measured<=0:raise ValueError('NONPOSITIVE_MEASUREMENT')
+    error=abs(Fraction(prediction)-measured)/measured
+    if error>=Fraction(1,50):raise ValueError('COMPILE_MODEL_DISAGREEMENT_GE_2_PERCENT')
+    return error
+
+
 def affine_fit(rows, *, stratum):
     """Exact rational least squares of SAVED compiled RZ metadata only."""
     if len(rows) < 3 or any(r['stratum'] != stratum or r['status'] != 'MEASURED_COMPLETE'
@@ -196,8 +222,7 @@ def validate_predictions(rows, *, expected_axes, frozen_model_sha256):
         if (r['status'] != 'MEASURED_COMPLETE' or r['model_sha256'] != frozen_model_sha256
                 or r.get('identity_verified') is not True or r['measured'] <= 0):
             raise ValueError('VALIDATION_BINDING_OR_MEASUREMENT')
-        if abs(Fraction(r['predicted'])-Fraction(r['measured']))/Fraction(r['measured']) >= Fraction(1, 50):
-            raise ValueError('COMPILE_MODEL_DISAGREEMENT_GE_2_PERCENT')
+        axis_relative_error(r.get('exact_prediction',r['predicted']),r['measured'])
     return dict(status='VALIDATED_ON_REGISTERED_AXES', population_bound=False,
                 extrapolation_guaranteed=False, compiler_or_science_change_authorized=False)
 

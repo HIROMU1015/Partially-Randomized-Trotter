@@ -6,6 +6,8 @@ additional compilation is available. Only signal-eligible S4 cases are built.
 import importlib
 import math
 from pathlib import Path
+from fractions import Fraction
+import time
 
 
 def evaluate(config, permit, contract, writer):
@@ -26,6 +28,12 @@ def evaluate(config, permit, contract, writer):
         raise ValueError('SIGNAL_ONLY_VALIDATION_SELECTION')
     if frozen['phase_and_profile_transfer_verified'] is not True:
         raise ValueError('DECLARED_MODEL_STRATUM_TRANSFER_RECEIPTS_REQUIRED')
+    transfer=permit.json_input('transfer_receipt.json')
+    if (len(frozen['transfer_receipts'])!=1 or
+            contract.digest(transfer)!=frozen['transfer_receipts'][0]['receipt_sha256'] or
+            transfer.get('status')!='AUDITED_CONDITIONAL_TRANSFER_REQUIRES_COMPILE_VALIDATION' or
+            transfer['current_runtime_closure_digest']!=contract.digest(config['runtime_file_hashes'])):
+        raise ValueError('TRANSFER_RECEIPT_CONTENT_BINDING')
     m=importlib.import_module('trottertracks.resource_applicability.h6_matched_port_v1')
     native=importlib.import_module('trottertracks.resource_applicability.ax2b_native_df_v5')
     codec=importlib.import_module('trottertracks.resource_applicability.h6_roundoff_preparation_v1')
@@ -39,6 +47,8 @@ def evaluate(config, permit, contract, writer):
     preps,archive=codec.read_preparations(config['archive']['path'],config['archive']['sha256'])
     if archive['binding']!=config['archive']['binding']:raise ValueError('ARCHIVE_CHANGED')
     whole=preps['faithful:p19']
+    if (whole.hamiltonian_hash!=config['binding']['hamiltonian'] or
+            whole.deterministic_fragment_indices!=tuple(range(19))):raise ValueError('FULL_PREPARATION_IDENTITY')
     cp=config['compiler_options']
     compiler=m.CompilerSettings(tuple(cp['basis_gates']),None,None,cp['optimization_level'],
                               None,None,cp['seed_transpiler'],qiskit.__version__)
@@ -66,7 +76,12 @@ def evaluate(config, permit, contract, writer):
                               (z.real if axis=='cosine' else z.imag)))
             m.finite_scale_guard(log_B=0.,intermediate_norm=1.,absolute_discrepancy=max(errors))
             before=m.canonical_qiskit_circuit_fingerprint(wrapper)
+            writer.write(cid+'_'+axis+'_compile_started.json',dict(cell_id=cid,axis=axis,
+                exact_prediction=next(x['exact_prediction'] for x in frozen['predictions']
+                                      if x['cell_id']==cid and x['axis']==axis),
+                input_instructions=len(wrapper.data),fingerprint=before,monotonic_seconds=time.monotonic()))
             permit.take('native_compile_max')
+            started=time.monotonic()
             result=m.transpile_and_measure_cost(wrapper,compiler,actual_circuit_fingerprint=before)
             if (result.compiler_settings_hash!=config['binding']['compiler'] or
                     result.actual_circuit_fingerprint!=before or
@@ -74,12 +89,14 @@ def evaluate(config, permit, contract, writer):
                     len(result.transpiled_circuit.data)>5000000):raise ValueError('COMPILE_IDENTITY_OR_SIZE')
             hypothesis=next(x for x in frozen['predictions'] if x['cell_id']==cid and x['axis']==axis)
             row=dict(cell_id=cid,axis=axis,predicted=hypothesis['predicted'],measured=result.rz_count,
+                exact_prediction=hypothesis['exact_prediction'],compile_wall_seconds=time.monotonic()-started,
+                exact_relative_error=str(abs(Fraction(hypothesis['exact_prediction'])-result.rz_count)/result.rz_count)
+                    if result.rz_count>0 else None,
                 model_sha256=config['frozen_model_sha256'],status='MEASURED_COMPLETE',identity_verified=True,
                 fingerprint=before,compiler_hash=result.compiler_settings_hash,
                 CX=result.cx_count,maximum_correctness_discrepancy=max(errors))
             writer.write(cid+'_'+axis+'.json',row);rows.append(row)
-            if result.rz_count<=0 or abs(row['predicted']-result.rz_count)/result.rz_count>=.02:
-                raise ValueError('COMPILE_MODEL_DISAGREEMENT_GE_2_PERCENT')
+            contract.axis_relative_error(row['exact_prediction'],result.rz_count)
             del result,probe,wrapper
     validation=contract.validate_predictions(rows,expected_axes=axes,frozen_model_sha256=config['frozen_model_sha256'])
     writer.write('validation_complete.json',dict(validation=validation,rows=rows,

@@ -70,3 +70,29 @@ def map_costs(signal_records, cost_rows, *, contract, legacy_accounting, epsilon
                          conservative_bias_certified=False))
     return dict(rows=rows,best=contract.best(rows),epsilon=epsilon,factor=factor,
                 no_cancellation_diagnostic=envelope,empirical_allowance=True)
+
+
+def validated_additional_cost_rows(frozen, validation_rows, signal_records, *, contract, frozen_model_sha256):
+    """Future explicit reaccounting input, never called by the Phase B runner.
+
+    All four (or registered fewer) axes must pass for this exact frozen model.
+    These remain conditional point estimates, including outside checked axes.
+    """
+    contract.validate_predictions(validation_rows,expected_axes=frozen['validation_axes'],
+                                  frozen_model_sha256=frozen_model_sha256)
+    allowed={c['id'] for c in contract.registrations()['additional']};out=[]
+    if frozen.get('fitted_after_validation') is not False:raise ValueError('REFITTED_MODEL_FORBIDDEN')
+    for record in signal_records:
+        cell=record['cell']
+        if cell['id'] not in allowed:raise ValueError('ADDITIONAL_MODEL_SCOPE_ONLY')
+        if not any(v['1.0']['cost_acquisition_eligible'] for v in record['precision_rows'].values()):continue
+        for axis in contract.AXES:
+            parents=[m for m in frozen['models'] if m['stratum']['method']==cell['method']
+                     and m['stratum']['axis']==axis and m['stratum']['formula']=='2nd']
+            if len(parents)!=1:raise ValueError('UNIQUE_S2_PARENT_STRATUM_REQUIRED')
+            a,b,d=map(Fraction,parents[0]['coefficients']);pieces=1 if cell['formula']=='2nd' else 3
+            value=a+pieces*cell['q']*(b+d*cell['prefix'])
+            if value<=0:raise ValueError('NONPOSITIVE_MODEL_ESTIMATE')
+            out.append(dict(cell_id=cell['id'],axis=axis,RZ=str(value),status='VALIDATED_MODEL_ESTIMATE',
+                model_sha256=frozen_model_sha256,population_error_bound=False,measured=False))
+    return out

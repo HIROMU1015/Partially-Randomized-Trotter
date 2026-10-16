@@ -53,19 +53,28 @@ class Writer:
 
 def verify_grant(config, grant, *, config_sha256, source, fresh):
     parallel=config.get('phase_a_parallel') is True
-    fixed=contract.phase_a_plan() if parallel else contract.plan()
-    schema='track_a_v1_phase_a_parallel_grant_v1' if parallel else 'track_a_v1_signal_grant_v1'
+    phase_b=config.get('phase_b') is True
+    if parallel and phase_b:raise ValueError('AMBIGUOUS_PHASE')
+    fixed=contract.phase_b_plan() if phase_b else contract.phase_a_plan() if parallel else contract.plan()
+    schema=('track_a_v1_phase_b_grant_v1' if phase_b else
+            'track_a_v1_phase_a_parallel_grant_v1' if parallel else 'track_a_v1_signal_grant_v1')
     if (grant.get('approved_by_user') is not True or grant.get('runtime_authorization') is not True
             or grant.get('schema') != schema
             or grant.get('one_shot') is not True or grant.get('retry') is not False
             or grant.get('resume') is not False or grant.get('scope') not in ('signal', 'compile_validation')
             or grant.get('SOURCE') != source or grant.get('config_sha256') != config_sha256
             or grant.get('plan_sha256') != contract.digest(fixed)
-            or grant.get('call_caps') != (fixed['call_caps'] if parallel else fixed['demand'])
-            or grant.get('resources') != fixed['resources'] or (parallel and grant.get('scope')!='signal')):
+            or grant.get('call_caps') != (fixed['call_caps'] if parallel or phase_b else fixed['demand'])
+            or grant.get('resources') != fixed['resources'] or (parallel and grant.get('scope')!='signal')
+            or (phase_b and grant.get('scope')!='compile_validation')):
         raise ValueError('NEW_SEALED_SIGNAL_GRANT_REQUIRED')
     cpus = grant.get('allowed_cpus')
-    if parallel:
+    if phase_b:
+        expected=[grant.get('driver_cpu'),grant.get('monitor_cpu')]
+        if (cpus!=expected or any(type(x) is not int for x in expected)
+                or len(set(expected))!=2 or not set(expected)<=os.sched_getaffinity(0)):
+            raise ValueError('DISJOINT_DRIVER_MONITOR_CPUS_REQUIRED')
+    elif parallel:
         workers=grant.get('worker_cpus',[])
         expected=[grant.get('driver_cpu'),grant.get('monitor_cpu'),*workers]
         if (len(workers)!=16 or cpus!=expected or any(type(x) is not int for x in expected)
@@ -168,7 +177,7 @@ def execute(config_path, grant_path, fresh_path, output):
             raise ValueError('INPUT_BYTES_CHANGED:'+receipt['logical_name'])
     for name, expected in config['runtime_file_hashes'].items():
         if sha(name) != expected: raise ValueError('RUNTIME_PROFILE_CHANGED')
-    cpus = {grant['driver_cpu']} if config.get('phase_a_parallel') is True else set(grant['allowed_cpus'])
+    cpus = {grant['driver_cpu']} if config.get('phase_a_parallel') is True or config.get('phase_b') is True else set(grant['allowed_cpus'])
     os.sched_setaffinity(0, cpus)
     for name in ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS', 'NUMEXPR_NUM_THREADS', 'NUMBA_NUM_THREADS', 'QISKIT_NUM_PROCS', 'RAYON_NUM_THREADS'):
         if os.environ.get(name) != '1': raise ValueError('THREAD_ONE_ENV_REQUIRED:'+name)
