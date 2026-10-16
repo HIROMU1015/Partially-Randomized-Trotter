@@ -1,0 +1,779 @@
+# Codexへの指示：M1-S Gate 0 科学的評価範囲の正式採択・数値精度契約の具体化
+
+## 0. 今回の承認と作業範囲
+
+Track B／M1-S G0-T1について、Checkpoint 2のGPT独立科学レビューとGate 0実行SOURCE準備が完了しました。
+
+今回、ユーザーは以下の**限定的なGate 0科学的評価範囲を正式採択します。**
+
+- H4 linear chain、1.00 Å、STO-3G
+- 8 spin orbitals、DF rank12
+- 保存済みdevelopment NPZを入力正本とする
+- 既存DF blockの生成順に基づくG3／G6／G9の3分割
+- Jordan–WignerによるPauli-tail表現
+- 同一Pauli文字列を符号付きで集約した非冗長sampling law
+- Identity項を決定論部HDへ移動する規約
+- 保存済みfull長stateを数値oracle参照として使用する
+- 主診断量はW、v、ρ
+- Ordinary／independent ±との同一理想task・同一概念的イベント数での比較
+- ρによる総資源の自動GO／STOP判定は行わない
+- 全3分割を報告し、結果に基づく分割の変更を認めない
+
+**この正式採択は研究対象・評価目的・比較規約の採択であり、数値精度・実行制限を含むGate 0実験契約全体の採択ではありません。**
+
+今回Codexに承認する作業は、次の範囲です。
+
+1. 上記科学的評価範囲を採択記録として固定する。
+2. 既存SOURCE・実行契約候補との整合性を確認する。
+3. 17項目の数値許容値と誤差予算について、根拠付きの具体案を作成する。
+4. 誤差伝播・数値安定性・精度不足時の分類規則を整理する。
+5. CPU・thread・メモリ・出力・処理量の制限を具体化する。
+6. 必要に応じてSOURCEの静的な不備を修正する。
+7. Gate 0最終実験契約の採択候補を作成する。
+8. 文書・設定・SOURCEの静的検査を行う。
+9. 成果と監査資料をGitHubへcommit・pushする。
+
+技術的に判断できる事項は、可能な限りCodex側で完結してください。
+
+ただし、研究結果の科学的受理、実験条件の未決部分の正式採択、新しい数値計算の承認はCodexが代行しません。
+
+### 今回承認しない事項
+
+以下は明示的に禁止します。
+
+- Gate 0の科学計算実行
+- Pauli係数表の新規数値生成
+- Hamiltonianの新規数値再構成
+- 保存stateの新規数値評価
+- 固有値・固有状態の計算
+- W、v、ρの数値評価
+- σ、gap、spectral couplingの数値評価
+- 実データまたは模擬データによる科学的correctness test
+- Simulation、sampling、trajectory
+- 回路生成、compile、synthesis
+- 新しい科学数値再解析
+- 新しい数学的定理の証明
+- T1c、Q4、Q5、一般DF eventへの拡張
+- Gate 0結果を前提とする研究のGO／STOP
+- 既存SOURCE・結果・authorization・markerの上書き
+
+**今回の承認は数値計算の承認ではありません。**
+
+新しい科学的結果を生成する処理は、最終契約の採択と別途の科学計算実施承認が揃うまで開始しないでください。
+
+---
+
+# 1. 固定GitHub資料
+
+Repository：
+
+`HIROMU1015/Partially-Randomized-Trotter`
+
+## 1.1 現在のSOURCE準備結果【最優先】
+
+固定commit：
+
+`83fbac28bca8e308b3039d8532492e6510492f89`
+
+Branch：
+
+`track-b-m1s-gate0-source-preparation-20261016`
+
+[Gate 0実行SOURCE・実験契約最終候補](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/83fbac28bca8e308b3039d8532492e6510492f89/docs/tracks/algorithm_codesign/m1s_gate0_headroom_execution_contract_candidate_20261016.md)
+
+[公開照合receipt](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/83fbac28bca8e308b3039d8532492e6510492f89/artifacts/track_b_m1s_gate0_source_preparation/2026-10-16/v1/publication_receipt.json)
+
+今回の作業は、上記SOURCEを基点とします。
+
+既存のSOURCEを最初から作り直す必要はありません。
+
+### SOURCE固定commit
+
+`4bd39ca68426f754111e47750534a7a56627107b`
+
+主なSOURCE：
+
+- `src/trottertracks/algorithm_codesign/m1s_gate0/control.py`
+- `src/trottertracks/algorithm_codesign/m1s_gate0/science.py`
+- `src/trottertracks/algorithm_codesign/m1s_gate0/__init__.py`
+- `scripts/tracks/algorithm_codesign/run_m1s_gate0_headroom.py`
+- `scripts/tracks/algorithm_codesign/check_m1s_gate0_source_static.py`
+
+既存状態：
+
+`IMPLEMENTED_NOT_SCIENTIFICALLY_EXECUTED`
+
+静的・CLI検査30件PASS。
+
+科学的数値correctnessは未検証です。
+
+**静的PASSを数値的な正しさの認定として扱わないでください。**
+
+## 1.2 Checkpoint 2 GPT独立科学レビュー
+
+固定commit：
+
+`62554ee127a2bec1206367cf1754df2ff49fa000`
+
+[Checkpoint 2 GPT独立科学レビュー](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/62554ee127a2bec1206367cf1754df2ff49fa000/docs/research/track_b_m1s_g0t1_checkpoint2_gpt_independent_scientific_review_20261016.md)
+
+この科学的判断を維持します。
+
+特に、
+
+- 限定的なGate 0 headroom診断を推奨
+- ρ単独による総資源STOP規則は不採用
+- Jensen floorは限定的に受理
+- 同イベント数とnative価格を区別
+- DF-nativeとPauli-tailを別lawとして区別
+
+という判断を変更しないでください。
+
+## 1.3 既存のGate 0事前調査
+
+固定commit：
+
+`05513eea807fbfb841c6012d2fe2133d70b5f1f9`
+
+[Gate 0事前登録草案](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/05513eea807fbfb841c6012d2fe2133d70b5f1f9/docs/tracks/algorithm_codesign/m1s_gate0_headroom_preflight_and_prereg_draft_20261016.md)
+
+## 1.4 T1b証明・S0契約
+
+T1b：
+
+`54336028edd7ef759f8a0c73bd0a96ade13f47f9`
+
+S0：
+
+`373b8e4b9831f4d00bdc00ffc741ac61e03f0841`
+
+研究契約・既存定理・科学的受理結果は変更しません。
+
+## 1.5 最新共通研究指示
+
+`research_project_instructions_gpt_codex_review_approval_2026-10-12.md`
+
+Mandatory STOP、SOURCE保護、計算実施の別途承認、研究判断と技術判断の分離を維持してください。
+
+---
+
+# 2. 今回正式採択するGate 0の科学的範囲
+
+## 2.1 実験の目的
+
+今回のGate 0は、
+
+**「保存されたH4 Hamiltonianに基づく非冗長Pauli-tailについて、small-stepの先導減衰係数に改善の余地が存在するかを診断する」**
+
+ことを目的とします。
+
+RPE全体の保証、化学的精度の確認、総資源改善、実機回路価格の比較は対象外です。
+
+主評価量は、
+
+\[
+W_k=1-\langle k|h^2|k\rangle
+\]
+
+\[
+v_k=
+\operatorname{Var}_j
+\langle k|P_j|k\rangle
+\]
+
+\[
+\rho_\infty^{(H)}
+=
+\frac{W_k+v_k}{2W_k}
+\]
+
+です。
+
+ここで、
+
+\[
+h=H_R/\lambda_R.
+\]
+
+これらを**oracle headroom診断量**として扱います。
+
+数値的な対象stateが厳密固有状態であることを、今回の正式採択によって認定したわけではありません。
+
+## 2.2 正式採択する入力
+
+- H4 linear 1.00 Å
+- STO-3G
+- 8 spin orbitals
+- DF rank12
+- 保存済みdevelopment NPZ
+- Charge 0
+- Multiplicity 1
+- 保存済みN=4、Nα=Nβ=2、Sz=0のsector情報
+
+入力NPZ：
+
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/8b7666d0270f7fac01e430e195bef7b58ac0116c/artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz
+
+SHA256：
+
+`3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a`
+
+保存Hamiltonian hash：
+
+`de7a549238e3a21f15a84018bef28440c345b31030282c01cf874f3d1d212424`
+
+既存の凍結DF Hamiltonianを正本とします。
+
+新SCF、積分計算、DF因子の生成、geometry変更、basis変更は禁止します。
+
+H4 1.30 Å、H6、別rankは初回評価へ追加しません。
+
+## 2.3 正式採択する分割
+
+既存のDF block生成順を維持します。
+
+| ID | HD側 | HR側 |
+|---|---|---|
+| G3 | DF block 0–2 | DF block 3–11 |
+| G6 | DF block 0–5 | DF block 6–11 |
+| G9 | DF block 0–8 | DF block 9–11 |
+
+Constantとone-bodyはHD側に置きます。
+
+全3分割を結果の成否にかかわらず報告する設計としてください。
+
+後から有利な分割を追加したり、DF blockを重み順に並べ替えたりしてはいけません。
+
+## 2.4 正式採択するPauli law
+
+- Jordan–Wigner変換
+- 保存されたspin-orbital順
+- 同一Pauli文字列の符号付き係数集約
+- 非冗長なcanonical Pauli表
+- Identity項をHDへ移動
+- Identity移動前後のcontrolled relative phase台帳を保持
+- 自動的な小係数cutoffを設けない
+- Sampling probabilityを非負で正規化する
+
+Pauli-tailについて、
+
+\[
+H_R=\sum_Pc_PP
+\]
+
+\[
+\lambda_R=\sum_P|c_P|
+\]
+
+\[
+p_P=\frac{|c_P|}{\lambda_R}
+\]
+
+\[
+P_{\mathrm{signed}}=\operatorname{sgn}(c_P)P
+\]
+
+とします。
+
+\(\lambda_R=0\) の場合は空tailとして分類し、W、v、ρを無理に定義しません。
+
+IdentityをHDへ移すことで乱択lawが変わる点を明示してください。
+
+この採択はDF-nativeの元の乱択eventと同じアルゴリズムであることを認定しません。
+
+## 2.5 正式採択する比較意味論
+
+- 同じ理想Hamiltonian
+- 同じD/R分割
+- 同じ対象state
+- 同じ理想相対時間
+- 同じPauli sampling law
+- 概念的な総乱択イベント位置数を揃えた比較
+
+比較対象：
+
+- Ordinary
+- Independent ±
+- Gate-shared ±
+
+ただし、controlled gate価格、native回路深さ、shot数が同じという仮定は置きません。
+
+ρは先導減衰係数に関する診断量です。
+
+## 2.6 正式採択しない事項
+
+以下は今回も未採択とします。
+
+- ρの科学的GO／STOP閾値
+- 必要な総資源削減率
+- Dressingの数値許容閾値
+- Gate 0の科学数値実行
+- Runtimeと科学的な数値精度の最終値
+- Pauli表生成・数値correctnessの実施
+- T1c／Q4／Q5の研究
+- Technical noteを正式論文成果とする判断
+- M1-S全体の継続・終了
+
+---
+
+# 3. 最優先作業：17項目の数値許容値と誤差予算
+
+## 3.1 基本方針
+
+現在のSOURCEには17項目の許容値・誤差予算が存在しますが、数値は未採択です。
+
+**Codexは、それぞれについて技術的・数学的根拠を調査し、可能な限り具体的な数値候補を提示してください。**
+
+ただし、数値を埋めること自体を目的にしないでください。
+
+根拠が不足している場合は、その理由と追加で必要な情報を明示し、未決事項として残してください。
+
+過去の別実験の許容値を、根拠なく流用してはいけません。
+
+## 3.2 対象となる17項目
+
+| 項目 | 数値の意味 |
+|---|---|
+| `eps_H` | Hamiltonian再構成誤差 |
+| `eps_hermiticity_H` | HamiltonianのHermiticity |
+| `eps_hermiticity_factors` | 保存DF因子のHermiticity |
+| `eps_phase` | Identity移動に関するscalar／phase台帳 |
+| `eps_state_norm` | State norm |
+| `eps_state_residual` | 固有状態残差 |
+| `eps_basis` | Basis ordering・JW変換の整合 |
+| `eps_prob` | Sampling probabilityの規格化 |
+| `eps_imag_coeff` | Pauli係数の虚部残差 |
+| `eps_imag_energy` | Energyの虚部残差 |
+| `eps_imag_expectation` | Pauli期待値の虚部 |
+| `eps_W` | Wの要求精度 |
+| `eps_v` | vの要求精度 |
+| `eps_rho` | ρの要求精度・区間幅 |
+| `W_error_budget` | Wの誤差予算 |
+| `v_error_budget` | vの誤差予算 |
+| `W_floor` | Wの小分母判定条件 |
+
+既存SOURCEでの厳密なkey名、norm、単位、定義を優先してください。
+
+## 3.3 各項目について提出する内容
+
+各項目について、以下を明示してください。
+
+1. 数学的定義
+2. 使用するnorm
+3. 単位
+4. 数値表現
+5. 発生する誤差の原因
+6. 誤差が他の評価量へ伝播する経路
+7. 候補の許容値
+8. 候補値の根拠
+9. 既存SOURCEとの整合性
+10. 不適格となる条件
+11. 技術的STOPが必要となる条件
+12. 科学的判断へ戻すべき条件
+13. 現時点で採択できない場合の理由
+
+値の候補を提示する際は、**数学的誤差評価、浮動小数点精度、既存資料、SOURCEの演算構造のどれに基づくのか**を区別してください。
+
+単なる慣習的な値は、確定値として扱わないでください。
+
+---
+
+# 4. 誤差伝播とρの安定性
+
+Gate 0の中心指標は、
+
+\[
+\rho=\frac{W+v}{2W}
+\]
+
+です。
+
+従って、Wの数値誤差が小分母により増幅される可能性があります。
+
+## 4.1 必要な誤差会計
+
+少なくとも以下を考慮してください。
+
+- DF入力の数値精度
+- Fermionic operatorからPauliへの変換
+- Pauli係数の集約
+- 虚部を除くことによる誤差
+- Identity移動
+- Hamiltonian再構成
+- 保存stateのnorm
+- 保存stateの固有状態残差
+- Pauli期待値
+- W
+- v
+- ρ
+
+数値的な誤差区間は、根拠付きのengineering error budgetとして扱ってください。
+
+厳密な数学的certificateや真の固有状態に対する信頼区間と誤認しないでください。
+
+## 4.2 Wが小さい場合
+
+以下を区別してください。
+
+- \(\lambda_R=0\)：空tail
+- 浮動小数点でW=0
+- Wの不確定区間が0を含む
+- Wが正だが非常に小さい
+- ρの不確かさが大きい
+
+Wの値を都合よくclampしてρを出さないでください。
+
+適用外の場合は、
+
+- `NOT_APPLICABLE`
+- `UNDETERMINED`
+- `PRECISION_UNRESOLVED`
+
+など、意味が区別できるclassificationを採用してください。
+
+## 4.3 誤差伝播の具体化
+
+既存SOURCEにあるW、vのengineering区間からρの区間を作る方法について、数学的整合性と前提を技術的に確認してください。
+
+特に、
+
+\[
+0\le v\le W\le1
+\]
+
+という理論的範囲との関係を確認してください。
+
+ただし、理論的範囲へ数値を無条件に丸め込んで不一致を隠してはいけません。
+
+**SOURCEの数値計算を実行せず、数式・演算構造に基づいて評価してください。**
+
+---
+
+# 5. State精度と理論適用域
+
+保存NPZにはfull Fock長256のstateが存在します。
+
+ただし、これは保存されたsector-groundの数値参照であり、全Fock空間の厳密な非縮退固有状態だと認定されたわけではありません。
+
+次を区別してください。
+
+1. State normalization
+2. 固定Hamiltonianに対するRayleigh残差
+3. Sector stateとの埋込み整合
+4. 数値的固有状態としての精度
+5. Exact eigenstateとの距離
+6. 全Hにおける非縮退性
+7. 全空間における端点性
+8. Pair-sum条件
+9. Jensen floorの適用条件
+
+**小さい固有状態残差だけで、gapを仮定せず厳密固有状態との近さを保証しないでください。**
+
+今回のGate 0では、保存stateをoracle診断に用いる方針を採択しました。
+
+そのため、結果は
+
+`NUMERICAL_SECTOR_GROUND_ORACLE_NOT_THEOREM_CERTIFIED`
+
+のように、数値診断と定理適用の認証を区別して報告する必要があります。
+
+科学的に必要な追加の固有値・gap計算が判明した場合も、今回は実施せず別途承認事項として整理してください。
+
+---
+
+# 6. Runtime・CPU・メモリ・出力制限
+
+## 6.1 現在の候補
+
+既存の実行契約候補では、初期backendとして、
+
+- CPU
+- workers=1
+- BLAS／OpenMP等のthread=1
+- G3→G6→G9の順次処理
+- 保存stateの再利用
+- Pauli作用のbitmask処理
+- 不必要なdense Pauli行列cacheを避ける
+
+という方針が提案されています。
+
+今回の数値精度契約では、これらを技術的に確認してください。
+
+GPUの利用を前提にしないでください。
+
+## 6.2 具体化する制限
+
+少なくとも、
+
+- Python runtime
+- NumPy等の依存version
+- CPU workers
+- BLAS/OpenMP thread
+- GPU使用の有無
+- メモリ上限
+- 出力ファイル上限
+- ログ出力上限
+- Pauli表の最大要素数
+- 演算寄与・展開量の上限
+- 結果保存directory
+- 失敗時の保存と停止
+- Retry禁止条件
+- Source／contract／authorization照合
+
+を整理してください。
+
+数値的なresource capには、演算構造・入力サイズ・既存環境から説明可能な根拠を示してください。
+
+不必要に保守的な制限で正常な科学評価を止めない一方、制限を無くして暴走や異常なメモリ使用を許すことも避けてください。
+
+実測benchmarkは今回承認しません。
+
+科学的wall-time capを根拠なく追加する必要はありません。Tool polling timeoutなどの技術的な待機制限とは区別してください。
+
+## 6.3 失敗時の扱い
+
+次を区別してください。
+
+- 環境不一致
+- SOURCE不一致
+- 入力hash不一致
+- Hamiltonian再構成不一致
+- 数値精度不適格
+- State残差不適格
+- ρ未定義
+- メモリ上限
+- 出力上限
+- 科学的適用域未認証
+
+失敗後にgeometry、分割、threshold、stateを自動変更してretryしてはいけません。
+
+---
+
+# 7. 実行SOURCEの追加技術確認
+
+前段の作業では静的・CLI検査30件PASS、文書・同一性確認79件PASSでした。
+
+この結果を尊重し、同じ検査を理由なく全面的に繰り返す必要はありません。
+
+今回追加するのは、**正式採択した科学的評価範囲と、現在のSOURCE・設定・拒否経路との整合性**の確認です。
+
+特に、
+
+1. H4 1.00 Åのみが初回対象であること
+2. G3/G6/G9のみを扱うこと
+3. Pauli集約規約が採択内容と一致すること
+4. Identity→HDが明示設定されていること
+5. 旧DF-nativeのnormalizerを誤用しないこと
+6. 17項目の数値許容値が全て必要項目として検査されること
+7. Runtime・resource capsが必要項目として管理されること
+8. 未承認状態では科学数値moduleを起動できないこと
+9. SOURCE commit、採択契約、別途実施承認の照合が必要であること
+10. 過去のauthorization／markerを再利用できないこと
+
+を確認してください。
+
+必要なSOURCE修正があれば、承認済み範囲内で修正して構いません。
+
+ただし、**数値correctness testや科学実行によって修正を検証してはいけません。**
+
+静的検査で検証できない部分は、次の実施承認後の初回数値gateへ明確に残してください。
+
+---
+
+# 8. 作成する成果物
+
+## 8.1 科学的評価範囲の正式採択記録
+
+新規に、
+
+`gate0_scientific_scope_adoption_record.json`
+
+などの採択記録を作成してください。
+
+ここでは、
+
+- 採択主体：ユーザー
+- 採択した対象とlaw
+- 主診断量
+- 比較規約
+- 未採択の数値精度
+- 科学計算の未承認
+- Gate 0実験契約全体の未採択
+- Mandatory STOP
+
+を区別してください。
+
+**この採択記録は科学計算の実施authorizationやrunner markerではありません。**
+
+## 8.2 数値精度・誤差予算の技術検討書
+
+作成候補：
+
+`docs/tracks/algorithm_codesign/m1s_gate0_precision_error_budget_design_20261016.md`
+
+17項目の検討結果を、数式・norm・単位・根拠付きでまとめてください。
+
+各候補値について、
+
+- 根拠あり
+- 根拠不足
+- 科学的判断が必要
+- 数値実行後に検証が必要
+
+を分類してください。
+
+## 8.3 Runtime・実行制限の技術契約
+
+作成候補：
+
+`docs/tracks/algorithm_codesign/m1s_gate0_runtime_and_resource_contract_candidate_20261016.md`
+
+CPU・thread・メモリ・出力・依存version・実行保護について整理してください。
+
+## 8.4 Gate 0最終実験契約案
+
+既存の候補を上書きせず、新しい版を作成してください。
+
+候補：
+
+`docs/tracks/algorithm_codesign/m1s_gate0_headroom_execution_contract_v2_candidate_20261016.md`
+
+以下を含めてください。
+
+1. 正式採択済みの科学的評価範囲
+2. 入力・分割・Pauli law
+3. SOURCE固定commit
+4. 数値精度17項目の採択候補
+5. 誤差伝播
+6. Stateの証拠区分
+7. Runtime・resource limits
+8. Technical PASS／STOP
+9. 科学的評価結果の報告形式
+10. 未採択の科学的閾値
+11. 数値correctness未検証の状態
+12. 新規科学計算の未承認状態
+13. Mandatory STOP
+14. 次の実施承認に必要な事項
+
+**数値精度と実行制限が完全に閉じていない場合、完成した正式契約と呼ばず、候補のまま提出してください。**
+
+## 8.5 証拠・監査資料
+
+新しいartifact directoryに、
+
+- Scope adoption record
+- Precision candidate table
+- Runtime candidate
+- SOURCE identity
+- Evidence index
+- Unresolved items
+- Static validation
+- Publication receipt
+
+を保存してください。
+
+科学計算結果、science run authorization、runner markerは作成しません。
+
+---
+
+# 9. 科学的判断をCodexが代行しない事項
+
+以下は、技術検討の結果を踏まえてユーザーへ戻してください。
+
+- 17項目の数値許容値の最終採択
+- 数値誤差予算の科学的な十分性
+- 保存stateの証拠区分に関する未決事項
+- 補助的なspectral計算の必要性
+- 追加の科学的許容値
+- Gate 0実験契約全体の正式採択
+- Gate 0科学計算の実施承認
+- 結果からM1-Sの研究を継続するかどうか
+
+Codexで解決可能な技術上の不備と、科学的な受理判断を区別してください。
+
+数値精度を十分に正当化できない場合は、科学的条件を推測で埋めて進行せず、未解決事項を明確に提示してください。
+
+---
+
+# 10. GitHub運用・保全
+
+専用branch／worktreeを使用してください。
+
+Branch名の候補：
+
+`track-b-m1s-gate0-precision-contract-20261016`
+
+以下を維持してください。
+
+- 既存SOURCE・結果・原本の保護
+- S0／T1a／T1bの保存
+- Checkpoint 1／2レビュー原本の保護
+- 既存authorization・markerの保護
+- 親worktreeのHEAD・index・dirty fileの保護
+- 新科学計算0件
+- 数値correctness test0件
+- 新Pauli係数表生成0件
+- Simulation／compile0件
+
+許可された文書・SOURCE修正だけをcommit・pushしてください。
+
+公開後はremote SHAと新規資料のbytes・SHA256を照合してください。
+
+今回の正式採択の範囲を、過去の実施承認やSTOP履歴へ遡及させないでください。
+
+---
+
+# 11. 完了条件
+
+以下を満たした場合に作業を完了してください。
+
+1. Gate 0の限定科学的評価範囲を正式採択記録に固定した。
+2. SOURCEとの整合性を確認した。
+3. 数値精度17項目をすべて検討した。
+4. 各数値候補の根拠・単位・normを明示した。
+5. W、v、ρの誤差伝播を整理した。
+6. State残差と理論適用域を区別した。
+7. CPU・memory・thread・output制限を具体化した。
+8. 実行保護機構を確認した。
+9. 未解決の科学的判断を明示した。
+10. Gate 0最終実験契約候補を作成した。
+11. 静的・文書検査を行った。
+12. GitHub公開・remote SHA照合を完了した。
+13. 既存SOURCE・結果・親worktreeを保全した。
+14. 新規科学計算・数値correctness testを実施していない。
+
+完了時には以下を報告してください。
+
+- Status
+- 科学的評価範囲の正式採択記録
+- 数値許容値17項目の一覧
+- 根拠付きで具体化できた項目
+- 未決の項目
+- 誤差伝播・小分母の扱い
+- Runtime・memory・output制限
+- SOURCE修正の有無
+- 静的検査結果
+- Gate 0最終実験契約候補
+- 追加の科学的判断が必要な事項
+- Branch／commit／remote SHA
+- 公開資料のbytes・SHA256
+- 既存成果・親worktreeの保全
+- Mandatory STOP
+
+---
+
+# 12. 最終指示
+
+今回の目的は、**Gate 0の研究範囲を正式に固定し、数値精度・実行制限の未決問題を技術的に解決すること**です。
+
+数値許容値を根拠なく決めてはいけません。
+
+一方、既存SOURCEと数学的知識から十分に判断できる技術条件について、毎回GPTレビューへ戻す必要はありません。
+
+Codexで具体化できるところまで進めてください。
+
+**ただし、Gate 0の実験契約全体の正式採択と、新規科学計算の実施承認は今回の範囲外です。**
+
+完了後はmandatory STOPしてください。
+
+次の段階は、ユーザーが数値精度・実行制限を含む最終Gate 0契約を確認・採択し、その後さらに別途、科学計算の実施を明示承認することです。
