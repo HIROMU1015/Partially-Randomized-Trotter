@@ -1,3 +1,9 @@
+## 2026-10-16 H8 Phase A：実装・人工検証完了、科学実行は未承認
+
+[plan](scripts/h8_strengthened_contract.py)／[export復元](scripts/h8_strengthened_export.py)／[signal](scripts/h8_strengthened_signal.py)／[runtime gate](scripts/h8_strengthened_runtime.py)／[runner](scripts/run_h8_strengthened_phase_a.py)／[launcher](scripts/launch_h8_strengthened_phase_a.py)／[未承認準備](scripts/prepare_h8_strengthened_phase_a.py)／[人工tests](tests/test_h8_strengthened_phase_a.py)／[2 qubit fixture](tests/check_h8_strengthened_synthetic_provider.py)。
+
+[H8 adapter・保存操作列復元・並列制御・契約](docs/research/track_a_h8_phase_a_implementation_readiness_20261016.md)。追加152候補は不変。22 primitive tasks/1,650 probesと13 prefix tasks、最大16 worker。28人工tests＋2 qubit fixture8項目PASS、provider265/runtime34,273/input11を結合。実H8復元・signal・数値再解析・compile・新有効grant0、別途明示承認とfresh gateが必要。V2 NO_GO・旧grant/ledger・V1/H5/H7を保持し、公開後mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-16 H8対照強化の準備・V2現行残差設計のNO_GO終了
 
 [metadata checker](scripts/check_track_a_h8_strengthened_plan.py)／[人工guard tests](tests/test_track_a_h8_strengthened_plan.py)／[未承認計画](artifacts/resource_applicability/track_a_h8_strengthened_readiness/2026-10-16/execution_plan_UNAPPROVED_v1.json)。
