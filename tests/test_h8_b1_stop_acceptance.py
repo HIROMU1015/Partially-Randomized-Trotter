@@ -53,7 +53,7 @@ def fixture():
                  B1_authorized=False, SOURCE_input_runtime_preparation_compiler_binding=True,
                  original_config_grant_raw_unchanged=True, final_preservation_audit_passed_posthoc=True,
                  measured_axes_verified=8, TRAIN_axes=6, HOLDOUT_axes=2)
-    terminal = dict(status='COMPLETE_MANDATORY_STOP', SOURCE=r.CANONICAL_SOURCE,
+    terminal = dict(status='COMPLETE_MANDATORY_STOP', SOURCE=r.IMPLEMENTATION_B_SOURCE,
                     model_sha256=r.digest({'fixture': True}), B2_authorized=False,
                     C_authorized=False, next_stage_authorized=False)
     return dict(stop=stop, audit=audit, plan=plan,
@@ -66,7 +66,7 @@ def fixture():
                                        cleanup_errors=[], automatic_retry=False) for i in (0, 4)]},
                 controls={'cases': controls}, B1_model={'fixture': True},
                 B1_contract=dict(authorized_B1_executed_once=True, original_B0_run02_status='STOP'),
-                B1_binding=dict(SOURCE=r.CANONICAL_SOURCE, profile_sha256=r.PROFILE,
+                B1_binding=dict(SOURCE=r.IMPLEMENTATION_B_SOURCE, profile_sha256=r.PROFILE,
                                 compiler_hash=r.COMPILER, original_B0_acquisition_status='STOP',
                                 historical_thread_compliance_certified=False),
                 B1_terminal=terminal, B1_phase=deepcopy(terminal),
@@ -78,8 +78,9 @@ def draft():
     return dict(schema='H8_B1_SAVED_STOP_ACCEPTANCE_DRAFT_V1', approved=False, accepted=False,
                 runtime_authorization=False, existing_result_adopted=False, B2_authorized=False,
                 C_authorized=False, next_stage_authorized=False, allowed_cpus=[], absolute_launch_command=None,
-                canonical_numerical_SOURCE=r.CANONICAL_SOURCE, unselected_numerical_SOURCE=r.UNSELECTED_SOURCE,
+                implementation_B_SOURCE=r.IMPLEMENTATION_B_SOURCE, implementation_A_SOURCE=r.IMPLEMENTATION_A_SOURCE,
                 existing_B1_result_commit=r.EXISTING_B1_RESULT, duplicate_fit_permitted=False,
+                implementation_selection='PENDING_USER_DECISION', implementation_changes_authorized=False,
                 evidence_set_sha256='artificial', original_acquisition_status='STOP',
                 original_final_gate_replaced=False, historical_thread_compliance_certified=False)
 
@@ -155,13 +156,15 @@ class AcceptanceTests(unittest.TestCase):
     def test_draft_rejects_acceptance_execution_and_duplicate_fit(self):
         r.validate_draft(draft(), 'artificial')
         for key in ('approved', 'accepted', 'runtime_authorization', 'existing_result_adopted',
-                    'B2_authorized', 'C_authorized', 'next_stage_authorized', 'duplicate_fit_permitted'):
+                    'B2_authorized', 'C_authorized', 'next_stage_authorized', 'duplicate_fit_permitted',
+                    'implementation_changes_authorized'):
             x = draft(); x[key] = True
             with self.subTest(key=key), self.assertRaises(ValueError):
                 r.validate_draft(x, 'artificial')
 
-    def test_draft_binds_selected_implementation_and_evidence(self):
-        for key in ('canonical_numerical_SOURCE', 'evidence_set_sha256', 'existing_B1_result_commit'):
+    def test_draft_binds_both_implementations_and_evidence(self):
+        for key in ('implementation_A_SOURCE', 'implementation_B_SOURCE', 'implementation_selection',
+                    'evidence_set_sha256', 'existing_B1_result_commit'):
             x = draft(); x[key] = 'wrong'
             with self.subTest(key=key), self.assertRaises(ValueError):
                 r.validate_draft(x, 'artificial')

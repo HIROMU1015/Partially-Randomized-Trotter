@@ -10,9 +10,9 @@ import math
 B0_SOURCE = 'db559a518214fd27fa96e2f1451911df05c4f4a8'
 B0_RESULT = 'af10b55420d31e227905f7762971e4b39c6c6a05'
 AUDIT_COMMIT = 'b19c337f0b16513d68b59eb3366dc6eff175c313'
-CANONICAL_SOURCE = '6fb8a0a71986fda571d82b5658686f5e74a32f8b'
+IMPLEMENTATION_B_SOURCE = '6fb8a0a71986fda571d82b5658686f5e74a32f8b'
 EXISTING_B1_RESULT = '83a3c4a6688e66576f85471bf41a45e29cbfb705'
-UNSELECTED_SOURCE = '1e25d5691b2a5c4738ca8b67c398ae06b70c4e0f'
+IMPLEMENTATION_A_SOURCE = '1e25d5691b2a5c4738ca8b67c398ae06b70c4e0f'
 PROFILE = '622ce4a8391002558b877240b48d831d9bb0a72aeabba2e4d73bfec64b9c9f12'
 COMPILER = '1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b'
 MODEL = '8420b9f247c63f47f10f40ba5e875f5ed971e8948ea6748b9845698fe6bdb8b0'
@@ -52,9 +52,11 @@ def validate_draft(contract, evidence_sha256):
         require(contract[key] is False, 'DRAFT_CANNOT_AUTHORIZE:' + key)
     require(contract['allowed_cpus'] == [] and contract['absolute_launch_command'] is None,
             'NO_EXECUTION_CONFIGURATION')
-    require(contract['canonical_numerical_SOURCE'] == CANONICAL_SOURCE and
-            contract['unselected_numerical_SOURCE'] == UNSELECTED_SOURCE,
-            'SINGLE_CANONICAL_IMPLEMENTATION')
+    require(contract['implementation_B_SOURCE'] == IMPLEMENTATION_B_SOURCE and
+            contract['implementation_A_SOURCE'] == IMPLEMENTATION_A_SOURCE,
+            'PINNED_IMPLEMENTATIONS')
+    require(contract['implementation_selection'] == 'PENDING_USER_DECISION' and
+            contract['implementation_changes_authorized'] is False, 'NO_UNILATERAL_IMPLEMENTATION_CHANGE')
     require(contract['existing_B1_result_commit'] == EXISTING_B1_RESULT and
             contract['duplicate_fit_permitted'] is False, 'EXISTING_RUN_NO_DUPLICATE_FIT')
     require(contract['evidence_set_sha256'] == evidence_sha256, 'EVIDENCE_SET_BINDING')
@@ -146,14 +148,14 @@ def validate_records(records):
     require(seen == expected, 'EXACT_EIGHT_AXES')
     # This is evidence of an already executed B1, never permission to repeat it.
     hist = records['B1_binding']
-    require(hist['SOURCE'] == CANONICAL_SOURCE and hist['profile_sha256'] == PROFILE and
+    require(hist['SOURCE'] == IMPLEMENTATION_B_SOURCE and hist['profile_sha256'] == PROFILE and
             hist['compiler_hash'] == COMPILER and hist['original_B0_acquisition_status'] == 'STOP' and
             hist['historical_thread_compliance_certified'] is False, 'EXISTING_B1_BINDING')
     require(records['B1_contract']['authorized_B1_executed_once'] is True and
             records['B1_contract']['original_B0_run02_status'] == 'STOP', 'HISTORICAL_AUTHORIZATION_RECORD')
     for name in ('B1_terminal', 'B1_phase'):
         x = records[name]
-        require(x['status'] == 'COMPLETE_MANDATORY_STOP' and x['SOURCE'] == CANONICAL_SOURCE and
+        require(x['status'] == 'COMPLETE_MANDATORY_STOP' and x['SOURCE'] == IMPLEMENTATION_B_SOURCE and
                 x['model_sha256'] == MODEL and all(x[k] is False for k in
                 ('B2_authorized', 'C_authorized', 'next_stage_authorized')), 'EXISTING_B1_TERMINAL')
     require(digest(records['B1_model']) == MODEL, 'EXISTING_MODEL_BYTES_ONLY')
@@ -166,7 +168,9 @@ def validate_records(records):
                 saved_B0_axes=8, TRAIN_axes=6, HOLDOUT_axes=2,
                 original_acquisition_status='STOP', original_final_gate_replaced=False,
                 historical_thread_compliance_certified=False,
-                canonical_numerical_SOURCE=CANONICAL_SOURCE, existing_B1_result_commit=EXISTING_B1_RESULT,
+                implementation_A_SOURCE=IMPLEMENTATION_A_SOURCE, implementation_B_SOURCE=IMPLEMENTATION_B_SOURCE,
+                implementation_selection='PENDING_USER_DECISION', implementation_changes_authorized=False,
+                existing_B1_result_commit=EXISTING_B1_RESULT,
                 existing_B1_result_adopted=False, duplicate_fit_permitted=False,
                 approved=False, runtime_authorization=False, new_compile=0, new_fit=0,
                 new_residual=0, new_reaccount=0, new_valid_grant=0, mandatory_STOP=True)
