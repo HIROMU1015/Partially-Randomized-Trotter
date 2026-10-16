@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:m1s:saved-signal:gamma-v1:result",
+  "type": "object",
+  "required": [
+    "schema",
+    "status",
+    "evidence",
+    "forecast_kind",
+    "provenance",
+    "science",
+    "resources",
+    "mandatory_STOP",
+    "retry",
+    "physical_shot_guarantee",
+    "scientific_GO",
+    "native_costs",
+    "total_resources",
+    "absolute_shot_counts",
+    "gamma_grid",
+    "rows",
+    "comparisons",
+    "failure"
+  ],
+  "properties": {
+    "schema": {
+      "const": "m1s_saved_signal_gamma_v1_result"
+    },
+    "status": {
+      "enum": [
+        "TECHNICAL_STOP",
+        "GAMMA_CONDITIONS_COMPLETE_AWAITING_SCIENTIFIC_JUDGMENT"
+      ]
+    },
+    "evidence": {
+      "const": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    "forecast_kind": {
+      "const": "IDEAL_SIGNAL_HYPOTHETICAL_SUFFICIENT_DESIGN_GAMMA_CONDITIONS"
+    },
+    "mandatory_STOP": {
+      "const": true
+    },
+    "retry": {
+      "const": false
+    },
+    "physical_shot_guarantee": {
+      "const": false
+    },
+    "scientific_GO": {
+      "type": "null"
+    },
+    "native_costs": {
+      "type": "null"
+    },
+    "total_resources": {
+      "type": "null"
+    },
+    "absolute_shot_counts": {
+      "type": "null"
+    },
+    "gamma_grid": {
+      "type": "null"
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "split",
+          "R",
+          "delta",
+          "T",
+          "method",
+          "status"
+        ],
+        "properties": {
+          "split": {
+            "enum": [
+              "G3",
+              "G6",
+              "G9"
+            ]
+          },
+          "R": {
+            "enum": [
+              2,
+              4
+            ]
+          },
+          "delta": {
+            "enum": [
+              "1/8",
+              "1/16"
+            ]
+          },
+          "T": {
+            "enum": [
+              "0",
+              "1",
+              "4"
+            ]
+          },
+          "method": {
+            "enum": [
+              "shared_pm",
+              "ordinary",
+              "independent_pm"
+            ]
+          },
+          "status": {
+            "enum": [
+              "NOT_EVALUATED",
+              "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+              "TASK_OR_EVIDENCE_UNRESOLVED",
+              "NO_POSITIVE_PHASE_DOMAIN",
+              "ARITHMETIC_DOMAIN_UNRESOLVED",
+              "READY_FOR_GAMMA_DOMAIN"
+            ]
+          }
+        }
+      },
+      "minItems": 108,
+      "maxItems": 108
+    },
+    "comparisons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "split",
+          "R",
+          "delta",
+          "T",
+          "comparator",
+          "status",
+          "scientific_GO",
+          "native_costs",
+          "scientific_gain_claim"
+        ],
+        "properties": {
+          "split": {
+            "enum": [
+              "G3",
+              "G6",
+              "G9"
+            ]
+          },
+          "R": {
+            "enum": [
+              2,
+              4
+            ]
+          },
+          "delta": {
+            "enum": [
+              "1/8",
+              "1/16"
+            ]
+          },
+          "T": {
+            "enum": [
+              "1",
+              "4"
+            ]
+          },
+          "comparator": {
+            "enum": [
+              "ordinary",
+              "independent_pm"
+            ]
+          },
+          "status": {
+            "enum": [
+              "NOT_EVALUATED",
+              "NO_COMMON_PHASE_DOMAIN",
+              "ARITHMETIC_UNRESOLVED",
+              "EVIDENCE_UNRESOLVED_NOT_COMPARABLE",
+              "ALL_COMMON_GAMMA_EQUAL",
+              "ALL_COMMON_GAMMA_SHARED_HIGHER",
+              "ALL_COMMON_GAMMA_SHARED_LOWER",
+              "UNIQUE_TRADEOFF_BOUNDARY"
+            ]
+          },
+          "scientific_GO": {
+            "type": "null"
+          },
+          "native_costs": {
+            "type": "null"
+          },
+          "boundary_interval_rad": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "scientific_gain_claim": {
+            "enum": [
+              "NOT_ASSESSED",
+              "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE"
+            ]
+          }
+        }
+      },
+      "minItems": 48,
+      "maxItems": 48
+    },
+    "failure": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "science": {
+      "type": "object"
+    },
+    "resources": {
+      "type": "object"
+    },
+    "arithmetic": {
+      "type": "object"
+    },
+    "usage": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "GAMMA_CONDITIONS_COMPLETE_AWAITING_SCIENTIFIC_JUDGMENT"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "failure": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}
