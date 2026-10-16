@@ -1,5 +1,7 @@
 # V1 Phase B run01：S4検証compileを起動
 
+終了追記：[登録全4軸PASS・正常終了STOP](track_a_v1_phase_b_run01_results_20261016.md)を確認した。以下は起動時点の履歴であり、現在の完了状態は終了報告を参照。
+
 2026-10-16 14:10:37 JSTのsnapshotで、B0 p11 q1 S4 cosineの実compile開始を確認した。実行SOURCEは `fcf37e6794e2e51fc95e958a75fc8f75fb049423`。準備内容のcommit・push後にremote SHAとlocal tree一致を確認し、利用者の「計算を実際に開始するところまで進めて」に基づく独立one-shot grantとfresh gateを発行した。
 
 [起動receipt](../../artifacts/resource_applicability/track_a_v1_phase_b_run01/2026-10-16/start_receipt.json)、[固定モデルと実行契約](track_a_v1_phase_b_readiness_20261016.md)。これは起動時刻付きの記録であり、全軸PASSや完了の記録ではない。

@@ -6,3 +6,5 @@ Phase Aのcommit bf865de1…を受け、[Phase B固定モデルと検証契約](
 compile前固定のmodelを新実測で自動再fitせず、検証後の5精度費用比較・V2は自動実行しない。H5と他作業、旧raw/grant/ledgerを保全する。
 
 14:10 JST追記：[起動snapshot](../track_a_v1_phase_b_run01_started_20261016.md)。準備SOURCEfcf37e67…のremote一致後、fresh gate PASS、実compile開始を確認。既存650ファイル不変。全軸検証結果は未確定で、起動時点の記録として公開する。
+
+終了確認追記：[登録全4軸PASS・完了STOP](../track_a_v1_phase_b_run01_results_20261016.md)。B0誤差321/326305、B0+I誤差0。wall3037.384秒、native wait0、全回収。SOURCE/provider/runtime/9入力/650旧ファイル不変。モデル再fitせず、5精度再会計・V2を開始せずmandatory STOP。登録4軸の局所検証と全prefixへの保証を区別する。

@@ -1,5 +1,7 @@
 # Track A V1 Phase B：保存費用モデル固定と最大4軸検証
 
+終了追記：[登録S4全4軸PASS・終了STOP](track_a_v1_phase_b_run01_results_20261016.md)。以下はcompile前に固定したモデルと準備の履歴であり、モデル・予測・transfer receiptは実測後も変更していない。
+
 Phase A結果commit `bf865de1efae51ce1663c878ad1e9daa5bb915c2` の追加104候補と既存実測費用を照合し、S2の4独立stratumと、S4の4軸予測をcompile前に固定した。
 本資料作成時点では新compile・grantは0、S4は未検証。利用者の後続指示「計算を実際に開始するところまで進めて」により、準備公開・remote SHA確認・fresh gateの後、同Phase Bの検証だけをone-shot起動する。完了または異常でmandatory STOP。次の5精度費用再評価は自動起動しない。
 
