@@ -1,5 +1,7 @@
 # V1：保存データによる5精度費用再評価の実行契約
 
+終了追記：[5精度再会計・結果と限界・完了STOP](track_a_v1_reaccount_results_20261016.md)。以下は実行前固定の比較・契約の履歴。
+
 利用者の「その方針で進めて」に基づき、Phase BでPASSした固定モデルを用いたone-shot再会計を実行する。対象はlinear H6/1Å/STO-3G/tol-only DF19/12 modes/sector400、T=.8、q1/2/4/8（δ=.8/.4/.2/.1）。新しいsignal・scalar overlay・primitive・native回路・compile・fit・sampling・V2計算は0とする。
 
 [機械可読の計画と入力binding](../../artifacts/resource_applicability/track_a_v1_reaccount_readiness/2026-10-16/README.md)。[再会計runner](../../scripts/track_a_v1_reaccount.py)、[入力materializer](../../scripts/prepare_track_a_v1_reaccount.py)、[人工tests](../../tests/test_track_a_v1_reaccount.py)。[Phase B結果](track_a_v1_phase_b_run01_results_20261016.md)はcommit `66caef169940320eb263d1e6fd8e87d1068d73f2`。

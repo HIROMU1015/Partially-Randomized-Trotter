@@ -10,3 +10,5 @@ compile前固定のmodelを新実測で自動再fitせず、検証後の5精度�
 終了確認追記：[登録全4軸PASS・完了STOP](../track_a_v1_phase_b_run01_results_20261016.md)。B0誤差321/326305、B0+I誤差0。wall3037.384秒、native wait0、全回収。SOURCE/provider/runtime/9入力/650旧ファイル不変。モデル再fitせず、5精度再会計・V2を開始せずmandatory STOP。登録4軸の局所検証と全prefixへの保証を区別する。
 
 利用者の「その方針で進めて」を受け、[5精度の保存値再会計](../track_a_v1_reaccount_readiness_20261016.md)を専用one-shotで進める。実測4軸を優先し他の追加候補には固定modelを適用、旧比較の完全再現をgateとする。非相殺分解未保存候補を未解決のまま保持する。V2保留・新科学計算0・終了時STOP。
+
+保存値再会計の終了追記：[結果と範囲](../track_a_v1_reaccount_results_20261016.md)。SOURCE2261a3ad…、旧表2170照合一致、4320会計行/60比較、wall6.024秒/native0/全回収。通常bias・固定model条件下でε=.05のPR優位が反転、中間εで削減率が10pp以上縮小。新最良対照は全てmodel推定、p7は外挿。非相殺診断は旧B0I12候補未保存で全domain最良をnullとした。旧653ファイル保全、新signal/compile/fit/V2実行0、mandatory STOP。
