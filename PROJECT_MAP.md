@@ -1,3 +1,5 @@
+H7中性開殻準備：[条件・計画](docs/research/track_a_h7_neutral_open_shell_readiness_20261016.md)、[SOURCE/54人工検査/監査](artifacts/resource_applicability/track_a_h7_open_shell_readiness_v1/2026-10-16/README.md)。SOURCEf93ad35b、14modes/sector1225・CSR/Numba/thread1・通常4並列、最大40compile案。実H7科学計算/grant0、実rank未知、別実行承認待ち。
+
 H5中性開殻pilot完了：[結果](docs/research/track_a_h5_neutral_open_shell_pilot_result_20261016.md)、[監査入口](artifacts/resource_applicability/track_a_h5_neutral_open_shell_pilot_v1/2026-10-16/README.md)。SOURCEd86a4673、rank14/p4/T.8/q1、20group/40compile/16trajectory、34人工mock PASS、exit0/reap/cleanup0・STOP。ε=.05のPR/PF点比.554、母平均・全面map・H7未認定。
 
 H8本格core完了：[結果](docs/research/track_a_h8_resource_map_result_v1.md)、[資料入口](artifacts/resource_applicability/track_a_h8_resource_map_result_v1/2026-10-14/README.md)。SOURCEc31ef424、92signal/592探索/192独立確認/1572wrapper。PR確認点RZ削減54.29–65.76%（fullPF比/P=0/経験的u）、母平均・stateprep込みは未保証。metadata36094 SHA/3576行算術一致、exit0/reap/cleanup0/残存0・mandatory STOP。以下running記録は履歴。

@@ -1,3 +1,5 @@
+H7中性開殻：[限定pilot準備](../docs/research/track_a_h7_neutral_open_shell_readiness_20261016.md)。新`h7_open_shell` adapter・prepare/run H7 scripts・`test_h7_open_shell.py`、SOURCEf93ad35b/54人工mock PASS。旧H5 library/native/monitorを保持して再利用、実H7未実行。
+
 H5中性開殻：[限定pilotと修正](../docs/research/track_a_h5_neutral_open_shell_pilot_result_20261016.md)。`h5_open_shell` adapter、prepare/run H5 scripts、`test_h5_open_shell.py`、SOURCEd86a4673、34人工mock/40実compile完了。旧libraryは変更せず再利用。
 
 H8再開02：`h8_resource_map_execution_v1.py` のinventory/own-run writer競合修正と2段階complete-only binding。入口 `docs/research/track_a_h8_resource_map_resume02_v1.md`。
