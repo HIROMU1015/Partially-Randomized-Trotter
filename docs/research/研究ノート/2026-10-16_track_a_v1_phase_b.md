@@ -8,3 +8,5 @@ compile前固定のmodelを新実測で自動再fitせず、検証後の5精度�
 14:10 JST追記：[起動snapshot](../track_a_v1_phase_b_run01_started_20261016.md)。準備SOURCEfcf37e67…のremote一致後、fresh gate PASS、実compile開始を確認。既存650ファイル不変。全軸検証結果は未確定で、起動時点の記録として公開する。
 
 終了確認追記：[登録全4軸PASS・完了STOP](../track_a_v1_phase_b_run01_results_20261016.md)。B0誤差321/326305、B0+I誤差0。wall3037.384秒、native wait0、全回収。SOURCE/provider/runtime/9入力/650旧ファイル不変。モデル再fitせず、5精度再会計・V2を開始せずmandatory STOP。登録4軸の局所検証と全prefixへの保証を区別する。
+
+利用者の「その方針で進めて」を受け、[5精度の保存値再会計](../track_a_v1_reaccount_readiness_20261016.md)を専用one-shotで進める。実測4軸を優先し他の追加候補には固定modelを適用、旧比較の完全再現をgateとする。非相殺分解未保存候補を未解決のまま保持する。V2保留・新科学計算0・終了時STOP。
