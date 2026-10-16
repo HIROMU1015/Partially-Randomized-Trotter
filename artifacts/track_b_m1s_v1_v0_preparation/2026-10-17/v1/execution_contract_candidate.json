@@ -1,0 +1,114 @@
+{
+  "schema": "m1s_saved_signal_v1_contract",
+  "base_commit": "870af3f65e3e31e19d2b002c556216c7340c06f0",
+  "status": "CANDIDATE_NOT_ADOPTED_NOT_EXECUTABLE",
+  "adopted": false,
+  "coverage_model_adopted": false,
+  "contract_grants_execution": false,
+  "mandatory_STOP": true,
+  "research_direction_adopted": true,
+  "direction": {
+    "first": "TASK_A_SAVED_RAW_H_SINGLE_TIME_PHASE",
+    "ultimate": "TASK_B_MULTIROUND_ENERGY_RPE_NOT_IN_V1",
+    "route": "UNCORRECTED_RAW_DIRECT",
+    "candidates": "ALL_SAVED_CELLS_TWO_INTERNAL_COMPARATORS"
+  },
+  "model": {
+    "molecule": "linear_H4",
+    "distance_angstrom": "1.00",
+    "basis": "STO-3G",
+    "modes": 8,
+    "df_rank": 12,
+    "splits": [
+      "G3",
+      "G6",
+      "G9"
+    ],
+    "delta_Ha_inverse": [
+      "1/8",
+      "1/16"
+    ],
+    "R": [
+      2,
+      4
+    ],
+    "T_Ha_inverse": [
+      "1",
+      "4"
+    ],
+    "state": "SAVED_ORIGINAL_NORM2_QUOTIENT",
+    "signal_sign": "+iTH"
+  },
+  "input": {
+    "path": "artifacts/track_b_m1s_finite_signal_v2_result/2026-10-16/completion_attempt_02/result.json",
+    "commit": "025c5a90888b02b73d2815fbb10d6bd1d2823602",
+    "bytes": 454422,
+    "sha256": "ff6c5192d8cca769cd61a1478cea01671d058a85a8f6a4cdcdc9baa672a56fe0",
+    "schema": "m1s_finite_signal_result_v2",
+    "status": "PILOT_COMPLETE_AWAITING_SCIENTIFIC_JUDGMENT"
+  },
+  "grid": {
+    "all_rows": 108,
+    "forecast_rows": 72,
+    "saved_zero_controls": 36,
+    "paired_contrasts": 48
+  },
+  "science": {
+    "accuracy_semantics": null,
+    "confidence_scope": null,
+    "statistical_policy": null,
+    "coverage_acceptance": null,
+    "comparison_policy": null,
+    "materiality_policy": null,
+    "gamma_rad": null,
+    "alpha_total": null,
+    "arithmetic_bits": null
+  },
+  "resources": {
+    "workers": 1,
+    "gpu": false,
+    "memory_bytes": 2147483648,
+    "input_bytes": 1048576,
+    "result_bytes": 16777216,
+    "log_bytes": 16777216,
+    "max_rational_bits": 65536,
+    "max_series_terms_per_call": 4096,
+    "max_bound_steps": 1000000,
+    "max_shot_integer_bits": 4096,
+    "max_arithmetic_bits": 256,
+    "wall_time_seconds": null,
+    "cpu_time_seconds": null,
+    "thread_environment": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "1",
+      "RAYON_NUM_THREADS": "1"
+    }
+  },
+  "source_identity": {
+    "commit": "de622bd77ebd61a6d2cf5b69e29c4e620c8563b3",
+    "files": {
+      "src/trottertracks/algorithm_codesign/m1s_saved_signal_v1/__init__.py": "7e175557901a2889ae8ce59c4d6a4548adcfb936f358ab29f643824f5a917e7e",
+      "src/trottertracks/algorithm_codesign/m1s_saved_signal_v1/spec.py": "03acbf03c9b7ba0e40a5807d56634d30e4bb435ad9dbac9937d1bf52c50c8e88",
+      "src/trottertracks/algorithm_codesign/m1s_saved_signal_v1/control.py": "49b4637ddca7fe7026e69328db3b6b32e24b0f36bd4f4d71f1acdea5b5ed03c5",
+      "src/trottertracks/algorithm_codesign/m1s_saved_signal_v1/bounds.py": "f955e70a8725a570528f962fcdb48b3a8486078f61afa1f551427c7b7a5bd298",
+      "src/trottertracks/algorithm_codesign/m1s_saved_signal_v1/analysis.py": "baf3870914bd9d414781106d51bda56eea4c27b93384dc6b0ce71d03323359a6",
+      "scripts/tracks/algorithm_codesign/run_m1s_saved_signal_v1.py": "75997798e13ac702d7ef70504eac93b38774eb5bb0bc2f64173f82949cb32f62",
+      "artifacts/track_b_m1s_v1_v0_preparation/2026-10-17/v1/result_schema.json": "90b065d1ff0f1a4d1710ca5435b8466aba9896b6800a99046cc36455d38bd47b"
+    }
+  },
+  "evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+  "forecast_kind": "IDEAL_SIGNAL_HYPOTHETICAL_SUFFICIENT_SHOT_FORECAST",
+  "bias_definition": "min(pi,abs(saved_total_principal_bias)+saved_phase_radius)",
+  "model_drift_added_again": false,
+  "shot_formula": "ceil_upper(4*log(2/alpha_axis)/(A_lower^2*sin(q)^2))",
+  "visibility": "max(0,saved_visibility-saved_visibility_error_radius)",
+  "q": "gamma-b_upper; require 0<gamma<pi/2 and q>0",
+  "physical_shot_guarantee": false,
+  "scientific_GO": null,
+  "native_costs": null,
+  "total_resources": null,
+  "retry": false,
+  "one_shot": true
+}

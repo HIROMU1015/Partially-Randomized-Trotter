@@ -1,0 +1,86 @@
+{
+  "schema": "m1s_v1_scientific_open_items",
+  "required_before_contract_adoption": [
+    {
+      "field": "gamma_rad",
+      "value": null,
+      "units": "rad",
+      "meaning": "common Task A circular phase error target; 0<gamma<pi/2; not an energy precision or pilot numerical radius"
+    },
+    {
+      "field": "alpha_total",
+      "value": null,
+      "meaning": "0<alpha<1 exact rational string"
+    },
+    {
+      "field": "confidence_scope",
+      "value": null,
+      "choices": [
+        "PER_METHOD_ROW",
+        "FAMILY_ALL_72_METHOD_ROWS"
+      ],
+      "meaning": "per-method row confidence or family union bound over all 72 nonzero method rows; zeros not forecast"
+    },
+    {
+      "field": "statistical_policy",
+      "value": null,
+      "choices": [
+        "FRESH_IID_HOEFFDING_EQUAL_AXES"
+      ],
+      "meaning": "fresh IID per shot; equal X/Y confidence and equal sufficient-design counts; no circuit reuse assumption"
+    },
+    {
+      "field": "accuracy_semantics",
+      "value": null,
+      "choices": [
+        "HIGH_PROBABILITY_CIRCULAR_PHASE_ERROR"
+      ]
+    },
+    {
+      "field": "arithmetic_bits",
+      "value": null,
+      "meaning": "adopt common enclosure resolution; implementation supports 8..256 bits, no automatic result-dependent precision increase"
+    },
+    {
+      "field": "coverage_acceptance",
+      "value": null,
+      "choices": [
+        "SAVED_CONDITIONAL_RADII_IDEAL_MEAN_ONLY"
+      ]
+    },
+    {
+      "field": "comparison_policy",
+      "value": null,
+      "choices": [
+        "COMMON_SUFFICIENT_DESIGNS_NO_OPTIMALITY"
+      ]
+    },
+    {
+      "field": "materiality_policy",
+      "value": null,
+      "choices": [
+        "DESCRIPTIVE_ONLY_NO_SCIENTIFIC_GO"
+      ],
+      "meaning": "proposed descriptive-only route avoids silently setting mu=0; scientific materiality not evaluated"
+    },
+    {
+      "field": "resources",
+      "value": "TECHNICAL_CANDIDATE_NOT_ADOPTED",
+      "meaning": "CPU1/noGPU/2GiB/16MiB result+log; no wall/CPU time cap"
+    }
+  ],
+  "not_required_for_Task_A_and_not_inferred": [
+    "energy_target_overlap_gap_or_prior",
+    "dyadic_RPE_horizon_and_decoder",
+    "epsilon_E",
+    "native_gate_profile_HD_synthesis_and_costs",
+    "SPAM_stateprep_physical_transfer",
+    "end_to_end_materiality_threshold",
+    "Task_B_baselines_and_held_out_design"
+  ],
+  "additional_technical_source_changes_required_for_current_supported_policy": false,
+  "numerical_correctness": "NOT_EXECUTED",
+  "runtime_performance": "NOT_MEASURED",
+  "V1_requires_separate_explicit_scientific_execution_approval": true,
+  "mandatory_STOP": true
+}
