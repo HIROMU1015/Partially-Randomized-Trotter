@@ -141,7 +141,7 @@ def validate_config(config, require_adopted=False):
             errors.append(f"Finite nonnegative (strictly positive except exact checks) contract value required: {key}")
     policy = config["formula_policy"]
     expected_policy = formula_policy()
-    for key in ("schema", "assumptions", "denominator_multiple"):
+    for key in ("schema", "assumptions"):
         if policy[key] != expected_policy[key]:
             errors.append(f"Unsupported formula policy: {key}")
     if type(policy["coverage_model_adopted"]) is not bool:

@@ -19,7 +19,7 @@ FORMULA_IDS = {
     "eps_imag_energy": "rayleigh_imaginary_v1",
     "W_error_budget": "W_forward_error_v1",
     "v_error_budget": "variance_forward_error_v1",
-    "W_floor": "denominator_multiple_v1",
+    "W_floor": "rho_resolution_floor_v1",
 }
 
 
@@ -27,7 +27,6 @@ def formula_policy():
     return {"schema": "m1s_gate0_conditional_roundoff_model_v1",
             "coverage_model_adopted": False,
             "oracle_relative_residual_quality": None,
-            "denominator_multiple": 8,
             "assumptions": ["IEEE_BINARY64_ROUND_TO_NEAREST",
                 "NO_UNACCOUNTED_OVERFLOW_UNDERFLOW_OR_FTZ",
                 "COMPLEX_BLAS_GAMMA_8K_PLUS_32",
@@ -167,8 +166,15 @@ class _Budget:
         for key in values:
             if not is_formula(precision[key], key):
                 values[key] = precision[key]
-        values["W_floor"] = (self.up(self.policy["denominator_multiple"]*self.q(values["W_error_budget"]))
-            if is_formula(precision["W_floor"], "W_floor") else precision["W_floor"])
+        if is_formula(precision["W_floor"], "W_floor"):
+            rho_target = self.q(precision["eps_rho"])
+            rho_roundoff = self.gamma(8)
+            if rho_target <= rho_roundoff:
+                return None, {"status": "RHO_TARGET_BELOW_ROUNDOFF_PRECISION_UNRESOLVED"}
+            half_error_sum = (self.q(values["W_error_budget"])+self.q(values["v_error_budget"]))/2
+            values["W_floor"] = self.up(half_error_sum*(1+rho_roundoff)/(rho_target-rho_roundoff))
+        else:
+            values["W_floor"] = precision["W_floor"]
         ledger = {"coverage": "CONDITIONAL_MODEL_NOT_PLATFORM_CERTIFIED",
             "resolved_law_limits": values, "lambda_absolute_error_upper": self.up(dl),
             "normalized_law_L1_error_upper": self.up(ep),
