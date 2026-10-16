@@ -28,8 +28,9 @@ SOURCE_PATHS = (
     "scripts/tracks/algorithm_codesign/run_m1s_gate0_headroom.py",
 )
 EPS_KEYS = (
-    "eps_H", "eps_hermiticity", "eps_phase", "eps_state_norm",
-    "eps_state_residual", "eps_basis", "eps_prob", "eps_imag", "eps_W",
+    "eps_H", "eps_hermiticity_H", "eps_hermiticity_factors", "eps_phase", "eps_state_norm",
+    "eps_state_residual", "eps_basis", "eps_prob", "eps_imag_coeff",
+    "eps_imag_energy", "eps_imag_expectation", "eps_W",
     "eps_v", "eps_rho", "W_error_budget", "v_error_budget", "W_floor",
 )
 THREAD_KEYS = ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS",

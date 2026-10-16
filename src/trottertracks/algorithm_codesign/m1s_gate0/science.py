@@ -188,8 +188,8 @@ class _Engine:
         # Projection is permitted only after its L1 operator-error ledger passes.
         # No approximate real coefficient is dropped, even if tiny.
         imag_l1 = math.fsum(abs(complex(c).imag) for c in mapping.values())
-        self.gate(label + "_imaginary_L1", imag_l1 <= self.eps["eps_imag"],
-                  imag_l1, self.eps["eps_imag"])
+        self.gate(label + "_imaginary_L1", imag_l1 <= self.eps["eps_imag_coeff"],
+                  imag_l1, self.eps["eps_imag_coeff"])
         real = {p: float(complex(c).real) for p, c in mapping.items() if complex(c).real != 0}
         return real, imag_l1
 
@@ -255,8 +255,8 @@ class _Engine:
         np = self.np
         for label, matrix in [("one_body", self.one), *[(f"g_{i}", g) for i, g in enumerate(self.gs)]]:
             error = self._norm(matrix - matrix.conj().T)
-            self.gate(label + "_input_hermiticity_F", error <= self.eps["eps_hermiticity"],
-                      error, self.eps["eps_hermiticity"])
+            tolerance = self.eps["eps_hermiticity_H" if label == "one_body" else "eps_hermiticity_factors"]
+            self.gate(label + "_input_hermiticity_F", error <= tolerance, error, tolerance)
         # Reuse each JW bilinear and each squared DF block across the 3 splits.
         self.bilinears = {(p, q): self._multiply(self._jw_ladder(p, True), self._jw_ladder(q, False))
                           for p in range(8) for q in range(8)}
@@ -277,11 +277,11 @@ class _Engine:
             self.block_reference.append(self.lambdas[index] * (refA @ refA))
         self.full_reference = self.base_reference + sum(self.block_reference)
         herr = self._norm(self.full_reference - self.full_reference.conj().T)
-        self.gate("full_H_hermiticity_F", herr <= self.eps["eps_hermiticity"], herr, self.eps["eps_hermiticity"])
+        self.gate("full_H_hermiticity_F", herr <= self.eps["eps_hermiticity_H"], herr, self.eps["eps_hermiticity_H"])
         Hpsi = self.full_reference @ self.state
         energy = np.vdot(self.state, Hpsi) / self.norm2
-        self.gate("state_energy_imaginary", abs(float(energy.imag)) <= self.eps["eps_imag"],
-                  abs(float(energy.imag)), self.eps["eps_imag"])
+        self.gate("state_energy_imaginary", abs(float(energy.imag)) <= self.eps["eps_imag_energy"],
+                  abs(float(energy.imag)), self.eps["eps_imag_energy"])
         residual = self._norm(Hpsi - energy.real * self.state) / math.sqrt(self.norm2)
         self.gate("full_H_state_residual_2", residual <= self.eps["eps_state_residual"],
                   residual, self.eps["eps_state_residual"])
@@ -314,8 +314,8 @@ class _Engine:
             self.gate("reconstruction_" + name, error <= self.eps["eps_H"], error, self.eps["eps_H"], split)
         for name, matrix in (("HD", hd), ("HR", hr)):
             error = self._norm(matrix - matrix.conj().T)
-            self.gate(name + "_hermiticity_F", error <= self.eps["eps_hermiticity"], error,
-                      self.eps["eps_hermiticity"], split)
+            self.gate(name + "_hermiticity_F", error <= self.eps["eps_hermiticity_H"], error,
+                      self.eps["eps_hermiticity_H"], split)
         phase_error = self._norm((hd - refd) + (hr - refr))
         self.gate("identity_phase_ledger_F", phase_error <= self.eps["eps_phase"], phase_error,
                   self.eps["eps_phase"], split)
@@ -361,8 +361,8 @@ class _Engine:
         means = []
         for event in table:
             value = event["signed_event_sign"] * np.vdot(self.state, self._apply_pauli(event["word"], self.state)) / self.norm2
-            self.gate("Pauli_expectation_imaginary", abs(float(value.imag)) <= self.eps["eps_imag"],
-                      abs(float(value.imag)), self.eps["eps_imag"], split)
+            self.gate("Pauli_expectation_imaginary", abs(float(value.imag)) <= self.eps["eps_imag_expectation"],
+                      abs(float(value.imag)), self.eps["eps_imag_expectation"], split)
             means.append(float(value.real))
         mean = math.fsum(p * a for p, a in zip(probabilities, means))
         v = math.fsum(p * (a - mean) ** 2 for p, a in zip(probabilities, means))
