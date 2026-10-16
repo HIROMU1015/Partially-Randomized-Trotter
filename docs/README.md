@@ -1,3 +1,5 @@
+H7中性開殻pilot：[結果](research/track_a_h7_neutral_open_shell_pilot_result_20261016.md)・[監査](../artifacts/resource_applicability/track_a_h7_neutral_open_shell_pilot_v1/2026-10-16/README.md)。DF23/p6/T.8/q1、20/40/16完了、ε=.05のPR点RZ削減29.39–31.58%、母平均未保証・STOP。
+
 H7中性開殻：[限定pilot準備](research/track_a_h7_neutral_open_shell_readiness_20261016.md)。新`h7_open_shell` adapter・prepare/run H7 scripts・`test_h7_open_shell.py`、SOURCEf93ad35b/54人工mock PASS。旧H5 library/native/monitorを保持して再利用、実H7未実行。
 
 H5中性開殻：[限定pilotと修正](research/track_a_h5_neutral_open_shell_pilot_result_20261016.md)。`h5_open_shell` adapter、prepare/run H5 scripts、`test_h5_open_shell.py`、SOURCEd86a4673、34人工mock/40実compile完了。旧libraryは変更せず再利用。

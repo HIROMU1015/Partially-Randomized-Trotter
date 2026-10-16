@@ -1,3 +1,6 @@
+H7中性開殻pilot完了：linearH7/1Å/STO-3G/neutralROHF/Na4Nb3/sector1225/tol-onlyDF23/p6/T.8/q1。20group/40compile/16trajectory、元SOURCEf93ad35b・runtime修正SOURCEd9fd36fc、33限定回帰。ε=.05/P0のPR/fullS2点比K2 .684194・K4 .706055（31.58%/29.39%減）。PRはε≤.01不適格、fullS4だけ.01適格、ε≤.005は全panel不適格。各8標本/経験的u・母平均/全面map未認定。12reuse＋新8、exit0/reap/cleanup0/残存0・mandatory STOP。
+[結果](docs/research/track_a_h7_neutral_open_shell_pilot_result_20261016.md)・[監査入口](artifacts/resource_applicability/track_a_h7_neutral_open_shell_pilot_v1/2026-10-16/README.md)。以下は各stage当時の記録。
+
 H7中性開殻準備：[条件・計画](docs/research/track_a_h7_neutral_open_shell_readiness_20261016.md)、[SOURCE/54人工検査/監査](artifacts/resource_applicability/track_a_h7_open_shell_readiness_v1/2026-10-16/README.md)。SOURCEf93ad35b、14modes/sector1225・CSR/Numba/thread1・通常4並列、最大40compile案。実H7科学計算/grant0、実rank未知、別実行承認待ち。
 
 H5中性開殻pilot完了：[結果](docs/research/track_a_h5_neutral_open_shell_pilot_result_20261016.md)、[監査入口](artifacts/resource_applicability/track_a_h5_neutral_open_shell_pilot_v1/2026-10-16/README.md)。SOURCEd86a4673、rank14/p4/T.8/q1、20group/40compile/16trajectory、34人工mock PASS、exit0/reap/cleanup0・STOP。ε=.05のPR/PF点比.554、母平均・全面map・H7未認定。

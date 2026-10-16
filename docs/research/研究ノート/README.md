@@ -1,3 +1,5 @@
+H7限定pilot：[2026-10-16完了・監視修正・再開](2026-10-16_h7_neutral_open_shell_pilot_result.md)。
+
 # 研究ノート
 
 ## 2026-10-12 H6共用サーバーPhase A v1：dependency STOP

@@ -1,3 +1,6 @@
+H7中性開殻pilot完了：linearH7/1Å/STO-3G/neutralROHF/Na4Nb3/sector1225/tol-onlyDF23/p6/T.8/q1。20group/40compile/16trajectory、元SOURCEf93ad35b・runtime修正SOURCEd9fd36fc、33限定回帰。ε=.05/P0のPR/fullS2点比K2 .684194・K4 .706055（31.58%/29.39%減）。PRはε≤.01不適格、fullS4だけ.01適格、ε≤.005は全panel不適格。各8標本/経験的u・母平均/全面map未認定。12reuse＋新8、exit0/reap/cleanup0/残存0・mandatory STOP。
+[結果](docs/research/track_a_h7_neutral_open_shell_pilot_result_20261016.md)・[120軸shot/40回路整合・source/input監査](artifacts/resource_applicability/track_a_h7_neutral_open_shell_pilot_v1/2026-10-16/completion_audit_v1.json)。新科学call0、主担当のlocal監査・外部CI再現なし。以下は各stage当時の記録。
+
 H8本格core完了：[結果](docs/research/track_a_h8_resource_map_result_v1.md)、[資料入口](artifacts/resource_applicability/track_a_h8_resource_map_result_v1/2026-10-14/README.md)。SOURCEc31ef424、92signal/592探索/192独立確認/1572wrapper。PR確認点RZ削減54.29–65.76%（fullPF比/P=0/経験的u）、母平均・stateprep込みは未保証。metadata36094 SHA/3576行算術一致、exit0/reap/cleanup0/残存0・mandatory STOP。以下running記録は履歴。
 
 H8監視競合修正・再開02：[入口](artifacts/resource_applicability/track_a_h8_resource_map_resume02_v1/2026-10-14/README.md)、[契約](docs/research/track_a_h8_resource_map_resume02_v1.md)。SOURCEc31ef424/44限定mock PASS、92signal/126group再利用、残466・8worker。上限1722/843/4219承認済み、03:19 JSTに8worker再開。coordinator643626、own-run監視下で継続。

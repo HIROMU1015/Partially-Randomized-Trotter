@@ -1,3 +1,5 @@
+H7中性開殻pilot：[結果](track_a_h7_neutral_open_shell_pilot_result_20261016.md)・[監査](../../artifacts/resource_applicability/track_a_h7_neutral_open_shell_pilot_v1/2026-10-16/README.md)。固定6構成20group/40compile/16trajectory、SOURCEd9fd36fc/seedf93ad35b・mandatory STOP。
+
 # 研究計画資料
 
 ## 2026-10-12 H6共用サーバーPhase A v1：dependency STOP
