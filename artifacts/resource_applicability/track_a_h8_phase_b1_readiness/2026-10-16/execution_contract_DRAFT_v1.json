@@ -1,0 +1,111 @@
+{
+  "schema": "H8_B1_PREPARATION_DRAFT_V1",
+  "status": "STOP_MISSING_REQUIRED_ANCHOR_PROVENANCE",
+  "authorization": {
+    "approved": false,
+    "runtime_authorization": false,
+    "grant_issued": false,
+    "SOURCE": null,
+    "allowed_cpus": [],
+    "command": null,
+    "mandatory_stop": true,
+    "retry": false,
+    "next_stage_authorized": false
+  },
+  "scope": "H8_SAVED_S2_ANCHORS_ONLY_NO_NEW_COMPILE_SIGNAL_OR_REACCOUNT",
+  "required_strata": [
+    "B0/cosine",
+    "B0/sine",
+    "B0I/cosine",
+    "B0I/sine"
+  ],
+  "models": {
+    "S2": "a+b*q+d*prefix*q",
+    "S4": "a+3*b*q+3*d*prefix*q",
+    "coefficients": null,
+    "H6_coefficients_transferred": false
+  },
+  "fixed_conditions": {
+    "model": "linear H8",
+    "separation_angstrom": 1,
+    "basis": "STO-3G",
+    "modes": 16,
+    "electrons_alpha": 4,
+    "electrons_beta": 4,
+    "sector_dimension": 4900,
+    "DF_rank": 28,
+    "DF_tolerance": "1e-8",
+    "DF_cutoff": 0,
+    "order": "SIGNED_GENERATION",
+    "projection": "WEIGHTED_HERMITIAN",
+    "T": "0.8",
+    "q": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "delta": [
+      "0.8",
+      "0.4",
+      "0.2",
+      "0.1"
+    ],
+    "control": "symmetric_directional",
+    "compiler_hash": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "full_runtime_profile_sha256": "622ce4a8391002558b877240b48d831d9bb0a72aeabba2e4d73bfec64b9c9f12",
+    "full_H_reference": "SAVED_UNROTATED",
+    "allowance": "UNCHANGED_EMPIRICAL_FACTOR_1_AND_10_NOT_CERTIFIED"
+  },
+  "fit_prerequisites": [
+    "EXPLICIT_NEW_B1_APPROVAL",
+    "ALL_FOUR_STRATA_HAVE_PROVENANCE_COMPLETE_ANCHORS",
+    "AT_LEAST_3_NONCOLLINEAR_ANCHORS_PER_STRATUM_FIXED_BY_PRIOR_CONTRACT",
+    "VERIFY_DESIGN_RANK_AFTER_APPROVAL_BEFORE_FIT",
+    "SEALED_ONE_SHOT_RUNNER_AND_NEW_GRANT",
+    "FRESH_SOURCE_INPUT_RUNTIME_RESOURCE_PRESERVATION_GATE"
+  ],
+  "fit_method_proposal": "EXACT_RATIONAL_LINEAR_LEAST_SQUARES_OF_SAVED_INTEGER_RZ_PER_STRATUM",
+  "fit_failure_policy": "STOP_NO_REFIT_OR_TRANSFER_OR_AUTOMATIC_PARTIAL_FIT",
+  "fit_anchor_diagnostic_proposal": "ALL_REGISTERED_ANCHOR_PREDICTIONS_POSITIVE_AND_PER_AXIS_RELATIVE_ERROR_BELOW_1/50_ELSE_STOP",
+  "S4_hypothesis_conditions": [
+    "UNMERGED_THREE_SIGNED_SECOND_ORDER_PIECES",
+    "SCALAR_AND_WRAPPER_ONCE",
+    "NO_CLAIM_OF_COMPILED_STAGE_ADDITIVITY_BEFORE_B2"
+  ],
+  "resources_proposal": {
+    "processes": 1,
+    "threads": 1,
+    "address_space_bytes": 536870912,
+    "rss_bytes": 268435456,
+    "cumulative_CPU_seconds": 240,
+    "wall_seconds": 600,
+    "output_bytes": 67108864,
+    "fresh_gate_max_age_seconds": 30,
+    "separate_physical_core": true,
+    "no_other_job_affinity_changes": true
+  },
+  "B2": {
+    "max_axes": 4,
+    "compile_concurrency": 1,
+    "error_stop": "abs(predicted-measured)/measured >= 1/50",
+    "retry": false,
+    "refit": false,
+    "separate_approval": true,
+    "mandatory_stop": true,
+    "predictions": null,
+    "model_sha256": null
+  },
+  "C": {
+    "separate_approval": true,
+    "mandatory_stop": true,
+    "primary": "RZ_P0_H8_CONFIRMATION_UNION6_N32"
+  },
+  "implementation": {
+    "metadata_guard_implemented": true,
+    "real_fit_runner_sealed": false,
+    "scientific_launch_available": false,
+    "grant_issuer_available": false
+  },
+  "V2": "CLOSED_NO_GO_UNCHANGED"
+}

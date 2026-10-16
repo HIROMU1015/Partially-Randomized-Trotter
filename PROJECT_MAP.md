@@ -1,3 +1,9 @@
+## 2026-10-16 H8 Phase B1：anchor照合完了・来歴不足でSTOP
+
+[照合・契約・資源・STOP判定](docs/research/track_a_h8_phase_b1_anchor_readiness_20261016.md)。H8/1Å/STO-3G/DF28/T=.8。保存32実測軸を照合し、B0I16軸はprofile/preparationへ結合、旧B0の16軸はruntime全体・cost用basis未結合で全B1 STOP。H6係数移送・実rank/fit/compile/再会計0。82既存証拠、8人工tests PASS、無効契約/grant案とB2事前選択4軸（予測null）を公開。旧673保護/112worktreeを保全、V2 NO_GO、公開後mandatory STOP。以下は各時点の履歴。
+
+[metadata guard](src/trotterlib/h8_phase_b1_contract.py)／[checker](scripts/check_h8_phase_b1_readiness.py)／[人工tests](tests/test_h8_phase_b1_readiness.py)／[bundle](artifacts/resource_applicability/track_a_h8_phase_b1_readiness/2026-10-16/README.md)。
+
 ## 2026-10-16 H8 Phase A run01：152候補完了・mandatory STOP
 
 [全152 signal gzip](artifacts/resource_applicability/track_a_h8_phase_a_run01/2026-10-16/H8_signal_complete_v1.json.gz)／[保存結果checker](artifacts/resource_applicability/track_a_h8_phase_a_run01/2026-10-16/verify_saved_result.py)。

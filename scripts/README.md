@@ -1,3 +1,9 @@
+## 2026-10-16 H8 Phase B1：anchor照合完了・来歴不足でSTOP
+
+[照合・契約・資源・STOP判定](../docs/research/track_a_h8_phase_b1_anchor_readiness_20261016.md)。H8/1Å/STO-3G/DF28/T=.8。保存32実測軸を照合し、B0I16軸はprofile/preparationへ結合、旧B0の16軸はruntime全体・cost用basis未結合で全B1 STOP。H6係数移送・実rank/fit/compile/再会計0。82既存証拠、8人工tests PASS、無効契約/grant案とB2事前選択4軸（予測null）を公開。旧673保護/112worktreeを保全、V2 NO_GO、公開後mandatory STOP。以下は各時点の履歴。
+
+`python3 scripts/check_h8_phase_b1_readiness.py` は保存台帳のSTOP整合性検査だけを行う。数値fit/compile入口なし。
+
 ## 2026-10-16 H8 Phase A：実装・人工検証完了、科学実行は未承認
 
 [H8 adapter・保存操作列復元・並列制御・契約](../docs/research/track_a_h8_phase_a_implementation_readiness_20261016.md)。追加152候補は不変。22 primitive tasks/1,650 probesと13 prefix tasks、最大16 worker。28人工tests＋2 qubit fixture8項目PASS、provider265/runtime34,273/input11を結合。実H8復元・signal・数値再解析・compile・新有効grant0、別途明示承認とfresh gateが必要。V2 NO_GO・旧grant/ledger・V1/H5/H7を保持し、公開後mandatory STOP。以下は各時点の履歴。
