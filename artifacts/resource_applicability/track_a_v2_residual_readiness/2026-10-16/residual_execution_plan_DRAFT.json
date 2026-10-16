@@ -1,0 +1,192 @@
+{
+  "schema": "track_a_v2_saved_RZ_residual_plan_DRAFT_v1",
+  "status": "PLANNED_NOT_IMPLEMENTED_OR_AUTHORIZED",
+  "scope": "CONDITIONAL_SAVED_UNIT_RZ_RESIDUALS_UNIFORM_A_B_ONLY",
+  "theory_result_commit": "7e41670565d9284da9aded94063be591fdcaa3dd",
+  "old_readiness_commit": "dd695e6584f15b88341d2446ed010c7bdfef1666",
+  "systems": [
+    "H6",
+    "H8"
+  ],
+  "models": [
+    "A",
+    "B"
+  ],
+  "axes": [
+    "cosine",
+    "sine"
+  ],
+  "metrics": [
+    "RZ"
+  ],
+  "CX": "DEFERRED_SEPARATE_DECISION",
+  "uniform_models_not_literal_mixed": true,
+  "input_manifest_sha256": "580e76a81e248843b35a926adc81c460a1214f9de101db964bea3f83fd7da91d",
+  "caps": {
+    "theory_rows": 832,
+    "connection_rows": 10480,
+    "candidate_scope_entries": 262,
+    "unit_model_observation_rows": 1048,
+    "fit_strata": 64,
+    "fit_calls_with_two_endpoints": 128
+  },
+  "forbidden": {
+    "new_compile": 0,
+    "new_native_wrapper_build": 0,
+    "new_primitive": 0,
+    "new_Gaussian": 0,
+    "new_preparation": 0,
+    "new_law_evaluation": 0,
+    "new_DP": 0,
+    "new_signal": 0,
+    "new_SCF": 0,
+    "new_DF": 0,
+    "new_state": 0,
+    "new_sampling": 0,
+    "new_shot_calculation": 0,
+    "new_total_cost_reaccounting": 0,
+    "new_candidate_ranking": 0,
+    "mixed_theory_evaluation": 0
+  },
+  "resources": {
+    "processes": 2,
+    "driver_processes": 1,
+    "observer_processes": 1,
+    "threads_per_process": 1,
+    "driver_AS_bytes": 4294967296,
+    "driver_RSS_bytes": 1073741824,
+    "observer_AS_bytes": 536870912,
+    "observer_RSS_bytes": 536870912,
+    "aggregate_RSS_bytes": 1610612736,
+    "aggregate_CPU_seconds": 600,
+    "wall_seconds": 1800,
+    "output_bytes": 67108864,
+    "stage_storage_bytes": 134217728,
+    "kind": "PROPOSED_STOP_CEILINGS_NOT_TIME_ESTIMATES",
+    "observer_interval_seconds": 1,
+    "maximum_observer_gap_seconds": 5,
+    "admission_headroom_bytes": 17179869184,
+    "disk_reserve_bytes": 2147483648,
+    "minimum_available_inodes": 4096
+  },
+  "normalization_and_shots": "REUSE_ONLY_NO_REDERIVATION",
+  "deduplication": {
+    "observation_key": [
+      "system",
+      "scope_or_reuse_cohort",
+      "candidate_id",
+      "axis",
+      "compiled_origin_lineage",
+      "wrapper_identity",
+      "profile",
+      "basis_variant"
+    ],
+    "ignore_as_replication": [
+      "epsilon",
+      "factor",
+      "metric",
+      "theory_model"
+    ],
+    "conflicting_repeats": "STOP",
+    "PF_reused_between_scopes": "SAME_OBSERVATION_NOT_NEW_SAMPLE"
+  },
+  "strata": {
+    "required": [
+      "system/input/H/state/DF/order",
+      "compiler_binary_profile",
+      "basis_variant",
+      "control_policy",
+      "scalar_phase_policy",
+      "native_composition_policy",
+      "origin_lineage_compatibility",
+      "sample_scope",
+      "model",
+      "axis"
+    ],
+    "unknown_critical": "UNRESOLVED_PROVENANCE_NO_FIT",
+    "mismatch": "STOP",
+    "full_numeric_envelope_certified": false,
+    "permitted_interpretation": "EXPLICITLY_APPROVED_METADATA_CONDITIONAL_POINT_DIAGNOSTIC_ONLY"
+  },
+  "calibration": {
+    "formula": "compiled_axis_mean = a + b * theory_axis_cost",
+    "shared_PR_PF_fit": true,
+    "method_specific_fits": false,
+    "weights": "ONE_PER_DEDUPLICATED_CANDIDATE_OBSERVATION_NO_PRECISION_OR_SAMPLE_COUNT_REPLICATION",
+    "holdout_group": [
+      "system",
+      "prefix",
+      "q",
+      "formula"
+    ],
+    "holdout": "SHA256(canonical group) modulo 5 equals 0; others train; all methods/r/K/models/axes/scopes for one group stay together",
+    "training_minimum": {
+      "PR": 2,
+      "PF": 2,
+      "distinct_x": 2
+    },
+    "holdout_minimum": {
+      "PR": 2,
+      "PF": 2
+    },
+    "insufficient": "INCONCLUSIVE_NO_ALTERNATE_SPLIT",
+    "solver": "scaled float64 rank2 least squares",
+    "rcond": 1e-12,
+    "maximum_design_condition_number": 10000000000.0,
+    "interval_policy": "lower and upper separate scenarios, no midpoint; endpoint checks are not worst-case interval guarantees",
+    "bad_fit": "STOP_NONFINITE_NEGATIVE_SLOPE_OR_NONPOSITIVE_PREDICTION",
+    "holdout_encoding": "ASCII bytes of json.dumps([system,prefix,q,formula],ensure_ascii=True,separators=(',',':'),allow_nan=False); SHA256 digest interpreted big-endian; mod5==0 holdout",
+    "x_scaling": "training mean and training root-mean-square deviation only; never use holdout values for scaling"
+  },
+  "residual": {
+    "formula": "(compiled_axis_mean - fitted_axis_cost) / compiled_axis_mean",
+    "comparison": "abs(mean(PR heldout residual) - mean(PF heldout residual))",
+    "stop_threshold": 0.05,
+    "threshold_unit": "5 percentage points in signed relative residual difference",
+    "boundary_tolerance": 1e-12,
+    "boundary_policy": "BOUNDARY_UNRESOLVED_STOP_NOT_PASS",
+    "per_stratum_independent": true,
+    "no_cross_system_or_axis_averaging": true,
+    "denominator_zero_or_missing": "UNASSESSABLE_NO_ZERO_FILL",
+    "stop_is_immediate_before_next_fit": true
+  },
+  "order": [
+    "H6",
+    "H8",
+    "A before B",
+    "cosine before sine",
+    "stratum_id lexical",
+    "lower before upper"
+  ],
+  "on_threshold_stop": [
+    "save charged fit and partial results",
+    "do not execute next fit/stratum/model",
+    "owned cleanup",
+    "preserve sources/grants/ledger",
+    "mandatory STOP"
+  ],
+  "runtime_authorization": false,
+  "approved_by_user": false,
+  "allowed_cpus": [],
+  "absolute_launch_command": null,
+  "numerical_runner_implemented": false,
+  "synthetic_runner_validation_completed": false,
+  "final_SOURCE": null,
+  "one_shot": true,
+  "retry": false,
+  "resume": false,
+  "mandatory_stop": true,
+  "next_stage_authorized": false,
+  "fresh_gate": {
+    "maximum_age_seconds": 30,
+    "source_input_profile_hashes": true,
+    "protected_jobs_unchanged": true,
+    "disjoint_idle_CPUs": 2,
+    "external_monitor_required": true,
+    "host_memory_PSI_avg10_stop_ge": 1.0,
+    "nonroot_memory_PSI_avg10_stop_gt": 0.0,
+    "OOM_increment_stop": true,
+    "owned_cleanup_only": true
+  },
+  "input_gzip_decompressed_bytes_cap": 16777216
+}

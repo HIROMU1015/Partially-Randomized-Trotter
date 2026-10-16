@@ -1,5 +1,7 @@
 # Track A V2：保存済み理論評価との読取専用照合
 
+後続のV1成果整理後に、[V2残差解析の再開準備](track_a_v2_residual_analysis_readiness_20261016.md)を作成した。既存832理論行・保存compiled接続は再利用し、数値再解析は未承認。以下は前回照合時点の履歴として保持する。
+
 V2のprimitive生成と基本A/B表の再計算は重複するため実施しない。
 利用者指定の `track-a-native-df-theory-evaluation-20261016`、結果commit
 `7e41670565d9284da9aded94063be591fdcaa3dd` を、V2準備commit

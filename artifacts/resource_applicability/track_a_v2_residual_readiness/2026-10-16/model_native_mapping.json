@@ -1,0 +1,39 @@
+{
+  "schema": "track_a_v2_model_native_mapping_v1",
+  "uniform_A": {
+    "PF_prefix": "NO_GAUSSIAN_REUSE",
+    "RTE_tail": "NO_GAUSSIAN_REUSE"
+  },
+  "uniform_B": {
+    "PF_prefix": "DECLARED_SAME_BASIS_ADJACENT_REUSE",
+    "RTE_tail": "DECLARED_SAME_BASIS_ADJACENT_REUSE_WITH_CLOSED_OCCURRENCES"
+  },
+  "literal_native": {
+    "PF_prefix": "A_EQUIVALENT",
+    "RTE_tail": "B_EQUIVALENT_WITH_CLOSED_OCCURRENCES",
+    "separate_mixed_theory_column_available": false
+  },
+  "theory_profile": "explicit_rz_sx_x_cx_v1",
+  "compiled_profile": {
+    "qiskit": "1.3.0",
+    "basis": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed": 17,
+    "topology": null,
+    "compiler_hash": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b"
+  },
+  "limitations": [
+    "uniform A/B are distinct from literal native mixed construction",
+    "full A/B totals alone do not identify separate prefix/tail mixed cost",
+    "theory excludes state preparation, measurement, routing, FT synthesis",
+    "compiled RZ/CX are optimization-dependent saved counts or finite-sample means",
+    "general identity phase interval and supplied binary64-law conditioning retained"
+  ],
+  "source_semantics_receipt_commit": "7e41670565d9284da9aded94063be591fdcaa3dd",
+  "source_semantics_receipt_path": "artifacts/resource_applicability/track_a_native_df_theory_evaluation/2026-10-16/shared_source_semantics_v1.json"
+}

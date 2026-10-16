@@ -1,3 +1,5 @@
+[2026-10-16 V2残差解析の再開準備・数値未承認](2026-10-16_track_a_v2_residual_readiness.md)。保存結果再利用・科学STOP。
+
 [2026-10-16 V1成果整理・追加実測は利用者判断](2026-10-16_track_a_v1_results_synthesis.md)。新計算0・V2保留・科学STOP。
 
 # 研究ノート

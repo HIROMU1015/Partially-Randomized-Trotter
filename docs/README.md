@@ -1,3 +1,7 @@
+## 2026-10-16 V2：保存結果を使う残差解析の再開準備・未実行
+
+[構成対応・未解決事項・最小実行計画](research/track_a_v2_residual_analysis_readiness_20261016.md)。既存7e416705…のA/B832理論行・保存接続10,480行を再利用。uniform A/BとnativeのA-prefix/B-tailを区別し、精度反復のdedup・来歴層別・RZ単価の共通較正/heldout残差・各層.05即STOPを未承認案として固定。新数値再解析/compile/primitive/law/DP/新grant0、V1/H5/H7・既存V2不変。数値runner/人工検証/最終seal/別実行承認が必要。準備資料だけを公開しmandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-16 V1：実測確認・モデル条件付き結果の成果整理
 
 [現在の主張・5精度証拠表・追加実測の判断材料](research/track_a_v1_results_synthesis_20261016.md)。H6/1Å/STO-3G/DF19/T=.8/P=0。ε=.05はp7両軸実測単価×保存shotによるPR削減率−13.2901%の限定点比較。残る4精度の30.89/34.97/31.17/10.03%は固定model条件付き。厳密bias/PR母平均/全grid実測最良は未認定。追加実測は利用者判断、厳しい側p11/q4 S4を条件付き第一候補に整理。新計算・新grant0、V2保留、科学STOPを維持。以下は各時点の履歴。
