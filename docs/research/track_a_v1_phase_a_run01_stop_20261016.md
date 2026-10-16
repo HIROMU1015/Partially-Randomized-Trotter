@@ -63,3 +63,7 @@ AS/RSS各512 MiB、全体RSS160 GiB等の上限値は一切増量していない
 旧config/grant/controlは保全し、再実行用の新grant・CPU割当・command・本番起動は0。
 旧失敗記録・grantを保持し、新しいone-shotの扱いはこの報告後に判断する。
 主担当の技術検査であり独立reviewではない。subagents0、push0。
+
+## 後続run02の記録
+
+利用者の別の再実行承認により、[run02](track_a_v1_phase_a_run02_results_20261016.md)がSOURCE26b9fde6…で完了。新しいgrant/outputを使用し、本run01のgrant/controlは保全した。run02ではlifetime peak647,266,304 bytesとcurrent-exec peak52,953,088 bytesの違いを本番で確認した。run01の未記録値を後から補ったり、その個別原因を断定したりはしない。上記の未承認草案・再実行0の記述はrun01報告時点の履歴である。
