@@ -1,0 +1,65 @@
+{
+  "schema": "m1s_gate0_tail_local_coefficient_model_v1",
+  "status": "AUTHOR_CONDITIONAL_PROOF_CANDIDATE",
+  "evidence_classification": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+  "coverage_model_adopted": false,
+  "conditional_assumptions": [
+    "IEEE_BINARY64_ROUND_TO_NEAREST",
+    "NO_UNACCOUNTED_OVERFLOW_UNDERFLOW_OR_FTZ",
+    "COMPLEX_BLAS_GAMMA_8K_PLUS_32",
+    "FSUM_NO_WORSE_THAN_GAMMA_M_PLUS_32_L1",
+    "EXACT_HERMITIAN_INPUT_ONE_BODY_AND_FACTORS",
+    "EXACT_SAVED_BINARY64_INPUT_IS_TARGET_NOT_EXACT_EIGENSTATE"
+  ],
+  "primitive_complex_product": "box_norm_absolute_error <= gamma_8*box(a)*box(b), same scalar-operation premise as v4",
+  "counts": {
+    "n_modes": 8,
+    "df_rank": 12,
+    "complex_product_real_budget": 8,
+    "phase_products_per_word": 8,
+    "coefficient_products_per_word": 2,
+    "fsum_padding": 32,
+    "bilinear_group_max": 4,
+    "one_body_group_max": 64,
+    "one_body_support_max": 121,
+    "square_group_max": 121,
+    "multiply_leaf_gamma_index": 80,
+    "bilinear_gamma_index": 116,
+    "one_body_gamma_index": 220,
+    "square_gamma_index": 673,
+    "scaled_block_gamma_index": 681,
+    "tail_gamma_base": 713,
+    "tail_gamma_max_rank12": 725
+  },
+  "formulas": {
+    "G_l": "sum_pq (abs(Re(g_lpq))+abs(Im(g_lpq)))",
+    "S_R": "sum_l_in_tail abs(lambda_l)*G_l**2",
+    "alpha_R": "gamma_(713+r)*S_R",
+    "lambda_error": "alpha_R+gamma_(M+32)*L",
+    "ec": "alpha_R/lambda_lo+lambda_error*L/(lambda_lo*lambda_hat)",
+    "propagation": "v4 law_limits algebra with alpha replaced by alpha_R; M unchanged"
+  },
+  "feasibility_domain": {
+    "S_R_over_lambda_hat_max": 8,
+    "L_over_lambda_hat_max": 2,
+    "M": 65536,
+    "d": 256,
+    "is_new_execution_gate": false
+  },
+  "tail_gamma_indices": {
+    "G3": 722,
+    "G6": 719,
+    "G9": 716
+  },
+  "resource_caps_are_not_gamma_path_counts": true,
+  "observed_counter_used": false,
+  "identity_nonidentity_policy": "real projection and removal are contractions for HR; HD scalar addition remains in unchanged v4 global ledger",
+  "source_target_commit": "606036db52da2f080cf846e48824e5e418430762",
+  "source_target_path": "src/trottertracks/algorithm_codesign/m1s_gate0_v4/science.py",
+  "source_target_sha256": "364514fdbb415bf4c43dfac48cda5ea65671323f7c39575f5bec1c7a9840548e",
+  "proof": "docs/tracks/algorithm_codesign/m1s_gate0_tail_local_bound_proof_20261016.md",
+  "spec_source": "src/trottertracks/algorithm_codesign/m1s_gate0_tail_bound_spec.py",
+  "spec_source_sha256": "b23c8aade7e3e94c804ad7128ca78c9ade1aa89bd40a7d50963a9c50a8c50732",
+  "numerical_evaluations": 0,
+  "integration_implemented": false
+}
