@@ -1,0 +1,147 @@
+{
+  "schema": "m1s_gate0_independent_contract_v1",
+  "status": "ADOPTED",
+  "adopted": true,
+  "contract_grants_execution": false,
+  "base_result_commit": "cdcb7f6f151df217960611f502eb1bac8be63f58",
+  "draft_origin_commit": "d6d35cfb79b97f9cb218c9169b427aacf6a4a334",
+  "scope": "M1S_GATE0_V5_POSTHOC_INDEPENDENT_CORRECTNESS_ONCE",
+  "input": {
+    "path": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz",
+    "sha256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a",
+    "bytes": 8652
+  },
+  "model": {
+    "molecule": "linear_H4",
+    "distance_angstrom": "1.00",
+    "basis": "sto-3g",
+    "modes": 8,
+    "df_rank": 12,
+    "splits": [
+      3,
+      6,
+      9
+    ],
+    "delta_window": null,
+    "mode_order": "mode0_MSB_alpha_even_beta_odd",
+    "state": "saved_binary64_vector_quotient_by_exact_original_norm2"
+  },
+  "comparator": {
+    "path": "artifacts/track_b_m1s_gate0_v5_result/2026-10-16/v5_one_shot/result.json",
+    "sha256": "8e32925e99b64ce6bc2c939e45ba51485d18b1eb4b62952e22a0debe1d9d4ec5",
+    "bytes": 440470,
+    "commit": "cdcb7f6f151df217960611f502eb1bac8be63f58",
+    "use": "HASH_BIND_ONLY_UNTIL_ALL_INDEPENDENT_REFERENCES_ARE_FROZEN"
+  },
+  "v5_contract": {
+    "path": "artifacts/track_b_m1s_gate0_v5_formal_adoption/2026-10-16/v1/execution_contract_v5_adopted.json",
+    "sha256": "361e7034850512fcfde76a68ebd5dc3b58de945d1075a696196d75af8ae7547b",
+    "commit": "50b3669b9253eb889fa4daa87e793646df2d5138"
+  },
+  "v5_source": {
+    "commit": "69de022dc8142f703423b1ce0bd42f05e123954e",
+    "sha256": {
+      "src/trottertracks/algorithm_codesign/m1s_gate0_v5/__init__.py": "289d67f42cd13ca0d9fd919f7a0f1fe98d2c98edc01d8c66d281e315cd5ebbbd",
+      "src/trottertracks/algorithm_codesign/m1s_gate0_v5/control.py": "dc027a115ae7b131325bebc9ba13992794daf1a7a216a5de489e691b14dc1022",
+      "src/trottertracks/algorithm_codesign/m1s_gate0_v5/science.py": "9a1d42916e972cb9b39af462678db1a70888fcab22a5de4f98d11fab0bc1a0ab",
+      "src/trottertracks/algorithm_codesign/m1s_gate0_v5/budget.py": "b73f47aa76718abda3f9ef8c4236e9d23cc379c22ce1b87140d4dd3c49638556",
+      "scripts/tracks/algorithm_codesign/run_m1s_gate0_headroom_v5.py": "453bda1343048c54726d3a6b8858dd08b6922cdb39b869ed63636cf84a1c6365",
+      "src/trottertracks/algorithm_codesign/m1s_gate0_tail_bound_spec.py": "b23c8aade7e3e94c804ad7128ca78c9ade1aa89bd40a7d50963a9c50a8c50732",
+      "src/trottertracks/__init__.py": "2d51bfa08b2b1e000b86ec53bd463e786529307a7270078600e3b03995e90285",
+      "src/trottertracks/algorithm_codesign/__init__.py": "b6503716cfd51d52ca9038e6de5a411eb78380d30451f81df9b81c31b1be090f"
+    }
+  },
+  "v5_proof": {
+    "proof_commit": "b5a185cc0c3aae0e477bfc52b93061e86feb7dec",
+    "files_sha256": {
+      "docs/tracks/algorithm_codesign/m1s_gate0_tail_local_bound_proof_20261016.md": "4d3547493e336c41a0acade491470f8376f872eafd4486c5cd206b8937834156",
+      "artifacts/track_b_m1s_gate0_tail_bound/2026-10-16/v1/tail_local_model_candidate.json": "88ee296cdf64b166a500671ffed2bad190463c0f4b97adea0c95f386bd1a924c"
+    },
+    "coefficient_pipeline_reference_commit": "606036db52da2f080cf846e48824e5e418430762",
+    "coefficient_pipeline_reference_sha256": "364514fdbb415bf4c43dfac48cda5ea65671323f7c39575f5bec1c7a9840548e"
+  },
+  "arithmetic": {
+    "coefficients": "Gaussian_integer_dyadic_occupation_and_CAR_full_Fock_trace_FWHT",
+    "metrics": "exact_integer_moments_and_Fraction; Decimal_32_display_only",
+    "reference_metric_allowance": "0_EXACT_RATIONAL_IF_SOURCE_CORRECT",
+    "evidence": "EXACT_SAVED_BINARY64_ALGEBRA_IF_SOURCE_CORRECT_NOT_FORMALLY_VERIFIED",
+    "platform_coverage": "NOT_CERTIFIED"
+  },
+  "comparison": {
+    "exact_algebra_and_embedding": "0",
+    "state_norm2_quality": "2^-40",
+    "oracle_residual_squared_quality_Ha2": "(1e-8)^2",
+    "coefficient_L1_Ha": "gamma_(713+tail_rank)*S_R",
+    "global_coefficient_L1_Ha": "2*gamma_(24000064)*S*(1+gamma_(65568))",
+    "HR_matrix_F_Ha": "16*alpha_R; compare exact squared norms",
+    "probability_mass": "2^-46",
+    "probability_rounding": "integer_binary64_nearest_even_cell_of_abs_saved_coeff_over_saved_lambda",
+    "W_absolute": "2^-24",
+    "v_absolute": "2^-24",
+    "rho_absolute": "2^-12",
+    "rho_defined": "exact W > 0",
+    "support_or_sign_discrepancy": "UNDETERMINED_IF_WITHIN_L1_ENVELOPE_OTHERWISE_FAIL",
+    "full_HD_saved_path_match": "UNDETERMINED_NOT_SAVED_BY_V5",
+    "overall": "FAIL_precedes_UNDETERMINED_precedes_PASS; missing_full_HD_comparator_prevents_full_scope_PASS",
+    "identity_scalar_sum": "gamma_34*(abs(saved_HD_before)+abs(saved_HR_moved)); nearest_even_relation_recorded_only"
+  },
+  "resources": {
+    "workers": 1,
+    "threads_per_library": 1,
+    "thread_environment": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "1",
+      "RAYON_NUM_THREADS": "1"
+    },
+    "gpu": false,
+    "memory_bytes": 2147483648,
+    "output_bytes": 134217728,
+    "log_bytes": 134217728,
+    "context_bytes": 4194304,
+    "wall_time_seconds": null,
+    "cpu_time_seconds": null,
+    "max_exact_integer_bits": 65536,
+    "max_primitive_events": 500000000,
+    "max_coefficient_cells": 65536,
+    "trace_transforms": 7,
+    "max_matrix_cells": 65536,
+    "max_transition_cache_entries": 4352,
+    "max_pauli_cache_entries": 512,
+    "max_difference_witnesses": 64,
+    "max_input_decode_bytes": 1048576
+  },
+  "runtime": {
+    "python": "3.11.0rc1",
+    "backend": "CPython_stdlib_only_no_NumPy_BLAS",
+    "python_executable_sha256": "320707a1d684b043661306d508d1a8655f507c0bb8e827398cb53680054aa7c8",
+    "stdlib_source_sha256": {
+      "fractions": "b11e850e354808b882d13a70a911c29accd1dbdd41757566704e3b7206c74edb",
+      "decimal": "000c00bad31d126b054c6ec7f3e02b27c0f9a4d579f987d3c4f879cee1bacb81",
+      "zipfile": "b3d1f76b7fe20c0b9da8ad587c5f5d3ee681c63f5bb9d99bbe681ff2fc605796",
+      "struct": "9c231f9497caf513a22dee8f790b07f969b0e45854a0bdd6dd84b492e08c2856",
+      "ast": "984a4037b30c8b178cc6bf8007d83d68ee5f24b054836547736ef89b6e860722"
+    }
+  },
+  "source_commit": "4787cf90b053d251bf6392988af35516bdbbe663",
+  "source_sha256": {
+    "src/trottertracks/algorithm_codesign/m1s_gate0_independent_v1/__init__.py": "74bc76779beae9f44222905005abb6fe1e2c3f8f4d799d72451e7829ddcd0335",
+    "src/trottertracks/algorithm_codesign/m1s_gate0_independent_v1/control.py": "e7b4979b2f2dcf98eaca0f9db0a2ffda19371e58b59e3ae3d74ee0aff2b19925",
+    "src/trottertracks/algorithm_codesign/m1s_gate0_independent_v1/reference.py": "c5cffdf33fa305d461c118edebd81af217e713edf81627c9814997a319e19a02",
+    "src/trottertracks/algorithm_codesign/m1s_gate0_independent_v1/execution.py": "b4aec2eb3c666311ca998d4c8c2be072960018ff7df120135eefb86b908e2a2b",
+    "scripts/tracks/algorithm_codesign/run_m1s_gate0_independent_v1.py": "1c5786459be0572c80e2135bac191b683a7235391db4d05a4d5a5b7007747a86",
+    "src/trottertracks/__init__.py": "2d51bfa08b2b1e000b86ec53bd463e786529307a7270078600e3b03995e90285",
+    "src/trottertracks/algorithm_codesign/__init__.py": "b6503716cfd51d52ca9038e6de5a411eb78380d30451f81df9b81c31b1be090f"
+  },
+  "adoption_record": {
+    "path": "artifacts/track_b_m1s_independent_contract_adoption/2026-10-16/v1/user_contract_adoption_record.json",
+    "sha256": "8435edbf78a850a28f8e4de0f261fad0ef87b62e80abc3e0fc1f4665ed369207"
+  },
+  "requires_separate_explicit_user_execution_approval": true,
+  "execution_adapter": "IMPLEMENTED_UNEXECUTED",
+  "automatic_retry": false,
+  "failure_action": "PRESERVE_ALL_COMPLETED_REFERENCE_LEDGER_AND_STOP; remaining_splits_UNDETERMINED",
+  "one_shot_consumed_on_output_reservation": true,
+  "mandatory_STOP": true
+}
