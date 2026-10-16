@@ -1,3 +1,5 @@
+> **M1-S γ依存V1 technical STOP**：[失敗・未適用の修正候補](tracks/algorithm_codesign/m1s_v1_gamma_one_shot_technical_stop_20261017.md)。runtime API不整合で科学engine未到達。run1/retry0、消費済marker・全未評価placeholderを保全。研究のGO/NO-GOではない。
+
 > **M1-S γ依存V1正式採択**：[正式契約](tracks/algorithm_codesign/m1s_v1_gamma_formally_adopted_contract_20261017.md)。新しいadopted契約と会話に基づく採択記録を固定。候補・SOURCE・結果は保持し、数値解析は別承認までSTOP。
 
 > **M1-S V1 γ依存準備**：[改訂候補](tracks/algorithm_codesign/m1s_v1_gamma_dependent_contract_candidate_20261017.md)／[精度・resource・引継ぎ](tracks/algorithm_codesign/m1s_v1_gamma_precision_resource_and_handoff_20261017.md)／[受領GPT原本](research/m1s_v1_scientific_conditions_independent_review_20261017.md)。γ境界の仮定・不適用・未解像とceil同数を区別。旧SOURCE/結果保持、新科学0、mandatory STOP。
