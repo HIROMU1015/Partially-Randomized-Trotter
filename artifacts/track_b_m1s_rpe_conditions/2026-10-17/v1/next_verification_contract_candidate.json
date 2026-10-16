@@ -1,0 +1,228 @@
+{
+  "schema": "m1s_rpe_conditions_draft_v1",
+  "status": "DRAFT_WITH_OPEN_SCIENTIFIC_CHOICES_NOT_EXECUTABLE",
+  "base_commit": "e5ed0db6b8f50ed02ee9bc17cc6d0e2d4ed0898b",
+  "scientific_review_commit": "e5ed0db6b8f50ed02ee9bc17cc6d0e2d4ed0898b",
+  "adopted": false,
+  "coverage_model_adopted": false,
+  "contract_grants_execution": false,
+  "scientific_execution_authorized": false,
+  "research_direction_adopted": false,
+  "run_ready": false,
+  "execution_entrypoint": null,
+  "future_scientific_source_prepared": false,
+  "new_detailed_scientific_review_started": false,
+  "formulas_evaluated": false,
+  "mandatory_STOP": true,
+  "open_scientific_choices": {
+    "research_direction": null,
+    "target_quantity": null,
+    "accuracy_semantics": null,
+    "accuracy_target": null,
+    "confidence_policy": null,
+    "time_and_branch_policy": null,
+    "bias_and_information_policy": null,
+    "candidate_and_baseline_policy": null,
+    "cost_and_implementation_policy": null,
+    "state_preparation_and_classical_cost_policy": null,
+    "statistical_policy": null,
+    "decision_and_coverage_policy": null,
+    "future_verification_scope": null,
+    "future_resource_caps": null,
+    "future_source_identity": null
+  },
+  "decision_items": {
+    "D1": "research direction",
+    "D2": "target and model",
+    "D3": "accuracy semantics and confidence",
+    "D4": "horizon prior and decoder",
+    "D5": "bias route information and correction",
+    "D6": "candidate cells and baselines",
+    "D7": "metric backend and HD implementation",
+    "D8": "state quality preparation and classical cost",
+    "D9": "sampling and shot policy",
+    "D10": "materiality and uncertainty coverage",
+    "D11": "future scope source and resource caps"
+  },
+  "symbolic_conditions": {
+    "P1": {
+      "classification": "conditional saved phase bound",
+      "expression": "min(pi,abs(b_hat)+r_b)",
+      "assumptions": [
+        "saved numerical coverage",
+        "branch/circular-distance convention",
+        "not a bias acceptance threshold"
+      ],
+      "evaluated": false
+    },
+    "P2": {
+      "classification": "example sufficient reference bound",
+      "expression": "A_raw >= 2*g-1; b_ref <= asin((1-g)/g)",
+      "assumptions": [
+        "certified exact target spectral weight g>1/2",
+        "normalized state",
+        "not established for saved oracle"
+      ],
+      "evaluated": false
+    },
+    "P3": {
+      "classification": "conditional implementation transfer",
+      "expression": "A_phys >= A_ideal-d_impl; b_impl <= asin(d_impl/A_ideal)",
+      "assumptions": [
+        "positive A_ideal",
+        "d_impl < A_ideal",
+        "justified complex signal discrepancy"
+      ],
+      "evaluated": false
+    },
+    "R1": {
+      "classification": "sufficient selected decoder route",
+      "expression": "b_upper+q <= gamma < pi/3; gamma_K/T_K <= eps_E; sum(alpha_k_a) <= alpha_total",
+      "assumptions": [
+        "dyadic times",
+        "known alias-free initial energy branch",
+        "all required rounds",
+        "not an RMSE theorem"
+      ],
+      "evaluated": false
+    },
+    "S1": {
+      "classification": "sufficient Hoeffding design upper",
+      "expression": "t=A_lower*sin(q)/sqrt(2); N_a >= ceil(2*log(2/alpha_a)/t^2)",
+      "assumptions": [
+        "positive signal lower bound",
+        "positive phase slack",
+        "independent bounded +/-1 outcomes",
+        "fresh IID law per shot or separately proved policy"
+      ],
+      "evaluated": false
+    },
+    "C1": {
+      "classification": "operator identity only",
+      "expression": "diag(exp(-i*theta*P),exp(+i*theta*P)) = exp(-i*theta*Z_a tensor P)",
+      "assumptions": [
+        "same signed Pauli and same label position",
+        "not a native cost ratio"
+      ],
+      "evaluated": false
+    },
+    "G1": {
+      "classification": "defined total resource accounting",
+      "expression": "G_g=F_g+sum_k_a N_k_a*(C_k_a_g+P_k_a_g)",
+      "assumptions": [
+        "same feasible task and metric",
+        "whole wrapper costs",
+        "separate incomparable cost units"
+      ],
+      "evaluated": false
+    },
+    "G2": {
+      "classification": "continuous single-time proxy only",
+      "expression": "(C_sh+P_sh)/(C_cmp+P_cmp) < ((A_sh*sin(q_sh))/(A_cmp*sin(q_cmp)))^2",
+      "assumptions": [
+        "same confidence and axis price",
+        "no fixed cost",
+        "ignore integer rounding",
+        "not general optimal-resource necessary/sufficient condition"
+      ],
+      "evaluated": false
+    }
+  },
+  "numerical_outputs": {
+    "phase_budget_status_by_cell": null,
+    "shot_counts": null,
+    "shot_ratios": null,
+    "native_costs": null,
+    "total_resources": null,
+    "resource_gain": null,
+    "winning_cells": null,
+    "scientific_GO_or_NO_GO": null
+  },
+  "future_resource_policy": {
+    "adopted": false,
+    "wall_time_seconds": null,
+    "cpu_time_seconds": null,
+    "memory_bytes": null,
+    "result_bytes": null,
+    "log_bytes": null,
+    "call_caps": null,
+    "workers": null,
+    "GPU": null,
+    "meaning": "new calculation contract has no time cap by default; other caps must be fixed before approval"
+  },
+  "historical_scope_only": {
+    "molecule": "linear_H4",
+    "distance_angstrom": "1.00",
+    "basis": "STO-3G",
+    "modes": 8,
+    "df_rank": 12,
+    "splits": [
+      "G3",
+      "G6",
+      "G9"
+    ],
+    "delta_Ha_inverse": [
+      "1/8",
+      "1/16"
+    ],
+    "R": [
+      2,
+      4
+    ],
+    "T_Ha_inverse": [
+      "1",
+      "4"
+    ],
+    "planned_rows": 108,
+    "state": "saved original norm2 quotient",
+    "new_grid_adopted": false
+  },
+  "prohibitions": [
+    "new_scientific_numerical_reanalysis",
+    "shot_forecast",
+    "ranking",
+    "Pauli_generation",
+    "Hamiltonian_evaluation",
+    "finite_signal_evaluation",
+    "RPE_simulation",
+    "circuit_build_compile_synthesis",
+    "numerical_correctness_tests",
+    "execution_authorization_grant_marker_issuance",
+    "old_one_shot_reuse",
+    "formal_scientific_adoption",
+    "new_GPT_detailed_review"
+  ],
+  "limits": [
+    "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+    "G9_ABSOLUTE_CONTRAST_UNRESOLVED",
+    "LEGACY_FULL_H_HD_DIRECT_COMPARISON_UNDETERMINED",
+    "NO_FREE_ORACLE_CORRECTION",
+    "NO_UNIT_RADIUS_ASSUMPTION_TRANSFER",
+    "NO_OLD_PR_COST_PROXY_TRANSFER"
+  ],
+  "future_options": [
+    {
+      "id": "V0",
+      "kind": "non_numerical_contract_completion",
+      "selected": false
+    },
+    {
+      "id": "V1",
+      "kind": "posthoc_saved_signal_phase_shot_screening",
+      "selected": false,
+      "requires_separate_scientific_execution_approval": true
+    },
+    {
+      "id": "V2",
+      "kind": "limited_native_wrapper_cost_validation",
+      "selected": false,
+      "requires_separate_scientific_execution_approval": true
+    },
+    {
+      "id": "V3",
+      "kind": "minimal_missing_signal_or_independent_validation",
+      "selected": false,
+      "requires_separate_scientific_execution_approval": true
+    }
+  ]
+}
