@@ -1,0 +1,116 @@
+"""New-scope six-core gate and owned driver/4-worker external supervisor."""
+import argparse
+import json
+import math
+import os
+from pathlib import Path
+import time
+
+import h8_b0_anchor_contract as c
+import h8_b0_anchor_runtime as r
+import launch_h8_strengthened_phase_a as observer
+
+
+def snapshot():
+    value=observer.snapshot()
+    if not value['events'] or 'host' not in value['pressure']:raise ValueError('OOM_OR_PSI_UNKNOWN')
+    for fields in value['events'].values():
+        if not {'oom','oom_kill'}<=set(fields):raise ValueError('OOM_COUNTERS_UNKNOWN')
+        if any(int(v)<0 for v in fields.values()):raise ValueError('INVALID_OOM_COUNTER')
+    for raw in value['pressure'].values():
+        full=[s for s in raw.splitlines() if s.startswith('full ')]
+        if len(full)!=1:raise ValueError('FULL_PSI_UNKNOWN')
+        x=float(dict(p.split('=') for p in full[0].split()[1:])['avg10'])
+        if not math.isfinite(x) or x<0:raise ValueError('INVALID_PSI')
+    return value
+
+
+def fresh(config,g,config_path,*,idle_seconds=1.,bindings_verified=False,launch_affinity=None):
+    cpus=r.verify_authorization(config,g,config_sha=r.sha(config_path),affinity=launch_affinity);r.protected(config)
+    siblings=r.topology(cpus);first=r.cpu_counters();time.sleep(idle_seconds)
+    r.check_idle(first,r.cpu_counters(),siblings)
+    value=snapshot();limits=g['resources']
+    reason=observer.resource_reason(value,value,limits['aggregate_RSS_bytes']+limits['admission_reserve_bytes'])
+    if reason:raise ValueError('FRESH_RESOURCE:'+reason)
+    fs=r.filesystem(Path(config['control']).parent)
+    if fs['bytes']<limits['fresh_free_disk_bytes'] or fs['inodes']<limits['fresh_free_inodes']:
+        raise ValueError('FRESH_DISK_INODES')
+    return dict(source=config['SOURCE'],config_sha256=r.sha(config_path),grant_sha256=c.digest(g),
+        allowed_cpus=cpus,monotonic_seconds=time.monotonic(),profile_verified=True,
+        observer_identity=list(observer.owned.identity(os.getpid())),
+        source_input_bytes_verified=True,physical_cores_verified=True,resources_idle_verified=True,
+        protected_jobs_unchanged=True,quota_verified=True,external_RSS_monitor_ready=True,
+        effective_available_bytes=value['effective_available_bytes'],filesystem=fs,
+        driver_bindings_verified=bindings_verified)
+
+
+def replace(path,value):
+    tmp=path.with_suffix('.refresh')
+    with tmp.open('x') as f:json.dump(value,f,allow_nan=False);f.flush();os.fsync(f.fileno())
+    os.replace(tmp,path)
+
+
+def launch(config_path,grant_path,fresh_path):
+    config,g=map(r.read,(config_path,grant_path))
+    launch_affinity=os.sched_getaffinity(0)
+    r.verify_authorization(config,g,config_sha=r.sha(config_path))  # Reject draft before side effects.
+    for path in (config_path,grant_path,fresh_path):r.private_path(path)
+    control,output,lock=[r.private_path(config[k]) for k in ('control','output','lock')]
+    if fresh_path.parent!=config_path.parent or any(p.exists() for p in (control,output,lock)):
+        raise ValueError('UNUSED_ONE_SHOT_PRIVATE_PATHS_REQUIRED')
+    r.verify_files(config)
+    initial=fresh(config,g,config_path);r.verify_grant(config,g,initial,config_sha=r.sha(config_path));replace(fresh_path,initial)
+    def refresh():
+        fs=r.filesystem(control.parent)
+        if fs['bytes']<2*2**30:raise ValueError('RUN_DISK_HEADROOM')
+        logs=[control/n for n in ('stdout.log','stderr.log','observations.jsonl')]
+        if sum(p.stat().st_size for p in logs if p.exists())>g['resources']['logs_bytes']:raise ValueError('COMBINED_LOG_CEILING')
+        if (control/'science_affinity_bound.json').exists():
+            started=r.read(control/'started.json')['driver']
+            try:
+                identity=observer.owned.identity(started['pid'])
+                if identity is not None and list(identity)!=started['identity']:raise ValueError('DRIVER_IDENTITY_CHANGED')
+                if identity is not None and os.sched_getaffinity(started['pid'])!={g['driver_cpu']}:
+                    raise ValueError('DRIVER_CPU_CHANGED')
+            except ProcessLookupError:pass  # Native exit is checked by the supervisor.
+        ready=control/'driver_bindings_verified.json'
+        if ready.exists():
+            if r.read(ready)!=dict(source=config['SOURCE'],config_sha256=r.sha(config_path)):
+                raise ValueError('DRIVER_BINDING_HANDSHAKE')
+            # Driver has not pinned itself yet; selected cores must still be idle.
+            replace(fresh_path,fresh(config,g,config_path,idle_seconds=.25,bindings_verified=True,
+                launch_affinity=launch_affinity));ready.unlink()
+    env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1')
+    for k in r.THREAD_KEYS:env[k]='1'
+    command=[config['python'],'-B',str(c.ROOT/'scripts/run_h8_b0_anchors.py'),'--execute-approved',
+        '--config',str(config_path),'--grant',str(grant_path),'--fresh-gate',str(fresh_path)]
+    old=os.sched_getaffinity(0)
+    pressure_baseline=snapshot()
+    try:
+        os.sched_setaffinity(0,{g['monitor_cpu']})
+        observer.supervise(command,env=env,control=control,output=output,limits=g['resources'],
+            allowed_cpus=g['allowed_cpus'],probe=snapshot,refresh_gate=refresh)
+    finally:os.sched_setaffinity(0,old)
+    try:
+        reason=observer.resource_reason(snapshot(),pressure_baseline,g['resources']['admission_reserve_bytes'])
+        if reason:raise ValueError('FINAL_RESOURCE:'+reason)
+        r.protected(config)
+    except BaseException as error:
+        r.Writer(control).write('acquisition_final_gate.json',dict(status='STOP',reason=str(error),next_stage_authorized=False))
+        raise
+    r.Writer(control).write('acquisition_final_gate.json',dict(status='PASS_MANDATORY_STOP',
+        SOURCE=config['SOURCE'],profile_sha256=c.PROFILE,next_stage_authorized=False))
+
+
+def main():
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--launch-approved',action='store_true')
+    for name in ('config','grant','fresh-gate'):p.add_argument('--'+name,type=Path)
+    a=p.parse_args()
+    if not a.launch_approved:
+        if any((a.config,a.grant,a.fresh_gate)):p.error('real paths require approved launch mode')
+        print(json.dumps(dict(status='PLAN_ONLY_NOT_AUTHORIZED',scope=c.SCOPE,axes=8)));return
+    if not all((a.config,a.grant,a.fresh_gate)):p.error('all private inputs required')
+    launch(a.config,a.grant,a.fresh_gate)
+
+
+if __name__=='__main__':main()
