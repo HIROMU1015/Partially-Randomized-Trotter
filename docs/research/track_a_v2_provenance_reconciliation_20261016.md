@@ -1,5 +1,7 @@
 # Track A V2：保存来歴の回収・照合と固定fit条件の件数確認
 
+> 後続：[H6探索PFの最終限定照合](track_a_v2_h6_pf_final_reconciliation_20261016.md)。比較可能PF0、現行残差設計をNO_GO候補として整理し広域回収を終了。以下は最終PF照合前の記録。
+
 **PR158件のdataset/seed来歴を回収し、262 scope entriesのうちH6の25件を条件付きmetadata結合済みへ更新した。残る237件は未解決である。fit可能なstratumは依然0件で、実データfit・残差計算は行っていない。**
 
 起点は`83824ada333c0d00c07adc9c7de8225c4715811a`、branchは`track-a-v2-residual-analysis-readiness-20261016`。残差runnerの固定SOURCE`5703dbda58ebb8b7a9d18dce18ba33ed45f3c11c`とその9実行ファイルは変更していない。既存832理論行・保存compiled接続の正本は`7e41670565d9284da9aded94063be591fdcaa3dd`である。[前回報告](track_a_v2_residual_implementation_20261016.md)、[今回の軽量証拠・監査手順](../../artifacts/resource_applicability/track_a_v2_provenance_reconciliation/2026-10-16/README.md)を参照する。

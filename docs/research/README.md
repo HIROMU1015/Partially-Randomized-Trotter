@@ -1,3 +1,7 @@
+## 2026-10-16 V2：H6探索PFの最終照合・現行残差設計NO_GO候補
+
+[最終証拠・不足理由・固定条件での判定](track_a_v2_h6_pf_final_reconciliation_20261016.md)。旧PF20候補（測定16・未測定4）を最後に限定照合。比較可能PF0・fit適格0。15測定候補は固定profile未結合、profile確認済みfull S4/q8の1候補もbasis lineage未完了かつtrain側のみ。固定分割・最小件数を維持し、広域回収を終了した。141入力・旧667保護ファイルを照合、PR/確認/H8/B0I・V1/H5/H7不変、新fit/残差/compile/config/grant0。現契約をNO_GO候補として利用者判断へ、公開後mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-16 V2：来歴25件を条件付き結合・固定fit条件は不成立
 
 [回収証拠・件数・不足理由・次の判断](track_a_v2_provenance_reconciliation_20261016.md)。PR158 entriesのseed来歴を回収し、H6探索17＋確認8の25件を条件付きmetadata結合済みへ更新、237件は未解決。結合済み層にPFはなくfit適格0。来歴無視の上限でもH8全PRとH6確認PRは固定holdout側0で、条件を変更していない。原receipt7,043件と旧保護667件を照合し、SOURCE・結果・grant/ledger・V1/H5/H7を保全。実fit/残差/compile/新grant0、公開後mandatory STOP。以下は各時点の履歴。

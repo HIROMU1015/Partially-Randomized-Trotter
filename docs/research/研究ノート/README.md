@@ -1,3 +1,5 @@
+[2026-10-16 V2 H6探索PFの最終限定照合・NO_GO候補](2026-10-16_track_a_v2_h6_pf_final_reconciliation.md)。広域回収終了、実fit/残差/compile0。
+
 [2026-10-16 V2保存来歴の回収・固定holdout件数の不足](2026-10-16_track_a_v2_provenance_reconciliation.md)。25件条件付き結合、237件未解決、fit適格0・実数値解析0。
 
 [2026-10-16 V2残差runner実装・43人工検証・来歴未解決](2026-10-16_track_a_v2_residual_implementation.md)。実数値実行0、公開後STOP。
