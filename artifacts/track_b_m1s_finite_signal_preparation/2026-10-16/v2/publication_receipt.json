@@ -1,0 +1,791 @@
+{
+  "schema": "m1s_finite_signal_model_accounting_v2_publication_receipt",
+  "date_jst": "2026-10-16",
+  "repository": "HIROMU1015/Partially-Randomized-Trotter",
+  "branch": "track-b-m1s-finite-signal-model-accounting-v2-20261016",
+  "base_commit": "a398a3fab6f68abc2a47799d7454b312082af292",
+  "source_commit": "fbc2edea3816bf8f68508f62c6da595631df03b6",
+  "fixed_candidate_payload_commit": "68fa558043bb7b18f40bdc02f45d2c0bba95f8fa",
+  "observed_remote_candidate_SHA": "68fa558043bb7b18f40bdc02f45d2c0bba95f8fa",
+  "base_SOURCE_candidate_commit_order_verified": true,
+  "contract_path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/finite_signal_contract_candidate.json",
+  "contract_sha256": "03944ae9aa462df10e2d9a0aab68e1db531413a731c20707b4048136f6a873f3",
+  "received_review": {
+    "path": "docs/research/m1s_finite_step_pilot_gpt_independent_review_20261016.md",
+    "sha256": "fb2ff8695b9bf0355a84fb3a368543e9d36aa6e97dc172a034116efb190432b4",
+    "bytes": 27909,
+    "role": "received pre-adoption model-accounting amendment; not a new review or execution authority"
+  },
+  "received_review_original_bytes_equal": true,
+  "new_GPT_scientific_review_started": false,
+  "model_accounting": {
+    "raw_reference": "H_full; z_full=<psi exp(+i T H_full) psi>/original_norm2",
+    "method_target": "H_tilde_j=HD_j+HR_saved_j; z_tilde_ideal is defined but not evaluated",
+    "B_unit": "Ha",
+    "T_unit": "Ha^-1",
+    "signal_unit": "dimensionless",
+    "phase_unit": "rad",
+    "operator_bound": "B_j=max_row sum(abs(Re DeltaH_j)+abs(Im DeltaH_j)) >= norm_2(DeltaH_j), conditional on exact Hermiticity",
+    "signal_bound": "eta_j(T)=abs(T)*B_j; exact rational ledger, separate from numerical precision gate",
+    "total_discrepancy": "computed z_method-z_full with numerical radius only; TOTAL_COMPLEX_DISCREPANCY_TO_RAW_H, never pure algorithm error",
+    "algorithm_enclosure": "triangle-inequality magnitude interval using total discrepancy numerical ball enlarged by eta; no algorithm-only point value or exact separation",
+    "model_phase": "conditional principal-phase bound only if raw visibility lower L and L-eta exceed 1/4, eta<L, union disk excludes zero and negative-real branch cut; otherwise UNDETERMINED",
+    "attribution": "MODEL_TARGET_CONFOUNDED if eta>0; B=0 proves model equality; no result-dependent tolerance or grid change",
+    "contrast": "shared minus comparator is direct same-H_tilde visibility contrast; no model budget added to its numerical radius",
+    "auxiliary_split_ideal_signal_evaluation": false,
+    "legacy_direct_full_HD_comparison": "UNDETERMINED_NOT_SAVED; new reconstruction does not recover missing v5 matrices",
+    "no_HD_repair_or_saved_coefficient_adjustment": true
+  },
+  "grid_and_comparison_conditions_unchanged": true,
+  "auxiliary_split_ideal_signal_evaluated": false,
+  "public_files_verified": 89,
+  "all_new_updated_payload_files_covered": true,
+  "files": [
+    {
+      "path": "PROJECT_MAP.md",
+      "bytes": 121500,
+      "sha256": "821f02d26e65ca2008b0d50cbc29b2c5927414544cc1ca7456881d2a3d1cd17d",
+      "git_blob_sha": "06529f519a7980b3edb9113b36fd55bce39261b9",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/PROJECT_MAP.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "VALIDATION_STATUS.md",
+      "bytes": 157401,
+      "sha256": "2a5461a3470b5180f7b6872728a109d9533b411b421f58e95f71ae5b3eef2e99",
+      "git_blob_sha": "aed588a68479dd992e3d7128bf74b381306f55b3",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/VALIDATION_STATUS.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz",
+      "bytes": 8652,
+      "sha256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a",
+      "git_blob_sha": "39770ad86433a029d2f5157a90384f5ee37b12ce",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/decision_context.json",
+      "bytes": 1079,
+      "sha256": "be2f6dac1c1d743732abd8abe98f831271cd25ffc011de299dbe6f50ab27c7a5",
+      "git_blob_sha": "e91fc8c5abbe1572e04d2c6d27e68bf812d867b3",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/decision_context.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/evidence_index.json",
+      "bytes": 17104,
+      "sha256": "1967418e8ecd630c1f6467a750bd94f369c4f7b8db0a523c4548c142e9ec8a85",
+      "git_blob_sha": "9c6189fca972753cec06e3c5f377e5597bf98bed",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/evidence_index.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/execution_readiness.json",
+      "bytes": 637,
+      "sha256": "e9ac514a887a3742d95bf924d5bb2d6f1f93fbe7863e4dbd9748c0fc57feac66",
+      "git_blob_sha": "994e17a262349af549a8ded10068cd50f2659e84",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/execution_readiness.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/finite_signal_contract_candidate.json",
+      "bytes": 9110,
+      "sha256": "3ee7e999eebf1a62b2da9f760b647c78d5e956211b5fc8ce26739eb54501096a",
+      "git_blob_sha": "12eb9ea19aafd17ed5be5e16a1241647f0bb2e18",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/finite_signal_contract_candidate.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/parent_and_other_worktree_preservation.json",
+      "bytes": 4084,
+      "sha256": "49db691e0fd491bf861963bb6c6e8444aaff762714ef073a89bd38d39ed12d9f",
+      "git_blob_sha": "d5b28d9ca2ef680701f2a6c786fba0a9ba0ffed0",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/parent_and_other_worktree_preservation.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/planned_rows.json",
+      "bytes": 30492,
+      "sha256": "efbd63ac3e2bbcf1537c0c683eb2da12f04b4905eb720bf9559f1c3e5e9aa1a3",
+      "git_blob_sha": "96db1270ee5d13c1d48f6258036708260abc5f45",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/planned_rows.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/policy_template.json",
+      "bytes": 8514,
+      "sha256": "3ea0d4de346f1060fda546ab4ea44abf4e96296018393bf39346cfb973922219",
+      "git_blob_sha": "451e683cf039a8bbe75e6d5d5809998a13a649b7",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/policy_template.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/preparation_scope.json",
+      "bytes": 812,
+      "sha256": "309097c8f17954c0b3b3eac54c00b7049548888b064d9cfad564f44c1edf5be0",
+      "git_blob_sha": "887353d1e3786d558978b63deaaf17bb36456742",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/preparation_scope.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/provenance_document_audit.json",
+      "bytes": 19393,
+      "sha256": "37c7e21fdbfbb5a53c2da08fb83485604481c0de82db68632c8c686b8439a5ae",
+      "git_blob_sha": "09c9b9b6802dd6f72a64acec4282f9de873d4cd2",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/provenance_document_audit.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/publication_receipt.json",
+      "bytes": 36550,
+      "sha256": "e74cbd586c6fec81d5af52ff86645a2bcb9a39986e7ef28da246d728f198037d",
+      "git_blob_sha": "213b08426ca5ab9328cf7e52ee3cc7487a0b86a7",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/publication_receipt.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/resource_and_acceleration_plan.json",
+      "bytes": 2555,
+      "sha256": "96401c076ebab9a02f5afa390f216cb059c09815962282b3940dbdb0debc9bf1",
+      "git_blob_sha": "92ba218f74f21c39902c6ee8d58ac2cb7c6112c5",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/resource_and_acceleration_plan.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/runtime_metadata_preflight.json",
+      "bytes": 1341,
+      "sha256": "09ea011426b03003983ffa7091421c7d9f8b46b03045429870ec54b1009fd557",
+      "git_blob_sha": "bc3ede2f684ac324c7f7c105f34cf99d54632c96",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/runtime_metadata_preflight.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/source_and_evidence_identity.json",
+      "bytes": 3175,
+      "sha256": "d8fff9e798caf09028648687bddc5218bc326bd930f8e02d666b422e444b59e8",
+      "git_blob_sha": "2a9b914021f3809bf4e7d1ea349287f488360268",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/source_and_evidence_identity.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/static_pre_freeze.json",
+      "bytes": 88961,
+      "sha256": "8a979227d43831085e215fcbe8c330bc6d1d06a9cd790cdba1f42be4a4d69f85",
+      "git_blob_sha": "7f35883a6cf61fd92af43ed8d279b26bb8d11961",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/static_pre_freeze.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/static_source_validation.json",
+      "bytes": 89440,
+      "sha256": "d259fef8a16eaa36856f744f3f15884b3ea8155947b3b281595694093a7844ca",
+      "git_blob_sha": "213640ff60b52eb9d208287ed0aca9003ed7d44d",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/static_source_validation.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/unresolved_choices.json",
+      "bytes": 1631,
+      "sha256": "0051eb51ef5ef2689957761ffcc8178eeac72cd174b10e05518d9e20707aefee",
+      "git_blob_sha": "b456df0369fb39b148948c713adc60478f242988",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v1/unresolved_choices.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/decision_context.json",
+      "bytes": 885,
+      "sha256": "329b78cec267c264c0f020236f2f79c205cccf98d8ce9a2f927c5d3c731ba8c2",
+      "git_blob_sha": "0107a1b9fbe24ac9777ce26a571883172688622b",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/decision_context.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/evidence_index.json",
+      "bytes": 22808,
+      "sha256": "f84ea704c4265eb63450bd26726794c7a0713179f2e1191317a9fac7cb6f4883",
+      "git_blob_sha": "068e202e51ca1de9f43ec97d992450388e7f13e6",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/evidence_index.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/execution_readiness.json",
+      "bytes": 609,
+      "sha256": "d5b514ea2fe6a9ed648bfd9beb3fb18298dcdd5b0cef37099aa7671ff574f688",
+      "git_blob_sha": "73f4851a1527c9c741faedce8292808efbec9ff8",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/execution_readiness.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/finite_signal_contract_candidate.json",
+      "bytes": 11308,
+      "sha256": "03944ae9aa462df10e2d9a0aab68e1db531413a731c20707b4048136f6a873f3",
+      "git_blob_sha": "9a0e135d5ea64c3ddf2de4f36944847caa1bd5cf",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/finite_signal_contract_candidate.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/planned_rows.json",
+      "bytes": 30492,
+      "sha256": "efbd63ac3e2bbcf1537c0c683eb2da12f04b4905eb720bf9559f1c3e5e9aa1a3",
+      "git_blob_sha": "96db1270ee5d13c1d48f6258036708260abc5f45",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/planned_rows.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/policy_template.json",
+      "bytes": 10712,
+      "sha256": "b622d67c6493c3cdc54a465500fc056e0932cff178b521a8e5f4c7749a20cfde",
+      "git_blob_sha": "fdbd0741a485de9c96f6d15e71af11ee63cf7dea",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/policy_template.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/preservation_audit.json",
+      "bytes": 3469,
+      "sha256": "5014fdf461b096a42bd2ae5cecd0f7b51b8f879d7ce7847b5283f4801f3f0578",
+      "git_blob_sha": "671e3c2c98c5d8f262b06d4a6b2e0db2487bf034",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/preservation_audit.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/provenance_document_audit.json",
+      "bytes": 19235,
+      "sha256": "f36c89f9502a24bef872f1b2a16f9c902460d8d20641e91c482a2def37ad6224",
+      "git_blob_sha": "0e822d5d30c46a036e3a84d8b4c346e83b4da34d",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/provenance_document_audit.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/resource_and_acceleration_plan.json",
+      "bytes": 2830,
+      "sha256": "ea34a76078e304a5956f89cfda25e5ae458ed8dd3b3a8037f78ec38e7c8f1a00",
+      "git_blob_sha": "12ba75d0dbdf1f062cf53c9f402b5dff80dcaa24",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/resource_and_acceleration_plan.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/result_schema.json",
+      "bytes": 8092,
+      "sha256": "b5fa5e5e6bb18c25a25874c4dbfed73e451bb0c7a3b0d78973fdb98afb6caac7",
+      "git_blob_sha": "dac8e7a9af0ff78a48c118feaaeb247f0df9e19d",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/result_schema.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/source_and_evidence_identity.json",
+      "bytes": 3638,
+      "sha256": "a094a84118664121c67b56c6c866b6ab41d0ac14c45104421e3e10404e8a7594",
+      "git_blob_sha": "c0024440ea3295d1194956ffda89635686ec7cca",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/source_and_evidence_identity.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/static_pre_freeze.json",
+      "bytes": 97998,
+      "sha256": "075e163daefabc5e3663c660acae8b7d9896b9582c8187beae2d7b28d7512261",
+      "git_blob_sha": "8c4eb3a2414d762b6e86cbdef7c98a9817fbbc68",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/static_pre_freeze.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/static_source_validation.json",
+      "bytes": 98477,
+      "sha256": "fa3a21160cb2673bfa081fba546ac1a362a4f81d7f144305720a14a7f419ddf4",
+      "git_blob_sha": "c38150399378f562bbe0638f002a8d74e9b655b5",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/static_source_validation.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/unresolved_choices.json",
+      "bytes": 1986,
+      "sha256": "8dbb044967366fbc46fa6ec70b116d36422035601257f0b21f201b46f6c0f1d1",
+      "git_blob_sha": "4299dccd056f326272e63cca2f57f4b6a5fbab75",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/unresolved_choices.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/v1_static_regression.json",
+      "bytes": 89440,
+      "sha256": "d259fef8a16eaa36856f744f3f15884b3ea8155947b3b281595694093a7844ca",
+      "git_blob_sha": "213640ff60b52eb9d208287ed0aca9003ed7d44d",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_finite_signal_preparation/2026-10-16/v2/v1_static_regression.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_gate0_execution_audit/2026-10-16/v4_one_shot/exclusive_launch_marker.json",
+      "bytes": 1819,
+      "sha256": "31fc658fc453a92389f248c7d433a64c149381b6b72b5eb369343f0922b4a674",
+      "git_blob_sha": "3018e82acbea507f7a6d0d12e3446e23973393ad",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_gate0_execution_audit/2026-10-16/v4_one_shot/exclusive_launch_marker.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_gate0_result/2026-10-16/v4_one_shot/result.json",
+      "bytes": 246756,
+      "sha256": "83bf30919202b045101fba6aed9e7aec9e149581c4696c8c9e7212c70ae593c0",
+      "git_blob_sha": "b79f07d434132a457fc6e4e1ce96e793c0788583",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_gate0_result/2026-10-16/v4_one_shot/result.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_gate0_tail_bound/2026-10-16/v1/tail_local_model_candidate.json",
+      "bytes": 2613,
+      "sha256": "88ee296cdf64b166a500671ffed2bad190463c0f4b97adea0c95f386bd1a924c",
+      "git_blob_sha": "7a8a3d8fea4104b8a7204aa5fdbc925dd25d562e",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_gate0_tail_bound/2026-10-16/v1/tail_local_model_candidate.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_gate0_v5_execution_audit/2026-10-16/v1/exclusive_launch_marker.json",
+      "bytes": 1828,
+      "sha256": "b51b9de96996c03968465f2ab229831a7e2f860be7af66a8894a10f36373bc5a",
+      "git_blob_sha": "2b02e553a8f7ae19168842d844e4b470c588c784",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_gate0_v5_execution_audit/2026-10-16/v1/exclusive_launch_marker.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_gate0_v5_execution_authorization/2026-10-16/v1/execution_authorization.json",
+      "bytes": 1264,
+      "sha256": "ba4cd0f71b82eef1b3a356639ae88dc81555b53c1c923fb910b6aa06a51d6f1a",
+      "git_blob_sha": "fb32670b69bee63a3f3e98a465a35ce0633d9f6f",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_gate0_v5_execution_authorization/2026-10-16/v1/execution_authorization.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_gate0_v5_formal_adoption/2026-10-16/v1/execution_contract_v5_adopted.json",
+      "bytes": 6933,
+      "sha256": "361e7034850512fcfde76a68ebd5dc3b58de945d1075a696196d75af8ae7547b",
+      "git_blob_sha": "fd6e87e7fd63794819c3c068fa7ca54100239ac9",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_gate0_v5_formal_adoption/2026-10-16/v1/execution_contract_v5_adopted.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_gate0_v5_result/2026-10-16/v5_one_shot/result.json",
+      "bytes": 440470,
+      "sha256": "8e32925e99b64ce6bc2c939e45ba51485d18b1eb4b62952e22a0debe1d9d4ec5",
+      "git_blob_sha": "3459ba806a8724abd548ee0d4825a812420d14e4",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_gate0_v5_result/2026-10-16/v5_one_shot/result.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_independent_contract_adoption/2026-10-16/v1/independent_validation_contract_adopted.json",
+      "bytes": 7703,
+      "sha256": "aaf9ac98f0f2ca27e3038834623a0724bbab3f01c050725357dd934c56957712",
+      "git_blob_sha": "533d0e4ff2d0867a87093c96d1638e085d8fee03",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_independent_contract_adoption/2026-10-16/v1/independent_validation_contract_adopted.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_independent_execution_audit/2026-10-16/v1/exclusive_launch_marker.json",
+      "bytes": 2992,
+      "sha256": "c3c84eac5ee6af9dc247dc3c88015cd9432a7c58d4905237e9feaba69d11483e",
+      "git_blob_sha": "5e59186c7963339acef04e8a22d83530042d38e8",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_independent_execution_audit/2026-10-16/v1/exclusive_launch_marker.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_independent_execution_audit/2026-10-16/v1/publication_receipt.json",
+      "bytes": 55623,
+      "sha256": "c85cf856fbe00c5ededa974bd35c3c133313f55541fd25248f5518ebd301ff59",
+      "git_blob_sha": "196ceff37c47fde76f07aa85d121c0a499869782",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_independent_execution_audit/2026-10-16/v1/publication_receipt.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_independent_execution_authorization/2026-10-16/v1/execution_authorization.json",
+      "bytes": 1018,
+      "sha256": "872b696153abd6088df137149e5818311b5bd059d8a53207e9c139eb6e9ee86b",
+      "git_blob_sha": "6e6284002b63a16ec89e86c9440265d9810bbd64",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_independent_execution_authorization/2026-10-16/v1/execution_authorization.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/track_b_m1s_independent_reference_result/2026-10-16/v1_one_shot/result.json",
+      "bytes": 541714,
+      "sha256": "32c73f57a1b3fada6bc185311bd56007628849222ad77e4a33e8383a2d0085ac",
+      "git_blob_sha": "056232fd4871648d928cd06ff431abaa920566d4",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/track_b_m1s_independent_reference_result/2026-10-16/v1_one_shot/result.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "artifacts/validation_manifest.json",
+      "bytes": 475214,
+      "sha256": "4a7d2ea24eabb532fca8cf9cb6c50b268b77a648f36f4c4660d2bb06147ad2b2",
+      "git_blob_sha": "7bc3cfa4f523fa9fd88237bf5f34b2e0599cf3c0",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/artifacts/validation_manifest.json",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "docs/README.md",
+      "bytes": 86674,
+      "sha256": "919fb0b2188864fd7c91b48275f0577ecbc58be7820bec05ec09f785e916cdbf",
+      "git_blob_sha": "b572be57a613e412bd970f8a7f98daf2cfc0407f",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/docs/README.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "docs/research/m1s_finite_step_pilot_gpt_independent_review_20261016.md",
+      "bytes": 27909,
+      "sha256": "fb2ff8695b9bf0355a84fb3a368543e9d36aa6e97dc172a034116efb190432b4",
+      "git_blob_sha": "ae7c22d5c6f0dbc33b8d0b7b532c52c682bb72fd",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/docs/research/m1s_finite_step_pilot_gpt_independent_review_20261016.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "docs/research/research_project_instructions_unified_2026-10-16.md",
+      "bytes": 29678,
+      "sha256": "8323be3f65856adf0f4d095d8e68546db3326822023c20e101ba5f596605ebfa",
+      "git_blob_sha": "1ef95e1f8012d5a155c6cd206bb7635175f8f554",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/docs/research/research_project_instructions_unified_2026-10-16.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "docs/research/track_b_m1s_g0t1_checkpoint2_gpt_independent_scientific_review_20261016.md",
+      "bytes": 52863,
+      "sha256": "89266825e483dbc334180fc4125dfd2e56f77ec6f35bf51f5bfb9dc3741f2774",
+      "git_blob_sha": "bace46f8389eeff53345e19bccf041a18181b6ea",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/docs/research/track_b_m1s_g0t1_checkpoint2_gpt_independent_scientific_review_20261016.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "docs/research/track_b_m1s_gate0_v5_gpt_independent_mathematical_review_20261016.md",
+      "bytes": 25729,
+      "sha256": "e68db32b6a175f34ce233413aee1b92f8da770afb341fdb0ea7e3816eef64baf",
+      "git_blob_sha": "a14622b0450cedd5ad4aaea1094fd4f7f6e22ba3",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/docs/research/track_b_m1s_gate0_v5_gpt_independent_mathematical_review_20261016.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "docs/research/track_b_m1s_gate0_v5_independent_result_gpt_scientific_review_20261016.md",
+      "bytes": 24927,
+      "sha256": "07864ab817cc5fa8f3b8f2a834619c3ea4af090dec3e553cb7be3438a401f6fb",
+      "git_blob_sha": "ceb2576b203f459740583b5cf7ee1a7adb005334",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/docs/research/track_b_m1s_gate0_v5_independent_result_gpt_scientific_review_20261016.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "docs/research/研究ノート/2026-10-16_track_b_M1S_finite_signal_model_accounting_v2.md",
+      "bytes": 926,
+      "sha256": "763c6041afbdcb336b64bf4224ce9cb6020387745c13a31d0a678d4331668570",
+      "git_blob_sha": "a3899efb6e542c5d296ad17ac33c7f5b8c299cd0",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/docs/research/%E7%A0%94%E7%A9%B6%E3%83%8E%E3%83%BC%E3%83%88/2026-10-16_track_b_M1S_finite_signal_model_accounting_v2.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "docs/research/研究ノート/2026-10-16_track_b_M1S_finite_signal_preparation.md",
+      "bytes": 1272,
+      "sha256": "7dc04344b048bf9d5696f0c0d1ebe17893f0d5c402aeb1f0a2b152250fa774fd",
+      "git_blob_sha": "606013ed2e7bd18a2768d0dd00a4d5ae7e5004a4",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/docs/research/%E7%A0%94%E7%A9%B6%E3%83%8E%E3%83%BC%E3%83%88/2026-10-16_track_b_M1S_finite_signal_preparation.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "docs/research/研究概要・現状.md",
+      "bytes": 227440,
+      "sha256": "032d947c2d4a1d8b0ddc64fe959f0f64222be041327dad44ce46033fc78df6a9",
+      "git_blob_sha": "0723d0f33bda56474689b13cf6c482321c951dbb",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/docs/research/%E7%A0%94%E7%A9%B6%E6%A6%82%E8%A6%81%E3%83%BB%E7%8F%BE%E7%8A%B6.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "docs/tracks/algorithm_codesign/m1s_finite_signal_precision_and_semantics_design_20261016.md",
+      "bytes": 4595,
+      "sha256": "f46db5bc16d37a3a7cedfb4abe328d9c0c87b73dd092acebd9d6630f5ea83aa9",
+      "git_blob_sha": "7f6a6f2e2097a0ae20c4035c300c8bbb623445ef",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/docs/tracks/algorithm_codesign/m1s_finite_signal_precision_and_semantics_design_20261016.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "docs/tracks/algorithm_codesign/m1s_finite_signal_precision_and_semantics_v2_design_20261016.md",
+      "bytes": 9736,
+      "sha256": "023f2089892666dcf2f7de2c0ea9e97285c8389aea6e28050162aa18a6230d24",
+      "git_blob_sha": "596bd9d11cc5dcb48691c360fb9a1dc6bc780cdb",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/docs/tracks/algorithm_codesign/m1s_finite_signal_precision_and_semantics_v2_design_20261016.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "docs/tracks/algorithm_codesign/m1s_finite_step_complex_signal_pilot_contract_candidate_20261016.md",
+      "bytes": 8993,
+      "sha256": "40c62f69faaee9b850648643ba956f694942c39aacd9ef23acdc86e5942abb84",
+      "git_blob_sha": "56a2bdea5fbadafe9acb0059ae4d5a6bb2a939e3",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/docs/tracks/algorithm_codesign/m1s_finite_step_complex_signal_pilot_contract_candidate_20261016.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "docs/tracks/algorithm_codesign/m1s_finite_step_complex_signal_pilot_contract_v2_candidate_20261016.md",
+      "bytes": 13777,
+      "sha256": "bf92542ddec26d345c73a6bcbab1ac87a170730ef12515f46642500bd4eccbcd",
+      "git_blob_sha": "e2297a05920c21d1625ab739ee68f1410fbe27c4",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/docs/tracks/algorithm_codesign/m1s_finite_step_complex_signal_pilot_contract_v2_candidate_20261016.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "docs/tracks/algorithm_codesign/m1s_g0t1_s0_formal_theory_contract_20261016.md",
+      "bytes": 33099,
+      "sha256": "4305a44ee690aa3c9d0d56aff7665a7c308a77109626cbe602d4eebd1d59f49e",
+      "git_blob_sha": "41b9512d798d127792aff41c9a9e75c76931d2b8",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/docs/tracks/algorithm_codesign/m1s_g0t1_s0_formal_theory_contract_20261016.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "docs/tracks/algorithm_codesign/m1s_g0t1_t1a_uniform_csec_signal_bound_and_proof_20261016.md",
+      "bytes": 20153,
+      "sha256": "6d777495d8e737fd271ed7e239e122bde2fc50772a58c120c1c8a3f67afcc58f",
+      "git_blob_sha": "65e5a16898fccdbce8df3df78730c2e736acf54a",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/docs/tracks/algorithm_codesign/m1s_g0t1_t1a_uniform_csec_signal_bound_and_proof_20261016.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "docs/tracks/algorithm_codesign/m1s_g0t1_t1b_partial_randomized_transfer_theory_20261016.md",
+      "bytes": 32550,
+      "sha256": "e7b621c489405e9c4876a9d2b71a2afd6d38c7c84e0f4bafec53f9b836d2c7fc",
+      "git_blob_sha": "60a43265eebe2c9086f38ace38076170eb91b9df",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/docs/tracks/algorithm_codesign/m1s_g0t1_t1b_partial_randomized_transfer_theory_20261016.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "docs/tracks/algorithm_codesign/m1s_gate0_tail_local_bound_proof_20261016.md",
+      "bytes": 12672,
+      "sha256": "4d3547493e336c41a0acade491470f8376f872eafd4486c5cd206b8937834156",
+      "git_blob_sha": "27f986951ea5f62e32dc25739b90f9260655ef79",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/docs/tracks/algorithm_codesign/m1s_gate0_tail_local_bound_proof_20261016.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "scripts/README.md",
+      "bytes": 71825,
+      "sha256": "15fa395171f369c1ad68e7353c1fbb61ce38f8fd1e691e270417b432e0d8281e",
+      "git_blob_sha": "b38b37e0c12385a314f747b3fcbc9d54a2fca953",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/scripts/README.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "scripts/tracks/algorithm_codesign/check_m1s_finite_signal_static.py",
+      "bytes": 10313,
+      "sha256": "6158b8b58686c5d2815cf02aca6cc3d6d89fd25fe68a84af48ebdfac15b3466d",
+      "git_blob_sha": "400366a5155ae87b0a70a359887edfd58ee28ec8",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/scripts/tracks/algorithm_codesign/check_m1s_finite_signal_static.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "scripts/tracks/algorithm_codesign/check_m1s_finite_signal_v2_static.py",
+      "bytes": 13851,
+      "sha256": "c3964d4829432ce68f5feedce8f85620e56ae7dad45430ad83dbd8f28c1fa87c",
+      "git_blob_sha": "178cc0175ee95109ff67bfe78757eb8715d3c2d5",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/scripts/tracks/algorithm_codesign/check_m1s_finite_signal_v2_static.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "scripts/tracks/algorithm_codesign/run_m1s_finite_signal_v1.py",
+      "bytes": 355,
+      "sha256": "bed404129b93977097fec69973533c535d52affd9c5abe2d959ceebb1eb4d78a",
+      "git_blob_sha": "343c04f80806e9c236bf9a53aa4e94f722426705",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/scripts/tracks/algorithm_codesign/run_m1s_finite_signal_v1.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "scripts/tracks/algorithm_codesign/run_m1s_finite_signal_v2.py",
+      "bytes": 355,
+      "sha256": "56dea60e4c6d42bad3b56c079d32ba8415e29d5455240a9b23c19bc0eeebfc42",
+      "git_blob_sha": "d52025999105a880415b3b4aa34f558f12b3ee1e",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/scripts/tracks/algorithm_codesign/run_m1s_finite_signal_v2.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trotterlib/README.md",
+      "bytes": 60814,
+      "sha256": "2a5b6e58574b4c8ebfd54da0a4e5c569e511f601697ab852fec7c017b4a2634f",
+      "git_blob_sha": "c46c49e8682460f29dd4c15c63e1e6f1f5069d21",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trotterlib/README.md",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trottertracks/__init__.py",
+      "bytes": 75,
+      "sha256": "2d51bfa08b2b1e000b86ec53bd463e786529307a7270078600e3b03995e90285",
+      "git_blob_sha": "0b8f414788f4f04618a8bca4a931c11fe8ad81b2",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trottertracks/__init__.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/__init__.py",
+      "bytes": 81,
+      "sha256": "b6503716cfd51d52ca9038e6de5a411eb78380d30451f81df9b81c31b1be090f",
+      "git_blob_sha": "48f0dad7e8a5aabc55bad58edb69331f11da2278",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trottertracks/algorithm_codesign/__init__.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/m1s_finite_signal_v1/__init__.py",
+      "bytes": 93,
+      "sha256": "dcc3bf21f38669804dd23dd54c9c523ed5e68a4c5e16cf85578169fa516964d6",
+      "git_blob_sha": "44734f29e6c158d7e073c2a15fc22386b348c80f",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trottertracks/algorithm_codesign/m1s_finite_signal_v1/__init__.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/m1s_finite_signal_v1/control.py",
+      "bytes": 18462,
+      "sha256": "0877b1c5b79759cb3c10354a2372b32dcfbbc400b39c21ab43dd228aacd3a826",
+      "git_blob_sha": "8291cd278ead82b76ea277311b2d2a892e8bc0d9",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trottertracks/algorithm_codesign/m1s_finite_signal_v1/control.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/m1s_finite_signal_v1/exact_input.py",
+      "bytes": 13233,
+      "sha256": "0792e7746de5580682385bdaa93504a951f803336f55f8d1e2daa253a733f2c5",
+      "git_blob_sha": "9d9688d27f24d42633c555b7c50b32a66dc1447e",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trottertracks/algorithm_codesign/m1s_finite_signal_v1/exact_input.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/m1s_finite_signal_v1/numerics.py",
+      "bytes": 10549,
+      "sha256": "97c9e7974d42c6e1b9c5c747f706532517799d1a9b1ca91de0542fa428b49d12",
+      "git_blob_sha": "635fa494ad753934f4077017763ddf5e16607506",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trottertracks/algorithm_codesign/m1s_finite_signal_v1/numerics.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/m1s_finite_signal_v1/pilot.py",
+      "bytes": 11555,
+      "sha256": "aa60d4f2e141f15e69bde87e64d92760361b83d5caad2b24192bfcb7b3d554b7",
+      "git_blob_sha": "ec50afdd48355967bed7383b655e2dce10e29d71",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trottertracks/algorithm_codesign/m1s_finite_signal_v1/pilot.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/m1s_finite_signal_v1/word_reference.py",
+      "bytes": 5583,
+      "sha256": "1e42d86c68cd35dad0d7238d171601a5c3ed1eb38519d8c19838200543885e05",
+      "git_blob_sha": "7d92177ef6735e7a58ae8fea4f25d9d0589ce952",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trottertracks/algorithm_codesign/m1s_finite_signal_v1/word_reference.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/m1s_finite_signal_v2/__init__.py",
+      "bytes": 93,
+      "sha256": "dcc3bf21f38669804dd23dd54c9c523ed5e68a4c5e16cf85578169fa516964d6",
+      "git_blob_sha": "44734f29e6c158d7e073c2a15fc22386b348c80f",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trottertracks/algorithm_codesign/m1s_finite_signal_v2/__init__.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/m1s_finite_signal_v2/control.py",
+      "bytes": 20610,
+      "sha256": "f8037b75ba99557cf51f3d2c7d5a17b796bce9f54c105a07c9f917bb44926560",
+      "git_blob_sha": "75007acabd394660b88537945029d4097274e3f6",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trottertracks/algorithm_codesign/m1s_finite_signal_v2/control.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/m1s_finite_signal_v2/exact_input.py",
+      "bytes": 13367,
+      "sha256": "3024044f5fb0281685a7fb236af3b7782adac94d05a0e154da96fd8a9062b7bc",
+      "git_blob_sha": "596ace44f90fd17d6af0295ae218c93ffaebe1cf",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trottertracks/algorithm_codesign/m1s_finite_signal_v2/exact_input.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/m1s_finite_signal_v2/numerics.py",
+      "bytes": 10549,
+      "sha256": "97c9e7974d42c6e1b9c5c747f706532517799d1a9b1ca91de0542fa428b49d12",
+      "git_blob_sha": "635fa494ad753934f4077017763ddf5e16607506",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trottertracks/algorithm_codesign/m1s_finite_signal_v2/numerics.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/m1s_finite_signal_v2/pilot.py",
+      "bytes": 15606,
+      "sha256": "a3161ba267e896b567a4986c516870d22ca6eb52844a8b8add81683068d590df",
+      "git_blob_sha": "47bb04141c82d128e0d831220e813cf7ece77df4",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trottertracks/algorithm_codesign/m1s_finite_signal_v2/pilot.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/m1s_finite_signal_v2/word_reference.py",
+      "bytes": 5583,
+      "sha256": "1e42d86c68cd35dad0d7238d171601a5c3ed1eb38519d8c19838200543885e05",
+      "git_blob_sha": "7d92177ef6735e7a58ae8fea4f25d9d0589ce952",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trottertracks/algorithm_codesign/m1s_finite_signal_v2/word_reference.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/m1s_gate0_independent_v1/control.py",
+      "bytes": 19251,
+      "sha256": "e7b4979b2f2dcf98eaca0f9db0a2ffda19371e58b59e3ae3d74ee0aff2b19925",
+      "git_blob_sha": "f23605e2fc2370aa59b8410fd582d0fd6e1e4e53",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trottertracks/algorithm_codesign/m1s_gate0_independent_v1/control.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/m1s_gate0_independent_v1/reference.py",
+      "bytes": 35815,
+      "sha256": "c5cffdf33fa305d461c118edebd81af217e713edf81627c9814997a319e19a02",
+      "git_blob_sha": "524c6e308f863e8cb59c87a27f7a5c3444b2480e",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trottertracks/algorithm_codesign/m1s_gate0_independent_v1/reference.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/m1s_gate0_v5/budget.py",
+      "bytes": 11725,
+      "sha256": "b73f47aa76718abda3f9ef8c4236e9d23cc379c22ce1b87140d4dd3c49638556",
+      "git_blob_sha": "71171d95a1d38749d69fadf6f4c67023033043e6",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trottertracks/algorithm_codesign/m1s_gate0_v5/budget.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/m1s_gate0_v5/control.py",
+      "bytes": 22778,
+      "sha256": "dc027a115ae7b131325bebc9ba13992794daf1a7a216a5de489e691b14dc1022",
+      "git_blob_sha": "5b47b4cb6bc023bf068d72f791a099051d290b79",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trottertracks/algorithm_codesign/m1s_gate0_v5/control.py",
+      "local_git_GitHub_bytes_equal": true
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/m1s_gate0_v5/science.py",
+      "bytes": 35226,
+      "sha256": "9a1d42916e972cb9b39af462678db1a70888fcab22a5de4f98d11fab0bc1a0ab",
+      "git_blob_sha": "81b3f591ecf6baf996a4786934d2351b6fb6802e",
+      "GitHub_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68fa558043bb7b18f40bdc02f45d2c0bba95f8fa/src/trottertracks/algorithm_codesign/m1s_gate0_v5/science.py",
+      "local_git_GitHub_bytes_equal": true
+    }
+  ],
+  "static_PASS": 683,
+  "static_FAIL": 0,
+  "v1_static_regression_PASS": 601,
+  "v1_static_regression_FAIL": 0,
+  "provenance_document_PASS": 149,
+  "provenance_document_FAIL": 0,
+  "result_schema_metaschema_check": "Draft202012Validator.check_schema PASS; no numeric result instance evaluated",
+  "parent_files_preserved": 2308,
+  "parent_HEAD": "e098c54c78f589055082f9cfc2b13de50c90ca94",
+  "parent_branch": "all-r-coherent-opt2-reoptimization",
+  "parent_index_sha256": "68a93531c7bc1993d49f6750ac8d98a54fafb8e153ddd0b887dd17b28ddd9c4c",
+  "protected_worktrees_preserved": 8,
+  "old_external_records_preserved": 6,
+  "old_tracked_payload_files_preserved": 7485,
+  "old_v1_candidate_SOURCE_review_v4_STOP_null_v5_independent_results_contract_authorities_consumed_markers_preserved": true,
+  "contract_adopted": false,
+  "coverage_model_adopted": false,
+  "contract_grants_execution": false,
+  "current_execution_permitted": false,
+  "numerical_correctness_verified": false,
+  "runtime_validated": false,
+  "platform_certified": false,
+  "new_scientific_calculations": 0,
+  "NPZ_array_decodes": 0,
+  "Pauli_coefficient_generation": 0,
+  "finite_signal_evaluations": 0,
+  "real_or_synthetic_numerical_correctness_tests": 0,
+  "new_simulation_compile": 0,
+  "new_execution_authorizations": 0,
+  "new_grants": 0,
+  "new_markers": 0,
+  "next": "user decides v2 final contract adoption; scientific execution requires further separate explicit approval",
+  "receipt_own_commit_hash_excluded_to_avoid_self_reference": true,
+  "mandatory_STOP": true
+}
