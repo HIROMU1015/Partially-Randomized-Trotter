@@ -220,7 +220,7 @@ def validate_config(config, require_adopted=False):
     if config["adoption_record"] is None:
         pending.append("adoption_record")
     elif not isinstance(config["adoption_record"], str) or not config["adoption_record"].strip():
-        errors.append("Adoption record must quote actual user/GPT adoption")
+        errors.append("Adoption record must quote actual user formal adoption")
     ready = not errors and not pending
     if require_adopted and not ready:
         errors.append("Fixed adopted contract with all precision/runtime limits is required")
