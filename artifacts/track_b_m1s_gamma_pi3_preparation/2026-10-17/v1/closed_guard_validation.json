@@ -1,0 +1,46 @@
+{
+  "schema": "m1s_gamma_pi3_closed_cli_metadata_checks",
+  "status_command": {
+    "status": "CANDIDATE_NOT_ADOPTED_NOT_EXECUTABLE",
+    "adopted": false,
+    "decision_gate_adopted": false,
+    "proposed_rules": {
+      "target": "GAMMA_STAR_STRICTLY_LESS_THAN_PI_OVER_THREE",
+      "threshold": "pi/3",
+      "unit": "rad",
+      "threshold_role": "PROPOSED_CONSERVATIVE_NEAREST_CONSISTENT_BRANCH_ROUND_ANGLE_CEILING",
+      "decoder_adopted_or_implemented": false,
+      "boundary_interval": "[L,U] FROM SAVED V1; NO ROOT RECOMPUTATION",
+      "pi_interval": "[p_lower,p_upper] FROM SAVED V1; NO PI RECOMPUTATION",
+      "satisfied": "3*U < p_lower",
+      "not_satisfied": "3*L >= p_upper",
+      "unresolved": "NEITHER SUFFICIENT INTERVAL SEPARATION HOLDS",
+      "shared_favourable_side": "ABOVE_ROOT; REQUIRE SHARED_LOWER_BEFORE_AND_SHARED_HIGHER_AFTER",
+      "all_splits_reported": [
+        "G3",
+        "G6",
+        "G9"
+      ],
+      "tested_splits": [
+        "G3",
+        "G6"
+      ],
+      "tested_contrasts": 32,
+      "G9": "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE_NOT_TESTED",
+      "exact_comparison": "BOUNDED_INTEGER_RATIONAL_CROSS_MULTIPLICATION_NO_FLOAT_TOLERANCE",
+      "coverage": "SAVED_V1_CONDITIONAL_ENGINEERING_ENCLOSURES_ONLY",
+      "statistical_scope": "NO_NEW_CONFIDENCE_CLAIM_NO_NEW_SHOTS",
+      "interpretation": "SAVED_CONTINUOUS_SUFFICIENT_DESIGN_INTERSECTION_ONLY",
+      "automatic_candidate_selection": false,
+      "automatic_scientific_GO": false
+    },
+    "execution_permitted": false,
+    "mandatory_STOP": true
+  },
+  "closed_run_request_exitcode": 2,
+  "closed_run_request_stderr": "EXECUTION_CLOSED: separate decision gate/contract/conditional coverage adoption required\n",
+  "new_scientific_evaluations": 0,
+  "comparison_engine_imported": false,
+  "authorization_grant_marker_created": false,
+  "scope": "METADATA_ONLY_NEGATIVE_GUARD_CHECK_NOT_NUMERICAL_CORRECTNESS"
+}

@@ -75,7 +75,7 @@ def main():
  check('no_new_pi_or_root_function',not any(isinstance(n,ast.FunctionDef) and any(t in n.name for t in ['atan','sin','cos','log','root','pi']) for n in ast.walk(tree)))
  for token in ['authority-only child required','source identity: ','saved input identity','execution worktree must be clean','one-shot output already exists; no retry','output.mkdir()','aggregate_memory_cap','supervisor_result.json']:
   check('guard:'+token,token in ctrl)
- check('engine_deferred_after_limits',ctrl.index('from .compare import evaluate')>ctrl.index('resource.setrlimit(resource.RLIMIT_AS')))
+ check('engine_deferred_after_limits',ctrl.index('from .compare import evaluate')>ctrl.index('resource.setrlimit(resource.RLIMIT_AS'))
  check('time_caps_none_as_current_policy',c['resources']['cpu_time_seconds'] is None and c['resources']['wall_time_seconds'] is None)
  check('caps_structural_only',c['resources']==spec.RESOURCES)
  check('48_records_32_tested_16_G9',c['grid']['contrast_records']==48 and c['grid']['tested_G3_G6']==32 and c['grid']['G9_carried_not_tested']==16)
