@@ -1,3 +1,9 @@
+## 2026-10-16 H8 Phase A run01：152候補完了・mandatory STOP
+
+[全152 signal gzip](artifacts/resource_applicability/track_a_h8_phase_a_run01/2026-10-16/H8_signal_complete_v1.json.gz)／[保存結果checker](artifacts/resource_applicability/track_a_h8_phase_a_run01/2026-10-16/verify_saved_result.py)。
+
+[結果・適格性表・資源/来歴/保全監査](docs/research/track_a_h8_phase_a_run01_results_20261016.md)。SOURCE fc463d9e…、H8/1Å/STO-3G/DF28/T=.8/q1/2/4/8。追加S2 96＋S4 56候補、B0/B0Iを評価。wall72.293秒・35 worker全exit0/reap・peak RSS6.846 GiB、132候補が少なくとも1条件で経験的適格。中断/科学retry0、費用fit/compile/再会計0、PR費用優位の新判定なし。原worker SHA欄1欠測は公開時の別SHAと区別。旧671保護/111他worktree不変、V2 NO_GO・B1/B2/C別承認、公開後mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-16 H8 Phase A：実装・人工検証完了、科学実行は未承認
 
 [plan](scripts/h8_strengthened_contract.py)／[export復元](scripts/h8_strengthened_export.py)／[signal](scripts/h8_strengthened_signal.py)／[runtime gate](scripts/h8_strengthened_runtime.py)／[runner](scripts/run_h8_strengthened_phase_a.py)／[launcher](scripts/launch_h8_strengthened_phase_a.py)／[未承認準備](scripts/prepare_h8_strengthened_phase_a.py)／[人工tests](tests/test_h8_strengthened_phase_a.py)／[2 qubit fixture](tests/check_h8_strengthened_synthetic_provider.py)。
