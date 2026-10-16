@@ -1,0 +1,47 @@
+{
+  "schema": "m1s_gamma_precision_resource_candidates",
+  "adopted": false,
+  "choices": [
+    {
+      "arithmetic_bits": 32,
+      "CPU_candidate_seconds": 30,
+      "wall_candidate_seconds": 60,
+      "max_offdomain_workload_CPU_seconds": 0.023999710000000007,
+      "max_offdomain_workload_wall_seconds": 0.023982377257198095
+    },
+    {
+      "arithmetic_bits": 64,
+      "CPU_candidate_seconds": 50,
+      "wall_candidate_seconds": 100,
+      "max_offdomain_workload_CPU_seconds": 0.05897893800000001,
+      "max_offdomain_workload_wall_seconds": 0.059322113171219826
+    },
+    {
+      "arithmetic_bits": 128,
+      "CPU_candidate_seconds": 160,
+      "wall_candidate_seconds": 320,
+      "max_offdomain_workload_CPU_seconds": 0.35100046900000004,
+      "max_offdomain_workload_wall_seconds": 0.35098584089428186
+    },
+    {
+      "arithmetic_bits": 256,
+      "CPU_candidate_seconds": 1290,
+      "wall_candidate_seconds": 2580,
+      "max_offdomain_workload_CPU_seconds": 5.077271204999999,
+      "max_offdomain_workload_wall_seconds": 5.088164895307273
+    }
+  ],
+  "technical_recommendation_not_adoption": {
+    "arithmetic_bits": 128,
+    "cpu_time_seconds": 160,
+    "wall_time_seconds": 320
+  },
+  "reason": "128-bit dyadic enclosures retain far smaller absolute coefficient uncertainty than 64 bits, at lower measured toy cost than 256 bits; no uniform root accuracy guaranteed near coefficient degeneracy",
+  "precision_quantum": "h=2^-(p+8); pi interval width<=62h; cos width<=3h; sin width<=4h on accepted domain; X width<=8h and Y width<=10h for amplitudes in (0,1]",
+  "uniform_gamma_boundary_resolution_guaranteed": false,
+  "root_width_policy": "report exact enclosing interval, including unresolved band; no adaptive p escalation",
+  "time_candidates_meaning": "empirical cutoff choices from off-domain step rate; not worst-case time estimates or completion guarantees",
+  "time_cap_scope": "single numerical worker including checkpoint; parent hard wall supervisor; CPU soft cap and hard cap +1s cleanup grace",
+  "structural_caps": "CPU1/noGPU; aggregate virtual-memory cap2GiB; result/log16MiB each; rational65536 bits; per-series4096 terms; total bound steps1e6",
+  "mandatory_STOP": true
+}

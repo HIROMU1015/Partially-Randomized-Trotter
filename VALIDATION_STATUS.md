@@ -1,3 +1,5 @@
+> **M1-S V1 γ依存準備（2026-10-17）**：[候補・SOURCE](docs/tracks/algorithm_codesign/m1s_v1_gamma_dependent_contract_candidate_20261017.md)。`GAMMA_SOURCE_PREPARED_OFFDOMAIN_TESTED_NOT_EXECUTABLE`。人工scalar kernel/停止testsのみPASS、保存H4のγ境界やshot解析は未実行。旧数値status不変、mandatory STOP。
+
 > **M1-S V1 V0（2026-10-17）**：[SOURCE・契約候補](docs/tracks/algorithm_codesign/m1s_v1_saved_signal_contract_candidate_20261017.md)。`SOURCE_PREPARED_SCIENTIFIC_FIELDS_OPEN_NOT_EXECUTABLE`。静的／metadata guardのみ検査し、数値correctness・forecast・runtimeは未検証。旧数値結果statusを変更せず、mandatory STOP。
 
 > **M1-S有限step v2計算完了（2026-10-16）：[結果・修正来歴](docs/tracks/algorithm_codesign/m1s_finite_signal_v2_completed_results_20261016.md)。** ユーザーの修正・完了承認の下で試行01の精度STOPを保全、Phiの既存Frobenius収縮性を誤差伝播へ適用し試行02で108/108行完了。H4 1.00 Å/STO-3G/8 modes/DF rank12・G3/G6/G9・保存oracle・delta1/8,1/16 Ha^-1・R2/4・T1/4 Ha^-1不変。correctness/全3twirl/精度PASS、条件付き未認証。G3/G6は各16絶対対照resolved higher、G9は16 unresolved。科学GO/native総資源未認定、旧成果・各試行・marker・親/他worktree保全、mandatory STOP。以下は履歴。

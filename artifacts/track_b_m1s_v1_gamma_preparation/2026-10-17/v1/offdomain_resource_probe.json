@@ -1,0 +1,106 @@
+{
+  "schema": "m1s_gamma_offdomain_resource_probe",
+  "scope": "ARTIFICIAL_SCALAR_KERNELS_ONLY",
+  "rows": [
+    {
+      "bits": 32,
+      "repeat": 0,
+      "cpu_seconds": 0.023255715999999996,
+      "wall_seconds": 0.023982377257198095,
+      "bound_steps": 3544
+    },
+    {
+      "bits": 32,
+      "repeat": 1,
+      "cpu_seconds": 0.023999710000000007,
+      "wall_seconds": 0.023280770052224398,
+      "bound_steps": 3544
+    },
+    {
+      "bits": 32,
+      "repeat": 2,
+      "cpu_seconds": 0.022999918999999994,
+      "wall_seconds": 0.02317907428368926,
+      "bound_steps": 3544
+    },
+    {
+      "bits": 64,
+      "repeat": 0,
+      "cpu_seconds": 0.058974296999999995,
+      "wall_seconds": 0.059132594615221024,
+      "bound_steps": 5390
+    },
+    {
+      "bits": 64,
+      "repeat": 1,
+      "cpu_seconds": 0.05897893800000001,
+      "wall_seconds": 0.058821048121899366,
+      "bound_steps": 5390
+    },
+    {
+      "bits": 64,
+      "repeat": 2,
+      "cpu_seconds": 0.058971209999999996,
+      "wall_seconds": 0.059322113171219826,
+      "bound_steps": 5390
+    },
+    {
+      "bits": 128,
+      "repeat": 0,
+      "cpu_seconds": 0.34791163599999997,
+      "wall_seconds": 0.3480687169358134,
+      "bound_steps": 9006
+    },
+    {
+      "bits": 128,
+      "repeat": 1,
+      "cpu_seconds": 0.347997997,
+      "wall_seconds": 0.3478262647986412,
+      "bound_steps": 9006
+    },
+    {
+      "bits": 128,
+      "repeat": 2,
+      "cpu_seconds": 0.35100046900000004,
+      "wall_seconds": 0.35098584089428186,
+      "bound_steps": 9006
+    },
+    {
+      "bits": 256,
+      "repeat": 0,
+      "cpu_seconds": 5.014270693,
+      "wall_seconds": 5.019044710788876,
+      "bound_steps": 15835
+    },
+    {
+      "bits": 256,
+      "repeat": 1,
+      "cpu_seconds": 5.028156588000001,
+      "wall_seconds": 5.033318171277642,
+      "bound_steps": 15835
+    },
+    {
+      "bits": 256,
+      "repeat": 2,
+      "cpu_seconds": 5.077271204999999,
+      "wall_seconds": 5.088164895307273,
+      "bound_steps": 15835
+    }
+  ],
+  "cpu_candidates_seconds": 1290,
+  "wall_candidates_seconds": 2580,
+  "candidate_formula": "CPU=round_up_10(4*max(observed_CPU/bound_steps)*1000000); wall=round_up_10(max(2*CPU,4*max(observed_wall/bound_steps)*1000000))",
+  "factor_4": "explicit engineering headroom; not a probabilistic or worst-case guarantee",
+  "peak_RSS_KiB_linux": 11520,
+  "logical_cpus": 32,
+  "cpu_affinity_count": 32,
+  "workers": 1,
+  "GPU_used": false,
+  "science_inputs_opened": 0,
+  "H4_gamma_boundaries_evaluated": 0,
+  "saved_signal_reanalysis": 0,
+  "shot_forecasts": 0,
+  "resource_caps_adopted": false,
+  "completion_time_guaranteed": false,
+  "mandatory_STOP": true
+}

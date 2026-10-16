@@ -1,3 +1,5 @@
+> **M1-S V1 γ依存準備**：[改訂候補](tracks/algorithm_codesign/m1s_v1_gamma_dependent_contract_candidate_20261017.md)／[精度・resource・引継ぎ](tracks/algorithm_codesign/m1s_v1_gamma_precision_resource_and_handoff_20261017.md)／[受領GPT原本](research/m1s_v1_scientific_conditions_independent_review_20261017.md)。γ境界の仮定・不適用・未解像とceil同数を区別。旧SOURCE/結果保持、新科学0、mandatory STOP。
+
 > **M1-S V1 V0**：[契約候補](tracks/algorithm_codesign/m1s_v1_saved_signal_contract_candidate_20261017.md)／[算術・coverage](tracks/algorithm_codesign/m1s_v1_arithmetic_coverage_and_resource_design_20261017.md)／[新GPT原本](research/m1s_rpe_applicability_scientific_design_review_20261017.md)。保存raw-H単一時刻phaseの仮説的十分shot設計SOURCEを準備。科学field null、未採択・未実行、mandatory STOP。
 
 > **M1-S RPE適用条件の非数値整理（2026-10-17）：[Decision Packet](tracks/algorithm_codesign/m1s_rpe_applicability_and_total_cost_decision_packet_20261017.md)。** 最新GPTレビューを引き継ぎ、位相bias予算・visibility/shot式・全wrapperとstate準備費用・総額条件を記号式で整理。D1–D11未決、契約候補未採択、科学計算/数値再解析/forecast/native生成/新authority・marker0。旧科学status/結果/SOURCEを保全、mandatory STOP。以下の本文は保持。
