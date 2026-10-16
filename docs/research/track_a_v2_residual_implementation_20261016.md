@@ -1,5 +1,7 @@
 # Track A V2：保存RZ残差runnerの実装・人工検証と未解決の来歴結合
 
+> 後続：[来歴証拠の回収・固定fit件数の確認](track_a_v2_provenance_reconciliation_20261016.md)。25件条件付き結合、237件未解決、fit適格0。以下は回収前の記録。
+
 **runner・人工検証・未承認契約を準備した。実データのfit・残差解析は未実行である。現在の来歴台帳では262 scope entriesすべてが`UNRESOLVED_PROVENANCE`で、fit適格な層はない。実行承認だけで有効な残差評価へ進める状態ではない。**
 
 branchは`track-a-v2-residual-analysis-readiness-20261016`。前段の計画commitは`0b573f0bbb922c1cb8bf851241d11816162a1653`、今回の公開実装SOURCEは`5703dbda58ebb8b7a9d18dce18ba33ed45f3c11c`。本文とartifactを追加する文書commitとは区別する。[前段の構成対応・最小計画](track_a_v2_residual_analysis_readiness_20261016.md)を維持し、[今回の機械可読証拠](../../artifacts/resource_applicability/track_a_v2_residual_implementation/2026-10-16/README.md)へ結合した。

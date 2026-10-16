@@ -1,3 +1,7 @@
+## 2026-10-16 V2：来歴25件を条件付き結合・固定fit条件は不成立
+
+[回収証拠・件数・不足理由・次の判断](track_a_v2_provenance_reconciliation_20261016.md)。PR158 entriesのseed来歴を回収し、H6探索17＋確認8の25件を条件付きmetadata結合済みへ更新、237件は未解決。結合済み層にPFはなくfit適格0。来歴無視の上限でもH8全PRとH6確認PRは固定holdout側0で、条件を変更していない。原receipt7,043件と旧保護667件を照合し、SOURCE・結果・grant/ledger・V1/H5/H7を保全。実fit/残差/compile/新grant0、公開後mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-16 V2：残差runner人工検証完了・実データ来歴は未解決
 
 [実装・43人工検証・契約・不足証拠](track_a_v2_residual_implementation_20261016.md)。保存RZ runner・metadata準備・未承認契約を実装し、人工36＋observer/cleanup7＝43件PASS。SOURCE5703dbda…、source9/runtime34,273/input5をseal。現台帳の262 scope entriesは全件UNRESOLVED_PROVENANCEでfit対象0、保存receiptへの独立結合が必要。実fit/残差/compile/primitive/law/DP・有効grant0、CPU[]/command=null。V1・旧V2・H5/H7と旧保護665件を保全し、公開後mandatory STOP。以下は各時点の履歴。
