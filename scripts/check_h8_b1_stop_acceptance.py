@@ -28,7 +28,7 @@ EVIDENCE_OBJECTS = {
 
 def verify(root, inventory, contract):
     review.require(inventory['schema'] == 'H8_B1_ACCEPTANCE_EVIDENCE_V1', 'EVIDENCE_SCHEMA')
-    review.validate_draft(contract, review.digest(inventory))
+    review.validate_comparison(contract, review.digest(inventory))
     records = {}
     for row in inventory['files']:
         role, commit, name = row['role'], row['commit'], row['path']
@@ -48,10 +48,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--repository', required=True)
     parser.add_argument('--inventory', required=True)
-    parser.add_argument('--draft', required=True)
+    parser.add_argument('--comparison', required=True)
     args = parser.parse_args()
     result = verify(args.repository, review.strict_json(Path(args.inventory).read_bytes()),
-                    review.strict_json(Path(args.draft).read_bytes()))
+                    review.strict_json(Path(args.comparison).read_bytes()))
     import json
     print(json.dumps(result, indent=2, ensure_ascii=False))
 

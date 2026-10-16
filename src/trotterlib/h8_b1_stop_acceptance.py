@@ -1,7 +1,8 @@
 """Review-only H8 saved-STOP acceptance checks. No fit, grant or executor.
 
-A successful check establishes consistency of pinned historical evidence, not
-acquisition completion, historical thread compliance, or runtime permission.
+A successful check establishes consistency of pinned historical evidence.
+It preserves the completed authoritative B1 result and the original B0 STOP;
+it neither reopens historical authorization nor issues runtime permission.
 """
 import hashlib
 import json
@@ -45,17 +46,19 @@ def strict_json(data):
     return json.loads(data, object_pairs_hook=pairs, parse_constant=nonfinite)
 
 
-def validate_draft(contract, evidence_sha256):
-    require(contract['schema'] == 'H8_B1_SAVED_STOP_ACCEPTANCE_DRAFT_V1', 'DRAFT_SCHEMA')
-    for key in ('approved', 'accepted', 'runtime_authorization', 'existing_result_adopted',
+def validate_comparison(contract, evidence_sha256):
+    require(contract['schema'] == 'H8_B1_EXECUTED_CONTRACT_COMPARISON_V1', 'COMPARISON_SCHEMA')
+    require(contract['comparison_only'] is True and contract['existing_B1_result_authoritative'] is True,
+            'PRESERVE_COMPLETED_AUTHORITATIVE_RESULT')
+    for key in ('approved', 'runtime_authorization', 'new_acceptance_required', 'historical_authorization_reopened',
                 'B2_authorized', 'C_authorized', 'next_stage_authorized'):
-        require(contract[key] is False, 'DRAFT_CANNOT_AUTHORIZE:' + key)
+        require(contract[key] is False, 'COMPARISON_CANNOT_AUTHORIZE:' + key)
     require(contract['allowed_cpus'] == [] and contract['absolute_launch_command'] is None,
             'NO_EXECUTION_CONFIGURATION')
     require(contract['implementation_B_SOURCE'] == IMPLEMENTATION_B_SOURCE and
             contract['implementation_A_SOURCE'] == IMPLEMENTATION_A_SOURCE,
             'PINNED_IMPLEMENTATIONS')
-    require(contract['implementation_selection'] == 'PENDING_USER_DECISION' and
+    require(contract['implementation_selection'] == 'EXISTING_RESULT_SOURCE_PRESERVED_NO_NEW_SELECTION' and
             contract['implementation_changes_authorized'] is False, 'NO_UNILATERAL_IMPLEMENTATION_CHANGE')
     require(contract['existing_B1_result_commit'] == EXISTING_B1_RESULT and
             contract['duplicate_fit_permitted'] is False, 'EXISTING_RUN_NO_DUPLICATE_FIT')
@@ -164,13 +167,15 @@ def validate_records(records):
             cleanup['first_stop'] is None and not cleanup['cleanup_errors'] and
             cleanup['automatic_retry'] is False and 0 < cleanup['max_monitor_gap_seconds'] <= 5,
             'EXISTING_B1_CLEANUP')
-    return dict(status='TECHNICALLY_ELIGIBLE_PENDING_EXPLICIT_ACCEPTANCE',
+    return dict(status='COMPARISON_COMPLETE_EXISTING_B1_RESULT_PRESERVED',
                 saved_B0_axes=8, TRAIN_axes=6, HOLDOUT_axes=2,
                 original_acquisition_status='STOP', original_final_gate_replaced=False,
                 historical_thread_compliance_certified=False,
                 implementation_A_SOURCE=IMPLEMENTATION_A_SOURCE, implementation_B_SOURCE=IMPLEMENTATION_B_SOURCE,
-                implementation_selection='PENDING_USER_DECISION', implementation_changes_authorized=False,
+                implementation_selection='EXISTING_RESULT_SOURCE_PRESERVED_NO_NEW_SELECTION', implementation_changes_authorized=False,
                 existing_B1_result_commit=EXISTING_B1_RESULT,
-                existing_B1_result_adopted=False, duplicate_fit_permitted=False,
+                existing_B1_result_authoritative=True, B1_status='COMPLETE_MANDATORY_STOP',
+                new_acceptance_required=False, historical_authorization_reopened=False,
+                duplicate_fit_permitted=False,
                 approved=False, runtime_authorization=False, new_compile=0, new_fit=0,
                 new_residual=0, new_reaccount=0, new_valid_grant=0, mandatory_STOP=True)

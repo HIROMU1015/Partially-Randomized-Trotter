@@ -74,13 +74,14 @@ def fixture():
                                 cleanup_errors=[], automatic_retry=False, max_monitor_gap_seconds=1))
 
 
-def draft():
-    return dict(schema='H8_B1_SAVED_STOP_ACCEPTANCE_DRAFT_V1', approved=False, accepted=False,
-                runtime_authorization=False, existing_result_adopted=False, B2_authorized=False,
+def comparison():
+    return dict(schema='H8_B1_EXECUTED_CONTRACT_COMPARISON_V1', approved=False, comparison_only=True,
+                runtime_authorization=False, existing_B1_result_authoritative=True,
+                new_acceptance_required=False, historical_authorization_reopened=False, B2_authorized=False,
                 C_authorized=False, next_stage_authorized=False, allowed_cpus=[], absolute_launch_command=None,
                 implementation_B_SOURCE=r.IMPLEMENTATION_B_SOURCE, implementation_A_SOURCE=r.IMPLEMENTATION_A_SOURCE,
                 existing_B1_result_commit=r.EXISTING_B1_RESULT, duplicate_fit_permitted=False,
-                implementation_selection='PENDING_USER_DECISION', implementation_changes_authorized=False,
+                implementation_selection='EXISTING_RESULT_SOURCE_PRESERVED_NO_NEW_SELECTION', implementation_changes_authorized=False,
                 evidence_set_sha256='artificial', original_acquisition_status='STOP',
                 original_final_gate_replaced=False, historical_thread_compliance_certified=False)
 
@@ -95,7 +96,7 @@ class AcceptanceTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, message):
             self.validate(data)
 
-    def test_eligible_is_never_permission(self):
+    def test_comparison_preserves_result_without_new_permission(self):
         result = self.validate(fixture())
         self.assertFalse(result['approved']); self.assertFalse(result['runtime_authorization'])
         self.assertFalse(result['duplicate_fit_permitted'])
@@ -153,21 +154,21 @@ class AcceptanceTests(unittest.TestCase):
     def test_existing_b1_cleanup_failure_stops(self):
         self.reject(lambda x: x['B1_cleanup'].update(all_reaped=False), 'B1_CLEANUP')
 
-    def test_draft_rejects_acceptance_execution_and_duplicate_fit(self):
-        r.validate_draft(draft(), 'artificial')
-        for key in ('approved', 'accepted', 'runtime_authorization', 'existing_result_adopted',
+    def test_comparison_rejects_reopening_and_execution(self):
+        r.validate_comparison(comparison(), 'artificial')
+        for key in ('approved', 'runtime_authorization', 'new_acceptance_required', 'historical_authorization_reopened',
                     'B2_authorized', 'C_authorized', 'next_stage_authorized', 'duplicate_fit_permitted',
                     'implementation_changes_authorized'):
-            x = draft(); x[key] = True
+            x = comparison(); x[key] = True
             with self.subTest(key=key), self.assertRaises(ValueError):
-                r.validate_draft(x, 'artificial')
+                r.validate_comparison(x, 'artificial')
 
-    def test_draft_binds_both_implementations_and_evidence(self):
+    def test_comparison_binds_both_implementations_and_evidence(self):
         for key in ('implementation_A_SOURCE', 'implementation_B_SOURCE', 'implementation_selection',
                     'evidence_set_sha256', 'existing_B1_result_commit'):
-            x = draft(); x[key] = 'wrong'
+            x = comparison(); x[key] = 'wrong'
             with self.subTest(key=key), self.assertRaises(ValueError):
-                r.validate_draft(x, 'artificial')
+                r.validate_comparison(x, 'artificial')
 
     def test_strict_json_rejects_duplicate_and_nonfinite(self):
         for data in ('{"a":1,"a":2}', '{"a":NaN}', '{"a":Infinity}'):
@@ -178,7 +179,7 @@ class AcceptanceTests(unittest.TestCase):
         role, (commit, path) = next(iter(checker.EVIDENCE_OBJECTS.items()))
         row = dict(role=role, commit=commit, path=path, bytes=1, sha256='bad')
         inventory = dict(schema='H8_B1_ACCEPTANCE_EVIDENCE_V1', files=[row])
-        proposal = draft(); proposal['evidence_set_sha256'] = r.digest(inventory)
+        proposal = comparison(); proposal['evidence_set_sha256'] = r.digest(inventory)
         with patch.object(checker.subprocess, 'check_output', return_value=b'{}'):
             with self.assertRaisesRegex(ValueError, 'EVIDENCE_BYTES'):
                 checker.verify(ROOT, inventory, proposal)
