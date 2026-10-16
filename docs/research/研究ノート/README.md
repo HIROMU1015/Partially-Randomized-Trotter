@@ -1,3 +1,5 @@
+- 2026-10-16: [M1-S Checkpoint 2後の草稿・source/文献事前調査](2026-10-16_track_b_M1S_post_checkpoint2_preflight.md)。GPT原本保存、Jensen補足、H4入力所在とPauli仕様、Gate 0未採択草案。新科学/新証明0、mandatory STOP。
+
 - 2026-10-16: [Track B M1-S G0-T1 T1b解析的移送](2026-10-16_track_b_M1S_G0T1_T1b_theory.md)。全H一様C-sec上界・条件付きrho・非可換共鳴の解析反例を著者提出。T1b独立科学受理未実施、数値0、Checkpoint 2待ち、mandatory STOP。
 
 - 2026-10-16: [Track B M1-S G0-T1 T1a解析的証明提出](2026-10-16_track_b_M1S_G0T1_T1a_theory.md)。固定有限次元・有限減衰で全N一様C-sec上界、独立科学的受理・新規性未判断。Checkpoint 1資料完成、T1b/数値未実施、mandatory STOP。

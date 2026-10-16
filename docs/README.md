@@ -1,3 +1,5 @@
+> **M1-S Checkpoint 2後（2026-10-16）：[addendum草稿](tracks/algorithm_codesign/m1s_g0t1_post_checkpoint2_theory_addendum_draft_20261016.md)／[Gate 0 preflight・草案](tracks/algorithm_codesign/m1s_gate0_headroom_preflight_and_prereg_draft_20261016.md)／[文献差分](tracks/algorithm_codesign/m1s_checkpoint2_prior_art_delta_20261016.md)。** H4保存入力をread-only確認、Jensen下界を受理済み出典から整理。Draft/not adopted、科学計算/新証明0、mandatory STOP。以下は履歴。
+
 > **M1-S T1b（2026-10-16）：[定理・全証明](tracks/algorithm_codesign/m1s_g0t1_t1b_partial_randomized_transfer_theory_20261016.md)／[Checkpoint 2資料](tracks/algorithm_codesign/m1s_g0t1_t1b_checkpoint2_decision_packet_20261016.md)。** 固定r小stepで全Hに基づくC-sec一様移送、条件付きrho、共鳴の解析反例を著者提出。独立科学レビュー未実施、数値/compile0、mandatory STOP。以下は履歴。
 
 > **M1-S G0-T1 T1a（2026-10-16）：[定理と証明](tracks/algorithm_codesign/m1s_g0t1_t1a_uniform_csec_signal_bound_and_proof_20261016.md)／[Checkpoint 1資料](tracks/algorithm_codesign/m1s_g0t1_t1a_checkpoint1_decision_packet_20261016.md)。** 全N一様のC-sec複素信号上界を著者提出、固定モデル・有限減衰予算・明示gap/次元依存。独立科学レビューは未実施、数値/compile0、T1b未実施、mandatory STOP。以下は履歴。

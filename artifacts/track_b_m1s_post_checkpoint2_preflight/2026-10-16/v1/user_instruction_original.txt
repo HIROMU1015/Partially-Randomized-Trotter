@@ -1,0 +1,658 @@
+# Codexへの指示：M1-S Checkpoint 2後の理論成果保全・Gate 0事前調査・先行研究照合
+
+## 0. 今回の実施承認
+
+Track B／M1-S G0-T1について、Checkpoint 2のGPT独立科学レビューが完了しました。
+
+ユーザーは、そのレビューで推奨された以下の技術的作業をCodexが実施することを承認します。
+
+1. T1a・T1bの理論成果を整理し、technical noteおよびaddendumの草稿を作成する。
+2. Gate 0のために既存GitHub資料と保存データの所在・入力仕様を調査する。
+3. Gate 0の実験契約・事前登録文書の草案を作成する。
+4. 近接先行研究について、未確認の理論的差分を追加調査する。
+5. 上記の資料、証拠索引、監査記録を新規ファイルとして作成し、GitHubへcommit・pushする。
+
+**今回の作業は、既存の科学的判断に基づく技術調査・文書整備・実験準備です。**
+
+GPTが既に受理した数学的結果を最初から証明し直す必要はありません。
+
+技術的な不備、資料の欠落、文書の矛盾、既存データの所在確認、先行論文の取得・比較については、可能な限りCodex側で完結させてください。
+
+### 今回承認しない事項
+
+- Gate 0／E0の科学計算
+- Hamiltonianや行列の新規数値評価
+- 新しい固有状態・固有値の計算
+- 保存済み結果からの新たな科学量の算出
+- W、v、ρ、gap、spectral weightの新規数値評価
+- αに依存するdressing指標の新規数値計算
+- Sampling、simulation、trajectory
+- 回路生成・compile・synthesis
+- 総資源forecast・最適化
+- T1cの新規理論研究・証明
+- Q4／Q5への研究拡張
+- 一般DF eventへの新規理論拡張
+- M1-S研究方針の正式変更
+- Gate 0の実験条件・閾値の正式採択
+- 研究全体の科学的GO／STOPの代行
+
+文書の作成、既存資料のread-only確認、ファイルhash計算、既存コードの構造調査、リンク・スキーマ検査など、**新しい科学的結果を生成しない技術作業**は許可します。
+
+---
+
+# 1. 必須資料
+
+Repository：
+
+`HIROMU1015/Partially-Randomized-Trotter`
+
+## 1.1 最新Checkpoint 2 GPTレビュー【最重要】
+
+ファイル名：
+
+`track_b_m1s_g0t1_checkpoint2_gpt_independent_scientific_review_20261016.md`
+
+これは今回の作業範囲を定める最新の科学的判断です。
+
+ユーザー提供原本、またはGitHubに公開された同一原本を取得してください。
+
+取得できた場合はbytes・SHA256を確認し、原文を変更せず保存してください。
+
+GitHubへ保存する場合の候補：
+
+`docs/research/track_b_m1s_g0t1_checkpoint2_gpt_independent_scientific_review_20261016.md`
+
+すでに同じ原本が保存されている場合、重複作成しないでください。
+
+**原本を取得できない場合は、過去のレビューや会話の要約から全文を再生成してはいけません。**
+
+GitHub上の既存資料について独立して実施可能な技術調査は進めて構いませんが、最新GPTレビューの判断を反映した最終addendum・実験契約案の公開前には、原本との照合を必須とします。
+
+取得できなければ未取得事項を記録し、mandatory STOPしてください。
+
+## 1.2 Claude独立レビュー
+
+原本：
+
+`レビューinner(2).md`
+
+Claudeが提出したCheckpoint 2レビューです。
+
+原本を取得できれば同一性を確認してください。
+
+GPTレビューと判断が異なる部分については、**最新GPTレビューの科学的判断を今回の作業の基準**とします。
+
+両方の原本を履歴として保持し、Claude原本を修正しないでください。
+
+## 1.3 T1b証明本文
+
+固定commit：
+
+`54336028edd7ef759f8a0c73bd0a96ade13f47f9`
+
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/54336028edd7ef759f8a0c73bd0a96ade13f47f9/docs/tracks/algorithm_codesign/m1s_g0t1_t1b_partial_randomized_transfer_theory_20261016.md
+
+Checkpoint 2資料：
+
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/54336028edd7ef759f8a0c73bd0a96ade13f47f9/docs/tracks/algorithm_codesign/m1s_g0t1_t1b_checkpoint2_decision_packet_20261016.md
+
+## 1.4 T1a証明本文
+
+固定commit：
+
+`4e7b18dd2aa14c127bce9e248c63996c62a055cc`
+
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4e7b18dd2aa14c127bce9e248c63996c62a055cc/docs/tracks/algorithm_codesign/m1s_g0t1_t1a_uniform_csec_signal_bound_and_proof_20261016.md
+
+## 1.5 Checkpoint 1 GPTレビュー
+
+固定commit：
+
+`4899608ea222777e64e706fda2b7e54b84c86247`
+
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4899608ea222777e64e706fda2b7e54b84c86247/docs/research/track_b_m1s_g0t1_checkpoint1_gpt_independent_scientific_review_20261016.md
+
+## 1.6 S0正式研究契約
+
+固定commit：
+
+`373b8e4b9831f4d00bdc00ffc741ac61e03f0841`
+
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/373b8e4b9831f4d00bdc00ffc741ac61e03f0841/docs/tracks/algorithm_codesign/m1s_g0t1_s0_formal_theory_contract_20261016.md
+
+## 1.7 共通研究指示
+
+`research_project_instructions_gpt_codex_review_approval_2026-10-12.md`
+
+最新の共通研究指示を適用してください。
+
+特に、既存SOURCE・結果の保護、研究判断と計算承認の分離、mandatory STOPを維持してください。
+
+---
+
+# 2. 最新GPTレビューの確定事項
+
+今回、以下の科学的評価は完了しています。
+
+## 2.1 数学的受理
+
+T1bの主定理は、次の範囲で受理されました。
+
+- 固定有限次元
+- 固定整数r
+- Pauli／Hermitian involution-tail
+- Exact deterministic half
+- Gate共有±
+- 小step極限
+- 有限減衰予算
+- 全stepに一様なC-sec複素信号のO(|δ|)近似
+
+全Hamiltonianの有効mode、dressing、三次位相、outer splitting、条件付き減衰係数比についても、明示した適用域で受理されています。
+
+**この受理を一般DF-native、任意のguiding state、RPE全体、総資源保証へ拡張してはいけません。**
+
+## 2.2 Jensen型signal floor
+
+Claudeが示し、GPTも独立に確認した重要な補足です。
+
+対象固有値E_kが非縮退なら、pair-sum共鳴があってもC-sec参照信号は、
+
+\[
+z_s^{H,\mathrm{sec}}
+=
+e^{iT_{\mathrm{rel}}E_k}m(u)
+\]
+
+と表せます。
+
+\[
+e^{-u\gamma_{\mathrm{sh}}}
+\le m(u)\le1
+\]
+
+\[
+\gamma_{\mathrm{sh}}
+=
+\beta(W_k+v_k)
+\]
+
+です。
+
+従って、
+
+- 共鳴blockでも参照振幅の正の下界がある。
+- C-sec参照の位相は理想位相と一致する。
+- 単一指数の減衰等式は一般には成立しない。
+- 真の平均信号にはT1bの誤差評価が別途必要である。
+
+この結果は、既存T1b証明の原本を書き換えるのではなく、**独立したaddendumとして追加**してください。
+
+## 2.3 改善因子ρ
+
+\[
+\rho_\infty^{(H)}
+=
+\frac{W_k+v_k}{2W_k}
+\]
+
+は、明示した比較lawと適用条件の下で先導減衰係数比として受理されています。
+
+同じ乱択イベント位置数による比較では、shared／ordinary／independent ±の先導係数についてρが意味を持ちます。
+
+ただし、
+
+- 同イベント数と同native gate価格は異なる。
+- 同イベント数と同回路深さも異なる。
+- 有限step幅の運用保証ではない。
+- Shot数の改善保証ではない。
+- RPEの誤差保証ではない。
+- 総資源削減率ではない。
+
+という境界を維持してください。
+
+## 2.4 Claudeの総資源STOP規則は不採用
+
+**Claudeが提案した、ρだけから総資源削減率の上限を決め、研究をSTOPする一般規則は、最新GPTレビューでは採択されていません。**
+
+同じshot schedule、同じ価格、同じ精度配分などを固定した限定費用モデルでは、不等式が成立します。
+
+しかし、総資源には必要shot数、visibility、位相bias、controlled gate単価などが影響します。
+
+従って、
+
+- ρ≥0.85なら研究終了
+- ρ≤0.7なら研究継続
+- ασ≤0.1なら実用適格
+
+などの数値基準を正式な研究判断として設定してはいけません。
+
+これらはClaudeによる例示であり、採択済みの閾値ではありません。
+
+## 2.5 研究方針
+
+最新GPTレビューは、
+
+**C：限定理論成果の保全を基本線とし、Gate 0のheadroom診断を事前登録後に条件付きで検討する**
+
+ことを推奨しています。
+
+ただし、Gate 0の実施、technical noteの最終採択、T1cへの進行はまだ承認されていません。
+
+今回作成するものは**草稿・事前調査資料**です。
+
+---
+
+# 3. 作業A：理論成果のaddendumとtechnical note草稿
+
+## 3.1 目的
+
+T1a・T1bで独立科学レビューを通過した結果を、研究成果として再利用できる形へ整理してください。
+
+新しい数学的証明を構築するのではなく、既存の受理済み結果を正確にまとめてください。
+
+## 3.2 作成する文書
+
+候補：
+
+`docs/tracks/algorithm_codesign/m1s_g0t1_post_checkpoint2_theory_addendum_draft_20261016.md`
+
+必要なら別に、
+
+`docs/research/m1s_t1a_t1b_theory_technical_note_draft_20261016.md`
+
+を作成してください。
+
+最低限、以下を含めてください。
+
+1. T1aの数学的保証
+2. T1bへの移送
+3. 適用域と極限
+4. Jensen型signal floor
+5. 単一pair-sum blockでの減衰等式
+6. 共鳴blockでの複数rate
+7. 改善因子ρの成立条件
+8. 同イベント数による比較
+9. Native単価・shot数との区別
+10. Outer splitting・有限角・mode mixing位相
+11. 三準位反例の射程
+12. 未確立の理論的保証
+13. 既知理論との差分
+14. 論文化に向けた限定claim
+15. 追加研究が必要な事項
+
+### 重要な制約
+
+- T1a・T1bの原本は変更しない。
+- Claude・GPTレビュー原本は変更しない。
+- 独立レビューの判断をCodexの新証明として記録しない。
+- 研究成果の新規性を確定したと書かない。
+- Technical note草稿を正式な論文原稿の採択と扱わない。
+- 新しい科学的な定理・補題を独断で追加しない。
+
+草稿には、どの結論がどの固定資料で成立したかを明記してください。
+
+---
+
+# 4. 作業B：Gate 0の技術的事前調査
+
+## 4.1 目的
+
+Gate 0の科学計算を開始する前に、**必要な既存データ・研究対象・入力条件・実装上の問題点を整理すること**です。
+
+今回、科学計算を開始してはいけません。
+
+## 4.2 候補系
+
+初期候補はH4／STO-3G程度の小系とします。
+
+ClaudeはH4 linear 1.0 Å、8 spin orbitalsを例示しましたが、**正式採択された入力条件ではありません。**
+
+以下を既存GitHub資料から確認してください。
+
+- 利用可能なH4データ
+- Geometry
+- Basis
+- Orbital数
+- Hamiltonianの生成方法
+- 既存NPZ／SOURCE
+- SHA256・Hamiltonian hash
+- 既存のDF分割
+- 対象の電子数・spin sector
+- 既存のground-state参照
+- 既存計算の承認・実施履歴
+
+別のgeometryやDF rankを同一データとして混同しないでください。
+
+**元データを新しく生成してはいけません。**
+
+## 4.3 Pauli-tailモデル
+
+今回の理論はPauli／Hermitian involution-tailを対象としています。
+
+一方、既存のPR実験にはDF-native eventが含まれます。
+
+したがって、
+
+**DF-nativeの既存結果と、Pauli-tailへ展開した新しい乱択モデルは、同じアルゴリズムとは扱えません。**
+
+事前調査では以下を整理してください。
+
+1. 既存D/R分割の候補
+2. その分割が取得できる場所
+3. Pauli-tailへの変換に必要な入力
+4. 正規化係数λ_R
+5. Sampling law
+6. 符号付きPauli項の扱い
+7. 重複項の集約規則
+8. Identity項の扱い
+9. Hamiltonian再構成時の確認条件
+10. Native DFとの差
+
+Pauli係数を数値的に新たに計算したり、変換後Hamiltonianを生成したりしてはいけません。
+
+今回は**変換仕様と入力の確認まで**です。
+
+## 4.4 対象状態とspectral条件
+
+次を確認してください。
+
+- 対象stateの定義
+- 既存の全Hとsector Hamiltonianの区別
+- 全Fock空間の情報があるか
+- Pauli-tailが対象sectorを保存するか
+- Pair-sum gapの評価に必要な資料
+- Near-resonant couplingの確認に必要な資料
+- Oracle情報として必要なexact state
+
+**保存されたsector groundを、全Fock空間の最低状態と自動的に同一視しないでください。**
+
+新しい固有値・固有状態・gapの計算は禁止します。
+
+既存資料で確認できる情報と、新しい科学計算が必要な情報を明確に分類してください。
+
+---
+
+# 5. 作業C：Gate 0の事前登録・実験契約草案
+
+## 5.1 作成文書
+
+候補：
+
+`docs/tracks/algorithm_codesign/m1s_gate0_headroom_preflight_and_prereg_draft_20261016.md`
+
+**DRAFT／NOT ADOPTED／NO SCIENTIFIC EXECUTION AUTHORIZED** と明示してください。
+
+## 5.2 主目的
+
+Gate 0の候補目的は、
+
+**「事前固定したPauli-tailモデルについて、完全な資源評価を行う前に、small-stepの先導減衰係数に改善の余地があるかを確認すること」**
+
+です。
+
+改善の余地を調べる量は、
+
+\[
+W_k=1-\langle k|h^2|k\rangle
+\]
+
+\[
+v_k=\operatorname{Var}_j
+\langle k|P_j|k\rangle
+\]
+
+\[
+\rho_\infty^{(H)}
+=
+\frac{W_k+v_k}{2W_k}
+\]
+
+です。
+
+ただし、これらはoracle診断量であり、実際の量子回路で無料に利用できるpredictorではありません。
+
+## 5.3 事前登録案に含める事項
+
+- 対象分子とgeometry
+- Hamiltonian・入力SOURCE
+- 事前固定するD/R分割
+- 非冗長Pauli-tailの定義
+- Identity・normalizerの扱い
+- 対象state・電子数・spin sector
+- 全空間・到達空間の扱い
+- Ordinary／independent ±の比較規約
+- 主評価量W、v、ρ
+- W=0の場合の扱い
+- Dressing警告量
+- 必要に応じたpair-sum gap・coupling
+- 科学計算の精度条件
+- 入力hash・再構成確認
+- 計算失敗時のSTOP条件
+- 結果の報告形式
+- 既存の科学計算承認と今回の未承認事項
+
+候補分割は結果を見て事後的に変更できないよう、事前登録案として固定可能な形式にしてください。
+
+## 5.4 受理・STOP条件
+
+重要なのは、**測定結果がどの研究判断を変えるか**です。
+
+以下の区別を採用してください。
+
+- Input／reconstructionの失敗による技術STOP
+- 理論の仮定が満たされない場合の適用外
+- Headroomが小さい場合の研究優先度低下
+- Headroomがある場合の追加研究の価値
+- Dressingが大きい場合のT1c必要性
+- 総資源改善の未認証
+- 研究全体の正式STOP
+
+これらを同じ意味のSTOPとして扱ってはいけません。
+
+特に、**ρだけからRPE総費用の改善不能性を宣言しないこと。**
+
+削減率目標、ρの閾値、dressingの許容値などは、根拠と候補を整理しても構いませんが、今回Codexが正式採択してはいけません。
+
+閾値を設定するには、その閾値がどの物理量・資源モデル・研究目的に対して意味を持つかを明示してください。
+
+具体的な数値が未承認の場合は、正式値を仮定せず未決事項として残してください。
+
+---
+
+# 6. 作業D：近接先行研究の追加照合
+
+## 6.1 目的
+
+T1a・T1bの新規性について、最新版GPTレビューが指摘した未確認の差分を調査してください。
+
+これは**技術的な文献取得・比較作業**であり、科学的新規性をCodexが最終認定する作業ではありません。
+
+## 6.2 最優先の先行研究
+
+### Morisaki–Fujii
+
+GPTレビューで追加照合が必要とされた文献：
+
+*Optimized Randomized Hamiltonian Simulation via Average-Error Analysis*
+
+https://arxiv.org/abs/2609.36694
+
+まず正式な書誌・版・本文の取得状況を確認してください。
+
+取得できた場合、関連する定理と証明を確認し、T1bとの比較を作成してください。
+
+### Yi–Crosson
+
+*Spectral Analysis of Product Formulas for Quantum Simulation*
+
+https://www.nature.com/articles/s41534-022-00548-w
+
+有効Hamiltonian、固有mode、QPEの位相誤差に関する既知の枠組みとの関係を確認してください。
+
+## 6.3 比較項目
+
+各文献について、
+
+1. 対象のHamiltonian
+2. Randomized law
+3. Branch共有の有無
+4. Mean channelとcoherent first momentの違い
+5. Error norm
+6. 長時間保証
+7. 対象state・gapの仮定
+8. 減衰・位相の評価
+9. 理論的な保証の強さ
+10. 既知の先行研究から直接導ける範囲
+11. T1bに固有の差分
+12. 未解決の同値性
+
+を整理してください。
+
+全文・定理・証明を取得できなかった資料は、abstractだけで完全な同値性や新規性を判断しないでください。
+
+G0-preなどで確認済みの文献調査を、必要なく全面的に繰り返すことは不要です。
+
+## 6.4 作成文書
+
+候補：
+
+`docs/tracks/algorithm_codesign/m1s_checkpoint2_prior_art_delta_20261016.md`
+
+以下を区別してください。
+
+- 一次本文で確認済み
+- Abstractのみ確認
+- 既存監査から引用
+- 数学的に未照合
+- 科学的判断が必要
+
+新規性の最終判断はGPT／ユーザーへ残してください。
+
+---
+
+# 7. 成果物と状態管理
+
+今回の成果物は次の4系統とします。
+
+| 成果物 | 状態 |
+|---|---|
+| T1a＋T1b理論addendum／technical note草稿 | Draft |
+| Gate 0 source・technical preflight | Technical preparation |
+| Gate 0 preregistration案 | Draft／Not adopted |
+| 近接先行研究との差分調査 | Technical literature audit |
+
+必要に応じて独立したartifact directoryを作成してください。
+
+候補：
+
+`artifacts/track_b_m1s_post_checkpoint2_preflight/2026-10-16/v1/`
+
+ここに、
+
+- `evidence_index.json`
+- `source_availability.json`
+- `unresolved_items.json`
+- `document_validation.json`
+- `publication_receipt.json`
+
+などを保存してください。
+
+ただし、新しいscientific run markerや計算authorizationを作成してはいけません。
+
+既存の研究結果のclassificationを変更してはいけません。
+
+**レビューの完了・技術資料の公開と、次の科学計算のGOを区別してください。**
+
+---
+
+# 8. 保全・GitHub・mandatory STOP
+
+最新版の研究共通指示を遵守してください。
+
+1. 既存worktreeのHEAD・index・dirty fileを保護する。
+2. 必要に応じて専用branch／worktreeを作成する。
+3. S0・T1a・T1bの原本を上書きしない。
+4. Claude／GPTレビューの原文を変更しない。
+5. 既存SOURCE・result・classification・authorization・markerを変更しない。
+6. 文書や索引の新規作成と、科学的な採択を区別する。
+7. 新しい科学数値計算を実施しない。
+8. 新しい理論研究・T1cを開始しない。
+9. Gate 0の実験条件をCodexが最終採択しない。
+10. 作業完了後はcommit・pushし、remote SHAと公開資料のbyte/hashを照合する。
+11. 既存結果・親worktreeの保全を確認する。
+12. 完了後はmandatory STOPする。
+
+Branch名の候補：
+
+`track-b-m1s-post-checkpoint2-preflight-20261016`
+
+既存branchと衝突する場合は、保護したうえで別名を使用してください。
+
+今回の文書の作成・公開は承認しますが、**研究の科学的方針変更やGate 0の実行を承認するものではありません。**
+
+---
+
+# 9. 作業完了時に報告する内容
+
+作業が完了したら、以下を簡潔に報告してください。
+
+1. Status
+2. 取得できた最新GPT・Claudeレビュー原本
+3. 理論addendum／technical note草稿
+4. Gate 0事前調査の結果
+5. 利用可能な既存H4入力資料
+6. 不足しているSOURCE
+7. Pauli-tail仕様の未決事項
+8. 科学計算が必要となる項目
+9. Gate 0事前登録草案
+10. 未決定の閾値・比較条件
+11. 追加先行研究との比較結果
+12. 科学的判断が必要な事項
+13. 次の担当
+14. 必要なユーザー承認
+15. Branch
+16. Commit SHA
+17. Remote SHAの一致
+18. 公開資料のbytes・SHA256照合
+19. 旧成果・親worktreeの保全
+20. Mandatory STOP
+
+---
+
+# 10. 完了条件
+
+次を満たした場合に作業を完了してください。
+
+- 最新GPTレビューの判断を正確に反映した。
+- T1a・T1bの受理済み理論成果を原本非改変で整理した。
+- Jensen型floorをaddendumとして記録した。
+- ρの数学的意味と資源保証の境界を明示した。
+- Gate 0の入力データ・SOURCE所在を調査した。
+- Pauli-tailとDF-nativeの違いを明示した。
+- Gate 0事前登録の草案を作成した。
+- ρ単独の総資源STOP規則を採用していない。
+- 近接先行研究との未確認差分を調査した。
+- 重要な未決事項を明示した。
+- 必要な新規科学計算を実施していない。
+- T1c・Q4・Q5などへ進んでいない。
+- GitHub公開・保全検査を終えた。
+
+**作業完了後はmandatory STOPしてください。**
+
+次の研究判断は、Gate 0の事前登録案を見たうえで、ユーザーが実験対象・評価指標・判断基準を採択するかどうかです。
+
+Gate 0の科学計算には、その後さらに別途の明示的な実施承認が必要です。
+
+---
+
+## 最終指示
+
+今回の目的は、**Checkpoint 2で数学的に受理された成果を保全し、実分子での改善可能性を合理的に判断するための最小限の準備を整えること**です。
+
+新しい科学的結果を無理に増やす必要はありません。
+
+Codexで完結できる技術調査・資料照合・先行研究比較を優先してください。
+
+ただし、研究契約の変更、新しい定理の採否、研究の正式な継続・終了、Gate 0の科学計算実施はユーザー／GPTによる別途の判断事項として残してください。
+
+**新規科学計算0件、mandatory STOP維持を絶対条件として、今回の技術作業を実施してください。**

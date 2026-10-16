@@ -1,0 +1,173 @@
+{
+  "schema": "m1s_gate0_candidate_spec_draft_v1",
+  "date_jst": "2026-10-16",
+  "document_kind": "DRAFT_SPEC_NOT_RUNNER_INPUT_NOT_AUTHORIZATION",
+  "status": "DRAFT_NOT_ADOPTED_NO_SCIENTIFIC_EXECUTION_AUTHORIZED",
+  "adopted": false,
+  "not_a_preregistration": true,
+  "not_a_run_contract": true,
+  "objective": "oracle headroom of small-step leading attenuation for a preselected nonredundant Pauli-tail, not RPE/native resource superiority",
+  "candidate_input_ids": [
+    "H4_DEV",
+    "H4_HOLDOUT"
+  ],
+  "proposed_minimal_input_id": "H4_DEV",
+  "selected_input_id": null,
+  "input_source_inventory": "artifacts/track_b_m1s_post_checkpoint2_preflight/2026-10-16/v1/source_availability.json",
+  "proposed_splits": [
+    {
+      "id": "G3",
+      "deterministic_df_indices": [
+        0,
+        1,
+        2
+      ],
+      "randomized_df_indices": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": "G6",
+      "deterministic_df_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "randomized_df_indices": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": "G9",
+      "deterministic_df_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "randomized_df_indices": [
+        9,
+        10,
+        11
+      ]
+    }
+  ],
+  "selected_split_ids": null,
+  "result_adaptive_split_selection_allowed": false,
+  "new_geometry_rank_H6_expansion_adopted": false,
+  "Pauli_law_proposal": {
+    "mapping": "Jordan_Wigner_from_saved_DF_not_new_chemistry",
+    "state_basis": "saved OpenFermion occupation order; mode0 most significant bit",
+    "signed_duplicate_policy": "aggregate same Pauli string before probability normalization",
+    "canonical_order": "Pauli string order; concrete encoding pending source binding",
+    "identity_policy_proposed": "move identity scalar to H_D and keep controlled-relative-phase ledger",
+    "identity_policy_adopted": null,
+    "small_coefficient_cutoff": null,
+    "imaginary_coefficient_tolerance": null,
+    "lambda_R_definition": "sum absolute nonidentity aggregated coefficients",
+    "sampling_probability": "abs(c_P)/lambda_R",
+    "signed_event": "sign(c_P) times canonical Pauli string",
+    "lambda_R_value": null,
+    "Pauli_table_hash": null
+  },
+  "state_reference": {
+    "proposal": "saved full-length numerical sector-ground vector",
+    "n_electrons": 4,
+    "nelec_alpha": 2,
+    "nelec_beta": 2,
+    "sz_value": 0,
+    "global_Fock_ground_claim": false,
+    "nondegenerate_energy_certification": null,
+    "numerical_state_error_policy": null
+  },
+  "comparators": {
+    "same_ideal_H_split_law_state_relative_time": true,
+    "equal_total_event_positions": "shared r=R; ordinary r=R with doubled relative angle; independent branches each R/2, R even",
+    "native_price_equality_assumed": false,
+    "PR_RTE_law_equivalence_assumed": false,
+    "R_value": null,
+    "r_value": null,
+    "delta_rel_value": null,
+    "s_value": null
+  },
+  "primary_metrics": [
+    "W",
+    "v",
+    "rho_if_denominator_resolved"
+  ],
+  "metric_values": {
+    "W": null,
+    "v": null,
+    "rho": null
+  },
+  "zero_denominator": "lambda=0 or W=0 => NOT_APPLICABLE; denominator interval containing zero => UNDETERMINED",
+  "auxiliary_metrics_proposed": [
+    "sigma_k_H_R",
+    "abs(alpha)*sigma_k_H_R only if alpha adopted"
+  ],
+  "reference_alpha": null,
+  "diagnostic_values": null,
+  "full_spectral_diagnostics_automatically_enabled": false,
+  "precision": {
+    "dtype_technical_proposal": "complex128",
+    "adopted_dtype": null,
+    "eps_reconstruction": null,
+    "eps_state": null,
+    "eps_probability": null,
+    "eps_imaginary": null,
+    "norm_definitions_and_error_propagation": null
+  },
+  "decision_thresholds": {
+    "rho_low": null,
+    "rho_high": null,
+    "dressing_limit": null,
+    "resource_saving_target": null
+  },
+  "rho_only_total_resource_STOP_allowed": false,
+  "source_runtime": {
+    "converter_fixed_commit": null,
+    "runner_fixed_commit": null,
+    "runtime_manifest": null,
+    "acceleration_and_memory_configuration": null,
+    "scientific_wall_time_cap_default": null,
+    "memory_output_log_call_instruction_limits": "to prepare before separately authorized execution"
+  },
+  "outcome_labels": [
+    "TECHNICAL_STOP",
+    "NOT_APPLICABLE",
+    "UNDETERMINED",
+    "HEADROOM_DIAGNOSTIC_ONLY",
+    "REQUIRES_SCIENTIFIC_DECISION"
+  ],
+  "automatic_scientific_GO_or_research_STOP": false,
+  "required_next_steps": [
+    "user/GPT adopt input, splits, law/identity, oracle and decision/precision conditions",
+    "prepare frozen source/runtime and practical acceleration without changing adopted science",
+    "obtain separate explicit Gate0 scientific execution authorization"
+  ],
+  "scientific_execution_authorized": false,
+  "T1c_started": false,
+  "new_theory_started": false,
+  "mandatory_STOP": true
+}

@@ -1,3 +1,5 @@
+> **M1-S Checkpoint 2後（2026-10-16）：[GPT2原本](track_b_m1s_g0t1_checkpoint2_gpt_independent_scientific_review_20261016.md)／[technical note草稿](m1s_t1a_t1b_theory_technical_note_draft_20261016.md)／[Gate 0草案](../tracks/algorithm_codesign/m1s_gate0_headroom_preflight_and_prereg_draft_20261016.md)。** T1b限定受理と共鳴Jensen floorを原本非改変で整理。文献・H4 source調査のみ、論文/実験条件未採択、新科学/新証明0、mandatory STOP。
+
 > **M1-S T1b（2026-10-16）：[解析的移送](../tracks/algorithm_codesign/m1s_g0t1_t1b_partial_randomized_transfer_theory_20261016.md)／[Checkpoint 2資料](../tracks/algorithm_codesign/m1s_g0t1_t1b_checkpoint2_decision_packet_20261016.md)。** [GPT1原本](track_b_m1s_g0t1_checkpoint1_gpt_independent_scientific_review_20261016.md)はT1a限定受理。ユーザー承認T1bの著者結果を提出、T1b独立受理・新規性未判断、数値0、mandatory STOP。以下は履歴。
 
 > **M1-S T1a（2026-10-16）：[一様上界・証明](../tracks/algorithm_codesign/m1s_g0t1_t1a_uniform_csec_signal_bound_and_proof_20261016.md)／[Checkpoint 1資料](../tracks/algorithm_codesign/m1s_g0t1_t1a_checkpoint1_decision_packet_20261016.md)。** T1aの解析的証明を著者提出。独立受理・新規性・科学GOはpending、数値0、T1b未実施。旧S0は当時の記録として保持、mandatory STOP。
