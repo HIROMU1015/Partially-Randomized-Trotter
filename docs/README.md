@@ -1,3 +1,7 @@
+## 2026-10-16 H8対照強化の準備・V2現行残差設計のNO_GO終了
+
+[H8準備状況・152追加候補案・Phase別資源/STOP](research/track_a_h8_strengthened_deterministic_readiness_20261016.md)。旧32候補・適格B0I16実測軸・保存full preparation exportを再利用。S2 p8〜20（14再利用）とS4 p15〜21、B0/B0I・q1/2/4/8。metadata checkerのみ実装、H8 science adapter/decoder検証・SOURCE sealは未完了。新科学/数値再解析/compile/有効grant0、Phaseごとの別承認が必要。[V2現行fitは利用者指示でCLOSED_NO_GO](research/track_a_v2_residual_design_closure_20261016.md)。832理論行の代替利用は技術的可否だけ、旧条件の緩和なし。公開後mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-16 V2：H6探索PFの最終照合・現行残差設計NO_GO候補
 
 [最終証拠・不足理由・固定条件での判定](research/track_a_v2_h6_pf_final_reconciliation_20261016.md)。旧PF20候補（測定16・未測定4）を最後に限定照合。比較可能PF0・fit適格0。15測定候補は固定profile未結合、profile確認済みfull S4/q8の1候補もbasis lineage未完了かつtrain側のみ。固定分割・最小件数を維持し、広域回収を終了した。141入力・旧667保護ファイルを照合、PR/確認/H8/B0I・V1/H5/H7不変、新fit/残差/compile/config/grant0。現契約をNO_GO候補として利用者判断へ、公開後mandatory STOP。以下は各時点の履歴。
