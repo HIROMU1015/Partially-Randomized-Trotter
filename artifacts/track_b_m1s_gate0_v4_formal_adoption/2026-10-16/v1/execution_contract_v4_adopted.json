@@ -1,0 +1,134 @@
+{
+  "schema": "m1s_gate0_execution_contract_v4",
+  "status": "ADOPTED",
+  "adopted": true,
+  "input": {
+    "path": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz",
+    "sha256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a",
+    "hamiltonian_hash": "de7a549238e3a21f15a84018bef28440c345b31030282c01cf874f3d1d212424",
+    "n_qubits": 8,
+    "df_rank": 12
+  },
+  "split_ids": [
+    "G3",
+    "G6",
+    "G9"
+  ],
+  "basis": "occupation_mode0_MSB_alpha_even_beta_odd",
+  "law": {
+    "mapping": "JW_saved_DF_v1",
+    "identity_policy": "move_to_hd",
+    "coefficient_cutoff": 0.0,
+    "zero_policy": "exact_zero_only",
+    "aggregation": "signed_before_abs_lexicographic_IXYZ"
+  },
+  "state": {
+    "source": "state_vector",
+    "normalize": false,
+    "label": "NUMERICAL_SECTOR_GROUND_ORACLE_NOT_THEOREM_CERTIFIED"
+  },
+  "precision": {
+    "dtype": "complex128",
+    "eps_H": {
+      "formula_id": "reconstruction_F_v1"
+    },
+    "eps_hermiticity_H": {
+      "formula_id": "hermiticity_F_v1"
+    },
+    "eps_hermiticity_factors": 0.0,
+    "eps_phase": {
+      "formula_id": "identity_ledger_F_v1"
+    },
+    "eps_state_norm": 9.094947017729282e-13,
+    "eps_state_residual": {
+      "formula_id": "absolute_original_solver_acceptance_v1"
+    },
+    "eps_basis": 0.0,
+    "eps_prob": 1.4210854715202004e-14,
+    "eps_imag_coeff": {
+      "formula_id": "coefficient_imaginary_L1_v1"
+    },
+    "eps_imag_energy": {
+      "formula_id": "rayleigh_imaginary_v1"
+    },
+    "eps_imag_expectation": 9.094947017729282e-13,
+    "eps_W": 5.960464477539063e-08,
+    "eps_v": 5.960464477539063e-08,
+    "eps_rho": 0.000244140625,
+    "W_error_budget": {
+      "formula_id": "W_forward_error_v1"
+    },
+    "v_error_budget": {
+      "formula_id": "variance_forward_error_v1"
+    },
+    "W_floor": {
+      "formula_id": "rho_resolution_floor_v1"
+    }
+  },
+  "runtime": {
+    "python": "3.11.0rc1",
+    "numpy": "1.26.4",
+    "workers": 1,
+    "threads": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "1",
+      "RAYON_NUM_THREADS": "1"
+    },
+    "backend": "cpu",
+    "numpy_build_files_sha256": {
+      "numpy.libs/libgfortran-040039e1.so.5.0.0": "14afb3129b1a8b50bc40a3b0820c7f1152ea9bc10121aab152943f7057472886",
+      "numpy.libs/libopenblas64_p-r0-0cf96a72.3.23.dev.so": "9254d0854dd7615e11de28d771ae408878ca8123a7ac204f21e4cc7a376cc2e5",
+      "numpy.libs/libquadmath-96973f99.so.0.0.0": "934c22ded0e7d169c4d4678876c96051adf3d94545da962f60b41659b075da3b",
+      "numpy/__config__.py": "3ae7fe8ec40a0b49635f0b4853615a843326e009db5c043d64f5512c391c07e1",
+      "numpy/__init__.py": "22cd1535fa14d74ef6f457cca149ffdc80875f460be313b8f895273f78bc402e",
+      "numpy/core/_multiarray_umath.cpython-311-x86_64-linux-gnu.so": "a735e4e8355b75c800112af8a5b1731b891b2016ed57067352eea6cab0aa00bc"
+    }
+  },
+  "limits": {
+    "wall_time_seconds": null,
+    "memory_bytes": 4294967296,
+    "output_bytes": 268435456,
+    "log_bytes": 268435456,
+    "max_pauli_terms": 65536,
+    "max_product_contributions": 1000000
+  },
+  "decisions": {
+    "automatic_GO_STOP": false,
+    "rho_threshold": null,
+    "dressing_threshold": null,
+    "report_all_splits": true
+  },
+  "source_commit": "606036db52da2f080cf846e48824e5e418430762",
+  "source_sha256": {
+    "src/trottertracks/algorithm_codesign/m1s_gate0_v4/__init__.py": "a39c2b0380d39ad565d346a933f6df57e36cfc5b4c2e582c073e9aae6b263a2e",
+    "src/trottertracks/algorithm_codesign/m1s_gate0_v4/control.py": "9845d8eff80b5ff3f09ca21cf491bc8476131f0177f186fb8f13dae09e7e3f65",
+    "src/trottertracks/algorithm_codesign/m1s_gate0_v4/science.py": "364514fdbb415bf4c43dfac48cda5ea65671323f7c39575f5bec1c7a9840548e",
+    "src/trottertracks/algorithm_codesign/m1s_gate0_v4/budget.py": "5ac1f272d2a9427c2b6c1381391af9e61b30d27da90507229905b637badd7843",
+    "scripts/tracks/algorithm_codesign/run_m1s_gate0_headroom_v4.py": "5e7d2d40f89f5f633637140f483425e6c067c2ca5a44e917f21a10cc2d449aec",
+    "src/trottertracks/__init__.py": "2d51bfa08b2b1e000b86ec53bd463e786529307a7270078600e3b03995e90285",
+    "src/trottertracks/algorithm_codesign/__init__.py": "b6503716cfd51d52ca9038e6de5a411eb78380d30451f81df9b81c31b1be090f"
+  },
+  "scientific_scope_record": {
+    "path": "artifacts/track_b_m1s_gate0_precision_contract/2026-10-16/v1/gate0_scientific_scope_adoption_record.json",
+    "sha256": "ec8c97ac92a23be98085e6caa54ee4e4b5094b2743107f38198bfd36058a2544"
+  },
+  "adoption_record": "User formal adoption, 2026-10-16 JST; record=artifacts/track_b_m1s_gate0_v4_formal_adoption/2026-10-16/v1/user_final_contract_adoption_record.json; exact user text: commit `44277e03448ee51dbe9afdd2dc6560337757cc6d` のv4最終実験契約を正式採択します。17項目、残差品質基準、条件付きcoverage、runtime制限、one-shot・failure時STOPを含め、正式契約と採択記録の固定・公開を進めてください。科学計算は承認しません。  ",
+  "formula_policy": {
+    "schema": "m1s_gate0_conditional_roundoff_model_v4",
+    "coverage_model_adopted": true,
+    "oracle_quality_policy": "absolute_original_solver_acceptance_v1",
+    "oracle_absolute_residual_quality_hartree": 1e-08,
+    "evidence_classification": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+    "assumptions": [
+      "IEEE_BINARY64_ROUND_TO_NEAREST",
+      "NO_UNACCOUNTED_OVERFLOW_UNDERFLOW_OR_FTZ",
+      "COMPLEX_BLAS_GAMMA_8K_PLUS_32",
+      "FSUM_NO_WORSE_THAN_GAMMA_M_PLUS_32_L1",
+      "EXACT_HERMITIAN_INPUT_ONE_BODY_AND_FACTORS",
+      "EXACT_SAVED_BINARY64_INPUT_IS_TARGET_NOT_EXACT_EIGENSTATE"
+    ]
+  },
+  "evidence_classification": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+}
