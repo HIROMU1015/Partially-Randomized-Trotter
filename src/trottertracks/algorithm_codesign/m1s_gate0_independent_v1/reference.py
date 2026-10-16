@@ -1,12 +1,13 @@
-"""UNEXECUTED independent reference kernels. Standard library only.
+"""UNEXECUTED independent reference, completed from published halted draft.
 
-Coefficient layer: exact Gaussian integers / powers of two, exterior-algebra
-occupation states, explicit CAR contraction, complete Pauli trace via FWHT.
-State layer: Decimal complex pairs, 80 digits; conditional, not a certificate.
-Construction is blocked in this preparation release by control.require_execution.
+Occupation/CAR matrices and full Pauli traces use exact Gaussian integers and
+powers of two. All state moments, W/v/rho and comparisons use exact rational
+arithmetic. Decimal is for bounded display only, never a PASS tolerance.
+No v5 helper imports; saved comparator values enter only compare_saved(), after
+all independent references and their digest have been completed.
 """
 from bisect import bisect_left
-from decimal import Decimal, localcontext, ROUND_HALF_EVEN
+from decimal import Decimal, localcontext
 from fractions import Fraction
 import ast
 import hashlib
@@ -15,41 +16,53 @@ import json
 import math
 import struct
 import zipfile
-
-from .control import require_execution, INPUT_SHA, H_SHA, POLICY
+from .control import require_execution, INPUT_SHA, H_SHA, POLICY, read_json
 
 
 class Reference:
     def __init__(self, authorization=None):
-        require_execution(authorization)  # No live permit issuer in this release.
+        require_execution(authorization)
         self.events = 0
         self.transitions = {}
+        self.pauli_transitions = {}
+        self.pauli_expectations = {}
+        self.progress = {'phase':'INITIALIZED', 'completed_reference_splits':[], 'comparisons':[]}
         self.occupations = [tuple(m for m in range(8) if (i >> (7-m)) & 1)
                             for i in range(256)]
-        self.occupation_index = {s: i for i, s in enumerate(self.occupations)}
+        self.occupation_index = {s:i for i,s in enumerate(self.occupations)}
 
     def tick(self, count=1):
         self.events += count
-        if self.events > POLICY["resources"]["max_primitive_events"]:
-            raise RuntimeError("UNDETERMINED: primitive event limit")
+        if self.events > POLICY['resources']['max_primitive_events']:
+            raise RuntimeError('UNDETERMINED: primitive event cap')
+
+    def integer(self, value):
+        if type(value) is not int or abs(value).bit_length() > POLICY['resources']['max_exact_integer_bits']:
+            raise RuntimeError('UNDETERMINED: exact integer bit cap/type')
+        return value
+
+    def q(self, value):
+        value = Fraction(value)
+        self.integer(value.numerator)
+        self.integer(value.denominator)
+        return value
 
     def add(self, a, b):
         self.tick()
-        c = (a[0]+b[0], a[1]+b[1])
-        if max(abs(x).bit_length() for x in c) > POLICY["resources"]["max_exact_integer_bits"]:
-            raise RuntimeError("UNDETERMINED: exact integer bit limit")
-        return c
+        return self.integer(a[0]+b[0]), self.integer(a[1]+b[1])
 
     def mul(self, a, b):
         self.tick()
         return self.add((a[0]*b[0], a[0]*b[1]), (-a[1]*b[1], a[1]*b[0]))
 
     def put(self, matrix, key, value):
-        value = self.add(matrix.get(key, (0, 0)), value)
-        if value == (0, 0):
-            matrix.pop(key, None)
+        value = self.add(matrix.get(key,(0,0)),value)
+        if value == (0,0):
+            matrix.pop(key,None)
         else:
             matrix[key] = value
+        if len(matrix) > POLICY['resources']['max_matrix_cells']:
+            raise RuntimeError('UNDETERMINED: matrix cell cap')
 
     def decode(self, raw):
         """Independent bounded NPY decoder; no NumPy, pickle or saved code."""
@@ -115,6 +128,8 @@ class Reference:
         position supplies the fermion sign, independently of JW/mask products.
         """
         if operators not in self.transitions:
+            if len(self.transitions) >= POLICY['resources']['max_transition_cache_entries']:
+                raise RuntimeError('UNDETERMINED: fermion transition cache cap')
             entries = []
             for col, initial in enumerate(self.occupations):
                 state, sign = list(initial), 1
@@ -245,302 +260,375 @@ class Reference:
                      "zero_bitmap_hex": zero_bitmap.hex(),
                      "zero_bitmap_sha256": hashlib.sha256(zero_bitmap).hexdigest()}
 
+    def shifted_identity(self, matrix, amount):
+        exponent, data = matrix
+        e = max(exponent,amount.denominator.bit_length()-1)
+        move = int(amount*(1 << e))
+        out = {k:(a << (e-exponent),b << (e-exponent)) for k,(a,b) in data.items()}
+        for i in range(256):
+            self.put(out,(i,i),(move,0))
+        return e,out
+
+    def tensor_word(self, word):
+        # Independent literal local matrices, no JW polynomial or v5 mask cache.
+        if word not in self.pauli_transitions:
+            local = {'I':[(0,0,(1,0)),(1,1,(1,0))],
+                     'X':[(0,1,(1,0)),(1,0,(1,0))],
+                     'Y':[(0,1,(0,-1)),(1,0,(0,1))],
+                     'Z':[(0,0,(1,0)),(1,1,(-1,0))]}
+            entries = [(0,0,(1,0))]
+            for letter in word:
+                entries = [(2*r+a,2*c+b,self.mul(v,w))
+                           for r,c,v in entries for a,b,w in local[letter]]
+            if len(self.pauli_transitions) >= POLICY['resources']['max_pauli_cache_entries']:
+                self.pauli_transitions.pop(next(iter(self.pauli_transitions)))
+            self.pauli_transitions[word] = entries
+        return self.pauli_transitions[word]
+
+    def reconstruct(self, coefficients):
+        exponent = max((c.denominator.bit_length()-1 for c in coefficients.values()),default=0)
+        out = {}
+        for word,c in sorted(coefficients.items()):
+            numerator = int(c*(1 << exponent))
+            for row,col,phase in self.tensor_word(word):
+                self.put(out,(row,col),self.mul((numerator,0),phase))
+        return exponent,out
+
+    def matrix_equal(self, a, b):
+        e = max(a[0],b[0])
+        return all((a[1].get(k,(0,0))[0] << (e-a[0]),a[1].get(k,(0,0))[1] << (e-a[0])) ==
+                   (b[1].get(k,(0,0))[0] << (e-b[0]),b[1].get(k,(0,0))[1] << (e-b[0]))
+                   for k in set(a[1]) | set(b[1]))
+
+    def matrix_witness(self, label, a, b):
+        self.progress['failure_witness'] = {'label':label,'left':self.matrix_digest(a),
+                                            'right':self.matrix_digest(b)}
+
+    def matrix_digest(self, matrix):
+        digest = hashlib.sha256()
+        digest.update(('exponent='+str(matrix[0])+'\n').encode())
+        for (r,c),(a,b) in sorted(matrix[1].items()):
+            digest.update((str(r)+','+str(c)+':'+hex(a)+','+hex(b)+'\n').encode())
+        return {'dyadic_exponent':matrix[0],'nonzero_cells':len(matrix[1]),'sha256':digest.hexdigest()}
+
+    def coefficient_digest(self, coefficients):
+        digest = hashlib.sha256()
+        for w,c in sorted(coefficients.items()):
+            digest.update((w+':'+hex(c.numerator)+'/'+hex(c.denominator)+'\n').encode())
+        return digest.hexdigest()
+
+    def encoded(self, value):
+        value = self.q(value)
+        with localcontext() as ctx:
+            ctx.prec = 32
+            display = str(Decimal(value.numerator)/Decimal(value.denominator))
+        return {'numerator_hex':hex(value.numerator),'denominator_hex':hex(value.denominator),
+                'decimal_display_only':display}
+
     def prepare_coefficients(self, arrays):
         self.ladder_correspondence()
-        one = self.one_body(arrays["one_body"])
+        one = self.one_body(arrays['one_body'])
         if not self.hermitian(one):
-            raise ValueError("FAIL: exact one-body Hermiticity")
-        base = self.combine([one, self.scalar_matrix(arrays["constant"][0])])
+            raise ValueError('FAIL: exact one-body Hermiticity')
+        base = self.combine([one,self.scalar_matrix(arrays['constant'][0])])
         blocks = []
         for ell in range(12):
-            g = arrays["g_matrices"][64*ell:64*(ell+1)]
+            g = arrays['g_matrices'][64*ell:64*(ell+1)]
             a = self.one_body(g)
             if not self.hermitian(a):
-                raise ValueError("FAIL: exact factor Hermiticity")
+                raise ValueError('FAIL: exact factor Hermiticity')
             squared = self.square(a)
-            if squared != self.contracted_square(g):
-                raise ValueError("FAIL: A_l² contraction")
-            blocks.append(self.scale(squared, arrays["lambdas"][ell]))
-        full = self.combine([base, *blocks])
-        full_map, full_support = self.trace_pauli(full)
+            contracted = self.contracted_square(g)
+            if squared != contracted:
+                self.matrix_witness('A_squared_vs_CAR_block_'+str(ell),squared,contracted)
+                raise ValueError('FAIL: A_l squared/CAR contraction')
+            blocks.append(self.scale(squared,arrays['lambdas'][ell]))
+            self.progress['completed_exact_blocks'] = ell+1
+        full = self.combine([base,*blocks])
+        full_map,full_support = self.trace_pauli(full)
+        reconstructed_full = self.reconstruct(full_map)
+        if not self.matrix_equal(full,reconstructed_full):
+            self.matrix_witness('full_trace_tensor',full,reconstructed_full)
+            raise ValueError('FAIL: full-H trace/tensor reconstruction')
         splits = {}
-        for count in (3, 6, 9):
+        for count in (3,6,9):
             tail = self.combine(blocks[count:])
-            law, coverage = self.trace_pauli(tail)
-            moved = law.pop("I"*8, Fraction(0))
-            # Fraction scalar cannot pass through binary64: shift exact integer diagonal.
-            e, data = tail
-            shifted_e = max(e, moved.denominator.bit_length()-1)
-            integer_move = moved*(1 << shifted_e)
-            shifted = {k: (a << (shifted_e-e), b << (shifted_e-e)) for k, (a, b) in data.items()}
-            for i in range(256):
-                self.put(shifted, (i, i), (-int(integer_move), 0))
-            hd = {p: full_map.get(p, 0)-law.get(p, 0) for p in set(full_map) | set(law)}
-            hd = {p: c for p, c in hd.items() if c}
-            lam = sum(abs(c) for c in law.values())
-            splits[count] = {"law": law, "lambda": lam, "moved": moved, "hd": hd,
-                             "matrix": (shifted_e, shifted), "support": coverage}
-        return {"full_matrix": full, "full_map": full_map,
-                "full_support": full_support, "splits": splits}
-
-    def dc(self, value):
-        return Decimal(value.numerator) / Decimal(value.denominator)
-
-    def cmul(self, a, b):
-        self.tick()
-        return a[0]*b[0]-a[1]*b[1], a[0]*b[1]+a[1]*b[0]
+            law,coverage = self.trace_pauli(tail)
+            moved = law.pop('I'*8,Fraction(0))
+            hr = self.shifted_identity(tail,-moved)
+            hd_before = self.combine([base,*blocks[:count]])
+            hd_matrix = self.shifted_identity(hd_before,moved)
+            hd,hd_support = self.trace_pauli(hd_matrix)
+            difference = {w:full_map.get(w,0)-law.get(w,0) for w in set(full_map)|set(law)}
+            difference = {w:c for w,c in difference.items() if c}
+            if hd != difference or not self.matrix_equal(self.combine([hd_matrix,hr]),full):
+                raise ValueError('FAIL: exact full/HD/HR/identity decomposition')
+            if not self.matrix_equal(hr,self.reconstruct(law)) or not self.matrix_equal(hd_matrix,self.reconstruct(hd)):
+                raise ValueError('FAIL: split trace/tensor reconstruction')
+            bitmap = bytearray.fromhex(coverage['zero_bitmap_hex'])
+            bitmap[0] |= 1
+            coverage.update(exact_nonzero=len(law),zero_bitmap_hex=bitmap.hex(),zero_bitmap_sha256=hashlib.sha256(bitmap).hexdigest(),identity_removed=True)
+            lam = self.q(sum(abs(c) for c in law.values()))
+            splits[count] = {'law':law,'lambda':lam,'moved':moved,'hd':hd,
+                             'hd_scalar_before':hd.get('I'*8,Fraction(0))-moved,
+                             'matrix':hr,'hd_matrix':hd_matrix,'support':coverage,'hd_support':hd_support,
+                             'coefficient_allowance':self.coefficient_allowance(arrays,count)}
+            self.progress['completed_exact_splits'] = ['G'+str(k) for k in splits]
+        return {'full_matrix':full,'full_map':full_map,'full_support':full_support,'splits':splits,
+                'global_coefficient_allowance':self.global_coefficient_allowance(arrays)}
 
     def dot(self, a, b):
-        terms = [self.cmul((x[0], -x[1]), y) for x, y in zip(a, b)]
-        return sum(t[0] for t in terms), sum(t[1] for t in terms)
+        total = (0,0)
+        for x,y in zip(a,b):
+            total = self.add(total,self.mul((x[0],-x[1]),y))
+        return total
 
     def matvec(self, matrix, vector):
-        exponent, data = matrix
-        scale = Decimal(2) ** (-exponent)
-        out = [(Decimal(0), Decimal(0)) for _ in range(256)]
-        for (row, col), (a, b) in sorted(data.items()):
-            x, y = self.cmul((Decimal(a)*scale, Decimal(b)*scale), vector[col])
-            out[row] = out[row][0]+x, out[row][1]+y
+        out = [(0,0) for _ in range(256)]
+        for (row,col),value in sorted(matrix[1].items()):
+            out[row] = self.add(out[row],self.mul(value,vector[col]))
         return out
 
     def tensor_action(self, word, vector):
-        # Apply local I/X/Y/Z to strided pairs. No v5 bitmask/phase cache.
+        # Strided local-state pairs: independently implemented from tensor_word.
         out = list(vector)
-        for axis, letter in enumerate(word):
+        for axis,letter in enumerate(word):
             stride = 2 ** (7-axis)
-            for start in range(0, 256, 2*stride):
-                for j in range(start, start+stride):
-                    a, b = out[j], out[j+stride]
+            for start in range(0,256,2*stride):
+                for j in range(start,start+stride):
+                    a,b = out[j],out[j+stride]
                     self.tick()
-                    if letter == "X":
-                        out[j], out[j+stride] = b, a
-                    elif letter == "Y":
-                        out[j], out[j+stride] = (b[1], -b[0]), (-a[1], a[0])
-                    elif letter == "Z":
-                        out[j+stride] = -b[0], -b[1]
+                    if letter == 'X':
+                        out[j],out[j+stride] = b,a
+                    elif letter == 'Y':
+                        out[j],out[j+stride] = (b[1],-b[0]),(-a[1],a[0])
+                    elif letter == 'Z':
+                        out[j+stride] = -b[0],-b[1]
         return out
 
     def state_metrics(self, arrays, prepared, count):
-        with localcontext() as ctx:
-            ctx.prec, ctx.rounding = 80, ROUND_HALF_EVEN
-            vector = [(Decimal.from_float(z.real), Decimal.from_float(z.imag)) for z in arrays["state_vector"]]
-            expected = [i for i, s in enumerate(self.occupations)
-                        if sum(m % 2 == 0 for m in s) == 2 and sum(m % 2 == 1 for m in s) == 2]
-            if arrays["sector_basis_indices"] != expected:
-                raise ValueError("FAIL: occupation/sector basis order")
-            embedded = [0j for _ in range(256)]
-            for index, value in zip(expected, arrays["sector_state_vector"]):
-                embedded[index] = value
-            if embedded != arrays["state_vector"]:
-                raise ValueError("FAIL: exact sector embedding")
-            norm2, norm_imag = self.dot(vector, vector)
-            if norm2 <= 0 or norm_imag or abs(norm2-1) > Decimal(2) ** -40:
-                raise ValueError("FAIL: state norm²")
-            full_psi = self.matvec(prepared["full_matrix"], vector)
-            energy_re, energy_im = self.dot(vector, full_psi)
-            energy = energy_re/norm2
-            residual_vector = [(a-energy*x, b-energy*y)
-                               for (a, b), (x, y) in zip(full_psi, vector)]
-            residual = (self.dot(residual_vector, residual_vector)[0]/norm2).sqrt()
-            split = prepared["splits"][count]
-            if split["lambda"] <= 0:
-                return {"status": "UNDETERMINED", "reason": "empty tail"}
-            lam = self.dc(split["lambda"])
-            hpsi = [(a/lam, b/lam) for a, b in self.matvec(split["matrix"], vector)]
-            W = 1-self.dot(hpsi, hpsi)[0]/norm2
-            events = []
-            for word, coefficient in sorted(split["law"].items()):
-                re, im = self.dot(vector, self.tensor_action(word, vector))
-                if abs(im/norm2) > Decimal(2) ** -80:
-                    raise ValueError("UNDETERMINED: reference expectation imaginary residue")
-                events.append((self.dc(abs(coefficient)/split["lambda"]),
-                               (1 if coefficient > 0 else -1)*re/norm2))
-            mean = sum(p*a for p, a in events)
-            variance = sum(p*(a-mean)**2 for p, a in events)
-            if abs(mean-self.dot(vector, hpsi)[0]/norm2) > Decimal(2) ** -80:
-                raise ValueError("UNDETERMINED: matrix/law mean disagreement")
-            allowance = Decimal(2) ** -80
-            if W < -allowance or W > 1+allowance or variance < -allowance or variance > W+2*allowance:
-                raise ValueError("UNDETERMINED: reference W/v range")
-            result = {"status": "PASS", "evidence": "CONDITIONAL_NOT_CERTIFIED",
-                      "norm2": str(norm2), "W": str(W), "v": str(variance),
-                      "rayleigh_energy_Ha": str(energy), "energy_imaginary_Ha": str(energy_im/norm2),
-                      "full_H_residual_2_Ha": str(residual),
-                      "exact_eigenstate_or_theorem_applicability_certified": False,
-                      "rho": None, "reference_allowance": str(allowance)}
-            if W <= allowance:
-                result.update(status="UNDETERMINED", reason="W small or denominator interval contains zero")
-            else:
-                rho = (W+variance)/(2*W)
-                lo = (1+(variance-allowance)/(W+allowance))/2
-                hi = (1+(variance+allowance)/(W-allowance))/2
-                if max(rho-lo, hi-rho) > Decimal(2) ** -12 or rho < Decimal("0.5") or rho > 1:
-                    result.update(status="UNDETERMINED", reason="rho reference resolution/domain")
-                else:
-                    result.update(rho=str(rho), rho_interval=[str(lo), str(hi)])
-            return result
+        exponent,vector = self.dyadic(arrays['state_vector'])
+        expected = [i for i,s in enumerate(self.occupations)
+                    if sum(m % 2 == 0 for m in s)==2 and sum(m % 2 == 1 for m in s)==2]
+        if arrays['sector_basis_indices'] != expected:
+            raise ValueError('FAIL: occupation/sector basis ordering')
+        embedded = [0j for _ in range(256)]
+        for index,value in zip(expected,arrays['sector_state_vector']):
+            embedded[index] = value
+        if embedded != arrays['state_vector']:
+            raise ValueError('FAIL: exact sector embedding')
+        norm,imag = self.dot(vector,vector)
+        norm2 = self.q(Fraction(norm,1 << (2*exponent)))
+        if norm <= 0 or imag or abs(norm2-1) > Fraction(1,1 << 40):
+            raise ValueError('FAIL: state norm quality')
+        full = prepared['full_matrix']
+        full_psi = self.matvec(full,vector)
+        er,ei = self.dot(vector,full_psi)
+        if ei:
+            raise ValueError('FAIL: exact Hermitian energy imaginary part')
+        energy = self.q(Fraction(er,(1 << full[0])*norm))
+        residual2 = self.q(Fraction(self.dot(full_psi,full_psi)[0],(1 << (2*full[0]))*norm)-energy*energy)
+        if residual2 < 0:
+            raise ValueError('FAIL: exact residual squared sign')
+        oracle_quality = residual2 <= Fraction(1,10**16)
+        split = prepared['splits'][count]
+        lam = split['lambda']
+        if lam <= 0:
+            return {'status':'UNDETERMINED','reason':'empty tail','W':None,'v':None,'rho':None,'norm2':norm2}
+        hpsi = self.matvec(split['matrix'],vector)
+        W = self.q(1-Fraction(self.dot(hpsi,hpsi)[0],(1 << (2*split['matrix'][0]))*norm)/(lam*lam))
+        ce = max(c.denominator.bit_length()-1 for c in split['law'].values())
+        mass,first,second = 0,0,0
+        for word,coefficient in sorted(split['law'].items()):
+            if word not in self.pauli_expectations:
+                ar,ai = self.dot(vector,self.tensor_action(word,vector))
+                if ai:
+                    raise ValueError('FAIL: exact Pauli expectation imaginary part')
+                self.pauli_expectations[word] = ar
+            ar = self.pauli_expectations[word]
+            ci = int(coefficient*(1 << ce))
+            mass = self.integer(mass+abs(ci))
+            first = self.integer(first+ci*ar)
+            second = self.integer(second+abs(ci)*ar*ar)
+        if Fraction(mass,1 << ce) != lam:
+            raise ValueError('FAIL: exact law mass')
+        mean = self.q(Fraction(first,mass*norm))
+        variance = self.q(Fraction(second,mass*norm*norm)-mean*mean)
+        mean_matrix,mean_imag = self.dot(vector,hpsi)
+        if mean_imag or mean != Fraction(mean_matrix,(1 << split['matrix'][0])*norm)/lam:
+            raise ValueError('FAIL: exact independent matrix/law mean')
+        if not 0 <= variance <= W <= 1:
+            raise ValueError('FAIL: exact W/v algebraic range')
+        rho = self.q((W+variance)/(2*W)) if W > 0 else None
+        return {'status':'PASS' if rho is not None and oracle_quality else 'UNDETERMINED',
+                'reason':None if rho is not None and oracle_quality else 'zero W or exact absolute oracle quality unresolved',
+                'norm2':norm2,'W':W,'v':variance,'rho':rho,'rayleigh_energy_Ha':energy,
+                'full_H_residual_squared_Ha2':residual2,'exact_oracle_absolute_quality':oracle_quality,
+                'reference_error_allowance':Fraction(0)}
 
     def coefficient_allowance(self, arrays, count):
-        # Re-derive the input-only scale with rational arithmetic, without v5 Budget.
         scale = Fraction(0)
-        for ell in range(count, 12):
-            g = arrays["g_matrices"][64*ell:64*(ell+1)]
+        for ell in range(count,12):
+            g = arrays['g_matrices'][64*ell:64*(ell+1)]
             mass = sum(abs(Fraction(z.real))+abs(Fraction(z.imag)) for z in g)
-            scale += abs(Fraction(arrays["lambdas"][ell]))*mass*mass
-        t = Fraction(713+12-count, 2**53)
-        return t/(1-t)*scale
+            scale += abs(Fraction(arrays['lambdas'][ell]))*mass*mass
+        t = Fraction(713+12-count,1 << 53)
+        return self.q(t/(1-t)*scale)
 
-    def compare_law(self, arrays, split, row, count):
-        """Union-support L1 comparisons in Ha; exact saved-float law relations."""
-        table = row["canonical_table"]
-        words = [e["word"] for e in table]
-        if words != sorted(set(words)) or any(len(w) != 8 or set(w)-set("IXYZ") or w == "I"*8 for w in words):
-            raise ValueError("FAIL: canonical words/order/duplicates/identity")
-        table_raw = json.dumps(table, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
-        if hashlib.sha256(table_raw).hexdigest() != row["canonical_table_sha256"]:
-            raise ValueError("UNDETERMINED: comparator table hash")
-        approx = {e["word"]: Fraction(float.fromhex(e["coefficient_hex"])) for e in table}
-        if any(not c for c in approx.values()):
-            raise ValueError("FAIL: saved zero coefficient was not removed")
-        exact = split["law"]
-        missing, spurious = sorted(set(exact)-set(approx)), sorted(set(approx)-set(exact))
-        flipped = sorted(w for w in set(exact) & set(approx) if exact[w]*approx[w] < 0)
-        error = sum(abs(exact.get(w, 0)-approx.get(w, 0)) for w in set(exact) | set(approx))
-        alpha = self.coefficient_allowance(arrays, count)
-        report = {"status": "PASS", "coefficient_L1_error_Ha": str(error),
-                  "coefficient_L1_allowance_Ha": str(alpha),
-                  "exact_only_missing": missing, "computed_only_spurious": spurious,
-                  "sign_flips": flipped, "exact_support_status": "PASS",
-                  "lambda_exact_Ha": str(split["lambda"])}
-        # Conservative independent candidate: any support/sign discrepancy stops,
-        # even though v5's approximate-law L1 theorem can accommodate small ones.
-        if missing or spurious or flipped:
-            report.update(status="FAIL", exact_support_status="FAIL",
-                          reason="strict support/sign discrepancy requires investigation")
-        if error > alpha:
-            report.update(status="FAIL", reason="coefficient L1 envelope exceeded")
-        lam_float = row["lambda_R"]
-        if type(lam_float) not in (int, float) or not math.isfinite(lam_float) or lam_float <= 0:
-            return dict(report, status="UNDETERMINED", reason="saved lambda nonpositive/nonfinite")
-        lam = Fraction(lam_float)
-        saved_mass = sum(abs(c) for c in approx.values())
-        t = Fraction(65536+32, 2**53)
-        summation = t/(1-t)*saved_mass
-        if abs(lam-saved_mass) > summation or abs(lam-split["lambda"]) > alpha+summation:
-            report.update(status="FAIL", reason="lambda_R mismatch")
-        probability_mass = Fraction(0)
-        for event in table:
-            c = approx[event["word"]]
-            if type(event["signed_event_sign"]) is not int or event["signed_event_sign"] != (1 if c > 0 else -1):
-                report.update(status="FAIL", reason="signed event sign mismatch")
-            p = event["probability"]
-            if type(p) not in (int, float) or not math.isfinite(p) or p < 0:
-                raise ValueError("FAIL: probability finite/nonnegative")
-            if p != float(abs(c)/lam):
-                report.update(status="FAIL", reason="probability is not correctly rounded abs(c_hat)/lambda_hat")
-            probability_mass += Fraction(p)
-        if abs(probability_mass-1) > Fraction(1, 2**46):
-            report.update(status="FAIL", reason="saved probability mass")
-        report["probability_mass_exact_saved_floats"] = str(probability_mass)
-        phase = row["phase_ledger"]
-        before, moved, after = (Fraction(phase[k]) for k in
-            ("HD_Pauli_scalar_before", "HR_Pauli_scalar_before", "HD_Pauli_scalar_after"))
-        shift_roundoff = Fraction(1, 2**53)*(abs(before)+abs(moved))
-        if (abs(moved-split["moved"]) > alpha or abs(after-before-moved) > shift_roundoff
-                or phase["HR_Pauli_scalar_after"] != 0
-                or Fraction(phase["HD_added_phase_per_T_rel"]) != moved
-                or Fraction(phase["HR_removed_phase_per_T_rel"]) != -moved
-                or phase["net_relative_phase_change_per_T_rel"] != 0
-                or Fraction(phase["HD_half_added_phase_per_delta"]) != moved/4):
-            report.update(status="FAIL", reason="identity transfer/phase ledger")
-        report["identity_move_exact_Ha"] = str(split["moved"])
-        report["HD_nonidentity_comparison"] = "UNDETERMINED_NOT_SAVED_BY_V5"
-        return report
+    def global_coefficient_allowance(self, arrays):
+        scale = abs(Fraction(arrays['constant'][0]))+sum(abs(Fraction(z.real))+abs(Fraction(z.imag)) for z in arrays['one_body'])
+        for ell in range(12):
+            mass = sum(abs(Fraction(z.real))+abs(Fraction(z.imag)) for z in arrays['g_matrices'][64*ell:64*(ell+1)])
+            scale += abs(Fraction(arrays['lambdas'][ell]))*mass*mass
+        a,b = Fraction(24000064,1 << 53),Fraction(65568,1 << 53)
+        return self.q(2*a/(1-a)*scale*(1+b/(1-b)))
 
-    def compare_metrics(self, reference, saved):
-        with localcontext() as ctx:
-            ctx.prec, ctx.rounding = 80, ROUND_HALF_EVEN
-            eps = Decimal(2) ** -80
-            out = {"status": reference["status"], "checks": {},
-                   "evidence": "CONDITIONAL_NOT_CERTIFIED"}
-            for name, power in (("W", -24), ("v", -24), ("rho", -12)):
-                if reference.get(name) is None or saved.get(name) is None:
-                    status, diff = "UNDETERMINED", None
-                elif type(saved[name]) not in (int, float) or not math.isfinite(saved[name]):
-                    status, diff = "FAIL", "NONFINITE_OR_NONNUMERIC"
-                else:
-                    diff = abs(Decimal.from_float(float(saved[name]))-Decimal(reference[name]))
-                    # Include the separately fixed reference allowance, never tune it.
-                    radius = eps
-                    if name == "rho":
-                        lo, hi = map(Decimal, reference["rho_interval"])
-                        radius = max(Decimal(reference[name])-lo, hi-Decimal(reference[name]))
-                    status = "PASS" if diff+radius <= Decimal(2) ** power else "FAIL"
-                    diff = str(diff)
-                out["checks"][name] = {"status": status, "absolute_difference": diff,
-                                       "units": "dimensionless", "tolerance": "2^"+str(power)}
-            statuses = [out["status"], *(c["status"] for c in out["checks"].values())]
-            out["status"] = "FAIL" if "FAIL" in statuses else "UNDETERMINED" if "UNDETERMINED" in statuses else "PASS"
-            return out
+    def public_metrics(self, metrics):
+        return {k:self.encoded(v) if isinstance(v,Fraction) else v for k,v in metrics.items()}
 
-    def evaluate(self, input_raw, comparator_raw, expected_comparator_sha256):
-        """In-memory result builder for a FUTURE separately authorized adapter.
-
-        This release has no executable caller. The future adapter must enforce
-        provenance, isolation, aggregate caps and exclusive result persistence.
-        """
-        if hashlib.sha256(comparator_raw).hexdigest() != expected_comparator_sha256:
-            raise ValueError("UNDETERMINED: prebound comparator identity")
-        def pairs(items):
-            out = {}
-            for k, v in items:
-                if k in out:
-                    raise ValueError("duplicate comparator JSON key")
-                out[k] = v
-            return out
-        saved = json.loads(comparator_raw, object_pairs_hook=pairs,
-                           parse_constant=lambda v: (_ for _ in ()).throw(ValueError(v)))
-        if (saved.get("schema") != "m1s_gate0_result_v5"
-                or saved.get("input", {}).get("sha256") != INPUT_SHA
-                or saved.get("config", {}).get("source_commit") != "69de022dc8142f703423b1ce0bd42f05e123954e"
-                or saved.get("config", {}).get("source_sha256", {}).get(
-                    "src/trottertracks/algorithm_codesign/m1s_gate0_v5/science.py") !=
-                    "9a1d42916e972cb9b39af462678db1a70888fcab22a5de4f98d11fab0bc1a0ab"):
-            raise ValueError("UNDETERMINED: comparator scope/source/input provenance")
-        if [r.get("split") for r in saved["rows"]] != ["G3", "G6", "G9"]:
-            raise ValueError("UNDETERMINED: all three ordered comparator rows required")
+    def build(self, input_raw):
+        # This entire phase accepts only the frozen NPZ, never comparator bytes.
+        self.progress['phase'] = 'INDEPENDENT_REFERENCE'
         arrays = self.decode(input_raw)
         prepared = self.prepare_coefficients(arrays)
-        report = {"schema": "m1s_gate0_independent_result_v1", "status": "UNDETERMINED",
-                  "input_sha256": INPUT_SHA, "comparator_sha256": expected_comparator_sha256,
-                  "rows": [], "full_support": prepared["full_support"],
-                  "coefficient_evidence": "EXACT_SAVED_BINARY64_ALGEBRA_IF_SOURCE_CORRECT",
-                  "state_metric_evidence": "CONDITIONAL_NOT_CERTIFIED",
-                  "mandatory_STOP": True, "unperformed": ["v5_reexecution", "sampling", "circuits", "compile", "finite_step", "scientific_GO"]}
-        for count, row in zip((3, 6, 9), saved["rows"]):
-            split = prepared["splits"][count]
-            entry = {"split": "G"+str(count), "support": split["support"],
-                     "exact_canonical_law": [{"word": w, "coefficient_Ha": str(c),
-                         "probability": str(abs(c)/split["lambda"]), "sign": 1 if c > 0 else -1}
-                         for w, c in sorted(split["law"].items())],
-                     "exact_HD_coefficients_Ha": {w: str(c) for w, c in sorted(split["hd"].items())}}
-            if not row.get("canonical_table") or row.get("phase_ledger") is None:
-                entry.update(status="UNDETERMINED", reason="comparator law/identity fields missing")
-            else:
-                entry["law_comparison"] = self.compare_law(arrays, split, row, count)
-                if entry["law_comparison"]["status"] != "PASS":
-                    entry["status"] = entry["law_comparison"]["status"]
-                else:
-                    entry["reference_metrics"] = self.state_metrics(arrays, prepared, count)
-                    entry["metric_comparison"] = self.compare_metrics(entry["reference_metrics"], row)
-                    entry["status"] = entry["metric_comparison"]["status"]
-            report["rows"].append(entry)
-            if entry["status"] != "PASS":
-                break  # STOP at first discrepancy; no implicit diagnosis/retry.
-        completed = {r["split"] for r in report["rows"]}
-        report["rows"].extend({"split": s, "status": "UNDETERMINED", "reason": "NOT_EVALUATED_AFTER_STOP"}
-                              for s in ("G3", "G6", "G9") if s not in completed)
-        statuses = [r["status"] for r in report["rows"]]
-        report["status"] = "FAIL" if "FAIL" in statuses else "UNDETERMINED" if "UNDETERMINED" in statuses else "PASS"
-        report["primitive_events"] = self.events
+        metrics = {}
+        public = {'full_matrix':self.matrix_digest(prepared['full_matrix']),
+                  'full_coefficients_sha256':self.coefficient_digest(prepared['full_map']),
+                  'full_support':prepared['full_support'],'splits':{}}
+        self.progress['partial_reference'] = public
+        for count in (3,6,9):
+            metrics[count] = self.state_metrics(arrays,prepared,count)
+            split = prepared['splits'][count]
+            public['splits']['G'+str(count)] = {
+                'HR_matrix':self.matrix_digest(split['matrix']),'HD_matrix':self.matrix_digest(split['hd_matrix']),
+                'HR_coefficients_sha256':self.coefficient_digest(split['law']),
+                'HD_coefficients_sha256':self.coefficient_digest(split['hd']),
+                'HR_support':split['support'],'HD_support':split['hd_support'],
+                'identity_moved_Ha':self.encoded(split['moved']),'lambda_R_Ha':self.encoded(split['lambda']),
+                'metrics':self.public_metrics(metrics[count])}
+            self.progress['completed_reference_splits'].append('G'+str(count))
+        raw = json.dumps(public,sort_keys=True,separators=(',',':'),allow_nan=False).encode()
+        self.progress.update(phase='INDEPENDENT_REFERENCE_FROZEN',independent_reference_sha256=hashlib.sha256(raw).hexdigest())
+        return {'arrays':arrays,'prepared':prepared,'metrics':metrics,'public':public,
+                'independent_reference_sha256':self.progress['independent_reference_sha256']}
+
+    def rounded_binary64(self, value, exact):
+        # Integer nearest-even cell test; never reuse Python float division.
+        if type(value) is not float or not math.isfinite(value):
+            return False
+        bits = struct.unpack('<Q',struct.pack('<d',value))[0]
+        if bits >> 63:
+            return self.rounded_binary64(-value,-exact)
+        if bits >= 0x7fefffffffffffff or exact < 0:
+            return False
+        q = Fraction(value)
+        previous = Fraction(struct.unpack('<d',struct.pack('<Q',bits-1))[0]) if bits else Fraction(0)
+        following = Fraction(struct.unpack('<d',struct.pack('<Q',bits+1))[0])
+        lower,upper = (previous+q)/2,(q+following)/2
+        return (lower <= exact <= upper) if bits % 2 == 0 else (lower < exact < upper)
+
+    def difference_F_squared(self, a, b):
+        e = max(a[0],b[0]);total = 0
+        for k in set(a[1]) | set(b[1]):
+            x,y = a[1].get(k,(0,0)),b[1].get(k,(0,0))
+            dr,di = (x[0] << (e-a[0]))-(y[0] << (e-b[0])),(x[1] << (e-a[0]))-(y[1] << (e-b[0]))
+            total = self.integer(total+dr*dr+di*di)
+            self.tick()
+        return self.q(Fraction(total,1 << (2*e)))
+
+    def compare_law(self, prepared, count, row):
+        split = prepared['splits'][count]
+        table = row['canonical_table'];words = [e['word'] for e in table]
+        if words != sorted(set(words)) or any(len(w)!=8 or set(w)-set('IXYZ') or w=='I'*8 for w in words):
+            raise ValueError('FAIL: comparator canonical word/order/identity')
+        raw = json.dumps(table,sort_keys=True,separators=(',',':'),allow_nan=False).encode()
+        if hashlib.sha256(raw).hexdigest() != row['canonical_table_sha256']:
+            raise ValueError('UNDETERMINED: comparator table digest')
+        approx = {e['word']:Fraction(float.fromhex(e['coefficient_hex'])) for e in table}
+        if any(not x for x in approx.values()):
+            raise ValueError('FAIL: saved zero coefficient present')
+        exact = split['law'];union = sorted(set(exact)|set(approx));alpha = split['coefficient_allowance']
+        missing,spurious = sorted(set(exact)-set(approx)),sorted(set(approx)-set(exact))
+        flipped = sorted(w for w in set(exact)&set(approx) if exact[w]*approx[w] < 0)
+        error = self.q(sum(abs(exact.get(w,0)-approx.get(w,0)) for w in union))
+        status = 'FAIL' if error > alpha else 'UNDETERMINED' if missing or spurious or flipped else 'PASS'
+        witness_words = [w for w in union if exact.get(w,0)!=approx.get(w,0)][:64]
+        report = {'status':status,'coefficient_L1_error_Ha':self.encoded(error),'coefficient_L1_allowance_Ha':self.encoded(alpha),
+                  'support_missing_count':len(missing),'support_spurious_count':len(spurious),'sign_flip_count':len(flipped),
+                  'support_or_sign_witnesses':{'missing':missing[:64],'spurious':spurious[:64],'flipped':flipped[:64]},
+                  'coefficient_difference_witnesses':[{'word':w,'exact_Ha':self.encoded(exact.get(w,Fraction(0))),
+                       'saved_Ha':self.encoded(approx.get(w,Fraction(0)))} for w in witness_words]}
+        lam_float = row['lambda_R']
+        if type(lam_float) is not float or not math.isfinite(lam_float) or lam_float <= 0:
+            return dict(report,status='FAIL',reason='invalid saved lambda')
+        lam = Fraction(lam_float);mass = sum(abs(c) for c in approx.values())
+        t = Fraction(65568,1 << 53);summation = t/(1-t)*mass
+        if abs(lam-mass) > summation or abs(lam-split['lambda']) > alpha+summation:
+            report.update(status='FAIL',reason='lambda discrepancy')
+        probability_mass = Fraction(0)
+        for event in table:
+            coeff = approx[event['word']];prob = event['probability']
+            if type(event['signed_event_sign']) is not int or event['signed_event_sign'] != (1 if coeff > 0 else -1) or type(prob) is not float or not math.isfinite(prob) or prob < 0:
+                raise ValueError('FAIL: saved sign/probability structure')
+            if not self.rounded_binary64(prob,abs(coeff)/lam):
+                report.update(status='FAIL',reason='probability rounding relation')
+            probability_mass += Fraction(prob)
+        if abs(probability_mass-1) > Fraction(1,1 << 46):
+            report.update(status='FAIL',reason='probability mass quality')
+        report['saved_probability_mass'] = self.encoded(probability_mass)
+        saved_matrix = self.reconstruct(approx)
+        f2 = self.difference_F_squared(saved_matrix,split['matrix'])
+        if f2 > 256*alpha*alpha:
+            report.update(status='FAIL',reason='HR matrix Frobenius envelope')
+        report['HR_matrix_F_squared_Ha2'] = self.encoded(f2)
+        phase = row['phase_ledger']
+        before,moved,after = (Fraction(phase[k]) for k in ('HD_Pauli_scalar_before','HR_Pauli_scalar_before','HD_Pauli_scalar_after'))
+        global_alpha = prepared['global_coefficient_allowance']
+        if abs(moved-split['moved']) > alpha or abs(before-split['hd_scalar_before']) > global_alpha or not self.rounded_binary64(float(phase['HD_Pauli_scalar_after']),before+moved) or phase['HR_Pauli_scalar_after'] != 0 or Fraction(phase['HD_added_phase_per_T_rel']) != moved or Fraction(phase['HR_removed_phase_per_T_rel']) != -moved or phase['net_relative_phase_change_per_T_rel'] != 0 or Fraction(phase['HD_half_added_phase_per_delta']) != moved/4:
+            report.update(status='FAIL',reason='identity/phase ledger discrepancy')
+        report['saved_full_HD_nonidentity_match'] = 'UNDETERMINED_NOT_SAVED_BY_V5'
         return report
+
+    def compare_metrics(self, exact, saved):
+        out = {'status':exact['status'],'checks':{},'reference_arithmetic':'EXACT_RATIONAL_IF_SOURCE_CORRECT'}
+        for key,power in [('W',24),('v',24),('rho',12)]:
+            value = saved.get(key)
+            if exact.get(key) is None:
+                status,diff = 'UNDETERMINED',None
+            elif type(value) is not float or not math.isfinite(value):
+                status,diff = 'FAIL',None
+            else:
+                diff = self.q(abs(Fraction(value)-exact[key]));status = 'PASS' if diff <= Fraction(1,1 << power) else 'FAIL'
+            out['checks'][key] = {'status':status,'absolute_difference':self.encoded(diff) if diff is not None else None,'tolerance':'2^-'+str(power),'units':'dimensionless'}
+        states = [out['status'],*[x['status'] for x in out['checks'].values()]]
+        out['status'] = 'FAIL' if 'FAIL' in states else 'UNDETERMINED' if 'UNDETERMINED' in states else 'PASS'
+        return out
+
+    def compare_saved(self, independent, comparator_raw):
+        if self.progress['phase'] != 'INDEPENDENT_REFERENCE_FROZEN':
+            raise RuntimeError('UNDETERMINED: reference not frozen before comparator')
+        if hashlib.sha256(comparator_raw).hexdigest() != POLICY['comparator']['sha256']:
+            raise ValueError('UNDETERMINED: comparator bytes')
+        # First comparator JSON parse: construction/metrics have all completed.
+        saved = read_json(comparator_raw)
+        if saved.get('schema') != 'm1s_gate0_result_v5' or saved.get('input',{}).get('sha256') != INPUT_SHA or saved.get('config',{}).get('source_commit') != POLICY['v5_source']['commit'] or [r.get('split') for r in saved.get('rows',[])] != ['G3','G6','G9']:
+            raise ValueError('UNDETERMINED: comparator provenance/split scope')
+        rows = []
+        for count,row in zip((3,6,9),saved['rows']):
+            law = self.compare_law(independent['prepared'],count,row)
+            metrics = self.compare_metrics(independent['metrics'][count],row)
+            statuses = [law['status'],metrics['status']]
+            status = 'FAIL' if 'FAIL' in statuses else 'UNDETERMINED' if 'UNDETERMINED' in statuses else 'PASS'
+            entry = {'split':'G'+str(count),'available_comparator_status':status,'law_comparison':law,'metric_comparison':metrics,
+                     'full_requested_scope_status':'FAIL' if status=='FAIL' else 'UNDETERMINED',
+                     'missing_comparator':'v5 full-H matrix / HD nonidentity coefficients and matrix were not saved'}
+            rows.append(entry);self.progress['comparisons'].append(entry)
+            if status != 'PASS':
+                break
+        done = {r['split'] for r in rows}
+        rows.extend({'split':s,'available_comparator_status':'UNDETERMINED','full_requested_scope_status':'UNDETERMINED','reason':'NOT_EVALUATED_AFTER_STOP'} for s in ('G3','G6','G9') if s not in done)
+        statuses = [r['available_comparator_status'] for r in rows]
+        primary = 'FAIL' if 'FAIL' in statuses else 'UNDETERMINED' if 'UNDETERMINED' in statuses else 'PASS'
+        return {'status':'FAIL' if primary=='FAIL' else 'UNDETERMINED','available_comparator_status':primary,'rows':rows,
+                'full_scope_limitation':'Missing frozen full/HD comparator prevents full requested scope PASS',
+                'independent_reference_sha256':independent['independent_reference_sha256'],'reference':independent['public']}
