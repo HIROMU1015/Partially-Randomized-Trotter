@@ -1,3 +1,9 @@
+## 2026-10-17 H8 B1：完了済み正本と実行済み受入契約の比較
+
+[比較資料](docs/research/track_a_h8_b1_executed_contract_comparison_20261017.md)。正本 `83a3c4a6688e66576f85471bf41a45e29cbfb705` は全4層PASS・完了済み。元B0 run02のSTOPを保持し、正常完了gateを要求する準備案との差を記録した。正本変更・再実行・新承認手続きなし、実装統合/変更なし。人工metadata21件、B0原本53/B1原本34のbytes照合。M1-Sは別研究。以下の準備未承認/pending記載は各時点の履歴。
+
+[metadata module](src/trotterlib/h8_b1_stop_acceptance.py)／[読取CLI](scripts/check_h8_b1_stop_acceptance.py)／[人工tests](tests/test_h8_b1_stop_acceptance.py)／[bundle](artifacts/resource_applicability/track_a_h8_b1_stop_acceptance/2026-10-17/README.md)。
+
 ## 2026-10-17 H8 Phase B1：実装・人工検証完了、数値実行未承認
 
 [準備報告](docs/research/track_a_h8_phase_b1_implementation_readiness_20261017.md)、[model](src/trotterlib/h8_phase_b1_model.py)、[receipt/grant gate](scripts/h8_phase_b1_validation.py)、[runner](scripts/run_h8_phase_b1_validation.py)、[launcher](scripts/launch_h8_phase_b1_validation.py)、[tests](tests/test_h8_phase_b1_model.py)、[bundle](artifacts/resource_applicability/track_a_h8_phase_b1_implementation/2026-10-17/README.md)。固定B0 TRAIN3/HOLDOUT1を両軸独立、B0I既存16軸の層別OLS/全anchor診断を実装。人工28件PASS、各軸2%以上でSTOP・refit/追加測定/B2/C自動移行なし。SOURCE 1e25d569…、実H8 fit/残差/再会計/compile・有効grant・既存job変更・subagents0。実receipt未結合・CPU[]/false/未seal、数値fitは別承認。

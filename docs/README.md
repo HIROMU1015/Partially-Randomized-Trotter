@@ -1,3 +1,7 @@
+## 2026-10-17 H8 B1：完了済み正本と実行済み受入契約の比較
+
+[比較資料](research/track_a_h8_b1_executed_contract_comparison_20261017.md)。正本 `83a3c4a6688e66576f85471bf41a45e29cbfb705` は全4層PASS・完了済み。元B0 run02のSTOPを保持し、正常完了gateを要求する準備案との差を記録した。正本変更・再実行・新承認手続きなし、実装統合/変更なし。人工metadata21件、B0原本53/B1原本34のbytes照合。M1-Sは別研究。以下の準備未承認/pending記載は各時点の履歴。
+
 ## 2026-10-17 H8 Phase B1実装準備
 
 [報告・未承認契約](research/track_a_h8_phase_b1_implementation_readiness_20261017.md)。固定B0 TRAIN3/HOLDOUT1を両軸独立、B0I既存16軸の層別OLS/全anchor診断を実装。人工28件PASS、各軸2%以上でSTOP・refit/追加測定/B2/C自動移行なし。SOURCE 1e25d569…、実H8 fit/残差/再会計/compile・有効grant・既存job変更・subagents0。実receipt未結合・CPU[]/false/未seal、数値fitは別承認。

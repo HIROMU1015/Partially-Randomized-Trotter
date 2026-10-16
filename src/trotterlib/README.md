@@ -1,3 +1,9 @@
+## 2026-10-17 H8 B1：完了済み正本と実行済み受入契約の比較
+
+[比較資料](../../docs/research/track_a_h8_b1_executed_contract_comparison_20261017.md)。正本 `83a3c4a6688e66576f85471bf41a45e29cbfb705` は全4層PASS・完了済み。元B0 run02のSTOPを保持し、正常完了gateを要求する準備案との差を記録した。正本変更・再実行・新承認手続きなし、実装統合/変更なし。人工metadata21件、B0原本53/B1原本34のbytes照合。M1-Sは別研究。以下の準備未承認/pending記載は各時点の履歴。
+
+`h8_b1_stop_acceptance.py` はstdlibの保存metadata照合専用。数値SOURCE6fb8…を置き換えない。
+
 ## 2026-10-17 H8 Phase B1固定model
 
 [`h8_phase_b1_model.py`](h8_phase_b1_model.py)：Fraction OLS・独立4層・固定TRAIN/HOLDOUT・各軸2% STOP。ファイル読込/科学import/compile/grant機能なし。人工28件PASS、実fit未実行。[準備と制限](../../docs/research/track_a_h8_phase_b1_implementation_readiness_20261017.md)。

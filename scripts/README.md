@@ -1,3 +1,9 @@
+## 2026-10-17 H8 B1：完了済み正本と実行済み受入契約の比較
+
+[比較資料](../docs/research/track_a_h8_b1_executed_contract_comparison_20261017.md)。正本 `83a3c4a6688e66576f85471bf41a45e29cbfb705` は全4層PASS・完了済み。元B0 run02のSTOPを保持し、正常完了gateを要求する準備案との差を記録した。正本変更・再実行・新承認手続きなし、実装統合/変更なし。人工metadata21件、B0原本53/B1原本34のbytes照合。M1-Sは別研究。以下の準備未承認/pending記載は各時点の履歴。
+
+`check_h8_b1_stop_acceptance.py` は固定Git evidenceのbytes/schema比較のみ。fit・holdout数値検証・compile・grant/launch機能なし。
+
 ## 2026-10-17 H8 Phase B1：fit/holdout runner（実行未承認）
 
 `h8_phase_b1_validation.py` は将来の完了receiptを照合し無効grant案だけを作る。`run_h8_phase_b1_validation.py` と `launch_h8_phase_b1_validation.py` は引数なしではplan表示のみ。新grantなしでfitしない。B0取得・既存B1には触れず、実H8数値処理0。[資料](../docs/research/track_a_h8_phase_b1_implementation_readiness_20261017.md)。
