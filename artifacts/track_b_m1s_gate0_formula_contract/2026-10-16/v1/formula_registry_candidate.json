@@ -1,0 +1,355 @@
+{
+  "schema": "m1s_gate0_formula_registry_v1",
+  "normative_design": "docs/tracks/algorithm_codesign/m1s_gate0_preregistered_error_formula_design_20261016.md",
+  "formula_rows": [
+    {
+      "item": "eps_H",
+      "selector": {
+        "formula_id": "reconstruction_F_v1"
+      },
+      "candidate_expression": "(1+n)(2Bmap+2Bref+D)",
+      "norm": "Frobenius",
+      "unit": "Hartree",
+      "basis": "triangle inequality and operator L1 to Frobenius",
+      "required_input_information": [
+        "constant",
+        "one_body",
+        "lambdas",
+        "g_matrices",
+        "frozen_operation_caps"
+      ],
+      "coverage_conditions": [
+        "IEEE_BINARY64_ROUND_TO_NEAREST",
+        "NO_UNACCOUNTED_OVERFLOW_UNDERFLOW_OR_FTZ",
+        "COMPLEX_BLAS_GAMMA_8K_PLUS_32",
+        "FSUM_NO_WORSE_THAN_GAMMA_M_PLUS_32_L1",
+        "EXACT_HERMITIAN_INPUT_ONE_BODY_AND_FACTORS",
+        "EXACT_SAVED_BINARY64_INPUT_IS_TARGET_NOT_EXACT_EIGENSTATE"
+      ],
+      "additional_coverage_conditions": [],
+      "resolution_stage": "before_H_reconstruction_or_state_energy_residual",
+      "scientific_quality_parameter_unresolved": false,
+      "forbidden_input_dependencies": [
+        "observed_validation_discrepancy",
+        "observed_residual",
+        "W",
+        "v",
+        "rho"
+      ],
+      "platform_coverage_certified": false,
+      "formally_adopted": false,
+      "numerically_evaluated": false
+    },
+    {
+      "item": "eps_hermiticity_H",
+      "selector": {
+        "formula_id": "hermiticity_F_v1"
+      },
+      "candidate_expression": "(1+n)(2(Bmap+Bref)+D)",
+      "norm": "Frobenius skew",
+      "unit": "Hartree",
+      "basis": "exact Hermitian target and forward-error triangle inequality",
+      "required_input_information": [
+        "constant",
+        "one_body",
+        "lambdas",
+        "g_matrices",
+        "frozen_operation_caps"
+      ],
+      "coverage_conditions": [
+        "IEEE_BINARY64_ROUND_TO_NEAREST",
+        "NO_UNACCOUNTED_OVERFLOW_UNDERFLOW_OR_FTZ",
+        "COMPLEX_BLAS_GAMMA_8K_PLUS_32",
+        "FSUM_NO_WORSE_THAN_GAMMA_M_PLUS_32_L1",
+        "EXACT_HERMITIAN_INPUT_ONE_BODY_AND_FACTORS",
+        "EXACT_SAVED_BINARY64_INPUT_IS_TARGET_NOT_EXACT_EIGENSTATE"
+      ],
+      "additional_coverage_conditions": [],
+      "resolution_stage": "before_H_reconstruction_or_state_energy_residual",
+      "scientific_quality_parameter_unresolved": false,
+      "forbidden_input_dependencies": [
+        "observed_validation_discrepancy",
+        "observed_residual",
+        "W",
+        "v",
+        "rho"
+      ],
+      "platform_coverage_certified": false,
+      "formally_adopted": false,
+      "numerically_evaluated": false
+    },
+    {
+      "item": "eps_phase",
+      "selector": {
+        "formula_id": "identity_ledger_F_v1"
+      },
+      "candidate_expression": "(1+n)(2Bmap+2Bref+D)",
+      "norm": "Frobenius net scalar ledger",
+      "unit": "Hartree per T_rel",
+      "basis": "identity move and cancellation; no finite-time phase certificate",
+      "required_input_information": [
+        "constant",
+        "one_body",
+        "lambdas",
+        "g_matrices",
+        "frozen_operation_caps"
+      ],
+      "coverage_conditions": [
+        "IEEE_BINARY64_ROUND_TO_NEAREST",
+        "NO_UNACCOUNTED_OVERFLOW_UNDERFLOW_OR_FTZ",
+        "COMPLEX_BLAS_GAMMA_8K_PLUS_32",
+        "FSUM_NO_WORSE_THAN_GAMMA_M_PLUS_32_L1",
+        "EXACT_HERMITIAN_INPUT_ONE_BODY_AND_FACTORS",
+        "EXACT_SAVED_BINARY64_INPUT_IS_TARGET_NOT_EXACT_EIGENSTATE"
+      ],
+      "additional_coverage_conditions": [],
+      "resolution_stage": "before_H_reconstruction_or_state_energy_residual",
+      "scientific_quality_parameter_unresolved": false,
+      "forbidden_input_dependencies": [
+        "observed_validation_discrepancy",
+        "observed_residual",
+        "W",
+        "v",
+        "rho"
+      ],
+      "platform_coverage_certified": false,
+      "formally_adopted": false,
+      "numerically_evaluated": false
+    },
+    {
+      "item": "eps_state_residual",
+      "selector": {
+        "formula_id": "oracle_quality_plus_roundoff_v1"
+      },
+      "candidate_expression": "eta_oracle*S+B_res",
+      "norm": "Euclidean residual divided by state norm",
+      "unit": "Hartree",
+      "basis": "separate oracle quality from arithmetic; eta remains unresolved",
+      "required_input_information": [
+        "constant",
+        "one_body",
+        "lambdas",
+        "g_matrices",
+        "frozen_operation_caps",
+        "oracle_relative_residual_quality"
+      ],
+      "coverage_conditions": [
+        "IEEE_BINARY64_ROUND_TO_NEAREST",
+        "NO_UNACCOUNTED_OVERFLOW_UNDERFLOW_OR_FTZ",
+        "COMPLEX_BLAS_GAMMA_8K_PLUS_32",
+        "FSUM_NO_WORSE_THAN_GAMMA_M_PLUS_32_L1",
+        "EXACT_HERMITIAN_INPUT_ONE_BODY_AND_FACTORS",
+        "EXACT_SAVED_BINARY64_INPUT_IS_TARGET_NOT_EXACT_EIGENSTATE"
+      ],
+      "additional_coverage_conditions": [],
+      "resolution_stage": "before_H_reconstruction_or_state_energy_residual",
+      "scientific_quality_parameter_unresolved": true,
+      "forbidden_input_dependencies": [
+        "observed_validation_discrepancy",
+        "observed_residual",
+        "W",
+        "v",
+        "rho"
+      ],
+      "platform_coverage_certified": false,
+      "formally_adopted": false,
+      "numerically_evaluated": false
+    },
+    {
+      "item": "eps_imag_coeff",
+      "selector": {
+        "formula_id": "coefficient_imaginary_L1_v1"
+      },
+      "candidate_expression": "gamma_(24C+64)*S*(1+gamma_(M+32))",
+      "norm": "imaginary coefficient L1",
+      "unit": "Hartree",
+      "basis": "Hermitian exact target has real Pauli coefficients",
+      "required_input_information": [
+        "constant",
+        "one_body",
+        "lambdas",
+        "g_matrices",
+        "frozen_operation_caps"
+      ],
+      "coverage_conditions": [
+        "IEEE_BINARY64_ROUND_TO_NEAREST",
+        "NO_UNACCOUNTED_OVERFLOW_UNDERFLOW_OR_FTZ",
+        "COMPLEX_BLAS_GAMMA_8K_PLUS_32",
+        "FSUM_NO_WORSE_THAN_GAMMA_M_PLUS_32_L1",
+        "EXACT_HERMITIAN_INPUT_ONE_BODY_AND_FACTORS",
+        "EXACT_SAVED_BINARY64_INPUT_IS_TARGET_NOT_EXACT_EIGENSTATE"
+      ],
+      "additional_coverage_conditions": [],
+      "resolution_stage": "before_H_reconstruction_or_state_energy_residual",
+      "scientific_quality_parameter_unresolved": false,
+      "forbidden_input_dependencies": [
+        "observed_validation_discrepancy",
+        "observed_residual",
+        "W",
+        "v",
+        "rho"
+      ],
+      "platform_coverage_certified": false,
+      "formally_adopted": false,
+      "numerically_evaluated": false
+    },
+    {
+      "item": "eps_imag_energy",
+      "selector": {
+        "formula_id": "rayleigh_imaginary_v1"
+      },
+      "candidate_expression": "Eerr",
+      "norm": "absolute imaginary part",
+      "unit": "Hartree",
+      "basis": "exact Hermitian Rayleigh quotient is real plus reference/matvec/dot/quotient errors",
+      "required_input_information": [
+        "constant",
+        "one_body",
+        "lambdas",
+        "g_matrices",
+        "frozen_operation_caps"
+      ],
+      "coverage_conditions": [
+        "IEEE_BINARY64_ROUND_TO_NEAREST",
+        "NO_UNACCOUNTED_OVERFLOW_UNDERFLOW_OR_FTZ",
+        "COMPLEX_BLAS_GAMMA_8K_PLUS_32",
+        "FSUM_NO_WORSE_THAN_GAMMA_M_PLUS_32_L1",
+        "EXACT_HERMITIAN_INPUT_ONE_BODY_AND_FACTORS",
+        "EXACT_SAVED_BINARY64_INPUT_IS_TARGET_NOT_EXACT_EIGENSTATE"
+      ],
+      "additional_coverage_conditions": [],
+      "resolution_stage": "before_H_reconstruction_or_state_energy_residual",
+      "scientific_quality_parameter_unresolved": false,
+      "forbidden_input_dependencies": [
+        "observed_validation_discrepancy",
+        "observed_residual",
+        "W",
+        "v",
+        "rho"
+      ],
+      "platform_coverage_certified": false,
+      "formally_adopted": false,
+      "numerically_evaluated": false
+    },
+    {
+      "item": "W_error_budget",
+      "selector": {
+        "formula_id": "W_forward_error_v1"
+      },
+      "candidate_expression": "eW",
+      "norm": "absolute metric error",
+      "unit": "dimensionless",
+      "basis": "normalized operator perturbation plus matvec/norm quotient/subtraction",
+      "required_input_information": [
+        "frozen_global_input_scales",
+        "canonical_coefficients",
+        "lambda_sum",
+        "frozen_operation_caps"
+      ],
+      "coverage_conditions": [
+        "IEEE_BINARY64_ROUND_TO_NEAREST",
+        "NO_UNACCOUNTED_OVERFLOW_UNDERFLOW_OR_FTZ",
+        "COMPLEX_BLAS_GAMMA_8K_PLUS_32",
+        "FSUM_NO_WORSE_THAN_GAMMA_M_PLUS_32_L1",
+        "EXACT_HERMITIAN_INPUT_ONE_BODY_AND_FACTORS",
+        "EXACT_SAVED_BINARY64_INPUT_IS_TARGET_NOT_EXACT_EIGENSTATE"
+      ],
+      "additional_coverage_conditions": [
+        "lambda_lower_bound_positive"
+      ],
+      "resolution_stage": "before_target_metrics_after_canonical_law",
+      "scientific_quality_parameter_unresolved": false,
+      "forbidden_input_dependencies": [
+        "observed_validation_discrepancy",
+        "observed_residual",
+        "W",
+        "v",
+        "rho"
+      ],
+      "platform_coverage_certified": false,
+      "formally_adopted": false,
+      "numerically_evaluated": false
+    },
+    {
+      "item": "v_error_budget",
+      "selector": {
+        "formula_id": "variance_forward_error_v1"
+      },
+      "candidate_expression": "ev",
+      "norm": "absolute metric error",
+      "unit": "dimensionless",
+      "basis": "signed event law L1 perturbation plus expectation/mean/centered variance arithmetic",
+      "required_input_information": [
+        "frozen_global_input_scales",
+        "canonical_coefficients",
+        "lambda_sum",
+        "frozen_operation_caps"
+      ],
+      "coverage_conditions": [
+        "IEEE_BINARY64_ROUND_TO_NEAREST",
+        "NO_UNACCOUNTED_OVERFLOW_UNDERFLOW_OR_FTZ",
+        "COMPLEX_BLAS_GAMMA_8K_PLUS_32",
+        "FSUM_NO_WORSE_THAN_GAMMA_M_PLUS_32_L1",
+        "EXACT_HERMITIAN_INPUT_ONE_BODY_AND_FACTORS",
+        "EXACT_SAVED_BINARY64_INPUT_IS_TARGET_NOT_EXACT_EIGENSTATE"
+      ],
+      "additional_coverage_conditions": [
+        "lambda_lower_bound_positive"
+      ],
+      "resolution_stage": "before_target_metrics_after_canonical_law",
+      "scientific_quality_parameter_unresolved": false,
+      "forbidden_input_dependencies": [
+        "observed_validation_discrepancy",
+        "observed_residual",
+        "W",
+        "v",
+        "rho"
+      ],
+      "platform_coverage_certified": false,
+      "formally_adopted": false,
+      "numerically_evaluated": false
+    },
+    {
+      "item": "W_floor",
+      "selector": {
+        "formula_id": "rho_resolution_floor_v1"
+      },
+      "candidate_expression": "((eW+ev)/2)*(1+gamma_8)/(eps_rho-gamma_8)",
+      "norm": "positive denominator screen",
+      "unit": "dimensionless",
+      "basis": "point rho sensitivity plus quotient rounding; final rectangle check retained",
+      "required_input_information": [
+        "resolved_W_error_budget",
+        "resolved_v_error_budget",
+        "eps_rho"
+      ],
+      "coverage_conditions": [
+        "IEEE_BINARY64_ROUND_TO_NEAREST",
+        "NO_UNACCOUNTED_OVERFLOW_UNDERFLOW_OR_FTZ",
+        "COMPLEX_BLAS_GAMMA_8K_PLUS_32",
+        "FSUM_NO_WORSE_THAN_GAMMA_M_PLUS_32_L1",
+        "EXACT_HERMITIAN_INPUT_ONE_BODY_AND_FACTORS",
+        "EXACT_SAVED_BINARY64_INPUT_IS_TARGET_NOT_EXACT_EIGENSTATE"
+      ],
+      "additional_coverage_conditions": [
+        "eps_rho_greater_than_gamma_8"
+      ],
+      "resolution_stage": "before_target_metrics_after_canonical_law",
+      "scientific_quality_parameter_unresolved": false,
+      "forbidden_input_dependencies": [
+        "observed_validation_discrepancy",
+        "observed_residual",
+        "W",
+        "v",
+        "rho"
+      ],
+      "platform_coverage_certified": false,
+      "formally_adopted": false,
+      "numerically_evaluated": false
+    }
+  ],
+  "formula_count": 9,
+  "conditional_candidates_specified": 8,
+  "scientific_quality_items_unresolved": 1,
+  "all_formula_values_uncomputed": true
+}
