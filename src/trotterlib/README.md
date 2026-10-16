@@ -1,3 +1,7 @@
+## 2026-10-17 H8 Phase B1固定model
+
+[`h8_phase_b1_model.py`](h8_phase_b1_model.py)：Fraction OLS・独立4層・固定TRAIN/HOLDOUT・各軸2% STOP。ファイル読込/科学import/compile/grant機能なし。人工28件PASS、実fit未実行。[準備と制限](../../docs/research/track_a_h8_phase_b1_implementation_readiness_20261017.md)。
+
 ## 2026-10-16 H8 B0：8軸取得の実装・seal完了、実行未承認
 
 [実装・gate・人工検証・承認範囲](../../docs/research/track_a_h8_b0_anchor_execution_readiness_20261016.md)。H8/1Å/STO-3G/DF28/T=.8。固定4構成8軸・4 worker/2 waveのadapter/launcher、SOURCE/input/profile・資源監視/回収を実装。SOURCE 572a337d…、14 own/265 provider/34,273 runtime/8 inputのbytes照合PASS。17新unittest＋旧計画10、2 qubit fixture8項目PASS（人工4 compile・実H8 0）。6物理core/176.25 GiBとfresh gate必須、無効grant・CPU[]。旧B1 STOP/V2 NO_GO・旧673保護/114worktreeを維持。科学起動/fit/残差/再会計0、公開後mandatory STOP。以下は各時点の履歴。
