@@ -1,5 +1,7 @@
 # Track A V2：既存理論・compiled費用の残差解析に向けた再開準備
 
+> 後続：[実装・43人工検証・SOURCE/input seal](track_a_v2_residual_implementation_20261016.md)。現在の262 entriesは全件来歴未解決、数値実行未承認。以下は実装前の計画履歴。
+
 **既存832理論行と保存compiled接続10,480行を再利用する。旧V2のprimitive生成・A/B基本表作成は重複するため再実行しない。今回は読取専用の対応整理と実行計画までで、残差・回帰係数・新しい費用比は計算していない。**
 
 準備branchは`track-a-v2-residual-analysis-readiness-20261016`、起点はV1成果整理`63e5773b6b408506f4c39783b80f3025f14481b9`。既存V1、V2準備`dd695e6584f15b88341d2446ed010c7bdfef1666`、理論結果`7e41670565d9284da9aded94063be591fdcaa3dd`のbranchを変更しない。新しいGPT/Claude詳細レビュー・サブエージェントは使用していない。

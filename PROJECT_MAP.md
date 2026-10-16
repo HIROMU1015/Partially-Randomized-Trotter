@@ -1,3 +1,7 @@
+## 2026-10-16 V2：残差runner人工検証完了・実データ来歴は未解決
+
+[実装・43人工検証・契約・不足証拠](docs/research/track_a_v2_residual_implementation_20261016.md)。保存RZ runner・metadata準備・未承認契約を実装し、人工36＋observer/cleanup7＝43件PASS。SOURCE5703dbda…、source9/runtime34,273/input5をseal。現台帳の262 scope entriesは全件UNRESOLVED_PROVENANCEでfit対象0、保存receiptへの独立結合が必要。実fit/残差/compile/primitive/law/DP・有効grant0、CPU[]/command=null。V1・旧V2・H5/H7と旧保護665件を保全し、公開後mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-16 V2：保存結果を使う残差解析の再開準備・未実行
 
 [構成対応・未解決事項・最小実行計画](docs/research/track_a_v2_residual_analysis_readiness_20261016.md)。既存7e416705…のA/B832理論行・保存接続10,480行を再利用。uniform A/BとnativeのA-prefix/B-tailを区別し、精度反復のdedup・来歴層別・RZ単価の共通較正/heldout残差・各層.05即STOPを未承認案として固定。新数値再解析/compile/primitive/law/DP/新grant0、V1/H5/H7・既存V2不変。数値runner/人工検証/最終seal/別実行承認が必要。準備資料だけを公開しmandatory STOP。以下は各時点の履歴。

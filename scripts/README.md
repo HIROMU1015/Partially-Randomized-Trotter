@@ -1,3 +1,7 @@
+## 2026-10-16 V2保存RZ残差：人工検証完了・数値実行未承認
+
+[残差runner](track_a_v2_residual_runner.py)、[metadata準備](prepare_track_a_v2_residual.py)。[報告](../docs/research/track_a_v2_residual_implementation_20261016.md)。262 scope entriesは全件来歴未解決でfit対象0。実データfit/残差/compile0、未承認draft・公開後mandatory STOP。primary agent自身のlocal checksであり独立レビューではない。以下は各時点の履歴。
+
 ## 2026-10-16 V1：p7実測費用の限定比較完了・STOP
 
 [結果・算術・保全監査](../docs/research/track_a_v1_p7_measured_reaccount_results_20261016.md)。H6/1Å/STO-3G/DF19/T=.8/B0+I p7 q1 S2/ε=.05/P=0/RZ。保存shot×実測2軸で決定論356,097,424 RZ、保存確認PR403,423,200 RZ、PR削減率−13.29012029%（倍率1/10）。通常bias・経験的allowanceの保存点比較で逆転を維持。全候補再選択・母平均/厳密bias保証は未実施/未認定。旧grant等663/compile raw22不変、新compile/signal/sampling/shot/fit/V2なし、mandatory STOP。以下は各時点の履歴。
