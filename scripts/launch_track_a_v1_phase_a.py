@@ -74,13 +74,37 @@ def enforce_processes(rows,limits,cpu_seconds):
     if cpu_seconds>limits['aggregate_CPU_seconds']:raise RuntimeError('AGGREGATE_CPU_CEILING')
 
 
+def observer_memory(*,status=None,lifetime_peak_kib=None):
+    """Current executable's peak; ru_maxrss can include an earlier executable.
+
+    Linux resets /proc VmHWM at exec, but preserves getrusage's lifetime peak.
+    Keep both values so a STOP never loses the measurement that triggered it.
+    """
+    if status is None:status=Path('/proc/self/status').read_text()
+    fields=dict(line.split(':',1) for line in status.splitlines() if ':' in line)
+    if lifetime_peak_kib is None:lifetime_peak_kib=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    row={name:int(fields[key].split()[0])*1024 for name,key in
+         (('current_RSS_bytes','VmRSS'),('current_exec_peak_RSS_bytes','VmHWM'),('AS_bytes','VmSize'))}
+    row['lifetime_peak_RSS_bytes']=lifetime_peak_kib*1024
+    if min(row.values())<0 or row['current_RSS_bytes']>row['current_exec_peak_RSS_bytes']:
+        raise RuntimeError('INVALID_OBSERVER_MEMORY_OBSERVATION')
+    return row
+
+
+def enforce_observer(row,limits):
+    if row['current_exec_peak_RSS_bytes']>limits.get('observer_RSS_bytes',limits['RSS_bytes']):
+        raise RuntimeError('OBSERVER_RSS_CEILING')
+    if row['AS_bytes']>limits.get('observer_AS_bytes',limits['AS_bytes']):
+        raise RuntimeError('OBSERVER_AS_CEILING')
+
+
 def supervise(command,*,env,control,output,limits,allowed_cpus,probe=snapshot):
     """Internal owned-child supervisor; CLI validates the grant before calling."""
     control=Path(control);output=Path(output);control.mkdir(mode=0o700)
     libc=ctypes.CDLL(None,use_errno=True)
     if libc.prctl(36,1,0,0,0)!=0:raise OSError(ctypes.get_errno(),'PR_SET_CHILD_SUBREAPER')
     start=time.monotonic();last=start;baseline=probe();handles={};driver=None;stop=None
-    peak=0;gap_max=0;exitcode=None;cleanup_errors=[]
+    peak=0;gap_max=0;exitcode=None;cleanup_errors=[];last_observer_memory=None
     previous={s:signal.getsignal(s) for s in (signal.SIGTERM,signal.SIGINT)}
     def stop_signal(*args):raise RuntimeError('LAUNCHER_STOP_SIGNAL')
     for sig in previous:signal.signal(sig,stop_signal)
@@ -142,8 +166,9 @@ def supervise(command,*,env,control,output,limits,allowed_cpus,probe=snapshot):
                     self_usage=resource.getrusage(resource.RUSAGE_SELF)
                     total_cpu=sum(r.get('CPU_seconds',0)+r.get('reaped_child_CPU_seconds',0) for r in rows)
                     enforce_processes(rows,limits,total_cpu+self_usage.ru_utime+self_usage.ru_stime)
-                    observer_rss=self_usage.ru_maxrss*1024
-                    if observer_rss>limits.get('observer_RSS_bytes',limits['RSS_bytes']):raise RuntimeError('OBSERVER_RSS_CEILING')
+                    last_observer_memory=observer_memory(lifetime_peak_kib=self_usage.ru_maxrss)
+                    enforce_observer(last_observer_memory,limits)
+                    observer_rss=last_observer_memory['current_exec_peak_RSS_bytes']
                     if sum(r.get('RSS_bytes',0) for r in rows)+observer_rss>limits['aggregate_RSS_bytes']:
                         raise RuntimeError('AGGREGATE_RSS_CEILING')
                     current=probe();reason=resource_reason(current,baseline,16*2**30)
@@ -156,7 +181,7 @@ def supervise(command,*,env,control,output,limits,allowed_cpus,probe=snapshot):
                         raise RuntimeError('LOG_CEILING')
                     rss=sum(r.get('RSS_bytes',0) for r in rows)+observer_rss;peak=max(peak,rss)
                     log.write(json.dumps(dict(elapsed=now-start,interval=gap,aggregate_RSS_bytes=rss,
-                        aggregate_CPU_seconds=total_cpu,processes=len(rows)))+'\n');log.flush()
+                        aggregate_CPU_seconds=total_cpu,processes=len(rows),observer_memory=last_observer_memory))+'\n');log.flush()
                     time.sleep(1)
             if exitcode!=0:raise RuntimeError('DRIVER_NATIVE_EXIT:'+str(exitcode))
             terminal=runner.read_json(output/'terminal.json')
@@ -203,6 +228,7 @@ def supervise(command,*,env,control,output,limits,allowed_cpus,probe=snapshot):
                 native_exit_code=exitcode,first_stop=stop,cleanup_errors=cleanup_errors,
                 all_reaped=not alive,wall_seconds=time.monotonic()-start,
                 peak_aggregate_RSS_bytes=peak,max_monitor_gap_seconds=gap_max,
+                last_observer_memory=last_observer_memory,
                 automatic_retry=False,next_stage_authorized=False))
         finally:
             for sig,handler in previous.items():signal.signal(sig,handler)

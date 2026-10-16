@@ -22,6 +22,40 @@ import launch_track_a_v1_phase_a as observer
 
 
 class Contracts(unittest.TestCase):
+    def test_observer_distinguishes_exec_peak_from_lifetime_counter(self):
+        row=observer.observer_memory(status='VmRSS: 10 kB\nVmHWM: 20 kB\nVmSize: 30 kB\n',
+                                     lifetime_peak_kib=1000000)
+        limits=dict(observer_RSS_bytes=20*1024,observer_AS_bytes=30*1024,RSS_bytes=20*1024,AS_bytes=30*1024)
+        observer.enforce_observer(row,limits)
+        self.assertEqual(row['current_exec_peak_RSS_bytes'],20*1024)
+        self.assertEqual(row['lifetime_peak_RSS_bytes'],1000000*1024)
+
+    def test_observer_still_rejects_peak_and_address_space_over_limits(self):
+        row=observer.observer_memory(status='VmRSS: 10 kB\nVmHWM: 21 kB\nVmSize: 30 kB\n',lifetime_peak_kib=21)
+        limits=dict(observer_RSS_bytes=20*1024,observer_AS_bytes=30*1024,RSS_bytes=20*1024,AS_bytes=30*1024)
+        with self.assertRaisesRegex(RuntimeError,'OBSERVER_RSS'):observer.enforce_observer(row,limits)
+        row['current_exec_peak_RSS_bytes']=20*1024;row['AS_bytes']+=1
+        with self.assertRaisesRegex(RuntimeError,'OBSERVER_AS'):observer.enforce_observer(row,limits)
+
+    def test_observer_ceiling_stop_retains_actual_measurements(self):
+        # An artificial child is stopped by a deliberately tiny observer
+        # budget. The native child is always reaped and the exact values stay.
+        with tempfile.TemporaryDirectory() as td:
+            p=Path(td);out=p/'output';out.mkdir()
+            limits=dict(max_workers=1,RSS_bytes=2**30,AS_bytes=2**30,
+                observer_RSS_bytes=1,aggregate_RSS_bytes=2**30,aggregate_CPU_seconds=10,
+                wall_seconds=5,output_bytes=2**20)
+            with self.assertRaisesRegex(RuntimeError,'OBSERVER_RSS'):
+                observer.supervise([sys.executable,'-B','-c','import time;time.sleep(10)'],
+                    env=dict(os.environ),control=p/'control',output=out,limits=limits,
+                    allowed_cpus=[min(os.sched_getaffinity(0))],
+                    probe=lambda:dict(effective_available_bytes=2**50,events={},pressure={}))
+            terminal=json.loads((p/'control/launcher_terminal.json').read_text())
+            self.assertTrue(terminal['all_reaped'])
+            self.assertGreater(terminal['last_observer_memory']['current_exec_peak_RSS_bytes'],1)
+            self.assertGreaterEqual(terminal['last_observer_memory']['current_exec_peak_RSS_bytes'],
+                                    terminal['last_observer_memory']['current_RSS_bytes'])
+
     def test_factored_outer_helper_uses_port_sector_and_original_scalar(self):
         # One-dimensional commuting example, standard library only. This
         # exercises the factored helper's scope, phase and both action paths.

@@ -74,7 +74,7 @@ launcherは明示grantなしでは拒否する。private configは `approved=fal
 
 ## 限定検証・STOP
 
-旧30＋新13＝44人工tests PASS。人工2 workerの重なり・affinity・native wait/reap、失敗時の兄弟回収、
+旧30＋新14＝44人工tests PASS。人工2 workerの重なり・affinity・native wait/reap、失敗時の兄弟回収、
 deadline、driver異常終了時の孤立worker回収、task予約、grant/role/fresh gate、scalar/両oracle診断を検査した。
 実H6の科学計算・速度実測・新grantは0。主担当の検査であり独立reviewではない。
 旧manifest全体checkerの歴史的拡張キー非対応は残るため、全体CI成功とは称さない。
