@@ -1,3 +1,5 @@
+> **M1-S Gate 0 SOURCE準備（2026-10-16）：[実験契約最終候補](../../tracks/algorithm_codesign/m1s_gate0_headroom_execution_contract_candidate_20261016.md)／[専用module](../../../src/trottertracks/algorithm_codesign/m1s_gate0)／[runner](../../../scripts/tracks/algorithm_codesign/run_m1s_gate0_headroom.py)／[非科学的checker](../../../scripts/tracks/algorithm_codesign/check_m1s_gate0_source_static.py)／[監査資料](../../../artifacts/track_b_m1s_gate0_source_preparation/2026-10-16/v1)。** 保存H4 1.00 Å/STO-3G/8 spin orbitals/DF rank12・G3/6/9のadapterとW/v/ρ SOURCEを実装。30静的確認PASS、数値correctness未検証。IMPLEMENTED_NOT_SCIENTIFICALLY_EXECUTED、契約未採択・実行未承認、新科学/Pauli表/authority/marker0、mandatory STOP。以下は履歴。
+
 - 2026-10-16: [M1-S Checkpoint 2後の草稿・source/文献事前調査](2026-10-16_track_b_M1S_post_checkpoint2_preflight.md)。GPT原本保存、Jensen補足、H4入力所在とPauli仕様、Gate 0未採択草案。新科学/新証明0、mandatory STOP。
 
 - 2026-10-16: [Track B M1-S G0-T1 T1b解析的移送](2026-10-16_track_b_M1S_G0T1_T1b_theory.md)。全H一様C-sec上界・条件付きrho・非可換共鳴の解析反例を著者提出。T1b独立科学受理未実施、数値0、Checkpoint 2待ち、mandatory STOP。

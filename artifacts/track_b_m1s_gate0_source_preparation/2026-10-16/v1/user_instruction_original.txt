@@ -1,0 +1,557 @@
+# Codexへの指示：Track B／M1-S Gate 0 実行SOURCE準備・実験契約最終化案
+
+## 0. 今回の承認範囲
+
+M1-SのCheckpoint 2 GPT独立科学レビュー、およびその後のGate 0技術的事前調査に基づき、**Gate 0の実行SOURCE準備と実験契約最終化案の作成**を承認します。
+
+今回Codexに担当させるのは、既存の採択済み科学方針に基づく技術実装・検証仕様の具体化です。
+
+以下を承認します。
+
+1. 既存の凍結H4入力・SOURCE・監査資料の再確認
+2. 凍結DF Hamiltonianから非冗長Pauli-tailを構築するadapterの実装
+3. W、v、ρを評価するrunnerの実装
+4. 入力・変換・状態・数値精度の検証処理の実装
+5. 実験契約の最終採択に必要な未決事項の具体化
+6. 静的検査、非科学的な文書・スキーマ検査
+7. 実行準備状況と未承認事項の整理
+8. GitHubへの新規SOURCE・文書・監査資料のcommit・push
+
+**ただし、今回の承認はSOURCEの作成と技術準備までです。**
+
+以下は明示的に承認しません。
+
+- Gate 0の科学計算実行
+- 凍結DFからの実際のPauli係数表の数値生成
+- Hamiltonianの新規数値再構成・評価
+- 保存stateの新規数値解析
+- 固有値・固有状態の計算
+- W、v、ρ、σ、gap、spectral couplingの数値評価
+- 新規の科学的検証実験
+- Sampling、simulation、trajectory
+- 回路生成、compile、synthesis
+- 資源forecast・最適化
+- T1cの新規理論研究
+- Q4・Q5・一般DF eventへの研究拡張
+- Gate 0の実験契約の最終科学的採択
+- 未承認の閾値を用いたGO／STOP
+- 研究全体の正式な継続・終了判断
+
+**実装済みであっても、科学計算の実行はユーザーの別途明示承認があるまで禁止します。**
+
+実行を伴うテストについても、実データ・模擬データの区別だけで承認済みと判断せず、科学的な数値検証に該当する場合は実施しないでください。
+
+---
+
+## 1. 必須資料
+
+Repository：
+
+`HIROMU1015/Partially-Randomized-Trotter`
+
+### 1.1 Gate 0事前調査・事前登録草案
+
+固定commit：
+
+`05513eea807fbfb841c6012d2fe2133d70b5f1f9`
+
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/05513eea807fbfb841c6012d2fe2133d70b5f1f9/docs/tracks/algorithm_codesign/m1s_gate0_headroom_preflight_and_prereg_draft_20261016.md
+
+これを今回の技術実装の基点とします。
+
+同commitの以下も確認してください。
+
+- 理論addendum草稿
+- Technical note草稿
+- 追加先行研究照合
+- Source availability
+- Unresolved items
+- Evidence index
+- Gate 0 candidate specification
+
+既存の事前調査を最初から繰り返す必要はありません。
+
+### 1.2 Checkpoint 2 GPT独立科学レビュー
+
+固定commit：
+
+`62554ee127a2bec1206367cf1754df2ff49fa000`
+
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/62554ee127a2bec1206367cf1754df2ff49fa000/docs/research/track_b_m1s_g0t1_checkpoint2_gpt_independent_scientific_review_20261016.md
+
+今回の科学的判断の基準とします。
+
+### 1.3 T1b証明本文
+
+固定commit：
+
+`54336028edd7ef759f8a0c73bd0a96ade13f47f9`
+
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/54336028edd7ef759f8a0c73bd0a96ade13f47f9/docs/tracks/algorithm_codesign/m1s_g0t1_t1b_partial_randomized_transfer_theory_20261016.md
+
+### 1.4 S0正式研究契約
+
+固定commit：
+
+`373b8e4b9831f4d00bdc00ffc741ac61e03f0841`
+
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/373b8e4b9831f4d00bdc00ffc741ac61e03f0841/docs/tracks/algorithm_codesign/m1s_g0t1_s0_formal_theory_contract_20261016.md
+
+### 1.5 共通研究指示
+
+最新版：
+
+`research_project_instructions_gpt_codex_review_approval_2026-10-12.md`
+
+特に、既存SOURCE・結果の保全、科学計算の別途承認、mandatory STOPを遵守してください。
+
+---
+
+# 2. 今回の技術実装に使用する暫定固定条件
+
+以下を**実行SOURCEの設計・実装のための暫定条件**とします。
+
+正式な科学的実験契約は、実装と精度条件の整理後に別途採択します。
+
+| 項目 | 技術実装上の暫定条件 |
+|---|---|
+| 対象系 | H4 linear chain |
+| 原子間距離 | 1.00 Å |
+| Basis | STO-3G |
+| Spin orbitals | 8 |
+| DF rank | 12 |
+| 入力 | 凍結development NPZ |
+| 分割 | G3／G6／G9 |
+| Hamiltonian | 保存済みDF Hamiltonian |
+| Pauli変換 | Jordan–Wigner |
+| Random tail | 非冗長Pauli-string law |
+| Identity | HDへの移動案を実装対象とする |
+| State | 保存済みfull長stateをoracle参照候補とする |
+| 主評価量 | W、v、ρ |
+| 比較 | Ordinary／independent ± |
+| Gate 0目的 | Small-step headroomの診断 |
+
+**これらの暫定条件を、採択済みの実験結果前登録や科学実行許可として扱ってはいけません。**
+
+H4 1.30 Åは後続の独立確認候補として保持し、初回Gate 0の評価集合へ自動追加しません。
+
+---
+
+# 3. 凍結入力と分割の固定
+
+## 3.1 H4 development入力
+
+固定NPZ：
+
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/8b7666d0270f7fac01e430e195bef7b58ac0116c/artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz
+
+既存調査で記録されたSHA256：
+
+`3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a`
+
+保存Hamiltonian hash：
+
+`de7a549238e3a21f15a84018bef28440c345b31030282c01cf874f3d1d212424`
+
+この正本を維持してください。
+
+新しいSCF、DF再構成、geometry変更、Hamiltonian生成を行わないでください。
+
+## 3.2 分割
+
+既存のDF block順序を維持し、次の3分割を技術実装上の候補として固定してください。
+
+| ID | HD側のDF block | HR側のDF block |
+|---|---|---|
+| G3 | 0–2 | 3–11 |
+| G6 | 0–5 | 6–11 |
+| G9 | 0–8 | 9–11 |
+
+Constantおよびone-body部分は、既存sourceの分割規約を基準にしてください。
+
+分割候補の追加、rank変更、DF blockの重み順への並べ替え、結果に基づく候補変更は禁止します。
+
+分割について既存sourceと矛盾が見つかった場合は、推測で修正せず報告してください。
+
+---
+
+# 4. 作業A：凍結DFからPauli-tailへのadapter実装
+
+## 4.1 目的
+
+保存済みDF Hamiltonianを、新しい量子化学計算なしに読み込み、指定されたD/R分割からPauli-tailを構成できるSOURCEを準備してください。
+
+ただし、今回はSOURCEの実装までであり、実際の科学入力に対して変換を実行してはいけません。
+
+## 4.2 Hamiltonian表現
+
+既存の凍結DF Hamiltonianは、
+
+\[
+H=c+\sum_{pq}h_{pq}a_p^\dagger a_q
++\sum_l\lambda_l A_l^2
+\]
+
+\[
+A_l=\sum_{pq}g^{(l)}_{pq}a_p^\dagger a_q
+\]
+
+という構造です。
+
+Pauli変換adapterでは、
+
+- DF factorの二乗
+- Fermionic contraction
+- One-body項
+- Constant
+- 保存spin-orbital順
+- Jordan–Wigner規約
+- フェルミオン演算子のordering
+
+を正しく扱う必要があります。
+
+既存のmolecular generation関数を流用して、新しいSCFや積分計算を実行してはいけません。
+
+## 4.3 Pauli項の正規化
+
+Pauli変換後に、同じPauli文字列の係数を符号付きで集約する仕様としてください。
+
+Canonicalな非冗長Pauli表を定義し、同じPauli文字列が複数の乱択eventとして残らないようにしてください。
+
+Identity項はHD側へ移す仕様案を実装します。
+
+ただし、Identity移動は元のDF分割のscalar配置に影響するため、移動前後のHamiltonianとcontrolled relative phaseを追跡できるようにしてください。
+
+Identity policyは正式な科学契約で採択されるまで、明示的な設定として保持してください。
+
+Pauli-tailについて、
+
+\[
+H_R=\sum_Pc_PP
+\]
+
+とし、
+
+\[
+\lambda_R=\sum_P|c_P|
+\]
+
+\[
+p_P=\frac{|c_P|}{\lambda_R}
+\]
+
+\[
+P_{\mathrm{signed}}=\operatorname{sgn}(c_P)P
+\]
+
+を実装規約としてください。
+
+同じ文字列の正負係数を、集約前に別eventとしてsamplingしてはいけません。
+
+\(\lambda_R=0\) は空tailとして扱い、ρを定義しないでください。
+
+## 4.4 実装上の重要事項
+
+- Complex coefficientのimaginary residual
+- Pauli coefficientの近似cutoff
+- Zero coefficientの処理
+- Identity phase
+- Hermiticity
+- Basis ordering
+- Endianness
+- Reconstruction error
+
+を明示的に管理できる設計にしてください。
+
+**数値誤差を隠すための自動cutoffや、入力ごとの事後的な許容値変更は禁止します。**
+
+今回、これらの数値閾値をCodexが正式採択する必要はありません。
+
+科学的な数値許容値は未決事項として残してください。
+
+---
+
+# 5. 作業B：Gate 0評価runnerの実装
+
+## 5.1 目的
+
+将来、別途承認された科学計算で、
+
+\[
+W_k=1-\langle k|h^2|k\rangle
+\]
+
+\[
+v_k=
+\operatorname{Var}_P
+\langle k|P_{\mathrm{signed}}|k\rangle
+\]
+
+\[
+\rho_\infty^{(H)}
+=
+\frac{W_k+v_k}{2W_k}
+\]
+
+を評価できるrunnerのSOURCEを作成してください。
+
+ここで、
+
+\[
+h=H_R/\lambda_R.
+\]
+
+**今回は数値評価を実行してはいけません。**
+
+## 5.2 Runner仕様
+
+最低限、以下を実装してください。
+
+1. 固定入力とhashの照合
+2. 分割IDの照合
+3. Pauli lawの規約確認
+4. State basis-orderの確認
+5. Hamiltonian再構成検証
+6. State normalization／residual検証
+7. Wの評価
+8. vの評価
+9. ρの評価
+10. λ=0・W=0・小分母の分類
+11. 誤差・精度の台帳
+12. 科学的適用域のlabel
+13. 結果の保存形式
+14. 必須監査情報の保存
+
+ただし、7〜9などの数値評価は将来の実施承認後に限ります。
+
+## 5.3 実行防止
+
+科学計算を含む処理は、明示的な実行承認・固定contract・実行設定が確認できない限り起動しないようにしてください。
+
+- Defaultはdry-runではなく、科学処理を一切実行しない設定とする。
+- `--help`、スキーマ確認、設定ファイルの静的検査などを分離する。
+- 実験入力を渡しただけで数値評価を開始しない。
+- 未承認の科学的検証を自動テストに組み込まない。
+- Import時に科学処理が走らないようにする。
+- 新しいrunner markerを発行しない。
+
+今回許可される動作確認は、静的検査やCLI仕様・ファイル形式の確認までです。
+
+科学入力・模擬入力を使った数値評価や科学的なcorrectness testは、実行しないでください。
+
+実装したSOURCEは、
+
+`IMPLEMENTED_NOT_SCIENTIFICALLY_EXECUTED`
+
+として分類してください。
+
+---
+
+# 6. 作業C：数値精度・検証契約の具体化
+
+## 6.1 目的
+
+Gate 0の科学計算を開始する前に、どの数値検証が必要で、どの許容値を採択すべきかを整理してください。
+
+## 6.2 必要な検証
+
+最低限、以下を独立したgateとして扱ってください。
+
+| 検証 | 確認対象 |
+|---|---|
+| Input identity | 固定NPZとSHA256 |
+| Hamiltonian reconstruction | 凍結DF表現と変換後表現 |
+| Hermiticity | Pauli係数・演算子 |
+| Identity／phase | Constantとrelative phase |
+| Probability normalization | pの非負性・総和 |
+| State normalization | 保存state |
+| State residual | 全Hに対する固有状態残差 |
+| Basis ordering | JWとoccupation basis |
+| W、vの内部整合 | 数学的な成立範囲 |
+| ρの定義域 | λ、Wと小分母 |
+| Domain applicability | 対象stateとspectral条件 |
+
+計算量・必要メモリ・CPU/GPUの候補も技術的に検討してください。
+
+ただし、新しい科学計算やbenchmarkは実行しません。
+
+## 6.3 数値許容値
+
+以下は別々の許容値として設計してください。
+
+- \(\varepsilon_H\)：Hamiltonian再構成誤差
+- \(\varepsilon_{\mathrm{state}}\)：State normalization／residual
+- \(\varepsilon_{\mathrm{prob}}\)：確率規格化誤差
+- \(\varepsilon_{\mathrm{imag}}\)：虚部残差
+- \(\varepsilon_W\)：Wの誤差
+- \(\varepsilon_v\)：vの誤差
+- \(\varepsilon_\rho\)：ρの誤差または不確定区間
+
+必要なら既存コードで使用されている許容値を調査し、流用可能性を説明してください。
+
+**過去の別実験の閾値を、根拠なく今回の科学的受理条件として採択してはいけません。**
+
+誤差伝播、浮動小数点精度、対象次元、実装可能性を踏まえて候補を提示してください。
+
+根拠のある値を提案できない場合は、未決事項として残してください。
+
+---
+
+# 7. 作業D：実験判断基準の整理
+
+Gate 0の目的は、small-stepにおけるPauli-tailの減衰改善余地を調べることです。
+
+**ρの値だけで、RPEの総資源改善可能性をGO／STOP判定しないでください。**
+
+以下を区別してください。
+
+1. Input／sourceの技術的なPASS／STOP
+2. Pauli modelの再構成適格性
+3. 対象stateの精度・適用域
+4. W、v、ρの定義可能性
+5. Headroom診断としての結果
+6. Finite-step dressingによる留保
+7. Native単価・shot数の未確立
+8. 研究継続・縮小の科学的判断
+
+今回、\(\rho=0.7\)、\(\rho=0.85\)、\(|\alpha|\sigma=0.1\) などを正式閾値として採用してはいけません。
+
+もし数値的な判断基準が必要なら、
+
+- どの科学的判断に使うか
+- その値を採用する理論的根拠
+- どの情報が追加で必要か
+- その値を変えた場合に結論がどう変わるか
+
+を整理してください。
+
+数値的なSTOP閾値を十分に正当化できない場合、初回Gate 0は全3分割の結果を提示し、研究判断をGPT／ユーザーへ戻す設計としてください。
+
+---
+
+# 8. 作業E：Gate 0最終契約案
+
+今回の技術実装結果を反映し、事前登録草案を更新した**新しい実験契約候補**を作成してください。
+
+既存の草稿は上書きしません。
+
+作成ファイル候補：
+
+`docs/tracks/algorithm_codesign/m1s_gate0_headroom_execution_contract_candidate_20261016.md`
+
+以下を含めてください。
+
+1. 実験の科学的目的
+2. 正式採択待ちの入力条件
+3. 固定SOURCEとhash
+4. G3／G6／G9の定義
+5. Pauli-tail変換規約
+6. Identity処理
+7. Stateの定義
+8. 必要な数値精度
+9. 主評価指標
+10. 補助診断と優先順位
+11. Baselineの比較規約
+12. 適用域と限界
+13. 技術PASS／STOP
+14. 科学的判断に必要な結果
+15. 未採択の科学的閾値
+16. 実行SOURCEの状態
+17. CPU/GPU・メモリの技術的準備
+18. 科学計算の実行承認状態
+19. 結果保存・再現性・監査
+20. Mandatory STOP
+
+**`CANDIDATE / NOT ADOPTED / SCIENTIFIC EXECUTION NOT AUTHORIZED`** と明示してください。
+
+実装が完了しても、この契約をCodexが正式採択してはいけません。
+
+---
+
+# 9. GitHub運用とSOURCE保護
+
+専用branch／worktreeを使用してください。
+
+Branch名候補：
+
+`track-b-m1s-gate0-source-preparation-20261016`
+
+次の規則を守ってください。
+
+- 親worktreeのHEAD・index・dirty fileを保護する。
+- 既存S0／T1a／T1bの原本を変更しない。
+- Claude／GPTレビュー原本を変更しない。
+- 過去のSOURCE・結果・classification・authorization・markerを変更しない。
+- 新しいコードを既存の科学runnerへ無断で接続しない。
+- 将来の科学実行をデフォルトで無効とする。
+- 既存の入力・実験結果を上書きしない。
+- 新規科学数値計算・simulationを行わない。
+- 新しい論文claimを科学的に認定しない。
+- 既存のSTOP状態を解除しない。
+
+文書・SOURCEの静的検査後、commit・pushしてください。
+
+公開後はremote SHAと新規ファイルのbytes・SHA256を照合してください。
+
+既存の保護対象について、作業前後の同一性を確認してください。
+
+---
+
+# 10. 完了条件と報告
+
+以下を満たせば今回の作業を完了としてください。
+
+- 凍結入力を変更していない。
+- G3／G6／G9の技術実装対象を明示した。
+- Pauli変換adapterのSOURCEを作成した。
+- 非冗長Pauli lawを定義した。
+- Identity・phaseの処理規約を整理した。
+- W、v、ρのrunner SOURCEを作成した。
+- 実験の実行防止機構を設けた。
+- 必要な検証gateを実装・文書化した。
+- 数値許容値の候補と未決事項を整理した。
+- Gate 0の実験契約最終候補を作成した。
+- 新しい科学量を計算していない。
+- 新しいPauli係数表を数値生成していない。
+- 回路・compile・simulationを実行していない。
+- 実験条件を正式採択していない。
+- 旧成果・親worktreeを保全した。
+- Commit・push・remote SHA照合を完了した。
+
+完了報告には、
+
+- Status
+- 新規SOURCE一覧
+- 静的検査結果
+- 実行可能な処理と未実行処理
+- 固定入力と分割
+- Pauli変換仕様
+- 評価runner仕様
+- 数値精度候補
+- 未決の科学的判断
+- Gate 0実験契約候補のリンク
+- Branch・commit・remote SHA
+- 公開資料のbytes・SHA256
+- 親worktree・旧成果の保全
+- 新規科学計算0件
+- Mandatory STOP
+
+を含めてください。
+
+**完了後はmandatory STOPしてください。**
+
+次の段階は、ユーザーが実行SOURCEと実験契約候補を確認し、Gate 0の科学的条件を正式採択することです。
+
+その後、**Gate 0の科学計算実施について、さらに別の明示的な承認が必要**です。
+
+---
+
+## 最終指示
+
+今回の目的は、研究方針を再検討することではなく、**採択済みの理論的判断に基づき、Gate 0を安全かつ再現可能に実施できるSOURCEと契約候補を準備すること**です。
+
+可能な限りCodex側で技術的な問題を解決してください。
+
+ただし、数学的な新規性の採択、実験条件の正式採択、新規科学計算、研究継続・終了の判断はユーザー／GPTへ残してください。
+
+**今回の作業範囲はSOURCE準備・静的検査・契約候補作成までとし、新規科学計算0件、mandatory STOP維持を絶対条件としてください。**

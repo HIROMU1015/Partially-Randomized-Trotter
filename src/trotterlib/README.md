@@ -1,3 +1,5 @@
+> **M1-S Gate 0 SOURCE準備（2026-10-16）：[実験契約最終候補](../../docs/tracks/algorithm_codesign/m1s_gate0_headroom_execution_contract_candidate_20261016.md)／[専用module](../trottertracks/algorithm_codesign/m1s_gate0)／[runner](../../scripts/tracks/algorithm_codesign/run_m1s_gate0_headroom.py)／[非科学的checker](../../scripts/tracks/algorithm_codesign/check_m1s_gate0_source_static.py)／[監査資料](../../artifacts/track_b_m1s_gate0_source_preparation/2026-10-16/v1)。** 保存H4 1.00 Å/STO-3G/8 spin orbitals/DF rank12・G3/6/9のadapterとW/v/ρ SOURCEを実装。30静的確認PASS、数値correctness未検証。IMPLEMENTED_NOT_SCIENTIFICALLY_EXECUTED、契約未採択・実行未承認、新科学/Pauli表/authority/marker0、mandatory STOP。以下は履歴。
+
 > Track Bの[KKT訂正・S4補完](../../docs/tracks/algorithm_codesign/parent_allocation_s4_kkt_repair_and_supplement_preparation_20261015.md)は別namespace `parent_experiment/supplement.py`。共通libraryは不変、旧S3と全result保持、science承認待ち。
 
 > Track Bの[Parent allocation v3結果/監査](../../docs/tracks/algorithm_codesign/parent_allocation_v3_results_and_gpt_handoff_20261015.md)は別namespace。共通libraryは保持、科学的採否は未判断、mandatory STOP。

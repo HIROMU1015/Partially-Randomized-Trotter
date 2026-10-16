@@ -1,3 +1,5 @@
+> **M1-S Gate 0 SOURCE準備（2026-10-16）：[実験契約最終候補](../docs/tracks/algorithm_codesign/m1s_gate0_headroom_execution_contract_candidate_20261016.md)／[専用module](../src/trottertracks/algorithm_codesign/m1s_gate0)／[runner](tracks/algorithm_codesign/run_m1s_gate0_headroom.py)／[非科学的checker](tracks/algorithm_codesign/check_m1s_gate0_source_static.py)／[監査資料](../artifacts/track_b_m1s_gate0_source_preparation/2026-10-16/v1)。** 保存H4 1.00 Å/STO-3G/8 spin orbitals/DF rank12・G3/6/9のadapterとW/v/ρ SOURCEを実装。30静的確認PASS、数値correctness未検証。IMPLEMENTED_NOT_SCIENTIFICALLY_EXECUTED、契約未採択・実行未承認、新科学/Pauli表/authority/marker0、mandatory STOP。以下は履歴。
+
 > Parent allocation入口はS4補完contract/manifestを検査し、訂正KKT/halfway最大4構成のみを対象とする。pending authorityで拒否、登録実行0。[補完準備](../docs/tracks/algorithm_codesign/parent_allocation_s4_kkt_repair_and_supplement_preparation_20261015.md)、[zero-compute preflight](tracks/algorithm_codesign/preflight_parent_allocation_experiment.py)。以下は履歴。
 
 > Parent allocation v3は一回実行完了・marker消費済み。[結果/保存監査](../docs/tracks/algorithm_codesign/parent_allocation_v3_results_and_gpt_handoff_20261015.md)。追加runner起動は未認可、mandatory STOP。以下は準備履歴。
