@@ -342,7 +342,8 @@ def main(argv=None):
             result = run_authorized(root, permit)
         print(json.dumps(result, indent=2, allow_nan=False))
         return 0
-    except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as exc:
+    except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError,
+            importlib.metadata.PackageNotFoundError) as exc:
         print(json.dumps({"status": "TECHNICAL_STOP", "reason": str(exc),
                           "automatic_scientific_GO_STOP": False}), file=sys.stderr)
         return 2
