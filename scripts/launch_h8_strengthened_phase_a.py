@@ -61,10 +61,20 @@ def process_record(pid):
     if fields[0]=='Z':return dict(identity=ident,zombie=True)
     values=dict(line.split(':',1) for line in (path/'status').read_text().splitlines() if ':' in line)
     ticks=os.sysconf('SC_CLK_TCK')
-    return dict(identity=ident,zombie=False,RSS_bytes=int(values['VmRSS'].split()[0])*1024,
+    return dict(identity=ident,zombie=False,executable=os.readlink(path/'exe'),
+        process_name=values.get('Name','').strip(),RSS_bytes=int(values['VmRSS'].split()[0])*1024,
         AS_bytes=int(values['VmSize'].split()[0])*1024,threads=int(values['Threads']),
         CPU_seconds=(int(fields[11])+int(fields[12]))/ticks,
         reaped_child_CPU_seconds=(int(fields[13])+int(fields[14]))/ticks)
+
+
+class ProcessThreadViolation(RuntimeError):
+    """Keep the observed offending process before cleanup removes /proc evidence."""
+    def __init__(self,row,role,rows):
+        super().__init__('PROCESS_THREADS')
+        self.receipt=dict(reason='PROCESS_THREADS',monotonic_seconds=time.monotonic(),
+            memory_limit_role=role,offending_process=dict(row),observed_processes=rows,
+            required_threads=1,scientific_or_administrative_exemption=False)
 
 
 def enforce_processes(rows,limits,cpu_seconds):
@@ -77,7 +87,7 @@ def enforce_processes(rows,limits,cpu_seconds):
         role='driver' if i==0 else 'worker'
         if r['RSS_bytes']>limits[role+'_RSS_bytes'] or r['AS_bytes']>limits[role+'_AS_bytes']:
             raise RuntimeError('PROCESS_MEMORY_CEILING:'+role)
-        if r['threads']!=1:raise RuntimeError('PROCESS_THREADS')
+        if r['threads']!=1:raise ProcessThreadViolation(r,role,rows)
     if cpu_seconds>limits['aggregate_CPU_seconds']:raise RuntimeError('AGGREGATE_CPU_CEILING')
 
 
@@ -111,7 +121,7 @@ def supervise(command,*,env,control,output,limits,allowed_cpus,probe=snapshot,re
     libc=ctypes.CDLL(None,use_errno=True)
     if libc.prctl(36,1,0,0,0)!=0:raise OSError(ctypes.get_errno(),'PR_SET_CHILD_SUBREAPER')
     start=time.monotonic();last=start;baseline=probe();handles={};driver=None;stop=None
-    peak=0;gap_max=0;exitcode=None;cleanup_errors=[];last_observer_memory=None
+    peak=0;gap_max=0;exitcode=None;cleanup_errors=[];last_observer_memory=None;thread_violation=None
     previous={s:signal.getsignal(s) for s in (signal.SIGTERM,signal.SIGINT)}
     def stop_signal(*args):raise RuntimeError('LAUNCHER_STOP_SIGNAL')
     for sig in previous:signal.signal(sig,stop_signal)
@@ -196,7 +206,13 @@ def supervise(command,*,env,control,output,limits,allowed_cpus,probe=snapshot,re
             if exitcode!=0:raise RuntimeError('DRIVER_NATIVE_EXIT:'+str(exitcode))
             terminal=runner.read(output/'terminal.json')
             if terminal.get('status')!='COMPLETE_MANDATORY_STOP':raise RuntimeError('MISSING_COMPLETE_TERMINAL')
-    except BaseException as exc:stop=type(exc).__name__+':'+str(exc)
+    except BaseException as exc:
+        # Keep the historical reason string while adding the missing evidence.
+        stop=('RuntimeError' if isinstance(exc,ProcessThreadViolation) else type(exc).__name__)+':'+str(exc)
+        if isinstance(exc,ProcessThreadViolation):
+            thread_violation=exc.receipt
+            try:owned.atomic_json(control/'process_thread_violation.json',thread_violation)
+            except BaseException as recording_error:cleanup_errors.append('THREAD_RECEIPT_WRITE:'+str(recording_error))
     finally:
         mask=signal.pthread_sigmask(signal.SIG_BLOCK,set(previous))
         try:
@@ -238,7 +254,7 @@ def supervise(command,*,env,control,output,limits,allowed_cpus,probe=snapshot,re
                 native_exit_code=exitcode,first_stop=stop,cleanup_errors=cleanup_errors,
                 all_reaped=not alive,wall_seconds=time.monotonic()-start,
                 peak_aggregate_RSS_bytes=peak,max_monitor_gap_seconds=gap_max,
-                last_observer_memory=last_observer_memory,
+                last_observer_memory=last_observer_memory,process_thread_violation=thread_violation,
                 automatic_retry=False,next_stage_authorized=False))
         finally:
             for sig,handler in previous.items():signal.signal(sig,handler)

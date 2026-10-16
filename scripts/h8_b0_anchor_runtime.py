@@ -5,11 +5,11 @@ import math
 import os
 from pathlib import Path
 import resource
-import subprocess
 import time
 
 import h8_b0_anchor_contract as c
 import h8_strengthened_runtime as io
+from h8_b0_saved_anchor_audit import git_bytes
 
 sha=io.sha
 read=io.read
@@ -79,7 +79,7 @@ def verify_files(config,*,runtime=True,git=True):
             p=Path(name)
             if p.is_absolute() or '..' in p.parts:raise ValueError('SOURCE_PATH')
             if sha(root/p)!=expected:raise ValueError('SOURCE_DISK_CHANGED:'+name)
-            if git and hashlib.sha256(subprocess.check_output(['git','show',commit+':'+name],cwd=root)).hexdigest()!=expected:
+            if git and hashlib.sha256(git_bytes(root,'show',commit+':'+name)).hexdigest()!=expected:
                 raise ValueError('SOURCE_GIT_CHANGED:'+name)
     for row in config['files']:
         p=Path(row['path'])
@@ -95,8 +95,8 @@ def protected(config):
         if Path(row['path']).stat().st_size!=row['bytes'] or sha(row['path'])!=row['sha256']:
             raise ValueError('PROTECTED_FILE_CHANGED')
     for row in config['protected_worktrees']:
-        head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=row['path'],text=True).strip()
-        status=subprocess.check_output(['git','status','--porcelain=v1','-z'],cwd=row['path'])
+        head=git_bytes(row['path'],'rev-parse','HEAD').decode().strip()
+        status=git_bytes(row['path'],'status','--porcelain=v1','-z')
         if head!=row['HEAD'] or hashlib.sha256(status).hexdigest()!=row['status_sha256']:
             raise ValueError('PROTECTED_WORKTREE_CHANGED')
 

@@ -29,7 +29,7 @@ def plan():
         worker_CPU_seconds=r['cumulative_CPU_seconds'],wall_seconds=r['phase_wall_seconds'],
         minimum_free_inodes=r['fresh_free_inodes'],log_bytes=r['logs_bytes'],
         output_files_max=r['output_files'])
-    return dict(schema='H8_B0_ANCHOR_EXECUTION_CONTRACT_V2',scope=SCOPE,
+    return dict(schema='H8_B0_ANCHOR_EXECUTION_CONTRACT_V3',scope=SCOPE,
         original_plan_sha256=PLAN_SHA,cases=p['cases'],axes=p['axes'],waves=p['waves'],
         call_caps=p['call_caps'],resources=limits,binding=p['binding'],
         control=p['control'],scalar_policy=p['scalar_policy'],
@@ -37,6 +37,10 @@ def plan():
         instruction_cap=r['native_instructions'],transpiled_cap=r['transpiled_instructions'],
         one_shot=True,retry=False,resume=False,mandatory_stop=True,next_stage_authorized=False,
         fit_authorized=False,holdout_in_fit=False,
+        administrative_git=dict(optional_locks=False,index_threads=1,preload_index=False,
+            fsmonitor=False,untracked_cache=False,process_thread_exemption=False),
+        thread_violation_receipt=dict(PID_identity=True,executable=True,thread_count=True,
+            recorded_before_cleanup=True,threshold=1),
         CPU_admission=dict(maximum_busy_fraction='1/20',window_seconds=1,
             count_SMT_siblings=True,subtract_own_activity=False,
             failed_attempt_reusable=False,automatic_reassignment=False,
@@ -52,5 +56,6 @@ SOURCES=(
     'scripts/h8_strengthened_export.py','scripts/h8_strengthened_contract.py',
     'scripts/h8_strengthened_runtime.py','scripts/launch_h8_strengthened_phase_a.py',
     'scripts/track_a_phase_a_parallel.py','src/trotterlib/h8_b0_anchor_plan.py',
+    'src/trotterlib/h8_b0_saved_anchor_audit.py',
     PLAN_PATH,TARGET_PATH,
 )
