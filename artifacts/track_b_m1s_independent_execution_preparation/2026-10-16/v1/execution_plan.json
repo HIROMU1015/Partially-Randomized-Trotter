@@ -1,0 +1,24 @@
+{
+  "schema": "m1s_independent_one_shot_execution_plan_v1",
+  "contract_commit": "3ec5721bda8ac449f61b77eb28b66dfcc5f0e8c8",
+  "contract_path": "artifacts/track_b_m1s_independent_contract_adoption/2026-10-16/v1/independent_validation_contract_adopted.json",
+  "source_commit": "4787cf90b053d251bf6392988af35516bdbbe663",
+  "authorization_path": "artifacts/track_b_m1s_independent_execution_authorization/2026-10-16/v1/execution_authorization.json",
+  "future_authorization_commit": "the commit containing this plan and dedicated authorization; passed as full SHA to launch supervisor",
+  "output_directory": "artifacts/track_b_m1s_independent_reference_result/2026-10-16/v1_one_shot",
+  "launch_supervisor": "scripts/tracks/algorithm_codesign/launch_m1s_independent_once.py",
+  "runner": "scripts/tracks/algorithm_codesign/run_m1s_gate0_independent_v1.py",
+  "separate_exclusive_external_launch_marker": "/tmp/m1s_independent_once_<authorization_commit>.launch.json",
+  "one_shot_contract_consumption": "exclusive output directory reservation; preserve it on all failures",
+  "launch_safety": "external O_EXCL marker limits supervisor to one child invocation, even if guard fails before output reservation; no automatic retry",
+  "full_scope_limitation": "full-H/HD comparator absent: overall UNDETERMINED unless FAIL, available scope separately judged",
+  "post_run_actions": [
+    "preserve raw result/context/log/checksum and external launch record",
+    "audit saved results and provenance only, do not rerun reference",
+    "update evidence/index/docs; commit/push/verify public bytes",
+    "mandatory STOP"
+  ],
+  "scientific_runner_invocations_planned": 1,
+  "automatic_retry": false,
+  "mandatory_STOP": true
+}
