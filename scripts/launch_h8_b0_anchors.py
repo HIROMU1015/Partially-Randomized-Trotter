@@ -25,10 +25,11 @@ def snapshot():
     return value
 
 
-def fresh(config,g,config_path,*,idle_seconds=1.,bindings_verified=False,launch_affinity=None):
+def fresh(config,g,config_path,*,idle_seconds=1.,bindings_verified=False,launch_affinity=None,cpu_record=lambda value:None):
     cpus=r.verify_authorization(config,g,config_sha=r.sha(config_path),affinity=launch_affinity);r.protected(config)
-    siblings=r.topology(cpus);first=r.cpu_counters();time.sleep(idle_seconds)
-    r.check_idle(first,r.cpu_counters(),siblings)
+    siblings=r.topology(cpus);CPU=r.measure_idle(siblings,seconds=idle_seconds)
+    cpu_record(CPU)  # Preserve failing counters BEFORE raising or forking.
+    if CPU['status']!='PASS':raise r.CPUIdleError(CPU)
     value=snapshot();limits=g['resources']
     reason=observer.resource_reason(value,value,limits['aggregate_RSS_bytes']+limits['admission_reserve_bytes'])
     if reason:raise ValueError('FRESH_RESOURCE:'+reason)
@@ -41,7 +42,7 @@ def fresh(config,g,config_path,*,idle_seconds=1.,bindings_verified=False,launch_
         source_input_bytes_verified=True,physical_cores_verified=True,resources_idle_verified=True,
         protected_jobs_unchanged=True,quota_verified=True,external_RSS_monitor_ready=True,
         effective_available_bytes=value['effective_available_bytes'],filesystem=fs,
-        driver_bindings_verified=bindings_verified)
+        driver_bindings_verified=bindings_verified,CPU_observation=CPU)
 
 
 def replace(path,value):
@@ -62,8 +63,41 @@ def launch(config_path,grant_path,fresh_path):
         raise ValueError('NEW_DISTINCT_FRESH_GATE_AND_SIBLING_STAGE_PATHS_REQUIRED')
     if fresh_path.parent!=config_path.parent or any(p.exists() for p in (control,output,lock)):
         raise ValueError('UNUSED_ONE_SHOT_PRIVATE_PATHS_REQUIRED')
-    r.verify_files(config)
-    initial=fresh(config,g,config_path);r.verify_grant(config,g,initial,config_sha=r.sha(config_path));replace(fresh_path,initial)
+    admission=config_path.parent/'launcher_admission01'
+    if admission.exists():raise ValueError('LAUNCH_ADMISSION_ATTEMPT_ALREADY_SPENT')
+    admission.mkdir(mode=0o700)  # Irrevocable even if the fresh gate rejects.
+    log=r.Writer(admission);stage='SOURCE_INPUT_RUNTIME';old=os.sched_getaffinity(0)
+    try:
+        log.write('attempt_started.json',dict(SOURCE=config['SOURCE'],config_sha256=r.sha(config_path),
+            grant_sha256=r.sha(grant_path),scope=c.SCOPE,retry=False,next_stage_authorized=False))
+        r.verify_files(config)
+        # Only this process is pinned. Its tiny sample overhead still counts
+        # against the unchanged raw 5% busy threshold; nothing is subtracted.
+        os.sched_setaffinity(0,{g['monitor_cpu']})
+        stage='INITIAL_FRESH_CPU_RESOURCE_GATE'
+        initial=fresh(config,g,config_path,launch_affinity=launch_affinity,
+            cpu_record=lambda value:log.write('CPU_initial.json',value))
+        r.verify_grant(config,g,initial,config_sha=r.sha(config_path),affinity=launch_affinity)
+        replace(fresh_path,initial)
+        stage='SUPERVISED_DRIVER'
+        supervise_acquisition(config,g,config_path,grant_path,fresh_path,control,output,log,launch_affinity)
+        log.write('terminal.json',dict(status='COMPLETE_MANDATORY_STOP',SOURCE=config['SOURCE'],
+            reported_exit_code=0,driver_started=True,next_stage_authorized=False,automatic_retry=False))
+    except BaseException as error:
+        state={k:Path(config[k]).exists() for k in ('control','output','lock')}
+        value=dict(status='STOP',SOURCE=config['SOURCE'],stage=stage,
+            error_type=type(error).__name__,reason=str(error),reported_exit_code=1,
+            native_wait_status_recorded_here=False,path_state=state,
+            driver_started=(control/'started.json').exists(),
+            science_reservation_journal_exists=(output/'reservations.jsonl').exists(),
+            automatic_retry=False,CPUs_reassigned=False,next_stage_authorized=False,mandatory_stop=True)
+        if isinstance(error,r.CPUIdleError):value['CPU_failure']=error.receipt
+        log.write('terminal.json',value)
+        raise
+    finally:os.sched_setaffinity(0,old)
+
+
+def supervise_acquisition(config,g,config_path,grant_path,fresh_path,control,output,log,launch_affinity):
     def refresh():
         fs=r.filesystem(control.parent)
         if fs['bytes']<2*2**30:raise ValueError('RUN_DISK_HEADROOM')
@@ -82,19 +116,15 @@ def launch(config_path,grant_path,fresh_path):
             if r.read(ready)!=dict(source=config['SOURCE'],config_sha256=r.sha(config_path)):
                 raise ValueError('DRIVER_BINDING_HANDSHAKE')
             # Driver has not pinned itself yet; selected cores must still be idle.
-            replace(fresh_path,fresh(config,g,config_path,idle_seconds=.25,bindings_verified=True,
-                launch_affinity=launch_affinity));ready.unlink()
+            replace(fresh_path,fresh(config,g,config_path,bindings_verified=True,
+                launch_affinity=launch_affinity,cpu_record=lambda value:log.write('CPU_driver_refresh.json',value)));ready.unlink()
     env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1')
     for k in r.THREAD_KEYS:env[k]='1'
     command=[config['python'],'-B',str(c.ROOT/'scripts/run_h8_b0_anchors.py'),'--execute-approved',
         '--config',str(config_path),'--grant',str(grant_path),'--fresh-gate',str(fresh_path)]
-    old=os.sched_getaffinity(0)
     pressure_baseline=snapshot()
-    try:
-        os.sched_setaffinity(0,{g['monitor_cpu']})
-        observer.supervise(command,env=env,control=control,output=output,limits=g['resources'],
-            allowed_cpus=g['allowed_cpus'],probe=snapshot,refresh_gate=refresh)
-    finally:os.sched_setaffinity(0,old)
+    observer.supervise(command,env=env,control=control,output=output,limits=g['resources'],
+        allowed_cpus=g['allowed_cpus'],probe=snapshot,refresh_gate=refresh)
     try:
         reason=observer.resource_reason(snapshot(),pressure_baseline,g['resources']['admission_reserve_bytes'])
         if reason:raise ValueError('FINAL_RESOURCE:'+reason)

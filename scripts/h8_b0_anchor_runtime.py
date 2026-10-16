@@ -120,10 +120,55 @@ def cpu_counters():
             if (p:=line.split()) and p[0].startswith('cpu') and p[0][3:].isdigit()}
 
 
+class CPUIdleError(ValueError):
+    def __init__(self,receipt):
+        super().__init__('PHYSICAL_CORE_BUSY')
+        self.receipt=receipt
+
+
+def idle_receipt(first,last,cpus):
+    """Inspect every selected logical CPU, preserving the unchanged 5% limit."""
+    rows=[]
+    for cpu in sorted(cpus):
+        before,after=first.get(cpu),last.get(cpu)
+        valid=(isinstance(before,list) and isinstance(after,list) and len(before)==len(after)==8
+               and all(type(x)is int and x>=0 for x in before+after))
+        d=[b-a for a,b in zip(before,after)] if valid else None
+        total=sum(d) if d is not None else 0
+        valid=valid and min(d)>=0 and total>0
+        busy=total-d[3]-d[4] if valid else None
+        ok=valid and 20*busy<=total
+        rows.append(dict(cpu=cpu,before=before,after=after,delta=d,total_ticks=total,
+            busy_ticks=busy,busy_fraction=busy/total if valid else None,
+            status='PASS' if ok else ('BUSY' if valid else 'UNKNOWN_COUNTERS')))
+    if not rows:raise ValueError('CPU_OBSERVATION_EMPTY')
+    return dict(status='PASS' if all(x['status']=='PASS' for x in rows) else 'STOP',
+        maximum_busy_fraction='1/20',policy='ALL_SELECTED_LOGICAL_CPUS_INCLUDING_SMT_SIBLINGS',
+        own_activity_subtracted=False,CPUs=rows,
+        failing_CPUs=[x['cpu'] for x in rows if x['status']!='PASS'])
+
+
 def check_idle(first,last,cpus):
-    for cpu in cpus:
-        d=[b-a for a,b in zip(first[cpu],last[cpu])];total=sum(d)
-        if min(d)<0 or total<=0 or (total-d[3]-d[4])/total>.05:raise ValueError('PHYSICAL_CORE_BUSY')
+    receipt=idle_receipt(first,last,cpus)
+    if receipt['status']!='PASS':raise CPUIdleError(receipt)
+    return receipt
+
+
+def self_cpu():
+    fields=Path('/proc/self/stat').read_text().rsplit(')',1)[1].split()
+    return dict(user_ticks=int(fields[11]),system_ticks=int(fields[12]),
+        last_CPU=int(fields[36]),affinity=sorted(os.sched_getaffinity(0)))
+
+
+def measure_idle(cpus,seconds=1.):
+    if seconds!=1.:raise ValueError('FIXED_ONE_SECOND_CPU_WINDOW_REQUIRED')
+    started=time.monotonic();own_first=self_cpu();first=cpu_counters()
+    time.sleep(seconds);last=cpu_counters();own_last=self_cpu()
+    receipt=idle_receipt(first,last,cpus)
+    receipt.update(window_requested_seconds=seconds,elapsed_seconds=time.monotonic()-started,
+        self_before=own_first,self_after=own_last,
+        self_cpu_ticks_delta=own_last['user_ticks']+own_last['system_ticks']-own_first['user_ticks']-own_first['system_ticks'])
+    return receipt
 
 
 def topology(cpus):

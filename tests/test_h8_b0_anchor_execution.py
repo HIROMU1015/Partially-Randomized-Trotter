@@ -102,7 +102,7 @@ class Gates(unittest.TestCase):
         cfg,g,_=gate();resources=dict(effective_available_bytes=200*2**30,events={},pressure={})
         with patch.object(r,'sha',return_value='config'),patch.object(os,'sched_getaffinity',return_value={1}),\
              patch.object(r,'protected'),patch.object(r,'topology',return_value=set(range(6))),\
-             patch.object(r,'cpu_counters',return_value={i:[0]*8 for i in range(6)}),patch.object(r,'check_idle'),\
+             patch.object(r,'measure_idle',return_value=dict(status='PASS')),\
              patch.object(launch.time,'sleep'),patch.object(launch,'snapshot',return_value=resources),\
              patch.object(r,'filesystem',return_value=dict(bytes=100*2**30,inodes=100000)):
             f=launch.fresh(cfg,g,Path('/tmp/config'),launch_affinity=set(range(6)))
