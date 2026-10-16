@@ -1,0 +1,55 @@
+{
+  "schema": "m1s_finite_signal_v2_pre_execution_technical_stop",
+  "status": "PRE_EXECUTION_TECHNICAL_STOP_SOURCE_CONFIGURATION_PARSE",
+  "contract_commit": "c6254be7c41d800a8ee417e8dc124f03ba6b382d",
+  "source_commit": "fbc2edea3816bf8f68508f62c6da595631df03b6",
+  "source_path": "src/trottertracks/algorithm_codesign/m1s_finite_signal_v2/pilot.py",
+  "source_sha256": "a3161ba267e896b567a4986c516870d22ca6eb52844a8b8add81683068d590df",
+  "failure": "adopted precision strings use power notation but frozen worker passes them directly to fractions.Fraction",
+  "configuration_checks": [
+    {
+      "key": "eps_signal_abs",
+      "literal": "2^-24",
+      "status": "FAIL_VALUE_ERROR",
+      "exception": "Invalid literal for Fraction: '2^-24'"
+    },
+    {
+      "key": "eps_phase_rad",
+      "literal": "2^-18",
+      "status": "FAIL_VALUE_ERROR",
+      "exception": "Invalid literal for Fraction: '2^-18'"
+    },
+    {
+      "key": "phase_visibility_floor",
+      "literal": "1/4",
+      "status": "PASS_PARSE"
+    }
+  ],
+  "source_call_lines": [
+    44,
+    104,
+    127
+  ],
+  "configuration_check_kind": "metadata literal syntax check only; not a scientific numerical correctness test",
+  "earlier_static_checks_missed_this_defect": true,
+  "prior_683_PASS_does_not_establish_executability": true,
+  "user_scientific_execution_approval_received": true,
+  "execution_authorization_issued": false,
+  "authorization_commit": null,
+  "launch_attempts": 0,
+  "scientific_worker_starts": 0,
+  "first_numerical_correctness_gate_runs": 0,
+  "finite_step_pilot_runs": 0,
+  "scientific_one_shot_consumed": false,
+  "new_external_launch_markers": 0,
+  "result_output_directory_created": false,
+  "automatic_retry": false,
+  "source_or_contract_conditions_changed": false,
+  "proposed_patch": "artifacts/track_b_m1s_finite_signal_v2_preflight_stop/2026-10-16/v1/PROPOSED_NOT_APPLIED_precision_literal_fix.patch",
+  "proposed_patch_applied": false,
+  "thresholds_would_remain_exactly_2_power_minus_24_and_2_power_minus_18": true,
+  "required_next": "prepare corrected frozen SOURCE and source-pin contract amendment before any numerical execution; adopted current SOURCE cannot be modified in place",
+  "new_GPT_scientific_review_started": false,
+  "new_scientific_calculations": 0,
+  "mandatory_STOP": true
+}

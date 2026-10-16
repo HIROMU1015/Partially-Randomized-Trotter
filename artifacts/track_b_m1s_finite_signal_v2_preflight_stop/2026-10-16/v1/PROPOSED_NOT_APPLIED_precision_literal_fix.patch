@@ -1,0 +1,21 @@
+--- a/src/trottertracks/algorithm_codesign/m1s_finite_signal_v2/pilot.py
++++ b/src/trottertracks/algorithm_codesign/m1s_finite_signal_v2/pilot.py
+@@ -14,0 +15,9 @@
++
++
++def _precision_target(name):
++    # Proposed metadata notation fix only: accept exactly the adopted literals.
++    targets={'eps_signal_abs':('2^-24',24),'eps_phase_rad':('2^-18',18)}
++    literal,exponent=targets[name]
++    if POLICY['precision'][name]!=literal:
++        raise RuntimeError('unsupported fixed precision literal; no relaxation')
++    return Fraction(1,1<<exponent)
+@@ -44 +53 @@
+-        if phase_error>float(Fraction(POLICY['precision']['eps_phase_rad'])):
++        if phase_error>float(_precision_target('eps_phase_rad')):
+@@ -104 +113 @@
+-        if error>float(Fraction(POLICY['precision']['eps_signal_abs'])):
++        if error>float(_precision_target('eps_signal_abs')):
+@@ -127 +136 @@
+-            if reference[T][1]>float(Fraction(POLICY['precision']['eps_signal_abs'])):
++            if reference[T][1]>float(_precision_target('eps_signal_abs')):
