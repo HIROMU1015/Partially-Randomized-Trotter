@@ -1,0 +1,106 @@
+{
+  "schema": "track_a_v1_p7_compile_plan_v1",
+  "base_commit": "25bbdd33fe758a0e730138cb91ddac8c41b0a298",
+  "scope": "p7_compile_validation",
+  "target": {
+    "system": "linear_H6",
+    "geometry_angstrom": 1.0,
+    "basis": "STO-3G",
+    "df_rank": 19,
+    "modes": 12,
+    "sector_dimension": 400,
+    "T": 0.8,
+    "delta": 0.8
+  },
+  "cell": {
+    "id": "B0I_p7_q1_2nd",
+    "method": "B0I",
+    "prefix": 7,
+    "q": 1,
+    "formula": "2nd",
+    "r": null,
+    "K": null,
+    "R": null
+  },
+  "axes": [
+    "cosine",
+    "sine"
+  ],
+  "axis_order": "cosine then sine, one compile in flight",
+  "predicted_RZ_per_axis": "72621/5",
+  "frozen_model_sha256": "406c6f36f93dac317f9709e68b042c4563edf5ec4b06219e1b60de660b695211",
+  "compiler_hash": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+  "compiler_options": {
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed_transpiler": 17
+  },
+  "control": "symmetric_directional",
+  "scalar": "saved full preparation constant + saved Phase A full-Fock tail C; one final ancilla phase",
+  "full_H_reference": "unchanged Phase A full-H reference, never rotated or recomputed",
+  "allowance": "saved empirical policy unchanged; not a numerical certificate",
+  "discrepancy": {
+    "relative_error": "abs(frozen prediction - measured RZ)/measured RZ, per axis",
+    "stop_when": ">= 1/50 exactly; no axis averaging",
+    "strict_before_next_axis": true,
+    "missing_or_changed_identity": "STOP",
+    "nonpositive_or_noninteger_measurement": "STOP"
+  },
+  "call_caps": {
+    "snapshot_load": 1,
+    "frozen_preparation_decode": 1,
+    "native_evolution_max": 1,
+    "measured_wrappers_max": 2,
+    "control_probes_max": 4,
+    "native_compile_max": 2,
+    "new_signal": 0,
+    "new_reference": 0,
+    "new_scalar": 0,
+    "new_primitive": 0,
+    "new_SCF": 0,
+    "new_DF": 0,
+    "new_state": 0,
+    "new_sampling": 0,
+    "new_fit": 0,
+    "cost_reaccounting": 0,
+    "additional_candidate_search": 0,
+    "V2": 0
+  },
+  "native_instruction_cap": 1000000,
+  "transpiled_instruction_cap": 5000000,
+  "correctness_guard": {
+    "absolute_gate": 1e-09,
+    "relative_gate": 1e-10,
+    "certified": false
+  },
+  "resources": {
+    "processes": 2,
+    "max_workers": 0,
+    "threads": 1,
+    "AS_bytes": 34359738368,
+    "RSS_bytes": 9663676416,
+    "observer_AS_bytes": 536870912,
+    "observer_RSS_bytes": 536870912,
+    "aggregate_RSS_bytes": 10200547328,
+    "CPU_seconds": 3600,
+    "aggregate_CPU_seconds": 3600,
+    "wall_seconds": 7200,
+    "output_bytes": 134217728,
+    "stage_storage_bytes": 536870912
+  },
+  "approved": false,
+  "runtime_authorization": false,
+  "allowed_cpus": [],
+  "absolute_launch_command": null,
+  "one_shot": true,
+  "retry": false,
+  "resume": false,
+  "refit": false,
+  "mandatory_stop": true,
+  "next_stage_authorized": false
+}
