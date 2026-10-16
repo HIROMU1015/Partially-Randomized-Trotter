@@ -1,0 +1,56 @@
+{
+  "kind": "STATIC_ESTIMATE_NOT_RUNTIME_VALIDATION",
+  "dimension": 256,
+  "DF_blocks": 12,
+  "splits": [
+    3,
+    6,
+    9
+  ],
+  "complete_trace_transforms": 7,
+  "coefficient_cells_per_transform": 65536,
+  "total_trace_cells": 458752,
+  "FWHT_butterflies": 1835008,
+  "CAR_operator_tuple_upper_bound": 4176,
+  "retained_optimizations": [
+    "reuse occupation transitions across DF blocks",
+    "reuse exact DF blocks for all splits",
+    "512-entry bounded Pauli tensor transition cache",
+    "reuse raw-state Pauli expectations across splits",
+    "integer moments avoid repeated rational matvec GCD costs"
+  ],
+  "dominant_work": "exact sparse A²/CAR contraction, 7 full traces/tensor reconstructions, integer state moments; sparse supports not measured",
+  "caps": {
+    "workers": 1,
+    "threads_per_library": 1,
+    "thread_environment": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "1",
+      "RAYON_NUM_THREADS": "1"
+    },
+    "gpu": false,
+    "memory_bytes": 2147483648,
+    "output_bytes": 134217728,
+    "log_bytes": 134217728,
+    "context_bytes": 4194304,
+    "wall_time_seconds": null,
+    "cpu_time_seconds": null,
+    "max_exact_integer_bits": 65536,
+    "max_primitive_events": 500000000,
+    "max_coefficient_cells": 65536,
+    "trace_transforms": 7,
+    "max_matrix_cells": 65536,
+    "max_transition_cache_entries": 4352,
+    "max_pauli_cache_entries": 512,
+    "max_difference_witnesses": 64,
+    "max_input_decode_bytes": 1048576
+  },
+  "resource_cap_is_not_roundoff_count": true,
+  "peak_memory_or_CPU_time_measured": false,
+  "numerical_benchmark_runs": 0,
+  "estimate_limit": "Worst-case cap exhaustion is UNDETERMINED with completed ledgers preserved; no feasibility/speedup assertion",
+  "output_design": "complete trace support bitmaps/digests plus at most 64 discrepancy witnesses per class; every coefficient participates in exact comparisons; display compaction never changes the reference",
+  "new_scientific_calculations": 0
+}
