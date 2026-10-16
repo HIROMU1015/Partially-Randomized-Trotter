@@ -1,0 +1,381 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:m1s:saved-signal:v1:result",
+  "type": "object",
+  "required": [
+    "schema",
+    "status",
+    "evidence",
+    "forecast_kind",
+    "provenance",
+    "science",
+    "resources",
+    "mandatory_STOP",
+    "retry",
+    "physical_shot_guarantee",
+    "scientific_GO",
+    "native_costs",
+    "total_resources",
+    "rows",
+    "comparisons",
+    "failure"
+  ],
+  "properties": {
+    "schema": {
+      "const": "m1s_saved_signal_v1_result"
+    },
+    "status": {
+      "enum": [
+        "TECHNICAL_STOP",
+        "CONDITIONAL_DESIGNS_COMPLETE_AWAITING_SCIENTIFIC_JUDGMENT"
+      ]
+    },
+    "evidence": {
+      "const": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    "forecast_kind": {
+      "const": "IDEAL_SIGNAL_HYPOTHETICAL_SUFFICIENT_SHOT_FORECAST"
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "science": {
+      "type": "object"
+    },
+    "resources": {
+      "type": "object"
+    },
+    "arithmetic": {
+      "type": "object"
+    },
+    "usage": {
+      "type": "object"
+    },
+    "mandatory_STOP": {
+      "const": true
+    },
+    "retry": {
+      "const": false
+    },
+    "physical_shot_guarantee": {
+      "const": false
+    },
+    "scientific_GO": {
+      "type": "null"
+    },
+    "native_costs": {
+      "type": "null"
+    },
+    "total_resources": {
+      "type": "null"
+    },
+    "rows": {
+      "type": "array",
+      "minItems": 108,
+      "maxItems": 108,
+      "items": {
+        "type": "object",
+        "required": [
+          "split",
+          "R",
+          "delta",
+          "T",
+          "method",
+          "status",
+          "forecast"
+        ],
+        "properties": {
+          "split": {
+            "enum": [
+              "G3",
+              "G6",
+              "G9"
+            ]
+          },
+          "R": {
+            "enum": [
+              2,
+              4
+            ]
+          },
+          "delta": {
+            "enum": [
+              "1/8",
+              "1/16"
+            ]
+          },
+          "T": {
+            "enum": [
+              "0",
+              "1",
+              "4"
+            ]
+          },
+          "method": {
+            "enum": [
+              "shared_pm",
+              "ordinary",
+              "independent_pm"
+            ]
+          },
+          "status": {
+            "enum": [
+              "NOT_EVALUATED",
+              "SAVED_ZERO_CONTROL_NOT_FORECAST",
+              "TASK_OR_EVIDENCE_UNRESOLVED",
+              "PHASE_BUDGET_NOT_CERTIFIED_UNDER_SELECTED_ROUTE",
+              "ARITHMETIC_RESOLUTION_UNDETERMINED",
+              "CONDITIONAL_SUFFICIENT_DESIGN_AVAILABLE"
+            ]
+          },
+          "forecast": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "kind",
+                  "N_X",
+                  "N_Y",
+                  "N_total",
+                  "formula_interval",
+                  "integerized_formula_interval",
+                  "effective_margin_interval",
+                  "rounding",
+                  "minimal_required_shots"
+                ],
+                "properties": {
+                  "kind": {
+                    "const": "IDEAL_SIGNAL_HYPOTHETICAL_SUFFICIENT_SHOT_FORECAST"
+                  },
+                  "N_X": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "N_Y": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "N_total": {
+                    "type": "integer",
+                    "minimum": 2
+                  },
+                  "formula_interval": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^-?[0-9]+/[1-9][0-9]*$"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "integerized_formula_interval": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "effective_margin_interval": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^-?[0-9]+/[1-9][0-9]*$"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "rounding": {
+                    "const": "CEILING_OF_RATIONAL_UPPER_ENCLOSURE"
+                  },
+                  "minimal_required_shots": {
+                    "type": "null"
+                  }
+                },
+                "additionalProperties": false
+              }
+            ]
+          },
+          "bounds": {
+            "type": "object",
+            "required": [
+              "visibility_lower",
+              "bias_upper_interval_rad",
+              "statistical_slack_interval_rad",
+              "model_drift_added_again"
+            ],
+            "properties": {
+              "visibility_lower": {
+                "type": "string",
+                "pattern": "^-?[0-9]+/[1-9][0-9]*$"
+              },
+              "bias_upper_interval_rad": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^-?[0-9]+/[1-9][0-9]*$"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "statistical_slack_interval_rad": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^-?[0-9]+/[1-9][0-9]*$"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "model_drift_added_again": {
+                "const": false
+              }
+            },
+            "additionalProperties": false
+          },
+          "saved_status": {
+            "type": "string"
+          },
+          "saved_phase_status": {
+            "type": "string"
+          },
+          "saved_evidence": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "comparisons": {
+      "type": "array",
+      "maxItems": 48,
+      "items": {
+        "type": "object",
+        "required": [
+          "split",
+          "R",
+          "delta",
+          "T",
+          "comparator",
+          "status",
+          "sufficient_design_ratio",
+          "scientific_GO",
+          "native_costs",
+          "scientific_gain_claim"
+        ],
+        "properties": {
+          "split": {
+            "enum": [
+              "G3",
+              "G6",
+              "G9"
+            ]
+          },
+          "R": {
+            "enum": [
+              2,
+              4
+            ]
+          },
+          "delta": {
+            "enum": [
+              "1/8",
+              "1/16"
+            ]
+          },
+          "T": {
+            "enum": [
+              "1",
+              "4"
+            ]
+          },
+          "comparator": {
+            "enum": [
+              "ordinary",
+              "independent_pm"
+            ]
+          },
+          "status": {
+            "enum": [
+              "NOT_EVALUATED",
+              "NOT_COMPARABLE_UNDER_SELECTED_ROUTE",
+              "COMMON_SUFFICIENT_DESIGNS_ONLY"
+            ]
+          },
+          "sufficient_design_ratio": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "pattern": "^-?[0-9]+/[1-9][0-9]*$"
+              }
+            ]
+          },
+          "scientific_GO": {
+            "type": "null"
+          },
+          "native_costs": {
+            "type": "null"
+          },
+          "scientific_gain_claim": {
+            "enum": [
+              "NOT_ASSESSED",
+              "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE"
+            ]
+          },
+          "saved_visibility_contrast_status": {
+            "type": "string"
+          },
+          "symbolic_cost_break_even": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "sufficient_design_relation": {
+            "enum": [
+              "SHARED_SMALLER",
+              "EQUAL",
+              "SHARED_LARGER"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 48
+    },
+    "failure": {
+      "type": [
+        "object",
+        "null"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "CONDITIONAL_DESIGNS_COMPLETE_AWAITING_SCIENTIFIC_JUDGMENT"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "comparisons": {
+            "minItems": 48
+          },
+          "failure": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}
