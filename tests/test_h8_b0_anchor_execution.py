@@ -61,6 +61,13 @@ class Gates(unittest.TestCase):
         with patch.object(r,'read',side_effect=[cfg,g]),patch.object(r,'sha',return_value='config'),patch.object(r,'verify_files') as files,patch.object(observer,'supervise') as supervised:
             with self.assertRaises(ValueError):launch.launch(Path('/tmp/config'),Path('/tmp/grant'),Path('/tmp/fresh'))
             files.assert_not_called();supervised.assert_not_called()
+    def test_fresh_path_cannot_overwrite_config_or_grant(self):
+        cfg,g,_=gate();base=Path(cfg['control']).parent
+        with patch.object(r,'read',side_effect=[cfg,g]),patch.object(r,'sha',return_value='config'),\
+             patch.object(r,'verify_authorization'),patch.object(r,'verify_files') as checked:
+            with self.assertRaisesRegex(ValueError,'NEW_DISTINCT_FRESH_GATE'):
+                launch.launch(base/'config.json',base/'grant.json',base/'grant.json')
+            checked.assert_not_called()
     def test_scientific_imports_denied_first(self):
         permit=NS(require=Mock(side_effect=ValueError('DENIED')))
         with patch.object(a.importlib,'import_module') as imported:

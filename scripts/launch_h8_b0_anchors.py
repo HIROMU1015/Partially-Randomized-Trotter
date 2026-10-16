@@ -56,6 +56,10 @@ def launch(config_path,grant_path,fresh_path):
     r.verify_authorization(config,g,config_sha=r.sha(config_path))  # Reject draft before side effects.
     for path in (config_path,grant_path,fresh_path):r.private_path(path)
     control,output,lock=[r.private_path(config[k]) for k in ('control','output','lock')]
+    if (fresh_path.name!='fresh_gate.json' or fresh_path.exists() or
+            fresh_path in (config_path,grant_path) or
+            any(p.parent!=config_path.parent for p in (control,output,lock))):
+        raise ValueError('NEW_DISTINCT_FRESH_GATE_AND_SIBLING_STAGE_PATHS_REQUIRED')
     if fresh_path.parent!=config_path.parent or any(p.exists() for p in (control,output,lock)):
         raise ValueError('UNUSED_ONE_SHOT_PRIVATE_PATHS_REQUIRED')
     r.verify_files(config)
