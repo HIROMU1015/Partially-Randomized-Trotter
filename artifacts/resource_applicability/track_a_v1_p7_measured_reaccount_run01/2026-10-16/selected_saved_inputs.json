@@ -1,0 +1,318 @@
+{
+  "kind": "EXACT_SAVED_METADATA_SELECTION_NO_NEW_SIGNAL_OR_SHOTS",
+  "p7_signal_digest": "937e886f0dc9cb693365e8f456b0bb2fdb54dfdc351e8ba01b8c9f32829b119b",
+  "original_plan": {
+    "status": "PLAN_ONLY_SEPARATE_EXECUTION_APPROVAL_REQUIRED",
+    "cell_id": "B0I_p7_q1_2nd",
+    "epsilon": 0.05,
+    "factors": [
+      1.0,
+      10.0
+    ],
+    "shots": {
+      "cosine": 10216,
+      "sine": 14356,
+      "total": 24572
+    },
+    "formula": "G_det = 10216 * measured_RZ_cosine + 14356 * measured_RZ_sine",
+    "saved_PR": {
+      "cell_id": "B2_p5_q1_2nd_r4_K4",
+      "G_exact": "403423200",
+      "scope": "CONFIRMATION_UNION8_N32",
+      "kind": "SAVED_PAIRED_SAMPLE_MEAN_NOT_POPULATION_MEAN"
+    },
+    "reduction": "100*(1-403423200/G_det); negative means PR is more expensive",
+    "measurement_gate": "both registered axes complete, immutable bindings, per-axis relative error < 1/50",
+    "new_shot_calculation": false,
+    "new_signal": false,
+    "candidate_reselection": false,
+    "approved": false,
+    "compile_phase_auto_reaccount": false,
+    "conservative_bias_certificate": null,
+    "next_stage_authorized": false
+  },
+  "saved_precision_rows": {
+    "1.0": {
+      "schema": "track_a_u_aware_diagnostic_v1",
+      "evidence_kind": "EMPIRICAL",
+      "evidence_ref": "B0I_p7_q1_2nd_signal.json",
+      "allowance_certification_claimed_by_caller": false,
+      "certificate_verified_by_this_function": false,
+      "eligibility_under_declared_allowance": "ELIGIBLE",
+      "axes": {
+        "real": {
+          "status": "ELIGIBLE",
+          "eligible": true,
+          "headroom": 0.02929020896565456,
+          "shots": 10216,
+          "log_shot_bound": 9.231662467533893,
+          "integer_status": "BINARY64_DIAGNOSTIC",
+          "allowance": 2.115451587635019e-11,
+          "u_over_headroom": 7.222384757020951e-10
+        },
+        "imag": {
+          "status": "ELIGIBLE",
+          "eligible": true,
+          "headroom": 0.024708433239788406,
+          "shots": 14356,
+          "log_shot_bound": 9.571879833753007,
+          "integer_status": "BINARY64_DIAGNOSTIC",
+          "allowance": 2.115451587635019e-11,
+          "u_over_headroom": 8.561658147666246e-10
+        }
+      },
+      "N_total": 24572,
+      "alpha_axis": 0.025,
+      "familywise_winner_certified": false,
+      "interpretation": "CONDITIONAL_DIAGNOSTIC",
+      "cost_acquisition_eligible": true,
+      "boundary_guard": "PASS"
+    },
+    "10.0": {
+      "schema": "track_a_u_aware_diagnostic_v1",
+      "evidence_kind": "EMPIRICAL",
+      "evidence_ref": "B0I_p7_q1_2nd_signal.json",
+      "allowance_certification_claimed_by_caller": false,
+      "certificate_verified_by_this_function": false,
+      "eligibility_under_declared_allowance": "ELIGIBLE",
+      "axes": {
+        "real": {
+          "status": "ELIGIBLE",
+          "eligible": true,
+          "headroom": 0.029290208775263917,
+          "shots": 10216,
+          "log_shot_bound": 9.231662480714187,
+          "integer_status": "BINARY64_DIAGNOSTIC",
+          "allowance": 2.1154515876350192e-10,
+          "u_over_headroom": 7.222384803967509e-09
+        },
+        "imag": {
+          "status": "ELIGIBLE",
+          "eligible": true,
+          "headroom": 0.024708433049397762,
+          "shots": 14356,
+          "log_shot_bound": 9.571879849343992,
+          "integer_status": "BINARY64_DIAGNOSTIC",
+          "allowance": 2.1154515876350192e-10,
+          "u_over_headroom": 8.561658213638039e-09
+        }
+      },
+      "N_total": 24572,
+      "alpha_axis": 0.025,
+      "familywise_winner_certified": false,
+      "interpretation": "CONDITIONAL_DIAGNOSTIC",
+      "cost_acquisition_eligible": true,
+      "boundary_guard": "PASS"
+    }
+  },
+  "old_comparison_rows": [
+    {
+      "epsilon": 0.05,
+      "factor": 1.0,
+      "bias_rule": "signed_signal",
+      "scope": "fine_grid_S2_plus_truncated_S4",
+      "deterministic": {
+        "status": "POINT_MINIMUM",
+        "unresolved_candidates": 0,
+        "best": {
+          "cell_id": "B0I_p7_q1_2nd",
+          "G_exact": "1784443212/5",
+          "G_point": 356888642.4,
+          "cost_status": "VALIDATED_MODEL_ESTIMATE",
+          "N_total": 24572
+        },
+        "exact_ties": [
+          "B0I_p7_q1_2nd"
+        ]
+      },
+      "confirmed_PR": {
+        "status": "POINT_MINIMUM",
+        "unresolved_candidates": 0,
+        "best": {
+          "cell_id": "B2_p5_q1_2nd_r4_K4",
+          "G_exact": "403423200",
+          "G_point": 403423200.0,
+          "cost_status": "SAVED_PAIRED_SAMPLE_MEAN",
+          "N_total": 30400
+        },
+        "exact_ties": [
+          "B2_p5_q1_2nd_r4_K4"
+        ]
+      },
+      "PR_over_deterministic_exact": "56031000/49567867",
+      "PR_over_deterministic": 1.1303895727447784,
+      "PR_reduction_percentage_points": -13.03895727447784,
+      "PR_reduction_percentage_points_exact": "-646313300/49567867",
+      "point_only": true,
+      "population_winner_certified": false,
+      "family_minima": {
+        "B0": {
+          "status": "POINT_MINIMUM",
+          "unresolved_candidates": 0,
+          "best": {
+            "cell_id": "B0_p11_q1_2nd",
+            "G_exact": "2590703814/5",
+            "G_point": 518140762.8,
+            "cost_status": "VALIDATED_MODEL_ESTIMATE",
+            "N_total": 23273
+          },
+          "exact_ties": [
+            "B0_p11_q1_2nd"
+          ]
+        },
+        "B0I": {
+          "status": "POINT_MINIMUM",
+          "unresolved_candidates": 0,
+          "best": {
+            "cell_id": "B0I_p7_q1_2nd",
+            "G_exact": "1784443212/5",
+            "G_point": 356888642.4,
+            "cost_status": "VALIDATED_MODEL_ESTIMATE",
+            "N_total": 24572
+          },
+          "exact_ties": [
+            "B0I_p7_q1_2nd"
+          ]
+        },
+        "full_S2": {
+          "status": "POINT_MINIMUM",
+          "unresolved_candidates": 0,
+          "best": {
+            "cell_id": "B1_p19_q1_2nd",
+            "G_exact": "877049350",
+            "G_point": 877049350.0,
+            "cost_status": "MEASURED_COMPLETE",
+            "N_total": 23350
+          },
+          "exact_ties": [
+            "B1_p19_q1_2nd"
+          ]
+        },
+        "full_S4": {
+          "status": "POINT_MINIMUM",
+          "unresolved_candidates": 0,
+          "best": {
+            "cell_id": "B1_p19_q1_4th",
+            "G_exact": "1790822626",
+            "G_point": 1790822626.0,
+            "cost_status": "MEASURED_COMPLETE",
+            "N_total": 16118
+          },
+          "exact_ties": [
+            "B1_p19_q1_4th"
+          ]
+        }
+      },
+      "eligibility_counts": {
+        "total": 136,
+        "eligible": 124,
+        "ineligible": 12,
+        "unresolved": 0
+      }
+    },
+    {
+      "epsilon": 0.05,
+      "factor": 10.0,
+      "bias_rule": "signed_signal",
+      "scope": "fine_grid_S2_plus_truncated_S4",
+      "deterministic": {
+        "status": "POINT_MINIMUM",
+        "unresolved_candidates": 0,
+        "best": {
+          "cell_id": "B0I_p7_q1_2nd",
+          "G_exact": "1784443212/5",
+          "G_point": 356888642.4,
+          "cost_status": "VALIDATED_MODEL_ESTIMATE",
+          "N_total": 24572
+        },
+        "exact_ties": [
+          "B0I_p7_q1_2nd"
+        ]
+      },
+      "confirmed_PR": {
+        "status": "POINT_MINIMUM",
+        "unresolved_candidates": 0,
+        "best": {
+          "cell_id": "B2_p5_q1_2nd_r4_K4",
+          "G_exact": "403423200",
+          "G_point": 403423200.0,
+          "cost_status": "SAVED_PAIRED_SAMPLE_MEAN",
+          "N_total": 30400
+        },
+        "exact_ties": [
+          "B2_p5_q1_2nd_r4_K4"
+        ]
+      },
+      "PR_over_deterministic_exact": "56031000/49567867",
+      "PR_over_deterministic": 1.1303895727447784,
+      "PR_reduction_percentage_points": -13.03895727447784,
+      "PR_reduction_percentage_points_exact": "-646313300/49567867",
+      "point_only": true,
+      "population_winner_certified": false,
+      "family_minima": {
+        "B0": {
+          "status": "POINT_MINIMUM",
+          "unresolved_candidates": 0,
+          "best": {
+            "cell_id": "B0_p11_q1_2nd",
+            "G_exact": "2590703814/5",
+            "G_point": 518140762.8,
+            "cost_status": "VALIDATED_MODEL_ESTIMATE",
+            "N_total": 23273
+          },
+          "exact_ties": [
+            "B0_p11_q1_2nd"
+          ]
+        },
+        "B0I": {
+          "status": "POINT_MINIMUM",
+          "unresolved_candidates": 0,
+          "best": {
+            "cell_id": "B0I_p7_q1_2nd",
+            "G_exact": "1784443212/5",
+            "G_point": 356888642.4,
+            "cost_status": "VALIDATED_MODEL_ESTIMATE",
+            "N_total": 24572
+          },
+          "exact_ties": [
+            "B0I_p7_q1_2nd"
+          ]
+        },
+        "full_S2": {
+          "status": "POINT_MINIMUM",
+          "unresolved_candidates": 0,
+          "best": {
+            "cell_id": "B1_p19_q1_2nd",
+            "G_exact": "877049350",
+            "G_point": 877049350.0,
+            "cost_status": "MEASURED_COMPLETE",
+            "N_total": 23350
+          },
+          "exact_ties": [
+            "B1_p19_q1_2nd"
+          ]
+        },
+        "full_S4": {
+          "status": "POINT_MINIMUM",
+          "unresolved_candidates": 0,
+          "best": {
+            "cell_id": "B1_p19_q1_4th",
+            "G_exact": "1790822626",
+            "G_point": 1790822626.0,
+            "cost_status": "MEASURED_COMPLETE",
+            "N_total": 16118
+          },
+          "exact_ties": [
+            "B1_p19_q1_4th"
+          ]
+        }
+      },
+      "eligibility_counts": {
+        "total": 136,
+        "eligible": 124,
+        "ineligible": 12,
+        "unresolved": 0
+      }
+    }
+  ]
+}
