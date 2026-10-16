@@ -1,3 +1,5 @@
+> **M1-S γ依存V1完了（2026-10-17）**：[結果・修正来歴](../docs/tracks/algorithm_codesign/m1s_v1_gamma_completed_results_and_stop_20261017.md)。ユーザーの修正・完了承認で旧失敗を保全し別S2/C2/A2から試行02が完了。H4 linear1.00 Å/STO-3G/DF rank12・G3/G6/G9・保存δ1/8,1/16・R2,4・T1,4・α0.05/p128/CPU160/wall320不変。72行評価・36zero保持・48対照分類、G3/G6各16tradeoff境界、G9絶対差未解像を保持。絶対shot/native/RPE総資源/科学GOなし。SOURCE `src/trottertracks/algorithm_codesign/m1s_saved_signal_gamma_v2`、runner `scripts/tracks/algorithm_codesign/run_m1s_saved_signal_gamma_v2.py`、tests `tests/tracks/algorithm_codesign/test_m1s_gamma_completion.py`、artifact `artifacts/track_b_m1s_v1_gamma_completion/2026-10-17/attempt_02`。条件付き未認証、旧成果保全、mandatory STOP。以下は履歴。
+
 > **M1-S γ依存V1 technical STOP**：[失敗・未適用の修正候補](tracks/algorithm_codesign/m1s_v1_gamma_one_shot_technical_stop_20261017.md)。runtime API不整合で科学engine未到達。run1/retry0、消費済marker・全未評価placeholderを保全。研究のGO/NO-GOではない。
 
 > **M1-S γ依存V1正式採択**：[正式契約](tracks/algorithm_codesign/m1s_v1_gamma_formally_adopted_contract_20261017.md)。新しいadopted契約と会話に基づく採択記録を固定。候補・SOURCE・結果は保持し、数値解析は別承認までSTOP。

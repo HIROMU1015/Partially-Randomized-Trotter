@@ -1,0 +1,3708 @@
+{
+  "schema": "m1s_saved_signal_gamma_v1_result",
+  "status": "GAMMA_CONDITIONS_COMPLETE_AWAITING_SCIENTIFIC_JUDGMENT",
+  "evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+  "forecast_kind": "IDEAL_SIGNAL_HYPOTHETICAL_SUFFICIENT_DESIGN_GAMMA_CONDITIONS",
+  "provenance": {
+    "S": "677dd6957e0e1913b70ca5f999458835ae8a2e23",
+    "C": "2cb5160d9051a6568b8acc0cfb29fc169bdfca09",
+    "A": "161ee8c3dc82c7fa19e0e1cfb79d71d3c236a03c",
+    "contract_sha256": "e877ada90db46cc6c7f525b118aaa649e769e1160d93e040d8e55bb76cb558f4",
+    "authority_sha256": "ce7150c8fed86e7418b593a212ffc86a3f563b6ae82f9aaeb3b1603cabd5e7f9",
+    "input_sha256": "ff6c5192d8cca769cd61a1478cea01671d058a85a8f6a4cdcdc9baa672a56fe0",
+    "output_path": "artifacts/track_b_m1s_saved_signal_gamma_v2_result/2026-10-17/completion_attempt_02",
+    "user_instruction": "\u3057\u3063\u304b\u308a\u5b8c\u4e86\u3059\u308b\u307e\u3067\u884c\u3063\u3066\u3088\u3044\u3000\u9014\u4e2d\u3067\u6b62\u307e\u3063\u305f\u5834\u5408\u306f\u4fee\u6b63\u3057\u3066\u884c\u3063\u3066\u3002Context: prior explicit approval was V1 saved-signal gamma analysis under S=f2a5611c/C=9aafa8b7. The latest instruction authorizes necessary technical repairs and separately frozen new attempts until completion, with unchanged adopted science and resource caps. This authority covers only completion attempt 02, new compatible SOURCE S2 and rebound C2. Old consumed A1/marker/failure remain immutable. No automatic reuse of an attempt authority. See artifacts/track_b_m1s_v1_gamma_completion/2026-10-17/attempt_02/user_completion_instruction.json",
+    "python_executable_sha256": "320707a1d684b043661306d508d1a8655f507c0bb8e827398cb53680054aa7c8"
+  },
+  "science": {
+    "accuracy_semantics": "HIGH_PROBABILITY_CIRCULAR_PHASE_ERROR",
+    "confidence_scope": "PER_METHOD_ROW",
+    "statistical_policy": "FRESH_IID_HOEFFDING_EQUAL_AXES",
+    "coverage_acceptance": "SAVED_CONDITIONAL_RADII_IDEAL_MEAN_ONLY",
+    "comparison_policy": "GAMMA_CONTINUOUS_SUFFICIENT_FACTOR_WITH_CEILING_CAVEAT",
+    "materiality_policy": "DESCRIPTIVE_ONLY_NO_SCIENTIFIC_GO",
+    "alpha_total": "0.05",
+    "arithmetic_bits": 128
+  },
+  "resources": {
+    "workers": 1,
+    "gpu": false,
+    "memory_bytes": 2147483648,
+    "input_bytes": 1048576,
+    "result_bytes": 16777216,
+    "log_bytes": 16777216,
+    "max_rational_bits": 65536,
+    "max_series_terms_per_call": 4096,
+    "max_bound_steps": 1000000,
+    "max_arithmetic_bits": 256,
+    "wall_time_seconds": 320,
+    "cpu_time_seconds": 160,
+    "thread_environment": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "1",
+      "RAYON_NUM_THREADS": "1"
+    }
+  },
+  "mandatory_STOP": true,
+  "retry": false,
+  "physical_shot_guarantee": false,
+  "scientific_GO": null,
+  "native_costs": null,
+  "total_resources": null,
+  "absolute_shot_counts": null,
+  "gamma_grid": null,
+  "rows": [
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/8",
+      "T": "0",
+      "method": "shared_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/8",
+      "T": "0",
+      "method": "ordinary",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/8",
+      "T": "0",
+      "method": "independent_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "2378146948286490338128991/2417851639229258349412352",
+        "unclipped_bias_rad": "718105742524715891635/151115727451828646838272",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "718105742524715891635/151115727451828646838272",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "2370153781715919487777847/2417851639229258349412352",
+        "unclipped_bias_rad": "105778811244617397961/1208925819614629174706176",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "105778811244617397961/1208925819614629174706176",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "148134466975019843756171/151115727451828646838272",
+        "unclipped_bias_rad": "31140430695695936629/604462909807314587353088",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "31140430695695936629/604462909807314587353088",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "288823583735654320205959/302231454903657293676544",
+        "unclipped_bias_rad": "2374391936971896490197/302231454903657293676544",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "2374391936971896490197/302231454903657293676544",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "279077480357859968264053/302231454903657293676544",
+        "unclipped_bias_rad": "107282051061441313627/302231454903657293676544",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "107282051061441313627/302231454903657293676544",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "17442291313007654225371/18889465931478580854784",
+        "unclipped_bias_rad": "64107285078083020431/302231454903657293676544",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "64107285078083020431/302231454903657293676544",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/16",
+      "T": "0",
+      "method": "shared_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/16",
+      "T": "0",
+      "method": "ordinary",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/16",
+      "T": "0",
+      "method": "independent_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "149870270070781586594367/151115727451828646838272",
+        "unclipped_bias_rad": "1438743652071062528929/604462909807314587353088",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "1438743652071062528929/604462909807314587353088",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "1196944484483384846251129/1208925819614629174706176",
+        "unclipped_bias_rad": "26329817780726005715/1208925819614629174706176",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "26329817780726005715/1208925819614629174706176",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "598472165902471466361299/604462909807314587353088",
+        "unclipped_bias_rad": "7767871728658805879/604462909807314587353088",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "7767871728658805879/604462909807314587353088",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "73863685215377818055731/75557863725914323419136",
+        "unclipped_bias_rad": "1195800787086654901599/302231454903657293676544",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "1195800787086654901599/302231454903657293676544",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "9075835311861382178417/9444732965739290427392",
+        "unclipped_bias_rad": "26771472437518625343/302231454903657293676544",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "26771472437518625343/302231454903657293676544",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "145213309727604704051821/151115727451828646838272",
+        "unclipped_bias_rad": "8007433599892487223/151115727451828646838272",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "8007433599892487223/151115727451828646838272",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/8",
+      "T": "0",
+      "method": "shared_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/8",
+      "T": "0",
+      "method": "ordinary",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/8",
+      "T": "0",
+      "method": "independent_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "2397919413603819037905215/2417851639229258349412352",
+        "unclipped_bias_rad": "2871474804596726460827/1208925819614629174706176",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "2871474804596726460827/1208925819614629174706176",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "1196945044765770161353033/1208925819614629174706176",
+        "unclipped_bias_rad": "34795402513673950437/604462909807314587353088",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "34795402513673950437/604462909807314587353088",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "299236121102979609639695/302231454903657293676544",
+        "unclipped_bias_rad": "26329889962507500447/1208925819614629174706176",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "26329889962507500447/1208925819614629174706176",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "73863731202898596587805/75557863725914323419136",
+        "unclipped_bias_rad": "1185992163979253396641/302231454903657293676544",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "1185992163979253396641/302231454903657293676544",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "290427151588114868238389/302231454903657293676544",
+        "unclipped_bias_rad": "69857136532873870305/302231454903657293676544",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "69857136532873870305/302231454903657293676544",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "36303341245213053557661/37778931862957161709568",
+        "unclipped_bias_rad": "26771491023251592111/302231454903657293676544",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "26771491023251592111/302231454903657293676544",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/16",
+      "T": "0",
+      "method": "shared_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/16",
+      "T": "0",
+      "method": "ordinary",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/16",
+      "T": "0",
+      "method": "independent_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "601966830780794430645891/604462909807314587353088",
+        "unclipped_bias_rad": "1438712143691298573149/1208925819614629174706176",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "1438712143691298573149/1208925819614629174706176",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "1202920562853963882828399/1208925819614629174706176",
+        "unclipped_bias_rad": "4337252527625844415/302231454903657293676544",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "4337252527625844415/302231454903657293676544",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "300730121455871220776473/302231454903657293676544",
+        "unclipped_bias_rad": "822714224092842033/151115727451828646838272",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "822714224092842033/151115727451828646838272",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "149412325951875392570613/151115727451828646838272",
+        "unclipped_bias_rad": "298843455447917899067/151115727451828646838272",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "298843455447917899067/151115727451828646838272",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "296270702375557302409239/302231454903657293676544",
+        "unclipped_bias_rad": "8723760170739112479/151115727451828646838272",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "8723760170739112479/151115727451828646838272",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "18516915288268302967767/18889465931478580854784",
+        "unclipped_bias_rad": "1674948540162027729/75557863725914323419136",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "1674948540162027729/75557863725914323419136",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/8",
+      "T": "0",
+      "method": "shared_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/8",
+      "T": "0",
+      "method": "ordinary",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/8",
+      "T": "0",
+      "method": "independent_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "2417832671397350941415125/2417851639229258349412352",
+        "unclipped_bias_rad": "290309319788239431/302231454903657293676544",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "290309319788239431/302231454903657293676544",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "2417831699688650715406007/2417851639229258349412352",
+        "unclipped_bias_rad": "17781343318685005/302231454903657293676544",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "17781343318685005/302231454903657293676544",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "1208915849139653695175689/1208925819614629174706176",
+        "unclipped_bias_rad": "28462488669823259/1208925819614629174706176",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "28462488669823259/1208925819614629174706176",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "302223954000530046135105/302231454903657293676544",
+        "unclipped_bias_rad": "402270241142452925/75557863725914323419136",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "402270241142452925/75557863725914323419136",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "302221485249860784085325/302231454903657293676544",
+        "unclipped_bias_rad": "71165230125527113/302231454903657293676544",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "71165230125527113/302231454903657293676544",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "75555371152022714412355/75557863725914323419136",
+        "unclipped_bias_rad": "28469275949046867/302231454903657293676544",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "28469275949046867/302231454903657293676544",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/16",
+      "T": "0",
+      "method": "shared_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/16",
+      "T": "0",
+      "method": "ordinary",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/16",
+      "T": "0",
+      "method": "independent_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "1208921074779697843627983/1208925819614629174706176",
+        "unclipped_bias_rad": "294887850551306799/604462909807314587353088",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "294887850551306799/604462909807314587353088",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "1208920830926783040593847/1208925819614629174706176",
+        "unclipped_bias_rad": "24271119186681349/1208925819614629174706176",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "24271119186681349/1208925819614629174706176",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "604460413707345088362619/604462909807314587353088",
+        "unclipped_bias_rad": "16957671410850465/1208925819614629174706176",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "16957671410850465/1208925819614629174706176",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "151113850618088921721817/151115727451828646838272",
+        "unclipped_bias_rad": "813719246497207437/302231454903657293676544",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "813719246497207437/302231454903657293676544",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "302226466251031350446657/302231454903657293676544",
+        "unclipped_bias_rad": "12157649076900003/151115727451828646838272",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "12157649076900003/151115727451828646838272",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "151113231397305112623057/151115727451828646838272",
+        "unclipped_bias_rad": "8474866352590771/151115727451828646838272",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "8474866352590771/151115727451828646838272",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/8",
+      "T": "0",
+      "method": "shared_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/8",
+      "T": "0",
+      "method": "ordinary",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/8",
+      "T": "0",
+      "method": "independent_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "2417842153200718553036073/2417851639229258349412352",
+        "unclipped_bias_rad": "144285843568705309/302231454903657293676544",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "144285843568705309/302231454903657293676544",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "151115103939883134116885/151115727451828646838272",
+        "unclipped_bias_rad": "33499185283547277/604462909807314587353088",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "33499185283547277/604462909807314587353088",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "1208920830855314784443261/1208925819614629174706176",
+        "unclipped_bias_rad": "12171293868771551/604462909807314587353088",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "12171293868771551/604462909807314587353088",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "151113851756306132930485/151115727451828646838272",
+        "unclipped_bias_rad": "800818847337163329/302231454903657293676544",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "800818847337163329/302231454903657293676544",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "302226466845926844604581/302231454903657293676544",
+        "unclipped_bias_rad": "67023325228300165/302231454903657293676544",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "67023325228300165/302231454903657293676544",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "302226466233164286159115/302231454903657293676544",
+        "unclipped_bias_rad": "3041645689100431/37778931862957161709568",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "3041645689100431/37778931862957161709568",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/16",
+      "T": "0",
+      "method": "shared_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/16",
+      "T": "0",
+      "method": "ordinary",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/16",
+      "T": "0",
+      "method": "independent_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "1208923444896511143106847/1208925819614629174706176",
+        "unclipped_bias_rad": "296917159785161727/1208925819614629174706176",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "296917159785161727/1208925819614629174706176",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "302230830019749115805847/302231454903657293676544",
+        "unclipped_bias_rad": "12621275795113825/604462909807314587353088",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "12621275795113825/604462909807314587353088",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "604461658286005355739179/604462909807314587353088",
+        "unclipped_bias_rad": "4482495495491233/302231454903657293676544",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "4482495495491233/302231454903657293676544",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "302229575801223351936417/302231454903657293676544",
+        "unclipped_bias_rad": "408842041307686503/302231454903657293676544",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "408842041307686503/302231454903657293676544",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "151114477690794014244049/151115727451828646838272",
+        "unclipped_bias_rad": "6320693957517147/75557863725914323419136",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "6320693957517147/75557863725914323419136",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "75557237982196581646939/75557863725914323419136",
+        "unclipped_bias_rad": "35835811692439375/604462909807314587353088",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "35835811692439375/604462909807314587353088",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/8",
+      "T": "0",
+      "method": "shared_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/8",
+      "T": "0",
+      "method": "ordinary",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/8",
+      "T": "0",
+      "method": "independent_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "604462908622572728990433/604462909807314587353088",
+        "unclipped_bias_rad": "4892534176658319474703/1267650600228229401496703205376",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "4892534176658319474703/1267650600228229401496703205376",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "2417851631062000198973399/2417851639229258349412352",
+        "unclipped_bias_rad": "26759771069105381048343/5070602400912917605986812821504",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "26759771069105381048343/5070602400912917605986812821504",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "604462907443893635735379/604462909807314587353088",
+        "unclipped_bias_rad": "117830429616313026478163/20282409603651670423947251286016",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "117830429616313026478163/20282409603651670423947251286016",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "604462905082230420608227/604462909807314587353088",
+        "unclipped_bias_rad": "9868875651802348912727/633825300114114700748351602688",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "9868875651802348912727/633825300114114700748351602688",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "604462901653458538165245/604462909807314587353088",
+        "unclipped_bias_rad": "53856761282299500167357/2535301200456458802993406410752",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "53856761282299500167357/2535301200456458802993406410752",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "37778931279639703347731/37778931862957161709568",
+        "unclipped_bias_rad": "117605589853039155478899/5070602400912917605986812821504",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "117605589853039155478899/5070602400912917605986812821504",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/16",
+      "T": "0",
+      "method": "shared_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/16",
+      "T": "0",
+      "method": "ordinary",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/16",
+      "T": "0",
+      "method": "independent_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "1208925814955383224310295/1208925819614629174706176",
+        "unclipped_bias_rad": "58348254854565580505133/10141204801825835211973625643008",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "58348254854565580505133/10141204801825835211973625643008",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "1208925813815273402874957/1208925819614629174706176",
+        "unclipped_bias_rad": "135824344706411575377973/20282409603651670423947251286016",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "135824344706411575377973/20282409603651670423947251286016",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "75557863144508655831743/75557863725914323419136",
+        "unclipped_bias_rad": "48649321204774109970461/5070602400912917605986812821504",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "48649321204774109970461/5070602400912917605986812821504",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "302231450251588024581949/302231454903657293676544",
+        "unclipped_bias_rad": "234725957419537933533237/10141204801825835211973625643008",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "234725957419537933533237/10141204801825835211973625643008",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "302231449111002652284805/302231454903657293676544",
+        "unclipped_bias_rad": "34124695456009057992745/1267650600228229401496703205376",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "34124695456009057992745/1267650600228229401496703205376",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "151115722830734435468139/151115727451828646838272",
+        "unclipped_bias_rad": "24296555500609732608051/633825300114114700748351602688",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "24296555500609732608051/633825300114114700748351602688",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/8",
+      "T": "0",
+      "method": "shared_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/8",
+      "T": "0",
+      "method": "ordinary",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/8",
+      "T": "0",
+      "method": "independent_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "2417851634487118855011723/2417851639229258349412352",
+        "unclipped_bias_rad": "9788408292579529981979/2535301200456458802993406410752",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "9788408292579529981979/2535301200456458802993406410752",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "1208925814387017035825141/1208925819614629174706176",
+        "unclipped_bias_rad": "252464061947528135835667/40564819207303340847894502572032",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "252464061947528135835667/40564819207303340847894502572032",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "1208925813743805146722415/1208925819614629174706176",
+        "unclipped_bias_rad": "137023383079303793082421/20282409603651670423947251286016",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "137023383079303793082421/20282409603651670423947251286016",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "151115726269882673496433/151115727451828646838272",
+        "unclipped_bias_rad": "39486863799115728289909/2535301200456458802993406410752",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "39486863799115728289909/2535301200456458802993406410752",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "302231449682746427224101/302231454903657293676544",
+        "unclipped_bias_rad": "507625878374820607951033/20282409603651670423947251286016",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "507625878374820607951033/20282409603651670423947251286016",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "151115724546567793994721/151115727451828646838272",
+        "unclipped_bias_rad": "34199635355832397332521/1267650600228229401496703205376",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "34199635355832397332521/1267650600228229401496703205376",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/16",
+      "T": "0",
+      "method": "shared_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/16",
+      "T": "0",
+      "method": "ordinary",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/16",
+      "T": "0",
+      "method": "independent_pm",
+      "status": "SAVED_ZERO_CONTROL_NOT_REANALYZED",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "1208925814952203192377645/1208925819614629174706176",
+        "unclipped_bias_rad": "3648435010582766157825/633825300114114700748351602688",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "3648435010582766157825/633825300114114700748351602688",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "1208925811527299889372061/1208925819614629174706176",
+        "unclipped_bias_rad": "43552562920609877590023/5070602400912917605986812821504",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "43552562920609877590023/5070602400912917605986812821504",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "604462904012082016819081/604462909807314587353088",
+        "unclipped_bias_rad": "58245793473043053412353/5070602400912917605986812821504",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "58245793473043053412353/5070602400912917605986812821504",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "method": "shared_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "151115725124439553664187/151115727451828646838272",
+        "unclipped_bias_rad": "14676056551779184148507/633825300114114700748351602688",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "14676056551779184148507/633825300114114700748351602688",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "method": "ordinary",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "302231446823029066051101/302231454903657293676544",
+        "unclipped_bias_rad": "10930293263457039941639/316912650057057350374175801344",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "10930293263457039941639/316912650057057350374175801344",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "method": "independent_pm",
+      "status": "READY_FOR_GAMMA_DOMAIN",
+      "saved_status": "NUMERIC_DIAGNOSTIC_ONLY",
+      "saved_phase_status": "RESOLVED_PRINCIPAL_PHASE",
+      "saved_evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+      "bounds": {
+        "A_lower": "151115721686747125952619/151115727451828646838272",
+        "unclipped_bias_rad": "58189584064442613628931/1267650600228229401496703205376",
+        "bias_definition": "min(pi,unclipped_bias_rad)",
+        "model_drift_added_again": false
+      },
+      "domain": {
+        "lower_open_rad": "58189584064442613628931/1267650600228229401496703205376",
+        "upper_open": "pi/2",
+        "positive_margin": "gamma>b_upper and A_lower>0"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "ordinary",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "718105742524715891635/151115727451828646838272",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "82584588261410006555053799967070111754205/87112285931760246646623899502532662132736",
+        "82584588261410006555053799967070111754859/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "143508541351730078678925201036162939687/43556142965880123323311949751266331066368",
+          "287017082703460157357850402072325879377/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "399688612609451184420835200246472251237/87112285931760246646623899502532662132736",
+          "399688612609451184420835200246472251239/87112285931760246646623899502532662132736"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "independent_pm",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "718105742524715891635/151115727451828646838272",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "82888353113416918111246868816060971097911/87112285931760246646623899502532662132736",
+        "82888353113416918111246868816060971098665/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "287100099824854622629994953203750425491/87112285931760246646623899502532662132736",
+          "143550049912427311314997476601875212747/43556142965880123323311949751266331066368"
+        ],
+        "Y": [
+          "402761141864689127418627588555491483097/87112285931760246646623899502532662132736",
+          "100690285466172281854656897138872870775/21778071482940061661655974875633165533184"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "ordinary",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "2374391936971896490197/302231454903657293676544",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "19101145492087958133349807198375877002823/87112285931760246646623899502532662132736",
+        "19101145492087958133349807198375877002941/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "2806559101041291945356154211117721942537/87112285931760246646623899502532662132736",
+          "2806559101041291945356154211117721942541/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "625451402849717159919029078345032059207/87112285931760246646623899502532662132736",
+          "312725701424858579959514539172516029605/43556142965880123323311949751266331066368"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "independent_pm",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "2374391936971896490197/302231454903657293676544",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "19439079476239392100986499116050800493719/87112285931760246646623899502532662132736",
+        "19439079476239392100986499116050800493823/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "1403396002192271934822400987016746167413/43556142965880123323311949751266331066368",
+          "701698001096135967411200493508373083707/21778071482940061661655974875633165533184"
+        ],
+        "Y": [
+          "318471187177619634452540569617203481741/43556142965880123323311949751266331066368",
+          "636942374355239268905081139234406963485/87112285931760246646623899502532662132736"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "ordinary",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "1438743652071062528929/604462909807314587353088",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "41458362227842140607571410059611266215001/43556142965880123323311949751266331066368",
+        "82916724455684281215142820119222532431475/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "18143022144505749369478403550339747925/10889035741470030830827987437816582766592",
+          "145144177156045994955827228402717983403/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "203757274593647432947315301786038556321/87112285931760246646623899502532662132736",
+          "50939318648411858236828825446509639081/21778071482940061661655974875633165533184"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "independent_pm",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "1438743652071062528929/604462909807314587353088",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "83068803577010110329322509930893923223397/87112285931760246646623899502532662132736",
+        "83068803577010110329322509930893923224867/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "145155165463036361606951955821271862449/87112285931760246646623899502532662132736",
+          "36288791365759090401737988955317965613/21778071482940061661655974875633165533184"
+        ],
+        "Y": [
+          "204527361245479345570637778834389082519/87112285931760246646623899502532662132736",
+          "102263680622739672785318889417194541261/43556142965880123323311949751266331066368"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "ordinary",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "1195800787086654901599/302231454903657293676544",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "19484944341336547791207864994146481282923/87112285931760246646623899502532662132736",
+        "304452255333383559237622890533538770049/1361129467683753853853498429727072845824"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "1448559237359964934337387776853124068393/87112285931760246646623899502532662132736",
+          "362139809339991233584346944213281017099/21778071482940061661655974875633165533184"
+        ],
+        "Y": [
+          "164761037199210142332772807094669066599/43556142965880123323311949751266331066368",
+          "329522074398420284665545614189338133201/87112285931760246646623899502532662132736"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "independent_pm",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "1195800787086654901599/302231454903657293676544",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "9827401968665746436597803816448888019221/43556142965880123323311949751266331066368",
+        "19654803937331492873195607632897776038655/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "724295441475232190106989533811208375405/43556142965880123323311949751266331066368",
+          "1448590882950464380213979067622416750813/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "83125340016201909853969990925032898307/21778071482940061661655974875633165533184",
+          "332501360064807639415879963700131593231/87112285931760246646623899502532662132736"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "ordinary",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "2871474804596726460827/1208925819614629174706176",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "82259721359956240348718879817627002200141/87112285931760246646623899502532662132736",
+        "82259721359956240348718879817627002201633/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "36232034196756125991763024571625673547/21778071482940061661655974875633165533184",
+          "144928136787024503967052098286502694191/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "50060197463930218424339525319456817125/21778071482940061661655974875633165533184",
+          "200240789855720873697358101277827268503/87112285931760246646623899502532662132736"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "independent_pm",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "2871474804596726460827/1208925819614629174706176",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "5179976225688647773102024837272730998117/5444517870735015415413993718908291383296",
+        "82879619611018364369632397396363695971349/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "72484196047370028499200836081154222381/43556142965880123323311949751266331066368",
+          "144968392094740056998401672162308444765/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "203327175143329861876725887892087521417/87112285931760246646623899502532662132736",
+          "50831793785832465469181471973021880355/21778071482940061661655974875633165533184"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "ordinary",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "1185992163979253396641/302231454903657293676544",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "1165216409222307019205486653714768390619/5444517870735015415413993718908291383296",
+        "4660865636889228076821946614859073562529/21778071482940061661655974875633165533184"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "362125883589223714259502424862742698581/21778071482940061661655974875633165533184",
+          "1448503534356894857038009699450970794327/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "314824979145499368008864240524390643399/87112285931760246646623899502532662132736",
+          "157412489572749684004432120262195321701/43556142965880123323311949751266331066368"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "independent_pm",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "1185992163979253396641/302231454903657293676544",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "19326040421422163444340348956317470011383/87112285931760246646623899502532662132736",
+        "19326040421422163444340348956317470011583/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "22634736753327534144834012328704351971/1361129467683753853853498429727072845824",
+          "724311576106481092634688394518539263073/43556142965880123323311949751266331066368"
+        ],
+        "Y": [
+          "326758546590090712119631495915828350233/87112285931760246646623899502532662132736",
+          "81689636647522678029907873978957087559/21778071482940061661655974875633165533184"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "ordinary",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "1438712143691298573149/1208925819614629174706176",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "82756682147924568649255787835076272588803/87112285931760246646623899502532662132736",
+        "82756682147924568649255787835076272591727/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "18235007863376174914759524534697936069/21778071482940061661655974875633165533184",
+          "72940031453504699659038098138791744279/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "50999048031028818155696558287272593909/43556142965880123323311949751266331066368",
+          "101998096062057636311393116574545187821/87112285931760246646623899502532662132736"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "independent_pm",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "1438712143691298573149/1208925819614629174706176",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "20765992440158826411285637259106413698397/21778071482940061661655974875633165533184",
+        "83063969760635305645142549036425654796497/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "72945574443494104687577735726060581821/87112285931760246646623899502532662132736",
+          "1139774600679595385743402120719696591/1361129467683753853853498429727072845824"
+        ],
+        "Y": [
+          "51385053750132970935260510164982000707/43556142965880123323311949751266331066368",
+          "102770107500265941870521020329964001417/87112285931760246646623899502532662132736"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "ordinary",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "298843455447917899067/151115727451828646838272",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "4814432132912954650535806229704639322599/21778071482940061661655974875633165533184",
+        "9628864265825909301071612459409278645419/43556142965880123323311949751266331066368"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "735957555269394322311938279893684268565/87112285931760246646623899502532662132736",
+          "735957555269394322311938279893684268569/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "165399816110598484667624342028107104639/87112285931760246646623899502532662132736",
+          "82699908055299242333812171014053552321/43556142965880123323311949751266331066368"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "independent_pm",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "298843455447917899067/151115727451828646838272",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "612473816666647282642758449161156050449/2722258935367507707706996859454145691648",
+        "19599162133332713044568270373156993614811/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "735974083084606850870559133132283898597/87112285931760246646623899502532662132736",
+          "735974083084606850870559133132283898601/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "84218270467193127048596789147313957111/43556142965880123323311949751266331066368",
+          "168436540934386254097193578294627914225/87112285931760246646623899502532662132736"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "ordinary",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "290309319788239431/302231454903657293676544",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "100312242980136518492953305804503505792007/87112285931760246646623899502532662132736",
+        "100312242980136518492953305804503509804747/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "8752363871371233672024847102175483/21778071482940061661655974875633165533184",
+          "35009455485484934688099388408701935/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "39275113502506927623083593188528517/43556142965880123323311949751266331066368",
+          "78550227005013855246167186377057037/87112285931760246646623899502532662132736"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "independent_pm",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "290309319788239431/302231454903657293676544",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "101493989527825587283244494494588483899097/87112285931760246646623899502532662132736",
+        "101493989527825587283244494494588487763137/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "17530116151726556981925857155781147/43556142965880123323311949751266331066368",
+          "35060232303453113963851714311562297/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "81624386473367841616044329305694939/87112285931760246646623899502532662132736",
+          "40812193236683920808022164652847471/43556142965880123323311949751266331066368"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "ordinary",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "402270241142452925/75557863725914323419136",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "48531630706039831625903926808093366209285/87112285931760246646623899502532662132736",
+        "48531630706039831625903926808093366638711/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "711567701872789703105387006896370549/87112285931760246646623899502532662132736",
+          "88945962734098712888173375862046319/10889035741470030830827987437816582766592"
+        ],
+        "Y": [
+          "443263196821492357848107273223590163/87112285931760246646623899502532662132736",
+          "221631598410746178924053636611795083/43556142965880123323311949751266331066368"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "independent_pm",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "402270241142452925/75557863725914323419136",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "49598284468330419823593635386907928256501/87112285931760246646623899502532662132736",
+        "6199785558541302477949204423363491085461/10889035741470030830827987437816582766592"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "355876338715847721799003236978344055/43556142965880123323311949751266331066368",
+          "711752677431695443598006473956688113/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "227784530913324149293694785839133421/43556142965880123323311949751266331066368",
+          "455569061826648298587389571678266845/87112285931760246646623899502532662132736"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "ordinary",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "294887850551306799/604462909807314587353088",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "791955358825804168054469849608911995349/680564733841876926926749214863536422912",
+        "101370285929702933510972140749940743144423/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "1098215249446073818727982121124371/5444517870735015415413993718908291383296",
+          "17571443991137181099647713937989939/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "20374370005166750388319906838380903/43556142965880123323311949751266331066368",
+          "40748740010333500776639813676761809/87112285931760246646623899502532662132736"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "independent_pm",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "294887850551306799/604462909807314587353088",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "101324332367271846174788423079231384698255/87112285931760246646623899502532662132736",
+        "50662166183635923087394211539615696169525/43556142965880123323311949751266331066368"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "8912258471979616271973613741600837/43556142965880123323311949751266331066368",
+          "17824516943959232543947227483201677/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "41275727290085637307685017714575943/87112285931760246646623899502532662132736",
+          "20637863645042818653842508857287973/43556142965880123323311949751266331066368"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "ordinary",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "813719246497207437/302231454903657293676544",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "49544337377765900707644150853148277431269/87112285931760246646623899502532662132736",
+        "49544337377765900707644150853148278285657/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "355959917868807379579343629237509549/87112285931760246646623899502532662132736",
+          "22247494866800461223708976827344347/5444517870735015415413993718908291383296"
+        ],
+        "Y": [
+          "227527399714780284835252237750382417/87112285931760246646623899502532662132736",
+          "56881849928695071208813059437595605/21778071482940061661655974875633165533184"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "independent_pm",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "813719246497207437/302231454903657293676544",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "49801334534875223322513175162084365403139/87112285931760246646623899502532662132736",
+        "1519816117397315164871617894350719185/2658455991569831745807614120560689152"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "356956163284935023482405574125126403/87112285931760246646623899502532662132736",
+          "178478081642467511741202787062563203/43556142965880123323311949751266331066368"
+        ],
+        "Y": [
+          "114825172214215999458429175340920103/43556142965880123323311949751266331066368",
+          "229650344428431998916858350681840209/87112285931760246646623899502532662132736"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "ordinary",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "144285843568705309/302231454903657293676544",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "48910841157080021416775293217435554863013/43556142965880123323311949751266331066368",
+        "97821682314160042833550586434871118277205/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "8829979305418680485328851396482449/43556142965880123323311949751266331066368",
+          "17659958610837360970657702792964901/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "4594959791933448028749943317283727/10889035741470030830827987437816582766592",
+          "36759678335467584229999546538269819/87112285931760246646623899502532662132736"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "independent_pm",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "144285843568705309/302231454903657293676544",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "100395729640410290702507359105857481882157/87112285931760246646623899502532662132736",
+        "100395729640410290702507359105857489795619/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "2213473342944016770508653320876039/10889035741470030830827987437816582766592",
+          "17707786743552134164069226567008315/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "4979167342098172616366480589052017/10889035741470030830827987437816582766592",
+          "39833338736785380930931844712416139/87112285931760246646623899502532662132736"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "ordinary",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "800818847337163329/302231454903657293676544",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "46650554799029522491449858226957887265441/87112285931760246646623899502532662132736",
+        "5831319349878690311431232278369736016183/10889035741470030830827987437816582766592"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "89111150064550097966109874007985595/21778071482940061661655974875633165533184",
+          "356444600258200391864439496031942383/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "26437451646331599784810623282911815/10889035741470030830827987437816582766592",
+          "211499613170652798278484986263294523/87112285931760246646623899502532662132736"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "independent_pm",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "800818847337163329/302231454903657293676544",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "48821534606406160558977617102747997673027/87112285931760246646623899502532662132736",
+        "48821534606406160558977617102747998528729/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "356621215181267535032831973883681869/87112285931760246646623899502532662132736",
+          "22288825948829220939551998367730117/5444517870735015415413993718908291383296"
+        ],
+        "Y": [
+          "111902005450650984572084609511042643/43556142965880123323311949751266331066368",
+          "223804010901301969144169219022085289/87112285931760246646623899502532662132736"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "ordinary",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "296917159785161727/1208925819614629174706176",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "49659285457755473929279298473975088825443/43556142965880123323311949751266331066368",
+        "99318570915510947858558596947950193738241/87112285931760246646623899502532662132736"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "4497023596627067501326633925700885/43556142965880123323311949751266331066368",
+          "8994047193254135002653267851401773/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "19576180361547385956420354779210105/87112285931760246646623899502532662132736",
+          "4894045090386846489105088694802527/21778071482940061661655974875633165533184"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "independent_pm",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "296917159785161727/1208925819614629174706176",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "49640298275972266877117063617950752437033/43556142965880123323311949751266331066368",
+        "49640298275972266877117063617950760269571/43556142965880123323311949751266331066368"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "9246752139441537863522442116996021/87112285931760246646623899502532662132736",
+          "1155844017430192232940305264624503/10889035741470030830827987437816582766592"
+        ],
+        "Y": [
+          "5025776362011559455934019361191203/21778071482940061661655974875633165533184",
+          "20103105448046237823736077444764815/87112285931760246646623899502532662132736"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "ordinary",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "408842041307686503/302231454903657293676544",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "48234981706858712671482676419682008448921/87112285931760246646623899502532662132736",
+        "24117490853429356335741338209841005079951/43556142965880123323311949751266331066368"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "89411852731142647197874074754241935/43556142965880123323311949751266331066368",
+          "178823705462285294395748149508483873/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "110552758966276320258425285875894669/87112285931760246646623899502532662132736",
+          "6909547435392270016151580367243417/5444517870735015415413993718908291383296"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "independent_pm",
+      "status": "UNIQUE_TRADEOFF_BOUNDARY",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "NOT_ASSESSED",
+      "saved_visibility_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "formula_applicability": "REVIEW_TRADEOFF_DIRECT",
+      "common_domain": {
+        "lower_open_rad": "408842041307686503/302231454903657293676544",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": [
+        "12190341193409609586685443799966083962511/21778071482940061661655974875633165533184",
+        "1523792649176201198335680474995760548361/2722258935367507707706996859454145691648"
+      ],
+      "boundary_location_status": "ENCLOSED_INTERIOR",
+      "continuous_relation_before": "SHARED_LOWER",
+      "continuous_relation_after": "SHARED_HIGHER",
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)",
+      "coefficient_intervals": {
+        "X": [
+          "44954726910972128192885355673213453/21778071482940061661655974875633165533184",
+          "179818907643888512771541422692853815/87112285931760246646623899502532662132736"
+        ],
+        "Y": [
+          "112675520715168948311798891836270925/87112285931760246646623899502532662132736",
+          "7042220044698059269487430739766933/5444517870735015415413993718908291383296"
+        ]
+      },
+      "oriented_equation": "X*sin(gamma)-Y*cos(gamma)",
+      "equation_orientation": "shared-minus-comparator",
+      "relation_rule": "before root lower endpoint / after root upper endpoint; enclosure band unresolved",
+      "unique_root_existence": "THEOREM_UNDER_VERIFIED_TRADEOFF_ASSUMPTIONS"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "ordinary",
+      "status": "ALL_COMMON_GAMMA_SHARED_HIGHER",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE",
+      "saved_visibility_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "formula_applicability": "NOT_APPLICABLE_SHARED_DOMINANCE",
+      "common_domain": {
+        "lower_open_rad": "26759771069105381048343/5070602400912917605986812821504",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": null,
+      "boundary_location_status": "NOT_APPLICABLE",
+      "continuous_relation_before": "SHARED_HIGHER",
+      "continuous_relation_after": null,
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "independent_pm",
+      "status": "ALL_COMMON_GAMMA_SHARED_HIGHER",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE",
+      "saved_visibility_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "formula_applicability": "NOT_APPLICABLE_SHARED_DOMINANCE",
+      "common_domain": {
+        "lower_open_rad": "117830429616313026478163/20282409603651670423947251286016",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": null,
+      "boundary_location_status": "NOT_APPLICABLE",
+      "continuous_relation_before": "SHARED_HIGHER",
+      "continuous_relation_after": null,
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "ordinary",
+      "status": "ALL_COMMON_GAMMA_SHARED_HIGHER",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE",
+      "saved_visibility_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "formula_applicability": "NOT_APPLICABLE_SHARED_DOMINANCE",
+      "common_domain": {
+        "lower_open_rad": "53856761282299500167357/2535301200456458802993406410752",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": null,
+      "boundary_location_status": "NOT_APPLICABLE",
+      "continuous_relation_before": "SHARED_HIGHER",
+      "continuous_relation_after": null,
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "independent_pm",
+      "status": "ALL_COMMON_GAMMA_SHARED_HIGHER",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE",
+      "saved_visibility_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "formula_applicability": "NOT_APPLICABLE_SHARED_DOMINANCE",
+      "common_domain": {
+        "lower_open_rad": "117605589853039155478899/5070602400912917605986812821504",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": null,
+      "boundary_location_status": "NOT_APPLICABLE",
+      "continuous_relation_before": "SHARED_HIGHER",
+      "continuous_relation_after": null,
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "ordinary",
+      "status": "ALL_COMMON_GAMMA_SHARED_HIGHER",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE",
+      "saved_visibility_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "formula_applicability": "NOT_APPLICABLE_SHARED_DOMINANCE",
+      "common_domain": {
+        "lower_open_rad": "135824344706411575377973/20282409603651670423947251286016",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": null,
+      "boundary_location_status": "NOT_APPLICABLE",
+      "continuous_relation_before": "SHARED_HIGHER",
+      "continuous_relation_after": null,
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "independent_pm",
+      "status": "ALL_COMMON_GAMMA_SHARED_HIGHER",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE",
+      "saved_visibility_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "formula_applicability": "NOT_APPLICABLE_SHARED_DOMINANCE",
+      "common_domain": {
+        "lower_open_rad": "48649321204774109970461/5070602400912917605986812821504",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": null,
+      "boundary_location_status": "NOT_APPLICABLE",
+      "continuous_relation_before": "SHARED_HIGHER",
+      "continuous_relation_after": null,
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "ordinary",
+      "status": "ALL_COMMON_GAMMA_SHARED_HIGHER",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE",
+      "saved_visibility_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "formula_applicability": "NOT_APPLICABLE_SHARED_DOMINANCE",
+      "common_domain": {
+        "lower_open_rad": "34124695456009057992745/1267650600228229401496703205376",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": null,
+      "boundary_location_status": "NOT_APPLICABLE",
+      "continuous_relation_before": "SHARED_HIGHER",
+      "continuous_relation_after": null,
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "independent_pm",
+      "status": "ALL_COMMON_GAMMA_SHARED_HIGHER",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE",
+      "saved_visibility_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "formula_applicability": "NOT_APPLICABLE_SHARED_DOMINANCE",
+      "common_domain": {
+        "lower_open_rad": "24296555500609732608051/633825300114114700748351602688",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": null,
+      "boundary_location_status": "NOT_APPLICABLE",
+      "continuous_relation_before": "SHARED_HIGHER",
+      "continuous_relation_after": null,
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "ordinary",
+      "status": "ALL_COMMON_GAMMA_SHARED_HIGHER",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE",
+      "saved_visibility_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "formula_applicability": "NOT_APPLICABLE_SHARED_DOMINANCE",
+      "common_domain": {
+        "lower_open_rad": "252464061947528135835667/40564819207303340847894502572032",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": null,
+      "boundary_location_status": "NOT_APPLICABLE",
+      "continuous_relation_before": "SHARED_HIGHER",
+      "continuous_relation_after": null,
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "independent_pm",
+      "status": "ALL_COMMON_GAMMA_SHARED_HIGHER",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE",
+      "saved_visibility_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "formula_applicability": "NOT_APPLICABLE_SHARED_DOMINANCE",
+      "common_domain": {
+        "lower_open_rad": "137023383079303793082421/20282409603651670423947251286016",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": null,
+      "boundary_location_status": "NOT_APPLICABLE",
+      "continuous_relation_before": "SHARED_HIGHER",
+      "continuous_relation_after": null,
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "ordinary",
+      "status": "ALL_COMMON_GAMMA_SHARED_HIGHER",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE",
+      "saved_visibility_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "formula_applicability": "NOT_APPLICABLE_SHARED_DOMINANCE",
+      "common_domain": {
+        "lower_open_rad": "507625878374820607951033/20282409603651670423947251286016",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": null,
+      "boundary_location_status": "NOT_APPLICABLE",
+      "continuous_relation_before": "SHARED_HIGHER",
+      "continuous_relation_after": null,
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "independent_pm",
+      "status": "ALL_COMMON_GAMMA_SHARED_HIGHER",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE",
+      "saved_visibility_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "formula_applicability": "NOT_APPLICABLE_SHARED_DOMINANCE",
+      "common_domain": {
+        "lower_open_rad": "34199635355832397332521/1267650600228229401496703205376",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": null,
+      "boundary_location_status": "NOT_APPLICABLE",
+      "continuous_relation_before": "SHARED_HIGHER",
+      "continuous_relation_after": null,
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "ordinary",
+      "status": "ALL_COMMON_GAMMA_SHARED_HIGHER",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE",
+      "saved_visibility_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "formula_applicability": "NOT_APPLICABLE_SHARED_DOMINANCE",
+      "common_domain": {
+        "lower_open_rad": "43552562920609877590023/5070602400912917605986812821504",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": null,
+      "boundary_location_status": "NOT_APPLICABLE",
+      "continuous_relation_before": "SHARED_HIGHER",
+      "continuous_relation_after": null,
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "independent_pm",
+      "status": "ALL_COMMON_GAMMA_SHARED_HIGHER",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE",
+      "saved_visibility_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "formula_applicability": "NOT_APPLICABLE_SHARED_DOMINANCE",
+      "common_domain": {
+        "lower_open_rad": "58245793473043053412353/5070602400912917605986812821504",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": null,
+      "boundary_location_status": "NOT_APPLICABLE",
+      "continuous_relation_before": "SHARED_HIGHER",
+      "continuous_relation_after": null,
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "ordinary",
+      "status": "ALL_COMMON_GAMMA_SHARED_HIGHER",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE",
+      "saved_visibility_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "formula_applicability": "NOT_APPLICABLE_SHARED_DOMINANCE",
+      "common_domain": {
+        "lower_open_rad": "10930293263457039941639/316912650057057350374175801344",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": null,
+      "boundary_location_status": "NOT_APPLICABLE",
+      "continuous_relation_before": "SHARED_HIGHER",
+      "continuous_relation_after": null,
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "independent_pm",
+      "status": "ALL_COMMON_GAMMA_SHARED_HIGHER",
+      "scientific_GO": null,
+      "native_costs": null,
+      "scientific_gain_claim": "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE",
+      "saved_visibility_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "formula_applicability": "NOT_APPLICABLE_SHARED_DOMINANCE",
+      "common_domain": {
+        "lower_open_rad": "58189584064442613628931/1267650600228229401496703205376",
+        "upper_open": "pi/2"
+      },
+      "boundary_interval_rad": null,
+      "boundary_location_status": "NOT_APPLICABLE",
+      "continuous_relation_before": "SHARED_HIGHER",
+      "continuous_relation_after": null,
+      "strict_integer_saving": "NOT_INFERRED_FROM_CONTINUOUS_ORDER",
+      "integer_condition": "ceil(K/M_sh(gamma)^2)<ceil(K/M_cmp(gamma)^2)"
+    }
+  ],
+  "failure": null,
+  "arithmetic": {
+    "pi_interval": [
+      "34208914690078935931509771941179865065619/10889035741470030830827987437816582766592",
+      "68417829380157871863019543882359730131243/21778071482940061661655974875633165533184"
+    ],
+    "K_interval": [
+      "381728357160300275000107753214953170710855/21778071482940061661655974875633165533184",
+      "190864178580150137500053876607476585355431/10889035741470030830827987437816582766592"
+    ],
+    "alpha_axis": "1/40",
+    "bits": 128,
+    "K_use": "symbolic N_axis(gamma)=ceil(K/M_m(gamma)^2); no fixed gamma evaluated",
+    "bound_steps": 3335
+  },
+  "usage": {
+    "maxrss_KiB_linux": 16084,
+    "cpu_user_seconds": 0.308422,
+    "cpu_system_seconds": 0.010908
+  }
+}

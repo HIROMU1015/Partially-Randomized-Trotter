@@ -1,3 +1,5 @@
+> **M1-S γ依存V1完了（2026-10-17）**：[結果・修正来歴](docs/tracks/algorithm_codesign/m1s_v1_gamma_completed_results_and_stop_20261017.md)。ユーザーの修正・完了承認で旧失敗を保全し別S2/C2/A2から試行02が完了。H4 linear1.00 Å/STO-3G/DF rank12・G3/G6/G9・保存δ1/8,1/16・R2,4・T1,4・α0.05/p128/CPU160/wall320不変。72行評価・36zero保持・48対照分類、G3/G6各16tradeoff境界、G9絶対差未解像を保持。絶対shot/native/RPE総資源/科学GOなし。SOURCE `src/trottertracks/algorithm_codesign/m1s_saved_signal_gamma_v2`、runner `scripts/tracks/algorithm_codesign/run_m1s_saved_signal_gamma_v2.py`、tests `tests/tracks/algorithm_codesign/test_m1s_gamma_completion.py`、artifact `artifacts/track_b_m1s_v1_gamma_completion/2026-10-17/attempt_02`。条件付き未認証、旧成果保全、mandatory STOP。以下は履歴。
+
 > **M1-S γ依存V1（2026-10-17）**：[失敗報告](docs/tracks/algorithm_codesign/m1s_v1_gamma_one_shot_technical_stop_20261017.md)。`TECHNICAL_STOP_RUNTIME_API / ONE_SHOT_CONSUMED / RETRY_0`。108行/48対照未評価、科学解析未到達、V1 correctness未検証。旧数値status不変、mandatory STOP。
 
 > **M1-S γ依存V1正式採択（2026-10-17）**：[正式契約](docs/tracks/algorithm_codesign/m1s_v1_gamma_formally_adopted_contract_20261017.md)。`CONTRACT_ADOPTED_EXECUTION_NOT_AUTHORIZED_MANDATORY_STOP`。SOURCE/入力不変、今回非数値の契約・保全監査のみ。登録H4のV1 correctness・runtimeは未検証。旧数値結果status不変。
