@@ -1,0 +1,101 @@
+{
+  "record_kind": "SAVED_DATA_SCALAR_DIAGNOSTIC_NOT_GATE0_AUTHORIZATION",
+  "date_jst": "2026-10-16",
+  "base_commit": "c937ed37e73bb9b0bb39f2fa7116d255a3215269",
+  "diagnostic_source": "scripts/tracks/algorithm_codesign/analyze_m1s_gate0_precision_saved.py",
+  "diagnostic_source_sha256": "bcda06c0c4b50fc824989e1857290cd3def70a2ea76ad5987afbb6f3a4b055a7",
+  "saved_result": "artifacts/track_b_m1s_gate0_result/2026-10-16/v4_one_shot/result.json",
+  "saved_result_sha256": "83bf30919202b045101fba6aed9e7aec9e149581c4696c8c9e7212c70ae593c0",
+  "saved_input": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz",
+  "saved_input_sha256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a",
+  "adopted_contract": "artifacts/track_b_m1s_gate0_v4_formal_adoption/2026-10-16/v1/execution_contract_v4_adopted.json",
+  "adopted_contract_sha256": "bcabddea9c87a6da37ef9499fe0ec5311a530415445dadf0a73d908d4646ef2f",
+  "user_scope": [
+    "保存済みデータだけを使った精度予算の原因調査: 項別支配・lambda増幅と共通上界・改善可否・保証/判断/追加計算の整理",
+    "必要なら追加計算し得もよい"
+  ],
+  "needed_additional_processing": "Existing JSON omits unaggregated DF-tail input scales; decode only four frozen NPZ members and exactly sum their absolute components. State and other members are not decoded.",
+  "C_cases": [
+    1000000,
+    706837,
+    27781
+  ],
+  "C_meaning": {
+    "1000000": "adopted resource cap",
+    "706837": "documented static global contribution bound, not new operation-DAG proof",
+    "27781": "saved observed global counter, sensitivity illustration only; cannot silently replace a future cap"
+  },
+  "cases": [
+    {
+      "id": "adopted_full",
+      "scale": "full_S",
+      "C": 1000000,
+      "law_M": "cap",
+      "alpha": "gamma_scale"
+    },
+    {
+      "id": "full_law_count_only",
+      "scale": "full_S",
+      "C": 1000000,
+      "law_M": "saved_event_count",
+      "alpha": "gamma_scale"
+    },
+    {
+      "id": "full_static_C",
+      "scale": "full_S",
+      "C": 706837,
+      "law_M": "cap",
+      "alpha": "gamma_scale"
+    },
+    {
+      "id": "full_observed_C_law_count",
+      "scale": "full_S",
+      "C": 27781,
+      "law_M": "saved_event_count",
+      "alpha": "gamma_scale"
+    },
+    {
+      "id": "tail_scale_only",
+      "scale": "tail_S",
+      "C": 1000000,
+      "law_M": "cap",
+      "alpha": "gamma_scale"
+    },
+    {
+      "id": "tail_static_C_law_count",
+      "scale": "tail_S",
+      "C": 706837,
+      "law_M": "saved_event_count",
+      "alpha": "gamma_scale"
+    },
+    {
+      "id": "tail_observed_C_law_count",
+      "scale": "tail_S",
+      "C": 27781,
+      "law_M": "saved_event_count",
+      "alpha": "gamma_scale"
+    },
+    {
+      "id": "zero_coefficient_error_limit",
+      "scale": "full_S",
+      "C": 1000000,
+      "law_M": "cap",
+      "alpha": "zero"
+    }
+  ],
+  "cases_are_post_hoc_unadopted_sensitivities": true,
+  "new_precision_targets_selected": false,
+  "output": "artifacts/track_b_m1s_gate0_precision_cause/2026-10-16/v1/diagnostic_result.json",
+  "memory_bytes": 4294967296,
+  "output_bytes": 268435456,
+  "wall_time_seconds": null,
+  "workers": 1,
+  "GPU": false,
+  "numeric_backend": "stdlib Fraction exact rational; no NumPy/BLAS",
+  "python": "3.10.12",
+  "performance": "Read NPZ once, cache input scales once and saved L1 once per split; 3 rows x 8 fixed scalar cases, CPU1. No substantial workload/parallel worker overhead warranted; no benchmark speedup claimed.",
+  "scientific_runner_or_W_v_rho_execution": false,
+  "formal_contract_changed": false,
+  "marker_reuse": false,
+  "mandatory_STOP": true
+}
