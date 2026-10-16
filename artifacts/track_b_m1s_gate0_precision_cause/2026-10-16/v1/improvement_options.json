@@ -1,0 +1,80 @@
+{
+  "schema": "m1s_gate0_precision_improvement_options_v1",
+  "options": [
+    {
+      "id": "A_law_count",
+      "change": "Use actual canonical event count for law-stage summation/assembly only",
+      "same_conditional_model_possible": true,
+      "supported_now": "360 saved events per split; gamma-law-count sensitivity computed",
+      "insufficient_alone": true,
+      "proof_needed": "Bound every law-stage sum length before metrics; do not substitute 360 into pre-aggregation coefficient DAG",
+      "formal_contract_adoption_needed": true,
+      "new_scientific_acquisition_for_proposal": false,
+      "new_Gate0_for_metrics": true
+    },
+    {
+      "id": "B_tail_scale",
+      "change": "Separate HR raw input scale S_R=sum_tail |lambda_l| G_l^2 from full-H S",
+      "same_conditional_model_possible": true,
+      "supported_now": "Exact raw scales recomputed from four saved NPZ members; frozen HR source excludes h/constant/HD prefix",
+      "insufficient_alone": true,
+      "proof_needed": "Cover the HR coefficient DAG, projection and identity policy using S_R, all missing/exact-zero target coefficients and all arithmetic errors",
+      "formal_contract_adoption_needed": true,
+      "new_scientific_acquisition_for_proposal": false,
+      "new_Gate0_for_metrics": true
+    },
+    {
+      "id": "C_DAG_counts",
+      "change": "Use operation-path or block-local bounds instead of global resource C in coefficient gamma",
+      "same_conditional_model_possible": true,
+      "supported_now": "Global cap 1000000, static bound 706837 and observed counter 27781 have different meanings; sensitivities distinguish them",
+      "proof_needed": "Count rounding operations and weighted input masses on each contributing path, including grouped fsum, scaling and shared preparation; keep resource cap independent",
+      "observed_counter_is_new_bound": false,
+      "formal_contract_adoption_needed": true,
+      "new_scientific_acquisition_for_proposal": "No, if proved from frozen SOURCE/input; instrumented verification may be needed if proof insufficient",
+      "new_Gate0_for_metrics": true
+    },
+    {
+      "id": "D_local_scale_and_DAG",
+      "change": "Combine B/C with verified law-stage counts; keep precision ceilings and binary64 assumptions",
+      "preferred_technical_preparation_candidate": true,
+      "same_conditional_model_possible": true,
+      "supported_now": "All three illustrative tail+observed-count scalar budgets fit W/v ceilings; these are post-hoc sensitivities, not validated bounds",
+      "guaranteed_now": "Cause attribution and the scalar sensitivity values only",
+      "proof_needed": "Prove a priori or metric-independent local bounds; do not freeze observed 27781 merely because it makes budgets fit",
+      "formal_contract_adoption_needed": true,
+      "new_scientific_acquisition_for_proposal": false,
+      "new_Gate0_for_metrics": true
+    },
+    {
+      "id": "E_exact_coefficients",
+      "change": "Independently reconstruct exact dyadic target coefficients and certify coefficient differences, preserving exact saved input target",
+      "same_target_possible": true,
+      "coverage": "Exact coefficient layer potentially certifiable; later BLAS/quotient stages remain conditional",
+      "not_performed": true,
+      "additional_work": "New exact JW implementation/verification with union of exact and saved supports, omitted zeros/signs/identity handled; no approximate cutoff",
+      "new_computation_if_selected": true,
+      "formal_contract_adoption_needed": true
+    },
+    {
+      "id": "F_validated_W_v",
+      "change": "Use directed-rounding interval or exact arithmetic for later W/v stages if a full numerical certificate is required",
+      "coverage": "A certificate requires verified arithmetic and full input/algorithm enclosure, not merely larger precision",
+      "not_performed": true,
+      "new_computation_if_selected": true,
+      "additional_scientific_judgment": "Whether certified coverage rather than current conditional engineering evaluation is required",
+      "formal_contract_adoption_needed": true
+    },
+    {
+      "id": "G_empirical_or_threshold_change",
+      "change": "Fit allowance to reconstruction discrepancy, compare two precisions, or relax eps_W/eps_v",
+      "coverage": "Observed agreement alone does not certify the exact-input target; ceiling relaxation changes adopted scientific resolution",
+      "recommendation": "Do not use as an automatic repair",
+      "not_performed": true,
+      "formal_contract_adoption_needed": true
+    }
+  ],
+  "adopted_options": [],
+  "new_source_for_Gate0_prepared": false,
+  "mandatory_STOP": true
+}
