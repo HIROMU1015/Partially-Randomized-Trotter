@@ -26,6 +26,8 @@ SOURCE_PATHS = (
     "src/trottertracks/algorithm_codesign/m1s_gate0/control.py",
     "src/trottertracks/algorithm_codesign/m1s_gate0/science.py",
     "scripts/tracks/algorithm_codesign/run_m1s_gate0_headroom.py",
+    "src/trottertracks/__init__.py",
+    "src/trottertracks/algorithm_codesign/__init__.py",
 )
 EPS_KEYS = (
     "eps_H", "eps_hermiticity_H", "eps_hermiticity_factors", "eps_phase", "eps_state_norm",
@@ -251,6 +253,9 @@ def authorize(root, config_path, auth_commit, auth_path):
         source_raw = _git(root, "show", f"{sc}:{path}")
         if digest(source_raw) != config["source_sha256"][path] or (root / path).read_bytes() != source_raw:
             raise ValueError(f"Frozen source mismatch: {path}")
+    input_raw = (root / INPUT_PATH).read_bytes()
+    if len(input_raw) != 8652 or digest(input_raw) != INPUT_SHA:
+        raise ValueError("Frozen input byte identity mismatch before numerical import")
     if sys.version.split()[0] != config["runtime"]["python"]:
         raise ValueError("Python version mismatch")
     for key, value in config["runtime"]["threads"].items():
