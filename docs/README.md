@@ -1,3 +1,7 @@
+## 2026-10-17 H8 signed成分：184候補368軸PASS
+
+[結果・証拠](research/track_a_h8_signed_bias_result_20261017.md)。保存値のsigned成分復元・数値照合を一回実行し、旧B0+I12復元＋既存172照合、全184候補368軸・3976検査PASS。不合格0。SOURCE64ec6cbb…、rel/abs1e-12維持、native exit0/reap、wall約.303秒/RSS47.7 MiB、修正・再実行0。共有reference/scalar・旧native projection8/12・prefix19元SHA欠測16候補を保持。新signal/compile/sampling/費用/shot/ランキング0。B2 STOP・既存資料保全、mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-17 H8 signed成分復元・数値整合性：準備完了、実行未承認
 
 [資料入口](research/track_a_h8_signed_bias_readiness_20261017.md)。旧B0+I12候補24軸のsigned成分復元と既存172候補344軸の整合性を検査するrunnerを準備。新38＋既存30の68人工検査PASS。closure案rel/abs1e-12を継承し端点・forward等にも事前固定。SOURCE 64ec6cbba7e48ac7c04a6ad0b38c3e76f0f14526。実H8復元/数値照合・shot/費用/ランキング・新signal/compile/sampling/fit0。B2完了は前提にせず旧STOP/証拠を保全。無効grant・実行未認可・command null、追加科学レビュー/subagents0。以下は各時点の履歴。
