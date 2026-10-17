@@ -1,0 +1,180 @@
+{
+  "schema": "H8_KEY_COMPILE_PLAN_V2",
+  "scope": "H8_THREE_SELECTED_CANDIDATES_SIX_NATIVE_AXES_PARALLEL_PREPARATION_V2",
+  "cases": [
+    {
+      "id": "B0I_p15_q4_4th",
+      "method": "B0I",
+      "prefix": 15,
+      "q": 4,
+      "formula": "4th",
+      "native_instruction_allocation_bound": 243121,
+      "measured_wrapper_allocation_bound": 243125
+    },
+    {
+      "id": "B0I_p11_q1_2nd",
+      "method": "B0I",
+      "prefix": 11,
+      "q": 1,
+      "formula": "2nd",
+      "native_instruction_allocation_bound": 14981,
+      "measured_wrapper_allocation_bound": 14985
+    },
+    {
+      "id": "B0_p15_q4_2nd",
+      "method": "B0",
+      "prefix": 15,
+      "q": 4,
+      "formula": "2nd",
+      "native_instruction_allocation_bound": 81041,
+      "measured_wrapper_allocation_bound": 81045
+    }
+  ],
+  "axes": [
+    {
+      "case_id": "B0I_p15_q4_4th",
+      "axis": "cosine",
+      "exact_prediction": "4670300/7",
+      "extrapolated_prefix": false
+    },
+    {
+      "case_id": "B0I_p15_q4_4th",
+      "axis": "sine",
+      "exact_prediction": "4670300/7",
+      "extrapolated_prefix": false
+    },
+    {
+      "case_id": "B0I_p11_q1_2nd",
+      "axis": "cosine",
+      "exact_prediction": "298323/7",
+      "extrapolated_prefix": true
+    },
+    {
+      "case_id": "B0I_p11_q1_2nd",
+      "axis": "sine",
+      "exact_prediction": "298323/7",
+      "extrapolated_prefix": true
+    },
+    {
+      "case_id": "B0_p15_q4_2nd",
+      "axis": "cosine",
+      "exact_prediction": "1564196/7",
+      "extrapolated_prefix": false
+    },
+    {
+      "case_id": "B0_p15_q4_2nd",
+      "axis": "sine",
+      "exact_prediction": "1564196/7",
+      "extrapolated_prefix": false
+    }
+  ],
+  "input_binding_sha256": "d289773ed7f52032aa8603b48f8da321d941efeb62354357572dd76e9655d63d",
+  "source_closure_sha256": "ca30b6a0b1a6f9ab5daf10f49181ea40f7b40838aa6b277a44da3334cd70dc65",
+  "science": {
+    "geometry": "Linear H8 1.0 Angstrom STO-3G",
+    "modes": 16,
+    "sector": 4900,
+    "DF_rank": 28,
+    "T": 0.8,
+    "fragment_order": "SAVED_SIGNED_GENERATION_ORDER",
+    "control": "symmetric_directional",
+    "S4": "NEGATIVE_MIDDLE_NONMERGED_THREE_S2_YOSHIDA",
+    "reference": "UNROTATED_SAVED_FULL_H"
+  },
+  "scalar": {
+    "B0": "ORIGINAL_ONCE",
+    "B0I": "ORIGINAL_PLUS_OWN_PREFIX_SAVED_FULL_FOCK_IDENTITY_ONCE"
+  },
+  "compiler_options": {
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "qiskit_version": "1.3.0",
+    "backend": null,
+    "coupling_map": null
+  },
+  "compiler_hash": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+  "profile_sha256": "622ce4a8391002558b877240b48d831d9bb0a72aeabba2e4d73bfec64b9c9f12",
+  "provider_SOURCE": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+  "model_sha256": "8420b9f247c63f47f10f40ba5e875f5ed971e8948ea6748b9845698fe6bdb8b0",
+  "call_caps": {
+    "snapshot_load": 1,
+    "saved_preparation_decode": 1,
+    "prefix_view": 2,
+    "native_evolution_build": 3,
+    "measured_wrapper_build": 6,
+    "probe_wrapper_copy": 6,
+    "control_probe": 12,
+    "qpy_dump": 6,
+    "qpy_load": 6,
+    "compile": 6,
+    "model_error_check": 6,
+    "new_signal": 0,
+    "new_reference": 0,
+    "tail_scalar": 0,
+    "SCF": 0,
+    "DF": 0,
+    "state_solver": 0,
+    "PR_sampling": 0,
+    "fit": 0,
+    "cost_reaccount": 0,
+    "extra_compile": 0
+  },
+  "compile_concurrency": 1,
+  "preparation_concurrency": 6,
+  "max_cases_live": 3,
+  "preparation": {
+    "case_build_concurrency": 3,
+    "worker_pairs": 3,
+    "workers_per_pair": 2,
+    "wrapper_build": "IN_AXIS_WORKER_WITH_VALIDATION_FINGERPRINT_AND_QPY",
+    "case_coordinator": "SHARES_FIRST_CPU_OF_OWN_PAIR_WHILE_WAITING",
+    "call_reservations": "PARENT_BEFORE_CASE_FORK_NONREFUNDABLE",
+    "per_case_caps": {
+      "native_evolution_build": 1,
+      "measured_wrapper_build": 2,
+      "probe_wrapper_copy": 2,
+      "control_probe": 4,
+      "qpy_dump": 2
+    },
+    "compile_admission": "ALL_THREE_PREPARATIONS_PASS"
+  },
+  "axis_order": "PRIORITY_CASE_THEN_COSINE_SINE",
+  "check_before_next_compile": true,
+  "model_PASS": "abs(prediction-measured)/measured < 1/50",
+  "control_PASS": "finite error < 1e-8",
+  "resource_policy": {
+    "agent_imposed_CPU_RAM_CPUtime_wall_caps": null,
+    "OS_limits": "INHERIT_WITHOUT_CHANGE",
+    "PSI": "OBSERVE_AND_REESTABLISH_NO_TRANSIENT_STOP",
+    "unrelated_worktrees": "OBSERVATION_ONLY",
+    "fork": "SINGLE_THREAD_PARENT_REQUIRED",
+    "threads_per_worker": 1,
+    "estimates": {
+      "aggregate_peak_RSS_bytes": 206158430208,
+      "headroom_bytes": 17179869184,
+      "stage_bytes": 2147483648,
+      "inodes": 1024,
+      "monitor_growth": "APPEND_JSONL_BYTES_PER_SECOND_REPORTED",
+      "wall": "UNMEASURED_NO_DEADLINE"
+    }
+  },
+  "mismatch": "PRESERVE_RAW_THEN_STOP_NO_REFIT_NO_EXTRA_COMPILE",
+  "one_shot": true,
+  "automatic_retry": false,
+  "next_stage_authorized": false,
+  "cost_reaccount_authorized": false,
+  "full_grid_measured_optimum": false,
+  "rigorous_bias_guarantee": false,
+  "PR_population_guarantee": false,
+  "approved": false,
+  "runtime_authorization": false,
+  "allowed_cpus": [],
+  "absolute_launch_command": null,
+  "mandatory_STOP": true
+}

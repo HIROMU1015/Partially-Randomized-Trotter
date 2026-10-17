@@ -1,3 +1,7 @@
+## 2026-10-17 H8：現runを保持した準備工程の並列化
+
+[実装・検証・契約](docs/research/track_a_h8_key_compile_parallel_preparation_20261017.md)。準備を3構成並行・最大6 workerへ拡張し、wrapper生成も軸workerへ移した。人工32件PASS、SOURCE 7f8d74660b2914a1223d0ac7990dde8d4645032e。compileは固定順直列・各軸2%以上でSTOP。新方式の科学起動0・無効grant・未seal。旧runの25 immutable filesはSHA一致し、稼働継続。速度/peak RSSは未測定。以下は各時点の履歴。
+
 ## 2026-10-17 H8：主要3構成・6軸の直接compile準備（未承認）
 
 [準備・人工検証](docs/research/track_a_h8_key_compile_readiness_20261017.md)。SOURCE `352581103b7dbd4fa58e28af7a6ca65570d36e8e`。保存入力11件のbyte照合、人工22件PASS。準備2並列・compile直列/各軸2%未満、own-process cleanupを実装。実H8 build/control/compile/費用再会計0、無効grant・CPU未指定・未seal。実compileと後続再会計は別承認。以下は各時点の履歴。
