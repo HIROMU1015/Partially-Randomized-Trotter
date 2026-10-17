@@ -1,3 +1,9 @@
+## 2026-10-17 H8 非相殺bias診断：runner・証拠照合・人工検証、実行未承認
+
+[資料入口](../../docs/research/track_a_h8_noncancellation_readiness_20261017.md)。全184決定論候補（旧B0+I復元12を含む）とPR確認union6を対象に、per-axis非相殺診断（B0/B0+I `abs(discard)+abs(PF)`、full PF `abs(PF)`、PR `abs(outer_PF)+abs(finite_RTE)`）のrunner・入力/SOURCE結合・無効grant案を準備。shotは凍結D0 accountingを呼びbias量だけ置換、5精度・倍率1/10・α.025・u/headroom≤.01を維持し、保存通常会計1,900行の完全再現を実行前gateにした。通常bias・経験的非相殺・厳密保証（null）を区別。費用比較はB2全4軸PASS結合時のみで旧32/184を別判定、未解決候補を含む集合の最良・PR比はnull。PR union6の保存証拠をmetadata照合し6候補とも必要データあり（数値closure等は承認後gate）、確認4次Taylor層は0観測。B2 attempt02は16:15:03 JSTにMEMORY_PRESSUREでSTOPし費用比較は実行不能。人工54件（2 interpreter）＋回帰113件PASS。SOURCE d567e6e1f3b1713b455a80da9b5c5f9e7848f2de。実H8の非相殺bias・shot・費用・ランキング・新signal/compile/sampling/fit0、本作業によるB2/M1-S/既存契約の変更0、無効grant・実行未認可、追加レビュー/subagents0。以下は各時点の履歴。
+
+[module](../../src/trotterlib/h8_noncancellation.py)／[contract](../../scripts/h8_noncancellation_contract.py)／[runner](../../scripts/run_h8_noncancellation_diagnostic.py)／[auditor](../../scripts/audit_h8_noncancellation_evidence.py)／[tests](../../tests/test_h8_noncancellation_diagnostic.py)／[bundle](../../artifacts/resource_applicability/track_a_h8_noncancellation_readiness/2026-10-17/README.md)。
+
 ## 2026-10-17 H8 signed成分復元・数値整合性：準備完了、実行未承認
 
 [資料入口](../../docs/research/track_a_h8_signed_bias_readiness_20261017.md)。旧B0+I12候補24軸のsigned成分復元と既存172候補344軸の整合性を検査するrunnerを準備。新38＋既存30の68人工検査PASS。closure案rel/abs1e-12を継承し端点・forward等にも事前固定。SOURCE 64ec6cbba7e48ac7c04a6ad0b38c3e76f0f14526。実H8復元/数値照合・shot/費用/ランキング・新signal/compile/sampling/fit0。B2完了は前提にせず旧STOP/証拠を保全。無効grant・実行未認可・command null、追加科学レビュー/subagents0。以下は各時点の履歴。

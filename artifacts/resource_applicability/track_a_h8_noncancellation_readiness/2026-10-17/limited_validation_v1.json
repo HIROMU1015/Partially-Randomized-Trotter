@@ -1,0 +1,86 @@
+{
+  "schema": "H8_NONCANCELLATION_LIMITED_VALIDATION_V1",
+  "SOURCE": "d567e6e1f3b1713b455a80da9b5c5f9e7848f2de",
+  "status": "PASS",
+  "new_artificial_tests": 54,
+  "regression_tests": 113,
+  "runs": {
+    "new_py312": {
+      "kind": "NEW_ARTIFICIAL_BOUND_INTERPRETER_3_12_3",
+      "tests": 54,
+      "status": "PASS",
+      "wall_clock": "0:13.78",
+      "peak_RSS_bytes": 76607488,
+      "log_sha256": "3057d3a3a1ddb94289059093205c73a4f64e15d966670f114db7378ee864095a"
+    },
+    "new_py311": {
+      "kind": "NEW_ARTIFICIAL_PORTABILITY_3_11_0RC1",
+      "tests": 54,
+      "status": "PASS",
+      "wall_clock": "0:16.60",
+      "peak_RSS_bytes": 95510528,
+      "log_sha256": "c5a35dbfd962a888ff3661ebcbed92892dc4168bdd51ab8deec81d541884e1f6"
+    },
+    "reg_signed": {
+      "kind": "REGRESSION_SIGNED_BIAS",
+      "tests": 38,
+      "status": "PASS",
+      "wall_clock": "0:00.91",
+      "peak_RSS_bytes": 43057152,
+      "log_sha256": "e0a1cb67b2f219888064c8058aeabe83e7c486c0722f385ca8271d51f289c947"
+    },
+    "reg_evidence": {
+      "kind": "REGRESSION_BIAS_EVIDENCE_AUDIT",
+      "tests": 30,
+      "status": "PASS",
+      "wall_clock": "0:00.16",
+      "peak_RSS_bytes": 27262976,
+      "log_sha256": "4a84edbf8d114977a2f2a152bb0c7c9c20d04596998cf7113b12cb05a2293b84"
+    },
+    "reg_d0": {
+      "kind": "REGRESSION_FROZEN_D0",
+      "tests": 33,
+      "status": "PASS",
+      "wall_clock": "0:00.12",
+      "peak_RSS_bytes": 29884416,
+      "log_sha256": "5993e16403cc6fb32b2c86ff0da2a4d90c5915710128799df270a5c190dbc14b"
+    },
+    "reg_adapter": {
+      "kind": "REGRESSION_H8_D0_ADAPTER",
+      "tests": 12,
+      "status": "PASS",
+      "wall_clock": "0:03.40",
+      "peak_RSS_bytes": 69705728,
+      "log_sha256": "ac9fc3d7660a162ae490a9c062944359f13545d47934137069d20134b5456dc4"
+    }
+  },
+  "test_kind": "ARTIFICIAL_ENDPOINTS_SHOTS_WRAPPERS_RECEIPTS_AND_BYTE_FIXTURES_ONLY",
+  "registry_used_for_candidate_IDs_only": true,
+  "saved_H8_values_used_in_tests": 0,
+  "parallel_test_processes": 6,
+  "own_CPU_affinity_set": false,
+  "covered": [
+    "per-axis cancellation and noncancellation envelopes (B0/B0I/full PF/PR)",
+    "closure, component-set and nonfinite/overflow STOP",
+    "frozen D0 accounting identity and bias-only substitution",
+    "shot integer formula, epsilon/sqrt(2), alpha .025, factors 1 and 10",
+    "axis-wise eligibility, UNDETERMINED and u/headroom guard",
+    "exact reproduction gate of 1900 saved usual rows",
+    "missing/failed signed axes kept unresolved; old32/184 whole-set nulls; no dropping",
+    "PR endpoint/forward/reference failures unresolved; PR normalization STOP",
+    "B2 gate before accounting; partial/failed/2%/exit/gap/SOURCE/refit rejection",
+    "measured-first unit labels, S2/S4 model values, extrapolation flags",
+    "confirmation n32 pairing, seed binding, exploration n8 not pooled",
+    "paired reweighting G exact mean and sample SE; missing pairs give null cost/SE, never zero",
+    "exact rational selection and lexicographic ties",
+    "adapter lineage tampering (13 cases), input byte change",
+    "draft/approval/stage/scope/environment/source/manifest/output/fresh-gate rejection",
+    "runner end-to-end shots-only and bound-B2 cost stage on artificial bytes, one-shot lock reuse rejection",
+    "runner STOP on input failure, post-read change and own SIGTERM",
+    "metadata auditor writes no float; B2 probe requires complete PASS receipts"
+  ],
+  "real_SCF_DF_state_signal_compile_sampling_fit": 0,
+  "real_noncancellation_bias_shots_costs_rankings": 0,
+  "independent_review": false,
+  "subagents": 0
+}
