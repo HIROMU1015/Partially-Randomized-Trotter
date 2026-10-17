@@ -1,3 +1,7 @@
+## 2026-10-17 H8 signed成分復元・数値整合性：準備完了、実行未承認
+
+[資料入口](research/track_a_h8_signed_bias_readiness_20261017.md)。旧B0+I12候補24軸のsigned成分復元と既存172候補344軸の整合性を検査するrunnerを準備。新38＋既存30の68人工検査PASS。closure案rel/abs1e-12を継承し端点・forward等にも事前固定。SOURCE 64ec6cbba7e48ac7c04a6ad0b38c3e76f0f14526。実H8復元/数値照合・shot/費用/ランキング・新signal/compile/sampling/fit0。B2完了は前提にせず旧STOP/証拠を保全。無効grant・実行未認可・command null、追加科学レビュー/subagents0。以下は各時点の履歴。
+
 ## 2026-10-17 H8 bias分解：保存証拠監査・人工検証のみ
 
 [資料入口](research/track_a_h8_bias_evidence_audit_20261017.md)。184決定論候補368軸を監査。172候補にsigned成分が保存済み、旧B0+I12候補は端点復元と数値照合が別承認待ち。独立forwardの存在を成分別検証合格・厳密保証と混同しない。人工30件PASS、実H8新数値解析/非相殺会計/ランキング/科学計算0。監査時はB2/M1-S保全のため未登録snapshotで作業した。その後B2のSTOP・cleanup記録と元PID不在を読取確認し、利用者のcommit指示により資料専用branchへ固定した。既存実行worktree・SOURCE・結果は変更せず、pushは利用者が実施する。正式共通branchへの統合は未実施。
