@@ -1,3 +1,7 @@
+## 2026-10-17 H8：主要3構成6軸の直接compile完了
+
+[結果・native回収・限定監査](docs/research/track_a_h8_key_compile_completed_results_20261017.md)。RZ/軸はB0+I p15/q4 S4が668,636、p11/q1 S2が42,268、B0 p15/q4 S2が223,940（各cosine/sine同値）。全6軸のモデル誤差0.216〜0.827%で2%未満PASS、22:15:38 JST正常終了。旧完了1軸＋新5軸をSOURCE別に結合。新run wall24分23.886秒、最大単一process RSS9.643 GiB、全回収・最終gate PASS。PR削減率の再会計は未実施・別承認。以下は各時点の履歴。
+
 ## 2026-10-17 H8：並列準備へ引継ぎ・稼働中
 
 [引継ぎ・再利用・稼働証拠](docs/research/track_a_h8_key_compile_parallel_handover_20261017.md)。SOURCE 41e466e13f32e9224bb37790cc16f0ff6621c399。検証済みQPY2本と実測cosine1軸を再利用、残る2構成を並行準備。旧所有runのみ停止・native回収・61証拠不変。人工39件PASS、compile固定順/各軸2% gate維持。

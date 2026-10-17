@@ -1006,3 +1006,5 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 - [H6固定δ T依存性の結果](research/track_a_h6_fixed_delta_t_dependence_results_20261015.md)：144 compile完了、3Tの精度適格性・RZ費用比・希少次数限界。
 
 - [H8主要6軸の並列準備への引継ぎ・稼働記録](research/track_a_h8_key_compile_parallel_handover_20261017.md)。
+
+- [H8主要3構成6軸：直接compile完了結果](research/track_a_h8_key_compile_completed_results_20261017.md)。
