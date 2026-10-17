@@ -1,3 +1,7 @@
+## 2026-10-18 H8：s4・複数2次・選択後効果の技術準備（未承認）
+
+[統合報告](docs/research/track_a_h8_rare_tail_selection_readiness_20261018.md)。完了s2 run02（b21e90b8…）と既存正本を36固定file/closure9でmetadata照合。count条件付きsampler・統計schema/人工bootstrap・mock wrapperを実装、人工73件PASS。未承認4stage/INVALID grant、production dispatch未接続。実H8 sampling/build/compile/統計/感度/shot・費用再会計/新順位は0。旧STOP/control376/376・既存成果を保全し、追加検証なしの選択肢を残してmandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-18 Track A H4〜H8：横断証拠監査（対象結果2026-10-17）
 
 [証拠整理・metadata検査](docs/research/track_a_h4_h8_cross_system_evidence_inventory_20261017.md)。19系列・222保存値/状態・32固定ファイル、12比較・13不足を別表に記録。実測/model/有限標本を分離し、新科学計算・再会計・ランキング・統計解析は0。H8希少次数pilotは別チャットの未完了作業として収録せず、既存SOURCE/grant/ledger/他worktreeを変更しない。新しい科学的採否・新規性判断なし。以下の記録は各時点の履歴。

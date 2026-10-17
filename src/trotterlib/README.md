@@ -1,3 +1,7 @@
+## 2026-10-18 H8 rare-tail / selection preparation
+
+`h8_rare_tail_selection.py`：stdlibのみの条件付きcount law・一様位置・component callback・mock wrapper・統計schema/人工bootstrap。分子入力/native/compiler/production dispatchなし。packageの重い`__init__`を通さず専用runnerから読込。[73人工検証と未承認契約](../../docs/research/track_a_h8_rare_tail_selection_readiness_20261018.md)。
+
 ## 2026-10-18 Track A H4〜H8：横断証拠監査（対象結果2026-10-17）
 
 [証拠整理・metadata検査](../../scripts/audit_track_a_cross_system_evidence_v1.py)。19系列・222保存値/状態・32固定ファイル、12比較・13不足を別表に記録。実測/model/有限標本を分離し、新科学計算・再会計・ランキング・統計解析は0。H8希少次数pilotは別チャットの未完了作業として収録せず、既存SOURCE/grant/ledger/他worktreeを変更しない。新しい科学的採否・新規性判断なし。以下の記録は各時点の履歴。

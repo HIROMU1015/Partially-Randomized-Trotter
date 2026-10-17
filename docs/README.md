@@ -1,3 +1,7 @@
+## 2026-10-18 H8 rare-tail / selection preparation
+
+[統合報告](research/track_a_h8_rare_tail_selection_readiness_20261018.md)、[sampling設計](research/track_a_h8_rare_tail_sampling_design_20261018.md)、[選択後統計設計](research/track_a_h8_selection_effect_design_20261018.md)。人工73/metadataのみ、全科学実行未承認・STOP。
+
 ## 2026-10-18 Track A H4〜H8：横断証拠監査（対象結果2026-10-17）
 
 [証拠整理・metadata検査](research/track_a_h4_h8_cross_system_evidence_inventory_20261017.md)。19系列・222保存値/状態・32固定ファイル、12比較・13不足を別表に記録。実測/model/有限標本を分離し、新科学計算・再会計・ランキング・統計解析は0。H8希少次数pilotは別チャットの未完了作業として収録せず、既存SOURCE/grant/ledger/他worktreeを変更しない。新しい科学的採否・新規性判断なし。以下の記録は各時点の履歴。
