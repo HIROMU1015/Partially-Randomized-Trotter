@@ -1,0 +1,129 @@
+{
+  "schema": "m1s_gamma_pi3_v1_contract",
+  "base_commit": "b34572770e7c2105e16da003af050d789f490662",
+  "status": "ADOPTED_FOR_SEPARATE_EXECUTION_APPROVAL",
+  "decision_gate_adopted": true,
+  "adopted": true,
+  "coverage_model_adopted": true,
+  "contract_grants_execution": false,
+  "source_identity": {
+    "commit": "2f800f179c7b29589b2f9a7e532408b16b8fe6d2",
+    "files": {
+      "src/trottertracks/algorithm_codesign/m1s_gamma_pi3_v1/__init__.py": "584f30c0edfb1a31934617af9e44980934773ac6c802d1ba3ba112e4bf200375",
+      "src/trottertracks/algorithm_codesign/m1s_gamma_pi3_v1/spec.py": "50b68fbe761ff846387b070287fa916293c6b0a4fcce0dc8791c6a08a9e84c1f",
+      "src/trottertracks/algorithm_codesign/m1s_gamma_pi3_v1/control.py": "0ae805096a5e9105b784b76d975683b70b09ac0d72ee697f6db1e3eccc3a42ac",
+      "src/trottertracks/algorithm_codesign/m1s_gamma_pi3_v1/compare.py": "2b5108bc218483cd16b6a63cc18f409df98632949dbd64c0ac13b32797395766",
+      "src/trottertracks/algorithm_codesign/m1s_gamma_pi3_v1/supervisor.py": "a5e88ab8cf2801698a7f806314e531f089e0e82062d33620cf853ce8551a269c",
+      "src/trottertracks/algorithm_codesign/m1s_gamma_pi3_v1/runtime_compatibility.py": "f1d1fe4e8b0adad475abbe9cf7fe2c5d8bd371692c3669c2225715faa39281a0",
+      "scripts/tracks/algorithm_codesign/run_m1s_gamma_pi3_v1.py": "e4b8904947c10a1b8b3e5571bb0c7732be72d35ef2452fbc1f127da29fa5629d",
+      "artifacts/track_b_m1s_gamma_pi3_preparation/2026-10-17/v1/result_schema.json": "c4f8991f0e2f764dc4e8c56197fb0745afb19fc699a55f67b157906c74e5399e"
+    }
+  },
+  "input": {
+    "path": "artifacts/track_b_m1s_saved_signal_gamma_v2_result/2026-10-17/completion_attempt_02/result.json",
+    "commit": "b34572770e7c2105e16da003af050d789f490662",
+    "bytes": 146764,
+    "sha256": "bb2d09e6963fdc8b8871170ba28e98c36f4e353f452e50870103a7e97bf2e55d",
+    "schema": "m1s_saved_signal_gamma_v1_result",
+    "status": "GAMMA_CONDITIONS_COMPLETE_AWAITING_SCIENTIFIC_JUDGMENT",
+    "provenance": {
+      "S": "677dd6957e0e1913b70ca5f999458835ae8a2e23",
+      "C": "2cb5160d9051a6568b8acc0cfb29fc169bdfca09",
+      "A": "161ee8c3dc82c7fa19e0e1cfb79d71d3c236a03c"
+    }
+  },
+  "resources": {
+    "workers": 1,
+    "gpu": false,
+    "memory_bytes": 2147483648,
+    "input_bytes": 1048576,
+    "result_bytes": 16777216,
+    "log_bytes": 16777216,
+    "max_rational_bits": 65536,
+    "max_rational_text_chars": 25000,
+    "max_fraction_fields": 1024,
+    "max_comparisons": 48,
+    "wall_time_seconds": null,
+    "cpu_time_seconds": null,
+    "thread_environment": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "1",
+      "RAYON_NUM_THREADS": "1"
+    }
+  },
+  "science": {
+    "target": "GAMMA_STAR_STRICTLY_LESS_THAN_PI_OVER_THREE",
+    "threshold": "pi/3",
+    "unit": "rad",
+    "threshold_role": "PROPOSED_CONSERVATIVE_NEAREST_CONSISTENT_BRANCH_ROUND_ANGLE_CEILING",
+    "decoder_adopted_or_implemented": false,
+    "boundary_interval": "[L,U] FROM SAVED V1; NO ROOT RECOMPUTATION",
+    "pi_interval": "[p_lower,p_upper] FROM SAVED V1; NO PI RECOMPUTATION",
+    "satisfied": "3*U < p_lower",
+    "not_satisfied": "3*L >= p_upper",
+    "unresolved": "NEITHER SUFFICIENT INTERVAL SEPARATION HOLDS",
+    "shared_favourable_side": "ABOVE_ROOT; REQUIRE SHARED_LOWER_BEFORE_AND_SHARED_HIGHER_AFTER",
+    "all_splits_reported": [
+      "G3",
+      "G6",
+      "G9"
+    ],
+    "tested_splits": [
+      "G3",
+      "G6"
+    ],
+    "tested_contrasts": 32,
+    "G9": "ABSOLUTE_CONTRAST_UNRESOLVED_NO_RELATIVE_RESCUE_NOT_TESTED",
+    "exact_comparison": "BOUNDED_INTEGER_RATIONAL_CROSS_MULTIPLICATION_NO_FLOAT_TOLERANCE",
+    "coverage": "SAVED_V1_CONDITIONAL_ENGINEERING_ENCLOSURES_ONLY",
+    "statistical_scope": "NO_NEW_CONFIDENCE_CLAIM_NO_NEW_SHOTS",
+    "interpretation": "SAVED_CONTINUOUS_SUFFICIENT_DESIGN_INTERSECTION_ONLY",
+    "automatic_candidate_selection": false,
+    "automatic_scientific_GO": false
+  },
+  "model": {
+    "molecule": "linear_H4",
+    "distance_angstrom": "1.00",
+    "basis": "STO-3G",
+    "modes": 8,
+    "df_rank": 12,
+    "splits": [
+      "G3",
+      "G6",
+      "G9"
+    ],
+    "delta_Ha_inverse": [
+      "1/8",
+      "1/16"
+    ],
+    "R": [
+      2,
+      4
+    ],
+    "T_Ha_inverse": [
+      "1",
+      "4"
+    ]
+  },
+  "grid": {
+    "saved_method_rows": 108,
+    "saved_nonzero_method_rows": 72,
+    "saved_zero_controls": 36,
+    "contrast_records": 48,
+    "tested_G3_G6": 32,
+    "G9_carried_not_tested": 16
+  },
+  "evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+  "forecast_kind": "SAVED_BOUNDARY_PI_OVER_THREE_INTERSECTION_ONLY_NOT_RPE_SUCCESS",
+  "one_shot": true,
+  "retry": false,
+  "mandatory_STOP": true,
+  "absolute_shot_counts": null,
+  "native_costs": null,
+  "total_resources": null,
+  "rpe_success_guaranteed": false,
+  "resource_improvement_guaranteed": false,
+  "scientific_GO": null
+}
