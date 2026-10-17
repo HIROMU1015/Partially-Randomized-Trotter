@@ -1,0 +1,29 @@
+{
+  "schema": "H8_B2_STARTUP_RECOVERY_WITH_USER_TECHNICAL_RESTART_AUTHORITY_V1",
+  "SOURCE": "2e604e4a3a04eee5090e03d9bb83818d7afd3c87",
+  "authority": "修正を行って計算を再び開始してほしい。計算が安定して進み始めるところまで見てほしい。計算が途中で中断された場合は修正して計算を再び開始してほしい。",
+  "scope": "H8_B2_SAVED_B0_ACCEPTANCE_B0I_TWO_AXES_PARALLEL_PREPARATION_V1",
+  "saved_B0_axes": 2,
+  "new_axes": [
+    {
+      "case_id": "B0I_p21_q8_4th",
+      "axis": "cosine",
+      "predicted_RZ": 1852640
+    },
+    {
+      "case_id": "B0I_p21_q8_4th",
+      "axis": "sine",
+      "predicted_RZ": 1852640
+    }
+  ],
+  "preparation_workers": 2,
+  "compile_workers": 1,
+  "one_shot_per_attempt": true,
+  "automatic_retry_within_attempt": false,
+  "technical_restart_uses_new_grant_and_new_attempt_and_preserves_old_STOP": true,
+  "scientific_model_error_threshold_exact": "1/50",
+  "model_error_denominator": "measured_RZ",
+  "scientific_mismatch_restart_authorized": false,
+  "C_authorized": false,
+  "next_stage_authorized": false
+}
