@@ -801,3 +801,8 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## D1/D2保存値の最終統合分析（2026-10-13）
 
 [報告・GPT handoff](tracks/algorithm_codesign/d2_final_saved_integration_and_gpt_handoff_20261013.md)／[manifest](../artifacts/track_b_d2_final_saved_integration/2026-10-13/v1/final_evidence_manifest_v1.json)。全hの感度/Pareto、r選択とdepth構造を保存値で整理。旧原結果を変更せず新科学0、mandatory STOP。
+
+
+## M1-S文献調査・技術比較（2026-10-17）
+
+[一次文献・比較表・GPTレビュー資料索引](research/m1s_prior_art_survey_20261017/README.md)。基点81d6103eの独立docs branchで30文献レコードを整理。新規科学計算・証明・新規性最終判断なし。進行中shot/cost作業の状態は更新せず、公開確認後mandatory STOP。

@@ -239,3 +239,8 @@ science0、新authorization0、旧closure/結果/marker/STOPは不変、mandator
 ## 2026-10-13後続判断：Track B既存成果の発展
 
 [GPT科学レビュー原本](track_b_existing_results_development_broad_scientific_review_20261013.md)をbyte一致で保存。[技術計画v1](../tracks/algorithm_codesign/existing_results_development_technical_plan_v1_20261013.md)で同target・情報・誤差・native費用を対応させた。旧系列の再開ではなく新RQの設計のみ。実行仕様・sourceは未固定、新科学計算なし、mandatory STOP。
+
+
+## M1-S文献調査・技術比較（2026-10-17）
+
+[一次文献・比較表・GPTレビュー資料索引](m1s_prior_art_survey_20261017/README.md)。基点81d6103eの独立docs branchで30文献レコードを整理。新規科学計算・証明・新規性最終判断なし。進行中shot/cost作業の状態は更新せず、公開確認後mandatory STOP。

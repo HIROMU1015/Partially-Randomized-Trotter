@@ -1175,3 +1175,8 @@ STOP_FOR_GPT_SCOPE_DECISION。元whole補正closure、Track A/G10/RA-D0結果・
 ## Track B：時間方向相関の限定照合（2026-10-13）
 
 [GPT方向レビュー原本](docs/research/track_b_interstep_correlated_randomization_direction_review_20261013.md)／[一次資料・式・会計の技術報告](docs/tracks/algorithm_codesign/interstep_correlated_randomization_prior_art_audit_20261013.md)。PRHS本文取得、qSHIFT v1/v3の表示差と実測shotの会計を確認。既知手順への対応、追加の具体的方法差は未確立。新実装・科学実行なし、既存休止・closure保持、mandatory STOP。
+
+
+## M1-S文献調査・技術比較（2026-10-17）
+
+[一次文献・比較表・GPTレビュー資料索引](docs/research/m1s_prior_art_survey_20261017/README.md)。基点81d6103eの独立docs branchで30文献レコードを整理。新規科学計算・証明・新規性最終判断なし。進行中shot/cost作業の状態は更新せず、公開確認後mandatory STOP。
