@@ -116,12 +116,34 @@ def authorize(config, grant):
 
 
 def protected(config):
+    """Enforce this run's dependencies; other work is observed, never frozen."""
+    critical = {str((ROOT/name).resolve()) for name in config.get('source_hashes', {})}
+    critical.update(str(Path(row['path']).resolve()) for row in config.get('inputs', []))
+    if config.get('python'):
+        critical.add(str(Path(config['python']).resolve()))
+    own_paths = [Path(config[k]).resolve() for k in ('output', 'control', 'lock') if config.get(k)]
+    report = dict(policy='OWN_RUNTIME_DEPENDENCIES_ONLY_OTHER_WORK_OBSERVATION',
+                  critical_files_checked=0, unrelated_file_receipts_observed=0, worktrees=[])
     for row in config['protected_files']:
-        c.require(Path(row['path']).stat().st_size == row['bytes'] and sha(row['path']) == row['sha256'], 'PROTECTED_BYTES')
+        path = Path(row['path']).resolve()
+        if str(path) in critical or any(path == p or path.is_relative_to(p) for p in own_paths):
+            c.require(path.stat().st_size == row['bytes'] and sha(path) == row['sha256'], 'PROTECTED_BYTES')
+            report['critical_files_checked'] += 1
+        else:
+            # Do not rehash unrelated jobs' runtime/ledger trees or reject their progress.
+            report['unrelated_file_receipts_observed'] += 1
     for row in config['protected_worktrees']:
-        c.require(subprocess.check_output([*GIT, 'rev-parse', 'HEAD'], cwd=row['path']).decode().strip() == row['HEAD'] and
-            hashlib.sha256(subprocess.check_output([*GIT, 'status', '--porcelain=v1', '-z'], cwd=row['path'])).hexdigest() ==
-            row['status_sha256'], 'PROTECTED_WORKTREE')
+        observation = dict(path=row['path'], enforced=False)
+        try:
+            head = subprocess.check_output([*GIT, 'rev-parse', 'HEAD'], cwd=row['path'], stderr=subprocess.PIPE, timeout=5).decode().strip()
+            status = hashlib.sha256(subprocess.check_output([*GIT, 'status', '--porcelain=v1', '-z'],
+                cwd=row['path'], stderr=subprocess.PIPE, timeout=5)).hexdigest()
+            observation.update(HEAD=head, status_sha256=status,
+                changed=head != row['HEAD'] or status != row['status_sha256'])
+        except (OSError, subprocess.SubprocessError) as error:
+            observation.update(observation_error=type(error).__name__, changed=None)
+        report['worktrees'].append(observation)
+    return report
 
 
 def verify(config, *, git=True, protection=True):
@@ -149,7 +171,7 @@ def verify(config, *, git=True, protection=True):
         c.require(path.is_absolute() and path.is_relative_to('/home/AbeHiromu') and not path.is_symlink() and
             path.stat().st_size == row['bytes'] and sha(path) == row['sha256'], 'C_INPUT_BYTES')
     if protection:
-        protected(config)
+        return protected(config)
 
 
 def load_saved(config):

@@ -51,7 +51,7 @@ def prepare(source, mapping_path, python_path, directory, *, seal=False, protect
         source_hashes={p: r.sha(r.ROOT/p) for p in r.SOURCES}, python=str(python_path), python_sha256=r.sha(python_path),
         profile_sha256=c.PROFILE, compiler_hash=c.COMPILER, inputs=files,
         B2_receipt_set_sha256=c.digest([by_role[k] for k in r.B2_ROLES]),
-        protection_policy='CAPTURE_ALL_REGISTERED_WORKTREES_AND_PROTECTED_EVIDENCE_AT_SEALING' if not seal else 'SEALED',
+        protection_policy='OWN_RUNTIME_DEPENDENCIES_ENFORCED_OTHER_WORK_OBSERVATION_ONLY',
         protected_files=protection['protected_files'], protected_worktrees=protection['protected_worktrees'],
         output=str(target/'output01'), control=str(target/'control01'), lock=str(target/'C_ONE_SHOT'))
     r.path_set(config); r.verify(config)

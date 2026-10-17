@@ -7,15 +7,19 @@ no-cap launcher. No saved H8 value is read.
 from copy import deepcopy
 from datetime import datetime, timezone
 from fractions import Fraction as F
+import errno
 import gzip
 import hashlib
 import json
 import os
 from pathlib import Path
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
+import time
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -445,6 +449,152 @@ class RuntimeTests(unittest.TestCase):
             value = json.loads(subprocess.check_output([sys.executable, '-P', '-B', str(ROOT/'scripts'/name)]))
             self.assertEqual(value['scope'], r.SCOPE); self.assertFalse(value['new_shot_calculation'])
             self.assertFalse(value['noncancellation_shots_used'])
+
+
+class ReviewScopeAndCleanupTests(unittest.TestCase):
+    """Only artificial files and at most one tiny child per case; never H8 data."""
+
+    def test_other_worktree_HEAD_and_status_progress_are_observed_not_STOP(self):
+        cfg = dict(protected_files=[], protected_worktrees=[dict(path='/artificial/other',
+            HEAD='old', status_sha256='old')])
+        with patch.object(subprocess, 'check_output', side_effect=[b'new\n', b' M ordinary-note.md\0']):
+            report = r.protected(cfg)
+        self.assertTrue(report['worktrees'][0]['changed'])
+        self.assertFalse(report['worktrees'][0]['enforced'])
+
+    def test_other_worktree_observation_error_is_not_STOP(self):
+        cfg = dict(protected_files=[], protected_worktrees=[dict(path='/artificial/other',
+            HEAD='old', status_sha256='old')])
+        with patch.object(subprocess, 'check_output', side_effect=FileNotFoundError('moved')):
+            report = r.protected(cfg)
+        self.assertEqual(report['worktrees'][0]['observation_error'], 'FileNotFoundError')
+
+    def test_only_own_dependency_receipts_are_enforced(self):
+        with tempfile.TemporaryDirectory() as directory:
+            own, other = Path(directory)/'input', Path(directory)/'unrelated-ledger'
+            own.write_bytes(b'original'); other.write_bytes(b'original')
+            rows = [dict(path=str(p), bytes=p.stat().st_size, sha256=r.sha(p)) for p in (own, other)]
+            cfg = dict(inputs=[dict(path=str(own))], protected_files=rows, protected_worktrees=[])
+            other.write_bytes(b'normal unrelated progress')
+            report = r.protected(cfg)
+            self.assertEqual(report['critical_files_checked'], 1)
+            self.assertEqual(report['unrelated_file_receipts_observed'], 1)
+            own.write_bytes(b'corrupted')
+            with self.assertRaisesRegex(ValueError, 'PROTECTED_BYTES'): r.protected(cfg)
+
+    def test_own_result_and_lock_receipts_stay_protected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); out = root/'out'; out.mkdir(); path = out/'receipt'
+            path.write_bytes(b'original')
+            cfg = dict(output=str(out), protected_files=[dict(path=str(path), bytes=8, sha256=r.sha(path))],
+                       protected_worktrees=[])
+            path.write_bytes(b'changed!')
+            with self.assertRaisesRegex(ValueError, 'PROTECTED_BYTES'): r.protected(cfg)
+
+    def fake_child(self):
+        identity = [99999999, 123, os.getpid(), os.getuid()]
+        with patch.object(r, 'identity', return_value=identity):
+            owned = runner.OwnedChild(SimpleNamespace(pid=identity[0], returncode=None))
+        return owned, identity
+
+    def test_pidfd_ESRCH_still_requires_wait_and_closes_FD(self):
+        owned, identity = self.fake_child()
+        with (patch.object(r, 'identity', return_value=identity), patch.object(os, 'pidfd_open', return_value=123),
+              patch.object(signal, 'pidfd_send_signal', side_effect=ProcessLookupError(errno.ESRCH, 'exited')),
+              patch.object(os, 'close') as close):
+            owned.send(signal.SIGTERM)
+            self.assertIsNone(owned.native); close.assert_called_once_with(123)
+        usage = SimpleNamespace(ru_utime=0., ru_stime=0., ru_maxrss=1)
+        with patch.object(os, 'wait4', return_value=(owned.child.pid, 0, usage)):
+            self.assertTrue(owned.wait()['reaped'])
+
+    def test_pidfd_non_ESRCH_and_ownership_mismatch_are_not_success(self):
+        owned, identity = self.fake_child()
+        with (patch.object(r, 'identity', return_value=identity), patch.object(os, 'pidfd_open', return_value=123),
+              patch.object(signal, 'pidfd_send_signal', side_effect=PermissionError(errno.EPERM, 'denied')),
+              patch.object(os, 'close') as close):
+            with self.assertRaises(PermissionError): owned.send(signal.SIGTERM)
+            close.assert_called_once_with(123)
+        with patch.object(r, 'identity', return_value=[identity[0], 999, os.getpid(), os.getuid()]), \
+             patch.object(os, 'pidfd_open') as opened:
+            with self.assertRaisesRegex(ValueError, 'OWN_CHILD_IDENTITY'): owned.send(signal.SIGTERM)
+            opened.assert_not_called()
+
+    def test_double_cleanup_does_not_signal_or_reap_twice(self):
+        owned, _ = self.fake_child()
+        owned.native = dict(native_exit_code=0, reaped=True)
+        with patch.object(os, 'wait4') as wait, patch.object(os, 'pidfd_open') as opened:
+            self.assertEqual(owned.cleanup(), []); self.assertEqual(owned.cleanup(), [])
+            wait.assert_not_called(); opened.assert_not_called()
+
+    def test_cleanup_errors_remain_errors_and_not_reaped(self):
+        owned, _ = self.fake_child()
+        with patch.object(owned, 'wait', return_value=None), \
+             patch.object(owned, 'send', side_effect=PermissionError('denied')):
+            self.assertIn('PermissionError:denied', owned.cleanup()[0])
+            self.assertIsNone(owned.native)
+
+    def interrupted_launcher(self, *, via_signal, ignore_TERM=False):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); ready = root/'ready'
+            cfg = dict(output=str(root/'out'), control=str(root/'control'), lock=str(root/'lock'),
+                       SOURCE='a'*40, python=sys.executable, protected_files=[], protected_worktrees=[])
+            created = []
+            popen, sleep = subprocess.Popen, time.sleep
+            def launch_dummy(command, **kwargs):
+                code = ('import signal,time;from pathlib import Path;'
+                        + ('signal.signal(signal.SIGTERM,signal.SIG_IGN);' if ignore_TERM else '')
+                        + 'Path(' + repr(str(ready)) + ').write_text("ready");time.sleep(30)')
+                child = popen([sys.executable, '-P', '-B', '-c', code], stdout=kwargs['stdout'], stderr=kwargs['stderr'])
+                created.append(child)
+                deadline = time.monotonic()+5
+                while not ready.exists() and time.monotonic() < deadline:
+                    sleep(.01)
+                self.assertTrue(ready.exists())
+                return child
+            interrupted = False
+            def trigger(delay):
+                nonlocal interrupted
+                if not interrupted:
+                    interrupted = True
+                    if via_signal:
+                        os.kill(os.getpid(), signal.SIGTERM)
+                    else:
+                        raise KeyboardInterrupt('FIRST_WAIT_INTERRUPTION')
+                else:
+                    sleep(delay)
+            handlers = {sig: signal.getsignal(sig) for sig in (signal.SIGTERM, signal.SIGINT)}
+            try:
+                with (patch.object(r, 'read', return_value=cfg), patch.object(r, 'authorize', return_value=[min(os.sched_getaffinity(0))]),
+                      patch.object(r, 'verify', return_value=dict(worktrees=[])), patch.object(runner, 'fresh', return_value={}),
+                      patch.object(runner, 'observe', return_value={}), patch.object(subprocess, 'Popen', side_effect=launch_dummy),
+                      patch.object(time, 'sleep', side_effect=trigger)):
+                    with self.assertRaises((RuntimeError, KeyboardInterrupt)):
+                        runner.launch(root/'cfg', root/'grant')
+                stop = json.loads((root/'C_phase_STOP.json').read_text())
+                native = json.loads((root/'control/native_exit.json').read_text())
+                self.assertTrue(stop['all_children_reaped']); self.assertEqual(stop['cleanup_errors'], [])
+                self.assertIn('C_LAUNCHER_SIGNAL:' if via_signal else 'FIRST_WAIT_INTERRUPTION', stop['first_stop'])
+                self.assertEqual(native['native_exit_code'], -signal.SIGKILL if ignore_TERM else -signal.SIGTERM)
+                self.assertFalse((root/'C_final_gate.json').exists())
+                self.assertFalse(Path('/proc', str(created[0].pid)).exists())
+                for sig in handlers: self.assertEqual(signal.getsignal(sig), handlers[sig])
+                # File contexts closed both launcher stdout/stderr handles on exit.
+                for name in ('stdout.log', 'stderr.log'):
+                    with (root/'control'/name).open('ab') as stream: stream.write(b'closed-parent-handles\n')
+            finally:
+                for child in created:
+                    if child.returncode is None:
+                        child.kill(); child.wait()
+
+    def test_launcher_SIGTERM_stops_and_reaps_only_its_own_child(self):
+        self.interrupted_launcher(via_signal=True)
+
+    def test_launcher_wait_exception_stops_and_reaps_own_child(self):
+        self.interrupted_launcher(via_signal=False)
+
+    def test_own_child_ignoring_TERM_is_KILLed_and_reaped(self):
+        self.interrupted_launcher(via_signal=True, ignore_TERM=True)
 
 
 class EndToEndArtificialTests(unittest.TestCase):
