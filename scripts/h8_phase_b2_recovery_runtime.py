@@ -48,7 +48,7 @@ def verify_grant(config,g,f,*,config_sha,now=None,affinity=None):
             f.get('source')!=source or f.get('config_sha256')!=config_sha or
             f.get('grant_sha256')!=c.digest(g) or f.get('allowed_cpus')!=cpus or
             any(f.get(k) is not True for k in ('profile_verified','source_input_bytes_verified',
-                'physical_cores_verified','resources_idle_verified','protected_jobs_unchanged',
+                'physical_cores_verified','resources_idle_verified','protected_frozen_jobs_unchanged',
                 'quota_verified','external_RSS_monitor_ready'))):raise ValueError('FRESH_B0_GATE_REQUIRED')
 
 
@@ -91,14 +91,32 @@ def verify_files(config,*,runtime=True,git=True):
 
 
 def protected(config):
+    frozen=config['protected_worktrees'];concurrent=config.get('concurrent_worktree_observations',[])
+    names=c.plan()['concurrent_read_only_worktree_names'];paths=[row['path'] for row in frozen+concurrent]
+    if len(paths)!=len(set(paths)) or len(paths)!=config.get('baseline_worktree_count'):
+        raise ValueError('ALL_WORKTREE_BASELINE_ROWS_ACCOUNTED_FOR')
+    critical_roots={c.ROOT.resolve(),Path(config['provider_root']).resolve()}
+    if (len(concurrent)>len(names) or any(Path(row['path']).name not in names or Path(row['path']).resolve() in critical_roots for row in concurrent)):
+        raise ValueError('ONLY_EXPLICIT_NONINPUT_CONCURRENT_WORKTREE_MAY_BE_OBSERVED')
     for row in config['protected_files']:
         if Path(row['path']).stat().st_size!=row['bytes'] or sha(row['path'])!=row['sha256']:
             raise ValueError('PROTECTED_FILE_CHANGED')
-    for row in config['protected_worktrees']:
+    for row in frozen:
         head=git_bytes(row['path'],'rev-parse','HEAD').decode().strip()
         status=git_bytes(row['path'],'status','--porcelain=v1','-z')
         if head!=row['HEAD'] or hashlib.sha256(status).hexdigest()!=row['status_sha256']:
             raise ValueError('PROTECTED_WORKTREE_CHANGED')
+    observations=[]
+    for row in concurrent:
+        head=git_bytes(row['path'],'rev-parse','HEAD').decode().strip()
+        status=git_bytes(row['path'],'status','--porcelain=v1','-z');status_sha=hashlib.sha256(status).hexdigest()
+        observations.append(dict(path=row['path'],baseline_HEAD=row['HEAD'],current_HEAD=head,
+            baseline_status_sha256=row['status_sha256'],current_status_sha256=status_sha,
+            changed_since_baseline=head!=row['HEAD'] or status_sha!=row['status_sha256'],
+            mode='READ_ONLY_EXTERNAL_WORKTREE_PROGRESS_NOT_SCIENTIFIC_INPUT',claimed_unchanged=False))
+    return dict(immutable_files_unchanged=len(config['protected_files']),frozen_worktrees_unchanged=len(frozen),
+        concurrent_worktree_observations=observations,baseline_worktree_count=len(paths),
+        source_input_provider_runtime_bytes_separately_required=True)
 
 
 def filesystem(parent):

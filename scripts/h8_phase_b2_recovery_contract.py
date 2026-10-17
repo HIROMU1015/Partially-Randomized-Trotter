@@ -4,7 +4,7 @@ from pathlib import Path
 import hashlib,json
 import h8_phase_b2_contract as original
 ROOT=Path(__file__).resolve().parents[1]
-SCOPE='H8_B2_THREE_SAVED_AXES_VALIDATED_SINE_QPY_ONE_COMPILE_V1'
+SCOPE='H8_B2_VALIDATED_SINE_ONLY_STRICT_EVIDENCE_CONCURRENT_OBSERVATION_V1'
 PROFILE=original.PROFILE;COMPILER=original.COMPILER;PROVIDER=original.PROVIDER
 RUNTIME_MAP_SHA=original.RUNTIME_MAP_SHA;PROVIDER_MAP_SHA=original.PROVIDER_MAP_SHA;MODEL_SHA=original.MODEL_SHA
 digest=original.digest;axis_check=original.axis_check
@@ -55,6 +55,8 @@ def plan():
  free_parent_circuits_before_compile=True,dispatcher_returns_after_detached_witness=True,
  observer_pinned_before_exec=True,witness_native_wait_mode='BLOCKING_WAITPID',
  owned_process_CPU_window_accounting=True,technical_restart_requires_new_attempt_and_recorded_user_authority=True,
+ concurrent_read_only_worktree_names=['h8-noncancellation-readiness-20261017'],
+ preservation_policy='IMMUTABLE_SOURCE_INPUT_RESULT_GRANT_LEDGER_STRICT_FROZEN_WORKTREES_STRICT_CONCURRENT_WORKTREE_READ_ONLY_OBSERVATION',
  authorization=dict(approved=False,runtime_authorization=False),C_authorized=False,next_stage_authorized=False)
  return p
 

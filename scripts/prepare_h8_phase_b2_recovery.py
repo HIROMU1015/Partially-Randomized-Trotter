@@ -32,7 +32,9 @@ def prepare(previous_config,input_paths,before_path,directory,*,source=None):
   runtime_file_hashes=old['runtime_file_hashes'],expected_profile_digest=c.PROFILE,python=old['python'],
   expected_preparation_hashes=old['expected_preparation_hashes'],scientific_binding=p['binding']['scientific_binding'],
   input_mapping={row['logical_name']:row['path'] for row in files},files=files,font_seed=font,resources=p['resources'],
-  protected_files=[dict(row,path=path) for path,row in before['protected'].items()],protected_worktrees=before['worktrees'],
+  protected_files=[dict(row,path=path) for path,row in before['protected'].items()],protected_worktrees=[row for row in before['worktrees'] if Path(row['path']).name not in p['concurrent_read_only_worktree_names']],
+  concurrent_worktree_observations=[row for row in before['worktrees'] if Path(row['path']).name in p['concurrent_read_only_worktree_names']],
+  baseline_worktree_count=len(before['worktrees']),
   output=str(directory/'output01'),lock=str(directory/'B2_RECOVERY_ONE_SHOT'),control=str(directory/'control01'))
  r.verify_files(cfg,git=source is not None);r.protected(cfg);accept_saved(cfg)
  directory.mkdir(mode=0o700);r.Writer(directory).write('config_UNAPPROVED.json',cfg)
@@ -46,6 +48,7 @@ def prepare(previous_config,input_paths,before_path,directory,*,source=None):
   provider_map_sha256=c.digest(cfg['provider_hashes']),runtime_map_sha256=c.digest(cfg['runtime_file_hashes']),
   input_receipts=[{k:v for k,v in row.items() if k!='path'} for row in files],
   protected_files_unchanged=len(cfg['protected_files']),protected_worktrees_unchanged=len(cfg['protected_worktrees']),
+  concurrent_worktrees_observed=len(cfg['concurrent_worktree_observations']),concurrent_worktrees_claimed_unchanged=False,
   model_sha256=c.MODEL_SHA,axes=p['axes'],compile_concurrency=1,preparation_concurrency=0,physical_cores=4,new_H8_objects=0,new_compile=0,new_fit=0,
   new_valid_grants=0,fresh_resource_gate_issued=False,next_stage_authorized=False,mandatory_STOP=True)
  r.Writer(directory).write('preparation_receipt.json',receipt)

@@ -29,7 +29,7 @@ def snapshot():
 
 
 def fresh(config,g,config_path,*,idle_seconds=1.,bindings_verified=False,launch_affinity=None,cpu_record=lambda value:None,resource_record=lambda value:None):
-    cpus=r.verify_authorization(config,g,config_sha=r.sha(config_path),affinity=launch_affinity);r.protected(config)
+    cpus=r.verify_authorization(config,g,config_sha=r.sha(config_path),affinity=launch_affinity);preservation=r.protected(config)
     siblings=r.topology(cpus)
     pids=[os.getpid(),os.getppid()];started=Path(config['control'])/'started.json'
     if started.exists():pids.append(r.read(started)['driver']['pid'])
@@ -47,7 +47,7 @@ def fresh(config,g,config_path,*,idle_seconds=1.,bindings_verified=False,launch_
         allowed_cpus=cpus,monotonic_seconds=time.monotonic(),profile_verified=True,
         observer_identity=list(observer.owned.identity(os.getpid())),
         source_input_bytes_verified=True,physical_cores_verified=True,resources_idle_verified=True,
-        protected_jobs_unchanged=True,quota_verified=True,external_RSS_monitor_ready=True,
+        protected_frozen_jobs_unchanged=True,preservation_observation=preservation,quota_verified=True,external_RSS_monitor_ready=True,
         effective_available_bytes=value['effective_available_bytes'],filesystem=fs,
         driver_bindings_verified=bindings_verified,CPU_observation=CPU)
 
@@ -141,7 +141,7 @@ def supervise_validation(config,g,config_path,grant_path,fresh_path,control,outp
         reason=observer.resource_reason(final_snapshot,pressure_baseline,g['resources']['admission_reserve_bytes'])
         r.Writer(control).write('resource_final.json',observer.resource_failure(final_snapshot,pressure_baseline,g['resources']['admission_reserve_bytes'],reason))
         if reason:raise ValueError('FINAL_RESOURCE:'+reason)
-        r.protected(config)
+        r.Writer(control).write('preservation_final.json',r.protected(config))
     except BaseException as error:
         r.Writer(control).write('B2_final_gate.json',dict(status='STOP',reason=str(error),next_stage_authorized=False))
         raise
