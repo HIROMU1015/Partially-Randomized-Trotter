@@ -1,3 +1,7 @@
+## 2026-10-17 H8：主要3構成・6軸の直接compile準備（未承認）
+
+[実行準備](../../docs/research/track_a_h8_key_compile_readiness_20261017.md)。library/scientific providerの変更なし、native runnerはscripts配下。SOURCE `352581103b7dbd4fa58e28af7a6ca65570d36e8e`。保存入力11件のbyte照合、人工22件PASS。準備2並列・compile直列/各軸2%未満、own-process cleanupを実装。実H8 build/control/compile/費用再会計0、無効grant・CPU未指定・未seal。実compileと後続再会計は別承認。以下は各時点の履歴。
+
 ## 2026-10-17 H8：非相殺COST_COMPARISON準備・未承認
 
 [h8_noncancellation_cost.py](h8_noncancellation_cost.py)：完成済み非相殺shotと最終B2四軸を結合するcost-only adapter。exact rational・paired新SE・通常保存結果との差。実データ実行は別承認。 以下は各時点の履歴。

@@ -1,0 +1,46 @@
+{
+  "status": "PROPOSAL_NOT_EXECUTION_GATE",
+  "observed_at": "2026-10-17T12:09:05.139562+00:00",
+  "resource_policy": {
+    "agent_imposed_CPU_RAM_CPUtime_wall_caps": null,
+    "OS_limits": "INHERIT_WITHOUT_CHANGE",
+    "PSI": "OBSERVE_AND_REESTABLISH_NO_TRANSIENT_STOP",
+    "unrelated_worktrees": "OBSERVATION_ONLY",
+    "fork": "SINGLE_THREAD_PARENT_REQUIRED",
+    "threads_per_worker": 1,
+    "estimates": {
+      "aggregate_peak_RSS_bytes": 68719476736,
+      "headroom_bytes": 17179869184,
+      "stage_bytes": 2147483648,
+      "inodes": 1024,
+      "monitor_growth": "APPEND_JSONL_BYTES_PER_SECOND_REPORTED",
+      "wall": "UNMEASURED_NO_DEADLINE"
+    }
+  },
+  "effective_memory_available_bytes": 503128600576,
+  "filesystem_free_bytes": 521928597504,
+  "filesystem_free_inodes": 219279085,
+  "filesystem_type": "ext4",
+  "quota_mount_options": [],
+  "quota_launch_gate_issued": false,
+  "roles": {
+    "launcher": "SHARES_DRIVER_CORE",
+    "driver": "ONE_CORE_PENDING",
+    "preparation": "TWO_DISTINCT_WORKER_CORES_PENDING",
+    "compile": "FIRST_WORKER_CORE_ONE_AXIS_AT_A_TIME"
+  },
+  "allowed_cpus": [],
+  "CPU_affinity_applied_to_science": false,
+  "proposed_memory_admission_bytes": 85899345920,
+  "memory_admission_is_estimate_not_RSS_AS_cap": true,
+  "QPY_and_journal": "SIX_HASHED_QPY_SPOOLS_PLUS_EXCLUSIVE_RESERVATIONS_AND_WAIT4_RECEIPTS",
+  "monitor": "ONE_APPEND_JSONL_FILE_5_SECOND_NOMINAL_INTERVAL_WITH_IO_ERROR_RECOVERY",
+  "monitor_sample_bytes": 1737,
+  "monitor_estimated_bytes_per_day": 30015360,
+  "storage_initial_estimate_bytes": 2147483648,
+  "inode_initial_estimate": 1024,
+  "storage_growth_without_wall_cap": "MONITOR_BYTES_PER_DAY_TIMES_ELAPSED_DAYS_PLUS_STDOUT_STDERR",
+  "runtime_estimate": "NOT_MEASURED_FOR_THESE_THREE_CASES_NO_72H_CEILING",
+  "historical_B2_peak_bytes": 28187870363,
+  "historical_peak_is_new_scope_guarantee": false
+}

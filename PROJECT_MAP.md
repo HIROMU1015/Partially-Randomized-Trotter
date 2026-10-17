@@ -1,3 +1,7 @@
+## 2026-10-17 H8：主要3構成・6軸の直接compile準備（未承認）
+
+[主要3構成・6軸の実行準備](docs/research/track_a_h8_key_compile_readiness_20261017.md)。SOURCE `352581103b7dbd4fa58e28af7a6ca65570d36e8e`。保存入力11件のbyte照合、人工22件PASS。準備2並列・compile直列/各軸2%未満、own-process cleanupを実装。実H8 build/control/compile/費用再会計0、無効grant・CPU未指定・未seal。実compileと後続再会計は別承認。以下は各時点の履歴。
+
 ## 2026-10-17 H8：非相殺費用比較の一回実行完了
 
 [結果・監査](docs/research/track_a_h8_noncancellation_cost_run01_results_20261017.md)。SOURCE ac932974a0f250be0df5720e1b6dad06f9ff9535で非相殺costを一回完了、1900行/20比較、paired44再現・union6 n32 PASS。driver/launcher exit0・全回収。184基準PR削減率（倍率1）16.62/34.68/35.13/39.28/−29.09%、全条件モデル条件付き。追加計算0、mandatory STOP。 以下は各時点の履歴。

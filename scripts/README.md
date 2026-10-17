@@ -1,3 +1,7 @@
+## 2026-10-17 H8：主要3構成・6軸の直接compile準備（未承認）
+
+[runner](run_h8_key_compile.py) / [契約](h8_key_compile_contract.py) / [adapter](h8_key_compile_adapter.py) / [metadata準備](prepare_h8_key_compile.py)。SOURCE `352581103b7dbd4fa58e28af7a6ca65570d36e8e`。保存入力11件のbyte照合、人工22件PASS。準備2並列・compile直列/各軸2%未満、own-process cleanupを実装。実H8 build/control/compile/費用再会計0、無効grant・CPU未指定・未seal。実compileと後続再会計は別承認。以下は各時点の履歴。
+
 ## 2026-10-17 H8：非相殺COST_COMPARISON準備・未承認
 
 [run_h8_noncancellation_cost.py](run_h8_noncancellation_cost.py) / [cost契約](h8_noncancellation_cost_contract.py) / [metadata準備](prepare_h8_noncancellation_cost.py)。default planのみ、別承認で保存shot再利用cost一回。旧shot/通常会計を再実行しない。 以下は各時点の履歴。
