@@ -17,6 +17,37 @@ import math
 import signal
 import sys
 import time
+import traceback
+
+
+class OwnedWorkerInterrupted(BaseException):
+    """A termination request, not a numerical or circuit-conversion failure.
+
+    Library ``except Exception`` adapters must not disguise a cleanup signal
+    as a BasisFingerprintError. child_main still records and exits nonzero.
+    """
+    def __init__(self, signum):
+        self.signum = signum
+        super().__init__('WORKER_STOP_SIGNAL_OR_DEADLINE:'+str(signum))
+
+
+def worker_stop_signal(signum, frame=None):
+    raise OwnedWorkerInterrupted(signum)
+
+
+def failure_receipt(exc):
+    """Bounded causal diagnostics without frame locals or an error-as-PASS path."""
+    chain = []
+    seen = set()
+    item = exc
+    while item is not None and id(item) not in seen and len(chain) < 16:
+        seen.add(id(item))
+        chain.append(dict(type=type(item).__name__, message=str(item)[:2000]))
+        item = item.__cause__ or (None if item.__suppress_context__ else item.__context__)
+    return dict(error=type(exc).__name__+':'+str(exc)[:2000], exception_chain=chain,
+        interruption=isinstance(exc, OwnedWorkerInterrupted),
+        signal=getattr(exc, 'signum', None),
+        traceback=''.join(traceback.format_exception(type(exc), exc, exc.__traceback__, limit=20))[-16000:])
 
 
 def identity(pid):
@@ -77,8 +108,7 @@ def child_main(task,callback,directory,cpu,limits,parent,deadline,font_seed,old_
         if os.getppid()!=parent:raise RuntimeError('PARENT_DEATH_RACE')
         signal.setitimer(signal.ITIMER_REAL,0)
         os.sched_setaffinity(0,{cpu})
-        def stop(*args):raise RuntimeError('WORKER_STOP_SIGNAL_OR_DEADLINE')
-        for sig in (signal.SIGTERM,signal.SIGINT,signal.SIGALRM):signal.signal(sig,stop)
+        for sig in (signal.SIGTERM,signal.SIGINT,signal.SIGALRM):signal.signal(sig,worker_stop_signal)
         scratch=directory/'scratch';scratch.mkdir();mpl=scratch/'mpl';mpl.mkdir()
         for key,name in (('NUMBA_CACHE_DIR','numba'),('TMPDIR','tmp'),('XDG_CACHE_HOME','cache')):
             p=scratch/name;p.mkdir();os.environ[key]=str(p)
@@ -96,7 +126,7 @@ def child_main(task,callback,directory,cpu,limits,parent,deadline,font_seed,old_
         atomic_json(directory/'task_result.json',value)
         status=0
     except BaseException as exc:
-        try:atomic_json(directory/'task_STOP.json',dict(error=type(exc).__name__+':'+str(exc)[:2000]))
+        try:atomic_json(directory/'task_STOP.json',failure_receipt(exc))
         except BaseException:pass
     finally:
         try:sys.stdout.flush();sys.stderr.flush()

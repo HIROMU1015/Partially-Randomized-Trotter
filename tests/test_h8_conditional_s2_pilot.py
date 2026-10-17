@@ -353,5 +353,144 @@ class SavedPreparationReceiptRegression(unittest.TestCase):
             c.preparation_receipt_schema(self.saved)
 
 
+class ArtificialPreparationReceipt(unittest.TestCase):
+    def test_original_receipt_schema_with_real_artificial_preparation(self):
+        import numpy as np
+        from trotterlib.df_hamiltonian import DFHamiltonian
+        from trotterlib.pr2_matched_accuracy_m1_execution import _prepare
+        # Same dimensions/prefix as the adapter, entirely artificial DF data;
+        # no real NPZ, trajectory generation or full-wrapper transpile.
+        # Keep every diagonal entry nonzero: the pinned preparation explicitly
+        # records exact-zero Pauli components as threshold-dropped entries.
+        diagonal = np.linspace(.01, .16, 16)
+        ham = DFHamiltonian(.1, np.zeros((16, 16), dtype=complex), np.array([.001]*8),
+            tuple(np.diag(diagonal).astype(complex) for _ in range(8)), {'artificial':True})
+        prep = _prepare(ham, 7)
+        receipt = dict(cell_id='artificial_p7', preparation_hash=prep.preparation_hash,
+            lambda_r=prep.exact_rte_lambda_r, constant=prep.constant_coefficient,
+            extracted_identity=prep.extracted_identity_coefficient)
+        proof = c.verify_saved_preparation(prep, receipt)
+        self.assertEqual(proof['live_partition_hash'], prep.partition_hash)
+        self.assertFalse(proof['historical_standalone_partition_hash_present'])
+
+
+class WorkerFailureDiagnosis(unittest.TestCase):
+    @staticmethod
+    def basis_module():
+        from trotterlib import df_rte_tail
+        from qiskit.circuit.library import RZGate
+        return df_rte_tail, [(RZGate(.2), (0,))]
+
+    def test_legacy_runtime_stop_is_wrapped_as_fingerprint_error(self):
+        module, gates = self.basis_module()
+        with patch.object(module, 'Operator', side_effect=RuntimeError('WORKER_STOP_SIGNAL_OR_DEADLINE')):
+            with self.assertRaises(module.BasisFingerprintError) as caught:
+                module.describe_basis_change_operations(gates)
+        self.assertIsInstance(caught.exception.__cause__, RuntimeError)
+
+    def test_new_stop_bypasses_library_conversion_handler(self):
+        module, gates = self.basis_module()
+        with patch.object(module, 'Operator', side_effect=lambda *a: pool.worker_stop_signal(signal.SIGTERM)):
+            with self.assertRaises(pool.OwnedWorkerInterrupted) as caught:
+                module.describe_basis_change_operations(gates)
+        receipt = pool.failure_receipt(caught.exception)
+        self.assertTrue(receipt['interruption'])
+        self.assertEqual(receipt['signal'], signal.SIGTERM)
+        self.assertNotIn('BasisFingerprintError', receipt['error'])
+
+    def test_real_conversion_error_remains_failure_with_cause(self):
+        module, gates = self.basis_module()
+        with patch.object(module, 'Operator', side_effect=ValueError('TOY_INVALID_MATRIX')):
+            with self.assertRaises(module.BasisFingerprintError) as caught:
+                module.describe_basis_change_operations(gates)
+        receipt = pool.failure_receipt(caught.exception)
+        self.assertFalse(receipt['interruption'])
+        self.assertEqual([x['type'] for x in receipt['exception_chain']], ['BasisFingerprintError', 'ValueError'])
+        self.assertIn('TOY_INVALID_MATRIX', receipt['exception_chain'][1]['message'])
+
+    def test_causal_diagnostics_are_bounded(self):
+        error = ValueError('x'*10000)
+        for i in range(30):
+            outer = RuntimeError('outer'+str(i))
+            outer.__cause__ = error
+            error = outer
+        receipt = pool.failure_receipt(error)
+        self.assertEqual(len(receipt['exception_chain']), 16)
+        self.assertLessEqual(len(receipt['traceback']), 16000)
+
+    def test_native_owned_signal_is_recorded_and_reaped(self):
+        cpu = min(os.sched_getaffinity(0))
+        with tempfile.TemporaryDirectory() as directory:
+            wave = Path(directory)/'wave'
+            signalled = []
+            def callback(task, path):
+                module, gates = self.basis_module()
+                def blocking_operator(gate):
+                    (path/'ready').write_text('ready')
+                    until = time.monotonic()+10
+                    while time.monotonic() < until:
+                        time.sleep(.01)
+                    raise AssertionError('ARTIFICIAL_SIGNAL_NOT_DELIVERED')
+                with patch.object(module, 'Operator', side_effect=blocking_operator):
+                    module.describe_basis_change_operations(gates)
+            def guard():
+                work = wave/'signal'
+                if not signalled and (work/'ready').exists():
+                    h = c.read(work/'started.json')
+                    h['reaped'] = False
+                    h['identity'] = tuple(h['identity'])
+                    pool.send_owned(h, signal.SIGTERM)
+                    signalled.append(h['pid'])
+            with self.assertRaisesRegex(RuntimeError, 'OwnedWorkerInterrupted:WORKER_STOP_SIGNAL_OR_DEADLINE:15'):
+                pool.map_owned([dict(id='signal')], callback, cpus=[cpu], limits={'max_workers':1},
+                    directory=wave, deadline=math.inf, guard=guard)
+            receipt = c.read(wave/'signal/task_STOP.json')
+            native = c.read(wave/'parallel_receipt.json')
+            self.assertEqual(len(signalled), 1)
+            self.assertTrue(receipt['interruption'])
+            self.assertEqual(receipt['signal'], signal.SIGTERM)
+            self.assertTrue(native['all_reaped'])
+            self.assertFalse(native['cleanup_errors'])
+            self.assertIsNone(pool.identity(signalled[0]))
+
+    def test_two_minimal_workers_overlap_and_reap(self):
+        cpus = sorted(os.sched_getaffinity(0))[:2]
+        if len(cpus) < 2:
+            self.skipTest('two allowed CPUs unavailable')
+        with tempfile.TemporaryDirectory() as directory:
+            wave = Path(directory)/'wave'
+            release = Path(directory)/'release'
+            overlapped = []
+            def callback(task, path):
+                (path/'ready').write_text('ready')
+                until = time.monotonic()+10
+                while not release.exists() and time.monotonic() < until:
+                    time.sleep(.01)
+                if not release.exists():
+                    raise AssertionError('ARTIFICIAL_OVERLAP_NOT_OBSERVED')
+                return dict(id=task['id'])
+            def guard():
+                if not release.exists() and all((wave/t/'ready').exists() for t in ('one', 'two')):
+                    overlapped.append(True)
+                    release.write_text('release')
+            receipt = pool.map_owned([dict(id='one'), dict(id='two')], callback, cpus=cpus,
+                limits={'max_workers':2}, directory=wave, deadline=math.inf, guard=guard)
+            self.assertEqual(overlapped, [True])
+            self.assertTrue(receipt['all_reaped'])
+            self.assertTrue(all(h['exit_code'] == 0 and pool.identity(h['pid']) is None for h in receipt['workers']))
+
+    def test_stage_receipts_distinguish_completion_and_interruption(self):
+        from h8_conditional_s2_adapter import Writer, trace_stage
+        with tempfile.TemporaryDirectory() as directory:
+            writer = Writer(directory)
+            with trace_stage(writer, 'good'):
+                pass
+            with self.assertRaises(pool.OwnedWorkerInterrupted):
+                with trace_stage(writer, 'preparation'):
+                    pool.worker_stop_signal(signal.SIGTERM)
+            self.assertEqual(c.read(Path(directory)/'stage_good_end.json')['outcome'], 'COMPLETE')
+            self.assertEqual(c.read(Path(directory)/'stage_preparation_end.json')['outcome'], 'STOP')
+
+
 if __name__ == '__main__':
     unittest.main()

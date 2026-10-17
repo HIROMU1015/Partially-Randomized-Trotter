@@ -30,10 +30,13 @@ class Writer:
 def trace_stage(writer, name, **context):
     started = time.monotonic()
     writer.write('stage_'+name+'_start.json', dict(stage=name, phase='start', monotonic=started, **context))
+    outcome = 'STOP'
     try:
         yield
+        outcome = 'COMPLETE'
     finally:
-        writer.write('stage_'+name+'_end.json', dict(stage=name, phase='end', elapsed=time.monotonic()-started, **context))
+        writer.write('stage_'+name+'_end.json', dict(stage=name, phase='end', outcome=outcome,
+            elapsed=time.monotonic()-started, **context))
 
 
 def evaluate(task, directory, config, grant):
@@ -71,9 +74,11 @@ def evaluate(task, directory, config, grant):
         c.require(prefix == 7 and ham.n_qubits == 16 and len(ham.lambdas) == 28, 'SAVED_H8_PREPARATION_SCOPE')
         # This is the original native view of the SAVED DF, not SCF/DF/state
         # generation. Exact saved hashes reject any basis/normalization drift.
-        p = frozen._prepare(ham, prefix)
-        ref = c.evidence()['preparation']
-        binding = c.verify_saved_preparation(p, ref)
+        with trace_stage(writer, 'native_preparation', prefix=prefix):
+            p = frozen._prepare(ham, prefix)
+        with trace_stage(writer, 'saved_preparation_validation'):
+            ref = c.evidence()['preparation']
+            binding = c.verify_saved_preparation(p, ref)
         writer.write('preparation_identity.json', dict(saved_preparation=ref, partition_binding=binding, snapshot_sha256=
             next(r['sha256'] for r in config['files'] if r['logical_name'] == 'h8_input_snapshot.npz'),
             SCF=0, DF=0, state_generation=0, new_signal=0))
