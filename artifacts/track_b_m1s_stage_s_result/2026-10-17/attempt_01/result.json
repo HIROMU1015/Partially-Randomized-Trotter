@@ -1,0 +1,1803 @@
+{
+  "schema": "m1s_stage_s_v1_result",
+  "status": "STAGE_S_COMPLETE_AWAITING_USER_JUDGMENT",
+  "evidence": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED",
+  "coverage_scope": "SAVED_CONDITIONAL_RADII_IDEAL_MEAN_ONLY",
+  "provenance": {
+    "S": "7a338c4eba778c4ce1f189cfa8c8f050afb5df08",
+    "C": "b4b4c12848d0cc65025e1ce9eb95902aec7d97fe",
+    "A": "437e6bbc4cc2c550268d8644b8fc2bc0ec56e791",
+    "contract_sha256": "9b4b453d9e79ac596f1f5328f260d8f558abc85b13a827759dcdec48779b5843",
+    "authorization_path": "artifacts/track_b_m1s_stage_s_execution_authorization/2026-10-17/attempt_01/authorization.json",
+    "output_path": "artifacts/track_b_m1s_stage_s_result/2026-10-17/attempt_01",
+    "inputs": {
+      "V1": {
+        "path": "artifacts/track_b_m1s_saved_signal_gamma_v2_result/2026-10-17/completion_attempt_02/result.json",
+        "commit": "b34572770e7c2105e16da003af050d789f490662",
+        "sha256": "bb2d09e6963fdc8b8871170ba28e98c36f4e353f452e50870103a7e97bf2e55d",
+        "bytes": 146764,
+        "schema": "m1s_saved_signal_gamma_v1_result",
+        "status": "GAMMA_CONDITIONS_COMPLETE_AWAITING_SCIENTIFIC_JUDGMENT",
+        "provenance": {
+          "S": "677dd6957e0e1913b70ca5f999458835ae8a2e23",
+          "C": "2cb5160d9051a6568b8acc0cfb29fc169bdfca09",
+          "A": "161ee8c3dc82c7fa19e0e1cfb79d71d3c236a03c"
+        }
+      },
+      "PI3": {
+        "path": "artifacts/track_b_m1s_gamma_pi3_result/2026-10-17/attempt_01/result.json",
+        "commit": "81d6103ec89d485cb7336c3a90bd95dad66992aa",
+        "sha256": "693ce941bf7793a6104af28443746f43e05d4903118c0ebbb6f09729f389fadf",
+        "bytes": 37054,
+        "schema": "m1s_gamma_pi3_v1_result",
+        "status": "PI3_COMPARISON_COMPLETE_AWAITING_SCIENTIFIC_JUDGMENT",
+        "provenance": {
+          "S": "2f800f179c7b29589b2f9a7e532408b16b8fe6d2",
+          "C": "bf97fcb2607904f8b96a625c5b64440a78bbbfdc",
+          "A": "a1dd87a1f81467bea0ce27cacf9d21e49cff7908"
+        }
+      }
+    }
+  },
+  "failure": null,
+  "scientific_GO": null,
+  "RPE_success": null,
+  "native_costs": null,
+  "total_resources": null,
+  "global_integer_impossibility": false,
+  "one_shot_consumed": true,
+  "retry_count": 0,
+  "mandatory_STOP": true,
+  "comparisons": [
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_NO_WITNESS_GLOBAL_UNDETERMINED",
+      "R_cont_cap_interval": [
+        "87227107314909213040328404700802766867851/87112285931760246646623899502532662132736",
+        "21806776828727303260082101175200691716969/21778071482940061661655974875633165533184"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "529018951302796245971733467472655829743711/21778071482940061661655974875633165533184",
+        "1058037902605592491943466934945311659487585/43556142965880123323311949751266331066368"
+      ],
+      "S_comparator_at_cap_interval": [
+        "2118864972642662366377064869487669127187557/87112285931760246646623899502532662132736",
+        "2118864972642662366377064869487669127187883/87112285931760246646623899502532662132736"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          25,
+          25
+        ],
+        "resolved": true,
+        "value": 25,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          25,
+          25
+        ],
+        "resolved": true,
+        "value": 25,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        50,
+        50
+      ],
+      "N_comparator_cap_left_interval": [
+        50,
+        50
+      ],
+      "integer_relation": "TIE_OR_NOT_LOWER_AT_CAP_ONLY",
+      "nonempty_open_region_existence_witness": false,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "2378146948286490338128991/2417851639229258349412352",
+        "A_comparator_lower": "2370153781715919487777847/2417851639229258349412352",
+        "bias_shared_upper_rad": "718105742524715891635/151115727451828646838272",
+        "bias_comparator_upper_rad": "105778811244617397961/1208925819614629174706176"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_NO_WITNESS_GLOBAL_UNDETERMINED",
+      "R_cont_cap_interval": [
+        "87223652821877917239721637390806638545487/87112285931760246646623899502532662132736",
+        "87223652821877917239721637390806638545511/87112285931760246646623899502532662132736"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "529018951302796245971733467472655829743711/21778071482940061661655974875633165533184",
+        "1058037902605592491943466934945311659487585/43556142965880123323311949751266331066368"
+      ],
+      "S_comparator_at_cap_interval": [
+        "2118781058312500924147087493625837840913195/87112285931760246646623899502532662132736",
+        "2118781058312500924147087493625837840913521/87112285931760246646623899502532662132736"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          25,
+          25
+        ],
+        "resolved": true,
+        "value": 25,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          25,
+          25
+        ],
+        "resolved": true,
+        "value": 25,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        50,
+        50
+      ],
+      "N_comparator_cap_left_interval": [
+        50,
+        50
+      ],
+      "integer_relation": "TIE_OR_NOT_LOWER_AT_CAP_ONLY",
+      "nonempty_open_region_existence_witness": false,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "2378146948286490338128991/2417851639229258349412352",
+        "A_comparator_lower": "148134466975019843756171/151115727451828646838272",
+        "bias_shared_upper_rad": "718105742524715891635/151115727451828646838272",
+        "bias_comparator_upper_rad": "31140430695695936629/604462909807314587353088"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_STRICT_INTEGER_WITNESS",
+      "R_cont_cap_interval": [
+        "92490607527983345841088442980986752215943/87112285931760246646623899502532662132736",
+        "92490607527983345841088442980986752215973/87112285931760246646623899502532662132736"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "1124896983692664919296460515892769435005667/43556142965880123323311949751266331066368",
+        "281224245923166229824115128973192358751469/10889035741470030830827987437816582766592"
+      ],
+      "S_comparator_at_cap_interval": [
+        "298587060123851480488591460738410362985867/10889035741470030830827987437816582766592",
+        "597174120247702960977182921476820725971831/21778071482940061661655974875633165533184"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          26,
+          26
+        ],
+        "resolved": true,
+        "value": 26,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          28,
+          28
+        ],
+        "resolved": true,
+        "value": 28,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        52,
+        52
+      ],
+      "N_comparator_cap_left_interval": [
+        56,
+        56
+      ],
+      "integer_relation": "SHARED_STRICTLY_LOWER",
+      "nonempty_open_region_existence_witness": true,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "288823583735654320205959/302231454903657293676544",
+        "A_comparator_lower": "279077480357859968264053/302231454903657293676544",
+        "bias_shared_upper_rad": "2374391936971896490197/302231454903657293676544",
+        "bias_comparator_upper_rad": "107282051061441313627/302231454903657293676544"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_STRICT_INTEGER_WITNESS",
+      "R_cont_cap_interval": [
+        "92475885214339949974871769279731413382483/87112285931760246646623899502532662132736",
+        "92475885214339949974871769279731413382513/87112285931760246646623899502532662132736"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "1124896983692664919296460515892769435005667/43556142965880123323311949751266331066368",
+        "281224245923166229824115128973192358751469/10889035741470030830827987437816582766592"
+      ],
+      "S_comparator_at_cap_interval": [
+        "597079064274637309994915057343950109391717/21778071482940061661655974875633165533184",
+        "298539532137318654997457528671975054695907/10889035741470030830827987437816582766592"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          26,
+          26
+        ],
+        "resolved": true,
+        "value": 26,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          28,
+          28
+        ],
+        "resolved": true,
+        "value": 28,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        52,
+        52
+      ],
+      "N_comparator_cap_left_interval": [
+        56,
+        56
+      ],
+      "integer_relation": "SHARED_STRICTLY_LOWER",
+      "nonempty_open_region_existence_witness": true,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "288823583735654320205959/302231454903657293676544",
+        "A_comparator_lower": "17442291313007654225371/18889465931478580854784",
+        "bias_shared_upper_rad": "2374391936971896490197/302231454903657293676544",
+        "bias_comparator_upper_rad": "64107285078083020431/302231454903657293676544"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_NO_WITNESS_GLOBAL_UNDETERMINED",
+      "R_cont_cap_interval": [
+        "43583927926531433683112087254836052448017/43556142965880123323311949751266331066368",
+        "43583927926531433683112087254836052448029/43556142965880123323311949751266331066368"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "518893725949026193993080947631744490959429/21778071482940061661655974875633165533184",
+        "129723431487256548498270236907936122739877/5444517870735015415413993718908291383296"
+      ],
+      "S_comparator_at_cap_interval": [
+        "1038449468356626301390164817900496928650429/43556142965880123323311949751266331066368",
+        "2076898936713252602780329635800993857301175/87112285931760246646623899502532662132736"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        48,
+        48
+      ],
+      "N_comparator_cap_left_interval": [
+        48,
+        48
+      ],
+      "integer_relation": "TIE_OR_NOT_LOWER_AT_CAP_ONLY",
+      "nonempty_open_region_existence_witness": false,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "149870270070781586594367/151115727451828646838272",
+        "A_comparator_lower": "1196944484483384846251129/1208925819614629174706176",
+        "bias_shared_upper_rad": "1438743652071062528929/604462909807314587353088",
+        "bias_comparator_upper_rad": "26329817780726005715/1208925819614629174706176"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_NO_WITNESS_GLOBAL_UNDETERMINED",
+      "R_cont_cap_interval": [
+        "87166979365988250830636917002063890662061/87112285931760246646623899502532662132736",
+        "87166979365988250830636917002063890662085/87112285931760246646623899502532662132736"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "518893725949026193993080947631744490959429/21778071482940061661655974875633165533184",
+        "129723431487256548498270236907936122739877/5444517870735015415413993718908291383296"
+      ],
+      "S_comparator_at_cap_interval": [
+        "1038439026577053435892839081272057739837591/43556142965880123323311949751266331066368",
+        "2076878053154106871785678162544115479675499/87112285931760246646623899502532662132736"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        48,
+        48
+      ],
+      "N_comparator_cap_left_interval": [
+        48,
+        48
+      ],
+      "integer_relation": "TIE_OR_NOT_LOWER_AT_CAP_ONLY",
+      "nonempty_open_region_existence_witness": false,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "149870270070781586594367/151115727451828646838272",
+        "A_comparator_lower": "598472165902471466361299/604462909807314587353088",
+        "bias_shared_upper_rad": "1438743652071062528929/604462909807314587353088",
+        "bias_comparator_upper_rad": "7767871728658805879/604462909807314587353088"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_STRICT_INTEGER_WITNESS",
+      "R_cont_cap_interval": [
+        "44875507689153825242161876791614968512963/43556142965880123323311949751266331066368",
+        "44875507689153825242161876791614968512977/43556142965880123323311949751266331066368"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "2140147813798278984650155731538238847113533/87112285931760246646623899502532662132736",
+        "267518476724784873081269466442279855889233/10889035741470030830827987437816582766592"
+      ],
+      "S_comparator_at_cap_interval": [
+        "1102487653110881548324698242268963012856265/43556142965880123323311949751266331066368",
+        "275621913277720387081174560567240753214117/10889035741470030830827987437816582766592"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          25,
+          25
+        ],
+        "resolved": true,
+        "value": 25,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          26,
+          26
+        ],
+        "resolved": true,
+        "value": 26,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        50,
+        50
+      ],
+      "N_comparator_cap_left_interval": [
+        52,
+        52
+      ],
+      "integer_relation": "SHARED_STRICTLY_LOWER",
+      "nonempty_open_region_existence_witness": true,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "73863685215377818055731/75557863725914323419136",
+        "A_comparator_lower": "9075835311861382178417/9444732965739290427392",
+        "bias_shared_upper_rad": "1195800787086654901599/302231454903657293676544",
+        "bias_comparator_upper_rad": "26771472437518625343/302231454903657293676544"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G3",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_STRICT_INTEGER_WITNESS",
+      "R_cont_cap_interval": [
+        "44873697352972549210852669051309409326539/43556142965880123323311949751266331066368",
+        "89747394705945098421705338102618818653101/87112285931760246646623899502532662132736"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "2140147813798278984650155731538238847113533/87112285931760246646623899502532662132736",
+        "267518476724784873081269466442279855889233/10889035741470030830827987437816582766592"
+      ],
+      "S_comparator_at_cap_interval": [
+        "2204886354658176926045076821541528877851613/87112285931760246646623899502532662132736",
+        "1102443177329088463022538410770764438925949/43556142965880123323311949751266331066368"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          25,
+          25
+        ],
+        "resolved": true,
+        "value": 25,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          26,
+          26
+        ],
+        "resolved": true,
+        "value": 26,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        50,
+        50
+      ],
+      "N_comparator_cap_left_interval": [
+        52,
+        52
+      ],
+      "integer_relation": "SHARED_STRICTLY_LOWER",
+      "nonempty_open_region_existence_witness": true,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "73863685215377818055731/75557863725914323419136",
+        "A_comparator_lower": "145213309727604704051821/151115727451828646838272",
+        "bias_shared_upper_rad": "1195800787086654901599/302231454903657293676544",
+        "bias_comparator_upper_rad": "8007433599892487223/151115727451828646838272"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_NO_WITNESS_GLOBAL_UNDETERMINED",
+      "R_cont_cap_interval": [
+        "10896440378627524982913402062039597250993/10889035741470030830827987437816582766592",
+        "87171523029020199863307216496316778007971/87112285931760246646623899502532662132736"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "2075571414258258336838727112639699080087789/87112285931760246646623899502532662132736",
+        "1037785707129129168419363556319849540044053/43556142965880123323311949751266331066368"
+      ],
+      "S_comparator_at_cap_interval": [
+        "2076982820518825406710424175075627552464101/87112285931760246646623899502532662132736",
+        "1038491410259412703355212087537813776232237/43556142965880123323311949751266331066368"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        48,
+        48
+      ],
+      "N_comparator_cap_left_interval": [
+        48,
+        48
+      ],
+      "integer_relation": "TIE_OR_NOT_LOWER_AT_CAP_ONLY",
+      "nonempty_open_region_existence_witness": false,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "2397919413603819037905215/2417851639229258349412352",
+        "A_comparator_lower": "1196945044765770161353033/1208925819614629174706176",
+        "bias_shared_upper_rad": "2871474804596726460827/1208925819614629174706176",
+        "bias_comparator_upper_rad": "34795402513673950437/604462909807314587353088"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_NO_WITNESS_GLOBAL_UNDETERMINED",
+      "R_cont_cap_interval": [
+        "21792000604935699896049779582364049485611/21778071482940061661655974875633165533184",
+        "87168002419742799584199118329456197942469/87112285931760246646623899502532662132736"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "2075571414258258336838727112639699080087789/87112285931760246646623899502532662132736",
+        "1037785707129129168419363556319849540044053/43556142965880123323311949751266331066368"
+      ],
+      "S_comparator_at_cap_interval": [
+        "2076898937104462148860026148305505193634363/87112285931760246646623899502532662132736",
+        "259612367138057768607503268538188149204335/10889035741470030830827987437816582766592"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        48,
+        48
+      ],
+      "N_comparator_cap_left_interval": [
+        48,
+        48
+      ],
+      "integer_relation": "TIE_OR_NOT_LOWER_AT_CAP_ONLY",
+      "nonempty_open_region_existence_witness": false,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "2397919413603819037905215/2417851639229258349412352",
+        "A_comparator_lower": "299236121102979609639695/302231454903657293676544",
+        "bias_shared_upper_rad": "2871474804596726460827/1208925819614629174706176",
+        "bias_comparator_upper_rad": "26329889962507500447/1208925819614629174706176"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_STRICT_INTEGER_WITNESS",
+      "R_cont_cap_interval": [
+        "89769042014462557289102662255513906001575/87112285931760246646623899502532662132736",
+        "89769042014462557289102662255513906001601/87112285931760246646623899502532662132736"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "267508027213992195047573207066745254903171/10889035741470030830827987437816582766592",
+        "2140064217711937560380585656533962039225699/87112285931760246646623899502532662132736"
+      ],
+      "S_comparator_at_cap_interval": [
+        "2205332033462216594062988182517821572313011/87112285931760246646623899502532662132736",
+        "2205332033462216594062988182517821572313357/87112285931760246646623899502532662132736"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          25,
+          25
+        ],
+        "resolved": true,
+        "value": 25,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          26,
+          26
+        ],
+        "resolved": true,
+        "value": 26,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        50,
+        50
+      ],
+      "N_comparator_cap_left_interval": [
+        52,
+        52
+      ],
+      "integer_relation": "SHARED_STRICTLY_LOWER",
+      "nonempty_open_region_existence_witness": true,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "73863731202898596587805/75557863725914323419136",
+        "A_comparator_lower": "290427151588114868238389/302231454903657293676544",
+        "bias_shared_upper_rad": "1185992163979253396641/302231454903657293676544",
+        "bias_comparator_upper_rad": "69857136532873870305/302231454903657293676544"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_STRICT_INTEGER_WITNESS",
+      "R_cont_cap_interval": [
+        "22438630321884788420908647889624194416993/21778071482940061661655974875633165533184",
+        "89754521287539153683634591558496777667997/87112285931760246646623899502532662132736"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "267508027213992195047573207066745254903171/10889035741470030830827987437816582766592",
+        "2140064217711937560380585656533962039225699/87112285931760246646623899502532662132736"
+      ],
+      "S_comparator_at_cap_interval": [
+        "2204975306649556834950223741348531391071469/87112285931760246646623899502532662132736",
+        "1102487653324778417475111870674265695535907/43556142965880123323311949751266331066368"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          25,
+          25
+        ],
+        "resolved": true,
+        "value": 25,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          26,
+          26
+        ],
+        "resolved": true,
+        "value": 26,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        50,
+        50
+      ],
+      "N_comparator_cap_left_interval": [
+        52,
+        52
+      ],
+      "integer_relation": "SHARED_STRICTLY_LOWER",
+      "nonempty_open_region_existence_witness": true,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "73863731202898596587805/75557863725914323419136",
+        "A_comparator_lower": "36303341245213053557661/37778931862957161709568",
+        "bias_shared_upper_rad": "1185992163979253396641/302231454903657293676544",
+        "bias_comparator_upper_rad": "26771491023251592111/302231454903657293676544"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_NO_WITNESS_GLOBAL_UNDETERMINED",
+      "R_cont_cap_interval": [
+        "87140531557176628771725506307918170569055/87112285931760246646623899502532662132736",
+        "87140531557176628771725506307918170569081/87112285931760246646623899502532662132736"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "1027815035091872207562596239954233487206701/43556142965880123323311949751266331066368",
+        "1027815035091872207562596239954233487206885/43556142965880123323311949751266331066368"
+      ],
+      "S_comparator_at_cap_interval": [
+        "1028148297824769292115519586369230528211545/43556142965880123323311949751266331066368",
+        "2056296595649538584231039172738461056423403/87112285931760246646623899502532662132736"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        48,
+        48
+      ],
+      "N_comparator_cap_left_interval": [
+        48,
+        48
+      ],
+      "integer_relation": "TIE_OR_NOT_LOWER_AT_CAP_ONLY",
+      "nonempty_open_region_existence_witness": false,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "601966830780794430645891/604462909807314587353088",
+        "A_comparator_lower": "1202920562853963882828399/1208925819614629174706176",
+        "bias_shared_upper_rad": "1438712143691298573149/1208925819614629174706176",
+        "bias_comparator_upper_rad": "4337252527625844415/302231454903657293676544"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_NO_WITNESS_GLOBAL_UNDETERMINED",
+      "R_cont_cap_interval": [
+        "87139646518726498551024280814256458013021/87112285931760246646623899502532662132736",
+        "10892455814840812318878035101782057251631/10889035741470030830827987437816582766592"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "1027815035091872207562596239954233487206701/43556142965880123323311949751266331066368",
+        "1027815035091872207562596239954233487206885/43556142965880123323311949751266331066368"
+      ],
+      "S_comparator_at_cap_interval": [
+        "514068927744004385485412111350516194419365/21778071482940061661655974875633165533184",
+        "2056275710976017541941648445402064777677773/87112285931760246646623899502532662132736"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        48,
+        48
+      ],
+      "N_comparator_cap_left_interval": [
+        48,
+        48
+      ],
+      "integer_relation": "TIE_OR_NOT_LOWER_AT_CAP_ONLY",
+      "nonempty_open_region_existence_witness": false,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "601966830780794430645891/604462909807314587353088",
+        "A_comparator_lower": "300730121455871220776473/302231454903657293676544",
+        "bias_shared_upper_rad": "1438712143691298573149/1208925819614629174706176",
+        "bias_comparator_upper_rad": "822714224092842033/151115727451828646838272"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_STRICT_INTEGER_WITNESS",
+      "R_cont_cap_interval": [
+        "88423929189056744559497434726907581916645/87112285931760246646623899502532662132736",
+        "44211964594528372279748717363453790958335/43556142965880123323311949751266331066368"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "521835502154324958204714018326500798668861/21778071482940061661655974875633165533184",
+        "521835502154324958204714018326500798668941/21778071482940061661655974875633165533184"
+      ],
+      "S_comparator_at_cap_interval": [
+        "2118770963121137717084328548772388481585983/87112285931760246646623899502532662132736",
+        "2118770963121137717084328548772388481586309/87112285931760246646623899502532662132736"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          25,
+          25
+        ],
+        "resolved": true,
+        "value": 25,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        48,
+        48
+      ],
+      "N_comparator_cap_left_interval": [
+        50,
+        50
+      ],
+      "integer_relation": "SHARED_STRICTLY_LOWER",
+      "nonempty_open_region_existence_witness": true,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "149412325951875392570613/151115727451828646838272",
+        "A_comparator_lower": "296270702375557302409239/302231454903657293676544",
+        "bias_shared_upper_rad": "298843455447917899067/151115727451828646838272",
+        "bias_comparator_upper_rad": "8723760170739112479/151115727451828646838272"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G3",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_STRICT_INTEGER_WITNESS",
+      "R_cont_cap_interval": [
+        "88420332491648725245427161036567310271577/87112285931760246646623899502532662132736",
+        "44210166245824362622713580518283655135801/43556142965880123323311949751266331066368"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "521835502154324958204714018326500798668861/21778071482940061661655974875633165533184",
+        "521835502154324958204714018326500798668941/21778071482940061661655974875633165533184"
+      ],
+      "S_comparator_at_cap_interval": [
+        "2118684780816176454441342918965431863945397/87112285931760246646623899502532662132736",
+        "529671195204044113610335729741357965986431/21778071482940061661655974875633165533184"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          25,
+          25
+        ],
+        "resolved": true,
+        "value": 25,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        48,
+        48
+      ],
+      "N_comparator_cap_left_interval": [
+        50,
+        50
+      ],
+      "integer_relation": "SHARED_STRICTLY_LOWER",
+      "nonempty_open_region_existence_witness": true,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "149412325951875392570613/151115727451828646838272",
+        "A_comparator_lower": "18516915288268302967767/18889465931478580854784",
+        "bias_shared_upper_rad": "298843455447917899067/151115727451828646838272",
+        "bias_comparator_upper_rad": "1674948540162027729/75557863725914323419136"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "NOT_SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CARRIED_PI3_NOT_SATISFIED_NOT_EVALUATED"
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "NOT_SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CARRIED_PI3_NOT_SATISFIED_NOT_EVALUATED"
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_NO_WITNESS_GLOBAL_UNDETERMINED",
+      "R_cont_cap_interval": [
+        "43556598631740599905915497244102392520901/43556142965880123323311949751266331066368",
+        "21778299315870299952957748622051196260457/21778071482940061661655974875633165533184"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "1017999073352097118734015352161237642868777/43556142965880123323311949751266331066368",
+        "1017999073352097118734015352161237642868931/43556142965880123323311949751266331066368"
+      ],
+      "S_comparator_at_cap_interval": [
+        "2036019446451698818828425677303712624535519/87112285931760246646623899502532662132736",
+        "2036019446451698818828425677303712624535881/87112285931760246646623899502532662132736"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        48,
+        48
+      ],
+      "N_comparator_cap_left_interval": [
+        48,
+        48
+      ],
+      "integer_relation": "TIE_OR_NOT_LOWER_AT_CAP_ONLY",
+      "nonempty_open_region_existence_witness": false,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "302223954000530046135105/302231454903657293676544",
+        "A_comparator_lower": "302221485249860784085325/302231454903657293676544",
+        "bias_shared_upper_rad": "402270241142452925/75557863725914323419136",
+        "bias_comparator_upper_rad": "71165230125527113/302231454903657293676544"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_NO_WITNESS_GLOBAL_UNDETERMINED",
+      "R_cont_cap_interval": [
+        "87113183423241808731935487151290783576523/87112285931760246646623899502532662132736",
+        "43556591711620904365967743575645391788275/43556142965880123323311949751266331066368"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "1017999073352097118734015352161237642868777/43556142965880123323311949751266331066368",
+        "1017999073352097118734015352161237642868931/43556142965880123323311949751266331066368"
+      ],
+      "S_comparator_at_cap_interval": [
+        "1018009561488033389668442641606738385252547/43556142965880123323311949751266331066368",
+        "127251195186004173708555330200842298156591/5444517870735015415413993718908291383296"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        48,
+        48
+      ],
+      "N_comparator_cap_left_interval": [
+        48,
+        48
+      ],
+      "integer_relation": "TIE_OR_NOT_LOWER_AT_CAP_ONLY",
+      "nonempty_open_region_existence_witness": false,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "302223954000530046135105/302231454903657293676544",
+        "A_comparator_lower": "75555371152022714412355/75557863725914323419136",
+        "bias_shared_upper_rad": "402270241142452925/75557863725914323419136",
+        "bias_comparator_upper_rad": "28469275949046867/302231454903657293676544"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "NOT_SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CARRIED_PI3_NOT_SATISFIED_NOT_EVALUATED"
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "NOT_SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CARRIED_PI3_NOT_SATISFIED_NOT_EVALUATED"
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_NO_WITNESS_GLOBAL_UNDETERMINED",
+      "R_cont_cap_interval": [
+        "21778183783399883419447145081623720627587/21778071482940061661655974875633165533184",
+        "87112735133599533677788580326494882510377/87112285931760246646623899502532662132736"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "508985368178296655346764660734576770410673/21778071482940061661655974875633165533184",
+        "1017970736356593310693529321469153540821527/43556142965880123323311949751266331066368"
+      ],
+      "S_comparator_at_cap_interval": [
+        "2035951971216864276289876309827289660645565/87112285931760246646623899502532662132736",
+        "2035951971216864276289876309827289660645927/87112285931760246646623899502532662132736"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        48,
+        48
+      ],
+      "N_comparator_cap_left_interval": [
+        48,
+        48
+      ],
+      "integer_relation": "TIE_OR_NOT_LOWER_AT_CAP_ONLY",
+      "nonempty_open_region_existence_witness": false,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "151113850618088921721817/151115727451828646838272",
+        "A_comparator_lower": "302226466251031350446657/302231454903657293676544",
+        "bias_shared_upper_rad": "813719246497207437/302231454903657293676544",
+        "bias_comparator_upper_rad": "12157649076900003/151115727451828646838272"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G6",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_NO_WITNESS_GLOBAL_UNDETERMINED",
+      "R_cont_cap_interval": [
+        "87112734674715002024283933974242286394377/87112285931760246646623899502532662132736",
+        "87112734674715002024283933974242286394403/87112285931760246646623899502532662132736"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "508985368178296655346764660734576770410673/21778071482940061661655974875633165533184",
+        "1017970736356593310693529321469153540821527/43556142965880123323311949751266331066368"
+      ],
+      "S_comparator_at_cap_interval": [
+        "127246997530753870174202310746372154448223/5444517870735015415413993718908291383296",
+        "508987990123015480696809242985488617792969/21778071482940061661655974875633165533184"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        48,
+        48
+      ],
+      "N_comparator_cap_left_interval": [
+        48,
+        48
+      ],
+      "integer_relation": "TIE_OR_NOT_LOWER_AT_CAP_ONLY",
+      "nonempty_open_region_existence_witness": false,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "151113850618088921721817/151115727451828646838272",
+        "A_comparator_lower": "151113231397305112623057/151115727451828646838272",
+        "bias_shared_upper_rad": "813719246497207437/302231454903657293676544",
+        "bias_comparator_upper_rad": "8474866352590771/151115727451828646838272"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "NOT_SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CARRIED_PI3_NOT_SATISFIED_NOT_EVALUATED"
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "NOT_SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CARRIED_PI3_NOT_SATISFIED_NOT_EVALUATED"
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_NO_WITNESS_GLOBAL_UNDETERMINED",
+      "R_cont_cap_interval": [
+        "87112754610669077592236215868094879418595/87112285931760246646623899502532662132736",
+        "87112754610669077592236215868094879418619/87112285931760246646623899502532662132736"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "254492667712105933538358115656704273955135/10889035741470030830827987437816582766592",
+        "508985335424211867076716231313408547910347/21778071482940061661655974875633165533184"
+      ],
+      "S_comparator_at_cap_interval": [
+        "31811754615740769283876813279858137923393/1361129467683753853853498429727072845824",
+        "508988073851852308542029012477730206774365/21778071482940061661655974875633165533184"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        48,
+        48
+      ],
+      "N_comparator_cap_left_interval": [
+        48,
+        48
+      ],
+      "integer_relation": "TIE_OR_NOT_LOWER_AT_CAP_ONLY",
+      "nonempty_open_region_existence_witness": false,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "151113851756306132930485/151115727451828646838272",
+        "A_comparator_lower": "302226466845926844604581/302231454903657293676544",
+        "bias_shared_upper_rad": "800818847337163329/302231454903657293676544",
+        "bias_comparator_upper_rad": "67023325228300165/302231454903657293676544"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_NO_WITNESS_GLOBAL_UNDETERMINED",
+      "R_cont_cap_interval": [
+        "21778185188925228570146415048664267759605/21778071482940061661655974875633165533184",
+        "21778185188925228570146415048664267759611/21778071482940061661655974875633165533184"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "254492667712105933538358115656704273955135/10889035741470030830827987437816582766592",
+        "508985335424211867076716231313408547910347/21778071482940061661655974875633165533184"
+      ],
+      "S_comparator_at_cap_interval": [
+        "1017975985798284676224050241465270190665043/43556142965880123323311949751266331066368",
+        "1017975985798284676224050241465270190665197/43556142965880123323311949751266331066368"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        48,
+        48
+      ],
+      "N_comparator_cap_left_interval": [
+        48,
+        48
+      ],
+      "integer_relation": "TIE_OR_NOT_LOWER_AT_CAP_ONLY",
+      "nonempty_open_region_existence_witness": false,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "151113851756306132930485/151115727451828646838272",
+        "A_comparator_lower": "302226466233164286159115/302231454903657293676544",
+        "bias_shared_upper_rad": "800818847337163329/302231454903657293676544",
+        "bias_comparator_upper_rad": "3041645689100431/37778931862957161709568"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "NOT_SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CARRIED_PI3_NOT_SATISFIED_NOT_EVALUATED"
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "NOT_SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CARRIED_PI3_NOT_SATISFIED_NOT_EVALUATED"
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_NO_WITNESS_GLOBAL_UNDETERMINED",
+      "R_cont_cap_interval": [
+        "43556257962952945619734940130358276507481/43556142965880123323311949751266331066368",
+        "21778128981476472809867470065179138253747/21778071482940061661655974875633165533184"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "1017956533910241502175511723803616196770563/43556142965880123323311949751266331066368",
+        "127244566738780187771938965475452024596343/5444517870735015415413993718908291383296"
+      ],
+      "S_comparator_at_cap_interval": [
+        "2035918443044903206548326388416392553131431/87112285931760246646623899502532662132736",
+        "508979610761225801637081597104098138282935/21778071482940061661655974875633165533184"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        48,
+        48
+      ],
+      "N_comparator_cap_left_interval": [
+        48,
+        48
+      ],
+      "integer_relation": "TIE_OR_NOT_LOWER_AT_CAP_ONLY",
+      "nonempty_open_region_existence_witness": false,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "302229575801223351936417/302231454903657293676544",
+        "A_comparator_lower": "151114477690794014244049/151115727451828646838272",
+        "bias_shared_upper_rad": "408842041307686503/302231454903657293676544",
+        "bias_comparator_upper_rad": "6320693957517147/75557863725914323419136"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G6",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "SATISFIED",
+      "old_absolute_contrast_status": "RESOLVED_HIGHER_VISIBILITY",
+      "new_stage_s_status": "CAP_EDGE_NO_WITNESS_GLOBAL_UNDETERMINED",
+      "R_cont_cap_interval": [
+        "87112515465151072704353042248781807490949/87112285931760246646623899502532662132736",
+        "2722266108285971022011032570274431484093/2722258935367507707706996859454145691648"
+      ],
+      "R_cont_cap_role": "UNATTAINED_SUPREMUM_NOT_NATIVE_COST_OR_RPE_SUCCESS",
+      "S_shared_at_cap_interval": [
+        "1017956533910241502175511723803616196770563/43556142965880123323311949751266331066368",
+        "127244566738780187771938965475452024596343/5444517870735015415413993718908291383296"
+      ],
+      "S_comparator_at_cap_interval": [
+        "2035918432276539753754421603283224929206715/87112285931760246646623899502532662132736",
+        "2035918432276539753754421603283224929207023/87112285931760246646623899502532662132736"
+      ],
+      "n_shared_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "n_comparator_cap_left": {
+        "interval": [
+          24,
+          24
+        ],
+        "resolved": true,
+        "value": 24,
+        "rule": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+      },
+      "N_shared_cap_left_interval": [
+        48,
+        48
+      ],
+      "N_comparator_cap_left_interval": [
+        48,
+        48
+      ],
+      "integer_relation": "TIE_OR_NOT_LOWER_AT_CAP_ONLY",
+      "nonempty_open_region_existence_witness": false,
+      "all_gamma_impossibility_established": false,
+      "input_bounds": {
+        "A_shared_lower": "302229575801223351936417/302231454903657293676544",
+        "A_comparator_lower": "75557237982196581646939/75557863725914323419136",
+        "bias_shared_upper_rad": "408842041307686503/302231454903657293676544",
+        "bias_comparator_upper_rad": "35835811692439375/604462909807314587353088"
+      },
+      "assumptions": "DIRECT_TRADEOFF_POSITIVE_MARGIN_SAVED_GATE_SATISFIED",
+      "model_drift_added_again": false
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED",
+      "old_absolute_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "new_stage_s_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED",
+      "old_absolute_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "new_stage_s_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED",
+      "old_absolute_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "new_stage_s_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED",
+      "old_absolute_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "new_stage_s_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED",
+      "old_absolute_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "new_stage_s_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED",
+      "old_absolute_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "new_stage_s_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED",
+      "old_absolute_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "new_stage_s_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED"
+    },
+    {
+      "split": "G9",
+      "R": 2,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED",
+      "old_absolute_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "new_stage_s_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED",
+      "old_absolute_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "new_stage_s_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/8",
+      "T": "1",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED",
+      "old_absolute_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "new_stage_s_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED",
+      "old_absolute_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "new_stage_s_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/8",
+      "T": "4",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED",
+      "old_absolute_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "new_stage_s_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED",
+      "old_absolute_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "new_stage_s_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/16",
+      "T": "1",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED",
+      "old_absolute_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "new_stage_s_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "ordinary",
+      "old_pi3_gate_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED",
+      "old_absolute_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "new_stage_s_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED"
+    },
+    {
+      "split": "G9",
+      "R": 4,
+      "delta": "1/16",
+      "T": "4",
+      "comparator": "independent_pm",
+      "old_pi3_gate_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED",
+      "old_absolute_contrast_status": "UNRESOLVED_ABSOLUTE_CONTRAST",
+      "new_stage_s_status": "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED"
+    }
+  ],
+  "adapter": {
+    "saved_pi_interval_rad": [
+      "34208914690078935931509771941179865065619/10889035741470030830827987437816582766592",
+      "68417829380157871863019543882359730131243/21778071482940061661655974875633165533184"
+    ],
+    "fraction_fields_read": 122,
+    "108_row_inventory_checked": true,
+    "zero_controls_reanalyzed": false
+  },
+  "cap": {
+    "interval_rad": [
+      "34208914690078935931509771941179865065619/32667107224410092492483962313449748299776",
+      "22805943126719290621006514627453243377081/21778071482940061661655974875633165533184"
+    ],
+    "endpoint_open": true,
+    "gamma_grid": null,
+    "pi_recomputed": false
+  },
+  "statistics": {
+    "alpha_axis": "1/40",
+    "K_interval": [
+      "381728357160300275000107753214953170710855/21778071482940061661655974875633165533184",
+      "190864178580150137500053876607476585355431/10889035741470030830827987437816582766592"
+    ],
+    "confidence_scope": "PER_METHOD_ROW",
+    "fresh_IID_physical_verified": false
+  },
+  "arithmetic": {
+    "bits": 128,
+    "bound_steps": 1548,
+    "refinements": 0,
+    "scalar_margins_planned": 36,
+    "sin_endpoint_calls_planned": 72,
+    "scalar_margins_completed_in_returned_cells": 36,
+    "sin_endpoint_calls_completed_in_returned_cells": 72,
+    "log_calls": 1,
+    "exact_interval_strings_are_primary": true
+  },
+  "resources": {
+    "logical_cpus": 32,
+    "selected_workers": 12,
+    "worker_policy": "AUTO_AFFINITY_AND_INDEPENDENT_CELL_COUNT",
+    "CPU_RAM_GPU_worker_caps": null,
+    "backend": "EXACT_RATIONAL_CPU_NO_FLOAT_BLAS_GPU_KERNEL",
+    "GPU_used": false,
+    "GPU_reason": "exact rational CPU arithmetic; no GPU backend",
+    "BLAS_OpenMP_NumPy_Qiskit_imports": false,
+    "memory_available_before": [
+      "MemTotal:       65522480 kB",
+      "MemAvailable:   50852848 kB"
+    ],
+    "observed_worker_peak_RSS_KiB": [
+      37704,
+      37704,
+      37960,
+      37708,
+      37708,
+      37964,
+      37964,
+      37708,
+      37708,
+      37968,
+      37712,
+      37712
+    ],
+    "parent_peak_RSS_KiB": 49152,
+    "children_peak_RSS_KiB": 42752,
+    "RSS_scope": "per-process peaks; not an aggregate concurrent peak"
+  },
+  "wall_seconds_observed": 0.0925622140057385
+}
