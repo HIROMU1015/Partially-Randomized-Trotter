@@ -535,3 +535,6 @@ N3保存帰属v1：[資料・事後評価準備](../../docs/research/n3_saved_at
 ## 2026-10-13 chemistry mixed-access feasibility計画
 
 [最小計画](../../docs/research/qc_mixed_access_feasibility_plan_v1_20261013.md)、[次のscope承認](../../docs/research/qc_mixed_access_feasibility_approval_scope_v1_20261013.md)。artifacts `artifacts/qc_mixed_access_feasibility/2026-10-13/`。current constructor独立算法非採択をユーザー経由の完了GPT判断として反映。新数値0、science module/runner/checkerは将来技術準備・source未freeze、旧13再実行なし。7法/H4一入力の有限PF/残余function費用を設計、launch認可なしMandatory STOP。数値validation実装pathを追加したとはしない。
+# 2026-10-18 別namespaceのA2人工certificate prototype
+
+`trotterlib`本体を変更せず、`src/trottercert/a2_spec04_07/` にSPEC-04〜07の人工SOURCEを追加した。[API・独立性・限界](../../docs/research/qc_a2_spec04_07_synthetic_20261018/source_api_and_scope.md)、test `tests/test_a2_spec04_07_synthetic.py`。既存科学libraryから呼ぶadapterは未実装。実入力適用・QPE/native・A2正式採択を意味しない。

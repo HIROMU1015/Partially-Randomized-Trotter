@@ -548,3 +548,6 @@ N3保存帰属v1：[資料・事後評価準備](../docs/research/n3_saved_attri
 ## 2026-10-13 chemistry mixed-access feasibility計画
 
 [最小計画](../docs/research/qc_mixed_access_feasibility_plan_v1_20261013.md)、[次のscope承認](../docs/research/qc_mixed_access_feasibility_approval_scope_v1_20261013.md)。artifacts `artifacts/qc_mixed_access_feasibility/2026-10-13/`。current constructor独立算法非採択をユーザー経由の完了GPT判断として反映。新数値0、science module/runner/checkerは将来技術準備・source未freeze、旧13再実行なし。7法/H4一入力の有限PF/残余function費用を設計、launch認可なしMandatory STOP。数値validation実装pathを追加したとはしない。
+# 2026-10-18 A2人工検査harnessの参照
+
+SPEC-04〜07の開発検査は [記録harness](../docs/research/qc_a2_spec04_07_synthetic_20261018/run_synthetic_checks.py) を `python -B` で実行する。指定された2本の人工unittestだけを読み、pytest conftest・科学runnerを起動しない。[技術報告](../docs/research/qc_a2_spec04_07_synthetic_20261018/technical_report.md)。科学実行CLI/authorizationは追加していない。

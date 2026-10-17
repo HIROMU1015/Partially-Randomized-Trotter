@@ -1,5 +1,10 @@
 # Validation status
 
+## 2026-10-18 A2 SPEC-04〜07：人工SOURCE検査の追加
+
+[技術報告](docs/research/qc_a2_spec04_07_synthetic_20261018/technical_report.md)と[機械可読テスト記録](docs/research/qc_a2_spec04_07_synthetic_20261018/synthetic_test_results.json)を追加した。これは既存SPEC-01〜03の回帰を含むローカル人工検査で、immutable CI・外部独立再現・実分子の認証を意味しない。旧validation結果・既知FAIL・科学的結論を更新しない。A2未採択、SPEC-08/実入力実行未承認、mandatory STOP。
+
+
 ## 2026-10-15 ユーザー採用：現構成の終了・探索系列pause
 
 第一候補（一体項再配分PF）の**現固定構成を正式CLOSED**、H-E1の現定義探索を終了、M-a・M-bの現定義での追加探索をSTOP（K1未実施）、PF小改変探索系列をPAUSED。旧D案HOLD、他の独立研究の状態は不変。 [採用元の完成GPTレビュー](docs/reviews/quantum_chemistry_pf/qc_m_k0_claude_scientific_rereview_and_direction_20261015.md)、[現行の採用済み状態](artifacts/qc_pf_exploration_state_adoption/2026-10-15/decision.json)、[日付ノート](docs/research/研究ノート/2026-10-15_qc_pf_exploration_state_adoption.md)。今回はユーザーが科学判断を採用した後の事務的反映であり、新しい科学レビュー・計算・再集計は0。一般的不能性や研究全体の終了を意味しない。新研究方向のGPTレビューは別途明示開始承認待ち。既存source・結果・認可・STOP・manifest既存FAILを保持し、公開・GitHub再取得照合後Mandatory STOP。以下は採用前の履歴。

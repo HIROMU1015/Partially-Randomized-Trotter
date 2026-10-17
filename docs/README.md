@@ -637,3 +637,6 @@ N3保存帰属v1：[公開・remote取得確認](research/n3_saved_attribution_v
 ## 2026-10-13 chemistry mixed-access feasibility計画
 
 [最小計画](research/qc_mixed_access_feasibility_plan_v1_20261013.md)、[次のscope承認](research/qc_mixed_access_feasibility_approval_scope_v1_20261013.md)。artifacts `artifacts/qc_mixed_access_feasibility/2026-10-13/`。current constructor独立算法非採択をユーザー経由の完了GPT判断として反映。新数値0、science module/runner/checkerは将来技術準備・source未freeze、旧13再実行なし。7法/H4一入力の有限PF/残余function費用を設計、launch認可なしMandatory STOP。数値validation実装pathを追加したとはしない。
+# 2026-10-18 A2 SPEC-04〜07の人工SOURCE検査
+
+[技術報告](research/qc_a2_spec04_07_synthetic_20261018/technical_report.md)、[証拠索引](research/qc_a2_spec04_07_synthetic_20261018/evidence_index.json)、[判断用引継ぎ](research/qc_a2_spec04_07_synthetic_20261018/decision_handoff.md)。SOURCE `src/trottercert/a2_spec04_07/`、test `tests/test_a2_spec04_07_synthetic.py`。既存SPEC-01〜03の回帰を含む人工検査であり、実分子・保存科学入力への適用やSPEC-08は未実施。科学状態・認可は変更しない。

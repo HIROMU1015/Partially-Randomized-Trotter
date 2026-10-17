@@ -1073,3 +1073,6 @@ N3保存帰属v1：[公開・remote取得確認](docs/research/n3_saved_attribut
 ## 2026-10-13 chemistry mixed-access feasibility計画
 
 [最小計画](docs/research/qc_mixed_access_feasibility_plan_v1_20261013.md)、[次のscope承認](docs/research/qc_mixed_access_feasibility_approval_scope_v1_20261013.md)。artifacts `artifacts/qc_mixed_access_feasibility/2026-10-13/`。current constructor独立算法非採択をユーザー経由の完了GPT判断として反映。新数値0、science module/runner/checkerは将来技術準備・source未freeze、旧13再実行なし。7法/H4一入力の有限PF/残余function費用を設計、launch認可なしMandatory STOP。数値validation実装pathを追加したとはしない。
+# 2026-10-18 A2 SPEC-04〜07：人工実装の追加索引
+
+[技術報告・入口](docs/research/qc_a2_spec04_07_synthetic_20261018/technical_report.md)、[API・保証範囲](docs/research/qc_a2_spec04_07_synthetic_20261018/source_api_and_scope.md)、[GPT引継ぎ](docs/research/qc_a2_spec04_07_synthetic_20261018/decision_handoff.md)。SOURCEは `src/trottercert/a2_spec04_07/`、人工testは `tests/test_a2_spec04_07_synthetic.py`、記録harnessと証拠は同技術資料directory内。既存SPEC-01〜03は無変更で再利用する。人工SOURCE検査のみで実入力certificate・科学的優位・QPE/native実装を認定しない。A2 `NOT_ADOPTED`、A1 `CLOSED`、K1-F未承認、mandatory STOP。
