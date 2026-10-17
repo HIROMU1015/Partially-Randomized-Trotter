@@ -1,3 +1,7 @@
+## 2026-10-18 H8：追加6精度の保存値検証完了
+
+[結果・実測/model区分・来歴](docs/research/track_a_h8_epsilon_boundary_run01_results_20261018.md)。SOURCE3156b036…、利用者の準備後実行承認に基づくC専用one-shot。保存anchor1,520行を再現後、新2,280行/12比較、native exit0・最終gate PASS、wall0.832秒。通常ε=.00075で+12.77%、.000625で−0.50%（有限標本の点比較）。人工164件PASS、新compile/sampling/signal/fit0。他のA/B/D/E/Fは未実行、条件付き実行承認は保持し、各単位のSTOPを維持。以下は各時点の履歴。
+
 ## 2026-10-18 Track A：対象を絞った並列検証計画（未承認）
 
 [具体案・再利用・依存関係](docs/research/track_a_targeted_parallel_validation_plan_20261018.md)。PR境界16構成、希少層4群、新ε6点、対照3構成、H8 T2点、H6/H8距離各1点を15の個別承認単位に分離。metadata DAG/CLI、18固定file監査、人工21＋既存135件PASS。production adapter未seal、科学実行0。完了RARE/SELECTION等は再利用しmandatory STOP。以下は各時点の履歴。

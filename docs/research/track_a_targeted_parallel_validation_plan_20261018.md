@@ -1,5 +1,7 @@
 # Track A：変数範囲を絞った検証と並列実行の計画
 
+追記：本計画の後に利用者の準備後実行承認を受け、[Cの追加6精度検証](track_a_h8_epsilon_boundary_run01_results_20261018.md)を正常完了した。以下の未承認表記は計画時点の履歴。他系列の科学計算は未実行。
+
 2026-10-18 JST。利用者の「必要な範囲を選び、検証間・検証内を並列化する」方針に基づく**未承認の具体案**。完了済みの解析を再利用し、追加検証6系列を15の承認単位に分けた。今回は計画コード・依存関係の人工検証・再利用監査までで、新しい科学計算は0。各単位のproduction adapter、実入力manifest、control予算、実行契約は未sealであり、科学実行可能な状態とはしていない。
 
 SOURCE `daf701d8e4fb25a22e5c383202f535f9db7a6e25`、起点 `cf8e93eef50333bef41f6d75803f6b819d679343`。[計画JSON](../../artifacts/resource_applicability/track_a_targeted_parallel_plan/2026-10-18/campaign_plan_UNAPPROVED_v1.json)のdigestは `b2519efb7c6f5d87fe18a561459edf325965ea7cb865d969c589dc4a9dfe341c`。[bundle](../../artifacts/resource_applicability/track_a_targeted_parallel_plan/2026-10-18/README.md)、[metadata CLI](../../scripts/prepare_track_a_targeted_plan.py)、[計画module](../../src/trotterlib/targeted_validation_plan.py)。このCLIはscience dispatchを実装していない。
