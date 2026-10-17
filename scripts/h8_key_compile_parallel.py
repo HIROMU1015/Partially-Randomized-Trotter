@@ -49,6 +49,17 @@ def wait_owned(h):
                  cpu_seconds=usage.ru_utime+usage.ru_stime,peak_RSS_bytes=usage.ru_maxrss*1024)
 
 
+def worker_failure(h):
+    """Keep the first failed child's cause across nested preparation maps."""
+    path=Path(h['directory'])/'task_STOP.json';cause=None
+    try:
+        if path.is_file() and path.stat().st_size<=2*2**20:
+            value=json.loads(path.read_bytes()).get('error')
+            if isinstance(value,str):cause=value
+    except (OSError,ValueError):pass
+    return RuntimeError('WORKER_FAILED:'+h['task_id']+(':'+cause if cause else ''))
+
+
 def atomic_json(path,value):
     raw=json.dumps(value,sort_keys=True,allow_nan=False).encode()
     if len(raw)>2*2**20:raise RuntimeError('WORKER_CONTROL_ARTIFACT_TOO_LARGE')
@@ -135,7 +146,7 @@ def map_owned(tasks,callback,*,cpus,limits,directory,deadline,guard=lambda:None,
                 if h['reaped']:continue
                 wait_owned(h)
                 if h['reaped']:
-                    if h['exit_code']!=0:raise RuntimeError('WORKER_FAILED:'+h['task_id'])
+                    if h['exit_code']!=0:raise worker_failure(h)
                     result=Path(h['directory'])/'task_result.json'
                     if not result.is_file():raise RuntimeError('MISSING_COMPLETE_WORKER_RESULT')
                     h['result_sha256']=hashlib.sha256(result.read_bytes()).hexdigest()
@@ -196,7 +207,7 @@ def map_owned(tasks,callback,*,cpus,limits,directory,deadline,guard=lambda:None,
                 try:
                     for h in handles:
                         if h['pid'] is None or not h['reaped'] or h['exit_code']!=0:
-                            raise RuntimeError('WORKER_FAILED:'+h['task_id'])
+                            raise worker_failure(h)
                         result=Path(h['directory'])/'task_result.json'
                         if not result.is_file():raise RuntimeError('MISSING_COMPLETE_WORKER_RESULT')
                         h['result_sha256']=hashlib.sha256(result.read_bytes()).hexdigest()

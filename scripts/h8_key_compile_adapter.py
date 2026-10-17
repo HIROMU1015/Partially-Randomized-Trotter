@@ -12,6 +12,7 @@ from types import SimpleNamespace
 import h8_key_compile_contract as c
 import h8_key_compile_controls as controls
 import h8_key_compile_parallel as pool
+from h8_key_compile_preparation import prepare_cases
 
 
 def scalar_for(case, constant_hex, target):
@@ -114,12 +115,12 @@ def evaluate(config, grant, output):
     c.require(qiskit.__version__==cp['qiskit_version'],'QISKIT_VERSION_CHANGED')
     compiler=m.CompilerSettings(tuple(cp['basis_gates']),None,None,cp['optimization_level'],None,None,cp['seed_transpiler'],qiskit.__version__)
     targets={x['case_id']:x for x in b['targets']}
-    def build(case):
+    def build(case,case_permit,worker_cpus):
         bs,identity=views[case['prefix']];scalar=scalar_for(case,identity['constant_hex'],targets[case['id']])
-        built=controls.build_case(case,bs,scalar,qstate,targets[case['id']],permit,native,m,
-                                  cap=case['measured_wrapper_allocation_bound'])
+        built=controls.build_case(case,bs,scalar,qstate,targets[case['id']],case_permit,native,m,
+                                  cap=case['measured_wrapper_allocation_bound'],worker_cpus=worker_cpus)
         built.update(case=case,identity=identity,scalar_hex=scalar.hex())
-        c.save(permit.output/(case['id']+'_control_preparation.json'),dict(case=case,preparation_binding=identity,
+        c.save(case_permit.output/(case['id']+'_control_preparation.json'),dict(case=case,preparation_binding=identity,
             scalar_hex=scalar.hex(),max_control_error=built['max_control_error'],fingerprints=built['fingerprints'],
             spools=built['spools'],SOURCE=config['SOURCE'],profile_sha256=c.PROFILE))
         return built
@@ -135,7 +136,8 @@ def evaluate(config, grant, output):
         return row
     def map_compile(*args,**kwargs):
         permit.take('qpy_load');return pool.map_owned(*args,**kwargs)
-    rows=serial_axes(permit,build,compile_axis,map_owned=map_compile)
+    prepared=prepare_cases(permit,build)
+    rows=serial_axes(permit,lambda case:prepared.pop(case['id']),compile_axis,map_owned=map_compile)
     result=c.complete(rows,permit.calls,config['SOURCE'])
     result.update(SOURCE=config['SOURCE'],rows=rows,actual_calls=permit.calls)
     return result

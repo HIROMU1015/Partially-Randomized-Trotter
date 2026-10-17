@@ -20,8 +20,8 @@ def load_wrapper(receipt,output,qpy,cap=None):
  c.require(len(circuits)==1,'ONE_SPOOLED_WRAPPER_REQUIRED')
  return circuits[0]
 
-def batch(tasks,callback,permit,name,*,reserve,map_owned=pool.map_owned):
- cpus=permit.grant['worker_cpus']
+def batch(tasks,callback,permit,name,*,reserve,map_owned=pool.map_owned,worker_cpus=None):
+ cpus=permit.grant['worker_cpus'] if worker_cpus is None else worker_cpus
  if len(cpus)!=2:raise ValueError('TWO_PREPARATION_CPUS_REQUIRED')
  directory=permit.output/name
  receipt=map_owned(tasks,callback,cpus=cpus,limits=dict(max_workers=2),
@@ -37,7 +37,7 @@ def batch(tasks,callback,permit,name,*,reserve,map_owned=pool.map_owned):
  return values
 
 
-def build_case(case,blocks,scalar,qstate,target,permit,native,m,*,n=16,cap=4_000_000,map_owned=pool.map_owned):
+def build_case(case,blocks,scalar,qstate,target,permit,native,m,*,n=16,cap=4_000_000,map_owned=pool.map_owned,worker_cpus=None):
  permit.require(c.SCOPE)
  from qiskit import qpy
  permit.take('native_evolution_build')
@@ -50,16 +50,14 @@ def build_case(case,blocks,scalar,qstate,target,permit,native,m,*,n=16,cap=4_000
   right=m.simulate_statevector(evolution.circuit,high);z=complex(np.vdot(qstate,right[len(qstate):]))
   return dict(overlap=dict(real=z.real,imag=z.imag),errors=[float(np.linalg.norm(right[:len(qstate)]))]+[abs(z-complex(target[key]['real'],target[key]['imag'])) for key in ('corrected','independent_forward')])
  values=batch([dict(id=x) for x in ('left','right')],directional,permit,case['id']+'_directional_controls',
-  reserve=lambda task:permit.take('control_probe'),map_owned=map_owned)
+  reserve=lambda task:permit.take('control_probe'),map_owned=map_owned,worker_cpus=worker_cpus)
  errors=[error for value in values for error in value['errors']]
  if any(not math.isfinite(v) or v<0 or v>=1e-8 for v in errors):raise ValueError('S4_DIRECTIONAL_CONTROL_1E8')
- z=complex(values[1]['overlap']['real'],values[1]['overlap']['imag']);wrappers={}
- for axis in ('cosine','sine'):
-  permit.take('measured_wrapper_build')
-  wrappers[axis]=native.build_native_hadamard_wrapper(evolution,axis=axis,include_measurement=True,max_instructions=cap)
- del evolution,directional;gc.collect()
+ z=complex(values[1]['overlap']['real'],values[1]['overlap']['imag'])
+ del directional;gc.collect()
  def axis_validation(task,path):
-  axis=task['id'];w=wrappers.pop(axis);wrappers.clear();gc.collect()
+  axis=task['id']
+  w=native.build_native_hadamard_wrapper(evolution,axis=axis,include_measurement=True,max_instructions=cap)
   probe=w.remove_final_measurements(inplace=False)
   measured=m.hadamard_expectation(m.simulate_statevector(probe,low),n);del probe
   error=abs(measured-(z.real if axis=='cosine' else z.imag))
@@ -68,8 +66,8 @@ def build_case(case,blocks,scalar,qstate,target,permit,native,m,*,n=16,cap=4_000
   spool=dump_wrapper(w,path/'scratch/validated_wrapper.qpy',qpy,None)
   return dict(axis=axis,max_control_error=error,fingerprint=fingerprint,qpy_spool=spool)
  def reserve_axis(task):
-  permit.take('probe_wrapper_copy');permit.take('control_probe');permit.take('qpy_dump')
- values=batch([dict(id=x) for x in ('cosine','sine')],axis_validation,permit,case['id']+'_axis_controls_and_fingerprints',reserve=reserve_axis,map_owned=map_owned)
+  permit.take('measured_wrapper_build');permit.take('probe_wrapper_copy');permit.take('control_probe');permit.take('qpy_dump')
+ values=batch([dict(id=x) for x in ('cosine','sine')],axis_validation,permit,case['id']+'_axis_controls_and_fingerprints',reserve=reserve_axis,map_owned=map_owned,worker_cpus=worker_cpus)
  error=max(errors+[v['max_control_error'] for v in values])
  # Return small descriptors only. Neither closure nor circuit escapes this call.
  return dict(spools={v['axis']:v['qpy_spool'] for v in values},fingerprints={v['axis']:v['fingerprint'] for v in values},max_control_error=error)

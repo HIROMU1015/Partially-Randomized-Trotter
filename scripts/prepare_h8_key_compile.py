@@ -11,7 +11,7 @@ def prepare(previous_config, directory, *, source=None):
     c.require(not directory.exists(),'EXCLUSIVE_NEW_DRAFT_DIRECTORY')
     specs=c.binding()['inputs'];by={r['logical_name']:r for r in specs}
     files=[dict(by[name],path=old['input_mapping'][name]) for name in by]
-    cfg=dict(schema='H8_KEY_COMPILE_CONFIG_V1',SOURCE=source,execution_sealed=False,
+    cfg=dict(schema='H8_KEY_COMPILE_CONFIG_V2',SOURCE=source,execution_sealed=False,
         plan_sha256=c.digest(c.plan()),source_hashes={name:c.sha(c.ROOT/name) for name in c.source_paths()},
         provider_source=c.PROVIDER,provider_root=old['provider_root'],provider_hashes=old['provider_hashes'],
         runtime_file_hashes=old['runtime_file_hashes'],python=old['python'],python_sha256=c.sha(old['python']),
@@ -19,7 +19,7 @@ def prepare(previous_config, directory, *, source=None):
         font_seed=old['font_seed'],output=str(directory/'output01'),control=str(directory/'control01'),
         lock=str(directory/'KEY_COMPILE_ONE_SHOT'))
     check=c.verify(cfg,runtime=False,git=source is not None)
-    grant=dict(schema='H8_KEY_COMPILE_GRANT_V1',scope=c.SCOPE,SOURCE=source,approved=False,
+    grant=dict(schema='H8_KEY_COMPILE_GRANT_V2',scope=c.SCOPE,SOURCE=source,approved=False,
         runtime_authorization=False,execution_sealed=False,approval_text=None,
         plan_sha256=cfg['plan_sha256'],config_sha256=c.digest(cfg),call_caps=c.CAPS,
         one_shot=True,automatic_retry=False,cost_reaccount_authorized=False,next_stage_authorized=False,

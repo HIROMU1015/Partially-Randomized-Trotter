@@ -29,12 +29,12 @@ def temp():
 
 
 def authorization():
-    cpus=[0,1,2]
+    cpus=list(range(7))
     cfg=dict(SOURCE='a'*40,execution_sealed=True,plan_sha256=c.digest(c.plan()))
-    g=dict(schema='H8_KEY_COMPILE_GRANT_V1',approved=True,runtime_authorization=True,execution_sealed=True,
+    g=dict(schema='H8_KEY_COMPILE_GRANT_V2',approved=True,runtime_authorization=True,execution_sealed=True,
         approval_text='ARTIFICIAL_ONLY',SOURCE=cfg['SOURCE'],scope=c.SCOPE,plan_sha256=cfg['plan_sha256'],
         config_sha256=c.digest(cfg),call_caps=c.CAPS,one_shot=True,automatic_retry=False,
-        cost_reaccount_authorized=False,next_stage_authorized=False,driver_cpu=0,worker_cpus=[1,2],allowed_cpus=cpus)
+        cost_reaccount_authorized=False,next_stage_authorized=False,driver_cpu=0,worker_cpus=cpus[1:],allowed_cpus=cpus)
     return cfg,g
 
 
@@ -44,7 +44,7 @@ class Contract(unittest.TestCase):
         self.assertEqual([x['axis'] for x in p['axes']],['cosine','sine']*3)
         self.assertFalse(p['approved']);self.assertFalse(p['runtime_authorization'])
         self.assertIsNone(p['absolute_launch_command']);self.assertEqual(p['allowed_cpus'],[])
-        self.assertEqual((p['compile_concurrency'],p['preparation_concurrency']),(1,2))
+        self.assertEqual((p['compile_concurrency'],p['preparation_concurrency']),(1,6))
         self.assertIsNone(p['resource_policy']['agent_imposed_CPU_RAM_CPUtime_wall_caps'])
     def test_denominator_boundary_and_invalid_counts(self):
         self.assertFalse(c.axis_check('102',100)['PASS'])
@@ -53,13 +53,13 @@ class Contract(unittest.TestCase):
         for invalid in (0,-1,1.0,True,float('nan')):
             with self.subTest(invalid=invalid),self.assertRaises(ValueError):c.axis_check('100',invalid)
     def test_explicit_new_grant_and_each_binding(self):
-        cfg,g=authorization();self.assertEqual(c.authorize(cfg,g,affinity={0,1,2}),[0,1,2])
+        cfg,g=authorization();self.assertEqual(c.authorize(cfg,g,affinity=set(range(7))),list(range(7)))
         for key,value in [('approved',False),('runtime_authorization',False),('execution_sealed',False),
                 ('SOURCE','b'*40),('scope','OLD_SCOPE'),('config_sha256','bad'),('plan_sha256','bad'),
                 ('call_caps',{}),('one_shot',False),('automatic_retry',True),('cost_reaccount_authorized',True),
                 ('next_stage_authorized',True),('allowed_cpus',[0,1,1]),('worker_cpus',[1])]:
             bad=deepcopy(g);bad[key]=value
-            with self.subTest(key=key),self.assertRaises(ValueError):c.authorize(cfg,bad,affinity={0,1,2})
+            with self.subTest(key=key),self.assertRaises(ValueError):c.authorize(cfg,bad,affinity=set(range(7)))
     def test_invalid_grant_rejected_before_side_effects(self):
         with patch.object(c,'read',side_effect=[{},{}]),patch.object(run,'fresh') as fresh,patch.object(pool,'map_owned') as launch:
             with self.assertRaises(ValueError):run.launch('artificial-config','artificial-grant')
@@ -124,7 +124,7 @@ class BindingAndCompletion(unittest.TestCase):
         source=root/'artificial.py';source.write_text('ARTIFICIAL=1\n')
         data=root/'input.json';data.write_text('{"artificial":true}\n')
         spec=dict(logical_name='artificial',bytes=data.stat().st_size,sha256=c.sha(data))
-        cfg=dict(schema='H8_KEY_COMPILE_CONFIG_V1',plan_sha256=c.digest({'artificial':True}),
+        cfg=dict(schema='H8_KEY_COMPILE_CONFIG_V2',plan_sha256=c.digest({'artificial':True}),
             provider_source=c.PROVIDER,expected_profile_digest=c.PROFILE,provider_root=str(root),
             provider_hashes={},runtime_file_hashes={},python=c.PYTHON,python_sha256=c.sha(c.PYTHON),
             source_hashes={'artificial.py':c.sha(source)},files=[dict(spec,path=str(data))],input_mapping={'artificial':str(data)})

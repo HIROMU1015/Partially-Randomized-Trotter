@@ -10,7 +10,7 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 INPUTS = 'references/h8_key_compile_inputs_v1.json'
 CLOSURE = 'references/h8_key_compile_closure_v1.json'
-SCOPE = 'H8_THREE_SELECTED_CANDIDATES_SIX_NATIVE_AXES_V1'
+SCOPE = 'H8_THREE_SELECTED_CANDIDATES_SIX_NATIVE_AXES_PARALLEL_PREPARATION_V2'
 PROFILE = '622ce4a8391002558b877240b48d831d9bb0a72aeabba2e4d73bfec64b9c9f12'
 COMPILER = '1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b'
 PROVIDER = 'c31ef424175c02379eafebe8fc6c7548c1d9aabe'
@@ -26,6 +26,8 @@ CAPS = dict(snapshot_load=1,saved_preparation_decode=1,prefix_view=2,native_evol
     measured_wrapper_build=6,probe_wrapper_copy=6,control_probe=12,qpy_dump=6,qpy_load=6,
     compile=6,model_error_check=6,new_signal=0,new_reference=0,tail_scalar=0,
     SCF=0,DF=0,state_solver=0,PR_sampling=0,fit=0,cost_reaccount=0,extra_compile=0)
+CASE_PREPARATION_CAPS = dict(native_evolution_build=1,measured_wrapper_build=2,
+    probe_wrapper_copy=2,control_probe=4,qpy_dump=2)
 
 
 def require(value, reason):
@@ -66,7 +68,7 @@ def source_paths():return read(ROOT/CLOSURE)['paths']
 
 def plan():
     b=binding()
-    return dict(schema='H8_KEY_COMPILE_PLAN_V1',scope=SCOPE,cases=b['cases'],axes=b['axes'],
+    return dict(schema='H8_KEY_COMPILE_PLAN_V2',scope=SCOPE,cases=b['cases'],axes=b['axes'],
         input_binding_sha256=sha(ROOT/INPUTS),source_closure_sha256=sha(ROOT/CLOSURE),
         science=dict(geometry='Linear H8 1.0 Angstrom STO-3G',modes=16,sector=4900,DF_rank=28,T=.8,
                      fragment_order='SAVED_SIGNED_GENERATION_ORDER',control='symmetric_directional',
@@ -74,13 +76,18 @@ def plan():
         scalar=dict(B0='ORIGINAL_ONCE',B0I='ORIGINAL_PLUS_OWN_PREFIX_SAVED_FULL_FOCK_IDENTITY_ONCE'),
         compiler_options=b['compiler_options'],compiler_hash=COMPILER,profile_sha256=PROFILE,
         provider_SOURCE=PROVIDER,model_sha256=MODEL,call_caps=CAPS,
-        compile_concurrency=1,preparation_concurrency=2,max_cases_live=1,
+        compile_concurrency=1,preparation_concurrency=6,max_cases_live=3,
+        preparation=dict(case_build_concurrency=3,worker_pairs=3,workers_per_pair=2,
+            wrapper_build='IN_AXIS_WORKER_WITH_VALIDATION_FINGERPRINT_AND_QPY',
+            case_coordinator='SHARES_FIRST_CPU_OF_OWN_PAIR_WHILE_WAITING',
+            call_reservations='PARENT_BEFORE_CASE_FORK_NONREFUNDABLE',
+            per_case_caps=CASE_PREPARATION_CAPS,compile_admission='ALL_THREE_PREPARATIONS_PASS'),
         axis_order='PRIORITY_CASE_THEN_COSINE_SINE',check_before_next_compile=True,
         model_PASS='abs(prediction-measured)/measured < 1/50',control_PASS='finite error < 1e-8',
         resource_policy=dict(agent_imposed_CPU_RAM_CPUtime_wall_caps=None,OS_limits='INHERIT_WITHOUT_CHANGE',
             PSI='OBSERVE_AND_REESTABLISH_NO_TRANSIENT_STOP',unrelated_worktrees='OBSERVATION_ONLY',
             fork='SINGLE_THREAD_PARENT_REQUIRED',threads_per_worker=1,
-            estimates=dict(aggregate_peak_RSS_bytes=64*2**30,headroom_bytes=16*2**30,
+            estimates=dict(aggregate_peak_RSS_bytes=3*64*2**30,headroom_bytes=16*2**30,
                            stage_bytes=2*2**30,inodes=1024,monitor_growth='APPEND_JSONL_BYTES_PER_SECOND_REPORTED',
                            wall='UNMEASURED_NO_DEADLINE')),
         mismatch='PRESERVE_RAW_THEN_STOP_NO_REFIT_NO_EXTRA_COMPILE',
@@ -101,7 +108,7 @@ def axis_check(prediction, measured):
 def authorize(config, grant, *, affinity=None):
     source=config.get('SOURCE')
     require(type(source)is str and len(source)==40 and all(x in '0123456789abcdef' for x in source) and
-        config.get('execution_sealed')is True and grant.get('schema')=='H8_KEY_COMPILE_GRANT_V1' and
+        config.get('execution_sealed')is True and grant.get('schema')=='H8_KEY_COMPILE_GRANT_V2' and
         grant.get('approved')is True and grant.get('runtime_authorization')is True and
         grant.get('execution_sealed')is True and grant.get('approval_text') and
         grant.get('scope')==SCOPE and grant.get('SOURCE')==source and
@@ -112,9 +119,9 @@ def authorize(config, grant, *, affinity=None):
         'NEW_EXPLICIT_SEALED_SIX_AXIS_GRANT_REQUIRED')
     cpus=grant.get('allowed_cpus');workers=grant.get('worker_cpus')
     available=os.sched_getaffinity(0) if affinity is None else affinity
-    require(type(workers)is list and len(workers)==2 and cpus==[grant.get('driver_cpu'),*workers] and
-        all(type(x)is int and x>=0 for x in cpus) and len(set(cpus))==3 and set(cpus)<=available,
-        'EXPLICIT_THREE_DISJOINT_OWN_CPUS_REQUIRED')
+    require(type(workers)is list and len(workers)==6 and cpus==[grant.get('driver_cpu'),*workers] and
+        all(type(x)is int and x>=0 for x in cpus) and len(set(cpus))==7 and set(cpus)<=available,
+        'EXPLICIT_SEVEN_DISJOINT_OWN_CPUS_REQUIRED')
     return cpus
 
 
@@ -134,7 +141,7 @@ def paths(config):
 
 
 def verify(config, *, runtime=False, git=True):
-    require(config['schema']=='H8_KEY_COMPILE_CONFIG_V1' and config['plan_sha256']==digest(plan()) and
+    require(config['schema']=='H8_KEY_COMPILE_CONFIG_V2' and config['plan_sha256']==digest(plan()) and
         config['provider_source']==PROVIDER and config['expected_profile_digest']==PROFILE and
         config['python']==PYTHON and sha(config['python'])==config['python_sha256'],'PLAN_PROFILE_BINDING')
     require(digest(config['provider_hashes'])==PROVIDER_MAP and digest(config['runtime_file_hashes'])==RUNTIME_MAP,
