@@ -70,3 +70,9 @@ def test_draft_rejected_before_any_input_read():
 def test_approved_bit_cannot_change_scope():
     with pytest.raises(ValueError,match='SCOPE_SOURCE_CONFIG_BINDING'):
         run.authorize(dict(authorized=True,scope={}),dict(authorized=True))
+
+
+def test_runtime_profiles_builtin_and_extension_math():
+    r=run.runtime()
+    assert r['files'] and all(len(v)==64 for v in r['files'].values())
+    assert isinstance(r['modules_in_hashed_python_executable'],list)

@@ -39,8 +39,13 @@ def write(path,value):
 
 def runtime():
     import math, fractions
-    paths=[Path(sys.executable).resolve(),Path(statistics.__file__),Path(fractions.__file__),Path(math.__file__)]
-    return dict(python=sys.version,files={str(p):sha(p.read_bytes()) for p in paths})
+    modules=(statistics,fractions,math)
+    paths=[Path(sys.executable).resolve()]+[Path(m.__file__) for m in modules if getattr(m,'__file__',None)]
+    builtins=[m.__name__ for m in modules if not getattr(m,'__file__',None)]
+    numeric.require(all(m.__spec__.origin=='built-in' for m in modules if m.__name__ in builtins),
+                    'UNIDENTIFIED_RUNTIME_MODULE')
+    return dict(python=sys.version,files={str(p):sha(p.read_bytes()) for p in paths},
+                modules_in_hashed_python_executable=builtins)
 
 
 def authorize(config,grant,root=ROOT):
