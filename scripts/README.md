@@ -1,3 +1,7 @@
+## 2026-10-17 H8 conditional s2 pilot：sampler / scoped native adapter / contract / one-shot witness
+
+[実装・契約](../docs/research/track_a_h8_conditional_s2_pilot_readiness_20261017.md)（repository root基準）。固定SOURCEの人工検証・grant後に実行する。旧n32と混合しない。
+
 ## 2026-10-17 H8：現runを保持した準備工程の並列化
 
 [実装・検証・契約](../docs/research/track_a_h8_key_compile_parallel_preparation_20261017.md)。準備を3構成並行・最大6 workerへ拡張し、wrapper生成も軸workerへ移した。人工32件PASS、SOURCE 7f8d74660b2914a1223d0ac7990dde8d4645032e。compileは固定順直列・各軸2%以上でSTOP。新方式の科学起動0・無効grant・未seal。旧runの25 immutable filesはSHA一致し、稼働継続。速度/peak RSSは未測定。以下は各時点の履歴。

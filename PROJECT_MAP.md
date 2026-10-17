@@ -1,3 +1,7 @@
+## 2026-10-17 H8 s2条件付きpilot：元PR lawのs2層だけ各q8本・paired32軸以内の一回取得
+
+[実装・契約](docs/research/track_a_h8_conditional_s2_pilot_readiness_20261017.md)（repository root基準）。固定SOURCEの人工検証・grant後に実行する。旧n32と混合しない。
+
 ## 2026-10-17 H8：主要6軸実測反映の限定再会計完了
 
 [結果・監査](docs/research/track_a_h8_six_axis_reaccount_run01_results_20261017.md)。SOURCE aa984d98…、保存3800行/40比較、科学dispatch1、native exit0・全回収・最終gate PASS。旧32/PR/SE/shot不変、winner変更0、model推定は残存。追加compile/signal/sampling/fit/retry0、mandatory STOP。以下は各時点の履歴。
