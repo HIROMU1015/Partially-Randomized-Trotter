@@ -1,3 +1,7 @@
+## 2026-10-17 H8 経験的非相殺bias・shot診断：run01完了
+
+[結果](../../docs/research/track_a_h8_noncancellation_shots_result_20261017.md)。承認された `NONCANCELLATION_SHOTS` stageだけを一回実行し正常終了（native exit0、修正・再実行0）。保存通常会計1,900行を完全再現、PR成分84検査PASS、1,900行・380軸を評価し未解決0。ε=.05で16候補（旧32の3・追加152の13）が通常の適格から非相殺で不適格、ε≤.01とPR6は通常と同一。shot比（両適格948行）中央値1・最大46.2。経験的感度診断で厳密bias保証はnull。SOURCE cbfd7cacad8a5828c0dbfd284a99ef0871860e66、plan v2 002f9edb…。費用比較・ランキング・PR削減率・B2再実行・新signal/compile/sampling/fit0。並行B2と非干渉（PSI増分0）。以下は各時点の履歴。
+
 ## 2026-10-17 H8 非相殺bias診断：レビュー指摘2点の修正、実行未承認
 
 [資料入口](../../docs/research/track_a_h8_noncancellation_readiness_20261017.md#修正追補レビュー指摘2点2026-10-17)。Codex読取レビューの指摘2点を修正。(1) PR保存paired費用の再現・n32 pairingは費用比較stageだけのgateであることを結果・plan・本文で明示し、shot診断だけでは未実行と記録。(2) S4 modelの検証済み表示をB2全PASS結合時だけに限定。計算値は修正前後で同一、科学条件・固定契約は不変。修正前に失敗する人工回帰2件を追加、人工56件（2 interpreter）＋回帰113件PASS。SOURCE cbfd7cacad8a5828c0dbfd284a99ef0871860e66、plan v2 digest 002f9edb…、無効grant v2は入力読取前に拒否。元worktreeは不変（独立cloneで作業）。作業中の広域grepが並行B2 attempt01をMEMORY_PRESSUREでSTOPさせ、準備段階のworktree変更が別sessionのB2準備attempt01〜03をSTOPさせていたことを保全receipt v2に記録。実H8数値解析・B2再実行・有効grant0。以下は各時点の履歴。
