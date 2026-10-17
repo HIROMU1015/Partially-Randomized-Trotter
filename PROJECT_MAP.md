@@ -1,3 +1,5 @@
+> **M1-S統合研究記録（2026-10-17）**： [統合サマリー](docs/research/m1s_integration_20261017/integrated_research_summary.md)／[証拠索引](docs/research/m1s_integration_20261017/evidence_and_results_index.md)／[Codex再開ハンドオフ](docs/research/m1s_integration_20261017/codex_restart_handoff.md)。Stage Sと先行研究調査を固定provenanceで連結し、最新Claude/GPT原本を保存。新しい科学判断・実行・研究終了/継続採択なし、mandatory STOP。以下の旧進行記述は履歴として読む。
+
 > **M1-S Stage S one-shot完了（2026-10-17）**：[結果・監査・STOP](docs/tracks/algorithm_codesign/m1s_stage_s_one_shot_results_and_stop_20261017.md)。H4 linear1.00 Å/STO-3G/DF rank12・G3/G6/G9・δ1/8,1/16・R2,4・T1,4。主対象24評価・全48報告。G3 T4の8対照にcap-edge整数削減の存在証拠、G3 T1/G6 T4の16対照はcap直下で同数。G6 T1旧不成立8/G9絶対未解像16をcarry。S7a338c4e/Cb4b4c128/A437e6bbc、初回正常完了・SOURCE修正/retry0。条件付き十分設計のみ、RPE/native総資源GOなし。保存監査448/保全14 PASS、旧成果保全、mandatory STOP。以下は履歴。
 
 > **M1-S Stage S正式採択・計算開始承認受領（2026-10-17）**：[採択・実施scope](docs/tracks/algorithm_codesign/m1s_stage_s_formal_adoption_and_execution_scope_20261017.md)。H4 linear1.00 Å/STO-3G/DF rank12・G3/G6/G9・δ1/8,1/16・R2,4・T1,4。公開0dd660ec候補とSOURCE7a338c4eを変更せず正式契約へ固定。ユーザーの今回の開始指示を専用Aへ別結合して一回実行する。契約単独は実行をgrantしない。failure消費・retry禁止・最終mandatory STOP維持。以下は履歴。
