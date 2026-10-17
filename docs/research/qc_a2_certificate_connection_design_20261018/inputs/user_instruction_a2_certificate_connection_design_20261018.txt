@@ -1,0 +1,487 @@
+# Codexへの指示：A2有限step保証の認証情報接続仕様・比較契約の設計
+
+## 0. 目的と今回の作業範囲
+
+④「PRに限定しないアルゴリズム改善研究」において、有限step相対形式保証A2の実用性を判断するため、**固定DF Hamiltonianを対象とした認証情報の接続仕様と、公平な比較契約を設計**してください。
+
+直前のpreflightは、
+
+`INPUT_CLASS_FOUND_CERTIFICATES_INCOMPLETE`
+
+で完了しています。
+
+固定粒子数sectorの一体項＋符号付きDF平方に対し、条件付きでPSD化できる既知の方法と、Gaussian・controlled S2の既存回路部品が確認されました。
+
+一方、同じHamiltonian・sector・分割に対応する以下の認証情報が不足しています。
+
+\[
+L,\ U,\ W,\ f_j,\ \Lambda,\ K_{\mathrm{SOS}},\ \overline C_2
+\]
+
+今回の目的は、**これらを正しく生成・検証・保存し、RF0/RF1/EW2と強い既知対照へ接続するための技術仕様を作ること**です。
+
+### 承認範囲
+
+実施してよい作業：
+
+- 既存SOURCE/API・保存資料の読取り
+- 認証情報の入力・出力仕様の設計
+- 証拠生成・検証手順の設計
+- 既存SOURCEとの接続方法の整理
+- 比較契約・費用台帳の設計
+- 必要な静的検査と文書作成
+
+実施してはいけない作業：
+
+- 新規科学計算・保存科学数値の再解析
+- 実際のcertificate生成
+- 新しい数学的定理・保証の探索
+- 科学SOURCEの実装
+- PF/QPE simulation・native compile
+- 新しい科学レビュー
+- A2の正式採択
+- authorization・grant発行
+
+**今回は設計作業であり、科学実行の承認ではありません。**
+
+---
+
+## 1. 必須参照資料
+
+Repository：
+
+`HIROMU1015/Partially-Randomized-Trotter`
+
+### 1.1 最新の実用性preflight
+
+固定commit：
+
+`c62fe99d29e7edcaf0cb655d789d297890709a29`
+
+最初に以下を実際に取得してください。
+
+- `docs/research/qc_a2_practical_preflight_20261017/practical_preflight_report.md`
+- `docs/research/qc_a2_practical_preflight_20261017/certificate_source_matrix.md`
+- `docs/research/qc_a2_practical_preflight_20261017/decision_handoff.md`
+- 同ディレクトリの証拠索引・publication receipt
+
+入口：
+
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/c62fe99d29e7edcaf0cb655d789d297890709a29/docs/research/qc_a2_practical_preflight_20261017
+
+これらを今回の技術設計の基点とします。
+
+**既に確認されたSOURCE/APIの機能・不足事項を再調査せず、接続仕様の具体化に集中してください。**
+
+### 1.2 EW2・有限step比較
+
+固定commit：
+
+`db1819587df36ee8833b37227ca0083faa0408ec`
+
+- `docs/research/qc_relative_form_ew2_step_audit_20261017/mathematical_audit.md`
+- `docs/research/qc_relative_form_ew2_step_audit_20261017/finite_step_and_prior_art_comparison.md`
+- `docs/research/qc_relative_form_ew2_step_audit_20261017/decision_handoff.md`
+
+### 1.3 RF0/RF1およびSOS-PF K0/K0.5
+
+RF0/RF1監査：
+
+`051df4661eeffb6c6c4c978f70f43eeeaadfddd6`
+
+SOS-PF K0：
+
+`58d8672702284d73321cc67a26c4640adaddde5f`
+
+SOS-PF K0.5：
+
+`01bdc56a2970dcb749390b0540846143f775d6f9`
+
+既存の数学的保証・係数辞書・先行研究調査を再利用してください。
+
+新たな証明レビューは必要ありません。
+
+### 1.4 正式な研究状態
+
+固定commit：
+
+`67576526c4e96ae7235fa645fdf744278d049f8d`
+
+- A1：現PF-native分割生成探索CLOSED
+- A2：NOT_ADOPTED
+- K1-F：未承認・未実行
+- Exact Encoding現構成：REDUCES_TO_KNOWN_METHODとして区切り済み
+
+今回これらの状態を変更しないでください。
+
+---
+
+## 2. 今回の暫定比較契約
+
+次の方針を**技術設計の暫定前提**として使用してください。
+
+まだユーザーが正式採択した科学実行契約ではありません。
+
+| 項目 | 今回の設計前提 |
+|---|---|
+| 対象 | 固定されたDF Hamiltonian |
+| 分割 | 実装可能なPSD fragmentによる固定順序の対称二次PF |
+| Sector | 最初は固定粒子数Nを優先 |
+| 保証 | DFモデル内での認証付き有限step保証 |
+| Ground state | exact ground状態への条件付きaccessを仮定し、その取得費用・実現性は別管理 |
+| 比較 | RF0/RF1/EW2と、同じ情報を使う強い交換子ノルム保証 |
+| 目的 | 認証stepの差と、それを得るための証拠取得費用を明らかにする |
+
+### 重要な区別
+
+**固定DFモデルを対象とすることと、元の電子Hamiltonianに対する厳密保証を得ることは別です。**
+
+固定されたbinary64係数を数学的に正確な係数として解釈する場合も、その意味、元データからの変更、演算時の丸め・数値誤差を明示してください。
+
+DFモデル内の保証を、元の分子Hamiltonianに対する保証へ無条件に拡張してはいけません。
+
+また、exact ground状態を条件付き入力とすることは、量子回路による状態準備が無料であるという意味ではありません。
+
+**state accessの条件付き理論比較と、実際のend-to-end資源評価を区別してください。**
+
+---
+
+## 3. Task A：認証対象モデルの完全な仕様
+
+既存のDFHamiltonianを基点として、次のデータが一つの固定identityで対応するよう、入出力仕様を設計してください。
+
+1. 元データと固定DFモデルの識別情報
+2. constant・nuclear repulsion・energy origin
+3. 一体演算子とsigned DF平方
+4. fermion modeの順序と符号規約
+5. 対象sectorとその保存条件
+6. Hermiticityとその検証方法
+7. PSD化に伴うscalar shift
+8. 各fragmentとPF適用順序
+9. 必要な誤差・丸め台帳
+
+特に、既存preflightで問題となった次の区別を維持してください。
+
+- `DFHamiltonian` と `DFModel` のデータ規約
+- full one-body/constantとcorrection-only表現
+- `df_truncation_value` とscalar correction
+- spin-orbital入力とspatial入力
+- 数値Hermitizationと、元入力がHermitianであることの証明
+- 古典sector制限と、量子回路が同じsectorを保存すること
+
+**既存SOURCEに不具合があると未確認のまま断定しないでください。**
+
+今回作るのは、これらを安全に接続するための仕様であり、既存コードの修正ではありません。
+
+---
+
+## 4. Task B：PSD分割・下界・上界の認証仕様
+
+次の形を対象にします。
+
+\[
+H_{\mathrm{DF}}=LI+\sum_jF_j,
+\qquad
+0\preceq F_j\preceq f_jI.
+\]
+
+既存K0の既知PSD化手順を利用し、正符号DF平方、負符号DF平方、一体項のそれぞれについて、必要な認証条件を整理してください。
+
+### 4.1 PSD分割
+
+各fragmentについて以下を仕様化します。
+
+- 元演算子との対応
+- PSD化のために必要なscalar
+- PSD性の証拠
+- 対象sectorでの保存条件
+- 指数化回路との対応
+- 証拠生成と検証の費用
+
+一般SOS分割を新しく探索・最適化しないでください。
+
+### 4.2 下界L
+
+一体項のsector下界と、負符号DF平方に必要な上界を使う既知構成を前提に、Lの生成・検証手順を設計してください。
+
+保存するcertificateには、少なくとも次が必要です。
+
+- 対象モデル・sector・分割のidentity
+- 下界の導出方法
+- 使用した係数とその誤差
+- scalar shiftの全内訳
+- 正しい丸め方向
+- 証明・検証に必要な補助情報
+
+### 4.3 上界UとW
+
+同じDF Hamiltonianとsectorに対する、検証可能な変分上界Uを得る手順を設計してください。
+
+候補となるtrial state、正規化、expectation、数値誤差、stateがsector内にある証拠を明示してください。
+
+既存HF energyやFCI保存値を、そのまま厳密な認証上界と呼んではいけません。
+
+\[
+W=U-L
+\]
+
+は、認証済みのLとUが同じ対象を参照する場合にのみ構成可能とします。
+
+**今回は実際のL/U/Wを計算しないでください。**
+
+---
+
+## 5. Task C：f_j・Λ・K_SOS・Cbar2の接続仕様
+
+以下の各量について、既存SOURCEを利用できる部分と、新しく必要な証拠生成・検証処理を区別してください。
+
+### 5.1 Fragment上界
+
+\[
+0\preceq F_j\preceq f_jI,
+\qquad
+\Lambda=\sum_jf_j
+\]
+
+を同じPSD分割に対して認証する仕様を作ってください。
+
+既存のfloat norm helperと、数学的に認証されたoperator上界を混同しないでください。
+
+また、shift前のnormをshift後のPSD fragmentにそのまま使わないでください。
+
+### 5.2 K_SOS
+
+既存K0の係数辞書、行和上界を再利用します。
+
+- 入力fragmentの順序
+- BCH係数
+- 重複添字の扱い
+- 上界計算
+- 有限精度の安全性
+- 計算量・保存量
+- 出力certificate
+
+を仕様化してください。
+
+新しいK_SOSの定理や計算法を研究する必要はありません。
+
+### 5.3 Cbar2
+
+同じS2順序に対応する、
+
+\[
+\overline C_2\ge C_2
+\]
+
+の認証手順を設計してください。
+
+単純なtriangle boundだけでなく、同じ情報から取得可能な可換性・fragment構造を対照側にも利用できるようにしてください。
+
+**相対形式側だけを精密に評価し、比較相手へ意図的に粗い認証値を与えてはいけません。**
+
+### 5.4 共通certificate identity
+
+L/U/f_j/Λ/K_SOS/Cbar2について、同じモデル・sector・PSD分割・PF順序・係数規約を参照していることを検査できる設計にしてください。
+
+入力が異なる場合は比較不能と分類し、自動的に値を流用しないでください。
+
+---
+
+## 6. Task D：保証・step選択への接続
+
+以下の既存保証を、共通certificateから評価するための仕様を作成してください。
+
+\[
+\eta_0(h)=
+\frac{32(h\Lambda)^2}{1-16(h\Lambda)^2}
+\]
+
+\[
+\eta_1(h)=
+h^2K_{\mathrm{SOS}}+
+\frac{512(h\Lambda)^4}{1-16(h\Lambda)^2}
+\]
+
+およびEW2、既存の強化交換子対照：
+
+\[
+b_C(h)=
+\frac{h^2\overline C_2}{1-h\Lambda/2}.
+\]
+
+ただし、適用条件とlog branch・有限step領域は元監査を正本とし、数式を勝手に一般化しないでください。
+
+### 出力設計
+
+- 各保証の成立条件
+- 必要な認証入力
+- 認証付き最大十分stepの定義
+- 比較可能・比較不能の判定条件
+- 失敗したcertificateの理由
+- 使用した保証・数式・SOURCEへの追跡情報
+
+相対形式保証に有利な結果が得られなくても、証拠・出力を保持する仕様にしてください。
+
+今回、新しいhや比較値は計算しません。
+
+また、RF0/RF1/EW2とCbar2の比較だけで、best-known baseline全体を超えたと判定する仕様にしないでください。
+
+他の適用可能な低エネルギー保証やQPE回路安定性の比較を、未評価事項として残してください。
+
+---
+
+## 7. Task E：state access・回路・費用台帳
+
+今回の第一段階では、exact ground state accessを**条件付きの理論入力**とします。
+
+しかし、実際の量子計算資源では状態準備が必要になるため、次を明示してください。
+
+- exact ground copiesを入力とする条件付きモデル
+- state preparation unitaryが利用可能な別モデル
+- 近似stateの場合に追加で必要な品質保証
+- controlled S2とfixed powers
+- phase branch・absolute energy origin
+- QPE readoutと失敗確率
+- 回転合成・実装誤差
+- certificate生成・検証の古典費用
+- 証拠や回路の再利用・償却条件
+
+異なるaccessモデルを混同しないでください。
+
+**第一段階の条件付き比較で得られた結果を、状態準備込みの総資源優位として報告できない設計**にしてください。
+
+---
+
+## 8. 技術設計の完成条件
+
+今回の成果は、認証値そのものではなく、後続のCodexが何を実装・検証すればよいか明確に分かる仕様です。
+
+最低限、以下を満たしてください。
+
+1. 必要な入力・出力・データ型が定義されている。
+2. 既存SOURCEとの対応が明確である。
+3. 新規実装が必要な部分が列挙されている。
+4. certificateの生成方法と検証方法が区別されている。
+5. 丸め・モデル誤差・元Hamiltonianとの対応が明示されている。
+6. RF/EW2と既知強対照へ同じ情報を接続できる。
+7. 失敗・不完全な証拠を正しく分類できる。
+8. 取得・前処理・量子実行費用の区分が明確である。
+9. 新規科学計算なしで、後続の実装計画を立てられる。
+
+実際にcertificateを生成できない場合も、その理由と不足する実装を具体的に示してください。
+
+### 技術的な判定
+
+次のいずれかで分類してください。
+
+- `DESIGN_READY_FOR_IMPLEMENTATION_PLANNING`
+- `DESIGN_PARTIALLY_READY_MISSING_CONTRACT`
+- `DESIGN_BLOCKED_BY_MODEL_IDENTITY`
+- `DESIGN_BLOCKED_BY_CERTIFICATE_METHOD`
+- `UNDETERMINED_MISSING_EVIDENCE`
+
+これらは技術設計の判定です。
+
+**A2の科学的GO、新定理の採択、数値実行承認ではありません。**
+
+---
+
+## 9. 成果物
+
+新しい専用ディレクトリに以下を作成してください。
+
+### A. 認証情報接続仕様
+
+主資料です。
+
+モデル、sector、PSD分割、L/U/f_j/Λ/K_SOS/Cbar2、誤差・scalar、QPE接続までの入出力・処理手順をまとめます。
+
+### B. SOURCE/API接続表
+
+既存関数、使用できる処理、不足するadapter、必要な検査・実装の対応表を作成します。
+
+### C. 比較契約・費用台帳設計
+
+RF/EW2と交換子対照について、同じ入力・証拠取得費・成功確率で比較するための仕様です。
+
+### D. GPT向けハンドオフ・固定証拠索引
+
+以下を明確にしてください。
+
+- 仕様として確定した内容
+- 暫定の科学的前提
+- 今後ユーザーの正式採択が必要な事項
+- 新規実装が必要な箇所
+- 実行前に必要なcertificate
+- 次の技術作業
+- 科学計算・実装の承認境界
+
+必要以上にファイルを増やさず、既存資料への固定リンクを活用してください。
+
+論文化・原稿作成は不要です。
+
+---
+
+## 10. 保全・作業環境・禁止事項
+
+最新版共通運用指示：
+
+`research_project_instructions_unified_2026-10-17.md`
+
+特に§8.4を適用してください。
+
+- CPU・RAM・worker数に恣意的な低い上限を設けない。
+- 必要な処理は、実際の空き資源を確認して合理的に高速化する。
+- 共有環境全体や他ユーザーへ影響する変更・操作は絶対禁止。
+- 他研究のjob、branch、worktree、venv、SOURCE、grant、ledger、markerへ干渉しない。
+- 既存の承認済み固定契約を無断変更しない。
+
+独立branch/worktreeで文書作業を行ってください。
+
+禁止事項：
+
+- 新しいPSD/SOS分割の科学的生成・最適化
+- 新規科学計算、固有値・RDM・Hamiltonian生成
+- 保存値再解析・数値certificate生成
+- 新しいRF/EW2保証の数学的研究
+- scientific SOURCE、実行用runnerの実装
+- PF/QPE simulation・native compile
+- 新しい科学実行契約・grant・authorization
+- A1や他のSTOP済み研究の再開
+- A2の正式採択
+- GPT/Claude重要科学レビューの自動開始
+- ①PRリソース評価、②PR内部改善、③M1-Sへの介入
+
+文書内の仕様・擬似コードは作成可能ですが、実行可能な新しい科学計算コードは作成しないでください。
+
+既存SOURCE・raw結果・研究契約・レビュー原本をすべて保全してください。
+
+---
+
+## 11. 最終報告・mandatory STOP
+
+成果物をcommit・pushし、remote HEAD、公開bytes/SHA256、主要リンク、既存成果の保全を確認してください。
+
+最終報告には次を含めてください。
+
+1. 認証情報の接続仕様を完成できたか。
+2. 対象DFモデル・sector・PSD分割の契約。
+3. L/U/f_j/Λ/K_SOS/Cbar2の生成・検証方法。
+4. 既存SOURCEと不足する実装。
+5. 丸め・モデル誤差・state accessの扱い。
+6. RF/EW2と強い既知対照への公平な接続方法。
+7. 仕様に残る未解決事項。
+8. 技術分類。
+9. 後続で必要な実装・科学実行の承認事項。
+10. branch、commit、成果物の固定GitHubリンク。
+11. 新規科学計算・SOURCE実装・未承認作業が0件であること。
+
+**完了後はmandatory STOP。**
+
+仕様が完成しても、certificate生成・実装・数値比較・研究採択へ自動移行しないでください。
+
+## 今回の最終目的
+
+**A2の数学的保証を、固定DFモデル上で正当な認証入力に結び付けるための設計を完成させることです。**
+
+研究としての改善が存在するかを今回判定するのではなく、次の技術実装と認証付き科学比較を、安全かつ再現可能に実施するために必要な仕様を明確化してください。
