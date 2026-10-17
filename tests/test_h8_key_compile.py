@@ -70,6 +70,10 @@ class Contract(unittest.TestCase):
         code='import runpy,sys;sys.argv=["plan"];runpy.run_path("scripts/run_h8_key_compile.py",run_name="__main__");assert not any(k in sys.modules for k in ("numpy","scipy","qiskit"))'
         result=subprocess.run([sys.executable,'-P','-B','-c',code],cwd=ROOT,capture_output=True,text=True)
         self.assertEqual(result.returncode,0,result.stderr)
+    def test_prepare_cli_safe_path_imports(self):
+        result=subprocess.run([sys.executable,'-P','-B',str(ROOT/'scripts/prepare_h8_key_compile.py'),'--help'],
+                              cwd=TEST_ROOT,capture_output=True,text=True)
+        self.assertEqual(result.returncode,0,result.stderr)
     def test_nonrefundable_counts_and_forbidden_calls(self):
         with temp() as d:
             p=c.Permit({}, {}, d,synthetic=True)

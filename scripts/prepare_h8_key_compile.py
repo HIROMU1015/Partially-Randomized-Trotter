@@ -1,6 +1,8 @@
 """Reuse byte receipts and pin a draft only. This command cannot issue a grant."""
 import argparse
 from pathlib import Path
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parent))
 import h8_key_compile_contract as c
 
 
