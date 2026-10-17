@@ -1,0 +1,595 @@
+{
+  "schema": "qc_exact_encoding_controlled_limited_construction_evidence_v1",
+  "observed_at_utc": "2026-10-17T12:04:30.553537+00:00",
+  "repository": "HIROMU1015/Partially-Randomized-Trotter",
+  "branch": "qc-exact-encoding-sector-shift-construction-20261017",
+  "base_commit": "68a87f99e16cff3e20d256e0432b11e6f3fb9d8b",
+  "classification": "REDUCES_TO_KNOWN_METHOD",
+  "classification_scope": "One spin-free DF square, one pivot-coefficient-removal attempt; not a general no-go or formal research adoption",
+  "new_independent_candidate_obtained": false,
+  "standalone_new_rule_specification_created": false,
+  "work_performed": [
+    "Fixed-evidence reuse",
+    "One local paper construction with symbolic algebra and non-executable pseudocode",
+    "Limited primary-literature comparison",
+    "Static documentation/provenance checks",
+    "Publication"
+  ],
+  "not_performed": {
+    "new_scientific_numeric_calculations": 0,
+    "saved_scientific_numeric_reanalyses": 0,
+    "hamiltonian_generation": 0,
+    "eigendecompositions_executed": 0,
+    "circuit_builds": 0,
+    "simulation": 0,
+    "native_compiles": 0,
+    "T_synthesis": 0,
+    "numeric_correctness_tests": 0,
+    "new_scientific_SOURCE": 0,
+    "new_scientific_execution_contracts": 0,
+    "new_execution_authorizations": 0,
+    "new_grants": 0,
+    "new_markers": 0,
+    "new_detailed_scientific_reviews": 0,
+    "new_theorems_formally_accepted": 0,
+    "research_theme_formally_adopted": false
+  },
+  "claim_evidence_map": [
+    {
+      "id": "C01",
+      "claim": "Selected DF square class and ordinary Gaussian/diagonal baseline",
+      "support": [
+        "fixed SOURCE ops.py",
+        "preflight source inventory",
+        "PR C13"
+      ],
+      "status": "EXISTING_METHOD"
+    },
+    {
+      "id": "C02",
+      "claim": "Sector identity Ds=D-s(N-N0) and equality on N0 sector",
+      "support": [
+        "report equations 3-5",
+        "BLISS II"
+      ],
+      "status": "LOCAL_PAPER_ALGEBRA_NOT_INDEPENDENT_REVIEW"
+    },
+    {
+      "id": "C03",
+      "claim": "Controlled RZ/RZZ/Phase sequence preserves the stated scalar on the target code in exact arithmetic",
+      "support": [
+        "report equations 6-8 and stated assumptions",
+        "fixed SOURCE append_diagonal_primitives"
+      ],
+      "status": "PAPER_CONSTRUCTION_NOT_EXECUTED"
+    },
+    {
+      "id": "C04",
+      "claim": "The attempted rule lies inside a known generating family",
+      "support": [
+        "PR Appendix C.3 equation C14, f_j=-s",
+        "BLISS II equations 6-9",
+        "report equation 9"
+      ],
+      "status": "DIRECT_KNOWN_METHOD_REDUCTION_FOR_THIS_ATTEMPT"
+    },
+    {
+      "id": "C05",
+      "claim": "Fewer formal diagonal pair candidates after two equal-spin pivot coefficients vanish",
+      "support": [
+        "report equations 3 and 7",
+        "report symbolic support table"
+      ],
+      "status": "SYMBOLIC_ONLY_NO_NATIVE_COST_FORECAST"
+    },
+    {
+      "id": "C06",
+      "claim": "Taper/GSE/Paldus distinctions and lack of automatic complete oracle",
+      "support": [
+        "fixed preflight report and inventory"
+      ],
+      "status": "REUSED_STATIC_PREFLIGHT_NOT_NEW_REVIEW"
+    },
+    {
+      "id": "C07",
+      "claim": "Old closures and no automatic restart",
+      "support": [
+        "fixed coverage map",
+        "four-track overlap map",
+        "current user instruction"
+      ],
+      "status": "PRESERVED_NOT_NEW_RESEARCH_DECISION"
+    }
+  ],
+  "authored_artifacts": [
+    {
+      "path": "docs/research/qc_exact_encoding_controlled_construction_20261017/limited_construction_report.md",
+      "bytes": 23995,
+      "sha256": "d10d8210bd26104ea99d38474d6ed193e9faf97cac87c20235f2a2bc5514a787"
+    },
+    {
+      "path": "docs/research/qc_exact_encoding_controlled_construction_20261017/decision_handoff.md",
+      "bytes": 4938,
+      "sha256": "b4497d6b7c27fc826fc9c7e87dead5c2208622920510614f713f56b00a1d83ff"
+    },
+    {
+      "path": "docs/research/qc_exact_encoding_controlled_construction_20261017/inputs/user_instruction_exact_encoding_construction_20261017.txt",
+      "bytes": 18295,
+      "sha256": "aa0c4d3e7d209ee03be38d7dafb7f8fbba3289825b0bd14b71e8e305b6a29e1b"
+    }
+  ],
+  "fixed_repository_evidence": [
+    {
+      "commit": "56f1cc55c59ab7bc42c6b24e0953675de9b29b1d",
+      "path": "docs/research/qc_new_algorithm_research_scope_20261016/gpt_decision_handoff.md",
+      "bytes": 7590,
+      "sha256": "7354090bb22706057b68b84f88ddbf220b891dfbabd0705c143690822ae8cbfa",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/56f1cc55c59ab7bc42c6b24e0953675de9b29b1d/docs/research/qc_new_algorithm_research_scope_20261016/gpt_decision_handoff.md"
+    },
+    {
+      "commit": "56f1cc55c59ab7bc42c6b24e0953675de9b29b1d",
+      "path": "docs/research/qc_new_algorithm_research_scope_20261016/open_problem_landscape.md",
+      "bytes": 15836,
+      "sha256": "c65f9ffa75c6eeda6b026d88b5ee0b2367523562c1aa75cdfc412db87e8ef499",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/56f1cc55c59ab7bc42c6b24e0953675de9b29b1d/docs/research/qc_new_algorithm_research_scope_20261016/open_problem_landscape.md"
+    },
+    {
+      "commit": "56f1cc55c59ab7bc42c6b24e0953675de9b29b1d",
+      "path": "docs/research/qc_new_algorithm_research_scope_20261016/research_coverage_map.md",
+      "bytes": 14560,
+      "sha256": "8c940959c187a90a63f70037476763a112df6fd7a86299a897fd3e2e7b84872a",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/56f1cc55c59ab7bc42c6b24e0953675de9b29b1d/docs/research/qc_new_algorithm_research_scope_20261016/research_coverage_map.md"
+    },
+    {
+      "commit": "56f1cc55c59ab7bc42c6b24e0953675de9b29b1d",
+      "path": "src/trotterlib/df_trotter/ops.py",
+      "bytes": 13557,
+      "sha256": "3801eafca014b0df6533172582887e3b345f65833505409cdd375dcd11925689",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/56f1cc55c59ab7bc42c6b24e0953675de9b29b1d/src/trotterlib/df_trotter/ops.py"
+    },
+    {
+      "commit": "5f079dbe67bb35eff35613857b169fdf812af4b8",
+      "path": "docs/research/research_project_instructions_unified_2026-10-17.md",
+      "bytes": 38191,
+      "sha256": "d2ebdac4b0e44e871c65f240f317e6b5d3c3460f27d92f4d798992da90bf422f",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/5f079dbe67bb35eff35613857b169fdf812af4b8/docs/research/research_project_instructions_unified_2026-10-17.md"
+    },
+    {
+      "commit": "68a87f99e16cff3e20d256e0432b11e6f3fb9d8b",
+      "path": "docs/research/qc_exact_encoding_controlled_preflight_20261017/evidence_and_checks.json",
+      "bytes": 38762,
+      "sha256": "b3443b0b1355c83d5f53fba73464e3758c84bae1942838a265b2357645591884",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68a87f99e16cff3e20d256e0432b11e6f3fb9d8b/docs/research/qc_exact_encoding_controlled_preflight_20261017/evidence_and_checks.json"
+    },
+    {
+      "commit": "68a87f99e16cff3e20d256e0432b11e6f3fb9d8b",
+      "path": "docs/research/qc_exact_encoding_controlled_preflight_20261017/inputs/qc_algorithm_strategy_ii_iii_iv_scientific_review_20261017.md",
+      "bytes": 43206,
+      "sha256": "8388dd1ba3a14ff147323af1f74ad65280508d9fe1a3894442a5ad9be99907f2",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68a87f99e16cff3e20d256e0432b11e6f3fb9d8b/docs/research/qc_exact_encoding_controlled_preflight_20261017/inputs/qc_algorithm_strategy_ii_iii_iv_scientific_review_20261017.md"
+    },
+    {
+      "commit": "68a87f99e16cff3e20d256e0432b11e6f3fb9d8b",
+      "path": "docs/research/qc_exact_encoding_controlled_preflight_20261017/publication_receipt.json",
+      "bytes": 4056,
+      "sha256": "6bc8878c3127239aeeedba760a42a47da94e0a3389748bdde3c9c053a46b177d",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68a87f99e16cff3e20d256e0432b11e6f3fb9d8b/docs/research/qc_exact_encoding_controlled_preflight_20261017/publication_receipt.json"
+    },
+    {
+      "commit": "68a87f99e16cff3e20d256e0432b11e6f3fb9d8b",
+      "path": "docs/research/qc_exact_encoding_controlled_preflight_20261017/source_api_inventory.md",
+      "bytes": 11595,
+      "sha256": "332d868f5a7cf1384cc912c40d62cf7342a4906227d0f1988ea257517b822c16",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68a87f99e16cff3e20d256e0432b11e6f3fb9d8b/docs/research/qc_exact_encoding_controlled_preflight_20261017/source_api_inventory.md"
+    },
+    {
+      "commit": "68a87f99e16cff3e20d256e0432b11e6f3fb9d8b",
+      "path": "docs/research/qc_exact_encoding_controlled_preflight_20261017/technical_preflight_report.md",
+      "bytes": 22497,
+      "sha256": "1dc3a741331821222021fc6dc055ae79bf816ce1ba690c10c0469cc1e987ef36",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/68a87f99e16cff3e20d256e0432b11e6f3fb9d8b/docs/research/qc_exact_encoding_controlled_preflight_20261017/technical_preflight_report.md"
+    },
+    {
+      "commit": "d09ba606a9fceef806a9313e3f7c43cd21d19e3f",
+      "path": "docs/research/qc_four_track_strategy_handoff_20261017/overlap_and_progress_map.md",
+      "bytes": 57756,
+      "sha256": "c4543d840e14c745e590a686d36cb9755f89829d3d3f90adad5ef0e549ef56de",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/d09ba606a9fceef806a9313e3f7c43cd21d19e3f/docs/research/qc_four_track_strategy_handoff_20261017/overlap_and_progress_map.md"
+    },
+    {
+      "commit": "d09ba606a9fceef806a9313e3f7c43cd21d19e3f",
+      "path": "docs/research/qc_four_track_strategy_handoff_20261017/strategy_handoff.md",
+      "bytes": 100325,
+      "sha256": "51948cb9412e95f2554d1d946acdaaffb3953f4861addecef1c1c5296b77a31f",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/d09ba606a9fceef806a9313e3f7c43cd21d19e3f/docs/research/qc_four_track_strategy_handoff_20261017/strategy_handoff.md"
+    }
+  ],
+  "source_read": {
+    "commit": "56f1cc55c59ab7bc42c6b24e0953675de9b29b1d",
+    "path": "src/trotterlib/df_trotter/ops.py",
+    "bytes": 13557,
+    "sha256": "3801eafca014b0df6533172582887e3b345f65833505409cdd375dcd11925689",
+    "definitions": [
+      {
+        "name": "U_to_qiskit_ops_jw_givens",
+        "start_line": 213,
+        "end_line": 223
+      },
+      {
+        "name": "one_body_diagonal_primitives",
+        "start_line": 226,
+        "end_line": 243
+      },
+      {
+        "name": "df_squared_diagonal_primitives",
+        "start_line": 246,
+        "end_line": 292
+      },
+      {
+        "name": "append_diagonal_primitives",
+        "start_line": 295,
+        "end_line": 321
+      }
+    ],
+    "read_scope": "Diagonal primitive coefficient generation, scalar/controlled append, exact-zero policy; no runtime test"
+  },
+  "primary_literature": [
+    {
+      "id": "PR",
+      "url": "https://arxiv.org/pdf/2503.05647v2",
+      "bytes": 1112523,
+      "sha256": "000068f58332b5f24c6f17bd3b08ea22de1908e1ef2242a4ffc6f644aaf9aa61",
+      "text_sha256": "6a765bcc7c2264160490c5d116768589a99aa9d4f7f3e5ae8b63cfa8878bed17",
+      "section": "Appendix C.1 and C.3, equations C13-C14",
+      "printed_pages": "32-34",
+      "decisive": true,
+      "claim": "The attempted square shift is obtained by f_j=-s in C14; not a numerical performance or full-paper validation",
+      "version": "2503.05647v2",
+      "version_date": "2026-07-10"
+    },
+    {
+      "id": "BLISS",
+      "url": "https://arxiv.org/pdf/2304.13772v2",
+      "bytes": 780072,
+      "sha256": "ae7464658979d9473c9832b065efc148b59fa0c9c50c3f6a21f466e212e133e3",
+      "text_sha256": "191775fd46e7313818b6b9bcd966ccd719a8eb1045d6e9c62d4387ea1f8a3e9d",
+      "section": "II, equations 6-9",
+      "printed_pages": "2-3",
+      "decisive": false,
+      "claim": "Number-difference polynomial and commuting one-body shift family contains the written operator difference",
+      "version": "2304.13772v2",
+      "version_date": "2023-08-24"
+    },
+    {
+      "id": "SCDF",
+      "url": "https://arxiv.org/pdf/2403.03502v1",
+      "bytes": 903790,
+      "sha256": "29580e66b7bcc3a62dad5034468b80a59b581f7ebe715b3a18cc74de63615844",
+      "text_sha256": "3e3756863fb174ac3ef3277ba7840b49762d484f41c9cdbc5aed38be0bbab67a",
+      "section": "2.3-2.4",
+      "printed_pages": "14-17",
+      "decisive": false,
+      "claim": "Nearby DF/symmetry-shift construction; not asserted identical to the attempted square shift",
+      "version": "2403.03502v1",
+      "version_date": "2024-03-06"
+    }
+  ],
+  "acquisition_limits": [
+    "HTML retrieval failed for PR v1/v2 and SCDF v2; pinned PDF PR v2 and SCDF v1 obtained and required parts read",
+    "No full-paper theorem verification or publication-version delta audit",
+    "Prior missing review originals remain missing; preflight acquisition records reused"
+  ],
+  "local_links": {
+    "resolved": [
+      {
+        "document": "limited_construction_report.md",
+        "target": "decision_handoff.md"
+      },
+      {
+        "document": "limited_construction_report.md",
+        "target": "inputs/user_instruction_exact_encoding_construction_20261017.txt"
+      },
+      {
+        "document": "decision_handoff.md",
+        "target": "limited_construction_report.md"
+      },
+      {
+        "document": "decision_handoff.md",
+        "target": "limited_construction_report.md"
+      }
+    ],
+    "deferred_until_final_receipt": [
+      {
+        "document": "limited_construction_report.md",
+        "target": "evidence_index.json"
+      },
+      {
+        "document": "limited_construction_report.md",
+        "target": "publication_receipt.json"
+      },
+      {
+        "document": "decision_handoff.md",
+        "target": "evidence_index.json"
+      },
+      {
+        "document": "decision_handoff.md",
+        "target": "publication_receipt.json"
+      }
+    ]
+  },
+  "static_checks": [
+    {
+      "id": "preflight_payload_identity:docs/research/qc_exact_encoding_controlled_preflight_20261017/evidence_and_checks.json",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "preflight_payload_identity:docs/research/qc_exact_encoding_controlled_preflight_20261017/inputs/qc_algorithm_strategy_ii_iii_iv_scientific_review_20261017.md",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "preflight_payload_identity:docs/research/qc_exact_encoding_controlled_preflight_20261017/source_api_inventory.md",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "preflight_payload_identity:docs/research/qc_exact_encoding_controlled_preflight_20261017/technical_preflight_report.md",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "preflight_static_claims_are_inherited_not_rerun",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "user_instruction_original_bytes",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "review_original_identity",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "referenced_source_definitions_exist",
+      "status": "PASS",
+      "details": "AST only; no imports or execution"
+    },
+    {
+      "id": "source_frozen_snapshot_identity",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "markdown_reference_definitions:limited_construction_report.md",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "local_link:limited_construction_report.md:decision_handoff.md",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "local_link:limited_construction_report.md:inputs/user_instruction_exact_encoding_construction_20261017.txt",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "document_utf8_and_final_newline:limited_construction_report.md",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "markdown_reference_definitions:decision_handoff.md",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "local_link:decision_handoff.md:limited_construction_report.md",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "local_link:decision_handoff.md:limited_construction_report.md",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "document_utf8_and_final_newline:decision_handoff.md",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "fixed_repository_links_resolve",
+      "status": "PASS",
+      "details": {
+        "count": 12,
+        "method": "git show immutable commit:path"
+      }
+    },
+    {
+      "id": "common_instructions_match_user_local_copy",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "primary_pdf_bytes_sha256:PR",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "primary_pdf_target_section:PR",
+      "status": "PASS",
+      "details": "Text locator only, not mathematical validation"
+    },
+    {
+      "id": "primary_pdf_bytes_sha256:BLISS",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "primary_pdf_target_section:BLISS",
+      "status": "PASS",
+      "details": "Text locator only, not mathematical validation"
+    },
+    {
+      "id": "primary_pdf_bytes_sha256:SCDF",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "primary_pdf_target_section:SCDF",
+      "status": "PASS",
+      "details": "Text locator only, not mathematical validation"
+    },
+    {
+      "id": "single_block_and_single_attempt_documented",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "classification_and_direct_reduction_present",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "paper_algebra_not_numeric_certificate_label",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "no_standalone_new_candidate_specification",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "runtime_and_scientific_execution_not_authorized",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "baseline_tracked_files_unchanged",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "new_files_only_in_dedicated_document_directory",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "origin_owner_allowed",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "parent_local_refs_unchanged",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "parent_worktree_registry_unchanged",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "parent_HEAD_unchanged",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "parent_index_unchanged",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "parent_exclude_unchanged",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "parent_all_tracked_present_file_bytes_unchanged",
+      "status": "PASS",
+      "details": {
+        "files": 1248,
+        "changed": []
+      }
+    },
+    {
+      "id": "parent_tracked_absences_preserved",
+      "status": "PASS",
+      "details": {
+        "absent": 36,
+        "reappeared": []
+      }
+    },
+    {
+      "id": "parent_selected_originals_unchanged",
+      "status": "PASS",
+      "details": null
+    },
+    {
+      "id": "diff_whitespace_check",
+      "status": "PASS",
+      "details": "CRLF preserved in user instruction archive; cr-at-eol allowed only for whitespace checking"
+    },
+    {
+      "id": "preflight_receipt_final_published_identity",
+      "status": "PASS",
+      "details": "4056 bytes; SHA256 6bc8878c3127239aeeedba760a42a47da94e0a3389748bdde3c9c053a46b177d"
+    }
+  ],
+  "static_check_summary": {
+    "PASS": 43,
+    "FAIL": 0,
+    "scientific_numeric_tests": 0,
+    "mathematical_certificate": false
+  },
+  "parent_preservation": {
+    "root": "/home/abe/Project/Partially Randomized Trotter",
+    "root_HEAD": "e098c54c78f589055082f9cfc2b13de50c90ca94",
+    "local_refs_sha256": "ec6a00b04ed87b7373f49aadb126af1aa3ab2223d798caa82eaa4d442a7eb628",
+    "worktrees_sha256": "28eeafb87be8d7b35b02deee48e62cec5752c1df8975582456cc382e524b0a1b",
+    "index": {
+      "bytes": 194666,
+      "sha256": "68a93531c7bc1993d49f6750ac8d98a54fafb8e153ddd0b887dd17b28ddd9c4c"
+    },
+    "tracked_present_files_checked": 1248,
+    "tracked_absences_checked": 36,
+    "selected_originals": {
+      "AGENTS.md": {
+        "bytes": 7634,
+        "sha256": "064e7d6aacf563707589c972198cc09fdf38199d5741dcfed5c01cfe723cff66"
+      },
+      "PROJECT_MAP.md": {
+        "bytes": 37360,
+        "sha256": "755a389388bf3d21d01a0e2ee297d19b9c9592028f095f8c9e0a5a3d6a9468c2"
+      },
+      "qc_algorithm_strategy_ii_iii_iv_scientific_review_20261017.md": {
+        "bytes": 43206,
+        "sha256": "8388dd1ba3a14ff147323af1f74ad65280508d9fe1a3894442a5ad9be99907f2"
+      },
+      "research_project_instructions_unified_2026-10-17.md": {
+        "bytes": 38191,
+        "sha256": "d2ebdac4b0e44e871c65f240f317e6b5d3c3460f27d92f4d798992da90bf422f"
+      },
+      ".agent/docs/review.md": {
+        "bytes": 8378,
+        "sha256": "0ce02dbae6ce5cbb7ae94678fafcadf057a95f80e10769c8dc046b5579114af3"
+      },
+      ".agent/docs/comment.md": {
+        "bytes": 25025,
+        "sha256": "616626e6c6a06f70eb40309d69178649cf1fb4b58ca298d530cde06de2bbfe65"
+      }
+    },
+    "old_scientific_files_modified_by_this_task": false
+  },
+  "next_actor": "USER",
+  "next_action": "Read the limited reduction result and decide whether to issue a separate concrete construction task; no automatic review, implementation, adoption, or execution",
+  "mandatory_stop": true,
+  "publication_receipt": "publication_receipt.json"
+}

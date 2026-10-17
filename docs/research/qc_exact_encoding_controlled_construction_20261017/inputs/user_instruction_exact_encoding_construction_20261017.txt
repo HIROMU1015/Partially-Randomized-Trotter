@@ -1,0 +1,386 @@
+# Codexへの指示：Exact Encoding × Controlled Evolution の新しい回路生成規則の限定構成
+
+## 0. 作業の目的と承認範囲
+
+量子化学Hamiltonian simulationのアルゴリズム改善研究として、**正確なfermion encoding・対称性sectorを活用し、元の電子Hamiltonianの絶対位相を保持するcontrolled時間発展回路について、既知手順とは異なる具体的な生成規則を構成できるか**検討してください。
+
+これは④「PR内部に限定しないアルゴリズム改善研究」の一部です。
+
+直前の限定技術事前検証では、既存のJW/DF回路、Gaussian変換、controlled位相処理、既知encodingの実装条件は整理できました。しかし、**既存方法を超える具体的な回路生成規則は得られていません。**
+
+今回は、この未解決点に対して一つの限定的な構成研究を行います。
+
+ユーザーが今回認めるのは、既存資料・先行研究の確認、具体的な生成規則の設計、必要な紙上の数式検討、静的な技術検証、研究判断用資料の作成までです。
+
+**新しいアルゴリズムの正式採択、新規科学計算、数値実験、native compile、本格的な科学レビューは承認されていません。**
+
+---
+
+## 1. 研究の背景
+
+研究全体の主要目的は、元の有限基底電子Hamiltonianの絶対基底エネルギーを、同じ精度・成功確率・情報アクセス条件で、より少ない量子計算資源によって求めることです。
+
+今回の研究は、PRという特定の乱択アルゴリズムの内部改変を必須としません。
+
+対象はHamiltonian simulationの回路生成方法です。既知のPF、DF、Gaussian、fermionic encodingなどを利用して構いません。
+
+ただし、既知構成を接続するだけでは独立した新アルゴリズムとは認定できません。**どこに実質的な生成手順の差があり、その差がどの計算資源を削減するのか**を具体化する必要があります。
+
+### 固定する研究範囲
+
+- **D1**：block-encoding、qubitization、それらを中核とするQSVT・quantum walkは新規研究対象から除外する。
+- **D2**：元の電子Hamiltonianの絶対基底エネルギーを主タスクとする。scalar、energy origin、対象sector、controlled位相を失わない。
+- 状態コピー、準備unitary、逆準備、古典固有情報、RDM、gapなどは、与えられた情報アクセス契約の範囲でのみ使う。無料oracleを追加しない。
+- 既存の終了・停止・保留状態を変更しない。
+
+これらを無断で緩和してはいけません。
+
+---
+
+## 2. 必須参照資料
+
+Repository：
+
+`HIROMU1015/Partially-Randomized-Trotter`
+
+### 2.1 直前の限定技術事前検証
+
+固定commit：
+
+`68a87f99e16cff3e20d256e0432b11e6f3fb9d8b`
+
+最初に以下を確認してください。
+
+- `docs/research/qc_exact_encoding_controlled_preflight_20261017/technical_preflight_report.md`
+- `docs/research/qc_exact_encoding_controlled_preflight_20261017/source_api_inventory.md`
+- `docs/research/qc_exact_encoding_controlled_preflight_20261017/evidence_and_checks.json`
+- `docs/research/qc_exact_encoding_controlled_preflight_20261017/publication_receipt.json`
+
+入口：
+
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/68a87f99e16cff3e20d256e0432b11e6f3fb9d8b/docs/research/qc_exact_encoding_controlled_preflight_20261017
+
+この事前検証で確定したAPI仕様・既知法・不足事項を再利用し、同じ調査を繰り返さないでください。
+
+### 2.2 GPT重要科学レビュー
+
+以下の原本を参照してください。
+
+`qc_algorithm_strategy_ii_iii_iv_scientific_review_20261017.md`
+
+直前の事前検証資料内には、ユーザー提供原本を保存しています。
+
+`docs/research/qc_exact_encoding_controlled_preflight_20261017/inputs/qc_algorithm_strategy_ii_iii_iv_scientific_review_20261017.md`
+
+今回の研究方向が提案された理由、対象範囲、留保、既知法との区別を確認してください。
+
+このレビューは研究方針に関する科学的推奨であり、具体的な新生成規則の成立や新規性を既に証明したものではありません。
+
+### 2.3 ④の既存研究と重複防止
+
+固定commit：
+
+`56f1cc55c59ab7bc42c6b24e0953675de9b29b1d`
+
+- `docs/research/qc_new_algorithm_research_scope_20261016/research_coverage_map.md`
+- `docs/research/qc_new_algorithm_research_scope_20261016/open_problem_landscape.md`
+- `docs/research/qc_new_algorithm_research_scope_20261016/gpt_decision_handoff.md`
+
+4系列横断資料：
+
+`d09ba606a9fceef806a9313e3f7c43cd21d19e3f`
+
+- `docs/research/qc_four_track_strategy_handoff_20261017/strategy_handoff.md`
+- `docs/research/qc_four_track_strategy_handoff_20261017/overlap_and_progress_map.md`
+
+④で既に停止・終了したN1〜N3、THRIFT、H1〜H4、SOS-PF、一体項再配分PFなどを名称変更して再開しないでください。
+
+②PR内部改善のGaussian積、basis fusion、分割共同最適化とも重複を確認してください。
+
+①PRリソース評価については、既存実装を技術的対照として参照することはできますが、その研究の進捗評価・追加検証・方針変更は今回の対象外です。
+
+---
+
+## 3. 今回の具体的な構成問題
+
+対象を無制限に広げず、**一つの明示的な演算block classと一つの主たる生成規則案**に絞ってください。
+
+最初の対象候補は、
+
+**元の電子Hamiltonianの正確な対称性sectorにおける、DF由来のnumber-preservingな演算block**
+
+とします。
+
+既存のGaussian変換、fermionic encoding、対称性処理を利用しても構いません。
+
+ただし、固定粒子数N、Nα/Nβ、Sz、S²、Z2対称性、GSE codespaceを同一視しないでください。実際に対象blockが保存する量を確認し、成立条件に含めてください。
+
+入力Hamiltonianを勝手に別の近似Hamiltonianへ置き換えず、元モデルとDF近似モデルの差がある場合は区別してください。
+
+### 3.1 生成規則の入出力
+
+候補を提示する場合、最低限以下を定義してください。
+
+**入力**
+
+- 元Hamiltonianとscalar
+- fermion mode/basisの順序
+- 対象sectorとその正当性
+- 対象となる演算block
+- 使用するencoding/isometry
+- 時間発展の符号・時間・要求精度
+- 許される状態準備・情報アクセス
+
+**出力**
+
+- 実際に回路を生成する手順、または明確な生成アルゴリズム
+- 演算の適用順序
+- 各block・中間操作・ancillaの意味
+- 必要な符号化・復号手順
+- controlled相対位相の扱い
+- 有限精度実装で必要になる誤差台帳
+- 主な計算資源の費用構造
+
+単にcompressed Hamiltonianを行列として与えるだけでは不十分です。
+
+### 3.2 正確性の条件
+
+対象のsectorからencoded spaceへのisometryを用い、Hamiltonianおよび時間発展の対応条件を明示してください。
+
+元Hamiltonianの絶対位相、定数項、nuclear repulsion、identity項、control側の相対位相を追跡してください。
+
+全Hamiltonianがsectorを保存していても、各fragmentが保存するとは限りません。
+
+どの論理block境界でsector/codespaceの閉包が必要かを区別してください。各native gateが常に対象sector内に存在することを無条件に要求する必要はありませんが、必要なlogical operationの成立を示してください。
+
+正確なencodingによる**実装費用の改善**と、PFの順序・分割を変えることによる**アルゴリズム誤差の改善**を区別してください。
+
+今回、厳密な新定理の科学的受理や一般的なcorrectness保証を完成済みと認定しないでください。
+
+---
+
+## 4. 最も重要な課題：既知方法と何が違うか
+
+今回の中心はこの点です。
+
+以下の既知方法を組み合わせるだけで得られるものは、新しい生成規則として扱わないでください。
+
+- JW変換
+- 既知のZ2 tapering／ParityMapper
+- BKSF／GSE
+- Quantum Paldus Transform
+- 既存のGaussian/Givens変換
+- DF diagonal primitive
+- 通常のPauli回転回路生成
+- 既知のcontrolled化とglobal-phase補正
+- 通常のcompiler最適化、隣接gate cancellation、basis fusion
+
+これらは利用して構いません。しかし、新しい候補には、既知の構成と比較して**少なくとも一つの具体的な生成上の差**が必要です。
+
+例えば、ある演算の生成を不要にする、複数の操作を構造的に共有する、従来必要だった変換列を別の生成規則へ置き換える、といった違いです。
+
+これは可能な差分の例であって、成立済みのアイデアではありません。
+
+**新しい基本gateの発明は必須ではありません。**
+
+ただし、単に既存gateを使う順序を通常のcompilerが最適化できる形へ変更しただけなら、独立した新しい方法とは扱わないでください。
+
+### 必須の比較
+
+候補が得られた場合、必ず以下を比較してください。
+
+1. 既存JW＋DF/Gaussian回路
+2. 関係する既知tapering／GSE／その他encoding
+3. 通常のencoding＋通常のcompiler
+4. ②および④の既存構成と近接先行研究
+
+既知手法に包含される可能性と、実際に異なる生成規則である可能性を明確に分離してください。
+
+先行研究の必要部分は実際に取得・確認し、読めなかった資料を読了済みとして扱わないでください。
+
+網羅的な新規性判定は今回実施せず、必要な未確認事項として残してください。
+
+---
+
+## 5. 資源改善機構の検討
+
+候補が得られたら、次の質問に答えてください。
+
+**新しい生成規則によって、どの費用が減る可能性があるのか。**
+
+検討する項目は、必要に応じて以下とします。
+
+- 1回の時間発展に必要なnative gate数
+- controlled回路の深さ
+- Gaussian/basis変換
+- 追加ancillaとworkspace
+- 符号化・復号・状態準備
+- 回転合成と精度
+- 古典前処理・回路生成時間
+- Hamiltonian/PF/encoding誤差
+- 測定shot数・全round費用との接続条件
+
+同じ演算・同じ位相信号・同じ誤差規約を保てるなら、回路単価を改善するだけでも意味があります。
+
+一方、qubit数やPauli weightの減少だけで、controlled evolutionの総費用改善を認定してはいけません。
+
+今回は新しい費用計算を実行せず、**具体的な演算数の構造、必要な変換、費用増減の条件を記号的・定性的に整理**してください。
+
+新しい倍率、閾値、数値的な改善予測を恣意的に設定しないでください。
+
+---
+
+## 6. 作業の進め方と停止条件
+
+### Step A：既存構成への還元を先に確認
+
+直前のpreflightと既存SOURCE/API明細を読み、対象blockに対して既知の生成手順が何を行えるか整理してください。
+
+ここで既知方法がすでに同じ生成手順を与える場合は、その結果を記録し、新しい方法として扱わないでください。
+
+### Step B：一つの主候補を具体化
+
+既存方法との差が生じ得る具体的な操作・構造が特定できる場合だけ、**一つの主候補**として生成規則を定義してください。
+
+入力から出力までの手順が追跡できる粒度で、数式・擬似コード・演算順序を記述してください。
+
+単なる着想の列挙で終わらせないでください。
+
+一方、根拠のない候補を多数生成して探索することもしないでください。
+
+### Step C：成立条件と既知法との差の静的確認
+
+提示した生成規則について、
+
+- どの仮定で演算が一致するか
+- どのsectorで使用できるか
+- controlled位相を保てるか
+- 入力情報を新たに要求していないか
+- 実装費用上の改善機構が具体的か
+- 既知手法との差が残るか
+
+を検討してください。
+
+必要な局所的な紙上計算・式変形は可能ですが、科学的な新定理の正式な受理や重要科学レビューは行わないでください。
+
+### Step D：結果に応じて停止
+
+以下のいずれかに分類してください。
+
+- `CONCRETE_CANDIDATE_FOR_SCIENTIFIC_REVIEW`：具体的な生成規則・成立条件・既知法との差を記述できた。科学的妥当性・独立新規性・利益の正式判断は未了。
+- `REDUCES_TO_KNOWN_METHOD`：提案した手順は既知構成で実現でき、今回の独立差分は確認できない。
+- `NO_CONCRETE_GENERATION_RULE`：限定した検討では具体的な生成規則に到達しなかった。
+- `UNDETERMINED_MISSING_EVIDENCE`：具体的な判断対象はあるが、重要な資料や成立条件が不足している。
+
+これらは今回の限定作業の分類であり、encodingやHamiltonian simulation全般の普遍的なNO-GO判定ではありません。
+
+**候補が得られなかった場合は、対象classを無断で拡大せずSTOPしてください。**
+
+---
+
+## 7. 禁止事項
+
+今回の作業では、以下を実施しないでください。
+
+- 新規Hamiltonian生成
+- 固有値・基底状態・RDM等の数値計算
+- 数値simulation、PF/RTE計算
+- native compile、T合成、実gate数測定
+- 保存科学結果の再解析・再ランキング
+- 新SOURCE実装
+- 数値correctness test
+- 新しい科学実行契約の採択、authorization/grant発行
+- 停止済み研究の再開
+- 既存結果・契約・markerの修正
+- 詳細なGPT/Claude科学レビューの自動開始
+- 研究テーマの正式採択
+- 他研究のbranch/worktree/jobへの介入
+
+今回の設計作業の承認を、科学計算の実行承認として扱わないでください。
+
+---
+
+## 8. 成果物
+
+新しい専用ディレクトリに、以下を作成してください。
+
+### A. 限定構成研究報告（主Markdown）
+
+- 対象とする演算block
+- 既知法でできること
+- 検討した生成上の差
+- 具体的な規則が得られた場合、その手順と数式
+- 成立条件・未証明部分
+- controlled位相・sector・state accessの扱い
+- 既知法との重複
+- 資源改善機構と追加費用
+- 今回の限定的な結論
+
+### B. 生成規則の仕様（Markdown）
+
+具体案が得られた場合のみ作成してください。
+
+入力、出力、処理手順、擬似コード、必要な仮定、既知baselineとの差を記載してください。
+
+候補がない場合は架空の仕様を作らず、主報告に未構成の理由を記載してください。
+
+### C. 固定証拠索引・判断用ハンドオフ
+
+主要な科学的・技術的記述と、その根拠となる固定GitHub commit、SOURCE、先行研究の節・定理・実装を対応付けてください。
+
+不足する原本や未確定の事項を明記してください。
+
+後からGPTが必要な科学判断を行えるよう、既に確認された事実と、今回の候補・仮説を分けてください。
+
+**論文化・原稿作成は不要です。** 後からCodexが研究内容を正確に理解できる研究記録を優先してください。
+
+---
+
+## 9. 作業環境・保全・公開
+
+最新版共通運用指示：
+
+`research_project_instructions_unified_2026-10-17.md`
+
+特に§8.4を適用してください。
+
+CPU・RAM・worker数などに恣意的な低い資源上限を設けないでください。必要な処理は実際の空き資源を確認して合理的に高速化してください。
+
+一方、共有サーバー全体、他ユーザー、他Codex、既存共通環境への変更・干渉は絶対禁止です。
+
+既存の個別固定契約の資源条件・one-shot・STOPは無断変更しないでください。
+
+独立branch/worktreeで作業し、既存SOURCE・raw結果・科学契約・grant・ledger・marker・レビュー原本を保全してください。
+
+作成資料をcommit・pushし、remote HEAD・公開bytes・SHA256・主要リンクを確認してください。
+
+既存の広域研究索引や他研究の資料は、必要性がなければ変更しないでください。
+
+---
+
+## 10. 最終報告
+
+完了時には、次を報告してください。
+
+1. 今回選んだ演算blockとその理由
+2. 既知方法との差を具体化できたか
+3. 提案した生成規則（ある場合）
+4. 成立条件と未証明事項
+5. 予想される改善機構と追加費用
+6. 既存研究・先行研究との重複
+7. 4分類のうち今回の判定
+8. 次に必要な科学的判断と不足証拠
+9. 成果物の固定GitHubリンク、branch、commit
+10. 新規科学計算・新SOURCE実装・未承認作業が0件であること
+
+**完了後はmandatory STOP。**
+
+具体的な生成規則が得られた場合も、科学レビュー、正式採択、実装、数値実行へ自動移行しないでください。
+
+## 最終目的
+
+今回の仕事は、既存encodingを単に実装することでも、未検討の研究候補を大量に列挙することでもありません。
+
+**既存研究で未解決だった「元の電子Hamiltonianから、絶対位相を保持するcontrolled evolutionをより安価に生成する具体的方法」を、一つの明示的な構成問題として扱い、既知手順と異なる生成規則を提示できるかを見極めることです。**
+
+提示できなかった場合も、その理由と科学的・技術的障害を記録すれば今回の作業は完了です。
