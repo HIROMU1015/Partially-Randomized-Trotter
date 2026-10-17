@@ -1,3 +1,7 @@
+## 2026-10-17 H8：主要6軸実測反映の限定再会計完了
+
+[結果・監査](docs/research/track_a_h8_six_axis_reaccount_run01_results_20261017.md)。SOURCE aa984d98…、保存3800行/40比較、科学dispatch1、native exit0・全回収・最終gate PASS。旧32/PR/SE/shot不変、winner変更0、model推定は残存。追加compile/signal/sampling/fit/retry0、mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-17 H8：現runを保持した準備工程の並列化
 
 [実装・検証・契約](docs/research/track_a_h8_key_compile_parallel_preparation_20261017.md)。準備を3構成並行・最大6 workerへ拡張し、wrapper生成も軸workerへ移した。人工32件PASS、SOURCE 7f8d74660b2914a1223d0ac7990dde8d4645032e。compileは固定順直列・各軸2%以上でSTOP。新方式の科学起動0・無効grant・未seal。旧runの25 immutable filesはSHA一致し、稼働継続。速度/peak RSSは未測定。以下は各時点の履歴。

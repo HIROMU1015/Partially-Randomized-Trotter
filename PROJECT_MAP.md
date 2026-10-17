@@ -1,3 +1,7 @@
+## 2026-10-17 H8：主要6軸実測反映の限定再会計完了
+
+[結果・監査](docs/research/track_a_h8_six_axis_reaccount_run01_results_20261017.md)。SOURCE aa984d98…、保存3800行/40比較、科学dispatch1、native exit0・全回収・最終gate PASS。旧32/PR/SE/shot不変、winner変更0、model推定は残存。追加compile/signal/sampling/fit/retry0、mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-17 H8：主要6軸反映の限定再会計準備・公開認証待ち
 
 [準備・来歴・次の手順](docs/research/track_a_h8_six_axis_reaccount_readiness_20261017.md)。主要6軸結果ce6cd8ea…のremote一致、45入力/元scalar・native証拠、保存3800行のshot joinを照合。SOURCE aa984d98…/closure7、人工30件PASS。利用者の一回実行承認受領済みだが、新SOURCE pushのHTTPS認証失敗により有効grant/科学dispatch0。通常/非相殺の費用・ランキング・削減率更新は未実施。手動push後に既存承認でfresh gateと一回実行へ。旧結果/STOP/他job保持。以下は過去各時点の記録。

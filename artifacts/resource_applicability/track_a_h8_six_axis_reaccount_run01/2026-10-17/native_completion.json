@@ -1,0 +1,50 @@
+{
+  "SOURCE": "aa984d98a7b438dc953a829a24fe3d7edc9d0a6b",
+  "status": "PASS_NATIVE_EXIT_AND_WAIT4_REAP",
+  "driver": {
+    "pid": 2856961,
+    "native_exit_code": 0,
+    "reaped": true,
+    "wait_kind": "os.wait4_DIRECT_UNREAPED_CHILD",
+    "wall_seconds": 1.309276906773448,
+    "first_stop": null,
+    "cleanup_errors": [],
+    "automatic_retry": false,
+    "peak_RSS_bytes": 85725184,
+    "CPU_seconds": 1.265617
+  },
+  "launcher": {
+    "pid": 2856952,
+    "native_exit_code": 0,
+    "reaped": true,
+    "wait_kind": "os.wait4_DIRECT_UNREAPED_CHILD",
+    "wall_seconds": 1.5609031599014997,
+    "first_stop": null,
+    "cleanup_errors": [],
+    "automatic_retry": false,
+    "peak_RSS_bytes": 85725184,
+    "CPU_seconds": 1.507718
+  },
+  "witness_CLI_exit_code_observed": 0,
+  "all_owned_processes_reaped": true,
+  "owned_PID_proc_entries_absent": [
+    2856961,
+    2856952
+  ],
+  "original_receipts": [
+    {
+      "role": "driver_native",
+      "bytes": 281,
+      "sha256": "d1152cd4ba8897cac851f6b25fc2e272015b8a9575a092fe5c605e9d4e4fe0d6"
+    },
+    {
+      "role": "launcher_native",
+      "bytes": 282,
+      "sha256": "adbf117836353cd83aca6fa92ccb3db612bb3eb932f5f0169d8b42166374dd78"
+    }
+  ],
+  "witness_receipt_scope": "wait4 for launcher; launcher wait4 for sole arithmetic child; no computation workers",
+  "descendants_remaining": 0,
+  "retry": 0,
+  "resume": 0
+}
