@@ -8,7 +8,7 @@ import time
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 
-from h8_phase_b2_recovery_witness import verify_witness
+from h8_phase_b2_recovery_witness import verify_witness,wait_witness_idle
 import h8_phase_b2_recovery_contract as c
 import h8_phase_b2_recovery_runtime as r
 import h8_phase_b2_recovery_observer as observer
@@ -30,7 +30,10 @@ def snapshot():
 
 def fresh(config,g,config_path,*,idle_seconds=1.,bindings_verified=False,launch_affinity=None,cpu_record=lambda value:None,resource_record=lambda value:None):
     cpus=r.verify_authorization(config,g,config_sha=r.sha(config_path),affinity=launch_affinity);r.protected(config)
-    siblings=r.topology(cpus);CPU=r.measure_idle(siblings,seconds=idle_seconds)
+    siblings=r.topology(cpus)
+    pids=[os.getpid(),os.getppid()];started=Path(config['control'])/'started.json'
+    if started.exists():pids.append(r.read(started)['driver']['pid'])
+    CPU=r.measure_idle(siblings,seconds=idle_seconds,process_pids=pids)
     cpu_record(CPU)  # Preserve failing counters BEFORE raising or forking.
     if CPU['status']!='PASS':raise r.CPUIdleError(CPU)
     value=snapshot();limits=g['resources']
@@ -57,9 +60,9 @@ def replace(path,value):
 
 def launch(config_path,grant_path,fresh_path):
     config,g=map(r.read,(config_path,grant_path))
-    launch_affinity=os.sched_getaffinity(0)
-    r.verify_authorization(config,g,config_sha=r.sha(config_path))  # Reject draft before side effects.
-    verify_witness(config,g)
+    launch_affinity=set(g.get('allowed_cpus',[]))
+    r.verify_authorization(config,g,config_sha=r.sha(config_path),affinity=launch_affinity)  # Draft rejects before side effects.
+    verify_witness(config,g,config_sha=r.sha(config_path),grant_sha=r.sha(grant_path))
     for path in (config_path,grant_path,fresh_path):r.private_path(path)
     control,output,lock=[r.private_path(config[k]) for k in ('control','output','lock')]
     if (fresh_path.name!='fresh_gate.json' or fresh_path.exists() or
@@ -75,6 +78,9 @@ def launch(config_path,grant_path,fresh_path):
     try:
         log.write('attempt_started.json',dict(SOURCE=config['SOURCE'],config_sha256=r.sha(config_path),
             grant_sha256=r.sha(grant_path),scope=c.SCOPE,retry=False,next_stage_authorized=False))
+        log.write('witness_idle_handshake.json',wait_witness_idle(config,g))
+        if os.sched_getaffinity(0)!={g['monitor_cpu']}:raise ValueError('EARLY_OBSERVER_AFFINITY_CHANGED')
+        log.write('early_observer_affinity.json',dict(pid=os.getpid(),affinity=sorted(os.sched_getaffinity(0)),before_source_runtime_verification=True))
         r.verify_files(config)
         # Only this process is pinned. Its tiny sample overhead still counts
         # against the unchanged raw 5% busy threshold; nothing is subtracted.
@@ -129,7 +135,7 @@ def supervise_validation(config,g,config_path,grant_path,fresh_path,control,outp
         '--config',str(config_path),'--grant',str(grant_path),'--fresh-gate',str(fresh_path)]
     pressure_baseline=snapshot()
     observer.supervise(command,env=env,control=control,output=output,limits=g['resources'],
-        allowed_cpus=g['allowed_cpus'],probe=snapshot,refresh_gate=refresh)
+        allowed_cpus=g['allowed_cpus'],probe=snapshot,refresh_gate=refresh,initial_driver_cpu=g['monitor_cpu'])
     try:
         final_snapshot=snapshot()
         reason=observer.resource_reason(final_snapshot,pressure_baseline,g['resources']['admission_reserve_bytes'])

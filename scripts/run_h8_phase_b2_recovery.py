@@ -16,14 +16,18 @@ import h8_phase_b2_recovery_runtime as r
 
 def execute(config_path,grant_path,fresh_path):
     config,g,f=map(r.read,(config_path,grant_path,fresh_path))
-    r.verify_grant(config,g,f,config_sha=r.sha(config_path));r.verify_observer(f);r.verify_files(config)
+    launch_affinity=set(f.get('allowed_cpus',[]))
+    r.verify_grant(config,g,f,config_sha=r.sha(config_path),affinity=launch_affinity);r.verify_observer(f)
+    if os.sched_getaffinity(0)!={g['monitor_cpu']} or os.sched_getaffinity(os.getppid())!={g['monitor_cpu']}:
+        raise ValueError('DRIVER_BINDING_REQUIRES_EARLY_MONITOR_AFFINITY')
+    r.verify_files(config)
     ready=Path(config['control'])/'driver_bindings_verified.json'
     r.Writer(config['control']).write(ready.name,dict(source=config['SOURCE'],config_sha256=r.sha(config_path)))
     deadline=time.monotonic()+30
     while True:
         fresh=r.read(fresh_path)
         if fresh.get('driver_bindings_verified') is True:
-            r.verify_grant(config,g,fresh,config_sha=r.sha(config_path));r.verify_observer(fresh);break
+            r.verify_grant(config,g,fresh,config_sha=r.sha(config_path),affinity=launch_affinity);r.verify_observer(fresh);break
         if time.monotonic()>deadline:raise ValueError('FRESH_REFRESH_TIMEOUT')
         time.sleep(.1)
     if Path(sys.executable).resolve()!=Path(config['python']).resolve():raise ValueError('PINNED_PYTHON')

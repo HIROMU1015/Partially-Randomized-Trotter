@@ -115,8 +115,9 @@ def enforce_observer(row,limits):
         raise RuntimeError('OBSERVER_AS_CEILING')
 
 
-def supervise(command,*,env,control,output,limits,allowed_cpus,probe=snapshot,refresh_gate=lambda:None):
+def supervise(command,*,env,control,output,limits,allowed_cpus,probe=snapshot,refresh_gate=lambda:None,initial_driver_cpu=None):
     """Internal owned-child supervisor; CLI validates the grant before calling."""
+    if initial_driver_cpu is not None and initial_driver_cpu not in allowed_cpus:raise ValueError('INITIAL_DRIVER_CPU_OUTSIDE_ALLOWED_SET')
     control=Path(control);output=Path(output);control.mkdir(mode=0o700)
     libc=ctypes.CDLL(None,use_errno=True)
     if libc.prctl(36,1,0,0,0)!=0:raise OSError(ctypes.get_errno(),'PR_SET_CHILD_SUBREAPER')
@@ -139,7 +140,7 @@ def supervise(command,*,env,control,output,limits,allowed_cpus,probe=snapshot,re
                     try:
                         if libc.prctl(1,int(signal.SIGKILL),0,0,0)!=0 or os.getppid()!=parent:os._exit(125)
                         for sig in previous:signal.signal(sig,signal.SIG_DFL)
-                        os.sched_setaffinity(0,set(allowed_cpus))
+                        os.sched_setaffinity(0,{initial_driver_cpu} if initial_driver_cpu is not None else set(allowed_cpus))
                         os.dup2(out.fileno(),1);os.dup2(err.fileno(),2)
                         signal.pthread_sigmask(signal.SIG_SETMASK,mask)
                         os.execve(command[0],command,env)

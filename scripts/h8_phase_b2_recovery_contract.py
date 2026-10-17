@@ -45,6 +45,8 @@ def plan():
  preparation_concurrency=2,compile_concurrency=1,parallel_phases=['left_and_right_control','cosine_and_sine_control_fingerprint_QPY'],
  compiler_threads=1,QPY_roundtrip_requires_identical_canonical_fingerprint=True,
  free_parent_circuits_before_compile=True,dispatcher_returns_after_detached_witness=True,
+ observer_pinned_before_exec=True,witness_native_wait_mode='BLOCKING_WAITPID',
+ owned_process_CPU_window_accounting=True,technical_restart_requires_new_attempt_and_recorded_user_authority=True,
  authorization=dict(approved=False,runtime_authorization=False),C_authorized=False,next_stage_authorized=False)
  return p
 

@@ -160,13 +160,38 @@ def self_cpu():
         last_CPU=int(fields[36]),affinity=sorted(os.sched_getaffinity(0)))
 
 
-def measure_idle(cpus,seconds=1.):
+def process_cpu(pid):
+    """Only explicitly owned PIDs; start-time identity prevents PID reuse attribution."""
+    try:
+        path=Path('/proc')/str(pid);fields=(path/'stat').read_text().rsplit(')',1)[1].split()
+        return dict(pid=pid,start_ticks=int(fields[19]),uid=path.stat().st_uid,
+            user_ticks=int(fields[11]),system_ticks=int(fields[12]),last_CPU=int(fields[36]),
+            affinity=sorted(os.sched_getaffinity(pid)),available=True)
+    except (FileNotFoundError,ProcessLookupError):return dict(pid=pid,available=False)
+
+
+def process_cpu_delta(before,after):
+    same=all(before.get(k)==after.get(k) for k in ('pid','start_ticks','uid'))
+    known=before.get('available') is True and after.get('available') is True and same
+    value=dict(before=before,after=after,identity_unchanged=known)
+    if known:
+        value.update(user_ticks_delta=after['user_ticks']-before['user_ticks'],
+            system_ticks_delta=after['system_ticks']-before['system_ticks'])
+    return value
+
+
+def measure_idle(cpus,seconds=1.,*,process_pids=None):
     if seconds!=1.:raise ValueError('FIXED_ONE_SECOND_CPU_WINDOW_REQUIRED')
-    started=time.monotonic();own_first=self_cpu();first=cpu_counters()
+    started=time.monotonic();pids=sorted(set(process_pids or [os.getpid()]))
+    process_first={pid:process_cpu(pid) for pid in pids}
+    own_first=self_cpu();first=cpu_counters()
     time.sleep(seconds);last=cpu_counters();own_last=self_cpu()
+    process_last={pid:process_cpu(pid) for pid in pids}
     receipt=idle_receipt(first,last,cpus)
     receipt.update(window_requested_seconds=seconds,elapsed_seconds=time.monotonic()-started,
         self_before=own_first,self_after=own_last,
+        owned_processes=[process_cpu_delta(process_first[pid],process_last[pid]) for pid in pids],
+        process_accounting_used_to_relax_gate=False,
         self_cpu_ticks_delta=own_last['user_ticks']+own_last['system_ticks']-own_first['user_ticks']-own_first['system_ticks'])
     return receipt
 
