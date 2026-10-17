@@ -1008,3 +1008,8 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 - [H8主要6軸の並列準備への引継ぎ・稼働記録](research/track_a_h8_key_compile_parallel_handover_20261017.md)。
 
 - [H8主要3構成6軸：直接compile完了結果](research/track_a_h8_key_compile_completed_results_20261017.md)。
+
+
+## H8 selected-six saved-cost reaccounting (2026-10-17)
+
+[H8主要6軸：保存値限定再会計準備・公開認証待ち](research/track_a_h8_six_axis_reaccount_readiness_20261017.md)。

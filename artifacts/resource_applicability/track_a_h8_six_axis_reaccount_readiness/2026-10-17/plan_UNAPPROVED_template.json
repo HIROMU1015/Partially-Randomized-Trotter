@@ -1,0 +1,109 @@
+{
+  "schema": "H8_SIX_AXIS_REACCOUNT_PLAN_V1",
+  "scope": "H8_SELECTED_SIX_SAVED_ACCOUNTING_BOTH_BIAS_MODES_V1",
+  "approved": false,
+  "runtime_authorization": false,
+  "execution_sealed": false,
+  "science": {
+    "system": "linear H8",
+    "spacing_A": 1.0,
+    "basis": "STO-3G",
+    "saved_DF_rank": 28,
+    "spin_modes": 16,
+    "sector": 4900,
+    "T": 0.8,
+    "q": [
+      1,
+      2,
+      4,
+      8
+    ]
+  },
+  "epsilons": [
+    0.05,
+    0.01,
+    0.005,
+    0.001,
+    0.0005
+  ],
+  "allowance_factors": [
+    1.0,
+    10.0
+  ],
+  "alpha_axis": 0.025,
+  "P": 0,
+  "metric": "SAVED_SHOT_WEIGHTED_FULL_WRAPPER_RZ_STATE_PREPARATION_EXCLUDED",
+  "bias_namespaces": [
+    "USUAL_SIGNED_SAVED",
+    "EMPIRICAL_NONCANCELLATION"
+  ],
+  "deterministic": 184,
+  "old": 32,
+  "PR_union": 6,
+  "PR_n": 32,
+  "replacement_RZ": {
+    "B0I_p15_q4_4th": 668636,
+    "B0I_p11_q1_2nd": 42268,
+    "B0_p15_q4_2nd": 223940
+  },
+  "cost_priority": [
+    "SELECTED_SIX_MEASURED",
+    "B2_REGISTERED_S4",
+    "B1_REGISTERED_ANCHORS",
+    "LEGACY_FULL_PF_WITH_ORIGINAL_LIMITS",
+    "FIXED_B1_MODEL"
+  ],
+  "model": "8420b9f247c63f47f10f40ba5e875f5ed971e8948ea6748b9845698fe6bdb8b0",
+  "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+  "profile": "622ce4a8391002558b877240b48d831d9bb0a72aeabba2e4d73bfec64b9c9f12",
+  "input_manifest_sha256": "03e7ce8e1d9149e0d1fb88577aef6913dbed457dabd69aa4222ac7882434c810",
+  "source_closure": [
+    "src/trotterlib/h8_six_axis_reaccount.py",
+    "src/trotterlib/h8_phase_c_accounting.py",
+    "scripts/h8_six_axis_reaccount_contract.py",
+    "scripts/run_h8_six_axis_reaccount.py",
+    "scripts/witness_h8_six_axis_reaccount.py",
+    "tests/test_h8_six_axis_reaccount.py",
+    "references/h8_six_axis_reaccount_inputs_v1.json"
+  ],
+  "selection": "EXACT_FRACTION_COST_THEN_LEXICAL_ID",
+  "old32": "MUST_BE_EXACTLY_UNCHANGED",
+  "PR": "REUSE_SAVED_COST_SELECTION_AND_SE_VERBATIM",
+  "missing_eligible_cost": "STOP",
+  "unresolved": "NO_FULL_DOMAIN_MINIMUM",
+  "execution": {
+    "one_shot": true,
+    "scientific_passes": 1,
+    "modes": 2,
+    "saved_rows": 3800,
+    "comparisons": 40,
+    "retry": false,
+    "resume": false,
+    "compile": 0,
+    "sampling": 0,
+    "signal": 0,
+    "fit": 0,
+    "shots": 0,
+    "bias": 0,
+    "model_prediction": 0,
+    "PR_mean_or_SE": 0
+  },
+  "resources": {
+    "processes": "native wait witness, one launcher, one arithmetic child; no workers",
+    "stdlib_only": true,
+    "agent_imposed_CPU_RAM_worker_wall_caps": null,
+    "inherited_OS_limits": "UNCHANGED",
+    "estimate_peak_RSS_bytes": 268435456,
+    "estimate_output_bytes": 67108864,
+    "estimate_output_inodes": 32,
+    "PSI": "OBSERVATION_ONLY",
+    "cleanup": "OWN_UNREAPED_DIRECT_CHILD_PIDFD_TERM_KILL_WAIT4_FIRST_REASON_PRESERVED"
+  },
+  "protection": "ONLY_OWN_SOURCE_INPUT_RUNTIME_OUTPUT_GRANT_LOCK; OTHER_WORK_OBSERVATION",
+  "SOURCE_publication": "MUST_BE_CONFIRMED_BEFORE_VALID_GRANT_OR_SCIENTIFIC_DISPATCH",
+  "rigorous_bias_certificate": null,
+  "PR_population_winner_guarantee": false,
+  "full_domain_direct_measured_optimum": false,
+  "mandatory_STOP": true,
+  "next_stage_authorized": false
+}

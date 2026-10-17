@@ -851,3 +851,8 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 Library本体を変えず、固定外部providerのDF/PF/RTE/native compilerを新scripts/h6_fixed_delta_science_v1.pyから再利用する。[実行直前準備](../../docs/research/track_a_h6_fixed_delta_t_dependence_readiness_20261015.md)。
 
 H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集計のみをscriptsへ追加した。[結果・再現](../../docs/research/track_a_h6_fixed_delta_t_dependence_results_20261015.md)。
+
+
+## H8 selected-six saved-cost reaccounting (2026-10-17)
+
+`h8_six_axis_reaccount.py`：6軸の保存実測単価反映、exact費用/全184選択/旧32・PR不変gate。人工または新実行permit必須。bias/shot/PR平均・SE/modelを再計算しない。

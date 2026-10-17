@@ -1,3 +1,7 @@
+## 2026-10-17 H8：主要6軸反映の限定再会計準備・公開認証待ち
+
+[準備・来歴・次の手順](docs/research/track_a_h8_six_axis_reaccount_readiness_20261017.md)。主要6軸結果ce6cd8ea…のremote一致、45入力/元scalar・native証拠、保存3800行のshot joinを照合。SOURCE aa984d98…/closure7、人工30件PASS。利用者の一回実行承認受領済みだが、新SOURCE pushのHTTPS認証失敗により有効grant/科学dispatch0。通常/非相殺の費用・ランキング・削減率更新は未実施。手動push後に既存承認でfresh gateと一回実行へ。旧結果/STOP/他job保持。以下は過去各時点の記録。
+
 ## 2026-10-17 H8：主要3構成6軸の直接compile完了
 
 [結果・native回収・限定監査](docs/research/track_a_h8_key_compile_completed_results_20261017.md)。RZ/軸はB0+I p15/q4 S4が668,636、p11/q1 S2が42,268、B0 p15/q4 S2が223,940（各cosine/sine同値）。全6軸のモデル誤差0.216〜0.827%で2%未満PASS、22:15:38 JST正常終了。旧完了1軸＋新5軸をSOURCE別に結合。新run wall24分23.886秒、最大単一process RSS9.643 GiB、全回収・最終gate PASS。PR削減率の再会計は未実施・別承認。以下は各時点の履歴。

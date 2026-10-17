@@ -874,3 +874,8 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 `track_a_v1_p7_measured_reaccount.py`：stdlib限定、default plan-only、新grantでp7実測×保存shotと保存PRの1比較だけ。参照は上記結果報告。
 
 H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY and completed-prefix results after old native cleanup; the new monitored driver waits for an exclusive atomic release. See [running handover record](../docs/research/track_a_h8_key_compile_parallel_handover_20261017.md).
+
+
+## H8 selected-six saved-cost reaccounting (2026-10-17)
+
+`h8_six_axis_reaccount_contract.py` / `run_h8_six_axis_reaccount.py` / `witness_h8_six_axis_reaccount.py`：H8の保存shot・PR費用/SEを固定し、6軸単価のみ反映する新one-shot。SOURCE公開・新grant必須。`--check`はmetadata/保存値の結合検査のみ。
