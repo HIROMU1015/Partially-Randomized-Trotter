@@ -1,0 +1,42 @@
+{
+  "actual_speedup": null,
+  "axes_per_worker": [
+    "cosine",
+    "sine"
+  ],
+  "axes_sequential_within_trajectory": true,
+  "candidates_in_order": [
+    4,
+    8
+  ],
+  "conclusion": "reasonable existing parallelism for eight independent trajectories per wave; further speed benefit remains unmeasured",
+  "evidence_kind": "source inspection plus tiny artificial overlap test; no production throughput measurement",
+  "further_parallelism": {
+    "implemented": false,
+    "possible_axis_workers": 16,
+    "rationale": "would require axis handoff/circuit duplication, separate accounting and memory measurement; not needed to fix the STOP"
+  },
+  "maximum_concurrent_native_transpiles": 8,
+  "maximum_concurrent_trajectory_workers": 8,
+  "optimizations": [
+    "direct positive-binomial conditional draw instead of rejection sampling",
+    "independent forked trajectory workers; no shared Python GIL bottleneck across workers",
+    "one native evolution build retained for the second axis; whole wrappers still compiled separately",
+    "canonical single-pass streaming hash with bounded operation-content LRU reuse",
+    "control probes on first trajectory per candidate; pinned joint-branch path or original fallback",
+    "internal threads one to avoid nested CPU oversubscription"
+  ],
+  "production_wall_estimate": null,
+  "q4_all_saved_validated_reaped_before_q8": true,
+  "scientific_retry": 0,
+  "source_locations": {
+    "conditional_sampler": "scripts/h8_conditional_s2_sampling.py:36",
+    "dispatch": "scripts/run_h8_conditional_s2_pilot.py:122",
+    "hash_cache": "pinned c31 provider h8_resource_map_optimization_v1.hashing",
+    "owned_pool": "scripts/h8_key_compile_parallel.py:136",
+    "paired_evolution_retention": "scripts/h8_conditional_s2_adapter.py:87"
+  },
+  "tasks_per_candidate": 8,
+  "theoretical_eightfold_speedup_claim": false,
+  "threads_per_worker": 1
+}

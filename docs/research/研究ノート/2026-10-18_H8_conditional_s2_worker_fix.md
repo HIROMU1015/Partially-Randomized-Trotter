@@ -1,0 +1,5 @@
+# 2026-10-18 H8条件付きpilotの停止診断修正
+
+[報告](../track_a_h8_conditional_s2_worker_fix_20261018.md)。旧停止handlerのRuntimeErrorが固定providerでBasisFingerprintErrorへ変換される経路を人工再現。新SOURCE03479a75…は専用BaseExceptionとchain/tracebackを保存し、準備とreceipt検査のphaseを分離する。人工28＋既存pool4 PASS。metadata修正と元preparationの接続も人工DFで確認した。旧3件の原因を後から確定したとは扱わない。
+
+8 trajectory並列、同eventのpaired evolution再利用とstreaming LRUを維持。q4→q8の逐次gateは契約上必要で、実効speedupは未測定。scope・科学条件・ledger不変、実H8 sampling/compile/retry0、有効grant0、サブエージェント0。次はユーザーが新しい実行承認を判断する。mandatory STOP。
