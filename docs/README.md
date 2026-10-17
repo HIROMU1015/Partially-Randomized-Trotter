@@ -1,3 +1,7 @@
+## 2026-10-17 H8 Phase C：B2完了結果の統合・実行準備（未承認）
+
+[資料入口](research/track_a_h8_phase_c_integration_readiness_20261017.md)。既存Phase C snapshotを統合し、B2最終4軸契約（PASS_REGISTERED_FOUR_AXES、保存3＋新規1、軸別SOURCE）へ再結合。B0 p15/q1 S4は実測168,353 RZ優先、未測定S4はmodel推定と明示、非相殺行は拒否、旧32/184は別判定。資源上限とPSI-STOP observerを廃止しwait4 launcherへ。人工37件PASS（実launcher→driver人工e2eを含む）。SOURCE 29ed76544441d534ad99e5c708a2ae17eec78c18、plan 9e42fc76…、unsealed・未承認・無効grant。実H8費用再会計・ランキング・削減率・新signal/compile/sampling/fit0、B2/M1-S/既存worktree不変。以下は各時点の履歴。
+
 ## 2026-10-17 H8 B2：登録S4全4軸の実測PASS・正常終了
 
 [結果・結合来歴・終了監査](research/track_a_h8_b2_completed_results_20261017.md)。H8/隣接1Å/STO-3G/DF28/T=.8、B0 p15q1・B0+I p21q8 S4の両軸を実測。B0各168,353 RZ/誤差0.2153638062%、B0+I各1,852,640 RZ/誤差0%、登録4軸PASS。2026-10-17T17:46:48.422662+09:00に最後のsineが終了、SOURCE f58da959…/native driver・launcher exit0/全回収。保存3軸を別受入契約で結合し、元runと過去のSTOP・未settle予約は保持。最新run wall1632.031秒/peak26.252GiB、33source/265provider/34273runtime/31input・702保護/135frozen/286過去immutableを照合。新fit/費用再会計/Phase C/非相殺stage0、全格子・厳密bias・PR母平均の保証は未認定。mandatory STOP。以下は各時点の履歴。
