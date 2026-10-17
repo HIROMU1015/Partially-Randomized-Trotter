@@ -1,4 +1,10 @@
-"""Future C execution gates. Preparation never issues a valid grant."""
+"""Future C execution gates. Preparation never issues a valid grant.
+
+Kept from the Phase C snapshot: sealed config, grant/plan/B2-receipt binding, source and
+input closure, protected work, exclusive paths, fresh-gate staleness and one-shot lock.
+Changed for the final B2 contract and the current resource rule: no agent-imposed
+CPU/RAM/worker/wall caps, no idle-core admission, PSI recorded as observation only.
+"""
 import hashlib
 import json
 import math
@@ -13,20 +19,20 @@ PYTHON = '/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2
 SCOPE = 'H8_PHASE_C_SAVED_FIVE_EPSILON_RZ_P0_V1'
 THREAD_KEYS = ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS',
                'NUMEXPR_NUM_THREADS', 'NUMBA_NUM_THREADS', 'QISKIT_NUM_PROCS', 'RAYON_NUM_THREADS')
-RESOURCES = dict(processes=2, max_workers=0, threads=1, physical_cores=2,
-    AS_bytes=2*2**30, RSS_bytes=2**30, driver_AS_bytes=2*2**30, driver_RSS_bytes=2**30,
-    observer_AS_bytes=512*2**20, observer_RSS_bytes=256*2**20,
-    aggregate_RSS_bytes=1280*2**20, admission_reserve_bytes=768*2**20,
-    CPU_seconds=600, observer_CPU_seconds=120, aggregate_CPU_seconds=720, wall_seconds=900,
-    output_bytes=512*2**20, log_bytes=16*2**20, stage_storage_bytes=2**30,
-    minimum_free_inodes=40000, output_files_max=2048)
+REGISTRY = 'references/h8_phase_c_registration_v1.json'
+INPUT_CONTRACT = 'references/h8_phase_c_input_contract_v2.json'
+# Admission facts, not limits on the job: the job is one arithmetic process.
+RESOURCE_POLICY = dict(agent_imposed_CPU_RAM_worker_wall_caps=None, processes=1, child_processes=0,
+    estimates=dict(peak_RSS_bytes=256*2**20, output_bytes=64*2**20, wall='seconds'),
+    admission=dict(minimum_memory_available_bytes=4*2**30, minimum_free_disk_bytes=2**30, minimum_free_inodes=10000),
+    CPU_selection='ANY_AVAILABLE_CPUS_EXCLUDING_CPUS_OF_RUNNING_PROTECTED_JOBS',
+    PSI='OBSERVATION_ONLY', own_child_signal_or_OOM_kill='STOP', supervision='LAUNCHER_WAIT4_DIRECT_CHILD')
 CAPS = dict(reaccounting_pass=1, saved_row=1900, model_axis_estimate=352, comparison=20,
             new_signal=0, new_shots=0, compile=0, fit=0, sampling=0)
 SOURCES = ('src/trotterlib/h8_phase_c_accounting.py', 'scripts/h8_phase_c_inputs.py',
     'scripts/h8_phase_c_runtime.py', 'scripts/run_h8_phase_c.py', 'scripts/prepare_h8_phase_c.py',
-    'scripts/launch_h8_strengthened_phase_a.py', 'scripts/track_a_phase_a_parallel.py',
-    'scripts/h8_strengthened_runtime.py', 'scripts/h8_strengthened_contract.py',
-    'references/registration_v1.json', 'references/input_contract_v1.json')
+    'tests/test_h8_phase_c.py', REGISTRY, INPUT_CONTRACT)
+B2_ROLES = ('B2_binding', 'B2_execution_receipts')
 GIT = ('git', '--no-optional-locks', '-c', 'index.threads=1', '-c', 'core.preloadIndex=false',
        '-c', 'core.fsmonitor=false', '-c', 'core.untrackedCache=false')
 
@@ -59,17 +65,30 @@ def loads(data):
     return json.loads(data, object_pairs_hook=pairs, parse_float=number, parse_constant=reject)
 
 
+def identity(pid):
+    """(pid, start ticks, parent, uid) of a live process, or None."""
+    try:
+        fields = (Path('/proc')/str(pid)/'stat').read_text().rsplit(')', 1)[1].split()
+        return [pid, int(fields[19]), int(fields[1]), (Path('/proc')/str(pid)).stat().st_uid]
+    except (OSError, IndexError, ValueError):
+        return None
+
+
 def plan():
-    return dict(schema='H8_PHASE_C_PLAN_V1', scope=SCOPE, B1_result=c.B1_RESULT,
-        model_sha256=c.MODEL_SHA, required_B2_SOURCE=c.B2_SOURCE, compiler_hash=c.COMPILER,
-        profile_sha256=c.PROFILE, deterministic_candidates=184, old_candidates=32,
-        added_candidates=152, confirmation_union=6, paired_samples=32,
+    return dict(schema='H8_PHASE_C_PLAN_V2', scope=SCOPE, B1_result=c.B1_RESULT,
+        model_sha256=c.MODEL_SHA, compiler_hash=c.COMPILER, profile_sha256=c.PROFILE,
+        B2_result=c.B2_RESULT, B2_status=c.B2_STATUS, B2_final_SOURCE=c.B2_FINAL_SOURCE,
+        B2_axes=[dict(case_id=a, axis=b, SOURCE=s, frozen_prediction=p) for a, b, s, p in c.B2_AXES],
+        B2_saved_axes_accepted=3, B2_new_axes_completed=1, deterministic_candidates=184, old_candidates=32,
+        added_candidates=152, confirmation_union=6, paired_samples=32, exploration_n8_pooled=False,
         epsilons=list(c.EPSILONS), allowance_factors=list(c.FACTORS), P=0,
-        registry_file_sha256=sha(ROOT/'references/registration_v1.json'),
-        input_contract_file_sha256=sha(ROOT/'references/input_contract_v1.json'),
-        call_caps=CAPS, resources=RESOURCES, selection='EXACT_RATIONAL_COST_THEN_LEXICAL_ID',
-        missing_eligible_cost='STOP', unresolved_eligibility='NO_FULL_DOMAIN_MINIMUM',
-        B2_partial_or_STOP='STOP_BEFORE_ANY_MODEL_ESTIMATE_OR_REACCOUNT',
+        metric='SHOT_WEIGHTED_FULL_WRAPPER_RZ_STATE_PREPARATION_EXCLUDED', bias_kind=c.USUAL_BIAS,
+        noncancellation_shots_used=False, registry_file_sha256=sha(ROOT/REGISTRY),
+        input_contract_file_sha256=sha(ROOT/INPUT_CONTRACT), call_caps=CAPS, resource_policy=RESOURCE_POLICY,
+        unit_cost_order=['B2_REGISTERED_S4_MEASUREMENT', 'B1_REGISTERED_ANCHOR', 'LEGACY_FULL_PF_DECLARED_LIMITS',
+                         'FIXED_MODEL_ESTIMATE_S2_OR_S4'], old_B0_unresolved_costs=False,
+        selection='EXACT_RATIONAL_COST_THEN_LEXICAL_ID', missing_eligible_cost='STOP',
+        unresolved_eligibility='NO_FULL_DOMAIN_MINIMUM', B2_partial_or_STOP='STOP_BEFORE_ANY_MODEL_ESTIMATE_OR_REACCOUNT',
         new_shot_calculation=False, compiler_invocations=0, refit=False,
         one_shot=True, retry=False, resume=False, mandatory_stop=True, next_stage_authorized=False)
 
@@ -77,21 +96,22 @@ def plan():
 def authorize(config, grant):
     source = config.get('SOURCE')
     c.require(type(source) is str and len(source) == 40 and all(x in '0123456789abcdef' for x in source) and
-        config.get('execution_sealed') is True and grant.get('schema') == 'H8_PHASE_C_NEW_GRANT_V1' and
+        config.get('execution_sealed') is True and grant.get('schema') == 'H8_PHASE_C_NEW_GRANT_V2' and
         grant.get('approved_by_user') is True and grant.get('runtime_authorization') is True and
         grant.get('approval_text') and grant.get('scope') == SCOPE and grant.get('SOURCE') == source and
         grant.get('config_sha256') == c.digest(config) and
         grant.get('plan_sha256') == config.get('plan_sha256') == c.digest(plan()) and
         grant.get('model_sha256') == c.MODEL_SHA and grant.get('B1_result_commit') == c.B1_RESULT and
+        grant.get('B2_result_commit') == c.B2_RESULT and
         grant.get('B2_receipt_set_sha256') == config.get('B2_receipt_set_sha256') and
         type(config.get('B2_receipt_set_sha256')) is str and len(config['B2_receipt_set_sha256']) == 64 and
-        grant.get('resources') == config.get('resources') == RESOURCES and grant.get('call_caps') == CAPS and
+        grant.get('resource_policy') == config.get('resource_policy') == RESOURCE_POLICY and grant.get('call_caps') == CAPS and
         all(grant.get(k) is v for k, v in [('one_shot', True), ('retry', False), ('resume', False),
-            ('refit', False), ('next_stage_authorized', False)]), 'NEW_SEALED_C_USER_GRANT_REQUIRED')
+            ('refit', False), ('next_stage_authorized', False), ('noncancellation_shots_allowed', False)]),
+        'NEW_SEALED_C_USER_GRANT_REQUIRED')
     cpus = grant.get('allowed_cpus', [])
-    c.require(cpus == [grant.get('driver_cpu'), grant.get('observer_cpu')] and len(cpus) == 2 and
-        all(type(x) is int and x >= 0 for x in cpus) and len(set(cpus)) == 2 and
-        set(cpus) <= os.sched_getaffinity(0), 'TWO_EXPLICIT_C_CPUS_REQUIRED')
+    c.require(type(cpus) is list and cpus and all(type(x) is int and x >= 0 for x in cpus) and
+        len(set(cpus)) == len(cpus) and set(cpus) <= os.sched_getaffinity(0), 'EXPLICIT_C_CPUS_REQUIRED')
     return cpus
 
 
@@ -118,13 +138,12 @@ def verify(config, *, git=True, protection=True):
         if git:
             c.require(hashlib.sha256(subprocess.check_output([*GIT, 'show', config['SOURCE']+':'+name], cwd=ROOT)).hexdigest() == h,
                       'C_SOURCE_GIT_CHANGED')
-    specifications = read(ROOT/'references/input_contract_v1.json')['files']
+    specifications = read(ROOT/INPUT_CONTRACT)['files']
     actual = c.unique(config['inputs'], lambda row: row['role'])
     c.require(set(actual) == {x['role'] for x in specifications}, 'EXACT_C_INPUT_ROLES')
     for spec in specifications:
         row = actual[spec['role']]
-        if spec['bytes'] is not None:
-            c.require(row['bytes'] == spec['bytes'] and row['sha256'] == spec['sha256'], 'PINNED_C_INPUT_RECEIPT')
+        c.require(row['bytes'] == spec['bytes'] and row['sha256'] == spec['sha256'], 'PINNED_C_INPUT_RECEIPT')
     for row in config['inputs']:
         path = Path(row['path'])
         c.require(path.is_absolute() and path.is_relative_to('/home/AbeHiromu') and not path.is_symlink() and
@@ -137,20 +156,22 @@ def load_saved(config):
     rows = c.unique(config['inputs'], lambda x: x['role'])
     def get(role):
         return read(rows[role]['path'])
-    proof = {k: get('B2_' + k) for k in ('terminal', 'cleanup', 'final', 'launcher_native_exit')}
-    c.require(c.digest([rows['B2_'+k] for k in ('terminal', 'cleanup', 'final', 'launcher_native_exit')]) ==
-              config['B2_receipt_set_sha256'], 'SEALED_B2_RECEIPTS')
+    proof = dict(binding=get('B2_binding'), receipts=get('B2_execution_receipts'))
+    c.require(c.digest([rows[k] for k in B2_ROLES]) == config['B2_receipt_set_sha256'], 'SEALED_B2_RECEIPTS')
     c.b2_gate(proof)
-    # Real scalar inputs are not parsed until the explicit grant and B2 gate.
+    # Real scalar inputs are not parsed until the explicit grant and the final B2 gate.
     import gzip
-    raw = {k: get(k) for k in ('D0', 'B0I_accounting', 'model', 'B1_terminal', 'B1_anchors')}
+    raw = {k: get(k) for k in ('D0', 'D0_terminal', 'B0I_accounting', 'B0I_file_receipts', 'model',
+                               'B1_terminal', 'B1_launcher_native_exit', 'B1_anchors')}
     path = Path(rows['Phase_A']['path'])
     with gzip.open(path, 'rb') as stream:
         data = stream.read(32*2**20+1)
     c.require(len(data) <= 32*2**20, 'GZIP_DECOMPRESSED_LIMIT')
     raw['Phase_A'] = loads(data)
     raw['B2'] = proof
-    return inputs.normalize(raw, get('registry')), get('registry')
+    inputs.lineage(raw, rows)
+    registry = get('registry')
+    return inputs.normalize(raw, registry), registry
 
 
 def path_set(config, *, supervisor_control_exists=False):
@@ -173,5 +194,5 @@ def fresh_binding(config, grant, fresh, now=None):
     c.require(fresh['SOURCE'] == config['SOURCE'] and fresh['config_sha256'] == c.digest(config) and
         fresh['grant_sha256'] == c.digest(grant) and fresh['allowed_cpus'] == grant['allowed_cpus'] and
         0 <= now-fresh['monotonic_seconds'] <= 30 and all(fresh[k] is True for k in
-        ('source_input_verified', 'physical_cores_verified', 'resources_idle_verified',
-         'quota_verified', 'protected_jobs_unchanged', 'external_monitor_ready')), 'FRESH_C_GATE_REQUIRED')
+        ('source_input_verified', 'CPU_selection_verified', 'resources_admission_verified',
+         'quota_verified', 'protected_jobs_unchanged', 'launcher_wait_ready')), 'FRESH_C_GATE_REQUIRED')

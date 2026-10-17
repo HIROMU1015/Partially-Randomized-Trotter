@@ -1,7 +1,8 @@
 """Saved H8 scalar arithmetic only. Real callers must pass the execution gate.
 
 No signal, shot rule, circuit, fit, compiler, sampler or molecular imports.
-S4 model use is conditional on all four registered B2 axes and final gates.
+S4 model use is conditional on the final B2 four-axis acceptance contract.
+Only saved usual signed-bias shots enter; noncancellation diagnostics never do.
 """
 from fractions import Fraction as F
 import hashlib
@@ -14,10 +15,17 @@ AXES = ('cosine', 'sine')
 CHANNEL = dict(cosine='real', sine='imag')
 B1_RESULT = '83a3c4a6688e66576f85471bf41a45e29cbfb705'
 MODEL_SHA = '8420b9f247c63f47f10f40ba5e875f5ed971e8948ea6748b9845698fe6bdb8b0'
-B2_SOURCE = '244c45e752fa703e286d40ece9ad641430ea9c6e'
 PROFILE = '622ce4a8391002558b877240b48d831d9bb0a72aeabba2e4d73bfec64b9c9f12'
 COMPILER = '1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b'
-B2_AXES = [(cid, a) for cid in ('B0_p15_q1_4th', 'B0I_p21_q8_4th') for a in AXES]
+B2_RESULT = 'fef2db7a79886ab682b652da7266b463c98c7d3a'
+B2_STATUS = 'PASS_REGISTERED_FOUR_AXES'
+B2_FINAL_SOURCE = 'f58da9590597f42ff7260c22d771734096a706bb'
+# Registered order: (case, axis, execution SOURCE of that axis, frozen B1 prediction).
+B2_AXES = [('B0_p15_q1_4th', 'cosine', '244c45e752fa703e286d40ece9ad641430ea9c6e', '1175933/7'),
+           ('B0_p15_q1_4th', 'sine', '244c45e752fa703e286d40ece9ad641430ea9c6e', '1175933/7'),
+           ('B0I_p21_q8_4th', 'cosine', '2e604e4a3a04eee5090e03d9bb83818d7afd3c87', '1852640'),
+           ('B0I_p21_q8_4th', 'sine', B2_FINAL_SOURCE, '1852640')]
+USUAL_BIAS = 'USUAL_SIGNED_SAVED'
 
 
 def require(ok, reason):
@@ -45,31 +53,53 @@ def unique(rows, key):
 
 
 def b2_gate(proof):
-    """Accept completed native B2 evidence only; do not redo its residuals."""
-    terminal, cleanup, final = (proof[k] for k in ('terminal', 'cleanup', 'final'))
-    require(terminal['status'] == cleanup['status'] == 'COMPLETE_MANDATORY_STOP' and
-            terminal['SOURCE'] == B2_SOURCE and final['SOURCE'] == B2_SOURCE and
-            final['status'] == 'PASS_MANDATORY_STOP' and final['profile_sha256'] == PROFILE,
-            'ALL_B2_COMPLETION_GATES_REQUIRED')
-    require(cleanup['native_exit_code'] == 0 and cleanup['all_reaped'] is True and
-            cleanup['cleanup_errors'] == [] and cleanup['first_stop'] is None and
-            0 < finite(cleanup['max_monitor_gap_seconds'], 'B2_MONITOR_GAP') <= 5,
-            'B2_NATIVE_EXIT_CLEANUP_MONITOR')
-    require(proof['launcher_native_exit']['native_exit_code'] == 0 and
-            proof['launcher_native_exit']['wait_completed'] is True, 'B2_LAUNCHER_NATIVE_WAIT')
-    require(terminal['fit_performed'] is False and terminal['next_stage_authorized'] is False and
-            terminal['validation']['status'] == 'VALIDATED_ONLY_ON_FOUR_REGISTERED_S4_AXES', 'B2_SCOPE')
-    rows = terminal['axes']
-    require([(r['case_id'], r['axis']) for r in rows] == B2_AXES, 'EXACT_B2_FOUR_AXES')
-    for row in rows:
-        require(row['model_sha256'] == MODEL_SHA and row['profile_sha256'] == PROFILE and
-                row['compiler_hash'] == COMPILER and row['native_exit_code'] == 0 and
-                row['reaped'] is True and row['fingerprint_before'] == row['fingerprint_after'] and
-                type(row['measured_RZ']) is int and row['measured_RZ'] > 0 and
-                0 <= finite(row['max_control_error'], 'B2_CONTROL') < 1e-8 and
-                row['model_check']['PASS'] is True and
-                0 <= F(row['model_check']['exact_relative_error']) < F(1, 50), 'B2_AXIS_NOT_PASS')
-    return rows
+    """Accept only the final registered-four-axis B2 acceptance contract.
+
+    Three saved axes and one newly completed axis carry their own execution SOURCE.
+    The binding and its terminal-receipt projection must agree exactly; residuals are
+    checked against the frozen predictions, never recomputed from a new model.
+    """
+    b, r = proof['binding'], proof['receipts']
+    require(b['schema'] == 'H8_B2_REGISTERED_FOUR_AXES_PASS_BINDING_V1' and b['status'] == B2_STATUS and
+            b['final_execution_SOURCE'] == B2_FINAL_SOURCE and b['source_per_axis'] is True and
+            (b['registered_axes'], b['saved_axes_accepted'], b['new_axes_completed']) == (4, 3, 1) and
+            b['model_sha256'] == MODEL_SHA and b['compiler_sha256'] == COMPILER and b['profile_sha256'] == PROFILE and
+            b['relative_error'] == 'abs(predicted-measured)/measured' and b['STOP_threshold'] == '1/50' and
+            b['comparison'] == 'strictly_less_than', 'B2_FINAL_FOUR_AXIS_BINDING_REQUIRED')
+    require(b['final_gate'] == dict(status='PASS_MANDATORY_STOP', SOURCE=B2_FINAL_SOURCE, profile_sha256=PROFILE,
+                                    next_stage_authorized=False), 'B2_FINAL_GATE_PASS_REQUIRED')
+    require(b['original_runs_retroactively_changed'] is False and b['old_STOPs_and_unsettled_reservations_preserved'] is True and
+            b['single_original_attempt_completed'] is False and b['full_grid_guaranteed'] is False and
+            b['Phase_C_authorized'] is False and b['mandatory_STOP'] is True, 'B2_HISTORY_AND_SCOPE_FLAGS')
+    rows = b['axes']
+    require([(x['case_id'], x['axis'], x['SOURCE']) for x in rows] == [a[:3] for a in B2_AXES], 'EXACT_B2_FOUR_AXES_AND_SOURCES')
+    measured = {}
+    for row, (cid, axis, source, prediction) in zip(rows, B2_AXES):
+        check = row['model_check']
+        m = row['measured_RZ']
+        require(type(m) is int and m > 0 and check['measured_RZ'] == m and check['exact_prediction'] == prediction and
+                check['PASS'] is True and F(check['exact_relative_error']) == abs(F(prediction)-m)/m < F(1, 50) and
+                row['model_sha256'] == MODEL_SHA and row['profile_sha256'] == PROFILE and row['compiler_hash'] == COMPILER and
+                row['native_exit_code'] == 0 and row['reaped'] is True and row['fingerprint_before'] == row['fingerprint_after'] and
+                0 <= finite(row['max_control_error'], 'B2_CONTROL') < 1e-8, 'B2_AXIS_NOT_PASS:' + cid + ':' + axis)
+        measured[cid, axis] = dict(RZ=m, SOURCE=source, acceptance='NEW_AXIS_COMPLETED' if source == B2_FINAL_SOURCE
+                                   else 'SAVED_AXIS_ACCEPTED_BY_FINAL_CONTRACT', result_sha256=row['result_sha256'])
+    t, lt, w, adm = r['raw_driver_terminal'], r['raw_launcher_terminal'], r['native_launcher_wait'], r['admission_terminal']
+    require(t['status'] == 'COMPLETE_MANDATORY_STOP' and t['SOURCE'] == B2_FINAL_SOURCE and t['fit_performed'] is False and
+            t['retry'] is False and t['next_stage_authorized'] is False and t['axes'] == rows[3:] and
+            t['saved_B0_axes'] == rows[:2] and t['saved_cosine_axis'] == rows[2] and
+            t['validation']['C_authorized'] is False and t['validation']['full_grid_guaranteed'] is False,
+            'B2_DRIVER_TERMINAL_MATCHES_BINDING')
+    require(lt['status'] == 'COMPLETE_MANDATORY_STOP' and lt['native_exit_code'] == 0 and lt['all_reaped'] is True and
+            lt['cleanup_errors'] == [] and lt['first_stop'] is None and not lt.get('process_thread_violation'),
+            'B2_NATIVE_EXIT_CLEANUP')
+    require(w['status'] == 'NATIVE_LAUNCHER_WAIT_RECORDED' and w['native_exit_code'] == 0 and w['wait_completed'] is True and
+            w['witness_stop_requested'] is False, 'B2_LAUNCHER_NATIVE_WAIT')
+    require(adm['status'] == 'COMPLETE_MANDATORY_STOP' and adm['SOURCE'] == B2_FINAL_SOURCE and adm['reported_exit_code'] == 0 and
+            r['final_gate'] == b['final_gate'] and r['new_compile_calls'] == 1 and r['extra_unregistered_compile_calls'] == 0 and
+            r['Phase_C_authorized'] is False and r['fit_performed'] is False and r['scientific_retry_after_mismatch'] is False,
+            'B2_ADMISSION_FINAL_GATE_AND_CALLS')
+    return measured
 
 
 def eligibility(a):
@@ -122,6 +152,8 @@ def evaluate(data, registry, *, take=lambda key: None, emit=lambda kind, value: 
     require(set(saved) == expected and len(saved) == 1900, 'EXACT_SAVED_1900_SHOT_ROWS')
     strata = unique(data['model']['models'], lambda r: (r['method'], r['axis']))
     require(set(strata) == {(m, a) for m in ('B0', 'B0I') for a in AXES}, 'FOUR_MODEL_STRATA')
+    require(all(r.get('S4_status') == 'UNVALIDATED_SCHEDULE_COMPOSITION_HYPOTHESIS' and r.get('full_grid_guaranteed') is False
+                for r in strata.values()), 'B1_S4_HYPOTHESIS_FROZEN')
     measured = unique(data['measured_axes'], lambda r: (r['cell_id'], r['axis']))
     for key, row in measured.items():
         require(key[0] in cells and key[1] in AXES and row['compiler_hash'] == COMPILER and
@@ -131,10 +163,11 @@ def evaluate(data, registry, *, take=lambda key: None, emit=lambda kind, value: 
                 'NO_UNRESOLVED_OLD_B0_COST_REUSE')
         require((cells[key[0]]['method'] == 'B1') == (row['kind'] == 'LEGACY_FULL_PF_DECLARED_LIMITS'),
                 'MEASURED_COST_METHOD')
-    for row in validated_b2:
-        measured[(row['case_id'], row['axis'])] = dict(cell_id=row['case_id'], axis=row['axis'],
-            RZ=row['measured_RZ'], kind='B2_REGISTERED_S4_MEASUREMENT', compiler_hash=COMPILER,
-            provenance_verified=True, origin_SOURCE=B2_SOURCE, profile_sha256=PROFILE)
+    for (cid, axis), row in validated_b2.items():
+        require(cid in cells and cells[cid]['formula'] == '4th', 'B2_AXIS_OUTSIDE_REGISTERED_DOMAIN')
+        measured[cid, axis] = dict(cell_id=cid, axis=axis, RZ=row['RZ'], kind='B2_REGISTERED_S4_MEASUREMENT',
+            compiler_hash=COMPILER, provenance_verified=True, origin_SOURCE=row['SOURCE'], profile_sha256=PROFILE,
+            B2_result_commit=B2_RESULT, B2_acceptance=row['acceptance'], result_sha256=row['result_sha256'])
     take('reaccounting_pass')
     axis_cache = {}
 
@@ -157,7 +190,9 @@ def evaluate(data, registry, *, take=lambda key: None, emit=lambda kind, value: 
             require(value_rz > 0, 'NONPOSITIVE_MODEL_COST')
             take('model_axis_estimate')
             value = dict(RZ=str(value_rz), status='FIXED_MODEL_ESTIMATE', measured=False,
-                         model_sha256=MODEL_SHA, S4_validated_on_four_axes_only=True,
+                         model_sha256=MODEL_SHA, model_formula='S2' if pieces == 1 else 'S4',
+                         model_validation='B1_S2_ANCHORS_HOLDOUT_OR_TRAINING_RESIDUAL' if pieces == 1 else
+                         'S4_COMPOSITION_HYPOTHESIS_PASSED_ONLY_ON_FOUR_REGISTERED_B2_AXES',
                          prefix_outside_B1_fit_range=not 14 <= cell['prefix'] <= 21,
                          full_grid_error_guaranteed=False)
         axis_cache[key] = value
@@ -171,6 +206,7 @@ def evaluate(data, registry, *, take=lambda key: None, emit=lambda kind, value: 
             for cid in [*cells, *confirmed]:
                 guard(); take('saved_row')
                 source = saved[cid, epsilon, factor]
+                require(source.get('bias_kind') == USUAL_BIAS, 'ONLY_SAVED_USUAL_SIGNED_BIAS_ROWS')
                 status = eligibility(source['accounting'])
                 row = dict(cell_id=cid, epsilon=epsilon, factor=factor, eligible=status,
                            G_exact=None, cost_status='INELIGIBLE' if status is False else 'MISSING_OR_UNRESOLVED',
@@ -213,5 +249,10 @@ def evaluate(data, registry, *, take=lambda key: None, emit=lambda kind, value: 
             comparisons.append(result); emit('comparison', result)
     return dict(status='COMPLETE_MANDATORY_STOP', accounting_rows=len(all_rows), comparisons=comparisons,
                 model_sha256=MODEL_SHA, state_preparation_P=0, all_candidates_measured=False,
+                bias_kind=USUAL_BIAS, noncancellation_diagnostic_used=False,
+                B2_binding=dict(status=B2_STATUS, result_commit=B2_RESULT, final_SOURCE=B2_FINAL_SOURCE,
+                    axes=[dict(cell_id=k[0], axis=k[1], **v) for k, v in validated_b2.items()],
+                    single_original_attempt_completed=False),
+                S4_model_status='COMPOSITION_HYPOTHESIS_PASSED_ON_FOUR_REGISTERED_B2_AXES_ONLY_NOT_FULL_GRID',
                 rigorous_bias_or_PR_population_guaranteed=False, original_B0_run02_status='STOP',
                 next_stage_authorized=False, automatic_retry=False, refit=False)
