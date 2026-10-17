@@ -1,0 +1,406 @@
+# Codexへの指示：有限step相対形式保証A2の実用性・証拠取得可能性preflight
+
+## 0. 目的と作業範囲
+
+④「PRに限定しないアルゴリズム改善研究」において、これまで検討してきた**有限step相対形式保証（RF0/RF1/EW2）を、実際の量子化学Hamiltonianに適用できるか**について、限定的な技術的事前検証を行ってください。
+
+直前の検証では、EW2の数学的成立と、強化した交換子ノルム対照に対する**条件付きの認証step優位条件**を確認しました。
+
+技術分類は、
+
+`VALID_SYMBOLIC_ADVANTAGE_CONDITION`
+
+です。
+
+しかし、以下は未確認です。
+
+- 実際の電子Hamiltonianに対して、回路実装可能なPSD fragment分割を構成・取得できるか。
+- 必要な認証情報を、正当な入力から取得できるか。
+- 相対形式保証を利用するための情報取得・古典前処理が高価にならないか。
+- 実際の入力で、既知の強い誤差保証より大きいstepを選べる可能性があるか。
+- 証拠取得費用・状態準備・controlled回路を含めた総費用改善につながり得るか。
+
+**今回の目的は、これらを判断するために必要な既存情報と技術基盤の有無を確認することです。**
+
+新規科学計算、保存数値の再解析、新しい数学的保証の構成、研究テーマの正式採択は行いません。
+
+---
+
+## 1. 必須資料
+
+Repository：
+
+`HIROMU1015/Partially-Randomized-Trotter`
+
+ローカル作業環境の例：
+
+`/home/abe/Project/Partially Randomized Trotter/`
+
+ただし、このパスの存在やworktree状態は実際に確認してください。
+
+### 1.1 直前のEW2・有限step比較
+
+固定commit：
+
+`db1819587df36ee8833b37227ca0083faa0408ec`
+
+必須資料：
+
+- `docs/research/qc_relative_form_ew2_step_audit_20261017/mathematical_audit.md`
+- `docs/research/qc_relative_form_ew2_step_audit_20261017/finite_step_and_prior_art_comparison.md`
+- `docs/research/qc_relative_form_ew2_step_audit_20261017/decision_handoff.md`
+- 同ディレクトリの固定証拠索引・公開receipt
+
+入口：
+
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/db1819587df36ee8833b37227ca0083faa0408ec/docs/research/qc_relative_form_ew2_step_audit_20261017
+
+この固定資料を最初に取得してください。
+
+### 1.2 RF0/RF1の独立検算
+
+固定commit：
+
+`051df4661eeffb6c6c4c978f70f43eeeaadfddd6`
+
+- `docs/research/qc_relative_form_finite_step_audit_20261017/mathematical_audit.md`
+- `docs/research/qc_relative_form_finite_step_audit_20261017/prior_art_and_practical_conditions.md`
+
+### 1.3 既存SOS-PF研究
+
+K0：
+
+`58d8672702284d73321cc67a26c4640adaddde5f`
+
+`docs/research/qc_sos_pf_k0_20261015/technical_audit.md`
+
+K0.5：
+
+`01bdc56a2970dcb749390b0540846143f775d6f9`
+
+`docs/research/qc_sos_pf_k05_20261015/technical_report.md`
+
+既存の分割・保証・費用条件を再利用してください。
+
+### 1.4 既存実装
+
+主に以下を確認対象とします。
+
+- `src/trotterlib/df_hamiltonian.py`
+- `src/trotterlib/df_trotter/`
+- 関連するDF decomposition・sector・Gaussian・controlled circuit実装
+- SOS/BLISS/PSD分割に関する既存SOURCE
+- 既存の入力生成・保存データ・監査資料
+
+必要なSOURCEは実際に取得してください。存在しない関数や、未確認の機能を実装済みと扱わないでください。
+
+### 1.5 高次PF研究との重複
+
+必要な場合のみ、以下も参照してください。
+
+`HIROMU1015/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae`
+
+高次PF側の誤差保証・情報取得・資源判断との直接重複だけを確認します。repository全体の再監査は不要です。
+
+---
+
+## 2. 今回の数学的前提
+
+対象sector上で、
+
+\[
+H=LI+G,\qquad G=\sum_jF_j,
+\]
+
+\[
+0\preceq F_j\preceq f_jI,\qquad
+\Lambda=\sum_jf_j
+\]
+
+とします。
+
+元Hamiltonianのground energyを \(E_0\) とし、
+
+\[
+e=E_0-L,\qquad
+W=U-L\ge e
+\]
+
+です。
+
+既存保証には、
+
+\[
+-\eta(h)G
+\preceq K(h)-G
+\preceq\eta(h)G
+\]
+
+があり、
+
+\[
+\eta_0(h)=
+\frac{32(h\Lambda)^2}{1-16(h\Lambda)^2}
+\]
+
+\[
+\eta_1(h)=
+h^2K_{\mathrm{SOS}}+
+\frac{512(h\Lambda)^4}{1-16(h\Lambda)^2}
+\]
+
+を利用できます。
+
+条件は原監査に従い、正stageの対称二次PF、共通不変sector、適切なlog branch、\(|h|\Lambda<1/4\) 等を維持してください。
+
+EW2による十分条件と、既知の強化交換子対照については、直前の固定資料を正本としてください。
+
+**今回はこれらの数式を再証明しません。**
+
+検討するのは、必要な認証情報が実際の量子化学Hamiltonianから取得可能か、その取得費用が妥当かという技術的問題です。
+
+---
+
+## 3. Step A：実装可能なPSD分割の確認
+
+既存の電子Hamiltonian・DF実装・SOS関連資料を調べ、次を確認してください。
+
+1. 既存の分割を、実装可能なPSD fragment \(F_j\) として扱える条件。
+2. 各fragmentの正半定値性を保証できる条件。
+3. 各fragmentが対象の論理sectorを保存する条件。
+4. 元Hamiltonianとの同値性、scalar、nuclear repulsion、normal orderingの扱い。
+5. 各 \(e^{-ihF_j}\) を既存のGaussian/DF/native回路で実装できるか。
+6. PSD化のためのshiftが、回路費用や \(\Lambda,W\) を悪化させる可能性。
+7. 元のHamiltonianと近似DFモデルの差をどう管理しているか。
+
+**形式的にPSD分割が存在することと、その分割を安価に実装できることを区別してください。**
+
+特に、既存のDF平方に負の係数が含まれる場合、それを単にPSD fragmentと呼んではいけません。
+
+また、SOS/BLISSによって数学的なPSD表示を得られても、その分割の指数関数が既存の低費用DF回路で実装できるとは限りません。
+
+今回は新しいSOS分割やDF係数を生成しないでください。
+
+**既存資料で確認できる具体的な入力classを優先し、調査対象を無制限に増やさないこと。**
+
+---
+
+## 4. Step B：必要な認証情報の取得可能性
+
+以下の各量について、既存SOURCEと保存資料から取得できるかを調べてください。
+
+| 必要量 | 確認する内容 |
+|---|---|
+| \(L\) | 実装するPSD分割と整合した認証済み下界 |
+| \(U\) | 同じHamiltonian・sectorの認証済み上界 |
+| \(W=U-L\) | 認証区間幅と取得条件 |
+| \(f_j\) | 各fragmentの正当なoperator norm上界 |
+| \(\Lambda\) | 同じ分割に基づく認証された上界 |
+| \(K_{\mathrm{SOS}}\) | 既存K0辞書・行和評価から取得可能か |
+| \(\overline C_2\) | 同じPFに対する交換子normの認証上界 |
+| state access | ground状態・近似状態を準備するための前提と費用 |
+
+それぞれについて、次を区別してください。
+
+- 既存の認証済み値・証拠がある。
+- 値や推定値はあるが、数学的certificateではない。
+- 既存SOURCEで計算可能と思われるが、未実行。
+- 理論的な取得方法はあるが、実装・取得費用が不明。
+- 必要な情報・実装が不足している。
+- 今回の調査範囲では判定不能。
+
+**経験的数値、既知のFCI真値、保存ground vector、未認証の近似normを、無料の認証入力として扱わないでください。**
+
+\(U\) は正しいHamiltonianに対する検証可能な上界でなければなりません。例えば変分エネルギーを使う場合、その計算・数値誤差・元モデルとの対応を含めて確認してください。
+
+\(K_{\mathrm{SOS}}\) は既存K0の生成方法を再利用し、\(\overline C_2\) は強い既知対照に公平な取得条件を適用してください。
+
+今回、新たな係数・norm・固有値を数値的に求めたり、保存値から計算し直したりしてはいけません。
+
+---
+
+## 5. Step C：実用性と証拠取得費用の静的確認
+
+必要な認証量の取得に関して、既存の実装・アルゴリズム・資料から費用構造を整理してください。
+
+特に、次を確認します。
+
+### 古典側
+
+- PSD分割の生成・検証
+- 下界・上界の取得
+- fragment normの証明
+- 交換子norm上界の生成
+- \(K_{\mathrm{SOS}}\) の構成
+- 有限精度・丸め誤差
+- 入力の読み込み・変換・前処理
+- certificateの再利用・償却
+
+### 量子側
+
+- 各PSD fragmentの指数化
+- Gaussian変換・DF diagonal回路
+- controlled S2
+- QPE powers
+- ground状態準備
+- scalar・absolute phase
+- 合成誤差と読出し
+- 使用qubit数・workspace
+
+取得方法が既知でも、実際の費用が未測定なら未測定としてください。
+
+新しい実測値や改善率を作らないでください。
+
+また、既知の強い交換子保証や、適用可能な低エネルギーPF保証に対して、片側だけ有利な情報アクセス・証拠取得費用を与えないでください。
+
+---
+
+## 6. Step D：次の科学的検証に適した入力classの候補
+
+Step A〜Cの結果から、次の限定科学検証に使用できる見込みのある入力classが存在するか整理してください。
+
+候補が存在する場合は、
+
+- どの既存Hamiltonian・DF/SOS構成を参照するか。
+- 数学的PSD性とsector条件は何か。
+- 必要な情報のうち何が既に存在するか。
+- 何を新しく認証する必要があるか。
+- どの費用が主要な障害になる可能性があるか。
+- 既存の強いbaselineを公平に比較できるか。
+
+を明記してください。
+
+ただし、**今回の段階では、実験用の分子・geometry・DF rank・precision・閾値・計算回数を新たに固定しないでください。**
+
+候補を無理に複数作る必要はありません。
+
+適切な入力classがなければ、その理由を示してSTOPしてください。
+
+---
+
+## 7. 判定基準
+
+結果を以下のように分類してください。
+
+| 分類 | 意味 |
+|---|---|
+| `PREFLIGHT_READY_FOR_SCIENTIFIC_DESIGN` | 適切な入力classと必要な証拠の取得経路が確認でき、次の限定科学検証を設計できる |
+| `INPUT_CLASS_FOUND_CERTIFICATES_INCOMPLETE` | 適用可能なclassはあるが、認証情報または取得手順が不足している |
+| `IMPLEMENTABILITY_OR_ACCESS_BLOCKED` | 現在の対象では、実装可能なPSD分割・必要情報アクセス等に重要な障害がある |
+| `NO_SUITABLE_EXISTING_INPUT_CLASS` | 調べた既存資料から、今回の条件に適した入力classを特定できない |
+| `UNDETERMINED_MISSING_EVIDENCE` | 必須資料の欠落で判断できない |
+
+これらは今回の技術的なpreflight分類であり、科学的GOやA2の正式採択ではありません。
+
+`PREFLIGHT_READY_FOR_SCIENTIFIC_DESIGN`でも、実際の相対保証の優位性や総資源改善は認定しないでください。
+
+不足している証拠を得るために新規科学計算が必要なら、必要な作業内容だけ記録し、実行せずSTOPしてください。
+
+---
+
+## 8. 成果物
+
+新しい専用ディレクトリに、次の資料を作成してください。
+
+### A. 実用性preflight報告書
+
+- 実装可能なPSD分割の有無
+- 対象classとsector
+- 既存実装の利用可能範囲
+- 必要な認証量と取得状況
+- 情報アクセス・古典前処理費用
+- 量子側の実装条件
+- 主要な障害
+- 今回の技術分類と限界
+
+### B. 認証情報・SOURCE対応表
+
+各認証量について、
+
+- 必要な数学的条件
+- 対応する既存SOURCE・API
+- 既存の保存資料
+- 取得済み／未取得
+- certificateとしての有効性
+- 追加で必要な技術作業
+
+を追跡可能にしてください。
+
+### C. GPT向け判断用ハンドオフ
+
+次に科学的判断を行う場合に必要な情報として、
+
+1. 有効な入力classがあるか。
+2. どの保証・費用情報が取得済みか。
+3. 未取得の情報は何か。
+4. 次の数値検証が研究判断を変える見込みがあるか。
+5. 科学計算前に必要な承認・契約上の条件は何か。
+
+を整理してください。
+
+結論を先取りして研究テーマのGO/NO-GOを正式採択しないでください。
+
+固定証拠索引・公開receiptも必要最小限で作成してください。
+
+---
+
+## 9. 作業環境・保全・禁止事項
+
+最新版共通運用指示：
+
+`research_project_instructions_unified_2026-10-17.md`
+
+特に§8.4を適用してください。
+
+- CPU/RAM/worker数等へ恣意的な低い資源上限を設けない。
+- 必要な処理は実際の空き資源を確認して効率的に実施する。
+- 共有サーバー全体や他ユーザーに影響する変更・操作は絶対禁止。
+- 他研究のjob、branch、worktree、venv、SOURCE、grant、ledger、markerに干渉しない。
+- 既存の承認済み固定契約を無断変更しない。
+
+今回は新規科学計算を行いません。
+
+以下は禁止します。
+
+- Hamiltonian・DF分割・SOS分割の新規科学的生成
+- 固有値・ground state・RDM・operator normの新規数値計算
+- 保存科学数値の再解析・再ランキング
+- 新しいcertificateを取得するための科学数値処理
+- PF simulation・QPE simulation
+- native compile・T合成・回路費用benchmark
+- 新しい科学SOURCEの実装
+- 新しい数学的定理・保証の探索
+- A2の正式採択
+- A1 CLOSED、K1-F未承認等の状態変更
+- ①PRリソース評価、②PR内部改善、③M1-Sへの介入
+- GPT/Claude重要科学レビューの自動開始
+- 科学実行契約・authorization・grantの発行
+
+既存ファイル・結果・科学SOURCE・レビュー原本・契約・markerを保全してください。
+
+独立branch/worktreeで必要最小限の新規資料を作成し、commit・pushしてください。
+
+公開後、remote HEAD・公開bytes/SHA256・リンク・既存成果の保全を確認してください。
+
+---
+
+## 10. 最終報告・mandatory STOP
+
+完了時には次を報告してください。
+
+1. 調べたPSD分割・入力class
+2. 回路実装の可能性
+3. \(L,U,W,\Lambda,K_{\mathrm{SOS}},\overline C_2\) の取得可能性
+4. 情報取得・認証・回路実装の費用構造
+5. 未取得・未認証・未実装の重要事項
+6. 次の限定科学検証を設計できるか
+7. 最終技術分類
+8. GPTによる科学的判断が必要な事項
+9. 成果物の固定GitHubリンク、branch、commit
+10. 新規科学計算・科学SOURCE・未承認作業が0件であること
+
+**公開・保全確認後はmandatory STOP。**
+
+次の科学的数値検証、SOURCE実装、科学レビュー、A2採択へ自動移行しないでください。
+
+今回の最終目的は、**数学的に成立した有限step相対形式保証について、実際の量子化学Hamiltonianで有用性を検証するための正当な入力・認証情報・費用条件が揃う見込みがあるかを明らかにすること**です。
