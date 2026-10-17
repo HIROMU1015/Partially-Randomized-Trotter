@@ -1,3 +1,9 @@
+## 2026-10-17 H8 bias分解：保存証拠監査・人工検証のみ
+
+[資料入口](docs/research/track_a_h8_bias_evidence_audit_20261017.md)。184決定論候補368軸を監査。172候補にsigned成分が保存済み、旧B0+I12候補は端点復元と数値照合が別承認待ち。独立forwardの存在を成分別検証合格・厳密保証と混同しない。人工30件PASS、実H8新数値解析/非相殺会計/ランキング/科学計算0。監査時はB2/M1-S保全のため未登録snapshotで作業した。その後B2のSTOP・cleanup記録と元PID不在を読取確認し、利用者のcommit指示により資料専用branchへ固定した。既存実行worktree・SOURCE・結果は変更せず、pushは利用者が実施する。正式共通branchへの統合は未実施。
+
+[metadata module](src/trotterlib/h8_bias_evidence.py)／[監査CLI](scripts/audit_h8_bias_evidence.py)／[人工診断prototype](src/trotterlib/h8_bias_diagnostic_fixture.py)／[tests](tests/test_h8_bias_evidence.py)／[bundle](artifacts/resource_applicability/track_a_h8_bias_evidence_audit/2026-10-17/README.md)。
+
 ## 2026-10-17 H8 Phase B2：S4の固定4軸・直列検証を実装、実行未承認
 
 [実装・固定条件・資源・承認範囲](docs/research/track_a_h8_phase_b2_execution_readiness_20261017.md)。B1正本83a3c4a6…/model8420b9f2…を固定し、B0 p15q1・B0I p21q8 S4の両軸を順番に検証するadapter/launcherを準備。各軸2%以上で次軸を起動せずSTOP。SOURCE244c45e7…、21 source/265 provider/34,273 runtime/15 inputをseal、新19＋既存100＝119人工testsと2 qubit S4接続11項目PASS（人工4compile、実H8 0）。3物理core・80.25 GiB、無効grant/CPU[]/command null、fresh gate未発行。旧683保護filesと別チャットの許可済み1worktree更新を区別、更新後122worktree不変。B1・元B0 STOP・V2 NO_GOを保持、新fit/再会計/有効grant0、公開後mandatory STOP。以下は各時点の履歴。

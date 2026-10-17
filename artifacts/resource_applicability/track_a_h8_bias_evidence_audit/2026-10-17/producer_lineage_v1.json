@@ -1,0 +1,77 @@
+{
+  "schema": "H8_BIAS_SOURCE_LINEAGE_REVIEW_V1",
+  "fixed_source_files": [
+    {
+      "role": "producer_decomposition",
+      "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+      "repository_path": "src/trottertracks/resource_applicability/ax2b_h6_pilot_port_v1.py",
+      "bytes": 17638,
+      "sha256": "ffb5a21c06139f889ce0cc37242db4ace17a0e92c9ef482c0659ce581d8da975",
+      "blob": "2c79678cc13d59dbac03b9e919af0fb8861a2c68"
+    },
+    {
+      "role": "producer_B0_signal",
+      "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+      "repository_path": "src/trottertracks/resource_applicability/h6_matched_port_v1.py",
+      "bytes": 22074,
+      "sha256": "c9afd00f0fdb5014f34163d04d03e45406da9ff949cf62742c69d7bddbfa1ac1",
+      "blob": "ac16fc8a1b6d46016e2b03c920656baebe08822f"
+    },
+    {
+      "role": "producer_H8_core",
+      "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+      "repository_path": "src/trottertracks/resource_applicability/h8_resource_map_port_v1.py",
+      "bytes": 6246,
+      "sha256": "e3b60cb1b14a2b718c6f407c94d703460cd031da36d49517ecf3efa2e38bdd2a"
+    },
+    {
+      "role": "producer_H8_forward",
+      "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+      "repository_path": "src/trottertracks/resource_applicability/h8_signal_preflight_port_v1.py",
+      "bytes": 13502,
+      "sha256": "0fe422f6ce510f444d67b4c5004ad5f2f4f8281798f4967014006748f86f0d4a"
+    },
+    {
+      "role": "producer_H8_reference",
+      "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+      "repository_path": "src/trottertracks/resource_applicability/h8_sparse_reference_v1.py",
+      "bytes": 10436,
+      "sha256": "49d682d94b2e205ab5e97a9a787fbc1bfe0679019323528db1b3ec3e81d193b1"
+    },
+    {
+      "role": "producer_A_overlay",
+      "commit": "fc463d9e07825f34e496acac6b40db7aec1aed6d",
+      "repository_path": "scripts/h8_strengthened_signal.py",
+      "bytes": 13899,
+      "sha256": "8ad95c0185c3bc473721d42235d254f6a3d871a711b7e5d1d657ef5402a617f9",
+      "blob": "a95575cb85c3fce3cac48b8a53f63e5646ed55e5"
+    },
+    {
+      "role": "producer_old_overlay",
+      "commit": "54ed98c5fa5b7190f77255271f4e3bec8db15630",
+      "repository_path": "scripts/h6_native_b0i_bridge_v1.py",
+      "bytes": 20980,
+      "sha256": "e9b6c3ca795801114b066cc74c0a7d8ad4d540351fd4358cd51af3d9b567e6ab",
+      "blob": "e7172173da5b626262334eadc5413dac46700877"
+    }
+  ],
+  "numerical_libraries_imported": false,
+  "source_text_only": true,
+  "component_formulas": {
+    "discard": "saved truncated - per-case full-H reference",
+    "PF_truncated": "saved corrected - saved truncated",
+    "PF_full": "saved corrected - saved full-H reference"
+  },
+  "inheritance": "H8CoreSignalPort -> H8SignalPort -> MatchedPort; shared differences function from ax2b_h6_pilot_port_v1",
+  "independent_corrected": "spin/native versus occupation CSR/forward recurrence endpoints",
+  "shared_truncated": "correctness merges oracle exact_truncated and stores the same oracle endpoint under independent_forward_signals; not a second independent truncated reference",
+  "reference_method": "CSR exponential action versus split-time and eigen residual; same numeric library, certified=false",
+  "scalar_overlay": "Both corrected and truncated rotate by the same C; full-H reference not rotated. Alternate forward uses the same scalar.",
+  "old_overlay_difference": "Old saved_signal_overlay returns total_signed only; Phase A explicitly calls differences to persist discard/PF.",
+  "old_B0I_native_correctness_projection": 8,
+  "old_B0I_parent_endpoint_records": 12,
+  "original_runtime_hash_missing": "prefix_19",
+  "prefix19_candidates": 16,
+  "new_component_differences_or_closure_evaluated": false,
+  "rigorous_bias_certificate": null
+}
