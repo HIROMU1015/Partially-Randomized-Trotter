@@ -1,0 +1,243 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "M1-S unadopted design candidate, not an execution schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "base_commit",
+    "status",
+    "adopted",
+    "coverage_model_adopted",
+    "contract_grants_execution",
+    "scientific_execution_authorized",
+    "run_ready",
+    "platform_certified",
+    "numerical_engine_implemented",
+    "future_source_identity",
+    "execution_authorization",
+    "scope",
+    "preserved_counts",
+    "scientific_choices",
+    "formula_ids",
+    "proposed_statistics",
+    "proposed_resources",
+    "coverage_evidence",
+    "adopted_coverage_of_old_results_is_not_new_contract_adoption",
+    "output_schema_design",
+    "new_scientific_calculations",
+    "saved_numerical_reanalysis",
+    "shot_forecasts",
+    "native_compiles",
+    "RPE_simulations",
+    "authorizations_issued",
+    "grants_issued",
+    "markers_issued",
+    "mandatory_STOP"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "m1s_shot_cost_design_candidate_v1"
+    },
+    "base_commit": {
+      "const": "81d6103ec89d485cb7336c3a90bd95dad66992aa"
+    },
+    "status": {
+      "const": "DESIGN_ONLY_NOT_ADOPTED_NOT_EXECUTABLE"
+    },
+    "adopted": {
+      "const": false
+    },
+    "coverage_model_adopted": {
+      "const": false
+    },
+    "contract_grants_execution": {
+      "const": false
+    },
+    "scientific_execution_authorized": {
+      "const": false
+    },
+    "run_ready": {
+      "const": false
+    },
+    "platform_certified": {
+      "const": false
+    },
+    "numerical_engine_implemented": {
+      "const": false
+    },
+    "future_source_identity": {
+      "const": null
+    },
+    "execution_authorization": {
+      "const": null
+    },
+    "scope": {
+      "const": {
+        "molecule": "linear_H4",
+        "geometry_angstrom": "1.00",
+        "basis": "STO-3G",
+        "modes": 8,
+        "saved_df_rank": 12,
+        "splits": [
+          "G3",
+          "G6",
+          "G9"
+        ],
+        "delta_Ha_inverse": [
+          "1/8",
+          "1/16"
+        ],
+        "R": [
+          2,
+          4
+        ],
+        "T_Ha_inverse": [
+          "1",
+          "4"
+        ],
+        "methods": [
+          "shared_pm",
+          "ordinary",
+          "independent_pm"
+        ],
+        "nonzero_cells": 24,
+        "nonzero_method_rows": 72,
+        "zero_inventory_only": 36,
+        "original_method_rows": 108,
+        "contrasts": 48,
+        "raw_uncorrected_route": true,
+        "Task_A_first_Task_B_ultimate_previously_adopted": true
+      }
+    },
+    "preserved_counts": {
+      "const": {
+        "G3_SATISFIED": 16,
+        "G6_T4_SATISFIED": 8,
+        "G6_T1_NOT_SATISFIED": 8,
+        "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED": 16
+      }
+    },
+    "scientific_choices": {
+      "const": {
+        "D1_phase_requirement_policy": null,
+        "D2_confidence_policy": null,
+        "D3_phase_and_state_budget": null,
+        "D4_coverage_acceptance_policy": null,
+        "D5_cost_metric_and_scope": null,
+        "D6_native_implementation_policy": null,
+        "D7_decision_and_stage_policy": null
+      }
+    },
+    "formula_ids": {
+      "const": [
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "S1",
+        "S2",
+        "S3",
+        "C1",
+        "C2",
+        "C3"
+      ]
+    },
+    "proposed_statistics": {
+      "const": {
+        "status": "UNADOPTED_PROPOSAL",
+        "fresh_IID": true,
+        "concentration": "Hoeffding",
+        "axes": "equal_X_Y",
+        "confidence_scope": null,
+        "alpha": null,
+        "optimal_shots_claimed": false
+      }
+    },
+    "proposed_resources": {
+      "const": {
+        "status": "UNADOPTED_TECHNICAL_CANDIDATE",
+        "saved_signal_stage": {
+          "workers": 1,
+          "GPU": false,
+          "threads_per_worker": 1,
+          "aggregate_memory_bytes": 2147483648,
+          "input_bytes": 16777216,
+          "result_bytes": 16777216,
+          "log_bytes": 16777216,
+          "max_contrasts": 48,
+          "max_method_inventory": 108,
+          "CPU_time_cap_seconds": null,
+          "wall_time_cap_seconds": null,
+          "precision_bits": 128,
+          "integer_bit_cap": 65536,
+          "gamma_evaluation_cap": null,
+          "arithmetic_call_cap": null
+        },
+        "native_stage": {
+          "workers": null,
+          "aggregate_memory_bytes": null,
+          "compile_call_cap": null,
+          "result_bytes": null,
+          "log_bytes": null,
+          "CPU_time_cap_seconds": null,
+          "wall_time_cap_seconds": null
+        }
+      }
+    },
+    "coverage_evidence": {
+      "const": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    "adopted_coverage_of_old_results_is_not_new_contract_adoption": {
+      "const": true
+    },
+    "output_schema_design": {
+      "const": {
+        "old_gate_classification": "separate_preserved_column",
+        "new_integer_classification": "NOT_EVALUATED",
+        "new_cost_classification": "NOT_EVALUATED",
+        "required_future_fields": [
+          "source_contract_input_commits_sha256",
+          "gamma_profile_and_units",
+          "confidence_scope_and_alpha",
+          "coverage_assumptions",
+          "A_b_q_intervals",
+          "S_n_N_intervals",
+          "all_method_contrast_identifiers",
+          "old_gate_classification",
+          "new_integer_classification",
+          "cost_components_and_exclusions",
+          "resource_actuals",
+          "failure_and_unevaluated_reason"
+        ]
+      }
+    },
+    "new_scientific_calculations": {
+      "const": 0
+    },
+    "saved_numerical_reanalysis": {
+      "const": 0
+    },
+    "shot_forecasts": {
+      "const": 0
+    },
+    "native_compiles": {
+      "const": 0
+    },
+    "RPE_simulations": {
+      "const": 0
+    },
+    "authorizations_issued": {
+      "const": 0
+    },
+    "grants_issued": {
+      "const": 0
+    },
+    "markers_issued": {
+      "const": 0
+    },
+    "mandatory_STOP": {
+      "const": true
+    }
+  }
+}
