@@ -383,6 +383,16 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(policy['PSI'], 'OBSERVATION_ONLY')
         self.assertNotIn('AS_bytes', json.dumps(r.plan()))
 
+    def test_old_plan_cannot_authorize_post_review_source(self):
+        cfg, grant = self.grant_fixture()
+        old_plan = '9e42fc76078568c9aaad4945539ffc46293214f71d4d36db1f0f53beea20d132'
+        self.assertNotEqual(c.digest(r.plan()), old_plan)
+        cfg['plan_sha256'] = grant['plan_sha256'] = old_plan
+        grant['config_sha256'] = c.digest(cfg)
+        with patch.object(os, 'sched_getaffinity', return_value={101, 103}):
+            with self.assertRaisesRegex(ValueError, 'NEW_SEALED_C_USER_GRANT_REQUIRED'):
+                r.authorize(cfg, grant)
+
     def test_fresh_gate_staleness_and_binding(self):
         cfg, g = self.grant_fixture()
         fresh = dict(SOURCE=cfg['SOURCE'], config_sha256=c.digest(cfg), grant_sha256=c.digest(g),

@@ -76,6 +76,12 @@ def identity(pid):
 
 def plan():
     return dict(schema='H8_PHASE_C_PLAN_V2', scope=SCOPE, B1_result=c.B1_RESULT,
+        execution_contract_revision='POST_REVIEW_SOURCE_BINDING_V3',
+        source_binding='SOURCE_HEAD_EXACT_CLOSURE_GIT_BYTES_CONFIG_AND_NEW_GRANT',
+        protection_policy=dict(enforced='OWN_RUNTIME_DEPENDENCIES_ONLY', unrelated_worktrees='OBSERVATION_ONLY'),
+        launcher_cleanup=dict(owner='UNREAPED_DIRECT_CHILD_PID_START_PPID_UID_PIDFD',
+            interrupted='TERM_THEN_KILL_AND_WAIT4', errors='STOP_WITH_ERRORS_AND_REAP_STATE',
+            first_stop='PRESERVED', repeated_cleanup='NO_DOUBLE_SIGNAL_OR_WAIT'),
         model_sha256=c.MODEL_SHA, compiler_hash=c.COMPILER, profile_sha256=c.PROFILE,
         B2_result=c.B2_RESULT, B2_status=c.B2_STATUS, B2_final_SOURCE=c.B2_FINAL_SOURCE,
         B2_axes=[dict(case_id=a, axis=b, SOURCE=s, frozen_prediction=p) for a, b, s, p in c.B2_AXES],
