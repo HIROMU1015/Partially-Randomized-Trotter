@@ -45,3 +45,9 @@ Track A/B、第1・第2研究は独立している。特にTrack Bの後続M1-S 
 [探索範囲表](research_coverage_map.md) → [科学的問題と未確認事項](open_problem_landscape.md) → [GPT判断資料](gpt_decision_handoff.md)を次の研究方針選定用とする。具体的な新アルゴリズムは成立していない。
 
 新規5資料の専用branchへの公開・独立取得照合後 **Mandatory STOP**。新候補の採択・設計・実装、新K0/K1、停止系列の再開、科学計算、GPT/Claude詳細科学レビューを自動開始しない。
+
+## 2026-10-17追記：Exact Encoding限定案の区切り・課題選定への復帰を正式採択
+
+ユーザーは、固定commit `830be75335bb9b599488cb365213d555b0dc18bb` のExact Encoding × Controlled Evolution限定構成案を区切り、④「PRに限定しないアルゴリズム改善」の**研究課題選定段階へ戻る方針を正式承認**した。この一案は `REDUCES_TO_KNOWN_METHOD` として保存し、追加探索・実装・数値検証を行わない。次の具体的な研究課題は未採択であり、Encoding一般の不可能性や④全体の終了ではない。
+
+[正式方針・日付ノート](../研究ノート/2026-10-17_qc_exact_encoding_direction_adoption.md)、[machine記録](../qc_exact_encoding_direction_adoption_20261017/decision.json)。上記2026-10-16本文と `provenance.json` は当時の記録として保全し、旧状態の意味を変更しない。①②③、H1–H4 PAUSEDおよび④の既存CLOSED/STOP/PAUSED/HOLDは不変。SOURCE・結果・科学契約・authorization・grant・ledger・markerと直前報告を変更しない。今回の記録・公開で新規候補探索・採択、科学レビュー、科学計算、SOURCE実装は0件。公開同一性・保全確認後mandatory STOPし、次の課題選定や検証には自動移行しない。
