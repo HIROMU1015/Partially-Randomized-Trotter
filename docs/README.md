@@ -1,3 +1,7 @@
+## 2026-10-17 H8：非相殺COST_COMPARISON準備・未承認
+
+[H8非相殺費用比較の準備](research/track_a_h8_noncancellation_cost_readiness_20261017.md)。B2/shot/通常Phase C結合、人工131件PASS、未承認・実H8新再会計0。 以下は各時点の履歴。
+
 ## 2026-10-17 H8 Phase C：5精度費用再会計完了・モデル条件付き比較
 
 [結果・監査](research/track_a_h8_phase_c_run01_results_20261017.md)。通常signed bias/P=0、旧32・強化184・PR確認union6/n32を1900行・一回再会計。driver/launcher exit0・全回収・最終gate PASS、本体0.355秒。184基準は全条件モデル推定を含み、PR削減率（倍率1）はε=.05/.01/.005/.001/.0005で−7.14/33.09/31.31/22.96/−51.14%。全精度優位を主張せず、全格子実測・厳密bias・母平均保証なし。新signal/compile/sampling/fit/retry0、科学判断へ戻してmandatory STOP。以下は各時点の履歴。

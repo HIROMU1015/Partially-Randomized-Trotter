@@ -1,3 +1,7 @@
+## 2026-10-17 H8：非相殺COST_COMPARISON準備・未承認
+
+[run_h8_noncancellation_cost.py](run_h8_noncancellation_cost.py) / [cost契約](h8_noncancellation_cost_contract.py) / [metadata準備](prepare_h8_noncancellation_cost.py)。default planのみ、別承認で保存shot再利用cost一回。旧shot/通常会計を再実行しない。 以下は各時点の履歴。
+
 ## 2026-10-17 H8 Phase C：B2完了結果の統合・実行準備（未承認）
 
 [資料入口](../docs/research/track_a_h8_phase_c_integration_readiness_20261017.md)。既存Phase C snapshotを統合し、B2最終4軸契約（PASS_REGISTERED_FOUR_AXES、保存3＋新規1、軸別SOURCE）へ再結合。B0 p15/q1 S4は実測168,353 RZ優先、未測定S4はmodel推定と明示、非相殺行は拒否、旧32/184は別判定。資源上限とPSI-STOP observerを廃止しwait4 launcherへ。人工37件PASS（実launcher→driver人工e2eを含む）。SOURCE 29ed76544441d534ad99e5c708a2ae17eec78c18、plan 9e42fc76…、unsealed・未承認・無効grant。実H8費用再会計・ランキング・削減率・新signal/compile/sampling/fit0、B2/M1-S/既存worktree不変。以下は各時点の履歴。
