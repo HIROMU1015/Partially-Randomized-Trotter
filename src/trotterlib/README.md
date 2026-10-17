@@ -1,3 +1,9 @@
+## 2026-10-17 H8 Phase B2：契約STOP・自動再実行なし
+
+[実測・判定・終了監査](../../docs/research/track_a_h8_phase_b2_run01_results_20261017.md)。H8/1Å/STO-3G/DF28/T=.8、S4の固定4軸を直列・一回実行。実compile entry3、保存判定2軸（PASS2）。SOURCE244c45e7…、model8420b9f2…を固定。STOP理由は結果報告と原terminalに保存（MEMORY_PRESSURE）。B0I cosineは中断、sine未起動、未settle予約1を保持し、後続compile・retry/refit0。driver native exit−9、launcher報告exit1（外側native wait欠測）、全owned process回収。旧684保護files/123worktree・B0原53/B1原34 rawを保持。新fit/signal/再会計0、元B0 STOP/V2 NO_GOを維持。C未承認、公開後mandatory STOP。以下は各時点の履歴。
+
+[固定contract](../../scripts/h8_phase_b2_contract.py)／[native adapter](../../scripts/h8_phase_b2_adapter.py)／[serial launcher](../../scripts/launch_h8_phase_b2.py)／[人工tests](../../tests/test_h8_phase_b2.py)／[保存結果checker](../../artifacts/resource_applicability/track_a_h8_phase_b2_run01/2026-10-17/verify_saved_result.py)。
+
 ## 2026-10-17 H8 Phase B2：S4の固定4軸・直列検証を実装、実行未承認
 
 [実装・固定条件・資源・承認範囲](../../docs/research/track_a_h8_phase_b2_execution_readiness_20261017.md)。B1正本83a3c4a6…/model8420b9f2…を固定し、B0 p15q1・B0I p21q8 S4の両軸を順番に検証するadapter/launcherを準備。各軸2%以上で次軸を起動せずSTOP。SOURCE244c45e7…、21 source/265 provider/34,273 runtime/15 inputをseal、新19＋既存100＝119人工testsと2 qubit S4接続11項目PASS（人工4compile、実H8 0）。3物理core・80.25 GiB、無効grant/CPU[]/command null、fresh gate未発行。旧683保護filesと別チャットの許可済み1worktree更新を区別、更新後122worktree不変。B1・元B0 STOP・V2 NO_GOを保持、新fit/再会計/有効grant0、公開後mandatory STOP。以下は各時点の履歴。
