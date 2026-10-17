@@ -1,3 +1,7 @@
+## 2026-10-18 Track A H4〜H8：横断証拠監査（対象結果2026-10-17）
+
+[証拠整理・metadata検査](docs/research/track_a_h4_h8_cross_system_evidence_inventory_20261017.md)。19系列・222保存値/状態・32固定ファイル、12比較・13不足を別表に記録。実測/model/有限標本を分離し、新科学計算・再会計・ランキング・統計解析は0。H8希少次数pilotは別チャットの未完了作業として収録せず、既存SOURCE/grant/ledger/他worktreeを変更しない。新しい科学的採否・新規性判断なし。以下の記録は各時点の履歴。
+
 ## 2026-10-17 H8：主要6軸実測反映の限定再会計完了
 
 [結果・監査](docs/research/track_a_h8_six_axis_reaccount_run01_results_20261017.md)。SOURCE aa984d98…、保存3800行/40比較、科学dispatch1、native exit0・全回収・最終gate PASS。旧32/PR/SE/shot不変、winner変更0、model推定は残存。追加compile/signal/sampling/fit/retry0、mandatory STOP。以下は各時点の履歴。

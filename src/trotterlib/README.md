@@ -1,3 +1,9 @@
+## 2026-10-18 Track A H4〜H8：横断証拠監査（対象結果2026-10-17）
+
+[証拠整理・metadata検査](../../scripts/audit_track_a_cross_system_evidence_v1.py)。19系列・222保存値/状態・32固定ファイル、12比較・13不足を別表に記録。実測/model/有限標本を分離し、新科学計算・再会計・ランキング・統計解析は0。H8希少次数pilotは別チャットの未完了作業として収録せず、既存SOURCE/grant/ledger/他worktreeを変更しない。新しい科学的採否・新規性判断なし。以下の記録は各時点の履歴。
+
+ライブラリ数値moduleの変更はない。上記入口から比較資料・新しいmetadata専用scriptへ辿れる。
+
 ## 2026-10-17 H8：現runを保持した準備工程の並列化
 
 [実装・検証・契約](../../docs/research/track_a_h8_key_compile_parallel_preparation_20261017.md)。準備を3構成並行・最大6 workerへ拡張し、wrapper生成も軸workerへ移した。人工32件PASS、SOURCE 7f8d74660b2914a1223d0ac7990dde8d4645032e。compileは固定順直列・各軸2%以上でSTOP。新方式の科学起動0・無効grant・未seal。旧runの25 immutable filesはSHA一致し、稼働継続。速度/peak RSSは未測定。以下は各時点の履歴。
