@@ -1,3 +1,7 @@
+## 2026-10-17 H8：非相殺費用比較の一回実行完了
+
+[H8非相殺COST_COMPARISON一回結果](research/track_a_h8_noncancellation_cost_run01_results_20261017.md)。保存shotを再利用し1900行/20比較を完了、native exit0・全回収。通常Phase Cとの差・exact費用・paired SE・モデル限定を保存。 以下は各時点の履歴。
+
 ## 2026-10-17 H8：非相殺COST_COMPARISON準備・未承認
 
 [H8非相殺費用比較の準備](research/track_a_h8_noncancellation_cost_readiness_20261017.md)。B2/shot/通常Phase C結合、人工131件PASS、未承認・実H8新再会計0。 以下は各時点の履歴。

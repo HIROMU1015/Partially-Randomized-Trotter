@@ -1,3 +1,7 @@
+## 2026-10-17 H8：非相殺費用比較の一回実行完了
+
+[結果・監査](docs/research/track_a_h8_noncancellation_cost_run01_results_20261017.md)。SOURCE ac932974a0f250be0df5720e1b6dad06f9ff9535で非相殺costを一回完了、1900行/20比較、paired44再現・union6 n32 PASS。driver/launcher exit0・全回収。184基準PR削減率（倍率1）16.62/34.68/35.13/39.28/−29.09%、全条件モデル条件付き。追加計算0、mandatory STOP。 以下は各時点の履歴。
+
 ## 2026-10-17 H8：非相殺COST_COMPARISON準備・未承認
 
 [資料入口](docs/research/track_a_h8_noncancellation_cost_readiness_20261017.md)。新cost-only adapter/runner/契約と人工26件を準備し、旧非相殺56＋Phase C49もPASS。B2最終4軸・保存shot1900行・通常Phase Cを結合。SOURCE ac932974a0f250be0df5720e1b6dad06f9ff9535、plan f171099baeb4fdd56fb40748292db1c70074479b711702f360c9d88921fc96ad、未承認・未seal・実H8費用再解析0。 以下は各時点の履歴。
