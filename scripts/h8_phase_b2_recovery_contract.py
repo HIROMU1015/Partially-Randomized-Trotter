@@ -4,7 +4,7 @@ from pathlib import Path
 import hashlib,json
 import h8_phase_b2_contract as original
 ROOT=Path(__file__).resolve().parents[1]
-SCOPE='H8_B2_VALIDATED_SINE_ONLY_STRICT_EVIDENCE_CONCURRENT_OBSERVATION_V1'
+SCOPE='H8_B2_VALIDATED_SINE_ONLY_PSI_OBSERVATION_OOM_HEADROOM_ENFORCED_V1'
 PROFILE=original.PROFILE;COMPILER=original.COMPILER;PROVIDER=original.PROVIDER
 RUNTIME_MAP_SHA=original.RUNTIME_MAP_SHA;PROVIDER_MAP_SHA=original.PROVIDER_MAP_SHA;MODEL_SHA=original.MODEL_SHA
 digest=original.digest;axis_check=original.axis_check
@@ -15,7 +15,8 @@ RESOURCES=deepcopy(original.RESOURCES)
 RESOURCES.update(physical_cores=4,max_workers=1,max_compile_workers=1,max_preparation_workers=0,
  witness_processes=1,witness_AS_bytes=128*2**20,witness_RSS_bytes=64*2**20,witness_CPU_seconds=120,
  aggregate_RSS_bytes=int(64.3125*2**30),output_bytes=256*2**20,qpy_file_bytes=2**30,
- stage_storage_bytes=8*2**30,observer_CPU_seconds=1800)
+ stage_storage_bytes=8*2**30,observer_CPU_seconds=1800,
+ memory_pressure_policy='PSI_OBSERVATION_ONLY_OOM_HEADROOM_AND_OS_LIMITS_ENFORCED')
 CAPS={k:0 for k in original.CAPS}
 CAPS.update(compile=1,model_error_check=1,qpy_load=1,qpy_dump=0)
 SPOOL_REGISTRY='artifacts/resource_applicability/track_a_h8_b2_sine_spool_recovery/2026-10-17/saved_spool_registry_v1.json'
@@ -57,6 +58,8 @@ def plan():
  owned_process_CPU_window_accounting=True,technical_restart_requires_new_attempt_and_recorded_user_authority=True,
  concurrent_read_only_worktree_names=['h8-noncancellation-readiness-20261017'],
  preservation_policy='IMMUTABLE_SOURCE_INPUT_RESULT_GRANT_LEDGER_STRICT_FROZEN_WORKTREES_STRICT_CONCURRENT_WORKTREE_READ_ONLY_OBSERVATION',
+ memory_pressure_policy_basis='CURRENT_COMMON_AGENTS_RESOURCE_POLICY_20261017_AND_EXPLICIT_TECHNICAL_REPAIR_RESTART_AUTHORITY',
+ historical_PSI_STOPs_preserved=True,shared_OS_cgroup_scheduler_changes=False,
  authorization=dict(approved=False,runtime_authorization=False),C_authorized=False,next_stage_authorized=False)
  return p
 

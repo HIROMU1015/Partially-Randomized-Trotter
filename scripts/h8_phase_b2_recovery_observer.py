@@ -6,6 +6,7 @@ Linux subreaping and parent-death signals cover driver/worker crash cascades.
 import argparse
 import ctypes
 import json
+import math
 import os
 from pathlib import Path
 import resource
@@ -40,17 +41,34 @@ def snapshot():
     return dict(effective_available_bytes=min(available),events=events,pressure=pressure)
 
 
+def pressure_observation(current):
+    rows=[]
+    for group,raw in current['pressure'].items():
+        full=[line for line in raw.splitlines() if line.startswith('full ')]
+        if len(full)!=1:raise ValueError('FULL_PSI_UNKNOWN')
+        fields=dict(x.split('=') for x in full[0].split()[1:]);value=float(fields['avg10'])
+        if not math.isfinite(value) or not 0<=value<=100 or int(fields['total'])<0:raise ValueError('INVALID_PSI_COUNTER')
+        rows.append(dict(group=group,full_avg10=value,total_microseconds=int(fields['total']),diagnostic_only=True))
+    if not rows or 'host' not in current['pressure']:raise ValueError('HOST_PSI_UNKNOWN')
+    return rows
+
+
 def resource_reason(current,baseline,headroom):
-    if current['effective_available_bytes']<headroom:return 'MEMORY_HEADROOM'
+    if contract.RESOURCES.get('memory_pressure_policy')!='PSI_OBSERVATION_ONLY_OOM_HEADROOM_AND_OS_LIMITS_ENFORCED':
+        return 'UNBOUND_MEMORY_PRESSURE_POLICY'
+    available=current.get('effective_available_bytes')
+    if type(available)is not int or available<0:return 'MEMORY_HEADROOM_UNKNOWN'
+    if available<headroom:return 'MEMORY_HEADROOM'
     if set(current['events'])!=set(baseline['events']) or set(current['pressure'])!=set(baseline['pressure']):return 'CGROUP_OBSERVATION_CHANGED'
+    if not current['events']:return 'OOM_COUNTERS_UNKNOWN'
     for group,rows in current['events'].items():
         for name in ('oom','oom_kill','oom_group_kill'):
-            if int(rows.get(name,0))>int(baseline['events'][group].get(name,0)):return 'OOM_INCREMENT'
-    for group,raw in current['pressure'].items():
-        for line in raw.splitlines():
-            if not line.startswith('full '):continue
-            value=float(dict(piece.split('=') for piece in line.split()[1:])['avg10'])
-            if value>=1 if group=='host' else value>0:return 'MEMORY_PRESSURE'
+            now=int(rows.get(name,0));old=int(baseline['events'][group].get(name,0))
+            if min(now,old)<0 or now<old:return 'OOM_COUNTERS_CHANGED'
+            if now>old:return 'OOM_INCREMENT'
+    try:pressure_observation(current);pressure_observation(baseline)
+    except (KeyError,TypeError,ValueError):return 'PSI_OBSERVATION_UNKNOWN'
+    # PSI remains fully recorded. It is not an OS quota or a numerical correctness gate.
     return None
 
 
@@ -213,7 +231,9 @@ def supervise(command,*,env,control,output,limits,allowed_cpus,probe=snapshot,re
                         raise RuntimeError('LOG_CEILING')
                     rss=sum(r.get('RSS_bytes',0) for r in rows)+observer_rss;peak=max(peak,rss)
                     log.write(json.dumps(dict(elapsed=now-start,interval=gap,aggregate_RSS_bytes=rss,
-                        aggregate_CPU_seconds=total_cpu,processes=len(rows),observer_memory=last_observer_memory))+'\n');log.flush()
+                        aggregate_CPU_seconds=total_cpu,processes=len(rows),observer_memory=last_observer_memory,
+                        memory_pressure_policy=contract.RESOURCES['memory_pressure_policy'],raw_resource_snapshot=current,
+                        pressure_observation=pressure_observation(current)))+'\n');log.flush()
                     time.sleep(1)
             if exitcode!=0:raise RuntimeError('DRIVER_NATIVE_EXIT:'+str(exitcode))
             terminal=runner.read(output/'terminal.json')
@@ -282,7 +302,9 @@ def resource_failure(current,baseline,headroom,reason):
             value=float(dict(piece.split('=') for piece in line.split()[1:])['avg10'])
             if value>=1 if group=='host' else value>0:hits.append(dict(group=group,full_avg10=value,threshold='>=1' if group=='host' else '>0'))
     return dict(reason=reason,monotonic_seconds=time.monotonic(),raw_current=current,raw_baseline=baseline,
-                required_headroom_bytes=headroom,pressure_hits=hits,thresholds_unchanged=True,automatic_retry=False)
+                required_headroom_bytes=headroom,pressure_hits=hits,pressure_hits_interpretation='HISTORICAL_THRESHOLDS_FOR_DIAGNOSTIC_COMPARISON_ONLY',
+                memory_pressure_policy=contract.RESOURCES['memory_pressure_policy'],PSI_is_STOP_gate=False,
+                OOM_and_headroom_STOPS_preserved=True,thresholds_unchanged=False,automatic_retry=False)
 
 if __name__=='__main__':
     print('LIBRARY_ONLY_NO_EXECUTION; use the new approved dispatcher after a separate grant')
