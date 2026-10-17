@@ -1,0 +1,53 @@
+{
+  "schema": "m1s_gamma_pi3_execution_preflight",
+  "C": "bf97fcb2607904f8b96a625c5b64440a78bbbfdc",
+  "S": "2f800f179c7b29589b2f9a7e532408b16b8fe6d2",
+  "contract_path": "artifacts/track_b_m1s_gamma_pi3_formal_adoption/2026-10-17/v1/execution_contract_adopted.json",
+  "contract_sha256": "56923b8ce762e4aa592f91a548657c8c0d0a343a48c4606b49778e68b620a570",
+  "source_identity_matches_frozen_commit": true,
+  "input_identity_matches_original_commit": true,
+  "python_executable_sha256": "320707a1d684b043661306d508d1a8655f507c0bb8e827398cb53680054aa7c8",
+  "scientific_JSON_decoded_before_launch": false,
+  "new_numerical_evaluations_before_launch": 0,
+  "logical_CPUs": 32,
+  "affinity_CPUs": 32,
+  "available_memory": [
+    "MemAvailable:   50745652 kB"
+  ],
+  "GPU_devices": [],
+  "selected_workers": 1,
+  "GPU_used": false,
+  "thread_environment": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "NUMBA_NUM_THREADS": "1",
+    "RAYON_NUM_THREADS": "1"
+  },
+  "resources": {
+    "workers": 1,
+    "gpu": false,
+    "memory_bytes": 2147483648,
+    "input_bytes": 1048576,
+    "result_bytes": 16777216,
+    "log_bytes": 16777216,
+    "max_rational_bits": 65536,
+    "max_rational_text_chars": 25000,
+    "max_fraction_fields": 1024,
+    "max_comparisons": 48,
+    "wall_time_seconds": null,
+    "cpu_time_seconds": null,
+    "thread_environment": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "1",
+      "RAYON_NUM_THREADS": "1"
+    }
+  },
+  "performance_plan": "Use existing fixed exact rational cross multiplication; one pi interval, bounded48 records. No transcendental/root recomputation. Workload is small scalar parsing/comparison plus atomic checkpoints; retain adopted worker1 and avoid process oversubscription. Prior V1 execution was sub-second, not a runtime guarantee for this path. No new implementation or speedup claim.",
+  "required_prelaunch_validation": "Frozen source AST/schema/guard/hash checks already passed; no new optimized backend. First real numerical comparison remains inside authorized attempt.",
+  "user_instruction_verbatim": "計算を開始してよい　中断された場合は修正して計算完了まで行って",
+  "technical_continuation_policy": "Preserve any failed attempt and consumed marker; newly frozen attempt if technical repair is necessary. Never alter a completed scientific negative/unresolved result to obtain success.",
+  "scientific_conditions_changed": false
+}
