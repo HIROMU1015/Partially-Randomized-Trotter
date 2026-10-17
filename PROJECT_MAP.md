@@ -1,3 +1,7 @@
+## 2026-10-17 H8 Phase C：5精度費用再会計完了・モデル条件付き比較
+
+[結果・監査](docs/research/track_a_h8_phase_c_run01_results_20261017.md)。通常signed bias/P=0、旧32・強化184・PR確認union6/n32を1900行・一回再会計。driver/launcher exit0・全回収・最終gate PASS、本体0.355秒。184基準は全条件モデル推定を含み、PR削減率（倍率1）はε=.05/.01/.005/.001/.0005で−7.14/33.09/31.31/22.96/−51.14%。全精度優位を主張せず、全格子実測・厳密bias・母平均保証なし。新signal/compile/sampling/fit/retry0、科学判断へ戻してmandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-17 H8 Phase C：修正後SOURCE固定・一回実行承認・公開認証待ち
 
 [資料入口](docs/research/track_a_h8_phase_c_execution_binding_20261017.md)。SOURCE931755c4…/plan79d624b9…へ再結合。利用者の一回実行承認受領済み、人工49件・入力12件・B2登録4軸受入PASS。公開認証確認に失敗したため有効grant/科学attempt0、未使用output/lock保持。公開後に既存承認でfresh gateと一回実行へ。旧SOURCE・旧plan・B2/他worktreeは保持。以下は各時点の履歴。
