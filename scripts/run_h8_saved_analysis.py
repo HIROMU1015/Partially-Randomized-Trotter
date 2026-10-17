@@ -114,6 +114,13 @@ def run(config,grant,approval,closure,*,projector=projection,reader=read_fixed,r
                       if l.startswith('MemAvailable:')),'UNAVAILABLE'),
             timestamp=now(),resource_competition_STOP=False,other_worktrees_frozen=False))
         data=projector(raw)
+        scoped=[e for e in data['endpoints'] if e['epsilon'] in config['analysis']['epsilon_scope']
+                and e['bias_kind'] in config['analysis']['bias_mode']
+                and e['factor'] in config['analysis']['allowance_scope']]
+        mask={e['id']:{c:v['eligible'] for c,v in e['candidates'].items()} for e in scoped}
+        if 'saved_eligibility_mask_sha256' in config['analysis']:
+            require(digest(mask)==config['analysis']['saved_eligibility_mask_sha256'],
+                    'SAVED_ELIGIBILITY_MASK_DRIFT')
         dispatch=1
         write_new(out/'science_dispatch.json',dict(stage=config['stage'],count=1,time=now()))
         if config['stage']=='RARE_SENSITIVITY':

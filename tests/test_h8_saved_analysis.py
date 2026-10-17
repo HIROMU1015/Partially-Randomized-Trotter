@@ -314,6 +314,16 @@ def test_manifest_schema_and_hash_failure(tmp_path,monkeypatch):
     with pytest.raises(ValueError,match='FIXED_INPUT_DRIFT'):adapter.read_fixed(tmp_path)
 
 
+def test_registered_eligibility_mask_drift(tmp_path,monkeypatch):
+    root,c,g,a,cl=artificial_binding(tmp_path,monkeypatch);by,e=selection_data()
+    c['analysis']['saved_eligibility_mask_sha256']='0'*64
+    a['scope_sha256']=digest(c['analysis']);g.update(config_sha256=digest(c),approval_sha256=digest(a))
+    with pytest.raises(RuntimeError,match='SAVED_ELIGIBILITY_MASK_DRIFT'):
+        run.run(c,g,a,cl,root=root,reader=lambda:{'fixture':b'bytes'},
+            projector=lambda raw:dict(by=by,endpoints=e,fixed=s.FIXED,provenance={}),
+            execution_root=tmp_path/'execution')
+
+
 @pytest.mark.parametrize('q',[Fraction(0),Fraction(1,4),Fraction(1,2),Fraction(1)])
 def test_quantile(q):
     assert s.quantile([Fraction(0),Fraction(4)],q)==4*q
