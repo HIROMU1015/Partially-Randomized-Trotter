@@ -80,6 +80,8 @@ def driver(task, directory, config, grant):
     c.verify(config,runtime=False,git=False)
     output=Path(config['output'])
     try:
+        from h8_key_compile_handover import wait_for_release
+        wait_for_release(config,grant)
         from h8_key_compile_adapter import evaluate
         result=evaluate(config,grant,output)
         c.verify(config,runtime=False,git=False)

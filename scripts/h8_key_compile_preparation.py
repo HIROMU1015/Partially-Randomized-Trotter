@@ -56,12 +56,18 @@ class CasePermit:
                     preparation_call_counts=self.calls,ticket_sha256=self.ticket_sha256)
 
 
-def prepare_cases(permit,build,*,map_owned=pool.map_owned):
+def prepare_cases(permit,build,*,map_owned=pool.map_owned,existing=None):
     """Build all registered cases concurrently; any failure prevents all compile."""
     cases=c.binding()['cases'];cpus=permit.grant['worker_cpus']
     c.require(len(cases)==3 and len(cpus)==6 and len(set(cpus))==6,'THREE_CASES_SIX_PREPARATION_CPUS')
     by={case['id']:case for case in cases}
-    tasks=[dict(id=case['id'],worker_cpus=cpus[2*i:2*i+2]) for i,case in enumerate(cases)]
+    prepared=dict(existing or {})
+    c.require(set(prepared)<=set(by),'ONLY_REGISTERED_REUSED_PREPARATION')
+    for case in cases:
+        if case['id'] in prepared:
+            for key,count in c.CASE_PREPARATION_CAPS.items():
+                for _ in range(count):permit.reuse(key)
+    tasks=[dict(id=case['id'],worker_cpus=cpus[2*i:2*i+2]) for i,case in enumerate(cases) if case['id'] not in prepared]
     def reserve(task):
         rows=[]
         for key,count in c.CASE_PREPARATION_CAPS.items():
@@ -79,13 +85,12 @@ def prepare_cases(permit,build,*,map_owned=pool.map_owned):
         result=build(by[task['id']],child,task['worker_cpus'])
         result.update(child.complete())
         return result
-    receipt=map_owned(tasks,callback,cpus=cpus[::2],limits=dict(max_workers=3,cleanup_TERM_seconds=10.),
+    receipt=map_owned(tasks,callback,cpus=[task['worker_cpus'][0] for task in tasks],limits=dict(max_workers=3,cleanup_TERM_seconds=10.),
         directory=permit.output/'parallel_preparation',deadline=math.inf,
-        reserve=reserve,font_seed=permit.config.get('font_seed'))
+        reserve=reserve,font_seed=permit.config.get('font_seed')) if tasks else dict(status='PASS',all_reaped=True,cleanup_errors=[],workers=[])
     c.require(receipt['status']=='PASS' and receipt['all_reaped'] and not receipt['cleanup_errors'] and
-        [w['task_id'] for w in receipt['workers']]==[case['id'] for case in cases],
+        [w['task_id'] for w in receipt['workers']]==[task['id'] for task in tasks],
         'ALL_CASE_PREPARATION_NATIVE_CLEANUP')
-    prepared={}
     for worker,task in zip(receipt['workers'],tasks):
         path=Path(worker['directory'])/'task_result.json';row=c.read(path)
         c.require(worker['exit_code']==0 and worker['reaped']is True and c.sha(path)==worker['result_sha256'] and
@@ -93,7 +98,9 @@ def prepare_cases(permit,build,*,map_owned=pool.map_owned):
             row['ticket_sha256']==task['ticket_sha256'] and
             row['preparation_call_counts']==c.CASE_PREPARATION_CAPS,'CASE_PREPARATION_NATIVE_BINDING')
         prepared[task['id']]=row
+    prepared={case['id']:prepared[case['id']] for case in cases}
     c.save(permit.output/'preparation_complete.json',dict(status='PASS_THREE_CASES_PREPARED',
         SOURCE=permit.config['SOURCE'],case_ids=list(prepared),compile_calls=permit.calls['compile'],
-        native_receipt_sha256=c.sha(permit.output/'parallel_preparation/parallel_receipt.json')))
+        reused_case_ids=list(existing or {}),
+        native_receipt_sha256=c.sha(permit.output/'parallel_preparation/parallel_receipt.json') if tasks else None))
     return prepared

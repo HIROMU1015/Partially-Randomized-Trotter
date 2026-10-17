@@ -83,6 +83,10 @@ def plan():
             call_reservations='PARENT_BEFORE_CASE_FORK_NONREFUNDABLE',
             per_case_caps=CASE_PREPARATION_CAPS,compile_admission='ALL_THREE_PREPARATIONS_PASS'),
         axis_order='PRIORITY_CASE_THEN_COSINE_SINE',check_before_next_compile=True,
+        handover=dict(policy='VERIFIED_OLD_PREPARATION_AND_COMPLETED_PREFIX_ONLY',
+            old_run_STOP='PRESERVE_WITH_NATIVE_EXIT_AND_CLEANUP',
+            release='BOUND_APPEND_ONLY_AFTER_NEW_DRIVER_READY_AND_OLD_EXIT',
+            accounting='NEW_ACTUAL_PLUS_REUSE_SEPARATE_PRIOR_RESERVATIONS_NONREFUNDABLE'),
         model_PASS='abs(prediction-measured)/measured < 1/50',control_PASS='finite error < 1e-8',
         resource_policy=dict(agent_imposed_CPU_RAM_CPUtime_wall_caps=None,OS_limits='INHERIT_WITHOUT_CHANGE',
             PSI='OBSERVE_AND_REESTABLISH_NO_TRANSIENT_STOP',unrelated_worktrees='OBSERVATION_ONLY',
@@ -173,17 +177,24 @@ class Permit:
         if not synthetic:authorize(config,grant,affinity=affinity)
         self.config,self.grant,self.output=config,grant,Path(output)
         self.calls={k:0 for k in CAPS}
+        self.new_calls={k:0 for k in CAPS};self.reused_calls={k:0 for k in CAPS}
     def require(self,scope):require(scope==SCOPE,'SCOPE_MISMATCH')
     def take(self,key):
         require(self.calls[key]<CAPS[key],'CALL_CAP:'+key);self.calls[key]+=1
         save(self.output/('reservation_'+key+'_'+str(self.calls[key])+'.json'),dict(call=key,ordinal=self.calls[key]))
+        self.new_calls[key]+=1
+
+    def reuse(self,key):
+        require(self.calls[key]<CAPS[key],'REUSE_CALL_CAP:'+key);self.calls[key]+=1
+        save(self.output/('reuse_'+key+'_'+str(self.calls[key])+'.json'),dict(call=key,ordinal=self.calls[key]))
+        self.reused_calls[key]+=1
 
 
-def complete(rows, calls, source):
+def complete(rows, calls, source, *, reused=()):
     axes=binding()['axes'];require(calls==CAPS and len(rows)==6,'EXACT_SIX_AXIS_COUNTS')
-    for row,axis in zip(rows,axes):
+    for i,(row,axis) in enumerate(zip(rows,axes)):
         case=next(x for x in binding()['cases'] if x['id']==axis['case_id'])
-        require(row['SOURCE']==source and row['preparation_binding']==binding()['prefix_preparations'][str(case['prefix'])] and
+        require((row['SOURCE']==source or (i<len(reused) and row==reused[i])) and row['preparation_binding']==binding()['prefix_preparations'][str(case['prefix'])] and
             (row['case_id'],row['axis'])==(axis['case_id'],axis['axis']) and row['native_exit_code']==0 and
             row['reaped']is True and row['compiler_hash']==COMPILER and row['profile_sha256']==PROFILE and
             row['model_sha256']==MODEL and row['fingerprint_before']==row['fingerprint_after'] and

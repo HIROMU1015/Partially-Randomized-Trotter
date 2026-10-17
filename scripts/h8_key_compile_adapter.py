@@ -29,12 +29,20 @@ def scalar_for(case, constant_hex, target):
     result=original+saved['C'];c.require(math.isfinite(result),'NONFINITE_TOTAL_SCALAR');return result
 
 
-def serial_axes(permit, build, compile_axis, *, map_owned=pool.map_owned):
+def serial_axes(permit, build, compile_axis, *, map_owned=pool.map_owned,reused=()):
     b=c.binding();rows=[];ordinal=0
     for case in b['cases']:
         built=build(case)  # One native evolution per case; controls precede compile.
         for axis in [a for a in b['axes'] if a['case_id']==case['id']]:
-            ordinal+=1;permit.take('compile')  # Nonrefundable reservation before dispatch.
+            ordinal+=1
+            if ordinal<=len(reused):
+                row=reused[ordinal-1]
+                c.require((row['case_id'],row['axis'])==(case['id'],axis['axis']) and
+                    c.axis_check(axis['exact_prediction'],row['measured_RZ'])['PASS'],'REUSED_AXIS_MODEL_OR_ORDER')
+                for key in ('compile','qpy_load','model_error_check'):permit.reuse(key)
+                c.save(permit.output/('axis_'+str(ordinal).zfill(2)+'_measured.json'),row);rows.append(row)
+                continue
+            permit.take('compile')  # Nonrefundable reservation before dispatch.
             task=dict(id=case['id']+'_'+axis['axis'],case_id=case['id'],axis=axis['axis'])
             receipt=map_owned([task],lambda t,d:compile_axis(t,built,d),
                 cpus=permit.grant['worker_cpus'][:1],limits=dict(max_workers=1),
@@ -64,6 +72,8 @@ def evaluate(config, grant, output):
     c.require(os.sched_getaffinity(0)=={grant['driver_cpu']},'OWN_DRIVER_CPU')
     c.authorize(config,grant,affinity=set(grant['allowed_cpus']))
     permit=c.Permit(config,grant,output,affinity=set(grant['allowed_cpus']));b=c.binding();paths=config['input_mapping']
+    import h8_key_compile_handover as handover
+    existing,reused,prior=handover.import_prepared(config,grant,output)
     model=c.read(paths['B1_frozen_models']);terminal=c.read(paths['B1_phase_terminal'])
     c.require(c.digest(model)==c.MODEL and terminal['status']=='COMPLETE_MANDATORY_STOP' and
               terminal['model_sha256']==c.MODEL,'FROZEN_B1_MODEL')
@@ -136,8 +146,9 @@ def evaluate(config, grant, output):
         return row
     def map_compile(*args,**kwargs):
         permit.take('qpy_load');return pool.map_owned(*args,**kwargs)
-    prepared=prepare_cases(permit,build)
-    rows=serial_axes(permit,lambda case:prepared.pop(case['id']),compile_axis,map_owned=map_compile)
-    result=c.complete(rows,permit.calls,config['SOURCE'])
-    result.update(SOURCE=config['SOURCE'],rows=rows,actual_calls=permit.calls)
+    prepared=prepare_cases(permit,build,existing=existing)
+    rows=serial_axes(permit,lambda case:prepared.pop(case['id']),compile_axis,map_owned=map_compile,reused=reused)
+    result=c.complete(rows,permit.calls,config['SOURCE'],reused=reused)
+    result.update(SOURCE=config['SOURCE'],rows=rows,actual_calls=permit.new_calls,logical_calls=permit.calls,
+                  reused_calls=permit.reused_calls,prior_reserved_calls_nonrefundable=prior)
     return result
