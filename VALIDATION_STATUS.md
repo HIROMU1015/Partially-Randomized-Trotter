@@ -1,3 +1,7 @@
+## 2026-10-18 Track A targeted parallel plan: metadata only
+
+[報告](docs/research/track_a_targeted_parallel_validation_plan_20261018.md)。SOURCE daf701d8…、6系列/15承認単位、未承認/無効grant、科学dispatchなし。人工156件PASS、18固定source fileのGit blob/SHA/AST確認。native adapter・実入力・control予算は未seal、実行準備完了とはしない。旧科学結果・V2 NO_GOを保全。
+
 ## 2026-10-18 H8：希少層境界・選択効果の保存値解析完了
 
 [結果・来歴・限界](docs/research/track_a_h8_rare_sensitivity_selection_run01_results_20261018.md)。RARE 40条件（32境界/8不適格）とSELECTION元4精度の探索的bootstrap2000を別grantで各一回完了、両native exit0・mandatory STOP。人工135件PASS。未知費用はnull、母平均/厳密bias/selection-adjusted coverageなし。PR sampling/compile/fit/shot再計算0、旧結果/ledger/STOPは保持。 以下は各時点の履歴。

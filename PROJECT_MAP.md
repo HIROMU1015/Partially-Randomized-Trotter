@@ -1,3 +1,7 @@
+## 2026-10-18 Track A：対象を絞った並列検証計画（未承認）
+
+[具体案・再利用・依存関係](docs/research/track_a_targeted_parallel_validation_plan_20261018.md)。PR境界16構成、希少層4群、新ε6点、対照3構成、H8 T2点、H6/H8距離各1点を15の個別承認単位に分離。metadata DAG/CLI、18固定file監査、人工21＋既存135件PASS。production adapter未seal、科学実行0。完了RARE/SELECTION等は再利用しmandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-18 H8：希少層境界・選択効果の保存値解析完了
 
 [結果・来歴・限界](docs/research/track_a_h8_rare_sensitivity_selection_run01_results_20261018.md)。RARE 40条件（32境界/8不適格）とSELECTION元4精度の探索的bootstrap2000を別grantで各一回完了、両native exit0・mandatory STOP。人工135件PASS。未知費用はnull、母平均/厳密bias/selection-adjusted coverageなし。PR sampling/compile/fit/shot再計算0、旧結果/ledger/STOPは保持。 以下は各時点の履歴。

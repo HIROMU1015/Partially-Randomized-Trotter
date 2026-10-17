@@ -1,3 +1,7 @@
+## 2026-10-18 Track A：変数範囲と並列化の具体案
+
+[未承認の検証計画](research/track_a_targeted_parallel_validation_plan_20261018.md)。6系列を必要な範囲に絞り、再利用先と残るadapter、独立実行と別承認・STOP条件を整理。人工metadata検証のみ完了、新科学計算0。
+
 ## 2026-10-18 H8：希少層境界・選択効果の保存値解析完了
 
 [結果・来歴・限界](research/track_a_h8_rare_sensitivity_selection_run01_results_20261018.md)。RARE 40条件（32境界/8不適格）とSELECTION元4精度の探索的bootstrap2000を別grantで各一回完了、両native exit0・mandatory STOP。人工135件PASS。未知費用はnull、母平均/厳密bias/selection-adjusted coverageなし。PR sampling/compile/fit/shot再計算0、旧結果/ledger/STOPは保持。 以下は各時点の履歴。

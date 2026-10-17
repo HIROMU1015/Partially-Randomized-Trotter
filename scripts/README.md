@@ -1,3 +1,7 @@
+## 2026-10-18 Targeted parallel verification plan
+
+[prepare_track_a_targeted_plan.py](prepare_track_a_targeted_plan.py) は未承認scope・無効grant・依存DAGをmetadataだけで出力する。science dispatchなし、`--execute`拒否。[範囲・並列化・未完成adapter](../docs/research/track_a_targeted_parallel_validation_plan_20261018.md)。
+
 ## 2026-10-18 H8：希少層境界・選択効果の保存値解析完了
 
 [結果・来歴・限界](../docs/research/track_a_h8_rare_sensitivity_selection_run01_results_20261018.md)。RARE 40条件（32境界/8不適格）とSELECTION元4精度の探索的bootstrap2000を別grantで各一回完了、両native exit0・mandatory STOP。人工135件PASS。未知費用はnull、母平均/厳密bias/selection-adjusted coverageなし。PR sampling/compile/fit/shot再計算0、旧結果/ledger/STOPは保持。 以下は各時点の履歴。
