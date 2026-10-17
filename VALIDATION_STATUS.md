@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-18 A2 Phase B固定DF：ローカルexact checker受理
+
+[結果・scope・費用](docs/research/qc_a2_phase_b_execution_20261018/results_and_stop.md)、[raw](artifacts/qc_a2_phase_b_execution/2026-10-18/attempt_1/ledger/result.json)、[byte監査](artifacts/qc_a2_phase_b_execution/2026-10-18/attempt_1/evidence_byte_manifest.json)。H4／1.00Å／STO-3G／保存DF rank12／N4／全12block／固定S2、d=.001Ha/α_spec=.1で初回one-shot完了。独立実装checker受理はローカル固定DF対象、immutable CI・外部独立再実験・元分子保証ではない。step `ENCLOSED`／`COUNTER_LARGER_SUFFICIENT_STEP`。旧global FAILと他validationは変更せず、A2 NOT_ADOPTED・A1 CLOSED・K1-F未承認、消費済みclaim保全・mandatory STOP。以下は過去の検証時点記録。
+
 ## 2026-10-18 A2科学契約C採択：数値validationは未実施
 
 [正式契約C](docs/research/qc_a2_phase_b_contract_adoption_20261018/formal_contract.md)、[静的・非数値メタデータ検査](docs/research/qc_a2_phase_b_contract_adoption_20261018/static_inspection.json)、[引継ぎ](docs/research/qc_a2_phase_b_contract_adoption_20261018/decision_handoff.md)。指定条件でCを採択したが実行権限は付与しない。SOURCE31 filesと旧草案・結果を保持し、契約schema/identity/guardを確認した。Phase A人工testは継承参照だけで今回再実施せず、実入力correctness/certificate/stepは未検証。旧科学validation・既知FAILは不変。A2 NOT_ADOPTED、A1 CLOSED、K1-F未承認、科学実行は別途承認待ち、mandatory STOP。以下は過去の検証時点記録。

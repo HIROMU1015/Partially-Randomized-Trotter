@@ -1083,3 +1083,7 @@ N3保存帰属v1：[公開・remote取得確認](docs/research/n3_saved_attribut
 # 2026-10-18 A2 Phase B科学契約Cの正式固定
 
 [契約C・条件](docs/research/qc_a2_phase_b_contract_adoption_20261018/formal_contract.md)、[machine C](docs/research/qc_a2_phase_b_contract_adoption_20261018/execution_contract_C.json)、[採択根拠・identity・証拠索引](docs/research/qc_a2_phase_b_contract_adoption_20261018/evidence_index.json)、[次の承認](docs/research/qc_a2_phase_b_contract_adoption_20261018/decision_handoff.md)。Phase A旧草案を残してユーザー指定条件を新規Cへ固定。科学SOURCEは無変更、実行未承認。A2研究NOT_ADOPTED、A1 CLOSED、K1-F未承認、mandatory STOP。
+
+# 2026-10-18 A2 Phase B固定DFの初回科学実行
+
+[結果・対象・費用・STOP](docs/research/qc_a2_phase_b_execution_20261018/results_and_stop.md)、[証拠索引](docs/research/qc_a2_phase_b_execution_20261018/evidence_index.json)、[引継ぎ](docs/research/qc_a2_phase_b_execution_20261018/decision_handoff.md)。SOURCE・正式契約C不変、独立checker受理、十分step比較完了。retry/修正0、消費済みclaim保全。A2研究未採択、元分子・QPE/native総費用未認定、mandatory STOP。

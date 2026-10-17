@@ -647,3 +647,7 @@ N3保存帰属v1：[公開・remote取得確認](research/n3_saved_attribution_v
 # 2026-10-18 A2 Phase B科学契約の正式採択
 
 [正式契約C](research/qc_a2_phase_b_contract_adoption_20261018/formal_contract.md)、[採択記録](research/qc_a2_phase_b_contract_adoption_20261018/adoption_record.json)、[証拠索引](research/qc_a2_phase_b_contract_adoption_20261018/evidence_index.json)、[実行承認の引継ぎ](research/qc_a2_phase_b_contract_adoption_20261018/decision_handoff.md)。採択と実行承認は分離し、科学計算・certificate・新authorization/grant/marker 0。旧SOURCE・草案・結果を保全、mandatory STOP。
+
+# 2026-10-18 A2 Phase B固定DFの初回科学実行
+
+[結果・対象・費用・STOP](research/qc_a2_phase_b_execution_20261018/results_and_stop.md)、[証拠索引](research/qc_a2_phase_b_execution_20261018/evidence_index.json)、[引継ぎ](research/qc_a2_phase_b_execution_20261018/decision_handoff.md)。SOURCE・正式契約C不変、独立checker受理、十分step比較完了。retry/修正0、消費済みclaim保全。A2研究未採択、元分子・QPE/native総費用未認定、mandatory STOP。
