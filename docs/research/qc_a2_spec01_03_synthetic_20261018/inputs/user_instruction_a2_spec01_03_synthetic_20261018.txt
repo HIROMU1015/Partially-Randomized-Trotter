@@ -1,0 +1,736 @@
+# Codexへの指示：A2認証基盤 SPEC-01〜03 の限定SOURCE実装・人工テスト
+
+## 0. 今回の目的と実施承認
+
+④「PRに限定しないアルゴリズム改善研究」の有限step相対形式保証A2について、固定DF Hamiltonianの認証情報を生成・検証する基盤のうち、**SPEC-01〜03を実装し、人工データによる技術テストまで完了**してください。
+
+直前の技術設計は、
+
+`DESIGN_READY_FOR_IMPLEMENTATION_PLANNING`
+
+で完了しています。
+
+今回は仕様書を追加するだけではなく、実際に動作するSOURCE、独立checker、人工テストを作成してください。
+
+### 今回明示的に許可すること
+
+- SPEC-01：固定DFモデルのexact intake・identity
+- SPEC-02：sector・PF順序・scalar台帳
+- SPEC-03：PSD shift・L・f_j・Λの認証生成と検証
+- これらに必要な限定SOURCE実装
+- 完全に人工的な入力を使ったunit / property / negative tests
+- テスト失敗の原因調査と、今回作成したSOURCEの修正
+- 技術監査、必要な文書・証拠の保存、commit・push
+
+### 今回許可しないこと
+
+- 実際の分子・保存済み科学入力の評価
+- 実入力certificate生成
+- 保存科学数値の再解析
+- SPEC-04〜08の実装
+- 新規科学数値計算・simulation
+- 新数学保証の研究
+- 科学実行契約・authorization・grantの発行
+- A2の正式採択
+
+**SOURCE実装と人工テストの承認は、科学実行の承認ではありません。**
+
+今回実装したgenerator/checkerを、実際の保存DF入力へ試しに適用することも禁止します。
+
+---
+
+## 1. 必須の固定資料
+
+Repository：
+
+`HIROMU1015/Partially-Randomized-Trotter`
+
+最新設計commit：
+
+`7af83266f96b714bb3fa2f1ef5e4bc89faf37db3`
+
+最初に次の資料を取得し、内容を確認してください。
+
+### 設計の正本
+
+- `docs/research/qc_a2_certificate_connection_design_20261018/certificate_connection_spec.md`
+- `docs/research/qc_a2_certificate_connection_design_20261018/source_api_connection.md`
+- `docs/research/qc_a2_certificate_connection_design_20261018/comparison_and_cost_design.md`
+- `docs/research/qc_a2_certificate_connection_design_20261018/decision_handoff.md`
+- 同ディレクトリの証拠索引・公開receipt
+
+固定入口：
+
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/7af83266f96b714bb3fa2f1ef5e4bc89faf37db3/docs/research/qc_a2_certificate_connection_design_20261018
+
+特に、`certificate_connection_spec.md` §2〜4を今回の実装仕様の正本としてください。
+
+`source_api_connection.md` のSPEC-01〜03を今回の作業単位とします。
+
+### 既存の科学資料
+
+- Preflight：`c62fe99d29e7edcaf0cb655d789d297890709a29`
+- EW2監査：`db1819587df36ee8833b37227ca0083faa0408ec`
+- RF0/RF1監査：`051df4661eeffb6c6c4c978f70f43eeeaadfddd6`
+- SOS-PF K0：`58d8672702284d73321cc67a26c4640adaddde5f`
+- SOS-PF K0.5：`01bdc56a2970dcb749390b0540846143f775d6f9`
+
+既存の数学的証明や先行研究レビューを最初から繰り返す必要はありません。
+
+必要な定義とSOURCE interfaceを確認する範囲に限定してください。
+
+### 正式研究状態
+
+固定decision：
+
+`67576526c4e96ae7235fa645fdf744278d049f8d`
+
+- A1 CLOSED
+- A2 NOT_ADOPTED
+- K1-F 未承認・未実行
+- Exact Encoding現構成 REDUCES_TO_KNOWN_METHOD
+
+今回これらを変更してはいけません。
+
+---
+
+## 2. 実装全体の原則
+
+### 2.1 固定DFモデルだけを扱う
+
+初期の数学的対象は、
+
+\[
+H_{\mathrm{DF}}
+=cI+Q+\sum_{\ell=1}^{r}\lambda_\ell A_\ell^2
+\]
+
+とします。
+
+\[
+Q=\sum_{pq}q_{pq}a_p^\dagger a_q,
+\qquad
+A_\ell=\sum_{pq}(g_\ell)_{pq}a_p^\dagger a_q.
+\]
+
+条件：
+
+- 固定N sector
+- Hermitianなq、g_l
+- 実数c、λ_l
+- 符号付きDF平方
+- 全fragmentがparticle numberを保存
+- 固定順序の正stage対称二次PF
+- binary64係数を正確な有理数として解釈する固定DF target
+
+元の分子Hamiltonianへの厳密な対応は、今回の認証対象ではありません。
+
+DF分解、SCF、FCI、積分生成、DF rank選択、ground solveは実行しないでください。
+
+### 2.2 正確な演算と検証
+
+認証用の数値は原則としてexact integer / rational arithmeticを使用してください。
+
+科学的な数値をJSON floatとして保存しないでください。
+
+浮動小数点の表示値や数値eigensolverの出力を、数学的certificateへ格上げしてはいけません。
+
+### 2.3 Generatorとcheckerを分離する
+
+認証値を作るgeneratorと、それを検査するcheckerを明確に分けてください。
+
+checkerはgeneratorのsuccess flagを信頼せず、元のraw bits・宣言された条件・証拠から必要な等式・不等式を再検証します。
+
+同じ計算関数を二度実行しただけで「独立検証」と呼ばないでください。
+
+schemaやcanonical serializationなど、安全に共有できる基盤は共有して構いません。ただし、科学的に重要な係数復元・scalar再構成・cap検算については、独立性の範囲と共通依存部分を明記してください。
+
+---
+
+## 3. SPEC-01：Exact Model Intakeとidentity
+
+### 3.1 Binary64 exact decode
+
+固定DFモデルの係数を、IEEE 754 binary64のbit patternから正確な有理数へ変換するSOURCEを実装してください。
+
+対応事項：
+
+- sign / exponent / fraction
+- normal / subnormal
+- +0 / −0
+- complex128の実部・虚部
+- 正確な分数への変換
+- 正規化されたRat形式
+- NaN / Infの拒否
+- dtype・shape・endianの検査
+
+decode時に、binary64の算術誤差を新たに混入させないでください。
+
+`float`で計算してから分数に近似する実装ではなく、保存bit patternの正確な解釈を基準としてください。
+
+### 3.2 ModelIntake
+
+設計資料の`ModelIntake`仕様に従い、次を扱ってください。
+
+- raw inputのidentity
+- exact coefficient table
+- constant
+- one-body matrix
+- 全λとg matrices
+- mode数・mode順序
+- 単位
+- 対象モデルの意味論version
+- provenance
+- 変換履歴
+- 元分子との対応が未認証であることの明示
+
+初期入力は`DFHamiltonian`のfull constant / full one-body / signed squaresです。
+
+`DFModel`のcorrection-only表現と、field名だけで混用してはいけません。
+
+`df_truncation_value`をconstantへ足さないでください。
+
+部分blockだけの入力を、全Hamiltonianの認証へ流用してはいけません。
+
+### 3.3 Hermiticityと入力拒否
+
+exact係数について、
+
+\[
+q=q^\dagger,\qquad g_\ell=g_\ell^\dagger
+\]
+
+を検査してください。
+
+また、cとλの実数性、mode数、配列shape、block inventoryを確認してください。
+
+不成立の場合はfail-closedとします。
+
+`hermitized()`、`real_if_close()`、暗黙cast、対称化によって入力を勝手に修復してはいけません。
+
+モデルが不正なら、設計で定義された理由付きverdictを返してください。
+
+### 3.4 Canonical identity
+
+設計資料の型とhash規約を実装してください。
+
+- `Int / Nat / Rat / ComplexRat`
+- `MatrixRef`
+- `Digest / ObjectRef`
+- canonical serialization
+- 内容に基づくSHA256
+- raw identityとexact model identityの分離
+- version付きの意味論
+- 重複key拒否
+- 整数・有理数の正規化
+- key順序と配列順序の固定
+
+少なくともSPEC-01〜03で必要な、
+
+`model_id → sector_id → partition_id → pf_id`
+
+の依存関係を扱えるようにしてください。
+
+将来のbundle/comparison identityについては、共通型を用意してもよいですが、**SPEC-04〜07を完成したかのように実装・出力しないでください。**
+
+未生成の科学certificateを、placeholder値でPASSにしないこと。
+
+---
+
+## 4. SPEC-02：Sector・PF・scalar台帳
+
+### 4.1 固定N sector
+
+対象は固定粒子数Nです。
+
+少なくとも次を検証してください。
+
+\[
+0\le N\le n_{\mathrm{modes}}
+\]
+
+- mode順序
+- occupation-bit規約
+- JW/fermionic ordering
+- CAR convention
+- 全基本項のnumber conservation
+- identity・一体項・平方項のsector保存
+
+単に古典的なsector indicesを抽出しただけで保存則の証明としないでください。
+
+基底外遷移をskipしただけの計算結果も証拠にしないでください。
+
+固定Nα/Nβ、S² sector等への拡張は今回不要です。
+
+### 4.2 PF順序
+
+固定した正stage対称S2について、
+
+\[
+S_2(h)
+=
+e^{-ihF_1/2}\cdots
+e^{-ihF_M}\cdots
+e^{-ihF_1/2}
+\]
+
+の表示順、回路時系列、fragment identityを明示してください。
+
+検査事項：
+
+- palindrome
+- half-stageと中央stage
+- 各fragmentの総時間係数が1
+- 全block inventoryとの一致
+- 零fragmentの扱い
+- 表示順と実装時系列の対応
+- fragment順序が変わる場合の別identity
+
+SPEC-02では、実際の量子回路の生成やcompileは行いません。
+
+### 4.3 Scalar ledger
+
+各fragmentを、
+
+\[
+F_j=B_j+s_jI
+\]
+
+と表現し、元のDF Hamiltonianとの恒等式を保つscalar台帳を実装してください。
+
+特に、
+
+\[
+L+\sum_j s_j=c
+\]
+
+を正確に検査してください。
+
+核反発、constant correction、negative-square shift、PF controlled phaseを二重加算しない設計を維持してください。
+
+SPEC-03で生成するL・shift・fragment capsと接続できる構造にしてください。
+
+単にscalar値の数値的一致だけでなく、全寄与の由来とcontext identityを保存してください。
+
+---
+
+## 5. SPEC-03：PSD・L・f_j・Λ
+
+今回の主要な数理認証実装です。
+
+既存K0のPSD化を正確な係数演算と独立checkerへ接続してください。
+
+### 5.1 正確な一体operator cap
+
+Hermitian一体係数行列xについて、
+
+\[
+s_x=
+\sum_{pq}
+\left(
+|\operatorname{Re}x_{pq}|
++
+|\operatorname{Im}x_{pq}|
+\right)
+\]
+
+を正確な有理数として求めます。
+
+初期の安全なcapは、
+
+\[
+q_-=-s_q,\qquad q_+=s_q,
+\]
+
+\[
+u_\ell=s_{g_\ell}
+\]
+
+です。
+
+これらは既知のoperator norm三角上界による保守的な認証値です。
+
+**より鋭いcapの新規探索・数値eigensolverへの置換は今回行わないでください。**
+
+generatorはcapとその導出情報を出力し、checkerは正確な係数から独立に再検算してください。
+
+### 5.2 Signed PSD化
+
+各fragmentを次の既知式で構成します。
+
+**一体項**
+
+\[
+F_0=Q-q_-I
+\]
+
+\[
+f_0=q_+-q_-.
+\]
+
+**正符号平方**
+
+\[
+\lambda_\ell\ge0:
+\quad
+F_\ell=\lambda_\ell A_\ell^2,
+\qquad
+f_\ell=\lambda_\ell u_\ell^2.
+\]
+
+**負符号平方**
+
+\[
+\lambda_\ell<0,\quad\mu_\ell=-\lambda_\ell:
+\]
+
+\[
+F_\ell=\mu_\ell(u_\ell^2I-A_\ell^2),
+\]
+
+\[
+f_\ell=\mu_\ell u_\ell^2.
+\]
+
+これらが同じsectorで、
+
+\[
+0\preceq F_j\preceq f_jI
+\]
+
+を満たす根拠を検証してください。
+
+### 5.3 LとΛ
+
+下界は、
+
+\[
+L=c+q_-
+-\sum_{\lambda_\ell<0}\mu_\ell u_\ell^2.
+\]
+
+また、
+
+\[
+\Lambda=\sum_j f_j.
+\]
+
+検査事項：
+
+- 全符号の場合のfragment式
+- 各PSD性
+- 各capの正当性
+- scalar寄与
+- 元DF Hamiltonianとの正確な演算子恒等式
+- 全blockの対応
+- fragment順序
+- LとΛの単位
+- 零λと零cap
+- context IDの一致
+
+LやΛを表示用に丸めた値から再構成しないでください。
+
+上向きcapを採用した場合、そのcapを対応するnegative-square fragmentの定義にも使用してください。
+
+shift後fragmentとshift前capを混同してはいけません。
+
+### 5.4 証拠形式
+
+少なくとも次を扱ってください。
+
+- `LowerCertificate`
+- `FragmentCapCertificate`
+- 対応するgenerator
+- 対応する独立checker
+- 理由付きverdict
+- parent IDs
+- SOURCE/version
+- witness references
+- exact values
+- scalar ledger
+- partial failure record
+
+これらの証拠を使ってL・全f_j・Λを再検証できるようにしてください。
+
+実装に必要な具体的class名・module構造は、既存namespaceとの衝突を避けながらCodexが決めて構いません。
+
+ただし、文書仕様との対応を明確に残してください。
+
+---
+
+## 6. 許可する人工テスト
+
+**今回は、完全に人工的な小規模データをSOURCE内で構成し、SPEC-01〜03の正しさを確認する技術テストを許可します。**
+
+実際の分子データ、保存済みHamiltonian、既存のheld-out入力をfixtureとして使用してはいけません。
+
+### 6.1 Positive tests
+
+少なくとも次を含めてください。
+
+- binary64 normal / subnormal
+- 正負の値
+- +0 / −0
+- 実・複素Hermitian行列
+- 対角・非対角の一体項
+- 正符号・負符号・零λ
+- signed PSD shift
+- 固定Nの端点
+- 一体項だけのM=1
+- λ=0やcap=0を含むfragment inventory
+- exact scalar恒等式
+- exact L / f / Λ
+- 同じmodel内容からのidentity再現性
+- 合法なPF順序とhalf-stage
+
+人工入力は、手計算で期待値を求められる例を優先してください。
+
+必要に応じて人工的な小行列のexact algebraを使った照合は可能ですが、**その結果を科学的benchmarkや実分子certificateへ流用しないこと**。
+
+### 6.2 Negative tests
+
+少なくとも次を拒否できるようにしてください。
+
+- NaN / Inf
+- 不正なdtype・shape・endian
+- 非Hermitian入力
+- 複素対角成分の不正な虚部
+- 不正なλやconstantの型
+- full/correction-onlyの規約混用
+- scalarの二重加算
+- 不正なN
+- 不整合なmode ordering
+- 欠けたblock / 不正なinventory
+- PFの非対称なstage構成
+- fragment順序の不一致
+- capの過小申告
+- Lの過大申告
+- Λの過小申告
+- 異なるmodel/sector/partitionの証拠流用
+- hash・witnessの改変
+- partial certificateを完全認証として扱う誤り
+
+### 6.3 独立checkerの検証
+
+generatorが作成した正常な人工証拠がcheckerで受理されることに加え、証拠を意図的に改変して拒否されることを確認してください。
+
+特に、
+
+- capだけを小さくする
+- scalarだけを変更する
+- fragment符号を変更する
+- λ・gの一部を変更する
+- mode順を変更する
+- PF順序だけを変更する
+- parent IDを差し替える
+- raw bitsとexact係数を不一致にする
+
+といったmutation testsを実施してください。
+
+checker自身がgeneratorと同じ誤りを共有する可能性についても、独立した人工oracleや手計算で重要部分を検証してください。
+
+### 6.4 テストの実行境界
+
+許可するのは、今回作成したSOURCEと、既存の関連する技術的テストです。
+
+既存のテスト名だけから安全と推定せず、実際の科学データ取得、SCF/FCI、DF生成、native compile、科学的再解析を起動しないことを確認してから実行してください。
+
+テスト失敗時は、今回許可したSOURCE内で原因調査・修正・再テストを行って構いません。
+
+新しい科学問題や実入力の数値探索へ拡張してはいけません。
+
+---
+
+## 7. 実装境界
+
+今回実装するのは**SPEC-01〜03だけ**です。
+
+次は実装しないでください。
+
+| 未承認の作業 | 対象 |
+|---|---|
+| SPEC-04 | Trial determinantによるU/W certificate |
+| SPEC-05 | K_SOS generator/checker |
+| SPEC-06 | Grouped Cbar2 / CAR / JW構造certificate |
+| SPEC-07 | RF/EW2・強対照のstep比較器 |
+| SPEC-08 | QPE / native / state / 費用adapter |
+
+将来の拡張を考慮したinterface設計は構いませんが、未承認機能を実装・実行したり、placeholder certificateをPASSとして出力しないでください。
+
+今回作成するSOURCEは**実際の科学入力へ接続しない技術的な認証基盤**という位置付けです。
+
+---
+
+## 8. 実装品質・失敗処理
+
+次を満たしてください。
+
+1. 既存の通常DF/PF計算経路を変更しない。
+2. 新しい認証用SOURCEは独立した明確なnamespaceに置く。
+3. 型と意味論versionを固定する。
+4. Generator / checkerの境界を分離する。
+5. Exact rational値を正本とする。
+6. 不正な入力はfail-closedで拒否する。
+7. 不完全なcertificateをPASSにしない。
+8. partial evidenceと理由を保存できる。
+9. SOURCE version・input digest・parent contextを追跡できる。
+10. 型・形式の検証成功と数学的証拠の検証成功を区別する。
+11. checkerが検証していない内容を`CERTIFIED`と表示しない。
+12. scientific GO/NO-GO、A2採択の判定をSOURCEに組み込まない。
+
+既存の実装や設計に不一致が発見された場合は、今回の対象外SOURCEを勝手に修正せず、影響を記録してください。
+
+---
+
+## 9. 作業環境・計算資源・保全
+
+最新版正式共通運用指示：
+
+`research_project_instructions_unified_2026-10-17.md`
+
+特に§8.4を適用してください。
+
+### 資源利用
+
+- CPU・RAM・worker数などに恣意的な低い資源上限を設けない。
+- 必要な検査は、実際の空き資源と処理構造を確認して効率的に実行する。
+- 独立テストを合理的に並列化・高速化してよい。
+- 他ユーザーの資源利用、管理者のquota、共有環境の安全条件を守る。
+- 共有サーバー全体や他ユーザーに影響する設定・環境・process・ファイル変更は絶対禁止。
+- 既存の承認済み科学契約の資源条件を無断変更しない。
+
+### Git・worktree
+
+専用branchと独立worktreeで作業してください。
+
+新規SOURCE・テスト・今回の技術報告以外を変更しないでください。
+
+既存SOURCE、raw results、過去レビュー、科学契約、grant、authorization、ledger、markerを保全してください。
+
+親worktree、他branch、他研究のjobには干渉しないでください。
+
+### 研究範囲
+
+次は変更しません。
+
+- ①PRリソース評価
+- ②PR内部改善
+- ③M1-S
+- 他のCLOSED / STOP / PAUSED / HOLD研究
+- A1 CLOSED
+- A2 NOT_ADOPTED
+- K1-F未承認
+
+新しいGPT/Claude重要科学レビューも開始しません。
+
+---
+
+## 10. 成果物
+
+次を作成してください。
+
+### A. SOURCE
+
+SPEC-01〜03の実装。
+
+- exact intake
+- canonical identity
+- sector/PF/scalar
+- PSD cap / shift / L / f / Λ
+- generator
+- independent checker
+
+### B. 人工テスト
+
+- 正常入力
+- 異常入力
+- mutation tests
+- 境界条件
+- identity再現性
+- 独立checkerの拒否能力
+
+テスト結果は、対象・件数・成功/失敗・未検証事項を追跡可能にしてください。
+
+### C. 技術報告書
+
+- 実装したSPEC
+- 新SOURCE/API
+- Generator/checkerの独立性
+- Exact arithmeticの規約
+- 人工テスト結果
+- 不具合と対応
+- 実装・検証の限界
+- SPEC-04以降に必要な依存条件
+
+### D. GPT向けハンドオフ
+
+今回の技術結果から、
+
+- SPEC-01〜03の実装が利用可能か
+- どの証拠まで生成・検証できるか
+- 残る重要な制限
+- SPEC-04〜07へ進めるか
+- 進める場合の最小の追加作業
+- 科学実行前に必要な別途承認
+
+を明記してください。
+
+固定SOURCE・テスト・証拠索引・公開receiptを保存してください。
+
+過去の重要科学レビューを再作成する必要はありません。
+
+---
+
+## 11. 完了判定
+
+今回の技術判定は以下のいずれかとしてください。
+
+- `SPEC01_03_IMPLEMENTED_SYNTHETIC_PASS`
+- `SPEC01_03_PARTIAL_IMPLEMENTATION`
+- `SPEC01_03_VERIFIER_INDEPENDENCE_UNCLOSED`
+- `SPEC01_03_TECHNICAL_FAILURE`
+- `SPEC01_03_BLOCKED_MISSING_EVIDENCE`
+
+`SPEC01_03_IMPLEMENTED_SYNTHETIC_PASS` は、限定SOURCEと人工テストの技術的な合格のみを意味します。
+
+実入力でcertificateが成立すること、全ての数理実装が形式的に証明されたこと、認証stepに優位性があることは意味しません。
+
+未解決事項があれば結果を隠さず保存してください。
+
+---
+
+## 12. 公開・最終報告・mandatory STOP
+
+成果物をcommit・pushしてください。
+
+公開後に確認すること：
+
+- branchと最終commit
+- remote HEAD一致
+- SOURCE・人工テスト・資料の公開bytes/SHA256
+- 必要なリンクの有効性
+- 既存SOURCE・raw・契約・markerの保全
+- 親worktree・他branchへの非干渉
+
+最終報告では次を簡潔に示してください。
+
+1. SPEC-01〜03の実装結果
+2. SOURCE/APIの一覧
+3. 人工テスト件数・結果
+4. generator/checkerの独立性と限界
+5. 正しく拒否できる不正入力
+6. 未解決の技術問題
+7. 最終技術分類
+8. 次にSPEC-04〜07へ進めるか
+9. 成果物の固定GitHubリンク・branch・commit
+10. 実分子科学計算、実入力certificate生成、科学実行authorization等が各0件であること
+
+**公開と保全確認が完了したらmandatory STOPしてください。**
+
+テストが全件PASSしても、SPEC-04以降、実入力certificate、QPE、native compile、科学数値比較を自動開始しないでください。
+
+### 最終目的
+
+**固定DFモデルの認証情報を安全に扱うため、SPEC-01〜03の実行可能なSOURCEと独立checkerを完成させ、人工テストで技術的に検証すること。**
+
+この成果を受けて、次にSPEC-04〜07の実装へ進むかをユーザーが別途判断できる状態にしてください。

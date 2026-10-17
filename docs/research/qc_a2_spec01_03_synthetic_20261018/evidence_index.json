@@ -1,0 +1,331 @@
+{
+  "schema": "qc_a2_spec01_03_synthetic_evidence_v1",
+  "record_type": "LIMITED_SOURCE_AND_SYNTHETIC_TECHNICAL_TEST_RECORD_NOT_SCIENTIFIC_AUTHORIZATION",
+  "date_JST": "2026-10-18",
+  "recorded_at_utc": "2026-10-17T16:35:52.920062+00:00",
+  "repository": "HIROMU1015/Partially-Randomized-Trotter",
+  "base_commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+  "branch": "qc-a2-spec01-03-synthetic-20261018",
+  "technical_classification": "SPEC01_03_IMPLEMENTED_SYNTHETIC_PASS",
+  "scope": "Exact input/identity, N/PF/scalar and known K0 PSD/L/f/Lambda only; callable source and tests use synthetic envelopes only",
+  "source_and_test_files": [
+    {
+      "path": "src/trottercert/__init__.py",
+      "bytes": 83,
+      "sha256": "29bb0730107458ae535baa9057797b9b67cc93905fd82d6bd5dab15e07c0af4e"
+    },
+    {
+      "path": "src/trottercert/a2_spec01_03/__init__.py",
+      "bytes": 424,
+      "sha256": "3afb062f5e9af4ddf4b2b13b164190cbdc30e18e44698cb48f3f662cc90e53bf"
+    },
+    {
+      "path": "src/trottercert/a2_spec01_03/checker.py",
+      "bytes": 17685,
+      "sha256": "509e04ac888a38207a392512b3e6501755c212b74fbd166287319d203090f1a7"
+    },
+    {
+      "path": "src/trottercert/a2_spec01_03/common.py",
+      "bytes": 8875,
+      "sha256": "aedf4a12fc127ef1af9386feb6eb0ae031052d06a1832f1fc6d19f5e2ed7d5de"
+    },
+    {
+      "path": "src/trottercert/a2_spec01_03/generator.py",
+      "bytes": 10983,
+      "sha256": "4d15e216122f6c06ce72748874c8c4394cf8c0d75d8f0fac48083f7e5a6fab52"
+    },
+    {
+      "path": "src/trottercert/a2_spec01_03/raw.py",
+      "bytes": 5350,
+      "sha256": "9177ca0b29fa04680d804f106162a33124896698bc72861e18c6f78a1d7ca251"
+    },
+    {
+      "path": "tests/test_a2_spec01_03_synthetic.py",
+      "bytes": 37929,
+      "sha256": "635faf62d23af3e4d898b1bfac29384a753bf803b2da09d2ba079b1e1411ab6c"
+    }
+  ],
+  "reports": [
+    "technical_report.md",
+    "source_api_and_scope.md",
+    "decision_handoff.md"
+  ],
+  "synthetic_test_result": {
+    "path": "synthetic_test_results.json",
+    "bytes": 9805,
+    "sha256": "872a930fffeded5fec58a4b907764cc6a0310c97c20a8a018e99c0038447e935",
+    "tests_run": 38,
+    "subtests_passed": 1489,
+    "failures": 0,
+    "errors": 0
+  },
+  "synthetic_evidence_example": {
+    "path": "synthetic_evidence_examples.json",
+    "bytes": 60084,
+    "sha256": "cec0e49168403be09f6ac4a692cbcb0afb530ea5adc278846b9b77a993d3109c",
+    "use": "Explicit artificial normal certificate and partial/mutation rejection examples only"
+  },
+  "received_originals": [
+    {
+      "path": "inputs/user_instruction_a2_spec01_03_synthetic_20261018.txt",
+      "original_local_path": "/home/abe/.codex/attachments/4551d765-3e2b-4943-b689-5ee503c2d354/貼り付けたテキスト.txt",
+      "bytes": 22251,
+      "sha256": "f7bef65f55722830dd2478be8f137685aa4dc854f04895a903b522fdc1d1c2c9",
+      "byte_preserved": true
+    }
+  ],
+  "fixed_repository_sources": [
+    {
+      "id": "design_certificate_connection_spec",
+      "commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+      "path": "docs/research/qc_a2_certificate_connection_design_20261018/certificate_connection_spec.md",
+      "git_blob": "fb46a4bba556453851f767fe700848abe218efb0",
+      "bytes": 25900,
+      "sha256": "72d3185f58ea0890081ca25f6c75b4279169294aff3254261eaee6ebe869c9c4",
+      "read_or_reuse_scope": "Required fixed design acquired; sections 2-4 and SPEC01-03 implemented, remaining scope kept unimplemented",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/7af83266f96b714bb3fa2f1ef5e4bc89faf37db3/docs/research/qc_a2_certificate_connection_design_20261018/certificate_connection_spec.md"
+    },
+    {
+      "id": "design_source_api_connection",
+      "commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+      "path": "docs/research/qc_a2_certificate_connection_design_20261018/source_api_connection.md",
+      "git_blob": "f30f07310d570d693a89d10fa94454826e62bb6e",
+      "bytes": 8382,
+      "sha256": "8fd3af9b82c373ae62b2a641595d5c0dc24ba201ea16a3323b1d2723d572029c",
+      "read_or_reuse_scope": "Required fixed design acquired; sections 2-4 and SPEC01-03 implemented, remaining scope kept unimplemented",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/7af83266f96b714bb3fa2f1ef5e4bc89faf37db3/docs/research/qc_a2_certificate_connection_design_20261018/source_api_connection.md"
+    },
+    {
+      "id": "design_comparison_and_cost_design",
+      "commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+      "path": "docs/research/qc_a2_certificate_connection_design_20261018/comparison_and_cost_design.md",
+      "git_blob": "53f1670a96b92a89cbc679e7129b3bd667c24bd0",
+      "bytes": 14628,
+      "sha256": "8140095c1e3c771b0e1ead0f1dfc37a3817e9093ed711facb4ffd4d984f2f9a1",
+      "read_or_reuse_scope": "Required fixed design acquired; sections 2-4 and SPEC01-03 implemented, remaining scope kept unimplemented",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/7af83266f96b714bb3fa2f1ef5e4bc89faf37db3/docs/research/qc_a2_certificate_connection_design_20261018/comparison_and_cost_design.md"
+    },
+    {
+      "id": "design_decision_handoff",
+      "commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+      "path": "docs/research/qc_a2_certificate_connection_design_20261018/decision_handoff.md",
+      "git_blob": "1a3828dc08f63bbe5dce459d50cc82212c9c3618",
+      "bytes": 8510,
+      "sha256": "9edd3ce393c664ac41ee1bf73c8fbed0515764bac1350705f9a60dae5ed80ea4",
+      "read_or_reuse_scope": "Required fixed design acquired; sections 2-4 and SPEC01-03 implemented, remaining scope kept unimplemented",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/7af83266f96b714bb3fa2f1ef5e4bc89faf37db3/docs/research/qc_a2_certificate_connection_design_20261018/decision_handoff.md"
+    },
+    {
+      "id": "design_evidence_index",
+      "commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+      "path": "docs/research/qc_a2_certificate_connection_design_20261018/evidence_index.json",
+      "git_blob": "4a0e8423cd0f64283cac75a70796a07f16263853",
+      "bytes": 28795,
+      "sha256": "1eb411d2d73768a97af61b9cd7d381a894cef00ed23ce15befa46e386da65e26",
+      "read_or_reuse_scope": "Required fixed design acquired; sections 2-4 and SPEC01-03 implemented, remaining scope kept unimplemented",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/7af83266f96b714bb3fa2f1ef5e4bc89faf37db3/docs/research/qc_a2_certificate_connection_design_20261018/evidence_index.json"
+    },
+    {
+      "id": "design_publication_receipt",
+      "commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+      "path": "docs/research/qc_a2_certificate_connection_design_20261018/publication_receipt.json",
+      "git_blob": "f8c1d537417d40a7455d3a8f9429bbe7b9c29cc7",
+      "bytes": 16663,
+      "sha256": "77643038d2336015f55c4b743ee9f3649b8645471a195c27963057288fc12f5f",
+      "read_or_reuse_scope": "Required fixed design acquired; sections 2-4 and SPEC01-03 implemented, remaining scope kept unimplemented",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/7af83266f96b714bb3fa2f1ef5e4bc89faf37db3/docs/research/qc_a2_certificate_connection_design_20261018/publication_receipt.json"
+    },
+    {
+      "id": "preflight",
+      "commit": "c62fe99d29e7edcaf0cb655d789d297890709a29",
+      "path": "docs/research/qc_a2_practical_preflight_20261017/certificate_source_matrix.md",
+      "git_blob": "dd06e9f6a234f901376b3b5ab30e682949810033",
+      "bytes": 9096,
+      "sha256": "8c5fbc682574d5d32356fb8ecd0faf064ed2facf9298416a1fd19c6b17ffa72c",
+      "read_or_reuse_scope": "Reused fixed definitions/state and interface boundaries; no new mathematics, literature or scientific review",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c62fe99d29e7edcaf0cb655d789d297890709a29/docs/research/qc_a2_practical_preflight_20261017/certificate_source_matrix.md"
+    },
+    {
+      "id": "EW2",
+      "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+      "path": "docs/research/qc_relative_form_ew2_step_audit_20261017/mathematical_audit.md",
+      "git_blob": "c1c9ae48ece1185a69f0c6beced9eea79e8d241c",
+      "bytes": 14407,
+      "sha256": "cfc4e4d09e61d801671486d47502a91f04d51607c53d86797c19c13a4e26ce4b",
+      "read_or_reuse_scope": "Reused fixed definitions/state and interface boundaries; no new mathematics, literature or scientific review",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/docs/research/qc_relative_form_ew2_step_audit_20261017/mathematical_audit.md"
+    },
+    {
+      "id": "RF",
+      "commit": "051df4661eeffb6c6c4c978f70f43eeeaadfddd6",
+      "path": "docs/research/qc_relative_form_finite_step_audit_20261017/mathematical_audit.md",
+      "git_blob": "73cfd7315f64dbab03bea849bfc3228072cb26da",
+      "bytes": 16075,
+      "sha256": "569cde743bc84a3b605006ed211c401cc2412468822e149a71edd9f73fc66a70",
+      "read_or_reuse_scope": "Reused fixed definitions/state and interface boundaries; no new mathematics, literature or scientific review",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/051df4661eeffb6c6c4c978f70f43eeeaadfddd6/docs/research/qc_relative_form_finite_step_audit_20261017/mathematical_audit.md"
+    },
+    {
+      "id": "K0",
+      "commit": "58d8672702284d73321cc67a26c4640adaddde5f",
+      "path": "docs/research/qc_sos_pf_k0_20261015/technical_audit.md",
+      "git_blob": "ceed25d0a9572f5328b967cb7d02ed149a01f52e",
+      "bytes": 32094,
+      "sha256": "6ba1ae010b24874368c9bac695626aad75157bb659718dfa859f5c000b28e2b7",
+      "read_or_reuse_scope": "Reused fixed definitions/state and interface boundaries; no new mathematics, literature or scientific review",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/58d8672702284d73321cc67a26c4640adaddde5f/docs/research/qc_sos_pf_k0_20261015/technical_audit.md"
+    },
+    {
+      "id": "K05",
+      "commit": "01bdc56a2970dcb749390b0540846143f775d6f9",
+      "path": "docs/research/qc_sos_pf_k05_20261015/technical_report.md",
+      "git_blob": "d22dac5d3b8e9d631125441992d65a49145aebf3",
+      "bytes": 21581,
+      "sha256": "99f00a89fb8fbd5b157823166f5ad46a718074b76e452fa94a92b612db8c0a10",
+      "read_or_reuse_scope": "Reused fixed definitions/state and interface boundaries; no new mathematics, literature or scientific review",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/01bdc56a2970dcb749390b0540846143f775d6f9/docs/research/qc_sos_pf_k05_20261015/technical_report.md"
+    },
+    {
+      "id": "formal_state",
+      "commit": "67576526c4e96ae7235fa645fdf744278d049f8d",
+      "path": "docs/research/qc_exact_encoding_direction_adoption_20261017/decision.json",
+      "git_blob": "328b32b8a85dc3dc0895bbf236f6454bd4d030d3",
+      "bytes": 6486,
+      "sha256": "3cbe55e7acc536d04295026a976e2fca9bebcf34571c9120aac8ec31b2c80316",
+      "read_or_reuse_scope": "Reused fixed definitions/state and interface boundaries; no new mathematics, literature or scientific review",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/67576526c4e96ae7235fa645fdf744278d049f8d/docs/research/qc_exact_encoding_direction_adoption_20261017/decision.json"
+    },
+    {
+      "id": "common_instructions",
+      "commit": "051df4661eeffb6c6c4c978f70f43eeeaadfddd6",
+      "path": "docs/research/qc_relative_form_finite_step_audit_20261017/inputs/research_project_instructions_unified_2026-10-17.md",
+      "git_blob": "7033afca5c7b04cd455bbb7c556eb73b9fd3fcd2",
+      "bytes": 38191,
+      "sha256": "d2ebdac4b0e44e871c65f240f317e6b5d3c3460f27d92f4d798992da90bf422f",
+      "read_or_reuse_scope": "Reused fixed definitions/state and interface boundaries; no new mathematics, literature or scientific review",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/051df4661eeffb6c6c4c978f70f43eeeaadfddd6/docs/research/qc_relative_form_finite_step_audit_20261017/inputs/research_project_instructions_unified_2026-10-17.md"
+    }
+  ],
+  "independence": {
+    "checker_generator_calls": false,
+    "distinct_critical_paths": [
+      "IEEE bits integer word vs binary-string significand",
+      "full matrix cap vs diagonal plus paired triangle cap",
+      "producer K0 L formula vs checker c minus all verified scalar shifts",
+      "producer S2 assembly vs position/time/total verifier"
+    ],
+    "shared_dependencies": [
+      "strict raw/schema validation",
+      "Fraction/integer runtime",
+      "canonical JSON/hash/type encoders",
+      "matrix/source identity representation",
+      "same known mathematical definitions"
+    ],
+    "test_oracles": [
+      "hand-computed exact quantities",
+      "test-only stdlib float/Fraction bit oracle",
+      "synthetic occupation-bit algebra",
+      "test-only rational complex PSD Schur elimination"
+    ],
+    "formal_proof_or_fully_independent_development_claimed": false
+  },
+  "static_checks": {
+    "syntax_and_imports": {
+      "schema": "a2_spec01_03_static_inspection_v1",
+      "syntax_files_parsed": 7,
+      "syntax": "PASS",
+      "checker_generator_import": "NONE",
+      "runtime_dependencies": "Python standard library plus isolated package only",
+      "scientific_package_imports": "NONE",
+      "new_dataset_loader_or_cli": "NONE",
+      "inspection_limit": "Static AST/import and documentation checks; no formal proof, no real-data evaluation, no installed scientific-platform certification."
+    },
+    "markdown_links_checked": 30,
+    "all_local_and_fixed_Git_links": "PASS_EXCEPT_NEW_INDEX_AND_RECEIPT_RESERVED",
+    "source_matches_successful_test_hashes": true,
+    "scientific_data_tests_or_integration_conftest_run": false
+  },
+  "preservation": {
+    "base_tracked_blobs_byte_equal": 8488,
+    "parent_checks": {
+      "parent_HEAD": true,
+      "parent_local_refs": true,
+      "parent_worktree_registry": true,
+      "parent_index": true,
+      "parent_exclude": true,
+      "parent_tracked_present": true,
+      "parent_tracked_absent": true,
+      "parent_selected_originals": true
+    },
+    "parent_tracked_present_checked": 1277,
+    "parent_tracked_absent_checked": 7,
+    "parent_selected_originals_checked": 7,
+    "allowed_new_paths": [
+      "src/trottercert/",
+      "tests/test_a2_spec01_03_synthetic.py",
+      "docs/research/qc_a2_spec01_03_synthetic_20261018/"
+    ],
+    "parent_snapshot_observed_at_utc": "2026-10-17T16:13:35.312263+00:00"
+  },
+  "authorized_technical_work": {
+    "new_SOURCE_namespace": "trottercert.a2_spec01_03",
+    "implemented_specs": [
+      "SPEC-01",
+      "SPEC-02",
+      "SPEC-03"
+    ],
+    "synthetic_final_tests": 38,
+    "synthetic_subtests": 1489,
+    "synthetic_evidence_generated": true,
+    "synthetic_development_tests_repeated_after_changes": true,
+    "scientific_one_shot_consumed": false
+  },
+  "work_counts": {
+    "real_molecule_scientific_calculations": 0,
+    "real_input_certificates_generated": 0,
+    "saved_scientific_numeric_reanalyses": 0,
+    "SPEC04_08_implementations": 0,
+    "new_mathematical_guarantees": 0,
+    "simulation_or_native_compile": 0,
+    "new_scientific_execution_contracts": 0,
+    "new_execution_authorizations": 0,
+    "new_grants": 0,
+    "new_markers": 0,
+    "new_important_scientific_reviews": 0,
+    "A2_adoptions": 0,
+    "other_research_changes": 0
+  },
+  "unimplemented": [
+    "U/W",
+    "K_SOS",
+    "grouped_Cbar2",
+    "RF_EW2_steps",
+    "QPE_native_state_cost",
+    "real_input_adapter",
+    "automatic_partial_record_persistence"
+  ],
+  "source_limits": [
+    "Synthetic input-class tag is a self-declaration, not proof of dataset origin",
+    "No exact-to-original-molecule certificate",
+    "Conservative cap not optimized",
+    "Runtime and certificate usefulness on real inputs unverified",
+    "Checker trusted runtime/schema/hash and same known mathematics remain common",
+    "No scientific GO/NO-GO or execution authorization function"
+  ],
+  "formal_state_unchanged": {
+    "A1": "CLOSED",
+    "A2": "NOT_ADOPTED",
+    "K1_F": "NOT_AUTHORIZED_NOT_EXECUTED",
+    "ExactEncoding_current_attempt": "REDUCES_TO_KNOWN_METHOD",
+    "tracks_i_ii_iii_and_other_stops": "UNCHANGED"
+  },
+  "resource_policy": {
+    "common_instructions": "2026-10-17 section 8.4",
+    "new_artificial_CPU_RAM_worker_wall_caps": false,
+    "shared_environment_or_other_job_changes": false,
+    "existing_fixed_contracts_unchanged": true
+  },
+  "next_actor": "USER",
+  "next_action": "Decide whether to separately authorize SPEC04-07 implementation and synthetic tests; adopt a real-input contract and separately authorize any scientific execution later",
+  "mandatory_stop": true
+}
