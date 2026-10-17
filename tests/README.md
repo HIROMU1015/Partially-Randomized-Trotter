@@ -1,3 +1,5 @@
+> **M1-S Stage S技術準備（2026-10-17、未採択・実行未承認）**：[cap-edge契約候補](../docs/tracks/algorithm_codesign/m1s_stage_s_cap_edge_contract_candidate_20261017.md)。linear H4 1.00 Å/STO-3G/DF rank12・G3/G6/G9・保存δ1/8,1/16・R2,4・T1,4。G3の16/G6 T4の8を主対象、G6 T1不成立8/G9絶対未解像16を保持。連続supremumと開端点floor+1を区別する新SOURCE `src/trottertracks/algorithm_codesign/m1s_stage_s_v1`、runner `scripts/tracks/algorithm_codesign/run_m1s_stage_s_v1.py`、checker `scripts/tracks/algorithm_codesign/check_m1s_stage_s_preparation_static.py`、人工tests `tests/tracks/algorithm_codesign/test_m1s_stage_s_preparation.py`、証拠 `artifacts/track_b_m1s_stage_s_preparation/2026-10-17/v1`。CPU/RAM/GPU/worker/timeに人工capなし、output/call/instruction bounds候補。保存再解析/科学shot/native/新authority・grant・marker0、guard closed、mandatory STOP。以下は履歴。
+
 > [S4 KKT/補完tests](tracks/algorithm_codesign/test_parent_experiment_kkt_s4.py)：新21＋従来93（既存解析例1件のraw価格を訂正）＝114登録外PASS。登録candidate/新合成/登録matrix0。
 
 > Parent allocation v3：`tests/tracks/algorithm_codesign/test_parent_experiment_buffered_evidence.py` の15 artificial bytes/guard controls＋既存78＝93 PASS。登録科学計算とは別。
