@@ -643,3 +643,7 @@ N3保存帰属v1：[公開・remote取得確認](research/n3_saved_attribution_v
 # 2026-10-18 A2固定DF pilotの準備
 
 [Phase A技術報告](research/qc_a2_pilot_phase_a_20261018/technical_report.md)、[科学契約草案](research/qc_a2_pilot_phase_a_20261018/execution_contract_draft.md)、[証拠索引](research/qc_a2_pilot_phase_a_20261018/evidence_index.json)。adapter・閉じたrunner・人工検査まで。実入力はidentity/header/既存metadata確認のみ、科学評価・authorization/grant/marker 0。正式契約と別実行承認の前にmandatory STOP。
+
+# 2026-10-18 A2 Phase B科学契約の正式採択
+
+[正式契約C](research/qc_a2_phase_b_contract_adoption_20261018/formal_contract.md)、[採択記録](research/qc_a2_phase_b_contract_adoption_20261018/adoption_record.json)、[証拠索引](research/qc_a2_phase_b_contract_adoption_20261018/evidence_index.json)、[実行承認の引継ぎ](research/qc_a2_phase_b_contract_adoption_20261018/decision_handoff.md)。採択と実行承認は分離し、科学計算・certificate・新authorization/grant/marker 0。旧SOURCE・草案・結果を保全、mandatory STOP。

@@ -1079,3 +1079,7 @@ N3保存帰属v1：[公開・remote取得確認](docs/research/n3_saved_attribut
 # 2026-10-18 A2固定DF pilot Phase A
 
 [接続・技術報告](docs/research/qc_a2_pilot_phase_a_20261018/technical_report.md)、[未採択契約草案](docs/research/qc_a2_pilot_phase_a_20261018/execution_contract_draft.md)、[次の承認](docs/research/qc_a2_pilot_phase_a_20261018/decision_handoff.md)。新SOURCE `src/trottercert/a2_pilot/`、閉じたlauncher `scripts/run_qc_a2_fixed_df_pilot.py`、人工test `tests/test_a2_pilot_phase_a_synthetic.py`。保存候補はbyte/header/既存metadataだけ確認し、実科学係数decode・certificate・step評価は0。契約未採択、Phase B未承認、A2 NOT_ADOPTED・A1 CLOSED・K1-F未承認、mandatory STOP。
+
+# 2026-10-18 A2 Phase B科学契約Cの正式固定
+
+[契約C・条件](docs/research/qc_a2_phase_b_contract_adoption_20261018/formal_contract.md)、[machine C](docs/research/qc_a2_phase_b_contract_adoption_20261018/execution_contract_C.json)、[採択根拠・identity・証拠索引](docs/research/qc_a2_phase_b_contract_adoption_20261018/evidence_index.json)、[次の承認](docs/research/qc_a2_phase_b_contract_adoption_20261018/decision_handoff.md)。Phase A旧草案を残してユーザー指定条件を新規Cへ固定。科学SOURCEは無変更、実行未承認。A2研究NOT_ADOPTED、A1 CLOSED、K1-F未承認、mandatory STOP。

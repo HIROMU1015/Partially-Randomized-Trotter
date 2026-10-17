@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-18 A2科学契約C採択：数値validationは未実施
+
+[正式契約C](docs/research/qc_a2_phase_b_contract_adoption_20261018/formal_contract.md)、[静的・非数値メタデータ検査](docs/research/qc_a2_phase_b_contract_adoption_20261018/static_inspection.json)、[引継ぎ](docs/research/qc_a2_phase_b_contract_adoption_20261018/decision_handoff.md)。指定条件でCを採択したが実行権限は付与しない。SOURCE31 filesと旧草案・結果を保持し、契約schema/identity/guardを確認した。Phase A人工testは継承参照だけで今回再実施せず、実入力correctness/certificate/stepは未検証。旧科学validation・既知FAILは不変。A2 NOT_ADOPTED、A1 CLOSED、K1-F未承認、科学実行は別途承認待ち、mandatory STOP。以下は過去の検証時点記録。
+
 ## 2026-10-18 A2実入力pilot Phase A：人工検査のみ
 
 [SOURCE接続・guard報告](docs/research/qc_a2_pilot_phase_a_20261018/technical_report.md)、[新36＋既存98人工test記録](docs/research/qc_a2_pilot_phase_a_20261018/synthetic_test_results.json)。実科学係数・certificate・stepの検証結果ではなく、元分子保証・immutable CI・総資源改善を認定しない。既存科学validation/FAILは変更せず、科学契約未採択・Phase B未承認。A2 NOT_ADOPTED・A1 CLOSED・K1-F未承認、mandatory STOP。
