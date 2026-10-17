@@ -608,6 +608,37 @@ class EvaluationTests(unittest.TestCase):
             run(base(), n.STAGES[:1], guard=guard)
 
 
+class ReviewFindingTests(unittest.TestCase):
+    """Two review findings (2026-10-17): stage scope of PR paired gates and S4 label."""
+
+    def test_PR_paired_cost_gates_are_cost_stage_only_and_say_so(self):
+        data = base()
+        item = next(x for x in data['PR_saved_metrics'] if x['status'] == 'DERIVED_SAVED_SCALAR')
+        item['metrics']['RZ']['G_standard_error'] += 1.
+        shots = run(data, n.STAGES[:1])
+        for gate in ('PR_saved_paired_metric_reproduction', 'PR_confirmation_n32_pairing'):
+            self.assertEqual(shots['gates'][gate], dict(stage='COST_COMPARISON', executed=False,
+                             status='NOT_EXECUTED_IN_NONCANCELLATION_SHOTS_STAGE', checked=0))
+        with self.assertRaisesRegex(ValueError, 'PR_SAVED_PAIRED_COST_NOT_REPRODUCED'):
+            run(data)
+        gates = run(base())['gates']
+        derived = sum(1 for x in base()['PR_saved_metrics'] if x['status'] == 'DERIVED_SAVED_SCALAR')
+        self.assertEqual(gates['PR_saved_paired_metric_reproduction'],
+                         dict(stage='COST_COMPARISON', executed=True, status='REPRODUCED', checked=derived))
+        self.assertEqual(gates['PR_confirmation_n32_pairing'],
+                         dict(stage='COST_COMPARISON', executed=True, status='PASS', checked=6))
+
+    def test_S4_model_is_not_labelled_validated_without_bound_B2_PASS(self):
+        shots = run(base(), n.STAGES[:1])
+        self.assertNotIn('S4_model_validated_on', shots['lineage_limitations'])
+        self.assertEqual(shots['lineage_limitations']['S4_model_validation_scope'],
+                         'PLANNED_FOUR_REGISTERED_B2_AXES_VALIDATED_ONLY_WHEN_B2_FULL_PASS_BOUND')
+        self.assertEqual(shots['S4_model_status'], 'UNVALIDATED_B2_FULL_PASS_NOT_BOUND_S4_MODEL_NOT_USED')
+        self.assertNotIn('FIXED_B1_S4_MODEL', json.dumps(shots))
+        cost = run(base())
+        self.assertEqual(cost['S4_model_status'], 'VALIDATED_ON_FOUR_REGISTERED_B2_AXES_ONLY_B2_FULL_PASS_BOUND')
+
+
 class B2GateTests(unittest.TestCase):
     def broken(self, edit):
         data = base()

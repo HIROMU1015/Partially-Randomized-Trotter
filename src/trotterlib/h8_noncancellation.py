@@ -43,6 +43,9 @@ B2 = dict(SOURCE='2e604e4a3a04eee5090e03d9bb83818d7afd3c87',
           axes=(('B0_p15_q1_4th', 'cosine', '1175933/7'), ('B0_p15_q1_4th', 'sine', '1175933/7'),
                 ('B0I_p21_q8_4th', 'cosine', '1852640'), ('B0I_p21_q8_4th', 'sine', '1852640')))
 CONFIRMATION_N = 32
+# PR paired-cost gates belong to COST_COMPARISON only; shots-only output says so.
+COST_STAGE_GATE_NOT_RUN = dict(stage='COST_COMPARISON', executed=False,
+                               status='NOT_EXECUTED_IN_NONCANCELLATION_SHOTS_STAGE', checked=0)
 # Corrupt numbers STOP; absent or failed component evidence stays UNRESOLVED.
 NONFINITE = ('NONFINITE_NUMBER', 'NONFINITE_NONCANCELLATION_ENVELOPE')
 
@@ -467,7 +470,11 @@ def evaluate(data, registry, permit, *, stages, guard=lambda: None):
                 rows.append(row)
     result = dict(schema='H8_NONCANCELLATION_DIAGNOSTIC_RESULT_V1', scope=SCOPE, stages_executed=list(stages),
                   gates=dict(saved_usual_rows_reproduced=len(usual), PR_normalization_bound=len(union),
-                             PR_component_checks=PR_checks, B2_accepted=measured_B2 is not None),
+                             PR_component_checks=PR_checks, B2_accepted=measured_B2 is not None,
+                             PR_saved_paired_metric_reproduction=dict(COST_STAGE_GATE_NOT_RUN),
+                             PR_confirmation_n32_pairing=dict(COST_STAGE_GATE_NOT_RUN)),
+                  S4_model_status='UNVALIDATED_B2_FULL_PASS_NOT_BOUND_S4_MODEL_NOT_USED' if measured_B2 is None
+                  else 'VALIDATED_ON_FOUR_REGISTERED_B2_AXES_ONLY_B2_FULL_PASS_BOUND',
                   axis_envelopes=axis_rows, accounting_rows=rows,
                   unresolved_axes=sum(1 for r in axis_rows if r['status'] != 'EMPIRICAL_NONCANCELLATION_ENVELOPE'),
                   rare_layers=rare_layers(data['Taylor_orders']), lineage_limitations=data['lineage_limitations'],
@@ -479,6 +486,7 @@ def evaluate(data, registry, permit, *, stages, guard=lambda: None):
                                       comparisons=None, PR_reduction_percent=None))
         return result
     result['cost_stage'] = costs(data, cells, union, records, rows, usual, measured_B2, old_ids, all_ids, guard)
+    result['gates'].update(result['cost_stage'].pop('gates'))
     result['status'] = 'COMPLETE_NONCANCELLATION_SHOTS_AND_COST_COMPARISON_MANDATORY_STOP'
     return result
 
@@ -498,6 +506,7 @@ def costs(data, cells, union, records, rows, usual, measured_B2, old_ids, all_id
         saved_metrics[key] = item
     require(set(saved_metrics) == {(c, e, f) for c in union for e in EPSILONS for f in FACTORS},
             'PR_SAVED_METRIC_COVERAGE')
+    reproduced = 0
     for (cid, e, f), item in saved_metrics.items():
         guard()
         ok, shots = eligibility(usual[cid, e, f])
@@ -510,6 +519,14 @@ def costs(data, cells, union, records, rows, usual, measured_B2, old_ids, all_id
         again = d0.weighted_metric(pairs[cid], {a: shots[CHANNEL[a]] for a in CHANNEL}, 'RZ',
                                    point_rule='sum_axis_products')
         require(again == item['metrics']['RZ'], 'PR_SAVED_PAIRED_COST_NOT_REPRODUCED:' + cid)
+        reproduced += 1
+    missing = sorted(c for c in union if pairs[c] is None)
+    gates = dict(PR_saved_paired_metric_reproduction=dict(stage='COST_COMPARISON', executed=True,
+                                                          status='REPRODUCED', checked=reproduced),
+                 PR_confirmation_n32_pairing=dict(stage='COST_COMPARISON', executed=True, status='PASS',
+                                                  checked=len(union)-len(missing)))
+    if missing:
+        gates['PR_confirmation_n32_pairing'].update(status='PASS_WITH_ABSENT_PAIRED_COSTS', absent=missing)
     cache = {}
 
     def unit(cell, axis):
@@ -582,7 +599,7 @@ def costs(data, cells, union, records, rows, usual, measured_B2, old_ids, all_id
             comparisons.append(dict(epsilon=e, factor=f, P=0, bias_kind='EMPIRICAL_NONCANCELLATION_DIAGNOSTIC',
                 scopes=scopes, reduction_change_percentage_points_exact=str(F(after)-F(before))
                 if before is not None and after is not None else None))
-    return dict(status='COMPLETE', comparisons=comparisons, unit_costs=[dict(cell_id=k[0], axis=k[1], **v)
+    return dict(status='COMPLETE', gates=gates, comparisons=comparisons, unit_costs=[dict(cell_id=k[0], axis=k[1], **v)
                 for k, v in sorted(cache.items())], model_sha256=MODEL_SHA, state_preparation_P=0,
                 B2_measured_axes=[dict(cell_id=k[0], axis=k[1], RZ=v) for k, v in sorted(measured_B2.items())],
                 PR_policy='CONFIRMATION_UNION6_N32_ONLY_EXPLORATION_N8_NOT_POOLED',

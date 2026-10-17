@@ -303,7 +303,8 @@ def assemble(objects, raw_receipts, permit):
             shared_reference_and_scalar=True, scalar_extraction_recomputed=False,
             exact_truncated_is_numerical_not_certified=True, legacy_full_PF_runtime_profile='ORIGINAL_OR_UNKNOWN',
             old_B0_wrapper_costs_reused=False, B0_anchor_original_acquisition_status='STOP',
-            S4_model_validated_on='FOUR_REGISTERED_B2_AXES_ONLY', model_extrapolation_flagged=True,
+            S4_model_validation_scope='PLANNED_FOUR_REGISTERED_B2_AXES_VALIDATED_ONLY_WHEN_B2_FULL_PASS_BOUND',
+            model_extrapolation_flagged=True,
             PR_population_mean_guaranteed=False, PR_rare_layers='SAVED_HISTOGRAM_UNOBSERVED_ORDERS_NOT_BOUNDED',
             empirical_u_certified=False, rigorous_bias_guarantee=None)), registry
 
