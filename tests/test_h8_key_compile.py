@@ -20,10 +20,12 @@ import h8_key_compile_adapter as a
 import h8_key_compile_controls as controls
 import h8_key_compile_parallel as pool
 import run_h8_key_compile as run
-TEST_ROOT=Path(os.environ['H8_KEY_TEST_ROOT'])
+TEST_ROOT=Path(os.environ.get('H8_KEY_TEST_ROOT',str(ROOT.parent/'h8-key-compile-artificial-tests')))
 
 
-def temp():return tempfile.TemporaryDirectory(dir=TEST_ROOT)
+def temp():
+    TEST_ROOT.mkdir(parents=True,exist_ok=True)
+    return tempfile.TemporaryDirectory(dir=TEST_ROOT)
 
 
 def authorization():
@@ -71,8 +73,9 @@ class Contract(unittest.TestCase):
         result=subprocess.run([sys.executable,'-P','-B','-c',code],cwd=ROOT,capture_output=True,text=True)
         self.assertEqual(result.returncode,0,result.stderr)
     def test_prepare_cli_safe_path_imports(self):
-        result=subprocess.run([sys.executable,'-P','-B',str(ROOT/'scripts/prepare_h8_key_compile.py'),'--help'],
-                              cwd=TEST_ROOT,capture_output=True,text=True)
+        with temp() as directory:
+            result=subprocess.run([sys.executable,'-P','-B',str(ROOT/'scripts/prepare_h8_key_compile.py'),'--help'],
+                                  cwd=directory,capture_output=True,text=True)
         self.assertEqual(result.returncode,0,result.stderr)
     def test_nonrefundable_counts_and_forbidden_calls(self):
         with temp() as d:
