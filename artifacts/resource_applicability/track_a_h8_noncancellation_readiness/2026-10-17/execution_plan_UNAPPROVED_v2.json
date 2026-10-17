@@ -1,0 +1,472 @@
+{
+  "schema": "H8_NONCANCELLATION_DIAGNOSTIC_EXECUTION_PLAN_V1",
+  "scope": "H8_EMPIRICAL_NONCANCELLATION_DIAGNOSTIC_V1",
+  "SOURCE": "cbfd7cacad8a5828c0dbfd284a99ef0871860e66",
+  "approved": false,
+  "runtime_authorization": false,
+  "execution_sealed": false,
+  "allowed_cpus": [],
+  "absolute_launch_command": null,
+  "base_commits": {
+    "signed_result": "8e54303bfe46bbebbf4d37148cbe26ef4013ae38",
+    "evidence_audit": "b75039c1d5ead475d8c0ff8b62dba04a9978a6fa",
+    "B2_readiness": "3a450af0fb431269ac94152807992883c1490b26"
+  },
+  "science": {
+    "system": "LINEAR_H8",
+    "separation_angstrom": 1.0,
+    "basis": "STO-3G",
+    "DF_rank": 28,
+    "modes": 16,
+    "sector_dimension": 4900,
+    "T": 0.8,
+    "qs": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "deterministic_candidates": 184,
+    "old_deterministic": 32,
+    "additional_deterministic": 152,
+    "deterministic_axes": 368,
+    "PR": "PREEXISTING_CONFIRMATION_UNION6_N32",
+    "PR_axes": 12
+  },
+  "accounting": {
+    "epsilons": [
+      0.05,
+      0.01,
+      0.005,
+      0.001,
+      0.0005
+    ],
+    "allowance_factors": [
+      1.0,
+      10.0
+    ],
+    "allowance_factor_meaning": "MULTIPLIERS_1_AND_10",
+    "alpha_axis": 0.025,
+    "epsilon_axis": "epsilon/sqrt(2)",
+    "maximum_u_over_headroom": 0.01,
+    "frozen_rule": {
+      "scripts/d0_saved_value_reanalysis_v1.py": "1ded644585bfabe4f8f28be26b92e8c09f00c4e8f9712b4cf45e0233cfc8737e",
+      "scripts/d0_frozen_shot_rule_v1.py": "ed3f57937a231719583c2893677b7e82f934dd98bda35cd37fc0f17f83d4279f"
+    },
+    "only_change": "abs(total_signed_axis)->declared_bias_axis",
+    "combined_empirical_u": "SAVED_COMBINED_U_TIMES_FACTOR_ONCE_PER_AXIS_NO_REPETITION_NO_RSS",
+    "normalization": "SAVED_log_B_PLUS_FACTOR_TIMES_SAVED_log_B_margin",
+    "metric": "SHOT_WEIGHTED_FULL_WRAPPER_RZ_STATE_PREPARATION_EXCLUDED",
+    "P": 0,
+    "closure": {
+      "rel_tol": 1e-12,
+      "abs_tol": 1e-12
+    }
+  },
+  "bias_kinds": {
+    "usual": "abs(total_signed_axis)",
+    "B0_B0I": "abs(discard_axis)+abs(PF_axis)",
+    "full_PF": "abs(PF_axis)",
+    "PR": "abs(outer_PF_axis)+abs(finite_RTE_axis)",
+    "rigorous_bias_guarantee": null
+  },
+  "prohibited": {
+    "new_signal": 0,
+    "compile": 0,
+    "sampling": 0,
+    "PR_sampling": 0,
+    "SCF_DF_state": 0,
+    "fit": 0,
+    "refit": 0,
+    "new_shot_rule": 0,
+    "unregistered_candidates": 0
+  },
+  "stages": {
+    "NONCANCELLATION_SHOTS": "1900 frozen-rule rows after exact reproduction of the 1900 saved usual rows",
+    "COST_COMPARISON": "only with a complete bound B2 four-axis PASS; old32 and strengthened184 separately"
+  },
+  "gates_by_stage": {
+    "NONCANCELLATION_SHOTS": [
+      "input bytes/SHA, gzip original bytes, strict JSON",
+      "signed run01 SOURCE/plan/grant/raw SHA and shared input roles",
+      "D0/B0I/B1/resource-map lineage joins and confirmation seed derivation (adapter, before evaluation)",
+      "exact reproduction of all 1900 saved usual accounting rows",
+      "PR log_B == R*log(b) exact binding",
+      "nonfinite component, envelope or arithmetic",
+      "own SIGINT/SIGTERM; post-read input/source change"
+    ],
+    "COST_COMPARISON_ADDITIONAL": [
+      "B2 gate before any accounting, model prediction or selection",
+      "confirmation n32 pairing, seed and compiler binding; no exploration n8 pooling",
+      "exact reproduction of saved PR paired metrics with saved usual shots",
+      "B1 model digest/strata, anchor lineage, legacy full PF saved mean equality",
+      "eligible deterministic unit missing or nonpositive model cost"
+    ],
+    "reporting": "Result gates PR_saved_paired_metric_reproduction and PR_confirmation_n32_pairing carry stage=COST_COMPARISON and executed=false/NOT_EXECUTED_IN_NONCANCELLATION_SHOTS_STAGE in a shots-only run"
+  },
+  "unresolved_not_STOP": [
+    "missing or non-PASS validated signed axis",
+    "PR endpoint/closure/forward/reference check failure",
+    "UNDETERMINED eligibility or u/headroom guard",
+    "PR paired costs consistently absent (cost stage)"
+  ],
+  "missing_policy": "ANY_UNRESOLVED_CANDIDATE_NULLS_THAT_SET_MINIMUM_AND_PR_RATIO; NO_CANDIDATE_DROPPING; NO_SUBSET_BEST",
+  "cost_policy": {
+    "order": [
+      "B2_MEASURED_REGISTERED_S4_AXIS",
+      "B1_REGISTERED_ANCHOR_MEASURED",
+      "LEGACY_FULL_PF_SAVED_N1_MEASURED",
+      "FIXED_B1_S2_MODEL_ESTIMATE",
+      "FIXED_B1_S4_MODEL_ESTIMATE_B2_FOUR_AXES_ONLY"
+    ],
+    "model_sha256": "8420b9f247c63f47f10f40ba5e875f5ed971e8948ea6748b9845698fe6bdb8b0",
+    "B1_result": "83a3c4a6688e66576f85471bf41a45e29cbfb705",
+    "old_B0_wrapper_costs_reused": false,
+    "extrapolation_flag": "prefix outside 14..21",
+    "S4_model_label": "S4 model is used and reported VALIDATED_ON_FOUR_REGISTERED_B2_AXES_ONLY only with a bound B2 full PASS; otherwise S4_model_status is UNVALIDATED and S4 is not used",
+    "refit": false,
+    "metric": "RZ",
+    "P": 0,
+    "deterministic": "sum_axis(shots_axis*unit_RZ_axis) exact Fraction",
+    "PR": "frozen D0 weighted_metric on 32 paired confirmation trajectories; G exact mean, paired sample SE",
+    "PR_reduction_percent": "100*(1-G_PR/G_det)",
+    "selection": "exact rational, lexicographic cell ID tie"
+  },
+  "environment": {
+    "executable": "/usr/bin/python3.12",
+    "executable_sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+    "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "statistics": "/usr/lib/python3.12/statistics.py",
+    "statistics_sha256": "b9ef01a757de37e9fbf13d32beeb9530c8271582cabec4998226dcb7e0613cd0",
+    "dependencies": "PYTHON_STDLIB_ONLY_NO_COMPILER_OR_PROVIDER_IMPORTS"
+  },
+  "source_files": [
+    {
+      "path": "src/trotterlib/h8_noncancellation.py",
+      "bytes": 34265,
+      "sha256": "2148a3123ea54a352dee8c0136f6d666846d8562b2daf8e78038006391e5c856",
+      "git_blob": "ba8e1a21006dd950f4e18704b42b34b97a9539e5"
+    },
+    {
+      "path": "scripts/h8_noncancellation_contract.py",
+      "bytes": 20948,
+      "sha256": "79614b6ea0f2d25265bc079831905a7c6719f6f45c253ef373ee8985749c9fcd",
+      "git_blob": "0a031cc1bf06e93adc482c656c404bcc76348540"
+    },
+    {
+      "path": "scripts/run_h8_noncancellation_diagnostic.py",
+      "bytes": 5132,
+      "sha256": "8b6b993ab302eb4d4dc3803b9c7a41b9c01d66ae23419de41fa5d1117220a7b9",
+      "git_blob": "6c98f52636207144e4b384adb26b12c88d116437"
+    },
+    {
+      "path": "scripts/audit_h8_noncancellation_evidence.py",
+      "bytes": 20774,
+      "sha256": "2dca65c22559a5c21c047abdfcadbebe7111ef9bdef7bf577555458569f2ec4e",
+      "git_blob": "786d32c2acb14b24fc82e571ac34e5c6c652652d"
+    },
+    {
+      "path": "tests/test_h8_noncancellation_diagnostic.py",
+      "bytes": 63617,
+      "sha256": "8dd57293e452efd42c75c20b05e362e16cb078c13548cada28edaf884c7cd17b",
+      "git_blob": "fbc4e3bfe4486e9ff0d7f3197e9eb6cd28b85378"
+    },
+    {
+      "path": "references/h8_noncancellation_inputs_v1.json",
+      "bytes": 10804,
+      "sha256": "ed5f32c6b46229d1e255ba1ad0b36c27158f8ebb107ebc423e28abc3f411b36f",
+      "git_blob": "a57ad8717832ae85de95b86f710b3f912f0abbfe"
+    },
+    {
+      "path": "references/registration_v1.json",
+      "bytes": 22432,
+      "sha256": "2899215a3a3342967baeace0d4614fe9522342f7c542ff6379742c53802c775f",
+      "git_blob": "fce7132a359a3eaa705523def74ae2a8c5be7523"
+    },
+    {
+      "path": "scripts/d0_saved_value_reanalysis_v1.py",
+      "bytes": 27097,
+      "sha256": "1ded644585bfabe4f8f28be26b92e8c09f00c4e8f9712b4cf45e0233cfc8737e",
+      "git_blob": "cf02773ee5041662522c252ef112e26f5f5c12e5"
+    },
+    {
+      "path": "scripts/d0_frozen_shot_rule_v1.py",
+      "bytes": 5506,
+      "sha256": "ed3f57937a231719583c2893677b7e82f934dd98bda35cd37fc0f17f83d4279f",
+      "git_blob": "dae4e12489753720488b5207e7e8aff16c3e4e83"
+    }
+  ],
+  "input_manifest": {
+    "schema": "H8_NONCANCELLATION_INPUTS_V1",
+    "files": [
+      {
+        "role": "registry",
+        "snapshot_path": "inputs/registry.json",
+        "bytes": 22432,
+        "sha256": "2899215a3a3342967baeace0d4614fe9522342f7c542ff6379742c53802c775f",
+        "receipt_commit": "3a450af0fb431269ac94152807992883c1490b26",
+        "receipt_path": "artifacts/resource_applicability/track_a_h8_strengthened_readiness/2026-10-16/execution_plan_UNAPPROVED_v1.json",
+        "copied_from": "H8_BIAS_AUDIT_PRIVATE_SNAPSHOT_references/registration_v1.json"
+      },
+      {
+        "role": "old_signals",
+        "snapshot_path": "inputs/old_signals.json",
+        "bytes": 1392287,
+        "sha256": "dac86904b9a9d5d72146956ce2ed7aa3f9da52545169f5bbecb2af45c8ae6706",
+        "receipt_commit": "3d910ee1de4597b8895e8506500553dbad5a5085",
+        "receipt_path": "artifacts/resource_applicability/track_a_h8_d0_saved_value_execution_v1/2026-10-15/contract_v1.json",
+        "copied_from": "H8_BIAS_AUDIT_PRIVATE_SNAPSHOT_private/scalar_inputs/old_signals.json"
+      },
+      {
+        "role": "old_B0I",
+        "snapshot_path": "inputs/old_B0I.json",
+        "bytes": 33997,
+        "sha256": "042f38a0efe2b13f3e41c6e0020639b4c5ab3bba33ea012647e4ff155b10c59e",
+        "commit": "5f79257f432bc7e0317f122090f62fec379e2a1b",
+        "repository_path": "artifacts/resource_applicability/track_a_h8_native_b0i_full_family_result_v1/2026-10-16/case_scalar_signal_receipts_v1.json",
+        "blob": "019a064a966d0cbe271025c3d5777d27be31e4d8",
+        "copied_from": "H8_BIAS_AUDIT_PRIVATE_SNAPSHOT_private/scalar_inputs/old_B0I.json"
+      },
+      {
+        "role": "A_signals",
+        "snapshot_path": "inputs/A_signals.gz",
+        "bytes": 138903,
+        "sha256": "3b067c5b28aa7b5b63fbe4bc4617e338aedc84861d6a06a020bc5f594213decd",
+        "commit": "01309059636f2432e29b663bcd2eb0e400f5ae0a",
+        "repository_path": "artifacts/resource_applicability/track_a_h8_phase_a_run01/2026-10-16/H8_signal_complete_v1.json.gz",
+        "blob": "71c7f79aa12bc0e9d19de6f04f91d414e9be9b5e",
+        "copied_from": "H8_BIAS_AUDIT_PRIVATE_SNAPSHOT_private/scalar_inputs/A_signals.gz"
+      },
+      {
+        "role": "A_export",
+        "snapshot_path": "inputs/A_export.json",
+        "bytes": 348,
+        "sha256": "652afdd0feafba3c6775ea96b14ae55aa2d29adefcd632227cccfca388348395",
+        "commit": "01309059636f2432e29b663bcd2eb0e400f5ae0a",
+        "repository_path": "artifacts/resource_applicability/track_a_h8_phase_a_run01/2026-10-16/signal_export_receipt_v1.json",
+        "blob": "194a924620dcae046d7e0125a2b43cf103a7e70a",
+        "copied_from": "H8_BIAS_AUDIT_PRIVATE_SNAPSHOT_private/scalar_inputs/A_export.json"
+      },
+      {
+        "role": "full_reference",
+        "snapshot_path": "inputs/full_reference.json",
+        "bytes": 4578,
+        "sha256": "b61cacde7d97514cf6734e1678c425471bd93acd4bbc93fd49542ad9c21cce18",
+        "receipt_commit": "01309059636f2432e29b663bcd2eb0e400f5ae0a",
+        "receipt_path": "artifacts/resource_applicability/track_a_h8_phase_a_run01/2026-10-16/execution_binding_v1.json",
+        "copied_from": "H8_BIAS_AUDIT_PRIVATE_SNAPSHOT_private/scalar_inputs/full_reference.json"
+      },
+      {
+        "role": "old_D0_contract",
+        "snapshot_path": "inputs/old_D0_contract.json",
+        "bytes": 7795,
+        "sha256": "b13708be6d62e0a3fff0fbf8309fe50a9486384e14ad276aedd45a6cc52a1fe2",
+        "commit": "3d910ee1de4597b8895e8506500553dbad5a5085",
+        "repository_path": "artifacts/resource_applicability/track_a_h8_d0_saved_value_execution_v1/2026-10-15/contract_v1.json",
+        "blob": "f79c806b6b93751413287992d699f3ca5681a2a8",
+        "copied_from": "H8_BIAS_AUDIT_PRIVATE_SNAPSHOT_private/scalar_inputs/old_D0_contract.json"
+      },
+      {
+        "role": "old_completion",
+        "snapshot_path": "inputs/old_completion.json",
+        "bytes": 7383,
+        "sha256": "4fabc4372320562950c6a7cd4cf3e1ff5250bb4110bd61ad1ded742feb5affd6",
+        "commit": "681ec23c93fdd1090d325908f4b155a79115afdf",
+        "repository_path": "artifacts/resource_applicability/track_a_h8_resource_map_result_v1/2026-10-14/completion_audit.json",
+        "blob": "2ca6d3cb0d8c6705b178479b97125f6c7ce931d9",
+        "copied_from": "H8_BIAS_AUDIT_PRIVATE_SNAPSHOT_private/scalar_inputs/old_completion.json"
+      },
+      {
+        "role": "signed_axis_results",
+        "snapshot_path": "inputs/signed_axis_results.json",
+        "bytes": 1376537,
+        "sha256": "b9539323fb3b6e2c88c866767f33318a5790adb495084d5f844b18d4d6b55828",
+        "receipt_commit": "8e54303bfe46bbebbf4d37148cbe26ef4013ae38",
+        "receipt_path": "artifacts/resource_applicability/track_a_h8_signed_bias_run01/2026-10-17/execution_binding_v1.json",
+        "receipt_field": "raw_axis_result_sha256",
+        "copied_from": "SIGNED_BIAS_RUN01_PRIVATE_OUTPUT"
+      },
+      {
+        "role": "confirmation_selection",
+        "snapshot_path": "inputs/confirmation_selection.json",
+        "bytes": 115742,
+        "sha256": "9fdd0193693cb7414a887877fceff5659ee5d46f2ac49c4dd1b2761721b23c87",
+        "receipt_commit": "3d910ee1de4597b8895e8506500553dbad5a5085",
+        "receipt_path": "artifacts/resource_applicability/track_a_h8_d0_saved_value_execution_v1/2026-10-15/contract_v1.json",
+        "receipt_field": "input_receipts:selection_before_confirmation.json",
+        "copied_from": "H8_RESOURCE_MAP_PRIVATE_RUN01"
+      },
+      {
+        "role": "signed_binding",
+        "snapshot_path": "inputs/signed_binding.json",
+        "bytes": 5744,
+        "sha256": "01093a0f2795f25dd409d8355bf6e50d8e44baf7d26a356ebb0e64887e053a92",
+        "commit": "8e54303bfe46bbebbf4d37148cbe26ef4013ae38",
+        "repository_path": "artifacts/resource_applicability/track_a_h8_signed_bias_run01/2026-10-17/execution_binding_v1.json",
+        "blob": "154326cfc9ae935ce03fbc7116b1032f121c3806"
+      },
+      {
+        "role": "D0_accounting",
+        "snapshot_path": "inputs/D0_accounting.json",
+        "bytes": 3142273,
+        "sha256": "ade806cb54624864cac876bf7449f8d9938011cb551456244efe1d0dff89005b",
+        "commit": "3d910ee1de4597b8895e8506500553dbad5a5085",
+        "repository_path": "artifacts/resource_applicability/track_a_h8_d0_saved_value_execution_v1/2026-10-15/candidate_accounting_v1.json",
+        "blob": "cfcbd15c33944b8c064cce5c83217d6544d1ddd8"
+      },
+      {
+        "role": "D0_terminal",
+        "snapshot_path": "inputs/D0_terminal.json",
+        "bytes": 5638,
+        "sha256": "674501b54d3eff1a7d4acc67a2f7ccb6b228baacf06e445df19bae715a73cfde",
+        "commit": "3d910ee1de4597b8895e8506500553dbad5a5085",
+        "repository_path": "artifacts/resource_applicability/track_a_h8_d0_saved_value_execution_v1/2026-10-15/terminal_v1.json",
+        "blob": "8ae4ea7ca65f6e927bbd430a5dffdc5815613950"
+      },
+      {
+        "role": "D0_provenance",
+        "snapshot_path": "inputs/D0_provenance.json",
+        "bytes": 2574,
+        "sha256": "f8e0591fdced7ea68b429ddf3227a13ca6e6ca929eebc367bc78243a2b1a6941",
+        "commit": "3d910ee1de4597b8895e8506500553dbad5a5085",
+        "repository_path": "artifacts/resource_applicability/track_a_h8_d0_saved_value_execution_v1/2026-10-15/provenance_v1.json",
+        "blob": "0e44fe8014e119e0802bcf0fbd34ef6538f8c534"
+      },
+      {
+        "role": "B0I_accounting",
+        "snapshot_path": "inputs/B0I_accounting.json",
+        "bytes": 230835,
+        "sha256": "13cda19a8fdfd7e0b7244fa3e8089f911d7c58153221ff986ea64306012f058a",
+        "commit": "5f79257f432bc7e0317f122090f62fec379e2a1b",
+        "repository_path": "artifacts/resource_applicability/track_a_h8_native_b0i_full_family_result_v1/2026-10-16/case_accounting_v1.json",
+        "blob": "d2e3b490f7fac0df16283210573f3df15079d115"
+      },
+      {
+        "role": "B0I_file_receipts",
+        "snapshot_path": "inputs/B0I_file_receipts.json",
+        "bytes": 2788,
+        "sha256": "6acc2a5b63bfc27b5b4c34d5e167a67f1b748f51ffe11438d2f4d6801ebfe629",
+        "commit": "5f79257f432bc7e0317f122090f62fec379e2a1b",
+        "repository_path": "artifacts/resource_applicability/track_a_h8_native_b0i_full_family_result_v1/2026-10-16/file_receipts_v1.json",
+        "blob": "3c511ed97ab951c2bed56e7e29d74d009a122d55"
+      },
+      {
+        "role": "wrapper_metrics",
+        "snapshot_path": "inputs/wrapper_metrics.csv",
+        "bytes": 560988,
+        "sha256": "b4de5564b42f88aa68883e4d1c26bfe5804da3d392d8cd3d5a41f439e60c0a6a",
+        "commit": "681ec23c93fdd1090d325908f4b155a79115afdf",
+        "repository_path": "artifacts/resource_applicability/track_a_h8_resource_map_result_v1/2026-10-14/wrapper_metrics.csv",
+        "blob": "4c3e44a6bbb46f835e1e3e9e28cc1adaab581001"
+      },
+      {
+        "role": "B1_models",
+        "snapshot_path": "inputs/B1_models.json",
+        "bytes": 8933,
+        "sha256": "a2f0ba10ee77691212a68457fbe2f50b623b771e50272ef823921e6027a5be78",
+        "commit": "83a3c4a6688e66576f85471bf41a45e29cbfb705",
+        "repository_path": "artifacts/resource_applicability/track_a_h8_phase_b1_run01/2026-10-17/frozen_models_v1.json",
+        "blob": "76b72696289d70561ed204a80bcbbfb31f5109db"
+      },
+      {
+        "role": "B1_anchors",
+        "snapshot_path": "inputs/B1_anchors.json",
+        "bytes": 32655,
+        "sha256": "1ec046fdce5e9ad48bde547bcbb4e1d058aa2095435cfc68e6be5ce37e4453cd",
+        "commit": "83a3c4a6688e66576f85471bf41a45e29cbfb705",
+        "repository_path": "artifacts/resource_applicability/track_a_h8_phase_b1_run01/2026-10-17/input_anchor_registry_v1.json",
+        "blob": "e3bc1419cae6d4f5c841d0159b51d3a0e39dd307"
+      },
+      {
+        "role": "B1_terminal",
+        "snapshot_path": "inputs/B1_terminal.json",
+        "bytes": 365,
+        "sha256": "96fd17afded3c3169c23311161c6aa4b29fd0c9c7c98c1e37f25d8bf363a809c",
+        "commit": "83a3c4a6688e66576f85471bf41a45e29cbfb705",
+        "repository_path": "artifacts/resource_applicability/track_a_h8_phase_b1_run01/2026-10-17/phase_terminal_v1.json",
+        "blob": "7046bb046c07c928d19e4951f732863cdaa38f2d"
+      },
+      {
+        "role": "B1_launcher_native_exit",
+        "snapshot_path": "inputs/B1_launcher_native_exit.json",
+        "bytes": 256,
+        "sha256": "55be7e7dda684da9e570fd7df383d66da09780166fa8f9afa32a51889f4370ec",
+        "commit": "83a3c4a6688e66576f85471bf41a45e29cbfb705",
+        "repository_path": "artifacts/resource_applicability/track_a_h8_phase_b1_run01/2026-10-17/launcher_native_exit_v1.json",
+        "blob": "fe1897bc467e5a3663a0ebe0fd42cf7ff318dcae"
+      },
+      {
+        "role": "B2_saved_B0_registry",
+        "snapshot_path": "inputs/B2_saved_B0_registry.json",
+        "bytes": 6609,
+        "sha256": "6523a32943df938b72c2cdd41cd1eb57a6fb99acacf22c23ebd4c22add88d6d7",
+        "commit": "bf56461fa9e0780d435bad5d30c2cf2103549041",
+        "repository_path": "artifacts/resource_applicability/track_a_h8_phase_b2_recovery_readiness/2026-10-17/saved_B0_acceptance_registry_v1.json",
+        "blob": "db5d4c90e551e91b484f2b6b8887a21fbdc6d36b"
+      }
+    ],
+    "B2_final_receipts": "BOUND_SEPARATELY_IN_PLAN_B2_DEPENDENCY",
+    "real_numerical_analysis_authorized": false
+  },
+  "input_manifest_sha256": "b3ce74d5e2c40ce7c08164caf96818f7832fb6cffe0b661b7fec6d87bc9cbbbe",
+  "B2_dependency": {
+    "required_SOURCE": "2e604e4a3a04eee5090e03d9bb83818d7afd3c87",
+    "scope": "H8_B2_SAVED_B0_ACCEPTANCE_B0I_TWO_AXES_PARALLEL_PREPARATION_V1",
+    "binding_complete": false,
+    "receipts": [
+      {
+        "role": "driver_terminal",
+        "relative_path": "output01/terminal.json",
+        "bytes": null,
+        "sha256": null
+      },
+      {
+        "role": "saved_B0_acceptance",
+        "relative_path": "output01/saved_B0_acceptance.json",
+        "bytes": null,
+        "sha256": null
+      },
+      {
+        "role": "launcher_terminal",
+        "relative_path": "control01/launcher_terminal.json",
+        "bytes": null,
+        "sha256": null
+      },
+      {
+        "role": "final_gate",
+        "relative_path": "control01/B2_final_gate.json",
+        "bytes": null,
+        "sha256": null
+      },
+      {
+        "role": "launcher_log_terminal",
+        "relative_path": "launcher_admission01/terminal.json",
+        "bytes": null,
+        "sha256": null
+      },
+      {
+        "role": "witness_native_exit",
+        "relative_path": "native_exit.json",
+        "bytes": null,
+        "sha256": null
+      }
+    ],
+    "status_at_preparation": "ATTEMPT02_STOP_MEMORY_PRESSURE_NO_FULL_FOUR_AXIS_PASS",
+    "rebinding_rule": "A later B2 attempt with another SOURCE/scope/schema needs a revised plan; no automatic substitution"
+  },
+  "resource_estimates": {
+    "new_output_bytes": 67108864,
+    "new_output_inodes": 4,
+    "kind": "ADMISSION_ESTIMATES_NOT_CPU_RAM_WORKER_OR_WALL_CAPS"
+  },
+  "parallelism": "SINGLE_PROCESS_INDEXED_PASS; about 1900 frozen-rule rows and 60 paired metrics; a worker pool is unnecessary",
+  "supersedes": {
+    "SOURCE": "d567e6e1f3b1713b455a80da9b5c5f9e7848f2de",
+    "plan_digest": "c9bc52053f4b4838c1264b2bfc2620ce4ab1822f19967e36e8b6d0d348ded236",
+    "reason": "Review findings: stage scope of PR paired-cost gates; unconditional S4 validated label",
+    "v1_files_preserved": true
+  },
+  "automatic_retry": false,
+  "next_stage_authorized": false,
+  "mandatory_STOP": true
+}

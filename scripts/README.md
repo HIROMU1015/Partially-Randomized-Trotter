@@ -1,3 +1,7 @@
+## 2026-10-17 H8 非相殺bias診断：レビュー指摘2点の修正、実行未承認
+
+[資料入口](../docs/research/track_a_h8_noncancellation_readiness_20261017.md#修正追補レビュー指摘2点2026-10-17)。Codex読取レビューの指摘2点を修正。(1) PR保存paired費用の再現・n32 pairingは費用比較stageだけのgateであることを結果・plan・本文で明示し、shot診断だけでは未実行と記録。(2) S4 modelの検証済み表示をB2全PASS結合時だけに限定。計算値は修正前後で同一、科学条件・固定契約は不変。修正前に失敗する人工回帰2件を追加、人工56件（2 interpreter）＋回帰113件PASS。SOURCE cbfd7cacad8a5828c0dbfd284a99ef0871860e66、plan v2 digest 002f9edb…、無効grant v2は入力読取前に拒否。元worktreeは不変（独立cloneで作業）。作業中の広域grepが並行B2 attempt01をMEMORY_PRESSUREでSTOPさせ、準備段階のworktree変更が別sessionのB2準備attempt01〜03をSTOPさせていたことを保全receipt v2に記録。実H8数値解析・B2再実行・有効grant0。以下は各時点の履歴。
+
 ## 2026-10-17 H8 非相殺bias診断：runner・証拠照合・人工検証、実行未承認
 
 [資料入口](../docs/research/track_a_h8_noncancellation_readiness_20261017.md)。全184決定論候補（旧B0+I復元12を含む）とPR確認union6を対象に、per-axis非相殺診断（B0/B0+I `abs(discard)+abs(PF)`、full PF `abs(PF)`、PR `abs(outer_PF)+abs(finite_RTE)`）のrunner・入力/SOURCE結合・無効grant案を準備。shotは凍結D0 accountingを呼びbias量だけ置換、5精度・倍率1/10・α.025・u/headroom≤.01を維持し、保存通常会計1,900行の完全再現を実行前gateにした。通常bias・経験的非相殺・厳密保証（null）を区別。費用比較はB2全4軸PASS結合時のみで旧32/184を別判定、未解決候補を含む集合の最良・PR比はnull。PR union6の保存証拠をmetadata照合し6候補とも必要データあり（数値closure等は承認後gate）、確認4次Taylor層は0観測。B2 attempt02は16:15:03 JSTにMEMORY_PRESSUREでSTOPし費用比較は実行不能。人工54件（2 interpreter）＋回帰113件PASS。SOURCE d567e6e1f3b1713b455a80da9b5c5f9e7848f2de。実H8の非相殺bias・shot・費用・ランキング・新signal/compile/sampling/fit0、本作業によるB2/M1-S/既存契約の変更0、無効grant・実行未認可、追加レビュー/subagents0。以下は各時点の履歴。

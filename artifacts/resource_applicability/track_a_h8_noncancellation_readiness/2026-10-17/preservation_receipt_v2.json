@@ -1,0 +1,127 @@
+{
+  "schema": "H8_NONCANCELLATION_PREPARATION_PRESERVATION_V2",
+  "method": "READ_ONLY; git --no-optional-locks; sizes and SHA-256; no writes, signals, locks, renames or affinity changes in other areas",
+  "this_fix_work": {
+    "location": "independent private hardlinked clone with sparse checkout (not a registered worktree)",
+    "shared_repository_refs_created_or_moved": 0,
+    "original_worktree_HEAD_index_dirty_untracked_changed": false,
+    "original_worktree_now": {
+      "HEAD": "d567e6e1f3b1713b455a80da9b5c5f9e7848f2de",
+      "status_sha256": "7ae421d5fa0c370f2f66000536fbba10cf22d5db239e280af2f79e3658bb5140"
+    },
+    "B2_or_M1S_or_worktree_cleanup_files_modified": 0,
+    "B2_restart_or_STOP_release": 0,
+    "valid_scientific_grant_issued": 0
+  },
+  "snapshot_check": {
+    "checked_UTC": "2026-10-17T08:10:30.185574+00:00",
+    "snapshots": [
+      {
+        "snapshot": "track-a-h8-b2-concurrent-preservation-recovery/attempt01/before_PRIVATE.json",
+        "protected_files": 699,
+        "protected_files_changed": 0,
+        "worktrees": 134,
+        "worktrees_changed": [],
+        "my_original_worktree_unchanged_since_snapshot": true
+      },
+      {
+        "snapshot": "track-a-h8-b2-concurrent-preservation-recovery/before_PRIVATE.json",
+        "protected_files": 699,
+        "protected_files_changed": 0,
+        "worktrees": 133,
+        "worktrees_changed": [],
+        "my_original_worktree_unchanged_since_snapshot": true
+      },
+      {
+        "snapshot": "track-a-h8-b2-sine-psi-observation/before_PRIVATE.json",
+        "protected_files": 702,
+        "protected_files_changed": 0,
+        "worktrees": 135,
+        "worktrees_changed": [],
+        "my_original_worktree_unchanged_since_snapshot": true
+      },
+      {
+        "snapshot": "track-a-h8-b2-sine-spool-recovery/attempt03/before_PRIVATE.json",
+        "protected_files": 695,
+        "protected_files_changed": 0,
+        "worktrees": 133,
+        "worktrees_changed": [
+          "partially-randomized-trotter-worktrees/h8-noncancellation-readiness-20261017"
+        ],
+        "my_original_worktree_unchanged_since_snapshot": false
+      },
+      {
+        "snapshot": "track-a-h8-b2-sine-spool-recovery/attempt04/before_PRIVATE.json",
+        "protected_files": 696,
+        "protected_files_changed": 0,
+        "worktrees": 133,
+        "worktrees_changed": [
+          "partially-randomized-trotter-worktrees/h8-noncancellation-readiness-20261017"
+        ],
+        "my_original_worktree_unchanged_since_snapshot": false
+      },
+      {
+        "snapshot": "track-a-h8-b2-sine-spool-recovery/attempt05/before_PRIVATE.json",
+        "protected_files": 698,
+        "protected_files_changed": 0,
+        "worktrees": 133,
+        "worktrees_changed": [
+          "partially-randomized-trotter-worktrees/h8-noncancellation-readiness-20261017"
+        ],
+        "my_original_worktree_unchanged_since_snapshot": false
+      },
+      {
+        "snapshot": "track-a-h8-b2-sine-spool-recovery/before_PRIVATE.json",
+        "protected_files": 695,
+        "protected_files_changed": 0,
+        "worktrees": 132,
+        "worktrees_changed": [
+          "partially-randomized-trotter-worktrees/h8-noncancellation-readiness-20261017"
+        ],
+        "my_original_worktree_unchanged_since_snapshot": false
+      }
+    ],
+    "note": "Differences are only this preparation worktree versus the sine-spool snapshots taken before 16:43:36 JST (see incidents A/B)."
+  },
+  "incidents": [
+    {
+      "id": "A",
+      "time_JST": "16:38:14-16:40:01",
+      "other_session": "B2 sine-spool recovery preparation attempts 01-03",
+      "cause": "This work changed its own new worktree after that session snapshotted it (16:34:00): SOURCE commit 16:38:14 (HEAD 8e54303b->d567e6e1) and new untracked bundle 16:39:44",
+      "effect": "attempt01/02 STOP_METADATA_PREPARATION_ONLY (CONCURRENT_OTHER_WORKTREE_PROGRESS) at 16:39:21; attempt03 STOP_BEFORE_VALID_GRANT_AND_DISPATCH (EXTERNAL_WORKTREE_CHANGED_AFTER_PREPARATION) at 16:40:01",
+      "scientific_loss": "none recorded: valid grant 0, dispatch 0, compile 0, science 0",
+      "attribution": "CAUSED_BY_THIS_WORK",
+      "known_at_the_time": false
+    },
+    {
+      "id": "B",
+      "time_JST": "16:42:44-16:43:18",
+      "other_session": "B2 sine-spool recovery attempt05 (prepared, not launched)",
+      "cause": "Further changes in this worktree (new research note 16:42:44, index edits 16:43:07-16:43:18) after its ~16:42 snapshot",
+      "effect": "no terminal or STOP receipt found; the session then moved to a new concurrent-preservation snapshot at 16:43:36",
+      "attribution": "POSSIBLE_CONTRIBUTION_NOT_CONFIRMED"
+    },
+    {
+      "id": "C",
+      "time_JST": "17:01:35",
+      "other_session": "B2 concurrent-preservation recovery attempt01 (B0I p21/q8 S4 sine compile entered 17:01:25)",
+      "cause": "Broad recursive grep over the whole local projects tree, the temp directory and the local agent-session store started about 17:00:55 by this fix task to locate the review text; page-cache reclaim stalled the shared session cgroup",
+      "effect": "resource_stop MEMORY_PRESSURE: session-108384.scope and user-30038.slice full PSI avg10 0.36 (>0); full total 1792/1793 us at baseline -> 52725/52737 us at STOP; driver terminal STOP, launcher native exit 1, all reaped",
+      "attribution": "CAUSED_BY_THIS_WORK",
+      "mitigation": "grep stopped at about 17:03; no further bulk I/O; no B2 file touched; no restart attempted"
+    },
+    {
+      "id": "D",
+      "time_JST": "16:41:38-16:41:45",
+      "other_session": "B2 sine-spool recovery attempt04 initial fresh CPU gate",
+      "effect": "STOP PHYSICAL_CORE_BUSY before science",
+      "this_work_at_that_time": "parallel test campaign had ended at 16:40:19; only a short receipt-writing script ran",
+      "attribution": "NO_EVIDENCE_OF_CONTRIBUTION_NOT_EXCLUDED"
+    }
+  ],
+  "earlier_B2_attempt02_STOP_16_15_03": "user.slice full PSI (all users); own cgroup totals unchanged then; not attributed to this work (see preservation_receipt_v1.json)",
+  "shared_OS_scheduler_packages_venv_modified": false,
+  "other_users_processes_touched": false,
+  "subagents": 0
+}

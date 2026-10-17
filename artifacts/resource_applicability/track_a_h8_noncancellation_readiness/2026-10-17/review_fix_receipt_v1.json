@@ -1,0 +1,77 @@
+{
+  "schema": "H8_NONCANCELLATION_REVIEW_FIX_RECEIPT_V1",
+  "review_source": {
+    "kind": "CODEX_READ_ONLY_REVIEW_OF_SOURCE_d567e6e1_AND_PLAN_c9bc5205",
+    "time_JST": "2026-10-17T16:51:53",
+    "located_in": "local Codex session record (private, not published)",
+    "changes_or_runs_by_reviewer": 0
+  },
+  "findings": [
+    {
+      "id": 1,
+      "original_text": "PR保存paired費用の再現gateの説明：実装では、この検査はCOST_COMPARISON内だけで実行されます。shot-onlyでも実行するように読める報告文を、stage別に明確化してください。",
+      "target": {
+        "SOURCE": "d567e6e1f3b1713b455a80da9b5c5f9e7848f2de",
+        "file": "src/trotterlib/h8_noncancellation.py",
+        "function": "costs (called only when COST_COMPARISON is authorized)",
+        "line": 476
+      },
+      "problem": "Report/plan listed the PR saved paired-metric reproduction (and the n32 pairing/seed gate) among general pre-execution gates; a shots-only result carried no record that they were not run.",
+      "reproduction": "shots-only evaluation on ARTIFICIAL data with a corrupted saved PR paired metric completes without any gate record; old code raises KeyError in the new regression test.",
+      "impact": "Description and output transparency only; no computed value depends on it. Shots-only runs never claimed a paired-cost check in data, but the prose and plan text implied it.",
+      "fix": "Result gates PR_saved_paired_metric_reproduction and PR_confirmation_n32_pairing are always present with stage=COST_COMPARISON; executed=false/NOT_EXECUTED_IN_NONCANCELLATION_SHOTS_STAGE in shots-only, REPRODUCED/PASS with counts in the cost stage. Plan v2 lists gates by stage; report text corrected."
+    },
+    {
+      "id": 2,
+      "original_text": "S4の検証済み表示：S4_model_validated_onがB2未PASSでも無条件に設定されます。「検証予定範囲」または「B2結合時のみ検証済み」という表現に修正すべきです。",
+      "target": {
+        "SOURCE": "d567e6e1f3b1713b455a80da9b5c5f9e7848f2de",
+        "file": "scripts/h8_noncancellation_contract.py",
+        "function": "assemble (lineage_limitations)",
+        "line": 306
+      },
+      "problem": "lineage_limitations.S4_model_validated_on=FOUR_REGISTERED_B2_AXES_ONLY was set for every run, including shots-only runs without any B2 PASS.",
+      "reproduction": "shots-only evaluation output contains S4_model_validated_on; new regression test fails on old code.",
+      "impact": "Label only; S4 model costs were already used only after the B2 gate, which requires a complete four-axis PASS.",
+      "fix": "Lineage label replaced by S4_model_validation_scope=PLANNED_FOUR_REGISTERED_B2_AXES_VALIDATED_ONLY_WHEN_B2_FULL_PASS_BOUND; new runtime S4_model_status is UNVALIDATED_B2_FULL_PASS_NOT_BOUND_S4_MODEL_NOT_USED unless the B2 gate accepted a full PASS."
+    }
+  ],
+  "new_SOURCE": "cbfd7cacad8a5828c0dbfd284a99ef0871860e66",
+  "previous_SOURCE": "d567e6e1f3b1713b455a80da9b5c5f9e7848f2de",
+  "previous_documentation_commit": "a967538e37fe1b017260fd728830b2572a833833",
+  "plan_digest_v2": "002f9edbf35506fca256431df641552d7c319581f306f13a316b736e07897e6d",
+  "plan_digest_v1": "c9bc52053f4b4838c1264b2bfc2620ce4ab1822f19967e36e8b6d0d348ded236",
+  "changed_source_files": [
+    "src/trotterlib/h8_noncancellation.py",
+    "scripts/h8_noncancellation_contract.py",
+    "tests/test_h8_noncancellation_diagnostic.py"
+  ],
+  "diff_lines": {
+    "insertions": 52,
+    "deletions": 3
+  },
+  "before_fix": {
+    "new_regression_tests": 2,
+    "result": "FAILED (failures=1, errors=1)",
+    "log_sha256": "c51d729e526a3a1e13da2d295217cbb53b5eca2945a96a5c9fbbbc0f2ab8dec4",
+    "first_lines": [
+      "ERROR: test_PR_paired_cost_gates_are_cost_stage_only_and_say_so (__main__.ReviewFindingTests.test_PR_paired_cost_gates_are_cost_stage_only_and_say_so)",
+      "KeyError: 'PR_saved_paired_metric_reproduction'",
+      "FAIL: test_S4_model_is_not_labelled_validated_without_bound_B2_PASS (__main__.ReviewFindingTests.test_S4_model_is_not_labelled_validated_without_bound_B2_PASS)",
+      "Ran 2 tests in 0.509s",
+      "FAILED (failures=1, errors=1)"
+    ]
+  },
+  "after_fix": "both new regression tests PASS; see limited_validation_v2.json",
+  "scientific_conditions_changed": false,
+  "computed_values_changed": false,
+  "preserved": [
+    "184 deterministic candidates / 368 axes",
+    "PR confirmation union6 / n32",
+    "epsilon .05/.01/.005/.001/.0005, factors 1 and 10",
+    "frozen D0 shot arithmetic",
+    "usual and empirical noncancellation bias definitions",
+    "no cost comparison without B2 full PASS",
+    "empirical u, shared reference/scalar, prefix19 lineage limits"
+  ]
+}

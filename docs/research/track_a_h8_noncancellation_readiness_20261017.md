@@ -3,7 +3,7 @@
 **全184決定論候補（旧B0+I復元12候補を含む）とPR確認union6を対象に、per-axis非相殺診断runner・入力/SOURCE結合・無効grant案・人工54件を準備し、PR確認集合の保存証拠をmetadataだけで照合した。実H8保存値による非相殺bias・shot・費用・ランキングは未実行（0）。**
 B2 recovery attempt02は準備中の16:15:03 JSTに `MEMORY_PRESSURE` でSTOPしたため、B2全4軸PASSの受領証拠は存在しない。runnerの費用比較stageはB2全PASS結合なしでは起動できない設計で、今回も実行していない。
 
-- SOURCE：`d567e6e1f3b1713b455a80da9b5c5f9e7848f2de`（runner・契約・監査器・tests・入力manifest）
+- SOURCE：`d567e6e1f3b1713b455a80da9b5c5f9e7848f2de`（runner・契約・監査器・tests・入力manifest）。レビュー指摘2点の修正後SOURCEは `cbfd7cacad8a5828c0dbfd284a99ef0871860e66`、未承認plan v2 digest `002f9edb…`（[修正追補](#修正追補レビュー指摘2点2026-10-17)）
 - 起点：signed成分検証結果 `8e54303bfe46bbebbf4d37148cbe26ef4013ae38`、証拠監査 `b75039c1d5ead475d8c0ff8b62dba04a9978a6fa`、B2準備 `3a450af0fb431269ac94152807992883c1490b26`
 - branch：`track-a-h8-noncancellation-readiness-20261017`
 - [準備bundle（plan・無効grant・監査・検証・保全）](../../artifacts/resource_applicability/track_a_h8_noncancellation_readiness/2026-10-17/README.md)
@@ -36,13 +36,14 @@ shotは凍結D0 accounting（`scripts/d0_saved_value_reanalysis_v1.py` SHA `1ded
 
 実行前gateとして、保存済み通常会計1,900行（旧B0/full PF200・旧B0+I120・Phase A1,520・PR60）を同じ凍結ruleで再計算しdict完全一致を要求する。これは費用比較ではなく、入力と算術の同一性確認である。
 旧B0+Iの保存会計も来歴codeが `g.d0.accounting(signal,e,f)` を使っていることをcode読取で確認した（数値照合は未実行）。
-保存PR paired費用（確認n32・通常shot）も凍結 `weighted_metric` で完全再現を要求する。SE浮動小数の同一性のため、実行環境をD0契約と同じPython3.12.3・`statistics.py`（hash一致を確認）へ固定した。
+保存PR paired費用（確認n32・通常shot）の凍結 `weighted_metric` による完全再現は、**費用比較stage（`COST_COMPARISON`）だけのgate**である。shot診断だけのstageでは実行せず、結果にも未実行と明記する（修正追補参照）。SE浮動小数の同一性のため、実行環境をD0契約と同じPython3.12.3・`statistics.py`（hash一致を確認）へ固定した。
 
 ## 3. STOPと未解決の区別
 
 |種類|例|扱い|
 |---|---|---|
-|STOP（fail closed）|入力bytes/SHA・来歴不一致、通常会計の非再現、非finite・overflow、PR normalization不一致、B2 gate不合格、n32 pairing/seed不一致、n8混入、eligible決定論候補の単価欠測、自processへのSIGINT/SIGTERM、読取後のinput/source変更|最初の理由をterminalに保存、部分結果を成功扱いにしない、自動retryなし|
+|STOP（fail closed、両stage）|入力bytes/SHA・来歴不一致、通常会計の非再現、非finite・overflow、PR normalization不一致、自processへのSIGINT/SIGTERM、読取後のinput/source変更|最初の理由をterminalに保存、部分結果を成功扱いにしない、自動retryなし|
+|STOP（費用比較stageだけ）|B2 gate不合格、n32 pairing/seed不一致、n8混入、保存PR paired費用の非再現、eligible決定論候補の単価欠測|同上。shot診断だけのstageでは評価しない|
 |未解決（候補を残してnull）|検証済み成分の欠測・非PASS、PR端点/closure/forward/referenceの不一致、UNDETERMINED、u/headroom guard、PR paired費用の一貫した欠測|候補を除外せず `UNRESOLVED_*` を記録。その候補を含む集合の最良・PR比・削減率はnull|
 
 部分集合の最良を「全候補最良」と呼ぶ出力は作らない。旧32集合と強化184集合は別々に判定し、例えば追加候補だけが未解決なら旧32の比較は残り184側だけnullになる。
@@ -54,7 +55,7 @@ shotは凍結D0 accounting（`scripts/d0_saved_value_reanalysis_v1.py` SHA `1ded
 1. **B2実測**：B0 p15/q1 S4・B0+I p21/q8 S4の登録4軸。B2 recovery SOURCE `2e604e4a…` の完了terminal・全4軸PASS・native exit0・全reap・監視gap≤5秒・最終gate PASS・witness native wait0を全て要求する。
 2. **B1登録anchor実測**：B0 p14/21×q1/8、B0+I p14/21×q1/2/4/8の24軸（来歴・profile・compiler結合）。
 3. **full PF旧N=1実測**：保存wrapperの探索replica0。元runtime profileはunknownのまま後付けしない。旧B0のwrapper単価は来歴未解決のため使わない。
-4. **B1固定model推定**：S2 `a+b*q+d*prefix*q`、S4 `a+3*b*q+3*d*prefix*q`（model SHA `8420b9f2…`）。prefix14〜21外は外挿flag。S4はB2全PASS時のみで、全grid精度保証にしない。再fitなし。
+4. **B1固定model推定**：S2 `a+b*q+d*prefix*q`、S4 `a+3*b*q+3*d*prefix*q`（model SHA `8420b9f2…`）。prefix14〜21外は外挿flag。S4はB2全PASSの結合時だけ使い、その場合だけ `S4_model_status` を登録4軸限りの検証済みとする（全grid精度保証にしない）。B2未結合では未検証のまま使わない。再fitなし。
 
 PRは確認n32の32 paired trajectoryを非相殺shotで重み直し、`G`は正確な標本平均、SEはpaired標本SE（信頼区間・母平均優位ではない）。通常biasのSEを流用しない。
 PR削減率は `100*(1-G_PR/G_det)`、旧32と184の差をpercentage pointsで出す。
@@ -124,3 +125,24 @@ B2の領域には書込・signal・lock・rename・affinity変更を行ってい
 **Codex**：B2 attempt02のSTOP記録と原因調査を、既存B2の担当範囲で行う（本作業はB2領域を変更していない）。
 **Claude Code**：承認があればfresh gateとgrantを結合して指定stageを一回だけ実行し、結果/欠測/STOP/native exitを保存してmandatory STOP。費用stageはB2全PASSの結合とその明示承認の後に限る。
 今回の準備でmandatory STOP。
+
+## 修正追補：レビュー指摘2点（2026-10-17）
+
+利用者の確認依頼に対するCodexの読取レビュー（16:51 JST）が、SOURCE `d567e6e1…`・plan `c9bc5205…` について次の2点を指摘した。科学条件・固定契約は変えず、表示と出力の範囲を直した。
+[修正receipt](../../artifacts/resource_applicability/track_a_h8_noncancellation_readiness/2026-10-17/review_fix_receipt_v1.json)、[動作差](../../artifacts/resource_applicability/track_a_h8_noncancellation_readiness/2026-10-17/behaviour_diff_v1.json)、[整合性](../../artifacts/resource_applicability/track_a_h8_noncancellation_readiness/2026-10-17/consistency_check_v2.json)。
+
+|指摘|該当（修正前）|問題|修正|
+|---|---|---|---|
+|1. PR保存paired費用の再現gateの説明|`src/trotterlib/h8_noncancellation.py` `costs()`（l.476付近、`COST_COMPARISON` 内だけで実行）|本文とplanが、この再現（とn32 pairing/seed検査）をshot診断だけでも実行するgateのように記載し、shot診断だけの結果にも未実行の記録がなかった|結果の `gates` に `PR_saved_paired_metric_reproduction`・`PR_confirmation_n32_pairing` を常に出し、`stage=COST_COMPARISON`、shot診断だけでは `executed=false`・`NOT_EXECUTED_IN_NONCANCELLATION_SHOTS_STAGE`。plan v2はgateをstage別に列挙。本文の該当2箇所を訂正|
+|2. S4の検証済み表示|`scripts/h8_noncancellation_contract.py` `assemble()`（l.306）|`S4_model_validated_on` がB2未PASSでも無条件に設定された|来歴欄は `S4_model_validation_scope=PLANNED_FOUR_REGISTERED_B2_AXES_VALIDATED_ONLY_WHEN_B2_FULL_PASS_BOUND`。実行時の `S4_model_status` はB2全PASS結合時だけ検証済み、それ以外は `UNVALIDATED_B2_FULL_PASS_NOT_BOUND_S4_MODEL_NOT_USED`|
+
+両指摘を再現する人工回帰testを2件追加し、修正前のcodeでは失敗（KeyError 1、assert失敗 1）、修正後はPASSした。
+人工データで修正前後を比較すると、1,900会計行・380軸envelope・費用stageの値は完全に同一で、追加されたのは上記2つのgate記録と `S4_model_status` だけである。
+既存54件＋新2件＝56件をPython3.12.3と3.11.0rc1で、既存回帰113件をPASS。plan v2・無効grant v2・source closure v2を新SOURCEへ結合し、science・accounting・bias区分・B2依存・入力manifest・凍結D0 fileがv1と同一であることを確認した。v2 draftは固定runnerで入力読取前に拒否（exit2）。v1のplan・grant・receiptは履歴として上書きしていない。
+
+保護対象のworktreeを動かさないため、修正はGit refを共有repositoryに作らない独立clone上で行った。元worktreeのHEAD `d567e6e1…`・status hash `7ae421d5…` は変更していない。
+この作業中、レビュー原文を探す広域grep（17:00:55 JST頃開始）がsession cgroupのmemory stallを起こし、並行していたB2 concurrent-preservation attempt01が17:01:35にMEMORY_PRESSUREでSTOPした。また準備段階の16:38〜16:40には、この準備worktreeへのcommit・file追加が別sessionのB2 sine-spool準備attempt01〜03のworktree保全gateに触れ、STOPさせていた（grant・dispatch・compileは0）。詳細と未確定の関与は[保全receipt v2](../../artifacts/resource_applicability/track_a_h8_noncancellation_readiness/2026-10-17/preservation_receipt_v2.json)に記録した。
+
+**ユーザー**：修正後のSOURCE `cbfd7cac…`・plan v2 `002f9edb…` に対する `NONCANCELLATION_SHOTS` 一回実行の承認を判断する。B2側のSTOPの扱いもB2担当とともに判断する。
+**Codex**：B2担当として、上記のB2 STOPを既存の承認範囲で扱う。
+**Claude Code**：承認があれば、その範囲だけを一回実行してmandatory STOPする。今回の修正はここでmandatory STOP。

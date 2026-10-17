@@ -18,3 +18,16 @@
 B2 attempt02はSTOP（MEMORY_PRESSURE）でB2全4軸PASSは未受領のため、費用比較stageは実行不能のまま。
 private入力snapshot・log・test一時領域はhome配下の準備領域に置き、公開しない。
 別sessionのB2保全snapshotがこのworktreeのHEAD/statusを記録したため、資料commitは一時indexで作成し、worktreeのHEAD/statusを動かしていない。mandatory STOP。
+
+## v2：レビュー指摘2点の修正（SOURCE `cbfd7cacad8a5828c0dbfd284a99ef0871860e66`）
+
+v1のfilesは旧SOURCE `d567e6e1…` の証拠として残し、上書きしない。
+
+- `review_fix_receipt_v1.json`：指摘原文・該当code・再現・影響・修正・修正前test失敗。
+- `behaviour_diff_v1.json`：人工データでの修正前後比較。計算値は同一、追加はgate記録2件と `S4_model_status`。
+- `execution_plan_UNAPPROVED_v2.json`／`grant_INVALID_DRAFT_v2.json`／`source_closure_v2.json`：新SOURCEとplan digest `002f9edb…` への結合。gateはstage別に記載。
+- `consistency_check_v2.json`：Git object・manifest・plan/grant・v1 files不変・v1との差分field。
+- `limited_validation_v2.json`：人工56件（2 interpreter）＋回帰113件PASS。
+- `draft_rejection_v2.json`：v2 draftを固定runnerが入力読取前に拒否。
+- `preservation_receipt_v2.json`：元worktree不変、全B2 snapshot照合、並行B2への干渉事案A〜Dの記録。
+- `publication_inventory_v2.json`：v2で追加・変更した公開files。
