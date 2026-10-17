@@ -1004,3 +1004,5 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 - [H6 fixed δ・T依存性の実行直前準備](research/track_a_h6_fixed_delta_t_dependence_readiness_20261015.md)：最大8並列、T=.8再利用、新64 trajectory/144 compile案。未起動。
 
 - [H6固定δ T依存性の結果](research/track_a_h6_fixed_delta_t_dependence_results_20261015.md)：144 compile完了、3Tの精度適格性・RZ費用比・希少次数限界。
+
+- [H8主要6軸の並列準備への引継ぎ・稼働記録](research/track_a_h8_key_compile_parallel_handover_20261017.md)。

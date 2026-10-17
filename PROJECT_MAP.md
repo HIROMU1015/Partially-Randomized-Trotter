@@ -1,3 +1,7 @@
+## 2026-10-17 H8：並列準備へ引継ぎ・稼働中
+
+[引継ぎ・再利用・稼働証拠](docs/research/track_a_h8_key_compile_parallel_handover_20261017.md)。SOURCE 41e466e13f32e9224bb37790cc16f0ff6621c399。検証済みQPY2本と実測cosine1軸を再利用、残る2構成を並行準備。旧所有runのみ停止・native回収・61証拠不変。人工39件PASS、compile固定順/各軸2% gate維持。
+
 ## 2026-10-17 H8：現runを保持した準備工程の並列化
 
 [実装・検証・契約](docs/research/track_a_h8_key_compile_parallel_preparation_20261017.md)。準備を3構成並行・最大6 workerへ拡張し、wrapper生成も軸workerへ移した。人工32件PASS、SOURCE 7f8d74660b2914a1223d0ac7990dde8d4645032e。compileは固定順直列・各軸2%以上でSTOP。新方式の科学起動0・無効grant・未seal。旧runの25 immutable filesはSHA一致し、稼働継続。速度/peak RSSは未測定。以下は各時点の履歴。

@@ -872,3 +872,5 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 `summarize_h6_fixed_delta_v1.py --verify <public-bundle>` は公開scalarのみからshot/paired6metricsを再計算する。`--run/--output` はprivate完了証拠からexclusiveな軽量bundleを作る。`plot_h6_fixed_delta_result_v1.py` は保存値のみでSVGを作成。[結果](../docs/research/track_a_h6_fixed_delta_t_dependence_results_20261015.md)。科学計算・compile0。
 
 `track_a_v1_p7_measured_reaccount.py`：stdlib限定、default plan-only、新grantでp7実測×保存shotと保存PRの1比較だけ。参照は上記結果報告。
+
+H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY and completed-prefix results after old native cleanup; the new monitored driver waits for an exclusive atomic release. See [running handover record](../docs/research/track_a_h8_key_compile_parallel_handover_20261017.md).
