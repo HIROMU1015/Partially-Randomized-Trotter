@@ -1,5 +1,10 @@
 # Validation status
 
+## 2026-10-18 A2実入力pilot Phase A：人工検査のみ
+
+[SOURCE接続・guard報告](docs/research/qc_a2_pilot_phase_a_20261018/technical_report.md)、[新36＋既存98人工test記録](docs/research/qc_a2_pilot_phase_a_20261018/synthetic_test_results.json)。実科学係数・certificate・stepの検証結果ではなく、元分子保証・immutable CI・総資源改善を認定しない。既存科学validation/FAILは変更せず、科学契約未採択・Phase B未承認。A2 NOT_ADOPTED・A1 CLOSED・K1-F未承認、mandatory STOP。
+
+
 ## 2026-10-18 A2 SPEC-04〜07：人工SOURCE検査の追加
 
 [技術報告](docs/research/qc_a2_spec04_07_synthetic_20261018/technical_report.md)と[機械可読テスト記録](docs/research/qc_a2_spec04_07_synthetic_20261018/synthetic_test_results.json)を追加した。これは既存SPEC-01〜03の回帰を含むローカル人工検査で、immutable CI・外部独立再現・実分子の認証を意味しない。旧validation結果・既知FAIL・科学的結論を更新しない。A2未採択、SPEC-08/実入力実行未承認、mandatory STOP。

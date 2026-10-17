@@ -551,3 +551,6 @@ N3保存帰属v1：[資料・事後評価準備](../docs/research/n3_saved_attri
 # 2026-10-18 A2人工検査harnessの参照
 
 SPEC-04〜07の開発検査は [記録harness](../docs/research/qc_a2_spec04_07_synthetic_20261018/run_synthetic_checks.py) を `python -B` で実行する。指定された2本の人工unittestだけを読み、pytest conftest・科学runnerを起動しない。[技術報告](../docs/research/qc_a2_spec04_07_synthetic_20261018/technical_report.md)。科学実行CLI/authorizationは追加していない。
+# 2026-10-18 A2固定DF pilot launcher（未承認）
+
+`run_qc_a2_fixed_df_pilot.py` は明示execute flag・採択済み固定契約・別authorization・独立pinsが揃う場合だけ入力を読む。Phase Aでは実snapshotへ起動していない。[guard/保存仕様](../docs/research/qc_a2_pilot_phase_a_20261018/source_guard_and_resource_design.md)、[人工検査harness](../docs/research/qc_a2_pilot_phase_a_20261018/run_artificial_checks.py)。science実行許可を発行するCLIではない。

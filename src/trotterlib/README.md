@@ -538,3 +538,6 @@ N3保存帰属v1：[資料・事後評価準備](../../docs/research/n3_saved_at
 # 2026-10-18 別namespaceのA2人工certificate prototype
 
 `trotterlib`本体を変更せず、`src/trottercert/a2_spec04_07/` にSPEC-04〜07の人工SOURCEを追加した。[API・独立性・限界](../../docs/research/qc_a2_spec04_07_synthetic_20261018/source_api_and_scope.md)、test `tests/test_a2_spec04_07_synthetic.py`。既存科学libraryから呼ぶadapterは未実装。実入力適用・QPE/native・A2正式採択を意味しない。
+# 2026-10-18 A2固定DF接続の別namespace
+
+`trotterlib`の既存SOURCE/数値loaderを変更せず、`src/trottercert/a2_pilot/` へbit-preserving adapterとguarded runnerを追加した。[技術資料](../../docs/research/qc_a2_pilot_phase_a_20261018/technical_report.md)、test `tests/test_a2_pilot_phase_a_synthetic.py`。実分子係数の評価・SPEC-08・QPE/nativeは未実施。科学契約未採択・実行未承認、mandatory STOP。

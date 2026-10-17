@@ -1076,3 +1076,6 @@ N3保存帰属v1：[公開・remote取得確認](docs/research/n3_saved_attribut
 # 2026-10-18 A2 SPEC-04〜07：人工実装の追加索引
 
 [技術報告・入口](docs/research/qc_a2_spec04_07_synthetic_20261018/technical_report.md)、[API・保証範囲](docs/research/qc_a2_spec04_07_synthetic_20261018/source_api_and_scope.md)、[GPT引継ぎ](docs/research/qc_a2_spec04_07_synthetic_20261018/decision_handoff.md)。SOURCEは `src/trottercert/a2_spec04_07/`、人工testは `tests/test_a2_spec04_07_synthetic.py`、記録harnessと証拠は同技術資料directory内。既存SPEC-01〜03は無変更で再利用する。人工SOURCE検査のみで実入力certificate・科学的優位・QPE/native実装を認定しない。A2 `NOT_ADOPTED`、A1 `CLOSED`、K1-F未承認、mandatory STOP。
+# 2026-10-18 A2固定DF pilot Phase A
+
+[接続・技術報告](docs/research/qc_a2_pilot_phase_a_20261018/technical_report.md)、[未採択契約草案](docs/research/qc_a2_pilot_phase_a_20261018/execution_contract_draft.md)、[次の承認](docs/research/qc_a2_pilot_phase_a_20261018/decision_handoff.md)。新SOURCE `src/trottercert/a2_pilot/`、閉じたlauncher `scripts/run_qc_a2_fixed_df_pilot.py`、人工test `tests/test_a2_pilot_phase_a_synthetic.py`。保存候補はbyte/header/既存metadataだけ確認し、実科学係数decode・certificate・step評価は0。契約未採択、Phase B未承認、A2 NOT_ADOPTED・A1 CLOSED・K1-F未承認、mandatory STOP。

@@ -640,3 +640,6 @@ N3保存帰属v1：[公開・remote取得確認](research/n3_saved_attribution_v
 # 2026-10-18 A2 SPEC-04〜07の人工SOURCE検査
 
 [技術報告](research/qc_a2_spec04_07_synthetic_20261018/technical_report.md)、[証拠索引](research/qc_a2_spec04_07_synthetic_20261018/evidence_index.json)、[判断用引継ぎ](research/qc_a2_spec04_07_synthetic_20261018/decision_handoff.md)。SOURCE `src/trottercert/a2_spec04_07/`、test `tests/test_a2_spec04_07_synthetic.py`。既存SPEC-01〜03の回帰を含む人工検査であり、実分子・保存科学入力への適用やSPEC-08は未実施。科学状態・認可は変更しない。
+# 2026-10-18 A2固定DF pilotの準備
+
+[Phase A技術報告](research/qc_a2_pilot_phase_a_20261018/technical_report.md)、[科学契約草案](research/qc_a2_pilot_phase_a_20261018/execution_contract_draft.md)、[証拠索引](research/qc_a2_pilot_phase_a_20261018/evidence_index.json)。adapter・閉じたrunner・人工検査まで。実入力はidentity/header/既存metadata確認のみ、科学評価・authorization/grant/marker 0。正式契約と別実行承認の前にmandatory STOP。
