@@ -1,3 +1,5 @@
+> 2026-10-18追補：この準備SOURCEによるrun01はmetadata参照ミスでSTOPした。実sampling/compile0、one-shot消費済み。[停止報告と限定修正](track_a_h8_conditional_s2_pilot_STOP_20261018.md)を現在の状態として参照する。以下は実行前の固定契約。
+
 # H8 PR s2条件付きpilot：実装・実行契約
 
 利用者の2026-10-17指示により、q4とq8の2候補についてs2条件付きtrajectoryを各8本、cosine/sine計32軸以内で一回取得する。これは元n32とは別の費用診断であり、母平均保証・PR削減率の再計算ではない。科学retry/resumeは認可されていない。A(q4)の8本を保存・検証・native回収してからB(q8)へ進む。

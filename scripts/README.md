@@ -1,3 +1,7 @@
+## 2026-10-18 H8 s2条件付きpilot：metadata不一致でSTOP、限定修正済み・再実行なし
+
+[停止証拠・修正・次の判断](../docs/research/track_a_h8_conditional_s2_pilot_STOP_20261018.md)。実行SOURCE 3db51df7…、q4の8 worker起動後に旧receiptのpartition field欠測でSTOP。実sampling/compile0、q8未起動、driver/全worker回収済み。修正SOURCE 7522d74b…、人工回帰20件PASS、非返却予約16compile/8trajectoryを保持。有効な新grantなし。再実行には新たな明示承認が必要。以下は各時点の履歴。
+
 ## 2026-10-17 H8 conditional s2 pilot：sampler / scoped native adapter / contract / one-shot witness
 
 [実装・契約](../docs/research/track_a_h8_conditional_s2_pilot_readiness_20261017.md)（repository root基準）。固定SOURCEの人工検証・grant後に実行する。旧n32と混合しない。
