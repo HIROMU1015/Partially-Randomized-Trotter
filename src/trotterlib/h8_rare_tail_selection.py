@@ -51,6 +51,7 @@ class CountLaw:
     counts: tuple
     probabilities: tuple
     log_stratum_mass: float
+    underflowed_count_cells: tuple
 
 
 def _xlog(n, p):
@@ -82,7 +83,12 @@ def conditional_counts(R, probabilities, stratum):
     weights = tuple(math.exp(v-high) for v in logs)
     total = math.fsum(weights)
     return CountLaw(R, stratum, tuple(support), tuple(w/total for w in weights),
-                    high+math.log(total))
+                    high+math.log(total),
+                    tuple(support[i] for i,w in enumerate(weights) if w == 0.))
+
+
+def require_representable(law):
+    require(not law.underflowed_count_cells, 'CONDITIONAL_SUPPORT_UNREPRESENTABLE')
 
 
 def categorical(probabilities, rng):

@@ -75,6 +75,12 @@ class RareLawTests(unittest.TestCase):
         self.assertTrue(math.isfinite(law.log_stratum_mass))
         self.assertAlmostEqual(max(law.probabilities),1.)
 
+    def test_lost_tiny_cells_cannot_enter_production_adapter(self):
+        law=m.conditional_counts(4,(1.,1e-250,0.),'s2_multi')
+        self.assertTrue(law.underflowed_count_cells)
+        with self.assertRaisesRegex(ValueError,'UNREPRESENTABLE'):
+            m.require_representable(law)
+
     def test_zero_categories(self):
         self.assertEqual(m.conditional_counts(3,(0.,0.,1.),'s4').counts,((0,3),))
         with self.assertRaises(ValueError):m.conditional_counts(4,(1.,0.,0.),'s4')
