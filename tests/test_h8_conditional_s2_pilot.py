@@ -217,14 +217,16 @@ class AuthorizationAndAccounting(unittest.TestCase):
 
     def test_budget_preserves_carry_and_failed_reservations(self):
         b = c.budget()
-        self.assertEqual(b['prior_held']['compile'], 22)
-        self.assertEqual(b['maximum_after']['compile'], 1626)
-        self.assertEqual(b['maximum_after']['trajectory'], 795)
-        self.assertEqual(b['maximum_after']['occurrence'], 3163)
-        self.assertEqual(b['maximum_after']['control_probe'], 372)
+        self.assertEqual(b['prior_held_by_attempt']['original']['compile'], 22)
+        self.assertEqual(b['prior_held_by_attempt']['conditional_run01']['compile'], 16)
+        self.assertEqual(b['prior_held']['compile'], 38)
+        self.assertEqual(b['maximum_after']['compile'], 1642)
+        self.assertEqual(b['maximum_after']['trajectory'], 803)
+        self.assertEqual(b['maximum_after']['occurrence'], 3195)
+        self.assertEqual(b['maximum_after']['control_probe'], 376)
         self.assertFalse(b['reset'])
         e = copy.deepcopy(c.evidence())
-        e['old_caps']['compile'] = 1625
+        e['old_caps']['compile'] = 1641
         with patch.object(c, 'evidence', return_value=e), self.assertRaises(ValueError):
             c.budget()
 
@@ -319,6 +321,36 @@ class MinimalOwnedChildren(unittest.TestCase):
             send.assert_not_called()
         with patch.object(pool, 'identity', return_value=h['identity']), patch.object(pool.os, 'pidfd_open', side_effect=ProcessLookupError):
             pool.send_owned(h, signal.SIGTERM)
+
+
+class SavedPreparationReceiptRegression(unittest.TestCase):
+    def setUp(self):
+        from types import SimpleNamespace
+        self.saved = copy.deepcopy(c.evidence()['preparation'])
+        self.prepared = SimpleNamespace(preparation_hash=self.saved['preparation_hash'], partition_hash='a'*64,
+            exact_rte_lambda_r=self.saved['lambda_r'], extracted_identity_coefficient=self.saved['extracted_identity'],
+            constant_coefficient=self.saved['constant'], coefficient_atol=0., threshold_dropped_component_count=0,
+            deterministic_fragment_indices=tuple(range(7)))
+
+    def test_exact_h8_receipt_without_standalone_partition(self):
+        self.assertNotIn('partition_hash', self.saved)
+        proof = c.verify_saved_preparation(self.prepared, self.saved)
+        self.assertFalse(proof['historical_standalone_partition_hash_present'])
+
+    def test_existing_partition_field_must_match(self):
+        self.saved['partition_hash'] = 'b'*64
+        with self.assertRaisesRegex(ValueError, 'PARTITION_CHANGED'):
+            c.verify_saved_preparation(self.prepared, self.saved)
+
+    def test_saved_hash_drift_is_still_stop(self):
+        self.prepared.preparation_hash = 'c'*64
+        with self.assertRaisesRegex(ValueError, 'PREPARATION_CHANGED'):
+            c.verify_saved_preparation(self.prepared, self.saved)
+
+    def test_missing_required_field_stops_metadata_preflight(self):
+        del self.saved['lambda_r']
+        with self.assertRaisesRegex(ValueError, 'MISSING_FIELD'):
+            c.preparation_receipt_schema(self.saved)
 
 
 if __name__ == '__main__':

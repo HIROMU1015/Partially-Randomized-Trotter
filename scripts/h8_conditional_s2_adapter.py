@@ -73,13 +73,8 @@ def evaluate(task, directory, config, grant):
         # generation. Exact saved hashes reject any basis/normalization drift.
         p = frozen._prepare(ham, prefix)
         ref = c.evidence()['preparation']
-        for field, value in (('preparation_hash', p.preparation_hash), ('partition_hash', p.partition_hash),
-            ('lambda_r', p.exact_rte_lambda_r), ('extracted_identity', p.extracted_identity_coefficient),
-            ('constant', p.constant_coefficient)):
-            c.require(value == ref[field], 'ORIGINAL_PREPARATION_CHANGED:'+field)
-        c.require(p.coefficient_atol == 0. and p.threshold_dropped_component_count == 0
-            and p.deterministic_fragment_indices == tuple(range(7)), 'PREPARATION_ORDER_THRESHOLD')
-        writer.write('preparation_identity.json', dict(saved_preparation=ref, snapshot_sha256=
+        binding = c.verify_saved_preparation(p, ref)
+        writer.write('preparation_identity.json', dict(saved_preparation=ref, partition_binding=binding, snapshot_sha256=
             next(r['sha256'] for r in config['files'] if r['logical_name'] == 'h8_input_snapshot.npz'),
             SCF=0, DF=0, state_generation=0, new_signal=0))
         return p

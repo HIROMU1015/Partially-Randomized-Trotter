@@ -66,6 +66,35 @@ def evidence():
     return read(ROOT/EVIDENCE)
 
 
+def preparation_receipt_schema(receipt):
+    required = {'cell_id', 'constant', 'extracted_identity', 'lambda_r', 'preparation_hash'}
+    require(required.issubset(receipt), 'ORIGINAL_PREPARATION_RECEIPT_MISSING_FIELD')
+    require(all(type(receipt[k]) in (int, float) and math.isfinite(receipt[k])
+                for k in ('constant', 'extracted_identity', 'lambda_r'))
+            and type(receipt['preparation_hash']) is str and len(receipt['preparation_hash']) == 64,
+            'ORIGINAL_PREPARATION_RECEIPT_SCHEMA')
+
+
+def verify_saved_preparation(prepared, receipt):
+    preparation_receipt_schema(receipt)
+    for key, observed in (('preparation_hash', prepared.preparation_hash),
+        ('lambda_r', prepared.exact_rte_lambda_r), ('extracted_identity', prepared.extracted_identity_coefficient),
+        ('constant', prepared.constant_coefficient)):
+        require(observed == receipt[key], 'ORIGINAL_PREPARATION_CHANGED:'+key)
+    # The pinned c31 codec hashes partition_hash INSIDE preparation_hash
+    # (df_partial_s2.py:447). H8CoreSignalPort's saved receipt has no standalone
+    # partition_hash. Keep the stronger original preparation hash comparison;
+    # never invent a missing historical receipt field or accept hash drift.
+    require(type(prepared.partition_hash) is str and len(prepared.partition_hash) == 64
+        and prepared.coefficient_atol == 0. and prepared.threshold_dropped_component_count == 0
+        and prepared.deterministic_fragment_indices == tuple(range(7)), 'PREPARATION_PARTITION_ORDER_THRESHOLD')
+    if 'partition_hash' in receipt:
+        require(prepared.partition_hash == receipt['partition_hash'], 'ORIGINAL_PARTITION_CHANGED')
+    return dict(saved_preparation_hash=receipt['preparation_hash'], live_partition_hash=prepared.partition_hash,
+                historical_standalone_partition_hash_present='partition_hash' in receipt,
+                partition_binding='partition_hash included in exact pinned preparation_hash payload')
+
+
 def tasks(q):
     require(q in (4, 8), 'CANDIDATE_Q')
     cid = f'B2_p7_q{q}_2nd_r4_K4'
@@ -75,11 +104,14 @@ def tasks(q):
 
 def budget():
     e = evidence()
-    prior = {k: e['old_ledger']['known'].get(k, 0)+e['old_ledger']['reserved'].get(k, 0) for k in CAPS}
+    extra = e.get('additional_nonrefundable_reservations', {})
+    held = {k: e['old_ledger']['reserved'].get(k, 0)+extra.get(k, 0) for k in CAPS}
+    prior = {k: e['old_ledger']['known'].get(k, 0)+held[k] for k in CAPS}
     total = {k: prior[k]+CAPS[k] for k in CAPS}
     require(all(total[k] <= e['old_caps'][k] for k in CAPS), 'ORIGINAL_APPROVED_CAP_EXCEEDED')
     carry = e['old_ledger']['preserved_carry']
-    return dict(prior_known=e['old_ledger']['known'], prior_held=e['old_ledger']['reserved'],
+    return dict(prior_known=e['old_ledger']['known'], prior_held=held,
+                prior_held_by_attempt=dict(original=e['old_ledger']['reserved'], conditional_run01=extra),
                 carry=carry, new_maximum=CAPS, maximum_after=total,
                 original_listed_lineage_after=dict(compile=carry['listed_known_plus_reserved_compile']+total['compile'],
                     trajectory=carry['listed_known_plus_reserved_trajectory']+total['trajectory']),
@@ -89,6 +121,7 @@ def budget():
 
 def plan():
     e = evidence()
+    preparation_receipt_schema(e['preparation'])
     all_tasks = tasks(4)+tasks(8)
     seeds = [t['seed'] for t in all_tasks]
     require(len(set(seeds)) == 16 and not set(seeds)&set(e['original_seeds']), 'SEED_COLLISION')
