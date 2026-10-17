@@ -1,3 +1,7 @@
+## 2026-10-18 H8 s2条件付きpilot run02：全16本・32軸完了
+
+[実測結果・終了監査](docs/research/track_a_h8_conditional_s2_run02_results_20261018.md)。SOURCE03479a75…、q4/q8各条件付きn8、paired32 full-wrapper compileを一回完了。各軸RZ平均はq4=127062.125、q8=255555.875。wall714.528秒、最大単一worker RSS1.024GiB、全worker/driver/witness native exit0・回収・最終gate PASS。元n32と混合せず、s4 null・bias/shot/費用ランキング/削減率不変。旧STOP・carry・未返却予約を保持、追加科学dispatch0、mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-18 H8 s2 pilot：worker停止signalの誤変換を修正・人工32検査PASS
 
 [修正・並列化点検](docs/research/track_a_h8_conditional_s2_worker_fix_20261018.md)。SOURCE03479a75…、停止を通常matrix例外で包ませずchain/signal/phaseを保存。人工28＋既存4 PASS、旧metadata修正の人工native接続も確認。最大8 trajectory並列・paired evolution再利用・streaming LRUを維持、実速度未測定。実H8 sampling/compile/retry・新有効grant0。旧STOP保持、再実行は別途明示承認後。以下は各時点の履歴。

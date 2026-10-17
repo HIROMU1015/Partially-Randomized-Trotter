@@ -1,3 +1,7 @@
+## 2026-10-18 H8 s2条件付きpilot run02：全16本・32軸完了
+
+[実測結果・終了監査](docs/research/track_a_h8_conditional_s2_run02_results_20261018.md)。SOURCE03479a75…、q4/q8各条件付きn8、paired32 full-wrapper compileを一回完了。各軸RZ平均はq4=127062.125、q8=255555.875。wall714.528秒、最大単一worker RSS1.024GiB、全worker/driver/witness native exit0・回収・最終gate PASS。元n32と混合せず、s4 null・bias/shot/費用ランキング/削減率不変。旧STOP・carry・未返却予約を保持、追加科学dispatch0、mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-17 H8：主要6軸実測反映の限定再会計完了
 
 [結果・監査](docs/research/track_a_h8_six_axis_reaccount_run01_results_20261017.md)。SOURCE aa984d98…、保存3800行/40比較、科学dispatch1、native exit0・全回収・最終gate PASS。旧32/PR/SE/shot不変、winner変更0、model推定は残存。追加compile/signal/sampling/fit/retry0、mandatory STOP。以下は各時点の履歴。
