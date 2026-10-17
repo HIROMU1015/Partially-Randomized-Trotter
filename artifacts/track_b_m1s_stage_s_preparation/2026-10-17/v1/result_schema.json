@@ -1,0 +1,379 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema",
+    "status",
+    "evidence",
+    "coverage_scope",
+    "provenance",
+    "failure",
+    "scientific_GO",
+    "RPE_success",
+    "native_costs",
+    "total_resources",
+    "global_integer_impossibility",
+    "one_shot_consumed",
+    "retry_count",
+    "mandatory_STOP",
+    "comparisons"
+  ],
+  "properties": {
+    "schema": {
+      "const": "m1s_stage_s_v1_result"
+    },
+    "status": {
+      "enum": [
+        "TECHNICAL_STOP",
+        "STAGE_S_COMPLETE_AWAITING_USER_JUDGMENT"
+      ]
+    },
+    "evidence": {
+      "const": "CONDITIONAL_ENGINEERING_NOT_CERTIFIED"
+    },
+    "coverage_scope": {
+      "const": "SAVED_CONDITIONAL_RADII_IDEAL_MEAN_ONLY"
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "failure": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "scientific_GO": {
+      "type": "null"
+    },
+    "RPE_success": {
+      "type": "null"
+    },
+    "native_costs": {
+      "type": "null"
+    },
+    "total_resources": {
+      "type": "null"
+    },
+    "global_integer_impossibility": {
+      "const": false
+    },
+    "one_shot_consumed": {
+      "const": true
+    },
+    "retry_count": {
+      "const": 0
+    },
+    "mandatory_STOP": {
+      "const": true
+    },
+    "comparisons": {
+      "type": "array",
+      "minItems": 48,
+      "maxItems": 48,
+      "items": {
+        "type": "object",
+        "required": [
+          "split",
+          "R",
+          "delta",
+          "T",
+          "comparator",
+          "old_pi3_gate_status",
+          "old_absolute_contrast_status",
+          "new_stage_s_status"
+        ],
+        "properties": {
+          "split": {
+            "enum": [
+              "G3",
+              "G6",
+              "G9"
+            ]
+          },
+          "R": {
+            "enum": [
+              2,
+              4
+            ]
+          },
+          "delta": {
+            "enum": [
+              "1/8",
+              "1/16"
+            ]
+          },
+          "T": {
+            "enum": [
+              "1",
+              "4"
+            ]
+          },
+          "comparator": {
+            "enum": [
+              "ordinary",
+              "independent_pm"
+            ]
+          },
+          "old_pi3_gate_status": {
+            "enum": [
+              "SATISFIED",
+              "NOT_SATISFIED",
+              "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED"
+            ]
+          },
+          "old_absolute_contrast_status": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "new_stage_s_status": {
+            "enum": [
+              "NOT_EVALUATED",
+              "CARRIED_PI3_NOT_SATISFIED_NOT_EVALUATED",
+              "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED",
+              "CAP_EDGE_STRICT_INTEGER_WITNESS",
+              "CAP_EDGE_NO_WITNESS_GLOBAL_UNDETERMINED",
+              "ARITHMETIC_UNRESOLVED"
+            ]
+          },
+          "R_cont_cap_interval": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "string",
+              "pattern": "^-?[0-9]+/[1-9][0-9]*$"
+            }
+          },
+          "S_shared_at_cap_interval": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "string",
+              "pattern": "^-?[0-9]+/[1-9][0-9]*$"
+            }
+          },
+          "S_comparator_at_cap_interval": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "string",
+              "pattern": "^-?[0-9]+/[1-9][0-9]*$"
+            }
+          },
+          "n_shared_cap_left": {
+            "type": "object",
+            "required": [
+              "interval",
+              "resolved",
+              "value",
+              "rule"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "interval": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "resolved": {
+                "type": "boolean"
+              },
+              "value": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "rule": {
+                "const": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+              }
+            }
+          },
+          "n_comparator_cap_left": {
+            "type": "object",
+            "required": [
+              "interval",
+              "resolved",
+              "value",
+              "rule"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "interval": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "resolved": {
+                "type": "boolean"
+              },
+              "value": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "rule": {
+                "const": "floor(S_at_cap)+1_for_left_limit_of_strictly_decreasing_S"
+              }
+            }
+          },
+          "all_gamma_impossibility_established": {
+            "const": false
+          },
+          "nonempty_open_region_existence_witness": {
+            "type": "boolean"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "new_stage_s_status": {
+                  "enum": [
+                    "CAP_EDGE_STRICT_INTEGER_WITNESS",
+                    "CAP_EDGE_NO_WITNESS_GLOBAL_UNDETERMINED"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "R_cont_cap_interval",
+                "S_shared_at_cap_interval",
+                "S_comparator_at_cap_interval",
+                "n_shared_cap_left",
+                "n_comparator_cap_left",
+                "all_gamma_impossibility_established",
+                "nonempty_open_region_existence_witness"
+              ],
+              "properties": {
+                "n_shared_cap_left": {
+                  "properties": {
+                    "resolved": {
+                      "const": true
+                    },
+                    "value": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "n_comparator_cap_left": {
+                  "properties": {
+                    "resolved": {
+                      "const": true
+                    },
+                    "value": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "new_stage_s_status": {
+                  "const": "CAP_EDGE_STRICT_INTEGER_WITNESS"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "nonempty_open_region_existence_witness": {
+                  "const": true
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "new_stage_s_status": {
+                  "enum": [
+                    "CARRIED_PI3_NOT_SATISFIED_NOT_EVALUATED",
+                    "G9_ABSOLUTE_GAIN_UNRESOLVED_NOT_TESTED"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "R_cont_cap_interval"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "S_shared_at_cap_interval"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "S_comparator_at_cap_interval"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "n_shared_cap_left"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "n_comparator_cap_left"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "STAGE_S_COMPLETE_AWAITING_USER_JUDGMENT"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "failure": {
+            "type": "null"
+          },
+          "comparisons": {
+            "items": {
+              "properties": {
+                "new_stage_s_status": {
+                  "not": {
+                    "const": "NOT_EVALUATED"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
