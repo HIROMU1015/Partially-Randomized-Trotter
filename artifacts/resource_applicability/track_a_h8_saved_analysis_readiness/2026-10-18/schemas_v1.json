@@ -1,0 +1,77 @@
+{
+  "schema": "H8_SAVED_ANALYSIS_STRUCTURAL_SCHEMAS_V1",
+  "trajectory": {
+    "required": [
+      "candidate",
+      "replica",
+      "phase",
+      "law",
+      "seed",
+      "cosine",
+      "sine",
+      "event_digest_cosine",
+      "event_digest_sine"
+    ],
+    "phase": "confirmation",
+    "law": "unconditional",
+    "cost_type": "nonnegative integer",
+    "event_pair": "must match",
+    "each_n": 32
+  },
+  "endpoint": {
+    "required": [
+      "id",
+      "bias_kind",
+      "epsilon",
+      "factor",
+      "candidates",
+      "comparator",
+      "saved_PR_winner"
+    ],
+    "candidate_fields": [
+      "eligible",
+      "shots",
+      "saved_G_exact"
+    ],
+    "shots": "cosine/sine saved nonnegative integers; unavailable only for ineligible"
+  },
+  "rare_result": {
+    "required": [
+      "candidate",
+      "endpoint",
+      "status",
+      "comparator",
+      "boundary",
+      "unobserved_s2_multi_mean",
+      "unobserved_s4_mean"
+    ],
+    "boundary": "coefficients and remaining G as Decimal80 strings, no unknown cost imputation"
+  },
+  "selection_result": {
+    "required": [
+      "endpoints",
+      "bootstrap_replicates",
+      "shared_resampling_indices_digest",
+      "simultaneous_coverage_certified"
+    ],
+    "mean_and_variance": "exact Fraction strings",
+    "bootstrap_intervals": "exploratory empirical quantiles, not CI"
+  },
+  "contract_required": [
+    "analysis_family",
+    "estimand",
+    "candidate_set",
+    "epsilon_scope",
+    "bias_mode",
+    "allowance_scope",
+    "eligibility_mask",
+    "statistical_method",
+    "assumptions",
+    "family_alpha",
+    "bootstrap_replicates",
+    "resampling_seed_policy",
+    "numeric_precision",
+    "STOP_conditions"
+  ],
+  "enforcement": "PYTHON_FIELD_DOMAIN_AND_IDENTITY_CHECKS; NO_SEPARATE_JSON_SCHEMA_ENGINE_CLAIM"
+}

@@ -1,3 +1,7 @@
+## 2026-10-18 H8：希少層境界・選択効果の保存値解析完了
+
+[結果・来歴・限界](../docs/research/track_a_h8_rare_sensitivity_selection_run01_results_20261018.md)。RARE 40条件（32境界/8不適格）とSELECTION元4精度の探索的bootstrap2000を別grantで各一回完了、両native exit0・mandatory STOP。人工135件PASS。未知費用はnull、母平均/厳密bias/selection-adjusted coverageなし。PR sampling/compile/fit/shot再計算0、旧結果/ledger/STOPは保持。 以下は各時点の履歴。
+
 ## 2026-10-18 H8 rare-tail / selection readiness
 
 `run_h8_rare_tail_selection_readiness.py`はbuilt-in syntheticだけ。science/config/grantは入力を開く前にexit2拒否。`audit_h8_rare_tail_selection_evidence.py`は36固定Git fileとpilot closure9のmetadata/literal監査だけ。新確率/SE/費用/順位を評価しない。[設計](../docs/research/track_a_h8_rare_tail_selection_readiness_20261018.md)。
