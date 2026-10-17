@@ -4,6 +4,7 @@ from pathlib import Path
 import h8_phase_b2_recovery_contract as c
 import h8_phase_b2_recovery_runtime as r
 import h8_strengthened_export as exported
+from h8_b2_saved_spool_acceptance import accept_saved
 
 
 def prepare(previous_config,input_paths,before_path,directory,*,source=None):
@@ -33,19 +34,19 @@ def prepare(previous_config,input_paths,before_path,directory,*,source=None):
   input_mapping={row['logical_name']:row['path'] for row in files},files=files,font_seed=font,resources=p['resources'],
   protected_files=[dict(row,path=path) for path,row in before['protected'].items()],protected_worktrees=before['worktrees'],
   output=str(directory/'output01'),lock=str(directory/'B2_RECOVERY_ONE_SHOT'),control=str(directory/'control01'))
- r.verify_files(cfg,git=source is not None);r.protected(cfg)
+ r.verify_files(cfg,git=source is not None);r.protected(cfg);accept_saved(cfg)
  directory.mkdir(mode=0o700);r.Writer(directory).write('config_UNAPPROVED.json',cfg)
  grant=dict(schema='H8_PHASE_B2_RECOVERY_NEW_SCOPE_GRANT_V1',scope=c.SCOPE,approved_by_user=False,runtime_authorization=False,
   approval_text=None,SOURCE=source,config_sha256=r.sha(directory/'config_UNAPPROVED.json'),plan_sha256=c.digest(p),
   resources=p['resources'],call_caps=p['call_caps'],one_shot=True,retry=False,resume=False,refit=False,C_authorized=False,
-  driver_cpu=None,monitor_cpu=None,worker_cpus=[],allowed_cpus=[],command=None,next_stage_authorized=False,accept_saved_B0_2_axes=False,witness_cpu=None,valid=False)
+  driver_cpu=None,monitor_cpu=None,worker_cpus=[],allowed_cpus=[],command=None,next_stage_authorized=False,accept_saved_B0_2_axes=False,accept_saved_cosine_and_sine_spool=False,witness_cpu=None,valid=False)
  r.Writer(directory).write('grant_INVALID_DRAFT.json',grant)
  receipt=dict(status='PREPARED_NOT_AUTHORIZED',SOURCE=source,plan_sha256=c.digest(p),config_sha256=grant['config_sha256'],
   source_hashes=cfg['source_hashes'],provider_files_verified=len(cfg['provider_hashes']),runtime_files_verified=len(cfg['runtime_file_hashes']),
   provider_map_sha256=c.digest(cfg['provider_hashes']),runtime_map_sha256=c.digest(cfg['runtime_file_hashes']),
   input_receipts=[{k:v for k,v in row.items() if k!='path'} for row in files],
   protected_files_unchanged=len(cfg['protected_files']),protected_worktrees_unchanged=len(cfg['protected_worktrees']),
-  model_sha256=c.MODEL_SHA,axes=p['axes'],compile_concurrency=1,preparation_concurrency=2,physical_cores=5,new_H8_objects=0,new_compile=0,new_fit=0,
+  model_sha256=c.MODEL_SHA,axes=p['axes'],compile_concurrency=1,preparation_concurrency=0,physical_cores=4,new_H8_objects=0,new_compile=0,new_fit=0,
   new_valid_grants=0,fresh_resource_gate_issued=False,next_stage_authorized=False,mandatory_STOP=True)
  r.Writer(directory).write('preparation_receipt.json',receipt)
  return receipt,grant

@@ -53,13 +53,15 @@ def execute(config_path,grant_path,fresh_path):
     try:
         sys.path.insert(0,str(Path(config['provider_root'])/'src'))
         adapter=importlib.import_module('h8_phase_b2_recovery_adapter')
-        accepted=c.saved_B0()
+        from h8_b2_saved_spool_acceptance import accept_saved
+        saved=accept_saved(config);accepted=c.saved_B0()
+        r.Writer(output).write('saved_cosine_and_sine_spool_acceptance.json',saved)
         r.Writer(output).write('saved_B0_acceptance.json',dict(acceptance_scope=c.SCOPE,original_B2_status='STOP',axes=accepted['axes'],accepted_by_new_grant=g['accept_saved_B0_2_axes']))
         rows=adapter.evaluate(config,permit,r.Writer(output,permit.guard))
         r.verify_files(config);r.protected(config)
         terminal=dict(scope=c.SCOPE,SOURCE=config['SOURCE'],status='COMPLETE_MANDATORY_STOP',axes=rows,
             actual_calls=permit.actual(),irrevocable_reservations=permit.reserved,settlements=permit.settled,
-            next_stage_authorized=False,fit_performed=False,retry=False,saved_B0_axes=accepted['axes'])
+            next_stage_authorized=False,fit_performed=False,retry=False,saved_B0_axes=accepted['axes'],saved_cosine_axis=saved['saved_cosine'])
         terminal['validation']=c.validate_complete(rows,permit.actual())
         r.Writer(output).write('terminal.json',terminal)
     except BaseException as exc:

@@ -28,13 +28,13 @@ def verify_authorization(config,g,*,config_sha,affinity=None):
         g.get('config_sha256')!=config_sha or g.get('plan_sha256')!=c.digest(p) or
         config.get('plan_sha256')!=c.digest(p) or g.get('resources')!=p['resources'] or
         g.get('call_caps')!=p['call_caps'] or config.get('resources')!=p['resources'] or
-        any(g.get(k) is not v for k,v in [('one_shot',True),('retry',False),('resume',False),('next_stage_authorized',False),('C_authorized',False),('refit',False),('accept_saved_B0_2_axes',True)])):
+        any(g.get(k) is not v for k,v in [('one_shot',True),('retry',False),('resume',False),('next_stage_authorized',False),('C_authorized',False),('refit',False),('accept_saved_B0_2_axes',True),('accept_saved_cosine_and_sine_spool',True)])):
         raise ValueError('NEW_EXPLICIT_H8_B2_GRANT_REQUIRED')
     cpus=[g.get('driver_cpu'),g.get('monitor_cpu'),*g.get('worker_cpus',[]),g.get('witness_cpu')]
     available=os.sched_getaffinity(0) if affinity is None else affinity
-    if (len(g.get('worker_cpus',[]))!=2 or len(cpus)!=5 or len(set(cpus))!=5 or any(type(x)is not int or x<0 for x in cpus)
+    if (len(g.get('worker_cpus',[]))!=1 or len(cpus)!=4 or len(set(cpus))!=4 or any(type(x)is not int or x<0 for x in cpus)
             or g.get('allowed_cpus')!=cpus or not set(cpus)<=available):
-        raise ValueError('FIVE_DISJOINT_EXPLICIT_CPUS_REQUIRED')
+        raise ValueError('FOUR_DISJOINT_EXPLICIT_CPUS_REQUIRED')
     paths=[private_path(config[k]) for k in ('output','control','lock')]
     if len(set(paths))!=3:raise ValueError('DISJOINT_PRIVATE_PATHS_REQUIRED')
     return cpus
@@ -204,14 +204,14 @@ def topology(cpus):
         # Include SMT siblings in the idle check, without changing their affinity.
         for span in (p/'thread_siblings_list').read_text().strip().split(','):
             ends=list(map(int,span.split('-')));siblings.update(range(ends[0],ends[-1]+1))
-    if len(identities)!=5 or len(set(identities))!=5:raise ValueError('FIVE_PHYSICAL_CORES_REQUIRED')
+    if len(identities)!=4 or len(set(identities))!=4:raise ValueError('FOUR_PHYSICAL_CORES_REQUIRED')
     relative=next(x.split(':',2)[2] for x in Path('/proc/self/cgroup').read_text().splitlines() if x.startswith('0::'))
     root=Path('/sys/fs/cgroup');group=root/relative.lstrip('/')
     while group.is_relative_to(root):
         quota=group/'cpu.max'
         if quota.exists():
             q,period=quota.read_text().split()
-            if q!='max' and int(q)<5*int(period):raise ValueError('EFFECTIVE_CPU_QUOTA_BELOW_FIVE')
+            if q!='max' and int(q)<4*int(period):raise ValueError('EFFECTIVE_CPU_QUOTA_BELOW_FOUR')
         if group==root:break
         group=group.parent
     return siblings
