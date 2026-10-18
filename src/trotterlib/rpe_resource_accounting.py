@@ -553,7 +553,10 @@ def _provider_evaluate(
 def _hoeffding_shots(epsilon_coordinate: float, alpha: float) -> int:
     if not math.isfinite(epsilon_coordinate) or epsilon_coordinate <= 0.0:
         raise ValueError("epsilon_coordinate must be finite and positive.")
-    value = (2.0 / (epsilon_coordinate * epsilon_coordinate)) * math.log(
+    epsilon_squared = epsilon_coordinate * epsilon_coordinate
+    if epsilon_squared == 0.0:
+        raise OverflowError("Hoeffding coordinate square underflowed.")
+    value = (2.0 / epsilon_squared) * math.log(
         2.0 / alpha
     )
     if not math.isfinite(value):
