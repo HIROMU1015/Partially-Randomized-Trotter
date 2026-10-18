@@ -1,4 +1,6 @@
 
+H8独立確認のcontrol/両軸並列化：`h8_pr_confirmation_parallel.py`、native完全結果だけを受け入れる`prepare_h8_pr_confirmation_resume.py`。[起動snapshot](../docs/research/track_a_h8_confirmation_parallel_resume01_20261019.md)。
+
 H8固定2候補の独立n48確認：`h8_pr_confirmation.py`（実行）、`prepare_h8_pr_confirmation.py`（metadata sealのみ）、`launch_h8_pr_confirmation.py`（own-child native witness）。[起動snapshot](../docs/research/track_a_h8_new_pr_confirmation_run01_20261018.md)。
 ## 2026-10-18 H8 A_COST：候補単位の並列投入・引継ぎ準備
 

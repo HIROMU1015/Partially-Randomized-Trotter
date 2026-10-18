@@ -1,4 +1,6 @@
 
+[H8独立確認：受入修正・control/両軸並列continuation（結果未完了）](research/track_a_h8_confirmation_parallel_resume01_20261019.md)。
+
 [H8新PR2候補・独立n48確認の起動snapshot（結果未完了）](research/track_a_h8_new_pr_confirmation_run01_20261018.md)。
 ## 2026-10-18 A_COST 3系完了・保存B/D解析結果
 
