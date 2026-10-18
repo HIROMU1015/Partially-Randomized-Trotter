@@ -1087,3 +1087,7 @@ N3保存帰属v1：[公開・remote取得確認](docs/research/n3_saved_attribut
 # 2026-10-18 A2 Phase B固定DFの初回科学実行
 
 [結果・対象・費用・STOP](docs/research/qc_a2_phase_b_execution_20261018/results_and_stop.md)、[証拠索引](docs/research/qc_a2_phase_b_execution_20261018/evidence_index.json)、[引継ぎ](docs/research/qc_a2_phase_b_execution_20261018/decision_handoff.md)。SOURCE・正式契約C不変、独立checker受理、十分step比較完了。retry/修正0、消費済みclaim保全。A2研究未採択、元分子・QPE/native総費用未認定、mandatory STOP。
+
+# 2026-10-18 A2現行実用化経路の区切り・成果保存
+
+[ユーザー方針決定](docs/research/qc_a2_current_route_handoff_20261018/decision_record.md)、[成果・限界](docs/research/qc_a2_current_route_handoff_20261018/achievements_and_limits.md)、[終了・再開ハンドオフ](docs/research/qc_a2_current_route_handoff_20261018/handoff.md)、[固定証拠索引](docs/research/qc_a2_current_route_handoff_20261018/evidence_index.json)。現在の十分step改善経路への追加投資を見送る。A2全体NOT_ADOPTED・A1 CLOSED・K1-F未承認、他研究・旧証拠・消費済みclaimを保持。新科学0、mandatory STOP。

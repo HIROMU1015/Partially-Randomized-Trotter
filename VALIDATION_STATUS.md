@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-18 A2現行実用化経路の方針固定：新validationなし
+
+[ユーザー採択済み方針・レビュー原本](docs/research/qc_a2_current_route_handoff_20261018/decision_record.md)と[再開条件](docs/research/qc_a2_current_route_handoff_20261018/handoff.md)。既存の固定DF checker受理・ENCLOSED・COUNTER_LARGER_SUFFICIENT_STEPを保持し、今回のpilotで現行経路への追加投資を見送る。新計算・保存値再解析・科学レビュー/証明・SOURCE/契約/claim変更0。A2 NOT_ADOPTED、A1 CLOSED、K1-F未承認、旧global FAILと他validationは不変。数学保証撤回・元分子/真PF誤差/総資源の一般判断は行わない。公開・保全確認後mandatory STOP。以下は過去の時点記録。
+
 ## 2026-10-18 A2 Phase B固定DF：ローカルexact checker受理
 
 [結果・scope・費用](docs/research/qc_a2_phase_b_execution_20261018/results_and_stop.md)、[raw](artifacts/qc_a2_phase_b_execution/2026-10-18/attempt_1/ledger/result.json)、[byte監査](artifacts/qc_a2_phase_b_execution/2026-10-18/attempt_1/evidence_byte_manifest.json)。H4／1.00Å／STO-3G／保存DF rank12／N4／全12block／固定S2、d=.001Ha/α_spec=.1で初回one-shot完了。独立実装checker受理はローカル固定DF対象、immutable CI・外部独立再実験・元分子保証ではない。step `ENCLOSED`／`COUNTER_LARGER_SUFFICIENT_STEP`。旧global FAILと他validationは変更せず、A2 NOT_ADOPTED・A1 CLOSED・K1-F未承認、消費済みclaim保全・mandatory STOP。以下は過去の検証時点記録。
