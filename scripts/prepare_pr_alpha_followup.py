@@ -52,6 +52,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source",required=True)
     args=parser.parse_args()
+    args.source=subprocess.check_output(["git","-C",str(ROOT),"rev-parse","--verify",args.source+"^{commit}"],text=True).strip()
     OUT.mkdir(parents=True,exist_ok=True)
     closure=[]
     for path in SOURCE_PATHS:
