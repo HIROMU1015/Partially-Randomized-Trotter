@@ -1,0 +1,250 @@
+{
+  "schema": "g7_g9_p1_static_reuse_inventory_v1",
+  "technical_status": "P1_PRELIMINARY_PUBLIC_PREPARATION_CROSSWALK_COMPLETE",
+  "base_commit": "ff0bed24ba8fdb361a2890646ef84347ae37d457",
+  "preparation_commit": "c8cbeb18f76aef2cb1329d8c810036372fa07cc0",
+  "categories": [
+    "DIRECTLY_REUSABLE",
+    "REUSABLE_IF_CONTRACT_MATCHES",
+    "ADDITIONAL_BINDING_REQUIRED",
+    "ADDITIONAL_EVIDENCE_REQUIRED",
+    "NOT_COMPARABLE",
+    "UNKNOWN"
+  ],
+  "rows": [
+    {
+      "id": "R01",
+      "target": "G9登録matched比較",
+      "classification": "DIRECTLY_REUSABLE",
+      "fixed_field_or_function": "G9R、G9RAW `/rows`、G9AUD、前回ABASE",
+      "conditions_and_limits": "同じP5・G9 policy・3-qubit I1・direct primary6の既存T/CX・affine判定を引用。再縮約/compile不要",
+      "evidence_ids": [
+        "G9R",
+        "G9RAW",
+        "G9AUD",
+        "ABASE"
+      ],
+      "scope": "Technical reuse classification only, not scientific superiority or policy adoption."
+    },
+    {
+      "id": "R02",
+      "target": "G7の保存B1/B2",
+      "classification": "DIRECTLY_REUSABLE",
+      "fixed_field_or_function": "BREUSE→G7RAW `/rows/4`〜`/rows/7`",
+      "conditions_and_limits": "BCの旧4方式・旧budget・helper/query scopeの引用。新粒度・G9 Nへの換算を含めない",
+      "evidence_ids": [
+        "BREUSE",
+        "G7RAW",
+        "BC"
+      ],
+      "scope": "Technical reuse classification only, not scientific superiority or policy adoption."
+    },
+    {
+      "id": "R03",
+      "target": "G7 N×G9 native総量の直接比較",
+      "classification": "NOT_COMPARABLE",
+      "fixed_field_or_function": "BC `/fixed_science_policy`対G9MC confidence/bias/resource",
+      "conditions_and_limits": "16/22 axes・3ρ/8ρ等が不一致。provider一致でも解消しない",
+      "evidence_ids": [
+        "BC",
+        "G9MC"
+      ],
+      "scope": "Technical reuse classification only, not scientific superiority or policy adoption."
+    },
+    {
+      "id": "R04",
+      "target": "G9の19 RZ資産",
+      "classification": "REUSABLE_IF_CONTRACT_MATCHES",
+      "fixed_field_or_function": "G9KEY `/keys`、G9RAW `/synthesis_cache/<ratio>`",
+      "conditions_and_limits": "full angle-key、scale、ε、strict phase、tool/options、sequence/hash、正負規約が一致する既存key。新合成不要",
+      "evidence_ids": [
+        "G9KEY",
+        "G9RAW",
+        "G9MC"
+      ],
+      "scope": "Technical reuse classification only, not scientific superiority or policy adoption."
+    },
+    {
+      "id": "R05",
+      "target": "G7由来18 keyの来歴",
+      "classification": "DIRECTLY_REUSABLE",
+      "fixed_field_or_function": "G9KEY acquisition=`reuse_G7`、G7RAW cache、G9MAN `/reused_sequence_keys`",
+      "conditions_and_limits": "旧保存record/sequenceの同一性は来歴として利用可。旧wrapper費用・独立再現を意味しない",
+      "evidence_ids": [
+        "G9KEY",
+        "G7RAW",
+        "G9MAN"
+      ],
+      "scope": "Technical reuse classification only, not scientific superiority or policy adoption."
+    },
+    {
+      "id": "R06",
+      "target": "新cache guardとの結合",
+      "classification": "ADDITIONAL_BINDING_REQUIRED",
+      "fixed_field_or_function": "BS `rz_cache_witness`、G9 cache `key/angle_key/epsilon/...`",
+      "conditions_and_limits": "row形は対応。引数keyはratioではなくfull `atan:…:scale:1:epsilon:…`。新precision_id/tool manifestとのbindingが未固定",
+      "evidence_ids": [
+        "BS",
+        "G9RAW",
+        "G9MC"
+      ],
+      "scope": "Technical reuse classification only, not scientific superiority or policy adoption."
+    },
+    {
+      "id": "R07",
+      "target": "negative RZ/actual adjoint/W",
+      "classification": "ADDITIONAL_BINDING_REQUIRED",
+      "fixed_field_or_function": "G7 CP `bind_synthesized_provider_ir`、G9N `inverse/adjoint`、BS `price_row`",
+      "conditions_and_limits": "新price rowが求めるforward artifact SHA/検証flagと、旧SOURCE・正列hash・W保持規約を結ぶ。負列再合成は不要",
+      "evidence_ids": [
+        "CP",
+        "G9N",
+        "BS"
+      ],
+      "scope": "Technical reuse classification only, not scientific superiority or policy adoption."
+    },
+    {
+      "id": "R08",
+      "target": "具体CQ model",
+      "classification": "REUSABLE_IF_CONTRACT_MATCHES",
+      "fixed_field_or_function": "G9MC `/input/provider`、`exact_provider_delta`、G9N `V/CQ`",
+      "conditions_and_limits": "同じQ/basis/control・exact Clifford+T contextを別途採択する場合。encoding/sectorを分子へ外挿しない",
+      "evidence_ids": [
+        "G9MC",
+        "G9N"
+      ],
+      "scope": "Technical reuse classification only, not scientific superiority or policy adoption."
+    },
+    {
+      "id": "R09",
+      "target": "将来C1の物理provider",
+      "classification": "UNKNOWN",
+      "fixed_field_or_function": "BC `/C1_proposal/physical_Q=null`、`/decisions_required`",
+      "conditions_and_limits": "公開準備版では未選定。将来のA実装/採択を予測しない",
+      "evidence_ids": [
+        "BC"
+      ],
+      "scope": "Technical reuse classification only, not scientific superiority or policy adoption."
+    },
+    {
+      "id": "R10",
+      "target": "既存event価格→新価格schema",
+      "classification": "ADDITIONAL_BINDING_REQUIRED",
+      "fixed_field_or_function": "G9RAW `/rows/*/events/*/{event,native_ir,cost}`、PRICE、BS `price_key/price_row`",
+      "conditions_and_limits": "event context/implementation digest、9-field ID registry、artifact/certificate SHA、整数区間への記録対応が必要。primitive価格の完成poolと誤認しない",
+      "evidence_ids": [
+        "G9RAW",
+        "PRICE",
+        "BS"
+      ],
+      "scope": "Technical reuse classification only, not scientific superiority or policy adoption."
+    },
+    {
+      "id": "R11",
+      "target": "compiler/cancellation",
+      "classification": "REUSABLE_IF_CONTRACT_MATCHES",
+      "fixed_field_or_function": "G9MC `/compiler`、G9N `native_ir/simplify/cost`",
+      "conditions_and_limits": "同じlowering・CZ基底・adjacent cancellation・cost conventionなら引用可。whole-eventをliteral primitive加算へ置換不可",
+      "evidence_ids": [
+        "G9MC",
+        "G9N"
+      ],
+      "scope": "Technical reuse classification only, not scientific superiority or policy adoption."
+    },
+    {
+      "id": "R12",
+      "target": "T/CX/1Q座標",
+      "classification": "ADDITIONAL_BINDING_REQUIRED",
+      "fixed_field_or_function": "G9 event `cost.{T,CX,1Q}`、row per_trial/two_axis、PRICE `coordinates`",
+      "conditions_and_limits": "1Q名、event/outer項、per-trial/2-axis・期待/上限を結合。新N/価格で縮約し直す場合は別承認",
+      "evidence_ids": [
+        "G9RAW",
+        "PRICE"
+      ],
+      "scope": "Technical reuse classification only, not scientific superiority or policy adoption."
+    },
+    {
+      "id": "R13",
+      "target": "serial/whole-circuit depth",
+      "classification": "ADDITIONAL_EVIDENCE_REQUIRED",
+      "fixed_field_or_function": "PRICE `/coordinates/serial_depth`、G9N `cost`にdepth fieldなし",
+      "conditions_and_limits": "旧gate数からdepthを推測しない。depthが研究判断に不可欠なときだけ追加scopeを検討",
+      "evidence_ids": [
+        "PRICE",
+        "G9N"
+      ],
+      "scope": "Technical reuse classification only, not scientific superiority or policy adoption."
+    },
+    {
+      "id": "R14",
+      "target": "ancilla/workspace",
+      "classification": "ADDITIONAL_BINDING_REQUIRED",
+      "fixed_field_or_function": "G9RAW row `workspace_beyond_system`、G9MC system3、PRICE ancilla_peak",
+      "conditions_and_limits": "direct1/helper2は旧model scopeで引用可。system・state・compiler workspaceを含む新peak定義と合わせる。N倍しない",
+      "evidence_ids": [
+        "G9RAW",
+        "G9MC",
+        "PRICE"
+      ],
+      "scope": "Technical reuse classification only, not scientific superiority or policy adoption."
+    },
+    {
+      "id": "R15",
+      "target": "CQ errorとevent error",
+      "classification": "ADDITIONAL_BINDING_REQUIRED",
+      "fixed_field_or_function": "BC CQ allowance0、G9MC delta0、G9RAW `event_strict_error_analytic_bound`",
+      "conditions_and_limits": "CQ=0とRZを含むevent=2εを分けて適用。eventをCQ allowance0へ押し込む／誤差をρへ吸収しない",
+      "evidence_ids": [
+        "BC",
+        "G9MC",
+        "G9RAW"
+      ],
+      "scope": "Technical reuse classification only, not scientific superiority or policy adoption."
+    },
+    {
+      "id": "R16",
+      "target": "provider/precision/compilerの不一致",
+      "classification": "NOT_COMPARABLE",
+      "fixed_field_or_function": "BC未決fieldとG9MC固定値、PRICE request",
+      "conditions_and_limits": "不一致の価格を直接転用しない。既存証拠で接続できるか先に確認し、未証明差を0にしない",
+      "evidence_ids": [
+        "BC",
+        "G9MC",
+        "PRICE"
+      ],
+      "scope": "Technical reuse classification only, not scientific superiority or policy adoption."
+    },
+    {
+      "id": "R17",
+      "target": "実state/prep/readout/backend",
+      "classification": "ADDITIONAL_EVIDENCE_REQUIRED",
+      "fixed_field_or_function": "BC C2 null、G9RAW affine K/outer1Q",
+      "conditions_and_limits": "共通非負parameterとして旧結論を引用可能。実QPE/RPE/総資源の取得済み価格ではない",
+      "evidence_ids": [
+        "BC",
+        "G9RAW"
+      ],
+      "scope": "Technical reuse classification only, not scientific superiority or policy adoption."
+    },
+    {
+      "id": "R18",
+      "target": "強い対照の全trial古典実費",
+      "classification": "ADDITIONAL_EVIDENCE_REQUIRED",
+      "fixed_field_or_function": "B3、BS ARMS、G9 `P5Closed.sample`/`cts_events`/runner",
+      "conditions_and_limits": "sample/構成機能はあるが、同等audit/production/全N計測・保存費用が不足。native compileではこの不足を埋められない",
+      "evidence_ids": [
+        "B3",
+        "BS",
+        "P5",
+        "G9N",
+        "G9RUN"
+      ],
+      "scope": "Technical reuse classification only, not scientific superiority or policy adoption."
+    }
+  ],
+  "future_driver_checked": false,
+  "future_work_automatically_authorized": false,
+  "new_provider_adopted": false,
+  "P2_P3_or_new_native_execution": false,
+  "mandatory_STOP": true
+}
