@@ -1,3 +1,5 @@
+
+H8固定2候補の独立n48確認：`h8_pr_confirmation.py`（実行）、`prepare_h8_pr_confirmation.py`（metadata sealのみ）、`launch_h8_pr_confirmation.py`（own-child native witness）。[起動snapshot](../docs/research/track_a_h8_new_pr_confirmation_run01_20261018.md)。
 ## 2026-10-18 H8 A_COST：候補単位の並列投入・引継ぎ準備
 
 [実装・検査・未seal草案](../docs/research/track_a_h8_pr_candidate_parallel_readiness_20261018.md)。SOURCE `87f1f0d528478ad212ba98159db06eec3c78433e`。代表軌道のnative/control合格ごとに同候補の残り7軌道を投入し、元128taskのseedを保持する継続adapter。人工24＋既存承認境界18＋無効CLI2件PASS。現在のrunは保全・継続、新方式launch0、有効grant0。最終receipt受領/静止観測後のsealと切替指示は未実施。以下は履歴。
