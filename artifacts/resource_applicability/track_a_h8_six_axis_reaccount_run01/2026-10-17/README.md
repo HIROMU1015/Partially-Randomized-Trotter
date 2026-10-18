@@ -1,5 +1,7 @@
 # H8主要6軸実測反映：通常・非相殺限定再会計 run01
 
+2026-10-18 A05説明追補：[通常projectionの固定親accounting、α=.025、証拠分類、実測/model単価とn32 SEの意味](../../../../docs/research/pr_alpha_projection_explanation_20261018.md)。既存のfile_receiptsは元公開commitの記録で、今回の説明追補は別receiptに残す。科学数値は変更しない。
+
 [結果報告](../../../../docs/research/track_a_h8_six_axis_reaccount_run01_results_20261017.md)。SOURCE `aa984d98a7b438dc953a829a24fe3d7edc9d0a6b`、科学dispatch1、3800保存行/40比較、native exit0・wait4回収・最終gate PASS。mandatory STOP。
 
 - `comparisons.json` / `comparison_summary_exact.csv`：旧32/184のbefore/after、PR保存費用・SE、exact削減率、適格/不適格/未解決/欠測。

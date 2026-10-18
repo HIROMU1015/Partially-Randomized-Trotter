@@ -1,5 +1,7 @@
 # H8主要6軸実測反映：通常・経験的非相殺の限定費用再会計結果
 
+2026-10-18説明追補（A05）：通常biasの簡略projectionは、α・証拠分類・shot状態を[固定SOURCEと元D0/B0I/Phase A accountingへつなぐ説明](pr_alpha_projection_explanation_20261018.md)と併用する。各軸α=.025、EMPIRICAL、n32費用SEと測定αの分離、実測/model区分を明記した。以下の保存数値・shot・順位は変更していない。
+
 固定SOURCEで通常signed biasと経験的非相殺を一つのstageとして一回実行し、3800保存行・40比較を正常完了した。driver/launcher native exit0・全回収・最終gate `PASS_MANDATORY_STOP`。旧32・PR・SE・保存shot・適格性を変えず、指定6単価だけを更新した。再実行・次stageは行わずmandatory STOP。
 
 強化184候補基準のPR点費用削減率（正はPR低費用、負はPR高費用）。
