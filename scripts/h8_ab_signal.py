@@ -10,6 +10,25 @@ from h6_dba_signal import forward_finite, Progress
 from h8_strengthened_signal import saved_reference
 
 
+def validate_reused_primitive(gate):
+    c.require(gate['status'] == 'PASS' and len(gate['new_time']) == 8
+              and {x['block'] for x in gate['new_time']} == set(range(8)), 'REUSED_PRIMITIVE_COVERAGE')
+    c.require(all(x['times'] == [.025, -.025] and x['probes_per_time'] == 3 and x['status'] == 'PASS'
+        and math.isfinite(x['max_error']) and 0 <= x['max_error'] < 1e-9 for x in gate['new_time']),
+        'REUSED_PRIMITIVE_VALUES')
+    return gate
+
+
+def validate_reused_outer(gate):
+    expected = {(x['prefix'], x['q']) for x in c.plan()['A']['new_outer']} | {(7, 4), (7, 8)}
+    c.require(gate['status'] == 'PASS' and len(gate['rows']) == 9
+              and {(x['prefix'], x['q']) for x in gate['rows']} == expected, 'REUSED_OUTER_COVERAGE')
+    for value in gate['rows']:
+        c.require(math.isfinite(value['error']) and 0 <= value['error'] < 1e-8
+            and all(math.isfinite(value['signal'][a]) for a in ('real', 'imag')), 'REUSED_OUTER_VALUES')
+    return gate
+
+
 def saved_primitive_coverage(config):
     expected = {(str('one' if i == 0 else i - 1), t)
                 for i in range(9) for t in (.2, -.2, .1, -.1, .05, -.05)}
@@ -37,7 +56,6 @@ def signal(config, grant, output):
     from trottertracks.resource_applicability import h8_resource_map_port_v1 as core
     from trottertracks.resource_applicability import h8_sparse_reference_v1 as sparse
     from trottertracks.resource_applicability import ax2b_molecular_ports_v3 as molecular
-    from trotterlib.df_hamiltonian import DFHamiltonian, df_linear_operator
     cells = c.plan()['A']['cells']
     p = old.plan()
     p.update(cells=cells, epsilons=c.plan()['A']['epsilons'], matrix_free=dict(p['matrix_free'], num_threads=1))
@@ -56,9 +74,9 @@ def signal(config, grant, output):
     del topology
     for prefix, prep in views.items():
         ids = prep.randomized_block_indices; lam = prep.exact_rte_lambda_r
-        port.tails[prefix] = df_linear_operator(DFHamiltonian(-prep.extracted_identity_coefficient,
-            m.np.zeros_like(ham.one_body), ham.lambdas[list(ids)].copy(), tuple(ham.g_matrices[i] for i in ids), {}),
-            sector, **p['matrix_free'])[0]
+        # Production df_linear_operator initializes OpenMP even at one thread.
+        # Leave it lazy until the owned signal child; never initialize it in the
+        # fork parent. Sparse/spin data below is safe to share by COW.
         port.oracle_tails[prefix] = sparse.df_operator(-prep.extracted_identity_coefficient / lam, port.one * 0,
             ham.lambdas[list(ids)] / lam, tuple(port.blocks[i] for i in ids), port.calls)
         port.actions(prep)  # Small spin eigensystems warmed once, inherited by COW.
@@ -86,12 +104,18 @@ def signal(config, grant, output):
         c.require(math.isfinite(error) and error < 1e-9, 'NEW_TIME_PRIMITIVE_MISMATCH')
         return dict(block=i, times=[.025, -.025], probes_per_time=3, max_error=error, status='PASS')
 
-    primitive_receipt = batch([dict(id='primitive_' + str(i), block=i) for i in range(8)], primitive,
-                              'new_time_primitive_workers')
-    values = checked_results(primitive_receipt)
-    c.require(len(values) == 8, 'NEW_TIME_COVERAGE')
-    writer.write('primitive_gate.json', dict(status='PASS', new_time=values, old_times=old_gate,
-        primitive_probe_triples=48, new_Gaussian_operations=0))
+    if 'A_saved_new_time_gate' in config['mapping']:
+        gate = validate_reused_primitive(c.read(config['mapping']['A_saved_new_time_gate']))
+        primitive_receipt = dict(status='REUSED_PASS', source_gate_sha256=c.sha(config['mapping']['A_saved_new_time_gate']))
+        writer.write('primitive_gate.json', dict(gate, reused=True, new_primitive_probes=0,
+                                                source_gate_sha256=primitive_receipt['source_gate_sha256']))
+    else:
+        primitive_receipt = batch([dict(id='primitive_' + str(i), block=i) for i in range(8)], primitive,
+                                  'new_time_primitive_workers')
+        values = checked_results(primitive_receipt)
+        c.require(len(values) == 8, 'NEW_TIME_COVERAGE')
+        writer.write('primitive_gate.json', dict(status='PASS', new_time=values, old_times=old_gate,
+            primitive_probe_triples=48, new_Gaussian_operations=0))
     outer = {}
     for q in (4, 8):
         saved = c.read(config['mapping']['old_signal_q' + str(q)])['signals']
@@ -130,15 +154,24 @@ def signal(config, grant, output):
         return dict(prefix=prefix, q=q, signal=m.complex_record(zs[1]), error=error,
                     kind='NEW_SPARSE_OUTER_PF_PAIR', full_H_reference_recomputed=False, certified=False)
 
-    outer_tasks = [dict(id=f'outer_p{x["prefix"]}_q{x["q"]}', **x) for x in c.plan()['A']['new_outer']]
-    outer_receipt = batch(outer_tasks, new_outer, 'outer_workers')
-    for value in checked_results(outer_receipt): outer[(value['prefix'], value['q'])] = value
-    writer.write('outer_gate.json', dict(status='PASS', new_pairs=7, saved_pairs=2,
-        rows=list(outer.values()), new_full_H_reference=0))
+    if 'A_saved_outer_gate' in config['mapping']:
+        gate = validate_reused_outer(c.read(config['mapping']['A_saved_outer_gate']))
+        for value in gate['rows']:
+            outer[(value['prefix'], value['q'])] = value
+        outer_receipt = dict(status='REUSED_PASS', source_gate_sha256=c.sha(config['mapping']['A_saved_outer_gate']))
+        writer.write('outer_gate.json', dict(gate, reused=True, new_outer_pairs=0,
+                                            source_gate_sha256=outer_receipt['source_gate_sha256']))
+    else:
+        outer_tasks = [dict(id=f'outer_p{x["prefix"]}_q{x["q"]}', **x) for x in c.plan()['A']['new_outer']]
+        outer_receipt = batch(outer_tasks, new_outer, 'outer_workers')
+        for value in checked_results(outer_receipt): outer[(value['prefix'], value['q'])] = value
+        writer.write('outer_gate.json', dict(status='PASS', new_pairs=7, saved_pairs=2,
+            rows=list(outer.values()), new_full_H_reference=0))
 
     def candidate(task, directory):
         local = copy(port); local.cells = [task['cell']]; local.plan = dict(p, cells=local.cells)
         local.writer = c.Writer(directory); local.progress = Progress(); local.completed = 0
+        local.tails = {}  # Initialize production/OpenMP in this child only.
         # Each fork owns its copied counters/caches; operator closures reference that same budget.
         def oracle(cell):
             prep = views[cell['prefix']]
@@ -169,6 +202,7 @@ def signal(config, grant, output):
     c.require(len(rows) == 16 and {x['cell']['id'] for x in rows} == {x['id'] for x in cells}, 'EXACT_A_CELLS')
     writer.write('worker_receipts.json', dict(primitive=primitive_receipt, outer=outer_receipt, signal=signal_receipt))
     return dict(stage='A', status='COMPLETE_MANDATORY_STOP', signals=rows, signal_count=16,
-        new_native_compile=0, new_sampling=0, new_full_H_reference=0, new_outer_diagnostic_pairs=7,
+        new_native_compile=0, new_sampling=0, new_full_H_reference=0,
+        new_outer_diagnostic_pairs=0 if 'A_saved_outer_gate' in config['mapping'] else 7,
         saved_outer_diagnostic_pairs_reused=2, formal_accuracy_certified=False,
         global_optimum_claim=False, cost_acquisition_auto_started=False)

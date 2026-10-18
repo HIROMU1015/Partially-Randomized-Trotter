@@ -190,4 +190,57 @@ class NativeFixture(unittest.TestCase):
                 self.assertLess(np.linalg.norm(actual['vectors'][path] - expected['vectors'][path]), 1e-12)
 
 
+class Recovery(unittest.TestCase):
+    def test_production_OpenMP_is_not_initialized_in_fork_parent(self):
+        import ast
+        source = c.ROOT / 'scripts/h8_ab_signal.py'
+        tree = ast.parse(source.read_text())
+        signal = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == 'signal')
+        parent_calls = []
+        def walk(node):
+            if isinstance(node, (ast.FunctionDef, ast.Lambda)): return
+            if isinstance(node, ast.Call): parent_calls.append(ast.unparse(node.func))
+            for child in ast.iter_child_nodes(node): walk(child)
+        for statement in signal.body: walk(statement)
+        self.assertFalse(any('df_linear_operator' in name for name in parent_calls))
+        candidate = next(n for n in signal.body if isinstance(n, ast.FunctionDef) and n.name == 'candidate')
+        self.assertIn('local.tails = {}', ast.unparse(candidate))
+
+    def test_production_operator_inside_owned_child_native_exit_zero(self):
+        import subprocess
+        code = '''
+import sys,os,math,tempfile
+from pathlib import Path
+sys.path.insert(0,str(Path.cwd()/'scripts'));sys.path.insert(0,str(Path.cwd()/'tests'))
+import h8_key_compile_parallel as pool
+from test_h8_ab_validation import NativeFixture
+def callback(task,directory):
+ NativeFixture('test_four_mode_spin_CSR_forward_and_production_horner').test_four_mode_spin_CSR_forward_and_production_horner()
+ return dict(PASS=True)
+with tempfile.TemporaryDirectory() as directory:
+ r=pool.map_owned([dict(id='production_in_child')],callback,cpus=[min(os.sched_getaffinity(0))],
+  limits=dict(max_workers=1),directory=Path(directory)/'workers',deadline=math.inf)
+ assert r['status']=='PASS' and r['all_reaped'] and r['workers'][0]['exit_code']==0
+'''
+        result = subprocess.run([sys.executable, '-B', '-c', code], cwd=c.ROOT,
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_primitive_reuse_rejects_different_scope(self):
+        from h8_ab_signal import validate_reused_primitive
+        gate = dict(status='PASS', new_time=[dict(block=i, times=[.025, -.025], probes_per_time=3,
+            max_error=1e-14, status='PASS') for i in range(8)])
+        validate_reused_primitive(gate)
+        gate['new_time'][0]['times'] = [.05, -.05]
+        with self.assertRaises(ValueError): validate_reused_primitive(gate)
+
+    def test_outer_reuse_requires_all_nine_registered_pairs(self):
+        from h8_ab_signal import validate_reused_outer
+        pairs = c.plan()['A']['new_outer'] + [dict(prefix=7, q=q) for q in (4, 8)]
+        gate = dict(status='PASS', rows=[dict(x, error=1e-14, signal=dict(real=.7, imag=.1)) for x in pairs])
+        validate_reused_outer(gate)
+        gate['rows'].pop()
+        with self.assertRaises(ValueError): validate_reused_outer(gate)
+
+
 if __name__ == '__main__': unittest.main()
