@@ -289,13 +289,24 @@ def theory_stage(plan, output):
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--plan',required=True);parser.add_argument('--grant',required=True)
+    parser.add_argument('--worker',type=int)
     a=parser.parse_args();plan=read(a.plan);grant=read(a.grant);output=verify(plan,grant)
+    if a.worker is not None:
+        if plan['stage']!=4 or not 0<=a.worker<7:raise ValueError('FIXED_SUBORDINATE_WORKER')
+        parent=read(output/'parent_identity.json')
+        if parent['pid']!=os.getppid() or parent['starttime']!=Path('/proc/'+str(os.getppid())+'/stat').read_text().rsplit(')',1)[1].split()[19]:
+            raise ValueError('OWN_PARENT_IDENTITY')
+        same=load('_h46_same',ROOT/'scripts/h46_same_event.py')
+        same.worker(sys.modules[__name__],plan,a.worker,output)
+        return
     output.mkdir(exist_ok=False)
     start=time.monotonic();terminal=dict(status='MANDATORY_STOP_FAILURE',first_stop=None,SOURCE=plan['SOURCE'],
         stage=plan['stage'],plan_digest=lib.digest(plan),grant_digest=lib.digest(grant),mandatory_stop=True,automatic_retry=False)
     try:
-        if plan['stage'] not in (2,3):raise ValueError('STAGE_NOT_IMPLEMENTED_IN_THIS_SOURCE')
-        terminal.update(theory_stage(plan,output))
+        if plan['stage']==4:
+            same=load('_h46_same',ROOT/'scripts/h46_same_event.py')
+            terminal.update(same.coordinator(sys.modules[__name__],plan,output,a.plan,a.grant))
+        else:terminal.update(theory_stage(plan,output))
         for item in plan['inputs'].values():
             if lib.file_hash(item['path'])!=item['sha256']:raise ValueError('INPUT_CHANGED_DURING_RUN')
         # Certify every provider import, rather than trusting a checkout name.

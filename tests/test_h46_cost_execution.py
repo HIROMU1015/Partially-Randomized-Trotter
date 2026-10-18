@@ -6,6 +6,7 @@ import types
 import unittest
 from unittest.mock import patch
 from fractions import Fraction as F
+import tempfile
 
 ROOT=Path(__file__).resolve().parents[1]
 s=importlib.util.spec_from_file_location('h46_exec',ROOT/'scripts/h46_cost_execution.py')
@@ -67,6 +68,56 @@ class AdapterTests(unittest.TestCase):
         x.check_saved_law(a,dict(a))
         with self.assertRaisesRegex(ValueError,'PINNED_NATIVE_LAW'):
             x.check_saved_law(a,dict(a,tau_hex=(.20000000000000004).hex()))
+
+    def test_native_reuse_requires_all_bound_fields(self):
+        same=x.load('_fake_same',ROOT/'scripts/h46_same_event.py')
+        v=dict(cell_id='c',axis='cosine',control='symmetric_directional',fingerprint='f',event_digest='e',compiler_hash='h')
+        kw=dict(candidate='c',axis='cosine',fingerprint='f',event_digest='e',compiler='h')
+        self.assertTrue(same.reusable(v,**kw))
+        for k in v:self.assertFalse(same.reusable(dict(v,**{k:'DIFFERENT'}),**kw))
+
+    def test_attempt_cap_preserves_prior_reservations(self):
+        same=x.load('_fake_same_cap',ROOT/'scripts/h46_same_event.py')
+        with tempfile.TemporaryDirectory(dir='/home/AbeHiromu',prefix='h46-artificial-budget-') as d:
+            p=Path(d)
+            for i in range(8):same.take(x,p,'compile','H4:fake',str(i))
+            with self.assertRaisesRegex(ValueError,'FIXED_SYSTEM_COMPILE_CAP'):same.take(x,p,'compile','H4:fake')
+            self.assertEqual(len((p/'calls.jsonl').read_text().splitlines()),8)
+
+    def test_ratio_interval_retains_endpoints(self):
+        summary=x.load('_fake_summary',ROOT/'scripts/h46_cost_summary.py')
+        r=summary.ratios('10','20','15')
+        self.assertEqual(r['rho_lower'],'3/4');self.assertEqual(r['rho_upper'],'3/2')
+        with self.assertRaises(ValueError):summary.ratios(0,20,15)
+
+    def test_full_panel_synthesis_artificial_only(self):
+        summary=x.load('_fake_panel_summary',ROOT/'scripts/h46_cost_summary.py')
+        with tempfile.TemporaryDirectory(dir='/home/AbeHiromu',prefix='h46-artificial-synthesis-') as d:
+            root=Path(d);out=root/'output';out.mkdir();theory=[];jobs=[]
+            d0={'H4_NATIVE_FIXED16':[],'H6_EXPLORATION92':[]}
+            for system in ('H4','H6'):
+                for cid in x.PANEL[system]:
+                    jobs.append(dict(system=system,candidate=dict(id=cid)))
+                    own=out/(system+'_'+cid);own.mkdir()
+                    paired=[]
+                    for axis in ('cosine','sine'):
+                        x.write(own/('wrapper_'+axis+'.json'),dict(metrics={'RZ':6,'CX':4},raw_native={'cost':{'rz':'9','cx':'9'}},compiled_origin='FAKE',event_digest='event',preparation_hash='p',fingerprint='f',compiler_hash='c'))
+                        for model,value in [('A','10'),('B','8'),('NATIVE_MIXED','9')]:
+                            cost={'rz':value,'cx':value};theory.append(dict(system=system,candidate_id=cid,model=model,axis=axis,lower=cost,upper=cost));paired.append(dict(model=model,axis=axis,cost=cost))
+                    x.write(own/'paired_theory.json',paired)
+                    for epsilon in (.05,.01,.005,.001,.0005):
+                        for factor in ('1.0','10.0'):
+                            d0['H4_NATIVE_FIXED16' if system=='H4' else 'H6_EXPLORATION92'].append(dict(cell_id=cid,epsilon=epsilon,factor=factor,sample_count=1 if cid.startswith('B1') else 8,sample_phase='fake',N_total=3,
+                                accounting=dict(cost_acquisition_eligible=True,axes={'real':{'eligible':True,'shots':1},'imag':{'eligible':True,'shots':2}}),
+                                metrics={metric:dict(axis_means={'cosine':v,'sine':v},G_exact={'numerator':str(3*v),'denominator':'1'}) for metric,v in [('RZ',6),('CX',4)]}))
+            inputs={}
+            for name,data in [('h4_theory',theory),('h6_mixed',[]),('h6_uniform',[]),('saved_accounting',d0)]:
+                path=root/(name+'.json');x.write(path,data);inputs[name]={'path':str(path)}
+            result=summary.summarize(x,dict(inputs=inputs,jobs=jobs),out)
+            self.assertEqual(result['expectation_comparison_rows'],84)
+            self.assertEqual(result['same_event_comparison_rows'],84)
+            self.assertEqual(result['pf_pr_comparison_rows'],360)
+            self.assertEqual(result['preserved_shot_conditions'],70)
 
 
 if __name__=='__main__':unittest.main()
