@@ -1,3 +1,5 @@
+H4 D/P Phase 0：[統合報告](research/track_a_h4_dp_phase0_20261019/integrated_readiness_report.md)、D coverage/契約・P設計/契約・依存関係の6文書。DRAFT_UNAUTHORIZED、科学実行なし。
+
 H4追加4検証: [範囲・契約・結果](research/track_a_h4_followup_20261018.md)。
 
 H4 native D/A/N: [readiness and execution](research/track_a_h4_native_validation_20261018.md).

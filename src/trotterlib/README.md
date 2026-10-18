@@ -1,3 +1,5 @@
+H4 D/Pの今回追加は科学libraryの変更を伴わない技術準備経路。既存native/RTEを再利用し、metadata契約とlazy adapterは `scripts/h4_dp_contract.py` / `scripts/h4_dp_science.py`、人工検査は `tests/test_h4_dp_phase0.py`。詳細 `docs/research/track_a_h4_dp_phase0_20261019/`。
+
 H4追加4検証は既存libraryを再利用する。新library数値実装はなく、scripts/h4_followup_science.py と h4_tol_only_input.py に限定adapterを置く。
 
 H4 native D/A/N reuses the frozen provider DF/native/finite-RTE implementations; orchestration is in `scripts/h4_native_*.py`. See `docs/research/track_a_h4_native_validation_20261018.md`.

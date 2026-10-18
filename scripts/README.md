@@ -1,3 +1,5 @@
+H4 D/P Phase 0：`prepare_h4_dp_phase0.py`（metadata限定）、`seal_h4_dp_phase0.py`（INVALID契約）、`h4_dp_contract.py`、`h4_dp_science.py`（承認後lazy adapter）、`run_h4_dp_verification.py`、`h4_dp_witness.py`。人工検査は `tests/test_h4_dp_phase0.py`。D/P起動は別承認。
+
 H4追加4検証: `prepare_h4_followup.py` / `run_h4_followup.py` / `h4_followup_witness.py`、契約・数値adapter・tol-only入力は `h4_followup_contract.py` / `h4_followup_science.py` / `h4_tol_only_input.py`。
 
 H4 native: `prepare_h4_native.py`, `run_h4_native.py`, `h4_native_witness.py`, `h4_native_contract.py`, `h4_native_science.py`.

@@ -1,3 +1,5 @@
+H4 D/P Phase 0技術準備（科学実行0）：[統合報告](docs/research/track_a_h4_dp_phase0_20261019/integrated_readiness_report.md)。D104候補を照合、55候補110軸案、P9候補・n未計算。D/S_STATS/Pは別承認、mandatory STOP。
+
 H4追加4検証完了：R12 signal、B64軸、T144新規軸、tol-only rank10入力とFP72軸、全native exit0/final gate PASS・mandatory STOP。詳細 `track_a_h4_followup_20261018.md`。以下は履歴。
 
 H4追加検証：[H4固定1 Åの追加4検証](docs/research/track_a_h4_followup_20261018.md)。R境界12 signal、B希少層64軸、T固定δの144新軸、tol-only入力と代表panel72軸。旧結果再利用・別grant・各単位STOP。実行状態は後続receiptを参照。
