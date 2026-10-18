@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "repository": "HIROMU1015/Partially-Randomized-Trotter",
+  "base_commit": "43d6533970e0eb4c430fe1cff2e798d681b707d4",
+  "branch": "track-b-g6-pu-analytic-proof-20261018",
+  "result_status": "DISPROVED",
+  "authorization": "Explicit user authorization for analytical proof/refutation of this P_U only; scientific numerical computation remains unauthorized",
+  "proposition": "For all admissible L,p,x and odd m>=7: U_m<=min(B_3,m,B_form_5+ordinary_tail,m)",
+  "subpropositions": {
+    "P_U,5": "DISPROVED_BY_ONE_EXACT_COUNTEREXAMPLE",
+    "P_U,3": "NOT_STUDIED_AFTER_DECISIVE_COUNTEREXAMPLE"
+  },
+  "counterexample": {
+    "L": "2",
+    "p": [
+      "1/2",
+      "1/2"
+    ],
+    "x": "1",
+    "m": "7",
+    "violated_inequality": "U_7<=B_form_5+ordinary_tail,7",
+    "strict_gap_proved_on_paper": "U_7-B_form_5+ordinary_tail,7 > 13/1024 > 0",
+    "same_target": "Fixed W2a finite P7 and formal P5+ordinary tail; no sampler completion assumed",
+    "dependence": "Scalar definitions depend only on p,x,m, not sigma or additional Q relations"
+  },
+  "existing_evidence": [
+    {
+      "claim": "Formal coefficient probabilities and alternating a/s sums",
+      "source_ids": [
+        "M",
+        "K",
+        "S03"
+      ]
+    },
+    {
+      "claim": "Existing U and raw-reduced mass interpretation",
+      "source_ids": [
+        "GC",
+        "U",
+        "G",
+        "S03"
+      ]
+    },
+    {
+      "claim": "P5 group/parent coefficients and normalizer",
+      "source_ids": [
+        "P5",
+        "PC",
+        "S03"
+      ]
+    },
+    {
+      "claim": "Exact comparison proposition and quantifiers",
+      "source_ids": [
+        "S02",
+        "S03",
+        "S05"
+      ]
+    }
+  ],
+  "new_analytical_derivations": [
+    {
+      "id": "D1",
+      "content": "Uniform two-label formal walk on a line: finite binomial endpoint counts and two alternating raw-reduced words",
+      "location": "analytic_proof_attempt.md section 2",
+      "method": "Paper combinatorial argument, no enumeration program"
+    },
+    {
+      "id": "D2",
+      "content": "At the single input, exact root coefficients A5/S5 and A7=A5-1/2304, S7=S5-1/9216",
+      "location": "analytic_proof_attempt.md section 3",
+      "method": "Paper substitution into existing alternating sums"
+    },
+    {
+      "id": "D3",
+      "content": "Existing P5 coefficient specialization gives pair H/2 and four-letter C4/8; exact delta identity includes negative root and ordinary-tail contributions",
+      "location": "analytic_proof_attempt.md section 4-5",
+      "method": "Paper rational algebra only"
+    },
+    {
+      "id": "D4",
+      "content": "Reverse triangle inequality, nonnegative square-root bounds and rational inequalities establish the strictly positive gap",
+      "location": "proof_or_counterexample_certificate.md",
+      "method": "Analytical proof; not computed or checked by metadata code"
+    }
+  ],
+  "unresolved_or_not_attempted": [
+    "P_U,3 truth on the entire domain",
+    "Ordering at other inputs or equality/validity-region classification",
+    "Ideal B_F,7 versus the formal closed benchmark",
+    "New upper bounds, new algorithms, W2b/W2c resources, novelty or publication GO"
+  ],
+  "mathematical_evidence_kind": "Complete human-readable analytical counterexample proof in the two linked proof documents; no external independent review or machine mathematics verification claimed",
+  "computer_verification_is_mathematical_proof": false,
+  "evidence_scope": "Metadata code only serializes these statements; it never evaluates a coefficient, rational comparison, square root, CAS expression or counterexample",
+  "execution_accounting": {
+    "numerical_scientific_program_runs": 0,
+    "computer_algebra_runs": 0,
+    "floating_or_arbitrary_precision_science_comparison": 0,
+    "parameter_grid_or_counterexample_code_search": 0,
+    "scientific_source_import_execution_changes": 0,
+    "scientific_test_fixture_creation_execution": 0,
+    "saved_result_reanalysis": 0,
+    "quantum_circuit_native_computation": 0,
+    "new_sampler_or_algorithm": 0,
+    "new_w2b_w2c_results": 0,
+    "private_original_publications": 0,
+    "new_science_contracts_grants": 0,
+    "other_branch_merge_rebase": 0,
+    "new_independent_scientific_reviews": 0,
+    "paper_manuscript_drafting": 0
+  },
+  "stop_after_first_counterexample_observed": true,
+  "formal_research_adoption": false,
+  "preservation_scope": "Parent tracked/top-level untracked bytes plus own dedicated Git diff/action boundary. No reads/writes of other worktree contents/index/lock/process/output, including F1/F2 and W1; their independent activity is not monitored.",
+  "mandatory_stop_after_publication": true
+}
