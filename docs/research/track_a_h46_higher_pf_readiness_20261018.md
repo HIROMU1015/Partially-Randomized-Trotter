@@ -122,3 +122,9 @@ Aと元3公式のB_saved準備は独立。補正版を実H4/H6へ導入するな
 専用cloneのみへ書き込んだ。既存PF checkout、元PR結果、SOURCE/input/Git blobは読取専用。既存grant/ledger/marker/lock/STOPは未操作。他worktreeは凍結せず、通常進行を妨げない。成果物を専用branchへcommit/pushし、remote確認の結果は最終報告・公開receiptに記す。認証が利用できなければ認証設定を変更せず、その事実と手動pushコマンドを報告する。
 
 次の担当：**ユーザー**がA候補の扱い、および最小B_SAVED_ONLYの数値実行を承認するか判断する。**Codex**は別承認後に該当Phaseだけを実行し、結果を保存してSTOPする。Bの新native取得とCの標本規模・samplingは今回の準備承認へ含めない。
+
+公開結果：HTTPS認証不足でpush1回がexit128。`git ls-remote`自体は成功したが対象branchは存在しなかった。remote SHA・主要資料の公開取得は確認できていない。認証設定は変更せず、公開待ちでmandatory STOP。利用者のコマンド：
+
+```bash
+git -C /home/AbeHiromu/projects/h46-higher-pf-readiness/20261018/repo push -u origin track-a-codex2-h46-higher-pf-readiness-20261018
+```

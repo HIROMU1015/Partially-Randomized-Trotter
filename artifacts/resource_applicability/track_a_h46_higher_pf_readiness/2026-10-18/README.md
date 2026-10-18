@@ -21,3 +21,5 @@ python3 -B scripts/run_h46_higher_pf_comparison.py
 ```
 
 本bundleに有効grantや科学実行の承認はない。manual approvalを得る前にstatusを変更して実データを起動しない。mandatory STOP。
+
+公開状態：HTTPS認証情報がなくpush1回がexit128。remote branchは未作成、remote SHA/主要資料の取得可能性は未確認。詳細は `publication_status.json`。local commit済み、利用者の手動push待ちでSTOP。
