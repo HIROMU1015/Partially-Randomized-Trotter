@@ -1,0 +1,88 @@
+{
+  "schema": "b3_r1_admission_artificial_results_v1",
+  "status": "PASS",
+  "new_admission_tests": 69,
+  "existing_readiness_tests": 30,
+  "existing_driver_tests": 36,
+  "existing_cost_preparation_tests": 48,
+  "total_tests": 183,
+  "runs": [
+    {
+      "command": [
+        "/usr/bin/python3",
+        "tests/tracks/algorithm_codesign/test_g6_w2c_b3_admission.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "tests": 69,
+      "log": "test_g6_w2c_b3_admission.log",
+      "log_sha256": "35ff52c9d409a9bca9afb9df4ec195e7bc24cab657e22a791af056634b9c4a39"
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "tests/tracks/algorithm_codesign/test_g6_w2c_b3_readiness.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "tests": 30,
+      "log": "test_g6_w2c_b3_readiness.log",
+      "log_sha256": "0773242aa68a488afc619302f85543c3183748da801ed8727a64fcdabb11711e"
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "tests/tracks/algorithm_codesign/test_g6_w2c_b3_driver.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "tests": 36,
+      "log": "test_g6_w2c_b3_driver.log",
+      "log_sha256": "b7eebf5a581340063cd2f74145e74d9b25ca32ca9b21897838aaebf3d4564029"
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "tests/tracks/algorithm_codesign/test_g6_w2c_cost_preparation.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "tests": 48,
+      "log": "test_g6_w2c_cost_preparation.log",
+      "log_sha256": "9732bbd151ce870277b45b255f624cadb146d05742d97ac16c68b99a7c89821a"
+    }
+  ],
+  "thread_race": {
+    "attempts": 32,
+    "winners": 1
+  },
+  "owned_process_race": {
+    "attempts": 32,
+    "winners": 1
+  },
+  "same_adapter_thread_race": {
+    "attempts": 32,
+    "winners": 1
+  },
+  "process_exit_stages": [
+    "insert_before_commit: rollback, no receipt/no science",
+    "after_reserve_commit: RESERVED, restart denied",
+    "before_output_creation: ADMITTED, restart denied",
+    "detail_update_before_commit: prior RESERVED recovered, restart denied"
+  ],
+  "partial_write_scope": "Actual short STOP-file write; logical fault after durable reservation, and real SQL UPDATE interrupted before second COMMIT; corrupt private SQLite file refused. No SQLite VFS torn-page/power-cut injection.",
+  "runtime": {
+    "python": "3.10.12",
+    "sqlite": "3.37.2",
+    "temporary_filesystem": "local ext4 /dev/nvme0n1p3",
+    "cpus_online": 32,
+    "memory_available_observed": "49 GiB",
+    "disk_available_observed": "371 GiB",
+    "load_average_observed": "1.18 1.16 1.11"
+  },
+  "performance": "Four independent artificial suites dispatched concurrently; races use 32 contenders matching prior baseline. SQLite critical section intentionally serializes writes. No CPU/RAM/wall caps, GPU irrelevant for byte/hash/storage tests. No performance speedup claim.",
+  "real_science_calls": 0,
+  "real_authorization_claim_issuance_consumption": 0,
+  "scientific_modules_imported": false,
+  "local_observation_not_CI": true
+}

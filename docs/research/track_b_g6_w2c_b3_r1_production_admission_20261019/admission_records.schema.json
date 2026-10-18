@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "B3 R1 admission record shapes",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/reservation"
+    },
+    {
+      "$ref": "#/$defs/stop"
+    }
+  ],
+  "$defs": {
+    "reservation": {
+      "type": "object",
+      "required": [
+        "scope",
+        "claim_id",
+        "contract_digest",
+        "binding",
+        "nonce",
+        "status",
+        "owner_pid"
+      ],
+      "properties": {
+        "scope": {
+          "type": "string"
+        },
+        "claim_id": {
+          "type": "string"
+        },
+        "contract_digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "binding": {
+          "type": "object",
+          "required": [
+            "formal_digest",
+            "driver_contract_digest",
+            "release_commit",
+            "scope",
+            "claim_id",
+            "output_path",
+            "adoption_sha256",
+            "source_pins_digest",
+            "input_pins_digest",
+            "authorization",
+            "ledger_directory",
+            "ledger_store_id"
+          ]
+        },
+        "nonce": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "RESERVED",
+            "ADMITTED",
+            "STOPPED"
+          ]
+        },
+        "owner_pid": {
+          "type": "integer"
+        },
+        "stop_record": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "stop": {
+      "type": "object",
+      "required": [
+        "schema",
+        "outcome",
+        "detail",
+        "mandatory_STOP",
+        "retry",
+        "resume"
+      ],
+      "properties": {
+        "schema": {
+          "const": "b3_admission_stop_v1"
+        },
+        "outcome": {
+          "type": "string"
+        },
+        "detail": {},
+        "mandatory_STOP": {
+          "const": true
+        },
+        "retry": {
+          "const": 0
+        },
+        "resume": {
+          "const": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
