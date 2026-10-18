@@ -1,3 +1,5 @@
+独立確認の設計専用kernel `h46_confirmation_design.py` とscope-only CLI。[標本計画](../../docs/research/track_a_h46_higher_pf_confirmation_readiness_20261018.md)。native dispatchなし。
+
 高次PF統合比較：既存higher_pf_readinessを変更せず再利用。[結果・限界](../../docs/research/track_a_h46_higher_pf_integrated_run01_results_20261018.md)。Cは未実行。
 
 ## 2026-10-18 H8：追加6精度の保存値検証完了
