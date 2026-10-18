@@ -1,0 +1,44 @@
+{
+  "schema": "g7_g9_p1_final_static_findings_v1",
+  "static_only": true,
+  "driver_changed_this_task": false,
+  "findings": [
+    {
+      "id": "F01",
+      "classification": "TECHNICAL_CORRECTION_REQUIRED_BEFORE_EXECUTION",
+      "title": "Previous successful result can be recorded as current inflight_event",
+      "source_evidence_id": "DSRC",
+      "source_commit": "e4af6c064db805cbec611bcc8f0ff75a4754d38b",
+      "source_sha256": "d7947af16baccbd3e0707fa9b4ffcd26650a6569eb6606ee3c08ec443d1dd7ee",
+      "function": "run_pair",
+      "assignment_line": 516,
+      "failure_lines": [
+        572,
+        573
+      ],
+      "condition": "After one successful sample, a subsequent sample raises before return. No per-attempt result reset occurs, so locals() still contains the previous result. May span axis transition.",
+      "impact": "Failure context can misidentify a previous event as the failing attempt. Does not show incorrect successful science values; no execution was performed.",
+      "required_future_correction": "Initialize per-attempt current result, record current axis/trial_id and acquired/unavailable status, distinguish last committed prefix from inflight context.",
+      "required_future_artificial_regressions": [
+        "successful sample then next-sample exception",
+        "axis transition then sample exception",
+        "angle failure and save failure context"
+      ],
+      "related_digest_scope": "digest.update precedes stream.emit and completed counter. Failure trace may include generated but uncommitted event. Bind trace and committed chain/file scopes explicitly.",
+      "fixed_or_tested_this_task": false
+    },
+    {
+      "id": "EXTERNAL_ATOMIC_ADMISSION_BINDING",
+      "classification": "ADDITIONAL_BINDING_REQUIRED",
+      "source_evidence_id": "DSRC",
+      "functions": [
+        "Boundary.enter",
+        "execute"
+      ],
+      "existing_scope": "Receipt shape/contract digest, fresh claim ID, one-use object, retry/resume controls are implemented; external authority is not implemented.",
+      "needed_scope": "Durable atomic admission and user approval/source release binding, with spent claim plus failure preservation even after admission but before output directory creation.",
+      "new_authority_or_claim_this_task": false
+    }
+  ],
+  "mandatory_STOP": true
+}
