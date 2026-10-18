@@ -63,3 +63,20 @@ B0+I S4は回路生成を終え、left/rightのdirectional controlを並列実�
 次の担当はCodex。Dの各軸の2%判定とnative exit・最終gateを回収する。
 B/Aはadapter未seal・未起動であり、独立した既存計画の準備完了後に扱う。
 費用統合再会計、追加候補、H4はここから自動開始しない。
+
+## 完了追記：追加Dの2構成・4軸すべてPASS
+
+両構成ともSOURCE `49879a9c73477c49081a3059cec70e4f4c6a5924`、native exit0・同じ親wait4回収・最終SOURCE/入力/compiler/runtime gate PASSでmandatory STOPした。
+
+| 構成 | 実測RZ/軸（両軸同値） | 保存モデルとの軸別相対誤差 |
+|---|---:|---:|
+| B0_p15_q8_2nd | 446,288 | 0.216644% |
+| B0I_p16_q4_4th | 713,432 | 0.409930% |
+
+全4軸で2%未満。control最大誤差はB0が1.484e-13、B0+Iが2.489e-13。
+witness込みwallはB0 1163.533秒（約19分24秒）、B0+I 1935.699秒（約32分16秒）。
+[実測・native終了・最終gate受入](../../artifacts/resource_applicability/track_a_h8_dba/2026-10-18/completion/)。
+このPASSは登録4軸に限定する。全候補のモデル精度・母平均PR優位・厳密biasを認定しない。
+既存結果・grant・ledger・STOPを保持し、総費用再会計・追加compile・fit・retryは0。
+A/Bは別cloneでそれぞれ16 signalと4群32 trajectory/64軸を正常終了している。
+次の担当：ユーザーが保存実測の費用統合を行うか判断し、Codexが別承認後にその契約で解析する。

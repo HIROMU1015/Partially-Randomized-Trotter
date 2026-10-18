@@ -1,3 +1,5 @@
+H8追加D完了：B0 p15/q8 S2は両軸446,288 RZ（誤差0.216644%）、B0+I p16/q4 S4は両軸713,432 RZ（0.409930%）。登録4軸2%未満、native exit0・最終gate PASS・mandatory STOP。新fit/費用再会計なし。詳細 `docs/research/track_a_h8_dba_20261018.md`。以下の稼働記録は履歴。
+
 H8 DBA先行起動：SOURCE49879a9c…でDの2構成4軸を独立grant・構成間並列で実行中。fresh gate PASS、人工7件PASS。実測の最終PASSは未確認。B/A未起動、H4保留。詳細 `docs/research/track_a_h8_dba_20261018.md`。
 
 
