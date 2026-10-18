@@ -1,3 +1,5 @@
+H4 native D/A/N reuses the frozen provider DF/native/finite-RTE implementations; orchestration is in `scripts/h4_native_*.py`. See `docs/research/track_a_h4_native_validation_20261018.md`.
+
 H8 A/B実行：AはSOURCE6197e97d…で16/16、最終gate PASS・native exit0・mandatory STOP。Bは元9d18cdd6…で先頭4本進行中、残28本はcontrol gate後。人工42件PASS、旧STOP保全・新費用会計なし。詳細 `docs/research/track_a_h8_ab_20261018.md`。
 
 H8 A/B：独立scopeの実行接続を完成。A境界16 signal、B希少層4群32 trajectory/64軸、人工38件PASS。旧preparation/CSR/sampler/forward再利用、stage別SOURCE closure。起動証拠は後続receipt。詳細 `docs/research/track_a_h8_ab_20261018.md`。
