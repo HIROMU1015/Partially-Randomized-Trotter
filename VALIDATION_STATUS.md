@@ -1,3 +1,7 @@
+## 2026-10-18 Codex 1：A_COST・B/D 9契約の技術seal（実行未認可）
+
+[9契約の状態・統合承認案](docs/research/track_a_pr_cost_nine_contracts_seal_20261018.md)。SOURCE `31ef62a12407010e9c1a07f9b37facedb8dff5fe`。A_COST3件・既存D_ACCOUNTING3件は技術実行候補、B3件は条件付き費用の限定診断まで準備済み。完全層別の無条件比較は証拠未結合で未確定。9 byte gate・新人工21検査・無効CLI10件PASS、旧40検査は再実行なし。全grant無効/CPU[]、実preparation復元・compile・sampling・科学再会計・B数値解析0。独立cloneを使用し、既存SOURCE/結果/他job不変。以下は履歴。
+
 ## 2026-10-18 Codex 1：S2 PR A_COST・既存B/D会計の準備
 
 [技術報告と未結合事項](docs/research/track_a_pr_cost_integration_readiness_20261018.md)。SOURCE `33c7231fc7c8f3940106bd8fe473e3db775fbcb0`。H4/H6/H8のA各16候補と29固定fileをmetadata照合。人工40検査PASS、9個別契約は無効grant・未seal。実分子signal/sampling/compile/再会計/ランキング0。高次PF・理論資源比較・他jobを変更せずmandatory STOP。以下は各時点の履歴。
