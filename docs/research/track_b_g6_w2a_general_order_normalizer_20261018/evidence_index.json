@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "repository": "HIROMU1015/Partially-Randomized-Trotter",
+  "base_commit": "de709339e2539fa4d9806a84e738040d52c97be1",
+  "branch": "track-b-g6-w2a-general-order-normalizer-20261018",
+  "scope": "W2a ideal normalizations and certified upper bounds only",
+  "status": "FORMULATION_COMPLETE_TRUTH_UNDECIDED_STOP_AFTER_PUBLICATION",
+  "baseline_definitions": [
+    {
+      "id": "O",
+      "target": "P_m",
+      "order": "odd m>=5",
+      "normalizer": "sum_even_l_0_to_m-1 b_l",
+      "definition_status": "PROVED_IN_EXISTING_SOURCE",
+      "source_ids": [
+        "G",
+        "GC"
+      ]
+    },
+    {
+      "id": "P",
+      "target": "P3_partial + ordinary tail = P_m",
+      "order": "odd m>=5",
+      "normalizer": "B_P,3+T_4,m",
+      "definition_status": "ROUTINE_DEFINITION_ALIGNMENT",
+      "source_ids": [
+        "G",
+        "GC"
+      ]
+    },
+    {
+      "id": "C3",
+      "target": "P3_full_closed + ordinary tail = P_m",
+      "order": "odd m>=5",
+      "normalizer": "B_3,3+T_4,m",
+      "definition_status": "ROUTINE_DEFINITION_ALIGNMENT",
+      "source_ids": [
+        "G",
+        "GC"
+      ]
+    },
+    {
+      "id": "C5",
+      "target": "P5",
+      "order": "m=5 only",
+      "normalizer": "B_5,5=B_F,5",
+      "definition_status": "EXACT_FIXED_ORDER_RESULT",
+      "source_ids": [
+        "P5",
+        "PC"
+      ]
+    },
+    {
+      "id": "C5_TAIL_FORM",
+      "target": "P5 + literal degrees 6..m = P_m as formal operator sum",
+      "order": "odd m>=7",
+      "normalizer": "B_5,5+T_6,m for tagged direct sum only",
+      "definition_status": "ROUTINE_DEFINITION_ALIGNMENT",
+      "integrated_generator_digital_status": "NOT_ESTABLISHED",
+      "formal_comparator_only": true,
+      "source_ids": [
+        "P5",
+        "PC",
+        "G"
+      ]
+    },
+    {
+      "id": "F",
+      "target": "P_m",
+      "order": "odd m>=5",
+      "normalizer": "sum_even_reduced_u d_u,m",
+      "definition_status": "PROVED_IN_EXISTING_SOURCE",
+      "global_normalizer_acquisition": "ACCESS_OR_CERTIFICATION_GAP",
+      "source_ids": [
+        "M",
+        "K",
+        "G",
+        "GC",
+        "U"
+      ]
+    }
+  ],
+  "existing_comparisons": [
+    {
+      "statement": "B_F,m<=U_m<=B_o,m",
+      "status": "PROVED_IN_EXISTING_SOURCE",
+      "source_ids": [
+        "M",
+        "GC",
+        "U"
+      ]
+    },
+    {
+      "statement": "m>=3,x>0: U_m<B_o,m; L=1: U_m=B_F,m",
+      "status": "PROVED_IN_EXISTING_SOURCE",
+      "source_ids": [
+        "GC",
+        "U"
+      ]
+    },
+    {
+      "statement": "m=3,L>=2: B_3,3=B_F,3<U_3<B_P,3<B_o,3",
+      "status": "EXACT_FIXED_ORDER_RESULT",
+      "source_ids": [
+        "GC",
+        "U"
+      ]
+    },
+    {
+      "statement": "odd m>=5,L>=2: B_3,m<B_P,m<B_o,m",
+      "status": "ROUTINE_DEFINITION_ALIGNMENT",
+      "operation": "Add the same existing ordinary tail T_4,m to the existing cubic inequalities; no new Full comparison proof",
+      "source_ids": [
+        "G",
+        "GC"
+      ]
+    },
+    {
+      "statement": "m=5: B_5,5=B_F,5<=U_5",
+      "status": "EXACT_FIXED_ORDER_RESULT",
+      "operation": "Existing P5 ideal decomposition identity and substitution into existing B_F<=U",
+      "source_ids": [
+        "PC",
+        "P5",
+        "GC",
+        "U"
+      ]
+    }
+  ],
+  "selected_propositions": [
+    {
+      "id": "P_U",
+      "status": "OPEN_COMPARISON_PROPOSITION",
+      "truth_status": "NOT_ESTABLISHED",
+      "quantifiers": "For every finite L>=2, every explicitly supplied positive rational p with sum p=1, every rational 0<x<=1 and every odd m>=7",
+      "statement": "U_m<=B_ref,m, B_ref,m=min(B_3,m,B_5,5+T_6,m)",
+      "reference_scope": "Two defined scalar expressions only; P5+tail is formal, not an established integrated sampler or free optimization oracle",
+      "same_target_condition": "Existing P3+tail target plus direct finite-polynomial identity for formal P5+tail",
+      "existing_evidence": [
+        "M",
+        "GC",
+        "U",
+        "G",
+        "P5",
+        "PC"
+      ],
+      "missing_evidence": "A general proof or permitted-domain certified refutation; existing integrated P5+tail source/digital contract also unestablished",
+      "positive_meaning": "Existing U reaches both defined closed scalar benchmarks; no trial/native-cost conclusion",
+      "negative_meaning": "This uniform U comparison fails; ideal Full improvement and construction validity are not refuted",
+      "scientific_impact": "Distinguish ideal coefficient gain from an available certified bound after strong closed references",
+      "next_work": "User selection and explicit authorization for one scoped proof/refutation task; no execution started",
+      "stop": "Resolved by direct existing theorem; formal comparator misrepresented as completed method; weak-baseline replacement; new/free oracle or out-of-scope work required",
+      "proof_requirement": "REQUIRES_NONTRIVIAL_PROOF if existing direct identities do not decide it"
+    }
+  ],
+  "allowed_statuses": [
+    "PROVED_IN_EXISTING_SOURCE",
+    "EXACT_FIXED_ORDER_RESULT",
+    "ROUTINE_DEFINITION_ALIGNMENT",
+    "OPEN_COMPARISON_PROPOSITION",
+    "REQUIRES_NONTRIVIAL_PROOF",
+    "ACCESS_OR_CERTIFICATION_GAP",
+    "NOT_ESTABLISHED"
+  ],
+  "w1_boundary": "No access to W1 content/index/lock/process/output. No automatic merge/rebase; W1 precision/API/bit work not repeated. Pure scalar formulation need not wait for W1, operational finite-precision certification does.",
+  "w2b_w2c_boundary": "Only implications for assumptions described; no new N, moment bound, cost ordering, expected cost or break-even derived.",
+  "execution_accounting": {
+    "new_nontrivial_proofs": 0,
+    "new_counterexamples_or_searches": 0,
+    "new_asymptotic_taylor_derivations": 0,
+    "new_samplers_or_algorithms": 0,
+    "science_source_import_execution_change": 0,
+    "science_test_import_execution_change": 0,
+    "saved_science_value_reanalysis": 0,
+    "science_calculations_circuits_native": 0,
+    "new_w2b_w2c_results": 0,
+    "new_scientific_reviews": 0,
+    "paper_drafting_or_novelty_go": 0,
+    "private_review_publication": 0,
+    "new_contracts_grants": 0,
+    "other_branch_integration": 0
+  },
+  "direct_rewrites_only": [
+    "Same-tail addition to existing cubic inequalities",
+    "Existing P5 fixed-order identity substitution into B_F<=U",
+    "Literal finite Taylor split after degree 5; no new sampler"
+  ],
+  "formal_research_adoption": false,
+  "mandatory_stop_after_publication": true
+}
