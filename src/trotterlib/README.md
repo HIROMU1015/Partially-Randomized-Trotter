@@ -902,3 +902,8 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 ## H8 selected-six saved-cost reaccounting (2026-10-17)
 
 `h8_six_axis_reaccount.py`：6軸の保存実測単価反映、exact費用/全184選択/旧32・PR不変gate。人工または新実行permit必須。bias/shot/PR平均・SE/modelを再計算しない。
+
+
+## 2026-10-19 Track A mechanism runner：準備完了・数値実行未承認
+
+[実装・人工検査・固定契約](../../artifacts/resource_applicability/track_a_mechanism_runner_readiness/2026-10-19/integrated_readiness_report.md)。主要32比較だけを固定し、残り212はmetadataのみ。SOURCE 5c256067db29a326bcaa0a0e244b38f6b87bd138。実科学数値解析0、有効grant0、mandatory STOP。

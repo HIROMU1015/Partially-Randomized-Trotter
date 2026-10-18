@@ -925,3 +925,8 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## H8 selected-six saved-cost reaccounting (2026-10-17)
 
 `h8_six_axis_reaccount_contract.py` / `run_h8_six_axis_reaccount.py` / `witness_h8_six_axis_reaccount.py`：H8の保存shot・PR費用/SEを固定し、6軸単価のみ反映する新one-shot。SOURCE公開・新grant必須。`--check`はmetadata/保存値の結合検査のみ。
+
+
+## 2026-10-19 Track A mechanism runner：準備完了・数値実行未承認
+
+[実装・人工検査・固定契約](../artifacts/resource_applicability/track_a_mechanism_runner_readiness/2026-10-19/integrated_readiness_report.md)。主要32比較だけを固定し、残り212はmetadataのみ。SOURCE 5c256067db29a326bcaa0a0e244b38f6b87bd138。実科学数値解析0、有効grant0、mandatory STOP。

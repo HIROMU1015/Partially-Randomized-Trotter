@@ -1065,3 +1065,8 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## H8 selected-six saved-cost reaccounting (2026-10-17)
 
 [H8主要6軸：保存値限定再会計準備・公開認証待ち](research/track_a_h8_six_axis_reaccount_readiness_20261017.md)。
+
+
+## 2026-10-19 Track A mechanism runner：準備完了・数値実行未承認
+
+[実装・人工検査・固定契約](../artifacts/resource_applicability/track_a_mechanism_runner_readiness/2026-10-19/integrated_readiness_report.md)。主要32比較だけを固定し、残り212はmetadataのみ。SOURCE 5c256067db29a326bcaa0a0e244b38f6b87bd138。実科学数値解析0、有効grant0、mandatory STOP。
