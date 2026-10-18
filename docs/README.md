@@ -1,3 +1,5 @@
+H4追加4検証: [範囲・契約・結果](research/track_a_h4_followup_20261018.md)。
+
 H4 native D/A/N: [readiness and execution](research/track_a_h4_native_validation_20261018.md).
 
 H8 A/B実行：AはSOURCE6197e97d…で16/16、最終gate PASS・native exit0・mandatory STOP。Bは元9d18cdd6…で先頭4本進行中、残28本はcontrol gate後。人工42件PASS、旧STOP保全・新費用会計なし。詳細 `docs/research/track_a_h8_ab_20261018.md`。

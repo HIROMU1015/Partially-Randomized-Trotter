@@ -1,3 +1,5 @@
+H4追加検証：[H4固定1 Åの追加4検証](docs/research/track_a_h4_followup_20261018.md)。R境界12 signal、B希少層64軸、T固定δの144新軸、tol-only入力と代表panel72軸。旧結果再利用・別grant・各単位STOP。実行状態は後続receiptを参照。
+
 H4 native D/A/N完了：D96 signalから選別8構成16軸を直接実測し、native exit0・最終gate PASS。A16/16とN旧固定16も正常終了。全stage mandatory STOP、D wall約4分39秒。全D domain最良は未認定。詳細 `docs/research/track_a_h4_native_validation_20261018.md`。以下の稼働記録は履歴。
 
 H4 native実行：SOURCE79758d28…、A16/16とN旧固定16診断はnative exit0・最終gate PASS・mandatory STOP。D96 signal後の8構成16軸compileが進行、時点付きsnapshotは4構成/10軸・STOP0。人工17件PASS。詳細 `docs/research/track_a_h4_native_validation_20261018.md`。

@@ -1,3 +1,5 @@
+H4追加4検証は既存libraryを再利用する。新library数値実装はなく、scripts/h4_followup_science.py と h4_tol_only_input.py に限定adapterを置く。
+
 H4 native D/A/N reuses the frozen provider DF/native/finite-RTE implementations; orchestration is in `scripts/h4_native_*.py`. See `docs/research/track_a_h4_native_validation_20261018.md`.
 
 H8 A/B実行：AはSOURCE6197e97d…で16/16、最終gate PASS・native exit0・mandatory STOP。Bは元9d18cdd6…で先頭4本進行中、残28本はcontrol gate後。人工42件PASS、旧STOP保全・新費用会計なし。詳細 `docs/research/track_a_h8_ab_20261018.md`。

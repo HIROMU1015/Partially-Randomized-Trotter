@@ -1,3 +1,5 @@
+H4追加4検証: `prepare_h4_followup.py` / `run_h4_followup.py` / `h4_followup_witness.py`、契約・数値adapter・tol-only入力は `h4_followup_contract.py` / `h4_followup_science.py` / `h4_tol_only_input.py`。
+
 H4 native: `prepare_h4_native.py`, `run_h4_native.py`, `h4_native_witness.py`, `h4_native_contract.py`, `h4_native_science.py`.
 
 H8 A/B実行：AはSOURCE6197e97d…で16/16、最終gate PASS・native exit0・mandatory STOP。Bは元9d18cdd6…で先頭4本進行中、残28本はcontrol gate後。人工42件PASS、旧STOP保全・新費用会計なし。詳細 `docs/research/track_a_h8_ab_20261018.md`。
