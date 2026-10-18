@@ -56,3 +56,28 @@ FPの追加preparerは `prepare_h4_followup_fp.py`。起動時に稼働中の兄
 
 
 FPも72/72軸、native exit0・最終gate PASS・全回収で終了（native wall289.09秒）。終了時metadataを確認する3人工試験もPASSし、今回の人工検証は計33件。残るTはT=1.6 full S4を処理中。`collect_h4_followup_results.py` は全stageの終了後に予定軸数・168 workerのnative回収・結果SHA・SOURCE/gateを照合して資料化する。科学実行・retry・追加候補は行わない。
+
+
+## 最終完了：全stage正常終了・mandatory STOP
+各SOURCEのnative exit0、最終gate PASS、全owned worker回収と予定軸数を照合した。R12 signal、B64軸、T144新規軸、Fの入力生成1回、FP72軸が完了した。T=.8とlegacy代表panelの保存値は再利用し、追加sampling・compile・fitは起動しない。
+| Stage | 新compile軸 | native wall秒 | SOURCE |
+|---|---:|---:|---|
+|R|0|12.44|`dfef38fc8107dd76f5d71dcdeca31f8d3dc39f64`|
+|B|64|133.01|`dfef38fc8107dd76f5d71dcdeca31f8d3dc39f64`|
+|T|144|767.90|`dfef38fc8107dd76f5d71dcdeca31f8d3dc39f64`|
+|F|0|8.70|`dfef38fc8107dd76f5d71dcdeca31f8d3dc39f64`|
+|FP|72|289.09|`64e0fc91cd273cff02ae8cffb729ee8e40c302a9`|
+
+### 固定5構成内の点費用比較
+下表は通常bias・allowance倍率1・P=0・RZのPR削減率である。新しい全格子winnerや母平均優位を示さない。nullは適格な比較pairがなく、0費用を意味しない。全20条件・paired SEは各圧縮resultに保存した。
+| 系列 | ε=.05 | .01 | .005 | .001 | .0005 |
+|---|---:|---:|---:|---:|---:|
+|legacy T=.8（保存）|49.54%|49.55%|49.55%|43.89%|null|
+|legacy T=0.4|48.88%|48.88%|48.89%|48.93%|49.02%|
+|legacy T=1.6|48.17%|48.18%|48.20%|null|null|
+|DF政策比較・legacy rank12|50.08%|50.09%|50.10%|38.81%|null|
+|tol-only rank10|42.86%|42.85%|42.83%|30.14%|null|
+
+TとDF政策のpanelはPRのKを含めて別登録集合であり、両panelを混ぜた最良選択をしていない。新DFはSCF軌道・状態も新しく、DF rankだけの因果効果を断定しない。Rの新PR構成について費用取得・ランキングは未実施。希少層は条件付きn8であり、無条件費用の母平均保証にはしない。
+
+公開証拠は `artifacts/resource_applicability/track_a_h4_followup/2026-10-18/`。SOURCE/plan/input/compiler/runtime/各grant digest・native回収・最終gateを分離して保存した。raw NPZ・環境・grant原本はprivateに保全した。旧H4/H6/H8の結果・SOURCE・grant・ledger・STOPを書き換えていない。
