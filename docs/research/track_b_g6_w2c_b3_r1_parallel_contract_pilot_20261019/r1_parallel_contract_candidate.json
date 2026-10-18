@@ -1,0 +1,142 @@
+{
+  "schema": "R1_PARALLEL_8PAIR_CANDIDATE_DRAFT_V1",
+  "status": "NOT_ADOPTED",
+  "artificial_only": true,
+  "run_ready": false,
+  "scientific_execution_authorized": false,
+  "formal_digest": null,
+  "production_entrypoint": null,
+  "production_scope": null,
+  "production_claim": null,
+  "base_commit": "564409487a35e15d73f1d0f0c2611824b400ab02",
+  "technical_baseline": "baebe23f2ed9620e0e2fc492f0e2b8ced3c7f342",
+  "measurement_source_commit": "b1dba4b6f282ffab413719aa000f18267caeb1d7",
+  "source_inventory": "source_inventory.json",
+  "input": {
+    "id": "P5_general_order",
+    "p": [
+      "1/5",
+      "3/10",
+      "1/2"
+    ],
+    "x": "5/7",
+    "m": 5,
+    "sigma": 1
+  },
+  "preserved": {
+    "law": true,
+    "N": true,
+    "error_confidence": true,
+    "seed_bitstream": true,
+    "event_phase_weight_word_order": true,
+    "angle_requery": true,
+    "held_state_XY": true,
+    "phase_barriers": true,
+    "cache_disabled": true,
+    "unbuffered": true
+  },
+  "angle": {
+    "tau_rad": "1/1000000",
+    "Kphi": 32,
+    "J": 32,
+    "math_only": true,
+    "physical_RZ": false
+  },
+  "budget": {
+    "correctness": 256,
+    "baseline": 15855296,
+    "instrumented": 15855296,
+    "total": 31710848,
+    "result_bytes": 68719476736,
+    "log_bytes": 268435456
+  },
+  "saved_N": {
+    "ordinary": 1174526,
+    "partial_return_tail": 894664,
+    "closed_P3_tail": 880312,
+    "full_return": 1014322
+  },
+  "phases": [
+    "correctness_baseline",
+    "profile_baseline",
+    "profile_instrumented"
+  ],
+  "scheduler": {
+    "pair_count_per_phase": 8,
+    "axes": [
+      "X",
+      "Y"
+    ],
+    "fresh_process_per_pair": true,
+    "worker_options": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "completion_order": "variable_recorded",
+    "summary_order": "phase_arm_layer",
+    "worker_authority": false,
+    "global_claims_per_bundle": 1
+  },
+  "stop": {
+    "P1": {
+      "outstanding_cap": "workers",
+      "cooperative_drain": true
+    },
+    "P2": {
+      "outstanding_cap": "user_selected_1_to_8",
+      "extra_start_check": true
+    },
+    "linearization": "parent_STOP_processing",
+    "physical_entry_instant_guaranteed": false,
+    "representative_failure": "first_parent_arrival",
+    "global_occurrence_total_order_proven": false,
+    "unknown_reservations_refunded": false,
+    "forced_kill_standard": false
+  },
+  "state_storage": {
+    "format": "uint8_latest_state_fixed_trial_offset",
+    "planned_bytes": 31710848,
+    "log_budget_includes_statefile": true,
+    "pwrite_traffic_separate_from_retained_bytes": true,
+    "power_loss_durability_claim": false
+  },
+  "changes_requiring_user_adoption": [
+    "dispatch_workers",
+    "start_and_conservative_call_charge",
+    "STOP_inflight_failure_prefix",
+    "concurrent_CPU_cost_estimand",
+    "global_output_reservation_and_state_storage",
+    "new_SOURCE_schema_host_admission_binding"
+  ],
+  "required_future_source_roles": [
+    "host",
+    "admission",
+    "readiness",
+    "driver",
+    "parallel_scheduler",
+    "audit",
+    "scientific_endpoint_sources",
+    "runtime_manifest"
+  ],
+  "future_integration_checks": [
+    "F01_current_last_candidate_committed_and_stream",
+    "canonical_bytes_unicode_exact_types_and_faults",
+    "angle_partial_remainder_endpoints_J_tau_Kphi",
+    "state_source_input_policy_preflight_law_guards",
+    "event_bits_traces_A_B_passes",
+    "claim_spent_fork_ownership_atomic_scope_race",
+    "global_bytes_and_uncertain_write",
+    "coarse_fine_reconciliation_and_overhead",
+    "source_manifest_import_location_schema_formal_digest"
+  ],
+  "retry": 0,
+  "resume": false,
+  "mandatory_STOP": true,
+  "scientific_calls_performed": 0,
+  "real_authorizations_issued": 0,
+  "real_claims_issued_or_consumed": 0,
+  "automatic_integration": false,
+  "final_artificial_source_commit": "ef57714b35bbdd3912fadf13ee522e6a4ff491e6"
+}
