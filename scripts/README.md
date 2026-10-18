@@ -1,3 +1,5 @@
+H4独立確認P：固定SOURCE73ec1964…で4185軌道/8370軸完了。`audit_h4_p_completed.py`は保存metadata照合のみ。[結果](../docs/research/track_a_h4_p_completed_20261019.md)。
+
 H4 P技術seal完了（2026-10-19）：SOURCE73ec1964…、n4185/compile案8370軸、新11559 seed slotを固定。旧明示39908値＋geometry7737216 slotとの衝突0、人工51件と終了監査PASS。P未承認・科学実行0、mandatory STOP。[最終契約](../docs/research/track_a_h4_p_technical_seal_20261019.md)。以下は履歴。 `prepare_h4_p_seal.py` / `h4_p_seed_inventory.py` / `audit_h4_p_seal.py`、人工検証 `tests/test_h4_p_seal.py`。
 
 H4 S_STATS完了（2026-10-19）：保存統計＋完成Dによる84 scenario・14方向を1 pass、native exit0・終了監査PASS。推奨n合計4185、P compile案8370軸。P科学実行・新seed生成0、mandatory STOP。[結果とP契約情報](../docs/research/track_a_h4_s_stats_20261019.md)。以下は履歴。 `prepare_h4_s_stats.py` / `h4_s_stats.py` / `h4_s_stats_witness.py` / `audit_h4_s_stats.py`、人工検証 `tests/test_h4_s_stats.py`。

@@ -1,3 +1,5 @@
+H4独立確認P完了（2026-10-19）：SOURCE73ec1964…、固定4185軌道/8370軸を61 workerで実行、主10/10＋診断4/4の費用差方向を再現。control36/event oracle9 PASS、native exit0・全回収・終了監査PASS。有限標本の点比較、母平均保証なし。mandatory STOP。[結果](research/track_a_h4_p_completed_20261019.md)。以下は履歴。
+
 H4 P技術seal完了（2026-10-19）：SOURCE73ec1964…、n4185/compile案8370軸、新11559 seed slotを固定。旧明示39908値＋geometry7737216 slotとの衝突0、人工51件と終了監査PASS。P未承認・科学実行0、mandatory STOP。[最終契約](research/track_a_h4_p_technical_seal_20261019.md)。以下は履歴。
 
 H4 S_STATS完了（2026-10-19）：保存統計＋完成Dによる84 scenario・14方向を1 pass、native exit0・終了監査PASS。推奨n合計4185、P compile案8370軸。P科学実行・新seed生成0、mandatory STOP。[結果とP契約情報](research/track_a_h4_s_stats_20261019.md)。以下は履歴。
