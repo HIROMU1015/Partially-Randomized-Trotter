@@ -1,3 +1,7 @@
+## 2026-10-18 H8 A_COST：候補単位の並列投入・引継ぎ準備
+
+[実装・検査・未seal草案](../../docs/research/track_a_h8_pr_candidate_parallel_readiness_20261018.md)。SOURCE `87f1f0d528478ad212ba98159db06eec3c78433e`。代表軌道のnative/control合格ごとに同候補の残り7軌道を投入し、元128taskのseedを保持する継続adapter。人工24＋既存承認境界18＋無効CLI2件PASS。現在のrunは保全・継続、新方式launch0、有効grant0。最終receipt受領/静止観測後のsealと切替指示は未実施。以下は履歴。
+
 ## 2026-10-18 Codex 1：A_COST3系を並列起動・保存B/D会計完了
 
 [起動・H8 D修正・scope別SOURCE](../../docs/research/track_a_pr_cost_batch_execution_20261018.md)。利用者の実行/修正再実行承認によりAを6/6/10 workerで開始、稼働継続中。保存B3件の限定診断とD3件は完了（H8 Dは修正後SOURCE8ff002dd…、元PR88行再現・native exit0/reap）。初期SOURCE31ef62a1…の旧STOP/消費を保持し、他の実行snapshot・高次PF研究・共有環境は変更しない。追加科学stageへ自動進行しない。以下は履歴。
