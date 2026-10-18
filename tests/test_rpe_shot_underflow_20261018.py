@@ -198,7 +198,8 @@ class ShotUnderflowRegression(unittest.TestCase):
                 nodes.append(node)
         class Approx:
             def __init__(self, expected): self.expected = expected
-            def __eq__(self, actual): return math.isclose(actual, self.expected, rel_tol=1e-6, abs_tol=1e-12)
+            def __eq__(self, actual):
+                return abs(actual - self.expected) <= max(1e-12, 1e-6 * abs(self.expected))
         ns = dict(self.after.__dict__)
         ns.update(_deterministic_preparation=ArtificialPreparation,
                   CompilerSettings=ArtificialCompiler, CircuitCost=ArtificialCost,
