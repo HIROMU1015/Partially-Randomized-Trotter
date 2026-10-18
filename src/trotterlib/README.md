@@ -1,3 +1,7 @@
+## 2026-10-18 H6：最小3候補の独立確認native準備完了・実計算未承認
+
+[実行契約・検証・限界](../../docs/research/track_a_h6_higher_pf_confirmation_native_readiness_20261018.md)。H6高次PFの最小3候補S2/q8・Yoshida4/q2/q4について専用native adapter・one-shot launcher・paired集計を実装。SOURCE e3ac6fd8…、13/45/45本＝103本206軸は名目90%の未採択案。306 closure・暫定seed914/旧seed3329との衝突0・人工回帰92件PASS。無効grantで実CLIの事前拒否を確認。目的Aの点順位再現に限定し、目的Bの母平均保証・A_COSTを分離。新分子sampling/compile/signal/費用再解析0、有効grant0、mandatory STOP。以下は各時点の履歴。
+
 独立確認の設計専用kernel `h46_confirmation_design.py` とscope-only CLI。[標本計画](../../docs/research/track_a_h46_higher_pf_confirmation_readiness_20261018.md)。native dispatchなし。
 
 高次PF統合比較：既存higher_pf_readinessを変更せず再利用。[結果・限界](../../docs/research/track_a_h46_higher_pf_integrated_run01_results_20261018.md)。Cは未実行。
