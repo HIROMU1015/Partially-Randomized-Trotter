@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "External JSON provider price record (internal API uses exact Fraction/tuple)",
+  "type": "object",
+  "required": [
+    "request",
+    "key",
+    "status",
+    "coordinates"
+  ],
+  "properties": {
+    "request": {
+      "type": "object",
+      "required": [
+        "operator_id",
+        "label",
+        "control_role",
+        "direction",
+        "compiler_id",
+        "gate_set_id",
+        "precision_id",
+        "phase_policy",
+        "optimization_id"
+      ],
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "key": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "status": {
+      "enum": [
+        "KNOWN",
+        "UNKNOWN"
+      ]
+    },
+    "coordinates": {
+      "type": "object",
+      "required": [
+        "T",
+        "CX",
+        "one_Q",
+        "serial_depth",
+        "ancilla_peak"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "T": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
+            }
+          ]
+        },
+        "CX": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
+            }
+          ]
+        },
+        "one_Q": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
+            }
+          ]
+        },
+        "serial_depth": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
+            }
+          ]
+        },
+        "ancilla_peak": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
+            }
+          ]
+        }
+      }
+    },
+    "strict_error_upper": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "phase_retained": {
+      "type": "boolean"
+    },
+    "artifact_sha256": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "certificate_sha256": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "$comment": "Cross-field error budget, actual-adjoint/phase/identity, interval ordering, UNKNOWN-null constraints are checked by price_row after exact decoding; schema alone does not certify numerical correctness."
+}

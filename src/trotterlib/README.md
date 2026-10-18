@@ -585,3 +585,8 @@ B固有namespaceは`src/trottertracks/algorithm_codesign/rte_development/`。共
 ## D1/D2最終保存分析（2026-10-13）
 
 共有library・science sourceの変更なし。新analyzerはscripts側のstdlib exact affine処理。[技術報告](../../docs/tracks/algorithm_codesign/d2_final_saved_integration_and_gpt_handoff_20261013.md)。旧科学分類保持、mandatory STOP。
+
+
+## 2026-10-19：Track B G6/G7 W2c-B3/C1の技術準備
+
+[補助SOURCE・schema・人工テスト・未採択契約候補](../../docs/research/track_b_g6_w2c_b3_c1_preparation_20261019/README.md)。既存G7 P5 development入力の費用比較に向けた準備のみ。実G7 sampling/profiling、native build/compile/synthesisは未実施。新補助moduleは`src/trottertracks/algorithm_codesign/g6_w2c_cost_preparation.py`、人工testは`tests/tracks/algorithm_codesign/test_g6_w2c_cost_preparation.py`。実行runner・authorizationを提供せず、契約採択と実行承認を別途要する。既存の研究状態・SOURCE・結果は変更しない。

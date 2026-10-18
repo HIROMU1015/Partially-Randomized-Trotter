@@ -628,3 +628,8 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## Track B D2 final saved integration
 
 `tracks/algorithm_codesign/analyze_d2_final_saved_integration.py`はD1r1/D2r2の保存scalar感度とPareto・depth分析だけ。[技術報告](../docs/tracks/algorithm_codesign/d2_final_saved_integration_and_gpt_handoff_20261013.md)。科学runner・boundary kernelを呼ばない。
+
+
+## 2026-10-19：Track B G6/G7 W2c-B3/C1の技術準備
+
+[補助SOURCE・schema・人工テスト・未採択契約候補](../docs/research/track_b_g6_w2c_b3_c1_preparation_20261019/README.md)。既存G7 P5 development入力の費用比較に向けた準備のみ。実G7 sampling/profiling、native build/compile/synthesisは未実施。新補助moduleは`src/trottertracks/algorithm_codesign/g6_w2c_cost_preparation.py`、人工testは`tests/tracks/algorithm_codesign/test_g6_w2c_cost_preparation.py`。実行runner・authorizationを提供せず、契約採択と実行承認を別途要する。既存の研究状態・SOURCE・結果は変更しない。

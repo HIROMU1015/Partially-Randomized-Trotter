@@ -1107,3 +1107,8 @@ STOP_FOR_GPT_SCOPE_DECISION。元whole補正closure、Track A/G10/RA-D0結果・
 ## Track B：時間方向相関の限定照合（2026-10-13）
 
 [GPT方向レビュー原本](docs/research/track_b_interstep_correlated_randomization_direction_review_20261013.md)／[一次資料・式・会計の技術報告](docs/tracks/algorithm_codesign/interstep_correlated_randomization_prior_art_audit_20261013.md)。PRHS本文取得、qSHIFT v1/v3の表示差と実測shotの会計を確認。既知手順への対応、追加の具体的方法差は未確立。新実装・科学実行なし、既存休止・closure保持、mandatory STOP。
+
+
+## 2026-10-19：Track B G6/G7 W2c-B3/C1の技術準備
+
+[補助SOURCE・schema・人工テスト・未採択契約候補](docs/research/track_b_g6_w2c_b3_c1_preparation_20261019/README.md)。既存G7 P5 development入力の費用比較に向けた準備のみ。実G7 sampling/profiling、native build/compile/synthesisは未実施。新補助moduleは`src/trottertracks/algorithm_codesign/g6_w2c_cost_preparation.py`、人工testは`tests/tracks/algorithm_codesign/test_g6_w2c_cost_preparation.py`。実行runner・authorizationを提供せず、契約採択と実行承認を別途要する。既存の研究状態・SOURCE・結果は変更しない。
