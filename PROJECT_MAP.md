@@ -1,4 +1,4 @@
-H4 S_STATS（2026-10-19）：保存統計と完成Dだけによる84 scenario・14方向のone-shotを承認受領。人工14件PASS、SOURCE固定後に実行。P科学実行は未承認。[契約と実装](docs/research/track_a_h4_s_stats_20261019.md)。
+H4 S_STATS完了（2026-10-19）：保存統計＋完成Dによる84 scenario・14方向を1 pass、native exit0・終了監査PASS。推奨n合計4185、P compile案8370軸。P科学実行・新seed生成0、mandatory STOP。[結果とP契約情報](docs/research/track_a_h4_s_stats_20261019.md)。以下は履歴。
 
 H4 D完了（2026-10-19）：55 workerで55候補110軸、control220 PASS、1040行会計・native exit0・全回収。登録内の代表winnerは旧subsetから10/10不変。S_STATS/P未実行、mandatory STOP。[結果](docs/research/track_a_h4_d_completed_20261019.md)。以下は履歴。
 
