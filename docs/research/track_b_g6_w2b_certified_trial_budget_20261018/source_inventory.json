@@ -1,0 +1,396 @@
+{
+  "schema": "g6_w2b_static_source_inventory_v1",
+  "files": [
+    {
+      "id": "G",
+      "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+      "path": "src/trottertracks/algorithm_codesign/g7_generator.py",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_generator.py",
+      "git_blob_oid": "70bd5eff7c5f84ddbfa50493aba7a6e55c999032",
+      "bytes": 13477,
+      "sha256": "bb4177d26f1cee9721c2b083de01f4aa309f3ad39f22597cfae3b662881269fb",
+      "reading_scope": "Full fixed file read; Canonical/Full/upper_normalizer/log640_upper/budget statically cross-checked. Never imported/called.",
+      "scientific_import_execution_or_test_this_task": false,
+      "AST_selected_declarations": [
+        {
+          "name": "raw_reduced_masses",
+          "start_line": 19,
+          "end_line": 27,
+          "AST_sha256": "e36eb8902140b7cc23ace9b33e8e44466320e13d636bf579b50787c7eaccca55"
+        },
+        {
+          "name": "sum_roots",
+          "start_line": 30,
+          "end_line": 32,
+          "AST_sha256": "c741087577bc6106ea078f58077542e3346b4c7e4e23ca27048141ddb0d34949"
+        },
+        {
+          "name": "upper_normalizer",
+          "start_line": 35,
+          "end_line": 41,
+          "AST_sha256": "f4444904106c03f98a4979b6b8ade0cb50ecc69c78c2b3fd6f5a0c6b6f4a950b"
+        },
+        {
+          "name": "CanonicalGenerator.__init__",
+          "start_line": 103,
+          "end_line": 143,
+          "AST_sha256": "f02a3aa5dc60c0b7d67c57123a40a5291280629a97a0624457432aa225121d0c"
+        },
+        {
+          "name": "CanonicalGenerator._ordinary",
+          "start_line": 148,
+          "end_line": 151,
+          "AST_sha256": "77a20f9250940c0ec06cce32c7c5aa3ae0ccf096919435edd68a578c2428a855"
+        },
+        {
+          "name": "CanonicalGenerator.conditional",
+          "start_line": 153,
+          "end_line": 156,
+          "AST_sha256": "51603fad6416c39b855e457a9b5ee38ab11d6ed3dca2cdad1e799a039426796f"
+        },
+        {
+          "name": "CanonicalGenerator.first_distribution",
+          "start_line": 158,
+          "end_line": 160,
+          "AST_sha256": "3dee1cec16c8bb3134550cdf2289800f595632e4d62261c7e757d7ad6ff15c8e"
+        },
+        {
+          "name": "CanonicalGenerator.event",
+          "start_line": 162,
+          "end_line": 191,
+          "AST_sha256": "2e79f557b1a127713e6f31fcc2e1d586e9c6916f3fc39e90127e6067207b6d26"
+        },
+        {
+          "name": "CanonicalGenerator.sample",
+          "start_line": 193,
+          "end_line": 212,
+          "AST_sha256": "0f59fd437e1c71686ee22cd7af9286bb07d912b0e9e03e3299eedd7ccaf34bf8"
+        },
+        {
+          "name": "FullReturnGenerator.__init__",
+          "start_line": 216,
+          "end_line": 225,
+          "AST_sha256": "7ec03b6cf15243ce5e215a34037906ea6186f61795605440576ddb1cadfc3f2f"
+        },
+        {
+          "name": "FullReturnGenerator.sample",
+          "start_line": 237,
+          "end_line": 251,
+          "AST_sha256": "5055ebb25453de4637862e4ad43c0de44bda666662d17491d2449322efd8c27d"
+        },
+        {
+          "name": "log640_upper",
+          "start_line": 258,
+          "end_line": 263,
+          "AST_sha256": "b214c2e44ff06d45a7a07c0ce8138c1649047248b228e4eec6a44dd7df08250a"
+        },
+        {
+          "name": "budget",
+          "start_line": 266,
+          "end_line": 284,
+          "AST_sha256": "091c76e153d241cc7b53d255e9fd10858b43d27be32aa3290bdb7fbe9c2ee7d2"
+        }
+      ],
+      "reading_and_AST_parse_only": true,
+      "imported_or_executed": false,
+      "tests_run_this_task": false,
+      "working_base_bytes_equal_fixed": true,
+      "budget_assignments_static_text": [
+        {
+          "targets": [
+            "(eta, rho, m)"
+          ],
+          "expression": "(generator.eta, generator.rho, generator.m)",
+          "line": 267
+        },
+        {
+          "targets": [
+            "kappa"
+          ],
+          "expression": "(1 + rho) ** 2 / (1 - eta) ** (m + 2)",
+          "line": 268
+        },
+        {
+          "targets": [
+            "B"
+          ],
+          "expression": "generator.B.hi",
+          "line": 269
+        },
+        {
+          "targets": [
+            "m2_upper"
+          ],
+          "expression": "kappa * B * (generator.U.hi if generator.arm == 'full_return' else B)",
+          "line": 270
+        },
+        {
+          "targets": [
+            "W"
+          ],
+          "expression": "(1 + rho) * B / (1 - eta) ** (m + 2)",
+          "line": 271
+        },
+        {
+          "targets": [
+            "common_bias"
+          ],
+          "expression": "2 * (3 * rho + 3 * (1 + rho) * 2 * primitive_error)",
+          "line": 273
+        },
+        {
+          "targets": [
+            "remaining"
+          ],
+          "expression": "epsilon_axis - common_bias",
+          "line": 274
+        },
+        {
+          "targets": [
+            "continuous"
+          ],
+          "expression": "log640_upper() * (2 * m2_upper / remaining ** 2 + 4 * W / (3 * remaining))",
+          "line": 277
+        },
+        {
+          "targets": [
+            "N"
+          ],
+          "expression": "(continuous.numerator + continuous.denominator - 1) // continuous.denominator",
+          "line": 278
+        }
+      ]
+    },
+    {
+      "id": "K",
+      "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+      "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py",
+      "git_blob_oid": "37a8dc0f6b45506bc7f52c1af451ff68ddffe412",
+      "bytes": 9814,
+      "sha256": "f716d3c69fc1063e47b7618022662715f6b34a9c1f35cc3e7ed26813f5ac69f0",
+      "reading_scope": "Frozen root/dyadic source read with focus on root_interval; exact bytes checked, no import/execution.",
+      "scientific_import_execution_or_test_this_task": false,
+      "AST_selected_declarations": [
+        {
+          "name": "root_interval",
+          "start_line": 45,
+          "end_line": 52,
+          "AST_sha256": "abadfd235c0832bba160d79babeee97416b255e0d55a1155d07093cda8f2643f"
+        },
+        {
+          "name": "dyadic_distribution",
+          "start_line": 55,
+          "end_line": 82,
+          "AST_sha256": "44ffb3d70f41051e7a249fc578d40e069782bcdac9f0c23449435406e509d10c"
+        },
+        {
+          "name": "dyadic_bernoulli",
+          "start_line": 85,
+          "end_line": 94,
+          "AST_sha256": "63df2e2d8cc072aae5bc4a44d1c50bda46957b8599597c19ed72a4794fe5395b"
+        },
+        {
+          "name": "dyadic_index",
+          "start_line": 97,
+          "end_line": 110,
+          "AST_sha256": "a77ebf2b62276477549f83e99f71e495d473111354acc88bfe9963ad01262913"
+        }
+      ],
+      "reading_and_AST_parse_only": true,
+      "imported_or_executed": false,
+      "tests_run_this_task": false,
+      "working_base_bytes_equal_fixed": true
+    },
+    {
+      "id": "P5",
+      "commit": "0ef2b92738750a3c0d187743dd4b7c9b927db802",
+      "path": "src/trottertracks/algorithm_codesign/g9_p5.py",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0ef2b92738750a3c0d187743dd4b7c9b927db802/src/trottertracks/algorithm_codesign/g9_p5.py",
+      "git_blob_oid": "88ed376bc910091573a7e4ea3c942c3b4bf93963",
+      "bytes": 8297,
+      "sha256": "322c4d340303e581aaefff1c3a6f58d019caf9e3f60beadc901425e766524d70",
+      "reading_scope": "Full fixed P5 source read; class and lack of in-file budget checked statically; never imported/executed.",
+      "scientific_import_execution_or_test_this_task": false,
+      "AST_selected_declarations": [
+        {
+          "name": "P5Closed.__init__",
+          "start_line": 11,
+          "end_line": 45,
+          "AST_sha256": "73f4379081f0ffd2a899e155f804a4ecf5c2df1213554401110e800ab9d14701"
+        },
+        {
+          "name": "P5Closed.event",
+          "start_line": 88,
+          "end_line": 108,
+          "AST_sha256": "dc86e75d4860666d0ca6813b269a73323149ab2feb19474257513924bef84cba"
+        },
+        {
+          "name": "P5Closed.sample",
+          "start_line": 110,
+          "end_line": 123,
+          "AST_sha256": "c2360652645920669c9e2daaee20ac50221c0d400fec6d5a97c0dcf8c254481b"
+        }
+      ],
+      "reading_and_AST_parse_only": true,
+      "imported_or_executed": false,
+      "tests_run_this_task": false,
+      "working_base_bytes_equal_fixed": true
+    },
+    {
+      "id": "G9PLAN",
+      "commit": "0ef2b92738750a3c0d187743dd4b7c9b927db802",
+      "path": "src/trottertracks/algorithm_codesign/g9_comparison.py",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0ef2b92738750a3c0d187743dd4b7c9b927db802/src/trottertracks/algorithm_codesign/g9_comparison.py",
+      "git_blob_oid": "3dabaf16db4650e208e06669ec4784c36928ae00",
+      "bytes": 4049,
+      "sha256": "8624cee69367fe59ff9c69077da18d6202299eb4d0987c7033a264ba0637609e",
+      "reading_scope": "Full fixed source read; existing plan only statically inspected; numpy/native row code never imported or run.",
+      "scientific_import_execution_or_test_this_task": false,
+      "AST_selected_declarations": [
+        {
+          "name": "plan",
+          "start_line": 16,
+          "end_line": 31,
+          "AST_sha256": "1d583c2727928f99e45e5350bc5c7e262bc2f79c65f9b5bd26f5062f787a49b0"
+        }
+      ],
+      "reading_and_AST_parse_only": true,
+      "imported_or_executed": false,
+      "tests_run_this_task": false,
+      "working_base_bytes_equal_fixed": true,
+      "budget_assignments_static_text": [
+        {
+          "targets": [
+            "eta",
+            "rho"
+          ],
+          "expression": "F(1, 10 ** 12)",
+          "line": 17
+        },
+        {
+          "targets": [
+            "alpha"
+          ],
+          "expression": "F(49, 22000)",
+          "line": 17
+        },
+        {
+          "targets": [
+            "epsilon"
+          ],
+          "expression": "F(1, 10 ** 6)",
+          "line": 17
+        },
+        {
+          "targets": [
+            "common_bias"
+          ],
+          "expression": "2 * (8 * rho + 8 * (1 + rho) * 2 * epsilon)",
+          "line": 18
+        },
+        {
+          "targets": [
+            "remaining"
+          ],
+          "expression": "F(1, 200) - common_bias",
+          "line": 19
+        },
+        {
+          "targets": [
+            "B"
+          ],
+          "expression": "g.B.hi if g else sum((e['coefficient'] for e in cts))",
+          "line": 20
+        },
+        {
+          "targets": [
+            "kappa"
+          ],
+          "expression": "(1 + rho) ** 2 / (1 - eta) ** 7",
+          "line": 22
+        },
+        {
+          "targets": [
+            "m2"
+          ],
+          "expression": "kappa * B * (g.U.hi if g and g.arm == 'full_return' else B)",
+          "line": 23
+        },
+        {
+          "targets": [
+            "W"
+          ],
+          "expression": "(1 + rho) * B / (1 - eta) ** 7",
+          "line": 24
+        },
+        {
+          "targets": [
+            "N"
+          ],
+          "expression": "ceil(log_upper(2 / alpha) * (2 * m2 / remaining ** 2 + 4 * W / (3 * remaining)))",
+          "line": 25
+        },
+        {
+          "targets": [
+            "z"
+          ],
+          "expression": "acceptance_upper(g) if g and g.arm == 'full_return' else F(1)",
+          "line": 26
+        }
+      ]
+    },
+    {
+      "id": "G8LOG",
+      "commit": "0ef2b92738750a3c0d187743dd4b7c9b927db802",
+      "path": "src/trottertracks/algorithm_codesign/g8_bounds.py",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0ef2b92738750a3c0d187743dd4b7c9b927db802/src/trottertracks/algorithm_codesign/g8_bounds.py",
+      "git_blob_oid": "2055c9b1c1eb9e20ad7db7754dd62e18452232d3",
+      "bytes": 3306,
+      "sha256": "7c6346c8d3e13a94041c18b666e28ec97968a472439805e10f73a7e81b10c9f0",
+      "reading_scope": "Full fixed helper source read; log_upper called by G9 identified statically, no new provider or budget analysis.",
+      "scientific_import_execution_or_test_this_task": false,
+      "AST_selected_declarations": [
+        {
+          "name": "log_interval",
+          "start_line": 9,
+          "end_line": 18,
+          "AST_sha256": "3ce5d54e627401492dbe0b45a0e0403665abe98ff694af3fb6eaa7985764b2a8"
+        },
+        {
+          "name": "log_upper",
+          "start_line": 21,
+          "end_line": 21,
+          "AST_sha256": "9c25b7094c9e5705920f52d0e447284a3aeaf21cd5441229a53ae18bb4205345"
+        }
+      ],
+      "reading_and_AST_parse_only": true,
+      "imported_or_executed": false,
+      "tests_run_this_task": false,
+      "working_base_bytes_equal_fixed": true
+    }
+  ],
+  "local_entrypoint_identity_reuse": {
+    "PROJECT_MAP.md": {
+      "bytes": 37360,
+      "sha256": "755a389388bf3d21d01a0e2ee297d19b9c9592028f095f8c9e0a5a3d6a9468c2",
+      "reading_scope": "Reuse prior complete reading with exact-byte identity; current common section 8.4 reread."
+    },
+    "docs/research/研究概要・現状.md": {
+      "bytes": 114245,
+      "sha256": "06bc6fc8a13b1e5862f7bad581a94e7221f6f2ecc103f80052a04f996467a65e",
+      "reading_scope": "Reuse prior complete reading with exact-byte identity; current common section 8.4 reread."
+    },
+    "research_project_instructions_unified_2026-10-17.md": {
+      "bytes": 38191,
+      "sha256": "d2ebdac4b0e44e871c65f240f317e6b5d3c3460f27d92f4d798992da90bf422f",
+      "reading_scope": "Reuse prior complete reading with exact-byte identity; current common section 8.4 reread."
+    }
+  },
+  "F3_source_not_imported_or_executed": true,
+  "prior_F3_test_artifacts_read_as_provenance_not_rerun": true,
+  "Codex_A_live_worktree_index_lock_process_output_inspected": false,
+  "B_application_SOURCE_reaudited": false,
+  "no_scientific_module_imported_by_administrative_tools": true,
+  "missing_required_materials": []
+}
