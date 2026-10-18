@@ -203,6 +203,11 @@ def law(p,c,rte):
 def packed_cost(cost):return {k:str(F(v)) for k,v in cost.as_dict().items()}
 
 
+def check_saved_law(receipt, saved):
+    if receipt['native_distribution']!=saved['native_distribution'] or receipt['tau_hex']!=saved['tau_hex'] or receipt['lambda_r_hex']!=saved['lambda_r_hex']:
+        raise ValueError('PINNED_NATIVE_LAW_MISMATCH')
+
+
 def evaluate(p,c,models,ops,rte):
     random=c['method']=='B2';rows=[]
     scalar=p['constant']+(p['extracted'] if random else 0.)
@@ -258,14 +263,26 @@ def theory_stage(plan, output):
             preparations[prefix]=from_graph(graph,graph.archive['codec']['roots']['faithful:p'+str(prefix)])
     write(output/'preparation_descriptions.json',{str(k):describe(p) for k,p in preparations.items()})
     results=[];laws=[]
+    old_laws=read(input['old_laws']['path']) if plan['stage']==3 else []
+    old_theory=read(input['old_theory']['path']) if plan['stage']==3 else []
     for c in plan['candidates']:
         journal(output,'theory_candidate_reserved',candidate_id=c['id'],models=plan['models'])
         print(json.dumps(dict(phase='THEORY',candidate=c['id'])),flush=True)
         rows,law_receipt=evaluate(preparations[c['prefix']],c,plan['models'],ops,rte)
+        if plan['stage']==3:
+            selected=[r for r in old_theory if r['system']=='H6' and r['candidate_id']==c['id']]
+            if len(selected)!=4 or {r['preparation_hash'] for r in selected}!={preparations[c['prefix']]['preparation_hash']}:
+                raise ValueError('PINNED_THEORY_PREPARATION_MISMATCH')
+            if law_receipt is not None:
+                previous=[r for r in old_laws if r['system']=='H6' and r['candidate_id']==c['id']]
+                if len(previous)!=1:raise ValueError('UNIQUE_SAVED_LAW_REQUIRED')
+                check_saved_law(law_receipt,previous[0])
         for row in rows:row['system']=plan['system']
         results.extend(rows)
         if law_receipt is not None:laws.append(dict(candidate_id=c['id'],**law_receipt))
     write(output/'theory.json',results);write(output/'laws.json',laws)
+    if plan['stage']==3:
+        write(output/'uniform_saved_reuse.json',[r for r in old_theory if r['system']=='H6' and r['candidate_id'] in PANEL['H6']])
     return dict(theory_wrapper_rows=len(results),candidates=len(plan['candidates']),
                 new_compile=0,new_sampling=0,new_signal=0,new_SCF_DF_state=0)
 

@@ -62,5 +62,11 @@ class AdapterTests(unittest.TestCase):
         with patch.object(x.subprocess,'check_output',return_value='1'*40):
             with self.assertRaisesRegex(ValueError,'FIXED_SEVEN_PANEL'):x.verify(plan,grant)
 
+    def test_saved_law_bit_drift_is_rejected(self):
+        a=dict(native_distribution={'probability':.1},tau_hex=(.2).hex(),lambda_r_hex=(.3).hex())
+        x.check_saved_law(a,dict(a))
+        with self.assertRaisesRegex(ValueError,'PINNED_NATIVE_LAW'):
+            x.check_saved_law(a,dict(a,tau_hex=(.20000000000000004).hex()))
+
 
 if __name__=='__main__':unittest.main()
