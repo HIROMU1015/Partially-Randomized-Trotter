@@ -2372,3 +2372,8 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-15 H6 fixed-delta readiness
 
 [準備資料](docs/research/track_a_h6_fixed_delta_t_dependence_readiness_20261015.md)。46人工/mockとAPI/byte binding PASS、新Tの科学処理0、実成功/独立review/CIを主張しない。SOURCE90a3c06…、approved/runtime falseでSTOP。
+
+
+## 2026-10-19 Mechanism：図表統合の技術準備
+
+[入口](docs/research/track_a_mechanism_paper_integration_readiness_20261019.md)。人工26テスト・人工描画PASS、保存値転記のみ。A82は原入力metadata回収で数値PASS未認定。H4 D完了は別provenance、P未完了、最終evidence freezeなし。local technical evidenceで独立科学再現／immutable CIではない。

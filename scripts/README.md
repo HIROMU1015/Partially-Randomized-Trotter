@@ -935,3 +935,6 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## Mechanism explanation-only readiness (2026-10-19)
 
 [契約・状態](../docs/research/track_a_mechanism_explanation_diagnostic_readiness_20261019.md)。prepare_mechanism_explanation.pyはmetadata転記のみ、run_mechanism_explanation.pyは新規の別承認が必要。旧core再計算なし。
+
+
+- `prepare_mechanism_figure2.py`：SHA固定保存CSVの文字列転記専用。科学再解析を行わない。`preview_mechanism_figure2.py --synthetic-preview`：人工値だけのFigure 2技術preview。実入力経路なし。[報告](../docs/research/track_a_mechanism_paper_integration_readiness_20261019.md)。

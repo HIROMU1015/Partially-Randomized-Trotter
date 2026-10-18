@@ -1561,3 +1561,8 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-19 Mechanism説明側：one-shot完了
 
 [結果・条件・監査](docs/research/track_a_mechanism_explanation_results_20261019.md)。SOURCE b6716396acc5760fde7cf7cc6f2481b183a08f10。63 side／31比較で説明完了、A82_OLD_PR.PRのみ既知欠測。元core32件不変、数値不一致・追加欠測0、mandatory STOP。
+
+
+## 2026-10-19 Track A Mechanism：Figure 2準備・A82限定回収
+
+[統合入口](docs/research/track_a_mechanism_paper_integration_readiness_20261019.md)。保存core32／説明31比較62軸を転記し、人工26テスト・人工描画PASS。A82原signalはreceipt SHA同一で回収、数値再解析0・旧欠測保持。H4 D完了／PF代表10/10不変を別来歴へ追記、旧PRE_D_P数値・P未完了・最終freezeなし。local commit後mandatory STOP、公開push0。

@@ -912,3 +912,6 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 ## Mechanism explanation (2026-10-19)
 
 [mechanism_explanation.py](mechanism_explanation.py)はstep／累積／empirical upperを区別する説明専用module。[診断と未承認契約](../../docs/research/track_a_mechanism_explanation_diagnostic_readiness_20261019.md)。旧mechanism coreは不変。
+
+
+- `mechanism_paper.py`：保存値のID／schema／cohort照合と図表への文字列転記。科学算術なし。人工testは`tests/test_mechanism_paper.py`。[統合準備](../../docs/research/track_a_mechanism_paper_integration_readiness_20261019.md)。
