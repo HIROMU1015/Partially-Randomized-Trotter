@@ -1,4 +1,6 @@
 
+H8 DBA：固定D2構成4軸の先行実行準備。保存予測3117248/7・4973552/7、構成間並列・軸内cosine判定後sine、人工7件PASS。B/Aは未seal。詳細 `docs/research/track_a_h8_dba_20261018.md`。
+
 H6 DBA実行更新：A境界16構成はnative exit0・最終gate PASS・mandatory STOP。D2軸/B希少層32軸は時点付き稼働記録。人工18件PASS、旧STOP保持・新費用会計なし。詳細：`docs/research/track_a_h6_dba_20261018.md`。
 
 H6 DBA限定並列検証：`docs/research/track_a_h6_dba_20261018.md`。D2軸・B2群32軸・A16 signal構成。新SOURCE/grant、stageごとSTOP、旧結果保全。
