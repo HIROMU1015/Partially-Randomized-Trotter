@@ -1,3 +1,5 @@
+H6 DBA完了：D2軸・B16 trajectory/32軸・A16 signal、各native exit0・最終gate PASS・mandatory STOP。D誤差各0.326615%、Bは条件付きn8 pilot、統合費用会計なし。詳細 `docs/research/track_a_h6_dba_20261018.md`。
+
 
 H6 DBA実行更新：A境界16構成はnative exit0・最終gate PASS・mandatory STOP。D2軸/B希少層32軸は時点付き稼働記録。人工18件PASS、旧STOP保持・新費用会計なし。詳細：`docs/research/track_a_h6_dba_20261018.md`。
 
