@@ -1,5 +1,9 @@
 # 文書索引
 
+## 2026-10-18 研究④：DF共分散の紙上方法差検証
+
+[既知式・SOURCE対応、同情報費用比較、技術判定と引継ぎ](research/qc_iv_covariance_method_audit_20261018/README.md)。REDUCES_TO_KNOWN_METHOD、独立差なし。新しい実装/計算/保証/科学契約/認可は0、既存研究状態不変、mandatory STOP。
+
 ## 2026-10-18 研究④の新課題に向けた技術調査
 
 [調査入口・候補比較・最小検証案・ハンドオフ・固定証拠](research/qc_track_iv_question_survey_20261018/README.md)。条件付き候補1件、方法差未確定・新規性未認定、テーマ未採択。既存停止状態・旧証拠を維持し、新科学計算・SOURCE実装・実験契約・認可0、mandatory STOP。

@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-18 研究④のDF共分散候補：紙上では既知法へ還元
+
+[方法差検証・技術判定・引継ぎ・証拠索引](docs/research/qc_iv_covariance_method_audit_20261018/README.md)。同じDF/state情報と標準縮約・stream/cacheを許した既知対照が同じ演算列を使えるため、指定候補はREDUCES_TO_KNOWN_METHOD。この候補の探索をここで止め、実装・科学実行へ進まない。新規性/研究GO・④全体の方針は採択せず、旧状態・旧証拠を保持。公開確認後mandatory STOP。
+
 ## 2026-10-18 研究④の課題選定：技術調査のみ・未採択
 
 [既存研究・終了理由、新候補1件、最小検証案、引継ぎ、証拠索引](docs/research/qc_track_iv_question_survey_20261018/README.md)。固定粒子数・DF構造を保持する全energy shadows共分散縮約を条件付きで提案するが、既知法との差は未確定。新アルゴリズム・研究テーマの採択、A2等の再開、新科学計算・SOURCE実装・科学契約・認可は行わない。旧状態と証拠を保全し、公開確認後mandatory STOP。

@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-18 研究④の共分散候補：方法差の静的比較のみ
+
+[紙上方法差検証](docs/research/qc_iv_covariance_method_audit_20261018/README.md)の技術判定はREDUCES_TO_KNOWN_METHOD。数値correctness・科学計算・著者SOURCEテスト・runtime比較は行っていない。新規validation/保証・科学契約/認可0、既存結果・既知global FAIL・正式研究状態を保持。文書/リンク/hash/公開/保全確認後mandatory STOP。
+
 ## 2026-10-18 研究④の課題調査：新しい数値validationなし
 
 [文献・SOURCE読取と候補提案](docs/research/qc_track_iv_question_survey_20261018/README.md)のみ。候補1件は独立方法差未確定・未採択、実装・人工テスト・科学計算・保存値再解析・科学契約・認可0。ファイル/リンク/hash/公開/旧成果保全の確認は数値correctnessやimmutable CIの証拠ではない。旧validation・既知global FAIL・研究停止状態を全て保持する。
