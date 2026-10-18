@@ -23,12 +23,13 @@ class Boundaries(unittest.TestCase):
         self.receipt=self.root/'approval.txt';self.receipt.write_text('ARTIFICIAL ONLY')
         self.spec=dict(scope='H4_D_ACCOUNTING',stage='D_ACCOUNTING',SOURCE='a'*40,
             technical_sealed=True,approved=False,runtime_authorization=False,retry=False,
-            next_stage_authorized=False,memory_estimate_per_worker_bytes=1,
+            next_stage_authorized=False,memory_estimate_per_worker_bytes=1,output_estimate_bytes=1,inode_estimate=1,
             output=str(self.root/'output'),lock=str(self.root/'ONE_SHOT'))
         self.spec['technical_digest']=b.metadata_binding(self.spec)
         self.grant=dict(scope=self.spec['scope'],technical_digest=self.spec['technical_digest'],SOURCE='a'*40,
             approved_by_user=True,runtime_authorization=True,one_shot=True,retry=False,
             next_stage_authorized=False,allowed_cpus=[min(os.sched_getaffinity(0))],
+            concurrent_job_cpus=[],quota_policy='USER_ACCEPTS_UNEXPOSED_QUOTA_ENOSPC_FAIL_CLOSED',
             memory_admission_estimate_bytes=1,approval_receipt=str(self.receipt),
             approval_receipt_sha256=b.sha(self.receipt))
     def tearDown(self):self.temp.cleanup()
@@ -76,12 +77,18 @@ class Boundaries(unittest.TestCase):
             if spec['scope']==scopes[0]:raise ValueError('ARTIFICIAL_MISSING')
         with patch.object(b,'read',side_effect=lambda p:specs[p]),patch.object(b,'authorize'),\
              patch.object(b,'verify',side_effect=verify),patch.object(b,'verify_scoped_paths'),\
-             patch.object(b.old,'fresh',return_value={'memory_available_bytes':10}),\
+             patch.object(b.old,'fresh',return_value={'memory_available_bytes':10,'disk_free_bytes':10,'free_inodes':10}),\
              patch.object(b.subprocess,'Popen',return_value=fake) as spawn,\
              patch.object(b,'identity',return_value={'pid':fake.pid}):
             result=b.launch(overview,approval)
         self.assertEqual(result[scopes[0]]['status'],'PRESTART_STOP')
         self.assertTrue(result[scopes[1]]['reaped']);self.assertEqual(spawn.call_count,1)
+    def test_unknown_quota_requires_explicit_selected_policy(self):
+        grant=dict(self.grant);grant.pop('quota_policy')
+        with self.assertRaisesRegex(ValueError,'QUOTA_POLICY'):b.fresh_admission(self.spec,grant)
+    def test_parallel_job_cpu_exclusion(self):
+        with self.assertRaisesRegex(ValueError,'CONCURRENT_JOB_CPU'):
+            b.fresh_admission(self.spec,dict(self.grant,concurrent_job_cpus=self.grant['allowed_cpus']))
     def test_one_shot_cannot_be_claimed_twice(self):
         path=self.root/'marker';b.old.claim_attempt(path,'a'*40,'artificial')
         with self.assertRaises(FileExistsError):b.old.claim_attempt(path,'a'*40,'artificial')

@@ -374,6 +374,8 @@ def prepare(private_root,source,runtime_receipt):
                 dict(saved_scalar_pass=1,trajectory=0,wrapper_compile=0,control_probe=0,signal=0,fit=0),
                 output=str(folder/'output'),lock=str(folder/'ONE_SHOT'),retry=False,next_stage_authorized=False,
                 memory_estimate_per_worker_bytes={'H4':2,'H6':6,'H8':24}[system]*2**30 if stage=='A_COST' else 256*2**20,
+                output_estimate_bytes=(8 if system=='H8' else 2)*2**30 if stage=='A_COST' else 128*2**20,
+                inode_estimate=8192 if stage=='A_COST' else 128,
                 resource_caps=None,allowed_cpus=[],fresh_resource_assignment_required=True,
                 scope_limit='recorded conditional-cost diagnostic only; unconditional mean unresolved'
                     if stage=='B_ANALYSIS' else 'saved direct measurements and original confirmed PR; no new A_COST results'

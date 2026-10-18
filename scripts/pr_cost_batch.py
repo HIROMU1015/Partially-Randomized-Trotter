@@ -47,8 +47,25 @@ def authorize(spec,grant):
     require(len(grant['allowed_cpus'])==len(set(grant['allowed_cpus'])),'UNIQUE_OWN_CPUS')
     require(type(grant.get('memory_admission_estimate_bytes')) is int
             and grant['memory_admission_estimate_bytes']>=spec['memory_estimate_per_worker_bytes']
-                * (len(grant['allowed_cpus']) if spec['stage']=='A_COST' else 1),'MEMORY_ESTIMATE_NOT_A_CAP')
+                * (len(grant['allowed_cpus'])+1 if spec['stage']=='A_COST' else 1),'MEMORY_ESTIMATE_NOT_A_CAP')
     require(sha(grant['approval_receipt'])==grant['approval_receipt_sha256'],'USER_APPROVAL_RECEIPT')
+
+
+def fresh_admission(spec,grant):
+    """Own-input resources only; unrelated worktree/PSI changes are observations."""
+    require(set(grant['allowed_cpus']).isdisjoint(grant['concurrent_job_cpus']),'CONCURRENT_JOB_CPU_EXCLUSION')
+    observation=old.fresh(Path(spec['output']).parent)
+    require(observation['memory_available_bytes']>=grant['memory_admission_estimate_bytes']
+            and observation['disk_free_bytes']>=spec['output_estimate_bytes']
+            and observation['free_inodes']>=spec['inode_estimate'],'FRESH_RESOURCE_ADMISSION')
+    # Absence of quota tools never implies unlimited quota. Accepting this
+    # site limitation must be an explicit part of the future selected approval.
+    require(grant.get('quota_policy') in ('AVAILABLE_VERIFIED','NO_QUOTA_CONFIRMED',
+            'USER_ACCEPTS_UNEXPOSED_QUOTA_ENOSPC_FAIL_CLOSED'),'EXPLICIT_QUOTA_POLICY_REQUIRED')
+    if grant['quota_policy']=='AVAILABLE_VERIFIED':
+        require(grant['quota_remaining_bytes']>=spec['output_estimate_bytes']
+                and grant['quota_remaining_inodes']>=spec['inode_estimate'],'QUOTA_ADMISSION')
+    return observation
 
 
 def verify(spec,*,runtime=True,source=True):
@@ -95,6 +112,7 @@ def verify_scoped_paths(spec):
 
 def run_contract(spec,grant):
     authorize(spec,grant);verify(spec)
+    fresh=fresh_admission(spec,grant)
     require(sha(grant['approval_receipt'])==grant['approval_receipt_sha256'],'USER_APPROVAL_RECEIPT')
     output,lock=verify_scoped_paths(spec);lock.parent.mkdir(parents=True,exist_ok=True)
     old.claim_attempt(lock,spec['SOURCE'],spec['scope']);output.mkdir(parents=True,exist_ok=False)
@@ -106,7 +124,7 @@ def run_contract(spec,grant):
     for name in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS',
                  'NUMBA_NUM_THREADS','QISKIT_NUM_PROCS','RAYON_NUM_THREADS'):os.environ[name]='1'
     try:
-        save(output/'startup_gate.json',dict(status='PASS',SOURCE=spec['SOURCE'],scope=spec['scope']))
+        save(output/'startup_gate.json',dict(status='PASS',SOURCE=spec['SOURCE'],scope=spec['scope'],fresh=fresh))
         import pr_cost_batch_science as science
         result=science.execute(spec,grant,output)
         save(output/'result.json',result)
@@ -157,20 +175,25 @@ def cleanup_all(processes):
 def launch(overview,approval):
     selected=select(overview,approval);processes={};results={};handles=[]
     # All selected grants are checked before the first scientific child starts.
-    runnable=[];used_cpus=set();total_memory_estimate=0
+    runnable=[];used_cpus=set();total_memory_estimate=0;total_output=0;total_inodes=0
     by={x['scope']:x for x in overview['contracts']}
     for scope in selected:
         try:
             require(by[scope]['status'] in ('READY','READY_PARTIAL_DIAGNOSTIC'),'CONTRACT_EVIDENCE_NOT_READY')
             spec=read(overview['private_specs'][scope]);grant=approval['individual_grants'][scope]
             authorize(spec,grant);verify(spec);verify_scoped_paths(spec)
+            fresh_admission(spec,grant)
             require(set(grant['allowed_cpus']).isdisjoint(used_cpus),'PARALLEL_CPU_COLLISION')
             used_cpus.update(grant['allowed_cpus'])
-            total_memory_estimate+=grant['memory_admission_estimate_bytes'];runnable.append(scope)
+            total_memory_estimate+=grant['memory_admission_estimate_bytes']
+            total_output+=spec['output_estimate_bytes'];total_inodes+=spec['inode_estimate'];runnable.append(scope)
         except Exception as error:
             results[scope]=dict(status='PRESTART_STOP',reason=str(error),scientific_calls=0)
     require(runnable,'NO_READY_SELECTED_CONTRACTS')
-    require(old.fresh(ROOT)['memory_available_bytes']>=total_memory_estimate,'FRESH_BATCH_MEMORY_ADMISSION')
+    fresh=old.fresh(ROOT)
+    require(fresh['memory_available_bytes']>=total_memory_estimate
+            and fresh['disk_free_bytes']>=total_output and fresh['free_inodes']>=total_inodes,
+            'FRESH_BATCH_RESOURCE_ADMISSION')
     batch_lock=old.home_path(overview['batch_lock']);batch_lock.parent.mkdir(parents=True,exist_ok=True)
     old.claim_attempt(batch_lock,overview['SOURCE'],'SELECTED_BATCH')
     try:
