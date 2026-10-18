@@ -84,6 +84,8 @@ def source_gate(plan):
 def runtime_gate(profile):
     core.require(sys.version.split()[0] == profile["python_version"], "PYTHON_RUNTIME_CHANGED")
     core.require(digest_bytes(Path(sys.executable).read_bytes()) == profile["python_executable_sha256"], "PYTHON_EXECUTABLE_CHANGED")
+    for row in profile.get("stdlib_files", []):
+        core.require(digest_bytes(Path(row["path"]).read_bytes()) == row["sha256"], "USED_STDLIB_RUNTIME_CHANGED")
     for saved in profile["packages"]:
         dist = importlib.metadata.distribution(saved["name"])
         core.require(dist.version == saved["version"], "NUMERIC_RUNTIME_VERSION_CHANGED")

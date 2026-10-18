@@ -141,6 +141,20 @@ class CopyBindingTests(unittest.TestCase):
         for value in (True, "nan", "2"):
             with self.assertRaises(ValueError): binder.factor_one(value)
 
+    def test_stage_dependencies_stay_independent(self):
+        closure = [dict(path=p) for p in binder.EXECUTION_FILES]
+        b1 = {r['path'] for r in binder.stage_source_files(closure, 'B1')}
+        b2 = {r['path'] for r in binder.stage_source_files(closure, 'B2')}
+        self.assertNotIn('scripts/run_pr_alpha_sensitivity.py', b1)
+        self.assertNotIn('scripts/run_pr_alpha_binomial.py', b2)
+        original = dict(python_version=sys.version.split()[0], python_executable_sha256=runtime.digest_bytes(Path(sys.executable).read_bytes()), packages=[dict(name='SYNTHETIC_SCIPY')])
+        profile = binder.stage_runtime_profile(original, 'B2')
+        self.assertEqual(profile['packages'], [])
+        with patch.object(runtime.importlib.metadata, 'distribution', side_effect=AssertionError('B2 has no SciPy dependency')):
+            runtime.runtime_gate(profile)
+        profile['stdlib_files'][0]['sha256'] = '0'*64
+        with self.assertRaisesRegex(ValueError, 'USED_STDLIB_RUNTIME_CHANGED'): runtime.runtime_gate(profile)
+
     def test_private_input_requires_exact_existing_receipt(self):
         with tempfile.TemporaryDirectory() as d:
             p = Path(d) / "synthetic.json"; raw = b'{"fixture":"ARTIFICIAL"}'; p.write_bytes(raw)

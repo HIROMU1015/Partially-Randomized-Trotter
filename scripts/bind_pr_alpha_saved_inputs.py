@@ -12,6 +12,7 @@ import csv
 import gzip
 import hashlib
 import importlib.util
+import importlib
 import io
 import json
 import os
@@ -160,6 +161,28 @@ def factor_one(value):
     parsed = float(value)
     codec.require(parsed in (1., 10.), "UNREGISTERED_FACTOR")
     return parsed == 1.
+
+
+def stage_source_files(closure, stage):
+    other = "scripts/run_pr_alpha_sensitivity.py" if stage == "B1" else "scripts/run_pr_alpha_binomial.py"
+    return [r for r in closure if r["path"] in EXECUTION_FILES and r["path"] != other]
+
+
+def stage_runtime_profile(original, stage):
+    profile = deepcopy(original)
+    if stage == "B2":
+        profile["packages"] = []  # B2 uses no NumPy/SciPy backend
+    profile["stdlib_files"] = []
+    profile["builtins_in_python_executable"] = []
+    for name in ("math", "fractions", "statistics"):
+        module = importlib.import_module(name)
+        if getattr(module, "__file__", None):
+            path = Path(module.__file__).resolve()
+            profile["stdlib_files"].append(dict(module=name, path=str(path), sha256=sha(path.read_bytes())))
+        else:
+            codec.require(module.__spec__.origin == "built-in", "UNIDENTIFIED_STDLIB_RUNTIME")
+            profile["builtins_in_python_executable"].append(name)
+    return profile
 
 
 def put(path, value, *, private=False):
@@ -312,7 +335,7 @@ def main():
         plan = deepcopy(proposal)
         plan.update(schema="PR_ALPHA_FOLLOWUP_PLAN_V1", status="UNAPPROVED_INPUTS_SEALED",
             sealed=True, inputs_bound=True, source_commit=source,
-            source_files=[r for r in closure if r["path"] in EXECUTION_FILES],
+            source_files=stage_source_files(closure, stage), runtime=stage_runtime_profile(proposal["runtime"], stage),
             preparation_source_files=[r for r in closure if r["path"] in PREPARATION_FILES],
             input=dict(path=str(input_path), **receipt, schema=codec.SCHEMA), input_blockers=[])
         plan["budget"]["input_recipe_decodes_maximum"] = len(records)
