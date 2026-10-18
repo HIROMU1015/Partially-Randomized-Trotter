@@ -1,0 +1,822 @@
+{
+  "base": "7e454b91185ed7b0f92a3790f800ba5d65d5f156",
+  "investigation_source_files": {
+    "scripts/audit_h46_s4_count_mismatch.py": "7762fe0ab62c0d6764c19965b9d43be26c3a932e33c714d15f1bcf389d9a88ea",
+    "tests/test_h46_s4_count_mismatch.py": "bfc5608066fd53832763ae8b29dbff454d9d4a6d3ecd47e83e617f265f1ff483"
+  },
+  "original_implementations_modified": false,
+  "pinned_sources": {
+    "adapter": {
+      "blob": "872942fb0ccca8eca2b8b760c6d1c377878a0d83",
+      "bytes": 17822,
+      "commit": "536a3671c0ec2939ff3886e40467db26a27ec65a",
+      "definitions": {
+        "NoGPU": {
+          "end": 92,
+          "start": 89
+        },
+        "check_saved_law": {
+          "end": 208,
+          "start": 206
+        },
+        "describe": {
+          "end": 179,
+          "start": 167
+        },
+        "evaluate": {
+          "end": 233,
+          "start": 211
+        },
+        "factory": {
+          "end": 188,
+          "start": 182
+        },
+        "from_graph": {
+          "end": 164,
+          "start": 138
+        },
+        "from_live": {
+          "end": 135,
+          "start": 111
+        },
+        "journal": {
+          "end": 238,
+          "start": 236
+        },
+        "law": {
+          "end": 200,
+          "start": 191
+        },
+        "load": {
+          "end": 35,
+          "start": 31
+        },
+        "main": {
+          "end": 323,
+          "start": 290
+        },
+        "packed_cost": {
+          "end": 203,
+          "start": 203
+        },
+        "provider_modules": {
+          "end": 108,
+          "start": 95
+        },
+        "read": {
+          "end": 45,
+          "start": 44
+        },
+        "theory_stage": {
+          "end": 287,
+          "start": 241
+        },
+        "verify": {
+          "end": 86,
+          "start": 54
+        },
+        "write": {
+          "end": 51,
+          "start": 48
+        }
+      },
+      "matches_prior_closure": true,
+      "path": "scripts/h46_cost_execution.py",
+      "sha256": "c672463803e548247d935950c5df344a6fe8df1f5744d048d4e453977519a1e8"
+    },
+    "basis": {
+      "blob": "f467ae0a987595c63a02a927e5e9c95dfb7b2146",
+      "bytes": 42929,
+      "commit": "217c971dd537b1cc7fbc13742bc0f6c263ff7f45",
+      "definitions": {
+        "DFDeterministicFragmentSpec": {
+          "end": 107,
+          "start": 90
+        },
+        "DFDeterministicOneBodySpec": {
+          "end": 86,
+          "start": 70
+        },
+        "DFPartialS2AdditiveCircuits": {
+          "end": 774,
+          "start": 768
+        },
+        "DFPartialS2CircuitResult": {
+          "end": 813,
+          "start": 778
+        },
+        "DFPartialS2Preparation": {
+          "end": 207,
+          "start": 120
+        },
+        "DFPartialS2StepRequest": {
+          "end": 643,
+          "start": 499
+        },
+        "QiskitDFPartialS2CircuitBuilder": {
+          "end": 1090,
+          "start": 816
+        },
+        "_block_hash_payload": {
+          "end": 325,
+          "start": 306
+        },
+        "_df_partial_s2_deterministic_half_size_upper_bound": {
+          "end": 690,
+          "start": 672
+        },
+        "_partition_hash": {
+          "end": 234,
+          "start": 210
+        },
+        "_real_tuple": {
+          "end": 66,
+          "start": 62
+        },
+        "_validate_partition": {
+          "end": 303,
+          "start": 237
+        },
+        "estimate_df_partial_s2_structural_size_upper_bound": {
+          "end": 709,
+          "start": 693
+        },
+        "estimate_df_partial_s2_untranspiled_size_upper_bound": {
+          "end": 669,
+          "start": 646
+        },
+        "make_df_partial_s2_step_request": {
+          "end": 764,
+          "start": 712
+        },
+        "prepare_df_partial_s2": {
+          "end": 495,
+          "start": 328
+        }
+      },
+      "matches_prior_closure": true,
+      "path": "src/trotterlib/df_partial_s2.py",
+      "sha256": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e"
+    },
+    "counter": {
+      "blob": "f0ed02b98be13a3ea30ce3b32422da3b47ae5a95",
+      "bytes": 29291,
+      "commit": "536a3671c0ec2939ff3886e40467db26a27ec65a",
+      "definitions": {
+        "Barrier": {
+          "end": 207,
+          "start": 206
+        },
+        "Basis": {
+          "end": 177,
+          "start": 157
+        },
+        "Circuit": {
+          "end": 60,
+          "start": 54
+        },
+        "Component": {
+          "end": 406,
+          "start": 391
+        },
+        "Cost": {
+          "end": 84,
+          "start": 64
+        },
+        "ExpectedCost": {
+          "end": 549,
+          "start": 538
+        },
+        "Gate": {
+          "end": 50,
+          "start": 23
+        },
+        "PFStage": {
+          "end": 328,
+          "start": 325
+        },
+        "Sandwich": {
+          "end": 202,
+          "start": 200
+        },
+        "_check_basis_identities": {
+          "end": 218,
+          "start": 210
+        },
+        "_validate_law": {
+          "end": 445,
+          "start": 431
+        },
+        "application": {
+          "end": 458,
+          "start": 448
+        },
+        "assemble": {
+          "end": 254,
+          "start": 221
+        },
+        "basis_from_runtime": {
+          "end": 196,
+          "start": 180
+        },
+        "canonical_order_probabilities": {
+          "end": 428,
+          "start": 409
+        },
+        "count": {
+          "end": 149,
+          "start": 144
+        },
+        "deterministic_circuit": {
+          "end": 362,
+          "start": 348
+        },
+        "diagonal_from_primitives": {
+          "end": 296,
+          "start": 257
+        },
+        "existing_rte_occurrence": {
+          "end": 534,
+          "start": 491
+        },
+        "expected_partial_trajectory": {
+          "end": 656,
+          "start": 643
+        },
+        "expected_rte_occurrence": {
+          "end": 640,
+          "start": 552
+        },
+        "explicit_rte_occurrence": {
+          "end": 488,
+          "start": 461
+        },
+        "gate_cost": {
+          "end": 141,
+          "start": 139
+        },
+        "hadamard_wrapper": {
+          "end": 321,
+          "start": 316
+        },
+        "lower": {
+          "end": 135,
+          "start": 129
+        },
+        "lower_gate": {
+          "end": 126,
+          "start": 87
+        },
+        "partial_prefix_circuit": {
+          "end": 387,
+          "start": 365
+        },
+        "pf_schedule": {
+          "end": 345,
+          "start": 331
+        },
+        "primitive_histogram": {
+          "end": 153,
+          "start": 152
+        },
+        "structural_instruction_bound": {
+          "end": 313,
+          "start": 299
+        }
+      },
+      "matches_prior_closure": true,
+      "path": "src/trotterlib/native_df_gate_model.py",
+      "sha256": "f7b9f4bb5dd828bb2609ad8e7b1491eda27d878fff9b73835a8c74eaff1685e5"
+    },
+    "integer": {
+      "blob": "53601b7c524653f5e1966b3955b9f51373e54002",
+      "bytes": 77103,
+      "commit": "217c971dd537b1cc7fbc13742bc0f6c263ff7f45",
+      "definitions": {
+        "BasisChangeOperation": {
+          "end": 89,
+          "start": 72
+        },
+        "BasisReuseInterval": {
+          "end": 491,
+          "start": 485
+        },
+        "CircuitCost": {
+          "end": 954,
+          "start": 918
+        },
+        "CompilerSettings": {
+          "end": 914,
+          "start": 871
+        },
+        "DeterministicOnlyRTETailError": {
+          "end": 59,
+          "start": 58
+        },
+        "EventOperatorSampleEstimate": {
+          "end": 674,
+          "start": 647
+        },
+        "InvolutoryTailTerm": {
+          "end": 133,
+          "start": 123
+        },
+        "NormalizedRTETail": {
+          "end": 169,
+          "start": 150
+        },
+        "RPERound": {
+          "end": 867,
+          "start": 835
+        },
+        "RPERoundTruncationBudget": {
+          "end": 821,
+          "start": 772
+        },
+        "RPETruncationSummary": {
+          "end": 831,
+          "start": 825
+        },
+        "RTEComponent": {
+          "end": 119,
+          "start": 93
+        },
+        "RTEConfig": {
+          "end": 481,
+          "start": 361
+        },
+        "RTEEvent": {
+          "end": 643,
+          "start": 549
+        },
+        "RTEEventApplication": {
+          "end": 545,
+          "start": 495
+        },
+        "RTEFiniteDistribution": {
+          "end": 357,
+          "start": 173
+        },
+        "RTEOccurrenceParameters": {
+          "end": 719,
+          "start": 688
+        },
+        "RTEOccurrenceTruncation": {
+          "end": 768,
+          "start": 723
+        },
+        "RTEOperatorMoments": {
+          "end": 684,
+          "start": 678
+        },
+        "RTETailLike": {
+          "end": 68,
+          "start": 62
+        },
+        "TailNormalizationMetadata": {
+          "end": 146,
+          "start": 137
+        },
+        "_array_hash": {
+          "end": 963,
+          "start": 957
+        },
+        "_basis_reuse_intervals": {
+          "end": 1574,
+          "start": 1543
+        },
+        "_make_event": {
+          "end": 1659,
+          "start": 1594
+        },
+        "_occurrence_truncation_record": {
+          "end": 1285,
+          "start": 1251
+        },
+        "_paired_order_weight": {
+          "end": 1114,
+          "start": 1100
+        },
+        "_paper_normalization_upper_bound": {
+          "end": 1124,
+          "start": 1117
+        },
+        "_rpe_round_context": {
+          "end": 1326,
+          "start": 1311
+        },
+        "_validate_components": {
+          "end": 1591,
+          "start": 1577
+        },
+        "choose_finite_taylor_order": {
+          "end": 1204,
+          "start": 1185
+        },
+        "compose_finite_rte_occurrences": {
+          "end": 1935,
+          "start": 1906
+        },
+        "compose_truncation_residual_bounds": {
+          "end": 1248,
+          "start": 1226
+        },
+        "enumerate_rte_events": {
+          "end": 1701,
+          "start": 1688
+        },
+        "event_unitary": {
+          "end": 1767,
+          "start": 1751
+        },
+        "exact_enumerated_event_mean_operator": {
+          "end": 1799,
+          "start": 1770
+        },
+        "finite_event_mean_operator": {
+          "end": 1851,
+          "start": 1836
+        },
+        "finite_rte_attenuation": {
+          "end": 1963,
+          "start": 1952
+        },
+        "finite_rte_combined_attenuation": {
+          "end": 1975,
+          "start": 1966
+        },
+        "finite_rte_corrected_operator": {
+          "end": 1886,
+          "start": 1876
+        },
+        "finite_rte_distribution": {
+          "end": 1491,
+          "start": 1460
+        },
+        "finite_rte_multi_step_operator": {
+          "end": 1949,
+          "start": 1938
+        },
+        "finite_rte_operator_moments": {
+          "end": 1903,
+          "start": 1889
+        },
+        "finite_taylor_operator": {
+          "end": 1873,
+          "start": 1854
+        },
+        "iter_rte_events": {
+          "end": 1685,
+          "start": 1662
+        },
+        "iter_sample_rte_events": {
+          "end": 1730,
+          "start": 1704
+        },
+        "make_rte_config": {
+          "end": 1540,
+          "start": 1494
+        },
+        "normalize_involutory_tail": {
+          "end": 1097,
+          "start": 966
+        },
+        "occurrence_truncation_residual_bound": {
+          "end": 1223,
+          "start": 1207
+        },
+        "require_integer_count": {
+          "end": 55,
+          "start": 38
+        },
+        "rte_occurrence_truncation_from_config": {
+          "end": 1308,
+          "start": 1288
+        },
+        "sample_event_mean_operator": {
+          "end": 1833,
+          "start": 1802
+        },
+        "sample_rte_events": {
+          "end": 1748,
+          "start": 1733
+        },
+        "select_rpe_round_taylor_orders": {
+          "end": 1457,
+          "start": 1383
+        },
+        "step_taylor_truncation_residual_bound": {
+          "end": 1171,
+          "start": 1127
+        },
+        "summarize_rpe_round_truncation": {
+          "end": 1380,
+          "start": 1329
+        },
+        "taylor_truncation_residual_bound": {
+          "end": 1182,
+          "start": 1174
+        }
+      },
+      "matches_prior_closure": true,
+      "path": "src/trotterlib/rte.py",
+      "sha256": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618"
+    },
+    "native": {
+      "blob": "d0a36e3b5a67525ec534a514907ea4cc10f7c98a",
+      "bytes": 13457,
+      "commit": "217c971dd537b1cc7fbc13742bc0f6c263ff7f45",
+      "definitions": {
+        "NativeEvolution": {
+          "end": 135,
+          "start": 127
+        },
+        "_append_block": {
+          "end": 123,
+          "start": 112
+        },
+        "_finish": {
+          "end": 142,
+          "start": 138
+        },
+        "_gate_only": {
+          "end": 54,
+          "start": 47
+        },
+        "_limit": {
+          "end": 44,
+          "start": 43
+        },
+        "_real": {
+          "end": 40,
+          "start": 34
+        },
+        "append_directional_diagonal": {
+          "end": 109,
+          "start": 94
+        },
+        "block_instruction_bound": {
+          "end": 91,
+          "start": 80
+        },
+        "build_deterministic_native": {
+          "end": 166,
+          "start": 145
+        },
+        "build_native_hadamard_wrapper": {
+          "end": 283,
+          "start": 259
+        },
+        "build_partial_native": {
+          "end": 205,
+          "start": 169
+        },
+        "make_native_block_action": {
+          "end": 256,
+          "start": 242
+        },
+        "partial_native_from_step_requests": {
+          "end": 239,
+          "start": 208
+        },
+        "validate_blocks": {
+          "end": 77,
+          "start": 57
+        }
+      },
+      "matches_prior_closure": true,
+      "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py",
+      "sha256": "7b8b13483066bb39cc4aad1c36f6e5da6fbc679ecb8bae9c08a0b326648a36fd"
+    },
+    "ops": {
+      "blob": "f950b0f7950042229de60ecd728f17638bbd265b",
+      "bytes": 13557,
+      "commit": "217c971dd537b1cc7fbc13742bc0f6c263ff7f45",
+      "definitions": {
+        "DiagonalEvolutionPrimitives": {
+          "end": 24,
+          "start": 19
+        },
+        "U_to_qiskit_ops_jw": {
+          "end": 210,
+          "start": 194
+        },
+        "U_to_qiskit_ops_jw_givens": {
+          "end": 223,
+          "start": 213
+        },
+        "_append_rzz": {
+          "end": 83,
+          "start": 72
+        },
+        "_append_u_ops": {
+          "end": 348,
+          "start": 340
+        },
+        "_as_real": {
+          "end": 47,
+          "start": 39
+        },
+        "_bit_reverse_permutation": {
+          "end": 37,
+          "start": 27
+        },
+        "_dense_gaussian_unitary_ops": {
+          "end": 163,
+          "start": 116
+        },
+        "_import_bogoliubov_transform": {
+          "end": 113,
+          "start": 103
+        },
+        "_import_fermionic_gaussian_decomposition": {
+          "end": 100,
+          "start": 86
+        },
+        "_is_effectively_zero": {
+          "end": 63,
+          "start": 54
+        },
+        "_is_symbolic": {
+          "end": 51,
+          "start": 50
+        },
+        "_normalize_u_ops": {
+          "end": 191,
+          "start": 174
+        },
+        "_qubit_index": {
+          "end": 171,
+          "start": 166
+        },
+        "_real_or_symbolic": {
+          "end": 69,
+          "start": 66
+        },
+        "append_diagonal_primitives": {
+          "end": 321,
+          "start": 295
+        },
+        "apply_D_one_body": {
+          "end": 328,
+          "start": 324
+        },
+        "apply_D_squared": {
+          "end": 337,
+          "start": 331
+        },
+        "apply_df_block": {
+          "end": 360,
+          "start": 351
+        },
+        "apply_one_body_gaussian_block": {
+          "end": 371,
+          "start": 363
+        },
+        "apply_pauli_block": {
+          "end": 377,
+          "start": 374
+        },
+        "build_df_blocks": {
+          "end": 388,
+          "start": 380
+        },
+        "build_df_blocks_givens": {
+          "end": 399,
+          "start": 391
+        },
+        "build_one_body_gaussian_block": {
+          "end": 407,
+          "start": 402
+        },
+        "build_one_body_gaussian_block_givens": {
+          "end": 415,
+          "start": 410
+        },
+        "df_squared_diagonal_primitives": {
+          "end": 292,
+          "start": 246
+        },
+        "one_body_diagonal_primitives": {
+          "end": 243,
+          "start": 226
+        }
+      },
+      "matches_prior_closure": true,
+      "path": "src/trotterlib/df_trotter/ops.py",
+      "sha256": "3801eafca014b0df6533172582887e3b345f65833505409cdd375dcd11925689"
+    },
+    "replay": {
+      "blob": "4d8b9d08b30cc29418661e94359facc98570a4e8",
+      "bytes": 16608,
+      "commit": "536a3671c0ec2939ff3886e40467db26a27ec65a",
+      "definitions": {
+        "coordinator": {
+          "end": 233,
+          "start": 194
+        },
+        "decode_event": {
+          "end": 28,
+          "start": 16
+        },
+        "paired_theory": {
+          "end": 89,
+          "start": 73
+        },
+        "raw_lowered": {
+          "end": 102,
+          "start": 92
+        },
+        "replay_requests": {
+          "end": 54,
+          "start": 37
+        },
+        "reusable": {
+          "end": 34,
+          "start": 31
+        },
+        "take": {
+          "end": 70,
+          "start": 57
+        },
+        "worker": {
+          "end": 191,
+          "start": 105
+        }
+      },
+      "matches_prior_closure": true,
+      "path": "scripts/h46_same_event.py",
+      "sha256": "5f9b465bfb5b30eb75324d52a4fee8294f0d55c8721161557476cbde8744ae75"
+    },
+    "schedule": {
+      "blob": "2cfde3b93586c447e0e89481c3267dce1775f275",
+      "bytes": 2752,
+      "commit": "217c971dd537b1cc7fbc13742bc0f6c263ff7f45",
+      "definitions": {
+        "ControlStage": {
+          "end": 30,
+          "start": 15
+        },
+        "deterministic_control_plan": {
+          "end": 65,
+          "start": 49
+        },
+        "partial_s2_control_plan": {
+          "end": 46,
+          "start": 33
+        }
+      },
+      "matches_prior_closure": true,
+      "path": "src/trottertracks/resource_applicability/ax2a_control_plan.py",
+      "sha256": "19046fc005a6be92238b5d504250464669920c4eff668e7dec5113a9e03cb66f"
+    },
+    "weights": {
+      "blob": "65bb2a09038770933ed22246639cd798225d3895",
+      "bytes": 4572,
+      "commit": "217c971dd537b1cc7fbc13742bc0f6c263ff7f45",
+      "definitions": {
+        "_get_w_list": {
+          "end": 150,
+          "start": 134
+        },
+        "morales_10th_m15_list": {
+          "end": 70,
+          "start": 45
+        },
+        "morales_10th_m16_list": {
+          "end": 98,
+          "start": 74
+        },
+        "morales_8th_list": {
+          "end": 22,
+          "start": 6
+        },
+        "new_4th_m2_list": {
+          "end": 131,
+          "start": 125
+        },
+        "new_4th_m3_list": {
+          "end": 122,
+          "start": 116
+        },
+        "trotter_2nd_list": {
+          "end": 113,
+          "start": 109
+        },
+        "yoshida_4th_list": {
+          "end": 106,
+          "start": 102
+        },
+        "yoshida_8th_list": {
+          "end": 41,
+          "start": 26
+        }
+      },
+      "matches_prior_closure": true,
+      "path": "src/trotterlib/product_formula.py",
+      "sha256": "39c4e03748fcab03ea7e64936a19372cb5f1bd1bc9f72a4f09cef58c3c202eca"
+    }
+  },
+  "provider": "217c971dd537b1cc7fbc13742bc0f6c263ff7f45",
+  "science_source": "536a3671c0ec2939ff3886e40467db26a27ec65a"
+}
