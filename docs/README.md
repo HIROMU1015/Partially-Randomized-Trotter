@@ -1,3 +1,7 @@
+## 2026-10-18 PR α追加検証：説明訂正と未承認準備
+
+[準備報告](research/pr_alpha_followup_preparation_20261018.md) / [D01/A05追補](research/pr_alpha_projection_explanation_20261018.md)。D01/A05説明修正済み。新規人工41件・CLI8検査PASS。B-1は14条件/最大28軸、B-2はα_total=.01/.05/.10案・144/190候補・最大11,160行。実入力projection未seal、別途承認必要、実データの確率/shot/費用/順位再解析0。既存証拠・STOPを保持しmandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-18 PR資源評価のα契約監査
 
 [A-1/A-2の監査結果](research/pr_alpha_contract_audit_20261018.md)。1 shot推定量・α付きshot数・n32費用会計の条件付き整合性、系別契約、残る証拠不足と説明訂正候補を整理。科学再計算0、mandatory STOP。

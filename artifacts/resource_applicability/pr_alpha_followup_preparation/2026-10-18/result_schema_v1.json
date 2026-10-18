@@ -1,0 +1,472 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:track-a:pr-alpha-followup-result:v1",
+  "title": "PR alpha followup results; conditional numeric diagnostics",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/B1_result"
+    },
+    {
+      "$ref": "#/$defs/B2_result"
+    },
+    {
+      "$ref": "#/$defs/terminal"
+    }
+  ],
+  "$defs": {
+    "axis": {
+      "type": "object",
+      "required": [
+        "n",
+        "event",
+        "lower_last",
+        "upper_first",
+        "p_rational",
+        "binomial",
+        "hoeffding_bound",
+        "log_hoeffding_bound",
+        "alpha_axis",
+        "alpha_compliance",
+        "rigorous_signal_precision_certified",
+        "bias_allowance_conditional",
+        "floating_probability_is_interval_certificate"
+      ],
+      "properties": {
+        "n": {
+          "type": "integer",
+          "minimum": 1,
+          "exclusiveMaximum": 4503599627370496
+        },
+        "event": {
+          "enum": [
+            "ge",
+            "gt"
+          ]
+        },
+        "lower_last": {
+          "type": "integer"
+        },
+        "upper_first": {
+          "type": "integer"
+        },
+        "p_rational": {
+          "type": "string"
+        },
+        "binomial": {
+          "type": "object",
+          "required": [
+            "probability",
+            "log_probability",
+            "numerical_status",
+            "underflow"
+          ],
+          "properties": {
+            "probability": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 1
+            },
+            "log_probability": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "numerical_status": {
+              "type": "string"
+            },
+            "underflow": {
+              "type": "boolean"
+            }
+          }
+        },
+        "hoeffding_bound": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "log_hoeffding_bound": {
+          "type": "number"
+        },
+        "alpha_axis": {
+          "const": 0.025
+        },
+        "alpha_compliance": {
+          "enum": [
+            "NUMERICALLY_WITHIN_BUDGET",
+            "EXCEEDS_BUDGET",
+            "UNDETERMINED_NUMERICAL",
+            "UNDETERMINED_AT_NUMERICAL_ALPHA_BOUNDARY"
+          ]
+        },
+        "rigorous_signal_precision_certified": {
+          "const": false
+        },
+        "bias_allowance_conditional": {
+          "const": true
+        },
+        "floating_probability_is_interval_certificate": {
+          "const": false
+        }
+      }
+    },
+    "B1_row": {
+      "type": "object",
+      "required": [
+        "cell_id",
+        "system",
+        "epsilon",
+        "axes",
+        "union_bound",
+        "union_bound_kind",
+        "exact_joint_failure_probability",
+        "alpha_total",
+        "rigorous_signal_precision_certified",
+        "population_cost_certified"
+      ],
+      "properties": {
+        "cell_id": {
+          "type": "string"
+        },
+        "system": {
+          "enum": [
+            "H6",
+            "H8"
+          ]
+        },
+        "epsilon": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "axes": {
+          "type": "object",
+          "required": [
+            "real",
+            "imag"
+          ],
+          "properties": {
+            "real": {
+              "$ref": "#/$defs/axis"
+            },
+            "imag": {
+              "$ref": "#/$defs/axis"
+            }
+          }
+        },
+        "union_bound": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "union_bound_kind": {
+          "const": "SUM_OF_MARGINALS_NO_AXIS_INDEPENDENCE_ASSUMED"
+        },
+        "exact_joint_failure_probability": {
+          "type": "null"
+        },
+        "alpha_total": {
+          "const": 0.05
+        },
+        "rigorous_signal_precision_certified": {
+          "const": false
+        },
+        "population_cost_certified": {
+          "const": false
+        }
+      }
+    },
+    "B1_missing_row": {
+      "type": "object",
+      "required": [
+        "cell_id",
+        "system",
+        "epsilon",
+        "status",
+        "missing_fields"
+      ],
+      "properties": {
+        "cell_id": {
+          "type": "string"
+        },
+        "system": {
+          "enum": [
+            "H6",
+            "H8"
+          ]
+        },
+        "epsilon": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "status": {
+          "const": "INCONCLUSIVE_SOURCE_MISSING"
+        },
+        "missing_fields": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "B2_row": {
+      "type": "object",
+      "required": [
+        "cell_id",
+        "system",
+        "method",
+        "epsilon",
+        "bias_kind",
+        "allowance_factor",
+        "alpha_total",
+        "alpha_real",
+        "alpha_imag",
+        "status",
+        "accounting",
+        "G_exact",
+        "population_winner_certified"
+      ],
+      "properties": {
+        "cell_id": {
+          "type": "string"
+        },
+        "system": {
+          "enum": [
+            "H6",
+            "H8"
+          ]
+        },
+        "epsilon": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "method": {
+          "enum": [
+            "B0",
+            "B0I",
+            "B1",
+            "B2"
+          ]
+        },
+        "bias_kind": {
+          "enum": [
+            "USUAL_SIGNED_SAVED",
+            "EMPIRICAL_NONCANCELLATION"
+          ]
+        },
+        "allowance_factor": {
+          "enum": [
+            1,
+            10
+          ]
+        },
+        "alpha_total": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "exclusiveMaximum": 1
+        },
+        "alpha_real": {
+          "type": "number"
+        },
+        "alpha_imag": {
+          "type": "number"
+        },
+        "status": {
+          "enum": [
+            "ELIGIBLE",
+            "INELIGIBLE",
+            "UNDETERMINED",
+            "LOG_DOMAIN_ONLY",
+            "MISSING"
+          ]
+        },
+        "accounting": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "G_exact": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cost_SE": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "cost_class": {
+          "enum": [
+            "PR_PAIRED_MEASURED",
+            "DETERMINISTIC_MEASURED",
+            "DETERMINISTIC_MODEL",
+            "DETERMINISTIC_MIXED"
+          ]
+        },
+        "population_winner_certified": {
+          "const": false
+        },
+        "cost_uncertainty_is_alpha_evidence": {
+          "const": false
+        }
+      }
+    },
+    "B1_result": {
+      "type": "object",
+      "required": [
+        "rows",
+        "binomial_axis_evaluations",
+        "shot_recalculations",
+        "cost_reaccounting"
+      ],
+      "properties": {
+        "rows": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/B1_row"
+              },
+              {
+                "$ref": "#/$defs/B1_missing_row"
+              }
+            ]
+          }
+        },
+        "binomial_axis_evaluations": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "shot_recalculations": {
+          "const": 0
+        },
+        "cost_reaccounting": {
+          "const": 0
+        }
+      }
+    },
+    "B2_result": {
+      "type": "object",
+      "required": [
+        "rows",
+        "comparisons",
+        "switches",
+        "accounting_rows",
+        "accounting_evaluations",
+        "binomial_axis_evaluations"
+      ],
+      "properties": {
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/B2_row"
+          }
+        },
+        "comparisons": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "system",
+              "epsilon",
+              "bias_kind",
+              "allowance_factor",
+              "alpha_total",
+              "families",
+              "PR_over_PF_exact",
+              "PR_reduction_percent_exact",
+              "rank",
+              "population_winner_certified"
+            ],
+            "properties": {
+              "rank": {
+                "enum": [
+                  "PR_LOWER",
+                  "PF_LOWER",
+                  "TIE",
+                  "UNRESOLVED"
+                ]
+              },
+              "population_winner_certified": {
+                "const": false
+              }
+            }
+          }
+        },
+        "switches": {
+          "type": "array"
+        },
+        "accounting_rows": {
+          "type": "integer"
+        },
+        "accounting_evaluations": {
+          "type": "integer"
+        },
+        "binomial_axis_evaluations": {
+          "const": 0
+        }
+      }
+    },
+    "terminal": {
+      "type": "object",
+      "required": [
+        "stage",
+        "status",
+        "source_commit",
+        "source_closure_sha256",
+        "mandatory_stop",
+        "retry",
+        "auto_next_stage",
+        "payload_kind"
+      ],
+      "properties": {
+        "stage": {
+          "enum": [
+            "B1",
+            "B2"
+          ]
+        },
+        "status": {
+          "enum": [
+            "COMPLETE_MANDATORY_STOP",
+            "COMPLETE_WITH_INCONCLUSIVE_MANDATORY_STOP",
+            "STOP"
+          ]
+        },
+        "mandatory_stop": {
+          "const": true
+        },
+        "retry": {
+          "const": false
+        },
+        "auto_next_stage": {
+          "const": false
+        },
+        "payload_kind": {
+          "enum": [
+            "SYNTHETIC",
+            "REAL"
+          ]
+        }
+      }
+    }
+  },
+  "x-decision-rules": {
+    "B1": "Marginal numerical tails vs alpha=.025; union bound sum only; no strict bias certificate. Nonempty underflow inconclusive; alpha exceeded -> STOP with partial_result.json.",
+    "B2": "Same signal epsilon and alpha for both families; exact rational point minima; unresolved full-domain candidates block winner. G_PR/G_PF and 100*(1-ratio); finite-sample SE is not alpha evidence.",
+    "artifacts": "result.json + terminal.json + parent native_wait.json; STOP partial_result.json optional. Input/plan/grant bound before read; never publish private scalar projection or live grant."
+  }
+}

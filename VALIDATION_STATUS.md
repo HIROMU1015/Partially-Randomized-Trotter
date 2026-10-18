@@ -1,3 +1,7 @@
+## 2026-10-18 PR α追加検証：説明訂正と未承認準備
+
+[準備報告](docs/research/pr_alpha_followup_preparation_20261018.md)。D01/A05説明修正済み。新規人工41件・CLI8検査PASS。B-1は14条件/最大28軸、B-2はα_total=.01/.05/.10案・144/190候補・最大11,160行。実入力projection未seal、別途承認必要、実データの確率/shot/費用/順位再解析0。既存証拠・STOPを保持しmandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-18 PR α契約の技術監査
 
 [監査報告](docs/research/pr_alpha_contract_audit_20261018.md)。44固定file、AST照合11件・人工境界16件PASS。保存accountingのα=.025/EMPIRICAL/証明書未検証を確認。fresh-IIDは評価モデルの仮定として照合し、実測N shotの証明とはしない。H4索引の説明不一致・保存law不足、H8通常projectionの親参照を保持。科学再計算0、A単位完了・mandatory STOP。

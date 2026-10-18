@@ -1,3 +1,7 @@
+## 2026-10-18 PR α追加検証：説明訂正と未承認準備
+
+[B-1](run_pr_alpha_binomial.py)・[B-2](run_pr_alpha_sensitivity.py)・[grant/STOP](pr_alpha_followup_runtime.py)・[metadata計画生成](prepare_pr_alpha_followup.py)。[設計](../docs/research/pr_alpha_followup_preparation_20261018.md)。D01/A05説明修正済み。新規人工41件・CLI8検査PASS。B-1は14条件/最大28軸、B-2はα_total=.01/.05/.10案・144/190候補・最大11,160行。実入力projection未seal、別途承認必要、実データの確率/shot/費用/順位再解析0。既存証拠・STOPを保持しmandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-18 PR alpha contract audit
 
 [audit_pr_alpha_contracts_20261018.py](audit_pr_alpha_contracts_20261018.py) は固定Git blobのmetadataと人工入力だけを検査する。科学provider/NPZ/実データのshot・費用再計算/sampling/compileは呼ばない。[条件付き結論と系別契約](../docs/research/pr_alpha_contract_audit_20261018.md)。
