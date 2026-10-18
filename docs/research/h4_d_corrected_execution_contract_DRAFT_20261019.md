@@ -1,5 +1,9 @@
 # H4 D 修正後の実行契約 DRAFT
 
+更新：修正版Dと中断時の技術回復をユーザーが承認し、新run02は完了した。
+最新状態は[完成報告](track_a_h4_d_completed_20261019.md)。以下は承認前DRAFTの履歴。
+workflowの自動技術retry禁止は新ユーザー指示で更新し、attemptごとのone-shotと旧記録保全は維持した。
+
 状態：`DRAFT_UNAUTHORIZED`。元runの停止を保全し、新しい実行承認を待つ。
 修正code SOURCE：`8a82b9272ee24896e7d7cbb7400d9b8c12d8f804`。
 

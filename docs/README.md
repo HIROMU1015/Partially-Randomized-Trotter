@@ -1,3 +1,5 @@
+H4 D完了（2026-10-19）：55 workerで55候補110軸、control220 PASS、1040行会計・native exit0・全回収。登録内の代表winnerは旧subsetから10/10不変。S_STATS/P未実行、mandatory STOP。[結果](research/track_a_h4_d_completed_20261019.md)。以下は履歴。
+
 H4 Dの技術停止と修正（2026-10-19）：55 workerで起動したが、Codex追加guardがdiscardのtruncated hashをfull hashと比較して停止。native evolution/control/compile/会計0。元SOURCE・STOPを保持し、新guardとworker payload縮小を人工検証、新D実行は未承認。 [詳細](research/track_a_h4_d_binding_fix_20261019.md)。
 
 H4 D/P Phase 0：[統合報告](research/track_a_h4_dp_phase0_20261019/integrated_readiness_report.md)、D coverage/契約・P設計/契約・依存関係の6文書。DRAFT_UNAUTHORIZED、科学実行なし。

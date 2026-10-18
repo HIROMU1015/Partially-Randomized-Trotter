@@ -1,5 +1,8 @@
 # H4 D：discard preparation整合性guardの技術停止と修正
 
+更新：ユーザーによる修正版D・中断時の技術回復承認を受け、新run02は正常完了した。
+[完成報告](track_a_h4_d_completed_20261019.md)。以下のSTOP・DRAFTは修正時点の履歴として保持する。
+
 2026-10-19 JST。主担当Codexによる技術確認。AI subagent 0。
 状態：人工・契約39件PASS。新しいD契約はDRAFT、科学再実行は未承認。
 修正code SOURCE：`8a82b9272ee24896e7d7cbb7400d9b8c12d8f804`。

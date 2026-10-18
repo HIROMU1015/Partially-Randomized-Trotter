@@ -1,3 +1,5 @@
+H4 D完了（2026-10-19）：55 workerで55候補110軸、control220 PASS、1040行会計・native exit0・全回収。登録内の代表winnerは旧subsetから10/10不変。S_STATS/P未実行、mandatory STOP。[結果](../docs/research/track_a_h4_d_completed_20261019.md)。以下は履歴。 終了metadata監査：`audit_h4_d_completed.py`。
+
 H4 Dの技術停止と修正（2026-10-19）：55 workerで起動したが、Codex追加guardがdiscardのtruncated hashをfull hashと比較して停止。native evolution/control/compile/会計0。元SOURCE・STOPを保持し、新guardとworker payload縮小を人工検証、新D実行は未承認。 [詳細](../docs/research/track_a_h4_d_binding_fix_20261019.md)。
 
 H4 D/P Phase 0：`prepare_h4_dp_phase0.py`（metadata限定）、`seal_h4_dp_phase0.py`（INVALID契約）、`h4_dp_contract.py`、`h4_dp_science.py`（承認後lazy adapter）、`run_h4_dp_verification.py`、`h4_dp_witness.py`。人工検査は `tests/test_h4_dp_phase0.py`。D/P起動は別承認。
