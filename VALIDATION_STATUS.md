@@ -1,3 +1,5 @@
+H4 Dの技術停止と修正（2026-10-19）：55 workerで起動したが、Codex追加guardがdiscardのtruncated hashをfull hashと比較して停止。native evolution/control/compile/会計0。元SOURCE・STOPを保持し、新guardとworker payload縮小を人工検証、新D実行は未承認。 [詳細](docs/research/track_a_h4_d_binding_fix_20261019.md)。
+
 H4 D/P Phase 0：metadata/人工検証のみ。D96+full8の登録監査、110軸契約案とP条件付き設計を準備。新科学実行・raw統計・n数値計算0。詳細 [統合報告](docs/research/track_a_h4_dp_phase0_20261019/integrated_readiness_report.md)。
 
 H4追加4検証完了：R12 signal、B64軸、T144新規軸、tol-only rank10入力とFP72軸、全native exit0/final gate PASS・mandatory STOP。詳細 `track_a_h4_followup_20261018.md`。以下は履歴。

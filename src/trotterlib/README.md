@@ -1,3 +1,5 @@
+H4 Dの技術停止と修正（2026-10-19）：55 workerで起動したが、Codex追加guardがdiscardのtruncated hashをfull hashと比較して停止。native evolution/control/compile/会計0。元SOURCE・STOPを保持し、新guardとworker payload縮小を人工検証、新D実行は未承認。 [詳細](../../docs/research/track_a_h4_d_binding_fix_20261019.md)。
+
 H4 D/Pの今回追加は科学libraryの変更を伴わない技術準備経路。既存native/RTEを再利用し、metadata契約とlazy adapterは `scripts/h4_dp_contract.py` / `scripts/h4_dp_science.py`、人工検査は `tests/test_h4_dp_phase0.py`。詳細 `docs/research/track_a_h4_dp_phase0_20261019/`。
 
 H4追加4検証は既存libraryを再利用する。新library数値実装はなく、scripts/h4_followup_science.py と h4_tol_only_input.py に限定adapterを置く。

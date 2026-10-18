@@ -118,16 +118,40 @@ def compile_axes(context, evolution, writer, budget, seed=None, event_digest=Non
         return _compile_axes(context, evolution, writer, budget, seed, event_digest)
 
 
+def validate_discard_preparation(prep, expected_truncated_hash, prefix, num_system_qubits,
+                                 expected_constant):
+    """The discard builder binds its truncated H; full input is checked at load.
+
+    Expected hash comes from the saved full Hamiltonian's first-prefix view,
+    before invoking the builder. It is never copied from the observed prep.
+    """
+    c.require(prep.hamiltonian_hash == expected_truncated_hash, 'DISCARD_HAMILTONIAN_BINDING')
+    c.require(prep.num_system_qubits == num_system_qubits and prep.ld == prefix
+              and prep.deterministic_fragment_indices == tuple(range(prefix))
+              and prep.randomized_block_indices == (), 'DISCARD_PARTITION_BINDING')
+    c.require(prep.constant_coefficient == expected_constant and prep.exact_rte_lambda_r == 0.,
+              'DISCARD_SCALAR_OR_EMPTY_TAIL_BINDING')
+
+
+def discard_preparation(context, prefix):
+    if prefix not in context.preparations:
+        from trotterlib.df_partial_randomized_pf import df_hamiltonian_hash
+        from trotterlib.pr2_s0_s1_validation import WEIGHT_RULE
+        truncated = context.ham.select_blocks(tuple(range(prefix)))
+        expected = df_hamiltonian_hash(truncated, weight_rule=WEIGHT_RULE)
+        prep = context.m._prepare_discard(context.ham, prefix)
+        validate_discard_preparation(prep, expected, prefix, context.ham.n_qubits,
+                                     context.ham.constant)
+        context.preparations[prefix] = prep
+    return context.preparations[prefix]
+
+
 def deterministic_task(context, task, directory):
     cell, record = task['cell'], task['record']
     writer = Writer(directory)
     budget = Budget(directory, dict(native_evolution=1, control_probe=4, wrapper_compile=2))
     prefix = cell['prefix']
-    if prefix not in context.preparations:
-        context.preparations[prefix] = context.m._prepare_discard(context.ham, prefix)
-    prep = context.preparations[prefix]
-    c.require(prep.hamiltonian_hash == context.binding['hamiltonian']
-              and prep.deterministic_fragment_indices == tuple(range(prefix)), 'PREPARATION_BINDING')
+    prep = discard_preparation(context, prefix)
     scalar = record['scalar_receipt']['scalar'] if cell['method'] == 'B0I' else prep.constant_coefficient
     budget.take('native_evolution')
     evolution = context.m.build_deterministic_native(prep.deterministic_blocks, num_system_qubits=8,

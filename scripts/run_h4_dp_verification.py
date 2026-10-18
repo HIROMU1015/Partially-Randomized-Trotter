@@ -14,6 +14,14 @@ _CONTEXT = None
 _SPEC = None
 
 
+def worker_context_spec(spec):
+    """Send loader context only; the parent retains all authorization manifests."""
+    keys = ['stage', 'output', 'native_config']
+    if spec['stage'] == 'P':
+        keys += ['A_native_adapter', 'cells']
+    return {key: spec[key] for key in keys}
+
+
 def initialize(spec):
     global _CONTEXT, _SPEC
     _SPEC = spec
@@ -68,7 +76,7 @@ def execute(spec, grant):
     try:
         context = multiprocessing.get_context('spawn')
         with ProcessPoolExecutor(spec['workers'], mp_context=context,
-                                 initializer=initialize, initargs=(spec,)) as pool:
+                                 initializer=initialize, initargs=(worker_context_spec(spec),)) as pool:
             def batch(tasks):
                 futures = [pool.submit(work, task) for task in tasks]
                 return [future.result() for future in futures]
