@@ -1,3 +1,7 @@
+## 2026-10-18 H4/H6 S4：実block別に8行差を照合完了
+
+[実primitive結果・SOURCE・終了監査](../../docs/research/track_a_h46_s4_primitive_sites_results_20261018.md)。SOURCE4d60519e…で負stageを66回評価、H4 fragment1/qubit0,1,7はRZ保持数が正味+1、H6 fragment5/qubit11は正味−1（indexは0始まり）。q反復によるRZ/CX +2/−16が両軸の8保存行と一致。全33blockのRZZ mask・phase有無は一致。native exit0/reap、12人工tests PASS、compile/trajectory/full回路/理論表再計算0。元counter/native/旧結果/ledger/STOPを保持、最小互換性修正は未実装。mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-18 H4/H6 S4：pretranspileの8行差を技術調査
 
 [報告・証拠・未承認の追加検証案](../../docs/research/track_a_h46_s4_count_mismatch_investigation_20261018.md)。S4負時間の1 ULP差→共有DF primitiveの厳密zero選別という機構を人工で再現。保存raw/RZ/CX差からRZ保持数の正味差（H4 +1組／H6 −8組）を特定。16人工・metadata tests PASS、84保存row digestと9 sourceを照合。実block別の特定・時間統一後の実系一致は未検証。元counter/native/科学結果・grant/ledger/STOP不変、新実系build/compile/費用再計算0、mandatory STOP。以下の記録は各時点の履歴。
