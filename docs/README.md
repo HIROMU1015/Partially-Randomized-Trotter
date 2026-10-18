@@ -1051,3 +1051,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-18 高次PF B保存値解析
 
 [H4/H6 B_SAVED_ONLY run01](research/track_a_h46_higher_pf_B_saved_run01_results_20261018.md)：18適格・6不適格、適格費用欠測12。全6層で最適q未確定。新sampling/compile0、mandatory STOP。
+
+## 2026-10-18 高次PF不足費用取得
+
+[H4/H6 B_ACQUIRE run01](research/track_a_h46_higher_pf_acquire_run01_results_20261018.md)。取得と統合準備まで、ランキング未実行。

@@ -913,3 +913,7 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## H4/H6 高次PF比較の準備（2026-10-18、未承認）
 
 `audit_h46_higher_pf_readiness.py` は固定証拠metadataのみを監査する。`h46_higher_pf_adapter.py` と `run_h46_higher_pf_comparison.py` は保存値のq比較接続。既定はscope表示、公開無効grantは実値読込前に拒否する。新sampling/compile経路なし。[契約・限界](../docs/research/track_a_h46_higher_pf_readiness_20261018.md)。
+
+## 2026-10-18 高次PF native取得
+
+`h46_acquire_native.py` / `launch_h46_acquire.py` は固定12群96trajectoryのnative取得。`h46_acquire_integration.py` / `run_h46_acquire_comparison.py` は別承認用の統合比較binding/CLI。[結果・契約](../docs/research/track_a_h46_higher_pf_acquire_run01_results_20261018.md)。

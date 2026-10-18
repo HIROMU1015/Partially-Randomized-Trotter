@@ -1,3 +1,7 @@
+## 2026-10-18 H4/H6：高次PFの不足native取得・統合比較は未実行
+
+[結果・制約・SOURCE](docs/research/track_a_h46_higher_pf_acquire_run01_results_20261018.md)。SOURCE d77e439a…、固定12群n8、取得96 trajectory/compile entry192・検証軸192。control636、native exit0・回収。旧6群を保持し、統合metadata状態METADATA_BOUND_NO_ACCOUNTING。重み費用/SE/順位・最良qの新計算0、新signal/DF/state/係数変更/C sampling0。結果保存後mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-18 H4/H6：高次PF B保存値解析完了・最適q未確定
 
 [結果・限定・来歴](docs/research/track_a_h46_higher_pf_B_saved_run01_results_20261018.md)。SOURCE ed14d951…/承認one-shot/native exit0・wait回収・wall0.7575秒。保存24条件は経験的18適格/6不適格、保存費用6群n8を再現。適格費用欠測12群のため全6層のfull-grid winnerはnull。新signal/sampling/compile/係数最適化0、元n8の標本追加なし。B取得/C確認を自動起動せずmandatory STOP。以下は各時点の履歴。
