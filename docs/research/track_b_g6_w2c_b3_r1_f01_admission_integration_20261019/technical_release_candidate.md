@@ -1,7 +1,8 @@
 # 高速化変更前の技術SOURCE候補
 
 状態は**TECHNICAL_INTEGRATION_BASELINE_NOT_FINAL_SCIENCE_RELEASE**。
-branch `track-b-g6-w2c-b3-r1-f01-admission-integration-20261019`、固定SOURCE commitはpublication_receiptのverified_content_commitで実値を示す。
+branch `track-b-g6-w2c-b3-r1-f01-admission-integration-20261019`、固定技術SOURCE commitは `baebe23f2ed9620e0e2fc492f0e2b8ced3c7f342`（publication receiptで公開照合済み）。
+後続の管理commitはSOURCEを変更せず、技術候補へのこの参照と公開receiptを固定する。
 基点 `1c15bacab349b8686c09d2981e1c0bc70e9c3ec9`。新SOURCE全bytesのSHA256：
 
 - `src/trottertracks/algorithm_codesign/g6_w2c_b3_driver.py`：`5e6904e782526e96cc6a2dc9e94642a8237b4aa69ce8743aec24ccde5f212694`
