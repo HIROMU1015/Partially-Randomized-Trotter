@@ -60,6 +60,11 @@ def plan(system,stage):
         A_acquisition_endpoints='saved multiplier1 flags; multiplier10 accounting only after separate authorization',
         cells=entry['cells'] if stage=='A_COST' else None,
         selected_cells=entry['acquisition']['selected'] if stage=='A_COST' else None,
+        H4_preparation_policy=(dict(prefer_existing_archive=True,
+            otherwise='same fixed original native preparation builder, once per prefix',
+            prefix_reconstructions_proposed=3,SCF_DF_state_solver=0,
+            builder_sha256='7528ebae754e14ee623d28212a668e4edc237575775a78d0d2bf4d34dc53c293')
+            if system=='H4' and stage=='A_COST' else None),
         n=entry['n_proposed'] if stage=='A_COST' else None,
         original_n32_and_new_n8_separate=True,conditional_mean_not_unconditional=True,
         automatic_retry=False,next_stage_authorized=False,mandatory_STOP=True,
@@ -133,7 +138,8 @@ def verify(config,grant,system,stage,*,root=ROOT,final=False):
     require(approval['sha256']==grant['user_approval_receipt_sha256'],'APPROVAL_RECEIPT_BINDING')
     require(sha(config['python'])==config['python_sha256'],'PYTHON_BINARY_BINDING')
     if stage=='A_COST':
-        require(config.get('provider_closure') and config.get('native_config') and config.get('preparation_identities'),
+        require(config.get('provider_closure') and config.get('native_config') and
+                (config.get('preparation_identities') or (system=='H4' and config.get('H4_reconstruct_original') is True)),
                 'NATIVE_SOURCE_PREPARATION_CLOSURE')
         for base,files in config['provider_closure'].items():
             for name,h in files.items():

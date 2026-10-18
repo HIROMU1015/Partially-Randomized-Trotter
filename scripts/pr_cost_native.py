@@ -5,6 +5,7 @@ outer SOURCE/input/runtime/grant gate. All H4/H6/H8 inputs remain private.
 """
 import hashlib
 import importlib
+import inspect
 import math
 import random
 from pathlib import Path
@@ -141,20 +142,31 @@ def load_context(system,config,cells,output):
         preparations={p:(preps['faithful:p5'] if p==5 else view(preps['faithful:p19'],ham,p,m))
                       for p in {x['prefix'] for x in cells}}
     else:
-        # H4's previous signal runner regenerated preparations but did not publicly
-        # export their archive. Require a hash-bound existing archive, never fall
-        # back to _prepare or create a new input under an A_COST permission.
-        c.require(config.get('H4_preparation_archive'),'H4_EXISTING_PREPARATION_ARCHIVE_REQUIRED')
+        # The plan explicitly registers at most three original native preparations
+        # when an archive is unavailable. This is not SCF/DF/state generation.
         from trottertracks.resource_applicability.h4_common_panel_port_v1 import h4_loader
         ham,sector,full,state,md,_=h4_loader(Path(old['mapping']['snapshot']),
             c.read(old['mapping']['snapshot_receipt']),c.read(old['mapping']['df_receipt']))
         _,qstate=m.checked_basis_bridge(ham,sector,full,state,1e-12)
-        codec=importlib.import_module('trottertracks.resource_applicability.h6_frozen_preparation_v1')
-        archive=config['H4_preparation_archive']
-        receipt=codec.read_archive(archive['path'],sha256=archive['sha256'])
-        c.require(receipt['binding']==archive['binding'],'H4_ARCHIVE_SOURCE_INPUT_BINDING')
-        preps=codec.decode_preparations(receipt['codec'])
-        preparations={p:preps['faithful:p'+str(p)] for p in {x['prefix'] for x in cells}}
+        c.require(md['hamiltonian_hash']==config['binding']['hamiltonian']
+                  and md['state_hash']==config['binding']['state'],'H4_SAVED_STATE_IDENTITY')
+        if config.get('H4_preparation_archive'):
+            codec=importlib.import_module('trottertracks.resource_applicability.h6_frozen_preparation_v1')
+            archive=config['H4_preparation_archive']
+            receipt=codec.read_archive(archive['path'],sha256=archive['sha256'])
+            c.require(receipt['binding']==archive['binding'],'H4_ARCHIVE_SOURCE_INPUT_BINDING')
+            preps=codec.decode_preparations(receipt['codec'])
+            preparations={p:preps['faithful:p'+str(p)] for p in {x['prefix'] for x in cells}}
+        else:
+            c.require(config.get('H4_reconstruct_original') is True,'EXPLICIT_H4_PREPARATION_MODE')
+            path=inspect.getsourcefile(m._prepare)
+            c.require(c.sha(path)=='7528ebae754e14ee623d28212a668e4edc237575775a78d0d2bf4d34dc53c293',
+                      'ORIGINAL_H4_PREPARATION_BUILDER_SOURCE')
+            prefixes=sorted({x['prefix'] for x in cells})
+            c.require(set(prefixes)<={2,3,4},'REGISTERED_H4_PREFIX_PREPARATION_BUDGET')
+            writer.write('H4_preparation_reconstruction_reserved.json',dict(prefixes=prefixes,
+                original_builder_sha256=c.sha(path),SCF_DF_state_solver=0,nonrefundable=True))
+            preparations={p:m._prepare(ham,p) for p in prefixes}
         cp=old['compiler_options'];import qiskit
         compiler=m.CompilerSettings(tuple(cp['basis_gates']),None,None,cp['optimization_level'],None,None,
                                     cp['seed_transpiler'],qiskit.__version__)
@@ -162,7 +174,15 @@ def load_context(system,config,cells,output):
     c.require(compiler_settings_hash(compiler)==config['binding']['compiler'],'RESTORED_COMPILER')
     for p,prep in preparations.items():
         c.require(prep.hamiltonian_hash==config['binding']['hamiltonian']
-                  and prep.preparation_hash==config['preparation_identities'][str(p)],'RESTORED_PREPARATION_BINDING')
+                  and prep.deterministic_fragment_indices==tuple(range(p)),'RESTORED_PREPARATION_BINDING')
+        expected=config.get('preparation_identities',{}).get(str(p))
+        c.require((expected is not None and prep.preparation_hash==expected) or
+                  (system=='H4' and config.get('H4_reconstruct_original') is True
+                   and not config.get('H4_preparation_archive') and expected is None),
+                  'PREPARATION_ARCHIVE_OR_REGISTERED_BUILDER_IDENTITY')
+    writer.write('preparation_receipt.json',dict(prefixes={str(p):dict(preparation_hash=v.preparation_hash,
+        hamiltonian_hash=v.hamiltonian_hash,scalar=v.constant_coefficient,tail_identity=v.extracted_identity_coefficient)
+        for p,v in preparations.items()},SCF_DF_state_solver=0))
     return SimpleNamespace(m=m,native=native,qstate=qstate,preparations=preparations,compiler=compiler,
                            binding=config['binding'])
 
@@ -185,7 +205,7 @@ def execute(system,config,grant,output):
             c.require(len(hierarchy)==len(set(hierarchy)) and set(hierarchy).isdisjoint(excluded),
                       'OLD_OR_NEW_SEED_COLLISION');excluded.update(hierarchy)
             tasks.append(dict(id=cell['id']+'_'+str(replica),cell=cell,replica=replica,seed=value,
-                preparation_hash=config['preparation_identities'][str(cell['prefix'])],
+                preparation_hash=context.preparations[cell['prefix']].preparation_hash,
                 saved_log_B=record['log_B'],log_B_tolerance=record['allowance']['log_B_margin'],
                 control_tolerance=1e-9 if system=='H4' else 1e-8))
     import h8_key_compile_parallel as pool

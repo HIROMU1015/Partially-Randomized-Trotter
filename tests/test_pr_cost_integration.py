@@ -281,5 +281,11 @@ class Gates(unittest.TestCase):
             with self.assertRaises(FileExistsError):contract.claim_attempt(path,'a'*40,'ARTIFICIAL_A_COST')
             self.assertTrue(contract.read(path)['nonrefundable_attempt'])
 
+    def test_H4_original_builder_proposal_is_explicit_not_input_generation(self):
+        p=contract.plan('H4','A_COST')['H4_preparation_policy']
+        self.assertEqual(p['prefix_reconstructions_proposed'],3)
+        self.assertEqual(p['SCF_DF_state_solver'],0)
+        self.assertFalse(contract.invalid_grant('H4','A_COST')['runtime_authorization'])
+
 
 if __name__=='__main__':unittest.main()
