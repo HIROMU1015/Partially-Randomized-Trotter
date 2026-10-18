@@ -132,6 +132,15 @@ def saved_pr_accounting(mode,key,usual,noncancel):
     return (usual if canonical=='USUAL_SIGNED' else noncancel).get(key)
 
 
+def saved_accounting_key(row):
+    # Use the same ID normalization as the frozen six-axis adapter: earlier
+    # D0 factors are strings, while completed accounting uses numeric factors.
+    from h8_six_axis_reaccount import row_key
+    key=row_key(row)
+    c.require(key[1] in c.core.EPS and key[2] in (1.,10.),'REGISTERED_SAVED_ACCOUNTING_KEY')
+    return key
+
+
 def bind_native(system,entry,store,private):
     original_path=ORIGINS[system]/CONFIGS[system];old=data(original_path)
     for key in ('hamiltonian','state','compiler'):
@@ -249,13 +258,13 @@ def d_payload(system,entry,store):
             for x in records:
                 if isinstance(x,dict) and 'accounting' in x and 'cell_id' in x and (
                         x.get('sample_scope')=='H8_CONFIRMATION_UNION6' or label=='H8_CONFIRMATION_UNION6'):
-                    usual[(x['cell_id'],x['epsilon'],x['factor'])]=x['accounting']
+                    usual[saved_accounting_key(x)]=x['accounting']
     noncancel_path=store.blob('H8:noncancel_saved_shots','23d46e489af054735d9d328aad0342ecdbddf305',
         'artifacts/resource_applicability/track_a_h8_noncancellation_cost_run01/2026-10-17/accounting_rows_v1.jsonl.gz')
-    noncancel={(x['cell_id'],x['epsilon'],x['factor']):x.get('accounting') for x in lines(noncancel_path)}
+    noncancel={saved_accounting_key(x):x.get('accounting') for x in lines(noncancel_path)}
     registry=data(r/'references/h8_phase_c_registration_v1.json');pr_ids=registry['confirmation_ids'];rows=[]
     for x in saved:
-        old=x['updated'];key=(old['cell_id'],old['epsilon'],old['factor']);weights=x.get('saved_shots')
+        old=x['updated'];key=saved_accounting_key(old);weights=x.get('saved_shots')
         mode=saved_bias_mode(x['bias_kind'])
         if old['cell_id'] in pr_ids:
             ac=saved_pr_accounting(mode,key,usual,noncancel)

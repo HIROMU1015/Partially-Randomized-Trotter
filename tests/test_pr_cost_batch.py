@@ -144,6 +144,11 @@ class ArtificialAccounting(unittest.TestCase):
     def test_unknown_saved_mode_is_rejected(self):
         with self.assertRaisesRegex(ValueError,'REGISTERED_SAVED_BIAS_MODE'):
             prepare.saved_bias_mode('UNKNOWN')
+    def test_saved_string_factor_has_same_identity_as_numeric(self):
+        for factor in (1.,10.):
+            row=dict(cell_id='ARTIFICIAL',epsilon=.01,factor=factor)
+            self.assertEqual(prepare.saved_accounting_key(row),
+                prepare.saved_accounting_key(dict(row,factor=str(factor))))
     def test_direct_prices_replace_only_saved_deterministic_cost(self):
         pairs=[dict(cell_id='PR',replica=i,seed=i+10,event_digest='event'+str(i),cohort='CONFIRMATION_N32',
             binding={'artificial':True},axes={a:dict(RZ=mult*(i+1),seed=i+10,event_digest='event'+str(i))
