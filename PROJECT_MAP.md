@@ -1,3 +1,7 @@
+## 2026-10-19 H4/H6：m5_bestの並列検証計画・科学未実行
+
+[計画・再利用・未完了範囲](docs/research/track_a_h46_m5_best_parallel_plan_20261019.md)。既存4th(m5_best)・11段S2を再利用するH4/H6計画。主controlはsymmetric_directional。4lane独立並列pilot案24条件・PR12本・60軸、後続は依存DAG/各Phase STOP。新12人工PASS、計画SOURCE834b738a…。実分子計算0、native adapter/launcher未seal・無効grant。係数非ZEROのみで棄却せず、主Track Aへ接続する差分を準備。以下は各時点の履歴。
+
 ## 2026-10-19 H6：高次PF独立確認の固定2点順位を再現・正常終了
 
 [結果・終了監査・限界](docs/research/track_a_h6_higher_pf_confirmation_run01_results_20261019.md)。SOURCE e3ac6fd8…、最小3候補13/45/45本・新103 trajectory/206軸・control536件PASS。2026-10-18 23:28:31 JST、native exit0/全56 worker回収、約42分12秒。固定2点順位は両方REPRODUCED、近似区間は両方0を含まず。点費用はY4/q2がS2/q8比3.748%低下、Y4/q4がq2比1.751%増。s4/s2_multi未観測、母平均保証なし、探索n8混合/追加sampling/compile/retry0。mandatory STOP。以下は各時点の履歴。
