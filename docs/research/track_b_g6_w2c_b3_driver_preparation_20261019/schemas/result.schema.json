@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema",
+    "contract_digest",
+    "admission",
+    "pairs",
+    "mandatory_STOP",
+    "population_cost_certificate",
+    "physical_RZ_certified"
+  ],
+  "properties": {
+    "schema": {
+      "const": "g6_w2c_b3_driver_result_v1"
+    },
+    "contract_digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "pairs": {
+      "type": "array",
+      "minItems": 24,
+      "maxItems": 24,
+      "items": {
+        "type": "object",
+        "required": [
+          "arm",
+          "layer",
+          "phase",
+          "pass_name",
+          "axes",
+          "coarse",
+          "reconciliation",
+          "file_sha256",
+          "output_chain_sha256",
+          "memory"
+        ]
+      }
+    },
+    "mandatory_STOP": {
+      "const": true
+    },
+    "population_cost_certificate": {
+      "const": false
+    },
+    "physical_RZ_certified": {
+      "const": false
+    }
+  },
+  "$comment": "Failure prefix is a separate TYPED_FAILURE document and never passes this complete-result schema. Nested function/coarse partitions are alternatives, not additive."
+}
