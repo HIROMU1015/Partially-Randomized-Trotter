@@ -156,7 +156,9 @@ def collect_receipts(origin,tasks,binding,receipts,*,handoff=None,synthetic=Fals
             reservations=[file_row(p) for p in sorted(directory.glob('*_reserved.json'))]
             attempts.append(dict(task_id=key,exit_code=worker['exit_code'],reservations=reservations,
                                  failed_or_unfinished_charge_refunded=False))
-            if worker['exit_code']!=0:continue
+            if worker['exit_code']!=0 or not worker.get('result_sha256'):
+                attempts[-1]['reuse_status']='NOT_ACCEPTED_INCOMPLETE_NATIVE_PROOF'
+                continue
             c.require(key not in accepted,'DUPLICATE_ACCEPTED_TASK')
             c.require(worker.get('result_sha256')==c.sha(directory/'task_result.json'),'NATIVE_RESULT_SHA')
             started=c.read(directory/'started.json')
@@ -182,7 +184,7 @@ def verify_manifest(manifest,tasks,binding,origin,*,synthetic=False,identity_fn=
     c.verify_byte_rows([dict(row,role=str(i)) for i,row in enumerate(manifest['files'])])
     observed=collect_receipts(origin,tasks,binding,manifest['receipt_paths'],
         handoff=manifest.get('handoff'),synthetic=synthetic,identity_fn=identity_fn)
-    for key in ('accepted','remaining_task_ids','old_attempts','retired_identities'):
+    for key in ('accepted','files','remaining_task_ids','old_attempts','retired_identities'):
         c.require(observed[key]==manifest[key],'RECHECKED_NATIVE_ACCEPTANCE:'+key)
     return observed
 

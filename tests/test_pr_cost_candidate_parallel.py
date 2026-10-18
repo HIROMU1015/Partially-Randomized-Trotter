@@ -118,6 +118,17 @@ class Fixtures(unittest.TestCase):
         path=self.receipt();value=c.read(path);value['workers'][0]['result_sha256']='0'*64
         path.write_text(__import__('json').dumps(value))
         with self.assertRaisesRegex(ValueError,'NATIVE_RESULT_SHA'):self.manifest(path)
+    def test_missing_native_result_hash_is_redone_without_refund(self):
+        path=self.receipt();value=c.read(path);value['workers'][0]['result_sha256']=None
+        path.write_text(__import__('json').dumps(value));manifest=self.manifest(path)
+        self.assertFalse(manifest['accepted']);self.assertEqual(len(manifest['remaining_task_ids']),2)
+        self.assertTrue(manifest['old_attempts'][0]['reservations'])
+        self.assertFalse(manifest['old_attempts'][0]['failed_or_unfinished_charge_refunded'])
+    def test_manifest_cannot_omit_a_required_file(self):
+        manifest=self.manifest(self.receipt());manifest['files']=manifest['files'][:-1]
+        value=dict(manifest);value.pop('manifest_digest');manifest['manifest_digest']=c.digest(value)
+        with self.assertRaisesRegex(ValueError,'RECHECKED_NATIVE_ACCEPTANCE:files'):
+            p.verify_manifest(manifest,self.tasks,self.binding,self.origin,synthetic=True,identity_fn=lambda pid:None)
     def test_invalid_control_never_unlocks_candidate(self):
         path=self.receipt();directory=path.parent/'A_0';value=c.read(directory/'control.json')
         value['max_error']=value['tolerance'];(directory/'control.json').write_text(__import__('json').dumps(value))
