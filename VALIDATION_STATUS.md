@@ -1,3 +1,7 @@
+## 2026-10-18 H4/H6：高次PFの統合比較完了・独立確認は未実行
+
+[結果・選択・確認案](docs/research/track_a_h46_higher_pf_integrated_run01_results_20261018.md)。SOURCE a65e4f6e…、18適格費用群n8/24条件・旧shot24行/費用6群再現、全6層の点選択完了。両系S2 q8/Yoshida4 q2/new_2元8桁 q1。H6 Y4 q2/q4は約0.974%差、S2対Y4は約3.294%差。native exit0・wall0.580秒、42人工PASS。MCSE案は未採用n=null、C sampling/新compile/signal0。母平均・厳密biasを認定せずmandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-18 H4/H6：高次PFの不足native取得・統合比較は未実行
 
 [結果・制約・SOURCE](docs/research/track_a_h46_higher_pf_acquire_run01_results_20261018.md)。SOURCE d77e439a…、固定12群n8、取得96 trajectory/compile entry192・検証軸192。control636、native exit0・回収。旧6群を保持し、統合metadata状態METADATA_BOUND_NO_ACCOUNTING。重み費用/SE/順位・最良qの新計算0、新signal/DF/state/係数変更/C sampling0。結果保存後mandatory STOP。以下は各時点の履歴。
