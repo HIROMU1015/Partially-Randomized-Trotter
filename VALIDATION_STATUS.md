@@ -1,3 +1,7 @@
+## 2026-10-18 H4/H6：高次PF・q比較・独立確認の準備のみ
+
+[技術報告](docs/research/track_a_h46_higher_pf_readiness_20261018.md)。PF repository固定20d64c2…の係数・次数証拠を先に再利用し、projector import先の2関数欠測と元高精度値の未取得を明示。SOURCE ed14d951…、新32人工/mock PASS。保存signal24/費用6/欠測18をmetadataのみ照合、frozen shot・paired RZ/CX・q選択・独立確認設計と無効4grantを準備。実H4/H6数値再解析・順位・sampling・compile・係数最適化0。新公式未採用、n未固定、A_COST/理論費用作業と分離しmandatory STOP。以下は過去各時点の履歴。
+
 ## 2026-10-18 H4/H6：new_2 PRのnative・同精度代表比較完了
 
 [結果・SOURCE・限界](docs/research/track_a_h46_new2_native_validation_20261018.md)。保存1Å/STO-3G/H4 rank12 p3・H6 rank19 p5/T=.8/K4/ε=.001、S2 q4・Yoshida q2・new_2 q1の同じPR分割を比較。各n8・採用96 compiled軸、人工18件/実数値222件PASS、最大差1.57e-10。new_2のshot重みRZ標本平均はS2比H4 73.45%/H6 91.59%、Yoshida比41.61%/56.03%低下。ただし固定代表点/empirical allowance/P=0で、最適q・母平均・対決定論・全RPE費用の保証ではない。8桁係数の立方和7.35e-9により厳密4次は未成立。初回compile不一致をexplicit XY分解で修正し、旧STOPを保存。H6を24軌道並列へ引継ぎ、重複13軸一致・全回収。sourceはH4 687679a4…/H6 f0dd2a9a…、旧成果/既存環境・他job不変、mandatory STOP。以下は過去各時点の履歴。

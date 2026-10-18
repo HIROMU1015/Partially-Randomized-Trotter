@@ -1,0 +1,58 @@
+{
+  "status": "UNAPPROVED",
+  "SOURCE": "ed14d951a4761838f25aeb16a653b55aba499c34",
+  "provider_SOURCE": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+  "valid_execution_grant": false,
+  "mandatory_STOP": true,
+  "automatic_next_phase": false,
+  "automatic_retry": false,
+  "closed_source_paths": [
+    {
+      "path": "src/trotterlib/higher_pf_readiness.py",
+      "bytes": 14755,
+      "sha256": "ecea5f8b006a876aee90cd42aa50c098dd25bfb801225260b52ceab98923ce4a"
+    },
+    {
+      "path": "scripts/h46_higher_pf_adapter.py",
+      "bytes": 9339,
+      "sha256": "bf6deb30f1dde7dd34c085ffcfab4997f12f73984271ba0735e1926b662cee45"
+    },
+    {
+      "path": "scripts/run_h46_higher_pf_comparison.py",
+      "bytes": 5671,
+      "sha256": "5a16fe4ee5cdec908942bc34cb9f9b6780b024596079f95a3ce9951d56dbd192"
+    },
+    {
+      "path": "scripts/audit_h46_higher_pf_readiness.py",
+      "bytes": 3740,
+      "sha256": "8e83dc45963ff2d8743b586f69ad8a666629a789e231659b19741027f82a5f89"
+    },
+    {
+      "path": "tests/test_h46_higher_pf_readiness.py",
+      "bytes": 16567,
+      "sha256": "c040637dec54ee6a7e954e394dae63d26284496bdfd9709408253ede1e170e7e"
+    },
+    {
+      "path": "scripts/d0_frozen_shot_rule_v1.py",
+      "bytes": 5506,
+      "sha256": "ed3f57937a231719583c2893677b7e82f934dd98bda35cd37fc0f17f83d4279f"
+    }
+  ],
+  "resource_policy": "fresh own-process CPU/RAM/filesystem observation; use available resources; no shared changes; no transient host PSI kill; only actual inputs/SOURCE/runtime/grant/results are immutable",
+  "science_tolerance": 1e-09,
+  "failure_policy": "STOP on own process failure, invalid input/source/profile/control/phase, nonfinite values, unpaired cost events or scientific mismatch; missing candidate cost remains null, no refit/imputation",
+  "phase": "A_COEFFICIENT",
+  "scope": "exact moment and symbolic root representation; any new finite-time toy sweep/root evaluation must first be registered and approved",
+  "coefficient_candidates": [
+    "new2-printed8-saved-binary64-v1",
+    "new2-external-projected-numeric-NOT-ADOPTED-v1",
+    "new2-exact-algebraic-family-NOT-ADOPTED-v1"
+  ],
+  "formula_selection_pending": true,
+  "optimization": false,
+  "molecular_calls": 0,
+  "sampling": 0,
+  "native_compile": 0,
+  "storage": "small coefficient/condition JSON and toy residual tables only; bounded by an approved finite q/precision grid, not chosen now",
+  "separate_approval_for_real_H4_H6_application": true
+}

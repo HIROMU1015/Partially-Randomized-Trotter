@@ -1,0 +1,63 @@
+{
+  "status": "DESIGN_REQUIRES_FROZEN_EXPLORATION_SELECTION_AND_PRECISION_TARGET",
+  "SOURCE": "ed14d951a4761838f25aeb16a653b55aba499c34",
+  "provider_SOURCE": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+  "valid_execution_grant": false,
+  "mandatory_STOP": true,
+  "automatic_next_phase": false,
+  "automatic_retry": false,
+  "closed_source_paths": [
+    {
+      "path": "src/trotterlib/higher_pf_readiness.py",
+      "bytes": 14755,
+      "sha256": "ecea5f8b006a876aee90cd42aa50c098dd25bfb801225260b52ceab98923ce4a"
+    },
+    {
+      "path": "scripts/h46_higher_pf_adapter.py",
+      "bytes": 9339,
+      "sha256": "bf6deb30f1dde7dd34c085ffcfab4997f12f73984271ba0735e1926b662cee45"
+    },
+    {
+      "path": "scripts/run_h46_higher_pf_comparison.py",
+      "bytes": 5671,
+      "sha256": "5a16fe4ee5cdec908942bc34cb9f9b6780b024596079f95a3ce9951d56dbd192"
+    },
+    {
+      "path": "scripts/audit_h46_higher_pf_readiness.py",
+      "bytes": 3740,
+      "sha256": "8e83dc45963ff2d8743b586f69ad8a666629a789e231659b19741027f82a5f89"
+    },
+    {
+      "path": "tests/test_h46_higher_pf_readiness.py",
+      "bytes": 16567,
+      "sha256": "c040637dec54ee6a7e954e394dae63d26284496bdfd9709408253ede1e170e7e"
+    },
+    {
+      "path": "scripts/d0_frozen_shot_rule_v1.py",
+      "bytes": 5506,
+      "sha256": "ed3f57937a231719583c2893677b7e82f934dd98bda35cd37fc0f17f83d4279f"
+    }
+  ],
+  "resource_policy": "fresh own-process CPU/RAM/filesystem observation; use available resources; no shared changes; no transient host PSI kill; only actual inputs/SOURCE/runtime/grant/results are immutable",
+  "science_tolerance": 1e-09,
+  "failure_policy": "STOP on own process failure, invalid input/source/profile/control/phase, nonfinite values, unpaired cost events or scientific mismatch; missing candidate cost remains null, no refit/imputation",
+  "phase": "C_INDEPENDENT",
+  "selection_sha256": null,
+  "n_confirmation": null,
+  "mcse_target": null,
+  "effect_to_detect": null,
+  "power": null,
+  "family_alpha": null,
+  "multiplicity_family": null,
+  "comparison_candidates": null,
+  "seed_namespace": "HIGHER_PF_INDEPENDENT_V1 + campaign + stage + formula/system/q + replica + outer + piece + input hash",
+  "legacy_seed_exclusion": "before sampling reconstruct all legacy seeds from H4 seed SOURCE/group/sample/outer/piece and compare actual uint64 values; check entire fresh exploration and confirmation registry for collisions; disjoint tag strings alone are insufficient",
+  "CRN": "disabled; cross-candidate independence is an explicit statistical assumption, not proved by unique seeds. A CRN design needs separate coupling/provenance approval.",
+  "cost_pairing": "same event digest and seed for cosine/sine; independent trajectory is sampling unit",
+  "estimation": "exact integer cost mean/sample variance; paired weighted SE; independent-candidate difference SE and delta-method ratio SE are exploratory, no strict interval",
+  "rare_events": "do not zero-impute unobserved multi2/s4; forced samples are correctness controls only. Population conclusion deferred unless full-support variance/tail assumptions or certified bounds are independently supplied.",
+  "sample_size": "user supplies target MCSE or detectable effect/power/multiplicity; pilot variance plug-in planning only; no automatic adoption or extension",
+  "budget_formula": "2*k*n_confirmation compiled sample axes for k pre-fixed candidates, plus separately registered correctness/control compiles; if one winner/formula/system then k=6 is an option only",
+  "storage": "private event replay and sample/phase registry, public summary and comparison diagnostics; estimate from chosen k,n before sealing",
+  "sampling_authorized": false
+}
