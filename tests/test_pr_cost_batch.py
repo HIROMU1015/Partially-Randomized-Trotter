@@ -12,6 +12,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
 import pr_cost_batch as b
 import pr_cost_batch_science as science
+import prepare_pr_cost_batch as prepare
 
 
 class Boundaries(unittest.TestCase):
@@ -130,6 +131,19 @@ class Boundaries(unittest.TestCase):
 
 
 class ArtificialAccounting(unittest.TestCase):
+    def test_h8_saved_usual_alias_uses_only_usual_shots(self):
+        key=('ARTIFICIAL',.01,1.)
+        usual={key:{'axes':{'real':{'shots':2},'imag':{'shots':3}}}}
+        noncancel={key:{'axes':{'real':{'shots':100},'imag':{'shots':200}}}}
+        self.assertEqual(prepare.saved_bias_mode('USUAL_SIGNED_SAVED'),'USUAL_SIGNED')
+        self.assertEqual(prepare.saved_pr_accounting('USUAL_SIGNED_SAVED',key,usual,noncancel),usual[key])
+        self.assertEqual(prepare.saved_pr_accounting('EMPIRICAL_NONCANCELLATION',key,usual,noncancel),noncancel[key])
+    def test_missing_usual_shots_cannot_fall_back_to_noncancel(self):
+        key=('ARTIFICIAL',.01,1.)
+        self.assertIsNone(prepare.saved_pr_accounting('USUAL_SIGNED_SAVED',key,{}, {key:{'shots':999}}))
+    def test_unknown_saved_mode_is_rejected(self):
+        with self.assertRaisesRegex(ValueError,'REGISTERED_SAVED_BIAS_MODE'):
+            prepare.saved_bias_mode('UNKNOWN')
     def test_direct_prices_replace_only_saved_deterministic_cost(self):
         pairs=[dict(cell_id='PR',replica=i,seed=i+10,event_digest='event'+str(i),cohort='CONFIRMATION_N32',
             binding={'artificial':True},axes={a:dict(RZ=mult*(i+1),seed=i+10,event_digest='event'+str(i))

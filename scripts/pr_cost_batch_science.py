@@ -79,6 +79,7 @@ def d_accounting(data):
     before=c.digest(data);rows=[]
     for saved in data['rows']:
         row=deepcopy(saved);cid=row['cell_id']
+        c.require(row['bias_mode'] in c.core.MODES,'CANONICAL_SAVED_BIAS_MODE_REQUIRED')
         if row['eligible'] and cid in data['measured']:
             weights=row['shots'];prices=data['measured'][cid]
             c.require(set(weights)=={'cosine','sine'} and all(type(x) is int and x>0 for x in weights.values()),'SAVED_SHOTS')

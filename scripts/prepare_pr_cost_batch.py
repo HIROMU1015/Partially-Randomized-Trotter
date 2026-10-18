@@ -120,6 +120,18 @@ def rewrite_paths(value,mapping):
     return mapping.get(value,value) if isinstance(value,str) else value
 
 
+def saved_bias_mode(value):
+    aliases={'USUAL_SIGNED_SAVED':'USUAL_SIGNED','USUAL_SIGNED':'USUAL_SIGNED',
+             'EMPIRICAL_NONCANCELLATION':'EMPIRICAL_NONCANCELLATION'}
+    c.require(value in aliases,'REGISTERED_SAVED_BIAS_MODE')
+    return aliases[value]
+
+
+def saved_pr_accounting(mode,key,usual,noncancel):
+    canonical=saved_bias_mode(mode)
+    return (usual if canonical=='USUAL_SIGNED' else noncancel).get(key)
+
+
 def bind_native(system,entry,store,private):
     original_path=ORIGINS[system]/CONFIGS[system];old=data(original_path)
     for key in ('hamiltonian','state','compiler'):
@@ -244,13 +256,14 @@ def d_payload(system,entry,store):
     registry=data(r/'references/h8_phase_c_registration_v1.json');pr_ids=registry['confirmation_ids'];rows=[]
     for x in saved:
         old=x['updated'];key=(old['cell_id'],old['epsilon'],old['factor']);weights=x.get('saved_shots')
+        mode=saved_bias_mode(x['bias_kind'])
         if old['cell_id'] in pr_ids:
-            ac=(usual if x['bias_kind']=='USUAL_SIGNED' else noncancel).get(key)
+            ac=saved_pr_accounting(mode,key,usual,noncancel)
             if old['eligible']:
                 c.require(ac is not None,'H8_SAVED_CONFIRMATION_SHOTS');weights={ch:ac['axes'][ch]['shots'] for ch in ('real','imag')}
         shots=None if weights is None else {a:weights[ch] for a,ch in c.core.CHANNEL.items()}
         rows.append(dict(cell_id=old['cell_id'],method='B2' if old['cell_id'] in pr_ids else 'DETERMINISTIC',
-            bias_mode=x['bias_kind'],epsilon=old['epsilon'],factor=old['factor'],eligible=old['eligible'],
+            bias_mode=mode,epsilon=old['epsilon'],factor=old['factor'],eligible=old['eligible'],
             G_exact=old['G_exact'],shots=shots,cost_status=old['cost_status'],axis_costs=old.get('axis_costs')))
     root=PROJECTS/'h8-dba-validation/20261018/private'
     for cid in ('B0_p15_q8_2nd','B0I_p16_q4_4th'):
