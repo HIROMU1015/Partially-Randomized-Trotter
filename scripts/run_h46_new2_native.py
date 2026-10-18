@@ -60,7 +60,9 @@ def run(c,group,out):
     def check(error,name):
         error=float(error)
         checks.append(dict(check=name,error=error))
-        if not math.isfinite(error) or error>plan['numeric_tolerance']:raise ValueError(name)
+        if not math.isfinite(error) or error>plan['numeric_tolerance']:
+            write(out/'failed_validation_checks.json',checks)
+            raise ValueError(f'{name}: {error:.17g}')
     progress('saved_input_load')
     if system=='H4':
         from trotterlib.pr2_new_series_validation import _load_snapshot_once

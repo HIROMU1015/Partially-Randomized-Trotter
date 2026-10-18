@@ -12,7 +12,7 @@ from h46_new2_core import weights, allocation
 
 
 def gaussian_operations(rotation):
-    from qiskit.circuit.library import PhaseGate, UnitaryGate
+    from qiskit.circuit.library import PhaseGate, XXPlusYYGate
     u = np.asarray(rotation, dtype=complex)
     if u.ndim != 2 or u.shape[0] != u.shape[1] or not 1 <= len(u) <= 12:
         raise ValueError('GAUSSIAN_SHAPE')
@@ -37,9 +37,20 @@ def gaussian_operations(rotation):
             operations.append((PhaseGate(float(phase)),(mode,)))
     for upper,lower,g in reversed(eliminations):
         reconstructed[[upper,lower],:]=g@reconstructed[[upper,lower],:]
-        fock=np.zeros((4,4),complex);fock[0,0]=1
-        fock[1:3,1:3]=g;fock[3,3]=np.linalg.det(g)
-        operations.append((UnitaryGate(fock),(upper,lower)))
+        # Explicit SU(2) two-mode factorization avoids generic 4x4 unitary
+        # synthesis, which caused a real ~1e-6 error in the first attempt.
+        # Apply XY first, then diagonal phases; vacuum and double occupancy
+        # remain exactly one. No near-zero angle is pruned here.
+        a,b=g[0,0],g[0,1]
+        alpha=float(np.angle(a)) if a!=0 else 0.
+        theta=2*math.atan2(abs(b),abs(a))
+        beta=alpha-math.pi/2-float(np.angle(b)) if b!=0 else 0.
+        xy=XXPlusYYGate(theta,beta)
+        represented=np.diag([np.exp(1j*alpha),np.exp(-1j*alpha)])@np.asarray(xy.to_matrix())[1:3,1:3]
+        if np.max(abs(represented-g))>1e-12:
+            raise ValueError('EXPLICIT_PAIR_RECONSTRUCTION')
+        operations.extend([(xy,(upper,lower)),(PhaseGate(alpha),(upper,)),
+            (PhaseGate(-alpha),(lower,))])
     if np.max(abs(reconstructed-u)) > 1e-12:
         raise ValueError('GAUSSIAN_RECONSTRUCTION')
     return operations

@@ -22,7 +22,7 @@
     "seed_transpiler": 17
   },
   "correctness": "sample0 each group: particle-number occupation oracle vs native high/low controls; cosine/sine; compiled full vector; forced order0/2/4 at both time signs for new2 only",
-  "cost_series": "H46-new2-representative-native-QR-ordinary-v1",
+  "cost_series": "H46-new2-representative-native-explicit-XY-ordinary-v2",
   "empirical_allowance": 1e-09,
   "epsilon": 0.001,
   "forced_events_enter_cost_samples": false,
@@ -73,7 +73,7 @@
   ],
   "internal_threads": 1,
   "log_B_empirical_margin": 1e-12,
-  "lowering": "new process-local adjacent complex SU2 QR for modes1..12; ordinary ancilla control; whole-wrapper transpile",
+  "lowering": "new process-local adjacent complex SU2 QR + explicit XXPlusYY/number Phase gates for modes1..12; ordinary ancilla control; no generic UnitaryGate synthesis",
   "mandatory_STOP_after_diagnostic": true,
   "numeric_tolerance": 1e-09,
   "old_cost_series_pooling": false,
@@ -91,5 +91,16 @@
   "source_origin_of_QR": "5aa6c3685afb9c3afcfbdc36f80244da0a7fe525:src/trottertracks/resource_applicability/h4_geometry/gaussian_structure.py",
   "state_preparation_P": 0,
   "strict_bias_guarantee": false,
+  "technical_recovery": {
+    "all_owned_children_reaped": true,
+    "diagnostic_extra_compile": 1,
+    "failed_SOURCE": "8b0f6cf2263a7c6e0af973c9bc742178fa0bd514",
+    "failed_budget_refund": false,
+    "failed_run": "run01",
+    "numeric_threshold_unchanged": 1e-09,
+    "old_result_pooling": false,
+    "prior_actual_compile_attempts": 10,
+    "remedy": "exact two-mode XY/phase representation; no coefficient/physics/precision change"
+  },
   "trajectories_per_group": 8
 }
