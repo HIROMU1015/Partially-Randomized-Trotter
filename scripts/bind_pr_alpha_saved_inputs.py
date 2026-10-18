@@ -151,6 +151,10 @@ def deterministic_axis_index(rows):
     return units, origins
 
 
+def unit_signature(axes):
+    return {axis: (row["RZ"], row["measured"]) for axis, row in axes.items()}
+
+
 def put(path, value, *, private=False):
     raw = canonical(value) + b"\n"
     fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o400 if private else 0o644)
@@ -237,6 +241,7 @@ def main():
                 if float(factor) == 1:
                     set_base(("H8", record["cell"]["id"], float(e), "USUAL_SIGNED_SAVED"), a, "H8_additional", f"/signals/{i}/precision_rows/{e}/{factor}")
     units, unit_origin = deterministic_axis_index(h6axis)
+    h8_case_units, h8_case_origin, h8_unit_signatures = {}, {}, {}
     for i, entry in enumerate(h8six):
         row = entry["updated"]
         if row["factor"] != 1:
@@ -244,15 +249,22 @@ def main():
         if entry["bias_kind"] == "EMPIRICAL_NONCANCELLATION":
             saved = entry["saved"]
             set_base(("H8", row["cell_id"], row["epsilon"], entry["bias_kind"]), saved["accounting"], "H8_six_costs", f"/{i}/saved/accounting")
+        case = row["cell_id"], row["epsilon"], entry["bias_kind"]
+        h8_case_units[case] = row.get("axis_costs")
+        h8_case_origin[case] = dict(receipt="H8_six_costs", pointer=f"/{i}/updated/axis_costs")
         if row.get("axis_costs"):
-            key = "H8", row["cell_id"]
-            if key in units:
-                codec.require(units[key] == row["axis_costs"], "UNIT_COST_CHANGED_ACROSS_SAVED_ROWS")
-            units[key] = row["axis_costs"]
-            unit_origin[key] = dict(receipt="H8_six_costs", pointer=f"/{i}/updated/axis_costs")
+            cid = row["cell_id"]
+            signature = unit_signature(row["axis_costs"])
+            codec.require(cid not in h8_unit_signatures or h8_unit_signatures[cid] == signature, "UNIT_COST_CHANGED_ACROSS_SAVED_ROWS")
+            h8_unit_signatures[cid] = signature
     for i, row in enumerate(h8eps):
         if row["epsilon"] == .000625:
             set_base(("H8", row["cell_id"], row["epsilon"], row["bias_kind"]), row["accounting"], "H8_epsilon_baseline", f"/{i}/accounting")
+            case = row["cell_id"], row["epsilon"], row["bias_kind"]
+            h8_case_units[case] = row.get("axis_costs")
+            h8_case_origin[case] = dict(receipt="H8_epsilon_baseline", pointer=f"/{i}/axis_costs")
+            if row.get("axis_costs"):
+                codec.require(h8_unit_signatures[row["cell_id"]] == unit_signature(row["axis_costs"]), "EPSILON_UNIT_COST_CHANGED")
     noncancellation = {}
     for i, row in enumerate(h8env):
         codec.require(row["status"] == "EMPIRICAL_NONCANCELLATION_ENVELOPE", "H8_ENVELOPE_STATUS")
@@ -266,12 +278,14 @@ def main():
     for system, cid, e, mode, factor in plans["B2"]["scope"]["case_keys"]:
         key = system, cid, e, mode
         signal = signals.get((system, cid))
-        cost = pairs.get((system, cid)) if cid.startswith("B2_") else deterministic_cost(units.get((system, cid)))
+        cost = pairs.get((system, cid)) if cid.startswith("B2_") else deterministic_cost(
+            units.get((system, cid)) if system == "H6" else h8_case_units.get((cid, e, mode)))
         all_records[key] = codec.make_record(system=system, cell_id=cid, epsilon=e, mode=mode,
             signal=signal, baseline=baseline.get(key), cost=cost,
             noncancellation=noncancellation.get((system, cid)) if mode == "EMPIRICAL_NONCANCELLATION" else None,
             lineage=dict(signal=origin.get((system, cid)), baseline=baseline_origin.get(key),
-                costs=dict(receipt=system + "_pairs", row_locator="cost.pairs[*].CSV_data_rows") if cid.startswith("B2_") else unit_origin.get((system, cid), dict(status="MISSING")),
+                costs=dict(receipt=system + "_pairs", row_locator="cost.pairs[*].CSV_data_rows") if cid.startswith("B2_") else
+                    (unit_origin.get((system, cid), dict(status="MISSING")) if system == "H6" else h8_case_origin.get((cid, e, mode), dict(status="MISSING"))),
                 saved_magnitude=dict(receipt="H8_saved_bias_magnitudes") if system == "H8" and mode == "EMPIRICAL_NONCANCELLATION" else None))
     s.post_check()
     target.mkdir(mode=0o700)

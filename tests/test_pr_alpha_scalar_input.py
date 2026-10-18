@@ -125,6 +125,14 @@ class CopyBindingTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "DUPLICATE_H6_UNIT_AXIS"):
             binder.deterministic_axis_index([pf, pf])
 
+    def test_equal_unit_prices_keep_mode_specific_metadata(self):
+        a = dict(cosine=dict(RZ="2", measured=True, status="USUAL"), sine=dict(RZ="3", measured=False, model_formula="saved"))
+        b = deepcopy(a); b["cosine"]["status"] = "NONCANCELLATION"
+        self.assertEqual(binder.unit_signature(a), binder.unit_signature(b))
+        self.assertNotEqual(binder.deterministic_cost(a)["original_axis_costs"], binder.deterministic_cost(b)["original_axis_costs"])
+        b["cosine"]["RZ"] = "99"
+        self.assertNotEqual(binder.unit_signature(a), binder.unit_signature(b))
+
     def test_private_input_requires_exact_existing_receipt(self):
         with tempfile.TemporaryDirectory() as d:
             p = Path(d) / "synthetic.json"; raw = b'{"fixture":"ARTIFICIAL"}'; p.write_bytes(raw)
