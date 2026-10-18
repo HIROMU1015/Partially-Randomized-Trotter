@@ -28,3 +28,5 @@ SOURCE：F01基点 `07f65831f045bf1fdbd4b370e44c7f59a9901ddd`。scaling SOURCE `
 追加の全trial監査：[all_trial_audit.json](all_trial_audit.json)。2,445ファイル・1,152,889完了人工trialのID/count/bit/chain/file SHAを照合し、重複0。replica間のglobal IDは `(run directory, task key, local trial_id)`。同じR1形のlocal IDを単独のglobal IDとは扱わない。
 
 公開経路：Git CLIの認証がないため、接続済みGitHub Appで同一treeを公開する。公開commitのmetadata/SHAとローカル測定SOURCE commitを区別し、元の測定commitは [measurement_source_history.bundle](measurement_source_history.bundle) にGit objectのまま保全した。固定F01基点があれば `git bundle verify` とbundleからのfetchで復元できる。
+
+公開照合完了：完全content commit `7485e191163bfbbc550950a7f1fc8b6d27b4196b` の49ファイル・5,172,233 bytesをGitHubから再取得し、全SHA256を照合した。receipt自身の最終commitは別に照合する。科学実行・正式採択・統合へ進まずmandatory STOP。
