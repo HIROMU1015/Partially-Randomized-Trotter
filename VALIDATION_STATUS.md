@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-18 研究④の課題調査：新しい数値validationなし
+
+[文献・SOURCE読取と候補提案](docs/research/qc_track_iv_question_survey_20261018/README.md)のみ。候補1件は独立方法差未確定・未採択、実装・人工テスト・科学計算・保存値再解析・科学契約・認可0。ファイル/リンク/hash/公開/旧成果保全の確認は数値correctnessやimmutable CIの証拠ではない。旧validation・既知global FAIL・研究停止状態を全て保持する。
+
 ## 2026-10-18 A2現行実用化経路の方針固定：新validationなし
 
 [ユーザー採択済み方針・レビュー原本](docs/research/qc_a2_current_route_handoff_20261018/decision_record.md)と[再開条件](docs/research/qc_a2_current_route_handoff_20261018/handoff.md)。既存の固定DF checker受理・ENCLOSED・COUNTER_LARGER_SUFFICIENT_STEPを保持し、今回のpilotで現行経路への追加投資を見送る。新計算・保存値再解析・科学レビュー/証明・SOURCE/契約/claim変更0。A2 NOT_ADOPTED、A1 CLOSED、K1-F未承認、旧global FAILと他validationは不変。数学保証撤回・元分子/真PF誤差/総資源の一般判断は行わない。公開・保全確認後mandatory STOP。以下は過去の時点記録。

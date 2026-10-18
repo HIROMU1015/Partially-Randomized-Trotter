@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-18 研究④の課題選定：技術調査のみ・未採択
+
+[既存研究・終了理由、新候補1件、最小検証案、引継ぎ、証拠索引](docs/research/qc_track_iv_question_survey_20261018/README.md)。固定粒子数・DF構造を保持する全energy shadows共分散縮約を条件付きで提案するが、既知法との差は未確定。新アルゴリズム・研究テーマの採択、A2等の再開、新科学計算・SOURCE実装・科学契約・認可は行わない。旧状態と証拠を保全し、公開確認後mandatory STOP。
+
 ## 2026-10-17 ユーザー採択：Exact Encoding限定案を区切り、④の課題選定へ戻る
 
 `830be753` の限定構成案を `REDUCES_TO_KNOWN_METHOD` として保全し、この案の追加探索・実装・数値検証を行わない。④「PRに限定しないアルゴリズム改善」は研究課題選定段階へ戻り、次の具体課題は未採択。Encoding一般の不可能性や④全体の終了を意味しない。[正式方針記録](docs/research/研究ノート/2026-10-17_qc_exact_encoding_direction_adoption.md)、[machine記録](docs/research/qc_exact_encoding_direction_adoption_20261017/decision.json)。①②③と④の既存停止・保留状態は変更せず、公開確認後mandatory STOP。以下の本文は過去の記録として保持する。

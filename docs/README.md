@@ -1,5 +1,9 @@
 # 文書索引
 
+## 2026-10-18 研究④の新課題に向けた技術調査
+
+[調査入口・候補比較・最小検証案・ハンドオフ・固定証拠](research/qc_track_iv_question_survey_20261018/README.md)。条件付き候補1件、方法差未確定・新規性未認定、テーマ未採択。既存停止状態・旧証拠を維持し、新科学計算・SOURCE実装・実験契約・認可0、mandatory STOP。
+
 ## 2026-10-15 採用済み研究状態の最小反映
 
 [最新GPTレビュー原文](reviews/quantum_chemistry_pf/qc_m_k0_claude_scientific_rereview_and_direction_20261015.md)／[現行採用状態](../artifacts/qc_pf_exploration_state_adoption/2026-10-15/decision.json)。第一候補の現固定構成CLOSED、H-E1現定義終了、M-a/M-b追加探索STOP・K1未実施、PF小改変探索系列PAUSED、旧D案HOLD、他研究不変。既存成果整理Aを再作成せず、新科学計算・GPTレビュー0。旧結果・STOP・manifest FAIL維持。新方向レビューは別途明示開始承認待ち、公開照合後Mandatory STOP。
