@@ -336,10 +336,13 @@ def pf_schedule(block_count, total_time, q, formula="2nd", policy="ordinary"):
         raise ValueError("Invalid time/formula")
     if policy not in ("ordinary", "symmetric_directional"):
         raise ValueError("Invalid control policy")
-    w = 1 / (2 - 2 ** (1 / 3))
-    pieces = (1.0,) if formula == "2nd" else (w, -2 ** (1 / 3) * w, w)
+    a = 2 ** (1 / 3)
+    w = 1 / (2 - a)
+    # Match the reference native provider's binary64 operations, not merely
+    # the algebraically equivalent Yoshida coefficients and stage times.
+    pieces = (1.0,) if formula == "2nd" else (w, -a / (2 - a), w)
     modes = ("ordinary", "ordinary") if policy == "ordinary" else ("uncontrolled", "directional")
-    return tuple(PFStage(j, total_time / q * weight / 2, mode)
+    return tuple(PFStage(j, total_time * weight / q / 2, mode)
                  for _ in range(q) for weight in pieces
                  for indices, mode in ((range(block_count), modes[0]),
                                        (reversed(range(block_count)), modes[1])) for j in indices)
