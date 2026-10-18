@@ -1,3 +1,7 @@
+## 2026-10-18 β契約監査の技術追補
+
+[追補・検査結果](../docs/research/pr_beta_contract_followup_20261018.md)。B03の二乗underflowを新SOURCE d87d217a…で最小修正し、人工9テスト（既存認証assertion10条件を含む）PASS。B08はgrid/費用/会計の生成経路を追跡しMODEL_MISMATCHを維持。B02/B06の引用注意を追補。新科学計算・旧結果再計算0、前段STOP保全、local commitでmandatory STOP。 以下は各時点の履歴。
+
 ## 2026-10-18 PR β契約の技術監査
 
 [監査報告](../docs/research/pr_beta_contract_audit_20261018.md)。旧H4 RPEのβ契約を固定SOURCE・保存値で監査。79固定blob、50 scenario/904 round、人工38件（underflow不具合2再現）。既存gridの18行はパラメータ対応するがpreparation閾値・hashが異なり、同一条件の物理検証とは扱わない。保証状態の投影不足・厳密予算和・歴史SOURCE差を記録。科学再計算0、既存SOURCE/結果は保持しmandatory STOP。 以下は各時点の履歴。
