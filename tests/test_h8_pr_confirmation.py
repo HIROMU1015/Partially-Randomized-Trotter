@@ -15,6 +15,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 import h8_pr_confirmation as h
 import launch_h8_pr_confirmation as witness
+import h8_pr_confirmation_parallel as parallel
 
 
 def targets():
@@ -187,6 +188,13 @@ class ArtificialConfirmation(unittest.TestCase):
             spec = dict(SOURCE='s' * 40, binding=context.binding, law=law)
             accepted, _ = h.accept(task, handle, spec)
             self.assertEqual(accepted, result)
+            # Real map handles contain a tuple; started.json contains a list.
+            handle['identity'] = tuple(ident)
+            self.assertEqual(h.accept(task, handle, spec)[0], result)
+            handle['identity'] = tuple([ident[0], ident[1]+1, ident[2], ident[3]])
+            with self.assertRaisesRegex(ValueError, 'NATIVE_START_IDENTITY'):
+                h.accept(task, handle, spec)
+            handle['identity'] = tuple(ident)
             handle['exit_code'] = 2
             with self.assertRaisesRegex(ValueError, 'NATIVE_EXIT'):
                 h.accept(task, handle, spec)
@@ -197,6 +205,68 @@ class ArtificialConfirmation(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'ORIGINAL_UNCONDITIONAL_LAW'):
                 h.compile_one(context, task, directory, 's' * 40, target, dict(wrong=True), 0., 1e-10, native)
             self.assertFalse((Path(directory) / 'native_evolution_1_reserved.json').exists())
+
+    def test_native_identity_shape_types_and_ownership_values(self):
+        self.assertEqual(h.native_identity([1, 2, 3, 4]), h.native_identity((1, 2, 3, 4)))
+        for value in ((1, 2, 3), '1234', [True, 2, 3, 4], [1, '2', 3, 4], None):
+            with self.assertRaisesRegex(ValueError, 'TYPED_NATIVE_IDENTITY'):
+                h.native_identity(value)
+
+    def parallel_fixture(self):
+        import numpy as np
+        task, law, target, native, context = self.fixture_native()
+        native.seed_hierarchy = h.hierarchy
+        context.qstate = np.asarray([1+0j, 0j, 0j, 0j])
+        context.m.np = np
+        context.m.build_native_hadamard_wrapper = lambda evolution, axis, **kwargs: SimpleNamespace(axis=axis)
+        context.m.simulate_statevector = lambda circuit, initial: initial.copy() if circuit == 'evolution' else circuit
+        context.m.hadamard_expectation = lambda state, n: 1. if state.axis == 'cosine' else 0.
+        context.native.partial_native_from_step_requests = lambda *args, **kwargs: SimpleNamespace(circuit='evolution')
+        pool = h.load_own('h8_confirmation_test_owned_pool', 'scripts/h8_key_compile_parallel.py')
+        return task, law, target, native, context, pool
+
+    def test_parallel_mock_native_probes_axes_and_nested_exit_receipts(self):
+        task, law, target, native, context, pool = self.parallel_fixture()
+        modules = {'trottertracks.resource_applicability.h6_hash_reuse_v1':
+                   SimpleNamespace(use_fingerprint_reuse=nullcontext),
+                   'h6_dba_science': SimpleNamespace(event_oracle=lambda *args: 1+0j)}
+        cpus = sorted(os.sched_getaffinity(0))[:2]
+        self.assertGreaterEqual(len(cpus), 2)
+        with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as directory:
+            with patch.dict(sys.modules, modules):
+                result = parallel.compile_one(context, task, directory, 's'*40, target,
+                    law, 0., 1e-10, native, pool, cpus, None, h.COHORT)
+            self.assertEqual(result['calls'], dict(trajectory=1, occurrence=2, RTE_event=8,
+                native_evolution=1, control_probe=4, independent_event_oracle=1, wrapper_compile=2))
+            parallel.verify_descendants(directory, result)
+            control_receipt = h.c.read(Path(directory)/'parallel_control/parallel_receipt.json')
+            axes_receipt = h.c.read(Path(directory)/'parallel_axes/parallel_receipt.json')
+            self.assertEqual(len(control_receipt['workers']), 5)
+            self.assertEqual(len(axes_receipt['workers']), 2)
+            self.assertTrue(all(w['exit_code']==0 and w['reaped'] for w in
+                                control_receipt['workers']+axes_receipt['workers']))
+
+    def test_parallel_control_failure_reaps_every_child(self):
+        task, law, target, native, context, pool = self.parallel_fixture()
+        context.m.hadamard_expectation = lambda *args: (_ for _ in ()).throw(RuntimeError('ARTIFICIAL_PROBE_FAILURE'))
+        with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as directory:
+            with self.assertRaisesRegex(RuntimeError, 'ARTIFICIAL_PROBE_FAILURE'):
+                parallel.control(SimpleNamespace(circuit='evolution'), [], context,
+                    native.Writer(directory), 1e-8, sorted(os.sched_getaffinity(0))[:2], pool, None,
+                    oracle=lambda *args: 1+0j)
+            receipt = h.c.read(Path(directory)/'parallel_control/parallel_receipt.json')
+            self.assertTrue(receipt['all_reaped'])
+            self.assertFalse(receipt['cleanup_errors'])
+            self.assertEqual(receipt['status'], 'STOP')
+
+    def test_previous_partial_event_stream_must_not_change(self):
+        task, law, target, native, context, pool = self.parallel_fixture()
+        task['expected_prior_event_digest'] = 'different-event-stream'
+        with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as directory:
+            with self.assertRaisesRegex(ValueError, 'ORIGINAL_EVENT_STREAM_NO_REDRAW'):
+                parallel.compile_one(context, task, directory, 's'*40, target,
+                    law, 0., 1e-10, native, pool, sorted(os.sched_getaffinity(0))[:2], None, h.COHORT)
+            self.assertFalse((Path(directory)/'native_evolution_1_reserved.json').exists())
 
 
 if __name__ == '__main__':

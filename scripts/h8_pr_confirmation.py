@@ -27,6 +27,7 @@ SCOPES = {'H8_CONFIRM_P8_Q2': 'B2_p8_q2_2nd_r4_K4',
 DESIGN = 'artifacts/resource_applicability/track_a_h8_new_pr_confirmation_design/2026-10-18/plan_PROPOSED.json'
 FILES = ('scripts/h8_pr_confirmation.py', 'scripts/prepare_h8_pr_confirmation.py',
          'scripts/launch_h8_pr_confirmation.py',
+         'scripts/h8_pr_confirmation_parallel.py', 'scripts/prepare_h8_pr_confirmation_resume.py',
          'tests/test_h8_pr_confirmation.py', 'scripts/pr_cost_native.py',
          'scripts/pr_cost_contract.py', 'scripts/h8_key_compile_parallel.py',
          'src/trotterlib/pr_cost_integration.py', DESIGN)
@@ -114,11 +115,17 @@ def verify(spec, *, source=True):
                   for a, ch in c.core.CHANNEL.items()}, 'AXIS_SHOT_MAPPING')
     registry = c.read(spec['registry'])
     design = c.read(ROOT / DESIGN)
-    c.require(registry['targets'] == design['targets'] and registry['SOURCE'] == spec['SOURCE']
+    dataset_source = spec.get('seed_derivation_SOURCE', spec['SOURCE'])
+    c.require(registry['targets'] == design['targets'] and registry['SOURCE'] == dataset_source
               and spec['target'] in design['targets'] and spec['design_digest'] == design['design_digest'],
               'FIXED_PUBLISHED_SELECTION')
-    validate_registry(registry['tasks'], registry['targets'], spec['SOURCE'],
+    validate_registry(registry['tasks'], registry['targets'], dataset_source,
                       registry['seed_plan_digest'], registry['excluded'])
+    if spec.get('resume_manifest'):
+        c.require(spec.get('parallel_scheduling') == 'H8_CONFIRMATION_GROUPED_PROBES_AXES_V1',
+                  'FIXED_PARALLEL_RESUME_POLICY')
+        resume = load_own('h8_confirmation_resume_gate', 'scripts/prepare_h8_pr_confirmation_resume.py')
+        resume.verify_manifest(spec)
     return dict(status='PASS_BYTES_ONLY', scientific_calls=0)
 
 
@@ -134,10 +141,17 @@ def authorize(spec, grant):
     c.require(approval['approved_by_user'] is True and approval['n_per_candidate'] == N
               and approval['wrapper_compiles'] == 192 and set(approval['scopes']) == set(SCOPES)
               and approval['design_digest'] == spec['design_digest'], 'EXACT_APPROVED_SCOPE')
+    if spec.get('resume_manifest'):
+        c.require(grant.get('explicit_resume_authorized') is True
+                  and approval.get('repair_parallel_resume_authorized') is True
+                  and approval.get('seed_registry_sha256') == c.sha(spec['registry']),
+                  'EXPLICIT_REPAIR_PARALLEL_HANDOFF_APPROVAL')
     cpus = grant['allowed_cpus']
     c.require(cpus and all(type(x) is int for x in cpus) and len(cpus) == len(set(cpus))
               and set(cpus) <= os.sched_getaffinity(0), 'FRESH_OWN_CPU_AFFINITY')
     c.require(set(cpus).isdisjoint(grant['concurrent_job_cpus']), 'NONINTERFERING_CPU_ASSIGNMENT')
+    if spec.get('parallel_scheduling'):
+        c.require(len(cpus) >= 2, 'PARALLEL_CPU_GROUP_REQUIRED')
     c.require(type(grant['driver_cpu']) is int and grant['driver_cpu'] in os.sched_getaffinity(0)
               and grant['driver_cpu'] not in cpus
               and grant['driver_cpu'] not in grant['concurrent_job_cpus'], 'SEPARATE_OWN_DRIVER_CPU')
@@ -240,12 +254,19 @@ def compile_one(context, task, directory, source, target, law, log_B, margin, na
         calls=budget.used, normalization_unchanged=True, synthetic=False)
 
 
+def native_identity(value):
+    c.require(isinstance(value, (list, tuple)) and len(value) == 4
+              and all(type(x) is int for x in value), 'TYPED_NATIVE_IDENTITY')
+    return tuple(value)
+
+
 def accept(task, handle, spec):
     directory = Path(handle['directory'])
     c.require(handle['reaped'] and handle['exit_code'] == 0
               and handle['result_sha256'] == c.sha(directory / 'task_result.json'), 'NATIVE_EXIT_RESULT_SHA')
     started = c.read(directory / 'started.json')
-    c.require(started['identity'] == handle['identity'] and started['task'] == task['id']
+    c.require(native_identity(started['identity']) == native_identity(handle['identity'])
+              and started['task'] == task['id']
               and handle['identity'][0] == handle['pid'] and handle['identity'][3] == os.getuid(),
               'NATIVE_START_IDENTITY')
     result = c.read(directory / 'task_result.json')
@@ -289,6 +310,9 @@ def accept(task, handle, spec):
         c.require(sum(x['count'] for x in reservations) == total
                   and max(x['total'] for x in reservations) == total
                   and all(x['nonrefundable'] is True for x in reservations), 'BEFORE_CALL_RESERVATIONS')
+    if result.get('parallel_native'):
+        parallel = load_own('h8_confirmation_parallel_accept', 'scripts/h8_pr_confirmation_parallel.py')
+        parallel.verify_descendants(directory, result)
     return result, trace
 
 
@@ -329,10 +353,27 @@ def execute(spec, grant, output):
     context = native.load_context('H8', payload['native_adapter'], [target['cell']], output)
     signal_record = next(r for r in c.read(payload['A_signal'])['signals']
                          if r['cell']['id'] == target['cell']['id'])
-    completed = {}
-    traces = {}
+    completed, traces, provenance = {}, {}, {}
+    if spec.get('resume_manifest'):
+        resume = c.read(spec['resume_manifest'])
+        origin = c.read(resume['origin_spec'])
+        by_id = {t['id']: t for t in tasks}
+        for key, handle in resume['accepted'].items():
+            value, trace = accept(by_id[key], handle, origin)
+            completed[key], traces[key] = value, trace
+            provenance[key] = dict(SOURCE=origin['SOURCE'], directory=handle['directory'], reused=True)
+        for task in tasks:
+            if task['id'] in resume['previous_event_digests']:
+                task['expected_prior_event_digest'] = resume['previous_event_digests'][task['id']]
     budget = c.Budget(output, spec['calls'])
     def callback(task, directory):
+        if spec.get('parallel_scheduling'):
+            parallel = load_own('h8_confirmation_parallel_worker', 'scripts/h8_pr_confirmation_parallel.py')
+            leader = next(iter(os.sched_getaffinity(0)))
+            cpus = grant['allowed_cpus'][:5] if task['replica'] == 0 else groups[leader]
+            return parallel.compile_one(context, task, directory, spec['SOURCE'], target, spec['law'],
+                signal_record['log_B'], signal_record['allowance']['log_B_margin'], native, pool,
+                cpus, payload['native_adapter']['font_seed'], COHORT)
         return compile_one(context, task, directory, spec['SOURCE'], target, spec['law'],
             signal_record['log_B'], signal_record['allowance']['log_B_margin'], native)
     def finish(task, handle):
@@ -340,6 +381,7 @@ def execute(spec, grant, output):
         c.require(task['id'] not in completed, 'DUPLICATE_COMPLETION')
         completed[task['id']] = result
         traces[task['id']] = trace
+        provenance[task['id']] = dict(SOURCE=spec['SOURCE'], directory=handle['directory'], reused=False)
     def reserve(task):
         for kind, count in dict(trajectory=1, occurrence=task['cell']['q'], RTE_event=task['cell']['R'],
                 native_evolution=1, wrapper_compile=2, control_probe=4 if task['replica'] == 0 else 0,
@@ -354,12 +396,23 @@ def execute(spec, grant, output):
             # Actual allocation, I/O, native or identity failures remain STOPs.
             c.save(output / ('resources_' + str(time.monotonic_ns()) + '.json'), fresh)
             observed_at[0] = time.monotonic()
-    receipt = pool.map_owned(tasks, callback, cpus=grant['allowed_cpus'],
-        limits=dict(max_workers=len(grant['allowed_cpus'])), directory=output / 'workers',
-        deadline=math.inf, font_seed=payload['native_adapter']['font_seed'], guard=observe,
-        reserve=reserve, on_complete=finish,
-        ready=lambda task: task['replica'] == 0 or tasks[0]['id'] in completed)
-    c.save(output / 'native_receipt.json', receipt)
+    cpus = grant['allowed_cpus']
+    width = 2 if spec.get('parallel_scheduling') else 1
+    groups = {cpus[i]: cpus[i:i+width] for i in range(0, len(cpus), width)}
+    pending = [t for t in tasks if t['id'] not in completed]
+    receipts = []
+    def batch(items, name, leaders):
+        if not items:return
+        receipt = pool.map_owned(items, callback, cpus=leaders,
+            limits=dict(max_workers=len(leaders), cleanup_TERM_seconds=10.), directory=output / name,
+            deadline=math.inf, font_seed=payload['native_adapter']['font_seed'], guard=observe,
+            reserve=reserve, on_complete=finish)
+        receipts.append(receipt)
+    batch([t for t in pending if t['replica'] == 0], 'representative', [cpus[0]])
+    c.require(tasks[0]['id'] in completed, 'FIRST_CONTROL_BEFORE_DEPENDENTS')
+    batch([t for t in pending if t['replica'] != 0], 'workers', list(groups))
+    c.save(output / 'native_receipt.json', dict(maps=receipts,
+        all_reaped=all(r['all_reaped'] for r in receipts), reused_task_count=len(tasks)-len(pending)))
     c.require(len(completed) == N and budget.used == spec['calls'], 'EXACT_COMPLETE_SCOPE')
     pairs = [completed[t['id']] for t in tasks]
     orders = [e['taylor_order'] for trace in traces.values() for step in trace['events'] for e in step]
@@ -369,6 +422,8 @@ def execute(spec, grant, output):
     return dict(status='COMPLETE_MANDATORY_STOP', scope=spec['scope'], SOURCE=spec['SOURCE'],
         primary=primary, secondary=secondary, paired_costs=pairs,
         event_order_counts={str(order): orders.count(order) for order in (0, 2, 4)},
+        task_provenance=provenance, seed_derivation_SOURCE=spec.get('seed_derivation_SOURCE', spec['SOURCE']),
+        carry_reservations=c.read(spec['resume_manifest'])['old_reservations'] if spec.get('resume_manifest') else [],
         unobserved_rare_costs_not_zero_filled=True, calls=budget.used,
         new_signal=0, new_PF_compile=0, new_fit=0, new_quantum_shots=0,
         automatic_retry=False, next_stage_authorized=False)

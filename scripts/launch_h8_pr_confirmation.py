@@ -45,7 +45,7 @@ def stop(process, owned):
     result = reap(process)
     if result:
         return result
-    for sig, wait in ((signal.SIGTERM, 5.), (signal.SIGKILL, 2.)):
+    for sig, wait in ((signal.SIGTERM, 20.), (signal.SIGKILL, 2.)):
         try:
             c.require(identity(process.pid) == owned and owned['uid'] == os.getuid()
                       and owned['pgid'] == process.pid, 'OWN_CHILD_SESSION_ONLY')
