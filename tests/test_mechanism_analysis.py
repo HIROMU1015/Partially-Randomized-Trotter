@@ -231,8 +231,8 @@ class SyntheticLauncherLifecycle(unittest.TestCase):
             def __init__(self,*args,**kwargs):
                 out=root/'new_run'
                 if exit_code==0:
-                    cli.write_new(out/'invented_result.json',dict(artificial=True))
-                    cli.write_new(out/'worker_result.json',dict(target_ids=target_ids,hashes={'invented_result.json':cli.sha(out/'invented_result.json')}))
+                    for name in ['results.json','mechanism_axes.csv','mechanism_totals.csv']:cli.write_new(out/name,dict(artificial=True))
+                    cli.write_new(out/'worker_result.json',dict(status='COMPLETE_MANDATORY_STOP',target_ids=target_ids,hashes={name:cli.sha(out/name) for name in ['results.json','mechanism_axes.csv','mechanism_totals.csv']}))
                 if corrupt:input_file.write_text('CHANGED_ARTIFICIAL_INPUT')
             def communicate(self):return ('ARTIFICIAL_STDOUT','ARTIFICIAL_STDERR')
             def poll(self):return self.returncode
@@ -240,7 +240,7 @@ class SyntheticLauncherLifecycle(unittest.TestCase):
     def test_native_acceptance_lifecycle_mock(self):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d);g,c,contract,binding,child=self.setup_case(root)
-            with patch.object(cli,'gate',return_value=({},contract,binding)),patch.object(cli.subprocess,'Popen',child):cli.launch(g,c)
+            with patch.object(cli,'gate',return_value=({},contract,binding)),patch.object(cli.subprocess,'Popen',child),patch.object(cli,'verify_source'),patch.object(cli,'verify_runtime'):cli.launch(g,c)
             terminal=cli.read(root/'new_run/terminal.json');self.assertEqual(terminal['native_exit_code'],0);self.assertTrue(terminal['reaped']);self.assertTrue((root/'new_run/ONE_SHOT.json').exists())
     def test_failure_retains_stop_and_reservation(self):
         with tempfile.TemporaryDirectory() as d:

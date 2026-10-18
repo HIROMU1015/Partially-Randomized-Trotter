@@ -60,6 +60,13 @@ def verify_source(contract):
         core.require(hashlib.sha256(blob).hexdigest()==digest,'SOURCE_COMMIT_BLOB_MISMATCH')
     core.require(set(contract['source_files'])==set(SOURCE_FILES),'SOURCE_CLOSURE')
 
+def verify_runtime(contract):
+    profile=read(contract['runtime_profile'])
+    core.require(sha(contract['runtime_profile'])==contract['runtime_profile_sha256'],'RUNTIME_PROFILE_HASH')
+    py=Path(sys.executable).resolve()
+    core.require(str(py)==profile['python'] and sha(py)==profile['python_sha256'] and sys.version==profile['version'],'PYTHON_RUNTIME_MISMATCH')
+    for name,digest in profile['files'].items():core.require(sha(name)==digest,'RUNTIME_CLOSURE_MISMATCH')
+
 def gate(grant_path, contract_path):
     grant=read(grant_path)
     # No contract, payload or scientific source is read on this rejection path.
@@ -77,11 +84,7 @@ def gate(grant_path, contract_path):
     core.require(grant.get('target_ids')==contract['target_ids'] and len(contract['target_ids'])==32,'EXACT_PRIMARY32')
     core.require(grant.get('output_root')==contract['output_root'],'OUTPUT_BINDING')
     verify_source(contract)
-    profile=read(contract['runtime_profile'])
-    core.require(sha(contract['runtime_profile'])==contract['runtime_profile_sha256'],'RUNTIME_PROFILE_HASH')
-    py=Path(sys.executable).resolve()
-    core.require(str(py)==profile['python'] and sha(py)==profile['python_sha256'] and sys.version==profile['version'],'PYTHON_RUNTIME_MISMATCH')
-    for name,digest in profile['files'].items():core.require(sha(name)==digest,'RUNTIME_CLOSURE_MISMATCH')
+    verify_runtime(contract)
     core.require(sha(contract['input_binding'])==contract['input_binding_sha256'],'INPUT_BINDING_HASH')
     binding=read(contract['input_binding'])
     core.require(binding['target_ids']==contract['target_ids'] and binding['kind']=='SAVED_REAL_VALUES','EXACT_PRIMARY32')
@@ -117,6 +120,7 @@ def worker(grant_path,contract_path,root):
     grant,contract,binding=gate(grant_path,contract_path)
     root=Path(root);core.require(str(root)==contract['output_root'],'OUTPUT_BINDING')
     marker=read(root/'ONE_SHOT.json')
+    protected_hashes={str(p):sha(p) for p in [Path(grant_path),Path(contract_path),root/'ONE_SHOT.json',root/'ledger.json']}
     core.require(marker['parent_pid']==os.getppid() and marker['grant_sha256']==sha(grant_path)
                  and marker['contract_sha256']==sha(contract_path),'OWN_PARENT_ONE_SHOT_REQUIRED')
     write_new(root/'WORKER_CLAIM.json',dict(pid=os.getpid(),parent_pid=os.getppid(),one_shot=True))
@@ -125,7 +129,8 @@ def worker(grant_path,contract_path,root):
     results=core.analyze_bundle(bundle,core._authorized_production_permit())
     core.require(all(r['core_status']=='CORE_COMPLETE' for r in results),'PRIMARY_CORE_NOT_COMPLETE')
     for item in binding['input_files']:core.require(sha(item['path'])==item['sha256'],'POST_INPUT_BYTES_MISMATCH')
-    verify_source(contract)
+    verify_source(contract);verify_runtime(contract)
+    for path,digest in protected_hashes.items():core.require(sha(path)==digest,'POST_GRANT_LEDGER_MARKER_MISMATCH')
     hashes=save_outputs(root,results)
     write_new(root/'worker_result.json',dict(status='COMPLETE_MANDATORY_STOP',target_ids=contract['target_ids'],hashes=hashes,new_statistics=0,next_stage_authorized=False))
 
@@ -135,6 +140,7 @@ def launch(grant_path,contract_path):
     root=prepare_output(contract['output_root'],contract['allowed_run_parent'],protected)
     write_new(root/'ONE_SHOT.json',dict(parent_pid=os.getpid(),grant_sha256=sha(grant_path),contract_sha256=sha(contract_path),consumed=True,analysis_pass_reserved=1))
     write_new(root/'ledger.json',dict(saved_value_analysis_pass=1,contrasts=32,sampling=0,compile=0,signal=0,statistics=0,refund=False))
+    protected_hashes={str(p):sha(p) for p in [Path(grant_path),Path(contract_path),root/'ONE_SHOT.json',root/'ledger.json']}
     argv=[sys.executable,'-I','-B',str(Path(__file__).resolve()),'--worker','--grant',str(grant_path),'--contract',str(contract_path),'--run-root',str(root)]
     try:
         process=subprocess.Popen(argv,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
@@ -142,8 +148,11 @@ def launch(grant_path,contract_path):
         write_new(root/'native_wait.json',dict(pid=process.pid,native_exit_code=process.returncode,reaped=process.poll() is not None,worker_descendants=0,stdout=stdout,stderr=stderr))
         core.require(process.returncode==0,'NATIVE_WORKER_FAILURE')
         result=read(root/'worker_result.json');core.require(result['target_ids']==contract['target_ids'],'OUTPUT_TARGETS')
+        core.require(result.get('status')=='COMPLETE_MANDATORY_STOP' and set(result['hashes'])=={'results.json','mechanism_axes.csv','mechanism_totals.csv'},'OUTPUT_SCHEMA')
         for name,digest in result['hashes'].items():core.require(sha(root/name)==digest,'RESULT_SHA_MISMATCH')
         for item in binding['input_files']:core.require(sha(item['path'])==item['sha256'],'POST_INPUT_BYTES_MISMATCH')
+        verify_source(contract);verify_runtime(contract)
+        for path,digest in protected_hashes.items():core.require(sha(path)==digest,'POST_GRANT_LEDGER_MARKER_MISMATCH')
         write_new(root/'terminal.json',dict(status='COMPLETE_MANDATORY_STOP',native_exit_code=0,reaped=True,result_sha256=sha(root/'worker_result.json'),source_commit=contract['source_commit'],next_stage_authorized=False))
     except BaseException as exc:
         if 'process' in locals() and process.poll() is None:
