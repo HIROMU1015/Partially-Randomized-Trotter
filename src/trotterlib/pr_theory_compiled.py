@@ -176,6 +176,52 @@ def native_expectation(*, model, bases, primitive_factory, T, q, ancilla, scalar
             for axis,a in [('cosine','X'),('sine','Y')]}
 
 
+def saved_table_rows(theory, connections, cases, *, models=('A','B'), metrics=METRICS):
+    """Copy original fields into comparison rows after authorization, no recount.
+
+    Saved epsilon/factor repetitions must agree; their G/shots are not used.
+    Cases carry separately audited theory/compiled identities, never inferred
+    from equal costs. This function is exercised only with artificial tables
+    during readiness. Real inputs are gated by the CLI before materialization.
+    """
+    output=[]
+    for case in cases:
+        for model in models:
+            if model not in ('A','B'):
+                raise ValueError('SAVED_UNIFORM_TABLE_HAS_NO_NATIVE_MIXED_COLUMN')
+            for axis in ('cosine','sine'):
+                source=[r for r in theory if (r['system'],r['candidate_id'],r['model'],r['axis'])==
+                    (case['system'],case['candidate_id'],model,axis)]
+                if len(source)!=1:
+                    raise ValueError('UNIQUE_SAVED_THEORY_ROW_REQUIRED')
+                t=source[0]
+                for metric in metrics:
+                    if metric not in METRICS:
+                        raise ValueError('UNSUPPORTED_SAVED_METRIC')
+                    found=[r for r in connections if (r['system'],r['scope'],r['candidate_id'],r['model'],r['metric'])==
+                        (case['system'],case['scope'],case['candidate_id'],model,metric)]
+                    present=[r for r in found if r.get('saved_axis_means') is not None]
+                    if not present:
+                        raise ValueError('MISSING_SAVED_COMPILED_UNIT_COST')
+                    first=present[0]
+                    if any((r['saved_axis_means'],r['sample_count'],r['sample_phase'])!=
+                           (first['saved_axis_means'],first['sample_count'],first['sample_phase']) for r in present):
+                        raise ValueError('CONFLICTING_ENDPOINT_REUSE')
+                    if (first['sample_count'],first['sample_phase'])!=(case['sample_size'],case['sample_phase']):
+                        raise ValueError('SAVED_SAMPLE_PHASE_COUNT')
+                    low,high=t['lower'][metric.lower()],t['upper'][metric.lower()]
+                    base=dict(case['theory_identity']);compiled=dict(case['compiled_identity'])
+                    output.append(dict(theory_identity=base,compiled_identity=compiled,model=model,axis=axis,
+                        theory_axis=axis,compiled_axis=axis,metric=metric,theory_metric=metric,compiled_metric=metric,
+                        lowering_profile=t['theory_profile'],theory_kind='LAW_EXPECTATION',
+                        all_positive_orders_included=case['all_positive_orders_included'],sample_size=case['sample_size'],
+                        theory_lower=str(low['numerator'])+'/'+str(low['denominator']),
+                        theory_upper=str(high['numerator'])+'/'+str(high['denominator']),
+                        compiled_mean=first['saved_axis_means'][axis],compiled_observation_id=digest(
+                            [case['system'],case['scope'],case['candidate_id'],case['sample_phase'],axis,metric,case['wrapper_identity_digest']])))
+    return output
+
+
 def verify_grant(plan, grant, *, source, input_sha):
     if (grant.get('status')!='APPROVED' or grant.get('approved') is not True or
         grant.get('runtime_authorization') is not True or plan.get('sealed') is not True):

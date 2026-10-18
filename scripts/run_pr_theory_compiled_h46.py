@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """No real data are read numerically without a new sealed H4/H6 grant."""
 import argparse
+import gzip
 import importlib.util
 import json
 import os
@@ -35,9 +36,32 @@ def run(plan,grant,input_path,output):
     terminal=dict(status='STOP',first_stop=None,mandatory_stop=True,next_stage_authorized=False,
                   SOURCE=source,plan_digest=lib.digest(plan),rows_completed=0)
     try:
-        rows=json.loads(input_path.read_bytes())
-        if [lib.digest(r) for r in rows]!=plan['rows']:
-            raise ValueError('EXACT_ROW_SET_BINDING')
+        payload=json.loads(input_path.read_bytes())
+        if isinstance(payload,dict) and payload.get('format')=='H46_SAVED_TABLES_V1':
+            tables={}
+            for name in ('theory','connections'):
+                ref=payload[name]
+                # The new plan seals this descriptor, including original Git
+                # commit/path/blob-byte SHA, before any numeric table is read.
+                if len(ref['commit'])!=40 or not ref['path'].startswith('artifacts/') or '..' in Path(ref['path']).parts:
+                    raise ValueError('FIXED_SAVED_TABLE_REFERENCE')
+                raw=subprocess.check_output(['git','-C',str(ROOT),'show',ref['commit']+':'+ref['path']])
+                import hashlib
+                if hashlib.sha256(raw).hexdigest()!=ref['sha256']:
+                    raise ValueError('SAVED_TABLE_BYTES')
+                tables[name]=json.loads(gzip.decompress(raw) if ref['path'].endswith('.gz') else raw)
+            rows=lib.saved_table_rows(tables['theory'],tables['connections'],payload['cases'],models=plan['models'],metrics=plan['metrics'])
+            if len(rows)!=plan.get('registered_row_count'):
+                raise ValueError('REGISTERED_ROW_COUNT')
+            # Exact input bytes + selected cases, models and metrics determine
+            # this row set; no floating arithmetic is used for its selection.
+            row_set=[{k:r[k] for k in ('model','axis','metric','compiled_observation_id')} for r in rows]
+            if row_set!=plan['rows']:
+                raise ValueError('EXACT_SAVED_ROW_IDENTITY_SET')
+        else:
+            rows=payload
+            if [lib.digest(r) for r in rows]!=plan['rows']:
+                raise ValueError('EXACT_ROW_SET_BINDING')
         unique=lib.unique_observations(rows)
         with (output/'comparisons.jsonl').open('x') as stream:
             for row in rows:

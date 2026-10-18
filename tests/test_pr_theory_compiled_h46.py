@@ -196,4 +196,34 @@ class Grant(unittest.TestCase):
             with patch.object(runner.subprocess,'check_output',return_value=p['SOURCE']),self.assertRaises(ValueError):runner.run(p,g,inp,out)
             t=json.loads((out/'terminal.json').read_text());self.assertEqual(t['rows_completed'],0);self.assertIn('NONPOSITIVE',t['first_stop'])
 
+
+class SavedAdapter(unittest.TestCase):
+    def fixture(self):
+        case=dict(system='H6',scope='fake-scope',candidate_id='fake-PR',sample_phase='exploration',sample_size=8,
+            wrapper_identity_digest='fake-pair',all_positive_orders_included=True,theory_identity=identity(),compiled_identity=identity())
+        theory=[dict(system='H6',candidate_id='fake-PR',model=model,axis=axis,theory_profile=m.counter.PROFILE,
+            lower={metric:dict(numerator='100',denominator='1') for metric in ('rz','cx')},
+            upper={metric:dict(numerator='101',denominator='1') for metric in ('rz','cx')}) for model in ('A','B') for axis in ('cosine','sine')]
+        connections=[dict(system='H6',scope='fake-scope',candidate_id='fake-PR',model=model,metric=metric,
+            saved_axis_means=dict(cosine=80,sine=81),sample_count=8,sample_phase='exploration') for model in ('A','B') for metric in ('RZ','CX')]
+        return case,theory,connections
+    def test_original_fraction_fields_and_models_axes_preserved(self):
+        case,t,c=self.fixture();rows=m.saved_table_rows(t,c,[case]);self.assertEqual(len(rows),8)
+        self.assertEqual(m.unique_observations(rows),4);self.assertEqual(rows[0]['theory_lower'],'100/1')
+        self.assertEqual(m.compare_row(rows[0])['rho_upper'],'4/5')
+    def test_missing_saved_cost_not_imputed(self):
+        case,t,c=self.fixture()
+        for x in c:x['saved_axis_means']=None
+        with self.assertRaisesRegex(ValueError,'MISSING_SAVED'):m.saved_table_rows(t,c,[case])
+    def test_endpoint_duplicate_agreement_and_conflict(self):
+        case,t,c=self.fixture();dup=copy.deepcopy(c[0]);c.append(dup)
+        self.assertEqual(len(m.saved_table_rows(t,c,[case])),8)
+        dup['saved_axis_means']['cosine']=82
+        with self.assertRaisesRegex(ValueError,'CONFLICTING_ENDPOINT'):m.saved_table_rows(t,c,[case])
+    def test_phase_mixed_and_mixed_model_column_refused(self):
+        case,t,c=self.fixture();c[0]['sample_phase']='confirmation'
+        with self.assertRaisesRegex(ValueError,'SAMPLE_PHASE'):m.saved_table_rows(t,c,[case])
+        case,t,c=self.fixture()
+        with self.assertRaisesRegex(ValueError,'NO_NATIVE_MIXED'):m.saved_table_rows(t,c,[case],models=('NATIVE_MIXED',))
+
 if __name__=='__main__':unittest.main(verbosity=2)
