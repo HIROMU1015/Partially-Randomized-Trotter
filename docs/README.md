@@ -1,3 +1,5 @@
+H4 P技術seal準備（2026-10-19）：固定n4185/compile案8370軸、旧全H4系列のseed inventoryを取得。新12＋既存39人工PASS、SOURCE固定後に11559 seed slotを照合する。P科学実行は未承認。[契約](research/track_a_h4_p_technical_seal_20261019.md)。
+
 H4 S_STATS完了（2026-10-19）：保存統計＋完成Dによる84 scenario・14方向を1 pass、native exit0・終了監査PASS。推奨n合計4185、P compile案8370軸。P科学実行・新seed生成0、mandatory STOP。[結果とP契約情報](research/track_a_h4_s_stats_20261019.md)。以下は履歴。
 
 H4 D完了（2026-10-19）：55 workerで55候補110軸、control220 PASS、1040行会計・native exit0・全回収。登録内の代表winnerは旧subsetから10/10不変。S_STATS/P未実行、mandatory STOP。[結果](research/track_a_h4_d_completed_20261019.md)。以下は履歴。

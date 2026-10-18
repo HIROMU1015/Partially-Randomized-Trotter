@@ -179,7 +179,8 @@ def confirmation_task(context, task, directory):
     c.require(math.isfinite(log_b) and abs(log_b-task['saved_log_B']) <= task['log_B_tolerance'],
               'ORIGINAL_FINITE_RTE_NORMALIZATION')
     c.require(prep.preparation_hash == task['preparation_hash'], 'PREPARATION_IDENTITY')
-    writer.write('trajectory.json', dict(cell=cell, seed=task['seed'], events=events,
+    writer.write('trajectory.json', dict(cell=cell, seed=task['seed'], master_seed=task['seed'],
+        step_seeds=[r.seed for r in requests], events=events,
         event_digest=event_digest, original_RTE_distribution=distribution.to_dict(),
         cohort='INDEPENDENT_H4_CONFIRMATION', conditional=False, quantum_weights_changed=False))
     budget.take('native_evolution')

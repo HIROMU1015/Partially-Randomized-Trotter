@@ -159,6 +159,39 @@ def boundary_attributes(cell, cells):
     return result
 
 
+def validate_final_p_bindings(spec):
+    require(sha(spec['stats_result_path']) == spec['stats_result_sha256'], 'ACCEPTED_S_STATS_RESULT_CHANGED')
+    result = read(spec['stats_result_path'])
+    require(result['actual_calls']['numeric_design_pass'] == 1
+            and spec['n_fixed'] == result['recommended']['n_fixed'], 'FIXED_S_STATS_N_REQUIRED')
+    expected = {(r['cell_id'], r['epsilon']): r for r in result['reference_directions']}
+    for ep in spec['evaluation_endpoints']:
+        prior = expected[(ep['cell_id'], ep['epsilon'])]
+        require(ep['expected_direction'] == prior['expected_direction']
+                and ep['saved_shots'] == prior['PR_saved_shots']
+                and ep['PF_id'] == prior['PF_cell_id'] and ep['PF_G_exact'] == prior['PF_G_exact'],
+                'FIXED_S_STATS_REFERENCE_DIRECTION')
+    require(digest(spec['seed_plan']) == spec['seed_plan_digest']
+            and spec['seed_plan']['SOURCE'] == spec['SOURCE']
+            and spec['seed_plan']['n_fixed'] == spec['n_fixed']
+            and spec['seed_plan']['evaluation_endpoints'] == spec['evaluation_endpoints'], 'SEED_PLAN_BINDING')
+    require(sha(spec['seed_inventory_receipt']) == spec['seed_inventory_receipt_sha256'],
+            'SEED_INVENTORY_RECEIPT_CHANGED')
+    inventory = read(spec['seed_inventory_receipt'])
+    require(inventory['status'] == 'COMPLETE_COLLISION_ZERO'
+            and inventory['all_registered_scopes_covered'] is True
+            and inventory['geometry_distances'] == 6 and inventory['geometry_registered_candidates'] == 1308
+            and inventory['old_explicit_exclusions_sha256'] == sha(spec['seed_exclusions']),
+            'COMPLETE_OLD_SEED_INVENTORY_REQUIRED')
+    calls = result['recommended']['proposed_P_calls']
+    for key in ('trajectory', 'native_evolution', 'wrapper_compile', 'occurrence', 'RTE_event'):
+        require(spec['calls'][key] == calls[key], 'FIXED_S_STATS_P_CALL_BUDGET')
+    require(spec['calls']['control_probe'] == calls['control_probe_maximum']
+            and spec['calls']['independent_event_oracle'] == calls['independent_event_oracle_maximum'],
+            'FIXED_P_CONTROL_BUDGET')
+    return inventory
+
+
 def validate_tasks(spec):
     require(len({t['id'] for t in spec['tasks']}) == len(spec['tasks']), 'DUPLICATE_TASK')
     if spec['stage'] == 'D':
@@ -168,6 +201,7 @@ def validate_tasks(spec):
         require(spec['calls']['wrapper_compile'] == 2*len(spec['tasks'])
                 and spec['calls']['control_probe'] == 4*len(spec['tasks']), 'D_CALL_BUDGET')
         return
+    inventory = validate_final_p_bindings(spec) if spec.get('P_final_contract_version') == 2 else None
     registration = read(spec['registration'])
     signals = read(spec['signal_bindings'])
     preparations = read(spec['saved_preparation_identities'])['prefixes']
@@ -186,6 +220,7 @@ def validate_tasks(spec):
         require(winner is not None and ep['PF_id'] == winner['cell_id']
                 and ep['PF_G_exact'] == winner['G_exact'], 'COMPLETED_D_COMPARATOR_REQUIRED')
     old = set(read(spec['seed_exclusions'])['values'])
+    new_seed_values = set()
     for cid, n in spec['n_fixed'].items():
         require(type(n) is int and n >= 2, 'FIXED_P_N')
         tasks = [t for t in spec['tasks'] if t['cell']['id'] == cid]
@@ -199,9 +234,18 @@ def validate_tasks(spec):
             master = independent_seed('H4_PR_INDEPENDENT_CONFIRMATION_V1', spec['SOURCE'],
                                       spec['seed_plan_digest'], cid, task['replica'])
             require(task['seed'] == master, 'SEALED_CONFIRMATION_SEED')
-            reserve_seed(old, master, task['cell']['q'])
+            hierarchy = reserve_seed(old, master, task['cell']['q'])
+            new_seed_values.update(hierarchy)
+            if inventory is not None:
+                require(task['step_seeds'] == (hierarchy if task['cell']['q'] == 1 else hierarchy[1:]),
+                        'SEALED_STEP_SEED_HIERARCHY')
     require(all(t['cell']['id'] in cells for t in spec['tasks']), 'EXTRA_P_TASK')
     require(spec['calls']['wrapper_compile'] == 2*sum(spec['n_fixed'].values()), 'P_CALL_BUDGET')
+    if inventory is not None:
+        require(digest(sorted(new_seed_values)) == inventory['new_seed_values_digest']
+                and len(new_seed_values) == inventory['new_seed_slots']
+                and all(x['collisions'] == [] for x in inventory['geometry_checks']),
+                'GEOMETRY_AND_EXPLICIT_SEED_COLLISION_RECEIPT')
 
 
 def authorize(spec, grant, root):
@@ -230,7 +274,8 @@ def authorize(spec, grant, root):
     require(not Path(spec['output']).exists() and not Path(spec['lock']).exists(), 'USED_ONE_SHOT_NAMESPACE')
     require(type(spec.get('workers')) is int and spec['workers'] > 0, 'FRESH_RESOURCE_ADMISSION_REQUIRED')
     if spec['stage'] == 'P':
-        require(spec.get('n_fixed') and spec.get('D_result_sha256') and spec.get('D_result_path')
+        require(spec.get('P_final_contract_version') == 2 and spec.get('n_fixed')
+                and spec.get('D_result_sha256') and spec.get('D_result_path')
                 and spec.get('seed_collision_check_complete')
                 and spec.get('stats_approval_receipt_sha256') and spec.get('seed_plan_digest')
                 and spec.get('seed_exclusions'), 'P_PENDING_DEPENDENCIES')
