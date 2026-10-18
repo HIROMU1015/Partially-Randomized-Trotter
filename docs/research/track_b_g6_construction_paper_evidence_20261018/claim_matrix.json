@@ -1,0 +1,1196 @@
+{
+  "schema": "track_b_g6_M1_M12_evidence_matrix_v1",
+  "claims": [
+    {
+      "id": "M1",
+      "title": "有限Taylor operatorとreturn集約",
+      "authoritative_entry": "mathematical_claim_evidence_matrix.md#m1",
+      "statement_and_assumptions": "命題・仮定／量化：共通条件のすべてのp,x,m,Q,σと長さl≤mのreduced uについて、Pₙ(u)をn回IID語のreduce先がuとなる確率とする。a_u=Σₙ(−1)^((n−l)/2)xⁿPₙ(u)/n!（n=l,l+2,…≤m）と置くと、M=Σᵤ(−iσ)^l a_uQ(u)。有限和の等式で、追加のQ間関係があっても写像として有効。",
+      "quantification_scope": "Finite Taylor coherent operator; not channel",
+      "proof_evidence": "Existing fixed G6 math/finite-bit audits; M8 and digital moment in existing G6 GPT review section 7; M12 conditional provider in section 9. Exact section is specified in authoritative entry.",
+      "SOURCE_bindings": [
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "ReturnKernel._mass",
+          "start_line": 177,
+          "end_line": 179,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L177",
+          "syntactic_calls": [
+            "factorial",
+            "range",
+            "sum"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "ReturnKernel.mass",
+          "start_line": 181,
+          "end_line": 183,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L181",
+          "syntactic_calls": [
+            "len",
+            "self._mass",
+            "self._word",
+            "self.word_series"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "reduce_word",
+          "start_line": 11,
+          "end_line": 18,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L11",
+          "syntactic_calls": [
+            "stack.append",
+            "stack.pop",
+            "tuple"
+          ]
+        }
+      ],
+      "existing_tests": [
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g6_return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "G6Tests.test_general_series_insertion_positivity_parent_envelope",
+          "start_line": 51,
+          "end_line": 96,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/tests/tracks/algorithm_codesign/test_g6_return_aggregation.py#L51",
+          "syntactic_calls": [
+            "F",
+            "ReturnKernel",
+            "add",
+            "defaultdict",
+            "dict",
+            "enumerate",
+            "factorial",
+            "kernel.envelope2",
+            "kernel.mass",
+            "kernel.parent",
+            "kernel.raw_mass",
+            "kernel.t",
+            "kernel.word_series",
+            "len",
+            "range",
+            "raw_distribution",
+            "self.assertEqual",
+            "self.assertGreater",
+            "self.assertGreaterEqual",
+            "self.assertLessEqual",
+            "set",
+            "set().union",
+            "sum",
+            "table.items",
+            "tuple",
+            "zip"
+          ]
+        }
+      ],
+      "known_literature_components": "Collection/low-order absorption",
+      "contribution_uncertainty": "Whole same-access finite-target finite-bit generation equivalence and independent constructive contribution remain unresolved; no novelty certification",
+      "conditional_unimplemented_parts": "See authoritative entry and implementation_and_validation_evidence.md; no current science tests, generic native provider or end-to-end arbitrary-input certificate",
+      "paper_placement_candidate": "Main target and proof appendix",
+      "evidence_status": "EXISTING_PROOF_AND_STATIC_CORRESPONDENCE_NOT_REPROVED",
+      "new_scientific_proof_or_test": false
+    },
+    {
+      "id": "M2",
+      "title": "Green再帰",
+      "authoritative_entry": "mathematical_claim_evidence_matrix.md#m2",
+      "statement_and_assumptions": "命題・仮定／量化：共通条件でFᵢ(0)=0、Fᵢ=zpᵢ/(1−zΣⱼ≠ᵢpⱼFⱼ)、G=1/(1−zΣpᵢFᵢ)、ΣₙPₙ(u)zⁿ=G∏ᵢ∈ᵤFᵢ。形式級数を次数mまで切断する。係数の積の可換性でoperator語を並べ替えない。L=1のrecurrent caseを含み、analytic transience・数値resolvent branchは仮定しない。",
+      "quantification_scope": "Formal finite series, including L=1",
+      "proof_evidence": "Existing fixed G6 math/finite-bit audits; M8 and digital moment in existing G6 GPT review section 7; M12 conditional provider in section 9. Exact section is specified in authoritative entry.",
+      "SOURCE_bindings": [
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "ReturnKernel.__init__",
+          "start_line": 138,
+          "end_line": 160,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L138",
+          "syntactic_calls": [
+            "F",
+            "ValueError",
+            "any",
+            "enumerate",
+            "isinstance",
+            "range",
+            "sum",
+            "tuple"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "ReturnKernel.word_series",
+          "start_line": 170,
+          "end_line": 175,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L170",
+          "syntactic_calls": [
+            "convolution",
+            "self._word"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "convolution",
+          "start_line": 21,
+          "end_line": 28,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L21",
+          "syntactic_calls": [
+            "F",
+            "enumerate",
+            "len",
+            "min",
+            "range",
+            "tuple"
+          ]
+        }
+      ],
+      "existing_tests": [
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g6_return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "G6Tests.test_single_label_recurrent_walk",
+          "start_line": 113,
+          "end_line": 116,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/tests/tracks/algorithm_codesign/test_g6_return_aggregation.py#L113",
+          "syntactic_calls": [
+            "F",
+            "ReturnKernel",
+            "range",
+            "self.assertEqual",
+            "tuple"
+          ]
+        }
+      ],
+      "known_literature_components": "Aomoto-Kato Z2 specialization",
+      "contribution_uncertainty": "Whole same-access finite-target finite-bit generation equivalence and independent constructive contribution remain unresolved; no novelty certification",
+      "conditional_unimplemented_parts": "See authoritative entry and implementation_and_validation_evidence.md; no current science tests, generic native provider or end-to-end arbitrary-input certificate",
+      "paper_placement_candidate": "Known lemma and specialization appendix",
+      "evidence_status": "EXISTING_PROOF_AND_STATIC_CORRESPONDENCE_NOT_REPROVED",
+      "new_scientific_proof_or_test": false
+    },
+    {
+      "id": "M3",
+      "title": "局所係数取得",
+      "authoritative_entry": "mathematical_claim_evidence_matrix.md#m3",
+      "statement_and_assumptions": "命題・仮定／量化：明示p tableと共通条件の任意の指定reduced uについて、切断F/Gからa_uを、偶数uについて全childのa_iuも局所取得できる。全reduced-word辞書、全費用表、B_RA=Σ_even reduced u d_uを入力・前計算しない。input readのΩ(L)を除外しない。",
+      "quantification_scope": "Explicit p table, arbitrary specified reduced word",
+      "proof_evidence": "Existing fixed G6 math/finite-bit audits; M8 and digital moment in existing G6 GPT review section 7; M12 conditional provider in section 9. Exact section is specified in authoritative entry.",
+      "SOURCE_bindings": [
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "ReturnKernel.parent",
+          "start_line": 194,
+          "end_line": 202,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L194",
+          "syntactic_calls": [
+            "Parent",
+            "ValueError",
+            "convolution",
+            "len",
+            "range",
+            "self._mass",
+            "self._word",
+            "self.word_series",
+            "tuple"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "ReturnKernel.word_series",
+          "start_line": 170,
+          "end_line": 175,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L170",
+          "syntactic_calls": [
+            "convolution",
+            "self._word"
+          ]
+        }
+      ],
+      "existing_tests": [
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g6_return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "G6Tests.test_invalid_queries",
+          "start_line": 148,
+          "end_line": 154,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/tests/tracks/algorithm_codesign/test_g6_return_aggregation.py#L148",
+          "syntactic_calls": [
+            "F",
+            "ReturnKernel",
+            "k.mass",
+            "k.parent",
+            "self.assertRaises"
+          ]
+        },
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g7_budget_and_control.py",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "name": "BudgetAndControl.test_enumeration_separated_from_production",
+          "start_line": 217,
+          "end_line": 220,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/tests/tracks/algorithm_codesign/test_g7_budget_and_control.py#L217",
+          "syntactic_calls": [
+            "(Path(__file__).resolve().parents[3] / 'src/trottertracks/algorithm_codesign/g7_generator.py').read_text",
+            "Path",
+            "Path(__file__).resolve",
+            "self.assertNotIn"
+          ]
+        }
+      ],
+      "known_literature_components": "Known finite series operations; ordinary/layer samplers also nonenumerating",
+      "contribution_uncertainty": "Whole same-access finite-target finite-bit generation equivalence and independent constructive contribution remain unresolved; no novelty certification",
+      "conditional_unimplemented_parts": "See authoritative entry and implementation_and_validation_evidence.md; no current science tests, generic native provider or end-to-end arbitrary-input certificate",
+      "paper_placement_candidate": "Access and query specification",
+      "evidence_status": "EXISTING_PROOF_AND_STATIC_CORRESPONDENCE_NOT_REPROVED",
+      "new_scientific_proof_or_test": false
+    },
+    {
+      "id": "M4",
+      "title": "short-step正値性",
+      "authoritative_entry": "mathematical_claim_evidence_matrix.md#m4",
+      "statement_and_assumptions": "命題・仮定／量化：共通条件、l=|u|、t_l=xˡ/l!、p(u)=∏pᵢ、χ=Σpᵢ²。既存の挿入cover上界 Pₙ₊₂(u)≤(n+1)χPₙ(u) により、t_lp(u)(1−χx²/(l+2))≤a_u≤t_lp(u)、従ってa_u>0。すべての該当uへ量化し、末尾一項・L=1も含む。",
+      "quantification_scope": "0<x<=1, positive normalized p, finite odd m",
+      "proof_evidence": "Existing fixed G6 math/finite-bit audits; M8 and digital moment in existing G6 GPT review section 7; M12 conditional provider in section 9. Exact section is specified in authoritative entry.",
+      "SOURCE_bindings": [
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "ReturnKernel._mass",
+          "start_line": 177,
+          "end_line": 179,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L177",
+          "syntactic_calls": [
+            "factorial",
+            "range",
+            "sum"
+          ]
+        }
+      ],
+      "existing_tests": [
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g6_return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "G6Tests.test_insertion_overcount_is_not_equality",
+          "start_line": 137,
+          "end_line": 140,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/tests/tracks/algorithm_codesign/test_g6_return_aggregation.py#L137",
+          "syntactic_calls": [
+            "F",
+            "raw_distribution",
+            "self.assertLess",
+            "sum"
+          ]
+        },
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g6_return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "G6Tests.test_invalid_domains",
+          "start_line": 142,
+          "end_line": 146,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/tests/tracks/algorithm_codesign/test_g6_return_aggregation.py#L142",
+          "syntactic_calls": [
+            "F",
+            "ReturnKernel",
+            "self.assertRaises"
+          ]
+        }
+      ],
+      "known_literature_components": "Insertion cover and alternating-sum bounds",
+      "contribution_uncertainty": "Whole same-access finite-target finite-bit generation equivalence and independent constructive contribution remain unresolved; no novelty certification",
+      "conditional_unimplemented_parts": "See authoritative entry and implementation_and_validation_evidence.md; no current science tests, generic native provider or end-to-end arbitrary-input certificate",
+      "paper_placement_candidate": "Domain lemma and existing proof appendix",
+      "evidence_status": "EXISTING_PROOF_AND_STATIC_CORRESPONDENCE_NOT_REPROVED",
+      "new_scientific_proof_or_test": false
+    },
+    {
+      "id": "M5",
+      "title": "parent/child pairing",
+      "authoritative_entry": "mathematical_claim_evidence_matrix.md#m5",
+      "statement_and_assumptions": "命題・仮定／量化：偶数reduced parent u、空語なら全i、非空ならi≠first(u)をchild iuとする。s_u=Σa_iu、d_u=√(a_u²+s_u²)、φ_u=atan(s_u/a_u)、q(i|u)=a_iu/s_u。V_ui=(−iσ)^l exp(−iσφ_uQᵢ)Q(u) に対し d_u EᵢV_ui はparentと全childの元係数を再現し、全parent和でMとなる。s=0は純parentの別扱い。",
+      "quantification_scope": "Even suffix, rotation about one Q_i, ordered word",
+      "proof_evidence": "Existing fixed G6 math/finite-bit audits; M8 and digital moment in existing G6 GPT review section 7; M12 conditional provider in section 9. Exact section is specified in authoritative entry.",
+      "SOURCE_bindings": [
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "Parent.s",
+          "start_line": 121,
+          "end_line": 122,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L121",
+          "syntactic_calls": [
+            "F",
+            "sum"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "Parent.d2",
+          "start_line": 125,
+          "end_line": 126,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L125",
+          "syntactic_calls": []
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "Parent.child_law",
+          "start_line": 132,
+          "end_line": 133,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L132",
+          "syntactic_calls": [
+            "tuple"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "ReturnKernel.parent",
+          "start_line": 194,
+          "end_line": 202,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L194",
+          "syntactic_calls": [
+            "Parent",
+            "ValueError",
+            "convolution",
+            "len",
+            "range",
+            "self._mass",
+            "self._word",
+            "self.word_series",
+            "tuple"
+          ]
+        }
+      ],
+      "existing_tests": [
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g6_return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "G6Tests.test_odd_word_need_not_be_involution",
+          "start_line": 122,
+          "end_line": 123,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/tests/tracks/algorithm_codesign/test_g6_return_aggregation.py#L122",
+          "syntactic_calls": [
+            "reduce_word",
+            "self.assertEqual"
+          ]
+        }
+      ],
+      "known_literature_components": "Euler pairing",
+      "contribution_uncertainty": "Whole same-access finite-target finite-bit generation equivalence and independent constructive contribution remain unresolved; no novelty certification",
+      "conditional_unimplemented_parts": "See authoritative entry and implementation_and_validation_evidence.md; no current science tests, generic native provider or end-to-end arbitrary-input certificate",
+      "paper_placement_candidate": "Ideal event construction",
+      "evidence_status": "EXISTING_PROOF_AND_STATIC_CORRESPONDENCE_NOT_REPROVED",
+      "new_scientific_proof_or_test": false
+    },
+    {
+      "id": "M6",
+      "title": "envelopeとnormalizer不要生成",
+      "authoritative_entry": "mathematical_claim_evidence_matrix.md#m6",
+      "statement_and_assumptions": "命題・仮定／量化：b_l=√(t_l²+t_(l+1)²)、B_o=Σ_even l≤m−1 b_l。d_u≤b_lp(u)、B_RA≤B_o。lをb_l/B_o、raw語をIID pから提案し、非reducedならzero、そうであればA_u=d_u/(b_lp(u))で受理しchildを選ぶ。全語辞書・B_RAを計算せずideal event記述を生成する。",
+      "quantification_scope": "Ordinary B_o needed, B_RA not required; prequantum zeros",
+      "proof_evidence": "Existing fixed G6 math/finite-bit audits; M8 and digital moment in existing G6 GPT review section 7; M12 conditional provider in section 9. Exact section is specified in authoritative entry.",
+      "SOURCE_bindings": [
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "ReturnKernel.order_intervals",
+          "start_line": 208,
+          "end_line": 212,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L208",
+          "syntactic_calls": [
+            "Interval",
+            "range",
+            "root_interval",
+            "self.t",
+            "sum",
+            "tuple"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/g7_generator.py",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "name": "FullReturnGenerator.sample",
+          "start_line": 237,
+          "end_line": 251,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_generator.py#L237",
+          "syntactic_calls": [
+            "F",
+            "_event",
+            "bits.bits",
+            "dyadic_index",
+            "par.children.index",
+            "range",
+            "rational_event_weight",
+            "reduce_word",
+            "self.packet",
+            "tuple"
+          ]
+        }
+      ],
+      "existing_tests": [
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g6_return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "G6Tests.test_reducing_raw_proposal_would_double_count",
+          "start_line": 125,
+          "end_line": 130,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/tests/tracks/algorithm_codesign/test_g6_return_aggregation.py#L125",
+          "syntactic_calls": [
+            "F",
+            "raw_distribution",
+            "self.assertEqual",
+            "self.assertGreater",
+            "sum"
+          ]
+        },
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g7_budget_and_control.py",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "name": "BudgetAndControl.test_deterministic_interface_reproducible_with_zero_trials",
+          "start_line": 149,
+          "end_line": 164,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/tests/tracks/algorithm_codesign/test_g7_budget_and_control.py#L149",
+          "syntactic_calls": [
+            "DeterministicBits",
+            "ForceRawPair",
+            "gen.sample",
+            "int",
+            "make_generator",
+            "range",
+            "self.assertEqual",
+            "self.assertIsNone"
+          ]
+        }
+      ],
+      "known_literature_components": "IID proposal and rejection weighting",
+      "contribution_uncertainty": "Whole same-access finite-target finite-bit generation equivalence and independent constructive contribution remain unresolved; no novelty certification",
+      "conditional_unimplemented_parts": "See authoritative entry and implementation_and_validation_evidence.md; no current science tests, generic native provider or end-to-end arbitrary-input certificate",
+      "paper_placement_candidate": "Generation procedure",
+      "evidence_status": "EXISTING_PROOF_AND_STATIC_CORRESPONDENCE_NOT_REPROVED",
+      "new_scientific_proof_or_test": false
+    },
+    {
+      "id": "M7",
+      "title": "受理率・二次moment・range",
+      "authoritative_entry": "mathematical_claim_evidence_matrix.md#m7",
+      "statement_and_assumptions": "命題・仮定／量化：ideal一試行、任意ρ・X/Y軸で、受理後だけHadamard Y=±1を測定しX=B_oY、拒否はX=0。全試行分母で E[X]=Re/Im Tr(ρM)、E[X²]=B_oB_RA、絶対値range≤B_o。Z=B_RA/B_o≥1/(2e)。A_u≥1/(2√2) は有効reduced parentが提案された条件付きの下界であり、Zとは別。",
+      "quantification_scope": "Ideal versus digital; conditional A_u versus all-trial Z; N versus quantum calls",
+      "proof_evidence": "Existing fixed G6 math/finite-bit audits; M8 and digital moment in existing G6 GPT review section 7; M12 conditional provider in section 9. Exact section is specified in authoritative entry.",
+      "SOURCE_bindings": [
+        {
+          "path": "src/trottertracks/algorithm_codesign/g7_generator.py",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "name": "FullReturnGenerator.sample",
+          "start_line": 237,
+          "end_line": 251,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_generator.py#L237",
+          "syntactic_calls": [
+            "F",
+            "_event",
+            "bits.bits",
+            "dyadic_index",
+            "par.children.index",
+            "range",
+            "rational_event_weight",
+            "reduce_word",
+            "self.packet",
+            "tuple"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/g7_generator.py",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "name": "budget",
+          "start_line": 266,
+          "end_line": 284,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_generator.py#L266",
+          "syntactic_calls": [
+            "F",
+            "ValueError",
+            "getattr",
+            "log640_upper"
+          ]
+        }
+      ],
+      "existing_tests": [
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g6_return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "G6Tests.test_accept_only_average_changes_mean",
+          "start_line": 132,
+          "end_line": 135,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/tests/tracks/algorithm_codesign/test_g6_return_aggregation.py#L132",
+          "syntactic_calls": [
+            "F",
+            "self.assertNotEqual"
+          ]
+        },
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g7_budget_and_control.py",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "name": "BudgetAndControl.test_zero_probability_prevents_readout_cost_but_not_attempt_cap",
+          "start_line": 256,
+          "end_line": 268,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/tests/tracks/algorithm_codesign/test_g7_budget_and_control.py#L256",
+          "syntactic_calls": [
+            "F",
+            "Path",
+            "Path(__file__).resolve",
+            "importlib.util.module_from_spec",
+            "importlib.util.spec_from_file_location",
+            "runner.totals",
+            "self.assertEqual",
+            "spec.loader.exec_module"
+          ]
+        }
+      ],
+      "known_literature_components": "Importance moments and cost-sensitive accounting",
+      "contribution_uncertainty": "Whole same-access finite-target finite-bit generation equivalence and independent constructive contribution remain unresolved; no novelty certification",
+      "conditional_unimplemented_parts": "See authoritative entry and implementation_and_validation_evidence.md; no current science tests, generic native provider or end-to-end arbitrary-input certificate",
+      "paper_placement_candidate": "Statistics and cost interpretation",
+      "evidence_status": "EXISTING_PROOF_AND_STATIC_CORRESPONDENCE_NOT_REPROVED",
+      "new_scientific_proof_or_test": false
+    },
+    {
+      "id": "M8",
+      "title": "B_RAを計算しない上界U",
+      "authoritative_entry": "mathematical_claim_evidence_matrix.md#m8",
+      "statement_and_assumptions": "命題・仮定／量化：共通条件でv₁ᵢ=pᵢ、r_l=Σv_lᵢ、v_(l+1),i=pᵢ(r_l−v_lᵢ)、r₀=1。r_lは「raw語が既にreduced」の質量。U=d_empty+Σ_even l≥2 b_l r_l は B_RA≤U≤B_o を満たす。reduction後の長さ分布ではない。m=1、L=1の等号caseを含む。",
+      "quantification_scope": "Ideal B_RA<=U<=B_o; implementation encloses U, uses upper endpoint",
+      "proof_evidence": "Existing fixed G6 math/finite-bit audits; M8 and digital moment in existing G6 GPT review section 7; M12 conditional provider in section 9. Exact section is specified in authoritative entry.",
+      "SOURCE_bindings": [
+        {
+          "path": "src/trottertracks/algorithm_codesign/g7_generator.py",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "name": "raw_reduced_masses",
+          "start_line": 19,
+          "end_line": 27,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_generator.py#L19",
+          "syntactic_calls": [
+            "F",
+            "map",
+            "masses.append",
+            "range",
+            "sum",
+            "tuple",
+            "zip"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/g7_generator.py",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "name": "upper_normalizer",
+          "start_line": 35,
+          "end_line": 41,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_generator.py#L35",
+          "syntactic_calls": [
+            "Interval",
+            "kernel.parent",
+            "kernel.t",
+            "range",
+            "raw_reduced_masses",
+            "root_interval",
+            "sum",
+            "zip"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/g7_generator.py",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "name": "budget",
+          "start_line": 266,
+          "end_line": 284,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_generator.py#L266",
+          "syntactic_calls": [
+            "F",
+            "ValueError",
+            "getattr",
+            "log640_upper"
+          ]
+        }
+      ],
+      "existing_tests": [
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g7_budget_and_control.py",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "name": "BudgetAndControl.test_raw_reduced_recursion_independent_oracle",
+          "start_line": 35,
+          "end_line": 45,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/tests/tracks/algorithm_codesign/test_g7_budget_and_control.py#L35",
+          "syntactic_calls": [
+            "F",
+            "all",
+            "len",
+            "product",
+            "range",
+            "raw_reduced_masses",
+            "self.assertEqual"
+          ]
+        },
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g7_budget_and_control.py",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "name": "BudgetAndControl.test_U_contains_normalizer_without_budget_oracle",
+          "start_line": 47,
+          "end_line": 63,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/tests/tracks/algorithm_codesign/test_g7_budget_and_control.py#L47",
+          "syntactic_calls": [
+            "F",
+            "ReturnKernel",
+            "independent_reduce",
+            "k.parent",
+            "k.t",
+            "product",
+            "range",
+            "root_interval",
+            "self.assertEqual",
+            "self.assertLess",
+            "self.assertLessEqual",
+            "sum",
+            "upper_normalizer"
+          ]
+        }
+      ],
+      "known_literature_components": "DP/envelope; later existing G6 review section 7",
+      "contribution_uncertainty": "Whole same-access finite-target finite-bit generation equivalence and independent constructive contribution remain unresolved; no novelty certification",
+      "conditional_unimplemented_parts": "See authoritative entry and implementation_and_validation_evidence.md; no current science tests, generic native provider or end-to-end arbitrary-input certificate",
+      "paper_placement_candidate": "Normalizer-free budgeting",
+      "evidence_status": "EXISTING_PROOF_AND_STATIC_CORRESPONDENCE_NOT_REPROVED",
+      "new_scientific_proof_or_test": false
+    },
+    {
+      "id": "M9",
+      "title": "finite-bit proposalとweight",
+      "authoritative_entry": "mathematical_claim_evidence_matrix.md#m9",
+      "statement_and_assumptions": "命題・仮定／量化：既存enclosureと十分な固定bit数でfull-support dyadic masses h_l,h_i,h_A,h_(i|u)を構成できた各eventについて、実π_ui=h_l(∏h_i)h_Ah_(i|u)、近似係数c̃_ui=d̃_u a_iu/s_u、W̃=c̃_ui/π_ui。π_ui W̃=c̃_uiは正確な有理等式。meanはM̃=Σc̃_uiV_uiで、元のMと無条件にexact一致しない。",
+      "quantification_scope": "Actual dyadic pi, approximate coefficient c_tilde, target M_tilde",
+      "proof_evidence": "Existing fixed G6 math/finite-bit audits; M8 and digital moment in existing G6 GPT review section 7; M12 conditional provider in section 9. Exact section is specified in authoritative entry.",
+      "SOURCE_bindings": [
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "dyadic_distribution",
+          "start_line": 55,
+          "end_line": 82,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L55",
+          "syntactic_calls": [
+            "F",
+            "ValueError",
+            "any",
+            "len",
+            "range",
+            "sorted",
+            "sum",
+            "tuple",
+            "zip"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "dyadic_bernoulli",
+          "start_line": 85,
+          "end_line": 94,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L85",
+          "syntactic_calls": [
+            "F",
+            "ValueError"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "rational_event_weight",
+          "start_line": 239,
+          "end_line": 254,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L239",
+          "syntactic_calls": [
+            "F",
+            "ValueError"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/g7_generator.py",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "name": "FullReturnGenerator.event",
+          "start_line": 230,
+          "end_line": 235,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_generator.py#L230",
+          "syntactic_calls": [
+            "_event",
+            "len",
+            "par.children.index",
+            "rational_event_weight",
+            "self.packet"
+          ]
+        }
+      ],
+      "existing_tests": [
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g6_return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "G6Tests.test_dyadic_law_support_and_exact_bit_map",
+          "start_line": 163,
+          "end_line": 170,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/tests/tracks/algorithm_codesign/test_g6_return_aggregation.py#L163",
+          "syntactic_calls": [
+            "F",
+            "Interval",
+            "dyadic_distribution",
+            "dyadic_index",
+            "range",
+            "self.assertEqual",
+            "sum",
+            "tuple"
+          ]
+        },
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g6_return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "G6Tests.test_digital_packet_support_weights_and_l1_budget",
+          "start_line": 179,
+          "end_line": 214,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/tests/tracks/algorithm_codesign/test_g6_return_aggregation.py#L179",
+          "syntactic_calls": [
+            "F",
+            "Interval",
+            "ReturnKernel",
+            "abs",
+            "dyadic_distribution",
+            "independent_reduce",
+            "k.digital_parent",
+            "k.order_intervals",
+            "k.t",
+            "len",
+            "max",
+            "product",
+            "range",
+            "rational_event_weight",
+            "reversed",
+            "root_interval",
+            "self.assertEqual",
+            "self.assertGreater",
+            "self.assertLessEqual",
+            "sum",
+            "tuple"
+          ]
+        }
+      ],
+      "known_literature_components": "Importance correction",
+      "contribution_uncertainty": "Whole same-access finite-target finite-bit generation equivalence and independent constructive contribution remain unresolved; no novelty certification",
+      "conditional_unimplemented_parts": "See authoritative entry and implementation_and_validation_evidence.md; no current science tests, generic native provider or end-to-end arbitrary-input certificate",
+      "paper_placement_candidate": "Finite-bit construction",
+      "evidence_status": "EXISTING_PROOF_AND_STATIC_CORRESPONDENCE_NOT_REPROVED",
+      "new_scientific_proof_or_test": false
+    },
+    {
+      "id": "M10",
+      "title": "bias・range・必要精度",
+      "authoritative_entry": "mathematical_claim_evidence_matrix.md#m10",
+      "statement_and_assumptions": "命題・仮定／量化：存在する各確率因子の相対誤差≤η（0<η<1）、abs(d̃−d)≤ρd（ρ>0）とsupportを満たすとする。既存上界は π_ui≥(1−η)^(l+3)c_ui/B_o、abs(W̃)≤(1+ρ)B_o/(1−η)^(m+2)、∥M̃−M∥≤Σabs(c̃−c)≤ρB_RA≤ρB_o。B_o≤eˣ<3を用いる保守的版もある。",
+      "quantification_scope": "Support and explicit eta/rho; no automatic arbitrary-input bit selector",
+      "proof_evidence": "Existing fixed G6 math/finite-bit audits; M8 and digital moment in existing G6 GPT review section 7; M12 conditional provider in section 9. Exact section is specified in authoritative entry.",
+      "SOURCE_bindings": [
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "root_interval",
+          "start_line": 45,
+          "end_line": 52,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L45",
+          "syntactic_calls": [
+            "F",
+            "Interval",
+            "ValueError",
+            "isinstance",
+            "isqrt"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "ReturnKernel.digital_parent",
+          "start_line": 214,
+          "end_line": 236,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L214",
+          "syntactic_calls": [
+            "F",
+            "Interval",
+            "ValueError",
+            "dyadic_bernoulli",
+            "dyadic_distribution",
+            "len",
+            "max",
+            "min",
+            "par.child_law",
+            "reversed",
+            "root_interval",
+            "self.envelope2",
+            "self.parent",
+            "tuple"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/g7_generator.py",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "name": "budget",
+          "start_line": 266,
+          "end_line": 284,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_generator.py#L266",
+          "syntactic_calls": [
+            "F",
+            "ValueError",
+            "getattr",
+            "log640_upper"
+          ]
+        }
+      ],
+      "existing_tests": [
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g6_return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "G6Tests.test_insufficient_precision_fails_closed",
+          "start_line": 172,
+          "end_line": 177,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/tests/tracks/algorithm_codesign/test_g6_return_aggregation.py#L172",
+          "syntactic_calls": [
+            "F",
+            "Interval",
+            "dyadic_bernoulli",
+            "dyadic_distribution",
+            "self.assertRaises"
+          ]
+        },
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g7_budget_and_control.py",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "name": "BudgetAndControl.test_digital_moment_range_and_support",
+          "start_line": 128,
+          "end_line": 134,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/tests/tracks/algorithm_codesign/test_g7_budget_and_control.py#L128",
+          "syntactic_calls": [
+            "all",
+            "budget",
+            "list",
+            "make_generator",
+            "max",
+            "reference_events",
+            "self.assertLessEqual",
+            "self.assertTrue",
+            "sum"
+          ]
+        }
+      ],
+      "known_literature_components": "Outward enclosure and bounded approximation",
+      "contribution_uncertainty": "Whole same-access finite-target finite-bit generation equivalence and independent constructive contribution remain unresolved; no novelty certification",
+      "conditional_unimplemented_parts": "See authoritative entry and implementation_and_validation_evidence.md; no current science tests, generic native provider or end-to-end arbitrary-input certificate",
+      "paper_placement_candidate": "Finite-bit guarantee and appendix",
+      "evidence_status": "EXISTING_PROOF_AND_STATIC_CORRESPONDENCE_NOT_REPROVED",
+      "new_scientific_proof_or_test": false
+    },
+    {
+      "id": "M11",
+      "title": "算術count・bit complexity",
+      "authoritative_entry": "mathematical_claim_evidence_matrix.md#m11",
+      "statement_and_assumptions": "命題・仮定／量化：[F]§2の既存countは、次数mの系列前計算O(Lm²)有理演算・O(Lm)係数、一つのreduced uの係数O(|u|m²)、偶数parentと全child O(m³+Lm²)。p/xの入力bit長H_p/H_xに対し係数bit長O(m(H_p+H_x+log m))。D=lcm den(pᵢ)を用いた既存分母上界に基づく多項式処理で、単位費用の有理演算を実秒としない。",
+      "quantification_scope": "Rational count/bit length versus actual selector, sort and provider acquisition",
+      "proof_evidence": "Existing fixed G6 math/finite-bit audits; M8 and digital moment in existing G6 GPT review section 7; M12 conditional provider in section 9. Exact section is specified in authoritative entry.",
+      "SOURCE_bindings": [
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "ReturnKernel.__init__",
+          "start_line": 138,
+          "end_line": 160,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L138",
+          "syntactic_calls": [
+            "F",
+            "ValueError",
+            "any",
+            "enumerate",
+            "isinstance",
+            "range",
+            "sum",
+            "tuple"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "convolution",
+          "start_line": 21,
+          "end_line": 28,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L21",
+          "syntactic_calls": [
+            "F",
+            "enumerate",
+            "len",
+            "min",
+            "range",
+            "tuple"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "dyadic_index",
+          "start_line": 97,
+          "end_line": 110,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L97",
+          "syntactic_calls": [
+            "AssertionError",
+            "ValueError",
+            "any",
+            "enumerate",
+            "int",
+            "isinstance",
+            "sum"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/g9_p5.py",
+          "commit": "0ef2b92738750a3c0d187743dd4b7c9b927db802",
+          "name": "P5Closed.sample",
+          "start_line": 110,
+          "end_line": 123,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0ef2b92738750a3c0d187743dd4b7c9b927db802/src/trottertracks/algorithm_codesign/g9_p5.py#L110",
+          "syntactic_calls": [
+            "bits.bits",
+            "draw",
+            "dyadic_index",
+            "enumerate",
+            "len",
+            "range",
+            "self.completion",
+            "self.event",
+            "self.law",
+            "self.parent_coefficients",
+            "tuple"
+          ]
+        }
+      ],
+      "existing_tests": [
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g6_return_aggregation.py",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "name": "G6Tests.test_no_enumeration_or_science_import_in_prototype",
+          "start_line": 216,
+          "end_line": 220,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/tests/tracks/algorithm_codesign/test_g6_return_aggregation.py#L216",
+          "syntactic_calls": [
+            "Path",
+            "Path(__file__).resolve",
+            "path.read_text",
+            "self.assertNotIn"
+          ]
+        },
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g9_p5_and_native.py",
+          "commit": "0ef2b92738750a3c0d187743dd4b7c9b927db802",
+          "name": "G9.test_group_build_no_triple_label_table",
+          "start_line": 33,
+          "end_line": 37,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0ef2b92738750a3c0d187743dd4b7c9b927db802/tests/tracks/algorithm_codesign/test_g9_p5_and_native.py#L33",
+          "syntactic_calls": [
+            "AssertionError",
+            "F",
+            "P5Closed",
+            "len",
+            "patch.object",
+            "self.assertEqual"
+          ]
+        }
+      ],
+      "known_literature_components": "Series/DP; no same-access complexity separation established",
+      "contribution_uncertainty": "Whole same-access finite-target finite-bit generation equivalence and independent constructive contribution remain unresolved; no novelty certification",
+      "conditional_unimplemented_parts": "See authoritative entry and implementation_and_validation_evidence.md; no current science tests, generic native provider or end-to-end arbitrary-input certificate",
+      "paper_placement_candidate": "Qualified complexity table",
+      "evidence_status": "EXISTING_PROOF_AND_STATIC_CORRESPONDENCE_NOT_REPROVED",
+      "new_scientific_proof_or_test": false
+    },
+    {
+      "id": "M12",
+      "title": "controlled位相・回転角・順序",
+      "authoritative_entry": "mathematical_claim_evidence_matrix.md#m12",
+      "statement_and_assumptions": "命題・仮定／量化：idealの全σ・ordered uで、回転軸は単一Qi、Q(u)は固定順。controlled evolutionをdiag(I,V_ui)として実装するとき、parent phase (−iσ)^lをancilla相対位相として保持し、時間順はreversed(u)。一般のsystem-only Q oracleから安価なcontrolled-Qを得られるとは仮定しない。",
+      "quantification_scope": "Signed rotation, phase, order, exact/strict controlled-provider and actual adjoint",
+      "proof_evidence": "Existing fixed G6 math/finite-bit audits; M8 and digital moment in existing G6 GPT review section 7; M12 conditional provider in section 9. Exact section is specified in authoritative entry.",
+      "SOURCE_bindings": [
+        {
+          "path": "src/trottertracks/algorithm_codesign/g7_provider.py",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "name": "controlled_event_ir",
+          "start_line": 2,
+          "end_line": 20,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_provider.py#L2",
+          "syntactic_calls": [
+            "ValueError",
+            "ir.append",
+            "reversed",
+            "str"
+          ]
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/g7_provider.py",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "name": "provider_contract",
+          "start_line": 23,
+          "end_line": 34,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_provider.py#L23",
+          "syntactic_calls": []
+        },
+        {
+          "path": "src/trottertracks/algorithm_codesign/g7_provider.py",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "name": "bind_synthesized_provider_ir",
+          "start_line": 37,
+          "end_line": 58,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_provider.py#L37",
+          "syntactic_calls": [
+            "controlled_event_ir",
+            "list",
+            "output.append",
+            "reversed"
+          ]
+        }
+      ],
+      "existing_tests": [
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g7_budget_and_control.py",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "name": "BudgetAndControl.test_strict_controlled_semantics_and_helper_reset",
+          "start_line": 177,
+          "end_line": 215,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/tests/tracks/algorithm_codesign/test_g7_budget_and_control.py#L177",
+          "syntactic_calls": [
+            "AssertionError",
+            "F",
+            "U.copy",
+            "atan",
+            "controlled_event_ir",
+            "cos",
+            "float",
+            "local",
+            "np.array",
+            "np.diag",
+            "np.diag([1, -1]).astype",
+            "np.exp",
+            "np.eye",
+            "np.linalg.norm",
+            "np.zeros",
+            "qs[g['label']].conj",
+            "range",
+            "self.assertGreater",
+            "self.assertLess",
+            "sin",
+            "sqrt",
+            "state.copy"
+          ]
+        },
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g7_budget_and_control.py",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "name": "BudgetAndControl.test_native_binding_retains_scalar_and_actual_adjoint",
+          "start_line": 281,
+          "end_line": 290,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/tests/tracks/algorithm_codesign/test_g7_budget_and_control.py#L281",
+          "syntactic_calls": [
+            "F",
+            "bind_synthesized_provider_ir",
+            "list",
+            "self.assertEqual",
+            "self.assertTrue"
+          ]
+        },
+        {
+          "path": "tests/tracks/algorithm_codesign/test_g9_p5_and_native.py",
+          "commit": "0ef2b92738750a3c0d187743dd4b7c9b927db802",
+          "name": "G9.test_phase_corruption_detected",
+          "start_line": 54,
+          "end_line": 56,
+          "kind": "FunctionDef",
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0ef2b92738750a3c0d187743dd4b7c9b927db802/tests/tracks/algorithm_codesign/test_g9_p5_and_native.py#L54",
+          "syntactic_calls": [
+            "F",
+            "circuit_error",
+            "native_ir",
+            "self.assertGreater"
+          ]
+        }
+      ],
+      "known_literature_components": "Euler and compute-rotate-uncompute",
+      "contribution_uncertainty": "Whole same-access finite-target finite-bit generation equivalence and independent constructive contribution remain unresolved; no novelty certification",
+      "conditional_unimplemented_parts": "See authoritative entry and implementation_and_validation_evidence.md; no current science tests, generic native provider or end-to-end arbitrary-input certificate",
+      "paper_placement_candidate": "Conditional access theorem and phase appendix",
+      "evidence_status": "EXISTING_PROOF_AND_STATIC_CORRESPONDENCE_NOT_REPROVED",
+      "new_scientific_proof_or_test": false
+    }
+  ],
+  "human_matrix": "mathematical_claim_evidence_matrix.md",
+  "claim_count": 12,
+  "formal_adoption_or_publication_GO": false
+}
