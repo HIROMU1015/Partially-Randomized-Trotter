@@ -1,3 +1,6 @@
+H4/H6理論対compiled比較準備：SOURCE 106ed56b、32人工tests PASS・296axis metadata。H4 native528/ordinary4分離、H6 PR25scopeは条件付き、完全envelope/公平PR-PF合格0。実データ新理論評価/比/残差/順位/compile0。次案はH6 PR2候補の保存16行診断、INVALID grant・未承認/未seal・mandatory STOP。
+[2026-10-18 H4/H6準備](2026-10-18_h46_theory_compiled_readiness.md)
+
 [2026-10-16 V2 H6探索PFの最終限定照合・NO_GO候補](2026-10-16_track_a_v2_h6_pf_final_reconciliation.md)。広域回収終了、実fit/残差/compile0。
 
 [2026-10-16 V2保存来歴の回収・固定holdout件数の不足](2026-10-16_track_a_v2_provenance_reconciliation.md)。25件条件付き結合、237件未解決、fit適格0・実数値解析0。
