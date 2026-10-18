@@ -105,12 +105,25 @@ def load_bound_input(plan):
     raw = path.read_bytes()
     core.require(len(raw) == spec["bytes"] and digest_bytes(raw) == spec["sha256"], "USED_INPUT_CHANGED")
     data = read_json(path)
-    core.require(data.get("schema") == "PR_ALPHA_BOUND_NATIVE_SCALARS_V1", "CANONICAL_INPUT_SCHEMA")
+    core.require(data.get("schema") in ("PR_ALPHA_BOUND_NATIVE_SCALARS_V1", "PR_ALPHA_BOUND_NATIVE_SCALARS_V2"), "CANONICAL_INPUT_SCHEMA")
     core.require(data.get("payload_kind") == plan["payload_kind"], "PAYLOAD_KIND")
     core.require(data.get("original_source_receipts"), "ORIGINAL_INPUT_PROVENANCE_REQUIRED")
     for receipt in data["original_source_receipts"]:
         core.require(receipt.get("sha256") and receipt.get("origin") and receipt.get("projection_fields"), "SCALAR_PROVENANCE")
     return data
+
+
+def decode_bound_records(plan, data):
+    """Called by compute after the one-shot marker is consumed, never by binders."""
+    if data.get("schema") == "PR_ALPHA_BOUND_NATIVE_SCALARS_V2":
+        spec = importlib.util.spec_from_file_location("pr_alpha_scalar_codec", ROOT / "src/trotterlib/pr_alpha_scalar_input.py")
+        codec = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(codec)
+        records = [codec.decode_record(r) for r in data["records"]]
+        if plan["stage"] == "B1":
+            records = [codec.decode_binomial_normalization(r) for r in records]
+        return records
+    return data["records"]
 
 
 def case_key(row):
@@ -123,7 +136,7 @@ def scope_gate(plan, records):
     core.require(len(observed) == len(records) and observed == expected, "EXACT_CANDIDATE_EPSILON_BIAS_SCOPE")
     core.require(len(records) == plan["budget"]["input_rows"], "INPUT_ROW_BUDGET")
     for r in records:
-        if not r.get("missing_fields"):
+        if not r.get("missing_fields") and r.get("scalar_encoding") != "SAVED_RECIPES_V1":
             core.native_record(r)
 
 
@@ -136,6 +149,10 @@ class ScientificStop(ValueError):
 def compute(plan, data):
     records = data["records"]
     scope_gate(plan, records)
+    records = decode_bound_records(plan, data)
+    for r in records:
+        if not r.get("missing_fields"):
+            core.native_record(r)
     if plan["stage"] == "B1":
         core.require(2 * sum(not r.get("missing_fields") for r in records) <= plan["budget"]["binomial_axis_evaluations"], "B1_CALL_BUDGET")
         rows = []
