@@ -49,7 +49,8 @@ private保全baselineへ記録し、終了時にbyte不変を照合する。
 spawn executorでown workerだけを管理する。科学的に必要なnative接続の実検証は今回行わず、
 人工compiler/metrics・人工paired標本でロジックを検証した。
 
-検査結果・件数は同artifact directoryのtechnical_validation.jsonを参照する。
+人工29件PASS（保存Python 3.11.0rc1）、D/P runner・witnessの4拒否試験PASS、既存原本40件のSHA不変。
+検査の詳細は同artifact directoryのtechnical_validation.jsonを参照する。
 これは作者Codex自身の技術確認であり、別担当による独立科学review・CI・外部再現ではない。
 metadata抽出の初回に旧metricsのordinary行も含まれていたため、明示的control filterを修正した。
 修正前には抽出が例外で停止し、科学実行はなかった。最終結果はsymmetric行だけを使用する。
@@ -77,3 +78,9 @@ local commit/SOURCE SHAはtechnical_source_binding.jsonおよび最終チャッ�
 今回はpushしない。公開承認の有無とremote照合を、local commitの成功と混同しない。
 
 **mandatory STOP。次の担当はユーザー：Dの110軸契約を審査する。CodexはD/Pを自動開始しない。**
+
+## 固定済み技術SOURCE
+
+SOURCE：`95fdfc8cfa34a26ae1b603405f8d2d0967f4e484`。branch：`codex/h4-dp-phase0-20261019`。
+機械可読D/P契約・INVALID grant・S_STATS契約案はartifact directoryに保存した。
+D/Pの科学outputとone-shot lockは未作成。公開push・remote公開照合は実施していない。
