@@ -155,6 +155,13 @@ def unit_signature(axes):
     return {axis: (row["RZ"], row["measured"]) for axis, row in axes.items()}
 
 
+def factor_one(value):
+    codec.require(not isinstance(value, bool) and isinstance(value, (int, float, str)), "FACTOR_ENCODING")
+    parsed = float(value)
+    codec.require(parsed in (1., 10.), "UNREGISTERED_FACTOR")
+    return parsed == 1.
+
+
 def put(path, value, *, private=False):
     raw = canonical(value) + b"\n"
     fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o400 if private else 0o644)
@@ -168,6 +175,7 @@ def main():
     parser.add_argument("--source", required=True)
     parser.add_argument("--local-input-map", type=Path, required=True)
     parser.add_argument("--private-directory", type=Path, required=True)
+    parser.add_argument("--public-directory", type=Path)
     args = parser.parse_args()
     source = subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "--verify", args.source + "^{commit}"], text=True).strip()
     closure = []
@@ -221,7 +229,7 @@ def main():
         codec.require(key not in baseline, "DUPLICATE_BASELINE")
         baseline[key] = value; baseline_origin[key] = dict(receipt=role, pointer=pointer)
     for i, row in enumerate(h6baseline):
-        if row["factor"] != 1 or (row["method"] == "B2" and row.get("sample_scope") != "H6_CONFIRMATION_UNION8"):
+        if not factor_one(row["factor"]) or (row["method"] == "B2" and row.get("sample_scope") != "H6_CONFIRMATION_UNION8"):
             continue
         mode = "USUAL_SIGNED_SAVED" if row["bias_rule"] == "signed_signal" else "EMPIRICAL_NONCANCELLATION"
         set_base(("H6", row["cell_id"], row["epsilon"], mode), row["accounting"], "H6_baseline", f"/rows/{i}/accounting")
@@ -229,22 +237,22 @@ def main():
         if scope not in ("H8_EXPLORATION92", "H8_CONFIRMATION_UNION6"):
             continue
         for i, row in enumerate(rows):
-            if row["factor"] != 1 or (row["method"] == "B2" and scope != "H8_CONFIRMATION_UNION6"):
+            if not factor_one(row["factor"]) or (row["method"] == "B2" and scope != "H8_CONFIRMATION_UNION6"):
                 continue
             set_base(("H8", row["cell_id"], row["epsilon"], "USUAL_SIGNED_SAVED"), row["accounting"], "H8_D0_baseline", f"/{scope}/{i}/accounting")
     for i, row in enumerate(h8b0ia):
-        if row["factor"] == 1:
+        if factor_one(row["factor"]):
             set_base(("H8", row["cell_id"], row["epsilon"], "USUAL_SIGNED_SAVED"), row["accounting"], "H8_B0I_baseline", f"/{i}/accounting")
     for i, record in enumerate(h8additional["signals"]):
         for e, variants in record["precision_rows"].items():
             for factor, a in variants.items():
-                if float(factor) == 1:
+                if factor_one(factor):
                     set_base(("H8", record["cell"]["id"], float(e), "USUAL_SIGNED_SAVED"), a, "H8_additional", f"/signals/{i}/precision_rows/{e}/{factor}")
     units, unit_origin = deterministic_axis_index(h6axis)
     h8_case_units, h8_case_origin, h8_unit_signatures = {}, {}, {}
     for i, entry in enumerate(h8six):
         row = entry["updated"]
-        if row["factor"] != 1:
+        if not factor_one(row["factor"]):
             continue
         if entry["bias_kind"] == "EMPIRICAL_NONCANCELLATION":
             saved = entry["saved"]
@@ -289,7 +297,8 @@ def main():
                 saved_magnitude=dict(receipt="H8_saved_bias_magnitudes") if system == "H8" and mode == "EMPIRICAL_NONCANCELLATION" else None))
     s.post_check()
     target.mkdir(mode=0o700)
-    public = ROOT / OUTSTEM
+    public = args.public_directory or ROOT / OUTSTEM
+    codec.require(public.is_absolute() and public.is_relative_to(ROOT), "PROJECT_PUBLIC_OUTPUT_ONLY")
     public.mkdir(parents=True, exist_ok=True)
     summaries = {}
     for stage, proposal in plans.items():

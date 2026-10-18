@@ -133,6 +133,14 @@ class CopyBindingTests(unittest.TestCase):
         b["cosine"]["RZ"] = "99"
         self.assertNotEqual(binder.unit_signature(a), binder.unit_signature(b))
 
+    def test_string_and_numeric_factor_encoding_join_equally(self):
+        for value in (1, 1., "1", "1.0"):
+            self.assertTrue(binder.factor_one(value))
+        for value in (10, 10., "10", "10.0"):
+            self.assertFalse(binder.factor_one(value))
+        for value in (True, "nan", "2"):
+            with self.assertRaises(ValueError): binder.factor_one(value)
+
     def test_private_input_requires_exact_existing_receipt(self):
         with tempfile.TemporaryDirectory() as d:
             p = Path(d) / "synthetic.json"; raw = b'{"fixture":"ARTIFICIAL"}'; p.write_bytes(raw)
