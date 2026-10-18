@@ -1070,3 +1070,8 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-19 Track A mechanism runner：準備完了・数値実行未承認
 
 [実装・人工検査・固定契約](../artifacts/resource_applicability/track_a_mechanism_runner_readiness/2026-10-19/integrated_readiness_report.md)。主要32比較だけを固定し、残り212はmetadataのみ。SOURCE 5c256067db29a326bcaa0a0e244b38f6b87bd138。実科学数値解析0、有効grant0、mandatory STOP。
+
+
+## 2026-10-19 Track A Mechanism固定32比較
+
+[結果・制約・STOP](research/track_a_mechanism_primary32_results_20261019.md)。core32 exact完了、normalization／headroom説明は未解決28＋欠測4。
