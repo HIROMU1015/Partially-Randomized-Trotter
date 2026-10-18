@@ -905,3 +905,7 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## H8 selected-six saved-cost reaccounting (2026-10-17)
 
 `h8_six_axis_reaccount_contract.py` / `run_h8_six_axis_reaccount.py` / `witness_h8_six_axis_reaccount.py`：H8の保存shot・PR費用/SEを固定し、6軸単価のみ反映する新one-shot。SOURCE公開・新grant必須。`--check`はmetadata/保存値の結合検査のみ。
+
+## H4/H6 new_2追加検証
+
+`h46_new2_native.py`は明示XY Gaussian loweringと独立occupation oracle。`run_h46_new2_native.py`/`launch_h46_new2_native.py`は群別検証、`run_h46_new2_native_shard.py`/`launch_h46_new2_native_shards.py`は同じ科学kernel/seedのH6軌道並列。`h46_new2_coefficient_audit.py`は70桁toyの係数丸め診断。実行済み結果は[報告](../docs/research/track_a_h46_new2_native_validation_20261018.md)。新しい実行は独立output/明示scopeで扱い、完了済みrun/旧grantを再利用しない。

@@ -1,3 +1,7 @@
+## 2026-10-18 H4/H6：new_2 PRのnative・同精度代表比較完了
+
+[結果・SOURCE・限界](docs/research/track_a_h46_new2_native_validation_20261018.md)。保存1Å/STO-3G/H4 rank12 p3・H6 rank19 p5/T=.8/K4/ε=.001、S2 q4・Yoshida q2・new_2 q1の同じPR分割を比較。各n8・採用96 compiled軸、人工18件/実数値222件PASS、最大差1.57e-10。new_2のshot重みRZ標本平均はS2比H4 73.45%/H6 91.59%、Yoshida比41.61%/56.03%低下。ただし固定代表点/empirical allowance/P=0で、最適q・母平均・対決定論・全RPE費用の保証ではない。8桁係数の立方和7.35e-9により厳密4次は未成立。初回compile不一致をexplicit XY分解で修正し、旧STOPを保存。H6を24軌道並列へ引継ぎ、重複13軸一致・全回収。sourceはH4 687679a4…/H6 f0dd2a9a…、旧成果/既存環境・他job不変、mandatory STOP。以下は過去各時点の履歴。
+
 ## 2026-10-18 H8：追加6精度の保存値検証完了
 
 [結果・実測/model区分・来歴](docs/research/track_a_h8_epsilon_boundary_run01_results_20261018.md)。SOURCE3156b036…、利用者の準備後実行承認に基づくC専用one-shot。保存anchor1,520行を再現後、新2,280行/12比較、native exit0・最終gate PASS、wall0.832秒。通常ε=.00075で+12.77%、.000625で−0.50%（有限標本の点比較）。人工164件PASS、新compile/sampling/signal/fit0。他のA/B/D/E/Fは未実行、条件付き実行承認は保持し、各単位のSTOPを維持。以下は各時点の履歴。

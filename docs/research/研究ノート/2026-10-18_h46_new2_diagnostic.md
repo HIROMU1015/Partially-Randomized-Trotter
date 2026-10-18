@@ -7,3 +7,9 @@
 初回の回路basis依存STOPと両worker exit1を保持し、環境installなしのmatrix-only修正後に新run02を実行。両exit0・全回収。旧source・入力・grant・ledger・marker・STOP、管理rootの958 staged削除を保持する。
 
 次の作業案：Codexがnew_2のnative adapterと、代表条件での同精度compiled費用比較を準備する。今回の診断完了後はmandatory STOP。追加の本計算は自動開始しない。
+
+## 追加検証完了
+
+利用者の不足検証追加指示を受け、[native・同精度代表比較](../track_a_h46_new2_native_validation_20261018.md)を実施。H4 SOURCE687679a4…/H6 executor f0dd2a9a…、同じPR分割で各n8・採用96軸。人工18件/実数値222件PASS。8桁係数は厳密4次の立方和条件を満たさない一方、代表ε=.001でnew_2のshot重み付きRZ標本平均はS2/Yoshidaより小さかった。係数の修正や全研究の採否は行わない。
+
+generic unitaryのcompile不一致を検出して旧STOPを残し、閾値不変のexplicit XYへ修正。H4完了を再利用してH6だけ24軌道並列へ引継ぎ、重複13軸を一致確認。旧SOURCE/原本/958 staged削除は保全。実entry累計121を記録し返却なし。共有環境・venv・他jobは変更0。次の範囲拡張は自動開始しない。

@@ -1041,3 +1041,5 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## H8 selected-six saved-cost reaccounting (2026-10-17)
 
 [H8主要6軸：保存値限定再会計準備・公開認証待ち](research/track_a_h8_six_axis_reaccount_readiness_20261017.md)。
+
+- [H4/H6 new_2 PR：native・同精度代表費用・係数次数の追加検証](research/track_a_h46_new2_native_validation_20261018.md)
