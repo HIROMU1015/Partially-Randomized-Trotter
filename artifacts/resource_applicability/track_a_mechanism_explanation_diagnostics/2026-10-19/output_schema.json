@@ -1,0 +1,51 @@
+{
+  "schema": "TRACK_A_MECHANISM_EXPLANATION_V2",
+  "future_only": true,
+  "files": {
+    "explanations.json": {
+      "type": "array",
+      "rows": 32,
+      "row_fields": [
+        "contrast_id",
+        "system",
+        "core_reused_without_recalculation",
+        "explanation"
+      ],
+      "explanation_fields": [
+        "status",
+        "sides",
+        "ratios"
+      ],
+      "method_sides": [
+        "PR",
+        "PF"
+      ]
+    },
+    "explanation_sides.csv": {
+      "rows": 64,
+      "columns": [
+        "contrast_id",
+        "system",
+        "method",
+        "status",
+        "reason",
+        "explanation_json"
+      ]
+    },
+    "joined_core_reference.json": {
+      "fields": [
+        "target_ids",
+        "core_recalculated",
+        "saved_core"
+      ],
+      "core_recalculated": false,
+      "saved_core": "exact JSON values from fixed prior results; no arithmetic"
+    }
+  },
+  "allowed_missing_side_ids": [
+    "A82_OLD_PR.PR"
+  ],
+  "failure_status": "FAILED_OR_STOPPED",
+  "terminal_status": "COMPLETE_MANDATORY_STOP",
+  "next_stage_authorized": false
+}

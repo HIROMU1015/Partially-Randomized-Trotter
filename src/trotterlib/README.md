@@ -907,3 +907,8 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 ## 2026-10-19 Track A mechanism runner：準備完了・数値実行未承認
 
 [実装・人工検査・固定契約](../../artifacts/resource_applicability/track_a_mechanism_runner_readiness/2026-10-19/integrated_readiness_report.md)。主要32比較だけを固定し、残り212はmetadataのみ。SOURCE 5c256067db29a326bcaa0a0e244b38f6b87bd138。実科学数値解析0、有効grant0、mandatory STOP。
+
+
+## Mechanism explanation (2026-10-19)
+
+[mechanism_explanation.py](mechanism_explanation.py)はstep／累積／empirical upperを区別する説明専用module。[診断と未承認契約](../../docs/research/track_a_mechanism_explanation_diagnostic_readiness_20261019.md)。旧mechanism coreは不変。

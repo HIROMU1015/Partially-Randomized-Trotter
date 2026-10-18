@@ -930,3 +930,8 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## 2026-10-19 Track A mechanism runner：準備完了・数値実行未承認
 
 [実装・人工検査・固定契約](../artifacts/resource_applicability/track_a_mechanism_runner_readiness/2026-10-19/integrated_readiness_report.md)。主要32比較だけを固定し、残り212はmetadataのみ。SOURCE 5c256067db29a326bcaa0a0e244b38f6b87bd138。実科学数値解析0、有効grant0、mandatory STOP。
+
+
+## Mechanism explanation-only readiness (2026-10-19)
+
+[契約・状態](../docs/research/track_a_mechanism_explanation_diagnostic_readiness_20261019.md)。prepare_mechanism_explanation.pyはmetadata転記のみ、run_mechanism_explanation.pyは新規の別承認が必要。旧core再計算なし。

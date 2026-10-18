@@ -1551,3 +1551,8 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-19 Track A Mechanism：主要32比較のone-shot完了
 
 [結果・費用分解・説明未解決](docs/research/track_a_mechanism_primary32_results_20261019.md)。SOURCE 5c256067db29a326bcaa0a0e244b38f6b87bd138。core32件はexact一致、説明は28比較UNRESOLVED／4比較欠測・完了0。保存SE転記のみ、retry0、mandatory STOP。
+
+
+## 2026-10-19 Mechanism説明側：診断と修正準備
+
+[原因・SOURCE・人工検査・未承認契約](docs/research/track_a_mechanism_explanation_diagnostic_readiness_20261019.md)。SOURCE b6716396acc5760fde7cf7cc6f2481b183a08f10。core不変、63 side field存在／1 side未回収、人工105件PASS、実科学数値再解析0・mandatory STOP。
