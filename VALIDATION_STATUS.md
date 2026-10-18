@@ -1,3 +1,7 @@
+## 2026-10-18 Codex 1：A_COST3系を並列起動・保存B/D会計完了
+
+[起動・H8 D修正・scope別SOURCE](docs/research/track_a_pr_cost_batch_execution_20261018.md)。利用者の実行/修正再実行承認によりAを6/6/10 workerで開始、稼働継続中。保存B3件の限定診断とD3件は完了（H8 Dは修正後SOURCE8ff002dd…、元PR88行再現・native exit0/reap）。初期SOURCE31ef62a1…の旧STOP/消費を保持し、他の実行snapshot・高次PF研究・共有環境は変更しない。追加科学stageへ自動進行しない。以下は履歴。
+
 ## 2026-10-18 Codex 1：A_COST・B/D 9契約の技術seal（実行未認可）
 
 [9契約の状態・統合承認案](docs/research/track_a_pr_cost_nine_contracts_seal_20261018.md)。SOURCE `31ef62a12407010e9c1a07f9b37facedb8dff5fe`。A_COST3件・既存D_ACCOUNTING3件は技術実行候補、B3件は条件付き費用の限定診断まで準備済み。完全層別の無条件比較は証拠未結合で未確定。9 byte gate・新人工21検査・無効CLI10件PASS、旧40検査は再実行なし。全grant無効/CPU[]、実preparation復元・compile・sampling・科学再会計・B数値解析0。独立cloneを使用し、既存SOURCE/結果/他job不変。以下は履歴。
