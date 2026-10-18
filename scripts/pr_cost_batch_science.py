@@ -45,6 +45,9 @@ def native_context(spec,data,cells,output):
 
 
 def a_cost(spec,grant,data,output):
+    if spec.get('A_scheduling')=='H8_CANDIDATE_CONTROL_CONTINUATION_V1':
+        from pr_cost_candidate_parallel import run
+        return run(spec,grant,data,output)
     import pr_cost_native as n
     signals=c.read(data['A_signal'])['signals'];cells=[x['cell'] for x in signals]
     index={x['cell']['id']:x for x in signals}

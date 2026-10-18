@@ -104,7 +104,8 @@ def child_main(task,callback,directory,cpu,limits,parent,deadline,font_seed,old_
 
 
 def map_owned(tasks,callback,*,cpus,limits,directory,deadline,guard=lambda:None,
-              reserve=lambda task:None,font_seed=None,prior_child_CPU_seconds=0.):
+              reserve=lambda task:None,font_seed=None,prior_child_CPU_seconds=0.,
+              ready=lambda task:True,on_complete=lambda task,handle:None):
     """Run each task once. On failure terminate/reap only owned children.
 
     Results are accepted only after native exit 0 and same-parent wait4. No
@@ -117,6 +118,15 @@ def map_owned(tasks,callback,*,cpus,limits,directory,deadline,guard=lambda:None,
         raise ValueError('UNIQUE_SAFE_TASK_IDS_REQUIRED')
     directory=Path(directory);directory.mkdir()
     parent=os.getpid();handles=[];queue=list(tasks);first_error=None
+    by_id={t['id']:t for t in tasks}
+    def completed(h):
+        if h.get('completion_notified'):return
+        if h['exit_code']!=0:raise worker_failure(h)
+        result=Path(h['directory'])/'task_result.json'
+        if not result.is_file():raise RuntimeError('MISSING_COMPLETE_WORKER_RESULT')
+        h['result_sha256']=hashlib.sha256(result.read_bytes()).hexdigest()
+        on_complete(by_id[h['task_id']],h)
+        h['completion_notified']=True
     ticks=os.sysconf('SC_CLK_TCK');cpu_total=prior_child_CPU_seconds
     try:
         while queue or any(not h['reaped'] for h in handles):
@@ -125,7 +135,9 @@ def map_owned(tasks,callback,*,cpus,limits,directory,deadline,guard=lambda:None,
             while queue and len(active)<len(cpus):
                 if len(list(Path('/proc/self/task').iterdir()))!=1:
                     raise RuntimeError('FORK_REQUIRES_SINGLE_THREAD_PARENT')
-                task=queue.pop(0);reserve(task)
+                position=next((i for i,t in enumerate(queue) if ready(t)),None)
+                if position is None:break
+                task=queue.pop(position);reserve(task)
                 cpu=next(x for x in cpus if x not in {h['cpu'] for h in active})
                 work=directory/task['id'];work.mkdir()
                 h=dict(task_id=task['id'],cpu=cpu,directory=str(work),pid=None,identity=None,
@@ -146,10 +158,7 @@ def map_owned(tasks,callback,*,cpus,limits,directory,deadline,guard=lambda:None,
                 if h['reaped']:continue
                 wait_owned(h)
                 if h['reaped']:
-                    if h['exit_code']!=0:raise worker_failure(h)
-                    result=Path(h['directory'])/'task_result.json'
-                    if not result.is_file():raise RuntimeError('MISSING_COMPLETE_WORKER_RESULT')
-                    h['result_sha256']=hashlib.sha256(result.read_bytes()).hexdigest()
+                    completed(h)
                     continue
                 current=identity(h['pid'])
                 if current is None:continue
@@ -170,6 +179,8 @@ def map_owned(tasks,callback,*,cpus,limits,directory,deadline,guard=lambda:None,
                     wait_owned(h)
                     h['observation_stale']=not h['reaped']
             usage=resource.getrusage(resource.RUSAGE_SELF)
+            if queue and all(h['reaped'] for h in handles) and not any(ready(t) for t in queue):
+                raise RuntimeError('UNSATISFIED_TASK_DEPENDENCY')
             cpu_total=prior_child_CPU_seconds+sum(h['cpu_seconds'] for h in handles)
             if queue or any(not h['reaped'] for h in handles):time.sleep(.05)
     except BaseException as exc:
@@ -208,9 +219,7 @@ def map_owned(tasks,callback,*,cpus,limits,directory,deadline,guard=lambda:None,
                     for h in handles:
                         if h['pid'] is None or not h['reaped'] or h['exit_code']!=0:
                             raise worker_failure(h)
-                        result=Path(h['directory'])/'task_result.json'
-                        if not result.is_file():raise RuntimeError('MISSING_COMPLETE_WORKER_RESULT')
-                        h['result_sha256']=hashlib.sha256(result.read_bytes()).hexdigest()
+                        completed(h)
                 except BaseException as exc:first_error=exc
             receipt=dict(status='PASS' if first_error is None and clean and not cleanup_errors else 'STOP',
                 all_reaped=clean,cleanup_errors=cleanup_errors,workers=handles,automatic_retry=False,

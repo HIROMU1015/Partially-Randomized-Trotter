@@ -19,7 +19,9 @@ import pr_cost_contract as old
 require,digest,read,save,sha=old.require,old.digest,old.read,old.save,old.sha
 SCOPES=tuple(s+'_'+t for s in ('H4','H6','H8') for t in ('A_COST','D_ACCOUNTING','B_ANALYSIS'))
 FILES=('scripts/pr_cost_batch.py','scripts/pr_cost_batch_science.py','scripts/prepare_pr_cost_batch.py',
-       'tests/test_pr_cost_batch.py',*old.SOURCES)
+       'tests/test_pr_cost_batch.py','scripts/pr_cost_candidate_parallel.py',
+       'scripts/prepare_pr_candidate_parallel.py','scripts/h8_key_compile_parallel.py',
+       'tests/test_pr_cost_candidate_parallel.py',*old.SOURCES)
 
 
 def metadata_binding(spec):
@@ -37,6 +39,11 @@ def sealed(spec):
 
 def authorize(spec,grant):
     sealed(spec)
+    if spec.get('A_scheduling'):
+        require(spec['A_scheduling']=='H8_CANDIDATE_CONTROL_CONTINUATION_V1' and spec['scope']=='H8_A_COST'
+                and grant.get('candidate_parallel_handoff_authorized') is True
+                and grant.get('origin_SOURCE')==spec['continuation_origin']['origin_SOURCE'],
+                'EXPLICIT_CANDIDATE_HANDOFF_APPROVAL_REQUIRED')
     require(grant.get('scope')==spec['scope'] and grant.get('technical_digest')==spec['technical_digest'],
             'INDIVIDUAL_SCOPE_BINDING')
     require(grant.get('approved_by_user') is True and grant.get('runtime_authorization') is True
@@ -86,6 +93,13 @@ def verify(spec,*,runtime=True,source=True):
         for path,h in files.items():
             relative=Path(path);require(not relative.is_absolute() and '..' not in relative.parts,'PROVIDER_PATH')
             require(sha(Path(directory)/relative)==h,'PROVIDER_SOURCE_CHANGED')
+    if spec.get('A_scheduling'):
+        from pr_cost_candidate_parallel import POLICY,verify_manifest,verify_origin
+        require(spec['A_scheduling']==POLICY and spec['scope']=='H8_A_COST','EXACT_CANDIDATE_SCOPE')
+        payload=read(spec['payload']);tasks=payload['new_seed_registry']['tasks'];origin=spec['continuation_origin']
+        require(spec['seed_derivation_SOURCE']==origin['origin_SOURCE'],'ORIGINAL_SEED_DERIVATION_SOURCE')
+        verify_origin(origin,tasks,spec['binding'])
+        verify_manifest(read(spec['resume_manifest']),tasks,spec['binding'],origin)
     return dict(status='PASS_BYTES_ONLY',scope=spec['scope'],SOURCE=spec['SOURCE'],scientific_calls=0)
 
 
