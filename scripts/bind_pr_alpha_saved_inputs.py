@@ -237,6 +237,8 @@ def main():
         if scope not in ("H8_EXPLORATION92", "H8_CONFIRMATION_UNION6"):
             continue
         for i, row in enumerate(rows):
+            if scope == "H8_CONFIRMATION_UNION6" and row["method"] != "B2":
+                continue  # copied deterministic comparators belong to EXPLORATION92
             if not factor_one(row["factor"]) or (row["method"] == "B2" and scope != "H8_CONFIRMATION_UNION6"):
                 continue
             set_base(("H8", row["cell_id"], row["epsilon"], "USUAL_SIGNED_SAVED"), row["accounting"], "H8_D0_baseline", f"/{scope}/{i}/accounting")
