@@ -1,3 +1,7 @@
+## H4/H6 new_2数値診断（2026-10-18）
+
+[runner](run_h46_new2_validation.py)と[core](h46_new2_core.py)は、保存入力からの高次PF・有限RTE期待signal専用。固定SOURCE/provider/input/planと利用者認可を検査する。新trajectory・native compile・分子入力生成を行わない。[結果と限界](../docs/research/track_a_h46_new2_diagnostic_20261018.md)。
+
 ## 2026-10-18 H8：追加6精度の保存値検証完了
 
 [結果・実測/model区分・来歴](../docs/research/track_a_h8_epsilon_boundary_run01_results_20261018.md)。SOURCE3156b036…、利用者の準備後実行承認に基づくC専用one-shot。保存anchor1,520行を再現後、新2,280行/12比較、native exit0・最終gate PASS、wall0.832秒。通常ε=.00075で+12.77%、.000625で−0.50%（有限標本の点比較）。人工164件PASS、新compile/sampling/signal/fit0。他のA/B/D/E/Fは未実行、条件付き実行承認は保持し、各単位のSTOPを維持。以下は各時点の履歴。
