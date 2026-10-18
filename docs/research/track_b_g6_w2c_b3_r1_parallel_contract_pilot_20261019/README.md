@@ -29,3 +29,5 @@
 性能SOURCE `b1dba4b6f282ffab413719aa000f18267caeb1d7`、障害/最終人工SOURCE `ef57714b35bbdd3912fadf13ee522e6a4ff491e6`。測定後の例外cleanup等の修正を性能測定へ遡及しない。元commitは [measurement_source_history.bundle](measurement_source_history.bundle) で保全。固定baseline取得後に `git bundle verify` / 専用checkoutへfetchして復元できる。最終公開commitのmetadataと測定commitは区別する。
 
 共通AGENTS.md・worktree AGENTS.md・固定共通指示§8.4を確認。AI sub-agentなし、主agent自身の検査。共有venv/package/OS/cgroup/他ユーザーprocess・他worktreeを変更していない。結果公開・保全確認後mandatory STOP。契約採択・本番統合・ローカル最適化統合・実入力pilotへ自動移行しない。
+
+完全content commit `06bfc3a905b31149aaec32a3d823bc8016d4ac09` の94ファイル・12,082,477 bytesをremoteから再取得し全SHA256照合済み。追加の [emit途中flush検証](tests/flush_emit_verification.json) もPASS（完全行1、論理完了0）。311件のsuite集計とは別の補足probe1件。receiptを含む最終commitは別途照合する。
