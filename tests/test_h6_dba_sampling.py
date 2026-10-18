@@ -11,6 +11,14 @@ import h6_dba_sampling as sampling
 
 
 class Counts(unittest.TestCase):
+    def test_original_pilot_master_seed_collision_audit(self):
+        import hashlib
+        for i in range(8):
+            expected=int(hashlib.sha256(
+                f'H6_CONDITIONAL_S2_PILOT_V1_FRESH_COST/B2_p5_q8_2nd_r2_K2/{i}'.encode()).hexdigest()[:16],16)
+            self.assertEqual(sampling.legacy_pilot_seed(i),expected)
+            self.assertIs(type(sampling.legacy_pilot_seed(i)),int)
+
     def test_multinomial_normalization_against_enumeration(self):
         import itertools
         for stratum in ['s2_multi','s4']:

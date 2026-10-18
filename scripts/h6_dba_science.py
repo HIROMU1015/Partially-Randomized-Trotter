@@ -44,8 +44,7 @@ def rare(config, grant, output):
     from trottertracks.resource_applicability.h6_matched_contract_v1 import cells as old_cells
     occupied={old_seed(x['id'],phase,i) for x in old_cells() if x['method']=='B2'
               for phase,size in [('exploration',8),('confirmation',32)] for i in range(size)}
-    occupied.update(int(__import__('hashlib').sha256(
-        f'H6_CONDITIONAL_S2_PILOT_V1_FRESH_COST/B2_p5_q8_2nd_r2_K2/{i}'.encode()).digest()[:8], 'big') for i in range(8))
+    occupied.update(sampling.legacy_pilot_seed(i) for i in range(8))
     tasks=[]
     for group in groups:
         for i in range(8):

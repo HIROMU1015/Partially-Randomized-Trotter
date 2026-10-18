@@ -9,6 +9,12 @@ _spec=importlib.util.spec_from_file_location('_dba_existing_counts',
 counts=importlib.util.module_from_spec(_spec);sys.modules[_spec.name]=counts;_spec.loader.exec_module(counts)
 
 
+def legacy_pilot_seed(replica):
+    import hashlib
+    return int.from_bytes(hashlib.sha256(
+        f'H6_CONDITIONAL_S2_PILOT_V1_FRESH_COST/B2_p5_q8_2nd_r2_K2/{replica}'.encode()).digest()[:8], 'big')
+
+
 def count_law(R, distribution, stratum):
     probs=dict(zip(distribution.orders,distribution.order_probabilities,strict=True))
     law=counts.conditional_counts(R,tuple(probs.get(k,0.) for k in (0,2,4)),stratum)
