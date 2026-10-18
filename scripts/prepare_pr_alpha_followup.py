@@ -89,7 +89,7 @@ def main():
                 representatives.append(dict(system="H8",epsilon=r["epsilon"],family=family,
                     cell_id=r[key]["best"]["cell_id"],selection="COPY_SAVED_POINT_WINNER_ID_NOT_RERANKING"))
     assert len(representatives)==14
-    runtime=dict(python_version=sys.version.split()[0],packages=[])
+    runtime=dict(python_version=sys.version.split()[0],python_executable_sha256=sha(Path(sys.executable).read_bytes()),packages=[])
     for name in ("numpy","scipy"):
         dist=importlib.metadata.distribution(name)
         runtime["packages"].append(dict(name=name,version=dist.version,record_sha256=sha(dist.read_text("RECORD").encode())))

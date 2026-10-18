@@ -285,7 +285,7 @@ class AdmissionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d);(root/"used.py").write_bytes(b"used")
             p=dict(source_commit="a"*40,source_files=[dict(path="used.py",sha256=runtime.digest_bytes(b"used"))],
-                   runtime=dict(python_version=sys.version.split()[0],packages=[]))
+                   runtime=dict(python_version=sys.version.split()[0],python_executable_sha256=runtime.digest_bytes(Path(sys.executable).read_bytes()),packages=[]))
             with patch.object(runtime,"ROOT",root),patch.object(runtime.subprocess,"check_output",return_value=b"used"):
                 runtime.source_gate(p)
                 (root/"unrelated.txt").write_bytes(b"changed elsewhere")
@@ -294,6 +294,8 @@ class AdmissionTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError,"USED_SOURCE_CHANGED"):runtime.source_gate(p)
             with self.assertRaisesRegex(ValueError,"PYTHON_RUNTIME_CHANGED"):
                 runtime.runtime_gate(dict(python_version="0.0",packages=[]))
+            with self.assertRaisesRegex(ValueError,"PYTHON_EXECUTABLE_CHANGED"):
+                runtime.runtime_gate(dict(python_version=sys.version.split()[0],python_executable_sha256="0"*64,packages=[]))
 
     def test_missing_rows_block_minimum_and_baseline_is_first(self):
         records=[toy(),toy("B1")]
