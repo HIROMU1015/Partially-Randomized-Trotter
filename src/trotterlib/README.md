@@ -1,3 +1,7 @@
+## 2026-10-18 PR α B-1：28軸の一回評価完了
+
+[pr_alpha_followup.py](pr_alpha_followup.py)の保存shot二項評価。[結果](../../docs/research/pr_alpha_binomial_run01_results_20261018.md)。固定14条件/28軸の二項数値評価を一回完了。全軸α=.025以内、最大union bound=.002144964604。EMPIRICAL bias/u/normalization・理想fresh-IIDモデルに条件付く。driver/launcher exit0、shot/費用再会計0、B-2未承認・未実行、mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-18 PR α：保存入力seal・解析未承認
 
 [pr_alpha_scalar_input.py](pr_alpha_scalar_input.py)は保存値コピーと承認後recipe decode。準備中はexp/abs/sumを評価しない。[報告](../../docs/research/pr_alpha_input_binding_20261018.md)。保存入力をseal。B-1は14/14、B-2は3,660完全＋既知60欠測。人工62件・CLI8件PASS、原本19件のコピー照合。実データ数値解析0・未承認・mandatory STOP。最新はrun03、旧sealと前回成果物を保持。以下は各時点の履歴。
