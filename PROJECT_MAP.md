@@ -1,3 +1,7 @@
+## 2026-10-18 H4/H6：論文化向け証拠整理（科学計算なし）
+
+[証拠整理・Claim–Evidence Matrix・表候補・来歴](docs/research/track_a_h46_theory_compiled_paper_evidence_20261018.md)。修正版RESULT6e2b7eb6を正本として528行の元参照を整理。期待費用84とsame-event84を分離し、shot込み360行・12主張候補・13制約・旧図2/将来4設計案を記録。数値再計算・sampling/compile/新grant0、中心claim/原稿/正式主図未採択。次はユーザーの科学的判断、公開確認後mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-18 H4/H6 S4：counter修正・8行受入・限定再会計完了
 
 [修正・3 Stage・全表・保全監査](docs/research/track_a_h46_s4_counter_native_compatibility_results_20261018.md)。pf_scheduleのbinary64係数・時間演算順だけをnativeへ揃え、68人工tests PASS。固定H4/H6 S4の8整数行・33block証拠が一致。84/84/360行を再会計し変更は24/24/168行、S2/PR/shot/compiled値は不変。主H4 RZ比は理論0.871632、compiled1.039336で方向不一致が残る。3 Stage全native exit0/reap・STOP、追加compile/sampling0、旧結果/UNATTRIBUTED/ledger/STOPは保持。最終mandatory STOP。以下は各時点の履歴。

@@ -1,3 +1,5 @@
+- [H4/H6理論・compiled比較：論文化向け証拠整理（固定結果・主張候補、科学計算なし）](research/track_a_h46_theory_compiled_paper_evidence_20261018.md)
+
 ## 2026-10-18 H4/H6 S4：counter修正・8行受入・限定再会計完了
 
 [修正・3 Stage・全表・保全監査](research/track_a_h46_s4_counter_native_compatibility_results_20261018.md)。pf_scheduleのbinary64係数・時間演算順だけをnativeへ揃え、68人工tests PASS。固定H4/H6 S4の8整数行・33block証拠が一致。84/84/360行を再会計し変更は24/24/168行、S2/PR/shot/compiled値は不変。主H4 RZ比は理論0.871632、compiled1.039336で方向不一致が残る。3 Stage全native exit0/reap・STOP、追加compile/sampling0、旧結果/UNATTRIBUTED/ledger/STOPは保持。最終mandatory STOP。以下は各時点の履歴。
