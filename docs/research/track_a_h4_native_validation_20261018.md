@@ -68,3 +68,15 @@ Dは48 B0＋48解析overlayを完了。固定規則で8構成を選び、最大1
 snapshotでは4構成完了・10軸取得・STOP0。全8構成/16軸の正常完了はこの時点では未確認。
 [A/N完了receiptと結果gzip、D時点付きsnapshot](../../artifacts/resource_applicability/track_a_h4_native_validation/2026-10-18/)。
 次の担当：CodexがDの残り実測・native終了・最終gateを回収する。追加候補やPR cost stageは起動しない。
+
+## 完了追記：D/A/Nすべて正常終了
+
+DもSOURCE79758d28…で8構成16軸の直接実測を完了した。48 signal worker＋8 compile workerがnative exit0・同じ親wait4回収・result SHA一致。driver native exit0、最終gate PASS。
+本体wall278.059秒、witness込み278.640秒（約4分39秒）。新compile16、native control32。
+通常/非相殺の費用比較は旧16＋直接実測8構成の部分集合に限定。残る88 D候補と新A16の未取得費用を0補完せず、全96最良はnull。
+[D完了receipt・保存結果gzip](../../artifacts/resource_applicability/track_a_h4_native_validation/2026-10-18/D_completion_receipt.json)。A/Nの完了証拠は前節の通りで、3stageともmandatory STOP。
+### H6/H8で実施した設定との対応
+
+1 Å/STO-3G/T=.8/native symmetric-directional/Qiskit1.3.0 opt1 seed17/P0、S2/S4対照、K2/K4、5精度、通常/非相殺と経験的allowanceを対応させた。候補集合・母平均・厳密保証の同一性は主張しない。
+H6固定δ=.2/T=.4/.8/1.6 panelに対応するH4の新T検証、H6/H8探索のr1と境界q16、希少Taylor条件付きpilotは今回のH4scopeにない。H4はlegacy固定DF12のままで、H6/H8 tol-only生成政策には統一していない。別入力状態・別compiler設定はH6/H8でも今回系列の完了範囲ではない。
+次の担当：ユーザーが、H6/H8で実施済みの範囲との差を埋めるH4追加scopeを選ぶ。Codexは承認された範囲だけを準備・実行する。

@@ -8,3 +8,5 @@ Dのprefix比proxyは選別用であり、2%検証済み費用モデルへ格上
 各stage終了後mandatory STOP、A_COST・希少pilot等は自動開始しない。
 
 SOURCE79758d28…でD/A/Nを独立起動。AとNはnative exit0/最終gate PASSで終了。D96候補から8構成を選別し、16軸の実測を並列実行中。旧STOP・既存結果は不変。
+
+D8構成16軸も正常終了。56 worker native回収と最終gate PASSを受入。D/A/N全完了でmandatory STOP。追加科学計算なし。H6/H8との基本設定の共通部分と、T/r1/q16/希少層/DF政策の差を分けた。
