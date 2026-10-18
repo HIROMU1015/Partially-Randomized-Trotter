@@ -1,0 +1,2811 @@
+{
+  "schema_version": "pr_beta_contract_audit_v1",
+  "audit_date_jst": "2026-10-18",
+  "fixed_science_snapshot": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+  "audit_base": "e62ddb59173d100c113be7a33581515d78f152ee",
+  "status": "TECHNICAL_AUDIT_COMPLETED_WITH_FINDINGS",
+  "scientific_certification": false,
+  "allowed_operations": [
+    "fixed_blob_read",
+    "hash_metadata",
+    "saved_budget_sum_and_constraint_checks",
+    "synthetic_AST_functions_with_mock_dependencies"
+  ],
+  "prohibited_operations_executed": {
+    "real_sampling": 0,
+    "physical_signal_generation": 0,
+    "native_build": 0,
+    "compile": 0,
+    "saved_shot_recalculation": 0,
+    "cost_reaccounting": 0,
+    "real_reoptimization": 0,
+    "monte_carlo": 0
+  },
+  "inventory": [
+    {
+      "label": "allocation",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/rpe_allocation_sensitivity_validation/2026-09-01/h4_sto3g_d100_rank12_ld3_dt0p1_r4_k2_q1_q2_q4_q8_beta_alpha_sensitivity_v1.json",
+      "git_blob": "adebf701b89c51f2983499e88b04f9f3b5cb9b08",
+      "bytes": 58757,
+      "sha256": "20d65463e7ff99052057bea074e9ac5cfe8527036a628e5fbfc301a792c2d71b"
+    },
+    {
+      "label": "wp04",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_ablation/2026-09-21/wp04_finite_rte_statistical_ablation_v1.json",
+      "git_blob": "cbd4646e0f64b47d5d502f22fad5e3ea846f5bd9",
+      "bytes": 1205054,
+      "sha256": "4b5d9eade695b1dbf963f401e5507651da2d596d54786acc6959f28379c9cbf4"
+    },
+    {
+      "label": "wp01_v1_history",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_decision_cost/2026-09-22/wp01d_c07_full_scope_optimization_compute_v1.json",
+      "git_blob": "59067e58c5fa1e763ab5b15758551e0bad01a718",
+      "bytes": 197162,
+      "sha256": "9e878c3dfbe1ad8628623ff6154e16d958233f84b578694188344b504a07b463"
+    },
+    {
+      "label": "wp01_v2",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_decision_cost/2026-09-22/wp01d_c07_full_scope_optimization_compute_v2.json",
+      "git_blob": "51e8bf0f505c54001b0203aea25d00b373390bc7",
+      "bytes": 199001,
+      "sha256": "718c79f8137913bf4690ac717a5c6a3c693114666bfded189fb44c9de540128d"
+    },
+    {
+      "label": "wp11",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_full_opt2/2026-09-25/wp11_all_r_opt2_coherent_analysis_20260925_065827.json",
+      "git_blob": "fa6f6e154fd60e135a9e6901a186976ad8bf34be",
+      "bytes": 335692,
+      "sha256": "3a86b356a0e602506577141c1c1d7ced7acb06f629818ca5a6bc59fb33633a88"
+    },
+    {
+      "label": "wp11_audit",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_full_opt2/2026-09-25/wp11_all_r_opt2_fresh32_audit_20260925_065827.json",
+      "git_blob": "e4e7d0a6fe85063ab1e1bf096d8ca0e329c7cab2",
+      "bytes": 138534,
+      "sha256": "f89d594deba3f38a6819d62cb101ef4c67c0afc0b0d94819ca8b0b138630fb7d"
+    },
+    {
+      "label": "phase4",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/rpe_four_round_phase_validation/2026-09-20/h4_sto3g_d100_rank12_ld3_dt0p1_r4_k2_q1_q2_q4_q8_physical_branch_v1.json",
+      "git_blob": "9271f6b6fd86c7cfc3cbab8714dfbaa527b5d477",
+      "bytes": 26641,
+      "sha256": "3c9c88e1ae49f7978c1d937f6aaa069a0765ab2777e394f0e3513b607ed57b51"
+    },
+    {
+      "label": "long_schedule",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/rpe_delta_round_schedule_validation/2026-09-20/h4_sto3g_d100_rank12_ld3_executed_delta_ca_over_10_round_schedule_v1.json",
+      "git_blob": "3e0fa4c1c16c1d9ab272d5120d5d565867f7cbe5",
+      "bytes": 119040,
+      "sha256": "e8f3a66c6b903b9a230b2fdbd86e73f9afca7f57a8d6942c152d66f947c05120"
+    },
+    {
+      "label": "wp01_screening",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_model_conditional_screening_v1.json",
+      "git_blob": "1aea2a7ed656753ead908a9fc5e41db5f682e6af",
+      "bytes": 234532,
+      "sha256": "d52fa24dc886bcebea761494a4b3d814717bde3537eb474f37c4956835bf34ac"
+    },
+    {
+      "label": "wp05a",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+      "git_blob": "8861d692ad6af336c42b8cbf77509882ff070edb",
+      "bytes": 436241,
+      "sha256": "153980491e631217b2c2cf2ec6da3613d86f7ba28063d23e8dee227bd37d24b4"
+    },
+    {
+      "label": "wp05b",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+      "git_blob": "3dd64055405a1c6e47d4041ef14c43b4f0a49e67",
+      "bytes": 679212,
+      "sha256": "239ecc986df08563988141eaf2cb4538246907bc60f710b942b3c0a45b862b76"
+    },
+    {
+      "label": "wp05br",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_full_scope_replication/2026-09-22/wp05br_r32_32trajectory_replication_v1.json",
+      "git_blob": "cdecd9b0348239f8071663e4fb070840ceb4efb0",
+      "bytes": 67011,
+      "sha256": "a390413914719c5784c6cb11603d4d00ed2a5d296b9c4b01a10dd4ab09e5ca64"
+    },
+    {
+      "label": "a0",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_full_opt2/2026-09-25/m06f_a0_proxy_lineage_reconciliation_v1.json",
+      "git_blob": "71d7e0c8d57236348b1e37c38c2c10e3478bd8c8",
+      "bytes": 18382,
+      "sha256": "6922ecba999855a0e7e51a28f71844bf22c29b4d682eea4bf5ae25f5c54545dd"
+    },
+    {
+      "label": "signal_grid",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_ablation/2026-09-21/wp04_ld3_full_schedule_signal_grid_v1.json",
+      "git_blob": "1abb90ebd647356223160f3fb889c89112a3294a",
+      "bytes": 481626,
+      "sha256": "56bca166b3fcbf6d5b235b77b8819b6bb0f51a99245fe87357479d3d55fa38d3"
+    },
+    {
+      "label": "rpe_resource_accounting",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "src/trotterlib/rpe_resource_accounting.py",
+      "git_blob": "95fd914943d4ee91779e03ba13e83b6f33bdaa87",
+      "bytes": 41206,
+      "sha256": "09c570a847ced735ae62cd4fb323a97caa2afb32fc548d41eed7a1c72ca52781"
+    },
+    {
+      "label": "research_direction_ablation",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "src/trotterlib/research_direction_ablation.py",
+      "git_blob": "75395da286ce094bd5c4c1f1fcf820502c9de932",
+      "bytes": 47148,
+      "sha256": "80219572a9933766a517064fd5187ace12a980964e4ca57f9246c0b871b23837"
+    },
+    {
+      "label": "research_direction_decision_cost",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "src/trotterlib/research_direction_decision_cost.py",
+      "git_blob": "6df8683a2f9dff4ffe1b7a9115718829baff0fd4",
+      "bytes": 23074,
+      "sha256": "3e9ac9a18749381409fab89c183a40a0ca4e0e556b19a7c50aba362272b0f435"
+    },
+    {
+      "label": "research_direction_full_opt2",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "src/trotterlib/research_direction_full_opt2.py",
+      "git_blob": "12808cd3d8829da909d2fa7d59beda16c245d949",
+      "bytes": 39513,
+      "sha256": "41a4066653c74a13090879355ce2f3cd0c9ee82df8cf414e2d2c98dc6c65b1a3"
+    },
+    {
+      "label": "research_direction_full_opt2_extension_analysis",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "src/trotterlib/research_direction_full_opt2_extension_analysis.py",
+      "git_blob": "b288da652a9f5e4f6d5e27504cb767d2f59f6abd",
+      "bytes": 28737,
+      "sha256": "b25af9a81e2d334e9a969574fefde13009d43c988712c4cb95f71e9d6527eb73"
+    },
+    {
+      "label": "finite_rte_signal_validation",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "src/trotterlib/finite_rte_signal_validation.py",
+      "git_blob": "4480bf602d600be3c69f96e3f036564fc1f92e57",
+      "bytes": 36258,
+      "sha256": "88bd1b209bcaec057ccc56c742c900bab0de2d1eb183890726640760215b1dd7"
+    },
+    {
+      "label": "rpe_four_round_phase_validation",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "src/trotterlib/rpe_four_round_phase_validation.py",
+      "git_blob": "928e662fe9734ab267674ee9d6f4ff62931ec2b1",
+      "bytes": 27207,
+      "sha256": "3f62733046962bb52254f58b83012ef8af3192612c68c2052cd48fbab73035b4"
+    },
+    {
+      "label": "rpe_delta_round_schedule_validation",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "src/trotterlib/rpe_delta_round_schedule_validation.py",
+      "git_blob": "77f0925bfbcec5bc7c603e72e0f0964607887102",
+      "bytes": 29096,
+      "sha256": "7854a9f2b05cc4d29d06e0d731fe76b988aaf63878971fb5be6a49515b9595c8"
+    },
+    {
+      "label": "rpe_allocation_sensitivity_validation",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "src/trotterlib/rpe_allocation_sensitivity_validation.py",
+      "git_blob": "278299a51b1593e925144b80e9ca0ca0e8281f37",
+      "bytes": 29335,
+      "sha256": "e2ff0ebfec2df3420f43751c841cec3371be0e4ee46e2424b7d2343a1896e3b8"
+    },
+    {
+      "label": "research_direction_prevalidation",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "src/trotterlib/research_direction_prevalidation.py",
+      "git_blob": "ad3fafa764287c966bbb70decba6df5a5030c754",
+      "bytes": 12724,
+      "sha256": "03c9aa2dbc9f9f8ce58d082636f666204a43097585e03d652358594f3a147708"
+    },
+    {
+      "label": "rpe_hadamard_compiled_cost_proxy",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "src/trotterlib/rpe_hadamard_compiled_cost_proxy.py",
+      "git_blob": "b7fc371fcdf469d4ed5585b9babc2cbde5c177a4",
+      "bytes": 76675,
+      "sha256": "9c65a61b12d9f622734d37e13f3b8e49cee0822733d891705379c20a3c356067"
+    },
+    {
+      "label": "rpe_hadamard_compiled_cost_benchmark",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "src/trotterlib/rpe_hadamard_compiled_cost_benchmark.py",
+      "git_blob": "d93d0b5ff32f5182c99d6052efa34464a04551e5",
+      "bytes": 87378,
+      "sha256": "38cdd6f13fd8201516b455e6a167586cc5755f198d949e1a83d9ebe4e7345eca"
+    },
+    {
+      "label": "df_partial_s2",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "src/trotterlib/df_partial_s2.py",
+      "git_blob": "f467ae0a987595c63a02a927e5e9c95dfb7b2146",
+      "bytes": 42929,
+      "sha256": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e"
+    },
+    {
+      "label": "rte",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "src/trotterlib/rte.py",
+      "git_blob": "53601b7c524653f5e1966b3955b9f51373e54002",
+      "bytes": 77103,
+      "sha256": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618"
+    },
+    {
+      "label": "runner_research_direction_ablation",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "scripts/run_research_direction_ablation.py",
+      "git_blob": "8fabe79a892ed7725b915a92f5d3d8ec9777f3f4",
+      "bytes": 13360,
+      "sha256": "eb0d1cecb4b21b466309cbccfe389fb58c4a340909de0cbc3c36144bd3724945"
+    },
+    {
+      "label": "runner_research_direction_decision_cost",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "scripts/run_research_direction_decision_cost.py",
+      "git_blob": "74372d0a726e1b98a43fcbcb41b84c27483a550e",
+      "bytes": 5483,
+      "sha256": "649328ccab0b9555007b4e341e2bbdbecf8b8ea3c04dc69de945f8d63b17c9c9"
+    },
+    {
+      "label": "runner_research_direction_full_opt2_extension_analysis",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "scripts/run_research_direction_full_opt2_extension_analysis.py",
+      "git_blob": "77690e672ed56ba6ba7e178b9e108311f22b5de7",
+      "bytes": 3910,
+      "sha256": "b17c4748e8dfbdd1e9e34c650ea78c2d03ccdcb30f1da04e47f804fcebb73f27"
+    },
+    {
+      "label": "runner_rpe_four_round_phase_validation",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "scripts/run_rpe_four_round_phase_validation.py",
+      "git_blob": "5aee7faa1632cdfb95ada5702ae56eb82b73a635",
+      "bytes": 4599,
+      "sha256": "16209d24cf76cbf8209ca2b2efa9db5bbb37f6ece6695fbfbf3384b5e36b6ca7"
+    },
+    {
+      "label": "runner_rpe_allocation_sensitivity_validation",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "scripts/run_rpe_allocation_sensitivity_validation.py",
+      "git_blob": "a15eb1e0f93286f24c30266c97d6355aa14c23f5",
+      "bytes": 4955,
+      "sha256": "43a0c390ae86c4435b74da837c5bc36e030d5a841fa8ce39b6a696dccde2df15"
+    },
+    {
+      "label": "tests_rpe_certification_boundary",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "tests/test_rpe_certification_boundary.py",
+      "git_blob": "9fcdab87962ca3fb9fa52d65ded88808e95318d5",
+      "bytes": 10510,
+      "sha256": "9c866823a6489886cd94b32db540494eef8f0df18626ccc77c3baf89a664ff70"
+    },
+    {
+      "label": "tests_rpe_resource_accounting_guards",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "tests/test_rpe_resource_accounting_guards.py",
+      "git_blob": "2a86be53f9ab4ff4f36dc022f511c299fe0c5811",
+      "bytes": 9463,
+      "sha256": "3e980c125dd4a6266ec96e073922515b25f7d6f27395ce3a27be2b63126e837b"
+    },
+    {
+      "label": "tests_research_direction_decision_cost",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "tests/test_research_direction_decision_cost.py",
+      "git_blob": "0e9d40194115ff7185e3f5358587920fa2fc01cc",
+      "bytes": 829,
+      "sha256": "88f96d7e6607357dc15dc5f7a2d2a1bf5d914cb20f2d143ea7918747573bcf1f"
+    },
+    {
+      "label": "tests_research_direction_ablation",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "tests/test_research_direction_ablation.py",
+      "git_blob": "18956cb04727601d1b5468918854806fe03695ae",
+      "bytes": 4618,
+      "sha256": "e89dc6f965890bceae0c3e0e8516b6a3d994d3dfc03dac63c710cfc8d0f44490"
+    },
+    {
+      "label": "tests_research_direction_full_opt2_extension_analysis",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "tests/test_research_direction_full_opt2_extension_analysis.py",
+      "git_blob": "9b7397d1d4c1f7df75eef50031553568a87feb7b",
+      "bytes": 4994,
+      "sha256": "4c41bd4a819df71f80d661d048089154a8642d885d9ec2a65d4b936348e64769"
+    },
+    {
+      "label": "doc_research_direction_ablation",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "docs/research_direction_ablation.md",
+      "git_blob": "658341f911fe56839fa5f237f302baedce452dfb",
+      "bytes": 7979,
+      "sha256": "a71c3e3c45f644ab12ac444bc73e6a299e72b5ecca5ae5f9346030db8db167ff"
+    },
+    {
+      "label": "doc_research_direction_decision_cost",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "docs/research_direction_decision_cost.md",
+      "git_blob": "e079371bc87497dcc0d52b01928c554bdafd0cfc",
+      "bytes": 5031,
+      "sha256": "2a75ce95641e594ad208986e583f5671fc873fd26a81a1ccddb18a44ed0c0980"
+    },
+    {
+      "label": "doc_research_direction_full_opt2",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "docs/research_direction_full_opt2.md",
+      "git_blob": "b37d35e18e9cdeb412b816fa20df5cbb65b73426",
+      "bytes": 14865,
+      "sha256": "bbc0362f2674730f6d67511728566e5c937828264569d21381993fdad0f56465"
+    },
+    {
+      "label": "doc_rpe_four_round_phase_validation",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "docs/rpe_four_round_phase_validation.md",
+      "git_blob": "5028025e5318f95e8b963beed349f5219ac3de3b",
+      "bytes": 5082,
+      "sha256": "6ad9685a2cb23ce3cf66933a1c575732c25ad3a35cab4ac332f5ace51c46e3ed"
+    },
+    {
+      "label": "doc_rpe_delta_round_schedule_validation",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "docs/rpe_delta_round_schedule_validation.md",
+      "git_blob": "2be026b1bce3e912c078b9f403abf1207ddd3fff",
+      "bytes": 6029,
+      "sha256": "fe7e98dde4c6333f8935b141f86041543f68b0d7886787396085483860b7e3e1"
+    },
+    {
+      "label": "doc_rpe_allocation_sensitivity_validation",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "docs/rpe_allocation_sensitivity_validation.md",
+      "git_blob": "2f51662a5d7ffc75d76f1ac33864c03abd0a9fb3",
+      "bytes": 5457,
+      "sha256": "95edb7b890a2d34843bd4dffcae7fab5023256a3019c75c40a8d1803c99ec8b8"
+    },
+    {
+      "label": "initial_manifest",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_full_opt2/2026-09-24/wp11_all_r_opt2_initial_20260924_023012.manifest.json",
+      "git_blob": "b6517a9ebd5ec637ee33b69bef988b9d80c1a965",
+      "bytes": 75109,
+      "sha256": "aeac0f4f111e089387fc5dde629237d6ed58c7158aa2c9fa87a4378f553d3ad8"
+    },
+    {
+      "label": "extension_manifest",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_full_opt2/2026-09-24/wp11_all_r_opt2_extension_20260924_222811.manifest.json",
+      "git_blob": "456b80f88ceff9c8f8646e402ee738be1a9af5eb",
+      "bytes": 31976,
+      "sha256": "77f4b450b7d19b8ac0369a7f3a8c57be112389b9398941a06501500676bc64f6"
+    },
+    {
+      "label": "initial_aggregate",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_full_opt2/2026-09-24/wp11_all_r_opt2_initial_20260924_023012/aggregate.json",
+      "git_blob": "6398ebf30fc2a4f86d0cfb8baecf790e1161bf74",
+      "bytes": 14017,
+      "sha256": "dd3fb552c29846cd6ee7959c5ff658080a8283fe2ad7a0ba0745e6d15b00d341"
+    },
+    {
+      "label": "extension_aggregate",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_full_opt2/2026-09-24/wp11_all_r_opt2_fresh32_20260924_232418/aggregate.json",
+      "git_blob": "0279b81fa90754a2db53c441ec8fbfdf0a77571f",
+      "bytes": 6037,
+      "sha256": "d955c7f1b702f73de61da18e33535059296b5eb7f3304425a007fd0dc4b15e9b"
+    },
+    {
+      "label": "initial_provenance",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_full_opt2/2026-09-24/wp11_all_r_opt2_initial_20260924_023012/run_provenance.json",
+      "git_blob": "a7e1c0cc13ee451bb465e7728278e05a5a840cbc",
+      "bytes": 6765,
+      "sha256": "a37b301171d47095533bdaf43606826ac1727abdd44f5b2e3f809e7d0de1df66"
+    },
+    {
+      "label": "extension_provenance",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_full_opt2/2026-09-24/wp11_all_r_opt2_fresh32_20260924_232418/run_provenance.json",
+      "git_blob": "026119d57ee872888f2c088a42d41d39c9ba1216",
+      "bytes": 7022,
+      "sha256": "75c0cd93baf02f9ee21ceeac14960ab10c74ab6d28840c9821e708f92757a928"
+    },
+    {
+      "label": "alpha_audit",
+      "commit": "e62ddb59173d100c113be7a33581515d78f152ee",
+      "path": "docs/research/pr_alpha_contract_audit_20261018.md",
+      "git_blob": "6e40594a20781b8f451ba05ee53e66408910013c",
+      "bytes": 17882,
+      "sha256": "4047eec19aab0fe743ce83cf750ca2e466375d9d5a746b17c5e8fcf57b9b1afb"
+    },
+    {
+      "label": "track_a_shot",
+      "commit": "fa75c7997e135da7b7a0c4e23949e47252bd7a2e",
+      "path": "scripts/d0_frozen_shot_rule_v1.py",
+      "git_blob": "dae4e12489753720488b5207e7e8aff16c3e4e83",
+      "bytes": 5506,
+      "sha256": "ed3f57937a231719583c2893677b7e82f934dd98bda35cd37fc0f17f83d4279f"
+    },
+    {
+      "label": "wp04_provider:12:r0_k0:dataset",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld12_dt0p02_r0_k0_q1_q2_exact.dataset.json",
+      "git_blob": "85f9f8807c90fb39da0bda87012d4c7d741e9c13",
+      "bytes": 26414,
+      "sha256": "2cd30cdc9b78985e73a9d1ca2aa434c73d2fe871f76394f7f92d5d1d61d8b20e"
+    },
+    {
+      "label": "wp04_provider:12:r0_k0:proxy",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld12_dt0p02_r0_k0_q1_q2_exact.proxy.json",
+      "git_blob": "60c42f2acd46ee6e24a8789b58cc3b0fe4a23692",
+      "bytes": 16718,
+      "sha256": "b5c09bf2194a846fba43379726c3edb7c7b6d321661ba095be72e40a39f0d383"
+    },
+    {
+      "label": "wp04_provider:3:r16_k2:dataset",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r16_k2_q1_q2_mc8.dataset.json",
+      "git_blob": "ac0bfb34171b42f532ee93adf2eda1cdf3373823",
+      "bytes": 63985,
+      "sha256": "dacd89cddf5a34c3264e948a0491bd90a6875e13fcbd4d5829d17149e3939de8"
+    },
+    {
+      "label": "wp04_provider:3:r16_k2:proxy",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r16_k2_q1_q2_mc8.proxy.json",
+      "git_blob": "a79fb94a5c8c731feb1e84b363a505b1941d270c",
+      "bytes": 17468,
+      "sha256": "046736a3b1c1030551f34e9d46832379142fb6ad85535e63afcac8af0ee882a8"
+    },
+    {
+      "label": "wp04_provider:3:r1_k0:dataset",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r1_k0_q1_q2_mc8.dataset.json",
+      "git_blob": "727faed4663afa9238e261d051a3c9dce580d051",
+      "bytes": 63483,
+      "sha256": "678c3757747ffa7ac0e7d41f5e474ccb8b3bd7729eac74121c3ce9aca9d4c94f"
+    },
+    {
+      "label": "wp04_provider:3:r1_k0:proxy",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r1_k0_q1_q2_mc8.proxy.json",
+      "git_blob": "88b65e2d085acb5f74d13ebb3d0d5a7e9caa3ea0",
+      "bytes": 18077,
+      "sha256": "d781d219ad4b6d28f0486ca9d8a2e18b1f82ec72d038277cddb155a2d49142eb"
+    },
+    {
+      "label": "wp04_provider:3:r1_k2:dataset",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r1_k2_q1_q2_mc8.dataset.json",
+      "git_blob": "b560e1f18b9f89a6b1e5f49af1ea6c90a65af6d4",
+      "bytes": 63331,
+      "sha256": "b863235b12f7a11fdf4f469fa32985e06169e7b132e7be0b330554544efdc670"
+    },
+    {
+      "label": "wp04_provider:3:r1_k2:proxy",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r1_k2_q1_q2_mc8.proxy.json",
+      "git_blob": "17e009d693d6823a5c0e8f765eb977ee74116f1d",
+      "bytes": 17523,
+      "sha256": "ced5b6584f621976a31ebe462b61806347fe8d1b102b59a73a90a92e04c26d06"
+    },
+    {
+      "label": "wp04_provider:3:r2_k2:dataset",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r2_k2_q1_q2_mc8.dataset.json",
+      "git_blob": "319c1e097e0e7d9fd7ce1ed7014333c3e5cc923b",
+      "bytes": 63383,
+      "sha256": "08113077c189db2b6280fa7a7ab562b3d62fcfedfdcec4c8b2a9286464a8d3e4"
+    },
+    {
+      "label": "wp04_provider:3:r2_k2:proxy",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r2_k2_q1_q2_mc8.proxy.json",
+      "git_blob": "03c3911730ac39d9f7bf5282d5ada3d0e908db4d",
+      "bytes": 17553,
+      "sha256": "fa06b1b603ffc7330f662afa5190720e9e394e315aed8f0353f0bf1293c3d339"
+    },
+    {
+      "label": "wp04_provider:3:r32_k2:dataset",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r32_k2_q1_q2_mc8.dataset.json",
+      "git_blob": "2e4e746a0e6ea25c3889dacc74207616ae2f27bf",
+      "bytes": 64877,
+      "sha256": "dc56276dbbb4d46bc720fa2bdc1a8d30ca5de25191600238e2c887b9ec2346c2"
+    },
+    {
+      "label": "wp04_provider:3:r32_k2:proxy",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r32_k2_q1_q2_mc8.proxy.json",
+      "git_blob": "3fcfd88e52916af8a4950ee3407892bceba5990f",
+      "bytes": 17698,
+      "sha256": "59ce0b3f1e519bf792c931e694b9460f6393c934d29f0fa259690e363f660757"
+    },
+    {
+      "label": "wp04_provider:3:r4_k2:dataset",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r4_k2_q1_q2_mc8.dataset.json",
+      "git_blob": "c096d63cd8411647c61680d87f792ebd0b069845",
+      "bytes": 63365,
+      "sha256": "6025ae56dd56655c4a0d5f6fc0930e5592b29436aa9f5cc3f1484b76efbb8811"
+    },
+    {
+      "label": "wp04_provider:3:r4_k2:proxy",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r4_k2_q1_q2_mc8.proxy.json",
+      "git_blob": "255decf39a08f2e17c5f173011e4c465ed5f52d6",
+      "bytes": 17395,
+      "sha256": "ce3dcd1905189b643cc398312e5e02c5542f3eea4dc6c8c831e7554bb010d077"
+    },
+    {
+      "label": "wp04_provider:3:r8_k2:dataset",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r8_k2_q1_q2_mc8.dataset.json",
+      "git_blob": "8e2aa0a8565fead4f26a1891047decd73e35a11d",
+      "bytes": 63837,
+      "sha256": "a0974e2aa4b95474d6e0a9c57f2bf27825c5ba54d5b949fbd9a6b70440956217"
+    },
+    {
+      "label": "wp04_provider:3:r8_k2:proxy",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r8_k2_q1_q2_mc8.proxy.json",
+      "git_blob": "089c8349d4a55317bf70ff3a0b439fffb664188c",
+      "bytes": 17825,
+      "sha256": "642ce172e58708b22a13156f78f0025cff0ed529bfc4077b49600c8f14b8daae"
+    },
+    {
+      "label": "declared_source:long_schedule",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "scripts/run_rpe_delta_round_schedule_validation.py",
+      "git_blob": "72044c9e87d1132784a4584f47f33395d67dde36",
+      "bytes": 6968,
+      "sha256": "d22278c8efd2d06d27d5d2cd26b987a6a9c5489cbdcf26ffb6f8ab344b7ed949"
+    },
+    {
+      "label": "declared_source:wp01_screening",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "scripts/run_research_direction_prevalidation.py",
+      "git_blob": "003ff168770ff4199a7633182bc675ca6cc53586",
+      "bytes": 33797,
+      "sha256": "ba8aa1037a8819c990f1a24b9b9da5bcc0de7a1349c5f7a2189f8383fe653f16"
+    },
+    {
+      "label": "declared_source:wp05a",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "scripts/run_research_direction_full_scope.py",
+      "git_blob": "37d85b20dc04697c9e5d879811d2d952156b5354",
+      "bytes": 5366,
+      "sha256": "129a21faab5fda5d5a846da406268466b9eb972fbab9650942bbd75548b360c4"
+    },
+    {
+      "label": "declared_source:wp05a",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "src/trotterlib/df_partial_s2_repeated.py",
+      "git_blob": "6b88b58eff5056e93f963a9c692246e94e5cad2d",
+      "bytes": 30013,
+      "sha256": "65b5ebd842a972735c7aa1e7ba4d11d8265ab586119f29bf5acc8631700c7d6d"
+    },
+    {
+      "label": "declared_source:wp05a",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "src/trotterlib/research_direction_full_scope.py",
+      "git_blob": "f50512a1d2c14a2fc9ce05b97dd937702e093937",
+      "bytes": 43568,
+      "sha256": "fd823967674da65f05d6f06048393437ad3b950018bf64469df001fc45a10bcf"
+    },
+    {
+      "label": "declared_source:wp05b",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "scripts/run_research_direction_full_scope_extension.py",
+      "git_blob": "3d548dfd1b9e92b0e744e8c78423072bddfef3e0",
+      "bytes": 5415,
+      "sha256": "c1d8db77da6b5e2620d0e6273f5e9b148c8325596dcfed7eb8abf91e7da20284"
+    },
+    {
+      "label": "declared_source:wp05b",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "src/trotterlib/research_direction_full_scope_extension.py",
+      "git_blob": "4396ccc52570adb4b023a59ef84e5849e83e27da",
+      "bytes": 32491,
+      "sha256": "b67360541910cd7509c9f0444f7a9faf65aa5fc55a7d88587bd82aacc2fea6d0"
+    },
+    {
+      "label": "declared_source:wp05br",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "scripts/run_research_direction_full_scope_replication.py",
+      "git_blob": "8db5b7df118099c1b0a311b9f96238f42fe97ac8",
+      "bytes": 5340,
+      "sha256": "634daaddd95ca16fd04fed82306b936cc8ac3354f07a6a01250006dc0614a7bd"
+    },
+    {
+      "label": "declared_source:wp05br",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "src/trotterlib/research_direction_full_scope_replication.py",
+      "git_blob": "0caa38b769f589a323358270496323e8a8f21825",
+      "bytes": 13116,
+      "sha256": "585d717c5ad2cd445a9213890f7e94d1882fb485ca8c109b4f9446427fed6c1c"
+    },
+    {
+      "label": "declared_source:a0",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "scripts/run_research_direction_proxy_lineage_reconciliation.py",
+      "git_blob": "2f45641014bb4c8ddec4a52e3af23b587bf1a641",
+      "bytes": 3655,
+      "sha256": "00ac712a8c63e5822627915bcaacc5cf8fd362eb15513bc1822afe2a11c708f7"
+    },
+    {
+      "label": "declared_source:a0",
+      "commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "path": "src/trotterlib/research_direction_proxy_lineage_reconciliation.py",
+      "git_blob": "cb082fdf3db5a35710ffafc51f118b0edb15d0f7",
+      "bytes": 17368,
+      "sha256": "3ca3fdee8f485ed8576e0273e76bcc9cf653fba0ecd094c2ce1aa6918af36302"
+    }
+  ],
+  "fingerprints": {
+    "allocation": {
+      "saved": "1cc242bdadc7d504b328befdab091c0fa82186cf0453333f1f24b0bdbc8afd7b",
+      "canonical_sha256": "1cc242bdadc7d504b328befdab091c0fa82186cf0453333f1f24b0bdbc8afd7b",
+      "matches": true
+    },
+    "wp04": {
+      "saved": "b7493a865fa4194e0af7dac90417cb67cbdb76781fd14f0cc51c7663028a6ab9",
+      "canonical_sha256": "b7493a865fa4194e0af7dac90417cb67cbdb76781fd14f0cc51c7663028a6ab9",
+      "matches": true
+    },
+    "wp01_v1_history": {
+      "saved": "9cc712135af95ae64598bd584958a30f8b518d6c1a9d29f5adb286bba731a617",
+      "canonical_sha256": "9cc712135af95ae64598bd584958a30f8b518d6c1a9d29f5adb286bba731a617",
+      "matches": true
+    },
+    "wp01_v2": {
+      "saved": "709142f76a78232804cae9971a24bc5757b3ef2e5258adb7314fc42e91937474",
+      "canonical_sha256": "709142f76a78232804cae9971a24bc5757b3ef2e5258adb7314fc42e91937474",
+      "matches": true
+    },
+    "wp11": {
+      "saved": "5ce368a94daa39680b4edc0cfb59b30168d8bc159ad2538b29cb67b928e3cdba",
+      "canonical_sha256": "5ce368a94daa39680b4edc0cfb59b30168d8bc159ad2538b29cb67b928e3cdba",
+      "matches": true
+    },
+    "wp11_audit": {
+      "saved": "b39960a630746e2c05009f8d7e13bd982ff565b3a3c70a7abfc2dc65dc7009ca",
+      "canonical_sha256": "b39960a630746e2c05009f8d7e13bd982ff565b3a3c70a7abfc2dc65dc7009ca",
+      "matches": true
+    },
+    "phase4": {
+      "saved": "da041036cd3cfb7989007acf9c1acb5d8ade2f1f5fb3e439e33d5f952e49a02f",
+      "canonical_sha256": "da041036cd3cfb7989007acf9c1acb5d8ade2f1f5fb3e439e33d5f952e49a02f",
+      "matches": true
+    },
+    "long_schedule": {
+      "saved": "d5fa8dc8cd8cf8f48f849b1cb8a15651e01d4dab177eca18a2efb0b0ebb1b78f",
+      "canonical_sha256": "d5fa8dc8cd8cf8f48f849b1cb8a15651e01d4dab177eca18a2efb0b0ebb1b78f",
+      "matches": true
+    },
+    "wp01_screening": {
+      "saved": "8d23ca982c50bbf954374d0b5193381d1324e09838764eb7293490d6ad4a506d",
+      "canonical_sha256": "8d23ca982c50bbf954374d0b5193381d1324e09838764eb7293490d6ad4a506d",
+      "matches": true
+    },
+    "wp05a": {
+      "saved": "d8196ef1d8a576b7b7ab443c8613d2bd70b7a4fa57f43ac495be62bf2748f512",
+      "canonical_sha256": "d8196ef1d8a576b7b7ab443c8613d2bd70b7a4fa57f43ac495be62bf2748f512",
+      "matches": true
+    },
+    "wp05b": {
+      "saved": "363ac90ace643556ff068ff7b22ed8e43c51c6dbd0085a2256dac29a0303bfda",
+      "canonical_sha256": "363ac90ace643556ff068ff7b22ed8e43c51c6dbd0085a2256dac29a0303bfda",
+      "matches": true
+    },
+    "wp05br": {
+      "saved": "7bfeddaccfe10f28b67bdf857ebd76cd43b0eb74b5af5d209a435ee9d8abb472",
+      "canonical_sha256": "7bfeddaccfe10f28b67bdf857ebd76cd43b0eb74b5af5d209a435ee9d8abb472",
+      "matches": true
+    },
+    "a0": {
+      "saved": "b786b1d48995d320c2301718cc958018462cf1cbb05fcfa19ca6cc9460dd2295",
+      "canonical_sha256": "b786b1d48995d320c2301718cc958018462cf1cbb05fcfa19ca6cc9460dd2295",
+      "matches": true
+    },
+    "signal_grid": {
+      "saved": "7a7233036dfc78b0f8d36dd7f201150be166f63e89293cbf3b346eb48ec10cdb",
+      "canonical_sha256": "7a7233036dfc78b0f8d36dd7f201150be166f63e89293cbf3b346eb48ec10cdb",
+      "matches": true
+    }
+  },
+  "historical_source_hash_comparison": [
+    {
+      "result": "allocation",
+      "path": "scripts/run_rpe_allocation_sensitivity_validation.py",
+      "saved_sha256": "43a0c390ae86c4435b74da837c5bc36e030d5a841fa8ce39b6a696dccde2df15",
+      "fixed_sha256": "43a0c390ae86c4435b74da837c5bc36e030d5a841fa8ce39b6a696dccde2df15",
+      "matches": true,
+      "recorded_git_commit": "2bf31169e53f747601f2012425e525f0d59af988",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "allocation",
+      "path": "src/trotterlib/rpe_allocation_sensitivity_validation.py",
+      "saved_sha256": "e2ff0ebfec2df3420f43751c841cec3371be0e4ee46e2424b7d2343a1896e3b8",
+      "fixed_sha256": "e2ff0ebfec2df3420f43751c841cec3371be0e4ee46e2424b7d2343a1896e3b8",
+      "matches": true,
+      "recorded_git_commit": "2bf31169e53f747601f2012425e525f0d59af988",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp04",
+      "path": "scripts/run_research_direction_ablation.py",
+      "saved_sha256": "eb0d1cecb4b21b466309cbccfe389fb58c4a340909de0cbc3c36144bd3724945",
+      "fixed_sha256": "eb0d1cecb4b21b466309cbccfe389fb58c4a340909de0cbc3c36144bd3724945",
+      "matches": true,
+      "recorded_git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp04",
+      "path": "src/trotterlib/research_direction_ablation.py",
+      "saved_sha256": "80219572a9933766a517064fd5187ace12a980964e4ca57f9246c0b871b23837",
+      "fixed_sha256": "80219572a9933766a517064fd5187ace12a980964e4ca57f9246c0b871b23837",
+      "matches": true,
+      "recorded_git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp01_v1_history",
+      "path": "scripts/run_research_direction_decision_cost.py",
+      "saved_sha256": "4021ecaf73e7d37c91c140631f09e62a03039fb20683166a863eaf7fce5bb308",
+      "fixed_sha256": "649328ccab0b9555007b4e341e2bbdbecf8b8ea3c04dc69de945f8d63b17c9c9",
+      "matches": false,
+      "recorded_git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp01_v1_history",
+      "path": "src/trotterlib/research_direction_ablation.py",
+      "saved_sha256": "80219572a9933766a517064fd5187ace12a980964e4ca57f9246c0b871b23837",
+      "fixed_sha256": "80219572a9933766a517064fd5187ace12a980964e4ca57f9246c0b871b23837",
+      "matches": true,
+      "recorded_git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp01_v1_history",
+      "path": "src/trotterlib/research_direction_decision_cost.py",
+      "saved_sha256": "281ad719953e9fc651a376d646dbd17adc08a04194941c17d34e25b7e84ce40f",
+      "fixed_sha256": "3e9ac9a18749381409fab89c183a40a0ca4e0e556b19a7c50aba362272b0f435",
+      "matches": false,
+      "recorded_git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp01_v2",
+      "path": "scripts/run_research_direction_decision_cost.py",
+      "saved_sha256": "649328ccab0b9555007b4e341e2bbdbecf8b8ea3c04dc69de945f8d63b17c9c9",
+      "fixed_sha256": "649328ccab0b9555007b4e341e2bbdbecf8b8ea3c04dc69de945f8d63b17c9c9",
+      "matches": true,
+      "recorded_git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp01_v2",
+      "path": "src/trotterlib/research_direction_ablation.py",
+      "saved_sha256": "80219572a9933766a517064fd5187ace12a980964e4ca57f9246c0b871b23837",
+      "fixed_sha256": "80219572a9933766a517064fd5187ace12a980964e4ca57f9246c0b871b23837",
+      "matches": true,
+      "recorded_git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp01_v2",
+      "path": "src/trotterlib/research_direction_decision_cost.py",
+      "saved_sha256": "3e9ac9a18749381409fab89c183a40a0ca4e0e556b19a7c50aba362272b0f435",
+      "fixed_sha256": "3e9ac9a18749381409fab89c183a40a0ca4e0e556b19a7c50aba362272b0f435",
+      "matches": true,
+      "recorded_git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp11",
+      "path": "scripts/run_research_direction_full_opt2_extension_analysis.py",
+      "saved_sha256": "b17c4748e8dfbdd1e9e34c650ea78c2d03ccdcb30f1da04e47f804fcebb73f27",
+      "fixed_sha256": "b17c4748e8dfbdd1e9e34c650ea78c2d03ccdcb30f1da04e47f804fcebb73f27",
+      "matches": true,
+      "recorded_git_commit": "7753eb71844e429facdb6f32c2def6e37379541f",
+      "evidence_status": "local_dirty_worktree_analysis_not_immutable_ci"
+    },
+    {
+      "result": "wp11",
+      "path": "src/trotterlib/research_direction_full_opt2_extension_analysis.py",
+      "saved_sha256": "b25af9a81e2d334e9a969574fefde13009d43c988712c4cb95f71e9d6527eb73",
+      "fixed_sha256": "b25af9a81e2d334e9a969574fefde13009d43c988712c4cb95f71e9d6527eb73",
+      "matches": true,
+      "recorded_git_commit": "7753eb71844e429facdb6f32c2def6e37379541f",
+      "evidence_status": "local_dirty_worktree_analysis_not_immutable_ci"
+    },
+    {
+      "result": "wp11_audit",
+      "path": "scripts/run_research_direction_full_opt2_extension_analysis.py",
+      "saved_sha256": "b17c4748e8dfbdd1e9e34c650ea78c2d03ccdcb30f1da04e47f804fcebb73f27",
+      "fixed_sha256": "b17c4748e8dfbdd1e9e34c650ea78c2d03ccdcb30f1da04e47f804fcebb73f27",
+      "matches": true,
+      "recorded_git_commit": "7753eb71844e429facdb6f32c2def6e37379541f",
+      "evidence_status": "local_dirty_worktree_analysis_not_immutable_ci"
+    },
+    {
+      "result": "wp11_audit",
+      "path": "src/trotterlib/research_direction_full_opt2_extension_analysis.py",
+      "saved_sha256": "b25af9a81e2d334e9a969574fefde13009d43c988712c4cb95f71e9d6527eb73",
+      "fixed_sha256": "b25af9a81e2d334e9a969574fefde13009d43c988712c4cb95f71e9d6527eb73",
+      "matches": true,
+      "recorded_git_commit": "7753eb71844e429facdb6f32c2def6e37379541f",
+      "evidence_status": "local_dirty_worktree_analysis_not_immutable_ci"
+    },
+    {
+      "result": "phase4",
+      "path": "scripts/run_rpe_four_round_phase_validation.py",
+      "saved_sha256": "16209d24cf76cbf8209ca2b2efa9db5bbb37f6ece6695fbfbf3384b5e36b6ca7",
+      "fixed_sha256": "16209d24cf76cbf8209ca2b2efa9db5bbb37f6ece6695fbfbf3384b5e36b6ca7",
+      "matches": true,
+      "recorded_git_commit": "2bf31169e53f747601f2012425e525f0d59af988",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "phase4",
+      "path": "src/trotterlib/rpe_four_round_phase_validation.py",
+      "saved_sha256": "3f62733046962bb52254f58b83012ef8af3192612c68c2052cd48fbab73035b4",
+      "fixed_sha256": "3f62733046962bb52254f58b83012ef8af3192612c68c2052cd48fbab73035b4",
+      "matches": true,
+      "recorded_git_commit": "2bf31169e53f747601f2012425e525f0d59af988",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "long_schedule",
+      "path": "scripts/run_rpe_delta_round_schedule_validation.py",
+      "saved_sha256": "d22278c8efd2d06d27d5d2cd26b987a6a9c5489cbdcf26ffb6f8ab344b7ed949",
+      "fixed_sha256": "d22278c8efd2d06d27d5d2cd26b987a6a9c5489cbdcf26ffb6f8ab344b7ed949",
+      "matches": true,
+      "recorded_git_commit": "2bf31169e53f747601f2012425e525f0d59af988",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "long_schedule",
+      "path": "src/trotterlib/rpe_delta_round_schedule_validation.py",
+      "saved_sha256": "7854a9f2b05cc4d29d06e0d731fe76b988aaf63878971fb5be6a49515b9595c8",
+      "fixed_sha256": "7854a9f2b05cc4d29d06e0d731fe76b988aaf63878971fb5be6a49515b9595c8",
+      "matches": true,
+      "recorded_git_commit": "2bf31169e53f747601f2012425e525f0d59af988",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp01_screening",
+      "path": "scripts/run_research_direction_prevalidation.py",
+      "saved_sha256": "ba8aa1037a8819c990f1a24b9b9da5bcc0de7a1349c5f7a2189f8383fe653f16",
+      "fixed_sha256": "ba8aa1037a8819c990f1a24b9b9da5bcc0de7a1349c5f7a2189f8383fe653f16",
+      "matches": true,
+      "recorded_git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp01_screening",
+      "path": "src/trotterlib/research_direction_prevalidation.py",
+      "saved_sha256": "03c9aa2dbc9f9f8ce58d082636f666204a43097585e03d652358594f3a147708",
+      "fixed_sha256": "03c9aa2dbc9f9f8ce58d082636f666204a43097585e03d652358594f3a147708",
+      "matches": true,
+      "recorded_git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp05a",
+      "path": "scripts/run_research_direction_full_scope.py",
+      "saved_sha256": "129a21faab5fda5d5a846da406268466b9eb972fbab9650942bbd75548b360c4",
+      "fixed_sha256": "129a21faab5fda5d5a846da406268466b9eb972fbab9650942bbd75548b360c4",
+      "matches": true,
+      "recorded_git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp05a",
+      "path": "src/trotterlib/df_partial_s2.py",
+      "saved_sha256": "2a9ff5483762ac7472ba49b0ed10c14e804ae3e2fbfb8a3979b7dce02a0d9444",
+      "fixed_sha256": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e",
+      "matches": false,
+      "recorded_git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp05a",
+      "path": "src/trotterlib/df_partial_s2_repeated.py",
+      "saved_sha256": "65b5ebd842a972735c7aa1e7ba4d11d8265ab586119f29bf5acc8631700c7d6d",
+      "fixed_sha256": "65b5ebd842a972735c7aa1e7ba4d11d8265ab586119f29bf5acc8631700c7d6d",
+      "matches": true,
+      "recorded_git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp05a",
+      "path": "src/trotterlib/research_direction_full_scope.py",
+      "saved_sha256": "5e1531d94e084186e9bedf62998659d522fa4164dcffe87fcabec6be99efd414",
+      "fixed_sha256": "fd823967674da65f05d6f06048393437ad3b950018bf64469df001fc45a10bcf",
+      "matches": false,
+      "recorded_git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp05b",
+      "path": "scripts/run_research_direction_full_scope_extension.py",
+      "saved_sha256": "c1d8db77da6b5e2620d0e6273f5e9b148c8325596dcfed7eb8abf91e7da20284",
+      "fixed_sha256": "c1d8db77da6b5e2620d0e6273f5e9b148c8325596dcfed7eb8abf91e7da20284",
+      "matches": true,
+      "recorded_git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp05b",
+      "path": "src/trotterlib/research_direction_full_scope_extension.py",
+      "saved_sha256": "b67360541910cd7509c9f0444f7a9faf65aa5fc55a7d88587bd82aacc2fea6d0",
+      "fixed_sha256": "b67360541910cd7509c9f0444f7a9faf65aa5fc55a7d88587bd82aacc2fea6d0",
+      "matches": true,
+      "recorded_git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp05br",
+      "path": "scripts/run_research_direction_full_scope_replication.py",
+      "saved_sha256": "634daaddd95ca16fd04fed82306b936cc8ac3354f07a6a01250006dc0614a7bd",
+      "fixed_sha256": "634daaddd95ca16fd04fed82306b936cc8ac3354f07a6a01250006dc0614a7bd",
+      "matches": true,
+      "recorded_git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp05br",
+      "path": "src/trotterlib/research_direction_full_scope_extension.py",
+      "saved_sha256": "b67360541910cd7509c9f0444f7a9faf65aa5fc55a7d88587bd82aacc2fea6d0",
+      "fixed_sha256": "b67360541910cd7509c9f0444f7a9faf65aa5fc55a7d88587bd82aacc2fea6d0",
+      "matches": true,
+      "recorded_git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "wp05br",
+      "path": "src/trotterlib/research_direction_full_scope_replication.py",
+      "saved_sha256": "585d717c5ad2cd445a9213890f7e94d1882fb485ca8c109b4f9446427fed6c1c",
+      "fixed_sha256": "585d717c5ad2cd445a9213890f7e94d1882fb485ca8c109b4f9446427fed6c1c",
+      "matches": true,
+      "recorded_git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+      "evidence_status": "local_worktree_validation_not_immutable_ci"
+    },
+    {
+      "result": "a0",
+      "path": "scripts/run_research_direction_proxy_lineage_reconciliation.py",
+      "saved_sha256": "00ac712a8c63e5822627915bcaacc5cf8fd362eb15513bc1822afe2a11c708f7",
+      "fixed_sha256": "00ac712a8c63e5822627915bcaacc5cf8fd362eb15513bc1822afe2a11c708f7",
+      "matches": true,
+      "recorded_git_commit": "898da8487aca30a176ce5931d34a923c28c34ac9",
+      "evidence_status": "local_worktree_analysis_not_externally_reproduced"
+    },
+    {
+      "result": "a0",
+      "path": "src/trotterlib/research_direction_proxy_lineage_reconciliation.py",
+      "saved_sha256": "3ca3fdee8f485ed8576e0273e76bcc9cf653fba0ecd094c2ce1aa6918af36302",
+      "fixed_sha256": "3ca3fdee8f485ed8576e0273e76bcc9cf653fba0ecd094c2ce1aa6918af36302",
+      "matches": true,
+      "recorded_git_commit": "898da8487aca30a176ce5931d34a923c28c34ac9",
+      "evidence_status": "local_worktree_analysis_not_externally_reproduced"
+    }
+  ],
+  "auditor_script_sha256": "4719fe33ef690bf80b5506d7ab7aeb7b03bff428aba3ff2d2c0aee09d190b1e5",
+  "metadata_joins": {
+    "wp04_signal_grid_sha256": true,
+    "wp04_signal_grid_fingerprint": true,
+    "wp11_initial_aggregate_fingerprint": true,
+    "wp11_extension_aggregate_fingerprint": true,
+    "wp04_wp01_declared_snapshot_sha256": true,
+    "wp11_source_expected_snapshot_sha256": true,
+    "wp01_wp05a_sha256": true,
+    "wp01_wp05b_sha256": true,
+    "wp01_wp05br_sha256": true
+  },
+  "wp11_pr_existing_physical_grid_join": {
+    "operation": "SAVED_VALUE_ID_JOIN_AND_INEQUALITY_ONLY",
+    "rows": [
+      {
+        "key": [
+          1,
+          1,
+          2
+        ],
+        "status": "PARAMETER_MATCH_PREPARATION_NOT_IDENTICAL",
+        "physical_saved_state": {
+          "attenuated_event_mean_signal": {
+            "imag": 0.04330819375415813,
+            "real": 0.9989255707627144
+          },
+          "conservative_radius_bound_pass": true,
+          "conservative_radius_lower_bound": 0.9998639377868259,
+          "corrected_finite_rte_radius": 0.9999999999684019,
+          "corrected_finite_rte_signal": {
+            "imag": 0.043314087131218426,
+            "real": 0.9990615045095037
+          },
+          "exact_signal": {
+            "imag": 0.04331419375913715,
+            "real": 0.9990614999182954
+          },
+          "finite_rte_phase_bound_applicable": true,
+          "finite_rte_phase_bound_pass": true,
+          "finite_rte_phase_bound_within_provisional_budget": true,
+          "finite_rte_phase_error": 2.5393576131542425e-13,
+          "finite_rte_phase_error_bound": 7.733972017628031e-10,
+          "finite_rte_signal_bound_pass": true,
+          "finite_rte_signal_error": 3.1553981722662853e-11,
+          "observed_attenuated_radius": 0.9998639385285691,
+          "pf_phase_error_within_provisional_budget": true,
+          "pf_signal": {
+            "imag": 0.04331408713283882,
+            "real": 0.999061504541016
+          },
+          "pf_vs_exact_phase_error": 1.0672645896215262e-07,
+          "pf_vs_exact_signal_error": 1.0672645896063182e-07,
+          "provisional_shot_relative_difference": 0.0,
+          "provisional_shots_reference_radius_per_axis": 212,
+          "provisional_shots_unit_radius_per_axis": 212,
+          "radius_model_absolute_error": 3.1548763601563223e-11,
+          "reference_radius_deviation_from_one": 4.5075054799781356e-14,
+          "reference_signal_radius": 0.9999999999999549,
+          "simplified_radius_model": 0.9998639385601179,
+          "state_label": "physical_df_ground_state"
+        },
+        "wp11_saved_model_radius_lower": 0.9998639377868708,
+        "physical_pf_error_within_wp11_budget": true,
+        "physical_rte_bound_within_wp11_budget": true,
+        "observed_physical_radius_above_wp11_model_lower": true
+      },
+      {
+        "key": [
+          2,
+          1,
+          2
+        ],
+        "status": "PARAMETER_MATCH_PREPARATION_NOT_IDENTICAL",
+        "physical_saved_state": {
+          "attenuated_event_mean_signal": {
+            "imag": 0.0865233243291444,
+            "real": 0.9959766962772754
+          },
+          "conservative_radius_bound_pass": true,
+          "conservative_radius_lower_bound": 0.9997278940864862,
+          "corrected_finite_rte_radius": 0.9999999999367121,
+          "corrected_finite_rte_signal": {
+            "imag": 0.08654687411153676,
+            "real": 0.9962477796486906
+          },
+          "exact_signal": {
+            "imag": 0.08654708676951049,
+            "real": 0.9962477612379911
+          },
+          "finite_rte_phase_bound_applicable": true,
+          "finite_rte_phase_bound_pass": true,
+          "finite_rte_phase_bound_within_provisional_budget": true,
+          "finite_rte_phase_error": 5.078576448592036e-13,
+          "finite_rte_phase_error_bound": 1.5467944041239608e-09,
+          "finite_rte_signal_bound_pass": true,
+          "finite_rte_signal_error": 6.310819626748028e-11,
+          "observed_attenuated_radius": 0.9997278955697707,
+          "pf_phase_error_within_provisional_budget": true,
+          "pf_signal": {
+            "imag": 0.08654687411750435,
+            "real": 0.996247779711516
+          },
+          "pf_vs_exact_phase_error": 2.134529148157111e-07,
+          "pf_vs_exact_signal_error": 2.1345291480801276e-07,
+          "provisional_shot_relative_difference": 0.0,
+          "provisional_shots_reference_radius_per_axis": 212,
+          "provisional_shots_unit_radius_per_axis": 212,
+          "radius_model_absolute_error": 6.308897848583683e-11,
+          "reference_radius_deviation_from_one": 1.8174350913113813e-13,
+          "reference_signal_radius": 0.9999999999998183,
+          "simplified_radius_model": 0.9997278956328597,
+          "state_label": "physical_df_ground_state"
+        },
+        "wp11_saved_model_radius_lower": 0.9997278940866675,
+        "physical_pf_error_within_wp11_budget": true,
+        "physical_rte_bound_within_wp11_budget": true,
+        "observed_physical_radius_above_wp11_model_lower": true
+      },
+      {
+        "key": [
+          4,
+          1,
+          2
+        ],
+        "status": "PARAMETER_MATCH_PREPARATION_NOT_IDENTICAL",
+        "physical_saved_state": {
+          "attenuated_event_mean_signal": {
+            "imag": 0.17235042943249795,
+            "real": 0.9844832938740641
+          },
+          "conservative_radius_bound_pass": true,
+          "conservative_radius_lower_bound": 0.9994558622142332,
+          "corrected_finite_rte_radius": 0.999999999873057,
+          "corrected_finite_rte_signal": {
+            "imag": 0.17244426233826754,
+            "real": 0.9850192770361018
+          },
+          "exact_signal": {
+            "imag": 0.17244468287159015,
+            "real": 0.9850192035434211
+          },
+          "finite_rte_phase_bound_applicable": true,
+          "finite_rte_phase_bound_pass": true,
+          "finite_rte_phase_bound_within_provisional_budget": true,
+          "finite_rte_phase_error": 1.0156597786323825e-12,
+          "finite_rte_phase_error_bound": 3.0935888106421946e-09,
+          "finite_rte_signal_bound_pass": true,
+          "finite_rte_signal_error": 1.262158930193918e-10,
+          "observed_attenuated_radius": 0.9994558651799955,
+          "pf_phase_error_within_provisional_budget": true,
+          "pf_signal": {
+            "imag": 0.1724442623610325,
+            "real": 0.9850192771602477
+          },
+          "pf_vs_exact_phase_error": 4.2690580490144854e-07,
+          "pf_vs_exact_signal_error": 4.2690580490446546e-07,
+          "provisional_shot_relative_difference": 0.0,
+          "provisional_shots_reference_radius_per_axis": 212,
+          "provisional_shots_unit_radius_per_axis": 212,
+          "radius_model_absolute_error": 1.261432069910029e-10,
+          "reference_radius_deviation_from_one": 7.311928840181281e-13,
+          "reference_signal_radius": 0.9999999999992688,
+          "simplified_radius_model": 0.9994558653061387,
+          "state_label": "physical_df_ground_state"
+        },
+        "wp11_saved_model_radius_lower": 0.9994558622149631,
+        "physical_pf_error_within_wp11_budget": true,
+        "physical_rte_bound_within_wp11_budget": true,
+        "observed_physical_radius_above_wp11_model_lower": true
+      },
+      {
+        "key": [
+          8,
+          1,
+          2
+        ],
+        "status": "PARAMETER_MATCH_PREPARATION_NOT_IDENTICAL",
+        "physical_saved_state": {
+          "attenuated_event_mean_signal": {
+            "imag": 0.3393522369363202,
+            "real": 0.939502685390124
+          },
+          "conservative_radius_bound_pass": true,
+          "conservative_radius_lower_bound": 0.9989120205129401,
+          "corrected_finite_rte_radius": 0.9999999997446561,
+          "corrected_finite_rte_signal": {
+            "imag": 0.33972184523461807,
+            "real": 0.9405259525178975
+          },
+          "exact_signal": {
+            "imag": 0.3397226483549434,
+            "real": 0.9405256626986326
+          },
+          "finite_rte_phase_bound_applicable": true,
+          "finite_rte_phase_bound_pass": true,
+          "finite_rte_phase_bound_within_provisional_budget": true,
+          "finite_rte_phase_error": 2.031097512925052e-12,
+          "finite_rte_phase_error_bound": 6.187177630868224e-09,
+          "finite_rte_signal_bound_pass": true,
+          "finite_rte_signal_error": 2.524320487891083e-10,
+          "observed_attenuated_radius": 0.9989120264412371,
+          "pf_phase_error_within_provisional_budget": true,
+          "pf_signal": {
+            "imag": 0.3397218453222823,
+            "real": 0.9405259527546187
+          },
+          "pf_vs_exact_phase_error": 8.538114135729243e-07,
+          "pf_vs_exact_signal_error": 8.538114135739725e-07,
+          "provisional_shot_relative_difference": 0.0,
+          "provisional_shots_reference_radius_per_axis": 212,
+          "provisional_shots_unit_radius_per_axis": 212,
+          "radius_model_absolute_error": 2.521493014384646e-10,
+          "reference_radius_deviation_from_one": 2.9199975770666242e-12,
+          "reference_signal_radius": 0.99999999999708,
+          "simplified_radius_model": 0.9989120266933864,
+          "state_label": "physical_df_ground_state"
+        },
+        "wp11_saved_model_radius_lower": 0.9989120205158553,
+        "physical_pf_error_within_wp11_budget": true,
+        "physical_rte_bound_within_wp11_budget": true,
+        "observed_physical_radius_above_wp11_model_lower": true
+      },
+      {
+        "key": [
+          16,
+          1,
+          2
+        ],
+        "status": "PARAMETER_MATCH_PREPARATION_NOT_IDENTICAL",
+        "physical_saved_state": {
+          "attenuated_event_mean_signal": {
+            "imag": 0.6376446757872318,
+            "real": 0.7675053551362614
+          },
+          "conservative_radius_bound_pass": true,
+          "conservative_radius_lower_bound": 0.9978252247196244,
+          "corrected_finite_rte_radius": 0.9999999994836799,
+          "corrected_finite_rte_signal": {
+            "imag": 0.6390344241584437,
+            "real": 0.7691781352247645
+          },
+          "exact_signal": {
+            "imag": 0.6390357379555358,
+            "real": 0.7691770443894058
+          },
+          "finite_rte_phase_bound_applicable": true,
+          "finite_rte_phase_bound_pass": true,
+          "finite_rte_phase_bound_within_provisional_budget": true,
+          "finite_rte_phase_error": 4.061695426583637e-12,
+          "finite_rte_phase_error_bound": 1.2374355300123445e-08,
+          "finite_rte_signal_bound_pass": true,
+          "finite_rte_signal_error": 5.04863860228258e-10,
+          "observed_attenuated_radius": 0.9978252365633186,
+          "pf_phase_error_within_provisional_budget": true,
+          "pf_signal": {
+            "imag": 0.6390344244841828,
+            "real": 0.7691781356104866
+          },
+          "pf_vs_exact_phase_error": 1.7076212818971589e-06,
+          "pf_vs_exact_signal_error": 1.7076212819113058e-06,
+          "provisional_shot_relative_difference": 0.0,
+          "provisional_shots_reference_radius_per_axis": 213,
+          "provisional_shots_unit_radius_per_axis": 213,
+          "radius_model_absolute_error": 5.037499306581594e-10,
+          "reference_radius_deviation_from_one": 1.1472489624964055e-11,
+          "reference_signal_radius": 0.9999999999885275,
+          "simplified_radius_model": 0.9978252370670685,
+          "state_label": "physical_df_ground_state"
+        },
+        "wp11_saved_model_radius_lower": 0.9978252247310684,
+        "physical_pf_error_within_wp11_budget": true,
+        "physical_rte_bound_within_wp11_budget": true,
+        "observed_physical_radius_above_wp11_model_lower": true
+      },
+      {
+        "key": [
+          32,
+          1,
+          2
+        ],
+        "status": "PARAMETER_MATCH_PREPARATION_NOT_IDENTICAL",
+        "physical_saved_state": {
+          "attenuated_event_mean_signal": {
+            "imag": 0.9787914066646564,
+            "real": 0.18247373758818888
+          },
+          "conservative_radius_bound_pass": true,
+          "conservative_radius_lower_bound": 0.9956551790673395,
+          "corrected_finite_rte_radius": 0.999999998947847,
+          "corrected_finite_rte_signal": {
+            "imag": 0.9830626134201765,
+            "real": 0.18327000843342187
+          },
+          "exact_signal": {
+            "imag": 0.9830632403596847,
+            "real": 0.1832666512312463
+          },
+          "finite_rte_phase_bound_applicable": true,
+          "finite_rte_phase_bound_pass": true,
+          "finite_rte_phase_bound_within_provisional_budget": true,
+          "finite_rte_phase_error": 8.121142656144442e-12,
+          "finite_rte_phase_error_bound": 2.474871075413844e-08,
+          "finite_rte_signal_bound_pass": true,
+          "finite_rte_signal_error": 1.0097266950942534e-09,
+          "observed_attenuated_radius": 0.9956552027032148,
+          "pf_phase_error_within_provisional_budget": true,
+          "pf_signal": {
+            "imag": 0.9830626144142574,
+            "real": 0.18327000861048492
+          },
+          "pf_vs_exact_phase_error": 3.4152310359043457e-06,
+          "pf_vs_exact_signal_error": 3.415231036106922e-06,
+          "provisional_shot_relative_difference": 0.0,
+          "provisional_shots_reference_radius_per_axis": 214,
+          "provisional_shots_unit_radius_per_axis": 214,
+          "radius_model_absolute_error": 1.0053072818649866e-09,
+          "reference_radius_deviation_from_one": 4.2458925264554637e-11,
+          "reference_signal_radius": 0.9999999999575411,
+          "simplified_radius_model": 0.9956552037085221,
+          "state_label": "physical_df_ground_state"
+        },
+        "wp11_saved_model_radius_lower": 0.9956551791096069,
+        "physical_pf_error_within_wp11_budget": true,
+        "physical_rte_bound_within_wp11_budget": true,
+        "observed_physical_radius_above_wp11_model_lower": true
+      },
+      {
+        "key": [
+          64,
+          1,
+          2
+        ],
+        "status": "PARAMETER_MATCH_PREPARATION_NOT_IDENTICAL",
+        "physical_saved_state": {
+          "attenuated_event_mean_signal": {
+            "imag": 0.35720745250785724,
+            "real": -0.9247359528392534
+          },
+          "conservative_radius_bound_pass": true,
+          "conservative_radius_lower_bound": 0.9913292355641137,
+          "corrected_finite_rte_radius": 0.9999999978558549,
+          "corrected_finite_rte_signal": {
+            "imag": 0.36033178682476197,
+            "real": -0.9328242059012963
+          },
+          "exact_signal": {
+            "imag": 0.36032541601851464,
+            "real": -0.9328266690929685
+          },
+          "finite_rte_phase_bound_applicable": true,
+          "finite_rte_phase_bound_pass": true,
+          "finite_rte_phase_bound_within_provisional_budget": true,
+          "finite_rte_phase_error": 1.623684523852915e-11,
+          "finite_rte_phase_error_bound": 4.949742212484947e-08,
+          "finite_rte_signal_bound_pass": true,
+          "finite_rte_signal_error": 2.0194461825561755e-09,
+          "observed_attenuated_radius": 0.9913292826304865,
+          "pf_phase_error_within_provisional_budget": true,
+          "pf_signal": {
+            "imag": 0.36033178753726297,
+            "real": -0.9328242077908744
+          },
+          "pf_vs_exact_phase_error": 6.830392312990237e-06,
+          "pf_vs_exact_signal_error": 6.8303923136877715e-06,
+          "provisional_shot_relative_difference": 0.0,
+          "provisional_shots_reference_radius_per_axis": 216,
+          "provisional_shots_unit_radius_per_axis": 216,
+          "radius_model_absolute_error": 2.0018713353664452e-09,
+          "reference_radius_deviation_from_one": 1.24764198972116e-10,
+          "reference_signal_radius": 0.9999999998752358,
+          "simplified_radius_model": 0.9913292846323578,
+          "state_label": "physical_df_ground_state"
+        },
+        "wp11_saved_model_radius_lower": 0.991329235687782,
+        "physical_pf_error_within_wp11_budget": true,
+        "physical_rte_bound_within_wp11_budget": true,
+        "observed_physical_radius_above_wp11_model_lower": true
+      },
+      {
+        "key": [
+          128,
+          1,
+          2
+        ],
+        "status": "PARAMETER_MATCH_PREPARATION_NOT_IDENTICAL",
+        "physical_saved_state": {
+          "attenuated_event_mean_signal": {
+            "imag": -0.6606451478296738,
+            "real": 0.7275394185256273
+          },
+          "conservative_radius_bound_pass": true,
+          "conservative_radius_lower_bound": 0.9827336533612864,
+          "corrected_finite_rte_radius": 0.9999999957902488,
+          "corrected_finite_rte_signal": {
+            "imag": -0.6722524257275588,
+            "real": 0.7403220027014668
+          },
+          "exact_signal": {
+            "imag": -0.6722423152281793,
+            "real": 0.7403311891421676
+          },
+          "finite_rte_phase_bound_applicable": true,
+          "finite_rte_phase_bound_pass": true,
+          "finite_rte_phase_bound_within_provisional_budget": true,
+          "finite_rte_phase_error": 3.247208072224522e-11,
+          "finite_rte_phase_error_bound": 9.899484670427213e-08,
+          "finite_rte_signal_bound_pass": true,
+          "finite_rte_signal_error": 4.038870020706555e-09,
+          "observed_attenuated_radius": 0.9827337466778575,
+          "pf_phase_error_within_provisional_budget": true,
+          "pf_signal": {
+            "imag": -0.6722524284185715,
+            "real": 0.7403220057132639
+          },
+          "pf_vs_exact_phase_error": 1.3660599779682249e-05,
+          "pf_vs_exact_signal_error": 1.3660599779508793e-05,
+          "provisional_shot_relative_difference": 0.0,
+          "provisional_shots_reference_radius_per_axis": 219,
+          "provisional_shots_unit_radius_per_axis": 219,
+          "radius_model_absolute_error": 3.969005790693814e-09,
+          "reference_radius_deviation_from_one": 1.7101176030820398e-10,
+          "reference_signal_radius": 0.9999999998289882,
+          "simplified_radius_model": 0.9827337506468633,
+          "state_label": "physical_df_ground_state"
+        },
+        "wp11_saved_model_radius_lower": 0.9827336535293174,
+        "physical_pf_error_within_wp11_budget": true,
+        "physical_rte_bound_within_wp11_budget": true,
+        "observed_physical_radius_above_wp11_model_lower": true
+      },
+      {
+        "key": [
+          256,
+          2,
+          2
+        ],
+        "status": "PARAMETER_MATCH_PREPARATION_NOT_IDENTICAL",
+        "physical_saved_state": {
+          "attenuated_event_mean_signal": {
+            "imag": -0.9781792465261092,
+            "real": 0.09449303668679321
+          },
+          "conservative_radius_bound_pass": true,
+          "conservative_radius_lower_bound": 0.9827326831442851,
+          "corrected_finite_rte_radius": 0.9999999988442609,
+          "corrected_finite_rte_signal": {
+            "imag": -0.9953665314896617,
+            "real": 0.09615334460517834
+          },
+          "exact_signal": {
+            "imag": -0.9953639052491243,
+            "real": 0.09618053923331375
+          },
+          "finite_rte_phase_bound_applicable": true,
+          "finite_rte_phase_bound_pass": true,
+          "finite_rte_phase_bound_within_provisional_budget": true,
+          "finite_rte_phase_error": 4.057004737442111e-12,
+          "finite_rte_phase_error_bound": 2.4719823550573883e-08,
+          "finite_rte_signal_bound_pass": true,
+          "finite_rte_signal_error": 1.0097257686522229e-09,
+          "observed_attenuated_radius": 0.9827327064449816,
+          "pf_phase_error_within_provisional_budget": true,
+          "pf_signal": {
+            "imag": -0.9953665324943107,
+            "real": 0.09615334470630427
+          },
+          "pf_vs_exact_phase_error": 2.7321140471678236e-05,
+          "pf_vs_exact_signal_error": 2.7321140469225293e-05,
+          "provisional_shot_relative_difference": 0.0,
+          "provisional_shots_reference_radius_per_axis": 219,
+          "provisional_shots_unit_radius_per_axis": 219,
+          "radius_model_absolute_error": 9.922827004515966e-10,
+          "reference_radius_deviation_from_one": 1.4602141718000894e-10,
+          "reference_signal_radius": 0.9999999998539786,
+          "simplified_radius_model": 0.9827327074372643,
+          "state_label": "physical_df_ground_state"
+        },
+        "wp11_saved_model_radius_lower": 0.9827326832877852,
+        "physical_pf_error_within_wp11_budget": true,
+        "physical_rte_bound_within_wp11_budget": true,
+        "observed_physical_radius_above_wp11_model_lower": true
+      },
+      {
+        "key": [
+          512,
+          2,
+          2
+        ],
+        "status": "PARAMETER_MATCH_PREPARATION_NOT_IDENTICAL",
+        "physical_saved_state": {
+          "attenuated_event_mean_signal": {
+            "imag": -0.184862254812331,
+            "real": -0.9479057044908024
+          },
+          "conservative_radius_bound_pass": true,
+          "conservative_radius_lower_bound": 0.9657635266476613,
+          "corrected_finite_rte_radius": 0.9999999978207357,
+          "corrected_finite_rte_signal": {
+            "imag": -0.1914156421758355,
+            "real": -0.981509066474622
+          },
+          "exact_signal": {
+            "imag": -0.19146927428047572,
+            "real": -0.9814986077455771
+          },
+          "finite_rte_phase_bound_applicable": true,
+          "finite_rte_phase_bound_pass": true,
+          "finite_rte_phase_bound_within_provisional_budget": true,
+          "finite_rte_phase_error": 8.120171221102155e-12,
+          "finite_rte_phase_error_bound": 4.943964771289962e-08,
+          "finite_rte_signal_bound_pass": true,
+          "finite_rte_signal_error": 2.019461352262972e-09,
+          "observed_attenuated_radius": 0.9657635724443656,
+          "pf_phase_error_within_provisional_budget": true,
+          "pf_signal": {
+            "imag": -0.1914156425703589,
+            "real": -0.9815090684551713
+          },
+          "pf_vs_exact_phase_error": 5.464235332106946e-05,
+          "pf_vs_exact_signal_error": 5.464235331013355e-05,
+          "provisional_shot_relative_difference": 0.0,
+          "provisional_shots_reference_radius_per_axis": 227,
+          "provisional_shots_unit_radius_per_axis": 227,
+          "radius_model_absolute_error": 1.95030658289852e-09,
+          "reference_radius_deviation_from_one": 1.5981926893005038e-10,
+          "reference_signal_radius": 0.9999999998401807,
+          "simplified_radius_model": 0.9657635743946722,
+          "state_label": "physical_df_ground_state"
+        },
+        "wp11_saved_model_radius_lower": 0.9657635268020089,
+        "physical_pf_error_within_wp11_budget": true,
+        "physical_rte_bound_within_wp11_budget": true,
+        "observed_physical_radius_above_wp11_model_lower": true
+      },
+      {
+        "key": [
+          1024,
+          4,
+          2
+        ],
+        "status": "PARAMETER_MATCH_PREPARATION_NOT_IDENTICAL",
+        "physical_saved_state": {
+          "attenuated_event_mean_signal": {
+            "imag": 0.3628877670481872,
+            "real": 0.8949920441076994
+          },
+          "conservative_radius_bound_pass": true,
+          "conservative_radius_lower_bound": 0.9657630498154214,
+          "corrected_finite_rte_radius": 0.9999999993490083,
+          "corrected_finite_rte_signal": {
+            "imag": 0.37575237795849525,
+            "real": 0.9267201029202683
+          },
+          "exact_signal": {
+            "imag": 0.3758536522646862,
+            "real": 0.9266790340130151
+          },
+          "finite_rte_phase_bound_applicable": true,
+          "finite_rte_phase_bound_pass": true,
+          "finite_rte_phase_bound_within_provisional_budget": true,
+          "finite_rte_phase_error": 1.0078049514066106e-12,
+          "finite_rte_phase_error_bound": 1.235270042615327e-08,
+          "finite_rte_signal_bound_pass": true,
+          "finite_rte_signal_error": 5.050794549924282e-10,
+          "observed_attenuated_radius": 0.9657630612574171,
+          "pf_phase_error_within_provisional_budget": true,
+          "pf_signal": {
+            "imag": 0.37575237814921364,
+            "real": 0.926720103387956
+          },
+          "pf_vs_exact_phase_error": 0.00010928467429782703,
+          "pf_vs_exact_signal_error": 0.00010928467423560599,
+          "provisional_shot_relative_difference": 0.0,
+          "provisional_shots_reference_radius_per_axis": 227,
+          "provisional_shots_unit_radius_per_axis": 227,
+          "radius_model_absolute_error": 4.877861448093768e-10,
+          "reference_radius_deviation_from_one": 1.4591328145741045e-10,
+          "reference_signal_radius": 0.9999999998540867,
+          "simplified_radius_model": 0.9657630617452032,
+          "state_label": "physical_df_ground_state"
+        },
+        "wp11_saved_model_radius_lower": 0.965763049956339,
+        "physical_pf_error_within_wp11_budget": true,
+        "physical_rte_bound_within_wp11_budget": true,
+        "observed_physical_radius_above_wp11_model_lower": true
+      },
+      {
+        "key": [
+          2048,
+          8,
+          2
+        ],
+        "status": "PARAMETER_MATCH_PREPARATION_NOT_IDENTICAL",
+        "physical_saved_state": {
+          "attenuated_event_mean_signal": {
+            "imag": 0.6725906890249251,
+            "real": 0.6930510865999936
+          },
+          "conservative_radius_bound_pass": true,
+          "conservative_radius_lower_bound": 0.9657629305760573,
+          "corrected_finite_rte_radius": 0.9999999997123717,
+          "corrected_finite_rte_signal": {
+            "imag": 0.6964345654041224,
+            "real": 0.7176203003922859
+          },
+          "exact_signal": {
+            "imag": 0.6965913988218068,
+            "real": 0.7174680641585918
+          },
+          "finite_rte_phase_bound_applicable": true,
+          "finite_rte_phase_bound_pass": true,
+          "finite_rte_phase_bound_within_provisional_budget": true,
+          "finite_rte_phase_error": 6.594724769241992e-14,
+          "finite_rte_phase_error_bound": 3.0872743403750562e-09,
+          "finite_rte_signal_bound_pass": true,
+          "finite_rte_signal_error": 1.251146606807102e-10,
+          "observed_attenuated_radius": 0.9657629334368012,
+          "pf_phase_error_within_provisional_budget": true,
+          "pf_signal": {
+            "imag": 0.6964345654913039,
+            "real": 0.7176203004820247
+          },
+          "pf_vs_exact_phase_error": 0.00021856942129887667,
+          "pf_vs_exact_signal_error": 0.00021856942084612808,
+          "provisional_shot_relative_difference": 0.0,
+          "provisional_shots_reference_radius_per_axis": 227,
+          "provisional_shots_unit_radius_per_axis": 227,
+          "radius_model_absolute_error": 1.2083123390738137e-10,
+          "reference_radius_deviation_from_one": 1.6251366918851318e-10,
+          "reference_signal_radius": 0.9999999998374863,
+          "simplified_radius_model": 0.9657629335576324,
+          "state_label": "physical_df_ground_state"
+        },
+        "wp11_saved_model_radius_lower": 0.965762930733007,
+        "physical_pf_error_within_wp11_budget": true,
+        "physical_rte_bound_within_wp11_budget": true,
+        "observed_physical_radius_above_wp11_model_lower": true
+      },
+      {
+        "key": [
+          4096,
+          8,
+          2
+        ],
+        "status": "PARAMETER_MATCH_PREPARATION_NOT_IDENTICAL",
+        "physical_saved_state": {
+          "attenuated_event_mean_signal": {
+            "imag": 0.9322794159963287,
+            "real": 0.027941573675696562
+          },
+          "conservative_radius_bound_pass": true,
+          "conservative_radius_lower_bound": 0.9326980383395771,
+          "corrected_finite_rte_radius": 0.999999999708568,
+          "corrected_finite_rte_signal": {
+            "imag": 0.9995511643416654,
+            "real": 0.029957791646867078
+          },
+          "exact_signal": {
+            "imag": 0.9995641648444151,
+            "real": 0.02952084617495563
+          },
+          "finite_rte_phase_bound_applicable": true,
+          "finite_rte_phase_bound_pass": true,
+          "finite_rte_phase_bound_within_provisional_budget": true,
+          "finite_rte_phase_error": 1.320818455048091e-13,
+          "finite_rte_phase_error_bound": 6.1745486895323345e-09,
+          "finite_rte_signal_bound_pass": true,
+          "finite_rte_signal_error": 2.5022920260060583e-10,
+          "observed_attenuated_radius": 0.9326980438651783,
+          "pf_phase_error_within_provisional_budget": true,
+          "pf_signal": {
+            "imag": 0.9995511645917862,
+            "real": 0.029957791654231368
+          },
+          "pf_vs_exact_phase_error": 0.0004371388354730717,
+          "pf_vs_exact_signal_error": 0.00043713883198352597,
+          "provisional_shot_relative_difference": 0.0,
+          "provisional_shots_reference_radius_per_axis": 244,
+          "provisional_shots_unit_radius_per_axis": 244,
+          "radius_model_absolute_error": 2.333881976568364e-10,
+          "reference_radius_deviation_from_one": 4.1202818934493735e-11,
+          "reference_signal_radius": 0.9999999999587972,
+          "simplified_radius_model": 0.9326980440985665,
+          "state_label": "physical_df_ground_state"
+        },
+        "wp11_saved_model_radius_lower": 0.9326980383780069,
+        "physical_pf_error_within_wp11_budget": true,
+        "physical_rte_bound_within_wp11_budget": true,
+        "observed_physical_radius_above_wp11_model_lower": true
+      },
+      {
+        "key": [
+          8192,
+          16,
+          2
+        ],
+        "status": "PARAMETER_MATCH_PREPARATION_NOT_IDENTICAL",
+        "physical_saved_state": {
+          "attenuated_event_mean_signal": {
+            "imag": 0.055858061304341,
+            "real": -0.9310238465245358
+          },
+          "conservative_radius_bound_pass": true,
+          "conservative_radius_lower_bound": 0.9326979807284264,
+          "corrected_finite_rte_radius": 0.9999999998439681,
+          "corrected_finite_rte_signal": {
+            "imag": 0.05988869105299008,
+            "real": -0.9982050612834498
+          },
+          "exact_signal": {
+            "imag": 0.05901595990473999,
+            "real": -0.9982570392822284
+          },
+          "finite_rte_phase_bound_applicable": true,
+          "finite_rte_phase_bound_pass": true,
+          "finite_rte_phase_bound_within_provisional_budget": true,
+          "finite_rte_phase_error": 1.5884515928592996e-13,
+          "finite_rte_phase_error_bound": 1.54341206298364e-09,
+          "finite_rte_signal_bound_pass": true,
+          "finite_rte_signal_error": 7.48161291660754e-11,
+          "observed_attenuated_radius": 0.9326979820981828,
+          "pf_phase_error_within_provisional_budget": true,
+          "pf_signal": {
+            "imag": 0.05988869105762927,
+            "real": -0.9982050613581219
+          },
+          "pf_vs_exact_phase_error": 0.0008742776553059716,
+          "pf_vs_exact_signal_error": 0.0008742776274261345,
+          "provisional_shot_relative_difference": 0.0,
+          "provisional_shots_reference_radius_per_axis": 244,
+          "provisional_shots_unit_radius_per_axis": 244,
+          "radius_model_absolute_error": 6.978084776676496e-11,
+          "reference_radius_deviation_from_one": 8.121592287579915e-11,
+          "reference_signal_radius": 0.9999999999187841,
+          "simplified_radius_model": 0.9326979821679636,
+          "state_label": "physical_df_ground_state"
+        },
+        "wp11_saved_model_radius_lower": 0.9326979808041763,
+        "physical_pf_error_within_wp11_budget": true,
+        "physical_rte_bound_within_wp11_budget": true,
+        "observed_physical_radius_above_wp11_model_lower": true
+      },
+      {
+        "key": [
+          16384,
+          16,
+          2
+        ],
+        "status": "PARAMETER_MATCH_PREPARATION_NOT_IDENTICAL",
+        "physical_saved_state": {
+          "attenuated_event_mean_signal": {
+            "imag": -0.10401037428276866,
+            "real": 0.8636852798032276
+          },
+          "conservative_radius_bound_pass": true,
+          "conservative_radius_lower_bound": 0.869925523284414,
+          "corrected_finite_rte_radius": 0.9999999997218812,
+          "corrected_finite_rte_signal": {
+            "imag": -0.11956238915217776,
+            "real": 0.9928266890771953
+          },
+          "exact_signal": {
+            "imag": -0.11782619480980897,
+            "real": 0.9930342329530436
+          },
+          "finite_rte_phase_bound_applicable": true,
+          "finite_rte_phase_bound_pass": true,
+          "finite_rte_phase_bound_within_provisional_budget": true,
+          "finite_rte_phase_error": 3.1773195198910347e-13,
+          "finite_rte_phase_error_bound": 3.0868241284953166e-09,
+          "finite_rte_signal_bound_pass": true,
+          "finite_rte_signal_error": 1.4963243513187063e-10,
+          "observed_attenuated_radius": 0.8699255258395521,
+          "pf_phase_error_within_provisional_budget": true,
+          "pf_signal": {
+            "imag": -0.11956238917038359,
+            "real": 0.992826689225716
+          },
+          "pf_vs_exact_phase_error": 0.0017485554140017673,
+          "pf_vs_exact_signal_error": 0.0017485551911347091,
+          "provisional_shot_relative_difference": 0.0,
+          "provisional_shots_reference_radius_per_axis": 280,
+          "provisional_shots_unit_radius_per_axis": 280,
+          "radius_model_absolute_error": 1.3016898670059618e-10,
+          "reference_radius_deviation_from_one": 1.2848655472907922e-10,
+          "reference_signal_radius": 0.9999999998715134,
+          "simplified_radius_model": 0.8699255259697211,
+          "state_label": "physical_df_ground_state"
+        },
+        "wp11_saved_model_radius_lower": 0.8699255233961877,
+        "physical_pf_error_within_wp11_budget": true,
+        "physical_rte_bound_within_wp11_budget": true,
+        "observed_physical_radius_above_wp11_model_lower": true
+      },
+      {
+        "key": [
+          32768,
+          32,
+          2
+        ],
+        "status": "PARAMETER_MATCH_PREPARATION_NOT_IDENTICAL",
+        "physical_saved_state": {
+          "attenuated_event_mean_signal": {
+            "imag": -0.20652854424181677,
+            "real": 0.8450540401972855
+          },
+          "conservative_radius_bound_pass": true,
+          "conservative_radius_lower_bound": 0.8699254963858616,
+          "corrected_finite_rte_radius": 0.9999999999496911,
+          "corrected_finite_rte_signal": {
+            "imag": -0.23740946199264837,
+            "real": 0.9714096701473295
+          },
+          "exact_signal": {
+            "imag": -0.23401088996946928,
+            "real": 0.9722339756332813
+          },
+          "finite_rte_phase_bound_applicable": true,
+          "finite_rte_phase_bound_pass": true,
+          "finite_rte_phase_bound_within_provisional_budget": true,
+          "finite_rte_phase_error": 3.938238624524614e-13,
+          "finite_rte_phase_error_bound": 7.716497649613432e-10,
+          "finite_rte_signal_bound_pass": true,
+          "finite_rte_signal_error": 6.808998679848569e-12,
+          "observed_attenuated_radius": 0.8699254970630528,
+          "pf_phase_error_within_provisional_budget": true,
+          "pf_signal": {
+            "imag": -0.23740946199141713,
+            "real": 0.9714096701406327
+          },
+          "pf_vs_exact_phase_error": 0.00349711077866261,
+          "pf_vs_exact_signal_error": 0.0034971089965251684,
+          "provisional_shot_relative_difference": 0.0,
+          "provisional_shots_reference_radius_per_axis": 280,
+          "provisional_shots_unit_radius_per_axis": 280,
+          "radius_model_absolute_error": 5.913491918363434e-12,
+          "reference_radius_deviation_from_one": 5.710654171764418e-11,
+          "reference_signal_radius": 0.9999999999428935,
+          "simplified_radius_model": 0.8699254970571393,
+          "state_label": "physical_df_ground_state"
+        },
+        "wp11_saved_model_radius_lower": 0.86992549643554,
+        "physical_pf_error_within_wp11_budget": true,
+        "physical_rte_bound_within_wp11_budget": true,
+        "observed_physical_radius_above_wp11_model_lower": true
+      },
+      {
+        "key": [
+          65536,
+          32,
+          2
+        ],
+        "status": "PARAMETER_MATCH_PREPARATION_NOT_IDENTICAL",
+        "physical_saved_state": {
+          "attenuated_event_mean_signal": {
+            "imag": -0.34905556143974903,
+            "real": 0.6714622914006043
+          },
+          "conservative_radius_bound_pass": true,
+          "conservative_radius_lower_bound": 0.7567703693734955,
+          "corrected_finite_rte_radius": 1.000000000046465,
+          "corrected_finite_rte_signal": {
+            "imag": -0.4612436943078206,
+            "real": 0.8872734947885031
+          },
+          "exact_signal": {
+            "imag": -0.4550266757929992,
+            "real": 0.8904778067513933
+          },
+          "finite_rte_phase_bound_applicable": true,
+          "finite_rte_phase_bound_pass": true,
+          "finite_rte_phase_bound_within_provisional_budget": true,
+          "finite_rte_phase_error": 7.879252805139637e-13,
+          "finite_rte_phase_error_bound": 1.5432995303792694e-09,
+          "finite_rte_signal_bound_pass": true,
+          "finite_rte_signal_error": 1.3618239225320146e-11,
+          "observed_attenuated_radius": 0.7567703705517074,
+          "pf_phase_error_within_provisional_budget": true,
+          "pf_signal": {
+            "imag": -0.4612436943022489,
+            "real": 0.8872734947760769
+          },
+          "pf_vs_exact_phase_error": 0.006994221457821246,
+          "pf_vs_exact_signal_error": 0.006994207201642608,
+          "provisional_shot_relative_difference": 0.0,
+          "provisional_shots_reference_radius_per_axis": 370,
+          "provisional_shots_unit_radius_per_axis": 370,
+          "radius_model_absolute_error": 1.0288547791503788e-11,
+          "reference_radius_deviation_from_one": 3.2869706956262235e-11,
+          "reference_signal_radius": 1.0000000000328697,
+          "simplified_radius_model": 0.7567703705414188,
+          "state_label": "physical_df_ground_state"
+        },
+        "wp11_saved_model_radius_lower": 0.7567703693486207,
+        "physical_pf_error_within_wp11_budget": true,
+        "physical_rte_bound_within_wp11_budget": true,
+        "observed_physical_radius_above_wp11_model_lower": true
+      },
+      {
+        "key": [
+          131072,
+          32,
+          2
+        ],
+        "status": "PARAMETER_MATCH_PREPARATION_NOT_IDENTICAL",
+        "physical_saved_state": {
+          "attenuated_event_mean_signal": {
+            "imag": -0.46875529425442597,
+            "real": 0.32902182375994465
+          },
+          "conservative_radius_bound_pass": true,
+          "conservative_radius_lower_bound": 0.5727013919655766,
+          "corrected_finite_rte_radius": 1.000000000099705,
+          "corrected_finite_rte_signal": {
+            "imag": -0.8184986092538312,
+            "real": 0.5745085089439095
+          },
+          "exact_signal": {
+            "imag": -0.8103823125470544,
+            "real": 0.5859014486335447
+          },
+          "finite_rte_phase_bound_applicable": true,
+          "finite_rte_phase_bound_pass": true,
+          "finite_rte_phase_bound_within_provisional_budget": true,
+          "finite_rte_phase_error": 1.5757395385791123e-12,
+          "finite_rte_phase_error_bound": 3.0865990630179466e-09,
+          "finite_rte_signal_bound_pass": true,
+          "finite_rte_signal_error": 2.723654701302129e-11,
+          "observed_attenuated_radius": 0.5727013937488484,
+          "pf_phase_error_within_provisional_budget": true,
+          "pf_signal": {
+            "imag": -0.8184986092324807,
+            "real": 0.5745085089269983
+          },
+          "pf_vs_exact_phase_error": 0.013988443007836207,
+          "pf_vs_exact_signal_error": 0.01398832895820163,
+          "provisional_shot_relative_difference": 0.0,
+          "provisional_shots_reference_radius_per_axis": 645,
+          "provisional_shots_unit_radius_per_axis": 645,
+          "radius_model_absolute_error": 1.557221018799737e-11,
+          "reference_radius_deviation_from_one": 7.251399480878717e-11,
+          "reference_signal_radius": 1.000000000072514,
+          "simplified_radius_model": 0.5727013937332762,
+          "state_label": "physical_df_ground_state"
+        },
+        "wp11_saved_model_radius_lower": 0.5727013919240477,
+        "physical_pf_error_within_wp11_budget": true,
+        "physical_rte_bound_within_wp11_budget": true,
+        "observed_physical_radius_above_wp11_model_lower": true
+      }
+    ],
+    "delta_matches": true,
+    "grid_request": {
+      "coefficient_atol": 1e-12,
+      "delta_time": 0.02,
+      "delta_time_selection": "explicit",
+      "finite_taylor_orders": [
+        2
+      ],
+      "identity_policy": "extract_identity_phase",
+      "ld": 3,
+      "matrix_free_backend": "python",
+      "maximum_delta_time": 0.1,
+      "numerical_atol": 1e-10,
+      "provisional_allocation": {
+        "alpha_axis_for_validated_round_set": 0.001388888888888889,
+        "alpha_total": 0.05,
+        "beta_pf_budget": 0.015,
+        "beta_rpe": 0.4,
+        "beta_rte_budget": 0.005,
+        "beta_stat_budget": 0.38
+      },
+      "q_values": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32,
+        64,
+        128,
+        256,
+        512,
+        1024,
+        2048,
+        4096,
+        8192,
+        16384,
+        32768,
+        65536,
+        131072
+      ],
+      "rte_step_values": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32
+      ],
+      "seed": 20260818
+    },
+    "grid_states": {
+      "effective_partial_s2_eigenstate_control": {
+        "definition": "PF-step eigenvector with maximum physical-state overlap",
+        "eigen_residual_norm": 2.3359615420828877e-15,
+        "physical_state_overlap": 0.9999999999396312,
+        "selected_eigenvalue": {
+          "imag": 0.0433140871359472,
+          "real": 0.9990615045409299
+        },
+        "state_fingerprint": "25f120a614a34c9924c8d60a2ce5c25a04eb3164096ce95c2c861a82da211f7c"
+      },
+      "physical_df_ground_state": {
+        "definition": "lowest eigenvector in the selected DF sector",
+        "state_fingerprint": "a07d6c7fdbbb23a035f9fc54b9956ee79e557a2185e29b1870748b771958be90"
+      }
+    },
+    "grid_summary": {
+      "all_applicable_phase_error_bounds_pass": true,
+      "all_conservative_radius_bounds_pass": true,
+      "all_operator_error_bounds_pass": true,
+      "all_pf_phase_errors_within_provisional_budget": true,
+      "all_phase_error_bounds_applicable": true,
+      "all_rte_phase_bounds_within_provisional_budget": true,
+      "all_signal_error_bounds_pass": true,
+      "general_radius_decision_rule": "recommend when physical PF radius deviates from one by more than 1% or provisional per-axis shots differ by more than 5%",
+      "general_radius_implementation_recommended": false,
+      "maximum_explicit_trajectory_count_log10_avoided": 29424630.603782125,
+      "maximum_physical_reference_radius_deviation_from_one": 1.7101176030820398e-10,
+      "maximum_provisional_shot_relative_difference": 1.6970842609569387e-10,
+      "overall_pass": true,
+      "phase_bound_applicable_state_count": 216,
+      "phase_bound_inapplicable_state_count": 0,
+      "point_count": 108,
+      "provisional_phase_feasible_point_count": 108,
+      "state_evaluation_count": 216
+    },
+    "grid_hamiltonian": {
+      "alias_phase_span": 0.05834702073816136,
+      "alias_phase_span_le_pi_over_two": true,
+      "df_truncation_value": 0.0,
+      "ground_energy": -2.1663874486347616,
+      "hamiltonian_hash": "56e4df83655aa2f2f8132126f2635996516dc2cfb1bf4cb8d95490184ad631e5",
+      "metadata": {
+        "basis": "sto-3g",
+        "charge": 0,
+        "df_rank_actual": 12,
+        "df_rank_config_selection": null,
+        "df_rank_requested": 12,
+        "df_rank_source": "explicit",
+        "df_tol_requested": null,
+        "df_truncation_value": 0.0,
+        "distance": 1.0,
+        "hermitized": true,
+        "hf_energy": -2.098545936997718,
+        "molecule_type": 4,
+        "multiplicity": 1
+      },
+      "n_df_blocks": 12,
+      "n_qubits": 8,
+      "partition_hash": "9034397f5bde1f20cb712578d14245f4dac1236413d34642a75d83d867b52086",
+      "preparation_hash": "89145d8324bf139eaec67265f3134a5c1a3cebb7ed97792d54ed3221d31f8919",
+      "sector_dimension": 70,
+      "sector_n_electrons": 4,
+      "sector_nelec_alpha": null,
+      "sector_nelec_beta": null,
+      "spectral_width": 2.9173510369080677
+    },
+    "grid_threshold_metadata": {
+      "threshold_dropped_coefficient_l1": 4.8294649659693557e-14,
+      "threshold_dropped_component_count": 108,
+      "threshold_operator_error_bound": 4.8294649659693557e-14
+    },
+    "same_preparation_verified": false,
+    "grid_preparation_hash": "89145d8324bf139eaec67265f3134a5c1a3cebb7ed97792d54ed3221d31f8919",
+    "wp04_ld3_cost_preparation_hashes": [
+      "50c77f5455cc1a3c0710ed3c7588efc957b9cead7436bd0a6d851af61738a4bc"
+    ],
+    "preparation_identity_comparisons": [
+      {
+        "pair": "r16_k2",
+        "hamiltonian_matches": true,
+        "partition_matches": true,
+        "preparation_matches": false
+      },
+      {
+        "pair": "r1_k0",
+        "hamiltonian_matches": true,
+        "partition_matches": true,
+        "preparation_matches": false
+      },
+      {
+        "pair": "r1_k2",
+        "hamiltonian_matches": true,
+        "partition_matches": true,
+        "preparation_matches": false
+      },
+      {
+        "pair": "r2_k2",
+        "hamiltonian_matches": true,
+        "partition_matches": true,
+        "preparation_matches": false
+      },
+      {
+        "pair": "r32_k2",
+        "hamiltonian_matches": true,
+        "partition_matches": true,
+        "preparation_matches": false
+      },
+      {
+        "pair": "r4_k2",
+        "hamiltonian_matches": true,
+        "partition_matches": true,
+        "preparation_matches": false
+      },
+      {
+        "pair": "r8_k2",
+        "hamiltonian_matches": true,
+        "partition_matches": true,
+        "preparation_matches": false
+      }
+    ],
+    "limitation": "Parameter-ID match only: grid coefficient_atol=1e-12 drops 108 terms; WP11 accounting SOURCE uses default coefficient_atol=0. Hashes differ. Numeric observations support only the saved grid, not identity with WP11, exact eigenstate/radius certification or WP11 statistical success. No transfer-error recalculation performed.",
+    "wp11_accounting_coefficient_atol_source_default": 0.0
+  },
+  "wp04_provider_metadata": [
+    {
+      "ld": "12",
+      "pair": "r0_k0",
+      "files": {
+        "dataset": {
+          "dataset_fingerprint": "4665eeb25c91f0bab017c4f7dd7191e53438ad98942a9c4a2697add23d31c603",
+          "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld12_dt0p02_r0_k0_q1_q2_exact.dataset.json",
+          "sha256": "2cd30cdc9b78985e73a9d1ca2aa434c73d2fe871f76394f7f92d5d1d61d8b20e"
+        },
+        "proxy": {
+          "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld12_dt0p02_r0_k0_q1_q2_exact.proxy.json",
+          "proxy_fingerprint": "9f11bb4dff4cf91b30a11bf9127fee7c5be51c0298cd5a6c78e5b1aa8ccc3570",
+          "sha256": "b5c09bf2194a846fba43379726c3edb7c7b6d321661ba095be72e40a39f0d383"
+        }
+      },
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "circuit_scope": "single_hadamard_interrogation_without_state_preparation",
+      "hamiltonian_fingerprint": "56e4df83655aa2f2f8132126f2635996516dc2cfb1bf4cb8d95490184ad631e5",
+      "partition_fingerprint": "2e579fb1fd0061e38786d1ede1e86f5baaa54b2333573eb0ceaa9d2abbb397be",
+      "preparation_fingerprint": "ef796ce44eaeccede1706b9be6bfe6a834b3c5ca6f21a470b47d879e2166682c"
+    },
+    {
+      "ld": "3",
+      "pair": "r16_k2",
+      "files": {
+        "dataset": {
+          "dataset_fingerprint": "33d5428997817ec15f635877ebeffa7bddc3b0e08489c011a6188198c8a9f476",
+          "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r16_k2_q1_q2_mc8.dataset.json",
+          "sha256": "dacd89cddf5a34c3264e948a0491bd90a6875e13fcbd4d5829d17149e3939de8"
+        },
+        "proxy": {
+          "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r16_k2_q1_q2_mc8.proxy.json",
+          "proxy_fingerprint": "fa3e1968080f2b152c9d2b84deb52605b448bb8706c986808361f13597aa58f9",
+          "sha256": "046736a3b1c1030551f34e9d46832379142fb6ad85535e63afcac8af0ee882a8"
+        }
+      },
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "circuit_scope": "single_hadamard_interrogation_without_state_preparation",
+      "hamiltonian_fingerprint": "56e4df83655aa2f2f8132126f2635996516dc2cfb1bf4cb8d95490184ad631e5",
+      "partition_fingerprint": "9034397f5bde1f20cb712578d14245f4dac1236413d34642a75d83d867b52086",
+      "preparation_fingerprint": "50c77f5455cc1a3c0710ed3c7588efc957b9cead7436bd0a6d851af61738a4bc"
+    },
+    {
+      "ld": "3",
+      "pair": "r1_k0",
+      "files": {
+        "dataset": {
+          "dataset_fingerprint": "5a59cb52485d929e77b87ce749744238aaf48f1bfabef9a238258730cfd104aa",
+          "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r1_k0_q1_q2_mc8.dataset.json",
+          "sha256": "678c3757747ffa7ac0e7d41f5e474ccb8b3bd7729eac74121c3ce9aca9d4c94f"
+        },
+        "proxy": {
+          "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r1_k0_q1_q2_mc8.proxy.json",
+          "proxy_fingerprint": "a8dac53ffbf5cfc0b6e15942d84771b056fd7d115dbb310c720dd250b9280f60",
+          "sha256": "d781d219ad4b6d28f0486ca9d8a2e18b1f82ec72d038277cddb155a2d49142eb"
+        }
+      },
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "circuit_scope": "single_hadamard_interrogation_without_state_preparation",
+      "hamiltonian_fingerprint": "56e4df83655aa2f2f8132126f2635996516dc2cfb1bf4cb8d95490184ad631e5",
+      "partition_fingerprint": "9034397f5bde1f20cb712578d14245f4dac1236413d34642a75d83d867b52086",
+      "preparation_fingerprint": "50c77f5455cc1a3c0710ed3c7588efc957b9cead7436bd0a6d851af61738a4bc"
+    },
+    {
+      "ld": "3",
+      "pair": "r1_k2",
+      "files": {
+        "dataset": {
+          "dataset_fingerprint": "1b056eca7f45a00e9badf7f2f875d5e55f641577b50f21b2219304107db14da3",
+          "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r1_k2_q1_q2_mc8.dataset.json",
+          "sha256": "b863235b12f7a11fdf4f469fa32985e06169e7b132e7be0b330554544efdc670"
+        },
+        "proxy": {
+          "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r1_k2_q1_q2_mc8.proxy.json",
+          "proxy_fingerprint": "ff6a540d5eaf4222b9b6b8c474fc68bd2d0fbd27337e4a591945a58f2ccd8a4e",
+          "sha256": "ced5b6584f621976a31ebe462b61806347fe8d1b102b59a73a90a92e04c26d06"
+        }
+      },
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "circuit_scope": "single_hadamard_interrogation_without_state_preparation",
+      "hamiltonian_fingerprint": "56e4df83655aa2f2f8132126f2635996516dc2cfb1bf4cb8d95490184ad631e5",
+      "partition_fingerprint": "9034397f5bde1f20cb712578d14245f4dac1236413d34642a75d83d867b52086",
+      "preparation_fingerprint": "50c77f5455cc1a3c0710ed3c7588efc957b9cead7436bd0a6d851af61738a4bc"
+    },
+    {
+      "ld": "3",
+      "pair": "r2_k2",
+      "files": {
+        "dataset": {
+          "dataset_fingerprint": "41fc0543db7e118027f26f639c96ffb3240c172129a2e445caa50ae5ac521ed5",
+          "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r2_k2_q1_q2_mc8.dataset.json",
+          "sha256": "08113077c189db2b6280fa7a7ab562b3d62fcfedfdcec4c8b2a9286464a8d3e4"
+        },
+        "proxy": {
+          "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r2_k2_q1_q2_mc8.proxy.json",
+          "proxy_fingerprint": "654ab06838ac207fec90c13e3882bebc8e1445437b5674b83f6883985c1f8aaf",
+          "sha256": "fa06b1b603ffc7330f662afa5190720e9e394e315aed8f0353f0bf1293c3d339"
+        }
+      },
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "circuit_scope": "single_hadamard_interrogation_without_state_preparation",
+      "hamiltonian_fingerprint": "56e4df83655aa2f2f8132126f2635996516dc2cfb1bf4cb8d95490184ad631e5",
+      "partition_fingerprint": "9034397f5bde1f20cb712578d14245f4dac1236413d34642a75d83d867b52086",
+      "preparation_fingerprint": "50c77f5455cc1a3c0710ed3c7588efc957b9cead7436bd0a6d851af61738a4bc"
+    },
+    {
+      "ld": "3",
+      "pair": "r32_k2",
+      "files": {
+        "dataset": {
+          "dataset_fingerprint": "4c5f8000aabe14dc4c46b888fe7f556ec1936e47e58c7fc468dbf30233b78b8b",
+          "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r32_k2_q1_q2_mc8.dataset.json",
+          "sha256": "dc56276dbbb4d46bc720fa2bdc1a8d30ca5de25191600238e2c887b9ec2346c2"
+        },
+        "proxy": {
+          "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r32_k2_q1_q2_mc8.proxy.json",
+          "proxy_fingerprint": "8f9ada3be957a636c7d1e5b97bdb9d4f4283b7efca12324dda68e6dc633053b8",
+          "sha256": "59ce0b3f1e519bf792c931e694b9460f6393c934d29f0fa259690e363f660757"
+        }
+      },
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "circuit_scope": "single_hadamard_interrogation_without_state_preparation",
+      "hamiltonian_fingerprint": "56e4df83655aa2f2f8132126f2635996516dc2cfb1bf4cb8d95490184ad631e5",
+      "partition_fingerprint": "9034397f5bde1f20cb712578d14245f4dac1236413d34642a75d83d867b52086",
+      "preparation_fingerprint": "50c77f5455cc1a3c0710ed3c7588efc957b9cead7436bd0a6d851af61738a4bc"
+    },
+    {
+      "ld": "3",
+      "pair": "r4_k2",
+      "files": {
+        "dataset": {
+          "dataset_fingerprint": "ac380d33df6ffb56fa11a2959c8126edf4cff483ff7adf2a38f8cf0a79d03de3",
+          "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r4_k2_q1_q2_mc8.dataset.json",
+          "sha256": "6025ae56dd56655c4a0d5f6fc0930e5592b29436aa9f5cc3f1484b76efbb8811"
+        },
+        "proxy": {
+          "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r4_k2_q1_q2_mc8.proxy.json",
+          "proxy_fingerprint": "b30819d377820dc2cfde70d0656187ed934f878209f906171d42a6103cbd4ddc",
+          "sha256": "ce3dcd1905189b643cc398312e5e02c5542f3eea4dc6c8c831e7554bb010d077"
+        }
+      },
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "circuit_scope": "single_hadamard_interrogation_without_state_preparation",
+      "hamiltonian_fingerprint": "56e4df83655aa2f2f8132126f2635996516dc2cfb1bf4cb8d95490184ad631e5",
+      "partition_fingerprint": "9034397f5bde1f20cb712578d14245f4dac1236413d34642a75d83d867b52086",
+      "preparation_fingerprint": "50c77f5455cc1a3c0710ed3c7588efc957b9cead7436bd0a6d851af61738a4bc"
+    },
+    {
+      "ld": "3",
+      "pair": "r8_k2",
+      "files": {
+        "dataset": {
+          "dataset_fingerprint": "590da3737506b32570247c5c8f05e15ef0110203dabce313cd86513c84159c49",
+          "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r8_k2_q1_q2_mc8.dataset.json",
+          "sha256": "a0974e2aa4b95474d6e0a9c57f2bf27825c5ba54d5b949fbd9a6b70440956217"
+        },
+        "proxy": {
+          "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_calibrations/ld3_dt0p02_r8_k2_q1_q2_mc8.proxy.json",
+          "proxy_fingerprint": "4d84ff06389714068e827755a73cc94f6aac2362d2246a4929eb4e51449c092e",
+          "sha256": "642ce172e58708b22a13156f78f0025cff0ed529bfc4077b49600c8f14b8daae"
+        }
+      },
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "circuit_scope": "single_hadamard_interrogation_without_state_preparation",
+      "hamiltonian_fingerprint": "56e4df83655aa2f2f8132126f2635996516dc2cfb1bf4cb8d95490184ad631e5",
+      "partition_fingerprint": "9034397f5bde1f20cb712578d14245f4dac1236413d34642a75d83d867b52086",
+      "preparation_fingerprint": "50c77f5455cc1a3c0710ed3c7588efc957b9cead7436bd0a6d851af61738a4bc"
+    }
+  ],
+  "saved_contract_summary": {
+    "beta_sum_matches_with_feasibility_tolerance:True": 50,
+    "beta_sum_within_represented_budget_without_tolerance:True": 44,
+    "alpha_sum_matches_saved_total:True": 50,
+    "alpha_exact_sum_within_represented_total:True": 30,
+    "saved_round_phase_usages_within_allocations:True": 50,
+    "saved_coordinate_widths_positive:True": 50,
+    "saved_shot_fields_positive_integers:True": 50,
+    "wp04_scenarios": 42,
+    "wp04_rounds": 756,
+    "alpha_exact_sum_within_represented_total:False": 20,
+    "beta_sum_within_represented_budget_without_tolerance:False": 6,
+    "wp01_v2_scenarios": 4,
+    "wp01_v2_rounds": 74,
+    "wp11_scenarios": 4,
+    "wp11_rounds": 74
+  },
+  "selected_wp11_saved_fields": {
+    "12": {
+      "delta_time": 0.02,
+      "maximum_round_index_M": 17,
+      "q_max": 131072,
+      "beta_pf_budget": 0.014077830256906622,
+      "beta_rte_budget": 0.0,
+      "beta_stat_budget": 0.3859221697430934,
+      "alpha_total_allocated": 0.05,
+      "maximum_empirical_pf_phase_proxy": 0.014077830255498839,
+      "maximum_finite_rte_phase_bound": 0.0,
+      "minimum_conservative_radius_lower_bound": 1.0,
+      "total_shots": 11162,
+      "total_compiled_rz_point_estimate": 1327822299806.0,
+      "last_three_round_cost_fraction": 0.8302589410503727
+    },
+    "3": {
+      "delta_time": 0.02,
+      "maximum_round_index_M": 17,
+      "q_max": 131072,
+      "beta_pf_budget": 0.014050012886294481,
+      "beta_rte_budget": 9.899584668737594e-08,
+      "beta_stat_budget": 0.38594988811785885,
+      "alpha_total_allocated": 0.05,
+      "maximum_empirical_pf_phase_proxy": 0.01405001288488948,
+      "maximum_finite_rte_phase_bound": 9.899484668737594e-08,
+      "minimum_conservative_radius_lower_bound": 0.5727013919240477,
+      "total_shots": 13588,
+      "total_compiled_rz_point_estimate": 1263314146772.9375,
+      "last_three_round_cost_fraction": 0.9139324437497927
+    }
+  },
+  "saved_wp11_comparison": {
+    "ld12_total_compiled_rz_point_estimate": 1327822299806.0,
+    "ld3_over_ld12_point_estimate_ratio": 0.9514180827942961,
+    "ld3_total_compiled_rz_point_estimate": 1263314146772.9375,
+    "measured_model_discrepancy_half_width": {
+      "ld12_deterministic": 0.0,
+      "ld3_full_basis_per_r": 60636748803.40786,
+      "ld3_selected_per_r": 53258783757.6017
+    },
+    "point_preference": "L_D=3",
+    "sampling_uncertainty": {
+      "ld12_95_half_width": 0.0,
+      "ld3_95_half_width": 58532541516.722305
+    },
+    "scenarios": {
+      "local_5_percent": {
+        "intervals_overlap": true,
+        "ld12_interval": [
+          1261431184815.7,
+          1394213414796.3
+        ],
+        "ld12_total_half_width": 66391114990.3,
+        "ld3_interval": [
+          1141615897917.5684,
+          1385012395628.3066
+        ],
+        "ld3_total_half_width": 121698248855.36919
+      },
+      "per_r_full_basis_measured_discrepancy": {
+        "intervals_overlap": true,
+        "ld12_interval": [
+          1327822299806.0,
+          1327822299806.0
+        ],
+        "ld12_total_half_width": 0.0,
+        "ld3_interval": [
+          1144144856452.8074,
+          1382483437093.0676
+        ],
+        "ld3_total_half_width": 119169290320.13016
+      },
+      "per_r_selected_measured_discrepancy": {
+        "intervals_overlap": true,
+        "ld12_interval": [
+          1327822299806.0,
+          1327822299806.0
+        ],
+        "ld12_total_half_width": 0.0,
+        "ld3_interval": [
+          1151522821498.6135,
+          1375105472047.2615
+        ],
+        "ld3_total_half_width": 111791325274.324
+      },
+      "transfer_25_percent": {
+        "intervals_overlap": true,
+        "ld12_interval": [
+          995866724854.5,
+          1659777874757.5
+        ],
+        "ld12_total_half_width": 331955574951.5,
+        "ld3_interval": [
+          888953068562.9808,
+          1637675224982.894
+        ],
+        "ld3_total_half_width": 374361078209.95667
+      }
+    }
+  },
+  "saved_wp11_scope": {
+    "backend_execution_included": false,
+    "coherent_optimization_level_2_context": true,
+    "final_total_cost_evaluation_performed": false,
+    "q_above_32_directly_validated": false,
+    "scientific_superiority_claimed": false,
+    "state_preparation_included": false
+  },
+  "saved_wp11_compiler": {
+    "backend_name": null,
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "coupling_map": null,
+    "layout_method": null,
+    "optimization_level": 2,
+    "qiskit_version": "1.3.0",
+    "routing_method": null,
+    "transpiler_seed": 17
+  },
+  "saved_wp11_task_counts": {
+    "completed": 51,
+    "expected": 51,
+    "failed": 0
+  },
+  "synthetic_checks": [
+    {
+      "name": "artificial_rigorous_candidate_is_conditionally_certified",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "empirical_is_not_certified",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "branch_margin_overrides_empirical",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "branch_lower_ULP_is_accepted",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "budget_ULP_feasible_is_not_certificate",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "actual_pf_ULP_is_rechecked",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "threshold_error_is_not_certified",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "missing_IID_is_not_certified",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "reject_nonfinite_or_negative_allocation_nan",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "reject_nonfinite_or_negative_allocation_inf",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "reject_nonfinite_or_negative_allocation_-0.1",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "reject_invalid_alpha_0",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "reject_invalid_alpha_1",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "reject_invalid_alpha_nan",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "empirical_source_cannot_be_marked_rigorous",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "budget_sum_rounds_outward",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "artificial_shots_obey_ceiling",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "zero_coordinate_is_rejected",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "nonfinite_coordinate_is_rejected",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "overflow_is_explicit",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "coordinate_square_underflow_escapes_as_ZeroDivisionError",
+      "passed": true,
+      "classification": "REPRODUCED_IMPLEMENTATION_BUG"
+    },
+    {
+      "name": "candidate_tiny_positive_stat_budget_escapes_as_ZeroDivisionError",
+      "passed": true,
+      "classification": "REPRODUCED_IMPLEMENTATION_BUG"
+    },
+    {
+      "name": "zero_stat_budget_returns_infeasible",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "projection_preserves_axis_shots_and_cost_scope_arithmetic",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "projection_drops_guarantee_and_assumptions",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "projection_excludes_infeasible_candidate",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "selector_tie_break_and_updated_infeasibility",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "fixed_selector_requires_all_rounds",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "alpha_iteration_reselects_and_checks_final_schedule",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "alpha_allocation_uses_cost_and_coordinate_weights",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "alpha_iteration_limit_does_not_claim_convergence",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "final_schedule_change_revokes_apparent_alpha_convergence",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "profile_recomputes_stat_budget_for_updated_beta",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "profile_rejects_nonpositive_stat_budget",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "refinement_rechecks_updated_schedule_constraints",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "coarse_fine_and_boundary_executed",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "tail_free_boundary_keeps_zero_RTE",
+      "passed": true,
+      "classification": "PASS"
+    },
+    {
+      "name": "nonconverged_candidates_are_excluded",
+      "passed": true,
+      "classification": "PASS"
+    }
+  ],
+  "synthetic_checks_count": 38,
+  "findings": [
+    {
+      "id": "B01",
+      "status": "CONDITIONAL",
+      "topic": "Physical state applicability",
+      "evidence": "Exact effective partial-S2 eigenstate, unit unattenuated radius, alias-free branch remain assumptions. WP04 grid has parameter-ID matches for all 18 selected WP11 PR rows, but different preparation metadata (B08); only supplemental saved-grid observations, not an exact WP11 validation."
+    },
+    {
+      "id": "B02",
+      "status": "INSUFFICIENT_EVIDENCE",
+      "topic": "Guarantee classification projection",
+      "evidence": "_evaluate_pair_round gates on feasible and drops guarantee_status/certification_reasons/assumptions; all_rounds_feasible is numerical, not a certificate. WP11 scope explicitly disclaims superiority/final-total-cost."
+    },
+    {
+      "id": "B03",
+      "status": "IMPLEMENTATION_BUG",
+      "topic": "Tiny positive coordinate exception",
+      "evidence": "Artificial coordinate 1e-200 and candidate beta_stat=1e-200 yield ZeroDivisionError when epsilon**2 underflows. Candidate only catches OverflowError. No evidence that saved selected rows enter this path; no production source/results changed."
+    },
+    {
+      "id": "B04",
+      "status": "CONDITIONAL",
+      "topic": "Boundary refinement",
+      "evidence": "Actual grid/refinement controller recomputes profiles and reselects schedules; synthetic schedule-change and nonconvergence checks pass. max(1e-12,abs(used)*1e-10) is numeric slack, not model headroom or global-optimum proof."
+    },
+    {
+      "id": "B05",
+      "status": "CONSISTENT",
+      "topic": "Comparison fairness",
+      "evidence": "WP11 uses total beta .4, alpha .05, same opt2 compiler and state-preparation-free full-Hadamard scope. Both candidates reoptimized; deterministic RTE budget zero is admissible. Separate opt1/WP04 series retained."
+    },
+    {
+      "id": "B06",
+      "status": "CONDITIONAL",
+      "topic": "Represented-value budget sums",
+      "evidence": "Saved beta/alpha sums are checked with feasibility tolerance and separately with exact rational sums of represented binary64 inputs. Strict overshoots, if present, do not invalidate the declared empirical screening or constitute rigorous coverage; no totals/shots/costs are repaired."
+    },
+    {
+      "id": "B07",
+      "status": "INSUFFICIENT_EVIDENCE",
+      "topic": "Historical closure",
+      "evidence": "Saved source hashes are compared individually. Local dirty generation metadata, mutable/missing historical dependencies, absent private checkpoints/runtime/NPZ remain separate from fixed committed snapshots; no clean scientific regeneration claimed."
+    },
+    {
+      "id": "B08",
+      "status": "MODEL_MISMATCH",
+      "topic": "Physical-grid preparation mismatch",
+      "evidence": "WP04 grid coefficient_atol=1e-12 drops 108 terms (saved operator error bound 4.8294649659693557e-14); WP11 accounting prepare_df_partial_s2 call uses default coefficient_atol=0. WP04 cost dataset and grid Hamiltonian/partition hashes agree for L_D3 but preparation hashes differ. Parameter matches do not establish identical operators or transfer of strict radius bounds. No scientific impact magnitude or shot/cost correction computed."
+    }
+  ],
+  "mandatory_stop": true,
+  "interpretation": "Author's technical checks only; no independent scientific review; reproduced defects are findings, not scientific PASS."
+}

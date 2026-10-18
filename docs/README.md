@@ -1,3 +1,7 @@
+## 2026-10-18 PR β契約の技術監査
+
+[監査報告](research/pr_beta_contract_audit_20261018.md)。旧H4 RPEのβ契約を固定SOURCE・保存値で監査。79固定blob、50 scenario/904 round、人工38件（underflow不具合2再現）。既存gridの18行はパラメータ対応するがpreparation閾値・hashが異なり、同一条件の物理検証とは扱わない。保証状態の投影不足・厳密予算和・歴史SOURCE差を記録。科学再計算0、既存SOURCE/結果は保持しmandatory STOP。 以下は各時点の履歴。
+
 ## 2026-10-18 PR資源評価のα契約監査
 
 [A-1/A-2の監査結果](research/pr_alpha_contract_audit_20261018.md)。1 shot推定量・α付きshot数・n32費用会計の条件付き整合性、系別契約、残る証拠不足と説明訂正候補を整理。科学再計算0、mandatory STOP。

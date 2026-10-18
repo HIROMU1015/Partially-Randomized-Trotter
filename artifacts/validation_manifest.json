@@ -63,6 +63,14 @@
   "artifact_inventory": {
     "present": [
       {
+        "path": "artifacts/resource_applicability/pr_beta_contract_audit/2026-10-18",
+        "kind": "directory",
+        "supports": [
+          "pr_beta_contract_audit_20261018"
+        ],
+        "reason": "Fixed blob inventory, saved beta contracts, synthetic checks including reproduced defect, and mandatory STOP. No scientific reanalysis."
+      },
+      {
         "path": "abe_trotter_project.ipynb",
         "kind": "file",
         "supports": [
@@ -3684,6 +3692,26 @@
     ]
   },
   "result_sets": [
+    {
+      "id": "pr_beta_contract_audit_20261018",
+      "status": "source_present_no_current_ci",
+      "summary": "Fixed-blob technical audit of legacy H4 RPE beta contracts. Existing physical grid has parameter-ID matches for all 18 selected WP11 PR rows, but coefficient thresholds and preparation hashes differ; same-preparation physical validation is not established. Reproduces coordinate-square underflow and records guarantee projection gaps, exact represented-value budget overshoots, and historical source differences. No scientific regeneration, shot/cost recalculation, production source change, or rigorous superiority claim.",
+      "counts": {
+        "fixed_blobs": 79,
+        "saved_scenarios": 50,
+        "saved_round_rows": 904,
+        "synthetic_assertions_passed": 38,
+        "reproduced_underflow_cases": 2,
+        "new_scientific_calls": 0,
+        "current_machine_readable_ci_reports": 0,
+        "parameter_matched_existing_grid_rows": 18
+      },
+      "completion_criteria": [
+        "Retain conditional physical-state, unit-radius, empirical PF, alias-free and long-q proxy assumptions; numerical feasibility is not certification.",
+        "Preserve saved results, historical SOURCE differences and STOP records; address any underflow repair in a new source scope.",
+        "B-1 sensitivity and B-3 statistical/branch validation require separately fixed conditions and explicit user numerical execution authorization."
+      ]
+    },
     {
       "id": "legacy_high_order_pf",
       "status": "historical_evidence",

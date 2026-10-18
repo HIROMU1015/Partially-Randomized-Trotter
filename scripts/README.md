@@ -1,3 +1,7 @@
+## 2026-10-18 PR β契約の技術監査
+
+[監査報告](../docs/research/pr_beta_contract_audit_20261018.md)。旧H4 RPEのβ契約を固定SOURCE・保存値で監査。79固定blob、50 scenario/904 round、人工38件（underflow不具合2再現）。既存gridの18行はパラメータ対応するがpreparation閾値・hashが異なり、同一条件の物理検証とは扱わない。保証状態の投影不足・厳密予算和・歴史SOURCE差を記録。科学再計算0、既存SOURCE/結果は保持しmandatory STOP。 以下は各時点の履歴。
+
 ## 2026-10-18 PR alpha contract audit
 
 [audit_pr_alpha_contracts_20261018.py](audit_pr_alpha_contracts_20261018.py) は固定Git blobのmetadataと人工入力だけを検査する。科学provider/NPZ/実データのshot・費用再計算/sampling/compileは呼ばない。[条件付き結論と系別契約](../docs/research/pr_alpha_contract_audit_20261018.md)。
