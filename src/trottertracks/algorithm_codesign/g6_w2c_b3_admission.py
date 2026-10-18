@@ -14,6 +14,7 @@ from pathlib import Path
 import re
 import sqlite3
 import stat
+import sys
 import threading
 import uuid
 
@@ -21,6 +22,9 @@ from . import g6_w2c_b3_driver as D
 
 BASE_PATH = 'docs/research/track_b_g6_w2c_b3_driver_preparation_20261019/execution_contract_candidate.json'
 BASE_SHA = 'dba9ed5b85fbb0a6599baf248a392aa8d3be30f8e816f1956a48563a49fd577c'
+F01_DRIVER_SHA = '5e6904e782526e96cc6a2dc9e94642a8237b4aa69ce8743aec24ccde5f212694'
+HOST = 'src/trottertracks/algorithm_codesign/g6_w2c_b3_host.py'
+HOST_SCHEMA = 'b3_formal_admission_v2'
 OLD_DRIVER_SHA = 'd7947af16baccbd3e0707fa9b4ffcd26650a6569eb6606ee3c08ec443d1dd7ee'
 DRIVER = 'src/trottertracks/algorithm_codesign/g6_w2c_b3_driver.py'
 GUARD = 'src/trottertracks/algorithm_codesign/g6_w2c_b3_readiness.py'
@@ -227,7 +231,10 @@ class PinnedApproval:
 
 
 def validate_r1(contract, root, artificial):
-    require(contract.get('schema') == 'b3_formal_admission_v1', 'FORMAL_CONTRACT_REQUIRED')
+    schema = contract.get('schema')
+    require(schema == HOST_SCHEMA or (artificial and schema == 'b3_formal_admission_v1'),
+            'HOST_V2_CONTRACT_REQUIRED')
+    with_host = schema == HOST_SCHEMA
     require(contract.get('content_adopted') is True and contract.get('contract_grants_execution') is False,
             'R1_ADOPTION_REQUIRED_CONTRACT_IS_NOT_AUTHORITY')
     require(contract.get('retry') == 0 and type(contract['retry']) is int and
@@ -258,9 +265,14 @@ def validate_r1(contract, root, artificial):
         'source_release': release['commit'], 'external_admission': 'DURABLE_ATOMIC_R1_V1'}, 'R1_POLICY_MISMATCH')
     require(candidate['source_pins'] == contract['source_pins'], 'DRIVER_PIN_SET_MISMATCH')
     roles = contract['source_roles']
-    require(set(roles) == {'science', 'driver', 'guard', 'admission'} and
+    expected_roles = {'science', 'driver', 'guard', 'admission'} | ({'host'} if with_host else set())
+    require(set(roles) == expected_roles and
             roles['driver'] == [DRIVER] and roles['guard'] == [GUARD] and roles['admission'] == [ADMISSION] and
             set().union(*(set(v) for v in roles.values())) == set(contract['source_pins']), 'SOURCE_ROLE_COVERAGE')
+    if with_host:
+        require(roles['host'] == [HOST] and contract.get('entrypoint') == {
+            'path': HOST, 'sha256': contract['source_pins'].get(HOST), 'api': 'execute_approved_v1'} and
+            HEX.fullmatch(contract['source_pins'].get(HOST) or ''), 'PINNED_HOST_REQUIRED')
     require(set(base['source_pins']) - {DRIVER} <= set(roles['science']), 'SCIENCE_PINS_MISSING')
     for name, pin in base['source_pins'].items():
         if name != DRIVER:
@@ -276,6 +288,9 @@ def validate_r1(contract, root, artificial):
         require(not contract['scope'].startswith('ARTIFICIAL_') and contract['claim_id'].startswith('B3_NEW_'),
                 'FRESH_PRODUCTION_NAMESPACE_REQUIRED')
         require(contract['source_pins'][DRIVER] != OLD_DRIVER_SHA, 'F01_OLD_DRIVER_FORBIDDEN')
+        loaded_host = sys.modules.get(__package__ + '.g6_w2c_b3_host')
+        require(loaded_host is not None and Path(loaded_host.__file__).resolve() == root / HOST,
+                'LOADED_HOST_ROOT_MISMATCH')
         require(Path(D.__file__).resolve() == root / DRIVER and Path(__file__).resolve() == root / ADMISSION,
                 'LOADED_MODULE_ROOT_MISMATCH')
     output = exact_path(root, candidate['output_relative'])
@@ -392,8 +407,19 @@ class _Admission:
         return self
 
     def __exit__(self, kind, exc, traceback):
-        self.stop('RETURNED' if kind is None else 'FAILED',
-                  None if exc is None else {'type': kind.__name__, 'message': str(exc)})
+        try:
+            report = self.stop('RETURNED' if kind is None else 'FAILED',
+                               None if exc is None else {'type': kind.__name__, 'message': str(exc)})
+            if report['record_errors']:
+                raise Denied('MANDATORY_STOP_RECORD_FAILURE:' + repr(report['record_errors']))
+        except BaseException as stop_error:
+            if exc is None:
+                raise  # A failed STOP save cannot be reported as normal completion.
+            try:
+                exc.b3_admission_stop_failure = {'type': type(stop_error).__name__, 'reason': str(stop_error)}
+            except BaseException:
+                pass
+            # Preserve the original driver/F01 exception. The spent row is never released.
 
 
 class ProductionAdmission(_Admission):

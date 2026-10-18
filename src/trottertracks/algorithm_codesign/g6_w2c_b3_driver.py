@@ -189,37 +189,49 @@ class Stream:
         self.bytes, self.rows, self.peak_line_bytes = 0, 0, 0
         self.previous = '0'*64
         self.file_hash = sha256()
+        self.file_hash_covers_written_bytes = True
         self.failed = None
         self.closed = False
         self.file = self.path.open('xb', buffering=0)
 
     def emit(self, payload):
         need(not self.closed and self.failed is None, 'OUTPUT_STOPPED')
+        stage = 'SERIALIZATION'
         try:
             with self.meter.span('save.serialize'):
                 text = audit.canonical(exact(payload))
             with self.meter.span('save.hash'):
+                stage = 'CHAIN_HASH'
                 digest = sha256((self.previous + text).encode()).hexdigest()
                 line = (json.dumps({'previous': self.previous, 'sha256': digest, 'payload': text},
                                    separators=(',', ':'))+'\n').encode()
             need(self.bytes+len(line) <= self.limit, 'RESULT_BYTE_LIMIT')
+            stage = 'WRITE'
             with self.meter.span('save.write'):
                 view = memoryview(line)
                 while view:
                     written = self.file.write(view)
                     need(type(written) is int and written > 0, 'SHORT_WRITE')
+                    self.bytes += written
                     with self.meter.span('save.file_hash'):
+                        stage = 'FILE_HASH'
+                        self.file_hash_covers_written_bytes = False
                         self.file_hash.update(view[:written])
-                    self.bytes += written;view = view[written:]
+                        self.file_hash_covers_written_bytes = True
+                    stage = 'WRITE'
+                    view = view[written:]
             self.rows += 1;self.previous = digest
             self.peak_line_bytes = max(self.peak_line_bytes, len(line))
             if self.rows % self.flush_rows == 0:
+                stage = 'FLUSH'
                 self.flush()
         except BaseException as exc:
             # Keep committed prefix plus failure descriptor even if disk is full.
-            self.failed = {'type': type(exc).__name__, 'reason': str(exc),
+            self.failed = {'type': type(exc).__name__, 'reason': str(exc), 'stage': stage,
                            'committed_rows': self.rows, 'written_bytes': self.bytes,
-                           'last_complete_hash': self.previous, 'mandatory_STOP': True}
+                           'last_complete_hash': self.previous,
+                           'file_hash_covers_written_bytes': self.file_hash_covers_written_bytes,
+                           'mandatory_STOP': True}
             raise
 
     def flush(self):
@@ -499,42 +511,97 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
     need(len(cells) == 2 and tuple(c['axis'] for c in cells) == AXES and
          all((c['arm'], c['layer'], c['N']) ==
              (cells[0]['arm'], cells[0]['layer'], cells[0]['N']) for c in cells), 'PAIR_AXIS_N_BINDING')
-    counts = Counter();digest = sha256();axis_summaries = [];max_rss = None
-    with meter.span('setup.share_identity'):
-        shared = endpoint.shared_identity()
+    # Published as one reference only after emit returns. Candidate hash/counter
+    # copies never mutate the last completed prefix on a failed attempt.
+    committed = {'counts': Counter(), 'digest': sha256(), 'last_trial': None}
+    axis_summaries = [];max_rss = None
+    current_result = current_event = pending = None
+
+    def context(cell=None, trial=None, stage='PAIR_IDENTITY'):
+        return {'axis': cell['axis'] if cell else None, 'trial_index': trial,
+                'trial_id': (f"{phase}/{pass_name}/{cell['arm']}/{cell['layer']}/{cell['axis']}/{trial}"
+                             if cell is not None and trial is not None else None),
+                'stage': stage, 'result_acquired': False, 'event_present': False,
+                'record_constructed': False, 'candidate_ready': False,
+                'stream_emit_started': False, 'stream_emit_returned': False}
+
+    def stream_prefix():
+        # Observed writes only: no reread or fsync, and a partial tail may exist.
+        try:
+            h = getattr(stream, 'file_hash', None)
+            return {'complete_rows': getattr(stream, 'rows', None),
+                    'written_bytes_including_possible_partial_tail': getattr(stream, 'bytes', None),
+                    'last_complete_chain_sha256': getattr(stream, 'previous', None),
+                    'written_bytes_sha256': (h.hexdigest() if h is not None and
+                                              getattr(stream, 'file_hash_covers_written_bytes', True) else None),
+                    'file_hash_covers_written_bytes': getattr(stream, 'file_hash_covers_written_bytes', None),
+                    'failure': getattr(stream, 'failed', None),
+                    'readback_verified': False, 'fsync_durability_verified': False}
+        except BaseException as error:
+            return {'status': 'UNAVAILABLE', 'type': type(error).__name__, 'reason': str(error)}
+
+    current = context()
     try:
+        with meter.span('setup.share_identity'):
+            shared = endpoint.shared_identity()
         for cell in cells:
+            current_result = current_event = pending = None
+            current = context(cell, stage='AXIS_IDENTITY')
+            committed = committed | {'axis_counts': Counter(), 'axis_digest': sha256(),
+                                     'prefix_digest': sha256()}
             with meter.span('setup.axis_identity'):
                 need(endpoint.shared_identity() == shared, 'X_Y_SETUP_SHARING_MISMATCH')
+            current['stage'] = 'BITS_FACTORY'
             bits = bits_factory(cell['axis'])
+            current['stage'] = 'TRIAL_BUDGET'
             n = correctness_trials if phase == 'correctness' else cell['N']
             need(type(n) is int and n > 0, 'INVALID_TRIAL_BUDGET')
-            axis_counts = Counter();axis_digest = sha256();prefix_digest = sha256()
             for trial in range(n):
-                trial_id = f"{phase}/{pass_name}/{cell['arm']}/{cell['layer']}/{cell['axis']}/{trial}"
+                current_result = current_event = pending = None
+                current = context(cell, trial, 'SAMPLING')
+                trial_id = current['trial_id']
                 with meter.span('online.generator_and_audit') as trial_span:
-                    result = endpoint.sample(bits, trial_id)
+                    current_result = result = endpoint.sample(bits, trial_id)
+                    current['result_acquired'] = True
+                    current['stage'] = 'RESULT_ACCESS'
+                    current_event = result.event
+                    current['event_present'] = current_event is not None
+                    current['stage'] = 'RESULT_VALIDATION'
                     result.validate()
                     trial_span[0] = 'online.'+result.kind+'.generator_and_audit'
                 if phase == 'correctness' and result.kind == 'EVENT':
+                    current['stage'] = 'EVENT_VALIDATION'
                     with meter.span('correctness.event_invariants'):
                         audit.event_witness(result.event, full=cell['arm'] == 'full_return',
                                             degree_cap=INPUT['m'], labels=3)
+                current['stage'] = 'RECORD_CONSTRUCTION'
                 payload = {'trial_id': trial_id, 'axis': cell['axis'], 'kind': result.kind,
                            'event': result.event, 'evidence': None, 'angle': None,
                            'generator_exclusive_ns': trial_span[3]}
                 if result.kind == 'EVENT' and cell['layer'] == 'B':
+                    current['stage'] = 'ANGLE_AND_REQUERY'
                     with meter.span('online.EVENT.angle_and_requery'):
                         a = endpoint.angle_for(result)
                         payload['angle'] = getattr(a, 'document', getattr(a, 'text', a))
                 with meter.span('online.'+result.kind+'.evidence'):
+                    current['stage'] = 'EVIDENCE_CONSTRUCTION'
                     if isinstance(result.evidence, dict):
                         payload['evidence'] = {k: getattr(v, 'document', v)
                                                for k, v in result.evidence.items()}
                     else:payload['evidence'] = result.evidence
+                    current['record_constructed'] = True
                     event_text = audit.canonical(exact({'kind': result.kind, 'event': result.event})).encode()
-                    axis_digest.update(event_text);digest.update(event_text)
-                    if trial < correctness_trials:prefix_digest.update(event_text)
+                    current['stage'] = 'CANDIDATE_DIGEST'
+                    pending = {'counts': committed['counts'].copy(),
+                               'digest': committed['digest'].copy(),
+                               'axis_counts': committed['axis_counts'].copy(),
+                               'axis_digest': committed['axis_digest'].copy(),
+                               'prefix_digest': committed['prefix_digest'].copy(),
+                               'last_trial': {'axis': cell['axis'], 'trial_id': trial_id,
+                                              'trial_index': trial}}
+                    pending['axis_digest'].update(event_text);pending['digest'].update(event_text)
+                    if trial < correctness_trials:pending['prefix_digest'].update(event_text)
+                    pending['counts'][result.kind] += 1;pending['axis_counts'][result.kind] += 1
                     if phase == 'profile' and trial >= correctness_trials:
                         # All evidence is constructed/hashed; retain exact full
                         # documents for first 16/axis plus typed-failure context.
@@ -544,36 +611,62 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
                                    'angle_sha256': identity(payload['angle']),
                                    'generator_exclusive_ns': trial_span[3],
                                    'retention': 'HASHED_FULL_DOCUMENTS_NOT_RETAINED'}
+                    current['record_constructed'] = True
+                    current['candidate_ready'] = True
+                current['stage'] = 'STREAM_EMIT'
+                current['stream_emit_started'] = True
                 stream.emit(payload)
-                counts[result.kind] += 1;axis_counts[result.kind] += 1
+                current['stream_emit_returned'] = True
+                committed = pending  # Single publication of counts, hashes and last trial.
+                current['stage'] = 'TRIAL_COMPLETED'
                 if (trial+1) % 4096 == 0:
+                    current['stage'] = 'MEMORY_OBSERVATION'
                     with meter.span('observe.memory'):
                         sample = memory_read()
                         rss = sample.get('VmRSS_bytes')
                         if rss is not None:max_rss = max(max_rss or 0, rss)
                     stream.emit({'memory_sample': sample, 'completed_trial': trial+1, 'axis': cell['axis']})
-            axis_summaries.append({'axis': cell['axis'], 'N_executed': n, 'counts': dict(axis_counts),
-                                   'event_trace_sha256': axis_digest.hexdigest(),
-                                   'first_correctness_prefix_sha256': prefix_digest.hexdigest(),
+            current_result = current_event = pending = None
+            current = context(cell, stage='AXIS_COMPLETION')
+            axis_summaries.append({'axis': cell['axis'], 'N_executed': n, 'counts': dict(committed['axis_counts']),
+                                   'event_trace_sha256': committed['axis_digest'].hexdigest(),
+                                   'first_correctness_prefix_sha256': committed['prefix_digest'].hexdigest(),
                                    'H_bits_supplied': getattr(bits, 'consumed_bits', None)})
             if phase == 'correctness':
-                need(axis_counts['EVENT'] > 0, 'CORRECTNESS_ACCEPTED_PATH_NOT_OBSERVED_NO_EXTRA_TRIALS')
+                need(committed['axis_counts']['EVENT'] > 0, 'CORRECTNESS_ACCEPTED_PATH_NOT_OBSERVED_NO_EXTRA_TRIALS')
+        current = context(stage='FINAL_IDENTITY')
         with meter.span('setup.final_identity'):
             need(endpoint.shared_identity() == shared, 'FINAL_STATE_CHANGED')
-        return {'counts': dict(counts), 'axes': axis_summaries, 'trace_sha256': digest.hexdigest(),
+        return {'counts': dict(committed['counts']), 'axes': axis_summaries, 'trace_sha256': committed['digest'].hexdigest(),
                 'shared_identity': shared, 'population_cost_certificate': False,
                 'periodic_max_observed_RSS_bytes': max_rss,
                 'RSS_sampling_is_not_continuous_peak': True}
     except BaseException as exc:
+        completed = (current['trial_id'] is not None and committed['last_trial'] is not None and
+                     committed['last_trial']['trial_id'] == current['trial_id'])
         failure = {'kind': 'TYPED_FAILURE', 'type': type(exc).__name__, 'reason': str(exc),
-                   'completed_prefix': dict(counts), 'completed_axes': axis_summaries,
-                   'trace_sha256': digest.hexdigest(), 'mandatory_STOP': True,
+                   'failure_provenance_schema': 'g6_w2c_b3_f01_failure_v1',
+                   'completed_prefix': dict(committed['counts']), 'completed_axes': axis_summaries,
+                   'trace_sha256': committed['digest'].hexdigest(),
+                   'trace_scope': 'COMPLETED_TRIALS_AFTER_NORMAL_EMIT_RETURN',
+                   'last_completed_trial': committed['last_trial'],
+                   'current_attempt': current | {'trial_completed': completed},
+                   'inflight_event': current_event,
+                   'candidate_trace_sha256': (pending['digest'].hexdigest()
+                                               if current['candidate_ready'] and pending is not None else None),
+                   'stream_prefix_before_failure_record': stream_prefix(), 'mandatory_STOP': True,
                    'is_random_zero': False, 'retry': 0, 'resume': False}
-        if 'result' in locals():
-            failure['inflight_event'] = result.event
-        if hasattr(exc, 'to_dict'):failure['frozen_failure_evidence'] = exc.to_dict()
+        if hasattr(exc, 'to_dict'):
+            try:failure['frozen_failure_evidence'] = exc.to_dict()
+            except BaseException as error:
+                failure['frozen_failure_evidence_error'] = {'type': type(error).__name__, 'reason': str(error)}
+        # Preserve the original exception and context even if saving failure fails.
+        try:exc.b3_failure_provenance = failure
+        except BaseException:pass
         try:stream.emit(failure)
-        except BaseException:pass  # Stream.failed plus the original exception remain available.
+        except BaseException as error:
+            failure['failure_record_write_error'] = {'type': type(error).__name__, 'reason': str(error)}
+            failure['stream_prefix_after_failure_record_attempt'] = stream_prefix()
         raise
 
 
@@ -702,11 +795,21 @@ def execute(candidate, *, root, output, approval_port=None, boundary=None):
                                     'last_complete_hash': stream.previous, 'mandatory_STOP': True,
                                     'cpu_wall_prefix_ns': delta(before, read_clock()),
                                     'control_log_self_write_cost_ns': None}
+                            provenance = getattr(exc, 'b3_failure_provenance', None)
+                            if provenance is not None:
+                                try:fail['trial_failure_provenance'] = audit.canonical(exact(provenance))
+                                except BaseException as error:
+                                    fail['trial_failure_provenance_error'] = type(error).__name__+': '+str(error)
                             try:
                                 write_control_metadata(path.with_suffix('.failure.json'), fail, policy['log_bytes']//2)
-                            except OSError:pass
+                            except BaseException:pass  # Never replace the original trial failure.
                             raise
-                        finally:stream.close()
+                        finally:
+                            if sys.exc_info()[0] is None:
+                                stream.close()
+                            else:
+                                try:stream.close()
+                                except BaseException:pass  # Cleanup must not hide the original cause.
                     with shared_meter.span('shared.worker_dispatch_and_receive'):
                         summary = isolated_pair(operation)
                     written_bytes += summary['output_bytes']

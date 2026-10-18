@@ -25,7 +25,7 @@ BASE = json.loads((ROOT/M.BASE_PATH).read_text())
 
 def fixture(root):
     pins = dict(BASE['source_pins'])
-    for name in (M.GUARD, M.ADMISSION):
+    for name in (M.DRIVER, M.GUARD, M.ADMISSION):
         pins[name] = M.digest((ROOT/name).read_bytes())
     paths = set(pins) | {M.BASE_PATH, BASE['saved_evidence']['path']}
     for name in paths:
