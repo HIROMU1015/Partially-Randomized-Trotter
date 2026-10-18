@@ -1,0 +1,208 @@
+{
+  "schema": "g7_g9_static_comparison_inventory_v1",
+  "technical_status": "STATIC_COMPARABILITY_AUDIT_COMPLETE_WITH_CONTRACT_GAPS",
+  "base_commit": "864097c1285f1f06399040cf0f7c0f42334d9252",
+  "G7_result_commit": "a689694080f4b7600fe67cf77d841d1cbbf04503",
+  "G9_result_commit": "c95736fd2990f5ef6dd1cb5866421fd78bb28687",
+  "common_anchor": "same known development P5: p=(1/5,3/10,1/2), x=5/7, m=5; same ideal full first operator moment, not exact exponential",
+  "same_anchor_does_not_imply_same_budget_or_provider": true,
+  "policy_fields_quoted": {
+    "G7": {
+      "epsilon_axis": "1/200",
+      "primitive_error": "1/1000000",
+      "eta": "1/1000000000000",
+      "rho": "1/1000000000000",
+      "root_bits": 256,
+      "probability_bits": 160,
+      "alpha_axis": "1/320",
+      "alpha_familywise_16_axes": "1/20",
+      "common_bias": "2*(3*rho+3*(1+rho)*2*primitive_error)"
+    },
+    "G9": {
+      "epsilon_axis": "1/200",
+      "primitive_error": "1/1000000",
+      "eta": "1/1000000000000",
+      "rho": "1/1000000000000",
+      "root_bits": 256,
+      "probability_bits": 160,
+      "alpha_axis": "49/22000",
+      "estimation_failure": "49/1000",
+      "resource_failure_per_row": "1/11000",
+      "resource_failure_total": "1/1000",
+      "familywise_failure": "1/20",
+      "common_bias_upper": "2*(8*rho+8*(1+rho)*2*epsilon_Rz)",
+      "compiler": "literal direct V/P controlled lowering, CZ->H CX H then adjacent inverse cancellation, symmetric for all arms; no global optimization"
+    }
+  },
+  "existing_affine_pair_flags_verbatim": [
+    {
+      "JSON_pointer": "/pairs/0",
+      "left": "ordinary",
+      "right": "partial_return_tail",
+      "left_no_higher_for_common_nonnegative_prep_T": false,
+      "right_no_higher_for_common_nonnegative_prep_T": true,
+      "no_method_adoption": true
+    },
+    {
+      "JSON_pointer": "/pairs/1",
+      "left": "ordinary",
+      "right": "closed_P3_tail",
+      "left_no_higher_for_common_nonnegative_prep_T": false,
+      "right_no_higher_for_common_nonnegative_prep_T": true,
+      "no_method_adoption": true
+    },
+    {
+      "JSON_pointer": "/pairs/2",
+      "left": "ordinary",
+      "right": "full_return",
+      "left_no_higher_for_common_nonnegative_prep_T": false,
+      "right_no_higher_for_common_nonnegative_prep_T": true,
+      "no_method_adoption": true
+    },
+    {
+      "JSON_pointer": "/pairs/3",
+      "left": "ordinary",
+      "right": "closed_P5_full",
+      "left_no_higher_for_common_nonnegative_prep_T": false,
+      "right_no_higher_for_common_nonnegative_prep_T": true,
+      "no_method_adoption": true
+    },
+    {
+      "JSON_pointer": "/pairs/4",
+      "left": "ordinary",
+      "right": "matched_CTS",
+      "left_no_higher_for_common_nonnegative_prep_T": true,
+      "right_no_higher_for_common_nonnegative_prep_T": false,
+      "no_method_adoption": true
+    },
+    {
+      "JSON_pointer": "/pairs/5",
+      "left": "partial_return_tail",
+      "right": "closed_P3_tail",
+      "left_no_higher_for_common_nonnegative_prep_T": false,
+      "right_no_higher_for_common_nonnegative_prep_T": false,
+      "no_method_adoption": true
+    },
+    {
+      "JSON_pointer": "/pairs/6",
+      "left": "partial_return_tail",
+      "right": "full_return",
+      "left_no_higher_for_common_nonnegative_prep_T": false,
+      "right_no_higher_for_common_nonnegative_prep_T": true,
+      "no_method_adoption": true
+    },
+    {
+      "JSON_pointer": "/pairs/7",
+      "left": "partial_return_tail",
+      "right": "closed_P5_full",
+      "left_no_higher_for_common_nonnegative_prep_T": false,
+      "right_no_higher_for_common_nonnegative_prep_T": true,
+      "no_method_adoption": true
+    },
+    {
+      "JSON_pointer": "/pairs/8",
+      "left": "partial_return_tail",
+      "right": "matched_CTS",
+      "left_no_higher_for_common_nonnegative_prep_T": true,
+      "right_no_higher_for_common_nonnegative_prep_T": false,
+      "no_method_adoption": true
+    },
+    {
+      "JSON_pointer": "/pairs/9",
+      "left": "closed_P3_tail",
+      "right": "full_return",
+      "left_no_higher_for_common_nonnegative_prep_T": false,
+      "right_no_higher_for_common_nonnegative_prep_T": true,
+      "no_method_adoption": true
+    },
+    {
+      "JSON_pointer": "/pairs/10",
+      "left": "closed_P3_tail",
+      "right": "closed_P5_full",
+      "left_no_higher_for_common_nonnegative_prep_T": false,
+      "right_no_higher_for_common_nonnegative_prep_T": true,
+      "no_method_adoption": true
+    },
+    {
+      "JSON_pointer": "/pairs/11",
+      "left": "closed_P3_tail",
+      "right": "matched_CTS",
+      "left_no_higher_for_common_nonnegative_prep_T": true,
+      "right_no_higher_for_common_nonnegative_prep_T": false,
+      "no_method_adoption": true
+    },
+    {
+      "JSON_pointer": "/pairs/12",
+      "left": "full_return",
+      "right": "closed_P5_full",
+      "left_no_higher_for_common_nonnegative_prep_T": false,
+      "right_no_higher_for_common_nonnegative_prep_T": true,
+      "no_method_adoption": true
+    },
+    {
+      "JSON_pointer": "/pairs/13",
+      "left": "full_return",
+      "right": "matched_CTS",
+      "left_no_higher_for_common_nonnegative_prep_T": true,
+      "right_no_higher_for_common_nonnegative_prep_T": false,
+      "no_method_adoption": true
+    },
+    {
+      "JSON_pointer": "/pairs/14",
+      "left": "closed_P5_full",
+      "right": "matched_CTS",
+      "left_no_higher_for_common_nonnegative_prep_T": true,
+      "right_no_higher_for_common_nonnegative_prep_T": false,
+      "no_method_adoption": true
+    }
+  ],
+  "verbatim_pair_scope": "Previously saved Boolean decisions only; no subtraction, ordering, recomputation or new classification. Numerical differences not copied/evaluated.",
+  "existing_matched_scope_closes_without_new_science": true,
+  "existing_G7_G9_total_N_costs_directly_comparable": false,
+  "depth_in_G9_saved_cost_schema": false,
+  "Closed_P5_is_existing_m5_sampler": true,
+  "formal_P5_plus_tail_is_not_assumed_implemented": true,
+  "future_work_options": [
+    "P0 existing G9 quotation only; no new work needed",
+    "P1 public result identity/scope crosswalk if later requested",
+    "P2 new common-policy evaluation only if required and separately approved",
+    "P3 strong-baseline classical cost only if it changes the decision and separately approved"
+  ],
+  "preserved_states": {
+    "track_B_D_plus_E_20261015": "UNCHANGED_ADOPTED_LIMITED_RESULTS_RETAINED_CURRENT_NUMERICAL_EXPLORATION_CONCLUDED",
+    "track_B_current_exploration_STOP": "UNCHANGED",
+    "next_concrete_algorithm_experiment_direction": "NOT_ADOPTED",
+    "track_IV_new_theme_selection": "ON_HOLD_FOR_NOW_UNCHANGED",
+    "A2": "NOT_ADOPTED",
+    "A2_current_practical_route": "NO_FURTHER_INVESTMENT_AFTER_PHASE_B",
+    "A1": "CLOSED",
+    "K1_F": "UNAPPROVED_NOT_EXECUTED",
+    "N1": "STOP",
+    "N2": "HOLD",
+    "N3": "CLOSED",
+    "THRIFT_current_template": "CLOSED",
+    "other_STOP_CLOSED_PAUSED_HOLD_and_tracks_I_II_III": "UNCHANGED"
+  },
+  "counts_this_task": {
+    "new_scientific_calculations": 0,
+    "saved_scientific_value_reanalysis": 0,
+    "new_N_or_cost_expectation_evaluation": 0,
+    "new_resource_rankings": 0,
+    "event_enumeration_or_Monte_Carlo": 0,
+    "scientific_SOURCE_changes_imports_execution": 0,
+    "new_SOURCE_schema_test_implementation_or_execution": 0,
+    "B3_C1_SOURCE_provider_or_contract_edits": 0,
+    "new_scientific_contracts": 0,
+    "authorization_grant_marker_claim_issued_or_reused": 0,
+    "circuit_build_compile_synthesis_backend": 0,
+    "new_nontrivial_proof": 0,
+    "new_prior_art_investigation": 0,
+    "important_scientific_review": 0,
+    "research_policy_or_scientific_condition_adoption": 0,
+    "Codex_A_private_worktree_inspection": 0
+  },
+  "scientific_contract_or_policy_adopted": false,
+  "contract_grants_execution": false,
+  "automatic_new_work": false,
+  "mandatory_STOP": true
+}
