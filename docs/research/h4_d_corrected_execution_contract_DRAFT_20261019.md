@@ -1,6 +1,7 @@
 # H4 D 修正後の実行契約 DRAFT
 
 状態：`DRAFT_UNAUTHORIZED`。元runの停止を保全し、新しい実行承認を待つ。
+修正code SOURCE：`8a82b9272ee24896e7d7cbb7400d9b8c12d8f804`。
 
 元[固定D契約](track_a_h4_dp_phase0_20261019/h4_deterministic_execution_contract_DRAFT.md)の科学条件、
 104登録、55 compile候補、保存適格性/shot、110 compile、最大220 control、決定論会計1 passを継承する。

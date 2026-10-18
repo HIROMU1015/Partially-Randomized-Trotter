@@ -2,6 +2,7 @@
 
 2026-10-19 JST。主担当Codexによる技術確認。AI subagent 0。
 状態：人工・契約39件PASS。新しいD契約はDRAFT、科学再実行は未承認。
+修正code SOURCE：`8a82b9272ee24896e7d7cbb7400d9b8c12d8f804`。
 
 ## 並列化・高速化の確認
 
@@ -64,6 +65,10 @@ full/truncated hashの差、正しいguard受入、同prefixの一回準備、�
 実H4 native evolution/control/compile・raw標本統計・n計算・費用再会計は追加していない。
 詳細結果は[technical_validation.json](../../artifacts/resource_applicability/track_a_h4_d_binding_fix/2026-10-19/technical_validation.json)。
 作者自身の検証であり、独立科学reviewや外部再現とは呼ばない。
+新DRAFTを実際のrunner/witnessの2入口へ渡し、両方とも`DRAFT_UNAUTHORIZED`で拒否した。
+新output/lockは未作成、native driverは未起動。固定SOURCEのGit blobと実file、
+元のtasks/input/call/runtime契約の不変、57記録と保全copyのSHA一致も確認した。
+結果は[readiness_and_mandatory_STOP.json](../../artifacts/resource_applicability/track_a_h4_d_binding_fix/2026-10-19/readiness_and_mandatory_STOP.json)に記録した。
 
 旧契約は「自動retryしない」、one-shotは消費済みなので、新SOURCE・新scopeの実行承認が必要。
 新しいD契約はDRAFT_UNAUTHORIZED、grantはINVALIDとして保全し、科学再起動しない。
