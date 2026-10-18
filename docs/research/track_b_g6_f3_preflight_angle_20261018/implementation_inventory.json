@@ -1,0 +1,859 @@
+{
+  "schema": "g6_f3_implementation_inventory_v1",
+  "technical_status": "F3_TECHNICALLY_VERIFIED",
+  "files": [
+    {
+      "path": "src/trottertracks/algorithm_codesign/g6_f3_contract.py",
+      "bytes": 9889,
+      "sha256": "754c27f72f3356b3072ced4a00bef174b8922d2efedd0eff18d86a887fa598e1",
+      "AST_declarations": [
+        {
+          "name": "_pack",
+          "start_line": 26,
+          "end_line": 43
+        },
+        {
+          "name": "_unpack",
+          "start_line": 46,
+          "end_line": 64
+        },
+        {
+          "name": "canonical",
+          "start_line": 67,
+          "end_line": 68
+        },
+        {
+          "name": "fingerprint",
+          "start_line": 71,
+          "end_line": 72
+        },
+        {
+          "name": "Evidence",
+          "start_line": 76,
+          "end_line": 96
+        },
+        {
+          "name": "Evidence.create",
+          "start_line": 81,
+          "end_line": 83
+        },
+        {
+          "name": "Evidence.read",
+          "start_line": 85,
+          "end_line": 92
+        },
+        {
+          "name": "Evidence.to_dict",
+          "start_line": 94,
+          "end_line": 96
+        },
+        {
+          "name": "F3Failure",
+          "start_line": 99,
+          "end_line": 112
+        },
+        {
+          "name": "F3Failure.__init__",
+          "start_line": 101,
+          "end_line": 109
+        },
+        {
+          "name": "F3Failure.to_dict",
+          "start_line": 111,
+          "end_line": 112
+        },
+        {
+          "name": "invalid",
+          "start_line": 115,
+          "end_line": 116
+        },
+        {
+          "name": "exact_integer",
+          "start_line": 119,
+          "end_line": 123
+        },
+        {
+          "name": "exact_rational",
+          "start_line": 126,
+          "end_line": 136
+        },
+        {
+          "name": "Request",
+          "start_line": 140,
+          "end_line": 177
+        },
+        {
+          "name": "Request.payload",
+          "start_line": 154,
+          "end_line": 155
+        },
+        {
+          "name": "Request.dimensions",
+          "start_line": 157,
+          "end_line": 166
+        },
+        {
+          "name": "Request.input_id",
+          "start_line": 169,
+          "end_line": 171
+        },
+        {
+          "name": "Request.policy_id",
+          "start_line": 174,
+          "end_line": 177
+        },
+        {
+          "name": "make_request",
+          "start_line": 180,
+          "end_line": 212
+        },
+        {
+          "name": "validate_word",
+          "start_line": 215,
+          "end_line": 225
+        },
+        {
+          "name": "source_identity",
+          "start_line": 228,
+          "end_line": 239
+        }
+      ],
+      "role": "F3_IMPLEMENTATION"
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/g6_f3_precision.py",
+      "bytes": 10702,
+      "sha256": "c2136326042fcf95240ecae41436cd953a1f857543ec9797e57f8fcbbe158706",
+      "AST_declarations": [
+        {
+          "name": "comparison",
+          "start_line": 14,
+          "end_line": 18
+        },
+        {
+          "name": "rounding_predicate",
+          "start_line": 21,
+          "end_line": 32
+        },
+        {
+          "name": "coefficient_predicate",
+          "start_line": 35,
+          "end_line": 41
+        },
+        {
+          "name": "acceptance_predicate",
+          "start_line": 44,
+          "end_line": 50
+        },
+        {
+          "name": "_predicate",
+          "start_line": 53,
+          "end_line": 59
+        },
+        {
+          "name": "assess_precision",
+          "start_line": 62,
+          "end_line": 114
+        },
+        {
+          "name": "bind_law",
+          "start_line": 117,
+          "end_line": 142
+        },
+        {
+          "name": "_atan_endpoint",
+          "start_line": 145,
+          "end_line": 149
+        },
+        {
+          "name": "enclose_atan",
+          "start_line": 152,
+          "end_line": 200
+        }
+      ],
+      "role": "F3_IMPLEMENTATION"
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/g6_f3_generator.py",
+      "bytes": 18696,
+      "sha256": "2ccce19571cdf33527abc92f049f35ef4e0d33d8a876132b2d1d70f6e63ad751",
+      "AST_declarations": [
+        {
+          "name": "_source",
+          "start_line": 16,
+          "end_line": 26
+        },
+        {
+          "name": "_state",
+          "start_line": 29,
+          "end_line": 37
+        },
+        {
+          "name": "_TraceBits",
+          "start_line": 40,
+          "end_line": 81
+        },
+        {
+          "name": "_TraceBits.__init__",
+          "start_line": 42,
+          "end_line": 47
+        },
+        {
+          "name": "_TraceBits.bits",
+          "start_line": 49,
+          "end_line": 72
+        },
+        {
+          "name": "_TraceBits.evidence",
+          "start_line": 74,
+          "end_line": 81
+        },
+        {
+          "name": "GeneratorSession",
+          "start_line": 84,
+          "end_line": 295
+        },
+        {
+          "name": "GeneratorSession.__init__",
+          "start_line": 86,
+          "end_line": 92
+        },
+        {
+          "name": "GeneratorSession.request",
+          "start_line": 95,
+          "end_line": 96
+        },
+        {
+          "name": "GeneratorSession.preflight",
+          "start_line": 99,
+          "end_line": 100
+        },
+        {
+          "name": "GeneratorSession.last_failure",
+          "start_line": 103,
+          "end_line": 104
+        },
+        {
+          "name": "GeneratorSession.status",
+          "start_line": 106,
+          "end_line": 111
+        },
+        {
+          "name": "GeneratorSession._guard",
+          "start_line": 113,
+          "end_line": 128
+        },
+        {
+          "name": "GeneratorSession._stop",
+          "start_line": 130,
+          "end_line": 156
+        },
+        {
+          "name": "GeneratorSession._result",
+          "start_line": 158,
+          "end_line": 163
+        },
+        {
+          "name": "GeneratorSession._trial_id",
+          "start_line": 166,
+          "end_line": 168
+        },
+        {
+          "name": "GeneratorSession._event_checks",
+          "start_line": 170,
+          "end_line": 186
+        },
+        {
+          "name": "GeneratorSession.sample",
+          "start_line": 188,
+          "end_line": 213
+        },
+        {
+          "name": "GeneratorSession.event",
+          "start_line": 215,
+          "end_line": 237
+        },
+        {
+          "name": "GeneratorSession.parent_packet",
+          "start_line": 239,
+          "end_line": 259
+        },
+        {
+          "name": "GeneratorSession.angle_for_event",
+          "start_line": 261,
+          "end_line": 295
+        },
+        {
+          "name": "prepare",
+          "start_line": 298,
+          "end_line": 345
+        }
+      ],
+      "role": "F3_IMPLEMENTATION"
+    },
+    {
+      "path": "tests/tracks/algorithm_codesign/test_g6_f3_preflight_angle.py",
+      "bytes": 28409,
+      "sha256": "af7d96b7fe5bbd56a43284b0e1024e91574e1d349c68627aacf54cf82fdeac9b",
+      "AST_declarations": [
+        {
+          "name": "session",
+          "start_line": 23,
+          "end_line": 24
+        },
+        {
+          "name": "FixedBits",
+          "start_line": 27,
+          "end_line": 34
+        },
+        {
+          "name": "FixedBits.__init__",
+          "start_line": 28,
+          "end_line": 30
+        },
+        {
+          "name": "FixedBits.bits",
+          "start_line": 32,
+          "end_line": 34
+        },
+        {
+          "name": "ForbiddenBits",
+          "start_line": 37,
+          "end_line": 43
+        },
+        {
+          "name": "ForbiddenBits.__init__",
+          "start_line": 38,
+          "end_line": 39
+        },
+        {
+          "name": "ForbiddenBits.bits",
+          "start_line": 41,
+          "end_line": 43
+        },
+        {
+          "name": "direct_atan_interval",
+          "start_line": 46,
+          "end_line": 52
+        },
+        {
+          "name": "independent_pi_interval",
+          "start_line": 55,
+          "end_line": 58
+        },
+        {
+          "name": "F3Assertions",
+          "start_line": 61,
+          "end_line": 70
+        },
+        {
+          "name": "F3Assertions.assertFailure",
+          "start_line": 62,
+          "end_line": 70
+        },
+        {
+          "name": "T1Entrance",
+          "start_line": 73,
+          "end_line": 145
+        },
+        {
+          "name": "T1Entrance.test_missing_or_unregistered_precision_arguments_fail_closed",
+          "start_line": 74,
+          "end_line": 76
+        },
+        {
+          "name": "T1Entrance.test_exact_fraction_and_integer_pair_inputs",
+          "start_line": 78,
+          "end_line": 82
+        },
+        {
+          "name": "T1Entrance.test_float_or_string_is_not_implicitly_a_rational",
+          "start_line": 84,
+          "end_line": 88
+        },
+        {
+          "name": "T1Entrance.test_boolean_integer_substitutes_are_rejected",
+          "start_line": 90,
+          "end_line": 94
+        },
+        {
+          "name": "T1Entrance.test_zero_negative_empty_and_implicit_tables_rejected",
+          "start_line": 96,
+          "end_line": 99
+        },
+        {
+          "name": "T1Entrance.test_normalization_is_exact",
+          "start_line": 101,
+          "end_line": 102
+        },
+        {
+          "name": "T1Entrance.test_rational_denominator_must_be_positive_integer",
+          "start_line": 104,
+          "end_line": 107
+        },
+        {
+          "name": "T1Entrance.test_degree_and_short_step_domains",
+          "start_line": 109,
+          "end_line": 114
+        },
+        {
+          "name": "T1Entrance.test_full_m1_and_canonical_domain_unsupported_are_distinct",
+          "start_line": 116,
+          "end_line": 122
+        },
+        {
+          "name": "T1Entrance.test_eta_rho_sigma_tau_domains",
+          "start_line": 124,
+          "end_line": 129
+        },
+        {
+          "name": "T1Entrance.test_positive_supplied_bit_and_series_parameters",
+          "start_line": 131,
+          "end_line": 135
+        },
+        {
+          "name": "T1Entrance.test_parent_helper_validates_external_words",
+          "start_line": 137,
+          "end_line": 140
+        },
+        {
+          "name": "T1Entrance.test_child_helper_rejects_negative_bool_and_excluded",
+          "start_line": 142,
+          "end_line": 145
+        },
+        {
+          "name": "T2Identity",
+          "start_line": 148,
+          "end_line": 178
+        },
+        {
+          "name": "T2Identity.test_identity_never_constructs_or_queries_generator_or_angle",
+          "start_line": 149,
+          "end_line": 158
+        },
+        {
+          "name": "T2Identity.test_identity_is_distinct_from_random_zero",
+          "start_line": 160,
+          "end_line": 164
+        },
+        {
+          "name": "T2Identity.test_identity_preserves_context_and_signed_time",
+          "start_line": 166,
+          "end_line": 173
+        },
+        {
+          "name": "T2Identity.test_identity_rejects_stochastic_helper_without_query",
+          "start_line": 175,
+          "end_line": 178
+        },
+        {
+          "name": "T3Preflight",
+          "start_line": 181,
+          "end_line": 293
+        },
+        {
+          "name": "T3Preflight.test_P5_rejects_constructor_law_substitution",
+          "start_line": 182,
+          "end_line": 190
+        },
+        {
+          "name": "T3Preflight.test_predicate_helper_domains_are_checked",
+          "start_line": 192,
+          "end_line": 201
+        },
+        {
+          "name": "T3Preflight.test_all_six_predicates_have_exact_bound_evidence",
+          "start_line": 203,
+          "end_line": 216
+        },
+        {
+          "name": "T3Preflight.test_arithmetic_assessment_alone_does_not_pass_P5",
+          "start_line": 218,
+          "end_line": 224
+        },
+        {
+          "name": "T3Preflight.test_insufficient_H_fails_before_generator_creation",
+          "start_line": 226,
+          "end_line": 231
+        },
+        {
+          "name": "T3Preflight.test_insufficient_K_e_ge_one_is_safe_fail_closed",
+          "start_line": 233,
+          "end_line": 237
+        },
+        {
+          "name": "T3Preflight.test_midpoint_sufficient_inequality_inclusive_boundary",
+          "start_line": 239,
+          "end_line": 243
+        },
+        {
+          "name": "T3Preflight.test_R_exact_law_inclusive_boundary_and_failure",
+          "start_line": 245,
+          "end_line": 250
+        },
+        {
+          "name": "T3Preflight.test_acceptance_inclusive_boundary",
+          "start_line": 252,
+          "end_line": 257
+        },
+        {
+          "name": "T3Preflight.test_root_exact_and_outward_endpoints",
+          "start_line": 259,
+          "end_line": 265
+        },
+        {
+          "name": "T3Preflight.test_preflight_does_not_visit_nonempty_parents",
+          "start_line": 267,
+          "end_line": 276
+        },
+        {
+          "name": "T3Preflight.test_selected_unvisited_parent_guards_after_uniform_preflight",
+          "start_line": 278,
+          "end_line": 287
+        },
+        {
+          "name": "T3Preflight.test_L1_m1_x1_are_supported_existing_boundaries",
+          "start_line": 289,
+          "end_line": 293
+        },
+        {
+          "name": "T4Failures",
+          "start_line": 296,
+          "end_line": 398
+        },
+        {
+          "name": "T4Failures.test_raw_nonreduced_is_valid_zero",
+          "start_line": 297,
+          "end_line": 304
+        },
+        {
+          "name": "T4Failures.test_coin_rejection_is_valid_zero",
+          "start_line": 306,
+          "end_line": 309
+        },
+        {
+          "name": "T4Failures.test_law_tampering_is_detected_before_bit_consumption",
+          "start_line": 311,
+          "end_line": 316
+        },
+        {
+          "name": "T4Failures.test_local_guard_after_preflight_is_terminal_inconsistency",
+          "start_line": 318,
+          "end_line": 328
+        },
+        {
+          "name": "T4Failures.test_constructor_guard_after_preflight_is_preserved",
+          "start_line": 330,
+          "end_line": 334
+        },
+        {
+          "name": "T4Failures.test_bit_source_runtime_failure_is_not_zero_or_retry",
+          "start_line": 336,
+          "end_line": 341
+        },
+        {
+          "name": "T4Failures.test_invalid_bit_integer_is_contract_failure",
+          "start_line": 343,
+          "end_line": 348
+        },
+        {
+          "name": "T4Failures.test_invalid_trial_id_does_not_consume_bits",
+          "start_line": 350,
+          "end_line": 356
+        },
+        {
+          "name": "T4Failures.test_unexpected_preflight_runtime_failure_is_preserved",
+          "start_line": 358,
+          "end_line": 361
+        },
+        {
+          "name": "T4Failures.test_source_identity_change_uses_no_file_mutation",
+          "start_line": 363,
+          "end_line": 369
+        },
+        {
+          "name": "T4Failures.test_preflight_evidence_tampering_is_rejected",
+          "start_line": 371,
+          "end_line": 374
+        },
+        {
+          "name": "T4Failures.test_input_policy_mutation_is_rejected",
+          "start_line": 376,
+          "end_line": 380
+        },
+        {
+          "name": "T4Failures.test_angle_precision_failure_stops_session_without_refinement",
+          "start_line": 382,
+          "end_line": 387
+        },
+        {
+          "name": "T4Failures.test_failure_preserves_parent_child_and_source_location",
+          "start_line": 389,
+          "end_line": 398
+        },
+        {
+          "name": "T5Angle",
+          "start_line": 401,
+          "end_line": 468
+        },
+        {
+          "name": "T5Angle.test_unserializable_angle_context_is_invalid_input",
+          "start_line": 402,
+          "end_line": 404
+        },
+        {
+          "name": "T5Angle.angle",
+          "start_line": 406,
+          "end_line": 408
+        },
+        {
+          "name": "T5Angle.assertContainsReference",
+          "start_line": 410,
+          "end_line": 415
+        },
+        {
+          "name": "T5Angle.test_zero_angle_is_exact_and_needs_no_root",
+          "start_line": 417,
+          "end_line": 421
+        },
+        {
+          "name": "T5Angle.test_atan_one_contains_independent_Machin_pi_quarter",
+          "start_line": 423,
+          "end_line": 425
+        },
+        {
+          "name": "T5Angle.test_small_positive_angle_contains_independent_direct_series",
+          "start_line": 427,
+          "end_line": 428
+        },
+        {
+          "name": "T5Angle.test_upper_tangent_boundary_contains_independent_reciprocal_identity",
+          "start_line": 430,
+          "end_line": 432
+        },
+        {
+          "name": "T5Angle.test_signed_time_retains_unsigned_and_signed_intervals",
+          "start_line": 434,
+          "end_line": 439
+        },
+        {
+          "name": "T5Angle.test_invalid_angle_inputs_fail_closed",
+          "start_line": 441,
+          "end_line": 446
+        },
+        {
+          "name": "T5Angle.test_insufficient_angle_precision_keeps_candidate_evidence",
+          "start_line": 448,
+          "end_line": 453
+        },
+        {
+          "name": "T5Angle.test_one_supplied_root_precision_no_retry",
+          "start_line": 455,
+          "end_line": 461
+        },
+        {
+          "name": "T5Angle.test_large_integer_evidence_roundtrip_uses_no_decimal_setting_change",
+          "start_line": 463,
+          "end_line": 468
+        },
+        {
+          "name": "T6EventSemantics",
+          "start_line": 471,
+          "end_line": 544
+        },
+        {
+          "name": "T6EventSemantics.test_rehashed_external_event_tampering_is_contract_failure",
+          "start_line": 472,
+          "end_line": 480
+        },
+        {
+          "name": "T6EventSemantics.test_deterministic_events_equal_frozen_legacy_reference",
+          "start_line": 482,
+          "end_line": 490
+        },
+        {
+          "name": "T6EventSemantics.test_fixed_accepted_stream_preserves_exact_legacy_event",
+          "start_line": 492,
+          "end_line": 503
+        },
+        {
+          "name": "T6EventSemantics.test_phase_word_child_and_sigma_are_lossless",
+          "start_line": 505,
+          "end_line": 510
+        },
+        {
+          "name": "T6EventSemantics.test_packet_evidence_keeps_exact_local_quantities",
+          "start_line": 512,
+          "end_line": 518
+        },
+        {
+          "name": "T6EventSemantics.test_returned_event_is_an_immutable_snapshot",
+          "start_line": 520,
+          "end_line": 526
+        },
+        {
+          "name": "T6EventSemantics.test_angle_rejects_event_from_other_input",
+          "start_line": 528,
+          "end_line": 531
+        },
+        {
+          "name": "T6EventSemantics.test_angle_rejects_event_from_other_precision_policy",
+          "start_line": 533,
+          "end_line": 535
+        },
+        {
+          "name": "T6EventSemantics.test_bound_angle_keeps_parent_sigma_and_precision_identity",
+          "start_line": 537,
+          "end_line": 544
+        }
+      ],
+      "role": "ARTIFICIAL_TEST"
+    },
+    {
+      "path": "docs/research/track_b_g6_f3_preflight_angle_20261018/focused_test_runner.py",
+      "bytes": 3367,
+      "sha256": "dddad9b574f94fb222977e4cdc5c48444c1d6b4eaee331d20a4e547ba7ae7a74",
+      "AST_declarations": [
+        {
+          "name": "Result",
+          "start_line": 15,
+          "end_line": 23
+        },
+        {
+          "name": "Result.__init__",
+          "start_line": 16,
+          "end_line": 16
+        },
+        {
+          "name": "Result.addSuccess",
+          "start_line": 17,
+          "end_line": 17
+        },
+        {
+          "name": "Result.addFailure",
+          "start_line": 18,
+          "end_line": 18
+        },
+        {
+          "name": "Result.addError",
+          "start_line": 19,
+          "end_line": 19
+        },
+        {
+          "name": "Result.addSkip",
+          "start_line": 20,
+          "end_line": 20
+        },
+        {
+          "name": "Result.addSubTest",
+          "start_line": 21,
+          "end_line": 23
+        }
+      ],
+      "role": "FOCUSED_TEST_HARNESS"
+    }
+  ],
+  "api": "g6_f3_generator.prepare -> GeneratorSession; fixed provided H/K; no selector",
+  "nonidentity_supported_arms": [
+    "full_return"
+  ],
+  "nonidentity_unsupported_canonical_arms": [
+    "ordinary",
+    "partial_return_tail",
+    "closed_P3_tail"
+  ],
+  "identity_arms": "Recognized arm and its pre-existing degree domain; no positive preflight",
+  "preflight_predicates": [
+    "P0",
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5"
+  ],
+  "acceptance_ids": [
+    "A01",
+    "A02",
+    "A03",
+    "A04",
+    "A05",
+    "A06",
+    "A07",
+    "A08",
+    "A09",
+    "A10"
+  ],
+  "final_focused_run": "run04",
+  "test_runs": [
+    {
+      "id": "run01",
+      "json": "test_runs/run01.json",
+      "log": "test_runs/run01.log",
+      "tests_run": 56,
+      "status": "PASS"
+    },
+    {
+      "id": "run02",
+      "json": "test_runs/run02.json",
+      "log": "test_runs/run02.log",
+      "tests_run": 62,
+      "status": "PASS"
+    },
+    {
+      "id": "run03",
+      "json": "test_runs/run03.json",
+      "log": "test_runs/run03.log",
+      "tests_run": 63,
+      "status": "PASS"
+    },
+    {
+      "id": "run04",
+      "json": "test_runs/run04.json",
+      "log": "test_runs/run04.log",
+      "tests_run": 63,
+      "status": "PASS"
+    }
+  ],
+  "counts_this_task": {
+    "new_scientific_calculations": 0,
+    "saved_scientific_data_reanalysis": 0,
+    "molecular_Hamiltonian_DF_generation": 0,
+    "backend_sampling_measurements": 0,
+    "circuit_matrix_generation_simulation": 0,
+    "native_compile_synthesis": 0,
+    "new_nontrivial_theorems": 0,
+    "new_H_K_selector_refinement_retry": 0,
+    "new_sampling_law": 0,
+    "DF_PR_RTE_adapter": 0,
+    "all_trial_estimator": 0,
+    "P_U_W2b_W2c_analysis": 0,
+    "new_scientific_contract_adoptions": 0,
+    "execution_authorization_grant_marker_claim": 0,
+    "important_scientific_reviews": 0,
+    "paper_writing": 0
+  },
+  "preserved_states": {
+    "track_B_D_plus_E_20261015": "UNCHANGED_ADOPTED_LIMITED_RESULTS_RETAINED_CURRENT_NUMERICAL_EXPLORATION_CONCLUDED",
+    "track_B_current_exploration_STOP": "UNCHANGED",
+    "next_concrete_algorithm_experiment_direction": "NOT_ADOPTED",
+    "track_IV_new_theme_selection": "ON_HOLD_FOR_NOW_UNCHANGED",
+    "A2": "NOT_ADOPTED",
+    "A2_current_practical_route": "NO_FURTHER_INVESTMENT_AFTER_PHASE_B",
+    "A1": "CLOSED",
+    "K1_F": "UNAPPROVED_NOT_EXECUTED",
+    "N1": "STOP",
+    "N2": "HOLD",
+    "N3": "CLOSED",
+    "THRIFT_current_template": "CLOSED",
+    "other_STOP_CLOSED_PAUSED_HOLD_and_tracks_I_II_III": "UNCHANGED"
+  },
+  "scientific_or_research_contract_adopted": false,
+  "contract_grants_execution": false,
+  "fresh_IID_empirically_verified": false,
+  "physical_provider_certified": false,
+  "general_math_theorem_proved_by_tests": false,
+  "actual_CP_runtime_or_total_resource_certification": false,
+  "important_new_mathematical_contradiction_identified": false,
+  "automatic_next_work": false,
+  "mandatory_STOP": true
+}
