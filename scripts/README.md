@@ -917,3 +917,5 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## H8 selected-six saved-cost reaccounting (2026-10-17)
 
 `h8_six_axis_reaccount_contract.py` / `run_h8_six_axis_reaccount.py` / `witness_h8_six_axis_reaccount.py`：H8の保存shot・PR費用/SEを固定し、6軸単価のみ反映する新one-shot。SOURCE公開・新grant必須。`--check`はmetadata/保存値の結合検査のみ。
+
+H4 completion metadata: `collect_h4_followup_results.py`。全実行終了後の結果・native回収・予定scope確認だけを行い、新科学計算を起動しない。

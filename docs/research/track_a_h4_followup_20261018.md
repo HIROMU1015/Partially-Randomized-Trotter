@@ -33,3 +33,26 @@ R/B/T/Fを同時起動し、F終了後は空いたCPUをFPに割り当てる。f
 時間比較は固定δの累積時間依存であり、固定qでのT効果ではない。希少層のn8は条件付きpilotの点推定である。F/FPではSCF軌道と保存状態も新規生成されるため、旧系列との差をDF rankだけの因果効果と断定しない。共通のDF生成政策による代表panelを追加する検証であり、legacy系列の置換や全格子再最適化ではない。
 
 実行状態・結果・SOURCEは後続のreceiptに追記する。この準備本文だけでは正常完了を主張しない。
+
+
+## 実行追記：R/B/F完了
+
+実行SOURCEは `dfef38fc8107dd76f5d71dcdeca31f8d3dc39f64`。R/B/T/Fを別grantで並行起動した。fresh時点の64物理coreからR12、B26、T25、F1を選択し、各workerは1 thread。R/F完了後、B/Tと重ならない13 coreへFPを結合した（FPのSOURCEは `64e0fc91`、科学moduleは元SOURCEと同一、追加は資源割当preparerだけ）。
+
+Rは12/12 signalでnative exit0・final gate PASS・mandatory STOP。5精度の経験的適格件数は通常/非相殺とも12/10/10/8/6。これはsignal適格性で、費用winnerではない。wallはdriver 11.79秒。
+
+Bは32/32軌道・64/64軸、全worker exit0/reap・final gate PASS・mandatory STOP。driverを含むnative wallは133.01秒。以下のcosine/sine単価は同値で、各n=8の条件付き平均とsample SE。
+
+| q | 層 | 平均RZ/軸 | sample SE |
+|---|---|---:|---:|
+|4|s2_multi|13,004.75|131.58|
+|4|s4|13,144.25|200.34|
+|8|s2_multi|25,306.125|157.07|
+|8|s4|25,731.625|263.65|
+
+Fもnative exit0・final gate PASS・mandatory STOP。tol-onlyの実rankは10、sector状態残差は1.96e-15未満、projectionのN=8 engineering評価は約8.28e-14 Hartree。旧rank12とその状態・SOURCEは変更していない。SCF/DF/state生成はFだけで各1回、新費用比較はFPの別grantに限定した。
+
+FPの追加preparerは `prepare_h4_followup_fp.py`。起動時に稼働中の兄弟stageが使うCPUを除き、終了したstageのCPUを再利用する。既存stageのSOURCEやgrantは変更しない。
+
+
+FPも72/72軸、native exit0・最終gate PASS・全回収で終了（native wall289.09秒）。終了時metadataを確認する3人工試験もPASSし、今回の人工検証は計33件。残るTはT=1.6 full S4を処理中。`collect_h4_followup_results.py` は全stageの終了後に予定軸数・168 workerのnative回収・結果SHA・SOURCE/gateを照合して資料化する。科学実行・retry・追加候補は行わない。
