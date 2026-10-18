@@ -23,3 +23,5 @@
 第1候補45c29d98の90性能/27診断/17障害・354 testsとrawはattempts/v1_*へbytes不変で保全。probeの追加案を採用後、最終SOURCEで全性能・回帰を再実施した。以前のP1測定b1dba4b6や第1候補の値を最終値へ流用していない。
 
 実G7/F3 import/sampling、実科学データの数値再解析、新科学計算、実authorization/grant/claim発行消費、correctness256/31,710,848 calls本番はいずれも0。ローカルfused canonical候補ad3117d2、冪漸化式、GMP/nativeを統合していない。共有設定/他ユーザーprocess・file/他worktreeを変更していない。公開・保全照合後mandatory STOP。
+
+公開照合：完全content commit `35617bdecb4fe38f0a348e7855db75132c071afd` の185ファイル・29,454,942 bytesをremoteから再取得し、全SHA256とbranch HEADを照合した。receipt自身を含む最終commitは別途照合する。
