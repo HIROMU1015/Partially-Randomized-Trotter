@@ -1556,3 +1556,8 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-19 Mechanism説明側：診断と修正準備
 
 [原因・SOURCE・人工検査・未承認契約](docs/research/track_a_mechanism_explanation_diagnostic_readiness_20261019.md)。SOURCE b6716396acc5760fde7cf7cc6f2481b183a08f10。core不変、63 side field存在／1 side未回収、人工105件PASS、実科学数値再解析0・mandatory STOP。
+
+
+## 2026-10-19 Mechanism説明側：one-shot完了
+
+[結果・条件・監査](docs/research/track_a_mechanism_explanation_results_20261019.md)。SOURCE b6716396acc5760fde7cf7cc6f2481b183a08f10。63 side／31比較で説明完了、A82_OLD_PR.PRのみ既知欠測。元core32件不変、数値不一致・追加欠測0、mandatory STOP。
