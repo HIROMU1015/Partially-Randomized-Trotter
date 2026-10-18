@@ -1,3 +1,7 @@
+## 2026-10-18 Codex 1：S2 PR A_COST・既存B/D会計の準備
+
+[技術報告と未結合事項](../../docs/research/track_a_pr_cost_integration_readiness_20261018.md)。SOURCE `33c7231fc7c8f3940106bd8fe473e3db775fbcb0`。H4/H6/H8のA各16候補と29固定fileをmetadata照合。人工40検査PASS、9個別契約は無効grant・未seal。実分子signal/sampling/compile/再会計/ランキング0。高次PF・理論資源比較・他jobを変更せずmandatory STOP。以下は各時点の履歴。
+
 H8 DBA先行起動：SOURCE49879a9c…でDの2構成4軸を独立grant・構成間並列で実行中。fresh gate PASS、人工7件PASS。実測の最終PASSは未確認。B/A未起動、H4保留。詳細 `docs/research/track_a_h8_dba_20261018.md`。
 
 
