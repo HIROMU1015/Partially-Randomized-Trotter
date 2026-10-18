@@ -1,3 +1,7 @@
+## 2026-10-18 PR α：保存入力seal・解析未承認
+
+[入力seal報告](docs/research/pr_alpha_input_binding_20261018.md) / [binder](scripts/bind_pr_alpha_saved_inputs.py) / [copy checker](scripts/check_pr_alpha_input_copies.py)。保存入力をseal。B-1は14/14、B-2は3,660完全＋既知60欠測。人工62件・CLI8件PASS、原本19件のコピー照合。実データ数値解析0・未承認・mandatory STOP。最新はrun03、旧sealと前回成果物を保持。以下は各時点の履歴。
+
 ## 2026-10-18 PR α追加検証：説明訂正と未承認準備
 
 [統合報告](docs/research/pr_alpha_followup_preparation_20261018.md) / [runner](scripts/run_pr_alpha_binomial.py)・[感度runner](scripts/run_pr_alpha_sensitivity.py) / [artifact](artifacts/resource_applicability/pr_alpha_followup_preparation/2026-10-18/)。D01/A05説明修正済み。新規人工41件・CLI8検査PASS。B-1は14条件/最大28軸、B-2はα_total=.01/.05/.10案・144/190候補・最大11,160行。実入力projection未seal、別途承認必要、実データの確率/shot/費用/順位再解析0。既存証拠・STOPを保持しmandatory STOP。以下は各時点の履歴。
