@@ -1,0 +1,60 @@
+{
+  "status": "PASS",
+  "new_readiness_tests": 30,
+  "existing_artificial_tests": 84,
+  "total_tests": 114,
+  "runs": [
+    {
+      "path": "tests/tracks/algorithm_codesign/test_g6_w2c_b3_readiness.py",
+      "command": [
+        "/usr/bin/python3",
+        "tests/tracks/algorithm_codesign/test_g6_w2c_b3_readiness.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "tests": 30,
+      "group": "new_readiness",
+      "log": "test_g6_w2c_b3_readiness.log",
+      "log_sha256": "c79ecc62f776c1401f6e1c54d945018501b2ca49cd7242d28bde074cfd803210",
+      "scope": "private temp/mock endpoints/fake clocks; no G7/F3 numeric execution or real bitstream"
+    },
+    {
+      "path": "tests/tracks/algorithm_codesign/test_g6_w2c_b3_driver.py",
+      "command": [
+        "/usr/bin/python3",
+        "tests/tracks/algorithm_codesign/test_g6_w2c_b3_driver.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "tests": 36,
+      "group": "existing_artificial",
+      "log": "test_g6_w2c_b3_driver.log",
+      "log_sha256": "d3f84ec74fda803500139d37cf0b67c7057359a817558d78e8b87cf3ab8d402e",
+      "scope": "private temp/mock endpoints/fake clocks; no G7/F3 numeric execution or real bitstream"
+    },
+    {
+      "path": "tests/tracks/algorithm_codesign/test_g6_w2c_cost_preparation.py",
+      "command": [
+        "/usr/bin/python3",
+        "tests/tracks/algorithm_codesign/test_g6_w2c_cost_preparation.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "tests": 48,
+      "group": "existing_artificial",
+      "log": "test_g6_w2c_cost_preparation.log",
+      "log_sha256": "9732bbd151ce870277b45b255f624cadb146d05742d97ac16c68b99a7c89821a",
+      "scope": "private temp/mock endpoints/fake clocks; no G7/F3 numeric execution or real bitstream"
+    }
+  ],
+  "scope": "new30 + existing36/48, local preparation checks only",
+  "mock_thread_race_attempts": 32,
+  "mock_thread_race_winners": 1,
+  "mock_owned_process_race_attempts": 32,
+  "mock_process_race_winners": 1,
+  "production_admission_enabled": false,
+  "real_G7_sampling_correctness_CPU_profiling": 0,
+  "real_authorization_claim_issuance_consumption": 0,
+  "scientific_SOURCE_executed": false,
+  "local_observation_not_CI_or_external_reproduction": true
+}
