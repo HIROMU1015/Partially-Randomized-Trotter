@@ -1,3 +1,5 @@
+H8 A/B：独立scopeの実行接続を完成。A境界16 signal、B希少層4群32 trajectory/64軸、人工38件PASS。旧preparation/CSR/sampler/forward再利用、stage別SOURCE closure。起動証拠は後続receipt。詳細 `docs/research/track_a_h8_ab_20261018.md`。
+
 H8 DBA先行起動：SOURCE49879a9c…でDの2構成4軸を独立grant・構成間並列で実行中。fresh gate PASS、人工7件PASS。実測の最終PASSは未確認。B/A未起動、H4保留。詳細 `docs/research/track_a_h8_dba_20261018.md`。
 
 
