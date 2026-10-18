@@ -1,5 +1,7 @@
 > **2026-10-18 Track B論文主張の技術調査**：[Claim Sheet・先行法対応・証拠・ハンドオフ](docs/research/track_b_paper_claim_survey_20261018/README.md)。A_INSUFFICIENT_EVIDENCE／B_DESCRIPTIVE_RESULTS_ONLY。独立論文化保留は技術提案で未採択。D＋E・既存STOP・研究④保留は不変、新科学計算/実装/実行権限0、mandatory STOP。以下の旧状態は履歴として保持。
 
+> 2026-10-18 Codex B追補：[G6/G7→DF/PR/RTE実装契約の静的監査](docs/research/track_b_g6_e2e_interface_contract_audit_20261018/README.md)：型・guard・位相・有限bit・全trialの不足と将来V1〜V6受入条件。実装／科学実行なし、Codex Aと独立、旧STOP維持。
+
 > 2026-10-18 G6 evidence追補：[G6構成論文Evidence Packet](docs/research/track_b_g6_construction_paper_evidence_20261018/README.md)：M1〜M12の既存証明・SOURCE・既済test・方法差を接続。新規性/投稿GO未認定、科学実行0、旧STOP維持。
 
 > **Track B現在（2026-10-15・D＋E正式採択）：[Parent allocationの限定的成果と現在探索の区切り](docs/tracks/algorithm_codesign/track_b_parent_allocation_research_closure_20261015.md)。** [資源構造調査](docs/tracks/algorithm_codesign/track_b_resource_structure_and_bottlenecks_20261015.md)と[次期方向Decision Packet](docs/tracks/algorithm_codesign/track_b_next_algorithm_research_decision_packet_20261015.md)を追加。4候補群は未採択・順位未設定。新科学計算0、旧成果不変、GPTレビュー開始／科学実行は別途明示承認、mandatory STOP。[判断履歴](docs/research/研究ノート/2026-10-15_track_b_D_plus_E_and_next_direction_preparation.md)。以下は過去の状態。

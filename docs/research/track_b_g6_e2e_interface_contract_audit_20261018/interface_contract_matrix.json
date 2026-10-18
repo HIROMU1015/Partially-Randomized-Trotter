@@ -1,0 +1,977 @@
+{
+  "schema": "g6_e2e_interface_acceptance_requirements_v1",
+  "interfaces": [
+    {
+      "id": "I01",
+      "title": "DF成分・basis・D/R",
+      "status": "IMPLEMENTED_AND_EVIDENCED",
+      "source_ids": [
+        "S04",
+        "S05",
+        "S08",
+        "S09",
+        "S10",
+        "S11",
+        "S12"
+      ],
+      "mathematical_basis": "M1/M12; existing non-Pauli C01/C02",
+      "inputs_required": "Existing DFHamiltonian/partition or DFBlock, identity and threshold policies",
+      "outputs_required": "DFTailExtraction/SymbolicRTETail/DFRTEEventPreparation with components and basis registry",
+      "type_units_phase_precision": "float coefficients/energy; signed I/Z/ZZ; basis IDs/hashes; existing operator and qubit order",
+      "existing_implementation_guarantees": "Existing component extraction, D/R checks, sign/support/registry consistency and deterministic identity fields",
+      "missing_or_uncertified": "No certified raw-DF-to-extracted-float operator error; generated basis is not certified merely by hash",
+      "invariants_and_acceptance": "Preserve partition and order, separate physical component L1 from ranking proxy, preserve threshold/identity/constant and label provenance",
+      "failure_or_fail_closed": "Reject missing/conflicting hash, sign/support/partition mismatch; no implicit repartition",
+      "existing_test_scope": "T03/T04/T05 source specifications plus fixed non-Pauli audit; general native certification not implied",
+      "additional_tests_required": "V1 artificial sign/identity/threshold/hash/partition changes; no molecular test now",
+      "next_work": "Reuse existing input types after target/error scope fixed",
+      "requires_scientific_or_target_decision": false,
+      "implementation_or_scientific_execution_authorized": false,
+      "certification_scope": "Existing scoped source/test/audit correspondence only; no current numerical certification or new test execution",
+      "source_bindings": [
+        {
+          "source_id": "S05",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/df_partial_s2.py",
+          "name": "prepare_df_partial_s2",
+          "start_line": 328,
+          "end_line": 495,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/df_partial_s2.py#L328"
+        },
+        {
+          "source_id": "S04",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/df_rte_tail.py",
+          "name": "extract_df_diagonal_tail",
+          "start_line": 563,
+          "end_line": 733,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/df_rte_tail.py#L563"
+        },
+        {
+          "source_id": "S08",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/df_rte_circuit.py",
+          "name": "DFRTEEventPreparation.__post_init__",
+          "start_line": 187,
+          "end_line": 231,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/df_rte_circuit.py#L187"
+        }
+      ]
+    },
+    {
+      "id": "I02",
+      "title": "DF→有理G6 target",
+      "status": "REQUIRES_NEW_SCIENTIFIC_DECISION",
+      "source_ids": [
+        "S01",
+        "S04",
+        "S05",
+        "S06"
+      ],
+      "mathematical_basis": "M1/M10; input target assumption",
+      "inputs_required": "Frozen DF/float-component model identity, c/sign/support, time h, error/coverage policy",
+      "outputs_required": "Exact positive rational p, rational x, Lambda_R, sigma and label binding with input-error evidence",
+      "type_units_phase_precision": "energy vs inverse-energy vs dimensionless x; exact Rat data, not independent float-p casts",
+      "existing_implementation_guarantees": "DF float normalization and Fraction-coercing kernel exist separately",
+      "missing_or_uncertified": "No ready binding or certified conversion; represented binary64, raw DF and original real Hamiltonian differ",
+      "invariants_and_acceptance": "Target explicitly chosen; p>0 and exact sum=1; zero coefficients removed; no fake zero physical error from Fraction",
+      "failure_or_fail_closed": "Stop on unknown target/coverage, zero normalization or unverifiable conversion; no silent renormalization or threshold change",
+      "existing_test_scope": "T03 checks old float normalization, T01 rational kernel; no joint verification",
+      "additional_tests_required": "V1 conversion/provenance/precision boundaries and negative independent-p rounding",
+      "next_work": "User chooses guarantee target/coverage; Codex implements only after separate permission",
+      "requires_scientific_or_target_decision": true,
+      "implementation_or_scientific_execution_authorized": false,
+      "certification_scope": "Existing scoped source/test/audit correspondence only; no current numerical certification or new test execution",
+      "source_bindings": [
+        {
+          "source_id": "S04",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/df_rte_tail.py",
+          "name": "extraction_to_symbolic_rte_tail",
+          "start_line": 808,
+          "end_line": 854,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/df_rte_tail.py#L808"
+        },
+        {
+          "source_id": "S01",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "name": "ReturnKernel.__init__",
+          "start_line": 138,
+          "end_line": 160,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L138"
+        },
+        {
+          "source_id": "S06",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/rte.py",
+          "name": "RTEComponent",
+          "start_line": 93,
+          "end_line": 119,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/rte.py#L93"
+        }
+      ]
+    },
+    {
+      "id": "I03",
+      "title": "H/K・angle精度policy",
+      "status": "MATHEMATICALLY_SPECIFIED_ONLY",
+      "source_ids": [
+        "S01",
+        "S02",
+        "S18"
+      ],
+      "mathematical_basis": "M10/M11; existing finite-bit audit section 5/6",
+      "inputs_required": "p/x/m, eta/rho, error objective, registered precision-policy identity",
+      "outputs_required": "Pre-sampling H/K_root and root/probability/angle enclosure evidence or fail-closed result",
+      "type_units_phase_precision": "K_root distinct from K_even cutoff; bits integers; eta/rho exact rational; angle radians",
+      "existing_implementation_guarantees": "Fixed-bit root/dyadic checks and symbolic tangent implemented",
+      "missing_or_uncertified": "Automatic arbitrary-input bit selector and general angle-enclosure binding not implemented",
+      "invariants_and_acceptance": "Known support and relative-error conditions before use; no claim fixed defaults cover every input",
+      "failure_or_fail_closed": "Insufficient support/interval precision or nonpositive margin stops; no result-driven rescue/retry",
+      "existing_test_scope": "T01 insufficient precision/root/bit-map and T02 digital bounds, old fixture scope only",
+      "additional_tests_required": "V3 preselected policy, enclosure/support/range/bias boundaries",
+      "next_work": "Fix precision/coverage policy first; later technical implementation without new precision theorem",
+      "requires_scientific_or_target_decision": true,
+      "implementation_or_scientific_execution_authorized": false,
+      "certification_scope": "Existing scoped source/test/audit correspondence only; no current numerical certification or new test execution",
+      "source_bindings": [
+        {
+          "source_id": "S01",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "name": "root_interval",
+          "start_line": 45,
+          "end_line": 52,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L45"
+        },
+        {
+          "source_id": "S01",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "name": "dyadic_distribution",
+          "start_line": 55,
+          "end_line": 82,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L55"
+        },
+        {
+          "source_id": "S01",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "name": "ReturnKernel.digital_parent",
+          "start_line": 214,
+          "end_line": 236,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L214"
+        },
+        {
+          "source_id": "S02",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "path": "src/trottertracks/algorithm_codesign/g7_generator.py",
+          "name": "FullReturnGenerator.__init__",
+          "start_line": 216,
+          "end_line": 225,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_generator.py#L216"
+        }
+      ]
+    },
+    {
+      "id": "I04",
+      "title": "局所return query",
+      "status": "IMPLEMENTED_AND_EVIDENCED",
+      "source_ids": [
+        "S01",
+        "S02"
+      ],
+      "mathematical_basis": "M1-M6/M11",
+      "inputs_required": "Exact p/x/m and a valid reduced even parent word",
+      "outputs_required": "a_u/s_u/d enclosure/child law/ordinary envelope/local packet",
+      "type_units_phase_precision": "Exact Fraction coefficients; root Interval; operator word order; finite odd m and short step",
+      "existing_implementation_guarantees": "Green recurrence, local parent/child query and bounded digital packet exist without global word dictionary",
+      "missing_or_uncertified": "No physical input/operator/native certificate supplied by the kernel",
+      "invariants_and_acceptance": "Same finite target, Q_i involutions, insertion positivity assumptions; no whole-word involution assumption",
+      "failure_or_fail_closed": "Reject invalid word/domain/precision; exceptions are not random zero outcomes",
+      "existing_test_scope": "T01 old 16-test record, T02 local/U tests; not rerun",
+      "additional_tests_required": "V2/V3 connector preserves existing semantics; no new Green proof",
+      "next_work": "Reuse frozen kernel; no change authorized",
+      "requires_scientific_or_target_decision": false,
+      "implementation_or_scientific_execution_authorized": false,
+      "certification_scope": "Existing scoped source/test/audit correspondence only; no current numerical certification or new test execution",
+      "source_bindings": [
+        {
+          "source_id": "S01",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "name": "ReturnKernel.parent",
+          "start_line": 194,
+          "end_line": 202,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L194"
+        },
+        {
+          "source_id": "S01",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "name": "ReturnKernel.word_series",
+          "start_line": 170,
+          "end_line": 175,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L170"
+        }
+      ]
+    },
+    {
+      "id": "I05",
+      "title": "bit source・raw/accept proposal",
+      "status": "PARTIALLY_IMPLEMENTED",
+      "source_ids": [
+        "S01",
+        "S02",
+        "S17"
+      ],
+      "mathematical_basis": "M6/M7/M9",
+      "inputs_required": "Fixed dyadic laws, bits(H) provider, run/input/policy identity",
+      "outputs_required": "accepted G7 event or prequantum zero with trial provenance",
+      "type_units_phase_precision": "Exactly H-bit integer draws; mathematical fresh uniform/IID model separated from diagnostic PRNG",
+      "existing_implementation_guarantees": "FullReturnGenerator.sample raw proposal/reduced check/coin/child; DeterministicBits diagnostic; G8 counters",
+      "missing_or_uncertified": "No DF-bound production bit/shot policy or retained zero reason/record identity",
+      "invariants_and_acceptance": "Do not remap raw nonreduced words; do not treat SHA reproducibility as IID proof",
+      "failure_or_fail_closed": "Invalid bits or arithmetic failure stop; no replacement draw until accepted",
+      "existing_test_scope": "T01 bit map, T02 deterministic zero diagnostic, T09 prior stub scope",
+      "additional_tests_required": "V2/V3/V5 zero, bit boundaries and failure distinction",
+      "next_work": "Later bind a declared randomness policy and explicit trial outcomes",
+      "requires_scientific_or_target_decision": true,
+      "implementation_or_scientific_execution_authorized": false,
+      "certification_scope": "Existing scoped source/test/audit correspondence only; no current numerical certification or new test execution",
+      "source_bindings": [
+        {
+          "source_id": "S02",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "path": "src/trottertracks/algorithm_codesign/g7_generator.py",
+          "name": "FullReturnGenerator.sample",
+          "start_line": 237,
+          "end_line": 251,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_generator.py#L237"
+        },
+        {
+          "source_id": "S02",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "path": "src/trottertracks/algorithm_codesign/g7_generator.py",
+          "name": "DeterministicBits.bits",
+          "start_line": 64,
+          "end_line": 72,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_generator.py#L64"
+        }
+      ]
+    },
+    {
+      "id": "I06",
+      "title": "lossless G7 event/trial record",
+      "status": "PARTIALLY_IMPLEMENTED",
+      "source_ids": [
+        "S01",
+        "S02",
+        "S06"
+      ],
+      "mathematical_basis": "M5/M9/M12",
+      "inputs_required": "G7 event dict or None, label map, signed-time and precision context",
+      "outputs_required": "Lossless event/zero/failure record; no adopted new class name",
+      "type_units_phase_precision": "word/raw_word/child/ratio/phase_i_power; exact c_tilde/pi/W; sigma and source/input identities",
+      "existing_implementation_guarantees": "G7 event has coefficient/proposal/weight, provider calls and reversed time-word",
+      "missing_or_uncertified": "Run identity, sigma field, rejection distinction and all-trial envelope absent; RTE float fields cannot be exact sidecar by assumption",
+      "invariants_and_acceptance": "pi*W=c_tilde; product order and all phases preserved; zero remains in trial count",
+      "failure_or_fail_closed": "Missing binding/sign/weight or contradictory metadata rejected, not patched silently",
+      "existing_test_scope": "T01/T02 old event/digital semantics; no DF connector record test",
+      "additional_tests_required": "V2/V5 serialization, round-trip, tampering and failed/zero separation",
+      "next_work": "Choose lossless representation then implement after permission; sidecar versus new type remains open",
+      "requires_scientific_or_target_decision": false,
+      "implementation_or_scientific_execution_authorized": false,
+      "certification_scope": "Existing scoped source/test/audit correspondence only; no current numerical certification or new test execution",
+      "source_bindings": [
+        {
+          "source_id": "S02",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "path": "src/trottertracks/algorithm_codesign/g7_generator.py",
+          "name": "_event",
+          "start_line": 79,
+          "end_line": 90,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_generator.py#L79"
+        },
+        {
+          "source_id": "S06",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/rte.py",
+          "name": "RTEEvent",
+          "start_line": 549,
+          "end_line": 643,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/rte.py#L549"
+        },
+        {
+          "source_id": "S01",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "name": "rational_event_weight",
+          "start_line": 239,
+          "end_line": 254,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L239"
+        }
+      ]
+    },
+    {
+      "id": "I07",
+      "title": "ordinary StepRequest→G6接続",
+      "status": "MISSING_INTERFACE",
+      "source_ids": [
+        "S05",
+        "S06",
+        "S08",
+        "S13"
+      ],
+      "mathematical_basis": "M5/M6/M9; ordinary guarded law",
+      "inputs_required": "G6 event law and component registry, D/R step context",
+      "outputs_required": "A validated circuit/step request preserving G6 law and weights",
+      "type_units_phase_precision": "Even parent phase compatible, but word-angle/probability/normalization differ from ordinary",
+      "existing_implementation_guarantees": "RTEEvent permits finite float angle; StepRequest explicitly rechecks ordinary angle/probability/common normalization",
+      "missing_or_uncertified": "No law-neutral G6 request path; repeated request reuses ordinary validator",
+      "invariants_and_acceptance": "Do not weaken old guard, call ordinary _make_event or forge ordinary probabilities to pass it",
+      "failure_or_fail_closed": "Explicitly classify incompatible path; fail before any quantum work",
+      "existing_test_scope": "T05/T06 ordinary guards; no G6-specific acceptance path",
+      "additional_tests_required": "V2/V6 distinguish valid circuit action from invalid law metadata and ensure old ordinary regression",
+      "next_work": "Select separate/extended request architecture; implement only after explicit approval",
+      "requires_scientific_or_target_decision": true,
+      "implementation_or_scientific_execution_authorized": false,
+      "certification_scope": "Existing scoped source/test/audit correspondence only; no current numerical certification or new test execution",
+      "source_bindings": [
+        {
+          "source_id": "S05",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/df_partial_s2.py",
+          "name": "DFPartialS2StepRequest.__post_init__",
+          "start_line": 511,
+          "end_line": 643,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/df_partial_s2.py#L511"
+        },
+        {
+          "source_id": "S13",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/df_partial_s2_repeated.py",
+          "name": "DFPartialS2RepeatedRequest.__post_init__",
+          "start_line": 134,
+          "end_line": 225,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/df_partial_s2_repeated.py#L134"
+        },
+        {
+          "source_id": "S08",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/df_rte_circuit.py",
+          "name": "DFRTEEventPreparation.sample_occurrence_request",
+          "start_line": 333,
+          "end_line": 389,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/df_rte_circuit.py#L333"
+        }
+      ]
+    },
+    {
+      "id": "I08",
+      "title": "label・sign・sigma binding",
+      "status": "MISSING_INTERFACE",
+      "source_ids": [
+        "S02",
+        "S03",
+        "S04",
+        "S07",
+        "S17"
+      ],
+      "mathematical_basis": "M5/M12",
+      "inputs_required": "Integer labels, signed DF component IDs/support/basis hash, sigma from h",
+      "outputs_required": "Resolved ordered product and signed child rotation with provenance",
+      "type_units_phase_precision": "G7 ratio nonnegative; sigma external; DF coefficient_sign multiplies rotation; product sign separate",
+      "existing_implementation_guarantees": "Each side has the required fields/operations; S03 accepts sigma; S17 bind defaults to +1",
+      "missing_or_uncertified": "No bridge from abstract label to DF registry; generic negative-time path not carried by G8 step",
+      "invariants_and_acceptance": "Preserve reverse word, parent phase, label sign and sigma exactly once; no s*Gamma(M)->Gamma(sM)",
+      "failure_or_fail_closed": "Reject unmapped label, wrong hash, missing time sign or double sign/phase",
+      "existing_test_scope": "T02 sigma/actual-adjoint, T04 signs, T07 sine sign; no integrated binding",
+      "additional_tests_required": "V2/V4 sigma plus/minus, negative components, identity and noncommuting ordering",
+      "next_work": "Later bind existing metadata and provider call context; do not modify old frozen positive-time runs",
+      "requires_scientific_or_target_decision": false,
+      "implementation_or_scientific_execution_authorized": false,
+      "certification_scope": "Existing scoped source/test/audit correspondence only; no current numerical certification or new test execution",
+      "source_bindings": [
+        {
+          "source_id": "S03",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "path": "src/trottertracks/algorithm_codesign/g7_provider.py",
+          "name": "controlled_event_ir",
+          "start_line": 2,
+          "end_line": 20,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_provider.py#L2"
+        },
+        {
+          "source_id": "S17",
+          "commit": "cb60a4a1336f1803ad49d890f4e74aafd6ad7c61",
+          "path": "src/trottertracks/algorithm_codesign/g8_pipeline.py",
+          "name": "NativePipeline.step",
+          "start_line": 75,
+          "end_line": 103,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/cb60a4a1336f1803ad49d890f4e74aafd6ad7c61/src/trottertracks/algorithm_codesign/g8_pipeline.py#L75"
+        },
+        {
+          "source_id": "S07",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/df_rte_qiskit.py",
+          "name": "QiskitDFRTEEventCircuitBuilder._append_central_application",
+          "start_line": 472,
+          "end_line": 502,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/df_rte_qiskit.py#L472"
+        }
+      ]
+    },
+    {
+      "id": "I09",
+      "title": "DF controlled primitive",
+      "status": "IMPLEMENTED_AND_EVIDENCED",
+      "source_ids": [
+        "S04",
+        "S07",
+        "S10"
+      ],
+      "mathematical_basis": "M12; existing non-Pauli controlled audit",
+      "inputs_required": "Registry and ordered applications; Z/ZZ support; float angle; control wire",
+      "outputs_required": "Logical controlled event circuit with relative phase and registry checks",
+      "type_units_phase_precision": "B dagger then central then B in time; CZ products, controlled RZ/RZZ, sign phase; one outer ancilla",
+      "existing_implementation_guarantees": "Existing basis/central/sign/identity primitives, adjacent-equal-basis sharing and actual logical inverse",
+      "missing_or_uncertified": "G6 whole event not yet bound; logical fixture evidence is not general strict physical certificate",
+      "invariants_and_acceptance": "Control=0 identity/control=1 intended event without phase minimization; same legal reuse for baseline",
+      "failure_or_fail_closed": "Reject basis/support/wire/hash conflict and invalid application order",
+      "existing_test_scope": "T03/T04 and fixed non-Pauli audit, limited logical scope",
+      "additional_tests_required": "V4 G6 event binding, phase corruption, workspace, actual inverse",
+      "next_work": "Reuse primitive after route choice; new circuit construction needs permission",
+      "requires_scientific_or_target_decision": false,
+      "implementation_or_scientific_execution_authorized": false,
+      "certification_scope": "Existing scoped source/test/audit correspondence only; no current numerical certification or new test execution",
+      "source_bindings": [
+        {
+          "source_id": "S07",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/df_rte_qiskit.py",
+          "name": "QiskitDFRTEEventCircuitBuilder._build",
+          "start_line": 214,
+          "end_line": 391,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/df_rte_qiskit.py#L214"
+        },
+        {
+          "source_id": "S07",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/df_rte_qiskit.py",
+          "name": "QiskitDFRTEEventCircuitBuilder._append_basis",
+          "start_line": 448,
+          "end_line": 458,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/df_rte_qiskit.py#L448"
+        },
+        {
+          "source_id": "S07",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/df_rte_qiskit.py",
+          "name": "QiskitDFRTEEventCircuitBuilder._append_central_application",
+          "start_line": 472,
+          "end_line": 502,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/df_rte_qiskit.py#L472"
+        }
+      ]
+    },
+    {
+      "id": "I10",
+      "title": "G7 helper provider route",
+      "status": "PARTIALLY_IMPLEMENTED",
+      "source_ids": [
+        "S03",
+        "S07",
+        "S14",
+        "S17"
+      ],
+      "mathematical_basis": "M12; existing G6 review section 9",
+      "inputs_required": "Resolved exact/strict controlled-Q provider, sigma, tangent-key synthesis row",
+      "outputs_required": "Conditional helper IR or a future bound system circuit",
+      "type_units_phase_precision": "Outer control plus eigenvalue helper, actual-adjoint uncompute, scalar tokens retained",
+      "existing_implementation_guarantees": "S03 helper IR and synthesized-Rz binding exist under conditional provider model",
+      "missing_or_uncertified": "No generic DF provider binding; Hadamard wrapper outer-last-wire/type assumptions need layout validation",
+      "invariants_and_acceptance": "Keep compute/unitary actual adjoint and cleanup; do not call helper workspace/cost equal to DF direct route",
+      "failure_or_fail_closed": "Missing strict provider or cleanup/layout proof stops rather than assuming zero error",
+      "existing_test_scope": "T02 helper reset/strict phase, T09 conditional/stub pipeline evidence",
+      "additional_tests_required": "V4 helper cleanup and ancilla layout, V6 wrapper boundary",
+      "next_work": "User chooses direct DF or helper access conditions; Codex can bind only after implementation permission",
+      "requires_scientific_or_target_decision": true,
+      "implementation_or_scientific_execution_authorized": false,
+      "certification_scope": "Existing scoped source/test/audit correspondence only; no current numerical certification or new test execution",
+      "source_bindings": [
+        {
+          "source_id": "S03",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "path": "src/trottertracks/algorithm_codesign/g7_provider.py",
+          "name": "provider_contract",
+          "start_line": 23,
+          "end_line": 34,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_provider.py#L23"
+        },
+        {
+          "source_id": "S03",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "path": "src/trottertracks/algorithm_codesign/g7_provider.py",
+          "name": "bind_synthesized_provider_ir",
+          "start_line": 37,
+          "end_line": 58,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_provider.py#L37"
+        },
+        {
+          "source_id": "S14",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/rpe_hadamard_interrogation.py",
+          "name": "QiskitRPEHadamardInterrogationBuilder._validate_evolution_common",
+          "start_line": 124,
+          "end_line": 179,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/rpe_hadamard_interrogation.py#L124"
+        }
+      ]
+    },
+    {
+      "id": "I11",
+      "title": "angle/native strict証拠",
+      "status": "IMPLEMENTED_BUT_UNCERTIFIED",
+      "source_ids": [
+        "S01",
+        "S03",
+        "S07",
+        "S17",
+        "S18",
+        "S19"
+      ],
+      "mathematical_basis": "M10/M12",
+      "inputs_required": "Rational tangent and signed angle enclosure, provider/basis implementation, tool/error identities",
+      "outputs_required": "Strict per-event error/cost evidence scoped to actual gates, or uncertified status",
+      "type_units_phase_precision": "Angle radians; operator norm includes controlled relative phase; native error separate from root bias",
+      "existing_implementation_guarantees": "G7/G8 conditional Rz/provider accounting and G9 fixed-provider/native example; DF float-angle lowering",
+      "missing_or_uncertified": "General DF angle/basis/control error and acquisition certificate not supplied; G9 3-qubit is not general DF",
+      "invariants_and_acceptance": "No global-phase quotient; inverse retains scalar; no unnamed free provider or extrapolation to unacquired keys",
+      "failure_or_fail_closed": "Unknown/invalid certificate or synthesis failure stops; no precision/seed retry granted",
+      "existing_test_scope": "T02/T10 fixed phase/adjoint specifications and historical native metadata only",
+      "additional_tests_required": "V3/V4 angle, phase, evidence mutation, strict bound and future native checks",
+      "next_work": "Fix certificate/coverage policy, then separately authorize implementation/native execution",
+      "requires_scientific_or_target_decision": true,
+      "implementation_or_scientific_execution_authorized": false,
+      "certification_scope": "Existing scoped source/test/audit correspondence only; no current numerical certification or new test execution",
+      "source_bindings": [
+        {
+          "source_id": "S03",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "path": "src/trottertracks/algorithm_codesign/g7_provider.py",
+          "name": "bind_synthesized_provider_ir",
+          "start_line": 37,
+          "end_line": 58,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_provider.py#L37"
+        },
+        {
+          "source_id": "S17",
+          "commit": "cb60a4a1336f1803ad49d890f4e74aafd6ad7c61",
+          "path": "src/trottertracks/algorithm_codesign/g8_pipeline.py",
+          "name": "NativePipeline.step",
+          "start_line": 75,
+          "end_line": 103,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/cb60a4a1336f1803ad49d890f4e74aafd6ad7c61/src/trottertracks/algorithm_codesign/g8_pipeline.py#L75"
+        },
+        {
+          "source_id": "S19",
+          "commit": "0ef2b92738750a3c0d187743dd4b7c9b927db802",
+          "path": "src/trottertracks/algorithm_codesign/g9_native.py",
+          "name": "native_ir",
+          "start_line": 159,
+          "end_line": 175,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0ef2b92738750a3c0d187743dd4b7c9b927db802/src/trottertracks/algorithm_codesign/g9_native.py#L159"
+        }
+      ]
+    },
+    {
+      "id": "I12",
+      "title": "logical X/Y Hadamard wrapper",
+      "status": "IMPLEMENTED_AND_EVIDENCED",
+      "source_ids": [
+        "S13",
+        "S14",
+        "S16"
+      ],
+      "mathematical_basis": "M12; existing ordinary wrapper convention",
+      "inputs_required": "DFPartialS2RepeatedCircuitResult already controlled; cosine/sine axis",
+      "outputs_required": "Circuit with H/evolution/Sdag-if-sine/H/measure and bit map",
+      "type_units_phase_precision": "Bit b->(-1)^b, q=1/2/4 at public builder, outer ancilla last, no duplicate control",
+      "existing_implementation_guarantees": "Logical builder and result scope; no state prep/backend/shots/IID execution",
+      "missing_or_uncertified": "G6 event/helper IR not a supported request directly; actual measurement remains unimplemented here",
+      "invariants_and_acceptance": "Preserve phase, signed signal, wire layout and identical target per axis; never infer shots from circuit measurement flag",
+      "failure_or_fail_closed": "Type/layout/axis/measurements-in-input guards remain closed",
+      "existing_test_scope": "T07 bit/sign/phase/type/scope tests, not rerun",
+      "additional_tests_required": "V4/V5 G6-bound wrapper and bit convention, V6 complete record",
+      "next_work": "Reuse logical convention after binding; backend and accumulator separate",
+      "requires_scientific_or_target_decision": false,
+      "implementation_or_scientific_execution_authorized": false,
+      "certification_scope": "Existing scoped source/test/audit correspondence only; no current numerical certification or new test execution",
+      "source_bindings": [
+        {
+          "source_id": "S14",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/rpe_hadamard_interrogation.py",
+          "name": "RPEHadamardInterrogationRequest.__post_init__",
+          "start_line": 65,
+          "end_line": 73,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/rpe_hadamard_interrogation.py#L65"
+        },
+        {
+          "source_id": "S14",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/rpe_hadamard_interrogation.py",
+          "name": "QiskitRPEHadamardInterrogationBuilder._build_validated",
+          "start_line": 306,
+          "end_line": 404,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/rpe_hadamard_interrogation.py#L306"
+        }
+      ]
+    },
+    {
+      "id": "I13",
+      "title": "backend・weighted全trial estimator",
+      "status": "MISSING_INTERFACE",
+      "source_ids": [
+        "S02",
+        "S14",
+        "S15",
+        "S17"
+      ],
+      "mathematical_basis": "M7/M9/M10",
+      "inputs_required": "Trial outcomes, accepted controlled circuit, axis/bit and exact W, N and policy identity",
+      "outputs_required": "Weighted all-trial estimate plus counters, completion/failure and provenance",
+      "type_units_phase_precision": "Rejected 0, accepted W*Y, denominator all attempts; failures distinct",
+      "existing_implementation_guarantees": "G8 counts attempt/zero/accepted; wrapper defines bit mapping; neither performs quantum measurement accumulation",
+      "missing_or_uncertified": "No integrated G6 backend adapter or exact-weight all-trial accumulator in audited paths",
+      "invariants_and_acceptance": "No accepted-only normalization, fake-zero failures, success-until-N retries or discarded rejection counts",
+      "failure_or_fail_closed": "Incomplete/backend/precision failure preserves evidence and STOP; no complete-confidence claim from prefix",
+      "existing_test_scope": "T01 accepted-only negative diagnostic, T02/T09 no-readout-zero counters; no full measured G6 fixture",
+      "additional_tests_required": "V5 artificial sequence and negative accounting, later explicitly authorized backend tests",
+      "next_work": "After state/IID/confidence/failure policies fixed, implement and test under separate permission",
+      "requires_scientific_or_target_decision": true,
+      "implementation_or_scientific_execution_authorized": false,
+      "certification_scope": "Existing scoped source/test/audit correspondence only; no current numerical certification or new test execution",
+      "source_bindings": [
+        {
+          "source_id": "S17",
+          "commit": "cb60a4a1336f1803ad49d890f4e74aafd6ad7c61",
+          "path": "src/trottertracks/algorithm_codesign/g8_pipeline.py",
+          "name": "NativePipeline.counters",
+          "start_line": 105,
+          "end_line": 110,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/cb60a4a1336f1803ad49d890f4e74aafd6ad7c61/src/trottertracks/algorithm_codesign/g8_pipeline.py#L105"
+        },
+        {
+          "source_id": "S14",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/rpe_hadamard_interrogation.py",
+          "name": "QiskitRPEHadamardInterrogationBuilder._build_validated",
+          "start_line": 306,
+          "end_line": 404,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/rpe_hadamard_interrogation.py#L306"
+        },
+        {
+          "source_id": "S15",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/rpe_resource_accounting.py",
+          "name": "_hoeffding_shots",
+          "start_line": 553,
+          "end_line": 561,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/rpe_resource_accounting.py#L553"
+        }
+      ]
+    },
+    {
+      "id": "I14",
+      "title": "九項目誤差・confidence統合",
+      "status": "PARTIALLY_IMPLEMENTED",
+      "source_ids": [
+        "S01",
+        "S02",
+        "S05",
+        "S06",
+        "S15",
+        "S18"
+      ],
+      "mathematical_basis": "M1/M7-M10/M12",
+      "inputs_required": "Target/coverage, source/input evidence, U/B_o intervals, digital/native/input/Taylor/PF bias and family policy",
+      "outputs_required": "Per-term ledger, range/moment/remaining margin, sufficient all-trial budget or unresolved/failure",
+      "type_units_phase_precision": "Keep physical energy/time and dimensionless signal budgets separate; G7 fixed alpha/factor convention not generic",
+      "existing_implementation_guarantees": "G7/G8 U-based conditional budget and ordinary RPE accounting exist separately",
+      "missing_or_uncertified": "No unified G6-DF raw-input/native/PF/statistical certificate or adopted confidence family",
+      "invariants_and_acceptance": "Use U upper endpoint, not unknown B_RA/Z/true signal; do not remove factor 2 on one method only",
+      "failure_or_fail_closed": "Missing coverage or nonpositive statistical margin stops; no bias clipping or threshold relaxation",
+      "existing_test_scope": "T02/T09 budget guards, T08 conditional-certification guards; old task scopes",
+      "additional_tests_required": "V3/V5/V6 ledger identity and budget tampering; no new N calculation now",
+      "next_work": "User fixes scientific conditions; Codex connects existing guarantees only where applicable",
+      "requires_scientific_or_target_decision": true,
+      "implementation_or_scientific_execution_authorized": false,
+      "certification_scope": "Existing scoped source/test/audit correspondence only; no current numerical certification or new test execution",
+      "source_bindings": [
+        {
+          "source_id": "S02",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "path": "src/trottertracks/algorithm_codesign/g7_generator.py",
+          "name": "budget",
+          "start_line": 266,
+          "end_line": 284,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/src/trottertracks/algorithm_codesign/g7_generator.py#L266"
+        },
+        {
+          "source_id": "S18",
+          "commit": "cb60a4a1336f1803ad49d890f4e74aafd6ad7c61",
+          "path": "src/trottertracks/algorithm_codesign/g8_bounds.py",
+          "name": "budget",
+          "start_line": 47,
+          "end_line": 69,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/cb60a4a1336f1803ad49d890f4e74aafd6ad7c61/src/trottertracks/algorithm_codesign/g8_bounds.py#L47"
+        },
+        {
+          "source_id": "S15",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/rpe_resource_accounting.py",
+          "name": "evaluate_rpe_round_candidate",
+          "start_line": 564,
+          "end_line": 924,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/rpe_resource_accounting.py#L564"
+        }
+      ]
+    },
+    {
+      "id": "I15",
+      "title": "event依存費用・cache",
+      "status": "PARTIALLY_IMPLEMENTED",
+      "source_ids": [
+        "S02",
+        "S07",
+        "S16",
+        "S17",
+        "S18",
+        "S21",
+        "S22"
+      ],
+      "mathematical_basis": "M7/M8/M11; existing conditional accounting",
+      "inputs_required": "Trial/accepted records, event costs, input/query/bit/acquisition/cache/prep/wrapper evidence",
+      "outputs_required": "Separate classical and quantum resource vector with exclusions and failure costs",
+      "type_units_phase_precision": "CPU/memory/bit vs T/CX/1Q/depth; expected calls not hard cap; old capacities remain old scope",
+      "existing_implementation_guarantees": "G8 timing/counters and conditional provider prices; ordinary wrapper compile scope; fixed D accounting",
+      "missing_or_uncertified": "No general G6-DF event costs, online acquisition/prep/full wrapper measurement cost",
+      "invariants_and_acceptance": "Prequantum rejection has no circuit but nonzero classical work; same compiler/cache/access for baseline",
+      "failure_or_fail_closed": "Record failed-acquisition/backend spent cost; unknown cost not zero; no retry or weak baseline",
+      "existing_test_scope": "T09 cache and resource-failure guard specifications; old compiled/native records only",
+      "additional_tests_required": "V5/V6 mocked cost trace first; future native execution separately approved",
+      "next_work": "Define resource-vector provenance; no forecast or compile authorized",
+      "requires_scientific_or_target_decision": false,
+      "implementation_or_scientific_execution_authorized": false,
+      "certification_scope": "Existing scoped source/test/audit correspondence only; no current numerical certification or new test execution",
+      "source_bindings": [
+        {
+          "source_id": "S17",
+          "commit": "cb60a4a1336f1803ad49d890f4e74aafd6ad7c61",
+          "path": "src/trottertracks/algorithm_codesign/g8_pipeline.py",
+          "name": "NativePipeline.step",
+          "start_line": 75,
+          "end_line": 103,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/cb60a4a1336f1803ad49d890f4e74aafd6ad7c61/src/trottertracks/algorithm_codesign/g8_pipeline.py#L75"
+        },
+        {
+          "source_id": "S16",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/df_rpe_hadamard_compiled_cost.py",
+          "name": "_compile_hadamard_trajectory_stream_with_plan",
+          "start_line": 377,
+          "end_line": 875,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/df_rpe_hadamard_compiled_cost.py#L377"
+        },
+        {
+          "source_id": "S22",
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "path": "scripts/tracks/algorithm_codesign/g7_budget_control_economics.py",
+          "name": "totals",
+          "start_line": 56,
+          "end_line": 68,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ab2549f41b3546fb3940342a2162dd9ee93699c4/scripts/tracks/algorithm_codesign/g7_budget_control_economics.py#L56"
+        }
+      ]
+    },
+    {
+      "id": "I16",
+      "title": "multi-step・PF/RPE接続scope",
+      "status": "REQUIRES_NEW_SCIENTIFIC_DECISION",
+      "source_ids": [
+        "S05",
+        "S06",
+        "S13",
+        "S14",
+        "S15",
+        "S21"
+      ],
+      "mathematical_basis": "Existing M7/M10 and limited independent-path D accounting",
+      "inputs_required": "Frozen step/repetition order, path law/independence, weights, bias and measurement position",
+      "outputs_required": "Scope-bound path estimator/error/cost contract, not an execution grant",
+      "type_units_phase_precision": "RTE microstep vs S2 step vs q repetition vs one final measurement; no extra ordinary attenuation correction",
+      "existing_implementation_guarantees": "Ordinary repeated composition/attenuation and fixed-provider D path accounting are implemented",
+      "missing_or_uncertified": "General G6-DF weighted path confidence and all-wrapper target not bound; per-step measurement is different protocol",
+      "invariants_and_acceptance": "Explicit preselection timing, zero/path weights/operator order and independence; do not import r*Z^r accounting to sequential quantum rejection",
+      "failure_or_fail_closed": "Unknown composition guarantee remains unresolved; no extrapolation to long RPE or empirical PF certification",
+      "existing_test_scope": "T06/T07 ordinary composition and wrapper scope; D saved fixed-provider results",
+      "additional_tests_required": "V6 after adopted scope; no additional r/grid/provider chosen here",
+      "next_work": "User chooses scope; new guarantee needs separate scientific judgment, not Codex A priority reassignment",
+      "requires_scientific_or_target_decision": true,
+      "implementation_or_scientific_execution_authorized": false,
+      "certification_scope": "Existing scoped source/test/audit correspondence only; no current numerical certification or new test execution",
+      "source_bindings": [
+        {
+          "source_id": "S13",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/df_partial_s2_repeated.py",
+          "name": "QiskitDFPartialS2RepeatedCircuitBuilder._attenuation",
+          "start_line": 437,
+          "end_line": 466,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/df_partial_s2_repeated.py#L437"
+        },
+        {
+          "source_id": "S06",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/rte.py",
+          "name": "compose_truncation_residual_bounds",
+          "start_line": 1226,
+          "end_line": 1248,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/rte.py#L1226"
+        },
+        {
+          "source_id": "S21",
+          "commit": "5f17a7548b7eef1976f45f5d09bdc979e2e0a81b",
+          "path": "src/trottertracks/algorithm_codesign/rte_development/pipeline.py",
+          "name": "evaluate",
+          "start_line": 148,
+          "end_line": 194,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/5f17a7548b7eef1976f45f5d09bdc979e2e0a81b/src/trottertracks/algorithm_codesign/rte_development/pipeline.py#L148"
+        }
+      ]
+    },
+    {
+      "id": "I17",
+      "title": "ready-to-use入力/証拠bundle",
+      "status": "NOT_VERIFIED",
+      "source_ids": [
+        "S04",
+        "S08",
+        "S20"
+      ],
+      "mathematical_basis": "Input identity preconditions for M1-M12",
+      "inputs_required": "Existing public fixture paths, saved manifests, source/input/model/basis identity",
+      "outputs_required": "Availability and identity report, not decoded scientific data",
+      "type_units_phase_precision": "NPZ opaque bytes/hash; synthetic SOURCE definition not persisted molecular input",
+      "existing_implementation_guarantees": "Existing H4 snapshot and synthetic/molecular test definitions available; loader fields known statically",
+      "missing_or_uncertified": "No fully bound G6-DF rational input/state/native/measurement bundle identified in audited fixed inputs",
+      "invariants_and_acceptance": "Distinguish NOT_AVAILABLE ready binding, NOT_VERIFIED NPZ contents and NOT_APPLICABLE regeneration-only molecular test",
+      "failure_or_fail_closed": "Do not manufacture missing past evidence or regenerate molecule to fill audit",
+      "existing_test_scope": "T03 H2 test invokes molecular build; not executed; snapshot not decoded",
+      "additional_tests_required": "V1/V6 only after input/model and scientific execution permissions fixed",
+      "next_work": "Request specifically identified public missing bundle if supplied; do not inspect Codex A private work",
+      "requires_scientific_or_target_decision": false,
+      "implementation_or_scientific_execution_authorized": false,
+      "certification_scope": "Existing scoped source/test/audit correspondence only; no current numerical certification or new test execution",
+      "source_bindings": [
+        {
+          "source_id": "S20",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/rte_connected_cluster_cost_validation.py",
+          "name": "write_connected_cluster_hamiltonian_snapshot",
+          "start_line": 95,
+          "end_line": 114,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/rte_connected_cluster_cost_validation.py#L95"
+        },
+        {
+          "source_id": "S20",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/rte_connected_cluster_cost_validation.py",
+          "name": "load_connected_cluster_hamiltonian_snapshot",
+          "start_line": 117,
+          "end_line": 135,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/rte_connected_cluster_cost_validation.py#L117"
+        },
+        {
+          "source_id": "S08",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/df_rte_circuit.py",
+          "name": "DFRTEEventPreparation",
+          "start_line": 180,
+          "end_line": 389,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/df_rte_circuit.py#L180"
+        }
+      ]
+    },
+    {
+      "id": "I18",
+      "title": "空R・zero-time境界",
+      "status": "IMPLEMENTED_AND_EVIDENCED",
+      "source_ids": [
+        "S01",
+        "S04",
+        "S05",
+        "S06"
+      ],
+      "mathematical_basis": "Existing deterministic-only and x=0 identity paths",
+      "inputs_required": "Empty tail/Lambda_R=0 or h/x=0, constant and extracted identity phases",
+      "outputs_required": "Deterministic-only/identity handling without invalid G6 proposal",
+      "type_units_phase_precision": "No division by zero, no empty positive-p normalization; zero time distinct from random rejection",
+      "existing_implementation_guarantees": "DF empty tail and deterministic-only StepRequest; kernel x=0 formal mass, digital_parent refuses x=0",
+      "missing_or_uncertified": "Unified connector dispatcher not implemented; FullReturnGenerator is not automatic x=0 fast path",
+      "invariants_and_acceptance": "Do not select new L_D to create tail; preserve deterministic phase/no-science boundary",
+      "failure_or_fail_closed": "Do not invoke G6 positive-support sampler on empty/zero-time case",
+      "existing_test_scope": "T01 x=0/L1, T05 deterministic-only specifications; not rerun",
+      "additional_tests_required": "V1/V2 dispatcher boundaries and identity/constant",
+      "next_work": "Later connector handles existing separate branches under explicit implementation permission",
+      "requires_scientific_or_target_decision": false,
+      "implementation_or_scientific_execution_authorized": false,
+      "certification_scope": "Existing scoped source/test/audit correspondence only; no current numerical certification or new test execution",
+      "source_bindings": [
+        {
+          "source_id": "S04",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/df_rte_tail.py",
+          "name": "empty_df_tail_extraction",
+          "start_line": 736,
+          "end_line": 805,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/df_rte_tail.py#L736"
+        },
+        {
+          "source_id": "S05",
+          "commit": "321cd8c3066194fe98741cbebbcdba1515d1deaa",
+          "path": "src/trotterlib/df_partial_s2.py",
+          "name": "DFPartialS2StepRequest.__post_init__",
+          "start_line": 511,
+          "end_line": 643,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe98741cbebbcdba1515d1deaa/src/trotterlib/df_partial_s2.py#L511"
+        },
+        {
+          "source_id": "S01",
+          "commit": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+          "path": "src/trottertracks/algorithm_codesign/return_aggregation.py",
+          "name": "ReturnKernel.digital_parent",
+          "start_line": 214,
+          "end_line": 236,
+          "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py#L214"
+        }
+      ]
+    }
+  ],
+  "status_vocabulary": [
+    "IMPLEMENTED_AND_EVIDENCED",
+    "IMPLEMENTED_BUT_UNCERTIFIED",
+    "PARTIALLY_IMPLEMENTED",
+    "MATHEMATICALLY_SPECIFIED_ONLY",
+    "MISSING_INTERFACE",
+    "REQUIRES_NEW_SCIENTIFIC_DECISION",
+    "NOT_APPLICABLE",
+    "NOT_VERIFIED"
+  ],
+  "interpretation": "Status applies to the narrowly named interface or primitive; IMPLEMENTED_AND_EVIDENCED is not an end-to-end/native/statistical certification. Missing means the audited fixed source path, not a universal absence proof.",
+  "not_an_execution_contract_or_adoption": true,
+  "tests_executed": 0
+}

@@ -1,5 +1,7 @@
 > **2026-10-18 論文化の技術的事前調査**：[Claim Sheet・先行研究・証拠マップ](../../research/track_b_paper_claim_survey_20261018/README.md)。A_INSUFFICIENT_EVIDENCE、B_DESCRIPTIVE_RESULTS_ONLY。独立論文の核は未確立、構成ノート・限定診断の価値は保持。D＋E方針・現行STOP・次方向未採択は不変、科学計算/実装/新契約/実行権限0。
 
+> 2026-10-18 Codex B追補：[G6/G7 End-to-End実装契約監査](../../research/track_b_g6_e2e_interface_contract_audit_20261018/README.md)：既存DF controlled primitiveと未完成のG6接続を区別。新SOURCE/test/科学計算なし。
+
 > 2026-10-18 G6 evidence追補：[G6構成論文Evidence Packet](../../research/track_b_g6_construction_paper_evidence_20261018/README.md)：既存証明と局所生成SOURCEの具体的対応。新規性・全手順同値性未確定、旧実験再開なし。
 
 > **Track B現在（2026-10-15・D＋E正式採択）：[Parent allocationの限定的成果と現在探索の区切り](track_b_parent_allocation_research_closure_20261015.md)。** [資源構造調査](track_b_resource_structure_and_bottlenecks_20261015.md)と[次期方向Decision Packet](track_b_next_algorithm_research_decision_packet_20261015.md)を追加。4候補群は未採択・順位未設定。新科学計算0、旧成果不変、GPTレビュー開始／科学実行は別途明示承認、mandatory STOP。[判断履歴](../../research/研究ノート/2026-10-15_track_b_D_plus_E_and_next_direction_preparation.md)。以下は過去の状態。
