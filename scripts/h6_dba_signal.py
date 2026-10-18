@@ -69,6 +69,23 @@ def forward_finite(state,actions,tail,cell,scalar,lambda_r,np):
                 intermediate_norm_max=maximum,counts=dict(tail=tail_count,deterministic=det_count))
 
 
+def outer_step(tail,time,m):
+    # The frozen occupation oracle returns nested sequences, not an ndarray.
+    matrix=m.np.asarray(tail,dtype=complex)
+    c.require(matrix.ndim==2 and matrix.shape[0]==matrix.shape[1]
+              and m.np.isfinite(matrix).all(),'OUTER_MATRIX')
+    return m.expm(-1j*time*matrix)
+
+
+def validate_saved_primitive_gate(gate):
+    c.require(gate['status']=='PASS' and len(gate['new_time'])==6,'SAVED_PRIMITIVE_GATE')
+    c.require({x['block'] for x in gate['new_time']}==set(range(6)),'SAVED_PRIMITIVE_COVERAGE')
+    for row in gate['new_time']:
+        c.require(row['status']=='PASS' and row['times']==[.025,-.025] and row['probes_per_time']==3
+                  and math.isfinite(row['max_error']) and row['max_error']<1e-9,'SAVED_PRIMITIVE_VALUE')
+    return gate
+
+
 def signal(config,grant,output):
     m,n,ham,sector,state,qstate,preps,compiler=native.load(config)
     from trottertracks.resource_applicability.h6_matched_contract_v1 import plan as original
@@ -130,14 +147,20 @@ def signal(config,grant,output):
             errors.extend(float(m.np.linalg.norm(action(v,time)-exact@v)) for v in probes for action in (actual,independent))
         maximum=max(errors);m.finite_scale_guard(log_B=0.,intermediate_norm=1.,absolute_discrepancy=maximum)
         return dict(block=i,times=[.025,-.025],probes_per_time=3,max_error=maximum,status='PASS')
-    receipt=pool.map_owned(tasks,primitive,cpus=grant['worker_cpus'],limits=dict(max_workers=len(grant['worker_cpus'])),
-        directory=output/'new_time_primitive_workers',deadline=math.inf,font_seed=config['font_seed'])
-    writer.write('primitive_gate.json',dict(status='PASS',new_time=checked_results(receipt),
-        old_times_reused_from_frozen_archive_validation=True,old_receipt_sha256=c.sha(mapping['A_saved_primitive'])))
+    if 'A_saved_new_time_gate' in mapping:
+        gate=validate_saved_primitive_gate(c.read(mapping['A_saved_new_time_gate']))
+        writer.write('primitive_gate.json',dict(gate,reused=True,
+            reused_gate_sha256=c.sha(mapping['A_saved_new_time_gate']),
+            previous_STOP_preserved=True,new_primitive_probes=0))
+    else:
+        receipt=pool.map_owned(tasks,primitive,cpus=grant['worker_cpus'],limits=dict(max_workers=len(grant['worker_cpus'])),
+            directory=output/'new_time_primitive_workers',deadline=math.inf,font_seed=config['font_seed'])
+        writer.write('primitive_gate.json',dict(status='PASS',new_time=checked_results(receipt),
+            old_times_reused_from_frozen_archive_validation=True,old_receipt_sha256=c.sha(mapping['A_saved_primitive'])))
     # Only q16 adds an outer-PF diagnostic; other p/q diagnostics are reused.
     prep=views[5];v=state.copy();actions=port.actions(prep,oracle=True)
     tail=m.occupation_df_matrix(0.,zero,ham.lambdas[5:],ham.g_matrices[5:],sector.basis_indices)
-    step=m.expm(-1j*(.8/16)*tail)
+    step=outer_step(tail,.8/16,m)
     for _ in range(16):
         for action in actions:v=action(v,.8/16/2)
         v=step@v

@@ -7,6 +7,22 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
 
 
 class Signal(unittest.TestCase):
+    def test_nested_sequence_occupation_matrix(self):
+        import numpy as np
+        from scipy.linalg import expm
+        from types import SimpleNamespace
+        from h6_dba_signal import outer_step
+        result=outer_step([[.3,.1],[.1,-.2]],.05,SimpleNamespace(np=np,expm=expm))
+        self.assertLess(np.linalg.norm(result.conj().T@result-np.eye(2)),1e-14)
+
+    def test_saved_new_time_gate_is_exactly_scoped(self):
+        from h6_dba_signal import validate_saved_primitive_gate
+        gate=dict(status='PASS',new_time=[dict(block=i,times=[.025,-.025],probes_per_time=3,
+                                             max_error=1e-14,status='PASS') for i in range(6)])
+        self.assertEqual(validate_saved_primitive_gate(gate),gate)
+        gate['new_time'][0]['times']=[.05,-.05]
+        with self.assertRaises(ValueError):validate_saved_primitive_gate(gate)
+
     def test_forward_polynomial_agrees_with_frozen_horner(self):
         import numpy as np
         from trottertracks.resource_applicability.h6_matched_port_v1 import compact_signal
