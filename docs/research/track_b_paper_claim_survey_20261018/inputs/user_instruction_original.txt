@@ -1,0 +1,318 @@
+# Codexへの指示：Track B論文化に向けた中心的貢献の特定・技術的事前調査
+
+## 1. 目的
+
+Repository：`HIROMU1015/Partially-Randomized-Trotter`
+
+Track B（Algorithm Co-design）について、**既存の研究成果を基に、独立した査読論文として成立し得る中心的な科学的貢献を特定してください。**
+
+今回の検討には、次の二つの方向を含めます。
+
+- **方向A：新しいアルゴリズムの論文**
+  Return aggregation（RA）の構造を利用した、資源効率のよい乱択時間発展の生成・最適化手法について、既知法と本質的に異なる具体的な貢献が残るか確認する。
+
+- **方向B：資源評価・設計方法論の論文**
+  有限RTEにおける正規化、統計的負担、native回路価格、合成誤差、準備費用の関係から、既知研究と異なる一般化可能な設計指針・評価方法が得られているか確認する。
+
+**第一希望は方向Aです。ただし、Aの成立を前提とせず、既存証拠が不足する場合はBの可能性も公平に評価してください。**
+
+論文化のために結果を肯定的に解釈することはしないでください。
+
+今回は**既存成果の調査・紙上方法差比較・論文主張の設計まで**とします。
+
+新規科学計算・実装・最適化・数値再解析は行いません。
+
+## 2. 正式な研究状態
+
+2026年10月15日に採択したD＋E方針を維持します。
+
+- Parent allocationの限定的成果は保持する。
+- 現行の数値探索は一区切りとする。
+- 現行探索のSTOPを解除しない。
+- 次の具体的なアルゴリズム・実験・研究方向は未採択。
+- 過去の科学SOURCE、結果、契約、grant、marker、claimを保全する。
+
+**今回の「論文化の検討」は、既存の実験系列を再開する承認ではありません。**
+
+また、研究④の新テーマ選定保留や、他Trackの既存研究状態も変更しないでください。
+
+## 3. 必須資料
+
+まず以下を実際に取得・確認してください。
+
+### Track Bの現在地
+
+基準となる固定commit：
+
+`101bf3426fcd04cc0c01c0d202d0916268765d97`
+
+- `docs/tracks/algorithm_codesign/README.md`
+- `docs/tracks/algorithm_codesign/track_b_parent_allocation_research_closure_20261015.md`
+- `docs/tracks/algorithm_codesign/track_b_resource_structure_and_bottlenecks_20261015.md`
+- `docs/tracks/algorithm_codesign/track_b_next_algorithm_research_decision_packet_20261015.md`
+
+### RA・Parent allocation
+
+- `docs/research/parent_allocation_s4_scientific_review_revision_20261015.md`
+- `docs/tracks/algorithm_codesign/parent_allocation_s4_final_comparison_evidence_packet_20261015.md`
+- `docs/tracks/algorithm_codesign/parent_allocation_s4_supplement_results_and_gpt_handoff_20261015.md`
+- `docs/tracks/algorithm_codesign/parent_allocation_prior_art_correspondence_20261014.md`
+- RAのG6〜G10関連資料
+- Parent allocationの科学SOURCE・実行結果・比較契約の固定版
+
+重要な固定commit：
+
+- S4 Evidence Packet：`53c48317d16851333c0e0354b0dfd8ef91e1d524`
+- S4科学レビュー完成版：`e3086f48c5598c8bb31b0587e807ca6c1b3d2754`
+
+### D1〜D3および周辺結果
+
+- `docs/tracks/algorithm_codesign/d1_d3_prior_art_claim_evidence_and_gpt_handoff_20261014.md`
+- D1〜D3の保存結果・資源比較・機構分析
+- SP-1、R1.5、BF/BM、DF correction、Gaussian、G5等の既存closure
+- `docs/research/track_b_algorithm_direction_review_20261014.md`
+
+特に、過去に既知手法への還元や方法差不成立が確認された構成を、新しい貢献として再提案しないでください。
+
+最新版の正式共通運用指示 `research_project_instructions_unified_2026-10-17.md` も適用してください。
+
+## 4. 方向A：独立したアルゴリズム貢献の検証
+
+中心的な問いは次です。
+
+**RAの構造を利用することで、既存の確率的時間発展法・Importance Sampling・確率的合成法とは異なる、実装可能で資源上意味のあるアルゴリズムが既存成果から構成・主張できるか。**
+
+以下の観点を区別して確認してください。
+
+1. **数学的構成**
+   - RAによるreturn集約
+   - finite Taylor targetとoperator meanの保存
+   - parent/child pairingと係数再配分
+   - 正規化・moment・rangeの関係
+
+2. **実行可能な生成手順**
+   - return構造に基づく係数・normalizer取得
+   - globalな辞書全列挙を必要としない生成
+   - 実際のsampling lawとweight
+   - 有限bit、bias、controlled位相
+   - 古典的なsetupとonline生成費用
+
+3. **資源最適化**
+   - 回路合成価格を利用する配分や生成
+   - 既知ISとの役割の違い
+   - 多stepでのnormalization負担
+   - 十分試行数とT/CX/depthの交換関係
+
+既存のEuler恒等式、線形分割、標準KKT、cost-aware ISなどを、それ自体の新規成果として扱わないでください。
+
+### 強い既知対照
+
+少なくとも以下との対応を確認してください。
+
+- Wan–Berta–Campbellのrandomized statistical phase estimation
+- Resource-Optimal Importance Sampling
+- Sparse Probabilistic Synthesis
+- Stochastic Combination of Unitaries / CTS
+- 既知のrandomized Hamiltonian simulation・RA近接手法
+
+必要な一次論文はversionを固定して取得してください。
+
+比較では、既知法にも同じoperator情報、生成機会、回路価格、最適化、state access、誤差・confidence条件を許してください。
+
+論文に同じ記法がないことだけを新規性の証拠にしてはいけません。
+
+特に以下を明確にしてください。
+
+**A1.** 既知法へ数学的に包含されるか。
+
+**A2.** 包含されても、生成手順・情報取得量・計算量・保証に独立した差が残るか。
+
+**A3.** 差が残る場合、それが実際の量子資源に影響し得るか。
+
+**A4.** 既存の保存証拠だけで主張できるか、新しい検証が必要か。
+
+今回、新しい生成規則を発明したり、未承認の定理を構築したりして候補を救済する必要はありません。
+
+既存成果から独立差を特定できなければ、**方向Aの新アルゴリズム論文は現状不成立**と明記してください。
+
+## 5. 方向B：資源評価・設計方法論の検討
+
+方向Aが不十分な場合に備え、既存のG系列、D1〜D3、Parent allocation S4から、独立した方法論的貢献が残るか確認してください。
+
+候補となる中心課題は、
+
+**「有限RTEで、数学的な正規化最適性と実際の量子資源最適性が一致しない条件を、共通の保証・費用モデルの下で説明し、有効な方式選択指針を与えられるか」**
+
+です。
+
+以下を確認してください。
+
+- 正規化改善と十分試行数の削減は同じか。
+- T費用削減がCX・1Q・depth・準備費用の増加を伴う条件は何か。
+- 合成精度・native価格・Taylor保証の変更によって最良方式が入れ替わる原因は何か。
+- RA、配分、IS、合成価格の寄与を既存証拠で分離できるか。
+- 既存研究にない評価指標・選択規則・適用境界を提示できるか。
+
+ただし、既存の数値表を単に整理するだけでは独立した方法論と認定しないでください。
+
+特に、Parent allocationの約14%・19%の期待T費用低下について、次の限定を維持します。
+
+- 固定synthetic条件での結果である。
+- best-to-bestの比較であり、配分単独の効果ではない。
+- NとCXが増加する。
+- h=0のT費用比較を含む。
+- 多step・分子DF・PR/RPE/QPE全体の優位は未確立。
+- 独立新規性は未認定。
+
+異なる研究系列の改善率を、費用・保証契約を揃えず直接比較しないでください。
+
+## 6. 論文主張の成立条件
+
+方向A・Bのそれぞれについて、最低限次を示してください。
+
+1. **中心的な科学的主張**
+2. 先行研究と異なる点
+3. その違いを成立させる数学的・アルゴリズム的根拠
+4. 現在存在する証拠
+5. 不足する証拠
+6. 反証または不成立となる条件
+7. 成立した場合に論文として提示できる図表・結果
+8. 論文としての限界
+
+重要なのは、**「論文として主張したいこと」と「現時点で証明・検証済みのこと」を混同しないこと**です。
+
+論文の中心に置けない結果は、補助結果・技術的成果として分類してください。
+
+## 7. 判定方法
+
+調査結果は、次の観点で整理してください。
+
+### 方向A
+
+- `A_CONCRETE_METHOD_DELTA_IDENTIFIED`
+- `A_KNOWN_METHOD_ONLY`
+- `A_INSUFFICIENT_EVIDENCE`
+
+### 方向B
+
+- `B_CONCRETE_METHODOLOGICAL_CLAIM_IDENTIFIED`
+- `B_DESCRIPTIVE_RESULTS_ONLY`
+- `B_INSUFFICIENT_EVIDENCE`
+
+これらは**紙上技術調査の分類**です。科学的新規性の最終認定、研究GO、投稿GO、査読通過可能性の認定ではありません。
+
+どちらも不十分なら、無理に論文構想を成立させないでください。
+
+不足する新機構を自動探索して補うことも禁止します。
+
+## 8. 成果物
+
+専用branch/worktreeで、以下を作成してください。
+
+### A. Paper Claim Sheet（1〜2ページ程度）
+
+方向A・Bそれぞれについて、
+
+- 仮題
+- 中心的な研究問題
+- 論文の核となる主張（案）
+- 新規性の根拠と不確実性
+- 最も近い既知法
+- 現時点で支持される内容
+- 論文化を妨げる未解決問題
+
+を簡潔に整理してください。
+
+### B. 先行研究・方法差比較表
+
+論文・定理・アルゴリズム・具体的実装手順ごとに、既知の部分と候補固有の部分を区別してください。
+
+一般論への包含と、同じ情報・費用での完全な方法同値性は分けて評価してください。
+
+### C. 既存成果の論文利用可能性マップ
+
+G6〜G10、D1〜D3、Parent allocation S4、SP、R1、その他を対象に、
+
+- 主要結果として利用可能
+- 補助結果として利用可能
+- Negative / limitationとして利用可能
+- 証拠不足で利用不可
+
+に分類し、固定SOURCE・結果・レビューへのリンクを付けてください。
+
+### D. 追加検証が必要な場合の最小計画案
+
+科学実行を直ちに要求するのではなく、**論文の中心的な主張を成立させるため、本当に必要な最小追加証拠**を特定してください。
+
+各項目について、
+
+- 目的
+- 解決する不確実性
+- 必要な入力・比較対象
+- 成功／不成立を分ける条件
+- 既存データだけで可能か
+- 新規科学計算が必要か
+- 必要なユーザー承認
+
+を整理してください。
+
+具体的な数値実験の新契約やauthorizationは今回作成しません。
+
+### E. GPT・ユーザー向け判断ハンドオフ
+
+次のいずれを推奨する技術的根拠があるか報告してください。
+
+- Aの新アルゴリズム論文を検討
+- Bの資源評価・方法論論文を検討
+- A/Bとも証拠不足でTrack B単独論文化を保留
+
+この分類から自動的に研究テーマを採択しないでください。
+
+## 9. 禁止事項と保全
+
+今回許可するのは、資料取得、SOURCE静的確認、既存式と演算手順の対応調査、論文主張の整理、計算量・費用条件の紙上比較のみです。
+
+以下は禁止します。
+
+- 新規科学計算、保存科学値の数値再解析
+- 新しい回路生成・compile・T合成
+- SOURCEの実装・変更・実行
+- 新数学保証の構築・新アルゴリズム探索
+- Parent allocationの再最適化
+- 追加provider・seed・r・precision・分子の走査
+- 既存契約・authorization・grant・marker・claimの変更・再利用
+- 重要GPT科学レビューの開始
+- 論文の正式採択・投稿GO認定
+- 現行Track BのD＋E方針の無断変更
+
+既存SOURCE、raw、結果、契約、失敗、STOP、消費済みclaim、親worktreeを保全してください。
+
+最新版共通指示§8.4に従い、恣意的なCPU/RAM/worker制限は設けず、必要な技術処理を効率的に行ってください。ただし共有環境全体や他ユーザーへ影響する変更・操作は禁止です。
+
+## 10. 完了条件
+
+成果物をcommit・pushし、remote HEAD、公開bytes/SHA256、固定資料のprovenance、旧成果と親worktreeの保全を確認してください。
+
+最終報告では、最初に以下を明記してください。
+
+**「現時点で、Track Bの独立論文の中心的貢献として何が残ったか」**
+
+続けて、
+
+- 方向Aの判定
+- 方向Bの判定
+- 最も重要な根拠
+- 不足する決定的な証拠
+- 論文化へ進む場合の最小限の次の作業
+- 次の担当と必要な承認
+- branch・commit・固定GitHubリンク
+
+を示してください。
+
+**公開・保全確認後、mandatory STOP。**
+
+次の段階で重要科学レビューが必要な場合でも、今回自動的に開始せず、ユーザーの明示的な開始承認を待ってください。
+
+新規科学計算はさらに独立した承認が必要です。
+
+今回の目的は、**Track Bの成果を無理に論文化することではなく、論文として独立して主張できる実質的な貢献が残っているかを、追加計算前に明確にすること**です。

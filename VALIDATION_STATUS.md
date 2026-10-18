@@ -1,3 +1,5 @@
+> **2026-10-18 Track B主張調査**：[文書・一次文献・SOURCE静的照合](docs/research/track_b_paper_claim_survey_20261018/README.md)。独立した科学的correctness検証・数値再解析ではない。旧validation状態と結果は不変、A/B単独論文の中心主張は現証拠では未確立。新科学計算0、mandatory STOP。
+
 > **Track B現在（2026-10-15）：[KKT目的不一致のS4訂正・補完準備](docs/tracks/algorithm_codesign/parent_allocation_s4_kkt_repair_and_supplement_preparation_20261015.md)。** 採択sqrt(C)目的へ戻し、114登録外tests PASS。旧20 lawは別proxyの原記録として保持、50対照は保存再利用。新登録計算0、authorization pending、別S4 one-shot明示承認までmandatory STOP。以下は履歴。
 
 > **Track B現在（2026-10-15）：[Parent allocation v3一回実行完了：15構成/70 law、新16合成/72 root診断、918保存監査PASS。科学条件/caps不変、旧証拠保持、retry0。科学的採否は未判断、mandatory STOP。](docs/tracks/algorithm_codesign/parent_allocation_v3_results_and_gpt_handoff_20261015.md)。** 分類はPARENT_ALLOCATION_RESOURCE_MAP_COMPLETE_AWAITING_GPT_REVIEW。次は開始承認後のGPT科学判断。以下は履歴。
