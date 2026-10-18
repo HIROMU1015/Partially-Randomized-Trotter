@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def table(path, rows):
     with path.open('w', newline='') as f:
-        writer = csv.DictWriter(f, fieldnames=list(rows[0]))
+        writer = csv.DictWriter(f, fieldnames=list(rows[0]), lineterminator='\n')
         writer.writeheader(); writer.writerows(rows)
 
 
