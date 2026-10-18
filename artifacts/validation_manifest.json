@@ -10607,5 +10607,75 @@
     "empirical_bias_allowance_conditional": true,
     "interval_probability_certificate": false,
     "independent_review": false
+  },
+  "pr_alpha_sensitivity_run01_20261018": {
+    "status": "COMPLETE_WITH_INCONCLUSIVE_MANDATORY_STOP",
+    "source_commit": "93145a4b24aa2e77f1eefdb39c2d70c56f9bddcb",
+    "preceding_B1_commit": "446ace970b2caa60858e3115d5f316b0b6870eb1",
+    "report": "docs/research/pr_alpha_sensitivity_run01_results_20261018.md",
+    "artifact_directory": "artifacts/resource_applicability/pr_alpha_sensitivity_run01/2026-10-18",
+    "collector": "scripts/collect_pr_alpha_sensitivity_run01.py",
+    "model_scope": {
+      "systems": [
+        "H6",
+        "H8"
+      ],
+      "geometry": "linear adjacent 1 Angstrom",
+      "basis": "STO-3G",
+      "DF_policy": "tol-only 1e-8",
+      "DF_ranks": [
+        19,
+        28
+      ],
+      "T": 0.8,
+      "split_L_D": "fixed saved candidate IDs: H6 p5-15/full19, PR p5; H8 p7-21/full28, PR p7",
+      "delta": "PF T/q=.1-.8; PR T/(qr): H6 .05-.2, H8 .025-.1"
+    },
+    "alpha_total_grid": [
+      0.01,
+      0.05,
+      0.1
+    ],
+    "allocation": "EQUAL_TWO_AXES",
+    "candidate_counts": {
+      "H6": 144,
+      "H8": 190
+    },
+    "input_rows": 3720,
+    "complete_rows": 3660,
+    "retained_missing_input_rows": 60,
+    "output_rows": 11160,
+    "exact_baseline_reproductions": 3660,
+    "accounting_evaluations": 10980,
+    "status_counts": {
+      "ELIGIBLE": 5619,
+      "INELIGIBLE": 5361,
+      "MISSING": 180
+    },
+    "comparisons": 66,
+    "resolved_nonbaseline_rank_checks": 34,
+    "unresolved_nonbaseline_rank_checks": 10,
+    "rank_changes": 0,
+    "family_winner_changes": {
+      "PR": 0,
+      "PF": 0
+    },
+    "maximum_reduction_change_pp": 0.004712438446477663,
+    "native_driver_exit": 0,
+    "native_launcher_exit": 0,
+    "evidence_kind": "EMPIRICAL",
+    "population_winner_certified": false,
+    "multi_signal_postselection_RPE_guarantee": false,
+    "new_signal": 0,
+    "new_sampling": 0,
+    "new_compile": 0,
+    "new_fit": 0,
+    "binomial_axis_evaluations": 0,
+    "scientific_dispatches": 1,
+    "automatic_retry": false,
+    "mandatory_stop": true,
+    "next_stage_authorized": false,
+    "independent_review": false,
+    "old_results_and_STOP_preserved": true
   }
 }

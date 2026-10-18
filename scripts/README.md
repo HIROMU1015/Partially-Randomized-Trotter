@@ -1,3 +1,7 @@
+## 2026-10-18 PR α B-2：総α感度の一回実行完了
+
+[run_pr_alpha_sensitivity.py](run_pr_alpha_sensitivity.py)の一回実行、[保存結果checker](collect_pr_alpha_sensitivity_run01.py)、[結果](../docs/research/pr_alpha_sensitivity_run01_results_20261018.md)。固定H6/H8の総α=.01/.05/.10・2軸均等配分を一回再会計。3,660基準会計が完全一致、11,160行。確定34順位比較・最良候補の変更0、削減率変化最大.00471244パーセントポイント。H6非相殺60欠測は未確定を保持。経験的bias/normalization・保存費用に条件付く。driver/launcher exit0、新signal/sampling/compile/fit0、mandatory STOP。条件はlinear隣接1 Å/STO-3G/tol-only1e-8/DF rank19・28/T=.8、保存IDのsplit L_D・PF q/次数・PR r/Kを固定（step範囲とεは報告参照）。以下は各時点の履歴。
+
 ## 2026-10-18 PR α B-1：28軸の一回評価完了
 
 [run_pr_alpha_binomial.py](run_pr_alpha_binomial.py)の一回実行。[結果](../docs/research/pr_alpha_binomial_run01_results_20261018.md)。固定14条件/28軸の二項数値評価を一回完了。全軸α=.025以内、最大union bound=.002144964604。EMPIRICAL bias/u/normalization・理想fresh-IIDモデルに条件付く。driver/launcher exit0、shot/費用再会計0、B-2未承認・未実行、mandatory STOP。以下は各時点の履歴。
