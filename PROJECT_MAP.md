@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-18 ユーザー採択：研究④の候補非採択・新テーマ選定を当面保留
+
+[正式方針・machine decision・再開条件・証拠](docs/research/qc_iv_selection_hold_20261018/decision_record.md)。DF全energy共分散縮約候補を独立算法として非採択、追加調査/実装/実験なし。研究④の新テーマ選定を当面保留し、今回の系列を区切る。④全体はCLOSEDではなく今回新規採択0件。新しい具体的改善根拠とユーザーの別途方針承認がある場合だけ再検討し、科学実行はさらに別承認。既存研究状態・旧証拠を保持、公開・保全確認後mandatory STOP。以下は履歴。
+
 ## 2026-10-18 研究④のDF共分散候補：紙上では既知法へ還元
 
 [方法差検証・技術判定・引継ぎ・証拠索引](docs/research/qc_iv_covariance_method_audit_20261018/README.md)。同じDF/state情報と標準縮約・stream/cacheを許した既知対照が同じ演算列を使えるため、指定候補はREDUCES_TO_KNOWN_METHOD。この候補の探索をここで止め、実装・科学実行へ進まない。新規性/研究GO・④全体の方針は採択せず、旧状態・旧証拠を保持。公開確認後mandatory STOP。

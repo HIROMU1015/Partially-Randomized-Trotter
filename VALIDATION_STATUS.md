@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-18 研究④の方針固定：新規validationなし
+
+[ユーザー正式記録](docs/research/qc_iv_selection_hold_20261018/decision_record.md)。既存の技術判定を受けて候補非採択・新テーマ選定当面保留を記録した。④全体CLOSEDではない。新しい計算・SOURCE検証・文献/科学レビュー・実験契約/認可は0。既存結果・研究停止状態・既知global FAILを保持し、文書/公開/保全確認後mandatory STOP。
+
 ## 2026-10-18 研究④の共分散候補：方法差の静的比較のみ
 
 [紙上方法差検証](docs/research/qc_iv_covariance_method_audit_20261018/README.md)の技術判定はREDUCES_TO_KNOWN_METHOD。数値correctness・科学計算・著者SOURCEテスト・runtime比較は行っていない。新規validation/保証・科学契約/認可0、既存結果・既知global FAIL・正式研究状態を保持。文書/リンク/hash/公開/保全確認後mandatory STOP。

@@ -1,5 +1,9 @@
 # 文書索引
 
+## 2026-10-18 研究④の正式方針：候補非採択・新テーマ選定保留
+
+[正式記録](research/qc_iv_selection_hold_20261018/decision_record.md)、[成果と限界](research/qc_iv_selection_hold_20261018/achievements_and_limits.md)、[再開条件](research/qc_iv_selection_hold_20261018/handoff.md)、[証拠索引](research/qc_iv_selection_hold_20261018/evidence_index.json)。共分散縮約候補非採択、④全体CLOSEDではない。新規採択0、旧状態保全、追加研究なし・mandatory STOP。
+
 ## 2026-10-18 研究④：DF共分散の紙上方法差検証
 
 [既知式・SOURCE対応、同情報費用比較、技術判定と引継ぎ](research/qc_iv_covariance_method_audit_20261018/README.md)。REDUCES_TO_KNOWN_METHOD、独立差なし。新しい実装/計算/保証/科学契約/認可は0、既存研究状態不変、mandatory STOP。
