@@ -1,0 +1,52 @@
+diff --git a/src/trottertracks/algorithm_codesign/g6_w2c_b3_driver.py b/src/trottertracks/algorithm_codesign/g6_w2c_b3_driver.py
+index 6af9cc1d..055aff8b 100644
+--- a/src/trottertracks/algorithm_codesign/g6_w2c_b3_driver.py
++++ b/src/trottertracks/algorithm_codesign/g6_w2c_b3_driver.py
+@@ -20,0 +21,3 @@ from . import g6_w2c_cost_preparation as audit
++from . import g6_w2c_b3_exact_serialization as serialization
++
++FASTPATH_SOURCE = 'src/trottertracks/algorithm_codesign/g6_w2c_b3_exact_serialization.py'
+@@ -62 +65 @@ def identity(value):
+-    return audit.fingerprint(exact(value))
++    return sha256(serialization.canonical(value).encode()).hexdigest()
+@@ -202 +205 @@ class Stream:
+-                text = audit.canonical(exact(payload))
++                text = serialization.canonical(payload)
+@@ -298,0 +302,3 @@ def candidate_errors(candidate):
++    fast_pin = candidate.get('source_pins', {}).get(FASTPATH_SOURCE)
++    if not (type(fast_pin) is str and len(fast_pin) == 64 and all(c in '0123456789abcdef' for c in fast_pin)):
++        errors.append('EXACT_SERIALIZATION_SOURCE_PIN_REQUIRED')
+@@ -593 +599 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
+-                    event_text = audit.canonical(exact({'kind': result.kind, 'event': result.event})).encode()
++                    event_text = serialization.canonical({'kind': result.kind, 'event': result.event}).encode()
+@@ -800 +806 @@ def execute(candidate, *, root, output, approval_port=None, boundary=None):
+-                                try:fail['trial_failure_provenance'] = audit.canonical(exact(provenance))
++                                try:fail['trial_failure_provenance'] = serialization.canonical(provenance)
+diff --git a/tests/tracks/algorithm_codesign/test_g6_w2c_b3_admission.py b/tests/tracks/algorithm_codesign/test_g6_w2c_b3_admission.py
+index 051213f7..1c02ee86 100644
+--- a/tests/tracks/algorithm_codesign/test_g6_w2c_b3_admission.py
++++ b/tests/tracks/algorithm_codesign/test_g6_w2c_b3_admission.py
+@@ -28 +28 @@ def fixture(root):
+-    for name in (M.DRIVER, M.GUARD, M.ADMISSION):
++    for name in (M.DRIVER, M.GUARD, M.ADMISSION, D.FASTPATH_SOURCE):
+@@ -54 +54 @@ def fixture(root):
+-         'source_roles': {'science': sorted(set(BASE['source_pins'])-{M.DRIVER}),
++         'source_roles': {'science': sorted(set(pins)-{M.DRIVER,M.GUARD,M.ADMISSION}),
+diff --git a/tests/tracks/algorithm_codesign/test_g6_w2c_b3_driver.py b/tests/tracks/algorithm_codesign/test_g6_w2c_b3_driver.py
+index 04afb34c..4491e477 100644
+--- a/tests/tracks/algorithm_codesign/test_g6_w2c_b3_driver.py
++++ b/tests/tracks/algorithm_codesign/test_g6_w2c_b3_driver.py
+@@ -103 +103,2 @@ def accepted_candidate():
+-            'source_pins': {'src/trottertracks/algorithm_codesign/'+k: v for k, v in M.FROZEN_PINS.items()},
++            'source_pins': {**{'src/trottertracks/algorithm_codesign/'+k: v for k, v in M.FROZEN_PINS.items()},
++                            M.FASTPATH_SOURCE: sha256((ROOT/M.FASTPATH_SOURCE).read_bytes()).hexdigest()},
+diff --git a/tests/tracks/algorithm_codesign/test_g6_w2c_b3_f01_provenance.py b/tests/tracks/algorithm_codesign/test_g6_w2c_b3_f01_provenance.py
+index 1223b059..a0182f9b 100644
+--- a/tests/tracks/algorithm_codesign/test_g6_w2c_b3_f01_provenance.py
++++ b/tests/tracks/algorithm_codesign/test_g6_w2c_b3_f01_provenance.py
+@@ -205 +205 @@ class F01(unittest.TestCase):
+-        original=A.canonical
++        original=M.serialization.canonical
+@@ -209 +209 @@ class F01(unittest.TestCase):
+-        _,f,_,_=self.exercise(ToyEndpoint(),patches=(patch.object(A,'canonical',canonical),))
++        _,f,_,_=self.exercise(ToyEndpoint(),patches=(patch.object(M.serialization,'canonical',canonical),))

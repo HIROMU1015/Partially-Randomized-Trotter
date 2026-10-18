@@ -202,11 +202,11 @@ class F01(unittest.TestCase):
         self.assertIsNone(f['candidate_trace_sha256'])
 
     def test_serialization_failure_keeps_pre_emit_committed_digest(self):
-        original=A.canonical
+        original=M.serialization.canonical
         def canonical(value):
             if isinstance(value,dict)and'generator_exclusive_ns'in value:raise Fault('serialize original')
             return original(value)
-        _,f,_,_=self.exercise(ToyEndpoint(),patches=(patch.object(A,'canonical',canonical),))
+        _,f,_,_=self.exercise(ToyEndpoint(),patches=(patch.object(M.serialization,'canonical',canonical),))
         self.check_prefix(f,0)
         self.assertTrue(f['current_attempt']['record_constructed'])
         self.assertTrue(f['current_attempt']['candidate_ready'])

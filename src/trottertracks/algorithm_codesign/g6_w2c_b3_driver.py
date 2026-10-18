@@ -18,6 +18,9 @@ import time
 from types import ModuleType
 
 from . import g6_w2c_cost_preparation as audit
+from . import g6_w2c_b3_exact_serialization as serialization
+
+FASTPATH_SOURCE = 'src/trottertracks/algorithm_codesign/g6_w2c_b3_exact_serialization.py'
 
 ARMS = audit.ARMS
 AXES = ('X', 'Y')
@@ -59,7 +62,7 @@ def exact(value):
 
 
 def identity(value):
-    return audit.fingerprint(exact(value))
+    return sha256(serialization.canonical(value).encode()).hexdigest()
 
 
 def clock():
@@ -199,7 +202,7 @@ class Stream:
         stage = 'SERIALIZATION'
         try:
             with self.meter.span('save.serialize'):
-                text = audit.canonical(exact(payload))
+                text = serialization.canonical(payload)
             with self.meter.span('save.hash'):
                 stage = 'CHAIN_HASH'
                 digest = sha256((self.previous + text).encode()).hexdigest()
@@ -296,6 +299,9 @@ def candidate_errors(candidate):
     for name, digest in FROZEN_PINS.items():
         if candidate.get('source_pins', {}).get('src/trottertracks/algorithm_codesign/'+name) != digest:
             errors.append('FROZEN_SOURCE_PIN_MISMATCH:'+name)
+    fast_pin = candidate.get('source_pins', {}).get(FASTPATH_SOURCE)
+    if not (type(fast_pin) is str and len(fast_pin) == 64 and all(c in '0123456789abcdef' for c in fast_pin)):
+        errors.append('EXACT_SERIALIZATION_SOURCE_PIN_REQUIRED')
     output = candidate.get('output_relative')
     if not (type(output) is str and output and not Path(output).is_absolute() and '..' not in Path(output).parts):
         errors.append('OUTPUT_NAMESPACE_REQUIRED')
@@ -590,7 +596,7 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
                                                for k, v in result.evidence.items()}
                     else:payload['evidence'] = result.evidence
                     current['record_constructed'] = True
-                    event_text = audit.canonical(exact({'kind': result.kind, 'event': result.event})).encode()
+                    event_text = serialization.canonical({'kind': result.kind, 'event': result.event}).encode()
                     current['stage'] = 'CANDIDATE_DIGEST'
                     pending = {'counts': committed['counts'].copy(),
                                'digest': committed['digest'].copy(),
@@ -797,7 +803,7 @@ def execute(candidate, *, root, output, approval_port=None, boundary=None):
                                     'control_log_self_write_cost_ns': None}
                             provenance = getattr(exc, 'b3_failure_provenance', None)
                             if provenance is not None:
-                                try:fail['trial_failure_provenance'] = audit.canonical(exact(provenance))
+                                try:fail['trial_failure_provenance'] = serialization.canonical(provenance)
                                 except BaseException as error:
                                     fail['trial_failure_provenance_error'] = type(error).__name__+': '+str(error)
                             try:

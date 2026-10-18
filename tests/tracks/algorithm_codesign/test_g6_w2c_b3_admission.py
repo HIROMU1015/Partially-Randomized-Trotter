@@ -25,7 +25,7 @@ BASE = json.loads((ROOT/M.BASE_PATH).read_text())
 
 def fixture(root):
     pins = dict(BASE['source_pins'])
-    for name in (M.DRIVER, M.GUARD, M.ADMISSION):
+    for name in (M.DRIVER, M.GUARD, M.ADMISSION, D.FASTPATH_SOURCE):
         pins[name] = M.digest((ROOT/name).read_bytes())
     paths = set(pins) | {M.BASE_PATH, BASE['saved_evidence']['path']}
     for name in paths:
@@ -51,7 +51,7 @@ def fixture(root):
          'adoption': {'adopted_package': 'R1', 'instruction_sha256': '3'*64,
                       'record_path': 'adoption.json', 'record_sha256': M.digest(record.read_bytes())},
          'candidate': candidate, 'source_pins': pins,
-         'source_roles': {'science': sorted(set(BASE['source_pins'])-{M.DRIVER}),
+         'source_roles': {'science': sorted(set(pins)-{M.DRIVER,M.GUARD,M.ADMISSION}),
                           'driver': [M.DRIVER], 'guard': [M.GUARD], 'admission': [M.ADMISSION]},
          'input_pins': {'adoption.json': M.digest(record.read_bytes()),
                        BASE['saved_evidence']['path']: BASE['saved_evidence']['sha256']},
