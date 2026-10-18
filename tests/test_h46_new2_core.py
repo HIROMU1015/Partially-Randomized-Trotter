@@ -3,7 +3,7 @@ import math
 import unittest
 import numpy as np
 from scipy.linalg import expm
-from h46_new2_core import weights, allocation, spectrum, polynomial, compare_prefix
+from h46_new2_core import weights, allocation, spectrum, polynomial, compare_prefix, matrix_only_tail_coefficients
 
 
 class New2Tests(unittest.TestCase):
@@ -54,6 +54,15 @@ class New2Tests(unittest.TestCase):
         for x,y in zip(a['finite_rows'],b['finite_rows']):
             self.assertLess(y['raw_corrected_vector_discrepancy'],1e-13)
             self.assertAlmostEqual(x['log_B'],y['log_B'])
+
+    def test_full_fock_scalar_extraction_without_circuit_basis(self):
+        from types import SimpleNamespace
+        ham=SimpleNamespace(n_blocks=1,g_matrices=[np.diag([.3,-.7])],lambdas=[.8])
+        scalar,lam=matrix_only_tail_coefficients(ham,0)
+        energies=np.array([0.,.8*.3**2,.8*(-.7)**2,.8*(.3-.7)**2])
+        self.assertAlmostEqual(scalar,float(energies.mean()),places=14)
+        self.assertGreater(lam,0)
+        with self.assertRaises(ValueError):matrix_only_tail_coefficients(ham,1)
 
 
 if __name__=='__main__':unittest.main()

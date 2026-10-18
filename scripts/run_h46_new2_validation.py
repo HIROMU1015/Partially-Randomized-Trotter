@@ -32,9 +32,8 @@ def run(config, system, output):
     sys.path.insert(1,str(provider/'src'))
     import numpy as np
     from scipy.linalg import expm
-    from h46_new2_core import spectrum, occupation_one_body, compare_prefix, complex_record
+    from h46_new2_core import spectrum, occupation_one_body, compare_prefix, complex_record, matrix_only_tail_coefficients
     from trotterlib.df_hamiltonian import df_linear_operator
-    from trotterlib.pr2_matched_accuracy_m1_execution import _prepare
     from trotterlib.rte import finite_taylor_operator
 
     def progress(phase, **details):
@@ -82,19 +81,22 @@ def run(config, system, output):
     spectra=[spectrum(one)]+[spectrum(a) for a in fragments]
     results=[]
     for prefix in config['plan']['prefixes'][system]:
-        preparation=_prepare(ham,prefix)
-        if preparation.deterministic_fragment_indices!=tuple(range(prefix)) or preparation.coefficient_atol!=0.:
-            raise ValueError('GENERATION_PREFIX_OR_CUTOFF')
-        scalar=ham.constant+preparation.extracted_identity_coefficient
-        tail=sum(fragments[prefix:])-preparation.extracted_identity_coefficient*identity
+        extracted_identity, lambda_R = matrix_only_tail_coefficients(ham,prefix)
+        if lambda_R<=0:
+            raise ValueError('EMPTY_TAIL')
+        scalar=ham.constant+extracted_identity
+        tail=sum(fragments[prefix:])-extracted_identity*identity
+        numeric_preparation_digest=hashlib.sha256(json.dumps(dict(
+            hamiltonian_hash=metadata['hamiltonian_hash'],prefix=prefix,
+            extracted_identity=extracted_identity,lambda_R=lambda_R,
+            policy='canonical_full_Fock_diagonal_coefficients_without_native_basis'),sort_keys=True).encode()).hexdigest()
         closure=float(np.linalg.norm(one+sum(fragments[:prefix])+tail+scalar*identity-full,'fro'))
         if closure>1e-9:
             raise ValueError('SCALAR_TAIL_FULL_H_CLOSURE')
         tail_spec=spectrum(tail)
         # Source-defined dense Taylor polynomial against our spectral implementation.
         probe_time=-.003
-        source_taylor=finite_taylor_operator(tail/preparation.exact_rte_lambda_r,
-            preparation.exact_rte_lambda_r*probe_time,4)@state
+        source_taylor=finite_taylor_operator(tail/lambda_R,lambda_R*probe_time,4)@state
         from h46_new2_core import polynomial
         local_taylor=tail_spec[1]@(polynomial(tail_spec[0],probe_time,4)*(tail_spec[2]@state))
         taylor_error=float(np.linalg.norm(source_taylor-local_taylor))
@@ -103,7 +105,7 @@ def run(config, system, output):
         for label in config['plan']['formulas']:
             for q in config['plan']['q']:
                 value=compare_prefix(state,spectra[:prefix+1],tail_spec,scalar,
-                    preparation.exact_rte_lambda_r,label,q,T=T,
+                    lambda_R,label,q,T=T,
                     total_steps=config['plan']['tail_steps_per_outer'],cutoffs=tuple(config['plan']['K']))
                 ideal_signal=complex(np.vdot(state,value.pop('exact_tail_vector')))
                 ideal_bias=ideal_signal-reference_signal
@@ -124,8 +126,9 @@ def run(config, system, output):
                     exact_tail_PF_signal=complex_record(ideal_signal),
                     exact_tail_PF_absolute_signal_bias=abs(ideal_bias),
                     full_Fock_identity_scalar=scalar,
-                    lambda_R=preparation.exact_rte_lambda_r,
-                    preparation_hash=preparation.preparation_hash,
+                    lambda_R=lambda_R,
+                    numeric_preparation_digest=numeric_preparation_digest,
+                    native_preparation_blueprint_constructed=False,
                     scalar_tail_closure_error=closure,
                     source_taylor_negative_time_error=taylor_error,
                     finite_rows=finite_rows,**value))

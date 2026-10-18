@@ -128,5 +128,23 @@ def occupation_one_body(matrix, sector):
     return result
 
 
+def matrix_only_tail_coefficients(hamiltonian, prefix):
+    """Reuse canonical full-Fock I/Z/ZZ coefficients without building a circuit."""
+    from trotterlib.df_trotter.decompose import diag_hermitian
+    from trotterlib.df_rte_tail import exact_df_diagonal_coefficients
+    if type(prefix) is not int or not 0 <= prefix < hamiltonian.n_blocks:
+        raise ValueError('INVALID_GENERATION_PREFIX')
+    identity = []
+    magnitudes = []
+    for i in range(prefix, hamiltonian.n_blocks):
+        _, eta = diag_hermitian(hamiltonian.g_matrices[i],sort='descending_abs',assume_hermitian=True)
+        for support,value in exact_df_diagonal_coefficients(eta,hamiltonian.lambdas[i]):
+            if support:
+                magnitudes.append(abs(value))
+            else:
+                identity.append(value)
+    return math.fsum(identity), math.fsum(magnitudes)
+
+
 def complex_record(value):
     return dict(real=float(value.real),imag=float(value.imag))
