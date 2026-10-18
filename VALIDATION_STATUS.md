@@ -1,4 +1,6 @@
 
+H6 DBA実行更新：A境界16構成はnative exit0・最終gate PASS・mandatory STOP。D2軸/B希少層32軸は時点付き稼働記録。人工18件PASS、旧STOP保持・新費用会計なし。詳細：`docs/research/track_a_h6_dba_20261018.md`。
+
 H6 DBA限定並列検証：`docs/research/track_a_h6_dba_20261018.md`。D2軸・B2群32軸・A16 signal構成。新SOURCE/grant、stageごとSTOP、旧結果保全。
 ## 2026-10-18 H8：追加6精度の保存値検証完了
 
