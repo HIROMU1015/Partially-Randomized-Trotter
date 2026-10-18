@@ -1,3 +1,7 @@
+## 2026-10-18 H4/H6：高次PF B保存値解析完了・最適q未確定
+
+[結果・限定・来歴](docs/research/track_a_h46_higher_pf_B_saved_run01_results_20261018.md)。SOURCE ed14d951…/承認one-shot/native exit0・wait回収・wall0.7575秒。保存24条件は経験的18適格/6不適格、保存費用6群n8を再現。適格費用欠測12群のため全6層のfull-grid winnerはnull。新signal/sampling/compile/係数最適化0、元n8の標本追加なし。B取得/C確認を自動起動せずmandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-18 H4/H6：高次PF・q比較・独立確認の準備のみ
 
 [技術報告](docs/research/track_a_h46_higher_pf_readiness_20261018.md)。PF repository固定20d64c2…の係数・次数証拠を先に再利用し、projector import先の2関数欠測と元高精度値の未取得を明示。SOURCE ed14d951…、新32人工/mock PASS。保存signal24/費用6/欠測18をmetadataのみ照合、frozen shot・paired RZ/CX・q選択・独立確認設計と無効4grantを準備。実H4/H6数値再解析・順位・sampling・compile・係数最適化0。新公式未採用、n未固定、A_COST/理論費用作業と分離しmandatory STOP。以下は過去各時点の履歴。

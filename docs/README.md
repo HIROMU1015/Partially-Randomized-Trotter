@@ -1047,3 +1047,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-18 高次PF・q比較の準備
 
 [H4/H6 高次PF・q比較・独立確認](research/track_a_h46_higher_pf_readiness_20261018.md)：PF既存検証を再利用し、新32人工/mockとmetadata照合のみ。実データ再解析・sampling・compile0、無効grant/mandatory STOP。
+
+## 2026-10-18 高次PF B保存値解析
+
+[H4/H6 B_SAVED_ONLY run01](research/track_a_h46_higher_pf_B_saved_run01_results_20261018.md)：18適格・6不適格、適格費用欠測12。全6層で最適q未確定。新sampling/compile0、mandatory STOP。
