@@ -1,3 +1,7 @@
+## 2026-10-18 A_COST 3系完了・保存B/D解析結果
+
+[結果・測定表・来歴](docs/research/track_a_pr_cost_batch_completed_results_20261018.md)。H4/H6/H8 A_COST各16候補×n8、計384軌道・768軸・48代表controlが完了。保存D3件は計7,160行/120比較、B3件は限定診断まで完了（無条件平均null）。H8は元16代表を再利用、SOURCE87f1f0d5…/15workerで残112軌道を約56分、21:14:13 JSTにnative exit0・全回収。H4は1Å/legacy DF12、H6 DF19、H8 DF28で系列を分離。新Aのn8を用いた新総費用・ランキングは未実施、旧STOP/未完了予約/他研究は保全。以下は各時点の履歴。
+
 ## 2026-10-18 H8 A_COST：候補単位の並列投入・引継ぎ準備
 
 [実装・検査・未seal草案](docs/research/track_a_h8_pr_candidate_parallel_readiness_20261018.md)。SOURCE `87f1f0d528478ad212ba98159db06eec3c78433e`。代表軌道のnative/control合格ごとに同候補の残り7軌道を投入し、元128taskのseedを保持する継続adapter。人工24＋既存承認境界18＋無効CLI2件PASS。現在のrunは保全・継続、新方式launch0、有効grant0。最終receipt受領/静止観測後のsealと切替指示は未実施。以下は履歴。

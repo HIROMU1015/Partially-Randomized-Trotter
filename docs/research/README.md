@@ -1,3 +1,7 @@
+## 2026-10-18 A_COST 3系完了・保存B/D解析結果
+
+[結果・測定表・来歴](track_a_pr_cost_batch_completed_results_20261018.md)。H4/H6/H8 A_COST各16候補×n8、計384軌道・768軸・48代表controlが完了。保存D3件は計7,160行/120比較、B3件は限定診断まで完了（無条件平均null）。H8は元16代表を再利用、SOURCE87f1f0d5…/15workerで残112軌道を約56分、21:14:13 JSTにnative exit0・全回収。H4は1Å/legacy DF12、H6 DF19、H8 DF28で系列を分離。新Aのn8を用いた新総費用・ランキングは未実施、旧STOP/未完了予約/他研究は保全。以下は各時点の履歴。
+
 ## 2026-10-16 V2：H6探索PFの最終照合・現行残差設計NO_GO候補
 
 [最終証拠・不足理由・固定条件での判定](track_a_v2_h6_pf_final_reconciliation_20261016.md)。旧PF20候補（測定16・未測定4）を最後に限定照合。比較可能PF0・fit適格0。15測定候補は固定profile未結合、profile確認済みfull S4/q8の1候補もbasis lineage未完了かつtrain側のみ。固定分割・最小件数を維持し、広域回収を終了した。141入力・旧667保護ファイルを照合、PR/確認/H8/B0I・V1/H5/H7不変、新fit/残差/compile/config/grant0。現契約をNO_GO候補として利用者判断へ、公開後mandatory STOP。以下は各時点の履歴。
