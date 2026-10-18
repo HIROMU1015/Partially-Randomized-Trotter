@@ -53,3 +53,18 @@ production numba/OpenMP operatorはfork後のworker内で初期化する。
 
 次の担当：Codexがfresh gate後に承認済みD/A/Nを各一回起動し、安定進行・終了証拠を回収する。
 ユーザーは結果を見て、A候補の費用取得等を次に行うか判断する。
+
+## 起動・正常終了snapshot
+
+時点：2026-10-18T15:00:09.753927+09:00。SOURCE `79758d28d89ccaf2f942dc10ad724e70cf513089`。
+3つの独立grantを発行し、SOURCE11/provider236/runtime34,273/入力9件のfresh gate後に起動した。
+Dは10 worker枠、Aは16 worker、Nは1 worker、内部thread1。fresh空きRAM約468 GiB。
+Aは16/16・native exit0・wait4全回収・最終gate PASS、wall11.563秒でmandatory STOP。
+倍率1での通常/非相殺適格数はε=.05/.01/.005/.001/.0005の順に16/11/11/11/6（両bias同数）。
+新PR sampling/compile・費用順位は0。
+Nはnative exit0・wait4回収・最終gate PASS、wall7.408秒でmandatory STOP。
+通常128会計行と保存選択8費用を再現し、旧固定16内の非相殺費用比較を保存した。
+Dは48 B0＋48解析overlayを完了。固定規則で8構成を選び、最大16軸を直接compile中。
+snapshotでは4構成完了・10軸取得・STOP0。全8構成/16軸の正常完了はこの時点では未確認。
+[A/N完了receiptと結果gzip、D時点付きsnapshot](../../artifacts/resource_applicability/track_a_h4_native_validation/2026-10-18/)。
+次の担当：CodexがDの残り実測・native終了・最終gateを回収する。追加候補やPR cost stageは起動しない。

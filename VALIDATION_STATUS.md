@@ -1,3 +1,5 @@
+H4 native実行：SOURCE79758d28…、A16/16とN旧固定16診断はnative exit0・最終gate PASS・mandatory STOP。D96 signal後の8構成16軸compileが進行、時点付きsnapshotは4構成/10軸・STOP0。人工17件PASS。詳細 `docs/research/track_a_h4_native_validation_20261018.md`。
+
 H4 native追加検証：利用者が1 ÅのD/A/非相殺3系統の準備後実行を承認。D96 signal（48 B0＋48解析overlay）から固定proxyで最大10構成20軸、A16 signal、N旧固定16保存値。人工17件PASS、独立grant・STOP。詳細 `docs/research/track_a_h4_native_validation_20261018.md`。起動/終了状態は同報告の時点付きreceiptを参照。
 
 H8 A/B実行：AはSOURCE6197e97d…で16/16、最終gate PASS・native exit0・mandatory STOP。Bは元9d18cdd6…で先頭4本進行中、残28本はcontrol gate後。人工42件PASS、旧STOP保全・新費用会計なし。詳細 `docs/research/track_a_h8_ab_20261018.md`。

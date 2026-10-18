@@ -6,3 +6,5 @@
 旧固定16とD0を保全し、独立cloneで人工17件を検査。
 Dのprefix比proxyは選別用であり、2%検証済み費用モデルへ格上げしない。
 各stage終了後mandatory STOP、A_COST・希少pilot等は自動開始しない。
+
+SOURCE79758d28…でD/A/Nを独立起動。AとNはnative exit0/最終gate PASSで終了。D96候補から8構成を選別し、16軸の実測を並列実行中。旧STOP・既存結果は不変。
