@@ -139,6 +139,18 @@ def deterministic_cost(axes):
                 axis_classes=classes, original_axis_costs=deepcopy(axes))
 
 
+def deterministic_axis_index(rows):
+    units, origins = {}, {}
+    for i, row in enumerate(rows):
+        if row["cell_id"].startswith("B2_"):
+            continue  # aggregate n8/n32 PR means are never used as paired costs
+        key = "H6", row["cell_id"]
+        codec.require(row["axis"] not in units.get(key, {}), "DUPLICATE_H6_UNIT_AXIS")
+        units.setdefault(key, {})[row["axis"]] = row
+        origins.setdefault(key, dict(receipt="H6_unit_cost", pointers={}))['pointers'][row['axis']] = f"/rows/{i}"
+    return units, origins
+
+
 def put(path, value, *, private=False):
     raw = canonical(value) + b"\n"
     fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o400 if private else 0o644)
@@ -224,11 +236,7 @@ def main():
             for factor, a in variants.items():
                 if float(factor) == 1:
                     set_base(("H8", record["cell"]["id"], float(e), "USUAL_SIGNED_SAVED"), a, "H8_additional", f"/signals/{i}/precision_rows/{e}/{factor}")
-    units, unit_origin = {}, {}
-    for i, row in enumerate(h6axis):
-        codec.require(row["axis"] not in units.get(("H6", row["cell_id"]), {}), "DUPLICATE_H6_UNIT_AXIS")
-        units.setdefault(("H6", row["cell_id"]), {})[row["axis"]] = row
-        unit_origin.setdefault(("H6", row["cell_id"]), dict(receipt="H6_unit_cost", pointers={}))['pointers'][row['axis']] = f"/rows/{i}"
+    units, unit_origin = deterministic_axis_index(h6axis)
     for i, entry in enumerate(h8six):
         row = entry["updated"]
         if row["factor"] != 1:

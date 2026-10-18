@@ -117,6 +117,14 @@ class CopyBindingTests(unittest.TestCase):
         self.assertEqual(r["kind"], "DETERMINISTIC_MIXED"); self.assertEqual(r["imag"], "3/2")
         self.assertEqual(binder.deterministic_cost(None)["kind"], "MISSING")
 
+    def test_aggregate_PR_means_do_not_enter_PF_unit_index(self):
+        pf = dict(cell_id="B1_SYNTHETIC", axis="cosine", RZ="2", measured=True)
+        pr = dict(cell_id="B2_SYNTHETIC", axis="cosine", RZ="3", measured=True)
+        units, _ = binder.deterministic_axis_index([pf, pr, dict(pr, RZ="4")])
+        self.assertEqual(set(units), {("H6", "B1_SYNTHETIC")})
+        with self.assertRaisesRegex(ValueError, "DUPLICATE_H6_UNIT_AXIS"):
+            binder.deterministic_axis_index([pf, pf])
+
     def test_private_input_requires_exact_existing_receipt(self):
         with tempfile.TemporaryDirectory() as d:
             p = Path(d) / "synthetic.json"; raw = b'{"fixture":"ARTIFICIAL"}'; p.write_bytes(raw)
