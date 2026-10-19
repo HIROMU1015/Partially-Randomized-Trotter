@@ -1,0 +1,79 @@
+{
+  "AD03": "DEFERRED",
+  "SOURCE": "0d47f59c351798434f7f29cdcbda993f60b5462c",
+  "accepted_cost_rows": 0,
+  "algebraic_passes_sha256": "6f76e1c35051d4b63f2cd4048b62531637ce70fd44d0739b78e478adf0250da3",
+  "artifacts": {
+    "compiled_qpy": {
+      "bytes": 127064678,
+      "file": "compiled.qpy",
+      "sha256": "62275898aeb3a9a0c3023122dca1b695a9cdbc71f6beba3301943119da476b27"
+    },
+    "compiled_vector": {
+      "bytes": 131338,
+      "file": "compiled_vector.npz",
+      "sha256": "9f4934cc3118207035aff8b9312c14c29d4c878903ef52c5e9db3a63a51599bf"
+    }
+  },
+  "checks": [
+    {
+      "PASS": true,
+      "check": "lowered_vs_saved_wrapper_vector",
+      "new_action": 0,
+      "origin_gate_sha256": "9f9495cf671e9af19aa50ed6746ff9250860f958e0d885f03cc6b5627311fff1",
+      "origin_vector_sha256": "a971ed8e97edc7f688e42e07ca942756bf43f8b914d6c8ef86d8258cbd0c4554",
+      "phase_alignment": false,
+      "raw_error": 2.326360070803798e-11,
+      "reused": true,
+      "strictly_below": 1e-09
+    },
+    {
+      "PASS": true,
+      "check": "compiled_vs_lowered",
+      "phase_alignment": false,
+      "raw_error": 1.3066542295717234e-11,
+      "strictly_below": 1e-09
+    },
+    {
+      "PASS": true,
+      "check": "compiled_vs_saved_wrapper_vector",
+      "phase_alignment": false,
+      "raw_error": 1.5206807563089305e-11,
+      "strictly_below": 1e-09
+    }
+  ],
+  "compiled_schema": {
+    "ancilla": 12,
+    "final_measurements_removed_only": true,
+    "gate_counts": {
+      "cx": 407894,
+      "measure": 1,
+      "rz": 1189845,
+      "sx": 679188,
+      "x": 107273
+    },
+    "global_phase": 1.7007329412166725,
+    "layout": "None",
+    "nqubits": 13
+  },
+  "compiler_policy": "M5_OPT1_ALGEBRAIC_ONEQ_ZERO_ROUNDING_V1",
+  "mandatory_STOP": true,
+  "new_compile": 1,
+  "new_lowered_replay": 0,
+  "new_lowering": 0,
+  "next_phase_started": false,
+  "old_58_axes_preserved": true,
+  "old_STOP_remains_STOP": true,
+  "old_cost_compatibility": false,
+  "phase_alignment_for_acceptance": false,
+  "pipeline_identity": "0e4714effe241a6d606790b933a18e13e28c7415e4f7414e80d24e3049cfb36f",
+  "plan_sha256": "3e98c14338979155cd69b7dfab4a73bc4b3c12fff7c52f7034598731fa829267",
+  "postcompile_phase_correction": false,
+  "retry": false,
+  "reused_initial_raw_gate": 1,
+  "sampling": 0,
+  "sine": 0,
+  "statevector_replays": 1,
+  "status": "ALGEBRAIC_ZERO_SINGLE_STATE_PASS_MANDATORY_STOP",
+  "wall_seconds": 435.5011582300067
+}

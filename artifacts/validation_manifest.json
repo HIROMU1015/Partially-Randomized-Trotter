@@ -12189,5 +12189,92 @@
     "push": false,
     "report": "docs/research/track_a_m5_algebraic_oneq_readiness_20261019.md",
     "artifact_directory": "artifacts/resource_applicability/track_a_m5_algebraic_oneq_readiness/2026-10-19"
+  },
+  "track_a_h6_m5_algebraic_zero_run01_results_20261019": {
+    "status": "ALGEBRAIC_ZERO_SINGLE_STATE_PASS_MANDATORY_STOP",
+    "SOURCE": "0d47f59c351798434f7f29cdcbda993f60b5462c",
+    "plan_sha256": "3e98c14338979155cd69b7dfab4a73bc4b3c12fff7c52f7034598731fa829267",
+    "pipeline_identity": "0e4714effe241a6d606790b933a18e13e28c7415e4f7414e80d24e3049cfb36f",
+    "compiler_policy": "M5_OPT1_ALGEBRAIC_ONEQ_ZERO_ROUNDING_V1",
+    "scope_id": "H6_M5_ALGEBRAIC_ZERO_ROUNDING_COSINE_V1",
+    "launch_UTC": "2026-10-19T12:23:44.630033+00:00",
+    "completed_UTC": "2026-10-19T12:31:56.792455+00:00",
+    "scientific_status": "SINGLE_STATE_PASS",
+    "raw_gates": [
+      {
+        "PASS": true,
+        "check": "lowered_vs_saved_wrapper_vector",
+        "executed_in_this_run": false,
+        "new_action": 0,
+        "origin_gate_sha256": "9f9495cf671e9af19aa50ed6746ff9250860f958e0d885f03cc6b5627311fff1",
+        "origin_vector_sha256": "a971ed8e97edc7f688e42e07ca942756bf43f8b914d6c8ef86d8258cbd0c4554",
+        "phase_alignment": false,
+        "raw_error": 2.326360070803798e-11,
+        "reused": true,
+        "strictly_below": 1e-09
+      },
+      {
+        "PASS": true,
+        "check": "compiled_vs_lowered",
+        "executed_in_this_run": true,
+        "phase_alignment": false,
+        "raw_error": 1.3066542295717234e-11,
+        "strictly_below": 1e-09
+      },
+      {
+        "PASS": true,
+        "check": "compiled_vs_saved_wrapper_vector",
+        "executed_in_this_run": true,
+        "phase_alignment": false,
+        "raw_error": 1.5206807563089305e-11,
+        "strictly_below": 1e-09
+      }
+    ],
+    "additional_angle_rounding_budget_radians": 0.0,
+    "algebraic_guard": {
+      "PASS": true,
+      "additional_angle_rounding": 0,
+      "global_phase_bits_unchanged": true,
+      "passes": 2,
+      "policy": "M5_OPT1_ALGEBRAIC_ONEQ_ZERO_ROUNDING_V1"
+    },
+    "diagnostic_gate_counts": {
+      "cx": 407894,
+      "measure": 1,
+      "rz": 1189845,
+      "sx": 679188,
+      "x": 107273
+    },
+    "policy_passes": 2,
+    "compiler_callbacks": 24,
+    "wall_seconds": 448.2324007935822,
+    "peak_RSS_KiB": 4054940,
+    "native_launcher_exit": 0,
+    "native_worker_exit": 0,
+    "all_workers_reaped": true,
+    "artificial_tests_reused": 30,
+    "preflight_checks": 30,
+    "negative_mutations": 12,
+    "end_audit_checks": 40,
+    "sealed_files": 2016,
+    "protected_files": 2758,
+    "new_compile": 1,
+    "statevector_replays": 1,
+    "new_lowering": 0,
+    "new_lowered_replay": 0,
+    "accepted_cost_rows": 0,
+    "sine": 0,
+    "sampling": 0,
+    "cost_accounting": false,
+    "old_cost_compatibility": false,
+    "old_STOP_remains_STOP": true,
+    "old_58_axes_preserved": true,
+    "AD03": "DEFERRED",
+    "retry": false,
+    "next_phase_started": false,
+    "mandatory_STOP": true,
+    "push": false,
+    "report": "docs/research/track_a_h6_m5_algebraic_zero_run01_results_20261019.md",
+    "artifact_directory": "artifacts/resource_applicability/track_a_h6_m5_algebraic_zero_run01/2026-10-19"
   }
 }

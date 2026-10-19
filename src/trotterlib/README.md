@@ -1,3 +1,7 @@
+## 2026-10-19 H6 m5：丸め0の代数的縮減の実検証・SINGLE_STATE_PASS
+
+[結果・実行証拠・採用範囲](../../docs/research/track_a_h6_m5_algebraic_zero_run01_results_20261019.md)。SOURCE0d47f59c…、保存PASS再利用・cosine新compile1/作用1。追加丸め0、Euler/小角度閾値/wrapなし、全raw検査は保存結果参照。診断gate数と受理費用を区別し、旧STOP/58軸/AD03保留。40項目終了監査、2016seal/2758file保全、会計/追加軸/retry0。次はユーザーの残る検証・政策採否判断。local commit後mandatory STOP・push0。以下は各時点の履歴。
+
 ## 2026-10-19 H6 m5：丸め0の代数的1qubit縮減・実行準備完了
 
 [方式・人工比較・未承認一軸契約](../../docs/research/track_a_m5_algebraic_oneq_readiness_20261019.md)。SOURCE0d47f59c…（prototype29f5d5f0…）、正確なRZ和とSX/X恒等式でEuler/閾値/wrap/phase加算を避ける。人工30件/14条件PASS、丸め0の人工RZ24→1と小角度全保持を確認。H6での縮減・raw精度・時間は未検証。2016seal、metadata20/改変拒否11、2720file保全、実H6 compile/作用/有効grant/会計0。旧PASS/STOP/58軸/AD03保留。次はユーザーの新SOURCE・固定cosine一軸の実行判断、承認後Codexが新grant/fresh gateで一回実行。local commit後mandatory STOP・push0。以下は各時点の履歴。
