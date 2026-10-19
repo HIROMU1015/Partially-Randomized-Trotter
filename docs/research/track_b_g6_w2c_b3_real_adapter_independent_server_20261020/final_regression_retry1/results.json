@@ -1,0 +1,40 @@
+{
+  "category": "regression",
+  "measured_SOURCE": "b7ad344401b10395c49e4cfa806909282859bab5",
+  "selected": [
+    "test_g6_w2c_b3_port_bundle_v1.ContractAndAdmission",
+    "test_g6_w2c_b3_parallel_codec.Canonical",
+    "test_g6_w2c_b3_parallel_f01",
+    "test_g6_w2c_b3_storage_v2.Storage"
+  ],
+  "run": 107,
+  "PASS": 102,
+  "FAIL": 0,
+  "ERROR": 5,
+  "SKIP": 0,
+  "core_scientific_modules_loaded": [],
+  "core_import_attempts": [],
+  "failures": [
+    {
+      "id": "test_g6_w2c_b3_parallel_codec.Canonical.test_recovered_server_prototype_and_collision_counterexample",
+      "trace": "Traceback (most recent call last):\n  File \"/tmp/b3-independent-server-r2-20261020/runtime/tests/tracks/algorithm_codesign/test_g6_w2c_b3_parallel_codec.py\", line 91, in test_recovered_server_prototype_and_collision_counterexample\n    row=json.loads((T.ROOT/'tests/tracks/algorithm_codesign/fixtures/g6_w2c_b3_pilot_exact_reference.json').read_text())\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1029, in read_text\n    with self.open(mode='r', encoding=encoding, errors=errors) as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1015, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/tmp/b3-independent-server-r2-20261020/runtime/tests/tracks/algorithm_codesign/fixtures/g6_w2c_b3_pilot_exact_reference.json'\n"
+    },
+    {
+      "id": "test_g6_w2c_b3_parallel_f01.F01.test_normal_all_four_arms_layers_match_frozen_pre_fix_reference",
+      "trace": "Traceback (most recent call last):\n  File \"/tmp/b3-independent-server-r2-20261020/runtime/tests/tracks/algorithm_codesign/test_g6_w2c_b3_parallel_f01.py\", line 344, in test_normal_all_four_arms_layers_match_frozen_pre_fix_reference\n    refs=json.loads(p.read_text())\n                    ^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1029, in read_text\n    with self.open(mode='r', encoding=encoding, errors=errors) as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1015, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/tmp/b3-independent-server-r2-20261020/runtime/tests/tracks/algorithm_codesign/fixtures/g6_w2c_b3_f01_normal_reference.json'\n"
+    },
+    {
+      "id": "test_g6_w2c_b3_storage_v2.Storage.test_new_admission_eight_contenders_same_store",
+      "trace": "Traceback (most recent call last):\n  File \"/tmp/b3-independent-server-r2-20261020/runtime/tests/tracks/algorithm_codesign/test_g6_w2c_b3_storage_v2.py\", line 130, in test_new_admission_eight_contenders_same_store\n    root=Path(t);c,i,l,a=F.fixture(root,R.P.Settings(profile_n=16));barrier=threading.Barrier(8)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/b3-independent-server-r2-20261020/runtime/tests/tracks/algorithm_codesign/b3_storage_artificial_fixture.py\", line 18, in fixture\n    c=R.candidate(F.ROOT);inner,ledger,_=F.fixture(root,settings)\n      ^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/b3-independent-server-r2-20261020/runtime/src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_storage_v2.py\", line 32, in candidate\n    c['source_pins'][path]=A.A.digest((Path(root)/path).read_bytes())\n                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1021, in read_bytes\n    with self.open(mode='rb') as f:\n         ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1015, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/tmp/b3-independent-server-r2-20261020/runtime/docs/research/track_b_g6_w2c_b3_trace_reservation_accounting_repair_20261019/storage_v2.schema.json'\n"
+    },
+    {
+      "id": "test_g6_w2c_b3_storage_v2.Storage.test_new_admission_spent_reuse_without_output_collision",
+      "trace": "Traceback (most recent call last):\n  File \"/tmp/b3-independent-server-r2-20261020/runtime/tests/tracks/algorithm_codesign/test_g6_w2c_b3_storage_v2.py\", line 120, in test_new_admission_spent_reuse_without_output_collision\n    root=Path(t);c,i,l,a=F.fixture(root,R.P.Settings(profile_n=16))\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/b3-independent-server-r2-20261020/runtime/tests/tracks/algorithm_codesign/b3_storage_artificial_fixture.py\", line 18, in fixture\n    c=R.candidate(F.ROOT);inner,ledger,_=F.fixture(root,settings)\n      ^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/b3-independent-server-r2-20261020/runtime/src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_storage_v2.py\", line 32, in candidate\n    c['source_pins'][path]=A.A.digest((Path(root)/path).read_bytes())\n                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1021, in read_bytes\n    with self.open(mode='rb') as f:\n         ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1015, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/tmp/b3-independent-server-r2-20261020/runtime/docs/research/track_b_g6_w2c_b3_trace_reservation_accounting_repair_20261019/storage_v2.schema.json'\n"
+    },
+    {
+      "id": "test_g6_w2c_b3_storage_v2.Storage.test_scientific_candidate_and_boolean_types_remain_fixed",
+      "trace": "Traceback (most recent call last):\n  File \"/tmp/b3-independent-server-r2-20261020/runtime/tests/tracks/algorithm_codesign/test_g6_w2c_b3_storage_v2.py\", line 113, in test_scientific_candidate_and_boolean_types_remain_fixed\n    c=R.candidate(F.F.ROOT)\n      ^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/b3-independent-server-r2-20261020/runtime/src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_storage_v2.py\", line 32, in candidate\n    c['source_pins'][path]=A.A.digest((Path(root)/path).read_bytes())\n                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1021, in read_bytes\n    with self.open(mode='rb') as f:\n         ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1015, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/tmp/b3-independent-server-r2-20261020/runtime/docs/research/track_b_g6_w2c_b3_trace_reservation_accounting_repair_20261019/storage_v2.schema.json'\n"
+    }
+  ],
+  "role": "Producer test rerun; independent oracle results are counted separately"
+}

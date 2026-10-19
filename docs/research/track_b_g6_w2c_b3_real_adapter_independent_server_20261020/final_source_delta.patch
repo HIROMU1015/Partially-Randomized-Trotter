@@ -1,0 +1,242 @@
+diff --git a/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/adapter.py b/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/adapter.py
+index 6c4af6da..63304cb4 100644
+--- a/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/adapter.py
++++ b/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/adapter.py
+@@ -36,7 +36,7 @@ class ArtificialFactory:
+ class Endpoint:
+     def __init__(self,task,settings,context):
+         self.task,self.settings,self.context=deepcopy(task),settings,deepcopy(context)
+-        self.stopped=False;self.last=None;self.adapted=None
++        self.stopped=False;self.last=None;self.adapted=None;self.audit_calls=0
+ 
+     def shared_identity(self):
+         return D.identity(dict(schema='ARTIFICIAL_ADAPTER_V1',task=self.task,
+@@ -84,6 +84,14 @@ class Endpoint:
+                 adapted_digest=C.fingerprint(a),consumption_digest=C.fingerprint(consumption))
+             evidence=dict(artificial=True,origin='SYNTHETIC_DOCUMENTS_NOT_REAL_G7_F3',
+                           consumption=consumption,adapted=a,dispatch=dispatch)
++            if layer=='B':
++                identity=C.fingerprint(dict(arm=arm,source=X.SOURCE))
++                state=C.fingerprint(dict(artificial=True,arm=arm,layer=layer))
++                seal=C.DriverDocument.create(dict(arm=arm,identity=identity,state_id=state,payload=record.document,
++                    completed_calls_before=self.audit_calls,confidence_certified=False))
++                evidence['audit']=R.canonical_audit(seal,arm=arm,identity=identity,state_id=state,
++                    completed_calls_before=self.audit_calls)
++                self.audit_calls+=1
+             self.last=D.Outcome(a['driver_kind'],a['event'],evidence);self.last.validate()
+             return self.last
+         except BaseException as exc:
+@@ -98,6 +106,10 @@ class Endpoint:
+             C.need(result is self.last and self.task['layer']=='B','ANGLE_RESULT_IDENTITY')
+             self.fault('angle');self.fault('requery')
+             query,angle=X.synthetic_angle(self.adapted)
++            if self.task['arm']!='full_return':
++                return R.canonical_angle_binding(self.adapted,requery_input=query,requery_event=result.event,
++                    angle_record=angle,input_payload={'id':'ARTIFICIAL_INPUT_V1'},
++                    policy_payload={'id':'ARTIFICIAL_PRECISION_V1'},synthetic=True)
+             return R.angle_binding(self.adapted,requery_input=query,requery_event=result.event,
+                                    angle_record=angle,synthetic=True)
+         except BaseException as exc:
+diff --git a/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/codec.py b/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/codec.py
+index 0d1a9720..df4bf37f 100644
+--- a/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/codec.py
++++ b/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/codec.py
+@@ -197,3 +197,37 @@ def restore(sidecar, *, source_identity):
+     need(json_bytes(sidecar) == json_bytes(convert(record, source_identity=source_identity)),
+          'CODEC_SIDECAR_MISMATCH')
+     return record
++
++
++@dataclass(frozen=True)
++class DriverDocument:
++    """Already-normalized driver bytes; earlier tuple/key types are unknown."""
++    text: str
++    digest: str
++
++    @classmethod
++    def create(cls, value):
++        text=driver_canonical(value)
++        return cls(text,digest_bytes(text.encode()))
++
++    def read(self):
++        need(type(self.text) is str and type(self.digest) is str and
++             digest_bytes(self.text.encode())==self.digest,'DRIVER_DOCUMENT_DIGEST')
++        def decode(value):
++            if value is None or type(value) in (str,bool):return value
++            if type(value) is list:return [decode(v) for v in value]
++            need(type(value) is dict,'DRIVER_NONEXACT_NUMBER')
++            if set(value)=={'int'}:return _hex(value['int'])
++            if set(value)=={'rat'}:
++                pair=value['rat'];need(type(pair) is list and len(pair)==2,'DRIVER_RATIONAL_PAIR')
++                n,d=map(_hex,pair);need(d>0,'DRIVER_DENOMINATOR');result=Fraction(n,d)
++                need((result.numerator,result.denominator)==(n,d),'DRIVER_RATIONAL_CANONICAL')
++                return result
++            return {k:decode(v) for k,v in value.items()}
++        value=decode(plain(self.text))
++        need(driver_canonical(value)==self.text,'DRIVER_CANONICAL_BYTES')
++        return value
++
++    def transport(self):
++        self.read()
++        return dict(text=self.text,digest=self.digest)
+diff --git a/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/fixture.py b/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/fixture.py
+index 1da93f54..726531d1 100644
+--- a/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/fixture.py
++++ b/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/fixture.py
+@@ -82,4 +82,8 @@ def synthetic_angle(adapted):
+     query=dict(word=e['word'],child=e['child'])
+     if source['schema']=='g7_observation_candidate_v1' and source['arm']!='full_return':
+         query.update(group_index=source['group_index'],raw_word=e['raw_word'])
++    if source['schema']=='g7_observation_candidate_v1' and source['arm']!='full_return':
++        data=record.read();data['context']=dict(event_id=C.digest_bytes(C.driver_canonical(e).encode()),
++            input={'id':'ARTIFICIAL_INPUT_V1'},policy={'id':'ARTIFICIAL_PRECISION_V1'},preflight=source['preflight_id'])
++        record=C.Document.create(data)
+     return query,record
+diff --git a/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/offline.py b/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/offline.py
+index 3f3ab17c..ef7de049 100644
+--- a/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/offline.py
++++ b/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/offline.py
+@@ -80,7 +80,14 @@ def reference(arm,axis,counter,tid,layer):
+             basis={'scope':'ARTIFICIAL_SHAPE_ONLY_NOT_AN_ATAN_ENCLOSURE'}))
+         query=dict(word=event['word'],child=2)
+         if arm!='full_return':query.update(group_index=0,raw_word=raw)
+-        angle=R.angle_binding(adapted,requery_input=query,requery_event=event,angle_record=a,synthetic=True)
++        if arm!='full_return':
++            data=a.read();data['context']=dict(event_id=C.digest_bytes(C.driver_canonical(event).encode()),
++                input={'id':'ARTIFICIAL_INPUT_V1'},policy={'id':'ARTIFICIAL_PRECISION_V1'},preflight=ids['preflight_id'])
++            angle=R.canonical_angle_binding(adapted,requery_input=query,requery_event=event,
++                angle_record=C.Document.create(data),input_payload={'id':'ARTIFICIAL_INPUT_V1'},
++                policy_payload={'id':'ARTIFICIAL_PRECISION_V1'},synthetic=True)
++        else:
++            angle=R.angle_binding(adapted,requery_input=query,requery_event=event,angle_record=a,synthetic=True)
+     return adapted,consumption,angle,counter
+ 
+ 
+@@ -127,6 +134,14 @@ def verify(root,trusted,source_root=None):
+                     event_digest=evhash,adapted_digest=C.fingerprint(a),consumption_digest=C.fingerprint(consumption))
+                 evidence=dict(artificial=True,origin='SYNTHETIC_DOCUMENTS_NOT_REAL_G7_F3',consumption=consumption,
+                               adapted=a,dispatch=dispatch)
++                if layer=='B':
++                    identity=C.fingerprint(dict(arm=arm,source='ARTIFICIAL_SOURCE_G7_F3_SHAPED_V1'))
++                    state=C.fingerprint(dict(artificial=True,arm=arm,layer=layer))
++                    original=(a['g7_observation']['f3']['document'] if arm=='full_return' and layer=='A' else a['codec']['f3']['document'])
++                    calls=idx+(task['n'] if axis=='Y' else 0)
++                    seal=C.DriverDocument.create(dict(arm=arm,identity=identity,state_id=state,payload=original,
++                        completed_calls_before=calls,confidence_certified=False))
++                    evidence['audit']=R.canonical_audit(seal,arm=arm,identity=identity,state_id=state,completed_calls_before=calls)
+                 V.require(p['kind']==kind and V.event_hash(p)==evhash,'ADAPTER_EVENT_DIGEST')
+                 if 'evidence' in p:
+                     V.require(V.identity(p['evidence'])==V.identity(evidence),'ADAPTER_FULL_EVIDENCE_CODEC_DIGEST')
+diff --git a/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/result.py b/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/result.py
+index aa2ce830..3c3c8c4d 100644
+--- a/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/result.py
++++ b/src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/result.py
+@@ -250,3 +250,50 @@ def angle_binding(adapted, *, requery_input, requery_event, angle_record, synthe
+                 angle=C.convert(angle_record,source_identity=adapted['source_identity']),
+                 synthetic=synthetic,mathematical_precision_verified=False,
+                 terminal_STOP=False)
++
++
++def canonical_audit(seal, *, arm, identity, state_id, completed_calls_before):
++    """Preserve the actual driver AuditParity Seal codec, distinct from F3."""
++    C.need(type(seal) is C.DriverDocument,'EXACT_DRIVER_AUDIT_DOCUMENT')
++    data=seal.read()
++    C.need(type(data) is dict and set(data)=={'arm','identity','state_id','payload',
++           'completed_calls_before','confidence_certified'},'AUDIT_SEAL_FIELDS')
++    C.need(type(completed_calls_before) is int and completed_calls_before>=0 and
++           type(data['completed_calls_before']) is int and data['completed_calls_before']==completed_calls_before,
++           'AUDIT_CALL_ORDER')
++    C.need(data['arm']==arm and data['identity']==identity and data['state_id']==state_id and
++           data['confidence_certified'] is False,'AUDIT_SEAL_BINDING')
++    return dict(schema='b3_driver_audit_sidecar_v1',original_driver_seal=seal.transport(),
++                normalized_document=C.Document.create(data).transport(),
++                earlier_tuple_or_key_types='NOT_RECOVERABLE_FROM_DRIVER_BYTES_ALONE',
++                actual_scientific_audit_verified=False)
++
++
++def canonical_angle_binding(adapted, *, requery_input, requery_event, angle_record,
++                            input_payload, policy_payload, synthetic):
++    """Canonical LegacyEndpoint context is not the Full F3 context.
++
++    Verify and retain the original context/bytes. A separate temporary normalized
++    document reuses structural enclosure checks; it never replaces the original.
++    """
++    C.need(type(angle_record) is C.Document,'EXACT_ANGLE_DOCUMENT')
++    source=C.restore(adapted['codec'],source_identity=adapted['source_identity']).read()
++    C.need(source['schema']=='g7_observation_candidate_v1' and source['arm']!='full_return',
++           'CANONICAL_ANGLE_SOURCE')
++    C.need(type(input_payload) is dict and type(policy_payload) is dict,'CANONICAL_CONTEXT_PAYLOADS')
++    data=angle_record.read();event=adapted['event']
++    event_id=C.digest_bytes(C.driver_canonical(event).encode())
++    original_context=dict(event_id=event_id,input=input_payload,policy=policy_payload,
++                          preflight=source['preflight_id'])
++    C.need(C.canonical(data['context'])==C.canonical(original_context),'CANONICAL_ANGLE_CONTEXT')
++    normalized=deepcopy(data)
++    normalized['context']={**{k:source[k] for k in (*IDS,'sigma')},'event_id':adapted['event_identity'],
++                           'parent':event['word'],'child':event['child']}
++    result=angle_binding(adapted,requery_input=requery_input,requery_event=requery_event,
++                         angle_record=C.Document.create(normalized),synthetic=synthetic)
++    result.update(angle=C.convert(angle_record,source_identity=adapted['source_identity']),
++                  angle_context_kind='CANONICAL_LEGACY',angle_original_event_id=event_id,
++                  canonical_input_binding=C.Document.create(input_payload).transport(),
++                  canonical_policy_binding=C.Document.create(policy_payload).transport(),
++                  requery_callable_arguments=(source['group_index'],event['raw_word'],event['child']))
++    return result
+diff --git a/tests/tracks/algorithm_codesign/test_g6_w2c_b3_real_adapter_integration_v1.py b/tests/tracks/algorithm_codesign/test_g6_w2c_b3_real_adapter_integration_v1.py
+index 36c288b7..36e04df1 100644
+--- a/tests/tracks/algorithm_codesign/test_g6_w2c_b3_real_adapter_integration_v1.py
++++ b/tests/tracks/algorithm_codesign/test_g6_w2c_b3_real_adapter_integration_v1.py
+@@ -57,7 +57,9 @@ for name in ['normal_n16','normal_n256']+TECHNICAL+INCOMPLETE:
+         row=self.rows[name];want='VERIFIED_ARTIFICIAL_BUNDLE_COMPLETE' if name.startswith('normal_') else 'TECHNICAL_FAILURE' if name in TECHNICAL else 'INCOMPLETE_EVIDENCE'
+         self.assertEqual(row.get('verification_status'),want,row)
+         self.assertEqual(row.get('verification_issues'),[])
+-        if 'fault' in row['spec']:self.assertEqual(row['fault_hits'],1)
++        if 'fault' in row['spec']:
++            if 'fault_hits' in row:self.assertEqual(row['fault_hits'],1)
++            else:self.assertIn('ARTIFICIAL_STORAGE_FAULT:'+row['spec']['fault']['point'],row['exception']['reason'])
+     setattr(Integration,'test_matrix_'+name,test)
+ 
+ 
+diff --git a/tests/tracks/algorithm_codesign/test_g6_w2c_b3_real_adapter_v1.py b/tests/tracks/algorithm_codesign/test_g6_w2c_b3_real_adapter_v1.py
+index 194ec705..215df4ec 100644
+--- a/tests/tracks/algorithm_codesign/test_g6_w2c_b3_real_adapter_v1.py
++++ b/tests/tracks/algorithm_codesign/test_g6_w2c_b3_real_adapter_v1.py
+@@ -116,7 +116,10 @@ class Results(unittest.TestCase):
+                         r,tr=X.build(b,trial_id=tid,arm=arm);a=X.adapt(r,trial_id=tid,arm=arm,layer=layer)
+                         seen.add(a['classification']);C.restore(a['codec'],source_identity=X.SOURCE)
+                         if a['event'] is not None and layer=='B':
+-                            q,ang=X.synthetic_angle(a);out=R.angle_binding(a,requery_input=q,requery_event=a['event'],angle_record=ang,synthetic=True)
++                            q,ang=X.synthetic_angle(a)
++                            out=(R.canonical_angle_binding(a,requery_input=q,requery_event=a['event'],angle_record=ang,
++                                input_payload={'id':'ARTIFICIAL_INPUT_V1'},policy_payload={'id':'ARTIFICIAL_PRECISION_V1'},synthetic=True)
++                                if arm!='full_return' else R.angle_binding(a,requery_input=q,requery_event=a['event'],angle_record=ang,synthetic=True))
+                             self.assertFalse(out['mathematical_precision_verified'])
+                     self.assertIn('ACCEPTED',seen)
+                     if arm=='full_return':self.assertEqual(seen,{'RAW_NONREDUCED','COIN_REJECT','ACCEPTED'})
+@@ -288,3 +291,26 @@ class AdditionalInterfaces(unittest.TestCase):
+             def read(self):raise AssertionError('MUST_NOT_CALL')
+         with self.assertRaises(C.Rejected):R.adapt_g7(None,observation=Foreign(),expected={},arm='ordinary')
+         with self.assertRaises(C.Rejected):R.adapt_f3(Foreign(),expected={})
++
++class CanonicalEvidence(unittest.TestCase):
++    def test_driver_document_and_audit_seal(self):
++        value=dict(arm='ordinary',identity='IDENTITY',state_id='STATE',payload='ORIGINAL_F3_BYTES',
++                   completed_calls_before=0,confidence_certified=False)
++        seal=C.DriverDocument.create(value);a=R.canonical_audit(seal,arm='ordinary',identity='IDENTITY',state_id='STATE',completed_calls_before=0)
++        self.assertEqual(a['original_driver_seal'],seal.transport());self.assertEqual(seal.read(),value)
++    def test_wrong_driver_digest(self):
++        with self.assertRaises(C.Rejected):C.DriverDocument('{}','0'*64).read()
++    def test_wrong_audit_call_order(self):
++        seal=C.DriverDocument.create(dict(arm='ordinary',identity='I',state_id='S',payload=None,completed_calls_before=True,confidence_certified=False))
++        with self.assertRaises(C.Rejected):R.canonical_audit(seal,arm='ordinary',identity='I',state_id='S',completed_calls_before=1)
++    def test_actual_canonical_angle_context(self):
++        _,_,_,a=obtain('ordinary');query,angle=X.synthetic_angle(a)
++        out=R.canonical_angle_binding(a,requery_input=query,requery_event=a['event'],angle_record=angle,
++            input_payload={'id':'ARTIFICIAL_INPUT_V1'},policy_payload={'id':'ARTIFICIAL_PRECISION_V1'},synthetic=True)
++        self.assertEqual(out['angle']['f3'],angle.transport())
++        self.assertEqual(out['requery_callable_arguments'],(0,(0,0),2))
++        with self.assertRaises(C.Rejected):R.angle_binding(a,requery_input=query,requery_event=a['event'],angle_record=angle,synthetic=True)
++    def test_canonical_context_input_mismatch(self):
++        _,_,_,a=obtain('ordinary');query,angle=X.synthetic_angle(a)
++        with self.assertRaises(C.Rejected):R.canonical_angle_binding(a,requery_input=query,requery_event=a['event'],angle_record=angle,
++            input_payload={'id':'WRONG'},policy_payload={'id':'ARTIFICIAL_PRECISION_V1'},synthetic=True)
