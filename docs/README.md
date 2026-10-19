@@ -1,3 +1,7 @@
+## 2026-10-20 H4/H6 m5：回路費用取得・標本設計準備
+
+[取得対象・再利用・未採択事項](research/track_a_h46_m5_cost_sampling_readiness_20261020.md)。新SOURCE635ba563…、保存88候補/880軸ラベルを同精度でjoin。m5決定論48候補中保存4軸を再利用し、追加H4 38/H6 54軸案。12保存軸は同m5系列内でidentity照合、8軸は今回の適格領域外。PR24群のn_E・新seed・総call数は未確定。native adapter/並列pool/4独立無効契約を実装、人工18＋回帰18・metadata84PASS、3137file不変。実分子signal/compile/sampling/shot/会計/ranking・有効grant0、AD03保留。次はユーザーの対象/標本設計/資源政策と独立実行承認の判断。公開資料のみcommit・push後mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-20 H4/H6 m5：修正版signal run02正常終了
 
 [signal結果・経験的適格性・終了監査](research/track_a_h46_m5_signal_run02_results_20261020.md)。修正版SOURCEbec018c6で固定88候補（82新signal＋6raw再利用）を正常終了。H4 40/H6 48、5精度両軸880行、2系process・各30候補thread、wall57.68秒/外部61.41秒、全exit0/reap。47終了監査/2065seal、旧2899file＋run01 STOP18file不変。reference条件付き経験的政策、shot/costはnull、AD03保留。新compile/sampling/reference/会計/ranking/push0。次はユーザーの費用取得計画準備の判断、local commit後mandatory STOP。以下は各時点の履歴。
