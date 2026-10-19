@@ -16,3 +16,5 @@ setup/sample/bits/coefficient-child-law/audit/angle/query/codec/IPC/observer/sto
 一時host PSIだけで科学workerを止める契約にはせず、実OOM/worker異常/破損/UNKNOWNのSTOPを保持する。
 
 **未採択・実科学未実行。mandatory STOP。次の担当：ユーザー・GPT。**
+
+追加の人工receipt close故障ではcomplete=false・INCOMPLETE_EVIDENCEとなり、receiptだけの成功扱いを拒否した。正常caseは512原document全件とtrace/receipt/callerを結合した。
