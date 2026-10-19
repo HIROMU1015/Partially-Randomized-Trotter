@@ -337,6 +337,7 @@ class ArtificialH6Confirmation(unittest.TestCase):
         def tiny_child(*args, **kwargs):
             return popen([sys.executable, '-P', '-B', '-c', 'raise SystemExit('+str(exit_code)+')'], **kwargs)
         with patch.object(h, 'authorize'), patch.object(h, 'verify'), patch.object(h.shared, 'fresh_gate'), \
+             patch.object(launcher, 'audit_completion', return_value=dict(artificial=True)), \
              patch.object(launcher.subprocess, 'Popen', side_effect=tiny_child):
             launcher.launch(spec, grant, path/'witness')
 

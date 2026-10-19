@@ -34,7 +34,9 @@ TARGETS = (
 SCOPES = {t['scope']: t['cell']['id'] for t in TARGETS}
 FILES = tuple(sorted(set((*batch.FILES, *shared.FILES, PLAN,
     'scripts/h6_pr_confirmation.py', 'scripts/prepare_h6_pr_confirmation.py',
-    'scripts/launch_h6_pr_confirmation.py', 'tests/test_h6_pr_confirmation.py'))))
+    'scripts/launch_h6_pr_confirmation.py', 'tests/test_h6_pr_confirmation.py',
+    'scripts/h6_pr_confirmation_seal.py', 'scripts/prepare_h6_pr_confirmation_seal.py',
+    'tests/test_h6_pr_confirmation_seal.py'))))
 
 
 def specialize(function, **constants):
@@ -181,6 +183,9 @@ def sealed(spec):
     check_target(spec['target'])
     c.require(spec['scope'] == spec['target']['scope'] and spec['cohort'] == COHORT, 'H6_SCOPE_COHORT')
     c.require(spec['calls'] == calls_for(spec['target'], spec['n']), 'EXACT_H6_CALL_BUDGET')
+    from h6_pr_confirmation_seal import FINAL_N
+    c.require(spec['n_by_scope'] == FINAL_N and spec['n'] == FINAL_N[spec['scope']],
+              'FINAL_ADOPTED_H6_N')
     c.require(spec['technical_digest'] == shared.technical_digest(spec), 'TECHNICAL_DIGEST')
     c.require(all(spec[k] is False for k in ('approved', 'runtime_authorization', 'retry',
                                           'next_stage_authorized')), 'SEALED_NOT_AUTHORIZED')
@@ -208,6 +213,11 @@ def authorize(spec, grant):
     c.require(type(grant['driver_cpu']) is int and grant['driver_cpu'] in os.sched_getaffinity(0)
               and grant['driver_cpu'] not in cpus
               and grant['driver_cpu'] not in grant['concurrent_job_cpus'], 'SEPARATE_OWN_DRIVER_CPU')
+    from h6_pr_confirmation_seal import process_slots
+    c.require(type(grant.get('memory_admission_estimate_bytes')) is int
+              and grant['memory_admission_estimate_bytes'] >=
+              spec['memory_estimate_per_process_bytes'] * process_slots(len(cpus)),
+              'MEMORY_ADMISSION_ESTIMATE_NOT_A_CAP')
 
 
 def verify(spec):
@@ -244,6 +254,8 @@ def verify(spec):
               and registry['excluded_inventory_complete'] is True, 'FINAL_H6_SEED_BINDING')
     c.require(registry['tasks'] == derive_registry(plan['targets'], spec['SOURCE'], registry['seed_plan_digest'],
               registry['excluded'], spec['n_by_scope']), 'EXACT_H6_SEED_REGISTRY')
+    from h6_pr_confirmation_seal import verify_final_binding
+    verify_final_binding(spec, registry)
     return dict(status='PASS_BYTES_ONLY', scientific_calls=0)
 
 

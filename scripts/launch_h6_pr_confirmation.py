@@ -10,6 +10,7 @@ import time
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import h6_pr_confirmation as h
 import launch_h8_pr_confirmation as witness
+from h6_pr_confirmation_seal import audit_completion
 
 
 def launch(spec, grant, directory):
@@ -46,9 +47,10 @@ def launch(spec, grant, directory):
                     and terminal['result_sha256'] == h.c.sha(Path(spec['output']) / 'result.json'),
                     'H6_COMPLETION_RESULT_SHA')
         h.verify(spec)
+        raw_audit = audit_completion(spec, receipt)
         h.c.save(directory / 'completion_audit.json', dict(status='COMPLETE_MANDATORY_STOP',
             SOURCE=spec['SOURCE'], scope=spec['scope'], native=receipt,
-            retry=False, next_stage_authorized=False))
+            raw_audit=raw_audit, retry=False, next_stage_authorized=False))
     except BaseException as error:
         if child is not None and child.returncode is None:
             receipt = witness.stop(child, owned) if owned is not None else witness.reap(child, block=True)
