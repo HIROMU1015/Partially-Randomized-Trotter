@@ -1,3 +1,7 @@
+H4 tol-only DF10 独立P完了（2026-10-19）：科学SOURCE3c664ca4…、固定n1108/78・1,186 trajectory/2,372軸/5,680 eventをone-shot実行。ε=.05はPFが低費用で方向NOT_REPRODUCED、ε=.0005はPRが低費用でREPRODUCED。paired SEを保存、S2 event37/7、複数S2・S4 trajectory0、母平均保証なし。60 worker枠・累計1,186全回収・native exit0・終了監査PASS、wall287.50秒。旧混合/追加sampling/retry0、新規pushなし、mandatory STOP。[結果・不確かさ・監査](../docs/research/track_a_h4_tol_p_completed_20261019.md)。以下は各時点の履歴。
+
+`record_h4_tol_p_completed.py` は終了したPの保存費用統計を転記し、要求された費用差とeventラベル整数監査を保存する。科学SOURCE・mean/SEを再計算せず、sampling/compileをdispatchしない。
+
 H4 tol-only DF10 独立P最終seal（2026-10-19）：S_STATS結果を正式受入しn1108/78・SOURCE3c664ca4…・1,186 trajectory/2,372軸を固定。新1,810 seed整数は旧70,270整数＋geometry7,737,216予約枠と衝突0。SOURCE25/provider251/input29/runtime34,273・旧9,216記録SHA照合、人工/回帰131件・無効grant2経路拒否PASS。実P sampling/compile・保存値新解析0、母平均保証なし、新規pushなし、mandatory STOP。[最終契約と次の承認](../docs/research/track_a_h4_tol_p_seal_20261019.md)。以下は各時点の履歴。
 
 `seal_h4_tol_p.py` はmetadata専用、`h4_tol_p_contract.py` は実行前ゲート、`run_h4_tol_p.py` と `h4_tol_p_science.py` は別承認後専用、`audit_h4_tol_p_completed.py` は終了監査。人工検証は `tests/test_h4_tol_p.py`。
