@@ -1,3 +1,5 @@
+> **2026-10-19 Track B Storage V2独立consumer**：`src/trottertracks/algorithm_codesign/g6_w2c_b3_storage_independent_{identity,trace,adapter}_v2.py` と [Evidence Packet](../../docs/research/track_b_g6_w2c_b3_v2_independent_acceptance_server_20261019/README.md)。Producerをimportしない独立経路。旧V1を保全、科学SOURCE採択なし。
+
 > Track Bの[KKT訂正・S4補完](../../docs/tracks/algorithm_codesign/parent_allocation_s4_kkt_repair_and_supplement_preparation_20261015.md)は別namespace `parent_experiment/supplement.py`。共通libraryは不変、旧S3と全result保持、science承認待ち。
 
 > Track Bの[Parent allocation v3結果/監査](../../docs/tracks/algorithm_codesign/parent_allocation_v3_results_and_gpt_handoff_20261015.md)は別namespace。共通libraryは保持、科学的採否は未判断、mandatory STOP。

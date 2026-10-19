@@ -1,3 +1,5 @@
+> **2026-10-19 Track B Storage V2独立人工受入**：[Evidence Packet](docs/research/track_b_g6_w2c_b3_v2_independent_acceptance_server_20261019/README.md)。公開108件＝正常2／技術失敗40／証拠不完全66、物理state exact82件。旧assertion1箇所の明示補正を含むversioned回帰623＋新57＝680 PASS。旧原文622 PASS/1 FAILは保持。同一サーバー別セッション、科学実行0、mandatory STOP。以下の旧状態は履歴として保持。
+
 > **2026-10-18 Track B論文主張の技術調査**：[Claim Sheet・先行法対応・証拠・ハンドオフ](docs/research/track_b_paper_claim_survey_20261018/README.md)。A_INSUFFICIENT_EVIDENCE／B_DESCRIPTIVE_RESULTS_ONLY。独立論文化保留は技術提案で未採択。D＋E・既存STOP・研究④保留は不変、新科学計算/実装/実行権限0、mandatory STOP。以下の旧状態は履歴として保持。
 
 > 2026-10-18 G6 evidence追補：[G6構成論文Evidence Packet](docs/research/track_b_g6_construction_paper_evidence_20261018/README.md)：M1〜M12の既存証明・SOURCE・既済test・方法差を接続。新規性/投稿GO未認定、科学実行0、旧STOP維持。

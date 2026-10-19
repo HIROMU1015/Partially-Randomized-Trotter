@@ -1,3 +1,5 @@
+> **2026-10-19 Storage V2独立offline検証**：[専用runner群と再現手順](../docs/research/track_b_g6_w2c_b3_v2_independent_acceptance_server_20261019/README.md)。`run_acceptance.py`、`run_new_tests.py`、`run_legacy_regressions.py`、独立writer faultとarchive restore helperはEvidence Packet内。人工専用、科学実行なし。
+
 > Parent allocation入口はS4補完contract/manifestを検査し、訂正KKT/halfway最大4構成のみを対象とする。pending authorityで拒否、登録実行0。[補完準備](../docs/tracks/algorithm_codesign/parent_allocation_s4_kkt_repair_and_supplement_preparation_20261015.md)、[zero-compute preflight](tracks/algorithm_codesign/preflight_parent_allocation_experiment.py)。以下は履歴。
 
 > Parent allocation v3は一回実行完了・marker消費済み。[結果/保存監査](../docs/tracks/algorithm_codesign/parent_allocation_v3_results_and_gpt_handoff_20261015.md)。追加runner起動は未認可、mandatory STOP。以下は準備履歴。
