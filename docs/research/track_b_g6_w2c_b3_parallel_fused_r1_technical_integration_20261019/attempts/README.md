@@ -1,0 +1,7 @@
+# 途中記録
+
+bdb6_testsはbdb6c12691450b65e929b494fef5317d17a217c8の477 PASS。
+11ae/は11ae23577f13a9ca7bb1d5ad525957c1cbfad30fの477 PASSと、中断した人工測定。
+直接science helperのguard補強のため自分の人工benchmarkだけを協調停止した。実科学jobは停止していない。
+最終SOURCE 860fef4aの481回帰・60性能・35障害へ、これらの件数や値を混ぜない。
+最初の3 host logsは未commit開発中の診断記録で、observer実pathと同期fault境界等を修正する前後を示す。最終証拠ではない。
