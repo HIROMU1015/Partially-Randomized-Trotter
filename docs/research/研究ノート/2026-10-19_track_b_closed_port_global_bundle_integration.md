@@ -1,0 +1,7 @@
+# 2026-10-19 Track B人工Global Bundle × API Port統合
+
+利用者の新規人工統合指示により、d24cccbを直接基点とする別branchで82896d53の固定Portを選択取得した。公開SOURCE deade78a19f5b23859d16816d3a7bfb37765dd80。旧factory hardwireをversioned派生Bridgeの固定人工adapterへ切替え、scheduler/worker/Admission/Storage V2/STOP/post-closeを単一bundleで通した。
+
+新134 tests PASS。53casesはbundle正常3・condition-only2・technical failure22・incomplete26。45mutationの10件は旧storage検査を通る偽Port証拠を新consumerが拒否。追加3negativeも拒否。n16/n256の1536/16896全trialでPort evidenceとglobal COMPLETEを照合。固定回帰107/73/41/57は別件数として全PASS、旧co_qualname原版622/1・補正版623と独立845の履歴を保持。
+
+実科学import/bits/sampling・新科学計算/再解析・SOURCE科学採択・実authority/grant/claim・native0。並行ローカル未公開結果は利用0。ユーザー/GPTが正式release/契約を判断し、後続ローカルCodexが新統合版を独立受入する。今回は公開・SHA照合後mandatory STOP。
