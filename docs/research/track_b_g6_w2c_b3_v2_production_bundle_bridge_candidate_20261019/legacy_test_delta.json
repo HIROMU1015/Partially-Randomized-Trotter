@@ -1,0 +1,8 @@
+{
+  "original_sha256": "0d5b0f541c971b12f5c7effc26922da5f536981f63d9771cc85d857b9e4f3914",
+  "corrected_compiled_source_sha256": "e8654c4c2b57f5fecccb55d2d7fec4fba4c7a071efe7c6365b74354c3e2ab764",
+  "original_source_modified": false,
+  "literal_changes": 1,
+  "diff": "--- fixed_49a0dcc_original.py\n+++ versioned_legacy_test_v1.py\n@@ -207,7 +207,7 @@\n             with observer:self.assertEqual(parent(),5)\n             allrows.append(observer.meter.rows)\n             reconciliation=observer.meter.reconcile((1000000,2000000));self.assertGreaterEqual(reconciliation['unattributed_and_observer_residual_ns'][0],0)\n-        self.assertEqual(allrows[0],allrows[1]);self.assertTrue(any(x.endswith(':leaf')for x in allrows[0]))\n+        self.assertEqual(allrows[0],allrows[1]);self.assertTrue(any(x.endswith('.<locals>.leaf')for x in allrows[0]))\n     def test_cached_observer_preexisting_profiler_refused(self):\n         O=self.observer()\n         with patch.object(sys,'getprofile',return_value=lambda *a:None):\n",
+  "full_observer_rows_and_exclusive_partition_comparison_preserved": true
+}

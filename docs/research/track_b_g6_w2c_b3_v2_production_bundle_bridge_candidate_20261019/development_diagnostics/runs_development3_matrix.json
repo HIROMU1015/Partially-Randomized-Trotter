@@ -1,0 +1,233 @@
+{
+  "cases": [
+    {
+      "case": "normal_bundle_small",
+      "root": "/tmp/b3-bundle-artificial-xp2m15g4",
+      "spec": {
+        "name": "normal_bundle_small"
+      },
+      "returned_complete": true,
+      "fault_hits": 0,
+      "external_host_outer": {
+        "parent_cpu_ns": 1121161055,
+        "wall_ns": 6564121720,
+        "worker_cpu_ns": 9681111000,
+        "includes_final_and_delivery_close": true
+      },
+      "forbidden_imports": [],
+      "process_exit": 0,
+      "verification_status": "VERIFIED_ARTIFICIAL_BUNDLE_COMPLETE",
+      "verification_issues": [],
+      "evidence_gaps": [],
+      "consumer_forbidden_imports": [],
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 715404970,
+          "worker_cpu_ns": 4674160000,
+          "wall_ns": 5297416506,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4233820
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31324
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142323,
+              "result": 4877605
+            },
+            "observed": {
+              "log": 2142323,
+              "result": 675109
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 343042029,
+          "worker_cpu_ns": 5006951000,
+          "wall_ns": 1199867989,
+          "budget_before": {
+            "reserved": {
+              "log": 2143011,
+              "result": 4878220
+            },
+            "observed": {
+              "log": 2143011,
+              "result": 675724
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4282861,
+              "result": 5522518
+            },
+            "observed": {
+              "log": 4282861,
+              "result": 1320022
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ]
+    },
+    {
+      "case": "parent_dispatch_failure",
+      "root": "/tmp/b3-bundle-artificial-x7g3j1ct",
+      "spec": {
+        "name": "parent_dispatch_failure",
+        "manifest": {
+          "parent_fault": "dispatch"
+        }
+      },
+      "returned_complete": false,
+      "fault_hits": 0,
+      "external_host_outer": {
+        "parent_cpu_ns": 102168205,
+        "wall_ns": 436585873,
+        "worker_cpu_ns": 338065000,
+        "includes_final_and_delivery_close": true
+      },
+      "forbidden_imports": [],
+      "process_exit": 0,
+      "verification_status": "INTEGRITY_MISMATCH",
+      "verification_issues": [
+        "CONTROL_WORKER_ID"
+      ],
+      "evidence_gaps": [],
+      "consumer_forbidden_imports": [],
+      "calls": null,
+      "conditions": null
+    },
+    {
+      "case": "delivery_close",
+      "root": "/tmp/b3-bundle-artificial-rl5uv7xt",
+      "spec": {
+        "name": "delivery_close",
+        "fault": {
+          "point": "delivery.json.close"
+        }
+      },
+      "exception": {
+        "type": "OSError",
+        "reason": "ARTIFICIAL_STORAGE_FAULT:delivery.json.close",
+        "traceback": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/docs/research/track_b_g6_w2c_b3_v2_production_bundle_bridge_candidate_20261019/run_case.py\", line 18, in main\n    result=B.execute_artificial(c,m,root=root,store=store,storage_fault=B.Fault(spec.get('fault')))\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_bridge_v1.py\", line 218, in execute_artificial\n    try:_save(out,'delivery.json',delivery,ctl,fault,slot=K.DELIVERY_SLOT,pre_reserved=True)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_bridge_v1.py\", line 106, in _save\n    try:fault(name+'.close')\n        ^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_bridge_v1.py\", line 56, in __call__\n    raise OSError('ARTIFICIAL_STORAGE_FAULT:'+point)\nOSError: ARTIFICIAL_STORAGE_FAULT:delivery.json.close\n"
+      },
+      "external_host_outer": {
+        "parent_cpu_ns": 1116604301,
+        "wall_ns": 6663634716,
+        "worker_cpu_ns": 9771145000,
+        "includes_final_and_delivery_close": true
+      },
+      "forbidden_imports": [],
+      "process_exit": 0,
+      "verification_status": "INCOMPLETE_EVIDENCE",
+      "verification_issues": [],
+      "evidence_gaps": [
+        "Caller observed bridge/delivery persistence exception"
+      ],
+      "consumer_forbidden_imports": [],
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 713726646,
+          "worker_cpu_ns": 4672484000,
+          "wall_ns": 5294380252,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4233820
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31324
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142326,
+              "result": 4877603
+            },
+            "observed": {
+              "log": 2142326,
+              "result": 675107
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 340214048,
+          "worker_cpu_ns": 5098661000,
+          "wall_ns": 1305428772,
+          "budget_before": {
+            "reserved": {
+              "log": 2143014,
+              "result": 4878218
+            },
+            "observed": {
+              "log": 2143014,
+              "result": 675722
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4282896,
+              "result": 5522524
+            },
+            "observed": {
+              "log": 4282896,
+              "result": 1320028
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ]
+    }
+  ],
+  "elapsed_seconds": 8.940307719632983,
+  "computational_process_parallelism": 3,
+  "subagents_used": false
+}

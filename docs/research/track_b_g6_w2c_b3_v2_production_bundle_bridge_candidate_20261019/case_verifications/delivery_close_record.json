@@ -1,0 +1,23 @@
+{
+  "case": "delivery_close",
+  "root": "/tmp/b3-bundle-artificial-mrhv7_x_",
+  "spec": {
+    "name": "delivery_close",
+    "fault": {
+      "point": "delivery.json.close"
+    }
+  },
+  "measured_git_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+  "exception": {
+    "type": "OSError",
+    "reason": "ARTIFICIAL_STORAGE_FAULT:delivery.json.close",
+    "traceback": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/docs/research/track_b_g6_w2c_b3_v2_production_bundle_bridge_candidate_20261019/run_case.py\", line 18, in main\n    result=B.execute_artificial(c,m,root=root,store=store,storage_fault=B.Fault(spec.get('fault')))\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_bridge_v1.py\", line 218, in execute_artificial\n    try:_save(out,'delivery.json',delivery,ctl,fault,slot=K.DELIVERY_SLOT,pre_reserved=True)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_bridge_v1.py\", line 106, in _save\n    try:fault(name+'.close')\n        ^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_bridge_v1.py\", line 56, in __call__\n    raise OSError('ARTIFICIAL_STORAGE_FAULT:'+point)\nOSError: ARTIFICIAL_STORAGE_FAULT:delivery.json.close\n"
+  },
+  "external_host_outer": {
+    "parent_cpu_ns": 1058176979,
+    "wall_ns": 6520758774,
+    "worker_cpu_ns": 9794131000,
+    "includes_final_and_delivery_close": true
+  },
+  "forbidden_imports": []
+}

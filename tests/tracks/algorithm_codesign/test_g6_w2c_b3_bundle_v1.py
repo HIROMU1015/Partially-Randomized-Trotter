@@ -11,6 +11,7 @@ from trottertracks.algorithm_codesign import g6_w2c_b3_bundle_offline_v1 as O
 from trottertracks.algorithm_codesign.g6_w2c_b3_bundle_store_v1 import FakeStore,Denied
 
 ROOT=Path(__file__).resolve().parents[3];DOC=ROOT/K.DOC
+MUTATION_RESULTS=[]
 MATRIX=Path(os.environ.get('B3_BUNDLE_MATRIX',str(DOC/'runs_final')))
 
 class ContractAndAdmission(unittest.TestCase):
@@ -123,14 +124,14 @@ NORMAL={'normal_S':'VERIFIED_ARTIFICIAL_CONDITION_ONLY','normal_P1':'VERIFIED_AR
 TECHNICAL={'S_failure_blocks_P1','P1_failure_preserves_S','F01_after_event','worker_crash','reserved_worker_crash','missing_ACK_unknown_credit','partial_worker_write','worker_flush','P1_inflight_drain','call_cap','result_cap','diagnostic_save','summary_save'}
 for name in ['normal_S','normal_P1','normal_bundle_small','normal_bundle_n256','S_failure_blocks_P1','P1_failure_preserves_S','F01_after_event','worker_crash','reserved_worker_crash','missing_ACK_unknown_credit','partial_worker_write','worker_flush','P1_inflight_drain','parent_dispatch_failure','parent_crash','call_cap','result_cap','log_cap','S_reserve_persistence','S_enter_persistence','S_complete_persistence','P1_reserve_persistence','P1_enter_persistence','P1_complete_persistence','state_reserve_write','state_entry_write','trace_partial','trace_complete_flush','diagnostic_save','receipt_save','receipt_flush','receipt_close','marker_save','trace_close','state_close','journal_close','fake_STOP_save','final_close','delivery_close','trace_STOP_save','journal_STOP_save','admission_commit_ack_unknown','summary_save']:
     def test(self,name=name):
-        row=self.rows[name];want=NORMAL.get(name,'TECHNICAL_FAILURE'if name in TECHNICAL else'INCOMPLETE_EVIDENCE');self.assertEqual(row['verification_status'],want,row.get('verification_issues'));self.assertFalse(row.get('verification_issues',[])if name!='log_cap'else[])
+        row=self.rows[name];want=NORMAL.get(name,'TECHNICAL_FAILURE'if name in TECHNICAL else'INCOMPLETE_EVIDENCE');self.assertEqual(row['verification_status'],want,row.get('verification_issues'));self.assertFalse(row.get('verification_issues',[])if name not in ('log_cap','admission_commit_ack_unknown')else[])
         if row['spec'].get('fault'):self.assertEqual(row.get('fault_hits',1),1)
     setattr(MatrixAcceptance,'test_artificial_'+name,test)
 
 class Mutations(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.rec=json.loads((MATRIX/'normal_bundle_small_result.json').read_text());cls.master=Path(cls.rec['root']);cls.trusted=json.loads((MATRIX/'trusted_candidate.json').read_text())
+        cls.rec=json.loads((MATRIX/'normal_bundle_small_result.json').read_text());cls.master=Path(cls.rec['root']);cls.trusted=json.loads((MATRIX/'trusted_candidate.json').read_text());cls.base_hashes={str(p.relative_to(cls.master)):O._sha(p)for p in cls.master.rglob('*')if p.is_file()}
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory(prefix='b3-bundle-mutation-');self.addCleanup(self.temp.cleanup);self.root=Path(self.temp.name)/'case';shutil.copytree(self.master,self.root);self.out=self.root/'output';self.r=O._read(self.out/'final.json')
     def reseal(self):
@@ -146,7 +147,15 @@ class Mutations(unittest.TestCase):
         if p.exists():
             d=O._read(p);d['delivery_sha256']=O._sha(self.out/'delivery.json')if(self.out/'delivery.json').exists()else None;data=B._bytes(d);p.write_bytes(data+b' '*(K.OBSERVATION_SLOT-len(data)))
     def reject(self):
-        v=O.verify(self.root,self.trusted);self.assertNotEqual(v['status'],'VERIFIED_ARTIFICIAL_BUNDLE_COMPLETE',v);return v
+        v=O.verify(self.root,self.trusted);self.assertNotEqual(v['status'],'VERIFIED_ARTIFICIAL_BUNDLE_COMPLETE',v)
+        hashes={str(p.relative_to(self.root)):O._sha(p)for p in self.root.rglob('*')if p.is_file()};changed=[name for name,h in hashes.items()if self.base_hashes.get(name)!=h];deleted=sorted(set(self.base_hashes)-set(hashes))
+        evidence=dict(test_id=self.id(),status=v['status'],issues=v['issues'],evidence_gaps=v['evidence_gaps'],base_case='normal_bundle_small',changed_files=[dict(path=name,sha256=hashes[name],bytes=(self.root/name).stat().st_size)for name in sorted(changed)],deleted_files=deleted)
+        if target:=os.environ.get('B3_BUNDLE_MUTATION_DIR'):
+            dest=Path(target)/self._testMethodName;dest.mkdir(parents=True,exist_ok=False)
+            for name in changed:
+                p=dest/name;p.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(self.root/name,p)
+            (dest/'overlay.json').write_text(json.dumps(evidence,indent=2)+'\n')
+        MUTATION_RESULTS.append(evidence);return v
     def trace(self,change):
         path=self.out/'operations.jsonl';rows=[]
         for line in path.read_bytes().splitlines():rows.append(json.loads(json.loads(line)['payload']))

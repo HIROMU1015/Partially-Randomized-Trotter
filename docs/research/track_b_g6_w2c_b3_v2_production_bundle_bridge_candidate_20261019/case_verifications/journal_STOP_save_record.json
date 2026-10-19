@@ -1,0 +1,35 @@
+{
+  "case": "journal_STOP_save",
+  "root": "/tmp/b3-bundle-artificial-q9zd2eqw",
+  "spec": {
+    "name": "journal_STOP_save",
+    "manifest": {
+      "condition_faults": {
+        "S": [
+          [
+            0,
+            0,
+            "sample",
+            0
+          ]
+        ]
+      }
+    },
+    "fault": {
+      "point": "journal.write",
+      "match": {
+        "event": "FAILURE_OBSERVED"
+      }
+    }
+  },
+  "measured_git_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+  "returned_complete": false,
+  "fault_hits": 1,
+  "external_host_outer": {
+    "parent_cpu_ns": 82538585,
+    "wall_ns": 238232581,
+    "worker_cpu_ns": 154448000,
+    "includes_final_and_delivery_close": true
+  },
+  "forbidden_imports": []
+}

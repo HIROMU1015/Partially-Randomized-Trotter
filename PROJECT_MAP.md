@@ -1122,3 +1122,8 @@ STOP_FOR_GPT_SCOPE_DECISION。元whole補正closure、Track A/G10/RA-D0結果・
 ## 2026-10-19：W2c-B3予約会計・保存故障修正V2
 
 [新SOURCE・人工fault matrix・独立受入引継ぎ](docs/research/track_b_g6_w2c_b3_trace_reservation_accounting_repair_20261019/README.md)。旧固定SOURCEで予約会計不整合を再現し、新しい人工専用module `g6_w2c_b3_pilot_storage_v2` と補助offline checker `g6_w2c_b3_storage_verify_v2` を追加。testsはtest_g6_w2c_b3_storage_v2.py、runner/raw/証跡はpacket内。科学入口閉鎖、科学条件未採択、後続ローカルCodex受入待ち、mandatory STOP。
+
+
+## 2026-10-19：Storage V2 S/P1 global bundle bridge 技術候補
+
+[S/P1 global bundle bridge候補・人工受入](docs/research/track_b_g6_w2c_b3_v2_production_bundle_bridge_candidate_20261019/README.md)。単一global claim/call/byte/STOP、人工43ケースと新107 testsを検証。科学入口閉鎖、正式採択なし、実G7/F3 import/sampling 0、mandatory STOP。旧科学結果とSTOPを保持。

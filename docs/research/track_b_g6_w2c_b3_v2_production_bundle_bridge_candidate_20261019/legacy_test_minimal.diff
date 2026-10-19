@@ -1,0 +1,11 @@
+--- fixed_49a0dcc_original.py
++++ versioned_legacy_test_v1.py
+@@ -207,7 +207,7 @@
+             with observer:self.assertEqual(parent(),5)
+             allrows.append(observer.meter.rows)
+             reconciliation=observer.meter.reconcile((1000000,2000000));self.assertGreaterEqual(reconciliation['unattributed_and_observer_residual_ns'][0],0)
+-        self.assertEqual(allrows[0],allrows[1]);self.assertTrue(any(x.endswith(':leaf')for x in allrows[0]))
++        self.assertEqual(allrows[0],allrows[1]);self.assertTrue(any(x.endswith('.<locals>.leaf')for x in allrows[0]))
+     def test_cached_observer_preexisting_profiler_refused(self):
+         O=self.observer()
+         with patch.object(sys,'getprofile',return_value=lambda *a:None):

@@ -1,0 +1,21 @@
+{
+  "name": "journal_STOP_save",
+  "manifest": {
+    "condition_faults": {
+      "S": [
+        [
+          0,
+          0,
+          "sample",
+          0
+        ]
+      ]
+    }
+  },
+  "fault": {
+    "point": "journal.write",
+    "match": {
+      "event": "FAILURE_OBSERVED"
+    }
+  }
+}
