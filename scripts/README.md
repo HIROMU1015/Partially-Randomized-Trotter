@@ -938,3 +938,6 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 
 
 - `prepare_mechanism_figure2.py`：SHA固定保存CSVの文字列転記専用。科学再解析を行わない。`preview_mechanism_figure2.py --synthetic-preview`：人工値だけのFigure 2技術preview。実入力経路なし。[報告](../docs/research/track_a_mechanism_paper_integration_readiness_20261019.md)。
+
+
+- `run_mechanism_a82.py`：SOURCE固定・新one-shot grant必須のA82.PR2軸だけのdelta runner。旧PF／core／他63sideは継承。`preview_mechanism_figure2.py --saved-data`：SHA固定保存4表を座標へ変換して描画。[準備・図・承認境界](../docs/research/track_a_mechanism_figure2_a82_readiness_20261019.md)。

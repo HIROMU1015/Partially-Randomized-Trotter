@@ -1088,3 +1088,6 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 
 
 - [Track A Mechanism Figure 2統合準備・A82限定回収](research/track_a_mechanism_paper_integration_readiness_20261019.md)：保存値転記、H4 D provenance追記、P未完了。実数値再解析・公開push0。
+
+
+- [Mechanism Figure 2実図・H4 P統合・A82限定SOURCE](research/track_a_mechanism_figure2_a82_readiness_20261019.md)：保存値可視化、独立Pを別cohortで反映、A82実行は別承認待ち。

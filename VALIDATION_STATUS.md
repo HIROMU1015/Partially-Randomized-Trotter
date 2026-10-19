@@ -2377,3 +2377,8 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-19 Mechanism：図表統合の技術準備
 
 [入口](docs/research/track_a_mechanism_paper_integration_readiness_20261019.md)。人工26テスト・人工描画PASS、保存値転記のみ。A82は原入力metadata回収で数値PASS未認定。H4 D完了は別provenance、P未完了、最終evidence freezeなし。local technical evidenceで独立科学再現／immutable CIではない。
+
+
+## 2026-10-19 Mechanism：保存Figure 2とA82限定技術SOURCE
+
+[入口](docs/research/track_a_mechanism_figure2_a82_readiness_20261019.md)。人工・回帰158PASS、実図は保存値の座標変換のみ。H4独立Pは固定完了証拠を別cohortで統合。A82.PRは未承認・未実数値検証、元欠測保持。最終evidence freeze／独立review／immutable CIなし、mandatory STOP。

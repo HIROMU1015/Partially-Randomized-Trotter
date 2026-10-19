@@ -915,3 +915,6 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 
 
 - `mechanism_paper.py`：保存値のID／schema／cohort照合と図表への文字列転記。科学算術なし。人工testは`tests/test_mechanism_paper.py`。[統合準備](../../docs/research/track_a_mechanism_paper_integration_readiness_20261019.md)。
+
+
+- `mechanism_a82.py`：固定`mechanism_explanation.explain_side`をA82.PRへ1回だけ適用するadapter。`mechanism_paper.py`はH4 Pの別cohort来歴と図用保存tokenを転記。人工testsは`test_mechanism_a82.py`／`test_mechanism_figure2_saved.py`。[統合入口](../../docs/research/track_a_mechanism_figure2_a82_readiness_20261019.md)。
