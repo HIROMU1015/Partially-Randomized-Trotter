@@ -622,3 +622,11 @@ B固有namespaceは`src/trottertracks/algorithm_codesign/rte_development/`。共
 ## 2026-10-20 Track B live correctness release preparation
 
 [実API object wrapper・512件候補・TEST_ONLY永続authority・人工受入](../../docs/research/track_b_g6_w2c_b3_live_correctness_release_preparation_20261020/README.md)。新SOURCE `src/trottertracks/algorithm_codesign/g6_w2c_b3_live_release_v1/`、tests `tests/tracks/algorithm_codesign/test_g6_w2c_b3_live_release_v1.py`、runnerはpacket内run_acceptance.py。科学resolverはinactive SOURCEのみ、実科学・実authority・正式採択0、mandatory STOP。
+
+
+## 2026-10-20 Track B final live connection / simple run control
+
+[接続SOURCE・512件候補・簡易one-shot・人工受入](../../docs/research/track_b_g6_w2c_b3_final_live_connection_simple_run_control_20261020/README.md)。
+SOURCE `src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/`、tests `tests/tracks/algorithm_codesign/test_g6_w2c_b3_final_live_v1.py`。
+runnerはpacket内`run_acceptance.py`。Canonical/FullとSOURCE/signature/G7 Bits委譲を接続、承認anchor未設定。
+Core科学load・科学bits・実512・実permission発行消費0、run_ready=false、mandatory STOP。
