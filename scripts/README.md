@@ -1,3 +1,7 @@
+H2 FP/D/A技術準備（2026-10-19）：F完了7ea6df2d…を正式受入。SOURCEde72e5d4…、rank3・4 qubits/spin sector4の保存入力を用いるFP8/D70/A66を登録。最大compile16/128/1056軸、Aは全適格候補に新n8・FP診断n1は混合しない。人工/回帰54件・実pending無効grant拒否9入口PASS、F関連295レコード保全。実H2科学実行0。D/Aの未来FP/D依存SHA結合とstage別承認は未完了。新規pushなし、mandatory STOP。[契約・予算・次の承認](../docs/research/track_a_h2_fp_d_a_preparation_20261019.md)。以下は各時点の履歴。
+
+`h2_panels_contract.py` / `h2_panels_science.py` / `prepare_h2_panels.py` / `run_h2_panels.py`：保存F専用のFP/D/A adapter。人工回帰 `tests/test_h2_panels.py`、契約・証跡 `artifacts/resource_applicability/track_a_h2_pr_resource/2026-10-19/fp_d_a_preparation01/`。
+
 H2 F完了（2026-10-19）：SOURCE37b1cf72…、新tol-only1e-8入力は実rank3・4 qubits／spin sector4。SCF/積分/DF/eigh各1、sector4 column＋独立oracle1、残差2.36e-16。native exit0・同一親回収・終了監査PASS、中断/retry0。signal/sampling/compile0・後段未実施、mandatory STOP。[保存結果・来歴・次の判断](../docs/research/track_a_h2_f_completed_20261019.md)。以下は各時点の履歴。
 
 `audit_h2_pr_f_completed.py` は保存bytes・call台帳・終了receiptを照合する。NPZ decode・科学計算・後段実行は行わない。
