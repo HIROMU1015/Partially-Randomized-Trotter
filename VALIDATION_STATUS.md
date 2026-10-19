@@ -1,3 +1,7 @@
+## 2026-10-19 H6 full m5：保存回路の精度診断・実行準備完了／実解析未承認
+
+[実装・固定契約・検証・次の承認](docs/research/track_a_h6_m5_saved_phase_readiness_20261019.md)。SOURCE 99e8723d…、保存2回路×通常/拡張の4再生runnerを実装。人工24件/metadata拒否12件PASS、1831file seal・旧684file不変。実H6 QPY/NPZ復元/解析/compile/有効grant0、原raw基準/旧STOP/58軸保全。通常再現atol1e-12は新契約案・未承認。最大4独立workerとvector化/cache、host PSIでkillせず他worktreeを凍結しない。SOURCE/plan/無効grantをlocal保存しmandatory STOP、push0。次はユーザーの別解析実行承認判断。以下は各時点の履歴。
+
 ## 2026-10-19 H6 full m5：保存phase追加診断計画・解析未実行
 
 [固定入力・4再生DAG・解釈・実装残件](docs/research/track_a_h6_m5_saved_phase_diagnostic_plan_20261019.md)。起点282cba7d…、保存cosine2回路/初期状態1つを通常・拡張精度で各2作用する未承認案。新compile/sampling/格子/受入変更0、QPY/NPZ未復元、runner未実装・SOURCE未seal・無効grant。12 roleのbyte SHAを結合、拡張精度の実mantissa・gate whitelist・通常再現をfail closedにする計画。旧STOP/58軸保全、684保護file、AD03/Core保留。次はCodexのrunner/人工検証/契約準備、その後ユーザーの別実行承認、local commit後mandatory STOP。以下は各時点の履歴。

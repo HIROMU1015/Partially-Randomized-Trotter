@@ -1,0 +1,81 @@
+{
+  "SOURCE": "99e8723d402245a9ad923e7dbc0800f47bc575b6",
+  "all_replay_outputs_quarantined_until_ordinary_reproduction_passes": true,
+  "already_running_own_jobs_may_finish_with_unaccepted_evidence": true,
+  "no_next_phase": true,
+  "one_future_approval_for_fixed_internal_DAG": true,
+  "ordinary_failure_stops_new_dispatch": true,
+  "phase": "SAVED_PHASE_DIAGNOSTIC",
+  "real_execution_authorized": false,
+  "steps": [
+    {
+      "depends": [],
+      "execution_authorized": false,
+      "id": "GATE",
+      "operation": "Verify hashes, origin STOP/native exit/reap, fresh own resources and new unused output scope"
+    },
+    {
+      "depends": [
+        "GATE"
+      ],
+      "execution_authorized": false,
+      "id": "SAVED_METRICS",
+      "operation": "Restore saved NPZ only; reproduce saved diagnostic/low/finite/shape checks"
+    },
+    {
+      "depends": [
+        "GATE"
+      ],
+      "execution_authorized": false,
+      "id": "QPY_SCHEMA",
+      "operation": "Restore exactly two saved QPY circuits; validate numerical parameters, qubit order, layout, whitelist and terminal measurement"
+    },
+    {
+      "depends": [
+        "SAVED_METRICS",
+        "QPY_SCHEMA"
+      ],
+      "execution_authorized": false,
+      "id": "REPLAY_WRAPPER_ORDINARY",
+      "operation": "One replay of WRAPPER at ORDINARY precision using the same saved low state"
+    },
+    {
+      "depends": [
+        "SAVED_METRICS",
+        "QPY_SCHEMA"
+      ],
+      "execution_authorized": false,
+      "id": "REPLAY_WRAPPER_EXTENDED",
+      "operation": "One replay of WRAPPER at EXTENDED precision using the same saved low state"
+    },
+    {
+      "depends": [
+        "SAVED_METRICS",
+        "QPY_SCHEMA"
+      ],
+      "execution_authorized": false,
+      "id": "REPLAY_COMPILED_ORDINARY",
+      "operation": "One replay of COMPILED at ORDINARY precision using the same saved low state"
+    },
+    {
+      "depends": [
+        "SAVED_METRICS",
+        "QPY_SCHEMA"
+      ],
+      "execution_authorized": false,
+      "id": "REPLAY_COMPILED_EXTENDED",
+      "operation": "One replay of COMPILED at EXTENDED precision using the same saved low state"
+    },
+    {
+      "depends": [
+        "REPLAY_WRAPPER_ORDINARY",
+        "REPLAY_WRAPPER_EXTENDED",
+        "REPLAY_COMPILED_ORDINARY",
+        "REPLAY_COMPILED_EXTENDED"
+      ],
+      "execution_authorized": false,
+      "id": "DIAGNOSTIC_REPORT",
+      "operation": "Compare saved and replay metrics; preserve original FAIL and unvalidated cost status; exit/reap/hash and mandatory STOP"
+    }
+  ]
+}
