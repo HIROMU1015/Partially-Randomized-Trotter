@@ -1,3 +1,7 @@
+## 2026-10-19 PF直接コンパイル拡充計画（未実行）
+
+[候補一覧・計画・必要承認](docs/research/track_a_pf_direct_compile_expansion_plan_20261019.md)。4系580候補＋legacy H4 DF12別104候補、計684候補/1368軸を棚卸し。両軸実測H2 34/H4 DF10 129/H6 29/H8 27、legacy71。未実測788軸と旧profile等の条件付き再取得48軸を分離し、H6 B0_p11_q4_2ndを優先。全登録qを残す。保存値転記・metadata確認のみ、新科学計算/compile/fit/費用再会計0、実行未認可・mandatory STOP。以下は履歴。
+
 ## 2026-10-19 共通実験プロトコルv2（正式採用）
 
 [正式v2・採用記録](docs/research/track_a_pr_resource_evaluation_protocol_v2.md)。ユーザー指示で固定v2案c0808b25を正式な共通実験プロトコルとして採用。H2をプロトコル対象へ追加し、保存snapshot829d697aと当初のA未完了履歴、H4/H6/H8独立確認6条件、入力手順差・希少event・母平均未保証・H8公開監査の限界を継承した。v1・元草案・科学契約・原図は不変。H2提案n80/12の採用、P最終seal、科学実行は別判断。新規科学計算・数値解析0。文書採用記録の保存・公開確認後mandatory STOP。以下は各時点の履歴。

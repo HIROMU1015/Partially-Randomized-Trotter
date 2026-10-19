@@ -1,0 +1,65 @@
+{
+  "schema": "PF_DIRECT_MODEL_COMPARISON_DATA_V1_DRAFT",
+  "purpose": "Same immutable candidate-axis observation can serve multiple independently versioned q models",
+  "keys": {
+    "input_series": [
+      "system",
+      "geometry",
+      "basis",
+      "DF_policy",
+      "rank",
+      "hamiltonian_hash",
+      "DF_hash",
+      "state_hash",
+      "snapshot_hash",
+      "fragment_order_hash",
+      "T"
+    ],
+    "circuit": [
+      "method",
+      "prefix",
+      "PF_order",
+      "PF_coefficients_version",
+      "q",
+      "delta",
+      "axis",
+      "control_policy",
+      "scalar_policy",
+      "wrapper_policy",
+      "preparation_hash",
+      "circuit_fingerprint"
+    ],
+    "compiler": [
+      "provider_SOURCE",
+      "runtime_closure_hash",
+      "compiler_version",
+      "compiler_options_hash",
+      "profile_hash",
+      "compiler_seed"
+    ],
+    "observation": [
+      "observation_id",
+      "acquisition_SOURCE",
+      "result_commit",
+      "result_sha256",
+      "attempt_id"
+    ]
+  },
+  "tables": {
+    "candidate_registry": "one immutable record per registered candidate; aliases explicit",
+    "direct_observation": "append-only per actual axis; integer gate counts, all basis ops, depths, circuit/preparation identities, control receipts, native exit/reap, build/compile/control wall and peak RSS semantics; unknown fields remain null",
+    "model_registry": "model_id/version/formula/code SOURCE/coefficients artifact/training IDs/holdout IDs/domain/profile/compiler; retain earlier models",
+    "prediction": "prediction_id/model_id/candidate-axis full key/predicted_gate_count_literal/status/role; never put predictions in measured column",
+    "model_comparison": "observation_id/prediction_id/evaluation protocol; error metrics and aggregate comparisons require separate future analysis approval",
+    "applicability": "explicit EXACT_MATCH / MISMATCH / UNKNOWN per input, preparation/circuit, control, compiler, runtime/profile; no candidate-name-only join"
+  },
+  "model_validation_rules": [
+    "fix train/holdout allocation before fitting",
+    "mark old training observations and historical validation observations",
+    "the same candidate may compare multiple models without becoming independent new evidence",
+    "no zero fill or extrapolation across input series",
+    "compiler/profile variants are separate observation layers",
+    "never stop benchmark collection solely because the model misses a valid direct observation"
+  ],
+  "model_prediction_or_fit_performed_this_task": false
+}

@@ -1,0 +1,98 @@
+{
+  "status": "DRAFT_NOT_EXECUTABLE",
+  "execution_authorized": false,
+  "grant_issued": false,
+  "SOURCE": null,
+  "base_document_commit": "3826f566b04ad9c2ead9abf1b80c864f7b34b785",
+  "scope": "Registered PF full cosine/sine wrappers, linear 1 Angstrom STO-3G T=0.8 P=0; H4 DF10 and legacy DF12 kept distinct",
+  "primary_metric": "compiled full-wrapper RZ per axis; no shot multiplication",
+  "secondary_metrics": [
+    "CX",
+    "depth",
+    "RZ_depth",
+    "CX_depth",
+    "size",
+    "all_basis_gate_counts"
+  ],
+  "task_file": "proposed_compile_axes.csv",
+  "proposed_candidates": 394,
+  "proposed_axes": 788,
+  "optional_reacquisition_file": "conditional_reacquisition_axes.csv",
+  "optional_reacquisition_axes": 48,
+  "optional_axes_automatically_authorized": false,
+  "all_saved_axes_need_identity_recheck": true,
+  "compiler": {
+    "version": "Qiskit 1.3.0",
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "compiler_hash": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "topology": null
+  },
+  "fixed_call_scope_per_unmeasured_candidate": {
+    "saved_input_decode": "bound existing input only; no regeneration",
+    "saved_preparation_view": "one candidate evolution; exact saved decomposition",
+    "native_evolution": 1,
+    "wrapper_build": 2,
+    "wrapper_compile": 2,
+    "control_probes_maximum": 4,
+    "QPY_dump_maximum": 2,
+    "QPY_load_maximum": 2
+  },
+  "proposed_missing_only_call_totals": {
+    "native_evolution": 394,
+    "wrapper_build": 788,
+    "wrapper_compile": 788,
+    "control_probes_maximum": 1576,
+    "QPY_dump_maximum": 788,
+    "QPY_load_maximum": 788
+  },
+  "optional_reacquisition_call_totals": "Must be bound separately after identity reconciliation; not added to missing-only totals",
+  "prohibited_calls": {
+    "SCF": 0,
+    "integral_build": 0,
+    "DF": 0,
+    "state_solver": 0,
+    "new_reference": 0,
+    "new_signal_grid": 0,
+    "sampling": 0,
+    "fit": 0,
+    "bootstrap": 0,
+    "shot_recalculation": 0,
+    "cost_reaccounting": 0,
+    "new_PF_selection": 0
+  },
+  "technical_control": "Reuse independent native branch/wrapper/control oracles; control probes are scientific calls and require explicit approval",
+  "model_mismatch_policy": "In the proposed NEW acquisition contract, record mismatch without refit and continue unrelated technically valid tasks. Existing contracts and their 2-percent STOP remain unchanged.",
+  "stop_conditions": [
+    "input/SOURCE/compiler/profile integrity failure",
+    "control or wrapper semantics mismatch",
+    "fingerprint mismatch before/after compile",
+    "nonzero native exit or unreaped worker",
+    "actual OOM or sustained inability to continue"
+  ],
+  "parallelism": {
+    "worker_limit": null,
+    "CPU_limit": null,
+    "RAM_limit": null,
+    "policy": "fresh actual permitted CPU/memory/FS and task footprints; admission-driven dynamic scheduling, no arbitrary q ceiling",
+    "oversubscription": "coordinate own inner threads with active process count",
+    "PSI": "record and diagnose temporary pressure; no automatic kill of healthy workers"
+  },
+  "permissions_and_OS": "Respect scheduler/cgroup/affinity/permissions; no shared setting or other-user changes",
+  "before_execution": [
+    "user reviews plan and selects exact task/reuse/reacquisition scope",
+    "bind future implementation SOURCE and dependencies, inputs and exact provider/runtime/profile",
+    "complete metadata and synthetic guard checks; no molecular compile before authorization",
+    "fix SOURCE/input hashes/tasks/call scope/output and one-shot identity; preserve old STOP",
+    "record explicit user scientific approval and new grant then fresh resource and integrity gates"
+  ],
+  "scientific_approval_still_required": true,
+  "final_evidence_freeze": false,
+  "detailed_scientific_review": false
+}
