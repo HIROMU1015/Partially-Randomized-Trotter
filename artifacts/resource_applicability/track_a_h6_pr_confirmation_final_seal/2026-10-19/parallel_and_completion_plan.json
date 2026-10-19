@@ -1,0 +1,62 @@
+{
+  "status": "FIXED_EXECUTION_POLICY_FRESH_ADMISSION_PENDING",
+  "scope_order": [
+    "H6_CONFIRM_P4_Q2",
+    "H6_CONFIRM_P4_Q8"
+  ],
+  "scopes_run_sequentially": true,
+  "first_representative_per_scope": {
+    "trajectory": 1,
+    "control_probe": 4,
+    "event_oracle": 1,
+    "max_parallel_control_children": 5
+  },
+  "after_representative_PASS": {
+    "trajectory_parallel": true,
+    "CPU_group_width": 2,
+    "paired_axes_parallel": true,
+    "max_workers": "min(n-1, ceil(len(fresh_allowed_cpus)/2))"
+  },
+  "own_driver_CPU_separate": true,
+  "resource_caps": null,
+  "actual_worker_allocation": null,
+  "CPU_selection": "Refresh affinity, per-affinity idle capacity, cgroup quotas, and concurrent allocations; use available slots with disjoint CPU groups.",
+  "memory_admission": {
+    "estimate_per_process_bytes": 6442450944,
+    "process_slots": "max(2+min(5,L), 1+L+ceil(L/2)) where L=len(allowed_cpus)",
+    "required": "estimate_per_process_bytes * process_slots <= fresh effective available RAM",
+    "estimate_is_resource_cap": false,
+    "includes_driver_trajectory_parents_and_descendants": true
+  },
+  "snapshot": {
+    "time": 1792380634.9028695,
+    "affinity_count": 64,
+    "memory_available_bytes": 503055384576,
+    "disk_free_bytes": 494429650944,
+    "free_inodes": 218804232
+  },
+  "quota_policy": "No quota CLI exposed; future approval must select an explicitly accepted supported quota policy before a valid grant.",
+  "own_process_BLAS_threads": 1,
+  "preparation_cache": "Restore saved H6 context once per scope, fork reuse; no SCF/DF/state generation.",
+  "monitoring": {
+    "period_seconds": 5,
+    "transient_PSI_or_CPU_contention_causes_STOP": false,
+    "own_errors_or_actual_OOM_cause_STOP": true
+  },
+  "no_wall_deadline": true,
+  "grant_policy": "Two separate per-scope one-shot grants; drafts stay false, new approval receipt required. No automatic retry/next stage.",
+  "completion_requires": [
+    "exact n and both axes for all registered tasks",
+    "K2 original law and event support; paired same trajectory",
+    "SOURCE/input/provider/runtime SHA before and after",
+    "compiler identity and circuit fingerprints",
+    "four control probes and independent oracle per scope",
+    "parent and task ledger exact nonrefundable budgets",
+    "native driver exit0 and wait4 reaped",
+    "all trajectory/control/axis descendants exit0 and reaped",
+    "raw result SHA and exact task set",
+    "save REPRODUCED/NOT_REPRODUCED/INCONCLUSIVE irrespective of direction",
+    "mandatory STOP"
+  ],
+  "completion_auditor": "scripts/h6_pr_confirmation_seal.py:audit_completion"
+}
