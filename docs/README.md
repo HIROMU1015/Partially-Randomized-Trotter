@@ -752,3 +752,8 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## 2026-10-19：Track B 実G7/F3 API Binding候補・独立技術受入
 
 固定基点6bffb5b5、候補82896d53/測定78c57100の[閉鎖API候補・独立受入](research/track_b_g6_w2c_b3_api_binding_independent_acceptance_local_20261019/README.md)。科学SOURCEはASTのみ、人工portと固定Bundle回帰を分離。独立checkerは `src/trottertracks/algorithm_codesign/g6_w2c_b3_api_independent_v1/`、testは `tests/tracks/algorithm_codesign/test_g6_w2c_b3_api_independent_v1.py`、復元/offline/test helperは同packet。975独立tests PASS、実science/Global Bundleへのport統合は未承認。Mandatory STOP。
+
+
+## 2026-10-19：Track B Global Bundle × API Port 人工E2E独立受入
+
+固定基点5e862a70、候補62967269/測定deade78aの[人工統合版・独立受入](research/track_b_g6_w2c_b3_closed_port_bundle_independent_local_20261019/README.md)。SOURCEは `src/trottertracks/algorithm_codesign/g6_w2c_b3_port_bundle_independent_v1/`、testは `tests/tracks/algorithm_codesign/test_g6_w2c_b3_port_bundle_independent_v1.py`、復元/offline/test helper・原証拠は同packet。53cases/45mutations/追加3を独立分類、独立1038tests PASS。実科学接続/採択は未承認。Mandatory STOP。

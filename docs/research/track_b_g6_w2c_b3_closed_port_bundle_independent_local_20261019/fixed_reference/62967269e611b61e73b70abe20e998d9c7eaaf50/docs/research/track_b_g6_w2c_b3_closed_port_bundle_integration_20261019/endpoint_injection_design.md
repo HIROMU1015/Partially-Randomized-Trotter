@@ -1,0 +1,11 @@
+# Versioned Endpoint注入口
+
+固定人工測定SOURCE：`deade78a19f5b23859d16816d3a7bfb37765dd80`。直接基点Global Bundle `d24cccbecdf0928fe977080dd7b28c591df0089e`、選択取得API Port `82896d53fa97235fa848d6c0833eb193af8b99d6`、既存独立受入 `6bffb5b5819918698b522270ff19b255766d3072`。Branch `track-b-g6-w2c-b3-closed-port-bundle-integration-20261019`。
+
+ARTIFICIAL_ONLY / UNADOPTED / EXECUTION_CLOSED。サーバーCodex主担当による技術自己検証。実G7/F3 import・科学bits・sampling・新科学計算・数値再解析・正式science/authority・native処理0。mandatory STOP。
+
+adapter.ArtificialFactoryは固定Port ArtificialEndpoint/ArtificialBitsだけを構築する。任意factory/callable・real module loaderは受け付けない。runtime/source/context seal、module location、taskの厳密canonical bytesをspawn constructorで確認。元Port6filesと旧Bundle52filesの公開hash58件をcontractへ明示固定し、改変後candidate再生成による再固定も拒否する。
+
+人工EndpointのOutcome/evidenceは固定Port由来。adapterはdispatch metadataと人工event tag PORT_V1/PORT_V2を付加し、元Portのconsume/result validationを保持する。tag変更は人工接続確認用のversioned fixture差で、科学law変更ではない。内側Portがsampleしたこと、Bitsが消費されたこと、保存raw/event/evidence/angle/hashが一致することをofflineの独立surrogate実装で全正常trial確認する。
+
+F01にはPortFailureのcategory/stage/reason/mandatory STOPと元例外を保存。generator/audit/angle/requery/invalid result/consume failureをzeroへ変更しない。固定Portの科学mappingやprecisionを黙って補完しない。canonical Bは元overlay、Full BはF3 facadeという静的差を保持するが、今回は両方人工surrogate。

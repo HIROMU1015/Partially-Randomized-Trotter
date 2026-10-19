@@ -1,0 +1,46 @@
+--- src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_offline_v1.py
++++ src/trottertracks/algorithm_codesign/g6_w2c_b3_port_bundle_v1/storage_consumer.py
+@@ -7,11 +7,11 @@
+ from pathlib import Path
+ from hashlib import sha256
+ import json,sqlite3
+-from . import g6_w2c_b3_offline_result as V
+-from . import g6_w2c_b3_parallel_verifier_core as G
+-from . import g6_w2c_b3_parallel_offline_adapter as A
+-from . import g6_w2c_b3_offline_cost as C
+-from . import g6_w2c_b3_bundle_trace_v1 as T
++from .. import g6_w2c_b3_offline_result as V
++from .. import g6_w2c_b3_parallel_verifier_core as G
++from .. import g6_w2c_b3_parallel_offline_adapter as A
++from .. import g6_w2c_b3_offline_cost as C
++from .. import g6_w2c_b3_bundle_trace_v1 as T
+ 
+ CLOSED=dict(content_adopted=False,run_ready=False,science_release=None,scientific_adoption=None,contract_grants_execution=False,mandatory_STOP=True,artificial_only=True,retry=0,resume=False)
+ 
+@@ -30,7 +30,7 @@
+ 
+ def identity(c,m,trusted,source_root):
+     V.require(_same(c,trusted),'TRUSTED_CANDIDATE_BINDING')
+-    V.require(c['schema']=='b3_storage_v2_global_bundle_candidate_v1'and m['schema']=='b3_bundle_artificial_manifest_v1','BUNDLE_SCHEMA')
++    V.require(c['schema']=='b3_closed_port_global_bundle_candidate_v1'and m['schema']=='b3_closed_port_global_bundle_manifest_v1','BUNDLE_SCHEMA')
+     for obj in (c,m):
+         for k,v in CLOSED.items():V.require(_same(obj[k],v),'CLOSED_FLAG:'+k)
+     V.require(c['production_gate']=='NO_IMPLEMENTED_SCIENCE_DISPATCH' and c['fixed_order']==['S','P1'],'PRODUCTION_GATE')
+@@ -41,7 +41,7 @@
+     V.require(m['candidate_binding']==_identity(c) and c['source_release_candidate']==_identity(c['source_pins'])and m['source_release_candidate']==c['source_release_candidate'],'GLOBAL_SOURCE_CONTRACT_ID')
+     p=c['proposal'];V.require(p['profile_n']==256 and p['cells']==16 and p['per_condition']==dict(correctness=256,baseline=4096,instrumented=4096,total=8448)and p['total_calls']==2*(16*16+16*256+16*256)==16896,'STATIC_16896_ARITHMETIC')
+     V.require(p['result_bytes']==1<<36 and p['log_bytes']==1<<28 and p['codec']=='fused' and p['observer']=='cached_all_call_return'and p['mode_is_seed_domain']is False,'FIXED_COMPARISON')
+-    V.require(m['seed_namespace']=='ARTIFICIAL_R1_PARALLEL'and m['codec']=='fused'and m['observer']==p['observer']and m['workers']==8 and m['start_method']=='spawn','ARTIFICIAL_PREFIX_CONDITION')
++    V.require(m['seed_namespace']=='ARTIFICIAL_API_BINDING_V1'and m['codec']=='fused'and m['observer']==p['observer']and m['workers']==8 and m['start_method']=='spawn','ARTIFICIAL_PREFIX_CONDITION')
+     V.require(m['global_scope'].startswith('ARTIFICIAL_ONLY/')and m['global_claim']==_identity(['ARTIFICIAL_ONLY',m['global_scope'],_identity(c)])and m['run_id']==_identity(['RUN',m['global_scope'],_identity(c)]),'GLOBAL_CLAIM_RUN_ID')
+     V.require(m['scientific_input']==_identity(c['scientific_reference']['scientific_reference']['input']),'SCIENTIFIC_INPUT_ID')
+     tasks,total=plan(m['profile_n']);V.require(16<=m['profile_n']<=256 and m['tasks']==tasks and m['planned']==total and m['static_scientific_candidate_calls']==16896,'GLOBAL_PLAN')
+@@ -115,7 +115,7 @@
+         observer_isolated_overhead_ns=None,parent_individual_IO_exclusive_cost_ns=None,unknown_cost_is_zero=False,coarse_and_fine_added=False,pair_or_IPC_added_to_outer=False,
+         fixed_S_then_P1_order_confound=True,both_fused_gain_unidentifiable=True,scientific_CPU_extrapolation=False)
+ 
+-def verify(root,trusted,source_root=None):
++def verify_storage(root,trusted,source_root=None):
+     root=Path(root);out=root/'output';source_root=Path(source_root or trusted['runtime_root'])
+     result=dict(schema='b3_bundle_offline_acceptance_v1',status='INCOMPLETE_EVIDENCE',issues=[],evidence_gaps=[],scientific_GO=False,mandatory_STOP=True)
+     try:

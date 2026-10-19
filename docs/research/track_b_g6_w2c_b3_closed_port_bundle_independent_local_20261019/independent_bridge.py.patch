@@ -1,0 +1,99 @@
+--- g6_w2c_b3_bundle_bridge_v1.py
++++ bridge.py
+@@ -1,6 +1,7 @@
+ """S -> P1 candidate: ONE coordinator, claim, call ledger and byte budget.
+ 
+-The only executable API binds built-in artificial factories. Production has no
++Derived from fixed Bundle Bridge V1 with versioned API-port injection.
++The only executable API binds the fixed artificial API port factories. Production has no
+ implementation, dispatch table, unlock flag, supplied factory or authority API.
+ """
+ from collections import Counter
+@@ -9,10 +10,10 @@
+ from hashlib import sha256
+ from pathlib import Path
+ import json,os,resource,sys,time
+-from . import g6_w2c_b3_pilot_storage_v2 as R
+-from . import g6_w2c_b3_bundle_contract_v1 as K
+-from . import g6_w2c_b3_bundle_fixture_v1 as F
+-from .g6_w2c_b3_bundle_store_v1 import FakeStore,Denied,private
++from .. import g6_w2c_b3_pilot_storage_v2 as R
++from . import contract as K
++from . import adapter as F
++from ..g6_w2c_b3_bundle_store_v1 import FakeStore,Denied,private
+ P,D,A=R.P,R.D,R.A
+ 
+ 
+@@ -23,21 +24,10 @@
+ 
+ 
+ def validate(c,m):
+-    if c!=K.candidate(c['runtime_root']):raise Denied('CANDIDATE_SOURCE_RUNTIME_BINDING')
+-    if Path(__file__).resolve()!=Path(c['runtime_root'])/K.SOURCE/'g6_w2c_b3_bundle_bridge_v1.py':raise Denied('LOADED_BRIDGE_LOCATION')
+-    for p,h in c['scientific_reference']['input_pins'].items():
+-        if sha256((Path(c['runtime_root'])/p).read_bytes()).hexdigest()!=h:raise Denied('FIXED_INPUT_BINDING:'+p)
+-    for p,h in c['source_pins'].items():
+-        module=sys.modules.get('trottertracks.algorithm_codesign.'+Path(p).stem)
+-        if module is not None and Path(module.__file__).resolve()!=Path(c['runtime_root'])/p:raise Denied('LOADED_SOURCE_BINDING:'+p)
+-    if any(n.rsplit('.',1)[-1]in P.FORBIDDEN for n in sys.modules):raise Denied('SCIENCE_IMPORT_FORBIDDEN')
+-    for k,v in K.CLOSED.items():
+-        if type(m.get(k))is not type(v) or m.get(k)!=v:raise Denied('MANIFEST_CLOSED_FLAG:'+k)
+-    expected=K.manifest(c,m['global_scope'],profile_n=m['profile_n'],modes=tuple(m['modes']),result_bytes=m['byte_limits']['result'],log_bytes=m['byte_limits']['log'],call_limit=m['call_limit'],condition_faults=m['condition_faults'],sync_failure=m['sync_failure'],parent_fault=m['parent_fault'])
+-    if expected!=m:raise Denied('GLOBAL_MANIFEST_BINDING')
+-    if not(0<=m['call_limit']<=m['planned']<=16896)or any(type(m['byte_limits'][k])is not int or not 0<m['byte_limits'][k]<=c['proposal'][k+'_bytes'] for k in ('result','log')):raise Denied('GLOBAL_CAP')
+-    if not m['global_scope'].startswith('ARTIFICIAL_ONLY/'):raise Denied('FAKE_SCOPE_REQUIRED')
+-    return K.digest(m)
++    F.PORT.install_guard()
++    if Path(__file__).resolve()!=Path(c['runtime_root'])/K.PKG/'bridge.py':raise Denied('LOADED_INTEGRATION_BRIDGE')
++    try:return K.guard(c,m)
++    except F.PORT.Rejected as exc:raise Denied("INTEGRATION_BINDING:"+str(exc)) from exc
+ 
+ 
+ class Fault:
+@@ -137,7 +127,7 @@
+ 
+ 
+ def execute_artificial(c,m,*,root,store,storage_fault=None):
+-    """No supplied endpoint/bits/real authority; ONE global fake claim per bundle."""
++    """Pinned artificial API-port injection; ONE global fake claim per bundle."""
+     binding=validate(c,m);root=private(root)
+     if type(store)is not FakeStore or store.root!=root:raise Denied('BUILTIN_FAKE_STORE_ONLY')
+     fault=storage_fault if storage_fault is not None else Fault()
+@@ -151,8 +141,8 @@
+         raise
+     out=root/'output';out.mkdir(exist_ok=False)
+     settings=P.Settings(mode='S',profile_n=m['profile_n'],codec='fused',workload='light',call_limit=m['call_limit'],result_bytes=m['byte_limits']['result'],log_bytes=m['byte_limits']['log'])
+-    runtime=A.manifest(c['runtime_root'],c['source_pins']);runtime['artificial_fixture']=dict(path=K.SOURCE+'g6_w2c_b3_bundle_fixture_v1.py',sha256=c['source_pins'][K.SOURCE+'g6_w2c_b3_bundle_fixture_v1.py'])
+-    factory=F.ArtificialFactory(runtime)
++    runtime=A.manifest(c['runtime_root'],c['source_pins']);runtime['artificial_fixture']=dict(path=K.PKG+'adapter.py',sha256=c['source_pins'][K.PKG+'adapter.py'])
++    factory=F.ArtificialFactory(runtime,dict(artificial_only=True,run_id=m['run_id'],tasks=m['tasks'],variant=m['port_variant'],port_faults=m['port_faults'],candidate_binding=K.digest(c),manifest_binding=binding,runtime_binding=K.digest(runtime),endpoint_binding=c['endpoint_binding']))
+     conditions=[];receipt=None;marker=None;late_errors=[]
+     try:
+         ctl=Coordinator(settings,out,m['tasks'],m['planned'],m['run_id'],fault,manifest=m);fault.control=ctl;ctl.parent_save_cost={}
+@@ -165,7 +155,7 @@
+             if not status['complete']:break
+         ctl.condition='SHARED';validate(c,m)
+         logical=ctl.report()
+-        _save(out,'summary.json',dict(schema='b3_bundle_summary_v1',run_id=m['run_id'],manifest_binding=binding,candidate_binding=K.digest(c),conditions=conditions,planned=m['planned'],reserved=logical['reserved'],started=logical['started_observed'],states=logical['states'],trace_prefix=dict(ctl.trace.prefix)),ctl,fault)
++        _save(out,'summary.json',dict(schema='b3_bundle_summary_v1',port_binding=m['endpoint_binding'],run_id=m['run_id'],manifest_binding=binding,candidate_binding=K.digest(c),conditions=conditions,planned=m['planned'],reserved=logical['reserved'],started=logical['started_observed'],states=logical['states'],trace_prefix=dict(ctl.trace.prefix)),ctl,fault)
+         _save(out,'diagnostic.json',dict(schema='b3_bundle_diagnostic_v1',complete=False,final_acceptance=False,run_id=m['run_id'],reserved=ctl.reservations,states=logical['states']),ctl,fault)
+     except BaseException as exc:
+         if ctl is None:
+@@ -186,7 +176,7 @@
+     # A condition projection is a useful artificial check, never a bundle success.
+     if base_complete:
+         try:
+-            receipt=dict(schema='b3_global_bundle_receipt_v1',run_id=m['run_id'],manifest_binding=binding,candidate_binding=K.digest(c),planned=m['planned'],reserved=ctl.reservations,completed=report['states']['COMPLETED'],conditions=['S','P1'],summary_sha256=sha256((out/'summary.json').read_bytes()).hexdigest(),state_sha256=sha256((out/'trial_states.bin').read_bytes()).hexdigest(),trace_prefix=dict(ctl.trace.prefix),storage_closed_before_receipt=True,claim_status=store.snapshot(m)['claim'][3],production_permission=False)
++            receipt=dict(schema='b3_global_bundle_receipt_v1',port_binding=m['endpoint_binding'],run_id=m['run_id'],manifest_binding=binding,candidate_binding=K.digest(c),planned=m['planned'],reserved=ctl.reservations,completed=report['states']['COMPLETED'],conditions=['S','P1'],summary_sha256=sha256((out/'summary.json').read_bytes()).hexdigest(),state_sha256=sha256((out/'trial_states.bin').read_bytes()).hexdigest(),trace_prefix=dict(ctl.trace.prefix),storage_closed_before_receipt=True,claim_status=store.snapshot(m)['claim'][3],production_permission=False)
+             receipt_sha=_save(out,'receipt.json',receipt,ctl,fault)
+             marker=dict(schema='b3_bundle_post_close_marker_v1',run_id=m['run_id'],manifest_binding=binding,receipt_sha256=receipt_sha,receipt_closed_before_marker=True)
+             _save(out,'marker.json',marker,ctl,fault)
+@@ -200,7 +190,7 @@
+     projected=dict(ctl.budget.observed);projected['result']=projected.get('result',0)+K.FINAL_SLOT+K.DELIVERY_SLOT+K.OBSERVATION_SLOT
+     budget=dict(limits=ctl.budget.limit,reserved=dict(ctl.budget.reserved),observed=projected,unknown_credit={k:ctl.budget.reserved[k]-projected.get(k,0)for k in ctl.budget.limit})
+     complete=base_complete and all(x==0 for x in budget['unknown_credit'].values())
+-    report.update(schema='b3_global_bundle_result_v1',complete=complete,manifest_binding=binding,candidate_binding=K.digest(c),run_id=m['run_id'],source_release_candidate=c['source_release_candidate'],conditions=conditions,output=budget,host_outer=host,
++    report.update(schema='b3_global_bundle_result_v1',port_binding=m['endpoint_binding'],complete=complete,manifest_binding=binding,candidate_binding=K.digest(c),run_id=m['run_id'],source_release_candidate=c['source_release_candidate'],conditions=conditions,output=budget,host_outer=host,
+         host_boundary='before claim through post-close receipt/marker; fixed final/delivery persistence is separately observed',
+         condition_parent_cpu_ns=sum(x['parent_cpu_ns']for x in conditions),condition_worker_cpu_ns=sum(x['worker_cpu_ns']for x in conditions),
+         fake_claim=snapshot,admission_stop_errors=store_errors,post_close_errors=late_errors,post_close_credits=list(ctl.post_close_credits),

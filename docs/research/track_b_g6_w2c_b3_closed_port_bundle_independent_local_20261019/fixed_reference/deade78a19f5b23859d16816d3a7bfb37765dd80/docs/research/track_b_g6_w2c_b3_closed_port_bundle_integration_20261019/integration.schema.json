@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Artificial closed API port global bundle manifest V1",
+  "type": "object",
+  "required": ["schema", "artificial_only", "run_ready", "content_adopted", "science_release", "scientific_adoption", "contract_grants_execution", "retry", "resume", "mandatory_STOP", "endpoint_binding", "port_variant", "port_faults"],
+  "properties": {
+    "schema": {"const": "b3_closed_port_global_bundle_manifest_v1"},
+    "artificial_only": {"const": true}, "run_ready": {"const": false}, "content_adopted": {"const": false},
+    "science_release": {"type": "null"}, "scientific_adoption": {"type": "null"},
+    "contract_grants_execution": {"const": false}, "retry": {"const": 0}, "resume": {"const": false},
+    "mandatory_STOP": {"const": true}, "port_variant": {"enum": ["PORT_V1", "PORT_V2"]},
+    "endpoint_binding": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "port_faults": {"type": "array"}
+  },
+  "$comment": "Full exact candidate/manifest/source/runtime validation is normative in versioned contract.guard and independent offline checker; schema alone grants no execution."
+}

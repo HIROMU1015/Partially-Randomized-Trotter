@@ -1,0 +1,8 @@
+import pathlib,json,sys,unittest,os
+T=pathlib.Path('/tmp/prt-b3-port-bundle-independent-local-20261019');c=json.loads((T/'config.json').read_text());R=T/'producer_runtime';D=T/'producer_test_matrix';sys.path[:0]=[str(R/'src'),str(R/'tests/tracks/algorithm_codesign')];sys.dont_write_bytecode=True
+os.environ['B3_BUNDLE_MATRIX']=str(D);os.environ['B3_BUNDLE_MUTATION_DIR']=str(T/'producer_unit_mutations')
+from trottertracks.algorithm_codesign.g6_w2c_b3_port_bundle_v1 import offline as O,contract as K
+matrix=json.loads((D/'matrix.json').read_text())['cases'];base=next(r for r in matrix if r['case']=='normal_bundle_small');root=pathlib.Path(base['root']);trusted=json.loads((root/'candidate_input.json').read_text());v=O.verify(root,trusted);assert v['status']=='VERIFIED_ARTIFICIAL_BUNDLE_COMPLETE',v['issues'];(D/'normal_bundle_small_verification.json').write_text(json.dumps(v,indent=2,default=str));(D/'trusted_candidate.json').write_text(json.dumps(trusted,indent=2))
+import test_g6_w2c_b3_port_bundle_v1 as m
+suite=unittest.defaultTestLoader.loadTestsFromModule(m);result=unittest.TextTestRunner(verbosity=2).run(suite);out=dict(run=result.testsRun,PASS=result.testsRun-len(result.failures)-len(result.errors)-len(result.skipped),FAIL=len(result.failures),ERROR=len(result.errors),SKIP=len(result.skipped),failures=[dict(test=t.id(),traceback=x) for t,x in result.failures],errors=[dict(test=t.id(),traceback=x) for t,x in result.errors],historical_metadata_tests_are_not_fresh_case_reexecution=True,local_cases=3,independent_acceptance=False)
+(T/'producer134.json').write_text(json.dumps(out,indent=2));print(out)
