@@ -1,3 +1,5 @@
+追記（2026-10-19）：利用者の別途明示承認により固定92軌道をone-shot実行し、[P独立確認・終了監査を完了](track_a_h2_p_completed_20261019.md)した。2/2の点比較方向を再現しmandatory STOP。以下は最終seal時点の記録である。
+
 # H2 P：最終SOURCE・独立seed・予算・one-shot契約の技術seal完了
 
 2026-10-19（Asia/Tokyo）。**FINAL_SEAL_MANDATORY_STOP。Pの科学実行は未承認・未実施。**
