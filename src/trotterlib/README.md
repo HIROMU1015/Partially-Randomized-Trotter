@@ -1,3 +1,7 @@
+H2 S_STATS完了（2026-10-19）：SOURCEe0b959e8…で保存D/Aの24 scenario・2方向・12感度を1 pass実行。native exit0・同一親wait4・終了監査PASS、基準f4/差.02の提案n80/12、P予算案92軌道/184軸。人工/回帰31件・無効grant2入口拒否PASS、旧7,219レコード保全。両探索n8はS0_ONLY8/8で母平均/実power保証なし。raw再集計・sampling/compile/P・新seed0、P最終sealはn採用指示待ち、新規pushなし、mandatory STOP。[結果・固定条件・感度・次の担当](../../docs/research/track_a_h2_s_stats_completed_20261019.md)。以下は各時点の履歴。
+
+S_STATSは保存scalarのみの設計であり、library・native DF/RTE・compiler実装は変更しない。専用adapterと人工テストは上記完了報告を参照。
+
 H2 A66完了（2026-10-19）：科学SOURCEde72e5d4…、新64 signal＋保存FP2、各新n8の528軌道/1,056軸、control264/oracle66・primitive90、会計1 pass/330行を保存。native exit0・同一親wait4・592 worker全回収、wall75.489秒、保存bytes監査PASS。5精度の点比較はPR/PF<1だが、winner2候補はいずれもS0_ONLY 8/8・母平均保証なし。F/FP/D・旧STOP/予約・最終sealを保全。S_STATS/P未実行、新規pushなし、mandatory STOP。[完了結果・条件・限界・次の担当](../../docs/research/track_a_h2_a_completed_20261019.md)。以下は各時点の履歴。
 
 今回のAは既存H2 adapter・固定native/RTE/compilerを実行し、科学library・元SOURCEの変更はない。追加auditorはmetadata専用。

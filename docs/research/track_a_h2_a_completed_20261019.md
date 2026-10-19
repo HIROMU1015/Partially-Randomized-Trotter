@@ -1,3 +1,5 @@
+追記（2026-10-19）：利用者がAを受け入れ、S_STATSの準備から数値実行まで承認した。[S_STATS完了結果](track_a_h2_s_stats_completed_20261019.md)では24 scenarioを1 pass、基準n80/12の案を保存しmandatory STOP。以下はA終了時点の記録である。
+
 # H2 A66：新n8のone-shot実行・終了監査完了（2026-10-19）
 
 **COMPLETE_MANDATORY_STOP。Aを1回実行し、native exit0・同一親wait4・592 worker全回収・保存bytes監査がPASS。**
