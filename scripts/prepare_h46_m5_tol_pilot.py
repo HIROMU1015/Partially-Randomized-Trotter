@@ -19,7 +19,7 @@ def seal(path, role):
     return dict(path=str(path), role=role, bytes=path.stat().st_size, sha256=c.sha(path))
 
 
-def prepare(old_bundle_path, fp_config_path, destination, source):
+def prepare(old_bundle_path, fp_config_path, destination, source, extra_seed_receipts=()):
     destination = Path(destination).resolve()
     c.require(not destination.exists(), 'NEW_PREPARATION_DIRECTORY_REQUIRED')
     for path in c.SOURCE_PATHS:
@@ -76,6 +76,12 @@ def prepare(old_bundle_path, fp_config_path, destination, source):
                 excluded.update(data['values'])
             else:
                 excluded.update(v for lane in data['lanes'].values() for task in lane.values() for v in task.values())
+    for path in extra_seed_receipts:
+        path = str(Path(path).resolve())
+        if path not in seed_receipts:
+            data = c.read(path)
+            excluded.update(v for lane in data['lanes'].values() for task in lane.values() for v in task.values())
+            seed_receipts.append(path)
     seeds = c.registry(source, excluded)
     # All molecular operations remain behind authorization; this is seed metadata only.
     destination.mkdir(parents=True, exist_ok=False)
@@ -141,8 +147,9 @@ def main():
     p.add_argument('--fp-config', type=Path, required=True)
     p.add_argument('--destination', type=Path, required=True)
     p.add_argument('--source', required=True)
+    p.add_argument('--extra-seed-receipt', type=Path, action='append', default=[])
     a = p.parse_args()
-    print(json.dumps(prepare(a.old_bundle, a.fp_config, a.destination, a.source)))
+    print(json.dumps(prepare(a.old_bundle, a.fp_config, a.destination, a.source, a.extra_seed_receipt)))
 
 
 if __name__ == '__main__':

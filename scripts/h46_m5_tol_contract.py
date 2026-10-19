@@ -107,6 +107,16 @@ _verify_original = _legacy['verify_seals']
 
 def verify_seals(config):
     # Includes fixed Git bytes, every used input/provider/runtime byte, and seeds.
+    sealed = {str(Path(e['path']).resolve()): e for e in config['sealed_files']}
+    require(len(sealed) == len(config['sealed_files']), 'UNIQUE_SEALED_PATHS')
+    for entry in config['inputs'].values():
+        expected = sealed.get(str(Path(entry['path']).resolve()))
+        require(expected is not None and expected['sha256'] == entry['sha256']
+                and expected['bytes'] == entry['bytes'], 'USED_INPUT_PATH_MUST_BE_SEALED')
+    used = [config['registry_path'], config['excluded_seed_path']]
+    used += [ROOT/p for p in SOURCE_PATHS]
+    require(all(str(Path(p).resolve()) in sealed for p in used), 'USED_SOURCE_SEED_PATH_MUST_BE_SEALED')
+    require(config['runtime']['provider_root'] == config['provider_root'], 'PROVIDER_PATH_BINDING')
     _verify_original(config)
     validate_inputs(config)
 

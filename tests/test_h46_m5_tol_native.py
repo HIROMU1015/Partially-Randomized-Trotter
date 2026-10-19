@@ -139,6 +139,18 @@ class MetadataTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 c.reserve(cfg, old_c.scope(old_c.LANES[0])['tasks'][0], 'sine', 'fp')
 
+    def test_used_input_path_must_belong_to_sealed_inventory(self):
+        cfg = dict(sealed_files=[dict(path='/tmp/frozen_input', sha256='a'*64, bytes=4)],
+                   inputs={'snapshot':dict(path='/tmp/other_input', sha256='a'*64, bytes=4)})
+        with patch.object(c, '_verify_original', side_effect=AssertionError('reject before other reads')):
+            with self.assertRaisesRegex(ValueError, 'USED_INPUT_PATH_MUST_BE_SEALED'):
+                c.verify_seals(cfg)
+
+    def test_duplicate_sealed_path_rejected(self):
+        cfg = dict(sealed_files=[dict(path='/tmp/frozen_input'), dict(path='/tmp/frozen_input')])
+        with self.assertRaisesRegex(ValueError, 'UNIQUE_SEALED_PATHS'):
+            c.verify_seals(cfg)
+
 
 class ProcessTests(unittest.TestCase):
     def artificial_pool(self, failure=None):
