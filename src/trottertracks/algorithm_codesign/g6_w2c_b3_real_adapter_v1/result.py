@@ -250,3 +250,50 @@ def angle_binding(adapted, *, requery_input, requery_event, angle_record, synthe
                 angle=C.convert(angle_record,source_identity=adapted['source_identity']),
                 synthetic=synthetic,mathematical_precision_verified=False,
                 terminal_STOP=False)
+
+
+def canonical_audit(seal, *, arm, identity, state_id, completed_calls_before):
+    """Preserve the actual driver AuditParity Seal codec, distinct from F3."""
+    C.need(type(seal) is C.DriverDocument,'EXACT_DRIVER_AUDIT_DOCUMENT')
+    data=seal.read()
+    C.need(type(data) is dict and set(data)=={'arm','identity','state_id','payload',
+           'completed_calls_before','confidence_certified'},'AUDIT_SEAL_FIELDS')
+    C.need(type(completed_calls_before) is int and completed_calls_before>=0 and
+           type(data['completed_calls_before']) is int and data['completed_calls_before']==completed_calls_before,
+           'AUDIT_CALL_ORDER')
+    C.need(data['arm']==arm and data['identity']==identity and data['state_id']==state_id and
+           data['confidence_certified'] is False,'AUDIT_SEAL_BINDING')
+    return dict(schema='b3_driver_audit_sidecar_v1',original_driver_seal=seal.transport(),
+                normalized_document=C.Document.create(data).transport(),
+                earlier_tuple_or_key_types='NOT_RECOVERABLE_FROM_DRIVER_BYTES_ALONE',
+                actual_scientific_audit_verified=False)
+
+
+def canonical_angle_binding(adapted, *, requery_input, requery_event, angle_record,
+                            input_payload, policy_payload, synthetic):
+    """Canonical LegacyEndpoint context is not the Full F3 context.
+
+    Verify and retain the original context/bytes. A separate temporary normalized
+    document reuses structural enclosure checks; it never replaces the original.
+    """
+    C.need(type(angle_record) is C.Document,'EXACT_ANGLE_DOCUMENT')
+    source=C.restore(adapted['codec'],source_identity=adapted['source_identity']).read()
+    C.need(source['schema']=='g7_observation_candidate_v1' and source['arm']!='full_return',
+           'CANONICAL_ANGLE_SOURCE')
+    C.need(type(input_payload) is dict and type(policy_payload) is dict,'CANONICAL_CONTEXT_PAYLOADS')
+    data=angle_record.read();event=adapted['event']
+    event_id=C.digest_bytes(C.driver_canonical(event).encode())
+    original_context=dict(event_id=event_id,input=input_payload,policy=policy_payload,
+                          preflight=source['preflight_id'])
+    C.need(C.canonical(data['context'])==C.canonical(original_context),'CANONICAL_ANGLE_CONTEXT')
+    normalized=deepcopy(data)
+    normalized['context']={**{k:source[k] for k in (*IDS,'sigma')},'event_id':adapted['event_identity'],
+                           'parent':event['word'],'child':event['child']}
+    result=angle_binding(adapted,requery_input=requery_input,requery_event=requery_event,
+                         angle_record=C.Document.create(normalized),synthetic=synthetic)
+    result.update(angle=C.convert(angle_record,source_identity=adapted['source_identity']),
+                  angle_context_kind='CANONICAL_LEGACY',angle_original_event_id=event_id,
+                  canonical_input_binding=C.Document.create(input_payload).transport(),
+                  canonical_policy_binding=C.Document.create(policy_payload).transport(),
+                  requery_callable_arguments=(source['group_index'],event['raw_word'],event['child']))
+    return result

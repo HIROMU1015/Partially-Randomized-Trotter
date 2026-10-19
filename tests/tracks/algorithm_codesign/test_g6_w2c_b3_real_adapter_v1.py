@@ -116,7 +116,10 @@ class Results(unittest.TestCase):
                         r,tr=X.build(b,trial_id=tid,arm=arm);a=X.adapt(r,trial_id=tid,arm=arm,layer=layer)
                         seen.add(a['classification']);C.restore(a['codec'],source_identity=X.SOURCE)
                         if a['event'] is not None and layer=='B':
-                            q,ang=X.synthetic_angle(a);out=R.angle_binding(a,requery_input=q,requery_event=a['event'],angle_record=ang,synthetic=True)
+                            q,ang=X.synthetic_angle(a)
+                            out=(R.canonical_angle_binding(a,requery_input=q,requery_event=a['event'],angle_record=ang,
+                                input_payload={'id':'ARTIFICIAL_INPUT_V1'},policy_payload={'id':'ARTIFICIAL_PRECISION_V1'},synthetic=True)
+                                if arm!='full_return' else R.angle_binding(a,requery_input=q,requery_event=a['event'],angle_record=ang,synthetic=True))
                             self.assertFalse(out['mathematical_precision_verified'])
                     self.assertIn('ACCEPTED',seen)
                     if arm=='full_return':self.assertEqual(seen,{'RAW_NONREDUCED','COIN_REJECT','ACCEPTED'})
@@ -288,3 +291,26 @@ class AdditionalInterfaces(unittest.TestCase):
             def read(self):raise AssertionError('MUST_NOT_CALL')
         with self.assertRaises(C.Rejected):R.adapt_g7(None,observation=Foreign(),expected={},arm='ordinary')
         with self.assertRaises(C.Rejected):R.adapt_f3(Foreign(),expected={})
+
+class CanonicalEvidence(unittest.TestCase):
+    def test_driver_document_and_audit_seal(self):
+        value=dict(arm='ordinary',identity='IDENTITY',state_id='STATE',payload='ORIGINAL_F3_BYTES',
+                   completed_calls_before=0,confidence_certified=False)
+        seal=C.DriverDocument.create(value);a=R.canonical_audit(seal,arm='ordinary',identity='IDENTITY',state_id='STATE',completed_calls_before=0)
+        self.assertEqual(a['original_driver_seal'],seal.transport());self.assertEqual(seal.read(),value)
+    def test_wrong_driver_digest(self):
+        with self.assertRaises(C.Rejected):C.DriverDocument('{}','0'*64).read()
+    def test_wrong_audit_call_order(self):
+        seal=C.DriverDocument.create(dict(arm='ordinary',identity='I',state_id='S',payload=None,completed_calls_before=True,confidence_certified=False))
+        with self.assertRaises(C.Rejected):R.canonical_audit(seal,arm='ordinary',identity='I',state_id='S',completed_calls_before=1)
+    def test_actual_canonical_angle_context(self):
+        _,_,_,a=obtain('ordinary');query,angle=X.synthetic_angle(a)
+        out=R.canonical_angle_binding(a,requery_input=query,requery_event=a['event'],angle_record=angle,
+            input_payload={'id':'ARTIFICIAL_INPUT_V1'},policy_payload={'id':'ARTIFICIAL_PRECISION_V1'},synthetic=True)
+        self.assertEqual(out['angle']['f3'],angle.transport())
+        self.assertEqual(out['requery_callable_arguments'],(0,(0,0),2))
+        with self.assertRaises(C.Rejected):R.angle_binding(a,requery_input=query,requery_event=a['event'],angle_record=angle,synthetic=True)
+    def test_canonical_context_input_mismatch(self):
+        _,_,_,a=obtain('ordinary');query,angle=X.synthetic_angle(a)
+        with self.assertRaises(C.Rejected):R.canonical_angle_binding(a,requery_input=query,requery_event=a['event'],angle_record=angle,
+            input_payload={'id':'WRONG'},policy_payload={'id':'ARTIFICIAL_PRECISION_V1'},synthetic=True)

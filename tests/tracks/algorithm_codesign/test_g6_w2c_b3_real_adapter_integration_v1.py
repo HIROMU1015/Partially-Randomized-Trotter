@@ -57,7 +57,9 @@ for name in ['normal_n16','normal_n256']+TECHNICAL+INCOMPLETE:
         row=self.rows[name];want='VERIFIED_ARTIFICIAL_BUNDLE_COMPLETE' if name.startswith('normal_') else 'TECHNICAL_FAILURE' if name in TECHNICAL else 'INCOMPLETE_EVIDENCE'
         self.assertEqual(row.get('verification_status'),want,row)
         self.assertEqual(row.get('verification_issues'),[])
-        if 'fault' in row['spec']:self.assertEqual(row['fault_hits'],1)
+        if 'fault' in row['spec']:
+            if 'fault_hits' in row:self.assertEqual(row['fault_hits'],1)
+            else:self.assertIn('ARTIFICIAL_STORAGE_FAULT:'+row['spec']['fault']['point'],row['exception']['reason'])
     setattr(Integration,'test_matrix_'+name,test)
 
 

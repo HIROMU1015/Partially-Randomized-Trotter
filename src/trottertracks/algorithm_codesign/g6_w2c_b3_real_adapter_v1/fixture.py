@@ -82,4 +82,8 @@ def synthetic_angle(adapted):
     query=dict(word=e['word'],child=e['child'])
     if source['schema']=='g7_observation_candidate_v1' and source['arm']!='full_return':
         query.update(group_index=source['group_index'],raw_word=e['raw_word'])
+    if source['schema']=='g7_observation_candidate_v1' and source['arm']!='full_return':
+        data=record.read();data['context']=dict(event_id=C.digest_bytes(C.driver_canonical(e).encode()),
+            input={'id':'ARTIFICIAL_INPUT_V1'},policy={'id':'ARTIFICIAL_PRECISION_V1'},preflight=source['preflight_id'])
+        record=C.Document.create(data)
     return query,record

@@ -36,7 +36,7 @@ class ArtificialFactory:
 class Endpoint:
     def __init__(self,task,settings,context):
         self.task,self.settings,self.context=deepcopy(task),settings,deepcopy(context)
-        self.stopped=False;self.last=None;self.adapted=None
+        self.stopped=False;self.last=None;self.adapted=None;self.audit_calls=0
 
     def shared_identity(self):
         return D.identity(dict(schema='ARTIFICIAL_ADAPTER_V1',task=self.task,
@@ -84,6 +84,14 @@ class Endpoint:
                 adapted_digest=C.fingerprint(a),consumption_digest=C.fingerprint(consumption))
             evidence=dict(artificial=True,origin='SYNTHETIC_DOCUMENTS_NOT_REAL_G7_F3',
                           consumption=consumption,adapted=a,dispatch=dispatch)
+            if layer=='B':
+                identity=C.fingerprint(dict(arm=arm,source=X.SOURCE))
+                state=C.fingerprint(dict(artificial=True,arm=arm,layer=layer))
+                seal=C.DriverDocument.create(dict(arm=arm,identity=identity,state_id=state,payload=record.document,
+                    completed_calls_before=self.audit_calls,confidence_certified=False))
+                evidence['audit']=R.canonical_audit(seal,arm=arm,identity=identity,state_id=state,
+                    completed_calls_before=self.audit_calls)
+                self.audit_calls+=1
             self.last=D.Outcome(a['driver_kind'],a['event'],evidence);self.last.validate()
             return self.last
         except BaseException as exc:
@@ -98,6 +106,10 @@ class Endpoint:
             C.need(result is self.last and self.task['layer']=='B','ANGLE_RESULT_IDENTITY')
             self.fault('angle');self.fault('requery')
             query,angle=X.synthetic_angle(self.adapted)
+            if self.task['arm']!='full_return':
+                return R.canonical_angle_binding(self.adapted,requery_input=query,requery_event=result.event,
+                    angle_record=angle,input_payload={'id':'ARTIFICIAL_INPUT_V1'},
+                    policy_payload={'id':'ARTIFICIAL_PRECISION_V1'},synthetic=True)
             return R.angle_binding(self.adapted,requery_input=query,requery_event=result.event,
                                    angle_record=angle,synthetic=True)
         except BaseException as exc:

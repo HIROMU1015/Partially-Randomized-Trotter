@@ -197,3 +197,37 @@ def restore(sidecar, *, source_identity):
     need(json_bytes(sidecar) == json_bytes(convert(record, source_identity=source_identity)),
          'CODEC_SIDECAR_MISMATCH')
     return record
+
+
+@dataclass(frozen=True)
+class DriverDocument:
+    """Already-normalized driver bytes; earlier tuple/key types are unknown."""
+    text: str
+    digest: str
+
+    @classmethod
+    def create(cls, value):
+        text=driver_canonical(value)
+        return cls(text,digest_bytes(text.encode()))
+
+    def read(self):
+        need(type(self.text) is str and type(self.digest) is str and
+             digest_bytes(self.text.encode())==self.digest,'DRIVER_DOCUMENT_DIGEST')
+        def decode(value):
+            if value is None or type(value) in (str,bool):return value
+            if type(value) is list:return [decode(v) for v in value]
+            need(type(value) is dict,'DRIVER_NONEXACT_NUMBER')
+            if set(value)=={'int'}:return _hex(value['int'])
+            if set(value)=={'rat'}:
+                pair=value['rat'];need(type(pair) is list and len(pair)==2,'DRIVER_RATIONAL_PAIR')
+                n,d=map(_hex,pair);need(d>0,'DRIVER_DENOMINATOR');result=Fraction(n,d)
+                need((result.numerator,result.denominator)==(n,d),'DRIVER_RATIONAL_CANONICAL')
+                return result
+            return {k:decode(v) for k,v in value.items()}
+        value=decode(plain(self.text))
+        need(driver_canonical(value)==self.text,'DRIVER_CANONICAL_BYTES')
+        return value
+
+    def transport(self):
+        self.read()
+        return dict(text=self.text,digest=self.digest)

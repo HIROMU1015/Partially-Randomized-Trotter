@@ -80,7 +80,14 @@ def reference(arm,axis,counter,tid,layer):
             basis={'scope':'ARTIFICIAL_SHAPE_ONLY_NOT_AN_ATAN_ENCLOSURE'}))
         query=dict(word=event['word'],child=2)
         if arm!='full_return':query.update(group_index=0,raw_word=raw)
-        angle=R.angle_binding(adapted,requery_input=query,requery_event=event,angle_record=a,synthetic=True)
+        if arm!='full_return':
+            data=a.read();data['context']=dict(event_id=C.digest_bytes(C.driver_canonical(event).encode()),
+                input={'id':'ARTIFICIAL_INPUT_V1'},policy={'id':'ARTIFICIAL_PRECISION_V1'},preflight=ids['preflight_id'])
+            angle=R.canonical_angle_binding(adapted,requery_input=query,requery_event=event,
+                angle_record=C.Document.create(data),input_payload={'id':'ARTIFICIAL_INPUT_V1'},
+                policy_payload={'id':'ARTIFICIAL_PRECISION_V1'},synthetic=True)
+        else:
+            angle=R.angle_binding(adapted,requery_input=query,requery_event=event,angle_record=a,synthetic=True)
     return adapted,consumption,angle,counter
 
 
@@ -127,6 +134,14 @@ def verify(root,trusted,source_root=None):
                     event_digest=evhash,adapted_digest=C.fingerprint(a),consumption_digest=C.fingerprint(consumption))
                 evidence=dict(artificial=True,origin='SYNTHETIC_DOCUMENTS_NOT_REAL_G7_F3',consumption=consumption,
                               adapted=a,dispatch=dispatch)
+                if layer=='B':
+                    identity=C.fingerprint(dict(arm=arm,source='ARTIFICIAL_SOURCE_G7_F3_SHAPED_V1'))
+                    state=C.fingerprint(dict(artificial=True,arm=arm,layer=layer))
+                    original=(a['g7_observation']['f3']['document'] if arm=='full_return' and layer=='A' else a['codec']['f3']['document'])
+                    calls=idx+(task['n'] if axis=='Y' else 0)
+                    seal=C.DriverDocument.create(dict(arm=arm,identity=identity,state_id=state,payload=original,
+                        completed_calls_before=calls,confidence_certified=False))
+                    evidence['audit']=R.canonical_audit(seal,arm=arm,identity=identity,state_id=state,completed_calls_before=calls)
                 V.require(p['kind']==kind and V.event_hash(p)==evhash,'ADAPTER_EVENT_DIGEST')
                 if 'evidence' in p:
                     V.require(V.identity(p['evidence'])==V.identity(evidence),'ADAPTER_FULL_EVIDENCE_CODEC_DIGEST')
