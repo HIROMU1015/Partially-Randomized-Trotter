@@ -15,6 +15,7 @@ import traceback
 import pf_direct_compile_contract as c
 import pf_direct_compile_adapter as a
 import pf_direct_execution as e
+from pf_direct_retry_support import array_record, scalar_value
 
 
 def load_context(system, task, oracle, journal):
@@ -31,7 +32,7 @@ def load_context(system, task, oracle, journal):
         from trotterlib.pr2_s0_s1_validation import _state_hash
         receipt=c.read_json(paths['tol_receipt']);c.require(e.sha(paths['tol_snapshot'])==receipt['sha256'],'SAVED_SNAPSHOT_SHA')
         with np.load(paths['tol_snapshot'],allow_pickle=False) as archive:arrays={k:archive[k] for k in archive.files}
-        observed={k:dict(shape=list(v.shape),dtype=v.dtype.str,sha256=__import__('hashlib').sha256(np.ascontiguousarray(v).tobytes()).hexdigest()) for k,v in arrays.items()}
+        observed={k:array_record(v,np) for k,v in arrays.items()}
         c.require(observed==receipt['arrays'],'SAVED_ARRAYS')
         ham=DFHamiltonian(float(arrays['constant']),arrays['one_body'],arrays['lambdas'],tuple(arrays['g_matrices']),receipt['hamiltonian_metadata'])
         sector=PhysicalSector.spin_sector(n_qubits=n,nelec_alpha=n//4,nelec_beta=n//4)
@@ -94,10 +95,7 @@ def load_context(system, task, oracle, journal):
         and row['cell']['prefix']==p and row['cell']['formula']==task['PF'],'SAVED_ORACLE_IDENTITY')
     scalar=float(ham.constant);receipt=row.get('scalar_receipt') or oracle.get('saved_outer_scalar')
     if method=='B0I':
-        c.require(isinstance(receipt,dict),'OWN_PREFIX_SCALAR_REQUIRED')
-        if 'scalar' in receipt:scalar=float(receipt['scalar'])
-        else:scalar=scalar+float(receipt['C'])
-        c.require(math.isfinite(scalar),'SAVED_SCALAR_FINITE')
+        scalar=scalar_value(scalar,receipt)
     import qiskit
     from trotterlib.rte_compiled_cost import compiler_settings_hash
     cp=cfg['compiler_options'];c.require(qiskit.__version__=='1.3.0','QISKIT_VERSION')
@@ -146,9 +144,9 @@ class ProductionKernel(a.NativeKernel):
             native_exit_code=None,reaped=False)
 
 
-def run(spec_path,grant_path,system,cid,output):
+def run(spec_path,grant_path,system,cid,output,*,authorize=e.authorize):
     spec,grant=c.read_json(spec_path),c.read_json(grant_path)
-    _,selected=e.authorize(spec,grant)
+    _,selected=authorize(spec,grant)
     pair=[r for r in selected if (r['system'],r['candidate_id'])==(system,cid)]
     c.require(len(pair)==2,'PAIR_NOT_APPROVED')
     c.require(Path(output)==Path(spec['output_root'])/(system+'__'+cid),'OWNED_OUTPUT_PATH')
