@@ -1,3 +1,7 @@
+## 2026-10-19 H4/H6/H8論文証拠統合（既存結果のみ）
+
+[採用結果・証拠統合・Figure 2更新案](research/track_a_h468_paper_evidence_integration_20261019.md)。H4 DF10 Pを正式採用（ε=.05はNOT_REPRODUCED/PF低費用、.0005はREPRODUCED/PR低費用）。H6/H8と独立確認6条件の主表案を整理。GitHub固定10資料＋9 SOURCE、47資料・SOURCE87hashを照合し、旧manifest/CEM/ledgerを保存した新versionを作成。H4 DF12 legacy・探索n8/保存FP n32を混合せず、H8 n48は既存Mechanismと同一証拠のalias。H8詳細公開監査と全入力生成規則の同一性は未確認。Figure 2原本34ファイル不変、数値更新は別承認。新規科学計算・統計解析0、最終freeze/詳細科学レビュー未開始。文書統合後mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-18 A_COST 3系完了・保存B/D解析結果
 
 [結果・測定表・来歴](research/track_a_pr_cost_batch_completed_results_20261018.md)。H4/H6/H8 A_COST各16候補×n8、計384軌道・768軸・48代表controlが完了。保存D3件は計7,160行/120比較、B3件は限定診断まで完了（無条件平均null）。H8は元16代表を再利用、SOURCE87f1f0d5…/15workerで残112軌道を約56分、21:14:13 JSTにnative exit0・全回収。H4は1Å/legacy DF12、H6 DF19、H8 DF28で系列を分離。新Aのn8を用いた新総費用・ランキングは未実施、旧STOP/未完了予約/他研究は保全。以下は各時点の履歴。

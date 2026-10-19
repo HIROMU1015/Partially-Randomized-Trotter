@@ -1,3 +1,7 @@
+## 2026-10-19 H4/H6/H8論文証拠統合（既存結果のみ）
+
+[採用結果・証拠統合・Figure 2更新案](../../docs/research/track_a_h468_paper_evidence_integration_20261019.md)。H4 DF10 Pを正式採用（ε=.05はNOT_REPRODUCED/PF低費用、.0005はREPRODUCED/PR低費用）。H6/H8と独立確認6条件の主表案を整理。GitHub固定10資料＋9 SOURCE、47資料・SOURCE87hashを照合し、旧manifest/CEM/ledgerを保存した新versionを作成。H4 DF12 legacy・探索n8/保存FP n32を混合せず、H8 n48は既存Mechanismと同一証拠のalias。H8詳細公開監査と全入力生成規則の同一性は未確認。Figure 2原本34ファイル不変、数値更新は別承認。新規科学計算・統計解析0、最終freeze/詳細科学レビュー未開始。文書統合後mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-18 H8 A_COST：候補単位の並列投入・引継ぎ準備
 
 [実装・検査・未seal草案](../../docs/research/track_a_h8_pr_candidate_parallel_readiness_20261018.md)。SOURCE `87f1f0d528478ad212ba98159db06eec3c78433e`。代表軌道のnative/control合格ごとに同候補の残り7軌道を投入し、元128taskのseedを保持する継続adapter。人工24＋既存承認境界18＋無効CLI2件PASS。現在のrunは保全・継続、新方式launch0、有効grant0。最終receipt受領/静止観測後のsealと切替指示は未実施。以下は履歴。

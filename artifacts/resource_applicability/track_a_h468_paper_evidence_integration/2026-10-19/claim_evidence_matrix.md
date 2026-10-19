@@ -1,0 +1,20 @@
+# Claim–Evidence Matrix：履歴保存とscope別採用
+
+旧H6採用版8行の全cellをCSV先頭に保持する。CE1–CE6の完成Mechanismに基づく現在の補足はclaim_evidence_matrix_current_overlay.jsonを参照。CE_M_LEGACY_H4_PはDF12のみ、CE_M_A82_FACTORSは元のn32機構分析のみ。H4 DF10 Pへ移さない。全行は有限標本・固定比較scopeに限定し、母平均保証やCOMMON_CORE_READYを認定しない。
+
+|ID|主張候補（保存／採用）|証拠の範囲と限界|
+|---|---|---|
+|CE1|決定論側の比較対象を強化するとPRの点費用利益が縮小する|全候補直接実測・母平均最良・モデル誤差の全domain保証なし。H4は比較した実測subset16に限定。|
+|CE2|PR側の探索domain拡張で、特にH8両端の点費用の結論が変わる|探索選択効果、rare tail、H8原profile bytes未確認。p7q16はq/r schedule端でr固定q走査ではない。母平均で符号が変わることは未認定。|
+|CE3|中間精度でのPR点費用削減は強化した比較集合でも残る|L2全primitive展開/数値TierR未完了、未観測tail、selection-adjusted保証なし。中間winnerにもp/K/次数別prefix境界があり、一括内部判定は不成立。|
+|CE4|回路費用とshot負担のトレードオフが勝敗を左右する|機構図の比の正式な新算出は別承認。常にPRの1回路が小さい・因果寄与を新たに定量分解したという主張は支持しない。|
+|CE5|signed／経験的非相殺の会計区分が結果に影響する|H6全登録非相殺のPR/PF比はnull。旧D unresolved=[]はeligible:nullのtruthinessによる検出漏れで、full-domain完了証拠にはならない。|
+|CE6|結果は有限時間signal・保存DF・P=0・Qiskit compiled RZ費用に限られる|保存DFから元電子Hamiltonianへの誤差、長時間/新geometry/energy/RPE全round、母平均最適性、非Clifford感度、H8原profile bytes。|
+|CE_H6P_Q2|H6の事前固定したPR不利方向を独立標本の点費用で再現した|H6P_POPULATION;H6P_RARE_SUPPORT;H6P_EMPIRICAL_BIAS。CI/p値は保存null。厳密母平均順位・全support分散精度・全候補最適性・定量機構説明を認定しない。|
+|CE_H6P_Q8|H6の事前固定したPR有利方向を独立標本の点費用で再現した|H6P_POPULATION;H6P_RARE_SUPPORT;H6P_EMPIRICAL_BIAS。CI/p値は保存null。厳密母平均順位・全support分散精度・全候補最適性・定量機構説明を認定しない。|
+|CE_H4_DF10_P_1|H4 ε=0.05の固定独立標本ではPFが低費用。方向判定NOT_REPRODUCED。|FINITE_SAMPLE_POINT;NO_POPULATION_MEAN_GUARANTEE;UNOBSERVED_RARE_COST_UNKNOWN;NO_COHORT_POOLING;EMPIRICAL_BIAS_ALLOWANCE;ANALYTIC_SHOTS;COMPILED_RZ_NOT_FT;P0;NO_GLOBAL_OPTIMUM;INPUT_RULE_EQUIVALENCE_NOT_VERIFIED;NOT_FINAL_FREEZE|
+|CE_H4_DF10_P_2|H4 ε=0.0005の固定独立標本ではPRが低費用。方向判定REPRODUCED。|FINITE_SAMPLE_POINT;NO_POPULATION_MEAN_GUARANTEE;UNOBSERVED_RARE_COST_UNKNOWN;NO_COHORT_POOLING;EMPIRICAL_BIAS_ALLOWANCE;ANALYTIC_SHOTS;COMPILED_RZ_NOT_FT;P0;NO_GLOBAL_OPTIMUM;INPUT_RULE_EQUIVALENCE_NOT_VERIFIED;NOT_FINAL_FREEZE|
+|CE_H8_DF28_P_1|H8 ε=0.05の固定独立標本ではPRが低費用。方向判定POINT_REPRODUCED。|FINITE_SAMPLE_POINT;NO_POPULATION_MEAN_GUARANTEE;UNOBSERVED_RARE_COST_UNKNOWN;NO_COHORT_POOLING;EMPIRICAL_BIAS_ALLOWANCE;ANALYTIC_SHOTS;COMPILED_RZ_NOT_FT;P0;NO_GLOBAL_OPTIMUM;INPUT_RULE_EQUIVALENCE_NOT_VERIFIED;NOT_FINAL_FREEZE|
+|CE_H8_DF28_P_2|H8 ε=0.0005の固定独立標本ではPRが低費用。方向判定POINT_REPRODUCED。|FINITE_SAMPLE_POINT;NO_POPULATION_MEAN_GUARANTEE;UNOBSERVED_RARE_COST_UNKNOWN;NO_COHORT_POOLING;EMPIRICAL_BIAS_ALLOWANCE;ANALYTIC_SHOTS;COMPILED_RZ_NOT_FT;P0;NO_GLOBAL_OPTIMUM;INPUT_RULE_EQUIVALENCE_NOT_VERIFIED;NOT_FINAL_FREEZE|
+|CE_M_LEGACY_H4_P|H4 D完了とPF代表10/10不変、独立Pで主10/10・診断4/4の点費用方向再現を示す。|S4未観測、母平均優位保証なし。Pによる新機構分解・tol-only DF10統合は未実施。|
+|CE_M_A82_FACTORS|検証済みA82のPR/PF保存sideから、cosine/sineの比較説明因子を固定SOURCEのone-shot1回で完成させた。|固定32比較の説明field/因子欠測は解消。母平均優位、厳密bias保証、FT資源、独立cohortとの統合は認定しない。|
