@@ -13,6 +13,7 @@ from prepare_h4_tol_main import PUBLIC
 def audit(private):
     private=Path(private).resolve()
     source=c.read(PUBLIC/'SOURCE_provenance.json')['implementation_SOURCE']
+    c.require(len(source)==40,'FULL_SOURCE_COMMIT')
     closure=c.source_closure()
     for name, expected in closure.items():
         blob=subprocess.check_output(['git','show',source+':'+name],cwd=c.ROOT)

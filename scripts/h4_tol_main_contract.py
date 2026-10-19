@@ -27,10 +27,13 @@ FP_DETERMINISTIC = ['B0I_p8_q4_2nd', 'B0I_p8_q4_4th', 'B1_p10_q4_2nd', 'B1_p10_q
 FP_SIGNALS_D = FP_DETERMINISTIC + ['B0_p8_q4_2nd', 'B0_p8_q4_4th']
 KERNEL_FILES = ('scripts/h4_tol_main_contract.py', 'scripts/h4_tol_main_science.py',
                 'scripts/run_h4_tol_main.py')
+# The separately frozen A kernel imports this project-level event oracle.
+# Its recursive imports belong to this execution closure as well.
+A_KERNEL_PROJECT_IMPORTS = ('scripts/h6_dba_science.py',)
 
 
 def source_closure(root=ROOT):
-    pending = list(KERNEL_FILES); found = {}
+    pending = list(KERNEL_FILES+A_KERNEL_PROJECT_IMPORTS); found = {}
     while pending:
         name = pending.pop()
         if name in found: continue

@@ -212,6 +212,7 @@ def preserve_fixed_records(collect):
 
 
 def materialize(private, source):
+    source=subprocess.check_output(['git','rev-parse',source+'^{commit}'],cwd=c.ROOT,text=True).strip()
     p = Path(private).resolve(); collect, own, f = inventory(p)
     evidence, differences = policies(collect, f)
     preserve_fixed_records(collect)

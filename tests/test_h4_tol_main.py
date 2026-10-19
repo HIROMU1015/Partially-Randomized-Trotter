@@ -40,6 +40,12 @@ def saved_rows(eligible=True):
 
 
 class Metadata(unittest.TestCase):
+    def test_frozen_a_event_oracle_project_import_is_bound(self):
+        closure=c.source_closure()
+        self.assertIn('scripts/h6_dba_science.py',closure)
+        self.assertIn('scripts/h6_dba_native.py',closure)
+        self.assertIn('scripts/h6_dba_signal.py',closure)
+
     def test_rank10_grid_and_full_rule(self):
         reg = c.registrations()
         self.assertEqual((len(reg['D']), len(reg['A'])), (190, 50))
