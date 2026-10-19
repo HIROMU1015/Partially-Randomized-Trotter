@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "python": "3.12.3",
+  "checks": [
+    {
+      "command": "python3 -B scripts/check_track_a_protocol_v1.py",
+      "scope": "adopted documents; 88 metadata rows; 37 fixed Git objects; local links",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 -B -m unittest discover -s tests -p test_track_a_protocol_v1.py -v",
+      "artificial_tests": 18,
+      "exit_code": 0
+    },
+    {
+      "command": "python3 -B scripts/check_track_a_protocol_draft.py",
+      "checkout_commit": "9c54d89f6154525e3c7c814a4da5ecdc37453b8a",
+      "scope": "historical DRAFT worktree; 25 objects; 88 rows",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 -B -m unittest discover -s tests -p 'test_track_a_protocol_*.py' -v",
+      "artificial_tests": 28,
+      "new_formal": 18,
+      "historical_DRAFT": 10,
+      "exit_code": 0
+    }
+  ],
+  "author_technical_checks": true,
+  "independent_reviewer": false,
+  "scientific_modules_imported": false,
+  "real_scientific_arithmetic": false,
+  "remote_reverified": false
+}

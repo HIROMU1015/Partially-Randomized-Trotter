@@ -1,3 +1,5 @@
+Track A共通プロトコルv1は文書正式化のみで、新science moduleは追加しない。[正式化報告](../../docs/research/track_a_pr_resource_protocol_v1_adoption_20261019.md)と既存科学SOURCEの承認境界を参照。
+
 ## 2026-10-19 Track A：共通実験プロトコル v1 DRAFT・未採択
 
 [プロトコル・充足表・例外・採択判断](../../docs/research/track_a_pr_resource_protocol_draft_preparation_20261019.md)。H4 legacy12/tol-only10/H6 DF19/H8 DF28を4系列に分離。固定9commit/25fileを実取得、Core/Extended/Guaranteeと22要件88metadata行、人工構造10件PASS。科学条件の正式採択・新科学計算・保存値数値再解析・push・A/B契約変更0。文書作成のみ、local commit後mandatory STOP。次担当はユーザーの採択判断。以下は各時点の履歴。

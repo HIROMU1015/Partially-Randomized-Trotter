@@ -4,11 +4,13 @@ import importlib.util
 import json
 from pathlib import Path
 import shutil
+import subprocess
 import tempfile
 import unittest
 from fractions import Fraction as F
 
 ROOT=Path(__file__).resolve().parents[1]
+DRAFT_COMMIT='9c54d89f6154525e3c7c814a4da5ecdc37453b8a'
 s=importlib.util.spec_from_file_location('protocol_check',ROOT/'scripts/check_track_a_protocol_draft.py')
 k=importlib.util.module_from_spec(s);s.loader.exec_module(k)
 
@@ -17,7 +19,13 @@ class StructureTests(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.root=Path(self.tmp.name)
         for name in (*k.DOCS,'track_a_protocol_compliance_matrix.csv',k.BUNDLE+'/evidence_catalog.json',k.BUNDLE+'/requirements.json'):
-            p=self.root/name;p.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(ROOT/name,p)
+            p=self.root/name;p.parent.mkdir(parents=True,exist_ok=True)
+            if (ROOT/'artifacts/resource_applicability/track_a_protocol_v1/2026-10-19/adoption_record.json').exists():
+                # The live matrix is now adopted. Test the immutable DRAFT fixture,
+                # rather than relabelling the current v1 as an unadopted document.
+                p.write_bytes(subprocess.check_output(['git','show',DRAFT_COMMIT+':'+name],cwd=ROOT))
+            else:
+                shutil.copyfile(ROOT/name,p)
 
     def tearDown(self):self.tmp.cleanup()
 

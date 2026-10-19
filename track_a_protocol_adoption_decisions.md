@@ -1,24 +1,24 @@
-# Track A共通プロトコル：採択判断表 v1 DRAFT
+# Track A共通プロトコル：採択判断表 v1 正式版
 
-2026-10-19。**全項目PROPOSED_AWAITING_USER_ADOPTION。正式採択0、実行承認0、既存契約への適用0。** 提案欄はCodexの整理であり、ユーザーの回答を記録した欄ではない。
+2026-10-19。**ADOPTED_V1_DOCUMENT_ONLY**。ユーザーの今回の明示判断を記録する。元DRAFTは `9c54d89f6154525e3c7c814a4da5ecdc37453b8a`。基本方針6件、条件付き5件、追加PF保留1件。科学計算・数値再解析・公開push・既存契約への自動適用の承認はいずれもない。
 
-|ID|ユーザーが判断する科学条件/最低基準|提案・選択肢|未採択のまま保留する内容|
-|---|---|---|---|
-|AD01|主比較のDF政策|tol-only1e-8・自動rankを共通目標にする。H4 legacy12は明示例外として残す案、tol-only10の主比較完成後に共通panelを作る案|H4 legacy D/Pを無効化/置換しない。rank10/19/28の全入力規則同一性は未認定|
-|AD02|入力生成の共通manifestと例外|SCF/MO/積分/DF correction・signed順・cutoff/projection/sector/state・runtimeを照合する案。異なるsolver等の条件付き同等性を許す範囲も事前判断|名前・tolだけの一致ではPASSにしない。自動再SCF/DF/state生成なし|
-|AD03|S4公式・係数版・m5_best|既存S2/S4を最低対照とし公式ID/係数原本を固定。m5を追加主方式にするか別補足にするか選ぶ。数値残差のみの機械的棄却はしない|m5 pilotは保留。新PFを旧Yoshida modelや旧費用と同一扱いにしない|
-|AD04|共通endpointとshot会計|T=.8/P0/5ε/通常signed/factor1/full wrapper/directional/固定compilerと、既存ε/√2・α_axis=.025の会計案を採択するか|allowance値の根拠・数値診断・guardはSOURCEへ結合。厳密bias保証は付かない|
-|AD05|PF対照の証拠水準|固定検証modelを明示して主表に許す案、独立Pの選択PFは直接測定を原則とする案。未知候補がある場合の固定subset例外も判断|全候補直接compileを自動要求しない。modelをDIRECTに変えない|
-|AD06|D/Aの探索範囲と境界|分子ごとの疎な登録域・根拠・予算を許容し、同数同格子を要求しない案。端なら登録内限定か別承認拡張かを選ぶ|candidate数/prefix/q/r/K/追加q16等の新範囲は未固定。既存A/Bを変更しない|
-|AD07|Pの最低対象と標本設計|H8型の事前固定/新cohort/無poolingを採用し、原則ε=.05/.0005。候補数・n・差精度・近似CI/多重比較の有無は対象ごと事前設計|n48/n32/13・45・45やpower90%を全系の正式基準へ流用しない。稀少上界保証を含めない|
-|AD08|技術/モデル受入閾値|SOURCE固有のnative tolerance、closure、丸めguardを明示し、共通値が必要なら実装・allowanceとの整合で選ぶ。過去のmodel2%は採択候補として保持|1e-9/1e-8、説明1e-12、2%を無承認で一律変更しない。旧STOPを解除しない|
-|AD09|費用分解と説明欠測の掲載|掲載cohort/対照版でexact両軸分解を要求。normalization/headroom説明の完全性を主機構図では要求し、欠測点は会計のみ/別枠とする案|H4新D/Pへの自動再解析なし。A82_OLD_PR.PRは逆算補完しない|
-|AD10|主図・主表の例外|COMMON/CONDITIONAL/EXPLORATORYの表示案と、legacy/model/profile未確認/限定subset/中間ε未確認をどこまで主表へ許すか|正式な論文採否や全系Core完了を今回認定しない|
-|AD11|研究の完了範囲|Coreの条件付きbenchmarkで一区切りにするか、どのExtended/Guarantee主張を追加で求めるかを選ぶ|Core後の自動拡張なし。PR不利/非再現を失敗扱いして追加計算しない|
-|AD12|採択後の移行・担当|新契約だけへ将来適用する案。Codex A/Bの進行条件とのdiffを別途静的照合し、必要な科学変更は担当・対象・承認を固定する|既存grant/ledger/marker/SOURCEや承認済み固定契約を遡及変更しない|
+|ID|採択状態|対象|決定内容|条件・保留境界|
+|---|---|---|---|---|
+|AD01|ADOPTED_BASIC_POLICY|共通DF政策|tol-only 1e-8・rank自動決定を採択。H4 legacy DF12は独立した既存成果として保全。|rank数は統一しない。legacyをtol-onlyへ読み替えず、全生成規則同一性は未認定。|
+|AD02|ADOPTED_BASIC_POLICY|入力manifestと来歴|SCF・軌道・積分・DF・状態・runtimeをmanifestで照合する基本方針を採択。|未照合をPASSへ変更しない。solver差等の個別同等性や再生成は今回認定・承認しない。|
+|AD03|DEFERRED_ADDITIONAL_PF|追加PF公式|既存S2/S4の比較条件を維持。m5_best等の追加公式を主比較へ採用する判断は保留。|m5 pilotは再開しない。保留は非ZERO残差だけによる棄却や既存S4の無効化を意味しない。|
+|AD04|ADOPTED_BASIC_POLICY|共通比較・会計条件|線形1 Å/STO-3G/T=.8/P=0/5ε/通常signed・倍率1/full wrapper/directional/固定compilerと、既存ε/√2・α_axis=.025の基本会計を採択。|SOURCE固有のallowance・数値診断・guardを維持。shot αと標本推論のαを分離し、厳密bias保証は付けない。|
+|AD05|CONDITIONALLY_ADOPTED|実測・model・欠測区分|既存DIRECT_MEASURED/VALIDATED_MODEL_ESTIMATE/MISSING区分と適用scopeを明示する条件で採択。|全候補や全P対照の新規直接compileを一律必須化しない。model条件付き最良を実測最良へ改称しない。|
+|AD06|ADOPTED_BASIC_POLICY|探索規則・境界|系別の根拠ある疎な事前登録domain、5ε評価、有限標本・選択効果・境界の明示を採択。|同候補数・同直積格子を強制せず、既存強化集合を弱めない。新候補数や境界拡張は個別契約。|
+|AD07|ADOPTED_BASIC_POLICY|独立確認P|H8型の事前固定・新cohort・新seed・標本非混合を共通手順とし、原則両端ε=.05/.0005を対象とする。|n=48は強制しない。分散・差・希少event・目的から個別設計。n・power・CI/多重比較は別固定、母平均保証とは区別。|
+|AD08|CONDITIONALLY_ADOPTED|技術・model閾値|既存SOURCE/契約のnative tolerance・closure・guard・model閾値を明示して維持する条件で採択。|過去2%等は該当契約の基準。一律の新共通閾値は制定しない。既存STOP・受入条件の緩和なし。|
+|AD09|CONDITIONALLY_ADOPTED|機構分解と説明欠測|exact両軸費用分解と説明側statusを分け、説明欠測を明示する条件で採択。|説明未検証の点は費用coreまでに限定。A82回収を説明完了としない。新cohortの説明も自動接続しない。|
+|AD10|CONDITIONALLY_ADOPTED|legacy・掲載例外|legacy/model/profile未確認/限定集合/探索点の例外ID・scope・caption表示を条件として採択。|個別主図・主表の最終採否や全系COMMON_CORE_READYを自動認定しない。条件付き掲載と完全共通条件を区別。|
+|AD11|CONDITIONALLY_ADOPTED|完了・主張範囲|証拠範囲を限定したCore/条件付きbenchmarkで一区切りにできる方針を採択。|Extended/Guaranteeへ自動進行せず、PR不利・非再現も有効結果。母平均・tail・厳密biasの保証は未取得。|
+|AD12|ADOPTED_BASIC_POLICY|移行・担当|正式文書と個別実行承認を分離し、既存契約へは自動適用しない方針を採択。|Codex A/Bを含む既存SOURCE/結果/grant/ledger/marker/STOPは不変。将来移行は担当と対象差分を別承認。|
 
-推奨する判断順はAD01–04（対象/条件）→AD05–09（証拠/最低手順）→AD10–12（掲載/一区切り/移行）。全項目を一度に決める必要はなく、未採択は未採択として残せる。
+採択は基準文書の正式化であり、各系の科学的受入・主表の最終freeze・新たな実験条件変更の承認ではない。未達/未照合のstatusは採択後も維持する。旧DRAFTの提案は、そのまま全細目が採択されたとは扱わず、上表の採択scopeと条件だけをv1へ反映した。
 
-採択は文書の正式版作成を認める判断であり、sampling/compile/数値再解析等の実行承認とは別である。正式版を作成しても既存Codex A/Bや保留m5契約へ自動適用しない。
+機械可読原本：[adoption_record.json](artifacts/resource_applicability/track_a_protocol_v1/2026-10-19/adoption_record.json)。[正式プロトコル](docs/research/track_a_pr_resource_evaluation_protocol_v1.md)、[充足表](track_a_protocol_compliance_matrix.csv)、[差異・例外](track_a_protocol_gap_and_exception_report.md)を併読する。
 
-次の担当：**ユーザー**。各IDの採択・変更・保留を判断する。Codexは判断を受けて必要な文書改訂/差分整理を行うが、今回はlocal commit後mandatory STOP。
+次の担当：**ユーザー**。公開の要否、H6の個別数値設計、A82説明検証等を必要とするかを別判断する。Codexは今回のlocal commit後mandatory STOPし、未承認stageを起動しない。
