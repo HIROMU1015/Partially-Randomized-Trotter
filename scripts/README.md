@@ -1,6 +1,6 @@
 ## 2026-10-20 PF直接compile：修正・残り216軸の再実行承認
 
-[修正・scope・実行記録](../docs/research/track_a_pf_direct_compile_retry216_20261020.md)。H2 72/H4 DF10 122/H8 DF28 22軸を新SOURCEで再実行する承認を受領。旧572軸のtask受入とglobal final gate欠測・旧SOURCE/STOPを保持。新13＋既存13人工検査PASS、分離observer/実wait4終了監査を接続。現在seal前で実compile未開始。新公開未承認、詳細review/最終freezeなし。以下は履歴。
+[修正・scope・実行記録](../docs/research/track_a_pf_direct_compile_retry216_20261020.md)。H2 72/H4 DF10 122/H8 DF28 22軸を新SOURCEで再実行する承認を受領。旧572軸のtask受入とglobal final gate欠測・旧SOURCE/STOPを保持。新13＋既存13人工検査PASS、分離observer/実wait4終了監査を接続。SOURCE0c5fcc83で分離起動済み。05:18 JST暫定は成功86/control STOP106/未終了24軸。失敗taskはcompile前にSTOP、正常worker継続・retry0。全体未完了、新公開未承認。以下は履歴。
 
 ## 2026-10-20 PF直接compile：中断後の保存監査・STOP
 
