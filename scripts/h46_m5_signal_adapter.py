@@ -44,7 +44,9 @@ def prefix_context(base,prefix):
     np=base.np;ham=base.ham
     c.require(type(prefix) is int and 1<=prefix<=ham.n_blocks,'SIGNAL_PREFIX_RANGE')
     cut=base.fullprep if prefix==ham.n_blocks else base.prepare(ham,prefix)
-    scalar,lam=matrix_only_tail_coefficients(ham,prefix)
+    # The canonical helper accepts truncated prefixes only. A full PF has no
+    # discarded fragments, hence exactly zero extracted tail scalar and lambda.
+    scalar,lam=(0.,0.) if prefix==ham.n_blocks else matrix_only_tail_coefficients(ham,prefix)
     c.require(abs(cut.extracted_identity_coefficient-scalar)<1e-9 and abs(cut.exact_rte_lambda_r-lam)<1e-9,'PREFIX_SCALAR_LAMBDA')
     c.require(tuple(cut.deterministic_fragment_indices)==tuple(range(prefix)),'PREFIX_GENERATION_ORDER')
     tail=sum(base.matrices[prefix+1:],np.zeros_like(base.matrices[0]))-scalar*np.eye(len(base.oracle.initial))

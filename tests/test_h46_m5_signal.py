@@ -140,6 +140,23 @@ class NumericalTests(unittest.TestCase):
         self.assertLess(self.np.linalg.norm((a.tail_spec[1]*a.tail_spec[0])@a.tail_spec[2]-(a.matrices[2]-.01*self.np.eye(2))),1e-14)
         self.assertEqual(b.lambda_R,0.);self.assertLess(self.np.linalg.norm(b.tail_spec[0]),1e-15)
 
+    def test_full_prefix_uses_empty_tail_without_mocking_helper(self):
+        # Real helper rejects prefix == n_blocks: do not mock this boundary.
+        from h46_new2_core import matrix_only_tail_coefficients
+        base=self.base()
+        with self.assertRaisesRegex(ValueError,'INVALID_GENERATION_PREFIX'):
+            matrix_only_tail_coefficients(base.ham,base.ham.n_blocks)
+        ctx=adapter.prefix_context(base,base.ham.n_blocks)
+        self.assertIs(ctx.cut,base.fullprep)
+        self.assertEqual(ctx.tail_identity,0.)
+        self.assertEqual(ctx.lambda_R,0.)
+        self.assertTrue(self.np.array_equal(ctx.tail_spec[0],self.np.zeros(2)))
+
+    def test_full_prefix_never_calls_partial_tail_helper(self):
+        with patch('h46_new2_core.matrix_only_tail_coefficients',side_effect=AssertionError('partial-only helper called for full')) as partial:
+            adapter.prefix_context(self.base(),2)
+        partial.assert_not_called()
+
     def test_signed_schedules_and_negative_times_R32(self):
         for f,n in [('2nd',1),('4th',3),('4th(m5_best)',11)]:
             steps=c.old.core.schedule(f,8,'ABS_TIME_PER_OUTER',32)
