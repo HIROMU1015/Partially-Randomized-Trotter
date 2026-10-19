@@ -1,3 +1,7 @@
+## 2026-10-19 H4/H6：m5_best native pilot準備完了・実計算未承認
+
+[実装・4契約・並列化・STOP](docs/research/track_a_h46_m5_best_native_readiness_20261019.md)。SOURCE7a4d126a…、3公式/full・B0・B0+I・PRの4laneを接続。24条件/PR12本/60軸/共有full-H reference2件。人工回帰120件PASS、metadata改変20件拒否、暫定seed120/既知4243衝突0。SOURCE/input/runtime closure各303/305 file封印、4無効grant。旧main profileは参照のみ、新native費用系列として識別。実分子signal/sampling/compile/会計/fit0、mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-19 H4/H6：m5_bestの並列検証計画・科学未実行
 
 [計画・再利用・未完了範囲](docs/research/track_a_h46_m5_best_parallel_plan_20261019.md)。既存4th(m5_best)・11段S2を再利用するH4/H6計画。主controlはsymmetric_directional。4lane独立並列pilot案24条件・PR12本・60軸、後続は依存DAG/各Phase STOP。新12人工PASS、計画SOURCE834b738a…。実分子計算0、native adapter/launcher未seal・無効grant。係数非ZEROのみで棄却せず、主Track Aへ接続する差分を準備。以下は各時点の履歴。

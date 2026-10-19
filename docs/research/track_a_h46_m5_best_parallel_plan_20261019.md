@@ -1,5 +1,7 @@
 # H4/H6：4th(m5_best)の論文用比較と並列検証計画
 
+> 2026-10-19更新：この文書は初期計画の記録。後続の[native実行準備](track_a_h46_m5_best_native_readiness_20261019.md)でadapter・launcherと4契約を封印した。実計算は引き続き未承認。
+
 2026-10-19。**計画・schedule adapter・人工検証まで完了。実分子計算は0、mandatory STOP。** 新しい主候補はPF研究側の既存 `pf_label="4th(m5_best)"`。new_2の再探索から始めず、既存係数・実装・検証を引き継ぐ。今回の実装はmetadataとcallbackによるschedule接続までで、実分子用native adapter/launcherのSOURCE封印は未完了。現時点ではpilotを起動できるとは報告しない。
 
 計画SOURCE：`834b738a1e14b80753f96b56f2901a3a60969aa7`。専用branch：`track-a-h46-m5-best-parallel-readiness-20261019`。起点はH6独立確認結果 `6e197973d4d4183d4e27b1b8cc95cb02f311bb92`。主Track Aの新A_COST `64c85f7a…`、最終監査 `bf8c1905…`は固定Git objectで読み取り、別系列の実行結果・承認を混合していない。
