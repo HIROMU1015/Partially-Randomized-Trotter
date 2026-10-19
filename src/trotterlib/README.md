@@ -1,3 +1,7 @@
+## 2026-10-19 H6 full m5：保存4再生の一回解析起動・完了未確認
+
+[承認・fresh gate・進行snapshot](../../docs/research/track_a_h6_m5_saved_phase_run01_start_20261019.md)。SOURCE99e8723d…/plan b2b2a818…に明示承認、新grant一回消費・15:04:07 JST起動。1831file seal/旧684file保全・fresh gate・保存診断/精度/2QPY構造PASS、初回通常再生が進行。最大4jobだがidle CPUから今回は1worker順次。新compile/sampling/会計0、旧STOP/58軸保全、AD03保留。最終結果・exit/reap未監査、次はCodexの終了監査とmandatory STOP。push0。以下は各時点の履歴。
+
 ## 2026-10-19 H6 full m5：保存回路の精度診断・実行準備完了／実解析未承認
 
 [実装・固定契約・検証・次の承認](../../docs/research/track_a_h6_m5_saved_phase_readiness_20261019.md)。SOURCE 99e8723d…、保存2回路×通常/拡張の4再生runnerを実装。人工24件/metadata拒否12件PASS、1831file seal・旧684file不変。実H6 QPY/NPZ復元/解析/compile/有効grant0、原raw基準/旧STOP/58軸保全。通常再現atol1e-12は新契約案・未承認。最大4独立workerとvector化/cache、host PSIでkillせず他worktreeを凍結しない。SOURCE/plan/無効grantをlocal保存しmandatory STOP、push0。次はユーザーの別解析実行承認判断。以下は各時点の履歴。
