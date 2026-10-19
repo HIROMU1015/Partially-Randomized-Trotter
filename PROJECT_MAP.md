@@ -1,3 +1,5 @@
+H4 PR単独のMC費用変動表示（2026-10-19）：既存defa5f6dの保存平均・SE・分位点・S0/S2群を転記し、PR平均推定値/n-SE/event構成の4図へ再構成。決定論的prefix＋RTE tail＋full Hadamard wrapperの保存shot×compiled RZ。n本分の合計費用とは区別。新sampling/compile/bootstrap/統計解析0、原本SHA不変・mandatory STOP。[表示入口](docs/research/track_a_h4_pr_cost_variability_20261019.md)。以下は履歴。
+
 H4 MC標本数依存性の保存値解析完了（2026-10-19）：SOURCE78352b86、n1108/78のpaired会計を完全再現、18群×2000 bootstrap。ε=.05のPR低費用割合はn4で41%、n512以上0/2000、ε=.0005は全n2000/2000。経験分布条件付き・母平均保証なし、4図×3形式、人工9検査/数値監査PASS、追加sampling/compile/shot再計算0、localのみ・mandatory STOP。[結果・図・限界](docs/research/track_a_h4_mc_sample_size_20261019.md)。以下は各時点の履歴。
 
 H4 tol-only DF10 独立P完了（2026-10-19）：科学SOURCE3c664ca4…、固定n1108/78・1,186 trajectory/2,372軸/5,680 eventをone-shot実行。ε=.05はPFが低費用で方向NOT_REPRODUCED、ε=.0005はPRが低費用でREPRODUCED。paired SEを保存、S2 event37/7、複数S2・S4 trajectory0、母平均保証なし。60 worker枠・累計1,186全回収・native exit0・終了監査PASS、wall287.50秒。旧混合/追加sampling/retry0、新規pushなし、mandatory STOP。[結果・不確かさ・監査](docs/research/track_a_h4_tol_p_completed_20261019.md)。以下は各時点の履歴。

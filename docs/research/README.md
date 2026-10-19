@@ -1,3 +1,5 @@
+H4 PR費用変動の表示入口（2026-10-19）：[平均の揺れ・SE減少・観測eventの図表](track_a_h4_pr_cost_variability_20261019.md)。元defa5f6dは保持し、新統計解析は行わない。
+
 H4 MC標本数依存性（2026-10-19）：[結果・全n表・収束図・観測S2・監査](track_a_h4_mc_sample_size_20261019.md)。保存P限定one-shot、未観測層・母平均保証なし、mandatory STOP。
 
 ## 2026-10-16 V2：H6探索PFの最終照合・現行残差設計NO_GO候補

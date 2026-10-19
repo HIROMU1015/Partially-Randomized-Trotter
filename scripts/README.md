@@ -1,3 +1,5 @@
+H4 PR費用変動の再描画：`render_h4_pr_cost_variability.py`は既存MC defa5f6dの保存列を転記し、PR単独の4図を出力する。raw trajectory/個別再標本化結果を読まず、sampling/compile/bootstrap/新統計なし。[表示・検証範囲](../docs/research/track_a_h4_pr_cost_variability_20261019.md)。
+
 H4 MC標本数依存性：`analyze_h4_mc_sample_size.py`の`seal`→`run`→`audit`。専用固定契約・明示承認が必要で、今回のone-shotは既に消費済み。`run`の再実行不可。既存paired費用関数を使い保存値だけを解析し、RTE sampler/compilerはimportしない。[結果と契約](../docs/research/track_a_h4_mc_sample_size_20261019.md)。
 
 H4 tol-only DF10 独立P完了（2026-10-19）：科学SOURCE3c664ca4…、固定n1108/78・1,186 trajectory/2,372軸/5,680 eventをone-shot実行。ε=.05はPFが低費用で方向NOT_REPRODUCED、ε=.0005はPRが低費用でREPRODUCED。paired SEを保存、S2 event37/7、複数S2・S4 trajectory0、母平均保証なし。60 worker枠・累計1,186全回収・native exit0・終了監査PASS、wall287.50秒。旧混合/追加sampling/retry0、新規pushなし、mandatory STOP。[結果・不確かさ・監査](../docs/research/track_a_h4_tol_p_completed_20261019.md)。以下は各時点の履歴。

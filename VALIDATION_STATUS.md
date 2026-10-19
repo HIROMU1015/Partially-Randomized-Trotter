@@ -1,3 +1,5 @@
+H4 PR費用変動の表示整理（2026-10-19）：元MC defa5f6dの保存3CSVと参照JSONを転記・再描画のみ。18/8/236行の選択列完全一致、4図×3形式・構造検証PASS。新統計・bootstrap・sampling・compile0、旧SOURCE/結果/原図/STOP不変。[図表と限界](docs/research/track_a_h4_pr_cost_variability_20261019.md)。以下は履歴。
+
 H4 MC標本数依存性（2026-10-19）：元P commit821cc0f6の保存paired費用をSOURCE78352b86で一回解析。mean/分散/SE完全一致2条件、36,000 bootstrap数値監査PASS、人工9件PASS。ε=.05ではn増大でPF低費用の順位が安定、ε=.0005は保存支持内でPR低費用。未観測希少event・母平均・厳密CIの保証なし、新sampling/compile/shot再計算0、mandatory STOP。[結果](docs/research/track_a_h4_mc_sample_size_20261019.md)。以下は履歴。
 
 H4 tol-only DF10 独立P完了（2026-10-19）：科学SOURCE3c664ca4…、固定n1108/78・1,186 trajectory/2,372軸/5,680 eventをone-shot実行。ε=.05はPFが低費用で方向NOT_REPRODUCED、ε=.0005はPRが低費用でREPRODUCED。paired SEを保存、S2 event37/7、複数S2・S4 trajectory0、母平均保証なし。60 worker枠・累計1,186全回収・native exit0・終了監査PASS、wall287.50秒。旧混合/追加sampling/retry0、新規pushなし、mandatory STOP。[結果・不確かさ・監査](docs/research/track_a_h4_tol_p_completed_20261019.md)。以下は各時点の履歴。

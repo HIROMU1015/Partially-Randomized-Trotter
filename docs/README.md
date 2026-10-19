@@ -1,3 +1,5 @@
+H4 PR単独のMC費用変動：[平均推定値・n-SE・観測S0/S2の図表](research/track_a_h4_pr_cost_variability_20261019.md)。既存値の転記・再描画だけ、原本不変・新統計0。
+
 H4 MC標本数依存性（2026-10-19）：[保存paired費用の一回bootstrap解析・図・限界](research/track_a_h4_mc_sample_size_20261019.md)。18群/36000反復、元P統計完全再現、科学sampling/compile0、監査PASS・mandatory STOP。
 
 H4 tol-only DF10 独立P完了（2026-10-19）：科学SOURCE3c664ca4…、固定n1108/78・1,186 trajectory/2,372軸/5,680 eventをone-shot実行。ε=.05はPFが低費用で方向NOT_REPRODUCED、ε=.0005はPRが低費用でREPRODUCED。paired SEを保存、S2 event37/7、複数S2・S4 trajectory0、母平均保証なし。60 worker枠・累計1,186全回収・native exit0・終了監査PASS、wall287.50秒。旧混合/追加sampling/retry0、新規pushなし、mandatory STOP。[結果・不確かさ・監査](research/track_a_h4_tol_p_completed_20261019.md)。以下は各時点の履歴。

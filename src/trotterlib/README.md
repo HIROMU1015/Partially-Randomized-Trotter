@@ -1,3 +1,5 @@
+H4 PR費用変動の表示整理は新libraryなし。`scripts/render_h4_pr_cost_variability.py`が既存保存値とmanuscript描画helperを使って転記・再描画する。[表示入口と限界](../../docs/research/track_a_h4_pr_cost_variability_20261019.md)。
+
 H4保存paired費用のMC標本数解析（2026-10-19）は新規libraryなし。既存`h8_rare_tail_selection.paired_cost`と`scripts/h4_dp_contract.py`のexact統計を再利用し、runnerは`scripts/analyze_h4_mc_sample_size.py`。人工検査`tests/test_h4_mc_sample_size.py`、[結果・限定scope](../../docs/research/track_a_h4_mc_sample_size_20261019.md)。
 
 H4 tol-only DF10 独立P完了（2026-10-19）：科学SOURCE3c664ca4…、固定n1108/78・1,186 trajectory/2,372軸/5,680 eventをone-shot実行。ε=.05はPFが低費用で方向NOT_REPRODUCED、ε=.0005はPRが低費用でREPRODUCED。paired SEを保存、S2 event37/7、複数S2・S4 trajectory0、母平均保証なし。60 worker枠・累計1,186全回収・native exit0・終了監査PASS、wall287.50秒。旧混合/追加sampling/retry0、新規pushなし、mandatory STOP。[結果・不確かさ・監査](../../docs/research/track_a_h4_tol_p_completed_20261019.md)。以下は各時点の履歴。
