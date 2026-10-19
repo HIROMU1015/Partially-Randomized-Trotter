@@ -1,0 +1,298 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "A82_factor_delta.json (future one-shot result)",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "TRACK_A_A82_SAVED_SIDE_FACTORS_V1"
+    },
+    "contrast_id": {
+      "const": "A82_OLD_PR"
+    },
+    "identity": {
+      "const": {
+        "system": "H8",
+        "geometry": "linear_1_Angstrom",
+        "basis": "STO-3G",
+        "DF_rank": 28,
+        "DF_policy": "tol-only",
+        "T": "0.8",
+        "P": 0,
+        "epsilon": "0.05",
+        "bias_mode": "USUAL_SIGNED",
+        "allowance_factor": "1",
+        "PR_id": "B2_p7_q2_2nd_r4_K2",
+        "PF_id": "B0I_p11_q1_2nd",
+        "PR_cohort": "CONFIRMATION_UNION_POST_SELECTION",
+        "n": 32
+      }
+    },
+    "status": {
+      "const": "EXPLANATION_COMPLETE"
+    },
+    "ratios": {
+      "type": "object",
+      "properties": {
+        "cosine": {
+          "type": "object",
+          "required": [
+            "factors",
+            "log_factors"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "factors": {
+              "type": "object",
+              "properties": {
+                "nominal_normalization_squared": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "normalization_margin_squared": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "normalization_upper_squared": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "headroom_squared": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "alpha_log": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "continuous_shot": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "rounding_factor": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "required": [
+                "nominal_normalization_squared",
+                "normalization_margin_squared",
+                "normalization_upper_squared",
+                "headroom_squared",
+                "alpha_log",
+                "continuous_shot",
+                "rounding_factor"
+              ],
+              "additionalProperties": false
+            },
+            "log_factors": {
+              "type": "object",
+              "properties": {
+                "nominal_normalization_squared": {
+                  "type": "number"
+                },
+                "normalization_margin_squared": {
+                  "type": "number"
+                },
+                "normalization_upper_squared": {
+                  "type": "number"
+                },
+                "headroom_squared": {
+                  "type": "number"
+                },
+                "alpha_log": {
+                  "type": "number"
+                },
+                "continuous_shot": {
+                  "type": "number"
+                },
+                "rounding_factor": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "nominal_normalization_squared",
+                "normalization_margin_squared",
+                "normalization_upper_squared",
+                "headroom_squared",
+                "alpha_log",
+                "continuous_shot",
+                "rounding_factor"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "sine": {
+          "type": "object",
+          "required": [
+            "factors",
+            "log_factors"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "factors": {
+              "type": "object",
+              "properties": {
+                "nominal_normalization_squared": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "normalization_margin_squared": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "normalization_upper_squared": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "headroom_squared": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "alpha_log": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "continuous_shot": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "rounding_factor": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "required": [
+                "nominal_normalization_squared",
+                "normalization_margin_squared",
+                "normalization_upper_squared",
+                "headroom_squared",
+                "alpha_log",
+                "continuous_shot",
+                "rounding_factor"
+              ],
+              "additionalProperties": false
+            },
+            "log_factors": {
+              "type": "object",
+              "properties": {
+                "nominal_normalization_squared": {
+                  "type": "number"
+                },
+                "normalization_margin_squared": {
+                  "type": "number"
+                },
+                "normalization_upper_squared": {
+                  "type": "number"
+                },
+                "headroom_squared": {
+                  "type": "number"
+                },
+                "alpha_log": {
+                  "type": "number"
+                },
+                "continuous_shot": {
+                  "type": "number"
+                },
+                "rounding_factor": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "nominal_normalization_squared",
+                "normalization_margin_squared",
+                "normalization_upper_squared",
+                "headroom_squared",
+                "alpha_log",
+                "continuous_shot",
+                "rounding_factor"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "required": [
+        "cosine",
+        "sine"
+      ],
+      "additionalProperties": false
+    },
+    "calls": {
+      "const": {
+        "saved_side_factor_passes": 1,
+        "comparison_axes": 2,
+        "PR_side_evaluation": 0,
+        "PF_side_evaluation": 0,
+        "core_arithmetic": 0,
+        "other31_comparison_evaluation": 0,
+        "statistics": 0,
+        "sampling": 0,
+        "signal": 0,
+        "compile": 0,
+        "ranking": 0
+      }
+    },
+    "definition_source": {
+      "const": "b6716396acc5760fde7cf7cc6f2481b183a08f10"
+    },
+    "validated_side_source": {
+      "const": "a8961c45d7fd0310c1e34c50ffd004dd58898247"
+    },
+    "input_result_digests": {
+      "type": "object",
+      "properties": {
+        "delta_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "old_core_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "old_explanations_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "delta_sha256",
+        "old_core_sha256",
+        "old_explanations_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "historical_PR_status": {
+      "const": "EXPLANATORY_INPUT_MISSING"
+    },
+    "side_results_recomputed": {
+      "const": false
+    },
+    "old_archives_modified": {
+      "const": false
+    },
+    "certification": {
+      "const": "EMPIRICAL_CONDITIONAL_ONLY"
+    },
+    "next_stage_authorized": {
+      "const": false
+    }
+  },
+  "required": [
+    "schema",
+    "contrast_id",
+    "identity",
+    "status",
+    "ratios",
+    "calls",
+    "definition_source",
+    "validated_side_source",
+    "input_result_digests",
+    "historical_PR_status",
+    "side_results_recomputed",
+    "old_archives_modified",
+    "certification",
+    "next_stage_authorized"
+  ],
+  "additionalProperties": false
+}

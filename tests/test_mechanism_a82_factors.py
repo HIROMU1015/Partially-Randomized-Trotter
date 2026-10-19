@@ -152,6 +152,37 @@ class GateTests(unittest.TestCase):
     def test_actual_SOURCE_mismatch_rejected(self):
         c=dict(source_commit='f'*40,source_files={name:'0'*64 for name in cli.SOURCE_FILES})
         with self.assertRaisesRegex(ValueError,'SOURCE_BYTES_MISMATCH'):cli.verify_source(c)
+    def test_input_binding_hash_tamper_rejected_before_read(self):
+        with patch.object(cli.io,'sha',return_value='BAD'),patch.object(cli.io,'read',side_effect=AssertionError('must not read')):
+            with self.assertRaisesRegex(ValueError,'INPUT_BINDING_SHA'):
+                cli.verify_inputs(dict(input_binding='INVENTED',input_binding_sha256='GOOD'))
+    def test_individual_input_byte_tamper_rejected(self):
+        b=dict(schema=m.SCHEMA,target_ids=[m.TARGET],delta_sha256='GOOD',old_core_sha256='GOOD',old_explanations_sha256='GOOD',
+            input_files=[dict(path='INVENTED_FILE',sha256='GOOD')])
+        c=dict(input_binding='INVENTED_BINDING',input_binding_sha256='GOOD',delta_sha256='GOOD',old_core_sha256='GOOD',old_explanations_sha256='GOOD')
+        with patch.object(cli.io,'read',return_value=b),patch.object(cli.io,'sha',side_effect=lambda p:'GOOD' if p=='INVENTED_BINDING' else 'BAD'):
+            with self.assertRaisesRegex(ValueError,'INPUT_BYTES_MISMATCH'):cli.verify_inputs(c)
+    def test_canonical_delta_tamper_rejected(self):
+        b=dict(schema=m.SCHEMA,target_ids=[m.TARGET],input_files=[])
+        for name in cli.REFERENCES:b[name]=name;b[name+'_sha256']='GOOD'
+        c=dict(input_binding='INVENTED_BINDING',input_binding_sha256='GOOD',delta_sha256='GOOD',old_core_sha256='GOOD',old_explanations_sha256='GOOD')
+        with patch.object(cli.io,'read',return_value=b),patch.object(cli.io,'sha',side_effect=lambda p:'BAD' if p=='delta' else 'GOOD'):
+            with self.assertRaisesRegex(ValueError,'CANONICAL_INPUT_SHA'):cli.verify_inputs(c)
+    def test_runtime_profile_tamper_rejected(self):
+        with patch.object(cli.io,'read',return_value={}),patch.object(cli.io,'sha',return_value='BAD'):
+            with self.assertRaisesRegex(ValueError,'RUNTIME_PROFILE_HASH'):
+                cli.io.verify_runtime(dict(runtime_profile='INVENTED',runtime_profile_sha256='GOOD'))
+    def test_contract_tamper_rejected_before_source_or_input(self):
+        g=dict(approved=True,approved_by_user=True,runtime_authorization=True,one_shot=True,schema=m.SCHEMA,
+            scope=m.SCOPE,kind='SAVED_REAL_VALUES',target_ids=[m.TARGET],axes=list(m.AXES),retry=False,
+            next_stage_authorized=False,approval_receipt='INVENTED_RECEIPT',approval_receipt_sha256='GOOD',contract_sha256='GOOD')
+        a=dict(approved_by_user=True,factor_computation_authorized=True,scope=m.SCOPE,target_ids=[m.TARGET],axes=list(m.AXES),retry=False,contract_sha256='GOOD')
+        with patch.object(cli.io,'read',side_effect=[g,a]),patch.object(cli.io,'sha',side_effect=['GOOD','BAD']),patch.object(cli,'verify_source',side_effect=AssertionError('source forbidden')):
+            with self.assertRaisesRegex(ValueError,'CONTRACT_SHA'):cli.gate('INVENTED_GRANT','INVENTED_CONTRACT')
+    def test_post_marker_or_ledger_tamper_rejected(self):
+        with patch.object(cli,'gate',return_value=None),patch.object(cli.io,'sha',return_value='BAD'):
+            with self.assertRaisesRegex(ValueError,'POST_CONTROL_SHA_MISMATCH'):
+                cli.post_gate('INVENTED_GRANT','INVENTED_CONTRACT',{'INVENTED_MARKER':'GOOD'})
     def test_protected_output_and_reuse_rejected(self):
         with tempfile.TemporaryDirectory() as temp:
             p=Path(temp)
