@@ -1,3 +1,7 @@
+H4 tol-only DF10 S_STATS完了（2026-10-19）：SOURCE8752489b…で24 scenario/2方向/12感度を1 pass、native exit0・同一親回収・終了監査PASS。基準f4/差.02の提案n1108/78、P提案1186 trajectory/2372軸。両探索n8はS0のみ、母平均/実power保証なし。raw再集計・sampling/compile/P・新seed0、新規pushなし、mandatory STOP。[結果とP契約への引継ぎ](../docs/research/track_a_h4_tol_s_stats_completed_20261019.md)。以下は各時点の履歴。
+
+`audit_h4_tol_s_stats_completed.py` は終了したDF10 S_STATSのmetadata/ledger/保存schemaとSHAを監査する。数値kernel・n設計を再実行しない。
+
 H4 tol-only DF10 S_STATS最終技術準備（2026-10-19）：D190/A50を正式受入、指定PR2条件と保存PF対照を固定。family α=.05/m2・power=.8、SD倍率1/2/4/8×差.01/.02/.05の24 scenario、基準f4/.02。SOURCE8752489b…/9 file・入力13・runtime128を固定。人工35件/無効grant拒否2経路PASS、旧9,178レコード保全。実n/SD/power・sampling/compile/P0、両n8の保存希少層はS0のみ、母平均保証なし。新規pushなし、mandatory STOP。[契約と次の承認](../docs/research/track_a_h4_tol_s_stats_preparation_20261019.md)。以下は各時点の履歴。
 
 `h4_tol_s_stats_contract.py` / `h4_tol_s_stats_numeric.py` / `run_h4_tol_s_stats.py` / `prepare_h4_tol_s_stats.py`：DF10の2 endpoint専用。数値moduleは承認gate後にだけimport。人工検証は `tests/test_h4_tol_s_stats.py`。旧rank12 S_STATSは履歴として保持する。
