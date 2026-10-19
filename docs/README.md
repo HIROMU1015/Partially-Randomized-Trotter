@@ -1,3 +1,7 @@
+## 2026-10-19 m5：Euler位相生成・角度簡約の人工切分け完了
+
+[局所結果・限界・次の担当](research/track_a_m5_local_resynthesis_diagnostic_20261019.md)。SOURCE057d954b…、45入力×3生成/Euler45/積9/局所反復4を4processで完了。既定の小角RZ省略で約9.1e-13差、正確な外側phase batchでも反復で蓄積する人工例を再現。簡約無効の対照は約2.9e-16。H6での発生・原因・修正十分性は未確定。新人工12＋回帰13件PASS、2598file保全、実分子QPY/NPZ/compile/作用/会計0、旧STOP/58軸/AD03保留。次はユーザーの保存H6局所run限定照合の判断。local commit後mandatory STOP・push0。以下は各時点の履歴。
+
 ## 2026-10-19 H6 m5：exact phase batchの再計算もraw基準超過でSTOP
 
 [結果・実行証拠・終了監査](research/track_a_h6_m5_phase_batch_run01_results_20261019.md)。SOURCE 96cd7cd4…、保存lowering PASS再利用で新compile1/作用1、約7分20秒。88pass・502636位相増分の正確な集計を完了したが、compiled vs保存変換後vectorは1.432e-9で固定1e-9未満FAIL、第3gate未実施null。worker exit0/launcher exit1・全回収、終了監査48項目PASS。2570file/2011seal・旧STOP/58軸/AD03保留、費用受理/retry/sine/会計0。修正未解決、次はユーザーの内部phase生成・matrix/Euler・局所簡約の切分け判断。local commit後mandatory STOP・push0。以下は各時点の履歴。
