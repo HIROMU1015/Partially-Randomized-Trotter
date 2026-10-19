@@ -1,3 +1,7 @@
+## 2026-10-19 H4/H6 m5：tol-only technical pilot一回起動・完了未確認
+
+[起動・fresh gate・承認範囲・終了監査](../../docs/research/track_a_h46_m5_tol_pilot_run01_start_20261019.md)。SOURCE c7d53f04…、最大60軸/PR12本/reference2、最大30 worker。13:07 JST snapshotでreference両PASS・21/30 task完了、STOPなし。新4grantを一回消費し旧DRAFT/INVALIDとSOURCEを保全。m5採用AD03/後続Core/会計/fitは未承認。バックグラウンド継続、終了後自動mandatory STOP。Codexの終了監査・結果報告は未実施。以下は各時点の履歴。
+
 [m5 tol-only adapter準備](../../docs/research/track_a_h46_m5_tol_native_readiness_20261019.md)：元library/schedule/係数を変更せず、新scripts側で保存入力と契約を接続。
 
 [m5共通v1整合計画](../../docs/research/track_a_h46_m5_protocol_alignment_20261019.md)を追加。既存m5科学module・係数・封印済み契約の変更はない。
