@@ -21,3 +21,5 @@ P→PFの総CPU削減はlight/mixed/heavy **5.6/4.0/1.8%**、wall削減 **4.0/3.
 実G7/F3 import/sampling、新科学計算、実保存値再解析、実authorization/grant/claim、correctness256/full-N本番は全0。
 共有設定や他ユーザーprocessを変更していない。検査はprimary agent自身による。公開照合後**mandatory STOP**。
 次はローカルCodexのparallel adapter。正式採択/科学実行はユーザーの別判断・承認が必要。
+
+公開照合：content commit `396b174cb492161b15f9dce23fc7ea3ce6911b56` の208ファイル・19,987,245 bytesを取得し直し、全SHA256とremote HEADを照合した。receipt自身を含む最終HEADと差分は別途照合する。
