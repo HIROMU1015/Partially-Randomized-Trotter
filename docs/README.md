@@ -1,3 +1,7 @@
+## 2026-10-19 H6 full m5：scalar位相台帳照合完了・旧STOP維持
+
+[結果・解釈・終了監査](research/track_a_h6_m5_phase_ledger_run01_results_20261019.md)。SOURCEf0022cec…/plan b24b9fea…、保存2QPYを2 workerでscalar抽出し約39秒でnative exit0・全回収。正確なbinary64有理数と数学的πの80/120桁でδ_det約1.48572348e-9 rad、保存拡張common phaseとの差約−1.69657e-11 rad。内部安定性PASSだが発生pass/全状態等価性は未確定。人工13件・起動前22項目・終了35項目PASS、2,324file保全/1,932seal。新compile/回路再生/費用受理/補正0、旧STOP/raw基準/58軸/AD03保留を維持。local commit後mandatory STOP・push0。次はユーザーの追加調査・修正計画判断。以下は各時点の履歴。
+
 ## 2026-10-19 H6 full m5：位相帳簿の静的調査完了・原因未確定
 
 [保存構造・source経路・次の最小案](research/track_a_h6_m5_phase_ledger_static_20261019.md)。保存2QPYを2processでmetadata照合し、ancilla scalar P1回/H2回・gate順序hashを確認。Qiskit公式1.3.0の11 source/選択Python5file byte一致、binary64再合成/位相加算・2π wrapへ追跡したが原因未確定。新再生/compile/実角度総和0、人工構造5＋記号3の8件PASS、2223file/1831seal保全。再compile不要のdeterminant scalar台帳案は未実装・未承認。旧STOP/58軸/raw基準/AD03保留を維持。local commit後mandatory STOP・push0、次はユーザーの台帳準備/実行判断。以下は各時点の履歴。
