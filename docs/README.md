@@ -1,3 +1,5 @@
+H2専用Fの静的準備（2026-10-19）：SOURCE37b1cf72…、tol-only／実rank未取得／spin sector4。旧H2 rank3・sector6は同一入力として再利用不可。人工16件・実INVALID grant拒否3入口PASS、F科学実行・P seal・push0、mandatory STOP。[契約・再利用監査・次の承認](research/track_a_h2_phase0_f_preparation_20261019.md)。以下は各時点の履歴。
+
 H2専用環境を準備（2026-10-19）：[新規チャットへの引継ぎ](research/track_a_h2_pr_resource_handoff_20261019.md)。H2科学実行・P seal・pushは未実施。以下は固定基点の既存履歴。
 
 H4 tol-only DF10 S_STATS完了（2026-10-19）：SOURCE8752489b…で24 scenario/2方向/12感度を1 pass、native exit0・同一親回収・終了監査PASS。基準f4/差.02の提案n1108/78、P提案1186 trajectory/2372軸。両探索n8はS0のみ、母平均/実power保証なし。raw再集計・sampling/compile/P・新seed0、新規pushなし、mandatory STOP。[結果とP契約への引継ぎ](research/track_a_h4_tol_s_stats_completed_20261019.md)。以下は各時点の履歴。

@@ -1,3 +1,7 @@
+H2専用Fの静的準備（2026-10-19）：SOURCE37b1cf72…、tol-only／実rank未取得／spin sector4。旧H2 rank3・sector6は同一入力として再利用不可。人工16件・実INVALID grant拒否3入口PASS、F科学実行・P seal・push0、mandatory STOP。[契約・再利用監査・次の承認](../docs/research/track_a_h2_phase0_f_preparation_20261019.md)。以下は各時点の履歴。
+
+`h2_pr_resource_contract.py` / `h2_tol_only_input.py` / `run_h2_pr_f.py` / `prepare_h2_pr_resource.py`：H2のF専用。人工検証は `tests/test_h2_pr_resource.py`。科学importは明示承認gate後だけ。
+
 H4 tol-only DF10 S_STATS完了（2026-10-19）：SOURCE8752489b…で24 scenario/2方向/12感度を1 pass、native exit0・同一親回収・終了監査PASS。基準f4/差.02の提案n1108/78、P提案1186 trajectory/2372軸。両探索n8はS0のみ、母平均/実power保証なし。raw再集計・sampling/compile/P・新seed0、新規pushなし、mandatory STOP。[結果とP契約への引継ぎ](../docs/research/track_a_h4_tol_s_stats_completed_20261019.md)。以下は各時点の履歴。
 
 `audit_h4_tol_s_stats_completed.py` は終了したDF10 S_STATSのmetadata/ledger/保存schemaとSHAを監査する。数値kernel・n設計を再実行しない。

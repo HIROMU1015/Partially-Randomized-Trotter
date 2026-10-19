@@ -1,3 +1,7 @@
+H2専用Fの静的準備（2026-10-19）：SOURCE37b1cf72…、tol-only／実rank未取得／spin sector4。旧H2 rank3・sector6は同一入力として再利用不可。人工16件・実INVALID grant拒否3入口PASS、F科学実行・P seal・push0、mandatory STOP。[契約・再利用監査・次の承認](../../docs/research/track_a_h2_phase0_f_preparation_20261019.md)。以下は各時点の履歴。
+
+H2 Fは既存DF/状態APIを固定providerから読取再利用する。ライブラリ実装の変更はない。
+
 H4 tol-only DF10 S_STATS完了（2026-10-19）：SOURCE8752489b…で24 scenario/2方向/12感度を1 pass、native exit0・同一親回収・終了監査PASS。基準f4/差.02の提案n1108/78、P提案1186 trajectory/2372軸。両探索n8はS0のみ、母平均/実power保証なし。raw再集計・sampling/compile/P・新seed0、新規pushなし、mandatory STOP。[結果とP契約への引継ぎ](../../docs/research/track_a_h4_tol_s_stats_completed_20261019.md)。以下は各時点の履歴。
 
 H4 tol-only DF10 S_STATS最終技術準備（2026-10-19）：D190/A50を正式受入、指定PR2条件と保存PF対照を固定。family α=.05/m2・power=.8、SD倍率1/2/4/8×差.01/.02/.05の24 scenario、基準f4/.02。SOURCE8752489b…/9 file・入力13・runtime128を固定。人工35件/無効grant拒否2経路PASS、旧9,178レコード保全。実n/SD/power・sampling/compile/P0、両n8の保存希少層はS0のみ、母平均保証なし。新規pushなし、mandatory STOP。[契約と次の承認](../../docs/research/track_a_h4_tol_s_stats_preparation_20261019.md)。以下は各時点の履歴。

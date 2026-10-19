@@ -116,3 +116,11 @@ without updating all references and provenance records.
   shared settings, environments, or other users' processes/files.
 - Keep proposed clarification choices pending until the user adopts them. Setup
   does not authorize publication; push only within a verified approval scope.
+
+
+## H2 current chat designation (user clarification, 2026-10-19)
+
+The user stated: 「これがその新規チャットです」. This chat is the designated
+independent H2 chat. Continue its static work here; do not ask for another chat.
+Scientific stage execution still requires separate explicit approval. Current
+F preparation: `docs/research/track_a_h2_phase0_f_preparation_20261019.md`.
