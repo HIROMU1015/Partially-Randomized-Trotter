@@ -31,6 +31,11 @@ def preserve_prior():
                      c.PRIVATE/'S_STATS_activation01/activation_preservation_manifest.json',
                      c.PRIVATE/'S_STATS_preparation01/completed_preservation_manifest_PRIVATE.json'):
         for r in c.read(manifest):c.require(c.sha(r['path'])==r['sha256'],'PREVIOUS_S_STATS_EVIDENCE_CHANGED')
+    stopped=c.PRIVATE/'P_seal01/partial_preservation_manifest_PRIVATE.json'
+    for r in c.read(stopped):
+        c.require(c.sha(r['path'])==r['sha256'],'PARTIAL_METADATA_STOP_PRESERVED')
+        rows[r['path']]=r['sha256']
+    rows[str(stopped)]=c.sha(stopped)
     for path,h in rows.items():c.require(c.sha(path)==h,'PRIOR_H2_SOURCE_RESULT_GRANT_LEDGER_STOP')
     return [dict(path=p,sha256=h) for p,h in sorted(rows.items())]
 
@@ -149,7 +154,7 @@ def seal(source):
             inputs.append(dict(role=stage+'_'+key,path=str(dest),sha256=h,bytes=len(blob),commit=commit,repo_path=rel))
             dep[key]=str(dest)
         manifest=c.read(dep['manifest'])
-        for r in manifest['files']:c.require(c.sha(c.PUBLIC/directory/r['path'])==r['sha256'],'UPSTREAM_PUBLIC_EVIDENCE')
+        for r in c.public_manifest_rows(manifest):c.require(c.sha(c.PUBLIC/directory/r['path'])==r['sha256'],'UPSTREAM_PUBLIC_EVIDENCE')
         dependencies[stage]=dep;results[stage]=c.read(dep['result'])
     endpoints=c.selected_endpoints(results['A'],results['D'],results['S_STATS'])
     adoption=dict(role='user',verbatim_user_message=MESSAGE,accepted_S_STATS_commit=c.STATS_COMMIT,

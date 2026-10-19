@@ -11,8 +11,8 @@ import h2_panels_contract as base
 
 require,read,save,sha,digest,owned=base.require,base.read,base.save,base.sha,base.digest,base.owned
 ROOT,PRIVATE,PUBLIC=base.ROOT,base.PRIVATE,base.PUBLIC
-STORE=PRIVATE/'P_seal01'
-EVIDENCE=PUBLIC/'P_seal01'
+STORE=PRIVATE/'P_seal02'
+EVIDENCE=PUBLIC/'P_seal02'
 SCOPE='H2_P_INDEPENDENT_CONFIRMATION_V1_20261019'
 COHORT='INDEPENDENT_H2_CONFIRMATION'
 STATS_COMMIT='829d697ae7905b3ea90a61da9d2d4da15d8b757a'
@@ -136,6 +136,21 @@ def verify_rows(rows):
         if r.get('commit'):
             blob=subprocess.check_output(['git','--no-optional-locks','show',r['commit']+':'+r['repo_path']],cwd=ROOT)
             require(hashlib.sha256(blob).hexdigest()==r['sha256'],'P_INPUT_GIT_IDENTITY')
+
+
+def public_manifest_rows(manifest):
+    """Read the existing F dict, FP file-key list and later path-key lists."""
+    files=manifest['files']
+    if isinstance(files,dict):rows=[dict(path=p,sha256=h) for p,h in files.items()]
+    else:
+        require(isinstance(files,list),'KNOWN_PUBLIC_MANIFEST_FORMAT')
+        rows=[dict(path=r.get('path',r.get('file')),sha256=r['sha256']) for r in files]
+    require(rows and len({r['path'] for r in rows})==len(rows),'UNIQUE_PUBLIC_MANIFEST_PATHS')
+    for r in rows:
+        require(isinstance(r['path'],str) and Path(r['path']).name==r['path']
+            and r['path'] not in ('.','..') and isinstance(r['sha256'],str) and len(r['sha256'])==64,
+            'PUBLIC_MANIFEST_FILE_AND_SHA')
+    return rows
 
 
 def verify(spec,*,runtime=True):

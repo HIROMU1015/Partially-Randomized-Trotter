@@ -129,6 +129,15 @@ class SeedAndAccounting(unittest.TestCase):
         self.assertTrue(set(c.base.stats.seed_hierarchy(123,4))<=found)
         self.assertTrue({1,2,99}<=found)
 
+    def test_F_FP_and_current_public_manifest_formats(self):
+        expected=[dict(path='toy.json',sha256='a'*64)]
+        for files in ({'toy.json':'a'*64},[dict(file='toy.json',sha256='a'*64)],expected):
+            self.assertEqual(c.public_manifest_rows(dict(files=files)),expected)
+
+    def test_duplicate_or_escaping_public_manifest_rejected(self):
+        for files in ([dict(path='../toy',sha256='a'*64)], [dict(path='toy',sha256='a'*64)]*2):
+            with self.assertRaises(ValueError):c.public_manifest_rows(dict(files=files))
+
 
 class FullMetadataGate(unittest.TestCase):
     def setUp(self):
