@@ -1,3 +1,7 @@
+H2 D_run01停止（2026-10-19）：SOURCEde72e5d4…のD70を承認後1回起動。チャット中断後にdriver/native/既知workerの不在を確認し、native exit・wait4・最終resultがないため完了未確認STOP。保存70 signal（36新base＋28overlay＋FP6）、signal worker36は回収/hash PASS。compile28開始・raw結果12/計測27軸は未受理、56軸予約を返還せず、会計0・PF winner未取得。再実行0、F/FP保全・原D541 files保存、再開案はSOURCE未固定のINVALID草案。A以降未実行、新規pushなし、mandatory STOP。[停止証拠・再開前の条件](../docs/research/track_a_h2_d_interrupted_20261019.md)。以下は各時点の履歴。
+
+`audit_h2_d_interrupted.py` はnative完了証拠を失ったD_run01の部分結果・未返還予約・PID不在をstdlibだけで保全する。native exit/reapを捏造せず、SOURCE変更・NPZ decode・科学再実行を行わない。
+
 H2 FP完了（2026-10-19）：SOURCEde72e5d4…、受入Fのtol-only rank3・4 qubits/spin sector4を再利用しFP8候補をone-shot実行。6 base＋2 B0I、PR各n1の2軌道・16軸、primitive111/control32＋oracle2 PASS。native exit0・同一親wait4・14 worker回収、wall19.184秒。SCF/DF/状態solver/実shots0、PR2本はS0のみ・母平均未保証。F295レコード保全、D/A未実行・未承認、新規pushなし、mandatory STOP。[完了証拠・次の判断](../docs/research/track_a_h2_fp_completed_20261019.md)。以下は各時点の履歴。
 
 `audit_h2_fp_completed.py` はFP_run01の保存bytes・台帳・seed・14 workerのnative終了を照合する。NPZ decode・科学再計算・後段起動は行わない。
