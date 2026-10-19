@@ -1,3 +1,7 @@
+## 2026-10-19 H6 m5：明示basis修正・cosine一軸再計算を起動
+
+[承認・固定scope・fresh gate・起動snapshot](../docs/research/track_a_h6_m5_phase_repair_run01_start_20261019.md)。SOURCE02cb8b12…/plan9c70e90b…、利用者の実H6再計算承認に基づき新grantを一回消費。最大cosine1compile/2作用、各3raw差1e-9未満を維持。人工11件・起動前22項目PASS、1964seal/2422保全file。1 productive worker＋独立監視、transient PSIでkillせず無関係worktree非凍結。新入力政策は旧費用非互換、旧STOP/58軸/AD03保留。全PASS/native exit/reapは未監査、次はCodexの終了監査・結果報告後mandatory STOP。local commit・push0。以下は各時点の履歴。
+
 ## 2026-10-19 H6 m5：compiler位相欠落の人工再現・明示basis修正候補
 
 [調査・人工検証・一軸DRAFT計画](../docs/research/track_a_h6_m5_phase_repair_design_20261019.md)。SOURCE9fe4981a…、固定BasisTranslatorでparameter付き等価則の数値定数phase欠落を人工最小例で再現。P-onlyは単独修正として不採用、明示native→basis候補は人工raw演算比較PASS、18 test method。H6旧微小差との因果接続/実H6改善は未検証、実行adapter/closure未完成・無効grant。実分子QPY/NPZ/compile/再生/有効grant0、2369file/1932seal保全、旧STOP/58軸/AD03保留。local commit後mandatory STOP・push0。次はCodexの固定一軸実行準備、その後ユーザーの別実行承認。以下は各時点の履歴。
