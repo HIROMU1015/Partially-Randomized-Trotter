@@ -14,3 +14,5 @@
 試験は主担当Codexが実施した。offline照合はproducerをimportしない別実装のcheckerによるもの。別人・別AIによる独立reviewを受けたとは主張しない。
 
 次の担当は**ユーザーとGPT**。pilot規模、比較条件、証拠粒度、正式SOURCE採択と別の科学実行承認を判断する。Codexは自動移行しない。
+
+公開content commit `f3ba0cd09d3c09c5d04a6b48c3d6c9da63fff867` の684 files / 57,212,260 bytesを読み戻し、全SHA256とremote HEADを照合済み。詳細はpublication_receipt.json。receipt自身は自己hashせず、後続metadata commitを別途照合する。
