@@ -38,6 +38,23 @@ def synthetic_system_worker(cfg,system,threads,stop):
 
 
 class ContractTests(unittest.TestCase):
+    def test_original_pilot_is_verified_at_its_sealed_root(self):
+        with tempfile.TemporaryDirectory() as d:
+            original=Path(d)/'original';(original/'scripts').mkdir(parents=True)
+            source=original/'scripts/h46_m5_tol_contract.py';source.write_text('# synthetic original contract\n')
+            config=Path(d)/'origin.json';payload=dict(SOURCE='a'*40,sealed_files=[dict(path=str(source))]);c.save(config,payload)
+            with patch.object(c.subprocess,'check_output',return_value=source.read_bytes()) as git,patch.object(c.subprocess,'run',return_value=SimpleNamespace(returncode=0,stderr='')) as process:
+                self.assertEqual(c.verify_original_pilot(config),payload)
+                self.assertEqual(git.call_args.kwargs['cwd'],original)
+                self.assertEqual(process.call_args.args[0][-2:],[str(original/'scripts'),str(config)])
+            with patch.object(c.subprocess,'check_output',return_value=source.read_bytes()),patch.object(c.subprocess,'run',return_value=SimpleNamespace(returncode=1,stderr='ORIGINAL_SEAL_MISMATCH')):
+                with self.assertRaisesRegex(ValueError,'ORIGINAL_PILOT_SEALS'):c.verify_original_pilot(config)
+
+    def test_ambiguous_original_contract_is_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            config=Path(d)/'origin.json';c.save(config,dict(sealed_files=[dict(path='/a/scripts/h46_m5_tol_contract.py'),dict(path='/b/scripts/h46_m5_tol_contract.py')]))
+            with self.assertRaisesRegex(ValueError,'UNIQUE_ORIGINAL_PILOT_CONTRACT'):c.verify_original_pilot(config)
+
     def test_88_adopted_no_optional(self):
         self.assertEqual(len(c.rows()),88);self.assertEqual(len(c.rows('H4')),40);self.assertEqual(len(c.rows('H6')),48)
         self.assertTrue(all(x['role']=='PRIMARY' for x in c.rows()))

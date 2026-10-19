@@ -3,6 +3,7 @@ import hashlib
 import math
 from pathlib import Path
 import subprocess
+import sys
 import h46_m5_tol_contract as old
 from h6_m5_phase_repair_contract import sha,read,save,seal,digest,require
 
@@ -41,6 +42,23 @@ def scope():
       retry=False,next_phase_authorized=False,AD03='DEFERRED',mandatory_STOP=True)
 
 
+def verify_original_pilot(config_path):
+    """Run the original sealed contract at its original root, in isolation.
+
+    Its absolute source paths remain mandatory. A new signal worktree is never
+    substituted into that historical seal. This subprocess imports stdlib only.
+    """
+    origin=read(config_path)
+    paths=[Path(e['path']) for e in origin['sealed_files'] if e['path'].endswith('/scripts/h46_m5_tol_contract.py')]
+    require(len(paths)==1,'UNIQUE_ORIGINAL_PILOT_CONTRACT')
+    path=paths[0];root=path.parents[1]
+    require(path.read_bytes()==subprocess.check_output(['git','show',origin['SOURCE']+':scripts/h46_m5_tol_contract.py'],cwd=root),'ORIGINAL_PILOT_CONTRACT_GIT_BYTES')
+    code='import sys;sys.path.insert(0,sys.argv[1]);import h46_m5_tol_contract as c;c.verify_seals(c.read(sys.argv[2]));c.consumed(c.read(sys.argv[2]))'
+    result=subprocess.run([sys.executable,'-B','-c',code,str(root/'scripts'),str(Path(config_path).resolve())],capture_output=True,text=True)
+    require(result.returncode==0,'ORIGINAL_PILOT_SEALS:'+result.stderr[-1500:])
+    return origin
+
+
 def verify(cfg):
     require(cfg['plan']['scope']==scope() and cfg['plan']['SOURCE']==cfg['SOURCE'],'EXACT_SIGNAL_SCOPE')
     require(read(cfg['plan_path'])==cfg['plan'] and sha(cfg['plan_path'])==cfg['plan_sha256'],'SIGNAL_PLAN_BYTES')
@@ -59,7 +77,7 @@ def verify(cfg):
     reused=[]
     original_inventory={r['path']:r for r in read(ROOT/PILOT_INVENTORY)}
     for system,info in cfg['systems'].items():
-        origin=read(info['origin_config']);old.verify_seals(origin);old.consumed(origin)
+        origin=verify_original_pilot(info['origin_config'])
         require(origin['SOURCE']=='c7d53f04c3be131078ee91e8bef3c78ca434ed3e' and origin['system']==system and origin['lane']==system+'_TOL_PILOT_DET','ORIGINAL_PILOT_LINEAGE')
         require(info['binding']==origin['binding'] and info['inputs']==origin['inputs'] and info['reference_root']==origin['reference_root'],'SAME_SAVED_INPUTS_REFERENCE')
         require(cfg['runtime']==origin['runtime'] and cfg['provider_root']==origin['provider_root'],'SAME_PILOT_RUNTIME')

@@ -22,7 +22,7 @@ def prepare(origin_directory,runtime_config,destination,source):
     systems={}
     for system in ('H4','H6'):
         path=Path(origin_directory)/(system+'_TOL_PILOT_DET_config_APPROVED_PRIVATE.json')
-        old=c.read(path);c.old.verify_seals(old);c.old.consumed(old)
+        old=c.verify_original_pilot(path)
         c.require(old['runtime']==frozen['runtime'],'SAME_FROZEN_SIGNAL_RUNTIME')
         for row in old['sealed_files']:
             if row['path'] in files:c.require(row['sha256']==files[row['path']]['sha256'],'UNCHANGED_PRIOR_CLOSURES')
