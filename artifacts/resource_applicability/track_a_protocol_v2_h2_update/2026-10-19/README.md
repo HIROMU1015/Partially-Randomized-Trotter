@@ -1,0 +1,5 @@
+# v2 H2状態追記
+
+ユーザー指示でv2本文にH2 P完了・有限標本2条件の正式受入を追記済み。初回採択bundleは1f001cfc時点の履歴、現行manifestはこのdirectoryのprotocol_manifest.json。初回採択record・旧manifest・STOPは変更しない。
+
+update_record.jsonに固定SOURCE/結果/受入の参照、structural_validation.jsonに主agentの構造検証、artifact_manifest.jsonに文書hashを保存する。独立科学レビューではない。科学計算・統計解析・sampling・compile0。H468主表・原図・v1を変更せずmandatory STOP。

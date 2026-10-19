@@ -1,5 +1,7 @@
 # Track A PRリソース評価：共通実験プロトコル v2（正式採用）
 
+> **2026-10-19 H2完了・正式受入の追記（ユーザー指示により適用済み）**：H2の現行状態は末尾の「10. H2独立確認P完了・正式受入」を優先する。以下§1–9に残るH2の「P未seal・未実行」「提案n未採用」「最終SOURCE/seed未固定」は、初回採択時snapshot `829d697a` の履歴である。H4/H6/H8の既存条件・判定・制約は変更しない。[現行manifest](../../artifacts/resource_applicability/track_a_protocol_v2_h2_update/2026-10-19/protocol_manifest.json)と[追記記録](../../artifacts/resource_applicability/track_a_protocol_v2_h2_update/2026-10-19/update_record.json)を参照。初回採択bundleはcommit `1f001cfc4e8e0531279a26613be29a52c7c0640c` 時点の不変snapshotとして読む。
+
 2026-10-19（Asia/Tokyo）。**ADOPTED_V2_DOCUMENT_ONLY_NO_EXECUTION_AUTHORIZATION。ユーザーの指示により正式採用。**
 
 文書基準の基点は[採用済みv1（9036d8a8）](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9036d8a87ad1c38e83b9ff654b412dde7041e9d3/docs/research/track_a_pr_resource_evaluation_protocol_v1.md)。v1の本文・採択記録・例外表は変更しない。
@@ -173,3 +175,51 @@ AI subagentへの委任禁止は維持する。
 **ユーザー（採用済み）**：固定v2改訂案を正式な共通実験プロトコルとして採用。H2の対象追加、保存snapshot、明示された例外・未検証事項を含む文書の採用であり、未検証事項の解消・科学的保証やH2 Pの提案n採用を認定しない。
 **ユーザー／H2担当Codex（別stage）**：H2 S_STATS提案n80/12の採否を判断し、指示後にP最終seed・SOURCE・予算をsealする。P科学実行はさらに別個の明示承認を必要とする。本改訂担当はH2作業を起動しない。
 **Codex（現在）**：正式版・採用記録の構造照合、保存、承認範囲の公開確認後、mandatory STOP。科学計算、詳細科学レビュー、最終freezeへ自動進行しない。
+
+## 10. H2独立確認P完了・正式受入（2026-10-19追記）
+
+ユーザーの「実験条件プロトコルｖ２の方に追記しておいて」という指示により、H2の完了・正式受入をv2本文へ反映した。既に採択済みのv2への状態追記であり、プロトコル全体の再採択や新規科学実行の承認ではない。H2は旧v1対象外の追加系列とし、v1と初回v2採択記録は変更しない。
+
+### 10.1 入力・実験条件
+
+linear H2、H座標(0,0,0)/(0,0,1) Å、STO-3G、charge0/multiplicity1、RHF、SCF conv_tol1e-9/max_cycle50、symmetryなし。DF threshold1e-8・final_rank指定なしのtol-only分解は実rank3。signed weights・生成順・cutoff0を保持する。4 qubits、Nα=Nβ=1のspin sector次元4。旧H2の設定選択rank3/sector6とは別入力である。
+
+状態はdense scipy.linalg.eigh、最大sector振幅の位相固定、norm gate1e-12、残差gate1e-10、最低gap gate1e-12、保存後再正規化なし。小さい保存残差や完了PASSをground-state certificateとはしない。H4 dense sector36、H6/H8の記録上eigsh sector400/4900とのsolver・正規化・残差gateの相違は保持し、全生成手順の完全同一性は未認定。
+
+T=.8、P=0、通常signed bias、allowance倍率1。D/Aの5精度はε=.05/.01/.005/.001/.0005。full cosine/sine Hadamard wrapper、symmetric_directional、original scalar＋tail identity一回、reference不回転を継承する。Qiskit1.3.0、rz/sx/x/cx、opt1、seed_transpiler17、backend/coupling/layout/routing未指定。費用は両軸compiled RZ×保存analytic shotの合計であり、実量子shot数、FT T資源、energy/RPE全round費用ではない。
+
+Hamiltonian `d0bc260db6fc0a485fe518050075c18ccc0dff532253dcc719a52a61f41afa80`、state `080b7ad2a46f38ed51e2989eb399ceda4cae95fca688722959ee65463cf174bf`、snapshot `62c6481bd1f8b05ec3b399b3a5293873796737866409049d808e8fe432dcacaa`。compiler hash `1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b`。
+
+### 10.2 全stageの完了と来歴
+
+|stage|科学SOURCE|完了commit|状態|
+|---|---|---|---|
+|F|`37b1cf72990885962d8449d8bd5ec7e303329350`|`7ea6df2dbe34e64a34f468c343bb12922d3e2829`|COMPLETE_MANDATORY_STOP|
+|FP|`de72e5d4e48177734c0ddd79dffac14222410658`|`af724928689be3592b391fab3a14538bf4752b76`|COMPLETE_MANDATORY_STOP|
+|D|`cf99e4452df96291d7e9d37d76d2e91be5cbc413`|`7b202a1a569c6839c4c7a5dfb18b6ff51ec3f3eb`|COMPLETE_MANDATORY_STOP|
+|A|`de72e5d4e48177734c0ddd79dffac14222410658`|`1d2f67ec285956ef4090ea26520d64b11e925f9c`|COMPLETE_MANDATORY_STOP|
+|S_STATS|`e0b959e8a617f7934d05c3e249832ccc1c43909f`|`829d697ae7905b3ea90a61da9d2d4da15d8b757a`|COMPLETE_MANDATORY_STOP|
+|P|`ce1f511c4f7429190adcee58cde86be8a87a2fb1`|`f2d1a86c431f835db700f348ce618d8604e7ee23`|COMPLETE_MANDATORY_STOP|
+
+Dは受入済みD_run02のD70に限定する。旧D_run01の未確認STOP・partial費用・非返還予約を成功へ書き換えない。A66は各新n8、FP診断各n1とPの独立cohortを混合しない。S_STATSは保存summaryによる24 scenario・12感度・2方向の既存設計であり、今回再実行していない。
+
+PはS_STATS提案n80/12の採用、最終seal `6eacd7f82afb1c6d3fa6b66987df8dcfa1ed8bcb`、別途明示承認を経て完了した。科学SOURCE `ce1f511c4f7429190adcee58cde86be8a87a2fb1`、固定92 trajectory・184 compiled軸・256 RTE event、元のfinite-RTE law、cos/sin paired trajectory、追加sampling・自動retry・候補再選択なし。native exit0・同一親wait4・92 worker全回収を保存終了監査で確認済み。
+
+### 10.3 正式採用した有限標本の2条件
+
+|ε|固定PR / 固定PF|L_D / δ|n|保存G_PR exact|保存paired SE|保存G_PF exact|点費用・方向判定|
+|---|---|---|---|---|---|---|---|
+|0.05|B2_p1_q1_2nd_r2_K4 / B1_p3_q1_2nd|1 / .8|80|384135011/80|15992.018778605378|5533984|PR低費用、REPRODUCED|
+|0.0005|B2_p1_q4_2nd_r2_K4 / B1_p3_q4_2nd|1 / .2|12|998482376201/4|276760628.92856276|305695076994|PR低費用、REPRODUCED|
+
+ユーザーが両条件を**有限標本の結果として正式採用**した。P結果は[f2d1a86c](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/f2d1a86c431f835db700f348ce618d8604e7ee23/artifacts/resource_applicability/track_a_h2_pr_resource/2026-10-19/P_completed_run01/confirmation_result.json)、受入記録は[8fbe7d77](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/8fbe7d77556c2353be837dbd9ed0fddc02ee81c4/artifacts/resource_applicability/track_a_h2_results_integration/2026-10-19/adoption_record.json)、全stageのSOURCE・契約・結果・終了監査は[固定証拠一覧](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/8fbe7d77556c2353be837dbd9ed0fddc02ee81c4/artifacts/resource_applicability/track_a_h2_results_integration/2026-10-19/stage_evidence.json)。mean/SE/PF/n/statusをそのまま転記し、新しい比・削減率・CI・検定・標本数・順位を計算していない。
+
+q1の保存層はS0_ONLY79/S2_SINGLE1、q4はS0_ONLY12。希少・未観測高次/多重eventの費用・分散、law確率はunknownを維持する。S2を1件観測したことや保存SEから、母平均優位・実power・全support保証を認定しない。経験的bias allowanceも厳密bias保証ではない。
+
+### 10.4 論文scopeと保全
+
+H4/H6/H8の既存主表6条件と原図34ファイルは不変。H2追加2条件との[別8条件比較](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/8fbe7d77556c2353be837dbd9ed0fddc02ee81c4/artifacts/resource_applicability/track_a_h2_results_integration/2026-10-19/H2468_comparison_separate.md)は研究資料であり、論文主表の差替えではない。H2本文／補遺への掲載とpaper manifest・CEM・台帳追加案の適用は、引き続きユーザーの別判断とする。
+
+H4粗精度NOT_REPRODUCED、H6粗精度REPRODUCEDかつPF低費用、H8のREPORTED_LOCAL_PASS_NOT_REVERIFIED_FROM_PUBLIC_RECEIPTSを保持する。H8主表とFigure2B/Mechanism H8_CONFIRM_1/3を重複した独立証拠と数えず、既存Mechanism因子をH2へ移送しない。
+
+今回の更新は文書追記・manifest整合・構造検証のみ。科学SOURCE・raw結果・grant・ledger・marker・STOPを変更せず、新規科学計算・統計解析・sampling・compileは0。詳細科学レビュー・最終evidence freezeへ進まない。**追記完了後はmandatory STOP**。
