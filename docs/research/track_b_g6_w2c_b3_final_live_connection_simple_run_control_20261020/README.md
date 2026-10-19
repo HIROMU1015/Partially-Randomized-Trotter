@@ -13,3 +13,5 @@ SOURCE `src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/`、test `t
 
 
 **実科学未実行、実行未承認。mandatory STOP。次の担当：ユーザー・GPT。**
+
+追加：[対象filesystem受入](target_filesystem_acceptance.md)。予定outputと同じproject filesystemでone-shot16 testsもPASS、主132＋追加16＝148 PASS。SOURCE不変、科学実行0。

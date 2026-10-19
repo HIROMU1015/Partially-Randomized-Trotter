@@ -1,0 +1,31 @@
+from pathlib import Path
+import unittest,json,os,tarfile,subprocess
+from trottertracks.algorithm_codesign.g6_w2c_b3_final_live_v1 import contract as K,guard as G
+
+
+def main():
+    root=Path(__file__).resolve().parent
+    with (root/'tests.log').open('w') as stream:r=unittest.TextTestRunner(stream=stream,verbosity=2).run(unittest.defaultTestLoader.loadTestsFromName('test_g6_w2c_b3_final_live_v1.SimpleState'))
+    c=K.candidate(Path.cwd());m=K.run_manifest_candidate(c)
+    result=dict(schema='b3_target_filesystem_atomic_acceptance_v1',test_source_public_HEAD=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),
+        measured_SOURCE='a1c4f41b6c29baf691006a8ef39e87b8ab9aa8d8',source_release_candidate=c['source_release_candidate'],
+        run=r.testsRun,PASS=r.testsRun-len(r.failures)-len(r.errors)-len(r.skipped),FAIL=len(r.failures),ERROR=len(r.errors),SKIP=len(r.skipped),
+        failures=[dict(id=t.id(),trace=v) for t,v in r.failures+r.errors],
+        filesystem=dict(project_device=Path.cwd().stat().st_dev,artificial_store_device=root.stat().st_dev,tmp_device=Path('/tmp').stat().st_dev,
+            target_parent_device=Path(m['storage_destination']).parents[5].stat().st_dev,same_project_filesystem=root.stat().st_dev==Path.cwd().stat().st_dev),
+        source_pins=K.verify_source_commit(c,'a1c4f41b6c29baf691006a8ef39e87b8ab9aa8d8'),
+        actual_science_directory_created=Path(m['storage_destination']).exists(),guard=G.observation(),
+        scientific_loader_calls=0,scientific_bits=0,scientific_sampling=0,real_permission_issue_consume=0,
+        scope='Only 16 existing SimpleState persistence tests repeated on target filesystem; no Bundle/sampling/regression repeat',
+        prior_harness_issue='stdin runner was not spawn-reimportable; failed raw retained separately, file runner used here',mandatory_STOP=True)
+    (root/'tests.json').write_text(json.dumps(result,indent=2)+'\n')
+    packet=Path(K.DOC)/'acceptance/target_filesystem';packet.mkdir(exist_ok=False)
+    for name in ('tests.json','tests.log'):(packet/name).write_bytes((root/name).read_bytes())
+    (packet/'runner_source.txt').write_bytes(Path(__file__).read_bytes())
+    with tarfile.open(packet/'raw.tar.gz','w:gz') as archive:archive.add(root/'raw_final',arcname='raw')
+    assert result['FAIL']==result['ERROR']==result['SKIP']==0
+    assert result['run']==16 and result['filesystem']['same_project_filesystem'] and not result['actual_science_directory_created']
+    print(json.dumps(result))
+
+
+if __name__=='__main__':main()

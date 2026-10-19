@@ -13,3 +13,5 @@
 
 
 **実科学未実行、実行未承認。mandatory STOP。次の担当：ユーザー・GPT。**
+
+対象FS追補（Q5/Q8）：/tmpとは別の予定output filesystemで既存one-shot16 testsを追加し16/16 PASS。主受入132と合わせ148 PASS。測定SOURCEと143 pinsは不変。[追加受入](target_filesystem_acceptance.md)。

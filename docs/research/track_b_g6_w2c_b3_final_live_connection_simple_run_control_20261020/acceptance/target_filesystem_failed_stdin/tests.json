@@ -1,0 +1,56 @@
+{
+  "schema": "b3_target_filesystem_atomic_acceptance_v1",
+  "test_source_public_HEAD": "62ef21a45c52936b455d860b66500bbf0dcffab5",
+  "measured_SOURCE": "a1c4f41b6c29baf691006a8ef39e87b8ab9aa8d8",
+  "source_release_candidate": "c0438772ddaa04744125c356e950fcb6b7c61e67e4b5da0063e0d03dad0f0c27",
+  "run": 16,
+  "PASS": 12,
+  "FAIL": 4,
+  "ERROR": 0,
+  "SKIP": 0,
+  "failures": [
+    {
+      "id": "test_g6_w2c_b3_final_live_v1.SimpleState.test_atomic_one_winner",
+      "trace": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-final-live-connection-simple-run-control-20261020/tests/tracks/algorithm_codesign/test_g6_w2c_b3_final_live_v1.py\", line 167, in test_atomic_one_winner\n    for p in processes:p.join();self.assertEqual(p.exitcode,0)\n                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 1 != 0\n"
+    },
+    {
+      "id": "test_g6_w2c_b3_final_live_v1.SimpleState.test_crash_after_commit",
+      "trace": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-final-live-connection-simple-run-control-20261020/tests/tracks/algorithm_codesign/test_g6_w2c_b3_final_live_v1.py\", line 176, in test\n    p.start();p.join();self.assertEqual(p.exitcode,exitcode)\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 1 != 63\n"
+    },
+    {
+      "id": "test_g6_w2c_b3_final_live_v1.SimpleState.test_crash_after_intent",
+      "trace": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-final-live-connection-simple-run-control-20261020/tests/tracks/algorithm_codesign/test_g6_w2c_b3_final_live_v1.py\", line 176, in test\n    p.start();p.join();self.assertEqual(p.exitcode,exitcode)\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 1 != 61\n"
+    },
+    {
+      "id": "test_g6_w2c_b3_final_live_v1.SimpleState.test_crash_before_commit",
+      "trace": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-final-live-connection-simple-run-control-20261020/tests/tracks/algorithm_codesign/test_g6_w2c_b3_final_live_v1.py\", line 176, in test\n    p.start();p.join();self.assertEqual(p.exitcode,exitcode)\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 1 != 62\n"
+    }
+  ],
+  "filesystem": {
+    "project_device": 66306,
+    "artificial_store_device": 66306,
+    "tmp_device": 66320,
+    "target_parent_device": 66306,
+    "same_project_filesystem": true
+  },
+  "source_pins": {
+    "commit": "a1c4f41b6c29baf691006a8ef39e87b8ab9aa8d8",
+    "source_release_candidate": "c0438772ddaa04744125c356e950fcb6b7c61e67e4b5da0063e0d03dad0f0c27",
+    "checked": 143,
+    "PASS": true
+  },
+  "actual_science_directory_created": false,
+  "guard": {
+    "pid": 196523,
+    "preload_guard": true,
+    "core_loaded": [],
+    "core_import_attempts": [],
+    "artificial_only": true
+  },
+  "scientific_loader_calls": 0,
+  "scientific_bits": 0,
+  "scientific_sampling": 0,
+  "real_permission_issue_consume": 0,
+  "scope": "Repeat only the 16 SimpleState persistence checks on the project filesystem; no Bundle/sample/regression repeat",
+  "mandatory_STOP": true
+}
