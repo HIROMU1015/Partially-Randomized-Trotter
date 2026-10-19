@@ -20,3 +20,5 @@ Producerは`g6_w2c_b3_pilot_storage_v2.py`、追加checkerは`g6_w2c_b3_storage_
 raw/詳細report/logはfault_cases_final.tar.gzとそのmanifestに収録。公開時は4MiB以下のpartへ分割し、archive_parts.jsonに各partと復元archiveのSHA256を記録した。`python3 restore_artifacts.py fault_cases_final.tar.gz`で復元し、このpacketで`tar -xzf fault_cases_final.tar.gz`を行うと、verify_saved_matrix.pyが再読できる。旧再現rawはbefore_repair/。途中試行はpreliminary_artifacts.tar.gzへ区別して保存し、同じhelperで復元できる。publication_receipt.jsonは公開contentの読み戻し結果。
 
 実G7/F3 sampling/import、新科学計算、保存科学値再解析、科学SOURCE採択、実authorization/grant/claim、quantum native build/compile/synthesisは0。production bridgeは未実装。pilot n256/二条件16,896 callsもFull-Nも実行・採択していない。
+
+公開content commit `851403389f26eb817b66ef3ddf0dc1057e7cc497` の341ファイル・79,954,628 bytesを公開URLから読み戻し、全SHA256一致を確認。詳細は[publication_receipt.json](publication_receipt.json)。このreceiptと本行だけを後続commitへ追加し、最終HEADも別途照合する。
