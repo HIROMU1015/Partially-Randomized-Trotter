@@ -1,3 +1,7 @@
+## 2026-10-20 PF直接compile：788軸の科学実行承認・本番接続
+
+[2契約の本番接続と実行記録](../docs/research/track_a_pf_direct_compile_execution_20261020.md)。ユーザーが722軸とlegacy66軸の実compile/controlを明示承認。新13＋既存34の人工検査PASS、初期byte照合35,547件PASS。最終SOURCE/入力/runtime seal後、各契約を独立one-shotで実行する準備。旧48軸は対象外。sampling/fit/shot/費用再順位0。以下は履歴。
+
 ## 2026-10-20 PF直接compile：722軸/66軸の独立契約案
 
 [契約分割と検証](../docs/research/track_a_pf_direct_compile_contract_split_20261020.md)。788軸の計画を維持し、現行4系列722軸とH4 legacy DF12の66軸を独立契約案へ分離。完全pair・非重複・全体一致をmetadata検査。実取得範囲/科学実行は未承認、選択0・compile0、旧成果物保全。ユーザーが範囲を判断後、Codexが最終結合・sealを準備。mandatory STOP。以下は履歴。
