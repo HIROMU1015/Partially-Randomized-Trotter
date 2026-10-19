@@ -49,4 +49,32 @@ class StructureTests(unittest.TestCase):
                 self.assertNotIn(name,('sum','fsum','to_matrix','det','norm','evolve','transpile','decompose','load_vectors'))
 
 
+class SymbolicLedgerProposalTests(unittest.TestCase):
+    """Exact symbolic toy identities; no real QPY parameter sums."""
+    def test_gate_determinants_and_phase_weights(self):
+        import sympy as sp
+        t,b=sp.symbols('t b',real=True);i=sp.I
+        c,sn=sp.cos(t/2),sp.sin(t/2)
+        xy=sp.eye(4);xy[1:3,1:3]=sp.Matrix([[c,-i*sn*sp.exp(-i*b)],[-i*sn*sp.exp(i*b),c]])
+        gates=[(sp.Matrix([[1,1],[1,-1]])/sp.sqrt(2),-1),
+            (sp.Matrix([[0,1],[1,0]]),-1),
+            (sp.Matrix([[1+i,1-i],[1-i,1+i]])/2,i),
+            (sp.diag(1,sp.exp(i*t)),sp.exp(i*t)),
+            (sp.diag(sp.exp(-i*t/2),sp.exp(i*t/2)),1),
+            (sp.diag(sp.exp(-i*t/2),sp.exp(i*t/2),sp.exp(i*t/2),sp.exp(-i*t/2)),1),
+            (sp.Matrix([[1,0,0,0],[0,0,0,1],[0,0,1,0],[0,1,0,0]]),-1),(xy,1)]
+        for gate,det in gates:self.assertEqual(sp.simplify(gate.det()-det),0)
+
+    def test_tensor_lift_determinant_exponent(self):
+        import sympy as sp
+        t=sp.symbols('t',real=True);p=sp.diag(1,sp.exp(sp.I*t))
+        self.assertEqual(sp.simplify(sp.kronecker_product(sp.eye(4),p).det()-sp.exp(4*sp.I*t)),0)
+
+    def test_determinant_alias_does_not_certify_operator_equality(self):
+        import sympy as sp
+        phase=sp.exp(sp.I*sp.pi/4);unitary=phase*sp.eye(8)
+        self.assertEqual(sp.simplify(unitary.det()),1)
+        self.assertFalse(unitary.equals(sp.eye(8)))
+
+
 if __name__=='__main__':unittest.main()

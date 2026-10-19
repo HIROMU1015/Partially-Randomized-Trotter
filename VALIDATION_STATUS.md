@@ -1,3 +1,7 @@
+## 2026-10-19 H6 full m5：位相帳簿の静的調査完了・原因未確定
+
+[保存構造・source経路・次の最小案](docs/research/track_a_h6_m5_phase_ledger_static_20261019.md)。保存2QPYを2processでmetadata照合し、ancilla scalar P1回/H2回・gate順序hashを確認。Qiskit公式1.3.0の11 source/選択Python5file byte一致、binary64再合成/位相加算・2π wrapへ追跡したが原因未確定。新再生/compile/実角度総和0、人工構造5＋記号3の8件PASS、2223file/1831seal保全。再compile不要のdeterminant scalar台帳案は未実装・未承認。旧STOP/58軸/raw基準/AD03保留を維持。local commit後mandatory STOP・push0、次はユーザーの台帳準備/実行判断。以下は各時点の履歴。
+
 ## 2026-10-19 H6 full m5：保存精度診断完了・旧raw FAIL維持
 
 [結果・解釈・終了監査](docs/research/track_a_h6_m5_saved_phase_run01_results_20261019.md)。SOURCE99e8723d…、保存4再生が15:17:11 JSTにnative exit0・全worker回収、wall約13分04秒で終了。通常2本は保存vectorと差0。拡張でもraw1.5039e-9/位相差が残り、旧1e-9未満基準FAIL・旧STOP維持。26終了監査PASS、旧684＋準備10file・1831seal不変。新compile/費用受理/会計/retry0、AD03/Core保留、local commit後mandatory STOP・push0。次はユーザーの静的調査継続判断。以下は各時点の履歴。

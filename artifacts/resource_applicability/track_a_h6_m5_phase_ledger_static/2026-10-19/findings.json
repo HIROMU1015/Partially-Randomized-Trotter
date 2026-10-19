@@ -1,0 +1,35 @@
+{
+  "findings": [
+    {
+      "finding": "Saved wrapper 536388 ops and compiled 1740557 ops match the accepted diagnostic schema; all numerical parameters are serialized floats.",
+      "id": "STRUCTURE",
+      "status": "ESTABLISHED_METADATA"
+    },
+    {
+      "finding": "Wrapper H appears twice on qubit12; one P appears on qubit12 just before final H/measurement. Simple double scalar insertion not observed.",
+      "id": "ANCILLA",
+      "status": "ESTABLISHED_METADATA"
+    },
+    {
+      "finding": "116160 adjacent P sign-bit-opposite occurrences on distinct qubits. Adjacency occurrences are not asserted to be disjoint removable gate pairs.",
+      "id": "OPPOSITE_P",
+      "status": "ESTABLISHED_METADATA"
+    },
+    {
+      "finding": "Binary64 phase propagation and one-qubit resynthesis offer paths where compile-stage errors can become frozen into QPY. Actual causal contribution unmeasured.",
+      "id": "PHASE_PROPAGATION",
+      "status": "ESTABLISHED_RELEASE_SOURCE"
+    },
+    {
+      "finding": "Extended replay does not reconstruct or improve the prior transpile. No pass snapshots or individual phase updates were saved.",
+      "id": "CAUSE",
+      "status": "UNRESOLVED"
+    },
+    {
+      "finding": "For the saved 13-qubit gate sets, a normalized determinant ledger can be evaluated from two stored phases and wrapper P angles only, modulo pi/4096. Not executed; determinant is not an operator certificate.",
+      "id": "LIGHTWEIGHT_LEDGER",
+      "status": "DERIVED_PLAN_ONLY"
+    }
+  ],
+  "status": "STATIC_INVESTIGATION_COMPLETE_ROOT_CAUSE_UNRESOLVED"
+}
