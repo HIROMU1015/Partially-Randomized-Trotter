@@ -1,0 +1,10 @@
+# SOURCE／契約差分
+
+基点6c6d3376e7ff206219f5e58355f1e1080fafba04。新namespace、focused tests、packet runner/docsと索引追記だけを追加する。
+固定科学8module、旧Adapter、Global Bundle、Storage V2、独立checkerは原本を変更しない。
+execution.pyは固定pair/worker/run_phaseの新version投影。coverage accepted即時gateをparent最終INCONCLUSIVE分類へ移し、worker target/importパスとpreload guardを変更した。
+同一correctness callへのcached fine diagnosticsを有効にし、profile/instrumented passを追加しない。worker_pair_source_derivation.jsonに元SHA・限定差分を保存する。
+原本のF01/STOP/one-shot/保存契約は保持し、新候補のcoverage変更は今回のユーザー方針へのversioned実装である。
+前段Source tree/bundle/publication mappingは照合済み。最終SOURCEと最終回帰SOURCE、公開snapshotの差分はpreservation.json/regression_source_delta.jsonを参照。
+
+**LIVE_RELEASE_CANDIDATE_UNAUTHORIZED。実科学未実行。mandatory STOP。次の担当：ユーザー・GPT。**

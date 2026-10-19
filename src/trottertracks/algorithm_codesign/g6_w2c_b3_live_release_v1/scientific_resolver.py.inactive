@@ -1,0 +1,34 @@
+"""Dormant source for a SEPARATE formally authorized scientific release.
+
+This file is parsed as AST and hashed only. It is not a Python import target,
+not compiled, not imported by the candidate, and is never run in these tests.
+Copying it into a future release requires independent formal activation code.
+"""
+from pathlib import Path
+from hashlib import sha256
+from importlib import import_module
+from types import SimpleNamespace
+
+
+def resolve_fixed_scientific_symbols(formal_admission, release):
+    """Concrete import/location/hash binding for future external admission."""
+    formal_admission.require_formal_science_release(release)
+    formal_admission.require_explicit_user_execution_approval()
+    formal_admission.require_real_authority_and_unspent_global_claim()
+    root=Path(release['runtime_root']).resolve()
+    modules={}
+    aliases={'g7':'g7_generator','f3':'g6_f3_generator','precision':'g6_f3_precision',
+             'contract':'g6_f3_contract','aggregation':'return_aggregation',
+             'audit':'g6_w2c_cost_preparation'}
+    for alias,name in aliases.items():
+        relative='src/trottertracks/algorithm_codesign/'+name+'.py'
+        path=root/relative
+        if sha256(path.read_bytes()).hexdigest()!=release['source_pins'][relative]:
+            raise RuntimeError('SCIENTIFIC_SOURCE_CHANGED')
+        module=import_module('trottertracks.algorithm_codesign.'+name)
+        if Path(module.__file__).resolve()!=path:
+            raise RuntimeError('SCIENTIFIC_MODULE_LOCATION_CHANGED')
+        modules[alias]=module
+    # A future admitted resolver supplies this bundle to the common connection
+    # implementation. Current public dispatch accepts built-in synthetic only.
+    return SimpleNamespace(**modules,dyadic_index=modules['aggregation'].dyadic_index)

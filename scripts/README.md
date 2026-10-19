@@ -660,3 +660,8 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## 2026-10-20 Track B closed live API correctness preflight v1
 
 [実API接続仕様・512 correctness候補・閉鎖preflight・人工受入](../docs/research/track_b_g6_w2c_b3_live_api_correctness_preflight_closed_20261020/README.md)。新namespace `src/trottertracks/algorithm_codesign/g6_w2c_b3_live_preflight_v1/`、test `tests/tracks/algorithm_codesign/test_g6_w2c_b3_live_preflight_v1.py`、runnerはpacket内run_acceptance.py。実科学loaderなし、科学採択・実科学処理0、mandatory STOP。
+
+
+## 2026-10-20 Track B live correctness release preparation
+
+[実API object wrapper・512件候補・TEST_ONLY永続authority・人工受入](../docs/research/track_b_g6_w2c_b3_live_correctness_release_preparation_20261020/README.md)。新SOURCE `src/trottertracks/algorithm_codesign/g6_w2c_b3_live_release_v1/`、tests `tests/tracks/algorithm_codesign/test_g6_w2c_b3_live_release_v1.py`、runnerはpacket内run_acceptance.py。科学resolverはinactive SOURCEのみ、実科学・実authority・正式採択0、mandatory STOP。

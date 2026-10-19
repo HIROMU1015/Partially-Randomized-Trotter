@@ -1,0 +1,15 @@
+# API接続実装
+
+wrapper.Endpointはgenerator/session構築、入力／精度確認、owned event/packet observer、sample／angle、原Evidence object保持、exact document変換、Result adapter、typed STOPを実装する。
+from_runtimeはobject.readを信頼せずdocument/digestの完全bytesとcanonical型を検査する。Full B angleへは元のEvidence objectを渡す。
+G7 Noneの分類にはraw/bit traceとpacket observationが必要。group_index/raw_word/childをCanonical requeryへ保持し、requeryを二重実行しない。
+既存Codec/Adapterは無変更。lossless原文sidecarの受理subsetでのみtuple/list/map/Fractionの復元を主張し、driver投影だけから原型を推測しない。
+EVENT、ZERO_R、ZERO_C、IDENTITY、deterministic query、typed failureの区別は既存Result契約を維持する。今回の固定正入力trial計画はEVENT/ZERO2種を扱い、IDENTITY/queryを確率ZEROへ割り当てない。
+原型失敗Evidenceはoriginal_scientific_failureとして保存してF01へ渡す。失敗後sample/angleはterminal拒否。
+
+scientific_resolver.py.inactiveには将来の固定module import/location/hash bindingを具体的に記述した。今回AST/SHAのみでcompile/import/callしない。
+現在のfactoryとEndpointはexact built-in SyntheticSymbolsだけを許す。Science dispatchは無条件拒否。別正式versionが、外部admission証拠とこのsymbol contractを結ぶ必要がある。
+人工symbolsは実API signatureを模したobjectsで、独自の人工order/label/intervalを使用する。固定P5の科学lawを生成・検証したものではない。
+Canonical snapshot collaboratorも人工held stateのsealed shapeであり、実canonical_snapshotの科学held state互換性は未確認。AuditParity/event_witness自体は許可済みhelperを再利用する。
+
+**LIVE_RELEASE_CANDIDATE_UNAUTHORIZED。実科学未実行。mandatory STOP。次の担当：ユーザー・GPT。**
