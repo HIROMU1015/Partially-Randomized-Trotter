@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:b3:parallel:v3:f01",
+  "type": "object",
+  "properties": {
+    "failure_provenance_schema": {
+      "const": "g6_w2c_b3_f01_failure_v1"
+    },
+    "kind": {
+      "const": "TYPED_FAILURE"
+    },
+    "current_attempt": {
+      "type": "object"
+    },
+    "last_completed_trial": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "completed_prefix": {
+      "type": "object"
+    },
+    "candidate_trace_sha256": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "trace_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "inflight_event": {},
+    "stream_prefix_before_failure_record": {
+      "type": "object"
+    },
+    "is_random_zero": {
+      "const": false
+    },
+    "mandatory_STOP": {
+      "const": true
+    },
+    "retry": {
+      "const": 0
+    },
+    "resume": {
+      "const": false
+    }
+  },
+  "required": [
+    "failure_provenance_schema",
+    "kind",
+    "current_attempt",
+    "last_completed_trial",
+    "completed_prefix",
+    "candidate_trace_sha256",
+    "trace_sha256",
+    "inflight_event",
+    "stream_prefix_before_failure_record",
+    "is_random_zero",
+    "mandatory_STOP",
+    "retry",
+    "resume"
+  ],
+  "additionalProperties": true
+}

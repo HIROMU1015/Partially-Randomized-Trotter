@@ -638,3 +638,8 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## 2026-10-19：Track B限定G7 pilotの実行前準備
 
 [SOURCE候補・独立consumer・人工証拠・未採択の計測計画](../docs/research/track_b_g6_w2c_b3_limited_pilot_readiness_20261019/README.md)。科学SOURCE/共通API/旧契約は変更せず、新科学実行0。新moduleはg6_w2c_b3_pilot_candidateとg6_w2c_b3_pilot_offline。再現runnerはpacket内run_consumer_smoke.py、run_pilot_tests.py、verify_saved_forward.py。実科学入口は閉鎖、正式採択・別実行承認待ち、mandatory STOP。
+
+
+## 2026-10-19：W2c-B3予約会計・保存故障修正V2
+
+[新SOURCE・人工fault matrix・独立受入引継ぎ](../docs/research/track_b_g6_w2c_b3_trace_reservation_accounting_repair_20261019/README.md)。旧固定SOURCEで予約会計不整合を再現し、新しい人工専用module `g6_w2c_b3_pilot_storage_v2` と補助offline checker `g6_w2c_b3_storage_verify_v2` を追加。testsはtest_g6_w2c_b3_storage_v2.py、runner/raw/証跡はpacket内。科学入口閉鎖、科学条件未採択、後続ローカルCodex受入待ち、mandatory STOP。

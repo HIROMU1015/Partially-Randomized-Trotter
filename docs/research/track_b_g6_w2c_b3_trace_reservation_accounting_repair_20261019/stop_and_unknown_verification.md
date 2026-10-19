@@ -1,0 +1,15 @@
+# STOP、unknown、保存不能
+
+最初の保存異常で親のSTOPをlatchedし、新しいENTER許可を返さない。既に開始したworkerは自然にdrainし、強制killで未知結果を0へ変えない。P1のcooperative_drainでは8 entry、1 FAIL、7 COMPLETEを確認。simultaneous failureも別caseに含めた。
+
+同じRESERVE writer故障はS/P1ともreserved1・started0・開始前取消1。予約済みslotをNOT_STARTEDへ戻さず、同じidentityを再利用しない。COMPLETE記録故障ではcompleted0・UNKNOWNを保持する。worker/reserved/未ACK exitではunknownと未返却creditを維持する。parent exit86はfinal report/CPUなし、fake claimはADMITTED/RESERVEDのspent、INCOMPLETE_EVIDENCE。
+
+traceは失敗したrecordの手前までのtrusted prefixと、実際に保持されたtailを分ける。partial write、full line後のflush故障でも、末尾を未確認の完成履歴として認定しない。STOP自身のtrace保存成否とcontrol journal保存成否、admission STOPのrecord_errorsを別々に記録する。
+
+admission failure_record_saveではADMITTEDが残り、stop_record_saveではDB STOPPEDでもmarkerが保存できない。いずれもspent/reuse拒否、completefalse、正常比較から除外。control journalのSTOPが保存できたことを、admission原本の保存成功へ読み替えない。
+
+state pwrite/truncate/open、journal/trace open等で完全なreportを作れない場合は、残ったraw・fake snapshot・例外を保存しINCOMPLETE_EVIDENCEとする。RAM claimを独立した物理証拠へ格上げしない。修正後の予約counterの一致と、全保存履歴の完全性は別の判定である。
+
+各channelのreserved、ACK observed、physical retained、reserved−ACKのunknown creditを記録。未ACK creditは返却しない。unknown creditは実際のwriteがあったという断定でもない。cap超過では新しいcreditを付与しない。
+
+新unitでは出力衝突がない状態での再admit/同scope再使用拒否と、同じ一つのfake storeへの8 contenders中1成功を確認した。既存scopeや旧47ケースの履歴を再利用・再構成していない。

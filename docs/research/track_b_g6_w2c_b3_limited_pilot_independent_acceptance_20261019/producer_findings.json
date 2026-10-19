@@ -1,0 +1,53 @@
+{
+  "findings": [
+    {
+      "check_id": "SRC_TRACE_RESERVE_ACCOUNTING",
+      "judgment": "FAIL",
+      "target_SOURCE": "src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_candidate.py",
+      "public_commit": "76ca3c4089b201d55da0fede08e1f77733ac38a5",
+      "measured_SOURCE_commit": "b9cabcfc6cf304ab65fc8a540c33ce2173f6cbaa",
+      "input_identity": {
+        "case": "fresh_trace_reserve_write_failure",
+        "inner_digest": "a48ab638725deaf37b602148b802ec2b2a2b888bf66fef9be12b5c5355f44bc8",
+        "archive_sha256": "d1a601a7ab084a4467e03e3d026b2c0e5cbaa8efe03cee810f470b3573951eab"
+      },
+      "expected": "report.reserved == planned - statefile.NOT_STARTED; trace I/O failure preserves spent reservations and prevents successful acceptance",
+      "observed": {
+        "report_reserved": 0,
+        "planned": 768,
+        "not_started": 767,
+        "start_reserved": 1,
+        "started_observed": 0,
+        "complete": false,
+        "claim_status": "STOPPED"
+      },
+      "evidence_files": [
+        "artificial_replays/fresh_trace_reserve_write_failure/observations.json",
+        "artificial_replays/fresh_trace_reserve_write_failure/artificial_raw.tar.gz",
+        "fresh_source_replay_verification.json",
+        "run_trace_write_failure.py"
+      ],
+      "unresolved": "Producer changes state before trace write, then updates counters/ticket; failed trace write leaves slot reserved but report counter zero. Requires a new producer version; fixed SOURCE preserved.",
+      "formal_adoption_required": false,
+      "technical_fix_required_before_production": true
+    }
+  ],
+  "limitations": [
+    {
+      "check_id": "GUARD_FILENAME_METADATA",
+      "judgment": "PENDING_TRUST_BOUNDARY",
+      "evidence": "pilot_guard_limit.json",
+      "whole_entrypoint_bypass_proven": false
+    },
+    {
+      "check_id": "HISTORICAL_ADMISSION_FOUR",
+      "judgment": "PENDING_EVIDENCE",
+      "cases": [
+        "binding_recheck",
+        "commit_ack_uncertain",
+        "parent_crash",
+        "race"
+      ]
+    }
+  ]
+}
