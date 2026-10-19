@@ -84,3 +84,35 @@ validation document, and artifact directory discoverable through the indexes in
 `PROJECT_MAP.md`, `scripts/README.md`, `src/trotterlib/README.md`, and
 `docs/README.md`. Do not move evidence or rename public paths merely for tidiness
 without updating all references and provenance records.
+
+
+## H2 isolated resource work (user instruction, 2026-10-19)
+
+- This worktree and branch are reserved for H2. Start the substantive H2 evaluation
+  in a new Codex chat, separately from the ongoing H4 validation chat.
+- First read `/home/AbeHiromu/projects/AGENTS.md` and
+  `docs/research/track_a_h2_pr_resource_handoff_20261019.md`.
+- Edit only this H2 worktree and its own private directories. Existing H4/H6/H8
+  SOURCE, contracts, grants, ledgers, markers, STOPs, results, runtime, processes,
+  branches, and worktrees are read-only references for this task.
+- Reuse implementation from pinned Git objects or H2-owned snapshots. Do not run
+  inherited H4 runners directly: they may bind H4-specific inputs and outputs.
+  H2 adapters must bind H2 paths and a sealed H2 SOURCE/input/runtime closure.
+- H2 public preparation/evidence root:
+  `artifacts/resource_applicability/track_a_h2_pr_resource/2026-10-19/`.
+  H2 private root: `.h2_pr_resource_private/2026-10-19/`.
+  Reserve distinct stage/attempt namespaces before each approved run; do not
+  pre-create scientific output, grants, ledgers, or one-shot markers at setup.
+- Each new scientific stage needs explicit user approval bound to its fixed
+  SOURCE, input or generation recipe, and scientific-call budget; then run once
+  and mandatory STOP. No automatic retry or automatic next-stage execution.
+- The requested terminal target is the final P seal. P scientific sampling and
+  compile, detailed scientific review, and final paper evidence freeze are out
+  of scope. No stage is authorized by this environment setup.
+- Other worktrees' changing HEAD/status, temporary PSI/CPU contention, and
+  observation delays are not blanket freeze or forced-stop conditions.
+- Current shared AGENTS resource policy takes precedence over historical run
+  limits. Scientific-call budgets remain explicit scope controls. Do not alter
+  shared settings, environments, or other users' processes/files.
+- Keep proposed clarification choices pending until the user adopts them. Setup
+  does not authorize publication; push only within a verified approval scope.

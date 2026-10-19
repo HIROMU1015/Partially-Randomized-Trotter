@@ -1,3 +1,5 @@
+H2専用環境を準備（2026-10-19）：[新規チャットへの引継ぎ](research/track_a_h2_pr_resource_handoff_20261019.md)。H2科学実行・P seal・pushは未実施。以下は固定基点の既存履歴。
+
 H4 tol-only DF10 S_STATS完了（2026-10-19）：SOURCE8752489b…で24 scenario/2方向/12感度を1 pass、native exit0・同一親回収・終了監査PASS。基準f4/差.02の提案n1108/78、P提案1186 trajectory/2372軸。両探索n8はS0のみ、母平均/実power保証なし。raw再集計・sampling/compile/P・新seed0、新規pushなし、mandatory STOP。[結果とP契約への引継ぎ](research/track_a_h4_tol_s_stats_completed_20261019.md)。以下は各時点の履歴。
 
 H4 tol-only DF10 S_STATS最終技術準備（2026-10-19）：D190/A50を正式受入、指定PR2条件と保存PF対照を固定。family α=.05/m2・power=.8、SD倍率1/2/4/8×差.01/.02/.05の24 scenario、基準f4/.02。SOURCE8752489b…/9 file・入力13・runtime128を固定。人工35件/無効grant拒否2経路PASS、旧9,178レコード保全。実n/SD/power・sampling/compile/P0、両n8の保存希少層はS0のみ、母平均保証なし。新規pushなし、mandatory STOP。[契約と次の承認](research/track_a_h4_tol_s_stats_preparation_20261019.md)。以下は各時点の履歴。
