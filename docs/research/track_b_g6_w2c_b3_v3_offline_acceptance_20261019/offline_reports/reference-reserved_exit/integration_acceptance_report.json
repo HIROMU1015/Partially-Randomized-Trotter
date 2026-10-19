@@ -1,0 +1,227 @@
+{
+  "schema": "b3_v3_offline_acceptance_v1",
+  "run_id": "reference-reserved_exit",
+  "rows": [
+    {
+      "check_id": "P01",
+      "target_SOURCE": "fixed integrated v3 / independent consumer",
+      "fixed_commit": "7ae4bd0b951dae05380538cd5c22a3ead5328ab2",
+      "measured_source_commit": "860fef4a3a8ebb5a46628f4e0364e5934b5af416",
+      "schema_version": "b3_parallel_wire_and_storage_v3",
+      "expected": "Fixed task identity/order/offset; exact pair chain and file bytes",
+      "observed": "TECHNICAL_FAILURE",
+      "judgment": "PASS",
+      "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+      "unresolved": null
+    },
+    {
+      "check_id": "P02",
+      "target_SOURCE": "fixed integrated v3 / independent consumer",
+      "fixed_commit": "7ae4bd0b951dae05380538cd5c22a3ead5328ab2",
+      "measured_source_commit": "860fef4a3a8ebb5a46628f4e0364e5934b5af416",
+      "schema_version": "b3_parallel_wire_and_storage_v3",
+      "expected": "Logical committed state vs physical F01 prefix/in-flight",
+      "observed": {
+        "planned": 768,
+        "reserved": 3,
+        "started_observed": 2,
+        "completed": 2,
+        "failed": 0,
+        "cancelled_before_start": 0,
+        "unknown": 1,
+        "not_started": 765,
+        "reserved_is_actual_call_start": false,
+        "unknown_credit_refunded": false,
+        "latest_state_is_transition_history": false,
+        "failed_slot_entry_history": "NOT_ESTABLISHED_FROM_LATEST_STATE"
+      },
+      "judgment": "PASS",
+      "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+      "unresolved": null
+    },
+    {
+      "check_id": "P03",
+      "target_SOURCE": "fixed integrated v3 / independent consumer",
+      "fixed_commit": "7ae4bd0b951dae05380538cd5c22a3ead5328ab2",
+      "measured_source_commit": "860fef4a3a8ebb5a46628f4e0364e5934b5af416",
+      "schema_version": "b3_parallel_wire_and_storage_v3",
+      "expected": "Global planned/reserved/started/completed/failed/cancelled/unknown",
+      "observed": {
+        "planned": 768,
+        "reserved": 3,
+        "started_observed": 2,
+        "completed": 2,
+        "failed": 0,
+        "cancelled_before_start": 0,
+        "unknown": 1,
+        "not_started": 765,
+        "reserved_is_actual_call_start": false,
+        "unknown_credit_refunded": false,
+        "latest_state_is_transition_history": false,
+        "failed_slot_entry_history": "NOT_ESTABLISHED_FROM_LATEST_STATE"
+      },
+      "judgment": "PASS",
+      "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+      "unresolved": null
+    },
+    {
+      "check_id": "P04",
+      "target_SOURCE": "fixed integrated v3 / independent consumer",
+      "fixed_commit": "7ae4bd0b951dae05380538cd5c22a3ead5328ab2",
+      "measured_source_commit": "860fef4a3a8ebb5a46628f4e0364e5934b5af416",
+      "schema_version": "b3_parallel_wire_and_storage_v3",
+      "expected": "Reserved/ACK/physical/unknown credit; no credit refund",
+      "observed": {
+        "result": {
+          "reserved": 11631,
+          "ack_observed": 11631,
+          "physical_bytes": 11631,
+          "unknown_credit": 0,
+          "credit_refunded": false
+        },
+        "log": {
+          "reserved": 47087,
+          "ack_observed": 47087,
+          "physical_bytes": 47087,
+          "unknown_credit": 0,
+          "credit_refunded": false
+        }
+      },
+      "judgment": "PASS",
+      "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+      "unresolved": null
+    },
+    {
+      "check_id": "P05",
+      "target_SOURCE": "fixed integrated v3 / independent consumer",
+      "fixed_commit": "7ae4bd0b951dae05380538cd5c22a3ead5328ab2",
+      "measured_source_commit": "860fef4a3a8ebb5a46628f4e0364e5934b5af416",
+      "schema_version": "b3_parallel_wire_and_storage_v3",
+      "expected": "Conservative worker/parent loss and unknown accounting",
+      "observed": {
+        "planned": 768,
+        "reserved": 3,
+        "started_observed": 2,
+        "completed": 2,
+        "failed": 0,
+        "cancelled_before_start": 0,
+        "unknown": 1,
+        "not_started": 765,
+        "reserved_is_actual_call_start": false,
+        "unknown_credit_refunded": false,
+        "latest_state_is_transition_history": false,
+        "failed_slot_entry_history": "NOT_ESTABLISHED_FROM_LATEST_STATE"
+      },
+      "judgment": "PASS",
+      "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+      "unresolved": "Saved worker exit/join declarations do not independently prove historical OS process state."
+    },
+    {
+      "check_id": "P06",
+      "target_SOURCE": "fixed integrated v3 / independent consumer",
+      "fixed_commit": "7ae4bd0b951dae05380538cd5c22a3ead5328ab2",
+      "measured_source_commit": "860fef4a3a8ebb5a46628f4e0364e5934b5af416",
+      "schema_version": "b3_parallel_wire_and_storage_v3",
+      "expected": "Phase barrier and persisted worker/failure order",
+      "observed": {
+        "started_workers": 8,
+        "ended_workers": 7,
+        "receipt_present": false,
+        "stop_saved": true,
+        "evidence_gaps": []
+      },
+      "judgment": "PENDING_EVIDENCE",
+      "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+      "unresolved": "Log failure may leave only an ordered subsequence; absent notices are not reconstructed."
+    },
+    {
+      "check_id": "P07",
+      "target_SOURCE": "fixed integrated v3 / independent consumer",
+      "fixed_commit": "7ae4bd0b951dae05380538cd5c22a3ead5328ab2",
+      "measured_source_commit": "860fef4a3a8ebb5a46628f4e0364e5934b5af416",
+      "schema_version": "b3_parallel_wire_and_storage_v3",
+      "expected": "Atomic fresh scope reservation, approval, spent state, SOURCE/runtime binding",
+      "observed": {
+        "complete_contract_present": false,
+        "independently_recomputed": null,
+        "saved_binding": {
+          "event": "BUNDLE_BINDING",
+          "schema": "b3_parallel_admission_v3",
+          "formal_digest": "c472c275eeb71081e4600a34c2f00fc81c0eb57644750dd5cef288565b8480fe",
+          "driver_digest": "8cd9ba159ef51ef37450012f82e7feb0ad8fcafca8d3a4b9caafe3c48cdb76ab",
+          "runtime_manifest_sha256": "3da39cb65a6fb777fc67724693fbdd1f1116baf395aa54bced5f5b0a6284cb2e",
+          "source_pins_sha256": "84261e1a0c33938fccea54fa22ac6e1cfd73e21ece9db35e10db886cb454df82",
+          "artificial_only": true
+        },
+        "contract_identity_evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unavailable_input_bytes": [
+          "private artificial adoption.json",
+          "historical Python executable/libraries",
+          "private approval/SQLite store"
+        ],
+        "real_authorization_verified": false
+      },
+      "judgment": "PENDING_EVIDENCE",
+      "evidence": "COMPARED_SUMMARY_CLAIMS",
+      "unresolved": "Contract digests can be recomputed when published; private approval/SQLite bytes and historical Python bytes are unavailable. No real atomic claim proof."
+    },
+    {
+      "check_id": "P08",
+      "target_SOURCE": "fixed integrated v3 / independent consumer",
+      "fixed_commit": "7ae4bd0b951dae05380538cd5c22a3ead5328ab2",
+      "measured_source_commit": "860fef4a3a8ebb5a46628f4e0364e5934b5af416",
+      "schema_version": "b3_parallel_wire_and_storage_v3",
+      "expected": "No new ENTER permission after parent STOP",
+      "observed": "No per-trial operation sequence in published control",
+      "judgment": "PENDING_EVIDENCE",
+      "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+      "unresolved": "Latest statefile is not transition history. Separate normalized artificial operation tests detect violations only in that supplied history."
+    },
+    {
+      "check_id": "P09",
+      "target_SOURCE": "fixed integrated v3 / independent consumer",
+      "fixed_commit": "7ae4bd0b951dae05380538cd5c22a3ead5328ab2",
+      "measured_source_commit": "860fef4a3a8ebb5a46628f4e0364e5934b5af416",
+      "schema_version": "b3_parallel_wire_and_storage_v3",
+      "expected": "Host parent+worker CPU; exclusive coarse/fine separately; unknown nonzero semantics",
+      "observed": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+      "judgment": "PASS",
+      "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+      "unresolved": "Parent crash lacks outer CPU; isolated observer overhead is unknown."
+    },
+    {
+      "check_id": "P10",
+      "target_SOURCE": "fixed integrated v3 / independent consumer",
+      "fixed_commit": "7ae4bd0b951dae05380538cd5c22a3ead5328ab2",
+      "measured_source_commit": "860fef4a3a8ebb5a46628f4e0364e5934b5af416",
+      "schema_version": "b3_parallel_wire_and_storage_v3",
+      "expected": "Summary/receipt digest and all-worker join declaration",
+      "observed": false,
+      "judgment": "PENDING_EVIDENCE",
+      "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+      "unresolved": "Absent success receipt is expected on failure; physical joins remain saved declarations."
+    },
+    {
+      "check_id": "P11",
+      "target_SOURCE": "fixed integrated v3 / independent consumer",
+      "fixed_commit": "7ae4bd0b951dae05380538cd5c22a3ead5328ab2",
+      "measured_source_commit": "860fef4a3a8ebb5a46628f4e0364e5934b5af416",
+      "schema_version": "b3_parallel_wire_and_storage_v3",
+      "expected": "Artificial retry0/resume=false flags; no reuse authority",
+      "observed": "STOPPED",
+      "judgment": "PENDING_EVIDENCE",
+      "evidence": "COMPARED_SUMMARY_CLAIMS",
+      "unresolved": "Flags and STOP claim checked; private v3 store nonreuse/atomic history not independently replayed. Existing artificial ledger regressions are separate evidence."
+    }
+  ],
+  "pending": [
+    "P06",
+    "P07",
+    "P08",
+    "P10",
+    "P11"
+  ],
+  "scientific_GO": false,
+  "real_authorization_verified": false,
+  "mandatory_STOP": true
+}

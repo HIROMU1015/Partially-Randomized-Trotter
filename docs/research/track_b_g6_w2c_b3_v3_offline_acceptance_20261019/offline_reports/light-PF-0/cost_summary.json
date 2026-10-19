@@ -1,0 +1,6657 @@
+{
+  "schema": "b3_v3_offline_cost_v1",
+  "status": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+  "execution_condition": {
+    "mode": "P1",
+    "workers": 8,
+    "inflight_cap": 2,
+    "codec": "fused",
+    "workload": "light",
+    "profile_n": 128,
+    "flush_rows": 4096
+  },
+  "serial_condition_is_different": true,
+  "pairs": [
+    {
+      "task_key": "correctness_baseline_ordinary_A",
+      "phase": "correctness",
+      "pass_name": "baseline",
+      "arm": "ordinary",
+      "layer": "A",
+      "worker_pid": 3692938,
+      "outer_cpu_wall_ns": [
+        34591595,
+        71649565
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          30088204,
+          66754582
+        ],
+        "outer_total_ns": [
+          34591595,
+          71649565
+        ],
+        "residual_ns": [
+          4503391,
+          4894983
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 19907659,
+            "wall_ns": 19907953
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 43320,
+            "wall_ns": 43300
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 76620,
+            "wall_ns": 77009
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 110560,
+            "wall_ns": 110689
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 18,
+            "cpu_ns": 2476360,
+            "wall_ns": 9073825
+          },
+          "correctness.event_invariants": {
+            "calls": 18,
+            "cpu_ns": 1065460,
+            "wall_ns": 1068751
+          },
+          "online.EVENT.evidence": {
+            "calls": 18,
+            "cpu_ns": 673201,
+            "wall_ns": 674747
+          },
+          "save.serialize": {
+            "calls": 32,
+            "cpu_ns": 1251341,
+            "wall_ns": 1789051
+          },
+          "save.hash": {
+            "calls": 32,
+            "cpu_ns": 433291,
+            "wall_ns": 434057
+          },
+          "save.file_hash": {
+            "calls": 32,
+            "cpu_ns": 123050,
+            "wall_ns": 119980
+          },
+          "save.write": {
+            "calls": 32,
+            "cpu_ns": 2150822,
+            "wall_ns": 25316613
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 8,
+            "cpu_ns": 836280,
+            "wall_ns": 4588474
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 8,
+            "cpu_ns": 229070,
+            "wall_ns": 229749
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 6,
+            "cpu_ns": 501510,
+            "wall_ns": 3110314
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 6,
+            "cpu_ns": 148550,
+            "wall_ns": 148890
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 47440,
+            "wall_ns": 47540
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 5480,
+            "wall_ns": 5470
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 8190,
+            "wall_ns": 8170
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        20185599,
+        20186491
+      ],
+      "online_cpu_wall_ns": [
+        4864971,
+        17825999
+      ],
+      "generator_audit_cpu_wall_ns": [
+        3814150,
+        16772613
+      ],
+      "angle_requery_cpu_wall_ns": null,
+      "evidence_cpu_wall_ns": [
+        1050821,
+        1053386
+      ],
+      "output_cpu_wall_ns": [
+        3972174,
+        27673341
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 98,
+        "cpu_ns": 2933491,
+        "wall_ns": 38737941,
+        "coalesced_write_acks": 32
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32260096
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9228795,
+        "wchar": 40203,
+        "syscr": 358,
+        "syscw": 130,
+        "read_bytes": 0,
+        "write_bytes": 32768,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 29159,
+      "output_rows": 32,
+      "logical_completed": 32,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "correctness_baseline_ordinary_B",
+      "phase": "correctness",
+      "pass_name": "baseline",
+      "arm": "ordinary",
+      "layer": "B",
+      "worker_pid": 3692939,
+      "outer_cpu_wall_ns": [
+        35884695,
+        50720448
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          31307784,
+          45856613
+        ],
+        "outer_total_ns": [
+          35884695,
+          50720448
+        ],
+        "residual_ns": [
+          4576911,
+          4863835
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 19463848,
+            "wall_ns": 19463896
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 39640,
+            "wall_ns": 39650
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 71010,
+            "wall_ns": 70840
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 101820,
+            "wall_ns": 102210
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 18,
+            "cpu_ns": 2504590,
+            "wall_ns": 7205007
+          },
+          "correctness.event_invariants": {
+            "calls": 18,
+            "cpu_ns": 1069821,
+            "wall_ns": 1074027
+          },
+          "online.EVENT.angle_and_requery": {
+            "calls": 18,
+            "cpu_ns": 1384811,
+            "wall_ns": 1389871
+          },
+          "online.EVENT.evidence": {
+            "calls": 18,
+            "cpu_ns": 719582,
+            "wall_ns": 721938
+          },
+          "save.serialize": {
+            "calls": 32,
+            "cpu_ns": 1351760,
+            "wall_ns": 1354782
+          },
+          "save.hash": {
+            "calls": 32,
+            "cpu_ns": 461040,
+            "wall_ns": 462376
+          },
+          "save.file_hash": {
+            "calls": 32,
+            "cpu_ns": 114690,
+            "wall_ns": 109870
+          },
+          "save.write": {
+            "calls": 32,
+            "cpu_ns": 2186522,
+            "wall_ns": 7871529
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 8,
+            "cpu_ns": 851480,
+            "wall_ns": 3371863
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 8,
+            "cpu_ns": 210160,
+            "wall_ns": 209948
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 6,
+            "cpu_ns": 572430,
+            "wall_ns": 2204228
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 6,
+            "cpu_ns": 144100,
+            "wall_ns": 144219
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 48580,
+            "wall_ns": 48659
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 4030,
+            "wall_ns": 3850
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 7870,
+            "wall_ns": 7850
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        19724898,
+        19725255
+      ],
+      "online_cpu_wall_ns": [
+        6387153,
+        15247074
+      ],
+      "generator_audit_cpu_wall_ns": [
+        3928500,
+        12781098
+      ],
+      "angle_requery_cpu_wall_ns": [
+        1384811,
+        1389871
+      ],
+      "evidence_cpu_wall_ns": [
+        1073842,
+        1076105
+      ],
+      "output_cpu_wall_ns": [
+        4125912,
+        9810257
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 98,
+        "cpu_ns": 3128760,
+        "wall_ns": 18004530,
+        "coalesced_write_acks": 32
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32256000
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9228794,
+        "wchar": 47771,
+        "syscr": 358,
+        "syscw": 130,
+        "read_bytes": 0,
+        "write_bytes": 36864,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 36727,
+      "output_rows": 32,
+      "logical_completed": 32,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "correctness_baseline_partial_return_tail_A",
+      "phase": "correctness",
+      "pass_name": "baseline",
+      "arm": "partial_return_tail",
+      "layer": "A",
+      "worker_pid": 3692940,
+      "outer_cpu_wall_ns": [
+        37852873,
+        154583579
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          32840262,
+          149312127
+        ],
+        "outer_total_ns": [
+          37852873,
+          154583579
+        ],
+        "residual_ns": [
+          5012611,
+          5271452
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 19677928,
+            "wall_ns": 19677825
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 38760,
+            "wall_ns": 38770
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 69470,
+            "wall_ns": 69179
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 107750,
+            "wall_ns": 114650
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 9,
+            "cpu_ns": 1451241,
+            "wall_ns": 38995412
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 9,
+            "cpu_ns": 383440,
+            "wall_ns": 384536
+          },
+          "save.serialize": {
+            "calls": 32,
+            "cpu_ns": 1360170,
+            "wall_ns": 1369496
+          },
+          "save.hash": {
+            "calls": 32,
+            "cpu_ns": 525660,
+            "wall_ns": 526747
+          },
+          "save.file_hash": {
+            "calls": 32,
+            "cpu_ns": 159960,
+            "wall_ns": 154228
+          },
+          "save.write": {
+            "calls": 32,
+            "cpu_ns": 3095761,
+            "wall_ns": 56086247
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 8,
+            "cpu_ns": 975460,
+            "wall_ns": 21575974
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 8,
+            "cpu_ns": 246860,
+            "wall_ns": 252059
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 15,
+            "cpu_ns": 2826662,
+            "wall_ns": 8136636
+          },
+          "correctness.event_invariants": {
+            "calls": 15,
+            "cpu_ns": 1170950,
+            "wall_ns": 1179323
+          },
+          "online.EVENT.evidence": {
+            "calls": 15,
+            "cpu_ns": 681790,
+            "wall_ns": 682565
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 52170,
+            "wall_ns": 52230
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 5870,
+            "wall_ns": 5870
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 10360,
+            "wall_ns": 10380
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        19946078,
+        19952654
+      ],
+      "online_cpu_wall_ns": [
+        6565453,
+        70027182
+      ],
+      "generator_audit_cpu_wall_ns": [
+        5253363,
+        68708022
+      ],
+      "angle_requery_cpu_wall_ns": null,
+      "evidence_cpu_wall_ns": [
+        1312090,
+        1319160
+      ],
+      "output_cpu_wall_ns": [
+        5157781,
+        58152968
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 98,
+        "cpu_ns": 4374762,
+        "wall_ns": 120482633,
+        "coalesced_write_acks": 32
+      },
+      "memory": {
+        "VmHWM_bytes": 39321600,
+        "VmRSS_bytes": 31772672
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31457280,
+        "VmRSS_bytes": 31457280
+      },
+      "io": {
+        "rchar": 9228795,
+        "wchar": 39254,
+        "syscr": 358,
+        "syscw": 130,
+        "read_bytes": 0,
+        "write_bytes": 28672,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 27154,
+      "output_rows": 32,
+      "logical_completed": 32,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "correctness_baseline_partial_return_tail_B",
+      "phase": "correctness",
+      "pass_name": "baseline",
+      "arm": "partial_return_tail",
+      "layer": "B",
+      "worker_pid": 3692941,
+      "outer_cpu_wall_ns": [
+        36678098,
+        118280094
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          31789575,
+          113193375
+        ],
+        "outer_total_ns": [
+          36678098,
+          118280094
+        ],
+        "residual_ns": [
+          4888523,
+          5086719
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 19625848,
+            "wall_ns": 19626124
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 41030,
+            "wall_ns": 41060
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 77120,
+            "wall_ns": 76950
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 98540,
+            "wall_ns": 98819
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 9,
+            "cpu_ns": 914240,
+            "wall_ns": 4154766
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 9,
+            "cpu_ns": 218860,
+            "wall_ns": 220689
+          },
+          "save.serialize": {
+            "calls": 32,
+            "cpu_ns": 1368083,
+            "wall_ns": 1372893
+          },
+          "save.hash": {
+            "calls": 32,
+            "cpu_ns": 470580,
+            "wall_ns": 472599
+          },
+          "save.file_hash": {
+            "calls": 32,
+            "cpu_ns": 132320,
+            "wall_ns": 128538
+          },
+          "save.write": {
+            "calls": 32,
+            "cpu_ns": 2459710,
+            "wall_ns": 53949588
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 8,
+            "cpu_ns": 759311,
+            "wall_ns": 3924650
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 8,
+            "cpu_ns": 184640,
+            "wall_ns": 192209
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 15,
+            "cpu_ns": 2283521,
+            "wall_ns": 25766094
+          },
+          "correctness.event_invariants": {
+            "calls": 15,
+            "cpu_ns": 1038602,
+            "wall_ns": 1043005
+          },
+          "online.EVENT.angle_and_requery": {
+            "calls": 15,
+            "cpu_ns": 1307050,
+            "wall_ns": 1312315
+          },
+          "online.EVENT.evidence": {
+            "calls": 15,
+            "cpu_ns": 636180,
+            "wall_ns": 639076
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 147080,
+            "wall_ns": 146940
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 9890,
+            "wall_ns": 9900
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 16970,
+            "wall_ns": 17160
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        19989618,
+        19989893
+      ],
+      "online_cpu_wall_ns": [
+        6303802,
+        36209799
+      ],
+      "generator_audit_cpu_wall_ns": [
+        3957072,
+        33845510
+      ],
+      "angle_requery_cpu_wall_ns": [
+        1307050,
+        1312315
+      ],
+      "evidence_cpu_wall_ns": [
+        1039680,
+        1051974
+      ],
+      "output_cpu_wall_ns": [
+        4457553,
+        55950678
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 98,
+        "cpu_ns": 3362542,
+        "wall_ns": 85010213,
+        "coalesced_write_acks": 32
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32256000
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9228794,
+        "wchar": 45548,
+        "syscr": 358,
+        "syscw": 130,
+        "read_bytes": 0,
+        "write_bytes": 36864,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 33448,
+      "output_rows": 32,
+      "logical_completed": 32,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "correctness_baseline_closed_P3_tail_A",
+      "phase": "correctness",
+      "pass_name": "baseline",
+      "arm": "closed_P3_tail",
+      "layer": "A",
+      "worker_pid": 3692942,
+      "outer_cpu_wall_ns": [
+        33751285,
+        70688460
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          29340113,
+          66033484
+        ],
+        "outer_total_ns": [
+          33751285,
+          70688460
+        ],
+        "residual_ns": [
+          4411172,
+          4654976
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 18932318,
+            "wall_ns": 18932398
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 39970,
+            "wall_ns": 40040
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 70990,
+            "wall_ns": 70710
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 100590,
+            "wall_ns": 100779
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 18,
+            "cpu_ns": 2830111,
+            "wall_ns": 10986911
+          },
+          "correctness.event_invariants": {
+            "calls": 18,
+            "cpu_ns": 1050311,
+            "wall_ns": 1054513
+          },
+          "online.EVENT.evidence": {
+            "calls": 18,
+            "cpu_ns": 663180,
+            "wall_ns": 665158
+          },
+          "save.serialize": {
+            "calls": 32,
+            "cpu_ns": 1231801,
+            "wall_ns": 1234682
+          },
+          "save.hash": {
+            "calls": 32,
+            "cpu_ns": 425490,
+            "wall_ns": 427739
+          },
+          "save.file_hash": {
+            "calls": 32,
+            "cpu_ns": 108530,
+            "wall_ns": 104180
+          },
+          "save.write": {
+            "calls": 32,
+            "cpu_ns": 2084900,
+            "wall_ns": 8238195
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 6,
+            "cpu_ns": 679100,
+            "wall_ns": 20065811
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 6,
+            "cpu_ns": 204940,
+            "wall_ns": 205839
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 8,
+            "cpu_ns": 688512,
+            "wall_ns": 3676549
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 8,
+            "cpu_ns": 163060,
+            "wall_ns": 163870
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 51690,
+            "wall_ns": 51500
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 5110,
+            "wall_ns": 5120
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 9510,
+            "wall_ns": 9490
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        19195558,
+        19195427
+      ],
+      "online_cpu_wall_ns": [
+        5228903,
+        35764138
+      ],
+      "generator_audit_cpu_wall_ns": [
+        4197723,
+        34729271
+      ],
+      "angle_requery_cpu_wall_ns": null,
+      "evidence_cpu_wall_ns": [
+        1031180,
+        1034867
+      ],
+      "output_cpu_wall_ns": [
+        3865341,
+        10019406
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 98,
+        "cpu_ns": 3214741,
+        "wall_ns": 40197883,
+        "coalesced_write_acks": 32
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32260096
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9228794,
+        "wchar": 40964,
+        "syscr": 358,
+        "syscw": 130,
+        "read_bytes": 0,
+        "write_bytes": 32768,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 29344,
+      "output_rows": 32,
+      "logical_completed": 32,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "correctness_baseline_closed_P3_tail_B",
+      "phase": "correctness",
+      "pass_name": "baseline",
+      "arm": "closed_P3_tail",
+      "layer": "B",
+      "worker_pid": 3692943,
+      "outer_cpu_wall_ns": [
+        38548927,
+        178686920
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          33399804,
+          148647003
+        ],
+        "outer_total_ns": [
+          38548927,
+          178686920
+        ],
+        "residual_ns": [
+          5149123,
+          30039917
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 19954029,
+            "wall_ns": 19953713
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 40100,
+            "wall_ns": 40300
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 71720,
+            "wall_ns": 71430
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 97680,
+            "wall_ns": 97690
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 18,
+            "cpu_ns": 3007890,
+            "wall_ns": 65855036
+          },
+          "correctness.event_invariants": {
+            "calls": 18,
+            "cpu_ns": 1168821,
+            "wall_ns": 1173484
+          },
+          "online.EVENT.angle_and_requery": {
+            "calls": 18,
+            "cpu_ns": 1535301,
+            "wall_ns": 1540055
+          },
+          "online.EVENT.evidence": {
+            "calls": 18,
+            "cpu_ns": 740990,
+            "wall_ns": 743064
+          },
+          "save.serialize": {
+            "calls": 32,
+            "cpu_ns": 1543710,
+            "wall_ns": 1546710
+          },
+          "save.hash": {
+            "calls": 32,
+            "cpu_ns": 520130,
+            "wall_ns": 522107
+          },
+          "save.file_hash": {
+            "calls": 32,
+            "cpu_ns": 132730,
+            "wall_ns": 126980
+          },
+          "save.write": {
+            "calls": 32,
+            "cpu_ns": 2505442,
+            "wall_ns": 50075844
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 6,
+            "cpu_ns": 727810,
+            "wall_ns": 2798674
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 6,
+            "cpu_ns": 189210,
+            "wall_ns": 189760
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 8,
+            "cpu_ns": 857850,
+            "wall_ns": 3606018
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 8,
+            "cpu_ns": 183601,
+            "wall_ns": 183589
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 103600,
+            "wall_ns": 103739
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 7220,
+            "wall_ns": 7020
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 11970,
+            "wall_ns": 11790
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        20267129,
+        20266872
+      ],
+      "online_cpu_wall_ns": [
+        7242652,
+        74916196
+      ],
+      "generator_audit_cpu_wall_ns": [
+        4593550,
+        72259728
+      ],
+      "angle_requery_cpu_wall_ns": [
+        1535301,
+        1540055
+      ],
+      "evidence_cpu_wall_ns": [
+        1113801,
+        1116413
+      ],
+      "output_cpu_wall_ns": [
+        4721202,
+        52290451
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 98,
+        "cpu_ns": 3814612,
+        "wall_ns": 144003737,
+        "coalesced_write_acks": 32
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32333824
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9228794,
+        "wchar": 48506,
+        "syscr": 358,
+        "syscw": 130,
+        "read_bytes": 0,
+        "write_bytes": 40960,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 36886,
+      "output_rows": 32,
+      "logical_completed": 32,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "correctness_baseline_full_return_A",
+      "phase": "correctness",
+      "pass_name": "baseline",
+      "arm": "full_return",
+      "layer": "A",
+      "worker_pid": 3692944,
+      "outer_cpu_wall_ns": [
+        36430428,
+        97819635
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          32000146,
+          93077046
+        ],
+        "outer_total_ns": [
+          36430428,
+          97819635
+        ],
+        "residual_ns": [
+          4430282,
+          4742589
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 21788219,
+            "wall_ns": 21816413
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 42770,
+            "wall_ns": 42940
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 77170,
+            "wall_ns": 76909
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 99950,
+            "wall_ns": 99940
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 17,
+            "cpu_ns": 2462380,
+            "wall_ns": 10874030
+          },
+          "correctness.event_invariants": {
+            "calls": 17,
+            "cpu_ns": 1080632,
+            "wall_ns": 1084424
+          },
+          "online.EVENT.evidence": {
+            "calls": 17,
+            "cpu_ns": 739351,
+            "wall_ns": 742075
+          },
+          "save.serialize": {
+            "calls": 32,
+            "cpu_ns": 1280312,
+            "wall_ns": 1283545
+          },
+          "save.hash": {
+            "calls": 32,
+            "cpu_ns": 433310,
+            "wall_ns": 434476
+          },
+          "save.file_hash": {
+            "calls": 32,
+            "cpu_ns": 109630,
+            "wall_ns": 105030
+          },
+          "save.write": {
+            "calls": 32,
+            "cpu_ns": 2056622,
+            "wall_ns": 30481094
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 7,
+            "cpu_ns": 580090,
+            "wall_ns": 2777405
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 7,
+            "cpu_ns": 146690,
+            "wall_ns": 148030
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 8,
+            "cpu_ns": 845270,
+            "wall_ns": 22854898
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 8,
+            "cpu_ns": 196370,
+            "wall_ns": 194917
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 47160,
+            "wall_ns": 47080
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 4600,
+            "wall_ns": 4410
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 9620,
+            "wall_ns": 9430
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        22055269,
+        22083282
+      ],
+      "online_cpu_wall_ns": [
+        4970151,
+        37591355
+      ],
+      "generator_audit_cpu_wall_ns": [
+        3887740,
+        36506333
+      ],
+      "angle_requery_cpu_wall_ns": null,
+      "evidence_cpu_wall_ns": [
+        1082411,
+        1085022
+      ],
+      "output_cpu_wall_ns": [
+        3894094,
+        32317985
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 98,
+        "cpu_ns": 3134681,
+        "wall_ns": 64539828,
+        "coalesced_write_acks": 32
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32251904
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9228794,
+        "wchar": 41749,
+        "syscr": 358,
+        "syscw": 130,
+        "read_bytes": 0,
+        "write_bytes": 32768,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 30417,
+      "output_rows": 32,
+      "logical_completed": 32,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "correctness_baseline_full_return_B",
+      "phase": "correctness",
+      "pass_name": "baseline",
+      "arm": "full_return",
+      "layer": "B",
+      "worker_pid": 3692945,
+      "outer_cpu_wall_ns": [
+        43582009,
+        220871314
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          37984047,
+          197655373
+        ],
+        "outer_total_ns": [
+          43582009,
+          220871314
+        ],
+        "residual_ns": [
+          5597962,
+          23215941
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 20286219,
+            "wall_ns": 20286371
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 38120,
+            "wall_ns": 38279
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 70540,
+            "wall_ns": 70029
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 104440,
+            "wall_ns": 391728
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 17,
+            "cpu_ns": 4235501,
+            "wall_ns": 56793923
+          },
+          "correctness.event_invariants": {
+            "calls": 17,
+            "cpu_ns": 1766290,
+            "wall_ns": 1771062
+          },
+          "online.EVENT.angle_and_requery": {
+            "calls": 17,
+            "cpu_ns": 2172491,
+            "wall_ns": 2176977
+          },
+          "online.EVENT.evidence": {
+            "calls": 17,
+            "cpu_ns": 1093590,
+            "wall_ns": 1096504
+          },
+          "save.serialize": {
+            "calls": 32,
+            "cpu_ns": 2006611,
+            "wall_ns": 2008708
+          },
+          "save.hash": {
+            "calls": 32,
+            "cpu_ns": 627401,
+            "wall_ns": 629319
+          },
+          "save.file_hash": {
+            "calls": 32,
+            "cpu_ns": 170980,
+            "wall_ns": 251559
+          },
+          "save.write": {
+            "calls": 32,
+            "cpu_ns": 3080403,
+            "wall_ns": 68717661
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 7,
+            "cpu_ns": 715270,
+            "wall_ns": 5302559
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 7,
+            "cpu_ns": 161720,
+            "wall_ns": 162399
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 8,
+            "cpu_ns": 1072721,
+            "wall_ns": 37575416
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 8,
+            "cpu_ns": 254240,
+            "wall_ns": 255509
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 106400,
+            "wall_ns": 106460
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 7410,
+            "wall_ns": 7290
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 13700,
+            "wall_ns": 13620
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        20605719,
+        20892867
+      ],
+      "online_cpu_wall_ns": [
+        9705533,
+        103363287
+      ],
+      "generator_audit_cpu_wall_ns": [
+        6023492,
+        99671898
+      ],
+      "angle_requery_cpu_wall_ns": [
+        2172491,
+        2176977
+      ],
+      "evidence_cpu_wall_ns": [
+        1509550,
+        1514412
+      ],
+      "output_cpu_wall_ns": [
+        5906505,
+        71628157
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 98,
+        "cpu_ns": 4695871,
+        "wall_ns": 181392487,
+        "coalesced_write_acks": 32
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32256000
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9228795,
+        "wchar": 48718,
+        "syscr": 358,
+        "syscw": 130,
+        "read_bytes": 0,
+        "write_bytes": 40960,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 37386,
+      "output_rows": 32,
+      "logical_completed": 32,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "profile_baseline_ordinary_A",
+      "phase": "profile",
+      "pass_name": "baseline",
+      "arm": "ordinary",
+      "layer": "A",
+      "worker_pid": 3692946,
+      "outer_cpu_wall_ns": [
+        100364968,
+        197134741
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          85478980,
+          181833897
+        ],
+        "outer_total_ns": [
+          100364968,
+          197134741
+        ],
+        "residual_ns": [
+          14885988,
+          15300844
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 20945409,
+            "wall_ns": 20945387
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 37280,
+            "wall_ns": 37280
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 69840,
+            "wall_ns": 69430
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 112790,
+            "wall_ns": 113050
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 147,
+            "cpu_ns": 17974077,
+            "wall_ns": 54574450
+          },
+          "online.EVENT.evidence": {
+            "calls": 147,
+            "cpu_ns": 10218255,
+            "wall_ns": 10474794
+          },
+          "save.serialize": {
+            "calls": 256,
+            "cpu_ns": 4479884,
+            "wall_ns": 4494081
+          },
+          "save.hash": {
+            "calls": 256,
+            "cpu_ns": 2586282,
+            "wall_ns": 2594476
+          },
+          "save.file_hash": {
+            "calls": 256,
+            "cpu_ns": 852340,
+            "wall_ns": 885612
+          },
+          "save.write": {
+            "calls": 256,
+            "cpu_ns": 14896727,
+            "wall_ns": 46267708
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 61,
+            "cpu_ns": 5469734,
+            "wall_ns": 24317573
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 61,
+            "cpu_ns": 2199111,
+            "wall_ns": 2235906
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 48,
+            "cpu_ns": 3904591,
+            "wall_ns": 13085898
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 48,
+            "cpu_ns": 1668140,
+            "wall_ns": 1673862
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 47120,
+            "wall_ns": 47270
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 6230,
+            "wall_ns": 5980
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 11170,
+            "wall_ns": 11140
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        21212439,
+        21212417
+      ],
+      "online_cpu_wall_ns": [
+        41433908,
+        106362483
+      ],
+      "generator_audit_cpu_wall_ns": [
+        27348402,
+        91977921
+      ],
+      "angle_requery_cpu_wall_ns": null,
+      "evidence_cpu_wall_ns": [
+        14085506,
+        14384562
+      ],
+      "output_cpu_wall_ns": [
+        22832633,
+        54258997
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 770,
+        "cpu_ns": 21373431,
+        "wall_ns": 116137651,
+        "coalesced_write_acks": 256
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32256000
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9245596,
+        "wchar": 257965,
+        "syscr": 1702,
+        "syscw": 1026,
+        "read_bytes": 0,
+        "write_bytes": 176128,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 172769,
+      "output_rows": 256,
+      "logical_completed": 256,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "profile_baseline_ordinary_B",
+      "phase": "profile",
+      "pass_name": "baseline",
+      "arm": "ordinary",
+      "layer": "B",
+      "worker_pid": 3692947,
+      "outer_cpu_wall_ns": [
+        118279843,
+        234920368
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          100687307,
+          217000881
+        ],
+        "outer_total_ns": [
+          118279843,
+          234920368
+        ],
+        "residual_ns": [
+          17592536,
+          17919487
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 20571179,
+            "wall_ns": 20571499
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 39150,
+            "wall_ns": 39030
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 68630,
+            "wall_ns": 68580
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 106390,
+            "wall_ns": 106549
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 147,
+            "cpu_ns": 18531640,
+            "wall_ns": 50490183
+          },
+          "online.EVENT.angle_and_requery": {
+            "calls": 147,
+            "cpu_ns": 11299704,
+            "wall_ns": 11332080
+          },
+          "online.EVENT.evidence": {
+            "calls": 147,
+            "cpu_ns": 10805462,
+            "wall_ns": 10841349
+          },
+          "save.serialize": {
+            "calls": 256,
+            "cpu_ns": 4944071,
+            "wall_ns": 5002197
+          },
+          "save.hash": {
+            "calls": 256,
+            "cpu_ns": 2801600,
+            "wall_ns": 2815067
+          },
+          "save.file_hash": {
+            "calls": 256,
+            "cpu_ns": 929380,
+            "wall_ns": 900027
+          },
+          "save.write": {
+            "calls": 256,
+            "cpu_ns": 16131556,
+            "wall_ns": 71464604
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 61,
+            "cpu_ns": 6007432,
+            "wall_ns": 22912844
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 61,
+            "cpu_ns": 2356020,
+            "wall_ns": 2358988
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 48,
+            "cpu_ns": 4187163,
+            "wall_ns": 16185994
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 48,
+            "cpu_ns": 1762920,
+            "wall_ns": 1766610
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 115610,
+            "wall_ns": 115870
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 11050,
+            "wall_ns": 11080
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 18350,
+            "wall_ns": 18330
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        20900959,
+        20901528
+      ],
+      "online_cpu_wall_ns": [
+        54950341,
+        115888048
+      ],
+      "generator_audit_cpu_wall_ns": [
+        28726235,
+        89589021
+      ],
+      "angle_requery_cpu_wall_ns": [
+        11299704,
+        11332080
+      ],
+      "evidence_cpu_wall_ns": [
+        14924402,
+        14966947
+      ],
+      "output_cpu_wall_ns": [
+        24836007,
+        80211305
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 770,
+        "cpu_ns": 22590473,
+        "wall_ns": 139130067,
+        "coalesced_write_acks": 256
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32256000
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9245595,
+        "wchar": 265535,
+        "syscr": 1702,
+        "syscw": 1026,
+        "read_bytes": 0,
+        "write_bytes": 184320,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 180339,
+      "output_rows": 256,
+      "logical_completed": 256,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "profile_baseline_partial_return_tail_A",
+      "phase": "profile",
+      "pass_name": "baseline",
+      "arm": "partial_return_tail",
+      "layer": "A",
+      "worker_pid": 3692948,
+      "outer_cpu_wall_ns": [
+        105687506,
+        273382531
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          89783822,
+          257259608
+        ],
+        "outer_total_ns": [
+          105687506,
+          273382531
+        ],
+        "residual_ns": [
+          15903684,
+          16122923
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 20551908,
+            "wall_ns": 20552319
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 37920,
+            "wall_ns": 38090
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 68760,
+            "wall_ns": 68190
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 120230,
+            "wall_ns": 120500
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 67,
+            "cpu_ns": 5975324,
+            "wall_ns": 25718573
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 67,
+            "cpu_ns": 2397670,
+            "wall_ns": 2407492
+          },
+          "save.serialize": {
+            "calls": 256,
+            "cpu_ns": 4908734,
+            "wall_ns": 4907348
+          },
+          "save.hash": {
+            "calls": 256,
+            "cpu_ns": 2817380,
+            "wall_ns": 2834253
+          },
+          "save.file_hash": {
+            "calls": 256,
+            "cpu_ns": 910941,
+            "wall_ns": 883025
+          },
+          "save.write": {
+            "calls": 256,
+            "cpu_ns": 16336775,
+            "wall_ns": 112880515
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 56,
+            "cpu_ns": 5301652,
+            "wall_ns": 22003655
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 56,
+            "cpu_ns": 2074011,
+            "wall_ns": 2081341
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 133,
+            "cpu_ns": 17933803,
+            "wall_ns": 52380131
+          },
+          "online.EVENT.evidence": {
+            "calls": 133,
+            "cpu_ns": 10206184,
+            "wall_ns": 10241666
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 114850,
+            "wall_ns": 114790
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 11020,
+            "wall_ns": 11100
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 16660,
+            "wall_ns": 16620
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        20893668,
+        20893889
+      ],
+      "online_cpu_wall_ns": [
+        43888644,
+        114832858
+      ],
+      "generator_audit_cpu_wall_ns": [
+        29210779,
+        100102359
+      ],
+      "angle_requery_cpu_wall_ns": null,
+      "evidence_cpu_wall_ns": [
+        14677865,
+        14730499
+      ],
+      "output_cpu_wall_ns": [
+        25001510,
+        121532861
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 770,
+        "cpu_ns": 23075768,
+        "wall_ns": 190629773,
+        "coalesced_write_acks": 256
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32260096
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9245596,
+        "wchar": 266877,
+        "syscr": 1702,
+        "syscw": 1026,
+        "read_bytes": 0,
+        "write_bytes": 176128,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 173233,
+      "output_rows": 256,
+      "logical_completed": 256,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "profile_baseline_partial_return_tail_B",
+      "phase": "profile",
+      "pass_name": "baseline",
+      "arm": "partial_return_tail",
+      "layer": "B",
+      "worker_pid": 3692949,
+      "outer_cpu_wall_ns": [
+        134164411,
+        368994308
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          113827872,
+          348610627
+        ],
+        "outer_total_ns": [
+          134164411,
+          368994308
+        ],
+        "residual_ns": [
+          20336539,
+          20383681
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 20327888,
+            "wall_ns": 20327581
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 39740,
+            "wall_ns": 39759
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 69810,
+            "wall_ns": 69629
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 102251,
+            "wall_ns": 102420
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 67,
+            "cpu_ns": 7069096,
+            "wall_ns": 25758031
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 67,
+            "cpu_ns": 2963370,
+            "wall_ns": 2972166
+          },
+          "save.serialize": {
+            "calls": 256,
+            "cpu_ns": 5766041,
+            "wall_ns": 5776755
+          },
+          "save.hash": {
+            "calls": 256,
+            "cpu_ns": 3372170,
+            "wall_ns": 3382725
+          },
+          "save.file_hash": {
+            "calls": 256,
+            "cpu_ns": 1017790,
+            "wall_ns": 982374
+          },
+          "save.write": {
+            "calls": 256,
+            "cpu_ns": 19360649,
+            "wall_ns": 158135830
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 56,
+            "cpu_ns": 5855182,
+            "wall_ns": 22986722
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 56,
+            "cpu_ns": 2525010,
+            "wall_ns": 2537733
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 133,
+            "cpu_ns": 20161494,
+            "wall_ns": 80272854
+          },
+          "online.EVENT.angle_and_requery": {
+            "calls": 133,
+            "cpu_ns": 12720393,
+            "wall_ns": 12758195
+          },
+          "online.EVENT.evidence": {
+            "calls": 133,
+            "cpu_ns": 12321417,
+            "wall_ns": 12352204
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 129291,
+            "wall_ns": 129249
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 9900,
+            "wall_ns": 10070
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 16380,
+            "wall_ns": 16330
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        20668980,
+        20668638
+      ],
+      "online_cpu_wall_ns": [
+        63615962,
+        159637905
+      ],
+      "generator_audit_cpu_wall_ns": [
+        33085772,
+        129017607
+      ],
+      "angle_requery_cpu_wall_ns": [
+        12720393,
+        12758195
+      ],
+      "evidence_cpu_wall_ns": [
+        17809797,
+        17862103
+      ],
+      "output_cpu_wall_ns": [
+        29542930,
+        168304084
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 770,
+        "cpu_ns": 26167301,
+        "wall_ns": 261241391,
+        "coalesced_write_acks": 256
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32260096
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9245595,
+        "wchar": 273179,
+        "syscr": 1702,
+        "syscw": 1026,
+        "read_bytes": 0,
+        "write_bytes": 180224,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 179535,
+      "output_rows": 256,
+      "logical_completed": 256,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "profile_baseline_closed_P3_tail_A",
+      "phase": "profile",
+      "pass_name": "baseline",
+      "arm": "closed_P3_tail",
+      "layer": "A",
+      "worker_pid": 3692950,
+      "outer_cpu_wall_ns": [
+        98447015,
+        334490703
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          83270522,
+          318947648
+        ],
+        "outer_total_ns": [
+          98447015,
+          334490703
+        ],
+        "residual_ns": [
+          15176493,
+          15543055
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 20256319,
+            "wall_ns": 20256511
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 39330,
+            "wall_ns": 39360
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 68380,
+            "wall_ns": 68110
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 117830,
+            "wall_ns": 117840
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 130,
+            "cpu_ns": 15884755,
+            "wall_ns": 88649021
+          },
+          "online.EVENT.evidence": {
+            "calls": 130,
+            "cpu_ns": 9403704,
+            "wall_ns": 9517622
+          },
+          "save.serialize": {
+            "calls": 256,
+            "cpu_ns": 4619364,
+            "wall_ns": 4782116
+          },
+          "save.hash": {
+            "calls": 256,
+            "cpu_ns": 2945930,
+            "wall_ns": 2957527
+          },
+          "save.file_hash": {
+            "calls": 256,
+            "cpu_ns": 897640,
+            "wall_ns": 871527
+          },
+          "save.write": {
+            "calls": 256,
+            "cpu_ns": 14298756,
+            "wall_ns": 131094761
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 59,
+            "cpu_ns": 4838771,
+            "wall_ns": 26641555
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 59,
+            "cpu_ns": 2077951,
+            "wall_ns": 2084105
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 67,
+            "cpu_ns": 5412042,
+            "wall_ns": 29447674
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 67,
+            "cpu_ns": 2313760,
+            "wall_ns": 2323599
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 78330,
+            "wall_ns": 78630
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 7090,
+            "wall_ns": 7130
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 10570,
+            "wall_ns": 10560
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        20560189,
+        20560451
+      ],
+      "online_cpu_wall_ns": [
+        39930983,
+        158663576
+      ],
+      "generator_audit_cpu_wall_ns": [
+        26135568,
+        144738250
+      ],
+      "angle_requery_cpu_wall_ns": null,
+      "evidence_cpu_wall_ns": [
+        13795415,
+        13925326
+      ],
+      "output_cpu_wall_ns": [
+        22779350,
+        139723621
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 770,
+        "cpu_ns": 19617295,
+        "wall_ns": 254195400,
+        "coalesced_write_acks": 256
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32260096
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9245596,
+        "wchar": 264121,
+        "syscr": 1702,
+        "syscw": 1026,
+        "read_bytes": 0,
+        "write_bytes": 176128,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 174317,
+      "output_rows": 256,
+      "logical_completed": 256,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "profile_baseline_closed_P3_tail_B",
+      "phase": "profile",
+      "pass_name": "baseline",
+      "arm": "closed_P3_tail",
+      "layer": "B",
+      "worker_pid": 3692951,
+      "outer_cpu_wall_ns": [
+        117017933,
+        477191816
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          99224397,
+          458766859
+        ],
+        "outer_total_ns": [
+          117017933,
+          477191816
+        ],
+        "residual_ns": [
+          17793536,
+          18424957
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 19785408,
+            "wall_ns": 19785424
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 40390,
+            "wall_ns": 40400
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 70670,
+            "wall_ns": 70200
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 105770,
+            "wall_ns": 174819
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 130,
+            "cpu_ns": 17103334,
+            "wall_ns": 180831440
+          },
+          "online.EVENT.angle_and_requery": {
+            "calls": 130,
+            "cpu_ns": 10449625,
+            "wall_ns": 10487485
+          },
+          "online.EVENT.evidence": {
+            "calls": 130,
+            "cpu_ns": 10291784,
+            "wall_ns": 10336657
+          },
+          "save.serialize": {
+            "calls": 256,
+            "cpu_ns": 5068930,
+            "wall_ns": 5085863
+          },
+          "save.hash": {
+            "calls": 256,
+            "cpu_ns": 3175412,
+            "wall_ns": 3194114
+          },
+          "save.file_hash": {
+            "calls": 256,
+            "cpu_ns": 873981,
+            "wall_ns": 838806
+          },
+          "save.write": {
+            "calls": 256,
+            "cpu_ns": 15739541,
+            "wall_ns": 126938948
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 59,
+            "cpu_ns": 5261311,
+            "wall_ns": 62626696
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 59,
+            "cpu_ns": 2314260,
+            "wall_ns": 2322967
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 67,
+            "cpu_ns": 6132931,
+            "wall_ns": 33059013
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 67,
+            "cpu_ns": 2680560,
+            "wall_ns": 2843218
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 110450,
+            "wall_ns": 110799
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 7550,
+            "wall_ns": 7560
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 12490,
+            "wall_ns": 12450
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        20112688,
+        20181642
+      ],
+      "online_cpu_wall_ns": [
+        54233805,
+        302507476
+      ],
+      "generator_audit_cpu_wall_ns": [
+        28497576,
+        276517149
+      ],
+      "angle_requery_cpu_wall_ns": [
+        10449625,
+        10487485
+      ],
+      "evidence_cpu_wall_ns": [
+        15286604,
+        15502842
+      ],
+      "output_cpu_wall_ns": [
+        24877904,
+        136077741
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 770,
+        "cpu_ns": 22161656,
+        "wall_ns": 381014413,
+        "coalesced_write_acks": 256
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32260096
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9245596,
+        "wchar": 271668,
+        "syscr": 1702,
+        "syscw": 1026,
+        "read_bytes": 0,
+        "write_bytes": 184320,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 181864,
+      "output_rows": 256,
+      "logical_completed": 256,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "profile_baseline_full_return_A",
+      "phase": "profile",
+      "pass_name": "baseline",
+      "arm": "full_return",
+      "layer": "A",
+      "worker_pid": 3692952,
+      "outer_cpu_wall_ns": [
+        139075420,
+        435224422
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          116757843,
+          412645278
+        ],
+        "outer_total_ns": [
+          139075420,
+          435224422
+        ],
+        "residual_ns": [
+          22317577,
+          22579144
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 20803498,
+            "wall_ns": 20803658
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 38890,
+            "wall_ns": 38910
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 70200,
+            "wall_ns": 70000
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 136320,
+            "wall_ns": 136430
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 114,
+            "cpu_ns": 20617257,
+            "wall_ns": 120387884
+          },
+          "online.EVENT.evidence": {
+            "calls": 114,
+            "cpu_ns": 13497679,
+            "wall_ns": 13528505
+          },
+          "save.serialize": {
+            "calls": 256,
+            "cpu_ns": 6929494,
+            "wall_ns": 6943020
+          },
+          "save.hash": {
+            "calls": 256,
+            "cpu_ns": 4111713,
+            "wall_ns": 4127797
+          },
+          "save.file_hash": {
+            "calls": 256,
+            "cpu_ns": 1162590,
+            "wall_ns": 1124973
+          },
+          "save.write": {
+            "calls": 256,
+            "cpu_ns": 22311554,
+            "wall_ns": 129632049
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 66,
+            "cpu_ns": 8378702,
+            "wall_ns": 71215555
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 66,
+            "cpu_ns": 3571481,
+            "wall_ns": 3580682
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 76,
+            "cpu_ns": 10430305,
+            "wall_ns": 36340491
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 76,
+            "cpu_ns": 4555070,
+            "wall_ns": 4572494
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 116780,
+            "wall_ns": 117150
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 9560,
+            "wall_ns": 9260
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 16750,
+            "wall_ns": 16420
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        21165688,
+        21166148
+      ],
+      "online_cpu_wall_ns": [
+        61050494,
+        249625611
+      ],
+      "generator_audit_cpu_wall_ns": [
+        39426264,
+        227943930
+      ],
+      "angle_requery_cpu_wall_ns": null,
+      "evidence_cpu_wall_ns": [
+        21624230,
+        21681681
+      ],
+      "output_cpu_wall_ns": [
+        34541661,
+        141853519
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 770,
+        "cpu_ns": 31492815,
+        "wall_ns": 327836328,
+        "coalesced_write_acks": 256
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32260096
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9245595,
+        "wchar": 262237,
+        "syscr": 1702,
+        "syscw": 1026,
+        "read_bytes": 0,
+        "write_bytes": 176128,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 174737,
+      "output_rows": 256,
+      "logical_completed": 256,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "profile_baseline_full_return_B",
+      "phase": "profile",
+      "pass_name": "baseline",
+      "arm": "full_return",
+      "layer": "B",
+      "worker_pid": 3692953,
+      "outer_cpu_wall_ns": [
+        137274989,
+        509430233
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          116393321,
+          488218408
+        ],
+        "outer_total_ns": [
+          137274989,
+          509430233
+        ],
+        "residual_ns": [
+          20881668,
+          21211825
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 19967238,
+            "wall_ns": 19967573
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 38660,
+            "wall_ns": 38820
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 68600,
+            "wall_ns": 68240
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 108690,
+            "wall_ns": 108879
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 114,
+            "cpu_ns": 18714546,
+            "wall_ns": 122660949
+          },
+          "online.EVENT.angle_and_requery": {
+            "calls": 114,
+            "cpu_ns": 12054557,
+            "wall_ns": 12097187
+          },
+          "online.EVENT.evidence": {
+            "calls": 114,
+            "cpu_ns": 11298902,
+            "wall_ns": 11335328
+          },
+          "save.serialize": {
+            "calls": 256,
+            "cpu_ns": 5992924,
+            "wall_ns": 6012477
+          },
+          "save.hash": {
+            "calls": 256,
+            "cpu_ns": 3700174,
+            "wall_ns": 3722160
+          },
+          "save.file_hash": {
+            "calls": 256,
+            "cpu_ns": 1098610,
+            "wall_ns": 1067411
+          },
+          "save.write": {
+            "calls": 256,
+            "cpu_ns": 19940218,
+            "wall_ns": 182858725
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 66,
+            "cpu_ns": 7459953,
+            "wall_ns": 30072759
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 66,
+            "cpu_ns": 3226873,
+            "wall_ns": 3235807
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 76,
+            "cpu_ns": 8898765,
+            "wall_ns": 91135701
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 76,
+            "cpu_ns": 3684171,
+            "wall_ns": 3696173
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 115020,
+            "wall_ns": 115169
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 10080,
+            "wall_ns": 9760
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 15340,
+            "wall_ns": 15290
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        20298208,
+        20298681
+      ],
+      "online_cpu_wall_ns": [
+        65337767,
+        274233904
+      ],
+      "generator_audit_cpu_wall_ns": [
+        35073264,
+        243869409
+      ],
+      "angle_requery_cpu_wall_ns": [
+        12054557,
+        12097187
+      ],
+      "evidence_cpu_wall_ns": [
+        18209946,
+        18267308
+      ],
+      "output_cpu_wall_ns": [
+        30757346,
+        193685823
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 770,
+        "cpu_ns": 28120941,
+        "wall_ns": 400249239,
+        "coalesced_write_acks": 256
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32256000
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9245595,
+        "wchar": 269201,
+        "syscr": 1702,
+        "syscw": 1026,
+        "read_bytes": 0,
+        "write_bytes": 184320,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 181701,
+      "output_rows": 256,
+      "logical_completed": 256,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "profile_instrumented_ordinary_A",
+      "phase": "profile",
+      "pass_name": "instrumented",
+      "arm": "ordinary",
+      "layer": "A",
+      "worker_pid": 3692955,
+      "outer_cpu_wall_ns": [
+        485973012,
+        713835674
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          378047761,
+          603840012
+        ],
+        "outer_total_ns": [
+          485973012,
+          713835674
+        ],
+        "residual_ns": [
+          107925251,
+          109995662
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 39101246,
+            "wall_ns": 39100350
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 169530,
+            "wall_ns": 169509
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 369210,
+            "wall_ns": 369178
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 582780,
+            "wall_ns": 582686
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 147,
+            "cpu_ns": 100292437,
+            "wall_ns": 185440769
+          },
+          "online.EVENT.evidence": {
+            "calls": 147,
+            "cpu_ns": 60850377,
+            "wall_ns": 61724112
+          },
+          "save.serialize": {
+            "calls": 256,
+            "cpu_ns": 32541808,
+            "wall_ns": 32582164
+          },
+          "save.hash": {
+            "calls": 256,
+            "cpu_ns": 7883247,
+            "wall_ns": 7897721
+          },
+          "save.file_hash": {
+            "calls": 256,
+            "cpu_ns": 3508050,
+            "wall_ns": 3506388
+          },
+          "save.write": {
+            "calls": 256,
+            "cpu_ns": 69407902,
+            "wall_ns": 141014112
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 61,
+            "cpu_ns": 26388326,
+            "wall_ns": 67571830
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 61,
+            "cpu_ns": 10792001,
+            "wall_ns": 10793759
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 48,
+            "cpu_ns": 17989873,
+            "wall_ns": 44918792
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 48,
+            "cpu_ns": 7810743,
+            "wall_ns": 7808523
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 286831,
+            "wall_ns": 286819
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 33190,
+            "wall_ns": 33100
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 40210,
+            "wall_ns": 40200
+          }
+        }
+      },
+      "fine_alternative": {
+        "exclusive_sum_ns": [
+          483049651,
+          710912500
+        ],
+        "outer_total_ns": [
+          485973012,
+          713835674
+        ],
+        "residual_ns": [
+          2923361,
+          2923174
+        ],
+        "rows": {
+          "g6_w2c_cost_preparation.py:26:require": {
+            "calls": 78,
+            "cpu_ns": 118710,
+            "wall_ns": 100650
+          },
+          "g6_w2c_cost_preparation.py:50:_pack.<locals>.<genexpr>": {
+            "calls": 40,
+            "cpu_ns": 47310,
+            "wall_ns": 46860
+          },
+          "g6_w2c_cost_preparation.py:41:_pack": {
+            "calls": 40,
+            "cpu_ns": 234360,
+            "wall_ns": 234758
+          },
+          "g6_w2c_cost_preparation.py:55:canonical": {
+            "calls": 2,
+            "cpu_ns": 99720,
+            "wall_ns": 99860
+          },
+          "g6_w2c_cost_preparation.py:59:fingerprint": {
+            "calls": 2,
+            "cpu_ns": 30710,
+            "wall_ns": 30640
+          },
+          "g6_w2c_cost_preparation.py:79:check_source_files": {
+            "calls": 2,
+            "cpu_ns": 10929965,
+            "wall_ns": 10947871
+          },
+          "g6_w2c_b3_parallel_driver.py:257:check_pins": {
+            "calls": 2,
+            "cpu_ns": 21820,
+            "wall_ns": 21770
+          },
+          "g6_w2c_b3_admission.py:42:require": {
+            "calls": 145,
+            "cpu_ns": 193610,
+            "wall_ns": 175359
+          },
+          "g6_w2c_b3_admission.py:73:read_regular": {
+            "calls": 41,
+            "cpu_ns": 6253773,
+            "wall_ns": 6255388
+          },
+          "g6_w2c_b3_admission.py:47:digest": {
+            "calls": 41,
+            "cpu_ns": 5717513,
+            "wall_ns": 5718249
+          },
+          "g6_w2c_b3_parallel_admission.py:28:python_identity": {
+            "calls": 1,
+            "cpu_ns": 1767840,
+            "wall_ns": 1768690
+          },
+          "g6_w2c_b3_admission.py:64:exact_path": {
+            "calls": 32,
+            "cpu_ns": 10037092,
+            "wall_ns": 10047494
+          },
+          "g6_w2c_b3_parallel_admission.py:50:check_runtime": {
+            "calls": 1,
+            "cpu_ns": 3584423,
+            "wall_ns": 3588832
+          },
+          "g6_w2c_b3_parallel_driver.py:78:delta.<locals>.<genexpr>": {
+            "calls": 11570,
+            "cpu_ns": 15892666,
+            "wall_ns": 16232860
+          },
+          "g6_w2c_b3_parallel_driver.py:79:delta.<locals>.<genexpr>": {
+            "calls": 6942,
+            "cpu_ns": 9104113,
+            "wall_ns": 9013213
+          },
+          "g6_w2c_b3_parallel_driver.py:80:delta.<locals>.<genexpr>": {
+            "calls": 6942,
+            "cpu_ns": 8898374,
+            "wall_ns": 8899766
+          },
+          "g6_w2c_b3_parallel_driver.py:104:Meter.span.<locals>.<genexpr>": {
+            "calls": 4632,
+            "cpu_ns": 5902624,
+            "wall_ns": 5956212
+          },
+          "b3_parallel_integrated_fixture.py:53:Endpoint.__init__": {
+            "calls": 1,
+            "cpu_ns": 99720,
+            "wall_ns": 99779
+          },
+          "b3_parallel_integrated_fixture.py:124:ArtificialFactory.__call__": {
+            "calls": 1,
+            "cpu_ns": 20750,
+            "wall_ns": 20590
+          },
+          "g6_w2c_b3_parallel_scheduler.py:268:ControlledEndpoint.__init__": {
+            "calls": 1,
+            "cpu_ns": 3060,
+            "wall_ns": 3030
+          },
+          "g6_w2c_b3_parallel_driver.py:191:Stream.__init__": {
+            "calls": 1,
+            "cpu_ns": 120410,
+            "wall_ns": 120179
+          },
+          "g6_w2c_b3_parallel_scheduler.py:317:_worker.<locals>.<genexpr>": {
+            "calls": 1,
+            "cpu_ns": 1790,
+            "wall_ns": 1700
+          },
+          "g6_w2c_b3_parallel_scheduler.py:225:ReservedFile.__init__": {
+            "calls": 1,
+            "cpu_ns": 3960,
+            "wall_ns": 3900
+          },
+          "g6_w2c_b3_parallel_scheduler.py:255:EngineStream.__init__": {
+            "calls": 1,
+            "cpu_ns": 2710,
+            "wall_ns": 2670
+          },
+          "g6_w2c_b3_parallel_driver.py:519:run_pair.<locals>.<genexpr>": {
+            "calls": 3,
+            "cpu_ns": 4430,
+            "wall_ns": 4350
+          },
+          "g6_w2c_b3_parallel_driver.py:520:run_pair.<locals>.<genexpr>": {
+            "calls": 3,
+            "cpu_ns": 5120,
+            "wall_ns": 5030
+          },
+          "g6_w2c_b3_parallel_driver.py:528:run_pair.<locals>.context": {
+            "calls": 262,
+            "cpu_ns": 986600,
+            "wall_ns": 979832
+          },
+          "g6_w2c_b3_exact_serialization.py:34:_packed.<locals>.<genexpr>": {
+            "calls": 5947,
+            "cpu_ns": 7747352,
+            "wall_ns": 7600385
+          },
+          "g6_w2c_b3_exact_serialization.py:23:_packed": {
+            "calls": 10472,
+            "cpu_ns": 58596508,
+            "wall_ns": 58832965
+          },
+          "g6_w2c_b3_exact_serialization.py:51:canonical": {
+            "calls": 964,
+            "cpu_ns": 21738691,
+            "wall_ns": 21902688
+          },
+          "g6_w2c_b3_parallel_driver.py:25:canonical": {
+            "calls": 964,
+            "cpu_ns": 4529753,
+            "wall_ns": 4444140
+          },
+          "g6_w2c_b3_parallel_driver.py:68:identity": {
+            "calls": 452,
+            "cpu_ns": 3028150,
+            "wall_ns": 3004621
+          },
+          "b3_parallel_integrated_fixture.py:59:Endpoint.shared_identity": {
+            "calls": 4,
+            "cpu_ns": 27720,
+            "wall_ns": 27620
+          },
+          "g6_w2c_b3_parallel_scheduler.py:271:ControlledEndpoint.shared_identity": {
+            "calls": 4,
+            "cpu_ns": 32050,
+            "wall_ns": 31999
+          },
+          "g6_w2c_b3_parallel_scheduler.py:190:Client.confirm": {
+            "calls": 3,
+            "cpu_ns": 23700,
+            "wall_ns": 23590
+          },
+          "b3_parallel_integrated_fixture.py:31:Bits.__init__": {
+            "calls": 2,
+            "cpu_ns": 13520,
+            "wall_ns": 13560
+          },
+          "b3_parallel_integrated_fixture.py:116:bits_factory": {
+            "calls": 2,
+            "cpu_ns": 29780,
+            "wall_ns": 29660
+          },
+          "g6_w2c_b3_parallel_scheduler.py:323:_worker.<locals>.bits": {
+            "calls": 2,
+            "cpu_ns": 47560,
+            "wall_ns": 47489
+          },
+          "g6_w2c_b3_parallel_scheduler.py:172:Client.rpc": {
+            "calls": 770,
+            "cpu_ns": 88264861,
+            "wall_ns": 310356828
+          },
+          "g6_w2c_b3_parallel_scheduler.py:691:CoalescedClient.rpc": {
+            "calls": 1026,
+            "cpu_ns": 8213402,
+            "wall_ns": 9926052
+          },
+          "g6_w2c_b3_parallel_scheduler.py:701:CoalescedClient.start": {
+            "calls": 256,
+            "cpu_ns": 4033220,
+            "wall_ns": 4026383
+          },
+          "b3_parallel_integrated_fixture.py:62:Endpoint.fault": {
+            "calls": 1427,
+            "cpu_ns": 4482182,
+            "wall_ns": 4477397
+          },
+          "b3_parallel_integrated_fixture.py:35:Bits.bits": {
+            "calls": 256,
+            "cpu_ns": 3002381,
+            "wall_ns": 3015727
+          },
+          "b3_parallel_integrated_fixture.py:96:Endpoint.sample.<locals>.<genexpr>": {
+            "calls": 1323,
+            "cpu_ns": 5315111,
+            "wall_ns": 5333704
+          },
+          "b3_parallel_integrated_fixture.py:69:Endpoint.sample": {
+            "calls": 256,
+            "cpu_ns": 44103020,
+            "wall_ns": 44144107
+          },
+          "g6_w2c_b3_parallel_scheduler.py:274:ControlledEndpoint.sample": {
+            "calls": 256,
+            "cpu_ns": 4129250,
+            "wall_ns": 4197117
+          },
+          "g6_w2c_b3_parallel_driver.py:364:Outcome.validate": {
+            "calls": 256,
+            "cpu_ns": 1098020,
+            "wall_ns": 1094838
+          },
+          "g6_w2c_b3_parallel_scheduler.py:320:_worker.<locals>.<lambda>": {
+            "calls": 256,
+            "cpu_ns": 1422990,
+            "wall_ns": 1417214
+          },
+          "g6_w2c_b3_parallel_scheduler.py:321:_worker.<locals>.<lambda>": {
+            "calls": 256,
+            "cpu_ns": 1285201,
+            "wall_ns": 1266675
+          },
+          "g6_w2c_b3_parallel_scheduler.py:229:ReservedFile.write": {
+            "calls": 256,
+            "cpu_ns": 5541011,
+            "wall_ns": 5620181
+          },
+          "g6_w2c_b3_parallel_driver.py:204:Stream.emit": {
+            "calls": 256,
+            "cpu_ns": 78603208,
+            "wall_ns": 80439600
+          },
+          "g6_w2c_b3_parallel_scheduler.py:261:EngineStream.emit": {
+            "calls": 256,
+            "cpu_ns": 2489021,
+            "wall_ns": 2470039
+          },
+          "g6_w2c_b3_parallel_driver.py:512:run_pair": {
+            "calls": 1,
+            "cpu_ns": 54968286,
+            "wall_ns": 56587289
+          },
+          "g6_w2c_b3_parallel_scheduler.py:245:ReservedFile.flush": {
+            "calls": 1,
+            "cpu_ns": 6350,
+            "wall_ns": 6310
+          },
+          "g6_w2c_b3_parallel_driver.py:244:Stream.flush": {
+            "calls": 1,
+            "cpu_ns": 83560,
+            "wall_ns": 84080
+          },
+          "g6_w2c_b3_parallel_scheduler.py:250:ReservedFile.close": {
+            "calls": 1,
+            "cpu_ns": 14100,
+            "wall_ns": 14110
+          },
+          "g6_w2c_b3_parallel_driver.py:248:Stream.close": {
+            "calls": 1,
+            "cpu_ns": 96520,
+            "wall_ns": 96600
+          }
+        }
+      },
+      "setup_cpu_wall_ns": [
+        40509597,
+        40508542
+      ],
+      "online_cpu_wall_ns": [
+        224123757,
+        378257785
+      ],
+      "generator_audit_cpu_wall_ns": [
+        144670636,
+        297931391
+      ],
+      "angle_requery_cpu_wall_ns": null,
+      "evidence_cpu_wall_ns": [
+        79453121,
+        80326394
+      ],
+      "output_cpu_wall_ns": [
+        113414407,
+        185073685
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 770,
+        "cpu_ns": 54323675,
+        "wall_ns": 274698756,
+        "coalesced_write_acks": 256
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32256000
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9245596,
+        "wchar": 262186,
+        "syscr": 1702,
+        "syscw": 1026,
+        "read_bytes": 0,
+        "write_bytes": 180224,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 173918,
+      "output_rows": 256,
+      "logical_completed": 256,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "profile_instrumented_ordinary_B",
+      "phase": "profile",
+      "pass_name": "instrumented",
+      "arm": "ordinary",
+      "layer": "B",
+      "worker_pid": 3692956,
+      "outer_cpu_wall_ns": [
+        577292622,
+        954908730
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          452982823,
+          829942915
+        ],
+        "outer_total_ns": [
+          577292622,
+          954908730
+        ],
+        "residual_ns": [
+          124309799,
+          124965815
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 39376447,
+            "wall_ns": 39375489
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 176340,
+            "wall_ns": 176239
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 374150,
+            "wall_ns": 374108
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 578690,
+            "wall_ns": 578426
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 147,
+            "cpu_ns": 102550080,
+            "wall_ns": 219761252
+          },
+          "online.EVENT.angle_and_requery": {
+            "calls": 147,
+            "cpu_ns": 59902501,
+            "wall_ns": 61565135
+          },
+          "online.EVENT.evidence": {
+            "calls": 147,
+            "cpu_ns": 67032757,
+            "wall_ns": 67796470
+          },
+          "save.serialize": {
+            "calls": 256,
+            "cpu_ns": 34256257,
+            "wall_ns": 34265980
+          },
+          "save.hash": {
+            "calls": 256,
+            "cpu_ns": 8114355,
+            "wall_ns": 8131867
+          },
+          "save.file_hash": {
+            "calls": 256,
+            "cpu_ns": 3707501,
+            "wall_ns": 3706483
+          },
+          "save.write": {
+            "calls": 256,
+            "cpu_ns": 70987736,
+            "wall_ns": 228378687
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 61,
+            "cpu_ns": 25387593,
+            "wall_ns": 66855897
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 61,
+            "cpu_ns": 10498403,
+            "wall_ns": 10494198
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 48,
+            "cpu_ns": 20682647,
+            "wall_ns": 79123726
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 48,
+            "cpu_ns": 8989336,
+            "wall_ns": 8991160
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 294400,
+            "wall_ns": 294399
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 34190,
+            "wall_ns": 34190
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 39440,
+            "wall_ns": 39209
+          }
+        }
+      },
+      "fine_alternative": {
+        "exclusive_sum_ns": [
+          574363541,
+          951980796
+        ],
+        "outer_total_ns": [
+          577292622,
+          954908730
+        ],
+        "residual_ns": [
+          2929081,
+          2927934
+        ],
+        "rows": {
+          "g6_w2c_cost_preparation.py:26:require": {
+            "calls": 78,
+            "cpu_ns": 188520,
+            "wall_ns": 101410
+          },
+          "g6_w2c_cost_preparation.py:50:_pack.<locals>.<genexpr>": {
+            "calls": 40,
+            "cpu_ns": 48300,
+            "wall_ns": 47669
+          },
+          "g6_w2c_cost_preparation.py:41:_pack": {
+            "calls": 40,
+            "cpu_ns": 237580,
+            "wall_ns": 238129
+          },
+          "g6_w2c_cost_preparation.py:55:canonical": {
+            "calls": 2,
+            "cpu_ns": 100500,
+            "wall_ns": 100670
+          },
+          "g6_w2c_cost_preparation.py:59:fingerprint": {
+            "calls": 2,
+            "cpu_ns": 31070,
+            "wall_ns": 30750
+          },
+          "g6_w2c_cost_preparation.py:79:check_source_files": {
+            "calls": 2,
+            "cpu_ns": 10965964,
+            "wall_ns": 11053211
+          },
+          "g6_w2c_b3_parallel_driver.py:257:check_pins": {
+            "calls": 2,
+            "cpu_ns": 22031,
+            "wall_ns": 21930
+          },
+          "g6_w2c_b3_admission.py:42:require": {
+            "calls": 145,
+            "cpu_ns": 194560,
+            "wall_ns": 176460
+          },
+          "g6_w2c_b3_admission.py:73:read_regular": {
+            "calls": 41,
+            "cpu_ns": 6271592,
+            "wall_ns": 6273084
+          },
+          "g6_w2c_b3_admission.py:47:digest": {
+            "calls": 41,
+            "cpu_ns": 5725723,
+            "wall_ns": 5726257
+          },
+          "g6_w2c_b3_parallel_admission.py:28:python_identity": {
+            "calls": 1,
+            "cpu_ns": 1811940,
+            "wall_ns": 1812261
+          },
+          "g6_w2c_b3_admission.py:64:exact_path": {
+            "calls": 32,
+            "cpu_ns": 10081864,
+            "wall_ns": 10092794
+          },
+          "g6_w2c_b3_parallel_admission.py:50:check_runtime": {
+            "calls": 1,
+            "cpu_ns": 3631153,
+            "wall_ns": 3635745
+          },
+          "g6_w2c_b3_parallel_driver.py:78:delta.<locals>.<genexpr>": {
+            "calls": 12305,
+            "cpu_ns": 17675343,
+            "wall_ns": 18224269
+          },
+          "g6_w2c_b3_parallel_driver.py:79:delta.<locals>.<genexpr>": {
+            "calls": 7383,
+            "cpu_ns": 10128998,
+            "wall_ns": 10006868
+          },
+          "g6_w2c_b3_parallel_driver.py:80:delta.<locals>.<genexpr>": {
+            "calls": 7383,
+            "cpu_ns": 10060303,
+            "wall_ns": 10065434
+          },
+          "g6_w2c_b3_parallel_driver.py:104:Meter.span.<locals>.<genexpr>": {
+            "calls": 5073,
+            "cpu_ns": 6893733,
+            "wall_ns": 6817827
+          },
+          "b3_parallel_integrated_fixture.py:53:Endpoint.__init__": {
+            "calls": 1,
+            "cpu_ns": 96800,
+            "wall_ns": 97049
+          },
+          "b3_parallel_integrated_fixture.py:124:ArtificialFactory.__call__": {
+            "calls": 1,
+            "cpu_ns": 28440,
+            "wall_ns": 28190
+          },
+          "g6_w2c_b3_parallel_scheduler.py:268:ControlledEndpoint.__init__": {
+            "calls": 1,
+            "cpu_ns": 3210,
+            "wall_ns": 3180
+          },
+          "g6_w2c_b3_parallel_driver.py:191:Stream.__init__": {
+            "calls": 1,
+            "cpu_ns": 93710,
+            "wall_ns": 93779
+          },
+          "g6_w2c_b3_parallel_scheduler.py:317:_worker.<locals>.<genexpr>": {
+            "calls": 1,
+            "cpu_ns": 1810,
+            "wall_ns": 1760
+          },
+          "g6_w2c_b3_parallel_scheduler.py:225:ReservedFile.__init__": {
+            "calls": 1,
+            "cpu_ns": 4330,
+            "wall_ns": 4340
+          },
+          "g6_w2c_b3_parallel_scheduler.py:255:EngineStream.__init__": {
+            "calls": 1,
+            "cpu_ns": 2780,
+            "wall_ns": 2720
+          },
+          "g6_w2c_b3_parallel_driver.py:519:run_pair.<locals>.<genexpr>": {
+            "calls": 3,
+            "cpu_ns": 4640,
+            "wall_ns": 4339
+          },
+          "g6_w2c_b3_parallel_driver.py:520:run_pair.<locals>.<genexpr>": {
+            "calls": 3,
+            "cpu_ns": 5180,
+            "wall_ns": 5110
+          },
+          "g6_w2c_b3_parallel_driver.py:528:run_pair.<locals>.context": {
+            "calls": 262,
+            "cpu_ns": 994430,
+            "wall_ns": 987764
+          },
+          "g6_w2c_b3_exact_serialization.py:34:_packed.<locals>.<genexpr>": {
+            "calls": 8446,
+            "cpu_ns": 11510021,
+            "wall_ns": 11386421
+          },
+          "g6_w2c_b3_exact_serialization.py:23:_packed": {
+            "calls": 13118,
+            "cpu_ns": 81046516,
+            "wall_ns": 83001383
+          },
+          "g6_w2c_b3_exact_serialization.py:51:canonical": {
+            "calls": 1111,
+            "cpu_ns": 26755253,
+            "wall_ns": 27013291
+          },
+          "g6_w2c_b3_parallel_driver.py:25:canonical": {
+            "calls": 1111,
+            "cpu_ns": 5539745,
+            "wall_ns": 5431189
+          },
+          "g6_w2c_b3_parallel_driver.py:68:identity": {
+            "calls": 599,
+            "cpu_ns": 4670321,
+            "wall_ns": 4628292
+          },
+          "b3_parallel_integrated_fixture.py:59:Endpoint.shared_identity": {
+            "calls": 4,
+            "cpu_ns": 28060,
+            "wall_ns": 27950
+          },
+          "g6_w2c_b3_parallel_scheduler.py:271:ControlledEndpoint.shared_identity": {
+            "calls": 4,
+            "cpu_ns": 32850,
+            "wall_ns": 32720
+          },
+          "g6_w2c_b3_parallel_scheduler.py:190:Client.confirm": {
+            "calls": 3,
+            "cpu_ns": 17600,
+            "wall_ns": 17559
+          },
+          "b3_parallel_integrated_fixture.py:31:Bits.__init__": {
+            "calls": 2,
+            "cpu_ns": 10060,
+            "wall_ns": 10040
+          },
+          "b3_parallel_integrated_fixture.py:116:bits_factory": {
+            "calls": 2,
+            "cpu_ns": 24050,
+            "wall_ns": 24039
+          },
+          "g6_w2c_b3_parallel_scheduler.py:323:_worker.<locals>.bits": {
+            "calls": 2,
+            "cpu_ns": 40440,
+            "wall_ns": 40370
+          },
+          "g6_w2c_b3_parallel_scheduler.py:172:Client.rpc": {
+            "calls": 770,
+            "cpu_ns": 88115308,
+            "wall_ns": 458855248
+          },
+          "g6_w2c_b3_parallel_scheduler.py:691:CoalescedClient.rpc": {
+            "calls": 1026,
+            "cpu_ns": 8262294,
+            "wall_ns": 8249141
+          },
+          "g6_w2c_b3_parallel_scheduler.py:701:CoalescedClient.start": {
+            "calls": 256,
+            "cpu_ns": 3987901,
+            "wall_ns": 4103051
+          },
+          "b3_parallel_integrated_fixture.py:62:Endpoint.fault": {
+            "calls": 1574,
+            "cpu_ns": 5516213,
+            "wall_ns": 6284132
+          },
+          "b3_parallel_integrated_fixture.py:35:Bits.bits": {
+            "calls": 256,
+            "cpu_ns": 3297452,
+            "wall_ns": 3308819
+          },
+          "b3_parallel_integrated_fixture.py:96:Endpoint.sample.<locals>.<genexpr>": {
+            "calls": 1323,
+            "cpu_ns": 5662171,
+            "wall_ns": 5481534
+          },
+          "b3_parallel_integrated_fixture.py:69:Endpoint.sample": {
+            "calls": 256,
+            "cpu_ns": 46478242,
+            "wall_ns": 48123025
+          },
+          "g6_w2c_b3_parallel_scheduler.py:274:ControlledEndpoint.sample": {
+            "calls": 256,
+            "cpu_ns": 4185552,
+            "wall_ns": 4136907
+          },
+          "g6_w2c_b3_parallel_driver.py:364:Outcome.validate": {
+            "calls": 256,
+            "cpu_ns": 1171430,
+            "wall_ns": 1164324
+          },
+          "b3_parallel_integrated_fixture.py:106:Endpoint.angle_for.<locals>.<genexpr>": {
+            "calls": 735,
+            "cpu_ns": 16655906,
+            "wall_ns": 16886015
+          },
+          "b3_parallel_integrated_fixture.py:100:Endpoint.angle_for": {
+            "calls": 147,
+            "cpu_ns": 13370044,
+            "wall_ns": 13637274
+          },
+          "g6_w2c_b3_parallel_scheduler.py:282:ControlledEndpoint.angle_for": {
+            "calls": 147,
+            "cpu_ns": 1235191,
+            "wall_ns": 1230572
+          },
+          "g6_w2c_b3_parallel_scheduler.py:320:_worker.<locals>.<lambda>": {
+            "calls": 256,
+            "cpu_ns": 1479820,
+            "wall_ns": 1471314
+          },
+          "g6_w2c_b3_parallel_scheduler.py:321:_worker.<locals>.<lambda>": {
+            "calls": 256,
+            "cpu_ns": 1357870,
+            "wall_ns": 1337693
+          },
+          "g6_w2c_b3_parallel_scheduler.py:229:ReservedFile.write": {
+            "calls": 256,
+            "cpu_ns": 5522712,
+            "wall_ns": 5772018
+          },
+          "g6_w2c_b3_parallel_driver.py:204:Stream.emit": {
+            "calls": 256,
+            "cpu_ns": 81831097,
+            "wall_ns": 82963547
+          },
+          "g6_w2c_b3_parallel_scheduler.py:261:EngineStream.emit": {
+            "calls": 256,
+            "cpu_ns": 2496520,
+            "wall_ns": 2472228
+          },
+          "g6_w2c_b3_parallel_driver.py:512:run_pair": {
+            "calls": 1,
+            "cpu_ns": 68557278,
+            "wall_ns": 69036142
+          },
+          "g6_w2c_b3_parallel_scheduler.py:245:ReservedFile.flush": {
+            "calls": 1,
+            "cpu_ns": 6900,
+            "wall_ns": 6830
+          },
+          "g6_w2c_b3_parallel_driver.py:244:Stream.flush": {
+            "calls": 1,
+            "cpu_ns": 84150,
+            "wall_ns": 84460
+          },
+          "g6_w2c_b3_parallel_scheduler.py:250:ReservedFile.close": {
+            "calls": 1,
+            "cpu_ns": 12780,
+            "wall_ns": 12650
+          },
+          "g6_w2c_b3_parallel_driver.py:248:Stream.close": {
+            "calls": 1,
+            "cpu_ns": 97290,
+            "wall_ns": 97619
+          }
+        }
+      },
+      "setup_cpu_wall_ns": [
+        40800027,
+        40798661
+      ],
+      "online_cpu_wall_ns": [
+        295043317,
+        514587838
+      ],
+      "generator_audit_cpu_wall_ns": [
+        148620320,
+        365740875
+      ],
+      "angle_requery_cpu_wall_ns": [
+        59902501,
+        61565135
+      ],
+      "evidence_cpu_wall_ns": [
+        86520496,
+        87281828
+      ],
+      "output_cpu_wall_ns": [
+        117139479,
+        274556416
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 770,
+        "cpu_ns": 53431460,
+        "wall_ns": 423125964,
+        "coalesced_write_acks": 256
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32256000
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9245597,
+        "wchar": 269765,
+        "syscr": 1702,
+        "syscw": 1026,
+        "read_bytes": 0,
+        "write_bytes": 188416,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 181497,
+      "output_rows": 256,
+      "logical_completed": 256,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "profile_instrumented_partial_return_tail_A",
+      "phase": "profile",
+      "pass_name": "instrumented",
+      "arm": "partial_return_tail",
+      "layer": "A",
+      "worker_pid": 3692957,
+      "outer_cpu_wall_ns": [
+        472655446,
+        742576450
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          363547620,
+          631302013
+        ],
+        "outer_total_ns": [
+          472655446,
+          742576450
+        ],
+        "residual_ns": [
+          109107826,
+          111274437
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 38378106,
+            "wall_ns": 38377264
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 165800,
+            "wall_ns": 165519
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 378200,
+            "wall_ns": 378158
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 565850,
+            "wall_ns": 565787
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 67,
+            "cpu_ns": 26598403,
+            "wall_ns": 61191392
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 67,
+            "cpu_ns": 11828955,
+            "wall_ns": 11833407
+          },
+          "save.serialize": {
+            "calls": 256,
+            "cpu_ns": 32213945,
+            "wall_ns": 32209188
+          },
+          "save.hash": {
+            "calls": 256,
+            "cpu_ns": 7879815,
+            "wall_ns": 7893235
+          },
+          "save.file_hash": {
+            "calls": 256,
+            "cpu_ns": 3498880,
+            "wall_ns": 3502138
+          },
+          "save.write": {
+            "calls": 256,
+            "cpu_ns": 68148260,
+            "wall_ns": 162014531
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 56,
+            "cpu_ns": 23899679,
+            "wall_ns": 66139891
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 56,
+            "cpu_ns": 10519306,
+            "wall_ns": 10591272
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 133,
+            "cpu_ns": 85768575,
+            "wall_ns": 182719440
+          },
+          "online.EVENT.evidence": {
+            "calls": 133,
+            "cpu_ns": 53341566,
+            "wall_ns": 53358693
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 291930,
+            "wall_ns": 291858
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 32910,
+            "wall_ns": 32800
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 37440,
+            "wall_ns": 37440
+          }
+        }
+      },
+      "fine_alternative": {
+        "exclusive_sum_ns": [
+          469787835,
+          739708485
+        ],
+        "outer_total_ns": [
+          472655446,
+          742576450
+        ],
+        "residual_ns": [
+          2867611,
+          2867965
+        ],
+        "rows": {
+          "g6_w2c_cost_preparation.py:26:require": {
+            "calls": 78,
+            "cpu_ns": 119980,
+            "wall_ns": 100327
+          },
+          "g6_w2c_cost_preparation.py:50:_pack.<locals>.<genexpr>": {
+            "calls": 40,
+            "cpu_ns": 47230,
+            "wall_ns": 47260
+          },
+          "g6_w2c_cost_preparation.py:41:_pack": {
+            "calls": 40,
+            "cpu_ns": 236670,
+            "wall_ns": 236578
+          },
+          "g6_w2c_cost_preparation.py:55:canonical": {
+            "calls": 2,
+            "cpu_ns": 111450,
+            "wall_ns": 112010
+          },
+          "g6_w2c_cost_preparation.py:59:fingerprint": {
+            "calls": 2,
+            "cpu_ns": 32650,
+            "wall_ns": 32200
+          },
+          "g6_w2c_cost_preparation.py:79:check_source_files": {
+            "calls": 2,
+            "cpu_ns": 10914505,
+            "wall_ns": 10934014
+          },
+          "g6_w2c_b3_parallel_driver.py:257:check_pins": {
+            "calls": 2,
+            "cpu_ns": 22240,
+            "wall_ns": 22120
+          },
+          "g6_w2c_b3_admission.py:42:require": {
+            "calls": 145,
+            "cpu_ns": 202820,
+            "wall_ns": 183690
+          },
+          "g6_w2c_b3_admission.py:73:read_regular": {
+            "calls": 41,
+            "cpu_ns": 5899262,
+            "wall_ns": 5902159
+          },
+          "g6_w2c_b3_admission.py:47:digest": {
+            "calls": 41,
+            "cpu_ns": 5559484,
+            "wall_ns": 5560408
+          },
+          "g6_w2c_b3_parallel_admission.py:28:python_identity": {
+            "calls": 1,
+            "cpu_ns": 1540520,
+            "wall_ns": 1541073
+          },
+          "g6_w2c_b3_admission.py:64:exact_path": {
+            "calls": 32,
+            "cpu_ns": 10038443,
+            "wall_ns": 10049779
+          },
+          "g6_w2c_b3_parallel_admission.py:50:check_runtime": {
+            "calls": 1,
+            "cpu_ns": 3590442,
+            "wall_ns": 3593637
+          },
+          "g6_w2c_b3_parallel_driver.py:78:delta.<locals>.<genexpr>": {
+            "calls": 11570,
+            "cpu_ns": 15898055,
+            "wall_ns": 15729191
+          },
+          "g6_w2c_b3_parallel_driver.py:79:delta.<locals>.<genexpr>": {
+            "calls": 6942,
+            "cpu_ns": 9255464,
+            "wall_ns": 9269233
+          },
+          "g6_w2c_b3_parallel_driver.py:80:delta.<locals>.<genexpr>": {
+            "calls": 6942,
+            "cpu_ns": 9014464,
+            "wall_ns": 8933688
+          },
+          "g6_w2c_b3_parallel_driver.py:104:Meter.span.<locals>.<genexpr>": {
+            "calls": 4632,
+            "cpu_ns": 6048794,
+            "wall_ns": 5966019
+          },
+          "b3_parallel_integrated_fixture.py:53:Endpoint.__init__": {
+            "calls": 1,
+            "cpu_ns": 98120,
+            "wall_ns": 98379
+          },
+          "b3_parallel_integrated_fixture.py:124:ArtificialFactory.__call__": {
+            "calls": 1,
+            "cpu_ns": 18760,
+            "wall_ns": 18520
+          },
+          "g6_w2c_b3_parallel_scheduler.py:268:ControlledEndpoint.__init__": {
+            "calls": 1,
+            "cpu_ns": 3080,
+            "wall_ns": 3030
+          },
+          "g6_w2c_b3_parallel_driver.py:191:Stream.__init__": {
+            "calls": 1,
+            "cpu_ns": 116110,
+            "wall_ns": 116259
+          },
+          "g6_w2c_b3_parallel_scheduler.py:317:_worker.<locals>.<genexpr>": {
+            "calls": 1,
+            "cpu_ns": 1870,
+            "wall_ns": 1760
+          },
+          "g6_w2c_b3_parallel_scheduler.py:225:ReservedFile.__init__": {
+            "calls": 1,
+            "cpu_ns": 4050,
+            "wall_ns": 3990
+          },
+          "g6_w2c_b3_parallel_scheduler.py:255:EngineStream.__init__": {
+            "calls": 1,
+            "cpu_ns": 2640,
+            "wall_ns": 2560
+          },
+          "g6_w2c_b3_parallel_driver.py:519:run_pair.<locals>.<genexpr>": {
+            "calls": 3,
+            "cpu_ns": 4380,
+            "wall_ns": 4289
+          },
+          "g6_w2c_b3_parallel_driver.py:520:run_pair.<locals>.<genexpr>": {
+            "calls": 3,
+            "cpu_ns": 5120,
+            "wall_ns": 5050
+          },
+          "g6_w2c_b3_parallel_driver.py:528:run_pair.<locals>.context": {
+            "calls": 262,
+            "cpu_ns": 985731,
+            "wall_ns": 1055732
+          },
+          "g6_w2c_b3_exact_serialization.py:34:_packed.<locals>.<genexpr>": {
+            "calls": 5729,
+            "cpu_ns": 7453253,
+            "wall_ns": 7390342
+          },
+          "g6_w2c_b3_exact_serialization.py:23:_packed": {
+            "calls": 9901,
+            "cpu_ns": 54962122,
+            "wall_ns": 55044463
+          },
+          "g6_w2c_b3_exact_serialization.py:51:canonical": {
+            "calls": 964,
+            "cpu_ns": 21333624,
+            "wall_ns": 21439727
+          },
+          "g6_w2c_b3_parallel_driver.py:25:canonical": {
+            "calls": 964,
+            "cpu_ns": 4450221,
+            "wall_ns": 4415968
+          },
+          "g6_w2c_b3_parallel_driver.py:68:identity": {
+            "calls": 452,
+            "cpu_ns": 3135510,
+            "wall_ns": 3112550
+          },
+          "b3_parallel_integrated_fixture.py:59:Endpoint.shared_identity": {
+            "calls": 4,
+            "cpu_ns": 27280,
+            "wall_ns": 27170
+          },
+          "g6_w2c_b3_parallel_scheduler.py:271:ControlledEndpoint.shared_identity": {
+            "calls": 4,
+            "cpu_ns": 31860,
+            "wall_ns": 31740
+          },
+          "g6_w2c_b3_parallel_scheduler.py:190:Client.confirm": {
+            "calls": 3,
+            "cpu_ns": 21330,
+            "wall_ns": 21239
+          },
+          "b3_parallel_integrated_fixture.py:31:Bits.__init__": {
+            "calls": 2,
+            "cpu_ns": 13460,
+            "wall_ns": 13520
+          },
+          "b3_parallel_integrated_fixture.py:116:bits_factory": {
+            "calls": 2,
+            "cpu_ns": 30380,
+            "wall_ns": 30270
+          },
+          "g6_w2c_b3_parallel_scheduler.py:323:_worker.<locals>.bits": {
+            "calls": 2,
+            "cpu_ns": 45950,
+            "wall_ns": 45640
+          },
+          "g6_w2c_b3_parallel_scheduler.py:172:Client.rpc": {
+            "calls": 770,
+            "cpu_ns": 84532648,
+            "wall_ns": 351444791
+          },
+          "g6_w2c_b3_parallel_scheduler.py:691:CoalescedClient.rpc": {
+            "calls": 1026,
+            "cpu_ns": 7885466,
+            "wall_ns": 7957420
+          },
+          "g6_w2c_b3_parallel_scheduler.py:701:CoalescedClient.start": {
+            "calls": 256,
+            "cpu_ns": 3723721,
+            "wall_ns": 3722459
+          },
+          "b3_parallel_integrated_fixture.py:62:Endpoint.fault": {
+            "calls": 1413,
+            "cpu_ns": 4530821,
+            "wall_ns": 4496050
+          },
+          "b3_parallel_integrated_fixture.py:35:Bits.bits": {
+            "calls": 256,
+            "cpu_ns": 2951283,
+            "wall_ns": 2965782
+          },
+          "b3_parallel_integrated_fixture.py:69:Endpoint.sample": {
+            "calls": 256,
+            "cpu_ns": 40455112,
+            "wall_ns": 41502935
+          },
+          "g6_w2c_b3_parallel_scheduler.py:274:ControlledEndpoint.sample": {
+            "calls": 256,
+            "cpu_ns": 3942772,
+            "wall_ns": 3917118
+          },
+          "g6_w2c_b3_parallel_driver.py:364:Outcome.validate": {
+            "calls": 256,
+            "cpu_ns": 1148491,
+            "wall_ns": 1146784
+          },
+          "g6_w2c_b3_parallel_scheduler.py:320:_worker.<locals>.<lambda>": {
+            "calls": 256,
+            "cpu_ns": 1386021,
+            "wall_ns": 1376599
+          },
+          "g6_w2c_b3_parallel_scheduler.py:321:_worker.<locals>.<lambda>": {
+            "calls": 256,
+            "cpu_ns": 1321601,
+            "wall_ns": 1388702
+          },
+          "g6_w2c_b3_parallel_scheduler.py:229:ReservedFile.write": {
+            "calls": 256,
+            "cpu_ns": 5361850,
+            "wall_ns": 5394093
+          },
+          "g6_w2c_b3_parallel_driver.py:204:Stream.emit": {
+            "calls": 256,
+            "cpu_ns": 78986697,
+            "wall_ns": 80863870
+          },
+          "g6_w2c_b3_parallel_scheduler.py:261:EngineStream.emit": {
+            "calls": 256,
+            "cpu_ns": 2405261,
+            "wall_ns": 2374488
+          },
+          "b3_parallel_integrated_fixture.py:96:Endpoint.sample.<locals>.<genexpr>": {
+            "calls": 1197,
+            "cpu_ns": 4647600,
+            "wall_ns": 4653575
+          },
+          "g6_w2c_b3_parallel_driver.py:512:run_pair": {
+            "calls": 1,
+            "cpu_ns": 55031087,
+            "wall_ns": 55207746
+          },
+          "g6_w2c_b3_parallel_scheduler.py:245:ReservedFile.flush": {
+            "calls": 1,
+            "cpu_ns": 5750,
+            "wall_ns": 5720
+          },
+          "g6_w2c_b3_parallel_driver.py:244:Stream.flush": {
+            "calls": 1,
+            "cpu_ns": 84600,
+            "wall_ns": 84810
+          },
+          "g6_w2c_b3_parallel_scheduler.py:250:ReservedFile.close": {
+            "calls": 1,
+            "cpu_ns": 11920,
+            "wall_ns": 11900
+          },
+          "g6_w2c_b3_parallel_driver.py:248:Stream.close": {
+            "calls": 1,
+            "cpu_ns": 97810,
+            "wall_ns": 98059
+          }
+        }
+      },
+      "setup_cpu_wall_ns": [
+        39779886,
+        39778586
+      ],
+      "online_cpu_wall_ns": [
+        211956484,
+        385834095
+      ],
+      "generator_audit_cpu_wall_ns": [
+        136266657,
+        310050723
+      ],
+      "angle_requery_cpu_wall_ns": null,
+      "evidence_cpu_wall_ns": [
+        75689827,
+        75783372
+      ],
+      "output_cpu_wall_ns": [
+        111811250,
+        205689332
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 770,
+        "cpu_ns": 51820109,
+        "wall_ns": 315498519,
+        "coalesced_write_acks": 256
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32333824
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9245596,
+        "wchar": 271096,
+        "syscr": 1702,
+        "syscw": 1026,
+        "read_bytes": 0,
+        "write_bytes": 180224,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 174380,
+      "output_rows": 256,
+      "logical_completed": 256,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "profile_instrumented_partial_return_tail_B",
+      "phase": "profile",
+      "pass_name": "instrumented",
+      "arm": "partial_return_tail",
+      "layer": "B",
+      "worker_pid": 3692958,
+      "outer_cpu_wall_ns": [
+        559423337,
+        899583647
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          435990426,
+          775644741
+        ],
+        "outer_total_ns": [
+          559423337,
+          899583647
+        ],
+        "residual_ns": [
+          123432911,
+          123938906
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 38818647,
+            "wall_ns": 38817372
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 172130,
+            "wall_ns": 172119
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 380920,
+            "wall_ns": 380918
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 572190,
+            "wall_ns": 572147
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 67,
+            "cpu_ns": 26799682,
+            "wall_ns": 66254038
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 67,
+            "cpu_ns": 12122155,
+            "wall_ns": 12115646
+          },
+          "save.serialize": {
+            "calls": 256,
+            "cpu_ns": 34069145,
+            "wall_ns": 34217721
+          },
+          "save.hash": {
+            "calls": 256,
+            "cpu_ns": 8039694,
+            "wall_ns": 8179464
+          },
+          "save.file_hash": {
+            "calls": 256,
+            "cpu_ns": 3449672,
+            "wall_ns": 3445076
+          },
+          "save.write": {
+            "calls": 256,
+            "cpu_ns": 67616172,
+            "wall_ns": 224248304
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 56,
+            "cpu_ns": 21522429,
+            "wall_ns": 52995012
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 56,
+            "cpu_ns": 9261003,
+            "wall_ns": 10123294
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 133,
+            "cpu_ns": 95613874,
+            "wall_ns": 205639189
+          },
+          "online.EVENT.angle_and_requery": {
+            "calls": 133,
+            "cpu_ns": 55303828,
+            "wall_ns": 55905438
+          },
+          "online.EVENT.evidence": {
+            "calls": 133,
+            "cpu_ns": 61887955,
+            "wall_ns": 62218125
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 290470,
+            "wall_ns": 290458
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 32750,
+            "wall_ns": 32700
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 37710,
+            "wall_ns": 37720
+          }
+        }
+      },
+      "fine_alternative": {
+        "exclusive_sum_ns": [
+          556535986,
+          896696823
+        ],
+        "outer_total_ns": [
+          559423337,
+          899583647
+        ],
+        "residual_ns": [
+          2887351,
+          2886824
+        ],
+        "rows": {
+          "g6_w2c_cost_preparation.py:26:require": {
+            "calls": 78,
+            "cpu_ns": 118990,
+            "wall_ns": 100590
+          },
+          "g6_w2c_cost_preparation.py:50:_pack.<locals>.<genexpr>": {
+            "calls": 40,
+            "cpu_ns": 47110,
+            "wall_ns": 46810
+          },
+          "g6_w2c_cost_preparation.py:41:_pack": {
+            "calls": 40,
+            "cpu_ns": 236050,
+            "wall_ns": 236288
+          },
+          "g6_w2c_cost_preparation.py:55:canonical": {
+            "calls": 2,
+            "cpu_ns": 103170,
+            "wall_ns": 103530
+          },
+          "g6_w2c_cost_preparation.py:59:fingerprint": {
+            "calls": 2,
+            "cpu_ns": 31420,
+            "wall_ns": 31090
+          },
+          "g6_w2c_cost_preparation.py:79:check_source_files": {
+            "calls": 2,
+            "cpu_ns": 10973245,
+            "wall_ns": 10991580
+          },
+          "g6_w2c_b3_parallel_driver.py:257:check_pins": {
+            "calls": 2,
+            "cpu_ns": 21611,
+            "wall_ns": 21530
+          },
+          "g6_w2c_b3_admission.py:42:require": {
+            "calls": 145,
+            "cpu_ns": 201360,
+            "wall_ns": 184368
+          },
+          "g6_w2c_b3_admission.py:73:read_regular": {
+            "calls": 41,
+            "cpu_ns": 6259373,
+            "wall_ns": 6262375
+          },
+          "g6_w2c_b3_admission.py:47:digest": {
+            "calls": 41,
+            "cpu_ns": 5581612,
+            "wall_ns": 5582468
+          },
+          "g6_w2c_b3_parallel_admission.py:28:python_identity": {
+            "calls": 1,
+            "cpu_ns": 1595341,
+            "wall_ns": 1595359
+          },
+          "g6_w2c_b3_admission.py:64:exact_path": {
+            "calls": 32,
+            "cpu_ns": 9983045,
+            "wall_ns": 9992396
+          },
+          "g6_w2c_b3_parallel_admission.py:50:check_runtime": {
+            "calls": 1,
+            "cpu_ns": 3601890,
+            "wall_ns": 3605398
+          },
+          "g6_w2c_b3_parallel_driver.py:78:delta.<locals>.<genexpr>": {
+            "calls": 12235,
+            "cpu_ns": 17537434,
+            "wall_ns": 17910936
+          },
+          "g6_w2c_b3_parallel_driver.py:79:delta.<locals>.<genexpr>": {
+            "calls": 7341,
+            "cpu_ns": 9995013,
+            "wall_ns": 10816107
+          },
+          "g6_w2c_b3_parallel_driver.py:80:delta.<locals>.<genexpr>": {
+            "calls": 7341,
+            "cpu_ns": 9999866,
+            "wall_ns": 9975711
+          },
+          "g6_w2c_b3_parallel_driver.py:104:Meter.span.<locals>.<genexpr>": {
+            "calls": 5031,
+            "cpu_ns": 6842245,
+            "wall_ns": 6777092
+          },
+          "b3_parallel_integrated_fixture.py:53:Endpoint.__init__": {
+            "calls": 1,
+            "cpu_ns": 100920,
+            "wall_ns": 101159
+          },
+          "b3_parallel_integrated_fixture.py:124:ArtificialFactory.__call__": {
+            "calls": 1,
+            "cpu_ns": 19710,
+            "wall_ns": 19470
+          },
+          "g6_w2c_b3_parallel_scheduler.py:268:ControlledEndpoint.__init__": {
+            "calls": 1,
+            "cpu_ns": 3460,
+            "wall_ns": 3440
+          },
+          "g6_w2c_b3_parallel_driver.py:191:Stream.__init__": {
+            "calls": 1,
+            "cpu_ns": 132120,
+            "wall_ns": 132129
+          },
+          "g6_w2c_b3_parallel_scheduler.py:317:_worker.<locals>.<genexpr>": {
+            "calls": 1,
+            "cpu_ns": 2300,
+            "wall_ns": 2010
+          },
+          "g6_w2c_b3_parallel_scheduler.py:225:ReservedFile.__init__": {
+            "calls": 1,
+            "cpu_ns": 4220,
+            "wall_ns": 4150
+          },
+          "g6_w2c_b3_parallel_scheduler.py:255:EngineStream.__init__": {
+            "calls": 1,
+            "cpu_ns": 2900,
+            "wall_ns": 2800
+          },
+          "g6_w2c_b3_parallel_driver.py:519:run_pair.<locals>.<genexpr>": {
+            "calls": 3,
+            "cpu_ns": 4440,
+            "wall_ns": 4340
+          },
+          "g6_w2c_b3_parallel_driver.py:520:run_pair.<locals>.<genexpr>": {
+            "calls": 3,
+            "cpu_ns": 5110,
+            "wall_ns": 5030
+          },
+          "g6_w2c_b3_parallel_driver.py:528:run_pair.<locals>.context": {
+            "calls": 262,
+            "cpu_ns": 944380,
+            "wall_ns": 938005
+          },
+          "g6_w2c_b3_exact_serialization.py:34:_packed.<locals>.<genexpr>": {
+            "calls": 7990,
+            "cpu_ns": 11071704,
+            "wall_ns": 10951442
+          },
+          "g6_w2c_b3_exact_serialization.py:23:_packed": {
+            "calls": 12295,
+            "cpu_ns": 76802358,
+            "wall_ns": 77138998
+          },
+          "g6_w2c_b3_exact_serialization.py:51:canonical": {
+            "calls": 1097,
+            "cpu_ns": 25945134,
+            "wall_ns": 26065470
+          },
+          "g6_w2c_b3_parallel_driver.py:25:canonical": {
+            "calls": 1097,
+            "cpu_ns": 5477742,
+            "wall_ns": 5337495
+          },
+          "g6_w2c_b3_parallel_driver.py:68:identity": {
+            "calls": 585,
+            "cpu_ns": 4652722,
+            "wall_ns": 4825703
+          },
+          "b3_parallel_integrated_fixture.py:59:Endpoint.shared_identity": {
+            "calls": 4,
+            "cpu_ns": 27290,
+            "wall_ns": 27210
+          },
+          "g6_w2c_b3_parallel_scheduler.py:271:ControlledEndpoint.shared_identity": {
+            "calls": 4,
+            "cpu_ns": 31730,
+            "wall_ns": 31680
+          },
+          "g6_w2c_b3_parallel_scheduler.py:190:Client.confirm": {
+            "calls": 3,
+            "cpu_ns": 16510,
+            "wall_ns": 16390
+          },
+          "b3_parallel_integrated_fixture.py:31:Bits.__init__": {
+            "calls": 2,
+            "cpu_ns": 9140,
+            "wall_ns": 9110
+          },
+          "b3_parallel_integrated_fixture.py:116:bits_factory": {
+            "calls": 2,
+            "cpu_ns": 23790,
+            "wall_ns": 23800
+          },
+          "g6_w2c_b3_parallel_scheduler.py:323:_worker.<locals>.bits": {
+            "calls": 2,
+            "cpu_ns": 40390,
+            "wall_ns": 40319
+          },
+          "g6_w2c_b3_parallel_scheduler.py:172:Client.rpc": {
+            "calls": 770,
+            "cpu_ns": 86082103,
+            "wall_ns": 421030341
+          },
+          "g6_w2c_b3_parallel_scheduler.py:691:CoalescedClient.rpc": {
+            "calls": 1026,
+            "cpu_ns": 7896313,
+            "wall_ns": 7969998
+          },
+          "g6_w2c_b3_parallel_scheduler.py:701:CoalescedClient.start": {
+            "calls": 256,
+            "cpu_ns": 3826391,
+            "wall_ns": 3824718
+          },
+          "b3_parallel_integrated_fixture.py:62:Endpoint.fault": {
+            "calls": 1546,
+            "cpu_ns": 5333873,
+            "wall_ns": 5219181
+          },
+          "b3_parallel_integrated_fixture.py:35:Bits.bits": {
+            "calls": 256,
+            "cpu_ns": 3096871,
+            "wall_ns": 3113187
+          },
+          "b3_parallel_integrated_fixture.py:69:Endpoint.sample": {
+            "calls": 256,
+            "cpu_ns": 44311921,
+            "wall_ns": 45088254
+          },
+          "g6_w2c_b3_parallel_scheduler.py:274:ControlledEndpoint.sample": {
+            "calls": 256,
+            "cpu_ns": 3920211,
+            "wall_ns": 3949991
+          },
+          "g6_w2c_b3_parallel_driver.py:364:Outcome.validate": {
+            "calls": 256,
+            "cpu_ns": 1170170,
+            "wall_ns": 1162283
+          },
+          "g6_w2c_b3_parallel_scheduler.py:320:_worker.<locals>.<lambda>": {
+            "calls": 256,
+            "cpu_ns": 1355040,
+            "wall_ns": 1345714
+          },
+          "g6_w2c_b3_parallel_scheduler.py:321:_worker.<locals>.<lambda>": {
+            "calls": 256,
+            "cpu_ns": 1296331,
+            "wall_ns": 1268078
+          },
+          "g6_w2c_b3_parallel_scheduler.py:229:ReservedFile.write": {
+            "calls": 256,
+            "cpu_ns": 5468951,
+            "wall_ns": 5494782
+          },
+          "g6_w2c_b3_parallel_driver.py:204:Stream.emit": {
+            "calls": 256,
+            "cpu_ns": 80455651,
+            "wall_ns": 81564517
+          },
+          "g6_w2c_b3_parallel_scheduler.py:261:EngineStream.emit": {
+            "calls": 256,
+            "cpu_ns": 2318480,
+            "wall_ns": 2275373
+          },
+          "b3_parallel_integrated_fixture.py:96:Endpoint.sample.<locals>.<genexpr>": {
+            "calls": 1197,
+            "cpu_ns": 5198700,
+            "wall_ns": 5199572
+          },
+          "b3_parallel_integrated_fixture.py:106:Endpoint.angle_for.<locals>.<genexpr>": {
+            "calls": 665,
+            "cpu_ns": 15454268,
+            "wall_ns": 15474034
+          },
+          "b3_parallel_integrated_fixture.py:100:Endpoint.angle_for": {
+            "calls": 133,
+            "cpu_ns": 12421736,
+            "wall_ns": 12629663
+          },
+          "g6_w2c_b3_parallel_scheduler.py:282:ControlledEndpoint.angle_for": {
+            "calls": 133,
+            "cpu_ns": 1142650,
+            "wall_ns": 1132114
+          },
+          "g6_w2c_b3_parallel_driver.py:512:run_pair": {
+            "calls": 1,
+            "cpu_ns": 67134001,
+            "wall_ns": 68835016
+          },
+          "g6_w2c_b3_parallel_scheduler.py:245:ReservedFile.flush": {
+            "calls": 1,
+            "cpu_ns": 5960,
+            "wall_ns": 5940
+          },
+          "g6_w2c_b3_parallel_driver.py:244:Stream.flush": {
+            "calls": 1,
+            "cpu_ns": 82900,
+            "wall_ns": 83060
+          },
+          "g6_w2c_b3_parallel_scheduler.py:250:ReservedFile.close": {
+            "calls": 1,
+            "cpu_ns": 11930,
+            "wall_ns": 11860
+          },
+          "g6_w2c_b3_parallel_driver.py:248:Stream.close": {
+            "calls": 1,
+            "cpu_ns": 104690,
+            "wall_ns": 105369
+          }
+        }
+      },
+      "setup_cpu_wall_ns": [
+        40234357,
+        40233014
+      ],
+      "online_cpu_wall_ns": [
+        282510926,
+        465250742
+      ],
+      "generator_audit_cpu_wall_ns": [
+        143935985,
+        324888239
+      ],
+      "angle_requery_cpu_wall_ns": [
+        55303828,
+        55905438
+      ],
+      "evidence_cpu_wall_ns": [
+        83271113,
+        84457065
+      ],
+      "output_cpu_wall_ns": [
+        113245143,
+        270160985
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 770,
+        "cpu_ns": 52820579,
+        "wall_ns": 382915498,
+        "coalesced_write_acks": 256
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32256000
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9245596,
+        "wchar": 277415,
+        "syscr": 1702,
+        "syscw": 1026,
+        "read_bytes": 0,
+        "write_bytes": 188416,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 180699,
+      "output_rows": 256,
+      "logical_completed": 256,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "profile_instrumented_closed_P3_tail_A",
+      "phase": "profile",
+      "pass_name": "instrumented",
+      "arm": "closed_P3_tail",
+      "layer": "A",
+      "worker_pid": 3692959,
+      "outer_cpu_wall_ns": [
+        461004614,
+        774411389
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          354690363,
+          667253399
+        ],
+        "outer_total_ns": [
+          461004614,
+          774411389
+        ],
+        "residual_ns": [
+          106314251,
+          107157990
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 39318997,
+            "wall_ns": 39318089
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 177960,
+            "wall_ns": 177949
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 382200,
+            "wall_ns": 382158
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 583240,
+            "wall_ns": 583206
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 130,
+            "cpu_ns": 82984275,
+            "wall_ns": 163733639
+          },
+          "online.EVENT.evidence": {
+            "calls": 130,
+            "cpu_ns": 51863038,
+            "wall_ns": 52076201
+          },
+          "save.serialize": {
+            "calls": 256,
+            "cpu_ns": 32424124,
+            "wall_ns": 33142791
+          },
+          "save.hash": {
+            "calls": 256,
+            "cpu_ns": 7660834,
+            "wall_ns": 7671453
+          },
+          "save.file_hash": {
+            "calls": 256,
+            "cpu_ns": 3400494,
+            "wall_ns": 3390783
+          },
+          "save.write": {
+            "calls": 256,
+            "cpu_ns": 64715260,
+            "wall_ns": 204961676
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 59,
+            "cpu_ns": 23693999,
+            "wall_ns": 75752491
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 59,
+            "cpu_ns": 10120596,
+            "wall_ns": 10118006
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 67,
+            "cpu_ns": 25519773,
+            "wall_ns": 63975893
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 67,
+            "cpu_ns": 11448263,
+            "wall_ns": 11571848
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 292460,
+            "wall_ns": 292498
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 36070,
+            "wall_ns": 36209
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 68780,
+            "wall_ns": 68509
+          }
+        }
+      },
+      "fine_alternative": {
+        "exclusive_sum_ns": [
+          458062023,
+          771469535
+        ],
+        "outer_total_ns": [
+          461004614,
+          774411389
+        ],
+        "residual_ns": [
+          2942591,
+          2941854
+        ],
+        "rows": {
+          "g6_w2c_cost_preparation.py:26:require": {
+            "calls": 78,
+            "cpu_ns": 121330,
+            "wall_ns": 101469
+          },
+          "g6_w2c_cost_preparation.py:50:_pack.<locals>.<genexpr>": {
+            "calls": 40,
+            "cpu_ns": 47200,
+            "wall_ns": 46699
+          },
+          "g6_w2c_cost_preparation.py:41:_pack": {
+            "calls": 40,
+            "cpu_ns": 238190,
+            "wall_ns": 238650
+          },
+          "g6_w2c_cost_preparation.py:55:canonical": {
+            "calls": 2,
+            "cpu_ns": 106240,
+            "wall_ns": 106409
+          },
+          "g6_w2c_cost_preparation.py:59:fingerprint": {
+            "calls": 2,
+            "cpu_ns": 32270,
+            "wall_ns": 31930
+          },
+          "g6_w2c_cost_preparation.py:79:check_source_files": {
+            "calls": 2,
+            "cpu_ns": 10970164,
+            "wall_ns": 10990092
+          },
+          "g6_w2c_b3_parallel_driver.py:257:check_pins": {
+            "calls": 2,
+            "cpu_ns": 21471,
+            "wall_ns": 21440
+          },
+          "g6_w2c_b3_admission.py:42:require": {
+            "calls": 145,
+            "cpu_ns": 198480,
+            "wall_ns": 179758
+          },
+          "g6_w2c_b3_admission.py:73:read_regular": {
+            "calls": 41,
+            "cpu_ns": 6280862,
+            "wall_ns": 6283314
+          },
+          "g6_w2c_b3_admission.py:47:digest": {
+            "calls": 41,
+            "cpu_ns": 5721513,
+            "wall_ns": 5722317
+          },
+          "g6_w2c_b3_parallel_admission.py:28:python_identity": {
+            "calls": 1,
+            "cpu_ns": 1819540,
+            "wall_ns": 1819691
+          },
+          "g6_w2c_b3_admission.py:64:exact_path": {
+            "calls": 32,
+            "cpu_ns": 10061154,
+            "wall_ns": 10071668
+          },
+          "g6_w2c_b3_parallel_admission.py:50:check_runtime": {
+            "calls": 1,
+            "cpu_ns": 3635213,
+            "wall_ns": 3639753
+          },
+          "g6_w2c_b3_parallel_driver.py:78:delta.<locals>.<genexpr>": {
+            "calls": 11570,
+            "cpu_ns": 15532545,
+            "wall_ns": 15583294
+          },
+          "g6_w2c_b3_parallel_driver.py:79:delta.<locals>.<genexpr>": {
+            "calls": 6942,
+            "cpu_ns": 8933633,
+            "wall_ns": 8858345
+          },
+          "g6_w2c_b3_parallel_driver.py:80:delta.<locals>.<genexpr>": {
+            "calls": 6942,
+            "cpu_ns": 9000156,
+            "wall_ns": 8982337
+          },
+          "g6_w2c_b3_parallel_driver.py:104:Meter.span.<locals>.<genexpr>": {
+            "calls": 4632,
+            "cpu_ns": 5944742,
+            "wall_ns": 5898632
+          },
+          "b3_parallel_integrated_fixture.py:53:Endpoint.__init__": {
+            "calls": 1,
+            "cpu_ns": 107440,
+            "wall_ns": 107740
+          },
+          "b3_parallel_integrated_fixture.py:124:ArtificialFactory.__call__": {
+            "calls": 1,
+            "cpu_ns": 19750,
+            "wall_ns": 19460
+          },
+          "g6_w2c_b3_parallel_scheduler.py:268:ControlledEndpoint.__init__": {
+            "calls": 1,
+            "cpu_ns": 3030,
+            "wall_ns": 2959
+          },
+          "g6_w2c_b3_parallel_driver.py:191:Stream.__init__": {
+            "calls": 1,
+            "cpu_ns": 128920,
+            "wall_ns": 129009
+          },
+          "g6_w2c_b3_parallel_scheduler.py:317:_worker.<locals>.<genexpr>": {
+            "calls": 1,
+            "cpu_ns": 1780,
+            "wall_ns": 1700
+          },
+          "g6_w2c_b3_parallel_scheduler.py:225:ReservedFile.__init__": {
+            "calls": 1,
+            "cpu_ns": 4640,
+            "wall_ns": 4580
+          },
+          "g6_w2c_b3_parallel_scheduler.py:255:EngineStream.__init__": {
+            "calls": 1,
+            "cpu_ns": 2780,
+            "wall_ns": 2730
+          },
+          "g6_w2c_b3_parallel_driver.py:519:run_pair.<locals>.<genexpr>": {
+            "calls": 3,
+            "cpu_ns": 4550,
+            "wall_ns": 4290
+          },
+          "g6_w2c_b3_parallel_driver.py:520:run_pair.<locals>.<genexpr>": {
+            "calls": 3,
+            "cpu_ns": 5210,
+            "wall_ns": 5139
+          },
+          "g6_w2c_b3_parallel_driver.py:528:run_pair.<locals>.context": {
+            "calls": 262,
+            "cpu_ns": 904720,
+            "wall_ns": 901407
+          },
+          "g6_w2c_b3_exact_serialization.py:34:_packed.<locals>.<genexpr>": {
+            "calls": 5726,
+            "cpu_ns": 7367593,
+            "wall_ns": 7274854
+          },
+          "g6_w2c_b3_exact_serialization.py:23:_packed": {
+            "calls": 9826,
+            "cpu_ns": 54234483,
+            "wall_ns": 55401567
+          },
+          "g6_w2c_b3_exact_serialization.py:51:canonical": {
+            "calls": 964,
+            "cpu_ns": 21035059,
+            "wall_ns": 21126972
+          },
+          "g6_w2c_b3_parallel_driver.py:25:canonical": {
+            "calls": 964,
+            "cpu_ns": 4421650,
+            "wall_ns": 4314242
+          },
+          "g6_w2c_b3_parallel_driver.py:68:identity": {
+            "calls": 452,
+            "cpu_ns": 3065911,
+            "wall_ns": 3049439
+          },
+          "b3_parallel_integrated_fixture.py:59:Endpoint.shared_identity": {
+            "calls": 4,
+            "cpu_ns": 28930,
+            "wall_ns": 28620
+          },
+          "g6_w2c_b3_parallel_scheduler.py:271:ControlledEndpoint.shared_identity": {
+            "calls": 4,
+            "cpu_ns": 32900,
+            "wall_ns": 33010
+          },
+          "g6_w2c_b3_parallel_scheduler.py:190:Client.confirm": {
+            "calls": 3,
+            "cpu_ns": 23590,
+            "wall_ns": 23490
+          },
+          "b3_parallel_integrated_fixture.py:31:Bits.__init__": {
+            "calls": 2,
+            "cpu_ns": 14210,
+            "wall_ns": 14190
+          },
+          "b3_parallel_integrated_fixture.py:116:bits_factory": {
+            "calls": 2,
+            "cpu_ns": 29690,
+            "wall_ns": 29659
+          },
+          "g6_w2c_b3_parallel_scheduler.py:323:_worker.<locals>.bits": {
+            "calls": 2,
+            "cpu_ns": 47590,
+            "wall_ns": 47500
+          },
+          "g6_w2c_b3_parallel_scheduler.py:172:Client.rpc": {
+            "calls": 770,
+            "cpu_ns": 81793901,
+            "wall_ns": 391829242
+          },
+          "g6_w2c_b3_parallel_scheduler.py:691:CoalescedClient.rpc": {
+            "calls": 1026,
+            "cpu_ns": 7479192,
+            "wall_ns": 7468680
+          },
+          "g6_w2c_b3_parallel_scheduler.py:701:CoalescedClient.start": {
+            "calls": 256,
+            "cpu_ns": 3641353,
+            "wall_ns": 3639711
+          },
+          "b3_parallel_integrated_fixture.py:62:Endpoint.fault": {
+            "calls": 1410,
+            "cpu_ns": 4347801,
+            "wall_ns": 4421480
+          },
+          "b3_parallel_integrated_fixture.py:35:Bits.bits": {
+            "calls": 256,
+            "cpu_ns": 2922004,
+            "wall_ns": 3124290
+          },
+          "b3_parallel_integrated_fixture.py:96:Endpoint.sample.<locals>.<genexpr>": {
+            "calls": 1170,
+            "cpu_ns": 4501731,
+            "wall_ns": 4450654
+          },
+          "b3_parallel_integrated_fixture.py:69:Endpoint.sample": {
+            "calls": 256,
+            "cpu_ns": 38723074,
+            "wall_ns": 40016192
+          },
+          "g6_w2c_b3_parallel_scheduler.py:274:ControlledEndpoint.sample": {
+            "calls": 256,
+            "cpu_ns": 3707371,
+            "wall_ns": 3664135
+          },
+          "g6_w2c_b3_parallel_driver.py:364:Outcome.validate": {
+            "calls": 256,
+            "cpu_ns": 1087140,
+            "wall_ns": 1083392
+          },
+          "g6_w2c_b3_parallel_scheduler.py:320:_worker.<locals>.<lambda>": {
+            "calls": 256,
+            "cpu_ns": 1295421,
+            "wall_ns": 1287296
+          },
+          "g6_w2c_b3_parallel_scheduler.py:321:_worker.<locals>.<lambda>": {
+            "calls": 256,
+            "cpu_ns": 1259180,
+            "wall_ns": 1246010
+          },
+          "g6_w2c_b3_parallel_scheduler.py:229:ReservedFile.write": {
+            "calls": 256,
+            "cpu_ns": 4982701,
+            "wall_ns": 4996250
+          },
+          "g6_w2c_b3_parallel_driver.py:204:Stream.emit": {
+            "calls": 256,
+            "cpu_ns": 76522900,
+            "wall_ns": 76954158
+          },
+          "g6_w2c_b3_parallel_scheduler.py:261:EngineStream.emit": {
+            "calls": 256,
+            "cpu_ns": 2379292,
+            "wall_ns": 2336484
+          },
+          "g6_w2c_b3_parallel_driver.py:512:run_pair": {
+            "calls": 1,
+            "cpu_ns": 52968123,
+            "wall_ns": 53551118
+          },
+          "g6_w2c_b3_parallel_scheduler.py:245:ReservedFile.flush": {
+            "calls": 1,
+            "cpu_ns": 5550,
+            "wall_ns": 5490
+          },
+          "g6_w2c_b3_parallel_driver.py:244:Stream.flush": {
+            "calls": 1,
+            "cpu_ns": 118590,
+            "wall_ns": 119279
+          },
+          "g6_w2c_b3_parallel_scheduler.py:250:ReservedFile.close": {
+            "calls": 1,
+            "cpu_ns": 17540,
+            "wall_ns": 17479
+          },
+          "g6_w2c_b3_parallel_driver.py:248:Stream.close": {
+            "calls": 1,
+            "cpu_ns": 160030,
+            "wall_ns": 159840
+          }
+        }
+      },
+      "setup_cpu_wall_ns": [
+        40754857,
+        40753900
+      ],
+      "online_cpu_wall_ns": [
+        205629944,
+        377228078
+      ],
+      "generator_audit_cpu_wall_ns": [
+        132198047,
+        303462023
+      ],
+      "angle_requery_cpu_wall_ns": null,
+      "evidence_cpu_wall_ns": [
+        73431897,
+        73766055
+      ],
+      "output_cpu_wall_ns": [
+        108305562,
+        249271421
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 770,
+        "cpu_ns": 50159246,
+        "wall_ns": 358301554,
+        "coalesced_write_acks": 256
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32251904
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9245596,
+        "wchar": 268325,
+        "syscr": 1702,
+        "syscw": 1026,
+        "read_bytes": 0,
+        "write_bytes": 180224,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 175449,
+      "output_rows": 256,
+      "logical_completed": 256,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "profile_instrumented_closed_P3_tail_B",
+      "phase": "profile",
+      "pass_name": "instrumented",
+      "arm": "closed_P3_tail",
+      "layer": "B",
+      "worker_pid": 3692960,
+      "outer_cpu_wall_ns": [
+        559940114,
+        918307796
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          435241663,
+          793421118
+        ],
+        "outer_total_ns": [
+          559940114,
+          918307796
+        ],
+        "residual_ns": [
+          124698451,
+          124886678
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 38727486,
+            "wall_ns": 38742301
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 174070,
+            "wall_ns": 173769
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 381570,
+            "wall_ns": 381558
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 637670,
+            "wall_ns": 637676
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 130,
+            "cpu_ns": 91705909,
+            "wall_ns": 170190503
+          },
+          "online.EVENT.angle_and_requery": {
+            "calls": 130,
+            "cpu_ns": 53290106,
+            "wall_ns": 53284041
+          },
+          "online.EVENT.evidence": {
+            "calls": 130,
+            "cpu_ns": 59155126,
+            "wall_ns": 59161065
+          },
+          "save.serialize": {
+            "calls": 256,
+            "cpu_ns": 34842402,
+            "wall_ns": 34857307
+          },
+          "save.hash": {
+            "calls": 256,
+            "cpu_ns": 8104422,
+            "wall_ns": 8109038
+          },
+          "save.file_hash": {
+            "calls": 256,
+            "cpu_ns": 3589030,
+            "wall_ns": 3598626
+          },
+          "save.write": {
+            "calls": 256,
+            "cpu_ns": 70390494,
+            "wall_ns": 272314360
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 59,
+            "cpu_ns": 24644798,
+            "wall_ns": 60564449
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 59,
+            "cpu_ns": 10845434,
+            "wall_ns": 10839890
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 67,
+            "cpu_ns": 26466081,
+            "wall_ns": 67896359
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 67,
+            "cpu_ns": 11915575,
+            "wall_ns": 12298698
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 297570,
+            "wall_ns": 297568
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 35000,
+            "wall_ns": 35010
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 38920,
+            "wall_ns": 38900
+          }
+        }
+      },
+      "fine_alternative": {
+        "exclusive_sum_ns": [
+          557081143,
+          915448440
+        ],
+        "outer_total_ns": [
+          559940114,
+          918307796
+        ],
+        "residual_ns": [
+          2858971,
+          2859356
+        ],
+        "rows": {
+          "g6_w2c_cost_preparation.py:26:require": {
+            "calls": 78,
+            "cpu_ns": 122111,
+            "wall_ns": 103520
+          },
+          "g6_w2c_cost_preparation.py:50:_pack.<locals>.<genexpr>": {
+            "calls": 40,
+            "cpu_ns": 48350,
+            "wall_ns": 47599
+          },
+          "g6_w2c_cost_preparation.py:41:_pack": {
+            "calls": 40,
+            "cpu_ns": 240930,
+            "wall_ns": 241599
+          },
+          "g6_w2c_cost_preparation.py:55:canonical": {
+            "calls": 2,
+            "cpu_ns": 104550,
+            "wall_ns": 104729
+          },
+          "g6_w2c_cost_preparation.py:59:fingerprint": {
+            "calls": 2,
+            "cpu_ns": 32640,
+            "wall_ns": 32570
+          },
+          "g6_w2c_cost_preparation.py:79:check_source_files": {
+            "calls": 2,
+            "cpu_ns": 11119714,
+            "wall_ns": 11153981
+          },
+          "g6_w2c_b3_parallel_driver.py:257:check_pins": {
+            "calls": 2,
+            "cpu_ns": 22190,
+            "wall_ns": 22109
+          },
+          "g6_w2c_b3_admission.py:42:require": {
+            "calls": 145,
+            "cpu_ns": 195650,
+            "wall_ns": 177469
+          },
+          "g6_w2c_b3_admission.py:73:read_regular": {
+            "calls": 41,
+            "cpu_ns": 5690843,
+            "wall_ns": 5693760
+          },
+          "g6_w2c_b3_admission.py:47:digest": {
+            "calls": 41,
+            "cpu_ns": 5550022,
+            "wall_ns": 5551001
+          },
+          "g6_w2c_b3_parallel_admission.py:28:python_identity": {
+            "calls": 1,
+            "cpu_ns": 1693390,
+            "wall_ns": 1693903
+          },
+          "g6_w2c_b3_admission.py:64:exact_path": {
+            "calls": 32,
+            "cpu_ns": 10238154,
+            "wall_ns": 10249322
+          },
+          "g6_w2c_b3_parallel_admission.py:50:check_runtime": {
+            "calls": 1,
+            "cpu_ns": 3595872,
+            "wall_ns": 3598260
+          },
+          "g6_w2c_b3_parallel_driver.py:78:delta.<locals>.<genexpr>": {
+            "calls": 12220,
+            "cpu_ns": 17733188,
+            "wall_ns": 18392318
+          },
+          "g6_w2c_b3_parallel_driver.py:79:delta.<locals>.<genexpr>": {
+            "calls": 7332,
+            "cpu_ns": 10124361,
+            "wall_ns": 10037161
+          },
+          "g6_w2c_b3_parallel_driver.py:80:delta.<locals>.<genexpr>": {
+            "calls": 7332,
+            "cpu_ns": 9956272,
+            "wall_ns": 9952645
+          },
+          "g6_w2c_b3_parallel_driver.py:104:Meter.span.<locals>.<genexpr>": {
+            "calls": 5022,
+            "cpu_ns": 6890933,
+            "wall_ns": 6822165
+          },
+          "b3_parallel_integrated_fixture.py:53:Endpoint.__init__": {
+            "calls": 1,
+            "cpu_ns": 99290,
+            "wall_ns": 99460
+          },
+          "b3_parallel_integrated_fixture.py:124:ArtificialFactory.__call__": {
+            "calls": 1,
+            "cpu_ns": 20900,
+            "wall_ns": 20669
+          },
+          "g6_w2c_b3_parallel_scheduler.py:268:ControlledEndpoint.__init__": {
+            "calls": 1,
+            "cpu_ns": 3100,
+            "wall_ns": 3040
+          },
+          "g6_w2c_b3_parallel_driver.py:191:Stream.__init__": {
+            "calls": 1,
+            "cpu_ns": 130450,
+            "wall_ns": 130289
+          },
+          "g6_w2c_b3_parallel_scheduler.py:317:_worker.<locals>.<genexpr>": {
+            "calls": 1,
+            "cpu_ns": 2040,
+            "wall_ns": 1700
+          },
+          "g6_w2c_b3_parallel_scheduler.py:225:ReservedFile.__init__": {
+            "calls": 1,
+            "cpu_ns": 4260,
+            "wall_ns": 4310
+          },
+          "g6_w2c_b3_parallel_scheduler.py:255:EngineStream.__init__": {
+            "calls": 1,
+            "cpu_ns": 2960,
+            "wall_ns": 2860
+          },
+          "g6_w2c_b3_parallel_driver.py:519:run_pair.<locals>.<genexpr>": {
+            "calls": 3,
+            "cpu_ns": 4520,
+            "wall_ns": 4200
+          },
+          "g6_w2c_b3_parallel_driver.py:520:run_pair.<locals>.<genexpr>": {
+            "calls": 3,
+            "cpu_ns": 5260,
+            "wall_ns": 5020
+          },
+          "g6_w2c_b3_parallel_driver.py:528:run_pair.<locals>.context": {
+            "calls": 262,
+            "cpu_ns": 960920,
+            "wall_ns": 954455
+          },
+          "g6_w2c_b3_exact_serialization.py:34:_packed.<locals>.<genexpr>": {
+            "calls": 7936,
+            "cpu_ns": 11053934,
+            "wall_ns": 10950063
+          },
+          "g6_w2c_b3_exact_serialization.py:23:_packed": {
+            "calls": 12166,
+            "cpu_ns": 75854941,
+            "wall_ns": 76011393
+          },
+          "g6_w2c_b3_exact_serialization.py:51:canonical": {
+            "calls": 1094,
+            "cpu_ns": 25705858,
+            "wall_ns": 25831507
+          },
+          "g6_w2c_b3_parallel_driver.py:25:canonical": {
+            "calls": 1094,
+            "cpu_ns": 5433032,
+            "wall_ns": 5677175
+          },
+          "g6_w2c_b3_parallel_driver.py:68:identity": {
+            "calls": 582,
+            "cpu_ns": 4540690,
+            "wall_ns": 4511420
+          },
+          "b3_parallel_integrated_fixture.py:59:Endpoint.shared_identity": {
+            "calls": 4,
+            "cpu_ns": 29660,
+            "wall_ns": 29500
+          },
+          "g6_w2c_b3_parallel_scheduler.py:271:ControlledEndpoint.shared_identity": {
+            "calls": 4,
+            "cpu_ns": 34780,
+            "wall_ns": 34800
+          },
+          "g6_w2c_b3_parallel_scheduler.py:190:Client.confirm": {
+            "calls": 3,
+            "cpu_ns": 17660,
+            "wall_ns": 17430
+          },
+          "b3_parallel_integrated_fixture.py:31:Bits.__init__": {
+            "calls": 2,
+            "cpu_ns": 10660,
+            "wall_ns": 10600
+          },
+          "b3_parallel_integrated_fixture.py:116:bits_factory": {
+            "calls": 2,
+            "cpu_ns": 24980,
+            "wall_ns": 25060
+          },
+          "g6_w2c_b3_parallel_scheduler.py:323:_worker.<locals>.bits": {
+            "calls": 2,
+            "cpu_ns": 43320,
+            "wall_ns": 43120
+          },
+          "g6_w2c_b3_parallel_scheduler.py:172:Client.rpc": {
+            "calls": 770,
+            "cpu_ns": 87963115,
+            "wall_ns": 444858284
+          },
+          "g6_w2c_b3_parallel_scheduler.py:691:CoalescedClient.rpc": {
+            "calls": 1026,
+            "cpu_ns": 8121464,
+            "wall_ns": 8122280
+          },
+          "g6_w2c_b3_parallel_scheduler.py:701:CoalescedClient.start": {
+            "calls": 256,
+            "cpu_ns": 3892352,
+            "wall_ns": 3898697
+          },
+          "b3_parallel_integrated_fixture.py:62:Endpoint.fault": {
+            "calls": 1540,
+            "cpu_ns": 5250813,
+            "wall_ns": 5220123
+          },
+          "b3_parallel_integrated_fixture.py:35:Bits.bits": {
+            "calls": 256,
+            "cpu_ns": 3113021,
+            "wall_ns": 3122569
+          },
+          "b3_parallel_integrated_fixture.py:96:Endpoint.sample.<locals>.<genexpr>": {
+            "calls": 1170,
+            "cpu_ns": 5020302,
+            "wall_ns": 5024275
+          },
+          "b3_parallel_integrated_fixture.py:69:Endpoint.sample": {
+            "calls": 256,
+            "cpu_ns": 42193515,
+            "wall_ns": 42459356
+          },
+          "g6_w2c_b3_parallel_scheduler.py:274:ControlledEndpoint.sample": {
+            "calls": 256,
+            "cpu_ns": 3968551,
+            "wall_ns": 3923839
+          },
+          "g6_w2c_b3_parallel_driver.py:364:Outcome.validate": {
+            "calls": 256,
+            "cpu_ns": 1168881,
+            "wall_ns": 1163112
+          },
+          "b3_parallel_integrated_fixture.py:106:Endpoint.angle_for.<locals>.<genexpr>": {
+            "calls": 650,
+            "cpu_ns": 14816395,
+            "wall_ns": 14828398
+          },
+          "b3_parallel_integrated_fixture.py:100:Endpoint.angle_for": {
+            "calls": 130,
+            "cpu_ns": 12023056,
+            "wall_ns": 12029837
+          },
+          "g6_w2c_b3_parallel_scheduler.py:282:ControlledEndpoint.angle_for": {
+            "calls": 130,
+            "cpu_ns": 1085420,
+            "wall_ns": 1081547
+          },
+          "g6_w2c_b3_parallel_scheduler.py:320:_worker.<locals>.<lambda>": {
+            "calls": 256,
+            "cpu_ns": 1405581,
+            "wall_ns": 1400800
+          },
+          "g6_w2c_b3_parallel_scheduler.py:321:_worker.<locals>.<lambda>": {
+            "calls": 256,
+            "cpu_ns": 1358010,
+            "wall_ns": 1345182
+          },
+          "g6_w2c_b3_parallel_scheduler.py:229:ReservedFile.write": {
+            "calls": 256,
+            "cpu_ns": 5607465,
+            "wall_ns": 5617809
+          },
+          "g6_w2c_b3_parallel_driver.py:204:Stream.emit": {
+            "calls": 256,
+            "cpu_ns": 82452496,
+            "wall_ns": 82664621
+          },
+          "g6_w2c_b3_parallel_scheduler.py:261:EngineStream.emit": {
+            "calls": 256,
+            "cpu_ns": 2421822,
+            "wall_ns": 2392744
+          },
+          "g6_w2c_b3_parallel_driver.py:512:run_pair": {
+            "calls": 1,
+            "cpu_ns": 67675899,
+            "wall_ns": 67851877
+          },
+          "g6_w2c_b3_parallel_scheduler.py:245:ReservedFile.flush": {
+            "calls": 1,
+            "cpu_ns": 6090,
+            "wall_ns": 6030
+          },
+          "g6_w2c_b3_parallel_driver.py:244:Stream.flush": {
+            "calls": 1,
+            "cpu_ns": 84990,
+            "wall_ns": 85230
+          },
+          "g6_w2c_b3_parallel_scheduler.py:250:ReservedFile.close": {
+            "calls": 1,
+            "cpu_ns": 12430,
+            "wall_ns": 12380
+          },
+          "g6_w2c_b3_parallel_driver.py:248:Stream.close": {
+            "calls": 1,
+            "cpu_ns": 97090,
+            "wall_ns": 97268
+          }
+        }
+      },
+      "setup_cpu_wall_ns": [
+        40218366,
+        40232872
+      ],
+      "online_cpu_wall_ns": [
+        278023029,
+        434235005
+      ],
+      "generator_audit_cpu_wall_ns": [
+        142816788,
+        298651311
+      ],
+      "angle_requery_cpu_wall_ns": [
+        53290106,
+        53284041
+      ],
+      "evidence_cpu_wall_ns": [
+        81916135,
+        82299653
+      ],
+      "output_cpu_wall_ns": [
+        117000268,
+        318953241
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 770,
+        "cpu_ns": 53806665,
+        "wall_ns": 409109040,
+        "coalesced_write_acks": 256
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32256000
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9245596,
+        "wchar": 275889,
+        "syscr": 1702,
+        "syscw": 1026,
+        "read_bytes": 0,
+        "write_bytes": 188416,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 183013,
+      "output_rows": 256,
+      "logical_completed": 256,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "profile_instrumented_full_return_A",
+      "phase": "profile",
+      "pass_name": "instrumented",
+      "arm": "full_return",
+      "layer": "A",
+      "worker_pid": 3692961,
+      "outer_cpu_wall_ns": [
+        476398090,
+        812452205
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          365483573,
+          700495893
+        ],
+        "outer_total_ns": [
+          476398090,
+          812452205
+        ],
+        "residual_ns": [
+          110914517,
+          111956312
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 41560158,
+            "wall_ns": 41599006
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 176400,
+            "wall_ns": 176469
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 385580,
+            "wall_ns": 385558
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 698880,
+            "wall_ns": 698285
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 114,
+            "cpu_ns": 76531317,
+            "wall_ns": 151491663
+          },
+          "online.EVENT.evidence": {
+            "calls": 114,
+            "cpu_ns": 50052987,
+            "wall_ns": 50479064
+          },
+          "save.serialize": {
+            "calls": 256,
+            "cpu_ns": 34694014,
+            "wall_ns": 34690731
+          },
+          "save.hash": {
+            "calls": 256,
+            "cpu_ns": 8079571,
+            "wall_ns": 8091292
+          },
+          "save.file_hash": {
+            "calls": 256,
+            "cpu_ns": 3411141,
+            "wall_ns": 3535764
+          },
+          "save.write": {
+            "calls": 256,
+            "cpu_ns": 67276877,
+            "wall_ns": 185010996
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 66,
+            "cpu_ns": 25306544,
+            "wall_ns": 93304563
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 66,
+            "cpu_ns": 11850055,
+            "wall_ns": 11876687
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 76,
+            "cpu_ns": 30861008,
+            "wall_ns": 104035120
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 76,
+            "cpu_ns": 13819041,
+            "wall_ns": 14340290
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 633590,
+            "wall_ns": 633836
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 66150,
+            "wall_ns": 66140
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 80260,
+            "wall_ns": 80429
+          }
+        }
+      },
+      "fine_alternative": {
+        "exclusive_sum_ns": [
+          473463790,
+          809517421
+        ],
+        "outer_total_ns": [
+          476398090,
+          812452205
+        ],
+        "residual_ns": [
+          2934300,
+          2934784
+        ],
+        "rows": {
+          "g6_w2c_cost_preparation.py:26:require": {
+            "calls": 78,
+            "cpu_ns": 122540,
+            "wall_ns": 102839
+          },
+          "g6_w2c_cost_preparation.py:50:_pack.<locals>.<genexpr>": {
+            "calls": 40,
+            "cpu_ns": 48690,
+            "wall_ns": 48380
+          },
+          "g6_w2c_cost_preparation.py:41:_pack": {
+            "calls": 40,
+            "cpu_ns": 244910,
+            "wall_ns": 245149
+          },
+          "g6_w2c_cost_preparation.py:55:canonical": {
+            "calls": 2,
+            "cpu_ns": 111070,
+            "wall_ns": 111548
+          },
+          "g6_w2c_cost_preparation.py:59:fingerprint": {
+            "calls": 2,
+            "cpu_ns": 33090,
+            "wall_ns": 32680
+          },
+          "g6_w2c_cost_preparation.py:79:check_source_files": {
+            "calls": 2,
+            "cpu_ns": 10903276,
+            "wall_ns": 10922871
+          },
+          "g6_w2c_b3_parallel_driver.py:257:check_pins": {
+            "calls": 2,
+            "cpu_ns": 22410,
+            "wall_ns": 22290
+          },
+          "g6_w2c_b3_admission.py:42:require": {
+            "calls": 145,
+            "cpu_ns": 198930,
+            "wall_ns": 175800
+          },
+          "g6_w2c_b3_admission.py:73:read_regular": {
+            "calls": 41,
+            "cpu_ns": 6116334,
+            "wall_ns": 6116839
+          },
+          "g6_w2c_b3_admission.py:47:digest": {
+            "calls": 41,
+            "cpu_ns": 7968253,
+            "wall_ns": 7984498
+          },
+          "g6_w2c_b3_parallel_admission.py:28:python_identity": {
+            "calls": 1,
+            "cpu_ns": 2110490,
+            "wall_ns": 2137489
+          },
+          "g6_w2c_b3_admission.py:64:exact_path": {
+            "calls": 32,
+            "cpu_ns": 9991593,
+            "wall_ns": 10005971
+          },
+          "g6_w2c_b3_parallel_admission.py:50:check_runtime": {
+            "calls": 1,
+            "cpu_ns": 3621262,
+            "wall_ns": 3625682
+          },
+          "g6_w2c_b3_parallel_driver.py:78:delta.<locals>.<genexpr>": {
+            "calls": 11570,
+            "cpu_ns": 16153416,
+            "wall_ns": 15935306
+          },
+          "g6_w2c_b3_parallel_driver.py:79:delta.<locals>.<genexpr>": {
+            "calls": 6942,
+            "cpu_ns": 9990215,
+            "wall_ns": 9572823
+          },
+          "g6_w2c_b3_parallel_driver.py:80:delta.<locals>.<genexpr>": {
+            "calls": 6942,
+            "cpu_ns": 9142684,
+            "wall_ns": 9083244
+          },
+          "g6_w2c_b3_parallel_driver.py:104:Meter.span.<locals>.<genexpr>": {
+            "calls": 4632,
+            "cpu_ns": 6149685,
+            "wall_ns": 6155643
+          },
+          "b3_parallel_integrated_fixture.py:53:Endpoint.__init__": {
+            "calls": 1,
+            "cpu_ns": 97720,
+            "wall_ns": 97730
+          },
+          "b3_parallel_integrated_fixture.py:124:ArtificialFactory.__call__": {
+            "calls": 1,
+            "cpu_ns": 20260,
+            "wall_ns": 20040
+          },
+          "g6_w2c_b3_parallel_scheduler.py:268:ControlledEndpoint.__init__": {
+            "calls": 1,
+            "cpu_ns": 3170,
+            "wall_ns": 3130
+          },
+          "g6_w2c_b3_parallel_driver.py:191:Stream.__init__": {
+            "calls": 1,
+            "cpu_ns": 114440,
+            "wall_ns": 114529
+          },
+          "g6_w2c_b3_parallel_scheduler.py:317:_worker.<locals>.<genexpr>": {
+            "calls": 1,
+            "cpu_ns": 1840,
+            "wall_ns": 1750
+          },
+          "g6_w2c_b3_parallel_scheduler.py:225:ReservedFile.__init__": {
+            "calls": 1,
+            "cpu_ns": 4540,
+            "wall_ns": 4500
+          },
+          "g6_w2c_b3_parallel_scheduler.py:255:EngineStream.__init__": {
+            "calls": 1,
+            "cpu_ns": 2750,
+            "wall_ns": 2700
+          },
+          "g6_w2c_b3_parallel_driver.py:519:run_pair.<locals>.<genexpr>": {
+            "calls": 3,
+            "cpu_ns": 4370,
+            "wall_ns": 4230
+          },
+          "g6_w2c_b3_parallel_driver.py:520:run_pair.<locals>.<genexpr>": {
+            "calls": 3,
+            "cpu_ns": 5130,
+            "wall_ns": 4949
+          },
+          "g6_w2c_b3_parallel_driver.py:528:run_pair.<locals>.context": {
+            "calls": 262,
+            "cpu_ns": 934640,
+            "wall_ns": 1112615
+          },
+          "g6_w2c_b3_exact_serialization.py:34:_packed.<locals>.<genexpr>": {
+            "calls": 5506,
+            "cpu_ns": 7557773,
+            "wall_ns": 7487904
+          },
+          "g6_w2c_b3_exact_serialization.py:23:_packed": {
+            "calls": 9991,
+            "cpu_ns": 57036763,
+            "wall_ns": 57544841
+          },
+          "g6_w2c_b3_exact_serialization.py:51:canonical": {
+            "calls": 964,
+            "cpu_ns": 21693611,
+            "wall_ns": 21809628
+          },
+          "g6_w2c_b3_parallel_driver.py:25:canonical": {
+            "calls": 964,
+            "cpu_ns": 4574901,
+            "wall_ns": 4459134
+          },
+          "g6_w2c_b3_parallel_driver.py:68:identity": {
+            "calls": 452,
+            "cpu_ns": 3173920,
+            "wall_ns": 3147463
+          },
+          "b3_parallel_integrated_fixture.py:59:Endpoint.shared_identity": {
+            "calls": 4,
+            "cpu_ns": 35510,
+            "wall_ns": 35460
+          },
+          "g6_w2c_b3_parallel_scheduler.py:271:ControlledEndpoint.shared_identity": {
+            "calls": 4,
+            "cpu_ns": 41940,
+            "wall_ns": 41489
+          },
+          "g6_w2c_b3_parallel_scheduler.py:190:Client.confirm": {
+            "calls": 3,
+            "cpu_ns": 24460,
+            "wall_ns": 24400
+          },
+          "b3_parallel_integrated_fixture.py:31:Bits.__init__": {
+            "calls": 2,
+            "cpu_ns": 9980,
+            "wall_ns": 9990
+          },
+          "b3_parallel_integrated_fixture.py:116:bits_factory": {
+            "calls": 2,
+            "cpu_ns": 23030,
+            "wall_ns": 22970
+          },
+          "g6_w2c_b3_parallel_scheduler.py:323:_worker.<locals>.bits": {
+            "calls": 2,
+            "cpu_ns": 40200,
+            "wall_ns": 40270
+          },
+          "g6_w2c_b3_parallel_scheduler.py:172:Client.rpc": {
+            "calls": 770,
+            "cpu_ns": 83775824,
+            "wall_ns": 416019009
+          },
+          "g6_w2c_b3_parallel_scheduler.py:691:CoalescedClient.rpc": {
+            "calls": 1026,
+            "cpu_ns": 7664434,
+            "wall_ns": 8180957
+          },
+          "g6_w2c_b3_parallel_scheduler.py:701:CoalescedClient.start": {
+            "calls": 256,
+            "cpu_ns": 3695880,
+            "wall_ns": 3690781
+          },
+          "b3_parallel_integrated_fixture.py:62:Endpoint.fault": {
+            "calls": 1394,
+            "cpu_ns": 4566452,
+            "wall_ns": 4526012
+          },
+          "b3_parallel_integrated_fixture.py:35:Bits.bits": {
+            "calls": 256,
+            "cpu_ns": 3015351,
+            "wall_ns": 3033704
+          },
+          "b3_parallel_integrated_fixture.py:96:Endpoint.sample.<locals>.<genexpr>": {
+            "calls": 1026,
+            "cpu_ns": 4046871,
+            "wall_ns": 4039663
+          },
+          "b3_parallel_integrated_fixture.py:69:Endpoint.sample": {
+            "calls": 256,
+            "cpu_ns": 37221954,
+            "wall_ns": 37926255
+          },
+          "g6_w2c_b3_parallel_scheduler.py:274:ControlledEndpoint.sample": {
+            "calls": 256,
+            "cpu_ns": 3922761,
+            "wall_ns": 3878112
+          },
+          "g6_w2c_b3_parallel_driver.py:364:Outcome.validate": {
+            "calls": 256,
+            "cpu_ns": 1160161,
+            "wall_ns": 1367483
+          },
+          "g6_w2c_b3_parallel_scheduler.py:320:_worker.<locals>.<lambda>": {
+            "calls": 256,
+            "cpu_ns": 1379920,
+            "wall_ns": 1365108
+          },
+          "g6_w2c_b3_parallel_scheduler.py:321:_worker.<locals>.<lambda>": {
+            "calls": 256,
+            "cpu_ns": 1320361,
+            "wall_ns": 1521959
+          },
+          "g6_w2c_b3_parallel_scheduler.py:229:ReservedFile.write": {
+            "calls": 256,
+            "cpu_ns": 5339790,
+            "wall_ns": 5760177
+          },
+          "g6_w2c_b3_parallel_driver.py:204:Stream.emit": {
+            "calls": 256,
+            "cpu_ns": 79662259,
+            "wall_ns": 80725817
+          },
+          "g6_w2c_b3_parallel_scheduler.py:261:EngineStream.emit": {
+            "calls": 256,
+            "cpu_ns": 2324363,
+            "wall_ns": 2298072
+          },
+          "g6_w2c_b3_parallel_driver.py:512:run_pair": {
+            "calls": 1,
+            "cpu_ns": 55589073,
+            "wall_ns": 56466141
+          },
+          "g6_w2c_b3_parallel_scheduler.py:245:ReservedFile.flush": {
+            "calls": 1,
+            "cpu_ns": 9480,
+            "wall_ns": 9340
+          },
+          "g6_w2c_b3_parallel_driver.py:244:Stream.flush": {
+            "calls": 1,
+            "cpu_ns": 191420,
+            "wall_ns": 191879
+          },
+          "g6_w2c_b3_parallel_scheduler.py:250:ReservedFile.close": {
+            "calls": 1,
+            "cpu_ns": 21140,
+            "wall_ns": 21189
+          },
+          "g6_w2c_b3_parallel_driver.py:248:Stream.close": {
+            "calls": 1,
+            "cpu_ns": 226500,
+            "wall_ns": 226989
+          }
+        }
+      },
+      "setup_cpu_wall_ns": [
+        43454608,
+        43493154
+      ],
+      "online_cpu_wall_ns": [
+        208420952,
+        425527387
+      ],
+      "generator_audit_cpu_wall_ns": [
+        132698869,
+        348831346
+      ],
+      "angle_requery_cpu_wall_ns": null,
+      "evidence_cpu_wall_ns": [
+        75722083,
+        76696041
+      ],
+      "output_cpu_wall_ns": [
+        113608013,
+        231475352
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 770,
+        "cpu_ns": 51311658,
+        "wall_ns": 379579473,
+        "coalesced_write_acks": 256
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 31821824
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9245596,
+        "wchar": 266453,
+        "syscr": 1702,
+        "syscw": 1026,
+        "read_bytes": 0,
+        "write_bytes": 180224,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 175881,
+      "output_rows": 256,
+      "logical_completed": 256,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "profile_instrumented_full_return_B",
+      "phase": "profile",
+      "pass_name": "instrumented",
+      "arm": "full_return",
+      "layer": "B",
+      "worker_pid": 3692962,
+      "outer_cpu_wall_ns": [
+        572543548,
+        1023976799
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          442279580,
+          890271693
+        ],
+        "outer_total_ns": [
+          572543548,
+          1023976799
+        ],
+        "residual_ns": [
+          130263968,
+          133705106
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 40781837,
+            "wall_ns": 40803560
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 183600,
+            "wall_ns": 183379
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 401051,
+            "wall_ns": 400818
+          },
+          "setup.axis_identity": {
+            "calls": 2,
+            "cpu_ns": 613480,
+            "wall_ns": 613657
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 114,
+            "cpu_ns": 80558194,
+            "wall_ns": 161101955
+          },
+          "online.EVENT.angle_and_requery": {
+            "calls": 114,
+            "cpu_ns": 50653344,
+            "wall_ns": 50663981
+          },
+          "online.EVENT.evidence": {
+            "calls": 114,
+            "cpu_ns": 55603380,
+            "wall_ns": 55614391
+          },
+          "save.serialize": {
+            "calls": 256,
+            "cpu_ns": 37005036,
+            "wall_ns": 37031865
+          },
+          "save.hash": {
+            "calls": 256,
+            "cpu_ns": 8746455,
+            "wall_ns": 8757565
+          },
+          "save.file_hash": {
+            "calls": 256,
+            "cpu_ns": 3691981,
+            "wall_ns": 3687304
+          },
+          "save.write": {
+            "calls": 256,
+            "cpu_ns": 73165796,
+            "wall_ns": 267963905
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 66,
+            "cpu_ns": 28511412,
+            "wall_ns": 95992852
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 66,
+            "cpu_ns": 13140055,
+            "wall_ns": 13135888
+          },
+          "online.ZERO_C.generator_and_audit": {
+            "calls": 76,
+            "cpu_ns": 33458626,
+            "wall_ns": 138562335
+          },
+          "online.ZERO_C.evidence": {
+            "calls": 76,
+            "cpu_ns": 14997983,
+            "wall_ns": 14991071
+          },
+          "setup.final_identity": {
+            "calls": 1,
+            "cpu_ns": 623830,
+            "wall_ns": 623837
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 66790,
+            "wall_ns": 66730
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 76730,
+            "wall_ns": 76600
+          }
+        }
+      },
+      "fine_alternative": {
+        "exclusive_sum_ns": [
+          569564717,
+          1020996924
+        ],
+        "outer_total_ns": [
+          572543548,
+          1023976799
+        ],
+        "residual_ns": [
+          2978831,
+          2979875
+        ],
+        "rows": {
+          "g6_w2c_cost_preparation.py:26:require": {
+            "calls": 78,
+            "cpu_ns": 130710,
+            "wall_ns": 109550
+          },
+          "g6_w2c_cost_preparation.py:50:_pack.<locals>.<genexpr>": {
+            "calls": 40,
+            "cpu_ns": 46970,
+            "wall_ns": 46799
+          },
+          "g6_w2c_cost_preparation.py:41:_pack": {
+            "calls": 40,
+            "cpu_ns": 243391,
+            "wall_ns": 243539
+          },
+          "g6_w2c_cost_preparation.py:55:canonical": {
+            "calls": 2,
+            "cpu_ns": 110160,
+            "wall_ns": 110270
+          },
+          "g6_w2c_cost_preparation.py:59:fingerprint": {
+            "calls": 2,
+            "cpu_ns": 34040,
+            "wall_ns": 33960
+          },
+          "g6_w2c_cost_preparation.py:79:check_source_files": {
+            "calls": 2,
+            "cpu_ns": 10989184,
+            "wall_ns": 11010249
+          },
+          "g6_w2c_b3_parallel_driver.py:257:check_pins": {
+            "calls": 2,
+            "cpu_ns": 23850,
+            "wall_ns": 23780
+          },
+          "g6_w2c_b3_admission.py:42:require": {
+            "calls": 145,
+            "cpu_ns": 229960,
+            "wall_ns": 201810
+          },
+          "g6_w2c_b3_admission.py:73:read_regular": {
+            "calls": 41,
+            "cpu_ns": 5876103,
+            "wall_ns": 5880446
+          },
+          "g6_w2c_b3_admission.py:47:digest": {
+            "calls": 41,
+            "cpu_ns": 5621252,
+            "wall_ns": 5622031
+          },
+          "g6_w2c_b3_parallel_admission.py:28:python_identity": {
+            "calls": 1,
+            "cpu_ns": 1524040,
+            "wall_ns": 1525202
+          },
+          "g6_w2c_b3_admission.py:64:exact_path": {
+            "calls": 32,
+            "cpu_ns": 11386066,
+            "wall_ns": 11426636
+          },
+          "g6_w2c_b3_parallel_admission.py:50:check_runtime": {
+            "calls": 1,
+            "cpu_ns": 4491781,
+            "wall_ns": 4495289
+          },
+          "g6_w2c_b3_parallel_driver.py:78:delta.<locals>.<genexpr>": {
+            "calls": 12140,
+            "cpu_ns": 18518410,
+            "wall_ns": 18308812
+          },
+          "g6_w2c_b3_parallel_driver.py:79:delta.<locals>.<genexpr>": {
+            "calls": 7284,
+            "cpu_ns": 10605561,
+            "wall_ns": 10487138
+          },
+          "g6_w2c_b3_parallel_driver.py:80:delta.<locals>.<genexpr>": {
+            "calls": 7284,
+            "cpu_ns": 10607766,
+            "wall_ns": 10529074
+          },
+          "g6_w2c_b3_parallel_driver.py:104:Meter.span.<locals>.<genexpr>": {
+            "calls": 4974,
+            "cpu_ns": 7177234,
+            "wall_ns": 7127111
+          },
+          "b3_parallel_integrated_fixture.py:53:Endpoint.__init__": {
+            "calls": 1,
+            "cpu_ns": 105250,
+            "wall_ns": 105250
+          },
+          "b3_parallel_integrated_fixture.py:124:ArtificialFactory.__call__": {
+            "calls": 1,
+            "cpu_ns": 21950,
+            "wall_ns": 21930
+          },
+          "g6_w2c_b3_parallel_scheduler.py:268:ControlledEndpoint.__init__": {
+            "calls": 1,
+            "cpu_ns": 3930,
+            "wall_ns": 3880
+          },
+          "g6_w2c_b3_parallel_driver.py:191:Stream.__init__": {
+            "calls": 1,
+            "cpu_ns": 110620,
+            "wall_ns": 110279
+          },
+          "g6_w2c_b3_parallel_scheduler.py:317:_worker.<locals>.<genexpr>": {
+            "calls": 1,
+            "cpu_ns": 1820,
+            "wall_ns": 1740
+          },
+          "g6_w2c_b3_parallel_scheduler.py:225:ReservedFile.__init__": {
+            "calls": 1,
+            "cpu_ns": 5730,
+            "wall_ns": 5500
+          },
+          "g6_w2c_b3_parallel_scheduler.py:255:EngineStream.__init__": {
+            "calls": 1,
+            "cpu_ns": 3240,
+            "wall_ns": 3190
+          },
+          "g6_w2c_b3_parallel_driver.py:519:run_pair.<locals>.<genexpr>": {
+            "calls": 3,
+            "cpu_ns": 4610,
+            "wall_ns": 4330
+          },
+          "g6_w2c_b3_parallel_driver.py:520:run_pair.<locals>.<genexpr>": {
+            "calls": 3,
+            "cpu_ns": 5620,
+            "wall_ns": 5360
+          },
+          "g6_w2c_b3_parallel_driver.py:528:run_pair.<locals>.context": {
+            "calls": 262,
+            "cpu_ns": 1017880,
+            "wall_ns": 1014154
+          },
+          "g6_w2c_b3_exact_serialization.py:34:_packed.<locals>.<genexpr>": {
+            "calls": 7444,
+            "cpu_ns": 10628782,
+            "wall_ns": 10494880
+          },
+          "g6_w2c_b3_exact_serialization.py:23:_packed": {
+            "calls": 12727,
+            "cpu_ns": 78802960,
+            "wall_ns": 79000983
+          },
+          "g6_w2c_b3_exact_serialization.py:51:canonical": {
+            "calls": 1078,
+            "cpu_ns": 27079416,
+            "wall_ns": 27183349
+          },
+          "g6_w2c_b3_parallel_driver.py:25:canonical": {
+            "calls": 1078,
+            "cpu_ns": 5645760,
+            "wall_ns": 5545250
+          },
+          "g6_w2c_b3_parallel_driver.py:68:identity": {
+            "calls": 566,
+            "cpu_ns": 4684372,
+            "wall_ns": 4629044
+          },
+          "b3_parallel_integrated_fixture.py:59:Endpoint.shared_identity": {
+            "calls": 4,
+            "cpu_ns": 35060,
+            "wall_ns": 35200
+          },
+          "g6_w2c_b3_parallel_scheduler.py:271:ControlledEndpoint.shared_identity": {
+            "calls": 4,
+            "cpu_ns": 38600,
+            "wall_ns": 38520
+          },
+          "g6_w2c_b3_parallel_scheduler.py:190:Client.confirm": {
+            "calls": 3,
+            "cpu_ns": 24340,
+            "wall_ns": 24260
+          },
+          "b3_parallel_integrated_fixture.py:31:Bits.__init__": {
+            "calls": 2,
+            "cpu_ns": 10620,
+            "wall_ns": 10610
+          },
+          "b3_parallel_integrated_fixture.py:116:bits_factory": {
+            "calls": 2,
+            "cpu_ns": 25120,
+            "wall_ns": 24910
+          },
+          "g6_w2c_b3_parallel_scheduler.py:323:_worker.<locals>.bits": {
+            "calls": 2,
+            "cpu_ns": 41510,
+            "wall_ns": 41610
+          },
+          "g6_w2c_b3_parallel_scheduler.py:172:Client.rpc": {
+            "calls": 770,
+            "cpu_ns": 90426380,
+            "wall_ns": 539640342
+          },
+          "g6_w2c_b3_parallel_scheduler.py:691:CoalescedClient.rpc": {
+            "calls": 1026,
+            "cpu_ns": 8321438,
+            "wall_ns": 8318473
+          },
+          "g6_w2c_b3_parallel_scheduler.py:701:CoalescedClient.start": {
+            "calls": 256,
+            "cpu_ns": 3978552,
+            "wall_ns": 3965352
+          },
+          "b3_parallel_integrated_fixture.py:62:Endpoint.fault": {
+            "calls": 1508,
+            "cpu_ns": 5346660,
+            "wall_ns": 5308443
+          },
+          "b3_parallel_integrated_fixture.py:35:Bits.bits": {
+            "calls": 256,
+            "cpu_ns": 3252793,
+            "wall_ns": 3276543
+          },
+          "b3_parallel_integrated_fixture.py:96:Endpoint.sample.<locals>.<genexpr>": {
+            "calls": 1026,
+            "cpu_ns": 4405843,
+            "wall_ns": 4415887
+          },
+          "b3_parallel_integrated_fixture.py:69:Endpoint.sample": {
+            "calls": 256,
+            "cpu_ns": 39904670,
+            "wall_ns": 40283804
+          },
+          "g6_w2c_b3_parallel_scheduler.py:274:ControlledEndpoint.sample": {
+            "calls": 256,
+            "cpu_ns": 4080172,
+            "wall_ns": 4040086
+          },
+          "g6_w2c_b3_parallel_driver.py:364:Outcome.validate": {
+            "calls": 256,
+            "cpu_ns": 1240190,
+            "wall_ns": 1231455
+          },
+          "b3_parallel_integrated_fixture.py:106:Endpoint.angle_for.<locals>.<genexpr>": {
+            "calls": 570,
+            "cpu_ns": 13135975,
+            "wall_ns": 13156668
+          },
+          "b3_parallel_integrated_fixture.py:100:Endpoint.angle_for": {
+            "calls": 114,
+            "cpu_ns": 10548994,
+            "wall_ns": 10548013
+          },
+          "g6_w2c_b3_parallel_scheduler.py:282:ControlledEndpoint.angle_for": {
+            "calls": 114,
+            "cpu_ns": 987050,
+            "wall_ns": 974152
+          },
+          "g6_w2c_b3_parallel_scheduler.py:320:_worker.<locals>.<lambda>": {
+            "calls": 256,
+            "cpu_ns": 1497232,
+            "wall_ns": 1493811
+          },
+          "g6_w2c_b3_parallel_scheduler.py:321:_worker.<locals>.<lambda>": {
+            "calls": 256,
+            "cpu_ns": 1436500,
+            "wall_ns": 1422181
+          },
+          "g6_w2c_b3_parallel_scheduler.py:229:ReservedFile.write": {
+            "calls": 256,
+            "cpu_ns": 5511713,
+            "wall_ns": 5627790
+          },
+          "g6_w2c_b3_parallel_driver.py:204:Stream.emit": {
+            "calls": 256,
+            "cpu_ns": 87632354,
+            "wall_ns": 88229364
+          },
+          "g6_w2c_b3_parallel_scheduler.py:261:EngineStream.emit": {
+            "calls": 256,
+            "cpu_ns": 2466380,
+            "wall_ns": 2428865
+          },
+          "g6_w2c_b3_parallel_driver.py:512:run_pair": {
+            "calls": 1,
+            "cpu_ns": 69051223,
+            "wall_ns": 70728733
+          },
+          "g6_w2c_b3_parallel_scheduler.py:245:ReservedFile.flush": {
+            "calls": 1,
+            "cpu_ns": 10660,
+            "wall_ns": 10550
+          },
+          "g6_w2c_b3_parallel_driver.py:244:Stream.flush": {
+            "calls": 1,
+            "cpu_ns": 187360,
+            "wall_ns": 181298
+          },
+          "g6_w2c_b3_parallel_scheduler.py:250:ReservedFile.close": {
+            "calls": 1,
+            "cpu_ns": 19740,
+            "wall_ns": 19670
+          },
+          "g6_w2c_b3_parallel_driver.py:248:Stream.close": {
+            "calls": 1,
+            "cpu_ns": 209170,
+            "wall_ns": 209519
+          }
+        }
+      },
+      "setup_cpu_wall_ns": [
+        42603798,
+        42625251
+      ],
+      "online_cpu_wall_ns": [
+        276922994,
+        530062473
+      ],
+      "generator_audit_cpu_wall_ns": [
+        142528232,
+        395657142
+      ],
+      "angle_requery_cpu_wall_ns": [
+        50653344,
+        50663981
+      ],
+      "evidence_cpu_wall_ns": [
+        83741418,
+        83741350
+      ],
+      "output_cpu_wall_ns": [
+        122752788,
+        317583969
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 770,
+        "cpu_ns": 54998438,
+        "wall_ns": 502332186,
+        "coalesced_write_acks": 256
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32071680
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9245596,
+        "wchar": 273436,
+        "syscr": 1702,
+        "syscw": 1026,
+        "read_bytes": 0,
+        "write_bytes": 188416,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 182864,
+      "output_rows": 256,
+      "logical_completed": 256,
+      "failed_prefix": false,
+      "shared_XY_setup_charged_once": true
+    }
+  ],
+  "comparison_eligible": true,
+  "ranking": null,
+  "unknown_cost_is_zero": false,
+  "receipt_self_cost_ns": null,
+  "coarse_fine_added": false,
+  "pair_CPU_added_to_worker_CPU": false,
+  "IPC_added_to_outer": false,
+  "parent_worker_wall_summed": false,
+  "RSS_sum_is_unique_memory": false,
+  "measurement_boundary": "host including outer STOP",
+  "parent_cpu_ns": 895006646,
+  "all_worker_cpu_ns": 9933090000,
+  "total_cpu_ns": 10828096646,
+  "global_wall_ns": 2549204535,
+  "known_pair_cpu_in_worker_total_ns": 5412862778,
+  "worker_unattributed_including_lost_pair_cpu_ns": 4520227222,
+  "pair_costs_unknown": [],
+  "parent_launch_diagnostic": {
+    "cpu_ns": 10090424,
+    "wall_ns": 22124382,
+    "count": 24
+  },
+  "coordinator_snapshot_cpu_wall": [
+    796861286,
+    2447435471
+  ],
+  "shared_finalization_in_parent": {
+    "coarse": {
+      "save.serialize": {
+        "calls": 1,
+        "cpu_ns": 14792026,
+        "wall_ns": 14791700
+      },
+      "save.hash": {
+        "calls": 1,
+        "cpu_ns": 1289131,
+        "wall_ns": 1289543
+      },
+      "save.file_hash": {
+        "calls": 1,
+        "cpu_ns": 297340,
+        "wall_ns": 296979
+      },
+      "save.write": {
+        "calls": 1,
+        "cpu_ns": 270570,
+        "wall_ns": 270898
+      },
+      "save.flush": {
+        "calls": 2,
+        "cpu_ns": 8050,
+        "wall_ns": 7900
+      },
+      "save.finalize": {
+        "calls": 1,
+        "cpu_ns": 17980,
+        "wall_ns": 18220
+      }
+    },
+    "elapsed_ns": [
+      17543877,
+      17543786
+    ]
+  },
+  "post_stop_worker_CPU_estimate_ns": null,
+  "post_stop_CPU_resolution_ns": 80000000,
+  "peak_sampled_RSS_shared_page_sum": 301064192,
+  "logical_output": {
+    "result": {
+      "reserved": 3321254,
+      "ack_observed": 3321254,
+      "physical_bytes": 3321254,
+      "unknown_credit": 0,
+      "credit_refunded": false
+    },
+    "log": {
+      "reserved": 150761,
+      "ack_observed": 150761,
+      "physical_bytes": 150761,
+      "unknown_credit": 0,
+      "credit_refunded": false
+    }
+  },
+  "state_retained_bytes": 4352,
+  "state_cumulative_pwrite_traffic_bytes": 17408,
+  "variant": "PF",
+  "measurement_condition": "concurrent_pairs",
+  "measurement_condition_evidence": "saved record",
+  "observer_cost_ns": null,
+  "observer_cost_unknown": true,
+  "observer_boundary": "fine partition is an alternative; no isolated cached-observer overhead observation",
+  "host_io": {
+    "rchar": 393162475,
+    "wchar": 5763126,
+    "syscr": 67954,
+    "syscw": 48141,
+    "read_bytes": 0,
+    "write_bytes": 3682304,
+    "cancelled_write_bytes": 0
+  },
+  "execution_io": {
+    "rchar": 393095053,
+    "wchar": 5746087,
+    "syscr": 67925,
+    "syscw": 48130,
+    "read_bytes": 0,
+    "write_bytes": 3653632,
+    "cancelled_write_bytes": 0
+  },
+  "execution_outer": {
+    "parent_cpu_ns": 892450835,
+    "wall_ns": 2544822747,
+    "worker_cpu_ns": 9933090000,
+    "io": {
+      "rchar": 393095053,
+      "wchar": 5746087,
+      "syscr": 67925,
+      "syscw": 48130,
+      "read_bytes": 0,
+      "write_bytes": 3653632,
+      "cancelled_write_bytes": 0
+    }
+  },
+  "same_condition_comparison_key": {
+    "mode": "P1",
+    "workers": 8,
+    "inflight_cap": 2,
+    "codec": "fused",
+    "workload": "light",
+    "profile_n": 128,
+    "flush_rows": 4096
+  },
+  "failed_prefix_excluded_from_comparison": false
+}
