@@ -1,7 +1,7 @@
 # Track B W2c-B3：live接続Release・512契約・authority準備
 
 実行状態はLIVE_RELEASE_CANDIDATE_UNAUTHORIZED。設計準備へのユーザー了承と、正式採択／実行承認を分離する。
-新SOURCE `src/trottertracks/algorithm_codesign/g6_w2c_b3_live_release_v1/`、測定SOURCE `25b62af55e1024b1d083af98a0246b62d457617e`、artifact `5d99b0a319523aee6df095407c231a912345b1bf35b44a7b13608652a9ba39d5`。
+新SOURCE `src/trottertracks/algorithm_codesign/g6_w2c_b3_live_release_v1/`、測定SOURCE `2405f5e2e5fb0dc5add39b102e3ccae3d56df0a4`、artifact `e44ca337e4833c005dafb397a72a6c4a5b093dd7ff72728f6bb46db0e4d87a50`。
 [Q1〜Q10](handoff.md)、[実装](live_api_connection_implementation.md)、[契約](correctness_contract_candidate.json)、
 [authority](trusted_store_implementation_status.md)、[未決条件](remaining_execution_blockers.md)、[人工受入](artificial_technical_acceptance.md)、[公開照合](publication_receipt.json)。
 

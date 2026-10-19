@@ -9,4 +9,4 @@ execution.pyは固定pair/worker/run_phaseの新version投影。coverage accepte
 
 **LIVE_RELEASE_CANDIDATE_UNAUTHORIZED。実科学未実行。mandatory STOP。次の担当：ユーザー・GPT。**
 
-公開前補強：失敗前に取得済みの原Result document/digest、Canonical audit failure seal、観測済みbitsをtyped F01へ明示保存する。正常完了や追加samplingにはしない。補強前SOURCEも履歴に保持し、補強後SOURCEで最終検証する。
+最終SOURCEではCanonical audit failure seal・取得済み原Result・観測済みbitsをtyped F01へ明示保存し、保存rawから照合済み。補強前SOURCE25b62af55e1024b1d083af98a0246b62d457617eも履歴に保持する。

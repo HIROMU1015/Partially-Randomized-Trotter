@@ -1,7 +1,7 @@
 # 人工技術検証
 
-測定SOURCE `25b62af55e1024b1d083af98a0246b62d457617e`。同一primary agentによる検証で、別reviewerの独立受入とは呼ばない。
-unit/negative/store/必要回帰PASS：`{"preflight": 23, "regression": 66, "store": 9, "unit": 9}`。
+測定SOURCE `2405f5e2e5fb0dc5add39b102e3ccae3d56df0a4`。同一primary agentによる検証で、別reviewerの独立受入とは呼ばない。
+unit/negative/store/必要回帰PASS：`{"preflight": 23, "regression": 66, "store": 9, "unit": 10}`。
 semantic mutation `20`/20、統合case `10`/10。
 正常512 full documents、coverage INCONCLUSIVE、S/P1 angle故障、人工科学不一致、receipt close、bytes/calls、worker exit、ACK unknownを分類する。
 原文を再sealした変更も含むpayload semantic mutationを拒否。旧独立224/Producer132/107/16,896は固定参照し再構築・合算しない。
