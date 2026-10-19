@@ -1,3 +1,7 @@
+## 2026-10-19 H6 full m5：compile不一致の静的調査・根本原因未確定
+
+[調査根拠・未検証証拠保存の修正案](research/track_a_h46_m5_compile_stop_static_analysis_20261019.md)。SOURCE c7d53f04…のraw差1.504e-9/固定1e-9未満を保持。global phase適用/complex精度/opt1経路を確認したが、失敗回路・比較ベクトル未保存のため原因未確定。選択Qiskit source8件RECORD照合。固定1点・最大2軸の診断取得は未承認DRAFT（旧59予約保全、累積最大61案）、adapter実装/新数値検査/compile0、旧STOP不変、mandatory STOP。次はCodexの診断adapter/人工test準備、その後ユーザーの別実行承認判断。以下は各時点の履歴。
+
 ## 2026-10-19 H4/H6 m5：tol-only pilot終了・29/30 PASS、H6 full m5でSTOP
 
 [結果・数値不一致・終了監査](research/track_a_h46_m5_tol_pilot_run01_results_20261019.md)。SOURCE c7d53f04…、13:30:50 JST終了、約27分25秒。H4全lane/H6 PR完了、H6 full m5/q2 cosineのcompiled vector差1.504e-9が固定1e-9未満基準を超過。58受理軸・59予約・sine1未投入、全24 worker exit0/reap・launcher exit1/reap。元SOURCE/input/grant/STOPを保全しretry/追加compile/会計0、AD03/後続Core保留、mandatory STOP。次はCodexの静的原因調査案と、ユーザーの追加検証判断。以下は各時点の履歴。
