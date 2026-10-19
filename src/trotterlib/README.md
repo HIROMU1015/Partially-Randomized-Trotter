@@ -1,3 +1,7 @@
+H4 tol-only DF10 D承認待ちseal（2026-10-19）：科学SOURCE84db3909…・D190候補/最大372新規軸を維持。SOURCE/input/runtime・774保全レコード照合、人工40件・拒否2経路PASS。D科学実行未承認・実行0、A50はD正式受入＋次指示待ち。mandatory STOP。[最終sealと承認事項](../../docs/research/track_a_h4_tol_d_seal_20261019.md)。以下は各時点の履歴。
+
+このD sealに科学library・既存科学SOURCEの変更はない。新しいmetadataツールだけを追加し、実行時は既存 `run_h4_tol_main.py` を使う。
+
 H4 tol-only rank10 Phase 0完了（2026-10-19）：SOURCE84db3909…、F/FP保存入力と同一条件の8＋64軸を再利用するD190/A50候補案を準備。新32＋再利用42人工/回帰PASS、実DRAFT拒否8経路・774レコードSHA監査PASS。状態solver/正規化のH6/H8との差を明記。科学実行・実統計解析・push0、Pのn/SOURCE/seed/予算はD/A後、mandatory STOP。[統合readiness](../../docs/research/track_a_h4_tol_main_phase0_20261019.md)。以下は各時点の履歴。
 
 この経路による科学libraryの変更はない。rank10 adapterは `scripts/h4_tol_main_science.py`、既存native/RTE・A kernel・paired会計を再利用する。P/S_STATSは結果待ちの設計で、現runnerから実行できない。
