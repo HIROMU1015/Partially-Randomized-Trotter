@@ -1,3 +1,7 @@
+## 2026-10-19 H4/H6：理論総RZ費用 vs compiled総RZ費用（保存値表示）
+
+[図・caption・出典・表示検査](docs/research/track_a_h46_theory_compiled_total_plots_20261019.md)。S4修正後RESULT6e2b7eb6のNATIVE_MIXED/RZを使用。固定7候補の絶対費用70条件と固定6pairの比60条件を転記し、5精度・allowance倍率1/10・H4/H6別の8図をPNG/SVG/PDFで保存。不適格/共通適格性なしはnull、期待値端点とcompiled有限標本を区別。新sampling/compile/bootstrap/数値再解析0、既存Figure2/主表/科学SOURCE/結果/STOP不変。専用commit/push後、次の作業なし、mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-18 H4/H6 S4：counter修正・8行受入・限定再会計完了
 
 [修正・3 Stage・全表・保全監査](docs/research/track_a_h46_s4_counter_native_compatibility_results_20261018.md)。pf_scheduleのbinary64係数・時間演算順だけをnativeへ揃え、68人工tests PASS。固定H4/H6 S4の8整数行・33block証拠が一致。84/84/360行を再会計し変更は24/24/168行、S2/PR/shot/compiled値は不変。主H4 RZ比は理論0.871632、compiled1.039336で方向不一致が残る。3 Stage全native exit0/reap・STOP、追加compile/sampling0、旧結果/UNATTRIBUTED/ledger/STOPは保持。最終mandatory STOP。以下は各時点の履歴。
