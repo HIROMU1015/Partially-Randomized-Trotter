@@ -1,3 +1,7 @@
+## 2026-10-19 H6固定独立確認：正式採用・論文証拠更新
+
+[採用報告と現行manifest・Claim–Evidence Matrix・証拠台帳](research/track_a_h6_pr_confirmation_adoption_20261019.md)。H6の固定2条件（ε=.05/n48はPRが78.055%高費用、ε=.0005/n104は9.644%低費用）をユーザー判断で正式採用し、双方REPRODUCEDとして完了扱いにする。結果3cccfcb2…／科学SOURCE bf0c26da…。PR_CHEAPERは別項目、母平均・rare support・厳密bias保証は未解決。旧表と共通プロトコルv1は履歴として保全し、新版にH6固定Pのstatus・入力binding・終了監査を結合する。H4/H8とは非混合、COMMON_CORE_READYや最終freezeの一括認定なし。文書・構造検証のみ、新科学計算・数値再解析・push0。local commit後mandatory STOP。次担当はユーザーの新規資料公開判断。以下は各時点の履歴。
+
 正式文書：[Track A共通プロトコルv1](research/track_a_pr_resource_evaluation_protocol_v1.md)／[正式化報告](research/track_a_pr_resource_protocol_v1_adoption_20261019.md)。採択scopeと既存科学契約は分離。旧DRAFTは履歴。
 
 ## 2026-10-19 Track A：共通実験プロトコル v1 DRAFT・未採択

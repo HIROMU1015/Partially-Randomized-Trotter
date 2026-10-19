@@ -1,3 +1,7 @@
+## 2026-10-19 H6採用資料の構造検証
+
+[正式採用・論文証拠更新](../../docs/research/track_a_h6_pr_confirmation_adoption_20261019.md)。`scripts/check_h6_pr_confirmation_adoption.py` は固定Git/SHA・保存値転記・旧表保全・cohort非混合だけを確認する。科学kernel変更・import・実行・統計再計算なし。新資料は独立local commit、mandatory STOP。
+
 Track A共通プロトコルv1は文書正式化のみで、新science moduleは追加しない。[正式化報告](../../docs/research/track_a_pr_resource_protocol_v1_adoption_20261019.md)と既存科学SOURCEの承認境界を参照。
 
 ## 2026-10-19 Track A：共通実験プロトコル v1 DRAFT・未採択

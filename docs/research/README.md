@@ -1,3 +1,7 @@
+## 2026-10-19 H6固定独立確認：正式採用・論文証拠更新
+
+[採用報告と現行manifest・Claim–Evidence Matrix・証拠台帳](track_a_h6_pr_confirmation_adoption_20261019.md)。H6の固定2条件（ε=.05/n48はPRが78.055%高費用、ε=.0005/n104は9.644%低費用）をユーザー判断で正式採用し、双方REPRODUCEDとして完了扱いにする。結果3cccfcb2…／科学SOURCE bf0c26da…。PR_CHEAPERは別項目、母平均・rare support・厳密bias保証は未解決。旧表と共通プロトコルv1は履歴として保全し、新版にH6固定Pのstatus・入力binding・終了監査を結合する。H4/H8とは非混合、COMMON_CORE_READYや最終freezeの一括認定なし。文書・構造検証のみ、新科学計算・数値再解析・push0。local commit後mandatory STOP。次担当はユーザーの新規資料公開判断。以下は各時点の履歴。
+
 ## 2026-10-18 A_COST 3系完了・保存B/D解析結果
 
 [結果・測定表・来歴](track_a_pr_cost_batch_completed_results_20261018.md)。H4/H6/H8 A_COST各16候補×n8、計384軌道・768軸・48代表controlが完了。保存D3件は計7,160行/120比較、B3件は限定診断まで完了（無条件平均null）。H8は元16代表を再利用、SOURCE87f1f0d5…/15workerで残112軌道を約56分、21:14:13 JSTにnative exit0・全回収。H4は1Å/legacy DF12、H6 DF19、H8 DF28で系列を分離。新Aのn8を用いた新総費用・ランキングは未実施、旧STOP/未完了予約/他研究は保全。以下は各時点の履歴。

@@ -1,3 +1,7 @@
+## 2026-10-19 H6採用資料の構造検証
+
+[正式採用・論文証拠更新](../docs/research/track_a_h6_pr_confirmation_adoption_20261019.md)。`scripts/check_h6_pr_confirmation_adoption.py` は固定Git/SHA・保存値転記・旧表保全・cohort非混合だけを確認する。科学kernel変更・import・実行・統計再計算なし。新資料は独立local commit、mandatory STOP。
+
 文書構造検査：[check_track_a_protocol_v1.py](check_track_a_protocol_v1.py)。採択表・88metadata行・固定証拠37file・H6 Phase0/A82回収境界だけを検査し、科学moduleは実行しない。旧draft checkerはDRAFT commitのcheckout専用。
 
 ## 2026-10-19 Track A：共通実験プロトコル v1 DRAFT・未採択
