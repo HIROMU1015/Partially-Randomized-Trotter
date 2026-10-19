@@ -66,6 +66,7 @@ def render(data, output, *, synthetic=False):
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     from matplotlib.lines import Line2D
+    from matplotlib.ticker import LogLocator, FuncFormatter
     plt.rcParams.update({'font.size':9, 'svg.fonttype':'none','savefig.facecolor':'white'})
     colors = {'OLD_PR':'#0072B2', 'NEW_PR':'#D55E00'}
     plotted=[]
@@ -97,6 +98,8 @@ def render(data, output, *, synthetic=False):
                         facecolors=fill,edgecolors=colors[record['PR_role']],linewidths=1.1,zorder=3)
             ax.axhline(1,color='#777777',linewidth=.8,zorder=1)
             ax.set_yscale('log');ax.grid(axis='y',which='major',alpha=.16)
+            ax.yaxis.set_major_locator(LogLocator(base=10,subs=(1,2,5)))
+            ax.yaxis.set_major_formatter(FuncFormatter(lambda tick,position:format(tick,'.2g')))
             ax.set_xticks([.5,2.5,4.5],['0.05','0.005','0.0005'])
             if col==0:ax.set_ylabel(row_labels[row])
             if row<2:ax.tick_params(labelbottom=False)
@@ -117,7 +120,7 @@ def render(data, output, *, synthetic=False):
     if not synthetic:fig.savefig(output/'figure2A.pdf')
     plt.close(fig)
     fig, panels = plt.subplots(2,2,figsize=(11.8,7.8))
-    fig.subplots_adjust(top=.88,bottom=.18,hspace=.44,wspace=.23,left=.09,right=.98)
+    fig.subplots_adjust(top=.88,bottom=.26,hspace=.44,wspace=.23,left=.09,right=.98)
     for col, record in enumerate(data['examples']):
         ax = panels[0,col]
         for x, field in enumerate(('R_N','R_Ceff','R_G')):
