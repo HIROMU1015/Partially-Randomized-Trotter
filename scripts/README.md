@@ -1,3 +1,7 @@
+H4 tol-only DF10 A50完了（2026-10-19）：科学SOURCE84db3909…、新49 signal・392 trajectory/784軸、保存FP n32と別cohort。control196/oracle49・primitive120 PASS、native exit0・全回収。250行を1 pass会計しD190の保存最良PFと点比較。seed衝突/中断/retry0、母平均保証なし。S_STATS/P・新科学レビュー未着手、mandatory STOP。[完了結果](../docs/research/track_a_h4_tol_a_completed_20261019.md)。以下は各時点の履歴。
+
+`audit_h4_tol_a_completed.py` は終了したAのmetadata/ledger/worker/保存統計schemaとSHAを検査し、sole accountingのbytesとseed非公開projectionを保存する。科学統計・sampling/compileを再dispatchしない。
+
 H4 tol-only DF10 A50最終seal（2026-10-19）：D完了406f7057…を正式受入。科学SOURCE84db3909…/A50を維持し、保存FP n32と新49候補n8を分離。392 master/2,760 seed整数を固定、既知67,510整数＋geometry7,737,216予約枠との衝突0。最大392 trajectory/784軸、人工/回帰96件・無効grant2経路拒否PASS。A実科学・保存値新解析0、有効grant0、mandatory STOP。[最終契約と次の承認](../docs/research/track_a_h4_tol_a_seal_20261019.md)。以下は各時点の履歴。
 
 `seal_h4_tol_a.py` はmetadata専用のA50 seed/契約/INVALID grant準備と `--audit` のbyte・識別子照合を行う。科学実行の入口なし。人工検証は `tests/test_h4_tol_a_seal.py`。
