@@ -134,3 +134,7 @@ FPのPR n1はnative診断に限り、後続Aの新n8へ混合しない。
 | Codex | D正式受入後、A66の固定SOURCE・依存result/audit/acceptance SHA・新n8 seed・予算を結合する。Aはその個別明示承認後だけ実行し、再びSTOPする。 |
 
 現在はmandatory STOP。A/S_STATS/P科学実行・P seal・詳細科学レビュー・論文最終evidence freezeには進まない。
+
+追記（2026-10-19）：利用者のA依存結合・最終seal指示に基づき、本D完了結果をA入力として受入した。
+[A66最終seal](track_a_h2_a_final_seal_20261019.md)では保存PF5対照をcopyし、費用再会計は行っていない。
+A科学実行は未承認・未実行のままSTOPした。
