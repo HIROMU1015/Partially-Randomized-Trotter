@@ -753,3 +753,6 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## 2026-10-19：Storage V2 S/P1 global bundle bridge 技術候補
 
 [Evidence Packet](research/track_b_g6_w2c_b3_v2_production_bundle_bridge_candidate_20261019/README.md)。単一global claim/call/byte/STOP、人工43ケースと新107 testsを検証。科学入口閉鎖、正式採択なし、実G7/F3 import/sampling 0、mandatory STOP。旧科学結果とSTOPを保持。
+
+
+2026-10-19 Track B閉鎖API binding候補：[静的G7/F3 mapping・人工port・tests・offline evidence](research/track_b_g6_w2c_b3_real_api_binding_preflight_candidate_20261019/README.md)。新module namespace `src/trottertracks/algorithm_codesign/g6_w2c_b3_api_binding_v1/`、test `test_g6_w2c_b3_api_binding_v1.py`、runnerはpacket内 `build_static.py/run_acceptance.py/run_checks.py`。実科学入口閉鎖、mandatory STOP。

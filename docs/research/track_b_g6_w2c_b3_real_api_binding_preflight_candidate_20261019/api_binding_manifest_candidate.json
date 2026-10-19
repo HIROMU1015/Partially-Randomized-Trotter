@@ -1,0 +1,93 @@
+{
+  "schema": "b3_static_API_port_mapping_v1",
+  "dispatch_implemented": false,
+  "arms": {
+    "ordinary": {
+      "layer_A": "g7_generator.make_generator -> CanonicalGenerator.sample",
+      "layer_B": "g6_w2c_b3_driver.LegacyEndpoint: canonical_snapshot/AuditParity/event_witness; CanonicalGenerator.event(group_index, raw_word, child) requery; g6_f3_precision.enclose_atan",
+      "axes": [
+        "X",
+        "Y"
+      ],
+      "axis_semantics": "execution identity and independent bits domain; not a G7 parameter"
+    },
+    "partial_return_tail": {
+      "layer_A": "g7_generator.make_generator -> CanonicalGenerator.sample",
+      "layer_B": "g6_w2c_b3_driver.LegacyEndpoint: canonical_snapshot/AuditParity/event_witness; CanonicalGenerator.event(group_index, raw_word, child) requery; g6_f3_precision.enclose_atan",
+      "axes": [
+        "X",
+        "Y"
+      ],
+      "axis_semantics": "execution identity and independent bits domain; not a G7 parameter"
+    },
+    "closed_P3_tail": {
+      "layer_A": "g7_generator.make_generator -> CanonicalGenerator.sample",
+      "layer_B": "g6_w2c_b3_driver.LegacyEndpoint: canonical_snapshot/AuditParity/event_witness; CanonicalGenerator.event(group_index, raw_word, child) requery; g6_f3_precision.enclose_atan",
+      "axes": [
+        "X",
+        "Y"
+      ],
+      "axis_semantics": "execution identity and independent bits domain; not a G7 parameter"
+    },
+    "full_return": {
+      "layer_A": "g7_generator.make_generator -> FullReturnGenerator.sample",
+      "layer_B": "g6_f3_generator.prepare -> GeneratorSession.sample/angle_for_event",
+      "axes": [
+        "X",
+        "Y"
+      ],
+      "axis_semantics": "execution identity and independent bits domain; not a G7 parameter"
+    }
+  },
+  "request": {
+    "G7": "p tuple[Fraction], x Fraction, m int, arm str; root_bits/probability_bits int; eta/rho Fraction",
+    "F3": "make_request exact int/Fraction/{num:int,den:positive int}; no float; angle_tau/root_bits/terms supplied",
+    "sigma": "provider/angle context only; G7 event retains symbolic tangent",
+    "identity": "GeneratorSession.sample(bits=None, *, trial_id); x=0 IDENTITY outside fixed positive input"
+  },
+  "result": {
+    "G7": "dict event or None; None only Full raw-nonreduced/coin-reject; Canonical has no stochastic zero",
+    "event_fields": [
+      "word",
+      "raw_word",
+      "child",
+      "ratio",
+      "phase_i_power",
+      "coefficient",
+      "proposal",
+      "weight",
+      "provider_calls",
+      "helper",
+      "event_unitary",
+      "circuit_time_word"
+    ],
+    "exact_values": "tuple[int] words; Fraction ratio/coefficient/proposal/weight; phase int; provider_calls int map",
+    "F3": "Evidence(document,digest), schema g6_f3_trial_v1, EVENT/ZERO/IDENTITY; trace and context IDs",
+    "bridge": "driver Outcome(EVENT|ZERO_R|ZERO_C,event,evidence); run_pair emits canonical chain and F01"
+  },
+  "failures": {
+    "G7": "ValueError for input/law/precision/support; never reinterpret as zero",
+    "F3": "F3Failure(category,reason,stage,input_id,details), immutable evidence, terminal session",
+    "driver": "terminal endpoint; F01 completed prefix only, retry0/resume false"
+  },
+  "full_boundaries": {
+    "setup": "ReturnKernel.__init__: first_passage/returns O(L*m^2), held fixed state",
+    "sample": "order -> raw labels -> reduced-word test -> packet only if raw valid -> acceptance -> child only if accepted",
+    "local": "packet -> digital_parent -> parent -> word_series/convolution/_mass; root/envelope/child law/weight",
+    "requery": "GeneratorSession.angle_for_event -> generator.event -> packet then event fingerprint and enclose_atan",
+    "state": "no growing packet cache; sample avoids second local query; angle intentionally requeries",
+    "rational": "Fraction C arithmetic is attributed to Python caller, not independently metered bit operations"
+  },
+  "codec": {
+    "F3": "hex $rat/$int/$tuple/$map exact Evidence document",
+    "driver": "cost_preparation canonical exact representation after driver.exact",
+    "compatibility": "related exact codecs have distinct documents; never assume bytes interchangeable"
+  },
+  "side_effects": {
+    "science": "constructors allocate held rational state; supplied bits consume state; F3 failure stops session; source guards read files",
+    "provider": "IR only; cache lookup in bind_synthesized_provider_ir; excluded from this release",
+    "adapter": "ARTIFICIAL only; no law/evidence equivalence to real APIs"
+  },
+  "canonical_F3_prepare": "positive canonical arms explicitly rejected by F3.prepare; existing driver overlay required",
+  "bundle_injection": "FIXED_BUNDLE_HAS_NO_EXTERNAL_ENDPOINT_PORT; future separate formal SOURCE required"
+}
