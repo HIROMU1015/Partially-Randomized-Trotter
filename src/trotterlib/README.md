@@ -1,3 +1,5 @@
+H2 F完了（2026-10-19）：SOURCE37b1cf72…、新tol-only1e-8入力は実rank3・4 qubits／spin sector4。SCF/積分/DF/eigh各1、sector4 column＋独立oracle1、残差2.36e-16。native exit0・同一親回収・終了監査PASS、中断/retry0。signal/sampling/compile0・後段未実施、mandatory STOP。[保存結果・来歴・次の判断](../../docs/research/track_a_h2_f_completed_20261019.md)。以下は各時点の履歴。
+
 H2専用Fの静的準備（2026-10-19）：SOURCE37b1cf72…、tol-only／実rank未取得／spin sector4。旧H2 rank3・sector6は同一入力として再利用不可。人工16件・実INVALID grant拒否3入口PASS、F科学実行・P seal・push0、mandatory STOP。[契約・再利用監査・次の承認](../../docs/research/track_a_h2_phase0_f_preparation_20261019.md)。以下は各時点の履歴。
 
 H2 Fは既存DF/状態APIを固定providerから読取再利用する。ライブラリ実装の変更はない。
