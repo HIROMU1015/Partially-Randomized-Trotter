@@ -1,3 +1,9 @@
+## 2026-10-19 Track A：共通実験プロトコル v1 DRAFT・未採択
+
+[プロトコル・充足表・例外・採択判断](../../docs/research/track_a_pr_resource_protocol_draft_preparation_20261019.md)。H4 legacy12/tol-only10/H6 DF19/H8 DF28を4系列に分離。固定9commit/25fileを実取得、Core/Extended/Guaranteeと22要件88metadata行、人工構造10件PASS。科学条件の正式採択・新科学計算・保存値数値再解析・push・A/B契約変更0。文書作成のみ、local commit後mandatory STOP。次担当はユーザーの採択判断。以下は各時点の履歴。
+
+本件は文書/stdlib metadata checkerのみで、新しい科学library moduleはない。
+
 ## 2026-10-18 H8 A_COST：候補単位の並列投入・引継ぎ準備
 
 [実装・検査・未seal草案](../../docs/research/track_a_h8_pr_candidate_parallel_readiness_20261018.md)。SOURCE `87f1f0d528478ad212ba98159db06eec3c78433e`。代表軌道のnative/control合格ごとに同候補の残り7軌道を投入し、元128taskのseedを保持する継続adapter。人工24＋既存承認境界18＋無効CLI2件PASS。現在のrunは保全・継続、新方式launch0、有効grant0。最終receipt受領/静止観測後のsealと切替指示は未実施。以下は履歴。
