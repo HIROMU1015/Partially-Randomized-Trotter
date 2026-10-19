@@ -1,3 +1,7 @@
+## 2026-10-20 H4/H6 m5：決定論的費用run01を独立2契約で起動
+
+[承認・起動gate・進捗snapshot](docs/research/track_a_h46_m5_det_cost_run01_start_20261020.md)。H4 38軸/H6 54軸を独立承認・grant・ledger・markerで起動。科学SOURCE635ba563…は不変、起動補助9e44ec88…/人工5件PASS。SOURCE/input/compiler・3137file保全・fresh RAM/scratch gateを通過、各3 workerで進行。compiled CT01 1e-7未満/他1e-9未満、異常時は当該stageのみSTOP・retryなし。全PASS/最終費用/exit/reapは未確定。PR/shot/会計/rankingは未承認、AD03保留。次はCodexの終了監査・結果報告後mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-20 H4/H6 m5：回路費用取得・標本設計準備
 
 [取得対象・再利用・未採択事項](docs/research/track_a_h46_m5_cost_sampling_readiness_20261020.md)。新SOURCE635ba563…、保存88候補/880軸ラベルを同精度でjoin。m5決定論48候補中保存4軸を再利用し、追加H4 38/H6 54軸案。12保存軸は同m5系列内でidentity照合、8軸は今回の適格領域外。PR24群のn_E・新seed・総call数は未確定。native adapter/並列pool/4独立無効契約を実装、人工18＋回帰18・metadata84PASS、3137file不変。実分子signal/compile/sampling/shot/会計/ranking・有効grant0、AD03保留。次はユーザーの対象/標本設計/資源政策と独立実行承認の判断。公開資料のみcommit・push後mandatory STOP。以下は各時点の履歴。
