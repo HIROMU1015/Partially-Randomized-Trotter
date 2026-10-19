@@ -1,3 +1,5 @@
+H4 MC標本数依存性（2026-10-19）：[結果・全n表・収束図・観測S2・監査](track_a_h4_mc_sample_size_20261019.md)。保存P限定one-shot、未観測層・母平均保証なし、mandatory STOP。
+
 ## 2026-10-16 V2：H6探索PFの最終照合・現行残差設計NO_GO候補
 
 [最終証拠・不足理由・固定条件での判定](track_a_v2_h6_pf_final_reconciliation_20261016.md)。旧PF20候補（測定16・未測定4）を最後に限定照合。比較可能PF0・fit適格0。15測定候補は固定profile未結合、profile確認済みfull S4/q8の1候補もbasis lineage未完了かつtrain側のみ。固定分割・最小件数を維持し、広域回収を終了した。141入力・旧667保護ファイルを照合、PR/確認/H8/B0I・V1/H5/H7不変、新fit/残差/compile/config/grant0。現契約をNO_GO候補として利用者判断へ、公開後mandatory STOP。以下は各時点の履歴。
