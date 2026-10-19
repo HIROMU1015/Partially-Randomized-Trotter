@@ -633,3 +633,8 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## 2026-10-19：Track B G6/G7 W2c-B3/C1の技術準備
 
 [補助SOURCE・schema・人工テスト・未採択契約候補](../docs/research/track_b_g6_w2c_b3_c1_preparation_20261019/README.md)。既存G7 P5 development入力の費用比較に向けた準備のみ。実G7 sampling/profiling、native build/compile/synthesisは未実施。新補助moduleは`src/trottertracks/algorithm_codesign/g6_w2c_cost_preparation.py`、人工testは`tests/tracks/algorithm_codesign/test_g6_w2c_cost_preparation.py`。実行runner・authorizationを提供せず、契約採択と実行承認を別途要する。既存の研究状態・SOURCE・結果は変更しない。
+
+
+## 2026-10-19：Track B限定G7 pilotの実行前準備
+
+[SOURCE候補・独立consumer・人工証拠・未採択の計測計画](../docs/research/track_b_g6_w2c_b3_limited_pilot_readiness_20261019/README.md)。科学SOURCE/共通API/旧契約は変更せず、新科学実行0。新moduleはg6_w2c_b3_pilot_candidateとg6_w2c_b3_pilot_offline。再現runnerはpacket内run_consumer_smoke.py、run_pilot_tests.py、verify_saved_forward.py。実科学入口は閉鎖、正式採択・別実行承認待ち、mandatory STOP。

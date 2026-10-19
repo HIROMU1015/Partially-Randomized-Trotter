@@ -1,0 +1,12 @@
+{
+  "commit": "2371261024176d9e343bc8c8109758d5571cbd59",
+  "path": "src/trottertracks/algorithm_codesign/g6_w2c_b3_performance_pilot.py",
+  "source_sha256": "e86a00a91b9fa643404868408c90146d9af53a778f209673c68d76b20500df02",
+  "bundle_sha256": "d8b6a7da4be2947d4b2d1e2f648e96148eb793917c219ed6f5fd16e632735270",
+  "functions": {
+    "packed_once": "def packed_once(value):\n    \"\"\"Fuse driver.exact and audit._pack; JSON sorts string keys exactly once.\"\"\"\n    if type(value) is F:\n        return {'rat': [hex(value.numerator), hex(value.denominator)]}\n    if type(value) is int:\n        return {'int': hex(value)}\n    if value is None or type(value) in (str, bool):\n        return value\n    if isinstance(value, dict):\n        # str conversion and last-wins collisions match driver.exact.\n        return {str(k): packed_once(v) for k, v in value.items()}\n    if isinstance(value, (list, tuple)):\n        return [packed_once(v) for v in value]\n    raise D.audit.InvalidEvidence('nonexact or unsupported evidence type')",
+    "canonical_fast": "def canonical_fast(value, backend='python'):\n    packed = packed_once(value)\n    if backend == 'orjson':\n        import orjson\n        try:\n            data = orjson.dumps(packed, option=orjson.OPT_SORT_KEYS)\n            if data.isascii() and b'\\x7f' not in data:\n                return data.decode('ascii')\n        except (TypeError, ValueError):\n            pass  # Preserve ensure_ascii / surrogate behavior of the reference.\n    return json.dumps(packed, sort_keys=True, separators=(',', ':'), ensure_ascii=True)",
+    "atan_reference": "def atan_reference(z, terms):\n    \"\"\"Independent artificial-input copy of the frozen endpoint expression.\"\"\"\n    partial = sum(((-1)**j * z**(2*j+1)/(2*j+1) for j in range(terms)), F(0))\n    nxt = (-1)**terms * z**(2*terms+1)/(2*terms+1)\n    return partial + min(F(0), nxt), partial + max(F(0), nxt), partial, abs(nxt)",
+    "atan_recurrence": "def atan_recurrence(z, terms):\n    power, square, partial = z, -z*z, F(0)\n    for j in range(terms):\n        partial += power/(2*j+1)\n        power *= square\n    nxt = power/(2*terms+1)\n    return partial + min(F(0), nxt), partial + max(F(0), nxt), partial, abs(nxt)"
+  }
+}
