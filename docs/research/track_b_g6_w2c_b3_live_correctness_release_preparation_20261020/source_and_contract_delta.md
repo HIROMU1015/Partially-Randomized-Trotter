@@ -8,3 +8,5 @@ execution.pyは固定pair/worker/run_phaseの新version投影。coverage accepte
 前段Source tree/bundle/publication mappingは照合済み。最終SOURCEと最終回帰SOURCE、公開snapshotの差分はpreservation.json/regression_source_delta.jsonを参照。
 
 **LIVE_RELEASE_CANDIDATE_UNAUTHORIZED。実科学未実行。mandatory STOP。次の担当：ユーザー・GPT。**
+
+公開前補強：失敗前に取得済みの原Result document/digest、Canonical audit failure seal、観測済みbitsをtyped F01へ明示保存する。正常完了や追加samplingにはしない。補強前SOURCEも履歴に保持し、補強後SOURCEで最終検証する。

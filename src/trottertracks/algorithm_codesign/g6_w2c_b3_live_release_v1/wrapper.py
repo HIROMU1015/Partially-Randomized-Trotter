@@ -50,6 +50,7 @@ class Endpoint:
         self.full=self.arm=='full_return';self.meter=Meter();self.calls=Counter()
         self.stopped=False;self.session=None;self.overlay=None;self.current_phase='setup'
         self.event_args=None;self.requery=None;self.last=None;self.record=None
+        self.pending_document=None;self.pending_trace=None
         p,x,m0=tuple(map(F,S.INPUT['p'])),F(S.INPUT['x']),S.INPUT['m']
         precision={k:(F(v) if k in ('eta','rho') else v) for k,v in S.PRECISION.items()
                    if k in ('eta','rho','root_bits','probability_bits')}
@@ -125,14 +126,22 @@ class Endpoint:
         original=None
         if hasattr(exc,'evidence'):
             original=from_runtime(exc.evidence).transport()
+        audit_failure=None
+        if self.overlay is not None and self.overlay.failure is not None:
+            seal=self.overlay.failure
+            audit_failure=C.DriverDocument(seal.text,seal.digest).transport()
         return R.AdapterFailure('ARTIFICIAL_SCIENTIFIC_MISMATCH' if 'SCIENTIFIC_MISMATCH' in str(exc)
             else 'LIVE_WRAPPER_TECHNICAL_FAILURE',str(exc),stage,
             details=dict(trial_id=tid,original_scientific_failure=original,guard=observation(),
-                         counters=dict(self.calls),prefix_only=True))
+                original_driver_audit_failure=audit_failure,
+                acquired_original_result=self.pending_document.transport() if self.pending_document is not None else None,
+                observed_bit_consumption=self.pending_trace.consumption() if self.pending_trace is not None else None,
+                counters=dict(self.calls),prefix_only=True))
 
     def sample(self,bits,trial_id):
         install();require(not self.stopped,'WRAPPER_TERMINAL_STOP')
         try:
+            self.pending_document=None;self.pending_trace=None
             self._count('scheduled_sampling',32)
             require(type(bits) is ArtificialBits,'BUILTIN_ARTIFICIAL_BITS_ONLY')
             phase,pa,arm,layer,axis,index=trial_id.split('/')
@@ -144,6 +153,7 @@ class Endpoint:
                 os._exit(87)
             self.current_phase='sample';self.requery=None
             trace=ObservedBits(bits,self.g,self.symbols.dyadic_index,full=self.full)
+            self.pending_trace=trace
             packet_before=self.calls['Full_sample_packet']
             captured={}
             def operation():
@@ -160,6 +170,9 @@ class Endpoint:
                         trace=trace.f3_trace() if self.full else dict(draws=list(trace.draws)),
                         packet_calls=self.calls['Full_sample_packet']-packet_before,
                         group_index=self.event_args[0] if not self.full else None))
+                # Publish acquired bytes into failure context before any later
+                # invariant/audit/adapter step can fail. This is not completion.
+                self.pending_document=doc
                 if scenario=='scientific_mismatch' and mode=='S' and self.task['pair_index']==1:
                     raise ValueError('ARTIFICIAL_SCIENTIFIC_MISMATCH_EVENT_INVARIANT')
                 if self.layer=='B' and event is not None:

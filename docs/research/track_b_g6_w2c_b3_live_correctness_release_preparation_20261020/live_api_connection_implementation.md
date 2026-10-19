@@ -13,3 +13,5 @@ scientific_resolver.py.inactiveには将来の固定module import/location/hash 
 Canonical snapshot collaboratorも人工held stateのsealed shapeであり、実canonical_snapshotの科学held state互換性は未確認。AuditParity/event_witness自体は許可済みhelperを再利用する。
 
 **LIVE_RELEASE_CANDIDATE_UNAUTHORIZED。実科学未実行。mandatory STOP。次の担当：ユーザー・GPT。**
+
+公開前補強：失敗前に取得済みの原Result document/digest、Canonical audit failure seal、観測済みbitsをtyped F01へ明示保存する。正常完了や追加samplingにはしない。補強前SOURCEも履歴に保持し、補強後SOURCEで最終検証する。

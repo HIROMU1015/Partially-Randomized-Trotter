@@ -60,6 +60,17 @@ class Unit(unittest.TestCase):
         failure=e._fail(error,'release.sample')
         transport=failure.record.read()['details']['original_scientific_failure']
         self.assertEqual(transport['document'],original.document);self.assertEqual(transport['digest'],original.digest)
+    def test_audit_failure_and_acquired_result_preserved(self):
+        e,m=fixture(self.c,scenario='scientific_mismatch')
+        with self.assertRaises(Exception) as caught:
+            e.sample(B.ArtificialBits('ordinary','X'),'correctness/baseline/ordinary/B/X/0')
+        details=caught.exception.record.read()['details']
+        audit=details['original_driver_audit_failure']
+        self.assertEqual(C.DriverDocument(audit['text'],audit['digest']).read()['completed_calls'],0)
+        result=details['acquired_original_result']
+        self.assertEqual(C.Document(result['document'],result['digest']).read()['schema'],'g7_observation_candidate_v1')
+        self.assertEqual(len(details['observed_bit_consumption']['draws']),2)
+        self.assertTrue(e.stopped)
     def test_bool_width_terminal(self):
         b=B.ArtificialBits('ordinary','X')
         with self.assertRaises(Exception):b.bits(True)
