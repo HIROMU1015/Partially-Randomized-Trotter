@@ -1,3 +1,7 @@
+## 2026-10-19 H6 m5：1qubit再合成を保持する対照を一回起動
+
+[scope・承認・fresh gate・起動snapshot](../../docs/research/track_a_h6_m5_preserve_oneq_run01_start_20261019.md)。SOURCE68ee03a7…、小角度を含む1qubit runを保持し他opt1処理を維持する新policy。保存PASS再利用・新cosine1compile/1作用、raw3検査各1e-9未満。人工12/preflight22/改変拒否12件PASS、2011seal・2658保全。単独原因/旧費用互換性を認定せず、旧STOP/58軸/AD03保留。完了/exit/reapは未監査、次はCodexの終了監査と報告後mandatory STOP。local commit・push0。以下は各時点の履歴。
+
 ## 2026-10-19 m5：Euler位相生成・角度簡約の人工切分け完了
 
 [局所結果・限界・次の担当](../../docs/research/track_a_m5_local_resynthesis_diagnostic_20261019.md)。SOURCE057d954b…、45入力×3生成/Euler45/積9/局所反復4を4processで完了。既定の小角RZ省略で約9.1e-13差、正確な外側phase batchでも反復で蓄積する人工例を再現。簡約無効の対照は約2.9e-16。H6での発生・原因・修正十分性は未確定。新人工12＋回帰13件PASS、2598file保全、実分子QPY/NPZ/compile/作用/会計0、旧STOP/58軸/AD03保留。次はユーザーの保存H6局所run限定照合の判断。local commit後mandatory STOP・push0。以下は各時点の履歴。
