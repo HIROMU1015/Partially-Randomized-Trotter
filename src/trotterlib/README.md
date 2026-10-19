@@ -1,3 +1,7 @@
+## 2026-10-19 H6独立確認S_STATS完了
+
+[H6独立確認S_STATS](../../docs/research/track_a_h6_pr_confirmation_s_stats_20261019.md)：既存H8算術とpr_cost_contractを再利用するscript adapter。新しい科学kernel/libraryなし。推奨n48/104は未採択。
+
 ## 2026-10-19 H6 PR独立確認 Phase 0（科学未実行）
 
 [H6 PR独立確認 Phase 0](../../docs/research/track_a_h6_pr_confirmation_phase0_20261019.md)：既存pr_cost_integrationとH8 paired統計を再利用。新しい科学kernel/libraryは追加せず、H6 adapterはscriptsに配置。

@@ -1,3 +1,7 @@
+## 2026-10-19 H6独立確認S_STATS完了
+
+[H6独立確認S_STATSの数値結果](research/track_a_h6_pr_confirmation_s_stats_20261019.md)：n48でのK2可視性99.88%/82.16%、推奨n48/104（未採択）。scalar pass1完了、sampling/compileは別承認・mandatory STOP。
+
 ## 2026-10-19 H6 PR独立確認 Phase 0（科学未実行）
 
 [H6 PR独立確認 Phase 0](research/track_a_h6_pr_confirmation_phase0_20261019.md)：固定2比較・反対方向判定、人工31＋H8既存22 PASS。科学未実行、数値設計は別承認・mandatory STOP。

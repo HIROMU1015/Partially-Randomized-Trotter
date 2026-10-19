@@ -1,3 +1,7 @@
+## 2026-10-19 H6独立確認S_STATS完了
+
+[H6符号付き標本数設計](h6_confirmation_sample_design.py)と[one-shot数値runner](run_h6_confirmation_s_stats.py)。既存H8計画算術を再利用、数値設計1回完了・sampling/compile0。[結果](../docs/research/track_a_h6_pr_confirmation_s_stats_20261019.md)。
+
 ## 2026-10-19 H6 PR独立確認 Phase 0（科学未実行）
 
 [H6 PR独立確認adapter](h6_pr_confirmation.py)、[metadata準備](prepare_h6_pr_confirmation.py)、[終了witness](launch_h6_pr_confirmation.py)。H6 native/H8並列・one-shot再利用、Phase 0契約は起動不可。人工31件。

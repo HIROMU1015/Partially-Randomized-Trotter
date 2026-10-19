@@ -1,3 +1,7 @@
+## 2026-10-19 H6独立確認S_STATS完了
+
+[H6独立確認S_STATS](track_a_h6_pr_confirmation_s_stats_20261019.md)：固定2候補、familyα=.05/power=.8/SD倍率1,2,4、K2可視性を一度評価。推奨n48/104は未採択、最終契約は次段階。
+
 ## 2026-10-19 H6 PR独立確認 Phase 0（科学未実行）
 
 [H6 PR独立確認 Phase 0](track_a_h6_pr_confirmation_phase0_20261019.md)：H6/H8/H4再利用監査、adapterと暫定契約を準備。最終n未計算、科学sampling/compile未承認。
