@@ -42,7 +42,7 @@ Producer既済820件、公開raw108件、外部writer故障2件を680へ加算�
 
 ## 再現
 
-Python 3.12と標準ライブラリだけを用いる。fresh checkoutでは、必要なら同じrepositoryから指定のProducer公開commitと測定SOURCE commitを `git fetch --no-tags origin <完全SHA>` で取得する。既存出力への上書きや同じ人工storeの再実行は行わず、新しい作業領域を使用する。
+Python 3.12と標準ライブラリだけを用いる。fresh checkoutでは、必要なら同じrepositoryから指定のProducer公開commitと測定SOURCE commitを `git fetch --no-tags origin <完全SHA>` で取得する。測定45bf46b4は直接の公開Git refではなく、Producer公開packetのmeasurement_source_history.bundleから復元する。prepare_evidence.pyが前提76ca3c40を取得し、49,475 bytes／SHA256 3f0012af22e4bd07c47de3b166e39b7a8633958728572d76d66f6d1ebd50e14cを検証して復元する。新しいbare Git領域でも15測定SOURCEファイルの一致を確認した（measurement_source_public_restore_verification.json）。既存出力への上書きや同じ人工storeの再実行は行わず、新しい作業領域を使用する。
 
 ```bash
 python3 docs/research/track_b_g6_w2c_b3_v2_independent_acceptance_server_20261019/prepare_evidence.py
@@ -68,7 +68,7 @@ Producer公開108 rawは元の固定公開archiveを参照する。`prepare_evid
 
 Producer公開HEAD 596781daeba253418ba35f4b7964312a54caf233 と旧独立branch HEAD 49a0dcc9c8ec6dfc96eba5bb862cfdcb3d0fc866 を `git ls-remote` で照合した。公開HEADと測定SOURCE 45bf46b4a833e71f138903fb511f2741e54043b7 は役割を区別し、inventoryの `at_measured_SOURCE=true` の全ファイルについて両commitのbytes一致も検証した。
 
-最初の82公開ファイルは固定raw GitHub URLとGit blobを照合した。補足として修正前5ファイルと正式共通指示7eff8a33bef4ee1f29698ab10c6da46988dc8db5の1ファイルも照合した。根拠はpublic_source_and_restore_verification.jsonとsupplemental_public_bytes_verification.json。SOURCE、schema、runner、保存資料、分割part、各ケースcontract/manifestのつながりを参照できる。
+最初の82公開ファイルは固定raw GitHub URLとGit blobを照合した。補足として修正前5ファイルと正式共通指示7eff8a33bef4ee1f29698ab10c6da46988dc8db5の1ファイルも照合した。根拠はpublic_source_and_restore_verification.jsonとsupplemental_public_bytes_verification.json。SOURCE、schema、runner、保存資料、分割part、各ケースcontract/manifestのつながりを参照できる。測定45bf46b4の直接raw URLは404で、公開履歴bundleが取得経路である。bundleのbytes/SHA256をProducer公開receiptへ照合し、新設bare Gitに前提76ca3c40とbundleだけを取得して45bf46b4を復元した。15測定SOURCEファイルは固定公開HEADのbytesと全一致（measurement_source_public_restore_verification.json）。
 
 4partから14,511,204 bytesの元archiveを独立復元した。SHA256は `ecb6ca11da78bf924ec08d82e93c35c41f1d3516fa6d9fe25cb9f7be91119936`。全758 memberは公開manifestのbytes/SHA256と一致。復元は専用未存在領域で行い、既存rawは変更していない。
 
@@ -184,7 +184,7 @@ consumer processのProducer/scheduler/Admission/補助checker/science importは0
 
 **結論：固定Storage V2の人工技術受入を完了した。正常2件、技術失敗40件、証拠不完全66件を独立に確認し、科学実行は閉鎖したままmandatory STOPする。** 同じサーバー上の別セッション・別worktreeによる技術検証であり、異なる物理環境での外部再現や第三者査読ではない。
 
-**Q1. 固定SOURCE等は照合できたか。** できた。公開596781daeba253418ba35f4b7964312a54caf233／測定45bf46b4a833e71f138903fb511f2741e54043b7を区別してSOURCE/schema/inventoryを検証した。最初の82公開ファイルと補足6ファイルはGit blobと一致。108ケースの4part archiveと758 memberのbytes/SHA256も一致した。
+**Q1. 固定SOURCE等は照合できたか。** できた。公開596781daeba253418ba35f4b7964312a54caf233／測定45bf46b4a833e71f138903fb511f2741e54043b7を区別してSOURCE/schema/inventoryを検証した。最初の82公開ファイルと補足6ファイルはGit blobと一致。108ケースの4part archiveと758 memberのbytes/SHA256も一致した。測定SOURCEの直接URLは404のため、公開履歴bundleを新設bare Gitに復元し、15測定SOURCEファイルの公開bytes一致も確認した。
 
 **Q2. V2独立adapterと独立性。** 新しいidentity/trace/adapterとacceptance harnessを実装した。旧global core・pair/F01・CPU partitionを使い、V2の意味論を別実装した。独立consumerはProducer/scheduler/Admission/Producer補助checkerをimportせず、Producerの保存済み判定は結果比較だけに用いた。旧V1検証器は変更していない。
 

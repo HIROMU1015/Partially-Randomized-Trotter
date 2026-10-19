@@ -24,7 +24,7 @@ Producer既済820件、公開raw108件、外部writer故障2件を680へ加算�
 
 ## 再現
 
-Python 3.12と標準ライブラリだけを用いる。fresh checkoutでは、必要なら同じrepositoryから指定のProducer公開commitと測定SOURCE commitを `git fetch --no-tags origin <完全SHA>` で取得する。既存出力への上書きや同じ人工storeの再実行は行わず、新しい作業領域を使用する。
+Python 3.12と標準ライブラリだけを用いる。fresh checkoutでは、必要なら同じrepositoryから指定のProducer公開commitと測定SOURCE commitを `git fetch --no-tags origin <完全SHA>` で取得する。測定45bf46b4は直接の公開Git refではなく、Producer公開packetのmeasurement_source_history.bundleから復元する。prepare_evidence.pyが前提76ca3c40を取得し、49,475 bytes／SHA256 3f0012af22e4bd07c47de3b166e39b7a8633958728572d76d66f6d1ebd50e14cを検証して復元する。新しいbare Git領域でも15測定SOURCEファイルの一致を確認した（measurement_source_public_restore_verification.json）。既存出力への上書きや同じ人工storeの再実行は行わず、新しい作業領域を使用する。
 
 ```bash
 python3 docs/research/track_b_g6_w2c_b3_v2_independent_acceptance_server_20261019/prepare_evidence.py

@@ -15,7 +15,7 @@ def main():
     assert len(commit)==40 and git('rev-parse',commit).decode().strip()==commit
     url=git('remote','get-url','origin').decode().strip();assert url.removesuffix('.git')=='https://github.com/'+REPO
     remote=git('ls-remote','origin','refs/heads/'+BRANCH).decode().split()[0];assert remote==commit
-    paths=git('diff','--name-only','--diff-filter=ACM',BASE,commit).decode().splitlines()
+    paths=git('diff','--name-only','-z','--diff-filter=ACM',BASE,commit).decode().split('\0')[:-1]
     def one(path):
         raw_url='https://raw.githubusercontent.com/'+REPO+'/'+commit+'/'+quote(path,safe='/')
         raw=urllib.request.urlopen(raw_url,timeout=90).read();expected=git('show',commit+':'+path);assert raw==expected,path

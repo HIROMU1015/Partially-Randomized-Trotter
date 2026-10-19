@@ -2,7 +2,7 @@
 
 **結論：固定Storage V2の人工技術受入を完了した。正常2件、技術失敗40件、証拠不完全66件を独立に確認し、科学実行は閉鎖したままmandatory STOPする。** 同じサーバー上の別セッション・別worktreeによる技術検証であり、異なる物理環境での外部再現や第三者査読ではない。
 
-**Q1. 固定SOURCE等は照合できたか。** できた。公開596781daeba253418ba35f4b7964312a54caf233／測定45bf46b4a833e71f138903fb511f2741e54043b7を区別してSOURCE/schema/inventoryを検証した。最初の82公開ファイルと補足6ファイルはGit blobと一致。108ケースの4part archiveと758 memberのbytes/SHA256も一致した。
+**Q1. 固定SOURCE等は照合できたか。** できた。公開596781daeba253418ba35f4b7964312a54caf233／測定45bf46b4a833e71f138903fb511f2741e54043b7を区別してSOURCE/schema/inventoryを検証した。最初の82公開ファイルと補足6ファイルはGit blobと一致。108ケースの4part archiveと758 memberのbytes/SHA256も一致した。測定SOURCEの直接URLは404のため、公開履歴bundleを新設bare Gitに復元し、15測定SOURCEファイルの公開bytes一致も確認した。
 
 **Q2. V2独立adapterと独立性。** 新しいidentity/trace/adapterとacceptance harnessを実装した。旧global core・pair/F01・CPU partitionを使い、V2の意味論を別実装した。独立consumerはProducer/scheduler/Admission/Producer補助checkerをimportせず、Producerの保存済み判定は結果比較だけに用いた。旧V1検証器は変更していない。
 

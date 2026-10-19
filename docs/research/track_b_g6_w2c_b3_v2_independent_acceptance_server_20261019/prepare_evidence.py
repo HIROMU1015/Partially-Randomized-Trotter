@@ -6,12 +6,34 @@ import io,json,subprocess,tarfile,urllib.request
 HERE=Path(__file__).resolve().parent
 SHA='596781daeba253418ba35f4b7964312a54caf233'
 PREFIX='docs/research/track_b_g6_w2c_b3_trace_reservation_accounting_repair_20261019/'
+MEASURED='45bf46b4a833e71f138903fb511f2741e54043b7'
+PARENT='76ca3c4089b201d55da0fede08e1f77733ac38a5'
+BUNDLE_SHA256='3f0012af22e4bd07c47de3b166e39b7a8633958728572d76d66f6d1ebd50e14c'
+ENSURED=set()
+def ensure_commit(commit):
+    if commit in ENSURED:return
+    present=subprocess.run(['git','cat-file','-e',commit+'^{commit}'],cwd=HERE,capture_output=True).returncode==0
+    if not present:
+        if commit==MEASURED:
+            ensure_commit(PARENT)
+            url='https://raw.githubusercontent.com/HIROMU1015/Partially-Randomized-Trotter/'+SHA+'/'+PREFIX+'measurement_source_history.bundle'
+            raw=urllib.request.urlopen(url,timeout=90).read()
+            assert len(raw)==49475 and sha256(raw).hexdigest()==BUNDLE_SHA256
+            dest=HERE/'bootstrap';dest.mkdir(exist_ok=True);bundle=dest/'measurement_source_history.bundle'
+            if bundle.exists():assert bundle.read_bytes()==raw
+            else:
+                with bundle.open('xb') as out:out.write(raw)
+            subprocess.run(['git','bundle','verify',str(bundle)],cwd=HERE,check=True,capture_output=True)
+            subprocess.run(['git','fetch','--no-tags',str(bundle),MEASURED],cwd=HERE,check=True)
+        else:subprocess.run(['git','fetch','--no-tags','origin',commit],cwd=HERE,check=True)
+    ENSURED.add(commit)
 def git(path,commit=SHA):
+    ensure_commit(commit)
     return subprocess.check_output(['git','show',commit+':'+path],cwd=HERE)
 def main():
     inventory=json.loads(git(PREFIX+'source_inventory.json'))
     archive=json.loads(git(PREFIX+'archive_parts.json'))['archives'][0]
-    names=['README.md','handoff.md','defect_reproduction.md','root_cause_and_fix.md','source_and_contract_delta.md','stop_and_unknown_verification.md','independent_checker_comparison.md','reservation_accounting_verification.json','fault_injection_matrix.json','artificial_regression_results.md','source_inventory.json','verification.json','publication_receipt.json','archive_parts.json','restore_artifacts.py','fault_cases_manifest.json']
+    names=['README.md','handoff.md','defect_reproduction.md','root_cause_and_fix.md','source_and_contract_delta.md','stop_and_unknown_verification.md','independent_checker_comparison.md','reservation_accounting_verification.json','fault_injection_matrix.json','artificial_regression_results.md','source_inventory.json','verification.json','publication_receipt.json','archive_parts.json','restore_artifacts.py','fault_cases_manifest.json','measurement_source_history.bundle']
     names += ['before_repair/fresh_trace_reserve_write_failure/'+x for x in ('pilot_contract.json','inner_contract.json','observations.json','FAKE_ONLY_claims.sqlite3','artificial_raw.tar.gz')]
     paths={PREFIX+x for x in names}|{PREFIX+x['path'] for x in archive['parts']}|{x['path'] for x in inventory['files']+inventory['protected']}
     root=HERE/'public_bytes';root.mkdir(exist_ok=False)
