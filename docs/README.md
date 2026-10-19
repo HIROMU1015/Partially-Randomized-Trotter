@@ -1,3 +1,7 @@
+## 2026-10-19 H6 PR独立確認 Phase 0（科学未実行）
+
+[H6 PR独立確認 Phase 0](research/track_a_h6_pr_confirmation_phase0_20261019.md)：固定2比較・反対方向判定、人工31＋H8既存22 PASS。科学未実行、数値設計は別承認・mandatory STOP。
+
 
 [H8独立確認：受入修正・control/両軸並列continuation（結果未完了）](research/track_a_h8_confirmation_parallel_resume01_20261019.md)。
 

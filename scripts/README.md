@@ -1,3 +1,7 @@
+## 2026-10-19 H6 PR独立確認 Phase 0（科学未実行）
+
+[H6 PR独立確認adapter](h6_pr_confirmation.py)、[metadata準備](prepare_h6_pr_confirmation.py)、[終了witness](launch_h6_pr_confirmation.py)。H6 native/H8並列・one-shot再利用、Phase 0契約は起動不可。人工31件。
+
 
 H8独立確認のcontrol/両軸並列化：`h8_pr_confirmation_parallel.py`、native完全結果だけを受け入れる`prepare_h8_pr_confirmation_resume.py`。[起動snapshot](../docs/research/track_a_h8_confirmation_parallel_resume01_20261019.md)。
 

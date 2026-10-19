@@ -1,3 +1,7 @@
+## 2026-10-19 H6 PR独立確認 Phase 0（科学未実行）
+
+[H6 PR独立確認 Phase 0](../../docs/research/track_a_h6_pr_confirmation_phase0_20261019.md)：既存pr_cost_integrationとH8 paired統計を再利用。新しい科学kernel/libraryは追加せず、H6 adapterはscriptsに配置。
+
 ## 2026-10-18 H8 A_COST：候補単位の並列投入・引継ぎ準備
 
 [実装・検査・未seal草案](../../docs/research/track_a_h8_pr_candidate_parallel_readiness_20261018.md)。SOURCE `87f1f0d528478ad212ba98159db06eec3c78433e`。代表軌道のnative/control合格ごとに同候補の残り7軌道を投入し、元128taskのseedを保持する継続adapter。人工24＋既存承認境界18＋無効CLI2件PASS。現在のrunは保全・継続、新方式launch0、有効grant0。最終receipt受領/静止観測後のsealと切替指示は未実施。以下は履歴。
