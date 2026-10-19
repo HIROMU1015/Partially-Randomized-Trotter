@@ -1,3 +1,5 @@
+[m5共通v1整合計画](../../docs/research/track_a_h46_m5_protocol_alignment_20261019.md)を追加。既存m5科学module・係数・封印済み契約の変更はない。
+
 ## 2026-10-19 H4/H6：m5_best native pilot準備完了・実計算未承認
 
 [実装・4契約・並列化・STOP](../../docs/research/track_a_h46_m5_best_native_readiness_20261019.md)。SOURCE7a4d126a…、3公式/full・B0・B0+I・PRの4laneを接続。24条件/PR12本/60軸/共有full-H reference2件。人工回帰120件PASS、metadata改変20件拒否、暫定seed120/既知4243衝突0。SOURCE/input/runtime closure各303/305 file封印、4無効grant。旧main profileは参照のみ、新native費用系列として識別。実分子signal/sampling/compile/会計/fit0、mandatory STOP。以下は各時点の履歴。

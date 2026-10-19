@@ -1,0 +1,11 @@
+# 2026-10-19 H4/H6 m5_bestの共通v1整合計画
+
+ユーザーが共通プロトコルv1に沿うm5計画差分の文書化を承認した。旧準備f9cd1498/科学SOURCE7a4d126aと正式プロトコル9036d8a8を静的に照合した。
+
+H4は旧legacy12を保全し、F/FPで完了済みのtol-only10保存入力を新adapterへ結合する計画に分けた。FP_bindingの新hashと、旧input_bindingのlegacy hashを混同しない。新SCF/DF/state生成や実preparation復元は実行していない。H6は既存tol-only19の入力候補を保持するがfresh closureは未検証。
+
+4lane/最大60軸の技術pilotと、その後の疎なsignal候補案124、単価・5精度会計・個別設計P・費用分解を独立の承認単位にした。124はmetadata件数で、科学計算件数ではない。旧252案や全直積の自動実行を要求しない。旧grant/SOURCE/STOPを変更せず、AD03の主比較採用保留を維持した。
+
+新人工構造12件PASS、固定23file照合PASS。実分子sampling/compile/signal/数値再解析0、有効grant0、push0。H6新A確認とA82は別チャット担当として触れない。[計画入口](../track_a_h46_m5_protocol_alignment_20261019.md)。local commit後mandatory STOP。
+
+次担当：ユーザーが候補案と後続準備の範囲を確認。次のCodex技術作業案はH4保存loader接続と新4契約のsealで、未実施。科学実行はsealed範囲への別承認が必要。
