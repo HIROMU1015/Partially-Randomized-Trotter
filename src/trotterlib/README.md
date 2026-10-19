@@ -1,3 +1,7 @@
+## 2026-10-20 H4/H6 m5：修正版signal run02正常終了
+
+[signal結果・経験的適格性・終了監査](../../docs/research/track_a_h46_m5_signal_run02_results_20261020.md)。修正版SOURCEbec018c6で固定88候補（82新signal＋6raw再利用）を正常終了。H4 40/H6 48、5精度両軸880行、2系process・各30候補thread、wall57.68秒/外部61.41秒、全exit0/reap。47終了監査/2065seal、旧2899file＋run01 STOP18file不変。reference条件付き経験的政策、shot/costはnull、AD03保留。新compile/sampling/reference/会計/ranking/push0。次はユーザーの費用取得計画準備の判断、local commit後mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-20 H4/H6 m5：signal run01初期化STOP・端点修正
 
 [実行STOP・原因・修正・次の判断](../../docs/research/track_a_h46_m5_signal_run01_stop_and_fix_20261020.md)。承認済み固定88条件のrun01を起動したが、両系がfull-prefixの打切り専用helper呼出しで初期化STOP。候補signal/ledger0、外部exit1・全回収。旧SOURCE480ca450/run01を保全し、別worktreeのSOURCEbec018c6で空tail分岐と元SOURCE path検証を修正。人工18・metadata37PASS、2899旧file＋18run file不変、新2064seal・無効grant。新科学retry/compile/sampling/会計/push0、AD03保留。次はユーザーの修正版一回実行判断、local commit後mandatory STOP。以下は各時点の履歴。
