@@ -1132,3 +1132,5 @@ STOP_FOR_GPT_SCOPE_DECISION。元whole補正closure、Track A/G10/RA-D0結果・
 ## 2026-10-19：Global Bundle × API Port 人工統合
 
 [人工End-to-End SOURCE・raw・受入・handoff](docs/research/track_b_g6_w2c_b3_closed_port_bundle_integration_20261019/README.md)。固定Portを単一Global Bundleの実spawn workerへ接続し、n16/n256の1536/16896全trialでPort evidenceとscheduler COMPLETEを照合。新134 tests PASS、53cases、45mutation＋追加3を検証。固定旧SOURCE/STOPを保全し、実科学import/sampling・実authority0、正式採択なし、後続ローカルCodex独立受入待ち、mandatory STOP。新module `src/trottertracks/algorithm_codesign/g6_w2c_b3_port_bundle_v1/`、tests `test_g6_w2c_b3_port_bundle_v1.py`、runnerはpacket内 `run_case.py/run_matrix.py/run_tests.py`。
+
+- 2026-10-20 Track B closed G7/F3 adapter candidate: `docs/research/track_b_g6_w2c_b3_real_api_adapter_contract_closed_v1_20261020/README.md`; versioned SOURCE `src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/`, artificial tests only, mandatory STOP.
