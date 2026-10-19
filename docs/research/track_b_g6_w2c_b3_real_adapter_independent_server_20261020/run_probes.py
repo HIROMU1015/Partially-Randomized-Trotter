@@ -144,10 +144,7 @@ def main():
         add('reject_namespace_'+namespace,'bits',group='bits',want=False,arm='ordinary',axis='X',widths=[1],namespace=namespace)
     add('mutated_bits_domain','bits',group='bits',arm='ordinary',axis='X',widths=[1],domain='REAL',value='DOMAIN_STOP')
     add('closed_parent','closed',group='gate',value='ALL_DENIED')
-    blocked=[dict(id=q['id'],group=groups[q['id']],status='NOT_EXECUTED_STATIC_ONLY_MODULE_DEPENDENCY',
-                  dependency='g6_w2c_cost_preparation',reason='User section 3E permits only static reading of this module')
-             for q in requests if groups[q['id']] in ('bits','gate')]
-    requests=[q for q in requests if groups[q['id']] not in ('bits','gate')]
+    blocked=[]  # User explicitly authorized artificial driver/helper execution.
     (I.HERE/'blocked_dynamic_checks.json').write_text(json.dumps(blocked,indent=2)+'\n')
     (I.HERE/'probe_inputs.json').write_text(json.dumps(requests,indent=2)+'\n')
     proc=subprocess.run([sys.executable,str(I.HERE/'candidate_probe.py')],input=json.dumps(requests),capture_output=True,text=True)
@@ -164,7 +161,7 @@ def main():
                 if value=='TERMINAL_BITS':
                     check(actual['rejected'] is True and actual['stopped'] is True and actual['failure_position']==dict(draw_index=1,counter=1,consumed_bits=160),'BITS_FAILURE_POSITION')
                 elif value=='DOMAIN_STOP':check(actual['rejected'] is True and actual['counter']==0,'DOMAIN_BEFORE_GENERATION')
-                elif value=='ALL_DENIED':check(all(x['rejected'] for x in actual) and len(actual)==12,'GATE_REJECTION')
+                elif value=='ALL_DENIED':check(all(x['rejected'] for x in actual) and len(actual)==10,'GATE_REJECTION')
                 else:I.same(actual,value,'INDEPENDENT_GOLDEN_VALUE')
             except (I.Invalid,TypeError) as exc:passed=False;reason=str(exc)
         results.append(dict(id=row['id'],group=groups[row['id']],pass_=passed,expected_accept=want,observed_accept=row['ok'],reason=reason))

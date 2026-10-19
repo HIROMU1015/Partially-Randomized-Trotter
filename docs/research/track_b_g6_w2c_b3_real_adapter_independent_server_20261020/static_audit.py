@@ -49,17 +49,17 @@ def main():
         if node.rsplit('.',1)[-1] in I.SCIENCE:
             found.append(dict(module=node,path=modules[node],chain=chain));continue
         for edge in graph[node]:queue.append((edge['module'],chain+[dict(importer=modules[node],**edge)]))
-    assert any(x['module'].endswith('.g6_w2c_cost_preparation') for x in found)
+    assert not found, 'New forbidden core scientific dependency: STOP'
     save('static_import_boundary.json',dict(
-        status='SCOPE_DEPENDENCY_CONFLICT_REQUIRES_DECISION',source=SOURCE,
-        user_static_only_modules=sorted(I.SCIENCE),candidate_guard_forbids_only_six=True,
+        status='RESOLVED_BY_EXPLICIT_USER_SCOPE_AMENDMENT',source=SOURCE,
+        user_static_only_modules=sorted(I.SCIENCE),candidate_guard_forbids_six=True,
         eager_dependencies_from_artificial_bits=found,
         observed_probe_failure='SUBJECT_PRELOAD_DENIAL:trottertracks.algorithm_codesign.g6_w2c_cost_preparation',
         prohibited_module_loaded=False,initial_probe_failed_before_test_execution=True,
         operational_science_processing_observed=False,
-        interpretation='The helper is stdlib artificial audit infrastructure, but user section 3E expressly restricts it to static reading. This is not evidence that real G7/F3 sampling ran.',
-        resolution_options=['Explicit permission for artificial execution of this helper and, for old regressions, g6_w2c_b3_driver; preserve the six core science prohibitions',
-                            'Separate versioned Producer dependency refactor; then repeat affected acceptance against the new fixed SOURCE'],
+        interpretation='User explicitly amended section 3E to allow driver/helper import and functions for artificial validation. The six core scientific modules remain static-only. No forbidden eager dependency is present.',
+        allowed_artificial_modules=['g6_w2c_b3_driver','g6_w2c_cost_preparation'],
+        amendment_is_scientific_authorization=False,
         producer_modified=False,guard_bypass_or_stub=False))
     candidate=I.plain((I.ROOT/'restored/cases/normal_n16/candidate_input.json').read_bytes())
     pins=[]
@@ -102,11 +102,13 @@ def main():
         data=blob(SOURCE,path);assert data==blob(OLD,path)
         tests.append(dict(path=path,sha256=I.digest(data),unchanged=True,
                           import_syntax=[ast.unparse(n) for n in ast.walk(ast.parse(data)) if isinstance(n,(ast.Import,ast.ImportFrom))]))
-    save('regression_summary.json',dict(old_Producer_regression=dict(PASS=107,source=OLD,independently_rerun=0),
+    save('regression_summary.json',dict(old_Producer_regression=dict(PASS=107,source=OLD),
         final_source=SOURCE,changed_paths=delta,old_test_files=tests,old_SOURCE_tests_preserved=len(old),
-        final_canonical_changes_exercised_by='197 independent Codec/Result/Audit/Angle probes and independent replay of all Layer B raw',
-        Producer_102_unit_and_30_integration_rerun=0,
-        reason_not_reexecuted='Their module import closure includes user static-only g6_w2c_cost_preparation and/or g6_w2c_b3_driver; no stubs or guard relaxation used'))
+        final_canonical_changes_exercised_by='214 independent Codec/Result/Bits/gate probes, all saved Layer B raw, and fresh spawn Bundle',
+        final_source_regression=dict(PASS=107,FAIL=0,ERROR=0,SKIP=0,source=SOURCE,record='final_regression_retry2/results.json'),
+        Producer_102_unit_and_30_integration_rerun=dict(unit_PASS=102,integration_PASS=30,source=SOURCE),
+        intermediate_regression_errors='Fixture acquisition issues only; original 5 ERROR record retained in final_regression_retry1',
+        user_scope_amendment_applied=True))
     save('pins_and_preservation_verification.json',dict(input_pins=pins,runtimes=runtimes,
         immutable_old_source_test_paths=old,runtime_SOURCE_pins=sourcepins,
         restored_archive_members_rechecked=len(archive['members']),restored_bytes_modified=0,
@@ -127,6 +129,6 @@ def main():
         current=resources,raw_computational_workers=8,authority_race_threads=32,AI_subagents=0,
         shared_settings_or_other_processes_modified=False))
     print(json.dumps(dict(static_dependency_conflicts=len(found),input_pins=len(pins),old_preserved=len(old),
-                          raw_members_preserved=len(archive['members']),old_regressions_rerun=0)))
+                          raw_members_preserved=len(archive['members']),old_regressions_rerun=107)))
 
 if __name__=='__main__':main()

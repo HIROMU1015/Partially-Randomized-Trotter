@@ -614,6 +614,6 @@ B固有namespaceは`src/trottertracks/algorithm_codesign/rte_development/`。共
 ## Track B W2c-B3 server independent adapter acceptance (2026-10-20)
 
 [Independent Codec/Result/raw/Storage evidence and Q1-Q10](../../docs/research/track_b_g6_w2c_b3_real_adapter_independent_server_20261020/README.md).
-207 independent checks PASS; 22 artificial cases and 20 semantic mutations independently classified.
-Overall acceptance ON HOLD: artificial runtime imports a module restricted to static reading by the current task.
+224 independent checks PASS; 22 saved artificial cases and 20 semantic mutations independently classified; two fresh artificial cases verified.
+Independent artificial technical acceptance COMPLETE after explicit user amendment allowing artificial driver/helper execution; final SOURCE regression 107 PASS.
 No real science, real authority, adoption, or STOP release; mandatory STOP.

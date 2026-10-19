@@ -4,8 +4,7 @@ import json
 from pathlib import Path
 import sys
 
-FORBIDDEN={'g7_generator','g7_provider','return_aggregation','g6_f3_contract','g6_f3_precision',
-           'g6_f3_generator','g6_w2c_b3_driver','g6_w2c_cost_preparation'}
+FORBIDDEN={'g7_generator','g7_provider','return_aggregation','g6_f3_contract','g6_f3_precision','g6_f3_generator'}
 class Guard(importlib.abc.MetaPathFinder):
     def find_spec(self, fullname, path=None, target=None):
         if fullname.rsplit('.',1)[-1] in FORBIDDEN:

@@ -15,7 +15,7 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[2]
 ROOT = Path('/tmp/b3-independent-server-r2-20261020')
 SCIENCE = {'g7_generator','g7_provider','return_aggregation','g6_f3_contract',
-           'g6_f3_precision','g6_f3_generator','g6_w2c_b3_driver','g6_w2c_cost_preparation'}
+           'g6_f3_precision','g6_f3_generator'}
 
 class NeverLoadScience(importlib.abc.MetaPathFinder):
     def find_spec(self, fullname, path=None, target=None):
