@@ -1,3 +1,7 @@
+H4 tol-only DF10 S_STATS最終技術準備（2026-10-19）：D190/A50を正式受入、指定PR2条件と保存PF対照を固定。family α=.05/m2・power=.8、SD倍率1/2/4/8×差.01/.02/.05の24 scenario、基準f4/.02。SOURCE8752489b…/9 file・入力13・runtime128を固定。人工35件/無効grant拒否2経路PASS、旧9,178レコード保全。実n/SD/power・sampling/compile/P0、両n8の保存希少層はS0のみ、母平均保証なし。新規pushなし、mandatory STOP。[契約と次の承認](../docs/research/track_a_h4_tol_s_stats_preparation_20261019.md)。以下は各時点の履歴。
+
+`h4_tol_s_stats_contract.py` / `h4_tol_s_stats_numeric.py` / `run_h4_tol_s_stats.py` / `prepare_h4_tol_s_stats.py`：DF10の2 endpoint専用。数値moduleは承認gate後にだけimport。人工検証は `tests/test_h4_tol_s_stats.py`。旧rank12 S_STATSは履歴として保持する。
+
 H4 tol-only DF10 A50完了（2026-10-19）：科学SOURCE84db3909…、新49 signal・392 trajectory/784軸、保存FP n32と別cohort。control196/oracle49・primitive120 PASS、native exit0・全回収。250行を1 pass会計しD190の保存最良PFと点比較。seed衝突/中断/retry0、母平均保証なし。S_STATS/P・新科学レビュー未着手、mandatory STOP。[完了結果](../docs/research/track_a_h4_tol_a_completed_20261019.md)。以下は各時点の履歴。
 
 `audit_h4_tol_a_completed.py` は終了したAのmetadata/ledger/worker/保存統計schemaとSHAを検査し、sole accountingのbytesとseed非公開projectionを保存する。科学統計・sampling/compileを再dispatchしない。
