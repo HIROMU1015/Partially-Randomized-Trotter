@@ -1,0 +1,102 @@
+{
+  "inventory": {
+    "status": "PASS",
+    "modules": 8,
+    "entries": 201,
+    "runtime_schema_proven": false,
+    "renderer_differences": [
+      {
+        "entry": "run_pair",
+        "field": "return_syntax",
+        "reason": "Python3.12 PEP701 unparse is not Python3.10 syntax; exact segment SHA matches"
+      },
+      {
+        "entry": "run_pair.context",
+        "field": "return_syntax",
+        "reason": "Python3.12 PEP701 unparse is not Python3.10 syntax; exact segment SHA matches"
+      }
+    ]
+  },
+  "mapping": {
+    "status": "PASS_STATIC_MAPPING_ONLY",
+    "checks": [
+      {
+        "module": "g7_generator",
+        "entry": "make_generator",
+        "line": 254,
+        "calls": [
+          "FullReturnGenerator",
+          "CanonicalGenerator"
+        ],
+        "status": "PASS_STATIC_CALL_SITES"
+      },
+      {
+        "module": "g7_generator",
+        "entry": "FullReturnGenerator.sample",
+        "line": 237,
+        "calls": [
+          "self.packet",
+          "rational_event_weight",
+          "_event"
+        ],
+        "status": "PASS_STATIC_CALL_SITES"
+      },
+      {
+        "module": "g6_f3_generator",
+        "entry": "prepare",
+        "line": 298,
+        "calls": [
+          "make_request",
+          "legacy.FullReturnGenerator",
+          "bind_law"
+        ],
+        "status": "PASS_STATIC_CALL_SITES"
+      },
+      {
+        "module": "g6_f3_generator",
+        "entry": "GeneratorSession.sample",
+        "line": 188,
+        "calls": [
+          "self._generator.sample",
+          "self._stop",
+          "self._event_checks"
+        ],
+        "status": "PASS_STATIC_CALL_SITES"
+      },
+      {
+        "module": "g6_f3_generator",
+        "entry": "GeneratorSession.angle_for_event",
+        "line": 261,
+        "calls": [
+          "self._generator.event",
+          "enclose_atan",
+          "fingerprint"
+        ],
+        "status": "PASS_STATIC_CALL_SITES"
+      },
+      {
+        "module": "g6_w2c_b3_driver",
+        "entry": "LegacyEndpoint.__init__",
+        "line": 369,
+        "calls": [
+          "modules['f3'].prepare",
+          "modules['g7'].make_generator"
+        ],
+        "status": "PASS_STATIC_CALL_SITES"
+      },
+      {
+        "module": "g6_w2c_b3_driver",
+        "entry": "LegacyEndpoint._angle_for.operation",
+        "line": 469,
+        "calls": [
+          "self.g.event",
+          "self.modules['precision'].enclose_atan"
+        ],
+        "status": "PASS_STATIC_CALL_SITES"
+      }
+    ],
+    "executed_science": false,
+    "codec_conversion": "PENDING",
+    "bundle_injection": "UNIMPLEMENTED"
+  }
+}

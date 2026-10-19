@@ -1,0 +1,28 @@
+{
+  "mutation": "report_false_integration",
+  "target": "port_report.json",
+  "status": "INTEGRITY_MISMATCH",
+  "issues": [
+    "Invalid:REPORT_CLOSED:global_bundle_equivalence"
+  ],
+  "base_case": "sealed_small",
+  "changed_files": [
+    {
+      "path": "port_report.json",
+      "sha256": "88fc6fdda229620b1f7f1d3ed0c19ccfdb7ea8e6bad75301c0903f30aaa5c582",
+      "bytes": 193341
+    },
+    {
+      "path": "port_caller.json",
+      "sha256": "fe78bae103644c03c2e3840e316e86eb9066aed52c0ce0bb1c48f63aaa3c5ba6",
+      "bytes": 275
+    }
+  ],
+  "deleted_files": [],
+  "expected": "REJECT_AS_COMPLETE",
+  "observed": "INTEGRITY_MISMATCH",
+  "pass_rejection": true,
+  "fixed_SOURCE": "82896d53fa97235fa848d6c0833eb193af8b99d6",
+  "base_input": "port_cases/sealed_small",
+  "execution_root": "/tmp/b3-bundle-artificial-API-elj0bnq_"
+}

@@ -1,0 +1,225 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:b3:storage-v2:global-bundle:candidate:1",
+  "title": "Unadopted Storage V2 S/P1 global bundle candidate v1",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/candidate"
+    },
+    {
+      "$ref": "#/$defs/manifest"
+    }
+  ],
+  "$defs": {
+    "candidate": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "b3_storage_v2_global_bundle_candidate_v1"
+        },
+        "content_adopted": {
+          "const": false
+        },
+        "run_ready": {
+          "const": false
+        },
+        "science_release": {
+          "type": "null"
+        },
+        "scientific_adoption": {
+          "type": "null"
+        },
+        "contract_grants_execution": {
+          "const": false
+        },
+        "mandatory_STOP": {
+          "const": true
+        },
+        "artificial_only": {
+          "const": true
+        },
+        "retry": {
+          "const": 0
+        },
+        "resume": {
+          "const": false
+        },
+        "status": {
+          "const": "UNADOPTED_EXECUTION_CLOSED"
+        },
+        "runtime_root": {
+          "type": "string"
+        },
+        "python": {
+          "type": "object"
+        },
+        "source_pins": {
+          "type": "object"
+        },
+        "scientific_reference": {
+          "type": "object"
+        },
+        "source_release_candidate": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "fixed_order": {
+          "const": [
+            "S",
+            "P1"
+          ]
+        },
+        "proposal": {
+          "type": "object",
+          "properties": {
+            "profile_n": {
+              "const": 256
+            },
+            "total_calls": {
+              "const": 16896
+            },
+            "result_bytes": {
+              "const": 68719476736
+            },
+            "log_bytes": {
+              "const": 268435456
+            },
+            "codec": {
+              "const": "fused"
+            },
+            "observer": {
+              "const": "cached_all_call_return"
+            }
+          }
+        },
+        "storage_protocol": {
+          "const": "GLOBAL_MONOTONE_V2_POST_CLOSE_JOIN_V1"
+        },
+        "production_gate": {
+          "const": "NO_IMPLEMENTED_SCIENCE_DISPATCH"
+        },
+        "finalization": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "schema",
+        "content_adopted",
+        "run_ready",
+        "science_release",
+        "scientific_adoption",
+        "contract_grants_execution",
+        "mandatory_STOP",
+        "artificial_only",
+        "retry",
+        "resume",
+        "status",
+        "runtime_root",
+        "python",
+        "source_pins",
+        "scientific_reference",
+        "source_release_candidate",
+        "fixed_order",
+        "proposal",
+        "storage_protocol",
+        "production_gate",
+        "finalization"
+      ]
+    },
+    "manifest": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "b3_bundle_artificial_manifest_v1"
+        },
+        "content_adopted": {
+          "const": false
+        },
+        "run_ready": {
+          "const": false
+        },
+        "science_release": {
+          "type": "null"
+        },
+        "scientific_adoption": {
+          "type": "null"
+        },
+        "contract_grants_execution": {
+          "const": false
+        },
+        "mandatory_STOP": {
+          "const": true
+        },
+        "artificial_only": {
+          "const": true
+        },
+        "retry": {
+          "const": 0
+        },
+        "resume": {
+          "const": false
+        },
+        "candidate_binding": {
+          "type": "string"
+        },
+        "global_scope": {
+          "type": "string",
+          "pattern": "^ARTIFICIAL_ONLY/"
+        },
+        "global_claim": {
+          "type": "string"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "tasks": {
+          "type": "array",
+          "minItems": 48,
+          "maxItems": 48
+        },
+        "planned": {
+          "type": "integer",
+          "minimum": 1536,
+          "maximum": 16896
+        },
+        "static_scientific_candidate_calls": {
+          "const": 16896
+        },
+        "byte_limits": {
+          "type": "object",
+          "properties": {
+            "result": {
+              "type": "integer",
+              "maximum": 68719476736
+            },
+            "log": {
+              "type": "integer",
+              "maximum": 268435456
+            }
+          }
+        }
+      },
+      "required": [
+        "schema",
+        "content_adopted",
+        "run_ready",
+        "science_release",
+        "scientific_adoption",
+        "contract_grants_execution",
+        "mandatory_STOP",
+        "artificial_only",
+        "retry",
+        "resume",
+        "candidate_binding",
+        "global_scope",
+        "global_claim",
+        "run_id",
+        "tasks",
+        "planned",
+        "static_scientific_candidate_calls",
+        "byte_limits"
+      ]
+    }
+  },
+  "description": "Normative candidate field names. Cross-field/source/trial/storage/cost checks are independently enforced by the versioned offline adapter; this schema grants no execution authority."
+}

@@ -1,0 +1,165 @@
+{
+  "schema": "b3_parallel_wire_and_storage_v3",
+  "status": "TECHNICAL_CANDIDATE_NOT_ADOPTED",
+  "output_files": {
+    "pairs": "<phase>_<pass_name>_<arm>_<layer>.jsonl",
+    "summary": "summary.jsonl",
+    "journal": "control.jsonl",
+    "trial_states": "trial_states.bin"
+  },
+  "formats": {
+    "pair_and_summary": "one UTF-8 envelope JSON object per LF; payload is exact canonical JSON string",
+    "journal": "plain JSON per LF; Fraction fallback is {exact:canonical_string}",
+    "exact_types": {
+      "int": {
+        "int": "signed Python hex() string"
+      },
+      "Fraction": {
+        "rat": [
+          "hex numerator",
+          "hex denominator"
+        ]
+      },
+      "bool": "native bool",
+      "tuple_list": "JSON array",
+      "dict": "str(key), reference evaluation order, last collision wins, sort_keys=True",
+      "text": "ensure_ascii=True standard JSON"
+    },
+    "summary_schema_application": "Decode exact int/rat tags before applying result schema. Summary snapshot excludes finalization/outer STOP; journal and host report supply those."
+  },
+  "canonical_chain": {
+    "initial": "0000000000000000000000000000000000000000000000000000000000000000",
+    "next": "sha256((previous + payload_string).encode(UTF-8)).hexdigest()",
+    "file_sha256": "SHA256 of every physical byte including partial tail"
+  },
+  "trial_identity": {
+    "template": "<phase>/<pass_name>/<arm>/<layer>/<axis>/<trial_index>",
+    "phases": [
+      "correctness/baseline",
+      "profile/baseline",
+      "profile/instrumented"
+    ],
+    "pair_order": "arm-major ordinary,partial_return_tail,closed_P3_tail,full_return; layer A then B",
+    "axes": [
+      "X",
+      "Y"
+    ],
+    "index_base": 0,
+    "offset": "task.offset + axis_index*task.n + trial_index",
+    "correctness_n_per_axis": 16
+  },
+  "state_codes": {
+    "NOT_STARTED": 0,
+    "START_RESERVED": 1,
+    "STARTED": 2,
+    "IN_FLIGHT": 3,
+    "COMPLETED": 4,
+    "FAILED": 5,
+    "CANCELLED_BEFORE_START": 6,
+    "TERMINATED_WITH_UNKNOWN_RESULT": 7
+  },
+  "state_transitions": {
+    "NOT_STARTED": [
+      "START_RESERVED"
+    ],
+    "START_RESERVED": [
+      "STARTED",
+      "CANCELLED_BEFORE_START",
+      "FAILED",
+      "TERMINATED_WITH_UNKNOWN_RESULT"
+    ],
+    "STARTED": [
+      "IN_FLIGHT"
+    ],
+    "IN_FLIGHT": [
+      "COMPLETED",
+      "FAILED",
+      "TERMINATED_WITH_UNKNOWN_RESULT"
+    ]
+  },
+  "terminal_states": [
+    "COMPLETED",
+    "FAILED",
+    "CANCELLED_BEFORE_START",
+    "TERMINATED_WITH_UNKNOWN_RESULT"
+  ],
+  "rpc": {
+    "RESERVE": "validate global identity/order/budget; persist START_RESERVED; complete_before commits previous first",
+    "ENTER": "reject after parent STOP, persist STARTED then IN_FLIGHT, reply permission",
+    "WRITE_RESERVE": "parent reserves exact bytes before every unbuffered write",
+    "WRITE_ACK": "coalesced into wrote_before on next RPC; never refunded/retried",
+    "COMPLETE": "only after normal engine emit return and next proven commit boundary; axis/bundle last immediate",
+    "FAIL": "parent STOP plus failure notification",
+    "END": "pair terminal report, never per-worker authority"
+  },
+  "stop": {
+    "order": "parent arrival order; physical exception time is not a total order",
+    "after_parent_stop": "no new ENTER grants; started trials drain cooperatively",
+    "extra_inflight": "P1 <= workers-1 additional trials; P2 <= inflight_cap-1 under rendezvous",
+    "unknown": "lost current ticket retains call and byte reservations; no refund/retry",
+    "parent_crash": "raw nonterminal reserved/started/inflight slots imply unknown; no rewriting crashed evidence",
+    "multiple_notifications": "FAIL and END may describe same trial; not separate quantum calls"
+  },
+  "budgets": {
+    "result": 68719476736,
+    "log": 268435456,
+    "units": "bytes",
+    "statefile_charged_to": "log",
+    "per_worker_partition": false,
+    "credit_reuse": false,
+    "log_accounting": "retained state bytes + journal bytes; pwrite traffic measured separately",
+    "durability": "unbuffered write/flush, no fsync claim for result/journal/state"
+  },
+  "receipt_join": {
+    "scope": "one global parent fake admission per bundle; no worker authority",
+    "keys": [
+      "formal_digest",
+      "source_pins_sha256",
+      "runtime_manifest_sha256"
+    ],
+    "summary": "receipt.summary_sha and summary_chain bind summary.jsonl; receipt is final journal record only on success",
+    "admission_stop": "external fake ledger STOP after host returns; missing STOP or STOP write error prevents acceptance",
+    "report_snapshot": "summary contains coordinator snapshot before summary write; host report.output includes summary and final journal charges"
+  },
+  "costs": {
+    "authoritative_total": "host_outer.parent_cpu_ns + host_outer.worker_cpu_ns",
+    "authoritative_wall": "host_outer.wall_ns",
+    "host_outer": "entrypoint context, all approval/source checks, reserve/fsync, spawn/import, work/IPC/write, join, summary/receipt, outer Admission STOP; excludes fixture generation, readback and compression",
+    "execution_outer": "inside admission context; excludes outer admission STOP",
+    "coordinator": "Coordinator init to snapshot; excludes prior admission and finalization",
+    "worker": "pair before source check to after observer exit/close; process_cpu_ns includes pre-pair spawn startup",
+    "startup": "host_outer child rusage minus sum(pair.cpu_ns), labelled startup/unattributed; no zero assumption",
+    "partitions": "coarse and fine are separate exclusive partitions; never add to each other or outer",
+    "observer": "callback effects included in outer and residual; standalone exclusive observer overhead unknown",
+    "unknown": [
+      "unknown_bit_operations=null",
+      "lost worker pair CPU/wall=null",
+      "parent crash final totals=null"
+    ],
+    "wall": "parent/worker wall overlap is never added",
+    "conditions": [
+      "sequential_pairs",
+      "concurrent_pairs"
+    ],
+    "formal_estimand_adopted": false
+  },
+  "f01": {
+    "schema": "g6_w2c_b3_f01_failure_v1",
+    "committed_trace": "trace_sha256 only completed after emit returned",
+    "candidate_trace": "candidate_trace_sha256 may include uncommitted current trial",
+    "current": "current_attempt, never borrowed previous event",
+    "last": "last_completed_trial, separate from current",
+    "physical_prefix": "can contain a full row whose flush failed; not logically completed"
+  },
+  "verification": {
+    "final_acceptance_requires": [
+      "complete true",
+      "all 24 pairs OK",
+      "all planned slots COMPLETED",
+      "file/chain and receipt joins verified",
+      "fake Admission STOP verified",
+      "no log_errors or secondary STOP failures"
+    ],
+    "partial": "verify all complete envelope lines; preserve partial trailing bytes; never interpret physical row count as committed trial count"
+  }
+}

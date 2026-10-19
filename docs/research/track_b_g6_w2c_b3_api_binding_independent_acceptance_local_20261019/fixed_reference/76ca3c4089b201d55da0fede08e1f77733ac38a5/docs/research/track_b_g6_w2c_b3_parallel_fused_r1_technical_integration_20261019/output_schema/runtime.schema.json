@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:b3:parallel:v3:runtime",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "b3_parallel_runtime_v3"
+    },
+    "runtime_root": {
+      "type": "string"
+    },
+    "python": {
+      "type": "object"
+    },
+    "source_roles": {
+      "type": "object"
+    },
+    "source_pins": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
+    "schema_pins": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
+    "entrypoint": {
+      "type": "object"
+    },
+    "import_locations": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema",
+    "runtime_root",
+    "python",
+    "source_roles",
+    "source_pins",
+    "schema_pins",
+    "entrypoint",
+    "import_locations"
+  ],
+  "additionalProperties": true
+}

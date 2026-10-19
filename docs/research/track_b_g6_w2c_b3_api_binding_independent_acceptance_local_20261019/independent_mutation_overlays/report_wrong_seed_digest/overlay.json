@@ -1,0 +1,28 @@
+{
+  "mutation": "report_wrong_seed_digest",
+  "target": "port_report.json",
+  "status": "INTEGRITY_MISMATCH",
+  "issues": [
+    "Invalid:REPORT_CANDIDATE_HASH"
+  ],
+  "base_case": "sealed_small",
+  "changed_files": [
+    {
+      "path": "port_report.json",
+      "sha256": "16036f5d12183a368d8fd1aa27c53a1a612bf7296a26fb8bff426f40937ec315",
+      "bytes": 193342
+    },
+    {
+      "path": "port_caller.json",
+      "sha256": "a14116befb7e5426b4aa73c7eecf05f73269a085246a1da6a04442afeda20ad1",
+      "bytes": 275
+    }
+  ],
+  "deleted_files": [],
+  "expected": "REJECT_AS_COMPLETE",
+  "observed": "INTEGRITY_MISMATCH",
+  "pass_rejection": true,
+  "fixed_SOURCE": "82896d53fa97235fa848d6c0833eb193af8b99d6",
+  "base_input": "port_cases/sealed_small",
+  "execution_root": "/tmp/b3-bundle-artificial-API-elj0bnq_"
+}
