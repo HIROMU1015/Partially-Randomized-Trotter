@@ -1,3 +1,5 @@
+[m5 tol-only native実行準備](research/track_a_h46_m5_tol_native_readiness_20261019.md)：新4契約と人工検査、科学実行未承認。
+
 [H4/H6 m5共通v1整合計画](research/track_a_h46_m5_protocol_alignment_20261019.md)。旧封印を保全した計画差分、実行未承認。
 
 ## 2026-10-19 H4/H6：m5_best native pilot準備完了・実計算未承認

@@ -1,3 +1,5 @@
+[m5 tol-only adapter準備](../../docs/research/track_a_h46_m5_tol_native_readiness_20261019.md)：元library/schedule/係数を変更せず、新scripts側で保存入力と契約を接続。
+
 [m5共通v1整合計画](../../docs/research/track_a_h46_m5_protocol_alignment_20261019.md)を追加。既存m5科学module・係数・封印済み契約の変更はない。
 
 ## 2026-10-19 H4/H6：m5_best native pilot準備完了・実計算未承認

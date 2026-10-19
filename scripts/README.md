@@ -1,3 +1,5 @@
+m5 tol-only：`h46_m5_tol_contract.py` / `h46_m5_tol_native.py` / `h46_m5_tol_saved_input.py`、`prepare_h46_m5_tol_pilot.py`、`launch_h46_m5_tol_pilot.py`。既存code再利用・新series/seal、既定はscope表示、科学実行は明示承認が必要。
+
 [check_h46_m5_protocol_alignment.py](check_h46_m5_protocol_alignment.py)：m5計画metadataと承認/Phase境界の構造検査のみ。科学moduleはimportしない。
 
 ## 2026-10-19 H4/H6：m5_best native pilot準備完了・実計算未承認
