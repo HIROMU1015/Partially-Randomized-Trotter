@@ -1581,3 +1581,8 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-19 Mechanism：A82比較因子の実行準備
 
 [契約・SOURCE・人工検査](docs/research/track_a_mechanism_a82_factor_readiness_20261019.md)。SOURCE 06c94745f50345b2d93714760608d9d11b83e784、保存sideを読む1比較2軸の因子専用runner、人工38件PASS。SOURCE5/入力14/runtime68を照合、旧363 file不変。実科学因子0、有効grant0、比較因子31/32を保持。別途実行承認までmandatory STOP、公開承認不明でpushなし。既存図/cohort・H4/H6並行job・protocol v1・最終freeze/詳細科学レビューへ進まない。
+
+
+## 2026-10-19 Mechanism：A82比較因子one-shot完了・説明32/32
+
+[結果・全因子表・統合](docs/research/track_a_mechanism_a82_factor_results_20261019.md)。SOURCE 06c94745f50345b2d93714760608d9d11b83e784、A82一比較2軸だけ一回PASS、親/worker exit0・回収。旧31を転記し32比較64軸の説明因子が完備、side64/64を継承。core/side/他31再計算0、旧381 file SHA一致、図/cohort・欠測履歴を保全。公開承認未確定でpushなし、最終freeze/詳細科学レビューなし、mandatory STOP。
