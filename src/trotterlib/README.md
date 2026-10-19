@@ -1,3 +1,7 @@
+H4 tol-only rank10 Phase 0完了（2026-10-19）：SOURCE84db3909…、F/FP保存入力と同一条件の8＋64軸を再利用するD190/A50候補案を準備。新32＋再利用42人工/回帰PASS、実DRAFT拒否8経路・774レコードSHA監査PASS。状態solver/正規化のH6/H8との差を明記。科学実行・実統計解析・push0、Pのn/SOURCE/seed/予算はD/A後、mandatory STOP。[統合readiness](../../docs/research/track_a_h4_tol_main_phase0_20261019.md)。以下は各時点の履歴。
+
+この経路による科学libraryの変更はない。rank10 adapterは `scripts/h4_tol_main_science.py`、既存native/RTE・A kernel・paired会計を再利用する。P/S_STATSは結果待ちの設計で、現runnerから実行できない。
+
 H4独立確認P：固定SOURCE73ec1964…で4185軌道/8370軸完了。`audit_h4_p_completed.py`は保存metadata照合のみ。[結果](../../docs/research/track_a_h4_p_completed_20261019.md)。
 
 H4 P技術seal完了（2026-10-19）：SOURCE73ec1964…、n4185/compile案8370軸、新11559 seed slotを固定。旧明示39908値＋geometry7737216 slotとの衝突0、人工51件と終了監査PASS。P未承認・科学実行0、mandatory STOP。[最終契約](../../docs/research/track_a_h4_p_technical_seal_20261019.md)。以下は履歴。
