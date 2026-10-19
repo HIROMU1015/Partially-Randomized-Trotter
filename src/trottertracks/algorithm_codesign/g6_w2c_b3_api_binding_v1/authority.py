@@ -1,7 +1,7 @@
 """Binding candidate using only the fixed private FAKE_ONLY SQLite store."""
 from pathlib import Path
 from ..g6_w2c_b3_bundle_store_v1 import FakeStore
-from .static import SEED, digest, need
+from .static import SEED, digest, encoded, need
 
 def binding(c, root, *, scope=None):
     root=Path(root).resolve()
@@ -28,11 +28,11 @@ class ArtificialAuthority:
         self.store=FakeStore(root)
 
     def claim(self,b,a,*,fault=lambda p:None):
-        need(b==self.expected and a==approval(self.expected), 'FAKE_APPROVAL_BINDING_MISMATCH')
+        need(encoded(b)==encoded(self.expected) and encoded(a)==encoded(approval(self.expected)), 'FAKE_APPROVAL_BINDING_MISMATCH')
         self.store.claim(b,fault)
 
     def stop(self,b):
-        need(b==self.expected, 'FAKE_STOP_BINDING_MISMATCH')
+        need(encoded(b)==encoded(self.expected), 'FAKE_STOP_BINDING_MISMATCH')
         self.store.stop(b)
 
     def snapshot(self):

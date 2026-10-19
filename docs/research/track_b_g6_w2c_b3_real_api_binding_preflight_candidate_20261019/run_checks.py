@@ -58,6 +58,7 @@ def main():
         elif kind=='count':t['draws'].pop()
         elif kind=='domain':t['domain']='REAL/ordinary/X'
         elif kind=='schema':t['schema']='unsupported'
+        elif kind=='bool':t['draws'][0]['counter_before']=False
         p.write_bytes(S.encoded(x)+b'\n')
     changes={
         'global_mode_collision':lambda p,c:mutate_port(p,'global_trial_id','collision'),
@@ -65,6 +66,7 @@ def main():
         'arm_axis_domain':lambda p,c:mutate_port(p,'domain','ARTIFICIAL_API_BINDING_V1/ordinary/Y'),
         'consumption_value':lambda p,c:mutate_trace(p,'value'),
         'consumption_count':lambda p,c:mutate_trace(p,'count'),
+        'consumption_integer_boolean':lambda p,c:mutate_trace(p,'bool'),
         'consumption_domain':lambda p,c:mutate_trace(p,'domain'),
         'trace_schema':lambda p,c:mutate_trace(p,'schema'),
         'candidate_digest':lambda p,c:mutate_report(p,'candidate_digest','0'*64),

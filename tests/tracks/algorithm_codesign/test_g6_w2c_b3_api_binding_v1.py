@@ -76,6 +76,11 @@ class Ports(unittest.TestCase):
         self.assertEqual(au.snapshot()['claim'][-2:],['SPENT',1])
         with self.assertRaises(RuntimeError):au.claim(b,A.approval(b))
         au.stop(b)
+    def test_authority_integer_boolean_type(self):
+        root=Path(tempfile.mkdtemp(prefix='b3-bundle-artificial-API-type-'))
+        au=A.ArtificialAuthority(self.c,root);b=copy.deepcopy(au.expected);b['retry']=False
+        with self.assertRaises(S.Rejected):au.claim(b,A.approval(b))
+        self.assertIsNone(au.snapshot()['claim'])
     def test_wrong_event_identity(self):
         e,b,r,i=self.obtain()
         with self.assertRaises(S.Rejected):e.angle_for(copy.deepcopy(r))
@@ -107,6 +112,7 @@ for name,change in {
     'contract_digest':lambda c:c.__setitem__('source_release_candidate','0'*64),
     'schema':lambda c:c.__setitem__('schema','unsupported'),
     'input':lambda c:c['scientific_reference']['fixed'].__setitem__('x','1/2'),
+    'scientific_sigma_type':lambda c:c['scientific_reference']['scientific_reference']['policy'].__setitem__('sigma',True),
     'retry':lambda c:c.__setitem__('retry',1),
     'resume':lambda c:c.__setitem__('resume',True),
     'run_ready':lambda c:c.__setitem__('run_ready',True),
@@ -144,6 +150,7 @@ for name,change in {
     'consumption_count':lambda r,t:t['draws'].pop(),
     'consumption_width':lambda r,t:t['draws'][0].__setitem__('width',159),
     'consumption_counter':lambda r,t:t.__setitem__('counter_after',999),
+    'consumption_counter_bool':lambda r,t:t['draws'][0].__setitem__('counter_before',bool(t['draws'][0]['counter_before'])),
     'consumption_value':lambda r,t:t['draws'][0].__setitem__('value_hex','0x100000000000000000000000000000000000000000000'),
     'consumption_valid_wrong_value':lambda r,t:t['draws'][0].__setitem__('value_hex','0x1'),
     'seed_domain':lambda r,t:t.__setitem__('domain','REAL/full_return/X'),

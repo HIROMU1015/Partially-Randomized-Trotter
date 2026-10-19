@@ -165,7 +165,7 @@ def preflight(c, root):
     need(type(c) is dict and c.get('schema') == SCHEMA, 'UNSUPPORTED_SCHEMA')
     for key, value in K.CLOSED.items():
         need(type(c.get(key)) is type(value) and c.get(key) == value, 'CLOSED_POLICY:'+key)
-    need(c == candidate(root), 'SOURCE_INPUT_RUNTIME_API_CONTRACT_MISMATCH')
+    need(encoded(c) == encoded(candidate(root)), 'SOURCE_INPUT_RUNTIME_API_CONTRACT_MISMATCH')
     for path,h in c['source_pins'].items():
         need(sha((Path(root)/path).read_bytes()) == h, 'SOURCE_HASH:'+path)
     for path,h in c['scientific_reference']['input_pins'].items():

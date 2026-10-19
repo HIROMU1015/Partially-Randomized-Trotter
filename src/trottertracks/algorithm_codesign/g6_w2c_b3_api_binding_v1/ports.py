@@ -161,6 +161,7 @@ def validate_result(result, ident, trace):
     draws = trace.get('draws')
     need(type(draws) is list and len(draws)==expected, 'CONSUMPTION_COUNT')
     for i,draw in enumerate(draws):
+        need(all(type(draw.get(k)) is int for k in ('width','counter_before','counter_after','discarded_bits')), 'CONSUMPTION_INTEGER_TYPE')
         need(set(draw)=={'width','counter_before','counter_after','value_hex','discarded_bits'} and
              draw['width']==160 and draw['discarded_bits']==96 and
              draw['counter_after']==draw['counter_before']+1 and
@@ -168,7 +169,8 @@ def validate_result(result, ident, trace):
         need(type(draw['value_hex']) is str and 0<=int(draw['value_hex'],16)<(1<<160), 'BIT_INTEGER')
         expected=hashlib.sha256(trace['domain'].encode()+draw['counter_before'].to_bytes(8,'big')).digest()
         need(hex(int.from_bytes(expected,'big')>>96)==draw['value_hex'],'ARTIFICIAL_CONSUMPTION_VALUE')
-    need(trace['counter_after']==draws[-1]['counter_after'] and trace['bits_consumed']==160*trace['counter_after'], 'CONSUMPTION_TOTAL')
+    need(type(trace['counter_after']) is int and type(trace['bits_consumed']) is int and
+         trace['counter_after']==draws[-1]['counter_after'] and trace['bits_consumed']==160*trace['counter_after'], 'CONSUMPTION_TOTAL')
     if result.kind=='EVENT':
         event=result.event
         need(type(event) is dict and {'raw_word','word','child','ratio','weight','coefficient','proposal',

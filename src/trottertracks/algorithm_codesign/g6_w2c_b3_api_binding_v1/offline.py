@@ -47,7 +47,7 @@ def verify(root, trusted, source_root, *, execution_root=None):
             seed_namespace='ARTIFICIAL_API_BINDING_V1',retry=0,resume=False,
             worker_policy='fresh spawn, owned workers; S sequential / P1 fixed candidate eight',storage_destination=str(logical),
             monitoring_STOP_hash=ident(trusted['monitoring']),artificial_only=True,real_grant=None,real_authority=False)
-        V.require(b==expected_binding, 'AUTHORITY_BINDING')
+        V.require(ident(b)==ident(expected_binding), 'AUTHORITY_BINDING')
         with sqlite3.connect((root/'FAKE_ONLY.sqlite3').resolve().as_uri()+'?mode=ro&immutable=1',uri=True) as db:
             claims=db.execute('SELECT scope,claim,binding,status,spent FROM claims').fetchall()
             history=db.execute('SELECT seq,scope,event,binding FROM history ORDER BY seq').fetchall()
@@ -103,13 +103,15 @@ def verify(root, trusted, source_root, *, execution_root=None):
                 expected_draws=({'ZERO_R':1,'ZERO_C':2,'EVENT':3}[p['kind']] if arm=='full_return' else 2)
                 V.require(len(tr['draws'])==expected_draws and (arm=='full_return' or p['kind']=='EVENT'),'CONSUMPTION_COUNT')
                 for draw in tr['draws']:
+                    V.require(all(type(draw.get(k)) is int for k in ('width','counter_before','counter_after','discarded_bits')),'CONSUMPTION_INTEGER_TYPE')
                     counter=counters[axis]
                     raw=sha256(domain.encode()+counter.to_bytes(8,'big')).digest()
                     value=int.from_bytes(raw,'big')>>96
                     V.require(draw==dict(width=160,counter_before=counter,counter_after=counter+1,
                         value_hex=hex(value),discarded_bits=96),'ARTIFICIAL_CONSUMPTION_REPLAY')
                     counters[axis]+=1
-                V.require(tr['counter_after']==counters[axis] and tr['bits_consumed']==160*counters[axis], 'CONSUMPTION_TOTAL')
+                V.require(type(tr['counter_after']) is int and type(tr['bits_consumed']) is int and
+                          tr['counter_after']==counters[axis] and tr['bits_consumed']==160*counters[axis], 'CONSUMPTION_TOTAL')
                 evhash=V.event_hash(p)
                 V.require(record['event_digest']==evhash,'PORT_EVENT_IDENTITY')
                 key=(arm,axis,int(trial))
