@@ -738,3 +738,7 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## 2026-10-19：Track B G6/G7 W2c-B3/C1の技術準備
 
 [補助SOURCE・schema・人工テスト・未採択契約候補](research/track_b_g6_w2c_b3_c1_preparation_20261019/README.md)。既存G7 P5 development入力の費用比較に向けた準備のみ。実G7 sampling/profiling、native build/compile/synthesisは未実施。新補助moduleは`src/trottertracks/algorithm_codesign/g6_w2c_cost_preparation.py`、人工testは`tests/tracks/algorithm_codesign/test_g6_w2c_cost_preparation.py`。実行runner・authorizationを提供せず、契約採択と実行承認を別途要する。既存の研究状態・SOURCE・結果は変更しない。
+
+## Track B W2c-B3 限定pilotの独立受入（2026-10-19）
+
+[独立adapter・SOURCE/契約/18人工case・trace/費用/予算監査](research/track_b_g6_w2c_b3_limited_pilot_independent_acceptance_20261019/README.md)。会計不整合の再現と修正要件はpacket内producer_consumer_discrepancies.md。科学的な採択・実行を意味しない。

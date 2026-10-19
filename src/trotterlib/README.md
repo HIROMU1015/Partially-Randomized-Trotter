@@ -590,3 +590,7 @@ B固有namespaceは`src/trottertracks/algorithm_codesign/rte_development/`。共
 ## 2026-10-19：Track B G6/G7 W2c-B3/C1の技術準備
 
 [補助SOURCE・schema・人工テスト・未採択契約候補](../../docs/research/track_b_g6_w2c_b3_c1_preparation_20261019/README.md)。既存G7 P5 development入力の費用比較に向けた準備のみ。実G7 sampling/profiling、native build/compile/synthesisは未実施。新補助moduleは`src/trottertracks/algorithm_codesign/g6_w2c_cost_preparation.py`、人工testは`tests/tracks/algorithm_codesign/test_g6_w2c_cost_preparation.py`。実行runner・authorizationを提供せず、契約採択と実行承認を別途要する。既存の研究状態・SOURCE・結果は変更しない。
+
+## Track B 限定pilot独立consumer（2026-10-19）
+
+[人工技術受入packet](../../docs/research/track_b_g6_w2c_b3_limited_pilot_independent_acceptance_20261019/README.md)を参照。moduleは `src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_independent_{identity,trace,adapter,cli}.py`、testsは `tests/tracks/algorithm_codesign/test_g6_w2c_b3_pilot_independent.py`。既存pair/F01/global/cost consumerを再利用し、SOURCE/schemaと人工rawを照合する。科学的GO・production bridge・科学callは含まない。

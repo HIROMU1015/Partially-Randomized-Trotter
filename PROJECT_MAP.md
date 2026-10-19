@@ -1112,3 +1112,7 @@ STOP_FOR_GPT_SCOPE_DECISION。元whole補正closure、Track A/G10/RA-D0結果・
 ## 2026-10-19：Track B G6/G7 W2c-B3/C1の技術準備
 
 [補助SOURCE・schema・人工テスト・未採択契約候補](docs/research/track_b_g6_w2c_b3_c1_preparation_20261019/README.md)。既存G7 P5 development入力の費用比較に向けた準備のみ。実G7 sampling/profiling、native build/compile/synthesisは未実施。新補助moduleは`src/trottertracks/algorithm_codesign/g6_w2c_cost_preparation.py`、人工testは`tests/tracks/algorithm_codesign/test_g6_w2c_cost_preparation.py`。実行runner・authorizationを提供せず、契約採択と実行承認を別途要する。既存の研究状態・SOURCE・結果は変更しない。
+
+## 2026-10-19：Track B W2c-B3 限定pilot準備版の独立技術受入
+
+[Evidence Packet](docs/research/track_b_g6_w2c_b3_limited_pilot_independent_acceptance_20261019/README.md)／[Q1–Q10](docs/research/track_b_g6_w2c_b3_limited_pilot_independent_acceptance_20261019/handoff.md)。固定公開18件を独立再読し、別の人工trace書込障害でreserved counterとstatefileの不整合を検出。実科学bridge・正式採択は未実施。新consumerは `src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_independent_*.py`、testは `tests/tracks/algorithm_codesign/test_g6_w2c_b3_pilot_independent.py`、人工runnerは `docs/research/track_b_g6_w2c_b3_limited_pilot_independent_acceptance_20261019/run_independent_tests.py`。旧SOURCE/raw/STOPを保持し、技術修正条件を記録してmandatory STOP。

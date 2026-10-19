@@ -1,0 +1,11 @@
+# 固定consumerの導入
+
+独立worktreeをproducer公開HEADから作成。stdlibのみでv3 consumer 5 modules、共通pair/F01/global/cost/CLI依存、tests、固定referenceと公開人工入力を選択導入した。正確なpath・原本commit・SHA256・既存有無はconsumer_import_manifest.json。入力/参考SOURCEのcopyはimportではない。共有venvや共有設定は変更していない。
+
+consumer SOURCEは原本と同じbytes。新規導入testの1行だけ、Python 3.12のco_qualnameが`...<locals>.leaf`となる点に対応した。Scoped/Cached両observerの全row一致検査を残し、末尾の関数名leafを確認する。旧assertionの`:leaf` suffix限定を修正した。原本・導入後SHAと理由はconsumer_local_adaptations.json。既存producer SOURCEと既存testは変更しない。
+
+run_consumer_smoke.pyは47個のmanifestを固定CLIへ別プロセスで渡し、実際のraw archive、canonical、chain/file SHA、F01 logical commit、statefile、pair、summary/receipt、CPU境界を再計算した。producer保存reportだけの再読ではない。出力は専用consumer_smokeに新規作成し、各caseの入力bytesが前後同じことを照合した。public packetのfixed_referenceもsource_inventoryで全hashを照合する。
+
+47件の結果JSON/Markdown/CSV/CLIログはconsumer_smoke_results.jsonおよびconsumer_smoke_reports.tar.gz。tar内manifestで各出力hashを確認できる。未圧縮出力はこのworktreeに残す。既存の正常/障害分類は変えない。旧P07/P08/P11もpendingのまま。
+
+再現は新しいcheckout/出力先で`PYTHONDONTWRITEBYTECODE=1 python3 docs/research/track_b_g6_w2c_b3_limited_pilot_readiness_20261019/run_consumer_smoke.py`。既存出力へ上書きしない。固定CLIの単一case利用は導入したserver_usage.mdも参照。

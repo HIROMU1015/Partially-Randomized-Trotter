@@ -1,0 +1,13 @@
+# Ordered operation trace独立照合
+
+独立Decisions readerがplain JSON payloadのcanonical bytes、envelope/previous/SHA、seq整数の連続一意性、inner digest run_id、task/trial順、derived global offset、terminal statefile byte witnessを検査する。24 pair cursorと最大outstanding worker数だけを保持し、全trial ID集合・全行をRAMに載せない。旧global coreのphase/STOP/reserve/ENTER/terminal/credit規則も再利用した。固定3phase以外のphase indexは新adapter側で拒否する。
+
+正常公開caseは768 RESERVED/ENTER/COMPLETE、24 pair、全state COMPLETED。drain caseは8 ENTERのうち1 FAIL、残り7 COMPLETE。FAIL/END通知数やRPC数をtrial数にしない。ENTERは親の許可観測であり、worker bodyの物理開始時刻ではない。STOPは親arrival順であり全workerの物理例外の全順序ではない。
+
+receiptのtrace_prefixはsummary作成前までのchain/rows/bytes/file SHAを束ねる。その後にsummary/receipt保存のWRITE_RESERVE/ACKがtraceへ追加されるため、prefixと全fileを別に照合した。Host report.operation_trace_sha256は最終物理trace全体。receipt-prefixの行境界、summary/receipt/journalの結合、全file SHAを独立検査した。
+
+trace自己bytesは同じlog予算へ一度課金し、再帰的にWRITEイベント化しない。正常rawではrecorded nontrace reserve/ACK＋物理trace自己bytesが最終reportと一致する。statefileは保持長、pwrite累積量はIOとして別表示する。
+
+seq欠落/重複、正しいchainを再計算した不正canonical、STOP後ENTER、二重reserve/complete、違法phase、global offset改変、partial tail、prefix途中境界をnegative fixtureで検出した。traceが完全でない場合に履歴を推定補完しない。
+
+追加の実writer故障注入では、最初のRESERVE時にstate更新後のtrace writeが失敗し、report reservation counterがstatefileより1少なくなる。独立checkerはGLOBAL_STATE_COUNTER_BINDINGで拒否する。これは公開18件へ遡及させない新しい故障証拠である。
