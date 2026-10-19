@@ -4,6 +4,7 @@ from datetime import datetime,timezone
 from hashlib import sha256
 from pathlib import Path
 import argparse,json,subprocess,urllib.request
+from urllib.parse import quote
 HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[2]
 BASE='49a0dcc9c8ec6dfc96eba5bb862cfdcb3d0fc866'
 BRANCH='track-b-g6-w2c-b3-v2-independent-acceptance-server-20261019'
@@ -16,7 +17,7 @@ def main():
     remote=git('ls-remote','origin','refs/heads/'+BRANCH).decode().split()[0];assert remote==commit
     paths=git('diff','--name-only','--diff-filter=ACM',BASE,commit).decode().splitlines()
     def one(path):
-        raw_url='https://raw.githubusercontent.com/'+REPO+'/'+commit+'/'+path
+        raw_url='https://raw.githubusercontent.com/'+REPO+'/'+commit+'/'+quote(path,safe='/')
         raw=urllib.request.urlopen(raw_url,timeout=90).read();expected=git('show',commit+':'+path);assert raw==expected,path
         return dict(path=path,bytes=len(raw),sha256=sha256(raw).hexdigest(),url=raw_url,git_bytes_equal=True)
     with ThreadPoolExecutor(max_workers=16) as pool:rows=list(pool.map(one,paths))
