@@ -154,3 +154,7 @@ one-shot claim後の自動retryは禁止し、異常時は証拠と非返還予�
 
 A結果・PR対PFの新比較・S_STATS・P科学実行・詳細科学レビューは未実施。
 P最終sealへの自動移行や論文最終evidence freezeには進まない。
+
+後続記録（2026-10-19）：利用者がAのみのone-shotを承認し、固定契約のまま実行・終了監査を完了した。
+[A66完了結果](track_a_h2_a_completed_20261019.md)。本書と元pendingはseal時点の記録として保持する。
+S_STATS/Pへは自動移行せず、A終了後にmandatory STOPした。
