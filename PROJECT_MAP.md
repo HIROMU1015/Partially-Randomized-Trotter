@@ -1,3 +1,5 @@
+H4 tol-only DF10 A50最終seal（2026-10-19）：D完了406f7057…を正式受入。科学SOURCE84db3909…/A50を維持し、保存FP n32と新49候補n8を分離。392 master/2,760 seed整数を固定、既知67,510整数＋geometry7,737,216予約枠との衝突0。最大392 trajectory/784軸、人工/回帰96件・無効grant2経路拒否PASS。A実科学・保存値新解析0、有効grant0、mandatory STOP。[最終契約と次の承認](docs/research/track_a_h4_tol_a_seal_20261019.md)。以下は各時点の履歴。
+
 H4 tol-only DF10 D完了（2026-10-19）：SOURCE84db3909…、190候補/950行、新125候補250軸＋保存8軸、control500・primitive1095 PASS。64 worker枠・221 process回収、native exit0、wall1017.587秒、中断/retry0。登録内5精度の最小PFを保存、厳密bias/global optimum/PR優位の認定なし。A50はD正式受入＋次指示待ち、mandatory STOP。[完了結果](docs/research/track_a_h4_tol_d_completed_20261019.md)。以下は各時点の履歴。
 
 H4 tol-only DF10 D承認待ちseal（2026-10-19）：科学SOURCE84db3909…・D190候補/最大372新規軸を維持。SOURCE/input/runtime・774保全レコード照合、人工40件・拒否2経路PASS。D科学実行未承認・実行0、A50はD正式受入＋次指示待ち。mandatory STOP。[最終sealと承認事項](docs/research/track_a_h4_tol_d_seal_20261019.md)。以下は各時点の履歴。
