@@ -1,3 +1,7 @@
+H2 P最終seal完了（2026-10-19）：S_STATS提案n80/12を正式採用し、科学SOURCEce1f511c…に固定。92軌道/184 compiled軸/256 RTE event、92 master・140 seed slot、旧78,174値＋geometry7,737,216予約slotへの衝突0。人工/回帰82件・無効grant3入口拒否・SOURCE/input/runtime保全監査PASS、旧7,272＋新seal63 records保全。希少event費用/分散unknown・母平均保証なし。P有効grant/activation/attempt/sampling/compile0、新規pushなし、mandatory STOP。[最終契約・予算・制約・次の担当](../docs/research/track_a_h2_p_final_seal_20261019.md)。以下は各時点の履歴。
+
+`h2_p_contract.py` / `h2_p_science.py` / `run_h2_p.py` / `prepare_h2_p_seal.py`：H2独立P専用。固定入力・seed・予算と別science承認を要求し、旧native kernelをP namespaceで再利用する。`--seal --source <SHA>` / `--verify`はmetadata専用。無効grantはdriver/worker/adapterで拒否する。人工testは`tests/test_h2_p_seal.py`。今回P科学実行0。
+
 H2 S_STATS完了（2026-10-19）：SOURCEe0b959e8…で保存D/Aの24 scenario・2方向・12感度を1 pass実行。native exit0・同一親wait4・終了監査PASS、基準f4/差.02の提案n80/12、P予算案92軌道/184軸。人工/回帰31件・無効grant2入口拒否PASS、旧7,219レコード保全。両探索n8はS0_ONLY8/8で母平均/実power保証なし。raw再集計・sampling/compile/P・新seed0、P最終sealはn採用指示待ち、新規pushなし、mandatory STOP。[結果・固定条件・感度・次の担当](../docs/research/track_a_h2_s_stats_completed_20261019.md)。以下は各時点の履歴。
 
 `h2_s_stats_contract.py` / `h2_s_stats_numeric.py` / `prepare_h2_s_stats.py` / `run_h2_s_stats.py` / `audit_h2_s_stats_completed.py`：固定D/A summary専用のH2 S_STATS。無変更のH4数値kernelをH2 namespaceへ結合し、stdlibだけで設計する。準備と終了監査は数値非実行、実数値passは承認済みrun01で消費済み。人工/回帰は`tests/test_h2_s_stats.py`。

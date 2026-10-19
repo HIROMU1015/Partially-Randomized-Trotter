@@ -1,3 +1,5 @@
+追記（2026-10-19）：利用者がn80/12を正式採用し、[P最終seal](track_a_h2_p_final_seal_20261019.md)を完了した。P科学実行は別途明示承認待ち・未実施。以下はS_STATS終了時点の記録である。
+
 # H2 S_STATS：技術seal・one-shot数値設計・終了監査完了（2026-10-19）
 
 **COMPLETE_MANDATORY_STOP。保存D/Aの2主endpointから、24 scenario・2方向・12感度設定を1 passだけ実行した。**
