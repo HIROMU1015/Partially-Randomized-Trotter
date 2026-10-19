@@ -1,3 +1,7 @@
+## 2026-10-19 H6 full m5：保存phase追加診断計画・解析未実行
+
+[固定入力・4再生DAG・解釈・実装残件](docs/research/track_a_h6_m5_saved_phase_diagnostic_plan_20261019.md)。起点282cba7d…、保存cosine2回路/初期状態1つを通常・拡張精度で各2作用する未承認案。新compile/sampling/格子/受入変更0、QPY/NPZ未復元、runner未実装・SOURCE未seal・無効grant。12 roleのbyte SHAを結合、拡張精度の実mantissa・gate whitelist・通常再現をfail closedにする計画。旧STOP/58軸保全、684保護file、AD03/Core保留。次はCodexのrunner/人工検証/契約準備、その後ユーザーの別実行承認、local commit後mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-19 H6 full m5：固定1点再計算もraw不一致を再現・診断保存STOP
 
 [結果・phase診断・保全](docs/research/track_a_h6_m5_full_recovery_run01_results_20261019.md)。SOURCE f743a882…、14:22:24 JST終了・約27分08秒。cosine raw差1.504e-9（元と一致）でSTOP、sine0・新受理費用0、全worker/launcher回収。保存共通位相1.503e-9 rad、phase-aligned差6.068e-11は診断専用で基準変更なし。QPY/NPZ保存とSHA照合に成功。旧58軸/629file・新330 seal保全、累積予約60、retry/再会計0、AD03/Core保留、mandatory STOP。次はCodexの保存証拠追加診断計画とユーザーの解析承認判断。以下は各時点の履歴。
