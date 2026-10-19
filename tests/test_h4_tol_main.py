@@ -41,7 +41,9 @@ def saved_rows(eligible=True):
 
 class Metadata(unittest.TestCase):
     def test_primitive_budget_covers_actual_signed_and_yoshida_time_schedule(self):
-        sys.path.insert(0,str(c.ROOT/'src'))
+        # This historical provider is an explicit Phase0 dependency, copied and
+        # SHA-checked by the preparer; the current source tree omits that module.
+        sys.path.insert(0,str(c.ROOT/'.h4_tol_main_private/provider/src'))
         from trottertracks.resource_applicability.ax2b_h6_contract import primitive_time_schedule
         for stage in ('D','A'):
             cells=[x for x in c.registrations()[stage] if x['method']!='B0I']
