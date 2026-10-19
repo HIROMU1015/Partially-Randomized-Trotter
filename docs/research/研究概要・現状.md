@@ -1,3 +1,7 @@
+## 2026-10-19 H4/H6/H8掲載用図表・caption・Methods（表示固定）
+
+[掲載packet・Methods・公開証拠の限界](track_a_h468_paper_display_methods_20261019.md)。利用者の指示で主表＝独立確認6条件、Figure2A＝legacy/探索、2B＝H8独立n48の配置を固定。英語掲載caption・Methods、入力/solver/正規化の8例外、H8公開証拠14項目、CEM/台帳対応を整備。A82後続完成をcaptionで補足し、原図34ファイル・保存数値・旧統合bundleを保全。H8固定PFの公開receiptとPR詳細監査未検証を区別。構造新13＋既存11件PASS、新科学計算/数値解析0、最終freeze/詳細科学レビュー未開始。公開確認後mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-19 H4/H6/H8論文証拠統合（既存結果のみ）
 
 [採用結果・証拠統合・Figure 2更新案](track_a_h468_paper_evidence_integration_20261019.md)。H4 DF10 Pを正式採用（ε=.05はNOT_REPRODUCED/PF低費用、.0005はREPRODUCED/PR低費用）。H6/H8と独立確認6条件の主表案を整理。GitHub固定10資料＋9 SOURCE、47資料・SOURCE87hashを照合し、旧manifest/CEM/ledgerを保存した新versionを作成。H4 DF12 legacy・探索n8/保存FP n32を混合せず、H8 n48は既存Mechanismと同一証拠のalias。H8詳細公開監査と全入力生成規則の同一性は未確認。Figure 2原本34ファイル不変、数値更新は別承認。新規科学計算・統計解析0、最終freeze/詳細科学レビュー未開始。文書統合後mandatory STOP。以下は各時点の履歴。
