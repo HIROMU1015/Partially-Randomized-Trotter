@@ -5,6 +5,14 @@
 
 入口：[充足表](../../track_a_protocol_compliance_matrix.csv)、[差異・例外](../../track_a_protocol_gap_and_exception_report.md)、[採択判断](../../track_a_protocol_adoption_decisions.md)、[統合報告](track_a_pr_resource_protocol_v1_adoption_20261019.md)。根拠IDは [evidence_catalog.json](../../artifacts/resource_applicability/track_a_protocol_v1/2026-10-19/evidence_catalog.json) の固定commit・file・SHAへ解決する。取得したGit objectを読んだ証拠であり、remote最新一致、private rawの再監査、実行の再現とは区別する。
 
+## 2026-10-19 暫定追補 CT01：compile前後の状態差閾値
+
+ユーザーの「一旦 －７ にして」により、**compile前後の同じ入力状態に対するraw状態ベクトル2-norm差の許容閾値を、従来の1e-9から暫定1e-7へ変更する**。判定はfiniteかつ厳密に`norm(after-before) < 1e-7`。Track Aの全系列・PF公式・PR/決定論PF・cosine/sineに共通の文書基準とし、m5だけの例外にはしない。AD08の「既存閾値維持」は、この検査だけ本追補を優先する。
+
+理由は、固定raw閾値の超過と、測定signal・資源見積りへの影響を区別した上でのユーザーによる暫定採択である。1e-7を理論的誤差上界・厳密bias保証とは認定しない。native/occupation/reference/normalization/closure、DF閾値、shot用allowance、modelの2%等は変更しない。compiler・回路・係数・制御の変更や、費用影響を使う新しい合否方式の導入も含めない。
+
+**既存PASSとcompile前の検査は再利用し、閾値変更を理由とする再検査・再compileは要求しない。** 旧SOURCE・grant・ledger・marker・STOPは保持する。旧FAILを新基準で扱う場合は、同じ対象・入力・検査の保存値との照合を別記録にし、旧STOPを書き換えない。未実施軸の補完や既存費用の自動受理はしない。今回は文書追補だけとし、封印済み実行コード・契約や進行中runへ自動適用しない。他の採択事項と88行の履歴的充足状態は維持する。
+
 ## 1. 状態と比較単位
 
 `COMPLETE`は行に記載した既存対象・cohort・endpoint・対照集合に対する充足、`PARTIAL`は一部のみ、`PENDING`は作業/判断待ち、`NOT_VERIFIED`は未照合、`NOT_APPLICABLE`はその主張には適用しないことを表す。不一致の有無は別の`target_relation`列で表示する。過去stageの正常終了を、v1のCore全体完了や個別科学結果の新たな受入へ読み替えない。
@@ -42,7 +50,7 @@ H4 legacy DF12は共通DF政策に不一致であり、D/Pが完了してもtol-
 - full PF、B0、B0+I（B0I）とS2/S4を登録する。公式名だけでなく係数原本/版/合成順を固定する。AD03によりm5_best等の追加PFの主比較採用は保留し、既存S2/S4比較条件を維持する。数値係数の次数残差が非ZEROというだけで棄却せず、保存精度・数値次数検証・適用窓を記録する。
 - 系ごとのprefix/q/次数の候補一覧と拡張・選択規則を費用評価前に固定する。同じ候補数を全分子へ強制しないが、PRに有利な対照だけを選ぶことは認めない。既存強化集合を後から弱めない。
 - 適格性はELIGIBLE/INELIGIBLE/UNDETERMINEDを分ける。全対象endpointで保存不適格の候補をcompileしないことは認める。欠測/未確認をFalseとして除外しない。
-- `DIRECT_MEASURED`、`VALIDATED_MODEL_ESTIMATE`、`MISSING`を軸別に保持する。モデルはSOURCE/input/control/compiler/preparation、次数、prefix/q、軸の適用範囲を明記し、fit前に検証点・閾値・STOPを固定する。旧2%は該当する既存契約で維持する条件で採択した。一律の新共通閾値は制定せず、他のnative/closure閾値も各SOURCE/契約のままとする（AD08）。再fitや追加anchorを自動実行しない。
+- `DIRECT_MEASURED`、`VALIDATED_MODEL_ESTIMATE`、`MISSING`を軸別に保持する。モデルはSOURCE/input/control/compiler/preparation、次数、prefix/q、軸の適用範囲を明記し、fit前に検証点・閾値・STOPを固定する。旧2%は該当する既存契約で維持する条件で採択した。compile前後の状態差だけは暫定追補CT01に従い、他のnative/closure閾値は各SOURCE/契約のままとする（AD08）。再fitや追加anchorを自動実行しない。
 - 固定集合の最小費用・ties・境界属性・証拠範囲を記録する。未知候補がある全登録最良はnullとし、別登録subsetの結果はsubsetと表示する。モデルを含む最小値はモデル条件付き。全格子直接実測や大域最適性を主張しない。
 
 ### A：PR探索
@@ -77,7 +85,7 @@ normalization、empirical margin、signed bias/u、headroom、α、整数ceilは
 
 ### T/S：技術・統計的受入
 
-- Native低/高branch、scalar一回、独立event/occupation oracle、Hadamard両軸を確認する。compiler変更・新loweringは対応する人工/実native controlを再登録する。既存1e-9/1e-8等の差を維持し、AD08は既存技術閾値の維持を条件付き採択し、新しい一律閾値は制定しない。
+- Native低/高branch、scalar一回、独立event/occupation oracle、Hadamard両軸を確認する。compiler変更・新loweringは対応する人工/実native controlを再登録する。compile前後の状態差には暫定追補CT01の共通1e-7未満を適用する。他の技術検査の既存1e-9/1e-8等は維持する。閾値だけの変更で、既存PASSやcompile前検査を再実行しない。
 - SOURCE/input/preparation/元law/compiler/runtime/fingerprint/trajectory seed・event・両軸・shotのidentityを結合する。同じcompiler optionsだけで同一費用系列と認定しない。原profile bytes未確認とSOURCE上のcontrol一致は別の項目。
 - nはtrajectory数。cos/sinを2n標本としない。SEの定義、探索/確認の役割、rare event各層の観測/未観測を記録する。条件付きpilotの平均を無条件平均へ無承認で混ぜない。未観測は0費用・分散0・上界0ではない。
 - plan/grant/ledger/marker、予約と完了、native exit0、worker wait/reap、結果SHA、最終byte照合、mandatory STOPを記録する。報告文だけの終了確認と、実receiptを取得した確認を分ける。過去のSTOPを遡及PASSにしない。

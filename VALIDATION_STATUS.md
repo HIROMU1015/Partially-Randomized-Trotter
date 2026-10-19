@@ -1,3 +1,7 @@
+## 2026-10-19 Track A：compile前後の状態差閾値の暫定追補CT01
+
+[プロトコル追補](docs/research/track_a_pr_resource_evaluation_protocol_v1.md)。共通raw状態差を1e-9からfiniteかつ1e-7未満へ暫定変更。既存PASS/事前検査は再利用、旧STOPと88行の証拠状態は保持。新しい科学検査・再compile・保存値再判定・費用会計・実行コード変更は0。local commit後STOP・push0。以下は履歴。
+
 ## 2026-10-19 Track A：共通プロトコルv1の文書正式化
 
 [正式版・88行充足表・採択判断・例外報告](docs/research/track_a_pr_resource_protocol_v1_adoption_20261019.md)。AD01/02/04/06/07/12基本採択、AD05/08/09/10/11条件付き、AD03追加PF保留。共通DFはtol-only1e-8・rank自動、H4 legacy12保全。独立PはH8型の事前固定/新cohort/非混合、nは個別設計。H6 Phase 0完了（6d290fc8）とA82原signal回収（bd41b376）を反映し、独立P実行/説明数値完了へ昇格しない。新科学計算・数値再解析・push・既存契約への自動適用0、local commit後mandatory STOP。次担当はユーザーの公開/個別承認判断。以下は各時点の履歴。
