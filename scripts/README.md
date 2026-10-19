@@ -1,3 +1,7 @@
+## 2026-10-19 H6独立確認の科学実行完了
+
+[H6固定2条件の結果](../docs/research/track_a_h6_pr_confirmation_science_results_20261019.md)：n48/104・152 trajectory/304軸/3,712 event完了。保存primaryの費用差方向とpaired SE、native exit0・全回収・終了監査を記録。追加sampling/retry/push/新科学レビュー/H4H8統合0、最終mandatory STOP。以下は履歴。
+
 ## 2026-10-19 H6独立確認の最終技術seal完了
 
 [最終metadata準備](prepare_h6_pr_confirmation_seal.py)と[seed/binding・終了監査](h6_pr_confirmation_seal.py)。H6 native/H8 kernelは不変、n48/104と科学予算を固定し無効grantのみ保存。66人工PASS、科学未実行。[報告](../docs/research/track_a_h6_pr_confirmation_final_seal_20261019.md)。以下は履歴。
