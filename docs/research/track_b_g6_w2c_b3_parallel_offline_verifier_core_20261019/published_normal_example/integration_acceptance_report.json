@@ -1,0 +1,188 @@
+{
+  "schema": "b3_parallel_acceptance_v1",
+  "checks": [
+    {
+      "check_id": "STATE_HASH_CLAIM",
+      "target_SOURCE": "published P1 prototype / independent verifier",
+      "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+      "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+      "expected": "Producer external state SHA",
+      "observed": null,
+      "judgment": "PENDING_EVIDENCE",
+      "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+      "unresolved": null
+    },
+    {
+      "check_id": "P01",
+      "target_SOURCE": "published P1 prototype / independent verifier",
+      "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+      "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+      "expected": "Consistent published evidence",
+      "observed": true,
+      "judgment": "PASS",
+      "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+      "unresolved": null
+    },
+    {
+      "check_id": "P03",
+      "target_SOURCE": "published P1 prototype / independent verifier",
+      "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+      "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+      "expected": "Consistent published evidence",
+      "observed": {
+        "planned": 4352,
+        "reserved": 4352,
+        "started_observed": 4352,
+        "completed": 4352,
+        "failed": 0,
+        "cancelled_before_start": 0,
+        "unknown": 0,
+        "not_started": 0,
+        "reserved_is_actual_call_start": false,
+        "unknown_credit_refunded": false,
+        "latest_state_is_transition_history": false
+      },
+      "judgment": "PASS",
+      "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+      "unresolved": null
+    },
+    {
+      "check_id": "P04",
+      "target_SOURCE": "published P1 prototype / independent verifier",
+      "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+      "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+      "expected": "Consistent published evidence",
+      "observed": {
+        "result": {
+          "reserved": 3293563,
+          "ack_observed": 3293563,
+          "actual_file_bytes": 3293563,
+          "unacknowledged_credit": 0,
+          "unacknowledged_credit_refunded": false
+        },
+        "log": {
+          "reserved": 128506,
+          "ack_observed": 128506,
+          "actual_file_bytes": 128506,
+          "unacknowledged_credit": 0,
+          "unacknowledged_credit_refunded": false
+        }
+      },
+      "judgment": "PASS",
+      "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+      "unresolved": null
+    },
+    {
+      "check_id": "P08",
+      "target_SOURCE": "published P1 prototype / independent verifier",
+      "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+      "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+      "expected": "No RESERVE/ENTER after parent STOP",
+      "observed": "Final state/control has no per-operation history",
+      "judgment": "PENDING_EVIDENCE",
+      "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+      "unresolved": "Need ordered parent gate trace; statefile is not transition history."
+    },
+    {
+      "check_id": "P02",
+      "target_SOURCE": "published P1 prototype / independent verifier",
+      "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+      "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+      "expected": "State/F01 logical completion vs in-flight",
+      "observed": {
+        "planned": 4352,
+        "reserved": 4352,
+        "started_observed": 4352,
+        "completed": 4352,
+        "failed": 0,
+        "cancelled_before_start": 0,
+        "unknown": 0,
+        "not_started": 0,
+        "reserved_is_actual_call_start": false,
+        "unknown_credit_refunded": false,
+        "latest_state_is_transition_history": false
+      },
+      "judgment": "PASS",
+      "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+      "unresolved": null
+    },
+    {
+      "check_id": "P05",
+      "target_SOURCE": "published P1 prototype / independent verifier",
+      "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+      "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+      "expected": "Lost worker/parent conservatively unknown",
+      "observed": 0,
+      "judgment": "PASS",
+      "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+      "unresolved": "Physical child exit is only a saved producer claim."
+    },
+    {
+      "check_id": "P06",
+      "target_SOURCE": "published P1 prototype / independent verifier",
+      "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+      "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+      "expected": "Phase barrier in control log",
+      "observed": [],
+      "judgment": "PASS",
+      "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+      "unresolved": null
+    },
+    {
+      "check_id": "P07",
+      "target_SOURCE": "published P1 prototype / independent verifier",
+      "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+      "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+      "expected": "Atomic one-shot scope reservation and nonreuse",
+      "observed": null,
+      "judgment": "PENDING_EVIDENCE",
+      "evidence": "COMPARED_SUMMARY_CLAIMS",
+      "unresolved": "Flags/state alone do not prove atomic admission. Baseline runtime artificial regressions supplied separately."
+    },
+    {
+      "check_id": "P10",
+      "target_SOURCE": "published P1 prototype / independent verifier",
+      "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+      "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+      "expected": "Global summary/receipt hashes and join declaration",
+      "observed": true,
+      "judgment": "PASS",
+      "evidence": "COMPARED_SUMMARY_CLAIMS",
+      "unresolved": "all_workers_joined is a receipt declaration; control WORKER_END precedes join in producer."
+    },
+    {
+      "check_id": "P11",
+      "target_SOURCE": "published P1 prototype / independent verifier",
+      "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+      "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+      "expected": "Retry0/resume false",
+      "observed": {
+        "retry": 0,
+        "resume": false
+      },
+      "judgment": "PASS",
+      "evidence": "COMPARED_SUMMARY_CLAIMS",
+      "unresolved": "Runtime claim-reuse refusal is separate artificial evidence."
+    },
+    {
+      "check_id": "P09",
+      "target_SOURCE": "published P1 prototype / independent verifier",
+      "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+      "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+      "expected": "Separate parent/all-worker CPU and global wall, alternative partitions",
+      "observed": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+      "judgment": "PASS",
+      "evidence": "COMPARED_SUMMARY_CLAIMS",
+      "unresolved": "Measurement boundary comes from fixed producer SOURCE; no ranking/estimand adoption."
+    }
+  ],
+  "final_server_schema": "PENDING_SERVER_SCHEMA",
+  "scientific_adoption": false,
+  "totals": {
+    "PASS": 9,
+    "FAIL": 0,
+    "PENDING_EVIDENCE": 3,
+    "REQUIRES_CONTRACT_CHANGE": 0,
+    "NOT_APPLICABLE": 0
+  }
+}

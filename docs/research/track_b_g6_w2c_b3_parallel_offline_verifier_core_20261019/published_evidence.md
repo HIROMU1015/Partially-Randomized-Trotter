@@ -1,0 +1,21 @@
+# 取得した公開人工証拠と検証範囲
+
+固定公開commit `1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff` のみをGit objectから読んだ。live branch、他worktree、未公開server資料は開いていない。
+
+[published_input_inventory.json](published_input_inventory.json)の37元fileについてbytes/SHAを記録し、原tarの全regular memberとmaterialized rawのSHAを人工testで照合した。
+正常代表はlight-after8-0、障害はsample/event/after_event/angle/write/flush/worker_exit/reserved_exit/result_cap/log_cap/correctness_zero/stop_save/P1_inflight/P2_inflight/simultaneous/parent_dispatch/parent_crashの17件。
+原archiveはpublished_inputs、展開raw・正規化manifest/reportはpublished_casesへ保存。元archive/metadataのbytesは不変。抽出したreport.jsonは保存JSONの再整形であり原bytesの代替ではない。
+
+[18件のmachine検証](published_case_verification.json)：**正常1 VERIFIED_COMPLETE／障害17 TECHNICAL_FAILURE**。破損を成功扱いしたものではなく、意図した失敗の整合性を検査した。
+P1同期failureは予約8・完了7・失敗1、simultaneousは失敗8。reserved_exitはstarted observed0・unknown1。parent crashはSTART_RESERVED1が残り、started=null/unknown1。
+close時flush失敗はcommit後のcleanup失敗、emit内flushは独立fixtureで可視2/commit1として区別する。
+
+原runs.json/reports.jsonl.gzには他の人工性能runも含まれるが、今回の検証対象rawは上記18件。全99性能runのrawを取得した、または全て再検証したとは主張しない。
+非公開private rawの存在を前提にしない。今回CPU数値を科学的順位付けやspeedup結論へ再解析していない。
+
+測定SOURCEの77f8667fはローカル本repoに存在しなかったため、20,030byteの公開bundleを専用/tmpのbare Gitへ復元した。prerequisiteは7b6f526b。
+[復元照合](fixed_SOURCE_recovery.json)でcandidate/overheadの完全bytesが公開copyと一致。親repositoryへfetch/mergeしていない。
+固定fused helperはad3117d2からそのままコピーし、SOURCE SHA e05326d9…を検査。いずれも正式SOURCEへ採択・本番接続していない。
+
+親crashのretry_rejected/all_started_children_exited_on_EOF等は公開metadataの申告である。元private SQLite row・cleanup marker・当時OS状態はarchiveに含まれず、これだけで独立証明しない。
+旧R1 Admission/Hostの実人工runtime回帰は今回の360件へ含めるが、未公開新統合SOURCEの認証・STOPを検証したとはしない。
