@@ -1,3 +1,7 @@
+H2 FP完了（2026-10-19）：SOURCEde72e5d4…、受入Fのtol-only rank3・4 qubits/spin sector4を再利用しFP8候補をone-shot実行。6 base＋2 B0I、PR各n1の2軌道・16軸、primitive111/control32＋oracle2 PASS。native exit0・同一親wait4・14 worker回収、wall19.184秒。SCF/DF/状態solver/実shots0、PR2本はS0のみ・母平均未保証。F295レコード保全、D/A未実行・未承認、新規pushなし、mandatory STOP。[完了証拠・次の判断](../docs/research/track_a_h2_fp_completed_20261019.md)。以下は各時点の履歴。
+
+`audit_h2_fp_completed.py` はFP_run01の保存bytes・台帳・seed・14 workerのnative終了を照合する。NPZ decode・科学再計算・後段起動は行わない。
+
 H2 FP/D/A技術準備（2026-10-19）：F完了7ea6df2d…を正式受入。SOURCEde72e5d4…、rank3・4 qubits/spin sector4の保存入力を用いるFP8/D70/A66を登録。最大compile16/128/1056軸、Aは全適格候補に新n8・FP診断n1は混合しない。人工/回帰54件・実pending無効grant拒否9入口PASS、F関連295レコード保全。実H2科学実行0。D/Aの未来FP/D依存SHA結合とstage別承認は未完了。新規pushなし、mandatory STOP。[契約・予算・次の承認](../docs/research/track_a_h2_fp_d_a_preparation_20261019.md)。以下は各時点の履歴。
 
 `h2_panels_contract.py` / `h2_panels_science.py` / `prepare_h2_panels.py` / `run_h2_panels.py`：保存F専用のFP/D/A adapter。人工回帰 `tests/test_h2_panels.py`、契約・証跡 `artifacts/resource_applicability/track_a_h2_pr_resource/2026-10-19/fp_d_a_preparation01/`。
