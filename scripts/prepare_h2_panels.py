@@ -99,7 +99,7 @@ def seal(source):
     c.require(not values['FP']&values['A'] and not (values['FP']|values['A'])&excluded, 'OLD_FP_A_SEED_COLLISION')
     import h4_p_seed_inventory as inventory
     # Six independent geometries, existing CPU-affinity-aware process pool.
-    checks=inventory.check_geometry(cases,values['FP']|values['A'])
+    checks,geometry_workers=inventory.check_geometry(cases,values['FP']|values['A'])
     c.require(all(not r['collisions'] for r in checks),'GEOMETRY_RESERVED_SEED_COLLISION')
     now=datetime.now(timezone.utc).isoformat()
     for stage in ('FP','A'):
@@ -107,7 +107,7 @@ def seal(source):
         c.save(c.STORE/(stage+'_seed_check.json'),dict(status='COLLISION_ZERO',
             new_values_digest=c.digest(sorted(values[stage])),new_seed_slots=len(values[stage]),
             joint_FP_A_values_digest=c.digest(sorted(values['FP']|values['A'])),
-            old_explicit_values=len(excluded),geometry_checks=checks,checked_at_UTC=now,
+            old_explicit_values=len(excluded),geometry_checks=checks,geometry_workers=geometry_workers,checked_at_UTC=now,
             old_explicit_exclusions_sha256=c.sha(c.STORE/'old_seed_values.json'),
             inherited_inventory_cutoff=previous['cutoff_UTC'],inherited_coverage=previous['coverage'],
             known_campaigns_only=True,future_unregistered_campaigns_covered=False,
