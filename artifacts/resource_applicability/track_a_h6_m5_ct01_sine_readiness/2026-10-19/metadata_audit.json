@@ -1,0 +1,151 @@
+{
+  "CLI_refusals": [
+    {
+      "mode": "--execute",
+      "native_exit": 2,
+      "result": {
+        "reason": "EXPLICIT_CT01_SINE_EXECUTION_APPROVAL_REQUIRED",
+        "retry": false,
+        "status": "REFUSED"
+      }
+    },
+    {
+      "mode": "--supervise",
+      "native_exit": 2,
+      "result": {
+        "reason": "EXPLICIT_CT01_SINE_EXECUTION_APPROVAL_REQUIRED",
+        "retry": false,
+        "status": "REFUSED"
+      }
+    }
+  ],
+  "SOURCE": "885bbd7199c9ada26704b7db75b99767734e92e7",
+  "checks": [
+    {
+      "PASS": true,
+      "check": "2025_SOURCE_input_runtime_seals_and_protocol_binding"
+    },
+    {
+      "PASS": true,
+      "check": "saved_cosine_acceptance_is_exact_metadata_reproduction"
+    },
+    {
+      "PASS": true,
+      "check": "disabled_grant"
+    },
+    {
+      "PASS": true,
+      "check": "new_run_root_unused"
+    },
+    {
+      "PASS": true,
+      "check": "supervisor_not_entered"
+    },
+    {
+      "PASS": true,
+      "check": "scope_only_no_retry_or_nextphase"
+    },
+    {
+      "PASS": true,
+      "check": "original_compiler_unchanged"
+    },
+    {
+      "PASS": true,
+      "check": "reused_5_prior_checks_no_rerun"
+    },
+    {
+      "PASS": true,
+      "check": "old_STOP_unchanged"
+    },
+    {
+      "PASS": true,
+      "check": "approval_is_preparation_only"
+    },
+    {
+      "PASS": true,
+      "check": "preparation_receipt_cannot_authorize"
+    },
+    {
+      "PASS": true,
+      "check": "draft_CLI_--execute"
+    },
+    {
+      "PASS": true,
+      "check": "draft_CLI_--supervise"
+    },
+    {
+      "PASS": true,
+      "check": "no_run_or_supervisor_after_refusals"
+    },
+    {
+      "PASS": true,
+      "check": "default_is_scope_only"
+    },
+    {
+      "PASS": true,
+      "check": "old_SOURCE_code_equals_original_Git"
+    }
+  ],
+  "inputs": 13,
+  "mandatory_STOP": true,
+  "molecular_QPY_NPZ_restored": 0,
+  "new_cost_accounting": 0,
+  "new_molecular_compile": 0,
+  "new_molecular_state_action": 0,
+  "plan_sha256": "2a91769d1c38ffa6b8c9c098f79783b5303a39880f423f617b1ced7b49a0d0b4",
+  "rejections": [
+    {
+      "case": "scope_threshold",
+      "reason": "EXACT_CT01_SCOPE",
+      "rejected": true
+    },
+    {
+      "case": "scope_extra_compile",
+      "reason": "EXACT_CT01_SCOPE",
+      "rejected": true
+    },
+    {
+      "case": "plan_binding",
+      "reason": "CT01_PLAN_BYTES",
+      "rejected": true
+    },
+    {
+      "case": "source_seal",
+      "reason": "CT01_CLOSURE",
+      "rejected": true
+    },
+    {
+      "case": "input_sha",
+      "reason": "CT01_INPUTS",
+      "rejected": true
+    },
+    {
+      "case": "runtime_identity",
+      "reason": "SAME_ORIGINAL_RUNTIME_PROVIDER",
+      "rejected": true
+    },
+    {
+      "case": "pipeline_identity",
+      "reason": "CT01_PIPELINE_IDENTITY",
+      "rejected": true
+    },
+    {
+      "case": "cosine_acceptance",
+      "reason": "SAVED_COSINE_ACCEPTANCE_BINDING",
+      "rejected": true
+    },
+    {
+      "case": "resource_caps",
+      "reason": "CT01_RESOURCE_POLICY",
+      "rejected": true
+    },
+    {
+      "case": "provider_path",
+      "reason": "SAME_ORIGINAL_RUNTIME_PROVIDER",
+      "rejected": true
+    }
+  ],
+  "sealed_files": 2025,
+  "status": "METADATA_READINESS_PASS_NO_SCIENCE",
+  "valid_grant_issued": false
+}
