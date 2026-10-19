@@ -40,6 +40,15 @@ def saved_rows(eligible=True):
 
 
 class Metadata(unittest.TestCase):
+    def test_primitive_budget_covers_actual_signed_and_yoshida_time_schedule(self):
+        sys.path.insert(0,str(c.ROOT/'src'))
+        from trottertracks.resource_applicability.ax2b_h6_contract import primitive_time_schedule
+        for stage in ('D','A'):
+            cells=[x for x in c.registrations()[stage] if x['method']!='B0I']
+            pairs={('one' if i==0 else str(i-1),t) for x in cells
+                for i,t in primitive_time_schedule(x,T=.8)['unique_primitive_times']}
+            self.assertEqual(3*len(pairs),c.budgets()[stage]['primitive_probe_maximum'])
+
     def test_frozen_a_event_oracle_project_import_is_bound(self):
         closure=c.source_closure()
         self.assertIn('scripts/h6_dba_science.py',closure)
