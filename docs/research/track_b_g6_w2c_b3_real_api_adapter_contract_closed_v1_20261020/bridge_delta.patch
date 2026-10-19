@@ -1,0 +1,19 @@
+--- fixed/bridge.py
++++ new/bridge.py
+@@ -1,6 +1,6 @@
+ """S -> P1 candidate: ONE coordinator, claim, call ledger and byte budget.
+ 
+-Derived from fixed Bundle Bridge V1 with versioned API-port injection.
++Derived from fixed Port Bundle V1; only versioned document adapter injection changes.
+ The only executable API binds the fixed artificial API port factories. Production has no
+ implementation, dispatch table, unlock flag, supplied factory or authority API.
+ """
+@@ -27,7 +27,7 @@
+     F.PORT.install_guard()
+     if Path(__file__).resolve()!=Path(c['runtime_root'])/K.PKG/'bridge.py':raise Denied('LOADED_INTEGRATION_BRIDGE')
+     try:return K.guard(c,m)
+-    except F.PORT.Rejected as exc:raise Denied("INTEGRATION_BINDING:"+str(exc)) from exc
++    except F.C.Rejected as exc:raise Denied("INTEGRATION_BINDING:"+str(exc)) from exc
+ 
+ 
+ class Fault:

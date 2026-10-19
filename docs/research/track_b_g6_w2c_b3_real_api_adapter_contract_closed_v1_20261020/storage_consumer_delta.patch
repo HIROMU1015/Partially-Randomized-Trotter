@@ -1,0 +1,20 @@
+--- fixed/storage_consumer.py
++++ new/storage_consumer.py
+@@ -30,7 +30,7 @@
+ 
+ def identity(c,m,trusted,source_root):
+     V.require(_same(c,trusted),'TRUSTED_CANDIDATE_BINDING')
+-    V.require(c['schema']=='b3_closed_port_global_bundle_candidate_v1'and m['schema']=='b3_closed_port_global_bundle_manifest_v1','BUNDLE_SCHEMA')
++    V.require(c['schema']=='b3_closed_real_adapter_candidate_v1'and m['schema']=='b3_closed_real_adapter_manifest_v1','BUNDLE_SCHEMA')
+     for obj in (c,m):
+         for k,v in CLOSED.items():V.require(_same(obj[k],v),'CLOSED_FLAG:'+k)
+     V.require(c['production_gate']=='NO_IMPLEMENTED_SCIENCE_DISPATCH' and c['fixed_order']==['S','P1'],'PRODUCTION_GATE')
+@@ -41,7 +41,7 @@
+     V.require(m['candidate_binding']==_identity(c) and c['source_release_candidate']==_identity(c['source_pins'])and m['source_release_candidate']==c['source_release_candidate'],'GLOBAL_SOURCE_CONTRACT_ID')
+     p=c['proposal'];V.require(p['profile_n']==256 and p['cells']==16 and p['per_condition']==dict(correctness=256,baseline=4096,instrumented=4096,total=8448)and p['total_calls']==2*(16*16+16*256+16*256)==16896,'STATIC_16896_ARITHMETIC')
+     V.require(p['result_bytes']==1<<36 and p['log_bytes']==1<<28 and p['codec']=='fused' and p['observer']=='cached_all_call_return'and p['mode_is_seed_domain']is False,'FIXED_COMPARISON')
+-    V.require(m['seed_namespace']=='ARTIFICIAL_API_BINDING_V1'and m['codec']=='fused'and m['observer']==p['observer']and m['workers']==8 and m['start_method']=='spawn','ARTIFICIAL_PREFIX_CONDITION')
++    V.require(m['seed_namespace']=='ARTIFICIAL_REAL_ADAPTER_V1'and m['codec']=='fused'and m['observer']==p['observer']and m['workers']==8 and m['start_method']=='spawn','ARTIFICIAL_PREFIX_CONDITION')
+     V.require(m['global_scope'].startswith('ARTIFICIAL_ONLY/')and m['global_claim']==_identity(['ARTIFICIAL_ONLY',m['global_scope'],_identity(c)])and m['run_id']==_identity(['RUN',m['global_scope'],_identity(c)]),'GLOBAL_CLAIM_RUN_ID')
+     V.require(m['scientific_input']==_identity(c['scientific_reference']['scientific_reference']['input']),'SCIENTIFIC_INPUT_ID')
+     tasks,total=plan(m['profile_n']);V.require(16<=m['profile_n']<=256 and m['tasks']==tasks and m['planned']==total and m['static_scientific_candidate_calls']==16896,'GLOBAL_PLAN')

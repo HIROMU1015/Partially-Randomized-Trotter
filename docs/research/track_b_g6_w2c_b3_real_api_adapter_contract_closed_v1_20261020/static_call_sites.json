@@ -1,0 +1,163 @@
+{
+  "science_imports": 0,
+  "analysis": "AST_ONLY",
+  "calls": {
+    "src/trottertracks/algorithm_codesign/g7_generator.py": [
+      {
+        "line": 212,
+        "target": "self.event",
+        "args": "self.event(index, word, child)"
+      },
+      {
+        "line": 231,
+        "target": "self.packet",
+        "args": "self.packet(word)"
+      },
+      {
+        "line": 242,
+        "target": "self.packet",
+        "args": "self.packet(word)"
+      },
+      {
+        "line": 195,
+        "target": "bits.bits",
+        "args": "bits.bits(self.H)"
+      },
+      {
+        "line": 238,
+        "target": "bits.bits",
+        "args": "bits.bits(self.H)"
+      },
+      {
+        "line": 243,
+        "target": "bits.bits",
+        "args": "bits.bits(self.H)"
+      },
+      {
+        "line": 246,
+        "target": "bits.bits",
+        "args": "bits.bits(self.H)"
+      },
+      {
+        "line": 239,
+        "target": "bits.bits",
+        "args": "bits.bits(self.H)"
+      }
+    ],
+    "src/trottertracks/algorithm_codesign/g7_provider.py": [],
+    "src/trottertracks/algorithm_codesign/return_aggregation.py": [],
+    "src/trottertracks/algorithm_codesign/g6_f3_contract.py": [
+      {
+        "line": 162,
+        "target": "bits",
+        "args": "bits(self.x)"
+      },
+      {
+        "line": 161,
+        "target": "bits",
+        "args": "bits(q)"
+      },
+      {
+        "line": 163,
+        "target": "bits",
+        "args": "bits(q)"
+      }
+    ],
+    "src/trottertracks/algorithm_codesign/g6_f3_precision.py": [],
+    "src/trottertracks/algorithm_codesign/g6_f3_generator.py": [
+      {
+        "line": 58,
+        "target": "self.provider.bits",
+        "args": "self.provider.bits(n)"
+      },
+      {
+        "line": 196,
+        "target": "self._generator.sample",
+        "args": "self._generator.sample(trace)"
+      },
+      {
+        "line": 224,
+        "target": "self._generator.event",
+        "args": "self._generator.event(word, child)"
+      },
+      {
+        "line": 245,
+        "target": "self._generator.packet",
+        "args": "self._generator.packet(word)"
+      },
+      {
+        "line": 281,
+        "target": "self._generator.event",
+        "args": "self._generator.event(word, child)"
+      },
+      {
+        "line": 285,
+        "target": "enclose_atan",
+        "args": "enclose_atan(event['ratio'], tau=self._request.angle_tau, root_bits=self._request.angle_root_bits, terms=self._request.angle_terms, sigma=self._request.sigma, context={**expected_ids, 'event_id': record.digest, 'parent': event['word'], 'child': event['child']})"
+      }
+    ],
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_driver.py": [
+      {
+        "line": 382,
+        "target": "modules['f3'].prepare",
+        "args": "modules['f3'].prepare(p, x, m, sigma=POLICY['sigma'], **params, **validate_angle(angle))"
+      },
+      {
+        "line": 386,
+        "target": "modules['g7'].make_generator",
+        "args": "modules['g7'].make_generator(p, x, m, arm, **params)"
+      },
+      {
+        "line": 406,
+        "target": "audit.AuditParity",
+        "args": "audit.AuditParity(arm, {'input': INPUT, 'policy': POLICY, 'angle': angle}, self.snapshot, source_check)"
+      },
+      {
+        "line": 467,
+        "target": "self.session.angle_for_event",
+        "args": "self.session.angle_for_event(outcome.evidence['f3'])"
+      },
+      {
+        "line": 471,
+        "target": "self.g.event",
+        "args": "self.g.event(*self.event_args)"
+      },
+      {
+        "line": 473,
+        "target": "self.modules['precision'].enclose_atan",
+        "args": "self.modules['precision'].enclose_atan(event['ratio'], tau=F(self.angle['tau']), root_bits=self.angle['K_phi'], terms=self.angle['J'], sigma=POLICY['sigma'], context={'event_id': identity(event), 'input': INPUT, 'policy': POLICY, 'preflight': self.preflight})"
+      },
+      {
+        "line": 432,
+        "target": "self.session.sample",
+        "args": "self.session.sample(bits, trial_id=trial_id)"
+      },
+      {
+        "line": 442,
+        "target": "self.g.sample",
+        "args": "self.g.sample(bits)"
+      },
+      {
+        "line": 448,
+        "target": "audit.event_witness",
+        "args": "audit.event_witness(event, full=self.arm == 'full_return', degree_cap=INPUT['m'], labels=3)"
+      },
+      {
+        "line": 405,
+        "target": "audit.canonical_snapshot",
+        "args": "audit.canonical_snapshot(self.g, modules['g7']._law)"
+      },
+      {
+        "line": 564,
+        "target": "endpoint.sample",
+        "args": "endpoint.sample(bits, trial_id)"
+      },
+      {
+        "line": 575,
+        "target": "audit.event_witness",
+        "args": "audit.event_witness(result.event, full=cell['arm'] == 'full_return', degree_cap=INPUT['m'], labels=3)"
+      }
+    ],
+    "src/trottertracks/algorithm_codesign/g6_w2c_cost_preparation.py": []
+  }
+}
