@@ -1,0 +1,7 @@
+# Production gate・権限境界
+
+production_entry/ProductionFactory/ProductionBitsはすべて無条件例外を投げる。run_ready/adopted/authority引数を渡しても解放されない。科学factory・real bits・real authorityへdispatchする実装やunseal flagは存在しない。人工APIは組込みfixture/storeをsourceとruntimeにbindし、science module import blockerをworkerへ設置する。parentでも禁止moduleの既loadを拒否する。
+
+今回の正式science SOURCE採択、real G7/F3 import/sampling、新科学計算、実authorization/grant/claim発行・消費、native quantum build/compile/synthesisはすべて0。Full-Nと限定pilotの科学実行も0。新しいfake scope/claimだけを人工試験へ使用し、旧one-shot/STOPを再使用・解除していない。
+
+将来の正式productionには別の採択済SOURCEとcontract、実API binding、authority bootstrap・grant/monitoring/保存範囲の明示認可が必要。このcandidateのbooleanを反転して実行へ移る手順は提供しない。

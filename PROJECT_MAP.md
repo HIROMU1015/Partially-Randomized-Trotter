@@ -1116,3 +1116,8 @@ STOP_FOR_GPT_SCOPE_DECISION。元whole補正closure、Track A/G10/RA-D0結果・
 ## 2026-10-19：Track B W2c-B3 限定pilot準備版の独立技術受入
 
 [Evidence Packet](docs/research/track_b_g6_w2c_b3_limited_pilot_independent_acceptance_20261019/README.md)／[Q1–Q10](docs/research/track_b_g6_w2c_b3_limited_pilot_independent_acceptance_20261019/handoff.md)。固定公開18件を独立再読し、別の人工trace書込障害でreserved counterとstatefileの不整合を検出。実科学bridge・正式採択は未実施。新consumerは `src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_independent_*.py`、testは `tests/tracks/algorithm_codesign/test_g6_w2c_b3_pilot_independent.py`、人工runnerは `docs/research/track_b_g6_w2c_b3_limited_pilot_independent_acceptance_20261019/run_independent_tests.py`。旧SOURCE/raw/STOPを保持し、技術修正条件を記録してmandatory STOP。
+
+
+## 2026-10-19：Track B Global Bundle Bridge V1 ローカル独立受入
+
+[`docs/research/track_b_g6_w2c_b3_global_bundle_independent_acceptance_local_20261019`](docs/research/track_b_g6_w2c_b3_global_bundle_independent_acceptance_local_20261019/README.md)：独立adapter/6-phase/post-close/費用会計、公開43件と新165人工test。独立845 PASS、科学入口閉鎖・未採択・mandatory STOP。

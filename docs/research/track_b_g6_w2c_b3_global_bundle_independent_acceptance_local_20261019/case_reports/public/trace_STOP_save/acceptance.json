@@ -1,0 +1,212 @@
+{
+  "status": "INCOMPLETE_EVIDENCE",
+  "checks": [
+    {
+      "check_id": "B-I01",
+      "fixed_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+      "public_HEAD": "d24cccbecdf0928fe977080dd7b28c591df0089e",
+      "input_identity": "112247e3caff59e6f0a9222c1f0b033537fda4861ba9a56be34daa52a006820d",
+      "expected": "Pinned source/schema/contract and declared runtime identity",
+      "observed": {
+        "planned": 1536,
+        "candidate_digest": "7852153f127f0a9a27f456865e08d6749b42867fadc0df02a3126276c3ca1c35",
+        "manifest_digest": "112247e3caff59e6f0a9222c1f0b033537fda4861ba9a56be34daa52a006820d",
+        "run_id": "dfb4196903d85467c2f0800886ce73e9c28080299595183b1c7a834fff3ad70f",
+        "historical_runtime_bytes_proven": false,
+        "local_runtime_bytes_proven": false,
+        "runtime_projection": false,
+        "real_authority_verified": false
+      },
+      "judgment": "PASS",
+      "evidence": "verification.json",
+      "unresolved": null,
+      "formal_adoption_required": true,
+      "input_observed_path_at_execution": "/tmp/prt-b3-global-independent-local-20261019/restored_bundle/cases/trace_STOP_save"
+    },
+    {
+      "check_id": "B-G01",
+      "fixed_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+      "public_HEAD": "d24cccbecdf0928fe977080dd7b28c591df0089e",
+      "input_identity": "112247e3caff59e6f0a9222c1f0b033537fda4861ba9a56be34daa52a006820d",
+      "expected": "Single global planned/reserved/started/completed counters",
+      "observed": {
+        "planned": 1536,
+        "reserved": 1,
+        "started": 1,
+        "completed": 0,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "judgment": "PASS",
+      "evidence": "verification.json",
+      "unresolved": null,
+      "formal_adoption_required": true,
+      "input_observed_path_at_execution": "/tmp/prt-b3-global-independent-local-20261019/restored_bundle/cases/trace_STOP_save"
+    },
+    {
+      "check_id": "B-S01",
+      "fixed_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+      "public_HEAD": "d24cccbecdf0928fe977080dd7b28c591df0089e",
+      "input_identity": "112247e3caff59e6f0a9222c1f0b033537fda4861ba9a56be34daa52a006820d",
+      "expected": "RAM state has exact physical statefile witness",
+      "observed": true,
+      "judgment": "PASS",
+      "evidence": "verification.json",
+      "unresolved": null,
+      "formal_adoption_required": true,
+      "input_observed_path_at_execution": "/tmp/prt-b3-global-independent-local-20261019/restored_bundle/cases/trace_STOP_save"
+    },
+    {
+      "check_id": "B-T01",
+      "fixed_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+      "public_HEAD": "d24cccbecdf0928fe977080dd7b28c591df0089e",
+      "input_identity": "112247e3caff59e6f0a9222c1f0b033537fda4861ba9a56be34daa52a006820d",
+      "expected": "Trusted operation prefix is validated; no tail reconstruction",
+      "observed": {
+        "bytes": 6970,
+        "sha256": "e3925d192b23cb7a1535398a22c8cd2c44e0342f5abbbe5d1ba8d33a5bc6d7ea",
+        "trusted_bytes": 6970,
+        "trusted_rows": 19,
+        "chain": "5df3f0a95f051cc3d10d0c3ea5efb5ad0688cb7d925ab97c4e0c02fdccb84a89",
+        "tail_bytes": 0,
+        "tail_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "untrusted_tail_used_as_history": false
+      },
+      "judgment": "PASS",
+      "evidence": "verification.json",
+      "unresolved": null,
+      "formal_adoption_required": true,
+      "input_observed_path_at_execution": "/tmp/prt-b3-global-independent-local-20261019/restored_bundle/cases/trace_STOP_save"
+    },
+    {
+      "check_id": "B-A01",
+      "fixed_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+      "public_HEAD": "d24cccbecdf0928fe977080dd7b28c591df0089e",
+      "input_identity": "112247e3caff59e6f0a9222c1f0b033537fda4861ba9a56be34daa52a006820d",
+      "expected": "One fake SPENT claim snapshot binding; no atomic history inference",
+      "observed": {
+        "snapshot": {
+          "schema": "b3_FAKE_ONLY_snapshot_v1",
+          "claim": [
+            "ARTIFICIAL_ONLY/b3-bundle-artificial-d2h55pvm",
+            "ab52af14685ef15c18a763207fbde24e75500b02ba6831c00f6e63d96bd7d4b1",
+            "112247e3caff59e6f0a9222c1f0b033537fda4861ba9a56be34daa52a006820d",
+            "STOPPED",
+            1
+          ],
+          "history": [
+            [
+              1,
+              "ARTIFICIAL_ONLY/b3-bundle-artificial-d2h55pvm",
+              "CLAIM_COMMITTED",
+              "112247e3caff59e6f0a9222c1f0b033537fda4861ba9a56be34daa52a006820d"
+            ],
+            [
+              2,
+              "ARTIFICIAL_ONLY/b3-bundle-artificial-d2h55pvm",
+              "STOP_COMMITTED",
+              "112247e3caff59e6f0a9222c1f0b033537fda4861ba9a56be34daa52a006820d"
+            ]
+          ],
+          "real_authority": false
+        },
+        "sha256": "b07669fcbea17361cedbe5810cefb874c85079e9d795df21080ce80f9b23f5e3",
+        "read_only": true,
+        "atomic_transition_history_independently_proven": false,
+        "real_authority": false
+      },
+      "judgment": "PASS",
+      "evidence": "verification.json",
+      "unresolved": null,
+      "formal_adoption_required": true,
+      "input_observed_path_at_execution": "/tmp/prt-b3-global-independent-local-20261019/restored_bundle/cases/trace_STOP_save"
+    },
+    {
+      "check_id": "B-P01",
+      "fixed_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+      "public_HEAD": "d24cccbecdf0928fe977080dd7b28c591df0089e",
+      "input_identity": "112247e3caff59e6f0a9222c1f0b033537fda4861ba9a56be34daa52a006820d",
+      "expected": "Full two-condition post-close receipt/marker/caller join",
+      "observed": {
+        "full_success_join": false,
+        "marker_alone_sufficient": false
+      },
+      "judgment": "PENDING",
+      "evidence": "verification.json",
+      "unresolved": [
+        "Only the declared trusted prefix is evidence; tail and unsaved operations remain unknown",
+        "Storage/write/flush/close failure retained"
+      ],
+      "formal_adoption_required": true,
+      "input_observed_path_at_execution": "/tmp/prt-b3-global-independent-local-20261019/restored_bundle/cases/trace_STOP_save"
+    },
+    {
+      "check_id": "B-B01",
+      "fixed_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+      "public_HEAD": "d24cccbecdf0928fe977080dd7b28c591df0089e",
+      "input_identity": "112247e3caff59e6f0a9222c1f0b033537fda4861ba9a56be34daa52a006820d",
+      "expected": "Global result/log reserved/observed/physical accounting",
+      "observed": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 4237530,
+          "observed_or_projected": 4237530,
+          "physical_retained": 4237530,
+          "unknown_credit": 0,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 25301,
+          "observed_or_projected": 24725,
+          "physical_retained": 24725,
+          "unknown_credit": 576,
+          "trace_self_bytes": 6970,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        }
+      },
+      "judgment": "PASS",
+      "evidence": "verification.json",
+      "unresolved": null,
+      "formal_adoption_required": true,
+      "input_observed_path_at_execution": "/tmp/prt-b3-global-independent-local-20261019/restored_bundle/cases/trace_STOP_save"
+    },
+    {
+      "check_id": "B-C01",
+      "fixed_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+      "public_HEAD": "d24cccbecdf0928fe977080dd7b28c591df0089e",
+      "input_identity": "112247e3caff59e6f0a9222c1f0b033537fda4861ba9a56be34daa52a006820d",
+      "expected": "Parent+worker CPU and caller outer wall; no double addition",
+      "observed": "VERIFIED_ARTIFICIAL_COST_BOUNDARIES",
+      "judgment": "PASS",
+      "evidence": "verification.json",
+      "unresolved": null,
+      "formal_adoption_required": true,
+      "input_observed_path_at_execution": "/tmp/prt-b3-global-independent-local-20261019/restored_bundle/cases/trace_STOP_save"
+    },
+    {
+      "check_id": "B-R01",
+      "fixed_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+      "input_identity": "7852153f127f0a9a27f456865e08d6749b42867fadc0df02a3126276c3ca1c35",
+      "expected": "Historical runtime actual executable/library bytes independently available",
+      "observed": false,
+      "judgment": "PENDING",
+      "evidence": "verification.json",
+      "unresolved": [
+        "Saved hashes are declarations; current runtime is recorded separately"
+      ],
+      "formal_adoption_required": true,
+      "input_observed_path_at_execution": "/tmp/prt-b3-global-independent-local-20261019/restored_bundle/cases/trace_STOP_save"
+    }
+  ],
+  "scientific_GO": false,
+  "mandatory_STOP": true,
+  "saved_input_archive": {
+    "manifest": "../../../fixed_reference/bridge/docs/research/track_b_g6_w2c_b3_v2_production_bundle_bridge_candidate_20261019/artificial_raw_manifest.json",
+    "member_prefix": "cases/trace_STOP_save"
+  },
+  "independent_source_inventory": "../../../source_inventory.json"
+}

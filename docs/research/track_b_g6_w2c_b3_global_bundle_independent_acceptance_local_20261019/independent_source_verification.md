@@ -1,0 +1,13 @@
+# 固定SOURCEと公開bytes
+
+直接基点`49a0dcc9c8ec6dfc96eba5bb862cfdcb3d0fc866`、Producer公開`d24cccbecdf0928fe977080dd7b28c591df0089e`、人工測定`e099dcc461247e81eff981867dc28c3f3b16df5e`を区別した。SOURCE release candidateはsource_pinsのplain canonical-JSON SHA256であり、旧exact codec digestとは異なる。
+
+[固定743入力](fixed_input_inventory.json)と[公開bytes照合](fixed_public_bytes_verification.json)は全一致。全Producerリポジトリや過去報告の全ファイルを取得したという主張ではない。bridge packet全303ファイルと必要SOURCE/inputs、指定V2独立資料/Storage資料/共通指示を選択した。科学結果ファイルは固定inputのbytes照合だけに使用し、数値再解析しない。
+
+[測定照合](measured_source_verification.json)：inventory22項目中14一致、2後続更新、6測定時不在。runtime pins52を測定Git object/tree/blobへ照合。e099objectは直接取得可能だった。各helper/testの時点を区別し、runtime six modulesの変更を混同しない。
+
+[Storage V2測定照合](storage_v2_measured_source_verification.json)：45bfはroot object DBに存在せず、公開49,475B/SHA256確認済bundleを所有/tmp bare Gitへ復元した。root Gitへfetchせず、前提objectをread-only alternateとした。15 SOURCE一致・後追加2helper。
+
+V2独立3moduleは77126767からbyte-identicalで選択追加。旧consumer/Producer/科学SOURCEは変更しない。共通運用指示は7eff8a33の固定pathを取得し§8.4を適用。
+
+歴史Python3.12の実体はNOT_ESTABLISHED。宣言identityと現行Python3.10実物を分離。fresh候補はroot/pythonだけの明示的environment projectionで、科学参照・policy・pinsは同一。fresh測定時は現行Python/library/SOURCE/input bytesも実物照合。保存freshの他環境offline再読では、その過去machineの実体照合へ格上げしない。別物理ホストはNOT_ESTABLISHED。

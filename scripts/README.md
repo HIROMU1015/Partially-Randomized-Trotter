@@ -637,3 +637,8 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## Track B 限定pilot独立人工受入（2026-10-19）
 
 [手順と出力](../docs/research/track_b_g6_w2c_b3_limited_pilot_independent_acceptance_20261019/README.md)。runnerは `docs/research/track_b_g6_w2c_b3_limited_pilot_independent_acceptance_20261019/run_independent_tests.py`、18固定case再読は同dirの `build_independent_evidence.py`、synthetic trace負荷は `run_synthetic_trace_load.py`。CLIは `python3 -m trottertracks.algorithm_codesign.g6_w2c_b3_pilot_independent_cli`。SOURCE・test・artifactは同packetのsource_inventory.jsonを参照。科学sampling入口は提供しない。
+
+
+## 2026-10-19：Track B Global Bundle Bridge V1 ローカル独立受入
+
+[`docs/research/track_b_g6_w2c_b3_global_bundle_independent_acceptance_local_20261019`](../docs/research/track_b_g6_w2c_b3_global_bundle_independent_acceptance_local_20261019/README.md)：独立adapter/6-phase/post-close/費用会計、公開43件と新165人工test。独立845 PASS、科学入口閉鎖・未採択・mandatory STOP。

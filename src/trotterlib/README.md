@@ -594,3 +594,8 @@ B固有namespaceは`src/trottertracks/algorithm_codesign/rte_development/`。共
 ## Track B 限定pilot独立consumer（2026-10-19）
 
 [人工技術受入packet](../../docs/research/track_b_g6_w2c_b3_limited_pilot_independent_acceptance_20261019/README.md)を参照。moduleは `src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_independent_{identity,trace,adapter,cli}.py`、testsは `tests/tracks/algorithm_codesign/test_g6_w2c_b3_pilot_independent.py`。既存pair/F01/global/cost consumerを再利用し、SOURCE/schemaと人工rawを照合する。科学的GO・production bridge・科学callは含まない。
+
+
+## 2026-10-19：Track B Global Bundle Bridge V1 ローカル独立受入
+
+[`docs/research/track_b_g6_w2c_b3_global_bundle_independent_acceptance_local_20261019`](../../docs/research/track_b_g6_w2c_b3_global_bundle_independent_acceptance_local_20261019/README.md)：独立adapter/6-phase/post-close/費用会計、公開43件と新165人工test。独立845 PASS、科学入口閉鎖・未採択・mandatory STOP。

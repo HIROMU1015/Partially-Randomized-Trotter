@@ -1,0 +1,104 @@
+{
+  "case": "delivery_close",
+  "root": "/tmp/b3-bundle-artificial-mrhv7_x_",
+  "spec": {
+    "name": "delivery_close",
+    "fault": {
+      "point": "delivery.json.close"
+    }
+  },
+  "measured_git_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+  "exception": {
+    "type": "OSError",
+    "reason": "ARTIFICIAL_STORAGE_FAULT:delivery.json.close",
+    "traceback": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/docs/research/track_b_g6_w2c_b3_v2_production_bundle_bridge_candidate_20261019/run_case.py\", line 18, in main\n    result=B.execute_artificial(c,m,root=root,store=store,storage_fault=B.Fault(spec.get('fault')))\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_bridge_v1.py\", line 218, in execute_artificial\n    try:_save(out,'delivery.json',delivery,ctl,fault,slot=K.DELIVERY_SLOT,pre_reserved=True)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_bridge_v1.py\", line 106, in _save\n    try:fault(name+'.close')\n        ^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_bridge_v1.py\", line 56, in __call__\n    raise OSError('ARTIFICIAL_STORAGE_FAULT:'+point)\nOSError: ARTIFICIAL_STORAGE_FAULT:delivery.json.close\n"
+  },
+  "external_host_outer": {
+    "parent_cpu_ns": 1058176979,
+    "wall_ns": 6520758774,
+    "worker_cpu_ns": 9794131000,
+    "includes_final_and_delivery_close": true
+  },
+  "forbidden_imports": [],
+  "process_exit": 0,
+  "verification_status": "INCOMPLETE_EVIDENCE",
+  "verification_issues": [],
+  "evidence_gaps": [
+    "Caller observed bridge/delivery persistence exception"
+  ],
+  "consumer_forbidden_imports": [],
+  "calls": {
+    "planned": 1536,
+    "reserved": 1536,
+    "started": 1536,
+    "completed": 1536,
+    "unknown": 0,
+    "cancelled": 0
+  },
+  "conditions": [
+    {
+      "condition": "S",
+      "complete": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "planned": 768,
+      "parent_cpu_ns": 660577164,
+      "worker_cpu_ns": 4696602000,
+      "wall_ns": 5272343453,
+      "budget_before": {
+        "reserved": {
+          "log": 14526,
+          "result": 4234036
+        },
+        "observed": {
+          "log": 14526,
+          "result": 31540
+        }
+      },
+      "budget_after": {
+        "reserved": {
+          "log": 2142340,
+          "result": 4877807
+        },
+        "observed": {
+          "log": 2142340,
+          "result": 675311
+        }
+      },
+      "shared_setup_or_finalization_allocated": false
+    },
+    {
+      "condition": "P1",
+      "complete": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "planned": 768,
+      "parent_cpu_ns": 333506028,
+      "worker_cpu_ns": 5097529000,
+      "wall_ns": 1183378922,
+      "budget_before": {
+        "reserved": {
+          "log": 2143028,
+          "result": 4878422
+        },
+        "observed": {
+          "log": 2143028,
+          "result": 675926
+        }
+      },
+      "budget_after": {
+        "reserved": {
+          "log": 4282890,
+          "result": 5522698
+        },
+        "observed": {
+          "log": 4282890,
+          "result": 1320202
+        }
+      },
+      "shared_setup_or_finalization_allocated": false
+    }
+  ]
+}

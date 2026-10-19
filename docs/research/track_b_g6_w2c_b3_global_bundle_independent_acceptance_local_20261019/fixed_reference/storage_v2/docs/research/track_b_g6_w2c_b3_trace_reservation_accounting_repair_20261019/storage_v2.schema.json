@@ -1,0 +1,15 @@
+{
+  "$id": "urn:b3:storage-repair:v2",
+  "type": "object",
+  "required": ["schema", "storage_protocol", "source_pins", "input_pins", "proposal"],
+  "properties": {
+    "schema": {"const": "b3_pilot_storage_repair_candidate_v2"},
+    "storage_protocol": {"const": "MONOTONE_ACCOUNTING_EXPLICIT_INCOMPLETE_EVIDENCE_V2"},
+    "contract_grants_execution": {"const": false},
+    "run_ready": {"const": false},
+    "science_release": {"type": "null"},
+    "retry": {"const": 0},
+    "resume": {"const": false}
+  },
+  "$comment": "Exact candidate equality additionally enforced by canonical identity. Healthy ordered operation lines retain V1 encoding/granularity. Failure result V2 declares trusted trace prefix, state persistence uncertainty, credit uncertainty and explicit STOP-save status. No production bridge."
+}

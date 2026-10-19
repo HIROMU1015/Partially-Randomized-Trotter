@@ -1,0 +1,7 @@
+# 不一致とその扱い
+
+最終公開43分類と公開35 mutation分類は独立結果と一致。実施した人工範囲で新Producer不具合は確認されなかった。全故障一般・電源断・実authority/科学lawを証明したという意味ではない。
+
+Python3.10では元co_name fallbackにより旧原版623全PASS。serverが保存したPython3.12原版622 PASS/1 FAILは不変。固定server suffix補正版はローカル対象77中76 PASS/1 FAILとなる。原版と各補正版のSOURCE・compiled SHA・失敗traceを別記録にした。portable版はco_qualnameの存在だけで期待suffixを選び、全observer行等値/call数/exclusive partition assertionを保持し77 PASS。これは環境互換性のtest-label差で、Producer会計の欠陥ではない。
+
+開発中の独立checker digest codec、失敗時generic cost stage、fixture bookkeeping/rejection理由、V2 reference symlink/missing inputは技術scope内で修正・準備した。初期診断はdevelopment_diagnosticsに残すが最終件数へ加算しない。固定Producerを結果合わせで変更していない。

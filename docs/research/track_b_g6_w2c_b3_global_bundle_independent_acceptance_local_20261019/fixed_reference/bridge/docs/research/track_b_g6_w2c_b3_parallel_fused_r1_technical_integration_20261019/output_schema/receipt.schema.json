@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:b3:parallel:v3:receipt",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "b3_parallel_receipt_v3"
+    },
+    "event": {
+      "const": "COMPLETION_RECEIPT"
+    },
+    "formal_digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "summary_chain": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "summary_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_pins_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "runtime_manifest_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "all_workers_joined": {
+      "const": true
+    }
+  },
+  "required": [
+    "schema",
+    "event",
+    "formal_digest",
+    "summary_chain",
+    "summary_sha",
+    "source_pins_sha256",
+    "runtime_manifest_sha256",
+    "all_workers_joined"
+  ],
+  "additionalProperties": false
+}

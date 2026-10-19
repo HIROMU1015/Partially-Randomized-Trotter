@@ -1,0 +1,15 @@
+# Ordered trace・STOP・完了証拠
+
+独立readerでcanonical envelope/payload、seq/run/trial identity、SHA256 chain、prefixのbytes/rows/chain/SHA256、row境界を検査する。trusted prefixを超えるtailは物理bytesとして記録し、操作が確定した履歴には使わない。欠損reportでは物理的にchainが成立するprefixを読めても、ACK済みtrusted prefixが確立したとは表示しない。
+
+旧global coreを使ってphase barrier、予約/entry/terminal、重複、STOP後ENTER禁止、合法なin-flight drainを検査する。保存失敗によりENTER traceだけが残っても、state保存と許可が完了したとは推定しない。state保存失敗に続くCANCELはこの区別を明示してINCOMPLETE_EVIDENCEへ残す。
+
+親arrival順序とrepresentative failureはcontrol/report間で照合し、worker/pair identity・global offset・F01と物理prefixを検査する。P1 cooperative drainの8開始・7COMPLETE・1FAILを独立再確認した。cooperative STOPをworker全員の同時物理停止とは呼ばない。強制killや共有環境の変更は行わない。
+
+STOPのtrace保存、journal保存、fake Admission保存は別々に扱う。Admission STOP保存失敗ケースはspent snapshotの状態を保持し、成功marker欠損やrecord_errorsを正常に隠さない。snapshotはatomic historyそのものではない。retry/resumeなし・同scopeのspent拒否は固定SOURCE静的確認と指定人工Admission回帰による。
+
+正常成功はreport、全trial state/trace、pair/F01、summary、receipt、diagnostic、marker、Admission STOPと保存errorのない状態を結合して初めて認める。summary/receipt/prefixをhashで結合し、final resultとsnapshotの時刻境界を区別する。summaryのCPU snapshotはfinal report以前なので同じ値と仮定せず、既存partitionと外側host境界を検査する。
+
+正常ケースではtraceのresult reserve/ACK末尾をsummary→receipt→diagnosticの実bytesに結合し、journal各行のlog credit/ACKとも順序照合する。diagnostic ACKがmarker用journal reserveより先でなければ拒否する。順序を崩してchainを作り直した独立mutationも拒否した。
+
+markerはreceipt・diagnostic・Admission STOPの後、storage closeより前に発行される。後続close失敗ではmarkerが残り得るが、final reportは失敗となり、後続STOP/保存不完全も独立に検出する。markerの存在だけをfinal acceptanceへ格上げしない。この複数証拠を結合する意味論は将来の正式契約で明示する必要がある。

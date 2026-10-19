@@ -742,3 +742,8 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## Track B W2c-B3 限定pilotの独立受入（2026-10-19）
 
 [独立adapter・SOURCE/契約/18人工case・trace/費用/予算監査](research/track_b_g6_w2c_b3_limited_pilot_independent_acceptance_20261019/README.md)。会計不整合の再現と修正要件はpacket内producer_consumer_discrepancies.md。科学的な採択・実行を意味しない。
+
+
+## 2026-10-19：Track B Global Bundle Bridge V1 ローカル独立受入
+
+[`docs/research/track_b_g6_w2c_b3_global_bundle_independent_acceptance_local_20261019`](research/track_b_g6_w2c_b3_global_bundle_independent_acceptance_local_20261019/README.md)：独立adapter/6-phase/post-close/費用会計、公開43件と新165人工test。独立845 PASS、科学入口閉鎖・未採択・mandatory STOP。

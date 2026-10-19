@@ -1,0 +1,9 @@
+# 最終人工受入と開発履歴
+
+最終runtime SOURCE e099dcc461247e81eff981867dc28c3f3b16df5e、43fresh fake scopes。bundle正常2（n16/n256）、単独条件正常2、期待された技術失敗13、期待された証拠不完全26。未解決の予期しないregression failureは0。INCOMPLETE_EVIDENCEを正常保存へ再分類していない。
+
+新規107 PASSには43matrix assertion、35mutation拒否とそのnormal control、global算術/seed/canonical、atomic race/spent/ACK、gate、費用/byte、SOURCE/runtime mutation等のtestsを含む。35mutationは32 integrity mismatch／3 incomplete、raw差分overlayを保存した。旧指定10suiteは原版622/1、補正版623/0。既存V2 storage41と旧独立57もPASSし、unique IDは828。
+
+開発初期にdelivery自身のclose失敗がconsumerから漏れる欠陥とdispatch abort表現の不足を検出した。callerのpost-delivery観測、PHASE_ABORTと欠落start証拠の不完全扱いを追加した。修正前2 rawをarchiveのdevelopment_before_repairへ保存し、全初期matrix/失敗testsをdevelopment_diagnosticsへ残した。依存不足の旧回帰と、新testの一条件分だけだった期待値・欠落証拠分類も修正した。初期結果を最終件数へ加算しない。
+
+offline consumerは別processでbridge/Producer/scheduler/Admission/scienceをimportしていない。作者自身による検査であり、別人・別AI・別物理環境の独立レビューではない。原証拠・個別結果・ログはcase_verifications、negative_mutation_results、regression_logs、raw_partsを参照する。

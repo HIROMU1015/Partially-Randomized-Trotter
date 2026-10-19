@@ -1,0 +1,106 @@
+{
+  "case": "P1_reserve_persistence",
+  "root": "/tmp/b3-bundle-artificial-xh1t12_x",
+  "spec": {
+    "name": "P1_reserve_persistence",
+    "fault": {
+      "point": "trace.write",
+      "condition": "P1",
+      "match": {
+        "op": "RESERVE"
+      }
+    }
+  },
+  "measured_git_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+  "returned_complete": false,
+  "fault_hits": 1,
+  "external_host_outer": {
+    "parent_cpu_ns": 796962823,
+    "wall_ns": 5590374540,
+    "worker_cpu_ns": 5982419000,
+    "includes_final_and_delivery_close": true
+  },
+  "forbidden_imports": [],
+  "process_exit": 0,
+  "verification_status": "INCOMPLETE_EVIDENCE",
+  "verification_issues": [],
+  "evidence_gaps": [
+    "Only trusted prefix is evidence; tail/unsaved intent remain unknown",
+    "Storage/flush/close failure retained"
+  ],
+  "consumer_forbidden_imports": [],
+  "calls": {
+    "planned": 1536,
+    "reserved": 769,
+    "started": 768,
+    "completed": 768,
+    "unknown": 0,
+    "cancelled": 1
+  },
+  "conditions": [
+    {
+      "condition": "S",
+      "complete": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "planned": 768,
+      "parent_cpu_ns": 697710551,
+      "worker_cpu_ns": 4684809000,
+      "wall_ns": 5290477459,
+      "budget_before": {
+        "reserved": {
+          "log": 14526,
+          "result": 4234036
+        },
+        "observed": {
+          "log": 14526,
+          "result": 31540
+        }
+      },
+      "budget_after": {
+        "reserved": {
+          "log": 2142320,
+          "result": 4877812
+        },
+        "observed": {
+          "log": 2142320,
+          "result": 675316
+        }
+      },
+      "shared_setup_or_finalization_allocated": false
+    },
+    {
+      "condition": "P1",
+      "complete": false,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "planned": 768,
+      "parent_cpu_ns": 16243097,
+      "worker_cpu_ns": 1297610000,
+      "wall_ns": 215732316,
+      "budget_before": {
+        "reserved": {
+          "log": 2143008,
+          "result": 4878427
+        },
+        "observed": {
+          "log": 2143008,
+          "result": 675931
+        }
+      },
+      "budget_after": {
+        "reserved": {
+          "log": 2196975,
+          "result": 4890401
+        },
+        "observed": {
+          "log": 2196338,
+          "result": 687905
+        }
+      },
+      "shared_setup_or_finalization_allocated": false
+    }
+  ]
+}

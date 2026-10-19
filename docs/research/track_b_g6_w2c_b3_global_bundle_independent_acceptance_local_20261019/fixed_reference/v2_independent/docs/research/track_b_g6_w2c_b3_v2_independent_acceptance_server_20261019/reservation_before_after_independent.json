@@ -1,0 +1,180 @@
+{
+  "schema": "b3_v2_independent_reservation_comparison_v1",
+  "before": {
+    "public_SOURCE": "76ca3c4089b201d55da0fede08e1f77733ac38a5",
+    "source_path": "src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_candidate.py",
+    "source_sha256": "c3bc48ee7dd85b77645c763b5d883710c5f20e68116498f81b4723a474c489fa",
+    "case": "fixed_before_repair_S",
+    "report_reserved": 0,
+    "state_counts": {
+      "NOT_STARTED": 767,
+      "START_RESERVED": 1,
+      "STARTED": 0,
+      "IN_FLIGHT": 0,
+      "COMPLETED": 0,
+      "FAILED": 0,
+      "CANCELLED_BEFORE_START": 0,
+      "TERMINATED_WITH_UNKNOWN_RESULT": 0
+    },
+    "independent_rejection": "GLOBAL_STATE_COUNTER_BINDING",
+    "raw_sha256": "7bbec76a97d34f1d9b18515d253f47aba3599025b341b775bf5455b49ed04289"
+  },
+  "new_external_writer_faults": [
+    {
+      "mode": "S",
+      "status": "INCOMPLETE_EVIDENCE",
+      "calls": {
+        "planned": 768,
+        "reserved": 1,
+        "started_observed": 0,
+        "completed": 0,
+        "failed": 0,
+        "cancelled_before_start": 1,
+        "unknown": 0,
+        "not_started": 767,
+        "reserved_is_actual_call_start": false,
+        "unknown_credit_refunded": false,
+        "latest_state_is_transition_history": false,
+        "failed_slot_entry_history": "NOT_ESTABLISHED_FROM_LATEST_STATE"
+      },
+      "at_actual_writer_fault": {
+        "at": "actual_file_write_before_OSError",
+        "reserved": 1,
+        "started": 0,
+        "state": {
+          "NOT_STARTED": 767,
+          "START_RESERVED": 1
+        },
+        "ticket": {
+          "index": 0,
+          "trial_id": "correctness/baseline/ordinary/A/X/0",
+          "state": "START_RESERVED",
+          "worker": "correctness_baseline_ordinary_A",
+          "reserved_ns": 13332214131450499
+        },
+        "cursor": 1,
+        "active_cursor": 1,
+        "physical_state_sha256": "7078d7e740aacff8f06e4b19d00cef4f7015dab0531cef57ef3dee856d2d541f"
+      },
+      "raw_sha256": "ea2e9ee9da336887469637ab00d4c4136713e9742204b9c51ea7550265a17a03",
+      "environment_delta": {
+        "runtime_root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/docs/research/track_b_g6_w2c_b3_v2_independent_acceptance_server_20261019/injection_runtime",
+        "all_non_environment_candidate_fields_equal": true
+      },
+      "scientific_calls": 0
+    },
+    {
+      "mode": "P1",
+      "status": "INCOMPLETE_EVIDENCE",
+      "calls": {
+        "planned": 768,
+        "reserved": 1,
+        "started_observed": 0,
+        "completed": 0,
+        "failed": 0,
+        "cancelled_before_start": 1,
+        "unknown": 0,
+        "not_started": 767,
+        "reserved_is_actual_call_start": false,
+        "unknown_credit_refunded": false,
+        "latest_state_is_transition_history": false,
+        "failed_slot_entry_history": "NOT_ESTABLISHED_FROM_LATEST_STATE"
+      },
+      "at_actual_writer_fault": {
+        "at": "actual_file_write_before_OSError",
+        "reserved": 1,
+        "started": 0,
+        "state": {
+          "NOT_STARTED": 767,
+          "START_RESERVED": 1
+        },
+        "ticket": {
+          "index": 0,
+          "trial_id": "correctness/baseline/ordinary/A/X/0",
+          "state": "START_RESERVED",
+          "worker": "correctness_baseline_ordinary_A",
+          "reserved_ns": 13332214775164193
+        },
+        "cursor": 1,
+        "active_cursor": 1,
+        "physical_state_sha256": "7078d7e740aacff8f06e4b19d00cef4f7015dab0531cef57ef3dee856d2d541f"
+      },
+      "raw_sha256": "9ba7849aff316c64839174a3cc0188691aed36841b569a11c09458d8c652e6ee",
+      "environment_delta": {
+        "runtime_root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/docs/research/track_b_g6_w2c_b3_v2_independent_acceptance_server_20261019/injection_runtime",
+        "all_non_environment_candidate_fields_equal": true
+      },
+      "scientific_calls": 0
+    }
+  ],
+  "fresh_fault_count": 2,
+  "producer_self_checker_called": false,
+  "current_runtime_bytes": [
+    {
+      "name": "executable",
+      "path": "/usr/bin/python3.12",
+      "recorded_sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+      "current_server_sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+      "current_bytes_match": true
+    },
+    {
+      "name": "json",
+      "path": "/usr/lib/python3.12/json/__init__.py",
+      "recorded_sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5",
+      "current_server_sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5",
+      "current_bytes_match": true
+    },
+    {
+      "name": "fractions",
+      "path": "/usr/lib/python3.12/fractions.py",
+      "recorded_sha256": "cf33568f7b767f66896995a7a81cc662e8be226f2e58efb61d2028f64eb5d231",
+      "current_server_sha256": "cf33568f7b767f66896995a7a81cc662e8be226f2e58efb61d2028f64eb5d231",
+      "current_bytes_match": true
+    },
+    {
+      "name": "multiprocessing",
+      "path": "/usr/lib/python3.12/multiprocessing/__init__.py",
+      "recorded_sha256": "a5a42976033c7d63ee2740acceef949a3582dcb0e0442845f9717e1be771c68b",
+      "current_server_sha256": "a5a42976033c7d63ee2740acceef949a3582dcb0e0442845f9717e1be771c68b",
+      "current_bytes_match": true
+    },
+    {
+      "name": "multiprocessing.connection",
+      "path": "/usr/lib/python3.12/multiprocessing/connection.py",
+      "recorded_sha256": "3b1591b340a6e8f68eab4af6a6ed158d51c9c35bb5b500827b677bf97e8afd51",
+      "current_server_sha256": "3b1591b340a6e8f68eab4af6a6ed158d51c9c35bb5b500827b677bf97e8afd51",
+      "current_bytes_match": true
+    },
+    {
+      "name": "sqlite3",
+      "path": "/usr/lib/python3.12/sqlite3/__init__.py",
+      "recorded_sha256": "f7cc982617b68e147540ef352d38310fe4d25c2c9c2542b67d0590c871df09a8",
+      "current_server_sha256": "f7cc982617b68e147540ef352d38310fe4d25c2c9c2542b67d0590c871df09a8",
+      "current_bytes_match": true
+    },
+    {
+      "name": "_sqlite3",
+      "path": "/usr/lib/python3.12/lib-dynload/_sqlite3.cpython-312-x86_64-linux-gnu.so",
+      "recorded_sha256": "ecf54958b24c533f5c8dc67ca82cdce236aeb322864140bfe93eb8a69b729f4d",
+      "current_server_sha256": "ecf54958b24c533f5c8dc67ca82cdce236aeb322864140bfe93eb8a69b729f4d",
+      "current_bytes_match": true
+    },
+    {
+      "name": "_json",
+      "path": "/usr/lib/python3.12/lib-dynload/_json.cpython-312-x86_64-linux-gnu.so",
+      "recorded_sha256": "ca8e35c58f7bc8e27258c4af43651c941413bc6318903621253485b0395758a3",
+      "current_server_sha256": "ca8e35c58f7bc8e27258c4af43651c941413bc6318903621253485b0395758a3",
+      "current_bytes_match": true
+    },
+    {
+      "name": "_hashlib",
+      "path": "/usr/lib/python3.12/lib-dynload/_hashlib.cpython-312-x86_64-linux-gnu.so",
+      "recorded_sha256": "8dc6cda6dd9495b95a2bfb5b26e8cf06b72f36dc0213d958b9277a958287f0fe",
+      "current_server_sha256": "8dc6cda6dd9495b95a2bfb5b26e8cf06b72f36dc0213d958b9277a958287f0fe",
+      "current_bytes_match": true
+    }
+  ],
+  "historical_loaded_runtime_independently_proven": false,
+  "real_scientific_calls": 0,
+  "mandatory_STOP": true
+}
