@@ -1,3 +1,7 @@
+## 2026-10-19 H6 full m5：保存精度診断完了・旧raw FAIL維持
+
+[結果・解釈・終了監査](../docs/research/track_a_h6_m5_saved_phase_run01_results_20261019.md)。SOURCE99e8723d…、保存4再生が15:17:11 JSTにnative exit0・全worker回収、wall約13分04秒で終了。通常2本は保存vectorと差0。拡張でもraw1.5039e-9/位相差が残り、旧1e-9未満基準FAIL・旧STOP維持。26終了監査PASS、旧684＋準備10file・1831seal不変。新compile/費用受理/会計/retry0、AD03/Core保留、local commit後mandatory STOP・push0。次はユーザーの静的調査継続判断。以下は各時点の履歴。
+
 ## 2026-10-19 H6 full m5：保存4再生の一回解析起動・完了未確認
 
 [承認・fresh gate・進行snapshot](../docs/research/track_a_h6_m5_saved_phase_run01_start_20261019.md)。SOURCE99e8723d…/plan b2b2a818…に明示承認、新grant一回消費・15:04:07 JST起動。1831file seal/旧684file保全・fresh gate・保存診断/精度/2QPY構造PASS、初回通常再生が進行。最大4jobだがidle CPUから今回は1worker順次。新compile/sampling/会計0、旧STOP/58軸保全、AD03保留。最終結果・exit/reap未監査、次はCodexの終了監査とmandatory STOP。push0。以下は各時点の履歴。
