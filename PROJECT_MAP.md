@@ -1,3 +1,7 @@
+## 2026-10-19 H6 m5：明示basis修正の一回再計算もraw不一致でSTOP
+
+[結果・限界・終了監査](docs/research/track_a_h6_m5_phase_repair_run01_results_20261019.md)。SOURCE02cb8b12…、cosine1compile/2作用・wall約15分38秒。修正後vs保存wrapperは2.326e-11でPASS、compiled vs修正後は1.472e-9で固定1e-9未満を満たさずSTOP、第3gate未実施null。worker exit0/reapとlauncher exit1/reapを区別、63項目の証拠監査PASS。2422file/1964seal・旧STOP/58軸保全、費用受理/自動retry/sine/会計0。修正完了・原因passは未確定、旧費用非互換・AD03保留。次はユーザーの限定静的調査継続判断。local commit後mandatory STOP・push0。以下は各時点の履歴。
+
 ## 2026-10-19 H6 m5：明示basis修正・cosine一軸再計算を起動
 
 [承認・固定scope・fresh gate・起動snapshot](docs/research/track_a_h6_m5_phase_repair_run01_start_20261019.md)。SOURCE02cb8b12…/plan9c70e90b…、利用者の実H6再計算承認に基づき新grantを一回消費。最大cosine1compile/2作用、各3raw差1e-9未満を維持。人工11件・起動前22項目PASS、1964seal/2422保全file。1 productive worker＋独立監視、transient PSIでkillせず無関係worktree非凍結。新入力政策は旧費用非互換、旧STOP/58軸/AD03保留。全PASS/native exit/reapは未監査、次はCodexの終了監査・結果報告後mandatory STOP。local commit・push0。以下は各時点の履歴。
