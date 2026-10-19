@@ -1,3 +1,7 @@
+H2 D完了（2026-10-19）：再開SOURCEcf99e445…で保存70 signal・FP決定論的6 pairを再利用し、D_run02をone-shot実行。新28条件56軸/control112・会計1 pass/350行、5精度の登録内最良はfull PF/S2（q1/1/2/4/4）。native exit0・同一親wait4・28 worker全回収、wall62.839秒、人工27件・保存bytes監査PASS。元D541/F295/FP204と旧STOP・旧56軸予約を保持し、新旧予約累計112軸、部分費用混合0。A以降未実行、新規pushなし、mandatory STOP。[完了結果・SOURCE・予算・次の担当](../docs/research/track_a_h2_d_recovered_completed_20261019.md)。以下は各時点の履歴。
+
+`h2_d_recovery_contract.py` / `h2_d_recovery_science.py` / `prepare_h2_d_recovery.py` / `run_h2_d_recovery.py`：保存D70 signal専用のD_run02 adapter。`audit_h2_d_recovery_completed.py`は保存bytesのみを監査し、会計を再実行しない。人工検証は `tests/test_h2_d_recovery.py`。
+
 H2 D_run01停止（2026-10-19）：SOURCEde72e5d4…のD70を承認後1回起動。チャット中断後にdriver/native/既知workerの不在を確認し、native exit・wait4・最終resultがないため完了未確認STOP。保存70 signal（36新base＋28overlay＋FP6）、signal worker36は回収/hash PASS。compile28開始・raw結果12/計測27軸は未受理、56軸予約を返還せず、会計0・PF winner未取得。再実行0、F/FP保全・原D541 files保存、再開案はSOURCE未固定のINVALID草案。A以降未実行、新規pushなし、mandatory STOP。[停止証拠・再開前の条件](../docs/research/track_a_h2_d_interrupted_20261019.md)。以下は各時点の履歴。
 
 `audit_h2_d_interrupted.py` はnative完了証拠を失ったD_run01の部分結果・未返還予約・PID不在をstdlibだけで保全する。native exit/reapを捏造せず、SOURCE変更・NPZ decode・科学再実行を行わない。

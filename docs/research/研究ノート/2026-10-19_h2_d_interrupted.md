@@ -20,3 +20,7 @@ F295/FP204レコード保全、原D541 filesをmanifestに固定。
 公開push承認はないためlocal commitのみ。mandatory STOP。
 
 [保全証拠・予約・次の担当](../track_a_h2_d_interrupted_20261019.md)。
+
+追記：利用者が切断は自身の誤操作で追加対策不要と説明し、元のD完了までの継続を承認。
+新SOURCE・別D_run02で保存signalを再利用して完了した。
+[後続記録](2026-10-19_h2_d_recovered_completed.md)。上記の原STOP・予約は保持する。
