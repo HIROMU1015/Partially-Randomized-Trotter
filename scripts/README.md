@@ -652,3 +652,11 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 ## 2026-10-19：Track B Global Bundle × API Port 人工E2E独立受入
 
 固定基点5e862a70、候補62967269/測定deade78aの[人工統合版・独立受入](../docs/research/track_b_g6_w2c_b3_closed_port_bundle_independent_local_20261019/README.md)。SOURCEは `src/trottertracks/algorithm_codesign/g6_w2c_b3_port_bundle_independent_v1/`、testは `tests/tracks/algorithm_codesign/test_g6_w2c_b3_port_bundle_independent_v1.py`、復元/offline/test helper・原証拠は同packet。53cases/45mutations/追加3を独立分類、独立1038tests PASS。実科学接続/採択は未承認。Mandatory STOP。
+
+
+## Track B W2c-B3 server independent adapter acceptance (2026-10-20)
+
+[Independent Codec/Result/raw/Storage evidence and Q1-Q10](../docs/research/track_b_g6_w2c_b3_real_adapter_independent_server_20261020/README.md).
+207 independent checks PASS; 22 artificial cases and 20 semantic mutations independently classified.
+Overall acceptance ON HOLD: artificial runtime imports a module restricted to static reading by the current task.
+No real science, real authority, adoption, or STOP release; mandatory STOP.
