@@ -1,3 +1,7 @@
+## 2026-10-19 H6 m5：CT01 sine一軸正常終了・両軸receipt取得
+
+[実測・終了監査・次の担当](docs/research/track_a_h6_m5_ct01_sine_run01_results_20261019.md)。SOURCE885bbd71…、元compilerでsine新compile/作用各1、raw1.494e-9でCT01の1e-7未満PASS。保存cosine1.504e-9も別受入、両軸831662 RZ／軸。wall約31分20秒/native exit0/全回収、63終了監査/2025seal/2816file保全。旧58軸・STOP不変、AD03/会計保留、retry/次Phase/push0。次はユーザーの後続範囲判断、local commit後mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-19 H6 m5：CT01で未実施sine一軸を一回起動
 
 [承認・fresh gate・進行snapshot](docs/research/track_a_h6_m5_ct01_sine_run01_start_20261019.md)。SOURCE885bbd71…、元compiler/保存cosine831662 RZと先行PASSを再利用、sine新compile/作用各最大1。1e-7未満/他1e-9を保持、2025seal/2816file保全、一回grant消費。進行中・最終raw/単価/native exit/reapは未監査。次はCodexの終了監査・結果報告後mandatory STOP。旧STOP/58軸/AD03保留、会計/retry/次Phase/push0。以下は各時点の履歴。

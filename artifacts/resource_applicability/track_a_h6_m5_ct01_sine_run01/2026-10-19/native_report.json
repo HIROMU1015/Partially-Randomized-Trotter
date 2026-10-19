@@ -1,0 +1,114 @@
+{
+  "AD03": "DEFERRED",
+  "SOURCE": "885bbd7199c9ada26704b7db75b99767734e92e7",
+  "artifacts": {
+    "compiled_sine": {
+      "bytes": 92549282,
+      "file": "compiled_sine.qpy",
+      "sha256": "3ade0b18f980a72c14654692947e89e20697015cafb50f8cadabc52337ae3832"
+    },
+    "compiled_vector": {
+      "bytes": 131338,
+      "file": "compiled_sine_vector.npz",
+      "sha256": "fb0a9c15245e41be354a8c8b95e3d95d123849da31bfc28aa59c3d67c00b429a"
+    },
+    "expected_sine": {
+      "bytes": 131338,
+      "file": "expected_sine.npz",
+      "sha256": "5a10a8cfc448214b46b60636cc77e8f613d35db00d40841ed9218a162a3a64fd"
+    },
+    "sine_wrapper": {
+      "bytes": 36202479,
+      "file": "sine_wrapper.qpy",
+      "sha256": "852e080ce1d84eaf9ed6782eabd16f96fa885b6f2ed6452d266f04072d280404"
+    }
+  },
+  "checks": [
+    {
+      "PASS": true,
+      "check": "sine_terminal_transform_vs_saved_signal",
+      "phase_alignment": false,
+      "raw_error": 7.249756350802272e-14,
+      "strictly_below": 1e-09
+    },
+    {
+      "PASS": true,
+      "check": "compiled_vector_sine",
+      "phase_alignment": false,
+      "raw_error": 1.493814218810128e-09,
+      "strictly_below": 1e-07
+    }
+  ],
+  "compiled_state_actions": 1,
+  "compiler_policy": "ORIGINAL_PRESET_OPT1_UNMODIFIED",
+  "cost_accounting": false,
+  "full_H_reference_generation": 0,
+  "main_table_adoption": false,
+  "mandatory_STOP": true,
+  "new_compile": 1,
+  "new_cosine_compile": 0,
+  "new_sampling": 0,
+  "new_signal_or_oracle": 0,
+  "new_uncompiled_full_replays": 0,
+  "next_phase_started": false,
+  "old_58_axes_preserved": true,
+  "old_STOP_preserved": true,
+  "pilot_axis_receipts": 2,
+  "pipeline_identity": "4f78225f720c575bea11136b596d7ef449e74a5ec213b6381fad45d3d36c087d",
+  "plan_sha256": "32849ff8539758dff5ed1502168cff1e537f62eae10de929cfae1d8ebf1d0928",
+  "ranking": false,
+  "retry": false,
+  "reused_cosine": {
+    "axis": "cosine",
+    "compiled_sha256": "0bd776985abdb2ba4ea5390bb6c99a96e4fa5615849e76814fcfb8bce86664c5",
+    "compiler_settings_hash": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "cost_accounting": false,
+    "main_table_adoption": false,
+    "metrics": {
+      "circuit_size": 1740557,
+      "cx_count": 367008,
+      "cx_depth": 167160,
+      "rz_count": 831662,
+      "rz_depth": 158935,
+      "total_depth": 410819
+    },
+    "new_PASS": true,
+    "new_compile": 0,
+    "new_state_action": 0,
+    "new_strictly_below": 1e-07,
+    "old_PASS": false,
+    "old_STOP_preserved": true,
+    "old_strictly_below": 1e-09,
+    "original_SOURCE": "f743a88225f7cb2c8d2c91d7e19813a5780f803b",
+    "other_checks": [
+      {
+        "check": "normalization_log_B",
+        "error": 0.0
+      },
+      {
+        "check": "native_low",
+        "error": 7.966375899717263e-14
+      },
+      {
+        "check": "native_leakage",
+        "error": 0.0
+      },
+      {
+        "check": "independent_occupation_vector",
+        "error": 2.0510309204898196e-12
+      },
+      {
+        "check": "hadamard_cosine",
+        "error": 1.1957101975212936e-13
+      }
+    ],
+    "prior_checks_reused": true,
+    "protocol_commit": "94d18a979cdc1a390fa7e2eb3ae2f18f700b47d5",
+    "raw_error": 1.504043707445665e-09,
+    "scope_id": "H6_FULL_M5_CT01_SAVED_COSINE_ONE_SINE_V1",
+    "status": "SAVED_COSINE_ACCEPTED_UNDER_CT01",
+    "task": "H6_TOL_FULL_0e289606747ea369__0",
+    "wrapper_fingerprint": "da9afa1d776bf6da829119b2f4ff888042b243ba7d4b98a037134516ed9cf83c"
+  },
+  "status": "CT01_SINE_PASS_MANDATORY_STOP"
+}
