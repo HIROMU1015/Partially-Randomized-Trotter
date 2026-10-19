@@ -1,3 +1,5 @@
+[PF直接compile技術preflight](check_pf_direct_compile_preparation.py)・[未認可metadata生成](prepare_pf_direct_compile_technical.py)・[契約](pf_direct_compile_contract.py)・[取得API](pf_direct_compile_adapter.py)。科学起動CLIなし、実loader/worker未結合。[報告](../docs/research/track_a_pf_direct_compile_technical_preparation_20261020.md)。
+
 [PF直接compile棚卸し](prepare_pf_direct_compile_inventory.py)：固定Git objectとstdlibだけで保存値転記・metadata構造検証。science runner/compile/fitは起動しない。[計画](../docs/research/track_a_pf_direct_compile_expansion_plan_20261019.md)。
 
 ## 2026-10-19 共通実験プロトコルv2（正式採用）

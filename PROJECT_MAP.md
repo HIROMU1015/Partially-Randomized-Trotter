@@ -1,3 +1,7 @@
+## 2026-10-20 PF直接compile：技術準備、範囲未承認
+
+[adapter・契約・検査・残る本番結合](docs/research/track_a_pf_direct_compile_technical_preparation_20261020.md)。ユーザーの研究適合判断と技術準備承認を記録。788提案軸は保持、選択0軸/有効grantなし。取得専用API・pair予約・metadata拒否検査を実装。実分子loader/oracle/worker/witness/fresh gateは未結合、実入力/回路/compile0。旧計画と結果・契約・STOP不変。mandatory STOP。以下は履歴。
+
 ## 2026-10-19 PF直接コンパイル拡充計画（未実行）
 
 [候補一覧・計画・必要承認](docs/research/track_a_pf_direct_compile_expansion_plan_20261019.md)。4系580候補＋legacy H4 DF12別104候補、計684候補/1368軸を棚卸し。両軸実測H2 34/H4 DF10 129/H6 29/H8 27、legacy71。未実測788軸と旧profile等の条件付き再取得48軸を分離し、H6 B0_p11_q4_2ndを優先。全登録qを残す。保存値転記・metadata確認のみ、新科学計算/compile/fit/費用再会計0、実行未認可・mandatory STOP。以下は履歴。

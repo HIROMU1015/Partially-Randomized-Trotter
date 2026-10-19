@@ -1,0 +1,168 @@
+{
+  "status": "STATIC_API_MAPPING_AND_FAKE_PROVIDER_VALIDATION_ONLY",
+  "backends": [
+    {
+      "system": "H2_DF3",
+      "origin": {
+        "id": "H2_COMPILE_CODE",
+        "commit": "cf99e4452df96291d7e9d37d76d2e91be5cbc413",
+        "path": "scripts/h2_d_recovery_science.py",
+        "sha256": "72aa5346456010d740b3772ae88e6326b4e6d8c154d4e911a6e275d18dcd0bf3",
+        "bytes": 3819,
+        "git_blob_sha": "2e87363dfe39fdec7817ece6dc292bb897ba3f7a",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/cf99e4452df96291d7e9d37d76d2e91be5cbc413/scripts/h2_d_recovery_science.py"
+      },
+      "functions_inspected": [
+        "context"
+      ],
+      "excluded_old_driver_paths": [
+        "execute: fixed D recovery scope, old grant and accounting"
+      ],
+      "new_adapter": "scripts/pf_direct_compile_adapter.py:NativeKernel",
+      "reusable_provider_APIs": [
+        "build_deterministic_native",
+        "build_native_hadamard_wrapper",
+        "canonical_qiskit_circuit_fingerprint",
+        "transpile_and_measure_cost"
+      ],
+      "molecular_loader_bound": false,
+      "profile_runtime_live_verified": false,
+      "independent_control_oracle_for_selected_scope_bound": false,
+      "worker_spawner_and_wait4_witness_bound": false,
+      "provider_infinite_instruction_allowance_compatibility_exercised": false,
+      "production_ready": false
+    },
+    {
+      "system": "H4_DF10",
+      "origin": {
+        "id": "H4_COMPILE_CODE",
+        "commit": "84db3909639b34ec521004c3d8f7ef9b5e6ad851",
+        "path": "scripts/h4_tol_main_science.py",
+        "sha256": "2f41c4e9fb865817f9361041fc7ee5ceace0ffc51e390d6f4165ba1669838288",
+        "bytes": 11591,
+        "git_blob_sha": "8f50c6327d613d7b56f9d4f7eea048e4a29d729d",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/84db3909639b34ec521004c3d8f7ef9b5e6ad851/scripts/h4_tol_main_science.py"
+      },
+      "functions_inspected": [
+        "h_compile",
+        "setup"
+      ],
+      "excluded_old_driver_paths": [
+        "setup: scientific primitives/actions; not invoked",
+        "execute: signal/acquisition/accounting pipeline"
+      ],
+      "new_adapter": "scripts/pf_direct_compile_adapter.py:NativeKernel",
+      "reusable_provider_APIs": [
+        "build_deterministic_native",
+        "build_native_hadamard_wrapper",
+        "canonical_qiskit_circuit_fingerprint",
+        "transpile_and_measure_cost"
+      ],
+      "molecular_loader_bound": false,
+      "profile_runtime_live_verified": false,
+      "independent_control_oracle_for_selected_scope_bound": false,
+      "worker_spawner_and_wait4_witness_bound": false,
+      "provider_infinite_instruction_allowance_compatibility_exercised": false,
+      "production_ready": false
+    },
+    {
+      "system": "H4_LEGACY_DF12",
+      "origin": {
+        "id": "H4_LEGACY_COMPILE_CODE",
+        "commit": "8a82b9272ee24896e7d7cbb7400d9b8c12d8f804",
+        "path": "scripts/h4_dp_science.py",
+        "sha256": "8c71fdf948bbce27fbd86e6b89533a70aa81e1c192b296ed69b3408380471457",
+        "bytes": 13198,
+        "git_blob_sha": "11013d48c12b2348fe312ab38fb8d46bc6c2bf65",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/8a82b9272ee24896e7d7cbb7400d9b8c12d8f804/scripts/h4_dp_science.py"
+      },
+      "functions_inspected": [
+        "compile_axes",
+        "deterministic_task"
+      ],
+      "excluded_old_driver_paths": [
+        "confirmation_task: PR sampling",
+        "deterministic_account: shot accounting and PF selection"
+      ],
+      "new_adapter": "scripts/pf_direct_compile_adapter.py:NativeKernel",
+      "reusable_provider_APIs": [
+        "build_deterministic_native",
+        "build_native_hadamard_wrapper",
+        "canonical_qiskit_circuit_fingerprint",
+        "transpile_and_measure_cost"
+      ],
+      "molecular_loader_bound": false,
+      "profile_runtime_live_verified": false,
+      "independent_control_oracle_for_selected_scope_bound": false,
+      "worker_spawner_and_wait4_witness_bound": false,
+      "provider_infinite_instruction_allowance_compatibility_exercised": false,
+      "production_ready": false
+    },
+    {
+      "system": "H6_DF19",
+      "origin": {
+        "id": "H6_COMPILE_CODE",
+        "commit": "579d03c9c8a2b1ce7c22eb751a08642e2d813c3c",
+        "path": "scripts/h6_dba_native.py",
+        "sha256": "d05606a081eedd13939fb7f436d7f95fa369a530d0490c695005076e49577982",
+        "bytes": 6128,
+        "git_blob_sha": "41f28830d03fd25a08dfa4dcad421a8fac2554dd",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/579d03c9c8a2b1ce7c22eb751a08642e2d813c3c/scripts/h6_dba_native.py"
+      },
+      "functions_inspected": [
+        "load",
+        "control",
+        "compile_pair"
+      ],
+      "excluded_old_driver_paths": [
+        "direct: hard-coded p11/q4/S4",
+        "compile_pair predictions/2-percent STOP: do not call with predictions"
+      ],
+      "new_adapter": "scripts/pf_direct_compile_adapter.py:NativeKernel",
+      "reusable_provider_APIs": [
+        "build_deterministic_native",
+        "build_native_hadamard_wrapper",
+        "canonical_qiskit_circuit_fingerprint",
+        "transpile_and_measure_cost"
+      ],
+      "molecular_loader_bound": false,
+      "profile_runtime_live_verified": false,
+      "independent_control_oracle_for_selected_scope_bound": false,
+      "worker_spawner_and_wait4_witness_bound": false,
+      "provider_infinite_instruction_allowance_compatibility_exercised": false,
+      "production_ready": false
+    },
+    {
+      "system": "H8_DF28",
+      "origin": {
+        "id": "H8_COMPILE_CODE",
+        "commit": "49879a9c73477c49081a3059cec70e4f4c6a5924",
+        "path": "scripts/h8_dba_direct.py",
+        "sha256": "be78e7af453ef60cf687f24b8e180002c54fdf670684416dbf9e4b6dec2524ff",
+        "bytes": 7074,
+        "git_blob_sha": "2aefd974a744aa510bc948ab5e6caa716d7c1a24",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/49879a9c73477c49081a3059cec70e4f4c6a5924/scripts/h8_dba_direct.py"
+      },
+      "functions_inspected": [
+        "load",
+        "measured_worker"
+      ],
+      "excluded_old_driver_paths": [
+        "evaluate: old selected cases/grant/caps/shared-model STOP"
+      ],
+      "new_adapter": "scripts/pf_direct_compile_adapter.py:NativeKernel",
+      "reusable_provider_APIs": [
+        "build_deterministic_native",
+        "build_native_hadamard_wrapper",
+        "canonical_qiskit_circuit_fingerprint",
+        "transpile_and_measure_cost"
+      ],
+      "molecular_loader_bound": false,
+      "profile_runtime_live_verified": false,
+      "independent_control_oracle_for_selected_scope_bound": false,
+      "worker_spawner_and_wait4_witness_bound": false,
+      "provider_infinite_instruction_allowance_compatibility_exercised": false,
+      "production_ready": false
+    }
+  ]
+}

@@ -1,3 +1,5 @@
+[PF直接compile技術準備](track_a_pf_direct_compile_technical_preparation_20261020.md)：研究適合と実行承認を分離。788提案/選択0軸、実compile0。
+
 [PF直接コンパイル拡充計画（未実行）](track_a_pf_direct_compile_expansion_plan_20261019.md)：684候補の棚卸し、全qの未実測788軸、旧profile再照合48軸。科学実行は別承認。
 
 ## 2026-10-19 共通実験プロトコルv2（正式採用）

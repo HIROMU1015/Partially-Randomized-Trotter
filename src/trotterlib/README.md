@@ -1,3 +1,5 @@
+[PF直接compile技術準備](../../docs/research/track_a_pf_direct_compile_technical_preparation_20261020.md)はscripts内の独立stdlib moduleとfake provider検査を使用。本package初期化や既存science/モデルは変更しない。
+
 [PF直接compile拡充の計画](../../docs/research/track_a_pf_direct_compile_expansion_plan_20261019.md)はmetadata整理のみ。ライブラリ・旧費用モデル・科学runnerは不変。
 
 ## 2026-10-19 共通実験プロトコルv2（正式採用）

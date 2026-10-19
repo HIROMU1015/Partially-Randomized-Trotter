@@ -1,3 +1,5 @@
+[PF直接compile技術準備](research/track_a_pf_direct_compile_technical_preparation_20261020.md)：未認可契約・取得API・人工検査、本番loader等は未結合。
+
 [PF直接コンパイル拡充計画（未実行）](research/track_a_pf_direct_compile_expansion_plan_20261019.md)：候補別測定/モデル/欠測、実行可能性、実行契約案。
 
 ## 2026-10-19 共通実験プロトコルv2（正式採用）

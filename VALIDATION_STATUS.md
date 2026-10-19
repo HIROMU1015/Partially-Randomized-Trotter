@@ -1,3 +1,7 @@
+## 2026-10-20 PF直接compile技術準備（人工検査のみ）
+
+[技術報告](docs/research/track_a_pf_direct_compile_technical_preparation_20261020.md)。fake provider・人工契約の34検査とmetadata preflightを実施。科学packageをimportせず、実分子検証・compiler互換性・性能保証は未実施。788提案/選択0軸、科学実行未認可・本番binding未完成。旧SOURCE/結果/STOP不変、最終freeze/詳細科学レビュー未開始。
+
 ## 2026-10-19 PF直接compile棚卸し・計画
 
 [計画・構造検証](docs/research/track_a_pf_direct_compile_expansion_plan_20261019.md)。684登録候補/1368軸、未実測788軸を保存証拠から整理。GitHub固定12ファイルbytes一致、科学実行0。計画は実行承認ではなく、詳細科学レビュー/最終freeze未開始。以下は履歴。
