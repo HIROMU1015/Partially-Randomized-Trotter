@@ -61,7 +61,7 @@ def run_task(cfg,task,stop):
             logB=math.fsum(len(r.rte_occurrence.events)*math.log(r.rte_distribution.exact_finite_distribution) for r in requests)
         stratum=c.design.event_stratum(events);event_digest=c.digest(events)
         c.save(out/'events_PRIVATE.json',dict(events=events,event_digest=event_digest,conditional=False,cohort='EXPLORATION' if row['method']=='PR' else 'DETERMINISTIC',**stratum))
-        sig=next(x for x in c.read(c.ROOT/'artifacts/resource_applicability/track_a_h46_m5_signal_run02_results/2026-10-20/signal_records.json')['records'] if x['candidate']['id']==row['id'])
+        sig=next(x for x in c.read(c.ROOT/c.SIGNAL_RECORDS)['records'] if x['candidate']['id']==row['id'])
         checks=[gate(out,'saved_normalization_log_B',abs(logB-sig['signal']['log_B']),c.OTHER_TOLERANCE)]
         scalar=ctx.scalar+(ctx.tail_identity if row['method'] in ('PR','B0I') else 0.)
         prep=ctx.fullprep if row['method']=='FULL' else ctx.cut

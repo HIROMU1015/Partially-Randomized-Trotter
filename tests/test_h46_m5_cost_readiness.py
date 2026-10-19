@@ -90,6 +90,12 @@ class DesignTests(unittest.TestCase):
         with self.assertRaises(ValueError):d.event_stratum([[dict(taylor_order=6)]])
 
 class ContractTests(unittest.TestCase):
+    def test_saved_normalization_records_are_sealed_source_input(self):
+        self.assertIn(c.SIGNAL_RECORDS,c.NEW_PATHS)
+        self.assertIn(c.SIGNAL_RECORDS,c.SOURCE_PATHS)
+        text=(c.ROOT/'scripts/h46_m5_cost_native.py').read_text()
+        self.assertIn('c.read(c.ROOT/c.SIGNAL_RECORDS)',text)
+
     def test_draft_refused_before_seals_and_molecular_import(self):
         with patch.object(c,'verify',side_effect=AssertionError('must not reach')):
             with self.assertRaisesRegex(ValueError,'EXPLICIT_UNIT_COST'):c.authorize(dict(authorized=False,grant=dict(valid=False)))

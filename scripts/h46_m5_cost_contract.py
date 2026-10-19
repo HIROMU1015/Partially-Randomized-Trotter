@@ -9,9 +9,10 @@ import h46_m5_signal_contract as signal_contract
 ROOT=Path(__file__).resolve().parents[1]
 STAGES=('H4_DET','H6_DET','H4_PR','H6_PR')
 MANIFEST='references/h46_m5_cost_readiness_v1.json'
+SIGNAL_RECORDS='artifacts/resource_applicability/track_a_h46_m5_signal_run02_results/2026-10-20/signal_records.json'
 NEW_PATHS=('scripts/h46_m5_cost_design.py','scripts/h46_m5_cost_contract.py',
  'scripts/h46_m5_cost_native.py','scripts/run_h46_m5_cost.py',
- 'scripts/prepare_h46_m5_cost_readiness.py','tests/test_h46_m5_cost_readiness.py',MANIFEST)
+ 'scripts/prepare_h46_m5_cost_readiness.py','tests/test_h46_m5_cost_readiness.py',MANIFEST,SIGNAL_RECORDS)
 SOURCE_PATHS=tuple(dict.fromkeys(signal_contract.SOURCE_PATHS+NEW_PATHS))
 COMPILE_TOLERANCE=1e-7
 OTHER_TOLERANCE=1e-9
