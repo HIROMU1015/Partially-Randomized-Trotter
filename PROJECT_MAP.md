@@ -1,3 +1,7 @@
+## 2026-10-20 PF直接compile：722軸/66軸の独立契約案
+
+[契約分割と検証](docs/research/track_a_pf_direct_compile_contract_split_20261020.md)。788軸の計画を維持し、現行4系列722軸とH4 legacy DF12の66軸を独立契約案へ分離。完全pair・非重複・全体一致をmetadata検査。実取得範囲/科学実行は未承認、選択0・compile0、旧成果物保全。ユーザーが範囲を判断後、Codexが最終結合・sealを準備。mandatory STOP。以下は履歴。
+
 ## 2026-10-20 PF直接compile：技術準備、範囲未承認
 
 [adapter・契約・検査・残る本番結合](docs/research/track_a_pf_direct_compile_technical_preparation_20261020.md)。ユーザーの研究適合判断と技術準備承認を記録。788提案軸は保持、選択0軸/有効grantなし。取得専用API・pair予約・metadata拒否検査を実装。実分子loader/oracle/worker/witness/fresh gateは未結合、実入力/回路/compile0。旧計画と結果・契約・STOP不変。mandatory STOP。以下は履歴。

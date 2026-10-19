@@ -1,3 +1,7 @@
+## 2026-10-20 PF直接compile：722軸/66軸の独立契約案
+
+[契約分割と検証](../docs/research/track_a_pf_direct_compile_contract_split_20261020.md)。788軸の計画を維持し、現行4系列722軸とH4 legacy DF12の66軸を独立契約案へ分離。完全pair・非重複・全体一致をmetadata検査。実取得範囲/科学実行は未承認、選択0・compile0、旧成果物保全。ユーザーが範囲を判断後、Codexが最終結合・sealを準備。mandatory STOP。以下は履歴。
+
 [PF直接compile技術preflight](check_pf_direct_compile_preparation.py)・[未認可metadata生成](prepare_pf_direct_compile_technical.py)・[契約](pf_direct_compile_contract.py)・[取得API](pf_direct_compile_adapter.py)。科学起動CLIなし、実loader/worker未結合。[報告](../docs/research/track_a_pf_direct_compile_technical_preparation_20261020.md)。
 
 [PF直接compile棚卸し](prepare_pf_direct_compile_inventory.py)：固定Git objectとstdlibだけで保存値転記・metadata構造検証。science runner/compile/fitは起動しない。[計画](../docs/research/track_a_pf_direct_compile_expansion_plan_20261019.md)。
