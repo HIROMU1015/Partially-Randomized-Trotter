@@ -17,6 +17,8 @@ GitHubの関連branch headを読取確認し、固定した67公開資料を実�
 [branch観測](../../artifacts/resource_applicability/track_a_protocol_v2_draft/2026-10-19/branch_observation.json)は他チャットの進行を凍結する規則ではない。
 SOURCEの規則、保存projection、公開監査receipt、報告書の申告、原private witnessの再監査は区別する。
 
+> **履歴注記（冒頭の公開snapshot）**：上記のH2「最新829d697a」と公開資料一覧は初回採用時点の履歴である。H2の最新の完了・受入状態は[§10](#h2-current-status)を参照。
+
 ## 1. 対象・比較単位・状態
 
 対象は保存DF Hamiltonian・保存状態における有限時間の複素signal推定資源。linear H2/H4/H6/H8、隣接距離1.0 Å、STO-3Gを整理する。
@@ -50,6 +52,8 @@ DF政策を揃えたことだけで分子サイズの単独因果効果、普遍
 
 ## 3. 時間・精度・回路・compiler・費用
 
+> **履歴注記（§3・精度表）**：下表H2の「n80/12は未採用提案」「P最終SOURCE/seed未固定」は初回採用時点の履歴である。最新状態は[§10](#h2-current-status)：P完了、n=80/12採用、2条件ともREPRODUCED（有限標本）。
+
 |項目|現在の主条件・継承規則|限定|
 |---|---|---|
 |時間|T=.8、δ=T/q。保存されたq scheduleを使う|未登録qへの補間や自動拡張なし|
@@ -80,6 +84,8 @@ H2 D70とH4 D190は保存済み登録集合の対照で、H6/H8の全域にはmo
 m5_best等の新PF採用保留はv1 AD03のまま。本案で新しい高次PF/PR系列を追加採用しない。
 
 ### 4.1 H2：v2での追加対象
+
+> **履歴注記（§4.1）**：本節の「P未実行・未seal」、未採用n/null/未承認の欄、および末尾の独立P再現性未判定は初回採用時点の履歴である。最新状態は[§10](#h2-current-status)：P完了、n=80/12採用、2条件ともREPRODUCED。母平均保証の未認定は現在も維持する。
 
 - **F完了**：SOURCE `37b1cf72990885962d8449d8bd5ec7e303329350`、受入済みF commit `7ea6df2dbe34e64a34f468c343bb12922d3e2829`。新tol-only DF3・sector4入力を保存。
 - **FP完了**：SOURCE `de72e5d4e48177734c0ddd79dffac14222410658`、完了commit `af724928689be3592b391fab3a14538bf4752b76`。PRは2候補それぞれ**native診断n1**で、Aや独立Pの統計標本ではない。
@@ -121,6 +127,8 @@ H8 D保存会計の修正SOURCE 8ff002ddと初回STOPも区別する。継続SOU
 
 H4粗精度の非再現は正式採用した結果。H6粗精度は事前の**PF優位方向**を再現しており、REPRODUCEDをPR優位の同義語にしない。
 H2はこの表に入らない。Pの2候補は保存草案で固定済みだが、最終n/seed/科学SOURCEは未固定で、H8 n48や他系の必要nを移さない。
+> **履歴注記（§5・H2段落）**：直前のH2最終n/seed/科学SOURCE未固定は初回採用時点の履歴であり、最新状態は[§10](#h2-current-status)を参照（P完了・n=80/12採用・2条件ともREPRODUCED）。既存のH4/H6/H8主表6条件へH2を混ぜない扱いは維持する。
+
 費用・SEのexact保存値とCEM対応は既存論文packetへ参照し、新しい比・差・CIを作らない。
 
 ## 6. sampling・seed・標本数設計
@@ -130,11 +138,15 @@ v1 P手順を継承する：候補・PF・期待方向・endpoint・保存shot�
 seed不一致や衝突0だけで統計的独立性を証明したとはしない。
 
 H2 Aはnamespace `H2_FP_D_A_V1_20261019_A` と原direct_master_to_step_seeds_v1で完了。保存activation receiptは528 master/3888 seed値と既知origin/geometry除外の衝突0、seed再抽選なしを報告する。将来の未登録campaignや統計的独立性は保証しない。将来Pの新seed/再照合は未seal。今回新seedを生成・衝突解析していない。
+> **履歴注記（§6・seed段落）**：直前の「将来Pの新seed/再照合は未seal」は初回採用時点の履歴である。Pの固定SOURCE/seed・完了証拠を含む最新状態は[§10](#h2-current-status)を参照。新seedや新samplingを今回承認する注記ではない。
+
 H4の保存FP n32、新A49候補n8、P n1108/78を分離する。H6/H8のA16探索n8、旧union n32、新Pも別cohort。
 
 H4 S_STATSとH6 S_STATSは別候補・別設計規則で完了した過去結果。近似normal/保存SE/効果差や、H6のorder2可視性計画を母分散・実power・母平均保証へ昇格させない。
 H2 S_STATSも完了済みの別設計で、family α=.05、2片側Bonferroni、power=.8、SD倍率1/2/4/8、相対検出差.01/.02/.05を保存契約に記録。推奨条件SD倍率4/差.02で提案n80/12、提案予算92 trajectory・184 compiled軸・256 RTE eventが保存されている。採用済みn、実power、母平均保証ではない。H2の2候補とも保存S0_ONLY=8で、law確率・rare可視性n・未観測費用はnullのまま保持する。
 H8の固定n48を共通最低nとしない。H2 Pはユーザーによるn採否判断、最終seal、別途実行承認が残る。raw分散再集計、bootstrap、不足共分散、必要n数値計算を文書準備の承認から推定しない。
+> **履歴注記（§6・標本数と残作業）**：直前2段落のH2「提案n」「採用済みnではない」「n採否判断・seal・実行承認が残る」は初回採用時点の履歴である。最新状態は[§10](#h2-current-status)：n=80/12採用、P完了、2条件ともREPRODUCED。実power・母平均保証は未認定のままである。
+
 
 ## 7. 希少event・公開監査・比較可能性
 
@@ -172,9 +184,13 @@ v2から`COMMON_CORE_READY`、母平均保証、最終evidence freeze、詳細�
 重い計算は許可scope内で候補/trajectory間の並列化、cache、重複削減等を行い、恣意的CPU/RAM/worker上限を設けない。共有設定・他processを変更せず、一時PSIや無関係worktreeの更新だけで正常workerを止めない。
 AI subagentへの委任禁止は維持する。
 
+> **履歴注記（§9・H2担当の判断と実行境界）**：以下のH2「提案n採用を認定しない」「n採否判断・P seal・実行承認が必要」は初回採用時点の履歴であり、完了済みPへの新たな承認要求ではない。最新状態は[§10](#h2-current-status)（P完了、n=80/12採用、2条件ともREPRODUCED）。一般の新規科学stageに対する上記の別承認境界は維持する。
+
 **ユーザー（採用済み）**：固定v2改訂案を正式な共通実験プロトコルとして採用。H2の対象追加、保存snapshot、明示された例外・未検証事項を含む文書の採用であり、未検証事項の解消・科学的保証やH2 Pの提案n採用を認定しない。
 **ユーザー／H2担当Codex（別stage）**：H2 S_STATS提案n80/12の採否を判断し、指示後にP最終seed・SOURCE・予算をsealする。P科学実行はさらに別個の明示承認を必要とする。本改訂担当はH2作業を起動しない。
 **Codex（現在）**：正式版・採用記録の構造照合、保存、承認範囲の公開確認後、mandatory STOP。科学計算、詳細科学レビュー、最終freezeへ自動進行しない。
+
+<a id="h2-current-status"></a>
 
 ## 10. H2独立確認P完了・正式受入（2026-10-19追記）
 
