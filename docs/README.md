@@ -1,3 +1,7 @@
+## 2026-10-19 H6 m5：1qubit保持対照の実検証完了
+
+[結果・旧STOPとの区別・費用上の制限](research/track_a_h6_m5_preserve_oneq_run01_results_20261019.md)。SOURCE68ee03a7…、H6でraw誤差の改善を確認し、登録した3検査を全て通過した。 保存PASS再利用・新compile1/作用1、1qubit再合成全体を外す対照なので局所簡約だけの原因認定・旧費用互換性は未確立。旧STOP/58軸/AD03保留・sine/会計/retry0。全exit/reapと保全を監査、次はユーザーの技術方針判断。local commit後mandatory STOP・push0。以下は各時点の履歴。
+
 ## 2026-10-19 H6 m5：1qubit再合成を保持する対照を一回起動
 
 [scope・承認・fresh gate・起動snapshot](research/track_a_h6_m5_preserve_oneq_run01_start_20261019.md)。SOURCE68ee03a7…、小角度を含む1qubit runを保持し他opt1処理を維持する新policy。保存PASS再利用・新cosine1compile/1作用、raw3検査各1e-9未満。人工12/preflight22/改変拒否12件PASS、2011seal・2658保全。単独原因/旧費用互換性を認定せず、旧STOP/58軸/AD03保留。完了/exit/reapは未監査、次はCodexの終了監査と報告後mandatory STOP。local commit・push0。以下は各時点の履歴。
