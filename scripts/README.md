@@ -941,3 +941,8 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 
 
 - `run_mechanism_a82.py`：SOURCE固定・新one-shot grant必須のA82.PR2軸だけのdelta runner。旧PF／core／他63sideは継承。`preview_mechanism_figure2.py --saved-data`：SHA固定保存4表を座標へ変換して描画。[準備・図・承認境界](../docs/research/track_a_mechanism_figure2_a82_readiness_20261019.md)。
+
+
+## 2026-10-19 Mechanism：A82.PR限定one-shot完了
+
+[結果・統合・STOP](../docs/research/track_a_mechanism_a82_validation_results_20261019.md)。SOURCE a8961c45d7fd0310c1e34c50ffd004dd58898247、PR cosine/sineだけ一回PASS。旧63 sideを継承してside検証64/64、比較因子は保存31比較62軸のまま。core32・図116点・H4 P別cohort・旧欠測履歴は不変。公開承認未確定でpushなし。新比生成・統計・sampling・compile・最終freeze・詳細科学レビューなし、mandatory STOP。

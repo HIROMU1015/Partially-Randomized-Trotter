@@ -1,0 +1,14 @@
+# Claim–Evidence更新案（最終freezeなし）
+
+前8行の全文をJSON内previous_figure2_readiness_rowとして保全。最新の主張は次の通り。詳細科学レビューや採択を実施したものではない。
+
+|ID|主張案|経験的条件と限界|
+|---|---|---|
+|CE1|強化PF比較集合による点費用結論の変化を、保存domainとcost class付きで記述する。|従来のH6/H8保存比較を維持。H4はDで保存代表10/10不変という別provenanceを追記。 全domain実測最良・母平均最良・登録外最適性は未認定。旧32の数値を書き換えない。|
+|CE2|H8探索n8の両端改善と独立固定n48の2比較を別の証拠として示す。|n48通常評価の保存点削減率2.935924%／3.302597%。候補と固定PF、n8との分離を明示。 高次event未観測、母平均優位未確定。旧union n32のA82.PRは今回検証済みだが新PR/PF因子比は未計算。n48と混合しない。|
+|CE3|中間精度の保存点費用削減を、固定候補・cohort・model条件付きで引用する。|保存された点比較にexact費用分解と31比較の条件付き説明を追加できる。新winnerを選ばない。 連続精度窓・全域の利益・rare頑健性・selection-adjusted保証は主張しない。|
+|CE4|保存32比較のexact費用分解・31比較の比較説明因子をFigure 2に示し、A82.PRを別deltaで検証した。|図は保存値のまま。63旧sideと新A82.PRで64 sideの条件付き整合検証が成立。比較因子は31比較62軸を継承。 A82のPR/PF説明因子比は未算出・未承認。因果効果や厳密保証へ拡張しない。|
+|CE5|signedと経験的非相殺の保存結果を別会計として維持する。|今回のcore32・説明31は通常signed/factor1のみ。H4 Dの非相殺5 endpointは別の転記表。 H6旧12候補分解欠測と全136非相殺null、factor10欠測等は未解消。新比較を追加しない。|
+|CE6|有限時間signal・保存DF・P=0・指定compilerのRZ点費用という適用範囲を保持する。|local source-bound結果と技術検査、探索／選択後確認／独立固定確認を区別する。 母平均優位・rigorous bias・FT T資源・state prep/noise/backend・energy/RPE全roundへ拡張しない。|
+|CE7|H4 D完了とPF代表10/10不変、独立Pで主10/10・診断4/4の点費用方向再現を示す。|legacy DF12、登録104 D候補、独立P4,185軌道／8,370 compile。旧n8/n32と新Pは別cohort。 S4未観測、母平均優位保証なし。Pによる新機構分解・tol-only DF10統合は未実施。|
+|CE8|A82_OLD_PR.PRのcosine/sineだけを固定SOURCE・契約のone-shotで検証し、保存shot会計との整合を確認した。|H8/linear1Å/STO-3G/tol-onlyDF28/T=.8/P=0、通常signed/factor1、ε=.05、B2_p7_q2_2nd_r4_K2、旧union n32。normalization・headroom・log bound・整数ceilの条件付きbinary64整合。旧欠測履歴を保全しPFは保存値を継承。 比較因子比は未算出。母平均優位、厳密bias保証、FT資源、独立cohortとの統合を認定しない。|

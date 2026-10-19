@@ -1571,3 +1571,8 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-19 Mechanism：Figure 2実図・H4 P統合・A82限定SOURCE
 
 [入口](docs/research/track_a_mechanism_figure2_a82_readiness_20261019.md)。固定32比較／31比較の保存値からFigure 2A/B（SVG/PNG/PDF）。H4 P4,185軌道／8,370 compile、主10＋診断4点方向再現を別cohortで追記し、旧core・P_PENDING履歴不変。A82 SOURCE a8961c45…、描画3de17acd…、人工158PASS。実A82解析・新統計・sampling・compile・push0、最終freezeなし、mandatory STOP。
+
+
+## 2026-10-19 Mechanism：A82.PR限定one-shot完了
+
+[結果・統合・STOP](docs/research/track_a_mechanism_a82_validation_results_20261019.md)。SOURCE a8961c45d7fd0310c1e34c50ffd004dd58898247、PR cosine/sineだけ一回PASS。旧63 sideを継承してside検証64/64、比較因子は保存31比較62軸のまま。core32・図116点・H4 P別cohort・旧欠測履歴は不変。公開承認未確定でpushなし。新比生成・統計・sampling・compile・最終freeze・詳細科学レビューなし、mandatory STOP。

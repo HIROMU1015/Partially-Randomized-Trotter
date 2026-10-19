@@ -1,0 +1,45 @@
+{
+  "status": "MANDATORY_STOP",
+  "actions": [
+    {
+      "owner": "ユーザー",
+      "action": "このlocal commitの公開候補資料と公開範囲を確認し、公開する場合だけ明示承認する。",
+      "approved": false
+    },
+    {
+      "owner": "Codex（公開承認後）",
+      "action": "承認された資料だけをpushしremote SHAを確認する。",
+      "authorized_now": false
+    },
+    {
+      "owner": "ユーザー",
+      "action": "A82の比較説明因子が論文上必要か判断する。必要なら既存PR/PF side結果を読む2軸の因子・log比生成だけを別契約で承認する。",
+      "approved": false
+    },
+    {
+      "owner": "Codex（その別承認後）",
+      "action": "新比生成の契約・最小adapterを準備し、PR/PF再評価・core・他31比較・統計・sampling・compileを範囲外にする。",
+      "authorized_now": false
+    }
+  ],
+  "optional_future_A82_factor_scope": {
+    "comparison": "A82_OLD_PR",
+    "axes": [
+      "cosine",
+      "sine"
+    ],
+    "factors": [
+      "nominal_normalization_squared",
+      "normalization_margin_squared",
+      "normalization_upper_squared",
+      "headroom_squared",
+      "alpha_log",
+      "continuous_shot",
+      "rounding_factor"
+    ],
+    "inputs": "New validated PR side delta and exact archived PF side; no re-evaluation",
+    "approved": false
+  },
+  "final_evidence_freeze_authorized": false,
+  "detailed_scientific_review_authorized": false
+}
