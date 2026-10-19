@@ -58,3 +58,5 @@ Qiskit1.3.0、rz/sx/x/cx、opt1、seed17、backend/coupling/layout/routing=None�
 **A50はPhase 0のまま**で、FP1候補n32と新規49候補n8の区別を維持している。新seed割当・旧seedとの最終衝突検査・最終SOURCE/入力/call/契約・A科学実行は未実施。S_STATS/Pも開始していない。Dについて未解決の技術異常はない。
 
 次の作業：**ユーザー**がD結果を正式に受け入れ、A50の最終sealを指示する。条件が成立した後に限り、**Codex**がAのseed・衝突検査・契約・人工/拒否検査を完了し、commit・push・remote SHA確認後にSTOPする。**A50の実科学計算は別の明示承認が必要**。現在はmandatory STOPで、A/Pを自動開始しない。
+
+公開記録：HTTPS git pushは実行環境の認証情報不足で失敗したため、認証済みGitHub接続のGit Data APIで公開した。元の3 commitと公開先3 commitのtree SHAがそれぞれ同一であることを検証し、元履歴をローカルbackup branchとbundleに保全した。[commit対応表](../../artifacts/resource_applicability/track_a_h4_tol_d_completed/2026-10-19/publication_mapping.json)でGitHub側のcommitを参照できる。科学SOURCEと結果bytes/SHAは変更していない。最後にbranch SHAを再取得して照合する。
