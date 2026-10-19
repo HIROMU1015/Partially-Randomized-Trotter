@@ -1,3 +1,7 @@
+## 2026-10-19 H6 m5：exact phase batchの再計算もraw基準超過でSTOP
+
+[結果・実行証拠・終了監査](../../docs/research/track_a_h6_m5_phase_batch_run01_results_20261019.md)。SOURCE 96cd7cd4…、保存lowering PASS再利用で新compile1/作用1、約7分20秒。88pass・502636位相増分の正確な集計を完了したが、compiled vs保存変換後vectorは1.432e-9で固定1e-9未満FAIL、第3gate未実施null。worker exit0/launcher exit1・全回収、終了監査48項目PASS。2570file/2011seal・旧STOP/58軸/AD03保留、費用受理/retry/sine/会計0。修正未解決、次はユーザーの内部phase生成・matrix/Euler・局所簡約の切分け判断。local commit後mandatory STOP・push0。以下は各時点の履歴。
+
 ## 2026-10-19 H6 m5：exact phase batchで問題cosine一軸を再計算起動
 
 [実装・承認・保存PASS再利用・fresh gate](../../docs/research/track_a_h6_m5_phase_batch_run01_start_20261019.md)。SOURCE 96cd7cd4…、元Rust再合成器を保持した隔離passでphaseを正確蓄積・境界で一度丸める。保存lowering QPY/vector/PASSを新契約で受け入れ、重複を避け新compile1/作用1、raw3検査は各1e-9未満（初回reuse）。人工13件・起動前22項目・12改変拒否PASS、2011seal/2570保全file。旧STOP/58軸/AD03保留、費用受理/sine/会計/retry0。全PASS/native exit/reapは未監査。次はCodexの終了監査・結果報告後mandatory STOP。local commit・push0。以下は各時点の履歴。
