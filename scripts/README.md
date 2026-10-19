@@ -1,3 +1,7 @@
+H4 tol-only DF10 D完了（2026-10-19）：SOURCE84db3909…、190候補/950行、新125候補250軸＋保存8軸、control500・primitive1095 PASS。64 worker枠・221 process回収、native exit0、wall1017.587秒、中断/retry0。登録内5精度の最小PFを保存、厳密bias/global optimum/PR優位の認定なし。A50はD正式受入＋次指示待ち、mandatory STOP。[完了結果](../docs/research/track_a_h4_tol_d_completed_20261019.md)。以下は各時点の履歴。
+
+`audit_h4_tol_d_completed.py` は終了したDのmetadata/SHA/費用恒等式・winner規則を監査し、保存結果を公開用にcopyする。科学dispatch・再会計・sampling/compile・A起動を行わない。
+
 H4 tol-only DF10 D承認待ちseal（2026-10-19）：科学SOURCE84db3909…・D190候補/最大372新規軸を維持。SOURCE/input/runtime・774保全レコード照合、人工40件・拒否2経路PASS。D科学実行未承認・実行0、A50はD正式受入＋次指示待ち。mandatory STOP。[最終sealと承認事項](../docs/research/track_a_h4_tol_d_seal_20261019.md)。以下は各時点の履歴。
 
 `seal_h4_tol_d.py` はmetadata専用のD最終sealとINVALID grantを新規作成する。科学実行・承認発行・A seed割当を行わない。境界テストは `tests/test_h4_tol_d_seal.py`。

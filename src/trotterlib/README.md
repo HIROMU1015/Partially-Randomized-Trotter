@@ -1,3 +1,7 @@
+H4 tol-only DF10 D完了（2026-10-19）：SOURCE84db3909…、190候補/950行、新125候補250軸＋保存8軸、control500・primitive1095 PASS。64 worker枠・221 process回収、native exit0、wall1017.587秒、中断/retry0。登録内5精度の最小PFを保存、厳密bias/global optimum/PR優位の認定なし。A50はD正式受入＋次指示待ち、mandatory STOP。[完了結果](../../docs/research/track_a_h4_tol_d_completed_20261019.md)。以下は各時点の履歴。
+
+この実行による科学library・固定SOURCEの変更はない。既存rank10 adapterを一回実行し、追加した終了監査はmetadata専用。
+
 H4 tol-only DF10 D承認待ちseal（2026-10-19）：科学SOURCE84db3909…・D190候補/最大372新規軸を維持。SOURCE/input/runtime・774保全レコード照合、人工40件・拒否2経路PASS。D科学実行未承認・実行0、A50はD正式受入＋次指示待ち。mandatory STOP。[最終sealと承認事項](../../docs/research/track_a_h4_tol_d_seal_20261019.md)。以下は各時点の履歴。
 
 このD sealに科学library・既存科学SOURCEの変更はない。新しいmetadataツールだけを追加し、実行時は既存 `run_h4_tol_main.py` を使う。
