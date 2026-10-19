@@ -1,3 +1,7 @@
+## 2026-10-19 H6 full m5：承認済み1構成の再計算起動・完了未確認
+
+[診断保存adapter・人工検証・新契約・起動](research/track_a_h6_m5_full_recovery_run01_start_20261019.md)。SOURCE f743a882…、固定H6 full m5/p19/q2・最大2軸、cosine FAILならsine抑止。元raw基準1e-9未満・science ASTを維持し、QPY/比較ベクトル/未検証費用を判定前保存。最終15人工PASS・metadata8種拒否、closure330/QPY runtime10、旧629file保全。13:55:17 JST一回起動・fresh gate PASS、1 productive workerでnative_build。旧STOP/58軸保全、AD03/Core保留、終了後mandatory STOP、次はCodexの終了監査。以下は各時点の履歴。
+
 ## 2026-10-19 H6 full m5：compile不一致の静的調査・根本原因未確定
 
 [調査根拠・未検証証拠保存の修正案](research/track_a_h46_m5_compile_stop_static_analysis_20261019.md)。SOURCE c7d53f04…のraw差1.504e-9/固定1e-9未満を保持。global phase適用/complex精度/opt1経路を確認したが、失敗回路・比較ベクトル未保存のため原因未確定。選択Qiskit source8件RECORD照合。固定1点・最大2軸の診断取得は未承認DRAFT（旧59予約保全、累積最大61案）、adapter実装/新数値検査/compile0、旧STOP不変、mandatory STOP。次はCodexの診断adapter/人工test準備、その後ユーザーの別実行承認判断。以下は各時点の履歴。
