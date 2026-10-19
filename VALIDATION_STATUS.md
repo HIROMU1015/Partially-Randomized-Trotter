@@ -1,3 +1,7 @@
+## 2026-10-19 H4/H6 m5：最小比較範囲の新DRAFT
+
+[範囲・再利用・並列計画](docs/research/track_a_h46_m5_minimal_comparison_plan_20261019.md)。旧ordinary/DF12のq比較と、新tol-only directional pilotの条件差を明示。基本88 signal条件（3公式PR24＋m5対照64）、outer32/K4/q1/2/4/8を提案。局所20は別枠、12軸を再利用候補へ。n/allowance/科学SOURCEは未seal、AD03保留、実signal/compile/再会計0。次はユーザーの範囲判断とCodexのsignal-only契約準備、local commit後mandatory STOP・push0。以下は各時点の履歴。
+
 ## 2026-10-19 H6 m5：CT01 sine一軸正常終了・両軸receipt取得
 
 [実測・終了監査・次の担当](docs/research/track_a_h6_m5_ct01_sine_run01_results_20261019.md)。SOURCE885bbd71…、元compilerでsine新compile/作用各1、raw1.494e-9でCT01の1e-7未満PASS。保存cosine1.504e-9も別受入、両軸831662 RZ／軸。wall約31分20秒/native exit0/全回収、63終了監査/2025seal/2816file保全。旧58軸・STOP不変、AD03/会計保留、retry/次Phase/push0。次はユーザーの後続範囲判断、local commit後mandatory STOP。以下は各時点の履歴。

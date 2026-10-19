@@ -1,0 +1,292 @@
+{
+  "acceptance": {
+    "automatic_refit": false,
+    "automatic_retry": false,
+    "compile_vector_strictly_below": 1e-07,
+    "global_domain_best_if_missing": null,
+    "m5_main_adoption_authorized": false,
+    "optional_extension_auto_start": false,
+    "other_native_checks_unchanged": true,
+    "point_nonreproduction_is_failure": false,
+    "technical_STOP_scope": "OWN_DEPENDENCY_LANE",
+    "unknown_cost_zero_fill": false
+  },
+  "adoption_AD03": "DEFERRED",
+  "base_commit": "16e7d1b63092532f2ad0227ca1598285a782fa9f",
+  "comparison": {
+    "PR_primary_K": 4,
+    "PR_primary_policy": "ABS_TIME_PER_OUTER",
+    "PR_primary_value": 32,
+    "allowance_multiplier": 1,
+    "allowance_status": "TO_BE_BOUND_TO_SIGNAL_SOURCE_NOT_COMPILE_VECTOR_TOLERANCE",
+    "allowance_value": null,
+    "alpha_axis": 0.025,
+    "bias": "USUAL_SIGNED",
+    "compiler": {
+      "basis": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "opt": 1,
+      "qiskit": "1.3.0",
+      "seed": 17,
+      "settings_hash": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b"
+    },
+    "control": "symmetric_directional",
+    "epsilon": [
+      0.05,
+      0.01,
+      0.005,
+      0.001,
+      0.0005
+    ],
+    "native_policy": "M5_TOL_ONLY_DF_EXPLICIT_GAUSSIAN_DIRECTIONAL_SCALAR_ONCE_V1",
+    "primary_formulas": [
+      "2nd",
+      "4th",
+      "4th(m5_best)"
+    ],
+    "q": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "same_R_is_not_same_native_cost": true
+  },
+  "counts": {
+    "PR_compile_axes_formula": "2 * sum(n_E[g] for g in registered_eligible_groups)",
+    "PR_exploration_n_E": null,
+    "PR_signal_conditions": 24,
+    "all_eligible_PR_cost_groups": 24,
+    "deterministic_model_adopted": false,
+    "deterministic_signal_conditions": 64,
+    "maximum_missing_direct_DET_axes_if_all_eligible": 116,
+    "optional_signal_conditions": 20,
+    "primary_signal_H4": 40,
+    "primary_signal_H6": 48,
+    "primary_signal_conditions": 88,
+    "saved_deterministic_axes_candidate_for_reuse": 12,
+    "saved_deterministic_pairs_candidate_for_reuse": 6
+  },
+  "formula": "4th(m5_best)",
+  "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+  "input": {
+    "DF_policy": "TOL_ONLY_1e-8_AUTOMATIC_RANK",
+    "P": 0,
+    "T": 0.8,
+    "basis": "STO-3G",
+    "geometry": "LINEAR_NEIGHBOR_1_ANGSTROM",
+    "new_input_generation": false,
+    "saved_observed_ranks": {
+      "H4": 10,
+      "H6": 19
+    }
+  },
+  "launch_blockers": [
+    "Freeze adopted domain and allowance/guard source",
+    "Prepare signal-only adapter and phase contract; do not run pilot launcher unchanged",
+    "Freeze registered cost domains and exploration n/seed registry before sampling",
+    "Join existing strong S2/S4 baseline input/control/native/compiler provenance before global PF ranking",
+    "Seal phase-specific SOURCE/input/runtime, grant/ledger/marker, exits/reap and STOP"
+  ],
+  "mandatory_STOP": true,
+  "next_action": "Review minimum scope; Codex prepares signal-only contract and artificial tests after scope direction",
+  "next_owner": "USER",
+  "old_proposal_delta": {
+    "changed_PR_policy": "Former per-piece r4 / outer16 cross-product replaced in this new proposal by common outer32 q-grid; old proposal unchanged",
+    "new_optional_count": 20,
+    "new_primary_count": 88,
+    "not_scientifically_adopted": true,
+    "old_signal_count": 124,
+    "unchanged_det_prefixes": true
+  },
+  "phases": [
+    {
+      "STOP": true,
+      "auto_transition": false,
+      "depends": [],
+      "execution_authorized": false,
+      "id": "H4_SIGNAL",
+      "productive_work": "Frozen finite-mean signal/allowance validation only; no sampling/compile"
+    },
+    {
+      "STOP": true,
+      "auto_transition": false,
+      "depends": [
+        "H4_SIGNAL"
+      ],
+      "execution_authorized": false,
+      "id": "H4_DET_COST",
+      "productive_work": "Reuse exact axes; direct compile eligible missing deterministic pairs"
+    },
+    {
+      "STOP": true,
+      "auto_transition": false,
+      "depends": [
+        "H4_SIGNAL"
+      ],
+      "execution_authorized": false,
+      "id": "H4_PR_COST",
+      "productive_work": "Unconditional paired trajectories for registered eligible common-q groups; n_E must be frozen"
+    },
+    {
+      "STOP": true,
+      "auto_transition": false,
+      "depends": [
+        "H4_DET_COST",
+        "H4_PR_COST"
+      ],
+      "execution_authorized": false,
+      "id": "H4_ACCOUNT",
+      "productive_work": "Saved-value five-epsilon accounting; no new compile"
+    },
+    {
+      "STOP": true,
+      "auto_transition": false,
+      "depends": [
+        "H4_ACCOUNT"
+      ],
+      "execution_authorized": false,
+      "id": "H4_P_DESIGN",
+      "productive_work": "Fix endpoint candidates, comparisons, n_C and fresh seeds; no sampling"
+    },
+    {
+      "STOP": true,
+      "auto_transition": false,
+      "depends": [
+        "H4_P_DESIGN"
+      ],
+      "execution_authorized": false,
+      "id": "H4_P_CONFIRM",
+      "productive_work": "New independent cohort; no exploration pooling"
+    },
+    {
+      "STOP": true,
+      "auto_transition": false,
+      "depends": [
+        "H4_P_CONFIRM"
+      ],
+      "execution_authorized": false,
+      "id": "H4_DECOMPOSE",
+      "productive_work": "Same-cohort cost decomposition and explanation validation"
+    },
+    {
+      "STOP": true,
+      "auto_transition": false,
+      "depends": [],
+      "execution_authorized": false,
+      "id": "H6_SIGNAL",
+      "productive_work": "Frozen finite-mean signal/allowance validation only; no sampling/compile"
+    },
+    {
+      "STOP": true,
+      "auto_transition": false,
+      "depends": [
+        "H6_SIGNAL"
+      ],
+      "execution_authorized": false,
+      "id": "H6_DET_COST",
+      "productive_work": "Reuse exact axes; direct compile eligible missing deterministic pairs"
+    },
+    {
+      "STOP": true,
+      "auto_transition": false,
+      "depends": [
+        "H6_SIGNAL"
+      ],
+      "execution_authorized": false,
+      "id": "H6_PR_COST",
+      "productive_work": "Unconditional paired trajectories for registered eligible common-q groups; n_E must be frozen"
+    },
+    {
+      "STOP": true,
+      "auto_transition": false,
+      "depends": [
+        "H6_DET_COST",
+        "H6_PR_COST"
+      ],
+      "execution_authorized": false,
+      "id": "H6_ACCOUNT",
+      "productive_work": "Saved-value five-epsilon accounting; no new compile"
+    },
+    {
+      "STOP": true,
+      "auto_transition": false,
+      "depends": [
+        "H6_ACCOUNT"
+      ],
+      "execution_authorized": false,
+      "id": "H6_P_DESIGN",
+      "productive_work": "Fix endpoint candidates, comparisons, n_C and fresh seeds; no sampling"
+    },
+    {
+      "STOP": true,
+      "auto_transition": false,
+      "depends": [
+        "H6_P_DESIGN"
+      ],
+      "execution_authorized": false,
+      "id": "H6_P_CONFIRM",
+      "productive_work": "New independent cohort; no exploration pooling"
+    },
+    {
+      "STOP": true,
+      "auto_transition": false,
+      "depends": [
+        "H6_P_CONFIRM"
+      ],
+      "execution_authorized": false,
+      "id": "H6_DECOMPOSE",
+      "productive_work": "Same-cohort cost decomposition and explanation validation"
+    }
+  ],
+  "protocol_commit": "94d18a979cdc1a390fa7e2eb3ae2f18f700b47d5",
+  "push_authorized": false,
+  "resources": {
+    "AI_subagents": false,
+    "ETA": null,
+    "RAM_cap": null,
+    "fresh_admission": "AVAILABLE_AFFINITY_CPU_EFFECTIVE_CGROUP_RAM_DISK_AND_MEASURED_POINT_SPECIFIC_RSS",
+    "historical_peak_is_not_high_q_bound": true,
+    "host_PSI_kill": false,
+    "inner_threads": 1,
+    "parallel_axes": "OUTER_CANDIDATE_TRAJECTORY_PROCESSES",
+    "q2_H6_full_saved_peak_RSS_KiB": 22557356,
+    "threads_reason": "Avoid oversubscription and preserve compiler policy; not a host setting",
+    "unrelated_worktrees_frozen": false,
+    "worker_cap": null
+  },
+  "reuse": {
+    "CT01_two_axes_separate_provenance": true,
+    "coefficients_and_order_tests": "REUSE_FIXED_VERSION_NO_REOPTIMIZATION",
+    "old_comparison_means_not_transferred": true,
+    "older_ordinary_H4_DF12_results": "SEPARATE_LEGACY_EVIDENCE_NOT_POOLED",
+    "pilot_PR_groups": 6,
+    "pilot_PR_is_not_primary_R32_group": true,
+    "pilot_PR_policy": "PER_PIECE",
+    "pilot_PR_value": 2,
+    "pilot_trajectory_per_group": 2,
+    "reference_jobs_already_saved": 2,
+    "saved_pilot_58_axes_preserved": true
+  },
+  "sample_design": {
+    "confirmation_endpoints": [
+      0.05,
+      0.0005
+    ],
+    "confirmation_n_C": null,
+    "exploration_n_E": null,
+    "pool_exploration_with_confirmation": false,
+    "pool_pilot_with_exploration": false,
+    "purpose": "FINITE_COHORT_POINT_REPRODUCTION_NOT_TAIL_MEAN_GUARANTEE",
+    "rare_unobserved_cost": null,
+    "seed_registry": null
+  },
+  "scientific_SOURCE": null,
+  "scientific_execution_authorized": false,
+  "status": "DRAFT_SCOPE_PROPOSAL_NOT_LAUNCH_READY",
+  "valid_grants": 0
+}
