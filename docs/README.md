@@ -1,3 +1,7 @@
+## 2026-10-20 PF直接compile：中断後の保存監査・STOP
+
+[572保存受入・200事前STOP・16終了未確認](research/track_a_pf_direct_compile_interrupted_audit_20261020.md)。coordinator/worker不在、元terminal/最終gateなし。旧386 pairの終了証拠と整数metricsを再照合、8 pairのexit/reapは未確認。中断後byte gate両契約PASSを元final gateへ代用しない。SOURCE220b9644・旧raw/grant/ledger/marker/STOP・44旧packet不変、retry/新科学0。原因未確定、公開・再実行範囲はユーザー判断。mandatory STOP。以下は履歴。
+
 ## 2026-10-20 PF直接compile：788軸の科学実行承認・本番接続
 
 [2契約の本番接続と実行記録](research/track_a_pf_direct_compile_execution_20261020.md)。ユーザーが722軸とlegacy66軸の実compile/controlを明示承認。新13＋既存34の人工検査PASS、初期byte照合35,547件PASS。最終SOURCE/入力/runtime seal後、各契約を独立one-shotで実行する準備。旧48軸は対象外。sampling/fit/shot/費用再順位0。以下は履歴。
