@@ -1,3 +1,7 @@
+## 2026-10-20 H6 PR pilot：全396本の取得範囲が揃い終了監査PASS
+
+[完了・SOURCE・資源・残る承認](../docs/research/track_a_h6_pr_pilot_continuation_run01_results_20261020.md)。新SOURCE 0ff0f704で322/322本・644軸、30 worker全exit0/reap、約58分6秒。1932 archiveのnative/原SHA復元・終了監査PASS。保存74本の再監査と参照結合により396登録/792軸を被覆、旧STOP保持。統計/MCSE/n_E/shot/会計/AD03未実施、mandatory STOP。次はユーザーのpilot数値評価の別承認。以下は履歴。
+
 ## 2026-10-20 H6 PR pilot：74本受入・残り322本を並列起動
 
 [継続契約・起動gate・進捗](../docs/research/track_a_h6_pr_pilot_continuation_run01_start_20261020.md)。SOURCE 0ff0f704、保存74本を独立受入し元固定322登録/最大644軸を一回起動。元seed/33本×12群・旧STOP保持。fresh gate/人工8＋回帰16/改変拒否11PASS、context共有後30worker。完了/native exit/reapは未確定。統計/n_E/shot/会計/AD03は保留、終了時mandatory STOP。以下は履歴。
