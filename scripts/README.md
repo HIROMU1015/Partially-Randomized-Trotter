@@ -1,3 +1,7 @@
+## 2026-10-20 H6 noncancellation段階A
+
+[run_h6_noncancellation_stage_a.py](run_h6_noncancellation_stage_a.py)はSOURCE/入力/runtimeをseal後、承認された12候補/120 endpointを一度だけ解析し同一親wait4で回収する。SOURCE85e25030のone-shotは消費済みで再実行しない。[check_h6_noncancellation_stage_a.py](check_h6_noncancellation_stage_a.py)は保存された数値監査・120行・SHA・native終了の構造照合だけを行う。元Pythonを使用。[結果と限界](../docs/research/track_a_h6_noncancellation_stage_a_20261020.md)。旧科学SOURCEとstageBを変更・実行しない。以下は履歴。
+
 ## 2026-10-20 H6 noncancellation記録照合
 
 `python3 -B scripts/investigate_h6_noncancellation.py --check`（repository rootから）。固定Git/GitHub blob、12既知private rawの公開receipt、元120未確定行と30条件、公開成分1copy、後続D null120行を照合する。科学module import・差/envelope/適格性/shot/費用/順位計算0。private原本がない環境ではその検査をPASSとせず停止する。将来の数値runnerではなく、[調査報告](../docs/research/track_a_h6_noncancellation_investigation_20261020.md)を再現するmetadata script。以下は履歴。

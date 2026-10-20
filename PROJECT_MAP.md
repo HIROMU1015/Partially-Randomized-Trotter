@@ -1,3 +1,7 @@
+## 2026-10-20 H6 noncancellation段階A：120 endpoint確定・終了監査PASS
+
+[報告](docs/research/track_a_h6_noncancellation_stage_a_20261020.md)、[packet](artifacts/resource_applicability/track_a_h6_noncancellation_stage_a/2026-10-20/README.md)、[core](src/trotterlib/h6_noncancellation_stage_a.py)、[runner](scripts/run_h6_noncancellation_stage_a.py)、[人工tests](tests/test_h6_noncancellation_stage_a.py)。旧B0I12候補の保存値をSOURCE85e25030でone-shot解析。成分11再構成＋p15q4既存1copy、closure12/12、適格34/不適格86/未解決0、analytic shotを保存。人工14＋既存shot回帰9＝23PASS、数値監査132記録・native exit0/同一親wait4/reaped、旧証拠55file/12raw・70件・v2本文・主表/Figure2不変。費用/順位/比・compile/sampling/追加signal0。段階B30scopeは別承認、詳細review/freeze未開始、新公開未承認・mandatory STOP。 次担当ユーザー：段階Bと公開範囲を判断。以下は履歴。
+
 ## 2026-10-20 H6非相殺未解決30件：原因調査・v2補足証拠
 
 [調査報告](docs/research/track_a_h6_noncancellation_investigation_20261020.md)、[v2補足](docs/research/track_a_protocol_v2_pf_cost_supplement_20261020.md)、[metadata照合script](scripts/investigate_h6_noncancellation.py)。旧B0I12件のsigned_parts保存欠測、公開receipt一致12/12、既存成分1件copy・適格性回収0/120。後続Dのtruthiness集計でもnull120行は未解決。70件結果・旧SOURCE/契約/raw・v2本文・主表/Figure2不変。新科学0、最小の保存値解析案は未承認、新公開未承認・mandatory STOP。以下は履歴。

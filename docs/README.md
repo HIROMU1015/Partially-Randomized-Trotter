@@ -1,3 +1,7 @@
+## 2026-10-20 H6 noncancellation段階A完了
+
+[120判定・必要shot・closure・終了監査](research/track_a_h6_noncancellation_stage_a_20261020.md)。適格34/不適格86/未解決0、旧SOURCE/raw/70件不変、段階B未実行。既存成分1件copyを含む保存値解析であり、新規signal/compile/samplingなし。以下は履歴。
+
 ## 2026-10-20 H6非相殺調査とPF単価置換のv2補足
 
 [原因・回収範囲](research/track_a_h6_noncancellation_investigation_20261020.md)、[v2補足・caption・主張境界](research/track_a_protocol_v2_pf_cost_supplement_20261020.md)。旧12候補/120endpointは未確定保持。既存signed成分1件copy、適格性再判定0。後続Dのtruthiness問題を別資料で記録し旧結果不変。次の保存値解析は未承認。以下は履歴。

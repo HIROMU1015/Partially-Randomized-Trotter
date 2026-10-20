@@ -1,3 +1,7 @@
+## 2026-10-20 H6 noncancellation段階A：120 endpoint確定・終了監査PASS
+
+[判定・shot・SOURCE/監査](docs/research/track_a_h6_noncancellation_stage_a_20261020.md)。旧B0I12候補の保存値をSOURCE85e25030でone-shot解析。成分11再構成＋p15q4既存1copy、closure12/12、適格34/不適格86/未解決0、analytic shotを保存。人工14＋既存shot回帰9＝23PASS、数値監査132記録・native exit0/同一親wait4/reaped、旧証拠55file/12raw・70件・v2本文・主表/Figure2不変。費用/順位/比・compile/sampling/追加signal0。段階B30scopeは別承認、詳細review/freeze未開始、新公開未承認・mandatory STOP。 数値監査はone-shot子内、post-runは保存記録の構造照合のみ。別担当の独立レビューではない。以下は履歴。
+
 ## 2026-10-20 H6 noncancellation原因調査（新数値判定0）
 
 [原因・記録回収・最小解析案](docs/research/track_a_h6_noncancellation_investigation_20261020.md)。GitHub94 blob/size・元12rawの公開SHA照合、120未確定行/30scope保全、p15q4既存成分1copy。非相殺適格性回収0、解決0。後続Dのunresolved=[]はnull120行をtruthinessで落とすため全domain解決証拠としない。旧結果/SOURCEを修正せず注意資料を追加。既存70件は別基準で不変、[v2補足](docs/research/track_a_protocol_v2_pf_cost_supplement_20261020.md)へ条件付き証拠として参照。科学再解析0、詳細review/freezeなし、新公開未承認、mandatory STOP。以下は履歴。
