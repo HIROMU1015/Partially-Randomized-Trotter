@@ -24,3 +24,5 @@ Pilot候補はcorrectness512＋baseline8192＋instrumented8192＝16896。固定P
 新準備SOURCEのactivation Noneは、消費済み旧承認のhelperを新SOURCE/new scopeへ移して追加512件を可能にしないための閉鎖で、旧SOURCEや旧STOPの変更ではない。候補とmetadata formatterは実行権限ではない。一般的正しさ・IID・性能優位性・科学的GO/NO-GOは認定せず、重要科学レビューも開始していない。同一primary Codexの技術検証で、別reviewerの独立再現とは呼ばない。
 
 SOURCEの実値と完全SHAはsource_inventory.json、公開commit/remote HEAD/bytes照合はpublication_receipt.jsonと最終チャットに記録する。**今回の作業後はmandatory STOP。次の担当：ユーザー・GPT。**
+
+公開状態：自動承認レビューが添付の公開指示を信頼できる承認として認めず、GitHub公開commit作成を2回拒否した。新commit/branchは未作成で、公開bytes照合は未完了。SOURCE・全成果物はローカルcommitへ保全し、明示的なチャット承認を待つ。科学実行の承認を求めるものではない。

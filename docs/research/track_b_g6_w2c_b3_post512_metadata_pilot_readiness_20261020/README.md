@@ -11,3 +11,5 @@
 新SOURCEはmetadataだけを直し、準備版のactivationをNoneへ閉鎖する。旧512測定SOURCE/raw/approved manifest/claim/STOPは不変。テストは80PASS＋4人工integration＋20mutation拒否。初回開発1ERRORの原因・修正と原記録も保持。Science/Core・Exact Adapter・Global Bundle・F01・Storage V2の再開発は行わない。
 
 Pilot n256/総16896、seed・coverage・retention/bytes・measurementは未採択。正式採択後に、限定phase/seed/budget/checker/monitoring差分の新releaseを固定し、別の一回実行承認が必要。次の担当はユーザー・GPT。科学的な重要レビューは開始していない。
+
+公開状態：自動承認レビューが添付の公開指示を信頼できる承認として認めず、GitHub公開commit作成を2回拒否した。新commit/branchは未作成で、公開bytes照合は未完了。SOURCE・全成果物はローカルcommitへ保全し、明示的なチャット承認を待つ。科学実行の承認を求めるものではない。
