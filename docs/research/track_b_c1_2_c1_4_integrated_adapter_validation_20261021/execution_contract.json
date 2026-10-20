@@ -1,0 +1,115 @@
+{
+  "schema": "C1_3_FIXED_R1_SELECTED_EVENT_CORRECTNESS_V1",
+  "base_commit": "2937e6b655ba3cd77f982d6901d766355a8b92c1",
+  "model_sha256": "e96ea0faea31bc6a784dfb8dc6f7cf4856789b0256e4a1c53b63ce087c86dc49",
+  "partition_hash": "16b35c1dde1a6807d39c733defd87e315e4ac7317a831b240d0f7214e744a834",
+  "snapshot": {
+    "path": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz",
+    "sha256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a"
+  },
+  "model": "linear H4 1.00 Angstrom / STO-3G / DF12 / R1 new partition / 8 system qubits / 324 labels / 13 bases",
+  "T": "4/5",
+  "q_outer": 1,
+  "r_RTE": 4,
+  "m": 5,
+  "sigma": 1,
+  "outer": "symmetric second order PF; forward deterministic half, one tail occurrence with four substeps, reverse half",
+  "adoption_scope": "limited correctness only, not performance/optimal scientific condition",
+  "precision": {
+    "root_bits": 4096,
+    "probability_bits": 2048,
+    "eta": "1/1000000000000",
+    "rho": "1/1000000000000",
+    "angle_tau": "1/1000000000000",
+    "angle_root_bits": 256,
+    "angle_terms": 64
+  },
+  "precision_policy": "one fixed supplied precision; F1/F3 P0-P5 exact checks inside one-shot; failure stops, no refinement",
+  "event_selection": {
+    "a": 0,
+    "b": 2,
+    "c": 36,
+    "d": 9,
+    "rule": "a first negative; b first positive; c first different-basis label from a excluding a,b; d first positive ZZ excluding a,b,c. Stable R1 label order. Two root, two length-2, two length-4 events as listed.",
+    "numerical_results_consulted": false
+  },
+  "events": [
+    {
+      "word": [],
+      "child": 0
+    },
+    {
+      "word": [],
+      "child": 9
+    },
+    {
+      "word": [
+        0,
+        2
+      ],
+      "child": 36
+    },
+    {
+      "word": [
+        36,
+        0
+      ],
+      "child": 9
+    },
+    {
+      "word": [
+        0,
+        2,
+        36,
+        9
+      ],
+      "child": 2
+    },
+    {
+      "word": [
+        9,
+        36,
+        2,
+        0
+      ],
+      "child": 36
+    }
+  ],
+  "reference": "saved local binary64 matrices composed in time order independently of gate restoration; Q=sign B P B-adjoint; analytic cos/sin atan(s/a), ordered Q product, strict block diag(I,V), no global phase alignment",
+  "axes": [
+    "X",
+    "Y"
+  ],
+  "state_sha256": "c9aca811b5c023772d148d0331c82958bac6824b593a367cb65a5f89937f4f63",
+  "state_tolerance": 1e-12,
+  "state_criterion_source": "R1 result/state_checks.json existing_state_tolerance",
+  "operator_tolerance": 1e-10,
+  "operator_criterion_source": "243eea8e840f3c472753f7935e510391626fd325:src/trottertracks/algorithm_codesign/g10_comparison.py:73-85",
+  "criterion_application": "same strict controlled phase/order/composition diagnostic; Frobenius <=1e-10 is sufficient for the existing spectral-norm criterion; not rigorous arithmetic/native certificate",
+  "XY_status": "saved-state expectation diagnostic; no new rigorous tolerance or sampling/confidence PASS",
+  "gates": [
+    "immutable identities",
+    "exact p positive sum one",
+    "P0-P5 ready",
+    "exact proposal*weight=coefficient",
+    "F3 angle enclosure",
+    "controlled and actual-adjoint Frobenius errors <=1e-10"
+  ],
+  "output": "result/{attempt,execution_identity,schedule,preflight,event_NN_sidecar,event_NN_parent,event_NN_comparison,summary,failure,terminal}.json plus raw stdout/stderr",
+  "runs": 1,
+  "retry": 0,
+  "failure": "preserve log/failure/terminal; stop; do not enter C1-4",
+  "success": "C1-4 documentation/static survey only, then publish/preserve/mandatory STOP",
+  "prohibited": [
+    "molecular reconstruction",
+    "eigendecomposition",
+    "DF factorization",
+    "full H4 event enumeration",
+    "random trajectories",
+    "shots",
+    "native compile/transpile/synthesis",
+    "N/resource ranking",
+    "source repair/retry after science starts"
+  ],
+  "resource_policy": "no agent-added CPU/RAM/worker caps; task-local caches only; shared environment unchanged"
+}
