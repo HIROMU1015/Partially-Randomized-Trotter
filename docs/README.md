@@ -1,3 +1,7 @@
+## 2026-10-20 PF qモデル/直接実測：比較準備・数値解析未承認
+
+[対応表・分類・公開検査・次の承認範囲](research/track_a_pf_q_model_comparison_preparation_20261020.md)。保存788軸のCSV/JSONを整備し、比較可能0/条件付き450（H6 192/H8 258）/現状比較不能338（保存予測なし78＋同一系列登録モデルなし260）。学習/検証roleと元出典SHAを保持。初回572の最終gate欠測、H2 20軸の旧signal未整合、対象外48軸を継承。基点261と承認branchのpublic状態、承認済み80パス一致を確認し、gzipを含むscoped検査で秘密情報pattern等の検出0。新12構造/人工検査、新規予測/誤差解析/fit/compile/費用再会計/公開0。次担当ユーザー：条件付き450軸の定量比較、別途78軸のモデル評価/domain方針、新しい公開範囲を判断。mandatory STOP。以下は履歴。
+
 ## 2026-10-20 PF残106軸：全成功・計画788軸の保存観測が揃う
 
 [修正・最終結果・限界](research/track_a_pf_direct_compile_retry106_20261020.md)。SOURCE9c65fb31でH2 46/H4 60軸すべてcontrol/compile成功、失敗/未実施/unknown0、全53worker回収。実時間152秒、39,522件の最終gate PASS。旧682を保全し計788軸のtask受入を保存。単一項S4の20軸は旧signal未整合flagを維持、初回572のglobal final gate欠測も継承。追加science/費用順位更新/詳細review/freeze0、mandatory STOP。次担当ユーザー：公開範囲と将来の旧signal対応を判断。以下は履歴。
