@@ -1,3 +1,9 @@
+## 2026-10-20 H6 noncancellation段階B：保存エラーSTOP・再試行0
+
+[停止原因・部分結果・必要な承認](research/track_a_h6_noncancellation_stage_b_20261020.md)。
+
+SOURCE224fbba0で承認30 scopeをone-shot実行。既存712費用の完全一致gateと新34費用構成を保存した後、summaryのSOURCE二重指定で保存処理がTypeErrorとなりnative exit1。7段階の復帰記録と30部分JSON・旧70を転記した100参照行は残るが、最終数値receipt/summary/CSV/図/完了gate未保存。100 scope完了とは扱わない。旧証拠/PR/Stage A/70件・v2本文・主表/Figure2は不変。人工・回帰27PASS、STOP後は構造/SHA/終了の技術監査のみ、worker回収済み・残0、grant消費済み。新公開未承認、詳細review/freeze未開始、mandatory STOP。次担当ユーザー：保存処理修正と同一30 scopeの新契約one-shot、公開範囲を判断。Codexは承認後のみ実行。以下は履歴。
+
 ## 2026-10-20 H6 noncancellation段階A完了
 
 [120判定・必要shot・closure・終了監査](research/track_a_h6_noncancellation_stage_a_20261020.md)。適格34/不適格86/未解決0、旧SOURCE/raw/70件不変、段階B未実行。既存成分1件copyを含む保存値解析であり、新規signal/compile/samplingなし。以下は履歴。

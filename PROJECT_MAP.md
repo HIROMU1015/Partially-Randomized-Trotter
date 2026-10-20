@@ -1,3 +1,9 @@
+## 2026-10-20 H6 noncancellation段階B：保存エラーSTOP・再試行0
+
+[停止原因・部分結果・必要な承認](docs/research/track_a_h6_noncancellation_stage_b_20261020.md)。[core](src/trotterlib/h6_noncancellation_stage_b.py)、[runner](scripts/run_h6_noncancellation_stage_b.py)、[test](tests/test_h6_noncancellation_stage_b.py)、[STOP監査](scripts/audit_h6_noncancellation_stage_b_stop.py)、[packet](artifacts/resource_applicability/track_a_h6_noncancellation_stage_b/2026-10-20/README.md)。
+
+SOURCE224fbba0で承認30 scopeをone-shot実行。既存712費用の完全一致gateと新34費用構成を保存した後、summaryのSOURCE二重指定で保存処理がTypeErrorとなりnative exit1。7段階の復帰記録と30部分JSON・旧70を転記した100参照行は残るが、最終数値receipt/summary/CSV/図/完了gate未保存。100 scope完了とは扱わない。旧証拠/PR/Stage A/70件・v2本文・主表/Figure2は不変。人工・回帰27PASS、STOP後は構造/SHA/終了の技術監査のみ、worker回収済み・残0、grant消費済み。新公開未承認、詳細review/freeze未開始、mandatory STOP。次担当ユーザー：保存処理修正と同一30 scopeの新契約one-shot、公開範囲を判断。Codexは承認後のみ実行。以下は履歴。
+
 ## 2026-10-20 H6 noncancellation段階A：120 endpoint確定・終了監査PASS
 
 [報告](docs/research/track_a_h6_noncancellation_stage_a_20261020.md)、[packet](artifacts/resource_applicability/track_a_h6_noncancellation_stage_a/2026-10-20/README.md)、[core](src/trotterlib/h6_noncancellation_stage_a.py)、[runner](scripts/run_h6_noncancellation_stage_a.py)、[人工tests](tests/test_h6_noncancellation_stage_a.py)。旧B0I12候補の保存値をSOURCE85e25030でone-shot解析。成分11再構成＋p15q4既存1copy、closure12/12、適格34/不適格86/未解決0、analytic shotを保存。人工14＋既存shot回帰9＝23PASS、数値監査132記録・native exit0/同一親wait4/reaped、旧証拠55file/12raw・70件・v2本文・主表/Figure2不変。費用/順位/比・compile/sampling/追加signal0。段階B30scopeは別承認、詳細review/freeze未開始、新公開未承認・mandatory STOP。 次担当ユーザー：段階Bと公開範囲を判断。以下は履歴。

@@ -1,3 +1,9 @@
+## 2026-10-20 H6 noncancellation段階B：保存エラーSTOP・再試行0
+
+[停止原因・部分結果・必要な承認](../docs/research/track_a_h6_noncancellation_stage_b_20261020.md)。[run_h6_noncancellation_stage_b.py](run_h6_noncancellation_stage_b.py)はSTOP済みで再実行不可。[audit_h6_noncancellation_stage_b_stop.py](audit_h6_noncancellation_stage_b_stop.py)は技術監査だけ。[check](check_h6_noncancellation_stage_b.py)/[plot](plot_h6_noncancellation_stage_b.py)は完了用に準備したが未実行。
+
+SOURCE224fbba0で承認30 scopeをone-shot実行。既存712費用の完全一致gateと新34費用構成を保存した後、summaryのSOURCE二重指定で保存処理がTypeErrorとなりnative exit1。7段階の復帰記録と30部分JSON・旧70を転記した100参照行は残るが、最終数値receipt/summary/CSV/図/完了gate未保存。100 scope完了とは扱わない。旧証拠/PR/Stage A/70件・v2本文・主表/Figure2は不変。人工・回帰27PASS、STOP後は構造/SHA/終了の技術監査のみ、worker回収済み・残0、grant消費済み。新公開未承認、詳細review/freeze未開始、mandatory STOP。次担当ユーザー：保存処理修正と同一30 scopeの新契約one-shot、公開範囲を判断。Codexは承認後のみ実行。以下は履歴。
+
 ## 2026-10-20 H6 noncancellation段階A
 
 [run_h6_noncancellation_stage_a.py](run_h6_noncancellation_stage_a.py)はSOURCE/入力/runtimeをseal後、承認された12候補/120 endpointを一度だけ解析し同一親wait4で回収する。SOURCE85e25030のone-shotは消費済みで再実行しない。[check_h6_noncancellation_stage_a.py](check_h6_noncancellation_stage_a.py)は保存された数値監査・120行・SHA・native終了の構造照合だけを行う。元Pythonを使用。[結果と限界](../docs/research/track_a_h6_noncancellation_stage_a_20261020.md)。旧科学SOURCEとstageBを変更・実行しない。以下は履歴。
