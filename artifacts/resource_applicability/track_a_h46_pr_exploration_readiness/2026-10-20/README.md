@@ -16,3 +16,5 @@ No new molecular sampling/compile/signal, shot calculation, cost accounting or r
 Unknown rare costs stay unknown. Formal shot policy and AD03 remain deferred.
 Public projection excludes private paths, QPY/NPZ, approval files and seed lists.
 MANDATORY STOP; separate explicit design adoption and H4/H6 execution approval required.
+
+Public CSV files use LF newlines; this publication formatting preserves all field values and nulls.
