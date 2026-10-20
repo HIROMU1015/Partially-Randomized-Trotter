@@ -1,3 +1,7 @@
+## 2026-10-20 H4/H6 m5：決定論的費用92軸完了・終了監査PASS
+
+[単価・終了監査・次の担当](../../docs/research/track_a_h46_m5_det_cost_run01_results_20261020.md)。H4 38/38・H6 54/54軸、全46pairを正常終了、両native exit0・全worker回収。科学SOURCE635ba563…不変、metadata監査c1b419cd…/人工5件、終了940項目PASS・保存368gate・台帳1012/1430一致。旧3137file不変。新92＋保存4＝適格m5決定論48候補96軸を直接実測区分で転記。PR24群n_E・shot政策・AD03は保留、会計/順位/fit/自動retry0。両契約mandatory STOP、次はユーザーのPR標本設計と後続会計の個別判断。以下は各時点の履歴。
+
 ## 2026-10-20 H4/H6 m5：決定論的費用run01を独立2契約で起動
 
 [承認・起動gate・進捗snapshot](../../docs/research/track_a_h46_m5_det_cost_run01_start_20261020.md)。H4 38軸/H6 54軸を独立承認・grant・ledger・markerで起動。科学SOURCE635ba563…は不変、起動補助9e44ec88…/人工5件PASS。SOURCE/input/compiler・3137file保全・fresh RAM/scratch gateを通過、各3 workerで進行。compiled CT01 1e-7未満/他1e-9未満、異常時は当該stageのみSTOP・retryなし。全PASS/最終費用/exit/reapは未確定。PR/shot/会計/rankingは未承認、AD03保留。次はCodexの終了監査・結果報告後mandatory STOP。以下は各時点の履歴。
