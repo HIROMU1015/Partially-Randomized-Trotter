@@ -228,7 +228,7 @@ class Endpoint(D.LegacyEndpoint):
             self.calls['bit_draw_requests']+=len(trace.draws)
             require(self.calls['bit_draw_requests']<=32*(7 if self.full else 6),'PAIR_DRAW_BUDGET')
             gid=self.m['run_id']+'/'+mode+'/'+trial_id
-            evidence=dict(schema='b3_live_object_bridge_artificial_v1',artificial_only=self.artificial,
+            evidence=dict(schema='b3_live_object_bridge_artificial_v1' if self.artificial else 'b3_live_object_bridge_v1',artificial_only=self.artificial,
                 runtime_origin='BUILTIN_API_SHAPED_OBJECTS_NOT_G7_LAW' if self.artificial else 'PINNED_G7_F3',adapted=a,consumption=consumption,
                 audit=audit,connection=dict(global_trial_id=gid,global_offset=self.task['offset']+(0 if axis=='X' else 16)+int(index),
                     source_binding=self.c['source_release_candidate'],manifest_binding=S.digest(self.m),

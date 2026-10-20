@@ -68,7 +68,7 @@ def _run(c,m,root,store,*,permit=None):
             condition=dict(mode=mode,complete=okay,coverage=coverage,pairs=len(rows))
             conditions.append(condition);ctl.condition_event('CONDITION_END',complete=okay,coverage=coverage)
             if not okay:break
-            _save(out,mode+'_receipt.json',dict(schema='ARTIFICIAL_CONDITION_RECEIPT',
+            _save(out,mode+'_receipt.json',dict(schema='LIVE_CONDITION_RECEIPT' if live else 'ARTIFICIAL_CONDITION_RECEIPT',
                 condition=condition,binding=S.digest(m),claim=m['global_claim'],production_permission=False),ctl,fault)
             if live:K.preflight_runtime(c,m,permit)
             else:K.preflight(c,m)
@@ -83,12 +83,12 @@ def _run(c,m,root,store,*,permit=None):
     finally:
         try:store.stop(m)
         except BaseException as exc:ctl.stop(dict(test_store_STOP_failure=repr(exc)))
-        try:_save(out,'TEST_ONLY_snapshot.json',store.snapshot(m),ctl,fault)
+        try:_save(out,'simple_store_snapshot.json' if live else 'TEST_ONLY_snapshot.json',store.snapshot(m),ctl,fault)
         except BaseException as exc:ctl.stop(dict(snapshot_failure=repr(exc)))
         V2.close_storage(ctl);ctl.closed=True;ctl.budget.notify=ctl.post_notify
     report=ctl.report()
     if any('UNKNOWN' in k and v for k,v in report['states'].items()):store.stop(m,unknown=True)
-    report.update(schema='b3_live_release_artificial_bundle_v1',conditions=conditions,
+    report.update(schema='b3_live_correctness_bundle_v1' if live else 'b3_live_release_artificial_bundle_v1',conditions=conditions,
         candidate_binding=S.digest(c),manifest_binding=S.digest(m),guard=observation(),
         science_correctness_certified=False,live_API_compatibility='NOT_ESTABLISHED')
     if report['complete']:
@@ -97,7 +97,7 @@ def _run(c,m,root,store,*,permit=None):
         report['classification']='ARTIFICIAL_SCIENTIFIC_MISMATCH_STOP' if 'ARTIFICIAL_SCIENTIFIC_MISMATCH' in C.driver_canonical(report['failures']) else 'TECHNICAL_STOP'
     try:
         if report['complete']:
-            receipt=dict(schema='b3_TEST_ONLY_release_receipt_v1',completed=512,classification=report['classification'],
+            receipt=dict(schema='b3_live_correctness_receipt_v1' if live else 'b3_TEST_ONLY_release_receipt_v1',completed=512,classification=report['classification'],
                 candidate_binding=S.digest(c),manifest_binding=S.digest(m),source=c['source_release_candidate'],
                 state_sha256=sha256((out/'trial_states.bin').read_bytes()).hexdigest(),
                 trace_sha256=sha256((out/'operations.jsonl').read_bytes()).hexdigest(),

@@ -118,7 +118,7 @@ def payload(p,c,m,task,*,setup=None,artificial=True):
                 classification=fresh['classification'],consumption=consumption,worker=connection['worker_pid'])
 
 
-def inspect(root,c,m):
+def inspect(root,c,m,*,artificial=True):
     root=Path(root);out=root/'output'
     missing=[n for n in ('final.json','delivery.json','caller.json','host_outer.json','simple_run_state.json') if not (out/n).is_file()]
     if missing:return dict(status='INCOMPLETE_EVIDENCE',missing=missing)
@@ -160,11 +160,15 @@ def inspect(root,c,m):
     rows={r['task']['key']:r for r in report['pairs']};prefix={};cells=[];global_counts=Counter();guard_pids=set();full=0
     for task in m['tasks']:
         path=out/(task['key']+'.jsonl');require(sha256(path.read_bytes()).hexdigest()==rows[task['key']]['file_sha'],'PAIR_FILE_HASH')
-        previous='0'*64;expected_counter={'X':0,'Y':0};counts={x:Counter() for x in ('X','Y')};last={}
+        previous='0'*64;expected_counter={'X':0,'Y':0};counts={x:Counter() for x in ('X','Y')};last={};setup=None;setup_doc=None
         for i,line in enumerate(path.read_bytes().splitlines()):
             envelope=json.loads(line);require(envelope['previous']==previous,'PAIR_CHAIN')
             previous=sha256((previous+envelope['payload']).encode()).hexdigest();require(envelope['sha256']==previous,'PAIR_DIGEST')
-            p=V.decode(envelope['payload']);joined=payload(p,c,m,task);axis=p['axis'];index=int(p['trial_id'].rsplit('/',1)[-1])
+            p=V.decode(envelope['payload'])
+            if not artificial:
+                if i==0:setup_doc,setup=validate_setup(p['evidence']['setup_witness'],c,m,task,artificial=False)
+                require(p['evidence']['setup_digest']==setup_doc.digest and (i==0 or p['evidence']['setup_witness'] is None),'SETUP_REFERENCE')
+            joined=payload(p,c,m,task,setup=setup,artificial=artificial);axis=p['axis'];index=int(p['trial_id'].rsplit('/',1)[-1])
             require((axis,index)==(('X' if i<16 else 'Y'),i%16),'PAIR_TRIAL_ORDER')
             require(complete[joined['offset']]==joined['gid'],'EVIDENCE_COMPLETE_JOIN')
             require(joined['worker']==rows[task['key']]['pid'],'WORKER_PID_JOIN');guard_pids.add(joined['worker'])
@@ -183,10 +187,10 @@ def inspect(root,c,m):
                  'Full_sample_packet','Full_angle_packet'):
         require(global_counts[name]<=m['call_budgets'][name],'GLOBAL_BOUNDARY_BUDGET:'+name)
     require(global_counts['bit_draw_requests']<=3200,'GLOBAL_DRAW_BUDGET')
-    classification='INCONCLUSIVE_COVERAGE' if any(x['accepted']==0 for x in cells) else 'ARTIFICIAL_TECHNICAL_COMPLETE'
+    classification='INCONCLUSIVE_COVERAGE' if any(x['accepted']==0 for x in cells) else ('ARTIFICIAL_TECHNICAL_COMPLETE' if artificial else 'LIVE_TECHNICAL_COMPLETE_AWAITING_REVIEW')
     require(report['classification']==classification==receipt['classification'],'COVERAGE_CLASSIFICATION')
     return dict(status=classification,full_documents=full,trials=512,cells=cells,boundary_counts=dict(global_counts),
-        worker_pids=sorted(guard_pids),core_loaded=[],core_import_attempts=[],receipt_caller_join=True,
+        worker_pids=sorted(guard_pids),artificial_only=artificial,core_import_attempts=[],receipt_caller_join=True,
         host_outer=outer,science_correctness_certified=False,live_compatibility='NOT_ESTABLISHED')
 
 

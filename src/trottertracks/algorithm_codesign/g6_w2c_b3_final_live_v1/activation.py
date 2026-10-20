@@ -1,15 +1,15 @@
-"""Implemented simple activation, shipped WITHOUT an approved activation ID.
+"""Owner-operated activation for the explicit USER one-shot approval.
 
 A later, explicitly approved activation-only release may set the ID and bind a
 USER approval record to the exact new SOURCE/manifest. No external keys/server
 are needed. This is an owner-operated research gate, not malicious-tamper
-protection. The current None anchor cannot be opened by JSON/boolean changes.
+protection. The anchor is a local content binding to the preserved instruction, not an external signature.
 """
 import os
 from .guard import require
 from ..g6_w2c_b3_live_preflight_v1 import spec as S
 
-APPROVED_ACTIVATION_ID=None
+APPROVED_ACTIVATION_ID='e41419e5235fd04e7c5273c26d9475d10c278033bbe9831447c29969c82138f6'
 
 
 def _check(c,m):
