@@ -1,3 +1,7 @@
+## 2026-10-20 H6 PR pilot：cutoff修正・軽量高速化（再実行未承認）
+
+[修正・人工検証・保全・再開提案](../docs/research/track_a_h6_pr_pilot_cutoff_repair_20261020.md)。SOURCE e7595e8f。cutoffの演算順序差を保存metadataで特定し、factoryと同じτ計算へ修正。H6専用opt-inのcontext共有・実空きCPU/RAMによる並列数・SHA検査付きJSON cacheを追加。新16＋回帰161件PASS。74完了pair/444 archive/4404片を読取照合、旧STOP保持。新実H6計算・有効grantは0。残り322本/最大644軸は別受入・継続契約と実行承認待ち。実H6の高速化率は未測定、AD03/統計/会計は保留、mandatory STOP。以下は履歴。
+
 ## 2026-10-20 H4/H6 DESIGN_PILOT：33本/群の取得を承認
 
 [新保存契約・実行範囲](../docs/research/track_a_h46_pr_design_pilot_execution_20261020.md)。新規QPY/NPZだけをbyte可逆level1圧縮し、manifest永続化・原SHA復元確認後に専用raw一時fileを解放する。H4/H6各396 trajectory/792軸、独立one-shot。実行状況・終了PASSは別の取得receiptを正とし、この契約記述から認定しない。n_E/統計評価/shot/会計/AD03は保留、取得終了後mandatory STOP。以下は履歴。

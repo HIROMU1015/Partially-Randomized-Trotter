@@ -1,0 +1,47 @@
+{
+  "SOURCE": "e7595e8ff543a0d0f5e1ea91dec14283b61f9c32",
+  "artificial_native_and_compile_scope": "FOUR_MODE_SYNTHETIC_DF_ONLY_NOT_H6_MOLECULE",
+  "new_real_H6_compile": 0,
+  "new_real_H6_sampling": 0,
+  "new_real_H6_state_actions": 0,
+  "new_suite": {
+    "file": "tests/test_h6_pr_pilot_cutoff_repair.py",
+    "result": "PASS",
+    "tests": 16,
+    "wall_seconds": 12.992
+  },
+  "regression_groups": [
+    {
+      "files": [
+        "test_h46_m5_native.py",
+        "test_h46_m5_cost_readiness.py",
+        "test_h46_pr_design_pilot.py"
+      ],
+      "result": "PASS",
+      "tests": 55,
+      "wall_seconds": 95.711
+    },
+    {
+      "QPY_storage_test_enabled": true,
+      "files": [
+        "test_h46_m5_tol_native.py",
+        "test_h46_m5_signal.py",
+        "test_h46_pr_pilot_execution.py",
+        "test_h46_pilot_lossless_storage.py"
+      ],
+      "result": "PASS",
+      "tests": 106,
+      "wall_seconds": 98.145
+    }
+  ],
+  "regression_groups_parallel_processes": 2,
+  "regression_total": 161,
+  "status": "AUTHOR_TECHNICAL_CHECKS_PASS_NOT_INDEPENDENT_REVIEW",
+  "targeted_post_prewarm_launcher_check": {
+    "result": "PASS",
+    "tests": 1,
+    "wall_seconds": 0.13
+  },
+  "test_environment": "FIXED_PILOT_PYTHON_3_12_QISKIT_1_3_0_SINGLE_NESTED_THREAD",
+  "timing_note": "Regression groups ran before removal of the rejected budget-cache prototype. Final 16-test suite covers the final source and resource gates; budget code was restored to its original implementation."
+}
