@@ -1,0 +1,123 @@
+{
+  "schema": "C1_1_LIMITED_REANALYSIS_CONTRACT_V1",
+  "run_id": "track_b_c1_1_h4_saved_basis_exact_model_one_shot_v1",
+  "repository": "HIROMU1015/Partially-Randomized-Trotter",
+  "branch": "track-b-c1-1-input-basis-exact-model-20261020",
+  "base_commit": "a48b3c8244fb5d932e0d6bf4a5de6bb573ce35ed",
+  "fixed_reference_commit": "243eea8e840f3c472753f7935e510391626fd325",
+  "execution_source_commit_binding": "authorization_receipt.json execution_source_commit; authorization commit must be direct child and change only receipt",
+  "snapshot": {
+    "path": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz",
+    "bytes": 8652,
+    "sha256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a",
+    "access": "read-only; one np.load allow_pickle=False; never resave"
+  },
+  "reference_result": "artifacts/pr2_new_series_validation/2026-09-28/pr2_v1_v3_result_v1.json",
+  "reference_result_sha256": "0eb22c813eb838169eb455334146140467ebbc5636db78bd923b1e6bdaed46d8",
+  "reference_method_pointer": "/stages/V2/ranks/0/methods/B2-G",
+  "npz_member_allowlist": [
+    "constant",
+    "one_body",
+    "lambdas",
+    "g_matrices",
+    "sector_basis_indices",
+    "state_vector",
+    "sector_state_vector",
+    "metadata_json"
+  ],
+  "model": {
+    "molecule": "linear H4",
+    "spacing_A": "1.00",
+    "orbital_basis": "STO-3G",
+    "DF_rank": 12,
+    "system_qubits": 8,
+    "prefix": 3,
+    "deterministic_indices": [
+      0,
+      1,
+      2
+    ],
+    "randomized_indices": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ]
+  },
+  "allowed_calls": {
+    "snapshot_load": 1,
+    "generation_partition": 1,
+    "prepare_df_partial_s2": 1,
+    "dense_df_operator_qiskit": 2,
+    "full_PR2_runner": 0,
+    "saved_basis_reconstruction": "existing diagonalization, Gaussian/JW operations and registry path only",
+    "basis_serialization": "local gate matrices and descriptors; matrix-level Operator.compose; no new event/wrapper circuits",
+    "numerical_comparisons": "state norms, Hermiticity, two component model reconstructions vs saved DF, difference between models",
+    "exact_arithmetic": "saved finite binary64 signed coefficients as dyadic Fraction; exact sum, positive probabilities, label bijection; draft short-step check"
+  },
+  "policies": {
+    "identity": "extract_identity_phase",
+    "coefficient_atol": 0.0,
+    "partition": "explicit_ordered_partition",
+    "diagonal_sort": "descending_abs",
+    "basis": "fermionic_gaussian_jw",
+    "label_order": "saved B2-G sampling_components order; no aggregation"
+  },
+  "existing_tolerances": {
+    "state": {
+      "value": 1e-12,
+      "source": "src/trotterlib/pr2_new_series_validation.py:STATE_TOLERANCE"
+    },
+    "Hermiticity": {
+      "value": 1e-12,
+      "source": "same:HERMITICITY_TOLERANCE"
+    },
+    "H_D_plus_tail_vs_full_relative_spectral": {
+      "value": 1e-10,
+      "source": "same:RECONSTRUCTION_TOLERANCE and _method_record reconstruction check"
+    }
+  },
+  "unresolved_comparisons": "basis unitarity residual is diagnostic only; no new tolerance; no rigorous operator norm binding; no original basis byte-exact claim without original serialization",
+  "candidate_schedule": {
+    "T": "4/5",
+    "q_outer": 1,
+    "r_RTE": 4,
+    "m": 5,
+    "adopted": false,
+    "all_occurrences": "conditional until C1 schedule fixed"
+  },
+  "prohibitions": [
+    "new molecular SCF/DF factorization",
+    "parameter/version exploration against results",
+    "adapter/sampler/DP implementation",
+    "new event/wrapper circuit build/compile/synthesis",
+    "sampling/trajectories/Pilot/Full-N",
+    "native costs/shot budgets/resources ranking",
+    "new nontrivial proof",
+    "changes to preexisting source/results/grants/claims/ledger/markers/STOP"
+  ],
+  "internal_basis_object_scope": "existing U_to_qiskit_ops_jw calls BogoliubovTransform to extract authorized basis operations. That class internally is a circuit object; no event/wrapper or execution circuit is built; no compile/transpile/synthesis calls.",
+  "environment_identity_file": "environment_identity.json",
+  "import_isolation": "lightweight trotterlib and df_trotter namespaces bypass export-only __init__; imported selected module files remain unmodified",
+  "output_directory": "result",
+  "raw_logs": [
+    "result/raw_stdout.log",
+    "result/raw_stderr.log"
+  ],
+  "failure_record": "result/failure.json",
+  "terminal_record": "result/terminal.json",
+  "run_limit": 1,
+  "retry_limit": 0,
+  "failure_policy": "preserve original failure/logs and mandatory STOP; do not change source/input/tolerances and rerun",
+  "success_policy": "preserve, publish, verify, mandatory STOP",
+  "resources": "no agent-imposed CPU/RAM/worker cap; existing BLAS defaults; fail-fast dependency sequence; cache common-basis diagonals/matrices to avoid repeated component products; no shared environment changes",
+  "cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-b-c1-1-input-basis-exact-model-20261020.runtime",
+  "launch": "task-local MPLCONFIGDIR/NUMBA_CACHE_DIR; PYTHONDONTWRITEBYTECODE=1; fixed python -B run_reanalysis.py --authorization authorization_receipt.json",
+  "authorization_basis": "current user C1-1 instruction explicitly authorizes this bounded reanalysis; old grants not reused",
+  "created_utc": "2026-10-20T15:12:05.452470+00:00"
+}
