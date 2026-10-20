@@ -1,3 +1,9 @@
+## 2026-10-21 H8希少RTE C-1：実科学承認後、runtime fork gateでSTOP
+
+[C-1 runtime gate STOP](docs/research/h8_rare_rte_c1_pilot_run_20261021.md)、[機械可読記録](artifacts/resource_applicability/h8_rare_rte_c1_pilot_run/2026-10-21/README.md)。
+
+新driver SOURCE3d247894、人工8＋既存55PASS。元runtime import後64 threadsとなり、固定single-thread fork gateでSTOP。技術probe exit2・回収、法則/library署名/科学load未到達。両条件0/43・compile0・推定値null・新grant発行/消費0。元35,304 byte保全、再試行/thread設定変更/他研究介入/push0。mandatory STOP。次担当ユーザー：runtime thread/fork技術対応と公開範囲を判断。Codexは停止。以下は旧記録を保全。
+
 ## 2026-10-21 H8希少RTE C-1：S2_SINGLE pilot契約確定・科学実行未承認
 
 [固定契約と充足境界](docs/research/h8_rare_rte_c1_pilot_contract_20261021.md)、[機械可読packet](artifacts/resource_applicability/h8_rare_rte_c1_contract/2026-10-21/README.md)。
