@@ -13,3 +13,19 @@ H2直鎖1 Å/STO-3G/tol-only1e-8 rank3、保存Hamiltonian/state、T=.8/P=0、pr
 H4/H6のprocess・設定・grant・SOURCEは変更せず、空きCPU/RAM/scratchからH2を25 workerで起動した。H4/H6の既存容量計画は再推定せず固定予約を保全した。H2では既存process-local compiler位相guardを保持し、全gate/角度/wire列が不変であることを検査する。
 
 次の担当Codex：pilotの終了監査後、H2自身の保存pilot統計から2%/f4/群別下限33の本探索数を決め、新seed/cohortの単価取得・終了監査まで進める。中間再承認は不要。新探索後の統計・shot・総費用会計・順位・P・AD03は含めない。終了時mandatory STOP、次の解析判断はユーザーが行う。
+
+## pilot終了監査・本探索の開始
+
+2026-10-21T02:52:38.541224+09:00の追跡観測。pilot396本/792軸とcompiler guardの終了監査がPASSし、H2のpilot統計から群別n_Eを決めた。
+
+| 公式 | q1 | q2 | q4 | q8 |
+| --- | ---: | ---: | ---: | ---: |
+| 2nd | 96 | 71 | 33 | 33 |
+| 4th | 60 | 34 | 33 | 33 |
+| 4th(m5_best) | 33 | 33 | 33 | 33 |
+
+本探索は新525 trajectory/1050軸を25 workerで起動した。観測時の両軸完了は42本、結果エラー0。pilotを混合しない。
+
+これはpilot観測分散に基づく名目2%/f4設計で、母平均・母分散や未観測tailの保証ではない。観測分散0による未確定群は今回は0。
+
+[H2標本設計と本探索起動記録](../../artifacts/resource_applicability/track_a_h2_outer32_run01_start/2026-10-21/main_exploration_start.json)。新しい探索の統計・shot・順位を計算せず、取得・終了監査後mandatory STOPする。中間再承認は不要。

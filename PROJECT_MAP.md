@@ -1,3 +1,7 @@
+## 2026-10-21 H2 outer32：pilot監査PASS・本探索525本を起動
+
+[経過とH2標本数](docs/research/track_a_h2_outer32_run01_start_20261021.md)。SOURCE4ec26921、pilot396本/792軸と終了監査PASS。H2自身の2%/f4/群別下限33設計で新525本/1050軸を25 worker起動。標本非混合、観測時エラー0。H4/H6 jobは変更せず、本探索後統計/shot/会計/順位/P/AD03は範囲外。取得終了監査後mandatory STOP。以下は履歴。
+
 ## 2026-10-21 H2 outer32：signal PASS・pilot25 workerで取得中
 
 [起動記録](docs/research/track_a_h2_outer32_run01_start_20261021.md)。SOURCE4ec26921、12候補/120labelのsignalを保存、観測時pilot167/396本・STOP0。新14＋回帰100人工検査PASS。終了監査後、H2自身の標本数設計と新探索取得まで中間承認なしで継続。本探索後統計/shot/会計/順位/P/AD03は範囲外。H4/H6 jobは変更0。以下は履歴。
