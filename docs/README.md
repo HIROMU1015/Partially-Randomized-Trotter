@@ -788,3 +788,7 @@ Core科学load・科学bits・実512・実permission発行消費0、run_ready=fa
 
 
 > 2026-10-20 Track B W2c-B3：[限定Pilot結果の技術整理](research/track_b_g6_w2c_b3_pilot_result_technical_organization_20261020.md)。公開f27e63b7の既存費用・観測・制約を引用し、有限主張／Full-N直接観測／追加Pilotの条件を整理。新科学・統計解析・外挿・順位再計算・科学レビュー0、旧SOURCE/raw/claim/STOP不変、mandatory STOP。次担当：ユーザー・GPT。
+
+## 2026-10-20 Track B方法ノートv1.1：既存成果の原稿化
+
+[本文v1.1](manuscripts/track_b_return_aggregation_native_resource_note_v1_1.md)／[変更・証拠対応・未確立事項・handoff](research/track_b_return_aggregation_method_note_v1_1_20261020/README.md)。G6を中心にF1/F2/F3・G7〜G10・D1〜D3・W2b/W2c・限定Pilotの既存証拠を接続。v1.0/科学SOURCE/原結果/既存STOPは保持、新科学計算・再解析・証明・科学レビューなし。独立新規性・一般資源優位・投稿GOは未認定。次の科学判断はユーザー・GPT、公開照合後mandatory STOP。
