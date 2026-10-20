@@ -1,0 +1,62 @@
+--- sealed_prior/run_c13.py
++++ recovery/run_c13_r1.py
+@@ -1 +1 @@
+-"""Frozen C1-3 one-shot (retry 0). No import of molecular construction/synthesis."""
++"""Frozen C1-3-R1 new one-shot (retry 0). No import of molecular construction/synthesis."""
+@@ -12,3 +12 @@
+-def emit(step, **details):
+-    print(json.dumps({'utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+-                      'step': step, **details}), flush=True)
++from journal import Journal, classify_failure
+@@ -24 +22,4 @@
+-                                  'authorization_commit': git('rev-parse', 'HEAD')})
++                                  'authorization_commit': git('rev-parse', 'HEAD'), 'run_id': 'C1-3-R1-H4-selected-20261021',
++                                  'previous_failed_run_resumed': False})
++    journal = Journal(output)
++    emit = journal.emit
+@@ -50 +51,2 @@
+-        from adapter import DFAdapter, restore_r1, matrix_hash
++        from adapter import DFAdapter, restore_r1
++        from state_identity import verify_state_identity
+@@ -58,3 +60,4 @@
+-            state = np.asarray(archive['state_vector'], dtype=np.complex128)
+-        state_sha = matrix_hash(state)
+-        require(state_sha == contract['state_sha256'], 'STATE_BYTES_MISMATCH')
++            state = np.array(archive['state_vector'], copy=True)
++        state_identity = verify_state_identity(state, contract['state_sha256'])
++        save(output / 'state_identity.json', state_identity)
++        require(state.dtype.str == '<c16' and state.shape == (256,), 'STATE_DTYPE_SHAPE_MISMATCH')
+@@ -127 +130 @@
+-        save(output / 'summary.json', {'status': 'PASS', 'scientific_attempts': 1, 'retry': 0,
++        save(output / 'summary.json', {'status': 'C1_3_CORRECTNESS_PASS', 'scientific_attempts': 1, 'retry': 0,
+@@ -137,3 +140 @@
+-        save(output / 'failure.json', {'stage': stage, 'type': type(exc).__name__, 'message': str(exc),
+-             'traceback': traceback.format_exc(), 'retry': 0, 'mandatory_STOP': True,
+-             'F3_failure': exc.to_dict() if callable(getattr(exc, 'to_dict', None)) else None})
++        journal.fail(exc, stage, classify_failure(exc, stage))
+@@ -144,7 +145,7 @@
+-        save(output / 'terminal.json', {'status': 'PASS' if completed else 'FAILED_STOP', 'last_stage': stage,
+-             'scientific_attempts': 1, 'retry': 0, 'wall_seconds': time.monotonic() - started,
+-             'CPU_user_seconds': usage.ru_utime, 'CPU_system_seconds': usage.ru_stime,
+-             'maximum_RSS_KiB': usage.ru_maxrss, 'resource_limits_added': False,
+-             'shared_configuration_modified': False, 'no_native_compile_or_sampling': True,
+-             'next': 'C1-4 documentation only' if completed else 'mandatory STOP; new explicit approval required'})
+-        emit('TERMINAL', status='PASS' if completed else 'FAILED_STOP')
++        journal.terminal('C1_3_CORRECTNESS_PASS' if completed else 'C1_3_TECHNICAL_INCONCLUSIVE_STOP', stage,
++             wall_seconds=time.monotonic() - started,
++             CPU_user_seconds=usage.ru_utime, CPU_system_seconds=usage.ru_stime,
++             maximum_RSS_KiB=usage.ru_maxrss, resource_limits_added=False,
++             shared_configuration_modified=False, no_native_compile_or_sampling=True,
++             mandatory_STOP=not completed,
++             next='C1-4 documentation only' if completed else 'mandatory STOP; new explicit approval required')
+--- sealed_prior/support.py
++++ recovery/support.py
+@@ -13 +13 @@
+-BASE = '2937e6b655ba3cd77f982d6901d766355a8b92c1'
++BASE = 'e72867b87e12d93d4fc1361f45f105febc6a94c6'
+@@ -58,0 +59,5 @@
++
++PRIOR = ROOT / 'docs/research/track_b_c1_2_c1_4_integrated_adapter_validation_20261021'
++# Immutable connection modules are resolved after this new helper directory.
++if str(PRIOR) not in sys.path:
++    sys.path.insert(1, str(PRIOR))
