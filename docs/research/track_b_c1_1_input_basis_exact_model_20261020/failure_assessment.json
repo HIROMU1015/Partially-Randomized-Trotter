@@ -1,0 +1,54 @@
+{
+  "overall_status": "REANALYSIS_INCONCLUSIVE",
+  "input_snapshot_and_array_identities": "VERIFIED",
+  "state_norm_sector_and_Hermiticity_existing_checks": "VERIFIED",
+  "partition_indices": "VERIFIED",
+  "partition_hash_check": "INPUT_IDENTITY_MISMATCH",
+  "comparison": {
+    "expected_partition_hash": "722ec0077b4505d963c03bccdd6311f9dd8b3d3a5ed1b9117f7a6f8fa85a7450",
+    "actual_partition_hash": "NOT_CAPTURED_BY_FROZEN_RUNNER",
+    "evidence": "result/failure.json, run_reanalysis.py:139-140",
+    "limitation": "only inequality observed; actual prep object and hash were not persisted; no reconstruction rerun to retrieve them"
+  },
+  "basis": "BASIS_RECONSTRUCTION_INCONCLUSIVE",
+  "basis_call_returned_before_check": true,
+  "basis_registry_serialized": false,
+  "original_basis_bytes": "MISSING_SOURCE",
+  "component_comparison": "NOT_REACHED",
+  "G6_exact_model": "REANALYSIS_INCONCLUSIVE",
+  "short_step_check": "NOT_REACHED",
+  "binding": "MODEL_BINDING_UNCLOSED",
+  "adapter": "IMPLEMENTATION_REQUIRED",
+  "static_cause_assessment": {
+    "partition_policy_and_index_paths": "same explicit ordered partition policy and original generation order in fixed V1-V3 and runner",
+    "hash_payload": "includes all RankedDFFragment fields (rank, original_index, lam, weight, weight_rule), ranking_proxy_lambda_r, Hamiltonian hash, ld and policy",
+    "possible_cause": "recomputed floating metadata (weights/tail sum) and runtime arithmetic identity; not established",
+    "confirmed_cause": "UNRESOLVED because actual hash/payload not saved",
+    "not_inferred": [
+      "snapshot corruption",
+      "operator mismatch",
+      "library/version as proved cause"
+    ]
+  },
+  "secondary_logging_failure": {
+    "error": "TypeError: say() got multiple values for argument stage",
+    "cause": "failure state contains stage; say(stage, **state) receives duplicate stage at terminal print",
+    "scope": "failure.json, terminal.json and output_inventory.json were already saved; outer process exit=1",
+    "source_repaired": false,
+    "retry": 0
+  },
+  "call_counts_from_traceback_and_straight_line_source": {
+    "provenance": "control-flow inference, not independent profiler instrumentation",
+    "snapshot_np_load": 1,
+    "generation_partition": 1,
+    "prepare_df_partial_s2": 1,
+    "dense_df_operator_qiskit": 0,
+    "exact_coefficient_model_stage": 0,
+    "event_wrapper_circuit_build": 0,
+    "compile_synthesis": 0,
+    "sampling": 0
+  },
+  "scientific_GO_or_independent_originality_or_submission_GO": false,
+  "next_stage_authorized": false,
+  "mandatory_STOP": true
+}
