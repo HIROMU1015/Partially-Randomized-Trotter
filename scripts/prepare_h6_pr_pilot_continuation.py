@@ -1,6 +1,7 @@
 """Seal the user's H6 restart approval; no molecular sampling/compile here."""
 import argparse
 import copy
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -55,8 +56,13 @@ def prepare(source,old_path,private):
     workers=worker_count(len(tasks),observation['idle_CPU_equivalents'],
       observation['effective_available_RAM_bytes'],resources['worker_RSS_proxy_bytes'])
     resources['admission_workers']=workers
+    # The actual fork count can increase between preparation and fresh gate.
+    # Reserve scratch for the affinity ceiling, without forcing that parallelism
+    # or capping workers at the historical/preparation allocation.
+    scratch_workers=min(len(tasks),len(os.sched_getaffinity(0)))
+    resources['scratch_worker_slots_reserved']=scratch_workers
     resources['disk_proxy_bytes']=(resources['storage_bytes_per_trajectory_proxy']*len(tasks)
-      +(workers+1)*2026673924)
+      +(scratch_workers+1)*2026673924)
     resources['inode_proxy']=sum(sum(c.task_limits(t).values())+100 for t in tasks)*2
     c.require(observation['disk_free_bytes']>=resources['disk_proxy_bytes'],'CONTINUATION_PEAK_DISK_ADMISSION')
     c.save(private/'capacity_PRIVATE.json',dict(observation=observation,workers=workers,
