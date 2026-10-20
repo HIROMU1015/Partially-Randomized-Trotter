@@ -1,5 +1,30 @@
 # PF直接compile：残106軸のcontrol参照修正・再実行
 
+## 現在の結果：106軸すべて成功・2026-10-20 11:02 JST終了
+
+科学SOURCEは`9c65fb312891d8334037f30ef953336c287bc262`。今回のH2 46軸とH4 60軸はすべてcontrol/compile成功、失敗0・未実施0・native終了未確認0。全53 workerとcoordinator、metadata auditorのexit0/reapを確認した。SOURCE/input/compiler/runtime等39,522件の終了gateと監査gate PASS。control誤差の保存最大は7.055e-13で、固定許容1e-9未満だった。現在の稼働0、mandatory STOP。
+
+| 系列 | 初回保存受入 | 前回再実行成功 | 今回成功 | 計画軸の保存合計 |
+| --- | ---: | ---: | ---: | ---: |
+| H2 DF3 | 0 | 26 | 46 | 72 |
+| H4 DF10 | 0 | 62 | 60 | 122 |
+| H6 DF19 | 214 | 0 | 0 | 214 |
+| H8 DF28 | 292 | 22 | 0 | 314 |
+| H4 legacy DF12 | 66 | 0 | 0 | 66 |
+| 合計 | 572 | 110 | 106 | 788 |
+
+788軸は保存されたtask単位受入の合計であり、初回572軸のrun全体最終gate欠測は継承する。前回110軸と今回106軸には独立した最終gateがある。保存682行を全field一致で継承し、SOURCE・compiler hash・task ID・cosine/sine pair・compiled整数値・終了証拠を照合した。旧48軸は対象外のままで、全登録候補のprofile一致を一括認定していない。
+
+今回の実時間152.063秒（約2分32秒）、worker CPU計1,033.940秒（約17.23 CPU分）、最大単一worker RSS631,103,488 bytes（約602 MiB）、標本観測したworker RSS合計最大21,349,957,632 bytes（約19.88 GiB）、最大観測worker53。合計RSSは標本最大。実行末gateは11:02:26 JST、監査gateは11:02:34 JST。native53/control212/wrapper build106/compile106は固定契約どおりで、禁止callは全0。
+
+H2単一項S4の20軸は保存exact_truncatedを用いた正式Tのnative回路のゲート数として取得した。旧merged corrected signalとの不整合は解消しておらず、CSV/JSONのrequires_saved_classical_signal_reconciliation=Trueを保持する。原signal・原費用・旧適格性・shot・ランキングを更新しない。将来のqモデル比較はこのflagとSOURCEを保持し、旧signalを用いる総費用比較への採用前に別途整合を確認する必要がある。
+
+[保存結果・自動監査](../../artifacts/resource_applicability/track_a_pf_direct_compile_retry106/2026-10-20/results01/completion_audit.json)、new_gate_counts.csv、combined_gate_counts.csv、combined_observation_index.json、control_reference/diagnosticsを含むworker_evidence.json.gz、final_structure_validation.json、terminal_exit_evidence.jsonに記録した。observer自身のexitは自己報告であることを明示し、独立wait4のcoordinator/worker終了証拠と区別する。
+
+新規sampling/fit/bootstrap/shot再計算/費用再ランキング、詳細科学レビュー、最終evidence freezeは行っていない。科学実行は終了し、追加stageを起動しない。次の担当はユーザーで、新しい公開範囲と、将来の旧classical signal整合への対応を判断する。今回はまだ公開承認を受けていない。
+
+## 以下は準備・実行前の履歴
+
 2026-10-20 JST。基点`636208ba6d74af13e7c405970c896b621022af65`。ユーザーの「修正を行って再計算して」を、残106軸の修正・control/compile再実行承認として記録した。保存受入682軸と過去のSOURCE/raw/grant/ledger/marker/STOPを保全する。現在はseal前で、実分子の再計算は未開始。
 
 [packet](../../artifacts/resource_applicability/track_a_pf_direct_compile_retry106/2026-10-20/README.md)。linear H2/H4、隣接1 Å、STO-3G、tol-only DF3/10、T=.8、P=0、symmetric_directional。対象H2 46軸/H4 60軸、計106軸＝53 cosine/sine pair。旧profile照合待ち48軸・H6/H8/legacyの追加実行は対象外。compilerは既存Qiskit1.3.0、rz/sx/x/cx、optimization_level1、seed17と同一hash。指標は状態準備を除くfull Hadamard wrapperのcompiled整数ゲート数で、shot重み付け・新費用ランキングは行わない。

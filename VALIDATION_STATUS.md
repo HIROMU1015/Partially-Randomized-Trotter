@@ -1,3 +1,7 @@
+## 2026-10-20 PF残106軸：全成功・計画788軸の保存観測が揃う
+
+[修正・最終結果・限界](docs/research/track_a_pf_direct_compile_retry106_20261020.md)。SOURCE9c65fb31でH2 46/H4 60軸すべてcontrol/compile成功、失敗/未実施/unknown0、全53worker回収。実時間152秒、39,522件の最終gate PASS。旧682を保全し計788軸のtask受入を保存。単一項S4の20軸は旧signal未整合flagを維持、初回572のglobal final gate欠測も継承。追加science/費用順位更新/詳細review/freeze0、mandatory STOP。次担当ユーザー：公開範囲と将来の旧signal対応を判断。以下は履歴。
+
 ## 2026-10-20 PF残106軸：参照修正・再実行承認
 
 [修正・固定scope・実行記録](docs/research/track_a_pf_direct_compile_retry106_20261020.md)。B0IはDのB0 overlayであり、前のpreparation仮説を訂正。未回転forwardを保存Cで位相整合し、H2単一項S4の20軸は保存exact_truncatedと未整合flagを使用。新13＋既存13人工検査PASS、旧682保存受入・全旧STOP保全。現在seal前、実分子再実行未開始。新公開未承認、詳細review/最終freezeなし。以下は履歴。
