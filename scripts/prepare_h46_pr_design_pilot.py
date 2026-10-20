@@ -19,6 +19,8 @@ def seal_drafts(source,signal_config,excluded_seeds,private):
     origin=c.original.original_signal(signal_config)
     c.require(origin['SOURCE']==c.manifest()['signal_SOURCE'],'EXACT_SIGNAL_ORIGIN')
     files={r['path']:r for r in origin['sealed_files']}
+    item=c.seal(Path(signal_config).resolve(),'pilot_original_signal_config')
+    files[item['path']]=item
     c.require(c.read(d.ROOT/PROPOSAL)==d.proposal(),'PROPOSAL_MATCHES_METADATA_GENERATOR')
     import run_h46_pr_design_pilot,concurrent.futures.process,concurrent.futures.thread
     for module in list(sys.modules.values()):
