@@ -1,3 +1,9 @@
+## 2026-10-21 H8希少RTE C-1：process-local修正・両条件pilot完了
+
+[H8 C-1両条件完了・限界](docs/research/h8_rare_rte_c1_pilot_repair_20261021.md)、[結果・call・native・SHA](artifacts/resource_applicability/h8_rare_rte_c1_pilot_repair/2026-10-21/README.md)。
+
+OpenBLASのthread生成を特定し、所有processのみpreimport thread制御で元single-thread fork gateを維持。新SOURCE383dd906、人工12＋既存55PASS。両条件S2_SINGLE43/43・86 trajectory/172 compileを独立新grantで順次完了。元prep/compiler/law・canonical p差1e-12、代表control/oracle1e-8、別moment・全call/native exit0/reap・SHA保全PASS。mean/variance/SEは条件付き標本推定。S0既存48は別anchor、multi/S4未知、全層期待費用・順位・母平均保証は未評価。旧STOP保全、追加science/production/review/freeze/push0、mandatory STOP。次担当ユーザー：後続科学範囲と公開範囲の判断。Codexは停止。以下は旧bytesを保全。
+
 ## 2026-10-21 H8希少RTE C-1：実科学承認後、runtime fork gateでSTOP
 
 [C-1 runtime gate STOP](docs/research/h8_rare_rte_c1_pilot_run_20261021.md)、[機械可読記録](artifacts/resource_applicability/h8_rare_rte_c1_pilot_run/2026-10-21/README.md)。
