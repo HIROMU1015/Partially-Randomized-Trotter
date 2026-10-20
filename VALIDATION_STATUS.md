@@ -1,3 +1,7 @@
+## 2026-10-21 希少RTE event・期待compiled費用：既存証拠調査のみ完了
+
+[調査報告](docs/research/pr_rare_rte_existing_evidence_20261021.md)、[条件表・分類・来歴・監査](artifacts/resource_applicability/pr_rare_rte_existing_evidence/2026-10-21/investigation_status.json)。指定7固定commitと4系Pの8条件を照合。旧conditional pilot取得済み/未結合、H8原profile補足、L1/L2/Tier Rの成立範囲を区別した。保存点・既存解析は引用可、P固有未観測寄与はB/C/Dへ分類し、新しい期待費用順位判断・上界採択は行わない。旧SOURCE/raw/grant/ledger/marker/STOP保全、新科学/数値再解析/統計/再順位/push/詳細review/freeze0。専用ローカルcommit後mandatory STOP。次担当ユーザー：対象条件・保証範囲・追加承認を判断。以下は従来の索引・履歴を保全。
+
 ## 2026-10-20 PF単価検証：100scopeを条件付き成果として正式採用
 
 [採用・主張境界・公開監査](docs/research/track_a_pf_q_model_evidence_integration_20261020.md)。この採用は保存点感度診断に限定し、科学core全gate・母平均・COMMON_CORE_READY・final freezeへ昇格させない。
