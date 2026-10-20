@@ -7,6 +7,8 @@ import traceback
 import h46_pr_pilot_contract as c
 
 CACHE={}
+from h46_pr_pilot_repair import BoundJSON,canonical_tau,enabled,CUTOFF_POLICY
+INPUT_CACHE=BoundJSON()
 
 def context(cfg,system,prefix):
     from h46_m5_signal_adapter import base_context,prefix_context
@@ -49,18 +51,23 @@ def run_task(cfg,task,stop):
         from trotterlib.df_trotter.circuit import simulate_statevector
         group=dict(row,policy=row['r_policy']);requests=();events=[];logB=0.
         if row['method']=='PR':
-            c.reserve(cfg,task,'trajectories');seeds=c.read(cfg['registry_path'])[task['id']];counter=[0]
+            c.reserve(cfg,task,'trajectories')
+            seeds=INPUT_CACHE.registry(cfg,cfg['registry_path'],task['id']) if enabled(cfg) else c.read(cfg['registry_path'])[task['id']]
+            counter=[0]
             def factory(*args,**kwargs):
                 checkpoint('sample_registered_unconditional_piece');i=counter[0];c.reserve(cfg,task,'request_sampling_calls',i);counter[0]+=1
                 request=make_df_partial_s2_step_request(*args,**kwargs)
-                c.save(out/('piece_law_'+str(i)+'.json'),dict(piece_request_index=i,law=request.rte_distribution.to_dict(),event_count=len(request.rte_occurrence.events),registry_seed_PRIVATE=kwargs['seed'],signed_step_time=kwargs['step_time'],rte_steps=kwargs['rte_steps'],cohort='DESIGN_PILOT',conditioned=False))
+                tau=canonical_tau(ctx.cut,kwargs['step_time'],kwargs['rte_steps'])
+                c.require(request.rte_distribution.dimensionless_step_time==tau,'EXACT_FACTORY_CUTOFF_TAU')
+                c.save(out/('piece_law_'+str(i)+'.json'),dict(piece_request_index=i,law=request.rte_distribution.to_dict(),event_count=len(request.rte_occurrence.events),registry_seed_PRIVATE=kwargs['seed'],signed_step_time=kwargs['step_time'],rte_steps=kwargs['rte_steps'],cohort='DESIGN_PILOT',conditioned=False,
+                  cutoff_policy=CUTOFF_POLICY,cutoff_tau=tau,truncation_tolerance=kwargs['truncation_tolerance']))
                 return request
             requests=original.make_requests(group,ctx.cut,seeds,ctx.lambda_R,factory=factory,tolerance=_explicit_cutoff_tolerance,checkpoint=checkpoint)
             events=[[e.to_dict() for e in request.rte_occurrence.events] for request in requests]
             logB=math.fsum(len(r.rte_occurrence.events)*math.log(r.rte_distribution.exact_finite_distribution) for r in requests)
         stratum=c.design.event_stratum(events);event_digest=c.digest(events)
         c.save(out/'events_PRIVATE.json',dict(events=events,event_digest=event_digest,conditional=False,cohort='DESIGN_PILOT' if row['method']=='PR' else 'DETERMINISTIC',**stratum))
-        sig=next(x for x in c.read(c.ROOT/c.SIGNAL_RECORDS)['records'] if x['candidate']['id']==row['id'])
+        sig=INPUT_CACHE.signal(cfg,c.ROOT/c.SIGNAL_RECORDS,row['id']) if enabled(cfg) else next(x for x in c.read(c.ROOT/c.SIGNAL_RECORDS)['records'] if x['candidate']['id']==row['id'])
         checks=[gate(out,'saved_normalization_log_B',abs(logB-sig['signal']['log_B']),c.OTHER_TOLERANCE)]
         scalar=ctx.scalar+(ctx.tail_identity if row['method'] in ('PR','B0I') else 0.)
         prep=ctx.fullprep if row['method']=='FULL' else ctx.cut

@@ -13,6 +13,7 @@ import threading
 from types import FunctionType
 import h46_pr_pilot_contract as c
 import run_h6_m5_saved_phase as observed
+import h46_pr_pilot_repair as repair
 
 supervise=FunctionType(observed.supervise.__code__,dict(observed.__dict__,c=c,__file__=__file__),'supervise',observed.supervise.__defaults__,observed.supervise.__closure__)
 WORKER_CFG=None
@@ -32,7 +33,8 @@ def fresh(cfg):
     probe=dict(cfg,systems={'H4':{},'H6':{}},resources=dict(system_RSS_proxy_bytes={'H4':1,'H6':1},disk_proxy_bytes=cfg['resources']['disk_proxy_bytes']))
     r=fresh_resources(probe);proxy=cfg['resources']['worker_RSS_proxy_bytes']
     c.require(type(proxy) is int and proxy>0,'RESOURCE_PROXY_REQUIRED_NOT_A_BOUND')
-    workers=min(len(cfg['tasks']),cfg['resources']['admission_workers'],math.floor(r['idle_CPU_equivalents']),r['effective_available_RAM_bytes']//proxy)
+    workers=repair.worker_count(len(cfg['tasks']),r['idle_CPU_equivalents'],r['effective_available_RAM_bytes'],proxy,
+      historical_allocation=None if repair.enabled(cfg) else cfg['resources']['admission_workers'])
     c.require(workers>=1,'CANNOT_ADMIT_ONE_COST_WORKER')
     import shutil
     fs=os.statvfs(Path(cfg['run_root']).parent)
@@ -45,7 +47,8 @@ def execute(cfg,*,target=worker):
     c.authorize(cfg);c.require(sys.executable==cfg['runtime']['python'],'COST_FIXED_PYTHON')
     root=Path(cfg['run_root']);c.require(not root.exists(),'UNUSED_COST_RUN_ROOT');resources=fresh(cfg)
     root.mkdir();Path(cfg['output']).mkdir();Path(cfg['ledger']).mkdir();c.save(cfg['marker'],dict(state='CONSUMED_NO_RETRY_NO_REFUND',grant=cfg['grant']));c.save(root/'fresh_gate.json',resources)
-    ctx=mp.get_context('spawn');stop=ctx.Event();errors={};results=[];signals=[];started=time.monotonic();handlers={};pids={}
+    optimized=repair.enabled(cfg)
+    ctx=mp.get_context('fork' if optimized else 'spawn');stop=ctx.Event();errors={};results=[];signals=[];started=time.monotonic();handlers={};pids={}
     keys=('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','BLIS_NUM_THREADS','VECLIB_MAXIMUM_THREADS','NUMEXPR_NUM_THREADS','QISKIT_PARALLEL');oldenv={k:os.environ.get(k) for k in keys}
     def interrupt(sig,frame):signals.append(sig);stop.set()
     monitoring_done=threading.Event();monitor=None
@@ -76,7 +79,18 @@ def execute(cfg,*,target=worker):
     try:
         for k in keys:os.environ[k]='FALSE' if k=='QISKIT_PARALLEL' else '1'
         for sig in (signal.SIGTERM,signal.SIGINT):handlers[sig]=signal.signal(sig,interrupt)
-        monitor=threading.Thread(target=monitor_resources,daemon=True);monitor.start()
+        if optimized:
+            c.require(threading.active_count()==1,'SINGLE_THREADED_PARENT_BEFORE_FORK')
+            from h46_pr_pilot_native import context
+            c.save(root/'context_prewarm.json',repair.prewarm(cfg,context))
+            c.require(not stop.is_set(),'OWN_STOP_BEFORE_FORK')
+            # Allocate against actual remaining RAM/CPU after the parent has
+            # materialized the shared context, then fork before any monitor.
+            resources=fresh(cfg)
+            c.save(root/'resources_after_context_prewarm.json',resources)
+            c.require(threading.active_count()==1,'SINGLE_THREADED_PARENT_AT_FORK')
+        else:
+            monitor=threading.Thread(target=monitor_resources,daemon=True);monitor.start()
         with ProcessPoolExecutor(max_workers=resources['workers'],mp_context=ctx,initializer=initialize,initargs=(cfg,stop)) as pool:
             # Retain own PID/exit evidence before shutdown releases pool handles.
             # Fixed schedule-only priority, independent of sampled outcomes.
@@ -87,6 +101,8 @@ def execute(cfg,*,target=worker):
               rule='DESCENDING_FIXED_Q_TIMES_PIECES_NO_OUTCOME_ADAPTATION'))
             futures={pool.submit(target,t):t for t in dispatch}
             processes=list(pool._processes.values());pids={p.pid:p for p in processes}
+            if optimized:
+                monitor=threading.Thread(target=monitor_resources,daemon=True);monitor.start()
             with (root/'task_completion.jsonl').open('x') as journal:
                 for future in as_completed(futures):
                     task=futures[future]

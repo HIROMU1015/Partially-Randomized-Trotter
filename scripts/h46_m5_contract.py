@@ -21,6 +21,7 @@ SOURCE_PATHS = ('scripts/h46_m5_contract.py','scripts/h46_m5_native.py',
     'scripts/h46_new2_native.py','scripts/h46_new2_core.py',
     'scripts/prepare_h46_confirmation_native.py','scripts/h46_confirmation_contract.py',
     'src/trotterlib/h46_m5_plan.py','references/h46_m5_best_formula_v1.json')
+SOURCE_PATHS+=('scripts/h46_pr_pilot_repair.py',)
 
 
 def require(test, reason):

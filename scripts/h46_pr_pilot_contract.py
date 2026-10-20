@@ -29,6 +29,8 @@ SOURCE_PATHS+=('scripts/h46_pilot_lossless_storage.py','scripts/h46_pr_pilot_sto
  'scripts/finalize_h46_pr_pilot_acquisition.py',
  'tests/test_h46_pr_pilot_execution.py','tests/test_h46_pilot_lossless_storage.py')
 SOURCE_PATHS+=('artifacts/resource_applicability/track_a_h46_m5_det_cost_run01_results/2026-10-20/private_raw_inventory.json',)
+SOURCE_PATHS+=('scripts/h46_pr_pilot_repair.py','tests/test_h6_pr_pilot_cutoff_repair.py','scripts/audit_h6_pr_pilot_cutoff_repair.py')
+SOURCE_PATHS=tuple(dict.fromkeys(SOURCE_PATHS))
 
 # Reuse the unchanged byte/closure/input/runtime/compiler verifier. Only new
 # SOURCE paths and accepted stage names differ. Scientific gates are unchanged.
@@ -41,6 +43,8 @@ def pipeline(cfg):
 
 def verify(cfg):
     _base_verify(cfg)
+    from h46_pr_pilot_repair import enabled
+    enabled(cfg)
     require(cfg['cohort']==cfg['plan']['cohort']==design.COHORT,'DESIGN_PILOT_COHORT_BOUND')
     require(cfg['proposal_sha256']==cfg['plan']['proposal_sha256']==sha(ROOT/NEW_PATHS[-1]),'PROPOSAL_VERSION_BOUND')
     require(cfg['decisions']['formal_shot_policy_adopted'] is False and cfg['decisions']['AD03']=='DEFERRED','NO_SHOT_OR_MAIN_ADOPTION')

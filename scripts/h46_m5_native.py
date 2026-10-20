@@ -19,11 +19,12 @@ CACHE={}
 
 
 def make_requests(group,prep,seeds,lambda_R,*,factory,tolerance,checkpoint=lambda phase:None):
+    from h46_pr_pilot_repair import canonical_tau
     result=[]
     for s in c.core.schedule(group['formula'],group['q'],group['policy'],group['r_value']):
         checkpoint('sample_signed_piece')
         r=factory(prep,step_time=s['signed_time'],rte_steps=s['rte_steps'],
-            truncation_tolerance=tolerance(lambda_R*s['signed_time']/s['rte_steps'],4),
+            truncation_tolerance=tolerance(canonical_tau(prep,s['signed_time'],s['rte_steps']),4),
             finite_taylor_order=4,seed=seeds[f"{s['outer']}:{s['piece']}"],controlled=True,
             ancilla_qubit=prep.num_system_qubits,pf_label='2nd')
         c.require(len(r.rte_occurrence.events)==s['rte_steps'],'REGISTERED_RTE_EVENT_COUNT')
