@@ -1,5 +1,7 @@
 # Partially Randomized Trotter
 
+発表資料：[PR資源評価のスライド構成案（14枚基本・12枚圧縮）](docs/progress/track_a/README.md)。本文・数式・図をGitHub上で閲覧できます。
+
 ## 研究内容を確認する入口
 
 リポジトリ内の実装、検証、文書、成果物の区分は、最初に
