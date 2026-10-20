@@ -1,0 +1,132 @@
+{
+  "schema": "C1_1_R1_NEW_PARTITION_EXACT_MODEL_CONTRACT_V1",
+  "run_id": "track_b_c1_1_r1_h4_new_partition_basis_exact_model_20261021_one_shot_v1",
+  "branch": "track-b-c1-1-r1-new-partition-exact-model-20261021",
+  "base_commit": "8188c8a50f79ea9d17fddb987c651650b58aa22c",
+  "scientific_reference_commit": "243eea8e840f3c472753f7935e510391626fd325",
+  "source_commit_binding": "new authorization receipt must be only addition in direct child of source commit",
+  "snapshot": {
+    "path": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz",
+    "bytes": 8652,
+    "sha256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a"
+  },
+  "expected_Hamiltonian_hash": "de7a549238e3a21f15a84018bef28440c345b31030282c01cf874f3d1d212424",
+  "npz_members": [
+    "constant",
+    "one_body",
+    "lambdas",
+    "g_matrices",
+    "metadata_json",
+    "sector_basis_indices",
+    "state_vector",
+    "sector_state_vector"
+  ],
+  "materialization": "Hamiltonian members use D0 np.array(copy=True), g_matrices tuple views; additional state arrays read in same single NPZ open; no resave",
+  "d0_payload": "docs/research/track_b_c1_1_d0_partition_hash_20261021/result/partition_payload.canonical.json",
+  "d0_payload_bytes": 1834,
+  "d0_partition_hash": "16b35c1dde1a6807d39c733defd87e315e4ac7317a831b240d0f7214e744a834",
+  "historical_partition_hash": "722ec0077b4505d963c03bccdd6311f9dd8b3d3a5ed1b9117f7a6f8fa85a7450",
+  "new_provenance_authorized_by_current_user": true,
+  "old_PR2_partition_reproduction_required": false,
+  "old_result_or_D0_classification_changes_allowed": false,
+  "reference_result": "artifacts/pr2_new_series_validation/2026-09-28/pr2_v1_v3_result_v1.json",
+  "reference_result_sha256": "0eb22c813eb838169eb455334146140467ebbc5636db78bd923b1e6bdaed46d8",
+  "reference_pointer": "/stages/V2/ranks/0/methods/B2-G",
+  "model": {
+    "molecule": "linear H4",
+    "spacing_A": "1.00",
+    "basis": "STO-3G",
+    "DF_rank": 12,
+    "system_qubits": 8,
+    "generation_prefix": 3
+  },
+  "policies": {
+    "partition": "explicit_ordered_partition",
+    "identity": "extract_identity_phase",
+    "coefficient_atol": 0.0,
+    "diagonal_sort": "descending_abs",
+    "basis": "fermionic_gaussian_jw",
+    "new_model_coefficient_source": "new reconstructed coefficients, then stored as exact dyadic images; not old float lambda/p",
+    "order": "new extraction order unchanged; common old/new labels retain relative old order. Existing threshold-zero retention may differ; record all old/new differences, including coefficient signs; do not merge or re-sort."
+  },
+  "scientific_call_budget": {
+    "np_load": 1,
+    "generation_partition": 1,
+    "partition_hash_before_basis": 1,
+    "prepare_df_partial_s2": 1,
+    "dense_df_operator_qiskit": 2,
+    "R1_tail_matrix": 1,
+    "old_coefficients_on_R1_basis_hybrid_matrix": 1,
+    "grouped_basis_cache": "per basis matrices and scalar diagonals, without merging labels",
+    "G6_kernel_or_sampler_or_event_generation": 0,
+    "SCF_new_DF_or_geometry_rank_search": 0,
+    "event_wrapper_build_compile_synthesis": 0,
+    "native_N_sampling_Pilot_FullN": 0
+  },
+  "hard_gate_conditions": [
+    "saved input layout/digests and state/Hermiticity existing checks",
+    "canonical partition bytes and hash exactly D0 before basis",
+    "preparation partition hash matches D0",
+    "basis local matrix/descriptor SHA and canonical ID/hash and component basis references",
+    "common component ID/fragment/support/identity structure and relative order match; all new labels legal; no duplicate or zero retained label; sign is checked against its adopted NEW coefficient",
+    "no duplicate component IDs, no retained zero, exact positive p and sum1 and lambda*p*sign=c",
+    "new H_D+tail vs full DF existing relative spectral criterion"
+  ],
+  "historical_differences_recorded_not_old_reproduction_PASS": [
+    "old partition hash mismatch kept",
+    "old/new preparation and tail hashes",
+    "old/new coefficient hex differences allowed as independent R1 input",
+    "old basis implementation identity unavailable; no byte-exact claim",
+    "old/new retained set or sign differences from fixed extraction are recorded; they do not assert old input identity. Hybrid check skipped if ID lists differ."
+  ],
+  "existing_tolerances": {
+    "state": {
+      "value": 1e-12,
+      "source": "pr2_new_series_validation.STATE_TOLERANCE"
+    },
+    "Hermiticity": {
+      "value": 1e-12,
+      "source": "same.HERMITICITY_TOLERANCE"
+    },
+    "new_H_D_plus_tail_vs_full_DF": {
+      "value": 1e-10,
+      "source": "same._method_record RECONSTRUCTION_TOLERANCE",
+      "same_target": "tail - (full - deterministic), spectral norm / max(1,norm(full,2))"
+    }
+  },
+  "diagnostics_without_new_tolerance": [
+    "basis unitarity Frobenius residual",
+    "old coefficients placed on new R1 basis (hybrid), not original PR2 operator reproduction",
+    "old/new coefficient hex equality"
+  ],
+  "exact_vs_numeric": "exact arithmetic certifies only adopted coefficient/probability relations; ideal gate unitary semantics remain separate from floating matrix evidence and original DF binding",
+  "short_step": {
+    "T_decimal_exact": "4/5",
+    "T_binary64_image_also_checked": true,
+    "q_outer": 1,
+    "r_RTE": 4,
+    "m": 5,
+    "design_adopted": false,
+    "all_actual_occurrences": "CONDITIONAL pending formal C1 schedule; no changing times/split/degree"
+  },
+  "basis_internal_scope": "existing BogoliubovTransform is basis-only operation extraction; gate internals may use Qiskit basis objects. No new event/wrapper or compile/synthesis; no basis_change_unitary circuit builder call",
+  "environment_identity": "environment_identity.json plus critical_runtime_files.json; same preexisting D0 runtime, read-only, no installations or version exploration",
+  "output_schema": {
+    "input_partition": "result/input_identity.json, partition_payload.canonical.json, partition_identity.json, state_checks.json",
+    "basis": "result/preparation_checkpoint.json, basis/basis_NNN.json, basis_registry_index.json",
+    "components": "result/component_comparison.json",
+    "exact_model": "result/labels/labels_NNNN.json in original order, exact_model_core.json, model_identity.json",
+    "numeric_short_step": "result/model_binding.json, short_step.json",
+    "failure": "result/failure.json, failure_stage.json, optional secondary_failures.json",
+    "terminal": "result/attempt.json, run_identity.json, terminal.json, call_observations.json, runner_output_inventory.json",
+    "logs": "raw stdout/stderr/launch/exit/resources captured under dedicated runtime then copied into result; final output manifest covers all"
+  },
+  "run_limit": 1,
+  "retry_limit": 0,
+  "failure_policy": "preserve actual/expected/checkpoints/traceback and STOP; no source repair or rerun after any scientific attempt",
+  "success_policy": "preserve, publish, verify public bytes and protections, mandatory STOP",
+  "authorization_basis": "current user R1 instruction explicitly authorizes this bounded execution; previous authorizations not reused",
+  "resources": "no agent CPU/RAM/worker caps; existing BLAS defaults; dependent Gate order and fail-fast; common basis/diagonal cache; shared environment untouched",
+  "runtime_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-b-c1-1-r1-new-partition-exact-model-20261021.runtime",
+  "created_utc": "2026-10-20T16:05:07.380074+00:00"
+}
