@@ -9,7 +9,7 @@ from hashlib import sha256
 from collections import Counter
 import json
 from .guard import require
-from . import contract as K
+from . import contract as K,metadata as M
 from .bits import validate_trace,validate_consumption
 from ..g6_w2c_b3_live_preflight_v1 import spec as S
 from ..g6_w2c_b3_real_adapter_v1 import codec as C,result as R
@@ -118,7 +118,10 @@ def payload(p,c,m,task,*,setup=None,artificial=True):
                 classification=fresh['classification'],consumption=consumption,worker=connection['worker_pid'])
 
 
-def inspect(root,c,m,*,artificial=True):
+def inspect(root,c,m,*,artificial=None):
+    expected=M.context(m)
+    if artificial is None:artificial=expected['artificial_only']
+    require(type(artificial) is bool and artificial is expected['artificial_only'],'CHECKER_MANIFEST_MODE')
     root=Path(root);out=root/'output'
     missing=[n for n in ('final.json','delivery.json','caller.json','host_outer.json','simple_run_state.json') if not (out/n).is_file()]
     if missing:return dict(status='INCOMPLETE_EVIDENCE',missing=missing)
@@ -141,6 +144,11 @@ def inspect(root,c,m,*,artificial=True):
         trace.append(value)
     marker=read(out/'STOP_marker.json');require(marker['mandatory_STOP'] is True,'MANDATORY_STOP')
     require(sha256((out/'STOP_marker.json').read_bytes()).hexdigest()==report['STOP_marker_sha256'],'STOP_MARKER_HASH')
+    if K.PKG+'metadata.py' in c['source_pins']:
+        documents=dict(delivery=delivery,caller=caller,STOP_marker=marker,simple_run_state=read(out/'simple_run_state.json'))
+        for name in ('receipt.json','S_receipt.json','P1_receipt.json'):
+            if (out/name).is_file():documents[name]=read(out/name)
+        M.validate_bundle(report,m,documents)
     claim=marker['store']['claim'];require(claim[:3]==[m['global_scope'],m['global_claim'],S.digest(m)]
         and claim[3] in ('STOPPED','UNKNOWN_STOPPED') and claim[4]==1,'CLAIM_TERMINAL_SPENT')
     if not report['complete']:

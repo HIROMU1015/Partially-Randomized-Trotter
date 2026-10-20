@@ -293,6 +293,10 @@ def worker(task, settings, target, conn, inherited, stopped, root, pins,
         conn.close()
 
 class Coordinator(PreviousCoordinator):
+    def report(self):
+        from .metadata import stamp_report
+        return stamp_report(super().report(),self.manifest)
+
     def run_phase(self,*args,drain_only=False,**kwargs):
         try:return self._versioned_phase(*args,drain_only=drain_only,**kwargs)
         except BaseException:

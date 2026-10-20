@@ -4,7 +4,7 @@ from dataclasses import replace
 from hashlib import sha256
 import resource,time,json
 from .guard import install,require,observation
-from . import contract as K
+from . import contract as K,metadata as M
 from .run_control import SimpleStore,mock_approval,private
 from .wrapper import ArtificialFactory
 from .bits import ArtificialBits
@@ -29,6 +29,7 @@ def _run(c,m,root,store,*,permit=None):
     live=permit is not None
     if live:K.preflight_runtime(c,m,permit)
     else:K.preflight(c,m)
+    execution_meta=M.context(m,live=live)
     require(type(store) is SimpleStore and store.root==root,'TEST_STORE_ONLY')
     require(Path(m['storage_destination'])==root/'output','STORAGE_DESTINATION')
     grant=None if live else mock_approval(m)
@@ -69,7 +70,7 @@ def _run(c,m,root,store,*,permit=None):
             conditions.append(condition);ctl.condition_event('CONDITION_END',complete=okay,coverage=coverage)
             if not okay:break
             _save(out,mode+'_receipt.json',dict(schema='LIVE_CONDITION_RECEIPT' if live else 'ARTIFICIAL_CONDITION_RECEIPT',
-                condition=condition,binding=S.digest(m),claim=m['global_claim'],production_permission=False),ctl,fault)
+                condition=condition,binding=S.digest(m),claim=m['global_claim'],production_permission=False,execution_metadata=execution_meta),ctl,fault)
             if live:K.preflight_runtime(c,m,permit)
             else:K.preflight(c,m)
         if not ctl.stopped.value:
@@ -90,7 +91,7 @@ def _run(c,m,root,store,*,permit=None):
     if any('UNKNOWN' in k and v for k,v in report['states'].items()):store.stop(m,unknown=True)
     report.update(schema='b3_live_correctness_bundle_v1' if live else 'b3_live_release_artificial_bundle_v1',conditions=conditions,
         candidate_binding=S.digest(c),manifest_binding=S.digest(m),guard=observation(),
-        science_correctness_certified=False,live_API_compatibility='NOT_ESTABLISHED')
+        science_correctness_certified=False,live_API_compatibility='NOT_ESTABLISHED',guard_observation_scope='PARENT_IMPORT_GUARD_ONLY')
     if report['complete']:
         report['classification']='INCONCLUSIVE_COVERAGE' if any(not x['coverage'] for x in conditions) else ('LIVE_TECHNICAL_COMPLETE_AWAITING_REVIEW' if live else 'ARTIFICIAL_TECHNICAL_COMPLETE')
     else:
@@ -101,17 +102,17 @@ def _run(c,m,root,store,*,permit=None):
                 candidate_binding=S.digest(c),manifest_binding=S.digest(m),source=c['source_release_candidate'],
                 state_sha256=sha256((out/'trial_states.bin').read_bytes()).hexdigest(),
                 trace_sha256=sha256((out/'operations.jsonl').read_bytes()).hexdigest(),
-                store=store.snapshot(m),storage_closed=True,production_permission=False)
+                store=store.snapshot(m),storage_closed=True,production_permission=False,execution_metadata=execution_meta)
             digest=_save(out,'receipt.json',receipt,ctl,fault);store.link_receipt(m,digest)
             report['receipt_sha256']=digest
         report['STOP_marker_sha256']=_save(out,'STOP_marker.json',dict(mandatory_STOP=True,
-            claim=m['global_claim'],store=store.snapshot(m),classification=report['classification'],
+            claim=m['global_claim'],store=store.snapshot(m),classification=report['classification'],execution_metadata=execution_meta,
             receipt_sha256=report.get('receipt_sha256')),ctl,fault)
         _save(out,'final.json',report,ctl,fault,slot=4<<20,pre_reserved=True)
         _save(out,'delivery.json',dict(final_sha256=sha256((out/'final.json').read_bytes()).hexdigest(),
-            artificial_only=not live),ctl,fault,slot=4096,pre_reserved=True)
+            artificial_only=not live,execution_metadata=execution_meta),ctl,fault,slot=4096,pre_reserved=True)
         _save(out,'caller.json',dict(delivery_sha256=sha256((out/'delivery.json').read_bytes()).hexdigest(),
-            observed=True,artificial_only=not live),ctl,fault,slot=4096,pre_reserved=True)
+            observed=True,artificial_only=not live,execution_metadata=execution_meta),ctl,fault,slot=4096,pre_reserved=True)
         parent=time.process_time_ns()-begin_cpu;workers=cpu_children()-begin_children
         outer=dict(schema='b3_host_outer_observation_v1',parent_cpu_ns=parent,all_worker_cpu_ns=workers,
             total_cpu_ns=parent+workers,outer_wall_ns=time.monotonic_ns()-begin_wall,

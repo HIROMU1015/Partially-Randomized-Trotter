@@ -1,0 +1,7 @@
+# Metadata原因
+
+`g6_w2c_b3_parallel_scheduler.Coordinator.report` は人工専用v3由来の `artificial_only=True` を固定して返す。Storage V2→Exact Adapter bridge→final_live.execution.Coordinatorの継承で残り、integration._runはschema/分類をLiveへ変えたがこのfieldを上書きしなかった。_saveはdictをそのままcanonical JSONへ保存するため、serializationの変換誤りではない。delivery/callerは `not live` を使いFalseだった。per-trial wrapperも実symbolsからFalseを生成しており科学処理へ分岐するfieldではなかった。
+
+SimpleStore.snapshotの `real_authority=False` も無条件の既定値で、USER approvalの有無を測っていない。外部認可サービス不使用と、USERの簡易one-shot承認を分離する必要がある。`live_API_compatibility=NOT_ESTABLISHED` は一般保証を避ける準備ラベルであり、単純にPASSへ変える対象ではない。
+
+現行offline.inspectは引数artificialでper-trialを検査し、集約reportとdelivery/caller/storeのmode一致までは検査しなかった。このため科学データの整合検査PASSと集約metadata誤りが共存した。旧checker結果を科学的な一般保証へ昇格させない。

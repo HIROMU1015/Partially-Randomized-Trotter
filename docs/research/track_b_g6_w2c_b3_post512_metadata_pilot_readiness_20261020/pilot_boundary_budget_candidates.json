@@ -1,0 +1,49 @@
+{
+  "assumptions": "unchanged fixed m5/raw degree<=4/H160 and current boundary semantics; no science calls performed",
+  "budgets": {
+    "AuditParity_construction": 24,
+    "B_angle": 8448,
+    "B_event_requery": 8448,
+    "B_sample_audit": 8448,
+    "F3_prepare": 6,
+    "Full_angle": 2112,
+    "Full_angle_packet": 2112,
+    "Full_constructor_inside_prepare": 6,
+    "Full_sample_packet": 4224,
+    "G7_make_generator": 42,
+    "additional_sampling": 0,
+    "bit_draw_requests_static_upper": 105600,
+    "bit_width": 160,
+    "canonical_angle": 6336,
+    "canonical_snapshot": 18,
+    "driver_correctness_event_witness": 512,
+    "internal_total": "NOT_ESTABLISHED; no aggregate unlimited internal call authorization",
+    "nested_B_event_witness": 8448,
+    "primary_constructions": 48,
+    "scheduled_sampling": 16896
+  },
+  "derivation": {
+    "draws": "12672 canonical*6 + 4224 Full*7 =105600",
+    "driver_witness": "correctness phase only <=512; nested B witness up to8448 across all phases",
+    "pairs": 48,
+    "trials": "2*(16*16+16*256+16*256)=16896"
+  },
+  "source_AST_invariants": [
+    {
+      "AST_unchanged": true,
+      "file": "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/execution.py",
+      "function": "run_pair"
+    },
+    {
+      "AST_unchanged": true,
+      "file": "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/execution.py",
+      "function": "worker"
+    },
+    {
+      "AST_unchanged": true,
+      "file": "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/execution.py",
+      "function": "_versioned_phase"
+    }
+  ],
+  "status": "UNADOPTED_DERIVED_CONTRACT_ARITHMETIC_ONLY"
+}

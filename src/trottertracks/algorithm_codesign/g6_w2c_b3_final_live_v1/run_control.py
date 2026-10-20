@@ -183,7 +183,12 @@ class SimpleStore:
         with self.connect() as db:
             row=db.execute('SELECT scope,claim,binding,status,spent,receipt FROM claims WHERE scope=?',(m['global_scope'],)).fetchone()
             history=db.execute('SELECT seq,scope,event,binding FROM history ORDER BY seq').fetchall()
+        from .metadata import context
+        mode=context(m)
+        binding_matches=row is None or row[:3]==(m['global_scope'],m['global_claim'],S.digest(m))
+        state=self.execution_state(m)
         return dict(schema='b3_simple_run_state_v1',claim=list(row) if row else None,
-            history=[list(x) for x in history],execution_state=self.execution_state(m),
+            history=[list(x) for x in history],execution_state=state,run_status=state,execution_metadata=mode,execution_metadata_verified=binding_matches,
+            claim_spent=bool(row and row[4]==1) or self._intent(m).exists() or self._run_intent(m).exists(),
             intent_exists=self._intent(m).exists(),run_intent_exists=self._run_intent(m).exists(),
-            real_authority=False,physical_power_loss_durability='NOT_ESTABLISHED',retry=0,resume=False)
+            real_authority=False,external_authority_used=False,real_authority_semantics='LEGACY_ALIAS_FOR_EXTERNAL_AUTHORITY_USED',physical_power_loss_durability='NOT_ESTABLISHED',retry=0,resume=False)

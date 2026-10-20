@@ -9,7 +9,9 @@ import os
 from .guard import require
 from ..g6_w2c_b3_live_preflight_v1 import spec as S
 
-APPROVED_ACTIVATION_ID='e41419e5235fd04e7c5273c26d9475d10c278033bbe9831447c29969c82138f6'
+# Post-512 technical preparation has no new science execution approval.
+# The spent run's approved anchor remains intact in its historical SOURCE.
+APPROVED_ACTIVATION_ID=None
 
 
 def _check(c,m):
