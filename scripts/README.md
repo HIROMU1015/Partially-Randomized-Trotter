@@ -673,3 +673,5 @@ CDは保存参照のみ、別E fixtureとの混合で全PR勝敗を作らない�
 SOURCE `src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/`、tests `tests/tracks/algorithm_codesign/test_g6_w2c_b3_final_live_v1.py`。
 runnerはpacket内`run_acceptance.py`。Canonical/FullとSOURCE/signature/G7 Bits委譲を接続、承認anchor未設定。
 Core科学load・科学bits・実512・実permission発行消費0、run_ready=false、mandatory STOP。
+
+> 2026-10-20 Track B W2c-B3：ユーザーが512件correctness-onlyと一回実科学実行を明示採択。S256/P1256完了、保存Evidence検査PASS、全cell coverage、retry0。分類LIVE_TECHNICAL_COMPLETE_AWAITING_REVIEW。集約reportのartificial_only既定値にmetadata残件あり、原本保全。一般正しさ・IID・性能優位性は未認定。mandatory STOP、次はユーザー・GPT。 [結果・SOURCE・原データ](../docs/research/track_b_g6_w2c_b3_correctness_512_authorized_run_20261020/handoff.md)。
