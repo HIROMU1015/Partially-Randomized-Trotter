@@ -1,3 +1,9 @@
+## 2026-10-20 H6段階B修正：新30完了・旧70参照で100scope比較
+
+[結果・来歴・図表・監査](docs/research/track_a_h6_noncancellation_stage_b_rerun_20261020.md)。[runner](scripts/run_h6_noncancellation_stage_b_rerun.py)、[全出力test](tests/test_h6_noncancellation_stage_b_rerun.py)、[checker](scripts/check_h6_noncancellation_stage_b_rerun.py)、[plotter](scripts/plot_h6_noncancellation_stage_b_rerun.py)、[packet](artifacts/resource_applicability/track_a_h6_noncancellation_stage_b_rerun/2026-10-20/README.md)。科学coreは旧版を変更せず流用。
+
+保存処理だけを修正したSOURCEc0d8ca8eで、同一30scopeを新契約one-shot実行。旧712費用exact再現、新34適格費用を新baselineとして区別。新30は候補/q/prefix/PF次数変更0、最良費用変更20、PR/PF方向逆転0。旧70を再計算せず参照した全100（unique40）は候補変更2（H8非相殺p16→p15、q4/S4保持）、q/PF次数変更0、最良費用変更50、方向逆転0、PR低費用90/PF低費用10。候補pair厳密逆転180・同率変化16はscope重複を含む。全出力保存10＋既存27の37test、1492費用/30scope/41578pairの整数検査、CSV/JSON/SHA/入力/runtime/旧証拠/予算/図coverage PASS。native exit0/親wait4回収・残worker0。2図6exports・100条件表保存。旧停止SOURCE/部分結果/grant/ledger/marker/STOP・Stage A・旧70・v2本文・主表/Figure2不変。profile/runtime/S4仮説/初回最終gate欠測・母平均未保証を維持する条件付き比較。追加科学不要、新公開未承認・push0、review/freeze未開始、mandatory STOP。次担当ユーザー：公開範囲判断。Codexは承認範囲のみpush。以下は履歴。
+
 ## 2026-10-20 H6 noncancellation段階B：保存エラーSTOP・再試行0
 
 [停止原因・部分結果・必要な承認](docs/research/track_a_h6_noncancellation_stage_b_20261020.md)。[core](src/trotterlib/h6_noncancellation_stage_b.py)、[runner](scripts/run_h6_noncancellation_stage_b.py)、[test](tests/test_h6_noncancellation_stage_b.py)、[STOP監査](scripts/audit_h6_noncancellation_stage_b_stop.py)、[packet](artifacts/resource_applicability/track_a_h6_noncancellation_stage_b/2026-10-20/README.md)。
