@@ -1,3 +1,9 @@
+## 2026-10-21 H8希少RTE C-1：S2_SINGLE pilot契約確定・科学実行未承認
+
+[固定契約と充足境界](docs/research/h8_rare_rte_c1_pilot_contract_20261021.md)、[機械可読packet](artifacts/resource_applicability/h8_rare_rte_c1_contract/2026-10-21/README.md)。
+
+両H8条件のS2_SINGLE 43本ずつを固定。η=1/2・計画90%の正規モデル分散CI基準から最小43を別算術で照合。予算はcompile172/event3096/control probe8/oracle2。新11＋既存55人工PASS、元35,292ファイルSHA一致。seedはprivate metadataのみ。実H8法則照合・live library/fork・footprint・実entry point封印は未解決gate。S0既存48は別anchor、multi/S4未知、母平均/順位保証なし。新実科学/有効grant/push0、production対象外、mandatory STOP。次担当ユーザー：完成契約への実行承認と公開範囲を別途判断。Codexは停止。以下の旧記録・bytesを保全。
+
 ## 2026-10-21 H8希少RTE C-0.5：本番adapter・科学実行未承認
 
 [実装報告](docs/research/h8_rare_rte_stage_c05_implementation_20261021.md)、[候補規約・標本/予算](docs/research/h8_rare_rte_stage_c05_numeric_pilot_20261021.md)、[packet](artifacts/resource_applicability/h8_rare_rte_stage_c05/2026-10-21/README.md)、[adapter](scripts/h8_rare_c05/adapter.py)、[scheduler](scripts/h8_rare_c05/parallel.py)、[tests](tests/test_h8_rare_c05.py)、[preflight](scripts/preflight_h8_rare_c05.py)。

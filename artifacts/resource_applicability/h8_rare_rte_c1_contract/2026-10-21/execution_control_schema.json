@@ -1,0 +1,28 @@
+{
+  "status": "SCHEMA_ONLY_NOT_A_GRANT",
+  "valid_grants": 0,
+  "approval_required_fields": [
+    "explicit_C1_scientific_execution_authorized=true",
+    "condition",
+    "SOURCE",
+    "contract_sha256",
+    "budget",
+    "runtime/source/seed binding manifest hashes",
+    "actual user instruction receipt"
+  ],
+  "grant_required_fields": [
+    "new unique grant id",
+    "condition",
+    "SOURCE",
+    "contract_sha256",
+    "approval_receipt_sha256",
+    "budget",
+    "one_shot=true",
+    "retry=false",
+    "resume=false"
+  ],
+  "marker": "new condition-specific O_EXCL marker records consumed/nonrefundable grant SHA before scientific load; presence forbids rerun",
+  "ledger": "fresh lock + O_EXCL before-call reservations; no refunds on failed control/compile, partial output, cancellation or cache attempt; final actual vs planned counters",
+  "startup_integrity": "same condition exclusive ownership; private paths fresh and mode700; consumed old grants and all STOP untouched",
+  "no_valid_grant_created": true
+}
