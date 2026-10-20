@@ -1,3 +1,5 @@
+H2高次PF outer32追加系列：`h2_outer32_contract/runtime/pipeline`と専用stage CLI。固定12群のsignal→pilot→H2標本数設計→新探索取得・技術監査。論文主比較AD03や本探索後解析は含まない。資料：`docs/research/track_a_h2_outer32_execution_20261021.md`（repository相対）。
+
 ## 2026-10-20 H4/H6高次PF：本探索標本数設計・実行準備（未採択）
 
 [設計・予算・契約・次の承認](../../docs/research/track_a_h46_pr_exploration_readiness_20261020.md)。H4/H6各12群の保存pilot統計・216名目nを再利用し、ρ5/2/1%×分散倍率1/2/4×群別/4q共通×名目のみ/下限33の36未採択案を用意。第一候補ρ2%・f4・群別・下限33はH4 793/H6 607本・計2800軸。EXPLORATION別2無効契約、SOURCE96259cbe、seed15879個/既知209156個衝突0。新16/回帰88・CLI6拒否/改変10拒否PASS、旧17867file不変。新実分子sampling/compile/signal/shot/会計/順位0、n_E/shot/AD03保留。ユーザーの設計採択・系別取得承認待ち、mandatory STOP。以下は履歴。
