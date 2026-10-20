@@ -1,3 +1,7 @@
+## 2026-10-21 H2 outer32：signal PASS・pilot25 workerで取得中
+
+[起動記録](docs/research/track_a_h2_outer32_run01_start_20261021.md)。SOURCE4ec26921、12候補/120labelのsignalを保存、観測時pilot167/396本・STOP0。新14＋回帰100人工検査PASS。終了監査後、H2自身の標本数設計と新探索取得まで中間承認なしで継続。本探索後統計/shot/会計/順位/P/AD03は範囲外。H4/H6 jobは変更0。以下は履歴。
+
 ## 2026-10-21 H2：outer32高次PFの取得まで一括承認
 
 [契約・検証範囲](docs/research/track_a_h2_outer32_execution_20261021.md)。保存DF3/状態、prefix1、3公式×4q、K4/outer32。signal12→pilot33/群→H2自身の2%/f4/群別下限33設計→新探索取得・終了監査まで承認。独立4契約、旧標本非混合・旧STOP保持、H4/H6の計算は変更しない。本探索後統計/shot/順位/P/AD03は範囲外。以下は履歴。
