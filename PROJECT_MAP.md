@@ -1695,3 +1695,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-20 H4/H6高次PF：統合データと付属実験記録
 
 [統合報告](docs/research/track_a_h46_higher_pf_dataset_integration_20261020.md)、[付属プロトコル](docs/research/track_a_h46_higher_pf_supplementary_protocol_v1.md)、[再利用データ索引](artifacts/resource_applicability/track_a_h46_higher_pf_dataset_v1/2026-10-20/README.md)。固定signal88・適格性880へ参照結合、m5単価96軸（新92/保存4）、原JSON233/SOURCE27照合。metadata readerと人工31件。共通v2は旧本文を保持し§11参照のみ追記。新科学値・会計・sampling/compile0、AD03/shot保留、mandatory STOP。
+
+## 2026-10-20 H4/H6：outer32 DESIGN_PILOT準備
+
+[設計・契約・次の承認](docs/research/track_a_h46_pr_design_pilot_readiness_20261020.md)、[bundle](artifacts/resource_applicability/track_a_h46_pr_design_pilot_readiness/2026-10-20/README.md)。PR24群、n_P33/群案（792 trajectory/1584軸）と9本案を未採択で提示。専用cohort・独立H4/H6無効契約・paired/stratum/law記録・全scratch採択gate。新20＋回帰49件、実H4/H6 sampling/compile/解析0。n_E/shot/AD03保留、mandatory STOP。

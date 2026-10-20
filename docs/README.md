@@ -1215,3 +1215,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-20 H4/H6高次PF統合
 
 [統合報告](research/track_a_h46_higher_pf_dataset_integration_20261020.md)、[付属プロトコル・記録](research/track_a_h46_higher_pf_supplementary_protocol_v1.md)、[共通v2 §11](research/track_a_pr_resource_evaluation_protocol_v2.md)、[再利用データ](../artifacts/resource_applicability/track_a_h46_higher_pf_dataset_v1/2026-10-20/README.md)。事後整理、AD03/正式shot政策保留、新科学計算0、mandatory STOP。
+
+## 2026-10-20 outer32設計pilot準備
+
+[H4/H6標本設計pilot](research/track_a_h46_pr_design_pilot_readiness_20261020.md) / [未承認bundle](../artifacts/resource_applicability/track_a_h46_pr_design_pilot_readiness/2026-10-20/README.md)。PR24群・n_P33/9案、専用cohort、2独立無効契約、全scratch予算gate。技術準備のみ、n_E/shot/AD03保留・mandatory STOP。

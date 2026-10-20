@@ -2522,3 +2522,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-20 H4/H6高次PFデータ統合・構造検証
 
 [報告](docs/research/track_a_h46_higher_pf_dataset_integration_20261020.md)、[検証metadata](artifacts/resource_applicability/track_a_h46_higher_pf_dataset_v1/2026-10-20/validation.json)。保存88候補・880適格性・96実測単価（新92/保存4）を正確に転記/参照し、native368gateへ結合。原JSON233、Git source27、共通v2旧本文prefix/公開snapshot27、人工31件を検査。作成者自身のmetadata検査で、独立科学レビュー・数値再解析・最終freezeではない。PR24群/n_E/shot政策・AD03保留。mandatory STOP。
+
+## 2026-10-20 H4/H6 outer32 pilot準備
+
+[報告](docs/research/track_a_h46_pr_design_pilot_readiness_20261020.md)、[検証](artifacts/resource_applicability/track_a_h46_pr_design_pilot_readiness/2026-10-20/validation.json)。人工20件（3公式native subcase）、旧費用18＋統合31件PASS。2系独立無効契約・SOURCE/input/runtime seal・CLI拒否とmetadata構造を確認。名目分散精度に基づく33/9本案はいずれも未採択、実H4/H6科学計算0。母平均/希少tailの保証ではなく作成者自身の技術検査。mandatory STOP。

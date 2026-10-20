@@ -1040,3 +1040,7 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 ## H4/H6 higher-PF evidence reuse (2026-10-20)
 
 The existing PF/native numerical modules are unchanged. The stdlib-only [saved-data reader](../../scripts/h46_higher_pf_dataset.py) joins fixed results without importing this package. [Dataset](../../artifacts/resource_applicability/track_a_h46_higher_pf_dataset_v1/2026-10-20/README.md) / [supplementary protocol](../../docs/research/track_a_h46_higher_pf_supplementary_protocol_v1.md).
+
+## H4/H6 pilot planning (2026-10-20)
+
+Existing numerical PF modules are unchanged. The [DESIGN_PILOT scripts](../../scripts/h46_pr_design_pilot.py) reuse the frozen native/request path with separate seeds/contracts. See [readiness](../../docs/research/track_a_h46_pr_design_pilot_readiness_20261020.md) and [bundle](../../artifacts/resource_applicability/track_a_h46_pr_design_pilot_readiness/2026-10-20/README.md). Proposed n_P is unadopted; no real-data evaluation was run.

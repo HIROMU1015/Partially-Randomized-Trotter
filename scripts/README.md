@@ -1077,3 +1077,7 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## H4/H6 higher-PF saved-data reader (2026-10-20)
 
 [h46_higher_pf_dataset.py](h46_higher_pf_dataset.py) reads SHA-bound Git JSON/CSV and validates exact metadata joins; it does not import scientific modules or dispatch science. See [dataset](../artifacts/resource_applicability/track_a_h46_higher_pf_dataset_v1/2026-10-20/README.md), [protocol](../docs/research/track_a_h46_higher_pf_supplementary_protocol_v1.md), and [31 metadata tests](../tests/test_h46_higher_pf_dataset.py).
+
+## H4/H6 outer32 design pilot (2026-10-20)
+
+[h46_pr_design_pilot.py](h46_pr_design_pilot.py) proposes n_P and separates DESIGN_PILOT seeds; statistics are tested on artificial values only. [Contract](h46_pr_pilot_contract.py), [native adapter](h46_pr_pilot_native.py), [launcher](run_h46_pr_design_pilot.py), [disabled preparation](prepare_h46_pr_design_pilot.py), [report](../docs/research/track_a_h46_pr_design_pilot_readiness_20261020.md), [tests](../tests/test_h46_pr_design_pilot.py). No main exploration or confirmation dispatch.
