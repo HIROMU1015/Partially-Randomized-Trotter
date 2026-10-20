@@ -108,3 +108,7 @@ OOM・継続不能なRAM/scratch/inode不足・SHA不一致・seed衝突・nativ
 取得後の新標本の統計評価は別承認。正式shot政策にはεの軸配分・α・shot整数式・normalization/bias/allowance/u/margin/guardの採択が必要で、その後にshot込み会計の実行判断を行う。独立確認Pは探索後に候補を固定し、目的と差/分散/希少層を踏まえて新cohortのn_Cを個別設計する。n48を強制せず、Pと探索を混ぜない。m5主比較採用AD03、詳細科学レビュー、最終freezeは保留。
 
 **次の担当：ユーザーが上記設計・取得承認を判断する。Codexは明示承認後のみfresh seal・有効grant・科学実行へ進む。**
+
+## 保存・公開状態
+
+専用branch `track-a-h46-pr-exploration-readiness-20261020` にlocal commit済み。公開用pushは非対話で1回試行したが、HTTPS認証情報がなく失敗した。remote SHAは未確認で、公開済みとは扱わない。ユーザーの認証済み環境から同branchをpushできる。科学実行の承認状態は変わらない。
