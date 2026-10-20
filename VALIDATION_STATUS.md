@@ -1,3 +1,7 @@
+## 2026-10-20 H4/H6 PR pilot：H4完了・H6 cutoff STOP
+
+[終了監査・部分byte監査](docs/research/track_a_h46_pr_design_pilot_run01_results_20261020.md)。H4は396/396 trajectory・792軸・native exit0/全回収。H6は74/396 pair・148受理軸、finite Taylor cutoff checkでSTOP・exit1/全回収。元STOP不変。H6の全stage archive値は未監査null、別部分監査510 archiveの元SHA復元を確認した。統計/MCSE/n_E/shot/会計/AD03/再実行0。次はユーザーがH4数値評価とH6修正・別取得の採否を個別判断する。以下は履歴。
+
 ## 2026-10-20 H4/H6 PR DESIGN_PILOT：独立2契約を起動
 
 [起動・技術snapshot](docs/research/track_a_h46_pr_design_pilot_run01_start_20261020.md)。SOURCE de5485d4…、各群33、各系396 trajectory/792軸をH4 9/H6 28 workerで一回起動。native構築中、全PASS・最終exit/reapは未確定。新level1可逆保存・別元SHA/archive SHA・独立STOP、統計/会計/AD03は保留。Codexが取得終了監査後mandatory STOP、ユーザーが次の数値評価を判断する。以下は履歴。
