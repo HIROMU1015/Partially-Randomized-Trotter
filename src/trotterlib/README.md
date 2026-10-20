@@ -1036,3 +1036,7 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 `higher_pf_readiness.py`：係数の正確なmoment表現、signed schedule、paired shot重み費用、q選択、SE/比の探索的診断、独立seed/selection・標本規模計画。化学loader/compile/samplingの副作用なし。科学実行は別承認。[技術報告](../../docs/research/track_a_h46_higher_pf_readiness_20261018.md)。
 
 高次PF取得データは既存`higher_pf_readiness.py`へ別承認後に結合する。[取得・統合準備](../../docs/research/track_a_h46_higher_pf_acquire_run01_results_20261018.md)。今回kernelのランキング実行はない。
+
+## H4/H6 higher-PF evidence reuse (2026-10-20)
+
+The existing PF/native numerical modules are unchanged. The stdlib-only [saved-data reader](../../scripts/h46_higher_pf_dataset.py) joins fixed results without importing this package. [Dataset](../../artifacts/resource_applicability/track_a_h46_higher_pf_dataset_v1/2026-10-20/README.md) / [supplementary protocol](../../docs/research/track_a_h46_higher_pf_supplementary_protocol_v1.md).

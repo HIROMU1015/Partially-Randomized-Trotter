@@ -1691,3 +1691,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-15 H6 fixed-delta result
 
 [結果・図・全表・監査](docs/research/track_a_h6_fixed_delta_t_dependence_results_20261015.md)。H6固定δ=.2/固定5構成、T=.4/.8/1.6。新144/144 compile・PR64完了、T=.8確認32再利用。ε=.05〜.005ではPR点費用約50〜55%削減、厳しい精度ではS4優位またはPR不適格。outer-PF biasが主因、希少次数・母平均未保証。wall3117.158秒、native exit0/全74 reap・残存0。保存314条件/7算術tests/900公開paired metrics PASS、新科学計算・共有変更0、mandatory STOP。
+
+## 2026-10-20 H4/H6高次PF：統合データと付属実験記録
+
+[統合報告](docs/research/track_a_h46_higher_pf_dataset_integration_20261020.md)、[付属プロトコル](docs/research/track_a_h46_higher_pf_supplementary_protocol_v1.md)、[再利用データ索引](artifacts/resource_applicability/track_a_h46_higher_pf_dataset_v1/2026-10-20/README.md)。固定signal88・適格性880へ参照結合、m5単価96軸（新92/保存4）、原JSON233/SOURCE27照合。metadata readerと人工31件。共通v2は旧本文を保持し§11参照のみ追記。新科学値・会計・sampling/compile0、AD03/shot保留、mandatory STOP。

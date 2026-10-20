@@ -1073,3 +1073,7 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## 2026-10-18 高次PF native取得
 
 `h46_acquire_native.py` / `launch_h46_acquire.py` は固定12群96trajectoryのnative取得。`h46_acquire_integration.py` / `run_h46_acquire_comparison.py` は別承認用の統合比較binding/CLI。[結果・契約](../docs/research/track_a_h46_higher_pf_acquire_run01_results_20261018.md)。
+
+## H4/H6 higher-PF saved-data reader (2026-10-20)
+
+[h46_higher_pf_dataset.py](h46_higher_pf_dataset.py) reads SHA-bound Git JSON/CSV and validates exact metadata joins; it does not import scientific modules or dispatch science. See [dataset](../artifacts/resource_applicability/track_a_h46_higher_pf_dataset_v1/2026-10-20/README.md), [protocol](../docs/research/track_a_h46_higher_pf_supplementary_protocol_v1.md), and [31 metadata tests](../tests/test_h46_higher_pf_dataset.py).
