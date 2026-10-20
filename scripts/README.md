@@ -1,3 +1,9 @@
+## 2026-10-21 希少RTE：段階B one-shot完了・条件付き期待費用
+
+[結果・限界](../docs/research/pr_rare_rte_stage_b_results_20261021.md)、[結果/契約/監査packet](../artifacts/resource_applicability/pr_rare_rte_stage_b/2026-10-21/README.md)、[core](../scripts/rare_rte_stage_b_core.py)、[別算術検証](../scripts/rare_rte_stage_b_verify.py)、[one-shot runner](../scripts/run_rare_rte_stage_b.py)、[人工tests](../tests/test_rare_rte_stage_b.py)、[構造・保全監査](../scripts/audit_rare_rte_stage_b_completion.py)。
+
+承認8固定条件の保存値解析を新SOURCE e16c3be8・新契約/grantで1回完了。全1,526 trajectoryの両軸RZ×analytic shots、4層確率、経験平均/SE、未知層の条件付き逆転境界を保存。H4/H6 ε=.05は観測層平均固定・未知費用非負の条件でPF低費用を維持、他6条件は境界依存。全8条件の母平均順位・全support compiled上界は未保証。別実装の有理数DP/moments照合8件、人工14件、旧入力1,895 SHA・SOURCE/runtime・native exit0/wait4/reap PASS。新sampling/signal/simulation/SCF/DF/state/回路/compile0、旧cohort混合0、retry0。C計画のみ、新公開未承認・review/freeze未開始、mandatory STOP。次担当ユーザー：必要保証・C対象・公開範囲を判断。Codexは新指示まで停止。 以下は従来の記録を保全。
+
 ## 2026-10-20 PF単価検証：100scopeを条件付き成果として正式採用
 
 [採用・主張境界・公開監査](../docs/research/track_a_pf_q_model_evidence_integration_20261020.md)。[integrate_pf_q_model_evidence.py](integrate_pf_q_model_evidence.py)はstdlibによる既存literal・hash・構造・公開内容の文書処理だけを行う。科学runnerはimportしない。
