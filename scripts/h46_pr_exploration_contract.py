@@ -1,6 +1,9 @@
 """Two isolated EXPLORATION contracts. No authorization is issued by this module."""
 from pathlib import Path
 from types import FunctionType
+import copy
+import json
+from functools import lru_cache
 import h46_m5_cost_contract as original
 import h46_pr_pilot_contract as pilot
 import h46_pr_exploration_design as design
@@ -16,7 +19,11 @@ manifest,task_limits,consumed=original.manifest,original.task_limits,original.co
 reserve=FunctionType(original.reserve.__code__,dict(original.__dict__,save=save),'reserve',original.reserve.__defaults__)
 NEW_PATHS=('scripts/h46_pr_exploration_design.py','scripts/h46_pr_exploration_contract.py',
  'scripts/h46_pr_exploration_runtime.py','scripts/run_h46_pr_exploration.py',
- 'scripts/prepare_h46_pr_exploration.py','tests/test_h46_pr_exploration.py',design.PROPOSAL)
+ 'scripts/prepare_h46_pr_exploration.py','tests/test_h46_pr_exploration.py',design.PROPOSAL,
+ 'scripts/prepare_h46_pr_exploration_execution.py',
+ 'scripts/launch_h46_pr_exploration_acquisition.py',
+ 'scripts/finalize_h46_pr_exploration_acquisition.py',
+ 'tests/test_h46_pr_exploration_execution.py')
 SOURCE_PATHS=tuple(dict.fromkeys(pilot.SOURCE_PATHS+NEW_PATHS+tuple(x['path'] for x in design.proposal()['inputs'])))
 _base_verify=FunctionType(original.verify.__code__,dict(original.__dict__,ROOT=ROOT,SOURCE_PATHS=SOURCE_PATHS,
  STAGES=STAGES),'exploration_base_verify',original.verify.__defaults__)
@@ -25,11 +32,19 @@ def pipeline(cfg):
     return digest(dict(SOURCE=cfg['SOURCE'],stage=cfg['stage'],manifest_sha256=sha(ROOT/MANIFEST),
                        decisions=cfg['decisions'],runtime=cfg['runtime']))
 
+@lru_cache(maxsize=16)
+def _proposal_tasks(raw_proposal,raw_domain,option_id,stage):
+    # Keys include full input bytes. verify() still checks every SOURCE/input
+    # SHA and committed byte identity on every invocation, including cache hits.
+    option=design.selected_option(json.loads(raw_proposal),option_id)
+    counts={r['id']:option['n_E_by_candidate_proposed'][r['id']] for r in design.groups() if r['system']==stage[:2]}
+    return counts,design.tasks_for(stage,counts)
+
 def proposal_tasks(cfg):
-    option=design.selected_option(read(ROOT/design.PROPOSAL),cfg['decisions']['option_id'])
-    counts={r['id']:option['n_E_by_candidate_proposed'][r['id']] for r in design.groups() if r['system']==cfg['stage'][:2]}
+    counts,tasks=_proposal_tasks((ROOT/design.PROPOSAL).read_bytes(),
+        (ROOT/design.pilot.DOMAIN).read_bytes(),cfg['decisions']['option_id'],cfg['stage'])
     require(cfg['decisions']['n_E_by_candidate']==counts,'ADOPTED_COUNTS_MATCH_NAMED_PROPOSAL')
-    return design.tasks_for(cfg['stage'],counts)
+    return copy.deepcopy(tasks)
 
 def verify(cfg):
     _base_verify(cfg)

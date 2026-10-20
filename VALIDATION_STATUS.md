@@ -1,3 +1,7 @@
+## 2026-10-21 H4/H6 PR本探索：標本案採択・軽量高速化・一回取得承認
+
+[契約と実行範囲](docs/research/track_a_h46_pr_exploration_execution_20261021.md)。MCSE2%/f4/群別下限33案を採択し、H4 793/H6 607本・2800軸のEXPLORATION単価取得を承認。共有context・SHA付きcache・process並列を再利用し、候補表の再生成を軽量化する。既存容量計画を保持しfresh資源で配分。実進捗は起動receiptを正とし、この契約から開始/完了を認定しない。新統計/shot/会計/順位/P/AD03は範囲外、取得終了後mandatory STOP。以下は履歴。
+
 ## 2026-10-20 H4/H6高次PF：本探索標本数設計・実行準備（未採択）
 
 [設計・予算・契約・次の承認](docs/research/track_a_h46_pr_exploration_readiness_20261020.md)。H4/H6各12群の保存pilot統計・216名目nを再利用し、ρ5/2/1%×分散倍率1/2/4×群別/4q共通×名目のみ/下限33の36未採択案を用意。第一候補ρ2%・f4・群別・下限33はH4 793/H6 607本・計2800軸。EXPLORATION別2無効契約、SOURCE96259cbe、seed15879個/既知209156個衝突0。新16/回帰88・CLI6拒否/改変10拒否PASS、旧17867file不変。新実分子sampling/compile/signal/shot/会計/順位0、n_E/shot/AD03保留。ユーザーの設計採択・系別取得承認待ち、mandatory STOP。以下は履歴。
