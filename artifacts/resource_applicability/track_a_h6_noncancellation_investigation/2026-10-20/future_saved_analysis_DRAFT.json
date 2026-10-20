@@ -1,0 +1,96 @@
+{
+  "status": "DRAFT_NOT_AUTHORIZED_NO_RUNNER_NO_GRANT",
+  "base_commit": "85433c48fd4c37d4cb4594391da422558ac3ce7f",
+  "scientific_execution_authorized": false,
+  "active_grant": null,
+  "launch_command": null,
+  "stage_A": {
+    "scope": "H6 DF19 saved-only noncancellation eligibility recovery",
+    "candidate_ids": [
+      "B0I_p5_q1_2nd",
+      "B0I_p5_q2_2nd",
+      "B0I_p5_q4_2nd",
+      "B0I_p5_q8_2nd",
+      "B0I_p10_q1_2nd",
+      "B0I_p10_q2_2nd",
+      "B0I_p10_q4_2nd",
+      "B0I_p10_q8_2nd",
+      "B0I_p15_q1_2nd",
+      "B0I_p15_q2_2nd",
+      "B0I_p15_q4_2nd",
+      "B0I_p15_q8_2nd"
+    ],
+    "epsilons": [
+      "0.05",
+      "0.01",
+      "0.005",
+      "0.001",
+      "0.0005"
+    ],
+    "allowance_factors": [
+      "1.0",
+      "10.0"
+    ],
+    "candidate_endpoints": 120,
+    "overlapping_blocked_scopes": 30,
+    "input_requirements": [
+      "12 raw SHA-bound corrected/exact-truncated/reference/allowance/log_B records",
+      "same Hamiltonian/state/input/compiler/provider and declared profile limits",
+      "1 public literal signed-parts recovery",
+      "pin original signal_envelopes and accounting arithmetic SOURCE/runtime; retain old allowances and policy"
+    ],
+    "proposed_new_numeric_calls": {
+      "saved_signal_decomposition_candidates": 11,
+      "literal_decomposition_candidates": 1,
+      "signed_closure_candidates": 12,
+      "noncancellation_envelope_candidates": 12,
+      "noncancellation_accounting_max": 120,
+      "analytic_shots": "only as output of eligible endpoint accounting; formerly missing, newly authorized values",
+      "new_phase_rotation": 0,
+      "new_reference_or_signal_evolution": 0,
+      "NPZ_decode": 0,
+      "compile": 0,
+      "sampling": 0,
+      "model_prediction": 0,
+      "fit": 0,
+      "weighted_cost": 0,
+      "ranking": 0,
+      "PR_statistics": 0
+    },
+    "arithmetic_proposal": {
+      "discard": "saved exact_truncated - saved full-H reference",
+      "PF": "saved corrected - saved exact_truncated",
+      "reference": "unchanged and unrotated",
+      "envelope": "abs(discard_axis) + abs(PF_axis)",
+      "closure": "original SOURCE math.isclose relative1e-12 / absolute1e-12; no new tolerance policy",
+      "eligibility": "original accounting, same epsilon/factor/allowance/log_B/alpha/order; unresolved remains null"
+    },
+    "prerequisites_before_any_execution": [
+      "new explicit user scientific approval for differences/envelope/eligibility/analytic shots",
+      "technical implementation and artificial/structure checks",
+      "new immutable SOURCE/input/runtime/contract seal",
+      "independent fresh grant/ledger/marker/STOP; old grants not reused"
+    ],
+    "stop_rules": [
+      "input/source/closure/identity inconsistency STOP, no retry or fallback",
+      "numeric unresolved stays unresolved",
+      "no old raw/result/contract changes",
+      "no automatic stageB"
+    ]
+  },
+  "stage_B": {
+    "status": "SEPARATE_APPROVAL_REQUIRED_NOT_PREPARED_FOR_EXECUTION",
+    "scope": "optional later30 PF cost/selection/PR ratio comparison",
+    "requires": [
+      "stageA completed evidence and new accounting seal",
+      "approval for new analytic shots at formerly null endpoints; old70 saved-shot contract cannot be reused unchanged",
+      "replay already resolved baseline rows exactly, label newly recovered baseline separately",
+      "all eligible unit prices available; missing baseline price STOP without new prediction/compile"
+    ],
+    "automatic_execution": false
+  },
+  "old_evidence_mutation": false,
+  "detailed_scientific_review": false,
+  "final_evidence_freeze": false,
+  "mandatory_STOP": true
+}

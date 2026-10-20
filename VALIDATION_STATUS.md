@@ -1,3 +1,7 @@
+## 2026-10-20 H6 noncancellation原因調査（新数値判定0）
+
+[原因・記録回収・最小解析案](docs/research/track_a_h6_noncancellation_investigation_20261020.md)。GitHub94 blob/size・元12rawの公開SHA照合、120未確定行/30scope保全、p15q4既存成分1copy。非相殺適格性回収0、解決0。後続Dのunresolved=[]はnull120行をtruthinessで落とすため全domain解決証拠としない。旧結果/SOURCEを修正せず注意資料を追加。既存70件は別基準で不変、[v2補足](docs/research/track_a_protocol_v2_pf_cost_supplement_20261020.md)へ条件付き証拠として参照。科学再解析0、詳細review/freezeなし、新公開未承認、mandatory STOP。以下は履歴。
+
 ## 2026-10-20 ALL_SAVED458：70件のPF選択・費用順位比較完了
 
 [70件の選択・費用・順位・監査・限界](docs/research/track_a_pf_selection_cost_comparison_20261020.md)。SOURCE19f2c5a9、承認H6 signed30/H8両bias40（unique30）をone-shot実行。適格PF2,594費用/70保存最良PF・PR比を完全再現後、450新＋既存8単価を置換し旧102保持。最良PF変更2（H8非相殺ε=.0005、p16→p15、倍率1/10）、q/PF次数変更0、最良費用変更30、PR/PF方向逆転0。全順位の厳密逆転146pair/tie変化8pairは重複scopeを含む。人工13/整数・Decimal監査/139,834pair照合PASS、2図×3形式、native exit0/起動親wait4。未解決H6非相殺30は未実行。旧profile/runtime/S4仮説/初回最終gate欠測を保持する条件付き比較。新compile/sampling/予測/fit/shot/PR統計0、新公開未承認・review/freezeなし。次担当ユーザー：公開範囲判断、追加解析は別承認。mandatory STOP。以下は履歴。

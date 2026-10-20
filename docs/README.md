@@ -1,3 +1,7 @@
+## 2026-10-20 H6非相殺調査とPF単価置換のv2補足
+
+[原因・回収範囲](research/track_a_h6_noncancellation_investigation_20261020.md)、[v2補足・caption・主張境界](research/track_a_protocol_v2_pf_cost_supplement_20261020.md)。旧12候補/120endpointは未確定保持。既存signed成分1件copy、適格性再判定0。後続Dのtruthiness問題を別資料で記録し旧結果不変。次の保存値解析は未承認。以下は履歴。
+
 ## 2026-10-20 ALL_SAVED458：70件のPF選択・費用順位比較完了
 
 [70件の選択・費用・順位・監査・限界](research/track_a_pf_selection_cost_comparison_20261020.md)。SOURCE19f2c5a9、承認H6 signed30/H8両bias40（unique30）をone-shot実行。適格PF2,594費用/70保存最良PF・PR比を完全再現後、450新＋既存8単価を置換し旧102保持。最良PF変更2（H8非相殺ε=.0005、p16→p15、倍率1/10）、q/PF次数変更0、最良費用変更30、PR/PF方向逆転0。全順位の厳密逆転146pair/tie変化8pairは重複scopeを含む。人工13/整数・Decimal監査/139,834pair照合PASS、2図×3形式、native exit0/起動親wait4。未解決H6非相殺30は未実行。旧profile/runtime/S4仮説/初回最終gate欠測を保持する条件付き比較。新compile/sampling/予測/fit/shot/PR統計0、新公開未承認・review/freezeなし。次担当ユーザー：公開範囲判断、追加解析は別承認。mandatory STOP。以下は履歴。
