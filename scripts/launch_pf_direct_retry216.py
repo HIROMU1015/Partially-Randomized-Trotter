@@ -18,18 +18,18 @@ def launch_detached(command,directory):
     return process.pid
 
 
-def main(seal):
+def main(seal,*,api=r):
+    r=api
     spec=c.read_json(seal/(r.GROUPS[0]+'_spec.json'));grant=c.read_json(seal/(r.GROUPS[0]+'_grant.json'))
     r.authorize(spec,grant);gate=r.gate(spec,grant)
     c.require(not (r.PRIVATE/'run01').exists() and not (r.PRIVATE/'observer01').exists(),'NEW_ATTEMPT_ALREADY_USED')
     directory=r.PRIVATE/'observer01'
-    command=[spec['observer_python'],'-B',str(r.ROOT/'scripts/observe_pf_direct_retry216.py'),
-        '--sealed-directory',str(seal),'--directory',str(directory)]
-    pid=launch_detached(command,directory)
+    cmd=r.command('observer',spec,seal,directory) if hasattr(r,'command') else [spec['observer_python'],'-B',str(r.ROOT/'scripts/observe_pf_direct_retry216.py'),'--sealed-directory',str(seal),'--directory',str(directory)]
+    pid=launch_detached(cmd,directory)
     r.save(directory/'launch_receipt.json',dict(observer_pid=pid,SOURCE=spec['SOURCE'],spec_digest=c.digest(spec),
         launcher_pid=os.getpid(),launcher_session=os.getsid(0),new_session_requested=True,
-        command=command,prelaunch_gate=gate,new_attempt_axes=216,automatic_retry=False))
-    print(__import__('json').dumps(dict(status='DETACHED_OBSERVER_LAUNCHED',pid=pid,SOURCE=spec['SOURCE'],axes=216)))
+        command=cmd,prelaunch_gate=gate,new_attempt_axes=len(spec['selected_task_ids']),automatic_retry=False))
+    print(__import__('json').dumps(dict(status='DETACHED_OBSERVER_LAUNCHED',pid=pid,SOURCE=spec['SOURCE'],axes=len(spec['selected_task_ids']))))
 
 
 if __name__=='__main__':

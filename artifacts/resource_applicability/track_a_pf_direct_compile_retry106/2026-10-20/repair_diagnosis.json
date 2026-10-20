@@ -1,0 +1,24 @@
+{
+  "status": "STATIC_SOURCE_AND_ARTIFICIAL_REGRESSION_CONFIRMED",
+  "supersedes_prior_preparation_mismatch_hypothesis": true,
+  "B0I": {
+    "affected_axes": 96,
+    "producer": "h4_tol_main_science.overlay -> h6_native_b0i_bridge_v1.saved_signal_overlay",
+    "native_preparation": "B0 discard is correct for these D-series overlays; h2_d_recovery_science explicitly uses it",
+    "defect": "signals is phase-rotated but independent_forward_signals is preserved unrotated by the overlay; old control compared both without aligning phases",
+    "repair": "Multiply the independent forward saved field by exp(-i*T*saved_C) exactly once in control binding. Primary rotated signal and saved scalar remain unchanged."
+  },
+  "single_term_S4": {
+    "affected_axes": 20,
+    "overlaps_B0I_axes": 10,
+    "B0_only_axes": 10,
+    "old_iterator": "for num_terms=1, merged iter_pf_steps weights sum 3*w+2*v=2-w, with v=1-2*w",
+    "native_yoshida": "unmerged weights w,v,w sum 1, branch0 cancels, branch1 evolves for T",
+    "repair": "Use already-saved exact_truncated for both sources, rotating only independent B0I forward field. Native circuit/registered T,q,PF are unchanged.",
+    "old_saved_corrected_signal_still_inconsistent": true,
+    "old_signal_ranking_not_updated": true,
+    "requires_separate_future_signal_reconciliation": true
+  },
+  "diagnostics": "Save reference bindings and labelled errors before PASS/STOP",
+  "new_molecular_scientific_calls_during_diagnosis": 0
+}

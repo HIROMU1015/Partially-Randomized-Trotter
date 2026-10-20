@@ -1,0 +1,7 @@
+# Remaining 106 PF axes: repaired control reference binding
+
+See [report](../../../../docs/research/track_a_pf_direct_compile_retry106_20261020.md).
+
+Exact scope: H2 DF3 46 axes and H4 DF10 60 axes, 53 pairs. Existing 682 accepted observations are preserved. `retry_axes.csv`, `scope_and_reference_bindings.json`, `user_approval_receipt.json`, `repair_diagnosis.json` and `technical_validation.json` describe the fixed preparation. Source/seal/launch and actual results follow separately.
+
+Twenty H2 prefix0/S4 axes (B0 and B0I) use already-saved exact_truncated because the original merged single-term signal schedule is inconsistent with registered T. Their direct gate measurements require explicit saved-classical-signal reconciliation flags. No saved signals/ranking are updated here. New publication is not yet approved.

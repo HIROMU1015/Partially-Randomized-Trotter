@@ -41,7 +41,8 @@ def observe_command(command,directory,label,*,heartbeat_seconds=5,environment=No
     return witness
 
 
-def main(seal,directory):
+def main(seal,directory,*,api=r):
+    r=api
     spec=c.read_json(seal/(r.GROUPS[0]+'_spec.json'));grant=c.read_json(seal/(r.GROUPS[0]+'_grant.json'))
     r.authorize(spec,grant)
     c.require(Path(directory)==r.PRIVATE/'observer01','OBSERVER_OUTPUT_IDENTITY')
@@ -53,15 +54,15 @@ def main(seal,directory):
     environment=os.environ.copy();environment['PYTHONDONTWRITEBYTECODE']='1'
     code=0
     try:
-        coordinator=observe_command([spec['observer_python'],'-B',str(r.ROOT/'scripts/run_pf_direct_retry216.py'),
-            '--sealed-directory',str(seal)],directory,'coordinator',environment=environment)
+        command=r.command('run',spec,seal) if hasattr(r,'command') else [spec['observer_python'],'-B',str(r.ROOT/'scripts/run_pf_direct_retry216.py'),'--sealed-directory',str(seal)]
+        coordinator=observe_command(command,directory,'coordinator',environment=environment)
         c.require(coordinator['exit_code']==0,'COORDINATOR_NATIVE_FAILURE')
         terminal=r.PRIVATE/'run01/terminal.json'
         c.require(terminal.is_file(),'COORDINATOR_TERMINAL_MISSING')
         r.save(directory/'coordinator_terminal_binding.json',dict(path=str(terminal),sha256=r.sha(terminal),
             native_exit_witness_sha256=r.sha(directory/'coordinator_native_exit.json')))
-        auditor=observe_command([spec['observer_python'],'-B',str(r.ROOT/'scripts/audit_pf_direct_retry216.py'),
-            '--sealed-directory',str(seal)],directory,'metadata_auditor',environment=environment)
+        command=r.command('audit',spec,seal) if hasattr(r,'command') else [spec['observer_python'],'-B',str(r.ROOT/'scripts/audit_pf_direct_retry216.py'),'--sealed-directory',str(seal)]
+        auditor=observe_command(command,directory,'metadata_auditor',environment=environment)
         c.require(auditor['exit_code']==0,'METADATA_AUDIT_FAILURE')
     except BaseException as error:
         code=2

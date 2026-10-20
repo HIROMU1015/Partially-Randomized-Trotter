@@ -16,9 +16,10 @@ import pf_direct_compile_contract as c
 import pf_direct_compile_adapter as a
 import pf_direct_execution as e
 from pf_direct_retry_support import array_record, scalar_value
+from pf_direct_control_reference import bind_references
 
 
-def load_context(system, task, oracle, journal):
+def load_context(system, task, oracle, journal,*,reference_policy=None):
     cfg=system['config'];n,rank=c.SYSTEM_LAYOUTS[task['system']]
     sys.path.insert(0,str(Path(cfg['provider_root'])/'src'))
     m=importlib.import_module('trottertracks.resource_applicability.h6_matched_port_v1')
@@ -96,6 +97,12 @@ def load_context(system, task, oracle, journal):
     scalar=float(ham.constant);receipt=row.get('scalar_receipt') or oracle.get('saved_outer_scalar')
     if method=='B0I':
         scalar=scalar_value(scalar,receipt)
+    references=None
+    if reference_policy is not None:
+        # These D-series B0I records are overlays of a B0 discard preparation.
+        # The generic MatchedPort B0I dispatch is not the producer of these rows.
+        references,reference_receipt=bind_references(task,row,reference_policy)
+        journal.write('control_reference.json',reference_receipt)
     import qiskit
     from trotterlib.rte_compiled_cost import compiler_settings_hash
     cp=cfg['compiler_options'];c.require(qiskit.__version__=='1.3.0','QISKIT_VERSION')
@@ -105,13 +112,24 @@ def load_context(system, task, oracle, journal):
         np=m.np;low=np.concatenate((qstate,np.zeros_like(qstate)));high=np.concatenate((np.zeros_like(qstate),qstate))
         t=time.monotonic();left=m.simulate_statevector(evolution.circuit,low);right=m.simulate_statevector(evolution.circuit,high)
         z=complex(np.vdot(qstate,right[len(qstate):]));errors=[float(np.linalg.norm(left-low)),float(np.linalg.norm(right[:len(qstate)])),abs(float(np.linalg.norm(right))-1)]
-        expected=[row['signals']['corrected']]
-        if row.get('independent_forward_signals'):expected.append(row['independent_forward_signals']['corrected'])
-        for value in expected:errors.append(abs(z-complex(value['real'],value['imag'])))
+        expected=references
+        if expected is None:
+            records=[row['signals']['corrected']]
+            if row.get('independent_forward_signals'):records.append(row['independent_forward_signals']['corrected'])
+            expected=[complex(value['real'],value['imag']) for value in records]
+        for value in expected:errors.append(abs(z-value))
         for axis,value in (('cosine',z.real),('sine',z.imag)):
             probe=m.build_native_hadamard_wrapper(evolution,axis=axis,include_measurement=False,max_instructions=len(evolution.circuit.data)+4)
             errors.append(abs(m.hadamard_expectation(m.simulate_statevector(probe,low),n)-value))
         tolerance=1e-9 if n<=8 else 1e-8
+        finite=all(math.isfinite(x) and x>=0 for x in errors)
+        journal.write('control_diagnostics.json',dict(
+            status='PASS' if finite and max(errors)<tolerance else 'STOP_CONTROL',
+            error_labels=['branch0_identity','branch1_leakage','branch1_norm']+
+                ['saved_primary','independent_forward'][:len(expected)]+['cosine_wrapper','sine_wrapper'],
+            errors=[v if math.isfinite(v) else None for v in errors],all_errors_finite=finite,
+            signal=dict(real=z.real if math.isfinite(z.real) else None,imag=z.imag if math.isfinite(z.imag) else None),
+            tolerance=tolerance,reference_policy=reference_policy))
         c.require(all(math.isfinite(x) and x>=0 for x in errors) and max(errors)<tolerance,'CONTROL_MISMATCH')
         return dict(status='PASS',probes=4,max_error=max(errors),errors=errors,signal=dict(real=z.real,imag=z.imag),
             oracle_source=oracle['source'],oracle_source_sha256=oracle['source_sha256'],new_classical_oracle=False,tolerance=tolerance,wall_seconds=time.monotonic()-t)
@@ -160,7 +178,8 @@ def run(spec_path,grant_path,system,cid,output,*,authorize=e.authorize):
         import tempfile
         tempfile.tempdir=os.environ['TMPDIR'];sys.dont_write_bytecode=True
         oracle=c.read_json(spec['oracles'])[system][cid]
-        context=load_context(spec['systems'][system],pair[0],oracle,journal)
+        reference_policy=spec.get('control_reference_bindings',{}).get(system+':'+cid)
+        context=load_context(spec['systems'][system],pair[0],oracle,journal,reference_policy=reference_policy)
         kernel=ProductionKernel(context);kernel.restore(pair[0])
         from trottertracks.resource_applicability.h6_hash_reuse_v1 import use_fingerprint_reuse
         with use_fingerprint_reuse():
@@ -171,6 +190,9 @@ def run(spec_path,grant_path,system,cid,output,*,authorize=e.authorize):
                 row=kernel.compile_axis(evolution,axis,journal)
                 row.update(task_id=system+':'+cid+':'+axis,system=system,candidate_id=cid,
                     SOURCE=spec['SOURCE'],observation_kind='DIRECT_COMPILED_FULL_WRAPPER',model_evaluated=False)
+                if reference_policy is not None:
+                    row.update(control_reference_binding=reference_policy,
+                        requires_saved_classical_signal_reconciliation=reference_policy['single_term_S4_saved_signal_inconsistent'])
                 journal.write('raw_'+axis+'.json',row);rows.append(row);gc.collect()
         c.require(journal.used==journal.caps,'EXACT_PAIR_CALLS')
         journal.write('result.json',dict(rows=rows,calls=journal.used,build_seconds=build_seconds,
