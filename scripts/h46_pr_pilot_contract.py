@@ -48,6 +48,10 @@ def authorize(cfg):
     require(dec.get('adaptive_top_up') is False and dec.get('pooling') is False,'NO_TOP_UP_OR_POOLING')
     require(cfg['resources'].get('proxy_policy_adopted') is True,'RESOURCE_PROXY_POLICY_NOT_ADOPTED')
     tasks=design.tasks_for(cfg['stage'],dec['n_P_by_candidate']);scope=design.call_scope(tasks,'PR')
+    resources=cfg['resources'];per_trajectory=resources.get('storage_bytes_per_trajectory_proxy')
+    require(resources.get('full_output_capacity_adopted') is True and type(per_trajectory) is int
+      and per_trajectory>0 and resources['disk_proxy_bytes']>=per_trajectory*len(tasks),'FULL_PILOT_SCRATCH_CAPACITY_REQUIRED')
+    require(dec.get('statistics_execution_authorized') is False,'PILOT_ACQUISITION_ONLY_NOT_NUMERICAL_EVALUATION')
     require(cfg['tasks']==cfg['plan']['tasks']==tasks and cfg['call_scope']==cfg['plan']['call_scope']==scope,'EXACT_PILOT_TASKS_AND_CALLS')
     require(g.get('SOURCE')==cfg['SOURCE'] and g.get('stage')==cfg['stage'] and g.get('cohort')==design.COHORT
       and g.get('plan_sha256')==cfg['plan_sha256'] and g.get('pipeline_identity')==cfg['pipeline_identity']

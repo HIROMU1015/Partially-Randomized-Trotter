@@ -57,7 +57,8 @@ def seal_drafts(source,signal_config,excluded_seeds,private):
           proxy_source='2X_SAVED_SAME_INPUT_DET_Q_RANGE_STAGE_OBSERVATION_NOT_A_BOUND',
           proxy_multiplier_proposed=2,proxy_policy_adopted=False,
           disk_proxy_bytes=sum(x['bytes'] for x in origin['systems'][system]['inputs'].values()),
-          disk_proxy_not_full_output_capacity=True,runtime_caps=False,host_PSI_kill=False,
+          disk_proxy_not_full_output_capacity=True,storage_bytes_per_trajectory_proxy=None,
+          full_output_capacity_adopted=False,runtime_caps=False,host_PSI_kill=False,
           live_own_resource_observation=True)
         supervisor={k:str(dest/name) for k,name in [('entered','SUPERVISOR_ENTERED.json'),('log','native_PRIVATE.log'),('exit','external_exit_witness_PRIVATE.json')]}
         cfg=dict(SOURCE=source,stage=stage,cohort=d.COHORT,origin_signal_config=str(Path(signal_config).resolve()),

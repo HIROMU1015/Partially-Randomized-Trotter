@@ -133,6 +133,12 @@ class ContractTests(unittest.TestCase):
     def test_foreign_stage_or_unadopted_decision_refused(self):
         with self.assertRaisesRegex(ValueError,'PILOT_ONLY'):c.authorize(dict(authorized=True,grant={'valid':True},stage='H4_PR',cohort=d.COHORT))
         with self.assertRaisesRegex(ValueError,'DECISIONS_NOT_ADOPTED'):c.authorize(dict(authorized=True,grant={'valid':True},stage=d.STAGES[0],cohort=d.COHORT,decisions={}))
+        dec={k:True for k in ('pilot_design_adopted','nominal_variance_precision_limit_accepted','rare_event_limit_accepted','resources_policy_accepted','unit_cost_only_accepted')}
+        dec.update(formal_shot_policy_adopted=False,AD03='DEFERRED',adaptive_top_up=False,pooling=False,
+                   n_P_by_candidate={r['id']:2 for r in d.groups() if r['system']=='H4'})
+        with self.assertRaisesRegex(ValueError,'FULL_PILOT_SCRATCH'):
+            c.authorize(dict(authorized=True,grant={'valid':True},stage=d.STAGES[0],cohort=d.COHORT,decisions=dec,
+                             resources={'proxy_policy_adopted':True,'full_output_capacity_adopted':False}))
 
     def test_two_CLI_paths_no_science_side_effects(self):
         with tempfile.TemporaryDirectory() as tmp:
