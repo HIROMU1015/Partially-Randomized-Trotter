@@ -2526,3 +2526,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-20 H4/H6 outer32 pilot準備
 
 [報告](docs/research/track_a_h46_pr_design_pilot_readiness_20261020.md)、[検証](artifacts/resource_applicability/track_a_h46_pr_design_pilot_readiness/2026-10-20/validation.json)。人工20件（3公式native subcase）、旧費用18＋統合31件PASS。2系独立無効契約・SOURCE/input/runtime seal・CLI拒否とmetadata構造を確認。名目分散精度に基づく33/9本案はいずれも未採択、実H4/H6科学計算0。母平均/希少tailの保証ではなく作成者自身の技術検査。mandatory STOP。
+
+## 2026-10-20 H4/H6 pilot lossless storage
+
+[報告](docs/research/track_a_h46_pr_pilot_storage_optimization_20261020.md)、[検証](artifacts/resource_applicability/track_a_h46_pr_pilot_storage_optimization/2026-10-20/validation.json)。人工18件・276fileの原byte SHA復元を確認。科学simulation/再解析ではなくopaque byte圧縮。原3482file/旧pilot sealの保全照合、新方式はstandalone試作で実行未採択。PR/rareサイズ上界なし、n_E/shot/AD03保留、mandatory STOP。

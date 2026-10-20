@@ -1081,3 +1081,7 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## H4/H6 outer32 design pilot (2026-10-20)
 
 [h46_pr_design_pilot.py](h46_pr_design_pilot.py) proposes n_P and separates DESIGN_PILOT seeds; statistics are tested on artificial values only. [Contract](h46_pr_pilot_contract.py), [native adapter](h46_pr_pilot_native.py), [launcher](run_h46_pr_design_pilot.py), [disabled preparation](prepare_h46_pr_design_pilot.py), [report](../docs/research/track_a_h46_pr_design_pilot_readiness_20261020.md), [tests](../tests/test_h46_pr_design_pilot.py). No main exploration or confirmation dispatch.
+
+## H4/H6 pilot lossless storage prototype (2026-10-20)
+
+[h46_pilot_lossless_storage.py](h46_pilot_lossless_storage.py) copies opaque bytes into lossless verified archives and restores into new files. A forward-only serializer sink is tested with artificial QPY; no existing science runner uses it. See [report](../docs/research/track_a_h46_pr_pilot_storage_optimization_20261020.md), [bundle](../artifacts/resource_applicability/track_a_h46_pr_pilot_storage_optimization/2026-10-20/README.md), [tests](../tests/test_h46_pilot_lossless_storage.py). No source deletion or scientific dispatch.

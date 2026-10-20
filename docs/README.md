@@ -1219,3 +1219,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-20 outer32設計pilot準備
 
 [H4/H6標本設計pilot](research/track_a_h46_pr_design_pilot_readiness_20261020.md) / [未承認bundle](../artifacts/resource_applicability/track_a_h46_pr_design_pilot_readiness/2026-10-20/README.md)。PR24群・n_P33/9案、専用cohort、2独立無効契約、全scratch予算gate。技術準備のみ、n_E/shot/AD03保留・mandatory STOP。
+
+## 2026-10-20 H4/H6 PR pilot保存容量
+
+[容量内訳・可逆圧縮・33/9本の計画](research/track_a_h46_pr_pilot_storage_optimization_20261020.md)、[証拠bundle](../artifacts/resource_applicability/track_a_h46_pr_pilot_storage_optimization/2026-10-20/README.md)。原byte証拠を保持したstandalone試作、科学計算/保存方式採択なし。mandatory STOP。

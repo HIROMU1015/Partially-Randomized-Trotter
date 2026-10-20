@@ -1,0 +1,55 @@
+{
+  "AD03": "DEFERRED",
+  "STOP": [
+    "source or input or compiler hash mismatch",
+    "archive corruption or raw SHA mismatch",
+    "native FAIL",
+    "own real OOM/ENOSPC/I/O failure",
+    "remaining scratch cannot fund committed reservations; stop admission, finish only if reserved; otherwise own stage STOP"
+  ],
+  "adopted": false,
+  "auto_top_up": false,
+  "base_commit": "3e7365a606e18efa585252eef23f7b13264b0f38",
+  "capacity_upper_bound": false,
+  "codec": {
+    "level": 1,
+    "lossy": false,
+    "name": "zlib_deflate"
+  },
+  "codec_only_checks_not_scientific_PASS": true,
+  "conditions_before_execution": [
+    "user adopts n/storage/stage scope",
+    "new SOURCE closure and config/grant",
+    "fresh aggregate RAM/CPU/scratch admission",
+    "lossless archive-aware end audit and loader identity",
+    "disk reservations include growing archives,partial,raw worker scratch and restore reserve"
+  ],
+  "evidence_required": [
+    "original uncompressed SHA/byte length",
+    "archive SHA/byte length/codec/runtime",
+    "relative logical object mapping",
+    "streamed decompression restores original SHA",
+    "native gate results remain required",
+    "source/input/compiler/seeds/events/law/grants/ledger/marker/STOP retained"
+  ],
+  "execution_grant": null,
+  "existing_evidence_change_allowed": false,
+  "formal_shot_policy_adopted": false,
+  "mandatory_STOP": true,
+  "metadata_and_call_ledger_omission": false,
+  "metadata_reserve_per_trajectory_bytes": 16777216,
+  "n_E": null,
+  "new_raw_temporary_release": "REQUIRES_EXPLICIT_NEW_STORAGE_CONTRACT_ADOPTION;PROTOTYPE_DOES_NOT_DELETE_SOURCES",
+  "original_source_deletion_allowed": false,
+  "predicted_capacity_factor": 4,
+  "quarantined_failure": "LOSSLESS_SAVE_WITH_UNVALIDATED_STATUS;NEVER_PROMOTE_TO_PASS",
+  "receipt_SHA_semantics": "COMPILED_SHA_CONTINUES_TO_IDENTIFY_RAW_QPY_BYTES;ARCHIVE_SHA_IS_SEPARATE",
+  "retry": false,
+  "runner_grant_admission_audit_resolver_integration": "PENDING_AFTER_STORAGE_POLICY_CHOICE",
+  "sample_n_each_proposed": 33,
+  "schema": "H46_PILOT_LOSSLESS_STORAGE_DRAFT_V1",
+  "scientific_execution_authorized": false,
+  "scientific_hook_installed": false,
+  "scope": "NEW_PILOT_OUTPUT_ONLY_NOT_EXISTING_RAW",
+  "shared_environment_changes": false
+}

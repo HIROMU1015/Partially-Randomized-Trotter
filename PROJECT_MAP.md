@@ -1699,3 +1699,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-20 H4/H6：outer32 DESIGN_PILOT準備
 
 [設計・契約・次の承認](docs/research/track_a_h46_pr_design_pilot_readiness_20261020.md)、[bundle](artifacts/resource_applicability/track_a_h46_pr_design_pilot_readiness/2026-10-20/README.md)。PR24群、n_P33/群案（792 trajectory/1584軸）と9本案を未採択で提示。専用cohort・独立H4/H6無効契約・paired/stratum/law記録・全scratch採択gate。新20＋回帰49件、実H4/H6 sampling/compile/解析0。n_E/shot/AD03保留、mandatory STOP。
+
+## 2026-10-20 H4/H6 PR pilot：保存容量最適化
+
+[報告](docs/research/track_a_h46_pr_pilot_storage_optimization_20261020.md) / [bundle](artifacts/resource_applicability/track_a_h46_pr_pilot_storage_optimization/2026-10-20/README.md)。既存276 QPY/NPZを別領域へbyte可逆圧縮、10.36→0.635 GB・全原SHA復元。33本案の保存proxy約132.5 GB、raw/復元scratch込み。standalone試作/人工18件、旧科学runner未変更・新方式未採択・実H4/H6科学計算0。次はユーザーの保存方式判断、Codex新契約接続、系別明示承認。mandatory STOP。

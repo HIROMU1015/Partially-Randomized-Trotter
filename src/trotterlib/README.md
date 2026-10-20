@@ -1044,3 +1044,7 @@ The existing PF/native numerical modules are unchanged. The stdlib-only [saved-d
 ## H4/H6 pilot planning (2026-10-20)
 
 Existing numerical PF modules are unchanged. The [DESIGN_PILOT scripts](../../scripts/h46_pr_design_pilot.py) reuse the frozen native/request path with separate seeds/contracts. See [readiness](../../docs/research/track_a_h46_pr_design_pilot_readiness_20261020.md) and [bundle](../../artifacts/resource_applicability/track_a_h46_pr_design_pilot_readiness/2026-10-20/README.md). Proposed n_P is unadopted; no real-data evaluation was run.
+
+## Storage-only pilot investigation (2026-10-20)
+
+Scientific modules and native controls are unchanged. The standalone [lossless byte archive prototype](../../scripts/h46_pilot_lossless_storage.py) does not import this package. [Storage report](../../docs/research/track_a_h46_pr_pilot_storage_optimization_20261020.md): new scientific storage policy and execution remain unapproved.
