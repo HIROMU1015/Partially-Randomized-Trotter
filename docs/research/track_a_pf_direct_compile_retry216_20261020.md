@@ -1,5 +1,30 @@
 # PF直接compile：loader修正・残り216軸の承認済み再実行
 
+## 現在の結果：2026-10-20 07:03 JST終了・partial mandatory STOP
+
+残りH8の22軸はすべて成功し、本attemptは終了した。新216軸は成功110、control不一致STOP106、未投入0、native終了未確認0。全108 workerとcoordinatorの実wait4終了・回収を確認し、現在の稼働0。STOP106軸ではwrapper build/compileは未実施であり、compileに失敗した106軸とは扱わない。以下の05:18/05:20・起動前の記述は時点履歴である。
+
+| 系列 | 今回成功 | 今回control STOP | 未投入 |
+| --- | ---: | ---: | ---: |
+| H2 DF3 | 26 | 46 | 0 |
+| H4 DF10 | 62 | 60 | 0 |
+| H8 DF28 | 22 | 0 | 0 |
+| 合計 | 110 | 106 | 0 |
+
+成功110と旧572 task受入を区別して保存し、合計682軸の直接ゲート数を照合した。旧実行のglobal final gate欠測は保持し、全788軸成功・旧run全体PASSとは認定しない。新規モデルfit・費用再ランキング・shot再計算・samplingは0。将来の同一候補に対するqモデル比較には、new_gate_counts.csv/combined_observation_index.jsonのtask ID・軸・SOURCE・compiler hash付き整数観測を利用できる。今回モデル誤差を計算していない。
+
+新SOURCE/依存の実行末gateと自動監査gateは38,686件PASS。110行のCSV/JSON整数値、完全pair、旧572行の保存値、108 native worker identity、coordinator exit0/reap、call ledgerを照合した。自動metadata auditorのexit2とobserver STOPは、216未達のpartial結果を保存した後の設計どおりの終了である。証拠不整合による監査失敗と混同しない。observer自身のexitは自己報告という限界を継承する。
+
+実時間6,439.953秒（約107分20秒）、worker CPU計52,330.987秒（約14.54 CPU時間）、最大単一worker RSS6,433,300,480 bytes（約5.99 GiB）、標本観測したowned worker RSS合計最大41,486,770,176 bytes（約38.64 GiB）。最大観測worker64。合計RSSは標本最大であり連続観測の厳密な最大ではない。終了gate時刻は2026-10-20 07:03:26 JST、自動監査gateは07:03:34 JST。
+
+残106軸はH2/H4 B0I計96軸とH2 B0 prefix0/S4の10軸。B0Iの静的preparation選択不一致と、prefix0/S4の原因未確定を区別する。失敗時のcontrol個別errors/vectorは保存されていない。修正・追加科学実行は本attemptに自動追加せず、旧STOPを保全してmandatory STOPする。詳細科学レビュー・最終evidence freezeは未開始。
+
+最終証拠は[results01](../../artifacts/resource_applicability/track_a_pf_direct_compile_retry216/2026-10-20/results01/completion_audit.json)、final_structure_validation.json、terminal_exit_evidence.jsonに保存した。completion_audit.jsonのworker_reserved_callsという既存fieldには実worker call総数が入るため、実compile110と親予約216をfinal_resource_summary.jsonで明確に分けた。原自動監査は変更しない。
+
+次の担当はユーザーで、残106軸への追加対応と新規成果物の公開を判断する。今回は新規公開承認がなくpushしていない。
+
+## 以下は準備・実起動時点の履歴
+
 2026-10-20 JST。利用者の「その方針で進めて、再実行まで行って」を、残り216軸の修正・再実行承認として記録した。基点はa80f89b435340898f8cc46940e9080c9bcd3b403、旧科学SOURCEは220b9644df6e114116737fd041973973fcf86cf5。当初は封印・起動前の準備段階であった。以下の実行記録を現状として優先する。
 
 [packet](../../artifacts/resource_applicability/track_a_pf_direct_compile_retry216/2026-10-20/README.md)。対象はlinear H2/H4/H8、隣接1 Å、STO-3G、tol-only DF3/10/28、T=.8、P=0、symmetric_directional。H2 72軸、H4 DF10 122軸、H8 DF28 22軸、計216軸＝108 cosine/sine pair。保存受入572軸（H6/H8/legacy DF12）は旧task来歴を保持して再利用し、再コンパイルしない。旧profile等の48軸は対象外。

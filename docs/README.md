@@ -1,3 +1,7 @@
+## 2026-10-20 PF直接compile再実行：終了・110成功/106 control STOP
+
+[最終結果・監査](research/track_a_pf_direct_compile_retry216_20261020.md)。07:03 JST終了、H8残22軸は全成功。今回216軸は成功110/control STOP106/未投入0/終了未確認0、全108 worker回収。約107分、旧572と合計682軸のtask受入を保存（旧global final gate欠測は保持）。38,686依存gate PASS、新科学fit/費用再会計/追加retry0。現在稼働0、mandatory STOP。次担当ユーザー：残106への対応・新公開範囲を判断。以下は履歴。
+
 ## 2026-10-20 PF直接compile：修正・残り216軸の再実行承認
 
 [修正・scope・実行記録](research/track_a_pf_direct_compile_retry216_20261020.md)。H2 72/H4 DF10 122/H8 DF28 22軸を新SOURCEで再実行する承認を受領。旧572軸のtask受入とglobal final gate欠測・旧SOURCE/STOPを保持。新13＋既存13人工検査PASS、分離observer/実wait4終了監査を接続。SOURCE0c5fcc83で分離起動済み。05:18 JST暫定は成功86/control STOP106/未終了24軸。失敗taskはcompile前にSTOP、正常worker継続・retry0。全体未完了、新公開未承認。以下は履歴。
