@@ -634,3 +634,6 @@ Core科学load・科学bits・実512・実permission発行消費0、run_ready=fa
 > 2026-10-20 Track B W2c-B3：ユーザーが512件correctness-onlyと一回実科学実行を明示採択。S256/P1256完了、保存Evidence検査PASS、全cell coverage、retry0。分類LIVE_TECHNICAL_COMPLETE_AWAITING_REVIEW。集約reportのartificial_only既定値にmetadata残件あり、原本保全。一般正しさ・IID・性能優位性は未認定。mandatory STOP、次はユーザー・GPT。 [結果・SOURCE・原データ](../../docs/research/track_b_g6_w2c_b3_correctness_512_authorized_run_20261020/handoff.md)。
 
 > 2026-10-20 Track B post-512：将来SOURCEのLive/Artificial・簡易USER承認metadataを修正、旧raw35files/144pins保全。人工80tests/4integration/20mutation PASS、新実科学0。16896 Pilotは再利用表と閉じた契約候補まで、未採択・新grantなし・mandatory STOP。次はユーザー・GPT。 [修正・照合・候補](../../docs/research/track_b_g6_w2c_b3_post512_metadata_pilot_readiness_20261020/README.md)。
+
+
+> 2026-10-20 Track B：限定Pilotを明示採択し、実G7/F3の6phase/48pair/16896件を新scopeで一回実行。accepted16280/ZERO_R324/coin292、coverage・保存値照合PASS、CPU1258.033384573秒/wall792.156549420秒（parent+reaped child hierarchy、Git helper含む）。claim spent/retry0/resumeなし/mandatory STOP。一般保証・方式順位・Full-Nは未認定。 [SOURCE・結果・Q1–Q10](../../docs/research/track_b_g6_w2c_b3_limited_pilot_16896_authorized_20261020/handoff.md)。SOURCE `src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/`、runner `authorized_runner`、tests `test_g6_w2c_b3_limited_pilot_live_v1.py`、原本 `artifacts/track_b_g6_w2c_b3_limited_pilot_16896/`。次担当：ユーザー・GPT。

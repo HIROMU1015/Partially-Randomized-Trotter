@@ -1,12 +1,13 @@
-# Track B：採択済み限定Pilot 16,896件
+# Track B：限定Pilot 16,896件完了・mandatory STOP
 
-今回のユーザー指示に基づく新namespaceの実装・人工受入を完了。実科学はまだ開始していない。これから実SOURCE commitとmanifestを固定し、同じ承認内容との一致をpreflightで検査してfresh scopeのone-shot実行へ進む。
+**LIVE_TECHNICAL_COMPLETE_AWAITING_REVIEW**。実G7/F3で6phase/48pair/16896完了、保存値検査PASS。accepted16280、ZERO_R324、coin reject292、全correctness coverage。追加0/retry0/resumeなし/claim spent/mandatory STOP。一般科学保証・方式順位は認定しない。
 
-- 原承認：user_approval.json。採択と具体化：adopted_contract.md。
-- 人工受入：artificial_acceptance.json、artificial_normal_final_checker.json、semantic_mutations_final.json。
-- Core不変性/境界：static_science_boundary_check.json。旧資料保全：preservation_before.json。
-- SOURCE：src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/。
-- focused tests：tests/tracks/algorithm_codesign/test_g6_w2c_b3_limited_pilot_live_v1.py。
-- runner：python3 -m trottertracks.algorithm_codesign.g6_w2c_b3_limited_pilot_live_v1.authorized_runner（prepare/execute/inspect）。executeは一回限り。
+- [Q1–Q10 handoff](handoff.md)、[機械可読結果](result_summary.json)、[cell/block費用](cost_tables.md)
+- [固定manifest](approved_manifest.json)、[preflight](preflight.json)、[原承認](user_approval.json)、[採択契約](adopted_contract.md)
+- [SOURCE/input identity](source_inventory.json)、[SOURCE保全](measured_source_retention.json)
+- [人工受入](artificial_acceptance.json)、[固定checker](saved_evidence_check.json)、[追加保存値照合](supplemental_saved_checks.json)
+- [費用元表](cost_and_outcomes.json)、[保存量照合](storage_reconciliation.json)、[原本inventory](raw_inventory.json)、[旧原本保全](preservation_after.json)
 
-人工試験は同じprimary Codexの技術検証であり、別reviewerの独立再現ではない。科学Core/Exact Adapter/Global Bundle/F01/Storage V2/旧checkerは不変。終端は必ずmandatory STOP、retry0/resumeなし。Full-N・追加pilotへの移行は承認されていない。
+測定SOURCE `c7e8806cf308131b5629ac54b627d46c360799a3`、manifest `92ddf84e0d6d90ead7a98dac7eadf69ef9c2bf0622694c8870b69cf841a23bb6`。CPU1258.033384573秒/wall792.156549420秒はparent＋reaped child hierarchy（Git helper含む）の固定窓。worker own/partitionと重ねて加算しない。baseline off/instrumented on、fused両pass。人工・旧512・今回16896は別証拠。
+
+新namespace `src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/`、focused tests `tests/tracks/algorithm_codesign/test_g6_w2c_b3_limited_pilot_live_v1.py`。SOURCE/科学Core/旧claimを変更して再実行しない。公開照合はpublication_receipt.jsonを参照。次の担当はユーザー・GPTによる後続判断。
