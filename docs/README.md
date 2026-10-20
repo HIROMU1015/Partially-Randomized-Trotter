@@ -1,3 +1,9 @@
+## 2026-10-20 PF単価検証：100scopeを条件付き成果として正式採用
+
+[採用・主張境界・公開監査](research/track_a_pf_q_model_evidence_integration_20261020.md)。[現行補足](research/track_a_protocol_v2_pf_cost_supplement_20261020.md)。
+
+ユーザー指示で3983fe4fの100scope/unique40条件を正式採用し、v2補足・新paper manifest・CEM21行（旧14保全）・台帳v4 338行（旧316保全）へSOURCE/図表/SHAを対応付けた。主要保存結果は最良PF候補変更2/100、q/PF次数0/100、最良総費用50/100、全候補順位50/100、PR/PF方向逆転0/100、PR低費用90/PF低費用10。旧70転記、新30、Stage A34適格費用の新baseline来歴を区別する。混在政策から直接単価への条件付き診断で、独立100実験・モデル固有誤差保証・母平均優位とはしない。正式v2科学条件、主表/Figure2、旧SOURCE/raw/grant/ledger/marker/STOP不変。GitHub58blob/全9SOURCE一致・summary/終了/native直接GET一致。既存58の明示公開承認receiptは利用可能記録で未確認、5fileに内部絶対パス88箇所、資格情報pattern検出0（限定検査）。公開経緯や許容範囲を断定せず、履歴変更/削除/force-push/再push0。新7人工と文書構造/SHA PASS、新科学/数値再解析/再順位/再描画0。新公開未承認、詳細review/freeze未開始、mandatory STOP。次担当ユーザー：既存58公開経緯・内部パス許容と新文書公開範囲を確認。Codexは承認済み新規公開のみ行う。以下は履歴。
+
 ## 2026-10-20 H6段階B修正：新30完了・旧70参照で100scope比較
 
 [結果・来歴・図表・監査](research/track_a_h6_noncancellation_stage_b_rerun_20261020.md)。
