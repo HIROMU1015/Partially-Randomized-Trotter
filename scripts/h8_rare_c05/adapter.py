@@ -1,5 +1,6 @@
 """Production trajectory bridge; exercised ONLY with symbolic providers in C0.5."""
 from pathlib import Path
+from contextlib import nullcontext
 from .accounting import check_permit,atomic,IdentityCache,paired_pilot_summary,independent_pilot_moments
 from .sampling import CELLS,requests,digest,require,POLICY,count_category,weights,IntegerCategorical,numerical_law_diagnostic
 from .parallel import map_fork
@@ -53,7 +54,7 @@ class Adapter:
         if task['id'] in self.c['validation_task_ids']:
             for kind,n in [('control_probe',4),('event_oracle',1),('validation_wrapper_build',2)]:self.budget.take(kind,n,task['id']+'_'+kind)
             self.provider.validate(evolution,steps,root)
-        def axis_callback(axis_task,work,width):
+        def axis_unwrapped(axis_task,work,width):
             axis=axis_task['id'];key=task['id']+'_'+axis
             require(digest(self.provider.event_values(steps))==event_hash,'PAIRED_EVENT_MUTATION')
             self.budget.take('wrapper_build',1,key+'_wrapper')
@@ -69,6 +70,11 @@ class Adapter:
             require(digest(self.provider.event_values(steps))==event_hash,'PAIRED_EVENT_CHANGED_AFTER_COMPILE')
             return dict(axis=axis,event_digest=event_hash,fingerprint=fingerprint,compiler=self.c['original_binding']['compiler'],
                         metrics=value,cache_hit=hit)
+        def axis_callback(axis_task,work,width):
+            # Reuse the original P canonical fingerprint byte cache only inside
+            # the disposable axis process. Compile-cache remains disabled.
+            context=self.provider.fingerprint_session() if hasattr(self.provider,'fingerprint_session') else nullcontext()
+            with context:return axis_unwrapped(axis_task,work,width)
         # Outer demand already reserves this many CPU/memory slots; no extra pool.
         cap=lambda:dict(cpu=axis_width,memory=0,io=axis_width)
         demand=lambda t,s:dict(cpu=1,memory=0,io=1,axis_width=1)

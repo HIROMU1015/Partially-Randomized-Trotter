@@ -1,6 +1,7 @@
 """Lazy bridge to pinned original H8 APIs. Never imports science in C0.5 tests."""
 import importlib
 import sys
+from contextlib import nullcontext
 from types import SimpleNamespace
 from .accounting import check_permit,sha
 from .sampling import PCG64Bits,require,digest
@@ -49,6 +50,12 @@ class OriginalProvider:
         self.check();return self.context.native.partial_native_from_step_requests(requests,control_policy='symmetric_directional',max_instructions=1000000)
     def wrapper(self,evolution,axis):
         self.check();return self.context.m.build_native_hadamard_wrapper(evolution,axis=axis,include_measurement=True,max_instructions=1000000)
+    def fingerprint_session(self):
+        # Same bounded canonical byte-reuse utility used by original P, no cost
+        # cache and no extra circuit/compile. State is local to each axis child.
+        self.check()
+        from trottertracks.resource_applicability.h6_hash_reuse_v1 import use_fingerprint_reuse
+        return use_fingerprint_reuse()
     def fingerprint(self,wrapper):self.check();return self.context.m.canonical_qiskit_circuit_fingerprint(wrapper)
     def compile(self,wrapper,fingerprint):
         self.check();value=self.context.m.transpile_and_measure_cost(wrapper,self.context.compiler,actual_circuit_fingerprint=fingerprint)

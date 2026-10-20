@@ -1,7 +1,7 @@
 """Fixed C-1 pilot: technical runtime probe and one-shot representative-first driver.
 
-No environment/thread settings, CPU affinity, shared packages or old evidence are
-changed. Science starts only through the newly bound approval/grant gate.
+Only the new subprocess's OpenBLAS thread setting is bound to one, before numpy
+import, so fork parents remain single threaded. Shared settings are untouched.
 """
 import argparse
 import csv
@@ -74,7 +74,12 @@ def require_safe_parent(expected_library=None):
         require(live_signature()==expected_library,'LIVE_LIBRARY_CHANGED')
 
 
+def require_thread_policy():
+    require(os.environ.get('OPENBLAS_NUM_THREADS')=='1','PREIMPORT_OPENBLAS_FORK_POLICY')
+
+
 def bind_imports(config):
+    require_thread_policy()
     sys.dont_write_bytecode=True
     for row in config['byte_rows']:
         require(sha(row['path'])==row['sha256'],'FROZEN_BYTES_CHANGED')
@@ -107,14 +112,14 @@ def runtime_probe(config,output):
         require(receipt['status']=='PASS' and receipt['all_reaped'],'TECHNICAL_FORK_PROBE')
         atomic(output/'probe.json',dict(status='PASS_TECHNICAL_RUNTIME_IMPORT_LIBRARY_FORK',
             library_signature=signature,memory=process_memory(),elapsed=time.monotonic()-start,
-            source_input_runtime_bytes=True,science_calls=0,thread_policy_changed=False,
+            source_input_runtime_bytes=True,science_calls=0,thread_policy_changed='OWN_SUBPROCESS_OPENBLAS_PREIMPORT_1',
             owned_child_reaped=True))
         return 0
     except BaseException as exc:
         atomic(output/'probe.json',dict(status='STOP_TECHNICAL_RUNTIME_GATE',
             reason=type(exc).__name__+':'+str(exc),memory=process_memory(),
             elapsed=time.monotonic()-start,science_calls=0,valid_grant_consumed=False,
-            traceback=traceback.format_exc(),thread_policy_changed=False,retry=False))
+            traceback=traceback.format_exc(),thread_policy_changed='OWN_SUBPROCESS_OPENBLAS_PREIMPORT_1',retry=False))
         return 2
 
 
@@ -164,7 +169,14 @@ def execute_batches(adapter,tasks,registry,root,admission,library_gate=lambda:No
         if time.monotonic()-last[0]>=1:
             values=[]
             for h in rows:
-                try:values.append(dict(task=h['id'],**process_memory(h['pid'])))
+                try:
+                    # Observe own leader and its own axis children; no host-wide scan.
+                    childfile=Path('/proc')/str(h['pid'])/'task'/str(h['pid'])/'children'
+                    children=[]
+                    for pid in childfile.read_text().split():
+                        try:children.append(process_memory(int(pid)))
+                        except (FileNotFoundError,ProcessLookupError):pass
+                    values.append(dict(task=h['id'],axis_children=children,**process_memory(h['pid'])))
                 except (FileNotFoundError,ProcessLookupError):pass
             observations.append(dict(monotonic=time.monotonic(),workers=values,capacity=admission.capacity()))
             atomic(root/'resource_observations.json',observations);last[0]=time.monotonic()
@@ -214,6 +226,12 @@ def run_condition(config,root):
     scope_gate(c,tasks,registry)
     b=None
     try:
+        frozen_core={k:config[k] for k in ('tasks','registry','law_root_seed','adapter_config','modules','byte_rows','resource_evidence','technical_probe','saved_law_bindings')}
+        require(digest(frozen_core)==c['private_configuration_core_digest'],'PRIVATE_EXECUTION_CONFIG_CHANGED')
+        if c['condition']=='H8_0.0005':
+            previous=read(config['phase1_completion'])
+            require(previous['status']=='COMPLETE_C1_CONDITION_MANDATORY_STOP' and previous['n']==43
+                and previous['compile']==86 and previous['all_owned_reaped'],'PHASE1_COMPLETE_REQUIRED')
         probe=read(config['technical_probe'])
         require(probe['status']=='PASS_TECHNICAL_RUNTIME_IMPORT_LIBRARY_FORK','TECHNICAL_PREFLIGHT_NOT_PASS')
         demand=config['resource_evidence']
@@ -226,13 +244,26 @@ def run_condition(config,root):
         permit=begin_approved(config['contract'],config['grant'],root/'one_shot_consumed.json',config['approval'],config['byte_rows'])
         b=Budget(root/'budget',c['frozen_scientific_budget'])
         cell=dict(prefix=8 if c['q']==2 else 7,q=c['q'],r=4,K=4)
+        (root/'restored').mkdir()
         provider=OriginalProvider.load_parent(permit,config['adapter_config'],[cell],root/'restored',config['modules'],config['byte_rows'],b)
         require_safe_parent(signature)
+        atomic(root/'postload_runtime_gate.json',dict(status='PASS',library_signature=signature,
+            threads=process_memory()['threads'],memory=process_memory(),preparation_sha=provider.context.preparations[cell['prefix']].preparation_hash))
         adapter=Adapter(provider,permit,c,b)
         adapter.initialize_law(config['law_root_seed'])
         expected=read(config['saved_law_bindings'])['conditions'][c['condition']]['saved_law']
         require(adapter.law.to_dict()==expected,'SAVED_TAU_NORMALIZATION_SUPPORT')
         require(adapter.cell['q']==c['q'] and adapter.cell['r']==4 and adapter.cell['K']==4,'LAW_Q_R_K_T')
+        atomic(root/'law_binding_gate.json',dict(status='PASS',original_law_sha256=digest(adapter.law.to_dict()),
+            q=c['q'],r=4,K=4,T=.8,tau=adapter.law.dimensionless_step_time,
+            normalization=adapter.law.exact_finite_distribution,law=adapter.law.to_dict(),
+            diagnostic=read(b.root/'law_diagnostic.json'),certificate=False))
+        # Probe parent/child library *after* loader, without science or budget use.
+        gate=map_fork([dict(id='postload_identity_only')],
+            lambda t,d,w: (require_safe_parent(signature) or dict(library=live_signature(),memory=process_memory())),
+            root/'postload_fork_probe',lambda:dict(cpu=1,memory=process_memory()['RSS'],io=1),
+            lambda t,c:dict(cpu=1,memory=process_memory()['RSS'],io=1,axis_width=1))
+        require(gate['status']=='PASS' and gate['all_reaped'],'POSTLOAD_FORK_LIBRARY_IDENTITY')
         summary=execute_batches(adapter,tasks,registry,root,admission,lambda:require_safe_parent(signature))
         return summary
     except BaseException as exc:

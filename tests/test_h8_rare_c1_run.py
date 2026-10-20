@@ -10,7 +10,7 @@ from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
 from h8_rare_c1_run import (scope_gate,execute_batches,runtime_probe,
-    require_safe_parent,library_record)
+    require_safe_parent,library_record,require_thread_policy)
 from h8_rare_c05.accounting import Budget,Permit,atomic,read
 from h8_rare_c05.adapter import Adapter
 from h8_rare_c05.sampling import register_streams,digest
@@ -105,6 +105,35 @@ class DriverTests(unittest.TestCase):
 
     def test_no_real_imports(self):
         self.assertFalse(any(n=='numpy' or n.startswith('qiskit') for n in sys.modules))
+
+    def test_thread_policy_absent_or_wrong_rejected(self):
+        for value in (None,'64','2'):
+            import os
+            env={} if value is None else {'OPENBLAS_NUM_THREADS':value}
+            with patch.dict(os.environ,env,clear=True):
+                with self.assertRaisesRegex(ValueError,'PREIMPORT_OPENBLAS'):require_thread_policy()
+
+    def test_thread_policy_single_for_fork_accepted(self):
+        import os
+        with patch.dict(os.environ,{'OPENBLAS_NUM_THREADS':'1'},clear=True):require_thread_policy()
+
+    def test_library_mutation_rejected(self):
+        with patch('h8_rare_c1_run.single_thread',return_value=True),patch('h8_rare_c1_run.live_signature',return_value='changed'):
+            with self.assertRaisesRegex(ValueError,'LIVE_LIBRARY_CHANGED'):require_safe_parent('original')
+
+    def test_fingerprint_session_restores_on_compile_failure(self):
+        from contextlib import contextmanager
+        p=ToyChecked('sine');events=[]
+        @contextmanager
+        def session():
+            events.append('entered')
+            try:yield
+            finally:events.append('restored')
+        # The provider context API itself always unwinds on error, preserving aliases.
+        p.fingerprint_session=session
+        with self.assertRaises(RuntimeError):
+            with p.fingerprint_session():p.compile({'axis':'sine'},'TOY')
+        self.assertEqual(events,['entered','restored'])
 
 
 if __name__=='__main__':unittest.main()
