@@ -1,0 +1,30 @@
+--- prior/reference.py
++++ R2/reference.py
+@@ -6,0 +7 @@
++from bitwise import restore_local
+@@ -14,2 +15 @@
+-        local = np.array([[float.fromhex(v) for v in row] for row in raw['real_hex']]) + 1j * np.array(
+-            [[float.fromhex(v) for v in row] for row in raw['imag_hex']])
++        local = restore_local(raw)
+--- prior/run_c13_r1.py
++++ R2/run_c13_r2.py
+@@ -1 +1 @@
+-"""Frozen C1-3-R1 new one-shot (retry 0). No import of molecular construction/synthesis."""
++"""Frozen C1-3-R2 new one-shot (retry 0). No import of molecular construction/synthesis."""
+@@ -22 +22 @@
+-                                  'authorization_commit': git('rev-parse', 'HEAD'), 'run_id': 'C1-3-R1-H4-selected-20261021',
++                                  'authorization_commit': git('rev-parse', 'HEAD'), 'run_id': 'C1-3-R2-H4-selected-20261021',
+@@ -29,0 +30,3 @@
++        require(contract['run_id'] == 'C1-3-R2-H4-selected-20261021', 'NEW_RUN_ID_MISMATCH')
++        require(all(json.loads((HERE / f).read_text())['status'] == 'PASS' for f in
++                    ('phase_a_checks.json', 'phase_b/summary.json')), 'PHASE_A_B_NOT_PASS')
+--- prior/support.py
++++ R2/support.py
+@@ -13 +13 @@
+-BASE = 'e72867b87e12d93d4fc1361f45f105febc6a94c6'
++BASE = '49dae5247ff0ad2c4efb9056e095b70913cc9ddb'
+@@ -63,0 +64,4 @@
++
++RECOVERY = ROOT / 'docs/research/track_b_c1_3_r1_recovery_c1_4_20261021'
++if str(RECOVERY) not in sys.path:
++    sys.path.insert(2, str(RECOVERY))
