@@ -1,3 +1,9 @@
+## 2026-10-21 H8希少RTE：段階C-0設計・科学実行未承認
+
+[技術報告](../../docs/research/h8_rare_rte_stage_c0_design_20261021.md)、[設計packet](../../artifacts/resource_applicability/h8_rare_rte_stage_c0/2026-10-21/README.md)、[preflight](../../scripts/preflight_h8_rare_rte_c0.py)、[toy/mock](../../scripts/h8_rare_rte_c0_mock.py)、[人工test](../../tests/test_h8_rare_rte_c0.py)。
+
+H8 p8q2/p7q16の未観測single/multi/S4を保持した条件別未承認契約案、S0誤差込み標本設計、trajectory/両軸fork-COW・全体token・private cache・回収計画を保存。33固定blob/GitHub6file・原input123行82file・旧B運用5fileを照合。toy15 test PASS、mock child exit0/7はwait4回収。本番n/精度/信頼水準/law数値処理/runtime/新SOURCEは未確定。C-0 technical preflight PASS、科学実行は未承認でBLOCKED。新science/保存値数値解析/有効grant/共有変更/push/review/freeze0、mandatory STOP。次担当ユーザー：保証・精度・pilot範囲・S0/残余層・公開範囲を判断。Codexは新指示まで停止。 以下の旧記録を保全。
+
 ## 2026-10-21 希少RTE：段階B one-shot完了・条件付き期待費用
 
 [結果・限界](../../docs/research/pr_rare_rte_stage_b_results_20261021.md)、[結果/契約/監査packet](../../artifacts/resource_applicability/pr_rare_rte_stage_b/2026-10-21/README.md)、[core](../../scripts/rare_rte_stage_b_core.py)、[別算術検証](../../scripts/rare_rte_stage_b_verify.py)、[one-shot runner](../../scripts/run_rare_rte_stage_b.py)、[人工tests](../../tests/test_rare_rte_stage_b.py)、[構造・保全監査](../../scripts/audit_rare_rte_stage_b_completion.py)。
