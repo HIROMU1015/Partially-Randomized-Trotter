@@ -71,7 +71,9 @@ def checks():
     assert not git('ls-files','--','.c1_contract_private').strip()
     assert git('check-ignore','.c1_contract_private/task_registries.json').strip()
     assert not list(PRIVATE.glob('*grant*')) and not list(PRIVATE.glob('*marker*')) and not list(PRIVATE.glob('*ledger*'))
-    for rel in git('diff','--name-only','--diff-filter=MDRT',BASE).decode().splitlines():
+    for raw in git('diff','--name-only','--diff-filter=MDRT','-z',BASE).split(b'\0'):
+        if not raw:continue
+        rel=raw.decode()
         assert rel in INDEXES,'OLD_FILE_MUTATION '+rel
         assert (ROOT/rel).read_bytes().endswith(git('show',BASE+':'+rel))
     allowed=['scripts/h8_rare_c1_contract.py','scripts/preflight_h8_rare_c1_contract.py','tests/test_h8_rare_c1_contract.py',
