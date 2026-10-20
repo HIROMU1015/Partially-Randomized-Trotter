@@ -1,0 +1,164 @@
+{
+  "schema": "h8_gpt_share_candidate_v1",
+  "client_date": "2026-10-20",
+  "timezone": "Asia/Tokyo",
+  "publication_status": "LOCAL_CANDIDATE_NOT_SENT",
+  "self_excluded": true,
+  "not_an_evidence_freeze": true,
+  "external_send_upload_push_authorized": false,
+  "files": [
+    {
+      "filename": "00_README_GPT.md",
+      "bytes": 5565,
+      "sha256": "e2081e719a66e9927494945bb4c0e9717028af34ccaedd28659b99d315bdc866",
+      "purpose": "読み方・条件・保存結論・監査範囲とSTOP",
+      "confidentiality": "公開情報＋匿名化した運用概要",
+      "remaining_disclosure_risk": "運用構造と証拠不足を開示",
+      "recommendation": "CONDITIONAL_AFTER_USER_CONTENT_AND_DESTINATION_APPROVAL"
+    },
+    {
+      "filename": "01_results_and_source.json",
+      "bytes": 6711,
+      "sha256": "98f96b3a2f41b4f8e35ae077b23c0acfb545bec89b8dc83baf88c06d3ea63efb",
+      "purpose": "二条件の主副評価の保存tokenとSOURCE対応",
+      "confidentiality": "公開結果中心",
+      "remaining_disclosure_risk": "公開済み数値と測定SOURCEの対応を開示",
+      "recommendation": "CONDITIONAL_AFTER_USER_CONTENT_AND_DESTINATION_APPROVAL"
+    },
+    {
+      "filename": "02_execution_receipts.json",
+      "bytes": 5190,
+      "sha256": "3b3bc8eb8542ada5b07126b783e4b48d1106421301225d967a564efc80fdb059",
+      "purpose": "startup/terminalとseal・結果SHAの結合",
+      "confidentiality": "原監査の選択項目",
+      "remaining_disclosure_risk": "未公開原本SHA/bytesと実行完了関係を開示",
+      "recommendation": "CONDITIONAL_AFTER_USER_CONTENT_AND_DESTINATION_APPROVAL"
+    },
+    {
+      "filename": "03_worker_receipts.json",
+      "bytes": 376540,
+      "sha256": "994c358983567dd8dd74cd829cf99a4b1ffa281a0b6b04c3a45fbd11088360d8",
+      "purpose": "296 native nodeのexit/reapと匿名化親子関係",
+      "confidentiality": "匿名化監査projection",
+      "remaining_disclosure_risk": "worker構造・失敗履歴・原SHAの相関が残る",
+      "recommendation": "CONDITIONAL_AFTER_USER_CONTENT_AND_DESTINATION_APPROVAL"
+    },
+    {
+      "filename": "04_grant_ledger_marker_stop.json",
+      "bytes": 193434,
+      "sha256": "a0478ec225d7345ac12b5fcecf72f7e52d071d2fea3c8ba0e4be66dbf7cf191d",
+      "purpose": "新旧grant/scopeと原bytesを保持した安全な台帳・marker・STOP",
+      "confidentiality": "原監査field＋許可済みfieldだけの監査JSON",
+      "remaining_disclosure_risk": "原SHA・消費予約・STOP理由を開示。承認本文やprocess identityは除外",
+      "recommendation": "CONDITIONAL_AFTER_USER_CONTENT_AND_DESTINATION_APPROVAL"
+    },
+    {
+      "filename": "05_seed_cohort_audit.json",
+      "bytes": 30753,
+      "sha256": "c5befafe91e12074f257d2eb3d49f567b506f64f81422f74ab50ff91646b7d13",
+      "purpose": "登録taskと除外coverage・固定導出検査の条件",
+      "confidentiality": "seed値を含まない監査projection",
+      "remaining_disclosure_risk": "registry全体SHAと件数を開示。実seed検査の再実行は不能",
+      "recommendation": "CONDITIONAL_AFTER_USER_CONTENT_AND_DESTINATION_APPROVAL"
+    },
+    {
+      "filename": "06_task_axis_links.json",
+      "bytes": 414015,
+      "sha256": "bf33bffcebc6c2bbcc553d8ca2d4ec1b7f76aa214aededb33680817b4ff88654",
+      "purpose": "96軌道192軸のSOURCE/native/event digest/fingerprint/公開metric対応",
+      "confidentiality": "公開metric＋監査hash",
+      "remaining_disclosure_risk": "非公開event/circuitを識別するhash相関が残る",
+      "recommendation": "CONDITIONAL_AFTER_USER_CONTENT_AND_DESTINATION_APPROVAL"
+    },
+    {
+      "filename": "07_input_runtime_bindings.json",
+      "bytes": 44131,
+      "sha256": "fcc7bf81d17a83fdf0dd62a54847443e0906ae7e9e96d393a14d64d6fd28dbd3",
+      "purpose": "input/provider/runtime/準備hashと前回検証条件",
+      "confidentiality": "原bytesを含まない閉包projection",
+      "remaining_disclosure_risk": "原input SHA/bytes/役割、内部閉包の件数を開示",
+      "recommendation": "CONDITIONAL_AFTER_USER_CONTENT_AND_DESTINATION_APPROVAL"
+    },
+    {
+      "filename": "08_provenance_and_redactions.json",
+      "bytes": 484907,
+      "sha256": "aaea5ae90da31a69dcbc7be10d0ebf9fc9db66b019450453709135c798b96dba",
+      "purpose": "E番号の原SHA/bytesと匿名化・再検証限界",
+      "confidentiality": "非公開原本への相関ID",
+      "remaining_disclosure_risk": "未公開原本の相関hashとbyte長を開示。内部pathは除外",
+      "recommendation": "CONDITIONAL_AFTER_USER_CONTENT_AND_DESTINATION_APPROVAL"
+    },
+    {
+      "filename": "09_limits.md",
+      "bytes": 2427,
+      "sha256": "30f637905e3128da347882e1f7327c71eb84655ed08ce0cd3066735d4f25801f",
+      "purpose": "匿名化で検証不能になる範囲と追加承認事項",
+      "confidentiality": "不足の説明",
+      "remaining_disclosure_risk": "欠測状況を開示",
+      "recommendation": "CONDITIONAL_AFTER_USER_CONTENT_AND_DESTINATION_APPROVAL"
+    },
+    {
+      "filename": "09_missing_evidence.csv",
+      "bytes": 2205,
+      "sha256": "147eae5405625d4dfb463dbee6931b6a69dfd03fe067976553889453e1084cfc",
+      "purpose": "四区分status・受領者の再検証可否・結論への影響",
+      "confidentiality": "不足一覧",
+      "remaining_disclosure_risk": "証拠の欠測と監査限界を開示",
+      "recommendation": "CONDITIONAL_AFTER_USER_CONTENT_AND_DESTINATION_APPROVAL"
+    },
+    {
+      "filename": "10_source_conditions.md",
+      "bytes": 15294,
+      "sha256": "d47720c6ff7a5626b0489b7b11607ac3ab7545c9e4188a3b72be415b0db784d5",
+      "purpose": "固定公開SOURCEの条件抜粋と行番号・SHA",
+      "confidentiality": "既存公開コード",
+      "remaining_disclosure_risk": "公開済み仕様のみ。コードの存在と実行PASSを区別",
+      "recommendation": "CONDITIONAL_AFTER_USER_CONTENT_AND_DESTINATION_APPROVAL"
+    },
+    {
+      "filename": "11_public_sources.json",
+      "bytes": 13826,
+      "sha256": "245e609492ca0ef188951fcb0bb4e39fb19ae05f07856e407b3b450d1d92123e",
+      "purpose": "固定commit・公開18資料と添付公開fileのSHA",
+      "confidentiality": "既存公開資料の取得metadata",
+      "remaining_disclosure_risk": "公開済み識別子のみ",
+      "recommendation": "CONDITIONAL_AFTER_USER_CONTENT_AND_DESTINATION_APPROVAL"
+    },
+    {
+      "filename": "public/comparisons.csv",
+      "bytes": 999,
+      "sha256": "64a08737038bcf122a457e31425dd7610dac5cdff4e8a396ede6e5ac73cd7299",
+      "purpose": "公開済み主副評価4行の原bytes",
+      "confidentiality": "既存公開結果",
+      "remaining_disclosure_risk": "既存公開と同じ",
+      "recommendation": "CONDITIONAL_AFTER_USER_CONTENT_AND_DESTINATION_APPROVAL"
+    },
+    {
+      "filename": "public/paired_metrics.csv",
+      "bytes": 29285,
+      "sha256": "e629f5be42c6558abb7b0f12a9433563870d6fb992a08135c77cbdb6710d6bdb",
+      "purpose": "公開済み192軸projectionの原bytes",
+      "confidentiality": "既存公開結果",
+      "remaining_disclosure_risk": "既存公開と同じ",
+      "recommendation": "CONDITIONAL_AFTER_USER_CONTENT_AND_DESTINATION_APPROVAL"
+    },
+    {
+      "filename": "public/result_report.md",
+      "bytes": 3458,
+      "sha256": "9937796154042f60ca0c38be65d6ce1535cfda893f9abc70be084b573b5f4cd1",
+      "purpose": "固定結果報告の原bytes",
+      "confidentiality": "既存公開報告",
+      "remaining_disclosure_risk": "既存公開と同じ",
+      "recommendation": "CONDITIONAL_AFTER_USER_CONTENT_AND_DESTINATION_APPROVAL"
+    },
+    {
+      "filename": "verify_packet.py",
+      "bytes": 18953,
+      "sha256": "805777c272befc5dbc316233fe22e9a0a174f4dd1acf424bc7c43acc1eb7787f",
+      "purpose": "標準libraryのみのoffline構造・SHA・privacy検査",
+      "confidentiality": "検査コード",
+      "remaining_disclosure_risk": "科学moduleや外部通信を呼ばない",
+      "recommendation": "CONDITIONAL_AFTER_USER_CONTENT_AND_DESTINATION_APPROVAL"
+    }
+  ]
+}
