@@ -1,3 +1,5 @@
+[2026-10-21 H8希少RTE C-0.5：本番接続・55人工検査・未承認数値モデル](2026-10-21_h8_rare_rte_stage_c05.md)。新科学0、mandatory STOP。
+
 [2026-10-21 H8希少RTE C-0：標本設計・並列実装計画・未承認契約](2026-10-21_h8_rare_rte_stage_c0.md)。新科学0、technical preflightのみ、mandatory STOP。
 
 [2026-10-21 希少RTE段階B：8固定条件の条件付き期待費用・終了STOP](2026-10-21_pr_rare_rte_stage_b.md)。科学one-shot成功1回、母平均保証8条件とも未取得。

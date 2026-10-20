@@ -1,0 +1,178 @@
+{
+  "schema": "H8_RARE_C05_C1_VARIANCE_LOAD_PILOT_PROPOSED_V1",
+  "status": "PROPOSED",
+  "approved": false,
+  "runtime_authorization": false,
+  "extends": {
+    "commit": "136bd2730e49938bae697ed32674dfcc53e63f07",
+    "path": "artifacts/resource_applicability/h8_rare_rte_stage_c0/2026-10-21/contract_H8_0.05_PROPOSED.json"
+  },
+  "condition": "H8_0.05",
+  "candidate": "B2_p8_q2_2nd_r4_K4",
+  "q": 2,
+  "r": 4,
+  "K": 4,
+  "phase": "variance_load_pilot",
+  "new_execution_SOURCE": null,
+  "original_science_SOURCE": "745a674546f2cb6258526fbfde1d9a00601689f8",
+  "target_preparation_sha256": "52bdd60b64c3823f13cb5bf0ee7621a2051b1b9e2b0db50dfeb0c8f058168108",
+  "original_binding": {
+    "system": "H8",
+    "geometry": "linear_1Angstrom",
+    "basis": "STO-3G",
+    "rank": 28,
+    "rank_policy": "tol_only_1e-8",
+    "T": 0.8,
+    "hamiltonian": "1a5ebefa18fc1c9f01ad644b81d13f49c7bf944bccfe3837d459c35d3325dbe2",
+    "state": "50a8fcb4cd29d60349db8e8fe728cb609eaaa903d9531833ef63e2711fa363fb",
+    "snapshot": "d4c4346127e97c241439ae1c4ae010962b0456b19f461cfd3d9b06e7d4a50955",
+    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "profile": "622ce4a8391002558b877240b48d831d9bb0a72aeabba2e4d73bfec64b9c9f12",
+    "control": "symmetric_directional"
+  },
+  "original_law_sha256": "0afb457fc00f9ac1c483b85cbff938d4dc1b12985a0727ba4f4538d9db14ecc4",
+  "shots": {
+    "cosine": 7659,
+    "sine": 8832
+  },
+  "fixed_PF": "B0I_p11_q1_2nd",
+  "fixed_PF_G_exact": "1267321444",
+  "numeric_policy": "EXACT_INTEGER_CONDITIONING_OF_STORED_BINARY64_V1_PROPOSED",
+  "numeric_model_approved": false,
+  "numerical_target": "exact rational conditioning of saved finite-order binary64 weights; exact rational normalization of original binary64 component probability/old fsum; PCG64 raw-word integer categorical",
+  "canonical_B_weights_used_as_exact_target": false,
+  "old_numpy_choice_bitstream_equivalence": false,
+  "law_compatibility_analysis": "NOT_RUN; future separately approved numeric comparison needed before combining with canonical B expectation",
+  "strata": [
+    "S2_SINGLE"
+  ],
+  "all_model_layers": [
+    "S0_ONLY",
+    "S2_SINGLE",
+    "S2_MULTI",
+    "S4_PRESENT"
+  ],
+  "scope_selected": false,
+  "scope_options": {
+    "A": [
+      "S2_SINGLE"
+    ],
+    "B": [
+      "S2_SINGLE",
+      "S2_MULTI",
+      "S4_PRESENT"
+    ]
+  },
+  "n_by_stratum": {
+    "S2_SINGLE": null,
+    "S2_MULTI": null,
+    "S4_PRESENT": null
+  },
+  "pilot_n_rule_selected": false,
+  "pilot_n_candidates": "choose relative variance precision eta and planning confidence; solve chi-square width criterion under explicitly assumed Normal model; variance-estimation minimum n>1 is not sufficient precision",
+  "variance_precision_eta_options": [
+    "1/2",
+    "1/4"
+  ],
+  "planning_confidence_options": [
+    "0.90",
+    "0.95"
+  ],
+  "production_confidence_options": [
+    "0.95",
+    "0.99"
+  ],
+  "production_G_halfwidth_options": [
+    "abs(saved_PF_minus_saved_P_point_cost)/4",
+    "abs(saved_PF_minus_saved_P_point_cost)/2"
+  ],
+  "confidence_and_halfwidth_selected": false,
+  "production_authorized": false,
+  "unknown_multi_S4_means_variances_remain_null": true,
+  "existing_S0_n48_separate_anchor": true,
+  "old_cohort_seed_exclusion_complete": false,
+  "private_task_registry_digest": null,
+  "private_byte_manifest_digest": null,
+  "runtime_bridge_config_digest": null,
+  "live_session_library_verified": false,
+  "fork_safety_verified": false,
+  "original_runtime_files_content_check": "34273 MATCH at C05 readonly snapshot; future fresh closure mandatory",
+  "original_provider_files_content_check": "265 MATCH at C05 readonly snapshot",
+  "historical_helper_live_import_binding": "original P sealed stage/provider bytes located; 21/21 SHA match; C1 actual import/library/fork gate still required",
+  "validation_task_ids": null,
+  "validation_plan": "one pre-registered representative per selected stratum; original 4 control probes + 1 event oracle; simulation calls require explicit approval",
+  "frozen_scientific_budget": null,
+  "symbolic_budget": {
+    "saved_preparation_decode": "1 per separately authorized condition parent",
+    "prefix_reconstruction": 1,
+    "law_formation": 1,
+    "count_law_setup": "number of selected strata",
+    "component_table_setup": 1,
+    "trajectory": "N=sum_s n_s",
+    "occurrence": "2*N",
+    "RTE_event": "8*N",
+    "native_evolution": "N",
+    "wrapper_build": "2*N",
+    "wrapper_compile": "<=2*N misses",
+    "control_probe": "4*V",
+    "event_oracle": "V",
+    "validation_wrapper_build": "2*V",
+    "independent_numeric_validation": "1",
+    "signal_SCF_DF_state_Gaussian_new_generation": 0,
+    "pilot_accounting": 1,
+    "law_compatibility": 1
+  },
+  "dynamic_resources": {
+    "arbitrary_CPU_RAM_worker_thread_wall_caps": false,
+    "private_peak_bytes": null,
+    "threads_per_axis": null,
+    "IO_profile_capacity": null,
+    "required": "fresh affinity/physical core idle/quota/memory/IO plus approved bootstrap footprint; trajectory reservation includes both axes",
+    "fork_failure_policy": "STOP on multi-thread parent; compare spawn+mmap/shared codec under new approved identity; never silently replace"
+  },
+  "cache_binding": {
+    "SOURCE": null,
+    "provider": null,
+    "runtime": null,
+    "session_library": null,
+    "hamiltonian": "1a5ebefa18fc1c9f01ad644b81d13f49c7bf944bccfe3837d459c35d3325dbe2",
+    "state": "50a8fcb4cd29d60349db8e8fe728cb609eaaa903d9531833ef63e2711fa363fb",
+    "snapshot": "d4c4346127e97c241439ae1c4ae010962b0456b19f461cfd3d9b06e7d4a50955",
+    "preparation": "52bdd60b64c3823f13cb5bf0ee7621a2051b1b9e2b0db50dfeb0c8f058168108",
+    "control": "symmetric_directional",
+    "scalar": "full_Fock_scalar_once_reference_unrotated",
+    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b"
+  },
+  "cost_cache_enabled": false,
+  "fresh_grant_required": true,
+  "valid_grant_issued": false,
+  "grant_sha256": null,
+  "one_shot": true,
+  "retry": false,
+  "resume": false,
+  "condition_specific_marker_ledger_STOP": true,
+  "concurrent_conditions_authorized": false,
+  "start_order": null,
+  "native_max_instructions": 1000000,
+  "native_guard_is_compiled_RZ_upper_bound": false,
+  "output_schema_reference": "result_schema.md",
+  "pilot_then_STOP": true,
+  "population_guarantee": false,
+  "new_mathematical_bound_adopted": false,
+  "push_authorized": false,
+  "C1_scientific_execution_authorized": false,
+  "old_cohort_seed_exclusion_prepared": true,
+  "old_exclusion_manifest_sha256": "aa87e8a033e26ba93d0ea784f700726465aea96b73f529e3a199a0ac3f5ed433",
+  "seed_exclusion_acceptance_pending": "candidate coverage is frozen historical excluded set plus original P; user accepts scope and fresh new registry collision check at C1",
+  "original_P_provider_931_file_closure": "both original scopes 931/931 match",
+  "pilot_numeric_accounting": true,
+  "law_compatibility_probe": true,
+  "law_compatibility_engineering_tolerance": "1e-12",
+  "canonical_order_probability_reference": [
+    "0.9991021873810731791318598210700628728824520014759005438020441297545780150746218467168336088607158599",
+    "0.0008976780951319012388423069573478071921393037219227275583699523808293327243915005135261958936912857025",
+    "1.345237949196292978719725893199254086948021767286395859178645926522009866527696401952455928542202973E-7"
+  ],
+  "canonical_reference_transcription": "saved B decimal strings only; no new calculation",
+  "private_runtime_bridge_config_frozen": false
+}
