@@ -1,3 +1,7 @@
+## 2026-10-20 H4/H6 DESIGN_PILOT：33本/群の取得を承認
+
+[新保存契約・実行範囲](research/track_a_h46_pr_design_pilot_execution_20261020.md)。新規QPY/NPZだけをbyte可逆level1圧縮し、manifest永続化・原SHA復元確認後に専用raw一時fileを解放する。H4/H6各396 trajectory/792軸、独立one-shot。実行状況・終了PASSは別の取得receiptを正とし、この契約記述から認定しない。n_E/統計評価/shot/会計/AD03は保留、取得終了後mandatory STOP。以下は履歴。
+
 ## 2026-10-20 H4/H6 m5：決定論的費用92軸完了・終了監査PASS
 
 [単価・終了監査・次の担当](research/track_a_h46_m5_det_cost_run01_results_20261020.md)。H4 38/38・H6 54/54軸、全46pairを正常終了、両native exit0・全worker回収。科学SOURCE635ba563…不変、metadata監査c1b419cd…/人工5件、終了940項目PASS・保存368gate・台帳1012/1430一致。旧3137file不変。新92＋保存4＝適格m5決定論48候補96軸を直接実測区分で転記。PR24群n_E・shot政策・AD03は保留、会計/順位/fit/自動retry0。両契約mandatory STOP、次はユーザーのPR標本設計と後続会計の個別判断。以下は各時点の履歴。

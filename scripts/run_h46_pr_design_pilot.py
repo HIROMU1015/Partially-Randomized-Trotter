@@ -32,9 +32,14 @@ def fresh(cfg):
     probe=dict(cfg,systems={'H4':{},'H6':{}},resources=dict(system_RSS_proxy_bytes={'H4':1,'H6':1},disk_proxy_bytes=cfg['resources']['disk_proxy_bytes']))
     r=fresh_resources(probe);proxy=cfg['resources']['worker_RSS_proxy_bytes']
     c.require(type(proxy) is int and proxy>0,'RESOURCE_PROXY_REQUIRED_NOT_A_BOUND')
-    workers=min(len(cfg['tasks']),math.floor(r['idle_CPU_equivalents']),r['effective_available_RAM_bytes']//proxy)
+    workers=min(len(cfg['tasks']),cfg['resources']['admission_workers'],math.floor(r['idle_CPU_equivalents']),r['effective_available_RAM_bytes']//proxy)
     c.require(workers>=1,'CANNOT_ADMIT_ONE_COST_WORKER')
-    return dict(workers=workers,worker_RSS_proxy_bytes=proxy,proxy_is_upper_bound=False,runtime_caps=False,observation=r)
+    import shutil
+    fs=os.statvfs(Path(cfg['run_root']).parent)
+    c.require(fs.f_favail>=cfg['resources']['inode_proxy'],'FRESH_INODES_CANNOT_ADMIT_PILOT')
+    return dict(workers=workers,worker_RSS_proxy_bytes=proxy,proxy_is_upper_bound=False,runtime_caps=False,
+      storage_peak_proxy_bytes=cfg['resources']['disk_proxy_bytes'],inode_free=fs.f_favail,
+      IO_PSI_observation_only=Path('/proc/pressure/io').read_text(),observation=r)
 
 def execute(cfg,*,target=worker):
     c.authorize(cfg);c.require(sys.executable==cfg['runtime']['python'],'COST_FIXED_PYTHON')
@@ -47,7 +52,25 @@ def execute(cfg,*,target=worker):
     def monitor_resources():
         with (root/'resource_observation.jsonl').open('x') as journal:
             while not monitoring_done.is_set():
-                try:row=dict(elapsed=time.monotonic()-started,resources=observed.observe())
+                try:
+                    own={}
+                    for pid in [os.getpid(),*pids]:
+                        try:
+                            status=Path('/proc/'+str(pid)+'/status').read_text().splitlines()
+                            own[str(pid)]={line.split(':')[0]:int(line.split()[1])*1024
+                              for line in status if line.startswith(('VmRSS:','VmHWM:'))}
+                        except FileNotFoundError:pass
+                    scratch=archives=0
+                    for qd in Path(cfg['output']).glob('*/quarantine_*'):
+                        for f in qd.iterdir():
+                            try:
+                                size=f.stat().st_blocks*512
+                                if f.name.endswith('.zlib'):archives+=size
+                                elif f.name.endswith(('.qpy','.npz','.partial')):scratch+=size
+                            except FileNotFoundError:pass
+                    row=dict(elapsed=time.monotonic()-started,resources=observed.observe(),own_process_RAM=own,
+                      owned_scratch_allocated_bytes_observed=scratch,archive_allocated_bytes_observed=archives,
+                      sampling_interval_seconds=5,peak_observation_is_exact_upper_bound=False)
                 except Exception as exc:row=dict(elapsed=time.monotonic()-started,observation_error=str(exc),kill_worker=False)
                 journal.write(json.dumps(row)+'\n');journal.flush();monitoring_done.wait(5)
     try:
@@ -56,7 +79,13 @@ def execute(cfg,*,target=worker):
         monitor=threading.Thread(target=monitor_resources,daemon=True);monitor.start()
         with ProcessPoolExecutor(max_workers=resources['workers'],mp_context=ctx,initializer=initialize,initargs=(cfg,stop)) as pool:
             # Retain own PID/exit evidence before shutdown releases pool handles.
-            futures={pool.submit(target,t):t for t in cfg['tasks']}
+            # Fixed schedule-only priority, independent of sampled outcomes.
+            # Long signed schedules first reduce idle workers near the end.
+            dispatch=sorted(cfg['tasks'],key=lambda t:t['candidate']['q']*
+              {'2nd':1,'4th':3,'4th(m5_best)':11}[t['candidate']['formula']],reverse=True)
+            c.save(root/'dispatch_order.json',dict(task_ids=[t['id'] for t in dispatch],
+              rule='DESCENDING_FIXED_Q_TIMES_PIECES_NO_OUTCOME_ADAPTATION'))
+            futures={pool.submit(target,t):t for t in dispatch}
             processes=list(pool._processes.values());pids={p.pid:p for p in processes}
             with (root/'task_completion.jsonl').open('x') as journal:
                 for future in as_completed(futures):
@@ -72,6 +101,11 @@ def execute(cfg,*,target=worker):
                         c.require(strata['stratum']==expected,'PILOT_EVENT_STRATUM')
                         c.require({p.name for p in (Path(cfg['output'])/task['id']).glob('piece_law_*.json')}==
                           {'piece_law_'+str(i)+'.json' for i in range(c.task_limits(task)['request_sampling_calls'])},'PIECE_LAWS_COMPLETE')
+                        sa=Path(cfg['output'])/task['id']/'storage_audit.json'
+                        c.require(c.sha(sa)==result['storage_audit_sha256'] and result['byte_restoration_PASS']
+                          and result['native_scientific_PASS'],'BYTE_AND_NATIVE_SEPARATE_PASS')
+                        audit=c.storage.audit_task(cfg,task,verify=False)
+                        c.require(audit['archives']==c.read(sa)['archives'],'TASK_ARCHIVE_MANIFEST_AUDIT')
                         results.append(entry)
                     except BaseException as exc:
                         errors.setdefault(task['id'],str(exc));stop.set()

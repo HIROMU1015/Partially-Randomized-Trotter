@@ -36,10 +36,16 @@ def fake_worker(task):
     for kind,n in c.task_limits(task).items():
         for i in range(n):c.reserve(cfg,task,kind,i)
     out=Path(cfg['output'])/task['id'];out.mkdir()
+    for a in ('cosine','sine'):
+        qd=out/('quarantine_'+a);qd.mkdir()
+        for name in ('wrapper.qpy','compiled.qpy','vectors.npz'):
+            c.storage.write_binary(cfg,qd/name,lambda f:f.write(b'ARTIFICIAL_STORAGE'))
+    c.save(out/'storage_audit.json',c.storage.audit_task(cfg,task))
     for i in range(c.task_limits(task)['request_sampling_calls']):c.save(out/f'piece_law_{i}.json',{'synthetic':True})
     c.save(out/'result.json',dict(status='UNIT_COST_PASS_NOT_ACCOUNTING',task=task,SOURCE=cfg['SOURCE'],
       plan_sha256=cfg['plan_sha256'],stage=cfg['stage'],axis_costs=[dict(axis=a,compiler_settings_hash=d.COMPILER_HASH,
       native_policy=d.NATIVE_POLICY) for a in ('cosine','sine')],shot_accounting=False,cost_ranking=False,
+      storage_audit_sha256=c.sha(out/'storage_audit.json'),byte_restoration_PASS=True,native_scientific_PASS=True,
       conditional_sampling=False,cohort_pooling=False,seed_cohort=d.COHORT,events=dict(N2=0,N4=0,stratum='S0')))
     return dict(id=task['id'],result_sha256=c.sha(out/'result.json'),peak_RSS_KiB=1)
 
@@ -135,7 +141,7 @@ class ContractTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'DECISIONS_NOT_ADOPTED'):c.authorize(dict(authorized=True,grant={'valid':True},stage=d.STAGES[0],cohort=d.COHORT,decisions={}))
         dec={k:True for k in ('pilot_design_adopted','nominal_variance_precision_limit_accepted','rare_event_limit_accepted','resources_policy_accepted','unit_cost_only_accepted')}
         dec.update(formal_shot_policy_adopted=False,AD03='DEFERRED',adaptive_top_up=False,pooling=False,
-                   n_P_by_candidate={r['id']:2 for r in d.groups() if r['system']=='H4'})
+                   n_P_by_candidate={r['id']:33 for r in d.groups() if r['system']=='H4'})
         with self.assertRaisesRegex(ValueError,'FULL_PILOT_SCRATCH'):
             c.authorize(dict(authorized=True,grant={'valid':True},stage=d.STAGES[0],cohort=d.COHORT,decisions=dec,
                              resources={'proxy_policy_adopted':True,'full_output_capacity_adopted':False}))
@@ -167,7 +173,7 @@ class ContractTests(unittest.TestCase):
                 root=Path(tmp)/'run';tasks=[toy_task(n) for n in ('A','B')]
                 cfg=dict(SOURCE='a'*40,plan_sha256='b'*64,stage=d.STAGES[0],tasks=tasks,run_root=str(root),
                          output=str(root/'output'),ledger=str(root/'ledger'),marker=str(root/'CONSUMED.json'),
-                         grant={},runtime={'python':sys.executable},failure=failure)
+                         grant={},storage=c.storage.storage_policy(),runtime={'python':sys.executable},failure=failure)
                 with patch.object(c,'authorize'),patch.object(c,'verify'),patch.object(launch,'fresh',return_value={'workers':2}):
                     self.assertEqual(launch.execute(cfg,target=fake_worker),0 if failure is None else 1)
                     report=c.read(root/'completion_witness.json')
@@ -188,8 +194,8 @@ class NativeTests(unittest.TestCase):
                 root=Path(tmp);(root/'output').mkdir();(root/'ledger').mkdir()
                 ctx=NativeToyTests.toy(self);task=toy_task(formula=formula);r=task['candidate'];group=dict(r,policy=r['r_policy'])
                 sig=original.signal(ctx,group)
-                cfg=dict(SOURCE='a'*40,plan_sha256='b'*64,stage=d.STAGES[0],tasks=[task],output=str(root/'output'),
-                  ledger=str(root/'ledger'),marker=str(root/'CONSUMED.json'),grant={},systems={'H4':{'binding':{'synthetic':True}}},registry_path=str(root/'seeds.json'))
+                cfg=dict(SOURCE='a'*40,plan_sha256='b'*64,stage=d.STAGES[0],tasks=[task],run_root=str(root),output=str(root/'output'),
+                  ledger=str(root/'ledger'),marker=str(root/'CONSUMED.json'),grant={},storage=c.storage.storage_policy(),systems={'H4':{'binding':{'synthetic':True}}},registry_path=str(root/'seeds.json'))
                 c.save(cfg['marker'],dict(state='CONSUMED_NO_RETRY_NO_REFUND',grant={}))
                 c.save(cfg['registry_path'],d.registry([task],cfg['SOURCE'],'ARTIFICIAL',d.COHORT,[]))
                 read=c.read
@@ -204,5 +210,34 @@ class NativeTests(unittest.TestCase):
                 self.assertEqual(len(list(out.glob('piece_law_*.json'))),{'2nd':1,'4th':3,'4th(m5_best)':11}[formula])
                 self.assertEqual([r['axis'] for r in report['axis_costs']],['cosine','sine'])
                 self.assertFalse(report['shot_accounting'])
+                import audit_h46_pr_pilot_execution as audit
+                self.assertEqual(audit.task_audit(cfg,task)['archives'],6)
+
+    def test_native_failure_does_not_become_byte_PASS_scientific_PASS(self):
+        from test_h46_m5_cost_readiness import NativeToyTests
+        import h46_m5_native as original
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);(root/'output').mkdir();(root/'ledger').mkdir()
+            ctx=NativeToyTests.toy(self);task=toy_task();row=task['candidate']
+            sig=original.signal(ctx,dict(row,policy=row['r_policy']))
+            cfg=dict(SOURCE='a'*40,plan_sha256='b'*64,stage=d.STAGES[0],tasks=[task],run_root=str(root),
+              output=str(root/'output'),ledger=str(root/'ledger'),marker=str(root/'CONSUMED.json'),grant={},
+              storage=c.storage.storage_policy(),systems={'H4':{'binding':{'synthetic':True}}},registry_path=str(root/'seeds.json'))
+            c.save(cfg['marker'],dict(state='CONSUMED_NO_RETRY_NO_REFUND',grant={}))
+            c.save(cfg['registry_path'],d.registry([task],cfg['SOURCE'],'ARTIFICIAL_FAIL',d.COHORT,[]))
+            read=c.read;gate=native.gate
+            def read_override(path):
+                if str(path).endswith('/signal_records.json'):return dict(records=[dict(candidate=row,signal=sig)])
+                return read(path)
+            def injected_gate(out,name,error,tolerance):
+                return gate(out,name,tolerance if name=='compiled_vector_cosine' else error,tolerance)
+            stop=threading.Event()
+            with patch.object(c,'authorize'),patch.object(c,'verify'),patch.object(native,'context',return_value=ctx),\
+              patch.object(c,'read',side_effect=read_override),patch.object(native,'gate',side_effect=injected_gate):
+                with self.assertRaisesRegex(ValueError,'NUMERIC_DISAGREEMENT'):native.run_task(cfg,task,stop)
+            out=root/'output'/task['id'];self.assertTrue(stop.is_set());self.assertTrue((out/'STOP.json').exists())
+            self.assertFalse((out/'result.json').exists());self.assertFalse((out/'cost_cosine.json').exists())
+            self.assertFalse((out/'quarantine_sine').exists())
+            self.assertEqual(len(list((out/'quarantine_cosine').glob('*.zlib'))),3)
 
 if __name__=='__main__':unittest.main()

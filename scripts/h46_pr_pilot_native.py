@@ -23,11 +23,8 @@ def gate(out,name,error,threshold):
     row=dict(check=name,error=float(error) if math.isfinite(error) else None,strictly_below=threshold,PASS=math.isfinite(error) and 0<=error<threshold,phase_alignment=False)
     c.save(Path(out)/(name+'.json'),row);c.require(row['PASS'],'NUMERIC_DISAGREEMENT:'+name);return row
 
-def atomic_binary(path,writer):
-    path=Path(path);temporary=path.with_suffix(path.suffix+'.partial')
-    c.require(not path.exists() and not temporary.exists(),'UNUSED_QUARANTINE_ARTIFACT')
-    with temporary.open('xb') as f:writer(f)
-    temporary.rename(path);return dict(file=path.name,sha256=c.sha(path),bytes=path.stat().st_size)
+def atomic_binary(path,writer,*,cfg):
+    return c.storage.write_binary(cfg,path,writer)
 
 def run_task(cfg,task,stop):
     c.authorize(cfg);c.consumed(cfg)
@@ -56,7 +53,7 @@ def run_task(cfg,task,stop):
             def factory(*args,**kwargs):
                 checkpoint('sample_registered_unconditional_piece');i=counter[0];c.reserve(cfg,task,'request_sampling_calls',i);counter[0]+=1
                 request=make_df_partial_s2_step_request(*args,**kwargs)
-                c.save(out/('piece_law_'+str(i)+'.json'),dict(piece_request_index=i,law=request.rte_distribution.to_dict(),event_count=len(request.rte_occurrence.events),cohort='DESIGN_PILOT',conditioned=False))
+                c.save(out/('piece_law_'+str(i)+'.json'),dict(piece_request_index=i,law=request.rte_distribution.to_dict(),event_count=len(request.rte_occurrence.events),registry_seed_PRIVATE=kwargs['seed'],signed_step_time=kwargs['step_time'],rte_steps=kwargs['rte_steps'],cohort='DESIGN_PILOT',conditioned=False))
                 return request
             requests=original.make_requests(group,ctx.cut,seeds,ctx.lambda_R,factory=factory,tolerance=_explicit_cutoff_tolerance,checkpoint=checkpoint)
             events=[[e.to_dict() for e in request.rte_occurrence.events] for request in requests]
@@ -100,20 +97,24 @@ def run_task(cfg,task,stop):
                 metrics={k:getattr(cost,k) for k in ('rz_count','cx_count','rz_depth','cx_depth','total_depth','circuit_size')}
                 c.require(all(type(v) is int and v>=0 for v in metrics.values()) and metrics['rz_count']>0,'FINITE_INTEGER_COMPILED_METRICS')
                 qdir=out/('quarantine_'+axis);qdir.mkdir()
-                wrapper_file=atomic_binary(qdir/'wrapper.qpy',lambda f:qpy.dump(wrapper,f))
-                compiled_file=atomic_binary(qdir/'compiled.qpy',lambda f:qpy.dump(cost.transpiled_circuit,f))
+                wrapper_file=atomic_binary(qdir/'wrapper.qpy',lambda f:qpy.dump(wrapper,f),cfg=cfg)
+                compiled_file=atomic_binary(qdir/'compiled.qpy',lambda f:qpy.dump(cost.transpiled_circuit,f),cfg=cfg)
                 c.save(qdir/'unvalidated_metrics.json',dict(status='UNVALIDATED_NOT_FOR_ACCOUNTING',metrics=metrics,wrapper_fingerprint=fp,compiler_settings_hash=cost.compiler_settings_hash,wrapper=wrapper_file,compiled=compiled_file))
                 c.reserve(cfg,task,'compiled_wrapper_actions',index);checkpoint('compiled_action_'+axis)
                 after=simulate_statevector(cost.transpiled_circuit.remove_final_measurements(inplace=False),low)
-                atomic_binary(qdir/'vectors.npz',lambda f:np.savez(f,low=low,before=before,after=after))
+                atomic_binary(qdir/'vectors.npz',lambda f:np.savez(f,low=low,before=before,after=after),cfg=cfg)
                 checks.append(gate(out,'compiled_vector_'+axis,float(np.linalg.norm(after-before)),c.COMPILE_TOLERANCE))
                 receipt=dict(status='DIRECT_MEASURED_CT01_SINGLE_SAVED_INPUT_STATE',axis=axis,metrics=metrics,fingerprint=fp,compiler_settings_hash=cost.compiler_settings_hash,event_digest=event_digest,preparation_hash=prep.preparation_hash,native_policy=c.design.NATIVE_POLICY,compiled_SHA=compiled_file['sha256'])
                 c.save(out/('cost_'+axis+'.json'),receipt);costs.append(receipt)
                 del after,before,cost,wrapper
             checkpoint('final_identity');c.verify(cfg)
+            storage_audit=c.storage.audit_task(cfg,task)
+            c.save(out/'storage_audit.json',storage_audit)
             result=dict(status='UNIT_COST_PASS_NOT_ACCOUNTING',task=task,SOURCE=cfg['SOURCE'],plan_sha256=cfg['plan_sha256'],stage=cfg['stage'],input_binding=cfg['systems'][system]['binding'],preparation_hash=prep.preparation_hash,
               scalar=scalar,log_B=logB,checks=checks,axis_costs=costs,events= stratum,event_digest=event_digest,seed_cohort='DESIGN_PILOT' if row['method']=='PR' else None,
               conditional_sampling=False,paired_trajectory=True,cohort_pooling=False,shot_accounting=False,cost_ranking=False,strict_bias_certificate=None,
+              storage_audit_sha256=c.sha(out/'storage_audit.json'),
+              byte_restoration_PASS=True,native_scientific_PASS=True,
               wall_seconds=time.monotonic()-started,peak_RSS_KiB=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,mandatory_STOP=True)
             c.save(out/'result.json',result);c.save(out/'fingerprint_cache.json',cache.snapshot())
             return dict(id=task['id'],result_sha256=c.sha(out/'result.json'),peak_RSS_KiB=result['peak_RSS_KiB'])
