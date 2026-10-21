@@ -1,0 +1,64 @@
+{
+  "schema": "RECOMPUTED_NATIVE_S2_EXECUTION_CONTRACT_V1",
+  "cohort": "FIXED_CANDIDATES_RECOMPUTED_NATIVE_20261022",
+  "unit": [
+    "cohort",
+    "system",
+    "candidate",
+    "stage",
+    "epsilon_when_specific"
+  ],
+  "stages": [
+    "input_preparation",
+    "theory_counter",
+    "signal",
+    "shot_accounting",
+    "MC_pilot",
+    "MC_main",
+    "compiled_cost"
+  ],
+  "source_policy": "Committed complete source closure; SHA256 verified at every unit before consuming grant",
+  "no_retry": true,
+  "new_id_retry_forbidden": true,
+  "independent_units_continue": true,
+  "global_stop_conditions": [
+    "SOURCE inconsistency",
+    "contract violation",
+    "shared environment impact"
+  ],
+  "pilot": {
+    "n": 128,
+    "independent": true
+  },
+  "main": {
+    "minimum": 128,
+    "relative_nominal_95_halfwidth": 0.01,
+    "n_rule": "max over applicable epsilon of ceil((t_0.975,127 * pilot_sd/(.01*pilot_mean))^2), at least128",
+    "independent_of_pilot": true,
+    "extension": false
+  },
+  "signal_policy": "Fixed provider SpinPrimitive against independent CSR expm; Horner versus forward polynomial; raw/corrected closure; full-H reference via split-time expm action",
+  "allowance": {
+    "kind": "EMPIRICAL",
+    "factor": 1,
+    "safety_factor": 10.0,
+    "floor": 1e-12,
+    "roundoff_multiplier": 64.0,
+    "maximum_u_over_headroom": 0.01,
+    "alpha_axis": 0.025,
+    "precision": "binary64"
+  },
+  "theory": "NATIVE_MIXED / explicit_rz_sx_x_cx_v1; exact native binary64 law with original phase interval retained",
+  "compiled": "Actual Qiskit full Hadamard wrapper compilation; both axes; paired trajectories; no saved compiled unit predictor",
+  "resources": "Worker count determined from current CPU affinity/load and available RAM; one numerical thread per process avoids oversubscription; no global changes",
+  "outputs": "Raw per-trajectory costs, samples, uncertainty, comparisons, figures A/B PNG/SVG/PDF, coverage/provenance/STOP; local commit only",
+  "preflight_artificial_tests": {
+    "passed": 4
+  },
+  "independent_scientific_review": false,
+  "compiler_scalar_guard": {
+    "source": "3eca46148070ba4d4b0f5815ef45943407cc959e",
+    "path": "scripts/h2_m5_compiler_phase_guard.py",
+    "scope": "Process-local Qiskit1.3 template scalar bookkeeping only; gate/angle/wire stream must match unguarded compiler exactly; no state fit; no RZ count change"
+  }
+}
