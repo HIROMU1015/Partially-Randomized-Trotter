@@ -41,6 +41,8 @@ def workload(origin,comparison):
     return out,files
 
 def prepare(source,origins,private):
+    source=subprocess.check_output(['git','rev-parse',source+'^{commit}'],cwd=c.ROOT,text=True).strip()
+    c.require(len(source)==40,'FULL_COMMIT_ID_REQUIRED')
     private=Path(private).resolve();private.mkdir(parents=True,exist_ok=False)
     proposal=c.proposal();c.require(proposal['saved_result_sha256']==c.d.RESULT_SHA,'FROZEN_DESIGN_INPUT')
     origin_cfgs={s:c.read(p) for s,p in origins.items()}

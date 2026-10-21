@@ -66,6 +66,7 @@ def source_blobs(source):
     require(pos==len(raw),'EXACT_SOURCE_STREAM');return out
 
 def verify(cfg):
+    require(len(cfg['SOURCE'])==40 and all(x in '0123456789abcdef' for x in cfg['SOURCE']),'FULL_SOURCE_COMMIT_ID')
     require(cfg['stage'] in STAGES and cfg['cohort']==d.COHORT,'PRIMARY_CONFIRMATION_COHORT')
     require(read(cfg['plan_path'])==cfg['plan'] and sha(cfg['plan_path'])==cfg['plan_sha256'],'PLAN_SHA')
     require(all(cfg.get(k)==cfg['plan'].get(k) for k in PLAN_KEYS),'ALL_PLAN_BINDINGS')
