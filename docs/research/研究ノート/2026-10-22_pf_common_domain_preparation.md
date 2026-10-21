@@ -11,3 +11,7 @@
 準備SOURCE 1fe0e60d28e7fc09821ee3d5a014fd5f8c976c19。新23＋既存12/18の53人工test PASS。既存signal人工回帰の最初のimport失敗は、元providerを明示して解消し科学コードは変更していない。旧PR SOURCE・raw・契約・marker・STOPを保全し、今回の実分子call/有効grant/pushは0。専用branchへローカルcommitしmandatory STOP。
 
 [条件・予算・比較設計・欠測・実行順序](../track_a_pf_common_domain_preparation_20261022.md)。次は利用者の追加call予算と共通政策に対する明示承認、および原metadata/identity接続の解決が必要。詳細科学レビュー・論文本文・productionには進んでいない。
+
+## 追記：包括承認による取得・固定比較
+
+利用者がH4/H6共通504・H2別84候補を包括承認。系別pack/source/grantでH2/H4の4 stageと終了監査を完了した。H6は17原metadata回収後も63 B0Iでnorm/closure未回収のため科学call0 STOP。H2全公式はPF低費用、H4は厳しい2精度でPR15.01/37.37%低費用、緩い3精度はPF低費用。旧m5疎格子への優位を全公式PF優位と同一視できないことを確認。旧SOURCE/PR/STOPを変更せず、新84 signal・169 compile候補338軸を保存。[結果と限界](../track_a_pf_common_domain_results_20261022.md)。local commit後mandatory STOP、push0。
