@@ -59,3 +59,5 @@ GitHubで上のMarkdownを開くと、本文・数式・図を閲覧できます
 </details>
 
 - [全方式のH-chain総費用図：公開入口（2026-10-22）](figures/all_methods_hchain_20261022/publication/README.md) — 主3精度と追加2精度の7系列比較、相対費用補助図、PNG/SVG/PDF・出典・検証記録。
+
+- [高次PRを含むH-chain比較図：公開入口（2026-10-22）](figures/all_methods_hchain_with_higher_pr_20261022/publication/README.md) — A/B/C/D計52図、PNG/SVG/PDF・保存データ・出典・カバレッジ監査・検証記録。
