@@ -1,0 +1,16 @@
+{
+  "scope": "UNEXECUTED_H4_H6_H8_ONLY",
+  "H2_retry": false,
+  "changes": [
+    "Use original _explicit_cutoff_tolerance at exact factory tau=lambda*(delta/r); K, r, q and law unchanged",
+    "Keep input numeric global phase outside Qiskit translator and add its exact stored value once; no state fit, gate stream unchanged",
+    "Reference uses native uncompiled Statevector; Aer input consumes declared circuit global phase once before set_statevector overwrites it",
+    "All PR groups precede deterministic simulator use in the driver, so forked simulator workers do not inherit an initialized parent simulator"
+  ],
+  "validation": {
+    "artificial_tests_passed": 4,
+    "maximum_allowed_wrapper_error": 1e-07,
+    "phase_alignment": false
+  },
+  "preservation": "All H2 failed units and original SOURCE/grants/markers/STOP remain immutable; v2 refuses H2 execution"
+}
