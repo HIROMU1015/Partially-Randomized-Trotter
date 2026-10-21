@@ -1080,3 +1080,7 @@ Existing numerical PF modules are unchanged. The [DESIGN_PILOT scripts](../../sc
 ## Storage-only pilot investigation (2026-10-20)
 
 Scientific modules and native controls are unchanged. The standalone [lossless byte archive prototype](../../scripts/h46_pilot_lossless_storage.py) does not import this package. [Storage report](../../docs/research/track_a_h46_pr_pilot_storage_optimization_20261020.md): new scientific storage policy and execution remain unapproved.
+
+## Higher-PF PR independent confirmation (2026-10-21)
+
+Numerical PF/request/compiler kernels are unchanged. The [confirmation adapter and drivers](../../scripts/h246_confirmation_runtime.py) reuse the frozen path with separate cohorts and disabled grants. [Readiness report](../../docs/research/track_a_h246_higher_pf_confirmation_readiness_20261021.md) / [31 artificial tests](../../tests/test_h246_confirmation_readiness.py). Only saved-statistic sample-design arithmetic ran; no new real molecular sampling or compilation.

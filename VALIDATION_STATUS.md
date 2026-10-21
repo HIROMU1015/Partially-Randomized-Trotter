@@ -1,3 +1,7 @@
+## 2026-10-21 高次PF H2/H4/H6：独立確認の設計・準備完了
+
+[設計・予算・検証・次の担当](docs/research/track_a_h246_higher_pf_confirmation_readiness_20261021.md)。SOURCE8825391ff73b531be5834bf852b9bf2479d1799b。ε=.0005の固定3比較にH2 24/28・H4 25/9・H6 23/9本（118 trajectory/236軸）を提案。保存統計の設計算術のみ実行、72感度案・別算術照合。3独立無効契約、CONFIRMATION seed846個/衝突0、fresh資源配分・context共有/cache・終了監査を実装。新人工31/回帰66、181構造・算術検査、12draft拒否/27改変拒否PASS。H4の1.36%差は補助として保留。新実分子計算・有効grant・push0、AD03保留、科学実行前mandatory STOP。次はユーザーがnと独立3契約の一回実行範囲を採択・承認する。以下は履歴。
+
 ## 2026-10-21 高次PF H2/H4/H6：保存値統計・測定込み費用を一回評価
 
 [結果・費用分解・不確かさ・次の担当](docs/research/track_a_h246_saved_cost_results_20261021.md)。SOURCE9a77d2b0、探索1925本のみ・PR36群、m5決定論64候補を含む1000精度/bias行と30比較を保存。通常signedのε=.0005ではH2 Yoshida4/q2、H4/H6 m5/q1がPR点最良、各S2比47.12/53.30/63.12%削減。ε=.05は全系S2最小。人工23/独立数値経路/終了監査PASS・exit0/reap。S4全群未観測、決定論非相殺280行は成分不足null。旧強化S2/S4最良への優位性・母平均保証は未確定。新sampling/simulation/compile0、AD03保留、local commit後STOP・push0。以下は履歴。

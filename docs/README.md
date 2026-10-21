@@ -1,3 +1,7 @@
+## 2026-10-21 高次PF H2/H4/H6：独立確認の設計・準備完了
+
+[設計・予算・検証・次の担当](research/track_a_h246_higher_pf_confirmation_readiness_20261021.md)。SOURCE8825391ff73b531be5834bf852b9bf2479d1799b。ε=.0005の固定3比較にH2 24/28・H4 25/9・H6 23/9本（118 trajectory/236軸）を提案。保存統計の設計算術のみ実行、72感度案・別算術照合。3独立無効契約、CONFIRMATION seed846個/衝突0、fresh資源配分・context共有/cache・終了監査を実装。新人工31/回帰66、181構造・算術検査、12draft拒否/27改変拒否PASS。H4の1.36%差は補助として保留。新実分子計算・有効grant・push0、AD03保留、科学実行前mandatory STOP。次はユーザーがnと独立3契約の一回実行範囲を採択・承認する。以下は履歴。
+
 ## 2026-10-21 H246高次PFの保存値統計・総費用
 
 [実行結果・範囲・限界](research/track_a_h246_saved_cost_results_20261021.md)。純粋な保存値計算`h246_saved_cost_evaluation.py`、専用preparer/one-shot runner、人工23件を追加。新sampling/compileは0。集約JSON・全1000行CSV・30比較・60費用分解・36単価統計・144層を保存し、SOURCE/認可/終了監査を結合した。母平均保証・独立確認P・AD03採択は行わない。
