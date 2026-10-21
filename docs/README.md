@@ -1,3 +1,7 @@
+## 2026-10-21 H246高次PFの保存値統計・総費用
+
+[実行結果・範囲・限界](research/track_a_h246_saved_cost_results_20261021.md)。純粋な保存値計算`h246_saved_cost_evaluation.py`、専用preparer/one-shot runner、人工23件を追加。新sampling/compileは0。集約JSON・全1000行CSV・30比較・60費用分解・36単価統計・144層を保存し、SOURCE/認可/終了監査を結合した。母平均保証・独立確認P・AD03採択は行わない。
+
 ## 2026-10-21 H246保存値評価の実行前gate
 
 [政策未採択STOP・根拠・採択案](research/track_a_h246_higher_pf_saved_evaluation_preflight_STOP_20261021.md)。`scripts/audit_h246_saved_evaluation_preflight.py`はmetadata/SHAだけを照合し、科学moduleを呼ばない。人工検査は`tests/test_h246_saved_evaluation_preflight.py`。統計・shot・総費用の実行は停止中。
