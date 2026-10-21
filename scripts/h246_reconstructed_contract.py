@@ -24,11 +24,20 @@ NEW_PATHS=('scripts/h246_reconstructed_contract.py','scripts/run_h246_reconstruc
 RT=None
 
 
-def make_packs(private):
+def make_packs(private,attempt='confirmation'):
     import numpy as np,qiskit
     import concurrent.futures.thread,concurrent.futures._base,queue,_queue,threading
     import symengine
     private=Path(private).resolve()
+    require(attempt in ('confirmation','confirmation_run02'),'FIXED_TECHNICAL_ATTEMPT_NAME')
+    if attempt!='confirmation':
+        previous=read(private/'confirmation/configs_PRIVATE.json')
+        for path in previous['configs']:
+            old_cfg=read(path);old_root=Path(old_cfg['run_root'])
+            done=read(old_root/'completion_witness.json');exit_=read(old_cfg['supervisor']['exit'])
+            require(not list(Path(old_cfg['ledger']).glob('*.json')) and not list(Path(old_cfg['output']).iterdir())
+                and done['results']==[] and all(w['exit']==0 and w['reaped'] for w in done['workers'].values())
+                and exit_['reaped'],'NO_PREVIOUS_SCIENTIFIC_CALLS_AND_ALL_REAPED_REQUIRED')
     source=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     # Original numerical source is kept byte-identical, independently of new contracts.
     for rel,blob in original.source_blobs(OLD_SOURCE).items():
@@ -43,6 +52,8 @@ def make_packs(private):
     for stage in STAGES:
         old=law.registry(tasks_for(stage),OLD_SOURCE,'H246_HIGHER_PF_CONFIRMATION_PROPOSED_RUN01_'+OLD_SOURCE,'CONFIRMATION',[])
         prior.update(v for row in old.values() for v in row.values())
+    for path in private.glob('confirmation*/H*_CONFIRMATION/registry_PRIVATE.json'):
+        prior.update(v for row in read(path).values() for v in row.values())
     registries={s:law.registry(tasks_for(s),source,namespace,'CONFIRMATION',sorted(prior)) for s in STAGES}
     seeds={s:{v for row in r.values() for v in row.values()} for s,r in registries.items()}
     require(sum(map(len,seeds.values()))==len(set.union(*seeds.values()))==846,'NEW_CROSS_STAGE_SEED_COLLISION')
@@ -50,7 +61,7 @@ def make_packs(private):
     old_binding=read(ROOT/'artifacts/resource_applicability/track_a_h246_saved_cost_results/2026-10-21/input_provenance.json')
     paths=[]
     for stage in STAGES:
-        system=stage[:2];dest=private/'confirmation'/stage
+        system=stage[:2];dest=private/attempt/stage
         dest.mkdir(parents=True,exist_ok=False);root=dest/'run01'
         forward=private/'forward'/system/'run01'
         require(read(forward/'completion.json')['status']=='REFERENCE_AND_FROZEN_SHOT_APPLICABILITY_PASS','FORWARD_COMPLETE')
@@ -72,7 +83,7 @@ def make_packs(private):
         rp=dest/'registry_PRIVATE.json';ep=dest/'known_exclusions_PRIVATE.json'
         save(rp,registries[stage])
         excluded=prior|set.union(*(v for s,v in seeds.items() if s!=stage))
-        save(ep,dict(values=sorted(excluded),coverage='OLD_SOURCE_PROPOSED_SEEDS_AND_NEW_OTHER_STAGES_ONLY',
+        save(ep,dict(values=sorted(excluded),coverage='OLD_PROPOSED_AND_PRIOR_LOCAL_UNUSED_GRANTS_AND_NEW_OTHER_STAGES_ONLY',
             historical_complete_exclusions_available=False,complete_old_seed_noncollision_guaranteed=False))
         approval=dest/'approval_APPROVED_PRIVATE.json'
         tasks=tasks_for(stage);scope=law.call_scope(tasks,'PR');analysis=analysis_scope(stage)
@@ -127,7 +138,7 @@ def make_packs(private):
             **{k:cfg[k] for k in ('SOURCE','stage','cohort','plan_sha256','call_scope','analysis_scope','output','ledger','marker','supervisor')})
         authorize(cfg)
         cp=dest/'config_APPROVED_PRIVATE.json';save(cp,cfg);save(dest/'grant_APPROVED_PRIVATE.json',cfg['grant']);paths.append(str(cp))
-    save(private/'confirmation/configs_PRIVATE.json',dict(configs=paths,SOURCE=source,new_namespace=True,old_pack_restored=False,
+    save(private/attempt/'configs_PRIVATE.json',dict(configs=paths,SOURCE=source,new_namespace=True,old_pack_restored=False,
         trajectories=118,compile_axes=236,complete_historical_seed_noncollision_guaranteed=False))
     return paths
 
@@ -199,7 +210,14 @@ def runtime(cfg):
     cli=str(ROOT/'scripts/run_h246_reconstructed.py')
     r.runner_namespace['__file__']=cli
     r.runner.supervise.__globals__['__file__']=cli
+    r.runner_namespace['worker']=worker
+    r.runner.execute.__kwdefaults__={'target':worker}
     return r
+
+
+def worker(task):
+    """Importable process-pool target; numerical worker remains the frozen one."""
+    return RT.worker(task)
 
 
 def audit(cfg):

@@ -43,13 +43,14 @@ def launch(paths,state):
 def main():
     p=argparse.ArgumentParser();g=p.add_mutually_exclusive_group(required=True)
     for mode in ('prepare','launch','supervise','execute','audit','evaluate'):g.add_argument('--'+mode,action='store_true')
-    p.add_argument('--private');p.add_argument('--config');a=p.parse_args()
+    p.add_argument('--private');p.add_argument('--config')
+    p.add_argument('--attempt',choices=('confirmation','confirmation_run02'),default='confirmation');a=p.parse_args()
     try:
         if a.prepare:
-            c.require(a.private,'PRIVATE_REQUIRED');print(json.dumps(dict(configs=c.make_packs(a.private))));return 0
+            c.require(a.private,'PRIVATE_REQUIRED');print(json.dumps(dict(configs=c.make_packs(a.private,a.attempt))));return 0
         if a.launch:
-            c.require(a.private,'PRIVATE_REQUIRED');v=c.read(Path(a.private)/'confirmation/configs_PRIVATE.json')
-            return launch(v['configs'],Path(a.private)/'confirmation/controller_run01')
+            c.require(a.private,'PRIVATE_REQUIRED');v=c.read(Path(a.private)/a.attempt/'configs_PRIVATE.json')
+            return launch(v['configs'],Path(a.private)/a.attempt/'controller_run01')
         c.require(a.config,'CONFIG_REQUIRED');cfg=c.read(a.config);c.authorize(cfg)
         if a.audit:
             result=c.audit(cfg);print(json.dumps({k:v for k,v in result.items() if k not in ('results','external_exit')}));return int(bool(result['errors']))

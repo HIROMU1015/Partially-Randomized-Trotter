@@ -7,6 +7,7 @@ import sys
 import tempfile
 import threading
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 
 sys.path.insert(0,str(Path(__file__).parents[1]/'scripts'))
@@ -34,6 +35,15 @@ class BoundaryTests(unittest.TestCase):
         self.assertIs(r.audit_namespace['c'].authorize,c.authorize)
         self.assertEqual(Path(r.runner.supervise.__globals__['__file__']).name,'run_h246_reconstructed.py')
         self.assertEqual(r.native_namespace['c'].design.COHORT,'CONFIRMATION')
+        import pickle
+        self.assertIs(pickle.loads(pickle.dumps(r.runner.execute.__kwdefaults__['target'])),c.worker)
+
+    def test_importable_worker_through_real_mock_pool(self):
+        from concurrent.futures import ProcessPoolExecutor
+        import multiprocessing as mp
+        c.RT=SimpleNamespace(worker=lambda x:x+1)
+        with ProcessPoolExecutor(max_workers=2,mp_context=mp.get_context('fork')) as pool:
+            self.assertEqual(list(pool.map(c.worker,[1,2,3])),[2,3,4])
 
     def test_cli_drafts_all_modes(self):
         with tempfile.TemporaryDirectory() as tmp:
