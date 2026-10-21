@@ -1602,3 +1602,10 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-19 Mechanism：A82比較因子one-shot完了・説明32/32
 
 [結果・全因子表・統合](docs/research/track_a_mechanism_a82_factor_results_20261019.md)。SOURCE 06c94745f50345b2d93714760608d9d11b83e784、A82一比較2軸だけ一回PASS、親/worker exit0・回収。旧31を転記し32比較64軸の説明因子が完備、side64/64を継承。core/side/他31再計算0、旧381 file SHA一致、図/cohort・欠測履歴を保全。公開承認未確定でpushなし、最終freeze/詳細科学レビューなし、mandatory STOP。
+
+## 2026-10-22 現行S2理論／compiled比較の限定実行
+
+[結果・不足入力](docs/research/track_a_current_s2_theory_compiled_20261022.md)。
+`src/trotterlib/current_s2_theory.py`、`scripts/run_current_s2_theory_main.py`、
+`tests/test_current_s2_theory.py`、`artifacts/resource_applicability/track_a_current_s2_theory_compiled/2026-10-22/run01/`を一組として読む。
+H4 ε=.001 S2選択を確定。現行理論Gは元入力不足で0/20、compiled系列のみ5図。新理論比較完了とは扱わない。
