@@ -1,0 +1,19 @@
+# G6 v1.2 draft: handoff to user/GPT
+
+The [standalone English manuscript](../../manuscripts/track_b_return_aggregation_native_resource_note_v1_2_draft.md) integrates the explicitly authorized 2026-10-22 review corrections into the existing G6 construction, finite-bit specification, Closed P5 specialization, synthetic evidence and auxiliary H4 case. It is `DRAFT_COMPLETE_AWAITING_USER_GPT_DECISION`; publication is not formal scientific adoption or submission GO.
+
+The five corrections are explicit: RA differs from General Full; Closed P5 is an internal RA specialization; degree-zero parents retain child rotations and aggregate coefficients; H4 is a limited logical diagnostic; G9/G10 conditional positive results coexist with strong-comparator limits. The [review matrix](REVIEW_INTEGRATION_MATRIX.md) gives source and placement for each.
+
+All v1.1 numbered equations (1)–(37) are retained as identical text blocks with their assumptions, existing proof provenance and restrictions. The supplied small-x and ideal second-moment/accepted-price interpretations are separately qualified. There is no new nontrivial proof or scientific calculation. See the [changelog](V1_1_TO_V1_2_CHANGELOG.md) and [claim matrix](CLAIM_EVIDENCE_MATRIX.md).
+
+H4 retains Linear H4 1.00 Å/STO-3G/DF12/R1 generation-prefix L_D=3/13 bases/324 labels/8 system qubits, T=4/5,q=1,r=4,m=5, four 1/5 microsteps and 1024 paths/method. Only `TAIL_ONLY_PLUS_SCALAR` logical records are quoted. Common sufficient N, uniform native costs, deterministic halves, physical preparation/readout, completed coherent estimator, rigorous model/exponential binding and all-round phase-estimation costs remain unavailable. The CPU observations retain implementation and timing confounds; P5 remains exploratory.
+
+Independent novelty/priority/non-reducibility, general speedup, equal-accuracy H4 total-native superiority or inferiority, optimized CPU ranking, final central claim/title/article form and submission remain unresolved or require user/GPT judgment. The [open-claims record](OPEN_CLAIMS_AND_LIMITATIONS.md) adds no new research program or compulsory run.
+
+No scientific SOURCE was imported/executed/modified; no raw trajectories were opened or reanalysed; no new normalizer, moment, N, resource ratio or ranking was evaluated; no sampler, native synthesis/compile, shot/Monte Carlo, proof or new detailed scientific/literature review was initiated. Git, byte/hash, source/text/link and literal-quotation checks are administrative document verification only.
+
+Only this new namespace and the v1.2 draft are added. Existing v1.0/v1.1, scientific sources/results/audits, C1 synthesis/pause record, raw archives, grants/claims/ledgers/markers/STOP and original workspace changes remain preserved within the stated verification scope. Old-server-only private files are unavailable and are not claimed checked. The supplied private review original was read and remains private, with its identity retained only locally.
+
+Branch: `track-b-g6-v1-2-draft-review-integration-20261022`. Base: `185ec4e9d6591f4ee8d7b047c2697bed7be7bc2e`. [Publication verification](publication_verification.json) records the payload commit and remote bytes/SHA256; the receipt-only final child and all final files are subsequently verified and reported with the full final HEAD. [Document verification](document_verification.json) and [preservation verification](preservation_verification.json) state the scope and limits of checks. Their PASS is not a scientific correctness or originality judgment.
+
+**Mandatory STOP after publication and final verification.** No v1.3, formal adoption, experiment, new proof, native acquisition, G6 expansion, other Track B work or new GPT/Claude review starts automatically. Next, the user/GPT assesses the center claim, changes from v1.1, article positioning and whether to formally accept the draft.
