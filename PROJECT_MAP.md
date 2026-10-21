@@ -1,3 +1,7 @@
+## 2026-10-22 H246移行再構築
+
+[入力再構築と固定独立確認の新規契約](docs/research/track_a_h246_migration_execution_20261022.md)。旧STOP保持。人工34PASS、科学入力生成は別枠one-shot、確認は固定118trajectory/236軸。
+
 ## 2026-10-22 H246独立確認：新環境の実行前STOP
 
 [不足資料・確認範囲](docs/research/track_a_h246_confirmation_new_environment_STOP_20261022.md)、[機械可読STOP](artifacts/resource_applicability/track_a_h246_confirmation_new_environment/2026-10-22/STOP.json)。実行・固定評価は承認済みだが、private pack・seed除外・固定snapshot未復元のため科学call0で停止。以下は履歴。

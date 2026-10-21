@@ -1,3 +1,7 @@
+## 2026-10-22 H246移行再構築
+
+[run_h246_migration.py：元生成式と新規grantを分離する実行入口](../docs/research/track_a_h246_migration_execution_20261022.md)。旧STOP保持。人工34PASS、科学入力生成は別枠one-shot、確認は固定118trajectory/236軸。
+
 ## 2026-10-21 H246高次PFの保存値統計・総費用
 
 [実行結果・範囲・限界](../docs/research/track_a_h246_saved_cost_results_20261021.md)。純粋な保存値計算`h246_saved_cost_evaluation.py`、専用preparer/one-shot runner、人工23件を追加。新sampling/compileは0。集約JSON・全1000行CSV・30比較・60費用分解・36単価統計・144層を保存し、SOURCE/認可/終了監査を結合した。母平均保証・独立確認P・AD03採択は行わない。

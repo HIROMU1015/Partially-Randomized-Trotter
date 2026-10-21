@@ -1,3 +1,7 @@
+## 2026-10-22 H246移行再構築
+
+[入力再構築と固定独立確認](research/track_a_h246_migration_execution_20261022.md)。旧STOP保持。人工34PASS、科学入力生成は別枠one-shot、確認は固定118trajectory/236軸。
+
 ## 2026-10-22 H246独立確認：新環境の実行前STOP
 
 [不足資料・SHA確認・実行前STOP](research/track_a_h246_confirmation_new_environment_STOP_20261022.md)。承認済み118 trajectory/236軸は保存入力・private seed資料未復元のため未実行。人工mock29 PASS/2 SKIP、実科学call・grant0。以下は履歴。
