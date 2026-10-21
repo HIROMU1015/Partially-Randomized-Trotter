@@ -1,3 +1,7 @@
+## 2026-10-22 H246独立確認：承認済み・保存入力未復元の実行前STOP
+
+[不足資料・確認記録](docs/research/track_a_h246_confirmation_new_environment_STOP_20261022.md)。SOURCE68ファイルと凍結評価SHAは一致。private proposal02・seed除外資料・固定3系snapshotを復元できず、科学取得と固定評価は未実施。科学call・有効grant・科学ledger/marker0。人工mock29 PASS/2 SKIPは実分子の検証結果ではない。追加承認待ちではなく、原資料復元待ち。以下は履歴。
+
 ## 2026-10-21 高次PF H2/H4/H6：独立確認の設計・準備完了
 
 [設計・予算・検証・次の担当](docs/research/track_a_h246_higher_pf_confirmation_readiness_20261021.md)。SOURCE8825391ff73b531be5834bf852b9bf2479d1799b。ε=.0005の固定3比較にH2 24/28・H4 25/9・H6 23/9本（118 trajectory/236軸）を提案。保存統計の設計算術のみ実行、72感度案・別算術照合。3独立無効契約、CONFIRMATION seed846個/衝突0、fresh資源配分・context共有/cache・終了監査を実装。新人工31/回帰66、181構造・算術検査、12draft拒否/27改変拒否PASS。H4の1.36%差は補助として保留。新実分子計算・有効grant・push0、AD03保留、科学実行前mandatory STOP。次はユーザーがnと独立3契約の一回実行範囲を採択・承認する。以下は履歴。

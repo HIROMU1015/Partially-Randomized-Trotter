@@ -1,0 +1,106 @@
+{
+  "status": "ESSENTIAL_EVIDENCE_UNAVAILABLE_FROM_ACCESSIBLE_SOURCES",
+  "items": [
+    {
+      "id": "PROPOSAL02_PRIVATE_PACK",
+      "status": "NOT_FOUND",
+      "required": [
+        "H2_CONFIRMATION/config_DRAFT_PRIVATE.json",
+        "H4_CONFIRMATION/config_DRAFT_PRIVATE.json",
+        "H6_CONFIRMATION/config_DRAFT_PRIVATE.json",
+        "per-stage plan_DRAFT_PRIVATE.json and original seals"
+      ],
+      "reason": "Public stage digests cannot reconstruct original input/runtime/origin-config closures."
+    },
+    {
+      "id": "H2_PRESERVED_SCIENTIFIC_INPUTS",
+      "status": "NO_MATCHING_SNAPSHOT_FOUND",
+      "expected_snapshot_file_sha256": "62c6481bd1f8b05ec3b399b3a5293873796737866409049d808e8fe432dcacaa",
+      "expected_binding": {
+        "P": 0,
+        "T": 0.8,
+        "basis": "STO-3G",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "hamiltonian": "d0bc260db6fc0a485fe518050075c18ccc0dff532253dcc719a52a61f41afa80",
+        "n_qubits": 4,
+        "nelec_alpha": 1,
+        "nelec_beta": 1,
+        "rank": 3,
+        "rank_policy": "tol_only_1e-8",
+        "reference_rotated": false,
+        "scalar": "original_plus_tail_once",
+        "sector_dimension": 4,
+        "snapshot": "62c6481bd1f8b05ec3b399b3a5293873796737866409049d808e8fe432dcacaa",
+        "state": "080b7ad2a46f38ed51e2989eb399ceda4cae95fca688722959ee65463cf174bf",
+        "system": "linear_H2_1Angstrom"
+      },
+      "also_required": "Original saved input receipts, saved state and reference arrays/receipts and origin acquisition config needed by the sealed contract. State/hamiltonian binding fingerprints are not asserted to be file SHA values."
+    },
+    {
+      "id": "H4_PRESERVED_SCIENTIFIC_INPUTS",
+      "status": "NO_MATCHING_SNAPSHOT_FOUND",
+      "expected_snapshot_file_sha256": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+      "expected_binding": {
+        "T": 0.8,
+        "basis": "STO-3G",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "geometry": "linear_1Angstrom",
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+        "profile_is_reference_only": true,
+        "rank": 10,
+        "rank_is_saved_observation_not_generation_argument": true,
+        "rank_policy": "tol_only_1e-8",
+        "series": "H4_TOL_ONLY_DF10",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "system": "H4"
+      },
+      "also_required": "Original saved input receipts, saved state and reference arrays/receipts and origin acquisition config needed by the sealed contract. State/hamiltonian binding fingerprints are not asserted to be file SHA values."
+    },
+    {
+      "id": "H6_PRESERVED_SCIENTIFIC_INPUTS",
+      "status": "NO_MATCHING_SNAPSHOT_FOUND",
+      "expected_snapshot_file_sha256": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+      "expected_binding": {
+        "T": 0.8,
+        "basis": "STO-3G",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "geometry": "linear_1Angstrom",
+        "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+        "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+        "profile_is_reference_only": true,
+        "rank": 19,
+        "rank_is_saved_observation_not_generation_argument": true,
+        "rank_policy": "tol_only_1e-8",
+        "series": "H6_TOL_ONLY_DF19",
+        "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+        "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+        "system": "H6"
+      },
+      "also_required": "Original saved input receipts, saved state and reference arrays/receipts and origin acquisition config needed by the sealed contract. State/hamiltonian binding fingerprints are not asserted to be file SHA values."
+    },
+    {
+      "id": "KNOWN_SEED_EXCLUSION_AND_ORIGIN_EVIDENCE",
+      "status": "NOT_FOUND",
+      "required": [
+        "registry_PROPOSED_PRIVATE.json per stage",
+        "excluded_seeds_PRIVATE.json per stage",
+        "original known registry/exclusion source files",
+        "origin acquisition config and bound end audit/completion/native exit evidence"
+      ],
+      "historical_exclusion_counts": {
+        "H2": 256572,
+        "H4": 256537,
+        "H6": 256553
+      },
+      "reason": "Source-derived new seed metadata does not recover historical exclusions or verify private registry byte identity."
+    }
+  ],
+  "regeneration_authorized": false,
+  "SCF_DF_state_regeneration": 0,
+  "guessed_or_imputed_data": 0
+}

@@ -94,3 +94,10 @@ TASKと各callの非返金ledger予約を別に記録する。RTE stepはpiece�
 **Codex（その承認後）**：新しい明示receiptにSOURCE/候補/n/call/固定analysis scopeを結合し、既知seed・fresh資源・preservation gateを照合して独立one-shotを実行、終了監査と指定された固定比較だけを保存してmandatory STOPする。
 
 本作業はlocal commit後に停止し、上記の科学実行・AD03採用・追加詳細レビュー・本文作成へ自動移行しない。
+
+## 2026-10-22追記：新環境の承認と必須資料欠落
+
+主要3比較118 trajectory/236軸および取得後固定評価はユーザーが明示承認した。
+新環境での確認は[別記録](track_a_h246_confirmation_new_environment_STOP_20261022.md)を正とする。
+private proposal02・seed除外資料・固定snapshotを復元できず、科学call・有効grant0で実行前STOP。
+上記10月21日時点の未承認・準備結果は当時の記録として保持する。
