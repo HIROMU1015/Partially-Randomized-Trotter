@@ -35,3 +35,7 @@ SHA・native受入・cohort・保存適格性・独立数値経路の不一致�
 人工22件PASS。数値解析と終了監査の後、結果・SOURCE/SHA・grant・ledger・終了証拠を保存し、local commit後mandatory STOP。公開push、新sampling/compile、独立確認P、AD03採択、詳細科学レビュー、論文本文は行わない。
 
 次の担当Codex：封印と一回解析・終了監査・報告。次の担当ユーザー：報告を見て独立確認対象と目的を判断する。
+
+## 実行前の封印修正
+
+最初の準備packは、実行環境の組込みmath moduleに`__file__`がないため、grant発行・科学root作成前に停止した。科学callは0。旧準備STOPを保持し、組込み/frozen moduleは封印したPython binaryへ結合し、fileを持つmoduleは従来どおりfile SHAを結合するよう修正した。回帰1件を追加し人工23件PASS。科学条件・shot算術・予算は不変。別の未使用packで準備を行う。

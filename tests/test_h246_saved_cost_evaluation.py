@@ -11,6 +11,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts'))
 import h246_saved_cost_evaluation as s
 import run_h246_saved_cost_evaluation as runner
+import prepare_h246_saved_cost_evaluation as preparer
 
 
 def record(method='PR', q=1, total=.001, pf=.002, u=1e-9, logB=.02):
@@ -33,6 +34,14 @@ def record(method='PR', q=1, total=.001, pf=.002, u=1e-9, logB=.02):
 
 
 class SavedEvaluationTests(unittest.TestCase):
+    def test_builtin_runtime_module_is_bound_to_sealed_interpreter(self):
+        path, origin=preparer.runtime_module_location(sys)
+        self.assertIsNone(path);self.assertEqual(origin,'built-in')
+        class Unknown:
+            __spec__=type('Spec',(),dict(origin=None))()
+        with self.assertRaisesRegex(ValueError,'RUNTIME_MODULE_LOCATION'):
+            preparer.runtime_module_location(Unknown())
+
     def test_exact_known_moments(self):
         m=s.moments([1,2,3]);self.assertEqual(s.frac(m['mean_exact']),2)
         self.assertEqual(s.frac(m['variance_exact']),1)

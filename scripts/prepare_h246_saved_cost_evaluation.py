@@ -7,6 +7,13 @@ import subprocess
 import run_h246_saved_cost_evaluation as c
 
 
+def runtime_module_location(module):
+    path = getattr(module, '__file__', None)
+    origin = module.__spec__.origin
+    c.require(path is not None or origin in ('built-in', 'frozen'), 'SEALED_RUNTIME_MODULE_LOCATION')
+    return path, origin
+
+
 def prepare(context_path, dest, source):
     context = c.read(context_path)
     dest = Path(dest).resolve()
@@ -93,9 +100,13 @@ def prepare(context_path, dest, source):
         c.require((c.ROOT/rel).read_bytes() == subprocess.check_output(
             ['git', 'show', source+':'+rel], cwd=c.ROOT), 'SEALED_COMMITTED_SOURCE')
         seal(c.ROOT/rel, 'analysis_source')
+    runtime_modules = {}
     for module in ('statistics', 'decimal', 'fractions', 'math'):
         imported = __import__(module)
-        seal(imported.__file__, 'analysis_runtime_'+module)
+        path, origin = runtime_module_location(imported)
+        runtime_modules[module] = dict(origin=origin, sealed_in_python_binary=path is None)
+        if path is not None:
+            seal(path, 'analysis_runtime_'+module)
     seal(sys.executable, 'analysis_python_binary')
     proposal = c.ROOT/'artifacts/resource_applicability/track_a_h246_saved_evaluation_preflight/2026-10-21/policy_adoption_required.json'
     seal(proposal, 'unchanged_prior_proposal')
@@ -109,7 +120,8 @@ def prepare(context_path, dest, source):
     c.save(dest/'policy_adoption_PRIVATE.json', adoption)
     seal(dest/'policy_adoption_PRIVATE.json', 'current_policy_adoption')
     plan = dict(SOURCE=source, stage='H246_SAVED_VALUE_COST_EVALUATION', scope=c.SCOPE,
-        python_executable=sys.executable, python_version=sys.version, adoption=adoption,
+        python_executable=sys.executable, python_version=sys.version,
+        runtime_modules=runtime_modules, adoption=adoption,
         run_root=str(dest/'run01'), groups=groups, input_metadata=metadata,
         comparison_scope='FINITE_SAMPLE_PR_THREE_FORMULAS_AND_IDENTITY_BOUND_M5_DET_SUBSET',
         old_S2_S4_PF_controls_preserved=True, old_PF_complete_set_optimum_claimed=False,
