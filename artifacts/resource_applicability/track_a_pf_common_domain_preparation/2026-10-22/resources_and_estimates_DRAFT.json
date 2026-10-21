@@ -1,0 +1,32 @@
+{
+  "observed_UTC": "2026-10-21T18:04:35Z",
+  "affinity_cpu_slots": 128,
+  "host_memory_bytes": {
+    "MemTotal": 1081968082944,
+    "MemAvailable": 1054114443264
+  },
+  "workspace_free_bytes": 127823290368,
+  "actual_workers_launched": 0,
+  "resources_are_fresh_execution_gate": false,
+  "worker_rule": "min(pending registered tasks, measured idle CPU/cgroup slots, available RAM / observed or size-scaled per-task RSS, free scratch / estimated per-task live bytes)",
+  "fixed_worker_CPU_RAM_or_wall_cap": null,
+  "worker_threads": 1,
+  "compiler_num_processes": 1,
+  "nested_parallelism": false,
+  "large_tasks": "size-aware admission; update RSS/scratch proxies from accepted tasks without changing science or n",
+  "old_timing_proxies": {
+    "H4": {
+      "pairs": 19,
+      "workers": 3,
+      "stage_wall_seconds_approx": 4112
+    },
+    "H6": {
+      "pairs": 27,
+      "workers": 3,
+      "stage_wall_seconds_approx": 28342
+    }
+  },
+  "timing_interpretation": "Historical throughput only; new environment/source/prefix/q differences prevent a wall-time bound",
+  "storage_rule": "Stream new QPY/NPZ to reversible compressed archives; persist original SHA + archive SHA and verify byte restoration before releasing new own temporary files; retain every original raw/control",
+  "resource_admission_failure": "Defer unstarted tasks or STOP; never change shared cgroups, settings, or other processes"
+}

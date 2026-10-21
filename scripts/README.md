@@ -1,3 +1,7 @@
+## 2026-10-22 S2/Yoshida4/m5決定論PF：共通探索域の準備完了・科学実行未承認
+
+[候補照合・固定追加予算・未解決条件](../docs/research/track_a_pf_common_domain_preparation_20261022.md)。H4 DF10 p1..9/H6 DF19 p5..15、q1/2/4/8、Full/B0/B0Iを3公式で統一し504候補。既存354候補（raw326/固定endpointのみ28）、不足150signal＝75基礎＋75overlay、独立forward75、compile最大373候補746軸。217候補の旧費用接続成功時は最大156候補312軸。H6原metadata28件と旧profile/runtime接続が未解決。新23＋既存30人工PASS、実分子call/新費用順位/有効grant/push0。既存PR結果不変、専用branchローカル保存、mandatory STOP。以下は履歴。
+
 H246固定評価の別経路照合：`audit_h246_reconstructed_results.py`。全3stage終了後の保存整数moment・paired covariance・台帳とraw目録の監査。
 
 H246再構築確認：`h246_reconstructed_contract.py / run_h246_reconstructed.py`。新packで元native数値・固定118/236取得と固定評価を接続する。`tests/test_h246_reconstructed.py`で境界と人工3公式を検証。
