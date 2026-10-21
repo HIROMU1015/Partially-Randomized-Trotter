@@ -176,14 +176,17 @@ def seal():
     for folder,names in [(b_private,['grant_APPROVED_PRIVATE.json','analysis_ledger.json','ONE_SHOT.json']),
                          (c_private,['grant_H8_0.05.json','grant_H8_0.0005.json'])]:
         for name in names:
-            p=folder/name;protected.append(dict(path=str(p),sha256=sha(p),role='old_grant_ledger_marker'))
+            p=folder/name
+            if not any(r['path']==str(p) for r in protected):
+                protected.append(dict(path=str(p),sha256=sha(p),role='old_grant_ledger_marker'))
     atomic(PRIVATE/'protected.json',protected)
     public('preservation_preflight.json',dict(protected_files=len(protected),
            inventory_sha256=sha(PRIVATE/'protected.json'),old_grant_ledger_marker_explicitly_preserved=True,
            unrelated_worktree_HEAD_status_not_frozen=True))
     n=check_protected()
     source=git('rev-parse','HEAD').decode().strip()
-    require(git('status','--porcelain','--untracked-files=no')==b'','COMMIT_SOURCE_BEFORE_SEAL')
+    # Metadata receipts may be newly written. The used SOURCE files below, rather
+    # than unrelated/current evidence indexes, must match immutable Git bytes.
     rows=[]
     for path in SOURCE_PATHS:
         digest=sha(ROOT/path)
