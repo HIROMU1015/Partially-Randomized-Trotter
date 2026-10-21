@@ -1609,3 +1609,9 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 `src/trotterlib/current_s2_theory.py`、`scripts/run_current_s2_theory_main.py`、
 `tests/test_current_s2_theory.py`、`artifacts/resource_applicability/track_a_current_s2_theory_compiled/2026-10-22/run01/`を一組として読む。
 H4 ε=.001 S2選択を確定。現行理論Gは元入力不足で0/20、compiled系列のみ5図。新理論比較完了とは扱わない。
+
+## 2026-10-22 固定S2候補の理論／compiled比較
+
+新実行の入口は [検証文書](docs/recomputed_s2_theory_compiled_validation.md)。再利用libraryは `src/trotterlib/current_s2_theory.py`、one-shot実行adapterは `scripts/recomputed_s2_runtime.py` と `scripts/recomputed_s2_runtime_v2.py`、runnerは `scripts/run_recomputed_s2_comparison*.py`、人工testは `tests/test_recomputed_s2_comparison*.py`。原出力は `artifacts/resource_applicability/pr_pf_s2_recomputed/2026-10-22/`、図とcohort照合は `docs/progress/track_a/figures/pr_pf_s2_recomputed_20261022/`。旧SOURCE・結果・STOPは保全し、この追加は全RPE総費用の最終評価を意味しない。
+
+追加のnative物理対応検証は `src/trotterlib/recomputed_s2_physics_validation.py`、`scripts/run_recomputed_s2_physics_validation.py`、`tests/test_recomputed_s2_physics_validation.py`。同じnamespaceのsystem単位 `native_physics_validation` を読む。H6/H8の補助unweighted-G診断不合格は、費用値の留保として保存し、全検証PASSや科学的GOへ変更しない。

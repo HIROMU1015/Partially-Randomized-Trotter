@@ -2419,3 +2419,9 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 [結果](docs/research/track_a_current_s2_theory_compiled_20261022.md)。40人工テスト・17保存G exact回帰PASS。
 元科学入力不足により現行理論counter実評価0、理論G取得0/20。現行物理適用の検証PASSを意味しない。
 新しいCI再現・独立科学レビュー・最終evidence freezeではない。
+
+## 固定S2理論／compiled再計算（2026-10-22）
+
+数値対応20/20条件（元H2 5、新cohort 15）。実施済み技術検査PASS 10、補助G診断不合格を残す条件付き対応10。新MC本評価11候補のうち11が名目95%相対半幅1%設計目標内。失敗one-shot 5単位は再試行なし。
+
+[検証文書](docs/recomputed_s2_theory_compiled_validation.md)・[図A/Bと数値](docs/progress/track_a/figures/pr_pf_s2_recomputed_20261022/README.md)。全RPE最終総費用、厳密な母平均保証、独立科学レビュー、immutable CIではない。旧結果・STOPを保全し、今回の承認範囲を終えてmandatory STOP。

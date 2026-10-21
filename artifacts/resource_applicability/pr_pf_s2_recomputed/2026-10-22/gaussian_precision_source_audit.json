@@ -1,0 +1,17 @@
+{
+  "qiskit_nature_version": "0.7.2",
+  "inspection_only": true,
+  "files": {
+    "second_q/circuit/library/bogoliubov_transform.py": "b3956e8469dfe22ed57a5bfe6ce341f34dfda6a22bef7082855371c157b181f2",
+    "utils/linalg.py": "1ed9493b02e768835d7468b36a9e66f195b18fb878012d5a3359c10c7e663a6a"
+  },
+  "findings": [
+    "Number-conserving Gaussian decomposition skips entries using np.isclose(value,0.0)",
+    "givens_matrix also uses np.isclose for its zero cases"
+  ],
+  "interpretation": "Possible contributor to unweighted-G discrepancies; not isolated causally and not a new error certificate",
+  "library_modified": false,
+  "tolerance_modified": false,
+  "failed_physics_units_retried": false,
+  "next_scientific_question": "Whether/how these diagnostic discrepancies affect the normalized finite-RTE signal remains unresolved; no independent scientific review started"
+}

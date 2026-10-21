@@ -1,0 +1,8 @@
+{
+  "SOURCE": "5e3503d8247d9a8788668c04818b665693501292",
+  "elapsed_seconds": 160.6310174688697,
+  "grant_id": "91a5ce02947dbb6d3ab06c35fffc97cf1f40f97c05d5f62c6e4f7fadc99f1191",
+  "reason": "",
+  "status": "FAILED_NO_RETRY",
+  "traceback": "Traceback (most recent call last):\n  File \"/usr/lib/python3.12/multiprocessing/pool.py\", line 856, in next\n    item = self._items.popleft()\n           ^^^^^^^^^^^^^^^^^^^^^\nIndexError: pop from an empty deque\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/pr-pf-s2-recomputed-theory-compiled-20261022/scripts/recomputed_s2_runtime.py\", line 103, in unit\n    yield dest\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/pr-pf-s2-recomputed-theory-compiled-20261022/scripts/recomputed_s2_runtime.py\", line 452, in candidate_stages\n    values,nw=sample(ctx,c,'MC_pilot',128);save(out/'result.json',dict(values=values,workers=nw,n=128))\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/pr-pf-s2-recomputed-theory-compiled-20261022/scripts/recomputed_s2_runtime.py\", line 405, in sample\n    values=list(pool.imap_unordered(compile_one,tasks,chunksize=1))\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/multiprocessing/pool.py\", line 861, in next\n    self._cond.wait(timeout)\n  File \"/usr/lib/python3.12/threading.py\", line 355, in wait\n    waiter.acquire()\nKeyboardInterrupt\n"
+}

@@ -982,3 +982,9 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 `run_current_s2_theory_main.py` は新plan/grantの下で保存選択・回帰を実行した消費済みone-shot。再実行しない。
 `check_current_s2_frozen_counter.py` は固定counterの人工27テスト。新adapterの人工13テストは`tests/test_current_s2_theory.py`。
 [結果・原入力不足と図](../docs/research/track_a_current_s2_theory_compiled_20261022.md)。現行理論G取得0/20。
+
+## 固定S2候補の理論／compiled再計算（2026-10-22）
+
+`run_recomputed_s2_comparison.py` は初回H2、`run_recomputed_s2_comparison_v2.py` は未実行H4、`run_recomputed_s2_candidates.py` は完了済み共通入力を再利用するH6/H8のone-shot runner。`recomputed_s2_runtime*.py` は固定SOURCEの実行adapterで、旧runをresume/retryしない。`build_recomputed_s2_figures.py` は成功済みJSONと元H2保存結果だけを読む作図入口で、科学runnerを呼ばない。[検証文書](../docs/recomputed_s2_theory_compiled_validation.md)と成果物のSTOPを先に確認すること。
+
+追加のnative物理対応検証は `src/trotterlib/recomputed_s2_physics_validation.py`、`scripts/run_recomputed_s2_physics_validation.py`、`tests/test_recomputed_s2_physics_validation.py`。同じnamespaceのsystem単位 `native_physics_validation` を読む。H6/H8の補助unweighted-G診断不合格は、費用値の留保として保存し、全検証PASSや科学的GOへ変更しない。
