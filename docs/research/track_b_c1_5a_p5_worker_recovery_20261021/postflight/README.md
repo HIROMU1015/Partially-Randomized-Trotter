@@ -1,0 +1,7 @@
+# 公開用の技術的後処理
+
+この2ファイルは科学job終了後のbyte保存・照合に使ったコードで、sampler/circuit/旧raw科学解析を呼ばない。封印済み科学SOURCEを変更・再実行するものではない。`archive_transport.py`はone-useの新rawをtar/gzipへ保存し、全memberのbytes/SHA256を照合してから当job専用runtimeへ移す。完了済みnamespaceで再実行しない。`preservation_check.py`は固定manifestと旧namespace/private原本のbyte照合を行う。
+
+monitor要約は新rawの各observations JSONLについて、各snapshot内の自分のactive childのVmRSS、PSS、Private_Clean+Private_Dirtyを合計し、snapshot間の最大を保存した。rootは含めず、時間間隔内の未観測peakの上界ではない。科学量の再解析ではない。原observationsとderived summaryはarchive内で保持する。
+
+CSVは標準writerのCRLFを公開時にLFへ正規化した。セル内容・数値は変更していない。
