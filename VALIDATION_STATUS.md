@@ -1,3 +1,7 @@
+## 2026-10-22 H246高次PF PR：新環境の独立確認完了
+
+[結果・入力provenance・限界](docs/research/track_a_h246_reconstructed_confirmation_results_20261022.md)。H2/H4/H6固定118 trajectory・236軸を取得し終了監査・固定評価・整数moment別経路照合PASS。S2比の点削減率46.51/53.11/63.13%、3比較とも方向再現。H2/H4は科学配列hash一致の再生成（容器SHAは別）、H6は原snapshot復元。旧全seed除外は未検証、S4未観測・tail上界null。local検証、全RPE最適化や母平均保証ではない。旧STOP保全、push0、mandatory STOP。以下は履歴。
+
 ## 2026-10-22 H246独立確認：承認済み・保存入力未復元の実行前STOP
 
 [不足資料・確認記録](docs/research/track_a_h246_confirmation_new_environment_STOP_20261022.md)。SOURCE68ファイルと凍結評価SHAは一致。private proposal02・seed除外資料・固定3系snapshotを復元できず、科学取得と固定評価は未実施。科学call・有効grant・科学ledger/marker0。人工mock29 PASS/2 SKIPは実分子の検証結果ではない。追加承認待ちではなく、原資料復元待ち。以下は履歴。

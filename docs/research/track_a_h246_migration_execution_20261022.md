@@ -39,3 +39,7 @@ SOURCE84a301f1の初回起動はProcessPoolの関数pickle identity不一致で3
 ## 取得後の独立整数moment監査
 
 `scripts/audit_h246_reconstructed_results.py`は全3系の終了監査と固定評価の完了後だけ起動する。保存整数RZから非中心化した整数和・二乗和で平均と不偏分散を再構成し、元evaluatorの中心化有理数計算およびpaired共分散の式と照合する。差SE・Bonferroni正規近似区間・点改善率も固定比較のまま再計算する。科学providerをimportせず、sampling/compile/shot再計算を行わない。2^120のoffsetを持つ人工値と観測分散0で検査した。別担当の科学レビューではない。
+
+## 完了追記
+
+[独立確認・固定評価結果](track_a_h246_reconstructed_confirmation_results_20261022.md)。SOURCEc028f1c2で118/236取得と3系終了監査・固定評価を完了。整数moment別経路照合PASS、点改善46.51/53.11/63.13%。全worker回収。旧科学call0技術STOPを保持した新grantによる取得であり、使用済みgrant再利用や取得済み標本のretryは0。最終成果物をローカルcommit後mandatory STOP。

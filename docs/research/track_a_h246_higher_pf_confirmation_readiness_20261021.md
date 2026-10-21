@@ -101,3 +101,7 @@ TASKと各callの非返金ledger予約を別に記録する。RTE stepはpiece�
 新環境での確認は[別記録](track_a_h246_confirmation_new_environment_STOP_20261022.md)を正とする。
 private proposal02・seed除外資料・固定snapshotを復元できず、科学call・有効grant0で実行前STOP。
 上記10月21日時点の未承認・準備結果は当時の記録として保持する。
+
+## 2026-10-22追記：入力再構築後の固定独立確認完了
+
+ユーザーの明示した再構築承認により、H6原snapshot回収とH2/H4科学配列hash一致の再生成、新pack・新namespaceで固定118/236を完了した。[結果・監査・旧seed除外の限界](track_a_h246_reconstructed_confirmation_results_20261022.md)を正とする。旧proposal02の復元を主張せず、上記の準備履歴・前回STOPは保持する。
