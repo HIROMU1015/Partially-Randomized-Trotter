@@ -11,3 +11,7 @@
 準備SOURCE 1fe0e60d28e7fc09821ee3d5a014fd5f8c976c19。新23＋既存12/18の53人工test PASS。既存signal人工回帰の最初のimport失敗は、元providerを明示して解消し科学コードは変更していない。旧PR SOURCE・raw・契約・marker・STOPを保全し、今回の実分子call/有効grant/pushは0。専用branchへローカルcommitしmandatory STOP。
 
 [条件・予算・比較設計・欠測・実行順序](../track_a_pf_common_domain_preparation_20261022.md)。次は利用者の追加call予算と共通政策に対する明示承認、および原metadata/identity接続の解決が必要。詳細科学レビュー・論文本文・productionには進んでいない。
+
+## 追記：H2独立トラックの取得・固定比較完了
+
+利用者がH2 84候補を別SOURCE/grantで包括承認。入力配列同一性を検証し、48保存signalを再利用、新36 signal・36 compile候補72軸・420 endpointを取得。全公式PFは5精度でPR探索点最良より低費用、同じm5内ではPR低費用。旧PR結果を遡及変更せず比較分母の拡張として記録する。[結果](../track_a_pf_common_H2_results_20261022.md)。4 stage/終了監査PASS、local commit後mandatory STOP、push0。
