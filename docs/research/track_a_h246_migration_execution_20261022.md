@@ -23,3 +23,11 @@ linear H2/H4/H6、隣接1Å、STO-3G、tol-only1e-8、rank3/10/19、prefix1/3/5�
 SOURCE88cd0907でH2/H4生成を各一回完了。両系とも元の全科学配列hash、Hamiltonian hash、state hash、基底エネルギーが完全一致した。NPZ容器SHAは異なるため、原本復元とは区別する。H6は原snapshot SHA一致。
 
 次の別枠は3系各1回のsnapshot restore、occupation oracle context、full/prefix preparation、tail spectrum、full-H reference生成。H2だけ欠落した固定2候補のsignalを元のspectral法で再計算する。H4/H6は元の公開signalを厳密一致する科学配列に結合して再利用し、新referenceとの整合も確認する。shot再計算0・新sampling0・compile0。各系別の新grantをSOURCE固定後に発行し、予算を全予約してから起動する。
+
+## Reference復元完了・新契約への接続
+
+SOURCEeb4a2411でreference3件と欠落H2signal2件を別枠で取得した。3系の保存Hamiltonian/state fingerprintは元値と一致、H4/H6のcut preparation hashも元signalと一致。固定6候補の保存bias/log_Bとの差は0であり、元の凍結shotを保持する。新shot再計算0。
+
+新しいh246_reconstructed_contract.pyは、旧proposal02を装わず、元固定候補・n・取得call・analysis scopeを保持した新規packを発行する。元SOURCE68ファイルとproviderをSHA照合し、元のnative/runner/auditor/evaluatorを再結合する。数値関数・PF係数・compiler・archive方式を変更しない。CLIの転送先だけを新runnerへ結合する。新namespaceのseed846個はstage間と復元可能な旧提案seed846個に非衝突。その他の旧約25.65万除外は未回収で完全非衝突未保証。各stageに新grant/ledger/marker/承認receiptを用いる。実空きCPU/RAM/diskによる旧allocatorを使い、固定worker上限を設けない。
+
+新接続の人工検証5PASS/3subtest。人工段階でcohort文字列変換helper自身の再変換によるラベル接続不具合を発見し、元helperを保持して修正した。数値関数は変更せず、実確認grant発行前に3公式native/compile/archiveの再検証を通過した。合計の人工検証は34+5PASS。

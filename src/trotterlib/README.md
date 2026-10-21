@@ -1,3 +1,5 @@
+H246再構築確認：`h246_migration.py / h246_reconstruction_forward.py`。新packで元native数値・固定118/236取得と固定評価を接続する。`tests/test_h246_reconstructed.py`で境界と人工3公式を検証。
+
 H246 reference復元：`src/trotterlib/h246_reconstruction_forward.py`。固定3 reference＋欠落H2 signal2を別枠で封印する。
 
 ## 2026-10-22 H246移行再構築
