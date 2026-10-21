@@ -100,7 +100,7 @@ def prepare(source,origins,private):
           registry_path=str(rp),excluded_seeds_path=str(ep),signal_path=origin['signal_path'] if system=='H2' else str(c.ROOT/c.SIGNAL_RECORDS),
           compiler_settings_hash=c.law.COMPILER_HASH,compile_tolerance=1e-7,other_tolerance=1e-9,
           resources=resources,storage=storage,origin_config_path=str(origin_path),decisions=dec,
-          proposal_sha256=c.sha(c.ROOT/c.d.PROPOSAL),authorized=False,approval_receipt_path=str(approval),approval_receipt_sha256=c.sha(approval),
+          proposal_sha256=c.sha(c.ROOT/c.d.PROPOSAL),authorized=False,approval_activation_path=None,approval_receipt_path=str(approval),approval_receipt_sha256=c.sha(approval),
           run_root=str(root),output=str(root/'output'),ledger=str(root/'ledger'),marker=str(root/'CONSUMED.json'),
           supervisor={k:str(dest/n) for k,n in [('entered','SUPERVISOR_ENTERED.json'),('exit','external_exit_witness_PRIVATE.json'),('log','native_PRIVATE.log')]})
         cfg['sealed_files']=list(closure.values())

@@ -29,7 +29,7 @@ PLAN_KEYS=('SOURCE','stage','cohort','tasks','call_scope','campaign_id','registr
  'runtime','provider_root','systems','signal_path','binding','inputs','reference_path','preparation_hash',
  'compiler_phase_policy','compiler_settings_hash','compile_tolerance','other_tolerance','storage','resources',
  'run_root','output','ledger','marker','supervisor','origin_config_path','proposal_sha256','comparison',
- 'analysis_scope','approval_receipt_path','approval_receipt_sha256','decisions')
+ 'analysis_scope','approval_receipt_path','approval_receipt_sha256','approval_activation_path','decisions')
 
 def proposal():return read(ROOT/d.PROPOSAL)
 def comparison(stage):
@@ -126,6 +126,9 @@ def authorize(cfg):
     require(a.get('execution_authorized') is True and all(a.get(k)==cfg[k] for k in
       ('SOURCE','stage','cohort','comparison','call_scope','analysis_scope','storage','decisions')),'USER_EXACT_SCOPE_ADOPTION_REQUIRED')
     require(g.get('approval_reference')==cfg['approval_receipt_path']+'#sha256='+sha(cfg['approval_receipt_path']),'GRANT_APPROVAL_SHA')
+    require(cfg.get('approval_activation_path') in {r['path'] for r in cfg['sealed_files']},'ONE_SHOT_APPROVAL_ACTIVATION_SEALED')
+    activation=read(cfg['approval_activation_path'])
+    require(all(activation.get(k)==cfg[k] for k in ('SOURCE','stage','run_root')),'EXACT_ONE_TIME_GRANT_ISSUANCE')
     verify(cfg)
 
 reserve=FunctionType(old.reserve.__code__,dict(old.__dict__,save=save),'reserve',old.reserve.__defaults__)
@@ -151,14 +154,18 @@ def activate(draft_path,approval_path,destination):
       ('SOURCE','stage','cohort','comparison','call_scope','analysis_scope','storage'))
       and receipt.get('decisions')==adopted,'EXPLICIT_USER_RECEIPT_EXACT_CANDIDATES_COUNTS_AND_BUDGET')
     # No stale SOURCE/input, seed or runtime bypass when authorization is issued.
-    dest=Path(destination).resolve();dest.mkdir(parents=True,exist_ok=False);root=dest/'run01'
+    dest=Path(destination).resolve();root=dest/'run01'
+    activation=Path(str(Path(approval_path).resolve())+'.GRANT_ISSUED.json')
+    save(activation,dict(SOURCE=cfg['SOURCE'],stage=cfg['stage'],run_root=str(root),
+      original_approval_sha256=sha(approval_path),retry=False))
+    dest.mkdir(parents=True,exist_ok=False)
     approval=dest/'approval_APPROVED_PRIVATE.json';save(approval,receipt)
-    prior=cfg['approval_receipt_path'];cfg.update(authorized=True,decisions=adopted,
+    prior=cfg['approval_receipt_path'];cfg.update(authorized=True,decisions=adopted,approval_activation_path=str(activation),
       approval_receipt_path=str(approval),approval_receipt_sha256=sha(approval),run_root=str(root),
       output=str(root/'output'),ledger=str(root/'ledger'),marker=str(root/'CONSUMED.json'),
       supervisor={k:str(dest/n) for k,n in [('entered','SUPERVISOR_ENTERED.json'),
         ('exit','external_exit_witness_PRIVATE.json'),('log','native_PRIVATE.log')]})
-    cfg['sealed_files']=[r for r in cfg['sealed_files'] if r['path']!=prior]+[seal(approval,'explicit_new_user_approval')]
+    cfg['sealed_files']=[r for r in cfg['sealed_files'] if r['path']!=prior]+[seal(approval,'explicit_new_user_approval'),seal(activation,'one_shot_approval_issuance')]
     plan=dict(status='APPROVED_ONE_SHOT_CONFIRMATION_NOT_YET_STARTED',**{k:cfg[k] for k in PLAN_KEYS},
       closure_digest=digest(cfg['sealed_files']))
     pp=dest/'plan_APPROVED_PRIVATE.json';save(pp,plan);cfg.update(plan=plan,plan_path=str(pp),plan_sha256=sha(pp))

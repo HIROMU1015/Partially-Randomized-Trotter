@@ -67,13 +67,16 @@ class ContractTests(unittest.TestCase):
             cfg=dict(authorized=True,stage='H4_CONFIRMATION',SOURCE='a'*40,cohort='CONFIRMATION',plan_sha256='b'*64,
               call_scope={'synthetic':1},analysis_scope=c.analysis_scope('H4_CONFIRMATION'),comparison={'synthetic':True},
               decisions=dict(c.decisions(),scientific_execution_adopted=True),storage=c.storage.storage_policy(),
-              output='synthetic_output',ledger='synthetic_ledger',marker='synthetic_marker',supervisor={'synthetic':True},
+              run_root='synthetic_run_root',output='synthetic_output',ledger='synthetic_ledger',marker='synthetic_marker',supervisor={'synthetic':True},
               approval_receipt_path=str(Path(tmp)/'approval'))
             c.save(cfg['approval_receipt_path'],dict(execution_authorized=True,**{k:cfg[k] for k in
               ('SOURCE','stage','cohort','comparison','call_scope','analysis_scope','storage','decisions')}))
             cfg['grant']=dict(valid=True,grant_id='ARTIFICIAL',retry=False,next_phase_authorized=False,
               approval_reference=cfg['approval_receipt_path']+'#sha256='+c.sha(cfg['approval_receipt_path']),
               **{k:cfg[k] for k in ('SOURCE','stage','cohort','plan_sha256','call_scope','analysis_scope','output','ledger','marker','supervisor')})
+            activation=Path(tmp)/'activation'
+            c.save(activation,{k:cfg.get(k) for k in ('SOURCE','stage','run_root')})
+            cfg['approval_activation_path']=str(activation);cfg['sealed_files']=[c.seal(activation,'artificial_activation')]
             with patch.object(c,'verify'):
                 c.authorize(cfg)
                 for key,value in [('cohort','EXPLORATION'),('stage','H4_AUXILIARY'),('SOURCE','bad'),('call_scope',{}),
@@ -157,6 +160,19 @@ class ControllerTests(unittest.TestCase):
                 self.assertTrue(all(not p.signals for p in processes))
                 done=c.read(dest/'controller'/'CONTROLLER_FINISHED.json')
                 self.assertTrue(done['mandatory_STOP']);self.assertFalse(done['fixed_comparison_evaluation_started'])
+    def test_approval_receipt_cannot_issue_two_grants(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            dest=Path(tmp);cfg={k:None for k in c.PLAN_KEYS}
+            cfg.update(SOURCE='a'*40,stage='H4_CONFIRMATION',cohort='CONFIRMATION',authorized=False,
+              grant={'valid':False},decisions=c.decisions(),sealed_files=[],approval_receipt_path='old')
+            dp=dest/'draft';ap=dest/'approval';c.save(dp,cfg)
+            receipt=dict(execution_authorized=True,**{k:cfg[k] for k in ('SOURCE','stage','cohort','comparison','call_scope','analysis_scope','storage')},
+              decisions=dict(c.decisions(),scientific_execution_adopted=True))
+            c.save(ap,receipt)
+            with patch.object(c,'verify'),patch.object(c,'authorize'):
+                c.activate(dp,ap,dest/'approved1')
+                with self.assertRaises(FileExistsError):c.activate(dp,ap,dest/'approved2')
+            self.assertFalse((dest/'approved2').exists());self.assertFalse(c.read(dp)['grant']['valid'])
     def test_activation_refuses_unapproved_before_new_files(self):
         with tempfile.TemporaryDirectory() as tmp:
             dest=Path(tmp);cfg=dict(authorized=False,grant={'valid':False})
@@ -240,5 +256,32 @@ class NativeSyntheticTests(unittest.TestCase):
                 self.assertEqual(result['seed_cohort'],'CONFIRMATION');self.assertTrue(all(g['PASS'] for g in result['checks']))
                 audited=r.auditor.task_audit(cfg,t);self.assertEqual(audited['archives'],6)
                 self.assertTrue(all(c.read(p)['cohort']=='CONFIRMATION' for p in (root/'output'/t['id']).glob('piece_law_*.json')))
+    def test_H2_confirmation_uses_guard_and_both_receipts(self):
+        from functools import partial
+        from test_h46_m5_cost_readiness import NativeToyTests
+        sys.path.insert(0,str(Path(os.environ['M5_TEST_PROVIDER'])/'src'))
+        import h46_m5_native as original
+        import h2_outer32_runtime as h2
+        import trotterlib.rte_compiled_cost as cost
+        for formula in ('2nd','4th'):
+            with self.subTest(formula=formula),tempfile.TemporaryDirectory() as tmp:
+                root=Path(tmp);(root/'output').mkdir();(root/'ledger').mkdir();toy=NativeToyTests.toy(self)
+                t=toy_task(formula=formula);t['stage']='H2_CONFIRMATION';t['candidate']['system']='H2'
+                cfg=dict(SOURCE='a'*40,plan_sha256='b'*64,stage=t['stage'],tasks=[t],run_root=tmp,
+                  output=str(root/'output'),ledger=str(root/'ledger'),marker=str(root/'CONSUMED.json'),grant={},
+                  storage=c.storage.storage_policy(),runtime={'python':sys.executable},resources=options(),
+                  systems={'H2':{'binding':{'synthetic':True}}},registry_path=str(root/'registry.json'),sealed_files=[],signal_path=str(root/'signal.json'))
+                c.save(cfg['marker'],dict(state='CONSUMED_NO_RETRY_NO_REFUND',grant={}))
+                c.save(cfg['registry_path'],c.law.registry([t],cfg['SOURCE'],'ARTIFICIAL_H2','CONFIRMATION',[]))
+                c.save(cfg['signal_path'],dict(records=[dict(candidate=t['candidate'],signal=original.signal(toy,dict(t['candidate'],policy=t['candidate']['r_policy'])))]))
+                cfg['sealed_files']=[c.seal(p,'artificial_input') for p in (cfg['registry_path'],cfg['signal_path'])]
+                rt.RUNTIME=rt.runtime(cfg);r=rt.RUNTIME;r.runner_namespace.update(WORKER_CFG=cfg,WORKER_STOP=threading.Event())
+                with patch.object(r.native_namespace['c'],'authorize'),patch.object(r.native_namespace['c'],'verify'),\
+                  patch.dict(r.native_namespace,{'context':lambda *a:toy}),patch.object(cost,'transpile',partial(h2.phase_transpile,num_processes=1)):
+                    rt.worker(t)
+                self.assertEqual(r.auditor.task_audit(cfg,t)['archives'],6)
+                for i in range(2):self.assertTrue(c.read(root/'output'/t['id']/('compiler_phase_guard_'+str(i)+'.json'))['unchanged_gate_stream'])
+        rt.RUNTIME=None
+
 
 if __name__=='__main__':unittest.main()
