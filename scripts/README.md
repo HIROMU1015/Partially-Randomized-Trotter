@@ -1,3 +1,9 @@
+## 2026-10-21 H8希少RTE：保存値統合・残余2層感度
+
+[結果・主張境界](../docs/research/h8_rare_rte_saved_integration_results_20261021.md)、[数値・SOURCE・監査](../artifacts/resource_applicability/h8_rare_rte_saved_integration/2026-10-21/README.md)。
+
+H8のS0各48とS2_SINGLE各43をpoolせず、B canonical確率の層別寄与へ統合。未知質量の約99.67%/99.56%に費用推定を付与、残余混合境界/S0約1276/888。未知multi/S4・law差・母平均順位は未保証。有限標本/条件付き感度なら追加compileは必須でなく現状停止可能。人工15・別CSV数値2条件・SHA/予算/native exit0/reap PASS。保存値one-shot1、追加sampling/compile/production/review/push0、mandatory STOP。次担当ユーザー：主張/公開範囲判断。Codex停止。以下は旧bytesを保全。
+
 ## 2026-10-21 H8希少RTE C-1：process-local修正・両条件pilot完了
 
 [C-1 driver](h8_rare_c1_run.py)、[修正tests](../tests/test_h8_rare_c1_run.py)、[終了監査](audit_h8_rare_c1_repair.py)、[報告](../docs/research/h8_rare_rte_c1_pilot_repair_20261021.md)。
