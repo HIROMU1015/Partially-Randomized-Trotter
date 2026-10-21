@@ -1,0 +1,49 @@
+test_01_multi_exec_start_exit_unique_ids (__main__.Tests.test_01_multi_exec_start_exit_unique_ids) ... ok
+test_02_exit_code7_preserves_partial_and_fails_closed (__main__.Tests.test_02_exit_code7_preserves_partial_and_fails_closed) ... ok
+test_03_signal_is_recorded (__main__.Tests.test_03_signal_is_recorded) ... ok
+test_04_marker_rejects_second_run_after_failure (__main__.Tests.test_04_marker_rejects_second_run_after_failure) ... ok
+test_05_prefix_all_bit_values_and_zero_mass_nodes (__main__.Tests.test_05_prefix_all_bit_values_and_zero_mass_nodes) ... ok
+test_06_sample_body_only_changes_draw (__main__.Tests.test_06_sample_body_only_changes_draw) ... ok
+test_07_P5_event_proposal_weight_exact_same (__main__.Tests.test_07_P5_event_proposal_weight_exact_same) ... ok
+test_08_group_boundaries_all_modes (__main__.Tests.test_08_group_boundaries_all_modes) ... ok
+test_09_frozen_bitstream_under_different_schedule (__main__.Tests.test_09_frozen_bitstream_under_different_schedule) ... ok
+test_10_complete_plan_zero_and_failure_distinct (__main__.Tests.test_10_complete_plan_zero_and_failure_distinct) ... ok
+test_11_old_source_result_marker_unmodified (__main__.Tests.test_11_old_source_result_marker_unmodified) ... ok
+test_12_no_worker_pool_or_sampler_transfer (__main__.Tests.test_12_no_worker_pool_or_sampler_transfer) ... ok
+test_13_split_Evidence_operator_exact_old_glue (__main__.Tests.test_13_split_Evidence_operator_exact_old_glue) ... /home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/transpiler/passmanager.py:70: DeprecationWarning: The property ``qiskit.dagcircuit.dagcircuit.DAGCircuit.duration`` is deprecated as of qiskit 1.3.0. It will be removed in Qiskit 2.0.0.
+  out_program = dag_to_circuit(passmanager_ir, copy_operations=False)
+/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/transpiler/passmanager.py:70: DeprecationWarning: The property ``qiskit.dagcircuit.dagcircuit.DAGCircuit.unit`` is deprecated as of qiskit 1.3.0. It will be removed in Qiskit 2.0.0.
+  out_program = dag_to_circuit(passmanager_ir, copy_operations=False)
+ERROR
+test_14_launch_failure_saved_and_no_retries (__main__.Tests.test_14_launch_failure_saved_and_no_retries) ... ok
+
+======================================================================
+ERROR: test_13_split_Evidence_operator_exact_old_glue (__main__.Tests.test_13_split_Evidence_operator_exact_old_glue)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-b-c1-5a-p5-worker-recovery-20261021/docs/research/track_b_c1_5a_p5_worker_recovery_20261021/test_technical.py", line 124, in test_13_split_Evidence_operator_exact_old_glue
+    record,events,angles=decode_path(self.path,actual,model,{}, {})
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-b-c1-5a-p5-worker-recovery-20261021/docs/research/track_b_c1_5a_p5_worker_recovery_20261021/job.py", line 60, in decode_path
+    inner=Evidence.create(_unpack(a['angle'])).read();representative=float.fromhex(a['representative_binary64'])
+                          ^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-b-c1-5a-p5-worker-recovery-20261021/src/trottertracks/algorithm_codesign/g6_f3_contract.py", line 61, in _unpack
+    return {k: _unpack(v) for k, v in value.items()}
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-b-c1-5a-p5-worker-recovery-20261021/src/trottertracks/algorithm_codesign/g6_f3_contract.py", line 61, in <dictcomp>
+    return {k: _unpack(v) for k, v in value.items()}
+               ^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-b-c1-5a-p5-worker-recovery-20261021/src/trottertracks/algorithm_codesign/g6_f3_contract.py", line 61, in _unpack
+    return {k: _unpack(v) for k, v in value.items()}
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-b-c1-5a-p5-worker-recovery-20261021/src/trottertracks/algorithm_codesign/g6_f3_contract.py", line 61, in <dictcomp>
+    return {k: _unpack(v) for k, v in value.items()}
+               ^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-b-c1-5a-p5-worker-recovery-20261021/src/trottertracks/algorithm_codesign/g6_f3_contract.py", line 64, in _unpack
+    raise ValueError('nonexact evidence number')
+ValueError: nonexact evidence number
+
+----------------------------------------------------------------------
+Ran 14 tests in 4.309s
+
+FAILED (errors=1)
