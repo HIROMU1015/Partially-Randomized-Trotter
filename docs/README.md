@@ -1,3 +1,9 @@
+## 2026-10-21 H8希少RTE：正式採択・現在の主張範囲で終了
+
+[正式方針](research/h8_rare_rte_closure_policy_20261021.md)、[固定証拠・文書監査](../artifacts/resource_applicability/h8_rare_rte_closure_policy/2026-10-21/README.md)。
+
+固定H8 2条件の層別有限標本評価・残余費用の条件付き感度をユーザーが正式採択し、現在の主張範囲で終了。追加sampling・compileは現時点で不要、S2_MULTI/S4_PRESENT追加取得なし、既存mandatory STOP維持。無条件期待費用優位・母平均順位・全support費用上界の保証は採用せず、未観測費用・分散は未知のまま。主張を強める場合のみ別科学判断・実行承認。4次PF等の別研究は不変。今回文書整理のみ、旧数値報告・科学契約・旧STOP保全、push0。次の科学作業なし、Codex停止。以下は採択前の履歴。
+
 ## 2026-10-21 H8希少RTE：保存値統合・残余2層感度
 
 [結果・主張境界](research/h8_rare_rte_saved_integration_results_20261021.md)、[数値・SOURCE・監査](../artifacts/resource_applicability/h8_rare_rte_saved_integration/2026-10-21/README.md)。
