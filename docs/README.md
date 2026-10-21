@@ -1,3 +1,7 @@
+## 2026-10-21 H246保存値評価の実行前gate
+
+[政策未採択STOP・根拠・採択案](research/track_a_h246_higher_pf_saved_evaluation_preflight_STOP_20261021.md)。`scripts/audit_h246_saved_evaluation_preflight.py`はmetadata/SHAだけを照合し、科学moduleを呼ばない。人工検査は`tests/test_h246_saved_evaluation_preflight.py`。統計・shot・総費用の実行は停止中。
+
 H4/H6高次PF PR本探索の実行契約・軽量高速化：[実行範囲](../docs/research/track_a_h46_pr_exploration_execution_20261021.md)。取得後mandatory STOP、統計・会計・AD03は含まない。
 
 ## 2026-10-20 H4/H6高次PF：本探索標本数設計・実行準備（未採択）
