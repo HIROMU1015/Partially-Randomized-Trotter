@@ -17,3 +17,9 @@ linear H2/H4/H6、隣接1Å、STO-3G、tol-only1e-8、rank3/10/19、prefix1/3/5�
 旧private packとseed除外資料は未回収。元契約を継承した新しいpackと新namespaceを作り、旧seed全体との完全非衝突は未検証と明記する。結果の逆転や未確定をretry理由にしない。取得後の固定比較、paired共分散を含む平均・不偏分散・SE、有理数の独立照合、Bonferroni正規近似区間、希少層null、終了監査まで実施してmandatory STOPする。一次担当の技術・数値照合であり、別担当の独立科学レビューではない。
 
 実装：src/trotterlib/h246_migration.py、scripts/run_h246_migration.py、tests/test_h246_migration.py。新旧のgrant・入力SHA・SOURCE・provenanceを分離する。人工検証34PASS/20subtest（元provider上の3公式native/compile/archive、H2guard両軸を含む）。この文書の初版時点で新実分子callは0、入力生成packは次のSOURCE固定後に発行する。
+
+## 入力生成完了・欠落reference復元の別枠予算
+
+SOURCE88cd0907でH2/H4生成を各一回完了。両系とも元の全科学配列hash、Hamiltonian hash、state hash、基底エネルギーが完全一致した。NPZ容器SHAは異なるため、原本復元とは区別する。H6は原snapshot SHA一致。
+
+次の別枠は3系各1回のsnapshot restore、occupation oracle context、full/prefix preparation、tail spectrum、full-H reference生成。H2だけ欠落した固定2候補のsignalを元のspectral法で再計算する。H4/H6は元の公開signalを厳密一致する科学配列に結合して再利用し、新referenceとの整合も確認する。shot再計算0・新sampling0・compile0。各系別の新grantをSOURCE固定後に発行し、予算を全予約してから起動する。

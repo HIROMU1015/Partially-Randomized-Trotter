@@ -1,3 +1,5 @@
+H246 reference復元：`scripts/run_h246_reconstruction_forward.py`。固定3 reference＋欠落H2 signal2を別枠で封印する。
+
 ## 2026-10-22 H246移行再構築
 
 [run_h246_migration.py：元生成式と新規grantを分離する実行入口](../docs/research/track_a_h246_migration_execution_20261022.md)。旧STOP保持。人工34PASS、科学入力生成は別枠one-shot、確認は固定118trajectory/236軸。
