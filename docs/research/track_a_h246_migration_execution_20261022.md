@@ -35,3 +35,7 @@ SOURCEeb4a2411でreference3件と欠落H2signal2件を別枠で取得した。3�
 ## 初回技術起動STOP・科学call未開始
 
 SOURCE84a301f1の初回起動はProcessPoolの関数pickle identity不一致で3系ともSTOP。workerは5/12/24で全exit0・reap、全科学ledger0、output内trajectory directory0、sampling/compile0。事前context復元は行ったがrandom/signal/compileは0。使用済みgrant・marker・終了STOPを保全し、同grantを再使用しない。元nativeworkerへ委譲するimport可能なtop-level入口へ修正する。実processpoolのmock転送を追加検証し、旧取得callが0であることを必須gateとした別新規pack confirmation_run02へ移す。固定118/236予算・科学数値は変更しない。
+
+## 取得後の独立整数moment監査
+
+`scripts/audit_h246_reconstructed_results.py`は全3系の終了監査と固定評価の完了後だけ起動する。保存整数RZから非中心化した整数和・二乗和で平均と不偏分散を再構成し、元evaluatorの中心化有理数計算およびpaired共分散の式と照合する。差SE・Bonferroni正規近似区間・点改善率も固定比較のまま再計算する。科学providerをimportせず、sampling/compile/shot再計算を行わない。2^120のoffsetを持つ人工値と観測分散0で検査した。別担当の科学レビューではない。

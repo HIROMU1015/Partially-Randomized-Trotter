@@ -1,3 +1,5 @@
+H246固定評価の別経路照合：`audit_h246_reconstructed_results.py`。全3stage終了後の保存整数moment・paired covariance・台帳とraw目録の監査。
+
 H246再構築確認：`h246_reconstructed_contract.py / run_h246_reconstructed.py`。新packで元native数値・固定118/236取得と固定評価を接続する。`tests/test_h246_reconstructed.py`で境界と人工3公式を検証。
 
 H246 reference復元：`scripts/run_h246_reconstruction_forward.py`。固定3 reference＋欠落H2 signal2を別枠で封印する。
