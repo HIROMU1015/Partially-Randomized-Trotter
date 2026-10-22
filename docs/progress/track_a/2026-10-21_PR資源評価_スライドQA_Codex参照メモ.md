@@ -1,5 +1,65 @@
 # PR資源評価スライドQ&A：Codex参照メモ
 
+最終更新：2026-10-22 JST。Q&Aは同じファイル内で78件から96件へ更新した。Q01–Q78のanchorは維持し、追加はQ79–Q96。ユーザーの「追加しておいて」と継続するcommit・push指示に基づく文書更新である。
+
+## 今回の編集範囲と現行資料
+
+- 読み手向けの基準：[発表用14枚・圧縮12枚・補足8枚](PR資源評価_発表用スライド構成案_14枚基本・12枚圧縮_補足8枚_2026-10-22.md)。編集前の公開基点は `9b042caa3eaebcf023b3e74e8327990368a6e6e4`。
+- 詳細説明の保存先：[説明意図明確化版](PR資源評価_詳細スライド構成案_14枚基本・12枚圧縮_2026-10-21_説明意図明確化版.md)。発表用MD・詳細版・全図は今回変更しない。
+- 今回更新するのは[Q&A](PR資源評価_スライドQAノート_2026-10-21.md)、本メモ、[案内README](README.md)のみ。通常編集は同じpathを使い、改訂ごとのQ&Aファイルは作らない。
+- 公開先は `codex/pr-resource-slides-supplement8-20261022`。継続する公開承認は[発表用メモの運用記録](2026-10-22_PR資源評価_発表用補足8枚_Codex参照メモ.md#slide-publication-policy)を参照。新規科学計算・科学的受入・図の本編採用を伴う承認とは区別する。
+
+## 追加質問と既存回答の同期
+
+|質問・変更箇所|確認内容・編集判断|
+|---|---|
+|Q79–Q81|PFも具体的な回路実装を反映した解析会計であり、原論文のPFだけが全回路実compileという根拠はない。Appendix E.3の式を転記し、G_detをstage全体の単価としない|
+|Q82–Q84、既存Q58|ユーザーの目的は、回路を構築しない数式評価とcompiled費用の差。原論文の数値再現・Tailのみの分離は必須ではなく、有限MCの差を含むことは認める。全差をTailやcompilerだけへ帰属しない|
+|Q85–Q88、既存Q27/Q59|同じ保存Nでの比較はC置換によるG差。現在のNは数値bias・有限RTE正規化・経験的uとHoeffdingの混合会計。理想同値ならcompileだけでNは変わらない。原論文のRPE round別N_mと固定Tの軸別N_aを同じ契約の式と呼ばない|
+|Q89–Q90|新しいCNG資料の20条件を参照。N_circuit・N比・G10/G11・N寄与は未取得nullであり、N差ゼロという結果ではない。H6/H8は条件付き参考値。本編6への採用は未判断・未実施|
+|Q91–Q92、既存Q07/Q53–Q54|outer32は各outer stepのRTE小ステップ合計32。S2ではr32相当、高次では各区間への割当の合計32。T/qから出る値やMC本数ではない|
+|Q93、既存Q14–Q16・対応表|「主比較8・9」は14枚版のスライド8・9、圧縮版7・8。探索A各n8とouter32・独立確認を区別|
+|Q94、既存Q20/Q69|本編13は日本語の探索→確認表へ変更済み。H4粗PR→PF、H6粗PF→PF、H8はPOINT_REPRODUCED。S5の固定候補・本数と元Dも保全|
+|既存Q39|本編1の既存Ha換算表示5行を転記。単一固有状態・半径1・既知branch・ℏ=1、T=.8、7桁丸め。新しい換算計算なし。達成エネルギー精度や丸め込みの厳密上界とはしない|
+|Q95–Q96、既存Q74/Q77|発表用S1–S8と詳細A.1–A.9/B.1–B.23を区別。発表用別MDは原本保全・別版作成という後続指示による。公開状態と過去の未公開履歴を区別|
+
+## 今回照合した固定資料
+
+### 原論文と旧理論／compiled比較
+
+- 原論文：[Phase estimation with partially randomized time evolution, arXiv:2503.05647v1](https://arxiv.org/pdf/2503.05647v1)。ローカル原本 `Phase estimation with partially randomized time evolution.pdf` の同版本文も参照。Appendix E.1（PDF pp.36–38）でPFのPauli回転・CNOT相殺・lexicographic ordering・DF基底変換等、E.3（pp.39–40）でG_det/G_randの定義とRPE総費用式を確認。Q81の式はE.3の総ゲート式であり、元論文の分子数値・Toffoli表を今回のRZ値へ変換したものではない。元論文のN_mの係数を今回のN_aの式として転記しない。
+- 固定commit `427480e4f1a61385cbffa724930a2221ed9e5e1d`：`docs/research/track_a_h46_theory_compiled_paper_evidence_20261018.md` と `artifacts/resource_applicability/track_a_h46_theory_compiled_paper_evidence/2026-10-18/table_index.md`。モデル／native／compiledの同一event計数、S4有限精度修正、loweringとopt1の未分離を照合。
+- 固定commit `da8eb64ba8e88c219a6b707e1c72d130f5f37fcb`：`scripts/h46_cost_summary.py` の保存shots利用・`no_new_bias_or_shot_rule=True` と総費用の合成。現行スライド6の図はN固定のC比較で、独立N比較ではない。現行発表用6・詳細A.9の条件と旧n8を保持。
+
+### 新しいC・N・G比較資料（今回の本編へは未採用）
+
+固定commit：`b81d4096e806efb6523304764d3a0680b7663320`。
+branch：`codex/pr-pf-analytic-vs-circuit-cng-20261022`。GitHubのbranch headをread-onlyで照合した。この枝を発表資料枝へmerge/cherry-pickしていない。
+
+root：`docs/progress/track_a/figures/pr_pf_analytic_vs_circuit_CNG_20261022/`。
+
+|固定ファイル・表示群|確認事項|
+|---|---|
+|[README](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/b81d4096e806efb6523304764d3a0680b7663320/docs/progress/track_a/figures/pr_pf_analytic_vs_circuit_CNG_20261022/README.md)、`definitions.md`、`captions_ja.md`|C/Gの20条件、native期待RZ数と保存compiled値、G00→G01はN固定。新図の本編採用は未判断|
+|[N_comparability_audit.json](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/b81d4096e806efb6523304764d3a0680b7663320/docs/progress/track_a/figures/pr_pf_analytic_vs_circuit_CNG_20261022/N_comparability_audit.json)|`independent_conditions=0`、`required_conditions=20`、`N_circuit=null`、`N_ratio=null`、`zero_N_change_observed=false`。新推定器・分散適応は未採用|
+|`coverage_matrix.md`、`figure_data.json`、`provenance.json`|直鎖1 Å・STO-3G・DF3/10/19/28・T=.8・生成順・通常signed・倍率1・P0・5精度、固定したS2 PR/PF候補、δ=.8/q、Qiskit1.3.0/Nature0.7.2・rz/sx/x/cx・opt1・seed17・topologyなし。H2は元n8、他3系は新cohort。H6/H8は補助演算子unweighted-G診断不合格の条件付き参考値|
+|`confirmed_H2_H4/` と `all_conditional/` のC/N/G図|前者は実施済み技術検査PASS範囲、後者は条件付きH6/H8も表示。独立科学レビュー済み・独立確認Pとは呼ばない。N図は保存回数の情報図|
+|`N_comparison_contract_DRAFT.md`|未採用・未実行。今回の読解・Q&A追記を、新しいN比較計算の承認へ拡張しない|
+
+元SOURCEは `bb5251fc9780ac7ac3b6c3c540aa3c865879eb4f`。固定README末尾の「ローカルcommit・pushなし」はその作成時の記録で、今回確認したbranchの公開状態とは区別する。今回は既存blobの読解と表示確認のみで、科学計算や新しい科学的判定は行っていない。
+
+### outer32と発表用の表示改善
+
+- outer32は既存 `figures/all_methods_hchain_with_higher_pr_20261022/README.md`、caption・provenance、詳細B.12、本編10の条件を参照。旧主比較とのidentity結合未実施を維持し、Q91のT=.8/q4は記号説明例としてのみ記す。
+- 本編1・13の表示改善の公開基点は `9b042caa3eaebcf023b3e74e8327990368a6e6e4`。[表示改善記録](2026-10-22_PR資源評価_発表用補足8枚_Codex参照メモ.md)と[その時点の文書検証](2026-10-22_PR資源評価_発表用補足8枚_文書検証.json)も参照。Q39は本編1、Q94は本編13/S5の既存表示の転記。今回数値・保存判定を変更していない。
+
+## 旧記録の扱い
+
+以下は2026-10-21のQ&A作成時の78件・参照先・未公開状態の記録。その後の発表用別版・公開・今回の96件への更新を取り消す指示ではない。
+
+<details>
+<summary>2026-10-21作成時の記録（原文保持）</summary>
+
 作成日：2026-10-21 JST。対象は[Q&Aノート](PR資源評価_スライドQAノート_2026-10-21.md)。本メモは参照・編集継続用で、投影用ではない。
 
 ## 作業範囲
@@ -52,3 +112,13 @@ Q01–Q78の連番・重複・内部anchor、目次、14枚／12枚の対応、�
 2026-10-21のQ&A作成時点の基準構成案のSHA-256は `f5b9d4bb4d4109933e39b456410e57848dc46e920b68968e7474d51a9251c7db`。技術確認の実行記録は作業用一時ディレクトリに保存し、新たな科学台帳・検証結果として登録しない。
 
 新規科学計算・sampling・compile・統計再解析・bootstrap・費用再計算・再ランキング・図変更は行わない。既存SOURCE・原結果・主表・grant・ledger・marker・STOPは保全する。Q&Aと本メモの作成、案内リンク、文書確認までで終了し、commit・pushは行わない。
+
+</details>
+
+## 2026-10-22今回の文書確認
+
+Q01–Q96の連番とanchor、既存78見出しの保持、18件の追加、14枚／12枚とS1–S8への対応を確認した。ローカルリンク100件が解決し、数式33箇所をMarkdownの数式として解析できることと括弧の対応を確認。Ha表は本編1、探索→確認表は本編13/S5の保存表示と照合し、新しい算術・統計計算はしていない。CNG固定資料の `independent_conditions=0`・N関連null・`zero_N_change_observed=false` も照合した。
+
+作業は公開用の既存worktreeで3文書だけに限定した。共有checkoutの発表資料503ファイルは編集前SHAと照合し、今回の3文書を除く発表用本編・詳細版・全図等を保全している。技術確認記録は作業用一時ディレクトリに保存し、新しい科学台帳や科学検証結果として登録しない。ユーザーの継続指示に基づき、文書確認後に3文書をcommit・pushする。公開commitはGit履歴で追跡し、本文へ自己参照SHAを埋め込まない。
+
+新規科学計算・sampling・compile・bootstrap・統計再解析・費用再計算・再ランキング・図変更・原結果変更・詳細科学レビュー・最終evidence freezeは行っていない。新CNG図の本編採用や追加N検証も実施していない。今回の文書公開後に残る必須作業はなく、mandatory STOPとする。
