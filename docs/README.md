@@ -1145,3 +1145,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-22 H2非DF固定時間signal pilot
 
 [H2非DF pilotの固定契約・実行・検証](non_df_h2_pilot_validation.md)。同一MO積分のPauli/DF表現・sector ground・既存DF operatorとnative回路を照合し、固定時間C/N/Gを取得する専用one-shot。
+
+## H2非DFのQiskit process分離（2026-10-23）
+
+[原因調査・人工並列・未完了2caseの新契約](non_df_h2_process_recovery_validation.md)。旧run01のSTOPと成功2caseを保全し、Pauli PR/DF PFのみ別runで取得する。

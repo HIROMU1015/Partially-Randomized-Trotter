@@ -971,3 +971,7 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 ## 2026-10-22 H2非DF固定時間signal pilot
 
 `h2_non_df_pilot.py` はH2固定契約・新規SCF/MO入力・DF照合・固定時間会計。`h2_non_df_pilot_validation.py` はevent/trajectory/DF primitive検証。import時の科学処理なし。[検証文書](../../docs/non_df_h2_pilot_validation.md)と新artifactからSOURCE・grant・STOPを確認する。
+
+## H2未完了2caseのprocess分離取得（2026-10-23）
+
+`isolated_qiskit_execution.py` はfresh-interpreter起動と回収、`h2_non_df_process_recovery.py` は保存入力/旧SOURCE照合と新one-shot、`h2_non_df_process_integration.py` は保存4caseのC/N/G・paired covariance検査を担当する。[検証文書](../../docs/non_df_h2_process_recovery_validation.md)。旧科学kernelはbyte不変。

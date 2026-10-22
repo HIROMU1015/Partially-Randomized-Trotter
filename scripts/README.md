@@ -1000,3 +1000,7 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## 2026-10-22 H2非DF固定時間signal pilot
 
 `run_h2_non_df_pilot.py` はH2・1 Å・STO-3G専用の新しい固定契約をbind/executeする。消費済みrunを再実行しない。[契約・技術文書](../docs/non_df_h2_pilot_validation.md)。
+
+## H2未完了2caseのprocess分離取得（2026-10-23）
+
+`run_h2_non_df_process_recovery.py` は人工4process preflightと、新SOURCEにbindしたPauli PR/DF PFだけのone-shotを提供する。`diagnose_qiskit_thread_contention.py` は人工のみのthread/process競合診断。[契約・検証・禁止範囲](../docs/non_df_h2_process_recovery_validation.md)。旧run/成功2caseは再実行しない。

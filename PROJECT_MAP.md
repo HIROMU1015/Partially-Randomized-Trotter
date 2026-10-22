@@ -1627,3 +1627,7 @@ H4 ε=.001 S2選択を確定。現行理論Gは元入力不足で0/20、compiled
 ## 2026-10-22 H2非DF固定時間signal pilot
 
 [H2非DF pilot検証文書](docs/non_df_h2_pilot_validation.md)。`src/trotterlib/h2_non_df_pilot.py`、`h2_non_df_pilot_validation.py`、`scripts/run_h2_non_df_pilot.py`、`tests/test_h2_non_df_pilot.py`、`artifacts/non_df_h2_pilot/2026-10-22/`を一組として読む。新規H2一括承認の下で固定4caseをone-shot実行し、旧STOPとは分離する。
+
+## H2非DFのQiskit process分離（2026-10-23）
+
+`src/trotterlib/{isolated_qiskit_execution,h2_non_df_process_recovery,h2_non_df_process_integration}.py`、`scripts/run_h2_non_df_process_recovery.py`、`tests/test_h2_non_df_process_recovery.py`、[検証文書](docs/non_df_h2_process_recovery_validation.md)、`artifacts/non_df_h2_process_recovery/2026-10-23/`を一組として読む。旧run01は保全し、承認された未完了2caseのみ別契約で取得する。
