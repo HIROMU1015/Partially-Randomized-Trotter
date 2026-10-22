@@ -81,7 +81,7 @@ def audit(private,output):
     save('grants_and_markers.json',grants);save('native_result_inventory.json',native);save('raw_archive_inventory.json',archives)
     save('source_input_identity.json',dict(SOURCE=plan['SOURCE'],base_commit=plan['base_commit'],binding=plan['binding'],
         input_seals=[{k:v for k,v in e.items() if k!='path'}|dict(role=e['role']) for e in plan['closure'] if e['role'].startswith('scientific_input:')],
-        original_snapshot_restored=False,regenerated_container_scientific_arrays_old_hashes_identical=True,
+        original_snapshot_restored=plan['system']=='H6',regenerated_container_scientific_arrays_old_hashes_identical=plan['system']!='H6',
         source_closure_sha256=c.digest(plan['closure']),source_files=[dict(path=e['role'][7:],sha256=e['sha256']) for e in plan['closure'] if e['role'].startswith('SOURCE:')],
         previous_confirmation_provider_runtime_hashes_reverified=True))
     with (output/'PF_endpoint_costs.json.gz').open('xb') as f:f.write(gzip.compress(c.encoded(endpoints),compresslevel=1,mtime=0))
