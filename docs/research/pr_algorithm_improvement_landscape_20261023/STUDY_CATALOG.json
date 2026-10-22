@@ -1,0 +1,3907 @@
+{
+  "schema_version": 1,
+  "survey_date_jst": "2026-10-23",
+  "classification_is_additional": true,
+  "study_unit": "概念・方法family。phase/retry/修正はversion_historyとsource参照へ分離。集計数は独立実験数ではない。",
+  "studies": [
+    {
+      "study_id": "REP-01",
+      "name": "Pauli groupingとDF回路基盤",
+      "category": "Hamiltonian表現・分解",
+      "primary_document": "README.md",
+      "objective": "回転数・RZ層を減らす",
+      "modification": "Pauli grouping／DF基底変換と対角回転",
+      "improvement_mechanism": "可換性と低rank構造で実装単位を変える",
+      "comparison": "ungrouped Pauli／grouped PF／DF PF",
+      "scientific_conditions": "旧水素鎖、basis・距離・rank・PF窓は個別artifactの条件。共通条件へ統合しない",
+      "metrics": [
+        "Pauli rotations",
+        "RZ layers",
+        "T-depth proxy"
+      ],
+      "recorded_status_description": "既存実装・保存fitあり",
+      "outcome": "implementation_and_evaluation",
+      "actual_result": "実装基盤を確認。最新PRや全energy taskの優位性とは分離する",
+      "pr_applicability": "直接応用",
+      "stop_reason": "個別runの終了。今回再実行しない",
+      "open_questions": "rawと現在の係数版・原稿の対応",
+      "reusable_assets": "DF/Gaussian builder、grouping、費用関数",
+      "repository_key": "DF",
+      "kind": "foundation",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0001",
+      "evidence_ids": [
+        "EV-0001"
+      ],
+      "branch": "codex/execute-provided-command-sequence",
+      "fixed_result_or_document_commit": "4d90167f0634a67ca1ed6bf2630af075c35a149f",
+      "repository": "HIROMU1015/Evaluation_numGate_highorder_DF",
+      "period": "資料日 2026-01-22（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0002",
+        "EV-0003"
+      ],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "REP-02",
+      "name": "旧DF rank screening",
+      "category": "Hamiltonian表現・分解",
+      "primary_document": "VALIDATION_STATUS.md",
+      "objective": "rank削減と誤差の交換を調べる",
+      "modification": "DF rankを変更したscreening",
+      "improvement_mechanism": "低rankで決定論費用を節約する",
+      "comparison": "full reference／低rank DF",
+      "scientific_conditions": "旧screening固有入力。現在のtol-only rank方針と同一視しない",
+      "metrics": [
+        "DF residual",
+        "PF bias",
+        "cost proxy"
+      ],
+      "recorded_status_description": "DO NOT USE / stale",
+      "outcome": "insufficient_evidence",
+      "actual_result": "旧screening値は現行科学結果として利用不可。履歴として保存",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "stale evidenceを現行値にしない",
+      "open_questions": "生成元・入力identity・旧rawの回収可否",
+      "reusable_assets": "rank-policyとsnapshot固定の教訓",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "C",
+      "gap_ids": [
+        "GAP-008"
+      ],
+      "version_history": "",
+      "primary_evidence_id": "EV-0004",
+      "evidence_ids": [
+        "EV-0004",
+        "EV-0005"
+      ],
+      "branch": "rte-basis-cost-attribution-diagnostic-20261013",
+      "fixed_result_or_document_commit": "403204edf22e5712a71ac9ac7eebdbcd18626421",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-04（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0006",
+        "EV-0007",
+        "EV-0008"
+      ],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [
+        {
+          "commit": "2978e2fea672b7a1ff20cac74269ec9a610159dc",
+          "evidence_id": "EV-0004",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "06b2c32528713a5270ee4915432bcd3898e0e5e1",
+          "evidence_id": "EV-0004",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "33f436bb3a7d5b9cefa23604bb22c8d1fb17cd62",
+          "evidence_id": "EV-0004",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。raw不足により成否未判定。",
+      "evidence_sufficiency_reason": "成否や再利用の判断を左右する原入力／結果が不足。stale/prose-onlyの数値を有効結果へ昇格しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "実装/報告記録はあるが重要raw/inputが不足し、実計算の成否を十分判断できない。"
+    },
+    {
+      "study_id": "REP-03",
+      "name": "BLISS型UWC＋grouped PF",
+      "category": "Hamiltonian表現・分解",
+      "primary_document": "notes/uwc_current_implementation_and_results.md",
+      "objective": "sectorを保持してtail normとPF費用を削減",
+      "modification": "粒子数sectorで消えるlinear/quadratic shiftを前処理",
+      "improvement_mechanism": "Hamiltonian係数を変えて誤差・normalizationを下げる",
+      "comparison": "同じgrouping規則の元Hamiltonian",
+      "scientific_conditions": "旧H2–H6/STO-3G系列、theta=.01 quadratic、二次PF。H3 sector訂正の前後を区別。L_Dとfit窓の完全条件は欠損raw待ち",
+      "metrics": [
+        "alpha",
+        "RZ layers",
+        "total-cost proxy"
+      ],
+      "recorded_status_description": "prose-only / raw artifacts missing",
+      "outcome": "insufficient_evidence",
+      "actual_result": "本文上の小差・悪化訂正は実行メモ。数値的な改善成否を確定しない",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "独立監査可能なraw不足",
+      "open_questions": "JSON/CSV、sector診断、theta sweep、実行環境",
+      "reusable_assets": "uwc.py、前処理位置とsector guard",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "C",
+      "gap_ids": [
+        "GAP-001"
+      ],
+      "version_history": "誤ったH3 target sectorの旧悪化値と訂正後記述を併記。orbital_optimization系は予約interface／NotImplementedError。",
+      "primary_evidence_id": "EV-0005",
+      "evidence_ids": [
+        "EV-0005"
+      ],
+      "branch": "agent/finite-rte-df-tail",
+      "fixed_result_or_document_commit": "231d17e393f573fd29c659eaf1fd9bae2a68d8f9",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-07-20（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0007",
+        "EV-0008",
+        "EV-0009"
+      ],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。raw不足により成否未判定。",
+      "evidence_sufficiency_reason": "成否や再利用の判断を左右する原入力／結果が不足。stale/prose-onlyの数値を有効結果へ昇格しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "実装/報告記録はあるが重要raw/inputが不足し、実計算の成否を十分判断できない。"
+    },
+    {
+      "study_id": "PF-01",
+      "name": "Yoshida・Morales・新4次係数の比較",
+      "category": "Product Formula",
+      "primary_document": "review_response/README.md",
+      "objective": "誤差次数と一step費用の釣合いを改善",
+      "modification": "既存高次係数・新4次候補・公開係数版を区別",
+      "improvement_mechanism": "誤差係数の低減で必要step数を減らす",
+      "comparison": "S2／標準4次／複数8次・10次",
+      "scientific_conditions": "高次PF repositoryの分子・H-chain別固定条件。PR分割L_Dは非該当。公開版と旧係数版を区別",
+      "metrics": [
+        "Pauli rotations",
+        "RZ depth proxy",
+        "energy bias"
+      ],
+      "recorded_status_description": "公開係数整理・有限時間検証記録",
+      "outcome": "limited_improvement",
+      "actual_result": "PF family内の限定比較がある。高次数が常に有利とはしない",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "既存比較scopeで完了",
+      "open_questions": "PRの負時間tail・normalizationと強い低次対照",
+      "reusable_assets": "固定係数列・stage数・既存PF builder",
+      "repository_key": "PF",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0010",
+      "evidence_ids": [
+        "EV-0010"
+      ],
+      "branch": "finite-time-research-consolidation-20260922",
+      "fixed_result_or_document_commit": "20d64c2fea1ed2d2188777df4f3d962ee94df486",
+      "repository": "HIROMU1015/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae",
+      "period": "資料日 2026-09-19（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0011",
+        "EV-0012",
+        "EV-0013"
+      ],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "PF-02",
+      "name": "Processed PF／YP8m8",
+      "category": "Product Formula",
+      "primary_document": "review_response/README.md",
+      "objective": "kernelの有限時間誤差・状態重なりを改善",
+      "modification": "processor–kernel–inverse processorを分離",
+      "improvement_mechanism": "processingによる状態・近似演算子の改善と反復kernel短縮",
+      "comparison": "kernel単体／非processed Morales",
+      "scientific_conditions": "YP8m8の公開kernelとprocessor。決定論unitaryの相似変換と固定状態を区別。PRへの移送は未実施",
+      "metrics": [
+        "eigenvalue error",
+        "state overlap",
+        "processor/kernel rotations"
+      ],
+      "recorded_status_description": "published coefficient and direct-check records",
+      "outcome": "technical_success_science_unresolved",
+      "actual_result": "kernelとprocessed回路の検証・費用区分を保存。PR全費用への利益は未確定",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "主結果への採用は未確定",
+      "open_questions": "processorの前後費用、状態変換、random平均の意味",
+      "reusable_assets": "kernel/processor係数・既存検証記録",
+      "repository_key": "PF",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "非processed Y8m10bとの名称・stage数の混同を避ける。",
+      "primary_evidence_id": "EV-0010",
+      "evidence_ids": [
+        "EV-0010"
+      ],
+      "branch": "finite-time-research-consolidation-20260922",
+      "fixed_result_or_document_commit": "20d64c2fea1ed2d2188777df4f3d962ee94df486",
+      "repository": "HIROMU1015/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae",
+      "period": "資料日 2026-09-19（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0011",
+        "EV-0012",
+        "EV-0013"
+      ],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "PF-03",
+      "name": "PF固有位相・D6係数とsurvival代理量",
+      "category": "誤差構造・評価基盤",
+      "primary_document": "docs/pf_delta_validation.md",
+      "objective": "PF係数入力の妥当性を確かめる",
+      "modification": "survival／D6／支配固有位相を比較",
+      "improvement_mechanism": "安い状態依存係数で探索を支える",
+      "comparison": "full-H参照・survival fit・QPE RMSE",
+      "scientific_conditions": "linear H4 1Å/STO-3G/DF12、L_D=0…11、δ=.0125/.025/.05/.1/.2/.4、q=1/2/4。D6 fit窓とphase窓を区別",
+      "metrics": [
+        "energy bias",
+        "branch weight",
+        "C_use"
+      ],
+      "recorded_status_description": "local validation",
+      "outcome": "foundation_validated",
+      "actual_result": "survival phaseとQPE RMSEは同じ量でない。C_useは実行窓の経験的envelope",
+      "pr_applicability": "直接応用",
+      "stop_reason": "局所検証で停止",
+      "open_questions": "H12係数・長q・別snapshotへの移送",
+      "reusable_assets": "係数定義・conditioning/branch診断",
+      "repository_key": "PR",
+      "kind": "foundation",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0014",
+      "evidence_ids": [
+        "EV-0014"
+      ],
+      "branch": "all-r-coherent-opt2-reoptimization",
+      "fixed_result_or_document_commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-09-24（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0015",
+        "EV-0016"
+      ],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "PF-04",
+      "name": "有限時間校正・第一研究S0–S4",
+      "category": "誤差構造・評価基盤",
+      "primary_document": "PF_first_study_final_synthesis_20260925.md",
+      "objective": "校正を改善して安全なPF予算を下げる",
+      "modification": "状態置換／proxy差／fit誤差の分離、二状態診断",
+      "improvement_mechanism": "誤差の支配成分を改善すれば校正過大見積りを削減できる",
+      "comparison": "既存校正と強い共通対照",
+      "scientific_conditions": "第一研究のH4/toy/HF等、分子ごとにbasis・active space・PF・time gridを固定。PR分割なし",
+      "metrics": [
+        "calibration error",
+        "budget safety",
+        "regret"
+      ],
+      "recorded_status_description": "complete_mechanism_study_no_method_benefit",
+      "outcome": "no_improvement",
+      "actual_result": "機構分離は成立、固定S4診断はcomplete_no_benefit。研究未完了と解釈しない",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "S5へ進まない既存STOP",
+      "open_questions": "PRで同じ取得費・bias台帳を満たすか",
+      "reusable_assets": "誤差分解と同情報比較の設計",
+      "repository_key": "PF",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0017",
+      "evidence_ids": [
+        "EV-0017"
+      ],
+      "branch": "first-study-completion-analysis-20260926",
+      "fixed_result_or_document_commit": "6a1e54d5e830a20b8817791f9f1f65729815fc12",
+      "repository": "HIROMU1015/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae",
+      "period": "資料日 2026-09-25（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0018"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0019"
+      ],
+      "source_snapshot_references": [],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "PF-05",
+      "name": "有限時間校正・第二研究Direction C",
+      "category": "誤差構造・評価基盤",
+      "primary_document": "docs/second_study_v2/evidence_integration_20261006/approved_closure.md",
+      "objective": "cheap predictorの安全性と資源価値を調べる",
+      "modification": "spectral情報・rank・geometry・prospective固定予測",
+      "improvement_mechanism": "安全余裕と点推定を分けて有用なdecision windowを調べる",
+      "comparison": "same-time cheap／B0／真値scorer",
+      "scientific_conditions": "H-chain G/Rと一般分子prospectiveは別契約。各分子basis・PF・rank/time条件は固定参照へ。PR L_Dなし",
+      "metrics": [
+        "safe/unsafe",
+        "budget advantage",
+        "abstention"
+      ],
+      "recorded_status_description": "Track G/R completion accepted; Direction C",
+      "outcome": "mixed",
+      "actual_result": "H-chain限定支持と一般分子への不十分な移送、情報追加後のbudget利得なしを保持",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "H-chain追加science終了",
+      "open_questions": "一部HF/HCl/prospectiveのabsolute identity tuple",
+      "reusable_assets": "prediction/truth分離・abstentionとheadroom診断",
+      "repository_key": "PF",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [
+        "GAP-005"
+      ],
+      "version_history": "",
+      "primary_evidence_id": "EV-0020",
+      "evidence_ids": [
+        "EV-0020",
+        "EV-0021"
+      ],
+      "branch": "pf-finite-time-research-completion-audit-20261016",
+      "fixed_result_or_document_commit": "b4a7a8204b8d7fa0a2a1bc79bfbdd7cf63177ca1",
+      "repository": "HIROMU1015/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae",
+      "period": "資料日 2026-10-06（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0022"
+      ],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "PF-06",
+      "name": "FS-C旧入力回収とFS-R1校正follow-up",
+      "category": "誤差構造・評価基盤",
+      "primary_document": "docs/research_audits/pf_finite_time_completion_20261016/open_question_and_evidence_map.md",
+      "objective": "state改善・local評価で校正予算を下げる",
+      "modification": "旧source回収から別new-source prediction freezeへ移行",
+      "improvement_mechanism": "selected-timeの安い情報で校正誤差を減らす",
+      "comparison": "historical H01/H02／new-source B0と4arm",
+      "scientific_conditions": "旧N2/CO historical Hamiltonianの指定SHA。new sourceのN2/COは独立identity。Phase B truth未実行",
+      "metrics": [
+        "identity",
+        "prediction error",
+        "future budget scoring"
+      ],
+      "recorded_status_description": "NO_GO_SOURCE_MISSING / NO_GO_RECONSTRUCTION_MISMATCH; Phase B unauthorized",
+      "outcome": "technical_success_science_unresolved",
+      "actual_result": "旧回収失敗を保存。new-source Phase A freezeは成立、利益採点は未実行",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "旧identity不一致と新Phase B未承認",
+      "open_questions": "旧H01 pickle／Hamiltonian／CISD／ordered groupsの原本",
+      "reusable_assets": "source再baselineとfreeze barrier",
+      "repository_key": "PF",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [
+        "GAP-004"
+      ],
+      "version_history": "C0.5 source missing→C0.6 reconstruction mismatch→R0別系列→R1 Phase A／B0。原truthを混合しない。",
+      "primary_evidence_id": "EV-0021",
+      "evidence_ids": [
+        "EV-0021",
+        "EV-0023",
+        "EV-0024"
+      ],
+      "branch": "pf-finite-time-research-completion-audit-20261016",
+      "fixed_result_or_document_commit": "b4a7a8204b8d7fa0a2a1bc79bfbdd7cf63177ca1",
+      "repository": "HIROMU1015/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae",
+      "period": "資料日 2026-10-16（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0025"
+      ],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [
+        {
+          "commit": "75fe0d65a2940f160ea42f6414fc2246d67bd0cf",
+          "evidence_id": "EV-0024",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "a5fb9835657c3e5ac1658d1323b5746bf318fc8c",
+          "evidence_id": "EV-0024",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "PF-07",
+      "name": "BCH高次項・response・direct-scaling",
+      "category": "Product Formula",
+      "primary_document": "docs/research_audits/pf_finite_time_completion_20261016/open_question_and_evidence_map.md",
+      "objective": "高次PF係数・有限時間モデルを安く予測",
+      "modification": "compact BCH、D4混合/D8、response・few direct点",
+      "improvement_mechanism": "相殺と混合補正を保持して過小評価を抑える",
+      "comparison": "HF/CISD/exact response／direct grid",
+      "scientific_conditions": "H05やF02/F03、H-chain sizingは別固定設計。basis/active space/PF/time窓は各引用元。PR L_Dなし",
+      "metrics": [
+        "model error",
+        "branch eligibility",
+        "acquisition cost"
+      ],
+      "recorded_status_description": "既存機構結果・U1/U3/U4残余",
+      "outcome": "mixed",
+      "actual_result": "限定identityや予測成功はあるが、モデル増量の単調改善・サイズ普遍則・net資源利益は未確立",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "既存終了／保留を維持",
+      "open_questions": "取得費・剰余・枝・未使用系への移送",
+      "reusable_assets": "compact BCH、response、失敗条件の記録",
+      "repository_key": "PF",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0021",
+      "evidence_ids": [
+        "EV-0021"
+      ],
+      "branch": "pf-finite-time-research-completion-audit-20261016",
+      "fixed_result_or_document_commit": "b4a7a8204b8d7fa0a2a1bc79bfbdd7cf63177ca1",
+      "repository": "HIROMU1015/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae",
+      "period": "資料日 2026-10-16（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0026"
+      ],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "CIR-01",
+      "name": "WP06-a/b full/support-union基底計画",
+      "category": "量子回路",
+      "primary_document": "docs/research_direction_sequence_policy.md",
+      "objective": "DF event列の基底変換費を削減",
+      "modification": "singleton source runだけsupport限定へ置換",
+      "improvement_mechanism": "runの共有を残し小supportの単発変換だけ省く",
+      "comparison": "full-basis共有／event毎support限定",
+      "scientific_conditions": "H4 rank12/1Å/STO-3G、二次partial S2、主にL_D3、δ=.02、短列3/6、固定Qiskit条件",
+      "metrics": [
+        "RZ",
+        "CX",
+        "depth",
+        "operator residual"
+      ],
+      "recorded_status_description": "local holdout pass",
+      "outcome": "limited_improvement",
+      "actual_result": "局所列で削減を観測。一律support限定は混在列で悪化し得る",
+      "pr_applicability": "直接応用",
+      "stop_reason": "局所検証完了",
+      "open_questions": "full-wrapper・別compiler/encodingにおける増分価値",
+      "reusable_assets": "basis-plan API／support_run_le_1",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0027",
+      "evidence_ids": [
+        "EV-0027"
+      ],
+      "branch": "all-r-coherent-opt2-reoptimization",
+      "fixed_result_or_document_commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-09-24（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0028",
+        "EV-0029"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0030"
+      ],
+      "source_snapshot_references": [],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "CIR-02",
+      "name": "P-A interval-union DP",
+      "category": "量子回路",
+      "primary_document": "docs/research/pa_joint_synthesis_v1_formalization.md",
+      "objective": "run内区間分割で回路をさらに減らす",
+      "modification": "interval-union DPと明示一区間baseline",
+      "improvement_mechanism": "support共有範囲の選択で基底変換を節約する",
+      "comparison": "support_run_le_1／one_segment_per_source_run",
+      "scientific_conditions": "H4/STO-3G/DF12/L_D3/δ=.02/K2、H5 transfer、後続forced-support order2の30task",
+      "metrics": [
+        "compiled RZ",
+        "plan changes",
+        "operator equivalence"
+      ],
+      "recorded_status_description": "stop_pa_interval_dp_as_primary_and_return_to_pc",
+      "outcome": "no_improvement",
+      "actual_result": "初期blind削減は保持するが、後続非退化比較で一区間baselineとの差0。interval固有claimを停止",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "interval subdivisionの独立寄与を支持せず",
+      "open_questions": "より異なるsupport構造に明示的機構があるか",
+      "reusable_assets": "run-level full/support-union policy",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "pilot→H5/H4 blind pass→全event order0等の機構監査→forced-support order2で全metric差0。",
+      "primary_evidence_id": "EV-0031",
+      "evidence_ids": [
+        "EV-0031",
+        "EV-0032",
+        "EV-0033"
+      ],
+      "branch": "all-r-coherent-opt2-reoptimization",
+      "fixed_result_or_document_commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-09-25（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0034",
+        "EV-0035",
+        "EV-0036"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0037"
+      ],
+      "source_snapshot_references": [],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "OPT-01",
+      "name": "round別r/K・誤差/失敗確率配分",
+      "category": "分割・協調設計",
+      "primary_document": "docs/research_direction_wp11_synthesis.md",
+      "objective": "shot込み総費用proxyを下げる",
+      "modification": "round schedule、beta/alpha配分、compiler-context整合",
+      "improvement_mechanism": "誤差headroomと単価を同時に配分する",
+      "comparison": "PR候補と決定論endpointへ同じ再最適化",
+      "scientific_conditions": "H4 linear1Å/STO-3G/DF12、L_D3/12、δ=.01/.02等、直接wrapper q≤32。長RPEは外挿scope",
+      "metrics": [
+        "shot-weighted RZ",
+        "uncertainty intervals",
+        "prep sensitivity"
+      ],
+      "recorded_status_description": "undetermined_under_compiler_and_transfer_sensitivity",
+      "outcome": "mixed",
+      "actual_result": "共通配分が大きく効き、強い対照とcompiler感度で頑健な区間優位は未確立",
+      "pr_applicability": "直接応用",
+      "stop_reason": "局所compiler精密化を区切った",
+      "open_questions": "長q移送・状態準備・外部instance",
+      "reusable_assets": "公平な予算再配分と不確かさの分離",
+      "repository_key": "PR",
+      "kind": "foundation",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0038",
+      "evidence_ids": [
+        "EV-0038"
+      ],
+      "branch": "all-r-coherent-opt2-reoptimization",
+      "fixed_result_or_document_commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-09-24（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0039",
+        "EV-0040",
+        "EV-0041"
+      ],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "OPT-02",
+      "name": "P-B signal-aware selection",
+      "category": "分割・協調設計",
+      "primary_document": "docs/research_direction_signal_weight_pilot.md",
+      "objective": "位相誤差だけの選択をsignal情報で改善",
+      "modification": "target weight／radiusによるscreening",
+      "improvement_mechanism": "leakageとvisibilityを考慮して不適切な候補を除く",
+      "comparison": "energy-only選択",
+      "scientific_conditions": "H4 1Å/STO-3G/DF12、L_D0…11、6delta、q1/2/4",
+      "metrics": [
+        "target weight",
+        "radius",
+        "selection change"
+      ],
+      "recorded_status_description": "現H4 gridで停止",
+      "outcome": "no_improvement",
+      "actual_result": "現gridに実用的なselection差がない。一般signal問題の否定ではない",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "meaningful inversion／near-tie改善を得ず",
+      "open_questions": "別taskでsignalがdecisionを支配するか",
+      "reusable_assets": "signal/energyの分離診断",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0042",
+      "evidence_ids": [
+        "EV-0042"
+      ],
+      "branch": "all-r-coherent-opt2-reoptimization",
+      "fixed_result_or_document_commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-09-25（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0043",
+        "EV-0044"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0045"
+      ],
+      "source_snapshot_references": [],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "OPT-03",
+      "name": "P-C geometry tracking／energy差",
+      "category": "分割・協調設計",
+      "primary_document": "docs/research_direction_geometry_energy_difference_pilot.md",
+      "objective": "geometry間の相殺でenergy差を安くする",
+      "modification": "DF prefix追跡・係数interpolation",
+      "improvement_mechanism": "共通構造と符号付きbiasを利用する",
+      "comparison": "independent prefix／独立endpoint推定",
+      "scientific_conditions": "linear H4/STO-3G/DF12/L_D3、局所.80–1.20Å→後続.70–1.60Å、二次partial S2、文書内delta窓",
+      "metrics": [
+        "coefficient prediction",
+        "difference bias",
+        "breakdown flags"
+      ],
+      "recorded_status_description": "stop_pc_current_h4_family_as_primary",
+      "outcome": "mixed",
+      "actual_result": "局所pilot支持。後続stretch予測破綻、tracked prefixは独立と同じ。主題候補を停止",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "tracking固有差とbreakdown予告が不足",
+      "open_questions": "別familyで安い追跡が新しい選択を作るか",
+      "reusable_assets": "paired geometry条件とsigned-biasの記録",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "局所pilotの肯定的結果を後続tracking失敗で消さない。",
+      "primary_evidence_id": "EV-0046",
+      "evidence_ids": [
+        "EV-0046",
+        "EV-0047"
+      ],
+      "branch": "all-r-coherent-opt2-reoptimization",
+      "fixed_result_or_document_commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-09-25（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0048",
+        "EV-0049",
+        "EV-0050"
+      ],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "OPT-04",
+      "name": "P-D energy/tail-aware高次PF選択",
+      "category": "Product Formula",
+      "primary_document": "docs/research_direction_energy_tail_pareto.md",
+      "objective": "PF次数をtail負担と協調選択",
+      "modification": "5公式をenergy／tail／finite modelで選ぶ",
+      "improvement_mechanism": "高次PFの負stageがrandom tailの絶対時間とnormalizationを増やす交換を利用",
+      "comparison": "B1a/B1b/B2/B4公平再最適化",
+      "scientific_conditions": "H4/STO-3G/DF12、L_D3/4/5、pilotδ=.4、S1 T=.8・δ候補、負時間/control/内部HDを区別",
+      "metrics": [
+        "PF bias",
+        "Gamma_R",
+        "stage proxy",
+        "finite work"
+      ],
+      "recorded_status_description": "P-D S2停止; S1 Case B+undetermined_boundary",
+      "outcome": "mixed",
+      "actual_result": "pilot選択差は成立、強いB1b/B2/B4は同じ候補を選びfinite補正固有利得なし",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "弱いouter-stage対照だけが差を作った",
+      "open_questions": "具体的な別機構・同情報baselineとの差",
+      "reusable_assets": "signed-time guardとenergy/tailの分離",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0051",
+      "evidence_ids": [
+        "EV-0051",
+        "EV-0052"
+      ],
+      "branch": "all-r-coherent-opt2-reoptimization",
+      "fixed_result_or_document_commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-09-25（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0053",
+        "EV-0054",
+        "EV-0055"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0056",
+        "EV-0057"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "33f436bb3a7d5b9cefa23604bb22c8d1fb17cd62",
+          "evidence_id": "EV-0052",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "2978e2fea672b7a1ff20cac74269ec9a610159dc",
+          "evidence_id": "EV-0052",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "evidence_id": "EV-0052",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "cb60a4a1336f1803ad49d890f4e74aafd6ad7c61",
+          "evidence_id": "EV-0052",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "41349b73157c7781e0b534cf0fe61e06bf439954",
+          "evidence_id": "EV-0052",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "a1f537b68f0f22419dff0202c553b7511653caa3",
+          "evidence_id": "EV-0052",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "OPT-05",
+      "name": "R3 split／formulaのmulti-fidelity選択",
+      "category": "分割・協調設計",
+      "primary_document": "docs/research/r3_prior_art_and_minimal_contract.md",
+      "objective": "詳細評価数を減らし選択を保つ",
+      "modification": "cheap DF-prefix診断による候補選別",
+      "improvement_mechanism": "安価な情報で不要な詳細評価を除く",
+      "comparison": "SPRINT等／一般multi-fidelity best-arm",
+      "scientific_conditions": "理論・静的scope、独立pilot未実行。新分子/rank/L_D/delta未固定",
+      "metrics": [
+        "regret",
+        "number of detailed evaluations"
+      ],
+      "recorded_status_description": "STOP_R3_NO_METHOD_DELTA",
+      "outcome": "planned_or_static_only",
+      "actual_result": "quantum-specific method deltaを固定できず数値pilotなし",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "一般手法を超える生成/認証差がない",
+      "open_questions": "具体的な情報削減則が提示されるか",
+      "reusable_assets": "cheap/full情報の公平比較表",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0058",
+      "evidence_ids": [
+        "EV-0058"
+      ],
+      "branch": "all-r-coherent-opt2-reoptimization",
+      "fixed_result_or_document_commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-09-26（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "ERR-01",
+      "name": "FR 位相・半径分離",
+      "category": "誤差構造・評価基盤",
+      "primary_document": "docs/research/fr_research_claim_and_manuscript.md",
+      "objective": "finite-RTEの位相認証を鋭くする",
+      "modification": "正scalar分離・Hermitian/anti-Hermitian構造境界",
+      "improvement_mechanism": "位相を変えないscalarを切り分けて保守性を減らす",
+      "comparison": "OLD/STRONG norm-disk・同情報scalar最適化",
+      "scientific_conditions": "2×2 toy FR-1、4×4非一様FR-R1b。分子/DF/L_Dなし、正負時間/K0/2/4、固定T/q/delta/r",
+      "metrics": [
+        "phase bound",
+        "one-sided witness",
+        "soundness"
+      ],
+      "recorded_status_description": "TECHNICAL_NOTE / MECHANISM_ONLY_NO_PRACTICAL_GO",
+      "outcome": "technical_success_science_unresolved",
+      "actual_result": "限定strict gainはあるが固定予算の実用認証差なし。直接帰結・反例・未解決を分離",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "実用GOなし、FR-R2等を開始しない",
+      "open_questions": "構造情報の安い取得と非oracle利益",
+      "reusable_assets": "mean operatorとchannelの区別、scalar処理",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0059",
+      "evidence_ids": [
+        "EV-0059"
+      ],
+      "branch": "all-r-coherent-opt2-reoptimization",
+      "fixed_result_or_document_commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-09-27（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0060"
+      ],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存synthetic/toy・限定prototypeまたは保存値解析。実分子の一般優位性へは移送しない。"
+    },
+    {
+      "study_id": "PR-01",
+      "name": "PR-2 圧縮＋残差random補完",
+      "category": "ランダム化・分割",
+      "primary_document": "docs/pr2_matched_accuracy_m2_transfer_result_validation.md",
+      "objective": "discard biasを補い回路を短縮",
+      "modification": "DF prefix保持と残差finite RTEをmatched signal accuracyで比較",
+      "improvement_mechanism": "bias・normalization・安いsample回路を同じshot費用へ戻す",
+      "comparison": "discard B0／full deterministic B1／partial B2／full random B3",
+      "scientific_conditions": "H4 linear1/1.30Å/STO-3G/DF12、rank3/6/9等、T=.8、q1/2/4/8、M2固定B2 rank3候補、r/Kは固定5構成表",
+      "metrics": [
+        "full-wrapper RZ/CX/depth",
+        "analytic shots",
+        "paired SE"
+      ],
+      "recorded_status_description": "TRANSFER_SUPPORTED",
+      "outcome": "limited_improvement",
+      "actual_result": "development点最小と固定held-out構成のtransferを支持。一般rank最適・新算法・全RPE優位ではない",
+      "pr_applicability": "直接応用",
+      "stop_reason": "M2後mandatory STOP、後続PMは別承認で実施",
+      "open_questions": "希少tail・強いPF/合成対照・全energy task",
+      "reusable_assets": "入力snapshot、residual再構成、matched-accuracy比較",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [
+        "GAP-006"
+      ],
+      "version_history": "旧S0 hash STOP→別series V1–V4/S2→M1-A/M1-B1→M2。GAP-006の旧pilot入力と新系列を混ぜない。",
+      "primary_evidence_id": "EV-0061",
+      "evidence_ids": [
+        "EV-0061",
+        "EV-0062",
+        "EV-0063",
+        "EV-0064"
+      ],
+      "branch": "codex/h2-outer32-metadata-export-20261023",
+      "fixed_result_or_document_commit": "e3531956af6a6d359e2f1fb320e9a5179f41eb98",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-04（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0065"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0066",
+        "EV-0067"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "2978e2fea672b7a1ff20cac74269ec9a610159dc",
+          "evidence_id": "EV-0061",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "90a9f24707ec439cd3618cc4ec2616a8caaf1148",
+          "evidence_id": "EV-0061",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "PR-02",
+      "name": "PR-3 tail限定Richardson",
+      "category": "ランダム化",
+      "primary_document": "docs/pr2_pr3_minimal_pilot_validation.md",
+      "objective": "tailのbiasを外挿で減らす",
+      "modification": "Re/Im平均信号の低次数外挿",
+      "improvement_mechanism": "複数levelのlinear combinationでtail biasを相殺",
+      "comparison": "通常PR最良／tail-exact oracle",
+      "scientific_conditions": "固定2qubit toy、tail levels4/8/16、target complex RMSE .05、分子/DF/L_Dなし",
+      "metrics": [
+        "signal bias",
+        "shots",
+        "backbone work"
+      ],
+      "recorded_status_description": "STOP_PR3_VARIANCE_BACKBONE_DOMINATES",
+      "outcome": "no_improvement",
+      "actual_result": "biasは下がったがshotとbackboneを戻すと不利。一般外挿の否定ではない",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "統計分散とbackbone費用が支配",
+      "open_questions": "同meanを安く取得できる別構造があるか",
+      "reusable_assets": "外挿係数の分散会計",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0068",
+      "evidence_ids": [
+        "EV-0068"
+      ],
+      "branch": "all-r-coherent-opt2-reoptimization",
+      "fixed_result_or_document_commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-09-27（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0069"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0070"
+      ],
+      "source_snapshot_references": [],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存synthetic/toy・限定prototypeまたは保存値解析。実分子の一般優位性へは移送しない。"
+    },
+    {
+      "study_id": "PR-03",
+      "name": "PR-1/4/5/6初期候補群",
+      "category": "ランダム化・分割",
+      "primary_document": "partial_randomization_research_options_20260927.md",
+      "objective": "PRの表現・sampling・誤差自由度を広げる",
+      "modification": "共通比較軸、測定実装監査等の候補整理",
+      "improvement_mechanism": "候補ごとにtailと実装・測定を接続する",
+      "comparison": "通常PRとstrong baseline",
+      "scientific_conditions": "段階Aの概念計画。PR-2/3実行と他候補の保留を区別",
+      "metrics": [
+        "candidate-specific proposed metrics"
+      ],
+      "recorded_status_description": "PR-4監査まで、PR-5/6保留",
+      "outcome": "planned_or_static_only",
+      "actual_result": "計画を実施済み成果へ数えない。後続に別名の対応候補があるか照合する",
+      "pr_applicability": "不明",
+      "stop_reason": "既存段階Aの制限を維持",
+      "open_questions": "各候補の後続系列への対応と未採択条件",
+      "reusable_assets": "候補分類・既存APIの対応",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0071",
+      "evidence_ids": [
+        "EV-0071"
+      ],
+      "branch": "all-r-coherent-opt2-reoptimization",
+      "fixed_result_or_document_commit": "f29eafbf4412193e8e8660d9f051889c2cba684b",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-09-27（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "EVAL-01",
+      "name": "Track A PM-1/PM-2 precision資源地図",
+      "category": "資源評価・基盤",
+      "primary_document": "docs/pr2_pm2_precision_resource_result_validation.md",
+      "objective": "PRが競争力を持つ精度・準備費条件を整理",
+      "modification": "nearby discard補完と保存値precision/prep感度",
+      "improvement_mechanism": "bias headroomと単価・shotを同じ目的関数に戻す",
+      "comparison": "B0 rank4/5等／B1/B2/B3",
+      "scientific_conditions": "H4 linear1/1.30Å/STO-3G/DF12/T=.8、二次DF-prefix、PM-1 εsig=.05、PM-2固定precision表示点、Qiskit1.3 opt1",
+      "metrics": [
+        "N",
+        "one-shot RZ",
+        "G",
+        "prep breakpoints"
+      ],
+      "recorded_status_description": "PM2_PRECISION_RESOURCE_MAP_COMPLETE_AWAITING_REVIEW",
+      "outcome": "foundation_validated",
+      "actual_result": "近接discard補完後も限定B2点利得が残る。小差の統計winnerは未確定",
+      "pr_applicability": "直接応用",
+      "stop_reason": "資源研究の既存STOP",
+      "open_questions": "強い高次PF・native synthesisと実準備",
+      "reusable_assets": "既存precision/resource table",
+      "repository_key": "PR",
+      "kind": "evaluation",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0072",
+      "evidence_ids": [
+        "EV-0072",
+        "EV-0073"
+      ],
+      "branch": "codex/h2-outer32-metadata-export-20261023",
+      "fixed_result_or_document_commit": "e3531956af6a6d359e2f1fb320e9a5179f41eb98",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-05（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0074"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0075",
+        "EV-0076"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "324435d77b6642dbd44e8d1f178420daf62e77ed",
+          "evidence_id": "EV-0072",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "fd7552edc0334ccf57ecf501a128c85c8d22822a",
+          "evidence_id": "EV-0073",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "EVAL-02",
+      "name": "Track A H4–H8強対照と希少tail",
+      "category": "資源評価・基盤",
+      "primary_document": "docs/research/h8_rare_rte_closure_policy_20261021.md",
+      "objective": "既存PRの限定資源利益と限界を評価",
+      "modification": "geometry／独立確認／B0+I／rare-order層別",
+      "improvement_mechanism": "短回路とnormalizationの交換を有限標本で評価",
+      "comparison": "strong deterministic PF／通常PR",
+      "scientific_conditions": "H8 linear1Å/STO-3G/tol-only1e-8 DF28、二次partial PF、r4/K4、p8q2・p7q4等固定候補、T=.8/P0、δ=T/q。H4/H6は別source条件",
+      "metrics": [
+        "shot-weighted compiled RZ",
+        "stratified costs",
+        "residual sensitivity"
+      ],
+      "recorded_status_description": "H8 rare-RTE current-scope closure adopted",
+      "outcome": "limited_improvement",
+      "actual_result": "層別有限標本と残余費用の条件付き感度で採択。母平均優位保証・未観測費用0補完なし",
+      "pr_applicability": "直接応用",
+      "stop_reason": "現在のclaim範囲で終了、追加sampling不要の既存判断",
+      "open_questions": "全support費用、実準備、長RPE。GAP-002は旧H4来歴",
+      "reusable_assets": "共通task／strong baseline／rare層の会計",
+      "repository_key": "PR",
+      "kind": "evaluation",
+      "evidence_sufficiency": "B",
+      "gap_ids": [
+        "GAP-002"
+      ],
+      "version_history": "",
+      "primary_evidence_id": "EV-0077",
+      "evidence_ids": [
+        "EV-0077",
+        "EV-0078"
+      ],
+      "branch": "codex/h8-rare-rte-closure-policy-20261021",
+      "fixed_result_or_document_commit": "862d732fba0a5f353c522a9219dec78ae2f21a4b",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-21（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [
+        "EV-0079"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "3d5ab5bb1cf0d78a3157ad7f742cfa5c7b58efbb",
+          "evidence_id": "EV-0077",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "e16c3be8a039f6bc468e112f0ed086bde544fef2",
+          "evidence_id": "EV-0077",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "f377f8869c697c4846e3614b0ae7bc9d3ad5cb3c",
+          "evidence_id": "EV-0077",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "383dd9068504b8f578944984fc45a60dd4ed18b2",
+          "evidence_id": "EV-0077",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "145b438c05b1888ab479081ef72462b93429f89a",
+          "evidence_id": "EV-0077",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "1e1e1c82a09ab656d9dc6ca71ef0b818e04fae87",
+          "evidence_id": "EV-0077",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "41ba315b2ad369825577ad671c79b69c77e1f3cc",
+          "evidence_id": "EV-0078",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "6b78e5f39917d92d6c60694d3e0b0d06394d7eb5",
+          "evidence_id": "EV-0078",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "5f79257f432bc7e0317f122090f62fec379e2a1b",
+          "evidence_id": "EV-0078",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "6dc5bf0de01a0aa23cafe0ff022c0cd21fbf1086",
+          "evidence_id": "EV-0078",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "23d46e489af054735d9d328aad0342ecdbddf305",
+          "evidence_id": "EV-0078",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "EVAL-03",
+      "name": "PR高次PF探索と次数逆転の既存証拠",
+      "category": "資源評価・Product Formula",
+      "primary_document": "docs/research/track_a_pf_order_reversal_existing_evidence_audit_20261023.md",
+      "objective": "PF次数の比較可能性と既存順位を整理",
+      "modification": "S2／Yoshida4／m5_bestの既存取得・来歴照合",
+      "improvement_mechanism": "次数・stage・normalization・単価の交換を既存結果から記録する",
+      "comparison": "通常deterministic PF／higher-order PR",
+      "scientific_conditions": "H2/H4/H6別snapshot、1Å/STO-3G、tol-only1e-8、H4 rank10/prefix3・H6 rank19/prefix5等、T=.8、q1/2/4/8、K4/outer32。比較ledger差を保持",
+      "metrics": [
+        "signal-error ledger",
+        "compiled cost",
+        "recorded ordering"
+      ],
+      "recorded_status_description": "科学的比較C・因果機構は未認定",
+      "outcome": "technical_success_science_unresolved",
+      "actual_result": "既存逆転候補と政策/来歴差を記録。今回原因調査を開始しない",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "別チャット対象。既存結果の読解のみ",
+      "open_questions": "common allowance／native-runtime binding／因果説明",
+      "reusable_assets": "固定係数・branch・policy差の索引",
+      "repository_key": "PR",
+      "kind": "evaluation",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0080",
+      "evidence_ids": [
+        "EV-0080"
+      ],
+      "branch": "codex/h2-outer32-metadata-export-20261023",
+      "fixed_result_or_document_commit": "e3531956af6a6d359e2f1fb320e9a5179f41eb98",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-23（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "RB-01",
+      "name": "B-F finite-RTE係数設計",
+      "category": "Product Formula",
+      "primary_document": "docs/tracks/algorithm_codesign/bf_current_hypothesis_closure_20261005.md",
+      "objective": "finite tail modelを係数設計へ戻す",
+      "modification": "同5-stage対称4次familyのF/L探索",
+      "improvement_mechanism": "finite modelで誤ったleading選択を避ける",
+      "comparison": "同情報・同32評価budgetのL／共通参照",
+      "scientific_conditions": "固定development、q1/2/4/8、Rbudget5/10/20/40/80、K2と事前trigger K4。詳細分子/DF/splitは契約参照",
+      "metrics": [
+        "shot/native action proxy"
+      ],
+      "recorded_status_description": "元INCONCLUSIVE、R0 BF-A、現仮説限定closure",
+      "outcome": "no_improvement",
+      "actual_result": "保存cellの公平cross-scoreでF固有のdecision valueなし。未完了bridgeは未補完",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "finite model追加価値なし",
+      "open_questions": "別familyへ移す具体機構・同budgetとの差",
+      "reusable_assets": "結果前探索budgetとcross-score",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "元serialization failure→read-only recovery。元runを完了へ上書きしない。",
+      "primary_evidence_id": "EV-0081",
+      "evidence_ids": [
+        "EV-0081"
+      ],
+      "branch": "m1s-prior-art-survey-20261017",
+      "fixed_result_or_document_commit": "4301c0f87a16be45b620304c3fa935d5aa2d721a",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-05（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0082"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0083"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "e59344a564e70d64dc3ea39d640581c72676df31",
+          "evidence_id": "EV-0081",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "f226f8c81b5ba07b6d0c4b248c0eb15bf080a622",
+          "evidence_id": "EV-0081",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "RB-02",
+      "name": "B-M DF multirate／compact BCH",
+      "category": "Product Formula",
+      "primary_document": "docs/tracks/algorithm_codesign/bm05_equivalence_and_method_delta_audit_v1.md",
+      "objective": "決定論block頻度の協調設計",
+      "modification": "nested列の三次誤差分解とcache",
+      "improvement_mechanism": "繰返し構造を再利用して評価を安くする",
+      "comparison": "同情報compact BCH再帰＋同DF backend",
+      "scientific_conditions": "記号監査、固定nested sweep。DF実入力の新順位・pilotなし",
+      "metrics": [
+        "symbolic coefficient identity",
+        "evaluation cost"
+      ],
+      "recorded_status_description": "BM05_EQUIVALENT_NO_ESTABLISHED_METHOD_DELTA_MANDATORY_STOP",
+      "outcome": "planned_or_static_only",
+      "actual_result": "固定adapterの三次係数は既知compact再帰と同じ。BM-1新手法検証なし",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "独立method deltaなし",
+      "open_questions": "異なる具体生成則があるか",
+      "reusable_assets": "compact再帰・cacheをbaselineにも与える",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0084",
+      "evidence_ids": [
+        "EV-0084"
+      ],
+      "branch": "m1s-prior-art-survey-20261017",
+      "fixed_result_or_document_commit": "4301c0f87a16be45b620304c3fa935d5aa2d721a",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-05（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0085"
+      ],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [
+        {
+          "commit": "3b2d624adde979f7d8f983bc7fdbbec88f90c500",
+          "evidence_id": "EV-0084",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "RB-03",
+      "name": "BS block合成・SP synthesis placement",
+      "category": "量子回路・ランダム化",
+      "primary_document": "docs/tracks/algorithm_codesign/sp1_one_shot_result_validation_20261006.md",
+      "objective": "高価な角度合成をrandom cheap gateへ置換",
+      "modification": "PAI/notch辞書とplacement mask",
+      "improvement_mechanism": "native T単価と重み二次momentの交換",
+      "comparison": "NONE／deterministic native合成／ordinary finite mean",
+      "scientific_conditions": "SP0.5 fixed8angles、SP1 synthetic2qubit wrapper、12wrapper・48mask、εnative1e-6、whole-wrapperはadditive primitiveモデル",
+      "metrics": [
+        "expected T",
+        "moment/range",
+        "sufficient shots"
+      ],
+      "recorded_status_description": "PRIMITIVE_TRADEOFF_EXISTS; SP1_RESOURCE_MAP_COMPLETE_AWAITING_REVIEW",
+      "outcome": "mixed",
+      "actual_result": "primitiveではstrict trade-off。wrapperでshot増加・不適格もあり一律有利でない",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "SP1後STOP、BS0.5はnew-method deltaなし",
+      "open_questions": "full wrapper/DF接続・bias/range・準備費",
+      "reusable_assets": "synthesis-placementとmoment会計",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0086",
+      "evidence_ids": [
+        "EV-0086",
+        "EV-0087",
+        "EV-0088"
+      ],
+      "branch": "m1s-prior-art-survey-20261017",
+      "fixed_result_or_document_commit": "4301c0f87a16be45b620304c3fa935d5aa2d721a",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-06（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0089",
+        "EV-0090"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0091",
+        "EV-0092"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "0d01ed9a332ebc5b66ed08acf56214a9b9c0236d",
+          "evidence_id": "EV-0086",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "d0502f22039dc0b5de227ce4b7b5a229c55f1e74",
+          "evidence_id": "EV-0086",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "65f6fcdb3dc1ad8bfccfaee6e1413336aef91184",
+          "evidence_id": "EV-0087",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "9d2bb1fa439748b02084bd9fbc9b10a705328f8a",
+          "evidence_id": "EV-0088",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存synthetic/toy・限定prototypeまたは保存値解析。実分子の一般優位性へは移送しない。"
+    },
+    {
+      "study_id": "RB-04",
+      "name": "R0/R1 finite-mean再配分",
+      "category": "ランダム化",
+      "primary_document": "docs/tracks/algorithm_codesign/r1p5_saved_value_attribution_v1.md",
+      "objective": "有限Taylor平均を保持して回転を安くする",
+      "modification": "Euler再配分・共通角と価格law",
+      "improvement_mechanism": "normalizationと角度辞書・native費用を交換する",
+      "comparison": "ordinary／PTSC-K0／A／collected CTS",
+      "scientific_conditions": "2qubit finite P3、distinct-basis ordinary-controlled、x1/8・1/4、3native precision。PR molecular splitなし",
+      "metrics": [
+        "B²",
+        "T/CX/1Q",
+        "bias/shots"
+      ],
+      "recorded_status_description": "R1_RESOURCE_MAP_COMPLETE_AWAITING_GPT_REVIEW",
+      "outcome": "limited_improvement",
+      "actual_result": "限定native Pareto上の有効点とtrade-offを保存。一般sampler最適・全PR利益は未確立",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "既存R1/R1.5 STOP",
+      "open_questions": "same-information CTSと一般入力費",
+      "reusable_assets": "finite-mean・位相を保つ再配分",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0093",
+      "evidence_ids": [
+        "EV-0093"
+      ],
+      "branch": "m1s-prior-art-survey-20261017",
+      "fixed_result_or_document_commit": "4301c0f87a16be45b620304c3fa935d5aa2d721a",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-06（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0094",
+        "EV-0095"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0096"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "d43d64a821a0249a0dfab12a2472bd3a72fdee74",
+          "evidence_id": "EV-0093",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "411f08f768244fe87b600d82308c3851847fe9e4",
+          "evidence_id": "EV-0093",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存synthetic/toy・限定prototypeまたは保存値解析。実分子の一般優位性へは移送しない。"
+    },
+    {
+      "study_id": "RB-05",
+      "name": "RA-D0 LP・G1–G5固定辞書",
+      "category": "ランダム化",
+      "primary_document": "docs/tracks/algorithm_codesign/g5_results_and_gpt_handoff_20261010.md",
+      "objective": "同辞書内のnormalization/費用を最適化",
+      "modification": "LP／exact rational認証／任意IS比較",
+      "improvement_mechanism": "返り語の集約と係数再配分を最適化する",
+      "comparison": "saved CTS law／同一辞書strong baseline",
+      "scientific_conditions": "2qubit distinct-basis controlled、p3/4・1/4、x1/4、固定6vertex/digital class、有限r",
+      "metrics": [
+        "second moment",
+        "bias",
+        "native resources",
+        "class lower"
+      ],
+      "recorded_status_description": "G5_DIGITAL_SIX_VERTEX_CLASS_EXCLUDED_BY_SAVED_CTS_LAW",
+      "outcome": "no_improvement",
+      "actual_result": "指定ideal/digital classで同辞書優位主線を閉じる。全乱択法のno-goではない",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "強いCTS対照による限定class除外",
+      "open_questions": "辞書外の生成差・取得費を伴う別構成",
+      "reusable_assets": "exact class境界とstrong comparator",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "RA-D0 technical STOP／active-support修正／exact backend等を別runとして保持。G5の理論閉鎖と技術停止を区別。",
+      "primary_evidence_id": "EV-0097",
+      "evidence_ids": [
+        "EV-0097"
+      ],
+      "branch": "m1s-prior-art-survey-20261017",
+      "fixed_result_or_document_commit": "4301c0f87a16be45b620304c3fa935d5aa2d721a",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-10（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0098"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0099"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "a221588f42ef3e58f63373915de95607a4ca36be",
+          "evidence_id": "EV-0097",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "407400d5e12aeadda8bb5ca475c4f80c82bff531",
+          "evidence_id": "EV-0097",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存synthetic/toy・限定prototypeまたは保存値解析。実分子の一般優位性へは移送しない。"
+    },
+    {
+      "study_id": "RB-06",
+      "name": "G6 Return Aggregation／General Full",
+      "category": "ランダム化",
+      "primary_document": "docs/research/track_b_g6_v1_2_draft_review_integration_20261022/handoff.md",
+      "objective": "finite Taylorを全列挙せず生成",
+      "modification": "formal return集約・parent/child・local Green query・finite bits",
+      "improvement_mechanism": "集約したrotationを局所生成しglobal normalizerを回避する",
+      "comparison": "ordinary／partial return／closed low-order／CTS",
+      "scientific_conditions": "正有理p、Hermitian involution、odd m、short-step条件。理論とsynthetic providerを分離。H4 C1は別study",
+      "metrics": [
+        "mean correctness",
+        "bit cost",
+        "query cost",
+        "conditional native resources"
+      ],
+      "recorded_status_description": "DRAFT_COMPLETE_AWAITING_USER_GPT_DECISION",
+      "outcome": "technical_success_science_unresolved",
+      "actual_result": "方法論と限定理論を保持。RAは広い構成、General Fullは生成方式、Closed P5は内部特殊化",
+      "pr_applicability": "直接応用",
+      "stop_reason": "v1.2 draft公開後STOP、投稿GOなし",
+      "open_questions": "全DF provider・費用認証・全手順の独立新規性",
+      "reusable_assets": "局所generatorとfinite-bit/zero-fill仕様",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "v1.0→v1.1→v1.2 draft。degree-zero parentでもchild rotation/集約係数が残る。",
+      "primary_evidence_id": "EV-0100",
+      "evidence_ids": [
+        "EV-0100",
+        "EV-0101",
+        "EV-0102"
+      ],
+      "branch": "track-b-g6-v1-2-draft-review-integration-20261022",
+      "fixed_result_or_document_commit": "5f750a23f023d75c8c4fbcabc6937d6953ce61f2",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-22（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0103",
+        "EV-0104",
+        "EV-0105"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0106",
+        "EV-0107"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "af75af03c0b334c29b5a4311bd2b4578a999460c",
+          "evidence_id": "EV-0101",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "b022f2ea421649015a4c21ea3c904fe619d0c198",
+          "evidence_id": "EV-0102",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "bb9059bacb697e1105e63c1b3826b0c34886ad15",
+          "evidence_id": "EV-0102",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "243eea8e840f3c472753f7935e510391626fd325",
+          "evidence_id": "EV-0102",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "185ec4e9d6591f4ee8d7b047c2697bed7be7bc2e",
+          "evidence_id": "EV-0102",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "df90ed8c8e847f8ea1861d9761b9515e7a895916",
+          "evidence_id": "EV-0102",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "f823e909cb7049a612f1bf2c247f3bbe15fc184d",
+          "evidence_id": "EV-0102",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "fcd3ea6217bc00b667180cec149a70102d75f07e",
+          "evidence_id": "EV-0102",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "e65e3c0680fff4cfc4243ed5d6c87429cd5ce753",
+          "evidence_id": "EV-0102",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "適用域付き理論、finite-bit構成、人工/既知synthetic検証。H4移植はRB-17へ分離。"
+    },
+    {
+      "study_id": "RB-07",
+      "name": "G7 conditional native economics",
+      "category": "ランダム化・量子回路",
+      "primary_document": "docs/tracks/algorithm_codesign/g7_results_and_gpt_handoff_20261010.md",
+      "objective": "return集約の費用価値を調べる",
+      "modification": "helper/directとnormalizationの条件付き会計",
+      "improvement_mechanism": "normalization低減とnative回転費用を交換する",
+      "comparison": "ordinary／partial／P3+tail",
+      "scientific_conditions": "known synthetic p、P3 controlとP5 development、finite mean、抽象controlled-Q provider。DF/basis/L_Dなし",
+      "metrics": [
+        "native T intercept",
+        "provider slopes",
+        "attempt caps"
+      ],
+      "recorded_status_description": "G7_LIMITED_IMPLEMENTATION_ECONOMICS_COMPLETE_AWAITING_GPT_REVIEW",
+      "outcome": "limited_improvement",
+      "actual_result": "m5登録3対照への条件付きT利得、m3 closed対照には不利。provider/prep/古典費用が残る",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "限定取得終了",
+      "open_questions": "強いP5/CTS対照・実provider",
+      "reusable_assets": "native affine cost ledgerとsigned joint phase",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0108",
+      "evidence_ids": [
+        "EV-0108"
+      ],
+      "branch": "m1s-prior-art-survey-20261017",
+      "fixed_result_or_document_commit": "4301c0f87a16be45b620304c3fa935d5aa2d721a",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-10（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0109"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0110",
+        "EV-0111"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+          "evidence_id": "EV-0108",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存synthetic/toy・限定prototypeまたは保存値解析。実分子の一般優位性へは移送しない。"
+    },
+    {
+      "study_id": "RB-08",
+      "name": "G8 on-demand synthesis／provider budget",
+      "category": "量子回路・生成基盤",
+      "primary_document": "docs/tracks/algorithm_codesign/g8_results_and_gpt_handoff_20261010.md",
+      "objective": "全angle表の事前取得を避ける",
+      "modification": "local generator→cache miss時native RZ取得",
+      "improvement_mechanism": "必要になった角度だけ取得しcacheを共有する",
+      "comparison": "G7固定inventory／closed low-order",
+      "scientific_conditions": "G7 development P3/P5、仮想provider δ=1e-6、finite bits/短trace。物理CQ未取得",
+      "metrics": [
+        "cold/warm calls",
+        "conditional error budget",
+        "CPU trace"
+      ],
+      "recorded_status_description": "G8_ON_DEMAND_PATH_AND_CONDITIONAL_PROVIDER_BUDGET_COMPLETE",
+      "outcome": "technical_success_science_unresolved",
+      "actual_result": "on-demand接続は成立。一般termination・大L scaling・物理provider性能は未保証",
+      "pr_applicability": "直接応用",
+      "stop_reason": "条件付きbudget検証でSTOP",
+      "open_questions": "全support費用上界、provider単価、全N古典費用",
+      "reusable_assets": "on-demand/cache・誤差会計",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0112",
+      "evidence_ids": [
+        "EV-0112"
+      ],
+      "branch": "m1s-prior-art-survey-20261017",
+      "fixed_result_or_document_commit": "4301c0f87a16be45b620304c3fa935d5aa2d721a",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-10（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0109"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0113",
+        "EV-0114"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "cb60a4a1336f1803ad49d890f4e74aafd6ad7c61",
+          "evidence_id": "EV-0112",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存synthetic/toy・限定prototypeまたは保存値解析。実分子の一般優位性へは移送しない。"
+    },
+    {
+      "study_id": "RB-09",
+      "name": "G9 Closed P5 matched-native",
+      "category": "ランダム化・量子回路",
+      "primary_document": "docs/tracks/algorithm_codesign/g9_v2_results_and_gpt_handoff_20261010.md",
+      "objective": "低次数return集約を安く生成",
+      "modification": "closed P5 group normalizerとnative direct実装",
+      "improvement_mechanism": "同ensembleをclosed normalizerで生成してzero/予算保守性を減らす",
+      "comparison": "General Full／ordinary／partial／P3+tail／matched CTS",
+      "scientific_conditions": "3system qubit synthetic Clifford+T provider、p1/5・3/10・1/2、x5/7、m5、Re/Im1/200、固定22axis failure配分",
+      "metrics": [
+        "expected T",
+        "CX",
+        "1Q",
+        "prep slope",
+        "range"
+      ],
+      "recorded_status_description": "G9_MATCHED_NATIVE_RESOURCE_MAP_COMPLETE",
+      "outcome": "limited_improvement",
+      "actual_result": "登録direct比較でT-primaryの有効点、CTSにはCX利点。全座標優越・任意IS最適ではない",
+      "pr_applicability": "直接応用",
+      "stop_reason": "v2完了後STOP",
+      "open_questions": "DF native移植・finite-bit差・setup/online償却",
+      "reusable_assets": "g9_p5群式・native価格・strong comparator",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "v1 API technical failureを保存し別v2完了。FullとP5の理想受理ensemble一致と全trial law差を区別。",
+      "primary_evidence_id": "EV-0115",
+      "evidence_ids": [
+        "EV-0115",
+        "EV-0116"
+      ],
+      "branch": "m1s-prior-art-survey-20261017",
+      "fixed_result_or_document_commit": "4301c0f87a16be45b620304c3fa935d5aa2d721a",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-10（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0117",
+        "EV-0118"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0119",
+        "EV-0120"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "0ef2b92738750a3c0d187743dd4b7c9b927db802",
+          "evidence_id": "EV-0116",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存synthetic/toy・限定prototypeまたは保存値解析。実分子の一般優位性へは移送しない。"
+    },
+    {
+      "study_id": "RB-10",
+      "name": "G10 degree-matched native比較",
+      "category": "ランダム化・量子回路",
+      "primary_document": "docs/tracks/algorithm_codesign/g10_v3_results_and_gpt_handoff_20261010.md",
+      "objective": "一般odd degreeでreturn方式の価値を確認",
+      "modification": "degreeごとの同target・native費用比較",
+      "improvement_mechanism": "高degreeで集約率と角度価格が変わる",
+      "comparison": "同degree ordinary／partial／closed/CTS等",
+      "scientific_conditions": "3system qubit known provider、p1/5・3/10・1/2、x5/7、固定degree集合・budget。m間は同一finite targetでない",
+      "metrics": [
+        "T intercept",
+        "prep slope",
+        "CX/1Q",
+        "resource cap"
+      ],
+      "recorded_status_description": "G10_DEGREE_MATCHED_NATIVE_RESOURCE_MAP_COMPLETE",
+      "outcome": "limited_improvement",
+      "actual_result": "within-degreeの条件付きtrade-offを取得。次degree/分子/全PRへ一般化しない",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "v3完了、G11未許可",
+      "open_questions": "強いsampling・古典取得費・実DF provider",
+      "reusable_assets": "degree別generator/streaming記録",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "v1/v2 resource/IO等のtechnical失敗→別v3完了。旧prefix利用制限、訂正auditorを保持。",
+      "primary_evidence_id": "EV-0121",
+      "evidence_ids": [
+        "EV-0121"
+      ],
+      "branch": "m1s-prior-art-survey-20261017",
+      "fixed_result_or_document_commit": "4301c0f87a16be45b620304c3fa935d5aa2d721a",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-10（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0122",
+        "EV-0123"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0124"
+      ],
+      "source_snapshot_references": [],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存synthetic/toy・限定prototypeまたは保存値解析。実分子の一般優位性へは移送しない。"
+    },
+    {
+      "study_id": "RB-11",
+      "name": "DF希薄三次補正・generic whole",
+      "category": "誤差補正・量子回路",
+      "primary_document": "docs/tracks/algorithm_codesign/df_correction_et_series_closure_20261012.md",
+      "objective": "三次誤差を局所補正して四次化",
+      "modification": "whole指数rotation対局所Pauli線形補正",
+      "improvement_mechanism": "少数軌道支持の補正を安い確率rotationで挿入する",
+      "comparison": "同じ局所情報を持つPauli対照",
+      "scientific_conditions": "synthetic3/6active modes、rank2×3 fixture。CDとE/Tは別条件。分子geometry/basis/L_D非該当",
+      "metrics": [
+        "conditional order",
+        "native T",
+        "completion lower/upper"
+      ],
+      "recorded_status_description": "GENERIC_WHOLE_SERIES_CLOSED_TO_AUTOMATIC_EXTENSION",
+      "outcome": "mixed",
+      "actual_result": "局所支持・平均構成は保持。固定加法planの3条件でwhole下界が対照上界より高く、1条件未確定",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "generic whole主線への追加投資を区切る",
+      "open_questions": "一般compiler・native phase・同task総費用",
+      "reusable_assets": "局所support判定・補正意味論",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "多数のnumeric/storage/phase停止→saved-only E/T recovery。原v7 TECHNICAL_INCONCLUSIVEは保持。",
+      "primary_evidence_id": "EV-0125",
+      "evidence_ids": [
+        "EV-0125"
+      ],
+      "branch": "m1s-prior-art-survey-20261017",
+      "fixed_result_or_document_commit": "4301c0f87a16be45b620304c3fa935d5aa2d721a",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-12（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0126"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0127"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "74682c40d0cdcca92d244a9edf4bb2852361eef5",
+          "evidence_id": "EV-0125",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "3afef9e418a8d2173a2780f5534404390bfbe6fb",
+          "evidence_id": "EV-0125",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存synthetic/toy・限定prototypeまたは保存値解析。実分子の一般優位性へは移送しない。"
+    },
+    {
+      "study_id": "RB-12",
+      "name": "Gaussian積生成",
+      "category": "量子回路",
+      "primary_document": "docs/tracks/algorithm_codesign/gaussian_product_generation_closure_20261013.md",
+      "objective": "DF event積の基底変換費を下げる",
+      "modification": "Gaussian積/相対basisの直接入力",
+      "improvement_mechanism": "隣接基底変換の積をまとめる",
+      "comparison": "同情報既知Gaussian compiler",
+      "scientific_conditions": "静的DF-RTE構成監査。新分子・rank/split/delta比較なし",
+      "metrics": [
+        "conditional wrapper cost",
+        "method delta"
+      ],
+      "recorded_status_description": "独立新手法としてCLOSED、性能UNDETERMINED",
+      "outcome": "planned_or_static_only",
+      "actual_result": "候補固有の追加手順が未定義で閉鎖。性能で敗れた実験結果ではない",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "既知手順との差がない",
+      "open_questions": "安い具体accessと費用差",
+      "reusable_assets": "Gaussian積とphase/actual-adjoint条件",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0128",
+      "evidence_ids": [
+        "EV-0128"
+      ],
+      "branch": "m1s-prior-art-survey-20261017",
+      "fixed_result_or_document_commit": "4301c0f87a16be45b620304c3fa935d5aa2d721a",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-13（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [
+        {
+          "commit": "e6530c055c505712d5f1d1af604f1accf85cebba",
+          "evidence_id": "EV-0128",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "RB-13",
+      "name": "D1–D3 finite-target・境界相殺・保証価格",
+      "category": "ランダム化・量子回路",
+      "primary_document": "docs/tracks/algorithm_codesign/d1_d3_prior_art_claim_evidence_and_gpt_handoff_20261014.md",
+      "objective": "representation/native/保証の交換を同taskで評価",
+      "modification": "同finite P5の6方式、boundary cancellation、保証×価格ledger",
+      "improvement_mechanism": "平均を保ちlaw・range・単価・r選択を協調する",
+      "comparison": "ordinary／partial／P3+tail／Full／P5／matched CTS",
+      "scientific_conditions": "synthetic3qubit involution、p1/5・3/10・1/2、τ5/7、r1/2、εaxis1/200、strict native誤差固定。molecule/DF/L_Dなし",
+      "metrics": [
+        "Bernstein sufficient N",
+        "T/CX/1Q",
+        "prep sensitivity"
+      ],
+      "recorded_status_description": "D1/D2/D3 v2 completed; current numerical exploration closed",
+      "outcome": "mixed",
+      "actual_result": "同targetの資源交換とboundary効果を保存。全方式に共通最適化、十分forecastであり新生成利益の証明でない",
+      "pr_applicability": "直接応用",
+      "stop_reason": "D1–D3探索は一区切り",
+      "open_questions": "DF scaling・online古典・full wrapper",
+      "reusable_assets": "same-mean accounting、literal inverse cancellation、四ledger",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "D3 v1型変換失敗→別v2完了。価格精度変更とnative error creditを区別。",
+      "primary_evidence_id": "EV-0129",
+      "evidence_ids": [
+        "EV-0129"
+      ],
+      "branch": "m1s-prior-art-survey-20261017",
+      "fixed_result_or_document_commit": "4301c0f87a16be45b620304c3fa935d5aa2d721a",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-14（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0130"
+      ],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [
+        {
+          "commit": "534d2347cb8af59a85ff58c3eb4e8aaf6e5a1c1f",
+          "evidence_id": "EV-0129",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存synthetic/toy・限定prototypeまたは保存値解析。実分子の一般優位性へは移送しない。"
+    },
+    {
+      "study_id": "RB-14",
+      "name": "Parent allocation／S4 KKT",
+      "category": "ランダム化・sampling",
+      "primary_document": "docs/tracks/algorithm_codesign/track_b_parent_allocation_research_closure_20261015.md",
+      "objective": "角度をcheap辞書へ寄せる",
+      "modification": "even parent係数をchildへcost-aware配分",
+      "improvement_mechanism": "L1増加を許し回転価格を下げる",
+      "comparison": "common allocation／ordinary／closed P5、同じIS機会",
+      "scientific_conditions": "固定development finite P5、r1/all-accept、正係数・fixed price proxy、native取得後の再選択なし",
+      "metrics": [
+        "T/CX/1Q",
+        "second moment",
+        "sufficient N"
+      ],
+      "recorded_status_description": "D＋E正式採択・現数値探索を区切る",
+      "outcome": "mixed",
+      "actual_result": "限定配分成果・訂正KKTを保持。commonはL1最小でありchild配分はL1改善自由度でない",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "同fixture追加探索を区切る",
+      "open_questions": "新しい価格構造・未知normalizer/online費",
+      "reusable_assets": "parent_allocationと強い同情報比較",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "v1 failure→v2/v3→誤ったKKT訂正→S4補完。旧proxy結果・markers不変。",
+      "primary_evidence_id": "EV-0131",
+      "evidence_ids": [
+        "EV-0131"
+      ],
+      "branch": "m1s-prior-art-survey-20261017",
+      "fixed_result_or_document_commit": "4301c0f87a16be45b620304c3fa935d5aa2d721a",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-15（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0132"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0133"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "4ccc1832f63cd323b23fc05623f7e0b58cf34f37",
+          "evidence_id": "EV-0131",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "71cf1b76492ed01fc5bb8363246b5f13f7e166d7",
+          "evidence_id": "EV-0131",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存synthetic/toy・限定prototypeまたは保存値解析。実分子の一般優位性へは移送しない。"
+    },
+    {
+      "study_id": "RB-15",
+      "name": "M1-S shared ± labels",
+      "category": "ランダム化",
+      "primary_document": "docs/research/m1s_integration_20261017/integrated_research_summary.md",
+      "objective": "干渉信号の減衰と位相を改善",
+      "modification": "Hadamard正負branchの同位置Pauli label共有",
+      "improvement_mechanism": "共通乱数で中心化変動の一部を抑える",
+      "comparison": "ordinary／independent Pauli exponential、同総label数等を区別",
+      "scientific_conditions": "H4 1Å/STO-3G/DF12、generation-prefix G3/G6/G9、保存sector-ground、δ1/8・1/16、R2/4、T1/4。C-sec理論は別適用域",
+      "metrics": [
+        "visibility",
+        "phase bias",
+        "conditional sufficient shots"
+      ],
+      "recorded_status_description": "限定理論受理・統合後mandatory STOP、正式方向未採択",
+      "outcome": "technical_success_science_unresolved",
+      "actual_result": "適用域付き理論と局所signal/整数witnessを保持。strong新primitive・whole-cost・多roundRPE未確立",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "資源路線へ自動進行しない",
+      "open_questions": "full-H/HD旧行列、先行定理対応、実wrapper/状態/decoder",
+      "reusable_assets": "共有law・visibility/phase trade-off台帳",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [
+        "GAP-003"
+      ],
+      "version_history": "Gate0 v4 technical STOP→v5→部分独立照合→finite signal v2→gamma→π/3→Stage S。共通保存信号を独立実験に増やさない。",
+      "primary_evidence_id": "EV-0134",
+      "evidence_ids": [
+        "EV-0134",
+        "EV-0135"
+      ],
+      "branch": "track-b-m1s-integrated-handoff-20261017",
+      "fixed_result_or_document_commit": "5f079dbe67bb35eff35613857b169fdf812af4b8",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-17（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0136"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0137",
+        "EV-0138"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "cdcb7f6f151df217960611f502eb1bac8be63f58",
+          "evidence_id": "EV-0135",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "cc2f451324b7292ae50cef94ff794d46f225d892",
+          "evidence_id": "EV-0135",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "025c5a90888b02b73d2815fbb10d6bd1d2823602",
+          "evidence_id": "EV-0135",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "b34572770e7c2105e16da003af050d789f490662",
+          "evidence_id": "EV-0135",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "81d6103ec89d485cb7336c3a90bd95dad66992aa",
+          "evidence_id": "EV-0135",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "f2bfb8770e6858de56a63e50e68f07ff2d6464b6",
+          "evidence_id": "EV-0135",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "適用域付き理論＋保存H4数値診断＋同保存信号の事後解析。"
+    },
+    {
+      "study_id": "RB-16",
+      "name": "G6 finite-bit／B3 live API・古典費用",
+      "category": "生成・実装基盤",
+      "primary_document": "docs/research/track_b_g6_w2c_b3_limited_pilot_16896_authorized_20261020/handoff.md",
+      "objective": "非列挙生成を監査可能なlive経路へ接続",
+      "modification": "dyadic/angle guard、closed ports、offline verifier、限定pilot",
+      "improvement_mechanism": "重複query/保存/検査を最適化し生成費を抑える",
+      "comparison": "旧G7 law／同条件baselineの必要性",
+      "scientific_conditions": "固定G7/P5 workloadとrelease別API、correctness512と限定16896 pilotを区別。分子/DFなし",
+      "metrics": [
+        "correctness",
+        "CPU/bit/cache/storage scope"
+      ],
+      "recorded_status_description": "限定pilot技術記録・mandatory STOP",
+      "outcome": "technical_success_science_unresolved",
+      "actual_result": "live接続と限定workload観測。全N・Closed P5/CTS同条件古典費用・新量子優位は未確立",
+      "pr_applicability": "直接応用",
+      "stop_reason": "別releaseごとのSTOPを維持",
+      "open_questions": "same-budget stronger comparatorと全N償却",
+      "reusable_assets": "finite-bit契約・API separation・provenance",
+      "repository_key": "PR",
+      "kind": "foundation",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0139",
+      "evidence_ids": [
+        "EV-0139"
+      ],
+      "branch": "track-b-c1-0-technical-preflight-20261020",
+      "fixed_result_or_document_commit": "a48b3c8244fb5d932e0d6bf4a5de6bb573ce35ed",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-20（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0140"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0141"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "c7e8806cf308131b5629ac54b627d46c360799a3",
+          "evidence_id": "EV-0139",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "fc022df06a27a3e68c51dea6f3e7e128e5da0a68",
+          "evidence_id": "EV-0139",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "7e65efdb43ce691d2b9f899495339c3adf4e58d6",
+          "evidence_id": "EV-0139",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "9849aa263bd3e46321de12d70be5947f530a3c4a",
+          "evidence_id": "EV-0139",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "1aad6c77b55c331e57d7660fb2d9c8d2a246730c",
+          "evidence_id": "EV-0139",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "RB-17",
+      "name": "C1 G6–DF移植・H4 logical pilot",
+      "category": "ランダム化・量子回路",
+      "primary_document": "docs/research/track_b_c1_freeze_synthesis_20261021/C1_RESEARCH_OUTCOMES.md",
+      "objective": "return構成を分子DFへ移す",
+      "modification": "exact input packet、controlled adapter、whole-path接続",
+      "improvement_mechanism": "同じtailを別lawで生成して回転/zeroを減らす",
+      "comparison": "ordinary／General Full／Closed P5、人工5方式",
+      "scientific_conditions": "H4 linear1Å/STO-3G/DF12、R1 generation-prefix L_D3、13bases/324labels、T=.8/q1/r4/m5、microstep.2、1024paths/方式、TAIL_ONLY_PLUS_SCALAR",
+      "metrics": [
+        "logical counts",
+        "weight records",
+        "CPU/setup",
+        "selected correctness"
+      ],
+      "recorded_status_description": "C1追加研究を一時凍結、G6数学的方法論維持",
+      "outcome": "technical_success_science_unresolved",
+      "actual_result": "3方式探索を完走した記録、logical差は小さくzero削減未観測。strict native/N/全wrapperは未取得",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "現在条件で追加投資を凍結",
+      "open_questions": "rigorous model binding、deterministic halves、十分N、strong公平CPU比較",
+      "reusable_assets": "exact packet・adapter・失敗原因とphase修正",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [
+        "GAP-007"
+      ],
+      "version_history": "旧partition hash STOP→別R1→state hash STOP→reference zero-sign修正→旧P5 worker停止→別P5R完走。",
+      "primary_evidence_id": "EV-0101",
+      "evidence_ids": [
+        "EV-0101",
+        "EV-0142",
+        "EV-0143"
+      ],
+      "branch": "track-b-c1-freeze-and-manuscript-synthesis-20261021",
+      "fixed_result_or_document_commit": "185ec4e9d6591f4ee8d7b047c2697bed7be7bc2e",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-21（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0144",
+        "EV-0145",
+        "EV-0146"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0147",
+        "EV-0106"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "af75af03c0b334c29b5a4311bd2b4578a999460c",
+          "evidence_id": "EV-0142",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "b022f2ea421649015a4c21ea3c904fe619d0c198",
+          "evidence_id": "EV-0142",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "bb9059bacb697e1105e63c1b3826b0c34886ad15",
+          "evidence_id": "EV-0142",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "243eea8e840f3c472753f7935e510391626fd325",
+          "evidence_id": "EV-0143",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "068f0ae8771fccf28c529bda12a84abe8b7e7648",
+          "evidence_id": "EV-0143",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "f3a6aa1108bbc8359e585c470e23033458c57466",
+          "evidence_id": "EV-0143",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "REP-04",
+      "name": "N1 representation selector",
+      "category": "Hamiltonian表現・量子回路",
+      "primary_document": "docs/research/n1_decode_recovery_v1_results_20261011.md",
+      "objective": "表現近似の回路節約を資源利益へ変える",
+      "modification": "Gaussian completion/cluster候補とbias込みselector",
+      "improvement_mechanism": "basis費を減らしつつ元Hの精度を保つ",
+      "comparison": "exact fallback／同情報候補",
+      "scientific_conditions": "synthetic JW4、ν2、signed DF2、T=.6/q1/2/4/8、δ=.6/.3/.15/.075、εcomplex.04",
+      "metrics": [
+        "certified shot×RZ/CX"
+      ],
+      "recorded_status_description": "N1 STOP",
+      "outcome": "no_improvement",
+      "actual_result": "decode修正後も固定全contextでexactが選ばれ、certified目的改善なし",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "現selector scan不成立",
+      "open_questions": "別表現の具体生成差とheadroom",
+      "reusable_assets": "selectorのbias/費用統合・exact fallback",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0148",
+      "evidence_ids": [
+        "EV-0148"
+      ],
+      "branch": "n1-decode-recovery-execution-20261011",
+      "fixed_result_or_document_commit": "4c719a72eb8caae2f77fc746bd4672d610d97610",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-11（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0149"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0150",
+        "EV-0151"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "3fe779f88ab6367631355cf5e5152bf32e897a4d",
+          "evidence_id": "EV-0148",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "89a40b39e08c6c5d5ea474f7055319bcdced86b2",
+          "evidence_id": "EV-0148",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "ba4530678df9d665d2e6005fb08179b0f7a7921f",
+          "evidence_id": "EV-0148",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "bbcb0176d43bfd1f7a10a87fa8f38e200d61ec46",
+          "evidence_id": "EV-0148",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存synthetic/toy・限定prototypeまたは保存値解析。実分子の一般優位性へは移送しない。"
+    },
+    {
+      "study_id": "REP-05",
+      "name": "N2 signed charge・L1 fit",
+      "category": "Hamiltonian表現・量子回路",
+      "primary_document": "docs/research/n13_redesign_results_20261011.md",
+      "objective": "charge表現で相互作用を圧縮",
+      "modification": "signed low-rank fitとcompute/phase/uncompute",
+      "improvement_mechanism": "係数fitを少数算術操作へ変える",
+      "comparison": "direct／known HWP",
+      "scientific_conditions": "synthetic JW4、後続はfixed4×2 SとεH=.0021の一件。化学geometry/basis/PF/L_Dなし",
+      "metrics": [
+        "fit residual",
+        "LP primal/dual",
+        "circuit cost"
+      ],
+      "recorded_status_description": "N2 HOLD",
+      "outcome": "mixed",
+      "actual_result": "weighted entry-L1訂正は成立。旧charge回路の費用増とfit改善を混同しない",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "安い算術回路とfitの両立未支持",
+      "open_questions": "bit幅・adder・ancilla・phase費用",
+      "reusable_assets": "signed-fit規約とprimal/dual検査",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0152",
+      "evidence_ids": [
+        "EV-0152"
+      ],
+      "branch": "n1-decode-recovery-execution-20261011",
+      "fixed_result_or_document_commit": "4c719a72eb8caae2f77fc746bd4672d610d97610",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-11（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0149"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0153"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "bbcb0176d43bfd1f7a10a87fa8f38e200d61ec46",
+          "evidence_id": "EV-0152",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存synthetic/toy・限定prototypeまたは保存値解析。実分子の一般優位性へは移送しない。"
+    },
+    {
+      "study_id": "REP-06",
+      "name": "N3 occupation／active-energy certificate",
+      "category": "Hamiltonian表現・誤差保証",
+      "primary_document": "docs/research/n3_saved_attribution_v1_claim_and_observability_20261013.md",
+      "objective": "active空間縮約誤差を構造認証",
+      "modification": "occupation/Schur/Fantope/SDP/SOS比較",
+      "improvement_mechanism": "結合方向とoccupationを残し保証幅を狭める",
+      "comparison": "強い既存certificate／同品質費用",
+      "scientific_conditions": "限定one-external mode、real one-body＋非負density、固定粒子。stress family5/6→4/5、εproj=.01等、PF/DF/L_Dなし",
+      "metrics": [
+        "active-energy width",
+        "PSD witness",
+        "prototype cost"
+      ],
+      "recorded_status_description": "現系列CLOSED・主研究不採択",
+      "outcome": "mixed",
+      "actual_result": "限定理論・保存幅改善は保持。元精度で追加縮約なし、強い既存族との差不足",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "同quality task利益未確立",
+      "open_questions": "一般二体・全energy/solver費、未保存因果情報",
+      "reusable_assets": "occupation certificate・rational witness",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0154",
+      "evidence_ids": [
+        "EV-0154"
+      ],
+      "branch": "n3-achievements-closure-20261013",
+      "fixed_result_or_document_commit": "ccc575ee339be091fd4031272c38bee13866f097",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-13（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0155"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0156",
+        "EV-0157"
+      ],
+      "source_snapshot_references": [],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存synthetic/toy・限定prototypeまたは保存値解析。実分子の一般優位性へは移送しない。"
+    },
+    {
+      "study_id": "REP-07",
+      "name": "THRIFT／mixed relative evolution",
+      "category": "Hamiltonian表現・Product Formula",
+      "primary_document": "docs/research/qc_mixed_access_feasibility_v1_closure_20261013.md",
+      "objective": "mixed可解blockでstepを削減",
+      "modification": "interaction/mixed relative template",
+      "improvement_mechanism": "可解部をexactに扱いstep誤差を下げる",
+      "comparison": "固定7方式・費用model",
+      "scientific_conditions": "H4 linear1Å/STO-3G、8modes/N4、DF16全保持、T1/4、r1…1024、εU=.001、PR L_Dなし",
+      "metrics": [
+        "operator-error frontier",
+        "arithmetic budget"
+      ],
+      "recorded_status_description": "現template CLOSED",
+      "outcome": "mixed",
+      "actual_result": "ideal step削減はあるが追加算術を回収する登録予算不足",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "詳細backend投資見送り",
+      "open_questions": "別の安いmixed oracleとcontrol費",
+      "reusable_assets": "mixed access契約と費用headroom",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0158",
+      "evidence_ids": [
+        "EV-0158"
+      ],
+      "branch": "qc-a2-certificate-connection-design-20261018",
+      "fixed_result_or_document_commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-13（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0159"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0160",
+        "EV-0161"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "102e6b31401356d6eea775169041ebdf2cfa6ba0",
+          "evidence_id": "EV-0158",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "214f9ab2d7d3e0b64b287f14f49795c99a1a8244",
+          "evidence_id": "EV-0158",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "QC-01",
+      "name": "C1 macrocycle／符号相殺",
+      "category": "Product Formula",
+      "primary_document": "docs/research/qc_c1_saved_oracle_diagnostic_v1_results_20261014.md",
+      "objective": "ground-connected PF位相の誤差を相殺",
+      "modification": "固定macrocycle composition",
+      "improvement_mechanism": "異符号主要誤差を合成で消す",
+      "comparison": "single/subdivision／S4／C2強対照",
+      "scientific_conditions": "非分子2qubit Pauli4H、3fragment、24macro、6h、target1e-5/1e-6、価格3/6。DF/L_Dなし",
+      "metrics": [
+        "eigenphase",
+        "overlap",
+        "conditional cost proxy"
+      ],
+      "recorded_status_description": "固定catalog内negative・新catalogなし",
+      "outcome": "no_improvement",
+      "actual_result": "通常contextで事後oracleを含め登録優位なし。bad contextは適格不足で未判定",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "fixed catalogの利益を得ず",
+      "open_questions": "catalog外の具体機構",
+      "reusable_assets": "branch/overlapと強いcomposition baseline",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0162",
+      "evidence_ids": [
+        "EV-0162"
+      ],
+      "branch": "qc-a2-certificate-connection-design-20261018",
+      "fixed_result_or_document_commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-14（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0163"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0164"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "e82a5202098ad95f2eb7280279d2c97cc06190bc",
+          "evidence_id": "EV-0162",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "657513ad06661aed84950d5907f3304dcdd5f1f7",
+          "evidence_id": "EV-0162",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "cc992b579290233ab5a7d8408d4a81c6d295f36d",
+          "evidence_id": "EV-0162",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "899289dacf3c55e00917c8f3e89a27edf8071cbc",
+          "evidence_id": "EV-0162",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存synthetic/toy・限定prototypeまたは保存値解析。実分子の一般優位性へは移送しない。"
+    },
+    {
+      "study_id": "QC-02",
+      "name": "C2 branch付きPF外挿",
+      "category": "Product Formula",
+      "primary_document": "docs/research/qc_research_integrated_gpt_decision_handoff_v1_20261014.md",
+      "objective": "PF biasを外挿で除く",
+      "modification": "同branch二点Richardsonと精度配分",
+      "improvement_mechanism": "先導bias相殺で許容stepを広げる",
+      "comparison": "既知外挿・同情報強対照",
+      "scientific_conditions": "静的監査、実分子/DF/L_D/precision pilot未固定",
+      "metrics": [
+        "proposed energy bias",
+        "multiple-width controlled cost"
+      ],
+      "recorded_status_description": "現案は実装停止",
+      "outcome": "planned_or_static_only",
+      "actual_result": "式は条件付き成立、独立した安いbranch/remainder取得規則未特定",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "既知手順との差・情報取得費が未解決",
+      "open_questions": "ground同定・残余certificate・複数幅全費用",
+      "reusable_assets": "branch/remainderと外挿分散の条件",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0165",
+      "evidence_ids": [
+        "EV-0165"
+      ],
+      "branch": "qc-a2-certificate-connection-design-20261018",
+      "fixed_result_or_document_commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-14（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [
+        {
+          "commit": "2dcd56737be35526f6436a52835f59d817adf30c",
+          "evidence_id": "EV-0165",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "QC-03",
+      "name": "C3 self-energy／active space",
+      "category": "Hamiltonian表現",
+      "primary_document": "docs/research/qc_research_integrated_gpt_decision_handoff_v1_20261014.md",
+      "objective": "virtual couplingを保持してmode削減",
+      "modification": "Schur/Feshbach root・resolvent access",
+      "improvement_mechanism": "小active空間にvirtual補正を戻す",
+      "comparison": "既知downfolding／Neumann／QSVT/LCU",
+      "scientific_conditions": "静的監査、E<c等の条件。新分子/active space/PF窓未固定",
+      "metrics": [
+        "proposed energy/root error",
+        "normalization/body rank"
+      ],
+      "recorded_status_description": "現案は実装停止",
+      "outcome": "planned_or_static_only",
+      "actual_result": "条件付きroot構造は整理、安い具体access未特定",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "既知構成と高body・取得費の壁",
+      "open_questions": "normalizer/control/ground solverと全費用",
+      "reusable_assets": "active-space残差を消さない台帳",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0165",
+      "evidence_ids": [
+        "EV-0165"
+      ],
+      "branch": "qc-a2-certificate-connection-design-20261018",
+      "fixed_result_or_document_commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-14（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [
+        {
+          "commit": "2dcd56737be35526f6436a52835f59d817adf30c",
+          "evidence_id": "EV-0165",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "QC-04",
+      "name": "C4 cost-aware proposal／whole path",
+      "category": "ランダム化・sampling",
+      "primary_document": "docs/research/qc_c4_finite_rte_gpt_handoff_v1_20261014.md",
+      "objective": "同meanのsampling費を削減",
+      "modification": "価格law・rejection/zero-fill・path DP",
+      "improvement_mechanism": "高価なeventを低頻度化しweightを補正する",
+      "comparison": "同情報importance sampling／weighted automata",
+      "scientific_conditions": "finite-RTEの静的law監査、分子/DF/L_D/delta pilotなし",
+      "metrics": [
+        "moment",
+        "range",
+        "sufficient shots",
+        "online cost"
+      ],
+      "recorded_status_description": "Phase B停止・独立生成差未特定",
+      "outcome": "planned_or_static_only",
+      "actual_result": "q∝|a|/sqrt(g)等の既知法対応。moment×平均価格だけで全費用優位を示さない",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "圧縮された安いpath取得則が未成立",
+      "open_questions": "inverse stack、finite bits、tail/range、zero-cost",
+      "reusable_assets": "全trial denominator・proposal費用の条件",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0166",
+      "evidence_ids": [
+        "EV-0166"
+      ],
+      "branch": "qc-a2-certificate-connection-design-20261018",
+      "fixed_result_or_document_commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-14（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [
+        "EV-0167"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "60da5738d48e0faaedd3de125b0350301935dc3a",
+          "evidence_id": "EV-0166",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "QC-05",
+      "name": "一体再配分・exact-ground PF応答",
+      "category": "Product Formula",
+      "primary_document": "docs/research/qc_onebody_repartition_h_boundary_reaudit_v2_results_20261015.md",
+      "objective": "ground-energy誤差を同情報で低減",
+      "modification": "一体項再配分・leading応答・finite-step成分比較",
+      "improvement_mechanism": "ground状態の誤差構造を係数配置へ戻す",
+      "comparison": "同情報compact BCH／強い費用対照",
+      "scientific_conditions": "現固定toy/DF構成と4登録h条件、10%費用基準。分子/DF/L_D/deltaの完全値は固定契約参照",
+      "metrics": [
+        "leading error",
+        "finite-step cost"
+      ],
+      "recorded_status_description": "現固定構成CLOSED; NO_UNIFORM_REGISTERED_COMPONENT_GAIN",
+      "outcome": "no_improvement",
+      "actual_result": "生成法はREDUCES_TO_KNOWN、別scopeのfinite-step基準も4条件未達",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "同情報生成差と登録費用gainなし",
+      "open_questions": "別の明示的生成/情報レバー",
+      "reusable_assets": "equal-access first-pair比較",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0168",
+      "evidence_ids": [
+        "EV-0168"
+      ],
+      "branch": "qc-a2-certificate-connection-design-20261018",
+      "fixed_result_or_document_commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-15（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0169"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0170",
+        "EV-0171"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "d96c9c6cb654058201cc15688aa1422beedefac5",
+          "evidence_id": "EV-0168",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "3953db1205f65ae6eda3e07b718c452f6e3d2f12",
+          "evidence_id": "EV-0168",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "5e3341c12bd84f30f19072cefa590f4499c36c38",
+          "evidence_id": "EV-0168",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "QC-06",
+      "name": "H-E1・M-a/M-b PF小改変",
+      "category": "Product Formula",
+      "primary_document": "docs/research/qc_new_algorithm_research_scope_20261016/research_coverage_map.md",
+      "objective": "固有値特化correctorでPFを改善",
+      "modification": "outer commutator消去・processor/counterterm候補",
+      "improvement_mechanism": "対象固有値で消える誤差方向を除く",
+      "comparison": "known processed PF／Hejazi／同情報BCH",
+      "scientific_conditions": "静的K0と固定小構成。新分子/rank/L_D/delta追加なし",
+      "metrics": [
+        "method delta",
+        "leading structure",
+        "proposed cost"
+      ],
+      "recorded_status_description": "H-E1現定義CLOSED、M追加探索STOP、K1未認可",
+      "outcome": "planned_or_static_only",
+      "actual_result": "既知処理への還元や生成規則不足。未実装を未検討扱いしない",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "現定義の独立方法差未成立",
+      "open_questions": "多fragment生成・有限step・control全費用",
+      "reusable_assets": "known correctorとfinite-step限界",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0172",
+      "evidence_ids": [
+        "EV-0172"
+      ],
+      "branch": "qc-a2-certificate-connection-design-20261018",
+      "fixed_result_or_document_commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-16（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "QC-07",
+      "name": "SOS-PF生成・K0/K0.5",
+      "category": "Hamiltonian表現・Product Formula",
+      "primary_document": "docs/research/qc_new_algorithm_research_scope_20261016/research_coverage_map.md",
+      "objective": "低energy構造をPF誤差へ利用",
+      "modification": "PSD化・DF/BLISS/Gram・SOS gap",
+      "improvement_mechanism": "正値構造で低energy誤差を抑える",
+      "comparison": "既知SOS/low-energy構成",
+      "scientific_conditions": "静的監査、現分割生成の固定scope、K1-Fなし。分子/rank/L_D/window新固定なし",
+      "metrics": [
+        "gap/remainder",
+        "generation cost"
+      ],
+      "recorded_status_description": "現分割生成CLOSED、A2 NOT_ADOPTED、K0 UNDETERMINED",
+      "outcome": "planned_or_static_only",
+      "actual_result": "生成探索の終了と保証理論の非採択を分離する",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "具体的有利な生成と有限保証・総費用が未成立",
+      "open_questions": "有用なgap/remainderと同情報強対照",
+      "reusable_assets": "PSD/SOSとBLISSの重複整理",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0172",
+      "evidence_ids": [
+        "EV-0172"
+      ],
+      "branch": "qc-a2-certificate-connection-design-20261018",
+      "fixed_result_or_document_commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-16（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "QC-08",
+      "name": "A2 RF0/RF1/EW2有限step相対保証",
+      "category": "誤差保証",
+      "primary_document": "docs/research/qc_a2_current_route_handoff_20261018/achievements_and_limits.md",
+      "objective": "低energy相対形式保証でstepを広げる",
+      "modification": "正stage S2の相対係数・有限剰余・energy-window tail",
+      "improvement_mechanism": "H−LIの正値構造から低energy誤差を抑える",
+      "comparison": "centered Cbar2強化対照",
+      "scientific_conditions": "H4 1Å/STO-3G/保存DF12/N4/8modes全block、one_body→block0…11、d=.001Ha/αspec=.1。PR splitなし",
+      "metrics": [
+        "sufficient-step enclosure",
+        "checker/preprocess cost"
+      ],
+      "recorded_status_description": "A2 NOT_ADOPTED、現実用化経路追加投資なし",
+      "outcome": "no_improvement",
+      "actual_result": "理論・checkerは保持。固定DF pilotでは強いcentered対照の十分stepが大きい",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "現経路への追加投資見送り",
+      "open_questions": "鋭いΛ・構造保持剰余、PRへの保証接続",
+      "reusable_assets": "RF/EW保証・rational checkerと負の結果",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0173",
+      "evidence_ids": [
+        "EV-0173"
+      ],
+      "branch": "qc-a2-current-route-handoff-20261018",
+      "fixed_result_or_document_commit": "f7e103bf3a0ffcee6162bd4b8d244f9a2f4502c5",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-18（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0174"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0175"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "8d483f9bfa5983bb52fef55887e2f9f73a790511",
+          "evidence_id": "EV-0173",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "a7f8307123f6ba5bbb8d8b84e124400ac04a60ce",
+          "evidence_id": "EV-0173",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "817d27b5a9af076b6205c3d54a7b60f646c6ad6f",
+          "evidence_id": "EV-0173",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "c1b80c0fabc1706d69585d993cbecfa12e4d09a6",
+          "evidence_id": "EV-0173",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "QC-09",
+      "name": "DF covariance縮約",
+      "category": "Hamiltonian表現・その他",
+      "primary_document": "docs/research/qc_iv_covariance_method_audit_20261018/handoff.md",
+      "objective": "DF相関を安く縮約してenergy情報を取得",
+      "modification": "factor contraction／streaming／cache／signed aggregation",
+      "improvement_mechanism": "既知表現変換・相関再利用で取得/回路費を節約する",
+      "comparison": "同DF/state/precisionを持つ既知対照K*",
+      "scientific_conditions": "静的source/数式/API監査。新分子・basis・rank/L_D/time比較なし",
+      "metrics": [
+        "method delta",
+        "access cost",
+        "proposed variance"
+      ],
+      "recorded_status_description": "REDUCES_TO_KNOWN_METHOD",
+      "outcome": "planned_or_static_only",
+      "actual_result": "同情報の既知対照が同じ演算列を選べ、独立した情報削減・計算量差は確認されない。",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "独立した安い生成/情報規則が未提示",
+      "open_questions": "実装上の便利さ・runtime・元Hの全費用は未検証。未知費用は方法差ではない。",
+      "reusable_assets": "encoding/control/scalar台帳と既知還元",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0176",
+      "evidence_ids": [
+        "EV-0176",
+        "EV-0177"
+      ],
+      "branch": "qc-iv-covariance-method-audit-20261018",
+      "fixed_result_or_document_commit": "88e4665590bb93c16fdd070e14980d9d3cbff699",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-18（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [
+        "EV-0178"
+      ],
+      "source_snapshot_references": [],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "REP-08",
+      "name": "非DF Pauli対DF fixed-signal比較",
+      "category": "Hamiltonian表現・ランダム化",
+      "primary_document": "docs/non_df_h2_process_recovery_validation.md",
+      "objective": "DF前提を外し表現とPRを比較",
+      "modification": "Pauli/DF各PF/PRの4固定方式",
+      "improvement_mechanism": "表現で単価・tail norm・shot負担を変える",
+      "comparison": "同MO積分・同reference signalの4方式",
+      "scientific_conditions": "H2 linear1Å/STO-3G、DFtol-only1e-8 rank3、T=.8/q4/δ=.2/S2、PauliPR L_D7・DFPR L_D1、r2/K4、64paired trajectories、P0",
+      "metrics": [
+        "C",
+        "analytic N",
+        "compiled RZ G",
+        "paired SE"
+      ],
+      "recorded_status_description": "COMPLETE_MANDATORY_STOP; H4 readiness only",
+      "outcome": "technical_success_science_unresolved",
+      "actual_result": "H2固定4方式の条件付き比較完了。母平均rare-order費用は未同定、H4は人工準備のみ",
+      "pr_applicability": "直接応用",
+      "stop_reason": "元run01失敗保全、別run02完了後STOP",
+      "open_questions": "未観測order費用・H4等への移送",
+      "reusable_assets": "表現identity・ordinary control・process分離基盤",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "PauliPR/DFPF thread競合で失敗→別process実行。旧成功2case再利用、新2case取得。H4未実施。",
+      "primary_evidence_id": "EV-0179",
+      "evidence_ids": [
+        "EV-0179",
+        "EV-0180"
+      ],
+      "branch": "codex/non-df-h2-process-recovery-20261023",
+      "fixed_result_or_document_commit": "c8990de7721545faff88b636108034dedb80a463",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-23（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0181",
+        "EV-0182",
+        "EV-0183"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0184",
+        "EV-0185"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "b5ed2c6e2399b55a0c24eb8437f842892a6703ef",
+          "evidence_id": "EV-0179",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "7a6c4263d96153ecbe721dcfb6941d0d2684b3b0",
+          "evidence_id": "EV-0179",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "c8990de7721545faff88b636108034dedb80a463",
+          "evidence_id": "EV-0180",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "8255fd0ed4e2e79b4394f8d1a91b67e9e20f6813",
+          "evidence_id": "EV-0180",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "EXT-01",
+      "name": "P1* bus/CAR固定word",
+      "category": "その他の算法構成",
+      "primary_document": "docs/research_exploration/research_strategy_redesign_20261017/research_exploration_retrospective.md",
+      "objective": "fermionic構造でinteracting演算を生成",
+      "modification": "bus条件付き変位の固定12segment word",
+      "improvement_mechanism": "CAR由来の相殺で低次残余を消す",
+      "comparison": "既知rectangle＋Strang構成",
+      "scientific_conditions": "紙上/固定exact solver ansatz、分子/basis/DF/L_Dなし",
+      "metrics": [
+        "formal order",
+        "fixed-ansatz satisfiability"
+      ],
+      "recorded_status_description": "NO_SOLUTION_IN_FIXED_ANSATZ",
+      "outcome": "no_improvement",
+      "actual_result": "固定wordは低次で不成立、後続紙上障害が固定solver結果を包含。一般bus不可能性ではない",
+      "pr_applicability": "低い",
+      "stop_reason": "現固定ansatzの障害",
+      "open_questions": "辞書外の具体的生成機構",
+      "reusable_assets": "必要条件とpositive control",
+      "repository_key": "PF",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0186",
+      "evidence_ids": [
+        "EV-0186"
+      ],
+      "branch": "qc-algorithm-difference-construction-20261018",
+      "fixed_result_or_document_commit": "beecb0c9fbaa8c8aab3a76b88b5e8f2e0faba63b",
+      "repository": "HIROMU1015/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae",
+      "period": "資料日 2026-10-17（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "固定分子/保存Hamiltonianまたは実装の既存局所検証。対象条件・scopeはscientific_conditionsと固定資料参照。"
+    },
+    {
+      "study_id": "EXT-02",
+      "name": "J1 joint-loop・echo構成",
+      "category": "その他の算法構成",
+      "primary_document": "docs/research_exploration/p1star_j1_pause_decision_20261017/research_decision_record.md",
+      "objective": "複数factorを安い共同閉路で生成",
+      "modification": "20pulse／16/24pulse紙上構成",
+      "improvement_mechanism": "未完了legの共有で操作数削減を狙う",
+      "comparison": "completed gate echo／rectangle Strang",
+      "scientific_conditions": "静的固定pulse word、分子/DF/L_D/数値delta窓なし",
+      "metrics": [
+        "formal residual",
+        "method delta"
+      ],
+      "recorded_status_description": "PAUSED_PENDING_NEW_MECHANISM",
+      "outcome": "planned_or_static_only",
+      "actual_result": "成立したものは既知生成、独自候補は三次で不成立。追加探索保留",
+      "pr_applicability": "低い",
+      "stop_reason": "新機構がない",
+      "open_questions": "新しい明示的閉路生成則",
+      "reusable_assets": "bus依存残余の失敗機構",
+      "repository_key": "PF",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0187",
+      "evidence_ids": [
+        "EV-0187"
+      ],
+      "branch": "qc-algorithm-difference-construction-20261018",
+      "fixed_result_or_document_commit": "beecb0c9fbaa8c8aab3a76b88b5e8f2e0faba63b",
+      "repository": "HIROMU1015/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae",
+      "period": "資料日 2026-10-17（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [
+        "EV-0188"
+      ],
+      "source_snapshot_references": [],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "EXT-03",
+      "name": "Q1 integrable level insertion",
+      "category": "その他の算法構成",
+      "primary_document": "docs/research_exploration/q1_pause_decision_20261017/research_decision_record.md",
+      "objective": "可解構造を非一様電子系へ拡張",
+      "modification": "Richardson–Gaudin型level insertion/Riccati候補",
+      "improvement_mechanism": "可解channelを増やし安い生成を得る",
+      "comparison": "既知可解族と同じaccess",
+      "scientific_conditions": "固定L4/m2等の紙上条件、分子/DF/L_Dなし",
+      "metrics": [
+        "closure conditions",
+        "method delta"
+      ],
+      "recorded_status_description": "PAUSED_PENDING_NEW_LEVEL_INSERTION_RULE",
+      "outcome": "planned_or_static_only",
+      "actual_result": "現候補の非一様性がchannel閉包を壊す。一般可解法の否定ではない",
+      "pr_applicability": "低い",
+      "stop_reason": "新しい挿入則未提示",
+      "open_questions": "別の具体的insertion rule",
+      "reusable_assets": "commutator障害とaccess条件",
+      "repository_key": "PF",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0189",
+      "evidence_ids": [
+        "EV-0189"
+      ],
+      "branch": "qc-algorithm-difference-construction-20261018",
+      "fixed_result_or_document_commit": "beecb0c9fbaa8c8aab3a76b88b5e8f2e0faba63b",
+      "repository": "HIROMU1015/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae",
+      "period": "資料日 2026-10-17（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [
+        "EV-0190"
+      ],
+      "source_snapshot_references": [],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "EXT-04",
+      "name": "集団遷移・pair collision・R1-P",
+      "category": "その他の算法構成",
+      "primary_document": "docs/research_exploration/research_strategy_redesign_20261017/research_exploration_retrospective.md",
+      "objective": "多電子集団操作を安く生成",
+      "modification": "pair collision／CG／multi-jump cycle等",
+      "improvement_mechanism": "集団量子数へ移して相互作用を簡略化する",
+      "comparison": "既知CG/Paldus・phase・標準gate",
+      "scientific_conditions": "紙上/静的構成、固定fermionic family、分子/DF/L_Dなし",
+      "metrics": [
+        "generation/access conditions",
+        "method delta"
+      ],
+      "recorded_status_description": "集団遷移PAUSED、R1-P NOT RETAINED",
+      "outcome": "planned_or_static_only",
+      "actual_result": "既知生成への還元や具体規則不足。量子優位の数値比較はない",
+      "pr_applicability": "低い",
+      "stop_reason": "独立した生成・情報削減が未成立",
+      "open_questions": "同情報強対照を越える具体規則",
+      "reusable_assets": "既知還元・fermionic抽出の障害",
+      "repository_key": "PF",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0186",
+      "evidence_ids": [
+        "EV-0186",
+        "EV-0191",
+        "EV-0192"
+      ],
+      "branch": "qc-algorithm-difference-construction-20261018",
+      "fixed_result_or_document_commit": "beecb0c9fbaa8c8aab3a76b88b5e8f2e0faba63b",
+      "repository": "HIROMU1015/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae",
+      "period": "資料日 2026-10-17（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [
+        {
+          "commit": "b7ec04fb84cd01eb846b9e3cc6d545bdf833e657",
+          "evidence_id": "EV-0191",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "12324144a3d4f7a247f1944b4866549e9cc19152",
+          "evidence_id": "EV-0191",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "EXT-05",
+      "name": "G coherent adaptive subspace",
+      "category": "その他・状態/部分空間",
+      "primary_document": "docs/research_exploration/coherent_subspace_g_closure_20261018/technical_outcomes_and_reduction.md",
+      "objective": "測定再利用で変分部分空間を安く更新",
+      "modification": "coherent cell partitionと共通測定record",
+      "improvement_mechanism": "同じ測定情報を候補へ再labelして追加取得を減らす",
+      "comparison": "同dictionary/seed/accessのVQNHE/QSE等",
+      "scientific_conditions": "固定有限tree class、紙上構成。実分子/basis/DF/L_D/PF窓なし",
+      "metrics": [
+        "energy interval",
+        "additional classical cost",
+        "update law"
+      ],
+      "recorded_status_description": "CLOSED / NOT RETAINED",
+      "outcome": "planned_or_static_only",
+      "actual_result": "強い既知wrapperが候補評価・情報law・更新を再現でき、独立差未確認",
+      "pr_applicability": "低い",
+      "stop_reason": "既知法の特殊化・組合せ",
+      "open_questions": "全絶対E0誤差とnative/情報費",
+      "reusable_assets": "強対照へ同じ測定情報を与える設計",
+      "repository_key": "PF",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0193",
+      "evidence_ids": [
+        "EV-0193"
+      ],
+      "branch": "qc-algorithm-difference-construction-20261018",
+      "fixed_result_or_document_commit": "beecb0c9fbaa8c8aab3a76b88b5e8f2e0faba63b",
+      "repository": "HIROMU1015/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae",
+      "period": "資料日 2026-10-18（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "EXT-06",
+      "name": "固定条件付き測定",
+      "category": "その他・測定",
+      "primary_document": "docs/research_exploration/conditional_measurement_closure_20261018/technical_outcomes_and_reduction.md",
+      "objective": "条件付き回転でenergy測定分散を削減",
+      "modification": "spectator読出し→active Givens→readout",
+      "improvement_mechanism": "条件付き可換構造を測定に使う",
+      "comparison": "separate pool／公表conditional法の強い対照",
+      "scientific_conditions": "4mode/N2、H=cI+F+R、hopping+density。残余Rは保持。PF/DF/L_Dなし",
+      "metrics": [
+        "fixed-state variance",
+        "measurement/access cost"
+      ],
+      "recorded_status_description": "CLOSED",
+      "outcome": "planned_or_static_only",
+      "actual_result": "弱い分割対照との差はあるが既知公表生成へ具体還元。全測定下界ではない",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "独立方法差なし",
+      "open_questions": "残余Rのfresh copies・状態/回路費",
+      "reusable_assets": "conditional分散と残余会計",
+      "repository_key": "PF",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0194",
+      "evidence_ids": [
+        "EV-0194"
+      ],
+      "branch": "qc-b01-limited-feasibility-20261018",
+      "fixed_result_or_document_commit": "bbd12642e2540e0d5c6341339820f0b153091d10",
+      "repository": "HIROMU1015/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae",
+      "period": "資料日 2026-10-18（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "EXT-07",
+      "name": "B-01 unknown-gap／energy情報",
+      "category": "その他・情報取得",
+      "primary_document": "docs/research_exploration/b01_pause_decision_20261018/technical_evidence_and_limits.md",
+      "objective": "小gapに依存しにくいenergy情報を得る",
+      "modification": "real-time Hadamard recordからfilter情報を取得",
+      "improvement_mechanism": "filterの情報をcontrolled実時間測定へ接続する",
+      "comparison": "既知Gaussian convolution・coarse energy取得",
+      "scientific_conditions": "D1 access下の静的検討、具体Hubbard/molecular利益未検証。PF/DF/L_D/window新固定なし",
+      "metrics": [
+        "sample/depth targets",
+        "soundness/completeness",
+        "eta acquisition"
+      ],
+      "recorded_status_description": "PAUSED_PENDING_NEW_EVIDENCE",
+      "outcome": "planned_or_static_only",
+      "actual_result": "目標依存と取得費を同時に閉じる独立規則未構成",
+      "pr_applicability": "低い",
+      "stop_reason": "構成研究着手根拠なし",
+      "open_questions": "ground population下界・正規化・全confidence台帳",
+      "reusable_assets": "access条件と不足情報の整理",
+      "repository_key": "PF",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0195",
+      "evidence_ids": [
+        "EV-0195"
+      ],
+      "branch": "qc-b01-pause-decision-20261018",
+      "fixed_result_or_document_commit": "d26aa812226819c406d6ce645dbb3c1056b0e8ee",
+      "repository": "HIROMU1015/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae",
+      "period": "資料日 2026-10-18（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [
+        "EV-0196"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "bbd12642e2540e0d5c6341339820f0b153091d10",
+          "evidence_id": "EV-0195",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "EXT-08",
+      "name": "T1 logical accreditation・独立原理P1–P8探索",
+      "category": "その他・研究候補探索",
+      "primary_document": "docs/research_exploration/research_strategy_redesign_20261017/research_exploration_retrospective.md",
+      "objective": "PF以外の資源レバーを探す",
+      "modification": "accreditation接続、障害起点、独立構成原理の比較",
+      "improvement_mechanism": "保証取得と生成操作を変えて費用削減を狙う",
+      "comparison": "公表accreditation／measurement／既知生成法",
+      "scientific_conditions": "静的候補・紙上構成、実分子/DF/L_D/time比較なし",
+      "metrics": [
+        "method delta",
+        "access/total-cost requirements"
+      ],
+      "recorded_status_description": "T1-D撤回、他は限定探索結果／個別STOP",
+      "outcome": "planned_or_static_only",
+      "actual_result": "候補名を新規性と数えず、既知還元・構成欠如・不成立を分類",
+      "pr_applicability": "不明",
+      "stop_reason": "独立差・資源利益が研究継続を正当化するほど未確立",
+      "open_questions": "新しい具体規則と最小識別task",
+      "reusable_assets": "既知baseline・障害・候補判別条件",
+      "repository_key": "PF",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0186",
+      "evidence_ids": [
+        "EV-0186"
+      ],
+      "branch": "qc-algorithm-difference-construction-20261018",
+      "fixed_result_or_document_commit": "beecb0c9fbaa8c8aab3a76b88b5e8f2e0faba63b",
+      "repository": "HIROMU1015/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae",
+      "period": "資料日 2026-10-17（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "REP-09",
+      "name": "core吸収・physical pair表現",
+      "category": "Hamiltonian表現・量子回路",
+      "primary_document": "docs/research/representation_attribution_pair_results_20261010.md",
+      "objective": "tail norm低減を回路節約へ接続",
+      "modification": "占有対角core吸収／physical pair involution",
+      "improvement_mechanism": "diagonal吸収とpair表現でtail normalizerを下げる",
+      "comparison": "whole-Pauli／direct Pauli／反射法",
+      "scientific_conditions": "synthetic3mode JW正平方DF2とphysical3+aux1 pair、q1 actual cost、q1/2/4 mean、εcomplex.05/.02、固定compiler",
+      "metrics": [
+        "lambda",
+        "shots",
+        "RZ/CX/depth"
+      ],
+      "recorded_status_description": "ATTRIBUTION_PAIR_COMPLETE_AWAITING_GPT_REVIEW",
+      "outcome": "no_improvement",
+      "actual_result": "強いwhole-Pauliでcore中心の利得が消え、pairのshot節約はbasis/central費用に負けた",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "固定toyで中心改善として不支持",
+      "open_questions": "別入力で費用増を避ける具体生成",
+      "reusable_assets": "core/direct辞書・次数別標本の比較",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0197",
+      "evidence_ids": [
+        "EV-0197"
+      ],
+      "branch": "hamiltonian-construction-feasibility-20261011",
+      "fixed_result_or_document_commit": "ae7434452450e80ec007d65417335e18a063fa1e",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-10（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0198"
+      ],
+      "saved_result_evidence_ids": [
+        "EV-0199",
+        "EV-0200"
+      ],
+      "source_snapshot_references": [
+        {
+          "commit": "c24dcede10ed9726e1e0b1030eca749ba7bc5cba",
+          "evidence_id": "EV-0197",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "3975650908c594ce6dddb4fc2086167caf5b6460",
+          "evidence_id": "EV-0197",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        },
+        {
+          "commit": "e576f023db84e6ac40629fd0437cab9c19073381",
+          "evidence_id": "EV-0197",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存synthetic/toy・限定prototypeまたは保存値解析。実分子の一般優位性へは移送しない。"
+    },
+    {
+      "study_id": "RB-18",
+      "name": "interstep correlated randomization",
+      "category": "ランダム化・sampling",
+      "primary_document": "docs/tracks/algorithm_codesign/interstep_correlated_randomization_prior_art_audit_20261013.md",
+      "objective": "basis switch等のpath費用を下げる",
+      "modification": "相関law・history-adaptive block・whole-path IS",
+      "improvement_mechanism": "path構造を利用し重み補正を保って高価な遷移を減らす",
+      "comparison": "PRHS／qSHIFT／全経路importance sampling",
+      "scientific_conditions": "静的law/source/文献対応、既存paired finite RTEを参照。新molecule/DF/L_D/delta pilotなし",
+      "metrics": [
+        "coherent mean",
+        "moment/range",
+        "whole-path/native/classical cost"
+      ],
+      "recorded_status_description": "KNOWN_PROCEDURE_MAPPING; ADDITIONAL_CONCRETE_METHOD_DELTA_NOT_ESTABLISHED",
+      "outcome": "planned_or_static_only",
+      "actual_result": "marginal保存はcoherent mean保存でない。単純相関やISは既知対応、独立candidate未成立",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "具体method deltaが揃わずpilotなし",
+      "open_questions": "finite-bit・signed phase・D interleaving・安いpath生成",
+      "reusable_assets": "channel/first-moment区別と全trial台帳",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "A",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0201",
+      "evidence_ids": [
+        "EV-0201"
+      ],
+      "branch": "m1s-prior-art-survey-20261017",
+      "fixed_result_or_document_commit": "4301c0f87a16be45b620304c3fa935d5aa2d721a",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-13（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [
+        "EV-0202",
+        "EV-0203"
+      ],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "固定資料から目的・主要結果・停止理由を概略判断可能。全rawの独立再認証を意味しない。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "QC-10",
+      "name": "H1 先導固有値補正",
+      "category": "その他・情報/表現",
+      "primary_document": "docs/research/qc_new_algorithm_research_scope_20261016/research_coverage_map.md",
+      "objective": "ground状態情報でPF固有値誤差を低減",
+      "modification": "低body表示・多fragment残余の静的監査",
+      "improvement_mechanism": "対象stateで消える誤差構造を利用",
+      "comparison": "既存BCH／一体再配分／SOS監査",
+      "scientific_conditions": "静的検討。新分子・basis・DF rank・L_D・delta窓の数値pilotなし",
+      "metrics": [
+        "method delta",
+        "information and implementation cost"
+      ],
+      "recorded_status_description": "H1 PAUSED",
+      "outcome": "planned_or_static_only",
+      "actual_result": "既存式との重複とfinite-stepへの未接続。高body表示から一般RDM下界を主張しない",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "独立した具体的生成/情報取得規則未成立",
+      "open_questions": "情報取得費と有限step剰余",
+      "reusable_assets": "既存scopeとknown-baseline対応",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0172",
+      "evidence_ids": [
+        "EV-0172"
+      ],
+      "branch": "qc-a2-certificate-connection-design-20261018",
+      "fixed_result_or_document_commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-16（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "QC-11",
+      "name": "H2 mixed correlation／filter",
+      "category": "その他・情報/表現",
+      "primary_document": "docs/research/qc_new_algorithm_research_scope_20261016/research_coverage_map.md",
+      "objective": "安い相関信号から元Hのenergyを読む",
+      "modification": "filter ratioとleakage/分母/shot台帳",
+      "improvement_mechanism": "有用な低energy相関へ測定を集中",
+      "comparison": "既知filter・直接energy測定",
+      "scientific_conditions": "静的検討。新分子・basis・DF rank・L_D・delta窓の数値pilotなし",
+      "metrics": [
+        "method delta",
+        "information and implementation cost"
+      ],
+      "recorded_status_description": "H2 PAUSED; UNDETERMINED_DATA_REQUIRED",
+      "outcome": "planned_or_static_only",
+      "actual_result": "ratio恒等式だけでは独立情報取得法にならず、現時点で有利な生成は未確定",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "独立した具体的生成/情報取得規則未成立",
+      "open_questions": "正の分母・leakage・全測定費",
+      "reusable_assets": "既存scopeとknown-baseline対応",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0172",
+      "evidence_ids": [
+        "EV-0172"
+      ],
+      "branch": "qc-a2-certificate-connection-design-20261018",
+      "fixed_result_or_document_commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-16（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "QC-12",
+      "name": "H3 frame／interaction picture",
+      "category": "その他・情報/表現",
+      "primary_document": "docs/research/qc_new_algorithm_research_scope_20261016/research_coverage_map.md",
+      "objective": "可解frameでtime evolutionを安くする",
+      "modification": "Gaussian共役・DF-square・frame access",
+      "improvement_mechanism": "可解部分をframeへ移して残余を小さくする",
+      "comparison": "THRIFT／CFQM／SPRINT／既知共役",
+      "scientific_conditions": "静的検討。新分子・basis・DF rank・L_D・delta窓の数値pilotなし",
+      "metrics": [
+        "method delta",
+        "information and implementation cost"
+      ],
+      "recorded_status_description": "H3 PAUSED",
+      "outcome": "planned_or_static_only",
+      "actual_result": "sampleされた和の指数・controlを無料にせず、独立した生成差を特定できていない",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "独立した具体的生成/情報取得規則未成立",
+      "open_questions": "同accessで安いframe/相対演算子生成",
+      "reusable_assets": "既存scopeとknown-baseline対応",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0172",
+      "evidence_ids": [
+        "EV-0172"
+      ],
+      "branch": "qc-a2-certificate-connection-design-20261018",
+      "fixed_result_or_document_commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-16（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "QC-13",
+      "name": "H4 copies／phase reference",
+      "category": "その他・情報/表現",
+      "primary_document": "docs/research/qc_new_algorithm_research_scope_20261016/research_coverage_map.md",
+      "objective": "利用可能stateから絶対energyを安く読む",
+      "modification": "copies・coherent preparation/inverse・位相参照を分離",
+      "improvement_mechanism": "準備済みstate情報を再利用",
+      "comparison": "直接energy/RDM測定／既知reference",
+      "scientific_conditions": "静的検討。新分子・basis・DF rank・L_D・delta窓の数値pilotなし",
+      "metrics": [
+        "method delta",
+        "information and implementation cost"
+      ],
+      "recorded_status_description": "H4 PAUSED",
+      "outcome": "planned_or_static_only",
+      "actual_result": "uncontrolled evolutionの定数位相不変性を確認。全測定方式の不能定理ではない",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "独立した具体的生成/情報取得規則未成立",
+      "open_questions": "許可されたcopy/逆/参照accessと全費用",
+      "reusable_assets": "既存scopeとknown-baseline対応",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0172",
+      "evidence_ids": [
+        "EV-0172"
+      ],
+      "branch": "qc-a2-certificate-connection-design-20261018",
+      "fixed_result_or_document_commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-16（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    },
+    {
+      "study_id": "QC-14",
+      "name": "exact fermion encoding／controlled構成",
+      "category": "Hamiltonian表現・量子回路",
+      "primary_document": "docs/research/qc_exact_encoding_controlled_preflight_20261017/technical_preflight_report.md",
+      "objective": "sector/encodingを使い要求位相を保つ",
+      "modification": "JW/DFと既知符号化のSOURCE/API照合",
+      "improvement_mechanism": "qubit/Pauli構造を変えて論理blockを安くする",
+      "comparison": "同情報の既知encoding＋通常compiler",
+      "scientific_conditions": "静的preflight、対象H/basis/rank/L_D/delta/precision未採択",
+      "metrics": [
+        "method delta",
+        "control/scalar/preparation cost"
+      ],
+      "recorded_status_description": "A1 CLOSED（後続方針）、preflight限定完了",
+      "outcome": "planned_or_static_only",
+      "actual_result": "既知手順を超える具体的block生成則は未提示。adapter不足と算法不足を分ける",
+      "pr_applicability": "条件付き応用",
+      "stop_reason": "具体生成差未成立、④選定保留",
+      "open_questions": "どのblockをどのaccessから生成するか",
+      "reusable_assets": "encodingとordinary controlの接続条件",
+      "repository_key": "PR",
+      "kind": "algorithm_study",
+      "evidence_sufficiency": "B",
+      "gap_ids": [],
+      "version_history": "",
+      "primary_evidence_id": "EV-0204",
+      "evidence_ids": [
+        "EV-0204",
+        "EV-0176"
+      ],
+      "branch": "qc-a2-certificate-connection-design-20261018",
+      "fixed_result_or_document_commit": "7af83266f96b714bb3fa2f1ef5e4bc89faf37db3",
+      "repository": "HIROMU1015/Partially-Randomized-Trotter",
+      "period": "資料日 2026-10-17（研究初出と同一とは限らない）",
+      "implementation_evidence_ids": [],
+      "saved_result_evidence_ids": [],
+      "source_snapshot_references": [
+        {
+          "commit": "56f1cc55c59ab7bc42c6b24e0953675de9b29b1d",
+          "evidence_id": "EV-0204",
+          "meaning": "source-labelled reference in existing document; no execution authorization inferred"
+        }
+      ],
+      "implementation_status": "No separate code pointer verified in this survey; documentary/symbolic SOURCE is the cited material. This is not proof of nonimplementation elsewhere.",
+      "evidence_strength": "既存の適用域付き理論／局所数値／静的監査の帰属。外部再現・immutable CI・一般科学結論には格上げしない。",
+      "evidence_sufficiency_reason": "概略判断は可能。参照先の全条件・全rawの確認範囲に限界がある。未取得資料と未実施検証の詳細はopen_questionsおよびGAPを参照。",
+      "validation_scope_this_survey": "資料読解・Git/bytes/hash照合・SOURCE静的構造・JSON container確認のみ。科学関数の実行、再集計、再ランキング、証明、simulation/compileなし。",
+      "status_handling": "recorded_status_descriptionは既存状態の説明、outcomeは本調査専用分類。元status/STOPは未変更。",
+      "historical_validation_level": "既存計画・理論/静的SOURCE監査。新しい科学的数値検証を実施したとは記録しない。"
+    }
+  ]
+}
