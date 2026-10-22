@@ -1612,3 +1612,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-23 H2共通production基盤
 
 [実装・契約・検証](docs/research/track_a_h2_common_production_20261023.md)。H2共通native/allowance production接続、exact3分岐、人工72件PASS。科学実行0・binding/政策/C witness未完、mandatory STOP。
+
+## 2026-10-23 H2 DIAGNOSTICS実行binding準備
+
+[技術封印・実契約・採択資料](docs/research/track_a_h2_diagnostics_binding_20261023.md)。固定4候補のSOURCE/inputと静的runtime許可集合を封印し、隔離preflight PASS。人工98件PASS、科学import/実行0。政策・科学承認待ち、PR C witnessと比較継続loaderは未完。local commit後mandatory STOP、push/PR/mergeなし。

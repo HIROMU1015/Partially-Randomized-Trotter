@@ -1132,3 +1132,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-23 H2共通production基盤
 
 [実装・契約・検証](research/track_a_h2_common_production_20261023.md)。production基盤、exact call予算、PR C再利用判定、未採択政策とBLOCKER。科学実行0、mandatory STOP。
+
+## 2026-10-23 H2 DIAGNOSTICS実行binding準備
+
+[封印記録・政策採択資料・実契約](research/track_a_h2_diagnostics_binding_20261023.md)。隔離preflight PASS、旧72件を含む人工98件PASS。科学実行0、共通政策/限定実行の承認待ち。保存PR67 tasksのidentity監査と独立診断後の比較継続案を記録し、COMPAREはBLOCKEDのまま。local commit後mandatory STOP。
