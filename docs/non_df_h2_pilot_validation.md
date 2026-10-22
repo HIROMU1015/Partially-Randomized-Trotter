@@ -94,3 +94,99 @@ numerical evidence・C/N/G・全MC価格・validation、grant/marker/STOPを新n
 結果保存後に既存tracked科学ファイルと過去manifestエントリを照合し、
 研究現状・本検証文書・日付ノート・新manifestエントリを更新する。
 ローカルcommit後mandatory STOP。push、詳細科学レビュー、新規モデル採択、H4以降、retryは承認外。
+
+## 実行結果：部分取得・FAILED_NO_RETRY（2026-10-22 JST）
+
+**4固定caseのうち2件が完了、2件がQiskit runtime例外で失敗した。pilot全体は未完了。**
+科学SOURCEは `b5ed2c6e2399b55a0c24eb8437f842892a6703ef`、runは `run01`、全体STOPは
+`FAILED_NO_RETRY_MANDATORY_STOP`、実行process exit1、wall246.816秒。
+新RHF1回・同一MO積分からDF1回・FCI照合1回は完了し、その後4caseを同時起動した。
+失敗をretryせず、同時起動済みcaseを回収して終了した。SOURCE・契約・許容差は変更していない。
+
+|固定case|分割条件|最終状態|C/N/Gの受理|
+|---|---|---|---|
+|Pauli PF|非identity全14項、L_D=14、DF rank非適用|完了・実施したgate PASS|受理|
+|Pauli PR|予定L_D=7 Pauli項、r2/K4|`Already mutably borrowed`|未取得null|
+|DF PF|rank3・全3fragment保持、L_D=3|operator validation中に `Already borrowed`|保存途中値は未受理|
+|DF PR|rank3・既存weight順位fragment0を1個＋one-body、L_D=1、r2/K4|完了・実施したgate PASS|有限MCの条件付き値として受理|
+
+DF PFにはnumerical evidenceとprecision_rowsが保存されているが、validation/resultの完成前に失敗した。
+これらの値を成功結果や優位性比較へ用いない。Pauli PRのsignal・C/N/Gを仮の値で埋めない。
+同じL_Dが同じ分割を示すとは扱っていない。
+
+### 入力と既存DF経路の整合性
+
+H2・1.00 Å・STO-3G、4 spin qubit、同一canonical real RHF MO積分、Pauli14非identity項、
+DFはtol-only1e-8/rank3（今回truncation値0）という新snapshotで照合した。
+数値はこの条件・新cohortに限定し、旧generation順最良候補cohortの再現結果とはしない。
+
+- 非DF sector ground energy：−1.1011503302326184 Hartree。独立PySCF FCIとの差2.22e-16 Hartree。
+- DF/nonDF full-H operator差（2-norm）：8.88e-16（事前許容1e-9）。
+- 既存 `df_linear_operator` のsector行列との差：4.62e-16（許容1e-9）。
+- state residual：8.92e-16（許容1e-10）。DF ground energyとの差は今回の数値で0、state overlap差2.22e-16。
+- T=.8のfull-H参照信号差は今回0（許容1e-10）。参照は約0.6364415911143844+0.771324899831317i。
+- 全4 native DF blockの±half-step、計8 primitive operator gateをPASS。
+
+[入力receipt](../artifacts/non_df_h2_pilot/2026-10-22/run01/inputs/receipt.json)と
+[入力snapshot](../artifacts/non_df_h2_pilot/2026-10-22/run01/inputs/snapshot.npz)を原値とする。
+
+### 受理した固定時間C/N/G
+
+以下は上記H2/geometry/basis/stateで、T=.8、q4、delta=.2の**単一点**、S2、
+各軸epsilon_sig/sqrt(2)、alpha各.025、P=0、full ordinary-control HadamardのRZ。
+Pauli PFはL_D14、DF PRはrank3/L_D1/r2/K4・新64 trajectory。
+Nは経験的allowance下のHoeffding十分値、PRのC/Gは有限MC平均であり、最終総RPE費用ではない。
+
+|方式|C_cos [RZ/shot]|C_sin [RZ/shot]|epsilon_sig=.05のN_cos+N_sin|同G [RZ]|
+|---|---:|---:|---:|---:|
+|Pauli PF|3850|3850|7044+7038=14082|54,215,700|
+|DF PR|2030.921875|2030.921875|7152+7146=14298|29,038,120.96875|
+
+DF PRのG名目95%半幅は29,529.2401 RZ（SE14,776.8809）、各軸CのSEは1.03349 RZ。
+この2caseの費用値から非DF PR優位、DF優位、方式一般のランキングを結論しない。
+
+|epsilon_sig|Pauli PF N_total|Pauli PF G|DF PR N_total|DF PR G（有限MC平均）|
+|---|---:|---:|---:|---:|
+|0.05|14082|54215700|14298|929219871/32|
+|0.01|357943|1378080550|363455|47241517445/64|
+|0.005|1462238|5629616300|1484776|24123712463/8|
+|0.001|43644174|168030069900|44322488|720124083469/8|
+|0.0005|223521528|860557882800|227040767|29510531853893/64|
+
+小数でないGは正確な有理数表記。各精度で回路を選び直した結果ではない。
+各軸N/C・bias・normalization・全64価格は原JSONを参照する。
+Pauli PFの複素signal絶対誤差は1.03943e-4、DF PRは1.04092e-4。
+DF PRのBは1.0076627782285141、attenuationは0.9923954934189536。
+Pauli PFのuは各軸9.37145e-8、DF PRは3.78351e-8で、いずれも経験的でcertifiedではない。
+
+受理caseでは計130軸wrapperを検査し、compiled probability最大差は
+Pauli PF4.33e-14、DF PR2.28e-14（許容1e-9）。
+独立trajectory operator比較、DF ordinary control、DF PRのTail再構成・order0/2/4強制event検査をPASS。
+DF PRの実MCは512 event位置が全てorder0、order2期待数0.24418、order4期待数1.94262e-5。
+order2/4のcost母平均寄与は未同定で、0と見なさない。名目区間を厳密母平均保証にしない。
+
+### 失敗の技術記録と未解決事項
+
+Pauli PRのtracebackはQiskit high-level synthesisのequivalence library keys、
+DF PFは追加operator検査時のcontrolled RZZ構築→basis translationでborrow例外を示す。
+同一processのThreadPoolExecutorでQiskit処理を並行したことと、
+インストール済みQiskit1.3.0がprocess-global `SessionEquivalenceLibrary` を持つことを静的確認した。
+共有mutable stateの競合が疑われる。原因の独立再現・修正後の科学再実行は行っていない。
+作者による技術確認で、独立科学レビューではない。
+
+人工preflightは87件PASS、最終のpilot固有16件もPASSしたが、人工caseは逐次実行だった。
+実際の4case同時実行に対する十分なpreflightになっていなかった。
+これは実行方式の問題であり、失敗2caseの科学結果を得たことにはしない。
+
+未完了なのは非DF PRの実分子C/N/GとDF PFの最終operator検証・結果受理。
+将来の再実行を検討する場合は、Qiskitをprocessごとに分離した実装と人工並列preflightが候補になる。
+ただし現契約を変更せず、今回のgrant/marker/STOPは消費済みのまま保全する。
+新SOURCE/新規出力・新しい明示承認なしで科学retryを行わない。
+
+[機械可読の部分取得・未取得台帳](../artifacts/non_df_h2_pilot/2026-10-22/result_inventory.json)、
+[全体STOP](../artifacts/non_df_h2_pilot/2026-10-22/run01/STOP.json)、
+[保全検査](../artifacts/non_df_h2_pilot/2026-10-22/preservation.json)を保存した。
+
+旧tracked 6870ファイルと旧manifest152エントリの内容同一を確認。
+凍結科学SOURCEのbyte hashは不変。旧raw・grant・ledger・marker・STOP・図を保全した。
+結果と失敗記録を専用branchへlocal commitし、pushなしでmandatory STOP。

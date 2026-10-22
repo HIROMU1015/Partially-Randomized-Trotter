@@ -1,0 +1,257 @@
+{
+  "circuit_cost": {
+    "axes": {
+      "cosine": {
+        "mean": 3850.0,
+        "mean_exact": "3850",
+        "nominal95_halfwidth": 0.0,
+        "standard_error": 0.0
+      },
+      "sine": {
+        "mean": 3850.0,
+        "mean_exact": "3850",
+        "nominal95_halfwidth": 0.0,
+        "standard_error": 0.0
+      }
+    },
+    "cache_hits": 0,
+    "cache_misses": 2,
+    "compiled_signal_max_error": 4.3298697960381105e-14,
+    "kind": "deterministic",
+    "mc_samples_are_quantum_shots": false,
+    "paired_axes": true,
+    "sample_count": 1,
+    "samples": [
+      {
+        "RZ": {
+          "cosine": 3850,
+          "sine": 3850
+        },
+        "seed": 15107639610233238299
+      }
+    ],
+    "scope": "full_cosine_sine_hadamard_wrapper_no_state_preparation",
+    "uncertainty": "nominal_Student_t_95_not_rare_event_or_population_guarantee"
+  },
+  "compiler": {
+    "backend_name": null,
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "coupling_map": null,
+    "layout_method": null,
+    "optimization_level": 1,
+    "qiskit_version": "1.3.0",
+    "routing_method": null,
+    "transpiler_seed": 17
+  },
+  "config": {
+    "K": 4,
+    "L_D": null,
+    "T": 0.8,
+    "cost_samples": 64,
+    "hamiltonian_type": "pauli_jw",
+    "method": "PF",
+    "product_formula": "S2",
+    "q": 4,
+    "r": 2,
+    "randomization_law": "finite_rte_even_paired",
+    "seed": 7938208451227488200
+  },
+  "model": {
+    "B0I_equivalent_to_B0": true,
+    "B0I_reason": "nonidentity_Pauli_tail_has_zero_identity_coefficient",
+    "DF_rank": null,
+    "L_D": 14,
+    "generation": {
+      "SCF_converged": true,
+      "basis": "STO-3G",
+      "charge": 0,
+      "coefficient_cutoff": 0.0,
+      "df_rank": null,
+      "distance": 1.0,
+      "eri_chemist_hash": "8b0b23738933fc32e91c437d5264b585a1e23b2cf0ce98410ff9e1147cd0e07c",
+      "geometry": [
+        [
+          "H",
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          "H",
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      ],
+      "hf_energy": -1.0661086493179366,
+      "input_eri": "chemist_(pq|rs)",
+      "input_origin": "new_one_shot_SCF_same_integrals_for_Pauli_and_DF",
+      "label_order": "q[n-1]...q[0]",
+      "model_id": "H2_1.00A_STO-3G_NON_DF_PILOT",
+      "molecule_type": 2,
+      "multiplicity": 1,
+      "nuclear_repulsion": 0.52917721092,
+      "one_body_hash": "20a3200d3099e100db2438e616fba818ea5caada6393dce632efee50b91f3b2f",
+      "openfermion_eri": "h[p,q,r,s]=(ps|qr)",
+      "orbital_basis": "real_orthonormal_spatial_MO",
+      "qubit_order": "qiskit_little_endian",
+      "spin_order": "2*p+alpha(0)/beta(1)",
+      "split_order": "descending_abs_then_label",
+      "two_body_prefactor": 0.5
+    },
+    "hamiltonian_hash": "4eca732f1835e5d52ba2672277edbe6ee911114ef9b336d7e820c23ed3abc840",
+    "hamiltonian_type": "pauli_jw",
+    "identity_policy": "constant_always_retained_once",
+    "retained_labels": [
+      "ZZII",
+      "IIZZ",
+      "IZZI",
+      "ZIIZ",
+      "IIIZ",
+      "IIZI",
+      "IZII",
+      "ZIII",
+      "IZIZ",
+      "ZIZI",
+      "XXYY",
+      "XYYX",
+      "YXXY",
+      "YYXX"
+    ],
+    "split_unit": "nonidentity_Pauli_term",
+    "tail_labels": []
+  },
+  "normalization": {
+    "B": 1.0,
+    "K": null,
+    "attenuation": 1.0,
+    "lambda_r": 0.0,
+    "law": "deterministic",
+    "log_B": 0.0,
+    "log_B_margin": 9.371447617923002e-08,
+    "log_B_upper": 9.371447617923002e-08,
+    "normalization_certificate_verified": false,
+    "r": null
+  },
+  "pilot_validation": {
+    "existing_DF_experiment_cohort_reproduced": false,
+    "fixed_case_only": true,
+    "molecular_system": "H2",
+    "new_Monte_Carlo_cohort": true,
+    "numerical_certificate": false,
+    "scientific_superiority_claimed": false
+  },
+  "primary_precision_status": "CONDITIONALLY_ELIGIBLE",
+  "provenance": {
+    "environment": {
+      "numpy": "1.26.4",
+      "openfermion": "1.6.1",
+      "openfermionpyscf": "0.5",
+      "pyscf": "2.7.0",
+      "qiskit": "1.3.0",
+      "qiskit-nature": "0.7.2",
+      "scipy": "1.14.1"
+    },
+    "python": "3.12.3",
+    "source": {
+      "SOURCE": "b5ed2c6e2399b55a0c24eb8437f842892a6703ef",
+      "contract_digest": "eb6796c71d4d0a1acc3af5e2d452b101b1144317740a520113675d3bb8b66079",
+      "grant_id": "121a3b8fddb71d80f5ece8bae1b94a30d1de165c80b1c8a2a2fe5d0ebbec66ce",
+      "input_snapshot_sha256": "fb5ca11d7f0be73abd063ae7b67c6b72399c5a2336635f3764af1a7316e81175",
+      "source_manifest_sha256": "a83567e2ee2e9b670e663a71ebd0c9134e0326b3be68fa19ef91831027219b4a"
+    }
+  },
+  "reference": {
+    "T": 0.8,
+    "hamiltonian_hash": "4eca732f1835e5d52ba2672277edbe6ee911114ef9b336d7e820c23ed3abc840",
+    "method": "scipy_sparse_expm_multiply",
+    "signal": {
+      "imag": 0.7713248998313171,
+      "real": 0.6364415911143843
+    }
+  },
+  "schema": "fixed_signal_resource_evaluation_v1",
+  "shots": {
+    "N_total": 14082,
+    "alpha_union": 0.05,
+    "axes": {
+      "cosine": {
+        "allowance": 9.371447617923002e-08,
+        "alpha": 0.025,
+        "bias": 8.013215315105793e-05,
+        "epsilon": 0.035355339059327376,
+        "headroom": 0.03527511319170014,
+        "log_shot_bound": 8.859813832168273,
+        "shots": 7044,
+        "status": "ELIGIBLE"
+      },
+      "sine": {
+        "allowance": 9.371447617923002e-08,
+        "alpha": 0.025,
+        "bias": 6.62040434271649e-05,
+        "epsilon": 0.035355339059327376,
+        "headroom": 0.03528904130142403,
+        "log_shot_bound": 8.859024303263416,
+        "shots": 7038,
+        "status": "ELIGIBLE"
+      }
+    },
+    "certificate_verified": false,
+    "epsilon_sig": 0.05,
+    "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+    "evidence_kind": "EMPIRICAL",
+    "evidence_ref": "pauli_jw_PF/numerical_evidence.json",
+    "interpretation": "CONDITIONAL_DIAGNOSTIC",
+    "log_B_upper": 9.371447617923002e-08,
+    "schema": "fixed_complex_signal_hoeffding_v1",
+    "usable": true
+  },
+  "signal": {
+    "absolute_error": 0.00010394295230909375,
+    "corrected": {
+      "imag": 0.77125869578789,
+      "real": 0.6365217232675353
+    },
+    "mean_method": "independent_sparse_paired_polynomial_state_action",
+    "raw": {
+      "imag": 0.77125869578789,
+      "real": 0.6365217232675353
+    },
+    "signed_bias": {
+      "imag": -6.62040434271649e-05,
+      "real": 8.013215315105793e-05
+    }
+  },
+  "state": {
+    "basis": "qiskit_little_endian",
+    "generation": {
+      "method": "exact lowest eigenvector in Nalpha=Nbeta=1; largest amplitude positive real",
+      "molecule": "H2",
+      "physical_sector": "Nalpha=Nbeta=1"
+    },
+    "hash": "4dc87df6c0466c1e5559ffcf3603b3a45ca7d1453b0657603188c120fe297b11"
+  },
+  "total_RZ": {
+    "mean": 54215700.0,
+    "mean_exact": "54215700",
+    "nominal95_halfwidth": 0.0,
+    "standard_error": 0.0
+  },
+  "validation": {
+    "RPE_rounds_evaluated": false,
+    "molecular_validation": true,
+    "molecular_validation_scope": "only the executed H2 1.00A STO-3G fixed-case technical gates",
+    "resource_status": "CONDITIONAL_CNG_AVAILABLE",
+    "scientific_superiority_claimed": false,
+    "status": "H2_FIXED_CASE_LOCAL_CONDITIONAL_EVIDENCE"
+  }
+}

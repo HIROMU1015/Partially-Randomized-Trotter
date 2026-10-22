@@ -12,3 +12,5 @@
 
 pilotの有限MC・経験的数値allowanceをrigorous保証・一般的優位性・全RPE最終費用と扱わない。
 既存DF/非DFの旧SOURCE・結果・grant・ledger・marker・STOP・図は不変。
+
+最終状態：`FAILED_NO_RETRY_MANDATORY_STOP`。受理2case（Pauli PF/DF PR）、失敗2case（Pauli PR/DF PF）。`result_inventory.json` に未取得・未受理を明記し、`preservation.json` で旧証拠を照合した。途中保存値を成功値に読み替えない。科学SOURCE b5ed2c6e2399b55a0c24eb8437f842892a6703ef。再実行しない。

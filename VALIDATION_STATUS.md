@@ -2439,3 +2439,5 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-22 H2非DF固定時間signal pilot
 
 [H2非DF pilotの新規固定契約](docs/non_df_h2_pilot_validation.md)。科学SOURCEと契約を固定してから、新規SCF1・DF1・FCI照合1、Pauli/DFのPF/PR固定4caseを一回実行する。実行前preflightは人工87件PASS。結果取得前に実分子検証PASSとは扱わない。
+
+最終結果：科学SOURCE `b5ed2c6e2399b55a0c24eb8437f842892a6703ef` でone-shot実行、全体はFAILED_NO_RETRY_MANDATORY_STOP（exit1）。同一積分のPauli/DF Hamiltonian・sector ground/FCI・参照signal・native primitiveは固定許容差内。Pauli PFとDF PRの2/4caseは取得・実施gate PASS、Pauli PR/DF PFはthread並行Qiskit処理でborrow例外。失敗caseを再実行せず、DF PFの保存途中会計も未受理として保持する。新規H2 SCF1/DF1/FCI照合1、H4以降0、詳細科学レビューなし。非DF PRのC/N/Gは未取得のためpilot全完了ではない。
