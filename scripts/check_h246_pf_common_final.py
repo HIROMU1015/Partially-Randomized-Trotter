@@ -60,6 +60,18 @@ def check():
             must(data['CONSUMED.json']['grant']==g,'MARKER_GRANT:'+system+stage)
     meta=read(ROOT/'artifacts/resource_applicability/track_a_h6_pf_metadata_completion/2026-10-22/grant_and_ledger.json')
     allgrants.append(meta['grant']['grant_id']);must(len(allgrants)==len(set(allgrants))==13,'DISTINCT13_SUCCESSFUL_GRANTS')
+    h6=ROOT/'artifacts/resource_applicability/track_a_pf_common_H6_results/2026-10-22'
+    if (h6/'interrupted_COST_controls.json').exists():
+        old=read(h6/'interrupted_COST_controls.json');g=old['grant'];counts={k:0 for k in g['caps']}
+        for entry in old['ledger']:must(entry['entered_nonrefundable'],'OLD_FAILED_CALL_NONREFUNDABLE');counts[entry['kind']]+=entry['count']
+        must(counts==old['counts'] and old['marker']['grant']==g,'FAILED_GRANT_LEDGER_MARKER')
+        must(g['grant_id'] not in allgrants,'FAILED_GRANT_NEVER_REUSED')
+        with gzip.open(h6/'controls_and_ledgers.json.gz','rt') as f:new=json.load(f)['COST']
+        cumulative={k:counts[k]+new['completion.json']['actual_calls'][k] for k in counts}
+        must(cumulative==old['cumulative_actual'],'FAILED_PLUS_FRESH_CALLS')
+        must(all(cumulative[k]<=old['cumulative_approved_caps'][k] for k in cumulative),'CUMULATIVE_APPROVED_CAPS')
+        must(cumulative['native_piece']==4854 and cumulative['wrapper_compile']==438,'FIXED_RECOVERY_CUMULATIVE_CALLS')
+        must(old['old_native_exit_reap'] is None and old['completion_receipt_not_fabricated'],'OLD_PARENT_EXIT_UNKNOWN_RETAINED')
     for r in read(FINAL/'prior_results_preserved.json')['files']:must(sha(ROOT/r['path'])==r['sha256'],'PRIOR_RESULT_BYTES:'+r['path'])
     for row in read(FINAL/'nested_PF_cost_change_decomposition_10.json'):
         product=Fraction(row['policy_and_saved_arithmetic_factor_exact'])*Fraction(row['m5_prefix_expansion_factor_exact'])*Fraction(row['formula_expansion_factor_exact'])

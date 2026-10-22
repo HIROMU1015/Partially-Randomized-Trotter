@@ -1,3 +1,7 @@
+## 2026-10-22 H6共通PF：新grantで残22候補の取得開始
+
+[承認・SOURCE・予算・起動証跡](docs/research/track_a_h6_pf_recovery_execution_start_20261022.md)。明示再開指示を直前の追加内部予算案に結合し、新SOURCE bdf6772aa・新pack/新grantで残22候補44軸を起動。旧187完成価格とSIGNAL/QUALIFYは参照し再計算0、旧394 compile予約を非返却維持。22 worker、正常終了後に別ACCOUNT grant・監査・H2/H4参照結合・local commit/mandatory STOPへ進む。完了/順位は未確定、旧STOP不変、push0。以下は履歴。
+
 ## 2026-10-22 H6回復制御の修正・科学実行なし
 
 [修正・人工検証・未承認仕様](docs/research/track_a_h6_pf_recovery_control_repair_20261022.md)。起動処理へ異常終了STOP・SIGTERM/SIGINT時の自分の子process回収・終了heartbeat・PID再使用検査を追加。人工13件と自分専用user service実動作PASS。残22候補の元入力/完成価格/control計6504照合項目を実行無効仕様へ封印。追加予算は未承認、科学call/新grant/push0、H6全域比較UNRESOLVED。旧科学SOURCE・raw・grant・STOP不変。以下は履歴。

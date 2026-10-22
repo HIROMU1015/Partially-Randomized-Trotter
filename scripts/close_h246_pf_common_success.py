@@ -49,7 +49,8 @@ def run(common,metadata):
         old_manifest_entries_unchanged=True,all_result_links_exist=True,H2_H4_recomputed=False,new_PR_sampling=0,GitHub_push=False))
     save(out/'MANDATORY_STOP.json',dict(status='MANDATORY_STOP',reason='Approved H6 completion and H246 fixed common-grid comparison finished',new_scientific_stage_started=False,
         result_summary_sha256=sha(out/'summary.json'),fixed_grid_checks_sha256=sha(out/'independent_saved_result_checks.json'),GitHub_push=False))
-    for directory in (ROOT/META,ROOT/H6,out):
+    # Metadata bundle has its own earlier immutable inventory and STOP.
+    for directory in (ROOT/H6,out):
         save(directory/'final_file_inventory.json',dict(excludes_self=True,files=[dict(path=str(p.relative_to(directory)),bytes=p.stat().st_size,sha256=sha(p)) for p in sorted(directory.rglob('*')) if p.is_file()]))
     subprocess.run(['git','diff','--check'],cwd=ROOT,check=True)
     paths=[META,H6,FINAL,'PROJECT_MAP.md','VALIDATION_STATUS.md','artifacts/validation_manifest.json','docs/README.md',
@@ -60,7 +61,7 @@ def run(common,metadata):
     commit=cmd(['git','rev-parse','HEAD'])
     receipt=dict(status='LOCAL_COMMIT_PASS_MANDATORY_STOP',local_result_commit=commit,branch=cmd(['git','branch','--show-current']),
                  new_scientific_stage_started=False,GitHub_push=False,scientific_calls_in_this_driver=0)
-    for root in (common,metadata):save(root/'MANDATORY_STOP.json',receipt)
+    save(common/'MANDATORY_STOP.json',receipt)
     save(common/'LOCAL_COMMIT_DRIVER_COMPLETE.json',receipt)
 
 

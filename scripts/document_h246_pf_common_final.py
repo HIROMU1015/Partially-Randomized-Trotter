@@ -21,6 +21,17 @@ def build():
         if r['system']!='H6':continue
         factors.append(f"| {r['epsilon']:g} | {float(__import__('fractions').Fraction(r['policy_and_saved_arithmetic_factor_exact'])):.8f} | {float(__import__('fractions').Fraction(r['m5_prefix_expansion_factor_exact'])):.8f} | {float(__import__('fractions').Fraction(r['formula_expansion_factor_exact'])):.8f} |")
     sources=read(out/'source_result_references.json')
+    recovery=h6.get('recovery_track',False)
+    cost_calls=('COSTは旧中断分と新grant分を非返却で合算し、signed piece4854（旧3625から追加1229を承認）、native evolution/low/high/独立occupation各231（旧224から各追加7）、'
+        'wrapper build452（旧448から追加4）、uncompiled作用441・compile438・compiled作用434（各448以内）。context各2、prefix preparation計17。'
+        '固有の新価格209候補418軸は旧完成187＋新取得22で、compile実呼出438軸と区別する。' if recovery else
+        'COSTはsigned piece3334≤3625、native evolution/low/high/独立occupation各209、wrapper/compile/各vector作用418、prefix preparation10、context各1。')
+    recovery_history=('\n\nその後のCOSTは完成187pairを残してprocessが消失し、元の停止時刻・exit/reap・原因は不明。旧STOPと394 compile予約を保持した。'
+        '利用者の「計算を再開して」を直前に提示したfresh22追加内部予算案へ結合し、新SOURCE・新pack・新COST grantで22候補44軸だけを再取得した。'
+        'SIGNAL/QUALIFYは旧成功receiptを参照し再計算0。ACCOUNTは新COST成功後に独立grantで実施。旧中断grantは再使用せず成功receiptを補作しない。'
+        '自分専用の一時user serviceで起動元と実行を分離し、自動再起動・同grant retry/resumeなし。旧187pairは保存byteとvector/gateの受入監査に基づいて参照し、旧parentの正常exit/reapを証明したとは表現しない。' if recovery else '')
+    worker_scope=('新COSTの22 workerについてexit0・同親join/reap・残存0を確認。旧187pairを取得した中断parentのexit/reapは不明のまま保全。' if recovery else
+        'COST全worker exit0・同親join/reap・残存0。')
     report=f'''# H2/H4/H6共通決定論PF探索：588候補の固定PR/PF費用比較完了
 
 2026-10-22 JST。**H6の不足63 metadata取得と固定276候補の取得・適格性/shot・必要なcompile・会計・終了監査PASS。H2/H4を再計算せず参照結合し、共通588候補すべての評価が揃った。local commit後mandatory STOP、push0。**
@@ -40,6 +51,8 @@ linear H2/H4/H6、隣接1 Å、STO-3G、tol-only DF threshold1e-8、保存rank3/
 H4 DF12、q16、未登録prefix、追加公式は含めない。最良は今回の固定共通格子内の最良。H2 prefix0/Full aliasを推測統合しない。保存PRは各系outer32/K4/prefix1/3/5のEXPLORATION 3公式×4qだけで、pilot・旧cohort・118確認標本を混合しない。新しいPR sampling・統計・単価・shot変更は0。
 
 H6 metadata科学SOURCEは `{meta['SOURCE']}`、共通科学SOURCEは `{h6['SOURCE']}`。起点0b1886f53、専用branch `pf-common-h6-metadata-execution-20261022`。旧H2/H4のSOURCE/raw/grant/ledger/marker/STOPはbyte同一のまま参照結合。旧H6 INPUT_STOPと失敗stageも正式履歴として保全した。
+
+{'H6 SIGNAL/QUALIFYと中断前187価格のSOURCEは `'+h6['inherited_SOURCE']+'`。回復22価格とACCOUNTは上記の新SOURCE。異なる取得SOURCEとgrantを混同せず、原科学入力と数値workerは同一性を確認した。' if recovery else ''}
 
 H6原snapshot SHA `99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005` がreceipt/bindingと一致。Hamiltonian hash `223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9`、state hash `664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3` を原配列から検査し、保存reference・full preparation・runtime/compiler/provider sealと接続した。H6は元protocolで採用した保存weighted-Hermitian completionのDF Hamiltonianをそのまま使用し、化学入力を再生成した系列ではない。今回SCF/DF/state/reference新生成0。H2/H4は以前に科学配列hash一致を確認した再生成容器であり、原snapshot復元とは区別する。
 
@@ -68,13 +81,14 @@ metadata実使用はnative corrected63/raw63、独立forward63、native primitiv
 | 基礎signal / B0I overlay | 51 / 51 | 51 / 51 |
 | 独立forward | 51 | 51 |
 | 適格性/shot | 1,380 endpoint | 1,380 |
-| 新compile候補/軸 | {h6['new_compile_candidates']} / {h6['new_compile_axes']} | 224 / 448 |
+| 固有の新価格候補/軸 | {h6['new_compile_candidates']} / {h6['new_compile_axes']} | 固有pool 224 / 448 |
+| compile予約の実呼出累積 | {h6.get('actual_compile_axis_calls',h6['new_compile_axes'])}軸 | 448軸 |
 | 同native保存price使用 | {h6['used_saved_compiled_pairs']}候補 | identity照合済みのみ |
 | 新PR sampling | 0 | 0 |
 
-H6全276候補・5精度の適格性が確定し、少なくとも1精度で適格な239候補の必要費用が揃った。全精度不適格37候補のcompileは不要。全588候補の評価完了は、不適格候補までcompileした意味ではない。共通段階の新signal全系計{summary['new_common_signal_candidates']}、新compile全系計{summary['new_common_compile_candidates']}候補/{summary['new_common_compile_axes']}軸、適格性2940 endpoint。別metadata予算の新11signalと52再観測は別記録。
+H6全276候補・5精度の適格性が確定し、少なくとも1精度で適格な239候補の必要費用が揃った。全精度不適格37候補のcompileは不要。全588候補の評価完了は、不適格候補までcompileした意味ではない。共通段階の新signal全系計{summary['new_common_signal_candidates']}、固有の新価格全系計{summary['new_common_compile_candidates']}候補/{summary['new_common_compile_axes']}軸、compile予約の実呼出全系計{summary.get('actual_common_compile_axis_calls',summary['new_common_compile_axes'])}軸、適格性2940 endpoint。別metadata予算の新11signalと52再観測は別記録。
 
-H6 SIGNALはsigned S2 piece1419、spectral/forward block作用各30588、prefix preparation9、expm構築448。同一行列/timeのexpm再利用で重複計算だけ削減、作用数・signed順序不変。COSTはsigned piece3334≤3625、native evolution/low/high/独立occupation各209、wrapper/compile/各vector作用418、prefix preparation10、context各1。ledger=reserved counter=receipt、すべてgrant上限内。
+H6 SIGNALはsigned S2 piece1419、spectral/forward block作用各30588、prefix preparation9、expm構築448。同一行列/timeのexpm再利用で重複計算だけ削減、作用数・signed順序不変。{cost_calls}正常stageのledger=reserved counter=receiptでgrant上限内。中断stageのledger/counterとSTOPは別保存し、返却0。
 
 旧legacy217候補の価格は今回も同native identityを証明できず再利用0。H6同native保存36 pairのうち30適格pairを使い、残る6は今回不適格。H2/H4保存22を含む使用再利用は全系{summary['same_native_price_pairs_used']} pair。旧profile/model推定を新しい直接実測へ代用しない。
 
@@ -117,12 +131,13 @@ H6旧m5部分集合に対する比較と、今回の全公式共通PF分母を�
 ## 技術停止・資源・監査
 
 前回のmetadata stageは0次元scalar shape検査の不具合でsnapshot_restore1後にSTOP。その消費・grant/marker/ledger/STOPを保全し返却0。今回の明示継続指示を新SOURCE/pack/grantへ結合した。修正後の63取得は新grantの一回実行。後続pack準備では汎用係数helperにm5がなく停止したが、科学grant前のため科学call0。元m5 signed scheduleを参照して新packへ封印した。消費済みgrantのretry/resumeなし。
+{recovery_history}
 
 metadata監査readerの来歴修正を分離し、実行SOURCEはGitからarchive化した。作者による別数値経路チェックであり、独立GPT/Claude科学レビューや外部再現ではない。旧STOPを成功へ書き換えていない。
 
-実affinity128、idle約127、空きRAM約1TB・disk約125GBのfresh観測からmetadata63、signal51、COST127 workerを選択。内側BLAS/compiler1、共有immutable context/preparationを再利用。固定の低いworker/CPU/RAM上限や共有設定変更・他ユーザー操作は0。
+実affinity128、空きRAM約1TB・disk約124GBのfresh観測からmetadata63、signal51、旧COST127、新COST22 workerを選択。新COSTは残る22候補を全て並列化。内側BLAS/compiler1、共有immutable context/preparationを再利用。固定の低いworker/CPU/RAM上限や共有設定変更・他ユーザー操作は0。
 
-H6 wall秒：SIGNAL {receipts['SIGNAL']['wall_seconds']:.3f}、QUALIFY {receipts['QUALIFY']['wall_seconds']:.3f}、COST {receipts['COST']['wall_seconds']:.3f}、ACCOUNT {receipts['ACCOUNT']['wall_seconds']:.3f}。COST全worker exit0・同親join/reap・残存0。新raw archive {h6['archives_verified']}件の原byte SHA復元、全native gate/phase alignmentなし、保存shot integer-ceiling、別Fraction整数費用、80桁Decimal比、完全格子最小値、ledger上限を監査PASS。
+H6 wall秒：SIGNAL {receipts['SIGNAL']['wall_seconds']:.3f}、QUALIFY {receipts['QUALIFY']['wall_seconds']:.3f}、新COST {receipts['COST']['wall_seconds']:.3f}、ACCOUNT {receipts['ACCOUNT']['wall_seconds']:.3f}。{worker_scope}受理raw archive {h6['archives_verified']}件の原byte SHA復元、全native gate/phase alignmentなし、保存shot integer-ceiling、別Fraction整数費用、80桁Decimal比、完全格子最小値、ledger上限を監査PASS。旧COSTのwall完了値は不明で補完しない。
 
 H6 native誤差最大値は[終了監査](../../{H6}/end_audit.json)に各check別で保存。compiled vectorは元CT01<1e-7、他native gate<1e-9を保持し、allowanceへ流用しない。
 
@@ -138,6 +153,7 @@ H6 native誤差最大値は[終了監査](../../{H6}/end_audit.json)に各check�
     with path.open('x') as f:f.write(report)
     for folder,title in [(META,'H6不足metadata63取得'),(H6,'H6共通PF276取得'),(OUTPUT,'H246共通PF588最終統合')]:
         p=ROOT/folder/'README.md'
+        if folder==META and p.exists():continue  # earlier immutable metadata report
         with p.open('x') as f:f.write(f'# {title}\n\n[結果・条件・限界](../../../../docs/research/track_a_h246_pf_common_final_20261022.md)。metadata63・H6全276・統合588評価完了。旧H2/H4は再計算せず参照、PR保存統計不変、経験的allowance・有限探索条件付き。SOURCE/input/grant/ledger/marker/raw原SHAを保存。消費済みgrant再利用禁止、local commit後mandatory STOP、push0。\n')
     return path
 

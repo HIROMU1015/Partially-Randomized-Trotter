@@ -11,7 +11,7 @@ def main():
     out=ROOT/OUTPUT;summary=read(out/'summary.json');audit=read(out/'independent_saved_result_checks.json')
     assert summary['complete']==588 and audit['status']=='PASS'
     comps=read(out/'comparisons_60.json');overall=[r for r in comps if r['formula']=='ALL_FORMULAS']
-    summaryline='588候補の評価が全て完了。H2/H4は再計算せず参照結合。H6不足63metadata・新102signal・1380 endpoint・必要209 compile候補418軸を取得し終了監査PASS。'
+    summaryline='588候補の評価が全て完了。H2/H4は再計算せず参照結合。H6不足63metadata・新102signal・1380 endpoint・固有新価格209候補418軸を取得し終了監査PASS。旧187価格は保存値受入監査、新22価格は新grant取得。中断予約を含むcompile実呼出438軸、旧parentのexit/reapは不明のまま保全。'
     strict=[]
     for system in ('H2','H4','H6'):
         r=next(r for r in overall if r['system']==system and r['epsilon']==.0005)
@@ -26,7 +26,7 @@ def main():
         comparisons_60=True,all_system_formula_and_global_minima_complete=True,global_PR_reduction_percent_by_system={s:{str(r['epsilon']):r['PR_reduction_percent'] for r in overall if r['system']==s} for s in ('H2','H4','H6')})
     p.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
     note=ROOT/'docs/research/研究ノート/2026-10-22_h6_pf_metadata_STOP.md'
-    note.write_text(note.read_text()+'\n## 追記：明示継続承認による完了\n\n旧STOP・snapshot_restore1消費を保持し、新SOURCE/新grantで63観測取得と旧52signal照合PASS。H6固定102signal・1380 endpoint・209compile候補418軸を取得。保存同native30価格を再利用し、H2/H4をbyte参照結合した588候補の全比較を終了監査した。科学grantのretry/resume0、旧PR統計不変。[最終結果と限界](../track_a_h246_pf_common_final_20261022.md)。ローカルcommit後mandatory STOP、push0。\n')
+    note.write_text(note.read_text()+'\n## 追記：明示継続承認による完了\n\n旧STOP・snapshot_restore1消費を保持し、新SOURCE/新grantで63観測取得と旧52signal照合PASS。H6固定102signal・1380 endpointは継承。中断COSTの完成187pairを保存値監査で受入、明示再開指示を直前の内部予算差分へ結合し、新SOURCE/新grantで残22pairだけ再取得。固有新価格209候補418軸、非返却compile実呼出438軸、native piece累積4854。保存同native30価格を再利用し、H2/H4をbyte参照結合した588候補の全比較を終了監査。旧parentのexit/reapは不明のまま、旧STOP不変。使用済みgrant再開0、旧PR統計不変。[最終結果と限界](../track_a_h246_pf_common_final_20261022.md)。ローカルcommit後mandatory STOP、push0。\n')
     print('Final indexes, current synthesis, dated note and manifest updated')
 
 

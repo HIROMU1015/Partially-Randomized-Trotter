@@ -30,17 +30,21 @@ def cid(row):return '_'.join(str(row[k]) for k in ('system','method','prefix','q
 
 def export_controls(private,out):
     p=Path(private);plan=read(p/'plan_APPROVED.json');controls={}
+    inherited=Path(plan['inherited_private']) if plan.get('recovery_track') else p
     for name in ('SIGNAL','QUALIFY','COST','ACCOUNT'):
-        root=p/name;controls[name]={n:read(root/n) for n in ('grant.json','CONSUMED.json','reserved_counts.json','completion.json')}
+        owner=inherited if name in ('SIGNAL','QUALIFY') else p
+        root=owner/name;controls[name]={n:read(root/n) for n in ('grant.json','CONSUMED.json','reserved_counts.json','completion.json')}
         controls[name]['ledger']=[read(q) for q in sorted((root/'ledger').glob('*.json'))]
-    for name,value in [('controls_and_ledgers.json.gz',controls),('signal_records.json.gz',read(p/'SIGNAL/output/all_signals.json')),
-                       ('native_results.json.gz',[read(q) for q in sorted((p/'COST/output').glob('*/result.json'))])]:
+    native=[read(q) for q in sorted((p/'COST/output').glob('*/result.json'))]
+    if inherited!=p:native.extend(read(q) for q in sorted((inherited/'COST/output').glob('*/result.json')))
+    for name,value in [('controls_and_ledgers.json.gz',controls),('signal_records.json.gz',read(inherited/'SIGNAL/output/all_signals.json')),
+                       ('native_results.json.gz',native)]:
         (out/name).write_bytes(gzip.compress((json.dumps(value,ensure_ascii=False,sort_keys=True,indent=2)+'\n').encode(),compresslevel=1,mtime=0))
-    projection={k:v for k,v in plan.items() if k not in ('private_root','provider','input_paths','closure')}
+    projection={k:v for k,v in plan.items() if k not in ('private_root','provider','input_paths','closure','inherited_private','inactive_preparation','metadata_private','metadata_completion')}
     projection.update(original_plan_sha256=sha(p/'plan_APPROVED.json'),read_only_projection=True,not_a_replay_grant=True,
         input_paths={k:Path(v).name for k,v in plan['input_paths'].items()},closure=[{k:v for k,v in e.items() if k!='path'} for e in plan['closure']])
     write(out/'execution_contract_projection.json',projection);write(out/'approval_receipt.json',read(p/'approval_receipt.json'))
-    write(out/'resource_receipts.json',{s:read(p/s/'resource_receipt.json') for s in ('SIGNAL','COST')})
+    write(out/'resource_receipts.json',{s:read((inherited if s=='SIGNAL' else p)/s/'resource_receipt.json') for s in ('SIGNAL','COST')})
 
 
 def archive_executed_source(private,out):
@@ -58,8 +62,11 @@ def build(common,metadata):
     meta=read(ROOT/META/'ending_audit.json');h6=read(ROOT/H6/'end_audit.json')
     assert meta['status']=='PASS' and meta['records']==63 and h6['status']=='PASS_MANDATORY_STOP' and h6['completed_candidates']==276
     export_controls(common,ROOT/H6)
-    archive_executed_source(metadata,ROOT/META/'executed_SOURCE.tar.gz')
+    # Metadata bundle was already audited/committed: never overwrite its archive.
+    if not (ROOT/META/'executed_SOURCE.tar.gz').exists():archive_executed_source(metadata,ROOT/META/'executed_SOURCE.tar.gz')
     archive_executed_source(common,ROOT/H6/'executed_SOURCE.tar.gz')
+    common_plan=read(Path(common)/'plan_APPROVED.json')
+    if common_plan.get('recovery_track'):archive_executed_source(common_plan['inherited_private'],ROOT/H6/'interrupted_executed_SOURCE.tar.gz')
     refs={};candidates=[];comparisons=[]
     for system in ('H2','H4','H6'):
         b=f'artifacts/resource_applicability/track_a_pf_common_{system}_results/2026-10-22'
@@ -139,6 +146,12 @@ def build(common,metadata):
         old_failed_snapshot_restore_nonrefunded=1,new_PR_sampling=0,old_PR_prices_statistics_samples_changed=False,H2_H4_recomputed_in_H6_track=False,
         empirical_allowance_not_certificate=True,population_ranking_guarantee=False,unobserved_rare_event_bound=None,full_energy_RPE_optimization=False,
         detailed_scientific_review=False,GitHub_push=False,mandatory_STOP=True)
+    if h6.get('recovery_track'):
+        summary.update(H6_recovery_new_pairs=22,H6_recovery_new_axes=44,H6_inherited_pairs_from_interrupted_stage=187,
+            H6_actual_compile_axis_calls=h6['actual_compile_axis_calls'],H6_failed_compile_reservations_nonrefunded=h6['interrupted_compile_axes_nonrefunded'],
+            actual_common_compile_axis_calls=sum(a.get('actual_compile_axis_calls',a['new_compile_axes']) for a in calls.values()),
+            H6_cumulative_nonrefundable_calls=h6['cumulative_nonrefundable_calls'],
+            H6_original_parent_exit_reap=None,H6_recovery_parent_exit_reap_PASS=True,H6_old_STOP_unchanged=True)
     write(out/'summary.json',summary)
     # Protect every existing H2/H4 bundle and historical H6 STOP/partial results.
     protected=[]
@@ -146,7 +159,14 @@ def build(common,metadata):
     for rel in paths:
         if rel.startswith(('artifacts/resource_applicability/track_a_pf_common_H2_results/','artifacts/resource_applicability/track_a_pf_common_H4_results/',OLD+'/')):
             data=subprocess.check_output(['git','show',BASE+':'+rel],cwd=ROOT);assert (ROOT/rel).read_bytes()==data;protected.append(dict(path=rel,sha256=sha(ROOT/rel)))
-    write(out/'prior_results_preserved.json',dict(base=BASE,files=protected))
+    extra='7bb35e256'
+    extra_paths=subprocess.check_output(['git','ls-tree','-r','--name-only',extra,'--',
+        META.split('/2026-10-22')[0],'artifacts/resource_applicability/track_a_h6_pf_cost_interruption',
+        'artifacts/resource_applicability/track_a_h6_pf_recovery_control_repair'],cwd=ROOT).decode().splitlines()
+    for rel in extra_paths:
+        assert (ROOT/rel).read_bytes()==subprocess.check_output(['git','show',extra+':'+rel],cwd=ROOT)
+        protected.append(dict(path=rel,sha256=sha(ROOT/rel)))
+    write(out/'prior_results_preserved.json',dict(base=BASE,additional_reference_commit=extra,files=protected))
     return summary
 
 

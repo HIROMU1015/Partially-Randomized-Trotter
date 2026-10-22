@@ -13,3 +13,7 @@ scalar shape修正にgrant前のstdlib NPY header/dtype/SHA検査を追加し、
 ## 追記：中断に備えた監督処理修正・実行無効仕様
 
 今回の「修正を行って」は制御修正として実施。新SOURCE 96c1c60cfaf35b9710d90d1ef6f44280b2d73267でspawn失敗/非0終了/TERM/INTのSTOP、子回収、terminal heartbeatとPID start time検査を追加。新10＋既存3人工PASS、自分の一時user serviceで起動元終了後の3秒人工タスク完了を確認。残22の入力/旧control等6504照合項目を未承認仕様へ封印。予算追加は未承認、science/new grant/push0。旧STOPと完成187pairは不変、H6全域比較はUNRESOLVED。[修正と限界](../track_a_h6_pf_recovery_control_repair_20261022.md)。ローカルcommit後mandatory STOP。
+
+## 追記：利用者の再開指示を新grantへ結合
+
+「計算を再開して」を直前のfresh22内部予算案への承認として、新SOURCE bdf6772aade7063c65d69f24dfdc5e303a2819a2・新pack・新grantで残22を一回起動。旧187価格の保存値受入と旧SIGNAL/QUALIFY成功を参照し、旧STOP・消費は不変。22 worker、人工新5＋export1 PASS。正常終了後に別ACCOUNT grantで固定会計、監査、588候補参照統合、local commit/mandatory STOP。開始時点で完了・順位は未確定。push0。[起動記録](../track_a_h6_pf_recovery_execution_start_20261022.md)。
