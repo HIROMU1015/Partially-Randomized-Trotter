@@ -1,3 +1,7 @@
+## 2026-10-23 H4非DF/DF：保存証拠の原因調査（数値再解析なし）
+
+[専用調査報告](docs/non_df_h4_evidence_investigation_20261023.md)。結果commit6892e95f/科学SOURCE0c329b30をGitHubから確認し、N/G nullのsource経路、不足する数値certificate、元監視記録の回収限界を整理。全20行はUNDETERMINED/nullを保持し、入力stage正常終了とcase監視の未証明を分離する。新しい数値解析・shot/G計算・科学実行・pushなし、原因UNKNOWN、完了後mandatory STOP。[構造証拠](artifacts/non_df_h4_evidence_investigation/2026-10-23/README.md)。以下は各時点の履歴。
+
 ## 2026-10-23 H4非DF/DF PF・PR：実行基盤完成・実分子実行は承認待ち
 
 [実装・技術検証報告](docs/non_df_h4_execution_foundation.md)。新H4 runner、実production eventの追加抽選なし記録、trajectory/compiled価格join、入力封印、SOURCE/grant/claim/STOP拒否、4方式×5精度統合を追加。既存科学API・H2結果は保持。人工8量子ビット4方式完了、最終の既存371＋新規65件PASS、FAIL/skip0、分子計算3件を除外。科学grant未発行、契約3 flagはfalse、実H4計算0、local commitのみ・pushなし、mandatory STOP。

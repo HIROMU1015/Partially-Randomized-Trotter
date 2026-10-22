@@ -1,0 +1,21 @@
+{
+  "native_completion_verified": false,
+  "records": {
+    "/tmp/h4-finalize-859ce9f6.receipt.json": {
+      "content": null,
+      "present": false,
+      "sha256": null
+    },
+    "/tmp/h4-recovery-859ce9f6.receipt.json": {
+      "content": "{\n  \"all_children_reaped\": null,\n  \"branch\": \"codex/non-df-h4-execution-foundation-20261023\",\n  \"commit\": \"6892e95ffdfc78e75425e7432e9e4ccdb9958df1\",\n  \"mandatory_STOP\": true,\n  \"original_native_completion_verified\": false,\n  \"push\": false,\n  \"scientific_retry\": false,\n  \"status\": \"COMMITTED_SAVED_RESULTS_WITH_SUPERVISION_GAP\",\n  \"verification_status\": \"SAVED_DATA_VALIDATED_SUPERVISION_INCOMPLETE\",\n  \"worktree_clean\": true\n}\n",
+      "present": true,
+      "sha256": "2a2b5958af62e5f1cee9610f6511e9ee3236151942e2a253e5faa7a0060ae37e"
+    },
+    "/tmp/h4_watch_20261023.py": {
+      "content": "import json,os,time\nfrom datetime import datetime,timezone\nfrom pathlib import Path\np=Path('/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-execution-foundation-20261023/artifacts/non_df_h4_pilot/2026-10-23/run01')\nwhile True:\n r={'UTC':datetime.now(timezone.utc).isoformat(),'cases':{},'load':os.getloadavg(),\n    'MemAvailable':next(l for l in Path('/proc/meminfo').read_text().splitlines() if l.startswith('MemAvailable')),\n    'IO_PSI':Path('/proc/pressure/io').read_text()}\n for c in ['pauli_jw_PF','pauli_jw_PR','df_native_PF','df_native_PR']:\n  d=p/'run'/c;v={'events':len(list((d/'trajectories').glob('*/events.json'))),'joined':len(list((d/'trajectories').glob('*/price_join.json')))}\n  for fn in ['status.json','FAILED.json']:\n   if (d/fn).exists():\n    j=json.loads((d/fn).read_text());v.update({k:j[k] for k in ['status','reason'] if k in j})\n  r['cases'][c]=v\n if (p/'STOP.json').exists():r['STOP']=json.loads((p/'STOP.json').read_text())\n with (p/'progress_observations.jsonl').open('a') as f:f.write(json.dumps(r,ensure_ascii=False)+'\\n')\n print(json.dumps(r,ensure_ascii=False),flush=True)\n if 'STOP' in r:break\n time.sleep(50)\n",
+      "present": true,
+      "sha256": "bdc1a3dea84eaa037a6f65efcc0c1ea3ed4477b1933200e40c69c9c8b1eb32fa"
+    }
+  },
+  "scope": "Copies of known existing auxiliary records only; not original native exit/reap proof."
+}

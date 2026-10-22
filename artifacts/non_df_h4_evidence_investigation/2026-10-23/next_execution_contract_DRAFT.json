@@ -1,0 +1,205 @@
+{
+  "conditions_as_saved": {
+    "DF": {
+      "decomposition_calls": 1,
+      "df_tol": 1e-08,
+      "final_rank": null,
+      "generation": "existing OpenFermion low_rank_two_body_decomposition; original indices retained",
+      "identity_policy": "extract_identity_phase",
+      "one_body": "always deterministic",
+      "prefix": "first prefix covering >=50% ranking weight, with positive nonempty tail; structural rule only",
+      "rank": null,
+      "rank_policy": "tol_only; actual rank recorded, never copied from H2 or historical H4",
+      "ranking": "descending abs(lambda)*Frobenius(g)^2, original index tie-break",
+      "ranking_weight_is_involution_lambda": false
+    },
+    "Pauli": {
+      "coefficient_cutoff": 0.0,
+      "mapping": "existing unthresholded supplied-MO JW conversion",
+      "nonidentity_term_count": null,
+      "ordering": "descending abs(coefficient), label tie-break",
+      "prefix": "first prefix covering >=50% nonidentity abs-coefficient sum, with positive nonempty tail; structural rule only"
+    },
+    "evolution": {
+      "K": 4,
+      "T": 0.8,
+      "delta": 0.1,
+      "law": "existing finite_rte_even_paired; no new randomization or estimator",
+      "normalization": "each actual involutory tail lambda; q*r log(B_K); identity/event phases preserved",
+      "product_formula": "S2",
+      "proposal_reason": "single smaller step than H2 for a larger system, no tuning or expected accuracy guarantee",
+      "q": 8,
+      "r": 4
+    },
+    "numerical": {
+      "Hamiltonian_operator_agreement": 1e-09,
+      "Hermiticity": 1e-10,
+      "allowance_policy": "existing empirical_allowance formula; no certification",
+      "allowance_settings": {
+        "floor": 1e-12,
+        "roundoff_multiplier": 64.0,
+        "safety_factor": 10.0
+      },
+      "compiled_probability_agreement": 1e-09,
+      "failure_policy": "any technical gate failure stops run; ineligible precision row remains null without changing parameters",
+      "law_mean_agreement": 1e-10,
+      "maximum_u_over_headroom": 0.01,
+      "orthonormality": 1e-10,
+      "reference_signal_agreement": 1e-10,
+      "state_energy_agreement": 1e-09,
+      "state_norm": 1e-12,
+      "state_residual": 1e-10,
+      "trajectory_unitary_agreement": 1e-09
+    },
+    "precision": {
+      "allowance_is_certified": false,
+      "alpha_axis": 0.025,
+      "epsilon_axis": "epsilon_sig/sqrt(2)",
+      "epsilon_sig": [
+        0.05,
+        0.01,
+        0.005,
+        0.001,
+        0.0005
+      ],
+      "ineligible_policy": "N/G null with reason; do not lower allowance or change parameters to obtain eligibility",
+      "large_dimension_caveat": "the dense operation proxy may dominate tight precision rows; no guarantee of non-null H4 N/G",
+      "maximum_u_over_headroom": 0.01,
+      "numerical_allowance": "same frozen empirical 64*eps operation proxy, safety10, floor1e-12, dense/sparse/Horner closure",
+      "statistical_model": "existing fresh IID corrected +/-1 Hoeffding sufficient N"
+    },
+    "system": {
+      "SCF": {
+        "calls": 1,
+        "conv_tol": 1e-12,
+        "init_guess": "minao",
+        "max_cycle": 100,
+        "method": "canonical real RHF"
+      },
+      "active_space": null,
+      "adjacent_distance_Angstrom": 1.0,
+      "basis": "sto-3g",
+      "charge": 0,
+      "coefficient_atol": 0.0,
+      "frozen_core": null,
+      "geometry_Angstrom": [
+        [
+          "H",
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          "H",
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          "H",
+          [
+            0.0,
+            0.0,
+            2.0
+          ]
+        ],
+        [
+          "H",
+          [
+            0.0,
+            0.0,
+            3.0
+          ]
+        ]
+      ],
+      "identity": "retained exactly once including nuclear phase",
+      "integrals": "same unthresholded real orthonormal MO h, chemist eri for both representations; interleaved alpha/beta; spin lift and 1/2 exactly as frozen H2",
+      "molecule": "linear H4",
+      "qubit_order": "qiskit_little_endian",
+      "spatial_orbitals": 4,
+      "spin_2S": 0,
+      "spin_orbitals": 8,
+      "symmetry": false
+    }
+  },
+  "dispatch_enabled": false,
+  "execution_authorized": false,
+  "existing_evidence_commit": "6892e95ffdfc78e75425e7432e9e4ccdb9958df1",
+  "existing_scientific_SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+  "grant_valid": false,
+  "input_snapshot_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+  "input_state_hash": "8339b1a8b0bec35ae07688e667fde7ba602d56c1182523d58e0889ea114e8b80",
+  "launch_command": null,
+  "mandatory_STOP": true,
+  "new_SOURCE": null,
+  "new_namespace": null,
+  "original_audit_policy": {
+    "external_original_audit_records": "May be inspected only if actually available; availability is UNKNOWN.",
+    "old_evidence_not_replaced": true,
+    "old_grant_reuse": false,
+    "original_native_completion_verified": false,
+    "scientific_retry": false
+  },
+  "phase_B_proposal": {
+    "approval_required": true,
+    "axes": [
+      "cosine",
+      "sine"
+    ],
+    "case_count": 4,
+    "new_G_accounting": false,
+    "new_shot_calculation": false,
+    "precision_count": 5,
+    "scientific_execution_calls": 0,
+    "scope": "New numerical sensitivity/required-accuracy diagnostics of the saved four cases and five precisions only; no replacement of official N/G."
+  },
+  "phase_C_proposal": {
+    "approval_required": true,
+    "cases": [
+      "pauli_jw_PF",
+      "pauli_jw_PR",
+      "df_native_PF",
+      "df_native_PR"
+    ],
+    "new_DF_generation": 0,
+    "new_FCI": 0,
+    "new_SCF": 0,
+    "new_compilation": 0,
+    "new_sampling": 0,
+    "new_state_optimization": 0,
+    "required_before_execution": [
+      "Specify and validate error-enclosure algorithm and exact proof scope",
+      "Fix per-case reference/law-mean/normalization diagnostic calls and numerical precision",
+      "Seal implementation/runtime/input hashes and call budget in a new SOURCE",
+      "Obtain explicit batch approval; issue a new namespace and grant only for that scope"
+    ],
+    "scope": "Design and technically validate numerical bias/error and finite-law normalization enclosures for the fixed stored Hamiltonians/state, then obtain separate activation approval for any real-data diagnostics.",
+    "signal_budget_status": "NOT_SEALED_NO_EXECUTION",
+    "signal_diagnostic_budget": null
+  },
+  "preservation": [
+    "Original SOURCE/raw/input/grant/claim/ledger/marker/STOP immutable",
+    "Keep EMPIRICAL and CERTIFIED distinct",
+    "Do not change numerical allowance/thresholds to manufacture acceptance",
+    "No integration with separate H2 S2/Yoshida4 analysis"
+  ],
+  "push": false,
+  "resource_policy": {
+    "arbitrary_low_CPU_RAM_worker_caps": false,
+    "authority": "research_project_instructions_unified_2026-10-17.md section 8.4",
+    "existing_execution_contracts_unchanged": true,
+    "other_users_process_or_file_changes": false,
+    "repository_copy": "docs/progress/track_a/figures/pr_pf_analytic_vs_circuit_CNG_20261022/sources/common_instructions.md",
+    "shared_environment_changes": false
+  },
+  "schema": "h4_next_evidence_work_DRAFT_v1",
+  "separate_future_accounting": {
+    "approval_required": true,
+    "scope": "Any new shot/G accounting must be a separately specified saved-accounting stage; no execution under this investigation."
+  },
+  "status": "DRAFT_NOT_READY_FOR_ACTIVATION"
+}

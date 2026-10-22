@@ -1,3 +1,7 @@
+## 2026-10-23 H4非DF/DF：保存証拠の原因調査
+
+[専用報告](non_df_h4_evidence_investigation_20261023.md)と[構造検証・JSON](../artifacts/non_df_h4_evidence_investigation/2026-10-23/README.md)。固定commit6892e95fのN/G保留と監視終了証拠の欠落を別問題として調査した。新規数値解析・科学計算なし、元結果は変更しない。以下は従来の入口。
+
 ## 2026-10-23 H4非DF/DF PF・PR：実行基盤と承認待ち契約
 
 [実装・技術検証報告](non_df_h4_execution_foundation.md)、[完成契約・一括承認案・開始手順](../artifacts/non_df_h4_execution_foundation/2026-10-23/README.md)。人工8量子ビットで入力封印→4独立process→実event/価格join→20精度行を検証。既存371＋新規65件PASS、FAIL/skip0、分子計算3件除外。実H4計算0、有効科学grant0、3 flag falseでmandatory STOP。詳細科学レビューとpushは未実施。以下は履歴。
