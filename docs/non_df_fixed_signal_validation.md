@@ -176,3 +176,18 @@ CPU/RAM/workerへの一律の低い資源上限は新設しない。
 推定器・数値allowance/normalizationの根拠、epsilon/alpha配分、compilerと回路scope、
 MCのseed／標本・精度条件、SOURCE/input/environment、出力領域と既存STOPの保全条件を固定する必要がある。
 DFと非DFのHamiltonian一致は仮定しない。今回の完成後はmandatory STOP、push・公開・詳細科学レビューへ進まない。
+
+## 最終技術結果
+
+- 新規人工テスト **71件PASS**。
+- 既存17moduleの選別回帰 **223件PASS**（うちDF名のテスト124件）、**1件runtime skip・5件実分子処理除外**。全repository suiteのPASSではない。
+- 固定SOURCEからの人工CLI **14件完了**。12件で条件付きC/N/G、2件で未取得／不適格N/Gのnullを確認。
+- source commit：`d94437b46086c2eaa3ff1eeb111daba683d8aaf1`。全156 library/runner sourceと追加test/人工入力をbyte hashで結合。
+- 原trackedファイル **6829件不変**（うち既存artifact 4664件）。既存manifest 151エントリも内容同一。許可した索引・status・研究現状への技術追記は保全検査の別枠に明記。
+- 実分子の新規SCF/DF/Hamiltonian生成・科学simulationは0件。旧失敗科学単位のretryなし。詳細科学レビューなし。
+
+[機械可読の結果・除外理由](../artifacts/non_df_fixed_signal_validation/2026-10-22/validation_summary.json)、
+[SOURCE](../artifacts/non_df_fixed_signal_validation/2026-10-22/SOURCE.json)、
+[保全検査](../artifacts/non_df_fixed_signal_validation/2026-10-22/preservation.json)を参照。
+専用branchにsource commitとevidence commitをローカル保存し、push・公開・merge・PR作成は行わない。
+実装・人工技術検証を終了し、**mandatory STOP**。
