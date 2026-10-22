@@ -29,6 +29,17 @@ def array_receipt_matches(value,record,*,original_shape):
     return (list(shape)==record['shape'] and v.dtype.str==record['dtype']
         and hashlib.sha256(v.tobytes()).hexdigest()==record['sha256'])
 
+def read_snapshot_arrays(snapshot,receipt,*,system):
+    """Load original or migrated arrays under their own receipt convention."""
+    import numpy as np
+    with np.load(snapshot,allow_pickle=False) as z:
+        c.require(set(z.files)==set(receipt['arrays']),'EXACT_SCIENTIFIC_ARRAY_NAMES')
+        arrays={name:z[name] for name in z.files}
+    for name,value in arrays.items():
+        c.require(array_receipt_matches(value,receipt['arrays'][name],original_shape=system=='H6'),
+            'EXACT_SCIENTIFIC_ARRAY:'+name)
+    return arrays
+
 def restore(stage,prefixes):
     plan=stage.plan;install(plan)
     import numpy as np
@@ -39,11 +50,7 @@ def restore(stage,prefixes):
     from h46_new2_core import matrix_only_tail_coefficients
     inp=plan['input_paths'];r=c.read(inp['receipt'])
     stage.take('snapshot_restore')
-    with np.load(inp['snapshot'],allow_pickle=False) as z:a={k:z[k] for k in z.files}
-    import hashlib
-    for name,value in a.items():
-        v=np.ascontiguousarray(value);record=r['arrays'][name]
-        c.require(array_receipt_matches(value,record,original_shape=plan['system']=='H6'),'EXACT_SCIENTIFIC_ARRAY:'+name)
+    a=read_snapshot_arrays(inp['snapshot'],r,system=plan['system'])
     if plan['system']=='H6':
         from trottertracks.resource_applicability.ax2b_h6_saved_completion_loader_v1 import load_h6_snapshot
         ham,sector,_,_,_,_=load_h6_snapshot(Path(inp['snapshot']),r,c.read(inp['df_receipt']))

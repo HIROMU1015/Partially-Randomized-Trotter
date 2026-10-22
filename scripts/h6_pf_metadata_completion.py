@@ -32,12 +32,13 @@ def old_B0I_inventory(inventory):
 
 
 def common_template(private):
-    p=Path(private).resolve();c.require(not p.exists(),'FRESH_PACK_REQUIRED');p.mkdir(parents=True)
+    p=Path(private).resolve();c.require(not p.exists(),'FRESH_PACK_REQUIRED')
     prior=MIG.parent/'pf-common-execution-20261022/H4/plan_APPROVED.json';old=c.read(prior)
     inv=c.read(c.ROOT/PREP/'inventory.json');bind=next(r['binding'] for r in inv['rows'] if r['system']=='H6')
     inp=dict(snapshot=MIG/'recovered/H6/h6_input_snapshot.npz',receipt=MIG/'recovered/H6/snapshot_receipt.json',
              df_receipt=MIG/'recovered/H6/df_receipt.json',reference=MIG/'forward/H6/run01/reference.npz',reference_receipt=MIG/'forward/H6/run01/receipt.json')
-    c.require(c.sha(inp['snapshot'])==bind['snapshot'],'ORIGINAL_H6_SNAPSHOT_SHA')
+    from pf_common_snapshot_receipt import check_original_snapshot
+    check_original_snapshot(inp['snapshot'],c.read(inp['receipt']),expected_sha256=bind['snapshot'])
     c.require(c.read(MIG/'forward/H6/run01/completion.json')['status']=='REFERENCE_AND_FROZEN_SHOT_APPLICABILITY_PASS','PREVIOUS_FORWARD_PASS')
     closure=[]
     for e in old['closure']:
@@ -45,7 +46,8 @@ def common_template(private):
             rel=e['role'][7:];closure.append(c.seal(c.ROOT/rel,e['role']))
         elif e['role'] in ('pinned_provider','loaded_runtime_identity','fixed_python_binary','compiler_array_runtime_binary','saved_PR_costs'):
             c.require(c.sha(e['path'])==e['sha256'],'PRIOR_PROVIDER_RUNTIME_SHA');closure.append(e)
-    for rel in ('scripts/h6_pf_metadata_completion.py','tests/test_h6_pf_metadata_completion.py','scripts/audit_pf_common_run.py'):
+    for rel in ('scripts/h6_pf_metadata_completion.py','tests/test_h6_pf_metadata_completion.py','scripts/audit_pf_common_run.py','scripts/pf_common_snapshot_receipt.py',
+                'tests/test_pf_common_snapshot_receipt.py'):
         closure.append(c.seal(c.ROOT/rel,'SOURCE:'+rel))
     # Explicit original compact/forward/native numerical definitions are in the pinned provider closure.
     closure.extend(c.seal(q,'scientific_input:'+k) for k,q in inp.items())
@@ -55,6 +57,7 @@ def common_template(private):
         native=c.NATIVE,compiler=c.COMPILER,approval=dict(execution_authorized=True,no_intermediate_reapproval=True,
         scope='User explicitly approved separate 63-cell missing observation calculation and subsequent original 276-cell H6 acquisition through fixed PR/PF comparison; no new PR sampling or pool expansion.'),
         original_H6_STOP_preserved=True,existing_PR_samples_changed=False,final_mandatory_STOP=True)
+    p.mkdir(parents=True)
     return p,plan,inv
 
 

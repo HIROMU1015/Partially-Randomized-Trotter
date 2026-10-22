@@ -45,6 +45,11 @@ def verify(plan):
         p=Path(e['path']);require(p.stat().st_size==e['bytes'] and sha(p)==e['sha256'],'SEALED_BYTES:'+e['role'])
         if e['role'].startswith('SOURCE:'):
             require(p.read_bytes()==gitbytes(plan['SOURCE'],e['role'][7:]),'COMMITTED_SOURCE')
+    if plan['system']=='H6':
+        from pf_common_snapshot_receipt import check_original_snapshot
+        inp=plan['input_paths']
+        check_original_snapshot(inp['snapshot'],read(inp['receipt']),
+            expected_sha256=plan['binding']['snapshot'])
 
 class Stage:
     def __init__(self,private,kind,caps,dependencies=()):
