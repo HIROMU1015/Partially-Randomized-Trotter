@@ -248,7 +248,7 @@ class Export:
         tasks=[t for t in cfg['tasks'] if t['candidate']['id'] in TARGETS]
         self.check(Counter(t['candidate']['id'] for t in tasks)==Counter(TARGETS), 'EXACT_N33_N34')
         self.check(len({t['id'] for t in tasks})==67, '67_UNIQUE_TASKS')
-        rows=[]; storage_rows=[]; archive_count=0
+        rows=[]; storage_rows=[]; law_rows=[]; archive_count=0
         check_names=('saved_normalization_log_B','native_low','native_leakage','independent_occupation_vector',
             'hadamard_cosine','compiled_vector_cosine','hadamard_sine','compiled_vector_sine')
         for t in tasks:
@@ -262,6 +262,8 @@ class Export:
             self.check(r['preparation_hash']==cfg['preparation_hash'] and r['input_binding']==cfg['binding'], 'TASK_PREPARATION_BINDING:'+t['id'])
             entry=dict(task=self.public(t), result=self.get(rp),
                 acceptance=self.get(audit_path,'/results/'+str(ai)), axes=[], saved_correctness=[])
+            laws=sorted(folder.glob('piece_law_*.json'),key=lambda p:int(p.stem.rsplit('_',1)[1]))
+            law_rows.append(dict(task_id=t['id'],candidate=t['candidate'],pieces=[self.get(p,role='saved_signed_schedule_and_RTE_law_seed_removed') for p in laws]))
             for name in check_names:
                 entry['saved_correctness'].append(self.get(folder/(name+'.json')))
                 self.check(self.read(folder/(name+'.json'),'saved_correctness')==next(x for x in r['checks'] if x['check']==name), 'CHECK_RECEIPT_COPY:'+t['id']+':'+name)
@@ -292,6 +294,8 @@ class Export:
             rows.append(entry);storage_rows.append(sr)
         self.write('task_acceptance_67.json',dict(tasks=rows,task_count=len(rows),axis_count=2*len(rows),cohort='EXPLORATION',
             audit_original_sha256=AUDIT,other_cohorts_pooled=False,correctness_reperformed=False))
+        self.write('rte_schedule_metadata.json',dict(tasks=law_rows,seed_values_published=False,
+            scope='Saved per-piece signed times, RTE step allocation, finite law, cutoff and cohort; no schedule/law recalculation or new sampling.'))
         self.write('storage_records.json',dict(tasks=storage_rows,opaque_archives_SHA_checked=archive_count,
             note='Historical original-byte restoration PASS copied; current compressed bytes SHA checked. No decompression, array decode or scientific native validation rerun.'))
         self.gap('compiler_guard_historical_hash_binding', 'Current guard files are joined by exact task/axis and stage policy audit. Original accepted result does not itself contain guard-file SHA; this export adds current original SHA, not a retroactive historical byte attestation.')

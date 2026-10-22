@@ -53,6 +53,16 @@ def verify(dest, private_map):
             check(a['cost']['saved']==r['axis_costs'][i],'COST_COPY:'+tid+':'+str(i))
             guard=e.loads((dest/a['guard_projection']).read_text())['saved']
             check(guard['policy']==e.GUARD and guard['unchanged_gate_stream'] and not guard['state_fit'],'GUARD:'+tid+':'+str(i))
+    laws=e.loads((dest/'rte_schedule_metadata.json').read_text())['tasks']
+    check(len(laws)==67 and {r['task_id'] for r in laws}=={r['task']['id'] for r in tasks},'RTE_LAW_TASK_SET')
+    check(sum(len(r['pieces']) for r in laws)==336,'RTE_LAW_336_RECORDS')
+    for row in laws:
+        expected=4 if row['candidate']['id']=='H2O32_c7ec590a32a859bc' else 6
+        check(len(row['pieces'])==expected,'SAVED_SCHEDULE_PIECES:'+row['task_id'])
+        for i,piece in enumerate(row['pieces']):
+            s=piece['saved']
+            check(s['piece_request_index']==i and s['cohort']=='EXPLORATION' and not s['conditioned']
+                and 'registry_seed_PRIVATE' not in s,'LAW_NO_SEED_COHORT:'+row['task_id']+':'+str(i))
     for raw,digest in mapping['original_sha256'].items():
         check(Path(raw).is_file() and e.sha_file(raw)==digest,'PRESERVATION:'+x.token(raw))
     stored=e.loads((dest/'runtime_provider_manifest.json').read_text())
@@ -66,7 +76,7 @@ def verify(dest, private_map):
     return dict(status='PASS_STATIC_EXPORT_NOT_SCIENTIFIC_GO',checks_PASS=len(checks),
         source_pointer_projections=projection_count,unchanged_numeric_token_occurrences=number_tokens,
         original_files_rehashed=len(mapping['original_sha256']),runtime_inventory_counts=dict(runtime_counts),
-        target_tasks=67,target_axes=134,compiler_guard_files=134,new_scientific_calls=0,
+        target_tasks=67,target_axes=134,compiler_guard_files=134,saved_piece_law_records=336,new_scientific_calls=0,
         numerical_analysis=0,new_compile=0,shot_recalculation=0,old_audit_rerun=False,
         limitation='Static identity/copy verification by author, not independent scientific review or restored native validation.',
         checks=checks)
