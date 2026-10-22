@@ -1,0 +1,167 @@
+{
+  "status": "TECHNICAL_HARDENING_AND_H4_DRAFT_COMPLETE",
+  "technical_SOURCE": "8255fd0ed4e2e79b4394f8d1a91b67e9e20f6813",
+  "final_tests": {
+    "passed": 370,
+    "new_supervisor": 31,
+    "new_saved_draft": 11,
+    "previous_safe": 328,
+    "skipped": 1,
+    "deselected": 5,
+    "elapsed_seconds": 192.0
+  },
+  "excluded_molecular_tests": {
+    "tests/test_df_partial_randomized_pf.py::test_optimize_df_screening_cost_uses_anchor_cgs_table": "indirect build_rank_ordered_df_cost_blocks -> H3 SCF/DF construction (guard blocked before SCF in initial technical run)",
+    "tests/test_df_rte_tail.py::test_h2_df_tail_reconstructs_selected_conjugated_fragments": "new H2 SCF/DF Hamiltonian construction",
+    "tests/test_pauli_partial_cgs_validation.py::test_h3_target_is_sector_unique_but_full_space_degenerate": "new H3 molecular JW Hamiltonian and eigensimulation",
+    "tests/test_rte_h2.py::test_h2_k2_enumeration_and_seeded_sample_mean": "new H2 molecular JW Hamiltonian and sampling simulation",
+    "tests/test_rte_h2.py::test_h2_pauli_tail_finite_rte_matches_dense_exponential": "new H2 molecular JW Hamiltonian and evolution"
+  },
+  "environment_skip": {
+    "initial_attempt": "16 numerical cases passed before original runtime assertion failed; fixture and thresholds unchanged",
+    "observed_python": "3.12.3",
+    "required_python": "3.11.0rc1",
+    "test": "tests/test_df_partial_s2_repeated_cost.py::test_level5r_q1_q4_compiled_cost_reference"
+  },
+  "safety_guard": "tests/no_molecular_plugin.py",
+  "artificial_preflight": {
+    "small_four_case": {
+      "all_four_actually_concurrent": true,
+      "cases": [
+        {
+          "case": "pauli_jw_PF",
+          "errors": {
+            "corrected": 0.0,
+            "log_B": 0.0,
+            "operator_imag": 0.0,
+            "operator_real": 0.0,
+            "raw": 0.0,
+            "reference": 0.0,
+            "signed_bias": 0.0
+          },
+          "gate_counts_and_seeds_identical": true,
+          "tolerance": 1e-12
+        },
+        {
+          "case": "pauli_jw_PR",
+          "errors": {
+            "corrected": 0.0,
+            "log_B": 0.0,
+            "operator_imag": 0.0,
+            "operator_real": 0.0,
+            "raw": 0.0,
+            "reference": 0.0,
+            "signed_bias": 0.0
+          },
+          "gate_counts_and_seeds_identical": true,
+          "tolerance": 1e-12
+        },
+        {
+          "case": "df_native_PF",
+          "errors": {
+            "corrected": 0.0,
+            "log_B": 0.0,
+            "operator_imag": 0.0,
+            "operator_real": 0.0,
+            "raw": 0.0,
+            "reference": 0.0,
+            "signed_bias": 0.0
+          },
+          "gate_counts_and_seeds_identical": true,
+          "tolerance": 1e-12
+        },
+        {
+          "case": "df_native_PR",
+          "errors": {
+            "corrected": 0.0,
+            "log_B": 0.0,
+            "operator_imag": 0.0,
+            "operator_real": 0.0,
+            "raw": 0.0,
+            "reference": 0.0,
+            "signed_bias": 0.0
+          },
+          "gate_counts_and_seeds_identical": true,
+          "tolerance": 1e-12
+        }
+      ],
+      "distinct_worker_pids": [
+        719841,
+        719842,
+        719843,
+        719844
+      ],
+      "no_new_molecular_work": true,
+      "overlap_seconds": 0.293168306350708,
+      "status": "PASS"
+    },
+    "eight_qubit": {
+      "cases": [
+        "pauli_jw_PF",
+        "pauli_jw_PR",
+        "df_native_PF",
+        "df_native_PR"
+      ],
+      "errors": {
+        "df_native_PF": {
+          "compiled_probability": 6.439293542825908e-14,
+          "law_mean": 4.441027621704298e-16,
+          "reference": 4.336808689942018e-18
+        },
+        "df_native_PR": {
+          "compiled_probability": 5.10702591327572e-14,
+          "law_mean": 2.2208695253419636e-16,
+          "reference": 4.336808689942018e-18
+        },
+        "pauli_jw_PF": {
+          "compiled_probability": 2.9976021664879227e-15,
+          "law_mean": 1.1150912609939193e-16,
+          "reference": 2.220446049250313e-16
+        },
+        "pauli_jw_PR": {
+          "compiled_probability": 8.881784197001252e-16,
+          "law_mean": 1.1102230246251565e-16,
+          "reference": 2.220446049250313e-16
+        }
+      },
+      "molecular": false,
+      "num_qubits": 8,
+      "overlap_seconds": 0.5855090618133545,
+      "status": "PASS"
+    }
+  },
+  "development_attempts": [
+    {
+      "id": "attempt01",
+      "passed": 25,
+      "failed": 2,
+      "reason": "artificial nonzero interpreter teardown and detached descendant startup exceeded short test deadlines; production failure detection and cleanup worked; tests changed to observe intended state before stopping"
+    },
+    {
+      "id": "attempt02",
+      "passed": 27,
+      "failed": 0
+    },
+    {
+      "id": "attempt03",
+      "passed": 41,
+      "failed": 0
+    }
+  ],
+  "final_STOP_count": 28,
+  "expected_abnormal_STOPs": 19,
+  "deliberate_STOP_storage_failure": true,
+  "final_owned_identities_gone": 39,
+  "H4_contract_status": "DRAFT_NOT_ADOPTED_NOT_AUTHORIZED",
+  "H4_scientific_calls": 0,
+  "H4_grant_valid": false,
+  "H2_new_sampling": 0,
+  "H2_RNG_replay": 0,
+  "H2_new_compile": 0,
+  "new_population_cost_estimates": 0,
+  "new_scientific_ranking": 0,
+  "old_scientific_failure_retry": 0,
+  "scientific_review_started": false,
+  "push": false,
+  "mandatory_STOP": true
+}

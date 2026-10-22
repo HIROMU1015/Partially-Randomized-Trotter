@@ -119,3 +119,35 @@ PauliとDFのL_Dは異なる演算子単位を数える。実際のラベル/ind
 dense/sparse信号・法則平均・両軸compiled probabilityを確認する。これをH4実分子検証完了とは扱わない。
 
 最終SOURCE・回帰件数・除外理由・保全監査は結果取得後に追記する。全てローカル技術証拠で、CI/外部再現ではない。
+
+## 最終検証・保全・終了
+
+技術SOURCEは `8255fd0ed4e2e79b4394f8d1a91b67e9e20f6813`（科学実行SOURCEではない）。このcommitの173 source/契約/承認ファイルを固定してから
+最終検証を行い、bytes一致を再照合した。最終結果は **370 PASS / skip1 / deselect5**、wall192.00秒。
+新supervisor31、新draft/保存値11、従来安全回帰328（DF/PF/RTE/非DF・H2保存会計等）。
+[JUnit](../artifacts/non_df_h4_readiness/2026-10-23/technical/final_tests.xml)と
+[除外理由・module別結果への入口](../artifacts/non_df_h4_readiness/2026-10-23/validation_summary.json)を参照。
+除外5件は内部でH2/H3のSCF/DF/JW生成等を実行する既存テスト。skip1件はPython3.11.0rc1固定fixtureと現3.12.3の差。
+残りは人工/保存済み/mockのみで、opt-in分子生成禁止guardを使用した。
+
+新監視基盤で人工4caseの逐次対4processを比較し、演算子・signal・normalization差≤1e-12、全seed/価格/probe RZ数は一致。
+最終同時実行の共通重なりは小さい人工系0.293168秒、8 system/9 wrapper qubit人工系0.585509秒。
+8 qubit系のdense/sparse reference差≤2.23e-16、法則平均差≤4.45e-16、全取得wrapperのcompiled probability差≤6.44e-14。
+この有限人工scopeのPASSをH4実分子の一般保証としない。
+
+最終の人工監視runは28件のSTOPを保存（正常9・意図的異常19）、記録されたowned identity39件が不在または再利用済み別identityであることを確認した。
+別にSTOP書込み失敗1件は、STOP保存不能をstderrに明示し、worker回収をprocess.jsonで確認する試験をPASSした。
+collision/無効scope等の消費前拒否では既存記録を変更せず、呼出し側ログへ拒否理由を残す。
+正常ケース・no-ready・早期例外・非ゼロexit・hang・TERM無視・親例外・SIGINT/SIGTERM・親消失・STOP要求・heartbeat期限・
+孫/setsid子孫の回収・log保存失敗・起動失敗・claim重複/参照先保護・出力競合・H4未承認拒否を検証した。
+
+保全監査は旧tracked7,074件（artifact 4,885件）、旧manifest154 entry、旧H2のSOURCE266ファイルと
+result inventory内の全保存hashを一致で確認した。元H2 worktreeはclean。旧C/N/G・図・科学raw・SOURCE・grant・ledger・marker・STOP不変。
+新科学SCF/FCI/DF生成/H4 signal/MC/compile0、H2追加sampling/RNG replay/compile0、新母平均評価/再ランキング0。
+[再実行可能な保存監査](../artifacts/non_df_h4_readiness/2026-10-23/verify_saved_readiness.py)は値とhashだけを読み、科学計算をしない。
+
+H4は契約案・一括承認文案・SOURCE計画・検証gate・人工preflightまで準備完了。
+[一括承認文案](../artifacts/non_df_h4_readiness/2026-10-23/H4_batch_approval_proposal.md)は未承認であり、工程別再承認を要求する設計ではない。
+将来のH4専用runner/event-audit hookと人工同値性試験・clean SOURCE sealを完成した後、対象をまとめた明示承認が必要。
+希少event情報取得案も定義の採用と実行承認が別途必要で、現在は実行しない。
+ローカルcommitまで行い、push・詳細科学レビュー・次stageなしでmandatory STOP。

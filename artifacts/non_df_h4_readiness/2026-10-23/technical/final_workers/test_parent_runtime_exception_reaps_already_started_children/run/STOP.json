@@ -1,0 +1,72 @@
+{
+  "all_children_reaped": true,
+  "automatic_next_stage": false,
+  "automatic_retry": false,
+  "elapsed_seconds": 2.902665018104017,
+  "errors": [],
+  "identities": [
+    {
+      "case": "case0",
+      "pgid": 725422,
+      "pid": 725422,
+      "ppid": 725253,
+      "reaped": true,
+      "sid": 725422,
+      "start_ticks": 446283007,
+      "state": "R"
+    },
+    {
+      "case": "case1",
+      "pgid": 725423,
+      "pid": 725423,
+      "ppid": 725253,
+      "reaped": true,
+      "sid": 725423,
+      "start_ticks": 446283007,
+      "state": "R"
+    }
+  ],
+  "pending_owned_processes": [],
+  "persistence_errors": [
+    {
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/non-df-h4-readiness-20261023/artifacts/non_df_h4_readiness/2026-10-23/technical/final_workers/test_parent_runtime_exception_reaps_already_started_children/run/release.json",
+      "reason": "RuntimeError('ARTIFICIAL_PARENT_EXCEPTION')"
+    }
+  ],
+  "reason": {
+    "reason": "ARTIFICIAL_PARENT_EXCEPTION",
+    "traceback": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/non-df-h4-readiness-20261023/src/trotterlib/isolated_qiskit_supervisor.py\", line 278, in run_supervised\n    evidence(run/\"release.json\",dict(tokens={c[\"job\"][\"case\"]:c[\"token\"] for c in children}))\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/non-df-h4-readiness-20261023/src/trotterlib/isolated_qiskit_supervisor.py\", line 155, in evidence\n    try: publish(path,value)\n         ^^^^^^^^^^^^^^^^^^^\n  File \"<string>\", line 2, in faulty_publish\nRuntimeError: ARTIFICIAL_PARENT_EXCEPTION\n",
+    "type": "RuntimeError"
+  },
+  "reports": [
+    {
+      "aborted": true,
+      "binding": {
+        "SOURCE": null,
+        "input_hash": null,
+        "scope": "ARTIFICIAL_ONLY"
+      },
+      "case": "case0",
+      "elapsed_until_reaped": 2.8470118679106236,
+      "exit_code": -15,
+      "finished_monotonic": null,
+      "launched_monotonic": 4462830.076671427,
+      "pid": 725422
+    },
+    {
+      "aborted": true,
+      "binding": {
+        "SOURCE": null,
+        "input_hash": null,
+        "scope": "ARTIFICIAL_ONLY"
+      },
+      "case": "case1",
+      "elapsed_until_reaped": 2.8461817810311913,
+      "exit_code": -15,
+      "finished_monotonic": null,
+      "launched_monotonic": 4462830.07820173,
+      "pid": 725423
+    }
+  ],
+  "status": "FAILED_NO_RETRY_MANDATORY_STOP"
+}

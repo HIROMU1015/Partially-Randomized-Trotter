@@ -2445,3 +2445,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-23 H2非DF pilot：未完了2caseを別契約で取得・4方式比較完了
 
 [原因・実装・結果・限界](docs/non_df_h2_process_recovery_validation.md)。旧thread並列のQiskit borrow例外を人工競合負荷で再現し、同負荷4process各64反復と人工4case同時preflightをPASS。安全な回帰等328 unique PASS、分子処理除外5・runtime skip1。新SOURCE `7a6c4263d96153ecbe721dcfb6941d0d2684b3b0` の別one-shotでPauli PR/DF PFだけを取得、両case実施gate PASS・親子exit0/全回収、run02 COMPLETE_MANDATORY_STOP。旧Pauli PF/DF PRはhash照合して再利用し、旧run01失敗/STOPを保持。H2/1.00Å/STO-3G、DF tol-only1e-8/rank3、T=.8/q4/δ=.2/S2、Pauli PR L_D7/14項・DF PR L_D1/3 fragment＋one-body、r2/K4の4方式×5精度が揃った。同じL_Dを同一分割としない。ε=.05のGはPauli PF54,215,700、Pauli PR14,813,895.8125、DF PF56,989,854、DF PR29,038,120.96875 RZ。経験的allowance下のHoeffding十分Nと64 paired MC平均で、母平均保証・一般的優位性・全RPE最終費用の結論ではない。新SCF/FCI/DF/state solve0、H4以降/独立確認/詳細科学レビュー/push0、mandatory STOP。前節の未取得は旧runの時点履歴である。
+
+## 2026-10-23 非DF実行基盤の堅牢化・H2保存希少event診断・H4準備
+
+[技術報告・限界・契約案](docs/non_df_h4_readiness_validation.md)。新supervisorを追加し、case別fresh processを維持してready/実行/heartbeatのoptional監視、SIGINT/SIGTERM・親消失、pidfd/子孫回収、排他的claim/ログ/STOPを接続。旧科学SOURCE bytesは変更しない。技術SOURCE `8255fd0ed4e2e79b4394f8d1a91b67e9e20f6813`、最終370 PASS・skip1・分子処理除外5、人工4case並列/8 qubit preflight PASS。H2の保存Pauli510/2/0・DF512/0/0をsamplingなしで照合し、Pauliのevent-to-cost join欠測・DF未観測order2/4の未知費用・母平均未保証を保持した。linear H4/1.00Å/STO-3G、tol-only1e-8 DF、表現別50%重みprefix、T=.8/q8/r4/K4/各PR256標本の未採用契約案と一括承認文案を作成。H4科学実行/追加希少event sampling/再ランキング/詳細科学レビュー/push0、有効H4 grantなし。旧H2結果・SOURCE・grant/STOP不変、local commit後mandatory STOP。

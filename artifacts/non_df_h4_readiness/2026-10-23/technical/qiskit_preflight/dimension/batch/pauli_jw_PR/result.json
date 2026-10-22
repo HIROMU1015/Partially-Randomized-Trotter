@@ -1,0 +1,244 @@
+{
+  "CNG": {
+    "circuit_cost": {
+      "axes": {
+        "cosine": {
+          "mean": 57.5,
+          "mean_exact": "115/2",
+          "nominal95_halfwidth": 235.06478762399377,
+          "standard_error": 18.5
+        },
+        "sine": {
+          "mean": 57.5,
+          "mean_exact": "115/2",
+          "nominal95_halfwidth": 235.06478762399377,
+          "standard_error": 18.5
+        }
+      },
+      "cache_hits": 0,
+      "cache_misses": 4,
+      "compiled_signal_max_error": 8.881784197001252e-16,
+      "kind": "finite_MC_mean",
+      "mc_samples_are_quantum_shots": false,
+      "paired_axes": true,
+      "sample_count": 2,
+      "samples": [
+        {
+          "RZ": {
+            "cosine": 39,
+            "sine": 39
+          },
+          "seed": 14324297923437556862
+        },
+        {
+          "RZ": {
+            "cosine": 76,
+            "sine": 76
+          },
+          "seed": 8871174185812515029
+        }
+      ],
+      "scope": "full_cosine_sine_hadamard_wrapper_no_state_preparation",
+      "uncertainty": "nominal_Student_t_95_not_rare_event_or_population_guarantee"
+    },
+    "compiler": {
+      "backend_name": null,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "coupling_map": null,
+      "layout_method": null,
+      "optimization_level": 1,
+      "qiskit_version": "1.3.0",
+      "routing_method": null,
+      "transpiler_seed": 17
+    },
+    "config": {
+      "K": 4,
+      "L_D": 3,
+      "T": 0.1,
+      "cost_samples": 2,
+      "hamiltonian_type": "pauli_jw",
+      "method": "PR",
+      "product_formula": "S2",
+      "q": 1,
+      "r": 2,
+      "randomization_law": "finite_rte_even_paired",
+      "seed": 1701
+    },
+    "model": {
+      "B0I_equivalent_to_B0": true,
+      "B0I_reason": "nonidentity_Pauli_tail_has_zero_identity_coefficient",
+      "DF_rank": null,
+      "L_D": 3,
+      "generation": {
+        "coefficient_cutoff": 0.0,
+        "df_rank": null,
+        "label_order": "q[n-1]...q[0]",
+        "model_id": "synthetic_eight_qubit_no_molecule",
+        "qubit_order": "qiskit_little_endian",
+        "split_order": "descending_abs_then_label"
+      },
+      "hamiltonian_hash": "5c1aecb83a8f1ef6ea0cb553fc820a5a00c917f9895c28f8f52daf7d3fd0464a",
+      "hamiltonian_type": "pauli_jw",
+      "identity_policy": "constant_always_retained_once",
+      "retained_labels": [
+        "ZIIIIIII",
+        "IZIIIIII",
+        "IIZIIIII"
+      ],
+      "split_unit": "nonidentity_Pauli_term",
+      "tail_labels": [
+        "XXIIIIII",
+        "IIIZIIII",
+        "IIIIZIII",
+        "IYYIIIII",
+        "IIIIIZII",
+        "IIXXIIII",
+        "IIIIIIZI",
+        "IIIIIIIZ",
+        "IIIZZIII"
+      ]
+    },
+    "normalization": {
+      "B": 1.0001335873696495,
+      "K": 4,
+      "attenuation": 0.9998664304735522,
+      "lambda_r": 0.16345238095238096,
+      "law": "finite_rte_even_paired",
+      "log_B": 0.00013357844765141214,
+      "log_B_margin": 1e-09,
+      "log_B_upper": 0.00013357944765141213,
+      "normalization_certificate_verified": false,
+      "r": 2
+    },
+    "provenance": {
+      "environment": {
+        "numpy": "1.26.4",
+        "openfermion": "1.6.1",
+        "openfermionpyscf": "0.5",
+        "pyscf": "2.7.0",
+        "qiskit": "1.3.0",
+        "qiskit-nature": "0.7.2",
+        "scipy": "1.14.1"
+      },
+      "python": "3.12.3",
+      "source": {
+        "scope": "ARTIFICIAL_ONLY"
+      }
+    },
+    "reference": {
+      "T": 0.1,
+      "hamiltonian_hash": "5c1aecb83a8f1ef6ea0cb553fc820a5a00c917f9895c28f8f52daf7d3fd0464a",
+      "method": "scipy_sparse_expm_multiply",
+      "signal": {
+        "imag": -0.025830272538289796,
+        "real": 0.99965673880514
+      }
+    },
+    "schema": "fixed_signal_resource_evaluation_v1",
+    "shots": {
+      "N_total": 14028,
+      "alpha_union": 0.05,
+      "axes": {
+        "cosine": {
+          "allowance": 1e-09,
+          "alpha": 0.025,
+          "bias": 1.1198193483608065e-09,
+          "epsilon": 0.035355339059327376,
+          "headroom": 0.03535533693950803,
+          "log_shot_bound": 8.85553750639341,
+          "shots": 7014,
+          "status": "ELIGIBLE"
+        },
+        "sine": {
+          "allowance": 1e-09,
+          "alpha": 0.025,
+          "bias": 5.8599280070709137e-08,
+          "epsilon": 0.035355339059327376,
+          "headroom": 0.03535527946004731,
+          "log_shot_bound": 8.855540757925565,
+          "shots": 7014,
+          "status": "ELIGIBLE"
+        }
+      },
+      "certificate_verified": false,
+      "epsilon_sig": 0.05,
+      "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+      "evidence_kind": "EMPIRICAL",
+      "evidence_ref": "synthetic-dimension-check-only",
+      "interpretation": "CONDITIONAL_DIAGNOSTIC",
+      "log_B_upper": 0.00013357944765141213,
+      "schema": "fixed_complex_signal_hoeffding_v1",
+      "usable": true
+    },
+    "signal": {
+      "absolute_error": 5.860997884471869e-08,
+      "corrected": {
+        "imag": -0.025830213939009725,
+        "real": 0.9996567399249594
+      },
+      "mean_method": "independent_sparse_paired_polynomial_state_action",
+      "raw": {
+        "imag": -0.025826763809565847,
+        "real": 0.9995232162475972
+      },
+      "signed_bias": {
+        "imag": 5.8599280070709137e-08,
+        "real": 1.1198193483608065e-09
+      }
+    },
+    "state": {
+      "basis": "qiskit_little_endian",
+      "generation": {
+        "kind": "artificial_supplied_state",
+        "molecular": false
+      },
+      "hash": "e0371a2b80a1ee734a994364251cbcc5d1110cffeca29e8f41af892a8d639dc4"
+    },
+    "total_RZ": {
+      "mean": 806610.0,
+      "mean_exact": "806610",
+      "nominal95_halfwidth": 3297488.8407893847,
+      "standard_error": 259518.0
+    },
+    "validation": {
+      "RPE_rounds_evaluated": false,
+      "molecular_validation": false,
+      "resource_status": "CONDITIONAL_CNG_AVAILABLE",
+      "scientific_superiority_claimed": false,
+      "status": "TECHNICAL_CONDITIONAL_ACCOUNTING"
+    }
+  },
+  "artificial_only": true,
+  "case": "pauli_jw_PR",
+  "claim": "finite artificial dimension/interface check only; no H4 scientific validation",
+  "config": {
+    "K": 4,
+    "L_D": 3,
+    "T": 0.1,
+    "cost_samples": 2,
+    "hamiltonian_type": "pauli_jw",
+    "method": "PR",
+    "product_formula": "S2",
+    "q": 1,
+    "r": 2,
+    "randomization_law": "finite_rte_even_paired",
+    "seed": 1701
+  },
+  "ended": 1792685984.0578272,
+  "errors": {
+    "compiled_probability": 8.881784197001252e-16,
+    "law_mean": 1.1102230246251565e-16,
+    "reference": 2.220446049250313e-16
+  },
+  "molecule": null,
+  "num_system_qubits": 8,
+  "num_wrapper_qubits": 9,
+  "pid": 721258,
+  "started": 1792685983.4475856,
+  "status": "PASS"
+}
