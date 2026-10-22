@@ -1,0 +1,23 @@
+{
+  "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+  "pf_label": "4th(m5_best)",
+  "PF_repository": "HIROMU1015/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae",
+  "PF_commit": "20d64c2fea1ed2d2188777df4f3d962ee94df486",
+  "definition_path": "src/trotterlib/product_formula.py",
+  "definition_file_sha256": "bdba795f739f718ecb1c0ab4f4cf5937c043f1e317eca7d0efbaf29c97771ce0",
+  "function_name": "actual_circuit_optimized_4th_m5_list",
+  "function_source": "def actual_circuit_optimized_4th_m5_list() -> List[float]:\n    \"\"\"H3 実回路コスト探索で使った 4次 non-processed m=5 係数列を返す。\"\"\"\n    w1to5 = [\n        0.11225428783206336,\n        0.14181961643121604,\n        0.1211920365713068,\n        0.13781643533753404,\n        0.12547397927357543,\n    ]\n    return [1 - 2 * sum(w1to5)] + w1to5",
+  "tail_decimal_literals": [
+    "0.11225428783206336",
+    "0.14181961643121604",
+    "0.1211920365713068",
+    "0.13781643533753404",
+    "0.12547397927357543"
+  ],
+  "central_rule": "binary64: 1 - 2 * sum(tail), exactly as original Python function",
+  "sequence_rule": "reversed(tail) + [central] + tail",
+  "stage_count": 11,
+  "coefficient_optimization_repeated": false,
+  "numerical_fourth_order_acceptance": "reuse original numerical-order evidence and record residual vs scope; nonzero alone is not rejection",
+  "formal_exact_algebraic_certificate_claimed": false
+}
