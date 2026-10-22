@@ -248,8 +248,9 @@ def prepare_common(private,metadata_private):
     # Same expm matrices are reused verbatim; operation order and vector matvecs stay identical.
     import runpy
     # Coefficients and schedule module only requires numpy/provider at import. This is metadata-only schedule arithmetic.
-    from h46_new2_core import weights
-    keys={(i,float(.8*w/r['q']).hex()) for r in base for w in weights(r['formula']) for i in range(r['prefix']+1)}
+    from h46_m5_contract import core
+    keys={(i,float(step['signed_time']).hex()) for r in base
+          for step in core.schedule(r['formula'],r['q'],'PER_PIECE',1) for i in range(r['prefix']+1)}
     actions=sum(2*(r['prefix']+1)*c.PIECES[r['formula']]*r['q'] for r in base)
     caps=dict(snapshot_restore=1,saved_reference_read=1,occupation_oracle=1,full_preparation=1,prefix_preparation=9,
       base_signal=51,analytic_overlay=51,independent_forward=51,spectral_piece=1419,spectral_block_action=30588,forward_block_action=30588,
