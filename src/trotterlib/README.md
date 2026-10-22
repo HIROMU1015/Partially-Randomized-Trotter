@@ -1,3 +1,9 @@
+## 2026-10-23 H4非DF/DF PF・PRの追加API
+
+[h4_execution_contract.py](h4_execution_contract.py)が非科学stdlib認証、[h4_molecular_inputs.py](h4_molecular_inputs.py)が承認後のH4入力生成と次元gate、[h4_pilot_execution.py](h4_pilot_execution.py)がone-shotの入力→4process監視、[h4_pilot_science.py](h4_pilot_science.py)がcase評価・20行統合を担当する。
+
+[rte_event_audit.py](rte_event_audit.py)はproduction samplerの実戻り値を再抽選せず記録し、[h4_audited_evaluation.py](h4_audited_evaluation.py)でcos/sin full-wrapper RZ価格へjoinするopt-in経路。既存H2 kernel/sampler/APIは不変。[技術報告・検証範囲](../../docs/non_df_h4_execution_foundation.md)、[テスト](../../tests/test_h4_event_audit.py)、[承認待ち契約・証拠](../../artifacts/non_df_h4_execution_foundation/2026-10-23/README.md)。実H4計算0、科学grant未発行、mandatory STOP。以下は履歴。
+
 ## 2026-10-19 共通実験プロトコルv2改訂案（未採用）
 
 [v2改訂案・変更点・条件一覧](../../docs/research/track_a_pr_resource_evaluation_protocol_v2_DRAFT.md)。**v2はDRAFTで実行承認を含まない。** v1（9036d8a8）を保全し、H2を追加対象として提案。最新829d697aのH2 F/FP/D/A66/S_STATS完了・P未sealを反映し、当初7b202a1aのA未完了は時点履歴に分離した。提案n80/12は未採用でP実行未承認。H4/H6/H8独立確認6条件、DF12/DF10・探索/独立cohort、solver/正規化差、未観測event・母平均未保証・H8公開監査の限界を整理。GitHub固定67資料を読取照合。主表/Methods/CEM/原図34ファイルと既存契約を保全。構造16件PASS、新規科学計算・数値解析0。正式採用はユーザー判断、完了後mandatory STOP。以下は各時点の履歴。

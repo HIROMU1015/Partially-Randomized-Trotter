@@ -1,3 +1,9 @@
+## 2026-10-23 H4非DF/DF PF・PR：実行基盤完成・実分子実行は承認待ち
+
+[実装・技術検証報告](docs/non_df_h4_execution_foundation.md)。新H4 runner、実production eventの追加抽選なし記録、trajectory/compiled価格join、入力封印、SOURCE/grant/claim/STOP拒否、4方式×5精度統合を追加。既存科学API・H2結果は保持。人工8量子ビット4方式完了、最終の既存371＋新規65件PASS、FAIL/skip0、分子計算3件を除外。科学grant未発行、契約3 flagはfalse、実H4計算0、local commitのみ・pushなし、mandatory STOP。
+
+入口：[runner](scripts/run_h4_non_df_pilot.py)、[保存証拠のみの検査](scripts/verify_h4_execution_foundation.py)、[event hook](src/trotterlib/rte_event_audit.py)、[新規テスト](tests/test_h4_execution_foundation.py)、[証拠と一括承認案](artifacts/non_df_h4_execution_foundation/2026-10-23/README.md)。以下は各時点の履歴。
+
 ## 2026-10-19 PR/PF絶対RZコスト図：v2・5精度（保存値のみ）
 
 [成果物・採用除外・再現方法](docs/research/track_a_pr_pf_absolute_cost_v2_20261019.md)。v2 snapshot c0808b25を基準に26比較・52点を描画。両端精度はH4/H6/H8独立確認とH2/H4/H6/H8探索n8の別パネル、中間3精度は探索のみ。H4は新DF10、H6中間PFはmodelを白抜き表示。H2 P未完了・H8詳細公開監査未照合・有限標本の限界を保持。PNG/SVG/PDF各5枚、exact表・採否・caption・SHAを保存。新科学計算/会計/順位計算0、local commitのみ、公開pushなし。次の作業なし、mandatory STOP。以下は各時点の履歴。

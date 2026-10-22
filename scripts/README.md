@@ -1,3 +1,9 @@
+## 2026-10-23 H4専用runner・保存証拠検査
+
+[run_h4_non_df_pilot.py](run_h4_non_df_pilot.py)：新H4入力生成・固定4caseの認証付き実行経路。`--contract`は非実行表示、`--execute`は未発行grantを科学import前に拒否する。`--synthetic`は内部供給の人工8量子ビットfixture専用。今回のH4実分子実行は未承認。
+
+[verify_h4_execution_foundation.py](verify_h4_execution_foundation.py)：`python3 -B scripts/verify_h4_execution_foundation.py`で保存証拠・hash・旧SOURCE保全のみ照合する。科学module import、sampling、compileなし。[技術報告](../docs/non_df_h4_execution_foundation.md)、[開始手順と一括承認案](../artifacts/non_df_h4_execution_foundation/2026-10-23/README.md)。以下は履歴。
+
 ## 2026-10-19 PR/PF絶対RZコスト図：v2・5精度（保存値のみ）
 
 [成果物・採用除外・再現方法](../docs/research/track_a_pr_pf_absolute_cost_v2_20261019.md)。v2 snapshot c0808b25を基準に26比較・52点を描画。両端精度はH4/H6/H8独立確認とH2/H4/H6/H8探索n8の別パネル、中間3精度は探索のみ。H4は新DF10、H6中間PFはmodelを白抜き表示。H2 P未完了・H8詳細公開監査未照合・有限標本の限界を保持。PNG/SVG/PDF各5枚、exact表・採否・caption・SHAを保存。新科学計算/会計/順位計算0、local commitのみ、公開pushなし。次の作業なし、mandatory STOP。以下は各時点の履歴。

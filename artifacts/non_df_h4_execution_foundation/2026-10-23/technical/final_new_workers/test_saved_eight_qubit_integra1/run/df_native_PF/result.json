@@ -1,0 +1,204 @@
+{
+  "circuit_cost": {
+    "axes": {
+      "cosine": {
+        "mean": 39132.0,
+        "mean_exact": "39132",
+        "nominal95_halfwidth": 0.0,
+        "standard_error": 0.0
+      },
+      "sine": {
+        "mean": 39131.0,
+        "mean_exact": "39131",
+        "nominal95_halfwidth": 0.0,
+        "standard_error": 0.0
+      }
+    },
+    "cache_hits": 0,
+    "cache_misses": 2,
+    "compiled_signal_max_error": 5.055955654142963e-13,
+    "kind": "deterministic",
+    "mc_samples_are_quantum_shots": false,
+    "paired_axes": true,
+    "paired_covariance_RZ": 0.0,
+    "paired_covariance_interpretation": "observed finite cost sample only; no rare/population guarantee",
+    "sample_count": 1,
+    "samples": [
+      {
+        "RZ": {
+          "cosine": 39132,
+          "sine": 39131
+        },
+        "event_record_hash": "bfb9217916a2921ebbea63404b4748c5e8a45024d176dd2ab8a003e25c397350",
+        "seed": 13727931133693582960,
+        "trajectory_id": "447f091f7f1e7d60531952c89c86ec5430cf359d68183ff1a10144c92649e804",
+        "trajectory_record_hash": "634a6cfbaac7685ce018ea3d5a9d40a7a8aea634e44c39de1d6fe63a3fa36626"
+      }
+    ],
+    "scope": "full_cosine_sine_hadamard_wrapper_no_state_preparation",
+    "uncertainty": "nominal_Student_t_95_not_rare_event_or_population_guarantee"
+  },
+  "compiler": {
+    "backend_name": null,
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "coupling_map": null,
+    "layout_method": null,
+    "optimization_level": 1,
+    "qiskit_version": "1.3.0",
+    "routing_method": null,
+    "transpiler_seed": 17
+  },
+  "config": {
+    "K": 4,
+    "L_D": null,
+    "T": 0.8,
+    "cost_samples": 2,
+    "hamiltonian_type": "df_native",
+    "method": "PF",
+    "product_formula": "S2",
+    "q": 8,
+    "r": 4,
+    "randomization_law": "finite_rte_even_paired",
+    "seed": 14080246706327003618
+  },
+  "model": {
+    "B0I_equivalent_to_B0": true,
+    "DF_rank": 3,
+    "L_D": 3,
+    "deterministic_block_order": [
+      "df-one-body-correction",
+      "df-fragment-2",
+      "df-fragment-1",
+      "df-fragment-0"
+    ],
+    "deterministic_fragment_indices": [
+      2,
+      1,
+      0
+    ],
+    "extracted_identity_coefficient": 0.0,
+    "generation": {
+      "model_id": "supplied_artificial_eight_qubit"
+    },
+    "hamiltonian_hash": "5f2d8d0824e65b3fcaf9154b4a58b5a0fadb316cb6d63e51cbccfad630d5a2ec",
+    "hamiltonian_type": "df_native",
+    "identity_policy": "extract_identity_phase",
+    "preparation_hash": "6fa84c8f32beadb40e1e103ff19b238fb16bece6276c19471faee255e5a673c4",
+    "split_unit": "DF_fragment"
+  },
+  "normalization": {
+    "B": 1.0,
+    "K": null,
+    "attenuation": 1.0,
+    "lambda_r": 0.0,
+    "law": "deterministic",
+    "log_B": 0.0,
+    "log_B_margin": 0.0006127357484331268,
+    "log_B_upper": 0.0006127357484331268,
+    "normalization_certificate_verified": false,
+    "r": null
+  },
+  "provenance": {
+    "environment": {
+      "numpy": "1.26.4",
+      "openfermion": "1.6.1",
+      "openfermionpyscf": "0.5",
+      "pyscf": "2.7.0",
+      "qiskit": "1.3.0",
+      "qiskit-nature": "0.7.2",
+      "scipy": "1.14.1"
+    },
+    "python": "3.11.0rc1",
+    "source": {
+      "SOURCE": "f7da77da0581c7a79c31c981cd9c6c1fcb05d98f",
+      "contract_digest": "a5ec854f4a4a371f1e955cfc91021c29588f5d59fa6d9637be199c13e1d22722",
+      "grant_id": "NO_SCIENTIFIC_GRANT_ARTIFICIAL_ONLY",
+      "receipt_sha256": "44e0d2055483b10a1f80d48a948a57522234debb83e353053121811695e026b3",
+      "snapshot_sha256": "af864a468d486994c1386d77031f89cb5869ba2e3929f5f297eecb092493a744"
+    }
+  },
+  "reference": {
+    "T": 0.8,
+    "hamiltonian_hash": "5f2d8d0824e65b3fcaf9154b4a58b5a0fadb316cb6d63e51cbccfad630d5a2ec",
+    "method": "scipy_sparse_expm_multiply",
+    "signal": {
+      "imag": 0.09171264650822288,
+      "real": 0.9946768243865385
+    }
+  },
+  "schema": "fixed_signal_resource_evaluation_v1",
+  "shots": {
+    "N_total": null,
+    "alpha_union": 0.05,
+    "axes": {
+      "cosine": {
+        "allowance": 0.0006127357484331268,
+        "alpha": 0.025,
+        "bias": 6.672440377997191e-14,
+        "epsilon": 0.035355339059327376,
+        "headroom": 0.03474260331082753,
+        "log_shot_bound": 8.891461139397386,
+        "shots": null,
+        "status": "UNDETERMINED"
+      },
+      "sine": {
+        "allowance": 0.0006127357484331268,
+        "alpha": 0.025,
+        "bias": 1.743175048751766e-12,
+        "epsilon": 0.035355339059327376,
+        "headroom": 0.03474260330915108,
+        "log_shot_bound": 8.891461139493893,
+        "shots": null,
+        "status": "UNDETERMINED"
+      }
+    },
+    "certificate_verified": false,
+    "epsilon_sig": 0.05,
+    "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+    "evidence_kind": "EMPIRICAL",
+    "evidence_ref": "numerical_evidence.json",
+    "interpretation": "CONDITIONAL_DIAGNOSTIC",
+    "log_B_upper": 0.0006127357484331268,
+    "schema": "fixed_complex_signal_hoeffding_v1",
+    "usable": false
+  },
+  "signal": {
+    "absolute_error": 1.744451603413094e-12,
+    "corrected": {
+      "imag": 0.0917126465064797,
+      "real": 0.9946768243866052
+    },
+    "mean_method": "independent_sparse_paired_polynomial_state_action",
+    "raw": {
+      "imag": 0.0917126465064797,
+      "real": 0.9946768243866052
+    },
+    "signed_bias": {
+      "imag": -1.743175048751766e-12,
+      "real": 6.672440377997191e-14
+    }
+  },
+  "state": {
+    "basis": "qiskit_little_endian",
+    "generation": {
+      "method": "full non-DF Nalpha=Nbeta=2 sector ground eigenvector; canonical largest amplitude positive real",
+      "molecular": false,
+      "physical_sector": "Nalpha=Nbeta=2",
+      "shared_across_four_cases": true
+    },
+    "hash": "c66ea2bc6459301fd152747811525e1104b6ed5eb08f2c5b0d8babe5d09df18a"
+  },
+  "total_RZ": null,
+  "validation": {
+    "RPE_rounds_evaluated": false,
+    "molecular_validation": false,
+    "resource_status": "N_G_UNDEFINED",
+    "scientific_superiority_claimed": false,
+    "status": "H4_FIXED_CASE_TECHNICAL_PASS"
+  }
+}
