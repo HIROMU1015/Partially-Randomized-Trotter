@@ -1122,3 +1122,8 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-19 Mechanism：A82比較因子one-shot完了・説明32/32
 
 [結果・全因子表・統合](../docs/research/track_a_mechanism_a82_factor_results_20261019.md)。SOURCE 06c94745f50345b2d93714760608d9d11b83e784、A82一比較2軸だけ一回PASS、親/worker exit0・回収。旧31を転記し32比較64軸の説明因子が完備、side64/64を継承。core/side/他31再計算0、旧381 file SHA一致、図/cohort・欠測履歴を保全。公開承認未確定でpushなし、最終freeze/詳細科学レビューなし、mandatory STOP。
+
+
+## 2026-10-23 H2共通native・allowance技術基盤
+
+[設計・実装・人工テスト・最小科学契約案](research/track_a_h2_common_native_allowance_preparation_20261023.md)。固定4候補、人工36テストPASS、科学backend未接続。保存metadataの照合と欠測整理まで完了し、実H2計算・保存値の新u/N/G評価なし。政策未採択・実行準備未完、mandatory STOP。

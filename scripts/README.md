@@ -976,3 +976,8 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## 2026-10-19 Mechanism：A82比較因子one-shot完了・説明32/32
 
 [結果・全因子表・統合](../docs/research/track_a_mechanism_a82_factor_results_20261019.md)。SOURCE 06c94745f50345b2d93714760608d9d11b83e784、A82一比較2軸だけ一回PASS、親/worker exit0・回収。旧31を転記し32比較64軸の説明因子が完備、side64/64を継承。core/side/他31再計算0、旧381 file SHA一致、図/cohort・欠測履歴を保全。公開承認未確定でpushなし、最終freeze/詳細科学レビューなし、mandatory STOP。
+
+
+## 2026-10-23 H2共通native・allowance技術基盤
+
+`prepare_h2_common_native.py --plan <draft.json>` は非実行draftのschema検査専用。`--execute` は常にSTOPする。`audit_h2_common_native_preparation.py` は固定Git/ASTと既知metadataだけを読み、新namespaceへ技術証跡を保存する。科学codeのimport・実行なし。[実装・人工36テスト・契約案](../docs/research/track_a_h2_common_native_allowance_preparation_20261023.md)。
