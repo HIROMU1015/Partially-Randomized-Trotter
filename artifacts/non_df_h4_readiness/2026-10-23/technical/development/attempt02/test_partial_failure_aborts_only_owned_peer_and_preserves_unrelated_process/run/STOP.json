@@ -1,0 +1,67 @@
+{
+  "all_children_reaped": true,
+  "automatic_next_stage": false,
+  "automatic_retry": false,
+  "elapsed_seconds": 3.2546851877123117,
+  "errors": [],
+  "identities": [
+    {
+      "case": "case0",
+      "pgid": 696351,
+      "pid": 696351,
+      "ppid": 696222,
+      "reaped": true,
+      "sid": 696351,
+      "start_ticks": 446205341,
+      "state": "R"
+    },
+    {
+      "case": "case1",
+      "pgid": 696352,
+      "pid": 696352,
+      "ppid": 696222,
+      "reaped": true,
+      "sid": 696352,
+      "start_ticks": 446205341,
+      "state": "R"
+    }
+  ],
+  "pending_owned_processes": [],
+  "persistence_errors": [],
+  "reason": {
+    "reason": "NONZERO_WORKER_EXIT:case1",
+    "traceback": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/non-df-h4-readiness-20261023/src/trotterlib/isolated_qiskit_supervisor.py\", line 258, in run_supervised\n    if code!=0: raise RuntimeError(\"NONZERO_WORKER_EXIT:\"+c[\"job\"][\"case\"])\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: NONZERO_WORKER_EXIT:case1\n",
+    "type": "RuntimeError"
+  },
+  "reports": [
+    {
+      "aborted": true,
+      "binding": {
+        "SOURCE": null,
+        "input_hash": null,
+        "scope": "ARTIFICIAL_ONLY"
+      },
+      "case": "case0",
+      "elapsed_until_reaped": 3.199734553694725,
+      "exit_code": -15,
+      "finished_monotonic": null,
+      "launched_monotonic": 4462053.41516562,
+      "pid": 696351
+    },
+    {
+      "aborted": true,
+      "binding": {
+        "SOURCE": null,
+        "input_hash": null,
+        "scope": "ARTIFICIAL_ONLY"
+      },
+      "case": "case1",
+      "elapsed_until_reaped": 3.198716497980058,
+      "exit_code": 7,
+      "finished_monotonic": 4462056.373519181,
+      "launched_monotonic": 4462053.416851303,
+      "pid": 696352
+    }
+  ],
+  "status": "FAILED_NO_RETRY_MANDATORY_STOP"
+}

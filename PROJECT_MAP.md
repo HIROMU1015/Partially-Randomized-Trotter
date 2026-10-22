@@ -1631,3 +1631,7 @@ H4 ε=.001 S2選択を確定。現行理論Gは元入力不足で0/20、compiled
 ## H2非DFのQiskit process分離（2026-10-23）
 
 `src/trotterlib/{isolated_qiskit_execution,h2_non_df_process_recovery,h2_non_df_process_integration}.py`、`scripts/run_h2_non_df_process_recovery.py`、`tests/test_h2_non_df_process_recovery.py`、[検証文書](docs/non_df_h2_process_recovery_validation.md)、`artifacts/non_df_h2_process_recovery/2026-10-23/`を一組として読む。旧run01は保全し、承認された未完了2caseのみ別契約で取得する。
+
+## 非DF監視基盤・希少event保存診断・H4準備（2026-10-23）
+
+`src/trotterlib/isolated_qiskit_supervisor.py`、`saved_rte_cost_diagnostics.py`、`non_df_h4_readiness.py`、`non_df_synthetic_dimension_preflight.py`と`run_non_df_h4_readiness.py`、`tests/test_isolated_qiskit_supervisor.py`、`tests/test_non_df_h4_readiness.py`は[技術報告](docs/non_df_h4_readiness_validation.md)・`artifacts/non_df_h4_readiness/2026-10-23/`から辿る。旧科学SOURCEを保持した追加経路。H4科学実行は未承認。

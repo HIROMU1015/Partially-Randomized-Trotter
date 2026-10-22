@@ -1149,3 +1149,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## H2非DFのQiskit process分離（2026-10-23）
 
 [原因調査・人工並列・未完了2caseの新契約](non_df_h2_process_recovery_validation.md)。旧run01のSTOPと成功2caseを保全し、Pauli PR/DF PFのみ別runで取得する。
+
+## 非DF堅牢化とH4準備（2026-10-23）
+
+[監視付きprocess基盤・H2保存希少event診断・H4未承認契約案](non_df_h4_readiness_validation.md)。人工異常系/8 qubit preflightと安全な既存回帰を実行し、H4科学計算・H2追加sampling/compileは実行しない。

@@ -1006,3 +1006,7 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 `run_h2_non_df_process_recovery.py` は人工4process preflightと、新SOURCEにbindしたPauli PR/DF PFだけのone-shotを提供する。`diagnose_qiskit_thread_contention.py` は人工のみのthread/process競合診断。[契約・検証・禁止範囲](../docs/non_df_h2_process_recovery_validation.md)。旧run/成功2caseは再実行しない。
 
 `plot_h2_non_df_process_comparison.py` は同artifactの保存済み20行だけをPNG/SVG/PDFへ描画し、入力/描画source hashを記録する。新科学評価は実行しない。
+
+## 非DF堅牢化とH4準備（2026-10-23）
+
+`run_non_df_h4_readiness.py` は専用supervisorの人工worker正常/異常系と、逐次対並行・8 qubit人工回路preflightのみを実行する。`--h4-execute` は入力生成前に拒否する。[技術報告・契約案](../docs/non_df_h4_readiness_validation.md)。旧H2科学runnerは実行しない。

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="27" time="126.157" timestamp="2026-10-23T00:54:51.692849+09:00" hostname="GPUA100-gleap-01"><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_four_normal_workers_and_bound_handshake" time="6.382" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_failure_modes_stop_and_reap[noready-READY_TIMEOUT]" time="3.725" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_failure_modes_stop_and_reap[earlyexit-WORKER_EXITED_BEFORE_RELEASE]" time="6.129" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_failure_modes_stop_and_reap[nonzero-NONZERO_WORKER_EXIT]" time="6.132"><failure message="AssertionError: assert 'NONZERO_WORKER_EXIT' in 'RUN_TIMEOUT'">area = PosixPath('artifacts/non_df_h4_readiness/2026-10-23/technical/development/attempt01/test_failure_modes_stop_and_reap[nonzero-NONZERO_WORKER_EXIT]')
+mode = 'nonzero', reason = 'NONZERO_WORKER_EXIT'
+
+    @pytest.mark.parametrize("mode,reason",[("noready","READY_TIMEOUT"),("earlyexit","WORKER_EXITED_BEFORE_RELEASE"),
+        ("nonzero","NONZERO_WORKER_EXIT"),("hang","RUN_TIMEOUT"),("ignoreterm","RUN_TIMEOUT"),
+        ("badready","INVALID_READY_IDENTITY")])
+    def test_failure_modes_stop_and_reap(area,mode,reason):
+        watch=policy(ready_timeout=.5 if mode=="noready" else 3.,run_timeout=.3)
+        code,result=finish(launch(area,[mode],watch=watch))
+        assert code==1 and result["status"]=="FAILED_NO_RETRY_MANDATORY_STOP"
+&gt;       assert reason in result["reason"]["reason"]
+E       AssertionError: assert 'NONZERO_WORKER_EXIT' in 'RUN_TIMEOUT'
+
+tests/test_isolated_qiskit_supervisor.py:91: AssertionError</failure></testcase><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_failure_modes_stop_and_reap[hang-RUN_TIMEOUT]" time="6.178" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_failure_modes_stop_and_reap[ignoreterm-RUN_TIMEOUT]" time="6.430" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_failure_modes_stop_and_reap[badready-INVALID_READY_IDENTITY]" time="5.929" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_partial_failure_aborts_only_owned_peer_and_preserves_unrelated_process" time="6.382" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_supervisor_interruption_reaps_workers[2]" time="6.030" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_supervisor_interruption_reaps_workers[15]" time="6.119" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_external_stop_request" time="6.080" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_heartbeat_timeout_is_opt_in" time="6.128" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_contract_can_leave_normal_compute_without_wall_limit" time="6.129" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_detached_descendants_and_grandchild_are_killed_and_reaped" time="6.933"><failure message="AssertionError: assert 1 is None&#10; +  where 1 = poll()&#10; +    where poll = &lt;Popen: returncode: 1 args: ['/home/AbeHiromu/venvs/trotter-common/bin/pytho...&gt;.poll">area = PosixPath('artifacts/non_df_h4_readiness/2026-10-23/technical/development/attempt01/test_detached_descendants_and_grandchild_are_killed_and_reaped')
+
+    def test_detached_descendants_and_grandchild_are_killed_and_reaped(area):
+        h=launch(area,["descendants"],watch=policy(run_timeout=.8))
+&gt;       wait_path(h[1]/"case0/family.json",h[0])
+
+tests/test_isolated_qiskit_supervisor.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('artifacts/non_df_h4_readiness/2026-10-23/technical/development/attempt01/test_detached_descendants_and_grandchild_are_killed_and_reaped/run/case0/family.json')
+process = &lt;Popen: returncode: 1 args: ['/home/AbeHiromu/venvs/trotter-common/bin/pytho...&gt;
+
+    def wait_path(path,process):
+        end=time.monotonic()+8.
+        while not path.exists():
+&gt;           assert process.poll() is None
+E           AssertionError: assert 1 is None
+E            +  where 1 = poll()
+E            +    where poll = &lt;Popen: returncode: 1 args: ['/home/AbeHiromu/venvs/trotter-common/bin/pytho...&gt;.poll
+
+tests/test_isolated_qiskit_supervisor.py:67: AssertionError</failure></testcase><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_log_open_failure_has_STOP_and_no_worker_launch[stdout.log]" time="3.676" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_log_open_failure_has_STOP_and_no_worker_launch[stderr.log]" time="3.223" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_second_popen_failure_reaps_first_child" time="3.679" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_parent_runtime_exception_reaps_already_started_children" time="5.986" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_run_consumption_and_cross_run_case_claim_are_not_refunded" time="12.731" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_duplicate_case_identity_rejected_before_launch[case]" time="3.195" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_duplicate_case_identity_rejected_before_launch[case_id]" time="2.961" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_invalid_watch_configuration[0.0]" time="0.001" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_invalid_watch_configuration[-0.1]" time="0.001" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_invalid_watch_configuration[inf]" time="0.001" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_invalid_watch_configuration[nan]" time="0.001" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_invalid_watch_configuration[True]" time="0.001" /><testcase classname="tests.test_isolated_qiskit_supervisor" name="test_h4_science_entry_is_denied_before_any_generation" time="3.192" /></testsuite></testsuites>

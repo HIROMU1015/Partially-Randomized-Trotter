@@ -975,3 +975,7 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 ## H2未完了2caseのprocess分離取得（2026-10-23）
 
 `isolated_qiskit_execution.py` はfresh-interpreter起動と回収、`h2_non_df_process_recovery.py` は保存入力/旧SOURCE照合と新one-shot、`h2_non_df_process_integration.py` は保存4caseのC/N/G・paired covariance検査を担当する。[検証文書](../../docs/non_df_h2_process_recovery_validation.md)。旧科学kernelはbyte不変。
+
+## 非DF堅牢化とH4準備（2026-10-23）
+
+`isolated_qiskit_supervisor.py` はoptional監視とpidfd/子孫回収、`saved_rte_cost_diagnostics.py` はsamplingなしのH2保存値照合、`non_df_h4_readiness.py` は未承認H4/追加希少event契約案、`non_df_synthetic_dimension_preflight.py` は8 qubit人工系。旧 `isolated_qiskit_execution.py` の科学SOURCE対象bytesは不変。[技術報告](../../docs/non_df_h4_readiness_validation.md)。
