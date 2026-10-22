@@ -1,0 +1,438 @@
+{
+  "schema_version": 1,
+  "date_jst": "2026-10-23",
+  "base_commit": "a9bdcf1d44061daceffe896637e2c92fcb3353b4",
+  "scientific_priority_assigned": false,
+  "adopted": false,
+  "new_algorithm_designed": false,
+  "problem_order": "identifier order only; not priority",
+  "problems": [
+    {
+      "id": "RQ-01",
+      "title": "表現の小さいnormを、同じPR taskの低い実装費用へ変換できる条件",
+      "ops": [
+        "OP-I3",
+        "OP-II1"
+      ],
+      "studies": [
+        "REP-03",
+        "REP-04",
+        "REP-08",
+        "REP-09",
+        "QC-05",
+        "QC-08",
+        "REP-07"
+      ],
+      "evidence": [
+        "EV-0179",
+        "EV-0197",
+        "EV-0200",
+        "EV-0198",
+        "EV-0005",
+        "EV-0007",
+        "P2-GAP2",
+        "P2-GAP2S",
+        "EV-0168",
+        "EV-0173",
+        "EV-0158",
+        "EV-0148"
+      ],
+      "problem_statement": "同じ元Hamiltonian・sector・状態アクセス・要求精度を保つとき、表現／軌道／可解coreの変更は、normalizationやPF誤差の低下を上回る基底移動・controlled生成費を払わず、PRの測定込み資源を下げられるか。DFを出発時点の必須形式とせず、実行可能な表現の成立条件を問う。",
+      "existing_bottleneck": "norm・rank・群数を単独で小さくしても、実際の生成単位、基底変換、残余bias、shot allowanceは同時に良くならない。core/pairの固定toyでは安いwhole-Pauli対照が強い。UWCの旧proseは元run来歴未照合であり、成功実証の出発点にできない。",
+      "evidence_text": "REP-09は固定3-mode正平方DF2／physical-pair toyでnorm低下と単価増の相殺を保存済み寄与表まで記録する。REP-08はH2四方式の条件付き固定task比較を完了済み。QC-05は同情報の既知一体抽出が強い。QC-08では新しい十分保証が強いcentered対照より鋭くない例、THRIFTではstep減少が登録算術templateの費用余白を作らない例がある。異なる実験の値を合成しない。",
+      "proposed_research_freedom": "軌道/frame、sector-preserving shift、分解辞書、可解成分と残余の表現、表現取得精度。具体的な最適化則・新分解・目的関数の設計は未着手。",
+      "strong_baseline": "同じ入力情報・sector・model誤差枠を持つcollected Pauli、既存DF/圧縮DF、適用できる既知orbital/grouping・BLISS・SPRINT/GRADE系。各表現にdiscard/full deterministic/partial/random endpoint、同じ合法fusion/control/compilerを許す。外部論文の別task費用を数値対照として流用しない。",
+      "improvement_mechanism_hypothesis": "確認済み：生成辞書が1-shot費用を変え、normの単調改善と資源順位は一致しない。仮説：同じ物理taskで、残余の統計負担を減らしつつ基底移動の実費も下げる入力構造がある。どの構造か・大きい寄与を持つかは未確定。",
+      "counterevidence": "core/pairの強対照負結果、N1のexact fallback、THRIFT現templateの閉鎖、QC-05の小幅proxy差、QC-08の保守保証。UWC候補7件はFOUND_UNVERIFIED。既存の軌道回転やnorm最適化という名称だけでは独立差にならない。",
+      "scientific_value": "成立／不成立を分ける構造条件が得られれば、PR向け表現選択について既知のnorm指標を超える知見になり得る。現時点で新算法・独立新規性・論文化可能性を認定しない。",
+      "smallest_distinguishing_evidence": "まず同じHへのbindingと、既知表現対照が再現できない生成上の差を文書で示すこと。次に、費用の大きい項が実際に変わることとbias/normalizationの相殺を同じtaskで区別する証拠が要る。新信号・軌道最適化・compileが必要なら、その小さい比較範囲を別承認する。旧UWC探索・旧DF復元を前提にしない。",
+      "failure_stop_criterion": "新しい記述が既知の同情報表現と同じ生成列へ還元される、又は減らす項が全費用の小部分にとどまり追加生成・統計負担が相殺するなら、この経路の優先度を下げる。旧toyのparameter追加だけで救済しない。閾値・採否はPhase 2Bで未採択。",
+      "current_readiness": "QUESTION_DEFINED / MECHANISM_UNRESOLVED。反証材料と強対照は利用可能。実行可能な独立生成差と主要費用寄与は未確定。旧UWCを認証しなくても問い自体は定義可能だが、旧成功の再現研究としては扱えない。",
+      "review_questions": [
+        "norm最小化を超えて説明すべき構造は何か。既知orbital/BLISS/RC-DF/GRADEとの独立差を要求する位置はどこか。",
+        "REP-09の相殺要因を変える理由は何か。同じH・アクセスで区別できる最小の証拠に研究上の価値があるか。"
+      ]
+    },
+    {
+      "id": "RQ-02",
+      "title": "非prefix分割・groupingが既知の同情報split選択を超えるための条件",
+      "ops": [
+        "OP-I4",
+        "OP-II2"
+      ],
+      "studies": [
+        "PR-01",
+        "EVAL-01",
+        "OPT-03",
+        "OPT-04",
+        "OPT-05",
+        "RB-01",
+        "RB-02",
+        "QC-05"
+      ],
+      "evidence": [
+        "EV-0061",
+        "EV-0066",
+        "P2-M2-S",
+        "EV-0073",
+        "EV-0072",
+        "P2-ATTR",
+        "P2-PD",
+        "EV-0081",
+        "EV-0084",
+        "EV-0047",
+        "EV-0058"
+      ],
+      "problem_statement": "単項weight順prefixより自由な決定論／random分割やgroupingは、同じ情報を使う既知のpartition・compact BCH・cost評価にも許したとき、PF誤差・tail統計・実装境界を通じて残る費用差を作れるか。一般探索を広げることと独立した方法差を区別する。",
+      "existing_bottleneck": "安いdeterministic backbone、tail norm、commutator、basis共有は相反し得る。良いscoreを追加しても既知対照の候補選択が同じなら意思決定上の利益はない。候補探索・誤差情報取得を候補側だけ無料にできない。",
+      "evidence_text": "PR-2 M1/M2とPM-1/2には固定prefix候補内のpartial支持と精度依存があるが、非prefixの優位は測っていない。P-Dは強いB1b/B2/B4が同じ候補を選択。B-Fは同family・同評価budgetでF固有価値なし。BMの三次係数は同じcompact再帰と同値。P-Cは局所pilot後の広いgeometry追跡で固有差・予測が不足した。",
+      "proposed_research_freedom": "保持／random化する演算子集合、groupの単位と順序、共有basisとcommutator構造の利用、評価に使う情報の範囲。新しい非prefix規則、探索アルゴリズム、証明は作らない。",
+      "strong_baseline": "PR原法/composite partition、SPRINT/GRADE、同じ候補domainとDF backendを持つcompact BCH再帰・cache、PR-2近接discardを含むendpoint。全方式へ同じ情報・探索機会・精度保証とlegal circuit最適化を与える。prefixだけに制限した対照を最強としない。",
+      "improvement_mechanism_hypothesis": "確認済み：固定PR-2集合では1-shot節約が増えるshotsを上回る条件がある。仮説：weight順では失う相互作用／共有構造を使う分割が、同情報known baseline後にも差を作る。非prefixであること自体は機構の証拠ではない。",
+      "counterevidence": "P-D/B-Fの選択一致、BMの既知同値、R3のmethod delta不足、P-C追跡の限定失敗。normalizationだけ又はleading係数だけの改善はfull task改善ではない。四次PF逆転の原因は本課題の自動調査対象にしない。",
+      "scientific_value": "既知partitionに含まれない有用な構造条件、又はどの追加情報が設計判断を変えるかを示せれば研究知見になり得る。汎用optimizerや評価台帳の再提案だけの価値はPhase 2Bで別に判断する。",
+      "smallest_distinguishing_evidence": "同じ情報・domainを持つ既知対照との差を一つの固定比較で識別できる記述が必要。まず差がscoreの集約順やcache禁止に由来しないことを確認する。新splitの性能や候補再ランキングは今回行わず、必要なら限定した同task比較を別途承認する。",
+      "failure_stop_criterion": "強い対照が同じscore・候補・再利用を再現できる場合、独立算法経路として進めない。未測定の探索費を0としてしか利得を説明できない場合も優先度を下げる。旧P-D/B-F/BM/R3/P-CのSTOPは維持する。",
+      "current_readiness": "QUESTION_DEFINED / METHOD_DELTA_MISSING。保存結果は反証設計に使えるが、新しい具体的差を持つ候補は未確立。既存prefixの勝者を新採択しない。",
+      "review_questions": [
+        "非prefixという自由度以外に何を発見すれば既知partition/SPRINT/compact設計との研究差になるか。",
+        "P-D/B-F/BMの各失敗条件を変え得る構造は既存証拠から特定できるか。できなければ設計着手を保留すべきか。"
+      ]
+    },
+    {
+      "id": "RQ-03",
+      "title": "既存の基底共有・control・境界融合後に残る回路生成の改善余地",
+      "ops": [
+        "OP-I1"
+      ],
+      "studies": [
+        "CIR-01",
+        "CIR-02",
+        "PR-01",
+        "RB-12",
+        "RB-13"
+      ],
+      "evidence": [
+        "EV-0027",
+        "EV-0028",
+        "EV-0030",
+        "EV-0032",
+        "EV-0037",
+        "P2-BUILD",
+        "P2-REPEAT",
+        "P2-ATTR",
+        "EV-0128",
+        "EV-0129",
+        "EV-0130"
+      ],
+      "problem_statement": "同じordered event列とcontrolled coherent meanを保持し、既存run-level full/support選択・同basis相殺・step境界融合を与えた後、異basis間やwrapper全体の生成に削減可能な大きい費用が残るか。何を共有できるかの構造条件を問う。",
+      "existing_bottleneck": "単発supportの安さは長いrunの共有を壊し得る。basisの費用占有率はPR-2集約RZからは分解できない。すでに無制御のbasisをさらに無制御化する、融合済み境界を再融合するという前提には改善余地がない。",
+      "evidence_text": "WP06bは独立短列holdoutでrun policyの局所削減を記録。P-A後続はcompile前planが強い一区間baselineと同一で、interval分割固有寄与を支持しない。actual M2 sourceのDF builderはcontrol_diagonal_onlyを強制し同basisを共有、repeated S2はblock0の境界halfを融合する。Gaussian積生成closureは候補固有の追加手順なしであり性能negativeではない。",
+      "proposed_research_freedom": "厳密なrelative Gaussian変換、support completionと基底間移動、legalな順序保持共有、scalar/ancilla位相の実装位置。新compiler、回路、合成policyは設計・実装しない。",
+      "strong_baseline": "full-basis共有、既存support_run_le_1、one_segment_per_source_run、既存diagonal-only control、同block boundary fusion、全方式共通actual-adjoint/literal inverse cancellation、適用可能な既知partial Gaussian compiler。WとZを別回路にする弱い対照を強制しない。",
+      "improvement_mechanism_hypothesis": "確認済み：run構造の保持は局所1-shot費用を変える。仮説：これら共通最適化で消えない異basis移動の構造がfull wrapperでも主要費用であり、より安く生成可能。費用占有率と増分削減は未取得。",
+      "counterevidence": "support-allの悪化、P-Aのplan同一、Gaussian候補の追加手順欠如、PR-2でbasis非controlと境界融合は実装済み。Taylor高次数が稀というだけで回路利得の上限を新たに推定しない。",
+      "scientific_value": "位相を保つ同一taskの回路生成に、強い既知compiler後にも構造的な費用削減が残る条件を示せれば価値がある。既知compilerの適用研究か独立構成かは未判断。",
+      "smallest_distinguishing_evidence": "どの既存操作列が消え、強対照ではなぜ同じ削減を得られないかをまず示す。必要なら固定event列に対するoperator/ancilla相対位相とfull wrapper費用の対照を別承認で確認する。compile前planが同じなら科学compileの追加だけで機構を救済しない。",
+      "failure_stop_criterion": "差が既存fusion・run共有・既知Gaussian積生成に尽きる、又はfull-wrapperで変える項の寄与が小さく追加費用で消えるなら縮小する。interval DPの名称変更再開はしない。",
+      "current_readiness": "QUESTION_DEFINED / COST_SHARE_UNMEASURED。既存SOURCEから解消済みの箇所を除外できた。残る大きい費用と固有生成差は不明。新しい回路取得の必要性自体をPhase 2Bで判断する。",
+      "review_questions": [
+        "既存の共有・境界融合を除いた後、相対基底変換に研究問題として残る差はあるか。既知compilerの適用で尽きるか。",
+        "full wrapperの費用寄与が未分解のまま、何を最初の識別証拠とすべきか。P-AとGaussian closureを繰り返さない停止条件は十分か。"
+      ]
+    },
+    {
+      "id": "RQ-04",
+      "title": "古典生成費と有限confidenceを払っても有用なPR samplingの成立条件",
+      "ops": [
+        "OP-II3",
+        "OP-I2"
+      ],
+      "studies": [
+        "RB-18",
+        "RB-14",
+        "RB-06",
+        "RB-09",
+        "RB-16",
+        "RB-17",
+        "RB-15",
+        "PR-02"
+      ],
+      "evidence": [
+        "EV-0201",
+        "EV-0202",
+        "EV-0131",
+        "EV-0132",
+        "EV-0115",
+        "EV-0119",
+        "EV-0142",
+        "EV-0147",
+        "EV-0144",
+        "EV-0146",
+        "EV-0139",
+        "EV-0068",
+        "EV-0070",
+        "EV-0134"
+      ],
+      "problem_statement": "同じcontrolled first momentを生成するlawについて、非加法なwhole-path量子費用と、weightのmoment/range・bias・有限bit・古典生成／取得費を含めても、既知ISとcanonical RTEを超える実行可能な節約条件はあるか。最適分布の式と安い実装可能性を分ける。",
+      "existing_bottleneck": "basis切替や高価格eventを減らすと重み・必要shotsが増え得る。full-path costやnormalizerを知るための列挙・compile oracleを無料にできない。zero試行と失敗を区別し、parent縮約後のchild回転も残る。",
+      "evidence_text": "時間相関監査はmarginal保存だけでcoherent meanが保てないこと、whole-path ISが既知であることを記録。C1は同じH4 tailでlogical差が小さく全pathのchild回転が残る。G9は同finite P5の条件付きT利益を保存するがCTSにCXの利点がある。B3は限定workloadのみ。M1-Sは別mean/干渉構成でvisibilityとphase biasが交換し、rate比をshot比にできない。PR-3はbias減少がvarianceとbackbone費に負けた。",
+      "proposed_research_freedom": "proposalの表現と生成アクセス、historyの保持、likelihood計算、normalizerのアクセス形式、zero/rejection処理、再利用可能な前処理。具体的なlaw・相関kernel・samplerや新証明は作らない。",
+      "strong_baseline": "同じ情報での既知whole-path IS/cost-aware IS、canonical ordinary/partial/P3+tail、同finite targetのGeneral Full/Closed P5/collected CTS。全方式へ同じ合法cache・selector・前処理を許し、全trialの量子測定と古典生成を含める。branch相関でtargetを変える方式は同mean対照と混ぜず別のbias契約を必要とする。",
+      "improvement_mechanism_hypothesis": "確認済み：同finite meanの辞書/law変更がmoment・acceptance・native費用を交換する。仮説：必要なpath構造を列挙せず安く扱え、その利益が有限confidenceと古典費を戻しても残るclassがある。安い生成則と適用classは未確立。",
+      "counterevidence": "既知ISへの還元、signed/history方式の保証移送不足、C1の小さいlogical差と処理境界の異なるCPU計測、Closed P5が既存の強い内部特殊化であること、M1-SとPR-3の統計・bias制約。C1旧P5 failureを後のP5R成功で書き換えない。",
+      "scientific_value": "抽象的な最適lawから実行可能な生成・認証へ移る際の障害、又は成立する構造classを明確にできれば研究価値があり得る。ISの既知式やFullとP5の名称差は新規性として数えない。",
+      "smallest_distinguishing_evidence": "既知法との差を持つ生成アクセスと、同finite target・support/likelihood・finite-bit・全trial意味論をまず明記する。次に、減らす量子費用項が実際に十分大きいかを既存証拠で判断する。足りなければ一つの限定classでの生成費と有限confidence比較が必要になり得るが、今回実装・新sampling・N再計算をしない。",
+      "failure_stop_criterion": "最適lawの存在説明だけで安い生成がない、meanを保持できない、又はnormalization/range・古典費を払うと利益が消えるなら設計着手の優先度を下げる。H4 degree-zero parentへの期待だけでC1を再開しない。",
+      "current_readiness": "QUESTION_DEFINED / ACCESS_AND_CONSTRUCTION_UNRESOLVED。旧資料の回収不足より具体的生成差・保証接続が不足する。C1は凍結、G6理論は保持、P5は内部特殊化として扱う。",
+      "review_questions": [
+        "未知なのは既知ISの数式か、情報アクセス・有限confidence・安い生成のどこか。その接続は独立の研究問題となるか。",
+        "C1でparentがほぼ空でもchild回転が残る反証を踏まえ、どの費用層が変わる根拠があれば新しい問いを検討すべきか。",
+        "PRHS/qSHIFTのchannel/observable保証をcoherent meanへ移す問題と、同meanのlaw変更を分離できているか。M1-Sを同じ方法の成果として混ぜていないか。"
+      ]
+    },
+    {
+      "id": "RQ-05",
+      "title": "native回転辞書・配分・合成位置の変更が全wrapperで有用になる条件",
+      "ops": [
+        "OP-II4",
+        "OP-I2"
+      ],
+      "studies": [
+        "RB-03",
+        "RB-09",
+        "RB-13",
+        "RB-14",
+        "RB-17"
+      ],
+      "evidence": [
+        "EV-0086",
+        "EV-0091",
+        "EV-0087",
+        "EV-0092",
+        "EV-0115",
+        "EV-0119",
+        "EV-0129",
+        "EV-0130",
+        "EV-0131",
+        "EV-0132",
+        "EV-0133",
+        "EV-0142"
+      ],
+      "problem_statement": "同じfinite target・精度を生成する回転辞書／allocation／合成配置の選択に、既知Euler pairing・cost-aware IS・共通fusion後も残る資源機構はあるか。加法primitive価格での利益が、全wrapper・複数step・準備費の条件で残る範囲を問う。",
+      "existing_bottleneck": "cheap角度への移動はnormalizationやshotsを増やす。T価格・CX・depthは同じ方向に動かず、価格取得後の選択とproxy最適化が交絡し得る。小さいparent部分を最適化してもchildとdeterministic費が残る。",
+      "evidence_text": "SP-1は固定synthetic wrapperで局所gainとn増加後loss/shot capを記録し、actual whole-wrapper compileではない。S4はcommonのL1最小性を保持しつつ非commonの条件付きT利益とN/CX増を記録。訂正KKTは固定価格proxyだけ。D1-D3は保証と合成価格の小差で有限集合の選択が変わる保存例。G9のT-primaryとCTSのCXを両方保持する。",
+      "proposed_research_freedom": "平均を保存する回転辞書、parent配分、合成を行う位置、誤差配分、合法な隣接融合。具体的な角度・allocation・合成policyの設計や価格探索をしない。",
+      "strong_baseline": "common/非commonと同じ既知ISの機会、ordinary/partial/P3+tail/Full/Closed P5/CTS、exact cheap角とactual-adjoint、全方式同じliteral inverse cancellation、適用可能な既知probabilistic synthesis。native保証とprepare/readoutの費用枠を一致させる。",
+      "improvement_mechanism_hypothesis": "確認済み：固定native providerで単価と統計負担の交換が費用差を作る。仮説：加法価格に依存しない構造的な節約が、同精度全wrapperと多stepでも残る。既存の約束済み新合成価格やoracleを仮定しない。",
+      "counterevidence": "SPのn依存反転、S4の同一proposalとbest-to-bestの交絡、prep費・多stepの未確立、D系列の微小価格margin、C1の小さいlogical差。commonより低いL1をallocationだけで得るという前提は採らない。",
+      "scientific_value": "既知部品を越える生成機構、又はどの費用・precision・準備条件で交換が有用かを事前に区別する知見が候補。新規性・主論文価値・有用な最適化則の存在は未判断。",
+      "smallest_distinguishing_evidence": "辞書変更の効果とproposal変更を分け、既知強対照後にも消える具体的操作・誤差項を先に特定する。必要な将来証拠は一つの同finite targetでの全wrapper費と十分budgetの対応であり、新angle/native取得・再rankingは別承認。S4の同toy探索延長を既定にしない。",
+      "failure_stop_criterion": "差が既知IS/Euler/cheap角の直接再現のみ、又は加法模型でしか残らず共有・準備・多stepを戻すと相殺するなら縮小する。合成seed/precision追加で小marginを救済しない。",
+      "current_readiness": "QUESTION_DEFINED / WHOLE_WRAPPER_TRANSFER_UNMEASURED。保存された局所機構と強対照はある。新たな独立生成差・頑健な条件は不明。Parent allocation D+E closureは変更しない。",
+      "review_questions": [
+        "既存SP/S4/D系列が既に示した交換関係を超え、研究として未解決な中心問題は何か。",
+        "加法primitive価格からwhole wrapperへの差は研究機構か実装上の確認にとどまるか。どの証拠が設計着手の価値を変えるか。"
+      ]
+    },
+    {
+      "id": "RQ-06",
+      "title": "roundごとに表現・splitを変えても同じenergyを推定できる条件",
+      "ops": [
+        "OP-III2",
+        "OP-I4"
+      ],
+      "studies": [
+        "OPT-01",
+        "PR-01",
+        "EVAL-01",
+        "RB-15",
+        "PF-05"
+      ],
+      "evidence": [
+        "EV-0038",
+        "EV-0039",
+        "EV-0072",
+        "EV-0061",
+        "P2-ATTR",
+        "EV-0134",
+        "EV-0020",
+        "EV-0021",
+        "P2-OPT2"
+      ],
+      "problem_statement": "時刻／roundごとに表現・rank・splitが異なる信号を、同じ元Hの絶対energy taskへ接続し、既存round別r/K・beta/alpha配分を超える費用節約を得られるか。変更した有効位相・状態overlap・branchをどの情報で整合させられるかを問う。",
+      "existing_bottleneck": "一時刻の安いsignalが同じenergyの一貫したround列とは限らない。構成によってPF固有位相、discard/model bias、visibilityが変わる。構成更新・情報取得・準備・compiler較正費も必要。",
+      "evidence_text": "WP系列は既にround別r/Kと統計／誤差配分を扱い、共通最適化が比較を変える。PM-2は一時刻精度と構成の関係を保存したが全RPEではない。M1-Sは固定signalと全energy/RPE接続の不足を明記。PF有限時間研究は系・time窓による移送不足を記録する。",
+      "proposed_research_freedom": "roundごとの表現・分割・近似構成、構成変更に伴う情報の再利用範囲。具体的なadaptive law、decoder、新しいphase/energy保証は設計しない。",
+      "strong_baseline": "固定表現/splitに既存round別r/K・beta/alpha/shot配分を最適化した対照、同じcost/error情報の既知adaptive/multifidelity運用。真のE0やexact spectral oracleを候補だけへ与えない。",
+      "improvement_mechanism_hypothesis": "確認済み：既存固定構成でもround費用は一様でなく配分が効く。仮説：表現/split自体を変えると、共通energyへのbridgeと変更費を払っても追加の節約がある。現証拠にその実証はない。",
+      "counterevidence": "同情報の汎用配分への還元、長q移送と状態準備への感度、M1-Sのphase bias、PF校正の一般移送不足。二つのT値やPMのepsilon地図から全round成功を推論しない。",
+      "scientific_value": "構成が変わるphaseデータを同じenergyへ結ぶ成立条件と、既知schedule配分では得られない差を示せれば候補。単なる一般動的計画や評価体系の再設計を本課題の成果にしない。",
+      "smallest_distinguishing_evidence": "まず異構成の信号が同じ元energyに結び付く条件と、固定構成＋既知配分にない節約項を示す資料が要る。新しい非自明な保証が必要ならその必要性だけを記録し、今回証明しない。全RPE simulationや既存表のround再会計を行わない。",
+      "failure_stop_criterion": "bridgeに未知E0／高価なspectral情報が必要、又は同情報の既存配分で選択・費用が再現されるなら着手優先度を下げる。異なるtargetのcheap signalを混ぜて成功にしない。",
+      "current_readiness": "QUESTION_DEFINED / MATHEMATICAL_INTERFACE_UNRESOLVED。主な欠落は新しいtarget整合条件で、旧rawを探せば閉じる問題ではない。設計・証明へ進む価値をPhase 2Bで判断。",
+      "review_questions": [
+        "同じ元energyを推定するためのbridgeは既知の多精度推定で尽きるか、未解決の算法問題があるか。",
+        "round別r/K配分に表現/splitを追加することは科学的に十分な差か。保証の取得費を含めて識別できるか。"
+      ]
+    },
+    {
+      "id": "RQ-07",
+      "title": "接続性がPR表現・分割の選択を変える条件",
+      "ops": [
+        "OP-III1"
+      ],
+      "studies": [
+        "CIR-01",
+        "PR-01",
+        "REP-08",
+        "RB-17"
+      ],
+      "evidence": [
+        "EV-0027",
+        "EV-0061",
+        "P2-BUILD",
+        "P2-REPEAT",
+        "EV-0179",
+        "EV-0142"
+      ],
+      "problem_statement": "明示した接続性と同じmapping/routing最適化を全方式に与えたとき、PRのbasis移動・演算子分割・表現の選択は、既知compilerへの単純接続を超える資源差を作れるか。",
+      "existing_bottleneck": "主要保存compiled比較はcoupling mapなし。logical RZ/CX差からrouting後のSWAP/depth費用と順位は決まらない。backendの恣意的選択や候補だけの配置最適化で差を作る危険がある。",
+      "evidence_text": "WP06b、M2、H2四方式はtopology-freeを明記する。C1はraw logical計数に限定。これらは接続性に関する性能positive/negativeを与えない。プロジェクト内の今回確認資料が薄いことは、世界で未研究である証拠ではない。",
+      "proposed_research_freedom": "物理接続に合わせる生成単位、配置とbasis移動、分割／表現との関係。接続graphやhardwareを今回選定せず、新mapping/routing法を設計しない。",
+      "strong_baseline": "適用可能な既知Gaussian/fermionic mappingとrouting/compiler、同じgraph・layout探索budget・control・fusion・精度を持つPauli/DFのPF/PR endpoint。Kivlichanらのfermionic swap network/Givens準備も適用classでは比較候補。ただし同論文の表現前提を任意DF-PRへ自動移送しない。どの既知法を必須とするかはPhase 2Bで判断する。",
+      "improvement_mechanism_hypothesis": "確認済み：主要保存値はroutingなし。仮説：接続性で増えるbasis移動費が十分大きいclassでは、表現/splitとの協調に価値がある。支配性も同情報baseline後の差も未測定。",
+      "counterevidence": "既知routing・Gaussian共有への還元可能性。RZの改善とCX/depthの悪化、shotsによる相殺。routingなしの結果をhardware性能へ外挿しない。",
+      "scientific_value": "PR特有の構造と接続性の関係を示す知見が得られる可能性はあるが、現在は世界的先行研究との距離も未確定。単にbackendを追加する検証との差を明示する必要がある。",
+      "smallest_distinguishing_evidence": "まず近接する既知routing/Gaussian生成との対応と、接続性が変える具体的な費用項を明らかにする。研究差が残る場合だけ、将来の一つの明示graph・同task・同最適化budgetの対照を検討する。新compile/routingの承認は今回含まない。",
+      "failure_stop_criterion": "既知compilerを同条件で適用すれば全差が再現される、又はgraphの恣意的選択にのみ依存するなら新算法課題として縮小する。未測定を有望さの根拠にしない。",
+      "current_readiness": "QUESTION_DEFINED / PRIOR_ART_AND_COST_SHARE_UNRESOLVED。Phase 2Bで問題自体の価値を判断する段階。性能資料が揃ったという意味のreview-readyではない。",
+      "review_questions": [
+        "これはPRの未解決問題か、既知routing/Gaussian compilerの適用範囲か。何が見つからなければ保留とすべきか。",
+        "topology-freeで未測定の費用層を調べる価値は、既存証拠からどこまで説明できるか。公正なbaselineの必須条件は何か。"
+      ]
+    }
+  ],
+  "opportunity_assessments": [
+    {
+      "id": "OP-I1",
+      "research_problems": "RQ-03",
+      "repeat_or_overlap": "基底共有・literal相殺は既存。P-A interval固有差は否定的。",
+      "overcome_prior_failure": "run共有を壊さない必要がある。追加分割のplan同一を越える機構が未提示。",
+      "strong_baseline": "diagonal-only control・同basis/step融合・既知Gaussian compilerを含める。",
+      "important_cost_share": "短列局所削減は観測。full wrapperのbasis寄与内訳は未取得。",
+      "information_and_preprocessing": "registry/planを利用可。追加compiler/情報取得費は未測定。",
+      "same_task_accuracy": "同event列で比較可能。ただし位相を含む同値性が必要。",
+      "unresolved_layer": "回路生成と費用寄与が未解決。",
+      "existing_evidence_defines_question": "既存成果の再利用として保持し、残る増分の有無を問う。"
+    },
+    {
+      "id": "OP-I2",
+      "research_problems": "RQ-04 / RQ-05",
+      "repeat_or_overlap": "Closed P5はRA内部特殊化。G9とH4 C1移植は既に実施。",
+      "overcome_prior_failure": "C1ではparentがほぼ空でもchild回転が残る。条件差の根拠が要る。",
+      "strong_baseline": "General FullだけでなくClosed P5/CTSと同じtarget・情報で比較。",
+      "important_cost_share": "G9の条件付きT機構は保存。H4のlogical差は小さくnative/N未取得。",
+      "information_and_preprocessing": "P5 setupとonlineを分ける。C1 CPUはcache/境界の交絡あり。",
+      "same_task_accuracy": "同finite targetなら可能。G9とC1のN/費用を混合しない。",
+      "unresolved_layer": "アルゴリズム移送、finite-bit、回路、統計、古典費の接続。",
+      "existing_evidence_defines_question": "単純移植を独立課題にせずsampling実行可能性とnative機構へ分離。"
+    },
+    {
+      "id": "OP-I3",
+      "research_problems": "RQ-01",
+      "repeat_or_overlap": "Pauli/DF四方式はH2固定比較済み。H4は準備資料あり。",
+      "overcome_prior_failure": "norm低減を基底/central費が相殺する既存例を越える必要。",
+      "strong_baseline": "collected Pauli・DFと各PF/PR endpoint、同control/fusionを許す。",
+      "important_cost_share": "同じHでも表現で1-shot費用が違う証拠。大系の寄与は不明。",
+      "information_and_preprocessing": "入力identity基盤は利用可。表現取得費は無料にしない。",
+      "same_task_accuracy": "元H/sector/状態/精度を共通化できるがL_Dの数値は同じ単位でない。",
+      "unresolved_layer": "表現・生成機構とrare-order費用scope。",
+      "existing_evidence_defines_question": "比較基盤自体は新算法でない。表現変更の成立条件へ統合。"
+    },
+    {
+      "id": "OP-I4",
+      "research_problems": "RQ-02 / RQ-06",
+      "repeat_or_overlap": "PR2/PM/P-Dの既存協調軸。R3は既知選択法との独立差なし。",
+      "overcome_prior_failure": "P-D/B-Fの選択一致を越える差が必要。広いgrid追加では足りない。",
+      "strong_baseline": "同情報partition・compact BCH/cacheと公平な再最適化。",
+      "important_cost_share": "q/backbone/shotの交換は保存。評価法追加だけの増分利益は未確立。",
+      "information_and_preprocessing": "探索・誤差情報・compile取得費が必要。",
+      "same_task_accuracy": "同元H/task/精度に整合させる必要。旧stale DFを使わない。",
+      "unresolved_layer": "具体的算法差とround間energy整合。",
+      "existing_evidence_defines_question": "評価体系そのものは別チャット。構造分割と異round構成の問いへ分離。"
+    },
+    {
+      "id": "OP-II1",
+      "research_problems": "RQ-01",
+      "repeat_or_overlap": "orbital DF・UWC/BLISS・RC-DF/GRADE等との重複。",
+      "overcome_prior_failure": "core/pairのnative相殺・N1 fallbackを変える条件が未提示。",
+      "strong_baseline": "同情報の既存orbital/grouping・Pauli/DFと同精度全task。",
+      "important_cost_share": "normだけでなく生成費を変える必要。UWC値は未照合。",
+      "information_and_preprocessing": "旧UWCは候補7件の来歴未確定。軌道法はSOURCEで未実装。",
+      "same_task_accuracy": "sector shift、model/DF誤差、stateアクセスの整合が要る。",
+      "unresolved_layer": "表現取得と全実装の機構。",
+      "existing_evidence_defines_question": "表現名を固定せずRQ-01へ統合。旧UWC成功を根拠にしない。"
+    },
+    {
+      "id": "OP-II2",
+      "research_problems": "RQ-02",
+      "repeat_or_overlap": "partition/grouping/compact BCHは既知。",
+      "overcome_prior_failure": "BMの係数・cache同値、P-C追跡の選択同一、R3差分不足を踏まえる。",
+      "strong_baseline": "同domain・同backend・同集約規則・同cacheを既知法に与える。",
+      "important_cost_share": "commutatorとbasis境界の寄与は重要だが非prefix増分は未測定。",
+      "information_and_preprocessing": "group構造・誤差scoreの取得と探索費を支払う。",
+      "same_task_accuracy": "同元H/precisionで可能だが新split評価は未実施。",
+      "unresolved_layer": "具体的な生成/情報差と回路・誤差の接続。",
+      "existing_evidence_defines_question": "非prefixという名称で再開せず、同情報対照との差を問う。"
+    },
+    {
+      "id": "OP-II3",
+      "research_problems": "RQ-04",
+      "repeat_or_overlap": "cost-aware/whole-path IS・history法は既知。",
+      "overcome_prior_failure": "mean破壊、moment/range増、取得費を避ける具体的手順が不足。",
+      "strong_baseline": "canonical RTE、既知whole-path IS、P5/CTSへ同じ情報を与える。",
+      "important_cost_share": "切替数減だけでは費用支配性不明。C1 child費を保持。",
+      "information_and_preprocessing": "likelihood/normalizer/価格取得とonline生成が中心の未解決。",
+      "same_task_accuracy": "同coherent finite targetなら可能。channel/observable法の自動移送不可。",
+      "unresolved_layer": "アルゴリズムアクセス・有限bit・統計・実装。",
+      "existing_evidence_defines_question": "既知最適lawの再記述を除き、安い実行可能性を中心にする。"
+    },
+    {
+      "id": "OP-II4",
+      "research_problems": "RQ-05",
+      "repeat_or_overlap": "SP/S4/D2/P5/Euler/ISに既存成果。",
+      "overcome_prior_failure": "多step・prep・whole compileへの移送と価格marginが不足。",
+      "strong_baseline": "共通fusion・actual-adjoint・common/P5/CTSと同IS機会。",
+      "important_cost_share": "synthetic加法費用の利益あり。実PR全wrapperの主要寄与は未確立。",
+      "information_and_preprocessing": "新角度価格の取得、bit費、online費を無料にしない。",
+      "same_task_accuracy": "同finite target・bias/native精度・confidenceで比較する。",
+      "unresolved_layer": "回路/合成と統計の交換、全wrapper移送。",
+      "existing_evidence_defines_question": "同toy再探索を避け、強対照後に残る機構の条件へ具体化。"
+    },
+    {
+      "id": "OP-III1",
+      "research_problems": "RQ-07",
+      "repeat_or_overlap": "routing/Gaussian/mapping自体は既知。世界的未探索としない。",
+      "overcome_prior_failure": "現資料にはrouting後の性能がなく、克服機構未確認。",
+      "strong_baseline": "同graph/layout budget/compiler/controlを全方式へ。",
+      "important_cost_share": "topology-free費用は観測、routing支配性は未測定。",
+      "information_and_preprocessing": "配置探索/取得費とstate/control追加費が未確定。",
+      "same_task_accuracy": "同H/mean/accuracyは必要。backend未選定。",
+      "unresolved_layer": "先行研究上の独立差と回路費寄与。",
+      "existing_evidence_defines_question": "問いは保持するが、証拠不足を有望さに読み替えない。"
+    },
+    {
+      "id": "OP-III2",
+      "research_problems": "RQ-06",
+      "repeat_or_overlap": "round別r/Kとbeta/alpha配分は既存。",
+      "overcome_prior_failure": "構成別phase/model biasとenergy bridgeを先に解く必要。",
+      "strong_baseline": "固定構成＋既知round配分、同情報adaptive運用。",
+      "important_cost_share": "late round負担の旧局所証拠あり。表現/split変更の追加利益は未測定。",
+      "information_and_preprocessing": "更新・準備・誤差情報・compile較正費が必要。",
+      "same_task_accuracy": "共通E0・branch/overlap/phase整合が未確立。",
+      "unresolved_layer": "数学的target接続、統計、構成更新費。",
+      "existing_evidence_defines_question": "単なるschedule追加から切り離し共通energy条件を問う。"
+    }
+  ]
+}
