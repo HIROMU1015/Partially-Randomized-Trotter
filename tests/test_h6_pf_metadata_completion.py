@@ -43,6 +43,17 @@ class Observations(unittest.TestCase):
             s=c.Stage(d,'METADATA',dict(metadata_candidate=1));s.take('metadata_candidate','toy')
             with self.assertRaisesRegex(ValueError,'GLOBAL_CAP'):s.take('metadata_candidate','extra')
             with self.assertRaisesRegex(ValueError,'ALREADY_ENTERED'):c.Stage(d,'METADATA',dict(metadata_candidate=1))
+    def test_original_NPY_scalar_shape_and_strict_content_identity(self):
+        import numpy as np,hashlib
+        from pf_common_run_native import array_receipt_matches
+        for value in (np.array(.17),np.array('metadata'),np.array([.17,.3])):
+            record=dict(shape=list(value.shape),dtype=value.dtype.str,sha256=hashlib.sha256(np.ascontiguousarray(value).tobytes()).hexdigest())
+            self.assertTrue(array_receipt_matches(value,record,original_shape=True))
+            if value.ndim==0:
+                self.assertFalse(array_receipt_matches(value,record,original_shape=False))
+            self.assertFalse(array_receipt_matches(value,dict(record,sha256='0'*64),original_shape=True))
+            self.assertFalse(array_receipt_matches(value,dict(record,dtype='<i8'),original_shape=True))
+
     def test_cached_expm_preserves_exact_matvec(self):
         import threading,numpy as np
         from scipy.linalg import expm

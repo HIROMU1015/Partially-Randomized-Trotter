@@ -21,6 +21,14 @@ def install(plan):
     else:transpile=qiskit.transpile
     compiler.transpile=partial(transpile,num_processes=1)
 
+def array_receipt_matches(value,record,*,original_shape):
+    """H6 receipt uses NPY shape; migrated H2/H4 receipt used contiguous shape."""
+    import numpy as np,hashlib
+    v=np.ascontiguousarray(value)
+    shape=np.asarray(value).shape if original_shape else v.shape
+    return (list(shape)==record['shape'] and v.dtype.str==record['dtype']
+        and hashlib.sha256(v.tobytes()).hexdigest()==record['sha256'])
+
 def restore(stage,prefixes):
     plan=stage.plan;install(plan)
     import numpy as np
@@ -35,8 +43,7 @@ def restore(stage,prefixes):
     import hashlib
     for name,value in a.items():
         v=np.ascontiguousarray(value);record=r['arrays'][name]
-        c.require(list(v.shape)==record['shape'] and v.dtype.str==record['dtype'] and
-            hashlib.sha256(v.tobytes()).hexdigest()==record['sha256'],'EXACT_SCIENTIFIC_ARRAY:'+name)
+        c.require(array_receipt_matches(value,record,original_shape=plan['system']=='H6'),'EXACT_SCIENTIFIC_ARRAY:'+name)
     if plan['system']=='H6':
         from trottertracks.resource_applicability.ax2b_h6_saved_completion_loader_v1 import load_h6_snapshot
         ham,sector,_,_,_,_=load_h6_snapshot(Path(inp['snapshot']),r,c.read(inp['df_receipt']))
