@@ -1,3 +1,7 @@
+## 2026-10-22 H6 metadata取得：snapshot読込後のloader shape検査でSTOP・修正を保存
+
+[実行・STOP・修正・監査](research/track_a_h6_pf_metadata_STOP_20261022.md)。不足63件を新grantで起動したが、snapshot_restore1後に0次元scalar shapeの比較不具合でexit1。入力SHAは原値一致。metadata/signal/compile/後続stage0、失敗時STOP条項に従いretry0。別SOURCE修正・人工5PASS、旧H2/H4結果75file不変。588登録中312完了/276未解決を維持。local commit後mandatory STOP、push0。以下は履歴。
+
 ## 2026-10-22 H2/H4共通PF比較完了・H6原metadata STOP
 
 [条件・全候補・費用・監査](research/track_a_pf_common_domain_results_20261022.md)。588登録中H2 84/H4 228を評価完了、H6 276は63原metadata不足でUNRESOLVED。新signal84・compile169候補338軸・1560 endpoint、同native保存22 pair再利用。全公式PF対PRではH2は5精度ともPF低費用、H4はε=.001/.0005でPRが15.01/37.37%低費用、緩い3精度はPF低費用。linear1Å/STO-3G/tol-only rank3/10/19、T=.8/P=0、固定prefix/q≤8域・経験的allowance・保存探索cohort条件付き。両系4 stage/終了監査PASS、旧PR不変、新sampling0。全energy/RPE最適化・母平均保証ではない。local commit後mandatory STOP、push0。以下は履歴。

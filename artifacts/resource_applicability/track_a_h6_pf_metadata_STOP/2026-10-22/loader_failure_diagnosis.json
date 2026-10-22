@@ -1,0 +1,19 @@
+{
+  "reason": "Shape checked after np.ascontiguousarray converted original NPY scalar shape () to (1,). Original receipt and data agree.",
+  "snapshot_sha256": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+  "constant_NPY_header": {
+    "descr": "<f8",
+    "fortran_order": false,
+    "shape": []
+  },
+  "original_receipt": {
+    "dtype": "<f8",
+    "sha256": "2b3651c6d759385f18dad4b447e3b0789fe4e179892a1519998e2fccfcdb2b4b",
+    "shape": []
+  },
+  "payload_sha256": "2b3651c6d759385f18dad4b447e3b0789fe4e179892a1519998e2fccfcdb2b4b",
+  "input_corruption_found": false,
+  "fix_SOURCE": "458ea00ddf9f14f5713892837a8912f2d8239713",
+  "fix": "For H6 compare original value.shape; preserve migrated H2/H4 contiguous-shape receipt definition. SHA/dtype and array bytes checks retained.",
+  "fix_validated_on_real_H6_runtime": false
+}

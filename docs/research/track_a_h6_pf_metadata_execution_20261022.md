@@ -25,3 +25,7 @@ SIGNAL/QUALIFY/COST/ACCOUNTは各別grant・ledger・exclusive marker・終了re
 共通政策はH2/H4で固定した通常signed、5精度、α_axis=.025、経験的u=max(floor1e-9,10closure+64eps(1+norm)(1+stages),saved u)、log_B margin>=1e-12/saved margin、u/headroom≤.01、凍結binary64 shotと別整数照合、compiled RZ×analytic shot。元PRのcohort/mean/variance/SE/sourceは変更しない。外部レビュー・新sampling・pushはしない。H6完了後588候補の参照統合、局所監査・local commit後mandatory STOP。
 
 実装 `scripts/h6_pf_metadata_completion.py`、H6 loader/cache接続 `scripts/pf_common_run_native.py`、one-shot `scripts/pf_common_run_contract.py`、人工 `tests/test_h6_pf_metadata_completion.py`。人工4件PASS、既存10件の結果を確認後にSOURCEを固定する。
+
+## 取得後記録
+
+科学SOURCE3cff9a4baのMETADATA stageはsnapshot_restore1後にloader shape検査でSTOP。旧入力SHAは一致。signal作用・再観測0。修正SOURCE458ea00ddを別に保存し人工5PASSだが、失敗時STOP指示に従い実H6は再実行しない。[終了監査・不足状況](track_a_h6_pf_metadata_STOP_20261022.md)。
