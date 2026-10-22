@@ -41,7 +41,7 @@ H4 DF12、q16、未登録prefix、追加公式は含めない。最良は今回�
 
 H6 metadata科学SOURCEは `{meta['SOURCE']}`、共通科学SOURCEは `{h6['SOURCE']}`。起点0b1886f53、専用branch `pf-common-h6-metadata-execution-20261022`。旧H2/H4のSOURCE/raw/grant/ledger/marker/STOPはbyte同一のまま参照結合。旧H6 INPUT_STOPと失敗stageも正式履歴として保全した。
 
-H6原snapshot SHA `99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005` がreceipt/bindingと一致。Hamiltonian hash `223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9`、state hash `664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3` を原配列から検査し、保存reference・full preparation・runtime/compiler/provider sealと接続した。今回SCF/DF/state/reference新生成0。H2/H4は以前に科学配列hash一致を確認した再生成容器であり、原snapshot復元とは区別する。
+H6原snapshot SHA `99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005` がreceipt/bindingと一致。Hamiltonian hash `223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9`、state hash `664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3` を原配列から検査し、保存reference・full preparation・runtime/compiler/provider sealと接続した。H6は元protocolで採用した保存weighted-Hermitian completionのDF Hamiltonianをそのまま使用し、化学入力を再生成した系列ではない。今回SCF/DF/state/reference新生成0。H2/H4は以前に科学配列hash一致を確認した再生成容器であり、原snapshot復元とは区別する。
 
 ## 不足63 metadataの正当な取得
 
