@@ -959,3 +959,7 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 `current_s2_theory.py` の既存NATIVE_MIXED / explicit_rz_sx_x_cx_v1を、固定S2候補27件の実preparationへ接続する経路を追加した。有限RTEの法則期待値と実Qiskit compiled MC平均を区別し、実行adapterは `scripts/recomputed_s2_runtime*.py`、人工testは `tests/test_recomputed_s2_comparison*.py`、raw/contractは `artifacts/resource_applicability/pr_pf_s2_recomputed/2026-10-22/`。[検証文書](../../docs/recomputed_s2_theory_compiled_validation.md)にcohort・同一性・失敗STOPと利用範囲を記録する。
 
 追加のnative物理対応検証は `src/trotterlib/recomputed_s2_physics_validation.py`、`scripts/run_recomputed_s2_physics_validation.py`、`tests/test_recomputed_s2_physics_validation.py`。同じnamespaceのsystem単位 `native_physics_validation` を読む。H6/H8の補助unweighted-G診断不合格は、費用値の留保として保存し、全検証PASSや科学的GOへ変更しない。
+
+## 2026-10-22 C/N/Gの解析／回路比較
+
+`analytic_circuit_cng.py`は保存RZ単価・shotの有理数会計とpaired MC分散。回路・signal・shot推定器を実行しない。対応runner/test・図・原実行は[検証文書](../../docs/analytic_circuit_cng_validation.md)から参照。

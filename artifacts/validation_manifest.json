@@ -3616,6 +3616,14 @@
         "supports": [
           "pr_pf_s2_recomputed_20261022"
         ]
+      },
+      {
+        "kind": "directory",
+        "path": "artifacts/resource_applicability/pr_pf_analytic_vs_circuit_CNG/2026-10-22",
+        "reason": "Source-bound saved accounting units and STOP; originals unchanged.",
+        "supports": [
+          "pr_pf_analytic_vs_circuit_CNG_20261022"
+        ]
       }
     ],
     "quarantined": [
@@ -4370,6 +4378,29 @@
     "snapshot_patch_sha256": "055848b618ecd913be5b94f518c250da99e56310869cfcef54474ca717774171",
     "status": "PREPARED_UNAPPROVED_UNSEALED_NO_SAVED_VALUE_REACCOUNTING",
     "subagents": 0
+  },
+  "pr_pf_analytic_vs_circuit_CNG_20261022": {
+    "SOURCE": "bb5251fc9780ac7ac3b6c3c540aa3c865879eb4f",
+    "base_result_commit": "a590214d6d70962aa02b9e0a2bce56810859522f",
+    "conditional_pairs": 10,
+    "executed_technical_pass_scope": 10,
+    "figure_packet": "docs/progress/track_a/figures/pr_pf_analytic_vs_circuit_CNG_20261022",
+    "id": "pr_pf_analytic_vs_circuit_CNG_20261022",
+    "independent_N_conditions": 0,
+    "independent_scientific_review": false,
+    "library": "src/trotterlib/analytic_circuit_cng.py",
+    "new_compile": 0,
+    "new_sampling": 0,
+    "new_shot_evaluation": 0,
+    "new_signal": 0,
+    "paired_conditions": 20,
+    "raw_namespace": "artifacts/resource_applicability/pr_pf_analytic_vs_circuit_CNG/2026-10-22",
+    "report": "docs/analytic_circuit_cng_validation.md",
+    "runner": "scripts/run_analytic_circuit_cng.py",
+    "scientific_validation_complete": false,
+    "status": "SAVED_CNG_ACCOUNTING_COMPLETE_N_INDEPENDENT_MISSING_CONDITIONAL_PHYSICS",
+    "summary": "Axis C comparison and fixed-N G00/G01 from saved data. No independent N_circuit or G11; H6/H8 remain conditional.",
+    "test": "tests/test_analytic_circuit_cng.py"
   },
   "pr_pf_s2_recomputed_20261022": {
     "SOURCE": [
@@ -7807,6 +7838,29 @@
       "summary": "Fixed-candidate native S2 theory/compiled accounting; original H2 and recomputed H4/H6/H8 kept distinct, with failed auxiliary G diagnostics retained.",
       "test": "tests/test_recomputed_s2_physics_validation.py",
       "theory_cost_pairs": 20
+    },
+    {
+      "SOURCE": "bb5251fc9780ac7ac3b6c3c540aa3c865879eb4f",
+      "base_result_commit": "a590214d6d70962aa02b9e0a2bce56810859522f",
+      "conditional_pairs": 10,
+      "executed_technical_pass_scope": 10,
+      "figure_packet": "docs/progress/track_a/figures/pr_pf_analytic_vs_circuit_CNG_20261022",
+      "id": "pr_pf_analytic_vs_circuit_CNG_20261022",
+      "independent_N_conditions": 0,
+      "independent_scientific_review": false,
+      "library": "src/trotterlib/analytic_circuit_cng.py",
+      "new_compile": 0,
+      "new_sampling": 0,
+      "new_shot_evaluation": 0,
+      "new_signal": 0,
+      "paired_conditions": 20,
+      "raw_namespace": "artifacts/resource_applicability/pr_pf_analytic_vs_circuit_CNG/2026-10-22",
+      "report": "docs/analytic_circuit_cng_validation.md",
+      "runner": "scripts/run_analytic_circuit_cng.py",
+      "scientific_validation_complete": false,
+      "status": "SAVED_CNG_ACCOUNTING_COMPLETE_N_INDEPENDENT_MISSING_CONDITIONAL_PHYSICS",
+      "summary": "Axis C comparison and fixed-N G00/G01 from saved data. No independent N_circuit or G11; H6/H8 remain conditional.",
+      "test": "tests/test_analytic_circuit_cng.py"
     }
   ],
   "schema_version": 1,

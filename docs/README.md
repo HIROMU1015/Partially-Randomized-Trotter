@@ -1133,3 +1133,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 [検証文書](recomputed_s2_theory_compiled_validation.md)と[図A/B・数値・cohort台帳](progress/track_a/figures/pr_pf_s2_recomputed_20261022/README.md)。H2の元cohort照合とH4/H6/H8の新MCを区別し、失敗した新H2単位は再実行しない。実行契約、SOURCE、入力、各単位grant/marker/STOPは `artifacts/resource_applicability/pr_pf_s2_recomputed/2026-10-22/`。全RPE最終総費用の結論ではない。
 
 追加のnative物理対応検証は `src/trotterlib/recomputed_s2_physics_validation.py`、`scripts/run_recomputed_s2_physics_validation.py`、`tests/test_recomputed_s2_physics_validation.py`。同じnamespaceのsystem単位 `native_physics_validation` を読む。H6/H8の補助unweighted-G診断不合格は、費用値の留保として保存し、全検証PASSや科学的GOへ変更しない。
+
+## 2026-10-22 C/N/Gの解析／回路比較
+
+[C/N/Gの解析／回路比較](analytic_circuit_cng_validation.md)：CとN固定Gは20条件。独立N・G11は未取得null、N図は保存十分shot数のみ。H6/H8の診断不合格を留保。library・runner・test・artifactは同文書から参照。

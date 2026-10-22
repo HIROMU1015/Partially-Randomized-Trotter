@@ -1,0 +1,36 @@
+{
+  "N_change_cause": null,
+  "N_change_identified": false,
+  "N_circuit": null,
+  "N_ratio": null,
+  "allowance_factor": 1,
+  "alpha_axis": 0.025,
+  "alpha_total": 0.05,
+  "bias_origin": "Classical native/CSR/spin finite-polynomial expectation minus full-H reference; original H2 saved signal/shot",
+  "circuit_evidence": "Representative statevector checks at 1e-7, plus primitive checks; no independently computed compiled ensemble mean and combined numerical error budget for all PR draws",
+  "estimator": "For each axis, B times average of fresh-IID Hadamard outcomes in {-1,+1}; each shot uses fresh RTE trajectory for PR",
+  "formula": "h=epsilon/sqrt(2)-abs(bias)-u; N=ceil(2 B_upper^2 log(2/alpha_axis)/h^2)",
+  "ideal_equivalence": "If every sampled wrapper has exactly the same measurement law, same estimator, normalization, bias, allowance and alpha, the same Hoeffding expression gives equal sufficient N. It is not an independent empirical result.",
+  "independent_conditions": 0,
+  "inequality": "Two-sided Hoeffding: 2 exp(-N h^2/(2 B_upper^2)) <= alpha_axis",
+  "missing_information": [
+    "Independent full compiled-ensemble corrected signal or justified equivalence/error transfer for the entire law",
+    "Combined candidate/reference/normalization numerical error budget under the same sufficient-condition guarantee",
+    "Exact probability law, bias and estimator assumptions under the same fixed task"
+  ],
+  "normalization_origin": "Finite-RTE analytical law with saved binary64 normalization and empirical log_B margin",
+  "numerical_guarantee": "Hoeffding is conditional on valid bias/normalization bounds, IID sampling, and correct implementation; saved allowance is EMPIRICAL, not certified",
+  "physical_status_ref": "../pr_pf_s2_recomputed_20261022/physical_validation_audit.json",
+  "required_conditions": 20,
+  "scope": "N sensitivity not identified. G00 to G01 is C substitution at fixed saved N, not proof that true N has no change.",
+  "source_code_refs": [
+    "scripts/recomputed_s2_runtime_v2.py:signal,shots,compile_one",
+    "artifacts/resource_applicability/pr_pf_s2_recomputed/2026-10-22/fixed_provider/src/trottertracks/resource_applicability/ax2b_numerical_accounting.py:u_aware_shots",
+    "docs/research/研究方法・解析手順.md: independent bounded outcomes and fresh IID trajectories"
+  ],
+  "status": "NO_INDEPENDENT_CIRCUIT_N",
+  "unadopted_alternatives": [
+    "Variance-adaptive shot estimators or exact-binomial minimum shots would change the statistical contract; not computed/adopted"
+  ],
+  "zero_N_change_observed": false
+}

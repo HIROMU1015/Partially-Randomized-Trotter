@@ -2425,3 +2425,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 数値対応20/20条件（元H2 5、新cohort 15）。実施済み技術検査PASS 10、補助G診断不合格を残す条件付き対応10。新MC本評価11候補のうち11が名目95%相対半幅1%設計目標内。失敗one-shot 5単位は再試行なし。
 
 [検証文書](docs/recomputed_s2_theory_compiled_validation.md)・[図A/Bと数値](docs/progress/track_a/figures/pr_pf_s2_recomputed_20261022/README.md)。全RPE最終総費用、厳密な母平均保証、独立科学レビュー、immutable CIではない。旧結果・STOPを保全し、今回の承認範囲を終えてmandatory STOP。
+
+## 2026-10-22 C/N/Gの解析／回路比較
+
+[結果と検証](docs/analytic_circuit_cng_validation.md)。C/G00/G01の数値対応20条件（H2/H4の実施済み検査PASS範囲10、H6/H8条件付き10）。独立Nは0/20、N比・G10/G11・N変更寄与はnull。40保存値会計one-shot、新signal/compile/sampling/shot評価0。旧失敗・grant・STOPを保全し、詳細科学レビューなし。30図90形式出力、数値／SOURCE／保全／形式検査後mandatory STOP。

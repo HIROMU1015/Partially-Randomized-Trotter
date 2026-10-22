@@ -1615,3 +1615,7 @@ H4 ε=.001 S2選択を確定。現行理論Gは元入力不足で0/20、compiled
 新実行の入口は [検証文書](docs/recomputed_s2_theory_compiled_validation.md)。再利用libraryは `src/trotterlib/current_s2_theory.py`、one-shot実行adapterは `scripts/recomputed_s2_runtime.py` と `scripts/recomputed_s2_runtime_v2.py`、runnerは `scripts/run_recomputed_s2_comparison*.py`、人工testは `tests/test_recomputed_s2_comparison*.py`。原出力は `artifacts/resource_applicability/pr_pf_s2_recomputed/2026-10-22/`、図とcohort照合は `docs/progress/track_a/figures/pr_pf_s2_recomputed_20261022/`。旧SOURCE・結果・STOPは保全し、この追加は全RPE総費用の最終評価を意味しない。
 
 追加のnative物理対応検証は `src/trotterlib/recomputed_s2_physics_validation.py`、`scripts/run_recomputed_s2_physics_validation.py`、`tests/test_recomputed_s2_physics_validation.py`。同じnamespaceのsystem単位 `native_physics_validation` を読む。H6/H8の補助unweighted-G診断不合格は、費用値の留保として保存し、全検証PASSや科学的GOへ変更しない。
+
+## 2026-10-22 C/N/Gの解析／回路比較
+
+[検証文書](docs/analytic_circuit_cng_validation.md)を入口に、`src/trotterlib/analytic_circuit_cng.py`、`scripts/run_analytic_circuit_cng.py`、`tests/test_analytic_circuit_cng.py`、`scripts/plot_analytic_circuit_cng.py`、`scripts/verify_analytic_circuit_cng.py`、`artifacts/resource_applicability/pr_pf_analytic_vs_circuit_CNG/2026-10-22/`を一組として読む。CとN固定Gの20条件、独立N未取得、H6/H8条件付き。
