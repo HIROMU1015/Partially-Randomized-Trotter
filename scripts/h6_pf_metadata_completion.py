@@ -72,8 +72,9 @@ def prepare_metadata(private):
     old=old_B0I_inventory(inv);selected={c.cid(r):old[c.cid(r)] for r in rows if c.cid(r) in old}
     c.require(len(selected)==52,'EXACT_52_OLD_SIGNALS')
     # Pure stdlib original merged S2/Yoshida schedule; no molecular import.
-    import runpy
-    schedule=runpy.run_path(str(MIG/'provider/src/trottertracks/resource_applicability/ax2b_h6_contract.py'))['primitive_time_schedule']
+    import sys
+    sys.path.insert(0,str(MIG/'provider/src'))
+    from trottertracks.resource_applicability.ax2b_h6_contract import primitive_time_schedule as schedule
     tasks=[]
     for r in rows:
         cell=dict(r,method='B0',id=c.cid(r),r=None,K=None,R=None)
