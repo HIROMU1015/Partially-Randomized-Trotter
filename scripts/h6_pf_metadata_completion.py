@@ -55,7 +55,7 @@ def common_template(private):
     plan=dict(SOURCE=c.source(),base_commit=BASE,system='H6',private_root=str(p),provider=str(MIG/'provider'),binding=bind,
         input_paths={k:str(q) for k,q in inp.items()},closure=closure,retry=False,resume=False,T=.8,P=0,
         native=c.NATIVE,compiler=c.COMPILER,approval=dict(execution_authorized=True,no_intermediate_reapproval=True,
-        scope='User explicitly approved separate 63-cell missing observation calculation and subsequent original 276-cell H6 acquisition through fixed PR/PF comparison; no new PR sampling or pool expansion.'),
+        scope='User explicitly approved continuing the corrected H6 metadata63 and fixed common276 stages, and autonomous repair of unintended technical stops with fresh SOURCE/pack/grant; all used grants and STOPs preserved; no new PR sampling or pool expansion.'),
         original_H6_STOP_preserved=True,existing_PR_samples_changed=False,final_mandatory_STOP=True)
     p.mkdir(parents=True)
     return p,plan,inv
