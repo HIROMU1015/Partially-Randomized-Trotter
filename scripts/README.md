@@ -981,3 +981,8 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## 2026-10-23 H2共通native・allowance技術基盤
 
 `prepare_h2_common_native.py --plan <draft.json>` は非実行draftのschema検査専用。`--execute` は常にSTOPする。`audit_h2_common_native_preparation.py` は固定Git/ASTと既知metadataだけを読み、新namespaceへ技術証跡を保存する。科学codeのimport・実行なし。[実装・人工36テスト・契約案](../docs/research/track_a_h2_common_native_allowance_preparation_20261023.md)。
+
+
+## 2026-10-23 H2共通production基盤
+
+[実装・契約・検証](../docs/research/track_a_h2_common_production_20261023.md)。run_h2_common_production.pyは別のproduction入口。approval/封印/one-shot/予算必須。prepare_h2_common_production.pyは静的準備専用。旧mock拒否は維持。

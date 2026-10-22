@@ -952,3 +952,8 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 ## 2026-10-23 H2共通native・allowance技術基盤
 
 [h2_common_native_policy.py](h2_common_native_policy.py) はstdlib専用。固定SOURCE/native recipe、mock構成、診断adapter/schema、人工入力専用適応allowance、identity再利用判定、provenance gateを提供する。package初期化を介さず直接loadする。科学backend未接続・正式政策未採択。[設計・人工テスト・不足](../../docs/research/track_a_h2_common_native_allowance_preparation_20261023.md)、[tests](../../tests/test_h2_common_native_policy.py)。
+
+
+## 2026-10-23 H2共通production基盤
+
+[実装・契約・検証](../../docs/research/track_a_h2_common_production_20261023.md)。旧h2_common_native_policy.pyを保持し、scriptsのproduction control/backend/診断が固定SOURCEへ接続。人工72件PASS、実科学評価なし。
