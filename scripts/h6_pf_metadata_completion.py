@@ -60,6 +60,7 @@ def common_template(private):
 
 def finish_plan(private,plan,files):
     plan['closure'].extend(c.seal(private/name,'fixed_new_metadata') for name in files)
+    plan=json.loads(c.encoded(plan))
     c.save(private/'plan_APPROVED.json',plan)
     c.save(private/'approval_receipt.json',dict(plan['approval'],SOURCE=plan['SOURCE'],plan_sha256=c.sha(private/'plan_APPROVED.json')))
     c.verify(plan);return dict(status='SEALED_APPROVED',SOURCE=plan['SOURCE'],system='H6',private=str(private))
