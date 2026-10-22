@@ -5,3 +5,7 @@
 ## 追記：利用者の「修正を行って」に対応
 
 scalar shape修正にgrant前のstdlib NPY header/dtype/SHA検査を追加し、loader本体の読込経路とH2/H4既存規約を人工試験した。人工26件・保存H6の8配列byte照合PASS。旧STOPを保全して科学再実行0。[修正報告](../track_a_h6_snapshot_loader_repair_20261022.md)。local commitのみ、push0。
+
+## 追記：metadata取得成功とCOSTの外部中断
+
+新SOURCE/新grantで不足63観測（旧52値保持・新11 signal）と新102 signal、1380 endpointは正常終了。COSTは187完成pairを残してprocess不在。元の失敗時刻・原因・exit/reapは不明。1122 archiveを保存値監査し、394 compile予約を含む全消費を非返却計上。残22を元手法でfresh取得するとnative piece累積4854が元上限3625を超えるため、再開せずmandatory STOP。旧grant/ledger/marker/STOPと旧H2/H4結果を保全。自分専用一時serviceによる起動分離を人工3件＋3秒実動作で検証したが、追加実分子stageは0。[監査・予算差分](../track_a_h6_pf_cost_interruption_20261022.md)。push0。

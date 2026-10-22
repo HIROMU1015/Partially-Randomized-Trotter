@@ -1,3 +1,7 @@
+## 2026-10-22 H6 metadata完了・COST外部中断
+
+[取得結果・中断監査・予算差分](../../docs/research/track_a_h6_pf_cost_interruption_20261022.md)。不足63 metadata・新102 signal・1380 endpointはPASS。COSTは187 pair完成後にprocess不在、残22 pair・H6全域比較はUNRESOLVED。完成1122 archiveを別経路で保存値監査し、394 compile予約を非返却計上。元手法のfresh22候補案は内部piece上限を1229超えるため未実行。H2/H4再計算・新PR sampling・push0。linear1Å/STO-3G/tol-only rank19、B0/B0I L_D5..15・Full19、q1/2/4/8、T=.8/P=0、δ=.8/.4/.2/.1。旧SOURCE/grant/ledger/marker/STOP保全。中断原因・元exit/reapは不明。ローカルcommit後mandatory STOP。以下は履歴。
+
 ## 2026-10-22 H6 loaderの修正と実行前検査
 
 [修正・人工検証・保全](../../docs/research/track_a_h6_snapshot_loader_repair_20261022.md)。H6 loader修正：scalar shape規約を維持しgrant前にNPY header/dtype/SHA検査。人工26件・保存8配列byte照合PASS。科学再実行・新分子grant・push0、旧STOPとH2/H4結果不変。 以下は履歴。
