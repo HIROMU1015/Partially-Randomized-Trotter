@@ -963,3 +963,7 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 ## 2026-10-22 C/N/Gの解析／回路比較
 
 `analytic_circuit_cng.py`は保存RZ単価・shotの有理数会計とpaired MC分散。回路・signal・shot推定器を実行しない。対応runner/test・図・原実行は[検証文書](../../docs/analytic_circuit_cng_validation.md)から参照。
+
+## 非DF Pauli固定時間signal adapter（2026-10-22）
+
+`pauli_signal_adapter.py` は供給済みJW Pauli和／実数MO積分とPauli S2/finite-RTEを扱う。`fixed_signal_accounting.py` は既存DF比較と同じ固定時間Hoeffding式、`fixed_signal_evaluation.py` はDF/Pauli共通信号・C/N/G、`fixed_signal_io.py` は人工入力とprovenance。既存DF APIは変更しない。[技術文書](../../docs/non_df_fixed_signal_validation.md)からrunner・人工test・回帰guard・artifactを参照。

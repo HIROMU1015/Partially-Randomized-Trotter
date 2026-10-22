@@ -11073,5 +11073,27 @@
     "runtime_authorization": false,
     "status": "READ_ONLY_RECONCILIATION_COMPLETE_MANDATORY_STOP",
     "subagents": 0
+  },
+  "non_df_fixed_signal_technical_20261022": {
+    "status": "IMPLEMENTED_ARTIFICIAL_VALIDATION_ONLY",
+    "base_commit": "b81d4096e806efb6523304764d3a0680b7663320",
+    "report": "docs/non_df_fixed_signal_validation.md",
+    "library": "src/trotterlib/fixed_signal_evaluation.py",
+    "related_libraries": [
+      "src/trotterlib/fixed_signal_accounting.py",
+      "src/trotterlib/pauli_signal_adapter.py",
+      "src/trotterlib/fixed_signal_io.py"
+    ],
+    "runner": "scripts/run_fixed_signal_evaluation.py",
+    "test": "tests/test_fixed_signal_evaluation.py",
+    "regression_guard": "tests/no_molecular_plugin.py",
+    "evidence": "artifacts/non_df_fixed_signal_validation/2026-10-22",
+    "source_manifest": "artifacts/non_df_fixed_signal_validation/2026-10-22/SOURCE.json",
+    "summary": "Supplied Hamiltonian adapters, paired finite-RTE, fixed-time complex-signal Hoeffding and full-wrapper compiled RZ; artificial technical evidence only.",
+    "new_molecular_scientific_calculations": 0,
+    "scientific_validation_complete": false,
+    "independent_scientific_review": false,
+    "existing_scientific_sources_preserved": true,
+    "mandatory_stop": true
   }
 }

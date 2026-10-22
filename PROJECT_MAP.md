@@ -1619,3 +1619,7 @@ H4 ε=.001 S2選択を確定。現行理論Gは元入力不足で0/20、compiled
 ## 2026-10-22 C/N/Gの解析／回路比較
 
 [検証文書](docs/analytic_circuit_cng_validation.md)を入口に、`src/trotterlib/analytic_circuit_cng.py`、`scripts/run_analytic_circuit_cng.py`、`tests/test_analytic_circuit_cng.py`、`scripts/plot_analytic_circuit_cng.py`、`scripts/verify_analytic_circuit_cng.py`、`artifacts/resource_applicability/pr_pf_analytic_vs_circuit_CNG/2026-10-22/`を一組として読む。CとN固定Gの20条件、独立N未取得、H6/H8条件付き。
+
+## 2026-10-22 非DF Pauli固定時間信号の技術実装
+
+[技術文書](docs/non_df_fixed_signal_validation.md)を入口に、`src/trotterlib/fixed_signal_evaluation.py`、`fixed_signal_accounting.py`、`pauli_signal_adapter.py`、`fixed_signal_io.py`、`scripts/run_fixed_signal_evaluation.py`、`tests/test_fixed_signal_evaluation.py`、`tests/no_molecular_plugin.py`、`artifacts/non_df_fixed_signal_validation/2026-10-22/`を一組として読む。DF/Pauli adapterと既存finite-RTE・固定時間Hoeffding・full Hadamard compiled RZの人工技術接続。実分子・新RPE科学モデル・優位性評価は未実施。

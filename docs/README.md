@@ -1137,3 +1137,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-22 C/N/Gの解析／回路比較
 
 [C/N/Gの解析／回路比較](analytic_circuit_cng_validation.md)：CとN固定Gは20条件。独立N・G11は未取得null、N図は保存十分shot数のみ。H6/H8の診断不合格を留保。library・runner・test・artifactは同文書から参照。
+
+## 非DF Pauli固定時間signalの技術接続（2026-10-22）
+
+[実装・定義・人工検証・限界](non_df_fixed_signal_validation.md)。供給済みHamiltonianのDF/Pauli adapter、既存finite-RTE、固定時間の複素信号精度に対するHoeffding会計、両軸full Hadamard compiled RZを接続。実分子検証・全RPE費用・新科学的結論は含まない。

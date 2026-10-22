@@ -992,3 +992,7 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## 2026-10-22 C/N/Gの解析／回路比較
 
 `run_analytic_circuit_cng.py`は固定SOURCEのone-shot保存値会計（再実行禁止）。`plot_analytic_circuit_cng.py`は保存結果の表示、`verify_analytic_circuit_cng.py`は数値／保全／形式検査。[検証文書](../docs/analytic_circuit_cng_validation.md)。
+
+## 非DF Pauli固定時間signalの人工runner（2026-10-22）
+
+`run_fixed_signal_evaluation.py` は人工入力JSONから `df_native` / `pauli_jw` のS2/finite-RTE・固定時間Hoeffding・full Hadamard RZを共通形式で出力する。実分子生成・科学実行は接続しない。入力例・API・実行範囲・SOURCEは[技術文書](../docs/non_df_fixed_signal_validation.md)と `artifacts/non_df_fixed_signal_validation/2026-10-22/`。
