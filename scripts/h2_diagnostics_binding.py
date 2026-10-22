@@ -108,6 +108,9 @@ def elf_info(path):
 
 
 def elf_closure(paths):
+    # Wheel libraries often rely on an importing extension's inherited RPATH.
+    # Inventory all selected sibling candidates; actual mappings are checked too.
+    bundled_dirs=sorted({str(p.parent) for p in paths if p.suffix=='.so' or '.so.' in p.name})
     queue=sorted({p.resolve() for p in paths if p.suffix=='.so' or '.so.' in p.name or p==PYTHON.resolve()})
     seen=set();rows=[];missing=[]
     while queue:
@@ -122,7 +125,7 @@ def elf_closure(paths):
                 joins.append(dict(needed='PT_INTERP',path=str(found)))
                 if found not in seen:queue.append(found)
             for name in info['needed']:
-                directories=info['search']+['/lib/x86_64-linux-gnu','/usr/lib/x86_64-linux-gnu','/lib64','/usr/lib64']
+                directories=info['search']+['/lib/x86_64-linux-gnu','/usr/lib/x86_64-linux-gnu','/lib64','/usr/lib64']+bundled_dirs
                 found=next((Path(d)/name for d in directories if (Path(d)/name).is_file()),None)
                 if found is None:missing.append(dict(parent=info['path'],needed=name));continue
                 found=found.resolve();joins.append(dict(needed=name,path=str(found)))
@@ -239,6 +242,10 @@ def build(source_commit):
     for p in SITE.iterdir():
         if p.is_dir() and p.name.endswith('.libs') and p.name[:-5].replace('_','-').lower() in {s.replace('_','-').lower() for s in selected}:
             runtime_paths|={q.resolve() for q in package_files(p)}
+    # Optional TBB backend is not installed. It is excluded from the allowlist,
+    # so any attempted Python import of it fails before native loader entry.
+    blocked=[p for p in runtime_paths if p.parent==SITE/'numba/np/ufunc' and p.name.startswith('tbbpool.')]
+    runtime_paths.difference_update(blocked)
     runtime_paths.add(PYTHON.resolve())
     elf_files,elf_rows,missing=elf_closure(runtime_paths);runtime_paths.update(elf_files)
     require(not missing,'ELF_DEPENDENCIES_REQUIRE_RESOLUTION:'+str(missing[:5]))
@@ -247,7 +254,9 @@ def build(source_commit):
     runtime_manifest=ASSETS/'runtime_closure.json'
     write(runtime_manifest,dict(mode='STATIC_CLOSED_IMPORT_SET_V1',scientific_imports_observed=False,
         package_roots=sorted(selected),package_metadata=metadata,files=runtime_rows,
-        elf_dependencies=elf_rows,unresolved_elf_dependencies=missing,probe=info))
+        elf_dependencies=elf_rows,unresolved_elf_dependencies=missing,probe=info,
+        forbidden_optional_plugins=[dict(path=str(p),reason='libtbb.so.12 absent; not a DIAGNOSTICS dependency; import forbidden') for p in sorted(blocked)],
+        elf_resolution_scope='static candidate closure including wheel RPATH inheritance; actual executable mappings checked before setup and at completion'))
     spec=read(OLD_PRIVATE/'D_activation01/D_spec_EXECUTION.json');inputs={}
     for entry in spec['inputs']:
         if entry['role'] not in {'F_snapshot','F_receipt'}:continue
@@ -282,6 +291,7 @@ def build(source_commit):
     write(OUT/'runtime_closure_summary.json',dict(files=len(runtime_rows),bytes=sum(Path(r['path']).stat().st_size for r in runtime_rows),
         package_roots=sorted(selected),inventory_sha256=digest(runtime_rows),manifest_sha256=sha(runtime_manifest),
         canonical_manifest=str(runtime_manifest),scientific_imports_observed=False,elf_entries=len(elf_rows),
+        forbidden_optional_plugins=[str(p) for p in sorted(blocked)],
         python_target=str(PYTHON.resolve()),python_sha256=sha(PYTHON.resolve()),package_metadata=metadata,
         not_a_historical_runtime_equivalence_certificate=True))
     command=[str(PYTHON),'-I','-S','-B','-X','pycache_prefix='+str(cache),str(ROOT/'scripts/launch_h2_diagnostics_binding.py'),'--contract',str(contract)]
