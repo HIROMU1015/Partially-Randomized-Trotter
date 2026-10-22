@@ -1,3 +1,7 @@
+## 2026-10-22 H6回復制御の修正・科学実行なし
+
+[修正・人工検証・未承認仕様](../docs/research/track_a_h6_pf_recovery_control_repair_20261022.md)。起動処理へ異常終了STOP・SIGTERM/SIGINT時の自分の子process回収・終了heartbeat・PID再使用検査を追加。人工13件と自分専用user service実動作PASS。残22候補の元入力/完成価格/control計6504照合項目を実行無効仕様へ封印。追加予算は未承認、科学call/新grant/push0、H6全域比較UNRESOLVED。旧科学SOURCE・raw・grant・STOP不変。制御 `run_detached_local_job.py`、非実行準備 `prepare_h6_pf_cost_recovery.py`、人工 `tests/test_h6_pf_recovery_preparation.py`。旧full-run driverのresumeは不可。以下は履歴。
+
 ## 2026-10-22 H6 metadata完了・COST外部中断
 
 [取得結果・中断監査・予算差分](../docs/research/track_a_h6_pf_cost_interruption_20261022.md)。不足63 metadata・新102 signal・1380 endpointはPASS。COSTは187 pair完成後にprocess不在、残22 pair・H6全域比較はUNRESOLVED。完成1122 archiveを別経路で保存値監査し、394 compile予約を非返却計上。元手法のfresh22候補案は内部piece上限を1229超えるため未実行。H2/H4再計算・新PR sampling・push0。linear1Å/STO-3G/tol-only rank19、B0/B0I L_D5..15・Full19、q1/2/4/8、T=.8/P=0、δ=.8/.4/.2/.1。旧SOURCE/grant/ledger/marker/STOP保全。中断原因・元exit/reapは不明。ローカルcommit後mandatory STOP。監査 `audit_h6_pf_interruption.py`、自分専用一時service起動 `run_detached_local_job.py`、人工 `tests/test_h6_pf_interruption.py`。launcherは科学実行承認を追加しない。以下は履歴。

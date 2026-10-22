@@ -9,3 +9,7 @@ scalar shape修正にgrant前のstdlib NPY header/dtype/SHA検査を追加し、
 ## 追記：metadata取得成功とCOSTの外部中断
 
 新SOURCE/新grantで不足63観測（旧52値保持・新11 signal）と新102 signal、1380 endpointは正常終了。COSTは187完成pairを残してprocess不在。元の失敗時刻・原因・exit/reapは不明。1122 archiveを保存値監査し、394 compile予約を含む全消費を非返却計上。残22を元手法でfresh取得するとnative piece累積4854が元上限3625を超えるため、再開せずmandatory STOP。旧grant/ledger/marker/STOPと旧H2/H4結果を保全。自分専用一時serviceによる起動分離を人工3件＋3秒実動作で検証したが、追加実分子stageは0。[監査・予算差分](../track_a_h6_pf_cost_interruption_20261022.md)。push0。
+
+## 追記：中断に備えた監督処理修正・実行無効仕様
+
+今回の「修正を行って」は制御修正として実施。新SOURCE 96c1c60cfaf35b9710d90d1ef6f44280b2d73267でspawn失敗/非0終了/TERM/INTのSTOP、子回収、terminal heartbeatとPID start time検査を追加。新10＋既存3人工PASS、自分の一時user serviceで起動元終了後の3秒人工タスク完了を確認。残22の入力/旧control等6504照合項目を未承認仕様へ封印。予算追加は未承認、science/new grant/push0。旧STOPと完成187pairは不変、H6全域比較はUNRESOLVED。[修正と限界](../track_a_h6_pf_recovery_control_repair_20261022.md)。ローカルcommit後mandatory STOP。
