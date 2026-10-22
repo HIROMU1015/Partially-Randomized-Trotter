@@ -65,6 +65,14 @@ def build(common,metadata):
         b=f'artifacts/resource_applicability/track_a_pf_common_{system}_results/2026-10-22'
         rows=read(ROOT/b/'candidate_status.json');comps=read(ROOT/b/'comparisons.json');audit=read(ROOT/b/'end_audit.json')
         assert len(rows)=={'H2':84,'H4':228,'H6':276}[system] and all(r['status']=='COMPLETE' for r in rows)
+        if system=='H6':
+            metadata_records=read(Path(metadata)/'METADATA/output/all_metadata_records.json')
+            new11=set(meta['new_raw_ids'])
+            for r in rows:
+                r['signal_acquisition_lane']=('COMMON102_NEW_SIGNAL' if r['signal']=='NEW'
+                    else 'METADATA63_NEW11_SIGNAL_AND_OBSERVATION' if r['id'] in new11
+                    else 'OLD52_SIGNAL_NEW_METADATA63_OBSERVATION' if r['id'] in metadata_records
+                    else 'ORIGINAL111_OBSERVATION_REUSED')
         candidates.extend(rows);comparisons.extend(comps)
         refs[system]=dict(bundle=b,SOURCE=audit['SOURCE'],candidate_sha256=sha(ROOT/b/'candidate_status.json'),comparison_sha256=sha(ROOT/b/'comparisons.json'),
             end_audit_sha256=sha(ROOT/b/'end_audit.json'),recomputed_in_H6_track=system=='H6')
@@ -72,7 +80,7 @@ def build(common,metadata):
     for r in comparisons:assert r['PF']['status']=='COMPLETE_REGISTERED_GRID' and r['PF']['best'] and r['PR_saved']
     write(out/'source_result_references.json',refs);write(out/'candidate_status_588.json',candidates);write(out/'comparisons_60.json',comparisons)
     with (out/'candidate_status_588.csv').open('x',newline='') as f:
-        cols=['id','system','formula','method','prefix','q','signal','status','cost_kind','eligible_epsilons'];w=csv.DictWriter(f,fieldnames=cols,extrasaction='ignore');w.writeheader();w.writerows(candidates)
+        cols=['id','system','formula','method','prefix','q','signal','status','cost_kind','eligible_epsilons','signal_acquisition_lane'];w=csv.DictWriter(f,fieldnames=cols,extrasaction='ignore');w.writeheader();w.writerows(candidates)
     def flat(r):
         pf=r['PF']['best'];pr=r['PR_saved'];return dict(system=r['system'],epsilon=r['epsilon'],scope=r['formula'],PF_id=cid(pf['candidate']),PF_total_RZ=pf['total_RZ_exact'],PR_candidate_id=pr['candidate_id'],PR_formula=pr['formula'],PR_q=pr['q'],
             PR_n=pr['n'],PR_mean_RZ=pr['total_RZ'],PR_unbiased_variance=pr['total_RZ_variance'],PR_SE=pr['total_RZ_SE'],PR_mean_exact=str(Fraction(int(pr['total_RZ_numerator']),int(pr['total_RZ_denominator']))),
