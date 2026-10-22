@@ -51,6 +51,37 @@ def save(path, value):
         os.fsync(f.fileno())
 
 
+def prior_blob(path):
+    return subprocess.check_output(['git','-C',str(ROOT),'show',
+        'cc7404ed189f8c768ecc50a2066485975c9c68f4:'+path])
+
+
+def reference_bytes_check(path):
+    original=prior_blob('artifacts/resource_applicability/track_a_pf_order_reversal_h2_common_policy_preparation/2026-10-23/saved_input_excerpts.json')
+    require(Path(path).read_bytes()==original,'ORIGINAL_REFERENCE_PROJECTION_BYTES')
+
+
+def saved_cost_tasks(candidate):
+    original=json.loads(prior_blob('artifacts/resource_applicability/track_a_pf_order_reversal_h2_metadata_receipt/2026-10-23/received/task_acceptance_67.json'))
+    rows=[]
+    for row in original['tasks']:
+        if row['task']['candidate']['id']!=candidate.id:continue
+        result=row['result']['saved'];axes={a['axis']:a for a in result['axis_costs']}
+        require(result['SOURCE']==ACQUISITION and result['native_scientific_PASS'] is True and
+                result['conditional_sampling'] is False and result['cohort_pooling'] is False,'ORIGINAL_TASK_ACCEPTANCE')
+        rows.append(dict(sample=row['task']['sample'],cosine=axes['cosine']['metrics']['rz_count'],
+            sine=axes['sine']['metrics']['rz_count'],receipt_sha256=policy.digest(result),accepted=True))
+    return rows
+
+
+def validate_reuse_preflight(cfg,seen):
+    for candidate,path in zip(policy.CANDIDATES[2:],cfg['reuse_witnesses']):
+        witness=read(path)
+        require(set(witness.get('proof',{}))=={'events','correctness','cohort'},'REUSE_PROOF_PATHS')
+        require(all(Path(p) in seen for p in witness['proof'].values()),'REUSE_PROOF_NOT_SEALED')
+        reuse_costs(witness,witness['proposed'],candidate)
+
+
 def counts(branch):
     require(branch in BRANCHES, 'FIXED_BRANCH_ONLY')
     c = dict.fromkeys(KINDS, 0)
@@ -177,6 +208,7 @@ def preflight(cfg):
     require(cfg['runtime']['qiskit']=='1.3.0' and cfg['runtime']['numpy']=='1.26.4', 'RUNTIME_VERSIONS')
     require(cfg['runtime'].get('loaded_closure_complete') is True, 'LOADED_CLOSURE_NOT_ATTESTED')
     reference = read(cfg['inputs']['old_reference'])['old_reference']
+    reference_bytes_check(cfg['inputs']['old_reference'])
     require(all(reference['binding'][k]==v for k,v in cfg['binding'].items()) and reference['T']==.8,
             'REFERENCE_INPUT_BINDING')
     require(set(reference['reference'])=={'real','imag'}, 'REFERENCE_COMPLEX_SCHEMA')
@@ -184,6 +216,7 @@ def preflight(cfg):
     policy.number(reference['error'], 'reference_uncertainty')
     require(cfg['branch']!='COMPARE_REUSE_PR' or len(cfg['reuse_witnesses'])==2, 'PR_C_WITNESSES_REQUIRED')
     for path in cfg['reuse_witnesses']: require(Path(path) in seen, 'REUSE_WITNESS_SEAL')
+    if cfg['branch']=='COMPARE_REUSE_PR':validate_reuse_preflight(cfg,seen)
     return dict(status='TECHNICAL_PREFLIGHT_PASS', science_GO=False, contract_sha256=policy.digest(cfg))
 
 
@@ -249,6 +282,7 @@ def reuse_costs(witness, current, candidate):
         policy.sha(witness['saved'][key],key); policy.sha(witness['proposed'][key],key)
         require(witness['saved'][key]==witness['proposed'][key]==current[key], 'REUSE_IDENTITY:'+key)
     require(witness['correctness_scope']=='SAVED_COHORT_ACCEPTANCE_WITH_DECLARED_VECTOR_GATE_SCOPE', 'REUSE_GATE_SCOPE')
+    require(policy.strict_equal(witness['tasks'],saved_cost_tasks(candidate)), 'ORIGINAL_PAIRED_COST_PROJECTION')
     n=33 if candidate.q==4 else 34
     require(len(witness['tasks'])==n and {t['sample'] for t in witness['tasks']}==set(range(n)), 'REUSE_COHORT')
     for t in witness['tasks']:
@@ -271,6 +305,9 @@ def execute(cfg, approval, grant, *, backend_factory=None):
         s.call('setup',backend.setup)
         for prefix in (3,1):s.call('prepare',backend.prepare,prefix)
         diagnostics={};costs={}
+        if cfg['branch']=='COMPARE_REUSE_PR':
+            for candidate,path in zip(policy.CANDIDATES[2:],cfg['reuse_witnesses']):
+                costs[candidate.id]=backend.reuse(candidate,read(path))
         if cfg['branch']!='PR_TWO_NATIVE_CONTROLS':
             for c in policy.CANDIDATES:
                 s.verify();diagnostics[c.id]=s.call('diagnose',backend.diagnose,c)
@@ -279,8 +316,6 @@ def execute(cfg, approval, grant, *, backend_factory=None):
             for c in candidates:
                 s.verify();costs[c.id]=s.call('native_validation',backend.native,c,diagnostics.get(c.id))
         if cfg['branch']=='COMPARE_REUSE_PR':
-            for c,p in zip(policy.CANDIDATES[2:],cfg['reuse_witnesses']):
-                costs[c.id]=backend.reuse(c,read(p))
             accounting=[]
             for c in policy.CANDIDATES:
                 allowance=s.call('allowance',backend.allowance,c,diagnostics[c.id])

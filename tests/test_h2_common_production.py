@@ -59,8 +59,9 @@ class ProductionTests(unittest.TestCase):
             runtime=dict(python_sha256=c.sha(Path(sys.executable).resolve()),qiskit='1.3.0',numpy='1.26.4',loaded_closure_complete=True),
             run_root=str(self.root/'run'),reuse_witnesses=[],retry=False,mandatory_STOP=True)
         self.source_patch=patch.object(c,'source_check');self.source_patch.start()
+        self.reference_patch=patch.object(c,'reference_bytes_check');self.reference_patch.start()
 
-    def tearDown(self):self.source_patch.stop();self.tmp.cleanup()
+    def tearDown(self):self.source_patch.stop();self.reference_patch.stop();self.tmp.cleanup()
 
     def approval_grant(self,cfg=None):
         cfg=cfg or self.cfg
@@ -147,7 +148,7 @@ class ProductionTests(unittest.TestCase):
                 p=self.root/'seeds.json';p.write_text(json.dumps({x.id:{str(o)+':'+str(j):7 for o in range(x.q) for j in range(1 if x.formula=='2nd' else 3)} for x in c.policy.CANDIDATES[2:]}))
                 cfg['inputs']['control_seeds']=str(p);cfg['files'].append(dict(path=str(p),sha256=c.sha(p),role='synthetic_seeds'))
             a,g=self.approval_grant(cfg)
-            with patch.object(c.Session,'loaded_closure'):
+            with patch.object(c.Session,'loaded_closure'),patch.object(c,'validate_reuse_preflight'):
                 c.execute(cfg,a,g,backend_factory=FakeBackend)
             result=c.read(Path(cfg['run_root'])/'completion.json')
             self.assertEqual(result['used'],c.counts(branch));self.assertTrue(result['mandatory_STOP'])
@@ -211,16 +212,22 @@ class ProductionTests(unittest.TestCase):
     def test_unknown_contract_fields(self):
         cfg=copy.deepcopy(self.cfg);cfg['authorized']=True
         with self.assertRaises(c.Stop):c.preflight(cfg)
+        self.reference_patch.stop()
+        try:
+            with self.assertRaisesRegex(c.Stop,'ORIGINAL_REFERENCE_PROJECTION_BYTES'):c.reference_bytes_check(self.cfg['inputs']['old_reference'])
+        finally:self.reference_patch.start()
 
     def test_exact_witness_fields_and_invalid_hash(self):
         can=c.policy.CANDIDATES[2];current={k:'a'*64 for k in c.REUSE_FIELDS}
         witness=dict(candidate=can.id,saved=dict(current),proposed=dict(current),all_identities_equal=True,
             tasks=[dict(sample=i,cosine=7,sine=9,receipt_sha256='c'*64,accepted=True) for i in range(33)],
             correctness_scope='SAVED_COHORT_ACCEPTANCE_WITH_DECLARED_VECTOR_GATE_SCOPE',proof={})
-        self.assertEqual(len(c.reuse_costs(witness,current,can)),33)
-        for key in c.REUSE_FIELDS:
-            r=copy.deepcopy(witness);r['saved'][key]='b'*64
-            with self.assertRaises(c.Stop):c.reuse_costs(r,current,can)
+        actual=c.saved_cost_tasks(can);self.assertEqual(len(actual),33)
+        with patch.object(c,'saved_cost_tasks',return_value=witness['tasks']):
+            self.assertEqual(len(c.reuse_costs(witness,current,can)),33)
+            for key in c.REUSE_FIELDS:
+                r=copy.deepcopy(witness);r['saved'][key]='b'*64
+                with self.assertRaises(c.Stop):c.reuse_costs(r,current,can)
 
     def test_missing_norm_and_wrong_closure_unit_still_stop(self):
         self.assertTrue(callable(c.policy.AdaptiveInputs.validate))
