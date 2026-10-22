@@ -245,3 +245,15 @@ H4粗精度NOT_REPRODUCED、H6粗精度REPRODUCEDかつPF低費用、H8のREPORT
 完了済みのS2/Yoshida4/m5_best追加実験は、[付属実験プロトコル・記録v1](track_a_h46_higher_pf_supplementary_protocol_v1.md)と[統合研究データセット](../../artifacts/resource_applicability/track_a_h46_higher_pf_dataset_v1/2026-10-20/README.md)を参照する。signal88候補・5精度両軸880行と、m5決定論48候補96実測軸（新92＋保存4）の来歴を整理した。これは実験後の文書整理であり、過去への事前登録、新しい科学契約、本v2の正式条件変更ではない。
 
 AD03（m5等の主比較採用）は保留。経験的allowanceを厳密な誤差保証や正式shot政策へ変更しない。PR24群の費用・n_Eと後続sampling/会計は未承認・未取得のまま。既存H2/H4/H6/H8結果、H4 legacy DF12、S2/S4の実測/model区分、旧STOPを保持し、進行中の別契約へ自動適用しない。今回の参照追記以前の本文は、公開済み`3826f566b04ad9c2ead9abf1b80c864f7b34b785`とbyte単位で同一である。
+
+
+## 12. H2/H4/H6共通決定論PFの正式採用補足（2026-10-22）
+
+ユーザーが結果commit `90f1cd55a0d963953696bd0a27d9d041ff939bb7` の588候補・未解決0件を、固定探索域の研究成果として正式採用した。
+[共通PF補足](track_a_h246_pf_common_protocol_v2_supplement_20261022.md)と[採用データ・論文用証拠](track_a_h246_pf_common_adoption_20261022.md)を接続する。
+§1–11の本文・正式条件・旧契約・独立確認結果は変更しない。§11のPR未取得等は2026-10-20当時の別scopeの履歴であり、今回の保存探索cohortと混合しない。
+今回の範囲はlinear1Å/STO-3G/tol-onlyDF1e-8 rank3/10/19、B0/B0I L_D0..2/1..9/5..15・Full3/10/19、S2/Yoshida4/m5_best、q1/2/4/8・δ=.8/.4/.2/.1、T=.8/P=0の有限signal比較。
+通常signed・経験的allowance・5精度の保存政策をこの共通比較に限定し、旧政策を遡及変更しない。比較A45行/比較B15行を分離する。
+H2の全5精度はPF低費用、H4/H6のε=.001/.0005はPR低費用、他3精度はPF低費用という保存点結果を採用する。
+新規解析/再ランキング/科学call0、PRの保存探索n・平均・分散・SEと独立確認を非混合、旧H6 COSTの原exit/reap不明を保持。
+AD03は別判断で保留。既存論文主表・Figure2・過去のSOURCE/raw/grant/ledger/marker/STOPは不変、最終evidence freeze・詳細科学レビュー未開始。mandatory STOP。

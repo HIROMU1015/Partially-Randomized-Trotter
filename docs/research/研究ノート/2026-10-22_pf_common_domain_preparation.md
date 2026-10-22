@@ -15,3 +15,16 @@
 ## 追記：包括承認による取得・固定比較
 
 利用者がH4/H6共通504・H2別84候補を包括承認。系別pack/source/grantでH2/H4の4 stageと終了監査を完了した。H6は17原metadata回収後も63 B0Iでnorm/closure未回収のため科学call0 STOP。H2全公式はPF低費用、H4は厳しい2精度でPR15.01/37.37%低費用、緩い3精度はPF低費用。旧m5疎格子への優位を全公式PF優位と同一視できないことを確認。旧SOURCE/PR/STOPを変更せず、新84 signal・169 compile候補338軸を保存。[結果と限界](../track_a_pf_common_domain_results_20261022.md)。local commit後mandatory STOP、push0。
+
+
+## 追記：588候補の正式採用・研究資料統合
+
+ユーザーが結果90f1cd55a0d963953696bd0a27d9d041ff939bb7（H2 84/H4 228/H6 276・未解決0）を有限共通域の正式成果として採用した。
+理由は決定論PF側の探索機会を3公式で統一した固定比較が完了し、PR有利/PF有利の両方向を含め保存結果を研究証拠へ接続するため。
+[採用報告](../track_a_h246_pf_common_adoption_20261022.md)と[v2補足](../track_a_h246_pf_common_protocol_v2_supplement_20261022.md)を追加。
+linear1Å/STO-3G/tol-only1e-8 rank3/10/19、L_D0..2/1..9/5..15・Full3/10/19、q≤8・δ=.8/.4/.2/.1/T=.8/P=0。
+全公式比較ではH2の5精度はPF低費用、H4/H6はε=.001/.0005のみPR低費用。H6の保存分母分解はm5 prefix拡張比1で、S2/Yoshida4を含む公式集合の変更が主な影響だった。
+既存旧比較を誤りへ書換えず、分母・cohort・政策・取得系列の違いを記録。保存値転記・構造検査だけで新しい科学call/解析/順位計算0。
+H6旧COSTの187完成価格受入と新22価格の正常取得を区別し、旧中断・未知exit/reap・STOP・grant・ledgerを保持する。
+旧CEM14行/台帳316行のbyte prefixを新証拠版へ保全。主表/Figure2/独立確認不変、経験的allowance/選択効果/未観測rare event/母平均保証なし。
+AD03正式採択・最終freeze・詳細科学レビュー・新科学実行は未開始。専用branchへcommitし、公開許可範囲だけpush、mandatory STOP。
