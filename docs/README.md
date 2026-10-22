@@ -1,3 +1,9 @@
+## 2026-10-23 H2 outer32保存metadataの共有
+
+[取得範囲・限界・静的検証](research/track_a_h2_outer32_metadata_export_20261023.md)。保存metadataを67 task/134軸取得し、原accepted result SHAへ結合。封印2012件は現在2011一致/liblzma1不一致、278 provider fileはc31ef424固定Gitと一致。旧PFのcompiled-vector証拠と完全import/preparation証拠等は欠測。原6000file不変、新科学計算・数値再解析・shot/compile0、PARTIAL_WITH_GAPS。詳細・元SHA・公開projection・次の担当はリンク先。旧STOPと他研究は保全。
+
+以下は各時点の履歴。
+
 ## 2026-10-19 PR/PF絶対RZコスト図：v2・5精度（保存値のみ）
 
 [成果物・採用除外・再現方法](research/track_a_pr_pf_absolute_cost_v2_20261019.md)。v2 snapshot c0808b25を基準に26比較・52点を描画。両端精度はH4/H6/H8独立確認とH2/H4/H6/H8探索n8の別パネル、中間3精度は探索のみ。H4は新DF10、H6中間PFはmodelを白抜き表示。H2 P未完了・H8詳細公開監査未照合・有限標本の限界を保持。PNG/SVG/PDF各5枚、exact表・採否・caption・SHAを保存。新科学計算/会計/順位計算0、local commitのみ、公開pushなし。次の作業なし、mandatory STOP。以下は各時点の履歴。

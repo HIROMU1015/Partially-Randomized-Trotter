@@ -1,3 +1,9 @@
+## 2026-10-23 H2 outer32保存metadataの共有
+
+[取得範囲・限界・静的検証](../../docs/research/track_a_h2_outer32_metadata_export_20261023.md)。保存metadataを67 task/134軸取得し、原accepted result SHAへ結合。封印2012件は現在2011一致/liblzma1不一致、278 provider fileはc31ef424固定Gitと一致。旧PFのcompiled-vector証拠と完全import/preparation証拠等は欠測。原6000file不変、新科学計算・数値再解析・shot/compile0、PARTIAL_WITH_GAPS。詳細・元SHA・公開projection・次の担当はリンク先。旧STOPと他研究は保全。
+
+以下は各時点の履歴。
+
 ## 2026-10-19 共通実験プロトコルv2改訂案（未採用）
 
 [v2改訂案・変更点・条件一覧](../../docs/research/track_a_pr_resource_evaluation_protocol_v2_DRAFT.md)。**v2はDRAFTで実行承認を含まない。** v1（9036d8a8）を保全し、H2を追加対象として提案。最新829d697aのH2 F/FP/D/A66/S_STATS完了・P未sealを反映し、当初7b202a1aのA未完了は時点履歴に分離した。提案n80/12は未採用でP実行未承認。H4/H6/H8独立確認6条件、DF12/DF10・探索/独立cohort、solver/正規化差、未観測event・母平均未保証・H8公開監査の限界を整理。GitHub固定67資料を読取照合。主表/Methods/CEM/原図34ファイルと既存契約を保全。構造16件PASS、新規科学計算・数値解析0。正式採用はユーザー判断、完了後mandatory STOP。以下は各時点の履歴。
