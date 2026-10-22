@@ -1623,3 +1623,7 @@ H4 ε=.001 S2選択を確定。現行理論Gは元入力不足で0/20、compiled
 ## 2026-10-22 非DF Pauli固定時間信号の技術実装
 
 [技術文書](docs/non_df_fixed_signal_validation.md)を入口に、`src/trotterlib/fixed_signal_evaluation.py`、`fixed_signal_accounting.py`、`pauli_signal_adapter.py`、`fixed_signal_io.py`、`scripts/run_fixed_signal_evaluation.py`、`tests/test_fixed_signal_evaluation.py`、`tests/no_molecular_plugin.py`、`artifacts/non_df_fixed_signal_validation/2026-10-22/`を一組として読む。DF/Pauli adapterと既存finite-RTE・固定時間Hoeffding・full Hadamard compiled RZの人工技術接続。実分子・新RPE科学モデル・優位性評価は未実施。
+
+## 2026-10-22 H2非DF固定時間signal pilot
+
+[H2非DF pilot検証文書](docs/non_df_h2_pilot_validation.md)。`src/trotterlib/h2_non_df_pilot.py`、`h2_non_df_pilot_validation.py`、`scripts/run_h2_non_df_pilot.py`、`tests/test_h2_non_df_pilot.py`、`artifacts/non_df_h2_pilot/2026-10-22/`を一組として読む。新規H2一括承認の下で固定4caseをone-shot実行し、旧STOPとは分離する。

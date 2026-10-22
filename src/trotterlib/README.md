@@ -967,3 +967,7 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 ## 非DF Pauli固定時間signal adapter（2026-10-22）
 
 `pauli_signal_adapter.py` は供給済みJW Pauli和／実数MO積分とPauli S2/finite-RTEを扱う。`fixed_signal_accounting.py` は既存DF比較と同じ固定時間Hoeffding式、`fixed_signal_evaluation.py` はDF/Pauli共通信号・C/N/G、`fixed_signal_io.py` は人工入力とprovenance。既存DF APIは変更しない。[技術文書](../../docs/non_df_fixed_signal_validation.md)からrunner・人工test・回帰guard・artifactを参照。
+
+## 2026-10-22 H2非DF固定時間signal pilot
+
+`h2_non_df_pilot.py` はH2固定契約・新規SCF/MO入力・DF照合・固定時間会計。`h2_non_df_pilot_validation.py` はevent/trajectory/DF primitive検証。import時の科学処理なし。[検証文書](../../docs/non_df_h2_pilot_validation.md)と新artifactからSOURCE・grant・STOPを確認する。

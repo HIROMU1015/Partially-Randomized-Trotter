@@ -1141,3 +1141,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 非DF Pauli固定時間signalの技術接続（2026-10-22）
 
 [実装・定義・人工検証・限界](non_df_fixed_signal_validation.md)。供給済みHamiltonianのDF/Pauli adapter、既存finite-RTE、固定時間の複素信号精度に対するHoeffding会計、両軸full Hadamard compiled RZを接続。実分子検証・全RPE費用・新科学的結論は含まない。
+
+## 2026-10-22 H2非DF固定時間signal pilot
+
+[H2非DF pilotの固定契約・実行・検証](non_df_h2_pilot_validation.md)。同一MO積分のPauli/DF表現・sector ground・既存DF operatorとnative回路を照合し、固定時間C/N/Gを取得する専用one-shot。

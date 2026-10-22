@@ -2435,3 +2435,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 [技術文書](docs/non_df_fixed_signal_validation.md)・[証拠](artifacts/non_df_fixed_signal_validation/2026-10-22/)。非DF入力・S2/既存finite-RTE・raw/corrected信号・固定時間Hoeffding・full Hadamard C/N/Gを人工系で接続。実分子科学計算0件。対象を限定した既存回帰の分子処理5件は除外、Python固定fixture1件は環境不一致を保持。最終件数・初期失敗・SOURCEは新artifactへ記録し、immutable CI／外部再現・実分子の検証完了とは扱わない。
 
 最終技術件数：人工71 PASS、既存選別回帰223 PASS（DF名124）、runtime skip1・分子処理除外5。固定SOURCE `d94437b46086c2eaa3ff1eeb111daba683d8aaf1` から人工CLI14件完了。旧tracked 6829件不変。実分子科学検証は未実施、local evidenceのみ。
+
+## 2026-10-22 H2非DF固定時間signal pilot
+
+[H2非DF pilotの新規固定契約](docs/non_df_h2_pilot_validation.md)。科学SOURCEと契約を固定してから、新規SCF1・DF1・FCI照合1、Pauli/DFのPF/PR固定4caseを一回実行する。実行前preflightは人工87件PASS。結果取得前に実分子検証PASSとは扱わない。
