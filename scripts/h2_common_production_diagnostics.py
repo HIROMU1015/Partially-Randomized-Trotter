@@ -100,8 +100,23 @@ def join(backend, candidate, primary, independent):
         obs(max(t['corrected_unit_norm'] for t in trace),'CORRECTED_STATE_VECTOR','BOTH_PATHS_ALL_REQUIRED_STAGES'),
         'BOTH_PATHS_ALL_REQUIRED_STAGES',ev,c.policy.NATIVE_POLICY,backend.input_digest)
     inputs.validate(backend.reference_id)
+    # File IO only; preserve accepted vectors for a separately approved continuation.
+    archive=candidate.id+'_vectors.npz'
+    with (backend.s.root/'results'/archive).open('xb') as f:
+        np.savez(f,primary=primary['vectors'],independent=independent['vectors'],
+                 occupation_basis=backend.ctx.oracle.basis,qindices=backend.ctx.oracle.qindices)
+    complex_rows=lambda row:[dict(real=z.real,imag=z.imag) for z in row['signals']]
     c.save(backend.s.root/ev,dict(candidate=candidate.id,series=c.SERIES,
         inputs=c.asdict(inputs),primary_trace=primary['trace'],independent_trace=independent['trace'],
         log_B=primary['log_B'],reference_binding=ref,certified=False,
+        primary_signals=complex_rows(primary),independent_signals=complex_rows(independent),
+        signal_columns=['corrected','raw'] if pr else ['corrected'],
+        vector_archive=dict(path=archive,sha256=c.sha(backend.s.root/'results'/archive)),
+        schedule=backend.steps(candidate),native_policy=c.policy.NATIVE_POLICY,
+        preparation_sha256=backend.preps[candidate.prefix].preparation_hash,
+        operations_sha256=backend.operations[candidate.prefix],
+        scalar=backend.ctx.ham.constant+(backend.ctx.tail_identity if pr else 0.),scalar_applications=1,
+        strict_diagnostic_limit=1e-9,phase_alignment=False,postcompile_correction=False,
+        baseline_comparison='Store operands and original baseline locators; no new u/N/G or saved-result difference arithmetic here.',
         policy_semantics='new instrumented common diagnostic series; old u is not reused'))
     return dict(inputs=inputs,primary=primary,independent=independent,bias=ref['bias'])

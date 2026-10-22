@@ -148,11 +148,19 @@ def source_check(cfg, seen):
     for role, root in roots.items():
         entries = [r for r in cfg['source_files'] if r['root'] == role]
         require(entries, 'SOURCE_CLOSURE:' + role)
+        requested=[commits[role]+':'+r['path'] for r in entries]
+        require(all('\n' not in p and '\r' not in p for p in requested),'SOURCE_PATH_LINES')
+        stream=subprocess.check_output(['git','-C',str(ROOT),'cat-file','--batch'],
+            input=('\n'.join(requested)+'\n').encode())
+        offset=0
         for r in entries:
             p = (root/r['path']).resolve()
             require(p.is_relative_to(root.resolve()) and p in seen, 'SOURCE_PATH_NOT_SEALED')
-            b = subprocess.check_output(['git', '-C', str(ROOT), 'show', commits[role]+':'+r['path']])
+            end=stream.find(b'\n',offset);header=stream[offset:end].split()
+            require(len(header)==3 and header[1]==b'blob','SOURCE_GIT_BLOB_REQUIRED')
+            size=int(header[2]);offset=end+1;b=stream[offset:offset+size];offset+=size+1
             require(hashlib.sha256(b).hexdigest() == r['sha256'] == sha(p), 'FIXED_SOURCE_BYTES')
+        require(offset==len(stream),'EXACT_SOURCE_OBJECT_STREAM')
     required = {'scripts/h2_common_production_contract.py', 'scripts/h2_common_production_backend.py',
                 'scripts/h2_common_production_diagnostics.py', 'scripts/run_h2_common_production.py',
                 'src/trotterlib/h2_common_native_policy.py'}
@@ -206,7 +214,11 @@ def preflight(cfg):
             for value in seeds[candidate.id].values():policy.integer(value,'seed')
     require(cfg['runtime']['python_sha256']==sha(Path(sys.executable).resolve()), 'PYTHON_RUNTIME_SEAL')
     require(cfg['runtime']['qiskit']=='1.3.0' and cfg['runtime']['numpy']=='1.26.4', 'RUNTIME_VERSIONS')
-    require(cfg['runtime'].get('loaded_closure_complete') is True, 'LOADED_CLOSURE_NOT_ATTESTED')
+    if cfg['runtime'].get('closure_mode')=='STATIC_CLOSED_IMPORT_SET_V1':
+        from h2_diagnostics_binding import verify_runtime_binding
+        verify_runtime_binding(cfg)
+    else:
+        require(cfg['runtime'].get('loaded_closure_complete') is True, 'LOADED_CLOSURE_NOT_ATTESTED')
     reference = read(cfg['inputs']['old_reference'])['old_reference']
     reference_bytes_check(cfg['inputs']['old_reference'])
     require(all(reference['binding'][k]==v for k,v in cfg['binding'].items()) and reference['T']==.8,
@@ -272,6 +284,9 @@ class Session:
                 try:p=Path(importlib.util.source_from_cache(str(p))).resolve()
                 except ValueError:pass
             require(str(p) in sealed, 'UNSEALED_LOADED_MODULE:'+name)
+        if self.cfg['runtime'].get('closure_mode')=='STATIC_CLOSED_IMPORT_SET_V1':
+            from h2_diagnostics_binding import verify_mapped_runtime
+            verify_mapped_runtime(self.cfg)
 
 
 def reuse_costs(witness, current, candidate):
@@ -324,8 +339,14 @@ def execute(cfg, approval, grant, *, backend_factory=None):
         else:result=dict(status='DIAGNOSTICS_ONLY' if cfg['branch']=='DIAGNOSTICS' else 'TWO_PR_CONTROLS_ONLY')
         s.verify();s.loaded_closure()
         require(s.used==cfg['budget'], 'INCOMPLETE_CALL_LEDGER')
+        result_files=[dict(path=str(p.relative_to(s.root)),sha256=sha(p))
+                      for p in sorted((s.root/'results').iterdir()) if p.is_file()]
         save(s.root/'completion.json',dict(status='CONTRACT_COMPLETE_NOT_SCIENTIFIC_GO',series=SERIES,
-             contract_sha256=policy.digest(cfg),used=s.used,result=result,mandatory_STOP=True))
+             contract_sha256=policy.digest(cfg),used=s.used,result=result,result_files=result_files,
+             source_commit=cfg['source_commit'],binding=cfg['binding'],runtime=cfg['runtime'],
+             physical=cfg['physical'],native_policy=cfg['native_policy'],
+             allowance_policy=cfg['allowance_policy'],reference_policy=cfg['reference_policy'],
+             marker_sha256=s.marker_sha,mandatory_STOP=True))
         return result
     except BaseException as exc:
         save(s.root/'STOP.json',dict(status='STOP_PARTIAL_NOT_PASS',reason=str(exc),used=s.used,
