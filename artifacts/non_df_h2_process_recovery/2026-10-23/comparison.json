@@ -1,0 +1,2770 @@
+{
+  "SOURCE": "7a6c4263d96153ecbe721dcfb6941d0d2684b3b0",
+  "automatic_next_stage": false,
+  "cases": [
+    {
+      "SOURCE": "b5ed2c6e2399b55a0c24eb8437f842892a6703ef",
+      "case": "pauli_jw_PF",
+      "circuit_cost": {
+        "axes": {
+          "cosine": {
+            "mean": 3850.0,
+            "mean_exact": "3850",
+            "nominal95_halfwidth": 0.0,
+            "standard_error": 0.0
+          },
+          "sine": {
+            "mean": 3850.0,
+            "mean_exact": "3850",
+            "nominal95_halfwidth": 0.0,
+            "standard_error": 0.0
+          }
+        },
+        "cache_hits": 0,
+        "cache_misses": 2,
+        "compiled_signal_max_error": 4.3298697960381105e-14,
+        "kind": "deterministic",
+        "mc_samples_are_quantum_shots": false,
+        "paired_axes": true,
+        "sample_count": 1,
+        "scope": "full_cosine_sine_hadamard_wrapper_no_state_preparation",
+        "uncertainty": "nominal_Student_t_95_not_rare_event_or_population_guarantee"
+      },
+      "comparison_checks": {
+        "arithmetic": [
+          {
+            "epsilon_sig": 0.05,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 0.0
+          },
+          {
+            "epsilon_sig": 0.01,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 0.0
+          },
+          {
+            "epsilon_sig": 0.005,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 0.0
+          },
+          {
+            "epsilon_sig": 0.001,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 0.0
+          },
+          {
+            "epsilon_sig": 0.0005,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 0.0
+          }
+        ],
+        "cost_sample_count": 1,
+        "covariance_cosine_sine": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "covariance_included_in_G_SE": true,
+        "nominal95_is_population_guarantee": false,
+        "sampled_orders": [],
+        "status": "PASS"
+      },
+      "compiler": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "model": {
+        "B0I_equivalent_to_B0": true,
+        "B0I_reason": "nonidentity_Pauli_tail_has_zero_identity_coefficient",
+        "DF_rank": null,
+        "L_D": 14,
+        "generation": {
+          "SCF_converged": true,
+          "basis": "STO-3G",
+          "charge": 0,
+          "coefficient_cutoff": 0.0,
+          "df_rank": null,
+          "distance": 1.0,
+          "eri_chemist_hash": "8b0b23738933fc32e91c437d5264b585a1e23b2cf0ce98410ff9e1147cd0e07c",
+          "geometry": [
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          ],
+          "hf_energy": -1.0661086493179366,
+          "input_eri": "chemist_(pq|rs)",
+          "input_origin": "new_one_shot_SCF_same_integrals_for_Pauli_and_DF",
+          "label_order": "q[n-1]...q[0]",
+          "model_id": "H2_1.00A_STO-3G_NON_DF_PILOT",
+          "molecule_type": 2,
+          "multiplicity": 1,
+          "nuclear_repulsion": 0.52917721092,
+          "one_body_hash": "20a3200d3099e100db2438e616fba818ea5caada6393dce632efee50b91f3b2f",
+          "openfermion_eri": "h[p,q,r,s]=(ps|qr)",
+          "orbital_basis": "real_orthonormal_spatial_MO",
+          "qubit_order": "qiskit_little_endian",
+          "spin_order": "2*p+alpha(0)/beta(1)",
+          "split_order": "descending_abs_then_label",
+          "two_body_prefactor": 0.5
+        },
+        "hamiltonian_hash": "4eca732f1835e5d52ba2672277edbe6ee911114ef9b336d7e820c23ed3abc840",
+        "hamiltonian_type": "pauli_jw",
+        "identity_policy": "constant_always_retained_once",
+        "retained_labels": [
+          "ZZII",
+          "IIZZ",
+          "IZZI",
+          "ZIIZ",
+          "IIIZ",
+          "IIZI",
+          "IZII",
+          "ZIII",
+          "IZIZ",
+          "ZIZI",
+          "XXYY",
+          "XYYX",
+          "YXXY",
+          "YYXX"
+        ],
+        "split_unit": "nonidentity_Pauli_term",
+        "tail_labels": []
+      },
+      "normalization": {
+        "B": 1.0,
+        "K": null,
+        "attenuation": 1.0,
+        "lambda_r": 0.0,
+        "law": "deterministic",
+        "log_B": 0.0,
+        "log_B_margin": 9.371447617923002e-08,
+        "log_B_upper": 9.371447617923002e-08,
+        "normalization_certificate_verified": false,
+        "r": null
+      },
+      "precision_rows": [
+        {
+          "epsilon_sig": 0.05,
+          "shots": {
+            "N_total": 14082,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 9.371447617923002e-08,
+                "alpha": 0.025,
+                "bias": 8.013215315105793e-05,
+                "epsilon": 0.035355339059327376,
+                "headroom": 0.03527511319170014,
+                "log_shot_bound": 8.859813832168273,
+                "shots": 7044,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 9.371447617923002e-08,
+                "alpha": 0.025,
+                "bias": 6.62040434271649e-05,
+                "epsilon": 0.035355339059327376,
+                "headroom": 0.03528904130142403,
+                "log_shot_bound": 8.859024303263416,
+                "shots": 7038,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.05,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "pauli_jw_PF/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 9.371447617923002e-08,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 54215700.0,
+            "mean_exact": "54215700",
+            "nominal95_halfwidth": 0.0,
+            "standard_error": 0.0
+          }
+        },
+        {
+          "epsilon_sig": 0.01,
+          "shots": {
+            "N_total": 357943,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 9.371447617923002e-08,
+                "alpha": 0.025,
+                "bias": 8.013215315105793e-05,
+                "epsilon": 0.0070710678118654745,
+                "headroom": 0.006990841944238237,
+                "log_shot_bound": 12.096967247684889,
+                "shots": 179328,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 9.371447617923002e-08,
+                "alpha": 0.025,
+                "bias": 6.62040434271649e-05,
+                "epsilon": 0.0070710678118654745,
+                "headroom": 0.00700477005396213,
+                "log_shot_bound": 12.092986538781638,
+                "shots": 178615,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.01,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "pauli_jw_PF/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 9.371447617923002e-08,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 1378080550.0,
+            "mean_exact": "1378080550",
+            "nominal95_halfwidth": 0.0,
+            "standard_error": 0.0
+          }
+        },
+        {
+          "epsilon_sig": 0.005,
+          "shots": {
+            "N_total": 1462238,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 9.371447617923002e-08,
+                "alpha": 0.025,
+                "bias": 8.013215315105793e-05,
+                "epsilon": 0.0035355339059327372,
+                "headroom": 0.0034553080383055,
+                "log_shot_bound": 13.506346024313682,
+                "shots": 734060,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 9.371447617923002e-08,
+                "alpha": 0.025,
+                "bias": 6.62040434271649e-05,
+                "epsilon": 0.0035355339059327372,
+                "headroom": 0.003469236148029393,
+                "log_shot_bound": 13.498300366357007,
+                "shots": 728178,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.005,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "pauli_jw_PF/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 9.371447617923002e-08,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 5629616300.0,
+            "mean_exact": "5629616300",
+            "nominal95_halfwidth": 0.0,
+            "standard_error": 0.0
+          }
+        },
+        {
+          "epsilon_sig": 0.001,
+          "shots": {
+            "N_total": 43644174,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 9.371447617923002e-08,
+                "alpha": 0.025,
+                "bias": 8.013215315105793e-05,
+                "epsilon": 0.0007071067811865475,
+                "headroom": 0.0006268809135593104,
+                "log_shot_bound": 16.92016661913975,
+                "shots": 22301548,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 9.371447617923002e-08,
+                "alpha": 0.025,
+                "bias": 6.62040434271649e-05,
+                "epsilon": 0.0007071067811865475,
+                "headroom": 0.0006408090232832034,
+                "log_shot_bound": 16.876216849405754,
+                "shots": 21342626,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.001,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "pauli_jw_PF/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 9.371447617923002e-08,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 168030069900.0,
+            "mean_exact": "168030069900",
+            "nominal95_halfwidth": 0.0,
+            "standard_error": 0.0
+          }
+        },
+        {
+          "epsilon_sig": 0.0005,
+          "shots": {
+            "N_total": 223521528,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 9.371447617923002e-08,
+                "alpha": 0.025,
+                "bias": 8.013215315105793e-05,
+                "epsilon": 0.00035355339059327376,
+                "headroom": 0.0002733275229660366,
+                "log_shot_bound": 18.580338215426753,
+                "shots": 117310898,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 9.371447617923002e-08,
+                "alpha": 0.025,
+                "bias": 6.62040434271649e-05,
+                "epsilon": 0.00035355339059327376,
+                "headroom": 0.0002872556326899296,
+                "log_shot_bound": 18.48093475216678,
+                "shots": 106210630,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.0005,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "pauli_jw_PF/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 9.371447617923002e-08,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 860557882800.0,
+            "mean_exact": "860557882800",
+            "nominal95_halfwidth": 0.0,
+            "standard_error": 0.0
+          }
+        }
+      ],
+      "precision_rows_sha256": "53f106c6caeb4cfd3e6acbfa17e4cbacaa15443ed9a4c482cf7ee3623744d421",
+      "reference": {
+        "T": 0.8,
+        "hamiltonian_hash": "4eca732f1835e5d52ba2672277edbe6ee911114ef9b336d7e820c23ed3abc840",
+        "method": "scipy_sparse_expm_multiply",
+        "signal": {
+          "imag": 0.7713248998313171,
+          "real": 0.6364415911143843
+        }
+      },
+      "result_sha256": "c09e0d5437a93065a406468d02459823ac3b775f23c14e1d7c5870aec5f21129",
+      "reused_read_only": true,
+      "run": "artifacts/non_df_h2_pilot/2026-10-22/run01/pauli_jw_PF",
+      "signal": {
+        "absolute_error": 0.00010394295230909375,
+        "corrected": {
+          "imag": 0.77125869578789,
+          "real": 0.6365217232675353
+        },
+        "mean_method": "independent_sparse_paired_polynomial_state_action",
+        "raw": {
+          "imag": 0.77125869578789,
+          "real": 0.6365217232675353
+        },
+        "signed_bias": {
+          "imag": -6.62040434271649e-05,
+          "real": 8.013215315105793e-05
+        }
+      },
+      "state": {
+        "basis": "qiskit_little_endian",
+        "generation": {
+          "method": "exact lowest eigenvector in Nalpha=Nbeta=1; largest amplitude positive real",
+          "molecule": "H2",
+          "physical_sector": "Nalpha=Nbeta=1"
+        },
+        "hash": "4dc87df6c0466c1e5559ffcf3603b3a45ca7d1453b0657603188c120fe297b11"
+      },
+      "validation": {
+        "all_trajectories_certified": false,
+        "forced_event_orders": [],
+        "full_MC_law_mean_independently_compiled": false,
+        "gates": {
+          "PF_full_operator": {
+            "PASS": true,
+            "error": 1.4133955711837284e-14,
+            "tolerance": 1e-09
+          }
+        },
+        "sampled_orders": [],
+        "scientific_superiority_claimed": false,
+        "status": "PASS",
+        "trajectory_operator_checks": [
+          {
+            "operator": {
+              "PASS": true,
+              "error": 1.3170595059014895e-14,
+              "tolerance": 1e-09
+            },
+            "ordinary_control": null,
+            "phase_alignment": false,
+            "seed": 15107639610233238299
+          }
+        ]
+      }
+    },
+    {
+      "SOURCE": "7a6c4263d96153ecbe721dcfb6941d0d2684b3b0",
+      "case": "pauli_jw_PR",
+      "circuit_cost": {
+        "axes": {
+          "cosine": {
+            "mean": 1005.96875,
+            "mean_exact": "32191/32",
+            "nominal95_halfwidth": 31.075346934950407,
+            "standard_error": 15.55057622748895
+          },
+          "sine": {
+            "mean": 1005.96875,
+            "mean_exact": "32191/32",
+            "nominal95_halfwidth": 31.075346934950407,
+            "standard_error": 15.55057622748895
+          }
+        },
+        "cache_hits": 0,
+        "cache_misses": 128,
+        "compiled_signal_max_error": 2.0650148258027912e-14,
+        "kind": "finite_MC_mean",
+        "mc_samples_are_quantum_shots": false,
+        "paired_axes": true,
+        "sample_count": 64,
+        "scope": "full_cosine_sine_hadamard_wrapper_no_state_preparation",
+        "uncertainty": "nominal_Student_t_95_not_rare_event_or_population_guarantee"
+      },
+      "comparison_checks": {
+        "arithmetic": [
+          {
+            "epsilon_sig": 0.05,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 228997.78552600226
+          },
+          {
+            "epsilon_sig": 0.01,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 5779387.205522495
+          },
+          {
+            "epsilon_sig": 0.005,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 23396028.541171852
+          },
+          {
+            "epsilon_sig": 0.001,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 645477298.9981256
+          },
+          {
+            "epsilon_sig": 0.0005,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 2942324994.520471
+          }
+        ],
+        "cost_sample_count": 64,
+        "covariance_cosine_sine": [
+          [
+            15476.506944444443,
+            15476.506944444443
+          ],
+          [
+            15476.506944444443,
+            15476.506944444443
+          ]
+        ],
+        "covariance_included_in_G_SE": true,
+        "nominal95_is_population_guarantee": false,
+        "sampled_orders": [
+          {
+            "compiled_population_contribution_identified": true,
+            "event_positions": 512,
+            "expected": 511.2564407679643,
+            "observed": 510,
+            "order": 0,
+            "probability": 0.9985477358749303,
+            "probability_of_zero": 0.0,
+            "unobserved_cost_is_zero": false
+          },
+          {
+            "compiled_population_contribution_identified": true,
+            "event_positions": 512,
+            "expected": 0.7433788694065799,
+            "observed": 2,
+            "order": 2,
+            "probability": 0.0014519118543097264,
+            "probability_of_zero": 0.4752477401829402,
+            "unobserved_cost_is_zero": false
+          },
+          {
+            "compiled_population_contribution_identified": false,
+            "event_positions": 512,
+            "expected": 0.00018036262913873923,
+            "observed": 0,
+            "order": 4,
+            "probability": 3.5227076003660005e-07,
+            "probability_of_zero": 0.9998196536034751,
+            "unobserved_cost_is_zero": false
+          }
+        ],
+        "status": "PASS"
+      },
+      "compiler": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "model": {
+        "B0I_equivalent_to_B0": true,
+        "B0I_reason": "nonidentity_Pauli_tail_has_zero_identity_coefficient",
+        "DF_rank": null,
+        "L_D": 7,
+        "generation": {
+          "SCF_converged": true,
+          "basis": "STO-3G",
+          "charge": 0,
+          "coefficient_cutoff": 0.0,
+          "df_rank": null,
+          "distance": 1.0,
+          "eri_chemist_hash": "8b0b23738933fc32e91c437d5264b585a1e23b2cf0ce98410ff9e1147cd0e07c",
+          "geometry": [
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          ],
+          "hf_energy": -1.0661086493179366,
+          "input_eri": "chemist_(pq|rs)",
+          "input_origin": "new_one_shot_SCF_same_integrals_for_Pauli_and_DF",
+          "label_order": "q[n-1]...q[0]",
+          "model_id": "H2_1.00A_STO-3G_NON_DF_PILOT",
+          "molecule_type": 2,
+          "multiplicity": 1,
+          "nuclear_repulsion": 0.52917721092,
+          "one_body_hash": "20a3200d3099e100db2438e616fba818ea5caada6393dce632efee50b91f3b2f",
+          "openfermion_eri": "h[p,q,r,s]=(ps|qr)",
+          "orbital_basis": "real_orthonormal_spatial_MO",
+          "qubit_order": "qiskit_little_endian",
+          "spin_order": "2*p+alpha(0)/beta(1)",
+          "split_order": "descending_abs_then_label",
+          "two_body_prefactor": 0.5
+        },
+        "hamiltonian_hash": "4eca732f1835e5d52ba2672277edbe6ee911114ef9b336d7e820c23ed3abc840",
+        "hamiltonian_type": "pauli_jw",
+        "identity_policy": "constant_always_retained_once",
+        "retained_labels": [
+          "ZZII",
+          "IIZZ",
+          "IZZI",
+          "ZIIZ",
+          "IIIZ",
+          "IIZI",
+          "IZII"
+        ],
+        "split_unit": "nonidentity_Pauli_term",
+        "tail_labels": [
+          "ZIII",
+          "IZIZ",
+          "ZIZI",
+          "XXYY",
+          "XYYX",
+          "YXXY",
+          "YYXX"
+        ]
+      },
+      "normalization": {
+        "B": 1.0235294095088925,
+        "K": 4,
+        "attenuation": 0.9770114964061637,
+        "lambda_r": 0.5396115938736828,
+        "law": "finite_rte_even_paired",
+        "log_B": 0.02325685996031154,
+        "log_B_margin": 6.111818607320859e-08,
+        "log_B_upper": 0.023256921078497615,
+        "normalization_certificate_verified": false,
+        "r": 2
+      },
+      "precision_rows": [
+        {
+          "epsilon_sig": 0.05,
+          "shots": {
+            "N_total": 14726,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 6.111818607320859e-08,
+                "alpha": 0.025,
+                "bias": 4.586676378692811e-05,
+                "epsilon": 0.035355339059327376,
+                "headroom": 0.03530941117735437,
+                "log_shot_bound": 8.904383832042212,
+                "shots": 7365,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 6.111818607320859e-08,
+                "alpha": 0.025,
+                "bias": 3.791134280461961e-05,
+                "epsilon": 0.035355339059327376,
+                "headroom": 0.03531736659833668,
+                "log_shot_bound": 8.903933270866041,
+                "shots": 7361,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.05,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "pauli_jw_PR/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 0.023256921078497615,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 14813895.8125,
+            "mean_exact": "237022333/16",
+            "nominal95_halfwidth": 457615.55896407965,
+            "standard_error": 228997.78552600226
+          }
+        },
+        {
+          "epsilon_sig": 0.01,
+          "shots": {
+            "N_total": 371651,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 6.111818607320859e-08,
+                "alpha": 0.025,
+                "bias": 4.586676378692811e-05,
+                "epsilon": 0.0070710678118654745,
+                "headroom": 0.0070251399298924735,
+                "log_shot_bound": 12.133692632301685,
+                "shots": 186036,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 6.111818607320859e-08,
+                "alpha": 0.025,
+                "bias": 3.791134280461961e-05,
+                "epsilon": 0.0070710678118654745,
+                "headroom": 0.007033095350874782,
+                "log_shot_bound": 12.131429070290489,
+                "shots": 185615,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.01,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "pauli_jw_PR/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 0.023256921078497615,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 373869291.90625,
+            "mean_exact": "11963817341/32",
+            "nominal95_halfwidth": 11549183.763721252,
+            "standard_error": 5779387.205522495
+          }
+        },
+        {
+          "epsilon_sig": 0.005,
+          "shots": {
+            "N_total": 1504512,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 6.111818607320859e-08,
+                "alpha": 0.025,
+                "bias": 4.586676378692811e-05,
+                "epsilon": 0.0035355339059327372,
+                "headroom": 0.003489606023959736,
+                "log_shot_bound": 13.533105214587254,
+                "shots": 753969,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 6.111818607320859e-08,
+                "alpha": 0.025,
+                "bias": 3.791134280461961e-05,
+                "epsilon": 0.0035355339059327372,
+                "headroom": 0.0034975614449420443,
+                "log_shot_bound": 13.52855090873705,
+                "shots": 750543,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.005,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "pauli_jw_PR/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 0.023256921078497615,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 1513492056.0,
+            "mean_exact": "1513492056",
+            "nominal95_halfwidth": 46753232.3677961,
+            "standard_error": 23396028.541171852
+          }
+        },
+        {
+          "epsilon_sig": 0.001,
+          "shots": {
+            "N_total": 41508256,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 6.111818607320859e-08,
+                "alpha": 0.025,
+                "bias": 4.586676378692811e-05,
+                "epsilon": 0.0007071067811865475,
+                "headroom": 0.0006611788992135462,
+                "log_shot_bound": 16.860144552855694,
+                "shots": 21002343,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 6.111818607320859e-08,
+                "alpha": 0.025,
+                "bias": 3.791134280461961e-05,
+                "epsilon": 0.0007071067811865475,
+                "headroom": 0.0006691343201958547,
+                "log_shot_bound": 16.836223822905854,
+                "shots": 20505913,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.001,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "pauli_jw_PR/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 0.023256921078497615,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 41756008403.0,
+            "mean_exact": "41756008403",
+            "nominal95_halfwidth": 1289883455.8647368,
+            "standard_error": 645477298.9981256
+          }
+        },
+        {
+          "epsilon_sig": 0.0005,
+          "shots": {
+            "N_total": 189210030,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 6.111818607320859e-08,
+                "alpha": 0.025,
+                "bias": 4.586676378692811e-05,
+                "epsilon": 0.00035355339059327376,
+                "headroom": 0.00030762550862027243,
+                "log_shot_bound": 18.3904271338258,
+                "shots": 97019945,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 6.111818607320859e-08,
+                "alpha": 0.025,
+                "bias": 3.791134280461961e-05,
+                "epsilon": 0.00035355339059327376,
+                "headroom": 0.00031558092960258093,
+                "log_shot_bound": 18.339363135403293,
+                "shots": 92190085,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.0005,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "pauli_jw_PR/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 0.023256921078497615,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 190339377366.5625,
+            "mean_exact": "3045430037865/16",
+            "nominal95_halfwidth": 5879767325.822374,
+            "standard_error": 2942324994.520471
+          }
+        }
+      ],
+      "precision_rows_sha256": "01d99703fad269123c57fdaf1af4e0153909acdae5b84efc91af340cae276af3",
+      "reference": {
+        "T": 0.8,
+        "hamiltonian_hash": "4eca732f1835e5d52ba2672277edbe6ee911114ef9b336d7e820c23ed3abc840",
+        "method": "scipy_sparse_expm_multiply",
+        "signal": {
+          "imag": 0.7713248998313171,
+          "real": 0.6364415911143843
+        }
+      },
+      "result_sha256": "ae18fe7b6d95718151cd886aef57aab7a8e63d3c4c33e0542b1bb88948b65bd0",
+      "reused_read_only": false,
+      "run": "artifacts/non_df_h2_process_recovery/2026-10-23/run02/pauli_jw_PR",
+      "signal": {
+        "absolute_error": 5.950655370238847e-05,
+        "corrected": {
+          "imag": 0.7712869884885125,
+          "real": 0.6364874578781712
+        },
+        "mean_method": "independent_sparse_paired_polynomial_state_action",
+        "raw": {
+          "imag": 0.753556254781765,
+          "real": 0.621855563665307
+        },
+        "signed_bias": {
+          "imag": -3.791134280461961e-05,
+          "real": 4.586676378692811e-05
+        }
+      },
+      "state": {
+        "basis": "qiskit_little_endian",
+        "generation": {
+          "method": "exact lowest eigenvector in Nalpha=Nbeta=1; largest amplitude positive real",
+          "molecule": "H2",
+          "physical_sector": "Nalpha=Nbeta=1"
+        },
+        "hash": "4dc87df6c0466c1e5559ffcf3603b3a45ca7d1453b0657603188c120fe297b11"
+      },
+      "validation": {
+        "all_trajectories_certified": false,
+        "forced_event_orders": [
+          {
+            "gate": {
+              "PASS": true,
+              "error": 0.0,
+              "tolerance": 1e-09
+            },
+            "order": 0
+          },
+          {
+            "gate": {
+              "PASS": true,
+              "error": 1.214306433183765e-16,
+              "tolerance": 1e-09
+            },
+            "order": 2
+          },
+          {
+            "gate": {
+              "PASS": true,
+              "error": 1.231653667943533e-16,
+              "tolerance": 1e-09
+            },
+            "order": 4
+          }
+        ],
+        "full_MC_law_mean_independently_compiled": false,
+        "gates": {
+          "tail_operator": {
+            "PASS": true,
+            "error": 6.70078870827233e-17,
+            "tolerance": 1e-09
+          }
+        },
+        "sampled_orders": [
+          {
+            "compiled_population_contribution_identified": true,
+            "event_positions": 512,
+            "expected": 511.2564407679643,
+            "observed": 510,
+            "order": 0,
+            "probability": 0.9985477358749303,
+            "probability_of_zero": 0.0,
+            "unobserved_cost_is_zero": false
+          },
+          {
+            "compiled_population_contribution_identified": true,
+            "event_positions": 512,
+            "expected": 0.7433788694065799,
+            "observed": 2,
+            "order": 2,
+            "probability": 0.0014519118543097264,
+            "probability_of_zero": 0.4752477401829402,
+            "unobserved_cost_is_zero": false
+          },
+          {
+            "compiled_population_contribution_identified": false,
+            "event_positions": 512,
+            "expected": 0.00018036262913873923,
+            "observed": 0,
+            "order": 4,
+            "probability": 3.5227076003660005e-07,
+            "probability_of_zero": 0.9998196536034751,
+            "unobserved_cost_is_zero": false
+          }
+        ],
+        "scientific_superiority_claimed": false,
+        "status": "PASS",
+        "trajectory_operator_checks": [
+          {
+            "operator": {
+              "PASS": true,
+              "error": 2.0125121965281305e-15,
+              "tolerance": 1e-09
+            },
+            "ordinary_control": null,
+            "phase_alignment": false,
+            "seed": 4530200179902533466
+          },
+          {
+            "operator": {
+              "PASS": true,
+              "error": 2.9698297731245613e-15,
+              "tolerance": 1e-09
+            },
+            "ordinary_control": null,
+            "phase_alignment": false,
+            "seed": 8300880370867053536
+          },
+          {
+            "operator": {
+              "PASS": true,
+              "error": 1.8066439564047745e-15,
+              "tolerance": 1e-09
+            },
+            "ordinary_control": null,
+            "phase_alignment": false,
+            "seed": 10957834230513649541
+          }
+        ]
+      }
+    },
+    {
+      "SOURCE": "7a6c4263d96153ecbe721dcfb6941d0d2684b3b0",
+      "case": "df_native_PF",
+      "circuit_cost": {
+        "axes": {
+          "cosine": {
+            "mean": 4047.0,
+            "mean_exact": "4047",
+            "nominal95_halfwidth": 0.0,
+            "standard_error": 0.0
+          },
+          "sine": {
+            "mean": 4047.0,
+            "mean_exact": "4047",
+            "nominal95_halfwidth": 0.0,
+            "standard_error": 0.0
+          }
+        },
+        "cache_hits": 0,
+        "cache_misses": 2,
+        "compiled_signal_max_error": 4.596323321948148e-14,
+        "kind": "deterministic",
+        "mc_samples_are_quantum_shots": false,
+        "paired_axes": true,
+        "sample_count": 1,
+        "scope": "full_cosine_sine_hadamard_wrapper_no_state_preparation",
+        "uncertainty": "nominal_Student_t_95_not_rare_event_or_population_guarantee"
+      },
+      "comparison_checks": {
+        "arithmetic": [
+          {
+            "epsilon_sig": 0.05,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 0.0
+          },
+          {
+            "epsilon_sig": 0.01,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 0.0
+          },
+          {
+            "epsilon_sig": 0.005,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 0.0
+          },
+          {
+            "epsilon_sig": 0.001,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 0.0
+          },
+          {
+            "epsilon_sig": 0.0005,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 0.0
+          }
+        ],
+        "cost_sample_count": 1,
+        "covariance_cosine_sine": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "covariance_included_in_G_SE": true,
+        "nominal95_is_population_guarantee": false,
+        "sampled_orders": [],
+        "status": "PASS"
+      },
+      "compiler": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "model": {
+        "B0I_equivalent_to_B0": true,
+        "DF_rank": 3,
+        "L_D": 3,
+        "deterministic_block_order": [
+          "df-one-body-correction",
+          "df-fragment-0",
+          "df-fragment-1",
+          "df-fragment-2"
+        ],
+        "deterministic_fragment_indices": [
+          0,
+          1,
+          2
+        ],
+        "extracted_identity_coefficient": 0.0,
+        "generation": {
+          "SCF_converged": true,
+          "basis": "STO-3G",
+          "charge": 0,
+          "df_rank_actual": 3,
+          "df_rank_requested": null,
+          "df_tol_requested": 1e-08,
+          "df_truncation_value": 0.0,
+          "distance": 1.0,
+          "geometry": [
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          ],
+          "hermitized": true,
+          "hf_energy": -1.0661086493179366,
+          "input_origin": "new_one_shot_SCF_same_integrals_for_Pauli_and_DF",
+          "model_id": "H2_1.00A_STO-3G_NON_DF_PILOT",
+          "molecule_type": 2,
+          "multiplicity": 1
+        },
+        "hamiltonian_hash": "fe05aa6b88aeab032cf9232c59309695375a83d26f1ed59aea031aeaa77647fd",
+        "hamiltonian_type": "df_native",
+        "identity_policy": "extract_identity_phase",
+        "preparation_hash": "495873e808788f2010388209d52349f684f762ba616c4aa8da438317577a3cfd",
+        "split_unit": "DF_fragment"
+      },
+      "normalization": {
+        "B": 1.0,
+        "K": null,
+        "attenuation": 1.0,
+        "lambda_r": 0.0,
+        "law": "deterministic",
+        "log_B": 0.0,
+        "log_B_margin": 4.714834744845583e-08,
+        "log_B_upper": 4.714834744845583e-08,
+        "normalization_certificate_verified": false,
+        "r": null
+      },
+      "precision_rows": [
+        {
+          "epsilon_sig": 0.05,
+          "shots": {
+            "N_total": 14082,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 4.714834744845583e-08,
+                "alpha": 0.025,
+                "bias": 8.030438816297725e-05,
+                "epsilon": 0.035355339059327376,
+                "headroom": 0.03527498752281695,
+                "log_shot_bound": 8.859820864121986,
+                "shots": 7044,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 4.714834744845583e-08,
+                "alpha": 0.025,
+                "bias": 6.634622471124452e-05,
+                "epsilon": 0.035355339059327376,
+                "headroom": 0.03528894568626868,
+                "log_shot_bound": 8.859029629110047,
+                "shots": 7038,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.05,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "df_native_PF/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 4.714834744845583e-08,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 56989854.0,
+            "mean_exact": "56989854",
+            "nominal95_halfwidth": 0.0,
+            "standard_error": 0.0
+          }
+        },
+        {
+          "epsilon_sig": 0.01,
+          "shots": {
+            "N_total": 357954,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 4.714834744845583e-08,
+                "alpha": 0.025,
+                "bias": 8.030438816297725e-05,
+                "epsilon": 0.0070710678118654745,
+                "headroom": 0.006990716275355049,
+                "log_shot_bound": 12.097003107307316,
+                "shots": 179334,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 4.714834744845583e-08,
+                "alpha": 0.025,
+                "bias": 6.634622471124452e-05,
+                "epsilon": 0.0070710678118654745,
+                "headroom": 0.0070046744388067815,
+                "log_shot_bound": 12.0930137458483,
+                "shots": 178620,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.01,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "df_native_PF/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 4.714834744845583e-08,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 1448639838.0,
+            "mean_exact": "1448639838",
+            "nominal95_halfwidth": 0.0,
+            "standard_error": 0.0
+          }
+        },
+        {
+          "epsilon_sig": 0.005,
+          "shots": {
+            "N_total": 1462332,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 4.714834744845583e-08,
+                "alpha": 0.025,
+                "bias": 8.030438816297725e-05,
+                "epsilon": 0.0035355339059327372,
+                "headroom": 0.0034551823694223115,
+                "log_shot_bound": 13.506418672116315,
+                "shots": 734114,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 4.714834744845583e-08,
+                "alpha": 0.025,
+                "bias": 6.634622471124452e-05,
+                "epsilon": 0.0035355339059327372,
+                "headroom": 0.0034691405328740443,
+                "log_shot_bound": 13.498355395717951,
+                "shots": 728218,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.005,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "df_native_PF/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 4.714834744845583e-08,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 5918057604.0,
+            "mean_exact": "5918057604",
+            "nominal95_halfwidth": 0.0,
+            "standard_error": 0.0
+          }
+        },
+        {
+          "epsilon_sig": 0.001,
+          "shots": {
+            "N_total": 43659485,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 4.714834744845583e-08,
+                "alpha": 0.025,
+                "bias": 8.030438816297725e-05,
+                "epsilon": 0.0007071067811865475,
+                "headroom": 0.0006267552446761218,
+                "log_shot_bound": 16.920567500031044,
+                "shots": 22310490,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 4.714834744845583e-08,
+                "alpha": 0.025,
+                "bias": 6.634622471124452e-05,
+                "epsilon": 0.0007071067811865475,
+                "headroom": 0.0006407134081278545,
+                "log_shot_bound": 16.87651519866727,
+                "shots": 21348995,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.001,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "df_native_PF/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 4.714834744845583e-08,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 176689935795.0,
+            "mean_exact": "176689935795",
+            "nominal95_halfwidth": 0.0,
+            "standard_error": 0.0
+          }
+        },
+        {
+          "epsilon_sig": 0.0005,
+          "shots": {
+            "N_total": 223700197,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 4.714834744845583e-08,
+                "alpha": 0.025,
+                "bias": 8.030438816297725e-05,
+                "epsilon": 0.00035355339059327376,
+                "headroom": 0.00027320185408284805,
+                "log_shot_bound": 18.581257881712236,
+                "shots": 117418835,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 4.714834744845583e-08,
+                "alpha": 0.025,
+                "bias": 6.634622471124452e-05,
+                "epsilon": 0.00035355339059327376,
+                "headroom": 0.0002871600175345808,
+                "log_shot_bound": 18.48160048459965,
+                "shots": 106281362,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.0005,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "df_native_PF/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 4.714834744845583e-08,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 905314697259.0,
+            "mean_exact": "905314697259",
+            "nominal95_halfwidth": 0.0,
+            "standard_error": 0.0
+          }
+        }
+      ],
+      "precision_rows_sha256": "fc07727eb6453edf8dcf293f34948651b40443b9def79728ef9e679027b7d67b",
+      "reference": {
+        "T": 0.8,
+        "hamiltonian_hash": "fe05aa6b88aeab032cf9232c59309695375a83d26f1ed59aea031aeaa77647fd",
+        "method": "scipy_sparse_expm_multiply",
+        "signal": {
+          "imag": 0.7713248998313171,
+          "real": 0.6364415911143844
+        }
+      },
+      "result_sha256": "0982e6f25bf1b1e874f0ff82a1f7438d89f8591c66f950c451d19fd52413d867",
+      "reused_read_only": false,
+      "run": "artifacts/non_df_h2_process_recovery/2026-10-23/run02/df_native_PF",
+      "signal": {
+        "absolute_error": 0.0001041662915326502,
+        "corrected": {
+          "imag": 0.7712585536066059,
+          "real": 0.6365218955025473
+        },
+        "mean_method": "independent_sparse_paired_polynomial_state_action",
+        "raw": {
+          "imag": 0.7712585536066059,
+          "real": 0.6365218955025473
+        },
+        "signed_bias": {
+          "imag": -6.634622471124452e-05,
+          "real": 8.030438816297725e-05
+        }
+      },
+      "state": {
+        "basis": "qiskit_little_endian",
+        "generation": {
+          "method": "exact lowest eigenvector in Nalpha=Nbeta=1; largest amplitude positive real",
+          "molecule": "H2",
+          "physical_sector": "Nalpha=Nbeta=1"
+        },
+        "hash": "4dc87df6c0466c1e5559ffcf3603b3a45ca7d1453b0657603188c120fe297b11"
+      },
+      "validation": {
+        "all_trajectories_certified": false,
+        "forced_event_orders": [],
+        "full_MC_law_mean_independently_compiled": false,
+        "gates": {
+          "PF_full_operator": {
+            "PASS": true,
+            "error": 3.2174542365791156e-15,
+            "tolerance": 1e-09
+          }
+        },
+        "sampled_orders": [],
+        "scientific_superiority_claimed": false,
+        "status": "PASS",
+        "trajectory_operator_checks": [
+          {
+            "operator": {
+              "PASS": true,
+              "error": 3.160722582196516e-15,
+              "tolerance": 1e-09
+            },
+            "ordinary_control": {
+              "PASS": true,
+              "error": 2.1757410457679048e-15,
+              "tolerance": 1e-09
+            },
+            "phase_alignment": false,
+            "seed": 2107874800888762518
+          }
+        ]
+      }
+    },
+    {
+      "SOURCE": "b5ed2c6e2399b55a0c24eb8437f842892a6703ef",
+      "case": "df_native_PR",
+      "circuit_cost": {
+        "axes": {
+          "cosine": {
+            "mean": 2030.921875,
+            "mean_exact": "129979/64",
+            "nominal95_halfwidth": 2.065270675010476,
+            "standard_error": 1.0334928562302539
+          },
+          "sine": {
+            "mean": 2030.921875,
+            "mean_exact": "129979/64",
+            "nominal95_halfwidth": 2.065270675010476,
+            "standard_error": 1.0334928562302539
+          }
+        },
+        "cache_hits": 0,
+        "cache_misses": 128,
+        "compiled_signal_max_error": 2.275957200481571e-14,
+        "kind": "finite_MC_mean",
+        "mc_samples_are_quantum_shots": false,
+        "paired_axes": true,
+        "sample_count": 64,
+        "scope": "full_cosine_sine_hadamard_wrapper_no_state_preparation",
+        "uncertainty": "nominal_Student_t_95_not_rare_event_or_population_guarantee"
+      },
+      "comparison_checks": {
+        "arithmetic": [
+          {
+            "epsilon_sig": 0.05,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 14776.88085838017
+          },
+          {
+            "epsilon_sig": 0.01,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 375628.14606116695
+          },
+          {
+            "epsilon_sig": 0.005,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 1534505.3891021314
+          },
+          {
+            "epsilon_sig": 0.001,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 45806974.71835115
+          },
+          {
+            "epsilon_sig": 0.0005,
+            "exact_G_identity": true,
+            "paired_covariance_SE": 234645010.76753756
+          }
+        ],
+        "cost_sample_count": 64,
+        "covariance_cosine_sine": [
+          [
+            68.35887896825396,
+            68.35887896825396
+          ],
+          [
+            68.35887896825396,
+            68.35887896825396
+          ]
+        ],
+        "covariance_included_in_G_SE": true,
+        "nominal95_is_population_guarantee": false,
+        "sampled_orders": [
+          {
+            "compiled_population_contribution_identified": true,
+            "event_positions": 512,
+            "expected": 511.7557970079973,
+            "observed": 512,
+            "order": 0,
+            "probability": 0.9995230410312447,
+            "probability_of_zero": 0.0,
+            "unobserved_cost_is_zero": false
+          },
+          {
+            "compiled_population_contribution_identified": false,
+            "event_positions": 512,
+            "expected": 0.24418356578379366,
+            "observed": 0,
+            "order": 2,
+            "probability": 0.000476921026921472,
+            "probability_of_zero": 0.7832982001091581,
+            "unobserved_cost_is_zero": false
+          },
+          {
+            "compiled_population_contribution_identified": false,
+            "event_positions": 512,
+            "expected": 1.9426218942845994e-05,
+            "observed": 0,
+            "order": 4,
+            "probability": 3.794183387274608e-08,
+            "probability_of_zero": 0.999980573969364,
+            "unobserved_cost_is_zero": false
+          }
+        ],
+        "status": "PASS"
+      },
+      "compiler": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "model": {
+        "B0I_equivalent_to_B0": false,
+        "DF_rank": 3,
+        "L_D": 1,
+        "deterministic_block_order": [
+          "df-one-body-correction",
+          "df-fragment-0"
+        ],
+        "deterministic_fragment_indices": [
+          0
+        ],
+        "extracted_identity_coefficient": 0.1028690690295947,
+        "generation": {
+          "SCF_converged": true,
+          "basis": "STO-3G",
+          "charge": 0,
+          "df_rank_actual": 3,
+          "df_rank_requested": null,
+          "df_tol_requested": 1e-08,
+          "df_truncation_value": 0.0,
+          "distance": 1.0,
+          "geometry": [
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          ],
+          "hermitized": true,
+          "hf_energy": -1.0661086493179366,
+          "input_origin": "new_one_shot_SCF_same_integrals_for_Pauli_and_DF",
+          "model_id": "H2_1.00A_STO-3G_NON_DF_PILOT",
+          "molecule_type": 2,
+          "multiplicity": 1
+        },
+        "hamiltonian_hash": "fe05aa6b88aeab032cf9232c59309695375a83d26f1ed59aea031aeaa77647fd",
+        "hamiltonian_type": "df_native",
+        "identity_policy": "extract_identity_phase",
+        "preparation_hash": "b799dc34dbe7507145230bb7d94d3d433233141540ccc6c4f2f45b615447414e",
+        "split_unit": "DF_fragment"
+      },
+      "normalization": {
+        "B": 1.0076627782285141,
+        "K": 4,
+        "attenuation": 0.9923954934189536,
+        "lambda_r": 0.30898252465473847,
+        "law": "finite_rte_even_paired",
+        "log_B": 0.007633568268157779,
+        "log_B_margin": 3.78351217026588e-08,
+        "log_B_upper": 0.007633606103279482,
+        "normalization_certificate_verified": false,
+        "r": 2
+      },
+      "precision_rows": [
+        {
+          "epsilon_sig": 0.05,
+          "shots": {
+            "N_total": 14298,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 3.78351217026588e-08,
+                "alpha": 0.025,
+                "bias": 8.024693455510601e-05,
+                "epsilon": 0.035355339059327376,
+                "headroom": 0.03527505428965057,
+                "log_shot_bound": 8.875084196529706,
+                "shots": 7152,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 3.78351217026588e-08,
+                "alpha": 0.025,
+                "bias": 6.629879229458346e-05,
+                "epsilon": 0.035355339059327376,
+                "headroom": 0.03528900243191109,
+                "log_shot_bound": 8.874293530964815,
+                "shots": 7146,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.05,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "df_native_PR/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 0.007633606103279482,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 29038120.96875,
+            "mean_exact": "929219871/32",
+            "nominal95_halfwidth": 29529.24011129978,
+            "standard_error": 14776.88085838017
+          }
+        },
+        {
+          "epsilon_sig": 0.01,
+          "shots": {
+            "N_total": 363455,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 3.78351217026588e-08,
+                "alpha": 0.025,
+                "bias": 8.024693455510601e-05,
+                "epsilon": 0.0070710678118654745,
+                "headroom": 0.006990783042188666,
+                "log_shot_bound": 12.112251123736831,
+                "shots": 182090,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 3.78351217026588e-08,
+                "alpha": 0.025,
+                "bias": 6.629879229458346e-05,
+                "epsilon": 0.0070710678118654745,
+                "headroom": 0.007004731184449189,
+                "log_shot_bound": 12.108264661602574,
+                "shots": 181365,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.01,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "df_native_PR/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 0.007633606103279482,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 738148710.078125,
+            "mean_exact": "47241517445/64",
+            "nominal95_halfwidth": 750632.9531859326,
+            "standard_error": 375628.146061167
+          }
+        },
+        {
+          "epsilon_sig": 0.005,
+          "shots": {
+            "N_total": 1484776,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 3.78351217026588e-08,
+                "alpha": 0.025,
+                "bias": 8.024693455510601e-05,
+                "epsilon": 0.0035355339059327372,
+                "headroom": 0.0034552491362559285,
+                "log_shot_bound": 13.521647143042376,
+                "shots": 745379,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 3.78351217026588e-08,
+                "alpha": 0.025,
+                "bias": 6.629879229458346e-05,
+                "epsilon": 0.0035355339059327372,
+                "headroom": 0.003469197278516451,
+                "log_shot_bound": 13.513589799370338,
+                "shots": 739397,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.005,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "df_native_PR/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 0.007633606103279482,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 3015464057.875,
+            "mean_exact": "24123712463/8",
+            "nominal95_halfwidth": 3066464.331759354,
+            "standard_error": 1534505.3891021314
+          }
+        },
+        {
+          "epsilon_sig": 0.001,
+          "shots": {
+            "N_total": 44322488,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 3.78351217026588e-08,
+                "alpha": 0.025,
+                "bias": 8.024693455510601e-05,
+                "epsilon": 0.0007071067811865475,
+                "headroom": 0.0006268220115097389,
+                "log_shot_bound": 16.935621573764013,
+                "shots": 22648894,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 3.78351217026588e-08,
+                "alpha": 0.025,
+                "bias": 6.629879229458346e-05,
+                "epsilon": 0.0007071067811865475,
+                "headroom": 0.0006407701537702614,
+                "log_shot_bound": 16.891605191737984,
+                "shots": 21673594,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.001,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "df_native_PR/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 0.007633606103279482,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 90015510433.625,
+            "mean_exact": "720124083469/8",
+            "nominal95_halfwidth": 91537934.70990372,
+            "standard_error": 45806974.718351156
+          }
+        },
+        {
+          "epsilon_sig": 0.0005,
+          "shots": {
+            "N_total": 227040767,
+            "alpha_union": 0.05,
+            "axes": {
+              "cosine": {
+                "allowance": 3.78351217026588e-08,
+                "alpha": 0.025,
+                "bias": 8.024693455510601e-05,
+                "epsilon": 0.00035355339059327376,
+                "headroom": 0.00027326862091646507,
+                "log_shot_bound": 18.596036286419807,
+                "shots": 119166984,
+                "status": "ELIGIBLE"
+              },
+              "sine": {
+                "allowance": 3.78351217026588e-08,
+                "alpha": 0.025,
+                "bias": 6.629879229458346e-05,
+                "epsilon": 0.00035355339059327376,
+                "headroom": 0.0002872167631769876,
+                "log_shot_bound": 18.496472421892907,
+                "shots": 107873783,
+                "status": "ELIGIBLE"
+              }
+            },
+            "certificate_verified": false,
+            "epsilon_sig": 0.0005,
+            "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+            "evidence_kind": "EMPIRICAL",
+            "evidence_ref": "df_native_PR/numerical_evidence.json",
+            "interpretation": "CONDITIONAL_DIAGNOSTIC",
+            "log_B_upper": 0.007633606103279482,
+            "schema": "fixed_complex_signal_hoeffding_v1",
+            "usable": true
+          },
+          "total_RZ": {
+            "mean": 461102060217.0781,
+            "mean_exact": "29510531853893/64",
+            "nominal95_halfwidth": 468900638.11698616,
+            "standard_error": 234645010.76753756
+          }
+        }
+      ],
+      "precision_rows_sha256": "c88e7c1fbdab6fe1c947113beac224addcc1e8b49bbf144b6219d6cb98fd7964",
+      "reference": {
+        "T": 0.8,
+        "hamiltonian_hash": "fe05aa6b88aeab032cf9232c59309695375a83d26f1ed59aea031aeaa77647fd",
+        "method": "scipy_sparse_expm_multiply",
+        "signal": {
+          "imag": 0.7713248998313171,
+          "real": 0.6364415911143844
+        }
+      },
+      "result_sha256": "ea68f7293b4d55a8eed926fa7476e5df9f28d924333c032ed2c43d1ed4d751df",
+      "reused_read_only": true,
+      "run": "artifacts/non_df_h2_pilot/2026-10-22/run01/df_native_PR",
+      "signal": {
+        "absolute_error": 0.00010409178817376415,
+        "corrected": {
+          "imag": 0.7712586010390226,
+          "real": 0.6365218380489395
+        },
+        "mean_method": "independent_sparse_paired_polynomial_state_action",
+        "raw": {
+          "imag": 0.7653935599317327,
+          "real": 0.6316814035425167
+        },
+        "signed_bias": {
+          "imag": -6.629879229458346e-05,
+          "real": 8.024693455510601e-05
+        }
+      },
+      "state": {
+        "basis": "qiskit_little_endian",
+        "generation": {
+          "method": "exact lowest eigenvector in Nalpha=Nbeta=1; largest amplitude positive real",
+          "molecule": "H2",
+          "physical_sector": "Nalpha=Nbeta=1"
+        },
+        "hash": "4dc87df6c0466c1e5559ffcf3603b3a45ca7d1453b0657603188c120fe297b11"
+      },
+      "validation": {
+        "all_trajectories_certified": false,
+        "forced_event_orders": [
+          {
+            "gate": {
+              "PASS": true,
+              "error": 1.5690266117427262e-16,
+              "tolerance": 1e-09
+            },
+            "order": 0
+          },
+          {
+            "gate": {
+              "PASS": true,
+              "error": 2.32960254188209e-16,
+              "tolerance": 1e-09
+            },
+            "order": 2
+          },
+          {
+            "gate": {
+              "PASS": true,
+              "error": 1.5547483934928913e-16,
+              "tolerance": 1e-09
+            },
+            "order": 4
+          }
+        ],
+        "full_MC_law_mean_independently_compiled": false,
+        "gates": {
+          "tail_operator": {
+            "PASS": true,
+            "error": 6.800116025829083e-16,
+            "tolerance": 1e-09
+          }
+        },
+        "sampled_orders": [
+          {
+            "compiled_population_contribution_identified": true,
+            "event_positions": 512,
+            "expected": 511.7557970079973,
+            "observed": 512,
+            "order": 0,
+            "probability": 0.9995230410312447,
+            "probability_of_zero": 0.0,
+            "unobserved_cost_is_zero": false
+          },
+          {
+            "compiled_population_contribution_identified": false,
+            "event_positions": 512,
+            "expected": 0.24418356578379366,
+            "observed": 0,
+            "order": 2,
+            "probability": 0.000476921026921472,
+            "probability_of_zero": 0.7832982001091581,
+            "unobserved_cost_is_zero": false
+          },
+          {
+            "compiled_population_contribution_identified": false,
+            "event_positions": 512,
+            "expected": 1.9426218942845994e-05,
+            "observed": 0,
+            "order": 4,
+            "probability": 3.794183387274608e-08,
+            "probability_of_zero": 0.999980573969364,
+            "unobserved_cost_is_zero": false
+          }
+        ],
+        "scientific_superiority_claimed": false,
+        "status": "PASS",
+        "trajectory_operator_checks": [
+          {
+            "operator": {
+              "PASS": true,
+              "error": 2.2620306547547704e-15,
+              "tolerance": 1e-09
+            },
+            "ordinary_control": {
+              "PASS": true,
+              "error": 1.5814771144869783e-15,
+              "tolerance": 1e-09
+            },
+            "phase_alignment": false,
+            "seed": 15521241456746187028
+          },
+          {
+            "operator": {
+              "PASS": true,
+              "error": 2.1005788037743402e-15,
+              "tolerance": 1e-09
+            },
+            "ordinary_control": {
+              "PASS": true,
+              "error": 1.5100697379383465e-15,
+              "tolerance": 1e-09
+            },
+            "phase_alignment": false,
+            "seed": 755942040598404991
+          },
+          {
+            "operator": {
+              "PASS": true,
+              "error": 2.6602396872215574e-15,
+              "tolerance": 1e-09
+            },
+            "ordinary_control": {
+              "PASS": true,
+              "error": 1.6727784077807546e-15,
+              "tolerance": 1e-09
+            },
+            "phase_alignment": false,
+            "seed": 6483387038883726631
+          }
+        ]
+      }
+    }
+  ],
+  "conditions": {
+    "K": 4,
+    "PR_cost_samples": 64,
+    "T": 0.8,
+    "adaptive_sampling": false,
+    "alpha_axis": 0.025,
+    "compiled_signal_check": "every sampled full cosine/sine wrapper",
+    "cost_uncertainty": "paired axes; nominal Student-t 95%; no population or rare-event guarantee",
+    "delta": 0.2,
+    "epsilon_axis_policy": "epsilon_sig/sqrt(2)",
+    "epsilon_sig": [
+      0.05,
+      0.01,
+      0.005,
+      0.001,
+      0.0005
+    ],
+    "independent_trajectory_operator_checks": 3,
+    "methods": [
+      "PF",
+      "PR"
+    ],
+    "product_formula": "S2",
+    "q": 4,
+    "r": 2,
+    "representations": [
+      "pauli_jw",
+      "df_native"
+    ],
+    "seed_rule": "sha256(H2_NON_DF_PILOT_20261022/<representation>/<method>)[:8] little-endian",
+    "state_preparation_cost": 0.0,
+    "state_preparation_excluded": true,
+    "statistical_model": "existing fresh-IID bounded +/-1 corrected by finite-RTE B; Hoeffding sufficient N"
+  },
+  "contract_sha256": "6f8dd78abf4445ea6a865c19b6212ebcf5a97fe73ce3eea9e12605aac6353f1b",
+  "input_sha256": "fb5ca11d7f0be73abd063ae7b67c6b72399c5a2336635f3764af1a7316e81175",
+  "input_verification": {
+    "input_sha256": "fb5ca11d7f0be73abd063ae7b67c6b72399c5a2336635f3764af1a7316e81175",
+    "new_DF_decompositions": 0,
+    "new_FCI": 0,
+    "new_SCF": 0,
+    "new_state_solves": 0,
+    "old_raw_hashes_verified": 23,
+    "original_source_files_verified": 163,
+    "reused_result_hashes": {
+      "df_native_PR": "ea68f7293b4d55a8eed926fa7476e5df9f28d924333c032ed2c43d1ed4d751df",
+      "pauli_jw_PF": "c09e0d5437a93065a406468d02459823ac3b775f23c14e1d7c5870aec5f21129"
+    },
+    "status": "PASS"
+  },
+  "limitations": [
+    "fixed H2 geometry/basis/T/q/splits only; no general superiority or scaling conclusion",
+    "empirical numerical allowance; Hoeffding sufficient N conditional on declared error bounds",
+    "PR C/G are 64 paired MC sample means; nominal t interval is not a population guarantee",
+    "unobserved Taylor orders retain unknown cost contribution, never zero-filled",
+    "no new SCF/FCI/DF/state solve, candidate search, independent confirmation or detailed science review"
+  ],
+  "old_source": "b5ed2c6e2399b55a0c24eb8437f842892a6703ef",
+  "original_STOP_unchanged": true,
+  "same_L_D_is_same_partition": false,
+  "status": "FOUR_FIXED_H2_CASES_COMPLETE_LOCAL_CONDITIONAL_EVIDENCE",
+  "system": {
+    "SCF": {
+      "conv_tol": 1e-12,
+      "init_guess": "minao",
+      "max_cycle": 100
+    },
+    "basis": "sto-3g",
+    "charge": 0,
+    "geometry_Angstrom": [
+      [
+        "H",
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        "H",
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    ],
+    "integral_policy": "real orthonormal spatial MO; chemist (pq|rs); unthresholded supplied arrays",
+    "molecule": "H2",
+    "orbital_policy": "PySCF canonical real RHF MOs; no active-space/frozen-core",
+    "qubit_order": "qiskit_little_endian",
+    "reference": "each representation's own full-H on the same non-DF physical-sector state",
+    "spin_2S": 0,
+    "spin_order": "2*p+alpha(0)/beta(1)",
+    "state_policy": "exact lowest eigenvector in Nalpha=Nbeta=1; largest amplitude positive real",
+    "symmetry": false
+  },
+  "table": [
+    {
+      "C": {
+        "cosine": {
+          "mean": 3850.0,
+          "mean_exact": "3850",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        },
+        "sine": {
+          "mean": 3850.0,
+          "mean_exact": "3850",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        }
+      },
+      "G": {
+        "mean": 54215700.0,
+        "mean_exact": "54215700",
+        "nominal95_halfwidth": 0.0,
+        "standard_error": 0.0
+      },
+      "N": {
+        "cosine": 7044,
+        "sine": 7038
+      },
+      "N_total": 14082,
+      "SOURCE": "b5ed2c6e2399b55a0c24eb8437f842892a6703ef",
+      "case": "pauli_jw_PF",
+      "eligible": true,
+      "epsilon_sig": 0.05,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    },
+    {
+      "C": {
+        "cosine": {
+          "mean": 3850.0,
+          "mean_exact": "3850",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        },
+        "sine": {
+          "mean": 3850.0,
+          "mean_exact": "3850",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        }
+      },
+      "G": {
+        "mean": 1378080550.0,
+        "mean_exact": "1378080550",
+        "nominal95_halfwidth": 0.0,
+        "standard_error": 0.0
+      },
+      "N": {
+        "cosine": 179328,
+        "sine": 178615
+      },
+      "N_total": 357943,
+      "SOURCE": "b5ed2c6e2399b55a0c24eb8437f842892a6703ef",
+      "case": "pauli_jw_PF",
+      "eligible": true,
+      "epsilon_sig": 0.01,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    },
+    {
+      "C": {
+        "cosine": {
+          "mean": 3850.0,
+          "mean_exact": "3850",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        },
+        "sine": {
+          "mean": 3850.0,
+          "mean_exact": "3850",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        }
+      },
+      "G": {
+        "mean": 5629616300.0,
+        "mean_exact": "5629616300",
+        "nominal95_halfwidth": 0.0,
+        "standard_error": 0.0
+      },
+      "N": {
+        "cosine": 734060,
+        "sine": 728178
+      },
+      "N_total": 1462238,
+      "SOURCE": "b5ed2c6e2399b55a0c24eb8437f842892a6703ef",
+      "case": "pauli_jw_PF",
+      "eligible": true,
+      "epsilon_sig": 0.005,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    },
+    {
+      "C": {
+        "cosine": {
+          "mean": 3850.0,
+          "mean_exact": "3850",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        },
+        "sine": {
+          "mean": 3850.0,
+          "mean_exact": "3850",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        }
+      },
+      "G": {
+        "mean": 168030069900.0,
+        "mean_exact": "168030069900",
+        "nominal95_halfwidth": 0.0,
+        "standard_error": 0.0
+      },
+      "N": {
+        "cosine": 22301548,
+        "sine": 21342626
+      },
+      "N_total": 43644174,
+      "SOURCE": "b5ed2c6e2399b55a0c24eb8437f842892a6703ef",
+      "case": "pauli_jw_PF",
+      "eligible": true,
+      "epsilon_sig": 0.001,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    },
+    {
+      "C": {
+        "cosine": {
+          "mean": 3850.0,
+          "mean_exact": "3850",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        },
+        "sine": {
+          "mean": 3850.0,
+          "mean_exact": "3850",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        }
+      },
+      "G": {
+        "mean": 860557882800.0,
+        "mean_exact": "860557882800",
+        "nominal95_halfwidth": 0.0,
+        "standard_error": 0.0
+      },
+      "N": {
+        "cosine": 117310898,
+        "sine": 106210630
+      },
+      "N_total": 223521528,
+      "SOURCE": "b5ed2c6e2399b55a0c24eb8437f842892a6703ef",
+      "case": "pauli_jw_PF",
+      "eligible": true,
+      "epsilon_sig": 0.0005,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    },
+    {
+      "C": {
+        "cosine": {
+          "mean": 1005.96875,
+          "mean_exact": "32191/32",
+          "nominal95_halfwidth": 31.075346934950407,
+          "standard_error": 15.55057622748895
+        },
+        "sine": {
+          "mean": 1005.96875,
+          "mean_exact": "32191/32",
+          "nominal95_halfwidth": 31.075346934950407,
+          "standard_error": 15.55057622748895
+        }
+      },
+      "G": {
+        "mean": 14813895.8125,
+        "mean_exact": "237022333/16",
+        "nominal95_halfwidth": 457615.55896407965,
+        "standard_error": 228997.78552600226
+      },
+      "N": {
+        "cosine": 7365,
+        "sine": 7361
+      },
+      "N_total": 14726,
+      "SOURCE": "7a6c4263d96153ecbe721dcfb6941d0d2684b3b0",
+      "case": "pauli_jw_PR",
+      "eligible": true,
+      "epsilon_sig": 0.05,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    },
+    {
+      "C": {
+        "cosine": {
+          "mean": 1005.96875,
+          "mean_exact": "32191/32",
+          "nominal95_halfwidth": 31.075346934950407,
+          "standard_error": 15.55057622748895
+        },
+        "sine": {
+          "mean": 1005.96875,
+          "mean_exact": "32191/32",
+          "nominal95_halfwidth": 31.075346934950407,
+          "standard_error": 15.55057622748895
+        }
+      },
+      "G": {
+        "mean": 373869291.90625,
+        "mean_exact": "11963817341/32",
+        "nominal95_halfwidth": 11549183.763721252,
+        "standard_error": 5779387.205522495
+      },
+      "N": {
+        "cosine": 186036,
+        "sine": 185615
+      },
+      "N_total": 371651,
+      "SOURCE": "7a6c4263d96153ecbe721dcfb6941d0d2684b3b0",
+      "case": "pauli_jw_PR",
+      "eligible": true,
+      "epsilon_sig": 0.01,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    },
+    {
+      "C": {
+        "cosine": {
+          "mean": 1005.96875,
+          "mean_exact": "32191/32",
+          "nominal95_halfwidth": 31.075346934950407,
+          "standard_error": 15.55057622748895
+        },
+        "sine": {
+          "mean": 1005.96875,
+          "mean_exact": "32191/32",
+          "nominal95_halfwidth": 31.075346934950407,
+          "standard_error": 15.55057622748895
+        }
+      },
+      "G": {
+        "mean": 1513492056.0,
+        "mean_exact": "1513492056",
+        "nominal95_halfwidth": 46753232.3677961,
+        "standard_error": 23396028.541171852
+      },
+      "N": {
+        "cosine": 753969,
+        "sine": 750543
+      },
+      "N_total": 1504512,
+      "SOURCE": "7a6c4263d96153ecbe721dcfb6941d0d2684b3b0",
+      "case": "pauli_jw_PR",
+      "eligible": true,
+      "epsilon_sig": 0.005,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    },
+    {
+      "C": {
+        "cosine": {
+          "mean": 1005.96875,
+          "mean_exact": "32191/32",
+          "nominal95_halfwidth": 31.075346934950407,
+          "standard_error": 15.55057622748895
+        },
+        "sine": {
+          "mean": 1005.96875,
+          "mean_exact": "32191/32",
+          "nominal95_halfwidth": 31.075346934950407,
+          "standard_error": 15.55057622748895
+        }
+      },
+      "G": {
+        "mean": 41756008403.0,
+        "mean_exact": "41756008403",
+        "nominal95_halfwidth": 1289883455.8647368,
+        "standard_error": 645477298.9981256
+      },
+      "N": {
+        "cosine": 21002343,
+        "sine": 20505913
+      },
+      "N_total": 41508256,
+      "SOURCE": "7a6c4263d96153ecbe721dcfb6941d0d2684b3b0",
+      "case": "pauli_jw_PR",
+      "eligible": true,
+      "epsilon_sig": 0.001,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    },
+    {
+      "C": {
+        "cosine": {
+          "mean": 1005.96875,
+          "mean_exact": "32191/32",
+          "nominal95_halfwidth": 31.075346934950407,
+          "standard_error": 15.55057622748895
+        },
+        "sine": {
+          "mean": 1005.96875,
+          "mean_exact": "32191/32",
+          "nominal95_halfwidth": 31.075346934950407,
+          "standard_error": 15.55057622748895
+        }
+      },
+      "G": {
+        "mean": 190339377366.5625,
+        "mean_exact": "3045430037865/16",
+        "nominal95_halfwidth": 5879767325.822374,
+        "standard_error": 2942324994.520471
+      },
+      "N": {
+        "cosine": 97019945,
+        "sine": 92190085
+      },
+      "N_total": 189210030,
+      "SOURCE": "7a6c4263d96153ecbe721dcfb6941d0d2684b3b0",
+      "case": "pauli_jw_PR",
+      "eligible": true,
+      "epsilon_sig": 0.0005,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    },
+    {
+      "C": {
+        "cosine": {
+          "mean": 4047.0,
+          "mean_exact": "4047",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        },
+        "sine": {
+          "mean": 4047.0,
+          "mean_exact": "4047",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        }
+      },
+      "G": {
+        "mean": 56989854.0,
+        "mean_exact": "56989854",
+        "nominal95_halfwidth": 0.0,
+        "standard_error": 0.0
+      },
+      "N": {
+        "cosine": 7044,
+        "sine": 7038
+      },
+      "N_total": 14082,
+      "SOURCE": "7a6c4263d96153ecbe721dcfb6941d0d2684b3b0",
+      "case": "df_native_PF",
+      "eligible": true,
+      "epsilon_sig": 0.05,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    },
+    {
+      "C": {
+        "cosine": {
+          "mean": 4047.0,
+          "mean_exact": "4047",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        },
+        "sine": {
+          "mean": 4047.0,
+          "mean_exact": "4047",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        }
+      },
+      "G": {
+        "mean": 1448639838.0,
+        "mean_exact": "1448639838",
+        "nominal95_halfwidth": 0.0,
+        "standard_error": 0.0
+      },
+      "N": {
+        "cosine": 179334,
+        "sine": 178620
+      },
+      "N_total": 357954,
+      "SOURCE": "7a6c4263d96153ecbe721dcfb6941d0d2684b3b0",
+      "case": "df_native_PF",
+      "eligible": true,
+      "epsilon_sig": 0.01,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    },
+    {
+      "C": {
+        "cosine": {
+          "mean": 4047.0,
+          "mean_exact": "4047",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        },
+        "sine": {
+          "mean": 4047.0,
+          "mean_exact": "4047",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        }
+      },
+      "G": {
+        "mean": 5918057604.0,
+        "mean_exact": "5918057604",
+        "nominal95_halfwidth": 0.0,
+        "standard_error": 0.0
+      },
+      "N": {
+        "cosine": 734114,
+        "sine": 728218
+      },
+      "N_total": 1462332,
+      "SOURCE": "7a6c4263d96153ecbe721dcfb6941d0d2684b3b0",
+      "case": "df_native_PF",
+      "eligible": true,
+      "epsilon_sig": 0.005,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    },
+    {
+      "C": {
+        "cosine": {
+          "mean": 4047.0,
+          "mean_exact": "4047",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        },
+        "sine": {
+          "mean": 4047.0,
+          "mean_exact": "4047",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        }
+      },
+      "G": {
+        "mean": 176689935795.0,
+        "mean_exact": "176689935795",
+        "nominal95_halfwidth": 0.0,
+        "standard_error": 0.0
+      },
+      "N": {
+        "cosine": 22310490,
+        "sine": 21348995
+      },
+      "N_total": 43659485,
+      "SOURCE": "7a6c4263d96153ecbe721dcfb6941d0d2684b3b0",
+      "case": "df_native_PF",
+      "eligible": true,
+      "epsilon_sig": 0.001,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    },
+    {
+      "C": {
+        "cosine": {
+          "mean": 4047.0,
+          "mean_exact": "4047",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        },
+        "sine": {
+          "mean": 4047.0,
+          "mean_exact": "4047",
+          "nominal95_halfwidth": 0.0,
+          "standard_error": 0.0
+        }
+      },
+      "G": {
+        "mean": 905314697259.0,
+        "mean_exact": "905314697259",
+        "nominal95_halfwidth": 0.0,
+        "standard_error": 0.0
+      },
+      "N": {
+        "cosine": 117418835,
+        "sine": 106281362
+      },
+      "N_total": 223700197,
+      "SOURCE": "7a6c4263d96153ecbe721dcfb6941d0d2684b3b0",
+      "case": "df_native_PF",
+      "eligible": true,
+      "epsilon_sig": 0.0005,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    },
+    {
+      "C": {
+        "cosine": {
+          "mean": 2030.921875,
+          "mean_exact": "129979/64",
+          "nominal95_halfwidth": 2.065270675010476,
+          "standard_error": 1.0334928562302539
+        },
+        "sine": {
+          "mean": 2030.921875,
+          "mean_exact": "129979/64",
+          "nominal95_halfwidth": 2.065270675010476,
+          "standard_error": 1.0334928562302539
+        }
+      },
+      "G": {
+        "mean": 29038120.96875,
+        "mean_exact": "929219871/32",
+        "nominal95_halfwidth": 29529.24011129978,
+        "standard_error": 14776.88085838017
+      },
+      "N": {
+        "cosine": 7152,
+        "sine": 7146
+      },
+      "N_total": 14298,
+      "SOURCE": "b5ed2c6e2399b55a0c24eb8437f842892a6703ef",
+      "case": "df_native_PR",
+      "eligible": true,
+      "epsilon_sig": 0.05,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    },
+    {
+      "C": {
+        "cosine": {
+          "mean": 2030.921875,
+          "mean_exact": "129979/64",
+          "nominal95_halfwidth": 2.065270675010476,
+          "standard_error": 1.0334928562302539
+        },
+        "sine": {
+          "mean": 2030.921875,
+          "mean_exact": "129979/64",
+          "nominal95_halfwidth": 2.065270675010476,
+          "standard_error": 1.0334928562302539
+        }
+      },
+      "G": {
+        "mean": 738148710.078125,
+        "mean_exact": "47241517445/64",
+        "nominal95_halfwidth": 750632.9531859326,
+        "standard_error": 375628.146061167
+      },
+      "N": {
+        "cosine": 182090,
+        "sine": 181365
+      },
+      "N_total": 363455,
+      "SOURCE": "b5ed2c6e2399b55a0c24eb8437f842892a6703ef",
+      "case": "df_native_PR",
+      "eligible": true,
+      "epsilon_sig": 0.01,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    },
+    {
+      "C": {
+        "cosine": {
+          "mean": 2030.921875,
+          "mean_exact": "129979/64",
+          "nominal95_halfwidth": 2.065270675010476,
+          "standard_error": 1.0334928562302539
+        },
+        "sine": {
+          "mean": 2030.921875,
+          "mean_exact": "129979/64",
+          "nominal95_halfwidth": 2.065270675010476,
+          "standard_error": 1.0334928562302539
+        }
+      },
+      "G": {
+        "mean": 3015464057.875,
+        "mean_exact": "24123712463/8",
+        "nominal95_halfwidth": 3066464.331759354,
+        "standard_error": 1534505.3891021314
+      },
+      "N": {
+        "cosine": 745379,
+        "sine": 739397
+      },
+      "N_total": 1484776,
+      "SOURCE": "b5ed2c6e2399b55a0c24eb8437f842892a6703ef",
+      "case": "df_native_PR",
+      "eligible": true,
+      "epsilon_sig": 0.005,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    },
+    {
+      "C": {
+        "cosine": {
+          "mean": 2030.921875,
+          "mean_exact": "129979/64",
+          "nominal95_halfwidth": 2.065270675010476,
+          "standard_error": 1.0334928562302539
+        },
+        "sine": {
+          "mean": 2030.921875,
+          "mean_exact": "129979/64",
+          "nominal95_halfwidth": 2.065270675010476,
+          "standard_error": 1.0334928562302539
+        }
+      },
+      "G": {
+        "mean": 90015510433.625,
+        "mean_exact": "720124083469/8",
+        "nominal95_halfwidth": 91537934.70990372,
+        "standard_error": 45806974.718351156
+      },
+      "N": {
+        "cosine": 22648894,
+        "sine": 21673594
+      },
+      "N_total": 44322488,
+      "SOURCE": "b5ed2c6e2399b55a0c24eb8437f842892a6703ef",
+      "case": "df_native_PR",
+      "eligible": true,
+      "epsilon_sig": 0.001,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    },
+    {
+      "C": {
+        "cosine": {
+          "mean": 2030.921875,
+          "mean_exact": "129979/64",
+          "nominal95_halfwidth": 2.065270675010476,
+          "standard_error": 1.0334928562302539
+        },
+        "sine": {
+          "mean": 2030.921875,
+          "mean_exact": "129979/64",
+          "nominal95_halfwidth": 2.065270675010476,
+          "standard_error": 1.0334928562302539
+        }
+      },
+      "G": {
+        "mean": 461102060217.0781,
+        "mean_exact": "29510531853893/64",
+        "nominal95_halfwidth": 468900638.11698616,
+        "standard_error": 234645010.76753756
+      },
+      "N": {
+        "cosine": 119166984,
+        "sine": 107873783
+      },
+      "N_total": 227040767,
+      "SOURCE": "b5ed2c6e2399b55a0c24eb8437f842892a6703ef",
+      "case": "df_native_PR",
+      "eligible": true,
+      "epsilon_sig": 0.0005,
+      "interpretation": "CONDITIONAL_EMPIRICAL_ALLOWANCE"
+    }
+  ]
+}

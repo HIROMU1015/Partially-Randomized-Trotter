@@ -2441,3 +2441,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 [H2非DF pilotの新規固定契約](docs/non_df_h2_pilot_validation.md)。科学SOURCEと契約を固定してから、新規SCF1・DF1・FCI照合1、Pauli/DFのPF/PR固定4caseを一回実行する。実行前preflightは人工87件PASS。結果取得前に実分子検証PASSとは扱わない。
 
 最終結果：科学SOURCE `b5ed2c6e2399b55a0c24eb8437f842892a6703ef` でone-shot実行、全体はFAILED_NO_RETRY_MANDATORY_STOP（exit1）。同一積分のPauli/DF Hamiltonian・sector ground/FCI・参照signal・native primitiveは固定許容差内。Pauli PFとDF PRの2/4caseは取得・実施gate PASS、Pauli PR/DF PFはthread並行Qiskit処理でborrow例外。失敗caseを再実行せず、DF PFの保存途中会計も未受理として保持する。新規H2 SCF1/DF1/FCI照合1、H4以降0、詳細科学レビューなし。非DF PRのC/N/Gは未取得のためpilot全完了ではない。
+
+## 2026-10-23 H2非DF pilot：未完了2caseを別契約で取得・4方式比較完了
+
+[原因・実装・結果・限界](docs/non_df_h2_process_recovery_validation.md)。旧thread並列のQiskit borrow例外を人工競合負荷で再現し、同負荷4process各64反復と人工4case同時preflightをPASS。安全な回帰等328 unique PASS、分子処理除外5・runtime skip1。新SOURCE `7a6c4263d96153ecbe721dcfb6941d0d2684b3b0` の別one-shotでPauli PR/DF PFだけを取得、両case実施gate PASS・親子exit0/全回収、run02 COMPLETE_MANDATORY_STOP。旧Pauli PF/DF PRはhash照合して再利用し、旧run01失敗/STOPを保持。H2/1.00Å/STO-3G、DF tol-only1e-8/rank3、T=.8/q4/δ=.2/S2、Pauli PR L_D7/14項・DF PR L_D1/3 fragment＋one-body、r2/K4の4方式×5精度が揃った。同じL_Dを同一分割としない。ε=.05のGはPauli PF54,215,700、Pauli PR14,813,895.8125、DF PF56,989,854、DF PR29,038,120.96875 RZ。経験的allowance下のHoeffding十分Nと64 paired MC平均で、母平均保証・一般的優位性・全RPE最終費用の結論ではない。新SCF/FCI/DF/state solve0、H4以降/独立確認/詳細科学レビュー/push0、mandatory STOP。前節の未取得は旧runの時点履歴である。

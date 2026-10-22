@@ -71,3 +71,72 @@ PRのC/Gは有限64標本平均で、paired covarianceを含めたSEと名目Stu
 詳細科学レビュー・新モデル・H4以降・独立確認・候補探索・pushは今回実施しない。
 
 実行前SOURCE commit時点では科学取得未実行。結果は以下に追記し、旧報告・旧STOPは変更しない。
+
+## 取得結果（2026-10-23 JST）
+
+**新規2caseともCOMPLETE_FIXED_CASE・実施gate PASS。旧成功2caseと結合し、4方式×5精度の比較を完了した。**
+科学SOURCE `7a6c4263d96153ecbe721dcfb6941d0d2684b3b0`、新grant `102d235ec47f37365370b7949e356302e6d1321b6f24f99b24f61d2fdd5726be`、
+run02は `COMPLETE_MANDATORY_STOP`。親/子2processすべてexit0、全子回収、全体wall71.516秒。
+Pauli PRの実処理68.416秒、DF PF6.784秒、実処理の共通重なり6.777秒。
+`process.json` のelapsedは親が回収した時点までの時間で、個別処理時間は各statusのstarted/endedで区別する。
+新SCF/FCI/DF分解/state solveはすべて0。成功2caseの科学再実行0。
+
+旧科学kernel・旧契約の科学条件・数値閾値・compiler・乱数生成規則はbyte/hash照合で不変。
+変更はcase間の実行状態のprocess分離と別契約/記録であり、旧run01の失敗とSTOPを消していない。
+元Pauli PF/DF PRのresult SHAはそれぞれ `c09e0d5437a93065a406468d02459823ac3b775f23c14e1d7c5870aec5f21129`、
+`ea68f7293b4d55a8eed926fa7476e5df9f28d924333c032ed2c43d1ed4d751df` のまま。
+
+### 入力・参照と対象条件
+
+入力snapshot SHA256 `fb5ca11d7f0be73abd063ae7b67c6b72399c5a2336635f3764af1a7316e81175`。
+全caseの状態hash `4dc87df6c0466c1e5559ffcf3603b3a45ca7d1453b0657603188c120fe297b11`。
+Pauli Hamiltonian hash `4eca732f1835e5d52ba2672277edbe6ee911114ef9b336d7e820c23ed3abc840`、
+DF Hamiltonian hash `fe05aa6b88aeab032cf9232c59309695375a83d26f1ed59aea031aeaa77647fd`。
+別表現のhashが違うことは演算子差を意味しない。同一MO積分に対する旧receiptのoperator差8.88e-16と参照信号差0を
+hash付きで再利用した。今回のdense/sparse参照差も1.57e-16以下、許容1e-10をPASSした。
+参照信号は約0.6364415911143844+0.771324899831317i。
+以下はH2/1.00Å/STO-3G、DF tol-only1e-8/rank3、T=.8/q4/δ=.2単一点の値に限る。
+
+### primary精度ε_sig=.05
+
+Cはcosine/sine共通値、Nはcos+sin、GはRZ。
+
+|方式|固定分割|C/軸|N_cos+N_sin|G|G SE|
+|---|---|---:|---:|---:|---:|
+|pauli_jw_PF|全14 Pauli項|3850.0|7044+7038|54215700.0|0|
+|pauli_jw_PR|7/14 Pauli項・r2/K4|1005.96875|7365+7361|14813895.8125|228998|
+|df_native_PF|全3 DF fragment|4047.0|7044+7038|56989854.0|0|
+|df_native_PR|1/3 DF fragment＋one-body・r2/K4|2030.921875|7152+7146|29038120.96875|14776.9|
+
+5精度の各軸C/N・exact G・SE・適格性は[20行の比較表](../artifacts/non_df_h2_process_recovery/2026-10-23/comparison.md)、
+全signal/bias/normalization/hash/SOURCE/検証scopeは[comparison.json](../artifacts/non_df_h2_process_recovery/2026-10-23/comparison.json)。
+全20行は固定経験的allowance下で条件付き適格。名目Nは量子shotの実測値ではない。
+保存値だけの[補助図](../artifacts/non_df_h2_process_recovery/2026-10-23/figure/H2_four_fixed_G.png)もPNG/SVG/PDFで保存した。
+
+|方式|corrected signal (real,imag)|signed bias (real,imag)|B|各軸allowance u|
+|---|---|---|---:|---:|
+|pauli_jw_PF|(0.636521723267535, 0.77125869578789)|(8.01321532e-05, -6.62040434e-05)|1|9.37144762e-08|
+|pauli_jw_PR|(0.636487457878171, 0.771286988488513)|(4.58667638e-05, -3.79113428e-05)|1.02352940950889|6.11181861e-08|
+|df_native_PF|(0.636521895502547, 0.771258553606606)|(8.03043882e-05, -6.63462247e-05)|1|4.71483474e-08|
+|df_native_PR|(0.636521838048939, 0.771258601039023)|(8.02469346e-05, -6.62987923e-05)|1.00766277822851|3.78351217e-08|
+
+### 実施した数値gateと限界
+
+新Pauli PRはtail再構成差6.70e-17、独立法則平均差2.88e-15、raw/補正closure差2.94e-15以下。
+強制event order0/2/4の最大演算子差1.24e-16、先頭3trajectory最大2.97e-15（phase alignmentなし）。
+128 sampled compiled wrapperの最大確率差2.07e-14（許容1e-9）。
+DF PFはfull-PF演算子差3.22e-15、ordinary controlled演算子差2.18e-15、compiled wrapper最大確率差4.60e-14。
+新2caseの数値閾値はすべて実行前固定のままPASS。全4caseのcompiled最大誤差は4.60e-14以下。
+20行のHoeffding会計・有理数G恒等式・paired covarianceによるG SEを保存値から再検査しPASSした。
+
+Pauli PRは512 event位置でorder0を510件・order2を2件・order4を0件観測した。
+order4確率3.5227e-7、期待0.0001804件、未観測確率約0.99982。その母平均費用寄与は未同定であり0ではない。
+旧DF PRはorder2/4未観測をそのまま継承する。強制order回路検査のPASSはMC母平均費用の実測ではない。
+Pauli PR CのSE15.5506、G(.05)の名目95%半幅457,615.559 RZ。旧DF PR CのSE1.03349、同G半幅29,529.240 RZ。
+PRの名目95%区間は希少事象や母平均の厳密保証ではない。全軌道・compiled法則平均の独立認証は行っていない。
+
+新しい科学モデル・最良候補探索・一般的PR/PF優位性・サイズスケーリング・全RPE総費用・詳細科学レビューを追加しない。
+H4以降0、追加独立確認0、科学retry0、元成功caseの新科学実行0、共有環境変更0、push0。
+ローカル成果物commit後mandatory STOP。
+
+最終保全監査：旧tracked 6,909件（artifact 4,729件）、旧manifest 153 entryを不変で照合。新SOURCE 266ファイルとrun02 STOP内の全result hashも一致。元worktree clean、旧rawは元/新worktree両方で一致。最終監査は結果commitからも保存値だけで再実行できる（`verify_saved_evidence.py`）。初回監査とその実行sourceは `postprocess_audits/` に保全した。
