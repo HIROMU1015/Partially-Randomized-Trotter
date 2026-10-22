@@ -1,3 +1,7 @@
+## 2026-10-22 H246共通決定論PF：588候補の固定比較完了
+
+[全結果・契約・監査](../docs/research/track_a_h246_pf_common_final_20261022.md)。588候補の評価が全て完了。H2/H4は再計算せず参照結合。H6不足63metadata・新102signal・1380 endpoint・固有新価格209候補418軸を取得し終了監査PASS。旧187価格は保存値受入監査、新22価格は新grant取得。中断予約を含むcompile実呼出438軸、旧parentのexit/reapは不明のまま保全。linear1Å/STO-3G/tol-only rank3/10/19、固定L_D/q≤8・δ=.8/.4/.2/.1/T=.8/P=0。ε=.0005の全公式PF対保存PR削減率：H2 -25.14%、H4 +37.37%、H6 +40.96%。経験的allowance・有限探索条件付きで母平均保証なし。旧SOURCE/raw/grant/STOP不変、local commit後mandatory STOP・push0。新経路 `h6_pf_metadata_completion.py`、監査 `audit_h6_pf_metadata.py` / `audit_h6_pf_common_run.py`、固定参照統合 `finalize_h6_pf_common_results.py`、数値別照合 `check_h246_pf_common_final.py`。stage driverと消費済みgrantの再使用は禁止。以下は履歴。
+
 ## 2026-10-22 H6共通PF：新grantで残22候補の取得開始
 
 [承認・SOURCE・予算・起動証跡](../docs/research/track_a_h6_pf_recovery_execution_start_20261022.md)。明示再開指示を直前の追加内部予算案に結合し、新SOURCE bdf6772aa・新pack/新grantで残22候補44軸を起動。旧187完成価格とSIGNAL/QUALIFYは参照し再計算0、旧394 compile予約を非返却維持。22 worker、正常終了後に別ACCOUNT grant・監査・H2/H4参照結合・local commit/mandatory STOPへ進む。完了/順位は未確定、旧STOP不変、push0。新経路 `h6_pf_recovery_execution.py` / `run_h6_pf_recovery_pipeline.py`、終了処理 `finish_h6_pf_recovery_results.py`、人工 `tests/test_h6_pf_recovery_execution.py` / `tests/test_h6_pf_recovery_exports.py`。以下は履歴。

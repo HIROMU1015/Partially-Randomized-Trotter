@@ -17,3 +17,7 @@ scalar shape修正にgrant前のstdlib NPY header/dtype/SHA検査を追加し、
 ## 追記：利用者の再開指示を新grantへ結合
 
 「計算を再開して」を直前のfresh22内部予算案への承認として、新SOURCE bdf6772aade7063c65d69f24dfdc5e303a2819a2・新pack・新grantで残22を一回起動。旧187価格の保存値受入と旧SIGNAL/QUALIFY成功を参照し、旧STOP・消費は不変。22 worker、人工新5＋export1 PASS。正常終了後に別ACCOUNT grantで固定会計、監査、588候補参照統合、local commit/mandatory STOP。開始時点で完了・順位は未確定。push0。[起動記録](../track_a_h6_pf_recovery_execution_start_20261022.md)。
+
+## 追記：明示継続承認による完了
+
+旧STOP・snapshot_restore1消費を保持し、新SOURCE/新grantで63観測取得と旧52signal照合PASS。H6固定102signal・1380 endpointは継承。中断COSTの完成187pairを保存値監査で受入、明示再開指示を直前の内部予算差分へ結合し、新SOURCE/新grantで残22pairだけ再取得。固有新価格209候補418軸、非返却compile実呼出438軸、native piece累積4854。保存同native30価格を再利用し、H2/H4をbyte参照結合した588候補の全比較を終了監査。旧parentのexit/reapは不明のまま、旧STOP不変。使用済みgrant再開0、旧PR統計不変。[最終結果と限界](../track_a_h246_pf_common_final_20261022.md)。ローカルcommit後mandatory STOP、push0。
