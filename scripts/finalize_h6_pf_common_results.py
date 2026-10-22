@@ -100,6 +100,29 @@ def build(common,metadata):
         changes.append(dict(system=r['system'],epsilon=r['epsilon'],old=before,new=flat(r),saved_PR_selection_unchanged=True,
             difference_factors=['deterministic prefix/formula search domain','common empirical PF allowance policy','direct common native prices; legacy profile prices excluded'],no_search_only_causal_effect_claim=True))
     write(out/'old_vs_common_15.json',changes)
+    # Compare nested deterministic subsets using completed saved endpoints only.
+    # No new qualification/shot/compile calls or PR statistics are evaluated.
+    oldcost=list(csv.DictReader((ROOT/'artifacts/resource_applicability/track_a_h246_saved_cost_results/2026-10-21/candidate_precision_costs_1000.csv').open()))
+    breakdown=[]
+    for system in ('H4','H6'):
+        saved=[r for r in oldcost if r['system']==system and r['method']!='PR' and r['mode']=='USUAL_SIGNED']
+        ids={cid(dict(r,prefix=int(r['prefix']),q=int(r['q']))) for r in saved}
+        with gzip.open(ROOT/f'artifacts/resource_applicability/track_a_pf_common_{system}_results/2026-10-22/PF_endpoint_costs.json.gz','rt') as f:endpoints=json.load(f)
+        assert len(ids)==(28 if system=='H4' else 36)
+        for epsilon in EPS:
+            common=[r for r in endpoints if r['epsilon']==epsilon]
+            sparse=[r for r in common if cid(r['candidate']) in ids]
+            assert len(sparse)==len(ids) and all(r['status'] in ('ELIGIBLE','INELIGIBLE') for r in sparse)
+            best=lambda rows:min((r for r in rows if r['status']=='ELIGIBLE'),key=lambda r:Fraction(r['total_RZ_exact']))
+            a=best(sparse);b=best([r for r in common if r['candidate']['formula']=='4th(m5_best)']);d=best(common)
+            before=next(r for r in old if r['system']==system and float(r['epsilon'])==epsilon)
+            c0=Fraction(before['m5_det_subset_total_RZ']);c1=Fraction(a['total_RZ_exact']);c2=Fraction(b['total_RZ_exact']);c3=Fraction(d['total_RZ_exact'])
+            factors=[c1/c0,c2/c1,c3/c2];assert factors[0]*factors[1]*factors[2]==c3/c0
+            breakdown.append(dict(system=system,epsilon=epsilon,old_sparse_saved_cost=str(c0),old_sparse_under_common=a,new_m5_common_best=b,all_formula_common_best=d,
+                policy_and_saved_arithmetic_factor_exact=str(factors[0]),m5_prefix_expansion_factor_exact=str(factors[1]),formula_expansion_factor_exact=str(factors[2]),
+                exact_product=str(c3/c0),unchanged_native_cost_series_for_sparse_m5=True,
+                interpretation='Nested saved-point comparison under fixed direct native prices; not a population or search-only causal guarantee'))
+    write(out/'nested_PF_cost_change_decomposition_10.json',breakdown)
     calls={s:read(ROOT/f'artifacts/resource_applicability/track_a_pf_common_{s}_results/2026-10-22/end_audit.json') for s in ('H2','H4','H6')}
     summary=dict(status='ALL588_EVALUATED_PASS_MANDATORY_STOP',registered=588,complete=588,unresolved=0,systems={s:{k:a[k] for k in ('SOURCE','registered_candidates','completed_candidates','new_signal_candidates','qualification_endpoints','new_compile_candidates','new_compile_axes','used_saved_compiled_pairs')} for s,a in calls.items()},
         H6_metadata_extra=dict(observed_candidates=63,old_signals_preserved=52,new_raw_signals=11,source=meta['SOURCE'],actual_calls=meta['actual_calls']),
