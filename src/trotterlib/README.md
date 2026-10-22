@@ -1,3 +1,7 @@
+## 2026-10-22 H6 loaderの修正と実行前検査
+
+[修正・人工検証・保全](../../docs/research/track_a_h6_snapshot_loader_repair_20261022.md)。H6 loader修正：scalar shape規約を維持しgrant前にNPY header/dtype/SHA検査。人工26件・保存8配列byte照合PASS。科学再実行・新分子grant・push0、旧STOPとH2/H4結果不変。 以下は履歴。
+
 ## 2026-10-22 H6 metadata取得：snapshot読込後のloader shape検査でSTOP・修正を保存
 
 [実行・STOP・修正・監査](../../docs/research/track_a_h6_pf_metadata_STOP_20261022.md)。不足63件を新grantで起動したが、snapshot_restore1後に0次元scalar shapeの比較不具合でexit1。入力SHAは原値一致。metadata/signal/compile/後続stage0、失敗時STOP条項に従いretry0。別SOURCE修正・人工5PASS、旧H2/H4結果75file不変。588登録中312完了/276未解決を維持。local commit後mandatory STOP、push0。以下は履歴。
