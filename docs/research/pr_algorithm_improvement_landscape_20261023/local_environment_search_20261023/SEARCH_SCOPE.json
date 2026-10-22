@@ -1,0 +1,87 @@
+{
+  "date_jst": "2026-10-23",
+  "environment_id": "ENV-LOCAL-01",
+  "scope_kind": "bounded_read_only_local_search",
+  "root_labels": [
+    {
+      "id": "PR_REPOSITORY",
+      "description": "主repositoryの既存ローカルGitと作業領域"
+    },
+    {
+      "id": "PR_WORKTREE_STORAGE",
+      "description": "PRの既知worktree保存領域とその直下315ディレクトリ"
+    },
+    {
+      "id": "RELATED_PF_REPOSITORY",
+      "description": "既知の関連高次PF研究repositoryのファイル名"
+    },
+    {
+      "id": "RELATED_PF_HOLDOUT_WORKTREE",
+      "description": "既知の関連高次PF holdout領域のファイル名"
+    }
+  ],
+  "registered_worktrees_at_observation": 255,
+  "immediate_worktree_storage_directories_probed": 315,
+  "worktree_counts_overlap": true,
+  "filename_inventory": {
+    "tool": "rg --files -uu --hidden",
+    "file_names_examined": 1401518,
+    "candidate_pattern": "uwc|bliss|df_cgs|df_screening|cgs_cost_table",
+    "candidate_paths_count": 4206,
+    "archive_file_names_count": 4235,
+    "exit_code": 0,
+    "errors": [],
+    "content_search_of_all_files": false,
+    "follows_symlink_directories": false,
+    "excluded_directory_names": [
+      ".git",
+      ".venv",
+      "venv",
+      "node_modules",
+      "__pycache__",
+      ".pytest_cache",
+      "private report output directory"
+    ]
+  },
+  "known_relative_path_probes": [
+    "artifacts/partial_randomized_pf/df_cgs_cost_table.json",
+    "artifacts/partial_randomized_pf/df_cgs_cost_tables/index.json",
+    "artifacts/partial_randomized_pf/df_cgs_fit_cache.json",
+    "artifacts/partial_randomized_pf/df_ground_state_cache",
+    "artifacts/partial_randomized_pf/H3_H14_df_screening_anchor_cgs.json",
+    "artifacts/partial_randomized_pf/H3_H14_df_screening_anchor_cgs.partial.json",
+    "artifacts/grouped_uwc_pf_qpe"
+  ],
+  "uwc_raw_directory_found": false,
+  "ground_state_cache_candidates_without_historical_identity": 1,
+  "synthetic_fixture_lookalikes_rejected": 4,
+  "old_recorded_research_root_exists": false,
+  "local_git_scope": {
+    "fixed_reference_commits": [
+      "a9bdcf1d44061daceffe896637e2c92fcb3353b4",
+      "231d17e393f573fd29c659eaf1fd9bae2a68d8f9",
+      "403204edf22e5712a71ac9ac7eebdbcd18626421",
+      "403204edf22e5712a71ac9ac7eebdbcd18626421"
+    ],
+    "deleted_inputs_commit": "98f960c2dd09fc1ae6b8b5c802dc5ce84fc61604",
+    "deleted_inputs_parent": "57e49cf27d19bfb35cb71b7e9d90a5a30e371e5b",
+    "historical_input_addition_commit": "c580aec790c46dd9aaa2f2982bc9270210523a0d",
+    "path_histories": "Only paths for the Cgs input family, its source raw references, old screening and grouped UWC artifacts."
+  },
+  "limits": [
+    "探索範囲内のファイル名・研究語・既知保存先・既存manifestと、候補に結び付く特定Git履歴だけを確認した。全ファイルの内容検索ではない。",
+    "別host、SSH接続先、他ユーザー領域、共有設定、未知の保存領域には探索を広げていない。",
+    "symlink先ディレクトリ、Gitのunreachable/dangling object・reflog、無関係な研究領域、アプリcache内部は未調査。",
+    "圧縮物4235件はファイル名のみを記録した。member検索・展開はしておらず、圧縮物内部の不存在は主張しない。",
+    "旧screeningが指す旧研究rootは現環境で存在しなかった。具体的な内部絶対パスは公開版から除外した。",
+    "実施したfilename検索・既知path probeに権限エラーはなかった。未調査領域をACCESS_UNAVAILABLEや不存在と分類していない。",
+    "並行作業のworktreeや科学processを凍結・変更していない。観測は探索時点の限定された結果である。"
+  ],
+  "publication_redactions": [
+    "internal absolute paths",
+    "host/user identifiers",
+    "private cache fingerprints and contents",
+    "per-worktree paths and process details"
+  ],
+  "remote_or_ssh_search_performed": false
+}

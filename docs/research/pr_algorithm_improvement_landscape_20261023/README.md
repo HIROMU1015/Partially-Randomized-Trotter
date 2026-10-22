@@ -20,6 +20,7 @@
 | [STUDY_CARDS.md](STUDY_CARDS.md) | 各研究の目的・条件・結果・SOURCE |
 | [EVIDENCE_GAPS.md](EVIDENCE_GAPS.md) | 8 GAPと影響・優先度 |
 | [OTHER_ENVIRONMENT_HANDOFF.md](OTHER_ENVIRONMENT_HANDOFF.md) | GAP別の未実行回収指示案 |
+| [現環境のGAP-001とGAP-008探索](local_environment_search_20261023/SEARCH_REPORT.md) | 原資料の限定探索、旧無効化DF資料のidentity、未解消範囲 |
 | [PR_IMPROVEMENT_OPPORTUNITIES.md](PR_IMPROVEMENT_OPPORTUNITIES.md) | I/II/IIIの10概念候補 |
 | [SOURCE_AND_PROVENANCE_INDEX.json](SOURCE_AND_PROVENANCE_INDEX.json) | 主要ファイルの取得/照合区分 |
 | [BRANCH_COVERAGE.json](BRANCH_COVERAGE.json) | 731公開branchの固定HEAD・path確認範囲 |
@@ -35,3 +36,7 @@
 共通運用指示2026-10-17（特に§8.4）を確認した。新しい資料公開は元研究のscientific GO、論文化GO、旧STOP解除ではない。公開/照合後mandatory STOP。
 
 次担当はユーザー/GPT：回収すべきGAPと具体的な研究候補を選ぶ。別環境資料回収、新科学レビュー、実装/計算はそれぞれ別途の依頼・承認後に行う。Codexは今回の完了後に自動開始しない。
+
+## GAP原資料の現環境探索
+
+2026-10-23の[追加探索報告](local_environment_search_20261023/SEARCH_REPORT.md)では、GAP-001の原rawは探索範囲内で未発見。GAP-008は旧無効化Cgs 37ファイルと旧screening結果のhistorical identityを確認したが、修正後canonical入力・実run来歴は未確認。GAP全体は両方とも未解消で、旧stale statusとmandatory STOPを保持する。
