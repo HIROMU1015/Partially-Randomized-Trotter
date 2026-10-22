@@ -1,0 +1,75 @@
+{
+  "status": "UNACQUIRED_PRIVATE_METADATA_DEFERRED_BY_USER",
+  "user_reply": "一旦なしで進めて後で渡す",
+  "new_private_root": null,
+  "remote_host": null,
+  "request_is_not_science_authorization": true,
+  "locator_convention": "<private> is an unknown original root, not a real path checked here. Derive paths from original config fields and validate against original seals; do not search broadly.",
+  "acquisition_SOURCE": "4ec26921c6872ed6e8667f167074e1e405cf1a3f",
+  "acquisition_publication": "a05f4ed19e87e1eb65f7fc346385b5b4eae69845",
+  "exploration_plan_sha256": "4dda5e68815f8359b3890dc7a9e301956a631d6cea500e8a90703224db719373",
+  "exploration_end_audit_sha256": "38ad4d594a3be9289bdf1697d9a37a6d677384899a3320666c75761a304f7723",
+  "files": [
+    {
+      "id": "RUNTIME_PROVIDER",
+      "required": "original runtime, package/distribution and provider inventory plus imported-module origins, Python binary/shared-library identity",
+      "locators_derived_from_SOURCE": ["<private>/config_PIPELINE_APPROVED_PRIVATE.json", "<private>/plan_PIPELINE_APPROVED_PRIVATE.json", "<private>/stagepacks/H2_PR_EXPLORATION/config_APPROVED_PRIVATE.json", "the original paths listed by cfg.sealed_files, cfg.runtime, cfg.provider_root"],
+      "availability": "NOT_ACQUIRED",
+      "acceptance": "original plan SHA and closure digest; every required loaded source/runtime byte bound to original manifest; package version is insufficient"
+    },
+    {
+      "id": "NEW_NATIVE_PREPARATION",
+      "required": "fullprep3/cut1 preparation identities, ordered blocks/basis/scalar/partition and source linkage",
+      "locators_derived_from_SOURCE": ["cfg.signal_path", "cfg.inputs", "cfg.reference_path", "cfg.output/<task_id>/result.json", "cfg.output/<task_id>/cost_cosine.json", "cfg.output/<task_id>/cost_sine.json"],
+      "availability": "PUBLIC_CONTRACT_AND_SUMMARY_ONLY",
+      "acceptance": "same saved H/state/snapshot; correct full vs retained prefix; signed schedule/scalar once; original accepted per-task hash; do not require prefix3 and prefix1 hash equality"
+    },
+    {
+      "id": "GUARD_RECEIPTS",
+      "required": "actual per-axis translator guard receipts and completion aggregation",
+      "locators_derived_from_SOURCE": ["cfg.output/<task_id>/compiler_phase_guard_0.json", "cfg.output/<task_id>/compiler_phase_guard_1.json", "cfg.run_root/compiler_policy_end_audit.json", "cfg.run_root/end_audit.json"],
+      "task_id_pattern": "H2E1__<candidate_id>__<sample>",
+      "candidate_ids": ["H2O32_c7ec590a32a859bc", "H2O32_8a2ecdd0294ffb74"],
+      "saved_sample_counts": {"H2O32_c7ec590a32a859bc": 33, "H2O32_8a2ecdd0294ffb74": 34},
+      "availability": "SUMMARY_PASS_ONLY_NOT_ACTUAL_RECEIPTS",
+      "acceptance": "2 axes for each accepted target task; H2 guard policy; stream digest per recorded pass; unchanged stream, zero scalar, no state fitting or postcompile correction; task/cost fingerprints and compiled_SHA tied to accepted original audit"
+    },
+    {
+      "id": "NEW_SIGNAL_DIAGNOSTICS",
+      "required": "original corrected/raw/exact-tail signal and reference values, independent forward errors, normalization error, allowance evidence and preparation hashes",
+      "locators_derived_from_SOURCE": ["cfg.signal_path", "<private>/stagepacks/H2_SIGNAL_OUTER32/run01/output/signals.json", "<private>/stagepacks/H2_SIGNAL_OUTER32/run01/output/reference.npz", "original reference receipt or binding in stage sealed_files"],
+      "availability": "NOT_ACQUIRED; E exposes bias/logB and adopted u, not the complete original diagnostics",
+      "acceptance": "original hash and candidate join; reference values/accuracy treatment common; no inference from PASS labels or saved u"
+    },
+    {
+      "id": "COMMON_ADAPTIVE_INPUTS",
+      "required": "path signal/vector discrepancies, corrected-signal-unit raw closure, independent logB difference, both-path work counts and all-required-stage norm observations, shared reference diagnostics",
+      "locators_derived_from_SOURCE": ["original signals/forward traces/action records if saved"],
+      "availability": "UNCONFIRMED; inspected new result schema does not expose all A-style inputs",
+      "acceptance": "shared definitions and sampling of stages; no zero filling, reverse engineering u, or copying A inputs to B",
+      "if_not_saved": "design only missing diagnostics for separate explicit scientific approval; no calls now"
+    },
+    {
+      "id": "OLD_ORIGINAL_METADATA",
+      "required": "old runtime/provider seals and preservation manifest if original-byte recheck is required",
+      "exact_known_paths": [
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h2-pr-resource-preparation-20261019/.h2_pr_resource_private/2026-10-19/D_activation01/D_spec_EXECUTION.json",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h2-pr-resource-preparation-20261019/.h2_pr_resource_private/2026-10-19/phase0_preparation01/runtime_hashes_PRIVATE.json",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h2-pr-resource-preparation-20261019/.h2_pr_resource_private/2026-10-19/D_interruption_audit01/original_D_preservation_manifest_PRIVATE.json"
+      ],
+      "availability": "THREE_EXACT_PATHS_ABSENT_HERE; previous fixed audit actually read and matched these, retained as historical evidence",
+      "runtime_manifest_sha256": "432e5f360030f30571e8ee8758a25f7972a25f964787cb82b124a805e0acb258",
+      "acceptance": "preserve previous audit; report current absence separately; use exact original host/locator if supplied"
+    },
+    {
+      "id": "OLD_COMPILED_CORRECTNESS_SCOPE",
+      "required": "any existing compiled action/phase correctness receipt, archived compiled/wrapper circuit or vectors for B1_p3_q4_2nd and B1_p3_q2_4th",
+      "locator": "original D recovery config output and preservation manifest referenced by execution_binding; actual recovery output root must be supplied or read from original config",
+      "availability": "NATIVE_CONTROL_AND_COMPILER_FINGERPRINT_METADATA_AVAILABLE; matching compiled-vector gate not found in acquired compile_one source",
+      "acceptance": "identify exactly what was validated; do not project new PR validation onto old PF; retrieve saved evidence before suggesting recompile"
+    }
+  ],
+  "no_broad_directory_search": true,
+  "no_replacement_science_executed": true,
+  "mandatory_STOP": true
+}
