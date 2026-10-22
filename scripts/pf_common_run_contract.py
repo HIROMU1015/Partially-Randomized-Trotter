@@ -49,7 +49,7 @@ def verify(plan):
 class Stage:
     def __init__(self,private,kind,caps,dependencies=()):
         self.private=Path(private);self.plan=read(self.private/'plan_APPROVED.json');verify(self.plan)
-        require(kind in ('SIGNAL','QUALIFY','COST','ACCOUNT'),'REGISTERED_STAGE')
+        require(kind in ('METADATA','SIGNAL','QUALIFY','COST','ACCOUNT'),'REGISTERED_STAGE')
         for dep in dependencies:require(read(self.private/dep/'completion.json')['status']=='PASS','DEPENDENCY:'+dep)
         self.root=self.private/kind
         require(not self.root.exists(),'ONE_SHOT_STAGE_ALREADY_ENTERED')

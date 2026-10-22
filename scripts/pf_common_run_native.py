@@ -37,7 +37,10 @@ def restore(stage,prefixes):
         v=np.ascontiguousarray(value);record=r['arrays'][name]
         c.require(list(v.shape)==record['shape'] and v.dtype.str==record['dtype'] and
             hashlib.sha256(v.tobytes()).hexdigest()==record['sha256'],'EXACT_SCIENTIFIC_ARRAY:'+name)
-    ham=DFHamiltonian(float(a['constant']),a['one_body'],a['lambdas'],tuple(a['g_matrices']),r['hamiltonian_metadata'])
+    if plan['system']=='H6':
+        from trottertracks.resource_applicability.ax2b_h6_saved_completion_loader_v1 import load_h6_snapshot
+        ham,sector,_,_,_,_=load_h6_snapshot(Path(inp['snapshot']),r,c.read(inp['df_receipt']))
+    else:ham=DFHamiltonian(float(a['constant']),a['one_body'],a['lambdas'],tuple(a['g_matrices']),r['hamiltonian_metadata'])
     full,state=a['state_vector'],a['sector_state_vector'];bind=plan['binding']
     c.require(df_hamiltonian_hash(ham)==bind['hamiltonian'] and _state_hash(full,state)==bind['state'] and ham.n_blocks==bind['rank'],'EXACT_OLD_PR_HAMILTONIAN_STATE')
     stage.take('occupation_oracle');oracle=OccupationOracle(ham,full,prefix=ham.n_blocks)
@@ -65,6 +68,16 @@ def forward_matrices(ctx):
         v=occupation_one_body(g,layout);matrices.append(w*(v@v))
     return matrices
 
+def forward_propagator(stage,ctx,index,time,matrix,task):
+    from scipy.linalg import expm
+    if not hasattr(ctx,'forward_cache'):return expm(-.5j*time*matrix)
+    key=(index,float(time).hex())
+    with ctx.forward_cache_lock:
+        if key not in ctx.forward_cache:
+            stage.take('forward_expm',str(index)+'_'+float(time).hex())
+            ctx.forward_cache[key]=expm(-.5j*time*matrix)
+        return ctx.forward_cache[key]
+
 def new_signal(stage,ctx,row,matrices):
     from scipy.linalg import expm
     from h46_m5_native import signal
@@ -77,8 +90,8 @@ def new_signal(stage,ctx,row,matrices):
     stage.take('independent_forward',identity);stage.take('forward_block_action',identity,actions)
     v=ctx.oracle.initial.copy()
     for step in old.c.core.schedule(row['formula'],row['q'],'PER_PIECE',1):
-        for matrix in matrices[:p+1]:v=expm(-.5j*step['signed_time']*matrix)@v
-        for matrix in reversed(matrices[:p+1]):v=expm(-.5j*step['signed_time']*matrix)@v
+        for i,matrix in enumerate(matrices[:p+1]):v=forward_propagator(stage,ctx,i,step['signed_time'],matrix,identity)@v
+        for i in reversed(range(p+1)):v=forward_propagator(stage,ctx,i,step['signed_time'],matrices[i],identity)@v
     v*=ctx.np.exp(-.8j*ctx.scalar)
     expected=complex(ctx.np.vdot(ctx.oracle.initial,v));actual=complex(record['corrected']['real'],record['corrected']['imag'])
     err=abs(expected-actual);c.require(math.isfinite(err) and err<1e-9,'INDEPENDENT_FORWARD_SIGNAL')

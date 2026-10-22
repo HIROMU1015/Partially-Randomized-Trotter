@@ -8,11 +8,17 @@ from pathlib import Path
 import pf_common_run_contract as c
 
 def run_signal(private):
-    plan=c.read(Path(private)/'plan_APPROVED.json');s=c.Stage(private,'SIGNAL',plan['signal_caps'])
+    plan=c.read(Path(private)/'plan_APPROVED.json')
+    if plan.get('metadata_completion'):
+        proof=c.read(plan['metadata_completion']);c.require(proof['status']=='PASS' and proof['records']==63,'PRIOR_METADATA_63_PASS')
+    s=c.Stage(private,'SIGNAL',plan['signal_caps'])
     try:
         import pf_common_run_native as native
         prefixes=sorted({r['prefix'] for r in plan['signal_base'] if r['method']!='FULL'})
         ctx=native.restore(s,prefixes);matrices=native.forward_matrices(ctx)
+        if plan.get('forward_propagator_cache'):
+            import threading
+            ctx.forward_cache={};ctx.forward_cache_lock=threading.RLock()
         obs=c.resources();count=c.workers(obs,len(plan['signal_base']),512*2**20,64*2**20)
         c.require(count>0,'NO_IDLE_SIGNAL_RESOURCE')
         c.save(s.root/'resource_receipt.json',dict(observation=obs,workers=count,nested_BLAS_threads=1))
@@ -90,7 +96,7 @@ def run_cost(private):
         if selected:
             import pf_common_run_native as native
             native.STAGE=s;native.CTX=native.restore(s,prefixes);native.SELECTED=c.read(Path(private)/'SIGNAL/output/all_signals.json')
-            obs=c.resources();n=c.workers(obs,len(selected),768*2**20 if p['system']=='H4' else 512*2**20,512*2**20)
+            obs=c.resources();n=c.workers(obs,len(selected),768*2**20 if p['system']=='H4' else (2*2**30 if p['system']=='H6' else 512*2**20),512*2**20)
             c.require(n>0,'NO_IDLE_COST_RESOURCE')
             c.save(s.root/'resource_receipt.json',dict(observation=obs,workers=n,worker_RSS_proxy_not_cap=True,compiler_processes=1,BLAS_threads=1))
             results=[]
