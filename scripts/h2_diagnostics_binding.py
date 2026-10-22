@@ -173,9 +173,11 @@ def verify_runtime_binding(cfg):
     verify_mapped_runtime(cfg)
 
 
-def accepted_diagnostics_receipt(root,expected):
+def accepted_diagnostics_receipt(root,expected,*,completion_sha256):
     """Metadata/hash acceptance only. Never decode or evaluate saved vectors."""
-    root=Path(root).resolve();completion=read(root/'completion.json')
+    root=Path(root).resolve()
+    require(sha(root/'completion.json')==completion_sha256,'EXTERNALLY_SEALED_DIAGNOSTIC_COMPLETION')
+    completion=read(root/'completion.json')
     require(completion['status']=='CONTRACT_COMPLETE_NOT_SCIENTIFIC_GO' and
             completion['result']['status']=='DIAGNOSTICS_ONLY','COMPLETED_DIAGNOSTICS_REQUIRED')
     require(not (root/'STOP.json').exists(),'PARTIAL_DIAGNOSTICS_FORBIDDEN')
@@ -183,9 +185,21 @@ def accepted_diagnostics_receipt(root,expected):
     for key in ('source_commit','binding','physical','native_policy','allowance_policy','reference_policy','runtime'):
         require(completion[key]==expected[key],'DIAGNOSTIC_IDENTITY:'+key)
     require(sha(root/'CONSUMED.json')==completion['marker_sha256'],'ACCEPTED_CONSUMED_MARKER')
-    require(read(root/'CONSUMED.json')['grant']['contract_sha256']==completion['contract_sha256'],
+    marker=read(root/'CONSUMED.json');grant=marker['grant']
+    require(marker['state']=='CONSUMED_NO_RETRY_NO_REFUND' and grant['run_root']==str(root) and
+            digest(grant['budget'])==digest(expected['budget']),'ORIGINAL_CONSUMED_GRANT_SCOPE')
+    require(grant['contract_sha256']==completion['contract_sha256'],
             'ORIGINAL_GRANT_CONTRACT_BINDING')
     require(completion['contract_sha256']==digest(expected),'DIAGNOSTIC_CONTRACT_DIGEST')
+    ledger=sorted((root/'ledger').glob('*.json'));used=dict.fromkeys(expected['budget'],0)
+    require(bool(ledger),'ORIGINAL_DIAGNOSTIC_LEDGER_REQUIRED')
+    for sequence,p in enumerate(ledger,1):
+        row=read(p)
+        require(p.name=='%06d.json'%sequence and row['nonrefundable'] is True and
+                row['contract_sha256']==completion['contract_sha256'],'ORIGINAL_DIAGNOSTIC_LEDGER_IDENTITY')
+        require(row['kind'] in used and type(row['amount']) is int and row['amount']>0,'ORIGINAL_DIAGNOSTIC_LEDGER_AMOUNT')
+        used[row['kind']]+=row['amount']
+    require(digest(used)==digest(expected['budget']),'ORIGINAL_DIAGNOSTIC_LEDGER_BUDGET')
     files={r['path']:r['sha256'] for r in completion['result_files']}
     ids=[r['id'] for r in expected['candidates']]
     required={'results/preparation_1.json','results/preparation_3.json'}

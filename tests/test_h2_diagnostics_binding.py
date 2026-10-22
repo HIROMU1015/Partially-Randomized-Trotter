@@ -107,7 +107,11 @@ class BindingTests(unittest.TestCase):
             native_policy='synthetic:native',allowance_policy='synthetic:allowance',
             reference_policy='synthetic:reference',runtime={'synthetic':True},budget={'path_signal':8},
             candidates=[{'id':'SYNTHETIC_A'},{'id':'SYNTHETIC_B'}])
-        marker=run/'CONSUMED.json';b.write(marker,{'grant':{'contract_sha256':b.digest(expected)}})
+        marker=run/'CONSUMED.json';b.write(marker,{'state':'CONSUMED_NO_RETRY_NO_REFUND',
+            'grant':{'contract_sha256':b.digest(expected),'budget':expected['budget'],'run_root':str(run)}})
+        (run/'ledger').mkdir()
+        b.write(run/'ledger/000001.json',dict(kind='path_signal',amount=8,nonrefundable=True,
+            contract_sha256=b.digest(expected)))
         for prefix in (1,3):b.write(run/'results'/('preparation_'+str(prefix)+'.json'),{'synthetic':True})
         for row in expected['candidates']:
             cid=row['id'];v=run/'results'/(cid+'_vectors.npz');v.write_bytes(b'ARTIFICIAL_NOT_A_REAL_NPZ')
@@ -125,22 +129,25 @@ class BindingTests(unittest.TestCase):
         r['result_files']=[dict(path=str(q.relative_to(run)),sha256=b.sha(q)) for q in sorted((run/'results').iterdir())]
         b.write(p,r)
 
+    def accept(self,run,cfg):
+        return b.accepted_diagnostics_receipt(run,cfg,completion_sha256=b.sha(run/'completion.json'))
+
     def test_accepted_bundle_is_metadata_only_and_grant_not_reusable(self):
-        run,cfg=self.bundle();r=b.accepted_diagnostics_receipt(run,cfg)
+        run,cfg=self.bundle();r=self.accept(run,cfg)
         self.assertFalse(r['prior_grant_reusable']);self.assertFalse(r['science_GO'])
         self.assertFalse(r['numerical_values_evaluated'])
 
     def test_partial_diagnostics_cannot_be_accepted(self):
         run,cfg=self.bundle();b.write(run/'STOP.json',{'partial':True})
-        with self.assertRaisesRegex(ValueError,'PARTIAL'):b.accepted_diagnostics_receipt(run,cfg)
+        with self.assertRaisesRegex(ValueError,'PARTIAL'):self.accept(run,cfg)
 
     def test_missing_vectors_rejected(self):
         run,cfg=self.bundle();(run/'results/SYNTHETIC_A_vectors.npz').unlink();self.refresh(run)
-        with self.assertRaisesRegex(ValueError,'COMPLETE_DIAGNOSTIC_BUNDLE'):b.accepted_diagnostics_receipt(run,cfg)
+        with self.assertRaisesRegex(ValueError,'COMPLETE_DIAGNOSTIC_BUNDLE'):self.accept(run,cfg)
 
     def test_result_byte_mutation_rejected(self):
         run,cfg=self.bundle();(run/'results/SYNTHETIC_A_vectors.npz').write_bytes(b'TAMPERED')
-        with self.assertRaisesRegex(ValueError,'RESULT_HASH'):b.accepted_diagnostics_receipt(run,cfg)
+        with self.assertRaisesRegex(ValueError,'RESULT_HASH'):self.accept(run,cfg)
 
     def test_source_runtime_reference_identity_rejected(self):
         for key,value in [('source_commit','c'*40),('runtime',{'different':True}),('reference_policy','DIFFERENT')]:
@@ -149,22 +156,35 @@ class BindingTests(unittest.TestCase):
                     old=self.root;self.root=Path(tmp)
                     try:
                         run,cfg=self.bundle();cfg[key]=value
-                        with self.assertRaises(ValueError):b.accepted_diagnostics_receipt(run,cfg)
+                        with self.assertRaises(ValueError):self.accept(run,cfg)
                     finally:self.root=old
 
     def test_consumed_marker_change_rejected(self):
         run,cfg=self.bundle();(run/'CONSUMED.json').write_text('{}')
-        with self.assertRaisesRegex(ValueError,'CONSUMED_MARKER'):b.accepted_diagnostics_receipt(run,cfg)
+        with self.assertRaisesRegex(ValueError,'CONSUMED_MARKER'):self.accept(run,cfg)
 
     def test_different_or_boolean_budget_rejected(self):
         run,cfg=self.bundle();p=run/'completion.json';r=b.read(p);r['used']={'path_signal':True};b.write(p,r)
-        with self.assertRaisesRegex(ValueError,'BUDGET'):b.accepted_diagnostics_receipt(run,cfg)
+        with self.assertRaisesRegex(ValueError,'BUDGET'):self.accept(run,cfg)
 
     def test_relaxed_tolerance_phase_fit_or_scalar_duplication_rejected(self):
         run,cfg=self.bundle();p=run/'results/SYNTHETIC_A_diagnostics.json';original=b.read(p)
         for field,value in [('strict_diagnostic_limit',1e-7),('phase_alignment',True),('postcompile_correction',True),('scalar_applications',2)]:
             r=copy.deepcopy(original);r[field]=value;b.write(p,r);self.refresh(run)
-            with self.assertRaises(ValueError):b.accepted_diagnostics_receipt(run,cfg)
+            with self.assertRaises(ValueError):self.accept(run,cfg)
+
+    def test_completion_requires_external_byte_seal(self):
+        run,cfg=self.bundle();value=b.sha(run/'completion.json')
+        with (run/'completion.json').open('a') as f:f.write(' ')
+        with self.assertRaisesRegex(ValueError,'EXTERNALLY_SEALED'):
+            b.accepted_diagnostics_receipt(run,cfg,completion_sha256=value)
+
+    def test_original_diagnostic_ledger_cannot_be_missing_or_underbudget(self):
+        run,cfg=self.bundle();p=run/'ledger/000001.json';row=b.read(p)
+        row['amount']=7;b.write(p,row)
+        with self.assertRaisesRegex(ValueError,'LEDGER_BUDGET'):self.accept(run,cfg)
+        p.unlink()
+        with self.assertRaisesRegex(ValueError,'LEDGER_REQUIRED'):self.accept(run,cfg)
 
     def test_diagnostics_counts_unchanged(self):
         expected=dict.fromkeys(c.KINDS,0);expected.update(bootstrap=1,setup=1,prepare=2,diagnose=4,path_signal=8,reference_rebind=4)
