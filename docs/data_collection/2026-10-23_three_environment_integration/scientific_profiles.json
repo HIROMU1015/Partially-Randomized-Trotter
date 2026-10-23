@@ -1,0 +1,403 @@
+{
+  "schema": 1,
+  "values_recomputed": false,
+  "profiles": [
+    {
+      "profile_id": "COMMON588",
+      "purpose": "採択済み共通決定論PF固定域と保存PR探索の点比較",
+      "conditions": "Linear H2/H4/H6; nearest-neighbour 1.00 Angstrom; STO-3G; signed tol-only DF1e-8 ranks3/10/19; T=.8, P=0. Per-candidate Hamiltonian/state/input hashes remain in fixed manifests.",
+      "candidates_and_schedule": "S2/Yoshida4/m5_best; q=1/2/4/8, delta=.8/q. H2 B0/B0I prefix0..2 + Full3 (84); H4 prefix1..9 + Full10 (228); H6 prefix5..15 + Full19 (276). PR prefix1/3/5, K4, outer32; signed substeps, r and remaining candidate fields: candidate_index.csv and dataset.json.gz. 588 evaluated candidates /2940 precision endpoints does not mean every candidate was compiled.",
+      "cohort": "Saved exploration; 36 PR groups. Five epsilons .05/.01/.005/.001/.0005. Pilot, original n8/n32, original PR-vs-PR confirmation and reconstructed confirmation remain separate.",
+      "measurement_and_contract": "full cosine/sine Hadamard wrapper; compiled RZ at declared native DF profile; sufficient analytic shots are separate from cost-MC sample count; empirical allowance and saved full-H reference, not strict bias certificates or total RPE/FT cost. alpha_axis=.025; symmetric-directional; rz/sx/x/cx; Qiskit1.3.0 opt1. Saved B normalization and eligible/ineligible/undetermined states retained.",
+      "limits": "Formally adopted fixed-grid finite point result; all-formula15 and within-formula45 answer different questions. PR was not optimized over the PF domain. Original H6 interrupted COST parent exit/reap/cause/time unknown; later acceptance does not repair that history.",
+      "reference_ids": [
+        "R0053",
+        "R0054",
+        "R0055",
+        "R0056",
+        "R0057",
+        "R0058",
+        "R0059",
+        "R0060",
+        "R0061",
+        "R0062",
+        "R0063",
+        "R0064",
+        "R0065",
+        "R0066",
+        "R0067",
+        "R0068",
+        "R0069",
+        "R0070",
+        "R0071",
+        "R0072",
+        "R0073",
+        "R0074",
+        "R0075",
+        "R0076",
+        "R0077",
+        "R0078",
+        "R0079",
+        "R0156",
+        "R0157",
+        "R0158",
+        "R0159",
+        "R0160",
+        "R0161",
+        "R0162",
+        "R0163",
+        "R0164",
+        "R0165",
+        "R0166",
+        "R0167",
+        "R0168",
+        "R0169",
+        "R0170",
+        "R0171"
+      ],
+      "review_sections": [
+        "3",
+        "4",
+        "5",
+        "9",
+        "11.M1",
+        "11.M2",
+        "11.M3"
+      ]
+    },
+    {
+      "profile_id": "H468_INDEPENDENT_ENDPOINTS",
+      "purpose": "既存論文主表のH4/H6/H8固定endpoint独立確認",
+      "conditions": "Linear H4/H6/H8, 1.00 Angstrom, STO-3G, tol-only DF1e-8 rank10/19/28; T=.8,P=0; five-precision exploration is not this six-endpoint cohort.",
+      "candidates_and_schedule": "Six comparison_id rows in main_table.csv/main_table_proposed.csv supply exact epsilon, PR/PF IDs, prefix, q,r,K, delta and deterministic baseline. Do not replace these selected baselines with COMMON588 without a separate decision.",
+      "cohort": "H4 independent n1108/n78; H6 n48/n104; H8 n48/n48. H8 mechanism aliases are the same observations. No pooling with A n8, old union n32 or H4 legacy DF12.",
+      "measurement_and_contract": "full cosine/sine Hadamard wrapper; compiled RZ at declared native DF profile; sufficient analytic shots are separate from cost-MC sample count; empirical allowance and saved full-H reference, not strict bias certificates or total RPE/FT cost. usual signed bias, empirical factor1; original source and audit_status per row.",
+      "limits": "H4 coarse NOT_REPRODUCED retained; H6 coarse REPRODUCED means PF cheaper. H8 has REPORTED_LOCAL_PASS_NOT_REVERIFIED_FROM_PUBLIC_RECEIPTS. Numeric table availability does not certify private execution receipts.",
+      "reference_ids": [
+        "R0124",
+        "R0136",
+        "R0137",
+        "R0139",
+        "R0140",
+        "R0142",
+        "R0143",
+        "R0172",
+        "R0173",
+        "R0174",
+        "R0175",
+        "R0176",
+        "R0177",
+        "R0178",
+        "R0179",
+        "R0180",
+        "R0181",
+        "R0182",
+        "R0183",
+        "R0184",
+        "R0185",
+        "R0186",
+        "R0187",
+        "R0188",
+        "R0189",
+        "R0190",
+        "R0191",
+        "R0192",
+        "R0193",
+        "R0194",
+        "R0195",
+        "R0196",
+        "R0197",
+        "R0198",
+        "R0199",
+        "R0200",
+        "R0201",
+        "R0202",
+        "R0203",
+        "R0204",
+        "R0205",
+        "R0206",
+        "R0207",
+        "R0208",
+        "R0209",
+        "R0210",
+        "R0211",
+        "R0212"
+      ],
+      "review_sections": [
+        "3",
+        "4",
+        "5",
+        "11.M1",
+        "11.M3"
+      ]
+    },
+    {
+      "profile_id": "OUTER32_EXPLORATION",
+      "purpose": "高次PR探索と保存shot/単価会計",
+      "conditions": "Linear H2/H4/H6; nearest-neighbour 1.00 Angstrom; STO-3G; signed tol-only DF1e-8 ranks3/10/19; T=.8, P=0. Per-candidate Hamiltonian/state/input hashes remain in fixed manifests.",
+      "candidates_and_schedule": "PR S2/Yoshida4/m5_best, q1/2/4/8, K4, prefix1/3/5, outer32. Exact r, signed stages, per-axis b,u,B,N,C and eligibility: original result/input files.",
+      "cohort": "H2 exploration525 distinct from design pilot396; H4 exploration793, H6 exploration607. Saved accounting36 PR groups /30 formula comparisons. Never treat these as independent confirmation.",
+      "measurement_and_contract": "full cosine/sine Hadamard wrapper; compiled RZ at declared native DF profile; sufficient analytic shots are separate from cost-MC sample count; empirical allowance and saved full-H reference, not strict bias certificates or total RPE/FT cost. signal policy SOURCE4ec26921...:scripts/h46_m5_signal_contract.py; shot SOURCE9a77d2b...:scripts/d0_frozen_shot_rule_v1.py. Binary64 legacy normalization handling is retained.",
+      "limits": "SHOT_POLICY_NOT_ADOPTED is an earlier STOP; later saved evaluation exists. Noncancellation B0/B0I missing components remain missing; no operational universal bias predictor.",
+      "reference_ids": [
+        "R0125",
+        "R0126",
+        "R0127",
+        "R0218",
+        "R0219"
+      ],
+      "review_sections": [
+        "3",
+        "4",
+        "5",
+        "11.M1",
+        "11.M2"
+      ]
+    },
+    {
+      "profile_id": "PR_VS_PR_ORIGINAL_RUN01",
+      "purpose": "元H2/H4確認とH6失敗の公開転記",
+      "conditions": "Linear H2/H4/H6; nearest-neighbour 1.00 Angstrom; STO-3G; signed tol-only DF1e-8 ranks3/10/19; T=.8, P=0. Per-candidate Hamiltonian/state/input hashes remain in fixed manifests.",
+      "candidates_and_schedule": "epsilon=.0005; PR vs PR: H2 S2/q4 vs Yoshida4/q2, H4 S2/q8 vs m5/q1; prefix1/3/5,K4,outer32. This is not independent confirmation against a newly measured PF.",
+      "cohort": "H2 n24/n28, H4 n25/n9;86 saved trajectories. H6 run01 planned32 accepted0, SIGBUS, NOT_EVALUATED.",
+      "measurement_and_contract": "full cosine/sine Hadamard wrapper; compiled RZ at declared native DF profile; sufficient analytic shots are separate from cost-MC sample count; empirical allowance and saved full-H reference, not strict bias certificates or total RPE/FT cost. Original SOURCE8825391ff73b531be5834bf852b9bf2479d1799b; original result commit0d3578... currently unavailable, six byte-identical public projections at GPU02 b8bd643... .",
+      "limits": "Original hash equality is the publishing owner receipt; this host independently hashes projections, not unavailable original bytes. H6 is not zero cost or a successful confirmation.",
+      "reference_ids": [
+        "R0015",
+        "R0016",
+        "R0017",
+        "R0018",
+        "R0019",
+        "R0020"
+      ],
+      "review_sections": [
+        "5",
+        "11.M1",
+        "11.M3"
+      ]
+    },
+    {
+      "profile_id": "H6_RUN02_UNIT_COSTS",
+      "purpose": "H6別run02の保存単価witness",
+      "conditions": "H6 fixed recovery tasks; read exact formula,prefix,q,K and per-axis metrics in axis_costs_64.csv. Do not infer missing statistical or physical conditions.",
+      "candidates_and_schedule": "32 task result witnesses /64 axes. Source01d12e3384f8c06a31cf9da0c8149c86ec4b6ee2 currently not retrievable.",
+      "cohort": "Separate run02, not run01 failure or reconstructed confirmation.",
+      "measurement_and_contract": "Stored unit-cost transcription plus receipt_projection.json; native exit0 reported; no aggregate statistics calculated by this integration.",
+      "limits": "end_audit.json not found by owner. Unit-price evidence cannot be promoted to completed aggregate confirmation.",
+      "reference_ids": [
+        "R0021",
+        "R0022"
+      ],
+      "review_sections": [
+        "5",
+        "11.M1",
+        "11.M3"
+      ]
+    },
+    {
+      "profile_id": "PR_VS_PR_RECONSTRUCTED",
+      "purpose": "別入力回収・再構成系列の固定PR同士確認",
+      "conditions": "Linear H2/H4/H6; nearest-neighbour 1.00 Angstrom; STO-3G; signed tol-only DF1e-8 ranks3/10/19; T=.8, P=0. Per-candidate Hamiltonian/state/input hashes remain in fixed manifests.",
+      "candidates_and_schedule": "epsilon=.0005; PR S2 vs higher-order PR: H2 S2/q4 n24 vs Y4/q2 n28; H4 S2/q8 n25 vs m5/q1 n9; H6 S2/q8 n23 vs m5/q1 n9. prefix1/3/5,K4,outer32.",
+      "cohort": "118 trajectories /236 paired axes /6 groups /3 comparisons; original seed-pool exclusion not fully established. No pooling with exploration or original run01/run02.",
+      "measurement_and_contract": "full cosine/sine Hadamard wrapper; compiled RZ at declared native DF profile; sufficient analytic shots are separate from cost-MC sample count; empirical allowance and saved full-H reference, not strict bias certificates or total RPE/FT cost. SOURCEc028f1c2885afdba65ef8c62c075738aadd7323d; group_statistics_6.csv, paired_samples_118.csv and per-system end_audits. H2/H4 scientific array hashes match reconstructed inputs; NPZ container identity is distinct. H6 original snapshot recovered by owner.",
+      "limits": "Independent fixed-point confirmation within its declared contract; no all-historical seed exclusion certificate, population mean guarantee, or newly measured PF comparison. First technical startup STOP is separate from successful namespace.",
+      "reference_ids": [
+        "R0047",
+        "R0048",
+        "R0049",
+        "R0050",
+        "R0051",
+        "R0052",
+        "R0220",
+        "R0221",
+        "R0222",
+        "R0223"
+      ],
+      "review_sections": [
+        "5",
+        "11.M1",
+        "11.M3"
+      ]
+    },
+    {
+      "profile_id": "OLD_S2_ORIGINAL_27",
+      "purpose": "旧current-A n8理論/compiled比較の不足原本一覧",
+      "conditions": "Original fixed H2/H4/H6/H8 current-A packet; use its candidate rows, geometry, DF ranks3/10/19/28 and Hamiltonian/state hashes. Original cohort stays fixed.",
+      "candidates_and_schedule": "27 original candidate/preparation requests in ABE required_input_candidates.csv; absent input is not replaced by a newly generated equivalent.",
+      "cohort": "Original A n8; distinct from original-H2 recovered5 + new-H4/H6/H8 15 in a590214... .",
+      "measurement_and_contract": "Saved compiled and analytic fields exist where catalogued. Missing H6/H8 new-A shot source rows remain explicitly missing.",
+      "limits": "New 20-condition theory packet is a separate citable cohort; it does not prove identity of all27 original preparations or repair original shot rows.",
+      "reference_ids": [
+        "R0151",
+        "R0152"
+      ],
+      "review_sections": [
+        "2",
+        "6",
+        "11.M1",
+        "11.M2"
+      ]
+    },
+    {
+      "profile_id": "S2_NEW_AND_RECOVERED",
+      "purpose": "完了済み別S2理論/compiled packetと補助FAIL",
+      "conditions": "Linear H2/H4/H6/H8,1.00 Angstrom,STO-3G,tol-only DF1e-8 ranks3/10/19/28,T=.8,P=0; fixed outer S2; candidate prefix,q,r,K,delta and hashes in figure_data/coverage.",
+      "candidates_and_schedule": "Saved selected compiled candidates retained; no re-selection by theory. H8 new Hamiltonian/state hashes differ from the old packet and cannot be joined by system name.",
+      "cohort": "Recovered original H2 n8 five conditions; new H4/H6/H8 fifteen conditions; 11 new PR main-evaluation candidates have separate pilots and main cohorts.",
+      "measurement_and_contract": "full cosine/sine Hadamard wrapper; compiled RZ at declared native DF profile; sufficient analytic shots are separate from cost-MC sample count; empirical allowance and saved full-H reference, not strict bias certificates or total RPE/FT cost. Theory G values recorded20/20. Original H2 recovery and new-condition source/physical-validation receipts remain separate.",
+      "limits": "H2/H4 ten conditions passed executed checks; H6/H8 ten retain unweighted-G auxiliary FAIL and are conditional panels. Unobserved positive-order stratum compiled mean costs remain UNKNOWN.",
+      "reference_ids": [
+        "R0080",
+        "R0081",
+        "R0082",
+        "R0083",
+        "R0084",
+        "R0085",
+        "R0086",
+        "R0087",
+        "R0224",
+        "R0225",
+        "R0226",
+        "R0227",
+        "R0228",
+        "R0229"
+      ],
+      "review_sections": [
+        "6",
+        "11.M1",
+        "11.M2",
+        "11.M3"
+      ]
+    },
+    {
+      "profile_id": "CNG_FIXED_N",
+      "purpose": "保存C比較とN固定のG00/G01分解",
+      "conditions": "Same fixed S2 cohort split as S2_NEW_AND_RECOVERED; 20 system/precision conditions, five epsilons; original H2 and new H4/H6/H8 never pooled.",
+      "candidates_and_schedule": "Per-axis theoretical native mixed RZ model vs saved compiled unit costs; prefix,q,r,K and normalization from figure_data.json and fixed provenance.",
+      "cohort": "PR law expectation versus finite-MC compiled mean; PF deterministic counts. MC sample SE and paired-axis covariance differ from quantum shot statistics.",
+      "measurement_and_contract": "G00=sum_a N_theory,a*C_theory,a; G01=sum_a N_theory,a*C_circuit,a. N_theory uses saved corrected signals, empirical u, B and sufficient Hoeffding allocation. N_circuit,N_ratio,G10,G11 and N-change contribution are null.",
+      "limits": "Valid fixed-N accounting, not proof N_circuit=N_theory or pure compiler causation. H6/H8 conditional FAIL qualification retained. Full compiled-measurement N is optional unless claiming independent N change.",
+      "reference_ids": [
+        "R0088",
+        "R0089",
+        "R0090",
+        "R0091",
+        "R0092",
+        "R0230",
+        "R0231",
+        "R0232",
+        "R0233"
+      ],
+      "review_sections": [
+        "4",
+        "6",
+        "11.M2",
+        "11.M3"
+      ]
+    },
+    {
+      "profile_id": "H2_DIAGNOSTICS_COMPARE",
+      "purpose": "新共通政策H2診断と未実行COMPAREの状態",
+      "conditions": "Linear H2,1.00 Angstrom,STO-3G,tol-only DF1e-8 rank3,T=.8,epsilon_sig=.0005,alpha_axis=.025,P=0.",
+      "candidates_and_schedule": "Four fixed Full S2/q4,Full Y4/q2 (prefix3),PR S2/q4,PR Y4/q2 (prefix1,K4,outer32). This is a different contract from COMMON588.",
+      "cohort": "Historical metadata request67 tasks/134 axes; diagnostics no new price or rank. Existing stream/runtime/correctness identity fields remain separate.",
+      "measurement_and_contract": "DIAGNOSTICS a6788bf... completed within its scope; COMPARE4008ce45... BLOCKED_PR_IDENTITY and not scientifically executed. Owner found O00002 expected SHA at GPU02; private root not disclosed or independently checked here.",
+      "limits": "O00002 alone does not close event/operation/runtime/correctness joins. No N/G or reversal mechanism adopted. Existing strict execution contract remains intact; any future relaxation/execution needs separate decision/authorization.",
+      "reference_ids": [
+        "R0114",
+        "R0115",
+        "R0116",
+        "R0117",
+        "R0118",
+        "R0119",
+        "R0128",
+        "R0129",
+        "R0213",
+        "R0214",
+        "R0249",
+        "R0250",
+        "R0251",
+        "R0252",
+        "R0253",
+        "R0254",
+        "R0255",
+        "R0256",
+        "R0257"
+      ],
+      "review_sections": [
+        "9",
+        "11.M1",
+        "11.M2"
+      ]
+    },
+    {
+      "profile_id": "NON_DF_SEPARATE_SCOPE",
+      "purpose": "非DF固定signal検証と技術readinessの補足索引",
+      "conditions": "DF/native and Pauli/Jordan-Wigner fixed-signal scopes are recorded separately in each original SOURCE/input. Not the main common-PF molecular resource cohort.",
+      "candidates_and_schedule": "No merge of native DF and Pauli candidates; exact q,delta,controlled wrapper and lowering retained in original input manifests.",
+      "cohort": "Original H2 run01 FAILED_NO_RETRY partial cases preserved; separately authorized process-isolated run02 is distinct. H4 readiness is artificial/technical, not an H4 campaign.",
+      "measurement_and_contract": "Read original saved result and ending receipt; this integration does not extend physical validation or pricing.",
+      "limits": "No method-wide rank or FT/RPE claim; no intervention in fourth-order PF verification.",
+      "reference_ids": [
+        "R0093",
+        "R0094",
+        "R0095",
+        "R0096",
+        "R0097",
+        "R0098",
+        "R0099",
+        "R0100",
+        "R0101",
+        "R0102",
+        "R0103",
+        "R0104",
+        "R0105",
+        "R0106",
+        "R0107",
+        "R0108",
+        "R0109",
+        "R0110"
+      ],
+      "review_sections": [
+        "2",
+        "8",
+        "11.M1"
+      ]
+    },
+    {
+      "profile_id": "H2_ORIGINAL_P",
+      "purpose": "元H2独立確認の別系列参照",
+      "conditions": "H2 linear1.00 Angstrom/STO-3G/tol-only DF1e-8 rank3; T=.8,P=0; remaining conditions in original A/D/P manifests.",
+      "candidates_and_schedule": "Original A n8 and independent P fixed endpoint candidates; not outer32 high-order exploration.",
+      "cohort": "Independent P n80/12, no pooling with A n8, later outer32 or reconstructed PR-vs-PR cohorts.",
+      "measurement_and_contract": "full cosine/sine Hadamard wrapper; compiled RZ at declared native DF profile; sufficient analytic shots are separate from cost-MC sample count; empirical allowance and saved full-H reference, not strict bias certificates or total RPE/FT cost.",
+      "limits": "Paper placement/adoption state remains in original adoption receipt; not silently added to existing H468 main table.",
+      "reference_ids": [
+        "R0153",
+        "R0154"
+      ],
+      "review_sections": [
+        "2",
+        "5",
+        "11.M1"
+      ]
+    },
+    {
+      "profile_id": "HISTORICAL_OR_TECHNICAL",
+      "purpose": "旧研究・停止・監査の文脈",
+      "conditions": "Each original series_manifest JSON pointer in research_index.csv is authoritative; legacy H4 DF12 is not tol-only H4 DF10. Baseline approximation validations and WP11/opt2 history retain their original conditions.",
+      "candidates_and_schedule": "Per-series source candidate/input manifests; no inferred missing q,r,K,delta or new Hamiltonian joins.",
+      "cohort": "Historical pilots, A n8, old union n32, stopped supplements and technical-only work remain separate.",
+      "measurement_and_contract": "No new scientific acceptance. Original reports and validation manifest distinguish implementation capability, local validation and pending evidence.",
+      "limits": "GAP-001 found-unverified and GAP-008 not found are historical recovery states, not restored UWC/BLISS science. Local-only CNG/publication drafts are metadata-only.",
+      "reference_ids": [],
+      "review_sections": [
+        "2",
+        "11.M1",
+        "11.M3"
+      ]
+    }
+  ],
+  "candidate_fields_policy": "Read exact r,K,prefix,q,bias,u,B,N,C and units from linked original CSV/JSON; unspecified fields remain unspecified, never inferred."
+}
