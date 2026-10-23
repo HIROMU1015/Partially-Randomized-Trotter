@@ -15,3 +15,9 @@ schemaはobject/type/required/const/enum等の管理構造とSOURCE上のvalidat
 公開後、remote HEAD、file集合、exact UTF-8 bytes／SHA256／Git blob、active SOURCE closure、相対linkを再照合し、可能な範囲で独立Git fetchする。[PUBLICATION.json](PUBLICATION.json)は検証済みpayload commitを記録し、receipt自身を含む最終commitと区別する。自己参照hashを捏造しない。
 
 静的PASSはscientific API・algebra・law・operator・confidence・performanceのPASSではない。今回の科学call、fixture／lambda/B/L／law／input hash生成、event/trajectory、build/compile、grant発行は0件。公開照合後mandatory STOP。
+
+## 公開照合実績
+
+payload commit `a686b0f6037245fe910b5fcef8e65b0bf8f4a801` の21file全件をGitHubから再取得し、内容とGit blobをローカルbytes／SHA256へ照合した。独立Git fetchでも同じtreeを確認。追加はPython4、技術記録17で、既存1,058fileは同一bytes。JSON6、固定資料36record、相対link25件、active SOURCE10file、11case/DAGの管理検査はPASS。
+
+元workspaceはread-only snapshotで観測し、本作業では書換え・fetch・ref更新・reset/cleanを行わない。並行変動を観測した場合もそのまま保全し、非公開snapshot／内部pathを公開しない。receipt更新後の最終HEADと全21fileは別途再照合する。
