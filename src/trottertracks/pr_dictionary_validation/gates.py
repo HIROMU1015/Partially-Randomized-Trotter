@@ -65,23 +65,29 @@ def high_precision_agreement(a,b):
     return str(residual)
 
 
-def compiled_wrapper(circuit, profile, *, cache=None, identity_context=None):
-    from qiskit import transpile, qpy
+def compile_cache_key(circuit, profile, identity_context):
+    """Full serialized IR identity, also used for F2 prebinding after approval."""
+    from qiskit import qpy
     import io
     import hashlib
     from dataclasses import asdict
     from .fixture import canonical_json
     profile.validate()
+    if not identity_context:
+        raise ValueError('Compile cache requires full bound context')
+    # Keep all angles, global phase and register layout. Ignore descriptions only.
+    normalized=circuit.copy(); normalized.metadata={}; normalized.name='full_ir'
+    stream=io.BytesIO(); qpy.dump(normalized,stream)
+    return hashlib.sha256(stream.getvalue()+canonical_json(dict(
+        profile=asdict(profile),identity_context=identity_context))).hexdigest()
+
+
+def compiled_wrapper(circuit, profile, *, cache=None, identity_context=None):
+    from qiskit import transpile
+    profile.validate()
     cache_key=None
     if cache is not None:
-        if not identity_context:
-            raise ValueError('Compile cache requires full bound context')
-        # Exact serialized full IR, including angles/global phase/register layout.
-        # Remove descriptive metadata/name only. No angle-insensitive equivalence.
-        normalized=circuit.copy(); normalized.metadata={}; normalized.name='full_ir'
-        stream=io.BytesIO(); qpy.dump(normalized,stream)
-        cache_key=hashlib.sha256(stream.getvalue()+canonical_json(dict(
-            profile=asdict(profile),identity_context=identity_context))).hexdigest()
+        cache_key=compile_cache_key(circuit,profile,identity_context)
         if cache_key in cache:
             return cache[cache_key].copy()
     compiled=transpile(circuit,basis_gates=list(profile.basis_gates),

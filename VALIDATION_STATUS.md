@@ -1,5 +1,13 @@
 # Validation status
 
+## 2026-10-24 F2 preparation: implementation present, no scientific execution
+
+F2 finite-target comparison SOURCE/input/case/preflight preparation and eight mock/management tests are complete.
+Statistical numerical policy, IID/range/finite-bit allowance evidence and interval/ceil qualification remain pending.
+No F2 circuit build, compile, law/target evaluation, numerical reanalysis or new grant has occurred.
+[Preparation and mandatory STOP](docs/research/pr_algorithm_improvement_phase2d_f2_preparation_20261024/README.md).
+This is implementation-only evidence; the F1 registered local PASS below remains unchanged.
+
 ## 2026-10-24 mixed Pauli/frame dictionary F1: completed registered local validation
 
 `F1_REGISTERED_CORRECTNESS_PASS_UNQUALIFIED_PRICE_FALLBACK_MANDATORY_STOP`。
