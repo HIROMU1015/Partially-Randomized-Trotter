@@ -2163,9 +2163,10 @@
     {
       "id": "pr_dictionary_phase2d_f2_resources_20261024",
       "status": "source_present_no_current_ci",
-      "summary": "ユーザーがγ保証を待たない1-shot actual資源計測と一回の科学実行を明示承認した。旧統計資格付きF2契約は保全し、独立したF2_RESOURCE契約・runnerを準備した。全13,676 wrapper/compile要求・27,356 reference評価とP0条件を維持し、認証N／N加重費用は対象外。このSOURCE固定時点は実行前。",
+      "summary": "One authorized limited-resource execution on SOURCE 9b1e103. All 13,676 raw wrapper and 27,356 reference evaluations completed; three compiled-operator gates failed (up to max-entry 1.9999996023, tolerance 5e-10). 57 unique transpiles attempted, 54 unique completed and 60 logical compiled checks passed. Means and weighted expected arm costs not reached; no ranking, no N. Preserved partial evidence and mandatory STOP, no retry/resume.",
       "documentation": [
-        "docs/research/pr_algorithm_improvement_phase2d_f2_resources_20261024/README.md"
+        "docs/research/pr_algorithm_improvement_phase2d_f2_resources_20261024/README.md",
+        "docs/research/pr_algorithm_improvement_phase2d_f2_resources_20261024/EXECUTION_REPORT.md"
       ],
       "source": [
         "src/trottertracks/pr_dictionary_validation/f2_resources.py",
@@ -2181,13 +2182,36 @@
         "reference_precision_evaluations": 27356
       },
       "counts": {
-        "F2_resource_scientific_executions": 0,
-        "management_tests_passed": 10
+        "F2_resource_scientific_executions": 1,
+        "management_tests_passed": 10,
+        "raw_wrapper_checks_completed": 13676,
+        "reference_precision_evaluations_completed": 27356,
+        "actual_unique_transpiles": 57,
+        "unique_compile_checks_completed": 54,
+        "unique_compile_checks_failed": 3,
+        "logical_compiled_checks_passed": 60,
+        "logical_compiled_checks_failed": 3,
+        "logical_compiled_operator_checks_not_evaluated": 13613,
+        "finite_corrected_means_completed": 0,
+        "weighted_resource_aggregations_completed": 0,
+        "shot_qualifications": 0,
+        "quantum_shots_drawn": 0,
+        "new_grants": 1,
+        "consumed_grants": 1
       },
       "completion_criteria": [
-        "Run the explicitly authorized resource-only one-shot after final source/input/grant preflight.",
-        "Preserve numeric residuals, per-case costs and exact weighted expectations; N and N-weighted costs remain unqualified/null.",
-        "Publish results or failure evidence and mandatory STOP."
+        "Mandatory STOP: User/GPT assesses the compiled operator mismatch and whether to authorize diagnosis, fixes and a new execution.",
+        "Preserve the original failed one-shot, source, raw, grant, marker and STOP; do not retry/resume.",
+        "Keep finite-bit/statistical qualifications and certified N-weighted comparisons unresolved/outside the current result."
+      ],
+      "source_commit": "9b1e103102f918bb157dea90c7eaf3acb5d88b6c",
+      "artifacts": [
+        "artifacts/pr_algorithm_improvement_phase2d_f2_resources/2026-10-24/RESULT_SUMMARY.json",
+        "artifacts/pr_algorithm_improvement_phase2d_f2_resources/2026-10-24/RAW_CASE_RESOURCES.csv.gz",
+        "artifacts/pr_algorithm_improvement_phase2d_f2_resources/2026-10-24/CASE_RESOURCES.csv.gz",
+        "artifacts/pr_algorithm_improvement_phase2d_f2_resources/2026-10-24/F2_laws.json",
+        "artifacts/pr_algorithm_improvement_phase2d_f2_resources/2026-10-24/common_reference.json",
+        "artifacts/pr_algorithm_improvement_phase2d_f2_resources/2026-10-24/STOP.json"
       ]
     }
   ],

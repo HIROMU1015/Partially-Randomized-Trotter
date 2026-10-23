@@ -1,7 +1,9 @@
 # Phase 2D-F2：限定actual資源計測
 
 ユーザーが共通finite targetに対するγ保証を前提としない限定資源計測への変更と、一回の科学実行を明示承認した。
-**このSOURCE固定時点は実行前**。結果は実行後に同ディレクトリへ追記する。
+SOURCE固定後に一回実行し、**compiled operatorの3件FAILで停止した**。
+[実行結果・残差・件数・費用・STOP](EXECUTION_REPORT.md)を現在の結果として参照する。
+全raw wrapper／referenceは完了、compile後60 logical caseはPASSだが、4armの期待資源比較とmean集計は未完了。
 認証N・N加重費用・同精度総資源優位は対象外で、未資格を解消済みと扱わない。
 
 起点は資格確認 `2b57cd33d75fb756ce0d5fb712d0379137118ac9` とF2-PRE `909b13a6f5f618fc3c1ba54ce3e56764e784d12f`。

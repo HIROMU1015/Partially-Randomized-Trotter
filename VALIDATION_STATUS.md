@@ -1,5 +1,13 @@
 # Validation status
 
+## 2026-10-24 limited F2: compiled operator gate FAIL, partial evidence preserved
+
+SOURCE `9b1e103` and a new one-shot grant completed 13,676 raw wrapper checks and 27,356 reference precision evaluations.
+All raw checks passed. Actual transpile calls: 57 unique groups; 54 completed and 3 failed the registered compiled full-operator gate (max-entry up to 1.9999996023, tolerance 5e-10).
+Compiled logical cases: 60 PASS, 3 FAIL, 13,613 not evaluated. Finite corrected means and expected arm resource aggregation were not reached.
+No complete SS/SP/PS/PP ranking, certified N or N-weighted cost is available. No retry/resume or extra numerical probe.
+[Execution report and mandatory STOP](docs/research/pr_algorithm_improvement_phase2d_f2_resources_20261024/EXECUTION_REPORT.md). Old statistical qualification gates and prior evidence remain preserved.
+
 ## 2026-10-24 F2 qualification: STOP before scientific execution
 
 F2 scientific execution is explicitly authorized subject to adopted conditions and established qualifications.
