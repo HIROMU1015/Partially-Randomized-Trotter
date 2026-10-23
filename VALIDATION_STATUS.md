@@ -1,5 +1,12 @@
 # Validation status
 
+## 2026-10-24 saved F2 attribution: exact grouped reconciliation PASS
+
+Saved-only regrouping of 13,674 physical X/Y records plus two excluded common diagnostics; no new quantum circuit, compile, law, sampling or simulation.
+Eight independent partitions produce 490 group rows; all 64 view/arm/axis mass and cost checks and all published expected metrics agree as exact rational numbers. Grouped X/Y costs also agree exactly.
+PS has lower frame-containing probability than SP (46.0786% vs 51.6195%) but higher conditional RZ (77.690309 vs 55.713230). Descriptive conditional-cost differences outweigh the probability-mix difference; no causal Gaussian/compiler effect or certified N is inferred.
+Five artificial saved-record tests PASS. [Results, definitions, exact artifacts and mandatory STOP](docs/research/pr_algorithm_improvement_phase2d_f2_attribution_20261024.md). Committed local analysis, not CI or independent reproduction; prior measurement evidence and statistical qualification unchanged.
+
 ## 2026-10-24 corrected limited F2: all registered numerical checks PASS
 
 SOURCE `9468c70` and a fresh grant completed raw/compiled 13,676 cases, 27,356 reference evaluations, all four finite corrected means and exact weighted per-shot resource aggregation.

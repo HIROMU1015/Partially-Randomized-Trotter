@@ -18,3 +18,5 @@
 `test_rpe_delta_round_schedule_validation.py`、`test_rpe_delta_compiled_cost_validation.py`を、
 対応する検証文書・artifactと一組で読む。最後の検証は中央RTEブロックだけを扱い、
 Hadamard 1 shot全体や最終総コストの検証ではない。
+
+`management/test_pr_dictionary_f2_attribution.py` は、保存F2寄与分析の分類保存則・共有metadata・joint origin・欠落／重複拒否・非零の記述分解を人工recordだけで検査する。新しい科学回路は生成しない。[結果とSOURCE対応](../docs/research/pr_algorithm_improvement_phase2d_f2_attribution_20261024.md)。

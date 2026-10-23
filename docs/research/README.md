@@ -11,6 +11,8 @@
 
 ## 文書の役割
 
+限定F2の[保存case寄与分析](pr_algorithm_improvement_phase2d_f2_attribution_20261024.md)は、8分類表のP・条件付き費用・寄与とexact全体照合をまとめる。SP／PS差の記述分解、限界、次の改善候補を明示し、新build／compileは行っていない。
+
 限定F2の[回路資源差の原因調査](pr_algorithm_improvement_phase2d_f2_resource_causes_20261024.md)は、固定SOURCEと保存caseの静的照合による技術メモ。Gaussian往復・共有条件・K0の成分選択と、未測定の寄与を区別する。新しい数値集計・build／compileは行っていない。
 
 | 種類 | 正本とする内容 |
