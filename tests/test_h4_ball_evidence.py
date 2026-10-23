@@ -180,4 +180,138 @@ class ProductionFixture(unittest.TestCase):
         m=fixture('df_native');m['hamiltonian']['one_body'][0][1]=[.1,0.]
         with self.assertRaisesRegex(ValueError,'HERMITICITY'):e.EnclosureEngine(rebind(m),MemoryBudget()).tier(64)
 
+class ReferenceContraction(unittest.TestCase):
+    """Analytic small-model oracles exercise the actual production tier path."""
+    def with_state(self,rep,values):
+        model=fixture(rep);model['state']=values
+        model['state_hash']=e.array_hash(values,vector=True)
+        return rebind(model)
+
+    def assert_encloses(self,encoded,expected):
+        # Compare exact saved endpoints to a separate 256-bit scalar formula.
+        # A wide interval or a matching midpoint alone must not pass.
+        for axis in ('real','imag'):
+            lo=Q(encoded[axis]['lower']);hi=Q(encoded[axis]['upper'])
+            wanted=getattr(expected,axis)
+            self.assertLessEqual(lo,e.dyadic(wanted.lower()))
+            self.assertGreaterEqual(hi,e.dyadic(wanted.upper()))
+            self.assertLess(hi-lo,Q(1,10**14))
+
+    def pauli_reference(self,values):
+        T=e.real(.8);answer=acb(0)
+        for j,energy in ((0,Q(3,8)),(2,Q(-1,8))):
+            a=e.complex_ball(values[j]);b=e.complex_ball(values[j+1])
+            norm=(a.conjugate()*a+b.conjugate()*b).real
+            x=(a.conjugate()*b+b.conjugate()*a).real
+            angle=T/8
+            answer+=e.phase(-e.real(energy)*T)*(norm*angle.cos()+acb(0,-x*angle.sin()))
+        return answer
+
+    def df_reference(self,values):
+        return sum((abs(e.complex_ball(z))**2*e.phase(-e.real(energy)*e.real(.8))
+                    for z,energy in zip(values,(Q(1,8),Q(1,2),Q(3,8),Q(3,4)),strict=True)),acb(0))
+
+    def test_signal_rejects_square_operator(self):
+        with self.assertRaisesRegex(ValueError,'SIGNAL_STATE_VECTOR_SHAPE'):
+            e.signal(acb_mat([[0],[1]]),e.identity(2))
+
+    def test_signal_rejects_row_vector(self):
+        with self.assertRaisesRegex(ValueError,'SIGNAL_STATE_VECTOR_SHAPE'):
+            e.signal(acb_mat([[0],[1]]),acb_mat([[0,1]]))
+
+    def test_signal_rejects_multicolumn_state(self):
+        with self.assertRaisesRegex(ValueError,'SIGNAL_STATE_VECTOR_SHAPE'):
+            e.signal(e.identity(2),acb_mat([[0],[1]]))
+
+    def test_signal_rejects_mismatched_rows(self):
+        with self.assertRaisesRegex(ValueError,'SIGNAL_STATE_VECTOR_SHAPE'):
+            e.signal(acb_mat([[0],[1]]),acb_mat([[0],[1],[0]]))
+
+    def test_signal_nonvacuum_identity(self):
+        state=acb_mat([[0],[1]])
+        self.assertEqual(e.signal(state,e.identity(2)*state),1)
+
+    def test_signal_complex_conjugation(self):
+        self.assertEqual(e.signal(acb_mat([[1],[acb(0,2)]]),acb_mat([[3],[acb(0,4)]])),11)
+        self.assertEqual(e.signal(acb_mat([[acb(0,2)]]),acb_mat([[3]])),acb(0,-6))
+
+    def test_pauli_all_basis_states_all_precisions(self):
+        for index in range(4):
+            values=[[float(j==index),0.] for j in range(4)]
+            for bits in (64,96,128):
+                with self.subTest(index=index,bits=bits),ctx.workprec(256):
+                    out=e.EnclosureEngine(self.with_state('pauli_jw',values),MemoryBudget()).tier(bits)
+                    self.assert_encloses(out['reference'],self.pauli_reference(values))
+
+    def test_df_all_basis_states_all_precisions(self):
+        for index in range(4):
+            values=[[float(j==index),0.] for j in range(4)]
+            for bits in (64,96,128):
+                with self.subTest(index=index,bits=bits),ctx.workprec(256):
+                    out=e.EnclosureEngine(self.with_state('df_native',values),MemoryBudget()).tier(bits)
+                    self.assert_encloses(out['reference'],self.df_reference(values))
+
+    def test_pauli_complex_superposition(self):
+        values=[[.5,0.],[0.,.5],[.5,0.],[0.,-.5]]
+        with ctx.workprec(256):
+            out=e.EnclosureEngine(self.with_state('pauli_jw',values),MemoryBudget()).tier(96)
+            self.assert_encloses(out['reference'],self.pauli_reference(values))
+
+    def test_df_complex_superposition(self):
+        values=[[.5,0.],[0.,.5],[.5,0.],[0.,-.5]]
+        with ctx.workprec(256):
+            out=e.EnclosureEngine(self.with_state('df_native',values),MemoryBudget()).tier(96)
+            self.assert_encloses(out['reference'],self.df_reference(values))
+
+    def test_reference_global_phase_invariance(self):
+        values=[[.5,0.],[0.,.5],[.5,0.],[0.,-.5]]
+        rotated=[[-im,re] for re,im in values]
+        for rep,oracle in (('pauli_jw',self.pauli_reference),('df_native',self.df_reference)):
+            with self.subTest(rep=rep),ctx.workprec(256):
+                for state in (values,rotated):
+                    out=e.EnclosureEngine(self.with_state(rep,state),MemoryBudget()).tier(96)
+                    self.assert_encloses(out['reference'],oracle(values))
+
+    def test_noncommuting_complex_state_reference(self):
+        values=[[.5,0.],[0.,.5],[.5,0.],[0.,.5]]
+        m=self.with_state('pauli_jw',values)
+        m['hamiltonian']['terms'][0][0]='IZ'
+        m['saved_full_matrix']=pairs([[.375,.125,0,0],[.125,-.125,0,0],[0,0,.375,.125],[0,0,.125,-.125]])
+        for case in m['cases'].values():
+            case['blocks'][0]['label']='IZ';case['metadata']['retained_labels'][0]='IZ'
+            case['expected_metadata']=copy.deepcopy(case['metadata'])
+        with ctx.workprec(256):
+            out=e.EnclosureEngine(rebind(m),MemoryBudget()).tier(96)
+            radius=(e.real(Q(1,4))**2+e.real(Q(1,8))**2).sqrt()
+            expected=e.phase(-e.real(.8)/8)*(radius*e.real(.8)).cos()
+            self.assert_encloses(out['reference'],expected)
+
+    def test_encoded_state_norm_not_silently_changed(self):
+        values=[[0.,0.],[2.,0.],[0.,0.],[0.,0.]]
+        for rep,oracle in (('pauli_jw',self.pauli_reference),('df_native',self.df_reference)):
+            with self.subTest(rep=rep),ctx.workprec(256):
+                m=self.with_state(rep,values);original=copy.deepcopy(m['state'])
+                out=e.EnclosureEngine(m,MemoryBudget()).tier(96)
+                self.assert_encloses(out['reference'],oracle(values))
+                self.assertEqual(out['state_norm'],dict(lower='4',upper='4'))
+                self.assertEqual(m['state'],original)
+
+    def test_biases_use_the_correct_reference_without_extra_calls(self):
+        # Pauli blocks commute; both methods and both bias axes have an analytic
+        # zero-bias oracle at this artificial tolerance. The defective first
+        # column would instead give a reference of zero for this state.
+        values=[[0.,0.],[0.,0.],[1.,0.],[0.,0.]]
+        budget=MemoryBudget()
+        out=e.EnclosureEngine(self.with_state('pauli_jw',values),budget).tier(96)
+        for method in ('PF','PR'):
+            for axis in ('real','imag'):
+                bias=out['nominal_law'][method]['signed_bias'][axis]
+                self.assertLess(max(abs(Q(bias['lower'])),abs(Q(bias['upper']))),Q(1,10**10))
+                physical=out['implemented_law'][method]['same_ray_physical_bias'][axis]
+                self.assertLess(max(abs(Q(physical['lower'])),abs(Q(physical['upper']))),Q(1,10**10))
+        self.assertEqual(out['status'],'TARGET_MET')
+        self.assertFalse(out['formal_certificate_accepted'])
+        self.assertEqual(budget.used['reference_signal_enclosures'],1)
+        self.assertEqual(budget.used['dense_matrix_exponential_requests'],1)
+
 if __name__=='__main__':unittest.main()

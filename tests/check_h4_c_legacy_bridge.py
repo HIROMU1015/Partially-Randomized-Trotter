@@ -3,6 +3,7 @@
 
 No H4 paths, chemistry, optimized state, reference, RNG or compilation calls.
 """
+import argparse
 import importlib.util
 import json
 from pathlib import Path
@@ -18,10 +19,16 @@ s=importlib.util.spec_from_file_location('legacy_C_builder',ROOT/'src/trotterlib
 s=importlib.util.spec_from_file_location('legacy_C_control',ROOT/'src/trotterlib/h4_certificate_control.py');c=importlib.util.module_from_spec(s);s.loader.exec_module(c)
 
 def main():
-    destination=Path(sys.argv[1]);destination.mkdir(exist_ok=False)
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('destination',type=Path)
+    parser.add_argument('--state',choices=['vacuum','nonvacuum','complex'],default='vacuum')
+    args=parser.parse_args()
+    destination=args.destination;destination.mkdir(exist_ok=False)
     p=PauliHamiltonian.from_terms([('ZI',.25),('IX',.125),('II',.125)],num_qubits=2)
     d=DFHamiltonian(.125,np.diag([.125,.25]),np.array([.25,.125]),(np.diag([1.,0.]),np.diag([0.,1.])),dict(model_id='ARTIFICIAL_TWO_QUBIT_ONLY'))
-    state=np.array([1.,0.,0.,0.],dtype=complex)
+    supplied_states=dict(vacuum=[1.,0.,0.,0.],nonvacuum=[0.,0.,1.,0.],
+                         complex=[.5,.5j,.5,-.5j])
+    state=np.array(supplied_states[args.state],dtype=complex)
     targets=[dict(case=rep+'_'+method,axis=axis,epsilon_sig=eps,design_total_error_target_exact='1/100') for rep in ('pauli_jw','df_native') for method in ('PF','PR') for axis in ('cosine','sine') for eps in (.05,.01,.005,.001,.0005)]
     for rep,h in [('pauli_jw',p),('df_native',d)]:
         results={}
@@ -37,5 +44,5 @@ def main():
         model=b.build_export(p,d,state,full,results,targets,rep,c,'ARTIFICIAL_NOT_OLD_H4')
         model['artificial_only']=True;model['binding_hash']=c.digest({k:v for k,v in model.items() if k!='binding_hash'})
         c.save(destination/(rep+'.json'),model)
-    print(json.dumps(dict(status='ARTIFICIAL_LEGACY_PREPARATION_EXPORTED',qubits=2,real_H4_calls=0)))
+    print(json.dumps(dict(status='ARTIFICIAL_LEGACY_PREPARATION_EXPORTED',qubits=2,state=args.state,real_H4_calls=0)))
 if __name__=='__main__':main()

@@ -213,7 +213,11 @@ def evolve(state,blocks,tail,scalar,q,r):
     return out
 
 
-def signal(state,out):return (dagger(state)*out)[0,0]
+def signal(state,out):
+    """Contract two column vectors; an unapplied operator is not a signal."""
+    require(state.ncols()==out.ncols()==1 and state.nrows()==out.nrows()
+            and state.nrows()>0,'SIGNAL_STATE_VECTOR_SHAPE')
+    return (dagger(state)*out)[0,0]
 
 
 def endpoint_compare(error,target):
@@ -319,7 +323,7 @@ class EnclosureEngine:
         m=self.model;n=m['n_qubits'];delta=real(m['step_time']);T=real(.8);r=4;q=8
         I,state,norm,full,ideal_blocks,op_residual=self.assemble()
         self.budget.take('reference_signal_enclosures')
-        reference=signal(state,self.expm(full*acb(0,-T),('reference',bits)))
+        reference=signal(state,self.expm(full*acb(0,-T),('reference',bits))*state)
         output=dict(bits=bits,reference=serialize(reference),state_norm=endpoints(norm),
             state_norm_defect=endpoints(abs(norm-1)),operator_snapshot_residual_upper=endpoints(op_residual),
             nominal_law={},implemented_law={},normalization={},axes=[],formal_certificate_accepted=False,
