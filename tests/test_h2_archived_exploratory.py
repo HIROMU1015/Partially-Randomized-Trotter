@@ -72,6 +72,8 @@ class NumericalFixtureTests(unittest.TestCase):
             try:
                 with patch.object(c,'saved_inputs',return_value=data):result=c.pipeline(s,backend)
             finally:backend.close()
+            with patch.object(c.old.Session,'verify'),patch.object(c.old.Session,'loaded_closure'):
+                c.audit_end(s)
             self.assertEqual(s.used,c.counts())
             self.assertEqual(len(list((root/'ledger').glob('*.json'))),sum(c.counts().values()))
             return result
@@ -156,8 +158,73 @@ class ControlTests(unittest.TestCase):
             self.cfg['run_root']=name
             with self.assertRaises(FileExistsError):c.Session(self.cfg,a,g)
 
+    def test_end_audit_rejects_disk_ledger_drift(self):
+        with tempfile.TemporaryDirectory() as name:
+            root=Path(name);(root/'ledger').mkdir();s=c.Session.__new__(c.Session)
+            s.root=root;s.cfg={'budget':dict.fromkeys(c.KINDS,0)};s.cfg['budget']['bootstrap']=1
+            s.used=deepcopy(s.cfg['budget']);s.sequence=1
+            path=root/'ledger/000001.json'
+            row=dict(kind='bootstrap',amount=1,nonrefundable=True,contract_sha256=c.digest(s.cfg))
+            path.write_text(json.dumps(row))
+            with patch.object(c.old.Session,'verify'),patch.object(c.old.Session,'loaded_closure'):
+                c.audit_end(s)
+                row['kind']='accounting';path.write_text(json.dumps(row))
+                with self.assertRaises(c.Stop):c.audit_end(s)
+
     def test_no_scientific_package_imports(self):
         self.assertFalse(any(k.split('.')[0] in ('numpy','qiskit','scipy','symengine','trotterlib') for k in sys.modules))
+
+
+class SealFixtureTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp=tempfile.TemporaryDirectory(prefix='h2-exploratory-artificial-seal-')
+        self.addCleanup(self.tmp.cleanup);self.assets=Path(self.tmp.name)
+        self.addCleanup(patch.stopall);patch.object(c,'ASSETS',self.assets).start()
+        patch.object(c,'saved_inputs',return_value={'ARTIFICIAL_ONLY':True}).start()
+        patch.object(c.seal,'git_batch',side_effect=lambda commit,paths:[('ARTIFICIAL_BLOB',b'# ARTIFICIAL SOURCE\n') for p in paths]).start()
+        files=[];sources=[]
+        for role,paths in [('runner',c.NEW+c.REUSED),('provider',c.PROVIDER_PATHS)]:
+            for rel in paths:
+                p=self.assets/role/rel;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(b'# ARTIFICIAL SOURCE\n')
+                files.append(dict(path=str(p),sha256=c.sha(p),role='SOURCE:'+role))
+                sources.append(dict(root=role,path=rel,local_path=str(p),sha256=c.sha(p)))
+        manifest=self.assets/'input_manifest_PRIVATE.json';manifest.write_text('{}')
+        files.append(dict(path=str(manifest),sha256=c.sha(manifest),role='INPUT:ARTIFICIAL_ONLY'))
+        self.cfg=dict(schema=c.SERIES,source_commit='1'*40,physical=deepcopy(c.policy.PHYSICAL),
+            candidates=[asdict(x) for x in c.policy.CANDIDATES],budget=c.counts(),limitations=list(c.LIMITS),
+            files=files,source_files=sources,manifest=str(manifest),origin_contract='ARTIFICIAL',
+            origin_run_root='ARTIFICIAL_ORIGIN',runtime={},run_root=str(self.assets/'EXPLORATORY_run01'),
+            retry=False,mandatory_STOP=True)
+
+    def test_synthetic_seal_and_source_binding(self):
+        self.assertEqual(c.verify(self.cfg,runtime=False),{'ARTIFICIAL_ONLY':True})
+
+    def test_input_SHA_drift_rejected(self):
+        Path(self.cfg['manifest']).write_text('{"drift":true}')
+        with self.assertRaises(c.Stop):c.verify(self.cfg,runtime=False)
+
+    def test_runtime_file_SHA_drift_rejected(self):
+        p=self.assets/'ARTIFICIAL_RUNTIME';p.write_text('sealed')
+        self.cfg['files'].append(dict(path=str(p),sha256=c.sha(p),role='runtime:ARTIFICIAL_ONLY'))
+        p.write_text('changed')
+        with self.assertRaises(c.Stop):c.verify(self.cfg,runtime=False)
+
+    def test_fixed_SOURCE_rejected_even_after_local_rehash(self):
+        row=self.cfg['source_files'][0];p=Path(row['local_path']);p.write_text('# substituted')
+        row['sha256']=c.sha(p);self.cfg['files'][0]['sha256']=c.sha(p)
+        with self.assertRaises(c.Stop):c.verify(self.cfg,runtime=False)
+
+    def test_budget_cannot_add_compile(self):
+        self.cfg['budget']['compile']=1
+        with self.assertRaises(c.Stop):c.verify(self.cfg,runtime=False)
+
+    def test_physical_conditions_cannot_change(self):
+        self.cfg['physical']['T']=1.
+        with self.assertRaises(c.Stop):c.verify(self.cfg,runtime=False)
+
+    def test_inherited_limits_cannot_disappear(self):
+        self.cfg['limitations'].pop()
+        with self.assertRaises(c.Stop):c.verify(self.cfg,runtime=False)
 
 
 def mutation(label,fn):

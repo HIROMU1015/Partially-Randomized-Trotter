@@ -27,7 +27,7 @@ def build(source):
         if path in c.REUSED:c.require(raw==c.recovery.git_bytes(c.BASE,path),'UNCHANGED_REUSED_IMPLEMENTATION')
         source_rows.append(dict(root='runner',path=path,local_path=str(p.resolve()),sha256=c.sha(p)))
         add(p,'SOURCE:runner')
-    c.require({p.name for p in OUT.iterdir()}<={'cache','technical_tests.txt','test_results.json'},'FRESH_OUTPUT_NAMESPACE')
+    c.require({p.name for p in OUT.iterdir()}<={'cache','technical_tests.txt','test_results.json','attempts'},'FRESH_OUTPUT_NAMESPACE')
     c.ASSETS.mkdir(exist_ok=False)
     for path,(_,raw) in zip(c.PROVIDER_PATHS,c.seal.git_batch(c.PROVIDER,c.PROVIDER_PATHS)):
         p=c.ASSETS/'provider'/path;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(raw)

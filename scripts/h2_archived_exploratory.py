@@ -16,7 +16,7 @@ B = 'ca29dd9ddc8a09cace84310f0dfdf7124652e07a'
 B_DIR = 'artifacts/resource_applicability/track_a_h2_runtime_cost_reuse/2026-10-23/'
 B2_DIR = 'artifacts/resource_applicability/track_a_h2_saved_cost_static_join_b2/2026-10-23/'
 PROVIDER = 'c31ef424175c02379eafebe8fc6c7548c1d9aabe'
-ASSETS = ROOT.parent/'h2-archived-exploratory-assets-20261023'
+ASSETS = ROOT.parent/'h2-archived-exploratory-assets-20261024'
 OUT_DIR = 'artifacts/resource_applicability/track_a_h2_archived_exploratory_ready/2026-10-23'
 NEW = ('scripts/h2_archived_exploratory.py','scripts/h2_archived_exploratory_backend.py',
        'scripts/prepare_h2_archived_exploratory.py','scripts/launch_h2_archived_exploratory.py')
@@ -211,6 +211,21 @@ def pipeline(session,backend):
                 delegated_comparison=result,methods=details,limitations=list(LIMITS),science_GO=False)
 
 
+def audit_end(session):
+    old.Session.verify(session)
+    old.Session.loaded_closure(session)
+    used=dict.fromkeys(KINDS,0)
+    ledger=sorted((session.root/'ledger').glob('*.json'))
+    require(len(ledger)==session.sequence,'LEDGER_RECORD_COUNT')
+    for i,p in enumerate(ledger,1):
+        row=read(p)
+        require(p.name=='%06d.json'%i and set(row)=={'kind','amount','nonrefundable','contract_sha256'} and
+            row['nonrefundable'] is True and type(row['amount']) is int and row['amount']==1 and
+            row['contract_sha256']==digest(session.cfg) and row['kind'] in used,'END_LEDGER_IDENTITY')
+        used[row['kind']]+=row['amount']
+    require(used==session.used==session.cfg['budget'],'END_EXACT_LEDGER_BUDGET')
+
+
 def execute(cfg,approval,grant):
     session=Session(cfg,approval,grant);guard=old.ImportSeal(cfg);backend=None
     try:
@@ -218,11 +233,12 @@ def execute(cfg,approval,grant):
         from h2_archived_exploratory_backend import Backend
         backend=Backend(session);result=pipeline(session,backend)
         require(session.used==cfg['budget'],'INCOMPLETE_EXACT_LEDGER')
-        # Input/source checks after the run; output namespace now exists by design.
-        for row in cfg['files']:require(sha(row['path'])==row['sha256'],'END_INPUT_SOURCE_RUNTIME_DRIFT')
+        audit_end(session)
         seal.verify_mapped_runtime(cfg)
         save(session.root/'results/comparison.json',result)
-        save(session.root/'completion.json',dict(status='EXPLORATORY_COMPLETE_NOT_FORMAL_COMPARE',
+        result_files=[dict(path=str(p.relative_to(session.root)),sha256=sha(p))
+            for folder in ('results','delegated_receipts') for p in sorted((session.root/folder).rglob('*')) if p.is_file()]
+        save(session.root/'completion.json',dict(result_files=result_files,status='EXPLORATORY_COMPLETE_NOT_FORMAL_COMPARE',
             contract_sha256=digest(cfg),used=session.used,result_sha256=sha(session.root/'results/comparison.json'),
             marker_sha256=session.marker_sha,source_commit=cfg['source_commit'],retry=False,mandatory_STOP=True))
         save(session.root/'STOP.json',dict(status='MANDATORY_STOP_EXPLORATORY_COMPLETE',used=session.used,
