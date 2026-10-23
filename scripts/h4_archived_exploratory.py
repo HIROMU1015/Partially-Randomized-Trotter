@@ -28,7 +28,8 @@ PHYSICAL = dict(system='H4',geometry='linear_1Angstrom',basis='STO-3G',rank=10,
 LIMITS = ('empirical_allowance_not_certificate','conditional_saved_reference_accuracy',
  'finite_exploration_not_population_mean','post_selection_fixed_candidates',
  'historical_runtime_not_complete_dynamic_trace','single_state_not_operator',
- 'H2_H4_different_allowance_inputs_and_cohorts','no_global_optimum_or_causal_attribution')
+ 'H2_H4_different_allowance_inputs_and_cohorts','H4_saved_reference_binary64_variants_not_bit_identical',
+ 'no_global_optimum_or_causal_attribution')
 NEW = ('scripts/h4_archived_exploratory.py','scripts/h4_archived_exploratory_backend.py',
  'scripts/prepare_h4_archived_exploratory.py','scripts/launch_h4_archived_exploratory.py')
 REUSED = tuple(dict.fromkeys(h2.NEW+h2.REUSED))
@@ -80,7 +81,7 @@ def validate_bundle(data):
             'REFERENCE_POLICY')
     require(data['adopted_commit']==ADOPTED and data['saved_commit']==SAVED,'FIXED_RESULTS')
     require(set(data['methods'])=={c.id for c in CANDIDATES},'FOUR_METHOD_INPUTS')
-    reference = None
+    references = {}
     for c in CANDIDATES:
         d=data['methods'][c.id]
         require(d['candidate']==asdict(c),'CANDIDATE_FORMULA_Q_PREFIX_LAW')
@@ -89,8 +90,8 @@ def validate_bundle(data):
                 'COHORT_SCOPE')
         require(d['compiler']==COMPILER and d['native']==NATIVE,'METHOD_COMPILER_NATIVE')
         require(d['saved_reference'] and set(d['saved_reference'])=={'real','imag'},'REFERENCE_PRESENT')
-        if reference is None:reference=d['saved_reference']
-        require(d['saved_reference']==reference,'H4_COMMON_REFERENCE')
+        if c.method not in references:references[c.method]=d['saved_reference']
+        require(d['saved_reference']==references[c.method],'H4_WITHIN_METHOD_SAVED_REFERENCE')
         for field in ('bias','saved_reference'):
             require(set(d[field])=={'real','imag'},'AXIS_SCHEMA')
             for v in d[field].values():require(type(v) in (int,float) and math.isfinite(v),'FINITE_SAVED_SCALAR')
