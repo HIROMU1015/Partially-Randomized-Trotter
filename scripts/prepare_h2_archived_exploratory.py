@@ -91,7 +91,7 @@ def build(source):
     contract=c.ASSETS/'EXPLORATORY_contract_PRIVATE.json';c.save(contract,cfg)
     cmd=[str(c.seal.PYTHON),'-I','-S','-B',str(ROOT/'scripts/launch_h2_archived_exploratory.py'),'--contract',str(contract)]
     run=subprocess.run(cmd,env=env,capture_output=True,text=True)
-    with (OUT/'cache/preflight_process_PRIVATE.json').open('x') as f:json.dump(dict(returncode=run.returncode,stdout=run.stdout,stderr=run.stderr),f)
+    with (OUT/('cache/preflight_process_'+source[:12]+'_PRIVATE.json')).open('x') as f:json.dump(dict(returncode=run.returncode,stdout=run.stdout,stderr=run.stderr),f)
     c.require(run.returncode==0,'METADATA_PREFLIGHT_FAILED:'+run.stderr[-1500:])
     pf=json.loads(run.stdout);c.require(pf['technical_ready'] and not pf['execution_authorized'],'NO_SCIENCE_BEFORE_APPROVAL')
     publish('metadata_preflight.json',pf)
