@@ -2481,3 +2481,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## H4 C/L誤差会計・literal保証転送・40軸接続（2026-10-23系列）
 
 [技術報告](docs/non_df_h4_cl_transfer_20261023.md)、[証拠](artifacts/non_df_h4_cl_transfer/2026-10-23/README.md)。SOURCE0880f4af9、T/binding/L148＋新54＝202 PASS、40×14 overlay・形式規則を実装。Code9/runtime1050/input673、旧3177 SHA保全。実H4数値/科学grant/compile/正式受理/N_G0、C/L BLOCKED・旧compiler MISSING、mandatory STOP。
+
+## 2026-10-24 H4：条件付きC/N/G主評価の採択・再解析計画
+
+[計画](docs/non_df_h4_conditional_cng_plan_20261024.md)、[非実行契約・検証](artifacts/non_df_h4_conditional_cng_plan/2026-10-24/README.md)。固定4方式の条件付き資源比較を主評価として正式採択。旧compiler形式証明は比較開始の必須条件にしない。C/L部分証拠・残差・MC/tailを分離し、20関数/100scenario/30比較領域の次回packageを設計。550 input SHA/514 paired join/40軸pointer・人工8検査PASS。実H4数値再解析/N_G/新科学grant0、原本・旧nullを保持しmandatory STOP。

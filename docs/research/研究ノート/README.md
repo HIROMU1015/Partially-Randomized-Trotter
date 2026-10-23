@@ -281,3 +281,5 @@ D1〜D4レビュー承認は未解決、science/source port/input generation/nex
 ## H4 C/L誤差会計・literal保証転送・40軸接続（2026-10-23系列）
 
 [技術報告](../../non_df_h4_cl_transfer_20261023.md)、[証拠](../../../artifacts/non_df_h4_cl_transfer/2026-10-23/README.md)。SOURCE0880f4af9、T/binding/L148＋新54＝202 PASS、40×14 overlay・形式規則を実装。Code9/runtime1050/input673、旧3177 SHA保全。実H4数値/科学grant/compile/正式受理/N_G0、C/L BLOCKED・旧compiler MISSING、mandatory STOP。
+
+- [2026-10-24 H4条件付きC/N/G方針・非実行計画](2026-10-24_H4_conditional_cng_plan.md)
