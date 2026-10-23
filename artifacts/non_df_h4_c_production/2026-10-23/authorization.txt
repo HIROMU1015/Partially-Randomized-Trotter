@@ -1,0 +1,311 @@
+# Codex指示：H4非DF/DFのC production実装・人工検証・SOURCE固定
+
+Repository：`HIROMU1015/Partially-Randomized-Trotter`
+
+基点branch：`codex/non-df-h4-precision-bc-20261023`
+
+基点commit：`b0f94185f93cd5614e8f183613a2a9313a5b9d4f`
+
+旧科学SOURCE：`0c329b30a81accb35c212be8defa66fee0dd0f12`
+
+## 1. 目的と承認範囲
+
+前段階B＋Cで設計した、H4非DF/DFの数値誤差・bias・normalizationに対する保証付き数値証拠生成について、**実H4用production実装を完成させてください。**
+
+今回は以下を一括承認します。
+
+1. Production assembler・certificate runnerの実装
+2. 保存入力・状態・演算子・有限RTE法則との対応を確認する機構の実装
+3. 保証付き区間演算・誤差伝播・normalization検証の実装
+4. 人工・回帰・異常系・実行制御テスト
+5. 実行契約・科学call予算・受理条件の最終具体化
+6. 新しい技術SOURCE・runtime manifestの固定
+7. 成果物保存・技術監査・local commit・mandatory STOP
+
+**実H4データを用いた数値証拠生成、certificate生成、N/G再会計は今回承認しません。**
+
+実行可能なコードを完成させても、実H4科学実行には自動移行しないでください。
+
+## 2. 固定資料
+
+最初にGitHub上の固定資料を取得・確認してください。
+
+主資料：
+
+- `docs/non_df_h4_precision_bc_20261023.md`
+- `docs/non_df_h4_numerical_enclosure_design_20261023.md`
+- `artifacts/non_df_h4_precision_bc/2026-10-23/C_execution_contract_DRAFT.json`
+- `artifacts/non_df_h4_precision_bc/2026-10-23/C_implementation_plan.json`
+- `artifacts/non_df_h4_precision_bc/2026-10-23/C_precision_method_map.csv`
+- `artifacts/non_df_h4_precision_bc/2026-10-23/B_run01/`
+- `artifacts/non_df_h4_precision_bc/2026-10-23/C_backend_artificial_final.json`
+- `artifacts/non_df_h4_precision_bc/2026-10-23/C_artificial_checks_final.json`
+
+元の科学条件・固定結果も確認してください。
+
+既存の設計契約を基準とし、科学モデル・誤差会計・比較対象を独断で変更しないでください。
+
+## 3. Production実装
+
+既存の実装計画に従い、以下の機能を完成させてください。
+
+### A. 保存入力・演算子の復元
+
+- 保存binary64値を正確に取り込む。
+- 元の状態・Hamiltonian・basis・preparationを再現するための入力処理を実装する。
+- Pauli-JWとDF-nativeの演算子構成を区別する。
+- 元のqubit順序、identity、DF因子、prefix、演算順序を維持する。
+- 保存SOURCE・入力・preparation hashとの一致検査を実装する。
+- 状態の正規化誤差・演算子復元誤差を包含する。
+- 正当性が証明されないsector射影や状態の無断再正規化を行わない。
+
+元の保存モデルとの対応が証明できない場合は、証拠生成を拒否する実装にしてください。
+
+### B. 保証付き数値演算
+
+前段階で設計したArb/Acb ball演算をproduction経路へ接続してください。
+
+対象：
+
+- full-H reference signal
+- 固定S2によるdeterministic evolution
+- finite RTE law mean
+- signed bias
+- 状態・演算子・法則の対応誤差
+- 数値誤差の伝播と包含
+
+特に、以下を満たしてください。
+
+- 外向き包含を維持する。
+- 行列指数の数値誤差・打切り誤差を保証付きで扱う。
+- midpointだけでcertificateを受理しない。
+- 非unitaryな有限Taylor多項式のnormを1と仮定しない。
+- PF/PRの演算順序を変更しない。
+- K=4に対応する元のdegree5有限法則を維持する。
+- exact tail exponentialへの無断置換を行わない。
+
+### C. PR normalizationの保証
+
+既存の有限RTE法則について、以下を検証できる機構を実装してください。
+
+- 有限lawの確率・係数
+- `lambda_r`
+- `B_K`
+- `B`
+- `log_B`
+- 保存された`log_B_upper`との包含関係
+- component・rotation angle・実装確率分布との対応
+- normalization誤差の信号への伝播
+
+NumPyの保存runtimeにおけるCDF構成と53-bit uniform mappingも、固定設計に従って検証してください。
+
+新たな乱数抽選・seed replayは行わないでください。
+
+nominal lawの数学的包含と、実装されたsampling lawとの対応証拠を別々に保存してください。
+
+### D. 数値精度と受理条件
+
+既存設計の有限precision scheduleを維持します。
+
+`64 → 96 → 128 bits`
+
+包含幅が不足した場合に限り、契約で許された次のprecision tierへ進む設計としてください。
+
+モデル不一致、SOURCE不一致、演算例外、入力破損などの場合は、precisionを上げて処理を続けずSTOPしてください。
+
+40軸の必要u予算は、前段階Bの固定結果を使用します。
+
+Cの受理条件には、Bの必要u上限の1/2という既存設計目標を使用してください。ただし、この設計目標の達成と、科学的なcertificateの正式受理を混同しないでください。
+
+## 4. 実行制御・監視・保全
+
+専用のC実行制御を実装してください。
+
+最低限、以下を備えてください。
+
+- 新SOURCE・入力・runtimeのhash検証
+- 有効grantがない場合の科学実行拒否
+- 使用済みgrantの再利用拒否
+- one-shot実行制御
+- 重複launch・重複claimの拒否
+- 科学call予算の強制
+- 異常時の部分証拠保存
+- 自動retry禁止
+- STOP後の再実行拒否
+- worker・子孫processの追跡
+- native exit・reap・STOPの監査記録
+
+前回の元H4実行では、監視プロセスの消失により終了証拠が欠落しました。
+
+そのため、**今回の新しい実行基盤では、各worker終了時にnative exitを永続化する設計を優先してください。**
+
+監視親processの最後の処理にだけ全workerの終了記録を依存させないでください。
+
+ただし、監視基盤を改善しても元H4実行の欠落証拠を復元したことにはしません。
+
+## 5. 人工・回帰検証
+
+Production実装が完成したら、人工入力・mock・既存の非科学的fixtureだけを使用して十分な技術検証を行ってください。
+
+特に以下を確認してください。
+
+1. 入力binary64の正確な変換
+2. 保証付き行列指数・区間包含
+3. 非可換演算子の順序
+4. finite RTE lawとdegree5 polynomial
+5. normalizationの包含
+6. 実装確率分布との対応
+7. state normalization defect
+8. basis・operator・preparationの一致検査
+9. 保存hash不一致の拒否
+10. 不足・破損した入力の拒否
+11. precision tierの進行条件
+12. 科学call予算超過の拒否
+13. grantなしの科学実行拒否
+14. 自動retry・重複実行の防止
+15. worker終了・reap・STOPの記録
+
+既存の33件＋backend13件のPASSを維持し、必要な新規回帰・異常系テストを追加してください。
+
+**実H4の科学入力を使った新しいreference・law mean・bias・normalizationの数値評価は、人工テストの名目でも実行しないでください。**
+
+実データへの適用可能性は、実装構造と入力schemaの静的検証までとします。
+
+不具合が見つかった場合は、承認済み技術範囲で修正・人工テストを継続して構いません。ただし、科学条件の変更が必要な場合はSTOPしてください。
+
+## 6. 実行契約・SOURCEの完成
+
+Production実装が技術検証を通過した後、Cの実行契約を完成させてください。
+
+固定対象：
+
+- 4方式
+- 5精度
+- cosine/sineの40軸
+- 既存Hamiltonian・保存状態
+- S2、T=0.8、q=8、PR r=4/K=4
+- 元の数値guard・allowance
+- Bで確定した必要誤差予算
+
+科学call予算は既存のC契約案を維持してください。
+
+| 対象 | 最大予算 |
+|---|---:|
+| Operator/preparation復元 | 2 batches |
+| Probability mapping | 2 batches |
+| Reference包含 | 6 |
+| Nominal law mean包含 | 12 |
+| Implemented PR law mean包含 | 6 |
+| PR normalization包含 | 6 |
+| Dense matrix exponential | 39 requests |
+
+これらは次回の科学実行範囲を固定する予算です。今回消費してよい科学callではありません。
+
+Production source・関連依存関係・runtime manifest・入力manifestを照合し、新しい技術SOURCEへ固定してください。
+
+実行前提となるproduction実装とruntimeのsealを完成させますが、**科学実行の有効grantは発行しないでください。**
+
+今回の最終状態では、以下を維持してください。
+
+- `execution_authorized = false`
+- `grant_valid = false`
+- `dispatch_enabled = false`
+
+実H4科学実行の起動を拒否することをテストで確認してください。
+
+## 7. 計算資源と共有環境
+
+最新版`research_project_instructions_unified_2026-10-17.md`の§8.4を適用してください。
+
+- CPU・RAM・worker数に恣意的な低い上限を設けない。
+- 重い技術検証は十分な並列化・高速化を検討する。
+- QiskitやFLINTのmutable contextを安全でない形でthread共有しない。
+- 独立processやprivate cacheを適切に使用する。
+- 実際の空き資源・負荷・非干渉を確認する。
+- 共有環境全体や他ユーザーに影響する変更・操作は絶対禁止。
+- 既存の固定科学契約・資源条件を無断変更しない。
+
+## 8. 保全条件・禁止事項
+
+以下は変更しないでください。
+
+- 元H4科学SOURCE
+- 元H4のraw結果・入力・grant・ledger・marker・STOP
+- BのSOURCE・結果・消費済みgrant
+- 既存の40軸診断結果
+- 既存のN/G=null・UNDETERMINED判定
+- 旧監視証拠の欠落状態
+- 別系列の研究結果
+
+今回禁止する作業：
+
+- 新規SCF/FCI・DF生成・状態最適化
+- 実H4のreference・law mean・biasの新規計算
+- 実H4の高精度・区間数値計算
+- 実H4 certificate生成
+- sampling・compile
+- N/G再会計
+- PR/PFの候補再選択・費用再ランキング
+- 旧科学runのretry/resume
+- 使用済みgrantの再利用
+- 詳細科学レビュー
+- 最終evidence freeze
+
+## 9. 成果物
+
+必要に応じて、既存計画の次のファイルを実装してください。
+
+- `src/trotterlib/h4_ball_evidence.py`
+- `src/trotterlib/h4_certificate_control.py`
+- `scripts/run_h4_numerical_evidence.py`
+- `tests/test_h4_ball_evidence.py`
+
+構造は実装上の合理的理由があれば調整して構いませんが、科学的意味・保全・実行拒否条件は変更しないでください。
+
+加えて、以下を保存してください。
+
+1. Production実装・技術検証報告書
+2. 人工・回帰テスト結果
+3. SOURCE・runtime manifest・SHA
+4. 完成したC科学実行契約案
+5. 次回実行に必要なgrant発行・起動手順
+6. 科学call予算・受理条件・STOP条件
+7. 既存結果の保全監査
+8. 未解決事項・技術的制約
+9. README・引継ぎ資料
+10. mandatory STOP記録
+
+## 10. 完了条件・最終報告
+
+以下を完了してください。
+
+- 実H4用production assemblerの実装
+- 保証付き数値演算・normalization検証の実装
+- 保存入力・モデル対応の検査機構
+- C実行制御・監視・STOP機構
+- 人工・回帰・異常系テスト
+- C科学実行契約案の完成
+- 新技術SOURCE・runtime manifestの固定
+- 成果物保存・技術終了監査
+- 専用branchへのlocal commit
+
+技術的に未解決の点が残った場合は、完了と偽らず、未実装・未検証の範囲を明示してください。
+
+GitHubへの新規pushは、公開範囲の明示承認が確認された場合に限ってください。
+
+最終報告では、次を簡潔に示してください。
+
+1. Production実装の完成状況
+2. 保証付き数値演算・normalization検証の実装状況
+3. 人工・回帰テストのPASS/FAIL/skip
+4. 実H4科学実行への技術的準備状況
+5. 固定SOURCE・実行契約案
+6. 残る問題・受理上の制約
+7. 次回実H4 certificate生成で必要な承認
+8. branch・commit・公開状態
+
+**今回承認した実装・技術検証・SOURCE固定・結果保存・終了監査まで、中間承認なしで一括実施してください。**
+
+ただし、実H4科学計算のgrantを有効化せず、科学実行は開始しないでください。
+
+完了後は**mandatory STOP**してください。

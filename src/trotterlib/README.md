@@ -1,3 +1,7 @@
+## H4 C production
+
+`h4_ball_evidence.py`（包含・full-space組立）、`h4_legacy_export.py`（旧準備/hash対応）、`h4_certificate_control.py`（one-shot/予算/native witness）。[保証範囲・人工検証・無効契約](../../docs/non_df_h4_c_production_20261023.md)。実H4数値実行0、旧science/B API・結果不変。以下は履歴。
+
 ## H4数値精度B・C人工包含prototype
 
 `h4_precision_budget.py` / `h4_precision_control.py` は保存scalar診断とone-shot認証。`h4_enclosure_prototype.py` は人工rational包含だけ。B40軸の一回診断を完了。C保証設計/人工FLINT13検査は完成、実H4 production runnerは未実装。旧science APIは不変。[仕様](../../docs/non_df_h4_precision_bc_20261023.md)。

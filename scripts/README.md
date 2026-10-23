@@ -1,3 +1,7 @@
+## H4 C production：承認なしの科学起動を拒否
+
+[run_h4_numerical_evidence.py](run_h4_numerical_evidence.py)はC専用inspect/issue-grant/execute/worker/bridge/witness。現在は無効契約で、実H4実行・grant発行を拒否する。[技術報告と将来手順](../docs/non_df_h4_c_production_20261023.md)。以下は履歴。
+
 ## H4保存scalarの数値精度診断B
 
 [`run_h4_precision_b.py`](run_h4_precision_b.py) は固定40軸だけのprepare/launch/run/verify。B_run01は一回消費済み、今後は保存監査verifyだけ。C実H4実行は非対応。[仕様](../docs/non_df_h4_precision_bc_20261023.md)。
