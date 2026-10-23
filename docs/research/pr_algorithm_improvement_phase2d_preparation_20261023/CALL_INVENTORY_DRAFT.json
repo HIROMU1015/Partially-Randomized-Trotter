@@ -1,0 +1,878 @@
+{
+  "schema_version": "phase2dp0-call-inventory-draft-v1",
+  "document_kind": "NON_EXECUTABLE_CONTRACT_DRAFT",
+  "execution_authorized": false,
+  "grant_created": false,
+  "scientific_work_executed_in_p0": 0,
+  "base_commit": "ef2eb7d55ea37bf93e0b85773df20b63811d1f9b",
+  "arms": [
+    "SS",
+    "SP",
+    "PS",
+    "PP"
+  ],
+  "variables": {
+    "L_SS": null,
+    "L_SP": null,
+    "L_PS": null,
+    "L_PP": null,
+    "sum_L": null,
+    "sum_E": null,
+    "sum_L_squared": null,
+    "Q": null,
+    "U_F2": null
+  },
+  "variable_definitions": {
+    "L_a": "nonzero canonical atoms after P-fragment collect; exact rational zero only",
+    "E_a": "L_a+L_a^3 for F1 one microstep",
+    "Q": "2*sum_a L_a^2",
+    "U_F2": "unique full-IR cache misses among Q+2 logical requests, unresolved; no invented number"
+  },
+  "binding_policy": "I/B approvals required before any implementation/materialization; resolve L/counts/IDs before final F1 approval, F2 counts and cache contract before separate F2 approval. B results reused without regeneration in F1.",
+  "fixed_f1": {
+    "physical_motifs": 32,
+    "controlled_motif_builds": 96,
+    "physical_full_wrappers": 64,
+    "limited_compile_requests": 64,
+    "catalog_events": 68,
+    "catalog_controlled_builds": 136,
+    "catalog_price_direct_records": 68
+  },
+  "calls": [
+    {
+      "id": "B.INPUT",
+      "stage": "B",
+      "kind": "input_materialization",
+      "arms": [],
+      "count": {
+        "exact": 2,
+        "formula": "2",
+        "units": "logical cases",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "adopted static physical fixture",
+        "adopted catalog"
+      ],
+      "source_role": "new fixture SOURCE and independent reference",
+      "expected_outputs": [
+        "two canonical input records",
+        "digests",
+        "no circuits"
+      ],
+      "failure_condition": "spec/hash/coverage mismatch; generation outside bounded approval",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "B.ARMS",
+      "stage": "B",
+      "kind": "exact_arm_binding",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": 4,
+        "formula": "4",
+        "units": "logical cases",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "physical input",
+        "S/P exact algebra"
+      ],
+      "source_role": "new canonicalization SOURCE",
+      "expected_outputs": [
+        "L_a",
+        "arm maps",
+        "sign/zero identities",
+        "motif IDs"
+      ],
+      "failure_condition": "missing I/s/v or algebra ambiguity",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "B.CONTEXTS",
+      "stage": "B",
+      "kind": "law_and_recipe_metadata_binding",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": 5,
+        "formula": "5",
+        "units": "logical cases",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "four F1 arm contexts",
+        "one catalog context"
+      ],
+      "source_role": "existing RTE law + frozen recipe/interval providers",
+      "expected_outputs": [
+        "law hashes",
+        "truncation API tolerance values",
+        "literal recipe source/static prices",
+        "exact counts"
+      ],
+      "failure_condition": "unresolved law/price/interval/call count",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F1.H",
+      "stage": "F1",
+      "kind": "hamiltonian_identity",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": 4,
+        "formula": "4",
+        "units": "logical cases",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "bound arm coefficients",
+        "independent CAR/Gamma H"
+      ],
+      "source_role": "mixed prototype vs independent reference",
+      "expected_outputs": [
+        "full/sector H residuals",
+        "scalar/collect report"
+      ],
+      "failure_condition": "H-ID threshold or exact input mismatch",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F1.LAW",
+      "stage": "F1",
+      "kind": "finite_event_metadata_enumeration",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": null,
+        "formula": "sum_a (L_a + L_a^3)",
+        "units": "event records",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "F1 law",
+        "all ordered n0/n2 indices"
+      ],
+      "source_role": "existing _make_event/iter law and independent formulas",
+      "expected_outputs": [
+        "event weight/sign/order metadata",
+        "mass report4"
+      ],
+      "failure_condition": "law/mass/sign/order discrepancy",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F1.COMPONENT",
+      "stage": "F1",
+      "kind": "controlled_component_build_and_operator",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": null,
+        "formula": "3 * sum_a L_a",
+        "units": "builds and corresponding operator checks",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "each atom",
+        "product and rotations theta0/theta2"
+      ],
+      "source_role": "typed router vs independent unsigned operator",
+      "expected_outputs": [
+        "3 controlled circuits and operators per atom"
+      ],
+      "failure_condition": "control block/unitarity/sign/phase mismatch",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F1.MOTIF",
+      "stage": "F1",
+      "kind": "controlled_trajectory_build_and_operator",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": 96,
+        "formula": "4 * 8 * 3",
+        "units": "builds and corresponding operator checks",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "M0-M7",
+        "raw/optimized/actual inverse"
+      ],
+      "source_role": "new mixed repeated builder with common policies",
+      "expected_outputs": [
+        "96 circuits/operator reports",
+        "construction differences"
+      ],
+      "failure_condition": "operator/order/adjoint/phase/fusion mismatch",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F1.WRAPPER",
+      "stage": "F1",
+      "kind": "full_wrapper_build",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": 64,
+        "formula": "4 * 8 * 2",
+        "units": "wrapper builds and raw signal checks",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "32 optimized motifs",
+        "X/Y",
+        "prep and terminal measure"
+      ],
+      "source_role": "new typed Hadamard adapter preserving known wrapper",
+      "expected_outputs": [
+        "64 full wrappers",
+        "64 raw signal reports"
+      ],
+      "failure_condition": "prep/readout phase/sign/signal mismatch",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F1.COMPILE",
+      "stage": "F1",
+      "kind": "limited_full_wrapper_compile",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": 64,
+        "formula": "4 * 8 * 2",
+        "units": "compile requests; cache-hit aliases retain all logical records",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "64 registered wrappers",
+        "fixed compiler"
+      ],
+      "source_role": "Qiskit1.3.0 transpile",
+      "expected_outputs": [
+        "64 compiled circuits",
+        "operator/signal reports64",
+        "layout/count metadata"
+      ],
+      "failure_condition": "compiled threshold/seed/context mismatch",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F1.MEAN",
+      "stage": "F1",
+      "kind": "actual_component_derived_corrected_mean",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": 4,
+        "formula": "4",
+        "units": "logical cases",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "actual control1 component blocks",
+        "bound law",
+        "D/c"
+      ],
+      "source_role": "new independent aggregation vs independently built P3 target",
+      "expected_outputs": [
+        "one-microstep and full mean report per arm"
+      ],
+      "failure_condition": "FINITE_MEAN mismatch; reuse of same candidate R/poly as sole reference",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F1.CATALOG.EVENT",
+      "stage": "F1",
+      "kind": "catalog_controlled_build_and_operator",
+      "arms": [],
+      "count": {
+        "exact": 136,
+        "formula": "68 * 2",
+        "units": "builds and corresponding operator checks",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "4 label catalog",
+        "68 ordered events",
+        "raw/optimized"
+      ],
+      "source_role": "typed router vs independent CAR/Pauli reference",
+      "expected_outputs": [
+        "136 circuits/operator reports"
+      ],
+      "failure_condition": "phase/order/sign/control mismatch",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F1.CATALOG.MEAN",
+      "stage": "F1",
+      "kind": "catalog_actual_corrected_mean",
+      "arms": [],
+      "count": {
+        "exact": 2,
+        "formula": "2",
+        "units": "logical cases",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "68 raw blocks",
+        "68 optimized blocks",
+        "w/prob/B",
+        "catalog scalar"
+      ],
+      "source_role": "weighted actual blocks vs independent P3",
+      "expected_outputs": [
+        "raw and optimized corrected means"
+      ],
+      "failure_condition": "CATALOG_MEAN mismatch",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F1.PRICE.ENUM",
+      "stage": "F1",
+      "kind": "literal_price_direct_count",
+      "arms": [],
+      "count": {
+        "exact": 68,
+        "formula": "68",
+        "units": "event price records",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "catalog event literal recipes",
+        "fixed source-derived RZ prices/reserves"
+      ],
+      "source_role": "independent literal sequence scan",
+      "expected_outputs": [
+        "68 integer price records",
+        "weighted aggregate"
+      ],
+      "failure_condition": "recipe count mismatch; model substituted for compiler prediction",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F1.PRICE.DP",
+      "stage": "F1",
+      "kind": "finite_state_price",
+      "arms": [],
+      "count": {
+        "exact": 1,
+        "formula": "1",
+        "units": "logical cases",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "same catalog law and literal price table"
+      ],
+      "source_role": "EMPTY/SINGLE/MULTI state machine",
+      "expected_outputs": [
+        "DP expectation",
+        "state/work/memory report"
+      ],
+      "failure_condition": "undefined transition/price/interval",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F1.PRICE.COMPARE",
+      "stage": "F1",
+      "kind": "price_aggregate_comparison",
+      "arms": [],
+      "count": {
+        "exact": 1,
+        "formula": "1",
+        "units": "logical cases",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "DP expectation",
+        "independent68 enumeration aggregate"
+      ],
+      "source_role": "independent aggregate gate",
+      "expected_outputs": [
+        "PRICE gate residual"
+      ],
+      "failure_condition": "price thresholds fail",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F1.PRICE.ARMS",
+      "stage": "F1",
+      "kind": "physical_literal_candidate_price",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": 4,
+        "formula": "4",
+        "units": "logical cases",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "F1 context",
+        "bound literal source prices",
+        "eta/alpha candidate"
+      ],
+      "source_role": "whole-candidate price/shot interval provider",
+      "expected_outputs": [
+        "Phi/B/N/J per arm",
+        "cold cache costs"
+      ],
+      "failure_condition": "unpriced interval/ceil unresolved; no certified improvement",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F1.SELECTOR",
+      "stage": "F1",
+      "kind": "phase2c_selector",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": 1,
+        "formula": "1",
+        "units": "logical cases",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "same four candidate cache"
+      ],
+      "source_role": "two-endpoint one-pass selector",
+      "expected_outputs": [
+        "at most6 evaluation requests",
+        "at most4 unique records",
+        "selection work"
+      ],
+      "failure_condition": "extra pass/oracle/info asymmetry",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F1.EXHAUSTIVE",
+      "stage": "F1",
+      "kind": "known_four_candidate_search",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": 1,
+        "formula": "1",
+        "units": "logical cases",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "same four candidate cache"
+      ],
+      "source_role": "known finite exhaustive search",
+      "expected_outputs": [
+        "4-candidate comparison",
+        "selection work"
+      ],
+      "failure_condition": "different candidate set/information/tie rule",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F1.REFERENCE",
+      "stage": "F1",
+      "kind": "independent_high_precision_reference",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": null,
+        "formula": "2 * (4 + 32 + 68 + sum_a L_a)",
+        "units": "precision evaluations; shared exact-identical reference may alias with recorded cache hit",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "4 finite target requests",
+        "32 motif references including X/Y",
+        "68 catalog event references",
+        "sum L atom references including3 roles"
+      ],
+      "source_role": "independent CAR/Gamma/Pauli +90 Taylor/128 Pade",
+      "expected_outputs": [
+        "both predeclared precision outputs per logical reference case",
+        "agreement report"
+      ],
+      "failure_condition": "reference disagreement or adaptive precision retry",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F2.LAW",
+      "stage": "F2",
+      "kind": "new_context_binding",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": 4,
+        "formula": "4",
+        "units": "logical cases",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "same fixture",
+        "F2 q1/r2/K0"
+      ],
+      "source_role": "frozen RTE law with new context",
+      "expected_outputs": [
+        "new arm law/B/N and exact counts"
+      ],
+      "failure_condition": "reuse of F1 angles/law/context",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F2.PATHS",
+      "stage": "F2",
+      "kind": "all_finite_trajectory_enumeration",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": null,
+        "formula": "sum_a L_a^2",
+        "units": "trajectory records",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "F2 law",
+        "all ordered child pairs"
+      ],
+      "source_role": "registered ordered finite iterator",
+      "expected_outputs": [
+        "all weights",
+        "trajectory IDs",
+        "mass4"
+      ],
+      "failure_condition": "missing path or MC substitution",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F2.WRAPPERS",
+      "stage": "F2",
+      "kind": "actual_full_wrapper_build_compile",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": null,
+        "formula": "Q + 2; Q=2*sum_a L_a^2",
+        "units": "logical requests; exact U pending IR binding",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "all X/Y full wrappers",
+        "common prep/readout-only diagnostics2",
+        "fixed compiler"
+      ],
+      "source_role": "common optimized mixed builder and Qiskit1.3.0",
+      "expected_outputs": [
+        "Q+2 logical build/compile records",
+        "U unique attempts <= Q+2",
+        "full metrics",
+        "raw/compiled operator and signal checks per record"
+      ],
+      "failure_condition": "compile/control/mean/layout/context mismatch; failed attempt auto retry",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F2.MEAN",
+      "stage": "F2",
+      "kind": "finite_mean_and_statistical_qualification",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": 4,
+        "formula": "4",
+        "units": "logical cases",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "all trajectory weights and actual signals",
+        "Btot",
+        "finite P1 reference",
+        "eta/alpha"
+      ],
+      "source_role": "independent aggregate and common shot policy",
+      "expected_outputs": [
+        "mean residual",
+        "qualified range/law/N",
+        "eligibility"
+      ],
+      "failure_condition": "finite mean or statistical qualification fails",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F2.BIAS",
+      "stage": "F2",
+      "kind": "physical_bias_diagnostic",
+      "arms": [],
+      "count": {
+        "exact": 1,
+        "formula": "1",
+        "units": "logical cases",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "finite P1 signal",
+        "exact physical signal",
+        "bias allowance candidate"
+      ],
+      "source_role": "independent reference with declared certificate status",
+      "expected_outputs": [
+        "numeric bias diagnostic",
+        "qualification label"
+      ],
+      "failure_condition": "unqualified physical same-accuracy claim or budget failure",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F2.REFERENCE",
+      "stage": "F2",
+      "kind": "independent_high_precision_reference",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": null,
+        "formula": "2 * (1 + 1 + Q + 2)",
+        "units": "precision evaluations",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "physical exact signal1",
+        "finite target1",
+        "Q+2 full wrapper references"
+      ],
+      "source_role": "independent90/128 decimal paths",
+      "expected_outputs": [
+        "reference outputs",
+        "predeclared agreement checks"
+      ],
+      "failure_condition": "disagreement/adaptive retry",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F2.PRICE.ARMS",
+      "stage": "F2",
+      "kind": "literal_price_and_shot_rebinding",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": 4,
+        "formula": "4",
+        "units": "logical cases",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "F2 law",
+        "same literal recipe provider"
+      ],
+      "source_role": "whole-candidate price and certified intervals",
+      "expected_outputs": [
+        "Phi/J with new B/N",
+        "classical work"
+      ],
+      "failure_condition": "F1 price reuse/unresolved interval",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F2.SELECTOR",
+      "stage": "F2",
+      "kind": "selector",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": 1,
+        "formula": "1",
+        "units": "logical cases",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "same F2 four candidate cache"
+      ],
+      "source_role": "same Phase2C selector",
+      "expected_outputs": [
+        "selection and work"
+      ],
+      "failure_condition": "extra pass or unequal information",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F2.EXHAUSTIVE",
+      "stage": "F2",
+      "kind": "known_finite_search",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": 1,
+        "formula": "1",
+        "units": "logical cases",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "same F2 four candidate cache"
+      ],
+      "source_role": "known four-candidate exhaustive search",
+      "expected_outputs": [
+        "best literal candidates and work"
+      ],
+      "failure_condition": "novelty attribution or information asymmetry",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    },
+    {
+      "id": "F2.ACTUAL",
+      "stage": "F2",
+      "kind": "weighted_actual_resource_aggregation",
+      "arms": [
+        "SS",
+        "SP",
+        "PS",
+        "PP"
+      ],
+      "count": {
+        "exact": 4,
+        "formula": "4",
+        "units": "logical cases",
+        "resolve_before_approval": "final input and SOURCE binding"
+      },
+      "inputs": [
+        "all full wrapper compiled metrics/weights",
+        "N_X/Y",
+        "classical profiling records"
+      ],
+      "source_role": "common aggregation",
+      "expected_outputs": [
+        "RZ/CX/depth expectations and N costs",
+        "all outcome classifications"
+      ],
+      "failure_condition": "unit mixing/missing prep/readout/qualification failure",
+      "dedup": "stage + input/context/source/env digests + case ID + full IR/angles/phase/compiler when relevant; atomic one-attempt claim; failed attempt retained",
+      "execution_authorized": false
+    }
+  ],
+  "prohibited": [
+    "sampling random draws",
+    "quantum shot execution",
+    "unregistered pilots",
+    "adaptive precision or condition changes",
+    "failed scientific retry",
+    "production SOURCE edits in P0"
+  ],
+  "failure_policy": "record first failed attempt and mandatory STOP; do not retry same scientific run",
+  "resource_policy": "no artificial CPU/RAM/GPU/worker/wall-time caps; science call and output/log bounds are separate; shared environment unchanged",
+  "source_binding": {
+    "prototype_commit": null,
+    "source_closure_sha256": null,
+    "fixture_input_sha256": null,
+    "catalog_input_sha256": null,
+    "environment_lock_sha256": null
+  }
+}

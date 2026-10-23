@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:phase2dp0:non-executable-call-inventory-draft",
+  "title": "P0 documentation inventory; not a run authorization",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "document_kind",
+    "execution_authorized",
+    "grant_created",
+    "scientific_work_executed_in_p0",
+    "base_commit",
+    "arms",
+    "variables",
+    "fixed_f1",
+    "calls",
+    "source_binding"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "phase2dp0-call-inventory-draft-v1"
+    },
+    "document_kind": {
+      "const": "NON_EXECUTABLE_CONTRACT_DRAFT"
+    },
+    "execution_authorized": {
+      "const": false
+    },
+    "grant_created": {
+      "const": false
+    },
+    "scientific_work_executed_in_p0": {
+      "const": 0
+    },
+    "base_commit": {
+      "const": "ef2eb7d55ea37bf93e0b85773df20b63811d1f9b"
+    },
+    "calls": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "stage",
+          "kind",
+          "arms",
+          "count",
+          "inputs",
+          "source_role",
+          "expected_outputs",
+          "failure_condition",
+          "dedup",
+          "execution_authorized"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "stage": {
+            "enum": [
+              "B",
+              "F1",
+              "F2"
+            ]
+          },
+          "kind": {
+            "type": "string"
+          },
+          "arms": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "SS",
+                "SP",
+                "PS",
+                "PP"
+              ]
+            }
+          },
+          "count": {
+            "type": "object",
+            "required": [
+              "exact",
+              "formula",
+              "units",
+              "resolve_before_approval"
+            ],
+            "properties": {
+              "exact": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 1
+              },
+              "formula": {
+                "type": "string",
+                "minLength": 1
+              },
+              "units": {
+                "type": "string",
+                "minLength": 1
+              },
+              "resolve_before_approval": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "inputs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "source_role": {
+            "type": "string"
+          },
+          "expected_outputs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "failure_condition": {
+            "type": "string",
+            "minLength": 1
+          },
+          "dedup": {
+            "type": "string",
+            "minLength": 1
+          },
+          "execution_authorized": {
+            "const": false
+          }
+        }
+      }
+    },
+    "arms": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "SS",
+          "SP",
+          "PS",
+          "PP"
+        ]
+      }
+    },
+    "variables": {
+      "type": "object"
+    },
+    "fixed_f1": {
+      "type": "object"
+    },
+    "source_binding": {
+      "type": "object"
+    }
+  }
+}
