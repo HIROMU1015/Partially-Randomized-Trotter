@@ -108,3 +108,7 @@ compile-plan生成拒否、clear時の最大16+16 cell plan、source hash、non-
 `test_pr2_matched_accuracy_m2_transfer_contract.py`では、M1-B1からの5構成固定、future seed衝突0、
 196-wrapper上限、primary予測と10%重大underestimate、4 terminal status、held-out/transfer未認可、schemaを
 検査する。held-out signalまたはcompileを実行するtestではない。
+
+## 2026-10-23 H2 runtime差：保存3.12費用の再利用調査
+
+[完了報告・比較政策・未解決条件](../docs/research/track_a_h2_runtime_cost_reuse_20261023.md)。元PR134軸と同じPython3.12 binaryの共通Full4軸を発見（S2/q4各1655、Y4/q2各2463 RZ）。主要compiler binary21/21、runtime8/8、Full preparation hashも現在の共通診断と一致。原PF QPY/plan・関連runtimeの静的結合を先行し、追加compileの必要性は未認定。人工82PASS・16,824保護file変化0。代替契約未採択、旧runtime出力同等性/A独立diagonal未証明、COMPARE BLOCKED。新科学計算/u/N/G/grant0、local commit後mandatory STOP。

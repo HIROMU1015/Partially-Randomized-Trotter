@@ -1014,3 +1014,9 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 [契約・構造検証・runtime・保全](../docs/research/track_a_h2_pr_equivalence_contract_20261023.md)。基準588d19544…から代替契約を未採択の別schemaとして実装。科学回路A/費用測定Bを分離し、全134保存QPYのinverse/reuse/diagonal mirror/control/phase/wrapperを全instruction消費でVERIFIED。Aは11/12条件、Bは2/3条件が全軸成立。共通diagonal絶対角度の独立bindingとcross-runtime compiler費用同等性は未証明。strict/代替正式認定とも0/134・COMPARE BLOCKED。新48＋既存200＝人工248PASS、16,804保護path不変。新科学計算/実H2生成/compile/会計/grant/公開push0、未承認最小案とmandatory STOP。
 
 [未採択契約とmetadata preflight](h2_pr_equivalence_contract.py)、[保存stream cursor](h2_pr_stream_conformance.py)、[runtime静的調査](h2_pr_runtime_relevance.py)、[原本監査](audit_h2_pr_equivalence.py)、[人工48 tests](../tests/test_h2_pr_equivalence_contract.py)、[成果物](../artifacts/resource_applicability/track_a_h2_pr_equivalence_contract/2026-10-23/REPORT.md)。新contractの`--execute`は入力を読む前に拒否する。
+
+## 2026-10-23 H2 runtime差：保存3.12費用の再利用調査
+
+[完了報告・比較政策・未解決条件](../docs/research/track_a_h2_runtime_cost_reuse_20261023.md)。元PR134軸と同じPython3.12 binaryの共通Full4軸を発見（S2/q4各1655、Y4/q2各2463 RZ）。主要compiler binary21/21、runtime8/8、Full preparation hashも現在の共通診断と一致。原PF QPY/plan・関連runtimeの静的結合を先行し、追加compileの必要性は未認定。人工82PASS・16,824保護file変化0。代替契約未採択、旧runtime出力同等性/A独立diagonal未証明、COMPARE BLOCKED。新科学計算/u/N/G/grant0、local commit後mandatory STOP。
+
+`h2_runtime_cost_reuse.py`のmetadata join/fixture ledgerと`audit_h2_runtime_cost_reuse.py`の保存receipt/SHA監査。科学library・既存compiler/sourceは変更しない。

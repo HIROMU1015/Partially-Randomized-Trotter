@@ -1,3 +1,7 @@
+## 2026-10-23 H2 runtime差：保存3.12費用の再利用調査
+
+[完了報告・比較政策・未解決条件](docs/research/track_a_h2_runtime_cost_reuse_20261023.md)。元PR134軸と同じPython3.12 binaryの共通Full4軸を発見（S2/q4各1655、Y4/q2各2463 RZ）。主要compiler binary21/21、runtime8/8、Full preparation hashも現在の共通診断と一致。原PF QPY/plan・関連runtimeの静的結合を先行し、追加compileの必要性は未認定。人工82PASS・16,824保護file変化0。代替契約未採択、旧runtime出力同等性/A独立diagonal未証明、COMPARE BLOCKED。新科学計算/u/N/G/grant0、local commit後mandatory STOP。
+
 ## 2026-10-19 PR/PF絶対RZコスト図：v2・5精度（保存値のみ）
 
 [成果物・採用除外・再現方法](docs/research/track_a_pr_pf_absolute_cost_v2_20261019.md)。v2 snapshot c0808b25を基準に26比較・52点を描画。両端精度はH4/H6/H8独立確認とH2/H4/H6/H8探索n8の別パネル、中間3精度は探索のみ。H4は新DF10、H6中間PFはmodelを白抜き表示。H2 P未完了・H8詳細公開監査未照合・有限標本の限界を保持。PNG/SVG/PDF各5枚、exact表・採否・caption・SHAを保存。新科学計算/会計/順位計算0、local commitのみ、公開pushなし。次の作業なし、mandatory STOP。以下は各時点の履歴。
