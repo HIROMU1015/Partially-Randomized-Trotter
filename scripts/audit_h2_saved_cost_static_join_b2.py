@@ -164,7 +164,7 @@ def audit(config, source):
             r.require(len(found)==1,'FIXED_RAW_INVENTORY_UNIQUE')
             j.same({k:v for k,v in found[0].items() if k!='candidate'},arc,'FIXED_ARCHIVE_RECEIPT')
         pfjoins.append(join)
-        rows.append(dict(series='FULL',candidate=join['candidate'],task=None,axis=join['axis'],
+        rows.append(dict(series='FULL',task=None,
             cohort=saved['cohort'],saved_object_ref=dict(commit=j.B,path=j.B_DIR+'saved_common_PF_cost_objects_4.json',
                 json_pointer='/rows/'+str(i),object_sha256=r.digest(saved)),
             GPU01_original_axis_ref=dict(commit=j.RECOVERY,path=j.REC_DIR+'axis_identity_4.json',
@@ -172,8 +172,7 @@ def audit(config, source):
             compiled_raw_SHA256=saved['compiled']['original_sha256'],
             original_cost_receipt_rehashed_GPU02=False,**join,
             policy2a_usable='CONDITIONAL_NOT_ADOPTED'))
-    r.require(len(rows)==138 and len({(x['series'],x['candidate'],x['task'],x['axis']) for x in rows})==138,
-              'FIXED_INTEGRATED_138_AXIS_KEYS')
+    j.validate_identity_index(rows, {(t['id'],a) for t in taskmap.values() for a in ('cosine','sine')})
     # Static scientific producer equality; no import or function invocation.
     source_rows=[]
     for path in ('scripts/h46_new2_native.py','scripts/h46_m5_native.py',

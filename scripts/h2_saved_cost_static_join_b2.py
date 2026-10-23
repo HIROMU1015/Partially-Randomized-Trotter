@@ -105,6 +105,27 @@ def join_runtime_projection(closure, projection):
                 historical_actual_load_complete=False)
 
 
+def validate_identity_index(rows, expected_pr_keys):
+    r.require(len(rows) == 138 and len({(x['series'],x['candidate'],x['task'],x['axis']) for x in rows}) == 138,
+              'EXACT_138_UNIQUE_AXES')
+    pr = [x for x in rows if x['series'] == 'PR']
+    full = [x for x in rows if x['series'] == 'FULL']
+    r.require(len(pr) == 134 and {(x['task'],x['axis']) for x in pr} == expected_pr_keys,
+              'EXACT_PR_COHORT_AXIS_KEYS')
+    r.require({(x['candidate'],x['axis']) for x in full} ==
+              {(c,a) for c in FULL for a in ('cosine','sine')} and len(full) == 4,
+              'EXACT_FULL_FOUR_AXES')
+    for row in rows:
+        is_pr = row['series'] == 'PR'
+        r.require(row['cohort'] == ('EXPLORATION' if is_pr else 'COMMON_PF_DETERMINISTIC_20261022'),
+                  'INDEX_COHORT')
+        ref = row['saved_object_ref']
+        r.require(ref['commit'] == B and ref['path'] == B_DIR +
+                  ('saved_PR_cost_objects_134.json' if is_pr else 'saved_common_PF_cost_objects_4.json'),
+                  'INDEX_FIXED_SOURCE')
+    return dict(PR=134, Full=4)
+
+
 def policy_preflight(conditions):
     r.require(type(conditions) is list and len({x['condition'] for x in conditions}) == len(conditions),
               'UNIQUE_CONDITIONS')

@@ -82,6 +82,28 @@ class StaticJoinTests(unittest.TestCase):
         c,p=closure_fixture();p[1]=deepcopy(p[0]);c[1]=dict(c[0],index=1)
         self.assertEqual(j.join_runtime_projection(c,p)['closure_entries'],365)
 
+    def test_integrated_axis_identity_index(self):
+        rows=[];keys=set()
+        for i in range(67):
+            for a in ('cosine','sine'):
+                keys.add((str(i),a))
+                rows.append(dict(series='PR',candidate=j.previous.PR_CANDIDATES[i>=33],task=str(i),axis=a,
+                    cohort='EXPLORATION',saved_object_ref=dict(commit=j.B,path=j.B_DIR+'saved_PR_cost_objects_134.json')))
+        for c in j.FULL:
+            for a in ('cosine','sine'):
+                rows.append(dict(series='FULL',candidate=c,task=None,axis=a,
+                    cohort='COMMON_PF_DETERMINISTIC_20261022',
+                    saved_object_ref=dict(commit=j.B,path=j.B_DIR+'saved_common_PF_cost_objects_4.json')))
+        self.assertEqual(j.validate_identity_index(rows,keys),dict(PR=134,Full=4))
+        for field,value in [('candidate','OLD_FULL'),('cohort','CONFIRMATION'),('axis','other')]:
+            bad=deepcopy(rows);bad[-1][field]=value
+            with self.assertRaises(j.r.EvidenceError):j.validate_identity_index(bad,keys)
+        bad=deepcopy(rows);bad[0]['saved_object_ref']['commit']='0'*40
+        with self.assertRaises(j.r.EvidenceError):j.validate_identity_index(bad,keys)
+        with self.assertRaises(j.r.EvidenceError):j.validate_identity_index(rows[:-1],keys)
+        bad=deepcopy(rows);bad[-1]=deepcopy(bad[-2])
+        with self.assertRaises(j.r.EvidenceError):j.validate_identity_index(bad,keys)
+
     def test_no_science_import(self):
         self.assertFalse(any(n.split('.')[0] in ('numpy','qiskit','scipy','symengine','trotterlib','trottertracks') for n in sys.modules))
 
