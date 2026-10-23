@@ -1,3 +1,7 @@
+## 2026-10-23 H4 certificate gateの原因・充足性
+
+[当日記録](2026-10-23_H4_certificate_gate_audit.md)：DF range falseの直接経路、literal readout/encoded matrix/compilerの区別、保存証拠照合と最小次段階案。新科学計算・受理・N/Gなし、mandatory STOP。
+
 ## 2026-10-23 H4 C修正版の固定40軸実行
 
 [当日記録](2026-10-23_H4_C_reference_evidence.md)：新SOURCE・新grantによる一回の数値証拠候補生成。旧SOURCE/失敗run・N/G未確定・元native欠落は保全。

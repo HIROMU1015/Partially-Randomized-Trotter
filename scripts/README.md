@@ -1,3 +1,7 @@
+## H4 certificate gateの読取監査（2026-10-23）
+
+[報告書](../docs/non_df_h4_certificate_gate_audit_20261023.md)。補助CLIは `artifacts/non_df_h4_certificate_gate_audit/2026-10-23/audit_saved_evidence.py`。固定source/bytes/JSON/CSV/AST/joinだけを照合し、既存outputは排他的保存。実H4数値再解析・compile・N/Gを呼ばない。新production runner/科学SOURCE変更0、mandatory STOP。以下は履歴。
+
 ## H4 C修正版の固定40軸実行（2026-10-23）
 
 封印済み `run_h4_numerical_evidence.py` を新grantで一回起動した。[結果・監査](../docs/non_df_h4_c_reference_evidence_20261023.md)・[読取観測と引継ぎ](../artifacts/non_df_h4_c_reference_evidence/2026-10-23/CONTINUATION.md)。消費済みgrant・起動wrapperを再実行しない。以下は履歴。

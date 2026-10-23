@@ -1,3 +1,7 @@
+## 2026-10-23 H4残存certificate gate監査
+
+[主報告書](non_df_h4_certificate_gate_audit_20261023.md)。DF event rangeのflag経路、wrapper/compilerの9境界、40軸の受理条件、未実行の最小局所診断案を整理。人工/構造検査だけを実施し、新科学計算・certificate正式受理・N/G会計なし。以下は履歴。
+
 ## 2026-10-23 H4 C修正版の固定40軸実行完了
 
 40軸すべて64 bit TARGET_MET、今回の全native exit0・回収、旧2,239 file保全を確認。正式certificate受理・N/G会計・pushなし、mandatory STOP。

@@ -1,3 +1,7 @@
+## 2026-10-23 H4残存certificate gate監査・mandatory STOP
+
+[調査・証拠充足性](docs/non_df_h4_certificate_gate_audit_20261023.md)。GitHub固定37 fileとrun directory、旧514軌道join、保存40軸TARGET_METを照合。DF range falseは表現別proof policyで、実際の範囲逸脱は未確認。literal readout範囲とencoded norm・compiler転送を別gateに整理。人工14＋構造12 PASS、正式certificate未生成/未受理、N/G null・元native UNKNOWNを保持。新科学数値解析・sampling/compile0、調査branchをcommit/push後mandatory STOP。以下は履歴。
+
 ## 2026-10-23 H4 C修正版：40軸数値目標達成・終了監査完了
 
 [保存結果・監査・制約](docs/non_df_h4_c_reference_evidence_20261023.md)。SOURCE e80d75108、新grantによる一回実行が19:15 JSTに終了。4方式×5精度×2軸の40軸すべて64 bit TARGET_MET、全worker/bridge/supervisor native exit0・回収、旧2,239 file SHA一致。正式certificate受理0、旧N/G=null・UNDETERMINED/元native未証明を保持。新科学stage/再会計/pushなし、mandatory STOP。以下は各時点の履歴。

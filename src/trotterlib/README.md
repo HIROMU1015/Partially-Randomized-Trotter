@@ -1,3 +1,7 @@
+## H4 certificate gate原因調査（2026-10-23）
+
+[flag・wrapper/compiler転送・証拠充足性](../../docs/non_df_h4_certificate_gate_audit_20261023.md)。`h4_legacy_export.py` のrange flagと `h4_ball_evidence.py` の転記、`df_rte_qiskit.py`・`fixed_signal_evaluation.py`・`rte_compiled_cost.py` の対応を静的調査。production科学コード・既存契約を変更しない。人工14＋構造12 PASS、mandatory STOP。以下は履歴。
+
 ## H4 C修正版の実行来歴（2026-10-23）
 
 [固定40軸の数値証拠候補・監査](../../docs/non_df_h4_c_reference_evidence_20261023.md)。実装SOURCE e80d75108を封印pathで使い、結果用worktreeに保存する。科学コードの変更0、正式certificate受理とN/G会計は別段階。以下は履歴。
