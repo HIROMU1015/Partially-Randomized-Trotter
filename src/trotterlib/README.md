@@ -1021,3 +1021,7 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 ## 非DF堅牢化とH4準備（2026-10-23）
 
 `isolated_qiskit_supervisor.py` はoptional監視とpidfd/子孫回収、`saved_rte_cost_diagnostics.py` はsamplingなしのH2保存値照合、`non_df_h4_readiness.py` は未承認H4/追加希少event契約案、`non_df_synthetic_dimension_preflight.py` は8 qubit人工系。旧 `isolated_qiskit_execution.py` の科学SOURCE対象bytesは不変。[技術報告](../../docs/non_df_h4_readiness_validation.md)。
+
+## 2026-10-23 H4 L局所数値診断：one-shot完了
+
+[実行結果・局所保証・終了監査](../../docs/non_df_h4_local_diagnostic_20261023.md)、[証拠](../../artifacts/non_df_h4_local_diagnostic/2026-10-23/README.md)。SOURCE eb195bf2dを変更せず固定128 bitで148/148/11/324完了、人工回帰148 PASS、native exit0・全回収・旧2486 file SHA一致。C/L重複BLOCKED、literal/compiler保証未完成、旧N/G null不変、正式受理0。mandatory STOP。

@@ -2473,3 +2473,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-23 非DF実行基盤の堅牢化・H2保存希少event診断・H4準備
 
 [技術報告・限界・契約案](docs/non_df_h4_readiness_validation.md)。新supervisorを追加し、case別fresh processを維持してready/実行/heartbeatのoptional監視、SIGINT/SIGTERM・親消失、pidfd/子孫回収、排他的claim/ログ/STOPを接続。旧科学SOURCE bytesは変更しない。技術SOURCE `8255fd0ed4e2e79b4394f8d1a91b67e9e20f6813`、最終370 PASS・skip1・分子処理除外5、人工4case並列/8 qubit preflight PASS。H2の保存Pauli510/2/0・DF512/0/0をsamplingなしで照合し、Pauliのevent-to-cost join欠測・DF未観測order2/4の未知費用・母平均未保証を保持した。linear H4/1.00Å/STO-3G、tol-only1e-8 DF、表現別50%重みprefix、T=.8/q8/r4/K4/各PR256標本の未採用契約案と一括承認文案を作成。H4科学実行/追加希少event sampling/再ランキング/詳細科学レビュー/push0、有効H4 grantなし。旧H2結果・SOURCE・grant/STOP不変、local commit後mandatory STOP。
+
+## 2026-10-23 H4 L局所数値診断：one-shot完了
+
+[実行結果・局所保証・終了監査](docs/non_df_h4_local_diagnostic_20261023.md)、[証拠](artifacts/non_df_h4_local_diagnostic/2026-10-23/README.md)。SOURCE eb195bf2dを変更せず固定128 bitで148/148/11/324完了、人工回帰148 PASS、native exit0・全回収・旧2486 file SHA一致。C/L重複BLOCKED、literal/compiler保証未完成、旧N/G null不変、正式受理0。mandatory STOP。

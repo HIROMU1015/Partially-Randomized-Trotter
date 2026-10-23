@@ -1683,3 +1683,7 @@ H4 ε=.001 S2選択を確定。現行理論Gは元入力不足で0/20、compiled
 ## 非DF監視基盤・希少event保存診断・H4準備（2026-10-23）
 
 `src/trotterlib/isolated_qiskit_supervisor.py`、`saved_rte_cost_diagnostics.py`、`non_df_h4_readiness.py`、`non_df_synthetic_dimension_preflight.py`と`run_non_df_h4_readiness.py`、`tests/test_isolated_qiskit_supervisor.py`、`tests/test_non_df_h4_readiness.py`は[技術報告](docs/non_df_h4_readiness_validation.md)・`artifacts/non_df_h4_readiness/2026-10-23/`から辿る。旧科学SOURCEを保持した追加経路。H4科学実行は未承認。
+
+## 2026-10-23 H4 L局所数値診断：one-shot完了
+
+[実行結果・局所保証・終了監査](docs/non_df_h4_local_diagnostic_20261023.md)、[証拠](artifacts/non_df_h4_local_diagnostic/2026-10-23/README.md)。SOURCE eb195bf2dを変更せず固定128 bitで148/148/11/324完了、人工回帰148 PASS、native exit0・全回収・旧2486 file SHA一致。C/L重複BLOCKED、literal/compiler保証未完成、旧N/G null不変、正式受理0。mandatory STOP。

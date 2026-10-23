@@ -1052,3 +1052,7 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## 非DF堅牢化とH4準備（2026-10-23）
 
 `run_non_df_h4_readiness.py` は専用supervisorの人工worker正常/異常系と、逐次対並行・8 qubit人工回路preflightのみを実行する。`--h4-execute` は入力生成前に拒否する。[技術報告・契約案](../docs/non_df_h4_readiness_validation.md)。旧H2科学runnerは実行しない。
+
+## 2026-10-23 H4 L局所数値診断：one-shot完了
+
+[実行結果・局所保証・終了監査](../docs/non_df_h4_local_diagnostic_20261023.md)、[証拠](../artifacts/non_df_h4_local_diagnostic/2026-10-23/README.md)。SOURCE eb195bf2dを変更せず固定128 bitで148/148/11/324完了、人工回帰148 PASS、native exit0・全回収・旧2486 file SHA一致。C/L重複BLOCKED、literal/compiler保証未完成、旧N/G null不変、正式受理0。mandatory STOP。
