@@ -1,0 +1,205 @@
+{
+  "stage": "F2",
+  "status": "F2_QUALIFICATION_BLOCKED_BEFORE_EXECUTION_MANDATORY_STOP",
+  "comparison": "FINITE_TARGET_ONLY",
+  "source_commit": "909b13a6f5f618fc3c1ba54ce3e56764e784d12f",
+  "source_closure_sha256": "f2ee499081ad336d57d507916cc602fb3649137f7fdbfd384dc550d6ab14d400",
+  "source_files_checked": 103,
+  "saved_B_input_hashes": {
+    "arms/PP.json": "4c036eb36262930669650e356accdc129aab0ec5f14bbbdac144fd55e1009a71",
+    "arms/PS.json": "8c9f0a2e739f2829cece524568523afa66487dbd7dd52b1bfd22a4ca182e16fb",
+    "arms/SP.json": "df5dd1aa4896286015cd757bad303fee18745a80e6bca3f949038c7c64127c6d",
+    "arms/SS.json": "e08985a9b560d49f7e6694d3d36c23e462bb1f996a9dd8f542e589d346e10358",
+    "handoff/f1_bundle.json": "9d87488f673551ace8e13456bc64cb73a5384ba56c42cac28f345fb270c6e4e0",
+    "inputs/physical.json": "d796385d5bc5f52fa2fbffe9d4f327b738055dae0420f4d255b40d862ea14658",
+    "requirements.lock": "c0e7e23e5c2c06931ab23cdf247ddea372d5c62b83c4a8cd07c42e3bf6c38eb0"
+  },
+  "saved_B_input_files_checked": 7,
+  "dependency_versions_checked": 50,
+  "context": {
+    "K": 0,
+    "T": "1/5",
+    "delta": "1/5",
+    "h": "1/10",
+    "q": 1,
+    "r": 2
+  },
+  "lengths": {
+    "PP": 51,
+    "PS": 26,
+    "SP": 58,
+    "SS": 14
+  },
+  "planned_counts": {
+    "compile_requests": 13676,
+    "compiled_operator_checks": 13676,
+    "compiled_signal_checks": 13676,
+    "conditional_selector": 1,
+    "full_wrapper_build_requests": 13676,
+    "known_four_search": 1,
+    "law_bindings": 4,
+    "mean_comparisons": 4,
+    "ordered_trajectory_pairs": 6837,
+    "physical_bias_diagnostics": 1,
+    "probability_mass_checks": 4,
+    "quantum_measurement_draws": 0,
+    "raw_operator_checks": 13676,
+    "raw_signal_checks": 13676,
+    "reference_precision_evaluations": 27356,
+    "resource_aggregation": 1,
+    "shot_qualifications": 4
+  },
+  "actual_counts": {
+    "compile_requests": 0,
+    "compiled_operator_checks": 0,
+    "compiled_signal_checks": 0,
+    "conditional_selector": 0,
+    "full_wrapper_build_requests": 0,
+    "known_four_search": 0,
+    "law_bindings": 0,
+    "mean_comparisons": 0,
+    "ordered_trajectory_pairs": 0,
+    "physical_bias_diagnostics": 0,
+    "probability_mass_checks": 0,
+    "quantum_measurement_draws": 0,
+    "raw_operator_checks": 0,
+    "raw_signal_checks": 0,
+    "reference_precision_evaluations": 0,
+    "resource_aggregation": 0,
+    "shot_qualifications": 0
+  },
+  "new_grants": 0,
+  "consumed_grants": 0,
+  "execution_authorization": "USER_EXPLICITLY_AUTHORIZED_CONDITIONAL_ON_ADOPTION_AND_QUALIFICATION",
+  "statistics": {
+    "status": "NUMERICAL_POLICY_NOT_ADOPTED",
+    "eta_stat": null,
+    "alpha": null,
+    "alpha_scope": null,
+    "candidate_eta_stat": "1/40",
+    "candidate_alpha": "1/20",
+    "finite_bit_allowance": null,
+    "conditional_formula": "ceil(4*Btot^2/(eta_stat-gamma)^2*log(4/alpha_arm))",
+    "failure_scope_options": [
+      "PER_ARM_COMPLEX_SIGNAL",
+      "SIMULTANEOUS_FOUR_ARMS"
+    ],
+    "bounded_IID_range_status": "STANDARD_CONDITIONAL_ARGUMENT_CHECKED_NOT_A_SAMPLER_EXECUTION",
+    "finite_bit_status": "NO_APPLICABLE_COMBINED_FORWARD_ERROR_GUARANTEE_FOUND"
+  },
+  "scalar_technical_qualification": {
+    "status": "PASS_FOR_RESTRICTED_SCALAR_PATH",
+    "scope": "Pinned 90-digit real rational positive arithmetic; log arguments 80/320; exact endpoint ceil with runtime boundary rejection. Conditional on alpha=1/20 and either registered failure scope.",
+    "blanket_provider_certificate": false,
+    "grants_or_adoption_issued": false,
+    "receipt": {
+      "status": "PASS",
+      "tests_run": 5,
+      "errors": 0,
+      "failures": 0,
+      "wall_seconds": 0.15062953904271126,
+      "user_cpu_seconds": 0.146675,
+      "system_cpu_seconds": 0.003945999999999999,
+      "max_RSS_KiB": 29260,
+      "python": "3.11.9",
+      "mpmath": "1.3.0",
+      "test_sha256": "d147c95614dd24aedbf19b94c389b446bc08840fc9b7f88ca1a83d8cd3e73d7a",
+      "scope": "SCALAR_TECHNICAL_CHECKS_ONLY",
+      "log_arguments": [
+        "1",
+        "2",
+        "1/2",
+        "3/2",
+        "10",
+        "64",
+        "1/64",
+        "80",
+        "320"
+      ],
+      "research_fixture_evaluations": 0,
+      "circuit_builds": 0,
+      "compiles": 0,
+      "F2_shot_qualifications": 0,
+      "interval_blanket_certificate": false
+    },
+    "source_sha256": {
+      "src/trottertracks/pr_dictionary_validation/intervals.py": "b9d5d858b1edff1e8d6b3b14f3255c9b763c8608062ff0164b02e509565b14bc",
+      "src/trottertracks/pr_dictionary_validation/f2_statistics.py": "dec6f7eb23b12781a5760ee3171d9a7b9a4a556ce1f808858dd556934e7e4ded",
+      "src/trottertracks/pr_dictionary_validation/gates.py": "97f8df17901f630d21ec6bd6c94e7d4cc3c6412edd06e4613dc610c853a9c817"
+    },
+    "environment_lock_sha256": "c0e7e23e5c2c06931ab23cdf247ddea372d5c62b83c4a8cd07c42e3bf6c38eb0",
+    "mpmath_implementation_sha256": {
+      "ctx_iv.py": "b6a74cafe1837e4664d4486819e0806a3cbba50bfe456b6b56a8588df23caf88",
+      "libmp/libmpi.py": "bb4239122c24a9afb8f9d5c44e2e64eccb9ac417996ef0803c5b65f7753d605d",
+      "libmp/libmpf.py": "be93f490d56449c6c2568668809e166ad97823b09ed1de1dcc75637d57b9eeca",
+      "libmp/libelefun.py": "8e80593f814e7713df89e5aca352cfb52afa747c9da46fcb42217f6d841858c8"
+    },
+    "runtime_ceil_qualification": "NOT_EVALUATED_FOR_F2_INPUTS"
+  },
+  "arms": {
+    "SS": {
+      "actual_RZ": null,
+      "actual_CX": null,
+      "actual_depth": null,
+      "N_X": null,
+      "N_Y": null,
+      "total_N_weighted_RZ": null,
+      "total_N_weighted_CX": null,
+      "status": "NOT_EXECUTED_UNQUALIFIED"
+    },
+    "SP": {
+      "actual_RZ": null,
+      "actual_CX": null,
+      "actual_depth": null,
+      "N_X": null,
+      "N_Y": null,
+      "total_N_weighted_RZ": null,
+      "total_N_weighted_CX": null,
+      "status": "NOT_EXECUTED_UNQUALIFIED"
+    },
+    "PS": {
+      "actual_RZ": null,
+      "actual_CX": null,
+      "actual_depth": null,
+      "N_X": null,
+      "N_Y": null,
+      "total_N_weighted_RZ": null,
+      "total_N_weighted_CX": null,
+      "status": "NOT_EXECUTED_UNQUALIFIED"
+    },
+    "PP": {
+      "actual_RZ": null,
+      "actual_CX": null,
+      "actual_depth": null,
+      "N_X": null,
+      "N_Y": null,
+      "total_N_weighted_RZ": null,
+      "total_N_weighted_CX": null,
+      "status": "NOT_EXECUTED_UNQUALIFIED"
+    }
+  },
+  "F2_scientific_PASS": false,
+  "F2_scientific_FAIL": false,
+  "technical_execution_error": null,
+  "F2_cpu_seconds": null,
+  "F2_wall_seconds": null,
+  "dictionary_generation": "NOT_REEXECUTED_SAVED_B_INPUT_REUSE_PLANNED",
+  "blockers": [
+    "Formal eta/alpha/failure-scope adoption is pending.",
+    "No justified gamma covering finite-bit law/angles/Gaussian synthesis/compile/evaluation relative to the common finite target.",
+    "Final qualified contract/evidence binding and runtime ceil resolution have not been completed."
+  ],
+  "mandatory_stop": true,
+  "next_owner": "USER_GPT",
+  "physical_same_accuracy_claim": false,
+  "general_advantage_claim": false,
+  "preservation": {
+    "workspace_files_checked": 2110,
+    "protected_prior_files_checked": 161,
+    "F1_failed_raw_files_checked": 369,
+    "F1_completed_raw_files_checked": 1930,
+    "frozen_F1_source_files_checked": 97,
+    "mismatches": 0,
+    "old_grants_markers_and_STOPs_unchanged": true
+  }
+}

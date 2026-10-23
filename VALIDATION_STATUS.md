@@ -1,5 +1,16 @@
 # Validation status
 
+## 2026-10-24 F2 qualification: STOP before scientific execution
+
+F2 scientific execution is explicitly authorized subject to adopted conditions and established qualifications.
+The standard conditional Hoeffding argument and five scalar interval/log/ceil technical tests passed.
+Candidate log(80)/log(320) enclosures were checked against independent exact rational series bounds.
+No applicable combined finite-bit/circuit error guarantee establishes gamma relative to the common finite target.
+Statistical parameter/failure-scope adoption remains pending. No F2 grant, build, compile, reference or shot qualification was executed.
+All four arms' resource results and N remain null; this is neither a scientific FAIL nor an execution-time technical failure.
+[Qualification findings and mandatory STOP](docs/research/pr_algorithm_improvement_phase2d_f2_qualification_20261024/README.md).
+The restricted scalar checks do not certify matrix/reference/circuit error or qualify F2 as a whole.
+
 ## 2026-10-24 F2 preparation: implementation present, no scientific execution
 
 F2 finite-target comparison SOURCE/input/case/preflight preparation and eight mock/management tests are complete.
