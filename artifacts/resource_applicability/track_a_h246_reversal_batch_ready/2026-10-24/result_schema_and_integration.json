@@ -1,0 +1,60 @@
+{
+  "schema": "H246_REVERSAL_BATCH_RESULT_SCHEMA_V1",
+  "pending_execution": true,
+  "A": {
+    "comparisons": 8,
+    "scope": "AUXILIARY_SAME_Q",
+    "epsilon": 0.001,
+    "fields": [
+      "S2/Y4 identifiers and q",
+      "saved G and saved SE",
+      "exact G/C/N ratios",
+      "C/N/cross/total differences",
+      "within-method direction"
+    ]
+  },
+  "B": {
+    "new_endpoints": 16,
+    "comparisons": 8,
+    "epsilons": [
+      0.05,
+      0.01,
+      0.005,
+      0.001
+    ],
+    "fields": [
+      "fixed candidate and epsilon",
+      "declared eligibility/headroom/u",
+      "new analytic integer shots/G",
+      "saved C and paired unit statistics",
+      "new_G_SE=null_not_evaluated"
+    ],
+    "old_epsilon_0005": "QUOTE_ONLY"
+  },
+  "C": {
+    "main_contrasts": 30,
+    "main_system_precision_cells": 15,
+    "same_q_contrasts": 8,
+    "same_q_system_q_cells": 4,
+    "reuses_old_22_without_arithmetic": true,
+    "new_scalar_integration_calls": 1,
+    "fields": [
+      "Full/PR lower point-cost formula or incomplete/tie",
+      "Full/PR reversal from exact comparison directions",
+      "G ratio",
+      "source/subscope and eligibility",
+      "n and applicable saved SE",
+      "exploratory point vs candidate-law independent support",
+      "weak-H4-.005 flag"
+    ]
+  },
+  "forbidden": [
+    "pooling",
+    "global ranking",
+    "new uncertainty intervals/tests",
+    "epsilon interpolation",
+    "order-only causal inference",
+    "population guarantee",
+    "old strict COMPARE unlock"
+  ]
+}

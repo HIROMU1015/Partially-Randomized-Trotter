@@ -1,3 +1,7 @@
+## 2026-10-24 H2/H4/H6同一q対照・H2精度補完の一括準備
+
+[契約・承認summary・SOURCE・検査・C/D計画](docs/research/track_a_h246_reversal_batch_ready_20261024.md)。H4/H6同一q8比較とH2他4精度16 endpoint/8比較を一契約・exact83 eventに固定。元exact分解とaccount/shot/headroomを流用し、ε/保存名だけ変更。人工12件＋封印runtime人工83 event・metadata-only preflight PASS、1,007 file封印。実数値解析/有効grant0、一回の明示承認待ち。独立S2単価はH4 n25/H6 n23が静的対応、標準Y4の独立n未決定、旧strict BLOCKED・STOP保持。
+
 ## 2026-10-24 H2/H4/H6費用逆転の証拠範囲・同一q対照
 
 [証拠・独立確認・最小追加案](docs/research/track_a_h246_reversal_evidence_controls_20261024.md)。H4/H6 ε=.001の保存点推定の逆転を整理し、標準Y4/q4の独立確認は調査範囲で未発見、m5の確認は転用しない。同一q4/q8の8比較は保存値完備。H2他4精度16 endpointは入力完備・現DIAGNOSTICS政策では新会計が必要。人工6件PASS、1,731保護file変更0、新科学call/grant0。最小補助案は同一q保存比較、科学的採択はユーザー・GPT、旧strict BLOCKED・mandatory STOP。
