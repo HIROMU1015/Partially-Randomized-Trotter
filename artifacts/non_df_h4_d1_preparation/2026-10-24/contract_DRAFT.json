@@ -1,0 +1,266 @@
+{
+  "schema": "h4_d1_fixed_diagnostic_contract_DRAFT_v1",
+  "status": "CONTRACT_DESIGN_COMPLETE_EXECUTION_DISABLED_ADAPTER_NOT_SEALED",
+  "base_commit": "6cc5bded8e0ea2a4f0f1ad7e990f909eb1878d13",
+  "purpose": "Compare retained/event/full costs at four fixed representatives of the H4 Pauli/DF PF/PR reversal; identify candidate mechanisms without unique causal shares or population claims",
+  "execution_authorized": false,
+  "dispatch_enabled": false,
+  "grant_valid": false,
+  "grant": null,
+  "science_SOURCE": null,
+  "production_adapter": null,
+  "launch_command": null,
+  "immutable_original_SOURCES": {
+    "H4": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+    "C": "e80d7510880f8db993b777c627bb8e95b05a070d",
+    "L": "eb195bf2dedd0aed9d80ad7f84948b59ea53d854",
+    "C_L": "0880f4af98b125d62599e970db89fc33634d1b61",
+    "conditional_adapter": "b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8",
+    "conditional_results": "5600f0e4b28c140a6a50b8aba47425860972a932"
+  },
+  "fixed": {
+    "system": "linear H4 adjacent1.00Angstrom STO-3G 8 system qubits; same saved state only as provenance, no state computation",
+    "pauli": "184 nonidentity terms; PR prefix27",
+    "df": "tol-only1e-8 rank10; PR prefix1 plus one-body",
+    "T": 0.8,
+    "q": 8,
+    "r": 4,
+    "K": 4,
+    "formula": "S2",
+    "axis": "cosine",
+    "ancilla": 8,
+    "qubit_order": "qiskit_little_endian",
+    "compiler": {
+      "qiskit_version": "1.3.0",
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "optimization_level": 1,
+      "transpiler_seed": 17,
+      "backend_name": null,
+      "coupling_map": null,
+      "layout_method": null,
+      "routing_method": null
+    },
+    "scope": "Full H-controlledbody-H-measurement, no state preparation",
+    "df_repetition_policy": "raw_concatenation"
+  },
+  "selection": "Pauli PF and DF PF singleton; Pauli PR and DF PR saved trajectory_index0. No cost-min/max or replacement trajectory. No RNG, no seed replay.",
+  "maximum_cost_transpile_calls": 9,
+  "variants": [
+    {
+      "id": "pauli_jw_PF_full",
+      "case": "pauli_jw_PF",
+      "part": "full",
+      "phase": "all_original",
+      "axis": "cosine",
+      "historical_baseline": true
+    },
+    {
+      "id": "pauli_jw_PR_full",
+      "case": "pauli_jw_PR",
+      "part": "full",
+      "phase": "all_original",
+      "axis": "cosine",
+      "historical_baseline": true
+    },
+    {
+      "id": "df_native_PF_full",
+      "case": "df_native_PF",
+      "part": "full",
+      "phase": "all_original",
+      "axis": "cosine",
+      "historical_baseline": true
+    },
+    {
+      "id": "df_native_PR_full",
+      "case": "df_native_PR",
+      "part": "full",
+      "phase": "all_original",
+      "axis": "cosine",
+      "historical_baseline": true
+    },
+    {
+      "id": "pauli_jw_PR_retained",
+      "case": "pauli_jw_PR",
+      "part": "retained",
+      "phase": "deterministic_scalar_and_block",
+      "axis": "cosine",
+      "historical_baseline": false
+    },
+    {
+      "id": "pauli_jw_PR_event",
+      "case": "pauli_jw_PR",
+      "part": "event",
+      "phase": "all_RTE",
+      "axis": "cosine",
+      "historical_baseline": false
+    },
+    {
+      "id": "df_native_PR_retained",
+      "case": "df_native_PR",
+      "part": "retained",
+      "phase": "deterministic_scalar_and_block",
+      "axis": "cosine",
+      "historical_baseline": false
+    },
+    {
+      "id": "df_native_PR_event",
+      "case": "df_native_PR",
+      "part": "event",
+      "phase": "all_RTE",
+      "axis": "cosine",
+      "historical_baseline": false
+    },
+    {
+      "id": "empty",
+      "case": null,
+      "part": "empty",
+      "phase": "none",
+      "axis": "cosine",
+      "historical_baseline": false
+    }
+  ],
+  "input_binding": {
+    "manifest": "preparation.json#/input_source_sha256",
+    "representatives": "preparation.json#/selected",
+    "remote_receipt": "github_verification.json",
+    "reference_runtime_manifest": "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/seal.json#/legacy_runtime_files",
+    "binding_rule": "Before future execution, verify SOURCE/ref, all used input bytes and actual runtime closure; never freeze unrelated worktrees. Exclude scientific state/matrix fields from evaluator.",
+    "full_baseline_expectations": "Use each selected.saved_cosine_RZ, not PR256 means; no new scientific aggregation."
+  },
+  "replay": {
+    "status": "DESIGNED_NOT_IMPLEMENTED_OR_REAL_H4_TESTED",
+    "pauli": [
+      "Read original pauli.json and C Pauli blocks/components; match labels, coefficients, prefix/tail in source order without sorting or threshold updates.",
+      "Restore nested RTEEvent/RTEEventApplication/BasisReuseInterval from saved JSON, including signed products, phase complex pair, exact saved binary64 angle, outer/inner order. No _make_event, atan, distribution generation or sampler.",
+      "Reuse append_pauli_evolution and append_pauli_event. For each q step emit original forward retained half, r stored events, reverse half; apply original per-step scalar update. Build original generic whole-body control through hadamard_wrapper(already_controlled=False).",
+      "Do not use C collapsed operators, dense full matrices, changed control placement, synthetic old gate names or generic UnitaryGate replacements."
+    ],
+    "df": [
+      "Read C model cases blocks: original RZ/XXPlusYY descriptions, ordered qubits/parameter strings/matrix SHA, diagonal RZ/RZZ/global_phase tokens and native_scalar_phases. Join event applications to same basis hash/support/sign/absolute coefficient and descriptions.",
+      "Restore standard RZGate/XXPlusYYGate from descriptor strings and preserve exact zeros/order/qubits/types. Invert original objects with original .inverse() ordering, not matrix-adjoint UnitaryGate. Verify local gate/ordered basis SHA in frozen runtime; no eigensolver/BogoliubovTransform/preparation call.",
+      "Use DFBasisRegistry and DFRTEEventSequenceCircuitRequest directly with original ids/hash/specs. Call existing QiskitDFRTEEventCircuitBuilder.build_sequence once per stored outer occurrence, preserve order and adjacent equal basis reuse; no make_df_partial_s2_repeated_request because it samples.",
+      "Deterministic block emitter narrowly substitutes stored primitives for the original primitive generator: inverse basis, append_diagonal_primitives(controlled=True,ancilla=8) in original RZZ/RZ/phase order, forward basis.",
+      "Within each step emit original scalar phases, forward blocks, occurrence, reverse blocks. Compose q steps using old raw sequence. No boundary_optimized or support-restricted basis. Reuse hadamard_wrapper(already_controlled=True).",
+      "Prepare q/r partitions only from saved outer_step_index/inner_RTE_position. q8 r4 are fixed; tail ids/hash for event requests must be jointly present or both None as API permits; never invent an original ID. Record any diagnostic-only provenance field."
+    ]
+  },
+  "ablation": {
+    "policy": "Delete only designated high-level groups before original control/compile; phases have disjoint owners; full emitter is never rebuilt by multiplying separately aggregated R/E.",
+    "retained": "All forward and reverse retained blocks across all q steps plus constant, extracted identity and deterministic diagonal primitive phases. Remove all events. Do not merge boundaries or commuting terms manually.",
+    "event": "Only the stored q groups of r events with order/negative-product/identity-rotation phases. No constant/extracted identity/deterministic primitive phase. Keep each occurrence's closing basis and phase before next occurrence; do not expand reuse across deleted gaps.",
+    "full": "Original full operation and float accumulation order, including per-step phase placement and raw concatenation. Audit scalar_phase.angle is a summary, never emit that as a replacement lumped phase.",
+    "empty": "QuantumCircuit(9,1) ancilla8 H,H,measurement. No controlled identity body, system/ancilla phase, state preparation, or compiler-visible tags.",
+    "phase_semantics": "A system-global phase of the controlled evolution is ancilla-relative. It is not discardable. Do not alter floating summation/mod2pi order of the original full circuit. Isolation changes unitary; no new valid simulation or accuracy claim."
+  },
+  "reproduction_gate": {
+    "before_compile": "Verify input/old source/runtime SHA, 4 joins, trajectory and event IDs, config, exact gate descriptors/local hashes, phase control branches and source schedule. All four reconstructed full recursive input fingerprints must match before any cost transpile; otherwise STOP.",
+    "fingerprint_policy": "qiskit_recursive_numeric_circuit_v2",
+    "fingerprint_mismatch": "STOP_NO_FALLBACK",
+    "auto_name": "Old hashes exist but custom names participate. Do not brute-force names, relabel to force an old hash, ignore a mismatching field or introduce a normalized hash as old evidence. New normalized descriptor hash may be stored only as supplementary provenance.",
+    "old_cost": "Full four exact integer RZ equal each saved_cosine_RZ; compiler settings equal. Any failure => no ablation compile/adoption. Save failure receipt, no retry or extra invocation.",
+    "identity_limit": "Even all hashes/prices equal proves corresponding input and count under fixed runtime, not bitwise identity to the lost old compiled program. Never claim old native PASS or old program recovery.",
+    "mapping": "No numerical Hamiltonian/operator reconstruction for proof; a source-line mapping plus local descriptor, phase/order checks is required and recorded. Missing scientifically necessary correspondence => STOP."
+  },
+  "execution_order": {
+    "stage_A": "After new explicit execution approval and seal, reconstruct four full inputs without RNG; check all input hashes before cost compilation. No H4 circuit is constructed during this preparation.",
+    "stage_B": "At most four full cost compilations (parallel if practical), persist results and require all4 exact reproduction PASS.",
+    "stage_C": "Only after all4 full PASS, compile four PR ablations plus shared empty (at most5); can run independent workers. No retry or extra variants.",
+    "budget_definition": "9 explicit top-level transpile_and_measure_cost calls, no prior persistent cost reuse masquerading as a fresh compilation. Internal _unroll_gate/BasisTranslator passes needed for old generic .control are builder work, recorded separately; no additional price transpile, backend transpile or hidden diagnostic variant.",
+    "cache": "New own empty cache or direct compiler function; save exactly one input/output per variant. Any failed call is spent, not refundable or automatically retried.",
+    "scientific_compute_excluded": [
+      "SCF",
+      "FCI",
+      "DF",
+      "Hamiltonian/state regeneration",
+      "matrix/state evolution",
+      "new signal calculation",
+      "sampler",
+      "RNG replay",
+      "atan/event-law recomputation",
+      "cohort statistics",
+      "N/G"
+    ]
+  },
+  "metrics": {
+    "measured": [
+      "RZ integer count",
+      "CX integer count",
+      "total depth",
+      "RZ/CX depth if existing function supplies them",
+      "source body before-control histogram",
+      "after-control pretranspile histogram",
+      "posttranspile histogram",
+      "input/output QPY and file SHA",
+      "recursive input/output fingerprints",
+      "DF returned application/basis-switch/reuse counters per occurrence",
+      "scheduled q-step boundary descriptors"
+    ],
+    "before_control": "Pauli source body exists before wrapper. DF virtual source histogram and pre-control central tags are collected during same schedule emission, not another whole H4 counterfactual circuit. Mark native central-control path and unavailable global after-control ratio as not directly comparable.",
+    "tags": "Sidecar interval/range/group IDs only; no barriers, labels, gate names or metadata edits that change compiler input. Nested axes: role=retained/event/scalar/wrapper; kind=basis/Pauli/diagonal/control; do not double count nested categories or force assign every final RZ.",
+    "missing": "Unavailable optional metric is null with reason; required RZ/CX/depth/program/hash and full reproduction gate cannot be silently skipped."
+  },
+  "compiler_trace": {
+    "policy": "PRE_POST_ONLY_NO_COMPILER_WRAPPER_CHANGE",
+    "reason": "Existing transpile_and_measure_cost exposes pre/post metrics but no callback. Do not add a callback, custom passmanager, alternate optimization or second compilation for trace in D1.",
+    "stage_pass_trace": "null with reason NO_CALLBACK_IN_FIXED_WRAPPER; retain fixed runtime source pass map as possible mechanism, not actual execution trace",
+    "generic_control_trace": "Record known source pathway and before/after histograms; internal actual pass invocation trace may be absent, explicitly null."
+  },
+  "comparisons": {
+    "count_metrics": [
+      "RZ",
+      "CX"
+    ],
+    "retained_increment": "C_retained - C_empty",
+    "event_increment": "C_event - C_empty",
+    "isolated_prediction": "C_retained + C_event - C_empty",
+    "interaction": "C_full - C_retained - C_event + C_empty",
+    "contextual_event_increment": "C_full - C_retained",
+    "contextual_retained_increment": "C_full - C_event",
+    "sign": "Keep signed integers, including negative increments/interactions. No clipping, fitting or additive allocation.",
+    "depth": "Report each depth; no additive depth budget or claimed causal depth contribution.",
+    "H1": "Compare isolated retained prices/increments across Pauli/DF at index0 and their context dependence. Does not identify effect of Z/ZZ retention alone or a unique dominant share.",
+    "H2": "Compare whole stored event-stream prices and tags at index0. No event-mean or component frequency aggregation; laws/angles differ and comparison is not matched.",
+    "H3": "Locate basis tags in retained and event and report actual source counters; compiled cost attributable specifically to basis remains unidentified.",
+    "H4": "Exact nonzero interaction demonstrates nonadditivity for the selected case; report magnitude and signs, no invented significance threshold, no unique boundary/compiler causal split.",
+    "H5": "Generic-control source and histogram expansion motivate D2 if unresolved. D1 alone cannot estimate equivalent-central-control counterfactual cost.",
+    "claim_limit": "Four selected representatives, no revised means, statistical confidence, population guarantee, certificate or general Pauli/DF superiority. Old PF/PR costs remain unchanged."
+  },
+  "GO_STOP": {
+    "GO": "Separate user execution approval; production adapter implemented with artificial tests, new source/runtime/input seal, fresh one-shot grant; all pre-execution checks; full4 correspondence and exact cost reproduction before ablations.",
+    "STOP": [
+      "missing/changed used bytes or runtime",
+      "descriptor/type/phase/basis/control/order mismatch",
+      "input hash missing or different",
+      "full RZ mismatch",
+      "quota exhausted or process failure",
+      "actual OOM or own job/input corruption",
+      "output persistence or child-reap failure",
+      "required metric absent"
+    ],
+    "not_STOP": "Unrelated worktree updates, shared CPU contention or transient PSI/monitoring delay alone; record observation and re-establish monitor without killing healthy workers.",
+    "partial": "Persist diagnostic failure/partial output; no complete PASS, no old-result attribution; no replacement trajectory/extra compile/automatic retry.",
+    "final": "Complete/failed scope always stops; no D2/D3/numerical next stage automatically."
+  },
+  "activation_procedure": [
+    "User explicitly approves finite D1 build+compile and diagnostic count arithmetic, separately from current preparation.",
+    "Within that authorized next scope, implement minimal descriptor hydration and schedule connector reusing old primitive/event/wrapper/compiler functions. Artificial phase, inverse, grouping, fingerprint and quota tests first; no original source modifications.",
+    "Commit new production source; pin actual old reference-compatible runtime closure and exact selected inputs. Freeze contract, executor, output schema and own process lifecycle; confirm SOURCE/runtime/input correspondence.",
+    "Create separate active contract from this immutable draft with approval reference and content hashes; require committed source and runtime SHA plus explicit approval and one-use grant, not flags alone.",
+    "Issue a new grant only after approval and all technical gates. Exclusive claim before any real build; durable call ledger per top-level compile and failure; source/input audits before/after.",
+    "Native supervisor records actual exit, worker identities/reap and persistence. Save new STOP for D1 only; retain original native UNKNOWN.",
+    "Publish scope/results only under repository authorization; STOP and return to user."
+  ],
+  "artificial_validation": "check_preparation.py: phase ownership, exact-9 scope, strict baseline/fingerprint failures, mock recursive gate-name sensitivity, signed nonadditive algebra; 7 existing native-gate artificial tests reused",
+  "followups": {
+    "D2": "Separate approval, at most2 new Pauli specialized-control compiles only if D1 baselines accepted and control question remains. Not implemented here.",
+    "D3": "Separate approval, at most1 DF reuse-off compile only if actual D1 returned cancelled equal-basis pairs>0. Otherwise no contrast and skip without selecting another trajectory.",
+    "prefix_law": "Different research series with a physical matched criterion; not D1 optimization."
+  },
+  "resources": "No arbitrary low CPU/RAM/worker caps. Parallelize independent four baselines or five later diagnostics when useful; preserve dependencies and exact finite call budget. Own directories/processes only, no shared environment/system settings/other users touched.",
+  "current_STOP": "Preparation complete, real_H4_runner_started=false; no new grant, build, compile, sampling, scientific aggregation or shot/N_G accounting. Original N_G null/C_L blocked/compiler missing/native unknown unchanged."
+}

@@ -1223,3 +1223,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-24 H4：Pauli／DF PF・PR費用逆転の構造解析
 
 [報告](non_df_h4_cost_reversal_structure_20261024.md)、[静的証拠・非実行案](../artifacts/non_df_h4_cost_reversal_structure/2026-10-24/README.md)。Pauli保持27はZ/ZZのみ。保持内容／event粒度／control実装の連動を主要候補とし、compiled成分寄与は未同定。GitHub11file・旧611 SHA・SOURCE15／runtime7・人工4件PASS。実H4数値再解析／build／compile／sampling／N_G0、旧未確定状態を保持してmandatory STOP。
+
+## 2026-10-24 H4：D1限定診断の契約準備
+
+[D1計画・非実行契約・人工14検査](non_df_h4_d1_preparation_20261024.md)。4代表の旧hash／index0価格を固定、full4再現後だけ隔離4＋empty1へ進む設計。phase配分・非加法性・D2/D3判断を固定。production adapter／新seal／grant未作成、実H4 build／compile／新科学値集計／sampling／N_G0、mandatory STOP。
