@@ -1,3 +1,7 @@
+## 2026-10-23 H4 C候補run01：reference欠陥・不受理STOP
+
+[実行・原因・保存証拠](docs/non_df_h4_c_candidate_run01_20261023.md)。SOURCE49c18ccc3を新grantで一回実行したが、referenceのstate作用欠落を人工1 FAILで確認。Pauli20軸raw不受理、DF20軸未完了、全native終了・回収。修正未適用・科学retry/N/G会計/push0、旧結果を保全しmandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-23 H4非DF/DF：C production技術実装
 
 [実装・検証・保証範囲](docs/non_df_h4_c_production_20261023.md)、[SOURCE・無効契約・監査](artifacts/non_df_h4_c_production/2026-10-23/README.md)。production assembler/ball演算/normalization/authority/native witnessを実装。実H4科学call0、3実行flag false、旧N/G/native未証明を保持しmandatory STOP。以下は履歴。

@@ -1,3 +1,7 @@
+## H4 C候補run01の停止
+
+[結果・reference欠陥・次回条件](../docs/non_df_h4_c_candidate_run01_20261023.md)。現SOURCEの数値結果は科学受理不可。消費済みgrantでの再実行禁止、patch未適用、旧runnerのbytesは保持する。以下は履歴。
+
 ## H4 C production：承認なしの科学起動を拒否
 
 [run_h4_numerical_evidence.py](run_h4_numerical_evidence.py)はC専用inspect/issue-grant/execute/worker/bridge/witness。現在は無効契約で、実H4実行・grant発行を拒否する。[技術報告と将来手順](../docs/non_df_h4_c_production_20261023.md)。以下は履歴。

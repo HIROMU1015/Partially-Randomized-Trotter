@@ -1,3 +1,7 @@
+## 2026-10-23 H4 C候補run01：実装欠陥
+
+[報告書・未適用修正案・終了証拠](non_df_h4_c_candidate_run01_20261023.md)。referenceの右側state作用欠落により科学受理0軸。前回110 PASSは十分なreference回帰ではなかった。修正・新grantの再実行は別承認。以下は履歴。
+
 ## 2026-10-23 H4 C production
 
 [技術報告](non_df_h4_c_production_20261023.md)と[人工検証・SOURCE・実行承認待ち契約](../artifacts/non_df_h4_c_production/2026-10-23/README.md)。実H4への数値適用は未実行、正式certificate/N/G受理は別。以下は履歴。

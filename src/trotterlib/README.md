@@ -1,3 +1,7 @@
+## H4 C reference呼出しの実装欠陥
+
+[新run診断](../../docs/non_df_h4_c_candidate_run01_20261023.md)。SOURCE49c18ccc3のreference呼出しが右側stateを欠く。非真空人工反例1 FAILを保存し、修正案だけを別ファイルへ記録。現codeは保全、再実行しない。以下は履歴。
+
 ## H4 C production
 
 `h4_ball_evidence.py`（包含・full-space組立）、`h4_legacy_export.py`（旧準備/hash対応）、`h4_certificate_control.py`（one-shot/予算/native witness）。[保証範囲・人工検証・無効契約](../../docs/non_df_h4_c_production_20261023.md)。実H4数値実行0、旧science/B API・結果不変。以下は履歴。
