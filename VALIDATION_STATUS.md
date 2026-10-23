@@ -1,3 +1,7 @@
+## 2026-10-23 H4 C reference修正・人工検証
+
+[修正報告](docs/non_df_h4_c_reference_fix_20261023.md)。SOURCE e80d7510880f8db993b777c627bb8e95b05a070d。人工124 PASS/FAIL0/ERROR0/skip0、backend13・人工接続4 model・無効CLI5件PASS。追加14件は旧SOURCEでsubtestを含む30 assertion FAILを期待どおり再現。旧SOURCE/失敗runを保存し、新契約3 flag false、実H4再実行/新grant/N/G再会計/push0。正式certificate未受理、旧N/G=null・UNDETERMINED/元native未証明を保持しmandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-19 PR/PF絶対RZコスト図：v2・5精度（保存値のみ）
 
 [成果物・採用除外・再現方法](docs/research/track_a_pr_pf_absolute_cost_v2_20261019.md)。v2 snapshot c0808b25を基準に26比較・52点を描画。両端精度はH4/H6/H8独立確認とH2/H4/H6/H8探索n8の別パネル、中間3精度は探索のみ。H4は新DF10、H6中間PFはmodelを白抜き表示。H2 P未完了・H8詳細公開監査未照合・有限標本の限界を保持。PNG/SVG/PDF各5枚、exact表・採否・caption・SHAを保存。新科学計算/会計/順位計算0、local commitのみ、公開pushなし。次の作業なし、mandatory STOP。以下は各時点の履歴。

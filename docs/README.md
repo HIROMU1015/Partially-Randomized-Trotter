@@ -1,3 +1,7 @@
+## 2026-10-23 H4 C reference修正
+
+[修正・検証・残る制約](non_df_h4_c_reference_fix_20261023.md)。一般状態の人工回帰を追加し、新SOURCE/runtime sealと無効契約を保存。実H4再実行・新grant・N/G会計・push0、mandatory STOP。以下は履歴。
+
 ## 2026-10-23 H4 C候補run01：実装欠陥
 
 [報告書・未適用修正案・終了証拠](non_df_h4_c_candidate_run01_20261023.md)。referenceの右側state作用欠落により科学受理0軸。前回110 PASSは十分なreference回帰ではなかった。修正・新grantの再実行は別承認。以下は履歴。

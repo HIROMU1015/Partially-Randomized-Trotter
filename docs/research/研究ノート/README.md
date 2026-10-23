@@ -1,3 +1,7 @@
+## 2026-10-23 H4 C reference修正
+
+[当日追記](2026-10-23_H4_C_reference_fix.md)：ψ†Uψ修正、一般状態の人工回帰、新SOURCE/無効契約、旧失敗run保全。実H4再実行0、mandatory STOP。
+
 [2026-10-16 V2 H6探索PFの最終限定照合・NO_GO候補](2026-10-16_track_a_v2_h6_pf_final_reconciliation.md)。広域回収終了、実fit/残差/compile0。
 
 [2026-10-16 V2保存来歴の回収・固定holdout件数の不足](2026-10-16_track_a_v2_provenance_reconciliation.md)。25件条件付き結合、237件未解決、fit適格0・実数値解析0。

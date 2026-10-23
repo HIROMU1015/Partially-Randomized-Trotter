@@ -1,3 +1,7 @@
+## H4 C reference修正（2026-10-23）
+
+`run_h4_numerical_evidence.py` の数値engineをψ†Uψへ修正。[報告書](../docs/non_df_h4_c_reference_fix_20261023.md)・[新SOURCE/無効契約](../artifacts/non_df_h4_c_reference_fix/2026-10-23/README.md)。`tests/check_h4_c_legacy_bridge.py` は人工stateの選択を追加。科学再実行は未承認、mandatory STOP。以下は履歴。
+
 ## H4 C候補run01の停止
 
 [結果・reference欠陥・次回条件](../docs/non_df_h4_c_candidate_run01_20261023.md)。現SOURCEの数値結果は科学受理不可。消費済みgrantでの再実行禁止、patch未適用、旧runnerのbytesは保持する。以下は履歴。

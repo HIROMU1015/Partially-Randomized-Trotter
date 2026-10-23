@@ -1,3 +1,7 @@
+## H4 C reference修正（2026-10-23）
+
+`h4_ball_evidence.py` のreferenceをψ†Uψへ修正し、signal列vector shape gateを追加。`tests/test_h4_ball_evidence.py` で一般状態の解析式と照合。[修正・検証](../../docs/non_df_h4_c_reference_fix_20261023.md)・[技術証拠](../../artifacts/non_df_h4_c_reference_fix/2026-10-23/README.md)。旧SOURCE/実行証拠は保全、実H4再実行0・mandatory STOP。以下は履歴。
+
 ## H4 C reference呼出しの実装欠陥
 
 [新run診断](../../docs/non_df_h4_c_candidate_run01_20261023.md)。SOURCE49c18ccc3のreference呼出しが右側stateを欠く。非真空人工反例1 FAILを保存し、修正案だけを別ファイルへ記録。現codeは保全、再実行しない。以下は履歴。

@@ -1,3 +1,7 @@
+## 2026-10-23 H4 C reference修正・技術STOP
+
+[修正・人工回帰・新SOURCE](docs/non_df_h4_c_reference_fix_20261023.md)、[技術証拠](artifacts/non_df_h4_c_reference_fix/2026-10-23/README.md)。referenceをψ†Uψへ修正。人工124・backend13・接続4 model・無効CLI5件PASS。実H4再実行/新grant/再会計/push0、旧SOURCE/失敗run/旧N/G/native欠落を保全。以下は各時点の履歴。
+
 ## 2026-10-23 H4 C候補run01：reference欠陥・不受理STOP
 
 [実行・原因・保存証拠](docs/non_df_h4_c_candidate_run01_20261023.md)。SOURCE49c18ccc3を新grantで一回実行したが、referenceのstate作用欠落を人工1 FAILで確認。Pauli20軸raw不受理、DF20軸未完了、全native終了・回収。修正未適用・科学retry/N/G会計/push0、旧結果を保全しmandatory STOP。以下は各時点の履歴。
