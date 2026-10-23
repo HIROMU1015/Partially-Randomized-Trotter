@@ -1,3 +1,7 @@
+## H4保存scalarの数値精度診断B
+
+[`run_h4_precision_b.py`](run_h4_precision_b.py) は固定40軸だけのprepare/launch/run/verify。C実H4実行は非対応。[仕様](../docs/non_df_h4_precision_bc_20261023.md)。
+
 ## 2026-10-23 H4専用runner・保存証拠検査
 
 [run_h4_non_df_pilot.py](run_h4_non_df_pilot.py)：新H4入力生成・固定4caseの認証付き実行経路。`--contract`は非実行表示、`--execute`は未発行grantを科学import前に拒否する。`--synthetic`は内部供給の人工8量子ビットfixture専用。今回のH4実分子実行は未承認。

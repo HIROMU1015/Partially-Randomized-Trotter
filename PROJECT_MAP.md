@@ -1,3 +1,7 @@
+## 2026-10-23 H4非DF/DF：数値精度B・保証手法C
+
+[専用仕様](docs/non_df_h4_precision_bc_20261023.md)、[証拠](artifacts/non_df_h4_precision_bc/2026-10-23/README.md)。Bは保存40軸の必要誤差予算、Cは人工prototypeと保証設計だけ。旧N/Gと監視未証明を保持する。以下は履歴。
+
 ## 2026-10-23 H4非DF/DF：保存証拠の原因調査（数値再解析なし）
 
 [専用調査報告](docs/non_df_h4_evidence_investigation_20261023.md)。結果commit6892e95f/科学SOURCE0c329b30をGitHubから確認し、N/G nullのsource経路、不足する数値certificate、元監視記録の回収限界を整理。全20行はUNDETERMINED/nullを保持し、入力stage正常終了とcase監視の未証明を分離する。新しい数値解析・shot/G計算・科学実行・pushなし、原因UNKNOWN、完了後mandatory STOP。[構造証拠](artifacts/non_df_h4_evidence_investigation/2026-10-23/README.md)。以下は各時点の履歴。

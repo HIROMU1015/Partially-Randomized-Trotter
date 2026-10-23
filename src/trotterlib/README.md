@@ -1,3 +1,7 @@
+## H4数値精度B・C人工包含prototype
+
+`h4_precision_budget.py` / `h4_precision_control.py` は保存scalar診断とone-shot認証。`h4_enclosure_prototype.py` は人工rational包含だけ。旧science APIは不変。[仕様](../../docs/non_df_h4_precision_bc_20261023.md)。
+
 ## 2026-10-23 H4非DF/DF PF・PRの追加API
 
 [h4_execution_contract.py](h4_execution_contract.py)が非科学stdlib認証、[h4_molecular_inputs.py](h4_molecular_inputs.py)が承認後のH4入力生成と次元gate、[h4_pilot_execution.py](h4_pilot_execution.py)がone-shotの入力→4process監視、[h4_pilot_science.py](h4_pilot_science.py)がcase評価・20行統合を担当する。

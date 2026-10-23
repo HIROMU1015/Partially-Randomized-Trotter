@@ -1,3 +1,7 @@
+## 2026-10-23 H4数値精度B＋保証手法C
+
+[仕様・診断・保証設計](non_df_h4_precision_bc_20261023.md)。B40軸は専用grant、Cは実H4未実行。以下は従来の入口。
+
 ## 2026-10-23 H4非DF/DF：保存証拠の原因調査
 
 [専用報告](non_df_h4_evidence_investigation_20261023.md)と[構造検証・JSON](../artifacts/non_df_h4_evidence_investigation/2026-10-23/README.md)。固定commit6892e95fのN/G保留と監視終了証拠の欠落を別問題として調査した。新規数値解析・科学計算なし、元結果は変更しない。以下は従来の入口。
