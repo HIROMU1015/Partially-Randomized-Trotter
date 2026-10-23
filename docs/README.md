@@ -1219,3 +1219,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-24 H4：条件付きC/N/G主評価の採択・再解析計画
 
 [計画](non_df_h4_conditional_cng_plan_20261024.md)、[非実行契約・検証](../artifacts/non_df_h4_conditional_cng_plan/2026-10-24/README.md)。固定4方式の条件付き資源比較を主評価として正式採択。旧compiler形式証明は比較開始の必須条件にしない。C/L部分証拠・残差・MC/tailを分離し、20関数/100scenario/30比較領域の次回packageを設計。550 input SHA/514 paired join/40軸pointer・人工8検査PASS。実H4数値再解析/N_G/新科学grant0、原本・旧nullを保持しmandatory STOP。
+
+## 2026-10-24 H4：Pauli／DF PF・PR費用逆転の構造解析
+
+[報告](non_df_h4_cost_reversal_structure_20261024.md)、[静的証拠・非実行案](../artifacts/non_df_h4_cost_reversal_structure/2026-10-24/README.md)。Pauli保持27はZ/ZZのみ。保持内容／event粒度／control実装の連動を主要候補とし、compiled成分寄与は未同定。GitHub11file・旧611 SHA・SOURCE15／runtime7・人工4件PASS。実H4数値再解析／build／compile／sampling／N_G0、旧未確定状態を保持してmandatory STOP。

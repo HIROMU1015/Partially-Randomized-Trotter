@@ -1,3 +1,7 @@
+## 2026-10-24 H4：Pauli／DF PF・PR費用逆転の構造解析
+
+[専用報告](docs/non_df_h4_cost_reversal_structure_20261024.md)、[証拠・非実行案D1〜D3](artifacts/non_df_h4_cost_reversal_structure/2026-10-24/README.md)。固定H4のPauli prefix27はZ/ZZのみ。保持内容・event粒度・generic/central controlの連動を主要候補とし、compiled寄与率は未確定。DF高次event頻度増加による説明は支持されない。旧611 SHA／固定source／runtime照合・人工4件PASS。新H4数値再解析/build/compile/sampling/N_G0、mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-24 H4：費用tail・rho重点調査（数値実行なし）
 
 [重点調査報告](docs/non_df_h4_tail_rho_investigation_20261024.md)、[証拠・非実行契約2件](artifacts/non_df_h4_tail_rho_investigation/2026-10-24/README.md)。 基点5600f0e4の既存条件付き結果を保全し、費用tailとrhoの12辺を静的調査。Literal構造counterからの記号的envelopeは可能だが、全wrapper compiled RZと母平均の数値upperは未確立。共通角度生成のSOURCE対応で435件再診断を減らせる候補を特定。新実H4数値評価/N_G/科学grant/sampling/compile0、未確定状態を維持しmandatory STOP。 以下は各時点の履歴。

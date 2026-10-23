@@ -1,0 +1,117 @@
+{
+  "schema": "h4_cost_reversal_nonexecution_design_v1",
+  "status": "DRAFT_NOT_AUTHORIZED_NOT_IMPLEMENTED_NOT_SEALED",
+  "purpose": "Identify retained/event/control/basis/compiler contributions to the fixed four-case compiled RZ reversal; no population or N/G result",
+  "base_commit": "1caaba2516dd3a30475e2acbd69672810a9fc05a",
+  "original_science_SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+  "execution_authorized": false,
+  "grant_valid": false,
+  "dispatch_enabled": false,
+  "grant": null,
+  "new_SOURCE": null,
+  "runtime_seal": null,
+  "launch_command": null,
+  "minimum_prior_approval": "Explicit approval for each selected diagnostic's saved-input circuit construction, finite compilation and diagnostic arithmetic; flags alone cannot activate this draft",
+  "fixed": {
+    "system": "linear H4 1A STO-3G n8, common saved state not evolved",
+    "formula": "S2",
+    "T": 0.8,
+    "q": 8,
+    "r": 4,
+    "K": 4,
+    "pauli": "184 terms; PR prefix27",
+    "df": "tol-only1e-8 rank10; PR prefix1+one-body",
+    "compiler": "old Qiskit1.3.0 rz/sx/x/cx opt1 seed17, no coupling/backend/layout/routing"
+  },
+  "preconditions": [
+    "Implement and artificially test replay from saved event/primitive descriptors without RNG, eigensolver or preparation regeneration. If original builder requires extra scientific preparation, STOP and return scope.",
+    "Freeze new diagnostic SOURCE/runtime/input SHA and separate invalid-to-valid grant only after explicit approval. Never reuse a consumed grant.",
+    "Carry every constant, extracted identity, negative product and order phase as ancilla-relative phase. Preserve gate order, basis identity and signs.",
+    "Check rebuilt full input fingerprints and compiled RZ against old matching case/trajectory. A mismatch ends the diagnostic; do not silently replace old result or call new program historical evidence.",
+    "Own output/claim/receipt/native exit/reap/STOP. Monitor resources without killing healthy workers for transient shared CPU/PSI contention. Existing immutable inputs only; no unrelated-worktree freeze."
+  ],
+  "forbidden_even_in_draft": [
+    "SCF/FCI/DF/new state or signal/evolution",
+    "new sampling or RNG replay",
+    "population fitting or N/G recalculation",
+    "parameter or prefix/law change",
+    "old evidence edits",
+    "formal certificate acceptance",
+    "automatic retry/resume or stage escalation"
+  ],
+  "designs": [
+    {
+      "id": "D1",
+      "priority": 1,
+      "status": "UNEXECUTED",
+      "question": "Does retained cost floor or event realization explain PR gap; how nonadditive is full compilation?",
+      "selection": "PF singleton in each representation; PR trajectory_index=0 in each representation fixed before new diagnostic. No cost extremum selection; no cohort-representativeness claim.",
+      "axis": "cosine only",
+      "variants": [
+        "full Pauli PF",
+        "full Pauli PR index0",
+        "full DF PF",
+        "full DF PR index0",
+        "Pauli PR deterministic-only",
+        "Pauli PR event-only",
+        "DF PR deterministic-only",
+        "DF PR event-only",
+        "shared empty wrapper"
+      ],
+      "maximum_compile_calls": 9,
+      "outputs": [
+        "before-control body and after-control / pretranspile / posttranspile gate histograms",
+        "source category tags with nested basis/control marked; no double counting",
+        "basis reuse/switch counters",
+        "RZ/CX/depth",
+        "input/output QPY or QASM and exact fingerprints",
+        "pass trace with stage counts",
+        "full-vs-isolated interaction residual with explicit repeated-wrapper/phase convention"
+      ],
+      "limits": "Isolated ablations change unitary and cannot be ranked as valid original PF/PR algorithms. Marginal costs do not give unique additive causal attribution. Old full-circuit price must reproduce before use. No actual efficiency/accuracy/population claim."
+    },
+    {
+      "id": "D2",
+      "priority": 2,
+      "status": "UNEXECUTED",
+      "depends_on": "D1 Pauli full baselines and phase-preserving artificial tests",
+      "question": "How much does Pauli generic whole-body control plus compiler response cost versus equivalent central-rotation control?",
+      "selection": "Same saved Pauli PF and PR index0 as D1",
+      "axis": "cosine only",
+      "variants": [
+        "phase-preserving specialized controlled Pauli PF full",
+        "phase-preserving specialized controlled Pauli PR index0 full"
+      ],
+      "maximum_compile_calls": 2,
+      "outputs": [
+        "algebraic control identity and artificial phase checks",
+        "same-body old-control/new-control gate histograms and compiled metrics/programs",
+        "fixed-prefix/event/angle join; difference labeled implementation+compiler"
+      ],
+      "limits": "New implementation series; no update to old measured values. Neither result identifies representation-only effect."
+    },
+    {
+      "id": "D3",
+      "priority": 3,
+      "status": "UNEXECUTED",
+      "depends_on": "D1 DF PR index0 baseline; evidence that adjacent equal-basis reuse actually removes a pair",
+      "question": "How much is saved by already-active DF builder basis reuse?",
+      "selection": "Same saved DF PR index0; do not select another trajectory if no reuse opportunity",
+      "axis": "cosine only",
+      "variants": [
+        "DF PR full with only cancel_adjacent_equal_bases disabled"
+      ],
+      "maximum_compile_calls": 1,
+      "outputs": [
+        "paired equal-body proof and basis counters",
+        "full compiled cost/program/trace",
+        "comparison to D1 reuse-on baseline"
+      ],
+      "skip_condition": "No removable equal-basis pair in D1 => no D3 circuit/compile. Record no contrast in this trajectory; do not search for another.",
+      "limits": "No boundary optimization or support-restricted basis, no prefix change, no mean inference. Does not isolate all basis cost."
+    }
+  ],
+  "deferred_new_series": "Prefix/law sensitivity only after physical matched-criterion design; equality of prefix counts is not a fair control. Not part of D1-D3.",
+  "resources": "No arbitrary low CPU/RAM/worker caps; choose efficient computational concurrency within selected finite call budgets. No OS/shared environment/other-user changes.",
+  "exit": "Mandatory STOP per selected diagnostic; no automatic transition to another design."
+}
