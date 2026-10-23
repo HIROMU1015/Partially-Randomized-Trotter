@@ -11,6 +11,8 @@
 
 ## 文書の役割
 
+Gaussian singletonの[改善候補設計](pr_gaussian_singleton_synthesis_design_20261024.md)は、support1／support2を区別した選択部分空間Givens案と、既存helperの再利用・同値性条件・未承認の48-wrapper対照案。静的調査のみで、削減量未測定・候補未実装。
+
 限定F2の[保存case寄与分析](pr_algorithm_improvement_phase2d_f2_attribution_20261024.md)は、8分類表のP・条件付き費用・寄与とexact全体照合をまとめる。SP／PS差の記述分解、限界、次の改善候補を明示し、新build／compileは行っていない。
 
 限定F2の[回路資源差の原因調査](pr_algorithm_improvement_phase2d_f2_resource_causes_20261024.md)は、固定SOURCEと保存caseの静的照合による技術メモ。Gaussian往復・共有条件・K0の成分選択と、未測定の寄与を区別する。新しい数値集計・build／compileは行っていない。
