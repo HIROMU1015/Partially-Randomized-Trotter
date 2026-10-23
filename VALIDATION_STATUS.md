@@ -2417,3 +2417,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-23 H2 DIAGNOSTICS run01：限定診断完了
 
 [結果・scope・保存receipt](docs/research/track_a_h2_diagnostics_run01_20261023.md)。固定H2/tol-only DF1e-8/rank3、T=.8、ε_sig=.0005、P=0の指定4候補について、明示承認後の実DIAGNOSTICS一回が正常終了。SOURCE35444654…/契約f71e52ce…、strict <1e-9のpath signal/vector/closure/log_B gate4/4、exact予算・metadata/hash/ledger照合PASS。新prep/operation receipt取得、旧原本等346と準備artifact28件保持。compile/sampling/新reference/allowance/N/G/順位0、native/compiled correctnessと保存PR67 taskの完全identityは未完。独立科学レビュー・費用比較GO・次stage承認なし。前段人工98件PASSを継承（今回再実行なし）、mandatory STOP。
+
+## 2026-10-23 H2受入済み診断COMPARE：技術実装のみ
+
+[実装・検証・不足](docs/research/track_a_h2_accepted_compare_20261023.md)。固定H2/rank3/ε=.0005/指定4候補で既存DIAGNOSTICSを読み込む専用分岐を実装。人工138件PASS、実データはmetadata/hash/NPY headerのみを検査。公開402 archive/134 compiled raw SHAの対応を取得したが、PR単価再利用はBLOCKED。新科学import/build/compile/sampling/u/N/G/順位評価0。旧4候補診断PASSと元SOURCE/結果/grant/STOPは保持し、比較実科学の新認定はない。

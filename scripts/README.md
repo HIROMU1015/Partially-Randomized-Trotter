@@ -994,3 +994,7 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## 2026-10-23 H2 DIAGNOSTICS run01実行完了
 
 固定SOURCEの隔離launcherを外部承認・新grantで一度実行し、4候補DIAGNOSTICSが正常終了。[結果・exact消費・受入監査](../docs/research/track_a_h2_diagnostics_run01_20261023.md)。新しいcollect_execution_receipt.pyは完了済みfile/metadata/hashの回収専用で、科学kernelを再実行しない。比較loaderは未実装、旧mock拒否と既存予算は不変。
+
+## 2026-10-23 H2受入済み診断COMPARE専用分岐
+
+`launch_h2_accepted_compare.py` は旧runnerを変更しない新入口。`h2_accepted_diagnostics.py` はstdlibのhash/NPY header検査と承認後のbundle_loadを分離し、`h2_accepted_compare_contract.py` が新grant/ledger/予算とPR証拠を検査する。`prepare_h2_accepted_compare.py` は科学importなしの契約準備専用。[仕様・138人工テスト・BLOCKER](../docs/research/track_a_h2_accepted_compare_20261023.md)。

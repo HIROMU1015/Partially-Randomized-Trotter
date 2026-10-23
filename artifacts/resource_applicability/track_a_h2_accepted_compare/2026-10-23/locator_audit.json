@@ -1,0 +1,65 @@
+{
+  "status": "MISSING_CANONICAL_ROOT",
+  "canonical_NEW_EXECUTION": null,
+  "originals": {
+    "O00001": {
+      "locator": "${NEW_EXECUTION}/config_PIPELINE_APPROVED_PRIVATE.json",
+      "original_sha256": "f4da8233474bf8e9f43784e80028948d62d8dd8f43a3f8d82f4c1136ccbdfc0d",
+      "bytes": 1483023
+    },
+    "O00002": {
+      "locator": "${NEW_EXECUTION}/stagepacks/H2_PR_EXPLORATION/config_APPROVED_PRIVATE.json",
+      "original_sha256": "f011e12b5df6c534fd610899abd2f0f8a17dd05e1cfefaf418a7cb09c0c9a8c7",
+      "bytes": 1331184
+    }
+  },
+  "known_git_exporter": {
+    "commit": "4f1e4ebd46a5e03876971a5374d390bd4ead921a",
+    "path": "scripts/export_h2_outer32_metadata.py",
+    "git_blob_sha1": "0579e4e8a4dd393a9ad46f2d83a794a843386105",
+    "sha256": "ce0c3f11fd8c013791f749c3da043e27d8b11e76cb7ea6e04ee7665285507d58",
+    "executed": false
+  },
+  "searches": [
+    {
+      "scope": "fixed received origin_inventory/acquisition_context and previous retrieval audit",
+      "result": "tokenized locators only"
+    },
+    {
+      "scope": "fixed exporter source and h2_outer32 runtime/worker Git objects",
+      "result": "CLI-supplied paths; no hardcoded execution root"
+    },
+    {
+      "scope": "known old H2 private 2026-10-19 root, immediate *map* filenames only",
+      "result": "no token map found"
+    },
+    {
+      "scope": "known metadata receipt/common-policy docs and source files",
+      "result": "no canonical NEW_EXECUTION or sender map locator"
+    }
+  ],
+  "event_digest_rule": {
+    "source": "4ec26921c6872ed6e8667f167074e1e405cf1a3f",
+    "path": "scripts/h46_pr_pilot_native.py",
+    "definition": "canonical JSON digest of nested ordered [piece][RTEEvent.to_dict()] list",
+    "source_lines": "66-69",
+    "scientific_source_imported": false
+  },
+  "broad_private_search": false,
+  "private_originals_published": false,
+  "required_owner_information": "Exact canonical path to O00002 or sender private root-token map. O00001 may resolve pipeline input/storage locators.",
+  "additional_known_source_checks": [
+    {
+      "source": "fixed e3531956 README",
+      "result": "absolute root-token map is explicitly kept private; no exact map path"
+    },
+    {
+      "source": "local Git registry, exact known sender branch only",
+      "result": "sender worktree located; immediate root and .gitignore contain no exact token-map locator"
+    },
+    {
+      "source": "fixed public storage_records.json",
+      "result": "402 archive SHA metadata recovered; paths still tokenized, no raw archive body"
+    }
+  ]
+}

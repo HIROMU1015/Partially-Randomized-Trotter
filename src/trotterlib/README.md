@@ -965,3 +965,7 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 ## 2026-10-23 H2 DIAGNOSTICS run01実科学診断
 
 共通QR native・経験的allowance・旧FP reference条件付き再利用を固定H2契約へ明示採択し、scripts側の固定production SOURCEで4候補DIAGNOSTICSを完了。[実行結果・限界](../../docs/research/track_a_h2_diagnostics_run01_20261023.md)。library SOURCE不変、allowance/費用評価0、native/compiled correctnessは未実行。比較GOを認定せずmandatory STOP。
+
+## 2026-10-23 H2受入済みDIAGNOSTICSの比較分岐
+
+旧library/実行済みSOURCEを保持し、scriptsの専用COMPARE sourceで既存診断bundleを再利用する。setup/prepare/steps/allowance/account/rankのASTを継承し、旧diagnose/referenceは新backendから除去。[実装・call予算・PR再利用BLOCKED](../../docs/research/track_a_h2_accepted_compare_20261023.md)。人工138件PASS、新科学評価0。
