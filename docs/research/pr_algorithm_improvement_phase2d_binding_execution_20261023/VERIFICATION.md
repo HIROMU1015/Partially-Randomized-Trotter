@@ -1,7 +1,13 @@
 # 結果保全・公開照合
 
-保存済みB出力の監査はPASS。11attempt／11completed、39JSON＋log、24行、15payload canonical bytes/SHA256/producer、manifest依存参照、marker/approval/contract binding、SOURCE固定HEAD／10fileを確認した。新しい科学計算・再生成・API probeは0。
+**PASS_SAVED_OUTPUT_PRESERVATION_AND_PUBLIC_SUMMARIES**。公開payload `6086f7550c1be9217477ea5ddbaecaf9675a82f2`、tree `3f5ccbbf04fd64dd6c289fd3d30ec328d8885220`。GitHubから15fileすべてを取得してbytes／Git blob一致を確認した。独立結果cloneへgit fetchし、全fileのbytes／SHA256／Git blobとtreeも確認した。
 
-公開前の静的照合もPASS。結果文書基点の全1,095fileはbyte同一、新規結果namespaceの15文書・JSONだけを追加した。local文書リンク23件、private path／run ID／approval等の混入を検査した。保存raw40file・packet・marker・STOPと科学SOURCE HEADの不変、環境package922hash／runtime2,713hashの一致も確認した。原workspaceのstatus／worktree一覧／refsは開始時と公開前で同一だった。
+結果基点`db432dcc998a8b6dabf387ee84b251518c334a52`の既存1,095fileはbyte同一。差分は新規結果namespaceの15文書・JSONだけ。local文書リンク23件、private path／run ID／approval／grant等の非公開内容混入を検査した。科学raw・private packetは公開していない。
 
-公開時にremote HEAD、全公開file bytes／SHA256／Git blob、独立git fetchを照合してpublication receiptを確定する。原本raw／STOP／packetを変更せず、公開用要約だけを追加する。公開receiptを確定後もmandatory STOP。
+科学SOURCE実行HEADは3de42d3a3efe9ebc74dde8a1d0e1f1bdbadd607c、SOURCE10file／仕様・recipe policyは変更なし。保存B原本は11attempt／11completed、39JSON＋log、24行、15payload canonical bytes／SHA／producer／manifest参照を確認した。原本40file・packet・marker・STOPをhash照合し、環境package922hash／absolute runtime2,713hashも一致した。新しいscience API probe、係数／lawの再生成、retryは0件。
+
+原workspaceのstatus／worktree一覧／refsは開始時と公開前で同一だった。原本への操作はread-onlyで、実行SOURCE checkoutと結果文書cloneは独立している。既存grant／marker／STOP、共有環境、他jobを変更していない。
+
+本receipt commitで変更するのはPUBLICATION.jsonと本書だけ。file inventoryはpayload固定commitのexact bytesを指す。自己のcommit/hashを再帰的に埋め込まず、最終receiptのremote HEAD／全file bytes/SHA/blobは外部照合して最終チャットに固定linkを記録する。科学SOURCE、input、raw、grant、marker、STOP、環境lockは変わらない。
+
+Bは11件成功のbinding／既存scalar metadata path完了であり、F1正しさ、F2資源改善、物理精度certificate、新規性GOではない。ローカル結果をimmutable CIや外部独立再現と呼ばない。固定runnerのB_COMPLETE_MANDATORY_STOPを保持し、F1/F2・追加資格・レビューへ自動進行しない。
