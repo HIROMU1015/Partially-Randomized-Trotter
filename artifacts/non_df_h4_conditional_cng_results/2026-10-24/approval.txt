@@ -1,0 +1,317 @@
+# Codex指示：H4非DF/DFの条件付きC/N/G比較・限定数値再解析
+
+Repository：`HIROMU1015/Partially-Randomized-Trotter`
+
+基点branch：`codex/non-df-h4-conditional-cng-plan-20261024`
+
+基点commit：`c8e7ae0f120edd5d4f93e9dad33c4bccefa2ac03`
+
+固定科学SOURCE：
+
+- 元H4：`0c329b30a81accb35c212be8defa66fee0dd0f12`
+- C：`e80d7510880f8db993b777c627bb8e95b05a070d`
+- L：`eb195bf2dedd0aed9d80ad7f84948b59ea53d854`
+- C/L技術接続：`0880f4af98b125d62599e970db89fc33634d1b61`
+
+## 1. 目的と今回の明示承認
+
+前段階で作成した条件付きC/N/G比較の実行計画に従い、固定H4の4方式について、実際の比較結果を取得してください。
+
+研究上の中心課題は次のとおりです。
+
+**部分ランダム化による回路単価Cの削減が、必要shot数Nを含む総費用Gでも維持されるか。その優劣は、未保証の実装残差とPRの費用推定の不確かさに対してどの程度頑健か。**
+
+今回は、以下を一括承認します。
+
+1. 既存コードを再利用した最小限の数値解析adapterの実装
+2. 人工テスト・入力検証・新SOURCE/runtime固定
+3. 固定済み保存データの限定数値再解析
+4. 20条件の条件付きN/G関数
+5. 100仮定シナリオ・30比較領域の評価
+6. PR2方式のpaired費用・希少event感度解析
+7. 結果の科学的な比較可能性・不確かさの整理
+8. 結果保存・監査・commit/push・mandatory STOP
+
+**この指示は、上記の保存データ再解析に対する明示的な実行承認です。**
+
+固定範囲内の作業について、中間承認を繰り返し求める必要はありません。
+
+ただし、追加sampling、再compile、新しい科学モデルの計算、435件の追加診断、正式certificate受理には進まないでください。
+
+## 2. 正式な実行契約
+
+最初にGitHubの固定commitと以下の資料を取得してください。
+
+- `docs/non_df_h4_conditional_cng_plan_20261024.md`
+- `artifacts/non_df_h4_conditional_cng_plan/2026-10-24/execution_contract_DRAFT.json`
+- `artifacts/non_df_h4_conditional_cng_plan/2026-10-24/inputs.json`
+- `artifacts/non_df_h4_conditional_cng_plan/2026-10-24/axis_conditions.json`
+- 既存C/L結果、元H4価格・trajectory記録、旧precision table
+- 関連するSOURCE・監査・STOP
+
+計画済みの非実行契約を、今回の明示承認に対応する新しい実行契約として有効化してください。
+
+科学条件・入力・評価式・対象数・禁止callは変更しません。
+
+既存の固定SOURCEや消費済みgrantは再利用して実行しないでください。
+
+### 固定科学条件
+
+- Linear H4、隣接1.00 Å、STO-3G
+- 8 system qubit、共通保存状態
+- Pauli-JW PF / PR、DF-native PF / PR
+- Pauli-JW 184項、PR prefix27
+- DF tol-only 1e-8、rank10、PR prefix1＋one-body
+- S2、T=0.8、q=8、r=4、K=4
+- 精度：0.05、0.01、0.005、0.001、0.0005
+- Cosine/sine両軸
+- 既存Qiskit 1.3.0、rz/sx/x/cx、optimization level1、seed17
+- 費用指標：状態準備を除くfull Hadamard wrapperのcompiled RZ数
+
+別の候補・分割・誤差定義を追加しないでください。
+
+## 3. 実装とSOURCE固定
+
+まず既存コードを確認し、同じ計算を再実装しないでください。
+
+優先的に利用する資産：
+
+- `fixed_signal_accounting.fixed_signal_shots`
+- 既存`precision_accounting`のguard処理
+- `_statistics`とpaired費用集計
+- 保存trajectory/event/priceのjoin検証
+- Cの40軸数値証拠
+- Lの局所・basis誤差上界
+- 既存のSOURCE・grant・ledger・STOP処理
+
+既存の化学計算・状態生成・sampling・compilerを起動するentrypointは使わず、保存値だけを読む薄いadapterを実装してください。
+
+実装方法は合理的な範囲でCodexに委ねます。
+
+ただし、**最初の実H4データを用いた数値演算より前に、adapterのSOURCE・runtime・入力SHA・実行契約を固定してください。**
+
+人工テストで数式・丸め・欠測値・条件付き判定を確認してください。
+
+固定SOURCEと実行契約に本質的な不一致がある場合は、勝手に科学条件を変更せずSTOPしてください。
+
+## 4. 条件付きN/Gの数値解析
+
+保存C結果の`bias_distance`を直接再利用してください。
+
+未保証の実装転送誤差は、各方式・各軸の非負変数`rho`として保持します。
+
+`rho`は、normalized ray・実装law・B_saved尺度をそろえたときの、C encoded meanから実際のcompiled測定期待値までの未保証残差です。
+
+**実際のrhoが0である、あるいは十分小さいと仮定して無条件のN/Gを確定しないでください。**
+
+既存計画の会計定義を維持します。
+
+- `u_a(rho) = u_enc,a + rho_a`
+- `h_a(rho) = epsilon_a - |b0_a| - u_a(rho)`
+- `epsilon_a = epsilon_sig / sqrt(2)`
+- `alpha_a = 0.025`
+
+元のguardも維持してください。
+
+`u_a / h_a <= 0.01`
+
+headroomが正であり、guardとshot boundの条件を満たす領域だけで、条件付きの必要shot数を計算します。
+
+### Normalization
+
+既存の保存Bを変更せず、新解析版では契約案の保守的尺度を使用してください。
+
+`B_up = max(1, B_saved, exp(saved_log_B_upper))`
+
+Scalar演算とceilについて、数値丸めが十分条件を破らないように確認してください。
+
+元のsafe integer条件も維持します。
+
+数値的に安全なNを得られない場合は、理由付きのnullまたはsymbolic結果を保存してください。
+
+### Gの計算
+
+同一trajectoryのcosine/sine価格をpairedで扱います。
+
+`Z_i = N_cos*C_i,cos + N_sin*C_i,sin`
+
+`G_hat = mean(Z_i)`
+
+PFは決定論的な1 trajectory、PRは固定256 trajectoryを使用してください。
+
+既存の費用標本を変更・再抽選しないでください。
+
+有限MC平均、母平均費用、条件付きshot数を区別してください。
+
+## 5. 固定解析package
+
+前段階で固定した有限packageを実施してください。
+
+| 対象 | 範囲 |
+|---|---:|
+| 入力・base error照合 | 40軸 |
+| 保存価格 | PF各1＋PR各256、計514 trajectory |
+| 条件付きN/G関数 | 20条件 |
+| 仮定シナリオ | 100行 |
+| シナリオの軸別shot評価 | 200件 |
+| 残差guard閾値 | 40軸 |
+| 方式間比較領域 | 30件 |
+| うち同表現PR/PF主比較 | 10件 |
+| PR費用・希少event感度 | 2方式 |
+
+### 100シナリオ
+
+既存契約の5つのθを使用します。
+
+`0, 1/4, 1/2, 3/4, 1`
+
+表示用の残差は、各case・precisionで許容域が非空の場合に限り、契約の共通θ断面を利用してください。
+
+**θ=0は仮想的な残差ゼロの条件であって、現実の実装誤差の推定値ではありません。**
+
+許容域が空なら、有限N/Gを無理に作らず、比較不能理由を記録してください。
+
+### 比較領域
+
+同じ表現内のPR/PFを主比較とします。
+
+その他の4方式間比較も実施しますが、DFとPauli-JWでは分割と実装条件が異なるため、差をDF分解のみの因果効果とは解釈しないでください。
+
+各方式の残差変数は独立に扱い、単一の共通θ断面だけで総合順位を決めないでください。
+
+Ceilを含むN/Gの区分的な性質を保持し、優劣が反転する条件・判定不能領域を評価してください。
+
+## 6. PR費用の統計的不確かさ・希少event
+
+固定256 paired trajectoryを利用してください。
+
+- Cosine/sineの共分散を保持したGのSE
+- 既存のnominal Student-t95
+- Order4の出現確率と未観測の扱い
+- 未観測componentを含むtrajectoryの扱い
+- 保存implemented lawのeffective probability
+- 希少eventの母平均費用への寄与
+- PR/PFの費用順位が反転し得る条件
+
+Order4を含むtrajectory、order4なしで過去未観測componentを含むtrajectory、残りを排他的に分類する既存案を使用してください。
+
+Nominal lawとimplemented lawを混同しないでください。
+
+未観測stratumの平均費用は未知変数として扱い、0で補完しないでください。
+
+全wrapper費用の正当な上界がない場合、観測最大値を母平均費用の厳密上界にしてはいけません。
+
+その場合は、**どの程度の希少event費用ならPR/PFの順位が反転するか**を示してください。
+
+今回、新しいsampling・RNG replay・compileは行いません。
+
+## 7. 結果の科学的解釈
+
+結果は、単なる費用表ではなく研究判断に使える形で整理してください。
+
+特に次の問いに答えてください。
+
+1. 回路単価CではPRとPFのどちらが有利か。
+2. Bとbiasにより必要shot数Nはどのように変わるか。
+3. Cの削減はGでも維持されるか。
+4. 残余誤差rhoによって優劣がどの条件で反転するか。
+5. PR費用tailが順位に影響する可能性はあるか。
+6. 既存データだけで結論が頑健な領域はどこか。
+7. 追加証拠が必要なら、どの具体的な研究判断を変えるために必要か。
+
+条件付きの有限N/Gと、無条件に成立する費用優位性を区別してください。
+
+数値が出ない条件についても、その理由を明示してください。
+
+元のPR論文との比較や、一般的なPR/PF優位性を今回の固定H4結果から自動的に主張しないでください。
+
+## 8. 保全・実行制御
+
+今回は新規の保存データ再解析なので、専用の新namespaceと未使用grantを使用してください。
+
+既存のSOURCE・raw・grant・ledger・marker・STOPは変更しないでください。
+
+- 実行前SOURCE・入力・runtime照合
+- 新grantのone-shot使用
+- 各固定解析batchのcall前予約
+- 重複実行・自動retry/resume禁止
+- 結果と実行条件の保存
+- 自分のprocessのnative終了・回収確認
+- mandatory STOP
+
+既存の実行制御コードを再利用し、必要以上に複雑な監査基盤を新設しないでください。
+
+CPU/RAM/worker数に恣意的な低い上限を設けず、処理内容と実際の空き資源に応じて効率的に実施してください。
+
+共有環境全体や他ユーザーへ影響する変更・操作は絶対禁止です。
+
+最新版`research_project_instructions_unified_2026-10-23.md`の§8.4、§10、特に§10.3を適用してください。
+
+## 9. 今回禁止する作業
+
+以下には進まないでください。
+
+- 新SCF/FCI/DF生成
+- 状態生成・最適化
+- Full-H reference再計算
+- Law mean・bias再計算
+- Cの40軸数値証拠の再実行
+- Lの148 forward/148 inverse/11 basis/324 supportの再実行
+- 435件の追加数値診断
+- 追加sampling・RNG replay
+- 新規compile
+- 候補・分割・精度条件の再選択
+- 元のguard・B・allowance・結果の改変
+- 正式certificate受理
+- 旧compiled programの保証済み認定
+- 未承認の研究方針変更
+
+C/Lの`COMBINATION_BLOCKED`、旧compilerの`MISSING_EVIDENCE`、元H4のN/G nullは原本で維持してください。
+
+今回の条件付きC/N/G結果は新しい評価版として分離してください。
+
+## 10. 成果物
+
+専用branchに以下を保存してください。
+
+- 条件付きN/Gの20条件関数
+- 100シナリオの評価結果
+- 40軸の残差guard閾値
+- 4方式のCとpaired統計
+- 30比較領域と10主比較
+- PR2方式の希少event・費用tail感度
+- 必要な図表
+- 研究判断に使える結果報告書
+- 新SOURCE・入力・実行来歴
+- 数値・統計・保全・終了監査
+- 次段階への引継ぎ・STOP
+
+図表では、条件付き結果、仮想シナリオ、経験的推定、未確定領域が明確に区別できるようにしてください。
+
+研究の主要な結果と判断を優先し、不要な文書・補助管理ファイルの増殖は避けてください。
+
+## 11. 最終報告・STOP
+
+最終報告では、特に次を示してください。
+
+1. 20条件のうち、固定guardの許容領域が非空だった条件数
+2. Cの方式間比較
+3. 条件付きN/GでのPR/PF優劣
+4. rhoによる順位反転条件
+5. PRの費用tail・統計的不確かさの影響
+6. 研究として支持できる結論と、支持できない結論
+7. 追加検証が本当に必要な箇所
+8. SOURCE・テスト・commit・公開状態
+9. 次の担当・作業・必要な承認
+
+専用commitに保存し、有効な公開承認に従いpush・remote SHA照合を行ってください。
+
+認証等でpushできない場合は、成果物を保全し、原因と必要な操作を報告してください。
+
+**今回承認したadapter実装・SOURCE固定・保存データ再解析・比較結果作成・検証・保存・終了監査まで一括して進めてください。**
+
+数値解析の結果が予想と異なっても、固定条件を変更して再実行しないでください。
+
+実行範囲が完了したら**mandatory STOP**してください。
+
+追加の科学計算、sampling、compile、正式certificate受理へは自動的に進まないでください。
