@@ -1,0 +1,768 @@
+{
+  "status": "STATIC_RELEVANCE_MAP_WITH_UNRESOLVED_OUTPUT_SENSITIVITY",
+  "source_records": [
+    {
+      "role": "SYMBOLIC_PARAMETER_ENGINE",
+      "filename": "parameterexpression.py",
+      "sha256": "20d25ed2361b7ae8c696d51022827eef4b379d1982b5dd4408bfe02d427f69d0",
+      "counterpart_exists": true,
+      "counterpart_byte_match": true,
+      "imports": [
+        "__future__",
+        "dataclasses",
+        "enum",
+        "numbers",
+        "numpy",
+        "operator",
+        "qiskit.circuit.exceptions",
+        "symengine",
+        "sympy",
+        "typing"
+      ],
+      "source_anchors": [
+        {
+          "line": 26,
+          "text": "import symengine"
+        },
+        {
+          "line": 278,
+          "text": "symbol_type = symengine.Symbol"
+        },
+        {
+          "line": 363,
+          "text": "elif isinstance(other, numbers.Number) and numpy.isfinite(other):"
+        }
+      ],
+      "scientific_module_imported": false
+    },
+    {
+      "role": "SCALAR_GUARD_PARAMETER",
+      "filename": "parameter.py",
+      "sha256": "94c0d23e028b37c34e84cb9d4f6ea4e046a863f20f86eed9ae9cfca20d705124",
+      "counterpart_exists": true,
+      "counterpart_byte_match": true,
+      "imports": [
+        ".parameterexpression",
+        "__future__",
+        "qiskit.circuit.exceptions",
+        "symengine",
+        "uuid"
+      ],
+      "source_anchors": [
+        {
+          "line": 20,
+          "text": "import symengine"
+        },
+        {
+          "line": 24,
+          "text": "from .parameterexpression import ParameterExpression"
+        },
+        {
+          "line": 27,
+          "text": "class Parameter(ParameterExpression):"
+        },
+        {
+          "line": 36,
+          "text": "This is the atom of :class:`.ParameterExpression`, and is itself an expression.  The numeric"
+        },
+        {
+          "line": 66,
+          "text": "# anyway, because `ParameterExpression` depends heavily on the structure of `Parameter`."
+        },
+        {
+          "line": 83,
+          "text": "symbol = symengine.Symbol(name)"
+        },
+        {
+          "line": 100,
+          "text": "if isinstance(value, ParameterExpression):"
+        },
+        {
+          "line": 103,
+          "text": "# This is the `super().bind` case, where we're required to return a `ParameterExpression`,"
+        },
+        {
+          "line": 105,
+          "text": "return ParameterExpression({}, symengine.sympify(value))"
+        },
+        {
+          "line": 148,
+          "text": "elif isinstance(other, ParameterExpression):"
+        },
+        {
+          "line": 154,
+          "text": "# `ParameterExpression` needs to be able to hash all its contained `Parameter` instances in"
+        }
+      ],
+      "scientific_module_imported": false
+    },
+    {
+      "role": "NUMERIC_ONE_QUBIT_SYNTHESIS",
+      "filename": "one_qubit_decompose.py",
+      "sha256": "c9c6d265997f14802b6bb6a04b6b5ab1a5ae86fddf5f5c6d87fdc023e6902e79",
+      "counterpart_exists": true,
+      "counterpart_byte_match": true,
+      "imports": [
+        "__future__",
+        "numpy",
+        "qiskit._accelerate",
+        "qiskit.circuit.gate",
+        "qiskit.circuit.library.standard_gates",
+        "qiskit.circuit.quantumcircuit",
+        "qiskit.circuit.quantumregister",
+        "qiskit.dagcircuit",
+        "qiskit.exceptions",
+        "qiskit.quantum_info.operators.operator",
+        "qiskit.quantum_info.operators.predicates",
+        "typing"
+      ],
+      "source_anchors": [
+        {
+          "line": 18,
+          "text": "import numpy as np"
+        },
+        {
+          "line": 20,
+          "text": "from qiskit._accelerate import euler_one_qubit_decomposer"
+        },
+        {
+          "line": 208,
+          "text": "unitary = np.asarray(unitary, dtype=complex)"
+        },
+        {
+          "line": 219,
+          "text": "circuit_sequence = euler_one_qubit_decomposer.unitary_to_gate_sequence("
+        },
+        {
+          "line": 267,
+          "text": "unitary = np.asarray(unitary, dtype=complex)"
+        },
+        {
+          "line": 280,
+          "text": "unitary = np.asarray(unitary, dtype=complex)"
+        }
+      ],
+      "scientific_module_imported": false
+    },
+    {
+      "role": "BASIS_TRANSLATION",
+      "filename": "basis_translator.py",
+      "sha256": "b749142df3d94ab5c3a232a4bc265b0ae3ffde4782d4ef2e8f226fcfb0121843",
+      "counterpart_exists": true,
+      "counterpart_byte_match": true,
+      "imports": [
+        "collections",
+        "logging",
+        "qiskit._accelerate.basis.basis_translator",
+        "qiskit.transpiler.basepasses"
+      ],
+      "source_anchors": [
+        {
+          "line": 21,
+          "text": "from qiskit._accelerate.basis.basis_translator import base_run"
+        },
+        {
+          "line": 116,
+          "text": "def run(self, dag):"
+        },
+        {
+          "line": 129,
+          "text": "return base_run("
+        }
+      ],
+      "scientific_module_imported": false
+    },
+    {
+      "role": "GAUSSIAN_INVERSE_RULE",
+      "filename": "xx_plus_yy.py",
+      "sha256": "b622e4cab5b4e4101736c7d682b13b149f077fe687f2de3f820949c92a277ded",
+      "counterpart_exists": true,
+      "counterpart_byte_match": true,
+      "imports": [
+        ".ry",
+        ".rz",
+        ".s",
+        ".sx",
+        ".x",
+        "__future__",
+        "cmath",
+        "math",
+        "numpy",
+        "qiskit._accelerate.circuit",
+        "qiskit.circuit.gate",
+        "qiskit.circuit.parameterexpression",
+        "qiskit.circuit.quantumcircuit",
+        "qiskit.circuit.quantumregister",
+        "typing"
+      ],
+      "source_anchors": [
+        {
+          "line": 199,
+          "text": "def inverse(self, annotated: bool = False):"
+        },
+        {
+          "line": 212,
+          "text": "return XXPlusYYGate(-self.params[0], self.params[1])"
+        }
+      ],
+      "scientific_module_imported": false
+    },
+    {
+      "role": "PHASE_INVERSE_RULE",
+      "filename": "p.py",
+      "sha256": "aea9ee4ba688ac7ba01642dd9ab50a1e58652a2a217e4be0f04bf0a60eedb702",
+      "counterpart_exists": true,
+      "counterpart_byte_match": true,
+      "imports": [
+        ".u",
+        ".u3",
+        "__future__",
+        "cmath",
+        "numpy",
+        "qiskit._accelerate.circuit",
+        "qiskit.circuit.controlledgate",
+        "qiskit.circuit.gate",
+        "qiskit.circuit.parameterexpression",
+        "qiskit.circuit.quantumcircuit",
+        "qiskit.circuit.quantumregister"
+      ],
+      "source_anchors": [
+        {
+          "line": 132,
+          "text": "def inverse(self, annotated: bool = False):"
+        },
+        {
+          "line": 144,
+          "text": "return PhaseGate(-self.params[0])"
+        },
+        {
+          "line": 285,
+          "text": "def inverse(self, annotated: bool = False):"
+        },
+        {
+          "line": 431,
+          "text": "def inverse(self, annotated: bool = False):"
+        }
+      ],
+      "scientific_module_imported": false
+    },
+    {
+      "role": "RELEVANT_SYMENGINE_COMPILER_PATH",
+      "filename": "h2_m5_compiler_phase_guard.py",
+      "sha256": "5da19e2cd2e72f40f86099b0bd248394183a6cc82d38590a8d62b6c3ed0228c5",
+      "counterpart_exists": null,
+      "counterpart_byte_match": null,
+      "imports": [
+        "contextlib",
+        "hashlib",
+        "math",
+        "qiskit",
+        "qiskit.circuit",
+        "qiskit.circuit.equivalence",
+        "qiskit.transpiler.passes",
+        "threading"
+      ],
+      "source_anchors": [
+        {
+          "line": 5,
+          "text": "template phase in its supported ParameterExpression branch. Every pass checks"
+        },
+        {
+          "line": 33,
+          "text": "from qiskit.circuit import Gate,Parameter"
+        },
+        {
+          "line": 36,
+          "text": "from qiskit.transpiler.passes import BasisTranslator"
+        },
+        {
+          "line": 50,
+          "text": "params=[Parameter('p'+str(i)) for i in range(len(op.params))]"
+        },
+        {
+          "line": 51,
+          "text": "scalar=Parameter('exact_zero_scalar')"
+        },
+        {
+          "line": 66,
+          "text": "require(before==after,'TRANSLATOR_GATE_ANGLE_WIRE_STREAM_CHANGED')"
+        },
+        {
+          "line": 70,
+          "text": "input_or_output_state_fit=False,postcompile_phase_correction=False))"
+        },
+        {
+          "line": 76,
+          "text": "def transpile(circuit,**settings):"
+        },
+        {
+          "line": 77,
+          "text": "from qiskit import transpile as native"
+        },
+        {
+          "line": 82,
+          "text": "state_fit=False,raw_validation_threshold_changed=False))"
+        }
+      ],
+      "scientific_module_imported": false
+    },
+    {
+      "role": "COMMON_PREPARATION_NUMERIC_DEPENDENCY",
+      "filename": "h46_new2_native.py",
+      "sha256": "a3fd7dd09fe4f16493f2d582d933eb5fe6d6d25257863e22f740573dcc5e0a83",
+      "counterpart_exists": null,
+      "counterpart_byte_match": null,
+      "imports": [
+        "dataclasses",
+        "h46_new2_core",
+        "math",
+        "numpy",
+        "qiskit",
+        "qiskit.circuit.library",
+        "scipy.linalg",
+        "scipy.sparse",
+        "trotterlib.df_partial_s2",
+        "trotterlib.df_trotter",
+        "trotterlib.df_trotter.decompose",
+        "trotterlib.pr2_matched_accuracy_m1_execution",
+        "trotterlib.rte",
+        "trottertracks.resource_applicability.ax2b_native_df_v5",
+        "trottertracks.resource_applicability.ax2b_stream_fingerprint_v5"
+      ],
+      "source_anchors": [
+        {
+          "line": 11,
+          "text": "from h46_new2_core import weights, allocation"
+        },
+        {
+          "line": 14,
+          "text": "def gaussian_operations(rotation):"
+        },
+        {
+          "line": 16,
+          "text": "u = np.asarray(rotation, dtype=complex)"
+        },
+        {
+          "line": 49,
+          "text": "represented=np.diag([np.exp(1j*alpha),np.exp(-1j*alpha)])@np.asarray(xy.to_matrix())[1:3,1:3]"
+        },
+        {
+          "line": 65,
+          "text": "ops.U_to_qiskit_ops_jw=gaussian_operations"
+        },
+        {
+          "line": 73,
+          "text": "counts=allocation(weights(label),total_steps)"
+        },
+        {
+          "line": 76,
+          "text": "for piece,(weight,steps) in enumerate(zip(weights(label),counts)):"
+        },
+        {
+          "line": 78,
+          "text": "step_time=T*weight/q,rte_steps=steps,truncation_tolerance=1e-10,"
+        },
+        {
+          "line": 88,
+          "text": "if not requests or len(requests)!=q*len(weights(label)):"
+        },
+        {
+          "line": 91,
+          "text": "expected=[T*w/q for _ in range(q) for w in weights(label)]"
+        },
+        {
+          "line": 114,
+          "text": "from scipy.linalg import eigh"
+        },
+        {
+          "line": 123,
+          "text": "self.initial=np.asarray(full_state)[self.basis]"
+        },
+        {
+          "line": 145,
+          "text": "vals,vecs=eigh(one);self.specs.append((vals,vecs,vecs.conj().T))"
+        },
+        {
+          "line": 146,
+          "text": "for weight,g in list(zip(ham.lambdas,ham.g_matrices))[:prefix]:"
+        },
+        {
+          "line": 147,
+          "text": "vals,vecs=eigh(self.one_body(g).toarray())"
+        },
+        {
+          "line": 148,
+          "text": "self.specs.append((weight*vals**2,vecs,vecs.conj().T))"
+        }
+      ],
+      "scientific_module_imported": false
+    },
+    {
+      "role": "ABSOLUTE_DIAGONAL_PARAMETERS",
+      "filename": "ops.py",
+      "sha256": "3801eafca014b0df6533172582887e3b345f65833505409cdd375dcd11925689",
+      "counterpart_exists": null,
+      "counterpart_byte_match": null,
+      "imports": [
+        "..qiskit_time_evolution_ungrouped",
+        ".decompose",
+        ".model",
+        "__future__",
+        "dataclasses",
+        "numpy",
+        "openfermion",
+        "openfermion.linalg",
+        "qiskit",
+        "qiskit.circuit",
+        "qiskit.circuit.library",
+        "qiskit.extensions",
+        "qiskit_nature.circuit.library",
+        "qiskit_nature.second_q.circuit.library",
+        "scipy.linalg",
+        "typing"
+      ],
+      "source_anchors": [
+        {
+          "line": 42,
+          "text": "arr = np.asarray(value)"
+        },
+        {
+          "line": 196,
+          "text": "U = np.asarray(U)"
+        },
+        {
+          "line": 215,
+          "text": "U = np.asarray(U)"
+        },
+        {
+          "line": 226,
+          "text": "def one_body_diagonal_primitives("
+        },
+        {
+          "line": 231,
+          "text": "eps = np.asarray(eps)"
+        },
+        {
+          "line": 235,
+          "text": "angle = _real_or_symbolic(-tau * _as_real(eps_k, \"eps_k\"), \"rz_angle\")"
+        },
+        {
+          "line": 238,
+          "text": "phase += angle / 2.0"
+        },
+        {
+          "line": 246,
+          "text": "def df_squared_diagonal_primitives("
+        },
+        {
+          "line": 252,
+          "text": "eta = np.asarray(eta)"
+        },
+        {
+          "line": 262,
+          "text": "tau * lam * _as_real(eta[k], \"eta_k\") * _as_real(eta[k], \"eta_k\"),"
+        },
+        {
+          "line": 266,
+          "text": "phase += alpha / 2.0"
+        },
+        {
+          "line": 280,
+          "text": "phase += beta / 4.0"
+        },
+        {
+          "line": 321,
+          "text": "qc.global_phase += primitives.global_phase"
+        }
+      ],
+      "scientific_module_imported": false
+    },
+    {
+      "role": "DIRECTIONAL_AND_WRAPPER_SOURCE",
+      "filename": "ax2b_native_df_v5.py",
+      "sha256": "7b8b13483066bb39cc4aad1c36f6e5da6fbc679ecb8bae9c08a0b326648a36fd",
+      "counterpart_exists": null,
+      "counterpart_byte_match": null,
+      "imports": [
+        ".ax2a_control_plan",
+        ".ax2b_stream_fingerprint_v5",
+        "__future__",
+        "dataclasses",
+        "math",
+        "numpy",
+        "qiskit",
+        "qiskit.circuit",
+        "trotterlib.df_partial_s2",
+        "trotterlib.df_rte_qiskit",
+        "trotterlib.df_trotter.circuit",
+        "trotterlib.df_trotter.ops",
+        "trotterlib.rpe_hadamard_interrogation",
+        "trotterlib.rte",
+        "typing"
+      ],
+      "source_anchors": [
+        {
+          "line": 52,
+          "text": "_real(circuit.global_phase, \"global_phase\")"
+        },
+        {
+          "line": 94,
+          "text": "def append_directional_diagonal(circuit, primitives: DiagonalEvolutionPrimitives, ancilla):"
+        },
+        {
+          "line": 95,
+          "text": "\"\"\"diag(D(-t),D(t)); parity rotations plus RZ(2*global_phase).\"\"\""
+        },
+        {
+          "line": 108,
+          "text": "if primitives.global_phase != 0:"
+        },
+        {
+          "line": 109,
+          "text": "circuit.rz(2*primitives.global_phase, ancilla)"
+        },
+        {
+          "line": 112,
+          "text": "def _append_block(circuit, block, time, mode, ancilla):"
+        },
+        {
+          "line": 113,
+          "text": "QiskitDFPartialS2CircuitBuilder._append_basis(circuit, block, inverse=True)"
+        },
+        {
+          "line": 119,
+          "text": "append_directional_diagonal(circuit, primitives, ancilla)"
+        },
+        {
+          "line": 123,
+          "text": "QiskitDFPartialS2CircuitBuilder._append_basis(circuit, block, inverse=False)"
+        },
+        {
+          "line": 259,
+          "text": "def build_native_hadamard_wrapper(evolution: NativeEvolution, *, axis,"
+        }
+      ],
+      "scientific_module_imported": false
+    },
+    {
+      "role": "RTE_REUSE_AND_RELATIVE_PHASE_SOURCE",
+      "filename": "df_rte_qiskit.py",
+      "sha256": "c710de23b7bfef525199ab28b897c21b2a78723a01b29da6067ff64354dcd436",
+      "counterpart_exists": null,
+      "counterpart_byte_match": null,
+      "imports": [
+        ".df_rte_circuit",
+        ".df_rte_tail",
+        ".rte",
+        "__future__",
+        "hashlib",
+        "json",
+        "math",
+        "qiskit",
+        "qiskit.circuit.library",
+        "typing"
+      ],
+      "source_anchors": [
+        {
+          "line": 245,
+          "text": "accumulated_phase = 0.0"
+        },
+        {
+          "line": 248,
+          "text": "accumulated_phase += _event_phase_angle(event.phase)"
+        },
+        {
+          "line": 272,
+          "text": "active_key: tuple[str, str] | None = None"
+        },
+        {
+          "line": 281,
+          "text": "self._append_basis(circuit, active_definition, inverse=False)"
+        },
+        {
+          "line": 284,
+          "text": "active_key = None"
+        },
+        {
+          "line": 285,
+          "text": "accumulated_phase += self._identity_application_phase("
+        },
+        {
+          "line": 308,
+          "text": "can_reuse = reuse_enabled and active_key == key"
+        },
+        {
+          "line": 309,
+          "text": "if can_reuse:"
+        },
+        {
+          "line": 313,
+          "text": "self._append_basis(circuit, active_definition, inverse=False)"
+        },
+        {
+          "line": 317,
+          "text": "self._append_basis(circuit, definition, inverse=True)"
+        },
+        {
+          "line": 320,
+          "text": "active_key = key"
+        },
+        {
+          "line": 323,
+          "text": "accumulated_phase += self._append_central_application("
+        },
+        {
+          "line": 331,
+          "text": "self._append_basis(circuit, definition, inverse=False)"
+        },
+        {
+          "line": 334,
+          "text": "active_key = None"
+        },
+        {
+          "line": 337,
+          "text": "self._append_basis(circuit, active_definition, inverse=False)"
+        },
+        {
+          "line": 349,
+          "text": "if accumulated_phase != 0.0:"
+        },
+        {
+          "line": 350,
+          "text": "circuit.append(PhaseGate(accumulated_phase), [ancilla_qubit])"
+        },
+        {
+          "line": 352,
+          "text": "relative_phase = accumulated_phase"
+        },
+        {
+          "line": 354,
+          "text": "circuit.global_phase += accumulated_phase"
+        },
+        {
+          "line": 355,
+          "text": "global_phase = accumulated_phase"
+        },
+        {
+          "line": 461,
+          "text": "def _identity_application_phase("
+        }
+      ],
+      "scientific_module_imported": false
+    }
+  ],
+  "ELF_records": [
+    {
+      "role": "QISKIT_RUST_ACCELERATE",
+      "filename": "_accelerate.abi3.so",
+      "sha256": "b4cb2ebbf8fba43f86ffc44e14cc554cadde2d90cfb9c378eaf57687c9289396",
+      "DT_NEEDED": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libm.so.6",
+        "libdl.so.2",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "direct_lib_lzma_declared": false,
+      "library_loaded": false,
+      "scope": "ELF direct dynamic dependencies only. Not a transitive closure or proof of worker load/non-load."
+    },
+    {
+      "role": "NUMPY_NUMERIC_ABI",
+      "filename": "_multiarray_umath.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "6a650810a8735cbdb988f74729973740a337645dd1585fef696e73e2dbc65beb",
+      "DT_NEEDED": [
+        "libopenblas64_p-r0-0cf96a72.3.23.dev.so",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "direct_lib_lzma_declared": false,
+      "library_loaded": false,
+      "scope": "ELF direct dynamic dependencies only. Not a transitive closure or proof of worker load/non-load."
+    },
+    {
+      "role": "SYMENGINE_SYMBOLIC_ABI",
+      "filename": "symengine_wrapper.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "65ded03f0e5983c9caaa80fee6764e7c3e3aecf66ea14ae6af051b3707a20171",
+      "DT_NEEDED": [
+        "libflint-83c087d5.so.18.0.1",
+        "libmpc-9408b0d6.so.3.3.1",
+        "libmpfr-b62f4d19.so.6.2.1",
+        "libgmp-42d12c2b.so.10.5.0",
+        "libdl.so.2",
+        "libpthread.so.0",
+        "libz.so.1",
+        "libzstd-0f56e521.so.1.5.6",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "direct_lib_lzma_declared": false,
+      "library_loaded": false,
+      "scope": "ELF direct dynamic dependencies only. Not a transitive closure or proof of worker load/non-load."
+    },
+    {
+      "role": "STDLIB_LZMA",
+      "filename": "_lzma.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "cb298120e40f064dc047e638d911f8b3b0abf625bf1d6bd07902b46efd820fd7",
+      "DT_NEEDED": [
+        "liblzma.so.5",
+        "libc.so.6"
+      ],
+      "direct_lib_lzma_declared": true,
+      "library_loaded": false,
+      "scope": "ELF direct dynamic dependencies only. Not a transitive closure or proof of worker load/non-load."
+    }
+  ],
+  "components": [
+    {
+      "component": "Python3.12_vs_3.11",
+      "native_generation": "Interpreter/numeric orchestration and API execution; saved QPY is fixed",
+      "compiled_RZ": "Potential effect through extension ABI, symbolic/numeric compiler behavior; seed17 alone is not output proof",
+      "existing_evidence": "Both historical and adopted identities, original completed receipts and archived output",
+      "unresolved": "No complete historical worker observation; no cross-runtime output comparison",
+      "required_condition": "Compiler-relevant output equivalence across exact axes or explicitly adopted archived-cost-object policy"
+    },
+    {
+      "component": "NumPy_ABI_and_build_config",
+      "native_generation": "Preparation numeric arrays/diagonal and Gaussian calculations; saved Gaussian fields already match common receipt",
+      "compiled_RZ": "Source uses numeric synthesis/array conversion; possible output-sensitive threshold or decomposition effects",
+      "existing_evidence": "408 corresponding source files equal, ABI binaries differ; all original raw receipts recovered",
+      "unresolved": "Independent common deterministic diagonal parameter receipt absent; counterfactual compiler output unmeasured",
+      "required_condition": "Independent absolute-diagonal binding and compiler-relevant sensitivity proof"
+    },
+    {
+      "component": "SymEngine_ABI",
+      "native_generation": "No new gate generation performed here; do not infer ABI irrelevance from numeric final QPY",
+      "compiled_RZ": "Direct symbolic path in scalar_guard creates Parameter/exact_zero_scalar and ParameterExpression imports SymEngine",
+      "existing_evidence": "Qiskit sources/guard and original unchanged-gate-stream receipts match",
+      "unresolved": "Original same-runtime guard guarantee does not compare ABI3.12 to ABI3.11",
+      "required_condition": "Sensitivity test/proof with guard active for affected symbolic translation paths"
+    },
+    {
+      "component": "Qiskit1.3.0_and_Rust_acceleration",
+      "native_generation": "830 corresponding files equal including serialized gate semantics",
+      "compiled_RZ": "Translator/decomposer compiled extension participates; identical package bytes strengthen source identity",
+      "existing_evidence": "Original versus adopted 830/830 file match; ELF direct dependencies recorded",
+      "unresolved": "Byte equality of package does not prove all transitive runtime libraries or numeric inputs equal",
+      "required_condition": "Keep fixed settings/source plus relevant closure/output sensitivity"
+    },
+    {
+      "component": "liblzma_drift",
+      "native_generation": "No direct dependency established in inspected circuit/compiler paths",
+      "compiled_RZ": "No direct cost effect established; absence from selected DT_NEEDED is not non-load proof",
+      "existing_evidence": "Historical seal vs current library differs; 402 zlib archive/raw hashes verified",
+      "unresolved": "Full historical actual-load membership unknown",
+      "required_condition": "Preserve unknown membership; archived-byte identity protects stored evidence, not counterfactual compilation"
+    }
+  ],
+  "full_runtime_byte_identity": false,
+  "historical_actual_worker_manifest_available": false,
+  "historical_load_reconstructed": false,
+  "A_does_not_imply_B": true,
+  "new_scientific_calls": 0,
+  "new_scientific_imports": 0
+}

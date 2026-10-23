@@ -1632,3 +1632,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-23 H2 PR原本回収・134軸identity判定
 
 [回収・identity・別契約案・保全](docs/research/track_a_h2_pr_original_identity_20261023.md)。原本O00002の期待SHAをGPUA100-gleap02で再確認し、2,554原証拠を直接照合。67 eventファイル/6,400 event/402 archive、134軸のraw・単価receipt・central/control・共通Gaussian登録fieldを結合。Qiskit830 byte一致、NumPy/SymEngine ABI差・歴史seal liblzma1差分と実worker全load欠測を区別。完全stream/runtime identityは未成立、strict再利用0/134・COMPARE BLOCKED。人工200PASS、16,804 path前後不変。新科学実行/compile/u/N/G/順位/grant/公開push0、別政策・最小probeは未承認DRAFT、mandatory STOP。
+
+## 2026-10-23 H2 PR代替同等性契約：静的検証
+
+[契約・構造検証・runtime・保全](docs/research/track_a_h2_pr_equivalence_contract_20261023.md)。基準588d19544…から代替契約を未採択の別schemaとして実装。科学回路A/費用測定Bを分離し、全134保存QPYのinverse/reuse/diagonal mirror/control/phase/wrapperを全instruction消費でVERIFIED。Aは11/12条件、Bは2/3条件が全軸成立。共通diagonal絶対角度の独立bindingとcross-runtime compiler費用同等性は未証明。strict/代替正式認定とも0/134・COMPARE BLOCKED。新48＋既存200＝人工248PASS、16,804保護path不変。新科学計算/実H2生成/compile/会計/grant/公開push0、未承認最小案とmandatory STOP。
