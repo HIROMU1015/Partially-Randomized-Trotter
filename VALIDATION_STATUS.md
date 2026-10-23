@@ -1,6 +1,6 @@
-## 2026-10-23 H4 C修正版：実行継続・chat handoff
+## 2026-10-23 H4 C修正版：40軸数値目標達成・終了監査完了
 
-[実行・引継ぎ](docs/non_df_h4_c_reference_evidence_20261023.md)。SOURCE e80d75108を新grantで一回起動し、Pauli20軸が64 bit TARGET_MET・native exit0。DFは計算中、全体STOPと最終終了監査は未完了。利用者の許可でchatのみ一旦終了し、科学workerは継続する。N/G再会計・正式certificate受理・pushなし。以下は各時点の履歴。
+[保存結果・監査・制約](docs/non_df_h4_c_reference_evidence_20261023.md)。SOURCE e80d75108、新grantによる一回実行が19:15 JSTに終了。4方式×5精度×2軸の40軸すべて64 bit TARGET_MET、全worker/bridge/supervisor native exit0・回収、旧2,239 file SHA一致。正式certificate受理0、旧N/G=null・UNDETERMINED/元native未証明を保持。新科学stage/再会計/pushなし、mandatory STOP。以下は各時点の履歴。
 
 ## 2026-10-23 H4 C reference修正・人工検証
 

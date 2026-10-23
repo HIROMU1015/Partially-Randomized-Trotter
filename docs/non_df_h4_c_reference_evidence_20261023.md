@@ -4,9 +4,57 @@
 
 実行branchは `codex/non-df-h4-c-reference-evidence-20261023`、基点 `450b0a787f376a7a72b5d944685d102aac911ae4`、科学実装SOURCEは **`e80d7510880f8db993b777c627bb8e95b05a070d`**。実装・runtimeは修正専用worktreeの封印pathに保持し、今回の結果用worktreeへ編集を分離した。封印済みコードの変更は0。
 
-## 実行状態（終了監査前）
+## 実行結果・終了監査
 
-18:53 JSTに新grantで一回起動した。Pauliの20軸は64 bitでTARGET_METを保存、worker native exit0。DFはPR implemented-lawの計算を継続中で、最終20軸・全体STOP・終了監査は未確定。この段落は最終保存結果の確認後に更新する。
+18:53:52 JSTに新grantを一回消費し、**19:15:15 JSTに固定40軸すべてを64 bitでTARGET_METとして保存し終了した**。所要時間は約21分24秒。96/128 bitへの昇格・科学retry・追加grantは0。runのSTOPは `C_CANDIDATE_EVIDENCE_COMPLETE_PENDING_SCIENTIFIC_ACCEPTANCE`。数値設計目標を満たす候補証拠であり、正式certificateの受理は0軸である。
+
+| 方式 | 固定5精度×cosine/sine | precision | 保存結果 |
+|---|---:|---:|---|
+| pauli_jw_PF | 10軸 | 64 bit | TARGET_MET 10/10 |
+| pauli_jw_PR | 10軸 | 64 bit | TARGET_MET 10/10 |
+| df_native_PF | 10軸 | 64 bit | TARGET_MET 10/10 |
+| df_native_PR | 10軸 | 64 bit | TARGET_MET 10/10 |
+
+[全40軸CSV](../artifacts/non_df_h4_c_reference_evidence/2026-10-23/axis_outcomes.csv)・[JSON](../artifacts/non_df_h4_c_reference_evidence/2026-10-23/axis_outcomes.json)は、saved resultの精度・軸・target・bias distance・error上端・判定を転記した。新しい科学値・shot/Gを計算していない。[終了監査](../artifacts/non_df_h4_c_reference_evidence/2026-10-23/completion_audit.json)。
+
+今回の待ち時間の大部分はDF側で生じた。DFのnormalization call予約からimplemented PR mean予約まで約17分27秒あり、source上では324 componentの基底変換・rotation構成を含む区間に対応する。これは既存ledgerの時刻とsourceの対応であり、関数別の実測profilingではない。計算中のSOURCE・runtime・契約を変更せず、CPU競合や待ち時間を理由とする中断・再実行は行っていない。
+
+## 保存normalization・残るcertificate gate
+
+両表現のPFは保存結果でB=1/log_B=0の決定論的構造を記録した。PRはPauli/DFともに `saved_log_B_upper_encloses=true` を保存し、有限係数から得たB/log_Bの区間と保存上界を照合した。[保存normalization](../artifacts/non_df_h4_c_reference_evidence/2026-10-23/normalization_saved.json)は原結果の転記である。
+
+| 保存gate | Pauli PR | DF PR |
+|---|---|---|
+| saved log_B上界の包含 | true | true |
+| exact ±saved B event範囲 | true | false |
+| PCG64独立性の証明 | false | false |
+| formal certificate受理 | false | false |
+
+literal compiled wrapperへの転送も未certifyであり、数値目標達成だけで旧shot gateを通過したとはしない。旧20精度行N/G=null・40軸UNDETERMINEDは変更していない。
+
+## 今回のnative終了とcall予算
+
+| process | native exit | wait/reap・witness STOP |
+|---|---:|---|
+| Pauli preparation bridge | 0 | 保存・照合済み |
+| DF preparation bridge | 0 | 保存・照合済み |
+| Pauli worker | 0 | 保存・照合済み |
+| DF worker | 0 | 保存・照合済み |
+| supervisor | 0 | outer witnessで保存・照合済み |
+
+[native監査](../artifacts/non_df_h4_c_reference_evidence/2026-10-23/native_audit.json)は各claimのpidとworker identity、native wait receipt、exit、回収、STOPを対応させた。全witnessでall_owned_reaped=true、異常な子孫停止はなく、同一pid/start_ticksの残存0。これは今回の新runだけの終了証拠であり、元H4の監視欠落を補完しない。
+
+| call区分 | 予約数 | 固定最大 |
+|---|---:|---:|
+| Operator/preparation | 2 | 2 |
+| Probability mapping | 2 | 2 |
+| Reference | 2 | 6 |
+| Nominal mean | 4 | 12 |
+| Implemented PR mean | 2 | 6 |
+| PR normalization | 2 | 6 |
+| Dense exponential | 13 | 39 |
+
+予約はcall前の非返却記録であり、予約数を完成証拠件数へ読み替えない。今回の完成結果は別途40軸・最終tier/result・native receiptで照合した。新SCF/FCI/DF生成/状態最適化/sampling/RNG replay/compile/shot/G会計・科学retryは0。
 
 ## 固定条件と承認境界
 
@@ -31,3 +79,13 @@ Pauli/DFを独立workerで並行実行し、各worker・各旧runtime bridge・s
 元H4の監視消失原因UNKNOWN・native終了未証明、旧20精度行N/G=null・40軸UNDETERMINEDは保持する。旧SOURCE49c18ccc3の失敗C run・不受理Pauli20軸raw・DF最終20軸未取得・消費済みgrant・FAILED_NO_RETRY・execution holdも履歴として残す。今回の新結果とnative記録で旧runの証拠欠落を埋めない。
 
 今回の保存結果・監査は主担当Codex自身の検査であり、別担当の独立科学レビュー、正式certificate受理、最終evidence freezeではない。公開pushとN/G再会計は別の承認対象。
+
+[保全確認](../artifacts/non_df_h4_c_reference_evidence/2026-10-23/launch01/preservation_after.json)では既知の2,239ファイルがSHA一致した。元H4/B/原因調査/旧C失敗runと修正技術packageを元の絶対pathで検証し、元commit6892e95のprecision table20行もbyte一致・N/G欄空値・accounting_usable=falseを確認した。CSV空値を0や適格判定へ読み替えていない。
+
+## 次の作業・保存状態
+
+**ユーザー**：数値候補の保存結果と残るDF event範囲・compiled wrapper転送・統計仮定を確認し、次の証拠検証・科学的受理の範囲を判断する。N/G再会計・公開push・詳細科学レビューは別承認。
+
+**Codex**：その承認後に指定された証拠検証だけを行う。今回のgrantは消費・正常STOP済みであり、再発行・再利用・resume/retryを行わない。
+
+branch `codex/non-df-h4-c-reference-evidence-20261023` に結果と終了監査をlocal commitする。科学SOURCE e80d75108と結果保存commitは区別する。公開pushなし。**mandatory STOP。新しい数値解析・科学計算・certificate受理・N/G会計へ自動移行しない。**

@@ -1,5 +1,11 @@
 # 引継ぎ：修正版SOURCEの固定40軸実行
 
+## 現在の状態：完了・mandatory STOP
+
+19:15 JSTにPauli/DFとも64 bit TARGET_MET、40軸の保存を完了。全worker/bridge/supervisorのnative exit0・回収、旧2,239 fileの保全を確認し、結果回収と終了監査まで完了した。`completion_audit.json` / `native_audit.json` / `axis_outcomes.csv` / `run01/STOP.json` を読む。grantは消費・STOP済みなので、起動・発行・retry/resumeしない。
+
+正式certificate受理・N/G再会計は行っていない。次はユーザーが残る証拠gateの検証・受理範囲を判断し、Codexはその承認後だけ指定作業へ進む。公開push・詳細科学レビュー・最終freezeは別承認。以下は計算中の引継ぎ履歴であり、追加の実行指示ではない。
+
 SOURCE `e80d7510880f8db993b777c627bb8e95b05a070d`、科学runtimeとコードは隣接 `non-df-h4-c-reference-fix-20261023` に封印されたまま。本worktreeは実行結果用で、科学コードを編集していない。
 
 今回のgrant `6862c863f376be24c4ab56bc2d21abd2f8c2560b80250f95d4a1e6fd8b0cb4b4` は既に一回消費済み。**launch・issue-grant・retry/resumeを再度行わない。** DFは計算を継続しているので、chatの切替・待機・一時的競合を理由に停止しない。
