@@ -1002,3 +1002,9 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## 2026-10-23 H2 PR identity原本のread-only回収
 
 `h2_pr_identity_recovery.py` は固定Git metadataと明示root/map/O00002で原SHA・event digest・archive raw SHAを照合し、QPY/NPZを解釈しない。`prepare_h2_pr_identity_recovery.py` は専用領域へ保全・SOURCE照合・BLOCKED記録を保存する。[仕様・人工174件・不足パス](../docs/research/track_a_h2_pr_identity_recovery_20261023.md)。科学runner/grantは変更しない。
+
+## 2026-10-23 H2 PR原本回収・134軸identity判定
+
+[回収・identity・別契約案・保全](../docs/research/track_a_h2_pr_original_identity_20261023.md)。原本O00002の期待SHAをGPUA100-gleap02で再確認し、2,554原証拠を直接照合。67 eventファイル/6,400 event/402 archive、134軸のraw・単価receipt・central/control・共通Gaussian登録fieldを結合。Qiskit830 byte一致、NumPy/SymEngine ABI差・歴史seal liblzma1差分と実worker全load欠測を区別。完全stream/runtime identityは未成立、strict再利用0/134・COMPARE BLOCKED。人工200PASS、16,804 path前後不変。新科学実行/compile/u/N/G/順位/grant/公開push0、別政策・最小probeは未承認DRAFT、mandatory STOP。
+
+[原証拠監査](audit_h2_pr_original_identity.py)・[保存QPY data parser](h2_pr_saved_qpy.py)・[既存回収tool](h2_pr_identity_recovery.py)・[人工tests](../tests/test_h2_pr_original_identity.py)・[成果物](../artifacts/resource_applicability/track_a_h2_pr_original_identity/2026-10-23/REPORT.md)。科学libraryをimportせず保存binaryのfieldのみ照合し、strict witnessを作成しない。

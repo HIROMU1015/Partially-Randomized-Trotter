@@ -973,3 +973,7 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 ## 2026-10-23 H2保存PR単価identityの原証拠回収準備
 
 [stdlib回収tool・判定・次の条件](../../docs/research/track_a_h2_pr_identity_recovery_20261023.md)。library/旧科学SOURCEを変更せず、SOURCE byteと原metadata/archive SHAの照合をscripts側に追加。人工174PASS、完全identity未成立によりCOMPAREはBLOCKED。新科学import・sampling・compile・数値再解析0。
+
+## 2026-10-23 H2 PR原本回収・134軸identity判定
+
+[回収・identity・別契約案・保全](../../docs/research/track_a_h2_pr_original_identity_20261023.md)。原本O00002の期待SHAをGPUA100-gleap02で再確認し、2,554原証拠を直接照合。67 eventファイル/6,400 event/402 archive、134軸のraw・単価receipt・central/control・共通Gaussian登録fieldを結合。Qiskit830 byte一致、NumPy/SymEngine ABI差・歴史seal liblzma1差分と実worker全load欠測を区別。完全stream/runtime identityは未成立、strict再利用0/134・COMPARE BLOCKED。人工200PASS、16,804 path前後不変。新科学実行/compile/u/N/G/順位/grant/公開push0、別政策・最小probeは未承認DRAFT、mandatory STOP。

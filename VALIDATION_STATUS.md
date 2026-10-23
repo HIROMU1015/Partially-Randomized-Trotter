@@ -1,3 +1,9 @@
+## 2026-10-23 H2 PR原本回収・134軸identity判定
+
+[回収・identity・別契約案・保全](docs/research/track_a_h2_pr_original_identity_20261023.md)。原本O00002の期待SHAをGPUA100-gleap02で再確認し、2,554原証拠を直接照合。67 eventファイル/6,400 event/402 archive、134軸のraw・単価receipt・central/control・共通Gaussian登録fieldを結合。Qiskit830 byte一致、NumPy/SymEngine ABI差・歴史seal liblzma1差分と実worker全load欠測を区別。完全stream/runtime identityは未成立、strict再利用0/134・COMPARE BLOCKED。人工200PASS、16,804 path前後不変。新科学実行/compile/u/N/G/順位/grant/公開push0、別政策・最小probeは未承認DRAFT、mandatory STOP。
+
+以下は各時点の履歴。
+
 ## 2026-10-19 PR/PF絶対RZコスト図：v2・5精度（保存値のみ）
 
 [成果物・採用除外・再現方法](docs/research/track_a_pr_pf_absolute_cost_v2_20261019.md)。v2 snapshot c0808b25を基準に26比較・52点を描画。両端精度はH4/H6/H8独立確認とH2/H4/H6/H8探索n8の別パネル、中間3精度は探索のみ。H4は新DF10、H6中間PFはmodelを白抜き表示。H2 P未完了・H8詳細公開監査未照合・有限標本の限界を保持。PNG/SVG/PDF各5枚、exact表・採否・caption・SHAを保存。新科学計算/会計/順位計算0、local commitのみ、公開pushなし。次の作業なし、mandatory STOP。以下は各時点の履歴。

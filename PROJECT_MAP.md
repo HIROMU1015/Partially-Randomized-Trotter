@@ -1628,3 +1628,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-23 H2保存PR単価：原証拠回収準備
 
 [限定調査・回収tool・判定](docs/research/track_a_h2_pr_identity_recovery_20261023.md)。基準4008ce45…、SOURCE9ed3c76c4…。主要依存16 byte一致・元SOURCE70 Git一致、原67 event/402 archiveのexact requestを整備。人工174件PASS、保全491項目PASS。O00002のcanonical locator/原stream/実loadは未取得、PR再利用・COMPAREはBLOCKED。新科学計算・grant・レビュー0、local commit後mandatory STOP。
+
+## 2026-10-23 H2 PR原本回収・134軸identity判定
+
+[回収・identity・別契約案・保全](docs/research/track_a_h2_pr_original_identity_20261023.md)。原本O00002の期待SHAをGPUA100-gleap02で再確認し、2,554原証拠を直接照合。67 eventファイル/6,400 event/402 archive、134軸のraw・単価receipt・central/control・共通Gaussian登録fieldを結合。Qiskit830 byte一致、NumPy/SymEngine ABI差・歴史seal liblzma1差分と実worker全load欠測を区別。完全stream/runtime identityは未成立、strict再利用0/134・COMPARE BLOCKED。人工200PASS、16,804 path前後不変。新科学実行/compile/u/N/G/順位/grant/公開push0、別政策・最小probeは未承認DRAFT、mandatory STOP。
