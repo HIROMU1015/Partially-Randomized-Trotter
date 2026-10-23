@@ -1,3 +1,7 @@
+## 2026-10-24 H2/H4/H6高次PF費用変化の定量解析 run01完了
+
+[結果・会計分解・精度依存性・保全](../../docs/research/track_a_h246_order_cost_analysis_run01_20261024.md)。ユーザー承認の固定12候補・保存44 endpoint解析を一回正常終了。exact86 event、約2.171秒、exit0/reaped、retry0。費用恒等式22/22とshot関係44/44が整合。主ε=.0005はH2 Full/PRが逆方向、H4/H6は双方Y4低費用。H6 PRはC増加をN削減が上回る。固定εではH4 .005/.001・H6 .001にFull S2/PR Y4の方向関係。H2他4精度16セルは未評価。既知1,622 file・完了run93 file変更0、compile/sampling/simulation/新整数shot/新SE0、旧strict BLOCKED・mandatory STOP。
+
 ## 2026-10-24 H2/H4/H6高次PF費用変化の定量解析準備
 
 [契約・入力不足・SOURCE・保全](../../docs/research/track_a_h246_order_cost_analysis_ready_20261024.md)。H2/H4の解析A〜DへH6を追加し、固定12候補・保存44 endpoint/22比較を準備。H2は完了比較と他保存表のallowance差により主ε=.0005のみ、H4/H6は登録5精度。元shot関係・schedule/allocation・ledger/sealを再利用。人工10件＋封印runtime人工86 event PASS、1,333 file seal・既知1,622 file変更0。新しい実データ比/寄与/精度方向の解析とgrant0、別途明示承認待ち、旧strict BLOCKED・mandatory STOP。
