@@ -1,3 +1,9 @@
+## 2026-10-23 H2共通Full PF原本の限定回収
+
+[REPORT・SOURCE・SHA・handoff・保全・STOP](../docs/research/track_a_h2_common_pf_original_recovery_20261023.md)。GPU01で対象2候補4軸の原plan・実行入力・原result・QPY/archiveのbyteを固定結果と照合。12 archive/8静的QPY parse、宣言closure365 entry一致、固定GitHub13資料全文一致、保全2,141 file変化0。保存1655/2463 RZの別cost objectを保持。完全過去実loadと現在共通native全streamのbinding等は未認定。人工8PASS。科学call/compile/simulation/COMPARE/正式採択0、原本転送0、公開push0、local commit後mandatory STOP。
+
+人工境界検査：[test_h2_common_pf_original_recovery.py](test_h2_common_pf_original_recovery.py)。gzip破損/連結/size/SHA、候補重複、private path、科学import不在を確認。
+
 ## 2026-10-16 V2保存RZ残差：人工検証完了・数値実行未承認
 
 [新規36人工tests](test_track_a_v2_residual.py)＋既存observer/cleanup限定7件＝43 PASS。[receipt](../artifacts/resource_applicability/track_a_v2_residual_implementation/2026-10-16/artificial_validation.json)・[報告](../docs/research/track_a_v2_residual_implementation_20261016.md)。262 scope entriesは全件来歴未解決でfit対象0。実データfit/残差/compile0、未承認draft・公開後mandatory STOP。primary agent自身のlocal checksであり独立レビューではない。以下は各時点の履歴。

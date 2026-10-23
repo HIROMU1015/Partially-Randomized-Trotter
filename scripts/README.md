@@ -1,3 +1,9 @@
+## 2026-10-23 H2共通Full PF原本の限定回収
+
+[REPORT・SOURCE・SHA・handoff・保全・STOP](../docs/research/track_a_h2_common_pf_original_recovery_20261023.md)。GPU01で対象2候補4軸の原plan・実行入力・原result・QPY/archiveのbyteを固定結果と照合。12 archive/8静的QPY parse、宣言closure365 entry一致、固定GitHub13資料全文一致、保全2,141 file変化0。保存1655/2463 RZの別cost objectを保持。完全過去実loadと現在共通native全streamのbinding等は未認定。人工8PASS。科学call/compile/simulation/COMPARE/正式採択0、原本転送0、公開push0、local commit後mandatory STOP。
+
+静的監査入口：[audit_h2_common_pf_originals.py](audit_h2_common_pf_originals.py)。原本を明示指定し、既存parser/SHAを再利用する。科学libraryの入口を実装しない。
+
 ## 2026-10-19 PR/PF絶対RZコスト図：v2・5精度（保存値のみ）
 
 [成果物・採用除外・再現方法](../docs/research/track_a_pr_pf_absolute_cost_v2_20261019.md)。v2 snapshot c0808b25を基準に26比較・52点を描画。両端精度はH4/H6/H8独立確認とH2/H4/H6/H8探索n8の別パネル、中間3精度は探索のみ。H4は新DF10、H6中間PFはmodelを白抜き表示。H2 P未完了・H8詳細公開監査未照合・有限標本の限界を保持。PNG/SVG/PDF各5枚、exact表・採否・caption・SHAを保存。新科学計算/会計/順位計算0、local commitのみ、公開pushなし。次の作業なし、mandatory STOP。以下は各時点の履歴。
