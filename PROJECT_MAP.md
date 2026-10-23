@@ -1711,3 +1711,7 @@ H4 ε=.001 S2選択を確定。現行理論Gは元入力不足で0/20、compiled
 ## 2026-10-24 H4：条件付きC/N/G主評価の採択・再解析計画
 
 [計画](docs/non_df_h4_conditional_cng_plan_20261024.md)、[非実行契約・検証](artifacts/non_df_h4_conditional_cng_plan/2026-10-24/README.md)。固定4方式の条件付き資源比較を主評価として正式採択。旧compiler形式証明は比較開始の必須条件にしない。C/L部分証拠・残差・MC/tailを分離し、20関数/100scenario/30比較領域の次回packageを設計。550 input SHA/514 paired join/40軸pointer・人工8検査PASS。実H4数値再解析/N_G/新科学grant0、原本・旧nullを保持しmandatory STOP。
+
+## 2026-10-24 H4 D1 saved-descriptor診断
+
+[新adapter・one-shot runner・人工検査・実行記録](docs/non_df_h4_d1_execution_20261024.md)。元primitive／event／wrapper／compilerを再利用し、全full hashと旧価格のgate後に最大9費用compile。実行結果は専用報告へ。
