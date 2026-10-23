@@ -1,0 +1,124 @@
+{
+  "UTC": "2026-10-23T09:54:02.566706+00:00",
+  "call_ledger.json": {
+    "events": [
+      {
+        "UTC": "2026-10-23T09:53:53.610758+00:00",
+        "call": "operator_preparation_reconstruction_batches",
+        "pid": 214276,
+        "reserved_before_call": true
+      },
+      {
+        "UTC": "2026-10-23T09:53:53.615090+00:00",
+        "call": "operator_preparation_reconstruction_batches",
+        "pid": 214277,
+        "reserved_before_call": true
+      },
+      {
+        "UTC": "2026-10-23T09:53:58.415358+00:00",
+        "call": "probability_mapping_batches",
+        "pid": 214276,
+        "reserved_before_call": true
+      },
+      {
+        "UTC": "2026-10-23T09:54:01.423758+00:00",
+        "call": "reference_signal_enclosures",
+        "pid": 214276,
+        "reserved_before_call": true
+      },
+      {
+        "UTC": "2026-10-23T09:54:01.426673+00:00",
+        "call": "dense_matrix_exponential_requests",
+        "pid": 214276,
+        "reserved_before_call": true
+      }
+    ],
+    "limits": {
+      "PR_normalization_enclosures": 6,
+      "dense_matrix_exponential_requests": 39,
+      "implemented_PR_law_mean_enclosures": 6,
+      "nominal_law_mean_enclosures": 12,
+      "operator_preparation_reconstruction_batches": 2,
+      "probability_mapping_batches": 2,
+      "reference_signal_enclosures": 6
+    },
+    "used": {
+      "PR_normalization_enclosures": 0,
+      "dense_matrix_exponential_requests": 1,
+      "implemented_PR_law_mean_enclosures": 0,
+      "nominal_law_mean_enclosures": 0,
+      "operator_preparation_reconstruction_batches": 2,
+      "probability_mapping_batches": 1,
+      "reference_signal_enclosures": 1
+    }
+  },
+  "native": {
+    "pauli_jw_bridge_native": {
+      "UTC": "2026-10-23T09:53:58.399621+00:00",
+      "exit_code": 0,
+      "pid": 214318,
+      "reaped": true,
+      "scope": "NEW_C_WORKER_ONLY"
+    }
+  },
+  "processes": {
+    "df_native_bridge_native": {
+      "cpu_ticks": 1627,
+      "pid": 214319,
+      "rss_pages": 99049,
+      "start_ticks": 11457907,
+      "state": "R"
+    },
+    "df_native_native": {
+      "cpu_ticks": 122,
+      "pid": 214277,
+      "rss_pages": 7989,
+      "start_ticks": 11457775,
+      "state": "S"
+    },
+    "pauli_jw_bridge_native": {
+      "pid": 214318,
+      "state": "ABSENT"
+    },
+    "pauli_jw_native": {
+      "cpu_ticks": 530,
+      "pid": 214276,
+      "rss_pages": 317103,
+      "start_ticks": 11457775,
+      "state": "R"
+    },
+    "supervisor_native": {
+      "cpu_ticks": 120,
+      "pid": 214254,
+      "rss_pages": 7991,
+      "start_ticks": 11457642,
+      "state": "S"
+    }
+  },
+  "resources": {
+    "available_memory": "MemAvailable:   508192644 kB",
+    "cpu_pressure": "some avg10=0.49 avg60=0.14 avg300=0.03 total=126397370\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+    "loadavg": "6.53 6.15 6.04 9/1519 214599"
+  },
+  "run_files": [
+    "CONSUMED.json",
+    "LAUNCH_CLAIM.json",
+    "call_ledger.json",
+    "call_ledger.lock",
+    "contract.json",
+    "df_native_bridge_claim.json",
+    "df_native_bridge_native",
+    "df_native_model.json",
+    "df_native_native",
+    "df_native_worker_claim.json",
+    "grant.json",
+    "pauli_jw_bridge_claim.json",
+    "pauli_jw_bridge_native",
+    "pauli_jw_bridge_witness_exit.json",
+    "pauli_jw_model.json",
+    "pauli_jw_native",
+    "pauli_jw_worker_claim.json",
+    "seal.json"
+  ],
+  "stderr": {}
+}
