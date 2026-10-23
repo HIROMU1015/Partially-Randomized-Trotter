@@ -42,8 +42,11 @@ class CompileMetadataTests(unittest.TestCase):
     def setUp(self):
         self.dump_patch=patch('qiskit.qpy.dump',side_effect=fake_qpy_dump)
         self.transpile_patch=patch('qiskit.transpile',side_effect=lambda proxy,**kw:proxy.copy())
+        self.lower_patch=patch('qiskit.transpiler.PassManager.run',side_effect=lambda proxy:proxy.copy())
         self.dump=self.dump_patch.start();self.transpile=self.transpile_patch.start()
+        self.lower_patch.start()
         self.addCleanup(self.dump_patch.stop);self.addCleanup(self.transpile_patch.stop)
+        self.addCleanup(self.lower_patch.stop)
         self.identity=dict(input='mock_input',source='mock_source',environment='mock_env')
         self.profile=CompilerProfile()
 

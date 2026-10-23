@@ -84,13 +84,23 @@ def compile_cache_key(circuit, profile, identity_context):
 
 def compiled_wrapper(circuit, profile, *, cache=None, identity_context=None):
     from qiskit import transpile
+    from qiskit.circuit.equivalence import EquivalenceLibrary
+    from qiskit.transpiler import PassManager
+    from qiskit.transpiler.passes import UnrollCustomDefinitions
     profile.validate()
     cache_key=None
     if cache is not None:
         cache_key=compile_cache_key(circuit,profile,identity_context)
         if cache_key in cache:
             return cache[cache_key].copy()
-    compiled=transpile(circuit,basis_gates=list(profile.basis_gates),
+    # Qiskit 1.3's nested equivalence translation can discard global phase
+    # (reproduced with RY -> R -> U3 and Gaussian XXPlusYY gates). Unroll
+    # official gate definitions to U plus the fixed native basis first. This
+    # preserves each definition's phase without fitting an output operator or
+    # changing the shared SessionEquivalenceLibrary, environment or profile.
+    lowered=PassManager([UnrollCustomDefinitions(EquivalenceLibrary(),
+        list(profile.basis_gates)+['u'])]).run(circuit)
+    compiled=transpile(lowered,basis_gates=list(profile.basis_gates),
         optimization_level=profile.optimization_level,seed_transpiler=profile.seed_transpiler,
         backend=None,target=None,coupling_map=None,initial_layout=None,
         layout_method=None,routing_method=None,translation_method=None,scheduling_method=None,

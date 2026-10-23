@@ -2213,6 +2213,31 @@
         "artifacts/pr_algorithm_improvement_phase2d_f2_resources/2026-10-24/common_reference.json",
         "artifacts/pr_algorithm_improvement_phase2d_f2_resources/2026-10-24/STOP.json"
       ]
+    },
+    {
+      "id": "pr_dictionary_phase2d_f2_resources_rerun_20261024",
+      "status": "source_present_no_current_ci",
+      "summary": "Technical phase-preserving compiler integration repair; five artificial compiler/metadata regressions and four saved-circuit checks passed. User explicitly authorized repair and fresh execution; source fixation only, science run not started yet. Original numeric gates and per-shot resource-only scope retained.",
+      "documentation": [
+        "docs/research/pr_algorithm_improvement_phase2d_f2_resources_rerun_20261024/README.md"
+      ],
+      "tests": [
+        "tests/management/test_pr_dictionary_compile_phase.py"
+      ],
+      "source": [
+        "src/trottertracks/pr_dictionary_validation/gates.py"
+      ],
+      "counts": {
+        "new_compiler_regression_tests_passed": 3,
+        "reused_metadata_proxy_tests_passed": 2,
+        "saved_repair_cases_checked": 4,
+        "F2_resource_scientific_executions": 0
+      },
+      "completion_criteria": [
+        "Freeze corrected SOURCE and fresh grant/input binding, execute the authorized resource-only inventory.",
+        "Preserve each attempt and issue a new grant only after a technical repair, never resume old one-shots.",
+        "Publish complete results or scientific-condition STOP; certified N and N-weighted costs remain outside scope."
+      ]
     }
   ],
   "repository_completion_criteria": [
