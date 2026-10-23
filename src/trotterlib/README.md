@@ -1,3 +1,7 @@
+## 2026-10-24 H4高次PR/PF 4方式の探索的会計 run01完了
+
+[結果・SOURCE・保全・STOP](../../docs/research/track_a_h4_four_method_exploratory_run01_20261024.md)。承認済みH4固定4候補の保存値会計を一回正常終了。4/4適格、Full/PRともYoshida4が低費用、次数の方向逆転なし、4点最小はPR Yoshida4。exact39 event・約1.18秒・失敗/再試行0、compile/sampling/simulation0。H2完了出力と並列表示するCSVを保存し、混合cohort・追加数値解析・詳細科学レビューなし。既知1141 file変更0、旧strict COMPARE BLOCKED、mandatory STOP。
+
 ## 2026-10-24 H4高次PR/PF 4方式の探索的会計準備
 
 [契約・SOURCE・承認ゲート](../../docs/research/track_a_h4_four_method_exploratory_ready_20261024.md)。固定H4 DF10のFull prefix10 S2/q8・Y4/q4とPR prefix3 S2/q8(n48)・Y4/q4(n33)を準備。保存166軸・signal/shot/allowanceを再利用し、追加取得不要。SOURCE/input/runtime1065 file、人工11件＋封印runtime人工39 event PASS。実H4新規会計・順位/compile/sampling/simulation/grant0。保存reference末尾差・条件付きempirical/有限標本を保持し、別途科学実行承認待ち、mandatory STOP。
