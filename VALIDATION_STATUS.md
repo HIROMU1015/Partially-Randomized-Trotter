@@ -1,5 +1,17 @@
 # Validation status
 
+## 2026-10-24 mixed Pauli/frame dictionary F1: completed registered local validation
+
+`F1_REGISTERED_CORRECTNESS_PASS_UNQUALIFIED_PRICE_FALLBACK_MANDATORY_STOP`。
+修正SOURCE `8192530b17d6bc4af195c734ff43a6e78c506942`、保存B入力、新grantで正常終了。
+4 mode・2粒子・L_D=1・残差2fragmentの合成fixture、T=1/5、q2、delta=1/10の一点、r2、h1/20、K2、full16／controlled32。
+geometry／AO basis／分子DF rankは非該当。全4armの登録済みH／LAW／mean／operator／signal／compile／referenceとcatalog直接価格-DP照合は固定閾値内。
+16familyの未実行caseは0。未資格intervalのfallback処理はPASSだが、認証score・最適選択・shot数・資源優位性は未評価。
+[結果とSTOP](docs/research/pr_algorithm_improvement_phase2d_f1_rerun_20261024/EXECUTION_REPORT.md)、
+[要約JSON](artifacts/pr_algorithm_improvement_phase2d_f1/2026-10-24-r1/F1_RESULT_SUMMARY.json)、
+[raw hash台帳](artifacts/pr_algorithm_improvement_phase2d_f1/2026-10-24-r1/OUTPUT_HASH_MANIFEST.json)。
+ローカル検証でありCI／外部再現ではない。旧停止記録は以下に保持し、F2へは別判断・承認を要する。
+
 ## 2026-10-24 mixed Pauli/frame dictionary F1: technical stop, partial local evidence
 
 `F1_TECHNICAL_FAILURE_PARTIAL_RESULTS_MANDATORY_STOP`。固定SOURCE
