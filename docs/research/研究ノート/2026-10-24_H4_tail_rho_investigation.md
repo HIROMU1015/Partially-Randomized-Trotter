@@ -1,0 +1,9 @@
+# 2026-10-24 H4 PR費用tail・実装残差の重点調査
+
+基点5600f0e4の既存条件付き結果を保全し、費用tailとrhoの12辺を静的調査。Literal構造counterからの記号的envelopeは可能だが、全wrapper compiled RZと母平均の数値upperは未確立。共通角度生成のSOURCE対応で435件再診断を減らせる候補を特定。新実H4数値評価/N_G/科学grant/sampling/compile0、未確定状態を維持しmandatory STOP。
+
+[報告](../../non_df_h4_tail_rho_investigation_20261024.md)。費用の一様増加率証明はcompiler全体の量子的等価性証明より狭い別問題として扱う。既存256本を使える正当なrangeが先であり、一律の追加256本は採用しない。Cの保存角度をliteralも使う辺をSOURCEで結び、残るcontrol/phaseだけの小規模診断を非実行案とした。成功してもcompiler kappaは未知でactual rhoはnull。
+
+約76万RZ/shotはrho0・remainder母平均固定の仮定付き感度であり、全wrapper上界をその値と比べるだけで母平均優位性を認定しない。旧C/L・compiler・native/N_G状態を維持。次担当はユーザーが主張範囲と最小契約を判断し、Codexは別承認後に準備する。今回は科学SOURCE/実行契約の有効化・grant発行なし。
+
+着手worktreeのchecker更新を上書きせず、SHA付きで別の納品worktreeへ保全し最終検証を行った。元の作業場所のprocess/ファイルは変更・停止していない。

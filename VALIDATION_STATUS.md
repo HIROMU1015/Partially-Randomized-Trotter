@@ -1,3 +1,7 @@
+## 2026-10-24 H4：費用tail・rho重点調査（数値実行なし）
+
+[費用upperの成立条件・rho未被覆辺](docs/non_df_h4_tail_rho_investigation_20261024.md)、[静的検証](artifacts/non_df_h4_tail_rho_investigation/2026-10-24/verification.json)。GitHub17/固定runtime13/保全611/324support・人工6件PASS。 基点5600f0e4の既存条件付き結果を保全し、費用tailとrhoの12辺を静的調査。Literal構造counterからの記号的envelopeは可能だが、全wrapper compiled RZと母平均の数値upperは未確立。共通角度生成のSOURCE対応で435件再診断を減らせる候補を特定。新実H4数値評価/N_G/科学grant/sampling/compile0、未確定状態を維持しmandatory STOP。 以下は各時点の履歴。
+
 ## 2026-10-24 H4：条件付きC/N/Gの限定保存値再解析完了
 
 [条件付き結果・限界](docs/non_df_h4_conditional_cng_results_20261024.md)、[数値・終了検証](artifacts/non_df_h4_conditional_cng_results/2026-10-24/verification.json)。 20/20条件のguard域が非空。SOURCE b1984dcde、人工16件PASS、100仮定scenario/200軸/40閾値/30領域・主比較10/514 paired priceをone-shot再解析。保存平均価格では独立rho許容域全体でPR/PF順位反転なし。実rhoと母平均tailは未確定、旧null/C-L/旧compiler/native状態を保全。今回native exit0・回収、mandatory STOP。 以下は各時点の履歴。

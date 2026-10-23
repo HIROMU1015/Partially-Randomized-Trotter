@@ -1,0 +1,54 @@
+{
+  "kind": "STATIC_EVIDENCE_SCOPE_MAP_NOT_A_CERTIFICATE",
+  "base_commit": "5600f0e4b28c140a6a50b8aba47425860972a932",
+  "scientific_SOURCE": {
+    "original": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+    "C": "e80d7510880f8db993b777c627bb8e95b05a070d",
+    "L": "eb195bf2dedd0aed9d80ad7f84948b59ea53d854",
+    "CL": "0880f4af98b125d62599e970db89fc33634d1b61",
+    "conditional_CNG": "b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8"
+  },
+  "cost_bound": {
+    "literal_structural_bound": "SOURCE_DERIVABLE_SYMBOLIC_ONLY_NOT_EVALUATED_ON_H4",
+    "compiled_RZ_upper": null,
+    "population_cost_upper": null,
+    "blocked_by": ["uniform lowering/translation expansion", "accelerated synthesis output-length and loop bound", "actual default plugin/target closure and termination"],
+    "not_equivalent_to": ["observed maximum", "sum of compiled primitives", "literal instruction count", "cluster fitted prediction", "full quantum-semantic compiler certificate"],
+    "functions": [
+      "src/trotterlib/df_rte_qiskit.py:estimate_df_rte_structural_size_upper_bound",
+      "src/trotterlib/df_partial_s2.py:estimate_df_partial_s2_structural_size_upper_bound",
+      "src/trotterlib/df_partial_s2_repeated.py:QiskitDFPartialS2RepeatedCircuitBuilder._build_raw",
+      "src/trotterlib/rte_compiled_cost.py:transpile_and_measure_cost"
+    ]
+  },
+  "source_defined_cost_families": [
+    {"id": "F4", "definition": "at least one order4 event; observable-free fixed order family"},
+    {"id": "FH", "definition": "no order4, at least one component from H; H is the maximizer set of the all-registry structural basis-plus-support instruction envelope, defined without the256 outcomes; do not evaluate H or its mass in this investigation"},
+    {"id": "FR", "definition": "no order4 and no H component; remaining family"}
+  ],
+  "family_cautions": [
+    "All three families cover full trajectories and must retain deterministic blocks and wrapper cost",
+    "FH may include basis-length and support-rank distinctions, but actual cancellation/compiled price is not determined by that proxy",
+    "U remains the old descriptive postselected set, not a predeclared probability-test event",
+    "No new family probabilities, means, costs or sensitivities evaluated"
+  ],
+  "rho_edges": [
+    {"id": "B01", "edge": "encoded model / finite implemented law", "status": ["NUMERICALLY_ENCLOSED_LIMITED_SCOPE", "CONDITIONAL_IID"], "evidence": ["src/trotterlib/h4_ball_evidence.py:EnclosureEngine._tier", "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/df_native_result.json"], "remaining": "not literal measurement; finite grid word assumption and all endpoint mapping still required"},
+    {"id": "B02", "edge": "rounded local forward/inverse vs ideal same-angle gates", "status": ["NUMERICALLY_GUARANTEED_LIMITED_SCOPE"], "evidence": ["src/trotterlib/h4_local_enclosure.py:diagnose", "artifacts/non_df_h4_local_diagnostic/2026-10-23/audit02/local_gate_bounds.csv"], "remaining": "148+148 local errors; excludes literal synthesis, compiler and B scale; DF only"},
+    {"id": "B03", "edge": "DF basis composition/reuse", "status": ["NUMERICALLY_GUARANTEED_LIMITED_SCOPE", "ENDPOINT_CHAIN_UNPROVED"], "evidence": ["artifacts/non_df_h4_local_diagnostic/2026-10-23/audit02/basis_bounds.csv", "artifacts/non_df_h4_local_diagnostic/2026-10-23/audit02/uniform_basis_transfer.csv"], "remaining": "11 bases/324 supports; connect collapsed C, reused literal and both branches before composing"},
+    {"id": "B04", "edge": "diagonal angle generation", "status": ["ENCODED_ROUNDING_ALREADY_CAPTURED", "SOURCE_IDENTITY_PROOF_POSSIBLE_CONDITIONALLY"], "evidence": ["src/trotterlib/h4_legacy_export.py:build_export", "src/trotterlib/df_partial_s2.py:QiskitDFPartialS2CircuitBuilder._append_block", "src/trotterlib/df_trotter/ops.py:one_body_diagonal_primitives", "src/trotterlib/df_trotter/ops.py:df_squared_diagonal_primitives"], "remaining": "prove same frozen inputs/runtime/scalar DAG, exact-zero pruning and time constants; same source name alone is insufficient; control lowering arithmetic remains separate"},
+    {"id": "B05", "edge": "controlled diagonal decomposition", "status": ["EXACT_FORMAL_RULES", "ACTUAL_GENERIC_LOWERING_UNPROVED"], "evidence": ["src/trotterlib/h4_transfer_rules.py:controlled_diagonal_identity", "artifacts/non_df_h4_cl_transfer/2026-10-23/literal_runtime_source_map.json"], "remaining": "CRZ source is direct; controlled-RZZ uses generic add_control; actual float half-angles, selected lowering and both branches need proof"},
+    {"id": "B06", "edge": "global/relative phases", "status": ["EXACT_FORMAL_RULES", "FINITE_ARITHMETIC_DAG_UNPROVED"], "evidence": ["src/trotterlib/df_rte_qiskit.py:QiskitDFRTEEventCircuitBuilder._identity_application_phase", "src/trotterlib/h4_transfer_rules.py:event_phase"], "remaining": "order phase, negative products, signed rotations, binary64 pi and accumulated phase; no subtraction of C semantic total"},
+    {"id": "B07", "edge": "control0/control1 branch cross expectation", "status": ["CONDITIONAL_MATHEMATICAL_TRANSFER"], "evidence": ["src/trotterlib/h4_transfer_rules.py:measurement_transfer", "artifacts/non_df_h4_local_diagnostic/2026-10-23/audit02/component_support.csv"], "remaining": "L branches apply to ideal central D and rounded basis; zero branch cannot be set to exact I for the whole encoded/literal comparison without proof"},
+    {"id": "B08", "edge": "Hadamard wrapper", "status": ["EXACT_IDEAL_RULE", "ACTUAL_CONTROLLED_BODY_CONDITIONAL"], "evidence": ["src/trotterlib/fixed_signal_evaluation.py:hadamard_wrapper", "src/trotterlib/h4_transfer_rules.py:wrapper"], "remaining": "H-CU-H / H-CU-Sdg-H identities require correct body, phase, initial ancilla and normalized input"},
+    {"id": "B09", "edge": "normalized ray / preparation", "status": ["SAVED_STATE_BINDING", "CONDITIONAL_MATHEMATICAL_NORMALIZATION"], "evidence": ["src/trotterlib/h4_pilot_science.py:load_inputs", "src/trotterlib/h4_ball_evidence.py:EnclosureEngine._tier"], "remaining": "same-ray n cancels in normalized expectation; no n>=1 assumption, no physical preparation evidence in a cost metric excluding preparation"},
+    {"id": "B10", "edge": "B_saved readout scale", "status": ["MATHEMATICAL_BINARY_SUPPORT", "PREVIOUS_CONDITIONAL_SCALAR_ACCOUNTING"], "evidence": ["src/trotterlib/fixed_signal_accounting.py:fixed_signal_shots", "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/conditional_functions.json"], "remaining": "binary support does not prove mean transfer; use B_saved after valid normalized operator-to-measurement transfer, not nominal B or n*B substitution"},
+    {"id": "B11", "edge": "literal -> compiled", "status": ["UNPROVED_UNIFORM_ERROR", "MISSING_HISTORICAL_PROGRAM_TRACE"], "evidence": ["artifacts/non_df_h4_kl_production/2026-10-23/K01/K_pass_map.csv", "src/trotterlib/rte_compiled_cost.py:transpile_and_measure_cost"], "remaining": "restricted uniform semantic error proof is an alternative to old trace recovery; no bound from profile/version/seed alone, no new program treated as old evidence"},
+    {"id": "B12", "edge": "fixed-state compiled probabilities", "status": ["EMPIRICALLY_CHECKED_FINITE_TRAJECTORIES"], "evidence": ["src/trotterlib/h4_audited_evaluation.py:evaluate_audited_signal", "src/trotterlib/h4_pilot_science.py:event_gates"], "remaining": "two axis probabilities on saved state/cohort, first3 production operator checks and forced representative orders only; no full-family norm/error bound"}
+  ],
+  "current_actual_rho": null,
+  "old_C_L": "COMBINATION_BLOCKED",
+  "old_compiler": "MISSING_EVIDENCE",
+  "formal_certificate_accepted": false,
+  "new_scientific_numeric_calls": 0
+}
