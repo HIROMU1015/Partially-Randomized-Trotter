@@ -1,3 +1,7 @@
+## 2026-10-23 H4 certificate gate技術段階T：schema・記号的checker
+
+[metadata専用CLI](verify_h4_certificate_gates.py)、[実装・終了条件](../docs/non_df_h4_certificate_gate_foundation_20261023.md)。技術SOURCE a66cefb49、人工/mock67 PASS、封印済みmetadata CLIで40軸照合。実H4 proof adapter/正式受理は未実装、科学計算・再解析・sampling/compile/certificate生成・N/G0。既存状態を保持し技術STOP。以下は各時点の履歴。
+
 ## H4 certificate gateの読取監査（2026-10-23）
 
 [報告書](../docs/non_df_h4_certificate_gate_audit_20261023.md)。補助CLIは `artifacts/non_df_h4_certificate_gate_audit/2026-10-23/audit_saved_evidence.py`。固定source/bytes/JSON/CSV/AST/joinだけを照合し、既存outputは排他的保存。実H4数値再解析・compile・N/Gを呼ばない。新production runner/科学SOURCE変更0、mandatory STOP。以下は履歴。
