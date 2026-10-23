@@ -156,6 +156,10 @@ Scalar式・514小入力のキャッシュ利用が中心で短時間のため�
 2. **Codex／保証設計担当**：無条件の精度主張が必要なら、既存C/Lとactual wrapperの未被覆辺だけを対象に、同一ray/control/phase/B尺度のmeasurement残差を上記各軸予算以下へ抑えられる最小証拠設計を作る。ε=.0005ではcosine約2.45–2.65e-6が判断境界。全compiler証明・435件一括診断を自動的な必須工程にしない。新数値診断・正式受理は別の明示承認が必要。
 3. **Codex／費用解析担当**：母平均PR優位性を必要とするなら、特にDFの未観測stratumについて、full-wrapperの正当なenvelopeが約76万RZ/shotという仮定付き反転水準を下回るかをまず静的に検討する。Samplingを増やすだけでは未観測tailの上界にならない。必要な場合のみ、事前固定stratum・同じlaw/seed規約・具体的判断幅を持つ最小sampling/compile案を提示して別途承認を得る。今回は実行しない。
 
+結果保存commit `325f58d856295ec34f72cf74507ee359b2ec9aa1`のpushはHTTPS認証情報を取得できずexit128となり、remote SHAは未照合。SOURCE・結果・終了証拠はlocalに保全し、この公開失敗記録も別commitに保存する。
+
+生成SVGのpath属性にMatplotlib既定の行末空白があり、全差分whitespace検査はその箇所を報告した。生成SVGを保全したまま、それ以外のcode/文書/JSON/CSVの検査はPASS。図3件は画像として目視確認した。
+
 Branchのlocal成果と公開状態は[publication_status.json](../artifacts/non_df_h4_conditional_cng_results/2026-10-24/publication_status.json)で管理する。ユーザーの現行共通指示によりcommitはpushまで承認済み。実解析SOURCEと報告保存commitを区別し、認証失敗時は成果物を保全して再実行コマンドを通知する。
 
 **今回の保存データ再解析・比較・検証・保存の範囲は完了。Mandatory STOP。追加科学計算・sampling・compile・正式certificate受理へ進まない。**
