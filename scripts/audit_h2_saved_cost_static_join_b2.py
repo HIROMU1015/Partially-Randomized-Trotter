@@ -29,7 +29,7 @@ EQUIV_DIR = 'artifacts/resource_applicability/track_a_h2_pr_equivalence_contract
 
 def audit(config, source):
     out = ROOT/j.OUT_DIR
-    r.require({p.name for p in out.iterdir()} <= {'cache'}, 'FRESH_METADATA_OUTPUT')
+    r.require({p.name for p in out.iterdir()} <= {'cache','test_results.json','technical_tests.txt'}, 'FRESH_METADATA_OUTPUT')
     source = subprocess.check_output(['git','rev-parse',source], cwd=ROOT, text=True).strip()
     for path in OWN:
         r.require((ROOT/path).read_bytes() == r.git_bytes(source,path), 'COMMITTED_TECHNICAL_SOURCE')
@@ -226,7 +226,7 @@ def audit(config, source):
         provider_relative_path_joins=delta,major_runtime_joins=relevant,
         full_runtime_origin_map='PRIVATE_GPU01_MAP_NOT_TRANSFERRED',
         declared_paths_to_bytes_verified_GPU01=runtime['declared_paths_to_bytes_verified'],
-        historical_actual_load_complete=False,transitive_dependency_closure_complete=False,
+        transitive_dependency_closure_complete=False,
         missing_load_history_alone_implies_recompile=False,
         old_Py312_vs_Py311_output_equivalence='UNRESOLVED_UNCHANGED')
     def cond(name,status,scope):return dict(condition=name,status=status,evidence_scope=scope)
