@@ -229,7 +229,7 @@ class ControlTests(Fixture):
     def test_exact_mock_trace_no_duplicate_diagnosis(self):
         cfg,approval,grant=self.runnable();c.execute(cfg,approval,grant,backend_factory=MockBackend)
         row=b.read(Path(cfg['run_root'])/'completion.json');self.assertEqual(row['used'],c.counts())
-        for key in ('diagnose','path_signal','reference_rebind','request_factory','rte_event'):self.assertEqual(row['used'][key],0)
+        for key in ('diagnose','path_signal','reference_rebind','request_factory','rte_event','sampling'):self.assertEqual(row['used'][key],0)
 
     def test_gated_bundle_loader_restores_inputs_using_fake_decoder(self):
         cfg,approval,grant=self.runnable();origin=old.read(cfg['accepted_diagnostics']['contract'])
@@ -285,6 +285,16 @@ class ControlTests(Fixture):
         self.assertEqual(b.read(Path(cfg['run_root'])/'STOP.json')['used']['bundle_load'],1)
         self.assertFalse((Path(cfg['run_root'])/'completion.json').exists())
 
+    def test_sampling_zero_budget_rejects_before_callback(self):
+        cfg,approval,grant=self.runnable()
+        class Bad(MockBackend):
+            def load_diagnostics(inner):
+                inner.s.call('sampling',lambda:self.fail('SAMPLING_MUST_NOT_START'))
+        with self.assertRaisesRegex(c.Stop,'BUDGET_EXCEEDED:sampling'):
+            c.execute(cfg,approval,grant,backend_factory=Bad)
+        self.assertEqual(b.read(Path(cfg['run_root'])/'STOP.json')['used']['sampling'],0)
+        self.assertFalse((Path(cfg['run_root'])/'completion.json').exists())
+
     def test_partial_native_failure_never_completes_or_retries(self):
         cfg,approval,grant=self.runnable()
         class Bad(MockBackend):
@@ -321,7 +331,7 @@ class ControlTests(Fixture):
         self.assertNotIn('diagnose',after);self.assertNotIn('reference',after)
 
     def test_fixed_budget_and_old_counts_not_changed(self):
-        expected=old.counts('COMPARE_REUSE_PR');expected.update(diagnose=0,path_signal=0,reference_rebind=0,bundle_load=1)
+        expected=old.counts('COMPARE_REUSE_PR');expected.update(diagnose=0,path_signal=0,reference_rebind=0,bundle_load=1,sampling=0)
         self.assertEqual(c.counts(),expected);self.assertEqual(old.counts('DIAGNOSTICS')['path_signal'],8)
 
     def test_no_scientific_module_imported(self):

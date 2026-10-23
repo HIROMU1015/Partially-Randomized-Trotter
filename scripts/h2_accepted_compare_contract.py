@@ -12,7 +12,7 @@ ROOT=Path(__file__).resolve().parents[1]
 BRANCH='COMPARE_FROM_ACCEPTED_DIAGNOSTICS'
 SERIES='H2_COMPARE_FROM_ACCEPTED_DIAGNOSTICS_V1'
 SCHEMA='h2_compare_from_accepted_diagnostics_v1'
-KINDS=old.KINDS+('bundle_load',)
+KINDS=old.KINDS+('bundle_load','sampling')
 policy=old.policy
 Stop,require,read,save,sha,reuse_costs=old.Stop,old.require,old.read,old.save,old.sha,old.reuse_costs
 RUNNER_FILES=('scripts/h2_accepted_compare_contract.py','scripts/h2_accepted_compare_backend.py',
@@ -25,7 +25,7 @@ RUNNER_FILES=('scripts/h2_accepted_compare_contract.py','scripts/h2_accepted_com
 
 def counts():
     result=old.counts('COMPARE_REUSE_PR')
-    result.update(diagnose=0,path_signal=0,reference_rebind=0,bundle_load=1)
+    result.update(diagnose=0,path_signal=0,reference_rebind=0,bundle_load=1,sampling=0)
     return result
 
 
