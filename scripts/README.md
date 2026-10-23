@@ -1,6 +1,6 @@
 ## H4保存scalarの数値精度診断B
 
-[`run_h4_precision_b.py`](run_h4_precision_b.py) は固定40軸だけのprepare/launch/run/verify。C実H4実行は非対応。[仕様](../docs/non_df_h4_precision_bc_20261023.md)。
+[`run_h4_precision_b.py`](run_h4_precision_b.py) は固定40軸だけのprepare/launch/run/verify。B_run01は一回消費済み、今後は保存監査verifyだけ。C実H4実行は非対応。[仕様](../docs/non_df_h4_precision_bc_20261023.md)。
 
 ## 2026-10-23 H4専用runner・保存証拠検査
 

@@ -1,6 +1,6 @@
 ## 2026-10-23 H4数値精度B＋保証手法C
 
-[仕様・診断・保証設計](non_df_h4_precision_bc_20261023.md)。B40軸は専用grant、Cは実H4未実行。以下は従来の入口。
+[仕様・診断・保証設計](non_df_h4_precision_bc_20261023.md)。B40軸は専用grantで一回完了。[C設計](non_df_h4_numerical_enclosure_design_20261023.md)・人工検査・承認待ち次回契約まで完了。C実H4/certificate/N/G再会計は0、mandatory STOP。以下は従来の入口。
 
 ## 2026-10-23 H4非DF/DF：保存証拠の原因調査
 

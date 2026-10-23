@@ -1,6 +1,6 @@
 ## H4数値精度B・C人工包含prototype
 
-`h4_precision_budget.py` / `h4_precision_control.py` は保存scalar診断とone-shot認証。`h4_enclosure_prototype.py` は人工rational包含だけ。旧science APIは不変。[仕様](../../docs/non_df_h4_precision_bc_20261023.md)。
+`h4_precision_budget.py` / `h4_precision_control.py` は保存scalar診断とone-shot認証。`h4_enclosure_prototype.py` は人工rational包含だけ。B40軸の一回診断を完了。C保証設計/人工FLINT13検査は完成、実H4 production runnerは未実装。旧science APIは不変。[仕様](../../docs/non_df_h4_precision_bc_20261023.md)。
 
 ## 2026-10-23 H4非DF/DF PF・PRの追加API
 
