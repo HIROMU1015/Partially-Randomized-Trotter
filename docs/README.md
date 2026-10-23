@@ -4,6 +4,10 @@
 研究全体を初めて読む場合は、先に[`../PROJECT_MAP.md`](../PROJECT_MAP.md)と
 [`research/研究概要・現状.md`](research/研究概要・現状.md)を読む。
 
+## 環境別の既存証拠所在索引
+
+- [GPUA100環境の回収・GitHub照合索引（2026-10-23）](research/environment_evidence_gpua100_20261023/README.md)：固定commit/path/SHA、SOURCE・結果・監査の対応と未解決事項。新規科学結果ではなく、新規索引の公開承認は未確認。
+
 ## 研究方針と現在地
 
 - [`research/研究概要・現状.md`](research/研究概要・現状.md)：最新の短い全体要約

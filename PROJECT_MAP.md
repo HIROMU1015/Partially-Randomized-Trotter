@@ -123,6 +123,12 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 - dirty worktreeの結果やローカルテストを、公開済み・CI固定済みの証拠と表現しない。
 - スライド構成案や研究ノートの単独記述より、研究概要、検証文書、manifestを優先する。
 
+## 環境別の既存証拠所在索引
+
+[GPUA100環境の回収・GitHub照合索引（2026-10-23）](docs/research/environment_evidence_gpua100_20261023/README.md)は、
+既存の固定commit・SOURCE・結果・監査の所在とbyte identityを整理する。新規科学計算・科学status更新ではない。
+新規索引は専用branchのローカルcommitまでとし、公開承認未確認のためpushしない。
+
 ## 保守規則
 
 研究上の決定や検証結果が変わった場合は、次を同じ変更で更新する。
