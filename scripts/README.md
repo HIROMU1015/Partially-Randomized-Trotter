@@ -1,3 +1,9 @@
+## 2026-10-24 H2/H4/H6高次PF費用変化の定量解析準備
+
+[契約・入力不足・SOURCE・保全](../docs/research/track_a_h246_order_cost_analysis_ready_20261024.md)。H2/H4の解析A〜DへH6を追加し、固定12候補・保存44 endpoint/22比較を準備。H2は完了比較と他保存表のallowance差により主ε=.0005のみ、H4/H6は登録5精度。元shot関係・schedule/allocation・ledger/sealを再利用。人工10件＋封印runtime人工86 event PASS、1,333 file seal・既知1,622 file変更0。新しい実データ比/寄与/精度方向の解析とgrant0、別途明示承認待ち、旧strict BLOCKED・mandatory STOP。
+
+`prepare_h246_order_cost_analysis.py`でmetadata回収・seal、`launch_h246_order_cost_analysis.py`は既定でpreflightのみ。実データ数値解析には新規H246承認・grantが必要。
+
 ## 2026-10-24 H6保存済み4方式の回収・再計算省略
 
 [保存値・出典・保全・任意rank契約](../docs/research/track_a_h6_saved_four_method_20261024.md)。H6の4方式すべてのC/N/G・PR paired SEを固定保存資料から回収し、利用者指示に従い再計算を省いた。H6/1 Å/STO-3G/tol-only DF1e-8/rank19、Full prefix19 q8/q4、PR prefix5 q8/q4各n33。H2/H4/H6の12行CSVは保存fieldの転記のみ。人工10件＋封印runtime人工3 event PASS、971 file seal・既知1,305 file変更0。旧Full中断stageのparent exit/reap不明を保持。任意の同時順位ranking1だけを未承認契約で準備し、実H6科学call/新規grant0、旧strict COMPARE BLOCKED、mandatory STOP。
