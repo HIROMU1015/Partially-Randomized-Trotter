@@ -14,8 +14,8 @@ import h2_pr_identity_recovery as r
 import prepare_h2_pr_identity_recovery as prepare
 
 
-def event(order=0, component=3):
-    ids = list(range(order)) + [component]
+def event(order=0, component='COMPONENT_ROTATION'):
+    ids = ['COMPONENT_PRODUCT_' + str(i) for i in range(order)] + [component]
     return dict(taylor_order=order, product_component_ids=ids[:-1],
                 rotation_component_id=component, selected_component_ids=ids,
                 phase=dict(real=1., imag=0.), application_sequence=[

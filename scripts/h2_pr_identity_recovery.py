@@ -101,7 +101,8 @@ def check_events(value, anchor, piece_counts):
             products = event['product_component_ids']; selected = event['selected_component_ids']
             require(type(products) is list and len(products) == order and
                     selected == products + [event['rotation_component_id']] and
-                    all(type(i) is int and i >= 0 for i in selected), 'EVENT_COMPONENTS')
+                    # Fixed provider RTEEvent.component_id is a nonempty string.
+                    all(type(i) is str and bool(i) for i in selected), 'EVENT_COMPONENTS')
             phase = event['phase']
             require(set(phase) == {'real', 'imag'} and
                     all(type(x) is int or (type(x) is float and math.isfinite(x)) for x in phase.values()), 'EVENT_PHASE')
