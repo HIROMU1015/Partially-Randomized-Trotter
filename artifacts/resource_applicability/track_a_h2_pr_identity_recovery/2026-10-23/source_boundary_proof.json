@@ -1,0 +1,156 @@
+{
+  "status": "FIXED_SOURCE_METADATA_INSPECTION_ONLY",
+  "proofs": [
+    {
+      "commit": "4ec26921c6872ed6e8667f167074e1e405cf1a3f",
+      "path": "scripts/h46_pr_pilot_native.py",
+      "git_blob_sha1": "5719a0ce7f2e19f587710b8d0329917a6b382c8b",
+      "sha256": "ce9a3890353b0d79b078348062e8eef8418a66905ab25c91b8caea3fb314a355",
+      "anchors": [
+        {
+          "line": 66,
+          "text": "            events=[[e.to_dict() for e in request.rte_occurrence.events] for request in requests]"
+        },
+        {
+          "line": 68,
+          "text": "        stratum=c.design.event_stratum(events);event_digest=c.digest(events)"
+        },
+        {
+          "line": 69,
+          "text": "        c.save(out/'events_PRIVATE.json',dict(events=events,event_digest=event_digest,conditional=False,cohort='DESIGN_PILOT' if row['method']=='PR' else 'DETERMINISTIC',**stratum))"
+        },
+        {
+          "line": 114,
+          "text": "                receipt=dict(status='DIRECT_MEASURED_CT01_SINGLE_SAVED_INPUT_STATE',axis=axis,metrics=metrics,fingerprint=fp,compiler_settings_hash=cost.compiler_settings_hash,event_digest=event_digest,preparation_hash=prep.preparation_hash,native_policy=c.design.NATIVE_POLICY,compiled_SHA=compiled_file['sha256'])"
+        }
+      ],
+      "scientific_source_imported": false
+    },
+    {
+      "commit": "4ec26921c6872ed6e8667f167074e1e405cf1a3f",
+      "path": "scripts/h2_outer32_runtime.py",
+      "git_blob_sha1": "d1bb3bab153061247e72fb5835e858d83c7c488e",
+      "sha256": "99732517cdcbe24f93f55cb99a392323ba550a6bdcfcdd13c8a30aecc3786122",
+      "anchors": [
+        {
+          "line": 33,
+          "text": "    c.require(all(str(Path(mod.__file__).resolve()) in indexed for mod in (np,qiskit)),'H2_LOADED_RUNTIME_SEALED')"
+        },
+        {
+          "line": 36,
+          "text": "        if name.startswith(('trotterlib.','trottertracks.')) and getattr(mod,'__file__',None):"
+        },
+        {
+          "line": 37,
+          "text": "            c.require(Path(mod.__file__).resolve().is_relative_to(root),'H2_LOADED_PROVIDER_ORIGIN')"
+        },
+        {
+          "line": 136,
+          "text": "def replace_code(code,label):"
+        },
+        {
+          "line": 182,
+          "text": "    label=c.cohort(cfg['stage']);c.require(label is not None,'H2_ACQUISITION_COHORT')"
+        },
+        {
+          "line": 189,
+          "text": "    run,rns=rebind(runner,dict(c=view,__file__=cli,repair=SimpleNamespace(enabled=enabled,prewarm=prewarm),fresh=fresh,worker=worker),label)"
+        },
+        {
+          "line": 191,
+          "text": "    run.supervise=FunctionType(runner.supervise.__code__,dict(runner.supervise.__globals__,c=view,__file__=cli),'supervise',runner.supervise.__defaults__,runner.supervise.__closure__)"
+        }
+      ],
+      "scientific_source_imported": false
+    },
+    {
+      "commit": "4f1e4ebd46a5e03876971a5374d390bd4ead921a",
+      "path": "scripts/export_h2_outer32_metadata.py",
+      "git_blob_sha1": "0579e4e8a4dd393a9ad46f2d83a794a843386105",
+      "sha256": "ce0c3f11fd8c013791f749c3da043e27d8b11e76cb7ea6e04ee7665285507d58",
+      "anchors": [
+        {
+          "line": 200,
+          "text": "        chain['historical_locator_chain'] = 'Prior H2 confirmation config /origin_config_path -> original exploration config -> original pipeline/config input locators'"
+        },
+        {
+          "line": 327,
+          "text": "        self.private_map.write_text(json.dumps({'roots':self.roots,'original_sha256':self.initial},indent=2))"
+        },
+        {
+          "line": 385,
+          "text": "            current_bytes_are_not_historical_load_attestation=True,complete_actual_import_manifest=None,"
+        }
+      ],
+      "scientific_source_imported": false
+    },
+    {
+      "commit": "8825391ff73b531be5834bf852b9bf2479d1799b",
+      "path": "scripts/prepare_h246_confirmation.py",
+      "git_blob_sha1": "0deb4f86d43b5bb91983f3533d5a0bb0732a8fd5",
+      "sha256": "be4fe7e69b2ba13d6e19421684f65479de532c223966537f712445b5ecf0e08d",
+      "anchors": [
+        {
+          "line": 102,
+          "text": "          resources=resources,storage=storage,origin_config_path=str(origin_path),decisions=dec,"
+        },
+        {
+          "line": 121,
+          "text": "    p=argparse.ArgumentParser();p.add_argument('--source',required=True);p.add_argument('--private',required=True)"
+        },
+        {
+          "line": 122,
+          "text": "    for s in ('h2','h4','h6'):p.add_argument('--'+s+'-origin',required=True)"
+        }
+      ],
+      "scientific_source_imported": false
+    },
+    {
+      "commit": "a05f4ed19e87e1eb65f7fc346385b5b4eae69845",
+      "path": "docs/research/track_a_h2_outer32_run01_results_20261021.md",
+      "git_blob_sha1": "23e2472ff3044327c46020e1b92b0ec4e8a49633",
+      "sha256": "01cbc3980417935c4ec53ba5738633458400e8c666bbd4879cd5df47d6ee9773",
+      "anchors": [
+        {
+          "line": 4,
+          "text": "科学SOURCE：`4ec26921c6872ed6e8667f167074e1e405cf1a3f`。"
+        },
+        {
+          "line": 21,
+          "text": "科学計算と全終了監査の完了後、資料commit用の公開検査が、更新した索引全体に元から存在する内部絶対パスを検出して停止した。`PUBLIC_METADATA_ONLY`の元停止receiptは保持した。新しい成果物全体と既存文書の追加行を検査し、公開資料・索引・manifestだけを復旧した。封印済みSOURCE、private原本、grant/ledger/marker/STOP、計算結果、H4/H6 jobは変更せず、科学計算の再実行は0件。"
+        }
+      ],
+      "scientific_source_imported": false
+    },
+    {
+      "commit": "328a7914d525d8d2b9dc8d203c140ae92dd35632",
+      "path": "docs/research/track_a_h246_confirmation_new_environment_STOP_20261022.md",
+      "git_blob_sha1": "aa603dec2b0c4aa5c0c1d2205f19a3a2e4b0bac5",
+      "sha256": "7445e85be03a1adfc8dee1f6bb8fc72745ac465d0b4479902446a719517aeb15",
+      "anchors": [
+        {
+          "line": 8,
+          "text": "停止理由は追加承認の不足ではなく、保存科学入力とprivate証拠を現在利用できる保存先から復元できないことである。"
+        },
+        {
+          "line": 20,
+          "text": "  private packがないため、旧runtime closure全体のbyte同一性は未確認。"
+        },
+        {
+          "line": 49,
+          "text": "1. private `proposal02`の3stage分の`config_DRAFT_PRIVATE.json`、"
+        },
+        {
+          "line": 72,
+          "text": "必要なのは上記原資料の復元可能なコピーまたは保存先である。実行承認は受領済みである。"
+        }
+      ],
+      "scientific_source_imported": false
+    }
+  ],
+  "events_full_body_saved_by_source": true,
+  "events_full_body_not_in_public_export": true,
+  "event_filename": "events_PRIVATE.json",
+  "complete_historical_worker_load_manifest_in_export": null,
+  "source_checks_are_not_a_full_retrospective_observed_load_attestation": true
+}

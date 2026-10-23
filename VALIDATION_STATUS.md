@@ -2421,3 +2421,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-23 H2受入済み診断COMPARE：技術実装のみ
 
 [実装・検証・不足](docs/research/track_a_h2_accepted_compare_20261023.md)。固定H2/rank3/ε=.0005/指定4候補で既存DIAGNOSTICSを読み込む専用分岐を実装。人工138件PASS、実データはmetadata/hash/NPY headerのみを検査。公開402 archive/134 compiled raw SHAの対応を取得したが、PR単価再利用はBLOCKED。新科学import/build/compile/sampling/u/N/G/順位評価0。旧4候補診断PASSと元SOURCE/結果/grant/STOPは保持し、比較実科学の新認定はない。
+
+## 2026-10-23 H2 PR identity原証拠：技術回収準備
+
+[証拠・実装・不足](docs/research/track_a_h2_pr_identity_recovery_20261023.md)。元SOURCE70 Git一致と主要依存16一致を確認したが、原event/stream/runtimeの完全identityは未成立。新36＋既存138＝人工174PASS、旧原本/基準資料491項目不変、旧metadata-only COMPARE preflightはBLOCKED。科学的な比較結果や新しいu/N/G評価はなく、原DIAGNOSTICS/SOURCE/grant/STOPを保持。

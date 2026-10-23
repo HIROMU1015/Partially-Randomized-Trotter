@@ -969,3 +969,7 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 ## 2026-10-23 H2受入済みDIAGNOSTICSの比較分岐
 
 旧library/実行済みSOURCEを保持し、scriptsの専用COMPARE sourceで既存診断bundleを再利用する。setup/prepare/steps/allowance/account/rankのASTを継承し、旧diagnose/referenceは新backendから除去。[実装・call予算・PR再利用BLOCKED](../../docs/research/track_a_h2_accepted_compare_20261023.md)。人工138件PASS、新科学評価0。
+
+## 2026-10-23 H2保存PR単価identityの原証拠回収準備
+
+[stdlib回収tool・判定・次の条件](../../docs/research/track_a_h2_pr_identity_recovery_20261023.md)。library/旧科学SOURCEを変更せず、SOURCE byteと原metadata/archive SHAの照合をscripts側に追加。人工174PASS、完全identity未成立によりCOMPAREはBLOCKED。新科学import・sampling・compile・数値再解析0。

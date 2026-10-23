@@ -1624,3 +1624,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-23 H2受入済み診断COMPARE専用分岐
 
 [実装・PR identity・契約](docs/research/track_a_h2_accepted_compare_20261023.md)。新COMPARE_FROM_ACCEPTED_DIAGNOSTICSはbundle_load1で元path8/ref4を再実行しない。新SOURCE46a3b33e…、人工138件PASS。公開402 archive metadata/134 compiled raw SHAを回収・結合したが、原config/full event/旧stream/実runtimeが不足しPR単価再利用はBLOCKED。新科学実行・live grant0、原SOURCE/結果保持、local commit後mandatory STOP。
+
+## 2026-10-23 H2保存PR単価：原証拠回収準備
+
+[限定調査・回収tool・判定](docs/research/track_a_h2_pr_identity_recovery_20261023.md)。基準4008ce45…、SOURCE9ed3c76c4…。主要依存16 byte一致・元SOURCE70 Git一致、原67 event/402 archiveのexact requestを整備。人工174件PASS、保全491項目PASS。O00002のcanonical locator/原stream/実loadは未取得、PR再利用・COMPAREはBLOCKED。新科学計算・grant・レビュー0、local commit後mandatory STOP。

@@ -1144,3 +1144,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-23 H2受入済み診断COMPARE技術準備
 
 [受入仕様・PR identity・exact契約](research/track_a_h2_accepted_compare_20261023.md)。人工138件PASS、実metadata preflightは技術binding確認後PR witness不足でBLOCKED。旧実行不変、新科学計算/会計0。元config locatorと完全event/stream/runtime/correctness結合が必要、mandatory STOP。
+
+## 2026-10-23 H2 PR identity原証拠の限定再調査
+
+[原本locator・SOURCE照合・回収tool・最小追加案](research/track_a_h2_pr_identity_recovery_20261023.md)。人工174PASS、保全491項目PASS。原root未提供・event/stream/実load不足とruntime宣言byte差を保持し、PR単価再利用とCOMPAREはBLOCKED。科学実行・詳細科学レビュー0、mandatory STOP。

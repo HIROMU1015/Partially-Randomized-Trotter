@@ -998,3 +998,7 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## 2026-10-23 H2受入済み診断COMPARE専用分岐
 
 `launch_h2_accepted_compare.py` は旧runnerを変更しない新入口。`h2_accepted_diagnostics.py` はstdlibのhash/NPY header検査と承認後のbundle_loadを分離し、`h2_accepted_compare_contract.py` が新grant/ledger/予算とPR証拠を検査する。`prepare_h2_accepted_compare.py` は科学importなしの契約準備専用。[仕様・138人工テスト・BLOCKER](../docs/research/track_a_h2_accepted_compare_20261023.md)。
+
+## 2026-10-23 H2 PR identity原本のread-only回収
+
+`h2_pr_identity_recovery.py` は固定Git metadataと明示root/map/O00002で原SHA・event digest・archive raw SHAを照合し、QPY/NPZを解釈しない。`prepare_h2_pr_identity_recovery.py` は専用領域へ保全・SOURCE照合・BLOCKED記録を保存する。[仕様・人工174件・不足パス](../docs/research/track_a_h2_pr_identity_recovery_20261023.md)。科学runner/grantは変更しない。
