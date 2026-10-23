@@ -76,6 +76,16 @@ class StreamTests(unittest.TestCase):
 
     def test_sine_full_wrapper(self):self.run_fixture(axis='sine')
 
+    def test_pair_ignores_only_one_sine_Sdg_instruction(self):
+        a=self.run_fixture();b=self.run_fixture(axis='sine')
+        stream.validate_pair(a,b,'a'*64,'a'*64)
+        b['reuse_boundaries']+=1
+        with self.assertRaises(r.EvidenceError):stream.validate_pair(a,b,'a'*64,'a'*64)
+
+    def test_pair_rejects_different_evolution_digest(self):
+        with self.assertRaises(r.EvidenceError):
+            stream.validate_pair(self.run_fixture(),self.run_fixture(axis='sine'),'a'*64,'b'*64)
+
     def test_wrong_inverse_sign_rejected(self):
         c,e,p=fixture();c['instructions'][1]['params'][0]['hex']=float(.125).hex()
         with self.assertRaises(r.EvidenceError):self.run_fixture(c,e,p)

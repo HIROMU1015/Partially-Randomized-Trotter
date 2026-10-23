@@ -195,3 +195,12 @@ def recognize(circuit, events, receipt, axis, scalar):
         diagonal_pattern='Fixed H2 nonzero: one-body 4 RZ; fragment 6 RZZ + 4 RZ; omission rejected',
         new_circuit_objects=0, new_lowering=0, fresh_diagonal_or_rotation_computation=0,
         scientific_operator_equivalence=False)
+
+
+def validate_pair(cosine, sine, cosine_evolution_sha256, sine_evolution_sha256):
+    """Sine has one Sdg; compare common evolution/conditions, not wrapper length."""
+    r.require(cosine_evolution_sha256 == sine_evolution_sha256, 'PAIRED_EVOLUTION_FIELDS')
+    a = {k:v for k,v in cosine.items() if k != 'serialized_instructions_consumed'}
+    b = {k:v for k,v in sine.items() if k != 'serialized_instructions_consumed'}
+    r.require(a == b and sine['serialized_instructions_consumed'] == cosine['serialized_instructions_consumed'] + 1,
+              'PAIRED_STRUCTURE_SCOPE')

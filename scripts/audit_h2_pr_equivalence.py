@@ -73,7 +73,7 @@ def observe(paths):
 def audit(config,out,source):
     r.require(out.resolve()==DEFAULT.resolve(), 'ONLY_FRESH_ALTERNATIVE_NAMESPACE')
     out.mkdir(exist_ok=True,parents=True)
-    r.require(not any(out.iterdir()), 'NEW_EVIDENCE_DIRECTORY_REQUIRED')
+    r.require(not any(p.name != 'attempts' for p in out.iterdir()), 'NEW_EVIDENCE_DIRECTORY_REQUIRED')
     source=subprocess.check_output(['git','rev-parse',source],cwd=ROOT,text=True).strip()
     r.require(len(source)==40,'IMMUTABLE_SOURCE_COMMIT')
     for rel in FILES:r.require((ROOT/rel).read_bytes()==r.git_bytes(source,rel),'AUDIT_SOURCE_BYTES')
@@ -132,7 +132,8 @@ def audit(config,out,source):
                 compiled_raw_sha256=cost['compiled_SHA'],events_sha256=r.file_digest(folder/'events_PRIVATE.json'),
                 events_digest=event['event_digest'],cost_receipt_sha256=r.file_digest(folder/('cost_'+axis+'.json')),
                 guard_receipt_sha256=r.file_digest(folder/('compiler_phase_guard_'+str(index)+'.json')),
-                structural=structural,historical_correctness=correctness,
+                structural=structural,paired_evolution_sha256=original.wrapper_fields(wrapper,axis,result['scalar'])['evolution_structure_sha256'],
+                historical_correctness=correctness,
                 strict_contract_status='BLOCKED',alternative_policy_adopted=False,science_authorized=False)
             proof=r.digest(packet)
             statuses={name:'VERIFIED' for name in contract.A+contract.B}
@@ -150,7 +151,8 @@ def audit(config,out,source):
         joined=list(pool.map(one_task,catalogue.tasks))
     rows=[x for part in joined for x in part[0]];packets=[x for part in joined for x in part[1]]
     for a,b in zip(packets[::2],packets[1::2]):
-        r.require(a['task']==b['task'] and a['structural']==b['structural'],'PAIRED_STRUCTURE_SCOPE')
+        r.require(a['task']==b['task'],'PAIRED_TASK')
+        conformance.validate_pair(a['structural'],b['structural'],a['paired_evolution_sha256'],b['paired_evolution_sha256'])
     draft=contract.draft();preflight=contract.preflight(draft,rows)
     runtime=relevance.investigate(old,compare)
     # Reuse fixed SOURCE joins; confirm their actual files, do not assume names.
