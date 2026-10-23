@@ -19,3 +19,11 @@ Markdownの相対file linkは全て存在を確認。固定外部URLは公開rep
 公開時は専用branchのremote HEAD、baseからの変更file集合、各fileのUTF-8 bytes／SHA256／Git blob、全相対文書リンクを照合する。可能な範囲で同じ公開branchを独立Git fetchし、最終treeとbase file非変更も確認する。GitHub APIだけの照合をローカルCI成功と呼ばない。最終照合のfile数／digestはreceiptと最終報告に記録する。
 
 今回の新規実装・科学call・生成・sampling・build・compile・証明・科学grant発行は0件。検査完了後mandatory STOP。
+
+## 照合実績
+
+payload commit `a7e0835ad0770355f6393e62281d3da9eb684ba4` の17file全件について、GitHub再取得の内容・Git blobとローカルbytes／SHA256を照合し、独立Git fetchでも同じtreeを確認した。baseからの差分は17件のA追加だけ、既存1,015tracked pathsは同一bytes。管理検査は必須11文書、JSON4、台帳29行、固定資料36record、相対file link39件でPASS。これは科学gateのPASSではない。
+
+元workspaceのstatusとworktree registryはsnapshotと同一。作業中にframework capture用refが1件変化したが、元branch／remote refの変更は検出していない。このtaskは元workspaceでref更新、reset、cleanを実行していない。private snapshotやref名は公開しない。
+
+この実績とpayload別fileのdigestをPUBLICATION.jsonへ保存する。receipt更新後の最終HEADは公開後に別途再取得し、全17fileを再照合する。receipt自身のhashを同じreceiptへ埋める自己参照はしない。
