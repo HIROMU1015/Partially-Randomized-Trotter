@@ -1,7 +1,13 @@
 # B-ENV保全・公開照合
 
-公開前の管理検査はPASS。固定SOURCE10file、wheel/RECORD／Python/venv/native、canonical digestを実照合した。旧基点の全1,079fileはbyte同一、新規B-ENV文書15fileと管理helper1fileだけを追加した。helper AST、local文書リンク26件、固定参照18件、private path等の混入を検査した。private B用environment recordは固定7field schemaに適合し、venv内922hashとabsolute runtime 2,713hashを実照合した。科学処理は0件。
+**PASS_STATIC_AND_ENVIRONMENT_MANAGEMENT_ONLY**。公開payload `88d9a0b5c0ce06e70393aa10ace229b299da05e7`、tree `47e7ecc3b98503b7d986322981b7411ae50820c5`。GitHubから全16fileを取得し、bytesとGit blobを照合した。独立cloneへのgit fetchでも全fileのbytes/SHA256/blobを確認し、Git treeは公開前の手元treeと一致した。
 
-原workspaceのstatusとworktree一覧は開始時／公開前で同一だった。別の並行作業によるrefs変化は観測したが、巻き戻し・変更を行っていない。原本のgit操作はread-onlyで、今回の作業は独立clone内だけ。
+基点 `3de42d3a3efe9ebc74dde8a1d0e1f1bdbadd607c` の全1,079fileはbyte同一。payload差分は新規B-ENV文書15fileと管理helper1fileだけの追加。helper AST、local文書リンク26件、固定参照18件、内部path・credential等の混入検査を通過した。SOURCE closure10file、仕様／call／schema、draft11case/DAGとcanonical digestを確認した。環境recordは固定7field schemaに適合し、venv内922hashとabsolute runtime2,713hashを実照合した。
 
-公開時に変更file一覧、全旧file同一、AST、文書リンク、内部path等の非公開情報、remote HEAD、公開file bytes/SHA256/Git blobを照合し、PUBLICATION.jsonと本書を確定する。静的・環境管理のPASSを科学結果やimmutable CI結果と呼ばない。
+環境管理検査はCPython3.11.9／NumPy1.26.4、wheel／installed RECORD／C API ABI、base3,471file／venv925file、実mapped ELF55fileと全DT_NEEDEDの一意解決、-I/-Bの分離とcanary、別process再照合まで。初回detached lddの誤判定と修正をENVIRONMENT_VALIDATION.mdに明記した。科学SOURCE import、B11call、F1/F2、科学input生成、build/compile、grant/marker発行は0件。
+
+原workspaceのstatusとworktree一覧は開始時／公開前で同一。並行作業によるrefs差分は観測したが、巻き戻し・変更はしていない。原本でのgit操作はread-only。独立cloneからHIROMU1015の専用branchだけを公開した。
+
+PUBLICATION.jsonのfile inventoryはpayload固定commitのexact bytesを指す。このreceipt commitで更新するのはPUBLICATION.jsonと本書だけ。自分自身のcommit/hashを再帰的に埋め込まず、receiptの最終remote HEAD／全file bytes/hash/blobは外部照合して最終チャットへ記録する。SOURCE・環境lock・科学契約は変わらない。
+
+本確認はローカル環境管理・静的照合とGitHub公開物照合であり、immutable CI／科学検証／第二環境での独立再現のPASSではない。READY_FOR_B_EXECUTION_APPROVAL、packetはEXECUTION_PACKET_DRAFT_NOT_AUTHORIZATION。公開照合後mandatory STOP。
