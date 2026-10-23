@@ -1,3 +1,7 @@
+## 2026-10-24 H4高次PR/PF 4方式の探索的会計準備
+
+[契約・SOURCE・承認ゲート](docs/research/track_a_h4_four_method_exploratory_ready_20261024.md)。固定H4 DF10のFull prefix10 S2/q8・Y4/q4とPR prefix3 S2/q8(n48)・Y4/q4(n33)を準備。保存166軸・signal/shot/allowanceを再利用し、追加取得不要。SOURCE/input/runtime1065 file、人工11件＋封印runtime人工39 event PASS。実H4新規会計・順位/compile/sampling/simulation/grant0。保存reference末尾差・条件付きempirical/有限標本を保持し、別途科学実行承認待ち、mandatory STOP。
+
 ## 2026-10-23 H2 PR代替同等性契約：静的検証
 
 [契約・構造検証・runtime・保全](docs/research/track_a_h2_pr_equivalence_contract_20261023.md)。基準588d19544…から代替契約を未採択の別schemaとして実装。科学回路A/費用測定Bを分離し、全134保存QPYのinverse/reuse/diagonal mirror/control/phase/wrapperを全instruction消費でVERIFIED。Aは11/12条件、Bは2/3条件が全軸成立。共通diagonal絶対角度の独立bindingとcross-runtime compiler費用同等性は未証明。strict/代替正式認定とも0/134・COMPARE BLOCKED。新48＋既存200＝人工248PASS、16,804保護path不変。新科学計算/実H2生成/compile/会計/grant/公開push0、未承認最小案とmandatory STOP。
