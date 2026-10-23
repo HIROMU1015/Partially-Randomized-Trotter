@@ -1,5 +1,26 @@
 # Validation status
 
+## 2026-10-24 mixed Pauli/frame dictionary F1: technical stop, partial local evidence
+
+`F1_TECHNICAL_FAILURE_PARTIAL_RESULTS_MANDATORY_STOP`。固定SOURCE
+`31e8391a56fbb1a0e64f477f78e242655329de99` と保存B入力を使ったone-shot。
+4 mode・2粒子・L_D=1・残差2fragmentの合成fixture（geometry／AO basis／分子DF rank非該当）、
+T=1/5、q2、delta=1/10の一点、r2、h1/20、K2、full16／controlled32。
+H-ID4件は全armでPASS、SSのみfinite meanを完了。実行済みcontrolled／raw signal検査は固定閾値内。
+最初のcompile requestが `gates.py:81` の `normalized.metadata=None` でTypeErrorとなり、
+actual transpiler invocation0のまま停止した。compile request1／completed0を区別する。
+
+LAW metadata47,889、component54、motif3、wrapper1、catalog controlled60、reference109precision evaluationsを
+完了したが、全登録範囲の検証ではない。LAW最終mass gate・残るmean／motif／signal・catalog DP比較・
+physical期待価格・selector／未資格fallback処理は未完了。価格・shot認証、資源優位性、新規性のGOはない。
+rawと消費済みgrant／STOPを保全し、retry／resume・追加科学計算なし。公開は保存診断要約とhash台帳のみで、
+ローカル部分検証をCI／独立外部再現と表示しない。
+[実行結果](docs/research/pr_algorithm_improvement_phase2d_f1_execution_20261024/EXECUTION_REPORT.md)、
+[要約JSON](artifacts/pr_algorithm_improvement_phase2d_f1/2026-10-24/F1_RESULT_SUMMARY.json)、
+[raw hash台帳](artifacts/pr_algorithm_improvement_phase2d_f1/2026-10-24/OUTPUT_HASH_MANIFEST.json)。
+旧系列のstatusは以下の履歴を保持する。F2は別の判断と実行承認が必要。
+
+
 ## 2026-09-20 delta-schedule central-RTE compiled-cost note
 
 H4 chain、1.0 Å、STO-3G、8 qubit、DF rank 12、固定Hamiltonian snapshot、$L_D=3$、

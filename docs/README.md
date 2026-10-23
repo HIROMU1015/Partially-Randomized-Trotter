@@ -75,3 +75,8 @@
 ## PR混在辞書 F1実行前準備
 
 [Phase 2D-F1-PRE](research/pr_algorithm_improvement_phase2d_f1_preparation_20261023/README.md)：保存B入力、専用環境、既存prototype adapter、case計画、承認境界。管理testのみ実行し、科学検証は未実行。既存の研究判断・validation結果を更新するものではない。
+
+
+## PR混在辞書F1実行結果（2026-10-24）
+
+[実行結果とSTOP](research/pr_algorithm_improvement_phase2d_f1_execution_20261024/README.md)：H-ID4armとSSのmean等は部分PASS、metadata TypeErrorでF1未完了。要約・残差・実績件数とprivate rawのhash台帳を公開。F2や再実行は開始していない。

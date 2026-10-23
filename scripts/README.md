@@ -121,3 +121,8 @@ artifacts/<validation_name>/
 ## PR混在辞書 F1保存入力経路（準備のみ）
 
 `run_pr_dictionary_f1_saved.py` は旧 `run_pr_dictionary_f1.py` の認可gateを再利用する将来F1専用入口。新規の明示承認・固定packetが必要で、F1-PREでは実行しない。SOURCE、管理test、planned artifactは[準備記録](../docs/research/pr_algorithm_improvement_phase2d_f1_preparation_20261023/README.md)を参照。
+
+
+## PR混在辞書F1の実行結果（2026-10-24）
+
+`run_pr_dictionary_f1_saved.py` の承認済みone-shotは最初のcompile requestで技術的停止。SOURCE修正や再実行は行っていない。[実行結果](../docs/research/pr_algorithm_improvement_phase2d_f1_execution_20261024/README.md)と `artifacts/pr_algorithm_improvement_phase2d_f1/2026-10-24/` に完了／未完了、残差、provenanceを記録した。

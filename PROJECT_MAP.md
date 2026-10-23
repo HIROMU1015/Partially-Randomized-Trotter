@@ -139,3 +139,8 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## PR混在辞書 F1の保存B入力adapter（準備のみ）
 
 [Phase 2D-F1-PRE](docs/research/pr_algorithm_improvement_phase2d_f1_preparation_20261023/README.md)に、専用環境、既存prototypeとの接続、runner／管理test／将来artifact path、実行承認境界をまとめた。科学的検証は未実行。既存SOURCE・入力・結果を保全した独立branchの技術準備である。
+
+
+## 2026-10-24：PR混在辞書F1のone-shot部分結果
+
+[docs/research/pr_algorithm_improvement_phase2d_f1_execution_20261024/README.md](docs/research/pr_algorithm_improvement_phase2d_f1_execution_20261024/README.md)に、固定SOURCE・runner・管理testとartifactの対応、metadata TypeErrorによるSTOP、実行済みPASSと未完了を記録した。科学SOURCEはF1-PREのまま、retry／resume・F2なし。要約とhash台帳は `artifacts/pr_algorithm_improvement_phase2d_f1/2026-10-24/`。

@@ -109,3 +109,8 @@ DF部分ランダム化研究と混同しない。
 ## PR混在辞書の保存入力adapter（F1-PRE）
 
 既存 `rte.py`／`df_trotter/ops.py` を変更せず、`trottertracks/pr_dictionary_validation/f1_saved_execution.py` と `f1_saved_plan.py` から再利用する準備を追加した。[準備記録](../../docs/research/pr_algorithm_improvement_phase2d_f1_preparation_20261023/README.md)がrunner、管理test、planned artifactの入口。科学実行は未承認・未実行。
+
+
+## PR混在辞書F1の部分検証（2026-10-24）
+
+既存RTE／Gaussian helperを再利用したone-shotの[結果](../../docs/research/pr_algorithm_improvement_phase2d_f1_execution_20261024/README.md)。4arm H-ID等は部分的にPASSしたが、compile cache用metadata設定で停止。`trottertracks/pr_dictionary_validation` の固定SOURCEは保全し、retry／resumeなし。要約／hash台帳は `artifacts/pr_algorithm_improvement_phase2d_f1/2026-10-24/`。
