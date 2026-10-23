@@ -340,7 +340,7 @@ def run(args):
           private_locator_map_kept_outside_worktree=True,
           resource_observation=dict(cpu_count=os.cpu_count(),affinity=len(os.sched_getaffinity(0)),
               loadavg=list(os.getloadavg()),mem_available_kB=next(int(x.split()[1]) for x in Path('/proc/meminfo').read_text().splitlines() if x.startswith('MemAvailable:')),
-              arbitrary_caps=None,execution='Small bounded files; cached fixed blobs, static parsing; no scientific workers or GPU jobs'))),
+              arbitrary_caps=None,execution='Small bounded files; cached fixed blobs, static parsing; no scientific workers or GPU jobs')),
       'STOP.json':dict(status='MANDATORY_STOP',scientific_calls=0,compile=0,transpile=0,simulation=0,
           setup=0,prepare=0,wrapper_generation=0,sampling=0,new_costs=0,allowance=0,accounting=0,ranking=0,
           COMPARE=0,formal_adoption=0,new_grants=0,old_grants_reused=0,push=False,
