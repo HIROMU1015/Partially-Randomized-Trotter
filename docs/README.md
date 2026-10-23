@@ -109,3 +109,5 @@
 [修正・実行契約・停止条件](research/pr_algorithm_improvement_phase2d_f2_resources_rerun_20261024/README.md)。既存runnerとf2_resources／f2_executionを再利用し、gates.compiled_wrapperの公式definition展開を修正。回帰testは `tests/management/test_pr_dictionary_compile_phase.py`、planned artifactは `artifacts/pr_algorithm_improvement_phase2d_f2_resources/2026-10-24-r1/`。
 
 [修正版F2の全件結果・資源表・STOP](research/pr_algorithm_improvement_phase2d_f2_resources_rerun_20261024/EXECUTION_REPORT.md)：SOURCE `9468c70`、raw／compiled各13,676・reference27,356・mean4arm・weighted集計を完了。1-shotの指標順はPP<SP<PS<SS、認証Nは対象外。旧失敗は保持し、追加実験へ進まない。
+
+[限定F2の資源差の原因調査](research/pr_algorithm_improvement_phase2d_f2_resource_causes_20261024.md)：SOURCE・保存CSVの静的照合のみ。PPのGaussian往復不要とK0/r2の抽出構造を説明し、compiler・共有・sampling weight別の寄与は未測定と明示した。新しい数値集計や回路生成は行わずmandatory STOP。
