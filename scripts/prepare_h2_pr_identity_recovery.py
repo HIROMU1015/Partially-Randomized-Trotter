@@ -24,6 +24,23 @@ def fixed(path):
     return r.loads(r.git_bytes(r.BASE, path))
 
 
+def check_preservation(rows, cfg, contract_path):
+    """Gate execution-bound evidence; observe unrelated documentation changes."""
+    bound = {Path(item['path']).resolve() for item in cfg['files']}
+    bound.add(Path(contract_path).resolve())
+    run = Path(cfg['accepted_diagnostics']['run_root']).resolve()
+    result = []
+    for item in rows:
+        path = Path(item['path']).resolve()
+        blocking = path in bound or path.is_relative_to(run)
+        try:observed = r.file_digest(path)
+        except OSError:observed = None
+        matches = observed == item['sha256']
+        if blocking:r.require(matches, 'EXECUTION_BOUND_ORIGINAL_CHANGED')
+        result.append(dict(item, observed_sha256=observed, matches=matches, blocking=blocking))
+    return result
+
+
 def source_joins(catalogue, cfg):
     rows = []
     historical = {}
@@ -70,7 +87,7 @@ def build(source):
                           role='BASE_4008_PROTECTED_FILE') for item in prior_inventory['files'])
     preserved.append(dict(path=str(original_root/r.PREVIOUS/'file_inventory.json'),
         sha256=hashlib.sha256(r.git_bytes(r.BASE,r.PREVIOUS+'file_inventory.json')).hexdigest(), role='BASE_INVENTORY'))
-    for item in preserved:r.require(r.file_digest(item['path']) == item['sha256'], 'PROTECTED_ORIGINAL_CHANGED')
+    preserved = check_preservation(preserved, cfg, command[-1])
     r.require(not Path(cfg['run_root']).exists() and not Path(cfg['runtime']['cache_prefix']).exists(), 'NO_COMPARE_RUN_OR_CACHE')
     env = dict(os.environ); env.pop('LD_PRELOAD', None); env.pop('LD_LIBRARY_PATH', None)
     preflight = subprocess.run(command, env=env, capture_output=True, text=True)
@@ -136,8 +153,12 @@ def build(source):
         event_raw_file_SHA_previously_registered=False,event_content_digest_anchor_available=True,
         recovered_original_files=0,new_scientific_calls=0))
     write('preservation_audit.json',dict(status='PASS',checked_at_utc=datetime.now(timezone.utc).isoformat(),
-        protected_file_checks=len(preserved),files=preserved,base_namespace_unchanged=True,
-        original_454_file_checks_unchanged=True,base_COMPARE_full_seal_and_runtime_preflight_verified=True,
+        file_checks=len(preserved),protected_file_checks=sum(x['blocking'] for x in preserved),
+        observational_file_checks=sum(not x['blocking'] for x in preserved),files=preserved,
+        base_namespace_unchanged=all(x['matches'] for x in preserved[454:]),
+        original_454_file_checks_unchanged=all(x['matches'] for x in preserved[:454]),
+        unrelated_documentation_changes_block_execution=False,
+        base_COMPARE_full_seal_and_runtime_preflight_verified=True,
         sealed_files=len(cfg['files']),source_files=len(cfg['source_files']),
         original_completion_sha256=cfg['accepted_diagnostics']['completion_sha256'],
         source_results_grant_ledger_marker_STOP_unchanged=True,shared_environment_changed=False,
@@ -152,7 +173,7 @@ def build(source):
         detailed_scientific_review=False,push=False,PR_created=False,merge=False,mandatory_STOP=True))
     print(json.dumps(dict(status='TECHNICAL_RECOVERY_PREPARATION_COMPLETE_COMPARE_BLOCKED',source=source,
         request_files=len(recovery['requests']),source_byte_matches=len(joins['compare_dependencies']),
-        protected_file_checks=len(preserved),science=0,live_grants=0)))
+        preservation_file_checks=len(preserved),execution_bound_file_checks=sum(x['blocking'] for x in preserved),science=0,live_grants=0)))
 
 
 if __name__=='__main__':

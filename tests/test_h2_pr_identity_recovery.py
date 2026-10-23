@@ -11,6 +11,7 @@ import zlib
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 import h2_pr_identity_recovery as r
+import prepare_h2_pr_identity_recovery as prepare
 
 
 def event(order=0, component=3):
@@ -156,6 +157,21 @@ class Files(TemporaryEvidence):
         with patch.object(r, 'Catalogue'), patch.object(r, 'ROOT', self.root/'own'), \
              patch.object(sys, 'argv', ['tool', '--report', str(self.root/'other.json')]):
             with self.assertRaisesRegex(r.EvidenceError, 'RECOVERY_WORKTREE'):r.main()
+
+    def test_unrelated_worktree_documentation_change_is_observation_only(self):
+        path = self.root/'other_worktree_PROJECT_MAP.md'; path.write_text('CONCURRENT_DOC_UPDATE')
+        cfg = dict(files=[],accepted_diagnostics=dict(run_root=str(self.root/'old_run')))
+        rows = prepare.check_preservation([dict(path=str(path),sha256='0'*64)],cfg,self.root/'contract.json')
+        self.assertFalse(rows[0]['matches']); self.assertFalse(rows[0]['blocking'])
+
+    def test_actual_input_or_diagnostic_result_change_blocks(self):
+        input_path = self.root/'scientific_input'; input_path.write_text('CHANGED')
+        run = self.root/'old_run'; run.mkdir(); result = run/'result.json'; result.write_text('CHANGED')
+        cfg = dict(files=[dict(path=str(input_path))],accepted_diagnostics=dict(run_root=str(run)))
+        for path in (input_path,result):
+            with self.subTest(path=path.name):
+                with self.assertRaisesRegex(r.EvidenceError,'EXECUTION_BOUND_ORIGINAL_CHANGED'):
+                    prepare.check_preservation([dict(path=str(path),sha256='0'*64)],cfg,self.root/'contract.json')
 
 
 class Configuration(TemporaryEvidence):
