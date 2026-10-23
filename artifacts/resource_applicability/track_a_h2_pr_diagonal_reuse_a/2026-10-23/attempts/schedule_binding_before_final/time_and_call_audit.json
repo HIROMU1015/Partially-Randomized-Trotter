@@ -1,0 +1,101 @@
+{
+  "status": "VERIFIED_SINGLE_HALF_TIME_MAPPING",
+  "records": [
+    {
+      "root": "ACQUISITION",
+      "path": "scripts/h46_m5_native.py",
+      "file_sha256": "f0aa2c442e5fa8f09095a040cb5eaf365db711ff8082acacfc5bef9a3a5dc1df",
+      "function": "compose",
+      "function_sha256": "fedcf72bb103b1aaa1dea79dfe7d74ca61f2684d421044015ac69e2971773521",
+      "calls": [
+        {
+          "line": 55,
+          "call": "api.build_partial_native(blocks, num_system_qubits=n, T=s['signed_time'], q=1, scalar=0.0, controlled_tails=[tail], control_policy='symmetric_directional', max_instructions=cap)"
+        }
+      ]
+    },
+    {
+      "root": "PROVIDER",
+      "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py",
+      "file_sha256": "7b8b13483066bb39cc4aad1c36f6e5da6fbc679ecb8bae9c08a0b326648a36fd",
+      "function": "build_partial_native",
+      "function_sha256": "0afae083966e9fd38612ca35d806dddd057c68fa074a1c2cda487115e32103d9",
+      "calls": [
+        {
+          "line": 198,
+          "call": "_append_block(circuit, block, delta / 2, modes[0], n)"
+        },
+        {
+          "line": 202,
+          "call": "_append_block(circuit, block, delta / 2, modes[1], n)"
+        }
+      ]
+    },
+    {
+      "root": "PROVIDER",
+      "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py",
+      "file_sha256": "7b8b13483066bb39cc4aad1c36f6e5da6fbc679ecb8bae9c08a0b326648a36fd",
+      "function": "_append_block",
+      "function_sha256": "273a034e428402ad7d6eae0f5652a45f6d6b3897123ac42a1d38fe6d0a2a2a34",
+      "calls": [
+        {
+          "line": 115,
+          "call": "one_body_diagonal_primitives(np.asarray(block.diagonal_eigenvalues), time)"
+        },
+        {
+          "line": 117,
+          "call": "df_squared_diagonal_primitives(np.asarray(block.diagonal_eta), block.lam, time)"
+        },
+        {
+          "line": 121,
+          "call": "append_diagonal_primitives(circuit, primitives, controlled=mode == 'ORDINARY', ancilla_qubit=ancilla if mode == 'ORDINARY' else None)"
+        }
+      ]
+    },
+    {
+      "root": "PROVIDER",
+      "path": "src/trotterlib/df_trotter/ops.py",
+      "file_sha256": "3801eafca014b0df6533172582887e3b345f65833505409cdd375dcd11925689",
+      "function": "one_body_diagonal_primitives",
+      "function_sha256": "c9cd58151d64e0531894642ca15a58d6f000468b66eecb5e4ffce764657943f1",
+      "calls": []
+    },
+    {
+      "root": "PROVIDER",
+      "path": "src/trotterlib/df_trotter/ops.py",
+      "file_sha256": "3801eafca014b0df6533172582887e3b345f65833505409cdd375dcd11925689",
+      "function": "df_squared_diagonal_primitives",
+      "function_sha256": "e8194ae9f322fabbfa12351ecb9d4cbc863d83e72ca1c9a885c4dd8bf448a2e1",
+      "calls": []
+    }
+  ],
+  "time_table": [
+    {
+      "piece_time_hex": "-0x1.5ca78b1289ec1p-1",
+      "primitive_argument_hex": "-0x1.5ca78b1289ec1p-2",
+      "division_count": 1
+    },
+    {
+      "piece_time_hex": "0x1.14ba2befab5c7p-1",
+      "primitive_argument_hex": "0x1.14ba2befab5c7p-2",
+      "division_count": 1
+    },
+    {
+      "piece_time_hex": "0x1.999999999999ap-3",
+      "primitive_argument_hex": "0x1.999999999999ap-4",
+      "division_count": 1
+    }
+  ],
+  "clarification": "User explicitly corrected signed half-time label: listed hex values identify full pieces, primitive receives exactly piece/2. No scientific condition changed.",
+  "previous_DRAFT_half_time_label_incorrect": true,
+  "previous_artifacts_left_unchanged": true,
+  "primitive_functions_do_not_rehalve_time": true,
+  "new_wrapper_primitive_does_not_rehalve_time": true,
+  "call_budget_difference": {
+    "previous_unapproved_plan_primitive_evaluations": 6,
+    "proposed": 6,
+    "change": 0
+  },
+  "previous_execution_call_path": "compose -> build_partial_native(q=1,T=piece) -> _append_block(time=piece/2) -> original primitive(time)",
+  "prospective_call_path": "fixed plan primitive_argument_hex=piece/2 -> original primitive(argument); do not invoke _append_block or a circuit builder"
+}

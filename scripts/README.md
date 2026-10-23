@@ -1014,3 +1014,9 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 [契約・構造検証・runtime・保全](../docs/research/track_a_h2_pr_equivalence_contract_20261023.md)。基準588d19544…から代替契約を未採択の別schemaとして実装。科学回路A/費用測定Bを分離し、全134保存QPYのinverse/reuse/diagonal mirror/control/phase/wrapperを全instruction消費でVERIFIED。Aは11/12条件、Bは2/3条件が全軸成立。共通diagonal絶対角度の独立bindingとcross-runtime compiler費用同等性は未証明。strict/代替正式認定とも0/134・COMPARE BLOCKED。新48＋既存200＝人工248PASS、16,804保護path不変。新科学計算/実H2生成/compile/会計/grant/公開push0、未承認最小案とmandatory STOP。
 
 [未採択契約とmetadata preflight](h2_pr_equivalence_contract.py)、[保存stream cursor](h2_pr_stream_conformance.py)、[runtime静的調査](h2_pr_runtime_relevance.py)、[原本監査](audit_h2_pr_equivalence.py)、[人工48 tests](../tests/test_h2_pr_equivalence_contract.py)、[成果物](../artifacts/resource_applicability/track_a_h2_pr_equivalence_contract/2026-10-23/REPORT.md)。新contractの`--execute`は入力を読む前に拒否する。
+
+## 2026-10-23 H2 PR diagonal角度：既存実装再利用A
+
+[A2判定・時間対応・未実行契約・保全](../docs/research/track_a_h2_pr_diagonal_reuse_a_20261023.md)。A専用branchで既存SOURCE/保存receiptを限定再調査しA2と判定。既存prepare/primitive8科学fileは原封印SHA一致、同一H2の独立6receiptは未発見。134軸の保存parameter6群は一致するがQPY由来なので独立証拠とはせずAは未解決。ユーザー訂正により3値はpiece識別子、primitive引数は各1/2とし二重半減を拒否。既存関数を変更しないwrapper/dormant adapter/未実行exact6契約、人工284PASS、16,804保護path不変。新科学計算/primitive評価/compile/grant/push0、代替契約未採択・COMPARE BLOCKED、mandatory STOP。
+
+[receipt/独立性/人工call制御](h2_pr_diagonal_a.py)、[元関数へ委譲するdormant adapter](h2_pr_diagonal_a_backend.py)、[限定SOURCE/QPY監査](audit_h2_pr_diagonal_a.py)、[人工36 tests](../tests/test_h2_pr_diagonal_a.py)。実H2の入口は未承認状態では必ず拒否し、独立6receiptを確定するまでQPYはproducerへ渡さない。
