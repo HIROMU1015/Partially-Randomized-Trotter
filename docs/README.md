@@ -70,3 +70,8 @@
 個別文書に数値があっても、それだけで現在利用可能とは判断しない。
 再現可能性、失効、成果物の有無は[`../VALIDATION_STATUS.md`](../VALIDATION_STATUS.md)と
 [`../artifacts/validation_manifest.json`](../artifacts/validation_manifest.json)で確認する。
+
+
+## PR混在辞書 F1実行前準備
+
+[Phase 2D-F1-PRE](research/pr_algorithm_improvement_phase2d_f1_preparation_20261023/README.md)：保存B入力、専用環境、既存prototype adapter、case計画、承認境界。管理testのみ実行し、科学検証は未実行。既存の研究判断・validation結果を更新するものではない。

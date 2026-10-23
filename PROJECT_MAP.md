@@ -134,3 +134,8 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 
 新しい検証を追加するときは、可能な限り同じ語幹で
 `src/trotterlib/`、`scripts/`、`tests/`、`docs/`、`artifacts/`を対応させる。
+
+
+## PR混在辞書 F1の保存B入力adapter（準備のみ）
+
+[Phase 2D-F1-PRE](docs/research/pr_algorithm_improvement_phase2d_f1_preparation_20261023/README.md)に、専用環境、既存prototypeとの接続、runner／管理test／将来artifact path、実行承認境界をまとめた。科学的検証は未実行。既存SOURCE・入力・結果を保全した独立branchの技術準備である。

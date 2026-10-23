@@ -116,3 +116,8 @@ artifacts/<validation_name>/
 
 結果を研究上の証拠へ加える場合は、`VALIDATION_STATUS.md`、研究概要、研究ノート、
 `artifacts/validation_manifest.json`も更新する。
+
+
+## PR混在辞書 F1保存入力経路（準備のみ）
+
+`run_pr_dictionary_f1_saved.py` は旧 `run_pr_dictionary_f1.py` の認可gateを再利用する将来F1専用入口。新規の明示承認・固定packetが必要で、F1-PREでは実行しない。SOURCE、管理test、planned artifactは[準備記録](../docs/research/pr_algorithm_improvement_phase2d_f1_preparation_20261023/README.md)を参照。
