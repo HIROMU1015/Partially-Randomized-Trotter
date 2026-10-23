@@ -8,6 +8,7 @@ from types import SimpleNamespace
 import subprocess
 import sys
 import unittest
+from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'scripts'));sys.path.insert(0,str(ROOT/'tests'))
 import h2_pr_diagonal_a as p
 import h2_pr_diagonal_a_backend as dormant
@@ -42,7 +43,9 @@ class FixtureMixin:
         task=p.alternative.anchors()[0]['task']
         i=dict(task=task['id'],candidate=task['candidate']['id'],sample=task['sample'],axis='cosine',
                cohort='EXPLORATION',preparation=BINDING['preparation'])
-        return p.compare_saved_axis(packet or self.packet,self.plan,circuit or a,b,common or c,'cosine',.25,
+        # One-piece artificial circuit; fix its independent synthetic schedule.
+        with patch.object(p,'expected_piece_times',return_value=('0x1.999999999999ap-3',)):
+            return p.compare_saved_axis(packet or self.packet,self.plan,circuit or a,b,common or c,'cosine',.25,
                                     pieces or ['0x1.999999999999ap-3'],identity or i)
 
 
@@ -145,6 +148,18 @@ class CompareTests(FixtureMixin,unittest.TestCase):
             changed=dict(v);changed[key]=value
             with self.subTest(key=key):
                 with self.assertRaises(r.EvidenceError):self.compare(identity=changed)
+
+    def test_wrong_known_piece_time_is_not_interchangeable(self):
+        with self.assertRaisesRegex(r.EvidenceError,'SIGNED_SCHEDULE'):
+            self.compare(pieces=[p.TIMES[0][0]])
+
+    def test_fixed_original_S2_Y4_schedules(self):
+        anchors=p.alternative.anchors()
+        s2=next(x['task']['id'] for x in anchors if x['task']['candidate']['id']=='H2O32_c7ec590a32a859bc')
+        y4=next(x['task']['id'] for x in anchors if x['task']['candidate']['id']=='H2O32_8a2ecdd0294ffb74')
+        self.assertEqual(p.expected_piece_times(s2),('0x1.999999999999ap-3',)*4)
+        self.assertEqual(len(p.expected_piece_times(y4)),6)
+        self.assertEqual(set(p.expected_piece_times(y4)),{x[0] for x in p.TIMES[:2]})
 
     def test_unknown_time_refused(self):
         with self.assertRaises(r.EvidenceError):self.compare(pieces=[float(.3).hex()])

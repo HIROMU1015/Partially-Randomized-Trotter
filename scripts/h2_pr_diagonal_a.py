@@ -6,6 +6,7 @@ separate dormant adapter. QPY is read only after the independent stage finishes.
 """
 from copy import deepcopy
 import math
+from functools import lru_cache
 import h2_pr_identity_recovery as r
 import h2_pr_stream_conformance as stream
 import h2_pr_equivalence_contract as alternative
@@ -151,6 +152,14 @@ class IndependentCursor(stream.Cursor):
         return phase
 
 
+@lru_cache(maxsize=67)
+def expected_piece_times(task):
+    saved=r.loads(r.git_bytes(r.BASE,r.RECEIVED+'rte_schedule_metadata.json'))['tasks']
+    row=next((x for x in saved if x['task_id']==task),None)
+    require(row is not None,'ORIGINAL_SCHEDULE_TASK')
+    return tuple(float(x['saved']['signed_step_time']).hex() for x in row['pieces'])
+
+
 def compare_saved_axis(packet,plan,circuit,events,common,axis,scalar,piece_times,identity):
     lookup=validate_independent_receipt(packet,plan)
     require(set(identity)=={'task','candidate','sample','axis','cohort','preparation'},'AXIS_IDENTITY_SCHEMA')
@@ -160,6 +169,8 @@ def compare_saved_axis(packet,plan,circuit,events,common,axis,scalar,piece_times
     require(identity['cohort']=='EXPLORATION' and identity['candidate']==task['candidate']['id'] and
         type(identity['sample']) is int and identity['sample']==task['sample'] and identity['axis']==axis and
         axis in ('cosine','sine') and identity['preparation']==plan['binding']['preparation'],'ORIGINAL_AXIS_COHORT_PREPARATION')
+    require(type(piece_times) is list and tuple(piece_times)==expected_piece_times(identity['task']),
+            'ORIGINAL_SIGNED_SCHEDULE_IDENTITY')
     require(common['preparation_sha256']==plan['binding']['preparation'] and
             common['operations_sha256']==plan['binding']['common_operations'],'COMMON_PREPARATION_BINDING')
     # Existing full stream checks are unchanged; this pass adds independent values.
