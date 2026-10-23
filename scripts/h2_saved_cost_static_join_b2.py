@@ -82,15 +82,22 @@ def join_full(saved, expected, recovered, packet, archives, plan):
 
 def join_runtime_projection(closure, projection):
     r.require(len(closure) == len(projection) == 365, 'FULL_PLAN_CLOSURE_365')
-    logical = set()
+    logical = {}
     for i, (entry, expected) in enumerate(zip(closure, projection)):
         r.require(type(entry['index']) is int and entry['index'] == i, 'CLOSURE_ORDER')
         same({k:entry[k] for k in ('role','sha256','bytes')}, expected, 'CLOSURE_ROLE_SHA_BYTES')
         p = entry['logical_path']
         r.require(type(p) is str and p.startswith(('${PROVIDER}/', '${RUNTIME}/',
-                  '${SCIENCE_SOURCE}/', '${SEALED}/')) and '..' not in p.split('/') and
-                  p not in logical, 'CLOSURE_LOGICAL_PATH')
-        logical.add(p)
+                  '${SCIENCE_SOURCE}/', '${SEALED}/')) and '..' not in p.split('/'), 'CLOSURE_LOGICAL_PATH')
+        identity = (entry['role'], entry['sha256'], entry['bytes'])
+        r.require(p not in logical or logical[p] == identity, 'CONFLICTING_DUPLICATE_PATH')
+        logical[p] = identity
+        if entry['role'].startswith('SOURCE:'):
+            r.require(p == '${SCIENCE_SOURCE}/'+entry['role'][7:], 'SOURCE_ROLE_PATH')
+        elif p.startswith('${SEALED}/'):
+            r.require(p == '${SEALED}/'+str(i), 'SEALED_INDEX_PATH')
+        elif p.startswith('${RUNTIME}/'):
+            r.require(p.startswith('${RUNTIME}/'+str(i)+'/'), 'RUNTIME_INDEX_PATH')
         r.require(entry['historical_actual_load_proven'] is False, 'HISTORICAL_LOAD_PROMOTION')
     return dict(closure_entries=365, fixed_projection_join=True,
                 actual_absolute_path_map_recovered_GPU02=False,

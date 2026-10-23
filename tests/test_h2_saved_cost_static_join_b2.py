@@ -41,7 +41,7 @@ def fixture():
 
 def closure_fixture():
     p=[dict(role='SOURCE:artificial_'+str(i),sha256='1'*64,bytes=i) for i in range(365)]
-    c=[dict(index=i,logical_path='${SEALED}/'+str(i),historical_actual_load_proven=False,**e) for i,e in enumerate(p)]
+    c=[dict(index=i,logical_path='${SCIENCE_SOURCE}/artificial_'+str(i),historical_actual_load_proven=False,**e) for i,e in enumerate(p)]
     return c,p
 
 
@@ -77,6 +77,10 @@ class StaticJoinTests(unittest.TestCase):
         result=j.join_runtime_projection(*closure_fixture())
         self.assertFalse(result['historical_actual_load_complete'])
         self.assertFalse(result['actual_absolute_path_map_recovered_GPU02'])
+
+    def test_identical_declared_duplicate_paths_allowed(self):
+        c,p=closure_fixture();p[1]=deepcopy(p[0]);c[1]=dict(c[0],index=1)
+        self.assertEqual(j.join_runtime_projection(c,p)['closure_entries'],365)
 
     def test_no_science_import(self):
         self.assertFalse(any(n.split('.')[0] in ('numpy','qiskit','scipy','symengine','trotterlib','trottertracks') for n in sys.modules))
