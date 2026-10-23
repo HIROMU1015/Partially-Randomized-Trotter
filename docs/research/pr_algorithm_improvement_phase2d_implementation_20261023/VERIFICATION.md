@@ -23,3 +23,9 @@ SOURCE上のAPI接続はrte.pyのRTEComponent／make_rte_config／_make_event／
 公開後、remote HEAD、変更file集合、UTF-8 bytes／SHA256／Git blob、文書リンク、source dependency mapを再照合する。[PUBLICATION.json](PUBLICATION.json)は検証済みpayload commitを記録する。receipt自身の最終commit/hashを同じreceiptへ埋める自己参照はしない。最終HEADは別途API／Git fetchで確認する。
 
 新科学input、lambda/B/L、event／trajectory、matrix／state、quantum circuit、numerical result、科学grant／ledger／markerは0件。公開・照合後mandatory STOP。
+
+## 公開照合実績
+
+payload commit `ae72c74f8ae15360b51865a749879c6b87feba75` の26fileをGitHubから全件再取得し、内容・Git blobとローカルbytes／SHA256を照合した。独立Git fetchでも同じtreeを確認した。baseからは26件のA追加だけで、既存1,032fileは非変更。内訳はPython14、技術記録12。JSON3、固定資料33record、相対link26件、SOURCE signature／依存graphの管理検査はPASS。
+
+元workspaceのstatusとworktree registry、local branch headsはsnapshotと同一。remote-tracking refsとframework capture refsには作業中の変動を観測した。本作業は元workspaceでfetch／ref更新／reset／cleanを実行しておらず、観測した変動を巻き戻さない。private snapshot／ref名は公開しない。公開receipt更新後の最終HEADと26fileは別途再照合する。
