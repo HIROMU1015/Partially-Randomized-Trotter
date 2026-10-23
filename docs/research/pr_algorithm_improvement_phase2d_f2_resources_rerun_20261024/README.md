@@ -2,7 +2,9 @@
 
 ユーザーが旧停止後の原因修正・再実行と、意図しない技術的中断時の修正・新規実行を明示承認した。
 旧結果 `06ce7e5b1002de3cfaec6c17ea901f589c05f8f6` と旧SOURCE `9b1e103102f918bb157dea90c7eaf3acb5d88b6c`、raw／grant／marker／STOPは保全する。
-**このSOURCE固定時点は実行前**。修正版、新grant、新outputで全件を新規実行し、旧runをresumeしない。
+**修正版SOURCE `9468c70` で全登録検証と資源集計を完了した。**
+[実行結果・資源比較・費用・保全・STOP](EXECUTION_REPORT.md)を現在の結果とする。
+新grant・新outputで一回だけ全件新規実行し、実行中の追加中断や修正はなかった。旧runをresumeしていない。
 
 ## 原因と修正
 

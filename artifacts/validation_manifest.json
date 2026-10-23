@@ -2217,9 +2217,10 @@
     {
       "id": "pr_dictionary_phase2d_f2_resources_rerun_20261024",
       "status": "source_present_no_current_ci",
-      "summary": "Technical phase-preserving compiler integration repair; five artificial compiler/metadata regressions and four saved-circuit checks passed. User explicitly authorized repair and fresh execution; source fixation only, science run not started yet. Original numeric gates and per-shot resource-only scope retained.",
+      "summary": "Corrected resource-only F2 completed one fresh execution on SOURCE 9468c70. All 13,676 raw/compiled checks, 27,356 references, four corrected means and exact weighted per-shot aggregation passed unchanged gates without phase fitting. 13,006 unique transpiles, 670 aliases. No additional interruption. Per-shot metric order PP < SP < PS < SS; N/statistical qualification remains outside scope. Old failed run preserved; mandatory STOP.",
       "documentation": [
-        "docs/research/pr_algorithm_improvement_phase2d_f2_resources_rerun_20261024/README.md"
+        "docs/research/pr_algorithm_improvement_phase2d_f2_resources_rerun_20261024/README.md",
+        "docs/research/pr_algorithm_improvement_phase2d_f2_resources_rerun_20261024/EXECUTION_REPORT.md"
       ],
       "tests": [
         "tests/management/test_pr_dictionary_compile_phase.py"
@@ -2231,12 +2232,33 @@
         "new_compiler_regression_tests_passed": 3,
         "reused_metadata_proxy_tests_passed": 2,
         "saved_repair_cases_checked": 4,
-        "F2_resource_scientific_executions": 0
+        "F2_resource_scientific_executions": 1,
+        "raw_wrapper_checks": 13676,
+        "compiled_wrapper_checks": 13676,
+        "reference_precision_evaluations": 27356,
+        "finite_corrected_mean_checks": 4,
+        "resource_aggregations": 1,
+        "actual_unique_transpiles": 13006,
+        "compile_aliases": 670,
+        "failed_attempts": 0,
+        "new_grants": 1,
+        "consumed_grants": 1,
+        "certified_shot_evaluations": 0,
+        "quantum_shots_drawn": 0
       },
       "completion_criteria": [
-        "Freeze corrected SOURCE and fresh grant/input binding, execute the authorized resource-only inventory.",
-        "Preserve each attempt and issue a new grant only after a technical repair, never resume old one-shots.",
-        "Publish complete results or scientific-condition STOP; certified N and N-weighted costs remain outside scope."
+        "Mandatory STOP: User/GPT interprets this fixed-context actual per-shot comparison and the lambda/Btot tradeoff.",
+        "Keep gamma/statistical qualifications and certified N-weighted comparison unresolved/outside scope until separately adopted and justified.",
+        "Preserve old failures and all source/raw/grant/marker/STOP evidence; no automatic additional experiments or scientific review."
+      ],
+      "source_commit": "9468c7089727f5648d9f59cddbaebe0a42f5f0a0",
+      "artifacts": [
+        "artifacts/pr_algorithm_improvement_phase2d_f2_resources/2026-10-24-r1/RESULT_SUMMARY.json",
+        "artifacts/pr_algorithm_improvement_phase2d_f2_resources/2026-10-24-r1/RAW_CASE_RESOURCES.csv.gz",
+        "artifacts/pr_algorithm_improvement_phase2d_f2_resources/2026-10-24-r1/CASE_RESOURCES.csv.gz",
+        "artifacts/pr_algorithm_improvement_phase2d_f2_resources/2026-10-24-r1/F2_laws.json",
+        "artifacts/pr_algorithm_improvement_phase2d_f2_resources/2026-10-24-r1/common_reference.json",
+        "artifacts/pr_algorithm_improvement_phase2d_f2_resources/2026-10-24-r1/STOP.json"
       ]
     }
   ],

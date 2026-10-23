@@ -1,5 +1,13 @@
 # Validation status
 
+## 2026-10-24 corrected limited F2: all registered numerical checks PASS
+
+SOURCE `9468c70` and a fresh grant completed raw/compiled 13,676 cases, 27,356 reference evaluations, all four finite corrected means and exact weighted per-shot resource aggregation.
+Unique transpiles: 13,006, aliases: 670. Compiled operator max-entry 2.99943e-14; mean max-entry 5.10708e-15, within unchanged P0 gates, no phase fit.
+One corrected execution completed without additional interruption. Old failed run and STOP retained. Actual per-shot metric order: PP < SP < PS < SS for this fixed synthetic context/compiler.
+No certified N, N-weighted comparison, physical same-accuracy or general algorithm advantage claim.
+[Completed local results and mandatory STOP](docs/research/pr_algorithm_improvement_phase2d_f2_resources_rerun_20261024/EXECUTION_REPORT.md). This is committed local evidence, not CI or independent reproduction.
+
 ## 2026-10-24 limited F2: compiled operator gate FAIL, partial evidence preserved
 
 SOURCE `9b1e103` and a new one-shot grant completed 13,676 raw wrapper checks and 27,356 reference precision evaluations.
