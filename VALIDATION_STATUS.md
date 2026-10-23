@@ -1,3 +1,7 @@
+## 2026-10-24 H4：条件付きC/N/Gの限定保存値再解析完了
+
+[条件付き結果・限界](docs/non_df_h4_conditional_cng_results_20261024.md)、[数値・終了検証](artifacts/non_df_h4_conditional_cng_results/2026-10-24/verification.json)。 20/20条件のguard域が非空。SOURCE b1984dcde、人工16件PASS、100仮定scenario/200軸/40閾値/30領域・主比較10/514 paired priceをone-shot再解析。保存平均価格では独立rho許容域全体でPR/PF順位反転なし。実rhoと母平均tailは未確定、旧null/C-L/旧compiler/native状態を保全。今回native exit0・回収、mandatory STOP。 以下は各時点の履歴。
+
 ## 2026-10-23 H4 K静的調査・L production実装
 
 [K保証範囲・L実装](docs/non_df_h4_kl_production_20261023.md)、[148 testと無効契約](artifacts/non_df_h4_kl_production/2026-10-23/README.md)。SOURCE eb195bf2d、T/binding100＋L48＝148 PASS。固定128・148/148/11/324のkernel/one-shot制御・無効契約を封印。K全体保証とC/L overlapは未解決、実H4診断/科学grant/compile/受理/N_G0、技術STOP。以下は各時点の履歴。
