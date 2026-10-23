@@ -1,0 +1,15 @@
+# 固定SOURCEと環境のbinding
+
+科学SOURCE commitは `3de42d3a3efe9ebc74dde8a1d0e1f1bdbadd607c`。B-ENV文書の公開commitと、将来Bを実行するSOURCE checkoutのHEADを混同しない。将来のB SOURCE rootはユーザーが確認するこの固定HEADであり、B-ENV文書追加後のHEADを暗黙採用しない。
+
+正本[SOURCE_CLOSURE.json](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3de42d3a3efe9ebc74dde8a1d0e1f1bdbadd607c/docs/research/pr_algorithm_improvement_phase2d_binding_preparation_20261023/SOURCE_CLOSURE.json)の10fileを実bytesで再照合した。B package/runner4、I package/fixture/algebra/prototype/cases5、単独rte.py1。canonical file→SHA256 mapのdigestは **`4b4fbde323bce42a87e44b2aad5ac0504efbcfabac21ffb536da489466092e12`**。[SOURCE_ENVIRONMENT_BINDING.json](SOURCE_ENVIRONMENT_BINDING.json)に全path/hash、仕様・台帳・schema digestを記録する。
+
+Python3.11.9はSOURCEの>=3.11を満たし、最小外部依存NumPy1.26.4をcp311 wheelで導入した。科学SOURCEはread-onlyで、import／RTE API／sample／event／実係数の生成は行っていない。適合性は**静的要求＋環境ABI import smokeの範囲**。B実case内でのAPI不整合は将来のone-shot実行でSTOPする。
+
+B-PREのprivate aliasによる単独rte.py load方針を保持する。trotterlibの広いinitializerやIのinactive make_tail/configure、F1 runner/testへ到達する追加probeをしない。F1用SciPy/Qiskit/mpmath等はこの環境に入れず、B環境をF1環境の代用にしない。
+
+環境のpublic lock digestは `32e8201e50ca37b99e58a516ef8b0e85317dd03527a1fd7f3b34dab8cac27c00`、future Bの7field private environment.json digestは `b69f325f6df3a9c9af186e031919d39577608f5e3a12a215c25b8869388b0e3e`。full private receipt digestは `5645df7bcfbb624573024fb130973d67f8bbed47845553a1285aee1217c921d8`。互いに対象が異なる。これらは科学input hashではない。
+
+固定gateが要求する7field recordを実際の値で準備した。package_file_hashesはvenv内で解決するfileへ限定し、venvのinterpreter symlinkの実体はabsolute runtime hashで固定する。native_runtime_hashesには実mapped ELFに加え、base側stdlib／interpreterの保守的file inventoryを含める。base側pip/setuptoolsはB import path外のbootstrap資産であり、runtime distributionはNumPyだけ。
+
+old SOURCE、B-PRE schema、I/P0契約を修正する必要はなかった。gate自体はauthorizationが未発行なので起動していない。環境管理helperの再照合と、schema fields／SOURCE／spec identityの静的整合を確認した。
