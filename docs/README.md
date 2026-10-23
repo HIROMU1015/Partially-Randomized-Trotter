@@ -1231,3 +1231,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-24 H4 D1 saved-descriptor診断
 
 [新adapter・one-shot runner・人工検査・実行記録](non_df_h4_d1_execution_20261024.md)。元primitive／event／wrapper／compilerを再利用し、全full hashと旧価格のgate後に最大9費用compile。実行結果は専用報告へ。
+
+## 2026-10-24 H4 D1：Stage A fingerprint STOP
+
+[実行・保存・native終了](non_df_h4_d1_execution_20261024.md)。新SOURCE48d4d27a0、人工13 PASS。4fullの旧hashは3一致／Pauli-PRのみ不一致。費用compile0/9、Stage B/C・費用分解未到達。新engine＋4task exit0・回収、旧611file保全、mandatory STOP。

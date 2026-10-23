@@ -2501,3 +2501,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-24 H4：D1限定診断の契約準備
 
 [D1計画・非実行契約・人工14検査](docs/non_df_h4_d1_preparation_20261024.md)。4代表の旧hash／index0価格を固定、full4再現後だけ隔離4＋empty1へ進む設計。phase配分・非加法性・D2/D3判断を固定。production adapter／新seal／grant未作成、実H4 build／compile／新科学値集計／sampling／N_G0、mandatory STOP。
+
+## 2026-10-24 H4 D1：Stage A fingerprint STOP
+
+[実行・保存・native終了](docs/non_df_h4_d1_execution_20261024.md)。新SOURCE48d4d27a0、人工13 PASS。4fullの旧hashは3一致／Pauli-PRのみ不一致。費用compile0/9、Stage B/C・費用分解未到達。新engine＋4task exit0・回収、旧611file保全、mandatory STOP。

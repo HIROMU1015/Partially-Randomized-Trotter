@@ -1,3 +1,7 @@
+## 2026-10-24 H4：D1実行・Pauli-PR input hash不一致でStage A STOP
+
+[D1実行・停止結果](docs/non_df_h4_d1_execution_20261024.md)、[summary](artifacts/non_df_h4_d1_execution/2026-10-24/result_summary.json)。SOURCE48d4d27a0、人工8＋5 PASS、新grantで4fullを並列再構成。Pauli-PF／DF-PF／DF-PRの旧hash一致、Pauli-PR index0だけ不一致。全4一致gate未成立のため費用compile0/9・Stage B/C未実行、寄与率／非加法性未測定。Engine＋4task native exit0・回収、旧611 SHA保全。名前依存が候補だが旧preimage不足で単独原因と未確定。Rename／retry／D2/D3なし、mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-24 H4：D1限定診断の非実行契約準備
 
 [D1計画・再構成・phase・再現性](docs/non_df_h4_d1_preparation_20261024.md)、[最大9 compileの無効契約](artifacts/non_df_h4_d1_preparation/2026-10-24/contract_DRAFT.json)、[入力と人工14検査](artifacts/non_df_h4_d1_preparation/2026-10-24/preparation.json)。4caseの旧input fingerprintとindex0価格を固定。全fullのhash／価格一致後だけablationへ。自動gate名のhash依存を人工確認し、不一致の迂回なし。設計完了・production adapter／新seal／grant未作成。実H4 build/compile/再集計0、D2/D3別承認、mandatory STOP。以下は各時点の履歴。
