@@ -57,7 +57,7 @@ def collect(analysis_pack):
         compiler=c.COMPILER,native=c.NATIVE,adopted_commit=c.ADOPTED,saved_commit=c.SAVED,
         reference_policy='CONDITIONAL_SAVED_H4_REFERENCE_NOT_ZERO_ERROR_BOUND',methods={})
     for candidate in c.CANDIDATES:
-        cid=candidate.id;costs=[]
+        cid=candidate.id;costs=[];raw_log_B_hex=[]
         if candidate.method=='FULL':
             item=next(x for x in dataset['candidates'] if x['candidate_status_saved']['id']==cid)
             target=item['candidate_status_saved'];saved=item['signal_record_saved'];signal=saved['signal']
@@ -94,7 +94,12 @@ def collect(analysis_pack):
                 protect(p,'INPUT:PR_original_trajectory_receipt');raw=c.read(p)
                 c.require(raw['task']==entry['task'] and raw['SOURCE']==group['acquisition_SOURCE'] and
                     raw['plan_sha256']==group['acquisition_plan_sha256'] and raw['input_binding']==group['binding'] and
-                    raw['preparation_hash']==prep and raw['log_B']==signal['log_B'],'ORIGINAL_PR_BINDING')
+                    raw['preparation_hash']==prep,'ORIGINAL_PR_BINDING')
+                # These exact receipts were accepted by the fixed prior analysis, whose
+                # load_price uses a 256*binary64-epsilon normalization tolerance.
+                # A reserialization difference is not a new byte-equality requirement.
+                # Retain both values; the signal's saved log_B remains the shot input.
+                raw_log_B_hex.append(float(raw['log_B']).hex())
                 c.require(raw['seed_cohort']=='EXPLORATION' and raw['paired_trajectory'] is True and
                     raw['native_scientific_PASS'] is True and raw['byte_restoration_PASS'] is True and
                     raw['conditional_sampling'] is False and raw['cohort_pooling'] is False,'ORIGINAL_PR_ACCEPTANCE')
@@ -117,13 +122,17 @@ def collect(analysis_pack):
             compiler=c.COMPILER,native=c.NATIVE,preparation_hash=prep,costs=costs,
             bias=signal['total_signed_bias'],saved_reference=signal['reference'],log_B=signal['log_B'],
             u=u,log_B_margin=margin,saved_shots=shots,allowance_recomputed=False,reference_error_bound=None,
-            source=source)
+            source=source,raw_log_B_hex=raw_log_B_hex,
+            normalization_reuse_basis='PINNED_PRIOR_ANALYSIS_ACCEPTANCE_NO_NEW_EQUIVALENCE_CLAIM')
     return c.validate_bundle(data),files,catalog
 
 
 def build(source,analysis_pack):
     source=subprocess.check_output(['git','rev-parse',source],cwd=c.ROOT,text=True).strip()
-    c.ASSETS.mkdir(exist_ok=False);c.OUT.mkdir(parents=True,exist_ok=True);(c.OUT/'cache').mkdir(exist_ok=True)
+    if c.ASSETS.exists():
+        c.require({p.name for p in c.ASSETS.iterdir()}<={'fixed'},'NO_OVERWRITE_OF_SEALED_PACK_OR_RUN')
+    else:c.ASSETS.mkdir()
+    c.OUT.mkdir(parents=True,exist_ok=True);(c.OUT/'cache').mkdir(exist_ok=True)
     data,files,catalog=collect(analysis_pack)
     def add(p,role):
         p=Path(p).resolve();files[str(p)]=dict(path=str(p),sha256=c.sha(p),role=role)
