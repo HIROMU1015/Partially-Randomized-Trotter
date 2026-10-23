@@ -78,7 +78,7 @@ def compiled_wrapper(circuit, profile, *, cache=None, identity_context=None):
             raise ValueError('Compile cache requires full bound context')
         # Exact serialized full IR, including angles/global phase/register layout.
         # Remove descriptive metadata/name only. No angle-insensitive equivalence.
-        normalized=circuit.copy(); normalized.metadata=None; normalized.name='full_ir'
+        normalized=circuit.copy(); normalized.metadata={}; normalized.name='full_ir'
         stream=io.BytesIO(); qpy.dump(normalized,stream)
         cache_key=hashlib.sha256(stream.getvalue()+canonical_json(dict(
             profile=asdict(profile),identity_context=identity_context))).hexdigest()
