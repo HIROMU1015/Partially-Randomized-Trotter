@@ -1,3 +1,7 @@
+## 2026-10-23 H2保存PR/PF費用の静的結合 B-2
+
+[証拠範囲・未解決・STOP](research/track_a_h2_saved_cost_static_join_b2_20261023.md)。保存PR134軸・共通Full4軸を固定証拠へ結合。Python1/1・主要runtime8/8・binary21/21、provider relative path235/236一致。Full原本byteのGPU01確認とGPU02の直接確認を区別。Full全parameter stream/provider非干渉/過去load/A独立角度は未解決。人工133PASS、16,804保護file変化0。政策2a・代替契約未採択、COMPARE BLOCKED、新科学/compile/uNG/転送/push0、ローカルcommit後mandatory STOP。
+
 ## 2026-10-23 H2共通Full PF原本の限定回収
 
 [REPORT・SOURCE・SHA・handoff・保全・STOP](research/track_a_h2_common_pf_original_recovery_20261023.md)。GPU01で対象2候補4軸の原plan・実行入力・原result・QPY/archiveのbyteを固定結果と照合。12 archive/8静的QPY parse、宣言closure365 entry一致、固定GitHub13資料全文一致、保全2,141 file変化0。保存1655/2463 RZの別cost objectを保持。完全過去実loadと現在共通native全streamのbinding等は未認定。人工8PASS。科学call/compile/simulation/COMPARE/正式採択0、原本転送0、公開push0、local commit後mandatory STOP。

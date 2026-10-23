@@ -1,0 +1,45 @@
+{
+  "compiler_cost_correctness_algorithms_reimplemented": false,
+  "inherited": {
+    "PR_operation_stream": "scripts/h2_pr_stream_conformance.py",
+    "QPY_parser": "scripts/h2_pr_saved_qpy.py"
+  },
+  "new_code_reason": "Existing B and GPU01 auditors have separate output schemas/hosts; only fixed cross-host joins, provenance distinction and non-executable preflight added",
+  "reused": [
+    {
+      "functions": [
+        "Catalogue.verify_config",
+        "git_bytes",
+        "loads",
+        "file_digest",
+        "digest"
+      ],
+      "path": "scripts/h2_pr_identity_recovery.py"
+    },
+    {
+      "functions": [
+        "join_saved_cost",
+        "join_projection_seals",
+        "guard_receipt"
+      ],
+      "path": "scripts/h2_runtime_cost_reuse.py"
+    },
+    {
+      "functions": [
+        "identity",
+        "selected",
+        "safe_json",
+        "verify_gzip (artificial test only)"
+      ],
+      "path": "scripts/audit_h2_common_pf_originals.py"
+    },
+    {
+      "functions": [
+        "observe",
+        "watch_set (baseline)"
+      ],
+      "path": "scripts/audit_h2_pr_equivalence.py"
+    }
+  ],
+  "scientific_runners_invoked": false
+}
