@@ -1,6 +1,7 @@
 """New one-shot COMPARE control plane. Never import scientific packages here."""
 from dataclasses import asdict
 import hashlib
+import json
 from pathlib import Path
 import sys
 import h2_common_production_contract as old
@@ -36,7 +37,7 @@ def runtime_identity(runtime):
 
 def saved_anchors(candidate):
     base='artifacts/resource_applicability/track_a_pf_order_reversal_h2_metadata_receipt/2026-10-23/received/'
-    tasks=read(ROOT/base/'task_acceptance_67.json')['tasks']
+    tasks=json.loads(old.prior_blob(base+'task_acceptance_67.json'))['tasks']
     return [r for r in tasks if r['task']['candidate']['id']==candidate.id]
 
 
@@ -93,7 +94,7 @@ def validate_witness(path,candidate,cfg,plan):
                     a['historical_runtime_identity']==current[field],'HISTORICAL_ACTUAL_RUNTIME_REQUIRED')
     events=read(proof['events']);cohort=read(proof['cohort']);correctness=read(proof['correctness'])
     require(events['candidate']==candidate.id and len(events['tasks'])==len(anchors),'FULL_TASK_EVENT_BODIES')
-    schedules=read(ROOT/'artifacts/resource_applicability/track_a_pf_order_reversal_h2_metadata_receipt/2026-10-23/received/rte_schedule_metadata.json')
+    schedules=json.loads(old.prior_blob('artifacts/resource_applicability/track_a_pf_order_reversal_h2_metadata_receipt/2026-10-23/received/rte_schedule_metadata.json'))
     schedules={r['task_id']:r for r in schedules['tasks']}
     for body,anchor in zip(events['tasks'],anchors):
         saved=anchor['result']['saved'];pieces=schedules[anchor['task']['id']]['pieces']
@@ -130,7 +131,9 @@ def preflight(cfg):
     require(set(cfg)==required and cfg['schema']==SCHEMA and cfg['series']==SERIES and cfg['branch']==BRANCH,'NEW_COMPARE_CONTRACT_SCHEMA')
     require(policy.strict_equal(cfg['budget'],counts()),'EXACT_NEW_CALL_BUDGET')
     require(cfg['retry'] is False and cfg['mandatory_STOP'] is True,'NEW_COMPARE_STOP_NO_RETRY')
-    require(cfg['source_commit']!=accepted.ORIGIN_SOURCE and len(cfg['source_commit'])==40,'SEPARATE_COMPARE_SOURCE')
+    require(type(cfg['source_commit']) is str and cfg['source_commit']!=accepted.ORIGIN_SOURCE and
+            len(cfg['source_commit'])==40 and all(x in '0123456789abcdef' for x in cfg['source_commit']),
+            'SEPARATE_COMPARE_SOURCE')
     run=Path(cfg['run_root']);origin=Path(cfg['accepted_diagnostics']['run_root'])
     require(run.is_absolute() and str(run.resolve())==str(run) and not run.exists() and
             not run.is_relative_to(origin) and not origin.is_relative_to(run),'NEW_UNUSED_DISJOINT_RUN_ROOT')
@@ -163,7 +166,7 @@ def authorize(cfg,approval,grant):
             'INHERITED_FIXED_POLICIES_REQUIRED')
     result=preflight(cfg);require(result['execution_ready'],'PR_IDENTITY_BLOCKS_COMPARE')
     require(set(grant)=={'id','contract_sha256','approval_sha256','run_root','budget','state','retry'} and
-            grant['state']=='UNUSED' and grant['retry'] is False and bool(grant['id']) and
+            grant['state']=='UNUSED' and grant['retry'] is False and type(grant['id']) is str and bool(grant['id']) and
             grant['id']!=read(Path(cfg['accepted_diagnostics']['run_root'])/'CONSUMED.json')['grant']['id'],
             'NEW_UNUSED_COMPARE_GRANT_REQUIRED')
     require(grant['contract_sha256']==policy.digest(cfg) and grant['approval_sha256']==policy.digest(approval) and

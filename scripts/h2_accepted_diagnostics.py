@@ -40,6 +40,7 @@ def archive_metadata(path,columns):
                 header=ast.literal_eval(f.read(n).decode('utf-8' if version==(3,0) else 'latin1'))
                 require(set(header)=={'descr','fortran_order','shape'} and
                         header['descr']==dtype and header['fortran_order'] is False and
+                        type(header['shape']) is tuple and all(type(x) is int for x in header['shape']) and
                         header['shape']==shape,'NPZ_SHAPE_DTYPE_REPRESENTATION')
                 size=itemsize
                 for dim in shape:size*=dim
@@ -53,6 +54,7 @@ def archive_metadata(path,columns):
 
 
 def origin_source_check(cfg,roots):
+    require(set(roots)=={'runner','acquisition','provider'},'ORIGIN_SOURCE_ROLES')
     commits={'runner':ORIGIN_SOURCE,'acquisition':old.ACQUISITION,'provider':old.PROVIDER}
     sealed={r['path']:r['sha256'] for r in cfg['files']}
     for role,commit in commits.items():
@@ -82,9 +84,10 @@ def inspect_origin(ref,consumer=None):
             approval['contract_sha256']==ORIGIN_CONTRACT,'ORIGIN_GRANT_APPROVAL_MARKER')
     require(approval['policies_adopted']==[cfg[k] for k in ('native_policy','allowance_policy','reference_policy')],
             'ORIGIN_POLICY_ADOPTION')
-    require(cfg['candidates']==[old.asdict(x) for x in old.policy.CANDIDATES] and
-            cfg['physical']==old.policy.PHYSICAL and cfg['compiler']==old.policy.COMPILER and
-            cfg['binding']==old.BINDING,'ORIGIN_FIXED_SCIENCE')
+    require(old.policy.strict_equal(cfg['candidates'],[old.asdict(x) for x in old.policy.CANDIDATES]) and
+            old.policy.strict_equal(cfg['physical'],old.policy.PHYSICAL) and
+            old.policy.strict_equal(cfg['compiler'],old.policy.COMPILER) and
+            old.policy.strict_equal(cfg['binding'],old.BINDING),'ORIGIN_FIXED_SCIENCE')
     old.seal_check(cfg);origin_source_check(cfg,ref['source_roots'])
     if consumer is not None:
         for key in ('physical','compiler','binding','candidates','native_policy','allowance_policy','reference_policy','inputs'):
@@ -114,6 +117,9 @@ def inspect_origin(ref,consumer=None):
         require(row['reference_binding']['reference_id']==reference_id and
                 row['reference_binding']['reference_recomputed'] is False and
                 row['reference_binding']['reference_error_certified'] is False,'CONDITIONAL_REFERENCE_IDENTITY')
+        require(set(row['reference_binding'].get('bias',{}))=={'real','imag'},'REFERENCE_BIAS_SCHEMA')
+        for value in row['reference_binding']['bias'].values():old.policy.number(value,'saved_bias',nonnegative=False)
+        old.policy.number(row['log_B'],'saved_log_B')
         headers[cid]=archive_metadata(run/'results'/(cid+'_vectors.npz'),2 if pr else 1)
         records[cid]=row
     return dict(config=cfg,records=records,preparations=preparations,headers=headers,

@@ -74,6 +74,9 @@ def build(source):
         source_roots=dict(runner=str(ORIGIN_ROOT),acquisition=oldcfg['acquisition_root'],provider=oldcfg['provider_root']))
     plan=accepted.inspect_origin(ref)
     source_rows=[r for r in oldcfg['source_files'] if r['root']!='runner']
+    for role,commit in (('acquisition',c.old.ACQUISITION),('provider',c.old.PROVIDER)):
+        subset=[r for r in source_rows if r['root']==role]
+        for row,(blob,_) in zip(subset,b.git_batch(commit,[r['path'] for r in subset])):row['git_blob_sha1']=blob
     files={r['path']:r for r in oldcfg['files']}
     for path,(blob,raw) in zip(c.RUNNER_FILES,b.git_batch(source,c.RUNNER_FILES)):
         target=(ROOT/path).resolve();c.require(target.read_bytes()==raw,'COMMITTED_NEW_RUNNER_BYTES')

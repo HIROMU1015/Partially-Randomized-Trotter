@@ -10,6 +10,7 @@ import struct
 import subprocess
 import sys
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 import zipfile
@@ -98,7 +99,8 @@ class Fixture(unittest.TestCase):
                 signal_columns=['corrected','raw'] if pr else ['corrected'],
                 primary_signals=[dict(real=.4,imag=.5)]*(2 if pr else 1),
                 independent_signals=[dict(real=.4,imag=.5)]*(2 if pr else 1),
-                reference_binding=dict(reference_id=refid,reference_recomputed=False,reference_error_certified=False),log_B=0.,schedule=[],scalar=.1)
+                reference_binding=dict(reference_id=refid,reference_recomputed=False,reference_error_certified=False,
+                    bias={'real':.01,'imag':.02}),log_B=0.,schedule=[],scalar=.1)
             write(run/'results'/(cid+'_diagnostics.json'),row)
         ref=dict(contract=str(contract),run_root=str(run),completion_sha256='',approval=str(self.root/'approval.json'),
             grant=str(self.root/'old_grant.json'),source_roots={k:str(self.root/'ARTIFICIAL_SOURCE') for k in ('runner','acquisition','provider')})
@@ -125,6 +127,10 @@ class OriginTests(Fixture):
 
     def test_npz_or_json_byte_change_rejected(self):
         cfg,ref=self.origin();p=next((Path(ref['run_root'])/'results').glob('*vectors.npz'));p.write_bytes(b'TAMPERED')
+        with self.assertRaisesRegex(c.Stop,'RESULT_HASH'):a.inspect_origin(ref)
+
+    def test_diagnostic_json_byte_change_rejected(self):
+        cfg,ref=self.origin();p=next((Path(ref['run_root'])/'results').glob('*diagnostics.json'));p.write_text(p.read_text()+' ')
         with self.assertRaisesRegex(c.Stop,'RESULT_HASH'):a.inspect_origin(ref)
 
     def test_candidate_prefix_preparation_mismatch(self):
@@ -225,10 +231,42 @@ class ControlTests(Fixture):
         row=b.read(Path(cfg['run_root'])/'completion.json');self.assertEqual(row['used'],c.counts())
         for key in ('diagnose','path_signal','reference_rebind','request_factory','rte_event'):self.assertEqual(row['used'][key],0)
 
+    def test_gated_bundle_loader_restores_inputs_using_fake_decoder(self):
+        cfg,approval,grant=self.runnable();origin=old.read(cfg['accepted_diagnostics']['contract'])
+        for key in ('physical','compiler','binding','candidates','inputs','runtime'):cfg[key]=origin[key]
+        approval['contract_sha256']=b.digest(cfg);grant['contract_sha256']=b.digest(cfg);grant['approval_sha256']=b.digest(approval)
+        class Vector:
+            def copy(self):return self
+        class Z(dict):
+            def __enter__(self):return self
+            def __exit__(self,*args):pass
+        class FakeNP:
+            @staticmethod
+            def load(*args,**kwargs):
+                return Z(primary=Vector(),independent=Vector(),occupation_basis=(3,5,6,9,10,12),qindices=(12,10,6,9,5,3))
+            array_equal=staticmethod(lambda a,b:a==b)
+            isfinite=staticmethod(lambda a:SimpleNamespace(all=lambda:True))
+        class Loader(MockBackend):
+            def __init__(self,s):
+                super().__init__(s);self.np=FakeNP();self.preps={};self.operations={}
+                self.ctx=SimpleNamespace(oracle=SimpleNamespace(basis=(3,5,6,9,10,12),qindices=(12,10,6,9,5,3)))
+            def prepare(self,prefix):
+                p=Path(self.s.cfg['accepted_diagnostics']['run_root'])/'results'/('preparation_'+str(prefix)+'.json');row=b.read(p)
+                self.preps[prefix]=SimpleNamespace(preparation_hash=row['preparation_sha256']);self.operations[prefix]=row['operations_sha256']
+            def load_diagnostics(self):return a.load_for_backend(self)
+        c.execute(cfg,approval,grant,backend_factory=Loader)
+        reuse=b.read(Path(cfg['run_root'])/'results/accepted_diagnostics_reuse.json')
+        self.assertFalse(reuse['path_recomputed']);self.assertFalse(reuse['reference_rebound'])
+        self.assertEqual(b.read(Path(cfg['run_root'])/'completion.json')['used'],c.counts())
+
     def test_old_consumed_grant_id_cannot_authorize_new_execution(self):
         cfg,approval,grant=self.runnable();grant['id']='ARTIFICIAL_OLD_GRANT'
         with self.assertRaisesRegex(c.Stop,'NEW_UNUSED_COMPARE_GRANT'):c.execute(cfg,approval,grant,backend_factory=MockBackend)
         self.assertFalse(Path(cfg['run_root']).exists())
+
+    def test_boolean_grant_id_rejected(self):
+        cfg,approval,grant=self.runnable();grant['id']=True
+        with self.assertRaisesRegex(c.Stop,'NEW_UNUSED_COMPARE_GRANT'):c.execute(cfg,approval,grant,backend_factory=MockBackend)
 
     def test_new_grant_reuse_and_existing_root_refused(self):
         cfg,approval,grant=self.runnable();c.execute(cfg,approval,grant,backend_factory=MockBackend)
