@@ -1,3 +1,7 @@
+## 2026-10-23 H4 C修正版の固定40軸実行
+
+[新grant・保存結果・native監査](non_df_h4_c_reference_evidence_20261023.md)。封印済み修正版を使う新しい数値証拠候補の実行。旧結果・旧N/G未確定・元native欠落を保全する。以下は履歴。
+
 ## 2026-10-23 H4 C reference修正
 
 [修正・検証・残る制約](non_df_h4_c_reference_fix_20261023.md)。一般状態の人工回帰を追加し、新SOURCE/runtime sealと無効契約を保存。実H4再実行・新grant・N/G会計・push0、mandatory STOP。以下は履歴。

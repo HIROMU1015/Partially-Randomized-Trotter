@@ -1,3 +1,7 @@
+## H4 C修正版の実行来歴（2026-10-23）
+
+[固定40軸の数値証拠候補・監査](../../docs/non_df_h4_c_reference_evidence_20261023.md)。実装SOURCE e80d75108を封印pathで使い、結果用worktreeに保存する。科学コードの変更0、正式certificate受理とN/G会計は別段階。以下は履歴。
+
 ## H4 C reference修正（2026-10-23）
 
 `h4_ball_evidence.py` のreferenceをψ†Uψへ修正し、signal列vector shape gateを追加。`tests/test_h4_ball_evidence.py` で一般状態の解析式と照合。[修正・検証](../../docs/non_df_h4_c_reference_fix_20261023.md)・[技術証拠](../../artifacts/non_df_h4_c_reference_fix/2026-10-23/README.md)。旧SOURCE/実行証拠は保全、実H4再実行0・mandatory STOP。以下は履歴。

@@ -1,3 +1,7 @@
+## 2026-10-23 H4 C修正版の固定40軸実行
+
+[当日記録](2026-10-23_H4_C_reference_evidence.md)：新SOURCE・新grantによる一回の数値証拠候補生成。旧SOURCE/失敗run・N/G未確定・元native欠落は保全。
+
 ## 2026-10-23 H4 C reference修正
 
 [当日追記](2026-10-23_H4_C_reference_fix.md)：ψ†Uψ修正、一般状態の人工回帰、新SOURCE/無効契約、旧失敗run保全。実H4再実行0、mandatory STOP。

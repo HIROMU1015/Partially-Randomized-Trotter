@@ -1,3 +1,7 @@
+## 2026-10-23 H4 C修正版：新grantでの固定40軸実行
+
+[実行・結果・監査](docs/non_df_h4_c_reference_evidence_20261023.md)、[証拠入口](artifacts/non_df_h4_c_reference_evidence/2026-10-23/README.md)。修正SOURCE e80d75108の新しいone-shot実行。正式certificate受理・N/G会計・旧runのnative欠落は別の証拠問題として扱う。以下は各時点の履歴。
+
 ## 2026-10-23 H4 C reference修正・技術STOP
 
 [修正・人工回帰・新SOURCE](docs/non_df_h4_c_reference_fix_20261023.md)、[技術証拠](artifacts/non_df_h4_c_reference_fix/2026-10-23/README.md)。referenceをψ†Uψへ修正。人工124・backend13・接続4 model・無効CLI5件PASS。実H4再実行/新grant/再会計/push0、旧SOURCE/失敗run/旧N/G/native欠落を保全。以下は各時点の履歴。
