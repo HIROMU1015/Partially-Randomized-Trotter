@@ -23,3 +23,15 @@ branch：`research/pr-algorithm-improvement-phase2d-f1-preparation-20261023`。
 private handoffには独立clone、F1 venv、wheelhouse、lock、ID plan、環境file identity、B原本参照、原workspace保全snapshotを保存した。非公開raw、ユーザー承認原文、grant／marker、内部absolute pathはGitHubに載せない。
 
 今回は研究runner・旧科学20test・追加science adapterを実行していない。通常import／signature／stdlib管理testを科学的PASSとして使わない。公開・照合後は **MANDATORY_STOP_AFTER_F1_PREPARATION**。
+
+
+## 公開照合の記録
+
+公開payload commitは `6bab309b692cb73925f5966d7ad991495db22a19`、treeは `d3226efae9f623f866eb7538966e2ce7669ccc96`。
+[固定payload](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/6bab309b692cb73925f5966d7ad991495db22a19/docs/research/pr_algorithm_improvement_phase2d_f1_preparation_20261023)の13fileすべてをGitHubから読み戻し、内容とGit blobを照合した。独立cloneへgit fetchし、bytes／SHA256／treeも一致した。
+
+旧基点1,110fileのうち1,106fileは同一、4つの索引は旧本文をbyte-identicalなprefixとして追記のみ。旧prototype／runner／20test、B入力・結果を変更していない。B raw40fileとB環境receiptの4,396fileを照合した。元のdirty/untracked 852fileとworktree一覧・既存refsを保持した。作業中にユーザーが追加した正式共通指示もそのまま保持した。元repoでは他のremote-tracking ref 2件の追加を観測したが、本作業は独立cloneで行い、それらに書き込んでいない。
+
+通常import11package・API signature・依存整合・AST96file・管理test2件はPASS。F1科学検証、研究回路build／compile、actual event／trajectory生成、科学grant発行／消費は0件。これらはローカルの技術確認であり、immutable CIや外部の独立科学再現ではない。
+
+本記録を追加するreceipt commitはhandoff.mdだけを更新する。SOURCE／入力hash／lock／case ID planはpayloadと同一。最終receiptのcommitと全13fileのremote照合は外部の最終報告／private receiptへ固定し、自己hashを再帰的に埋め込まない。**MANDATORY_STOP_AFTER_F1_PREPARATION**。
