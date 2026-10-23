@@ -63,7 +63,7 @@ def _attempt(stage,identifier,function):
 class Worker:
     def __init__(self,payload):
         from .circuits import BasisProvider
-        self.__dict__.update(payload);self.contexts={};self.references={};self.taus={}
+        self.__dict__.update(payload);self.contexts={};self.references={};self.taus={};self.event_references={}
         self.provider=BasisProvider(self.spec.modes,self.frames)
 
     def reference_state(self,digits):
@@ -88,7 +88,10 @@ class Worker:
         by_id={a.atom_id:a for a in self.atoms[arm]}
         step=ctx.eye(16)
         for k in (i,j):
-            step=ref.event_operator(ctx,self.events[arm][k],by_id,frames,self.taus[key])*step
+            event_key=(arm,k,digits)
+            if event_key not in self.event_references:
+                self.event_references[event_key]=ref.event_operator(ctx,self.events[arm][k],by_id,frames,self.taus[key])
+            step=self.event_references[event_key]*step
         u=ctx.exp(-ctx.j*ref.exact(ctx,self.spec.scalar)*ref.exact(ctx,'1/5'))*half*step*half
         return ctx,u
 
@@ -219,15 +222,17 @@ def aggregate_metrics(records,weights):
     return result
 
 
-def execute_f2(verified):
-    """Called by the runner only after verified, atomically consumed F2 approval."""
+def measure_f2_circuits(verified):
+    """Shared circuit/reference measurements after an appropriate one-shot grant.
+
+    This function issues no N, score or statistical qualification. The original
+    F2 entry retains its own qualified preflight and statistical continuation.
+    """
     import numpy as np
     from .fixture import specification_from_record,EvolutionContext
     from .execution import _atom
     from .prototype import make_tail,ordered_event
     from . import reference as ref,gates
-    from .f2_statistics import qualified_shots
-    from .pricing import ScoreInterval,select_dictionary,exhaustive_four
     from trotterlib.rte import finite_rte_distribution
     c=verified['contract'];out=verified['output'];check_source(verified)
     for name in ('attempts','build','compiled'): (out/name).mkdir()
@@ -306,6 +311,25 @@ def execute_f2(verified):
     timings['four_actual_block_means']=time.monotonic()-tick
     write_json(out/'mean_checks.json',means)
     tick=time.monotonic();phis=aggregate_metrics(compiled,weights)
+    timings['resource_aggregation']=time.monotonic()-tick
+    check_source(verified)
+    return dict(phis=phis,ranges=ranges,built=built,compiled=compiled,groups=groups,
+        means=means,timings=timings,start=start,cpu=cpu,children=children)
+
+
+def execute_f2(verified):
+    """Original statistically qualified route; resource grants cannot enter it."""
+    if verified['contract'].get('comparison')!='FINITE_TARGET_ONLY':
+        raise PermissionError('Original F2 qualified comparison required')
+    from .f2_statistics import qualified_shots,require_adopted_statistics
+    from .pricing import ScoreInterval,select_dictionary,exhaustive_four
+    c=verified['contract'];out=verified['output']
+    require_adopted_statistics(c['statistics'])
+    measured=measure_f2_circuits(verified)
+    phis=measured['phis'];ranges=measured['ranges'];built=measured['built']
+    compiled=measured['compiled'];groups=measured['groups'];timings=measured['timings']
+    start=measured['start'];cpu=measured['cpu'];children=measured['children']
+    tick=time.monotonic()
     shots={a:qualified_shots(ranges[a],c['statistics']) for a in ARMS}
     costs={a:{metric:shots[a]['N_X']*phis[a]['X'][metric]+shots[a]['N_Y']*phis[a]['Y'][metric]
         for metric in ('rz_count','cx_count')} for a in ARMS}
