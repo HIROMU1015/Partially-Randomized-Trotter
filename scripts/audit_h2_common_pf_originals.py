@@ -114,8 +114,11 @@ def run(args):
     def observe():
         return {p: dict(sha256=r.file_digest(p), bytes=Path(p).stat().st_size) for p in sorted(watched)}
     before = observe()
-    r.require(not (private/'preservation_before_PRIVATE.json').exists(), 'NEW_PRIVATE_AUDIT_ONLY')
-    (private/'preservation_before_PRIVATE.json').write_text(json.dumps(before, sort_keys=True, indent=2)+'\n')
+    first_observation=private/'preservation_before_PRIVATE.json'
+    if first_observation.exists():
+        r.require(r.loads(first_observation.read_bytes())==before, 'PRESERVATION_SINCE_FIRST_STATIC_ATTEMPT')
+    else:
+        first_observation.write_text(json.dumps(before, sort_keys=True, indent=2)+'\n')
     records = []
     def original_record(path, token, role, expected=None, origin=None):
         raw = path.read_bytes(); ident = identity(raw)
@@ -164,7 +167,7 @@ def run(args):
     refs = [(SCIENCE, 'scripts/pf_common_run_native.py', ('install','restore','cost_one')),
             (SCIENCE, 'scripts/h2_m5_compiler_phase_guard.py', ('transpile','scalar_guard')),
             (SCIENCE, 'scripts/pf_common_run_contract.py', ('verify',)),
-            (SCIENCE, 'scripts/audit_pf_common_run.py', ('audit',))]
+            (PF, 'scripts/audit_pf_common_run.py', ('audit',))]
     for ref, path, names in refs:
         raw = git(ref,path); tree = ast.parse(raw)
         for name in names:
