@@ -990,3 +990,7 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## 2026-10-23 H2 DIAGNOSTICS実行binding準備
 
 `h2_diagnostics_binding.py --source-commit <固定commit>` はGit/AST/ELF/hash封印と科学importなしのpreflight専用。`launch_h2_diagnostics_binding.py` は選択Pythonの-I/-S/-Bを必須にする隔離入口で、executeには別の外部明示承認・新grantを要する。受入診断のmetadata検査は科学vectorをdecodeせず、既存COMPAREのcallを変更しない。[実契約・98人工テスト・不足条件](../docs/research/track_a_h2_diagnostics_binding_20261023.md)。
+
+## 2026-10-23 H2 DIAGNOSTICS run01実行完了
+
+固定SOURCEの隔離launcherを外部承認・新grantで一度実行し、4候補DIAGNOSTICSが正常終了。[結果・exact消費・受入監査](../docs/research/track_a_h2_diagnostics_run01_20261023.md)。新しいcollect_execution_receipt.pyは完了済みfile/metadata/hashの回収専用で、科学kernelを再実行しない。比較loaderは未実装、旧mock拒否と既存予算は不変。

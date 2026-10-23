@@ -1,0 +1,583 @@
+{
+  "status": "COMPLETED_DIAGNOSTICS_VALUES_COPIED_ONLY",
+  "physical": {
+    "system": "linear_H2_1Angstrom",
+    "basis": "STO-3G",
+    "rank": 3,
+    "rank_policy": "tol_only_1e-8",
+    "T": 0.8,
+    "epsilon": 0.0005,
+    "alpha_axis": 0.025,
+    "P": 0,
+    "n_qubits": 4,
+    "ancilla": 4,
+    "control": "symmetric_directional",
+    "bias_mode": "USUAL_SIGNED"
+  },
+  "compiler": {
+    "qiskit": "1.3.0",
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "backend": null,
+    "coupling_map": null,
+    "layout": null,
+    "routing": null,
+    "num_processes": 1,
+    "phase_policy": "H2_QISKIT130_SYMBOLIC_ZERO_SCALAR_GUARD_V1"
+  },
+  "binding": {
+    "snapshot": "62c6481bd1f8b05ec3b399b3a5293873796737866409049d808e8fe432dcacaa",
+    "hamiltonian": "d0bc260db6fc0a485fe518050075c18ccc0dff532253dcc719a52a61f41afa80",
+    "state": "080b7ad2a46f38ed51e2989eb399ceda4cae95fca688722959ee65463cf174bf"
+  },
+  "source_commit": "35444654f9159a5d85debdbc577feab0590e2610",
+  "contract_sha256": "f71e52ce6f42cc17d1a97f0cbdfac311da57c80b49ee8ea69ebe34fb4d45bfd9",
+  "candidates": [
+    {
+      "candidate": {
+        "id": "B1_p3_q4_2nd",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 3,
+        "q": 4,
+        "K": null,
+        "r_policy": null,
+        "r_value": null
+      },
+      "primary_signals": [
+        {
+          "real": 0.6365218955025442,
+          "imag": 0.7712585536066026
+        }
+      ],
+      "independent_signals": [
+        {
+          "real": 0.636521895502547,
+          "imag": 0.7712585536066058
+        }
+      ],
+      "signal_columns": [
+        "corrected"
+      ],
+      "log_B": 0,
+      "schedule": [
+        {
+          "outer": 0,
+          "piece": 0,
+          "signed_time": 0.2,
+          "rte_steps": 1
+        },
+        {
+          "outer": 1,
+          "piece": 0,
+          "signed_time": 0.2,
+          "rte_steps": 1
+        },
+        {
+          "outer": 2,
+          "piece": 0,
+          "signed_time": 0.2,
+          "rte_steps": 1
+        },
+        {
+          "outer": 3,
+          "piece": 0,
+          "signed_time": 0.2,
+          "rte_steps": 1
+        }
+      ],
+      "path_signal_errors": [
+        {
+          "value": 4.25086404278222e-15,
+          "unit": "CORRECTED_SIGNAL",
+          "scope": "PRIMARY_VS_INDEPENDENT_SIGNAL",
+          "evidence": "results/B1_p3_q4_2nd_diagnostics.json"
+        }
+      ],
+      "path_vector_errors": [
+        {
+          "value": 5.0842372423983806e-15,
+          "unit": "CORRECTED_STATE_VECTOR",
+          "scope": "PRIMARY_VS_INDEPENDENT_VECTOR",
+          "evidence": "results/B1_p3_q4_2nd_diagnostics.json"
+        }
+      ],
+      "corrected_signal_closure": {
+        "value": 0.0,
+        "unit": "CORRECTED_SIGNAL",
+        "scope": "B_RAW_MINUS_CORRECTED_SIGNAL",
+        "evidence": "results/B1_p3_q4_2nd_diagnostics.json"
+      },
+      "log_B_difference": {
+        "value": 0.0,
+        "unit": "LOG_NORMALIZATION",
+        "scope": "TWO_PATH_LOG_B_DIFFERENCE",
+        "evidence": "results/B1_p3_q4_2nd_diagnostics.json"
+      },
+      "maximum_norm": {
+        "value": 1.0000000000000007,
+        "unit": "CORRECTED_STATE_VECTOR",
+        "scope": "BOTH_PATHS_ALL_REQUIRED_STAGES",
+        "evidence": "results/B1_p3_q4_2nd_diagnostics.json"
+      },
+      "work_primary": {
+        "deterministic": 32,
+        "tail": 0
+      },
+      "work_independent": {
+        "deterministic": 32,
+        "tail": 0
+      },
+      "reference_binding": {
+        "reference_id": "OLD_FP:5b86f4d65130bc5566b60dd0be8a7d632237904bdb0f0519e86a3725b2a43946",
+        "reference_error": 2.0973428995247362e-16,
+        "bias": {
+          "real": 8.030438815997964e-05,
+          "imag": -6.634622471402007e-05
+        },
+        "definition": "ordinary_signed_corrected_minus_saved_full_H_reference",
+        "reference_recomputed": false,
+        "reference_error_certified": false
+      },
+      "preparation_sha256": "98c1beb120c22077b409550a4d61c31638b9a52637246fae4cb1ac55a776f1d9",
+      "operations_sha256": "4a60ed34ef2e81a88cf5b1ab0672141970a331b509bc902cbe1b111fc233e5a0",
+      "vector_archive": {
+        "path": "B1_p3_q4_2nd_vectors.npz",
+        "sha256": "68d517306cee46464aab66f3329c3e25478a321ed1fc4fe31d56614444833e63"
+      },
+      "scalar": 0.52917721092,
+      "scalar_applications": 1,
+      "strict_diagnostic_limit": 1e-09,
+      "phase_alignment": false,
+      "postcompile_correction": false
+    },
+    {
+      "candidate": {
+        "id": "B1_p3_q2_4th",
+        "method": "FULL",
+        "formula": "4th",
+        "prefix": 3,
+        "q": 2,
+        "K": null,
+        "r_policy": null,
+        "r_value": null
+      },
+      "primary_signals": [
+        {
+          "real": 0.6364259629855911,
+          "imag": 0.7713377946979874
+        }
+      ],
+      "independent_signals": [
+        {
+          "real": 0.6364259629855948,
+          "imag": 0.7713377946979915
+        }
+      ],
+      "signal_columns": [
+        "corrected"
+      ],
+      "log_B": 0,
+      "schedule": [
+        {
+          "outer": 0,
+          "piece": 0,
+          "signed_time": 0.5404828767838631,
+          "rte_steps": 1
+        },
+        {
+          "outer": 0,
+          "piece": 1,
+          "signed_time": -0.6809657535677262,
+          "rte_steps": 1
+        },
+        {
+          "outer": 0,
+          "piece": 2,
+          "signed_time": 0.5404828767838631,
+          "rte_steps": 1
+        },
+        {
+          "outer": 1,
+          "piece": 0,
+          "signed_time": 0.5404828767838631,
+          "rte_steps": 1
+        },
+        {
+          "outer": 1,
+          "piece": 1,
+          "signed_time": -0.6809657535677262,
+          "rte_steps": 1
+        },
+        {
+          "outer": 1,
+          "piece": 2,
+          "signed_time": 0.5404828767838631,
+          "rte_steps": 1
+        }
+      ],
+      "path_signal_errors": [
+        {
+          "value": 5.578801654593729e-15,
+          "unit": "CORRECTED_SIGNAL",
+          "scope": "PRIMARY_VS_INDEPENDENT_SIGNAL",
+          "evidence": "results/B1_p3_q2_4th_diagnostics.json"
+        }
+      ],
+      "path_vector_errors": [
+        {
+          "value": 6.8603671893258265e-15,
+          "unit": "CORRECTED_STATE_VECTOR",
+          "scope": "PRIMARY_VS_INDEPENDENT_VECTOR",
+          "evidence": "results/B1_p3_q2_4th_diagnostics.json"
+        }
+      ],
+      "corrected_signal_closure": {
+        "value": 0.0,
+        "unit": "CORRECTED_SIGNAL",
+        "scope": "B_RAW_MINUS_CORRECTED_SIGNAL",
+        "evidence": "results/B1_p3_q2_4th_diagnostics.json"
+      },
+      "log_B_difference": {
+        "value": 0.0,
+        "unit": "LOG_NORMALIZATION",
+        "scope": "TWO_PATH_LOG_B_DIFFERENCE",
+        "evidence": "results/B1_p3_q2_4th_diagnostics.json"
+      },
+      "maximum_norm": {
+        "value": 1.0,
+        "unit": "CORRECTED_STATE_VECTOR",
+        "scope": "BOTH_PATHS_ALL_REQUIRED_STAGES",
+        "evidence": "results/B1_p3_q2_4th_diagnostics.json"
+      },
+      "work_primary": {
+        "deterministic": 48,
+        "tail": 0
+      },
+      "work_independent": {
+        "deterministic": 48,
+        "tail": 0
+      },
+      "reference_binding": {
+        "reference_id": "OLD_FP:5b86f4d65130bc5566b60dd0be8a7d632237904bdb0f0519e86a3725b2a43946",
+        "reference_error": 2.0973428995247362e-16,
+        "bias": {
+          "real": -1.562812879318809e-05,
+          "imag": 1.2894866670776217e-05
+        },
+        "definition": "ordinary_signed_corrected_minus_saved_full_H_reference",
+        "reference_recomputed": false,
+        "reference_error_certified": false
+      },
+      "preparation_sha256": "98c1beb120c22077b409550a4d61c31638b9a52637246fae4cb1ac55a776f1d9",
+      "operations_sha256": "4a60ed34ef2e81a88cf5b1ab0672141970a331b509bc902cbe1b111fc233e5a0",
+      "vector_archive": {
+        "path": "B1_p3_q2_4th_vectors.npz",
+        "sha256": "a537e4c9acb37a47a5ff0d3159f0c18a2fb212d6949b890fe7d2a6515849b075"
+      },
+      "scalar": 0.52917721092,
+      "scalar_applications": 1,
+      "strict_diagnostic_limit": 1e-09,
+      "phase_alignment": false,
+      "postcompile_correction": false
+    },
+    {
+      "candidate": {
+        "id": "H2O32_c7ec590a32a859bc",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "q": 4,
+        "K": 4,
+        "r_policy": "ABS_TIME_PER_OUTER",
+        "r_value": 32
+      },
+      "primary_signals": [
+        {
+          "real": 0.6365218380469898,
+          "imag": 0.7712586010365317
+        },
+        {
+          "real": 0.6362180668472198,
+          "imag": 0.7708905285894194
+        }
+      ],
+      "independent_signals": [
+        {
+          "real": 0.6365218380469889,
+          "imag": 0.7712586010365302
+        },
+        {
+          "real": 0.6362180668472204,
+          "imag": 0.7708905285894189
+        }
+      ],
+      "signal_columns": [
+        "corrected",
+        "raw"
+      ],
+      "log_B": 0.00047735001373052684,
+      "schedule": [
+        {
+          "outer": 0,
+          "piece": 0,
+          "signed_time": 0.2,
+          "rte_steps": 32
+        },
+        {
+          "outer": 1,
+          "piece": 0,
+          "signed_time": 0.2,
+          "rte_steps": 32
+        },
+        {
+          "outer": 2,
+          "piece": 0,
+          "signed_time": 0.2,
+          "rte_steps": 32
+        },
+        {
+          "outer": 3,
+          "piece": 0,
+          "signed_time": 0.2,
+          "rte_steps": 32
+        }
+      ],
+      "path_signal_errors": [
+        {
+          "value": 1.6946818973100072e-15,
+          "unit": "CORRECTED_SIGNAL",
+          "scope": "PRIMARY_VS_INDEPENDENT_SIGNAL",
+          "evidence": "results/H2O32_c7ec590a32a859bc_diagnostics.json"
+        },
+        {
+          "value": 7.850462293418876e-16,
+          "unit": "CORRECTED_SIGNAL",
+          "scope": "PRIMARY_VS_INDEPENDENT_SIGNAL",
+          "evidence": "results/H2O32_c7ec590a32a859bc_diagnostics.json"
+        }
+      ],
+      "path_vector_errors": [
+        {
+          "value": 1.75480956440342e-15,
+          "unit": "CORRECTED_STATE_VECTOR",
+          "scope": "PRIMARY_VS_INDEPENDENT_VECTOR",
+          "evidence": "results/H2O32_c7ec590a32a859bc_diagnostics.json"
+        },
+        {
+          "value": 9.888285250772094e-16,
+          "unit": "CORRECTED_STATE_VECTOR",
+          "scope": "PRIMARY_VS_INDEPENDENT_VECTOR",
+          "evidence": "results/H2O32_c7ec590a32a859bc_diagnostics.json"
+        }
+      ],
+      "corrected_signal_closure": {
+        "value": 6.753223014464259e-16,
+        "unit": "CORRECTED_SIGNAL",
+        "scope": "B_RAW_MINUS_CORRECTED_SIGNAL",
+        "evidence": "results/H2O32_c7ec590a32a859bc_diagnostics.json"
+      },
+      "log_B_difference": {
+        "value": 0.0,
+        "unit": "LOG_NORMALIZATION",
+        "scope": "TWO_PATH_LOG_B_DIFFERENCE",
+        "evidence": "results/H2O32_c7ec590a32a859bc_diagnostics.json"
+      },
+      "maximum_norm": {
+        "value": 1.0000007071312882,
+        "unit": "CORRECTED_STATE_VECTOR",
+        "scope": "BOTH_PATHS_ALL_REQUIRED_STAGES",
+        "evidence": "results/H2O32_c7ec590a32a859bc_diagnostics.json"
+      },
+      "work_primary": {
+        "deterministic": 32,
+        "tail": 16
+      },
+      "work_independent": {
+        "deterministic": 32,
+        "tail": 1280
+      },
+      "reference_binding": {
+        "reference_id": "OLD_FP:5b86f4d65130bc5566b60dd0be8a7d632237904bdb0f0519e86a3725b2a43946",
+        "reference_error": 2.0973428995247362e-16,
+        "bias": {
+          "real": 8.024693260555438e-05,
+          "imag": -6.629879478492473e-05
+        },
+        "definition": "ordinary_signed_corrected_minus_saved_full_H_reference",
+        "reference_recomputed": false,
+        "reference_error_certified": false
+      },
+      "preparation_sha256": "85b8243d752d3390e214b429a80e3899f0cc8b0166e0958fc1d73a930a77597c",
+      "operations_sha256": "acb9c34e7a1a801133e68055bb2f7e028c77ed77d7eaf90ec887eaeb48ab5863",
+      "vector_archive": {
+        "path": "H2O32_c7ec590a32a859bc_vectors.npz",
+        "sha256": "71d2f094757ce7b1490fd7bf695bc3b0eba0e0f4543254da7c2d3aa59bcd7bc2"
+      },
+      "scalar": 0.6320462799495947,
+      "scalar_applications": 1,
+      "strict_diagnostic_limit": 1e-09,
+      "phase_alignment": false,
+      "postcompile_correction": false
+    },
+    {
+      "candidate": {
+        "id": "H2O32_8a2ecdd0294ffb74",
+        "method": "PR",
+        "formula": "4th",
+        "prefix": 1,
+        "q": 2,
+        "K": 4,
+        "r_policy": "ABS_TIME_PER_OUTER",
+        "r_value": 32
+      },
+      "primary_signals": [
+        {
+          "real": 0.6364259661477418,
+          "imag": 0.7713377920900248
+        },
+        {
+          "real": 0.6247409182344275,
+          "imag": 0.7571757064157423
+        }
+      ],
+      "independent_signals": [
+        {
+          "real": 0.6364259661477417,
+          "imag": 0.7713377920900242
+        },
+        {
+          "real": 0.6247409182344265,
+          "imag": 0.757175706415741
+        }
+      ],
+      "signal_columns": [
+        "corrected",
+        "raw"
+      ],
+      "log_B": 0.018531064276367512,
+      "schedule": [
+        {
+          "outer": 0,
+          "piece": 0,
+          "signed_time": 0.5404828767838631,
+          "rte_steps": 10
+        },
+        {
+          "outer": 0,
+          "piece": 1,
+          "signed_time": -0.6809657535677262,
+          "rte_steps": 12
+        },
+        {
+          "outer": 0,
+          "piece": 2,
+          "signed_time": 0.5404828767838631,
+          "rte_steps": 10
+        },
+        {
+          "outer": 1,
+          "piece": 0,
+          "signed_time": 0.5404828767838631,
+          "rte_steps": 10
+        },
+        {
+          "outer": 1,
+          "piece": 1,
+          "signed_time": -0.6809657535677262,
+          "rte_steps": 12
+        },
+        {
+          "outer": 1,
+          "piece": 2,
+          "signed_time": 0.5404828767838631,
+          "rte_steps": 10
+        }
+      ],
+      "path_signal_errors": [
+        {
+          "value": 6.753223014464259e-16,
+          "unit": "CORRECTED_SIGNAL",
+          "scope": "PRIMARY_VS_INDEPENDENT_SIGNAL",
+          "evidence": "results/H2O32_8a2ecdd0294ffb74_diagnostics.json"
+        },
+        {
+          "value": 1.6653345369377348e-15,
+          "unit": "CORRECTED_SIGNAL",
+          "scope": "PRIMARY_VS_INDEPENDENT_SIGNAL",
+          "evidence": "results/H2O32_8a2ecdd0294ffb74_diagnostics.json"
+        }
+      ],
+      "path_vector_errors": [
+        {
+          "value": 1.7612182362671013e-15,
+          "unit": "CORRECTED_STATE_VECTOR",
+          "scope": "PRIMARY_VS_INDEPENDENT_VECTOR",
+          "evidence": "results/H2O32_8a2ecdd0294ffb74_diagnostics.json"
+        },
+        {
+          "value": 2.1788096812823775e-15,
+          "unit": "CORRECTED_STATE_VECTOR",
+          "scope": "PRIMARY_VS_INDEPENDENT_VECTOR",
+          "evidence": "results/H2O32_8a2ecdd0294ffb74_diagnostics.json"
+        }
+      ],
+      "corrected_signal_closure": {
+        "value": 3.1401849173675503e-16,
+        "unit": "CORRECTED_SIGNAL",
+        "scope": "B_RAW_MINUS_CORRECTED_SIGNAL",
+        "evidence": "results/H2O32_8a2ecdd0294ffb74_diagnostics.json"
+      },
+      "log_B_difference": {
+        "value": 0.0,
+        "unit": "LOG_NORMALIZATION",
+        "scope": "TWO_PATH_LOG_B_DIFFERENCE",
+        "evidence": "results/H2O32_8a2ecdd0294ffb74_diagnostics.json"
+      },
+      "maximum_norm": {
+        "value": 1.0000597791239385,
+        "unit": "CORRECTED_STATE_VECTOR",
+        "scope": "BOTH_PATHS_ALL_REQUIRED_STAGES",
+        "evidence": "results/H2O32_8a2ecdd0294ffb74_diagnostics.json"
+      },
+      "work_primary": {
+        "deterministic": 48,
+        "tail": 24
+      },
+      "work_independent": {
+        "deterministic": 48,
+        "tail": 640
+      },
+      "reference_binding": {
+        "reference_id": "OLD_FP:5b86f4d65130bc5566b60dd0be8a7d632237904bdb0f0519e86a3725b2a43946",
+        "reference_error": 2.0973428995247362e-16,
+        "bias": {
+          "real": -1.562496664242463e-05,
+          "imag": 1.2892258708263604e-05
+        },
+        "definition": "ordinary_signed_corrected_minus_saved_full_H_reference",
+        "reference_recomputed": false,
+        "reference_error_certified": false
+      },
+      "preparation_sha256": "85b8243d752d3390e214b429a80e3899f0cc8b0166e0958fc1d73a930a77597c",
+      "operations_sha256": "acb9c34e7a1a801133e68055bb2f7e028c77ed77d7eaf90ec887eaeb48ab5863",
+      "vector_archive": {
+        "path": "H2O32_8a2ecdd0294ffb74_vectors.npz",
+        "sha256": "b38f968de05a0e9ed2ff1876cb26d3ceb94c737e9ea402f8f2eb4a2c269f7893"
+      },
+      "scalar": 0.6320462799495947,
+      "scalar_applications": 1,
+      "strict_diagnostic_limit": 1e-09,
+      "phase_alignment": false,
+      "postcompile_correction": false
+    }
+  ],
+  "scientific_values_recomputed": false,
+  "new_allowance_shots_cost_or_ranking": false
+}

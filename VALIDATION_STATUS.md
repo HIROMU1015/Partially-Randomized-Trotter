@@ -2413,3 +2413,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-19 Mechanism：A82比較因子one-shot完了・説明32/32
 
 [結果・全因子表・統合](docs/research/track_a_mechanism_a82_factor_results_20261019.md)。SOURCE 06c94745f50345b2d93714760608d9d11b83e784、A82一比較2軸だけ一回PASS、親/worker exit0・回収。旧31を転記し32比較64軸の説明因子が完備、side64/64を継承。core/side/他31再計算0、旧381 file SHA一致、図/cohort・欠測履歴を保全。公開承認未確定でpushなし、最終freeze/詳細科学レビューなし、mandatory STOP。
+
+## 2026-10-23 H2 DIAGNOSTICS run01：限定診断完了
+
+[結果・scope・保存receipt](docs/research/track_a_h2_diagnostics_run01_20261023.md)。固定H2/tol-only DF1e-8/rank3、T=.8、ε_sig=.0005、P=0の指定4候補について、明示承認後の実DIAGNOSTICS一回が正常終了。SOURCE35444654…/契約f71e52ce…、strict <1e-9のpath signal/vector/closure/log_B gate4/4、exact予算・metadata/hash/ledger照合PASS。新prep/operation receipt取得、旧原本等346と準備artifact28件保持。compile/sampling/新reference/allowance/N/G/順位0、native/compiled correctnessと保存PR67 taskの完全identityは未完。独立科学レビュー・費用比較GO・次stage承認なし。前段人工98件PASSを継承（今回再実行なし）、mandatory STOP。
