@@ -1086,3 +1086,5 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 - `run_h4_a_gate.py`: sealed one-shot index1 source body/lift once, cosine/sine compile once each, native wait/reap and STOP; `docs/non_df_h4_a_gate_order2_20261024.md`.
 
 - `run_h4_a_cohort_cos.py`: original saved Pauli PR index2..255, one body/control/cosine compile each, reuse0/1, one statistics batch and mandatory STOP.
+
+- `run_h4_a_axes.py`: saved controlled QPY reuse, PR255/PF1 sine compiles, paired257 costs and native STOP; no cosine recompile.

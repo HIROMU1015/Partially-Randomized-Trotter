@@ -1055,3 +1055,5 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 - `h4_a_gate.py`: Pauli body-only replay using original append/schedule, unchanged D2 central-control and fixed compiler/native helpers. Artificial12: `tests/test_h4_a_gate.py`.
 
 - `h4_a_cohort.py`: finite 254-task connector reusing A_GATE replay, D2 lift/batch, D1 compiler, native witness and saved-cost t statistics. Artificial12: `tests/test_h4_a_cohort.py`.
+
+- `h4_a_axes.py`: saved controlled-body extraction and original sine wrapper; reuses cohort grant/native dispatch and statistics; `tests/test_h4_a_axes.py` artificial14.

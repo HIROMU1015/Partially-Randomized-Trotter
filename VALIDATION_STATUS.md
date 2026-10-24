@@ -1,3 +1,7 @@
+## 2026-10-24 H4 A_AXES：保存body再利用・sine256対象SOURCE準備
+
+[実行・paired費用・終了監査](docs/non_df_h4_a_axes_20261024.md)、[専用namespace](artifacts/non_df_h4_a_axes/2026-10-24/README.md)。D2 controlled bodyと保存cosine入力を再利用し、PR255＋PF1のsineを新compileする。cosine257/PR1 sineを再利用、body replay/central生成/cosine compile/N_G0。新人工14 PASS、旧44意味対応証拠を保全。SOURCE固定前の科学call0。技術回復は原因特定・成功再利用・新SOURCE/seal/grantが必要で自動retryなし。完了後mandatory STOP、条件付きC/N/G等は別承認。以下は時点履歴。
+
 ## 2026-10-24 H4 A_COHORT_COS：新254/254成功・保存256 cosine費用確定
 
 [結果・paired比較・終了監査](docs/non_df_h4_a_cohort_cos_20261024.md)、[固定256本の価格と統計](artifacts/non_df_h4_a_cohort_cos/2026-10-24/run01/statistics.json)、[保存検証](artifacts/non_df_h4_a_cohort_cos/2026-10-24/verification.json)。H4/1Å/STO-3G/n8、Pauli184/prefix27、S2/T.8/q8/r4/K4、SOURCE34ef0a7ca。新254＋再利用0/1の256平均1140.8046875 RZ、旧generic9321.1015625から87.761%削減、central PF15028/PR平均=13.173倍。SD16.959、SE1.060、nominal t95 [1138.717,1142.892]。order0のみ221本平均1139.493、order2含む35本1149.086、order4未観測/null。異lawのDFとはunpaired、固定実装ではPauliのPF/PRとも低単価。有限cohort算術平均は確定、母平均tail/compiledρ/certificate/N_Gは未確定。新人工12 PASS、主agent20構造check、code56/input362/runtime6999/旧1895/run3836 SHA保全、旧manifest178不変。engine＋254task exit0・回収、cosine254/statistics1・sine/sampling/N_G0、mandatory STOP。次はユーザーがA_AXES等を別承認するか判断する。以下は時点履歴。

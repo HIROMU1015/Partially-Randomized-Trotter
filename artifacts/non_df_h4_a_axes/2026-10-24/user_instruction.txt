@@ -1,0 +1,397 @@
+# Codex指示：H4 Pauli-JW central-control A_AXES実行・両軸回路費用の完成
+
+Repository：`HIROMU1015/Partially-Randomized-Trotter`
+
+基点branch：
+`codex/non-df-h4-a-cohort-cos-execution-20261024`
+
+基点commit：
+`7c5e25dce757b7daa165095839ca879ed0bb0c10`
+
+主要資料：
+
+- `docs/non_df_h4_a_cohort_cos_20261024.md`
+- `docs/non_df_h4_a_gate_order2_20261024.md`
+- `docs/non_df_h4_controlled_comparison_redesign_20261024.md`
+- `artifacts/non_df_h4_controlled_comparison_redesign/2026-10-24/contracts_DRAFT.json`
+
+固定SOURCE：
+
+- 元H4：`0c329b30a81accb35c212be8defa66fee0dd0f12`
+- D2 central control：`74515d8eb4f073c40fc783681a3775dbca89e9b1`
+- A_GATE：`ee7d281b5daead1d0d5e81e00c9a0ed4727792b0`
+- A_COHORT_COS：`34ef0a7ca2412a61f5215a4ce1192e99f3226b2a`
+
+## 1. 研究目的と今回の明示承認
+
+**A_AXES_FOR_COMPLEX_Gの限定科学実行を承認します。**
+
+Pauli-JWのcentral-control実装について、固定保存cohortのcosine/sine両軸のcompiled回路費用を完成させます。
+
+これにより、PR256 trajectoryのpaired回路価格とPFの両軸価格を取得し、後続の条件付き総費用G解析に利用できる状態にします。
+
+今回は以下を一括承認します。
+
+1. GitHub SOURCE・保存回路・結果の確認
+2. 既存コードを再利用したsine-wrapper計測接続
+3. 必要な人工テスト
+4. 新SOURCE・runtime・入力・実行契約の固定
+5. 新しいone-shot grantの発行
+6. PR未計測255本＋PF1本のsine回路生成
+7. **新規費用compile最大256回**
+8. Cosine/sineのpaired費用統計
+9. 既存generic-control費用との限定比較
+10. 結果保存・検証・commit/push・mandatory STOP
+
+固定範囲内の技術準備・実行は、中間承認を繰り返し求めずに完了してください。
+
+後述する意図しない技術的中断については、原因修正・限定再実行も今回承認します。
+
+ただし、新しいHamiltonian計算、sampling、N/G再解析、実装誤差certificate、D3は対象外です。
+
+## 2. 固定科学条件
+
+以下を変更しません。
+
+- Linear H4、隣接1.00 Å、STO-3G
+- System 8 qubit＋ancilla 1 qubit（wire8）
+- Pauli-JW Hamiltonian：184非identity項
+- PR prefix27
+- S2、T=0.8、q=8、r=4、K=4
+- 元の保存PR event law・保持規則
+- D2のcentral-control合成規則
+- Qiskit 1.3.0
+- Native basis：`rz`, `sx`, `x`, `cx`
+- Optimization level1、seed17
+- Backend／coupling／layout／routing指定なし
+- 元のHadamard wrapper
+- 状態準備費用除外
+
+元の分子、Hamiltonian、trajectory、回路合成条件、compiler profileを変更しないでください。
+
+## 3. 新しいcompileの対象
+
+既存結果を最大限再利用します。
+
+### PR central control
+
+- 保存trajectory：index0〜255
+- Cosine：256本すべて計測済み
+- Sine：index1のみ計測済み
+- **新規sine対象：index0、index2〜255の計255本**
+
+### PF central control
+
+- Cosine：15,028 RZをD2で計測済み
+- Sine：未計測
+- **新規sine対象：1本**
+
+| 対象 | 新規compile |
+|---|---:|
+| PR central sine | 255 |
+| PF central sine | 1 |
+| **合計** | **256** |
+
+保存済みindex1 sineの1,129 RZを再利用してください。
+
+新しいcosine compileは行いません。
+
+D2・A_GATE・A_COHORT_COSの消費済みgrantは再利用しないでください。
+
+## 4. 既存回路・コードの再利用
+
+最初に過去のコード、テスト、計算パイプラインを確認してください。
+
+優先して再利用する資産：
+
+- `h4_a_cohort`
+- `h4_a_gate`
+- `h4_d2_pauli_control`
+- `h4_d1_adapter`
+- `fixed_signal_evaluation.hadamard_wrapper`
+- `rte_compiled_cost`
+- `fixed_signal_evaluation._statistics`
+- 既存QPY・fingerprint・SHA検証
+- CallBudget・native witness・保存処理
+- D2/A_GATE/A_COHORT_COSの人工テスト
+
+**既に保存されているcentral-controlled bodyを再利用し、Pauli bodyやcentral-control演算を不要に再生成しないでください。**
+
+具体的には、D2のPF/index0、A_GATEのindex1、A_COHORT_COSのindex2〜255について、保存されたQPYとSOURCE対応を確認してください。
+
+保存bodyを再利用できる場合は、元のsine Hadamard wrapperへ接続します。
+
+元のsine wrapperは、cosineのH–C(U)–Hに対し、ancillaのSdgを最後のHの前へ追加するものです。
+
+Cosine input QPYから既存central-controlled bodyを抽出して利用する方法も検討できますが、元SOURCEの順序・位相・controlとの対応を確認してください。
+
+保存入力から正しく再利用できない場合、無断で新しい科学的body生成や別アルゴリズムへ変更しないでください。技術的な接続不具合は後述の回復方針で修正できますが、科学的対象の変更は別判断とします。
+
+## 5. 実行前の人工検証・SOURCE固定
+
+実H4に適用する前に、必要な人工検証を実施してください。
+
+重点項目：
+
+- 保存central-controlled bodyの読み取りと対応
+- Cosine/sineのwrapper構造
+- Sdgの位置
+- Control=0/1の意味
+- Global phaseとancilla相対phase
+- Qubit・ancilla・measurement配置
+- PFとPRの保存入力対応
+- Trajectory IDの重複・欠測
+- Pairingの正確性
+- Grant・call予約・終了処理
+- 技術的中断後の回復処理
+
+既存テストを再利用し、今回必要な部分だけ追加してください。
+
+新SOURCEをcommitし、実使用runtime、入力QPY・保存価格・compiler profile、出力schemaを固定してください。
+
+今回の承認を結び付けた専用active contract・未使用grantを作成します。
+
+既存の固定SOURCEや過去の契約を上書きしないでください。
+
+## 6. A_AXESの実行
+
+### Stage A：保存入力と対象の照合
+
+以下を確認してください。
+
+- PF1本＋PR256本の対象ID
+- 既存cosine価格257件
+- 既存PR index1 sine価格1件
+- 保存central-controlled body
+- SOURCE・runtime・compiler
+- Phase・control・wire・wrapper
+- 旧generic価格との対応
+
+この段階で科学的に重要な不一致があれば、原因を明示してください。
+
+### Stage B：Sine wrapper生成
+
+保存されたcentral-controlled bodyを元sine wrapperに接続してください。
+
+- Controlを二重に追加しない
+- Product・rotation・phaseを変更しない
+- 保存bodyのglobal phaseを捨てない
+- Sdgを元SOURCE規則どおり配置する
+- Compiler-visibleな診断barrier等を挿入しない
+
+Cosine価格とsine価格が同じになることを事前に仮定しないでください。
+
+### Stage C：最大256回の費用compile
+
+固定Qiskit compilerを使用してください。
+
+各対象について原則1回ずつ、RZ・CX・depthなどを計測します。
+
+新規対象はPR255本とPF1本だけです。
+
+独立したtaskは、実際の空きCPU・RAMと共有環境への非干渉を確認して十分に並列化してください。
+
+費用compileの成功結果は、trajectory IDとaxisを固定して保存してください。
+
+一部の価格が予想と異なっても、それだけを理由に再compileしないでください。観測結果として保存します。
+
+## 7. 意図しない中断時の修正・再実行を承認
+
+**今回、意図しない技術的中断については、Codex自身による原因調査・修正・再実行を明示的に許可します。**
+
+例：
+
+- Adapterやwrapper接続のバグ
+- 実装上の例外
+- 保存処理・ファイルI/Oの失敗
+- Native supervisor・worker管理の不具合
+- 一時的なプロセス異常
+- 実行環境・認証・権限の修正可能な問題
+- その他、科学条件を変更せず解消できる技術的問題
+
+### 回復の原則
+
+1. まず中断原因を特定し、科学条件・入力・compiler設定を変えずに修正してください。
+2. 既に正常終了・保存・検証された対象は再実行せず、その結果を再利用してください。
+3. 失敗したtask・未完了taskだけを対象に、修正後の限定再実行を行ってください。
+4. 失敗した科学callも消費済みとして記録し、返還・削除・上書きしないでください。
+5. 実行後にコード修正が必要になった場合は、新しいSOURCEをcommitし、対応するseal・実行契約・未使用grantを新たに固定してください。
+6. 消費済みgrantや終了済みrunを再開・改変してはいけません。別runとして回復実行してください。
+7. 初回の256対象を超える新しい科学対象は追加しないでください。回復のため失敗対象へのcompileを再試行した場合は、総試行回数と成功した固有対象数を区別して記録してください。
+8. 修正と回復の履歴、原因、影響対象、結果の再利用条件を保存してください。
+
+**この範囲の技術的回復については、失敗のたびにユーザーへ中間承認を求める必要はありません。**
+
+ただし、無制限の自動retryや、原因不明のまま同じ処理を繰り返すことは認めません。原因の特定と修正を優先し、合理的に回復できない場合はSTOPしてください。
+
+### 再実行を許可しない場合
+
+以下は今回の回復承認に含めません。
+
+- Hamiltonian・prefix・event lawの変更
+- 保存trajectoryの差替え
+- Central-control合成規則の科学的変更
+- Compiler profile・費用指標の変更
+- 新しいsampling
+- Sine以外の新しい費用計測
+- N/G再解析
+- 科学的に重要な位相・演算対応の未解決
+- 結果が予想と異なることを理由とする再実行
+- D3や別研究系列への拡張
+
+これらが必要になった場合は、取得済み結果を保全してユーザー判断へ戻してください。
+
+**技術的回復の許可は、科学的な試行回数や実験条件を恣意的に変更する許可ではありません。**
+
+## 8. 保存する費用結果
+
+各対象について、少なくとも以下を保存してください。
+
+- Case（PF/PR）
+- Trajectory index・ID
+- Axis（cosine/sine）
+- Compiled RZ数
+- CX数
+- Total depth
+- RZ depth・CX depth
+- Pre/post gate histogram
+- Input/output QPYまたは必要な対応証拠
+- Fingerprint・SHA
+- SOURCE・compiler profile
+- 既存cosine結果との対応
+- Native終了・保存検証状態
+
+既存のcosine価格は再compileせず再利用してください。
+
+重複する巨大な証拠やmanifestを不要に複製しないでください。
+
+## 9. Cosine/sine paired費用統計
+
+必要な257件のsine価格が揃った場合、固定256本PRとPF singletonについて両軸の価格を整理してください。
+
+### Pauli central PR
+
+- Cosine平均・sine平均
+- 各軸の標本SD・SE
+- Nominal 95%信頼区間
+- Cosineとsineの同一ID paired差
+- 両軸価格のsample covariance
+- 両軸価格の一致／不一致件数
+- 費用分布・分位点
+- 旧generic-controlとの対応
+- Order0/2群の記述的な費用関係
+
+### Pauli central PF
+
+- Cosine価格：既存15,028 RZ
+- Sine価格：今回の新規計測値
+- 両軸それぞれのRZ・CX・depth
+
+### 他方式との比較
+
+既存のDF-native PF/PRの費用を参考値として再利用してください。
+
+ただし、PauliとDFではrandomization lawが異なるため、異表現間でtrajectory indexを使ったpaired統計を行わないでください。
+
+また、Pauli centralの両軸価格が揃ったことをもって、実装残差・必要shot数・総費用Gの保証が成立したと主張しないでください。
+
+### 統計上の注意
+
+256本は固定された有限cohortです。
+
+この256本の標本平均は正確に算出できますが、implemented lawの厳密な母平均・未観測order4のtail費用は未確定です。
+
+Nominal信頼区間を厳密な母平均上界として扱わないでください。
+
+## 10. 今回の主要な研究判断
+
+以下を回答してください。
+
+1. **Pauli central PRの256本sine平均RZはいくつか。**
+2. Cosine平均1,140.8046875 RZとどの程度異なるか。
+3. Cosine/sine価格は全256本で一致するか。
+4. 同じtrajectoryの両軸価格にはどのような共分散があるか。
+5. Pauli central PFのsine価格はいくつか。
+6. PF/PRの両軸における回路単価の比較はどうなるか。
+7. 旧generic-controlやDF-nativeとの比較から、何が新しく分かるか。
+8. **次に条件付きC/N/G解析へ進むための入力は揃ったか。**
+
+回路費用の観測と科学的精度保証は分けて報告してください。
+
+## 11. 今回実行しない作業
+
+- 新SCF/FCI/DF計算
+- Hamiltonian・state再生成
+- 新sampling・RNG replay
+- 新しいcosine compile
+- 既存PF/PR回路価格の不要な再測定
+- Prefix・q/r/K・event law変更
+- N/G・shot数の再解析
+- 新しい実装残差rhoの数値計算
+- 未観測order4の追加診断
+- D3
+- 正式certificate受理
+- 元SOURCE・raw・grant・ledger・marker・STOPの改変
+
+過去の以下の状態も維持してください。
+
+- Pauli-PR historical hash FAIL／原因UNKNOWN
+- 元H4 native UNKNOWN
+- 旧N/G null
+- C/L COMBINATION_BLOCKED
+- 旧compiler MISSING_EVIDENCE
+- 正式certificate未受理
+
+## 12. 運用・資源方針
+
+最新版`research_project_instructions_unified_2026-10-23.md`を適用してください。
+
+特に§8.4・§10・§10.3の方針を遵守します。
+
+- 既存コード・関数・テスト・計算パイプラインの再利用を優先
+- 研究成果と科学的再現性を優先
+- 不要な再実装・過剰監査を回避
+- CPU・RAM・worker数に恣意的な低い上限を設定しない
+- 重い独立taskは十分に並列化・高速化
+- 実際の空き資源と非干渉を確認
+- 共有環境全体・他ユーザーへの設定変更・ファイル操作・process操作は禁止
+
+新runおよび技術的回復runのSOURCE・grant・実行履歴はそれぞれ区別して保全してください。
+
+## 13. 成果物・mandatory STOP
+
+専用branchに、必要十分な成果物を保存してください。
+
+1. A_AXES実行adapterと人工テスト
+2. SOURCE・runtime・入力・active contract
+3. 新grant・call ledger・必要な回復履歴
+4. 新規256対象のsine compiled費用
+5. 既存cosine257件とのpaired結果
+6. PR256本の両軸費用統計
+7. PFの両軸費用
+8. 旧generic・DF-nativeとの限定比較
+9. 研究結果報告書・必要な図表
+10. Native終了・保全・mandatory STOP
+
+最終報告では、次を明確にしてください。
+
+- 新規sine対象256/256件の完了状況
+- 技術的中断があった場合の原因・修正・回復実行
+- 成功した固有対象数と総compile試行数
+- PR cosine/sineの平均・差・共分散
+- Cosine/sine価格の一致・不一致
+- PFのsine価格
+- 両軸のPF/PR資源比較
+- 条件付きC/N/G解析へ進める状態か
+- SOURCE・commit・remote SHA
+- Native終了・mandatory STOP
+
+専用branchへcommitし、repository運用規則に従ってpush・remote SHAを確認してください。
+
+Push認証失敗のみを理由に、成功済み科学計算を再実行しないでください。必要な認証操作を報告し、GitHub上の同一commitが既に確認できる場合は再push不要です。
+
+**今回承認したA_AXESの技術実装・人工検証・SOURCE固定・最大256固有対象のsine計測・paired費用統計・必要な技術的回復・結果保存・終了監査まで一括で進めてください。**
+
+完了後は**mandatory STOP**してください。
+
+条件付きC/N/G解析、実装誤差保証、D3などの次の科学段階には自動移行しないでください。
