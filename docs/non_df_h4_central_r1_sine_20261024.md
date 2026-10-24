@@ -183,6 +183,13 @@ PR全law保証には、これとは別に未観測order4まで含むuniformま�
 科学SOURCEと結果commitを区別し、push試行と確認可能なremote SHAを記録する。
 認証失敗なら結果をlocal保全し、再実行用pushコマンドを最終チャットに提示する。
 
+成果物commitは`b8762baa1e7b521885e80f7a9166eb91c313397d`。
+push試行1はexit128、GitHub HTTPS Username取得不能で失敗した。
+[失敗log](../artifacts/non_df_h4_central_r1_sine/2026-10-24/push_attempt01.log)、
+[remote再確認](../artifacts/non_df_h4_central_r1_sine/2026-10-24/remote_branch_check.json)を保存。
+GitHub connectorの専用branch検索0件、remote SHA=null。
+後続metadata commitは公開状態だけを記録し、科学SOURCE・grant・結果・STOPを変更しない。
+
 ## 付記：SOURCE準備時の記録
 
 ユーザーの「次の作業に進んで大丈夫」と、sine3診断・最大6状態作用を選択した回答に基づく。
