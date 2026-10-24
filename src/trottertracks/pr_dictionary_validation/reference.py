@@ -6,6 +6,69 @@ No matrices or high-precision contexts are instantiated on import.
 from __future__ import annotations
 from fractions import Fraction
 import itertools
+import re
+
+
+_SAVED_UNSIGNED = r'(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?'
+_SAVED_REAL = r'[+-]?' + _SAVED_UNSIGNED
+_SAVED_COMPLEX = re.compile(r'\((' + _SAVED_REAL + r') ([+-]) ('
+                            + _SAVED_UNSIGNED + r')j\)')
+
+
+def saved_scalar_parts(text):
+    """Strict ctx.nstr grammar, preserving decimal text without float/eval."""
+    if not isinstance(text, str):
+        raise ValueError('Saved reference scalar must be text')
+    if re.fullmatch(_SAVED_REAL, text):
+        return text, '0'
+    match = _SAVED_COMPLEX.fullmatch(text)
+    if not match:
+        raise ValueError('Unknown/nonfinite saved reference scalar')
+    real, sign, imaginary = match.groups()
+    return real, ('-' if sign == '-' else '') + imaginary
+
+
+def validate_saved_reference(payload, *, full):
+    """Metadata/string-only validation; no high-precision or matrix operations."""
+    shapes = dict(h=16, d=16, r=16, operator=16, wrapper_X=32, wrapper_Y=32) if full else dict(controlled=32)
+    expected = set(shapes) | ({'signal'} if full else set())
+    if (set(payload) != {'digits', 'values'} or type(payload['digits']) is not int
+            or payload['digits'] != 128 or not isinstance(payload['values'], dict)
+            or set(payload['values']) != expected):
+        raise ValueError('Saved reference schema/digits/keys mismatch')
+    for key, size in shapes.items():
+        matrix = payload['values'][key]
+        if (not isinstance(matrix, list) or len(matrix) != size
+                or any(not isinstance(row, list) or len(row) != size for row in matrix)):
+            raise ValueError('Saved reference shape mismatch: '+key)
+        for row in matrix:
+            for text in row:
+                saved_scalar_parts(text)
+    if full:
+        saved_scalar_parts(payload['values']['signal'])
+    return payload
+
+
+def restore_saved_reference(payload, *, full):
+    """Explicit science entry: restore only selected saved 128-digit targets.
+
+    No reference generation or precision re-comparison. Real/imag strings enter
+    the high-precision context before the caller's existing binary64 conversion.
+    """
+    validate_saved_reference(payload, full=full)
+    ctx = precision_context(128)
+    def scalar(text):
+        real, imaginary = saved_scalar_parts(text)
+        value = ctx.mpc(ctx.mpf(real), ctx.mpf(imaginary))
+        if not ctx.isfinite(value):
+            raise ValueError('Nonfinite restored reference')
+        return value
+    keys = ('operator', 'wrapper_X', 'wrapper_Y') if full else ('controlled',)
+    values = {key: ctx.matrix([[scalar(v) for v in row] for row in payload['values'][key]])
+              for key in keys}
+    if full:
+        values['signal'] = scalar(payload['values']['signal'])
+    return dict(ctx=ctx, **values)
 
 
 def precision_context(digits: int):

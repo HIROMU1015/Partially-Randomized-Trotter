@@ -1,4 +1,4 @@
-"""Opt-in Qiskit 1.3 Rustiq central-rotation adapter; science remains unrun.
+"""Opt-in Qiskit 1.3 central-rotation adapter; new B2 science remains unrun.
 
 Planning/binding uses only typed PR records and the standard library. Quantum
 imports and synthesis occur only in explicit build calls after separate approval.
@@ -16,7 +16,8 @@ from .prototype import atom_record
 
 ADAPTER = 'C4_Q13_central_v1'
 QISKIT_SOURCE = '896d1c8b72888a52a46081a6d1f4de8c56db8aea'
-ROUTES = ('B0', 'B1', 'R1')
+ROUTES = ('B0', 'B1', 'R1', 'B2')
+FUSION_POLICY = 'C4_B2_adjacent_controlled_fsum_v1'
 
 
 @dataclass(frozen=True)
@@ -96,11 +97,14 @@ def route_identity(route, *, input_identity, source_identity, profile=None, opti
     options.validate()
     profile = CompilerProfile() if profile is None else profile
     profile.validate()
-    return dict(adapter=ADAPTER, route=route, input=input_identity, source=source_identity,
+    identity = dict(adapter=ADAPTER, route=route, input=input_identity, source=source_identity,
                 qiskit='1.3.0', qiskit_source=QISKIT_SOURCE, bundled_rustiq_core='0.0.10',
                 options=asdict(options), compiler=asdict(profile),
                 basis_policy='common_run_support_full_fused',
                 mapping='word[p]=qubit_p;system=0..m-1;ancilla=m;no_second_control')
+    if route == 'B2':
+        identity['fusion_policy'] = FUSION_POLICY
+    return identity
 
 
 def _validate_atom(atom, modes):
@@ -255,6 +259,80 @@ def region_network(region, *, ancilla):
     return tuple(terms)
 
 
+@dataclass(frozen=True)
+class FusionGroup:
+    support: tuple[int, ...]
+    signed_angle: float
+    ledger: dict
+
+
+def _signed_sum(members):
+    angles = tuple(o.signed_angle for o in members)
+    if not angles or any(type(a) is not float or not math.isfinite(a) for a in angles):
+        raise ValueError('Finite binary64 rotation angles required')
+    try:
+        value = angles[0] if len(angles) == 1 else math.fsum(angles)
+    except OverflowError as error:
+        raise ValueError('B2 angle sum overflow') from error
+    if not math.isfinite(value):
+        raise ValueError('B2 angle sum is nonfinite')
+    return value
+
+
+def fusion_groups(plan, region, *, case_id, macro_index):
+    """Pure typed fold; never re-plan runs, move events, or expand controls.
+
+    Preparation tests use artificial records only. Calling on saved F1 angles
+    belongs to the separately approved scientific execution.
+    """
+    data = asdict(plan)
+    fingerprint = data.pop('fingerprint')
+    if (digest(data) != fingerprint or plan.provenance != route_identity('B2',
+            input_identity=plan.provenance.get('input'), source_identity=plan.provenance.get('source'))):
+        raise ValueError('Stale original plan')
+    if (not isinstance(case_id, str) or not case_id
+            or type(macro_index) is not int or macro_index < 0
+            or plan.system_qubits != tuple(range(plan.ancilla))):
+        raise ValueError('Bound case/macro and original ancilla-last mapping required')
+    matching = [(run, r) for run in plan.runs for r in run.regions if r == region]
+    if len(matching) != 1 or not region.eligible or not region.occurrences:
+        raise ValueError('One original eligible rotation region required')
+    run = matching[0][0]
+    def key(o):
+        if (o.role != 'rotation' or o.kind not in ('FRAME_Z', 'PHYSICAL_PAULI')
+                or o.run_id != run.run_id or o.basis_id != run.basis_id
+                or o.basis_hash != run.basis_hash or not o.support
+                or o.word != tuple(plan.occurrences[o.ordinal].word)
+                or o != plan.occurrences[o.ordinal]):
+            raise ValueError('Rotation/original occurrence or basis/run drift')
+        return (o.kind, o.word, o.support, o.basis_id, o.basis_hash, o.frame_id, o.run_id)
+    groups = []
+    members = []
+    previous = None
+    def flush():
+        first = members[0]
+        angle = _signed_sum(members)
+        ledger = dict(policy=FUSION_POLICY, case=case_id, macro=macro_index,
+            run=run.run_id, region=region.region_id, singleton=run.singleton,
+            basis_id=first.basis_id, basis_hash=first.basis_hash, frame=first.frame_id,
+            kind=first.kind, word=first.word, support=first.support,
+            system=plan.system_qubits, ancilla=plan.ancilla, generator='controlled_central_Z',
+            original_plan=fingerprint, members=[dict(ordinal=o.ordinal, atom_id=o.atom_id,
+                event=o.event_index, application=o.application_index,
+                coefficient_sign=o.coefficient_sign, angle_hex=o.signed_angle.hex()) for o in members],
+            angle_hex=angle.hex())
+        groups.append(FusionGroup(first.support, angle, ledger))
+    for occurrence in region.occurrences:
+        current = key(occurrence)
+        if members and current != previous:
+            flush()
+            members = []
+        members.append(occurrence)
+        previous = current
+    flush()
+    return tuple(groups)
+
+
 def _q13(num_qubits, network, options):
     from importlib.metadata import version
     if version('qiskit') != '1.3.0':
@@ -270,7 +348,8 @@ def _new_circuit(qubits):
     return QuantumCircuit(qubits)
 
 
-def emit_sequence(plan, atoms, provider, *, options=Options(), trace=None):
+def emit_sequence(plan, atoms, provider, *, options=Options(), trace=None,
+                  case_id=None, macro_index=None):
     """Explicit SCIENTIFIC build entry. Do not call during preparation."""
     options.validate()
     data = asdict(plan)
@@ -281,6 +360,10 @@ def emit_sequence(plan, atoms, provider, *, options=Options(), trace=None):
         raise ValueError('Stale plan or route/options provenance')
     if provider.modes != plan.ancilla:
         raise ValueError('Provider/register mismatch')
+    if plan.provenance['route'] == 'B2' and (
+            not isinstance(case_id, str) or not case_id
+            or type(macro_index) is not int or macro_index < 0):
+        raise ValueError('B2 requires bound case/macro scope before emission')
     by_id = {a.atom_id: a for a in atoms}
     qc = _new_circuit(plan.ancilla+1)
     for run in plan.runs:
@@ -305,6 +388,19 @@ def emit_sequence(plan, atoms, provider, *, options=Options(), trace=None):
                     trace.append(dict(kind='synthesis', plan=plan.fingerprint,
                                       region=region.region_id, seconds=seconds,
                                       cpu_seconds=cpu_seconds, terms=network))
+            elif plan.provenance['route'] == 'B2' and region.eligible:
+                tick, cpu = time.perf_counter(), time.process_time()
+                groups = fusion_groups(plan, region, case_id=case_id, macro_index=macro_index)
+                record = dict(kind='fusion', plan=plan.fingerprint,
+                    region=region.region_id, seconds=time.perf_counter()-tick,
+                    cpu_seconds=time.process_time()-cpu, ledger=[g.ledger for g in groups])
+                tick, cpu = time.perf_counter(), time.process_time()
+                for group in groups:
+                    legacy.append_central(qc, group.support, plan.ancilla, group.signed_angle)
+                if trace is not None:
+                    record.update(emitter_seconds=time.perf_counter()-tick,
+                                  emitter_cpu_seconds=time.process_time()-cpu)
+                    trace.append(record)
             else:
                 for o in region.occurrences:
                     legacy.append_central(qc, o.support, plan.ancilla, o.signed_angle)
@@ -315,16 +411,19 @@ def emit_sequence(plan, atoms, provider, *, options=Options(), trace=None):
 
 
 def build_evolution(spec, context, macros, atoms, provider, *, input_identity,
-                    source_identity, route='B0', options=Options(), trace=None):
+                    source_identity, route='B0', options=Options(), trace=None, case_id=None):
     """Opt-in builder, preserving legacy D fusion, scalar and result/wrapper API.
 
     B0 delegates unchanged to the strong optimized baseline. B1 uses the same
     typed partition as R1 with the original central emitter. R1 alone calls Q13.
+    B2 folds only original adjacent controlled rotations without re-planning.
     This orchestration is narrow duplication because the frozen builder has no
     emitter hook; its basis/central/D/result/compiler implementations are reused.
     """
     provenance = route_identity(route, input_identity=input_identity,
                                 source_identity=source_identity, options=options)
+    if route == 'B2' and (not isinstance(case_id, str) or not case_id):
+        raise ValueError('B2 requires bound case scope')
     if route == 'B0':
         return legacy.build_evolution(spec, context, macros, atoms, provider,
             input_identity=input_identity, source_identity=source_identity, optimized=True)
@@ -346,18 +445,24 @@ def build_evolution(spec, context, macros, atoms, provider, *, input_identity,
             plans=[asdict(p) for p in plans],
             scalar_phase=dict(kind='scalar', angle=scalar, ancilla=spec.modes)))
     qc = _new_circuit(spec.modes+1)
+    emit_trace = trace if trace is not None or route != 'B2' else []
+    trace_start = len(emit_trace) if route == 'B2' else 0
     delta = float(context.delta)
     for j, plan in enumerate(plans):
         if j == 0:
             legacy.append_deterministic(qc, spec.deterministic, delta/2, spec.modes)
-        qc.compose(emit_sequence(plan, atoms, provider, options=options, trace=trace), inplace=True)
+        scope = dict(case_id=case_id, macro_index=j) if route == 'B2' else {}
+        qc.compose(emit_sequence(plan, atoms, provider, options=options, trace=emit_trace,
+                                 **scope), inplace=True)
         legacy.append_deterministic(qc, spec.deterministic,
             delta if j < context.q-1 else delta/2, spec.modes)
     qc.p(scalar, spec.modes)
     records = tuple(tuple(e.to_dict() for e in macro) for macro in macros)
+    fusion = dict(case=case_id, fusion_ledger=[t['ledger'] for t in emit_trace[trace_start:]
+                 if t['kind'] == 'fusion']) if route == 'B2' else {}
     fp = digest(dict(provenance=provenance, context=vars(context), macros=records,
                      atoms=[atom_record(a) for a in atoms], plans=[p.fingerprint for p in plans],
-                     scalar_phase=scalar))
+                     scalar_phase=scalar, **fusion))
     return legacy.MixedEvolutionResult(qc, spec.modes, spec.modes, context, records,
         input_identity, source_identity, fp, ADAPTER+'_'+route)
 

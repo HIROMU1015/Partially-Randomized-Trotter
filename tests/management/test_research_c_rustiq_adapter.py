@@ -6,8 +6,10 @@ from types import SimpleNamespace
 from unittest.mock import Mock, patch
 import math
 import hashlib
+import importlib.metadata  # keep module lifetime stable across synthetic sys.modules patches
 import json
 import sys
+import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -207,7 +209,7 @@ class AdapterTests(unittest.TestCase):
                       for r in adapter.ROUTES]
         identities.extend([adapter.route_identity('R1', input_identity='i2', source_identity='s'),
                            adapter.route_identity('R1', input_identity='i', source_identity='s2')])
-        self.assertEqual(len({digest(x) for x in identities}), 5)
+        self.assertEqual(len({digest(x) for x in identities}), len(adapter.ROUTES)+2)
         p = provenance()
         p['options']['upto_phase'] = True
         with self.assertRaises(ValueError):
@@ -322,7 +324,108 @@ class AdapterTests(unittest.TestCase):
         c = json.loads(path.read_bytes())
         for name, expected in c['source_files'].items():
             with self.subTest(path=name):
-                self.assertEqual(hashlib.sha256((ROOT/name).read_bytes()).hexdigest(), expected)
+                frozen = subprocess.check_output(['git','show',
+                    '5038427e034c5e2cca6674998d28715cd93ec551:'+name], cwd=ROOT)
+                self.assertEqual(hashlib.sha256(frozen).hexdigest(), expected)
+
+    def test_B2_maximal_adjacent_groups_keep_P_Q_P_and_atom_aliases(self):
+        a, alias = atom('a'), atom('alias', negative=True)
+        q = atom('q', ('I','Z','I','I'))
+        p = plan([event(a),event(alias,angle=-0.25),event(q),event(a)], [a,alias,q], 'B2')
+        groups = adapter.fusion_groups(p, p.runs[0].regions[0], case_id='artificial', macro_index=0)
+        self.assertEqual([g.signed_angle for g in groups], [-0.125,0.125,0.125])
+        self.assertEqual([[m['ordinal'] for m in g.ledger['members']] for g in groups], [[0,1],[2],[3]])
+        self.assertEqual([m['atom_id'] for m in groups[0].ledger['members']], ['a','alias'])
+        self.assertEqual([m['coefficient_sign'] for m in groups[0].ledger['members']], [1,-1])
+        self.assertEqual(len(p.occurrences),4)
+
+    def test_B2_fsum_keeps_distinct_Taylor_angles_without_representative_multiplier(self):
+        a = atom('a')
+        events = [event(a,angle=x) for x in (1e16,1.0,-1e16)]
+        for e, n in zip(events, (2,0,0)):
+            e.taylor_order = n
+        p = plan(events,[a],'B2')
+        g, = adapter.fusion_groups(p,p.runs[0].regions[0],case_id='artificial',macro_index=0)
+        self.assertEqual(g.signed_angle,1.0)
+        self.assertEqual([e.taylor_order for e in events],[2,0,0])
+        self.assertEqual([m['angle_hex'] for m in g.ledger['members']], [x.hex() for x in (1e16,1.0,-1e16)])
+
+    def test_B2_singleton_negative_zero_and_zero_sum_are_not_deleted(self):
+        a = atom('a')
+        for angles in [(-0.0,), (0.125,-0.125), (math.pi,math.pi)]:
+            p = plan([event(a,angle=x) for x in angles],[a],'B2')
+            g, = adapter.fusion_groups(p,p.runs[0].regions[0],case_id='artificial',macro_index=0)
+            wanted = angles[0] if len(angles)==1 else math.fsum(angles)
+            self.assertEqual(g.signed_angle.hex(),wanted.hex())
+        for bad in (float('nan'),float('inf'),1):
+            with self.assertRaises(ValueError):
+                adapter._signed_sum([SimpleNamespace(signed_angle=bad)])
+        with self.assertRaisesRegex(ValueError,'overflow'):
+            adapter._signed_sum([SimpleNamespace(signed_angle=1e308)]*2)
+
+    def test_B2_original_word_and_frame_are_in_the_group_key(self):
+        a = atom('a')
+        p = plan([event(a),event(a)],[a],'B2')
+        for field,value in [('word',('X','I','I','I')),('frame_id','other')]:
+            second = replace(p.occurrences[1],**{field:value})
+            occurrences = (p.occurrences[0],second)
+            region = replace(p.runs[0].regions[0],occurrences=occurrences)
+            changed = replace(p,occurrences=occurrences,runs=(replace(p.runs[0],regions=(region,)),))
+            data = adapter.asdict(changed); data.pop('fingerprint')
+            changed = replace(changed,fingerprint=digest(data))
+            self.assertEqual(len(adapter.fusion_groups(changed,region,case_id='artificial',macro_index=0)),2)
+
+    def test_B2_product_identity_basis_macro_fences_and_phase_are_preserved(self):
+        a, other = atom('a',negative=True),atom('other',frame='F1')
+        identity = atom('identity',('I',)*4,kind='IDENTITY')
+        p = plan([event(a,a,phase=-1),event(a),event(identity,angle=0.25),event(other),event(a)],
+                 [a,identity,other],'B2')
+        groups = [g for run in p.runs for r in run.regions if r.eligible
+                  for g in adapter.fusion_groups(p,r,case_id='artificial',macro_index=0)]
+        self.assertEqual([len(g.ledger['members']) for g in groups],[2,1,1])
+        self.assertEqual(p.phase,math.pi+math.pi-0.25)
+        region = p.runs[0].regions[-1]
+        other_macro = adapter.fusion_groups(p,region,case_id='artificial',macro_index=1)
+        self.assertNotEqual(digest(groups[0].ledger),digest(other_macro[0].ledger))
+        with self.assertRaises(ValueError):
+            adapter.fusion_groups(p,p.runs[0].regions[0],case_id='artificial',macro_index=0)
+        crossing = adapter.Region('crossing',(p.occurrences[1],p.occurrences[-1]),True)
+        with self.assertRaises(ValueError):
+            adapter.fusion_groups(p,crossing,case_id='artificial',macro_index=0)
+
+    def test_B2_emits_one_existing_controlled_primitive_keeps_original_full_basis(self):
+        a = atom('a')
+        p = plan([event(a),event(a,angle=-0.125)],[a],'B2')
+        provider = SimpleNamespace(modes=4,basis=Mock(return_value=Mock()),
+                                   reference_support=lambda a,singleton:a.support)
+        trace=[]
+        with patch.object(adapter,'_new_circuit',return_value=Recorder(5)), \
+                patch.object(adapter,'_q13',side_effect=AssertionError('No Rustiq')), \
+                patch.object(adapter.legacy,'append_central') as central:
+            adapter.emit_sequence(p,[a],provider,trace=trace,case_id='artificial',macro_index=0)
+        provider.basis.assert_called_once_with(a,singleton=False)
+        self.assertEqual(central.call_count,1)
+        self.assertEqual(central.call_args.args[1:],((0,),4,0.0))
+        self.assertEqual(trace[0]['kind'],'fusion')
+        self.assertEqual(trace[0]['ledger'][0]['original_plan'],p.fingerprint)
+
+    def test_B2_route_fingerprint_cache_and_scoped_original_order(self):
+        a = atom('a'); e = event(a)
+        context = EvolutionContext('1/5',2,2,2)
+        spec = SimpleNamespace(modes=4,scalar='1/37',deterministic=('1/20',)*4,validate=Mock())
+        provider = SimpleNamespace(modes=4,basis=Mock(return_value=Mock()),
+                                   reference_support=lambda a,singleton:a.support)
+        with patch.object(adapter,'_new_circuit',side_effect=Recorder), \
+                patch.object(adapter.legacy,'append_deterministic'), \
+                patch.object(adapter.legacy,'append_central'), \
+                patch.object(adapter,'_q13',side_effect=AssertionError('No Rustiq')):
+            result = adapter.build_evolution(spec,context,((e,e),(e,e)),[a],provider,
+                input_identity='i',source_identity='s',route='B2',case_id='artificial')
+        self.assertEqual(result.ordered_events,((e.to_dict(),e.to_dict()),)*2)
+        identity=adapter.compile_identity(result,route='B2')
+        self.assertEqual(identity['fusion_policy'],adapter.FUSION_POLICY)
+        self.assertEqual(identity['evolution'],result.fingerprint)
+        self.assertNotEqual(plan([e],[a],'B1').fingerprint,plan([e],[a],'B2').fingerprint)
 
 
 if __name__ == '__main__':
