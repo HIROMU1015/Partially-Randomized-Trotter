@@ -1,3 +1,15 @@
+## 2026-10-24 H4 Pauli central-control：Arb包含評価の準備完了・mandatory STOP
+
+[Arb bridge・人工包含検証・無効pilot契約](../../docs/non_df_h4_central_arb_preparation_20261024.md)。
+既存C exact/Arb端点・R0 QPY検査・R1 sine人工検証を再利用。native vectorをexact center＋unitary L2 radiusで包含する技術実装。
+新Arb10＋QPY6＋旧sine9＝25人工PASS。3qubit49,000gate人工列は64/96/128bitすべて既知値を包含、64bit幅9.43e-15。
+実PF cosine保存QPY1個の構造decodeのみ、実H4 Arb評価/状態作用/科学grant/compile/sampling/N_Gは0。
+最小案はPF cosine1局所、64から条件付き96→128bit・最大3状態作用、保存C-target区間再利用、新target作用0。契約は実行無効。
+幅1e-8は設計目標であり旧allowance変更ではない。局所ρ保証/PR全law/tail/C-L/旧未確定状態を保持。
+次はユーザーが限定pilot範囲を明示承認、Codexが承認後にproduction固定・評価・終了監査。現在は未実行。以下は時点履歴。
+
+[native Arb bridge](h4_arb_bridge.py)。数値入口は合計2〜3qubitの人工fixtureのみ、実H4 domainを拒否。
+
 ## 2026-10-24 H4：条件付きC/N/Gの限定保存値再解析完了
 
 [純scalar/paired/tail adapter](h4_conditional_cng.py)、[報告](../../docs/non_df_h4_conditional_cng_results_20261024.md)。化学・sampling/compiler entrypointを使わず、private namespaceから必要な関数だけ再利用。 20/20条件のguard域が非空。SOURCE b1984dcde、人工16件PASS、100仮定scenario/200軸/40閾値/30領域・主比較10/514 paired priceをone-shot再解析。保存平均価格では独立rho許容域全体でPR/PF順位反転なし。実rhoと母平均tailは未確定、旧null/C-L/旧compiler/native状態を保全。今回native exit0・回収、mandatory STOP。 以下は各時点の履歴。

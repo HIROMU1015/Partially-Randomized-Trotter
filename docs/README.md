@@ -1,3 +1,13 @@
+## 2026-10-24 H4 Pauli central-control：Arb包含評価の準備完了・mandatory STOP
+
+[Arb bridge・人工包含検証・無効pilot契約](non_df_h4_central_arb_preparation_20261024.md)。
+既存C exact/Arb端点・R0 QPY検査・R1 sine人工検証を再利用。native vectorをexact center＋unitary L2 radiusで包含する技術実装。
+新Arb10＋QPY6＋旧sine9＝25人工PASS。3qubit49,000gate人工列は64/96/128bitすべて既知値を包含、64bit幅9.43e-15。
+実PF cosine保存QPY1個の構造decodeのみ、実H4 Arb評価/状態作用/科学grant/compile/sampling/N_Gは0。
+最小案はPF cosine1局所、64から条件付き96→128bit・最大3状態作用、保存C-target区間再利用、新target作用0。契約は実行無効。
+幅1e-8は設計目標であり旧allowance変更ではない。局所ρ保証/PR全law/tail/C-L/旧未確定状態を保持。
+次はユーザーが限定pilot範囲を明示承認、Codexが承認後にproduction固定・評価・終了監査。現在は未実行。以下は時点履歴。
+
 ## 2026-10-24 H4：費用tail・rho重点調査（数値実行なし）
 
 [H4 PR費用tail・実装残差の重点調査](non_df_h4_tail_rho_investigation_20261024.md)、[非実行案・保全・STOP](../artifacts/non_df_h4_tail_rho_investigation/2026-10-24/README.md)。 基点5600f0e4の既存条件付き結果を保全し、費用tailとrhoの12辺を静的調査。Literal構造counterからの記号的envelopeは可能だが、全wrapper compiled RZと母平均の数値upperは未確立。共通角度生成のSOURCE対応で435件再診断を減らせる候補を特定。新実H4数値評価/N_G/科学grant/sampling/compile0、未確定状態を維持しmandatory STOP。 以下は各時点の履歴。
