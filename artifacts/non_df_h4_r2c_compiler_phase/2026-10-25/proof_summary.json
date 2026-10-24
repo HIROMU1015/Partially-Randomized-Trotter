@@ -1,0 +1,136 @@
+{
+  "status": "PROOF_INCOMPLETE",
+  "base_branch": "codex/non-df-h4-central-r2-design-20261025",
+  "base_commit": "b297571d6949bb8b39152f08589c3a3b9c829ba6",
+  "branch": "codex/non-df-h4-r2c-compiler-phase-proof-20261025",
+  "scope": "STATIC_SOURCE_MATHEMATICS_SYNTHETIC_TESTS_ONLY",
+  "report": "docs/non_df_h4_r2c_compiler_phase_proof_20261025.md",
+  "compiler": {
+    "qiskit": "1.3.0",
+    "basis": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed": 17,
+    "target": null,
+    "layout": null,
+    "routing": null
+  },
+  "proofs": [
+    {
+      "id": "control_all_orders",
+      "status": "PROVED_SYMBOLIC",
+      "orders": [
+        0,
+        2,
+        4
+      ],
+      "statement": "Chronological controlled signed products, Pauli rotation conjugation, body phase transferred once to ancilla; +Im sine."
+    },
+    {
+      "id": "eta_operands",
+      "status": "CONDITIONAL_BOUND",
+      "statement": "eta <= min(2, 2q sum_j |beta_j-alpha_j| + d_g)",
+      "conditions": [
+        "round-to-nearest",
+        "finite operands; exact doubling/halving domains justified",
+        "phase bound"
+      ]
+    },
+    {
+      "id": "phase_winding",
+      "status": "IDENTITY_PROVED_BOUND_CONDITIONAL",
+      "statement": "e_t=e_(t-1)+(a_t-a*_t)+A_t+R_t-n_t*(p_f-2pi)",
+      "unproved": [
+        "actual remainder error",
+        "pi/angle constants",
+        "winding and update domain numerical enclosure"
+      ]
+    },
+    {
+      "id": "native_rewrites",
+      "status": "PROVED_UNDER_RESTRICTED_PATH_CONDITIONS",
+      "statement": "accepted rewrites <= N0; run length <= N0; iterations <= N0+1",
+      "conditions": [
+        "native input",
+        "target=None",
+        "normal finite synthesis",
+        "representable gate counts"
+      ],
+      "notes": "No monotonic RZ-cost or population-tail claim."
+    },
+    {
+      "id": "native_count",
+      "status": "CONDITIONAL_STRUCTURAL_BOUND",
+      "statement": "N0 <= (2qL+qr)(10n+2)+7nKqr+7+indicator_sine",
+      "conditions": [
+        "standard-library native-cost search returns a minimum finite path without integer overflow"
+      ],
+      "notes": "Does not fix the selected equal-cost lowering rule or certify its numeric binding."
+    },
+    {
+      "id": "inverse_cancellation",
+      "status": "PROVED_RESTRICTED_PARAMETER_FREE_GATES",
+      "statement": "Exact inverse cancellation; parameter tolerance is irrelevant for this gate list."
+    },
+    {
+      "id": "exact_euler_backward",
+      "status": "PROVED_MATHEMATICAL_LEMMA",
+      "statement": "||M-U||<=epsilon<1 => ||V_exactEuler(M)-U|| <= min(2,24epsilon+6epsilon^2)",
+      "notes": "Zero-entry phases allowed; no actual Rust/libm error assigned."
+    },
+    {
+      "id": "numeric_lowering",
+      "status": "UNPROVED",
+      "missing": [
+        "finite equal-cost rule closure",
+        "ParameterExpression numeric/SymEngine rounding",
+        "phase accumulation and pi constants"
+      ]
+    },
+    {
+      "id": "actual_numeric_synthesis",
+      "status": "UNPROVED",
+      "missing": [
+        "matrix formation bound epsilon(l)",
+        "det/abs/arg/atan2 actual errors",
+        "ZSXX simplification and mod_2pi bound",
+        "sequence/DAG phase updates"
+      ]
+    },
+    {
+      "id": "whole_law_transfer",
+      "status": "THEOREM_CONDITIONAL_NUMERIC_UNDETERMINED",
+      "statement": "rho_PR,a <= B_saved * min(2, eta+2*kappa_a)"
+    }
+  ],
+  "whole_law_rho_upper": null,
+  "eta_uniform_numeric_upper": null,
+  "kappa_uniform_numeric_upper": null,
+  "uniform_budget_satisfied": null,
+  "formal_certificate_accepted": false,
+  "counts": {
+    "new_H4_state_actions": 0,
+    "new_H4_Arb_actions": 0,
+    "new_H4_scalar_bound_evaluations": 0,
+    "new_compile": 0,
+    "new_sampling": 0,
+    "new_RNG_replay": 0,
+    "new_Hamiltonian_or_state_generation": 0,
+    "N_G_reanalysis": 0,
+    "new_scientific_grants": 0,
+    "synthetic_tests_passed": 10
+  },
+  "next": {
+    "owner": "user",
+    "decision": "Authorize a bounded continuation of the specific compiler numeric proofs, or choose research redesign. No automatic execution.",
+    "H4_state_actions_required_for_next_proof": 0,
+    "scalar_scientific_evaluation_requires_separate_permission": true,
+    "compiler_family_change_requires_separate_permission": true,
+    "prior_disabled_contract_unchanged": true
+  },
+  "mandatory_STOP": true
+}

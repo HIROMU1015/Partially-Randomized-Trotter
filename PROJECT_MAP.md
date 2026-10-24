@@ -1,3 +1,7 @@
+## 2026-10-25 H4 R2-C compiler・位相の限定証明
+
+[限定証明・未解決数値辺](docs/non_df_h4_r2c_compiler_phase_proof_20261025.md)。PROOF_INCOMPLETE。全lawρ/null保持、H4科学/scalar/compile0、人工10PASS、mandatory STOP。
+
 ## 2026-10-25 H4 PR全law R2静的設計
 
 [転送式・compiler不足・無効次契約](docs/non_df_h4_central_r2_design_20261025.md)。全lawρは未確定、科学call0・人工11PASS・mandatory STOP。

@@ -1,3 +1,7 @@
+## 2026-10-25 H4 R2-C compiler・位相の限定証明
+
+[全orderのcontrol・phase winding・Euler補題・未解決数値証明](non_df_h4_r2c_compiler_phase_proof_20261025.md)。PROOF_INCOMPLETE、全lawρ/null、H4科学/scalar/compile0、人工10PASS、mandatory STOP。
+
 ## 2026-10-25 H4 PR全law R2静的設計
 
 [Uniform/law-weighted比較・誤差分解・未解決証明](non_df_h4_central_r2_design_20261025.md)。実H4計算0、次契約無効、全law保証/正式受理なし。

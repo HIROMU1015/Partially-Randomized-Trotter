@@ -1,3 +1,13 @@
+## 2026-10-25 H4 R2-C：compiler・位相の限定証明・mandatory STOP
+
+[技術報告](docs/non_df_h4_r2c_compiler_phase_proof_20261025.md)。**PROOF_INCOMPLETE**。
+固定H4/1Å/STO-3G、Pauli184/prefix27、S2/T.8/q8/r4/K4、Qiskit1.3.0/opt1/basis rz-sx-x-cx/seed17を保持。
+全orderのcontrol/非可換順序、phase winding恒等式、native後の有限rewrite数、exact Eulerの特異点に一様な補題を導出。
+Actual binary64 binding・Euler簡約・remainderの保証は未証明。η/κ/全lawρ数値上界はnull、保存予算達成未確定。
+新3＋再利用7の人工10PASS、H4状態作用/Arb/scalar上界評価/compile/sampling/RNG replay/grant/N_G0。
+旧6局所保証・旧SOURCE/結果/grant/STOP、C/L・旧N_G/null・元native UNKNOWNを保全。費用tailは別問題。
+次はユーザーが特定数値kernelの証明継続か実装family再設計を判断し、Codexが指定scopeを進める。科学scalar評価・compiler変更は別承認。以下は時点履歴。
+
 ## 2026-10-25 H4 Pauli PR全law：R2静的設計完了・mandatory STOP
 
 [全law構造・転送式・比較・非実行契約](docs/non_df_h4_central_r2_design_20261025.md)。
