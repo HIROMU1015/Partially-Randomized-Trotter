@@ -189,3 +189,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## Gaussian singleton構造選択の静的設計調査（2026-10-24）
 
 [設計メモ・限界・独立検証案・STOP](docs/research/pr_rectangular_selection_design_20261024.md)。PS48結果と既存SOURCEを読むだけで、数値再集計・recipe生成・選択器実装・build／compileはしない。一般的な正の選択条件は未確立で、一旦終了の技術提案はユーザー／GPTの採否待ち。既存の科学的PASS・結果・承認状態は保持する。
+
+## Gaussian singleton独立研究の一時終了・次研究への引継ぎ（2026-10-24、現在の採択状態）
+
+[採択記録と引継ぎ](docs/research/pr_gaussian_singleton_closeout_handoff_20261024.md)。ユーザーが一時終了を正式採択した。上記の採否待ちは当時の履歴で、科学的PASS・負結果・未確立事項は変更しない。既存Track BのC4／Parent allocation／G9／C1と先行研究整理を再利用し、辞書・law・実回路費用・統計負担の共同検討へ論点を渡す。具体的機構の採択・新実装・科学実行は含めずmandatory STOP。

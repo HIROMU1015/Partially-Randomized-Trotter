@@ -1,5 +1,10 @@
 # Validation status
 
+## 2026-10-24 research disposition: Gaussian singleton direction temporarily closed by user adoption
+
+The user adopted temporary closure of Gaussian singleton synthesis/selection optimization as an independent research direction. F1/F2 fixed-fixture correctness and PS48 equivalence PASS remain unchanged; blanket candidate-A use does not support RZ/CX reduction and a general compile-free selector remains unestablished. This is a research-priority decision, not a scientific FAIL or a PR-wide NO-GO.
+[Adopted decision, evidence boundaries and next-research handoff](docs/research/pr_gaussian_singleton_closeout_handoff_20261024.md) reuses existing Track B/prior-art records. Gamma/statistical/interval qualification, certified N and N-weighted total cost remain unresolved. No new science, regrouping, implementation or validation path was executed. Earlier preparation and pending-decision entries below are historical. Mandatory STOP; User/GPT chooses any next mechanism and authorizes new work separately.
+
 ## 2026-10-24 rectangular Givens PS48: all scientific gates PASS; resource changes mixed
 
 Unchanged source `770e53a` completed one separately approved PS48 execution: six candidate bases and raw/compiled 48 wrappers (24 each support1/support2), 36 transpiles and 12 aliases, zero new high-precision references or retries. Compiled operator max-entry 1.99349e-14, within fixed tolerances with rtol=0 and no phase fit.

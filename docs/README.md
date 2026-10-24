@@ -121,3 +121,5 @@
 [Rectangular Givens候補AのPS48科学実行結果](research/pr_rectangular_givens_ps48_execution_20261024.md)：6基底・raw／compiled各48の固定gateが全件PASS。index21/25では改善、全48等重みRZ/CXは増加。case CSV・残差・古典費用・provenanceは `artifacts/pr_rectangular_givens/2026-10-24/`。全F2期待値や一般的優位の認定はせずmandatory STOP。
 
 [Rectangular Givens候補Aの構造選択規則調査](research/pr_rectangular_selection_design_20261024.md)：SOURCEと保存結果の静的調査だけ。support／frame／境界の説明と予測の限界、両方式compileの強い対照、未承認の独立検証案を整理した。一般的な規則は未確立で、一旦終了を技術的に推奨。選択器実装・再集計・科学実行なし、mandatory STOP。
+
+[Gaussian singleton独立研究の一時終了・次研究への引継ぎ](research/pr_gaussian_singleton_closeout_handoff_20261024.md)：一時終了をユーザーが正式採択した現在の記録。F1／限定F2／PS48の科学的PASS、候補A一律適用の負結果、選択規則・γ／認証N等の未確立事項を保持する。既存Track Bと先行研究整理から辞書・sampling・whole-trajectory費用・統計負担の論点を渡す。新しい機構の設計・実装・科学実行は開始せずmandatory STOP。
