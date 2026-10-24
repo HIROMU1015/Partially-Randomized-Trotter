@@ -1,5 +1,10 @@
 # プロジェクト案内
 
+## C1 Stage3：共通CA総資源比較の準備（2026-10-25）
+
+[技術報告](docs/research/research_c_c1_stage3_preparation_20261025.md)／[未承認科学契約](docs/research/research_c_c1_stage3_contract_unapproved_20261025.json)。既存native一般K・RTE・RPE・compilerを再利用し、`c1_stage3_connection/accuracy/reference.py`、`scripts/run_research_c_c1_stage3.py`、人工testを追加。新規25＋既存40 tests・29 subtests PASS。CA初回pilot、状態準備除外・oracle／law／合成誤差／費用supportの未決定条件を明記。科学call0、旧証拠保全、mandatory STOP。
+
+
 ## C1 Stage2限定科学実行：native接続PASS（2026-10-25）
 
 [結果・全gate・native費用・STOP](docs/research/research_c_c1_stage2_native_execution_20261025.md)。公開SOURCE `a977a4390668bc107360c8ff05f43d851dc81dc9` を無変更で使用し、局所40／raw full4／actual adjoint4／compiled full4／X/Y8組の60主検査とunitarity52件が全PASS。P-H4・CDF rank8／XDF rank10、T1/10 ordered S2・P0 profile。科学call243/243、fit／optimizer／retry／resume0、transpile12・QPY68。CDF fullのRZ12118／CX7352／depth12724、XDF16659／9520／16215。物理DF精度が異なり同精度総資源優位とはしない。証拠 `artifacts/research_c_c1_stage2_science/2026-10-25/`、Stage3未承認・mandatory STOP。下記の準備時点の未承認表示は履歴。

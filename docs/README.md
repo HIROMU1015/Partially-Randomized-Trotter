@@ -1,5 +1,8 @@
 # 文書索引
 
+[C1 Stage3：共通CA総資源比較の準備](research/research_c_c1_stage3_preparation_20261025.md)／[未承認契約](research/research_c_c1_stage3_contract_unapproved_20261025.json)。既存一般K native・独立CAR・RTE/RPEを接続し、oracle／DF energy bias／signal誤差／統計／直列kernel費用を区別。人工65 tests＋29 subtests PASS、科学call0。初回CA推奨条件と残るlaw／合成誤差／費用区間資格を明記し、mandatory STOP。
+
+
 [C1 Stage2 native限定科学実行](research/research_c_c1_stage2_native_execution_20261025.md)：局所／full／actual adjoint／compiled／X/Yの60主検査＋unitarity52件PASS、科学call243/243、新fit／retry／resume0、transpile12・QPY68。CDF full RZ12118／CX7352／depth12724、XDF16659／9520／16215。異なる物理DF精度での構造的比較であり同精度総資源優位ではない。証拠 `artifacts/research_c_c1_stage2_science/2026-10-25/`、Stage3未承認・mandatory STOP。
 
 [C1 Stage2 native接続・科学実行準備](research/research_c_c1_stage2_native_preparation_20261025.md)：保存CDF rank8を限定対象採択、既存Gaussian／controlled RZ/RZZ・phase／actual adjoint／X/Y／compilerを接続。人工80 tests＋29 subtests PASS。[未承認契約](research/research_c_c1_stage2_native_contract_unapproved_20261025.json)の時間・S2・profile・allowance・243 unitsは推奨案。証拠 `artifacts/research_c_c1_stage2_technical/2026-10-25/`、実回路・科学call0、mandatory STOP。

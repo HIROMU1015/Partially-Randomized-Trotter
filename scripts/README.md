@@ -1,5 +1,8 @@
 # scripts 索引
 
+`run_research_c_c1_stage3.py` は[C1 Stage3技術準備](../docs/research/research_c_c1_stage3_preparation_20261025.md)のSOURCE／保存入力byte確認を既定とする。科学条件を採択して別途チャットで許可した後だけ`--evaluate-evidence <packet> --output <fresh.json>`で精度／shot／費用を評価する。分子evidence生成は既存loader／native／RTEと新しい最小接続関数を組み合わせる。[未承認契約](../docs/research/research_c_c1_stage3_contract_unapproved_20261025.json)、人工test `tests/management/test_research_c_c1_stage3.py`、証拠 `artifacts/research_c_c1_stage3_technical/2026-10-25/`。今回科学call0・mandatory STOP。
+
+
 `run_research_c_c1_stage2_native.py` の[C1 Stage2限定実行](../docs/research/research_c_c1_stage2_native_execution_20261025.md)は採択されたT1/10・S2・P0 profileで全60主検査＋unitarity52件PASS。SOURCE／runner無変更、call243/243、fit／retry／resume0、68 QPY・12 caseのnative metric記録。原本 `artifacts/research_c_c1_stage2_science/2026-10-25/`。Stage3未承認・mandatory STOP。
 
 `run_research_c_c1_stage2_native.py` は[C1 Stage2接続](../docs/research/research_c_c1_stage2_native_preparation_20261025.md)のbyte preflightを既定とする。実行前にチャットで条件採択・別明示科学許可を受け、`--execute --output <fresh>` を使用する。approval記録や証明照合は不要。処理 `trottertracks.c1_stage2_native/validation/execution`、test `tests/management/test_research_c_c1_stage2_native.py`、SOURCE／52 pins／人工証拠 `artifacts/research_c_c1_stage2_technical/2026-10-25/`、[未承認契約](../docs/research/research_c_c1_stage2_native_contract_unapproved_20261025.json)。人工80件＋29 subtests PASS、今回実回路build/compile・科学call0、mandatory STOP。

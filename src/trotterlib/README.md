@@ -1,5 +1,8 @@
 # trotterlib モジュール索引
 
+C1 Stage3の新しい最小接続は`../trottertracks/c1_stage3_connection.py`（一般K tail／RTE／native直列接続）、`c1_stage3_reference.py`（独立generator／PF／RTE／virtual RPE）、`c1_stage3_accuracy.py`（CA／signal／shots／費用）にある。既存RTE・horizon・Hoeffding・phase復元・compilerを再利用。旧square-specific cost providerと短q proxyはCDFへ直接転用しない。[技術報告](../../docs/research/research_c_c1_stage3_preparation_20261025.md)、entry `scripts/run_research_c_c1_stage3.py`、人工test `tests/management/test_research_c_c1_stage3.py`。実H4科学計算なし、条件未採択・STOP。
+
+
 関連trackの[C1 Stage2限定科学結果](../../docs/research/research_c_c1_stage2_native_execution_20261025.md)は既存Givens／diagonal emitter／CAR／controlled／X/Y／compilerを無変更で再利用し、全60主検査とunitarity52件PASS。CDF保存rank8／XDF rank10、call243/243、fit／retry／resume0。証拠 `artifacts/research_c_c1_stage2_science/2026-10-25/`。物理DF精度差があり同精度総資源優位ではない。Stage3未承認・mandatory STOP。
 
 関連trackの[C1 Stage2 native接続](../../docs/research/research_c_c1_stage2_native_preparation_20261025.md)は `trottertracks.c1_stage2_native` から既存 `df_trotter.ops/decompose` と独立CAR、controlled/X/Y/compiler/metric資産を再利用する。旧library変更なし。entry `scripts/run_research_c_c1_stage2_native.py`、test `tests/management/test_research_c_c1_stage2_native.py`、SOURCE／証拠 `artifacts/research_c_c1_stage2_technical/2026-10-25/`。人工80件＋29 subtests PASS、科学条件は[未承認案](../../docs/research/research_c_c1_stage2_native_contract_unapproved_20261025.json)、実回路・科学call0、mandatory STOP。
