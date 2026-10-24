@@ -106,5 +106,14 @@ class ProductionTests(unittest.TestCase):
             self.assertEqual(native['exit_code'],0);self.assertTrue(native['reaped']);self.assertTrue(stop['all_owned_reaped'])
             self.assertEqual(native['scope'],'NEW_H4_PF_COSINE_ARB_WORKER_ONLY')
 
+    def test_new_runtime_pins_actual_files_and_records_inherited_differences(self):
+        data=runner['runtime']()
+        self.assertGreater(data['reused_numeric_files'],0)
+        C.hashes(data['files'])
+        for p,change in data['prior_runtime_differences'].items():
+            self.assertEqual(data['files'][p],change['current_sha256'])
+            self.assertNotEqual(change['old_sha256'],change['current_sha256'])
+            self.assertNotIn('/flint/',p);self.assertNotIn('/python_flint.libs/',p)
+
 
 if __name__=='__main__':unittest.main(verbosity=2)

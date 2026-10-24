@@ -45,11 +45,15 @@ def runtime():
         if len(parts)==6 and parts[5].startswith('/') and Path(parts[5]).is_file():paths.add(Path(parts[5]).resolve())
     files={str(p):C.sha(p) for p in sorted(paths)}
     common={p for p in files if p in old['files']}
-    C.require(all(files[p]==old['files'][p] for p in common),'REUSED_RUNTIME_BYTES_CHANGED')
+    differences={p:dict(old_sha256=old['files'][p],current_sha256=files[p]) for p in sorted(common) if files[p]!=old['files'][p]}
+    numeric={p for p in common if '/flint/' in p or '/python_flint.libs/' in p}
+    C.require(all(files[p]==old['files'][p] for p in numeric),'REUSED_NUMERICAL_BACKEND_CHANGED')
     C.require(flint.__version__=='0.9.0','FLINT_BINDING_VERSION')
     return dict(files=files,python=sys.version,python_flint=flint.__version__,FLINT=old['FLINT'],
         executable=PYTHON,reused_manifest='artifacts/non_df_h4_c_reference_fix/2026-10-23/runtime_manifest.json',
-        reused_unchanged_files=len(common),scope='loaded stdlib/shared libraries and existing complete flint binary package; unused numpy excluded')
+        reused_unchanged_files=len(common)-len(differences),reused_numeric_files=len(numeric),prior_runtime_differences=differences,
+        difference_policy='observe inherited system differences; new runtime sealed before any grant; numeric FLINT package must match; no shared files changed',
+        scope='loaded stdlib/shared libraries and existing complete flint binary package; unused numpy excluded')
 
 
 def verify(seal):

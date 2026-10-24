@@ -5,7 +5,7 @@
 `codex/non-df-h4-central-arb-pf-cosine-20261025`。
 
 本SOURCE固定時点では、実H4状態作用0、科学grant発行/消費0。
-production接続・人工35テスト・保存QPYの構造検証を完了し、次にSOURCE/runtime/入力/契約を固定する。
+production接続・人工36テスト・保存QPYの構造検証を完了し、次にSOURCE/runtime/入力/契約を固定する。
 結果・終了監査・公開状態は計算後に追記する。
 
 ## 固定科学範囲
@@ -30,7 +30,7 @@ workerが照合するsealは実際に使うcode/runtime/入力に限定し、他
 
 ## 人工検証
 
-新production10＋既存Arb10＋QPY6＋sine9＝35 PASS。
+最終構成は新production11＋既存Arb10＋QPY6＋sine9＝36 PASS（修正前35件の記録も保全）。
 早期停止（幅目標未達でも判定後は終了）、straddle/nonfiniteの有限昇精度、128bit後INCONCLUSIVE、
 contract改変拒否、direct interval差とbudget3分岐、共通kernel一致、非返還call、grant再消費/STOP拒否、
 人工processのnative exit/reapとscopeを確認した。
@@ -55,3 +55,13 @@ CPU/RAM/worker数の任意上限なし。1科学対象の順序依存walkは逐�
 
 [承認・入力・人工・SOURCE/grant・結果・監査](../artifacts/non_df_h4_central_arb_pf_cosine/2026-10-25/README.md)。
 計算後は結果を保存しcommit/push/remote確認してmandatory STOPする。
+
+## grant発行前の技術回復
+
+最初のproduction SOURCE bbb29c868e7464e729253fe6881d341c55be96b7では、旧C runtimeの
+システムlibz.so.1.3 SHAと現在値の相違を検出して、grant発行前にprepareを停止した。
+実H4状態作用0・grant発行/消費0、run01未作成。変更主体や時点はUNKNOWNであり、共有ファイルは変更しない。
+pre_grant_runtime_diagnosis.jsonとpre_grant_STOP.jsonに旧SOURCEと失敗を保存する。
+修正ではFLINT数値packageの旧版一致を維持し、現在のsystem runtime差を明示記録して新SOURCE/新sealへ固定する。
+runtimeに関する回帰を追加し11件PASS。既存の旧SOURCE/runtime/STOPは書き換えず、新しい未使用grantだけを発行する。
+科学的条件・許可call数・精度scheduleは変更しない。
