@@ -23,6 +23,7 @@ FIT_SETTINGS = dict(optimize=True, max_vecs=8, tol=1e-8, method="L-BFGS-B",
                     cholesky=True, return_optimize_result=True)
 ALLOWANCE_VERSION = "binary64_operation_scale_guard8_v1"
 ROUNDING_GUARD = 8
+RAW_FRAME_VERSION = "car_density_batched_matmul_v2"
 
 
 class Calls:
@@ -204,9 +205,15 @@ def raw_frame(J, U, bilinears):
     n=len(J)
     # Raw spatial J/U only. No K, V, coefficient expansion or candidate helper.
     b=bilinears[0::2,0::2]+bilinears[1::2,1::2]
-    densities=np.einsum("pi,qi,pqab->iab",U,U.conj(),b,optimize=True)
-    weighted=np.einsum("ij,jab->iab",J,densities,optimize=True)
-    matrix=0.5*np.einsum("iab,ibc->ac",densities,weighted,optimize=True)
+    d=bilinears.shape[-1]
+    # The locked NumPy optimized-einsum/dot path produced intermittent wrong
+    # results when concurrent frame jobs overlapped the candidate's matmuls.
+    # Keep the CAR contraction and BLAS parallelism, using explicit matmul
+    # shapes; no adapter coefficients, projection, pruning or tolerance change.
+    coefficients=(U.T[:,:,None]*U.conj().T[:,None,:]).reshape(n,n*n)
+    densities=(coefficients@b.reshape(n*n,d*d)).reshape(n,d,d)
+    weighted=(J@densities.reshape(n,d*d)).reshape(n,d,d)
+    matrix=0.5*np.sum(densities@weighted,axis=0)
     s=np.sum(np.abs(U),axis=0)**2
     scale=2*float(np.sum(np.abs(J)*s[:,None]*s[None,:]))
     return matrix,scale
@@ -295,9 +302,11 @@ class _GateFailure(Exception):
 
 def evaluate(*args,**kwargs):
     try:
-        return _evaluate(*args,**kwargs)
+        result=_evaluate(*args,**kwargs)
     except _GateFailure as failure:
-        return failure.result
+        result=failure.result
+    result['raw_frame_version']=RAW_FRAME_VERSION
+    return result
 
 
 def _evaluate(h,g,c,kappa,J,U,saved_one,saved_lambdas,saved_G,*,

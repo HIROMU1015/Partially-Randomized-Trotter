@@ -1,0 +1,27 @@
+diff --git a/src/trottertracks/c1_stage1.py b/src/trottertracks/c1_stage1.py
+index 678cf5965..9e892df14 100644
+--- a/src/trottertracks/c1_stage1.py
++++ b/src/trottertracks/c1_stage1.py
+@@ -25,0 +26 @@ ROUNDING_GUARD = 8
++RAW_FRAME_VERSION = "car_density_batched_matmul_v2"
+@@ -207,3 +208,9 @@ def raw_frame(J, U, bilinears):
+-    densities=np.einsum("pi,qi,pqab->iab",U,U.conj(),b,optimize=True)
+-    weighted=np.einsum("ij,jab->iab",J,densities,optimize=True)
+-    matrix=0.5*np.einsum("iab,ibc->ac",densities,weighted,optimize=True)
++    d=bilinears.shape[-1]
++    # The locked NumPy optimized-einsum/dot path produced intermittent wrong
++    # results when concurrent frame jobs overlapped the candidate's matmuls.
++    # Keep the CAR contraction and BLAS parallelism, using explicit matmul
++    # shapes; no adapter coefficients, projection, pruning or tolerance change.
++    coefficients=(U.T[:,:,None]*U.conj().T[:,None,:]).reshape(n,n*n)
++    densities=(coefficients@b.reshape(n*n,d*d)).reshape(n,d,d)
++    weighted=(J@densities.reshape(n,d*d)).reshape(n,d,d)
++    matrix=0.5*np.sum(densities@weighted,axis=0)
+@@ -298 +305 @@ def evaluate(*args,**kwargs):
+-        return _evaluate(*args,**kwargs)
++        result=_evaluate(*args,**kwargs)
+@@ -300 +307,3 @@ def evaluate(*args,**kwargs):
+-        return failure.result
++        result=failure.result
++    result['raw_frame_version']=RAW_FRAME_VERSION
++    return result
