@@ -1,0 +1,791 @@
+{
+  "schema": "H46_STANDARD_Y4_CONDITIONAL_ADOPTION_V1",
+  "date": "2026-10-24",
+  "status": "FORMALLY_ADOPTED_CONDITIONAL_INDEPENDENT_COST_DIRECTION",
+  "authority": {
+    "kind": "CURRENT_USER_INSTRUCTION",
+    "historical_adoption_receipt_created": false,
+    "scope": "H4/H6標準Yoshida4独立確認結果を、固定shot政策下の条件付き費用方向再現として正式採用し研究証拠へ統合する"
+  },
+  "SOURCE": "a2a53698a72da7280d217adc7931938121ed732d",
+  "numeric_SOURCE": "c028f1c2885afdba65ef8c62c075738aadd7323d",
+  "result_commit": "4d117041469fb8eebf2ad55405c0f7d1b70dea7d",
+  "input_manifest_sha256": "1409340dbe84ca07a4bdcfc73400699ce0cfb6ec14559d4febec98498336c128",
+  "contract_sha256": "4750841471e8f98a358db64e2cee8c616a7888408ef1a4bdbd6f1c6d98ab0f74",
+  "conditions": "linear H4/H6; adjacent1.0Angstrom;STO-3G;tol-only DF1e-8;rank10/19;T=.8;epsilon_signal=.001;alpha_axis=.025;P=0;USUAL_SIGNED;empirical allowance factor1;saved reference/signal/analytic shots;symmetric-directional;full cos/sin Hadamard wrapper;without state preparation;compiled RZ;PR K4 ABS_TIME_PER_OUTER32;prefix3/5;S2 q8/Y4 q4",
+  "compiler_profile": "Qiskit1.3.0;rz/sx/x/cx;opt1;seed17",
+  "family_policy_saved": {
+    "P": 0,
+    "adaptive_top_up": false,
+    "allowance_multiplier": 1,
+    "alpha_axis": "0.025",
+    "conditional_on_saved_signal_bias_normalization_shots": true,
+    "cross_formula_independent": true,
+    "epsilon": "0.001",
+    "family_alpha": "0.05",
+    "family_size": 2,
+    "interval": "NORMAL_BONFERRONI_APPROXIMATE_NOT_CERTIFIED",
+    "mandatory_STOP": true,
+    "mode": "USUAL_SIGNED",
+    "new_shots": 0,
+    "paired_within_trajectory": true,
+    "pooling": false,
+    "population_guarantee": false,
+    "ranking": 0,
+    "rare_cost_imputation": false,
+    "retry": false
+  },
+  "family_size_is_not_trajectory_count": true,
+  "groups_and_comparisons_saved": [
+    {
+      "claim_id": "CE_H4_STANDARD_Y4_FIXED_SHOT_DIRECTION",
+      "system": "H4",
+      "groups_saved": [
+        {
+          "system": "H4",
+          "formula": "2nd",
+          "q": "8",
+          "prefix": "3",
+          "candidate": "M5_MIN_72b305020499dd68",
+          "epsilon": "0.001",
+          "cohort": "CONFIRMATION",
+          "origin": "REUSED_INDEPENDENT_S2",
+          "SOURCE": "c028f1c2885afdba65ef8c62c075738aadd7323d",
+          "n": "25",
+          "C_cos_mean": "51413.64",
+          "C_sin_mean": "51413.64",
+          "N_cos": "24249726",
+          "N_sin": "18445335",
+          "G_mean": "2195108496032.04",
+          "G_SE": "23804460639.228283",
+          "C_cos_sin_covariance": "7771438.656666666",
+          "observed_strata": "{\"S0\": 25, \"S2_multi\": 0, \"S2_single\": 0, \"S4\": 0}",
+          "unobserved_strata": "S2_single;S2_multi;S4",
+          "rare_tail_bound": "",
+          "population_guarantee": "False"
+        },
+        {
+          "system": "H4",
+          "formula": "4th",
+          "q": "4",
+          "prefix": "3",
+          "candidate": "M5_MIN_ab57ad5bd40dc583",
+          "epsilon": "0.001",
+          "cohort": "CONFIRMATION",
+          "origin": "NEW_INDEPENDENT_STANDARD_Y4",
+          "SOURCE": "a2a53698a72da7280d217adc7931938121ed732d",
+          "n": "45",
+          "C_cos_mean": "49901.71111111111",
+          "C_sin_mean": "49901.71111111111",
+          "N_cos": "19240638",
+          "N_sin": "18807773",
+          "G_mean": "1898680813958.8223",
+          "G_SE": "12324235676.571392",
+          "C_cos_sin_covariance": "4721276.71010101",
+          "observed_strata": "{\"S0\": 45, \"S2_multi\": 0, \"S2_single\": 0, \"S4\": 0}",
+          "unobserved_strata": "S2_single;S2_multi;S4",
+          "rare_tail_bound": "",
+          "population_guarantee": "False"
+        }
+      ],
+      "comparison_saved": {
+        "system": "H4",
+        "epsilon": "0.001",
+        "difference_S2_minus_Y4": "296427682073.2178",
+        "difference_SE": "26805580227.56164",
+        "approximate_interval_low": "236345581436.1279",
+        "approximate_interval_high": "356509782710.3077",
+        "ratio_Y4_over_S2": "0.8649598948712324",
+        "point_status": "REPRODUCED",
+        "decision": "REPRODUCED_APPROXIMATE",
+        "family_size": "2",
+        "family_alpha": "0.05",
+        "interval_is_rigorous": "False",
+        "rare_tail_bound": ""
+      },
+      "result_saved": {
+        "comparison": {
+          "all_zero_sample_variance_warning": false,
+          "approximate_direction": "POSITIVE",
+          "approximate_interval": [
+            "236345581436.1279",
+            "356509782710.3077"
+          ],
+          "decision": "REPRODUCED_APPROXIMATE",
+          "difference": "296427682073.2178",
+          "difference_SE": "26805580227.56164",
+          "interval_is_rigorous": false,
+          "point_status": "REPRODUCED",
+          "population_rank": "NOT_CERTIFIED",
+          "rare_tail_bound": null,
+          "ratio_Y4_over_S2": "0.8649598948712324",
+          "ratio_interval": null,
+          "reselection": false
+        },
+        "groups": {
+          "S2": {
+            "N_cos": 24249726,
+            "N_sin": 18445335,
+            "candidate": "M5_MIN_72b305020499dd68",
+            "cohort": "CONFIRMATION",
+            "formula": "2nd",
+            "observed_strata": {
+              "S0": 25,
+              "S2_multi": 0,
+              "S2_single": 0,
+              "S4": 0
+            },
+            "q": 8,
+            "statistics": {
+              "SE": "23804460639.228283",
+              "axis_means": [
+                "51413.64",
+                "51413.64"
+              ],
+              "covariance": "7771438.656666666",
+              "independent_weighted_covariance_match": true,
+              "mean": "2195108496032.04",
+              "mean_exact": {
+                "denominator": 25,
+                "numerator": 54877712400801
+              },
+              "n": 25,
+              "population_variance_bound": null,
+              "rare_tail_bound": null,
+              "variance": "1.4166308658114214e+22",
+              "variance_exact": {
+                "denominator": 100,
+                "numerator": 1416630865811421439867479
+              },
+              "zero_observed_variance": false
+            },
+            "unobserved_strata": [
+              "S2_single",
+              "S2_multi",
+              "S4"
+            ],
+            "unseen_costs": null,
+            "unseen_tail_bound": null
+          },
+          "Y4": {
+            "N_cos": 19240638,
+            "N_sin": 18807773,
+            "candidate": "M5_MIN_ab57ad5bd40dc583",
+            "cohort": "CONFIRMATION",
+            "formula": "4th",
+            "observed_strata": {
+              "S0": 45,
+              "S2_multi": 0,
+              "S2_single": 0,
+              "S4": 0
+            },
+            "q": 4,
+            "statistics": {
+              "SE": "12324235676.571392",
+              "axis_means": [
+                "49901.71111111111",
+                "49901.71111111111"
+              ],
+              "covariance": "4721276.71010101",
+              "independent_weighted_covariance_match": true,
+              "mean": "1898680813958.8223",
+              "mean_exact": {
+                "denominator": 45,
+                "numerator": 85440636628147
+              },
+              "n": 45,
+              "population_variance_bound": null,
+              "rare_tail_bound": null,
+              "variance": "6.834905325525381e+21",
+              "variance_exact": {
+                "denominator": 990,
+                "numerator": 6766556272270126710323503
+              },
+              "zero_observed_variance": false
+            },
+            "unobserved_strata": [
+              "S2_single",
+              "S2_multi",
+              "S4"
+            ],
+            "unseen_costs": null,
+            "unseen_tail_bound": null
+          }
+        }
+      },
+      "fixed_group_binding": {
+        "N_S2": [
+          24249726,
+          18445335
+        ],
+        "N_Y4": [
+          19240638,
+          18807773
+        ],
+        "S2": "M5_MIN_72b305020499dd68",
+        "Y4": "M5_MIN_ab57ad5bd40dc583",
+        "n": 45,
+        "n_s2": 25,
+        "prefix": 3,
+        "preparation": "317662c0ff954eefa5808bed84fa1bc5cbcd2e803383c62503fff8492b7b3508",
+        "rank": 10
+      },
+      "Full_and_exploration_saved": [
+        {
+          "C_cos": "62571",
+          "C_sin": "62571",
+          "G": "2668093076979",
+          "G_SE": "",
+          "N_cos": "24225252",
+          "N_sin": "18415797",
+          "bias_cos": "0.0001056297009830176",
+          "bias_sin": "1.7251680356378252e-05",
+          "candidate": "H4_FULL_10_8_2nd",
+          "cohort": "COMMON_PF_DETERMINISTIC",
+          "epsilon": "0.001",
+          "formula": "2nd",
+          "headroom_cos": "0.0006014760802035299",
+          "headroom_sin": "0.0006898541008301692",
+          "log_B_base": "0.0",
+          "log_B_margin": "4.78905803902314e-11",
+          "method": "FULL",
+          "n": "1",
+          "new_G_SE_evaluated": "False",
+          "origin": "LITERAL_SAVED_ENDPOINT",
+          "population_guarantee": "False",
+          "prefix": "10",
+          "q": "8",
+          "saved_unit_C_SE_cos": "",
+          "saved_unit_C_SE_sin": "",
+          "status": "ELIGIBLE",
+          "system": "H4",
+          "u_cos": "1e-09",
+          "u_sin": "1e-09"
+        },
+        {
+          "C_cos": "93799",
+          "C_sin": "93799",
+          "G": "3341048717564",
+          "G_SE": "",
+          "N_cos": "18013027",
+          "N_sin": "17606209",
+          "bias_cos": "-9.581774840089485e-06",
+          "bias_sin": "-1.5691165964337728e-06",
+          "candidate": "H4_FULL_10_4_4th",
+          "cohort": "COMMON_PF_DETERMINISTIC",
+          "epsilon": "0.001",
+          "formula": "4th",
+          "headroom_cos": "0.000697524006346458",
+          "headroom_sin": "0.0007055366645901137",
+          "log_B_base": "0.0",
+          "log_B_margin": "6.949107955733875e-11",
+          "method": "FULL",
+          "n": "1",
+          "new_G_SE_evaluated": "False",
+          "origin": "LITERAL_SAVED_ENDPOINT",
+          "population_guarantee": "False",
+          "prefix": "10",
+          "q": "4",
+          "saved_unit_C_SE_cos": "",
+          "saved_unit_C_SE_sin": "",
+          "status": "ELIGIBLE",
+          "system": "H4",
+          "u_cos": "1e-09",
+          "u_sin": "1e-09"
+        },
+        {
+          "C_cos": "51251.0",
+          "C_sin": "51251.0",
+          "G": "2188164571311.0",
+          "G_SE": "15629532287.03437",
+          "N_cos": "24249726",
+          "N_sin": "18445335",
+          "bias_cos": "0.00010542177747244197",
+          "bias_sin": "1.721776067908909e-05",
+          "candidate": "M5_MIN_72b305020499dd68",
+          "cohort": "EXPLORATION",
+          "epsilon": "0.001",
+          "formula": "2nd",
+          "headroom_cos": "0.0006016840037141055",
+          "headroom_sin": "0.0006898880205074584",
+          "log_B_base": "0.0008505094007942772",
+          "log_B_margin": "1.0382747061933342e-12",
+          "method": "PR",
+          "n": "48",
+          "new_G_SE_evaluated": "False",
+          "origin": "LITERAL_SAVED_ENDPOINT",
+          "population_guarantee": "False",
+          "prefix": "3",
+          "q": "8",
+          "saved_unit_C_SE_cos": "366.0735438938562",
+          "saved_unit_C_SE_sin": "366.0735438938562",
+          "status": "ELIGIBLE",
+          "system": "H4",
+          "u_cos": "1e-09",
+          "u_sin": "1e-09"
+        },
+        {
+          "C_cos": "49547.666666666664",
+          "C_sin": "49547.666666666664",
+          "G": "1885209985424.3333",
+          "G_SE": "14504412056.459614",
+          "N_cos": "19240638",
+          "N_sin": "18807773",
+          "bias_cos": "-9.544617688234114e-06",
+          "bias_sin": "-1.5630315197689981e-06",
+          "candidate": "M5_MIN_ab57ad5bd40dc583",
+          "cohort": "EXPLORATION",
+          "epsilon": "0.001",
+          "formula": "4th",
+          "headroom_cos": "0.0006975611634983134",
+          "headroom_sin": "0.0007055427496667785",
+          "log_B_base": "0.03301794834187473",
+          "log_B_margin": "1.6001274100469849e-12",
+          "method": "PR",
+          "n": "33",
+          "new_G_SE_evaluated": "False",
+          "origin": "LITERAL_SAVED_ENDPOINT",
+          "population_guarantee": "False",
+          "prefix": "3",
+          "q": "4",
+          "saved_unit_C_SE_cos": "381.20940336929215",
+          "saved_unit_C_SE_sin": "381.20940336929215",
+          "status": "ELIGIBLE",
+          "system": "H4",
+          "u_cos": "1e-09",
+          "u_sin": "1e-09"
+        }
+      ],
+      "same_q_controls_saved": [
+        {
+          "system": "H4",
+          "q": "4",
+          "epsilon": "0.001",
+          "scope": "AUXILIARY_SAME_Q",
+          "Full_lower": "Y4_LOWER",
+          "PR_lower": "Y4_LOWER",
+          "reversal": "False",
+          "Full_G_ratio_exact": "3341048717564/4107911384685",
+          "PR_G_ratio_exact": "11311259912546/20295825072129",
+          "pure_order_causal_effect": ""
+        },
+        {
+          "system": "H4",
+          "q": "8",
+          "epsilon": "0.001",
+          "scope": "AUXILIARY_SAME_Q",
+          "Full_lower": "S2_LOWER",
+          "PR_lower": "S2_LOWER",
+          "reversal": "False",
+          "Full_G_ratio_exact": "596863907576/242553916089",
+          "PR_G_ratio_exact": "39339493541740/24069810284421",
+          "pure_order_causal_effect": ""
+        }
+      ]
+    },
+    {
+      "claim_id": "CE_H6_STANDARD_Y4_FIXED_SHOT_DIRECTION",
+      "system": "H6",
+      "groups_saved": [
+        {
+          "system": "H6",
+          "formula": "2nd",
+          "q": "8",
+          "prefix": "5",
+          "candidate": "M5_MIN_a08e8bfb6642eb93",
+          "epsilon": "0.001",
+          "cohort": "CONFIRMATION",
+          "origin": "REUSED_INDEPENDENT_S2",
+          "SOURCE": "c028f1c2885afdba65ef8c62c075738aadd7323d",
+          "n": "23",
+          "C_cos_mean": "182086.5652173913",
+          "C_sin_mean": "182086.5652173913",
+          "N_cos": "22907931",
+          "N_sin": "27494282",
+          "G_mean": "9177565844525.348",
+          "G_SE": "72796698101.2711",
+          "C_cos_sin_covariance": "47979087.89328063",
+          "observed_strata": "{\"S0\": 23, \"S2_multi\": 0, \"S2_single\": 0, \"S4\": 0}",
+          "unobserved_strata": "S2_single;S2_multi;S4",
+          "rare_tail_bound": "",
+          "population_guarantee": "False"
+        },
+        {
+          "system": "H6",
+          "formula": "4th",
+          "q": "4",
+          "prefix": "5",
+          "candidate": "M5_MIN_37ff3428bb58f5cd",
+          "epsilon": "0.001",
+          "cohort": "CONFIRMATION",
+          "origin": "NEW_INDEPENDENT_STANDARD_Y4",
+          "SOURCE": "a2a53698a72da7280d217adc7931938121ed732d",
+          "n": "32",
+          "C_cos_mean": "186172.46875",
+          "C_sin_mean": "186172.46875",
+          "N_cos": "21115055",
+          "N_sin": "21415717",
+          "G_mean": "7918058821083.375",
+          "G_SE": "33286436108.542614",
+          "C_cos_sin_covariance": "19600991.67641129",
+          "observed_strata": "{\"S0\": 31, \"S2_multi\": 0, \"S2_single\": 1, \"S4\": 0}",
+          "unobserved_strata": "S2_multi;S4",
+          "rare_tail_bound": "",
+          "population_guarantee": "False"
+        }
+      ],
+      "comparison_saved": {
+        "system": "H6",
+        "epsilon": "0.001",
+        "difference_S2_minus_Y4": "1259507023441.9727",
+        "difference_SE": "80045899852.87003",
+        "approximate_interval_low": "1080091925178.1575",
+        "approximate_interval_high": "1438922121705.7878",
+        "ratio_Y4_over_S2": "0.8627624094690314",
+        "point_status": "REPRODUCED",
+        "decision": "REPRODUCED_APPROXIMATE",
+        "family_size": "2",
+        "family_alpha": "0.05",
+        "interval_is_rigorous": "False",
+        "rare_tail_bound": ""
+      },
+      "result_saved": {
+        "comparison": {
+          "all_zero_sample_variance_warning": false,
+          "approximate_direction": "POSITIVE",
+          "approximate_interval": [
+            "1080091925178.1575",
+            "1438922121705.7878"
+          ],
+          "decision": "REPRODUCED_APPROXIMATE",
+          "difference": "1259507023441.9727",
+          "difference_SE": "80045899852.87003",
+          "interval_is_rigorous": false,
+          "point_status": "REPRODUCED",
+          "population_rank": "NOT_CERTIFIED",
+          "rare_tail_bound": null,
+          "ratio_Y4_over_S2": "0.8627624094690314",
+          "ratio_interval": null,
+          "reselection": false
+        },
+        "groups": {
+          "S2": {
+            "N_cos": 22907931,
+            "N_sin": 27494282,
+            "candidate": "M5_MIN_a08e8bfb6642eb93",
+            "cohort": "CONFIRMATION",
+            "formula": "2nd",
+            "observed_strata": {
+              "S0": 23,
+              "S2_multi": 0,
+              "S2_single": 0,
+              "S4": 0
+            },
+            "q": 8,
+            "statistics": {
+              "SE": "72796698101.2711",
+              "axis_means": [
+                "182086.5652173913",
+                "182086.5652173913"
+              ],
+              "covariance": "47979087.89328063",
+              "independent_weighted_covariance_match": true,
+              "mean": "9177565844525.348",
+              "mean_exact": {
+                "denominator": 23,
+                "numerator": 211084014424083
+              },
+              "n": 23,
+              "population_variance_bound": null,
+              "rare_tail_bound": null,
+              "variance": "1.2188526285229501e+23",
+              "variance_exact": {
+                "denominator": 253,
+                "numerator": 30836971501630639602097453
+              },
+              "zero_observed_variance": false
+            },
+            "unobserved_strata": [
+              "S2_single",
+              "S2_multi",
+              "S4"
+            ],
+            "unseen_costs": null,
+            "unseen_tail_bound": null
+          },
+          "Y4": {
+            "N_cos": 21115055,
+            "N_sin": 21415717,
+            "candidate": "M5_MIN_37ff3428bb58f5cd",
+            "cohort": "CONFIRMATION",
+            "formula": "4th",
+            "observed_strata": {
+              "S0": 31,
+              "S2_multi": 0,
+              "S2_single": 1,
+              "S4": 0
+            },
+            "q": 4,
+            "statistics": {
+              "SE": "33286436108.542614",
+              "axis_means": [
+                "186172.46875",
+                "186172.46875"
+              ],
+              "covariance": "19600991.67641129",
+              "independent_weighted_covariance_match": true,
+              "mean": "7918058821083.375",
+              "mean_exact": {
+                "denominator": 8,
+                "numerator": 63344470568667
+              },
+              "n": 32,
+              "population_variance_bound": null,
+              "rare_tail_bound": null,
+              "variance": "3.545557852185887e+22",
+              "variance_exact": {
+                "denominator": 62,
+                "numerator": 2198245868355249858728007
+              },
+              "zero_observed_variance": false
+            },
+            "unobserved_strata": [
+              "S2_multi",
+              "S4"
+            ],
+            "unseen_costs": null,
+            "unseen_tail_bound": null
+          }
+        }
+      },
+      "fixed_group_binding": {
+        "N_S2": [
+          22907931,
+          27494282
+        ],
+        "N_Y4": [
+          21115055,
+          21415717
+        ],
+        "S2": "M5_MIN_a08e8bfb6642eb93",
+        "Y4": "M5_MIN_37ff3428bb58f5cd",
+        "n": 32,
+        "n_s2": 23,
+        "prefix": 5,
+        "preparation": "8f1a392f8ab2bcb6cf59cad513b96f15ff518cb6dc237233410b03bb14567938",
+        "rank": 19
+      },
+      "Full_and_exploration_saved": [
+        {
+          "C_cos": "311350",
+          "C_sin": "311350",
+          "G": "15636885592900",
+          "G_SE": "",
+          "N_cos": "22822005",
+          "N_sin": "27400849",
+          "bias_cos": "8.741417223101511e-05",
+          "bias_sin": "0.00014155644150481983",
+          "candidate": "H6_FULL_19_8_2nd",
+          "cohort": "COMMON_PF_DETERMINISTIC",
+          "epsilon": "0.001",
+          "formula": "2nd",
+          "headroom_cos": "0.0006196916089555324",
+          "headroom_sin": "0.0005655493396817277",
+          "log_B_base": "0.0",
+          "log_B_margin": "8.881784197002917e-11",
+          "method": "FULL",
+          "n": "1",
+          "new_G_SE_evaluated": "False",
+          "origin": "LITERAL_SAVED_ENDPOINT",
+          "population_guarantee": "False",
+          "prefix": "19",
+          "q": "8",
+          "saved_unit_C_SE_cos": "",
+          "saved_unit_C_SE_sin": "",
+          "status": "ELIGIBLE",
+          "system": "H6",
+          "u_cos": "1e-09",
+          "u_sin": "1e-09"
+        },
+        {
+          "C_cos": "469386",
+          "C_sin": "469386",
+          "G": "16951728941568",
+          "G_SE": "",
+          "N_cos": "17929288",
+          "N_sin": "18185400",
+          "bias_cos": "-7.954776269247787e-06",
+          "bias_sin": "-1.2895431811710267e-05",
+          "candidate": "H6_FULL_19_4_4th",
+          "cohort": "COMMON_PF_DETERMINISTIC",
+          "epsilon": "0.001",
+          "formula": "4th",
+          "headroom_cos": "0.0006991510049172997",
+          "headroom_sin": "0.0006942103493748372",
+          "log_B_base": "0.0",
+          "log_B_margin": "1.3088197192704698e-10",
+          "method": "FULL",
+          "n": "1",
+          "new_G_SE_evaluated": "False",
+          "origin": "LITERAL_SAVED_ENDPOINT",
+          "population_guarantee": "False",
+          "prefix": "19",
+          "q": "4",
+          "saved_unit_C_SE_cos": "",
+          "saved_unit_C_SE_sin": "",
+          "status": "ELIGIBLE",
+          "system": "H6",
+          "u_cos": "1e-09",
+          "u_sin": "1e-09"
+        },
+        {
+          "C_cos": "184315.9696969697",
+          "C_sin": "184315.9696969697",
+          "G": "9289932763968.213",
+          "G_SE": "76211309054.89842",
+          "N_cos": "22907931",
+          "N_sin": "27494282",
+          "bias_cos": "8.727237460903758e-05",
+          "bias_sin": "0.00014132691509682882",
+          "candidate": "M5_MIN_a08e8bfb6642eb93",
+          "cohort": "EXPLORATION",
+          "epsilon": "0.001",
+          "formula": "2nd",
+          "headroom_cos": "0.0006198334065775099",
+          "headroom_sin": "0.0005657788660897187",
+          "log_B_base": "0.0021078034526976377",
+          "log_B_margin": "1.4952848824028315e-12",
+          "method": "PR",
+          "n": "33",
+          "new_G_SE_evaluated": "False",
+          "origin": "LITERAL_SAVED_ENDPOINT",
+          "population_guarantee": "False",
+          "prefix": "5",
+          "q": "8",
+          "saved_unit_C_SE_cos": "1512.062755159152",
+          "saved_unit_C_SE_sin": "1512.062755159152",
+          "status": "ELIGIBLE",
+          "system": "H6",
+          "u_cos": "1e-09",
+          "u_sin": "1e-09"
+        },
+        {
+          "C_cos": "186918.57575757575",
+          "C_sin": "186918.57575757575",
+          "G": "7949791328110.182",
+          "G_SE": "41565857890.619064",
+          "N_cos": "21115055",
+          "N_sin": "21415717",
+          "bias_cos": "-7.930071772355163e-06",
+          "bias_sin": "-1.2855382783949487e-05",
+          "candidate": "M5_MIN_37ff3428bb58f5cd",
+          "cohort": "EXPLORATION",
+          "epsilon": "0.001",
+          "formula": "4th",
+          "headroom_cos": "0.0006991757094141923",
+          "headroom_sin": "0.000694250398402598",
+          "log_B_base": "0.08181069434428587",
+          "log_B_margin": "2.4136323732485164e-12",
+          "method": "PR",
+          "n": "33",
+          "new_G_SE_evaluated": "False",
+          "origin": "LITERAL_SAVED_ENDPOINT",
+          "population_guarantee": "False",
+          "prefix": "5",
+          "q": "4",
+          "saved_unit_C_SE_cos": "977.3125653731154",
+          "saved_unit_C_SE_sin": "977.3125653731154",
+          "status": "ELIGIBLE",
+          "system": "H6",
+          "u_cos": "1e-09",
+          "u_sin": "1e-09"
+        }
+      ],
+      "same_q_controls_saved": [
+        {
+          "system": "H6",
+          "q": "4",
+          "epsilon": "0.001",
+          "scope": "AUXILIARY_SAME_Q",
+          "Full_lower": "Y4_LOWER",
+          "PR_lower": "Y4_LOWER",
+          "reversal": "False",
+          "Full_G_ratio_exact": "235440679744/1121500718565",
+          "PR_G_ratio_exact": "43723852304606/259901960210669",
+          "pure_order_causal_effect": ""
+        },
+        {
+          "system": "H6",
+          "q": "8",
+          "epsilon": "0.001",
+          "scope": "AUXILIARY_SAME_Q",
+          "Full_lower": "S2_LOWER",
+          "PR_lower": "S2_LOWER",
+          "reversal": "False",
+          "Full_G_ratio_exact": "1637201435238/781844279645",
+          "PR_G_ratio_exact": "467936929247522/306567781210951",
+          "pure_order_causal_effect": ""
+        }
+      ]
+    }
+  ],
+  "new_Y4_trajectories": {
+    "H4": 45,
+    "H6": 32,
+    "total_acquisition_only": 77
+  },
+  "reused_S2_trajectories": {
+    "H4": 25,
+    "H6": 23,
+    "total_acquisition_only": 48
+  },
+  "cohort_pooling": false,
+  "independence_scope": "INDEPENDENT_SAMPLING_COHORTS_NOT_EXTERNAL_REPLICATION",
+  "saved_result_decision": "REPRODUCED_APPROXIMATE",
+  "adopted_claim_ids": [
+    "CE_H4_STANDARD_Y4_FIXED_SHOT_DIRECTION",
+    "CE_H6_STANDARD_Y4_FIXED_SHOT_DIRECTION"
+  ],
+  "not_adopted": [
+    "CONDITIONAL_ON_SAVED_SIGNAL_REFERENCE_EMPIRICAL_ALLOWANCE_ANALYTIC_SHOTS",
+    "NORMAL_BONFERRONI_APPROXIMATE_NOT_RIGOROUS_COVERAGE",
+    "NO_POPULATION_MEAN_RANK_CERTIFICATE_OR_RARE_TAIL_BOUND",
+    "FINITE_SAMPLES_AND_POST_SELECTION_LIMITATIONS",
+    "DIFFERENT_Q_FIXED_CONFIGURATIONS_NOT_PURE_ORDER_CAUSAL_EFFECT",
+    "SAME_Q_CONTROLS_SHOW_NO_FULL_PR_REVERSAL",
+    "NO_GLOBAL_OPTIMUM_GENERALIZATION_OR_UNIVERSAL_PR_ADVANTAGE",
+    "COMPILED_RZ_NOT_END_TO_END_FAULT_TOLERANT_COST",
+    "NOT_EXTERNAL_RESEARCHER_OR_FACILITY_REPLICATION",
+    "NOT_FINAL_PAPER_CLAIM_NOVELTY_OR_RESEARCH_GO"
+  ],
+  "rare_tail_bound": null,
+  "ratio_interval": null,
+  "failed_attempt_result_commit": "4ce444eb5b7cd1dad7cf61f149aa182949ad60a1",
+  "success_is_separate_recovery": true,
+  "old_H6_adoption_is_different_S2_K2_scope": {
+    "commit": "4d117041469fb8eebf2ad55405c0f7d1b70dea7d",
+    "path": "docs/research/track_a_h6_pr_confirmation_adoption_20261019.md",
+    "sha256": "450ccdf6554b71a1126bdab6d2b195f2e280fba2a596f64bd784bb56e51b4ed7",
+    "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4d117041469fb8eebf2ad55405c0f7d1b70dea7d/docs/research/track_a_h6_pr_confirmation_adoption_20261019.md"
+  },
+  "m5_best_confirmation_transferred_to_standard_Y4": false,
+  "new_scientific_calls": {
+    "sampling": 0,
+    "circuit_generation": 0,
+    "compile": 0,
+    "simulation": 0,
+    "Hamiltonian_reference_signal": 0,
+    "analytic_shots": 0,
+    "G_ratio_difference_variance_SE_CI_reanalysis": 0,
+    "ranking": 0,
+    "candidate_search": 0,
+    "scientific_grants_issued": 0,
+    "scientific_grants_consumed": 0,
+    "old_SOURCE_execution": 0
+  },
+  "scientific_execution_authorized": false,
+  "final_evidence_freeze": false,
+  "detailed_scientific_review_started": false,
+  "old_strict_COMPARE": "BLOCKED",
+  "mandatory_STOP": true
+}

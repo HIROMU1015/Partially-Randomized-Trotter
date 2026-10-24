@@ -1,3 +1,7 @@
+## 2026-10-24 H4/H6標準Yoshida4：条件付き独立費用方向を正式採用
+
+[採用記録・現行索引・検査・保全](../../docs/research/track_a_h46_standard_y4_adoption_20261024.md)。H4/H6・ε=.001、固定PR S2/q8対標準Y4/q4の独立費用方向再現をユーザー指示で正式採用。旧S2 n25/23・新Y4 n45/32、保存判定REPRODUCED_APPROXIMATEを保持。保存FullはS2低費用、同一q対照はq4で双方Y4・q8で双方S2が低費用で逆転なし。CEM旧21行＋2主張、台帳旧391行＋14参照、paper manifest・3環境差分を接続。主表/Figure2・旧SOURCE/結果/STOP不変、新科学計算/数値再解析/grant0。母平均/tail・次数因果効果・一般化・独立新規性・論文中心主張の最終採択は未認定。旧strict BLOCKED、mandatory STOP。
+
 ## 2026-10-24 H4/H6標準Yoshida4 独立方向再現・修正後実行完了
 
 [結果・4群統計・Full/探索対照・台帳・保全](../../docs/research/track_a_h46_standard_y4_confirmation_recovery_20261024.md)。修正後SOURCE a2a53698…で新標準Y4 H4 n45/H6 n32を取得し、保存独立S2 n25/23をε=.001で再会計。G比Y4/S2はH4 0.864959895、H6 0.862762409で、両系のBonferroni正規近似区間も差の正側。保存Full S2低費用との逆方向を固定構成として支持。77軌道/154軸、exact2953 entry・会計9 eventを正常終了、修正後の科学中断0、全process回収。25人工件PASS、569入力・旧停止64 file保全。固定shot・empirical政策に条件付き、母平均/tail保証なし、旧strict BLOCKED・mandatory STOP。
