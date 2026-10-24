@@ -1037,3 +1037,7 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 ## 2026-10-24 H4 D1 saved-descriptor診断
 
 [新adapter・one-shot runner・人工検査・実行記録](../../docs/non_df_h4_d1_execution_20261024.md)。元primitive／event／wrapper／compilerを再利用し、全full hashと旧価格のgate後に最大9費用compile。実行結果は専用報告へ。
+
+## 2026-10-24 H4 D1 SOURCE再現性の設計（未採用）
+
+[調査・対応表・人工17件・非実行契約](../../docs/non_df_h4_d1_reproducibility_design_20261024.md)。旧hash3一致／Pauli-PR不一致と原因UNKNOWNを保持。`src/trotterlib/h4_d1_reproducibility.py`、`tests/test_h4_d1_reproducibility.py`、`artifacts/non_df_h4_d1_reproducibility_design/2026-10-24/inspect_saved_evidence.py`を一組として読む。SOURCE基準はGO候補のみ、実H4生成/数値/compile/新grant0、旧725 SHA保全、mandatory STOP。

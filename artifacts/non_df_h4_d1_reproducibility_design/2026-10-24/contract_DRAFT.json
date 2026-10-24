@@ -1,0 +1,253 @@
+{
+  "schema": "h4_d1_SOURCE_reproducibility_rerun_DRAFT_v1",
+  "status": "DESIGN_COMPLETE_EXECUTION_DISABLED",
+  "base_commit": "a5f77bbb99e23f15a2a465e0ab485777e7a6f40d",
+  "historical_science_SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+  "existing_D1_science_SOURCE": "48d4d27a05a529e05b11599f5f3c671302826617",
+  "execution_authorized": false,
+  "criterion_adopted": false,
+  "dispatch_enabled": false,
+  "science_SOURCE": null,
+  "production_controller_patch": null,
+  "grant": null,
+  "grant_valid": false,
+  "launch_command": null,
+  "new_grants_issued": 0,
+  "fixed": {
+    "system": "linear H4 adjacent1.00Angstrom STO-3G 8 system qubits; same saved state only as provenance, no state computation",
+    "pauli": "184 nonidentity terms; PR prefix27",
+    "df": "tol-only1e-8 rank10; PR prefix1 plus one-body",
+    "T": 0.8,
+    "q": 8,
+    "r": 4,
+    "K": 4,
+    "formula": "S2",
+    "axis": "cosine",
+    "ancilla": 8,
+    "qubit_order": "qiskit_little_endian",
+    "compiler": {
+      "qiskit_version": "1.3.0",
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "optimization_level": 1,
+      "transpiler_seed": 17,
+      "backend_name": null,
+      "coupling_map": null,
+      "layout_method": null,
+      "routing_method": null
+    },
+    "scope": "Full H-controlledbody-H-measurement, no state preparation",
+    "df_repetition_policy": "raw_concatenation"
+  },
+  "selection": "Pauli PF and DF PF singleton; Pauli PR and DF PR saved trajectory_index0. No cost-min/max or replacement trajectory. No RNG, no seed replay.",
+  "variants": [
+    {
+      "id": "pauli_jw_PF_full",
+      "case": "pauli_jw_PF",
+      "part": "full",
+      "phase": "all_original",
+      "axis": "cosine",
+      "historical_baseline": true
+    },
+    {
+      "id": "pauli_jw_PR_full",
+      "case": "pauli_jw_PR",
+      "part": "full",
+      "phase": "all_original",
+      "axis": "cosine",
+      "historical_baseline": true
+    },
+    {
+      "id": "df_native_PF_full",
+      "case": "df_native_PF",
+      "part": "full",
+      "phase": "all_original",
+      "axis": "cosine",
+      "historical_baseline": true
+    },
+    {
+      "id": "df_native_PR_full",
+      "case": "df_native_PR",
+      "part": "full",
+      "phase": "all_original",
+      "axis": "cosine",
+      "historical_baseline": true
+    },
+    {
+      "id": "pauli_jw_PR_retained",
+      "case": "pauli_jw_PR",
+      "part": "retained",
+      "phase": "deterministic_scalar_and_block",
+      "axis": "cosine",
+      "historical_baseline": false
+    },
+    {
+      "id": "pauli_jw_PR_event",
+      "case": "pauli_jw_PR",
+      "part": "event",
+      "phase": "all_RTE",
+      "axis": "cosine",
+      "historical_baseline": false
+    },
+    {
+      "id": "df_native_PR_retained",
+      "case": "df_native_PR",
+      "part": "retained",
+      "phase": "deterministic_scalar_and_block",
+      "axis": "cosine",
+      "historical_baseline": false
+    },
+    {
+      "id": "df_native_PR_event",
+      "case": "df_native_PR",
+      "part": "event",
+      "phase": "all_RTE",
+      "axis": "cosine",
+      "historical_baseline": false
+    },
+    {
+      "id": "empty",
+      "case": null,
+      "part": "empty",
+      "phase": "none",
+      "axis": "cosine",
+      "historical_baseline": false
+    }
+  ],
+  "full_inputs": {
+    "df_native_PF": {
+      "path": "artifacts/non_df_h4_d1_execution/2026-10-24/run01/variants/df_native_PF_full/input.qpy",
+      "sha256": "b845beaad8570c5d1256834a3ea9493c0280b12cc619e18005adb83ef2e05d1d",
+      "D1_input_fingerprint": "f6ae7f8009d80513df7c505ac7af5046234e840cf9aebfd0f555128bd4711bf8",
+      "legacy_input_fingerprint": "f6ae7f8009d80513df7c505ac7af5046234e840cf9aebfd0f555128bd4711bf8",
+      "historical_match": true
+    },
+    "df_native_PR": {
+      "path": "artifacts/non_df_h4_d1_execution/2026-10-24/run01/variants/df_native_PR_full/input.qpy",
+      "sha256": "8049e1cb4e029c85beee107d99638a0f362f0c4538826441d27a535c438a0286",
+      "D1_input_fingerprint": "b17c2ec962c33fc270c04c3ae9ee3173d177ed69b8f6a4f44755b73897d67f3d",
+      "legacy_input_fingerprint": "b17c2ec962c33fc270c04c3ae9ee3173d177ed69b8f6a4f44755b73897d67f3d",
+      "historical_match": true
+    },
+    "pauli_jw_PF": {
+      "path": "artifacts/non_df_h4_d1_execution/2026-10-24/run01/variants/pauli_jw_PF_full/input.qpy",
+      "sha256": "f48a00583e99e04678012f7b9eecb7e7dd56221771ff34a69094fef2c00ac63a",
+      "D1_input_fingerprint": "d04d5593d3502fef29e3447261fc245c8e14660ac1ae5a5a2123799c19d93ee5",
+      "legacy_input_fingerprint": "d04d5593d3502fef29e3447261fc245c8e14660ac1ae5a5a2123799c19d93ee5",
+      "historical_match": true
+    },
+    "pauli_jw_PR": {
+      "path": "artifacts/non_df_h4_d1_execution/2026-10-24/run01/variants/pauli_jw_PR_full/input.qpy",
+      "sha256": "f7ce1ba5e18bfbb2aa4353424f1590c57e4d6eec8d9245166daefd675a597853",
+      "D1_input_fingerprint": "b677002ac37cd37a3f8a0ec84320963f7e44d3dcd29c271c369b1e6ab49fcd21",
+      "legacy_input_fingerprint": "8a8adeded83edfddead525494906ccbd2a3796b11ed038f1d53f113b61468986",
+      "historical_match": false
+    }
+  },
+  "reuse_policy": "Reuse all four saved full QPY byte-for-byte. No renaming/counter replay, additional full H4 build, alternate input, seed or sampling. The five isolation/empty builds require the next explicit execution approval.",
+  "maximum_full_input_build_calls": 0,
+  "maximum_ablation_input_build_calls": 5,
+  "maximum_cost_transpile_calls": 9,
+  "ablation": {
+    "policy": "Delete only designated high-level groups before original control/compile; phases have disjoint owners; full emitter is never rebuilt by multiplying separately aggregated R/E.",
+    "retained": "All forward and reverse retained blocks across all q steps plus constant, extracted identity and deterministic diagonal primitive phases. Remove all events. Do not merge boundaries or commuting terms manually.",
+    "event": "Only the stored q groups of r events with order/negative-product/identity-rotation phases. No constant/extracted identity/deterministic primitive phase. Keep each occurrence's closing basis and phase before next occurrence; do not expand reuse across deleted gaps.",
+    "full": "Original full operation and float accumulation order, including per-step phase placement and raw concatenation. Audit scalar_phase.angle is a summary, never emit that as a replacement lumped phase.",
+    "empty": "QuantumCircuit(9,1) ancilla8 H,H,measurement. No controlled identity body, system/ancilla phase, state preparation, or compiler-visible tags.",
+    "phase_semantics": "A system-global phase of the controlled evolution is ancilla-relative. It is not discardable. Do not alter floating summation/mod2pi order of the original full circuit. Isolation changes unitary; no new valid simulation or accuracy claim."
+  },
+  "comparisons": {
+    "count_metrics": [
+      "RZ",
+      "CX"
+    ],
+    "retained_increment": "C_retained - C_empty",
+    "event_increment": "C_event - C_empty",
+    "isolated_prediction": "C_retained + C_event - C_empty",
+    "interaction": "C_full - C_retained - C_event + C_empty",
+    "contextual_event_increment": "C_full - C_retained",
+    "contextual_retained_increment": "C_full - C_event",
+    "sign": "Keep signed integers, including negative increments/interactions. No clipping, fitting or additive allocation.",
+    "depth": "Report each depth; no additive depth budget or claimed causal depth contribution.",
+    "H1": "Compare isolated retained prices/increments across Pauli/DF at index0 and their context dependence. Does not identify effect of Z/ZZ retention alone or a unique dominant share.",
+    "H2": "Compare whole stored event-stream prices and tags at index0. No event-mean or component frequency aggregation; laws/angles differ and comparison is not matched.",
+    "H3": "Locate basis tags in retained and event and report actual source counters; compiled cost attributable specifically to basis remains unidentified.",
+    "H4": "Exact nonzero interaction demonstrates nonadditivity for the selected case; report magnitude and signs, no invented significance threshold, no unique boundary/compiler causal split.",
+    "H5": "Generic-control source and histogram expansion motivate D2 if unresolved. D1 alone cannot estimate equivalent-central-control counterfactual cost.",
+    "claim_limit": "Four selected representatives, no revised means, statistical confidence, population guarantee, certificate or general Pauli/DF superiority. Old PF/PR costs remain unchanged."
+  },
+  "metrics": {
+    "measured": [
+      "RZ integer count",
+      "CX integer count",
+      "total depth",
+      "RZ/CX depth if existing function supplies them",
+      "source body before-control histogram",
+      "after-control pretranspile histogram",
+      "posttranspile histogram",
+      "input/output QPY and file SHA",
+      "recursive input/output fingerprints",
+      "DF returned application/basis-switch/reuse counters per occurrence",
+      "scheduled q-step boundary descriptors"
+    ],
+    "before_control": "Pauli source body exists before wrapper. DF virtual source histogram and pre-control central tags are collected during same schedule emission, not another whole H4 counterfactual circuit. Mark native central-control path and unavailable global after-control ratio as not directly comparable.",
+    "tags": "Sidecar interval/range/group IDs only; no barriers, labels, gate names or metadata edits that change compiler input. Nested axes: role=retained/event/scalar/wrapper; kind=basis/Pauli/diagonal/control; do not double count nested categories or force assign every final RZ.",
+    "missing": "Unavailable optional metric is null with reason; required RZ/CX/depth/program/hash and full reproduction gate cannot be silently skipped."
+  },
+  "reproduction_gate": {
+    "A": "Retain exact historical match/fail independently. Three PASS and Pauli-PR FAIL remain immutable historical evidence.",
+    "B": "Proposed SOURCE_SEMANTIC_CORRESPONDENCE criterion: each of twelve correspondence.json links, exact saved operands, meaningful schedule/phase/control and pinned runtime. Requires explicit user adoption before execution; current status CANDIDATE.",
+    "metadata": "No blanket name removal, no normalized-hash substitute. Names of primitive/opaque gates or unresolved meaningful definition/control/phase changes are STOP. Generic composite names can be metadata only with SOURCE/recursive-body justification. Compiler sensitivity not presumed absent.",
+    "missing_preimage": "Historical-only unknown payload/name is retained as UNKNOWN. It may be tolerated only under explicitly adopted SOURCE criterion, never claimed recovered. An unknown scientifically important SOURCE edge is STOP.",
+    "current_QPY_integrity": "Recomputed actual current recursive fingerprint must match saved D1 fingerprint, not force Pauli-PR to old hash. This is self-integrity only, not scientific correspondence to old. Any discrepancy is STOP, no silent reserialization/rebuild."
+  },
+  "execution_order": {
+    "A": "After explicit criterion and finite execution approval, bind new immutable controller SOURCE, used code/input/QPY/runtime and fresh one-shot grant in new namespace. Read four existing full QPY; record A and B separately; all four need (A or adopted B), with no Class1/meaningful Class3 discrepancy and fixed runtime/compiler/wrapper. Otherwise STOP before any cost compile.",
+    "B": "Only after Stage A and explicit execution approval. Compile full4 once each in existing fixed order; reserve each cost call before launch. Compare RZ exactly to old prices. First mismatch/error STOP; do not compile remaining targets, retry or refund.",
+    "C": "Only after all four full correspondence gates and four exact price gates PASS. Build/compile two PR retained-only, two PR event-only and one empty wrapper, once each, using unchanged original descriptor adapter and phase ownership. Independent tasks may parallelize after prerequisite gates.",
+    "budget": "Full4 plus later5 = maximum9 top-level cost calls. No uncharged probe, cache replay, alternative profile, replacement trajectory, retry/resume or D2/D3.",
+    "final": "Native exit and own worker reap audit, output/SHA inventory and immutable STOP. Numerical result integrity and lifecycle proof remain separate."
+  },
+  "old_full_RZ": {
+    "df_native_PF": 135355,
+    "df_native_PR": 23021,
+    "pauli_jw_PF": 255500,
+    "pauli_jw_PR": 9652
+  },
+  "interpretation": {
+    "same_RZ": "Price reproduction is separate from semantic correspondence; same RZ is not a unitary/program proof.",
+    "SOURCE_not_history": "If B is adopted and RZ reproduced, report SOURCE-defined selected representative mechanism diagnosis, with Pauli-PR old hash FAIL retained. No exact old recursive/compiled program identity.",
+    "quantitative_limit": "Four selected representatives, no revised means, statistical confidence, population guarantee, certificate or general Pauli/DF superiority. Old PF/PR costs remain unchanged.",
+    "unmeasured": "All new RZ/CX/depth, isolation prices and interactions remain null until next approved execution. Never fill null as0."
+  },
+  "lifecycle": {
+    "old_grant": "b4a61a9064c687d00df10f49bbc24e90d62f47074dbc655727a6ab33e4e17ba8",
+    "old_status": "CONSUMED; STAGE_A_FINGERPRINT_STOP_NO_RETRY",
+    "old_records": "Preserve old SOURCE/grant/CONSUMED/ledger/STOP exactly. No grant issued or consumed in this design.",
+    "new_authority": "Next approval must bind the future controller SOURCE, exact QPY/descriptors/runtime, finite calls and output namespace; new grant cannot reinterpret old unused calls as transferable.",
+    "processes": "Only own processes monitored/reaped; native completion distinct from science gates. PSI/other worktree activity alone never kills valid workers."
+  },
+  "required_next_approval": [
+    "User explicitly adopts the SOURCE criterion B with its limited claim, accepting unresolved historical preimage/name while all meaningful SOURCE edges must be established.",
+    "User explicitly authorizes finite D1 execution on four saved full QPY plus five isolation/empty builds and at most9 cost compiles, metric extraction and original signed count formulas.",
+    "Codex implements only minimal new controller connector, performs artificial checks, commits/seals SOURCE/runtime/input and issues fresh one-shot grant only within that approved next task."
+  ],
+  "prohibited_now": [
+    "real H4 generation",
+    "cost compile",
+    "H4 unitary/state/signal",
+    "sampling/RNG replay",
+    "SCF/FCI/DF",
+    "N/G",
+    "StageB/C",
+    "new grant",
+    "certificate acceptance",
+    "D2/D3"
+  ],
+  "resources": "No arbitrary low CPU/RAM/worker caps. Parallelize independent four baselines or five later diagnostics when useful; preserve dependencies and exact finite call budget. Own directories/processes only, no shared environment/system settings/other users touched.",
+  "mandatory_STOP": true
+}
