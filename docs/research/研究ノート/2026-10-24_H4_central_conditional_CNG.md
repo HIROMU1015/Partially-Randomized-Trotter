@@ -13,3 +13,13 @@ DF会計・quantum/compile/sampling/C-L実行へ範囲拡大しない。
 元SOURCEでは表現別full Hからreferenceを作るため、hash/信号は別。
 表現内一致と同一ray/T/methodを検査する修正で、各保存reference/biasは保持する。
 新16人工PASS。N/G科学callは0、成功科学値の重複なし。新SOURCE/seal/grantで回復する。
+
+## 回復完了・科学STOP
+
+SOURCE d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34、新grant 37a5812aa9787e3a366576fde95fa02176621d449ee928c8d04c47265e288bf2。
+10条件/20軸+20端点/15比較/paired G統計1batch成功。PR/PF G比.12434〜.12788。
+PFとPRそれぞれ対応するDFより低G、全15比較は独立guard全域で反転なし。
+実ρと母平均tailは未保証。旧genericよりPFの低下幅が大きいため、PR/PF比は旧約.06から約.125へ上昇した。
+主agent124保存check PASS、code13/input600/runtime4896/旧9165/output28 SHA照合・旧manifest180行保全。
+native exit0・回収、初回失敗STOPは維持。科学作業mandatory STOP。
+結果commit/push・remote SHA確認のみ継続し、残差/tail/D3等へ移行しない。

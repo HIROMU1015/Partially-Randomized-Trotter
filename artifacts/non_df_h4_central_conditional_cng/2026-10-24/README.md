@@ -1,9 +1,9 @@
-# H4 Pauli central：条件付きC/N/G（独立version）
+# H4 Pauli central：条件付きC/N/G完了
 
-[専用報告](../../../docs/non_df_h4_central_conditional_cng_20261024.md)。
-固定H4/1Å/STO-3G/n8、Pauli184/prefix27、S2/T=.8/q8/r4/K4。
-新SOURCE固定前。人工16＋14 PASS、実H4 scalar call0。
-Pauli10条件/20軸＋guard端点、15比較、paired G統計1batch。
-DF N/Gは保存行・保存端点を引用し、再会計しない。
-実ρ不明、ρ=0は仮想条件。旧null/native/hash/C-L/compiler状態を保持。
-新grant・native終了・保全確認後mandatory STOP。
+[報告](../../../docs/non_df_h4_central_conditional_cng_20261024.md)・[結果](recovery02/run01/conditional_results.json)・[15比較](recovery02/run01/comparison_regions.json)・[保存検証](recovery02/verification.json)。
+
+成功SOURCE `d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34`。新grant `37a5812aa9787e3a366576fde95fa02176621d449ee928c8d04c47265e288bf2`。
+初回run01は入力reference scopeの技術停止（N/G0）で保存、recovery02が成功実行。
+仮想ρ=0のG_PR/G_PF=.12434〜.12788、15比較すべて独立guard全域で順位反転なし。
+actualρとPR母平均tailは未知。元null/native/hash/C-L/compiler/certificate状態は維持。
+主agent124保存check PASS、旧9165 SHA/manifest180行保全。native exit0・回収、mandatory STOP。

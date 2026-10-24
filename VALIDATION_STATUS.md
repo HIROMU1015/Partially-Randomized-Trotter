@@ -1,3 +1,13 @@
+## 2026-10-24 H4 Pauli central：条件付き総費用比較完了
+
+[10条件・15比較と終了監査](docs/non_df_h4_central_conditional_cng_20261024.md)。
+固定H4/1Å/STO-3G/n8、Pauli184/prefix27、S2/T.8/q8/r4/K4。SOURCE d96dfe5ca。
+仮想ρ=0でPR/PF G比.12434〜.12788、PF/DF-PF .10146〜.11243、PR/DF-PR .05346〜.05766。
+全15比較は保存平均価格・独立guard全域で反転なし。新compiledρ・PR母平均tail・実精度保証は未確定。
+初回reference scope gate誤り（N/G0）を保全し、新SOURCE/grantで技術回復、10条件/20主軸+20端点/15比較/paired1batch完了。
+新16＋旧16人工PASS、主agent124保存check、code13/input600/runtime4896/旧9165/output28 SHA・manifest180行保全。
+native exit0・回収、DF N/G再計算/compile/sampling/元C-L計算0、mandatory STOP。以下は時点履歴。
+
 ## 2026-10-24 H4 Pauli central：条件付きC/N/G SOURCE準備
 
 [新adapter・固定10条件/15比較](docs/non_df_h4_central_conditional_cng_20261024.md)。
