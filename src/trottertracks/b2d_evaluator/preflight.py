@@ -1,9 +1,9 @@
 """B2-D read-only preflight, with existing one-shot packet/marker convention.
 
 No issuance API, implicit approval, default authority or science import exists.
-An operations authority must check the actual user approval record, not merely
-trust authorization.json/user_approval.txt written by a caller. Its production
-binding is a prerequisite still to be adopted by research B.
+The fixed manual authority checks an independently protected user/admin record,
+not merely authorization.json/user_approval.txt written by a caller. Publication
+of that record and final scientific approval remain separate user operations.
 """
 from dataclasses import asdict, dataclass
 import importlib.metadata
@@ -155,9 +155,11 @@ def source_inventory(root):
     root = Path(root).resolve()
     names = [str(p.relative_to(root)) for p in (root / "src").rglob("*.py")]
     names.append(InputRecipe().fixture_path)
-    launcher = "scripts/run_b2d_stage1.py"
-    if (root / launcher).is_file():
-        names.append(launcher)
+    for name in ("scripts/run_b2d_stage1.py", "scripts/prepare_b2d_stage1.py",
+                 "scripts/issue_b2d_stage1_approval.py",
+                 "docs/research/b2d_stage1_execution_ready_20261025/environment.json"):
+        if (root/name).is_file():
+            names.append(name)
     return {name: file_sha(_under(root, name).read_bytes()) for name in sorted(names)}
 
 
@@ -270,8 +272,12 @@ def require_claimed_run(value):
 
 
 def _check_source(root, contract, *, output=None):
-    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
-    command = ["git", "status", "--porcelain", "--untracked-files=normal", "--", "."]
+    # Root is used only by the user's manual publisher. Per-command trust in
+    # this explicitly reviewed checkout avoids changing global Git settings.
+    import os
+    git=["git"]+(["-c","safe.directory="+str(Path(root).resolve())] if os.geteuid()==0 else [])
+    head = subprocess.check_output(git+["rev-parse", "HEAD"], cwd=root, text=True).strip()
+    command = git+["status", "--porcelain", "--untracked-files=normal", "--", "."]
     if output is not None:
         command.append(":(exclude)" + str(Path(output).relative_to(root)))
     dirty = subprocess.check_output(command, cwd=root, text=True)
@@ -341,9 +347,15 @@ def verify_execution(packet_dir, source_root, output, graph, *, authority=None):
         runtime = dict(implementation=sys.implementation.name, version=list(sys.version_info))
         if contract.get("python_runtime") != runtime:
             raise PermissionError("Adopted Python runtime binding differs.")
+        if not authority.is_mock:
+            from .environment import ENVIRONMENT_PATH, verify_environment
+            frozen=json.loads((root/ENVIRONMENT_PATH).read_bytes())
+            if contract.get("environment_binding")!=frozen:
+                raise PermissionError("Contract environment binding differs from frozen SOURCE.")
+            verify_environment(frozen)
     out = Path(output).resolve()
     parent = root / "artifacts/research_b_b2d_stage1"
-    if not out.is_relative_to(parent) or out == parent or out.exists() or not out.parent.is_dir():
+    if not out.is_relative_to(parent) or out == parent or out.exists():
         raise PermissionError("Fresh dedicated output with existing parent required.")
     if grant.get("fresh_output_namespace") != str(out):
         raise PermissionError("Unbound output.")

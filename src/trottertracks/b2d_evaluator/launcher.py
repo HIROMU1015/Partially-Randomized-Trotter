@@ -1,7 +1,7 @@
-"""Dormant Stage-1 launcher. No production approval source is available here.
+"""Dormant Stage-1 launcher requiring a protected manual user approval record.
 
-CLI execution therefore fails closed. A future operations integration must
-supply the real approval verifier; a packet/string/mock cannot replace it.
+A draft, caller authority, hash or mock cannot replace the user/admin operation.
+No science executes until the fixed contract and one-shot record both verify.
 """
 from dataclasses import asdict
 from datetime import datetime, timezone
@@ -18,8 +18,9 @@ from .scope import ScopeLedger, Stage1Failure, STOP, OUTPUTS, OUTPUT_LIMITS, can
 
 
 def production_authority():
-    """No discoverable production provider; never manufacture self-approval."""
-    return None
+    """Fixed manual provider. Missing user-published receipt always rejects."""
+    from .manual_authority import MANUAL_AUTHORITY
+    return MANUAL_AUTHORITY
 
 
 def failure_code(error):
@@ -224,6 +225,7 @@ def launch(packet_dir, source_root, output, *, authority=None):
     except BaseException as error:
         return rejection(error)
     try:
+        verified.output.parent.mkdir(parents=True,exist_ok=True)
         claim_packet(claim)
     except BaseException as error:
         # A racing mkdir may have consumed the marker. Never write into a

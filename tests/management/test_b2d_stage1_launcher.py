@@ -84,6 +84,7 @@ class MockBackend:
             for weight in kernel+processor:
                 for block in self.scope.graph.settings.context.block_ids:
                     self.exponential(block,h*weight/(2*n))
+            self.scope.call("published.convention",lambda: "MOCK_REFERENCE",identity=(str(h),n))
         if kind=="rte_moments":
             for name in ("rte.config","rte.moments"):
                 self.scope.call(name,lambda: "MOCK_MOMENT_LABEL",identity=str(params[0]))
@@ -148,14 +149,14 @@ class LauncherTests(unittest.TestCase):
             ScopeLedger(registry(g),g).record_resolution("sector",dict(N=2))
 
     def test_fake_or_missing_authority_never_claims_or_generates_input(self):
-        self.assertIsNone(production_authority())
+        self.assertFalse(production_authority().is_mock)
         with patch("trottertracks.b2d_evaluator.launcher.claim_packet") as claim:
             result=launch("not read",ROOT,"not created")
-            self.assertEqual(result["reason"],"PRODUCTION_AUTHORITY_UNCONNECTED")
+            self.assertEqual(result["status"],"REJECTED_BEFORE_SCIENCE")
             claim.assert_not_called()
             forged=NS(is_mock=False,verify_approval=lambda *args:True)
             self.assertEqual(launch("not read",ROOT,"not created",authority=forged)["reason"],
-                             "PRODUCTION_AUTHORITY_UNCONNECTED")
+                             "UNREGISTERED_APPROVAL_AUTHORITY")
             from trottertracks.b2d_evaluator.preflight import verify_execution
             with self.assertRaises(PermissionError):
                 verify_execution("not read",ROOT,"not created",candidate_graph("MOCK"),authority=forged)

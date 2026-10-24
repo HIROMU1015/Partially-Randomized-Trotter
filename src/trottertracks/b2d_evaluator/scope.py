@@ -52,6 +52,10 @@ def exponential_keys(graph):
             for weight in kernel + processor:
                 keys.update(exp_key(graph, b, delta * weight / (4*n))
                             for b in graph.settings.context.block_ids)
+            from ._published_reference import _get_s2_sequence
+            for weight in map(F,_get_s2_sequence("8th(Morales-YP8m8)",kernel_steps=n)):
+                keys.update(exp_key(graph,b,delta*weight/(2*n*(1 if i==2 else 2)))
+                            for i,b in enumerate(graph.settings.context.block_ids))
     return [list(key) for key in sorted(keys)]
 
 
@@ -66,7 +70,8 @@ def registry(graph):
         **{"input.fixture":1, "input.split":1, "input.preparation":1,
            "input.sector":1, "input.full":1, "input.block":3, "input.tail":1,
            "input.state":1, "backend.expm":len(exponential_keys(graph)),
-           "rte.config":2, "rte.moments":2, "signal.expectation":144})
+           "rte.config":2, "rte.moments":2, "signal.expectation":144,
+           "published.convention":4})
     return dict(schema=SCHEMA, status="FIXED_RECIPE_BOUNDED_RUNTIME_EXPANSION",
         recipe_fingerprint=InputRecipe().fingerprint, graph_layout=graph_layout(graph),
         dispatch_counts=graph.call_counts, dispatch_total=len(graph.nodes), rows=36,
@@ -81,6 +86,7 @@ def registry(graph):
             tail="one retained basis: basis_change_unitary QuantumCircuit/Operator, diagonal grouping, sector permutation and leakage",
             input_gate="existing DenseBackend._validate: 5 Hermiticity, state norm, H identity, 3 D-pair and 1 DR commutator diagnostics",
             a4="4 independent P K^n P-adjoint references, actual inverse; shared exponential cache",
+            published_convention="4 mandatory full mathematical products from fixed upstream _get_s2_sequence; old direct-append validator equivalence NOT assumed",
             rte="make_rte_config and finite_rte_operator_moments, r=2,K=2; Taylor/power/normalization enclosed, no sampling",
             signals="144 common-state expectations; X/Y, radius, direct complex errors; phase disabled"),
         outputs=list(OUTPUTS),

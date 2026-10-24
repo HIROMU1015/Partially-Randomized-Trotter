@@ -166,8 +166,30 @@ class DenseBackend:
             raise Stage1Failure("INCONCLUSIVE_NUMERICAL_PRECISION")
         if max(error, inverse_error) > self.s.numerical_atol:
             raise Stage1Failure("A4_ORDER_OR_INVERSE_CORRECTNESS_FAILURE")
+        convention = self.execution.science_call("published.convention",
+            lambda:self._published_convention(actual,h,n_d),identity=(str(h),n_d))
         return {"mathematical_reference_error": error, "actual_inverse_error": inverse_error,
+                "published_convention":convention,
                 "historical_validator_equivalence": "NOT_CERTIFIED_BY_THIS_REFERENCE"}
+
+    def _published_convention(self, actual, h, n_d):
+        # Full word, independent of DRun expansion and p @ k**n @ p-adjoint.
+        # Upstream documents mathematical P K^n P^-1. Its legacy validator
+        # instead left-multiplies the returned list; that is NOT this target.
+        from fractions import Fraction
+        from ._published_reference import _get_s2_sequence
+        weights = _get_s2_sequence("8th(Morales-YP8m8)",kernel_steps=n_d)
+        indices = tuple(range(len(self.s.context.block_ids)))
+        expected = self.identity.copy()
+        for weight in map(Fraction,weights):
+            for index in indices[:-1]+indices[::-1]:
+                time = h*weight/(n_d*(1 if index==indices[-1] else 2))
+                expected = expected @ self._exp(self.s.context.block_ids[index],time)
+        error = float(self.np.linalg.norm(actual-expected,ord=2))
+        if not math.isfinite(error) or error>self.s.numerical_atol:
+            raise Stage1Failure("PUBLISHED_CONVENTION_CORRECTNESS_FAILURE")
+        return dict(operator_error=error,reference="UPSTREAM_MATHEMATICAL_FULL_WORD",
+                    legacy_direct_append_equivalence="NOT_ASSERTED")
 
     def perform(self, kind, args, params):
         if kind == "validate_input":

@@ -22,7 +22,7 @@ def main():
     if args.inspect:
         head = subprocess.check_output(["git","rev-parse","HEAD"],cwd=root,text=True).strip()
         print(json.dumps(dict(status="PROPOSAL_NOT_EXECUTION_APPROVAL",source_commit=head,
-            production_authority="UNCONNECTED",scope=registry(candidate_graph(head))),indent=2))
+            production_authority="MANUAL_PROTECTED_USER_RECORD_REQUIRED",scope=registry(candidate_graph(head))),indent=2))
         return 0
     if not args.packet or not args.output:
         parser.error("--execute requires --packet and --output")
