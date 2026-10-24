@@ -1,3 +1,7 @@
+## 2026-10-25 PR1 sine Arb限定実行
+
+`h4_arb_pr1_sine.py`: 既存PR1 exact unitary/誤差転送を共用し最終内積のimagだけを包含。sine QPY/予算へbind、B一回・並行2作用/早期停止。
+
 ## 2026-10-25 PR1 cosine Arb限定実行
 
 `h4_arb_pr1_cosine.py`: PR0数値kernelとpair実行を無変更でscope接続。PR1固定order2/hash/labels/signsの検査、個別C-target/compiled whole区間差、B一回。

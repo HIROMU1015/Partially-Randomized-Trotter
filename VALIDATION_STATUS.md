@@ -1,3 +1,15 @@
+## 2026-10-25 H4 PR1 sine：局所Arb包含評価完了・mandatory STOP
+
+[個別imag C-target/実保存sine compiled包含・終了監査](docs/non_df_h4_central_arb_pr1_sine_20261025.md)。
+固定linear H4/隣接1Å/STO-3G、Pauli184/prefix27、S2/T.8/q8/r4/K4、system8+ancilla8、PR index1 sineのみ。
+科学SOURCE `473cc930c9d1a13d3a7662b6ad0b996f1e60517a`、64bitでC-target1＋compiled1（試行/成功2）、約.638/2.672秒並行、96/128bit未使用。
+局所ρは `[0,13154309625350691783/20769187434139310514121985316880384]`、上端約6.3335697014e-16、保存sine予算約3.3523233722408497e-6以内。
++Im/Sdg-before-final-H、order2 43(+)/4(-)→72(-)/phase−1、原constant/relative/global phase・共通exact ν/B一回を保持。
+新7＋再利用36＝43人工PASS、PR1保存QPY6静的decode・cosine作用0。新grant発行/消費1、親/2child exit0・全回収/STOP。
+code36/runtime211/input23・旧証拠654 SHA/旧manifest190行保全、旧code変更0。正式受理/LOCAL_BUDGET_MET=false、PR全law/tail・C/L/旧N_G=null・元native UNKNOWN保持。
+PF/PR0/cosine再計算、追加trajectory、新compile/sampling/Hamiltonian/state生成、R2/N_G/正式受理0。
+次はユーザーがPF/PR0 sineの対象/precision/callを別承認、Codexがsaved imag区間/個別target接続を準備して指定範囲だけ評価。以下は時点履歴。
+
 ## 2026-10-25 H4 PR1 order2 cosine：局所Arb包含評価完了・mandatory STOP
 
 [個別C-target/compiled包含・order2対応・終了監査](docs/non_df_h4_central_arb_pr1_cosine_20261025.md)。

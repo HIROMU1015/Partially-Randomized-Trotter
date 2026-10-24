@@ -57,8 +57,50 @@ trig cache/Pauli permutation/raw入力共有を利用し、CPU/RAM/workerの恣�
 
 ## 実行結果・終了監査
 
-実行後にSOURCE/grant/precision/call/信号区間/ρ/予算比較/native終了を追記する。
-ここまでの準備・人工検証では実H4状態作用・科学grant発行/消費は0。
+科学SOURCE **`473cc930c9d1a13d3a7662b6ad0b996f1e60517a`**、新one-shot grant **`a714406d159973472eddc5c2f62de2c1ed6839efd2bae93526e9c4755deb3014`** を一回発行・消費した。
+[封印](../artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/seal.json)、[active contract](../artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/active_contract.json)、
+[保存結果](../artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/run01/result_summary.json)。
+
+**64bitで上端≤保存sine予算が確定。状態作用試行/成功2（C-target虚部1＋compiled sine1）、残差区間縮約1。96/128bitは未使用。**
+科学失敗・技術retry・追加grantは0。不要な高精度化はしなかった。
+
+| 保存量 | 包含区間（十進は外向き24桁表示） | exact区間幅 |
+|---|---|---|
+| PR1 selected C-target sine | [-0.0237293346657786360672622, -0.0237293346657784497064612] | 13751/73786976294838206464 ≈1.86361e-16 |
+| 実保存compiled sine | [-0.0237293346657789416835258, -0.0237293346657782549295409] | 101347/147573952589676412928 ≈6.86754e-16 |
+| raw Arb ρ ball | [-4.90665622449783279945845e-16, 6.33356970130103477878240e-16] | 23345035905498873857/20769187434139310514121985316880384 ≈1.12402e-15 |
+
+ρ≥0との共通部分は **`[0,13154309625350691783/20769187434139310514121985316880384]`**。
+よって **ρ_local ≤6.33356970130103477878240e-16 < 保存sine予算約3.3523233722408497e-6**。
+raw ballと非負共通部分を別々に保存した。0は新ballとの数学的交差で、ρ=0の証明や旧nullの読み替えではない。
+[保存ρ](../artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/run01/rho_64.json)。
+幅1e-8も満たすが、停止理由は保存予算との関係が包含区間から確定したこと。
+
+C-targetはretained432 rotation・32event（Pauli product2）・scalar8回で約0.63821秒。
+compiledは3042 native gate（保存3043命令から最後のmeasurement1だけを除外）で約2.67176秒。
+2独立processは重なって実行。raw ray hash `8339b1a8b0bec35ae07688e667fde7ba602d56c1182523d58e0889ea114e8b80` とexact νを共用し、B_savedは一度だけ。
+符号付き信号が負であることは+Im規約と整合しており、−Imへ読み替えていない。
+
+保存source aggregate phase `.26518225073344787`、sine compiled global phase **2.4887856155591095**、ancilla8の相対phaseを保持。
+**今回の固定scopeで、order2の位相・符号・Sdg/+Im測定軸に不一致を検出しなかった。**
+人工包含検証とSOURCE/QPY照合・局所ρ比較の結果であり、全compiler/全trajectoryのcertificateではない。
+[構造/phase照合](../artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/structural_inspection.json)、
+[人工43件](../artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/artificial_verification.json)。
+
+親worker PID676190と2childはnative exit0・回収。残留子孫の強制終了0、all_owned_reaped=true。
+[非返還ledger](../artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/run01/call_ledger.json)、
+[target native](../artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/run01/target_64_native_exit.json)、
+[compiled native](../artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/run01/compiled_64_native_exit.json)、
+[親native](../artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/run01/native/worker_native_exit.json)、
+[最終STOP](../artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/run01/STOP.json)。
+UTC2026-10-24T17:04台はJST2026-10-25T02:04台。
+
+code36/runtime211（FLINT数値package103）/実入力23を新SOURCE・封印へ固定した。
+既存private Python-FLINT0.9.0/FLINT3.6.0を再利用。旧C runtimeとの既知libz.so.1.3 SHA差は原因UNKNOWNとして観測し、今回の実runtimeを固定した。FLINT packageは同一、共有library/package変更0。
+旧証拠654file・旧manifest190行と旧SOURCE/results/grants/ledger/markers/STOPを保全した。
+[stdlibだけの保存検証](../artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/verify_saved_results.py)、
+[検証結果](../artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/verification.json)。
+保存検証129項目PASS。後検証の状態作用・QPY再decode・保存vectorからのsignal再縮約は0。
 
 ## 残る課題・次の承認
 
