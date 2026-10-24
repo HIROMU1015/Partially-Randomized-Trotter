@@ -1105,3 +1105,4 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## H4 R1 order2 cosine（2026-10-24）
 
 `run_h4_r1_order2.py`：R0 controllerを再利用した専用one-shot／1論理・最大3作用。
+保存run01は消費済み・STOP済み。`artifacts/non_df_h4_central_r1_order2/2026-10-24/verify_saved.py`は保存照合のみで追加科学callなし。

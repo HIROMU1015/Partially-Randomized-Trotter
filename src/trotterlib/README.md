@@ -1074,3 +1074,4 @@ PF/PR0 cosine2診断・5状態作用を完了。結果は経験値のみ、rho_u
 ## H4 R1 order2 cosine（2026-10-24）
 
 `h4_r1_order2.py`：R0数値経路への固定PR1接続、SOURCE/order2事前照合。
+cosine1件・新3作用を完了。経験値だけを保存し、rho_upper=null。sine/Arb/R2へ自動移行しない。

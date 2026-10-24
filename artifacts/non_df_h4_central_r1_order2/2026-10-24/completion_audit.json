@@ -1,0 +1,128 @@
+{
+  "status": "R1_ORDER2_EMPIRICAL_COMPLETE_MANDATORY_STOP",
+  "UTC": "2026-10-24T11:13:41.124469+00:00",
+  "SOURCE": "ca9a1c0e2426565ba63cc8bfd0247f73339d95b8",
+  "base_commit": "f01c4018201de9335f20a8901ec5f40f9cf9e89b",
+  "branch": "codex/non-df-h4-central-r1-order2-20261024",
+  "grant_id": "4cbf315e6afa2fd28a165b8869bec04624f1122c8b4a201ef076bacadacdc647",
+  "logical_diagnostics": 1,
+  "successful_state_actions": 3,
+  "total_state_action_attempts": 3,
+  "science_failed_calls": 0,
+  "scientific_recovery_runs": 0,
+  "code_changes_after_seal": 0,
+  "pre_SOURCE_technical_note": "static inspection connected json namespace of reused R0 controller; no grant/state action existed; no scientific failure",
+  "artificial_tests": {
+    "new": 7,
+    "reused_R0": 10,
+    "PASS": 17
+  },
+  "saved_verification": "verification.json",
+  "native_exit": {
+    "UTC": "2026-10-24T11:08:21.244350+00:00",
+    "exit_code": 0,
+    "pid": 619848,
+    "reaped": true,
+    "scope": "NEW_R1_ORDER2_BINARY64_EMPIRICAL_ONLY"
+  },
+  "old_manifest_rows_unchanged": 183,
+  "old_evidence_files_unchanged": 253,
+  "results": {
+    "B_saved": 1.2873709223899619,
+    "B_saved_exact": "1449450801590761/1125899906842624",
+    "LOCAL_BUDGET_MET": false,
+    "PR_law_rho": null,
+    "axis": "cosine",
+    "budget_minus_d": 2.5936113683820912e-06,
+    "budget_minus_d_exact": "42504588005980166766703305379/16388186959750549702549379039100928",
+    "d": 4.3771358202651746e-16,
+    "d_exact": "71023089277947289/162259276829213363391578010288128",
+    "d_over_budget": 1.687660639094493e-10,
+    "d_over_budget_exact": "1024761716724668027/6072084001879071254825140224",
+    "delta": 3.573172098175653e-16,
+    "delta_exact": "7247254007953805/20282409603651670423947251286016",
+    "empirical_relation": "BELOW_SAVED_BUDGET",
+    "eta": 7.950307918440827e-16,
+    "eta_exact": "129001121341577729/162259276829213363391578010288128",
+    "formal_certificate_accepted": false,
+    "index": 1,
+    "key": "PR1",
+    "m_C": 0.01919550205004739,
+    "m_C_representative_exact": "5532726776306113/288230376151711744",
+    "m_input": 0.019195502050046772,
+    "m_output": 0.01919550205004705,
+    "method": "PR",
+    "numerical_error_upper": null,
+    "rho_budget": 2.593611368819805e-06,
+    "rho_budget_exact": "19792741170690161541/7631344236317346665332736",
+    "rho_upper": null,
+    "scope": "SELECTED_PR_INDEX1_ORDER2_ONLY",
+    "status": "EMPIRICAL_ONLY_NO_RHO_UPPER",
+    "trajectory_id": "596897f2d5ec2fb9b28a2b73c16423192d1494fd490fc58ca52cfc818baae0aa",
+    "triangle_verified": true
+  },
+  "R0_results": "copied saved values only; no reevaluation",
+  "forbidden_calls": {
+    "Arb_interval": 0,
+    "C_L_full_runs": 0,
+    "Hamiltonian_state_generation": 0,
+    "N_G_reanalysis": 0,
+    "R0_reevaluation": 0,
+    "R2": 0,
+    "RNG_replay": 0,
+    "additional_trajectory": 0,
+    "certificate_acceptance": 0,
+    "new_circuit_build": 0,
+    "new_compile": 0,
+    "precision_escalation": 0,
+    "sampling": 0,
+    "sine": 0
+  },
+  "preserved_states": {
+    "historical_hash": "FAIL_CAUSE_UNKNOWN_UNCHANGED",
+    "original_native": "UNKNOWN_UNCHANGED",
+    "original_N_G_null": true,
+    "C_L": "COMBINATION_BLOCKED",
+    "old_compiler": "MISSING_EVIDENCE",
+    "population_cost_tail": "UNKNOWN",
+    "PR_law_rho": null,
+    "formal_certificate_accepted": false
+  },
+  "rho_upper": null,
+  "numerical_error_upper": null,
+  "LOCAL_BUDGET_MET": false,
+  "phase_scale_control_mismatch": "NOT_DETECTED_WITHIN_FIXED_QPY_SOURCE_AND_ONE_COSINE_SCOPE",
+  "policy": {
+    "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research_project_instructions_unified_2026-10-23.md",
+    "sections_read": [
+      "8.4",
+      "10",
+      "10.1",
+      "10.2"
+    ],
+    "section_10_3": "ABSENT_IN_AVAILABLE_VERSION_DIRECT_USER_POLICY_APPLIED"
+  },
+  "next_actions": [
+    {
+      "candidate": "R1_SINE",
+      "owner": "Codex after explicit user approval",
+      "minimum": "3 logical / 6 new QPY state actions if saved PF C interval and PR0/PR1 complex targets fit; no new ideal target actions",
+      "priority": "first empirical axis coverage"
+    },
+    {
+      "candidate": "ARBITRARY_PRECISION_VALIDATED_LOCAL",
+      "owner": "Codex after explicit user approval",
+      "minimum": "choose local target and precision schedule; PR1 selected C and compiled enclosures required, input optional for delta/eta",
+      "priority": "required for rigorous local rho upper; first if assurance is the objective"
+    },
+    {
+      "candidate": "R2_FULL_LAW_TRANSFER",
+      "owner": "Codex after explicit user approval",
+      "minimum": "static uniform/law-weighted design including unseen order4; no initial numeric calls",
+      "priority": "separate law-wide assurance"
+    }
+  ],
+  "mandatory_STOP": true,
+  "automatic_next_stage": false,
+  "publication": "publication_status.json"
+}

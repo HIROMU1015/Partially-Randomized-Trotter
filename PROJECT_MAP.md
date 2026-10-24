@@ -1,11 +1,13 @@
-## 2026-10-24 H4 R1：order2 cosine SOURCE準備
+## 2026-10-24 H4 R1：order2 cosine経験的診断完了・mandatory STOP
 
-[PR index1・1論理／初回3状態作用](docs/non_df_h4_central_r1_order2_20261024.md)。
-固定H4/1Å/STO-3G/n8+ancilla8、Pauli184/prefix27、S2/T.8/q8/r4/K4。基点f01c40182。
-A_GATE保存PR1のQPY4個を実decode、order2 product/sign/phase・SOURCE・control・fingerprintを照合PASS、実H4状態作用0。
-R0数値・controllerを再利用、新7＋R0 10人工PASS。入力97／保全253／旧manifest183行、GitHub7commit/3blob照合。
-新SOURCE commit/seal/未使用grant後にinput/output/selected C-target各1を実行する。PF/PR0再計算・sine・Arb・R2・N_G0。
-EMPIRICAL_ONLY_NO_RHO_UPPER、旧未確定状態保持・完了後mandatory STOP。以下は時点履歴。
+[PR index1・1論理／状態作用成功3・総試行3](docs/non_df_h4_central_r1_order2_20261024.md)。
+固定H4/1Å/STO-3G/n8+ancilla8、Pauli184/prefix27、S2/T.8/q8/r4/K4。科学SOURCE `ca9a1c0e2426565ba63cc8bfd0247f73339d95b8`。
+PR1 δ=3.573172098175653e-16、η=7.950307918440827e-16、d=4.3771358202651746e-16。d/保存cosineρ予算=1.687660639094493e-10。
+EMPIRICAL_ONLY_NO_RHO_UPPER、rho_upper/numerical_error_upper=null、LOCAL_BUDGET_MET=false。PR0比較は保存値引用のみ、order2因果効果や全lawへ外挿しない。
+固定order2 product43(+)/4(-)/rotation72(-)、order phase-1、保存aggregate phase .26518225073344787を維持。
+実QPY4 decode・SOURCE/control/phase照合PASS、新7＋R0 10人工PASS、code21/input97/runtime6999/保全253 SHA・旧manifest183行不変。
+今回native exit0/reap・STOP、科学失敗/回復0、PF/PR0再計算/sine/Arb/R2/compile/sampling/N_G0。旧未確定状態保持。
+次の担当：ユーザーがsine経験的coverageまたは局所保証intervalを選び明示承認、Codexが別SOURCE/grantで実施。今回は提案まで。以下は時点履歴。
 
 ## 2026-10-24 H4 R0：binary64経験的診断完了・mandatory STOP
 
