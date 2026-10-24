@@ -304,3 +304,17 @@ CPU/RAM/workerの恣意的上限・共有設定/他process変更なし。静的/
 - [central合成](../src/trotterlib/h4_d2_pauli_control.py)、[wrapper/compiler設定](../src/trotterlib/fixed_signal_evaluation.py)、[transpile呼出](../src/trotterlib/rte_compiled_cost.py)。
 - [selected C-target](../src/trotterlib/h4_arb_pr0_preparation.py)、[given-program Arb](../src/trotterlib/h4_arb_bridge.py)。
 - [今回の人工テスト](../tests/test_h4_r2_static_design.py)、[artifact入口](../artifacts/non_df_h4_central_r2_design/2026-10-25/README.md)。
+
+## 公開確認結果
+
+設計commit `95a51177591f7e6f0a319f6a40d2aed882bb14d8` をlocal保存。pushはHTTPS認証失敗（exit128）。
+GitHub接続による新branch検索は空、同commit取得もAPI422 `No commit found`。remote SHAは未確認/nullで、公開済みとは扱わない。
+[公開状態](../artifacts/non_df_h4_central_r2_design/2026-10-25/publication_status.json)、[照合結果](../artifacts/non_df_h4_central_r2_design/2026-10-25/remote_after_push.json)、[失敗log](../artifacts/non_df_h4_central_r2_design/2026-10-25/push_attempt01.log)。
+
+認証のある環境でユーザーが再実行するコマンド：
+
+```bash
+git -C /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-central-r2-design-20261025 push -u origin codex/non-df-h4-central-r2-design-20261025
+```
+
+旧科学結果と実行無効契約を保持し、今回の設計作業をmandatory STOP。公開のための科学再実行は不要。
