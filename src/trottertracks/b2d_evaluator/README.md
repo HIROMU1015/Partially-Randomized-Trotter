@@ -1,0 +1,52 @@
+# B2-D 5方式評価器：接続準備・技術報告
+
+2026-10-25 JST。**Scienceは未起動。** 起点 `5d3ec883eeeabf69abfa128c9e169c59fc572149` の既存adapter・15人工testを変更せず再利用した。新規追加だけで作業し、旧SOURCE・結果・草案・grant・STOPを保全する。
+
+## 追加した接口
+
+- [`plans.py`](plans.py)：A0 current partial-S2、A1 standalone D-S2、A2 Yoshida4、A3 published Y8m10b、A4 published YP8m8。数学的積とappend順、同方向D半時間、opaque tail barrierを扱う。
+- [`_baselines.py`](_baselines.py)：固定PF repository `20d64c2fea1ed2d2188777df4f3d962ee94df486` の `product_formula.py`（blob `70d68691a1dcdedea5447aac4b8bbfa51141d4cb`）からS2／Yoshida4／Y8m10bの3関数をbody変更なしで移植。実取得SOURCEとのAST一致を確認。A4は旧adapterをそのまま使う。
+- [`evaluation.py`](evaluation.py)：必須科学条件を持つSettings、共有参照DAG、call予算、出力schema、承認境界。`build_graph` は純粋な記述処理。`evaluate` は承認参照・grant参照・SOURCE／grid／call一致を確認してからbackendを作る。
+- [`dense_backend.py`](dense_backend.py)：承認後に限り生成する数値backend。外部で準備したsector行列・state・symbolic tailを受け取る。importだけではnumpy／Qiskit／trotterlibを読まない。今回instantiate・performしていない。
+- [新規人工tests](../../../tests/management/test_b2d_evaluator.py)と[実行前提案](../../../docs/research/research_b_b2d_science_preflight_proposal_20261025.md)。
+
+## 再利用と追加の理由
+
+既存PRの `rte.make_rte_config`／`finite_rte_operator_moments`、`finite_rte_signal_validation._signal`／`_phase_distance`／`_array_fingerprint` をlazyな数値backendから接続する。finite Taylorやsampler、signal estimatorを新しく作っていない。`_state_result` はshots／暫定RPE予算等まで計算し、既存validation runnerもHamiltonian・eig・回路を起動するため、第一段階へ丸ごと流用しない。
+
+新コードは5armの接続・共有・identity・出力と必要なmatrix積のglueである。旧partial-S2は任意nested D列を受け取らず、旧PF namespaceのimportも科学依存が広いため、stdlibの独立namespaceを維持した。価格table・係数optimizer・新しいcorrector・circuit renderer・grant発行処理は追加しない。
+
+## 作用順とphase
+
+A0は `reverse @ tail @ forward`。A1–A4は同じGを両側へ置く。A4の数学的 `P K^n P†` に対するappend順は旧adapter同様 `P† → K…K → P`。tail越しのP相殺はしない。隣接D融合の既存規則は旧15testで確認し、本数値経路はnative列最適化を加えずordered積／powerを扱う。
+
+Scalarはcontextのconstant＋抽出identityをphysical時間に対して付ける。tailのevent位相・normalizationは既存analytic momentの意味論を保持し、新samplingをしない。controlled wrapperの数値位相照合は第二段階。A4は独立した数学的S2/P/K積との将来数値gateを用意したが、**旧validatorとの数値operator同値性は引き続き未確認**である。
+
+## 実行しない経路と未解決の接続
+
+今回の人工確認ではbackendのfactoryもmockへ置換する。`DenseBackend` の科学依存import、matrix exponential、operator error、signal、commutatorを一度も実行していない。fixture loader／D blockの行列化／sector・basis順の独立照合はまだ接続が必要で、`PreparedDenseInputs` を名前だけ埋めても科学資格は成立しない。
+
+未来のInput packageには、同じsector順序のblock行列、retained normalized tail、full physical H、state、symbolic tailとresolved identityが必要。backendは配列hash・H=D+R+scalar・shape／Hermiticity／state norm・D／D-R非可換性を数値gateで照合するが、それ自体が未実行である。schemaにSOURCE・設定・input／graph fingerprint・call・全rowを保存する。
+
+未設定のradius／branch／数値条件を拒否し、承認なしではbackend生成前に拒否する。ただし `ExecutionApproval` は呼出し元が渡すattestationであり、外部ledgerの真正性・未使用grant・ユーザー承認を暗号学的に認定する仕組みではない。未来のlauncher側でSOURCE・実入力・fresh出力・新grantを確認する。science runner／CLIは今回作っていない。
+
+## 人工test結果
+
+Python 3.11.0rc1、stdlibのみで次のfocused filesを実行した。
+
+```bash
+/usr/bin/python3.11 -S tests/management/test_b2d_adapter.py -v
+/usr/bin/python3.11 -S tests/management/test_b2d_evaluator.py -v
+```
+
+**既存15件＋追加14件＝29件PASS。** 5family／固定係数AST、A0 sweep、A4旧列との同一性、signed順序、actual descriptor inverseとtail逆の拒否、metadata共有、grid公平性、参照共有、未設定条件／未承認要求の拒否、mock出力schemaを確認した。import barrierでnumpy／scipy／Qiskit／化学／trotterlibを読まないことも確認した。既存science testsは実行していない。
+
+提案gridの36行・941 dispatchはmetadataから数えたもので、科学call消費は0。low-levelの全expm数、Input package作成を含む全job予算、科学性能・速度倍率は未確定。人工PASSはoperator精度・数値位相・full signal改善・YP8m8優位の証拠ではない。
+
+## 次の担当・STOP
+
+研究Bチャット／ユーザーが、[提案条件と未確定事項](../../../docs/research/research_b_b2d_science_preflight_proposal_20261025.md)、Input package接続、科学SOURCE・新grant・全call範囲を確認し、必要な追加準備と限定科学実行を別途明示承認する。科学的materiality、radius／branch条件、精度資格、retry／保存scopeは未採択である。
+
+C1圧縮DF最優先を維持し、研究Aはnormalization／finite-bit／range・shots、研究Cは表現／native合成／制御位相を分担する。通常の研究B進行に統括報告を必須としない。共有環境変更、他研究merge、科学計算・回路build／compile、保存数値の再解析、新grant発行はない。
+
+専用branch `codex/research-b-b2d-evaluator-preflight-20261025` を公開し、remote SHAと追加内容を確認後 **mandatory STOP**。第一段階の未承認科学実行や第二段階へ進まない。
