@@ -1,3 +1,7 @@
+## 2026-10-24 H4/H6標準Yoshida4 独立確認の技術停止
+
+[原因・台帳・修正候補・保全・STOP](../../docs/research/track_a_h46_standard_y4_confirmation_stop_20261024.md)。固定契約を一回実行したが、追加adapterの遅延runtime参照不備でworker入口が失敗。親context各9・計18 entryを消費し、新trajectory/sampling/compile/再会計/統計0。全44 worker・両nativeを回収、2 grant消費済み・科学retryなし。入力504 file照合、停止証拠64 file保全。修正候補は人工確認のみ・未適用、方向は未評価、mandatory STOP。
+
 ## 2026-10-24 H4/H6標準Yoshida4 独立確認準備
 
 [固定契約・S2再利用・n設計・予算・監査](../../docs/research/track_a_h46_standard_y4_confirmation_ready_20261024.md)。H4/H6標準Yoshida4の独立確認準備。旧独立S2 n25/23を再利用し、新Y4 n45/32・77軌道/154軸を固定。保存pilot設計値を使い、新n数値算定0。元native/paired統計を再利用、人工24件・metadata変更11種拒否・preflight PASS、504 file封印。SOURCE a9473594…、実科学call/有効grant0、一回のPhase C承認待ち。旧strict BLOCKED・STOP保持。
