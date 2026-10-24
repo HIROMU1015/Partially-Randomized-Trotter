@@ -1,7 +1,7 @@
 """Dormant outer nodes; reuse DenseBackend validation, exp cache and signals.
 
-No instantiation in preparation. A future execution context must bind the NEW
-graph/scope: the old Stage-1 launcher/scope cannot run this graph.
+No instantiation in artificial preparation tests. The fixed outer execution
+context binds the new graph/scope; the legacy 36-row scope remains separate.
 """
 import math
 from fractions import Fraction
@@ -12,6 +12,22 @@ from trottertracks.b2d_adapter._published import symmetric_s2_sequence
 
 
 class OuterDenseBackend(DenseBackend):
+    def _outer_signals(self, physical, outer, ideal, corrected, raw):
+        records = self._signals((physical, ideal, corrected, raw))
+        value = self.execution.science_call("signal.expectation",
+            lambda: self.signal(outer, self.i.state))
+        if not math.isfinite(value.real) or not math.isfinite(value.imag):
+            raise Stage1Failure("INCONCLUSIVE_NUMERICAL_PRECISION")
+        records["exact_outer"] = dict(X=value.real, Y=value.imag, radius=abs(value),
+            principal_phase=None, phase_status="NOT_REQUESTED")
+        target = complex(records["physical"]["X"], records["physical"]["Y"])
+        for name in ("exact_outer", "ideal_tail", "corrected", "raw"):
+            signal = complex(records[name]["X"], records[name]["Y"])
+            records[name + "_physical_signal_error"] = abs(signal - target)
+        records["D_approximation_signal_error"] = abs(
+            complex(records["ideal_tail"]["X"], records["ideal_tail"]["Y"]) - value)
+        return records
+
     def _check_error(self, actual, reference, code):
         error = float(self.np.linalg.norm(actual - reference, ord=2))
         if not math.isfinite(error):
@@ -44,6 +60,8 @@ class OuterDenseBackend(DenseBackend):
             return self._check_word(args[0], params[0], "OUTER_ORDER_CORRECTNESS_FAILURE")
         if kind == "outer_rescale_check":
             return self._check_error(args[0], args[1], "NORMALIZATION_CORRECTNESS_FAILURE")
+        if kind == "outer_signals":
+            return self._outer_signals(*args)
         if kind == "outer_d_check":
             stage, = params
             blocks = self.s.context.block_ids

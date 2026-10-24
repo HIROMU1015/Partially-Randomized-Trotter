@@ -212,7 +212,7 @@ class OuterTests(unittest.TestCase):
         norm = g.nodes[row["outputs"]["normalization"]]
         self.assertEqual(len(norm.dependencies), 6)
         signal = g.nodes[row["outputs"]["signals"]]
-        for index, field in ((2, "corrected_operator"), (3, "attenuated_event_mean_operator")):
+        for index, field in ((3, "corrected_operator"), (4, "attenuated_event_mean_operator")):
             phase = g.nodes[signal.dependencies[index]]
             self.assertEqual(phase.parameters, (F(9, 50),))
             word = g.nodes[phase.dependencies[0]]

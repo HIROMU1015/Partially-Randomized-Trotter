@@ -153,10 +153,14 @@ def save_inputs(inputs, output):
 
 
 def _run(run, *, mock_only=False, input_loader=load_candidate,
-                 backend_factory=None, input_saver=save_inputs):
+                 backend_factory=None, input_saver=save_inputs, outer=False):
     """Shared continuation; artificial tests inject only mock loaders/backends."""
-    template = candidate_graph(run.source_commit)
-    ledger = ScopeLedger(run.call_scope, template)
+    make_template, ledger_type, resolve, evaluator = candidate_graph, ScopeLedger, resolved_graph, evaluate
+    if outer:
+        from .outer_execution import candidate_graph as make_template, OuterScopeLedger as ledger_type, resolved_graph as resolve
+        from .outer import evaluate_outer as evaluator
+    template = make_template(run.source_commit)
+    ledger = ledger_type(run.call_scope, template)
     run.attach_scope(ledger)
     evidence = Evidence(run.output, mock_only=mock_only)
     ledger.sink = evidence.event
@@ -172,7 +176,7 @@ def _run(run, *, mock_only=False, input_loader=load_candidate,
         evidence.write("inputs.json",provenance)
         input_saver(inputs,run.output)
         evidence.audit()
-        graph = resolved_graph(template,context,inputs,provenance)
+        graph = resolve(template,context,inputs,provenance)
         ledger.bind_graph(graph)
         run.check_settings(graph.settings)
         evidence.write("graph.json", dict(settings=asdict(graph.settings), graph_fingerprint=graph.fingerprint,
@@ -180,9 +184,12 @@ def _run(run, *, mock_only=False, input_loader=load_candidate,
         if backend_factory is None:
             if mock_only:
                 raise Stage1Failure("MOCK_BACKEND_REQUIRED")
-            from .dense_backend import DenseBackend
-            backend_factory = lambda s: DenseBackend(s,inputs,execution=run)
-        result = evaluate(graph,backend_factory,execution=run,scope=ledger,mock_only=mock_only)
+            if outer:
+                from .outer_backend import OuterDenseBackend as Backend
+            else:
+                from .dense_backend import DenseBackend as Backend
+            backend_factory = lambda s: Backend(s,inputs,execution=run)
+        result = evaluator(graph,backend_factory,execution=run,scope=ledger,mock_only=mock_only)
         ledger.finish()
         return evidence.finish(dict(status="COMPLETED_DESCRIPTIVE_MANDATORY_STOP"),ledger,result=result)
     except BaseException as error:
@@ -193,11 +200,23 @@ def _run(run, *, mock_only=False, input_loader=load_candidate,
 
 def launch(source_root, output, source_commit):
     """Check scientific configuration, create output exclusively, then run once."""
+    return _launch(source_root, output, source_commit, outer=False)
+
+
+def launch_outer(source_root, output, source_commit):
+    """The separately permitted fixed 16-row outer study, using the same writer."""
+    return _launch(source_root, output, source_commit, outer=True)
+
+
+def _launch(source_root, output, source_commit, *, outer):
     try:
         root = Path(source_root).resolve()
         if root != Path(__file__).resolve().parents[3]:
             raise Stage1Failure("LOADED_SOURCE_ROOT_MISMATCH")
-        run = verify_execution(root,output,source_commit)
+        verifier = verify_execution
+        if outer:
+            from .outer_execution import verify_execution as verifier
+        run = verifier(root,output,source_commit)
     except BaseException as error:
         return rejection(error)
     try:
@@ -208,7 +227,7 @@ def launch(source_root, output, source_commit):
         return dict(status="FRESH_OUTPUT_FAILED_MANDATORY_STOP", error_type=type(error).__name__,
                     reason="EXCLUSIVE_FRESH_OUTPUT_FAILURE", science_started=False, stop=STOP)
     try:
-        return _run(run)
+        return _run(run, outer=True) if outer else _run(run)
     except BaseException as error:
         # Setup failed after this launch's successful mkdir. Best-effort evidence.
         try:

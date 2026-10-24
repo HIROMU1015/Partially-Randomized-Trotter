@@ -20,6 +20,9 @@ OUTPUT_LIMITS = dict(total_bytes=16*1024*1024, json_document_bytes=1024*1024,
                      event_record_bytes=64*1024, files=len(OUTPUTS), stop_reserve_bytes=256*1024)
 REQUIRED_DEPENDENCIES = ("numpy", "scipy", "qiskit", "qiskit-nature", "openfermion",
                          "openfermionpyscf", "pyscf", "numba", "matplotlib")
+INPUT_BOUNDARIES = {"input.fixture":1, "input.split":1, "input.preparation":1,
+                    "input.sector":1, "input.full":1, "input.block":3,
+                    "input.tail":1, "input.state":1}
 
 
 def candidate_graph(source_commit):
@@ -67,9 +70,8 @@ def registry(graph):
         raise Stage1Failure("UNREGISTERED_NUMERIC_POLICY")
     boundaries = dict(
         **{f"dag.{kind}": count for kind,count in graph.call_counts.items()},
-        **{"input.fixture":1, "input.split":1, "input.preparation":1,
-           "input.sector":1, "input.full":1, "input.block":3, "input.tail":1,
-           "input.state":1, "backend.expm":len(exponential_keys(graph)),
+        **INPUT_BOUNDARIES,
+        **{"backend.expm":len(exponential_keys(graph)),
            "rte.config":2, "rte.moments":2, "signal.expectation":144,
            "published.convention":4})
     return dict(schema=SCHEMA, status="FIXED_RECIPE_BOUNDED_RUNTIME_EXPANSION",
@@ -115,8 +117,16 @@ def resolved_graph(template, context, inputs, provenance):
 
 class ScopeLedger:
     """Local to one launch; records attempted, completed, failed boundaries."""
+    validate_registry = staticmethod(validate_registry)
+    comparison_kinds = frozenset(("operator_error", "signals"))
+    result_kinds = frozenset(("validate_input", "a4_reference_check", "operator_error", "signals", "normalization"))
+
+    def check_rte_identity(self, identity):
+        if identity not in ("9/100", "-9/100"):
+            raise Stage1Failure("UNREGISTERED_RTE_TIME")
+
     def __init__(self, scope, graph, sink=lambda event: None):
-        validate_registry(scope, graph)
+        self.validate_registry(scope, graph)
         self.scope, self.graph, self.sink = scope, graph, sink
         self.attempted, self.completed, self.failed = Counter(), Counter(), Counter()
         self.seen, self.node_results, self.resolutions = set(), {}, {}
@@ -141,8 +151,8 @@ class ScopeLedger:
                 raise Stage1Failure("UNREGISTERED_EXPONENTIAL")
         if name == "input.block" and identity not in (0,1,2):
             raise Stage1Failure("UNREGISTERED_D_POSITION")
-        if name.startswith("rte.") and identity not in ("9/100", "-9/100"):
-            raise Stage1Failure("UNREGISTERED_RTE_TIME")
+        if name.startswith("rte."):
+            self.check_rte_identity(identity)
         if identity is not None:
             self.seen.add(key)
         self.attempted[name] += 1
@@ -160,7 +170,7 @@ class ScopeLedger:
             raise
 
     def bind_graph(self, graph):
-        validate_registry(self.scope, graph)
+        self.validate_registry(self.scope, graph)
         self.graph = graph
 
     def record_resolution(self, name, value):
@@ -197,10 +207,10 @@ class ScopeLedger:
         if index < 0 or index >= len(self.graph.nodes) or self.graph.nodes[index] != node:
             raise Stage1Failure("UNREGISTERED_DAG_NODE")
         gate_indices = set(self.graph.correctness.values())
-        comparison = node.kind in ("operator_error", "signals")
+        comparison = node.kind in self.comparison_kinds
         if comparison and not gate_indices.issubset(self.node_results):
             raise Stage1Failure("COMPARISON_BEFORE_CORRECTNESS")
-        kinds = {"validate_input", "a4_reference_check", "operator_error", "signals", "normalization"}
+        kinds = self.result_kinds
         value = self.call("dag."+node.kind, function, identity=index,
                           summary=(lambda v:v) if node.kind in kinds else None)
         self.node_results[index] = value if node.kind in kinds else None

@@ -1,7 +1,7 @@
 """Outer splitting preparation: descriptors and the existing memoized DAG.
 
 Import/build only use stdlib metadata. No fixture, sampler, operator or circuit
-is created. There is deliberately no scientific launcher for this draft.
+is created. The fixed scientific entry point lives in outer_execution/launcher.
 """
 from dataclasses import asdict, dataclass, replace
 from fractions import Fraction
@@ -238,13 +238,11 @@ def build_outer_graph(settings, cases, *, independent_occurrences):
             cutoff=settings.cutoff, truncation_tolerance=settings.truncation_tolerance,
             seed=settings.seed, independent_occurrences=independent_occurrences)
         exact, ideal, corrected, raw, moments = [], [], [], [], []
-        reference_word = []
         for stage_id, stage in enumerate(plan.body):
             if isinstance(stage, DStage):
                 d = product(exp(op.block_id, op.evolution_time) for op in stage.append_operations())
                 correctness[f"D:{row_id}:{stage_id}"] = add("outer_d_check", (d,), (stage,))
                 exact.append(exp("exact_D", stage.duration))
-                reference_word.append(("exact_D", stage.duration))
                 ideal.append(d); corrected.append(d); raw.append(d)
             else:
                 spec = stage.payload
@@ -252,12 +250,16 @@ def build_outer_graph(settings, cases, *, independent_occurrences):
                 moments.append(moment)
                 tail = exp("exact_R", stage.evolution_time)
                 exact.append(tail); ideal.append(tail)
-                reference_word.append(("exact_R", stage.evolution_time))
                 corrected.append(add("moment_field", (moment,), ("corrected_operator",)))
                 raw.append(add("moment_field", (moment,), ("attenuated_event_mean_operator",)))
         outer_unphased = product(exact)
+        # Unfused mathematical reference, constructed from the case rather than
+        # by reversing the realized body. Exact adjacent D factors may compose;
+        # the approximate D words themselves must not be replaced this way.
+        reference_word = tuple(("exact_" + kind, case.total_time * coefficient / case.step_count)
+            for kind, coefficient in mathematical_stages(case.method)) * case.step_count
         correctness[f"outer:{row_id}"] = add("outer_order_check", (outer_unphased,),
-                                             (tuple(reversed(reference_word)),))
+                                             (reference_word,))
         outer = add("physical_scalar_phase", (outer_unphased,), (case.total_time,))
         ideal, corrected, raw = (phased(ops, case.total_time) for ops in (ideal, corrected, raw))
         physical = exp("exact_physical", case.total_time)
@@ -273,9 +275,11 @@ def build_outer_graph(settings, cases, *, independent_occurrences):
             outputs=dict(outer_operator_error=error(outer, physical),
                          ideal_tail_physical_error=error(ideal, physical),
                          corrected_physical_error=error(corrected, physical),
+                         raw_physical_error=error(raw, physical),
+                         D_approximation_error=error(ideal, outer),
                          finite_RTE_error=error(corrected, ideal),
                          normalization_consistency=consistency, normalization=norm,
-                         signals=add("signals", (physical, ideal, corrected, raw)))))
+                         signals=add("outer_signals", (physical, outer, ideal, corrected, raw)))))
     return Graph(settings, tuple(nodes), tuple(rows), correctness)
 
 
