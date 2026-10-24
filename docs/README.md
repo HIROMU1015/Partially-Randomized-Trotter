@@ -1,3 +1,7 @@
+## 2026-10-25 H4 PR全law R2静的設計
+
+[Uniform/law-weighted比較・誤差分解・未解決証明](non_df_h4_central_r2_design_20261025.md)。実H4計算0、次契約無効、全law保証/正式受理なし。
+
 ## 2026-10-25 PF・PR0 sine Arb限定実行
 
 [PF・PR0 sine Arb包含と全6件一覧](non_df_h4_central_arb_pf_pr0_sine_20261025.md)：64bit/3作用・両方予算内、正式受理なし、mandatory STOP。

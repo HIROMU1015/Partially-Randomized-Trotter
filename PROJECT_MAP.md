@@ -1,3 +1,7 @@
+## 2026-10-25 H4 PR全law R2静的設計
+
+[転送式・compiler不足・無効次契約](docs/non_df_h4_central_r2_design_20261025.md)。全lawρは未確定、科学call0・人工11PASS・mandatory STOP。
+
 ## 2026-10-25 H4 PF・PR0 sine：6局所Arb包含結果が完成・mandatory STOP
 
 [PF/PR0 sine包含・6件一覧・終了監査](docs/non_df_h4_central_arb_pf_pr0_sine_20261025.md)。

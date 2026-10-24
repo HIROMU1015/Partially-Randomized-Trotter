@@ -1,0 +1,64 @@
+{
+  "LOCAL_BUDGET_MET": false,
+  "PR_law_rho": null,
+  "artificial_tests_passed": 11,
+  "automatic_next_stage": false,
+  "base_commit": "21fa1d08cf53422bd6e44e832ce8cc453f6d3ebf",
+  "branch": "codex/non-df-h4-central-r2-design-20261025",
+  "conclusion": "Mathematical transfer is available; existing optimized compiled family lacks an all-input error bound. No new H4 numerical bound.",
+  "current_counts": {
+    "Arb_H4_state_actions": 0,
+    "Hamiltonian_state_generation": 0,
+    "N_G_reanalysis": 0,
+    "RNG_replay": 0,
+    "new_compile": 0,
+    "new_sampling": 0,
+    "new_scientific_grants_consumed": 0,
+    "new_scientific_grants_issued": 0,
+    "real_H4_numerical_evaluations": 0
+  },
+  "formal_certificate_accepted": false,
+  "mandatory_STOP": true,
+  "methods": [
+    {
+      "formula": "B_saved*min(2,D+2*K_axis)",
+      "id": "uniform",
+      "status": "CONDITIONAL_ON_UNIFORM_INPUT_AND_COMPILER_PROOFS"
+    },
+    {
+      "formula": "B_saved*sum_s p_s*d_s; additive version B_saved*min(2,D_axis+qr*E[e])",
+      "id": "law_weighted",
+      "status": "CONDITIONAL_ON_ALL_MEMBERS_BOUND_AND_EFFECTIVE_LAW"
+    },
+    {
+      "formula": "abs(m_out-m_C)<=min(2,eta_body+2*kappa_wrapper)",
+      "id": "decomposition",
+      "status": "PROVED_INEQUALITY_UNDER_UNITARY_AND_WRAPPER_BINDING_PREMISES"
+    },
+    {
+      "id": "sample_max_mean",
+      "reason": "selected trajectories do not cover unseen components/order4/compiler paths",
+      "status": "NOT_A_FULL_LAW_BOUND"
+    },
+    {
+      "actual_error_exceeded": false,
+      "id": "order4_trivial_remainder",
+      "reason": "w4>=saved pi4>1/400000; B_saved>1; 2*B_saved*w4>1/200000>both saved guards",
+      "status": "SUFFICIENT_BOUND_TOO_COARSE_FOR_SAVED_GUARDS"
+    }
+  ],
+  "minimum_next_H4_state_actions_identified": 0,
+  "next_owner": "User: choose restricted proof continuation or explicit implementation redesign; Codex: follow chosen scope",
+  "old_N_G_changed": false,
+  "original_H4_native": "UNKNOWN_UNCHANGED",
+  "population_cost_tail": "UNKNOWN_SEPARATE_PROBLEM",
+  "preferred": "split C-target to central input and input to compiled; uniform first; law-weighted only from proved all-event bounds",
+  "primary_blockers": [
+    "phase aggregation/remainder error over all allowed paths",
+    "fixed opt1 accelerated numerical synthesis all-input operator bound",
+    "whole-path compiler definition/termination/layout/measurement coverage",
+    "no lawful extrapolation from local PR0/PR1 or 256 samples"
+  ],
+  "report": "docs/non_df_h4_central_r2_design_20261025.md",
+  "status": "R2_STATIC_DESIGN_COMPLETE_FULL_LAW_RHO_UNDETERMINED"
+}
