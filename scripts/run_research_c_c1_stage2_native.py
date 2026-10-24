@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Byte preflight by default; science requires new approval AND proposal adoption."""
+"""Byte preflight by default. Run science only after user permission in chat."""
 import argparse
 import json
 from pathlib import Path
@@ -18,17 +18,16 @@ def main():
     parser.add_argument('--contract', type=Path, required=True)
     parser.add_argument('--input', type=Path, required=True)
     parser.add_argument('--execute', action='store_true')
-    parser.add_argument('--approval', type=Path)
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
-    if args.execute and (args.approval is None or args.output is None):
-        parser.error('Separate scientific approval, proposal adoption and fresh output required')
-    if not args.execute and (args.approval or args.output):
-        parser.error('Preflight accepts no approval/output')
+    if args.execute and args.output is None:
+        parser.error('Fresh output required; obtain user permission and adopt conditions in chat before executing')
+    if not args.execute and args.output:
+        parser.error('Preflight accepts no output')
     from trottertracks import c1_stage2_execution as run
     v = run.preflight(ROOT, args.contract, args.input)
     if args.execute:
-        result = run.execute(v, args.approval, args.output)
+        result = run.execute(v, args.output)
         print(json.dumps(dict(status=result['status'], mandatory_stop=True)))
     else:
         print(json.dumps(dict(status='STAGE2_BYTE_PREFLIGHT_PASS_SCIENCE_UNAPPROVED',

@@ -72,7 +72,10 @@ def test_import_and_default_cli_cannot_dispatch_science():
     subprocess.run([sys.executable, '-c', script], cwd=ROOT, check=True)
     r = subprocess.run([sys.executable, str(ROOT/'scripts/run_research_c_c1_stage2_native.py'),
         '--contract', '/DO_NOT_READ', '--input', '/DO_NOT_READ', '--execute'], capture_output=True, text=True)
-    assert r.returncode == 2 and 'Separate scientific approval' in r.stderr
+    assert r.returncode == 2 and 'Fresh output required' in r.stderr
+    help = subprocess.run([sys.executable, str(ROOT/'scripts/run_research_c_c1_stage2_native.py'),
+        '--help'],capture_output=True,text=True,check=True).stdout
+    assert '--approval' not in help
 
 
 def test_schedule_preserves_original_order_and_fractional_time():
@@ -245,37 +248,27 @@ def test_fail_fast_has_no_dependent_calls_or_retry(fail_kind):
     else: assert 'metrics' not in events
 
 
-def test_approval_requires_separate_science_and_exact_proposal_adoption(tmp_path):
-    with patch.object(execution.io,'read',return_value={'approved':True}), patch.object(
-            execution.io,'sha',return_value='h'),patch.object(execution.subprocess,'check_output',return_value='HEAD\n'):
-        v=dict(root=tmp_path,contract_path=tmp_path/'c',source_path=tmp_path/'s',input=tmp_path/'i',
-               contract=dict(saved_export_sha256='e',proposal_sha256='p',maximum_units=243))
-        with pytest.raises(PermissionError,match='PROPOSAL_ADOPTION'):execution.verify_approval(v,'old_grant',tmp_path/'output')
+def test_output_control_checks_source_drift_without_reading_permission_files(tmp_path):
+    output=tmp_path/execution.FAMILY/'ARTIFICIAL'
+    with patch.object(execution.subprocess,'check_output',return_value=b'source.py\n'),patch.object(
+            execution.io,'read',side_effect=AssertionError('No permission file is read')):
+        with pytest.raises(ValueError,match='SOURCE_DRIFT'):execution.check_output({'root':tmp_path},output)
 
 
 def test_execution_rechecks_preflight_before_numeric_dispatch():
     with patch.object(execution,'preflight',side_effect=ValueError('artificial source drift')), patch.object(
-            execution,'verify_approval') as approval,patch.object(execution,'runtime') as runtime:
-        with pytest.raises(ValueError):execution.execute(dict(root='r',contract_path='c',input='i'),'a','o')
-        approval.assert_not_called();runtime.assert_not_called()
+            execution,'check_output') as output,patch.object(execution,'runtime') as runtime:
+        with pytest.raises(ValueError):execution.execute(dict(root='r',contract_path='c',input='i'),'o')
+        output.assert_not_called();runtime.assert_not_called()
 
 
-def test_exact_new_approval_accepts_only_fresh_output_and_adopted_proposal(tmp_path):
+def test_scientific_output_control_requires_task_namespace_and_fresh_output(tmp_path):
     output=tmp_path/execution.FAMILY/'ARTIFICIAL'
-    v=dict(root=tmp_path,contract_path=tmp_path/'c',source_path=tmp_path/'s',input=tmp_path/'i',
-           contract=dict(saved_export_sha256='e',proposal_sha256='p',maximum_units=243))
-    approval=dict(scope=execution.SCOPE,authority='USER_EXPLICIT_C1_STAGE2_SCIENCE',approved=True,
-        source_commit='HEAD',contract_sha256='h',source_manifest_sha256='h',input_sha256='h',
-        saved_export_sha256='e',adopted_proposal_sha256='p',scientific_conditions_adopted=True,
-        output=str(output),maximum_units=243,new_fit_calls=0,retry=0,resume=0)
-    def git(args,**kw):return 'HEAD\n' if args[1]=='rev-parse' else b''
-    with patch.object(execution.io,'read',return_value=approval), patch.object(execution.io,'sha',return_value='h'),patch.object(execution.subprocess,'check_output',side_effect=git):
-        assert execution.verify_approval(v,'ARTIFICIAL_RECORD',output)==approval
-        approval['scientific_conditions_adopted']=False
-        with pytest.raises(PermissionError):execution.verify_approval(v,'ARTIFICIAL_RECORD',output)
-        approval['scientific_conditions_adopted']=True
+    with patch.object(execution.subprocess,'check_output',return_value=b''):
+        execution.check_output({'root':tmp_path},output)
+        with pytest.raises(ValueError,match='FRESH'):execution.check_output({'root':tmp_path},tmp_path/'wrong_namespace')
         output.mkdir(parents=True)
-        with pytest.raises(PermissionError,match='FRESH'):execution.verify_approval(v,'ARTIFICIAL_RECORD',output)
+        with pytest.raises(ValueError,match='FRESH'):execution.check_output({'root':tmp_path},output)
 
 
 @pytest.mark.parametrize('error', [ValueError('ARTIFICIAL_LOAD_BLOCK'), KeyboardInterrupt()])
@@ -283,8 +276,8 @@ def test_exception_preserves_prefix_ledger_claim_and_STOP_without_retry(tmp_path
     v=dict(root=tmp_path,contract_path=tmp_path/'c',input=tmp_path/'ARTIFICIAL',
            contract=dict(call_limits=validation.call_limits()),source={'artificial':True})
     output=tmp_path/'fresh'
-    with patch.object(execution,'preflight',return_value=v),patch.object(execution,'verify_approval',return_value={'artificial':True}),patch.object(execution,'runtime',return_value={'artificial':True}),patch.object(np,'load',side_effect=error),patch.object(native,'prepare_cdf') as prepare,patch.object(validation,'validate') as validate:
-        with pytest.raises(type(error)):execution.execute(v,'ARTIFICIAL_RECORD',output)
+    with patch.object(execution,'preflight',return_value=v),patch.object(execution,'check_output'),patch.object(execution,'runtime',return_value={'artificial':True}),patch.object(np,'load',side_effect=error),patch.object(native,'prepare_cdf') as prepare,patch.object(validation,'validate') as validate:
+        with pytest.raises(type(error)):execution.execute(v,output)
         prepare.assert_not_called();validate.assert_not_called()
     assert json.loads((output/'STOP.json').read_text())['mandatory_stop']
     assert json.loads((output/'failure.json').read_text())['call_counts']=={'input_load':1}

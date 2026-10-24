@@ -1,6 +1,7 @@
-"""Stage2 byte preflight and separately approved one-shot dispatcher.
+"""Stage2 scientific byte preflight and one-shot dispatcher.
 
-Proposed science is never adopted by technical preflight or artificial tests.
+User permission and adoption of proposed conditions are handled in conversation,
+not proved by files. Technical preflight and artificial tests authorize no science.
 """
 import hashlib
 import importlib.metadata
@@ -59,23 +60,14 @@ def preflight(root, contract_path, input_path):
                 contract=c, source=source, source_path=source_path)
 
 
-def verify_approval(v, approval_path, output):
-    c, root = v['contract'], v['root']
+def check_output(v, output):
+    """Scientific one-shot/output controls, not proof of user permission."""
+    root = v['root']
     output = Path(output).resolve()
-    approval = io.read(approval_path)
-    expected = dict(scope=SCOPE, authority='USER_EXPLICIT_C1_STAGE2_SCIENCE', approved=True,
-        source_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip(),
-        contract_sha256=io.sha(v['contract_path']), source_manifest_sha256=io.sha(v['source_path']),
-        input_sha256=io.sha(v['input']), saved_export_sha256=c['saved_export_sha256'],
-        adopted_proposal_sha256=c['proposal_sha256'], scientific_conditions_adopted=True,
-        output=str(output), maximum_units=c['maximum_units'], new_fit_calls=0, retry=0, resume=0)
-    if any(approval.get(k) != want for k, want in expected.items()):
-        raise PermissionError('SEPARATE_SCIENCE_APPROVAL_AND_PROPOSAL_ADOPTION_REQUIRED')
     if output.exists() or not output.is_relative_to(root/FAMILY):
-        raise PermissionError('FRESH_STAGE2_OUTPUT_REQUIRED')
+        raise ValueError('FRESH_STAGE2_OUTPUT_REQUIRED')
     if subprocess.check_output(['git', 'diff', '--name-only', 'HEAD'], cwd=root):
         raise ValueError('TRACKED_SOURCE_DRIFT')
-    return approval
 
 
 def runtime(v):
@@ -91,16 +83,21 @@ def runtime(v):
     return dict(python=sys.version, executable=sys.executable, packages=packages)
 
 
-def execute(verified, approval_path, output):
+def execute(verified, output):
+    """Call only after user adopts the conditions and permits science in chat.
+
+    This function neither authenticates nor issues that permission. No approval
+    file, certificate, identity or receipt is needed or created.
+    """
     v = preflight(verified['root'], verified['contract_path'], verified['input'])
-    approval = verify_approval(v, approval_path, output)
+    check_output(v, output)
     environment = runtime(v)
     root, c, output = v['root'], v['contract'], Path(output).resolve()
     output.mkdir(parents=True)
     counts, events, backend = {}, [], None
     try:
         io.save(output/'evaluation.claim', dict(scope=SCOPE, new_fit=0, retry=0, resume=0))
-        for name, data in [('approval.json', approval), ('contract.json', c),
+        for name, data in [('contract.json', c),
                            ('SOURCE.json', v['source']), ('runtime.json', environment)]:
             io.save(output/name, data)
         # Cache location is task-owned and outside published evidence.
