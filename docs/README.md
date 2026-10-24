@@ -1277,3 +1277,4 @@ PR1 cosine1論理・状態作用成功3／総試行3、d=4.3771e-16の経験値�
 ## H4 R1 sine（2026-10-24）
 
 [R1 sine経験的診断](non_df_h4_central_r1_sine_20261024.md)。
+PF/PR0/PR1 sine3論理・成功6／総試行6、19人工PASS、保存検証・native exit0・mandatory STOP。局所上界null。

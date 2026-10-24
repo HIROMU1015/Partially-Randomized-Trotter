@@ -1079,3 +1079,4 @@ cosine1件・新3作用を完了。経験値だけを保存し、rho_upper=null�
 ## H4 R1 sine（2026-10-24）
 
 `h4_r1_sine.py`：R0数値経路・保存C-target cacheを使う固定3 sine接続。
+6作用を完了、C-target新作用・cosine再評価0。経験値のみでrho_upper=null。Arb/R2へ自動移行しない。

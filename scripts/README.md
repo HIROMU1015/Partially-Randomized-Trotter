@@ -1110,3 +1110,4 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## H4 R1 sine（2026-10-24）
 
 `run_h4_r1_sine.py`：3論理・最大6作用、R0 controllerを再利用する新one-shot。
+保存run01は消費済み・STOP済み。artifactの`verify_saved.py`は保存SHAとscalar恒等式だけを照合し追加科学callなし。
