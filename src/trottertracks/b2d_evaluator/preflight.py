@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 import re
 import subprocess
+import sys
 
 from trottertracks.pr_dictionary_validation.authorization import _canonical, _under, file_sha
 from .input_package import InputRecipe, read_fixture_definition, fingerprint
@@ -60,6 +61,10 @@ def validate_stage1_graph(graph):
 
 def validate_scope(scope, graph):
     """Reject incomplete scopes; dispatch counts alone are insufficient."""
+    if scope.get("schema") == "b2d_stage1_scope_v2":
+        from .scope import validate_registry
+        validate_registry(scope, graph)
+        return
     if scope.get("fully_resolved") is not True or scope.get("unresolved") != []:
         raise PermissionError("Full scientific call scope is unresolved; no new grant.")
     if scope.get("dispatch_counts") != graph.call_counts:
@@ -150,6 +155,9 @@ def source_inventory(root):
     root = Path(root).resolve()
     names = [str(p.relative_to(root)) for p in (root / "src").rglob("*.py")]
     names.append(InputRecipe().fixture_path)
+    launcher = "scripts/run_b2d_stage1.py"
+    if (root / launcher).is_file():
+        names.append(launcher)
     return {name: file_sha(_under(root, name).read_bytes()) for name in sorted(names)}
 
 
@@ -189,6 +197,22 @@ class _ClaimedRun:
         self._input_started = False
         self._input_binding = None
         self._evaluation_started = False
+        self.scope = None
+
+    def attach_scope(self, scope):
+        if self.scope is not None or scope.scope != self.contract["call_scope"]:
+            raise PermissionError("Scope receipt binding differs.")
+        self.scope = scope
+
+    def science_call(self, name, function, *, identity=None):
+        if self.scope is None:
+            raise PermissionError("Registered science scope recorder required.")
+        return self.scope.call(name, function, identity=identity)
+
+    def record_resolution(self, name, value):
+        if self.scope is None:
+            raise PermissionError("Registered input resolution recorder required.")
+        self.scope.record_resolution(name, value)
 
     def check_input(self, root, recipe):
         if Path(root).resolve() != self.verified.source_root or recipe.fingerprint != self.contract["recipe_fingerprint"]:
@@ -221,6 +245,8 @@ class _ClaimedRun:
                 InputRecipe().fixture_commit, InputRecipe().fixture_blob):
             raise PermissionError("Fixture SOURCE changed.")
         validate_scope(self.contract["call_scope"], graph)
+        if self.scope is not None:
+            self.scope.bind_graph(graph)
 
     def check_graph(self, graph, approval):
         self.check_settings(graph.settings)
@@ -266,6 +292,11 @@ def verify_execution(packet_dir, source_root, output, graph, *, authority=None):
     validate_stage1_graph(graph)
     if authority is None or not callable(getattr(authority, "verify_approval", None)) or type(getattr(authority, "is_mock", None)) is not bool:
         raise PermissionError("Actual approval-record verification is missing.")
+    if not authority.is_mock:
+        from .launcher import production_authority
+        trusted = production_authority()
+        if trusted is None or authority is not trusted:
+            raise PermissionError("Production authority is unconnected; caller authority is not evidence.")
     packet, root = Path(packet_dir).resolve(), Path(source_root).resolve()
     grant_bytes = (packet / "authorization.json").read_bytes()
     contract_bytes = (packet / "contract.json").read_bytes()
@@ -303,6 +334,13 @@ def verify_execution(packet_dir, source_root, output, graph, *, authority=None):
     for name, version in contract["dependency_versions"].items():
         if importlib.metadata.version(name) != version:
             raise PermissionError("Runtime dependency changed: " + name)
+    if contract["call_scope"].get("schema") == "b2d_stage1_scope_v2":
+        from .scope import REQUIRED_DEPENDENCIES
+        if not set(REQUIRED_DEPENDENCIES).issubset(contract["dependency_versions"]):
+            raise PermissionError("Stage-1 dependency version closure is incomplete.")
+        runtime = dict(implementation=sys.implementation.name, version=list(sys.version_info))
+        if contract.get("python_runtime") != runtime:
+            raise PermissionError("Adopted Python runtime binding differs.")
     out = Path(output).resolve()
     parent = root / "artifacts/research_b_b2d_stage1"
     if not out.is_relative_to(parent) or out == parent or out.exists() or not out.parent.is_dir():

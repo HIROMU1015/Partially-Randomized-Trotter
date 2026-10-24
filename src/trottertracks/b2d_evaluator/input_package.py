@@ -126,39 +126,59 @@ def load_candidate(source_root, *, execution):
         dense_df_operator_in_sector, _normalized_symbolic_tail_in_sector,
         _qiskit_to_openfermion_sector_permutation, _array_fingerprint,
     )
-    h = DFHamiltonian(
+    h = permit.science_call("input.fixture", lambda: DFHamiltonian(
         constant=definition["constant"],
         one_body=np.asarray(definition["one_body"], dtype=np.complex128),
         lambdas=np.asarray(definition["lambdas"], dtype=np.float64),
         g_matrices=tuple(np.asarray(g, dtype=np.complex128) for g in definition["g_matrices"]),
         metadata=definition["metadata"],
-    )
+    ))
     recipe = InputRecipe()
-    split = split_df_hamiltonian_by_ld(h, recipe.ld, weight_rule=recipe.weight_rule)
-    prep = prepare_df_partial_s2(h, split, identity_policy=recipe.identity_policy,
-                                 coefficient_atol=0.0)
-    sector = PhysicalSector.number_sector(n_qubits=h.n_qubits, n_electrons=1)
-    physical = dense_df_operator_in_sector(h, sector)
+    split = permit.science_call("input.split", lambda: split_df_hamiltonian_by_ld(
+        h, recipe.ld, weight_rule=recipe.weight_rule))
+    prep = permit.science_call("input.preparation", lambda: prepare_df_partial_s2(
+        h, split, identity_policy=recipe.identity_policy, coefficient_atol=0.0))
+    preparation_receipt = dict(
+        selected=list(prep.deterministic_fragment_indices), residual=list(prep.randomized_block_indices),
+        D_blocks=[dict(id=b.block_id, kind=b.block_kind, factor_index=b.original_fragment_index,
+                       basis_id=b.basis_id, basis_hash=b.basis_hash,
+                       operations=len(b.basis_change_operations)) for b in prep.deterministic_blocks],
+        tail_bases=[dict(basis_id=b.basis_id, basis_hash=b.basis_hash,
+                         operations=len(b.operations)) for b in prep.tail_extraction.basis_definitions],
+        tail_components=[dict(id=c.component_id, fragment=c.df_fragment_id, basis_id=c.basis_id,
+                              support=list(c.diagonal_pauli_support)) for c in prep.tail_extraction.components])
+    permit.record_resolution("preparation", preparation_receipt)
+    sector = permit.science_call("input.sector", lambda: PhysicalSector.number_sector(
+        n_qubits=h.n_qubits, n_electrons=1))
+    permit.record_resolution("sector", dict(n_modes=h.n_qubits, N=1,
+        basis_indices=list(map(int,sector.basis_indices)), occupied_modes=[0]))
+    physical = permit.science_call("input.full", lambda: dense_df_operator_in_sector(h, sector))
     blocks = {}
     # select_blocks retains one-body and constant: isolate each operator explicitly.
-    for block in prep.deterministic_blocks:
-        if block.block_kind == "one_body":
-            part = DFHamiltonian(0.0, h.one_body, np.empty(0), (), dict(h.metadata))
-        elif block.block_kind == "df_fragment":
-            j = block.original_fragment_index
-            part = DFHamiltonian(0.0, np.zeros_like(h.one_body), h.lambdas[[j]],
-                                 (h.g_matrices[j],), dict(h.metadata))
-        else:
-            raise ValueError("Unregistered deterministic block kind; STOP.")
-        blocks[block.block_id] = dense_df_operator_in_sector(part, sector)
-    permutation = _qiskit_to_openfermion_sector_permutation(sector)
-    retained = _normalized_symbolic_tail_in_sector(prep, sector, permutation)
+    for position, block in enumerate(prep.deterministic_blocks):
+        def materialize():
+            if block.block_kind == "one_body":
+                part = DFHamiltonian(0.0, h.one_body, np.empty(0), (), dict(h.metadata))
+            elif block.block_kind == "df_fragment":
+                j = block.original_fragment_index
+                part = DFHamiltonian(0.0, np.zeros_like(h.one_body), h.lambdas[[j]],
+                                     (h.g_matrices[j],), dict(h.metadata))
+            else:
+                raise ValueError("Unregistered deterministic block kind; STOP.")
+            return dense_df_operator_in_sector(part, sector)
+        blocks[block.block_id] = permit.science_call("input.block", materialize, identity=position)
+    retained = permit.science_call("input.tail", lambda: _normalized_symbolic_tail_in_sector(
+        prep, sector, _qiskit_to_openfermion_sector_permutation(sector)))
     if retained.leakage_frobenius_norm > permit.contract["numerical_atol"]:
-        raise ValueError("Retained tail leaks outside registered sector; STOP.")
+        from .scope import Stage1Failure
+        raise Stage1Failure("SECTOR_BASIS_LEAKAGE")
     # OpenFermion mode 0 is the most significant occupation bit.
     occupation = sum(1 << (h.n_qubits - 1 - m) for m in recipe.occupied_modes)
-    state = np.zeros(sector.dimension, dtype=np.complex128)
-    state[list(sector.basis_indices).index(occupation)] = 1
+    def occupation_state():
+        state = np.zeros(sector.dimension, dtype=np.complex128)
+        state[list(sector.basis_indices).index(occupation)] = 1
+        return state
+    state = permit.science_call("input.state", occupation_state)
     context, inputs = connect_prepared(
         prep, blocks=blocks, physical_hamiltonian=physical,
         normalized_tail=retained.matrix, state=state,
@@ -177,6 +197,8 @@ def load_candidate(source_root, *, execution):
         sector_id=inputs.sector_id, sector_basis_indices=tuple(map(int, sector.basis_indices)),
         state_id=inputs.state_id, occupied_modes=recipe.occupied_modes,
         input_data_sha256=digest, tail_leakage_norm=retained.leakage_frobenius_norm,
-        array_shapes={key: value.shape for key, value in arrays.items()})
+        array_shapes={key: value.shape for key, value in arrays.items()},
+        preparation_receipt=preparation_receipt)
+    permit.record_resolution("input", provenance)
     permit.bind_input(context, inputs, provenance)
     return context, inputs, provenance

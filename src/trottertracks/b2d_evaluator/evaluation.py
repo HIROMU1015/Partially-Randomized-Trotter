@@ -228,7 +228,7 @@ def _check_approval(graph, approval):
         raise PermissionError("Scientific call scope differs from approval.")
 
 
-def evaluate(graph: Graph, backend_factory, approval: ExecutionApproval | None = None, *, execution=None):
+def evaluate(graph: Graph, backend_factory, approval: ExecutionApproval | None = None, *, execution=None, scope=None):
     """Dormant science entry: reject missing approval before backend creation.
 
     Approval fields alone cannot authorize science. A real backend requires
@@ -239,7 +239,10 @@ def evaluate(graph: Graph, backend_factory, approval: ExecutionApproval | None =
     _check_approval(graph, approval)
     if not approval.mock_only:
         from .preflight import require_claimed_run
-        require_claimed_run(execution).begin_evaluation(graph, approval)
+        permit = require_claimed_run(execution)
+        if scope is None or scope is not permit.scope:
+            raise PermissionError("Bound science scope recorder required.")
+        permit.begin_evaluation(graph, approval)
     backend = backend_factory(graph.settings)
     if approval.mock_only and not backend.is_mock:
         raise PermissionError("Mock approval cannot execute a scientific backend.")
@@ -248,7 +251,8 @@ def evaluate(graph: Graph, backend_factory, approval: ExecutionApproval | None =
         if index not in values:
             node = graph.nodes[index]
             args = tuple(resolve(i) for i in node.dependencies)
-            values[index] = backend.perform(node.kind, args, node.parameters)
+            perform = lambda: backend.perform(node.kind, args, node.parameters)
+            values[index] = scope.dispatch(index, node, perform) if scope is not None else perform()
         return values[index]
     # All signed-time correctness gates precede ANY performance comparison.
     for index in graph.correctness.values():

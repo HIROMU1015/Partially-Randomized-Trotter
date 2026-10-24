@@ -6,6 +6,8 @@ sector order. No PF circuit renderer is included. Scientific imports are lazy.
 from dataclasses import dataclass
 import hashlib
 import json
+import math
+from .errors import Stage1Failure
 
 
 @dataclass(frozen=True)
@@ -45,15 +47,16 @@ class DenseBackend:
         self.array_fingerprint = _array_fingerprint
         self.exp_cache = {}
         self.validated = False
+        self.execution = execution
 
     def _validate(self):
         np, s, i = self.np, self.s, self.i
         actual = (i.preparation_id, i.tail_id, i.hamiltonian_id, i.sector_id, i.state_id)
         expected = (s.context.preparation_id, s.context.tail_id, s.hamiltonian_id, s.sector_id, s.state_id)
         if actual != expected or tuple(i.blocks) != s.context.block_ids:
-            raise ValueError("Prepared input identity/order differs from the registered input.")
+            raise Stage1Failure("INPUT_IDENTITY_ORDER_MISMATCH")
         if i.symbolic_tail.tail_hash != s.context.tail_id or i.symbolic_tail.lambda_r <= 0:
-            raise ValueError("Wrong or empty retained tail.")
+            raise Stage1Failure("INCONCLUSIVE_RESIDUAL_IDENTITY")
         arrays = {**{key: np.asarray(value) for key, value in i.blocks.items()},
                   "physical": np.asarray(i.physical_hamiltonian),
                   "tail": np.asarray(i.normalized_tail), "state": np.asarray(i.state)}
@@ -62,20 +65,20 @@ class DenseBackend:
             sort_keys=True, separators=(",", ":")
         ).encode()).hexdigest()
         if digest != s.input_data_sha256:
-            raise ValueError("Prepared arrays are not the approved input bytes.")
+            raise Stage1Failure("INPUT_BYTES_MISMATCH")
         dimension = arrays["state"].size
         if arrays["state"].shape != (dimension,) or dimension < 2:
-            raise ValueError("A nontrivial common sector vector is required.")
+            raise Stage1Failure("SECTOR_STATE_DIMENSION_MISMATCH")
         for label, matrix in arrays.items():
             if not np.isfinite(matrix).all() or matrix.dtype != np.complex128:
-                raise ValueError("All inputs must be finite complex128 arrays.")
+                raise Stage1Failure("NUMERICAL_INPUT_PRECISION_FAILURE")
             if label != "state":
                 if matrix.shape != (dimension, dimension):
-                    raise ValueError("Matrix/sector dimension mismatch.")
+                    raise Stage1Failure("SECTOR_BASIS_DIMENSION_MISMATCH")
                 if np.linalg.norm(matrix - matrix.conj().T, ord=2) > s.numerical_atol:
-                    raise ValueError("Non-Hermitian input.")
+                    raise Stage1Failure("NUMERICAL_HERMITICITY_FAILURE")
         if abs(np.vdot(i.state, i.state) - 1) > s.numerical_atol:
-            raise ValueError("Physical state must already be normalized.")
+            raise Stage1Failure("STATE_NORMALIZATION_FAILURE")
         self.d_matrix = sum(i.blocks.values())
         self.r_matrix = i.symbolic_tail.lambda_r * i.normalized_tail
         self.scalar = float(sum(t.coefficient for t in s.context.scalar_terms))
@@ -83,14 +86,16 @@ class DenseBackend:
         identity_error = np.linalg.norm(
             i.physical_hamiltonian - self.d_matrix - self.r_matrix - self.scalar * self.identity, ord=2
         )
-        if identity_error > s.numerical_atol:
-            raise ValueError("Physical H differs from D + retained R + scalar.")
+        if not math.isfinite(identity_error) or identity_error > s.numerical_atol:
+            raise Stage1Failure("HAMILTONIAN_IDENTITY_FAILURE")
         d = tuple(i.blocks.values())
         d_commutators = [float(np.linalg.norm(a @ b - b @ a, ord=2))
                          for j, a in enumerate(d) for b in d[j + 1:]]
         dr_commutator = float(np.linalg.norm(self.d_matrix @ self.r_matrix - self.r_matrix @ self.d_matrix, ord=2))
+        if not all(math.isfinite(v) for v in d_commutators+[dr_commutator]):
+            raise Stage1Failure("INCONCLUSIVE_NUMERICAL_PRECISION")
         if not d_commutators or max(d_commutators) <= s.numerical_atol or dr_commutator <= s.numerical_atol:
-            raise ValueError("D or D/R noncommutativity is unresolved at the approved tolerance.")
+            raise Stage1Failure("INCONCLUSIVE_NONCOMMUTATIVITY")
         self.validated = True
         return {"input_sha256": digest, "H_identity_error": float(identity_error),
                 "D_commutator_norms": d_commutators, "DR_commutator_norm": dr_commutator,
@@ -103,13 +108,21 @@ class DenseBackend:
                       "exact_physical": self.i.physical_hamiltonian}.get(label)
             if matrix is None:
                 matrix = self.i.blocks[label]
-            self.exp_cache[key] = self.expm(-1j * float(time) * matrix)
+            from .scope import exp_key
+            self.exp_cache[key] = self.execution.science_call("backend.expm",
+                lambda: self.expm(-1j * float(time) * matrix),
+                identity=exp_key(self.execution.scope.graph, label, time))
         return self.exp_cache[key]
 
     def _signals(self, matrices):
         np, s = self.np, self.s
         names = ("physical", "ideal_tail", "corrected", "raw")
-        values = dict(zip(names, (self.signal(m, self.i.state) for m in matrices)))
+        def expectation(matrix):
+            execution = getattr(self, "execution", None)
+            return execution.science_call("signal.expectation", lambda: self.signal(matrix,self.i.state)) if execution else self.signal(matrix,self.i.state)
+        values = dict(zip(names, (expectation(m) for m in matrices)))
+        if not all(math.isfinite(v.real) and math.isfinite(v.imag) for v in values.values()):
+            raise Stage1Failure("INCONCLUSIVE_NUMERICAL_PRECISION")
         def record(value):
             if not s.phase_diagnostics:
                 return {"X": value.real, "Y": value.imag, "radius": abs(value),
@@ -149,8 +162,10 @@ class DenseBackend:
         expected = p @ np.linalg.matrix_power(k, n_d) @ p.conj().T
         error = float(np.linalg.norm(actual - expected, ord=2))
         inverse_error = float(np.linalg.norm(p.conj().T @ p - self.identity, ord=2))
+        if not all(math.isfinite(v) for v in (error,inverse_error)):
+            raise Stage1Failure("INCONCLUSIVE_NUMERICAL_PRECISION")
         if max(error, inverse_error) > self.s.numerical_atol:
-            raise ValueError("A4 mathematical order or actual inverse numerical check failed.")
+            raise Stage1Failure("A4_ORDER_OR_INVERSE_CORRECTNESS_FAILURE")
         return {"mathematical_reference_error": error, "actual_inverse_error": inverse_error,
                 "historical_validator_equivalence": "NOT_CERTIFIED_BY_THIS_REFERENCE"}
 
@@ -172,12 +187,13 @@ class DenseBackend:
         if kind == "physical_scalar_phase":
             return np.exp(-1j * float(params[0]) * self.scalar) * args[0]
         if kind == "rte_moments":
-            config, _distribution = self.make_rte_config(
+            config, _distribution = self.execution.science_call("rte.config", lambda: self.make_rte_config(
                 self.i.symbolic_tail, evolution_time=float(params[0]), rte_steps=self.s.r_rte,
                 finite_taylor_order=self.s.cutoff, truncation_tolerance=self.s.truncation_tolerance,
                 seed=self.s.seed,
-            )
-            return self.finite_rte_operator_moments(self.i.normalized_tail, config)
+            ), identity=str(params[0]))
+            return self.execution.science_call("rte.moments", lambda: self.finite_rte_operator_moments(
+                self.i.normalized_tail, config), identity=str(params[0]))
         if kind == "moment_field":
             return getattr(args[0], params[0])
         if kind == "normalization":
@@ -186,7 +202,10 @@ class DenseBackend:
         if kind == "rescale_raw":
             return args[0] * args[1]["normalization_product"]
         if kind == "operator_error":
-            return float(np.linalg.norm(args[0] - args[1], ord=2))
+            value = float(np.linalg.norm(args[0] - args[1], ord=2))
+            if not math.isfinite(value):
+                raise Stage1Failure("INCONCLUSIVE_NUMERICAL_PRECISION")
+            return value
         if kind == "signals":
             return self._signals(args)
         if kind == "a4_reference_check":
