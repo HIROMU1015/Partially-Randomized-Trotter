@@ -2509,3 +2509,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## 2026-10-24 H4 D1 SOURCE再現性の設計（未採用）
 
 [調査・対応表・人工17件・非実行契約](docs/non_df_h4_d1_reproducibility_design_20261024.md)。旧hash3一致／Pauli-PR不一致と原因UNKNOWNを保持。`src/trotterlib/h4_d1_reproducibility.py`、`tests/test_h4_d1_reproducibility.py`、`artifacts/non_df_h4_d1_reproducibility_design/2026-10-24/inspect_saved_evidence.py`を一組として読む。SOURCE基準はGO候補のみ、実H4生成/数値/compile/新grant0、旧725 SHA保全、mandatory STOP。
+
+## 2026-10-24 H4 D1：採用SOURCE基準・9/9計測完了
+
+[結果・全表・証拠](docs/non_df_h4_d1_source_execution_20261024.md)。SOURCE9843b8038／人工27 PASS。現在QPY4一致・SOURCE基準Bの後、旧full4 RZを全再現。PR保持/eventはPauli6524/3110、DF13483/5773、RZ非加法性は+18/+3765。engine/18 task全exit0・回収、旧740/出力177 SHA保全。旧Pauli-PR hashFAIL・原因UNKNOWN・旧native UNKNOWN、旧N/G nullとC/L/旧compiler制約を保持。固定代表のみ、full再生成・sampling/N_G/D2/D3/証拠格上げ0、mandatory STOP。

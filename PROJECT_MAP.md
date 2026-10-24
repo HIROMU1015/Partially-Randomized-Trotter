@@ -1726,4 +1726,4 @@ H4 ε=.001 S2選択を確定。現行理論Gは元入力不足で0/20、compiled
 
 ## 2026-10-24 H4 D1：採用SOURCE基準・保存QPY実行
 
-[新接続・人工27件・有限実行](docs/non_df_h4_d1_source_execution_20261024.md)。`h4_d1_source_control.py`／`run_h4_d1_source.py`／`test_h4_d1_source_control.py`を一組で読む。旧hashとSOURCE対応を分離、full再生成0・最大9compile。実行結果は専用run01/STOPを正本とし、旧grant/STOPと元native UNKNOWNを保持する。
+[新接続・人工27件・有限実行](docs/non_df_h4_d1_source_execution_20261024.md)。`h4_d1_source_control.py`／`run_h4_d1_source.py`／`test_h4_d1_source_control.py`を一組で読む。9/9完了・full4旧RZ全一致。PR保持/eventはPauli6524/3110、DF13483/5773、RZ非加法性+18/+3765。旧hashとSOURCE対応を分離し、full再生成0、旧grant/STOPと元native UNKNOWNを保持してmandatory STOP。
