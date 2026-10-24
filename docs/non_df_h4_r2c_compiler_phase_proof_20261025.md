@@ -221,3 +221,15 @@ body→信号のηは係数1、generic compiled wrapper→Z期待値のκは係�
 必要最小の次段階は上記scalar/2×2証明であり、新H4状態作用・追加order4 trajectory・標本拡大を既定の工程にはしない。Law-weighted化はuniformの保守性が実際に支配すると証明できた場合、実装family変更は現行証明が現実的でないと判断した場合だけ再設計する。どちらも今回未実施。
 
 commit/push・GitHub remote SHA照合の結果は[publication_status.json](../artifacts/non_df_h4_r2c_compiler_phase/2026-10-25/publication_status.json)に記録する。保存・公開確認後 **mandatory STOP**。scalar科学評価、追加科学計算、compiler変更、正式certificate受理へ自動移行しない。
+
+## 公開確認結果
+
+証明commit `0c7a2eac3c4e80f4d7d4eb9743d81e3d7ac20f2b` をlocal保存した。pushはHTTPS Username取得不能でexit128。GitHub接続でも新branchは検索結果0、同commitはAPI422 `No commit found`。remote SHAはnull/未確認で、公開済みとは扱わない。[失敗記録](../artifacts/non_df_h4_r2c_compiler_phase/2026-10-25/push_attempt01.txt)を保全し、公開状態の追記もlocal commitする。認証失敗が判明している同pushを反復しない。
+
+認証のある環境での再実行：
+
+```bash
+git -C /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-r2c-compiler-phase-proof-20261025 push -u origin codex/non-df-h4-r2c-compiler-phase-proof-20261025
+```
+
+成果をlocal保全してmandatory STOP。科学処理へは進まない。
