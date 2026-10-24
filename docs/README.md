@@ -125,3 +125,7 @@
 ## B2-D Input package・preflight準備（2026-10-25）
 
 [技術報告](research/research_b_b2d_input_preflight_technical_report_20261025.md)／[未採択の第一段階契約案](research/research_b_b2d_stage1_science_execution_contract_proposal_20261025.md)。実装 `src/trottertracks/b2d_evaluator/input_package.py`・`preflight.py`、人工test `tests/management/test_b2d_input_preflight.py`。science runner未起動、予定artifact `artifacts/research_b_b2d_stage1/<date>/<fresh-run-id>/` は未生成。科学計算・新grantなし、実運用scope確定前にSTOP。
+
+## B2-D Stage 1最終実行準備（2026-10-25）
+
+[最終提案](research/research_b_b2d_stage1_final_execution_proposal_20261025.md)・[技術報告](research/research_b_b2d_stage1_final_preparation_technical_report_20261025.md)・[scope JSON](research/research_b_b2d_stage1_scope_20261025.json)。科学的処理境界の実績照合と失敗保存launcherを準備。入口 `scripts/run_b2d_stage1.py`、実装 `src/trottertracks/b2d_evaluator/`、人工test `tests/management/test_b2d_stage1_launcher.py`。62人工test PASS、production authority未接続、科学実行・grant操作なし。予定artifact `artifacts/research_b_b2d_stage1/<date>/<fresh-run-id>/` は未生成。

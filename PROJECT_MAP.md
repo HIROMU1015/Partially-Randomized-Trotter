@@ -193,3 +193,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## B2-D Input package・preflight準備（2026-10-25）
 
 [技術報告](docs/research/research_b_b2d_input_preflight_technical_report_20261025.md)と[未採択の第一段階契約案](docs/research/research_b_b2d_stage1_science_execution_contract_proposal_20261025.md)。実装は `src/trottertracks/b2d_evaluator/{input_package,preflight}.py`、人工testは `tests/management/test_b2d_input_preflight.py`。science runner未起動、将来outputは `artifacts/research_b_b2d_stage1/<date>/<fresh-run-id>/`。全call scope・実運用承認接続は未確定、科学実行・新grantなし。
+
+## B2-D Stage 1最終実行準備（2026-10-25）
+
+[最終提案](docs/research/research_b_b2d_stage1_final_execution_proposal_20261025.md)・[技術報告](docs/research/research_b_b2d_stage1_final_preparation_technical_report_20261025.md)・[scope JSON](docs/research/research_b_b2d_stage1_scope_20261025.json)。SOURCE候補 `97a449ad53c74361ffc5c4cffd6de5f3f0f0a72e`、実装 `src/trottertracks/b2d_evaluator/{scope,launcher,errors}.py`、入口 `scripts/run_b2d_stage1.py`、人工test `tests/management/test_b2d_stage1_launcher.py`。境界scope／実績照合・失敗保存はmock確認済み、production authorityは未接続で実行不可。既存46＋追加16＝62人工test PASS、科学計算・grant操作なし。予定artifactは従来どおり `artifacts/research_b_b2d_stage1/<date>/<fresh-run-id>/`、今回未生成。

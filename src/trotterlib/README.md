@@ -155,3 +155,7 @@ DF部分ランダム化研究と混同しない。
 ## B2-D限定準備の既存関数再利用（2026-10-25）
 
 `trottertracks/b2d_evaluator/input_package.py` は本ライブラリのDF分割・preparation・number sector・sector matrix／retained tail関数をlazyに再利用する。[技術報告](../../docs/research/research_b_b2d_input_preflight_technical_report_20261025.md)、[契約案](../../docs/research/research_b_b2d_stage1_science_execution_contract_proposal_20261025.md)、`tests/management/test_b2d_input_preflight.py` を参照。science runner未起動、将来artifact `artifacts/research_b_b2d_stage1/<date>/<fresh-run-id>/` は今回作成しない。既存trotterlib科学SOURCEの変更なし。
+
+## B2-D Stage 1 scope・launcher準備（2026-10-25）
+
+既存trotterlibのGaussian preparation／sector行列化／RTEを固定科学境界へ含め、`trottertracks/b2d_evaluator/{scope,launcher,errors}.py` と `scripts/run_b2d_stage1.py` で実績照合・失敗保存を接続した。[最終提案](../../docs/research/research_b_b2d_stage1_final_execution_proposal_20261025.md)・[技術報告](../../docs/research/research_b_b2d_stage1_final_preparation_technical_report_20261025.md)、`tests/management/test_b2d_stage1_launcher.py` を参照。予定artifact `artifacts/research_b_b2d_stage1/<date>/<fresh-run-id>/` は未生成。実科学SOURCEは未起動、production authority未接続、既存trotterlib科学コード変更なし。
