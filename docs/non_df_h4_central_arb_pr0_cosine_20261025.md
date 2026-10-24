@@ -98,3 +98,16 @@ FLINT0.9.0/FLINT3.6.0と既存private環境を再利用し、package変更0。
 
 結果保存とcommit/push/remote確認後mandatory STOP。
 次はユーザーが追加対象・軸・call範囲を判断し、Codexは別承認後だけ指定範囲を実装/実行する。
+
+## Commit・push・remote状態
+
+科学SOURCE `f1f3049670234cfc9c65430bd5016b9c6315a375`、結果commit `01ea027761f76e1df05168a49116b88a899c7542`。
+origin専用branchへのpush1回はHTTPS Username取得不能でexit128。
+GitHub connectorで再確認したが当該branchは0件、remote SHA=null（基点f817c492…のGitHub存在確認は別資料）。
+[公開状態](../artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/publication_status.json)、
+[push失敗log](../artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/push_attempt01.log)、
+[remote再確認](../artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/remote_after_push.json)。
+後続local metadata commitはこの公開状態だけを保存し、科学SOURCE/結果/grant/ledger/STOPを変更しない。
+
+次の担当：**ユーザー**が認証可能な環境で記録済みcommandを再pushし、追加対象/軸/call（例PR1 cosineやsine）の要否を判断・別承認する。
+**Codex**は承認後だけ対象の既存evidence/接続適合性を確認し、新SOURCE/契約/grantの範囲内で実行する。現在は追加科学実行なし、mandatory STOP。

@@ -17,3 +17,9 @@ Cのexact-bra norm転送、native L2 recenter、PF精度schedule/C native witnes
 [技術報告](../../non_df_h4_central_arb_pr0_cosine_20261025.md)、[結果と監査](../../../artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/run01/result_summary.json)。
 局所数値包含と正式受理は別。PR全law/tail、C/L、旧N_G=null、元native UNKNOWNは保持。
 次の担当はユーザー（対象・軸・callを別承認）、Codexは承認後だけ進める。結果公開処理後mandatory STOP。
+
+## 公開試行
+
+結果commit 01ea027761f76e1df05168a49116b88a899c7542。
+origin push1回はHTTPS Username取得不能・exit128、GitHub側の当該branch検索0件、remote SHA=null。
+失敗と再pushコマンドを後続local metadata commitへ保全。SOURCE/科学結果/grant/ledger/STOPは変更せずmandatory STOP。
