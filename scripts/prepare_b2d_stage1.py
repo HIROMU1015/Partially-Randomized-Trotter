@@ -21,7 +21,7 @@ def main():
     from trottertracks.b2d_evaluator.preflight import source_inventory,graph_layout,_check_source
     from trottertracks.b2d_evaluator.scope import candidate_graph,registry
     from trottertracks.b2d_evaluator.input_package import InputRecipe
-    from trottertracks.b2d_evaluator.manual_authority import adoption_bytes
+    from trottertracks.b2d_evaluator.manual_authority import adoption_bytes,approval_policy
     head=subprocess.check_output(["git","rev-parse","HEAD"],cwd=root,text=True).strip()
     graph=candidate_graph(head);env=json.loads((root/ENVIRONMENT_PATH).read_bytes())
     verify_environment(env)
@@ -34,7 +34,7 @@ def main():
         input_resolution="REGISTERED_RECIPE_THEN_BACKEND_CORRECTNESS",call_scope=registry(graph),
         numerical_atol=1e-12,dependency_versions=env["dependency_versions"],
         python_runtime=env["python_runtime"],environment_binding=env,
-        fresh_output_namespace=str(out),retry_allowed=False,mandatory_stop=True)
+        fresh_output_namespace=str(out),approval_policy=approval_policy(),retry_allowed=False,mandatory_stop=True)
     _check_source(root,contract)
     data=_canonical(contract);digest=file_sha(adoption_bytes(contract))
     draft.mkdir(mode=0o700)

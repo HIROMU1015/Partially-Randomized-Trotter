@@ -1,7 +1,7 @@
 """B2-D read-only preflight, with existing one-shot packet/marker convention.
 
 No issuance API, implicit approval, default authority or science import exists.
-The fixed manual authority checks an independently protected user/admin record,
+The fixed manual authority checks the user's manually published private record,
 not merely authorization.json/user_approval.txt written by a caller. Publication
 of that record and final scientific approval remain separate user operations.
 """
@@ -272,10 +272,7 @@ def require_claimed_run(value):
 
 
 def _check_source(root, contract, *, output=None):
-    # Root is used only by the user's manual publisher. Per-command trust in
-    # this explicitly reviewed checkout avoids changing global Git settings.
-    import os
-    git=["git"]+(["-c","safe.directory="+str(Path(root).resolve())] if os.geteuid()==0 else [])
+    git=["git"]
     head = subprocess.check_output(git+["rev-parse", "HEAD"], cwd=root, text=True).strip()
     command = git+["status", "--porcelain", "--untracked-files=normal", "--", "."]
     if output is not None:

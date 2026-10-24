@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""USER/ADMIN ONLY: issue a manual approval receipt AFTER actual chat approval.
+"""USER ONLY: ordinary-user publication AFTER actual chat approval.
 
 This operation issues a fresh grant but does not claim or execute it. Codex must
 not run this command during preparation or manufacture the user's approval.

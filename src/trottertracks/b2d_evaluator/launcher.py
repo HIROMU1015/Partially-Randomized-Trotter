@@ -1,6 +1,6 @@
-"""Dormant Stage-1 launcher requiring a protected manual user approval record.
+"""Dormant Stage-1 launcher requiring a private manual user approval record.
 
-A draft, caller authority, hash or mock cannot replace the user/admin operation.
+A draft, caller authority, hash or mock cannot replace the user's manual operation.
 No science executes until the fixed contract and one-shot record both verify.
 """
 from dataclasses import asdict
