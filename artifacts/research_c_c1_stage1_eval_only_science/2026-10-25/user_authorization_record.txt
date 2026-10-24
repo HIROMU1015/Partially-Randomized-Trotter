@@ -1,0 +1,17 @@
+# 研究C・C1 Stage 1：保存fitの評価専用科学実行
+以下の固定条件による限定科学実行を明示的に承認します。
+Repository：HIROMU1015/Partially-Randomized-Trotter
+公開commit：bec41ac7dc7e034bd664817acfdcfed858ddadd0
+契約：C1_STAGE1_P_H4_SAVED_FIT_EVAL_ONLY_V1
+契約SHA256：f4d3aa81b3a4fd2272144f0c45fd82bb2aa748f4fc59a6f5875e5dd3e0949dfc
+評価SOURCE manifest SHA256：5be0fea39b167845343f94985699f31a0a1bb07d085ea2ed9312a1af9b8dede5
+元fit SOURCE：da2edb465d5ae6432439fbd1df8e57512ee59c11
+保存export SHA256：c33f782d3224aa80968e1e6ea70f5ae3f764b872b5bce545c38875c83f3c4e08
+元P-H4入力SHA256：8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50
+独立worktree・fresh output、SOURCE・契約・元入力・保存fit・環境のpreflightを再実施し、今回の明示承認を新しい専用approval記録へ固定する。旧grantは再利用しない。
+新規fit 0回で保存rank8 J/Uを読み込み、修正済みraw CARで評価する。full256 base・frame0〜7の全gate PASS時のみsector36 adapter同値性とC-DF／保存X-DFの物理sector operator normを評価する。
+全結果・科学call・資源・証拠を保存し、commit・push・remote照合する。
+科学call最大141、新規fit・optimizer0、binary64_operation_scale_guard8_v1維持、Retry/resume0。
+旧frame0 FAILを事前PASS扱いしない。科学条件・SOURCE・許容差を変更しない。最初の科学的FAILで依存評価STOPしpartial evidenceを保全する。
+Stage2/3・回路build/compileは禁止。CPU/RAM/worker恣意制限なし、共有環境・他ユーザー非干渉。旧SOURCE・結果・grant・ledger・marker・STOP保全。
+正常完了・FAILいずれでも証拠公開後mandatory STOP。Stage2進行は研究Cで別判断。

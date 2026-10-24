@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1 保存fit評価専用科学実行：全gate PASS（2026-10-25）
+
+[実行結果・全gate・誤差・STOP](docs/research/research_c_c1_stage1_eval_only_execution_20261025.md)。公開SOURCE `bec41ac7dc7e034bd664817acfdcfed858ddadd0` の既存評価専用entryを無変更で実行した。P-H4・sector36/full256、保存C-DF rank8／XDF rank10で37 gate PASS、以前不一致のframe0も今回PASS。物理sector誤差はCDF `7.666027761392501e-5`／XDF `3.3751558354542566e-15` Hartreeの別測定。科学call141/141、新fit／optimizer／retry／resume0。原本 `artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/`、人工19件PASS。旧FAIL保全、Stage2適格性は別判断、mandatory STOP。下記の準備時点の未承認表示は履歴。
+
 ## C1 保存fit評価専用経路の準備（2026-10-25）
 
 [技術報告](docs/research/research_c_c1_stage1_eval_only_preparation_20261025.md)、[未承認科学契約](docs/research/research_c_c1_stage1_eval_only_contract_unapproved_20261025.json)。新entry `scripts/run_research_c_c1_stage1_eval_only.py`／`src/trottertracks/c1_stage1_eval_only.py` は旧fitのSOURCE/input/exportと新評価SOURCEを独立に保持し、新fit0で既存CAR/K/XDF検証を再利用する。新test `tests/management/test_research_c_c1_stage1_eval_only.py`、人工82件＋29 subtests PASS。証拠・SOURCE `artifacts/research_c_c1_stage1_eval_only_technical/2026-10-25/`、call上限141、retry/resume0。実H4 decode・評価・fit0、旧科学的STOP保全、別明示承認待ち・mandatory STOP。

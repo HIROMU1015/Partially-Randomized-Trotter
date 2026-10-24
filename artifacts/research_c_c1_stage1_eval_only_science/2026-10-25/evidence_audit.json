@@ -1,0 +1,57 @@
+{
+  "status": "PASS_JSON_AND_BYTE_AUDIT_ONLY",
+  "gate_pass": 37,
+  "gate_fail": 0,
+  "gate_not_run": 0,
+  "non_gate_physical_error_reports": 2,
+  "load_call_units": 2,
+  "evaluation_call_units": 139,
+  "total_call_units": 141,
+  "maximum_call_units": 141,
+  "ledger_lines": {
+    "load": 2,
+    "evaluation": 102
+  },
+  "counting": "Sum row.count, including batched xdf_matvec36/full_sum2/sector_restrict2; not JSONL line count",
+  "spectral_order": [
+    "full_base",
+    "full_frame_0",
+    "full_frame_1",
+    "full_frame_2",
+    "full_frame_3",
+    "full_frame_4",
+    "full_frame_5",
+    "full_frame_6",
+    "full_frame_7",
+    "sector_adapter",
+    "sector_DF_CDF",
+    "sector_DF_XDF"
+  ],
+  "operator_files_byte_verified": 24,
+  "source_files_byte_verified": 32,
+  "call_counts": {
+    "load": {
+      "input_load": 1,
+      "export_load": 1
+    },
+    "evaluation": {
+      "adapter_import": 1,
+      "structural_frobenius": 27,
+      "allowance": 39,
+      "physical_build": 1,
+      "xdf_build": 1,
+      "xdf_matvec": 36,
+      "base_build": 2,
+      "spectral_norm": 12,
+      "frame_build": 16,
+      "full_sum": 2,
+      "sector_restrict": 2
+    }
+  },
+  "new_fit_calls": 0,
+  "optimizer_calls": 0,
+  "retry": 0,
+  "resume": 0,
+  "additional_scientific_calls": 0,
+  "numerical_matrix_decodes_during_audit": 0
+}

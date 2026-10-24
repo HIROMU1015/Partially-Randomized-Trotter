@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_research_c_c1_stage1_eval_only.py` の[保存fit評価専用科学実行](../docs/research/research_c_c1_stage1_eval_only_execution_20261025.md)は、公開SOURCE `bec41ac7dc7e034bd664817acfdcfed858ddadd0` を無変更で使用し37 gate PASS。旧fit来歴を独立に保持、新fit0・call141/141・retry/resume0。結果 `artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/`、直前の人工19件PASS。Stage2適格性は別判断、旧FAIL／STOP保全・mandatory STOP。以下の準備段階の未承認表示は履歴。
+
 `run_research_c_c1_stage1_eval_only.py` は[C1評価専用入口](../docs/research/research_c_c1_stage1_eval_only_preparation_20261025.md)。既定はbyte/JSON preflight、実行は新scopeの別科学承認が必要。`--worker-fit`／fit Python引数はなく、旧one-fit runnerを再起動しない。処理 `trottertracks.c1_stage1_eval_only`、人工test `test_research_c_c1_stage1_eval_only.py`、SOURCE／証拠 `artifacts/research_c_c1_stage1_eval_only_technical/2026-10-25/`、[未承認契約](../docs/research/research_c_c1_stage1_eval_only_contract_unapproved_20261025.json)。人工82件＋29 subtests PASS、新fit0／最大141、H4未評価・mandatory STOP。
 
 [C1 raw frame修正](../docs/research/research_c_c1_frame_repair_20261025.md)の人工監査は `artifacts/research_c_c1_frame_repair/2026-10-25/artificial_parallel_audit.py` と `preloaded_backend_audit.py`。新test `tests/management/test_research_c_c1_frame_repair.py`、修正 `trottertracks.c1_stage1.raw_frame`、SOURCE／証拠 `artifacts/research_c_c1_frame_repair/2026-10-25/`。人工63件＋29 subtests PASS、分子科学処理0。`run_research_c_c1_stage1.py` はone-fit入口のままで、保存exportの評価専用runnerではない。別準備・科学承認待ち、mandatory STOP。

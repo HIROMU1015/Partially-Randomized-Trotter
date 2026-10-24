@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+関連trackの[C1保存fit評価専用科学実行](../../docs/research/research_c_c1_stage1_eval_only_execution_20261025.md)は `trottertracks.c1_stage1_eval_only` と既存CAR／一般K／XDFを無変更で使用した。full256 base・全8 frame／sector36を含む37 gate PASS、CDF/XDF物理誤差は別測定。entry `scripts/run_research_c_c1_stage1_eval_only.py`、人工19件PASS、科学call141/141、新fit／optimizer／retry／resume0。証拠 `artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/`。Stage2は別判断・mandatory STOP。以下の未承認・未再検証表示は当時の履歴。
+
 関連trackの [C1保存fit評価専用準備](../../docs/research/research_c_c1_stage1_eval_only_preparation_20261025.md)は `trottertracks.c1_stage1_eval_only` から既存修正済みCAR／一般K／保存XDF評価を再利用し、数値libraryは無変更。entry `scripts/run_research_c_c1_stage1_eval_only.py`、新test `tests/management/test_research_c_c1_stage1_eval_only.py`、SOURCE／証拠 `artifacts/research_c_c1_stage1_eval_only_technical/2026-10-25/`。旧fit／新評価SOURCEを分離、人工82件＋29 subtests PASS、[未承認契約](../../docs/research/research_c_c1_stage1_eval_only_contract_unapproved_20261025.json)。実H4評価0、mandatory STOP。
 
 関連trackの [C1 raw CAR frame修正](../../docs/research/research_c_c1_frame_repair_20261025.md)は `trottertracks.c1_stage1.raw_frame` の縮約だけをexplicit batched matmulへ接続。一般K／独立CAR代数／保存XDF／allowanceを保持し、新test `tests/management/test_research_c_c1_frame_repair.py` と既存回帰63件＋29 subtests、別プロセス64人工frame比較PASS。SOURCE／証拠 `artifacts/research_c_c1_frame_repair/2026-10-25/`、分子再解析・新fit0、H4の旧FAILは未再検証のままmandatory STOP。
