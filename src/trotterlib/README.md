@@ -1,3 +1,7 @@
+## 2026-10-25 PR0 cosine Arb限定実行
+
+`h4_arb_pr0_cosine.py`: 個別selected C-target/compiledの並行包含とB一回の差。`h4_arb_pr0_preparation.py`はexact kernelを共通化、人工入口のH4拒否を維持。
+
 ## 2026-10-25 H4 PR0 cosine：個別C-target Arb接続の準備完了・mandatory STOP
 
 [技術実装・人工包含検証・無効pilot契約](../../docs/non_df_h4_central_arb_pr0_preparation_20261025.md)。

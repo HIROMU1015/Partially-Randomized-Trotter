@@ -1,3 +1,7 @@
+## 2026-10-25 PR0 cosine Arb限定実行
+
+PR0 cosine Arb one-shot: `run_h4_arb_pr0_cosine.py`。64bitのtarget/compiled各1で局所予算内・grant消費済みSTOP。再launch不可。
+
 ## 2026-10-25 H4 PR0 cosine：個別C-target Arb接続の準備完了・mandatory STOP
 
 [技術実装・人工包含検証・無効pilot契約](../docs/non_df_h4_central_arb_pr0_preparation_20261025.md)。

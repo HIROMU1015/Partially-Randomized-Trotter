@@ -47,8 +47,47 @@ straddle/非有限の場合だけ96→128へ進み、128でも未決ならINCONC
 
 ## 実行結果と監査
 
-科学SOURCE/新one-shot grant/使用bit/信号区間/ρ/予算比較/native終了/保全確認は、この文書と `artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/` に実行後追記する。
-実行前準備時点では区間未取得。元の準備用DRAFT_DISABLED契約とSTOPは変更しない。
+科学SOURCE **`f1f3049670234cfc9c65430bd5016b9c6315a375`**、新grant **`ac99c3df12320ee5c27a2cdc01d8f8bf4fa90c10e93438eb9b40065832063def`** を一回発行・消費。
+[封印](../artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/seal.json)、[実行契約](../artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/active_contract.json)、[結果](../artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/run01/result_summary.json)。
+
+**64bitで上端≤保存予算が確定した。状態作用試行/成功2、scalar縮約1。96/128bitは未実行。**
+計算callはC-target1＋compiled1だけで、失敗call/technical retryは0。
+
+| 保存量 | 包含区間（十進端点は外向き24桁表示） | exact区間幅 |
+|---|---|---|
+| selected C-target cosine | [-0.106488293230470611846399, -0.106488293230470428412943] | 13535/73786976294838206464 ≈1.83433e-16 |
+| compiled cosine | [-0.106488293230470956290653, -0.106488293230470248415054] | 6529/9223372036854775808 ≈7.07876e-16 |
+| raw Arb ρ ball | [-4.67870948374473227725180e-16, 6.79574416339626407633468e-16] | 23831507850181476353/20769187434139310514121985316880384 ≈1.14745e-15 |
+
+ρ≥0との共通部分は **`[0,14114208428403524923/20769187434139310514121985316880384]`**。
+したがって **ρ_local ≤6.79574416339626407633468e-16 < 保存予算2.593611368819805e-6**。
+非負表示の0は新ballの数学的交差であり、残差exact0の認定や旧nullの読み替えではない。
+幅1e-8も満たすが、停止理由は保存予算との包含比較が確定したこと。
+[raw ρと別fieldの非負交差](../artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/run01/rho_64.json)。
+
+C-target作用は約0.62744秒、compiled作用は約2.72173秒で、別processとして重なって実行した。
+state hash `8339b1a8b0bec35ae07688e667fde7ba602d56c1182523d58e0889ea114e8b80`、同じexact νを使用。
+selected retained432 rotation＋32event＋8 scalar、compiled3139 native gate。
+source/control/QPY fingerprint・binary64値・global/relative phase・配置を保持する。
+
+親worker PID666324、C-target childとcompiled childはいずれもnative exit0・回収。
+親のnative witnessはexit0、残留子孫の強制終了0、all_owned_reaped=true。
+[call ledger](../artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/run01/call_ledger.json)、
+[target native](../artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/run01/target_64_native_exit.json)、
+[compiled native](../artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/run01/compiled_64_native_exit.json)、
+[親native](../artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/run01/native/worker_native_exit.json)、
+[最終STOP](../artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/run01/STOP.json)。
+
+科学code23・runtime206（FLINT数値package103を含む）・実入力17を封印前後でSHA照合した。
+FLINT0.9.0/FLINT3.6.0と既存private環境を再利用し、package変更0。
+旧C snapshotとの差は既知libz.so.1.3 SHA差だけで、数値packageは同一。原因UNKNOWNの履歴として記録し、今回の実runtimeを新規固定した。
+[失敗によるものではないruntime観測](../artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/runtime.json)。
+古いruntime全体と同一と主張せず、共有libraryを変更していない。
+
+保存有理端点のwhole区間差とB一回・予算比較、SOURCE/runtime/実入力、旧証拠515 SHA・旧manifest188行、grant/claim/native exit/STOPを科学再計算なしで検証する。
+[stdlibのみの検証](../artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/verify_saved_results.py)、
+[検証結果](../artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/verification.json)。
+元の準備用DRAFT_DISABLED契約・STOPと旧SOURCE/results/grants/ledger/markersは保全する。
 
 ## 範囲と終了
 

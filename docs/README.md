@@ -1,3 +1,7 @@
+## 2026-10-25 PR0 cosine Arb限定実行
+
+[H4 PR0 cosine Arb包含評価](non_df_h4_central_arb_pr0_cosine_20261025.md)：64bit/2状態作用、局所ρ上端約6.79575e-16、正式受理なし・mandatory STOP。
+
 ## 2026-10-25 H4 PR0 cosine：個別C-target Arb接続の準備完了・mandatory STOP
 
 [技術実装・人工包含検証・無効pilot契約](non_df_h4_central_arb_pr0_preparation_20261025.md)。
