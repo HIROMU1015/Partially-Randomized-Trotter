@@ -21,7 +21,8 @@ DFは同じH4、tol-only1e-8/rank10、PR prefix1＋one-body・raw concatenation�
 | 今回の科学SOURCE | `a37232f85812688c3b9ab957c5073c5ce143b17e` |
 | 新規対象 | PR index0,2〜255 sine255本＋PF sine1本 |
 | 再利用 | cosine257件＋PR index1 sine1129 RZ |
-| 結果commit・remote SHA | [公開状態](../artifacts/non_df_h4_a_axes/2026-10-24/publication_status.json)参照 |
+| 結果commit | `82e188dd4fa239bffcd3b010f7f7ea7e7155e9d7` |
+| remote SHA | 認証失敗・GitHub branch検索0件により未取得。[公開状態](../artifacts/non_df_h4_a_axes/2026-10-24/publication_status.json)参照 |
 
 [添付原文](../artifacts/non_df_h4_a_axes/2026-10-24/user_instruction.txt)・[承認](../artifacts/non_df_h4_a_axes/2026-10-24/approval.json)はSHAで結合。[GitHub確認](../artifacts/non_df_h4_a_axes/2026-10-24/github_verification.json)には基点commitとcohort sealの実取得・local Git blob一致を保存した。以前のpush失敗は時点履歴で、今回の基点はGitHub取得済み。
 
