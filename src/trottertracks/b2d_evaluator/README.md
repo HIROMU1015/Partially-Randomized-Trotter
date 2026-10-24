@@ -1,5 +1,9 @@
 # B2-D 5方式評価器：接続準備・技術報告
 
+**後続準備（2026-10-25）：** [Input package／preflight技術報告](../../../docs/research/research_b_b2d_input_preflight_technical_report_20261025.md)と[第一段階契約案](../../../docs/research/research_b_b2d_stage1_science_execution_contract_proposal_20261025.md)を参照。
+`input_package.py`／`preflight.py` を追加し、位相無効・全correctness先行・科学claim境界を最小拡張した。既存29＋新規17＝46人工test PASS。実入力・科学計算・新grantなし。
+以下は起点52baでの準備記録であり、未接続欄の現状は後続報告を優先する。
+
 2026-10-25 JST。**Scienceは未起動。** 起点 `5d3ec883eeeabf69abfa128c9e169c59fc572149` の既存adapter・15人工testを変更せず再利用した。新規追加だけで作業し、旧SOURCE・結果・草案・grant・STOPを保全する。
 
 ## 追加した接口

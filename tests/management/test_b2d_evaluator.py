@@ -69,6 +69,7 @@ def mock_approval(graph):
         "MOCK_APPROVAL_NOT_USER_AUTHORIZATION", "MOCK_NOT_A_GRANT",
         graph.settings.source_commit, graph.fingerprint,
         tuple(graph.call_counts.items()), "MOCK_NO_OUTPUT_WRITTEN", "MOCK_NO_RETRY",
+        mock_only=True,
     )
 
 

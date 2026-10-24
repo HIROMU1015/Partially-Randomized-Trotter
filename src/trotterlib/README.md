@@ -151,3 +151,7 @@ DF部分ランダム化研究と混同しない。
 `src/trottertracks/pr_dictionary_validation/rectangular.py` は既存Nature helperのGaussian suffixをsingletonにだけ接続する。[条件・SOURCE・未検証事項](../../docs/research/pr_rectangular_givens_preparation_20261024.md)。`rectangular_preflight.py`／`rectangular_execution.py`、runner `scripts/run_pr_rectangular_givens_saved.py`、mock test `tests/management/test_pr_rectangular_givens_preparation.py`、artifact `artifacts/pr_rectangular_givens_preparation/2026-10-24/`。共有runの既存合成を維持し、実回路・数値同値性・削減量は次回承認後の検証対象。
 
 固定SOURCE `770e53a` の関連track `trottertracks.pr_dictionary_validation.rectangular*` による[PS48科学結果](../../docs/research/pr_rectangular_givens_ps48_execution_20261024.md)を取得した。6基底と全48 wrapperの同値性gateはPASS、資源差はcase依存。科学SOURCEの変更なし。結果は `artifacts/pr_rectangular_givens/2026-10-24/`、保存集計だけのutilityも同所。全F2や別候補へ進まずmandatory STOP。
+
+## B2-D限定準備の既存関数再利用（2026-10-25）
+
+`trottertracks/b2d_evaluator/input_package.py` は本ライブラリのDF分割・preparation・number sector・sector matrix／retained tail関数をlazyに再利用する。[技術報告](../../docs/research/research_b_b2d_input_preflight_technical_report_20261025.md)、[契約案](../../docs/research/research_b_b2d_stage1_science_execution_contract_proposal_20261025.md)、`tests/management/test_b2d_input_preflight.py` を参照。science runner未起動、将来artifact `artifacts/research_b_b2d_stage1/<date>/<fresh-run-id>/` は今回作成しない。既存trotterlib科学SOURCEの変更なし。

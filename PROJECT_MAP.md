@@ -189,3 +189,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## Gaussian singleton構造選択の静的設計調査（2026-10-24）
 
 [設計メモ・限界・独立検証案・STOP](docs/research/pr_rectangular_selection_design_20261024.md)。PS48結果と既存SOURCEを読むだけで、数値再集計・recipe生成・選択器実装・build／compileはしない。一般的な正の選択条件は未確立で、一旦終了の技術提案はユーザー／GPTの採否待ち。既存の科学的PASS・結果・承認状態は保持する。
+
+## B2-D Input package・preflight準備（2026-10-25）
+
+[技術報告](docs/research/research_b_b2d_input_preflight_technical_report_20261025.md)と[未採択の第一段階契約案](docs/research/research_b_b2d_stage1_science_execution_contract_proposal_20261025.md)。実装は `src/trottertracks/b2d_evaluator/{input_package,preflight}.py`、人工testは `tests/management/test_b2d_input_preflight.py`。science runner未起動、将来outputは `artifacts/research_b_b2d_stage1/<date>/<fresh-run-id>/`。全call scope・実運用承認接続は未確定、科学実行・新grantなし。

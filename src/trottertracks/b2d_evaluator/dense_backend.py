@@ -1,8 +1,7 @@
 """Dormant small-system numerical connection. Never instantiated in preparation.
 
-No fixture loader or circuit renderer is included. The future approved launcher
-must supply physically consistent matrices/state in ONE documented sector order,
-created without borrowing a grant from older work. Scientific imports are lazy.
+The guarded input_package loader supplies matrices/state in ONE documented
+sector order. No PF circuit renderer is included. Scientific imports are lazy.
 """
 from dataclasses import dataclass
 import hashlib
@@ -26,11 +25,13 @@ class PreparedDenseInputs:
 class DenseBackend:
     is_mock = False
 
-    def __init__(self, settings, inputs: PreparedDenseInputs):
+    def __init__(self, settings, inputs: PreparedDenseInputs, *, execution=None):
         # evaluate() checks explicit approval before constructing a backend.
         # Direct construction is also a scientific action requiring approval;
         # these API guards do not replace human authorization or ledger checks.
         settings.validate()
+        from .preflight import require_claimed_run
+        require_claimed_run(execution).check_settings(settings)
         import numpy as np
         from scipy.linalg import expm
         from trotterlib.rte import make_rte_config, finite_rte_operator_moments
@@ -110,6 +111,9 @@ class DenseBackend:
         names = ("physical", "ideal_tail", "corrected", "raw")
         values = dict(zip(names, (self.signal(m, self.i.state) for m in matrices)))
         def record(value):
+            if not s.phase_diagnostics:
+                return {"X": value.real, "Y": value.imag, "radius": abs(value),
+                        "principal_phase": None, "phase_status": "NOT_REQUESTED"}
             angle = float(np.angle(value))
             eligible = abs(value) > s.radius_floor and np.pi - abs(angle) > s.branch_margin
             return {"X": value.real, "Y": value.imag, "radius": abs(value),

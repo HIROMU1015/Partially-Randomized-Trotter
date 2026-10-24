@@ -48,6 +48,7 @@ class Settings:
     radius_floor: float | None
     branch_margin: float | None
     decision_policy: str
+    phase_diagnostics: bool = True
 
     def validate(self):
         for name in ("source_commit", "fixture_definition_commit", "fixture_definition_blob",
@@ -77,13 +78,18 @@ class Settings:
             raise ValueError("This minimal stage-1 path requires no coefficient dropping.")
         if self.precision != "complex128" or self.finite_bit_policy != "analytic_moments_no_sampling":
             raise ValueError("Only the explicit analytic-moment complex128 path is prepared.")
-        for name in ("numerical_atol", "radius_floor", "branch_margin"):
+        if type(self.phase_diagnostics) is not bool:
+            raise ValueError("Explicit phase diagnostic policy required.")
+        conditions = ("numerical_atol", "radius_floor", "branch_margin") if self.phase_diagnostics else ("numerical_atol",)
+        if not self.phase_diagnostics and (self.radius_floor is not None or self.branch_margin is not None):
+            raise ValueError("Disabled phase diagnostics must not invent phase thresholds.")
+        for name in conditions:
             value = getattr(self, name)
             if isinstance(value, bool) or value is None or not math.isfinite(value) or value <= 0:
                 raise ValueError("Unresolved positive numerical condition: " + name)
         if not math.isfinite(self.truncation_tolerance) or self.truncation_tolerance <= 0:
             raise ValueError("Explicit finite positive RTE tolerance metadata required.")
-        if self.branch_margin >= math.pi:
+        if self.phase_diagnostics and self.branch_margin >= math.pi:
             raise ValueError("Branch margin must be smaller than pi.")
         if self.decision_policy != "descriptive_only_no_scientific_go":
             raise ValueError("No scientific GO threshold is implemented or adopted.")
@@ -207,6 +213,7 @@ class ExecutionApproval:
     approved_call_counts: tuple[tuple[str, int], ...]
     output_identity: str
     retry_policy: str
+    mock_only: bool = False
 
 
 def _check_approval(graph, approval):
@@ -221,20 +228,33 @@ def _check_approval(graph, approval):
         raise PermissionError("Scientific call scope differs from approval.")
 
 
-def evaluate(graph: Graph, backend_factory, approval: ExecutionApproval | None = None):
+def evaluate(graph: Graph, backend_factory, approval: ExecutionApproval | None = None, *, execution=None):
     """Dormant science entry: reject missing approval before backend creation.
 
-    Approval fields are caller-supplied attestations, not grant issuance or
-    verification of external ledger state. A future launcher must validate
-    source/input/unused-grant/fresh-output and ledger policy before calling.
+    Approval fields alone cannot authorize science. A real backend requires
+    the operations-verified, claimed-run handle; mock approval remains explicit.
+    The future launcher owns failure saving and the external authority binding.
     """
     graph.settings.validate()
     _check_approval(graph, approval)
+    if not approval.mock_only:
+        from .preflight import require_claimed_run
+        require_claimed_run(execution).begin_evaluation(graph, approval)
     backend = backend_factory(graph.settings)
-    values = []
-    for node in graph.nodes:
-        args = tuple(values[i] for i in node.dependencies)
-        values.append(backend.perform(node.kind, args, node.parameters))
+    if approval.mock_only and not backend.is_mock:
+        raise PermissionError("Mock approval cannot execute a scientific backend.")
+    values = {}
+    def resolve(index):
+        if index not in values:
+            node = graph.nodes[index]
+            args = tuple(resolve(i) for i in node.dependencies)
+            values[index] = backend.perform(node.kind, args, node.parameters)
+        return values[index]
+    # All signed-time correctness gates precede ANY performance comparison.
+    for index in graph.correctness.values():
+        resolve(index)
+    for index in range(len(graph.nodes)):
+        resolve(index)
     return {
         "schema": SCHEMA,
         "mode": "MOCK_ONLY" if backend.is_mock else "SCIENCE_STAGE1",

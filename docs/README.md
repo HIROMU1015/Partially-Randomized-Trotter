@@ -121,3 +121,7 @@
 [Rectangular Givens候補AのPS48科学実行結果](research/pr_rectangular_givens_ps48_execution_20261024.md)：6基底・raw／compiled各48の固定gateが全件PASS。index21/25では改善、全48等重みRZ/CXは増加。case CSV・残差・古典費用・provenanceは `artifacts/pr_rectangular_givens/2026-10-24/`。全F2期待値や一般的優位の認定はせずmandatory STOP。
 
 [Rectangular Givens候補Aの構造選択規則調査](research/pr_rectangular_selection_design_20261024.md)：SOURCEと保存結果の静的調査だけ。support／frame／境界の説明と予測の限界、両方式compileの強い対照、未承認の独立検証案を整理した。一般的な規則は未確立で、一旦終了を技術的に推奨。選択器実装・再集計・科学実行なし、mandatory STOP。
+
+## B2-D Input package・preflight準備（2026-10-25）
+
+[技術報告](research/research_b_b2d_input_preflight_technical_report_20261025.md)／[未採択の第一段階契約案](research/research_b_b2d_stage1_science_execution_contract_proposal_20261025.md)。実装 `src/trottertracks/b2d_evaluator/input_package.py`・`preflight.py`、人工test `tests/management/test_b2d_input_preflight.py`。science runner未起動、予定artifact `artifacts/research_b_b2d_stage1/<date>/<fresh-run-id>/` は未生成。科学計算・新grantなし、実運用scope確定前にSTOP。

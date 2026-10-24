@@ -163,3 +163,7 @@ artifacts/<validation_name>/
 `run_pr_rectangular_givens_saved.py` は[候補Aの限定実装](../docs/research/pr_rectangular_givens_preparation_20261024.md)の入口。`--check-only` は保存hash・case identityだけを確認する。`--execute` は別のPS48科学承認・新one-shotを要求する。処理は `trottertracks.pr_dictionary_validation.rectangular*`、mock testは `tests/management/test_pr_rectangular_givens_preparation.py`、planと技術証拠は `artifacts/pr_rectangular_givens_preparation/2026-10-24/`。今回は科学実行なし。
 
 PS48の[科学実行結果](../docs/research/pr_rectangular_givens_ps48_execution_20261024.md)は固定runner `run_pr_rectangular_givens_saved.py` で一回取得した。SOURCE変更・retryなし。保存結果だけの集計utilityは `artifacts/pr_rectangular_givens/2026-10-24/summarize_saved_ps48.py`、CSV／summaryも同所。これは新build／compileや全F2への展開の許可を意味しない。
+
+## B2-D Input package・preflight準備（2026-10-25）
+
+この準備はCLI science runnerを追加しない。呼出し経路 `trottertracks.b2d_evaluator.input_package.load_candidate`／read-only `preflight.verify_execution`、人工test `tests/management/test_b2d_input_preflight.py` と[技術報告](../docs/research/research_b_b2d_input_preflight_technical_report_20261025.md)を一組として読む。予定outputは `artifacts/research_b_b2d_stage1/<date>/<fresh-run-id>/`、今回は未作成。全scope・承認binding・失敗保存launcherは実行前の残事項。
