@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究B outer splitting準備（2026-10-25）
+
+[技術報告・未承認科学契約案](docs/research/research_b_outer_splitting_stage1_preparation_20261025.md)、`src/trottertracks/b2d_evaluator/{outer,outer_backend}.py`、`tests/management/test_b2d_outer_preparation.py`を一組として読む。4方式のstage／heterogeneous RTE接続と人工91件PASS。科学処理未実行、新outer専用launcherなし。旧Stage 1 SOURCE・結果・scope・STOPは保全する。
+
 最終更新：2026-09-20
 
 このファイルは、人またはGPTがリポジトリ全体を読むときの入口である。研究内容の正本、

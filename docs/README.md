@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究B outer splitting準備（2026-10-25）
+
+[実装・人工検証・未承認科学契約案](research/research_b_outer_splitting_stage1_preparation_20261025.md)。SOURCEは `src/trottertracks/b2d_evaluator/{outer,outer_backend}.py`、人工testは `tests/management/test_b2d_outer_preparation.py`。4方式を準備し、追加19＋既存72件PASS。科学計算・回路生成なし。比較条件と新scope／実行bindingは科学実行前に確定する。
+
 このディレクトリには、研究方針の正本、実装規約、検証報告、発表資料の案内が共存する。
 研究全体を初めて読む場合は、先に[`../PROJECT_MAP.md`](../PROJECT_MAP.md)と
 [`research/研究概要・現状.md`](research/研究概要・現状.md)を読む。
