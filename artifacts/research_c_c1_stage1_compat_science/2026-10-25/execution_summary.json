@@ -1,0 +1,434 @@
+{
+  "schema": "C1_STAGE1_COMPAT_SCIENCE_PARTIAL_RESULT_v1",
+  "status": "SCIENTIFIC_STOP_EQUALITY",
+  "Stage1_completed": false,
+  "mandatory_stop": true,
+  "source_commit": "da2edb465d5ae6432439fbd1df8e57512ee59c11",
+  "implementation_commit": "303f73275f133bfed0a0cd93a06f4a46f8ffd7be",
+  "branch": "codex/research-c-c1-stage1-compat-science-20261025",
+  "contract_sha256": "e89f8bb323efaf5cfd72a2f8c35b5462fc0ff456b194e4dcd2f0bbc08c0310e8",
+  "source_manifest_sha256": "e7bf161d2ab45a78d772c960ab5c2c41d3ed145bfd0a1193ee280536c1547240",
+  "input_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+  "output_id": "C1_STAGE1_COMPAT_V2_20261025_run01",
+  "conditions": {
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "full_dimension": 256,
+    "full_checks": "Base kappa+c and each of R frames, plus Nalpha/Nbeta commutators; no full physical or XDF norm",
+    "L_D": null,
+    "delta_window": null,
+    "z_representation": false,
+    "one_body_role": "ffsim_corrected_kappa",
+    "kappa": "h_original - 0.5 * einsum(prrq,g_original), held fixed after fit",
+    "constant": "Original nuclear c at model level once; frame I terms stay inside frame",
+    "spatial_g_prefactor": "No 1/2 applied at ffsim input; density J products carry 1/2",
+    "general_K": "K[2i+sigma,2j+tau]=J[i,j]/2, V spin-lift U, one original frame preserved",
+    "spin_and_state_order": "Interleaved spin mode a=2p+sigma, common matrix mode a on bit a; reverse OpenFermion/PhysicalSector bits once",
+    "baseline": "Saved actual rank10 XDF from same packet; original generation df_rank=None,df_tol=1e-8; no new decomposition or rehermitization",
+    "DF_errors": "Separate spectral norms of P36(Hphys-HCDF)P36 and P36(Hphys-HXDF)P36, including c/kappa/two-body",
+    "physical_DF_absolute_gate": null,
+    "CDF_le_XDF_required": false,
+    "Stage2_eligibility": "Separate decision after Stage1 measurement; not automatic from representation PASS"
+  },
+  "molecule": {
+    "label": "P-H4",
+    "commit": "86b8b002704aced8ca239414080f53793de81658",
+    "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/snapshot.npz",
+    "sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+    "model": "linear H4",
+    "adjacent_distance_Angstrom": 1.0,
+    "basis": "STO-3G",
+    "charge": 0,
+    "spin_2S": 0,
+    "MO": "saved real canonical RHF, no regenerated integrals",
+    "physical_members": [
+      "one_mo",
+      "eri_chemist",
+      "nuclear_repulsion",
+      "mo_coeff"
+    ],
+    "saved_XDF_members": [
+      "df_one_body",
+      "df_lambdas",
+      "df_g_matrices"
+    ],
+    "never_decode_saved_members": [
+      "state",
+      "DF_state",
+      "non_DF_matrix",
+      "DF_matrix",
+      "energy",
+      "fci_energy",
+      "fci_vector",
+      "hf_energy"
+    ]
+  },
+  "fit_settings": {
+    "optimize": true,
+    "max_vecs": 8,
+    "tol": 1e-08,
+    "method": "L-BFGS-B",
+    "options": {},
+    "callback": null,
+    "diag_coulomb_indices": null,
+    "cholesky": true,
+    "return_optimize_result": true
+  },
+  "preflight": "PASS",
+  "fit_qualification": "PASS",
+  "actual_rank": 8,
+  "optimizer": {
+    "success": true,
+    "status": 0,
+    "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+    "fun": 2.1839632052963425e-09,
+    "nit": 68,
+    "nfev": 74,
+    "njev": 74
+  },
+  "tensor_residual": {
+    "maxabs": 1.0550030930367438e-05,
+    "frobenius": 6.60902898358172e-05,
+    "objective_from_export": 2.183963205291161e-09,
+    "objective_difference": 5.181459357032165e-21
+  },
+  "adapter_full_base": "PASS",
+  "adapter_first_full_frame": "FAIL",
+  "adapter_sector": "NOT_RUN",
+  "physical_CDF_sector_error_Hartree": null,
+  "physical_XDF_sector_error_Hartree": null,
+  "physical_DF_error_status": "NOT_MEASURED_FIRST_FAILED_GATE_STOP",
+  "gate_statuses": [
+    {
+      "id": "kappa_Hermitian",
+      "status": "PASS",
+      "error": 8.660473972585522e-17,
+      "allowance": 3.518379690624931e-11,
+      "gate": true
+    },
+    {
+      "id": "kappa_original_g",
+      "status": "PASS",
+      "error": 0.0,
+      "allowance": 1.8829801476580426e-11,
+      "gate": true
+    },
+    {
+      "id": "saved_XDF_kappa",
+      "status": "PASS",
+      "error": 6.723512808976018e-17,
+      "allowance": 2.5246248268644952e-11,
+      "gate": true
+    },
+    {
+      "id": "J_symmetric_0",
+      "status": "PASS",
+      "error": 0.0,
+      "allowance": 2.051712654016196e-13,
+      "gate": true
+    },
+    {
+      "id": "U_unitary_0",
+      "status": "PASS",
+      "error": 6.889341055985076e-16,
+      "allowance": 1.2505552149378008e-12,
+      "gate": true
+    },
+    {
+      "id": "J_symmetric_1",
+      "status": "PASS",
+      "error": 0.0,
+      "allowance": 8.407378297423365e-14,
+      "gate": true
+    },
+    {
+      "id": "U_unitary_1",
+      "status": "PASS",
+      "error": 5.222180388738334e-16,
+      "allowance": 1.250555214937801e-12,
+      "gate": true
+    },
+    {
+      "id": "J_symmetric_2",
+      "status": "PASS",
+      "error": 0.0,
+      "allowance": 4.505093323649554e-14,
+      "gate": true
+    },
+    {
+      "id": "U_unitary_2",
+      "status": "PASS",
+      "error": 8.33295347395036e-16,
+      "allowance": 1.2505552149378008e-12,
+      "gate": true
+    },
+    {
+      "id": "J_symmetric_3",
+      "status": "PASS",
+      "error": 0.0,
+      "allowance": 8.629462117743016e-15,
+      "gate": true
+    },
+    {
+      "id": "U_unitary_3",
+      "status": "PASS",
+      "error": 5.90297749748245e-16,
+      "allowance": 1.250555214937801e-12,
+      "gate": true
+    },
+    {
+      "id": "J_symmetric_4",
+      "status": "PASS",
+      "error": 0.0,
+      "allowance": 5.27780947516106e-15,
+      "gate": true
+    },
+    {
+      "id": "U_unitary_4",
+      "status": "PASS",
+      "error": 4.1027585493109925e-16,
+      "allowance": 1.2505552149378008e-12,
+      "gate": true
+    },
+    {
+      "id": "J_symmetric_5",
+      "status": "PASS",
+      "error": 0.0,
+      "allowance": 5.280284777605203e-15,
+      "gate": true
+    },
+    {
+      "id": "U_unitary_5",
+      "status": "PASS",
+      "error": 5.634844388169163e-16,
+      "allowance": 1.250555214937801e-12,
+      "gate": true
+    },
+    {
+      "id": "J_symmetric_6",
+      "status": "PASS",
+      "error": 0.0,
+      "allowance": 6.872373323592923e-15,
+      "gate": true
+    },
+    {
+      "id": "U_unitary_6",
+      "status": "PASS",
+      "error": 8.613088352278267e-16,
+      "allowance": 1.2505552149378008e-12,
+      "gate": true
+    },
+    {
+      "id": "J_symmetric_7",
+      "status": "PASS",
+      "error": 0.0,
+      "allowance": 3.248207769797396e-15,
+      "gate": true
+    },
+    {
+      "id": "U_unitary_7",
+      "status": "PASS",
+      "error": 1.619157848017643e-16,
+      "allowance": 1.2505552149378008e-12,
+      "gate": true
+    },
+    {
+      "id": "full_base",
+      "status": "PASS",
+      "error": 3.552713678800501e-15,
+      "allowance": 1.7591898453124768e-11,
+      "gate": true
+    },
+    {
+      "id": "full_frame_0",
+      "status": "FAIL",
+      "error": 2.8302153250645086,
+      "allowance": 4.831545715791788e-10,
+      "gate": true
+    },
+    {
+      "id": "full_frame_1",
+      "status": "NOT_RUN",
+      "error": null,
+      "allowance": null,
+      "gate": true
+    },
+    {
+      "id": "full_frame_2",
+      "status": "NOT_RUN",
+      "error": null,
+      "allowance": null,
+      "gate": true
+    },
+    {
+      "id": "full_frame_3",
+      "status": "NOT_RUN",
+      "error": null,
+      "allowance": null,
+      "gate": true
+    },
+    {
+      "id": "full_frame_4",
+      "status": "NOT_RUN",
+      "error": null,
+      "allowance": null,
+      "gate": true
+    },
+    {
+      "id": "full_frame_5",
+      "status": "NOT_RUN",
+      "error": null,
+      "allowance": null,
+      "gate": true
+    },
+    {
+      "id": "full_frame_6",
+      "status": "NOT_RUN",
+      "error": null,
+      "allowance": null,
+      "gate": true
+    },
+    {
+      "id": "full_frame_7",
+      "status": "NOT_RUN",
+      "error": null,
+      "allowance": null,
+      "gate": true
+    },
+    {
+      "id": "raw_N0",
+      "status": "NOT_RUN",
+      "error": null,
+      "allowance": null,
+      "gate": true
+    },
+    {
+      "id": "raw_N1",
+      "status": "NOT_RUN",
+      "error": null,
+      "allowance": null,
+      "gate": true
+    },
+    {
+      "id": "K_N0",
+      "status": "NOT_RUN",
+      "error": null,
+      "allowance": null,
+      "gate": true
+    },
+    {
+      "id": "K_N1",
+      "status": "NOT_RUN",
+      "error": null,
+      "allowance": null,
+      "gate": true
+    },
+    {
+      "id": "physical_Hermitian",
+      "status": "NOT_RUN",
+      "error": null,
+      "allowance": null,
+      "gate": true
+    },
+    {
+      "id": "CDF_Hermitian",
+      "status": "NOT_RUN",
+      "error": null,
+      "allowance": null,
+      "gate": true
+    },
+    {
+      "id": "K_Hermitian",
+      "status": "NOT_RUN",
+      "error": null,
+      "allowance": null,
+      "gate": true
+    },
+    {
+      "id": "XDF_Hermitian",
+      "status": "NOT_RUN",
+      "error": null,
+      "allowance": null,
+      "gate": true
+    },
+    {
+      "id": "sector_adapter",
+      "status": "NOT_RUN",
+      "error": null,
+      "allowance": null,
+      "gate": true
+    },
+    {
+      "id": "sector_DF_CDF",
+      "status": "NOT_RUN",
+      "error": null,
+      "allowance": null,
+      "gate": false
+    },
+    {
+      "id": "sector_DF_XDF",
+      "status": "NOT_RUN",
+      "error": null,
+      "allowance": null,
+      "gate": false
+    }
+  ],
+  "scientific_calls_by_phase": {
+    "fit": {
+      "input_load": 1,
+      "fit": 1,
+      "fit_qualification": 1,
+      "tensor_reconstruct": 1,
+      "tensor_maxabs": 1,
+      "tensor_frobenius": 1
+    },
+    "load": {
+      "input_load": 1,
+      "export_load": 1
+    },
+    "evaluation": {
+      "adapter_import": 1,
+      "structural_frobenius": 19,
+      "allowance": 21,
+      "physical_build": 1,
+      "xdf_build": 1,
+      "xdf_matvec": 36,
+      "base_build": 2,
+      "spectral_norm": 2,
+      "frame_build": 16
+    }
+  },
+  "scientific_counter_units_used": 107,
+  "scientific_counter_units_max": 147,
+  "fit_calls_attempted": 1,
+  "fit_calls_returned": 1,
+  "scientific_retry": 0,
+  "scientific_resume": 0,
+  "pending_checks_after_failure": "Frames1-7 gates, full Nalpha/Nbeta conservation, sector Hermiticity and adapter equality, separate CDF/XDF physical norms",
+  "parallel_submission": "16 raw/K frame build jobs journaled before executor.map; first frame gate failed. Fixed executor waits for already-submitted tasks during cleanup; only F0 matrices/gate were saved. No further gate/norm/run was launched.",
+  "operators_saved": [
+    "physical_sector",
+    "XDF_sector",
+    "raw_base",
+    "K_base",
+    "raw_frame_0",
+    "K_frame_0"
+  ],
+  "post_STOP_new_scientific_calls": 0,
+  "resource_usage": {
+    "exitcode": 0,
+    "elapsed_seconds": 9.015891236253083,
+    "sampling_interval_seconds": 1,
+    "samples": 9,
+    "peak_sampled_aggregate_rss_kib": 524084,
+    "peak_sampled_total_threads": 98,
+    "scope": "GNU time and sampled fixed-runner descendants, not a scientific metric",
+    "scientific_retries": 0,
+    "automatic_resume": false
+  },
+  "resource_time_text": "resource_time_run01.txt",
+  "Stage2_authorized": false,
+  "Stage3_authorized": false,
+  "conclusion": "ffsim/SciPy compatibility and fit convergence succeeded; registered adapter/reference full-frame equality failed. Neither route is identified as the correct one by this failure alone; no repair or molecular reanalysis performed."
+}

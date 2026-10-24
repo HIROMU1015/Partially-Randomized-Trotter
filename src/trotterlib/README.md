@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+関連trackの [C1 Stage 1互換性修正版実行](../../docs/research/research_c_c1_stage1_compat_execution_20261025.md)：SOURCE無変更で通常C-DF fit1回が収束（R8）。full256 frame0のraw CAR／K同値性がFAILし科学的STOP、既存保存XDF sector経路は構築したが物理CDF/XDF normは未到達。科学call107/147、retry/resume0、原本 `artifacts/research_c_c1_stage1_compat_science/2026-10-25/`、追加科学実行なし。
+
 関連trackの [C1 Stage 1互換性修正](../../docs/research/research_c_c1_stage1_compatibility_20261025.md)は `trottertracks.c1_ffsim_compat` のtask専用batch logm bridgeだけを追加し、既存一般K／独立CAR／保存XDFの数値経路を保持する。runner `scripts/run_research_c_c1_stage1.py`、人工tests `tests/management/test_research_c_c1_ffsim_compat.py` と既存回帰59件＋29 subtests PASS、SOURCE／lock／証拠 `artifacts/research_c_c1_stage1_compatibility/2026-10-25/`。[新未承認契約](../../docs/research/research_c_c1_stage1_compatibility_contract_unapproved_20261025.json)、分子科学call0、別承認待ち・mandatory STOP。
 
 関連track `trottertracks.c1_stage1*` の[Stage 1限定科学実行](../../docs/research/research_c_c1_stage1_execution_20261025.md)はffsim/SciPy batch logm非互換でfit初期化中に停止。保存XDFの既存sector演算・CAR/K/物理normへは未到達。artifact `artifacts/research_c_c1_stage1_science/2026-10-25/`、科学call2・fit1 attempt、追加実行なし、mandatory STOP。

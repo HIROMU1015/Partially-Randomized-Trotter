@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_research_c_c1_stage1.py` の[互換性修正版Stage 1科学実行](../docs/research/research_c_c1_stage1_compat_execution_20261025.md)は新approvalで1 fit収束後、frame0 raw CAR／K同値性FAILによりSTOP。科学call107/147、retry/resume0、証拠 `artifacts/research_c_c1_stage1_compat_science/2026-10-25/`。SOURCEと既存runnerは変更せず、物理sector norm未到達、追加実行・Stage2/3なし。
+
 `run_research_c_c1_stage1.py` は[ffsim／SciPy互換性修正版](../docs/research/research_c_c1_stage1_compatibility_20261025.md)でvenv Python symlinkを保持し、`trottertracks.c1_ffsim_compat` 経由の初期化へ接続する。人工tests `test_research_c_c1_ffsim_compat.py` を含む59件＋29 subtests PASS、証拠・SOURCE／lock `artifacts/research_c_c1_stage1_compatibility/2026-10-25/`。[新未承認契約](../docs/research/research_c_c1_stage1_compatibility_contract_unapproved_20261025.json)は新scope、fresh outputへの別明示承認が必要。科学実行0、mandatory STOP。
 
 `run_research_c_c1_stage1.py` の[限定科学実行・技術的STOP](../docs/research/research_c_c1_stage1_execution_20261025.md)：固定SOURCE `de76aee72`、1 fitはSciPy1.14.1 batch logm非互換でoptimizer前に停止。call2/147、科学retry/resume0。artifact `artifacts/research_c_c1_stage1_science/2026-10-25/`。SOURCEを修正せず証拠保存・mandatory STOP。

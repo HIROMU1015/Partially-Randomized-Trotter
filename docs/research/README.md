@@ -1,5 +1,7 @@
 # 研究計画資料
 
+[C1 Stage 1互換性修正版の科学実行](research_c_c1_stage1_compat_execution_20261025.md)：新しい1 fitはrank8で収束、full256 frame0同値性FAILでSTOP。κ/J/U・baseはPASS、CDF/XDFの物理sector誤差は未測定。科学call107/147、retry/resume0、証拠 `artifacts/research_c_c1_stage1_compat_science/2026-10-25/`。旧SOURCE／run／STOPを保全し、追加科学処理・Stage2/3へ進まない。
+
 [C1 Stage 1：ffsim／SciPy互換性修正](research_c_c1_stage1_compatibility_20261025.md)：既存2D logmを順に呼ぶ専用bridge、venv起動修正、人工59件＋29 subtests PASS。[新未承認契約](research_c_c1_stage1_compatibility_contract_unapproved_20261025.json)とSOURCE／lockは `artifacts/research_c_c1_stage1_compatibility/2026-10-25/`。実分子科学call0、旧結果／STOP保全、別の1 fit明示承認待ち・mandatory STOP。
 
 このディレクトリには、DF部分ランダム化・有限RTE・RPE compiled cost研究の目的、背景、未解決点、解析手順および数値評価計画をまとめる。

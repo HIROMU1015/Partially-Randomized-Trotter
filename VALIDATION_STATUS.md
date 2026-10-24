@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-25 C1 Stage 1 compatibility-source execution: scientific equality STOP
+
+[Report](docs/research/research_c_c1_stage1_compat_execution_20261025.md), [summary/evidence](artifacts/research_c_c1_stage1_compat_science/2026-10-25/execution_summary.json). New user approval bound source `da2edb465d5ae6432439fbd1df8e57512ee59c11`, contract/input and fresh output. One CDF fit converged at R8; kappa/J/U and full-base gates PASS. First full256 frame equality FAIL: error2.8302153250645086 vs frozen allowance4.831545715791788e-10. Registered diagnostics20 PASS/1 FAIL/18 NOT_RUN, physical CDF/XDF sector errors and sector adapter equality not measured. Call107/147, fit attempted1/returned1, science retry/resume0. No route is identified as correct by this comparison alone. Stage1 incomplete; raw evidence/old STOP preserved; no repairs, reanalysis or further science after STOP. Stage2/3 remain unapproved.
+
 ## 2026-10-25 C1 Stage 1 compatibility repair: artificial qualification only
 
 [Report](docs/research/research_c_c1_stage1_compatibility_20261025.md), [unapproved contract](docs/research/research_c_c1_stage1_compatibility_contract_unapproved_20261025.json), [SOURCE/locks/evidence](artifacts/research_c_c1_stage1_compatibility/2026-10-25/). Implementation `303f73275f133bfed0a0cd93a06f4a46f8ffd7be` retains SciPy1.14.1 and ffsim0.0.83; task-only per-matrix logm plus venv symlink launch fix. Artificial59 tests and29 subtests PASS, including real ffsim initialization on artificial tensors with optimizer blocked. No molecular fit/numeric decode/operator/norm/residual/reanalysis/circuit call. Scientific Stage1 remains incomplete; former spent approval/STOP preserved. New one-fit authorization required, no automatic Stage2/3, mandatory STOP. Local tests archived in Git are not immutable CI or molecular qualification.

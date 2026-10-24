@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1 Stage 1互換性修正版の科学的STOP（2026-10-25）
+
+[実行結果・gate・部分証拠](docs/research/research_c_c1_stage1_compat_execution_20261025.md)。公開SOURCE `da2edb465d5ae6432439fbd1df8e57512ee59c11`、新approval／fresh outputで1 fit収束・実R8。κ/J/Uとfull baseはPASS、full256 frame0のraw CAR／K同値性がFAILしmandatory STOP。物理CDF/XDF sector norm・sector adapterは未到達。科学call107/147、retry/resume0。原本は `artifacts/research_c_c1_stage1_compat_science/2026-10-25/`、既存runner `scripts/run_research_c_c1_stage1.py` とSOURCEは無変更。追加計算・Stage2/3なし。
+
 ## C1 Stage 1互換性修正・人工検証（2026-10-25）
 
 [修正報告](docs/research/research_c_c1_stage1_compatibility_20261025.md)、[新未承認契約](docs/research/research_c_c1_stage1_compatibility_contract_unapproved_20261025.json)。専用bridge `src/trottertracks/c1_ffsim_compat.py` を既存Stage1 runnerへ接続し、venv Python symlinkを保持。新test `tests/management/test_research_c_c1_ffsim_compat.py` と既存回帰59件＋29 subtests PASS。証拠・SOURCE・同版依存lockは `artifacts/research_c_c1_stage1_compatibility/2026-10-25/`。実ffsim人工初期化はoptimizerを遮断して確認、分子科学call0。旧run01/run02/STOP保全、新しい1 fitは別明示承認が必要。mandatory STOP。
