@@ -119,7 +119,40 @@ def guarded_context(cfg, system, prefix):
 
 
 def worker(task):
-    return RT.worker(task)
+    from trottertracks.resource_applicability import ax2b_native_df_v5 as api
+    cfg = RT.RUNTIME.runner_namespace['WORKER_CFG']
+    counts = dict(partial_native_build=0, hadamard_wrapper_build=0)
+    originals = {name: getattr(api, name) for name in
+        ('build_partial_native', 'build_native_hadamard_wrapper')}
+
+    def partial(*args, **kwargs):
+        counts['partial_native_build'] += 1
+        c.require(counts['partial_native_build'] <= 12, 'EXACT_PARTIAL_NATIVE_BUILDS')
+        return originals['build_partial_native'](*args, **kwargs)
+
+    def wrapper(*args, **kwargs):
+        i = counts['hadamard_wrapper_build']
+        c.reserve(cfg, task, 'wrapper_build', i)
+        counts['hadamard_wrapper_build'] += 1
+        return originals['build_native_hadamard_wrapper'](*args, **kwargs)
+
+    completed = False
+    try:
+        api.build_partial_native, api.build_native_hadamard_wrapper = partial, wrapper
+        result = RT.worker(task)
+        c.require(counts == dict(partial_native_build=12, hadamard_wrapper_build=2),
+            'EXACT_COMPLETED_BUILD_DISPATCH')
+        completed = True
+        return result
+    finally:
+        for name, fn in originals.items():
+            setattr(api, name, fn)
+        out = Path(cfg['output']) / task['id']
+        if out.is_dir():
+            c.save(out / 'build_dispatch.json', dict(SOURCE=cfg['SOURCE'],
+                plan_sha256=cfg['plan_sha256'], task_id=task['id'],
+                counts=counts, completed=completed,
+                partial_native_build_is_nested_in_native_piece_compositions=True))
 
 
 def runtime(cfg):
@@ -155,8 +188,20 @@ def audit(cfg):
         row = c.read(p)
         if row['SOURCE'] != cfg['SOURCE'] or row['plan_sha256'] != cfg['plan_sha256']:
             errors['context_binding'] = 'SOURCE_OR_PLAN_MISMATCH'
+    build_joins = []
+    for task in cfg['tasks']:
+        path = Path(cfg['output']) / task['id'] / 'build_dispatch.json'
+        if not path.is_file():
+            errors[task['id']] = 'MISSING_BUILD_DISPATCH'
+            continue
+        row = c.read(path)
+        if not (row['SOURCE'] == cfg['SOURCE'] and row['plan_sha256'] == cfg['plan_sha256']
+                and row['task_id'] == task['id'] and row['completed'] and
+                row['counts'] == dict(partial_native_build=12, hadamard_wrapper_build=2)):
+            errors[task['id']] = 'BUILD_DISPATCH_MISMATCH'
+        build_joins.append(dict(task_id=task['id'], sha256=c.sha(path)))
     report = dict(status='STOP' if errors else 'CONTEXT_AND_ACQUISITION_AUDIT_PASS',
-        errors=errors, end_audit_sha256=c.sha(root / 'end_audit.json'),
+        errors=errors, build_joins=build_joins, end_audit_sha256=c.sha(root / 'end_audit.json'),
         SOURCE=cfg['SOURCE'], plan_sha256=cfg['plan_sha256'], retry=False,
         mandatory_STOP=True)
     c.save(root / 'context_end_audit.json', report)

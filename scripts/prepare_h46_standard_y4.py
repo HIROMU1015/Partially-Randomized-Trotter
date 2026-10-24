@@ -104,7 +104,7 @@ def phase_a(assets):
     return result
 
 
-def prepare(assets, python, site_packages, historical_configs):
+def prepare(assets, python, site_packages, historical_configs, pack_name):
     a = Path(assets).resolve()
     c.install_paths(a, site_packages)
     source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=c.ROOT, text=True).strip()
@@ -137,7 +137,8 @@ def prepare(assets, python, site_packages, historical_configs):
     records = [r for r in original_signals['records'] if
         r['candidate']['id'] in {g['Y4'] for g in c.GROUPS.values()}]
     c.require(len(records) == 2, 'TWO_STANDARD_Y4_SIGNALS')
-    packdir = a / 'standard_y4_run01'
+    c.require(pack_name in ('standard_y4_run01', 'standard_y4_run02'), 'FIXED_PREPARATION_ATTEMPT')
+    packdir = a / pack_name
     packdir.mkdir(exist_ok=False)
     signal_path = packdir / 'signals_PRIVATE.json'
     c.save(signal_path, dict(records=records, source=c.OLD_SOURCE))
@@ -178,8 +179,10 @@ def prepare(assets, python, site_packages, historical_configs):
         for name, origin in [('reference.npz', 'forward_reference.npz'),
                              ('receipt.json', 'forward_receipt.json')]:
             src, dst = a / 'inputs' / s / origin, a / 'inputs' / s / name
-            c.require(not dst.exists(), 'NEW_REFERENCE_ALIAS_ONLY')
-            dst.write_bytes(src.read_bytes())
+            if dst.exists():
+                c.require(dst.read_bytes() == src.read_bytes(), 'IDENTICAL_EXISTING_SAVED_REFERENCE_ALIAS')
+            else:
+                dst.write_bytes(src.read_bytes())
             add(dst, 'byte_identical_saved_reference_alias')
             alias_rows.append(dict(system=s, alias=name, origin=origin, sha256=c.sha(dst)))
     input_path = packdir / 'input_manifest_PRIVATE.json'
@@ -221,7 +224,7 @@ def prepare(assets, python, site_packages, historical_configs):
             assets=str(a), package_path=str(package_path), provider_root=str(a / 'provider'),
             input_manifest_path=str(input_path), input_manifest_sha256=c.sha(input_path),
             runtime=runtime, campaign_id=namespace, tasks=tasks[s],
-            call_scope=c.law.call_scope(tasks[s], 'PR'), context_scope=c.context_scope(),
+            call_scope=c.acquisition_scope(tasks[s]), context_scope=c.context_scope(),
             analysis_scope=c.analysis_scope(), registry_path=str(rp), excluded_seeds_path=str(ep),
             systems={s: dict(binding=binding, inputs=inputs, reference_root=str(a / 'inputs' / s))},
             inputs=inputs, binding=binding, preparation_hash=g['preparation'],
@@ -285,8 +288,11 @@ def main():
     parser.add_argument('--python', required=True)
     parser.add_argument('--site-packages', required=True)
     parser.add_argument('--historical-config', action='append', required=True)
+    parser.add_argument('--pack-name', choices=('standard_y4_run01', 'standard_y4_run02'),
+                        default='standard_y4_run02')
     args = parser.parse_args()
-    print(json.dumps(prepare(args.assets, args.python, args.site_packages, args.historical_config)))
+    print(json.dumps(prepare(args.assets, args.python, args.site_packages, args.historical_config,
+        args.pack_name)))
 
 
 if __name__ == '__main__':

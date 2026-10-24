@@ -8,7 +8,7 @@ import pickle
 import subprocess
 import sys
 import tempfile
-from types import SimpleNamespace
+from types import ModuleType, SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -184,6 +184,41 @@ class LegacyBindingTests(unittest.TestCase):
         with patch.object(r, 'WARM', False):
             with self.assertRaisesRegex(ValueError, 'PARENT_PREWARM'):
                 r.guarded_context({}, 'H4', 3)
+
+    def test_actual_build_dispatch_counted_before_wrapper_call(self):
+        import h46_standard_y4_runtime as r
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            task = c.tasks_for('H4', candidate())[0]
+            out = root / 'output' / task['id']
+            out.mkdir(parents=True)
+            ledger = root / 'ledger'
+            ledger.mkdir()
+            cfg = dict(output=str(root/'output'),ledger=str(ledger),marker=str(root/'CONSUMED.json'),
+                grant={'toy':True},tasks=[task],SOURCE='a'*40,stage=task['stage'],plan_sha256='b'*64)
+            c.save(cfg['marker'],dict(state='CONSUMED_NO_RETRY_NO_REFUND',grant=cfg['grant']))
+            api = ModuleType('toy_native_api')
+            api.build_partial_native = lambda *args,**kw: 'toy partial'
+            def original_wrapper():
+                self.assertTrue(list(ledger.glob('*__wrapper_build__*.json')))
+                return 'toy wrapper'
+            api.build_native_hadamard_wrapper = original_wrapper
+            parent = ModuleType('trottertracks.resource_applicability')
+            parent.ax2b_native_df_v5 = api
+            def fake_worker(task):
+                for _ in range(12):api.build_partial_native()
+                for _ in range(2):api.build_native_hadamard_wrapper()
+                return {'toy':'complete'}
+            runtime = SimpleNamespace(worker=fake_worker,RUNTIME=SimpleNamespace(
+                runner_namespace={'WORKER_CFG':cfg}))
+            with patch.dict(sys.modules,{'trottertracks.resource_applicability':parent}), \
+                    patch.object(r,'RT',runtime):
+                self.assertEqual(r.worker(task),{'toy':'complete'})
+            self.assertIs(api.build_native_hadamard_wrapper,original_wrapper)
+            self.assertEqual(c.read(out/'build_dispatch.json')['counts'],
+                dict(partial_native_build=12,hadamard_wrapper_build=2))
+            self.assertEqual(len(list(ledger.iterdir())),2)
+            self.assertEqual(sum(c.task_limits(task).values()),38)
 
     def test_paired_statistics_uses_covariance(self):
         from h246_confirmation_evaluation import paired_statistics

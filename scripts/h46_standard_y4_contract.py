@@ -130,9 +130,13 @@ def evaluation_scope():
         paired_statistics=4, direction_comparison=2)
 
 
+def acquisition_scope(tasks):
+    return dict(law.call_scope(tasks, 'PR'), wrapper_build=2 * len(tasks))
+
+
 def task_limits(task):
     s = law.call_scope([task], 'PR')
-    return {'TASK': 1, **{k: s[k] for k in ('trajectories',
+    return {'TASK': 1, 'wrapper_build': 2, **{k: s[k] for k in ('trajectories',
         'request_sampling_calls', 'native_piece_compositions', 'native_evolution',
         'native_low_actions', 'native_high_actions', 'independent_oracle_actions',
         'uncompiled_wrapper_actions', 'compiled_wrapper_actions', 'compile_axes')}}
@@ -189,7 +193,7 @@ def verify(cfg):
     require(cfg['stage'] in STAGES and cfg['cohort'] == 'CONFIRMATION' and
         cfg['analysis_scope'] == analysis_scope(), 'CONFIRMATION_COHORT_POLICY')
     require(cfg['tasks'] == tasks_for(system, cfg['tasks'][0]['candidate']) and
-        cfg['call_scope'] == law.call_scope(cfg['tasks'], 'PR') and
+        cfg['call_scope'] == acquisition_scope(cfg['tasks']) and
         cfg['context_scope'] == context_scope(), 'EXACT_CALLS_AND_TASKS')
     require(cfg['systems'][system]['binding'] == cfg['binding'] and
         cfg['binding']['rank'] == GROUPS[system]['rank'] and
