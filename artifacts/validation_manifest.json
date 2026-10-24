@@ -53,6 +53,11 @@
       "sha": "8192530b17d6bc4af195c734ff43a6e78c506942",
       "role": "phase2d_f1_corrected_science_source",
       "description": "Qiskit metadata normalization fix used for separately approved full registered F1 validation; no F2 or certified interval/shot claims."
+    },
+    {
+      "sha": "0c9d0a480db95e4bbd57a1cda02f7fb24c2b2162",
+      "role": "research_c_b2_science_source",
+      "description": "Frozen B2-only four-case science SOURCE; zero new references/old-route reruns/Rustiq/retries."
     }
   ],
   "artifact_inventory": {
@@ -1139,6 +1144,14 @@
           "research_c_rustiq_limited_20261024"
         ],
         "reason": "Complete fixed four-case C4 execution packet: exact saved synthetic inputs, QPY/NPY/high-precision references, approval, journals, hashes and resource records. Local evidence only."
+      },
+      {
+        "path": "artifacts/research_c_rustiq_angle_fusion/2026-10-24/attempt01",
+        "kind": "directory",
+        "supports": [
+          "research_c_angle_fusion_b2_20261024"
+        ],
+        "reason": "Approved B2-only execution packet with saved target provenance, absolute gates, fusion ledger, paired B0/B1/R1/B2 metrics, journals, preflight, approval, hashes and STOP. Local evidence; no extra science."
       }
     ],
     "quarantined": [
@@ -2572,6 +2585,118 @@
         "Committed local run, no CI or independent external reproduction"
       ],
       "next_owner": "User/coordination chooses whether to request Codex design of a simple same-Pauli angle-merge control; no additional science authorized",
+      "mandatory_stop": true
+    },
+    {
+      "id": "research_c_angle_fusion_b2_20261024",
+      "status": "source_present_no_current_ci",
+      "scientific_status": "C4_B2_CORRECTNESS_PASS_RESOURCES_RECORDED_MANDATORY_STOP",
+      "summary": "One approved B2-only run passed all absolute local/before-after/full/adjoint/raw-compiled XY gates. All eight compiled metrics equal saved R1 on all eight wrappers; adjacent controlled-Pauli angle fusion reproduces prior SS gains on this fixed fixture. No remaining R1 metric advantage here; not unique mechanism identification or general method superiority. Mandatory STOP.",
+      "documentation": [
+        "docs/research/research_c_angle_fusion_b2_execution_20261024.md",
+        "docs/research/research_c_angle_fusion_b2_preparation_20261024.md",
+        "docs/research/research_c_angle_fusion_b2_contract_20261024.json"
+      ],
+      "source": [
+        "src/trottertracks/pr_dictionary_validation/rustiq_adapter.py",
+        "src/trottertracks/pr_dictionary_validation/rustiq_execution.py",
+        "src/trottertracks/pr_dictionary_validation/reference.py",
+        "scripts/run_research_c_rustiq_limited.py",
+        "artifacts/research_c_rustiq_angle_fusion/2026-10-24/attempt01/summarize_saved_results.py"
+      ],
+      "tests": [
+        "tests/management/test_research_c_rustiq_adapter.py",
+        "tests/management/test_research_c_rustiq_execution.py"
+      ],
+      "artifacts": [
+        "artifacts/research_c_rustiq_angle_fusion/2026-10-24/attempt01/summary.json",
+        "artifacts/research_c_rustiq_angle_fusion/2026-10-24/attempt01/comparison_summary.json",
+        "artifacts/research_c_rustiq_angle_fusion/2026-10-24/attempt01/gate_summary.json",
+        "artifacts/research_c_rustiq_angle_fusion/2026-10-24/attempt01/paired_metrics.csv",
+        "artifacts/research_c_rustiq_angle_fusion/2026-10-24/attempt01/raw_ir_diagnosis.json",
+        "artifacts/research_c_rustiq_angle_fusion/2026-10-24/attempt01/classical_costs.json",
+        "artifacts/research_c_rustiq_angle_fusion/2026-10-24/attempt01/preflight.json",
+        "artifacts/research_c_rustiq_angle_fusion/2026-10-24/attempt01/provenance.json",
+        "artifacts/research_c_rustiq_angle_fusion/2026-10-24/attempt01/attempt_ledger.json",
+        "artifacts/research_c_rustiq_angle_fusion/2026-10-24/attempt01/OUTPUT_HASH_MANIFEST.json",
+        "artifacts/research_c_rustiq_angle_fusion/2026-10-24/attempt01/STOP.json"
+      ],
+      "science_source_commit": "0c9d0a480db95e4bbd57a1cda02f7fb24c2b2162",
+      "implementation_commit": "c7b6bc17f73d7b1dd2c9221272b4a5d858b5c472",
+      "parent_result_set": "research_c_rustiq_limited_20261024",
+      "contract_sha256": "f03839377158a44477a898fdc35af7d6a3b96bf953e86275915bf97324df035f",
+      "model": {
+        "modes": 4,
+        "particles": 2,
+        "occupied": [
+          0,
+          1
+        ],
+        "split_L_D": 1,
+        "residual_fragments": 2,
+        "geometry": null,
+        "ao_basis": null,
+        "molecular_df_rank": null,
+        "total_time": "1/5",
+        "q": 2,
+        "delta_window": [
+          "1/10"
+        ],
+        "r": 2,
+        "micro_time": "1/20",
+        "K": 2
+      },
+      "case_ids": [
+        "SS_motif_2",
+        "SS_motif_3",
+        "SS_motif_4",
+        "PP_motif_0"
+      ],
+      "counts": {
+        "compile_cold": 8,
+        "compile_warm": 8,
+        "operator": 26,
+        "compiled_signal": 8,
+        "wrapper_build": 8,
+        "raw_signal": 8,
+        "saved_raw_qpy_decode": 8,
+        "raw_metrics": 16,
+        "adjoint": 4,
+        "full_build": 4,
+        "local_build": 10,
+        "motif_restore": 4,
+        "reference_decode": 14,
+        "target_matrix": 22,
+        "literal_load": 10,
+        "target_signal": 4,
+        "signal_pair": 8,
+        "metrics": 8
+      },
+      "attempts": 1,
+      "retries": 0,
+      "resumes": 0,
+      "max_errors": {
+        "local_independent": 2.220446049250313e-16,
+        "local_before_fusion": 1.1103585416259206e-16,
+        "full": 1.332285418226229e-15,
+        "actual_adjoint": 1.1103097574110884e-15,
+        "compiled_wrapper": 1.0872044994774617e-14,
+        "unitarity": 2.55351295663786e-15,
+        "raw_complex_XY": 1.554347083440092e-15,
+        "compiled_complex_XY": 4.920674243571191e-15
+      },
+      "B2_R1_all_wrappers_all_metrics_equal": true,
+      "new_reference_generations": 0,
+      "old_route_reexecutions": 0,
+      "Rustiq_calls": 0,
+      "limitations": [
+        "Four preselected synthetic cases and one delta/profile only",
+        "Compiled metric equality does not uniquely identify Rustiq internals or establish general novelty/superiority",
+        "No matched R1 classical timing",
+        "No law-weighted expectations, certified N, all-round resource totals or T-count model",
+        "Committed local evidence, not CI or independent external reproduction"
+      ],
+      "next_owner": "User/research C/coordination decides whether to retain known fusion improvement and close C4 as an independent research direction. No closure adopted and no further science authorized.",
       "mandatory_stop": true
     }
   ],

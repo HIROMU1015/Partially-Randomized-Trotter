@@ -1,0 +1,610 @@
+{
+  "operator": {
+    "label": "PP_motif_0_B2_controlled",
+    "max_entry": 1.332285418226229e-15,
+    "frobenius": 3.879995807585897e-15,
+    "spectral": 1.336405662453212e-15,
+    "tolerance": 1e-10,
+    "rtol": 0,
+    "unitarity": {
+      "label": "PP_motif_0_B2_controlled_UNITARITY",
+      "max_entry": 2.55351295663786e-15,
+      "frobenius": 7.71003378338493e-15,
+      "spectral": 2.5596299386071814e-15,
+      "tolerance": 1e-10,
+      "rtol": 0
+    }
+  },
+  "trace": [
+    {
+      "kind": "adapter",
+      "seconds": 0.0017458079382777214,
+      "cpu_seconds": 0.0017462610000000822,
+      "plans": [
+        {
+          "occurrences": [
+            {
+              "ordinal": 0,
+              "event_index": 0,
+              "application_index": 0,
+              "atom_id": "P:collect:IIIZ",
+              "role": "rotation",
+              "kind": "PHYSICAL_PAULI",
+              "word": [
+                "I",
+                "I",
+                "I",
+                "Z"
+              ],
+              "support": [
+                3
+              ],
+              "signed_angle": -0.010404662323093328,
+              "coefficient_sign": -1,
+              "basis_id": "local:ZZZZ",
+              "basis_hash": "ed0c3563cdad2a6824fc12453bd4a4d53942f13187b926073af21aa7e4cf7dd5",
+              "frame_id": null,
+              "run_id": 0
+            },
+            {
+              "ordinal": 1,
+              "event_index": 1,
+              "application_index": 0,
+              "atom_id": "P:collect:IIXX",
+              "role": "rotation",
+              "kind": "PHYSICAL_PAULI",
+              "word": [
+                "I",
+                "I",
+                "X",
+                "X"
+              ],
+              "support": [
+                2,
+                3
+              ],
+              "signed_angle": 0.010404662323093328,
+              "coefficient_sign": 1,
+              "basis_id": "local:ZZXX",
+              "basis_hash": "83119db96b12b32bb79341a18494a90ccb487b238d68318b49209c478a737051",
+              "frame_id": null,
+              "run_id": 1
+            }
+          ],
+          "runs": [
+            {
+              "run_id": 0,
+              "basis_id": "local:ZZZZ",
+              "basis_hash": "ed0c3563cdad2a6824fc12453bd4a4d53942f13187b926073af21aa7e4cf7dd5",
+              "singleton": true,
+              "regions": [
+                {
+                  "region_id": "run0:region0",
+                  "occurrences": [
+                    {
+                      "ordinal": 0,
+                      "event_index": 0,
+                      "application_index": 0,
+                      "atom_id": "P:collect:IIIZ",
+                      "role": "rotation",
+                      "kind": "PHYSICAL_PAULI",
+                      "word": [
+                        "I",
+                        "I",
+                        "I",
+                        "Z"
+                      ],
+                      "support": [
+                        3
+                      ],
+                      "signed_angle": -0.010404662323093328,
+                      "coefficient_sign": -1,
+                      "basis_id": "local:ZZZZ",
+                      "basis_hash": "ed0c3563cdad2a6824fc12453bd4a4d53942f13187b926073af21aa7e4cf7dd5",
+                      "frame_id": null,
+                      "run_id": 0
+                    }
+                  ],
+                  "eligible": true
+                }
+              ]
+            },
+            {
+              "run_id": 1,
+              "basis_id": "local:ZZXX",
+              "basis_hash": "83119db96b12b32bb79341a18494a90ccb487b238d68318b49209c478a737051",
+              "singleton": true,
+              "regions": [
+                {
+                  "region_id": "run1:region0",
+                  "occurrences": [
+                    {
+                      "ordinal": 1,
+                      "event_index": 1,
+                      "application_index": 0,
+                      "atom_id": "P:collect:IIXX",
+                      "role": "rotation",
+                      "kind": "PHYSICAL_PAULI",
+                      "word": [
+                        "I",
+                        "I",
+                        "X",
+                        "X"
+                      ],
+                      "support": [
+                        2,
+                        3
+                      ],
+                      "signed_angle": 0.010404662323093328,
+                      "coefficient_sign": 1,
+                      "basis_id": "local:ZZXX",
+                      "basis_hash": "83119db96b12b32bb79341a18494a90ccb487b238d68318b49209c478a737051",
+                      "frame_id": null,
+                      "run_id": 1
+                    }
+                  ],
+                  "eligible": true
+                }
+              ]
+            }
+          ],
+          "phases": [
+            {
+              "kind": "taylor",
+              "event_index": 0,
+              "occurrence": null,
+              "angle": 0.0
+            },
+            {
+              "kind": "taylor",
+              "event_index": 1,
+              "occurrence": null,
+              "angle": 0.0
+            }
+          ],
+          "phase": 0.0,
+          "system_qubits": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ancilla": 4,
+          "provenance": {
+            "adapter": "C4_Q13_central_v1",
+            "route": "B2",
+            "input": "b53b89174549c721f082e1e444eaa9f88a6132df0d58e20d14e439fb70a8f539",
+            "source": "0c9d0a480db95e4bbd57a1cda02f7fb24c2b2162:8db2c2b844b324507a1efd7a9fcd8420ef6454d9f10f94783595fbd719a0cff6",
+            "qiskit": "1.3.0",
+            "qiskit_source": "896d1c8b72888a52a46081a6d1f4de8c56db8aea",
+            "bundled_rustiq_core": "0.0.10",
+            "options": {
+              "optimize_count": true,
+              "preserve_order": true,
+              "upto_clifford": false,
+              "upto_phase": false,
+              "resynth_clifford_method": 0
+            },
+            "compiler": {
+              "qiskit": "1.3.0",
+              "optimization_level": 1,
+              "seed_transpiler": 17,
+              "basis_gates": [
+                "rz",
+                "sx",
+                "x",
+                "cx"
+              ],
+              "approximation_degree": 1.0,
+              "qubits_initially_zero": false
+            },
+            "basis_policy": "common_run_support_full_fused",
+            "mapping": "word[p]=qubit_p;system=0..m-1;ancilla=m;no_second_control",
+            "fusion_policy": "C4_B2_adjacent_controlled_fsum_v1"
+          },
+          "fingerprint": "ba3f0f04ed900ab446efa4c1e28115878193b47b3311b4c9c4e39068d50712f4"
+        },
+        {
+          "occurrences": [
+            {
+              "ordinal": 0,
+              "event_index": 0,
+              "application_index": 0,
+              "atom_id": "P:collect:IIIZ",
+              "role": "rotation",
+              "kind": "PHYSICAL_PAULI",
+              "word": [
+                "I",
+                "I",
+                "I",
+                "Z"
+              ],
+              "support": [
+                3
+              ],
+              "signed_angle": -0.010404662323093328,
+              "coefficient_sign": -1,
+              "basis_id": "local:ZZZZ",
+              "basis_hash": "ed0c3563cdad2a6824fc12453bd4a4d53942f13187b926073af21aa7e4cf7dd5",
+              "frame_id": null,
+              "run_id": 0
+            },
+            {
+              "ordinal": 1,
+              "event_index": 1,
+              "application_index": 0,
+              "atom_id": "P:collect:IIXX",
+              "role": "rotation",
+              "kind": "PHYSICAL_PAULI",
+              "word": [
+                "I",
+                "I",
+                "X",
+                "X"
+              ],
+              "support": [
+                2,
+                3
+              ],
+              "signed_angle": 0.010404662323093328,
+              "coefficient_sign": 1,
+              "basis_id": "local:ZZXX",
+              "basis_hash": "83119db96b12b32bb79341a18494a90ccb487b238d68318b49209c478a737051",
+              "frame_id": null,
+              "run_id": 1
+            }
+          ],
+          "runs": [
+            {
+              "run_id": 0,
+              "basis_id": "local:ZZZZ",
+              "basis_hash": "ed0c3563cdad2a6824fc12453bd4a4d53942f13187b926073af21aa7e4cf7dd5",
+              "singleton": true,
+              "regions": [
+                {
+                  "region_id": "run0:region0",
+                  "occurrences": [
+                    {
+                      "ordinal": 0,
+                      "event_index": 0,
+                      "application_index": 0,
+                      "atom_id": "P:collect:IIIZ",
+                      "role": "rotation",
+                      "kind": "PHYSICAL_PAULI",
+                      "word": [
+                        "I",
+                        "I",
+                        "I",
+                        "Z"
+                      ],
+                      "support": [
+                        3
+                      ],
+                      "signed_angle": -0.010404662323093328,
+                      "coefficient_sign": -1,
+                      "basis_id": "local:ZZZZ",
+                      "basis_hash": "ed0c3563cdad2a6824fc12453bd4a4d53942f13187b926073af21aa7e4cf7dd5",
+                      "frame_id": null,
+                      "run_id": 0
+                    }
+                  ],
+                  "eligible": true
+                }
+              ]
+            },
+            {
+              "run_id": 1,
+              "basis_id": "local:ZZXX",
+              "basis_hash": "83119db96b12b32bb79341a18494a90ccb487b238d68318b49209c478a737051",
+              "singleton": true,
+              "regions": [
+                {
+                  "region_id": "run1:region0",
+                  "occurrences": [
+                    {
+                      "ordinal": 1,
+                      "event_index": 1,
+                      "application_index": 0,
+                      "atom_id": "P:collect:IIXX",
+                      "role": "rotation",
+                      "kind": "PHYSICAL_PAULI",
+                      "word": [
+                        "I",
+                        "I",
+                        "X",
+                        "X"
+                      ],
+                      "support": [
+                        2,
+                        3
+                      ],
+                      "signed_angle": 0.010404662323093328,
+                      "coefficient_sign": 1,
+                      "basis_id": "local:ZZXX",
+                      "basis_hash": "83119db96b12b32bb79341a18494a90ccb487b238d68318b49209c478a737051",
+                      "frame_id": null,
+                      "run_id": 1
+                    }
+                  ],
+                  "eligible": true
+                }
+              ]
+            }
+          ],
+          "phases": [
+            {
+              "kind": "taylor",
+              "event_index": 0,
+              "occurrence": null,
+              "angle": 0.0
+            },
+            {
+              "kind": "taylor",
+              "event_index": 1,
+              "occurrence": null,
+              "angle": 0.0
+            }
+          ],
+          "phase": 0.0,
+          "system_qubits": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ancilla": 4,
+          "provenance": {
+            "adapter": "C4_Q13_central_v1",
+            "route": "B2",
+            "input": "b53b89174549c721f082e1e444eaa9f88a6132df0d58e20d14e439fb70a8f539",
+            "source": "0c9d0a480db95e4bbd57a1cda02f7fb24c2b2162:8db2c2b844b324507a1efd7a9fcd8420ef6454d9f10f94783595fbd719a0cff6",
+            "qiskit": "1.3.0",
+            "qiskit_source": "896d1c8b72888a52a46081a6d1f4de8c56db8aea",
+            "bundled_rustiq_core": "0.0.10",
+            "options": {
+              "optimize_count": true,
+              "preserve_order": true,
+              "upto_clifford": false,
+              "upto_phase": false,
+              "resynth_clifford_method": 0
+            },
+            "compiler": {
+              "qiskit": "1.3.0",
+              "optimization_level": 1,
+              "seed_transpiler": 17,
+              "basis_gates": [
+                "rz",
+                "sx",
+                "x",
+                "cx"
+              ],
+              "approximation_degree": 1.0,
+              "qubits_initially_zero": false
+            },
+            "basis_policy": "common_run_support_full_fused",
+            "mapping": "word[p]=qubit_p;system=0..m-1;ancilla=m;no_second_control",
+            "fusion_policy": "C4_B2_adjacent_controlled_fsum_v1"
+          },
+          "fingerprint": "ba3f0f04ed900ab446efa4c1e28115878193b47b3311b4c9c4e39068d50712f4"
+        }
+      ],
+      "scalar_phase": {
+        "kind": "scalar",
+        "angle": -0.005405405405405406,
+        "ancilla": 4
+      }
+    },
+    {
+      "kind": "fusion",
+      "plan": "ba3f0f04ed900ab446efa4c1e28115878193b47b3311b4c9c4e39068d50712f4",
+      "region": "run0:region0",
+      "seconds": 0.00035870587453246117,
+      "cpu_seconds": 0.000358179000000014,
+      "ledger": [
+        {
+          "policy": "C4_B2_adjacent_controlled_fsum_v1",
+          "case": "PP_motif_0",
+          "macro": 0,
+          "run": 0,
+          "region": "run0:region0",
+          "singleton": true,
+          "basis_id": "local:ZZZZ",
+          "basis_hash": "ed0c3563cdad2a6824fc12453bd4a4d53942f13187b926073af21aa7e4cf7dd5",
+          "frame": null,
+          "kind": "PHYSICAL_PAULI",
+          "word": [
+            "I",
+            "I",
+            "I",
+            "Z"
+          ],
+          "support": [
+            3
+          ],
+          "system": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ancilla": 4,
+          "generator": "controlled_central_Z",
+          "original_plan": "ba3f0f04ed900ab446efa4c1e28115878193b47b3311b4c9c4e39068d50712f4",
+          "members": [
+            {
+              "ordinal": 0,
+              "atom_id": "P:collect:IIIZ",
+              "event": 0,
+              "application": 0,
+              "coefficient_sign": -1,
+              "angle_hex": "-0x1.54f0a233a977ap-7"
+            }
+          ],
+          "angle_hex": "-0x1.54f0a233a977ap-7"
+        }
+      ],
+      "emitter_seconds": 4.881899803876877e-05,
+      "emitter_cpu_seconds": 4.9062000000432704e-05
+    },
+    {
+      "kind": "fusion",
+      "plan": "ba3f0f04ed900ab446efa4c1e28115878193b47b3311b4c9c4e39068d50712f4",
+      "region": "run1:region0",
+      "seconds": 0.0004065311513841152,
+      "cpu_seconds": 0.00040665000000039697,
+      "ledger": [
+        {
+          "policy": "C4_B2_adjacent_controlled_fsum_v1",
+          "case": "PP_motif_0",
+          "macro": 0,
+          "run": 1,
+          "region": "run1:region0",
+          "singleton": true,
+          "basis_id": "local:ZZXX",
+          "basis_hash": "83119db96b12b32bb79341a18494a90ccb487b238d68318b49209c478a737051",
+          "frame": null,
+          "kind": "PHYSICAL_PAULI",
+          "word": [
+            "I",
+            "I",
+            "X",
+            "X"
+          ],
+          "support": [
+            2,
+            3
+          ],
+          "system": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ancilla": 4,
+          "generator": "controlled_central_Z",
+          "original_plan": "ba3f0f04ed900ab446efa4c1e28115878193b47b3311b4c9c4e39068d50712f4",
+          "members": [
+            {
+              "ordinal": 1,
+              "atom_id": "P:collect:IIXX",
+              "event": 1,
+              "application": 0,
+              "coefficient_sign": 1,
+              "angle_hex": "0x1.54f0a233a977ap-7"
+            }
+          ],
+          "angle_hex": "0x1.54f0a233a977ap-7"
+        }
+      ],
+      "emitter_seconds": 6.284192204475403e-05,
+      "emitter_cpu_seconds": 6.317300000002746e-05
+    },
+    {
+      "kind": "fusion",
+      "plan": "ba3f0f04ed900ab446efa4c1e28115878193b47b3311b4c9c4e39068d50712f4",
+      "region": "run0:region0",
+      "seconds": 0.00035108625888824463,
+      "cpu_seconds": 0.00035111499999995743,
+      "ledger": [
+        {
+          "policy": "C4_B2_adjacent_controlled_fsum_v1",
+          "case": "PP_motif_0",
+          "macro": 1,
+          "run": 0,
+          "region": "run0:region0",
+          "singleton": true,
+          "basis_id": "local:ZZZZ",
+          "basis_hash": "ed0c3563cdad2a6824fc12453bd4a4d53942f13187b926073af21aa7e4cf7dd5",
+          "frame": null,
+          "kind": "PHYSICAL_PAULI",
+          "word": [
+            "I",
+            "I",
+            "I",
+            "Z"
+          ],
+          "support": [
+            3
+          ],
+          "system": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ancilla": 4,
+          "generator": "controlled_central_Z",
+          "original_plan": "ba3f0f04ed900ab446efa4c1e28115878193b47b3311b4c9c4e39068d50712f4",
+          "members": [
+            {
+              "ordinal": 0,
+              "atom_id": "P:collect:IIIZ",
+              "event": 0,
+              "application": 0,
+              "coefficient_sign": -1,
+              "angle_hex": "-0x1.54f0a233a977ap-7"
+            }
+          ],
+          "angle_hex": "-0x1.54f0a233a977ap-7"
+        }
+      ],
+      "emitter_seconds": 4.606274887919426e-05,
+      "emitter_cpu_seconds": 4.631600000060132e-05
+    },
+    {
+      "kind": "fusion",
+      "plan": "ba3f0f04ed900ab446efa4c1e28115878193b47b3311b4c9c4e39068d50712f4",
+      "region": "run1:region0",
+      "seconds": 0.00034226616844534874,
+      "cpu_seconds": 0.0003421740000000284,
+      "ledger": [
+        {
+          "policy": "C4_B2_adjacent_controlled_fsum_v1",
+          "case": "PP_motif_0",
+          "macro": 1,
+          "run": 1,
+          "region": "run1:region0",
+          "singleton": true,
+          "basis_id": "local:ZZXX",
+          "basis_hash": "83119db96b12b32bb79341a18494a90ccb487b238d68318b49209c478a737051",
+          "frame": null,
+          "kind": "PHYSICAL_PAULI",
+          "word": [
+            "I",
+            "I",
+            "X",
+            "X"
+          ],
+          "support": [
+            2,
+            3
+          ],
+          "system": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ancilla": 4,
+          "generator": "controlled_central_Z",
+          "original_plan": "ba3f0f04ed900ab446efa4c1e28115878193b47b3311b4c9c4e39068d50712f4",
+          "members": [
+            {
+              "ordinal": 1,
+              "atom_id": "P:collect:IIXX",
+              "event": 1,
+              "application": 0,
+              "coefficient_sign": 1,
+              "angle_hex": "0x1.54f0a233a977ap-7"
+            }
+          ],
+          "angle_hex": "0x1.54f0a233a977ap-7"
+        }
+      ],
+      "emitter_seconds": 6.23408704996109e-05,
+      "emitter_cpu_seconds": 6.25859999994205e-05
+    }
+  ],
+  "fingerprint": "1a3fa3ea19644226813b5c67a58f10c3e9c5f0573f071f16de36f872b5b45b8d",
+  "basis_cache_entries": 2
+}

@@ -1,5 +1,11 @@
 # Validation status
 
+## 2026-10-24 research C4 B2: all correctness gates PASS; simple fusion matches saved R1
+
+One separately approved run at frozen SOURCE `0c9d0a480db95e4bbd57a1cda02f7fb24c2b2162` completed with no retry/resume. Saved-F1 four-mode/two-particle occupied(0,1) density-square synthetic H, L_D1/two residual fragments, T1/5 q2 delta1/10 one point r2 h1/20 K2; geometry/AO basis/molecular DF rank not applicable. Qiskit1.3.0 opt1 seed17 native rz/sx/x/cx, unchanged full measured X/Y scope.
+Local10 (against both independent saved targets and pre-fusion literal), controlled4, actual-adjoint4, raw/compiled XY and compiled-operator8 PASS; compiled max-entry1.08720e-14 at absolute tol1e-10/rtol0, no phase fit. Saved references restored14, new references0, Operator26, transpile8/cold8/warm8; old routes and Rustiq/R2 rerun0. All eight compiled metrics match saved R1 on all eight wrappers. Simple adjacent controlled-Pauli fusion is sufficient to reproduce the observed SS gains; no additional R1 compiled metric gain is observed here. This does not identify Rustiq internals or prove general superiority/newness.
+[Result, immutable source and new evidence packet](docs/research/research_c_angle_fusion_b2_execution_20261024.md). Committed local evidence, not CI or external independent reproduction. No law-weighted cost/shot/all-round evaluation. Earlier pending-angle-control statements below are historical. User/research C/coordination decides whether to retain the known implementation improvement and close independent C4; no closure is automatically adopted. Mandatory STOP and no additional science.
+
 ## 2026-10-24 research C4: limited Q13 integration correctness PASS, local resource differences recorded
 
 Source `b546c4e4f5d6645fd198b9ec3f85e3cd644ac4e9` completed one explicitly approved execution of saved-F1 SS motifs2/3/4 and PP motif0, with B0/B1/R1. Four-mode/two-particle density-square synthetic fixture, L_D1, two residual fragments, T1/5 q2 delta1/10 r2 h1/20 K2; molecular geometry/AO basis/DF rank not applicable. Fixed Qiskit1.3.0 opt1 seed17 native rz/sx/x/cx.
