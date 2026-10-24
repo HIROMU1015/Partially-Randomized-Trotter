@@ -1,3 +1,7 @@
+## 2026-10-24 H4/H6標準Yoshida4 独立方向再現・修正後実行完了
+
+[結果・4群統計・Full/探索対照・台帳・保全](../../docs/research/track_a_h46_standard_y4_confirmation_recovery_20261024.md)。修正後SOURCE a2a53698…で新標準Y4 H4 n45/H6 n32を取得し、保存独立S2 n25/23をε=.001で再会計。G比Y4/S2はH4 0.864959895、H6 0.862762409で、両系のBonferroni正規近似区間も差の正側。保存Full S2低費用との逆方向を固定構成として支持。77軌道/154軸、exact2953 entry・会計9 eventを正常終了、修正後の科学中断0、全process回収。25人工件PASS、569入力・旧停止64 file保全。固定shot・empirical政策に条件付き、母平均/tail保証なし、旧strict BLOCKED・mandatory STOP。
+
 ## 2026-10-24 H4/H6標準Yoshida4 独立確認の技術停止
 
 [原因・台帳・修正候補・保全・STOP](../../docs/research/track_a_h46_standard_y4_confirmation_stop_20261024.md)。固定契約を一回実行したが、追加adapterの遅延runtime参照不備でworker入口が失敗。親context各9・計18 entryを消費し、新trajectory/sampling/compile/再会計/統計0。全44 worker・両nativeを回収、2 grant消費済み・科学retryなし。入力504 file照合、停止証拠64 file保全。修正候補は人工確認のみ・未適用、方向は未評価、mandatory STOP。
