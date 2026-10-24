@@ -1,3 +1,14 @@
+## 2026-10-25 H4 PR0 cosine：個別C-target Arb接続の準備完了・mandatory STOP
+
+[技術実装・人工包含検証・無効pilot契約](non_df_h4_central_arb_pr0_preparation_20261025.md)。
+Cのexact retained operand・保存32event（全order0）を選択順で作用し、raw bra内積/共通νを包含する接続を追加。
+既存compiled bridge/L2 recenter/Cのexact変換を再利用。Pauli product/sign/order phase/native scalarとbinary64値を保持し、B_savedは差で一度だけ。
+新13＋再利用25＝38人工PASS。実QPY4個を構造検証しただけで、実H4 Arb状態作用/科学grant/compile/sampling/N_Gは0。
+C-target/compiled/実rho区間は未取得。PF cosineの既存局所上界・旧証拠481 SHA・旧manifest187行・旧科学SOURCEを保全。
+非実行案はPR0 cosineのみ、64→96→128bit各C-target1＋compiled1・最大6状態作用、保存予算約2.593611368819805e-6。
+契約無効・新科学SOURCE/grantなし、PR1/sine/R2/正式受理への拡張なし。
+次はユーザーが対象/軸/精度/callを明示承認後、Codexが別production SOURCE/契約/runtime/未使用grantを固定して限定実行・終了監査。以下は時点履歴。
+
 ## 2026-10-25 H4 PF cosine：局所Arb包含評価完了・mandatory STOP
 
 [PF cosineの包含区間・予算比較・監査](non_df_h4_central_arb_pf_cosine_20261025.md)。
