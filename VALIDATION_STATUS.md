@@ -1,3 +1,7 @@
+## 2026-10-24 H4 D2：Pauli control方式比較の準備（科学実行なし）
+
+[D2候補・位相対応・最小実行案](docs/non_df_h4_d2_preparation_20261024.md)、[無効契約](artifacts/non_df_h4_d2_preparation/2026-10-24/contract_DRAFT.json)、[SHA/schema検証](artifacts/non_df_h4_d2_preparation/2026-10-24/verification.json)。D1と同じPauli-PF/PR index0の保存bodyをcentral controlへ移す候補を実装。人工12＋metadata8件PASS、旧937/input86/code45 SHA照合。全identity evolutionは元SOURCE対象外として拒否し、初回人工失敗も保全。実H4 QPY読込/build/compile・科学grant・N/G0、新価格未測定、旧hash/native/null状態保持。科学実行は2対象・最大2compileを別承認後に限る。準備完了・mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-24 H4：費用tail・rho重点調査（数値実行なし）
 
 [費用upperの成立条件・rho未被覆辺](docs/non_df_h4_tail_rho_investigation_20261024.md)、[静的検証](artifacts/non_df_h4_tail_rho_investigation/2026-10-24/verification.json)。GitHub17/固定runtime13/保全611/324support・人工6件PASS。 基点5600f0e4の既存条件付き結果を保全し、費用tailとrhoの12辺を静的調査。Literal構造counterからの記号的envelopeは可能だが、全wrapper compiled RZと母平均の数値upperは未確立。共通角度生成のSOURCE対応で435件再診断を減らせる候補を特定。新実H4数値評価/N_G/科学grant/sampling/compile0、未確定状態を維持しmandatory STOP。 以下は各時点の履歴。

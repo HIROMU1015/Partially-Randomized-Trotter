@@ -1,0 +1,54 @@
+test_all_two_qubit_labels_and_signed_rotations (__main__.CentralTests.test_all_two_qubit_labels_and_signed_rotations) ... FAIL
+test_mixed_xyz_little_endian_and_permuted_wires (__main__.CentralTests.test_mixed_xyz_little_endian_and_permuted_wires) ... ok
+test_noncommuting_order_is_preserved (__main__.CentralTests.test_noncommuting_order_is_preserved) ... ok
+test_products_negative_and_aggregate_phase (__main__.CentralTests.test_products_negative_and_aggregate_phase) ... ok
+test_pure_scalar_and_identity_rotations (__main__.CentralTests.test_pure_scalar_and_identity_rotations) ... FAIL
+test_qpy_roundtrip_and_original_wrapper_profile (__main__.CentralTests.test_qpy_roundtrip_and_original_wrapper_profile) ... ok
+test_reused_d1_pf_pr_and_rte_orders_0_2_4 (__main__.CentralTests.test_reused_d1_pf_pr_and_rte_orders_0_2_4) ... ok
+test_source_unchanged_and_exact_instruction_mapping (__main__.CentralTests.test_source_unchanged_and_exact_instruction_mapping) ... ok
+test_transform_does_not_sample_build_compile_or_generic_control (__main__.CentralTests.test_transform_does_not_sample_build_compile_or_generic_control) ... ok
+test_transform_never_hydrates_pauli_evolution_definition (__main__.CentralTests.test_transform_never_hydrates_pauli_evolution_definition) ... ok
+test_unsupported_and_nondefault_programs_stop (__main__.CentralTests.test_unsupported_and_nondefault_programs_stop) ... ERROR
+test_wrong_control_angle_and_y_basis_are_detected (__main__.CentralTests.test_wrong_control_angle_and_y_basis_are_detected) ... ok
+
+======================================================================
+ERROR: test_unsupported_and_nondefault_programs_stop (__main__.CentralTests.test_unsupported_and_nondefault_programs_stop)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-d2-preparation-20261024/tests/test_h4_d2_pauli_control.py", line 127, in test_unsupported_and_nondefault_programs_stop
+    b = QuantumCircuit(1); evolution(b, 'X', 1j, .2); cases.append(b)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-d2-preparation-20261024/tests/test_h4_d2_pauli_control.py", line 25, in evolution
+    body.append(PauliEvolutionGate(SparsePauliOp.from_list([(label, coefficient)]),
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/circuit/library/pauli_evolution.py", line 111, in __init__
+    operator = _to_sparse_pauli_op(operator)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/circuit/library/pauli_evolution.py", line 169, in _to_sparse_pauli_op
+    raise ValueError("Operator contains complex coefficients, which are not supported.")
+ValueError: Operator contains complex coefficients, which are not supported.
+
+======================================================================
+FAIL: test_all_two_qubit_labels_and_signed_rotations (__main__.CentralTests.test_all_two_qubit_labels_and_signed_rotations)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-d2-preparation-20261024/tests/test_h4_d2_pauli_control.py", line 50, in test_all_two_qubit_labels_and_signed_rotations
+    self.equal(Operator(result.body).data, oracle(body))
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-d2-preparation-20261024/tests/test_h4_d2_pauli_control.py", line 38, in equal
+    self.assertLess(float(np.max(np.abs(left-right))), 2e-12)
+AssertionError: 0.1468676806211756 not less than 2e-12
+
+======================================================================
+FAIL: test_pure_scalar_and_identity_rotations (__main__.CentralTests.test_pure_scalar_and_identity_rotations)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-d2-preparation-20261024/tests/test_h4_d2_pauli_control.py", line 97, in test_pure_scalar_and_identity_rotations
+    self.equal(Operator(result.body).data, oracle(body))
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-d2-preparation-20261024/tests/test_h4_d2_pauli_control.py", line 38, in equal
+    self.assertLess(float(np.max(np.abs(left-right))), 2e-12)
+AssertionError: 0.13320133054159267 not less than 2e-12
+
+----------------------------------------------------------------------
+Ran 12 tests in 2.290s
+
+FAILED (failures=2, errors=1)
