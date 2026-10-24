@@ -14,11 +14,11 @@ Stage 2の最小接続SOURCE、人工検証、専用環境と未承認科学契�
 | 起点 | `b5fa60f9b682a93fda417452b5d85ceb1527e550` |
 | 独立branch | `codex/research-c-c1-stage2-preparation-20261025` |
 | worktree | `/tmp/prt-c1-stage2-preparation-20261025` |
-| 実装commit | `d8d54b0d4a78a25d8a2b88ac2a6d0c6833c394db` |
-| SOURCE manifest | [SOURCE.json](../../artifacts/research_c_c1_stage2_technical/2026-10-25/SOURCE.json)、136ファイル |
-| SOURCE SHA256 | `0b659088a817a732969a930341bf32cda744034e8108d99725e7677d32b312e6` |
+| 実装commit | `be4f299470fd896c4bfd50b11bb87bf17cd760b2` |
+| SOURCE manifest | [SOURCE.json](../../artifacts/research_c_c1_stage2_technical/2026-10-25/SOURCE.json)、34ファイル |
+| SOURCE SHA256 | `63cff2a63bb49581e44c437f412af63c3b70c328439d1e12cd35c2551aeca8e0` |
 | 契約 | [未承認契約](research_c_c1_stage2_native_contract_unapproved_20261025.json)、scope `C1_STAGE2_SAVED_R8_NATIVE_LIMITED_V1` |
-| 契約SHA256 | `b25a8b3f1611f0b90c1d9706ceea2e6b03e3d6cb86ba45cda15faaf5cae4ac98` |
+| 契約SHA256 | `d770a8fc6e2c3281fee1cad8d73f64abd939a0030ed4963776356fd84befcbbc` |
 | 推奨条件のSHA256 | `0c484c98ffdf4e287b52708cc50b45c14022e4010d3beb2ad684f0970a79e3be`。**未採択** |
 | 元fit SOURCE | `da2edb465d5ae6432439fbd1df8e57512ee59c11` |
 | 保存export SHA256 | `c33f782d3224aa80968e1e6ea70f5ae3f764b872b5bce545c38875c83f3c4e08` |
@@ -29,7 +29,7 @@ Stage 2の最小接続SOURCE、人工検証、専用環境と未承認科学契�
 | 表現 | CDF保存実rank8、number／元g補正κ／元frame order、XDF保存実rank10 |
 | L_D / delta窓 | 分割PR／PF誤差窓は非該当。下記Tは回路接続用ordered targetの1点案 |
 
-今回の来歴確認はbytes／JSON宣言だけで、保存J/U／元input／Stage1の行列を数値decodeしない。[数値importを禁止したpreflight](../../artifacts/research_c_c1_stage2_technical/2026-10-25/preflight.json)はSOURCE136、旧来歴25ファイル、元input hash、環境52 pinsをPASSした。[既定CLI](../../artifacts/research_c_c1_stage2_technical/2026-10-25/cli_preflight.txt)も科学実行せずPASS。SOURCEの既存部分、旧contract・grant・結果・ledger・marker・STOPは変更していない。
+今回の来歴確認はbytes／JSON宣言だけで、保存J/U／元input／Stage1の行列を数値decodeしない。[数値importを禁止したpreflight](../../artifacts/research_c_c1_stage2_technical/2026-10-25/preflight.json)はSOURCE34、旧来歴25ファイル、元input hash、主要数値／回路library5 versionsをPASSした。[既定CLI](../../artifacts/research_c_c1_stage2_technical/2026-10-25/cli_preflight.txt)も科学実行せずPASS。SOURCEの既存部分、旧contract・grant・結果・ledger・marker・STOPは変更していない。
 
 ## 実装した接続と再利用
 
@@ -71,7 +71,7 @@ literalとsharedの双方へ同じ中央primitiveを使う。sharedでは**隣�
 
 実QuantumCircuit／Operator／Statevector／transpileはmockまたは禁止constructorで遮断した。人工test PASSはNatureの分子Gaussian conventionや実H4回路の科学的PASSを意味せず、今回その資格を認定しない。
 
-専用 `.venv`（CPython3.11.1）を新規作成した。[52 package hash lock](../../artifacts/research_c_c1_stage2_technical/2026-10-25/environment/requirements.lock)は既存Stage1 eval41 pinsを保ち、不足するQiskit関連11 pinsを既存F1 lockから補った。NumPy1.26.4／SciPy1.14.1／Qiskit1.3.0／Nature0.7.2／Algorithms0.3.1／Aer0.15.1。Stage1の共有・既存venvは書き換えず、保存wheelをread-only再利用し、不足wheelはhash必須でtask内へ取得した。[runtimeと禁止constructor付きimport smoke](../../artifacts/research_c_c1_stage2_technical/2026-10-25/environment/runtime.json)、[pip check](../../artifacts/research_c_c1_stage2_technical/2026-10-25/environment/pip_check.txt)はPASS。venv Pythonのsymlinkを解決してbase Pythonに置換する処理は使わない。
+専用 `.venv`（CPython3.11.1）を新規作成した。[52 package hash lock](../../artifacts/research_c_c1_stage2_technical/2026-10-25/environment/requirements.lock)は既存Stage1 eval41 pinsを保ち、不足するQiskit関連11 pinsを既存F1 lockから補った。NumPy1.26.4／SciPy1.14.1／Qiskit1.3.0／Nature0.7.2／Algorithms0.3.1／Aer0.15.1。Stage1の共有・既存venvは書き換えず、保存wheelをread-only再利用し、不足wheelはhash必須でtask内へ取得した。[runtimeと禁止constructor付きimport smoke](../../artifacts/research_c_c1_stage2_technical/2026-10-25/environment/runtime.json)、[pip check](../../artifacts/research_c_c1_stage2_technical/2026-10-25/environment/pip_check.txt)はPASS。venv Pythonのsymlinkを解決してbase Pythonに置換する処理は使わない。再現用の52-package lockを保存する一方、実行時の検査はPython3.11と主要5 libraryの版に絞り、無関係なpackageやstdlibのbitwise一致は要求しない。
 
 ## 未採択の科学条件：合理的な初回推奨案
 
@@ -137,7 +137,7 @@ local／ordered／adjoint／compiledのcontrolled checkは計52。各checkは既
 
 [技術資源記録](../../artifacts/research_c_c1_stage2_technical/2026-10-25/resources.json)にavailable affinity32 CPUとRAM／pressureを保存した。重い将来の計算では、既存batched CAR／BLAS／native compilerを利用し、CDF9行列再構築、Gaussianの重複生成、ordered targetのexpm再計算を避ける。gate順序と最初のFAILで即STOPを保つため、外側dispatchは逐次とし、dense kernel／compiler内部には利用可能CPUを使う。投入前に空き資源・aggregate RAM・thread競合を確認し、実行監視でGNU time／process tree等の使用量を保存する。恣意的なCPU／RAM／worker／wall capは設けない。共有環境・他ユーザーのjob/fileへの変更や性能speedupの断言はしない。
 
-[保全記録](../../artifacts/research_c_c1_stage2_technical/2026-10-25/preservation.json)と[evidence inventory](../../artifacts/research_c_c1_stage2_technical/2026-10-25/evidence_inventory.json)を保存する。固定SOURCE／旧科学結果・grant・ledger・marker・STOPは保全し、現行概要・索引・dated note・validation manifestには今回の技術準備と限定対象採択を追記する。commit／push後にremote SHA、SOURCE、契約、成果物bytesを照合する。公開されたローカル人工証拠であり、CI／外部独立再現や分子回路資格ではない。
+[保全記録](../../artifacts/research_c_c1_stage2_technical/2026-10-25/preservation.json)と[evidence inventory](../../artifacts/research_c_c1_stage2_technical/2026-10-25/evidence_inventory.json)を保存する。元workspaceへtaskから変更は加えず、作業中の追加指示に対応するAGENTS.md更新はそのまま保持した。固定SOURCE／旧科学結果・grant・ledger・marker・STOPは保全し、現行概要・索引・dated note・validation manifestには今回の技術準備と限定対象採択を追記する。commit／push後にremote SHA、SOURCE、契約、成果物bytesを照合する。公開されたローカル人工証拠であり、CI／外部独立再現や分子回路資格ではない。
 
 技術的blockerは人工／mock範囲では解消済み。**実H4のGaussian向き・native回路・compiled correctnessは未検証**であり、予定された科学gateで確認する事項である。C-DF物理誤差の新たな合否閾値、PF誤差、RTE、shot、同精度総資源の判断は今回の対象外。
 
