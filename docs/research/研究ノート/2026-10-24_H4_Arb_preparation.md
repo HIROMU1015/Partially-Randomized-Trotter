@@ -20,3 +20,9 @@ PF C-targetはR0保存区間全体を引用。PR個別C-targetはまだ経験値
 
 次：ユーザーが最小pilotの範囲を明示承認後、Codexがproduction SOURCE/controllerを固定して限定評価・終了監査。
 今回の契約は無効、科学grantなし。mandatory STOP。
+
+## 公開試行
+
+技術準備commit fdb775ca7f1d38ff46cd30364b4739c5d10a34be。
+push1回はHTTPS Username取得不能でexit128、専用branchのremote検索0件、remote SHA=null。
+公開記録を後続local metadata commitへ保存する。実H4実行・grant発行なし、mandatory STOPを維持。

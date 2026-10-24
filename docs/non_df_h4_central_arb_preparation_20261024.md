@@ -193,3 +193,13 @@ Qiskit/Arb/科学runnerをimportしない。[STOP](../artifacts/non_df_h4_centra
 
 次の担当：**ユーザー**が最小PF cosine pilotの実行範囲を判断し明示承認する。
 **Codex**は承認後だけproductionの固定と限定評価・終了監査を行う。現在は未実行、mandatory STOP。
+
+## 公開状態の追記
+
+技術準備commitは `fdb775ca7f1d38ff46cd30364b4739c5d10a34be`。
+originへのpush1回はHTTPS Username取得不能でexit128。
+[失敗log](../artifacts/non_df_h4_central_arb_preparation/2026-10-24/push_attempt01.log)、
+[remote再確認](../artifacts/non_df_h4_central_arb_preparation/2026-10-24/remote_after_push.json)。
+専用branch検索0件、remote SHA=null。認証可能な環境で同branchをpushする必要がある。
+後続local metadata commitは公開状態を記録するだけで、bridge・契約・人工結果・旧証拠・STOPを変更しない。
+実H4 pilotは未実行、mandatory STOPを維持する。
