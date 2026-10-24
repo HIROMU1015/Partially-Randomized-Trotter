@@ -1,3 +1,13 @@
+## 2026-10-25 H4 Pauli/DF PF・PR比較：既存証拠の整理完了
+
+[4方式とPauli generic/centralの比較・完成範囲](docs/non_df_h4_comparison_synthesis_20261025.md)。
+固定H4/1Å/STO-3G、Pauli184/prefix27、DF tol-only1e-8/rank10/prefix1＋one-body、S2/T.8/q8/r4/K4。
+保存cohortの価格と条件付きGは揃う。central PF15028/PR平均1140.8046875 RZ、DF PF135355/PR平均23678.44140625 RZ。
+D1初回Stage A停止と、後続SOURCE基準Bの9構成実測を区別。保持/event価格・非加法性は後者で測定済み、basis単独/pass寄与率は未識別。
+保存15比較のguard全域頑健性と、実ρ所属・PR母平均tailの不足を分離。6局所Arb・R2-C PROOF_INCOMPLETEは元のscopeを保持。
+新科学計算/再解析/再ランキング/build/compile/sampling/R2-C証明継続/正式受理0。旧SOURCE/結果/grant/STOP保全。
+条件付きcase studyなら追加計算は必須でなく、強い母平均/実精度主張を求める場合の最小検証案を提示。方針はユーザー/GPTの判断へ返しmandatory STOP。以下は時点履歴。
+
 ## 2026-10-25 H4 R2-C：compiler・位相の限定証明・mandatory STOP
 
 [技術報告](docs/non_df_h4_r2c_compiler_phase_proof_20261025.md)。**PROOF_INCOMPLETE**。

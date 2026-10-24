@@ -1,3 +1,7 @@
+## 2026-10-25 H4 Pauli-JW／DF-native PF・PR比較の再整理
+
+[4方式比較・コスト構造・条件付きG・最小の残課題](non_df_h4_comparison_synthesis_20261025.md)。既存値引用のみ、generic/centralを分離。研究方針採択・新計算なし、mandatory STOP。
+
 ## 2026-10-25 H4 R2-C compiler・位相の限定証明
 
 [全orderのcontrol・phase winding・Euler補題・未解決数値証明](non_df_h4_r2c_compiler_phase_proof_20261025.md)。PROOF_INCOMPLETE、全lawρ/null、H4科学/scalar/compile0、人工10PASS、mandatory STOP。
