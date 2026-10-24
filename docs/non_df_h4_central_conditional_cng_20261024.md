@@ -133,3 +133,12 @@ PR母平均価格μを未知とすると、同じceilを用いる `ΣN_left,a μ
 3. **Codex／費用解析担当**：母平均順位を求めるなら、まず未観測order4を含むfull-wrapper費用envelopeを設計する。新sampling/compileの実行は別承認とし、今回のnominal CIや観測最大をtail上界にしない。
 
 公開状態と最終commit/remote SHAは[publication_status](../artifacts/non_df_h4_central_conditional_cng/2026-10-24/publication_status.json)に記録する。**科学作業はmandatory STOP。自動的な次段階実行なし。**
+
+## Commit・公開確認
+
+結果commit `ef5c13d94639c5235cfd6486a17ac998344397f0`。origin pushはHTTPS Usernameを取得できずexit128。
+GitHub branch検索0件のため新branchのremote SHAは未取得。基点SHAはGitHubで取得確認済み。
+失敗logとユーザー用pushコマンドをpublication_statusに保存。後続local commitは公開監査metadataだけで、科学run/shot/統計の追加なし。
+
+テキスト/コード/JSON/CSVの空白検査・報告リンク23件・JSON49件はPASS。
+Matplotlib生成SVGはpath属性の既定末尾空白を含む元byte/SHAを保全し、空白検査から除外した。

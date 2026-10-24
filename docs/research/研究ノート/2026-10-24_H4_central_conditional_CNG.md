@@ -23,3 +23,9 @@ PFとPRそれぞれ対応するDFより低G、全15比較は独立guard全域で
 主agent124保存check PASS、code13/input600/runtime4896/旧9165/output28 SHA照合・旧manifest180行保全。
 native exit0・回収、初回失敗STOPは維持。科学作業mandatory STOP。
 結果commit/push・remote SHA確認のみ継続し、残差/tail/D3等へ移行しない。
+
+## 公開監査
+
+結果commit ef5c13d94639c5235cfd6486a17ac998344397f0。pushはHTTPS認証情報なしでexit128、remote branch検索0件。
+新remote SHA未取得、失敗logと再実行コマンドを保存。後続は公開metadata commitのみ。
+科学STOP・旧N/G null・元native UNKNOWN・hash FAIL/原因UNKNOWNを維持。
