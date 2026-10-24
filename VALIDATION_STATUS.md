@@ -1,5 +1,12 @@
 # Validation status
 
+## 2026-10-24 research C4: limited Q13 integration correctness PASS, local resource differences recorded
+
+Source `b546c4e4f5d6645fd198b9ec3f85e3cd644ac4e9` completed one explicitly approved execution of saved-F1 SS motifs2/3/4 and PP motif0, with B0/B1/R1. Four-mode/two-particle density-square synthetic fixture, L_D1, two residual fragments, T1/5 q2 delta1/10 r2 h1/20 K2; molecular geometry/AO basis/DF rank not applicable. Fixed Qiskit1.3.0 opt1 seed17 native rz/sx/x/cx.
+All local20/full-controlled12/actual-adjoint12/raw-and-compiled XY/compiled-operator24 gates PASS; max compiled error1.12226e-14 at tol1e-10, rtol0 and no phase fit. Reference28, transpile24, cold/warm24 each, retry0. B0/B1 match all eight metrics. R1 reduces costs in three selected SS motifs; PP M0 is unchanged. Across eight designed case/axis wrappers the unweighted RZ/CX/depth sums fall2.5%/4.9751%/4.0486%, not a law expectation or total-round advantage. Identical-Pauli angle-merge baseline and general method delta remain unvalidated.
+[Results, source, immutable raw packet and mandatory STOP](docs/research/research_c_rustiq_execution_20261024.md). Local committed evidence, not CI or independent reproduction. Old research states/grants/STOP remain preserved; no additional experiment is authorized by completion.
+
+
 ## 2026-10-24 research disposition: Gaussian singleton direction temporarily closed by user adoption
 
 The user adopted temporary closure of Gaussian singleton synthesis/selection optimization as an independent research direction. F1/F2 fixed-fixture correctness and PS48 equivalence PASS remain unchanged; blanket candidate-A use does not support RZ/CX reduction and a general compile-free selector remains unestablished. This is a research-priority decision, not a scientific FAIL or a PR-wide NO-GO.
