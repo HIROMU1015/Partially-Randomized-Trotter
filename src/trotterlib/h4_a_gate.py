@@ -29,6 +29,13 @@ LIMITS=dict(body_replay=1,central_control_build=1,axis_wrapper_build=2,cost_tran
 KIND='H4_A_GATE_ORDER2_ACTIVE_V1'
 
 
+def fixed_conditions():
+    result=dict(C.read(D2.BASE/'active_contract.json')['fixed'])
+    result.pop('axis',None)
+    result['axes']=list(AXES)
+    return result
+
+
 def body_only(model,join):
     """Literal D1 Pauli full schedule without its generic-control wrapper."""
     from . import h4_d1_adapter as A
@@ -67,7 +74,7 @@ def scope(c):
     C.require(c['kind']==KIND and all(c[k] is True for k in ('execution_authorized','dispatch_enabled','grant_valid')),'AG_AUTHORIZATION')
     C.require(c['target']==target and target['trajectory_index']==1 and target['trajectory_id']==ID,'AG_TARGET')
     C.require(target['event_record_hash']==EVENT and target['trajectory_record_hash']==TRAJECTORY,'AG_TARGET_HASH')
-    C.require(c['fixed']==C.read(D2.BASE/'active_contract.json')['fixed'],'AG_FIXED')
+    C.require(c['fixed']==fixed_conditions(),'AG_FIXED')
     C.require(c['call_limits']==LIMITS and c['per_axis_compile_max']==dict(cosine=1,sine=1),'AG_BUDGET')
     C.require(c['mandatory_STOP'] is True and c['automatic_retry'] is False and c['automatic_next_stage'] is False,'AG_STOP')
 
@@ -90,7 +97,7 @@ def prepare():
     old=C.read(D2.BASE/'seal.json');code=dict(old['code_files']);inputs=dict(old['input_files'])
     for p in ('src/trotterlib/h4_a_gate.py','scripts/run_h4_a_gate.py','tests/test_h4_a_gate.py','tests/test_h4_controlled_comparison.py'):
         code[p]=C.sha(ROOT/p)
-    for p in (ROOT/JOIN,DESIGN/'contracts_DRAFT.json',DESIGN/'cohort_manifest.json',BASE/'approval.json',BASE/'user_instruction.txt',BASE/'output_schema.json',BASE/'artificial/new_tests.json'):
+    for p in (ROOT/JOIN,D2.BASE/'active_contract.json',D2.BASE/'run01/variants/pauli_jw_PR/metrics.json',DESIGN/'contracts_DRAFT.json',DESIGN/'cohort_manifest.json',BASE/'approval.json',BASE/'user_instruction.txt',BASE/'output_schema.json',BASE/'artificial/new_tests.json'):
         inputs[str(p.relative_to(ROOT))]=C.sha(p)
     protected=dict(C.read(DESIGN/'preservation_before.json'))
     for p in DESIGN.rglob('*'):
@@ -102,7 +109,7 @@ def prepare():
         approval_sha256=C.sha(BASE/'approval.json'),preservation_sha256=C.sha(BASE/'preservation_before.json'),real_H4_calls_before_seal=0,UTC=C.utc())
     verify_seal(s);C.save(BASE/'seal.json',s)
     target=C.read(DESIGN/'cohort_manifest.json')['selected']
-    c=dict(kind=KIND,status='APPROVED_SEALED_A_GATE_ORDER2',target=target,fixed=C.read(D2.BASE/'active_contract.json')['fixed'],
+    c=dict(kind=KIND,status='APPROVED_SEALED_A_GATE_ORDER2',target=target,fixed=fixed_conditions(),
         execution_authorized=True,dispatch_enabled=True,grant_valid=True,science_SOURCE=source,
         call_limits=LIMITS,per_axis_compile_max=dict(cosine=1,sine=1),mandatory_STOP=True,automatic_retry=False,automatic_next_stage=False,
         seal_sha256=C.sha(BASE/'seal.json'),approval_sha256=s['approval_sha256'],output_schema_sha256=C.sha(BASE/'output_schema.json'),

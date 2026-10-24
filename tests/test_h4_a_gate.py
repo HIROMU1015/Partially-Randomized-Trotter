@@ -41,7 +41,7 @@ def fixture():
 def active():
     target=C.read(D.DESIGN/'cohort_manifest.json')['selected']
     return dict(kind=D.KIND,execution_authorized=True,dispatch_enabled=True,grant_valid=True,target=target,
-        fixed=C.read(D.D2.BASE/'active_contract.json')['fixed'],call_limits=D.LIMITS,
+        fixed=D.fixed_conditions(),call_limits=D.LIMITS,
         per_axis_compile_max=dict(cosine=1,sine=1),mandatory_STOP=True,automatic_retry=False,automatic_next_stage=False,
         science_SOURCE='TOY',seal_sha256='TOY',approval_sha256='TOY')
 
