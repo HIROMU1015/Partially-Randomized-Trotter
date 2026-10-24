@@ -1,0 +1,88 @@
+{
+  "schema": "C1_STAGE1_LIMITED_EXECUTION_STOP_v1",
+  "date_JST": "2026-10-25",
+  "status": "TECHNICAL_STOP_FFSIM_SCIPY_BATCH_LOGM_INCOMPATIBILITY",
+  "completed": false,
+  "mandatory_stop": true,
+  "source_commit": "de76aee72f35321c00155b0b17d22ef6eb2bcb9a",
+  "source_manifest_sha256": "dadd5f25c813144f1683f0b2fc3d5454b336638da722116735ae955172e43a7c",
+  "contract_sha256": "ab20dcd476610b2c65956e51d4edc3a0152d48fc546aa0605744c8c724d8cb2c",
+  "input_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+  "model": {
+    "system": "P-H4 linear H4",
+    "distance_Angstrom": 1.0,
+    "basis": "STO-3G",
+    "charge": 0,
+    "spin_2S": 0,
+    "sector": "Nalpha=Nbeta=2",
+    "sector_dimension": 36,
+    "full_dimension": 256,
+    "C_DF": "ffsim0.0.83 number, max_vecs8,tol1e-8,L-BFGS-B, corrected kappa-original-g",
+    "X_DF": "saved actual rank10, not evaluated",
+    "L_D": null,
+    "delta_window": null
+  },
+  "failure_stage": "ffsim modified-Cholesky initialization returned to unitaries_to_parameters; scipy.linalg.logm called with batch rotations; raised expected square array_like input before x0 and minimize",
+  "root_cause": "ffsim0.0.83 uses scipy.linalg.logm(mats) on batched matrices; locked SciPy1.14.1 logm accepts only ndim2 square array",
+  "fit_calls_attempted": 1,
+  "fit_calls_returned": 0,
+  "optimizer_minimize_started": false,
+  "actual_R": null,
+  "tensor_residual": null,
+  "epsilon_DF_CDF_sector_Hartree": null,
+  "epsilon_DF_XDF_sector_Hartree": null,
+  "epsilon_adapter_sector": null,
+  "epsilon_adapter_full_base": null,
+  "epsilon_adapter_full_frames": null,
+  "gate_status": {
+    "source_input_contract_hash": "PASS",
+    "fit_environment_preflight": "PASS",
+    "eval_environment_preflight": "PASS",
+    "approval_binding_and_fresh_output": "PASS",
+    "fit_production_API": "TECHNICAL_FAIL",
+    "optimizer_success_and_finite_export": "NOT_REACHED",
+    "kappa_J_U_structure": "NOT_RUN",
+    "independent_CAR_general_K_equality": "NOT_RUN",
+    "physical_CDF_norm": "NOT_RUN",
+    "physical_XDF_norm": "NOT_RUN"
+  },
+  "scientific_counter_units_used": 2,
+  "scientific_counter_units_by_kind": {
+    "input_load": 1,
+    "fit": 1
+  },
+  "scientific_counter_units_max": 147,
+  "expected_success_formula": "83+8R; actual R unavailable; only attempted prefix consumed",
+  "scientific_retry": 0,
+  "scientific_resume": 0,
+  "technical_launch_correction_before_science": {
+    "monitor_root_error": "fixed before runner entered, no science calls",
+    "venv_symlink_resolution": "run01 STOP kept; regular interpreter entry used for fresh run02, no run01 scientific calls"
+  },
+  "scientific_attempt_output": "run02",
+  "fit_output_preserved": "No J/U/OptimizeResult/export was returned to caller; preserve fit.claim, fit_runtime, journal, traceback, SOURCE/contract/approval and STOP",
+  "post_failure_scientific_calls": 0,
+  "Stage2_authorized": false,
+  "Stage3_authorized": false,
+  "next_decision": "No Stage2 qualification; correct dependency/API compatibility in separately frozen technical source, artificial validation, and obtain new explicit one-fit authorization before any fresh scientific run",
+  "evidence_events": [
+    {
+      "attempt": "run02",
+      "phase": "fit",
+      "kind": "input_load",
+      "label": "",
+      "count": 1,
+      "event": "attempt",
+      "time": 1792856196.7216628
+    },
+    {
+      "attempt": "run02",
+      "phase": "fit",
+      "kind": "fit",
+      "label": "one ffsim lower-level fit",
+      "count": 1,
+      "event": "attempt",
+      "time": 1792856196.7233164
+    }
+  ]
+}

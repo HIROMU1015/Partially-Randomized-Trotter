@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_research_c_c1_stage1.py` の[限定科学実行・技術的STOP](../docs/research/research_c_c1_stage1_execution_20261025.md)：固定SOURCE `de76aee72`、1 fitはSciPy1.14.1 batch logm非互換でoptimizer前に停止。call2/147、科学retry/resume0。artifact `artifacts/research_c_c1_stage1_science/2026-10-25/`。SOURCEを修正せず証拠保存・mandatory STOP。
+
 `run_research_c_c1_stage1.py` は[C1 Stage 1技術準備](../docs/research/research_c_c1_stage1_technical_preparation_20261025.md)の限定入口。既定は数値decodeなしpreflight、科学runは別の明示承認が必要。処理 `trottertracks.c1_stage1*`、人工test `tests/management/test_research_c_c1_stage1*.py`、SOURCE/lock/証拠 `artifacts/research_c_c1_stage1_technical/2026-10-24/`。今回は人工検証のみ、mandatory STOP。
 
 `scripts/` はコマンドラインから実行する入口を置く。研究ロジックの本体は原則として

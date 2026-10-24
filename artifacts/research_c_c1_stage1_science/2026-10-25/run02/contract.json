@@ -1,0 +1,306 @@
+{
+  "schema": "C1_STAGE1_LIMITED_SCIENCE_CONTRACT_UNAPPROVED_v1",
+  "date_JST": "2026-10-25",
+  "scope": "C1_STAGE1_P_H4_ONE_FIT_V1",
+  "status": "TECHNICALLY_PREPARED_ALLOWANCE_ADOPTION_AND_NEW_SCIENCE_APPROVAL_REQUIRED",
+  "conditions_adopted": true,
+  "conditions_authority": "User message: C1 Stage1 final preparation, initial pilot conditions adopted; technical implementation/artificial tests authorized",
+  "execution_authorized": false,
+  "grant_issued": false,
+  "dispatch_enabled": false,
+  "executable_command": null,
+  "preparation_base_commit": "826ea4d02407501ee3252d65e5662af18cc49192",
+  "implementation_source_commit": "394fcf3a445caf0a5f206b7bbcf4a8c88f971504",
+  "source_manifest": "artifacts/research_c_c1_stage1_technical/2026-10-24/SOURCE.json",
+  "source_manifest_sha256": "dadd5f25c813144f1683f0b2fc3d5454b336638da722116735ae955172e43a7c",
+  "input": {
+    "label": "P-H4",
+    "commit": "86b8b002704aced8ca239414080f53793de81658",
+    "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/snapshot.npz",
+    "sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+    "model": "linear H4",
+    "adjacent_distance_Angstrom": 1.0,
+    "basis": "STO-3G",
+    "charge": 0,
+    "spin_2S": 0,
+    "MO": "saved real canonical RHF, no regenerated integrals",
+    "physical_members": [
+      "one_mo",
+      "eri_chemist",
+      "nuclear_repulsion",
+      "mo_coeff"
+    ],
+    "saved_XDF_members": [
+      "df_one_body",
+      "df_lambdas",
+      "df_g_matrices"
+    ],
+    "never_decode_saved_members": [
+      "state",
+      "DF_state",
+      "non_DF_matrix",
+      "DF_matrix",
+      "energy",
+      "fci_energy",
+      "fci_vector",
+      "hf_energy"
+    ]
+  },
+  "scope_and_policy": {
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "full_dimension": 256,
+    "full_checks": "Base kappa+c and each of R frames, plus Nalpha/Nbeta commutators; no full physical or XDF norm",
+    "L_D": null,
+    "delta_window": null,
+    "z_representation": false,
+    "one_body_role": "ffsim_corrected_kappa",
+    "kappa": "h_original - 0.5 * einsum(prrq,g_original), held fixed after fit",
+    "constant": "Original nuclear c at model level once; frame I terms stay inside frame",
+    "spatial_g_prefactor": "No 1/2 applied at ffsim input; density J products carry 1/2",
+    "general_K": "K[2i+sigma,2j+tau]=J[i,j]/2, V spin-lift U, one original frame preserved",
+    "spin_and_state_order": "Interleaved spin mode a=2p+sigma, common matrix mode a on bit a; reverse OpenFermion/PhysicalSector bits once",
+    "baseline": "Saved actual rank10 XDF from same packet; original generation df_rank=None,df_tol=1e-8; no new decomposition or rehermitization",
+    "DF_errors": "Separate spectral norms of P36(Hphys-HCDF)P36 and P36(Hphys-HXDF)P36, including c/kappa/two-body",
+    "physical_DF_absolute_gate": null,
+    "CDF_le_XDF_required": false,
+    "Stage2_eligibility": "Separate decision after Stage1 measurement; not automatic from representation PASS"
+  },
+  "fit_settings": {
+    "optimize": true,
+    "max_vecs": 8,
+    "tol": 1e-08,
+    "method": "L-BFGS-B",
+    "options": {},
+    "callback": null,
+    "diag_coulomb_indices": null,
+    "cholesky": true,
+    "return_optimize_result": true
+  },
+  "solver": {
+    "ffsim": "v0.0.83 at 558d3517385778c733f1aa226bb61b8f30f4b0f3",
+    "scipy": "1.14.1",
+    "jax": "0.4.38",
+    "jaxlib": "0.4.38",
+    "float_dtype": "float64, JAX x64 required",
+    "backend": "CPU",
+    "objective": "0.5*sum((g-g_fit)^2), real tensor, unregularized",
+    "initialization": "One nested modified Cholesky; no seed sweep, no factory second fit",
+    "effective_defaults": {
+      "maxcor": 10,
+      "ftol": 2.220446049250313e-09,
+      "gtol": 1e-05,
+      "maxfun": 15000,
+      "maxiter": 15000,
+      "maxls": 20,
+      "jac": true
+    },
+    "qualification": "OptimizeResult success true and finite x/fun/jac/J/U/kappa/c, exact J symmetry, positive R<=8; finite unsuccessful export is partial evidence only"
+  },
+  "runtime": {
+    "python": "CPython3.11.1",
+    "fit_venv_local": ".venv-fit",
+    "eval_venv_local": ".venv-eval",
+    "lock_directory": "artifacts/research_c_c1_stage1_technical/2026-10-24/environment",
+    "locks": {
+      "fit": {
+        "path": "artifacts/research_c_c1_stage1_technical/2026-10-24/environment/fit-requirements.lock",
+        "sha256": "b93f5135b9a7b4918b1dbbcae1ee18bf5d892dba51ba8067d219e62c16f262ab",
+        "wheel_count": 22
+      },
+      "eval": {
+        "path": "artifacts/research_c_c1_stage1_technical/2026-10-24/environment/eval-requirements.lock",
+        "sha256": "c8e6438a9019828fed2327d16204bffdedc1dee0f7cc889b2727c076c527dfa2",
+        "wheel_count": 41
+      }
+    },
+    "fit_source_files_verified": 102,
+    "fit_source_mismatches": 0,
+    "pip_check_both": "PASS",
+    "shared_environment_modified": false,
+    "evaluation_backend": "Existing Python sector matrix-free kernel; avoid numba compile for d36",
+    "array_boundary": "NPZ allow_pickle=False and JSON metadata, little-endian float64; operator complex128"
+  },
+  "references": {
+    "physical": "Original h/g/c, frozen unthresholded spin-lift, no-pruning OpenFermion term map and existing JW sparse evaluator, sector36",
+    "raw_CDF": "Original export kappa/J/U/c and generic CAR bit action, independent density products; no adapter K/V/Z coefficients",
+    "candidate_K": "Existing general-K adapter and I/Z/ZZ coefficients; independent OF bilinears evaluated on matrices",
+    "saved_XDF": "Existing DFHamiltonian/PhysicalSector/df_linear_operator, 36 basis actions, explicit bit order mapping",
+    "norm": "SciPy1.14.1 gesdd maximum singular value; no Hermitian projection",
+    "independence_limits": "Shared numerical libraries and frozen inputs, separate assembly transformations; real Gaussian circuit convention remains Stage2"
+  },
+  "allowance": {
+    "version": "binary64_operation_scale_guard8_v1",
+    "status": "IMPLEMENTED_TECHNICALLY_TESTED_PROPOSAL_REQUIRES_SCIENTIFIC_ACCEPTANCE",
+    "scientific_adoption_pending": true,
+    "unit_roundoff": "u=2^-53",
+    "gamma": "gamma_m=m*u/(1-m*u)",
+    "scale": "Absolute pre-cancellation coefficient/operator envelopes; no fit-result threshold tuning",
+    "spectral_formula": "8 * (gamma_mL*B_L + gamma_mR*B_R + 32*d*u*Frobenius(delta))",
+    "structural_formula": "sqrt(d) times the spectral-form allowance, using the actual diagnostic matrix dimension",
+    "guard": 8,
+    "norm_coefficient": 32,
+    "operation_lengths_H4": {
+      "raw": 2720,
+      "candidate": 3016,
+      "base": 544,
+      "physical": 33288,
+      "xdf": 1136,
+      "unitary": 176
+    },
+    "sum_adjustment": "Add 8*R to raw/candidate full-sum path; XDF path uses actual saved rank10",
+    "raw_frame_scale": "2*sum_ij |Jij|*(sum_p |U_pi|)^2*(sum_q |U_qj|)^2",
+    "candidate_frame_scale": "Sum over I/Z/ZZ coefficients of |coefficient| times product of b_a, b_a=1+2*(sum_p |V_pa|)^2",
+    "base_scale": "|c|+2*sum_pq |kappa_pq|",
+    "physical_scale": "|c|+sum |spin_one|+sum |spin_two/2|",
+    "XDF_scale": "|c|+sum |one_body|+sum_l |lambda_l|*(sum |G_l|)^2",
+    "structural_gates": [
+      "kappa Hermiticity",
+      "kappa-original-g agreement",
+      "saved XDF kappa agreement",
+      "J symmetry",
+      "U unitarity",
+      "four sector Hamiltonian Hermiticity",
+      "full raw/K Nalpha/Nbeta conservation"
+    ],
+    "rigorous_interval_certificate": false,
+    "policy_decision": "Accept these engineering roundoff allowances for the limited pilot, or request a different accuracy standard before any molecular run",
+    "precision_or_threshold_tuning_after_results": false
+  },
+  "call_limits": {
+    "fit": {
+      "input_load": 1,
+      "fit": 1,
+      "fit_qualification": 1,
+      "tensor_reconstruct": 1,
+      "tensor_maxabs": 1,
+      "tensor_frobenius": 1
+    },
+    "evaluation_load": {
+      "input_load": 1,
+      "export_load": 1
+    },
+    "evaluation_formula": "adapter1+physical1+xdf1+xdf_matvec36+base2+frame2R+full_sum2+sector_restrict2+spectral(R+4)+structural_Frobenius(2R+11)+allowance(3R+15)",
+    "evaluation_max_R8": {
+      "adapter_import": 1,
+      "physical_build": 1,
+      "xdf_build": 1,
+      "xdf_matvec": 36,
+      "base_build": 2,
+      "frame_build": 16,
+      "full_sum": 2,
+      "sector_restrict": 2,
+      "spectral_norm": 12,
+      "structural_frobenius": 27,
+      "allowance": 39
+    },
+    "actual_R": null,
+    "logical_counter_units_total": "83+8*R for successful path including fit and evaluation loads; nested jobs/matvecs and allowance calls intentionally distinct, not independent expensive runs",
+    "max_counter_units_at_R8": 147,
+    "Hamiltonian_construction_jobs": "6+2*R, using shared references",
+    "solver_internal_evaluations": "nfev/njev/nit reported separately under fixed SciPy defaults; not another fit",
+    "hashes_IO_norms_inside_allowance": "Technical/internal work not counted as additional scientific jobs; no hidden energy/eigensolver/evolution calls",
+    "failure": "Record attempted prefix and partial outputs, no call extension",
+    "cache": "Reuse within identical SOURCE/input/policy/order/dtype only; no saved energy/PASS as new norm"
+  },
+  "outputs": {
+    "operators": "8+2*R NPZ files: physical/XDF sector2, raw/K base2, frames2R, raw/K full totals2, raw/K sectors2; no new calculation for saving",
+    "fit_files": [
+      "raw_fit.npz",
+      "raw_status.json",
+      "fit_export.npz",
+      "fit_export.json",
+      "fit_runtime.json",
+      "fit.claim"
+    ],
+    "other_files": [
+      "approval.json",
+      "SOURCE.json",
+      "contract.json",
+      "eval_runtime.json",
+      "fit_process.log",
+      "fit_calls.jsonl",
+      "load_calls.jsonl",
+      "evaluation_calls.jsonl",
+      "operator_inventory.jsonl",
+      "result.json",
+      "STOP.json"
+    ],
+    "failure_file": "failure.json; retain existing raw/partial evidence",
+    "numeric_output_root": null
+  },
+  "resources": {
+    "configuration": "Read actual available CPU/pressure/RAM before approved run; pair independent frames across min(R,available affinity) workers with floor(available/workers) BLAS threads, no arbitrary core cap",
+    "memory": "Cache immutable CAR bilinears, stream frame outputs; aggregate RAM check across workers",
+    "GPU": "Driver unavailable at technical check; CPU path qualified on artificial data",
+    "CPU_GPU_RAM_worker_cap": null,
+    "phase_wall_cap": null,
+    "total_wall_cap": null,
+    "performance_claim": "No speedup factor asserted",
+    "noninterference": "Only task-owned venv/cache/output/process group; no shared server/package/cache or other-user changes"
+  },
+  "approval_and_STOP": {
+    "new_explicit_science_authorization_required": true,
+    "approval_must_bind": [
+      "scope",
+      "authority=USER_EXPLICIT_C1_STAGE1_SCIENCE",
+      "approved=true",
+      "published execution source_commit",
+      "contract_sha256",
+      "source_manifest_sha256",
+      "input_sha256",
+      "fresh absolute output",
+      "one_fit=true",
+      "numerical_allowance_version",
+      "numerical_allowance_accepted=true"
+    ],
+    "self_issued_grant_allowed": false,
+    "automatic_retry": false,
+    "automatic_resume": false,
+    "technical_STOP": [
+      "SOURCE/input/runtime/schema mismatch",
+      "Nonfinite or missing optimizer status",
+      "Independent reference unavailable",
+      "Call limit exceeded",
+      "Missing approval",
+      "Shared environment interference"
+    ],
+    "scientific_STOP_or_hold": [
+      "Fit unsuccessful",
+      "Hamiltonian or sector semantics mismatch",
+      "kappa/U/J/structure gate fail",
+      "full base/frame or sector adapter equality fail",
+      "Saved XDF comparison ineligible"
+    ],
+    "failure_actions": "Save raw arrays/status and partial evidence; journal attempts; STOP at first failed gate; no automatic rank/tol/seed/optimizer/precision change",
+    "interruptions": "Parent SIGINT/SIGTERM closes only its fit child process group; fit.claim and fresh output prevent resume; abrupt SIGKILL requires manual reconciliation and no rerun",
+    "on_success": "Report representation qualification and separate DF errors, then mandatory STOP"
+  },
+  "executed_this_preparation": {
+    "artificial_tests_top_level": 45,
+    "adapter_subtests": 29,
+    "actual_ffsim_fit_calls": 0,
+    "real_H4_numerical_decode": 0,
+    "molecular_operator_or_norm_or_residual_calls": 0,
+    "real_circuit_or_compile_calls": 0,
+    "environment_builds": 2
+  },
+  "excluded": [
+    "Fresh SCF/integrals",
+    "Fresh XDF decomposition",
+    "Saved scientific result numerical reanalysis",
+    "Real Gaussian/Partial-S2/controlled/adjoint/X-Y circuit",
+    "Compilation/native resource claims",
+    "Stage2",
+    "Stage3",
+    "D/R/PF/RTE/sampling/shot/confidence/total cost"
+  ],
+  "preservation": [
+    "Old fixed SOURCE/results/grants/ledgers/markers/STOP",
+    "Original workspace",
+    "C4 closure and Gaussian singleton hold",
+    "Shared environments/caches and other users jobs/files"
+  ],
+  "preparation_completion": "Commit/push and remote SHA/SOURCE/body verification, then mandatory STOP; no science launched"
+}

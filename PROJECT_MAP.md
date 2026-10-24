@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C・C1 Stage 1科学実行の技術的STOP（2026-10-25）
+
+[結果・固定SOURCE・部分証拠・STOP](docs/research/research_c_c1_stage1_execution_20261025.md)。固定 `c1_stage1.py` / `c1_stage1_execution.py` と `scripts/run_research_c_c1_stage1.py` を使用。artifactは `artifacts/research_c_c1_stage1_science/2026-10-25/`。1 fitはffsim/SciPy batch logm非互換でoptimizer前に停止、科学call2/147、CDF/XDF誤差とadapter同値性は未測定。追加fit・Stage2/3なし、mandatory STOP。
+
 ## 研究C・C1 Stage 1技術準備（2026-10-25）
 
 [実装・人工検証・未承認契約](docs/research/research_c_c1_stage1_technical_preparation_20261025.md)。libraryは `src/trottertracks/c1_stage1.py` と `c1_stage1_execution.py`、入口は `scripts/run_research_c_c1_stage1.py`、人工testsは `tests/management/test_research_c_c1_stage1*.py`、証拠と独立環境lockは `artifacts/research_c_c1_stage1_technical/2026-10-24/`。既存ffsim/一般K/CAR/sector演算を接続、人工45件＋29 subtests PASS。科学runは未承認、allowance採択と新明示承認が必要。

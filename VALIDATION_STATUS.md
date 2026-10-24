@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-25 C1 Stage 1 authorized attempt: technical STOP before optimizer
+
+[Execution report](docs/research/research_c_c1_stage1_execution_20261025.md), [evidence/summary](artifacts/research_c_c1_stage1_science/2026-10-25/execution_summary.json). Fixed source `de76aee72f35321c00155b0b17d22ef6eb2bcb9a`; preflight PASS, one ffsim call failed during x0 parameterization because SciPy1.14.1 logm rejects batched matrices. Optimizer and all Hamiltonian/norm comparisons were not reached. Physical CDF/XDF errors and adapter equality remain NOT_MEASURED/NOT_RUN. Scientific counter2/maximum147, fit attempted1/returned0, science retry/resume0. Technical launches before science are separately preserved. Prior artificial tests remain valid within their mock/artificial scope; molecular Stage1 qualification is incomplete. No further fit or Stage2/3 authorization is inferred; mandatory STOP.
+
 ## 2026-10-25 C1 Stage 1 technical preparation only
 
 [Technical report](docs/research/research_c_c1_stage1_technical_preparation_20261025.md), [unapproved contract](docs/research/research_c_c1_stage1_science_contract_unapproved_20261025.json), [SOURCE/locks/artificial evidence](artifacts/research_c_c1_stage1_technical/2026-10-24/). Implementation commit `394fcf3a445caf0a5f206b7bbcf4a8c88f971504`; 45 artificial top-level tests plus 29 subtests PASS. Adopted P-H4 pilot conditions have not been executed. No real fit/operator/norm/residual/energy/circuit calls. Engineering allowance adoption and new explicit science authorization remain required; no immutable CI or scientific qualification claimed. Earlier evidence/status entries remain historical and unchanged.
