@@ -1057,3 +1057,7 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 - `h4_a_cohort.py`: finite 254-task connector reusing A_GATE replay, D2 lift/batch, D1 compiler, native witness and saved-cost t statistics. Artificial12: `tests/test_h4_a_cohort.py`.
 
 - `h4_a_axes.py`: saved controlled-body extraction and original sine wrapper; reuses cohort grant/native dispatch and statistics; `tests/test_h4_a_axes.py` artificial14.
+
+## H4 Pauli central 条件付きC/N/G（2026-10-24）
+
+`h4_central_cng.py`：既存有理数会計へのcentral paired価格adapter。

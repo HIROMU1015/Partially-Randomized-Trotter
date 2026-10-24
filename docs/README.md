@@ -1255,3 +1255,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 - [H4 Pauli central-control saved256 cosine cost cohort](non_df_h4_a_cohort_cos_20261024.md).
 
 - [H4 central-control paired cosine/sine costs A_AXES](non_df_h4_a_axes_20261024.md).
+
+## H4 Pauli central 条件付きC/N/G（2026-10-24）
+
+[H4 Pauli central条件付きC/N/G](non_df_h4_central_conditional_cng_20261024.md)。

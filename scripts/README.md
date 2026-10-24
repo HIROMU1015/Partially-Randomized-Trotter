@@ -1088,3 +1088,7 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 - `run_h4_a_cohort_cos.py`: original saved Pauli PR index2..255, one body/control/cosine compile each, reuse0/1, one statistics batch and mandatory STOP.
 
 - `run_h4_a_axes.py`: saved controlled QPY reuse, PR255/PF1 sine compiles, paired257 costs and native STOP; no cosine recompile.
+
+## H4 Pauli central 条件付きC/N/G（2026-10-24）
+
+`run_h4_central_cng.py`：新Pauli10条件/20軸、15比較・保存DF再利用one-shot。
