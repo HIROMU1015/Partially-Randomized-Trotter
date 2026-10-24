@@ -1,3 +1,11 @@
+## 2026-10-24 H4 Pauli central：実装残差ρの非実行準備
+
+[来歴・ρ定義・再利用・R0/R1/R2](docs/non_df_h4_central_rho_preparation_20261024.md)。
+固定H4/1Å/STO-3G/n8+ancilla8、Pauli184/prefix27、S2/T.8/q8/r4/K4。6保存QPY候補のSOURCE/hash/fingerprint/stateを接続。
+C-target→入力ηと入力→compiled δを区別、PR law meanを個別targetへ転用しない。PF ideal保存、PR selected target/validated bridgeは次段階の不足辺。
+最小R0はPF/PR0 cosine2論理（最大5新state作用）、R1追加4、R2全law転送設計。全契約無効・新科学SOURCE/grantなし。
+新15＋既存20人工・主agent metadata57項目PASS、83入力/163保全SHA・旧manifest181行保持。実H4 QPY/NPZ decode/伝播/ρ/N_G/compile/sampling0。前段CNGと未解決状態を保全、mandatory STOP。以下は時点履歴。
+
 ## 2026-10-24 H4 Pauli central：条件付き総費用比較完了
 
 [10条件・15比較と終了監査](docs/non_df_h4_central_conditional_cng_20261024.md)。

@@ -1,0 +1,466 @@
+# Codex指示：H4 Pauli central-control実装残差ρの限定診断準備
+
+Repository：`HIROMU1015/Partially-Randomized-Trotter`
+
+基点branch：
+`codex/non-df-h4-central-conditional-cng-20261024`
+
+基点commit：
+`388b1e525d3cfbeba8f231acd42c813f67a7f531`
+
+最新結果：
+`docs/non_df_h4_central_conditional_cng_20261024.md`
+
+## 1. 研究目的
+
+固定H4におけるPauli-JW central-control実装について、compiled回路の実装残差ρを検証するための技術的準備を行ってください。
+
+これまでに以下が完了しています。
+
+- D2：Controlled化の実装方式比較
+- A_GATE：Order2を含むPR回路への適用
+- A_COHORT_COS：PR256本のcosine費用
+- A_AXES：PR256本とPFの両軸費用
+- B_CONDITIONAL_CNG：必要shot数Nと条件付き総費用Gの比較
+
+現在の主要結果は以下です。
+
+| 比較 | 仮想ρ=0でのG比 |
+|---|---:|
+| Pauli central PR / PF | 0.1243〜0.1279 |
+| Pauli central PF / DF-native PF | 0.1015〜0.1124 |
+| Pauli central PR / DF-native PR | 0.0535〜0.0577 |
+
+保存平均価格と固定guardの下では、指定15比較の順位反転はありませんでした。
+
+しかし、これらは**新しいcompiled回路の実装残差ρが固定guard内に収まることを保証した結果ではありません。**
+
+今回の目的は、実際のcompiled回路と理想的なcontrolled演算の信号差を評価するために、既存SOURCE・回路・状態・誤差証拠を整理し、必要最小限の数値診断を実施できる状態にすることです。
+
+## 2. 今回の承認範囲
+
+以下の作業を一括承認します。
+
+1. GitHubの固定SOURCE・保存結果・必要証拠の取得と確認
+2. 既存のcompiled QPY・理想信号・状態の来歴調査
+3. D2 central-controlの位相・controlled演算・measurement意味論の確認
+4. 既存C/L評価コードと数値診断機能の調査
+5. 実装残差ρの評価対象・定義・誤差所有範囲の整理
+6. 限定診断対象と必要な精度・計算資源の設計
+7. 既存コードを再利用する非実行診断adapterの必要最小限の実装
+8. 人工小系・mockによる技術検証
+9. 新規数値診断の実行契約案作成
+10. 報告書・非実行契約の保存、commit/push、mandatory STOP
+
+**今回は実H4の新しい残差数値計算を承認しません。**
+
+新しい科学SOURCE、実行可能なgrant、実H4診断jobは起動しないでください。
+
+今回の成果物は、次にユーザーが数値診断を承認した場合、その必要範囲を明確にして実行できる状態を目指します。
+
+## 3. 固定科学条件
+
+以下を変更しません。
+
+- Linear H4、隣接1.00 Å
+- STO-3G
+- System 8 qubit＋ancilla 1 qubit
+- Pauli-JW Hamiltonian：184非identity項
+- PR prefix27
+- S2、T=0.8、q=8、r=4、K=4
+- 元のPR event law
+- D2のcentral-control実装
+- Qiskit 1.3.0
+- Basis gates：`rz`, `sx`, `x`, `cx`
+- Optimization level1、seed17
+- Backend/coupling/layout/routing指定なし
+- 元のcosine/sine Hadamard wrapper
+- 固定されたstate/ray・normalization
+
+科学SOURCE：
+
+- 元H4：`0c329b30a81accb35c212be8defa66fee0dd0f12`
+- D2：`74515d8eb4f073c40fc783681a3775dbca89e9b1`
+- A_GATE：`ee7d281b5daead1d0d5e81e00c9a0ed4727792b0`
+- A_COHORT_COS：`34ef0a7ca2412a61f5215a4ce1192e99f3226b2a`
+- A_AXES：`a37232f85812688c3b9ab957c5073c5ce143b17e`
+- 条件付きC/N/G：`d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34`
+
+元のC/L証拠・過去のcompiler評価も必要に応じて参照してください。
+
+## 4. 最優先：既存コード・診断資産の確認
+
+新しい数値計算コードを実装する前に、過去の計算・検証で使った資産を確認してください。
+
+特に以下を調査してください。
+
+- `h4_d2_pauli_control`
+- `h4_a_gate`
+- `h4_a_cohort`
+- `h4_a_axes`
+- `h4_central_cng`
+- `fixed_signal_evaluation`
+- `h4_conditional_cng`
+- 既存のC/L評価backend
+- 保存QPYの読み取り・照合機能
+- 保存state/rayの再利用機能
+- 理想信号の計算・照合機能
+- 数値精度・区間評価・丸め誤差管理
+- 既存の人工テスト
+- Grant・ledger・native終了管理
+
+各機能について、科学条件・入出力・数値精度・再現性との適合性を確認してください。
+
+**既存の状態伝播、理想信号、compiled circuit評価、数値誤差評価の実装が利用できるなら再利用してください。**
+
+新しい独立シミュレータ、Hamiltonian builder、回路compiler、数値区間演算基盤を不要に再実装しないでください。
+
+既存コードで対応できない部分だけ最小限拡張し、新規実装が必要な理由を報告してください。
+
+## 5. 限定診断対象
+
+最初の診断候補を以下の3構成に固定してください。
+
+| 対象 | 保存trajectory | 主な目的 |
+|---|---|---|
+| Pauli central PF | PF singleton | 決定論的PFのcompiled残差 |
+| Pauli central PR order0 | index0 | 基本的なPR event構成 |
+| Pauli central PR order2 | index1 | Pauli product・符号・位相を含むPR |
+
+保存trajectory ID：
+
+**PF**
+`d761627d56a4454e644358fef8907b8a7db28c4feeb44130224c20e4e50aae4d`
+
+**PR index0**
+`93ef5e4e28b499472c8ba9329f6cb139f63c5de071279783b3cca3319793fc97`
+
+**PR index1**
+`596897f2d5ec2fb9b28a2b73c16423192d1494fd490fc58ca52cfc818baae0aa`
+
+Cosine/sineの両軸を診断候補に含めてください。
+
+つまり、全体の候補は3構成×2軸の最大6論理診断です。
+
+ただし、最初から6件すべてを数値計算することは前提にしません。
+
+既存の`C_SELECTED_DIAGNOSTIC`草案にあるPF・PR index0のcosine 2件を最小pilot候補とし、order2とsineを加える価値を比較してください。
+
+数値実行の最小単位、診断順序、後続に進む条件を非実行契約として整理します。
+
+**今回これらの数値診断は実行しません。**
+
+## 6. 既存compiled QPYと理想演算の対応
+
+各対象について、以下の来歴を整理してください。
+
+- 元の保存body
+- 理想controlled演算
+- Central-control変換
+- Cosine/sine wrapper
+- Compiled QPY
+- Compiler profile
+- Input/output fingerprint
+- Global phase・ancilla相対phase
+- Measurement axis
+- 保存state/ray
+- Reference signal
+- PR event law・normalization
+- 元SOURCEと各結果の対応
+
+主な取得先は以下です。
+
+- D2：PF・PR index0の保存回路
+- A_GATE：PR index1のcosine/sine保存回路
+- A_AXES：PFおよびPR index0のsine保存回路
+- 元H4・C/L：state/ray・理想信号・誤差証拠
+
+保存metadataやSOURCEの読み取りを優先してください。
+
+必要な場合は、QPYの構造を非実行で確認する方法を設計・人工検証して構いませんが、実H4の状態伝播・matrix評価・compiled signal算出は行わないでください。
+
+元のcompiled回路を再生成したり、再compileしたりしないでください。
+
+## 7. 実装残差ρの意味論
+
+今回最も重要なのは、**比較する2つの信号の定義を正確に一致させること**です。
+
+条件付きC/N/Gでは、ρ_newを、新しいcompiled実装によって生じる未保証の測定期待値誤差として扱っています。
+
+診断計画では、理想的なcentral-controlled回路と保存compiled回路について、同じstate/ray、同じcontrol、同じmeasurement convention、同じ正規化尺度で比較する方法を定義してください。
+
+特に、
+
+1. Cosineの符号と測定期待値
+2. Sineの符号とSdgの適用位置
+3. Ancilla位相
+4. Pauli productの符号
+5. Order phase
+6. Constant Hamiltonian phase
+7. Global phaseのcontrolled回路への転送
+8. State normとrayの扱い
+9. PRの係数・重み・B_saved
+10. Ideal PF/PR biasとcompiled residualの区別
+
+を確認してください。
+
+System bodyのglobal phaseと、controlled回路におけるancilla相対phaseを混同しないでください。
+
+また、保存されたstateを使用する場合、normや位相規約を勝手に変更しないでください。
+
+### PRについて
+
+個別trajectoryのcompiled residualと、PR lawで平均したencoded meanの残差は同じものではありません。
+
+個別trajectoryの小さい残差を、PR全体のρ保証へ直接転用してはいけません。
+
+重み付き平均誤差への変換を行う場合は、元law・係数・normalizationを正確に保持してください。
+
+保存された256 trajectoryは、全event lawを網羅していません。
+
+**未観測order4を含むPR全体について、今回の代表trajectoryだけから一様残差上界を主張しないでください。**
+
+## 8. 既存C/L・誤差会計との接続
+
+既存の誤差証拠から、次を整理してください。
+
+- `bias_distance.upper`
+- Signed bias
+- `u_enc`
+- `B_saved`
+- `saved_log_B_upper`
+- `B_up`
+- 元reference signal
+- State/ray
+- Measurement residualの所有範囲
+
+既存の条件付き会計では、
+
+```text
+epsilon_axis = epsilon_sig / sqrt(2)
+
+u_axis = u_enc,axis + rho_new,axis
+
+h_axis = epsilon_axis - abs(b0_axis) - u_axis
+
+guard:
+  h_axis > 0
+  u_axis / h_axis <= 0.01
+```
+
+を使用しています。
+
+この定義を変更しないでください。
+
+最も厳しい`epsilon_sig=0.0005`で、保存済みのρ許容上限は概ね次の値です。
+
+| 方式 | Cosine | Sine |
+|---|---:|---:|
+| Pauli PF | 2.64900e-6 | 3.36139e-6 |
+| Pauli PR | 2.59361e-6 | 3.35232e-6 |
+
+これらは**残差の許容予算**であり、実測値・証明済み上界ではありません。
+
+今後の数値診断では、計算の数値誤差・丸め幅・測定残差を混同しないよう、比較可能な精度設計を作成してください。
+
+CとLの誤差の二重計上、旧generic-control残差の無条件転用、未保証項の根拠のない差引きは禁止します。
+
+## 9. 数値診断方法の設計
+
+次の実行で使用する数値診断方法を比較し、推奨案を示してください。
+
+候補には、既存の状態作用・期待値評価、保存compiled circuitの状態伝播、既存区間演算・誤差評価機能などがあります。
+
+ただし、既存コードを調査する前に新しい評価器を作らないでください。
+
+設計で明示する事項：
+
+- 理想信号の取得方法
+- Compiled信号の取得方法
+- 比較するobservableとその符号
+- 入力state/rayの扱い
+- 正規化・B尺度
+- 必要な数値精度
+- 丸め誤差・計算誤差の見積り方
+- 実残差と数値不確かさの区別
+- 許容ρとの比較方法
+- 成功・不十分・失敗の判定条件
+- 必要な科学call数
+- 計算資源・並列化計画
+- SOURCE・結果・終了状態の保存方法
+
+必要なら、倍精度による限定diagnosticと、より高精度の評価を段階的に行う案を示して構いません。
+
+旧`C_SELECTED_DIAGNOSTIC`草案のprecision tierも参照してください。
+
+ただし、精度tierを増やすこと自体を目的化せず、ρ予算に対して十分な判別能力が得られる最小構成を優先してください。
+
+数値幅が不十分な場合のprecision escalation条件を事前に定義してください。
+
+**今回、倍精度・高精度のいずれの実H4診断も実行しません。**
+
+## 10. 診断結果の解釈範囲
+
+次の数値実行を行った場合に得られる結論を、あらかじめ区別してください。
+
+### A：固定PF回路
+
+PFの保存compiled回路について、限定的な実装残差を測定・評価すること。
+
+### B：固定PR trajectory
+
+Order0/order2の保存compiled回路について、局所的な実装残差を測定・評価すること。
+
+### C：PRのencoded mean
+
+PR全lawに対する残差を評価するには、局所診断に加えて、全allowed trajectoryへの一様上界、または正当なlaw-weighted上界などが必要です。
+
+今回の代表的なPR trajectoryの残差だけで、この条件を満たしたことにしてはいけません。
+
+### D：条件付きN/Gの更新
+
+ρの診断結果が得られた場合でも、既存の条件付きN/Gが実際の精度保証に昇格できるかは別の判断です。
+
+Formal certificateの受理は今回の目的ではありません。
+
+したがって、**局所的なcompiled residualの確認と、PR全体のρ保証・総費用保証を区別した診断契約**を作成してください。
+
+## 11. 今回作成する非実行契約
+
+必要な数値診断を段階別に整理してください。
+
+例えば、
+
+**候補R0：最小pilot**
+
+- PF cosine
+- PR index0 cosine
+- 保存compiled QPYを再利用
+- 新compileなし
+- 理想信号とcompiled信号の限定比較
+
+**候補R1：構造・両軸の拡張**
+
+- PR index1 order2
+- 必要なcosine/sineの追加診断
+- 位相・product・測定軸の違いを確認
+
+**候補R2：全lawへの誤差転送設計**
+
+- PR全体へ残差保証を拡張する条件の検討
+- 一様／law-weighted上界の候補
+- 未観測order4への対応
+- 新規計算が本当に必要かの判断
+
+R0/R1/R2を自動で連続実行する契約にはしないでください。
+
+各候補について、科学的目的・計算対象・必要call・入力SOURCE・計算精度・終了条件・得られる結論・得られない結論を明示してください。
+
+今回の契約は、`execution_authorized=false`、`dispatch_enabled=false`、`grant_valid=false`とし、実行可能な科学grantは発行しません。
+
+正式な数値実行はユーザーの別承認を必要とします。
+
+## 12. 人工テストと準備作業
+
+今回実施してよいテストは、実H4の新しい科学数値計算を伴わない技術検証です。
+
+例：
+
+- 人工2〜3qubit回路のcontrol=0/1確認
+- Global phaseとancilla相対phase
+- Cosine/sine wrapperの符号
+- State/rayの正規化規約
+- 数値diagnostic adapterのmock
+- 入力SOURCE不一致時の拒否
+- Grant未承認時の実行拒否
+- 実行callの重複防止
+- 技術的中断・回復の人工検証
+
+既存の人工テストで十分なら再利用してください。
+
+新しい大規模なテスト基盤や独自compilerを作らないでください。
+
+科学的な数値検証を実施したように扱わないことが重要です。
+
+## 13. 意図しない技術的中断
+
+従来の方針を維持します。
+
+今回承認された準備・技術実装・人工テストで予期しない中断が発生した場合は、Codex自身で原因を調査・修正して再実行して構いません。
+
+中間承認は不要です。
+
+ただし、
+
+- 旧SOURCE・結果・grant・STOPを変更しない
+- 原因不明の無制限retryを行わない
+- 成功済みの技術結果を不要に再実行しない
+- 実H4の新しい数値診断を回復作業の名目で起動しない
+- 科学的実行範囲を拡張しない
+
+ことを守ってください。
+
+今回の技術的回復の許可は、将来の科学診断実行を先行承認するものではありません。
+
+## 14. 保全・資源・運用
+
+最新版`research_project_instructions_unified_2026-10-23.md`を適用してください。
+
+特に§8.4・§10・§10.3の方針を遵守します。
+
+Codex側のコピーに§10.3がない場合は、版の不一致を記録してください。未取得の規則を読了済みとせず、今回の直接指示にある科学的再現性・必要十分な技術検証・過剰管理の回避を優先してください。
+
+CPU・RAM・worker数に恣意的な低い上限を設けず、重い計算が必要な将来の契約には十分な並列化・高速化を検討してください。
+
+共有環境全体や他ユーザーに影響する設定変更・ファイル操作・process操作は禁止です。
+
+元SOURCE・raw・grant・ledger・marker・STOPを維持してください。
+
+また、以下の未解決状態は変更しません。
+
+- Pauli-PR historical hash FAIL／原因UNKNOWN
+- 元H4 native UNKNOWN
+- 旧N/G null
+- C/L COMBINATION_BLOCKED
+- 旧compiler MISSING_EVIDENCE
+- 新compiled残差ρ UNKNOWN
+- 母平均費用tail UNKNOWN
+- Formal certificate未受理
+
+既存の条件付きC/N/G結果も変更せず、新しい診断計画として分離してください。
+
+## 15. 成果物とmandatory STOP
+
+専用branchに以下を保存してください。
+
+1. 既存SOURCE・QPY・状態・理想信号の来歴表
+2. PF／PR index0／PR index1の診断対象表
+3. ρの数学的定義と誤差所有範囲
+4. 既存C/L評価コードの再利用可否
+5. 数値診断方法・必要精度・計算資源の設計
+6. 必要最小限の非実行adapter・人工テスト
+7. R0/R1/R2の非実行契約案
+8. 保全・技術検証結果
+9. 実行準備報告書
+10. Commit・remote SHA・mandatory STOP
+
+最終報告では、特に以下に答えてください。
+
+- 新compiled残差ρの対象をどこまで正確に定義できたか
+- 保存された理想信号・state・QPYで不足するものはあるか
+- 既存コードの再利用で数値診断を実装できるか
+- 最小限の実H4診断は何件必要か
+- Cosine/sine・order0/order2をどの順で評価すべきか
+- 最も厳しいρ予算に対して必要な数値精度は何か
+- 局所診断でどこまで主張できるか
+- PR全lawのρ保証には何が追加で必要か
+- 次にユーザーが承認すべき科学callと計算範囲
+- SOURCE・branch・commit・remote SHA・STOP
+
+必要十分な報告書・契約を保存してcommitしてください。
+
+既存のrepository運用規則に従ってpush・remote SHAを確認してください。認証失敗が記録されても、GitHub上で同一commitを取得できる場合は再push不要です。
+
+**今回承認したSOURCE調査・既存コード確認・非実行adapter・人工検証・診断契約作成まで一括して実施してください。**
+
+実H4の残差数値計算・新compile・sampling・N/G再解析・正式certificate受理は行わず、作業完了後は**mandatory STOP**してください。

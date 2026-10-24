@@ -1092,3 +1092,7 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## H4 Pauli central 条件付きC/N/G（2026-10-24）
 
 `run_h4_central_cng.py`：新Pauli10条件/20軸、15比較・保存DF再利用one-shot。
+
+## H4 central 実装残差ρの準備（2026-10-24）
+
+`prepare_h4_central_rho.py --inspect`：metadata専用。`--execute`は常に拒否。

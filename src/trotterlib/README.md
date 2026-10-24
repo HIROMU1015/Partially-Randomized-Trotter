@@ -1061,3 +1061,7 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 ## H4 Pauli central 条件付きC/N/G（2026-10-24）
 
 `h4_central_cng.py`：既存有理数会計へのcentral paired価格adapter。
+
+## H4 central 実装残差ρの準備（2026-10-24）
+
+`h4_central_rho_plan.py`：来歴・無効診断契約・人工3system以下のobservable/mock。実H4 evaluatorなし。

@@ -1,0 +1,32 @@
+test_B_saved_applied_once (__main__.PreparationTests.test_B_saved_applied_once) ... /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-central-rho-preparation-20261024/src/trotterlib/h4_central_rho_plan.py:129: DeprecationWarning: The property ``qiskit.circuit.instruction.Instruction.condition`` is deprecated as of qiskit 1.3.0. It will be removed in 2.0.0.
+  C.require(not item.clbits and getattr(item.operation,'condition',None) is None and item.operation.name not in ('measure','reset'),'NO_MID_MEASURE_RESET_CONDITION')
+ok
+test_CLI_execution_denied (__main__.PreparationTests.test_CLI_execution_denied) ... ok
+test_H4_shape_refused_before_propagation (__main__.PreparationTests.test_H4_shape_refused_before_propagation) ... ok
+test_QPY_structure_toy_no_matrix_or_propagation (__main__.PreparationTests.test_QPY_structure_toy_no_matrix_or_propagation) ... ok
+test_all_drafts_disabled_and_no_escalation_default (__main__.PreparationTests.test_all_drafts_disabled_and_no_escalation_default) ... ok
+test_compiler_gap_not_C_target_gap (__main__.PreparationTests.test_compiler_gap_not_C_target_gap) ... /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-central-rho-preparation-20261024/src/trotterlib/h4_d2_pauli_control.py:28: DeprecationWarning: The property ``qiskit.circuit.instruction.Instruction.condition`` is deprecated as of qiskit 1.3.0. It will be removed in 2.0.0.
+  if item.clbits or getattr(op, 'condition', None) is not None:
+ok
+test_controlled_phase_matters_full_global_does_not (__main__.PreparationTests.test_controlled_phase_matters_full_global_does_not) ... ok
+test_mock_interval_and_precision_outcomes (__main__.PreparationTests.test_mock_interval_and_precision_outcomes) ... ok
+test_no_compile_or_sampler_in_toy_diagnostic (__main__.PreparationTests.test_no_compile_or_sampler_in_toy_diagnostic) ... ok
+test_nonrefundable_technical_failure_no_duplicate_call (__main__.PreparationTests.test_nonrefundable_technical_failure_no_duplicate_call) ... ok
+test_original_wrapper_positive_real_imag_same_ray (__main__.PreparationTests.test_original_wrapper_positive_real_imag_same_ray) ... FAIL
+test_raw_state_not_normalized_or_mutated (__main__.PreparationTests.test_raw_state_not_normalized_or_mutated) ... ok
+test_sine_wrong_S_sign_detected (__main__.PreparationTests.test_sine_wrong_S_sign_detected) ... ok
+test_source_fingerprint_profile_mismatch_rejected (__main__.PreparationTests.test_source_fingerprint_profile_mismatch_rejected) ... ok
+test_wrong_measure_reset_or_mid_measure_rejected (__main__.PreparationTests.test_wrong_measure_reset_or_mid_measure_rejected) ... ok
+
+======================================================================
+FAIL: test_original_wrapper_positive_real_imag_same_ray (__main__.PreparationTests.test_original_wrapper_positive_real_imag_same_ray)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-central-rho-preparation-20261024/tests/test_h4_central_rho_plan.py", line 41, in test_original_wrapper_positive_real_imag_same_ray
+    self.assertAlmostEqual(signal['signal'],value,places=12)
+AssertionError: 0.0 != 0.11752929176597603 within 12 places (0.11752929176597603 difference)
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.141s
+
+FAILED (failures=1)
