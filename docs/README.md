@@ -115,3 +115,5 @@
 [限定F2の保存case寄与分析](research/pr_algorithm_improvement_phase2d_f2_attribution_20261024.md)：8分類表・490行のP／条件付き費用／寄与を公開Φへexact照合。SOURCEは `src/trottertracks/pr_dictionary_validation/f2_attribution.py`、runnerは `scripts/run_pr_dictionary_f2_attribution_saved.py`、人工testは `tests/management/test_pr_dictionary_f2_attribution.py`、artifactは `artifacts/pr_algorithm_improvement_phase2d_f2_attribution/2026-10-24/`。新build／compileなし、因果効果・Nは未確立。mandatory STOP。
 
 [Gaussian singleton合成の改善候補](research/pr_gaussian_singleton_synthesis_design_20261024.md)：既存SOURCE・保存資料の静的調査。support1／support2の選択部分空間Givens案を推奨し、既存Nature helper・operator等価条件・未承認の48-wrapper最小対照案を整理。新しい実装・科学計算・build／compileは0件、削減量未測定。mandatory STOP。
+
+[Rectangular Givens候補Aの限定実装・PS48準備](research/pr_rectangular_givens_preparation_20261024.md)：singleton専用adapter、内部T、actual adjointを接続。SOURCEは `src/trottertracks/pr_dictionary_validation/rectangular*`、runnerは `scripts/run_pr_rectangular_givens_saved.py`、mock testは `tests/management/test_pr_rectangular_givens_preparation.py`、artifactは `artifacts/pr_rectangular_givens_preparation/2026-10-24/`。実装・技術確認のみで、科学実行は別承認。mandatory STOP。

@@ -145,3 +145,7 @@ DF部分ランダム化研究と混同しない。
 [修正版F2の全件結果・資源表・STOP](../../docs/research/pr_algorithm_improvement_phase2d_f2_resources_rerun_20261024/EXECUTION_REPORT.md)：SOURCE `9468c70`、raw／compiled各13,676・reference27,356・mean4arm・weighted集計を完了。1-shotの指標順はPP<SP<PS<SS、認証Nは対象外。旧失敗は保持し、追加実験へ進まない。
 
 関連trackの `src/trottertracks/pr_dictionary_validation/f2_attribution.py` は[保存F2寄与分析](../../docs/research/pr_algorithm_improvement_phase2d_f2_attribution_20261024.md)。既存 `f2_execution.aggregate_metrics` を変更せず再利用し、分類だけを追加した。runnerは `scripts/run_pr_dictionary_f2_attribution_saved.py`、testは `tests/management/test_pr_dictionary_f2_attribution.py`、artifactは `artifacts/pr_algorithm_improvement_phase2d_f2_attribution/2026-10-24/`。回路・reference処理は呼ばない。
+
+## 関連track：Rectangular GivensのPS48準備（2026-10-24）
+
+`src/trottertracks/pr_dictionary_validation/rectangular.py` は既存Nature helperのGaussian suffixをsingletonにだけ接続する。[条件・SOURCE・未検証事項](../../docs/research/pr_rectangular_givens_preparation_20261024.md)。`rectangular_preflight.py`／`rectangular_execution.py`、runner `scripts/run_pr_rectangular_givens_saved.py`、mock test `tests/management/test_pr_rectangular_givens_preparation.py`、artifact `artifacts/pr_rectangular_givens_preparation/2026-10-24/`。共有runの既存合成を維持し、実回路・数値同値性・削減量は次回承認後の検証対象。

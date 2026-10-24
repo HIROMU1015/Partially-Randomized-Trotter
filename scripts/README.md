@@ -157,3 +157,7 @@ artifacts/<validation_name>/
 [修正版F2の全件結果・資源表・STOP](../docs/research/pr_algorithm_improvement_phase2d_f2_resources_rerun_20261024/EXECUTION_REPORT.md)：SOURCE `9468c70`、raw／compiled各13,676・reference27,356・mean4arm・weighted集計を完了。1-shotの指標順はPP<SP<PS<SS、認証Nは対象外。旧失敗は保持し、追加実験へ進まない。
 
 `run_pr_dictionary_f2_attribution_saved.py` は[保存F2寄与分析](../docs/research/pr_algorithm_improvement_phase2d_f2_attribution_20261024.md)の入口。既存CSV・law・B atomまたは公開派生featuresだけを使い、回路・lawを生成しない。処理は `trottertracks.pr_dictionary_validation.f2_attribution`、人工testは `tests/management/test_pr_dictionary_f2_attribution.py`、artifactは `artifacts/pr_algorithm_improvement_phase2d_f2_attribution/2026-10-24/`。
+
+## Rectangular Givens PS48の実行前準備（2026-10-24）
+
+`run_pr_rectangular_givens_saved.py` は[候補Aの限定実装](../docs/research/pr_rectangular_givens_preparation_20261024.md)の入口。`--check-only` は保存hash・case identityだけを確認する。`--execute` は別のPS48科学承認・新one-shotを要求する。処理は `trottertracks.pr_dictionary_validation.rectangular*`、mock testは `tests/management/test_pr_rectangular_givens_preparation.py`、planと技術証拠は `artifacts/pr_rectangular_givens_preparation/2026-10-24/`。今回は科学実行なし。

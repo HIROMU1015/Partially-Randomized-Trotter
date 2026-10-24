@@ -177,3 +177,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## 2026-10-24：保存F2回路資源の寄与分析
 
 [結果と分類定義](docs/research/pr_algorithm_improvement_phase2d_f2_attribution_20261024.md)、`src/trottertracks/pr_dictionary_validation/f2_attribution.py`、`scripts/run_pr_dictionary_f2_attribution_saved.py`、`tests/management/test_pr_dictionary_f2_attribution.py`、`artifacts/pr_algorithm_improvement_phase2d_f2_attribution/2026-10-24/`を一組として読む。既存exact集計を再利用する保存データの再集計だけで、回路build／compile・sampling・law生成・N計算はしない。主7指標＋measureの公開期待値へexact照合し、因果効果の認定や次の実験には進まない。
+
+## Rectangular Givens候補Aの限定実装・PS48準備（2026-10-24）
+
+[条件・実行境界](docs/research/pr_rectangular_givens_preparation_20261024.md)、`src/trottertracks/pr_dictionary_validation/rectangular.py`・`rectangular_preflight.py`・`rectangular_execution.py`、`scripts/run_pr_rectangular_givens_saved.py`、`tests/management/test_pr_rectangular_givens_preparation.py`、`artifacts/pr_rectangular_givens_preparation/2026-10-24/`を一組として読む。実装・metadata/mock確認のみ。保存PS48の新科学実行は別承認・新grantが必要で、今回build／compileは0件。

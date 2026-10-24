@@ -62,6 +62,10 @@ class BasisProvider:
         self.frames=dict(frames)
         self._cache={}
 
+    def reference_support(self, atom, singleton):
+        """Internal central support; legacy recipes keep the physical support."""
+        return atom.support
+
     def basis(self, atom: MixedAtom, singleton: bool):
         from qiskit import QuantumCircuit
         key=(atom.basis_key,atom.support if singleton and atom.kind=='FRAME_Z' else ())
@@ -103,7 +107,7 @@ def component_probe(atom, provider, *, angle=None):
     else:
         b=provider.basis(atom,True)
         qc.compose(b.inverse(),qubits=range(anc),inplace=True)
-        append_central(qc,atom.support,anc,signed_angle)
+        append_central(qc,provider.reference_support(atom,True),anc,signed_angle)
         qc.compose(b,qubits=range(anc),inplace=True)
     if phase: qc.p(phase,anc)
     return qc
@@ -138,9 +142,11 @@ def build_event_sequence(events, atoms, provider, *, optimized=True):
                 other=flattened[stop][0]
                 if other.kind=='IDENTITY' or other.basis_key!=atom.basis_key: break
                 stop+=1
-        b=provider.basis(atom,singleton=optimized and stop-pos==1)
+        singleton=optimized and stop-pos==1
+        b=provider.basis(atom,singleton=singleton)
         qc.compose(b.inverse(),qubits=range(anc),inplace=True)
-        for a,theta in flattened[pos:stop]: append_central(qc,a.support,anc,theta)
+        for a,theta in flattened[pos:stop]:
+            append_central(qc,provider.reference_support(a,singleton),anc,theta)
         qc.compose(b,qubits=range(anc),inplace=True)
         pos=stop
     if phase: qc.p(phase,anc)

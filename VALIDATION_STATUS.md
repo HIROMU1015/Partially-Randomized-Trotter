@@ -1,5 +1,10 @@
 # Validation status
 
+## 2026-10-24 rectangular Givens candidate A: implementation only, PS48 not executed
+
+Singleton-only Nature0.7.2 Gaussian suffix and canonical central support are connected to the existing builder; shared-frame runs retain the existing synthesis. Eight candidate mocks plus six existing artificial preparation tests PASS, and saved input/source/case hashes pass metadata preflight. No real quantum circuits, numerical matrices, QPY decoding, reference evaluations or new research grants were executed.
+PS48 correctness, controlled relative phase and resource reduction remain unvalidated. Saved targets and fixed F2 compiler/tolerances are bound for a separately approved future one-shot. [Implementation, evidence limits and mandatory STOP](docs/research/pr_rectangular_givens_preparation_20261024.md). Local technical evidence only; no CI or scientific PASS claim.
+
 ## 2026-10-24 saved F2 attribution: exact grouped reconciliation PASS
 
 Saved-only regrouping of 13,674 physical X/Y records plus two excluded common diagnostics; no new quantum circuit, compile, law, sampling or simulation.
