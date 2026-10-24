@@ -19,3 +19,9 @@ scalar counterexample fixtureの点加算方法1件を修正して再検証。�
 
 次：ユーザーが数値pilot範囲を明示承認後、Codexが新production SOURCE/runtime/入力/契約/未使用grantを固定して限定実行・終了監査。
 現在PR1/sine/R2/N_G/正式受理は未実行。公開処理後mandatory STOP。
+
+## 公開試行
+
+技術準備commit 4e97841b87b6cc032639f0e616fdd2c01c48f244。
+origin push1回はHTTPS Username取得不能でexit128、専用branch検索0件、remote SHA=null。
+失敗記録と再pushコマンドを後続local metadata commitへ保存する。実H4評価/新科学grantは0、mandatory STOP。

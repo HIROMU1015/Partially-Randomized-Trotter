@@ -158,3 +158,11 @@ PF科学SOURCE・既存結果・grant/ledger/marker/STOPを変更していない
 技術準備commit、push試行、remote SHAは[publication_status.json](../artifacts/non_df_h4_central_arb_pr0_preparation/2026-10-25/publication_status.json)に保存する。
 新しい科学SOURCE/grantではない。認証失敗なら全成果物をlocalに保全し、再pushコマンドを最終回答へ示す。
 公開処理後mandatory STOP、数値実行へ自動移行しない。
+
+技術準備commitは `4e97841b87b6cc032639f0e616fdd2c01c48f244`。
+push1回はHTTPS Username取得不能でexit128。
+[失敗log](../artifacts/non_df_h4_central_arb_pr0_preparation/2026-10-25/push_attempt01.log)、
+[remote再確認](../artifacts/non_df_h4_central_arb_pr0_preparation/2026-10-25/remote_after_push.json)を保存。
+専用branch検索0件、remote SHA=null。認証可能な環境で同branchをpushする必要がある。
+後続local metadata commitは公開状態だけを記録し、接続code・人工結果・無効契約・旧証拠・STOPは変更しない。
+実H4状態作用/新科学grant0、mandatory STOPを維持する。
