@@ -6,6 +6,7 @@ from types import SimpleNamespace
 import h46_standard_y4_contract as c
 
 RT = None
+ACTIVE_RUNTIME = None
 WARM = False
 
 
@@ -111,8 +112,8 @@ def guarded_context(cfg, system, prefix):
     # The native worker must inherit the parent-prepared context; a cache miss
     # would otherwise perform extra unbudgeted preparation inside a worker.
     c.require(WARM, 'PARENT_PREWARM_REQUIRED_NO_WORKER_SETUP')
-    ctx = RT.RUNTIME.h46_context
-    cache = RT.RUNTIME.native_namespace['CACHE']
+    ctx = ACTIVE_RUNTIME.h46_context
+    cache = ACTIVE_RUNTIME.native_namespace['CACHE']
     key = (cfg['SOURCE'], system, c.digest(cfg['systems'][system]['inputs']))
     c.require(key in cache and prefix in cache[key]['prefixes'], 'READONLY_CONTEXT_CACHE_HIT')
     return ctx(cfg, system, prefix)
@@ -120,7 +121,7 @@ def guarded_context(cfg, system, prefix):
 
 def worker(task):
     from trottertracks.resource_applicability import ax2b_native_df_v5 as api
-    cfg = RT.RUNTIME.runner_namespace['WORKER_CFG']
+    cfg = ACTIVE_RUNTIME.runner_namespace['WORKER_CFG']
     counts = dict(partial_native_build=0, hadamard_wrapper_build=0)
     originals = {name: getattr(api, name) for name in
         ('build_partial_native', 'build_native_hadamard_wrapper')}
@@ -156,13 +157,14 @@ def worker(task):
 
 
 def runtime(cfg):
-    global RT
+    global RT, ACTIVE_RUNTIME
     c.authorize(cfg)
     import h246_confirmation_runtime as old
     if RT is None:
         RT, _ = old.rebind(old, dict(c=c, rebind=old.rebind,
             cohort_code=old.cohort_code))
     r = RT.get_runtime(cfg)
+    ACTIVE_RUNTIME = r
     cli = str(c.ROOT / 'scripts/run_h46_standard_y4.py')
     r.runner_namespace['__file__'] = cli
     r.runner.supervise.__globals__['__file__'] = cli

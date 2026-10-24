@@ -169,7 +169,8 @@ class LegacyBindingTests(unittest.TestCase):
         import h46_standard_y4_runtime as r
         import run_h46_pr_design_pilot as old
         cfg = dict(stage='H4_CONFIRMATION', signal_path='/toy/signal.json')
-        with patch.object(c, 'authorize'), patch.object(r, 'RT', None):
+        with patch.object(c, 'authorize'), patch.object(r, 'RT', None), \
+                patch.object(r, 'ACTIVE_RUNTIME', None):
             rt = r.runtime(cfg)
             self.assertEqual(rt.runner.execute.__code__.co_code, old.execute.__code__.co_code)
             self.assertIs(rt.runner.execute.__kwdefaults__['target'], r.worker)
@@ -212,13 +213,66 @@ class LegacyBindingTests(unittest.TestCase):
             runtime = SimpleNamespace(worker=fake_worker,RUNTIME=SimpleNamespace(
                 runner_namespace={'WORKER_CFG':cfg}))
             with patch.dict(sys.modules,{'trottertracks.resource_applicability':parent}), \
-                    patch.object(r,'RT',runtime):
+                    patch.object(r,'RT',runtime), patch.object(r,'ACTIVE_RUNTIME',runtime.RUNTIME):
                 self.assertEqual(r.worker(task),{'toy':'complete'})
             self.assertIs(api.build_native_hadamard_wrapper,original_wrapper)
             self.assertEqual(c.read(out/'build_dispatch.json')['counts'],
                 dict(partial_native_build=12,hadamard_wrapper_build=2))
             self.assertEqual(len(list(ledger.iterdir())),2)
             self.assertEqual(sum(c.task_limits(task).values()),38)
+
+    def test_real_lazy_runtime_is_retained_through_fork_pool_initializer(self):
+        """Exercise actual rebind/get_runtime and runner initialize, no molecule."""
+        from concurrent.futures import ProcessPoolExecutor
+        import multiprocessing
+        import h46_standard_y4_runtime as r
+        import run_h46_pr_design_pilot as old_runner
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task = c.tasks_for('H4', candidate())[0]
+            (root / 'output' / task['id']).mkdir(parents=True)
+            (root / 'ledger').mkdir()
+            cfg = dict(stage='H4_CONFIRMATION',signal_path='/synthetic/signal',
+                SOURCE='a'*40,plan_sha256='b'*64,tasks=[task],
+                systems={'H4':dict(inputs={'synthetic':True})},
+                output=str(root/'output'),ledger=str(root/'ledger'),
+                marker=str(root/'CONSUMED.json'),grant={'synthetic':True})
+            c.save(cfg['marker'],dict(state='CONSUMED_NO_RETRY_NO_REFUND',grant=cfg['grant']))
+            api=ModuleType('synthetic_native_api')
+            api.build_partial_native=lambda *a,**k:None
+            api.build_native_hadamard_wrapper=lambda *a,**k:None
+            parent=ModuleType('trottertracks.resource_applicability')
+            parent.ax2b_native_df_v5=api
+            with patch.object(c,'authorize'),patch.object(r,'RT',None), \
+                    patch.object(r,'ACTIVE_RUNTIME',None),patch.object(r,'WARM',True), \
+                    patch.dict(sys.modules,{'trottertracks.resource_applicability':parent}):
+                live=r.runtime(cfg)
+                self.assertIsNone(r.RT.RUNTIME)
+                self.assertIs(r.RT.get_runtime.__globals__['RUNTIME'],live)
+                self.assertIs(r.ACTIVE_RUNTIME,live)
+                context=SimpleNamespace(synthetic=True)
+                key=(cfg['SOURCE'],'H4',c.digest(cfg['systems']['H4']['inputs']))
+                live.native_namespace['CACHE'][key]=dict(prefixes={3:context})
+                live.h46_context=lambda *args:context
+                self.assertIs(r.guarded_context(cfg,'H4',3),context)
+                self.assertEqual(live.runner_namespace['initialize'].__code__.co_code,
+                    old_runner.initialize.__code__.co_code)
+                def fake_task(actual_cfg,actual_task,stop):
+                    assert actual_cfg is cfg and actual_task==task and not stop.is_set()
+                    assert r.guarded_context(actual_cfg,'H4',3) is context
+                    for _ in range(12):api.build_partial_native()
+                    for _ in range(2):api.build_native_hadamard_wrapper()
+                    return dict(id=actual_task['id'],synthetic=True,pid=os.getpid())
+                live.native.run_task=fake_task
+                mp=multiprocessing.get_context('fork')
+                stop=mp.Event()
+                with ProcessPoolExecutor(max_workers=1,mp_context=mp,
+                        initializer=live.runner_namespace['initialize'],initargs=(cfg,stop)) as pool:
+                    result=pool.submit(r.worker,task).result(timeout=30)
+                self.assertNotEqual(result['pid'],os.getpid())
+                self.assertTrue(result['synthetic'])
+                self.assertEqual(len(list((root/'ledger').glob('*.json'))),2)
+                self.assertTrue(c.read(root/'output'/task['id']/'build_dispatch.json')['completed'])
 
     def test_paired_statistics_uses_covariance(self):
         from h246_confirmation_evaluation import paired_statistics

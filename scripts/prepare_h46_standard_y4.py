@@ -160,6 +160,13 @@ def prepare(assets, python, site_packages, historical_configs, pack_name):
         add(r['local'], 'recovered:' + r['path'])
     add(a / 'recovery_manifest_PRIVATE.json', 'recovery_provenance')
     add(a / 'additional_import_closure_PRIVATE.json', 'additional_static_import_closure')
+    prior_stop = a / 'prior_attempt_preservation_PRIVATE.json'
+    if prior_stop.exists():
+        prior = c.read(prior_stop)
+        c.check_files([dict(r, role='prior_stopped_attempt') for r in prior['files']])
+        add(prior_stop, 'technical_recovery_prior_attempt')
+        for row in prior['files']:
+            add(row['path'], 'prior_stopped_attempt:' + row['logical_path'])
     for rel in c.SOURCE_PATHS:
         add(c.ROOT / rel, 'new_SOURCE:' + rel)
     add(c.ROOT / ENDPOINTS, 'fixed_current_epsilon_001_endpoints')
