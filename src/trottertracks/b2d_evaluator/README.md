@@ -1,5 +1,7 @@
 # B2-D 5方式評価器：接続準備・技術報告
 
+**Outer固定16行の接続完了（2026-10-25、科学実行未承認）：** [`outer_execution.py`](outer_execution.py) と `scripts/run_b2d_outer_stage1.py` を追加し、既存Input package・scope・launcher・失敗保存／STOPへ接続した。[SOURCE b85dd3284・最終契約・単一command](../../../docs/research/research_b_outer_splitting_stage1_execution_ready_20261025.md)。906 dispatch／490 key／RTE各24／80 expectation。追加14＋既存91＝105人工件PASS、科学処理0件。以下は前段の履歴。
+
 **Outer splittingの独立拡張（2026-10-25、準備のみ）：** [`outer.py`](outer.py)／[`outer_backend.py`](outer_backend.py)、人工test `tests/management/test_b2d_outer_preparation.py`、[技術報告・未承認科学契約案](../../../docs/research/research_b_outer_splitting_stage1_preparation_20261025.md)。4方式のstageとsigned RTE／normalizationを既存DAGへ接続。追加19＋既存72＝91人工test PASS。科学計算・回路生成なし。旧launcher／scopeは保全し、新outerの実行bindingは条件採択後に接続する。
 
 **Stage 1実行済み（2026-10-25）：** [全結果・技術復旧・科学SOURCE758a05ed・STOP](../../../docs/research/b2d_stage1_execution_20261025.md)。入力・独立A4数学参照・published列がPASSし、36行・941 dispatch・448 keyを完了。A0／D-S2からのfull signal誤差改善は観測したがA3との優劣はINCONCLUSIVE。入力loaderの2参照と保存後のCLI表示を修正、人工72件PASS。保存済み原本・CSV・provenanceは `artifacts/research_b_b2d_stage1/20261025/`。以下は準備段階の履歴。追加科学計算・Stage2は開始しない。

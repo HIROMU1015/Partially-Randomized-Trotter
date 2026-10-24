@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究B outer Stage 1固定16行（準備完了・科学実行未承認）
+
+[`run_b2d_outer_stage1.py`](run_b2d_outer_stage1.py) は `--inspect` でmetadataだけを表示する。科学実行はユーザーの明示許可後に `--execute --source-commit … --output …`。Source・固定条件・scope・fresh outputを検査し、既存Input package／保存／STOPを再利用する。[契約・単一command・人工105件](../docs/research/research_b_outer_splitting_stage1_execution_ready_20261025.md)。Source候補b85dd3284、16行・906 dispatch・490 key・80 expectation、科学処理未起動。
+
 `scripts/` はコマンドラインから実行する入口を置く。研究ロジックの本体は原則として
 `src/trotterlib/` にあり、runnerは条件の読込み、呼出し、成果物保存を担当する。
 

@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究B outer 16行最終実行準備（2026-10-25）
+
+[固定SOURCE・未承認科学契約・実行command](docs/research/research_b_outer_splitting_stage1_execution_ready_20261025.md)。SOURCE候補 `b85dd328423de5b1159f11939835f04db90f3187`、入口 `scripts/run_b2d_outer_stage1.py`、接続 `b2d_evaluator/outer_execution.py`、人工test `tests/management/test_b2d_outer_execution.py`。16行・906 dispatch・490 key・80 expectationを登録、105人工件PASS。科学処理未実行、明示許可後だけ実行する。以下の準備履歴・旧Stage 1結果・STOPは保全する。
+
 ## 研究B outer splitting準備（2026-10-25）
 
 [技術報告・未承認科学契約案](docs/research/research_b_outer_splitting_stage1_preparation_20261025.md)、`src/trottertracks/b2d_evaluator/{outer,outer_backend}.py`、`tests/management/test_b2d_outer_preparation.py`を一組として読む。4方式のstage／heterogeneous RTE接続と人工91件PASS。科学処理未実行、新outer専用launcherなし。旧Stage 1 SOURCE・結果・scope・STOPは保全する。

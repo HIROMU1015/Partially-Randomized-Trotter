@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究B outer 16行最終実行準備（2026-10-25）
+
+[未承認の最終科学実行契約・技術報告](research/research_b_outer_splitting_stage1_execution_ready_20261025.md)。SOURCE候補b85dd3284、16行・906 dispatch・490 key・80 expectation。既存launcher／Input package／scope／保存へ接続し、105人工件PASS。科学処理0件。実行入口は `scripts/run_b2d_outer_stage1.py --execute …`、ユーザーの別途明示許可が必要。
+
 ## 研究B outer splitting準備（2026-10-25）
 
 [実装・人工検証・未承認科学契約案](research/research_b_outer_splitting_stage1_preparation_20261025.md)。SOURCEは `src/trottertracks/b2d_evaluator/{outer,outer_backend}.py`、人工testは `tests/management/test_b2d_outer_preparation.py`。4方式を準備し、追加19＋既存72件PASS。科学計算・回路生成なし。比較条件と新scope／実行bindingは科学実行前に確定する。
