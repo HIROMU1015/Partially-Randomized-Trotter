@@ -1049,3 +1049,5 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 - `h4_d2_pauli_control.py`: unlaunched D2 candidate lifting a saved nonidentity Pauli body to central-rotation control with aggregate ancilla phase; no I/O/compile/grant. Artificial tests: `tests/test_h4_d2_pauli_control.py`.
 
 - `h4_d2_control.py`: D2 two-target authority, SOURCE/input/runtime seal, parallel staged tasks, native exit/reap and signed comparisons; uses unchanged `h4_d2_pauli_control.py` and D1 compiler. Tests: `tests/test_h4_d2_control.py`.
+
+- H4 Controlled transfer is reviewed without changing library code in `docs/non_df_h4_controlled_comparison_redesign_20261024.md`; additional artificial cases: `tests/test_h4_controlled_comparison.py`, reusing existing Pauli event emitters and D2 lift.

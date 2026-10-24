@@ -1080,3 +1080,5 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 - `verify_h4_d2_preparation.py --verify`: stdlib-only SHA/schema validation of the disabled two-target D2 draft; no launch path. See `docs/non_df_h4_d2_preparation_20261024.md`.
 
 - `run_h4_d2.py`: sealed one-shot D2 authority before quantum imports; validate/build/compile fixed Pauli PF/PR index0, no retry; `docs/non_df_h4_d2_execution_20261024.md`.
+
+- `audit_h4_controlled_comparison.py --record/--verify`: stdlib-only fixed-source/metadata/SHA audit and saved-value quotations. No QPY load, compiler, statistics or launch. See `docs/non_df_h4_controlled_comparison_redesign_20261024.md`.
