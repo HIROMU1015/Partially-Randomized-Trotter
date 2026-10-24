@@ -1,3 +1,7 @@
+## 2026-10-24 H4 D2：同一body control比較2/2完了
+
+[D2結果・位相対応・終了監査](docs/non_df_h4_d2_execution_20261024.md)、[数値/保存検証](artifacts/non_df_h4_d2_execution/2026-10-24/verification.json)。固定H4/1Å/STO-3G/n8、Pauli184/prefix27、S2/T.8/q8/r4/K4/cosine/index0。SOURCE74515d8e・人工22 PASS。generic→centralのRZはPF255500→15028、PR9652→1145。同一bodyの実装＋compiler比較で、母平均/表現単独効果/N_Gではない。validation2/build2/compile2、新engine＋6task全exit0・回収。旧953/code48/input91/run76 SHA保全。監査JSONの32件int/float差を保存mappingで確認、旧historical hash原因UNKNOWNは不変。新科学retry/追加runなし、mandatory STOP。以下は各時点の履歴。
+
 ## 2026-10-24 H4 D2：固定2回路のone-shot実行接続
 
 [D2実装・承認・実行監査](docs/non_df_h4_d2_execution_20261024.md)、[新namespace](artifacts/non_df_h4_d2_execution/2026-10-24/README.md)。保存Pauli-PF/PR index0のcentral control比較、最大2compile。新接続人工10＋候補12 PASS。SOURCE/seal/grant固定後に一度だけ実行しmandatory STOP。旧generic対照・hash FAIL/原因UNKNOWN・native UNKNOWN・N/G nullを保全。科学実行前のSOURCE記録で、結果は後続記録を参照。以下は各時点の履歴。
