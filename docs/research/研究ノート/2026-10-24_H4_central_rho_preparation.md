@@ -17,3 +17,8 @@ R0=cosine2論理/最大5新state作用、R1追加4/最大9、R2静的転送設�
 主agent57項目PASS。83入力/163旧保全file SHA、旧manifest181行維持、6候補・3無効契約・26報告リンクを確認。
 実行CLIは常に拒否し、新科学SOURCE/seal/grant/ledgerなし。
 監査自身のverification.jsonリンクを生成前に要求したmetadata順序問題は、生成後の存在検査へ修正。科学callなし。
+
+## Commit・公開監査
+
+技術準備commit b2b026d9271c81842c56be360c96e3dc25d90024。pushはHTTPS認証情報なしでexit128、remote branch0件・SHA未取得。
+失敗記録と再pushコマンドを保存する公開metadata commitのみ後続。科学実行なし・準備STOP維持。
