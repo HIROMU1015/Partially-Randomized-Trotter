@@ -203,3 +203,8 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## 研究C・C4：B2角度結合baseline限定科学比較（2026-10-24）
 
 [結果・固定SOURCE・契約・証拠](docs/research/research_c_angle_fusion_b2_execution_20261024.md)。既存 `rustiq_adapter.py`／`rustiq_execution.py` と `scripts/run_research_c_rustiq_limited.py --scope C4_B2_SAVED_COMPARISON_V1` を使用。testは `tests/management/test_research_c_rustiq_*.py`、artifactは `artifacts/research_c_rustiq_angle_fusion/2026-10-24/attempt01/`。全登録gateがPASSし、全8wrapper・全8compiled指標でB2=保存R1。単純融合がこのfixtureの改善を再現した。旧route再実行・新reference・Rustiq/R2・retryは0。独立研究を区切るかはユーザー／研究C／統括の次判断であり未採択、mandatory STOP。
+
+## 研究C：C4一時終了・C1接口調査（2026-10-24、現在の判断）
+
+[C4終了・成果引継ぎ](docs/research/research_c_c4_closeout_handoff_20261024.md)でユーザー採択済みの一時終了を追記した。上記の未採択状態は当時の履歴。B2等のSOURCE・検証資産・旧科学結果・STOPは維持する。
+[C1圧縮DFの静的接口調査](docs/research/research_c_compressed_df_interface_survey_20261024.md)は、X-DF／通常C-DF／RC-DF／SCDF、外部実装と既存DF下流の再利用、general diagonal・scalar/sector/phase、強いbaselineと別承認の最小案を整理する。C1の方式未採択、新実装・科学計算なし、公開照合後mandatory STOP。

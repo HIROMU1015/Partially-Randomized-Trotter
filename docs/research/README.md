@@ -11,6 +11,8 @@
 
 ## 文書の役割
 
+研究Cの[C4終了・成果引継ぎ](research_c_c4_closeout_handoff_20261024.md)はユーザー採択済みの一時終了と限定結論・B2等の資産・再開条件の正本。[C1圧縮DF接口調査](research_c_compressed_df_interface_survey_20261024.md)は外部実装・一般対角fragment・誤差/位相・既存SOURCEの再利用と未承認の次案を整理する。C1方式の採択・新実装・科学実行は含まない。
+
 Gaussian singletonの[改善候補設計](pr_gaussian_singleton_synthesis_design_20261024.md)は、support1／support2を区別した選択部分空間Givens案と、既存helperの再利用・同値性条件・未承認の48-wrapper対照案。静的調査のみで、削減量未測定・候補未実装。
 
 限定F2の[保存case寄与分析](pr_algorithm_improvement_phase2d_f2_attribution_20261024.md)は、8分類表のP・条件付き費用・寄与とexact全体照合をまとめる。SP／PS差の記述分解、限界、次の改善候補を明示し、新build／compileは行っていない。

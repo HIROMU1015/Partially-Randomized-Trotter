@@ -133,3 +133,7 @@
 ## 研究C・C4：B2角度結合baseline限定科学比較（2026-10-24）
 
 [結果・固定SOURCE・契約・証拠](research/research_c_angle_fusion_b2_execution_20261024.md)。既存 `rustiq_adapter.py`／`rustiq_execution.py` と `scripts/run_research_c_rustiq_limited.py --scope C4_B2_SAVED_COMPARISON_V1` を使用。testは `tests/management/test_research_c_rustiq_*.py`、artifactは `artifacts/research_c_rustiq_angle_fusion/2026-10-24/attempt01/`。全登録gateがPASSし、全8wrapper・全8compiled指標でB2=保存R1。単純融合がこのfixtureの改善を再現した。旧route再実行・新reference・Rustiq/R2・retryは0。独立研究を区切るかはユーザー／研究C／統括の次判断であり未採択、mandatory STOP。
+
+## 研究C：C4一時終了・C1圧縮DF調査（2026-10-24）
+
+[C4終了・成果引継ぎ](research/research_c_c4_closeout_handoff_20261024.md)にユーザー採択済みの一時終了、限定的成果とB2等の資産、再開条件を追加した。[C1接口調査](research/research_c_compressed_df_interface_survey_20261024.md)は外部fitterと既存DF下流・general diagonal・誤差/位相の再利用条件、候補1～2件と未承認の次案を整理する。上記の未採択は履歴として維持し、旧科学結果・SOURCE・grant・STOPを変更しない。C1方式の採択・新実装・科学実行なし、公開照合後mandatory STOP。

@@ -1,5 +1,11 @@
 # Validation status
 
+## 2026-10-24 disposition update: C4 temporarily closed; C1 static survey complete
+
+The user adopted temporary closure of research-C C4 Rustiq/simple-angle fusion as an independent direction. [Closeout, preserved evidence and reopening conditions](docs/research/research_c_c4_closeout_handoff_20261024.md). All prior scientific statuses, raw packets and STOPs remain unchanged. Earlier statements that closure was pending are historical. This decision is not a general Rustiq or PR NO-GO.
+
+[C1 compressed-DF interface survey](docs/research/research_c_compressed_df_interface_survey_20261024.md) recommends ordinary ffsim C-DF for an initial interface check and RC-DF conditionally on a faithful available fitter. General diagonal blocks require an adapter; SCDF optimizer/input and original-integral provenance gaps remain. No method adoption, new numerical evidence, implementation, science grant or execution. Old invalidated DF screening and prose-only grouped-UWC status are unchanged. User/research C/coordination selects the next scope with research A/B; mandatory STOP after publication verification.
+
 ## 2026-10-24 research C4 B2: all correctness gates PASS; simple fusion matches saved R1
 
 One separately approved run at frozen SOURCE `0c9d0a480db95e4bbd57a1cda02f7fb24c2b2162` completed with no retry/resume. Saved-F1 four-mode/two-particle occupied(0,1) density-square synthetic H, L_D1/two residual fragments, T1/5 q2 delta1/10 one point r2 h1/20 K2; geometry/AO basis/molecular DF rank not applicable. Qiskit1.3.0 opt1 seed17 native rz/sx/x/cx, unchanged full measured X/Y scope.
