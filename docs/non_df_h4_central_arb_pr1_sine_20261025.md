@@ -113,3 +113,16 @@ code36/runtime211（FLINT数値package103）/実入力23を新SOURCE・封印へ
 次は**ユーザー**がPF sine／PR0 sineの対象・precision・callを別承認し、**Codex**が保存PF imag区間またはPR0個別imag包含との接続・人工検証を行って指定範囲だけ評価する。
 PFは既存C imag区間との適合が確認できれば新target作用0＋compiled最大3、PR0はtarget/compiled各precision1で最大6が最小案。いずれも新SOURCE/runtime/入力/契約/未使用grantが必要。
 今回は準備・実行しない。結果保存・commit/push/remote確認後mandatory STOP。
+
+## Commit・push・remote状態
+
+科学SOURCE `473cc930c9d1a13d3a7662b6ad0b996f1e60517a`、結果commit `3745e63e9c674d69bfc9b6e217766522f3ca78e2`。
+origin専用branchへのpush1回はHTTPS Username取得不能でexit128。
+GitHub connectorの当該branch検索は0件、remote SHA=null。基点5c5497795…の実取得とは区別する。
+[公開状態](../artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/publication_status.json)、
+[push失敗log](../artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/push_attempt01.log)、
+[remote再確認](../artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/remote_after_push.json)。
+後続local metadata commitは公開状態だけを保存し、科学SOURCE/runtime/入力/区間/結果/grant/ledger/STOPを変更しない。
+
+ユーザーが認証可能な環境で保存commandを再pushする。次の科学段階はPF/PR0 sineの具体的な別承認待ち。
+Codexはmandatory STOPし、追加対象・正式受理・N/Gへ自動移行しない。
