@@ -1070,3 +1070,7 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 
 `h4_r0_empirical.py`：SOURCE/QPY構造・binary64信号・selected C-target・δ/η/d。
 PF/PR0 cosine2診断・5状態作用を完了。結果は経験値のみ、rho_upper=null。Arb/R1/R2へ自動移行しない。
+
+## H4 R1 order2 cosine（2026-10-24）
+
+`h4_r1_order2.py`：R0数値経路への固定PR1接続、SOURCE/order2事前照合。

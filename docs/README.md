@@ -1268,3 +1268,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 
 [H4 R0経験的実装残差診断](non_df_h4_central_r0_empirical_20261024.md)。
 PF/PR0 cosine2論理・状態作用成功5／総試行5、経験的δ/η/d・保存ρ予算比較・native exit0とSTOP。局所ρ上界はnull。
+
+## H4 R1 order2 cosine（2026-10-24）
+
+[R1 order2 cosine経験的診断](non_df_h4_central_r1_order2_20261024.md)。
