@@ -1,10 +1,7 @@
-"""Shared, memoized evaluation DAG and approval boundary; stdlib only.
+"""Shared memoized scientific DAG; metadata building runs no science.
 
-    build_graph: metadata only
-    evaluate: separate explicit authorization, then injected backend calls
-
-No default scientific grid, input state, tolerances, approval or grant exists.
-This module does not issue/consume a grant, create a fixture, or write results.
+Chat permission is handled by Codex. Evaluation uses the registered scientific
+scope and injected backend, with all correctness gates before comparison.
 """
 from collections import Counter
 from dataclasses import asdict, dataclass
@@ -204,48 +201,16 @@ def build_graph(settings: Settings) -> Graph:
     return Graph(settings, tuple(nodes), tuple(rows), correctness)
 
 
-@dataclass(frozen=True)
-class ExecutionApproval:
-    approval_reference: str
-    grant_reference: str
-    source_commit: str
-    graph_fingerprint: str
-    approved_call_counts: tuple[tuple[str, int], ...]
-    output_identity: str
-    retry_policy: str
-    mock_only: bool = False
-
-
-def _check_approval(graph, approval):
-    if not isinstance(approval, ExecutionApproval):
-        raise PermissionError("Separate explicit science approval and fresh grant are required.")
-    if not all((approval.approval_reference, approval.grant_reference,
-                approval.output_identity, approval.retry_policy)):
-        raise PermissionError("Incomplete science approval metadata.")
-    if approval.source_commit != graph.settings.source_commit or approval.graph_fingerprint != graph.fingerprint:
-        raise PermissionError("Science source or registered grid differs from approval.")
-    if dict(approval.approved_call_counts) != graph.call_counts:
-        raise PermissionError("Scientific call scope differs from approval.")
-
-
-def evaluate(graph: Graph, backend_factory, approval: ExecutionApproval | None = None, *, execution=None, scope=None):
-    """Dormant science entry: reject missing approval before backend creation.
-
-    Approval fields alone cannot authorize science. A real backend requires
-    the operations-verified, claimed-run handle; mock approval remains explicit.
-    The future launcher owns failure saving and the external authority binding.
-    """
+def evaluate(graph: Graph, backend_factory, *, execution=None, scope=None, mock_only=False):
+    """Evaluate the DAG; no approval proof, grant or packet is consumed."""
     graph.settings.validate()
-    _check_approval(graph, approval)
-    if not approval.mock_only:
-        from .preflight import require_claimed_run
-        permit = require_claimed_run(execution)
-        if scope is None or scope is not permit.scope:
-            raise PermissionError("Bound science scope recorder required.")
-        permit.begin_evaluation(graph, approval)
+    if execution is not None:
+        if scope is None or scope is not execution.scope:
+            raise ValueError("Bound scientific scope recorder required.")
+        execution.begin_evaluation(graph)
     backend = backend_factory(graph.settings)
-    if approval.mock_only and not backend.is_mock:
-        raise PermissionError("Mock approval cannot execute a scientific backend.")
+    if mock_only and not backend.is_mock:
+        raise ValueError("Mock execution requires a mock backend.")
     values = {}
     def resolve(index):
         if index not in values:
@@ -267,9 +232,6 @@ def evaluate(graph: Graph, backend_factory, approval: ExecutionApproval | None =
         "input_fingerprint": graph.settings.fingerprint,
         "graph_fingerprint": graph.fingerprint,
         "call_counts": graph.call_counts,
-        "approval_reference": approval.approval_reference,
-        "grant_reference": approval.grant_reference,
-        "output_identity": approval.output_identity,
         "correctness": {key: values[node] for key, node in graph.correctness.items()},
         "rows": [{**row, "outputs": {k: None if v is None else values[v]
                                     for k, v in row["outputs"].items()}} for row in graph.rows],

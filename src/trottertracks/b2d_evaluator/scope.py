@@ -1,4 +1,4 @@
-"""Stage-1 scientific boundaries, fixed recipe expansion and execution receipts.
+"""Stage-1 scientific boundaries, fixed recipe expansion and execution counts.
 
 Nested boundaries overlap. Their counts must NEVER be summed as a job total.
 BLAS/NumPy internals stay inside their frozen library function boundary.
@@ -96,7 +96,7 @@ def registry(graph):
         retry_allowed=False, mandatory_stop=True,
         exclusions=["controlled_Hadamard_wrapper", "native_compile_transpile", "native_processor_pricing",
                     "shot_sampling_certification", "RPE_total_resources", "precision_or_grid_extension"],
-        unresolved_scientific_identities="RESOLVE_AFTER_CLAIM_THEN_CORRECTNESS_GATES")
+        unresolved_scientific_identities="RESOLVE_AFTER_FRESH_OUTPUT_THEN_CORRECTNESS_GATES")
 
 
 def validate_registry(scope, graph):
@@ -136,7 +136,7 @@ class ScopeLedger:
         if identity is not None and key in self.seen:
             raise Stage1Failure("DUPLICATE_CALL_NO_RETRY")
         if name == "backend.expm" and list(identity or ()) not in self.scope["exponential_keys"]:
-            # Registry made directly by Python uses tuples, JSON packet uses lists.
+            # Python tuples and JSON lists represent the same registered key.
             if tuple(identity or ()) not in map(tuple, self.scope["exponential_keys"]):
                 raise Stage1Failure("UNREGISTERED_EXPONENTIAL")
         if name == "input.block" and identity not in (0,1,2):

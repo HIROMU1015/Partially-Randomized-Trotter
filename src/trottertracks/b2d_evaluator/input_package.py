@@ -108,14 +108,13 @@ def connect_prepared(preparation, *, blocks, physical_hamiltonian, normalized_ta
 
 
 def load_candidate(source_root, *, execution):
-    """SCIENCE ONLY: must follow external approval, unused grant check and claim.
+    """SCIENCE ONLY: registered recipe and scientific scope are checked before imports.
 
     Reuses existing basis construction (including internal Gaussian gates and
     tail basis circuits). This cost belongs to input scope, not to stage-2 PF
     resource compilation. It must be separately registered before execution.
     """
-    from .preflight import require_claimed_run
-    permit = require_claimed_run(execution)
+    permit = execution
     permit.begin_input(source_root, InputRecipe())
     definition = read_fixture_definition(source_root)
     import numpy as np

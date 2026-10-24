@@ -29,7 +29,7 @@ try:
     from trottertracks.b2d_evaluator import _baselines
     from trottertracks.b2d_evaluator.plans import ARMS, make_arm_plan
     from trottertracks.b2d_evaluator.evaluation import (
-        Settings, ExecutionApproval, build_graph, evaluate,
+        Settings, build_graph, evaluate,
     )
     from trottertracks.b2d_evaluator.dense_backend import DenseBackend
 finally:
@@ -62,15 +62,6 @@ class MockBackend:
     def perform(self, kind, args, params):
         self.calls.append((kind, args, params))
         return {"mock_kind": kind, "mock_call": len(self.calls)}
-
-
-def mock_approval(graph):
-    return ExecutionApproval(
-        "MOCK_APPROVAL_NOT_USER_AUTHORIZATION", "MOCK_NOT_A_GRANT",
-        graph.settings.source_commit, graph.fingerprint,
-        tuple(graph.call_counts.items()), "MOCK_NO_OUTPUT_WRITTEN", "MOCK_NO_RETRY",
-        mock_only=True,
-    )
 
 
 class EvaluatorTests(unittest.TestCase):
@@ -156,25 +147,22 @@ class EvaluatorTests(unittest.TestCase):
             with self.subTest(field=field), self.assertRaises(ValueError):
                 build_graph(replace(s, **{field: value}))
 
-    def test_no_approval_rejected_before_factory_is_touched(self):
+    def test_invalid_scientific_settings_rejected_before_factory(self):
         graph = build_graph(settings())
-        def forbidden(_):
-            self.fail("An unapproved backend must not be constructed.")
-        with self.assertRaises(PermissionError):
-            evaluate(graph, forbidden)
+        graph = replace(graph,settings=replace(graph.settings,precision="float32"))
+        with self.assertRaises(ValueError):
+            evaluate(graph,lambda _:self.fail("Invalid precision reached backend"),mock_only=True)
 
-    def test_wrong_source_grid_calls_or_grant_rejected(self):
+    def test_mock_execution_rejects_a_non_mock_backend(self):
         graph = build_graph(settings())
-        approved = mock_approval(graph)
-        for field, value in (("source_commit", "wrong"), ("graph_fingerprint", "wrong"),
-                             ("approved_call_counts", ()), ("grant_reference", "")):
-            with self.subTest(field=field), self.assertRaises(PermissionError):
-                evaluate(graph, lambda _: self.fail("Factory must not be touched"), replace(approved, **{field: value}))
+        backend = MockBackend(); backend.is_mock = False
+        with self.assertRaises(ValueError):
+            evaluate(graph,lambda _:backend,mock_only=True)
 
     def test_mock_schema_and_budget_cover_all_nodes(self):
         graph = build_graph(settings())
         backend = MockBackend()
-        result = evaluate(graph, lambda _: backend, mock_approval(graph))
+        result = evaluate(graph, lambda _: backend, mock_only=True)
         self.assertEqual(len(backend.calls), len(graph.nodes))
         self.assertEqual(result["mode"], "MOCK_ONLY")
         self.assertEqual(result["decision"], "DESCRIPTIVE_ONLY_NO_SCIENTIFIC_GO")

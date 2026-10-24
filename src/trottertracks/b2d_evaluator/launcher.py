@@ -1,7 +1,7 @@
-"""Dormant Stage-1 launcher requiring a private manual user approval record.
+"""Stage-1 science launcher: fixed conditions, exclusive fresh output and STOP.
 
-A draft, caller authority, hash or mock cannot replace the user's manual operation.
-No science executes until the fixed contract and one-shot record both verify.
+Chat permission is checked by Codex before starting this command, not proved
+by the program. No approval file, packet, receipt or grant is required.
 """
 from dataclasses import asdict
 from datetime import datetime, timezone
@@ -10,46 +10,37 @@ import json
 import os
 from pathlib import Path
 
-from trottertracks.pr_dictionary_validation.authorization import claim_packet
-from .evaluation import ExecutionApproval, evaluate
-from .input_package import load_candidate
+from .evaluation import evaluate
+from .input_package import InputRecipe, load_candidate
 from .preflight import verify_execution
 from .scope import ScopeLedger, Stage1Failure, STOP, OUTPUTS, OUTPUT_LIMITS, candidate_graph, resolved_graph
-
-
-def production_authority():
-    """Fixed manual provider. Missing user-published receipt always rejects."""
-    from .manual_authority import MANUAL_AUTHORITY
-    return MANUAL_AUTHORITY
 
 
 def failure_code(error):
     if isinstance(error,Stage1Failure):
         return error.code
     message = str(error).lower()
-    if isinstance(error,PermissionError):
-        for words,code in ((('already used','already consumed'),'GRANT_CONSUMED_NO_RESUME'),
-            (('source','fixture'),'SOURCE_MISMATCH'), (('scope','call'),'CALL_SCOPE_MISMATCH'),
+    if type(error).__name__ in ("LinAlgError","FloatingPointError","OverflowError"):
+        return "INCONCLUSIVE_NUMERICAL_PRECISION"
+    if "non-empty randomized tail" in message:
+        return "INCONCLUSIVE_RESIDUAL_DOMAIN"
+    if isinstance(error,(PermissionError,ValueError)):
+        for words,code in ((('source','fixture'),'SOURCE_MISMATCH'), (('scope','call'),'CALL_SCOPE_MISMATCH'),
             (('grid','graph','tolerance'),'CONTRACT_LAYOUT_MISMATCH'),
             (('runtime','dependency'),'ENVIRONMENT_MISMATCH'),
             (('fresh','output'),'FRESH_OUTPUT_REJECTED'),
             (('retry','resume','stop'),'RETRY_STOP_POLICY_REJECTED'),
-            (('grant','one-shot'),'GRANT_REJECTED'),
-            (('approval','authority','record'),'APPROVAL_RECORD_REJECTED')):
+            (('identity','input'),'INPUT_IDENTITY_MISMATCH')):
             if any(word in message for word in words):
                 return code
-        return "AUTHORIZATION_REJECTED"
-    if type(error).__name__ in ("LinAlgError","FloatingPointError","OverflowError"):
-        return "INCONCLUSIVE_NUMERICAL_PRECISION"
+        return "SCIENTIFIC_CONFIGURATION_REJECTED"
     if isinstance(error,FileNotFoundError):
-        return "REQUIRED_RECORD_UNAVAILABLE"
-    if "non-empty randomized tail" in message:
-        return "INCONCLUSIVE_RESIDUAL_DOMAIN"
+        return "REQUIRED_SOURCE_OR_DEPENDENCY_UNAVAILABLE"
     return "EXECUTION_BOUNDARY_EXCEPTION"
 
 
 def rejection(error):
-    # No untrusted exception text, paths, approval content or stack trace.
+    # Keep failure codes stable; do not persist arbitrary exception text.
     return dict(status="REJECTED_BEFORE_SCIENCE", reason=failure_code(error), error_type=type(error).__name__,
         science_started=False, stop=STOP)
 
@@ -70,7 +61,7 @@ def _encode(value):
 
 
 class Evidence:
-    """Only a newly claimed output, or isolated mock directory, may use this."""
+    """Only this launch's newly created output, or isolated mock directory, may use this."""
     def __init__(self, output, *, mock_only=False):
         self.output, self.mock_only = Path(output), mock_only
         self.total_bytes = 0
@@ -151,7 +142,7 @@ class Evidence:
 
 
 def save_inputs(inputs, output):
-    # SCIENCE IO only, after approved one-shot claim and registered input loading.
+    # SCIENCE IO only, after fresh output creation and registered input loading.
     import numpy as np
     arrays = {f"D_{i}":value for i,value in enumerate(inputs.blocks.values())}
     arrays.update(physical=inputs.physical_hamiltonian, tail=inputs.normalized_tail, state=inputs.state)
@@ -161,42 +152,37 @@ def save_inputs(inputs, output):
         os.fsync(file.fileno())
 
 
-def _run_claimed(verified, permit, *, mock_only=False, input_loader=load_candidate,
+def _run(run, *, mock_only=False, input_loader=load_candidate,
                  backend_factory=None, input_saver=save_inputs):
-    """Testable continuation. Mocks NEVER call claim_packet or DenseBackend."""
-    template = candidate_graph(verified.contract["source_commit"])
-    ledger = ScopeLedger(verified.contract["call_scope"], template)
-    permit.attach_scope(ledger)
-    evidence = Evidence(verified.output, mock_only=mock_only)
+    """Shared continuation; artificial tests inject only mock loaders/backends."""
+    template = candidate_graph(run.source_commit)
+    ledger = ScopeLedger(run.call_scope, template)
+    run.attach_scope(ledger)
+    evidence = Evidence(run.output, mock_only=mock_only)
     ledger.sink = evidence.event
     result = None
     try:
         if mock_only and (input_loader is load_candidate or input_saver is save_inputs or backend_factory is None):
             raise Stage1Failure("MOCK_DEPENDENCIES_REQUIRED")
-        evidence.write("binding.json", dict(source_commit=verified.contract["source_commit"],
-            contract_digest=verified.contract_digest, authorization_digest=verified.authorization_digest,
-            call_scope=verified.contract["call_scope"], python_runtime=verified.contract.get("python_runtime"),
-            dependency_versions=verified.contract.get("dependency_versions"),
+        evidence.write("binding.json", dict(source_commit=run.source_commit,
+            call_scope=run.call_scope, environment=run.environment, output=str(run.output),
+            recipe=asdict(InputRecipe()),
             mode="MOCK_ONLY" if mock_only else "SCIENCE_STAGE1"))
-        context,inputs,provenance = input_loader(verified.source_root, execution=permit)
+        context,inputs,provenance = input_loader(run.source_root, execution=run)
         evidence.write("inputs.json",provenance)
-        input_saver(inputs,verified.output)
+        input_saver(inputs,run.output)
         evidence.audit()
         graph = resolved_graph(template,context,inputs,provenance)
         ledger.bind_graph(graph)
-        permit.check_settings(graph.settings)
+        run.check_settings(graph.settings)
         evidence.write("graph.json", dict(settings=asdict(graph.settings), graph_fingerprint=graph.fingerprint,
             nodes=[asdict(n) for n in graph.nodes], rows=graph.rows, correctness=graph.correctness))
         if backend_factory is None:
             if mock_only:
                 raise Stage1Failure("MOCK_BACKEND_REQUIRED")
             from .dense_backend import DenseBackend
-            backend_factory = lambda s: DenseBackend(s,inputs,execution=permit)
-        grant = verified.authorization
-        approval = ExecutionApproval(grant["approval_reference"], grant["grant_id"],
-            graph.settings.source_commit,graph.fingerprint,tuple(graph.call_counts.items()),
-            str(verified.output),"NO_RETRY_NO_RESUME",mock_only=mock_only)
-        result = evaluate(graph,backend_factory,approval,execution=permit,scope=ledger)
+            backend_factory = lambda s: DenseBackend(s,inputs,execution=run)
+        result = evaluate(graph,backend_factory,execution=run,scope=ledger,mock_only=mock_only)
         ledger.finish()
         return evidence.finish(dict(status="COMPLETED_DESCRIPTIVE_MANDATORY_STOP"),ledger,result=result)
     except BaseException as error:
@@ -205,41 +191,30 @@ def _run_claimed(verified, permit, *, mock_only=False, input_loader=load_candida
             ledger,result=result,error=error)
 
 
-def launch(packet_dir, source_root, output, *, authority=None):
-    """Real entry: verify before any output, claim, input or scientific import."""
+def launch(source_root, output, source_commit):
+    """Check scientific configuration, create output exclusively, then run once."""
     try:
-        trusted_authority = production_authority()
-        if trusted_authority is None:
-            raise Stage1Failure("PRODUCTION_AUTHORITY_UNCONNECTED")
-        if authority is not None and authority is not trusted_authority:
-            raise Stage1Failure("UNREGISTERED_APPROVAL_AUTHORITY")
-        authority = trusted_authority
         root = Path(source_root).resolve()
         if root != Path(__file__).resolve().parents[3]:
             raise Stage1Failure("LOADED_SOURCE_ROOT_MISMATCH")
-        contract = json.loads((Path(packet_dir)/"contract.json").read_text())
-        graph = candidate_graph(contract["source_commit"])
-        verified = verify_execution(packet_dir,root,output,graph,authority=authority)
-        # This branch also rejects every mock authority before the existing claim.
-        claim = verified.for_existing_claim()
+        run = verify_execution(root,output,source_commit)
     except BaseException as error:
         return rejection(error)
     try:
-        verified.output.parent.mkdir(parents=True,exist_ok=True)
-        claim_packet(claim)
+        run.output.parent.mkdir(parents=True,exist_ok=True)
+        run.output.mkdir(mode=0o700)
     except BaseException as error:
-        # A racing mkdir may have consumed the marker. Never write into a
-        # colliding output or remove the marker. Return a sanitized STOP record.
-        return dict(status="CLAIM_FAILED_MANDATORY_STOP", error_type=type(error).__name__,
-                    reason="ATOMIC_CLAIM_OR_FRESH_OUTPUT_FAILURE", science_started=False, stop=STOP)
+        # Never write into a colliding output, retry or remove an old STOP.
+        return dict(status="FRESH_OUTPUT_FAILED_MANDATORY_STOP", error_type=type(error).__name__,
+                    reason="EXCLUSIVE_FRESH_OUTPUT_FAILURE", science_started=False, stop=STOP)
     try:
-        return _run_claimed(verified,verified.after_existing_claim())
+        return _run(run)
     except BaseException as error:
         # Setup failed after this launch's successful mkdir. Best-effort evidence.
         try:
-            with (verified.output/"STOP.json").open("x") as file:
+            with (run.output/"STOP.json").open("x") as file:
                 file.write(_encode(dict(status="SETUP_FAILED_MANDATORY_STOP",stop=STOP,
-                    error_type=type(error).__name__,reason="POST_CLAIM_SETUP_FAILURE"))+"\n")
+                    error_type=type(error).__name__,reason="POST_OUTPUT_SETUP_FAILURE"))+"\n")
         except BaseException:
             pass
         return dict(status="SETUP_FAILED_MANDATORY_STOP",stop=STOP,science_started=False,

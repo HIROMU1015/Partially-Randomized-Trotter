@@ -28,12 +28,10 @@ class DenseBackend:
     is_mock = False
 
     def __init__(self, settings, inputs: PreparedDenseInputs, *, execution=None):
-        # evaluate() checks explicit approval before constructing a backend.
-        # Direct construction is also a scientific action requiring approval;
-        # these API guards do not replace human authorization or ledger checks.
         settings.validate()
-        from .preflight import require_claimed_run
-        require_claimed_run(execution).check_settings(settings)
+        if execution is None:
+            raise ValueError("Scientific input identity and scope context required.")
+        execution.check_settings(settings)
         import numpy as np
         from scipy.linalg import expm
         from trotterlib.rte import make_rte_config, finite_rte_operator_moments

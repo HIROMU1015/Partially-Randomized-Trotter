@@ -1,11 +1,8 @@
-"""Metadata-only runtime binding. Never import a scientific dependency here."""
+"""Metadata-only dependency checks and provenance; no bitwise environment lock."""
 import importlib.metadata as metadata
 import importlib.util
 import os
-from pathlib import Path
 import sys
-
-from trottertracks.pr_dictionary_validation.authorization import file_sha
 
 ENVIRONMENT_PATH = "docs/research/b2d_stage1_execution_ready_20261025/environment.json"
 MODULES = ("numpy", "scipy", "qiskit", "qiskit_nature", "openfermion", "openfermionpyscf",
@@ -14,58 +11,28 @@ CONTROLLED_ENV = ("PYTHONPATH", "PYTHONHOME", "LD_PRELOAD", "LD_LIBRARY_PATH",
                   "OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMBA_NUM_THREADS")
 
 
-def identity(path):
-    path = Path(path).resolve()
-    return dict(path=str(path), sha256=file_sha(path.read_bytes()))
-
-
 def inspect_environment():
-    """Run with the selected existing venv's -I -B; no arrays or circuits."""
-    prefix = Path(sys.prefix).resolve()
-    if sys.prefix == sys.base_prefix or not sys.flags.isolated or not sys.dont_write_bytecode:
-        raise PermissionError("Isolated venv interpreter with -I -B required.")
-    versions, records = {}, {}
-    for dist in metadata.distributions():
-        name = dist.metadata["Name"].lower().replace("_", "-")
-        if name in versions:
-            raise PermissionError("Duplicate runtime distribution.")
-        versions[name] = dist.version
-        record = dist.read_text("RECORD")
-        if record is None:
-            raise PermissionError("Unbound installed distribution RECORD.")
-        records[name] = file_sha(record.encode())
+    """Record versions and locations without importing scientific packages."""
+    versions = {dist.metadata["Name"].lower().replace("_", "-"): dist.version
+                for dist in metadata.distributions()}
     origins = {}
     for name in MODULES:
         spec = importlib.util.find_spec(name)
         if spec is None or not spec.origin:
-            raise PermissionError("Required scientific package is not installed: "+name)
-        path = Path(spec.origin).resolve()
-        if not path.is_relative_to(prefix):
-            raise PermissionError("Scientific import would escape pinned venv.")
-        origins[name] = identity(path)
-    from packaging.requirements import Requirement
-    conflicts=[]
-    for dist in metadata.distributions():
-        for text in dist.requires or ():
-            required=Requirement(text)
-            if required.marker is not None and not required.marker.evaluate({"extra":""}):
-                continue
-            key=required.name.lower().replace("_","-")
-            if key not in versions or not required.specifier.contains(versions[key],prereleases=True):
-                conflicts.append(dict(package=dist.metadata["Name"],requirement=text))
-    if conflicts:
-        raise PermissionError("Runtime dependency requirements are inconsistent: "+str(conflicts))
-    return dict(schema="b2d_environment_v1", python_runtime=dict(
-        implementation=sys.implementation.name, version=list(sys.version_info)),
-        interpreter=identity(sys.executable), prefix=str(prefix), base_prefix=sys.base_prefix,
-        pyvenv_cfg=identity(prefix/"pyvenv.cfg"), dependency_versions=dict(sorted(versions.items())),
-        distribution_records=dict(sorted(records.items())), package_origins=origins,
-        dependency_requirements_consistent=True,
-        isolated=True, dont_write_bytecode=True,
-        controlled_environment={name:os.environ.get(name) for name in CONTROLLED_ENV},
-        validation="METADATA_AND_IMPORT_ORIGINS_ONLY_NO_SCIENTIFIC_EXECUTION")
+            raise ValueError("Required scientific dependency is not installed: " + name)
+        origins[name] = spec.origin
+    return dict(python_runtime=dict(implementation=sys.implementation.name,
+                version=list(sys.version_info)), dependency_versions=dict(sorted(versions.items())),
+        executable=sys.executable, prefix=sys.prefix, package_origins=origins,
+        environment_variables={name: os.environ.get(name) for name in CONTROLLED_ENV})
 
 
 def verify_environment(expected):
-    if inspect_environment() != expected:
-        raise PermissionError("Bound Stage-1 environment changed.")
+    from .scope import REQUIRED_DEPENDENCIES
+    actual = inspect_environment()
+    if actual["python_runtime"] != expected["python_runtime"]:
+        raise ValueError("Scientific Python runtime version differs.")
+    for name in REQUIRED_DEPENDENCIES:
+        if actual["dependency_versions"].get(name) != expected["dependency_versions"][name]:
+            raise ValueError("Scientific dependency version differs: " + name)
+    return actual

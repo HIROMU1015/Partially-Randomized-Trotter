@@ -1,4 +1,4 @@
-"""Metadata-only pipeline tests. No claim, scientific imports, arrays or states."""
+"""Artificial scientific pipeline tests; no arrays, circuits or science imports."""
 from dataclasses import replace
 from fractions import Fraction as F
 import importlib.abc
@@ -20,8 +20,8 @@ try:
         ScopeLedger, Stage1Failure, STOP, candidate_graph, registry, exp_key,
         validate_registry, resolved_graph,
     )
-    from trottertracks.b2d_evaluator.preflight import VerifiedRun, validate_scope, source_inventory
-    from trottertracks.b2d_evaluator.launcher import launch, _run_claimed, production_authority, Evidence
+    from trottertracks.b2d_evaluator.preflight import RunContext, validate_scope
+    from trottertracks.b2d_evaluator.launcher import launch, _run, Evidence
     from trottertracks.b2d_adapter.adapter import published_math_sequences
 finally:
     sys.meta_path.remove(barrier)
@@ -37,8 +37,20 @@ def preparation_receipt():
         tail_components=[dict(fragment="df-fragment-1",basis_id="MOCK_BASIS",support=[0])])
 
 
-class MockPermit:
+class MockRun:
+    def __init__(self,output):
+        self.source_commit="MOCK_SOURCE"
+        self.call_scope=registry(candidate_graph(self.source_commit))
+        self.environment={"mode":"MOCK_METADATA_ONLY"}
+        self.source_root=ROOT
+        self.output=Path(output)
+        self.evaluations=0
     def attach_scope(self,scope): self.scope=scope
+    def begin_input(self,root,recipe): pass
+    def begin_evaluation(self,graph):
+        self.check_settings(graph.settings)
+        self.evaluations+=1
+        if self.evaluations!=1: raise ValueError("No retry or resume")
     def science_call(self,name,function,**kwargs): return self.scope.call(name,function,**kwargs)
     def record_resolution(self,name,value): self.scope.record_resolution(name,value)
     def bind_input(self,context,inputs,provenance):
@@ -49,6 +61,8 @@ class MockPermit:
 
 
 def mock_loader(root,*,execution):
+    from trottertracks.b2d_evaluator.input_package import InputRecipe
+    execution.begin_input(root,InputRecipe())
     for name in ("fixture","split","preparation","sector","full"):
         execution.science_call("input."+name,lambda: "MOCK_LABEL_NO_SCIENCE")
     execution.record_resolution("preparation",preparation_receipt())
@@ -91,14 +105,6 @@ class MockBackend:
         if kind=="signals":
             for _ in range(4): self.scope.call("signal.expectation",lambda: "MOCK_SIGNAL_LABEL")
         return dict(mock_kind=kind)
-
-
-def verified(output):
-    graph=candidate_graph("MOCK_SOURCE")
-    return NS(contract=dict(source_commit="MOCK_SOURCE",call_scope=registry(graph)),
-        contract_digest="MOCK_CONTRACT",authorization_digest="MOCK_NOT_A_GRANT",
-        authorization=dict(approval_reference="MOCK_NOT_USER_APPROVAL",grant_id="MOCK_NO_CLAIM"),
-        source_root=ROOT,output=Path(output))
 
 
 def mock_save(inputs,output):
@@ -148,39 +154,31 @@ class LauncherTests(unittest.TestCase):
         with self.assertRaises(Stage1Failure):
             ScopeLedger(registry(g),g).record_resolution("sector",dict(N=2))
 
-    def test_fake_or_missing_authority_never_claims_or_generates_input(self):
-        self.assertFalse(production_authority().is_mock)
-        with patch("trottertracks.b2d_evaluator.launcher.claim_packet") as claim:
-            result=launch("not read",ROOT,"not created")
-            self.assertEqual(result["status"],"REJECTED_BEFORE_SCIENCE")
-            claim.assert_not_called()
-            forged=NS(is_mock=False,verify_approval=lambda *args:True)
-            self.assertEqual(launch("not read",ROOT,"not created",authority=forged)["reason"],
-                             "UNREGISTERED_APPROVAL_AUTHORITY")
-            from trottertracks.b2d_evaluator.preflight import verify_execution
-            with self.assertRaises(PermissionError):
-                verify_execution("not read",ROOT,"not created",candidate_graph("MOCK"),authority=forged)
+    def test_launch_has_only_scientific_arguments_and_rejects_wrong_source(self):
+        from inspect import signature
+        self.assertEqual(tuple(signature(launch).parameters),("source_root","output","source_commit"))
+        with patch("trottertracks.b2d_evaluator.launcher._run") as run:
+            result=launch(ROOT,"not created","0"*40)
+        run.assert_not_called()
+        self.assertEqual(result["status"],"REJECTED_BEFORE_SCIENCE")
 
-    def test_mock_verified_authority_cannot_enter_real_claim(self):
+    def test_exclusive_fresh_output_rejects_a_racing_creation_without_retry(self):
         with tempfile.TemporaryDirectory() as directory:
-            packet=Path(directory);(packet/"contract.json").write_text('{"source_commit":"MOCK"}')
-            v=VerifiedRun({}, {},"MOCK","MOCK",ROOT,packet/"output",packet/"marker",True)
-            authority=NS(is_mock=True,verify_approval=lambda *args:True)
-            with patch("trottertracks.b2d_evaluator.launcher.verify_execution",return_value=v),patch(
-                "trottertracks.b2d_evaluator.launcher.production_authority",return_value=authority),patch(
-                "trottertracks.b2d_evaluator.launcher.claim_packet") as claim:
-                result=launch(packet,ROOT,packet/"output",authority=authority)
-                self.assertEqual(result["status"],"REJECTED_BEFORE_SCIENCE")
-                claim.assert_not_called()
-                self.assertFalse((packet/"output").exists())
+            output=Path(directory)/"MOCK_OUTPUT";output.mkdir()
+            (output/"STOP.json").write_text("MOCK_EXISTING_STOP")
+            context=MockRun(output)
+            with patch("trottertracks.b2d_evaluator.launcher.verify_execution",return_value=context),patch(
+                    "trottertracks.b2d_evaluator.launcher._run") as run:
+                result=launch(ROOT,output,"0"*40)
+            run.assert_not_called()
+            self.assertEqual(result["status"],"FRESH_OUTPUT_FAILED_MANDATORY_STOP")
+            self.assertEqual((output/"STOP.json").read_text(),"MOCK_EXISTING_STOP")
 
     def test_mock_full_launcher_records_scope_and_36_rows(self):
         with tempfile.TemporaryDirectory() as directory:
-            permit=MockPermit()
-            with patch("trottertracks.b2d_evaluator.launcher.claim_packet") as claim:
-                status=_run_claimed(verified(directory),permit,mock_only=True,input_loader=mock_loader,
-                    backend_factory=lambda s:MockBackend(permit.scope),input_saver=mock_save)
-                claim.assert_not_called()
+            run=MockRun(directory)
+            status=_run(run,mock_only=True,input_loader=mock_loader,
+                backend_factory=lambda s:MockBackend(run.scope),input_saver=mock_save)
             self.assertEqual(status["status"],"COMPLETED_DESCRIPTIVE_MANDATORY_STOP")
             self.assertEqual(status["mode"],"MOCK_ONLY")
             result=json.loads((Path(directory)/"result.json").read_text())
@@ -191,9 +189,9 @@ class LauncherTests(unittest.TestCase):
 
     def test_a4_failure_preserves_evidence_and_forbids_all_comparisons(self):
         with tempfile.TemporaryDirectory() as directory:
-            permit=MockPermit()
-            status=_run_claimed(verified(directory),permit,mock_only=True,input_loader=mock_loader,
-                backend_factory=lambda s:MockBackend(permit.scope,fail="a4_reference_check"),input_saver=mock_save)
+            run=MockRun(directory)
+            status=_run(run,mock_only=True,input_loader=mock_loader,
+                backend_factory=lambda s:MockBackend(run.scope,fail="a4_reference_check"),input_saver=mock_save)
             self.assertEqual(status["reason"],"A4_ORDER_OR_INVERSE_CORRECTNESS_FAILURE")
             self.assertNotIn("dag.operator_error",status["calls"]["attempted"])
             self.assertNotIn("dag.signals",status["calls"]["attempted"])
@@ -204,47 +202,47 @@ class LauncherTests(unittest.TestCase):
     def test_input_correctness_failure_and_resolution_mismatch_stop(self):
         for wrong in (False,True):
             with self.subTest(wrong=wrong),tempfile.TemporaryDirectory() as directory:
-                permit=MockPermit()
+                run=MockRun(directory)
                 def loader(root,**kwargs):
                     c,i,p=mock_loader(root,**kwargs)
                     return (replace(c,tail_id="WRONG"),i,p) if wrong else (c,i,p)
-                status=_run_claimed(verified(directory),permit,mock_only=True,input_loader=loader,
-                    backend_factory=lambda s:MockBackend(permit.scope,fail="validate_input"),input_saver=mock_save)
+                status=_run(run,mock_only=True,input_loader=loader,
+                    backend_factory=lambda s:MockBackend(run.scope,fail="validate_input"),input_saver=mock_save)
                 self.assertIn(status["reason"],("INPUT_IDENTITY_ORDER_MISMATCH","HAMILTONIAN_IDENTITY_FAILURE"))
                 self.assertNotIn("dag.operator_error",status["calls"]["attempted"])
 
     def test_mid_comparison_exception_retains_partial_rows_and_no_retry(self):
         with tempfile.TemporaryDirectory() as directory:
-            permit=MockPermit()
+            run=MockRun(directory)
             class FailLater(MockBackend):
                 def perform(self,kind,args,params):
                     if kind=="signals" and self.scope.attempted["dag.signals"]==3:
                         raise RuntimeError("SECRET_MUST_NOT_BE_SAVED")
                     return super().perform(kind,args,params)
-            status=_run_claimed(verified(directory),permit,mock_only=True,input_loader=mock_loader,
-                backend_factory=lambda s:FailLater(permit.scope),input_saver=mock_save)
+            status=_run(run,mock_only=True,input_loader=mock_loader,
+                backend_factory=lambda s:FailLater(run.scope),input_saver=mock_save)
             self.assertEqual(status["status"],"FAILED_MANDATORY_STOP")
             rows=json.loads((Path(directory)/"partial_results.json").read_text())["rows"]
             self.assertEqual(len(rows),2)
             for path in Path(directory).glob("*.json*"):
                 self.assertNotIn("SECRET_MUST_NOT_BE_SAVED",path.read_text())
             with self.assertRaises(FileExistsError):
-                _run_claimed(verified(directory),MockPermit(),mock_only=True,input_loader=mock_loader,
+                _run(MockRun(directory),mock_only=True,input_loader=mock_loader,
                     backend_factory=lambda s:None,input_saver=mock_save)
 
     def test_inconclusive_precision_failure_never_extends_conditions(self):
         with tempfile.TemporaryDirectory() as directory:
-            permit=MockPermit()
+            run=MockRun(directory)
             class Inconclusive(MockBackend):
                 def perform(self,*args): raise Stage1Failure("INCONCLUSIVE_NUMERICAL_PRECISION")
-            status=_run_claimed(verified(directory),permit,mock_only=True,input_loader=mock_loader,
-                backend_factory=lambda s:Inconclusive(permit.scope),input_saver=mock_save)
+            status=_run(run,mock_only=True,input_loader=mock_loader,
+                backend_factory=lambda s:Inconclusive(run.scope),input_saver=mock_save)
             self.assertEqual(status["status"],"INCONCLUSIVE_MANDATORY_STOP")
             self.assertEqual(sum(status["calls"]["attempted"].get("dag."+k,0) for k in ("operator_error","signals")),0)
 
     def test_missing_mock_dependencies_reject_before_any_loader(self):
         with tempfile.TemporaryDirectory() as directory:
-            status=_run_claimed(verified(directory),MockPermit(),mock_only=True)
+            status=_run(MockRun(directory),mock_only=True)
             self.assertEqual(status["reason"],"MOCK_DEPENDENCIES_REQUIRED")
 
     def test_rejection_and_ledger_use_non_sensitive_failure_codes(self):
@@ -256,29 +254,8 @@ class LauncherTests(unittest.TestCase):
         with self.assertRaises(Stage1Failure):
             ledger.dispatch(*node,lambda:self.fail("Comparison before correctness"))
 
-    def test_source_inventory_binds_launcher_and_keeps_science_imports_absent(self):
-        self.assertIn("scripts/run_b2d_stage1.py",source_inventory(ROOT))
+    def test_science_imports_remain_absent(self):
         self.assertFalse(FORBIDDEN.intersection(n.split(".")[0] for n in sys.modules))
-
-    def test_bound_v2_packet_read_only_and_runtime_mismatch_rejected(self):
-        from test_b2d_input_preflight import InputPreflightTests, MockAuthority
-        from trottertracks.b2d_evaluator.preflight import verify_execution
-        with tempfile.TemporaryDirectory() as directory:
-            g,packet,out,contract,grant,write=InputPreflightTests()._packet(directory)
-            contract.update(call_scope=registry(g),python_runtime=dict(
-                implementation=sys.implementation.name,version=list(sys.version_info)))
-            from trottertracks.b2d_evaluator.scope import REQUIRED_DEPENDENCIES
-            contract["dependency_versions"]={name:"1" for name in REQUIRED_DEPENDENCIES}
-            write()
-            with patch("trottertracks.b2d_evaluator.preflight._check_source"),patch(
-                "trottertracks.b2d_evaluator.preflight.read_fixture_definition"),patch(
-                "importlib.metadata.version",return_value="1"):
-                value=verify_execution(packet,directory,out,g,authority=MockAuthority())
-                with self.assertRaises(PermissionError): value.for_existing_claim()
-                self.assertFalse(out.exists())
-                contract["python_runtime"]["version"]=[0,0,0];write()
-                with self.assertRaises(PermissionError):
-                    verify_execution(packet,directory,out,g,authority=MockAuthority())
 
     def test_save_failure_still_attempts_stop_and_does_not_report_completion(self):
         with tempfile.TemporaryDirectory() as directory:

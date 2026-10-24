@@ -12,7 +12,7 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from test_b2d_evaluator import settings, mock_approval, MockBackend, Barrier, FORBIDDEN
+from test_b2d_evaluator import settings, MockBackend, Barrier, FORBIDDEN
 
 guard = Barrier()
 sys.meta_path.insert(0, guard)
@@ -23,10 +23,8 @@ try:
     from trottertracks.b2d_evaluator.evaluation import build_graph, evaluate
     from trottertracks.b2d_evaluator.dense_backend import DenseBackend
     from trottertracks.b2d_evaluator.preflight import (
-        STAGE, SCOPE_GROUPS, graph_layout, scope_proposal, validate_scope, verify_execution,
-        source_inventory,
+        graph_layout, validate_scope, verify_execution,
     )
-    from trottertracks.pr_dictionary_validation.authorization import _canonical, file_sha
 finally:
     sys.meta_path.remove(guard)
 
@@ -42,12 +40,6 @@ def preparation():
         num_system_qubits=2, ld=2, identity_policy="extract_identity_phase", coefficient_atol=0,
         constant_coefficient=0.17, extracted_identity_coefficient=0.23,
         rte_preparation=NS(symbolic_tail=NS(tail_hash="MOCK_TAIL", lambda_r=2.0)))
-
-
-class MockAuthority:
-    is_mock = True
-    def verify_approval(self, packet, approval, grant_digest, contract_digest):
-        return approval == b"MOCK_RECORD_NOT_ACTUAL_USER_APPROVAL"
 
 
 class InputPreflightTests(unittest.TestCase):
@@ -129,7 +121,7 @@ class InputPreflightTests(unittest.TestCase):
     def test_all_correctness_gates_precede_every_comparison(self):
         graph = build_graph(no_phase_settings())
         backend = MockBackend()
-        evaluate(graph, lambda _: backend, mock_approval(graph))
+        evaluate(graph, lambda _: backend, mock_only=True)
         kinds = [call[0] for call in backend.calls]
         gate_positions = [i for i, kind in enumerate(kinds) if kind == "a4_reference_check"]
         self.assertEqual(len(gate_positions), 4)
@@ -148,28 +140,21 @@ class InputPreflightTests(unittest.TestCase):
                     raise AssertionError("Comparison preceded correctness")
                 return super().perform(kind, args, params)
         with self.assertRaisesRegex(ValueError, "MOCK_CORRECTNESS_FAILURE"):
-            evaluate(graph, lambda _: FailingBackend(), mock_approval(graph))
+            evaluate(graph, lambda _: FailingBackend(), mock_only=True)
 
-    def test_unapproved_science_paths_reject_before_scientific_import(self):
+    def test_backend_requires_scientific_input_scope_context(self):
         graph = build_graph(no_phase_settings())
-        with self.assertRaises(PermissionError):
-            evaluate(graph, lambda _: self.fail("factory reached"), replace(mock_approval(graph), mock_only=False))
-        with self.assertRaises(PermissionError):
+        with self.assertRaises(ValueError):
             DenseBackend(graph.settings, object())
-        with self.assertRaises(PermissionError):
-            load_candidate(ROOT, execution="caller approval text")
-        with self.assertRaises(PermissionError):
-            verify_execution("unused", ROOT, "unused", graph)
 
-    def test_scope_proposal_is_not_941_total_and_cannot_authorize(self):
-        graph = build_graph(no_phase_settings())
-        proposal = scope_proposal(graph)
-        self.assertFalse(proposal["fully_resolved"])
-        self.assertEqual(proposal["dispatch_total"], 941)
-        self.assertEqual(set(proposal["groups"]), set(SCOPE_GROUPS))
-        self.assertGreater(proposal["known_interface_counts"]["backend_unique_expm_keys"], 410)
-        with self.assertRaises(PermissionError):
-            validate_scope(proposal, graph)
+    def test_registry_rejects_incomplete_scientific_scope(self):
+        from trottertracks.b2d_evaluator.scope import candidate_graph,registry,Stage1Failure
+        graph = candidate_graph("MOCK")
+        scope = registry(graph)
+        self.assertEqual(scope["dispatch_total"],941)
+        self.assertEqual(scope["boundaries"]["backend.expm"],448)
+        scope["boundaries"] = {}
+        with self.assertRaises(Stage1Failure): validate_scope(scope,graph)
 
     def test_layout_binds_grid_not_uncreated_array_hashes(self):
         a = build_graph(no_phase_settings())
@@ -178,100 +163,19 @@ class InputPreflightTests(unittest.TestCase):
         self.assertNotEqual(a.fingerprint, b.fingerprint)
         self.assertNotEqual(graph_layout(a), graph_layout(build_graph(replace(a.settings, q_values=(2,)))))
 
-    def _packet(self, directory):
-        graph = build_graph(no_phase_settings())
-        root = Path(directory)
-        packet = root / "packet"
-        packet.mkdir()
-        output = root / "artifacts/research_b_b2d_stage1/mock/run"
-        output.parent.mkdir(parents=True)
-        scope = scope_proposal(graph)
-        # Artificial ledger schema only: these counts are NOT science adoption.
-        scope.update(fully_resolved=True, unresolved=[], groups={name: [dict(
-            operation="MOCK_OPERATION", count=0, dependencies=[])] for name in SCOPE_GROUPS})
-        contract = dict(stage=STAGE, status="USER_ADOPTED_STAGE1", retry_allowed=False,
-            mandatory_stop=True, recipe_fingerprint=InputRecipe().fingerprint,
-            input_resolution="REGISTERED_RECIPE_THEN_BACKEND_CORRECTNESS",
-            numerical_atol=graph.settings.numerical_atol, graph_layout=graph_layout(graph),
-            call_scope=scope, source_commit=graph.settings.source_commit,
-            source_files={"MOCK_SOURCE": "MOCK_BYTES"}, dependency_versions={"mock": "1"})
-        approval = b"MOCK_RECORD_NOT_ACTUAL_USER_APPROVAL"
-        grant = dict(stage=STAGE, authority="USER_EXPLICIT_B2D_STAGE1", status="APPROVED_BOUND_ONE_SHOT",
-            retry_allowed=False, mandatory_stop=True, approval_sha256=file_sha(approval),
-            fresh_output_namespace=str(output), source_commit=contract["source_commit"],
-            source_closure_sha256=file_sha(_canonical(contract["source_files"])),
-            grant_id="b2d_MOCK_NOT_A_GRANT", approval_reference="MOCK_RECORD")
-        def write():
-            cb = _canonical(contract)
-            grant["contract_sha256"] = file_sha(cb)
-            (packet / "contract.json").write_bytes(cb)
-            (packet / "authorization.json").write_bytes(_canonical(grant))
-            (packet / "user_approval.txt").write_bytes(approval)
-        write()
-        return graph, packet, output, contract, grant, write
-
-    def test_read_only_mock_packet_never_claims_and_used_marker_rejected(self):
-        with tempfile.TemporaryDirectory() as directory:
-            graph, packet, output, contract, grant, write = self._packet(directory)
-            with patch("trottertracks.b2d_evaluator.preflight._check_source"), patch(
-                "trottertracks.b2d_evaluator.preflight.read_fixture_definition"), patch(
-                "importlib.metadata.version", return_value="1"):
-                verified = verify_execution(packet, directory, output, graph, authority=MockAuthority())
-                self.assertFalse(verified.consumption_path.exists())
-                self.assertFalse(output.exists())
-                with self.assertRaises(PermissionError):
-                    verified.for_existing_claim()
-                with self.assertRaises(PermissionError):
-                    verified.after_existing_claim()
-                # Artificial marker in isolated tmp only, not an operational grant.
-                verified.consumption_path.write_text("MOCK_ALREADY_USED")
-                with self.assertRaises(PermissionError):
-                    verify_execution(packet, directory, output, graph, authority=MockAuthority())
-
-    def test_packet_rejects_draft_source_grid_scope_output_and_false_record(self):
-        mutations = [lambda c, g: c.update(status="PROPOSAL"),
-            lambda c, g: c.update(source_commit="wrong"),
-            lambda c, g: c.update(graph_layout="wrong"),
-            lambda c, g: c["call_scope"].update(dispatch_counts={}),
-            lambda c, g: c["call_scope"].update(fully_resolved=False),
-            lambda c, g: g.update(stage="F1"),
-            lambda c, g: g.update(fresh_output_namespace="wrong"),
-            lambda c, g: g.update(retry_allowed=True)]
-        for mutate in mutations:
-            with self.subTest(mutate=mutate), tempfile.TemporaryDirectory() as directory:
-                graph, packet, output, contract, grant, write = self._packet(directory)
-                mutate(contract, grant)
-                write()
-                with patch("trottertracks.b2d_evaluator.preflight._check_source"), patch(
-                    "trottertracks.b2d_evaluator.preflight.read_fixture_definition"), patch(
-                    "importlib.metadata.version", return_value="1"), self.assertRaises(PermissionError):
-                    verify_execution(packet, directory, output, graph, authority=MockAuthority())
-        class Deny(MockAuthority):
-            def verify_approval(self, *args): return False
-        with tempfile.TemporaryDirectory() as directory:
-            graph, packet, output, *_ = self._packet(directory)
-            with self.assertRaises(PermissionError):
-                verify_execution(packet, directory, output, graph, authority=Deny())
-
     def test_actual_source_check_rejects_changed_commit_without_science(self):
         from trottertracks.b2d_evaluator.preflight import _check_source
-        with self.assertRaises(PermissionError):
-            _check_source(ROOT, dict(source_commit="WRONG_COMMIT", source_files={}))
-        inventory = source_inventory(ROOT)
-        self.assertIn(InputRecipe().fixture_path, inventory)
-        self.assertIn("src/trotterlib/df_hamiltonian.py", inventory)
+        with self.assertRaises(ValueError):
+            _check_source(ROOT,"0"*40)
         self.assertFalse(FORBIDDEN.intersection(name.split(".")[0] for name in sys.modules))
 
-    def test_source_closure_and_dirty_checkout_rejected(self):
+    def test_clean_commit_and_dirty_checkout_checks_without_source_hash_packet(self):
         from trottertracks.b2d_evaluator.preflight import _check_source
-        inventory = source_inventory(ROOT)
-        contract = dict(source_commit="MOCK_HEAD", source_files=inventory)
-        with patch("subprocess.check_output", side_effect=["MOCK_HEAD\n", ""]):
-            _check_source(ROOT, contract)
-        for dirty, files in ((" M src/changed.py\n", inventory), ("", {})):
-            with self.subTest(dirty=dirty), patch("subprocess.check_output", side_effect=["MOCK_HEAD\n", dirty]), self.assertRaises(PermissionError):
-                _check_source(ROOT, dict(source_commit="MOCK_HEAD", source_files=files))
+        with patch("subprocess.check_output",side_effect=["MOCK_HEAD\n", ""]):
+            _check_source(ROOT,"MOCK_HEAD")
+        for head,dirty in (("WRONG", ""),("MOCK_HEAD", " M src/changed.py\n")):
+            with self.subTest(head=head,dirty=dirty),patch("subprocess.check_output",side_effect=[head,dirty]),self.assertRaises(ValueError):
+                _check_source(ROOT,"MOCK_HEAD")
 
 
-if __name__ == "__main__":
-    unittest.main()
+if __name__ == "__main__": unittest.main()
