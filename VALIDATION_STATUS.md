@@ -1,3 +1,14 @@
+## 2026-10-25 H4 PR1 order2 cosine：局所Arb包含評価完了・mandatory STOP
+
+[個別C-target/compiled包含・order2対応・終了監査](docs/non_df_h4_central_arb_pr1_cosine_20261025.md)。
+固定linear H4/隣接1Å/STO-3G、Pauli184/prefix27、S2/T.8/q8/r4/K4、system8+ancilla8、PR index1 cosineのみ。
+科学SOURCE `4a14964310f6cca4f824d22c4dbae41f2ae73b34`、64bitでC-target1＋compiled1（試行/成功2）、約.636/2.674秒並行、96/128bit未使用。
+局所ρは `[0,13026622080417147141/20769187434139310514121985316880384]`、上端約6.2720903848e-16、保存予算約2.593611368819805e-6以内。
+position30のproduct43(+)/4(-)→rotation72(-)・order phase-1・constant/relative phase・共通exact ν/B一回を保持。新7＋再利用49＝56人工PASS、実QPY4構造照合。
+新grant発行/消費1、親/2child exit0・全回収/STOP。code30/runtime211/input18・旧証拠583 SHA/旧manifest189行保全、旧code変更0。
+局所数値上界のみ。正式受理/LOCAL_BUDGET_MET=false、PR全law/tail・C/L・旧N_G=null・元native UNKNOWN保持。PF/PR0再計算/sine/追加trajectory/compile/sampling/R2/N_G0。
+次はユーザーがPR1 sineなどの対象/precision/callを別承認、Codexが虚部/+Im接続を準備して指定範囲だけ実行する。以下は時点履歴。
+
 ## 2026-10-25 H4 PR0 cosine：局所Arb包含評価完了・mandatory STOP
 
 [個別C-target/compiled包含・予算比較・終了監査](docs/non_df_h4_central_arb_pr0_cosine_20261025.md)。

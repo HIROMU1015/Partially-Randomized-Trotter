@@ -1,3 +1,7 @@
+## 2026-10-25 PR1 cosine Arb限定実行
+
+`h4_arb_pr1_cosine.py`: PR0数値kernelとpair実行を無変更でscope接続。PR1固定order2/hash/labels/signsの検査、個別C-target/compiled whole区間差、B一回。
+
 ## 2026-10-25 PR0 cosine Arb限定実行
 
 `h4_arb_pr0_cosine.py`: 個別selected C-target/compiledの並行包含とB一回の差。`h4_arb_pr0_preparation.py`はexact kernelを共通化、人工入口のH4拒否を維持。

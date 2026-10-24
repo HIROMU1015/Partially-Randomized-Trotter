@@ -64,8 +64,50 @@ trig cache/Pauli permutation/raw入力共有を再利用し、恣意的なCPU/RA
 
 ## 実行結果・監査
 
-この節へ実行後のSOURCE/grant/信号区間/ρ/予算比較/precision/call/native終了を追記する。
-実行前の時点では実H4区間は未取得である。
+科学SOURCE **`4a14964310f6cca4f824d22c4dbae41f2ae73b34`**、新one-shot grant **`4bec1a18ed2cbe94ebacc9c6f5fed9526ee33fda1bf343bedb2d82eac636b65c`** を一回発行・消費した。
+[封印](../artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/seal.json)、[active contract](../artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/active_contract.json)、
+[保存結果](../artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/run01/result_summary.json)。
+
+**64bitで上端≤保存予算が確定した。状態作用試行/成功2（C-target1＋compiled1）、区間縮約1。96/128bitは未使用。**
+科学失敗・技術的retry・追加grantは0。幅目標のための追加評価はしなかった。
+
+| 保存量 | 包含区間（十進は外向き24桁表示） | exact区間幅 |
+|---|---|---|
+| PR1 selected C-target cosine | [0.0191955020500472283298076, 0.0191955020500474146601155] | 54995/295147905179352825856 ≈1.86330e-16 |
+| 保存compiled cosine | [0.0191955020500469274586226, 0.0191955020500476196912166] | 204311/295147905179352825856 ≈6.92233e-16 |
+| raw Arb ρ ball | [-5.03827301239501764690735e-16, 6.27209038472283370091352e-16] | 23490705734296928257/20769187434139310514121985316880384 ≈1.13104e-15 |
+
+ρ≥0との共通部分は **`[0,13026622080417147141/20769187434139310514121985316880384]`**。
+よって **ρ_local ≤6.27209038472283370091352e-16 < 保存予算約2.593611368819805e-6**。
+[raw ballと非負交差](../artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/run01/rho_64.json)を両方保存した。
+下端0は新ballの数学的非負交差で、ρのexact0認定や旧nullの読み替えではない。
+幅1e-8も満たすが、終了理由は保存予算との包含比較が確定したこと。
+
+C-targetはretained432 rotation、32 selected event（product作用2）、scalar8回で約0.63624秒。
+compiledは3042 native gate（QPYの3043命令から最後のmeasurement1だけを除外）で約2.67424秒。
+2作用は独立processで重なって実行し、同じraw ray hash `8339b1a8b0bec35ae07688e667fde7ba602d56c1182523d58e0889ea114e8b80` とexact νを使用した。
+双方の包含区間の直接差にB_savedを一度適用した上界であり、既存binary64点値の格上げやPR law meanの流用ではない。
+
+**保存対象のorder2/source/control/phase照合と人工包含検証では不一致を検出しなかった。**
+今回の局所ρも予算内だが、全compiler変換・全trajectoryの証明にはしない。
+[保存SOURCE/phase照合](../artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/structural_inspection.json)、
+[人工テスト集計](../artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/artificial_verification.json)。
+
+親worker PID671551と2計算childはいずれもexit0・native回収。残留子孫の強制終了0、all_owned_reaped=true。
+[非返還call ledger](../artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/run01/call_ledger.json)、
+[target native](../artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/run01/target_64_native_exit.json)、
+[compiled native](../artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/run01/compiled_64_native_exit.json)、
+[親native](../artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/run01/native/worker_native_exit.json)、
+[最終STOP](../artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/run01/STOP.json)。
+UTC2026-10-24T16:42台はJST2026-10-25T01:42台。
+
+code30・runtime211（FLINT数値package103を含む）・実入力18を科学SOURCE/封印へ固定した。
+Python-FLINT0.9.0/FLINT3.6.0の既存private環境を再利用し、fork起動codeもruntimeへ含めた。
+旧C runtimeとの既知libz.so.1.3 SHA差は観測記録であり原因UNKNOWN。FLINT数値packageは一致し、今回の実runtimeを固定した。共有library/package変更0。
+旧証拠583fileと旧manifest189行・旧科学SOURCE/code/results/grants/ledger/markers/STOPを保全した。
+[stdlibだけの保存証拠検証](../artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/verify_saved_results.py)、
+[検証結果](../artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/verification.json)。
+保存検証112項目PASS。この後検証は保存有理端点/SHA/ログだけで、状態作用・QPY再decode・signal再縮約は0。
 
 ## 範囲・保全・次段階
 
@@ -76,4 +118,6 @@ trig cache/Pauli permutation/raw入力共有を再利用し、恣意的なCPU/RA
 次は**ユーザー**がsine包含評価の対象/精度/callを別承認する。
 **Codex**は承認後に測定Sdg/+Im・個別C-target imag転送の適合を準備・人工検証し、指定範囲の数値評価を行う。
 sineは実部だけでは確認できない位相・測定軸のcoverageを増やす価値があるが、PR全law保証や正式受理を自動的に満たさない。
+最小次案は**PR1 sine一件**、selected C-targetのimag作用1＋保存compiled sine作用1を各precisionで最大1回、64→96→128bit・最大6状態作用/縮約3。
+cosineの予算を流用せず既存sine予算を使い、未確定時だけ昇精度する。ユーザーの別承認、新SOURCE/runtime/入力/契約/未使用grantが必要で、今回は準備・実行しない。
 結果保存・commit/push/remote確認後mandatory STOP。

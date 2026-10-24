@@ -1,3 +1,7 @@
+## 2026-10-25 PR1 cosine Arb限定実行
+
+`run_h4_arb_pr1_cosine.py`: 既存PR0 controller/R1静的preflightを再利用。PR1 order2 cosine、64bit各1作用で局所予算内。grant消費済み・再launch不可。
+
 ## 2026-10-25 PR0 cosine Arb限定実行
 
 PR0 cosine Arb one-shot: `run_h4_arb_pr0_cosine.py`。64bitのtarget/compiled各1で局所予算内・grant消費済みSTOP。再launch不可。
