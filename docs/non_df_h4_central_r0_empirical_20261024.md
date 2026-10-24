@@ -210,6 +210,13 @@ Arb／precision escalation／R1／R2／sine／新compile／sampling／Hamiltonia
 過去のpush失敗履歴は変更しない。今回の認証失敗時はlocal保全し、最終チャットへ再実行コマンドを提示する。
 **mandatory STOP。追加数値診断・Arb・R1/R2・N/G再解析へ自動移行しない。**
 
+成果物commitは`d1de0b5ed2c169945227a6fd508e36fec32b15f5`。
+push試行1はexit128、GitHub HTTPSのUsername取得不能で失敗した。
+[push log](../artifacts/non_df_h4_central_r0_empirical/2026-10-24/push_attempt01.log)と
+[remote再確認](../artifacts/non_df_h4_central_r0_empirical/2026-10-24/remote_branch_check.json)を保存した。
+GitHub connectorのbranch検索でも専用branchは存在せず、remote SHAはnull。
+公開状態を記録する後続metadata commitは科学SOURCE・run出力を変更しない。
+
 ## 付記：SOURCE固定前の準備記録
 
 基点 `2734b97c2dd5f017e93cd81619ff52a6a0c6f16b`、専用branch `codex/non-df-h4-central-r0-empirical-20261024`。

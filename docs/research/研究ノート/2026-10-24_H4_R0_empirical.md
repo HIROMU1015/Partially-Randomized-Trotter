@@ -20,3 +20,10 @@ PF C-targetは保存区間のexact midpoint、PR0は選択trajectoryのbinary64�
 今回worker615052 native exit0/reap、10:33:00 UTC STOP。旧H4 native UNKNOWNは維持。
 次の経験的範囲拡張はorder2 cosine→sineを提案。局所上界が目的なら別承認のvalidated intervalが必要。
 Arb/R1/R2/sine/N-G等へ自動移行しない。公開試行とremote SHAはpublication_status.jsonへ追記する。
+
+## 公開試行とlocal保全
+
+成果物commit `d1de0b5ed2c169945227a6fd508e36fec32b15f5`。
+origin HTTPS push1回はUsername取得不能でexit128。GitHub connector再確認で専用branchは存在せずremote SHA=null。
+失敗log・branch照合・再実行コマンドを保存。後続metadata commitで記録し、科学SOURCE・grant・run出力・STOPは変更しない。
+ユーザーが認証のある環境から同branchをpushできる。Arb/R1/R2等の追加診断は別途明示承認が必要。mandatory STOP。
