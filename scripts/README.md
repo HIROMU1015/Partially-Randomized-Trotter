@@ -1072,3 +1072,7 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## 2026-10-24 H4 D1 SOURCE再現性の設計（未採用）
 
 [調査・対応表・人工17件・非実行契約](../docs/non_df_h4_d1_reproducibility_design_20261024.md)。旧hash3一致／Pauli-PR不一致と原因UNKNOWNを保持。`src/trotterlib/h4_d1_reproducibility.py`、`tests/test_h4_d1_reproducibility.py`、`artifacts/non_df_h4_d1_reproducibility_design/2026-10-24/inspect_saved_evidence.py`を一組として読む。SOURCE基準はGO候補のみ、実H4生成/数値/compile/新grant0、旧725 SHA保全、mandatory STOP。
+
+## 2026-10-24 H4 D1：採用SOURCE基準・保存QPY実行
+
+[新接続・人工27件・有限実行](../docs/non_df_h4_d1_source_execution_20261024.md)。`h4_d1_source_control.py`／`run_h4_d1_source.py`／`test_h4_d1_source_control.py`を一組で読む。旧hashとSOURCE対応を分離、full再生成0・最大9compile。実行結果は専用run01/STOPを正本とし、旧grant/STOPと元native UNKNOWNを保持する。
