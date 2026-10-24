@@ -123,3 +123,8 @@
 [Rectangular Givens候補Aの構造選択規則調査](research/pr_rectangular_selection_design_20261024.md)：SOURCEと保存結果の静的調査だけ。support／frame／境界の説明と予測の限界、両方式compileの強い対照、未承認の独立検証案を整理した。一般的な規則は未確立で、一旦終了を技術的に推奨。選択器実装・再集計・科学実行なし、mandatory STOP。
 
 [Gaussian singleton独立研究の一時終了・次研究への引継ぎ](research/pr_gaussian_singleton_closeout_handoff_20261024.md)：一時終了をユーザーが正式採択した現在の記録。F1／限定F2／PS48の科学的PASS、候補A一律適用の負結果、選択規則・γ／認証N等の未確立事項を保持する。既存Track Bと先行研究整理から辞書・sampling・whole-trajectory費用・統計負担の論点を渡す。新しい機構の設計・実装・科学実行は開始せずmandatory STOP。
+
+
+## 研究C・C4：Q13限定科学検証（2026-10-24）
+
+[実行契約・履歴・結果](../docs/research/research_c_rustiq_execution_20261024.md)。SOURCEは `src/trottertracks/pr_dictionary_validation/rustiq_adapter.py` と `rustiq_execution.py`、入口は `scripts/run_research_c_rustiq_limited.py`、管理testは `tests/management/test_research_c_rustiq_*.py`、artifactは `artifacts/research_c_rustiq_limited/2026-10-24/`。保存F1の4case・B0/B1/R1だけを対象とし、旧SOURCE・grant・STOPを保持する。

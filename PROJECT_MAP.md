@@ -193,3 +193,8 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## Gaussian singleton独立研究の一時終了・次研究への引継ぎ（2026-10-24、現在の採択状態）
 
 [採択記録と引継ぎ](docs/research/pr_gaussian_singleton_closeout_handoff_20261024.md)。ユーザーが一時終了を正式採択した。上記の採否待ちは当時の履歴で、科学的PASS・負結果・未確立事項は変更しない。既存Track BのC4／Parent allocation／G9／C1と先行研究整理を再利用し、辞書・law・実回路費用・統計負担の共同検討へ論点を渡す。具体的機構の採択・新実装・科学実行は含めずmandatory STOP。
+
+
+## 研究C・C4：Q13限定科学検証（2026-10-24）
+
+[実行契約・履歴・結果](docs/research/research_c_rustiq_execution_20261024.md)。SOURCEは `src/trottertracks/pr_dictionary_validation/rustiq_adapter.py` と `rustiq_execution.py`、入口は `scripts/run_research_c_rustiq_limited.py`、管理testは `tests/management/test_research_c_rustiq_*.py`、artifactは `artifacts/research_c_rustiq_limited/2026-10-24/`。保存F1の4case・B0/B1/R1だけを対象とし、旧SOURCE・grant・STOPを保持する。
