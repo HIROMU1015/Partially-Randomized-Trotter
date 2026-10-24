@@ -1,3 +1,7 @@
+## 2026-10-25 PF・PR0 sine Arb限定実行
+
+`run_h4_arb_pf_pr0_sine.py`：PF/PR0 sine 2対象のみ。64bitで合計3作用・予算内、grant消費済み/STOP。再launch不可。
+
 ## 2026-10-25 PR1 sine Arb限定実行
 
 `run_h4_arb_pr1_sine.py`: 保存Sdg/+Im・PR1 sine限定one-shot。64bit各1作用で局所予算内、grant消費済みSTOP・再launch不可。

@@ -56,8 +56,54 @@ PFのcompiled作用と、PR0のtarget/compiled作用は独立processで並行す
 
 ## 新2件の結果・全6局所一覧・終了監査
 
-実行後にSOURCE/grant/区間/上界/予算比較/precision/call/native終了を追記する。
-この準備時点では実H4科学作用・科学grant発行/消費0。
+科学SOURCE **`1e6a702f51c2ba7bb1577610919b99cb9990f8d6`**、root grant **`b79b1eab4fcbcc799c544d8774e1f244ff1e812b2d4fd93fcf4d7563adc4a7bd`**。発行1・消費1、技術的な科学失敗/回復0。
+SOURCE/code40、runtime211、入力38をsealし、親worker・case PF/PR0・PR0内target/compiledのnative exit0/join/reapとSTOPを保存した。
+PF compiled約48.320秒、PR0 target約0.626秒/compiled約2.679秒（独立並行）。
+**両対象64bitでUPPER_WITHIN_BUDGET。総試行/成功3、縮約2、96/128bit作用0。PF target作用0。**
+
+| 対象 | C-target sine包含区間（外向き表示） | compiled sine包含区間（外向き表示） |
+|---|---|---|
+| PF | [0.986870090295708622377272, 0.986870090295715194919262] | [0.986870090295702870710533, 0.986870090295714798127054] |
+| PR0 | [0.900307652047570361366745, 0.900307652047570548391621] | [0.900307652047569947526776, 0.900307652047570692807350] |
+
+- PF局所ρ非負区間：`[0,465594429/37778931862957161709568]`、上端 **≤1.23241819194079088800945e-14**。
+- PR0局所ρ非負区間：`[0,16065712728141281981/20769187434139310514121985316880384]`、上端 **≤7.73535930526261160074741e-16**。
+
+両方とも上表の保存exact予算との有理数比較で予算内。非負区間の下端0は新しいArb ballと数学的非負性の共通部分であり、旧nullや実装誤差そのものを0と判定したものではない。
+raw Arb ballの負下端も変更せず保存した。PF rawρ区間幅約1.8500e-14、compiled幅約1.1928e-14。
+PR0 rawρ幅約1.2003e-15、compiled幅約7.4529e-16。参考幅1e-8のための追加callなし。
+
+PFは旧実装通り、保存C全区間と**内部Arb signal ball**を直接減算する。
+JSON signal端点は`h4_ball_evidence.endpoints`の`lower()/upper()`でさらに外向きに丸めるため、JSON区間全体同士の直積差は内部ballによるρと同一ではない。
+保存端点だけの有理数照合では保守的上端約1.2324208729e-14となり、これも同じ保存予算内。
+初回の監査条件「ρがJSON直積差の全点を包含する」はPFの実経路より強すぎたため、内部ball経路のSOURCE照合・保存端点の整合性・独立した保存端点上端の予算確認に訂正した。
+科学SOURCE/値/allowance/閾値の変更、科学再実行は0。PR0は保存端点を再度外向きunionして縮約するため、保存直積差全体の包含も直接確認できた。
+
+### 全6件の局所包含結果
+
+| 対象 | 軸 | 局所ρ上端（外向き表示） | 保存予算（概数） | bit | 状態作用 | 来歴 |
+|---|---|---:|---:|---:|---:|---|
+| PF | cosine | 9.56489249909976322304440E-15 | 0.00000264900383383235944762061 | 64 | 1 | 保存値引用 |
+| PF | sine | 1.23241819194079088800945E-14 | 0.00000336139425244868746478033 | 64 | 1 | 今回 |
+| PR0 | cosine | 6.79574416339626407633468E-16 | 0.00000259361136881980481818957 | 64 | 2 | 保存値引用 |
+| PR0 | sine | 7.73535930526261160074741E-16 | 0.00000335232337224084958653573 | 64 | 2 | 今回 |
+| PR1 | cosine | 6.27209038472283370091352E-16 | 0.00000259361136881980481818957 | 64 | 2 | 保存値引用 |
+| PR1 | sine | 6.33356970130103477878240E-16 | 0.00000335232337224084958653573 | 64 | 2 | 保存値引用 |
+
+全6件が保存予算内の局所上界を持つ。今回の新評価はPF sineとPR0 sineだけで、他4件の区間・SOURCE・成功call・STOPは保存値の引用。
+既存4件を合算した新科学評価やPR law平均/資源順位再解析は行っていない。
+[exact全6件一覧](../artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/six_local_results.json)、[CSV](../artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/six_local_results.csv)。
+
+### 保存監査
+
+126照合PASS。新SOURCE/runtime/入力、exact共通ν、PFのC虚部全区間/target作用0、PR0個別32event・B一回、sine QPY/+Im、precision/call/早期停止、native PID/exit/reap/STOPを確認。
+旧証拠723ファイル・旧manifest191行・既存4件の重要24ファイルをSHA照合し保全。新manifest行だけ追加。
+37人工テストlogのSHAも照合し、共有設定/他process変更0。科学nativeの失敗なし。
+[監査結果](../artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/verification.json)、[raw結果](../artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/run01/result_summary.json)、[native STOP](../artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/run01/STOP.json)、[表示区間](../artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/reported_intervals.json)。
+
+`numerical_local_budget_satisfied=true`は今回の包含区間による比較。正式受理/`LOCAL_BUDGET_MET=false`、`PR_law_rho=null`、旧N/G=null、元H4 native UNKNOWNを保持。
+今回のnative終了を元H4の失われた終了証拠へ代用しない。全law/費用tail/C-L/正式certificateの問題は独立に残る。
+
 
 ## 保全・残る課題・次の承認
 
@@ -69,3 +115,9 @@ PR全lawの保証へ進むには、選択PR0/PR1の局所値を未観測order4�
 次は**ユーザー**がR2の静的設計（全lawへのuniform/正当なlaw-weighted上界、compiler/literal転送のscope、未観測event、最小診断契約案。科学call0）を別承認し、**Codex**が承認後に設計する。
 新科学診断・compile/sampling・正式受理・N_Gは、その設計と固定契約を確認した別承認後だけ実行する。今回R2へ自動移行しない。
 結果保存・commit/push/remote確認後mandatory STOP。
+
+## Git保存・公開状態
+
+科学SOURCE `1e6a702f51c2ba7bb1577610919b99cb9990f8d6`、専用branch `codex/non-df-h4-central-arb-pf-pr0-sine-20261025`。
+結果commit後にpushし、GitHubで実際のbranch SHAを照合する。公開成否は`publication_status.json`へ保存する。
+実行namespaceは既にmandatory STOP・再launch禁止。

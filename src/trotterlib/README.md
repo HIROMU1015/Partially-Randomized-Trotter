@@ -1,3 +1,7 @@
+## 2026-10-25 PF・PR0 sine Arb限定実行
+
+`h4_arb_pf_pr0_sine.py`：既存PF/PR0 kernelをsine限定で再利用。PFは保存C虚部全区間/target作用0、PR0は個別imag。親one-shot・case委譲・各対象早期STOP。
+
 ## 2026-10-25 PR1 sine Arb限定実行
 
 `h4_arb_pr1_sine.py`: 既存PR1 exact unitary/誤差転送を共用し最終内積のimagだけを包含。sine QPY/予算へbind、B一回・並行2作用/早期停止。

@@ -1,3 +1,7 @@
+## 2026-10-25 PF・PR0 sine Arb限定実行
+
+[PF・PR0 sine Arb包含と全6件一覧](non_df_h4_central_arb_pf_pr0_sine_20261025.md)：64bit/3作用・両方予算内、正式受理なし、mandatory STOP。
+
 ## 2026-10-25 PR1 sine Arb限定実行
 
 [H4 PR1 sine Arb包含評価](non_df_h4_central_arb_pr1_sine_20261025.md)：64bit/2作用・ρ上端約6.33357e-16、保存sine予算内。正式受理なし・mandatory STOP。
