@@ -1,5 +1,6 @@
 """CLI and scientific preflight only, with isolated stub data and no science."""
 from dataclasses import replace
+from fractions import Fraction
 import io
 import json
 from pathlib import Path
@@ -61,6 +62,15 @@ class SimpleExecutionTests(unittest.TestCase):
             code,_=self.cli(['--execute','--source-commit',SOURCE,'--output','MOCK_ONLY_NOT_CREATED'])
         self.assertEqual(code,0)
         run.assert_called_once_with(ROOT,'MOCK_ONLY_NOT_CREATED',SOURCE)
+
+    def test_execute_cli_serializes_fraction_provenance_after_saved_completion(self):
+        status=dict(status='COMPLETED_DESCRIPTIVE_MANDATORY_STOP',calls=dict(
+            resolutions=dict(input=dict(scalar_terms=[dict(coefficient=Fraction(17,100))]))))
+        with patch('trottertracks.b2d_evaluator.launcher.launch',return_value=status) as run:
+            code,out=self.cli(['--execute','--source-commit',SOURCE,'--output','MOCK_NOT_CREATED'])
+        self.assertEqual(code,0)
+        self.assertEqual(json.loads(out)['calls']['resolutions']['input']['scalar_terms'][0]['coefficient'],'17/100')
+        run.assert_called_once()
 
     def test_scientific_preflight_is_read_only_and_needs_no_approval_packet(self):
         with tempfile.TemporaryDirectory() as directory:

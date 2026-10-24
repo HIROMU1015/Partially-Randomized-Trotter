@@ -18,7 +18,7 @@ def main():
     root = Path(__file__).resolve().parents[1]
     sys.path.insert(0,str(root/"src"))
     from trottertracks.b2d_evaluator.scope import candidate_graph, registry
-    from trottertracks.b2d_evaluator.launcher import launch
+    from trottertracks.b2d_evaluator.launcher import launch, _encode
     if args.inspect:
         head = subprocess.check_output(["git","rev-parse","HEAD"],cwd=root,text=True).strip()
         print(json.dumps(dict(status="METADATA_ONLY_NO_SCIENCE",source_commit=head,
@@ -27,7 +27,7 @@ def main():
     if not args.source_commit or not args.output:
         parser.error("--execute requires --source-commit and --output")
     result = launch(root,args.output,args.source_commit)
-    print(json.dumps(result,indent=2))
+    print(_encode(result))
     return 0 if result["status"] == "COMPLETED_DESCRIPTIVE_MANDATORY_STOP" else 2
 
 
