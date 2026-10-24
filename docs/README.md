@@ -117,3 +117,5 @@
 [Gaussian singleton合成の改善候補](research/pr_gaussian_singleton_synthesis_design_20261024.md)：既存SOURCE・保存資料の静的調査。support1／support2の選択部分空間Givens案を推奨し、既存Nature helper・operator等価条件・未承認の48-wrapper最小対照案を整理。新しい実装・科学計算・build／compileは0件、削減量未測定。mandatory STOP。
 
 [Rectangular Givens候補Aの限定実装・PS48準備](research/pr_rectangular_givens_preparation_20261024.md)：singleton専用adapter、内部T、actual adjointを接続。SOURCEは `src/trottertracks/pr_dictionary_validation/rectangular*`、runnerは `scripts/run_pr_rectangular_givens_saved.py`、mock testは `tests/management/test_pr_rectangular_givens_preparation.py`、artifactは `artifacts/pr_rectangular_givens_preparation/2026-10-24/`。実装・技術確認のみで、科学実行は別承認。mandatory STOP。
+
+[Rectangular Givens候補AのPS48科学実行結果](research/pr_rectangular_givens_ps48_execution_20261024.md)：6基底・raw／compiled各48の固定gateが全件PASS。index21/25では改善、全48等重みRZ/CXは増加。case CSV・残差・古典費用・provenanceは `artifacts/pr_rectangular_givens/2026-10-24/`。全F2期待値や一般的優位の認定はせずmandatory STOP。

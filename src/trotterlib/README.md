@@ -149,3 +149,5 @@ DF部分ランダム化研究と混同しない。
 ## 関連track：Rectangular GivensのPS48準備（2026-10-24）
 
 `src/trottertracks/pr_dictionary_validation/rectangular.py` は既存Nature helperのGaussian suffixをsingletonにだけ接続する。[条件・SOURCE・未検証事項](../../docs/research/pr_rectangular_givens_preparation_20261024.md)。`rectangular_preflight.py`／`rectangular_execution.py`、runner `scripts/run_pr_rectangular_givens_saved.py`、mock test `tests/management/test_pr_rectangular_givens_preparation.py`、artifact `artifacts/pr_rectangular_givens_preparation/2026-10-24/`。共有runの既存合成を維持し、実回路・数値同値性・削減量は次回承認後の検証対象。
+
+固定SOURCE `770e53a` の関連track `trottertracks.pr_dictionary_validation.rectangular*` による[PS48科学結果](../../docs/research/pr_rectangular_givens_ps48_execution_20261024.md)を取得した。6基底と全48 wrapperの同値性gateはPASS、資源差はcase依存。科学SOURCEの変更なし。結果は `artifacts/pr_rectangular_givens/2026-10-24/`、保存集計だけのutilityも同所。全F2や別候補へ進まずmandatory STOP。

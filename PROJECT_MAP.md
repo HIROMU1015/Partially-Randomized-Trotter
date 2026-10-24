@@ -181,3 +181,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## Rectangular Givens候補Aの限定実装・PS48準備（2026-10-24）
 
 [条件・実行境界](docs/research/pr_rectangular_givens_preparation_20261024.md)、`src/trottertracks/pr_dictionary_validation/rectangular.py`・`rectangular_preflight.py`・`rectangular_execution.py`、`scripts/run_pr_rectangular_givens_saved.py`、`tests/management/test_pr_rectangular_givens_preparation.py`、`artifacts/pr_rectangular_givens_preparation/2026-10-24/`を一組として読む。実装・metadata/mock確認のみ。保存PS48の新科学実行は別承認・新grantが必要で、今回build／compileは0件。
+
+## Rectangular Givens PS48科学結果（2026-10-24）
+
+[実行結果・資源差・STOP](docs/research/pr_rectangular_givens_ps48_execution_20261024.md)。固定SOURCE `770e53a` の既存runner／builder／reference target／compilerを再利用し、raw／compiled各48がPASS。結果・CSV・provenance・保存結果集計utilityは `artifacts/pr_rectangular_givens/2026-10-24/`。費用差はcase依存で、全F2への一律展開や追加実験は未実施。

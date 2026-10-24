@@ -1,5 +1,10 @@
 # Validation status
 
+## 2026-10-24 rectangular Givens PS48: all scientific gates PASS; resource changes mixed
+
+Unchanged source `770e53a` completed one separately approved PS48 execution: six candidate bases and raw/compiled 48 wrappers (24 each support1/support2), 36 transpiles and 12 aliases, zero new high-precision references or retries. Compiled operator max-entry 1.99349e-14, within fixed tolerances with rtol=0 and no phase fit.
+Indices21/25 improve RZ/CX/depth in all eight cases each, but the fixed48 equal-case mean increases RZ 7.8571% and CX 1.9802%; total depth decreases 0.7124%. This is not a full-F2 weighted expectation or certified-N comparison. [Results, residuals, costs, provenance and mandatory STOP](docs/research/pr_rectangular_givens_ps48_execution_20261024.md). Committed local science, not CI or independent external reproduction. No blanket rollout or additional experiment.
+
 ## 2026-10-24 rectangular Givens candidate A: implementation only, PS48 not executed
 
 Singleton-only Nature0.7.2 Gaussian suffix and canonical central support are connected to the existing builder; shared-frame runs retain the existing synthesis. Eight candidate mocks plus six existing artificial preparation tests PASS, and saved input/source/case hashes pass metadata preflight. No real quantum circuits, numerical matrices, QPY decoding, reference evaluations or new research grants were executed.
