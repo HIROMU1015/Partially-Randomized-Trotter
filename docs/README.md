@@ -1273,3 +1273,7 @@ PF/PR0 cosine2論理・状態作用成功5／総試行5、経験的δ/η/d・保
 
 [R1 order2 cosine経験的診断](non_df_h4_central_r1_order2_20261024.md)。
 PR1 cosine1論理・状態作用成功3／総試行3、d=4.3771e-16の経験値。局所上界null、native exit0・mandatory STOP。
+
+## H4 R1 sine（2026-10-24）
+
+[R1 sine経験的診断](non_df_h4_central_r1_sine_20261024.md)。
