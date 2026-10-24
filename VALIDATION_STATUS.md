@@ -1,5 +1,11 @@
 # Validation status
 
+## 2026-10-25 outer Stage 1: COMPLETE; corrected signal improvement observed in the fixed scope
+
+SOURCE `b85dd328423de5b1159f11939835f04db90f3187`, one successful attempt, no source fixes or reruns. Synthetic2mode one-body+3 DF, N1/mode0, LD2 weight-ranked, T±.18, q2, refined f2, inner A2/A3 nD1, r2K2, complex128, atol1e-12, phase off; molecular geometry/AO basis/rank exploration not applicable.
+All correctness gates preceded 16 rows; 906 dispatch/490 exponential keys/RTE config+moments24 each/signal expectations80 matched scope. Corrected physical signal errors: S2 about2.27e-7, refined about5.66e-8, Yoshida4 4.53–6.76e-10, SABA2 2.80–2.91e-9. Yoshida4 has larger finite-RTE bias and normalization; raw signal error did not improve. No convergence-order, general weak-perturbation, shot/native/total-resource advantage claim.
+[Results and limits](docs/research/research_b_outer_splitting_stage1_execution_20261025.md), [all16 rows](artifacts/research_b_outer_splitting/20261025/COMPARISON.csv), [raw+STOP](artifacts/research_b_outer_splitting/20261025/once-16rows/). Local committed science, not CI or independent reproduction. Mandatory STOP; further science or native compilation needs separate scope/permission.
+
 
 ## 2026-10-25 B2-D Stage 1: COMPLETE; A4 versus A3 discrimination inconclusive
 

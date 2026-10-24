@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究B outer固定16行の科学実行完了（2026-10-25）
+
+[結果・残差・SOURCE・STOP](docs/research/research_b_outer_splitting_stage1_execution_20261025.md)。SOURCE b85dd3284、全gate先行、16行・906 dispatch・490 key・80 expectationsを完了、retry0。原本9ファイル・CSV・process logは `artifacts/research_b_outer_splitting/20261025/`。Corrected signal改善を限定観測したが、raw改善・総資源優位は認定しない。追加科学計算へ進まずmandatory STOP。
+
 ## 研究B outer 16行最終実行準備（2026-10-25）
 
 [固定SOURCE・未承認科学契約・実行command](docs/research/research_b_outer_splitting_stage1_execution_ready_20261025.md)。SOURCE候補 `b85dd328423de5b1159f11939835f04db90f3187`、入口 `scripts/run_b2d_outer_stage1.py`、接続 `b2d_evaluator/outer_execution.py`、人工test `tests/management/test_b2d_outer_execution.py`。16行・906 dispatch・490 key・80 expectationを登録、105人工件PASS。科学処理未実行、明示許可後だけ実行する。以下の準備履歴・旧Stage 1結果・STOPは保全する。

@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究B outer Stage 1の完了結果（2026-10-25）
+
+[実行報告・比較・normalization・限界・STOP](research/research_b_outer_splitting_stage1_execution_20261025.md)。SOURCE b85dd3284、16行・906 dispatch・490 key、全correctness PASS。原本と全行CSVは `artifacts/research_b_outer_splitting/20261025/`。技術的中断・修正・再実行なし。追加条件・native費用・Stage2は開始しない。
+
 ## 研究B outer 16行最終実行準備（2026-10-25）
 
 [未承認の最終科学実行契約・技術報告](research/research_b_outer_splitting_stage1_execution_ready_20261025.md)。SOURCE候補b85dd3284、16行・906 dispatch・490 key・80 expectation。既存launcher／Input package／scope／保存へ接続し、105人工件PASS。科学処理0件。実行入口は `scripts/run_b2d_outer_stage1.py --execute …`、ユーザーの別途明示許可が必要。

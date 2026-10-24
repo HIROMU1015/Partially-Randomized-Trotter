@@ -53,6 +53,11 @@
       "sha": "8192530b17d6bc4af195c734ff43a6e78c506942",
       "role": "phase2d_f1_corrected_science_source",
       "description": "Qiskit metadata normalization fix used for separately approved full registered F1 validation; no F2 or certified interval/shot claims."
+    },
+    {
+      "sha": "b85dd328423de5b1159f11939835f04db90f3187",
+      "role": "research_b_outer_stage1_science_source",
+      "description": "Unchanged fixed16-row outer splitting source; input and all correctness gates PASS; no technical interruption or rerun."
     }
   ],
   "artifact_inventory": {
@@ -1139,6 +1144,14 @@
           "research_b_b2d_stage1_20261025"
         ],
         "reason": "Preserved technical-stop attempt, completed36-row science attempt, full raw/provenance/STOP, logs, CSV and saved-only summary."
+      },
+      {
+        "path": "artifacts/research_b_outer_splitting/20261025",
+        "kind": "directory",
+        "supports": [
+          "research_b_outer_stage1_20261025"
+        ],
+        "reason": "Nine byte-preserved raw files including inputs and STOP, process logs, and a direct16-row CSV extraction."
       }
     ],
     "quarantined": [
@@ -2457,6 +2470,51 @@
       "completion_criteria": [
         "Mandatory STOP after Stage1; User/researchB decides whether further differentiated comparisons are worthwhile.",
         "Preserve both attempts, raw source/results/STOP; no automatic new conditions, precision or Stage2."
+      ]
+    },
+    {
+      "id": "research_b_outer_stage1_20261025",
+      "status": "source_present_no_current_ci",
+      "summary": "COMPLETE: input/all numerical gates PASS before16 rows;906 dispatch/490 exponential keys/RTE24 each/signal80. Local fixed-scope corrected signal improvement; raw and total-resource improvements not claimed.",
+      "documentation": [
+        "docs/research/research_b_outer_splitting_stage1_execution_20261025.md",
+        "docs/research/research_b_outer_splitting_stage1_execution_ready_20261025.md"
+      ],
+      "source": [
+        "scripts/run_b2d_outer_stage1.py",
+        "src/trottertracks/b2d_evaluator/outer.py",
+        "src/trottertracks/b2d_evaluator/outer_backend.py",
+        "src/trottertracks/b2d_evaluator/outer_execution.py",
+        "src/trottertracks/b2d_evaluator/input_package.py",
+        "src/trottertracks/b2d_evaluator/launcher.py"
+      ],
+      "tests": [
+        "tests/management/test_b2d_outer_execution.py",
+        "tests/management/test_b2d_outer_preparation.py"
+      ],
+      "artifacts": [
+        "artifacts/research_b_outer_splitting/20261025/COMPARISON.csv",
+        "artifacts/research_b_outer_splitting/20261025/once-16rows/result.json",
+        "artifacts/research_b_outer_splitting/20261025/once-16rows/inputs.npz",
+        "artifacts/research_b_outer_splitting/20261025/once-16rows/STOP.json"
+      ],
+      "science_source_commit": "b85dd328423de5b1159f11939835f04db90f3187",
+      "counts": {
+        "scientific_attempts": 1,
+        "comparisons": 16,
+        "dag_dispatch": 906,
+        "exponential_keys": 490,
+        "rte_configs": 24,
+        "rte_moments": 24,
+        "signal_expectations": 80,
+        "artificial_preparation_tests": 105,
+        "technical_recoveries": 0,
+        "scientific_reruns_after_completion": 0,
+        "new_native_compilations": 0
+      },
+      "interpretation": "Synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,T±.18,q2,refinedf2,innerA2/A3nD1,r2K2,complex128,phaseoff. Corrected signal improved with outer Yoshida4/SABA2; Yoshida4 exposes D and finite-RTE bias plus larger normalization. No general order, resource-superiority, or weak-regime certification.",
+      "completion_criteria": [
+        "Preserve raw evidence and mandatory STOP; further scientific conditions or native compilation require a separate decision/permission."
       ]
     }
   ],
