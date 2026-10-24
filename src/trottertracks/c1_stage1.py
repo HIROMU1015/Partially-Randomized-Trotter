@@ -14,6 +14,7 @@ import sys
 from types import ModuleType
 
 from . import c1_general_k_adapter as adapter
+from .c1_ffsim_compat import VERSION as COMPAT_VERSION
 
 FFSIM_COMMIT = adapter.FFSIM_SOURCE
 EXPORT_SCHEMA = "C1_STAGE1_FFSIM_NUMBER_EXPORT_v1"
@@ -62,11 +63,12 @@ def fit_once(h, g, constant, calls, *, fit_function=None, raw_callback=None):
     """
     import numpy as np
     if fit_function is None:
-        import ffsim
+        from .c1_ffsim_compat import double_factorized
+        import ffsim  # initializes the fixed ffsim/JAX configuration
         import jax
         if not jax.config.jax_enable_x64:
             raise ValueError("JAX_X64_REQUIRED")
-        fit_function = ffsim.linalg.double_factorized
+        fit_function = double_factorized
     finite_arrays(h, g, constant)
     if h.dtype != np.float64 or g.dtype != np.float64:
         raise ValueError("FLOAT64_INPUT_REQUIRED")
@@ -93,6 +95,7 @@ def fit_once(h, g, constant, calls, *, fit_function=None, raw_callback=None):
     calls.mark("tensor_frobenius")
     frobenius = float(np.linalg.norm(residual.ravel()))
     metadata = dict(schema=EXPORT_SCHEMA, ffsim_commit=FFSIM_COMMIT,
+                    compatibility_version=COMPAT_VERSION,
                     z_representation=False, one_body_role="ffsim_corrected_kappa",
                     actual_rank=rank, settings=FIT_SETTINGS,
                     optimizer=dict(success=bool(result.success), status=int(result.status),

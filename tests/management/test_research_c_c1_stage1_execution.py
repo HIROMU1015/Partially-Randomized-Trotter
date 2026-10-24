@@ -32,6 +32,7 @@ def packet(tmp_path):
     run.save(contract,dict(scope=run.SCOPE,conditions_adopted=True,execution_authorized=False,
              grant_issued=False,input=dict(sha256=run.sha(input_path)),
              fit_settings=s.FIT_SETTINGS,allowance={'version':s.ALLOWANCE_VERSION},
+             compatibility={'version':s.COMPAT_VERSION},
              source_manifest_sha256=run.sha(source),implementation_source_commit='mock',
              call_limits=dict(fit={},evaluation_max_R8=s.expected_evaluation_calls(8,36))))
     with patch.object(run,'P_H4_SHA256',run.sha(input_path)):
@@ -119,6 +120,9 @@ def test_CLI_execution_requires_approval_before_any_file_read(tmp_path):
     assert process.returncode==2 and 'new explicit approval' in process.stderr
 
 
-def test_production_numeric_entries_have_not_been_run():
-    # There is no bundled grant, real snapshot, science output or auto-run hook.
-    assert not (ROOT/'artifacts/research_c_c1_stage1_science').exists()
+def test_previous_approval_scope_cannot_authorize_compatibility_run(tmp_path):
+    v=packet(tmp_path);ap=tmp_path/'approval.json'
+    run.save(ap,dict(scope='C1_STAGE1_P_H4_ONE_FIT_V1',approved=True))
+    with patch.object(run.subprocess,'check_output',return_value='mock'):
+        with pytest.raises(PermissionError,match='NEW_EXPLICIT'):
+            run.verify_approval(v,ap,tmp_path/'fresh')

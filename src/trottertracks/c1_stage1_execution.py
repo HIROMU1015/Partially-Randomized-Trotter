@@ -15,9 +15,9 @@ import sys
 import time
 import traceback
 
-SCOPE="C1_STAGE1_P_H4_ONE_FIT_V1"
+SCOPE="C1_STAGE1_P_H4_ONE_FIT_COMPAT_V2"
 P_H4_SHA256="8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50"
-ENV_DIR="artifacts/research_c_c1_stage1_technical/2026-10-24/environment"
+ENV_DIR="artifacts/research_c_c1_stage1_compatibility/2026-10-25/environment"
 
 
 def sha(path):
@@ -54,12 +54,13 @@ def preflight(root,contract_path,source_path,input_path):
     root=Path(root).resolve(); contract_path=Path(contract_path).resolve()
     source_path=Path(source_path).resolve(); input_path=Path(input_path).resolve()
     contract=read(contract_path); source=read(source_path)
-    from .c1_stage1 import FIT_SETTINGS, ALLOWANCE_VERSION, expected_evaluation_calls
+    from .c1_stage1 import FIT_SETTINGS, ALLOWANCE_VERSION, COMPAT_VERSION, expected_evaluation_calls
     if (contract['scope']!=SCOPE or contract['conditions_adopted'] is not True
             or contract['execution_authorized'] is not False
             or contract['grant_issued'] is not False):
         raise ValueError('CONTRACT_SCOPE_OR_STATE')
-    if (contract['fit_settings']!=FIT_SETTINGS or contract['allowance']['version']!=ALLOWANCE_VERSION
+    if (contract['compatibility']['version']!=COMPAT_VERSION
+            or contract['fit_settings']!=FIT_SETTINGS or contract['allowance']['version']!=ALLOWANCE_VERSION
             or contract['call_limits']['evaluation_max_R8']!=expected_evaluation_calls(8,36)):
         raise ValueError('CONTRACT_NUMERICAL_POLICY')
     for name,expected in source['files'].items():
@@ -157,7 +158,7 @@ def worker_fit(v,output):
             raise ValueError('FFSIM_SOURCE_DRIFT: '+name)
     if not jax.config.jax_enable_x64:
         raise ValueError('JAX_X64_REQUIRED')
-    runtime.update(x64=True,devices=list(map(str,jax.devices())))
+    runtime.update(x64=True,devices=list(map(str,jax.devices())),compatibility_version=s.COMPAT_VERSION)
     save(output/'fit_runtime.json',runtime)
     calls=s.Calls(journal(output,'fit',v['contract']['call_limits']['fit']))
     calls.mark('input_load');a=load_input(v['input'])
@@ -191,6 +192,7 @@ def load_export(output,verified):
     from . import c1_stage1 as s
     metadata=read(Path(output)/'fit_export.json')
     if (metadata['schema']!=s.EXPORT_SCHEMA or metadata['ffsim_commit']!=s.FFSIM_COMMIT
+            or metadata.get('compatibility_version')!=s.COMPAT_VERSION
             or metadata['z_representation'] is not False
             or metadata['one_body_role']!='ffsim_corrected_kappa'
             or metadata['settings']!=s.FIT_SETTINGS or not metadata['optimizer']['success']

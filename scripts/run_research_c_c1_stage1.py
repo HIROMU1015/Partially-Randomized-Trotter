@@ -34,7 +34,8 @@ def main():
         run.verify_approval(v,args.approval,args.output,worker=True)
         run.worker_fit(v,args.output)
     elif args.execute:
-        result=run.execute(v,args.approval,args.output,args.fit_python.resolve())
+        # Preserve the venv symlink: resolving it launches the base interpreter.
+        result=run.execute(v,args.approval,args.output,args.fit_python.absolute())
         print(json.dumps(dict(status=result['status'],mandatory_stop=True)))
     else:
         if args.approval or args.output:
