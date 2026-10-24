@@ -1,7 +1,7 @@
-"""Selected PR0 C-target bridge. Real inputs: static export ONLY.
+"""Selected exact C-target kernel and guarded artificial interfaces.
 
-Numerical entry points, including the private kernel, accept tiny artificial
-fixtures only. No real H4 dispatch, grant issuer or certificate acceptance.
+Real dispatch authority lives only in the separate PR0 production controller.
+Old preparation public/private artificial interfaces still reject H4.
 """
 from fractions import Fraction as Q
 from pathlib import Path
@@ -138,6 +138,16 @@ def _pauli_action(vector,mapping,backend):
 
 def _target_artificial(p,raw,bits,fixture_id):
     _guard(p,raw,bits,fixture_id)  # even private entry rejects H4 before Arb import
+    return _selected_unitary_enclosure(p,raw,bits)
+
+
+def _selected_unitary_enclosure(p,raw,bits,*,progress=None):
+    """Shared exact kernel; the production caller supplies bound authority."""
+    validate_plan(p);C.require(type(bits) is int and bits in B.PRECISIONS,'FINITE_PRECISION_SCHEDULE')
+    C.require(len(raw)==1<<p['n_system'],'RAW_STATE_DIMENSION')
+    for pair in raw:
+        C.require(type(pair) in (list,tuple) and len(pair)==2,'RAW_COMPLEX_PAIR')
+        for value in pair:B.exact_binary64(value)
     backend=B._backend()
     with backend.ctx.workprec(bits):
         nu=sum((B.exact_binary64(x)**2+B.exact_binary64(y)**2 for x,y in raw),Q(0))
@@ -155,6 +165,7 @@ def _target_artificial(p,raw,bits,fixture_id):
             return B._recenter([cosine*z+sine*w for z,w in zip(v,pv)],e,backend)
         scalar=backend.phase(backend.real(Q(p['native_scalar_exact_sum'])))
         for step in range(p['q']):
+            if progress:progress(step,p['q'])
             for b in p['retained_blocks']:vector,error=rotate(vector,error,b['label'],1,Q(b['angle_exact']))
             for e in p['events'][step*p['r']:(step+1)*p['r']]:
                 for cid in e['product_component_ids']:
@@ -170,13 +181,14 @@ def _target_artificial(p,raw,bits,fixture_id):
         denominator=backend.real(nu);C.require(denominator.lower()>0,'NORM_DENOMINATOR_EXCLUDES_ZERO')
         signal=(dot.real+backend.arb(0,transfer))/denominator;C.require(signal.is_finite(),'FINITE_SELECTED_SIGNAL')
         endpoints=backend.endpoints(signal)
-        record=dict(status='ARTIFICIAL_SELECTED_C_TARGET_ENCLOSURE_ONLY',fixture_id=fixture_id,precision_bits=bits,
+        record=dict(status='VALIDATED_SELECTED_C_TARGET_ENCLOSURE',fixture_id=p['fixture_id'],precision_bits=bits,
             interval=endpoints,interval_width_exact=str(Q(endpoints['upper'])-Q(endpoints['lower'])),raw_norm_exact=str(nu),
             state_l2_error_upper_exact=str(error),inner_product_error_upper_exact=str(backend.dyadic(transfer)),
             selected_events=len(p['events']),retained_rotations=2*p['q']*len(p['retained_blocks']),
             product_applications=sum(e['taylor_order'] for e in p['events']),native_scalar_applications=p['q'],
             PR_law_mean_used=False,normalization_B_applied_to_target=False,state_renormalized=False,
-            formal_certificate_accepted=False,real_H4_state_actions=0)
+            formal_certificate_accepted=False,real_H4_state_actions=int(p['domain']=='SAVED_PR0_NO_EXECUTION'))
+        if progress:progress(p['q'],p['q'])
         return signal,record
 
 

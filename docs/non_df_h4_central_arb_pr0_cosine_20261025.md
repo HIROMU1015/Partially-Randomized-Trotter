@@ -1,0 +1,61 @@
+# H4 Pauli PR0 cosine Arb包含評価（2026-10-25）
+
+## 対象と承認
+
+基点 `f817c492c527d4e436b81abda9e9341defa1c49d`、専用branch `codex/non-df-h4-central-arb-pr0-cosine-20261025`。
+ユーザーの「その方針で、次の作業に進んで大丈夫」を、前段で提示したPR0 cosine・64→96→128bit・各target1＋compiled1・最大6状態作用の実行承認として適用する。
+[承認記録](../artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/approval.md)。
+
+固定linear H4 / 隣接1.00 Å / STO-3G、Pauli-JW184非identity項、retained prefix27、S2 / T=.8 / q8 / r4 / K4、system8＋ancilla8。
+PR index0、cosine一件だけ。保存32eventはすべてorder0。
+保存raw state/ray・source/control/input/compiled QPY・元C SOURCE `e80d7510880f8db993b777c627bb8e95b05a070d` のexact operandを使用する。
+
+## 接続と包含性
+
+前段の `h4_arb_pr0_preparation.py` からselected C-target数値部分を共通private kernelへ分離した。
+人工用public/private入口のH4拒否は維持し、新しいproduction controllerがSOURCE/入力/runtime/契約/未使用grantを検査してdispatchする。
+旧worktreeと固定SOURCE blobは変更しない。新worktreeの進化したcodeは別科学SOURCEへ固定する。
+
+retained角はbinary64係数×binary64 delta/2を**exact有理積**として評価し、event角は保存binary64値、Pauli sign/product/order phase/作用順、各stepのexact scalar operandを保持する。
+selected C-targetはraw braとの内積の実部/共通exact ν。compiledは既存native `rz/sx/x/cx`・global/relative phase・qubit配置を保持し、最終ancilla-Z/同じνを評価する。
+両者とも既存Arb/FLINTのexact初期値・unitary L2 recenterを使い、C-targetはsqrt(ν)×e、compiledは2||m||e+e²を最終期待値へ転送する。
+raw stateの再正規化、出力normによる除算、確率clippingはしない。
+
+各precisionで2つの独立作用をprocess-local Arb contextに分け、別call予約後に並行する。
+各childのnative join/exit/reapを記録し、既存C native witnessが親workerのexitと残留する自分の子孫だけを監査する。
+precision間は早期STOP判定への逐次依存がある。CPU/RAM/affinity/worker数への恣意的な制限、共有設定変更は0。
+Pauli permutation・角のtrig cache・raw入力共有を再利用する。非有限の場合も、既に開始した独立作用は不要に強制中断しない。
+
+区間差は保存する両信号のwhole enclosureを使う。compiled端点からの再unionは外向きで、midpointによる置換はしない。
+`ρ_local = B_saved × |m_compiled_cos − m_C_selected_cos|`、
+`B_saved = 1449450801590761/1125899906842624` を一度だけ適用する。targetは非scale。
+Arb ballの下端が負ならraw ballを保持し、数学的非負性との共通部分を別fieldで表示する。
+PR全law mean・R0経験的点値を保証targetとして使わない。
+
+## 実行契約と人工検証
+
+保存予算は `19792741170690161541/7631344236317346665332736`（約2.593611368819805e-6）。
+64bitから開始し、上端≤予算または下端>予算が決まればその時点でSTOP。
+straddle/非有限の場合だけ96→128へ進み、128でも未決ならINCONCLUSIVE。
+各precisionのC-target1＋compiled1、最大6状態作用・scalar縮約最大3。call予約は非返還。
+幅1e-8は参考値で、決定後の不要な昇精度はしない。
+
+新production制御13＋既存selected C-target13＋compiled Arb10＋QPY6＝**42人工テストPASS**。
+2〜3qubitの独立dense参照包含・位相/符号/順序・exact operand・B尺度・測定を含み、production追加では並行2childのnative回収、共通ν、grant排他、早期STOP/非有限/精度枯渇を検証した。
+保存実QPY4個を静的decodeして前段のexact plan/descriptorと同一性を確認した。ここまで実H4状態作用0。
+確認は主agent本人によるもので、別reviewerによる独立reviewではない。
+
+## 実行結果と監査
+
+科学SOURCE/新one-shot grant/使用bit/信号区間/ρ/予算比較/native終了/保全確認は、この文書と `artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/` に実行後追記する。
+実行前準備時点では区間未取得。元の準備用DRAFT_DISABLED契約とSTOPは変更しない。
+
+## 範囲と終了
+
+正式certificate受理、LOCAL_BUDGET_METへの昇格、PR全lawρ、費用tail、C/L重複、旧N/G=null、元H4 native UNKNOWNは解決済みにしない。
+新compile/sampling/Hamiltonian/state生成、PR1/sine/DF/R2/N_G再解析は0。
+旧証拠515file・旧manifest188行を保全し、workerの取消gateは実際に使うSOURCE/入力/runtime/契約だけへ限定する。
+提供された2026-10-23 policyに§10.3がない版不一致を記録し、実在する§8.4/10/10.1/10.2を適用する。
+
+結果保存とcommit/push/remote確認後mandatory STOP。
+次はユーザーが追加対象・軸・call範囲を判断し、Codexは別承認後だけ指定範囲を実装/実行する。
