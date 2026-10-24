@@ -171,3 +171,7 @@ PS48の[科学実行結果](../docs/research/pr_rectangular_givens_ps48_executio
 ## B2-D Stage 1 launcher準備（2026-10-25）
 
 `run_b2d_stage1.py --inspect` は固定recipe／scopeのmetadataのみを表示する。`--execute` は現SOURCEではproduction authority未接続のためclaim前に拒否。[最終提案](../docs/research/research_b_b2d_stage1_final_execution_proposal_20261025.md)・[技術報告](../docs/research/research_b_b2d_stage1_final_preparation_technical_report_20261025.md)、`src/trottertracks/b2d_evaluator/{scope,launcher,errors}.py`、`tests/management/test_b2d_stage1_launcher.py` を一組として読む。予定outputは `artifacts/research_b_b2d_stage1/<date>/<fresh-run-id>/`、今回未作成。実行承認・grant発行／claimはない。
+
+## B2-D Stage 1一括準備完了（2026-10-25）
+
+`prepare_b2d_stage1.py` は固定SOURCE・実環境から未承認packetを作るmetadata入口。`issue_b2d_stage1_approval.py` は**実承認後にユーザー／管理者自身が行う正式発行操作**で、今回未実行。`run_b2d_stage1.py` は管理者所有receiptと既存packet／markerを照合した後だけscienceへ進む。[契約・具体command](../docs/research/b2d_stage1_execution_ready_20261025/CONTRACT.md)・[技術報告](../docs/research/b2d_stage1_execution_ready_20261025/TECHNICAL_REPORT.md)、`tests/management/test_b2d_execution_ready.py` を参照。科学SOURCE候補348e08、74人工test PASS、科学計算・正式grantなし。予定artifactは `artifacts/research_b_b2d_stage1/<date>/<fresh-run-id>/`、今回未生成。

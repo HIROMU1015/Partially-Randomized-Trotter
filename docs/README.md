@@ -129,3 +129,7 @@
 ## B2-D Stage 1最終実行準備（2026-10-25）
 
 [最終提案](research/research_b_b2d_stage1_final_execution_proposal_20261025.md)・[技術報告](research/research_b_b2d_stage1_final_preparation_technical_report_20261025.md)・[scope JSON](research/research_b_b2d_stage1_scope_20261025.json)。科学的処理境界の実績照合と失敗保存launcherを準備。入口 `scripts/run_b2d_stage1.py`、実装 `src/trottertracks/b2d_evaluator/`、人工test `tests/management/test_b2d_stage1_launcher.py`。62人工test PASS、production authority未接続、科学実行・grant操作なし。予定artifact `artifacts/research_b_b2d_stage1/<date>/<fresh-run-id>/` は未生成。
+
+## B2-D Stage 1一括準備完了（2026-10-25）
+
+[最終契約・承認手順](research/b2d_stage1_execution_ready_20261025/CONTRACT.md)と[技術報告](research/b2d_stage1_execution_ready_20261025/TECHNICAL_REPORT.md)にSOURCE、実環境、scope、未承認packet、ユーザー操作を集約。science入口 `scripts/run_b2d_stage1.py`、metadata準備／ユーザー発行入口も同scripts索引を参照。実装 `src/trottertracks/b2d_evaluator/`、人工test `tests/management/test_b2d_execution_ready.py`。74人工test PASS、科学計算・正式grant操作なし。予定artifact `artifacts/research_b_b2d_stage1/<date>/<fresh-run-id>/` は未生成。

@@ -197,3 +197,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## B2-D Stage 1最終実行準備（2026-10-25）
 
 [最終提案](docs/research/research_b_b2d_stage1_final_execution_proposal_20261025.md)・[技術報告](docs/research/research_b_b2d_stage1_final_preparation_technical_report_20261025.md)・[scope JSON](docs/research/research_b_b2d_stage1_scope_20261025.json)。SOURCE候補 `97a449ad53c74361ffc5c4cffd6de5f3f0f0a72e`、実装 `src/trottertracks/b2d_evaluator/{scope,launcher,errors}.py`、入口 `scripts/run_b2d_stage1.py`、人工test `tests/management/test_b2d_stage1_launcher.py`。境界scope／実績照合・失敗保存はmock確認済み、production authorityは未接続で実行不可。既存46＋追加16＝62人工test PASS、科学計算・grant操作なし。予定artifactは従来どおり `artifacts/research_b_b2d_stage1/<date>/<fresh-run-id>/`、今回未生成。
+
+## B2-D Stage 1一括準備完了（2026-10-25）
+
+[最終契約・ユーザー承認操作](docs/research/b2d_stage1_execution_ready_20261025/CONTRACT.md)・[技術報告](docs/research/b2d_stage1_execution_ready_20261025/TECHNICAL_REPORT.md)。科学SOURCE候補 `348e08cbc44fb0a81cfc4b6932914f7b146a5b9c`、手動承認接続・実環境binding・published列独立gateを追加。入口は `scripts/{prepare_b2d_stage1,issue_b2d_stage1_approval,run_b2d_stage1}.py`、実装は `src/trottertracks/b2d_evaluator/`、人工testは `tests/management/test_b2d_execution_ready.py`。既存62＋追加12＝74件PASS。実行にはユーザーの別途明示承認と管理者所有receipt発行が必要。科学計算・正式grant操作なし、予定artifactは従来の専用namespaceで未生成。

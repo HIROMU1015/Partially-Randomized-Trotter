@@ -159,3 +159,7 @@ DF部分ランダム化研究と混同しない。
 ## B2-D Stage 1 scope・launcher準備（2026-10-25）
 
 既存trotterlibのGaussian preparation／sector行列化／RTEを固定科学境界へ含め、`trottertracks/b2d_evaluator/{scope,launcher,errors}.py` と `scripts/run_b2d_stage1.py` で実績照合・失敗保存を接続した。[最終提案](../../docs/research/research_b_b2d_stage1_final_execution_proposal_20261025.md)・[技術報告](../../docs/research/research_b_b2d_stage1_final_preparation_technical_report_20261025.md)、`tests/management/test_b2d_stage1_launcher.py` を参照。予定artifact `artifacts/research_b_b2d_stage1/<date>/<fresh-run-id>/` は未生成。実科学SOURCEは未起動、production authority未接続、既存trotterlib科学コード変更なし。
+
+## B2-D Stage 1一括準備完了（2026-10-25）
+
+既存科学関数の変更なしで、`trottertracks/b2d_evaluator/{manual_authority,environment,_published_reference}.py` を追加。[最終契約・承認操作](../../docs/research/b2d_stage1_execution_ready_20261025/CONTRACT.md)・[技術報告](../../docs/research/b2d_stage1_execution_ready_20261025/TECHNICAL_REPORT.md)、`scripts/run_b2d_stage1.py`、`tests/management/test_b2d_execution_ready.py` を参照。科学SOURCE348e08、74人工test PASS。実科学計算・正式grant発行は未実施で、予定artifact `artifacts/research_b_b2d_stage1/<date>/<fresh-run-id>/` は未生成。

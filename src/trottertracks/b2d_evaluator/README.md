@@ -1,5 +1,7 @@
 # B2-D 5方式評価器：接続準備・技術報告
 
+**最新（2026-10-25一括準備）：** [最終契約・ユーザー承認手順](../../../docs/research/b2d_stage1_execution_ready_20261025/CONTRACT.md)・[最終技術報告](../../../docs/research/b2d_stage1_execution_ready_20261025/TECHNICAL_REPORT.md)。SOURCE候補348e08に手動ユーザー承認record接続、実環境binding、published規約の追加gate4件を登録した。74人工test PASS。技術準備は完了、科学実行・正式grant発行は未承認・未実施。下記は以前の段階記録であり、最新状態はこの契約・報告を優先する。
+
 **最新の実行準備（2026-10-25）：** [最終提案](../../../docs/research/research_b_b2d_stage1_final_execution_proposal_20261025.md)・[技術報告](../../../docs/research/research_b_b2d_stage1_final_preparation_technical_report_20261025.md)・[scope JSON](../../../docs/research/research_b_b2d_stage1_scope_20261025.json)。SOURCE候補 `97a449ad53c74361ffc5c4cffd6de5f3f0f0a72e` に `scope.py`／`launcher.py`／`errors.py` とCLIを追加し、入力・DAG・内部数値境界の実績照合と失敗保存を接続。既存46＋追加16＝62人工test PASS。production authorityは未接続、実科学経路・grantは未起動。最新状態はこの後続報告を優先する。
 
 **後続準備（2026-10-25）：** [Input package／preflight技術報告](../../../docs/research/research_b_b2d_input_preflight_technical_report_20261025.md)と[第一段階契約案](../../../docs/research/research_b_b2d_stage1_science_execution_contract_proposal_20261025.md)を参照。
