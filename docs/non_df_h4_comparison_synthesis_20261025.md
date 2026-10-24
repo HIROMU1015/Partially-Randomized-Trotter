@@ -242,3 +242,17 @@ Pauli/DFのC-referenceは各表現のfull Hに対応する別の保存値であ�
 最新版`research_project_instructions_unified_2026-10-25.md`の§8.4/10/10.3を適用。既存コード・数値パイプラインを調べ、今回それらの科学entrypointは実行せず保存表を再利用した。共有環境/他ユーザー/processへの操作、恣意的CPU/RAM制限、新しい承認証明の仕組みはない。
 
 新branchのcommit/push・remote照合は[publication_status.json](../artifacts/non_df_h4_comparison_synthesis/2026-10-25/publication_status.json)へ記録する。**完了後mandatory STOP**。次の担当は**ユーザー/GPT**：empirical/conditional case studyで結論するか、母平均/実精度保証まで必要かを判断する。**Codex**は選ばれた主張に必要な最小範囲を、明示指示後に扱う。今回は新科学計算や重要な方針採択へ移行しない。
+
+## 公開確認結果
+
+local snapshot `c37ab940b858f12f46b2d5b203c61aaca1a7ac2a` の通常origin pushはHTTPS Username取得不能でexit128。当初のbranch/commit検索未検出も失敗記録へ保持した。
+
+その後、許可済みGitHub接続のGit data APIを用い、全blobと完全tree `0c86ada77eb3fbf398835183ccb433d227a53ea2` がlocal snapshotと一致することを確認して公開した。公開整理commitは **`745bc0044c621112a10e7a1008e39dd4f577c787`**。APIが付すcommit metadataはlocal snapshotと異なるが、ファイル内容は完全一致する。元snapshotは別のlocal branchへ保全し、公開commitをgit fetchして専用local branchを同じSHAへ揃えた。公開状態の追記commit後もremote/local HEADを確認する。
+
+既にAPI経由で公開済みのため再pushは不要。通常git用の手動コマンドは次のとおり：
+
+```bash
+git -C /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-comparison-synthesis-20261025 push -u origin codex/non-df-h4-comparison-synthesis-20261025
+```
+
+**成果をlocal保全してmandatory STOP**。新科学計算・重要方針採択へは進まない。
