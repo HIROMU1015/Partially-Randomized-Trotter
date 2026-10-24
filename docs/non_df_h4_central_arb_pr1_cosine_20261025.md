@@ -121,3 +121,16 @@ sineは実部だけでは確認できない位相・測定軸のcoverageを増�
 最小次案は**PR1 sine一件**、selected C-targetのimag作用1＋保存compiled sine作用1を各precisionで最大1回、64→96→128bit・最大6状態作用/縮約3。
 cosineの予算を流用せず既存sine予算を使い、未確定時だけ昇精度する。ユーザーの別承認、新SOURCE/runtime/入力/契約/未使用grantが必要で、今回は準備・実行しない。
 結果保存・commit/push/remote確認後mandatory STOP。
+
+## Commit・push・remote状態
+
+科学SOURCE `4a14964310f6cca4f824d22c4dbae41f2ae73b34`、結果commit `73f239a3b04921d2030c458af59742f01c9b70fb`。
+専用branchへのorigin push1回はHTTPS Username取得不能でexit128。
+GitHub connector再確認は当該branch0件、remote SHA=null。基点e90d6cfed…のGitHub実取得とは区別する。
+[公開状態](../artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/publication_status.json)、
+[push失敗log](../artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/push_attempt01.log)、
+[remote再確認](../artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/remote_after_push.json)。
+後続local metadata commitは公開状態だけを保全し、科学SOURCE/runtime/入力/結果/grant/ledger/STOPを変更しない。
+
+ユーザーが認証可能な環境で保存commandを再pushする。次の科学段階はユーザーによるPR1 sine等の具体的別承認待ち。
+Codexは現在mandatory STOPし、追加科学実行や正式受理へ自動移行しない。

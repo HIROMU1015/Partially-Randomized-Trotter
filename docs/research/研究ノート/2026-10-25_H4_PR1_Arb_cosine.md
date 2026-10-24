@@ -16,3 +16,9 @@ PF/PR0再計算、sine、追加trajectory、新compile/sampling/Hamiltonian/stat
 [結果報告](../../non_df_h4_central_arb_pr1_cosine_20261025.md)、[結果・監査](../../../artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/run01/result_summary.json)。
 次はユーザーがPR1 sineなどの対象/精度/callを別承認。Codexは承認後だけimag/+Im接続を準備し、指定範囲を評価する。
 現時点でsine実装/数値評価へ自動移行せず、公開処理後mandatory STOP。
+
+## 公開試行
+
+結果commit 73f239a3b04921d2030c458af59742f01c9b70fb。
+push1回はHTTPS認証Username取得不能でexit128。GitHub当該branch0件・remote SHA=null。
+失敗と再pushコマンドを後続local metadata commitへ保存し、科学SOURCE・結果・grant・ledger・STOPを保全。mandatory STOP。
