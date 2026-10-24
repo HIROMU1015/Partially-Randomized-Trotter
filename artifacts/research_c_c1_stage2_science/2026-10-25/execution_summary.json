@@ -1,0 +1,186 @@
+{
+  "schema": "C1_STAGE2_LIMITED_EXECUTION_SUMMARY_V1",
+  "scope": "C1_STAGE2_SAVED_R8_NATIVE_LIMITED_V1",
+  "source_commit": "a977a4390668bc107360c8ff05f43d851dc81dc9",
+  "source_manifest_sha256": "63cff2a63bb49581e44c437f412af63c3b70c328439d1e12cd35c2551aeca8e0",
+  "contract_sha256": "d770a8fc6e2c3281fee1cad8d73f64abd939a0030ed4963776356fd84befcbbc",
+  "status": "STAGE2_LIMITED_CIRCUIT_VALIDATION_PASS",
+  "physical_conditions": {
+    "model": "linear H4",
+    "adjacent_distance_Angstrom": 1.0,
+    "basis": "STO-3G",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "full_system_dimension": 256,
+    "controlled_dimension": 512,
+    "system_qubits": 8,
+    "control": "ancilla last (qubit8)",
+    "CDF_rank": 8,
+    "XDF_rank": 10,
+    "CDF_representation": "number, original-g corrected kappa",
+    "L_D": null,
+    "delta_window": null
+  },
+  "selected_conditions": {
+    "total_time": "1/10",
+    "local_times": [
+      "1/20",
+      "1/10"
+    ],
+    "product_formula": "ordered_symmetric_S2_one_step",
+    "steps": 1,
+    "application_order": "one_body half, F0 half,..., F(R-2) half, F(R-1) full, F(R-2) half,...,F0 half,one_body half",
+    "scalar": "c once over total_time; each frame I term retained centrally",
+    "occupied": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "compiler": {
+      "qiskit": "1.3.0",
+      "optimization_level": 1,
+      "seed_transpiler": 17,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "approximation_degree": 1.0,
+      "qubits_initially_zero": false
+    },
+    "operator_atol": 1e-10,
+    "signal_atol": 2e-10,
+    "rtol": 0,
+    "unitarity_atol": 1e-10,
+    "precision": "complex128, SciPy1.14.1 expm and existing gesdd diagnostics; no Hermitian projection or phase fit",
+    "primary_route": "shared",
+    "routes": [
+      "literal",
+      "shared"
+    ],
+    "basis_policy": "Adjacent EXACT equal full rotations only; B^-1 B boundary cancellation and fsum of phase/RZ/RZZ; exact-zero pruning only",
+    "frame_order": "Original saved outer order; no coefficient magnitude sort of frames",
+    "one_body_basis_sort": "Existing diag_hermitian descending_abs; assume_hermitian=True; no repair or symmetrization",
+    "topology": "free, no backend/target/coupling/layout/scheduling; identity mapping required"
+  },
+  "gate_groups": {
+    "local": {
+      "passed": 40,
+      "failed": 0,
+      "max_error": 3.3306690738755414e-15,
+      "tolerance": 1e-10
+    },
+    "raw_full": {
+      "passed": 4,
+      "failed": 0,
+      "max_error": 6.357662851146151e-15,
+      "tolerance": 1e-10
+    },
+    "actual_adjoint": {
+      "passed": 4,
+      "failed": 0,
+      "max_error": 5.4514785811733496e-15,
+      "tolerance": 1e-10
+    },
+    "compiled_full": {
+      "passed": 4,
+      "failed": 0,
+      "max_error": 5.917215348217358e-11,
+      "tolerance": 1e-10
+    },
+    "raw_XY_pair": {
+      "passed": 4,
+      "failed": 0,
+      "max_error": 2.445012586343469e-15,
+      "tolerance": 2e-10
+    },
+    "compiled_XY_pair": {
+      "passed": 4,
+      "failed": 0,
+      "max_error": 1.3012864077677942e-12,
+      "tolerance": 2e-10
+    }
+  },
+  "primary_check_count": 60,
+  "nested_unitarity_checks": 52,
+  "elementary_threshold_checks": 112,
+  "FAIL": 0,
+  "NOT_RUN": 0,
+  "maximum_controlled_unitarity_error": 4.71733763163229e-13,
+  "scientific_units": 243,
+  "maximum_units": 243,
+  "call_counts": {
+    "input_load": 1,
+    "export_load": 1,
+    "model_prepare": 2,
+    "saved_operator_load": 9,
+    "car_context": 1,
+    "xdf_generator": 11,
+    "local_reference": 40,
+    "local_build": 40,
+    "gaussian_build": 20,
+    "local_controlled_check": 40,
+    "ordered_reference": 2,
+    "ordered_build": 4,
+    "ordered_controlled_check": 4,
+    "adjoint_build": 4,
+    "adjoint_check": 4,
+    "wrapper_build": 8,
+    "raw_signal": 8,
+    "raw_signal_pair_check": 4,
+    "compile": 12,
+    "compiled_controlled_check": 4,
+    "metrics": 12,
+    "compiled_signal": 8,
+    "compiled_signal_pair_check": 4
+  },
+  "new_fit": 0,
+  "optimizer": 0,
+  "retry": 0,
+  "resume": 0,
+  "saved_CDF_generators_reused": 9,
+  "XDF_full_generators_built": 11,
+  "controlled_Operator_conversions": 52,
+  "reference_expm": 40,
+  "transpile": 12,
+  "QPY_files": 68,
+  "primary_compiled_full_metrics": {
+    "CDF": {
+      "rz_count": 12118,
+      "cx_count": 7352,
+      "rz_depth": 5845,
+      "cx_depth": 6412,
+      "total_depth": 12724,
+      "circuit_size": 23217,
+      "measurement_count": 0,
+      "quantum_only_depth": 12724
+    },
+    "XDF": {
+      "rz_count": 16659,
+      "cx_count": 9520,
+      "rz_depth": 7431,
+      "cx_depth": 8056,
+      "total_depth": 16215,
+      "circuit_size": 31822,
+      "measurement_count": 0,
+      "quantum_only_depth": 16215
+    }
+  },
+  "full_cost_reduction_percent": {
+    "rz_count": 27.258538927906837,
+    "cx_count": 22.77310924369748,
+    "total_depth": 21.52944804193648
+  },
+  "all_literal_shared_metrics_equal": true,
+  "all_same_arm_XY_metrics_equal": true,
+  "equal_accuracy_total_resource_superiority": false,
+  "physical_DF_norm_recomputed": false,
+  "PF_error_evaluated": false,
+  "RTE_or_shots": false,
+  "Stage3_authorized": false,
+  "mandatory_STOP": true,
+  "post_STOP_scientific_calls": 0
+}

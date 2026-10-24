@@ -1,5 +1,7 @@
 # 文書索引
 
+[C1 Stage2 native限定科学実行](research/research_c_c1_stage2_native_execution_20261025.md)：局所／full／actual adjoint／compiled／X/Yの60主検査＋unitarity52件PASS、科学call243/243、新fit／retry／resume0、transpile12・QPY68。CDF full RZ12118／CX7352／depth12724、XDF16659／9520／16215。異なる物理DF精度での構造的比較であり同精度総資源優位ではない。証拠 `artifacts/research_c_c1_stage2_science/2026-10-25/`、Stage3未承認・mandatory STOP。
+
 [C1 Stage2 native接続・科学実行準備](research/research_c_c1_stage2_native_preparation_20261025.md)：保存CDF rank8を限定対象採択、既存Gaussian／controlled RZ/RZZ・phase／actual adjoint／X/Y／compilerを接続。人工80 tests＋29 subtests PASS。[未承認契約](research/research_c_c1_stage2_native_contract_unapproved_20261025.json)の時間・S2・profile・allowance・243 unitsは推奨案。証拠 `artifacts/research_c_c1_stage2_technical/2026-10-25/`、実回路・科学call0、mandatory STOP。
 
 [C1 保存fit評価専用科学実行](research/research_c_c1_stage1_eval_only_execution_20261025.md)：37 gate PASS、frame0再検証PASS、sector adapter同値性PASS。P-H4保存CDF rank8／XDF rank10の物理sector誤差を別測定。既存評価専用entry／SOURCE無変更、新fit0・科学call141/141・retry/resume0。証拠 `artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/`、旧FAIL保全・mandatory STOP、Stage2適格性は別判断。下記の準備時点の未承認表示は履歴。

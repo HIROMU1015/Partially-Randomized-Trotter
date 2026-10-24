@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1 Stage2限定科学実行：native接続PASS（2026-10-25）
+
+[結果・全gate・native費用・STOP](docs/research/research_c_c1_stage2_native_execution_20261025.md)。公開SOURCE `a977a4390668bc107360c8ff05f43d851dc81dc9` を無変更で使用し、局所40／raw full4／actual adjoint4／compiled full4／X/Y8組の60主検査とunitarity52件が全PASS。P-H4・CDF rank8／XDF rank10、T1/10 ordered S2・P0 profile。科学call243/243、fit／optimizer／retry／resume0、transpile12・QPY68。CDF fullのRZ12118／CX7352／depth12724、XDF16659／9520／16215。物理DF精度が異なり同精度総資源優位とはしない。証拠 `artifacts/research_c_c1_stage2_science/2026-10-25/`、Stage3未承認・mandatory STOP。下記の準備時点の未承認表示は履歴。
+
 ## C1 Stage2 native接続の技術準備（2026-10-25）
 
 [技術報告・再利用・人工検証](docs/research/research_c_c1_stage2_native_preparation_20261025.md)、[未承認科学契約](docs/research/research_c_c1_stage2_native_contract_unapproved_20261025.json)。ユーザーがCDF rank8を限定対象に採用。新SOURCE `c1_stage2_native.py`／`c1_stage2_validation.py`／`c1_stage2_execution.py`、entry `scripts/run_research_c_c1_stage2_native.py`、test `tests/management/test_research_c_c1_stage2_native.py`。既存Gaussian・中央RZ/RZZ・phase・controlled／X/Y／compilerを接続し、人工80件＋29 subtests PASS。SOURCE・52 pins・証拠 `artifacts/research_c_c1_stage2_technical/2026-10-25/`。時間／S2／compiler／allowance／最大243 unitsは未採択の推奨案。実H4 decode・実回路build/compile・科学call0、別科学承認待ち・mandatory STOP。同精度総資源優位の主張なし。

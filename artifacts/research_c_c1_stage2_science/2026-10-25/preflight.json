@@ -1,0 +1,105 @@
+{
+  "status": "PASS",
+  "source_commit": "a977a4390668bc107360c8ff05f43d851dc81dc9",
+  "contract_sha256": "d770a8fc6e2c3281fee1cad8d73f64abd939a0030ed4963776356fd84befcbbc",
+  "source_manifest_sha256": "63cff2a63bb49581e44c437f412af63c3b70c328439d1e12cd35c2551aeca8e0",
+  "input_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+  "saved_export_sha256": "c33f782d3224aa80968e1e6ea70f5ae3f764b872b5bce545c38875c83f3c4e08",
+  "selected_conditions": {
+    "total_time": "1/10",
+    "local_times": [
+      "1/20",
+      "1/10"
+    ],
+    "product_formula": "ordered_symmetric_S2_one_step",
+    "steps": 1,
+    "application_order": "one_body half, F0 half,..., F(R-2) half, F(R-1) full, F(R-2) half,...,F0 half,one_body half",
+    "scalar": "c once over total_time; each frame I term retained centrally",
+    "occupied": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "compiler": {
+      "qiskit": "1.3.0",
+      "optimization_level": 1,
+      "seed_transpiler": 17,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "approximation_degree": 1.0,
+      "qubits_initially_zero": false
+    },
+    "operator_atol": 1e-10,
+    "signal_atol": 2e-10,
+    "rtol": 0,
+    "unitarity_atol": 1e-10,
+    "precision": "complex128, SciPy1.14.1 expm and existing gesdd diagnostics; no Hermitian projection or phase fit",
+    "primary_route": "shared",
+    "routes": [
+      "literal",
+      "shared"
+    ],
+    "basis_policy": "Adjacent EXACT equal full rotations only; B^-1 B boundary cancellation and fsum of phase/RZ/RZZ; exact-zero pruning only",
+    "frame_order": "Original saved outer order; no coefficient magnitude sort of frames",
+    "one_body_basis_sort": "Existing diag_hermitian descending_abs; assume_hermitian=True; no repair or symmetrization",
+    "topology": "free, no backend/target/coupling/layout/scheduling; identity mapping required"
+  },
+  "runtime": {
+    "python": "3.11.1 (main, Nov 18 2024, 15:05:59) [GCC 11.4.0]",
+    "executable": "/tmp/prt-c1-stage2-preparation-20261025/.venv/bin/python",
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.14.1",
+      "qiskit": "1.3.0",
+      "qiskit-nature": "0.7.2",
+      "qiskit-algorithms": "0.3.1"
+    }
+  },
+  "resources": {
+    "affinity_cpus": 32,
+    "loadavg": [
+      1.3564453125,
+      1.23583984375,
+      1.32666015625
+    ],
+    "meminfo": "MemTotal:       65522480 kB\nMemFree:         2388856 kB\nMemAvailable:   54871448 kB\nBuffers:         6171672 kB\nCached:         40918692 kB\nSwapCached:        15480 kB\nActive:          9596316 kB\nInactive:       44821888 kB\nActive(anon):    6193804 kB\nInactive(anon):  2072400 kB\nActive(file):    3402512 kB\nInactive(file): 42749488 kB\nUnevictable:      108844 kB\nMlocked:           12788 kB\nSwapTotal:       2097148 kB\nSwapFree:         133012 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:             11152 kB\nWriteback:             0 kB\nAnonPages:       7421016 kB\nMapped:          1128128 kB\nShmem:            926208 kB\nKReclaimable:    7060864 kB\nSlab:            8021324 kB\nSReclaimable:    7060864 kB\nSUnreclaim:       960460 kB\nKernelStack:       29828 kB\nPageTables:        93604 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    34858388 kB\nCommitted_AS:   24971648 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:      156832 kB\nVmallocChunk:          0 kB\nPercpu:            44416 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:         0 kB\nShmemHugePages:   712704 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nUnaccepted:            0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:     1739872 kB\nDirectMap2M:    39884800 kB\nDirectMap1G:    26214400 kB\n",
+    "cpu_pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=7952883981\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory_pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=5417766\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=5389541\n",
+    "threadpools": [
+      {
+        "user_api": "blas",
+        "internal_api": "openblas",
+        "num_threads": 32,
+        "prefix": "libopenblas",
+        "filepath": "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/numpy.libs/libopenblas64_p-r0-0cf96a72.3.23.dev.so",
+        "version": "0.3.23.dev",
+        "threading_layer": "pthreads",
+        "architecture": "Prescott"
+      },
+      {
+        "user_api": "blas",
+        "internal_api": "openblas",
+        "num_threads": 32,
+        "prefix": "libscipy_openblas",
+        "filepath": "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/scipy.libs/libscipy_openblas-c128ec02.so",
+        "version": "0.3.27.dev",
+        "threading_layer": "pthreads",
+        "architecture": "Haswell"
+      }
+    ],
+    "resource_caps": null,
+    "thread_policy": "Sequential gate dispatch, full available CPU through existing BLAS/native compiler; no new thread caps",
+    "GPU": "driver unavailable at launch check"
+  },
+  "source_files": 34,
+  "provenance_files": 25,
+  "fresh_output": "/tmp/prt-c1-stage2-science-20261025/artifacts/research_c_c1_stage2_science/2026-10-25/run01",
+  "new_fit": 0,
+  "science_retry": 0,
+  "resume": 0
+}
