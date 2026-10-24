@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+関連trackの `trottertracks.c1_stage1` / `c1_stage1_execution` は、既存 `df_hamiltonian` のsector演算を保存XDFに再利用する[C1 Stage 1技術準備](../../docs/research/research_c_c1_stage1_technical_preparation_20261025.md)。runner `scripts/run_research_c_c1_stage1.py`、人工tests `tests/management/test_research_c_c1_stage1*.py`、SOURCE/lock/証拠 `artifacts/research_c_c1_stage1_technical/2026-10-24/`。実分子科学実行・回路は未実行・未承認。
+
 このディレクトリが実装本体である。`scripts/` は主にここにある関数を呼び出す実行入口、
 `tests/` は回帰検査である。研究全体の入口は[`../../PROJECT_MAP.md`](../../PROJECT_MAP.md)を参照する。
 

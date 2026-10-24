@@ -1,5 +1,7 @@
 # 文書索引
 
+[C1 Stage 1技術実装・人工検証](research/research_c_c1_stage1_technical_preparation_20261025.md)：既存ffsim/一般K/CAR/保存XDF接続、独立venv/lock、限定runner、人工45件＋29 subtests PASS。[未承認科学契約](research/research_c_c1_stage1_science_contract_unapproved_20261025.json)、証拠は `artifacts/research_c_c1_stage1_technical/2026-10-24/`。科学実行0、allowance採択と別明示承認待ち。
+
 このディレクトリには、研究方針の正本、実装規約、検証報告、発表資料の案内が共存する。
 研究全体を初めて読む場合は、先に[`../PROJECT_MAP.md`](../PROJECT_MAP.md)と
 [`research/研究概要・現状.md`](research/研究概要・現状.md)を読む。

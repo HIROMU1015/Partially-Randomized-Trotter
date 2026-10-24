@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_research_c_c1_stage1.py` は[C1 Stage 1技術準備](../docs/research/research_c_c1_stage1_technical_preparation_20261025.md)の限定入口。既定は数値decodeなしpreflight、科学runは別の明示承認が必要。処理 `trottertracks.c1_stage1*`、人工test `tests/management/test_research_c_c1_stage1*.py`、SOURCE/lock/証拠 `artifacts/research_c_c1_stage1_technical/2026-10-24/`。今回は人工検証のみ、mandatory STOP。
+
 `scripts/` はコマンドラインから実行する入口を置く。研究ロジックの本体は原則として
 `src/trotterlib/` にあり、runnerは条件の読込み、呼出し、成果物保存を担当する。
 

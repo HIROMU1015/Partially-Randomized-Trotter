@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-25 C1 Stage 1 technical preparation only
+
+[Technical report](docs/research/research_c_c1_stage1_technical_preparation_20261025.md), [unapproved contract](docs/research/research_c_c1_stage1_science_contract_unapproved_20261025.json), [SOURCE/locks/artificial evidence](artifacts/research_c_c1_stage1_technical/2026-10-24/). Implementation commit `394fcf3a445caf0a5f206b7bbcf4a8c88f971504`; 45 artificial top-level tests plus 29 subtests PASS. Adopted P-H4 pilot conditions have not been executed. No real fit/operator/norm/residual/energy/circuit calls. Engineering allowance adoption and new explicit science authorization remain required; no immutable CI or scientific qualification claimed. Earlier evidence/status entries remain historical and unchanged.
+
 ## 2026-10-24 disposition update: C4 temporarily closed; C1 static survey complete
 
 The user adopted temporary closure of research-C C4 Rustiq/simple-angle fusion as an independent direction. [Closeout, preserved evidence and reopening conditions](docs/research/research_c_c4_closeout_handoff_20261024.md). All prior scientific statuses, raw packets and STOPs remain unchanged. Earlier statements that closure was pending are historical. This decision is not a general Rustiq or PR NO-GO.

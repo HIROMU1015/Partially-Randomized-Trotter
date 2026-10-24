@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C・C1 Stage 1技術準備（2026-10-25）
+
+[実装・人工検証・未承認契約](docs/research/research_c_c1_stage1_technical_preparation_20261025.md)。libraryは `src/trottertracks/c1_stage1.py` と `c1_stage1_execution.py`、入口は `scripts/run_research_c_c1_stage1.py`、人工testsは `tests/management/test_research_c_c1_stage1*.py`、証拠と独立環境lockは `artifacts/research_c_c1_stage1_technical/2026-10-24/`。既存ffsim/一般K/CAR/sector演算を接続、人工45件＋29 subtests PASS。科学runは未承認、allowance採択と新明示承認が必要。
+
 最終更新：2026-09-20
 
 このファイルは、人またはGPTがリポジトリ全体を読むときの入口である。研究内容の正本、
