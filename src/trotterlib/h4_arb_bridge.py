@@ -1,7 +1,8 @@
-"""Preparation-only native QPY / Arb bridge.
+"""Native QPY / Arb bridge with a scope-preserving artificial entry point.
 
 Real QPY inspection is structural. Numerical entry points reject saved-H4 and
-systems with more than three total qubits BEFORE loading Arb. No grant issuer or H4 runner.
+systems with more than three total qubits BEFORE loading Arb. Production uses
+the separate sealed PF-cosine adapter; there is no implicit grant issuer here.
 The unitary kernel tracks a global L2 error ball to avoid interval wrapping.
 """
 from fractions import Fraction as Q
@@ -126,6 +127,23 @@ def _recenter(values, error, C):
 
 def _kernel(program, raw, bits, fixture_id):
     _artificial_guard(program, raw, bits, fixture_id)
+    signal, record = _native_unitary_enclosure(program, raw, bits)
+    record.update(status='ARTIFICIAL_VALIDATED_SIGNAL_NO_H4_RESULT', fixture_id=fixture_id)
+    return signal, record
+
+
+def _native_unitary_enclosure(program, raw, bits, *, progress=None):
+    """Shared numerical kernel; production caller reserves its call first.
+
+    Algorithm unchanged from the preparation SOURCE. Dispatch authority belongs
+    to h4_arb_pf_cosine and its bound one-shot controller, not this private core.
+    """
+    validate_program(program)
+    require(type(bits) is int and bits in PRECISIONS, 'FINITE_PRECISION_SCHEDULE')
+    require(len(raw) == 1 << program['n_system'], 'RAW_STATE_DIMENSION')
+    for pair in raw:
+        require(type(pair) in (list, tuple) and len(pair) == 2, 'RAW_COMPLEX_PAIR')
+        for value in pair: exact_binary64(value)
     C = _backend()
     with C.ctx.workprec(bits):
         nu = sum((exact_binary64(x) ** 2 + exact_binary64(y) ** 2 for x, y in raw), Q(0))
@@ -134,7 +152,8 @@ def _kernel(program, raw, bits, fixture_id):
         require(all(z.real.is_exact() and z.imag.is_exact() for z in vector), 'EXACT_INITIAL_BINARY64_STATE')
         error, phases = Q(0), {}
         diag, off = C.acb(C.real(Q(1, 2)), C.real(Q(1, 2))), C.acb(C.real(Q(1, 2)), C.real(Q(-1, 2)))
-        for gate in program['instructions']:
+        for index, gate in enumerate(program['instructions']):
+            if progress and index % 256 == 0: progress(index, len(program['instructions']))
             name, wires = gate['name'], gate['qubits']
             q = wires[-1]
             mask = 1 << q
@@ -173,12 +192,13 @@ def _kernel(program, raw, bits, fixture_id):
         signal = (zmid + C.arb(0, transfer)) / denominator
         require(signal.is_finite(), 'FINITE_SIGNAL_ENCLOSURE')
         interval = C.endpoints(signal)
-        record = dict(status='ARTIFICIAL_VALIDATED_SIGNAL_NO_H4_RESULT', fixture_id=fixture_id, precision_bits=bits,
+        record = dict(status='VALIDATED_FINITE_ENCODED_SIGNAL_ENCLOSURE', precision_bits=bits,
             interval=interval, interval_width_exact=str(Q(interval['upper']) - Q(interval['lower'])),
             raw_norm_exact=str(nu), state_l2_error_upper_exact=str(error),
             observable_transfer_upper_exact=str(C.dyadic(transfer)), instructions=len(program['instructions']),
             normalization='same exact raw nu; no input/output rescaling', clipping=False,
-            global_phase_preserved=True, real_H4_state_actions=0, formal_certificate_accepted=False)
+            global_phase_preserved=True, real_H4_state_actions=int(program['domain'] == 'SAVED_QPY_NO_EXECUTION'), formal_certificate_accepted=False)
+        if progress: progress(len(program['instructions']), len(program['instructions']))
         return signal, record
 
 
@@ -188,6 +208,13 @@ def evaluate_artificial(program, raw_state, *, bits=64, fixture_id):
 
 def residual_artificial(signal, target_interval, *, B_saved_exact, budget_exact, bits=64, fixture_id):
     require(type(fixture_id) is str and fixture_id.startswith('TOY_') and bits in PRECISIONS, 'ARTIFICIAL_RESIDUAL_ONLY')
+    rho, record = _residual_interval(signal, target_interval, B_saved_exact=B_saved_exact, budget_exact=budget_exact, bits=bits)
+    record['status'] = 'ARTIFICIAL_LOCAL_NUMERICAL_CANDIDATE_NO_ACCEPTANCE'
+    return rho, record
+
+
+def _residual_interval(signal, target_interval, *, B_saved_exact, budget_exact, bits):
+    require(type(bits) is int and bits in PRECISIONS, 'FINITE_PRECISION_SCHEDULE')
     C = _backend()
     with C.ctx.workprec(bits):
         lo, hi = Q(target_interval['lower']), Q(target_interval['upper'])
@@ -198,7 +225,7 @@ def residual_artificial(signal, target_interval, *, B_saved_exact, budget_exact,
         ep = C.endpoints(rho)
         lower, upper = Q(ep['lower']), Q(ep['upper'])
         relation = 'UPPER_WITHIN_BUDGET' if upper <= budget else 'LOWER_EXCEEDS_BUDGET' if lower > budget else 'UNDETERMINED'
-        return rho, dict(status='ARTIFICIAL_LOCAL_NUMERICAL_CANDIDATE_NO_ACCEPTANCE', interval=ep,
+        return rho, dict(status='LOCAL_NUMERICAL_ENCLOSURE_PENDING_ACCEPTANCE', interval=ep,
             budget_relation=relation, B_saved_exact=str(b), formal_certificate_accepted=False, LOCAL_BUDGET_MET=False)
 
 
