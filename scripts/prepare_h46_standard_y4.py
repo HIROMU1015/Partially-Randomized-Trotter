@@ -162,10 +162,10 @@ def prepare(assets, python, site_packages, historical_configs, pack_name):
     add(a / 'additional_import_closure_PRIVATE.json', 'additional_static_import_closure')
     prior_stop = a / 'prior_attempt_preservation_PRIVATE.json'
     if prior_stop.exists():
-        prior = c.read(prior_stop)
-        c.check_files([dict(r, role='prior_stopped_attempt') for r in prior['files']])
+        prior_evidence = c.read(prior_stop)
+        c.check_files([dict(r, role='prior_stopped_attempt') for r in prior_evidence['files']])
         add(prior_stop, 'technical_recovery_prior_attempt')
-        for row in prior['files']:
+        for row in prior_evidence['files']:
             add(row['path'], 'prior_stopped_attempt:' + row['logical_path'])
     for rel in c.SOURCE_PATHS:
         add(c.ROOT / rel, 'new_SOURCE:' + rel)
