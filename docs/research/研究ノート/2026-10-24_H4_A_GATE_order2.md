@@ -11,3 +11,7 @@
 engineと2taskはexit0/native wait/reap、07:21:49 UTCにmandatory STOP。旧1822/code52/input100/runtime6999/run48をSHA照合、既存manifest177項目不変。主agentの構造31check PASSで、科学的数値誤差certificateではない。旧hash FAIL/原因UNKNOWN・元native UNKNOWN・N/G null・C/L/旧compiler未確定を保持。
 
 事後固定された構造coverageの1本で全cohort平均・未観測order4・母平均は未確定。研究価値のある次候補はA_COHORT_COSだが、残254 cosineのSOURCE/body/compile予算とindex0/1再利用条件を別承認するまで進まない。公開状態は専用publication_status.jsonを参照。
+
+## 公開確認
+
+結果commit f4ebb25292dd246b4d77e74f004b3bc50b377f37。originへのpushはHTTPS認証名を取得できずexit128。GitHub connectorで対象branch検索0件、remote SHA未取得を保存した。成果物は専用local branchに保全し、ユーザー用pushコマンドをpublication_status.jsonと最終チャットに記載する。後続の公開監査commitはmetadataだけで、科学run・compile・grant消費の追加なし。

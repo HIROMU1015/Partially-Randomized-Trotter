@@ -18,6 +18,8 @@ Qiskit1.3.0、native basis rz/sx/x/cx、optimization level1、seed17、backend/c
 | D1 SOURCE | `9843b803878db6c3aee7ab5e7c6bb4818572c944` |
 | D2 SOURCE | `74515d8eb4f073c40fc783681a3775dbca89e9b1` |
 | 今回の科学SOURCE | `ee7d281b5daead1d0d5e81e00c9a0ed4727792b0` |
+| 結果commit | `f4ebb25292dd246b4d77e74f004b3bc50b377f37` |
+| remote SHA | push認証失敗・branch検索0件のため未取得 |
 | trajectory index | **1** |
 | trajectory ID | `596897f2d5ec2fb9b28a2b73c16423192d1494fd490fc58ca52cfc818baae0aa` |
 | trajectory hash | `0d16d201c87fdbb5f3e219dffb7dca7d48a69799290453e9ebb110a267db0e4b` |
