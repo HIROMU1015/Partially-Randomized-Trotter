@@ -157,3 +157,11 @@ PR全law/R2/tail/N_G/正式受理まで拡張するなら各範囲の別承認�
 科学SOURCEと結果commitを区別し、結果commit・push試行・remote SHAの時点状態を
 [publication_status.json](../artifacts/non_df_h4_central_arb_pf_cosine/2026-10-25/publication_status.json)に保存する。
 認証失敗ならlocal commitへ全結果を保全し、最終回答で再pushコマンドを示す。mandatory STOP。
+
+結果commitは `b0a8bb28c8ba78c11b6be2bbc67b575fa92e9fd8`。
+push1回はGitHub HTTPS Username取得不能でexit128。
+[失敗log](../artifacts/non_df_h4_central_arb_pf_cosine/2026-10-25/push_attempt01.log)、
+[remote再確認](../artifacts/non_df_h4_central_arb_pf_cosine/2026-10-25/remote_after_push.json)を保存した。
+専用branch検索0件、remote SHA=null。認証できる環境で同branchをpushする必要がある。
+後続local metadata commitは公開状態のみを記録し、科学SOURCE/入力/runtime/grant/ledger/結果/native/STOPは変更しない。
+科学workerは既に終了、PR拡張なし、mandatory STOP。

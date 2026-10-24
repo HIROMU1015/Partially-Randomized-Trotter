@@ -21,3 +21,10 @@ worker652280は00:24:17 JST native exit0/reap、controller exit0。今回STOPは
 
 次：ユーザーがPR個別C-targetとcompiled包含の対象・軸・call範囲を別承認後、Codexが別SOURCE/未使用grantで限定実施。
 現在PR拡張未実行。公開処理後mandatory STOP。
+
+## 公開試行
+
+結果commit b0a8bb28c8ba78c11b6be2bbc67b575fa92e9fd8。
+origin push1回はHTTPS Username取得不能でexit128、remote専用branch検索0件、remote SHA=null。
+公開記録を後続local metadata commitへ保存する。結果とSOURCE/grant/native/STOPは不変。
+ユーザーが認証可能な環境で同branchをpushできる。mandatory STOP、科学計算への自動移行なし。
