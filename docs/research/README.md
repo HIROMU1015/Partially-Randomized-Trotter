@@ -1,5 +1,7 @@
 # 研究計画資料
 
+[C1 Stage 1：ffsim／SciPy互換性修正](research_c_c1_stage1_compatibility_20261025.md)：既存2D logmを順に呼ぶ専用bridge、venv起動修正、人工59件＋29 subtests PASS。[新未承認契約](research_c_c1_stage1_compatibility_contract_unapproved_20261025.json)とSOURCE／lockは `artifacts/research_c_c1_stage1_compatibility/2026-10-25/`。実分子科学call0、旧結果／STOP保全、別の1 fit明示承認待ち・mandatory STOP。
+
 このディレクトリには、DF部分ランダム化・有限RTE・RPE compiled cost研究の目的、背景、未解決点、解析手順および数値評価計画をまとめる。
 
 実装、runner、テスト、成果物を含むリポジトリ全体の区分は

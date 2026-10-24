@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1 Stage 1互換性修正・人工検証（2026-10-25）
+
+[修正報告](docs/research/research_c_c1_stage1_compatibility_20261025.md)、[新未承認契約](docs/research/research_c_c1_stage1_compatibility_contract_unapproved_20261025.json)。専用bridge `src/trottertracks/c1_ffsim_compat.py` を既存Stage1 runnerへ接続し、venv Python symlinkを保持。新test `tests/management/test_research_c_c1_ffsim_compat.py` と既存回帰59件＋29 subtests PASS。証拠・SOURCE・同版依存lockは `artifacts/research_c_c1_stage1_compatibility/2026-10-25/`。実ffsim人工初期化はoptimizerを遮断して確認、分子科学call0。旧run01/run02/STOP保全、新しい1 fitは別明示承認が必要。mandatory STOP。
+
 ## 研究C・C1 Stage 1科学実行の技術的STOP（2026-10-25）
 
 [結果・固定SOURCE・部分証拠・STOP](docs/research/research_c_c1_stage1_execution_20261025.md)。固定 `c1_stage1.py` / `c1_stage1_execution.py` と `scripts/run_research_c_c1_stage1.py` を使用。artifactは `artifacts/research_c_c1_stage1_science/2026-10-25/`。1 fitはffsim/SciPy batch logm非互換でoptimizer前に停止、科学call2/147、CDF/XDF誤差とadapter同値性は未測定。追加fit・Stage2/3なし、mandatory STOP。

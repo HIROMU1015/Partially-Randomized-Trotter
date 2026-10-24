@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-25 C1 Stage 1 compatibility repair: artificial qualification only
+
+[Report](docs/research/research_c_c1_stage1_compatibility_20261025.md), [unapproved contract](docs/research/research_c_c1_stage1_compatibility_contract_unapproved_20261025.json), [SOURCE/locks/evidence](artifacts/research_c_c1_stage1_compatibility/2026-10-25/). Implementation `303f73275f133bfed0a0cd93a06f4a46f8ffd7be` retains SciPy1.14.1 and ffsim0.0.83; task-only per-matrix logm plus venv symlink launch fix. Artificial59 tests and29 subtests PASS, including real ffsim initialization on artificial tensors with optimizer blocked. No molecular fit/numeric decode/operator/norm/residual/reanalysis/circuit call. Scientific Stage1 remains incomplete; former spent approval/STOP preserved. New one-fit authorization required, no automatic Stage2/3, mandatory STOP. Local tests archived in Git are not immutable CI or molecular qualification.
+
 ## 2026-10-25 C1 Stage 1 authorized attempt: technical STOP before optimizer
 
 [Execution report](docs/research/research_c_c1_stage1_execution_20261025.md), [evidence/summary](artifacts/research_c_c1_stage1_science/2026-10-25/execution_summary.json). Fixed source `de76aee72f35321c00155b0b17d22ef6eb2bcb9a`; preflight PASS, one ffsim call failed during x0 parameterization because SciPy1.14.1 logm rejects batched matrices. Optimizer and all Hamiltonian/norm comparisons were not reached. Physical CDF/XDF errors and adapter equality remain NOT_MEASURED/NOT_RUN. Scientific counter2/maximum147, fit attempted1/returned0, science retry/resume0. Technical launches before science are separately preserved. Prior artificial tests remain valid within their mock/artificial scope; molecular Stage1 qualification is incomplete. No further fit or Stage2/3 authorization is inferred; mandatory STOP.
