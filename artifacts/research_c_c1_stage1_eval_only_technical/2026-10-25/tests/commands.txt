@@ -1,0 +1,10 @@
+Worktree: /tmp/prt-c1-eval-only-preparation-20261025
+All test data are artificial. No molecular J/U or input NPZ is decoded.
+Environment for commands: XDG_CACHE_HOME=$PWD/.cache MPLCONFIGDIR=$PWD/.cache/matplotlib TMPDIR=$PWD/.cache/tmp PYTHONPYCACHEPREFIX=$PWD/.cache/pycache
+Read-only exact-lock venv reuse: .venv-fit -> /tmp/prt-c1-stage1-compatibility-20261025/.venv-fit; .venv-eval -> /tmp/prt-c1-stage1-compatibility-20261025/.venv-eval. No dependency install/update.
+.venv-eval/bin/python -m pytest -q -o cache_dir=.cache/pytest-eval-only tests/management/test_research_c_c1_stage1_eval_only.py --junitxml=artifacts/research_c_c1_stage1_eval_only_technical/2026-10-25/tests/eval-only.xml
+.venv-eval/bin/python -m pytest -q -o cache_dir=.cache/pytest-eval-regression tests/management/test_research_c_c1_frame_repair.py tests/management/test_research_c_c1_stage1.py tests/management/test_research_c_c1_stage1_execution.py --junitxml=artifacts/research_c_c1_stage1_eval_only_technical/2026-10-25/tests/eval-regression.xml
+.venv-fit/bin/python -m pytest -q -o cache_dir=.cache/pytest-fit tests/management/test_research_c_c1_ffsim_compat.py tests/management/test_research_c_c1_stage1_fit_environment.py --junitxml=artifacts/research_c_c1_stage1_eval_only_technical/2026-10-25/tests/fit-regression.xml
+.venv-eval/bin/python -m pytest -q -o cache_dir=.cache/pytest-adapter tests/management/test_research_c_c1_general_k_adapter.py --junitxml=artifacts/research_c_c1_stage1_eval_only_technical/2026-10-25/tests/adapter.xml
+.venv-eval/bin/python -m pip check
+Initial harness failures are kept under tests/initial_mock_failure and tests/initial_counter_assertion_failure; final suites all pass. Artificial technical reruns are not scientific retries.
