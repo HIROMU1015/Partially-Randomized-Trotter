@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+関連trackの [C1保存fit評価専用準備](../../docs/research/research_c_c1_stage1_eval_only_preparation_20261025.md)は `trottertracks.c1_stage1_eval_only` から既存修正済みCAR／一般K／保存XDF評価を再利用し、数値libraryは無変更。entry `scripts/run_research_c_c1_stage1_eval_only.py`、新test `tests/management/test_research_c_c1_stage1_eval_only.py`、SOURCE／証拠 `artifacts/research_c_c1_stage1_eval_only_technical/2026-10-25/`。旧fit／新評価SOURCEを分離、人工82件＋29 subtests PASS、[未承認契約](../../docs/research/research_c_c1_stage1_eval_only_contract_unapproved_20261025.json)。実H4評価0、mandatory STOP。
+
 関連trackの [C1 raw CAR frame修正](../../docs/research/research_c_c1_frame_repair_20261025.md)は `trottertracks.c1_stage1.raw_frame` の縮約だけをexplicit batched matmulへ接続。一般K／独立CAR代数／保存XDF／allowanceを保持し、新test `tests/management/test_research_c_c1_frame_repair.py` と既存回帰63件＋29 subtests、別プロセス64人工frame比較PASS。SOURCE／証拠 `artifacts/research_c_c1_frame_repair/2026-10-25/`、分子再解析・新fit0、H4の旧FAILは未再検証のままmandatory STOP。
 
 関連trackの [C1 Stage 1互換性修正版実行](../../docs/research/research_c_c1_stage1_compat_execution_20261025.md)：SOURCE無変更で通常C-DF fit1回が収束（R8）。full256 frame0のraw CAR／K同値性がFAILし科学的STOP、既存保存XDF sector経路は構築したが物理CDF/XDF normは未到達。科学call107/147、retry/resume0、原本 `artifacts/research_c_c1_stage1_compat_science/2026-10-25/`、追加科学実行なし。

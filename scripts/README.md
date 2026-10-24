@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_research_c_c1_stage1_eval_only.py` は[C1評価専用入口](../docs/research/research_c_c1_stage1_eval_only_preparation_20261025.md)。既定はbyte/JSON preflight、実行は新scopeの別科学承認が必要。`--worker-fit`／fit Python引数はなく、旧one-fit runnerを再起動しない。処理 `trottertracks.c1_stage1_eval_only`、人工test `test_research_c_c1_stage1_eval_only.py`、SOURCE／証拠 `artifacts/research_c_c1_stage1_eval_only_technical/2026-10-25/`、[未承認契約](../docs/research/research_c_c1_stage1_eval_only_contract_unapproved_20261025.json)。人工82件＋29 subtests PASS、新fit0／最大141、H4未評価・mandatory STOP。
+
 [C1 raw frame修正](../docs/research/research_c_c1_frame_repair_20261025.md)の人工監査は `artifacts/research_c_c1_frame_repair/2026-10-25/artificial_parallel_audit.py` と `preloaded_backend_audit.py`。新test `tests/management/test_research_c_c1_frame_repair.py`、修正 `trottertracks.c1_stage1.raw_frame`、SOURCE／証拠 `artifacts/research_c_c1_frame_repair/2026-10-25/`。人工63件＋29 subtests PASS、分子科学処理0。`run_research_c_c1_stage1.py` はone-fit入口のままで、保存exportの評価専用runnerではない。別準備・科学承認待ち、mandatory STOP。
 
 `run_research_c_c1_stage1.py` の[互換性修正版Stage 1科学実行](../docs/research/research_c_c1_stage1_compat_execution_20261025.md)は新approvalで1 fit収束後、frame0 raw CAR／K同値性FAILによりSTOP。科学call107/147、retry/resume0、証拠 `artifacts/research_c_c1_stage1_compat_science/2026-10-25/`。SOURCEと既存runnerは変更せず、物理sector norm未到達、追加実行・Stage2/3なし。

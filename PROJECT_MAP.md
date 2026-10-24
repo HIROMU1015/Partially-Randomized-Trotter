@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1 保存fit評価専用経路の準備（2026-10-25）
+
+[技術報告](docs/research/research_c_c1_stage1_eval_only_preparation_20261025.md)、[未承認科学契約](docs/research/research_c_c1_stage1_eval_only_contract_unapproved_20261025.json)。新entry `scripts/run_research_c_c1_stage1_eval_only.py`／`src/trottertracks/c1_stage1_eval_only.py` は旧fitのSOURCE/input/exportと新評価SOURCEを独立に保持し、新fit0で既存CAR/K/XDF検証を再利用する。新test `tests/management/test_research_c_c1_stage1_eval_only.py`、人工82件＋29 subtests PASS。証拠・SOURCE `artifacts/research_c_c1_stage1_eval_only_technical/2026-10-25/`、call上限141、retry/resume0。実H4 decode・評価・fit0、旧科学的STOP保全、別明示承認待ち・mandatory STOP。
+
 ## C1 raw CAR frame修正・人工検証（2026-10-25）
 
 [修正報告](docs/research/research_c_c1_frame_repair_20261025.md)、[未承認引継ぎ](docs/research/research_c_c1_frame_repair_handoff_unapproved_20261025.json)。`src/trottertracks/c1_stage1.py` のraw縮約をexplicit batched matmulへ変更し、一般K／物理モデル／solver／allowanceは維持。新test `tests/management/test_research_c_c1_frame_repair.py` と既存回帰63件＋29 subtests PASS、別プロセス64人工frame比較もPASS。証拠・SOURCE `artifacts/research_c_c1_frame_repair/2026-10-25/`。分子exportの数値再解析・新fitは0。旧科学的FAILとの因果帰属・H4資格は未確認、旧STOP保全・mandatory STOP。現行one-fit runnerは評価専用入口ではない。

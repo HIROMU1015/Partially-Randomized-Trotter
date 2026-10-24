@@ -1,5 +1,7 @@
 # 研究計画資料
 
+[C1 保存fit評価専用経路の技術準備](research_c_c1_stage1_eval_only_preparation_20261025.md)：新規fit0、旧fit来歴と新評価SOURCEの独立検証、既存CAR/K/XDFを再利用。人工82件＋29 subtests PASS、固定byte/metadata preflight PASS。[未承認科学契約](research_c_c1_stage1_eval_only_contract_unapproved_20261025.json)は最大141、fresh output、retry/resume0、mandatory STOP。証拠 `artifacts/research_c_c1_stage1_eval_only_technical/2026-10-25/`、H4数値decode・評価なし、旧FAIL未再検証。
+
 [C1 raw CAR frame縮約修正](research_c_c1_frame_repair_20261025.md)：旧rawの起動／読込順に依存する人工並列不一致を再現し、explicit matmulへ変更。人工63件＋29 subtests・別プロセス64 frame比較PASS。[未承認引継ぎ](research_c_c1_frame_repair_handoff_unapproved_20261025.json)、証拠 `artifacts/research_c_c1_frame_repair/2026-10-25/`。H4追加解析・fit0、科学的資格は未完了、旧STOP保全・mandatory STOP。
 
 [C1 Stage 1互換性修正版の科学実行](research_c_c1_stage1_compat_execution_20261025.md)：新しい1 fitはrank8で収束、full256 frame0同値性FAILでSTOP。κ/J/U・baseはPASS、CDF/XDFの物理sector誤差は未測定。科学call107/147、retry/resume0、証拠 `artifacts/research_c_c1_stage1_compat_science/2026-10-25/`。旧SOURCE／run／STOPを保全し、追加科学処理・Stage2/3へ進まない。
