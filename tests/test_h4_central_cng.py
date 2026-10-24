@@ -36,6 +36,24 @@ def toy_function(case):
 
 
 class CentralTests(unittest.TestCase):
+    def test_reference_scope_allows_distinct_represented_H(self):
+        original={}
+        for rep in ('pauli_jw','df_native'):
+            for method in ('PF','PR'):
+                original[rep+'_'+method]=dict(state=dict(hash='same-ray'),reference=dict(T=.8,method='saved',hamiltonian_hash=rep,signal=rep))
+        refs=A.reference_scopes(original)
+        self.assertNotEqual(refs['pauli_jw'],refs['df_native'])
+        original['df_native_PR']['reference']['signal']='changed'
+        with self.assertRaises(ValueError):A.reference_scopes(original)
+
+    def test_reference_scope_rejects_state_or_time_change(self):
+        for field in ('state','time'):
+            original={c:dict(state='same',reference=dict(T=.8,method='saved')) for c in (*A.CASES,'df_native_PF','df_native_PR')}
+            if field=='state':original['df_native_PF']['state']='wrong'
+            else:
+                for method in ('PF','PR'):original['df_native_'+method]['reference']['T']=.9
+            with self.assertRaises(ValueError):A.reference_scopes(original)
+
     def test_join_257_artificial_prices(self):
         rows,s=fixture(); p=A.bind_prices(list(reversed(rows)),s)
         self.assertEqual(len(p['pauli_jw_PR']),256)

@@ -1,0 +1,438 @@
+# Codex指示：H4 Pauli central-control版の条件付きC/N/G総資源比較
+
+Repository：`HIROMU1015/Partially-Randomized-Trotter`
+
+基点branch：`codex/non-df-h4-a-axes-execution-20261024`
+
+基点commit：`564cd71936fa27225624b00a7d5d1f12dc4cc6dc`
+
+主要資料：
+
+- `docs/non_df_h4_a_axes_20261024.md`
+- `artifacts/non_df_h4_a_axes/2026-10-24/conditional_CNG_readiness.json`
+- `docs/non_df_h4_conditional_cng_results_20261024.md`
+- `docs/non_df_h4_controlled_comparison_redesign_20261024.md`
+- 各研究の固定SOURCE・保存結果・監査資料
+
+主要SOURCE：
+
+- 元H4：`0c329b30a81accb35c212be8defa66fee0dd0f12`
+- Pauli central-control D2：`74515d8eb4f073c40fc783681a3775dbca89e9b1`
+- A_COHORT_COS：`34ef0a7ca2412a61f5215a4ce1192e99f3226b2a`
+- A_AXES：`a37232f85812688c3b9ab957c5073c5ce143b17e`
+- 既存条件付きC/N/G：`b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8`
+
+## 1. 研究目的と今回の実行承認
+
+**Pauli-JW central-control版の条件付きC/N/G資源比較を実行することを明示承認します。**
+
+現在、両軸のcompiled RZ回路単価は次のとおり確定しています。
+
+| 方法 | Cosine RZ | Sine RZ |
+|---|---:|---:|
+| Pauli PF central | 15,028 | 15,028 |
+| Pauli PR central（保存256本平均） | 1,140.8046875 | 1,140.8046875 |
+| Pauli PF generic（旧結果） | 255,500 | 255,500 |
+| Pauli PR generic（旧256本平均） | 9,321.1015625 | 9,321.1015625 |
+| DF-native PF（旧結果） | 135,355 | 135,355 |
+| DF-native PR（旧256本平均） | 23,678.44140625 | 23,678.44140625 |
+
+今回の主要な問いは、
+
+**「Controlled化を最適化したPauli-JW PF/PRでは、必要shot数Nを含めた総費用Gがどの程度削減されるか。また、従来のPauli generic-control版およびDF-nativeとの優劣はどう変わるか」**
+
+です。
+
+既存の条件付きC/N/G解析パイプラインと新しいpaired価格を接続し、有限な保存データ再解析を一括実行してください。
+
+今回は以下を承認します。
+
+1. GitHub固定SOURCE・入力・結果の確認
+2. 既存C/N/G会計コードの再利用
+3. 必要最小限のadapter実装と人工検証
+4. 新SOURCE・runtime・入力・実行契約の固定
+5. 新しいone-shot grantによる限定数値再解析
+6. 10条件のPauli central N/G評価
+7. 15件の方式間比較
+8. 固定guard内の費用順位の頑健性評価
+9. 結果保存・検証・報告・mandatory STOP
+
+承認済み範囲内で中間確認を繰り返す必要はありません。
+
+## 2. 固定科学条件
+
+従来と同じ条件を使用してください。
+
+- Linear H4、隣接1.00 Å、STO-3G
+- System 8 qubit
+- Pauli-JW 184非identity項、PR prefix27
+- S2、T=0.8、q=8、r=4、K=4
+- 保存された元のPR event law・256 trajectory
+- Central-controlは固定D2実装
+- Qiskit 1.3.0、rz/sx/x/cx、optimization level1、seed17
+- 状態準備費用を除くfull Hadamard wrapper
+- 信号精度：0.05、0.01、0.005、0.001、0.0005
+- Cosine/sine両軸
+
+Hamiltonian、状態、分割、保持規則、event law、control実装、費用定義を変更しません。
+
+## 3. 既存コード・証拠の再利用
+
+最初に、過去のC/N/G評価で使用したコードと検証資産を確認してください。
+
+特に以下を優先的に再利用します。
+
+- `fixed_signal_accounting.fixed_signal_shots`
+- 既存`precision_accounting`
+- `fixed_signal_evaluation._statistics`
+- 既存のPauli条件付きC/N/G計算・比較処理
+- A_AXESのpaired価格と共分散
+- Cの保存`bias_distance`
+- 保存signed bias、normalization、B_saved
+- 既存のscalar丸め・ceil検証
+- 既存の保存・grant・native終了管理
+
+同じ処理を再実装せず、**新central-control価格を既存会計へ接続する最小限のadapter**を優先してください。
+
+元の化学計算・回路生成・compiler・samplingのentrypointを起動してはいけません。
+
+## 4. 誤差会計と条件付き評価
+
+D2によるcentral-control変換は、理想的なcontrolled演算とのSOURCE対応が確認されています。
+
+しかし、新しいcompiled回路の実際の数値誤差は保証されていません。
+
+したがって、旧generic-control版の実装残差を新しい実装に自動転用してはいけません。
+
+### 4.1 既存誤差証拠の利用
+
+Pauli PF/PRそれぞれについて、保存された
+
+- 理想信号のreference
+- Signed bias
+- Cの`bias_distance.upper`
+- B_saved
+- `saved_log_B_upper`
+- State/rayとnormalizationの定義
+
+を確認してください。
+
+同じ理想演算、保存state、event law、正規化、信号尺度に対応する範囲で再利用します。
+
+Cのsemantic allowanceとL上界を無条件に足したり、C totalから未証明の項を減算したりしないでください。
+
+### 4.2 新しい実装残差
+
+新central-control版の未保証残差を、方式・軸ごとの変数
+
+`rho_new >= 0`
+
+として保持します。
+
+これは、正規化された同じrayとB_saved尺度で、Cのencoded meanから実際のcompiled測定期待値までに残る未保証誤差です。
+
+実際のrho_newは未知であり、0と認定しません。
+
+### 4.3 固定会計式
+
+既存の条件を維持します。
+
+```text
+epsilon_axis = epsilon_sig / sqrt(2)
+alpha_axis = 0.025
+
+u_axis = u_enc,axis + rho_new,axis
+
+h_axis = epsilon_axis - abs(b0_axis) - u_axis
+
+guard:
+    h_axis > 0
+    u_axis / h_axis <= 0.01
+
+B_up = max(1, B_saved, exp(saved_log_B_upper))
+
+N_axis = ceil(
+    2 * B_up^2 * log(2 / alpha_axis) / h_axis^2
+)
+```
+
+B_savedや既存の安全側normalizationを変更しないでください。
+
+Scalar演算・丸め・ceilは既存の十分条件検証を再利用してください。
+
+元のsafe integer規則を維持し、成立しない場合は有限値を強制せず理由付きnullとしてください。
+
+今回の主たる数値評価は、
+
+**rho_new,cos = rho_new,sin = 0 という仮想シナリオ**
+
+とします。
+
+これは最低残差を仮定した感度評価であり、実装残差の測定値・保証値ではありません。
+
+## 5. 必須数値解析package
+
+### 5.1 Pauli centralのN/G
+
+対象：
+
+- Pauli PF central：5精度
+- Pauli PR central：5精度
+
+合計10条件、20軸です。
+
+各条件について、
+
+- Bias・u_enc・B_up
+- Headroom
+- Guard判定
+- Cosine/sineの必要shot数
+- Shot数合計
+- 各軸回路単価
+- 総費用G
+- PR/PF比
+
+を評価してください。
+
+### 5.2 Paired総費用
+
+各PR trajectory iについて、
+
+```text
+G_i = N_cos * C_i,cos + N_sin * C_i,sin
+
+G_hat = mean_i(G_i)
+```
+
+を使用してください。
+
+同じtrajectoryのcosine/sine価格と共分散を維持します。
+
+保存256本では両軸RZ費用が全件一致していますが、この観測結果を利用してよいのは今回の固定cohort内だけです。
+
+共分散を無視して両軸のSEを独立に足さないでください。
+
+PFは決定論的な1回路価格です。
+
+PR価格標本数256と、量子測定の必要shot数Nを混同しないでください。
+
+### 5.3 費用統計
+
+既存のpaired価格統計を再利用してください。
+
+Gについて、
+
+- 保存256本の算術平均
+- 標本SD
+- SE
+- Nominal Student-t95
+- 必要なpaired費用情報
+
+を報告してください。
+
+Nominal信頼区間を母平均費用の厳密上界と呼ばないでください。
+
+未観測order4のtailは未確定のままです。
+
+## 6. 方式間比較
+
+各精度について、次の3種類を比較してください。
+
+| 比較 | 研究上の意味 |
+|---|---|
+| Pauli central PR vs Pauli central PF | Central-control版でのPR効果 |
+| Pauli central PF vs DF-native PF | 固定実装におけるHamiltonian表現間の費用差 |
+| Pauli central PR vs DF-native PR | 固定実装におけるPRの費用差 |
+
+5精度×3比較＝**15件**です。
+
+DF-nativeは既存の条件付きC/N/G結果を再利用してください。
+
+DFの新しい化学計算・費用compile・N/G再計算は行わず、比較条件と誤差・normalizationの定義が整合するか確認してください。
+
+Pauli/DFの比較は、同じ固定H4における異なるHamiltonian分割・保持規則・回路合成の比較です。
+
+**表現そのものだけの因果効果や、一般的な最適手法の順位と解釈しないでください。**
+
+また、旧Pauli generic-control版の既存G結果も参考として併記し、control実装の変更によって総費用の評価がどう変わったか整理してください。
+
+旧結果を書き換えてはいけません。
+
+## 7. Guard許容域内の頑健性
+
+rho_new=0の一点だけで結論を固定しないため、可能なら**固定guardの許容域全体**について費用順位の頑健性を評価してください。
+
+追加の大規模なシナリオ探索は不要です。
+
+既存の解析方法を再利用し、必要shot数の単調性とceilを保持した端点評価などで、各方式・各軸の独立残差に対する上下界を確認してください。
+
+特に、
+
+- Guard許容域が非空か
+- PR/PF順位が許容域内で反転し得るか
+- Pauli/DF順位が反転し得るか
+- 母平均費用の不確かさを入れると何が未判定になるか
+
+を区別してください。
+
+本件の頑健性判定は、指定された条件付き誤差予算と保存平均価格に対するものです。
+
+**実際のrho_newがguard内にあるとの保証ではありません。**
+
+本packageの固定10条件・15比較を超える新しい科学的探索やパラメータ変更は行わないでください。
+
+## 8. 研究上明らかにすべきこと
+
+最終的に、次の問いに答えてください。
+
+1. Pauli central PF/PRそれぞれの必要shot数Nはいくつか。
+2. PRのshot負担はPFよりどの程度大きいか。
+3. Central-control版ではPRによる回路単価削減がGでも維持されるか。
+4. 従来generic-control版のPF/PR総費用比から、どのように変化したか。
+5. Pauli centralとDF-nativeの総費用順位はどうなるか。
+6. 固定guard内の残差変動で順位反転はあるか。
+7. PR母平均費用tailや実装残差によって、どの結論が未確定になるか。
+8. 今後、追加のcompiled誤差診断やtail解析を行う科学的価値はあるか。
+
+事前にPR優位などの結論を固定せず、実際の条件付き計算結果に従って判断してください。
+
+## 9. 実行範囲・SOURCE固定
+
+今回の新規数値作業は、次の有限packageに限定します。
+
+| 作業 | 上限・対象 |
+|---|---|
+| 保存paired価格の入力照合 | Pauli PF1＋PR256 |
+| Pauli条件付きN/G | 10条件 |
+| Axis shot評価 | 20軸 |
+| 方式間比較 | 15件 |
+| Guard頑健性 | 上記条件・比較内の端点評価 |
+| Paired費用統計 | 1固定batch |
+| 新compile | 0 |
+| 新sampling | 0 |
+| Hamiltonian/state生成 | 0 |
+
+新しい科学データの演算前に、使用コード、入力、runtime、出力schemaを固定してください。
+
+新SOURCEをcommitし、今回の承認・SOURCE・入力・runtimeを結び付けた専用active contractと新one-shot grantを使用します。
+
+旧SOURCE・grant・ledger・marker・STOPは変更しないでください。
+
+## 10. 意図しない技術的中断への対応
+
+前回承認された方針を今回にも適用します。
+
+**科学条件を変更しない技術的不具合については、Codex自身が原因を修正し、必要な範囲を再実行して構いません。**
+
+対象例：
+
+- Adapterの実装バグ
+- 既存関数との接続不備
+- 保存入力・出力の技術的処理エラー
+- Native worker・supervisorの不具合
+- 実行環境に起因する修正可能な例外
+
+回復時には、
+
+1. 原因を特定する。
+2. 成功済みの科学結果を再利用する。
+3. 失敗・未完了範囲だけを対象にする。
+4. 旧SOURCE・grant・結果・STOPを保全する。
+5. SOURCE変更後は新commit・seal・契約・未使用grantを使う。
+6. 技術的修正と回復実行の履歴を保存する。
+
+という方針を維持してください。
+
+この技術的回復について、中間承認は不要です。
+
+ただし、次の場合はユーザー判断へ戻してください。
+
+- Hamiltonian・分割・精度条件の変更
+- 誤差会計式やguardの変更
+- 新しいρの根拠のない数値代入
+- 科学的に重要な入力・SOURCE不一致
+- 結論が予想と違うという理由での再実行
+- 新規sampling・compile等への範囲拡大
+
+原因不明のまま同じ計算を無制限にretryしないでください。
+
+## 11. 禁止事項と研究上の限界
+
+今回は以下を実行しません。
+
+- 新SCF/FCI/DF計算
+- Hamiltonian/state再生成
+- 回路build・compile
+- 新しいPR sampling・RNG replay
+- 元のC/L数値証拠の再計算
+- New compiled residual rhoの数値保証
+- 未観測order4の追加診断
+- 実際の量子shot実行
+- D3
+- Formal certificate受理
+- 旧SOURCE・raw・結果・grant・STOPの変更
+
+従来の以下の状態も維持してください。
+
+- Pauli-PR historical hash FAIL／原因UNKNOWN
+- 元H4 native UNKNOWN
+- 元H4のN/G null
+- C/L COMBINATION_BLOCKED
+- 旧compiler MISSING_EVIDENCE
+- Formal certificate未受理
+
+今回作成する条件付きN/G・G比は、新しい解析versionとして独立に保存してください。
+
+**仮想的なρ=0による有限Gを、実際のcompiled回路の保証済みGに格上げしないでください。**
+
+## 12. 運用・資源方針
+
+最新版`research_project_instructions_unified_2026-10-23.md`を適用してください。
+
+特に§8.4、§10、§10.3を遵守します。
+
+- 既存コード・テスト・計算パイプラインを優先的に再利用
+- 科学的な結論に必要な検証を優先
+- 不要な再実装・過剰な監査を回避
+- CPU/RAM/worker数に恣意的な低い上限を設けない
+- 重い処理があれば十分な並列化・高速化を検討
+- 共有環境全体・他ユーザーの設定・ファイル・processへの影響は禁止
+
+今回の解析は保存価格とscalar演算が中心なので、無意味な並列化や複雑な基盤を追加する必要はありません。
+
+## 13. 成果物・mandatory STOP
+
+専用branchに、必要十分な成果物を保存してください。
+
+1. 新条件付きC/N/G adapter・人工テスト
+2. SOURCE・runtime・入力・active contract
+3. 新grant・call ledger・STOP
+4. Pauli central PF/PRの10条件N/G結果
+5. Cosine/sine 20軸のshot・headroom・guard結果
+6. 15件の方式間比較
+7. Guard許容域内の頑健性
+8. Paired Gの統計的不確かさ
+9. 旧generic・DFとの比較表
+10. 研究結果報告書・必要な図表
+11. Native終了・保全・必要な回復履歴
+
+最終報告では特に、
+
+- Pauli central PF/PRの条件付きG比
+- 旧generic-controlからの変化
+- Pauli centralとDF-nativeの条件付き費用順位
+- 固定guard内での順位反転の有無
+- 未保証ρ・費用tailの影響
+- 科学的に支持できる結論・支持できない結論
+- 次に必要な追加検証
+- SOURCE・commit・remote SHA・mandatory STOP
+
+を簡潔に示してください。
+
+専用branchへcommitし、承認済みのrepository運用規則に従ってpush・remote SHA照合を行ってください。
+
+認証失敗時は成果物を保全し、必要な操作を報告してください。既にremote SHAが一致する場合は再push不要です。
+
+**今回承認した条件付きC/N/G数値再解析・統計比較・guard頑健性評価・必要な技術回復・成果物保存まで一括で実施してください。**
+
+未承認の新しい科学計算・compile・sampling・certificate受理へは進まず、完了後は**mandatory STOP**してください。

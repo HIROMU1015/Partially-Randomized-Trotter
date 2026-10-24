@@ -1,0 +1,142 @@
+{
+  "DF_rows": "saved only; no evaluator",
+  "SOURCE": "da979af729f3c90e3cfbd3250e870ed3806cdf57",
+  "accounting": {
+    "B_upper_policy": "B_up=max(1,B_saved,exp(saved_log_B_upper)); log_up=max(0,log(B_saved),saved_log_B_upper) with outward scalar verification in new version; fixed B_saved readout never changed",
+    "alpha_axis": "0.025",
+    "alpha_complex": "0.05 per method/precision; not simultaneous20-condition95%",
+    "epsilon_axis": "same epsilon_sig/sqrt(2) allocation",
+    "error_label": "C encoded-enclosure evidence plus explicitly assumed residual budget; residual is not observed, estimated or certified by this plan",
+    "evidence_kind": "EMPIRICAL / conditional diagnostic even when using C enclosure; formal certificate flag false",
+    "guard": "u_total/h<=0.01 with h=epsilon_axis-|old_signed_bias|-u_total>0",
+    "maximum_u_over_headroom": "0.01",
+    "no_actual_shots_executed": true,
+    "reuse": "fixed_signal_accounting.fixed_signal_shots; original precision_accounting guard logic; _statistics and weighted paired sample method reused without invoking Hamiltonian/circuit evaluation",
+    "rho_guard_formula": "g*(epsilon_axis-|b0|)/(1+g)-u_enc; g=0.01; negative means no admissible nonnegative residual under policy",
+    "safe_integer_limit": "Reuse original shots<2**52 representation policy; larger bound reported symbolically/null, not zero",
+    "safe_rounding": "Retain original floating evaluator output as diagnostic; validate scalar sufficient inequality with exact/outward inputs. Inflate only the new-version sufficient N to the scalar ceiling when necessary, or leave null with NUMERICAL_BOUND_UNRESOLVED. Never call this a certificate."
+  },
+  "approval_sha256": "b855323a8e72277d03d85fadfa255f58555f5004bd2b649f6db59e43628342f7",
+  "authority_batch_limits": {
+    "comparisons_15_with_guard_boxes": 1,
+    "input_binding_batch": 1,
+    "paired_G_statistics_batch": 1,
+    "pauli_10_conditions_20_axes_with_guard_faces": 1
+  },
+  "automatic_retry": false,
+  "axes": [
+    "cosine",
+    "sine"
+  ],
+  "base_commit": "564cd71936fa27225624b00a7d5d1f12dc4cc6dc",
+  "cases": [
+    "pauli_jw_PF",
+    "pauli_jw_PR"
+  ],
+  "central_SOURCE": "74515d8eb4f073c40fc783681a3775dbca89e9b1",
+  "comparisons": [
+    [
+      "pauli_jw_PR",
+      "pauli_jw_PF"
+    ],
+    [
+      "pauli_jw_PF",
+      "df_native_PF"
+    ],
+    [
+      "pauli_jw_PR",
+      "df_native_PR"
+    ]
+  ],
+  "epsilon_sig": [
+    "0.05",
+    "0.01",
+    "0.005",
+    "0.001",
+    "0.0005"
+  ],
+  "execution_authorized": true,
+  "fixed_model": {
+    "DF_PR_prefix": 1,
+    "DF_rank": 10,
+    "DF_rank_policy": "tol-only1e-8",
+    "DF_retains_one_body": true,
+    "K": 4,
+    "Pauli_PR_prefix": 27,
+    "Pauli_terms": 184,
+    "T": "0.8",
+    "basis": "STO-3G",
+    "compiler": "original Qiskit1.3.0 rz/sx/x/cx opt1 seed17",
+    "cost_metric": "compiled full Hadamard wrapper RZ; preparation cost excluded",
+    "product_formula": "S2",
+    "q": 8,
+    "r": 4,
+    "spacing_Angstrom": "1.00",
+    "state": "same saved ray normalized in expectation formulas; no state regeneration",
+    "system": "linear H4",
+    "system_qubits": 8
+  },
+  "forbidden_calls": {
+    "C_L_recompute": 0,
+    "D3": 0,
+    "DF_N_G_recompute": 0,
+    "QPY_operator_load": 0,
+    "RNG_replay": 0,
+    "SCF_FCI_DF": 0,
+    "certificate_acceptance": 0,
+    "circuit_build": 0,
+    "compile": 0,
+    "new_order4_diagnosis": 0,
+    "numerical_rho": 0,
+    "old_evidence_rewrite": 0,
+    "quantum_shots": 0,
+    "sampling": 0,
+    "state_signal": 0
+  },
+  "formal_certificate_accepted": false,
+  "guard": "independent method/axis residuals; monotone ceil endpoints only; no extra scenario grid",
+  "kind": "H4_CENTRAL_CNG_ACTIVE_V1",
+  "mandatory_STOP": true,
+  "price_SOURCE": "a37232f85812688c3b9ab957c5073c5ce143b17e",
+  "real_rho_new": null,
+  "resources": "light saved scalar workload: one worker, no CPU/RAM/affinity ceilings or shared setting changes",
+  "rho_zero_hypothetical_only": true,
+  "scientific_SOURCE": {
+    "C": "e80d7510880f8db993b777c627bb8e95b05a070d",
+    "CL": "0880f4af98b125d62599e970db89fc33634d1b61",
+    "L": "eb195bf2dedd0aed9d80ad7f84948b59ea53d854",
+    "original": "0c329b30a81accb35c212be8defa66fee0dd0f12"
+  },
+  "scope": {
+    "actual_N_G_default": null,
+    "actual_rho_default": null,
+    "analytic_guard_faces": 20,
+    "comparisons": 15,
+    "conditions": 10,
+    "formal_certificate_accepted": false,
+    "paired_prices": 257,
+    "primary_axes": 20,
+    "primary_scenario": "rho_new_cos=rho_new_sin=0 HYPOTHETICAL_ONLY",
+    "required_result_fields": [
+      "case",
+      "epsilon_sig",
+      "N_cos",
+      "N_sin",
+      "N_total",
+      "prices_exact",
+      "G",
+      "G_exact",
+      "G_SD",
+      "G_SE",
+      "G_nominal95",
+      "actual_N",
+      "actual_G",
+      "actual_rho_new"
+    ],
+    "version": "H4_CENTRAL_CONDITIONAL_CNG_V1"
+  },
+  "seal_sha256": "cf06e6190af62764678e8091ba456eeb3157716ae2b3821c52e6c0778c67ec61",
+  "statistical_plan": "one fixed batch; paired within each Pauli trajectory; no Pauli/DF index pairing",
+  "technical_recovery": "diagnosed technical only; preserve successes/failures; new SOURCE/seal/namespace/grant if code changes",
+  "version": "H4_CENTRAL_CONDITIONAL_CNG_V1"
+}

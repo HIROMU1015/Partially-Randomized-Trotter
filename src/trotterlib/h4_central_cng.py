@@ -14,7 +14,7 @@ from . import h4_conditional_cng as P
 from . import h4_certificate_control as C
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = ROOT/'artifacts/non_df_h4_central_conditional_cng/2026-10-24'
+BASE = ROOT/'artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02'
 OLD = 'artifacts/non_df_h4_conditional_cng_results/2026-10-24'
 AXES = P.AXES
 EPS = ('0.05', '0.01', '0.005', '0.001', '0.0005')
@@ -22,6 +22,25 @@ CASES = ('pauli_jw_PF', 'pauli_jw_PR')
 PAIRS = (('pauli_jw_PR', 'pauli_jw_PF'),
          ('pauli_jw_PF', 'df_native_PF'),
          ('pauli_jw_PR', 'df_native_PR'))
+
+
+def reference_scopes(original):
+    """The original adapters use distinct representation-specific references.
+
+    Compare PF/PR to the reference of their own representation, on the same
+    saved state/T. Do not identify distinct represented Hamiltonian bytes or
+    replace either saved signal. Cross-representation bias budgets stay separate.
+    """
+    refs = {}
+    anchor = original['pauli_jw_PF']
+    for rep in ('pauli_jw', 'df_native'):
+        pf, pr = original[rep+'_PF'], original[rep+'_PR']
+        C.require(pf['reference'] == pr['reference'], 'WITHIN_REP_REFERENCE')
+        for obj in (pf, pr):
+            C.require(obj['state'] == anchor['state'], 'SHARED_STATE')
+            C.require(all(obj['reference'][k] == anchor['reference'][k] for k in ('T','method')), 'REFERENCE_CONVENTION')
+        refs[rep] = copy.deepcopy(pf['reference'])
+    return refs
 
 
 def bind_prices(rows, samples):
@@ -110,6 +129,7 @@ def run(ns, contract, budget):
     C.hashes({str(ROOT/k):v for k,v in manifest['files'].items()})
     roles = C.read(ROOT/'artifacts/non_df_h4_conditional_cng_plan/2026-10-24/inputs.json')['roles']
     original = {case:C.read(ROOT/roles[case+'_old']) for case in (*CASES, 'df_native_PF', 'df_native_PR')}
+    references_by_representation = reference_scopes(original)
     oldrows = C.read(ROOT/OLD/'run01/conditional_results.json')
     functions = C.read(ROOT/OLD/'run01/conditional_functions.json')
     oldregions = C.read(ROOT/OLD/'run01/comparison_regions.json')
@@ -133,7 +153,6 @@ def run(ns, contract, budget):
         rr = original[case]
         C.require(all(x['shots']['N_total'] is None and x['total_RZ'] is None for x in C.read(ROOT/roles[case+'_precision'])), 'OLD_NULL_CHANGED')
         C.require(rr['state'] == original['df_native_PF']['state'] == original['df_native_PR']['state'], 'SHARED_STATE')
-        C.require(rr['reference'] == original['df_native_PF']['reference'] == original['df_native_PR']['reference'], 'SHARED_REFERENCE')
         scales[case] = dict(state=rr['state'], reference=rr['reference'], signed_bias=rr['signal']['signed_bias'],
                             normalization=rr['normalization'], C_reference=cref['reference'], C_state_norm=cref['state_norm'],
                             compiled_rho_new=None, old_generic_residual_transferred=False,
@@ -219,6 +238,9 @@ def run(ns, contract, budget):
     C.save(ns/'reused_reference_rows.json', references)
     C.save(ns/'paired_G_values.json', trajectory_G)
     C.save(ns/'error_scale_provenance.json', scales)
+    C.save(ns/'reference_scopes.json', dict(references=references_by_representation,
+        same_state_ray=True, cross_representation_reference_identity_required=False,
+        comparison_scope='fixed H4, representation-specific Hamiltonian/ideal reference and saved bias budgets; no reference redefinition or DF N/G recomputation'))
     C.save(ns/'input_verification.json', dict(status='PASS', paired_rows=257, price_joins=257, input_files=len(manifest['files']),
         unchanged_DF_rows=10, reused_DF_guard_boxes=10, actual_rho_unknown=True, old_N_G_null=True))
     figure(ns, results, references, comparisons)

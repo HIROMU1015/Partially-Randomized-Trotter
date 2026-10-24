@@ -22,7 +22,8 @@ LIMITS = dict(input_binding_batch=1, pauli_10_conditions_20_axes_with_guard_face
               paired_G_statistics_batch=1, comparisons_15_with_guard_boxes=1)
 CODE = legacy.CODE + ['scripts/run_h4_central_cng.py', 'src/trotterlib/h4_central_cng.py',
                       'tests/test_h4_central_cng.py', 'src/trotterlib/h2_non_df_pilot.py',
-                      'artifacts/non_df_h4_central_conditional_cng/2026-10-24/prepare_inputs.py']
+                      'artifacts/non_df_h4_central_conditional_cng/2026-10-24/prepare_inputs.py',
+                      'artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/prepare_recovery_metadata.py']
 SCHEMA = dict(version='H4_CENTRAL_CONDITIONAL_CNG_V1', conditions=10, primary_axes=20,
               analytic_guard_faces=20, comparisons=15, paired_prices=257,
               primary_scenario='rho_new_cos=rho_new_sin=0 HYPOTHETICAL_ONLY',

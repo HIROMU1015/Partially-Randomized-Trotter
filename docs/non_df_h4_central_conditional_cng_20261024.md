@@ -25,3 +25,15 @@ compile/build/sampling/SCF/FCI/DF/state/signal/元C-L再計算0。
 
 最新版運用指示§8.4/10.1/10.2を適用。参照された§10.3は現ファイルに存在しないため規則を補作しない。
 軽い保存scalar処理は単一workerが実用的で、CPU/RAM/affinity上限・共有設定変更なし。
+
+## 初回の技術停止と修正SOURCE準備
+
+初回SOURCE `da979af729f3c90e3cfbd3250e870ed3806cdf57`、grant消費済み。
+入力照合でSHARED_REFERENCE例外、native exit1・回収・FAILED STOP。N/G/guard/統計/比較call0。
+誤ったadapter gateが、Pauli/DF間にreference全体のbyte相当一致を要求していた。
+元h4_audited_evaluationは各adapterのfull Hamiltonianからreferenceを作るため、
+表現ごとのhashと保存浮動小数点信号は元々異なる。全4caseのstateは同一。
+旧会計は表現ごとのbias/referenceを使う比較であり、参照の同一化を要求しない。
+同一ray/T/methodと表現内PF/PR reference一致を検査し、表現別referenceを保持するよう修正。
+保存値の変更・新許容誤差・科学的条件変更はない。新16人工PASS。
+失敗run/旧grant/STOP/SOURCE archiveを保存し、新namespace recovery02・新SOURCE/grantで未着手全packageを実行する。

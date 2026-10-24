@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-central-conditional-cng-20261024/scripts/run_h4_central_cng.py", line 153, in <module>
+    else: worker()
+          ^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-central-conditional-cng-20261024/scripts/run_h4_central_cng.py", line 118, in worker
+    A.run(ns,c,C.CallBudget(ns,LIMITS))
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-central-conditional-cng-20261024/src/trotterlib/h4_central_cng.py", line 136, in run
+    C.require(rr['reference'] == original['df_native_PF']['reference'] == original['df_native_PR']['reference'], 'SHARED_REFERENCE')
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-central-conditional-cng-20261024/src/trotterlib/h4_certificate_control.py", line 32, in require
+    raise ValueError(reason)
+ValueError: SHARED_REFERENCE
