@@ -1,5 +1,13 @@
 # Validation status
 
+
+## 2026-10-25 B2-D Stage 1: COMPLETE; A4 versus A3 discrimination inconclusive
+
+Fixed synthetic 2-mode one-body plus 3 DF factors; N=1/mode0, L_D=2 weight-ranked, delta=±0.09, q=2,3, n_D=1,2, r_RTE=2/K=2, complex128, correctness atol1e-12, phase disabled. Molecular geometry/AO basis/molecular rank exploration is not applicable.
+Science SOURCE `758a05ed6aac58a5945af5a5330c792a842b174d` completed input/noncommutativity, A4 mathematical4 and published-convention4 gates, then 36 rows/941 DAG dispatch/448 exponential keys. The initial54008c69 attempt stopped at a stale input-context attribute; both raw attempts and STOPs are preserved.
+A4 corrected physical signal error is 87.460–87.462% below A0, and 62.220–62.223%/29.163–29.166% below D-S2 at n_D=1/2. A3/A4 differences are near roundoff; no ranking, convergence-order or resource-superiority claim. All saved science results completed before a CLI stdout Fraction serialization error (exit1), repaired with stubs without further science.
+[Results and limits](docs/research/b2d_stage1_execution_20261025.md), [summary](artifacts/research_b_b2d_stage1/20261025/STAGE1_SUMMARY.json), [all36 rows](artifacts/research_b_b2d_stage1/20261025/COMPARISON.csv). Local committed science, not CI or independent external reproduction. Artificial tests72 PASS. Mandatory STOP; no Stage2 or extra conditions.
+
 ## 2026-10-24 rectangular Givens PS48: all scientific gates PASS; resource changes mixed
 
 Unchanged source `770e53a` completed one separately approved PS48 execution: six candidate bases and raw/compiled 48 wrappers (24 each support1/support2), 36 transpiles and 12 aliases, zero new high-precision references or retries. Compiled operator max-entry 1.99349e-14, within fixed tolerances with rtol=0 and no phase fit.

@@ -1,0 +1,33 @@
+Matplotlib created a temporary cache directory at /tmp/matplotlib-7xnffzy7 because the default path (/home/abe/.config/matplotlib) is not a writable directory; it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+Traceback (most recent call last):
+  File "/tmp/prt-b2d-stage1-recovery-science-20261025/scripts/run_b2d_stage1.py", line 35, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/tmp/prt-b2d-stage1-recovery-science-20261025/scripts/run_b2d_stage1.py", line 30, in main
+    print(json.dumps(result,indent=2))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/pr-phase2dbenv-private-20261023/cpython-3.11.9/lib/python3.11/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+  File "/tmp/pr-phase2dbenv-private-20261023/cpython-3.11.9/lib/python3.11/json/encoder.py", line 202, in encode
+    chunks = list(chunks)
+             ^^^^^^^^^^^^
+  File "/tmp/pr-phase2dbenv-private-20261023/cpython-3.11.9/lib/python3.11/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/tmp/pr-phase2dbenv-private-20261023/cpython-3.11.9/lib/python3.11/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/tmp/pr-phase2dbenv-private-20261023/cpython-3.11.9/lib/python3.11/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/tmp/pr-phase2dbenv-private-20261023/cpython-3.11.9/lib/python3.11/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  [Previous line repeated 1 more time]
+  File "/tmp/pr-phase2dbenv-private-20261023/cpython-3.11.9/lib/python3.11/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/tmp/pr-phase2dbenv-private-20261023/cpython-3.11.9/lib/python3.11/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/tmp/pr-phase2dbenv-private-20261023/cpython-3.11.9/lib/python3.11/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/tmp/pr-phase2dbenv-private-20261023/cpython-3.11.9/lib/python3.11/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type Fraction is not JSON serializable

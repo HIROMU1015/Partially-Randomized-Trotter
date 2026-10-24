@@ -143,3 +143,8 @@
 ## B2-D Stage 1承認管理撤去・実行簡素化（2026-10-25）
 
 最新の[科学実行契約・単一command・技術報告](research/b2d_stage1_simple_execution_20261025.md)。新科学SOURCE `54008c697e686a42ec48941d25219d523bafd454`。入口は `scripts/run_b2d_stage1.py --execute --source-commit … --output …`。承認packet／grant／receipt・発行／準備scriptを撤去し、科学SOURCE・input identity・scope・correctness・fresh output・失敗保存・STOPを維持した。実装 `src/trottertracks/b2d_evaluator/`、人工test `tests/management/test_b2d_simple_execution.py` と既存5ファイル、計70件PASS。科学計算は未実行。予定artifact `artifacts/research_b_b2d_stage1/20261025/simple-once/` は未生成。旧方式は過去の未採択提案として保全し、今後のB2-D実行要件にはしない。
+
+
+## B2-D Stage 1限定科学検証の完了（2026-10-25）
+
+[実行結果・技術復旧・比較表・STOP](research/b2d_stage1_execution_20261025.md)。科学SOURCE758a05ed、入力／A4数学／published列gate全PASS、36行・941 dispatch・448 key完了。A4のA0／D-S2からのfull signal改善は観測したが、A3との差は丸め誤差水準でINCONCLUSIVE。原本2attempt・全比較・環境・CSV・保存値集計は `artifacts/research_b_b2d_stage1/20261025/`。ローカル結果でCI／外部再現ではない。追加科学計算・Stage2へ進まずmandatory STOP。

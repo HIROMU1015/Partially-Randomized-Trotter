@@ -1131,6 +1131,14 @@
           "pr_dictionary_phase2d_f2_preparation_20261024"
         ],
         "reason": "F2 preparation contract with fixed SOURCE/input hashes and integer descriptors; no F2 scientific data or authorization."
+      },
+      {
+        "path": "artifacts/research_b_b2d_stage1/20261025",
+        "kind": "directory",
+        "supports": [
+          "research_b_b2d_stage1_20261025"
+        ],
+        "reason": "Preserved technical-stop attempt, completed36-row science attempt, full raw/provenance/STOP, logs, CSV and saved-only summary."
       }
     ],
     "quarantined": [
@@ -2400,6 +2408,56 @@
         "new_scientific_execution": false,
         "scientific_evidence_status_unchanged": true
       }
+    },
+    {
+      "id": "research_b_b2d_stage1_20261025",
+      "status": "source_present_no_current_ci",
+      "summary": "COMPLETE: fixed Stage1 input, A4 mathematical4 and published4 gates PASS,36 rows/941 DAG dispatch/448 exponential keys. A4 versus A3 ranking unresolved near roundoff. One authorized technical recovery; complete saved science followed by a stdout-only CLI error, no scientific rerun after completion.",
+      "documentation": [
+        "docs/research/b2d_stage1_execution_20261025.md",
+        "docs/research/b2d_stage1_simple_execution_20261025.md"
+      ],
+      "source": [
+        "src/trottertracks/b2d_evaluator/input_package.py",
+        "src/trottertracks/b2d_evaluator/dense_backend.py",
+        "src/trottertracks/b2d_evaluator/evaluation.py",
+        "src/trottertracks/b2d_evaluator/launcher.py",
+        "src/trottertracks/b2d_evaluator/scope.py",
+        "scripts/run_b2d_stage1.py",
+        "artifacts/research_b_b2d_stage1/20261025/summarize_saved.py"
+      ],
+      "tests": [
+        "tests/management/test_b2d_input_preflight.py",
+        "tests/management/test_b2d_simple_execution.py"
+      ],
+      "artifacts": [
+        "artifacts/research_b_b2d_stage1/20261025/STAGE1_SUMMARY.json",
+        "artifacts/research_b_b2d_stage1/20261025/COMPARISON.csv",
+        "artifacts/research_b_b2d_stage1/20261025/technical-r1/result.json",
+        "artifacts/research_b_b2d_stage1/20261025/technical-r1/inputs.npz",
+        "artifacts/research_b_b2d_stage1/20261025/technical-r1/STOP.json",
+        "artifacts/research_b_b2d_stage1/20261025/simple-once/STOP.json"
+      ],
+      "science_source_commit": "758a05ed6aac58a5945af5a5330c792a842b174d",
+      "initial_science_source_commit": "54008c697e686a42ec48941d25219d523bafd454",
+      "post_save_cli_fix_commit": "5bef9c9cbcd7cfd595ec82874531ad3c7982d014",
+      "counts": {
+        "scientific_attempts": 2,
+        "completed_comparison_runs": 1,
+        "authorized_technical_reruns": 1,
+        "comparisons": 36,
+        "dag_dispatch": 941,
+        "exponential_keys": 448,
+        "published_gate_cases": 4,
+        "new_native_compilations": 0,
+        "artificial_tests": 72,
+        "scientific_reruns_after_completion": 0
+      },
+      "interpretation": "A4 versus A0/D-S2 full-signal improvement observed on fixed synthetic2mode N1/mode0 LD2 weight-ranked delta±.09 q2,3 nD1,2 r2K2 complex128. A3/A4 differences at roundoff; no scientific GO, convergence-order or total-resource advantage claim.",
+      "completion_criteria": [
+        "Mandatory STOP after Stage1; User/researchB decides whether further differentiated comparisons are worthwhile.",
+        "Preserve both attempts, raw source/results/STOP; no automatic new conditions, precision or Stage2."
+      ]
     }
   ],
   "repository_completion_criteria": [

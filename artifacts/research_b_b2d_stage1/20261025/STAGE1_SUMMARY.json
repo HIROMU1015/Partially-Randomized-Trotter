@@ -1,0 +1,605 @@
+{
+  "A4_vs_A3_discrimination": "INCONCLUSIVE_AT_COMPLEX128_ROUNDOFF",
+  "attempts": [
+    {
+      "comparisons": 0,
+      "dag_dispatch": 0,
+      "exit_code": 2,
+      "id": "simple-once",
+      "input_boundaries_completed": 9,
+      "reason": "stale contract attributes in input loader",
+      "source": "54008c697e686a42ec48941d25219d523bafd454",
+      "status": "TECHNICAL_STOP",
+      "wall_seconds": 5.64
+    },
+    {
+      "exit_code": 1,
+      "id": "technical-r1",
+      "no_scientific_rerun_after_completion": true,
+      "post_save_cli_error": "Fraction JSON stdout serialization after complete persisted results",
+      "source": "758a05ed6aac58a5945af5a5330c792a842b174d",
+      "status": "COMPLETE",
+      "wall_seconds": 5.65
+    }
+  ],
+  "conditions": {
+    "K": 2,
+    "L_D": 2,
+    "N": 1,
+    "correctness_atol": 1e-12,
+    "delta": [
+      "9/100",
+      "-9/100"
+    ],
+    "geometry_basis_molecular_rank": "NOT_APPLICABLE",
+    "model": "synthetic_2mode_onebody_3DF",
+    "n_D": [
+      1,
+      2
+    ],
+    "phase_diagnostics": false,
+    "precision": "complex128",
+    "q": [
+      2,
+      3
+    ],
+    "r_RTE": 2,
+    "residual_factors": [
+      2
+    ],
+    "selected_factors": [
+      0,
+      1
+    ],
+    "split_policy": "weight_ranked",
+    "state": "mode0_occupation"
+  },
+  "correctness": {
+    "A4_cases": 4,
+    "all_gates_before_comparison": true,
+    "input": {
+      "DR_commutator_norm": 0.004280430000000002,
+      "D_commutator_norms": [
+        0.023895,
+        0.003920000000000003,
+        0.016074449999999997
+      ],
+      "H_identity_error": 6.166450881450042e-17,
+      "input_sha256": "54a9233d59f670c7b8d38c186c9543925b6ca70bb09357c0176f1daf98fa819a",
+      "sector_id": "0214bed6f733638b4a6a75aaed8a3a59f2676f2b6bff79398003ee6193bcff64",
+      "state_id": "fbced738576097362b9816075729b42fde7c8d533fb8740ee755b75417da7f4b"
+    },
+    "max_A4_inverse_error": 2.4424955950655415e-15,
+    "max_A4_math_error": 1.8916157383370123e-15,
+    "max_published_operator_error": 6.694889225807887e-16
+  },
+  "counts": {
+    "additional_scientific_runs": 0,
+    "comparisons": 36,
+    "dag_dispatch": 941,
+    "events": 3108,
+    "exponential_keys": 448,
+    "input_boundaries": 10,
+    "published_convention": 4,
+    "scientific_attempts": 2
+  },
+  "environment": {
+    "dependency_versions": {
+      "attrs": "26.1.0",
+      "certifi": "2026.10.23",
+      "charset-normalizer": "3.5.2",
+      "cirq-core": "1.4.1",
+      "contourpy": "1.3.3",
+      "cycler": "0.12.1",
+      "deprecation": "2.1.0",
+      "dill": "0.4.1",
+      "duet": "0.2.9",
+      "fonttools": "4.67.0",
+      "h5py": "3.16.0",
+      "idna": "3.20",
+      "iniconfig": "2.3.1",
+      "kiwisolver": "1.5.1",
+      "llvmlite": "0.43.0",
+      "matplotlib": "3.9.2",
+      "mpmath": "1.3.0",
+      "networkx": "3.6.1",
+      "numba": "0.60.0",
+      "numpy": "1.26.4",
+      "openfermion": "1.6.1",
+      "openfermionpyscf": "0.5",
+      "packaging": "26.3",
+      "pandas": "3.0.6",
+      "pillow": "13.0.0",
+      "pluggy": "1.7.0",
+      "psutil": "7.2.2",
+      "pubchempy": "1.0.5",
+      "pygments": "2.21.0",
+      "pyparsing": "3.3.3",
+      "pyscf": "2.7.0",
+      "pytest": "9.1.1",
+      "python-dateutil": "3.0.0",
+      "qiskit": "1.3.0",
+      "qiskit-aer": "0.15.1",
+      "qiskit-algorithms": "0.3.1",
+      "qiskit-nature": "0.7.2",
+      "requests": "2.34.2",
+      "rustworkx": "0.18.1",
+      "scipy": "1.14.1",
+      "setuptools": "84.2.1",
+      "six": "1.17.0",
+      "sortedcontainers": "2.4.0",
+      "stevedore": "5.9.1",
+      "symengine": "0.13.0",
+      "sympy": "1.14.0",
+      "tqdm": "4.70.1",
+      "typing-extensions": "4.16.0",
+      "tzdata": "2026.5",
+      "urllib3": "2.8.0"
+    },
+    "environment_variables": {
+      "LD_LIBRARY_PATH": null,
+      "LD_PRELOAD": null,
+      "MKL_NUM_THREADS": null,
+      "NUMBA_NUM_THREADS": null,
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": null,
+      "PYTHONHOME": null,
+      "PYTHONPATH": null
+    },
+    "executable": "/tmp/pr-phase2df1pre-private-20261023/venv/bin/python",
+    "package_origins": {
+      "matplotlib": "/tmp/pr-phase2df1pre-private-20261023/venv/lib/python3.11/site-packages/matplotlib/__init__.py",
+      "numba": "/tmp/pr-phase2df1pre-private-20261023/venv/lib/python3.11/site-packages/numba/__init__.py",
+      "numpy": "/tmp/pr-phase2df1pre-private-20261023/venv/lib/python3.11/site-packages/numpy/__init__.py",
+      "openfermion": "/tmp/pr-phase2df1pre-private-20261023/venv/lib/python3.11/site-packages/openfermion/__init__.py",
+      "openfermionpyscf": "/tmp/pr-phase2df1pre-private-20261023/venv/lib/python3.11/site-packages/openfermionpyscf/__init__.py",
+      "pyscf": "/tmp/pr-phase2df1pre-private-20261023/venv/lib/python3.11/site-packages/pyscf/__init__.py",
+      "qiskit": "/tmp/pr-phase2df1pre-private-20261023/venv/lib/python3.11/site-packages/qiskit/__init__.py",
+      "qiskit_nature": "/tmp/pr-phase2df1pre-private-20261023/venv/lib/python3.11/site-packages/qiskit_nature/__init__.py",
+      "scipy": "/tmp/pr-phase2df1pre-private-20261023/venv/lib/python3.11/site-packages/scipy/__init__.py"
+    },
+    "prefix": "/tmp/pr-phase2df1pre-private-20261023/venv",
+    "python_runtime": {
+      "implementation": "cpython",
+      "version": [
+        3,
+        11,
+        9,
+        "final",
+        0
+      ]
+    }
+  },
+  "final_status": "COMPLETE",
+  "group_ranges": [
+    {
+      "arm": "A0",
+      "n_D": null,
+      "ranges": {
+        "D_half_operator_error": null,
+        "D_pair_operator_error": [
+          1.6663225984985876e-06,
+          1.6663225984985876e-06
+        ],
+        "corrected_physical_error": [
+          4.007258145829329e-06,
+          5.974889242535603e-06
+        ],
+        "corrected_physical_signal_error": [
+          1.8076402595109812e-06,
+          2.6946402891478114e-06
+        ],
+        "finite_RTE_error": [
+          3.249746556876534e-11,
+          4.874569713875509e-11
+        ],
+        "normalization_consistency": [
+          2.469030873274615e-16,
+          2.7998204039823157e-16
+        ],
+        "outer_operator_error": [
+          5.094835292319979e-07,
+          7.596481029087242e-07
+        ]
+      },
+      "rows": 4
+    },
+    {
+      "arm": "A1",
+      "n_D": 1,
+      "ranges": {
+        "D_half_operator_error": [
+          2.0838555221004084e-07,
+          2.0838555221004084e-07
+        ],
+        "D_pair_operator_error": [
+          4.164291487768102e-07,
+          4.164291487768102e-07
+        ],
+        "corrected_physical_error": [
+          1.3392303684070284e-06,
+          1.9968144305361652e-06
+        ],
+        "corrected_physical_signal_error": [
+          5.999437997720588e-07,
+          8.944059482259403e-07
+        ],
+        "finite_RTE_error": [
+          3.2497296903464166e-11,
+          4.8745640287128714e-11
+        ],
+        "normalization_consistency": [
+          1.1449418918915275e-16,
+          2.220582097608647e-16
+        ],
+        "outer_operator_error": [
+          5.094835292319979e-07,
+          7.596481029087242e-07
+        ]
+      },
+      "rows": 4
+    },
+    {
+      "arm": "A1",
+      "n_D": 2,
+      "ranges": {
+        "D_half_operator_error": [
+          5.2091652401913655e-08,
+          5.2091652401913655e-08
+        ],
+        "D_pair_operator_error": [
+          1.0409782363963961e-07,
+          1.0409782363963961e-07
+        ],
+        "corrected_physical_error": [
+          7.169124205601973e-07,
+          1.0689281162784282e-06
+        ],
+        "corrected_physical_signal_error": [
+          3.19956106838136e-07,
+          4.770183631018313e-07
+        ],
+        "finite_RTE_error": [
+          3.2497080773115e-11,
+          4.874524234425312e-11
+        ],
+        "normalization_consistency": [
+          3.6524706203993983e-16,
+          5.030544714006899e-16
+        ],
+        "outer_operator_error": [
+          5.094835292319979e-07,
+          7.596481029087242e-07
+        ]
+      },
+      "rows": 4
+    },
+    {
+      "arm": "A2",
+      "n_D": 1,
+      "ranges": {
+        "D_half_operator_error": [
+          6.406135791577256e-11,
+          6.406135791577256e-11
+        ],
+        "D_pair_operator_error": [
+          1.2801798349961142e-10,
+          1.2801798349961142e-10
+        ],
+        "corrected_physical_error": [
+          5.097543325439601e-07,
+          7.600520202372851e-07
+        ],
+        "corrected_physical_signal_error": [
+          2.2673774971824875e-07,
+          3.3805491011913276e-07
+        ],
+        "finite_RTE_error": [
+          3.249739042801479e-11,
+          4.874574338256666e-11
+        ],
+        "normalization_consistency": [
+          7.823747436189331e-16,
+          1.1349446428043942e-15
+        ],
+        "outer_operator_error": [
+          5.094835292319979e-07,
+          7.596481029087242e-07
+        ]
+      },
+      "rows": 4
+    },
+    {
+      "arm": "A2",
+      "n_D": 2,
+      "ranges": {
+        "D_half_operator_error": [
+          4.003566471995939e-12,
+          4.003566471995939e-12
+        ],
+        "D_pair_operator_error": [
+          8.000696627111626e-12,
+          8.000696627111626e-12
+        ],
+        "corrected_physical_error": [
+          5.095156662472042e-07,
+          7.596961655498412e-07
+        ],
+        "corrected_physical_signal_error": [
+          2.2664487075436173e-07,
+          3.3791619740521423e-07
+        ],
+        "finite_RTE_error": [
+          3.249717631963629e-11,
+          4.874540091349022e-11
+        ],
+        "normalization_consistency": [
+          2.226332429796328e-16,
+          3.3442263543799257e-16
+        ],
+        "outer_operator_error": [
+          5.094835292319979e-07,
+          7.596481029087242e-07
+        ]
+      },
+      "rows": 4
+    },
+    {
+      "arm": "A3",
+      "n_D": 1,
+      "ranges": {
+        "D_half_operator_error": [
+          1.1107936166009693e-15,
+          1.1107936166009693e-15
+        ],
+        "D_pair_operator_error": [
+          2.1133304099174184e-15,
+          2.1133304099174184e-15
+        ],
+        "corrected_physical_error": [
+          5.09499760894805e-07,
+          7.596724504935041e-07
+        ],
+        "corrected_physical_signal_error": [
+          2.2663868094331063e-07,
+          3.379069536378411e-07
+        ],
+        "finite_RTE_error": [
+          3.249740444142882e-11,
+          4.8745551141923155e-11
+        ],
+        "normalization_consistency": [
+          5.656612291444367e-16,
+          6.910545010527196e-16
+        ],
+        "outer_operator_error": [
+          5.094835292319979e-07,
+          7.596481029087242e-07
+        ]
+      },
+      "rows": 4
+    },
+    {
+      "arm": "A3",
+      "n_D": 2,
+      "ranges": {
+        "D_half_operator_error": [
+          1.2214506748647305e-15,
+          1.2214506748647305e-15
+        ],
+        "D_pair_operator_error": [
+          2.443774270944563e-15,
+          2.443774270944563e-15
+        ],
+        "corrected_physical_error": [
+          5.094997569145626e-07,
+          7.596724445252929e-07
+        ],
+        "corrected_physical_signal_error": [
+          2.2663868059640622e-07,
+          3.3790695292417874e-07
+        ],
+        "finite_RTE_error": [
+          3.249741789392055e-11,
+          4.87455893504819e-11
+        ],
+        "normalization_consistency": [
+          5.577458496405105e-16,
+          6.722036720487354e-16
+        ],
+        "outer_operator_error": [
+          5.094835292319979e-07,
+          7.596481029087242e-07
+        ]
+      },
+      "rows": 4
+    },
+    {
+      "arm": "A4",
+      "n_D": 1,
+      "ranges": {
+        "D_half_operator_error": [
+          2.888666190083402e-15,
+          2.888666190083402e-15
+        ],
+        "D_pair_operator_error": [
+          5.787034703764812e-15,
+          5.787034703764812e-15
+        ],
+        "corrected_physical_error": [
+          5.0949975398838e-07,
+          7.596724401474985e-07
+        ],
+        "corrected_physical_signal_error": [
+          2.2663868103905428e-07,
+          3.379069535988414e-07
+        ],
+        "finite_RTE_error": [
+          3.24975267746849e-11,
+          4.874570890177841e-11
+        ],
+        "normalization_consistency": [
+          6.778450714753044e-16,
+          8.523464515476996e-16
+        ],
+        "outer_operator_error": [
+          5.094835292319979e-07,
+          7.596481029087242e-07
+        ]
+      },
+      "rows": 4
+    },
+    {
+      "arm": "A4",
+      "n_D": 2,
+      "ranges": {
+        "D_half_operator_error": [
+          1.3372344308747334e-15,
+          1.3372344308747334e-15
+        ],
+        "D_pair_operator_error": [
+          2.574737666301374e-15,
+          2.574737666301374e-15
+        ],
+        "corrected_physical_error": [
+          5.094997585980366e-07,
+          7.596724470635849e-07
+        ],
+        "corrected_physical_signal_error": [
+          2.2663868135106512e-07,
+          3.37906954385583e-07
+        ],
+        "finite_RTE_error": [
+          3.249741989849848e-11,
+          4.874559464754702e-11
+        ],
+        "normalization_consistency": [
+          6.727665527303556e-16,
+          9.19504524949071e-16
+        ],
+        "outer_operator_error": [
+          5.094835292319979e-07,
+          7.596481029087242e-07
+        ]
+      },
+      "rows": 4
+    }
+  ],
+  "initial_source_commit": "54008c697e686a42ec48941d25219d523bafd454",
+  "input_provenance": "technical-r1/inputs.json",
+  "limitations": [
+    "A4/A3 errors near machine precision cannot rank the two published methods.",
+    "Small A4/A2 differences are descriptive observations, not certified precision gains.",
+    "One fixed synthetic model and delta window; no convergence order or resource superiority conclusion.",
+    "Raw signals are attenuated; corrected and raw mean operators retain their distinct normalization."
+  ],
+  "normalization": {
+    "max_rescaling_consistency": 1.1349446428043942e-15,
+    "product_range": [
+      1.0000558557271046,
+      1.0000837847605943
+    ]
+  },
+  "paired_signal_error_comparisons": [
+    {
+      "baseline": "A0",
+      "n_D": 1,
+      "signal_error_difference": [
+        1.581001578471927e-06,
+        2.35673333554897e-06
+      ],
+      "signal_error_reduction_percent": [
+        87.46003483434497,
+        87.4621800523315
+      ]
+    },
+    {
+      "baseline": "A0",
+      "n_D": 2,
+      "signal_error_difference": [
+        1.581001578159916e-06,
+        2.3567333347622283e-06
+      ],
+      "signal_error_reduction_percent": [
+        87.46003480514844,
+        87.46218003507083
+      ]
+    },
+    {
+      "baseline": "A1",
+      "n_D": 1,
+      "signal_error_difference": [
+        3.7330511873300455e-07,
+        5.564989946270989e-07
+      ],
+      "signal_error_reduction_percent": [
+        62.2199568027156,
+        62.223348066075054
+      ]
+    },
+    {
+      "baseline": "A1",
+      "n_D": 2,
+      "signal_error_difference": [
+        9.331742548707089e-08,
+        1.391114087162483e-07
+      ],
+      "signal_error_reduction_percent": [
+        29.1626946626689,
+        29.165696010384213
+      ]
+    },
+    {
+      "baseline": "A2",
+      "n_D": 1,
+      "signal_error_difference": [
+        9.906867919446884e-11,
+        1.479565202913725e-10
+      ],
+      "signal_error_reduction_percent": [
+        0.043693068012527515,
+        0.04376700821746137
+      ]
+    },
+    {
+      "baseline": "A2",
+      "n_D": 2,
+      "signal_error_difference": [
+        6.189403296610222e-12,
+        9.243019631224346e-12
+      ],
+      "signal_error_reduction_percent": [
+        0.002730881698760486,
+        0.0027352993736907273
+      ]
+    },
+    {
+      "baseline": "A3",
+      "n_D": 1,
+      "signal_error_difference": [
+        -9.574365450884059e-17,
+        3.899972623219294e-17
+      ],
+      "signal_error_reduction_percent": [
+        -4.2245063424450945e-08,
+        1.1541557760895241e-08
+      ]
+    },
+    {
+      "baseline": "A3",
+      "n_D": 2,
+      "signal_error_difference": [
+        -1.4614042609853287e-15,
+        -7.546588956887558e-16
+      ],
+      "signal_error_reduction_percent": [
+        -4.324871827402871e-07,
+        -3.3297886031759855e-07
+      ]
+    }
+  ],
+  "post_save_cli_repair_commit": "5bef9c9cbcd7cfd595ec82874531ad3c7982d014",
+  "scientific_comparison": "DESCRIPTIVE_ONLY_NO_SCIENTIFIC_GO",
+  "scientific_source_commit": "758a05ed6aac58a5945af5a5330c792a842b174d",
+  "stop": "MANDATORY_STOP_NO_STAGE2_NO_EXTRA_GRID"
+}
