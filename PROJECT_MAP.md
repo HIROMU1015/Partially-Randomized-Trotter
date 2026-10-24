@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1 raw CAR frame修正・人工検証（2026-10-25）
+
+[修正報告](docs/research/research_c_c1_frame_repair_20261025.md)、[未承認引継ぎ](docs/research/research_c_c1_frame_repair_handoff_unapproved_20261025.json)。`src/trottertracks/c1_stage1.py` のraw縮約をexplicit batched matmulへ変更し、一般K／物理モデル／solver／allowanceは維持。新test `tests/management/test_research_c_c1_frame_repair.py` と既存回帰63件＋29 subtests PASS、別プロセス64人工frame比較もPASS。証拠・SOURCE `artifacts/research_c_c1_frame_repair/2026-10-25/`。分子exportの数値再解析・新fitは0。旧科学的FAILとの因果帰属・H4資格は未確認、旧STOP保全・mandatory STOP。現行one-fit runnerは評価専用入口ではない。
+
 ## C1 Stage 1互換性修正版の科学的STOP（2026-10-25）
 
 [実行結果・gate・部分証拠](docs/research/research_c_c1_stage1_compat_execution_20261025.md)。公開SOURCE `da2edb465d5ae6432439fbd1df8e57512ee59c11`、新approval／fresh outputで1 fit収束・実R8。κ/J/Uとfull baseはPASS、full256 frame0のraw CAR／K同値性がFAILしmandatory STOP。物理CDF/XDF sector norm・sector adapterは未到達。科学call107/147、retry/resume0。原本は `artifacts/research_c_c1_stage1_compat_science/2026-10-25/`、既存runner `scripts/run_research_c_c1_stage1.py` とSOURCEは無変更。追加計算・Stage2/3なし。

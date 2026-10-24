@@ -1,5 +1,7 @@
 # scripts 索引
 
+[C1 raw frame修正](../docs/research/research_c_c1_frame_repair_20261025.md)の人工監査は `artifacts/research_c_c1_frame_repair/2026-10-25/artificial_parallel_audit.py` と `preloaded_backend_audit.py`。新test `tests/management/test_research_c_c1_frame_repair.py`、修正 `trottertracks.c1_stage1.raw_frame`、SOURCE／証拠 `artifacts/research_c_c1_frame_repair/2026-10-25/`。人工63件＋29 subtests PASS、分子科学処理0。`run_research_c_c1_stage1.py` はone-fit入口のままで、保存exportの評価専用runnerではない。別準備・科学承認待ち、mandatory STOP。
+
 `run_research_c_c1_stage1.py` の[互換性修正版Stage 1科学実行](../docs/research/research_c_c1_stage1_compat_execution_20261025.md)は新approvalで1 fit収束後、frame0 raw CAR／K同値性FAILによりSTOP。科学call107/147、retry/resume0、証拠 `artifacts/research_c_c1_stage1_compat_science/2026-10-25/`。SOURCEと既存runnerは変更せず、物理sector norm未到達、追加実行・Stage2/3なし。
 
 `run_research_c_c1_stage1.py` は[ffsim／SciPy互換性修正版](../docs/research/research_c_c1_stage1_compatibility_20261025.md)でvenv Python symlinkを保持し、`trottertracks.c1_ffsim_compat` 経由の初期化へ接続する。人工tests `test_research_c_c1_ffsim_compat.py` を含む59件＋29 subtests PASS、証拠・SOURCE／lock `artifacts/research_c_c1_stage1_compatibility/2026-10-25/`。[新未承認契約](../docs/research/research_c_c1_stage1_compatibility_contract_unapproved_20261025.json)は新scope、fresh outputへの別明示承認が必要。科学実行0、mandatory STOP。
