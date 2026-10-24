@@ -20,7 +20,8 @@ DF比較は同じH4のtol-only1e-8/rank10、PR prefix1＋one-body、raw concaten
 | 今回の科学SOURCE | `34ef0a7ca2412a61f5215a4ce1192e99f3226b2a` |
 | 新規対象 | 元Pauli PR保存cohort index2〜255の254本、cosine各1回 |
 | 再利用 | index0=1145 RZ、index1=1129 RZ、いずれも新compile0 |
-| 結果commit・remote SHA | [公開状態JSON](../artifacts/non_df_h4_a_cohort_cos/2026-10-24/publication_status.json)参照 |
+| 結果commit | `5d9ea8e8ba135f0bc9d2935a3bb507a6d00b3dbc` |
+| remote SHA | 認証失敗・GitHub branch検索0件のため未取得。[公開状態JSON](../artifacts/non_df_h4_a_cohort_cos/2026-10-24/publication_status.json)参照 |
 
 [添付原文](../artifacts/non_df_h4_a_cohort_cos/2026-10-24/user_instruction.txt)と[承認JSON](../artifacts/non_df_h4_a_cohort_cos/2026-10-24/approval.json)をSHAで結合。[GitHub確認](../artifacts/non_df_h4_a_cohort_cos/2026-10-24/github_verification.json)では基点commitとA_GATE sealを実取得し、Git blobをlocalと照合した。前回のpush失敗は保存時点の履歴であり、今回の基点は現在GitHubから取得できる。
 
