@@ -1,5 +1,8 @@
 # scripts 索引
 
+`run_research_c_c1_stage3_feasibility.py --mode feasibility-only` は[C1限定数値経路](../docs/research/research_c_c1_stage3_feasibility_preparation_20261025.md)。既定はbyte preflightだけ。別明示科学許可後だけ`--execute --output <fresh>`で260セルのPF/RTE誤差・減衰と20候補の十分条件分類を保存する。full modeへのdispatchなし、CA達成／shots／費用／順位は評価しない。[639-call未承認契約](../docs/research/research_c_c1_stage3_feasibility_contract_unapproved_20261025.json)、SOURCE・人工結果 `artifacts/research_c_c1_stage3_feasibility_technical/2026-10-25/`。今回科学call0、STOP。
+
+
 `run_research_c_c1_stage3_integrated.py` は[C1 Stage3統合runner](../docs/research/research_c_c1_stage3_integrated_preparation_20261025.md)。既定はbyte preflightのみ、別途チャットでの科学許可後だけ`--execute --output <fresh>`を使う。保存入力からevidence生成・shots／費用比較までの一体経路で、旧packet評価SOURCEは無変更。[未承認契約](../docs/research/research_c_c1_stage3_integrated_contract_unapproved_20261025.json)は固定20候補／13round・最大5,637 logical units・fit／retry／resume0。人工19＋既存65 tests／29 subtests PASS、今回実H4科学call0、全law合成誤差未資格・mandatory STOP。
 
 

@@ -1,5 +1,8 @@
 # 文書索引
 
+[C1 Stage3 feasibility-only準備](research/research_c_c1_stage3_feasibility_preparation_20261025.md)／[限定科学契約](research/research_c_c1_stage3_feasibility_contract_unapproved_20261025.json)。20候補×13roundのPF operator誤差・補正RTE誤差・attenuationを測り、INFEASIBLE／POTENTIALLY_FEASIBLE／UNRESOLVEDへ分類する専用経路。最大639 logical units、回路・shots・総費用・資源順位は除外。人工60 tests PASS、実H4科学call0・mandatory STOP。
+
+
 [C1 Stage3統合実行経路の技術準備](research/research_c_c1_stage3_integrated_preparation_20261025.md)／[新未承認科学契約](research/research_c_c1_stage3_integrated_contract_unapproved_20261025.json)。採用された共通CA・20候補・13roundを一体runnerへ接続。人工84 tests＋29 subtests PASS。全lawの費用supportは小有限集合の網羅時だけ資格付けし、H4の有用な合成誤差上界はUNRESOLVEDのまま。今回実H4科学call0・mandatory STOP。
 
 

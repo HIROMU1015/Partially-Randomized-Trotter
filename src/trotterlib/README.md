@@ -1,5 +1,8 @@
 # trotterlib モジュール索引
 
+C1 Stage3の限定数値modeは`../trottertracks/c1_stage3_feasibility.py`。旧CAR／保存loader／ground・alias helper／PF・RTE reference／候補順序／call・資源計画を再利用し、QPY／回路／sampling／shot・費用経路へ接続しない。entry `scripts/run_research_c_c1_stage3_feasibility.py`、test `tests/management/test_research_c_c1_stage3_feasibility.py`、[技術報告](../../docs/research/research_c_c1_stage3_feasibility_preparation_20261025.md)、証拠 `artifacts/research_c_c1_stage3_feasibility_technical/2026-10-25/`。科学上限639、実H4未実行・STOP。
+
+
 C1 Stage3の統合実行は`../trottertracks/c1_stage3_integrated.py`と`c1_stage3_molecular.py`、全law資格は`c1_stage3_qualification.py`、負係数RTE検査の新versionは`c1_stage3_native_bridge.py`。既存一般K／CAR／native／PF・RTE／RPE／compiler／費用評価を再利用し、旧SOURCEは保全する。entry `scripts/run_research_c_c1_stage3_integrated.py`、test `tests/management/test_research_c_c1_stage3_integrated.py`、[統合技術報告](../../docs/research/research_c_c1_stage3_integrated_preparation_20261025.md)、証拠 `artifacts/research_c_c1_stage3_integrated_technical/2026-10-25/`。実H4科学計算0、全lawの有用な合成誤差上界未資格、STOP。
 
 

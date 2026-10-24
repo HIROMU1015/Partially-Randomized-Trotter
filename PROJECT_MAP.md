@@ -1,5 +1,10 @@
 # プロジェクト案内
 
+## C1 Stage3：feasibility-only限定経路の準備（2026-10-25）
+
+[技術報告](docs/research/research_c_c1_stage3_feasibility_preparation_20261025.md)／[未承認639-call契約](docs/research/research_c_c1_stage3_feasibility_contract_unapproved_20261025.json)。専用entry `scripts/run_research_c_c1_stage3_feasibility.py --mode feasibility-only`、処理 `c1_stage3_feasibility.py`、人工test `tests/management/test_research_c_c1_stage3_feasibility.py`。旧SOURCE無変更で20候補×13roundのPF／補正RTE誤差・attenuationと分類だけを接続。回路／compile／shots／総費用／順位付けは除外。人工16＋既存44 tests PASS。実H4科学call0・mandatory STOP。
+
+
 ## C1 Stage3：統合実行経路の完成（2026-10-25）
 
 [統合技術報告](docs/research/research_c_c1_stage3_integrated_preparation_20261025.md)／[新未承認契約](docs/research/research_c_c1_stage3_integrated_contract_unapproved_20261025.json)。entry `scripts/run_research_c_c1_stage3_integrated.py` は保存H4からground／alias、20×13round、native費用、evidence評価、RPE診断、条件付き比較まで接続する。`c1_stage3_integrated/molecular/qualification/native_bridge.py`、人工19＋既存65 tests／29 subtests PASS。core pilot採用、実H4科学call0、全lawの有用な合成誤差上界はUNRESOLVED。旧SOURCE保全、remote照合後mandatory STOP。
