@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1 Stage2 native接続の技術準備（2026-10-25）
+
+[技術報告・再利用・人工検証](docs/research/research_c_c1_stage2_native_preparation_20261025.md)、[未承認科学契約](docs/research/research_c_c1_stage2_native_contract_unapproved_20261025.json)。ユーザーがCDF rank8を限定対象に採用。新SOURCE `c1_stage2_native.py`／`c1_stage2_validation.py`／`c1_stage2_execution.py`、entry `scripts/run_research_c_c1_stage2_native.py`、test `tests/management/test_research_c_c1_stage2_native.py`。既存Gaussian・中央RZ/RZZ・phase・controlled／X/Y／compilerを接続し、人工80件＋29 subtests PASS。SOURCE・52 pins・証拠 `artifacts/research_c_c1_stage2_technical/2026-10-25/`。時間／S2／compiler／allowance／最大243 unitsは未採択の推奨案。実H4 decode・実回路build/compile・科学call0、別科学承認待ち・mandatory STOP。同精度総資源優位の主張なし。
+
 ## C1 保存fit評価専用科学実行：全gate PASS（2026-10-25）
 
 [実行結果・全gate・誤差・STOP](docs/research/research_c_c1_stage1_eval_only_execution_20261025.md)。公開SOURCE `bec41ac7dc7e034bd664817acfdcfed858ddadd0` の既存評価専用entryを無変更で実行した。P-H4・sector36/full256、保存C-DF rank8／XDF rank10で37 gate PASS、以前不一致のframe0も今回PASS。物理sector誤差はCDF `7.666027761392501e-5`／XDF `3.3751558354542566e-15` Hartreeの別測定。科学call141/141、新fit／optimizer／retry／resume0。原本 `artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/`、人工19件PASS。旧FAIL保全、Stage2適格性は別判断、mandatory STOP。下記の準備時点の未承認表示は履歴。

@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+関連trackの[C1 Stage2 native接続](../../docs/research/research_c_c1_stage2_native_preparation_20261025.md)は `trottertracks.c1_stage2_native` から既存 `df_trotter.ops/decompose` と独立CAR、controlled/X/Y/compiler/metric資産を再利用する。旧library変更なし。entry `scripts/run_research_c_c1_stage2_native.py`、test `tests/management/test_research_c_c1_stage2_native.py`、SOURCE／証拠 `artifacts/research_c_c1_stage2_technical/2026-10-25/`。人工80件＋29 subtests PASS、科学条件は[未承認案](../../docs/research/research_c_c1_stage2_native_contract_unapproved_20261025.json)、実回路・科学call0、mandatory STOP。
+
 関連trackの[C1保存fit評価専用科学実行](../../docs/research/research_c_c1_stage1_eval_only_execution_20261025.md)は `trottertracks.c1_stage1_eval_only` と既存CAR／一般K／XDFを無変更で使用した。full256 base・全8 frame／sector36を含む37 gate PASS、CDF/XDF物理誤差は別測定。entry `scripts/run_research_c_c1_stage1_eval_only.py`、人工19件PASS、科学call141/141、新fit／optimizer／retry／resume0。証拠 `artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/`。Stage2は別判断・mandatory STOP。以下の未承認・未再検証表示は当時の履歴。
 
 関連trackの [C1保存fit評価専用準備](../../docs/research/research_c_c1_stage1_eval_only_preparation_20261025.md)は `trottertracks.c1_stage1_eval_only` から既存修正済みCAR／一般K／保存XDF評価を再利用し、数値libraryは無変更。entry `scripts/run_research_c_c1_stage1_eval_only.py`、新test `tests/management/test_research_c_c1_stage1_eval_only.py`、SOURCE／証拠 `artifacts/research_c_c1_stage1_eval_only_technical/2026-10-25/`。旧fit／新評価SOURCEを分離、人工82件＋29 subtests PASS、[未承認契約](../../docs/research/research_c_c1_stage1_eval_only_contract_unapproved_20261025.json)。実H4評価0、mandatory STOP。

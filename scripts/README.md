@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_research_c_c1_stage2_native.py` は[C1 Stage2接続](../docs/research/research_c_c1_stage2_native_preparation_20261025.md)のbyte preflightを既定とする。実行前にチャットで条件採択・別明示科学許可を受け、`--execute --output <fresh>` を使用する。approval記録や証明照合は不要。処理 `trottertracks.c1_stage2_native/validation/execution`、test `tests/management/test_research_c_c1_stage2_native.py`、SOURCE／52 pins／人工証拠 `artifacts/research_c_c1_stage2_technical/2026-10-25/`、[未承認契約](../docs/research/research_c_c1_stage2_native_contract_unapproved_20261025.json)。人工80件＋29 subtests PASS、今回実回路build/compile・科学call0、mandatory STOP。
+
 `run_research_c_c1_stage1_eval_only.py` の[保存fit評価専用科学実行](../docs/research/research_c_c1_stage1_eval_only_execution_20261025.md)は、公開SOURCE `bec41ac7dc7e034bd664817acfdcfed858ddadd0` を無変更で使用し37 gate PASS。旧fit来歴を独立に保持、新fit0・call141/141・retry/resume0。結果 `artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/`、直前の人工19件PASS。Stage2適格性は別判断、旧FAIL／STOP保全・mandatory STOP。以下の準備段階の未承認表示は履歴。
 
 `run_research_c_c1_stage1_eval_only.py` は[C1評価専用入口](../docs/research/research_c_c1_stage1_eval_only_preparation_20261025.md)。既定はbyte/JSON preflight、実行は新scopeの別科学承認が必要。`--worker-fit`／fit Python引数はなく、旧one-fit runnerを再起動しない。処理 `trottertracks.c1_stage1_eval_only`、人工test `test_research_c_c1_stage1_eval_only.py`、SOURCE／証拠 `artifacts/research_c_c1_stage1_eval_only_technical/2026-10-25/`、[未承認契約](../docs/research/research_c_c1_stage1_eval_only_contract_unapproved_20261025.json)。人工82件＋29 subtests PASS、新fit0／最大141、H4未評価・mandatory STOP。

@@ -1,5 +1,7 @@
 # 研究計画資料
 
+[C1 Stage2 native接続準備](research_c_c1_stage2_native_preparation_20261025.md)：CDF rank8の限定対象採択、旧独立CAR／Gaussian／controlled／X/Y／compiler資産を再利用。人工80件＋29 subtests、52 pins・byte preflight PASS。[未承認科学契約](research_c_c1_stage2_native_contract_unapproved_20261025.json)は局所全PASS後にfull/adjoint/X/Y/compile、上限243 unitsの推奨案。科学条件未採択・実H4 decode／実回路／科学call0、証拠 `artifacts/research_c_c1_stage2_technical/2026-10-25/`、mandatory STOP。
+
 [C1 保存fit評価専用科学実行](research_c_c1_stage1_eval_only_execution_20261025.md)：37 gate PASS、full256 frame0再検証・sector36 adapter同値性PASS。保存CDF rank8／XDF rank10の物理誤差は別測定、新fit／optimizer0、科学call141/141、retry/resume0。原本 `artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/`、旧STOP保全、Stage2は別判断・mandatory STOP。下記の未承認・未再検証表示は当時の履歴。
 
 [C1 保存fit評価専用経路の技術準備](research_c_c1_stage1_eval_only_preparation_20261025.md)：新規fit0、旧fit来歴と新評価SOURCEの独立検証、既存CAR/K/XDFを再利用。人工82件＋29 subtests PASS、固定byte/metadata preflight PASS。[未承認科学契約](research_c_c1_stage1_eval_only_contract_unapproved_20261025.json)は最大141、fresh output、retry/resume0、mandatory STOP。証拠 `artifacts/research_c_c1_stage1_eval_only_technical/2026-10-25/`、H4数値decode・評価なし、旧FAIL未再検証。

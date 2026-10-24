@@ -1,5 +1,7 @@
 # tests の役割
 
+`management/test_research_c_c1_stage2_native.py` は[C1 Stage2接続準備](../docs/research/research_c_c1_stage2_native_preparation_20261025.md)の新規27人工test。実QuantumCircuit／Operator／Statevector／compileをmockまたは禁止し、係数・phase・spin・順序・API dispatch・call／fresh output／STOPを確認する。既存一般K／CAR／frame修正／評価専用testsを含む80件＋29 subtests PASS、分子回路の科学的PASSではない。証拠 `artifacts/research_c_c1_stage2_technical/2026-10-25/`。
+
 `tests/` は、ライブラリAPI、数値恒等式、成果物schema、ガード条件の回帰検査を置く。
 基本的に `src/trotterlib/<name>.py`、`scripts/run_<name>.py`、
 `tests/test_<name>.py`、`docs/<name>.md`、`artifacts/<name>/`を一組として読む。

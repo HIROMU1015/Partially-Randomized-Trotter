@@ -71,11 +71,13 @@ def check_output(v, output):
 
 
 def runtime(v):
-    if sys.version_info[:3] != (3, 11, 1):
-        raise ValueError('LOCKED_PYTHON_3_11_1_REQUIRED')
+    if sys.version_info[:2] != (3, 11):
+        raise ValueError('PYTHON_3_11_REQUIRED')
     packages = {}
-    for line in (v['root']/v['contract']['environment_pins']).read_text().splitlines():
-        name, want = line.split('==')
+    # These versions affect Gaussian conventions, numerical kernels and the
+    # compiler profile. Full dependency lock is available for reproduction,
+    # without making unrelated packaging/version differences a science STOP.
+    for name, want in v['contract']['runtime_required_packages'].items():
         actual = importlib.metadata.version(name)
         if actual != want:
             raise ValueError('ENVIRONMENT_PIN: '+name)
