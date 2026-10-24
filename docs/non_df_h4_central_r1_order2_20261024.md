@@ -179,6 +179,13 @@ PF/PR0再計算・sine・Arb・precision escalation・R2・新compile・sampling
 認証失敗時は成果物をlocal保全し、再実行コマンドを最終チャットへ提示する。
 **mandatory STOP。sine・Arb・R2・N/G再解析・追加compile/sampling・certificate受理へ自動移行しない。**
 
+成果物commit：`dc48d402e98bece3e14361e1981a5f7370581fb1`。
+push試行1はexit128、GitHub HTTPS Username取得不能で失敗した。
+[失敗log](../artifacts/non_df_h4_central_r1_order2/2026-10-24/push_attempt01.log)、
+[remote再確認](../artifacts/non_df_h4_central_r1_order2/2026-10-24/remote_branch_check.json)を保存。
+GitHub connectorの専用branch検索は0件、remote SHA=null。
+後続metadata commitはこの公開状態だけを記録し、科学SOURCE・grant・run・STOPを変更しない。
+
 ## 付記：SOURCE準備時の記録
 
 基点`f01c4018201de9335f20a8901ec5f40f9cf9e89b`、専用branch `codex/non-df-h4-central-r1-order2-20261024`。
