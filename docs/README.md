@@ -1,5 +1,8 @@
 # 文書索引
 
+[C1 Stage3統合実行経路の技術準備](research/research_c_c1_stage3_integrated_preparation_20261025.md)／[新未承認科学契約](research/research_c_c1_stage3_integrated_contract_unapproved_20261025.json)。採用された共通CA・20候補・13roundを一体runnerへ接続。人工84 tests＋29 subtests PASS。全lawの費用supportは小有限集合の網羅時だけ資格付けし、H4の有用な合成誤差上界はUNRESOLVEDのまま。今回実H4科学call0・mandatory STOP。
+
+
 [C1 Stage3：共通CA総資源比較の準備](research/research_c_c1_stage3_preparation_20261025.md)／[未承認契約](research/research_c_c1_stage3_contract_unapproved_20261025.json)。既存一般K native・独立CAR・RTE/RPEを接続し、oracle／DF energy bias／signal誤差／統計／直列kernel費用を区別。人工65 tests＋29 subtests PASS、科学call0。初回CA推奨条件と残るlaw／合成誤差／費用区間資格を明記し、mandatory STOP。
 
 

@@ -1,5 +1,8 @@
 # scripts 索引
 
+`run_research_c_c1_stage3_integrated.py` は[C1 Stage3統合runner](../docs/research/research_c_c1_stage3_integrated_preparation_20261025.md)。既定はbyte preflightのみ、別途チャットでの科学許可後だけ`--execute --output <fresh>`を使う。保存入力からevidence生成・shots／費用比較までの一体経路で、旧packet評価SOURCEは無変更。[未承認契約](../docs/research/research_c_c1_stage3_integrated_contract_unapproved_20261025.json)は固定20候補／13round・最大5,637 logical units・fit／retry／resume0。人工19＋既存65 tests／29 subtests PASS、今回実H4科学call0、全law合成誤差未資格・mandatory STOP。
+
+
 `run_research_c_c1_stage3.py` は[C1 Stage3技術準備](../docs/research/research_c_c1_stage3_preparation_20261025.md)のSOURCE／保存入力byte確認を既定とする。科学条件を採択して別途チャットで許可した後だけ`--evaluate-evidence <packet> --output <fresh.json>`で精度／shot／費用を評価する。分子evidence生成は既存loader／native／RTEと新しい最小接続関数を組み合わせる。[未承認契約](../docs/research/research_c_c1_stage3_contract_unapproved_20261025.json)、人工test `tests/management/test_research_c_c1_stage3.py`、証拠 `artifacts/research_c_c1_stage3_technical/2026-10-25/`。今回科学call0・mandatory STOP。
 
 

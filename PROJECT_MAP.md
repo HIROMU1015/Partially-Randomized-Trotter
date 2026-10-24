@@ -1,5 +1,10 @@
 # プロジェクト案内
 
+## C1 Stage3：統合実行経路の完成（2026-10-25）
+
+[統合技術報告](docs/research/research_c_c1_stage3_integrated_preparation_20261025.md)／[新未承認契約](docs/research/research_c_c1_stage3_integrated_contract_unapproved_20261025.json)。entry `scripts/run_research_c_c1_stage3_integrated.py` は保存H4からground／alias、20×13round、native費用、evidence評価、RPE診断、条件付き比較まで接続する。`c1_stage3_integrated/molecular/qualification/native_bridge.py`、人工19＋既存65 tests／29 subtests PASS。core pilot採用、実H4科学call0、全lawの有用な合成誤差上界はUNRESOLVED。旧SOURCE保全、remote照合後mandatory STOP。
+
+
 ## C1 Stage3：共通CA総資源比較の準備（2026-10-25）
 
 [技術報告](docs/research/research_c_c1_stage3_preparation_20261025.md)／[未承認科学契約](docs/research/research_c_c1_stage3_contract_unapproved_20261025.json)。既存native一般K・RTE・RPE・compilerを再利用し、`c1_stage3_connection/accuracy/reference.py`、`scripts/run_research_c_c1_stage3.py`、人工testを追加。新規25＋既存40 tests・29 subtests PASS。CA初回pilot、状態準備除外・oracle／law／合成誤差／費用supportの未決定条件を明記。科学call0、旧証拠保全、mandatory STOP。
