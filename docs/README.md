@@ -133,3 +133,8 @@
 ## B2-D Stage 1一括準備完了（2026-10-25）
 
 [最終契約・承認手順](research/b2d_stage1_execution_ready_20261025/CONTRACT.md)と[技術報告](research/b2d_stage1_execution_ready_20261025/TECHNICAL_REPORT.md)にSOURCE、実環境、scope、未承認packet、ユーザー操作を集約。science入口 `scripts/run_b2d_stage1.py`、metadata準備／ユーザー発行入口も同scripts索引を参照。実装 `src/trottertracks/b2d_evaluator/`、人工test `tests/management/test_b2d_execution_ready.py`。74人工test PASS、科学計算・正式grant操作なし。予定artifact `artifacts/research_b_b2d_stage1/<date>/<fresh-run-id>/` は未生成。
+
+
+## B2-D Stage 1通常ユーザー承認方式（2026-10-25）
+
+最新の[未承認契約・通常権限の具体command](research/b2d_stage1_user_approval_20261025/CONTRACT.md)と[技術報告](research/b2d_stage1_user_approval_20261025/TECHNICAL_REPORT.md)。新科学SOURCE `91f45aeb50275bb6d22050a304d0a9b1ff025d70`、通常ユーザーのprivate手動記録へ限定修正し、root／外部APIを要求しない。同じOSアカウントの本人識別は運用規則であり独立認証ではない。入口 `scripts/{prepare_b2d_stage1,issue_b2d_stage1_approval,run_b2d_stage1}.py`、実装 `src/trottertracks/b2d_evaluator/`、人工test `tests/management/test_b2d_execution_ready.py`。既存74件を適合更新＋追加6件＝80件PASS。科学条件・scope・環境は不変、正式grant／claim／科学実行なし。予定artifactは固定checkout内 `artifacts/research_b_b2d_stage1/20261025/user-approval-once/`、今回未生成。旧root方式は上記過去段階の履歴として保全する。
