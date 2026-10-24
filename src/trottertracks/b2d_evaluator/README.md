@@ -1,5 +1,7 @@
 # B2-D 5方式評価器：接続準備・技術報告
 
+**現在の実行経路（2026-10-25）：** [簡素化した科学実行契約・単一command・技術報告](../../../docs/research/b2d_stage1_simple_execution_20261025.md)。科学SOURCE `54008c697e686a42ec48941d25219d523bafd454`。チャットでの明示許可後、Codexが `run_b2d_stage1.py --execute --source-commit … --output …` で一回実行する。承認原文・ID・packet・receipt・grant発行／消費・manual authorityは不要。科学条件・scope・gate・provenance・fresh output・失敗保存・retry禁止・STOPを維持。70人工test PASS、科学計算未実行。以下は過去段階の履歴であり、記載された承認管理や削除済みscriptを将来の実行要件にはしない。
+
 **最新（通常ユーザー方式、2026-10-25）：** [新契約・発行／実行の二段階手順](../../../docs/research/b2d_stage1_user_approval_20261025/CONTRACT.md)・[技術報告](../../../docs/research/b2d_stage1_user_approval_20261025/TECHNICAL_REPORT.md)。新科学SOURCE `91f45aeb50275bb6d22050a304d0a9b1ff025d70`。root所有receiptを本人の0700／0600 private記録へ変更し、approval_policyを契約へ束縛。科学条件・scope・環境は不変。80人工test PASS、正式発行・科学実行なし。同一OSアカウントの本人性を独立認証するものではない。以下は過去段階の記録であり、旧root／管理者要件を今回へ適用しない。
 
 **最新（2026-10-25一括準備）：** [最終契約・ユーザー承認手順](../../../docs/research/b2d_stage1_execution_ready_20261025/CONTRACT.md)・[最終技術報告](../../../docs/research/b2d_stage1_execution_ready_20261025/TECHNICAL_REPORT.md)。SOURCE候補348e08に手動ユーザー承認record接続、実環境binding、published規約の追加gate4件を登録した。74人工test PASS。技術準備は完了、科学実行・正式grant発行は未承認・未実施。下記は以前の段階記録であり、最新状態はこの契約・報告を優先する。
