@@ -1100,3 +1100,4 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 ## H4 R0経験的診断（2026-10-24）
 
 `run_h4_r0_empirical.py`：inspect/prepare/launch。固定cosine2対象・最大5状態作用one-shot。
+保存run01は消費済み・STOP済み。後検証はartifactの`verify_saved.py`で保存SHAとscalar恒等式だけを照合し、科学実行を再開しない。

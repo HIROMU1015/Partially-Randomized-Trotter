@@ -1,10 +1,12 @@
-## 2026-10-24 H4 R0：binary64経験的診断SOURCE準備
+## 2026-10-24 H4 R0：binary64経験的診断完了・mandatory STOP
 
-[限定2対象・最大5状態作用](docs/non_df_h4_central_r0_empirical_20261024.md)。
-固定H4/1Å/STO-3G/n8+ancilla8、Pauli184/prefix27、S2/T.8/q8/r4/K4。
-D2保存PF/PR0 cosine QPYを実decode、SOURCE/phase/wrapper/fingerprint/nativebasisを照合し状態作用0。
-新10＋旧15人工PASS。toy制限は維持し専用production接続を追加。SOURCE/seal/grant固定後に経験的δ/η/dを評価する。
-Arb/R1/R2/sine/新compile/sampling/N_Gなし、旧未確定状態保持・完了後STOP。以下は時点履歴。
+[PF/PR0 cosine2診断・成功5／総試行5](docs/non_df_h4_central_r0_empirical_20261024.md)。
+固定H4/1Å/STO-3G/n8+ancilla8、Pauli184/prefix27、S2/T.8/q8/r4/K4。科学SOURCE `84a326598b006384d13c7a354a3eec6881ee841c`。
+直接差d：PF 1.8722085654184194e-14、PR0 7.860978615986437e-16。保存cosine予算約2.649e-6/2.594e-6より小さい経験値。
+EMPIRICAL_ONLY_NO_RHO_UPPER、numerical_error_upper/rho_upper=null、LOCAL_BUDGET_MET=false。PR0を全lawへ外挿しない。
+実QPY8 decode・SOURCE/phase/control照合PASS、新10＋旧15人工PASS、code17/input89/runtime6999/旧証拠192 SHA・旧manifest182行不変。
+今回native exit0/reap・STOP、科学retry0。Arb/R1/R2/sine/compile/sampling/N_G0、旧未確定状態保持。
+次はユーザー承認後にCodexがorder2 cosine→sineの限定経験的診断、または局所保証目的ならvalidated interval。今回は提案まで。以下は時点履歴。
 
 ## 2026-10-24 H4 Pauli central：実装残差ρの非実行準備
 
