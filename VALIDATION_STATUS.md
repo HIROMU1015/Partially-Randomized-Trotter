@@ -1,3 +1,7 @@
+## 2026-10-24 H4 A_AXES：新sine256/256成功・PF/PR両軸価格完成
+
+[結果・paired費用・終了監査](docs/non_df_h4_a_axes_20261024.md)、[PR256＋PF1のpaired行](artifacts/non_df_h4_a_axes/2026-10-24/run01/paired_costs.json)、[保存検証](artifacts/non_df_h4_a_axes/2026-10-24/verification.json)。固定H4/1Å/STO-3G/n8、Pauli184/prefix27、S2/T.8/q8/r4/K4、SOURCE a37232f85。新PR255/PF1 sine・総compile256、技術中断/回復0。PR sine/cosine平均とも1140.8046875 RZ、全256本でRZ/CX/depth/RZ-depth/CX-depth一致、sample covariance1564549/5440=287.6009191 RZ²。PF両軸RZ15028/CX26768/depth35694、両軸PF/PR比13.1732。保存body再利用のみでPauli replay/central生成/cosine compile/N_G0。新人工14 PASS、主agent21 metadata/SHA/moment検査、code59/input1661/runtime6999/旧5755/run3354保全・旧manifest179不変。engine＋256task exit0・回収、mandatory STOP。価格入力は揃ったがρ/tail/精度/G保証は未確定。次はユーザーが条件付きC/N/Gを別承認するか判断。以下は時点履歴。
+
 ## 2026-10-24 H4 A_AXES：保存body再利用・sine256対象SOURCE準備
 
 [実行・paired費用・終了監査](docs/non_df_h4_a_axes_20261024.md)、[専用namespace](artifacts/non_df_h4_a_axes/2026-10-24/README.md)。D2 controlled bodyと保存cosine入力を再利用し、PR255＋PF1のsineを新compileする。cosine257/PR1 sineを再利用、body replay/central生成/cosine compile/N_G0。新人工14 PASS、旧44意味対応証拠を保全。SOURCE固定前の科学call0。技術回復は原因特定・成功再利用・新SOURCE/seal/grantが必要で自動retryなし。完了後mandatory STOP、条件付きC/N/G等は別承認。以下は時点履歴。
