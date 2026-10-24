@@ -5,9 +5,9 @@ import json
 from pathlib import Path
 import sys
 import tempfile
-from types import SimpleNamespace as NS
+from types import SimpleNamespace as NS, ModuleType
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
@@ -55,6 +55,54 @@ class InputPreflightTests(unittest.TestCase):
         self.assertEqual(len(d["g_matrices"]), 3)
         self.assertEqual(d["one_body"][0][1], .13)
         self.assertEqual(InputRecipe().weight_rule, "lambda_frobenius_squared")
+
+    def test_real_loader_uses_scientific_context_for_leakage_and_source_metadata(self):
+        # Exercise the actual loader, with every scientific import/function
+        # replaced by opaque stubs. No Hamiltonian, matrix or circuit is made.
+        from trottertracks.b2d_evaluator.scope import candidate_graph,Stage1Failure
+        graph=candidate_graph('MOCK_SOURCE_NO_SCIENCE')
+        prep=NS(deterministic_fragment_indices=(0,1),randomized_block_indices=(2,),
+            deterministic_blocks=[NS(block_id='D'+str(i),block_kind='one_body' if i==0 else 'df_fragment',
+                original_fragment_index=None if i==0 else i-1,basis_id='MOCK_BASIS',
+                basis_hash='MOCK_HASH',basis_change_operations=()) for i in range(3)],
+            tail_extraction=NS(basis_definitions=[NS(basis_id='MOCK_BASIS',basis_hash='MOCK_HASH',operations=())],
+                components=[NS(component_id='MOCK_COMPONENT',df_fragment_id='df-fragment-2',
+                    basis_id='MOCK_BASIS',diagonal_pauli_support=(0,))]),exact_rte_lambda_r='MOCK_LAMBDA')
+        parent=ModuleType('trotterlib');parent.__path__=[]
+        modules={name:ModuleType(name) for name in ('trotterlib.df_hamiltonian',
+            'trotterlib.df_partial_randomized_pf','trotterlib.df_partial_s2',
+            'trotterlib.finite_rte_signal_validation')}
+        modules['trotterlib']=parent
+        modules['numpy']=MagicMock(name='MOCK_NUMPY_NO_SCIENCE')
+        h=NS(n_qubits=2,metadata={},one_body=MagicMock(),lambdas=MagicMock(),g_matrices=(None,None,None))
+        modules['trotterlib.df_hamiltonian'].DFHamiltonian=MagicMock(return_value=h)
+        modules['trotterlib.df_hamiltonian'].PhysicalSector=NS(number_sector=lambda **kw:NS(
+            basis_indices=(1,2),dimension=2))
+        modules['trotterlib.df_partial_randomized_pf'].split_df_hamiltonian_by_ld=lambda *a,**kw:'MOCK_SPLIT'
+        modules['trotterlib.df_partial_s2'].prepare_df_partial_s2=lambda *a,**kw:prep
+        numerical=modules['trotterlib.finite_rte_signal_validation']
+        numerical.dense_df_operator_in_sector=lambda *a:MagicMock(name='MOCK_MATRIX')
+        numerical._qiskit_to_openfermion_sector_permutation=lambda *a:'MOCK_PERMUTATION'
+        numerical._array_fingerprint=lambda *a:'MOCK_ARRAY_HASH'
+        context=NS(block_ids=('D0','D1','D2'),scalar_terms=())
+        inputs=NS(hamiltonian_id='MOCK_H',preparation_id='MOCK_PREP',tail_id='MOCK_TAIL',
+            sector_id='MOCK_N1',state_id='MOCK_STATE')
+        for leakage in (0.0,1e-6):
+            execution=NS(source_commit=graph.settings.source_commit,scope=NS(graph=graph),
+                begin_input=MagicMock(),record_resolution=MagicMock(),bind_input=MagicMock(),
+                science_call=lambda name,function,**kw:function())
+            numerical._normalized_symbolic_tail_in_sector=lambda *a:NS(
+                matrix=MagicMock(name='MOCK_TAIL'),leakage_frobenius_norm=leakage)
+            with self.subTest(leakage=leakage),patch.dict(sys.modules,modules),patch(
+                    'trottertracks.b2d_evaluator.input_package.connect_prepared',return_value=(context,inputs)):
+                if leakage:
+                    with self.assertRaisesRegex(Stage1Failure,'SECTOR_BASIS_LEAKAGE'):
+                        load_candidate(ROOT,execution=execution)
+                    execution.bind_input.assert_not_called()
+                else:
+                    _,_,provenance=load_candidate(ROOT,execution=execution)
+                    self.assertEqual(provenance['source_commit'],'MOCK_SOURCE_NO_SCIENCE')
+                    execution.bind_input.assert_called_once()
 
     def test_changed_fixture_bytes_rejected(self):
         with tempfile.TemporaryDirectory() as directory:

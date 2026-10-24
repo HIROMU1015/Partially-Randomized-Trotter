@@ -168,7 +168,7 @@ def load_candidate(source_root, *, execution):
         blocks[block.block_id] = permit.science_call("input.block", materialize, identity=position)
     retained = permit.science_call("input.tail", lambda: _normalized_symbolic_tail_in_sector(
         prep, sector, _qiskit_to_openfermion_sector_permutation(sector)))
-    if retained.leakage_frobenius_norm > permit.contract["numerical_atol"]:
+    if retained.leakage_frobenius_norm > permit.scope.graph.settings.numerical_atol:
         from .scope import Stage1Failure
         raise Stage1Failure("SECTOR_BASIS_LEAKAGE")
     # OpenFermion mode 0 is the most significant occupation bit.
@@ -185,7 +185,7 @@ def load_candidate(source_root, *, execution):
     arrays = {**blocks, "physical": physical, "tail": retained.matrix, "state": state}
     digest = fingerprint({key: _array_fingerprint(value) for key, value in arrays.items()})
     provenance = dict(recipe=asdict(recipe), fixture_definition=definition,
-        source_commit=permit.contract["source_commit"], hamiltonian_id=inputs.hamiltonian_id,
+        source_commit=permit.source_commit, hamiltonian_id=inputs.hamiltonian_id,
         preparation_id=inputs.preparation_id, tail_id=inputs.tail_id,
         ordered_d_block_ids=context.block_ids,
         deterministic_fragment_indices=prep.deterministic_fragment_indices,
