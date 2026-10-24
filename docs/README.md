@@ -1249,3 +1249,5 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 - [H4 D2 approved execution: same saved Pauli body control comparison](non_df_h4_d2_execution_20261024.md).
 
 - [H4 Controlled semantics and comparison redesign:20 artificial checks, no new science](non_df_h4_controlled_comparison_redesign_20261024.md).
+
+- [H4 A_GATE saved order2 index1, body-only replay and paired axes](non_df_h4_a_gate_order2_20261024.md).
