@@ -1251,3 +1251,5 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 - [H4 Controlled semantics and comparison redesign:20 artificial checks, no new science](non_df_h4_controlled_comparison_redesign_20261024.md).
 
 - [H4 A_GATE saved order2 index1, body-only replay and paired axes](non_df_h4_a_gate_order2_20261024.md).
+
+- [H4 Pauli central-control saved256 cosine cost cohort](non_df_h4_a_cohort_cos_20261024.md).

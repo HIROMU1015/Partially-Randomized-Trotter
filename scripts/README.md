@@ -1084,3 +1084,5 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 - `audit_h4_controlled_comparison.py --record/--verify`: stdlib-only fixed-source/metadata/SHA audit and saved-value quotations. No QPY load, compiler, statistics or launch. See `docs/non_df_h4_controlled_comparison_redesign_20261024.md`.
 
 - `run_h4_a_gate.py`: sealed one-shot index1 source body/lift once, cosine/sine compile once each, native wait/reap and STOP; `docs/non_df_h4_a_gate_order2_20261024.md`.
+
+- `run_h4_a_cohort_cos.py`: original saved Pauli PR index2..255, one body/control/cosine compile each, reuse0/1, one statistics batch and mandatory STOP.

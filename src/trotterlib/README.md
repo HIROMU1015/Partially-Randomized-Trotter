@@ -1053,3 +1053,5 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 - H4 Controlled transfer is reviewed without changing library code in `docs/non_df_h4_controlled_comparison_redesign_20261024.md`; additional artificial cases: `tests/test_h4_controlled_comparison.py`, reusing existing Pauli event emitters and D2 lift.
 
 - `h4_a_gate.py`: Pauli body-only replay using original append/schedule, unchanged D2 central-control and fixed compiler/native helpers. Artificial12: `tests/test_h4_a_gate.py`.
+
+- `h4_a_cohort.py`: finite 254-task connector reusing A_GATE replay, D2 lift/batch, D1 compiler, native witness and saved-cost t statistics. Artificial12: `tests/test_h4_a_cohort.py`.
