@@ -13,3 +13,9 @@ PFは保存C虚部全区間を使用しtarget作用0。PR0個別32event全order0
 
 
 SOURCE `1e6a702f51c2ba7bb1577610919b99cb9990f8d6`。結果の保存・commit/push状況は技術報告書末尾を参照。
+
+結果commit `ee99186edb08c3291b0f1e8a2b0a1846b5b9880e`。pushはHTTPS認証失敗、remote SHA未確認。失敗log/remote照合を保全。
+
+```bash
+git -C /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-central-arb-pf-pr0-sine-20261025 push -u origin codex/non-df-h4-central-arb-pf-pr0-sine-20261025
+```

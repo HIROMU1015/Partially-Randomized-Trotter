@@ -119,5 +119,15 @@ PR全lawの保証へ進むには、選択PR0/PR1の局所値を未観測order4�
 ## Git保存・公開状態
 
 科学SOURCE `1e6a702f51c2ba7bb1577610919b99cb9990f8d6`、専用branch `codex/non-df-h4-central-arb-pf-pr0-sine-20261025`。
-結果commit後にpushし、GitHubで実際のbranch SHAを照合する。公開成否は`publication_status.json`へ保存する。
+結果commit **`ee99186edb08c3291b0f1e8a2b0a1846b5b9880e`** をlocal保存。`git push -u origin codex/non-df-h4-central-arb-pf-pr0-sine-20261025`はexit128、HTTPS Usernameを取得できず失敗した。
+GitHub接続toolによるpush後のbranch検索は空で、**remote SHAは未確認/null**。成功や公開済みとは扱わない。
+[公開記録](../artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/publication_status.json)、[失敗log](../artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/push_attempt01.log)、[remote照合](../artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/remote_after_push.json)。
+
+ユーザーがGit認証のある環境で実行するコマンド：
+
+```bash
+git -C /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-central-arb-pf-pr0-sine-20261025 push -u origin codex/non-df-h4-central-arb-pf-pr0-sine-20261025
+```
+
+結果・失敗記録を専用branchに保全。公開のための科学計算再実行は不要。
 実行namespaceは既にmandatory STOP・再launch禁止。
