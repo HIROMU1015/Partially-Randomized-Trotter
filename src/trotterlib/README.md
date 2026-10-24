@@ -1065,3 +1065,7 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 ## H4 central 実装残差ρの準備（2026-10-24）
 
 `h4_central_rho_plan.py`：来歴・無効診断契約・人工3system以下のobservable/mock。実H4 evaluatorなし。
+
+## H4 R0経験的診断（2026-10-24）
+
+`h4_r0_empirical.py`：SOURCE/QPY構造・binary64信号・selected C-target・δ/η/d。

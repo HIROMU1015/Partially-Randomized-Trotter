@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-central-r0-empirical-20261024/scripts/run_h4_r0_empirical.py", line 123, in <module>
+    *_,result=A.preflight();C.save(BASE/'structural_preflight.json',result);print(json.dumps(dict(status='PASS',state_actions=0)))
+              ^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-central-r0-empirical-20261024/src/trotterlib/h4_r0_empirical.py", line 102, in preflight
+    inputs=C.read(BASE/'inputs.json')['files']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-central-r0-empirical-20261024/src/trotterlib/h4_certificate_control.py", line 36, in read
+    return json.loads(Path(p).read_text())
+                      ^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-central-r0-empirical-20261024/artifacts/non_df_h4_central_r0_empirical/2026-10-24/inputs.json'

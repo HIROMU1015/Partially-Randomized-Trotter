@@ -1263,3 +1263,7 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 ## H4 central 実装残差ρの準備（2026-10-24）
 
 [H4 central実装残差ρの非実行準備](non_df_h4_central_rho_preparation_20261024.md)。
+
+## H4 R0経験的診断（2026-10-24）
+
+[H4 R0経験的実装残差診断](non_df_h4_central_r0_empirical_20261024.md)。
