@@ -1,3 +1,7 @@
+## 2026-10-24 H4 D2：固定2回路のone-shot実行接続
+
+[D2実装・承認・実行監査](docs/non_df_h4_d2_execution_20261024.md)、[新namespace](artifacts/non_df_h4_d2_execution/2026-10-24/README.md)。保存Pauli-PF/PR index0のcentral control比較、最大2compile。新接続人工10＋候補12 PASS。SOURCE/seal/grant固定後に一度だけ実行しmandatory STOP。旧generic対照・hash FAIL/原因UNKNOWN・native UNKNOWN・N/G nullを保全。科学実行前のSOURCE記録で、結果は後続記録を参照。以下は各時点の履歴。
+
 ## 2026-10-24 H4 D2：Pauli control方式比較の準備（科学実行なし）
 
 [D2候補・位相対応・最小実行案](docs/non_df_h4_d2_preparation_20261024.md)、[無効契約](artifacts/non_df_h4_d2_preparation/2026-10-24/contract_DRAFT.json)、[SHA/schema検証](artifacts/non_df_h4_d2_preparation/2026-10-24/verification.json)。D1と同じPauli-PF/PR index0の保存bodyをcentral controlへ移す候補を実装。人工12＋metadata8件PASS、旧937/input86/code45 SHA照合。全identity evolutionは元SOURCE対象外として拒否し、初回人工失敗も保全。実H4 QPY読込/build/compile・科学grant・N/G0、新価格未測定、旧hash/native/null状態保持。科学実行は2対象・最大2compileを別承認後に限る。準備完了・mandatory STOP。以下は各時点の履歴。

@@ -1047,3 +1047,5 @@ H6固定δの実行は完了。Library/science SOURCEを変えず、保存値集
 [新接続・人工27件・有限実行](../../docs/non_df_h4_d1_source_execution_20261024.md)。`h4_d1_source_control.py`／`run_h4_d1_source.py`／`test_h4_d1_source_control.py`を一組で読む。9/9完了・full4旧RZ全一致。PR保持/eventはPauli6524/3110、DF13483/5773、RZ非加法性+18/+3765。旧hashとSOURCE対応を分離し、full再生成0、旧grant/STOPと元native UNKNOWNを保持してmandatory STOP。
 
 - `h4_d2_pauli_control.py`: unlaunched D2 candidate lifting a saved nonidentity Pauli body to central-rotation control with aggregate ancilla phase; no I/O/compile/grant. Artificial tests: `tests/test_h4_d2_pauli_control.py`.
+
+- `h4_d2_control.py`: D2 two-target authority, SOURCE/input/runtime seal, parallel staged tasks, native exit/reap and signed comparisons; uses unchanged `h4_d2_pauli_control.py` and D1 compiler. Tests: `tests/test_h4_d2_control.py`.

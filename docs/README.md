@@ -1245,3 +1245,5 @@ H6 run03は全native検証後の退出/proc競合でSTOP、1 worker PASS/受理0
 [新接続・人工27件・有限実行](non_df_h4_d1_source_execution_20261024.md)。`h4_d1_source_control.py`／`run_h4_d1_source.py`／`test_h4_d1_source_control.py`を一組で読む。9/9完了・full4旧RZ全一致。PR保持/eventはPauli6524/3110、DF13483/5773、RZ非加法性+18/+3765。旧hashとSOURCE対応を分離し、full再生成0、旧grant/STOPと元native UNKNOWNを保持してmandatory STOP。
 
 - [H4 D2 preparation: same saved Pauli body control comparison, artificial12 / metadata8, no H4 execution](non_df_h4_d2_preparation_20261024.md).
+
+- [H4 D2 approved execution: same saved Pauli body control comparison](non_df_h4_d2_execution_20261024.md).
