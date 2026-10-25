@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1 Stage3 shots下界スクリーニング準備
+
+[技術報告](research/research_c_c1_stage3_shots_preparation_20261025.md)／[未承認282-call契約](research/research_c_c1_stage3_shots_contract_unapproved_20261025.json)／[人工証拠](../artifacts/research_c_c1_stage3_shots_technical/2026-10-25/)。保存PF/RTE/Aを保持した理想条件の十分shots式を全20候補・13round・X/Yへ接続。任意精度整数と減衰診断を用い、CA・実装保証・総費用には昇格させない。人工81 PASS、実保存値再解析0・mandatory STOP。
+
 ## C1 Stage3 feasibility-only限定科学実行
 
 [結果・分類・制約](research/research_c_c1_stage3_feasibility_execution_20261025.md)／[260セル・20候補・call](../artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/)。639/639 callsで潜在適格14／十分条件不適格6、correctness FAIL0、retry0。合成誤差資格・shots・総費用・順位は未評価、mandatory STOP。

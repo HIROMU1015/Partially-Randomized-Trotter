@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1 Stage3：楽観的shots下界スクリーニング準備（2026-10-25）
+
+[技術報告](docs/research/research_c_c1_stage3_shots_preparation_20261025.md)／[未承認282-call契約](docs/research/research_c_c1_stage3_shots_contract_unapproved_20261025.json)。新module `c1_stage3_shots_screen.py`、CLI `scripts/run_research_c_c1_stage3_shots_screen.py`、人工test `tests/management/test_research_c_c1_stage3_shots_screen.py`。保存PF/RTE/Aを保った仮定付き十分shots式で、全20候補・13round・X/Yを保持し、潜在適格14を主対象とする。巨大整数は文字列、未知実装誤差・CAは未資格。人工21＋既存60 PASS、保存値再解析0・科学実行未承認・mandatory STOP。
+
 ## C1 Stage3：feasibility-only限定科学実行（2026-10-25）
 
 [結果・候補別値・制約](docs/research/research_c_c1_stage3_feasibility_execution_20261025.md)／[260セルCSV・20候補・call・STOP](artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/)。固定SOURCE6ea5c6a9…無変更で639/639 calls、潜在適格14／十分条件不適格6、correctness FAIL0、fit／retry／resume0。回路・shots・総費用・順位付けは未実施、CA達成を意味しない。mandatory STOP。以下の未承認・準備表示は履歴。

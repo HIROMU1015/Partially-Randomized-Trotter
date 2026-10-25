@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_research_c_c1_stage3_shots_screen.py` は[楽観的shotsスクリーニング](../docs/research/research_c_c1_stage3_shots_preparation_20261025.md)。既定はbyte preflightのみ。別明示許可後だけ`--execute --output <fresh>`で保存20候補×13roundのPF/RTE/Aから仮定付きX/Y算定値・合計・減衰診断を作る。[未承認契約](../docs/research/research_c_c1_stage3_shots_contract_unapproved_20261025.json)は最大282 logical units、fit／retry／resume0。未知誤差は実際の0と認定せず、CA・回路・総費用・資源順位なし。人工81 PASS、今回再解析0・STOP。
+
 `run_research_c_c1_stage3_feasibility.py --mode feasibility-only` は[C1限定数値経路](../docs/research/research_c_c1_stage3_feasibility_preparation_20261025.md)。既定はbyte preflightだけ。別明示科学許可後だけ`--execute --output <fresh>`で260セルのPF/RTE誤差・減衰と20候補の十分条件分類を保存する。full modeへのdispatchなし、CA達成／shots／費用／順位は評価しない。[639-call未承認契約](../docs/research/research_c_c1_stage3_feasibility_contract_unapproved_20261025.json)、SOURCE・人工結果 `artifacts/research_c_c1_stage3_feasibility_technical/2026-10-25/`。今回科学call0、STOP。
 
 

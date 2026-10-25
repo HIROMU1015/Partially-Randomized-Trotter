@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+C1 Stage3のshotsスクリーニングは`../trottertracks/c1_stage3_shots_screen.py`。旧精度geometry／Hoeffding／feasibility分類／call・partial証拠を再利用し、極小Aの任意精度countだけ最小拡張。全20候補を保持し、実装誤差が仮になければ式が要求する数を算定する。普遍的下界・CA保証ではない。entry `scripts/run_research_c_c1_stage3_shots_screen.py`、test `tests/management/test_research_c_c1_stage3_shots_screen.py`、[報告・未承認契約](../../docs/research/research_c_c1_stage3_shots_preparation_20261025.md)。人工81 PASS、保存値再解析0・STOP。
+
 C1 Stage3の限定数値modeは`../trottertracks/c1_stage3_feasibility.py`。旧CAR／保存loader／ground・alias helper／PF・RTE reference／候補順序／call・資源計画を再利用し、QPY／回路／sampling／shot・費用経路へ接続しない。entry `scripts/run_research_c_c1_stage3_feasibility.py`、test `tests/management/test_research_c_c1_stage3_feasibility.py`、[技術報告](../../docs/research/research_c_c1_stage3_feasibility_preparation_20261025.md)、証拠 `artifacts/research_c_c1_stage3_feasibility_technical/2026-10-25/`。科学上限639、実H4未実行・STOP。
 
 
