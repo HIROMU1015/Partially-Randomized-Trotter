@@ -1,3 +1,7 @@
+## 2026-10-25 H2/H6 Pauli PF/B0/PR
+
+[有限探索・独立確認・条件付きG](pauli_h2_h6_resource_comparison_20261025.md)。H2/H6の新入力対応、335候補、H4固定PRとの比較、未保証範囲。
+
 ## 2026-10-25 H4 Pauli B0/B0I探索・比較
 
 [106候補の適格性・最小条件付きG・PR比較](non_df_h4_pauli_b0_comparison_20261025.md)。5精度と303点grid、raw/QPY/nativeはlossless archive、mandatory STOP。

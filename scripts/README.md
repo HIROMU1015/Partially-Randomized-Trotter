@@ -1,3 +1,7 @@
+## 2026-10-25 H2/H6 Pauli比較
+
+`prepare_pauli_h2_h6_inputs.py`：新研究の入力準備。`pauli_h2_h6_study.py`：固定batchとprocess分離compile。`pauli_h2_h6_refinement.py`：旧rawを保全した数値精密化と独立確認。`finalize_pauli_h2_h6_study.py` / `package_pauli_h2_h6_results.py`：保存値会計・比較。`pack_pauli_h2_h6_evidence.py` / `restore_pauli_h2_h6_evidence.py`：可逆圧縮・SHA復元。完了runは再実行しない。[報告](../docs/pauli_h2_h6_resource_comparison_20261025.md)。
+
 ## 2026-10-25 H4 Pauli B0/B0I有限探索
 
 [`run_h4_pauli_b0_comparison.py`](run_h4_pauli_b0_comparison.py)：事前固定batchのtarget/build/compileをprocess並列。各完了batchは再開不可。

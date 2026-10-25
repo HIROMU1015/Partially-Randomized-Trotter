@@ -1,3 +1,7 @@
+## 2026-10-25 H2/H6 Pauli PF/B0/PR拡張完了
+
+[条件付き資源比較・独立確認](docs/pauli_h2_h6_resource_comparison_20261025.md)、[H2/H4/H6 CSV](artifacts/pauli_h2_h6_comparison/2026-10-25/H2_H4_H6_comparison.csv)。H2 120候補・H6 215候補、独立確認n96/n48。実rho・母平均tail・大域最適性は未保証。公開照合後mandatory STOP。
+
 ## 2026-10-25 H4 Pauli B0/B0I：106候補の条件付き比較完了
 
 [候補集合・適格性・最小G・PR比較・保存証拠](docs/non_df_h4_pauli_b0_comparison_20261025.md)。S2/T.8/q1–8、初期20＋適応86。ε=.05はp132/q1 B0、他4精度は保存PRが低G。全比較はρ/保存平均価格に条件付き、mandatory STOP。

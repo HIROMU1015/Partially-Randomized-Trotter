@@ -1,3 +1,7 @@
+## 2026-10-25 H2/H6 matrix-free包含
+
+`pauli_vector_enclosure.py` と `pauli_vector_tight_enclosure.py`：Arb scalar＋binary64中心/L2誤差、同じraw rayのreference、PR finite law mean。既存`h4_pauli_pr_search.py`/`h4_pauli_pr_mean.py`のCDF・law/人工oracle、D2 controlとshot会計を再利用。compiled rhoや正式certificateを受理しない。[報告](../../docs/pauli_h2_h6_resource_comparison_20261025.md)。
+
 ## 2026-10-25 Pauli B0/B0I登録候補比較
 
 [`h4_pauli_b0_comparison.py`](h4_pauli_b0_comparison.py)：保存順序prefix/q、対角同値target・保存PF target転送、共通unitary会計、有限集合最小/guard比較。[結果](../../docs/non_df_h4_pauli_b0_comparison_20261025.md)。
