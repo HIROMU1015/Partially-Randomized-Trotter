@@ -89,6 +89,8 @@ def report():
            '', '## 成果物', '',
            '- [cost_vs_time.png](artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/cost_vs_time.png) / SVG / PDF',
            '- [selected_delta_vs_time.png](artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/selected_delta_vs_time.png) / SVG / PDF',
+           '- [selected_formula_grid.png](artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/selected_formula_grid.png) / SVG / PDF',
+           '- [fixed_delta_time_dependence.png](artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/fixed_delta_time_dependence.png) / SVG / PDF',
            '- [candidate_precision_accounting.csv](artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/candidate_precision_accounting.csv)',
            '- [independent_comparisons.csv](artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/independent_comparisons.csv)',
            '- private raw event/seed・代表QPY・全trial結果：`/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/`（Git公開対象外）',
@@ -106,6 +108,9 @@ def run(base_pid):
             status('Q32_REMAINING_TASKS_WITH_NEWLY_FREE_CPUS')
             import h46_long_time_extension_fill as extension
             extension.run()
+        status('FIXED_DELTA_COST_PANEL_REUSE_AND_MISSING_ONLY')
+        import h46_long_time_fixed_delta as fixed_delta
+        fixed_delta.run()
         # Preserve the original extension dispatch summary separately. Its
         # directory-claim conflicts are technical deduplication, not new trials.
         status('ACCOUNTING_AND_FIXED_CONFIRMATION_DESIGN')

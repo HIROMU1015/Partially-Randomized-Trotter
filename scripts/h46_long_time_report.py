@@ -51,7 +51,8 @@ def costs():
     p=PUBLIC/'reused_compiled_prices.json.gz'
     if p.exists():
         result.update(read(p))
-    for name in ('exploration_costs.json.gz','extension_exploration_costs.json.gz','extension_parallel_costs.json.gz'):
+    for name in ('exploration_costs.json.gz','extension_exploration_costs.json.gz','extension_parallel_costs.json.gz',
+                 'fixed_delta_exploration_costs.json.gz'):
         p=PUBLIC/name
         if p.exists():
             result.update(read(p))
@@ -132,7 +133,7 @@ def check_mean_and_trial_binding(prices):
             if r['method']=='PR' and sum(trial['orders'].values())!=r['q']*r['R_outer']:
                 raise ValueError('INCOMPLETE_RTE_TRIAL_ACCOUNTING')
     occupied=set();seed_counts={}
-    for cohort in ('EXPLORATION','EXTENSION_EXPLORATION','CONFIRMATION'):
+    for cohort in ('EXPLORATION','EXTENSION_EXPLORATION','FIXED_DELTA_EXPLORATION','CONFIRMATION'):
         p=PRIVATE/(cohort+'_seeds.json.gz')
         if not p.exists():
             continue
@@ -398,7 +399,34 @@ def figures():
     for suffix in ('png','svg','pdf'):
         fig.savefig(PUBLIC/('selected_formula_grid.'+suffix),dpi=160)
     plt.close(fig)
-    return dict(figures=['cost_vs_time','selected_delta_vs_time','selected_formula_grid'],formats=['png','svg','pdf'],
+    targets=read(PUBLIC/'fixed_delta_selection.json')['all_fixed_delta_targets']
+    ids={r['id'] for r in targets}
+    fixed=[v for v in read(PUBLIC/'accounting.json.gz') if v['id'] in ids]
+    write_csv(PUBLIC/'fixed_delta_comparisons.csv',fixed)
+    fig,axes=plt.subplots(2,2,figsize=(13,9))
+    for si,s in enumerate(study.PREFIX):
+        series={}
+        for row in fixed:
+            if row['system']!=s or row['epsilon']!=.005:
+                continue
+            label=('Full PF S2' if row['method']=='FULL' else 'PR '+short[row['formula']]
+                   +' R'+str(row['R_outer'])+' K'+str(row['K']))
+            series.setdefault(label,[]).append(row)
+        for label,values in series.items():
+            values.sort(key=lambda v:v['T']);priced=[v for v in values if v['G'] is not None]
+            axes[si,0].errorbar([v['T'] for v in priced],[v['G'] for v in priced],
+                yerr=[v.get('G_SE') or 0. for v in priced],marker='o',label=label,capsize=2)
+            axes[si,1].plot([v['T'] for v in values],[v['log_B'] for v in values],marker='o',label=label)
+        axes[si,0].set_yscale('log');axes[si,0].set_ylabel('Shot weighted RZ (epsilon=.005)')
+        axes[si,1].set_ylabel('log B')
+        for ax in axes[si]:
+            ax.set_xlabel('Total time T');ax.set_title(s+' fixed delta=.2; PR prefix '+str(3 if s=='H4' else 5))
+            ax.legend(fontsize=7);ax.grid(alpha=.25)
+    fig.tight_layout()
+    for suffix in ('png','svg','pdf'):
+        fig.savefig(PUBLIC/('fixed_delta_time_dependence.'+suffix),dpi=160)
+    plt.close(fig)
+    return dict(figures=['cost_vs_time','selected_delta_vs_time','selected_formula_grid','fixed_delta_time_dependence'],formats=['png','svg','pdf'],
                 interpretation='Finite-sample points and 1 SE; empirical signal allowance; evaluated cost subset')
 
 
