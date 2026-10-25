@@ -1,0 +1,141 @@
+"""Finish already-authorized independent stages after the current native pool.
+
+Waits only for this study's outputs/process. No machine settings, old execution
+contracts, other jobs, approvals, or grants are changed.
+"""
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import time
+import traceback
+import h46_long_time_signal as study
+
+
+def wait_for(path,pid=None):
+    while not path.exists():
+        if pid is not None and not Path('/proc',str(pid)).exists():
+            raise RuntimeError('OWN_STAGE_EXITED_WITHOUT_COMPLETION:'+str(path))
+        time.sleep(3)
+
+
+def status(stage,**extra):
+    study.save(study.PRIVATE/'pipeline_status.json',dict(stage=stage,updated_epoch=time.time(),**extra))
+
+
+def report():
+    import h46_long_time_report as accounting
+    best=study.read(study.PUBLIC/'best_configurations.json')
+    independent=study.read(study.PUBLIC/'independent_comparisons.json')
+    summary=study.read(study.PUBLIC/'accounting_summary.json')
+    def find(s,T,e,family,f):
+        return next(x['best'] for x in best if x['system']==s and x['T']==T and x['epsilon']==e
+                    and x['family']==family and x['formula_group']==f)
+    text=['# H4/H6 長時間PF・PR：次数・刻み幅・分割点・r/K比較',
+          '', '2026-10-25開始の専用研究。科学計算・会計・独立標本確認まで取得し、最終技術確認待ち。',
+          '**最良はcompiled費用を取得した適格候補内の点最良。全登録域の大域最適値・母平均優位・厳密誤差保証ではない。**',
+          '', '## 条件', '',
+          'Linear H4/H6、隣接1.0 Å、STO-3G、tol-only DF threshold1e-8、rank10/19。保存Hamiltonian/state/scalar/DF fragment順を再利用し、SCF・DF・状態の再生成0。',
+          'T=.8/1.2/1.6/2.0。基本qはT=.8/1.6で1/2/4/8/16、T=1.2では6、T=2では10も追加。δ=T/q。',
+          'S2、標準Yoshida4、m5_bestの既存signed係数を使用。Full、B0、B0+I、PRを同じfull-H referenceに照合。',
+          'H4 prefix=1/2/3/5/7/9、Full10。H6 prefix=3/4/5/7/11/15、Full19。PR R_outerはS2=4/8/16/32/64、Y4=8/16/32/64、m5=16/32/64。K=2/4/6（paired-cutoff、分子多項式の最高次数K+1）。',
+          'R_outerは1 outerの総short-step数。既存ABS_TIME_PER_OUTER整数配分・各piece最低1 stepを維持。全trajectoryのevent数はq R_outer。',
+          'ε=.05/.01/.005/.001/.0005、α_axis=.025、P=0。共通PF政策の経験的u floor1e-9、倍率1、log_B margin、u/headroom≤.01を使用。旧保存allowance/marginを減らさない。',
+          '主指標G=N_cos C_cos+N_sin C_sin。nativeはsymmetric-directional、scalar一回、actual adjoint、測定付きfull Hadamard wrapper。Qiskit1.3.0、rz/sx/x/cx、opt1、seed17。',
+          'analytic shot数であり、量子測定を実施した回数ではない。単一の有限時間signal費用で、全energy/QPE/RPE費用ではない。',
+          '', '## 取得範囲・重複回避', '',
+          '基本11,220構成は全signal評価完了。旧signal294構成・shot1,440条件・compiled費用候補203件を再利用候補として索引化し、選択された費用65候補は再build/compileしなかった。新アダプタに対する必要な旧T=.8代表照合4件のみ別記録（最大差約2.7e-13）。',
+          'q16でS2が探索境界に達したため、T=1.6/2.0のH4/H6・S2に限りq32を追加。追加412構成の全signalを評価。基本共通格子とS2限定追加域を区別し、Y4/m5のq32は未評価。',
+          '合計11,632構成・58,160精度endpoint。費用取得候補は基本481＋追加22。適格性・shot数と明示した作業proxyで候補を絞り、Full PF、S2 r4/K2、同じq/prefixのR32/K4対照を残した。proxyを実測費用や下界に使わない。',
+          '新規PR探索は9 trajectory/候補（粗い分散計画の名目基準）。独立確認は探索と別seed/cohort、旧有効確認標本は再利用。新確認nは探索分散×4、名目相対MCSE2%、最低33で取得前に固定し、確認後top-up・探索とのpoolingなし。',
+          'K0は任意候補として未追加。主候補K2/4/6を完了対象とした。',
+          '', '## ε=.0005の費用取得範囲内の結果', '',
+          '|系|T|方式|最良公式|q / δ|prefix|R_outer / K|G（1 SE）|',
+          '|---|---:|---|---|---|---:|---|---:|']
+    for s in study.PREFIX:
+        for T in study.Q:
+            for family in ('PF','PR'):
+                v=find(s,T,.0005,family,'ALL')
+                if v is None:
+                    text.append(f'|{s}|{T}|{family}|未取得|||||');continue
+                se='' if v.get('G_SE') is None else f" ± {v['G_SE']:.3g}"
+                rk='—' if family=='PF' else f"{v['R_outer']} / {v['K']}"
+                text.append(f"|{s}|{T}|{family}|{v['formula']}|{v['q']} / {v['delta']:.4g}|{v['prefix']}|{rk}|{v['G']:.6g}{se}|")
+    directions=[]
+    for s in study.PREFIX:
+        for T in study.Q:
+            for e in study.EPS:
+                pf,pr=find(s,T,e,'PF','ALL'),find(s,T,e,'PR','ALL')
+                if pf and pr:
+                    directions.append((s,T,e,pr['G']<pf['G']))
+    text+=['',f"全40系・時間・精度セルのうち、取得範囲内でPRの点費用が最良PFより低いセルは{sum(v[3] for v in directions)}/{len(directions)}。全5精度・公式別のq/δ/prefix/r/Kと未計測数は[best_configurations.csv](artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/best_configurations.csv)。",
+           '', '## signal・刻み幅・費用の区別', '',
+           'T=2・ε=.0005ではH6のS2 PF/PR、H4のS2 PRはq32で適格候補を取得。一方m5は両系PF/PRでq1の適格候補を持つ。H4 S2 PFにはq16の適格候補がある。この最小qはsignal適格性の観測で、費用最適qとは異なる。',
+           '高次化による少ないqと、signed piece増加・normalization・必要shot・単価の影響を分離する。公式別C/N/G比は[C_N_G_decomposition.csv](artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/C_N_G_decomposition.csv)。',
+           '同一q/prefixの共通R32/K4対照は[same_q_prefix_R32_K4.csv](artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/same_q_prefix_R32_K4.csv)。欠けたcompiled値は空欄であり0ではない。r/K感度は全signal・shotと取得済みcompiled費用を区別して[r_K_sensitivity.csv](artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/r_K_sensitivity.csv)に保存。',
+           '', '## 独立確認と希少event', '',
+           f"固定した独立比較{len(independent)}件のうち、確認費用が揃ったものは{sum(r['status']!='MISSING_INDEPENDENT_COST' for r in independent)}件。探索と同じ点方向の再現は{sum(r.get('lower_cost_point_reproduced',False) for r in independent)}件。",
+           '同じcandidateの標本を複数εで会計している比較があり、比較件数は独立実験数ではない。PR内のcos/sinはpaired、異なる候補をpairingしない。95%正規近似区間とBonferroni感度を保存するが、母平均・希少event tailの保証ではない。',
+           '新規群はPCG64/NumPy choiceの元sampling lawを使用し、53-bit CDFの丸め・未観測次数の確率を記録。次数2/4/6の未観測費用を0とせず、未取得の条件付き費用・tail上界はnull。ゼロ標本分散も母分散0とはしない。',
+           '新しいK6だけ、H4/H6・正負時間の強制eventを既存native builderと独立occupation演算で確認（最大vector差約2.4e-15）。これは条件付き正しさ確認で、random費用標本へ混ぜていない。K0/K2/K4の旧検証は反復していない。',
+           '', '## 実装・再現性・制約', '',
+           '既存h46_new2_coreのspectral/paired polynomial/occupation、h46_m5_planのsigned係数・整数allocation、保存input loader、h46_new2_nativeのGaussian preparation・occupation oracle、ax2b native builder、fingerprint reuse、compiler、凍結shotとpaired統計を再利用。旧科学SOURCEを編集せず、新しい時間可変adapterを追加した。',
+           'signalは保存spin sectorの不変性を既存ladder演算で検査し、H4 36/H6 400次元でbatch演算。新referenceは同じfull-Hとstate、旧T=.8（H6は1.6も）は保存値を再利用。新T2 referenceはexpm_multiplyと別経路照合。',
+           '基本signalとnativeは実空きCPU/RAMから63 workerで開始し、内部BLAS/compilerは1 thread/process。q32は主pool稼働中の空き1 coreで開始し、主pool終了後は未着手taskの追加worker処理へ移す。原子的なtask directory取得で科学call二重実行を防ぐ。旧dispatch記録は保持し、既存workerを停止しない。',
+           '新規科学条件はこの専用研究のH4/H6・T≤2、登録公式/prefix/r/K内。旧run/grant/ledger/marker/STOP、R2-CS、Track A主表・Figure2・他研究・共有環境・既存venvを変更していない。',
+           '残る制約：compiled費用の全登録域最適性、未観測eventの母平均費用上界、厳密reference/bias保証、有限PRNGの独立性証明は未確定。保存数値allowanceは経験的である。歴史的Python/runtime差をbit完全同一と主張しない。',
+           '', '## 成果物', '',
+           '- [cost_vs_time.png](artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/cost_vs_time.png) / SVG / PDF',
+           '- [selected_delta_vs_time.png](artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/selected_delta_vs_time.png) / SVG / PDF',
+           '- [candidate_precision_accounting.csv](artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/candidate_precision_accounting.csv)',
+           '- [independent_comparisons.csv](artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/independent_comparisons.csv)',
+           '- private raw event/seed・代表QPY・全trial結果：`/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/`（Git公開対象外）',
+           '', '次の担当：Codexが最終技術確認・commit/push・remote HEAD/worktree確認を行い、mandatory STOP。科学的な採択・主表変更・詳細レビューは今回開始しない。','']
+    (ROOT/'REPORT.md').write_text('\n'.join(text))
+    return summary
+
+
+def run(base_pid):
+    study.install()
+    try:
+        status('WAIT_MAIN_NATIVE_COST')
+        wait_for(study.PUBLIC/'exploration_cost_summary.json',base_pid)
+        if not (study.PUBLIC/'extension_parallel_summary.json').exists():
+            status('Q32_REMAINING_TASKS_WITH_NEWLY_FREE_CPUS')
+            import h46_long_time_extension_fill as extension
+            extension.run()
+        # Preserve the original extension dispatch summary separately. Its
+        # directory-claim conflicts are technical deduplication, not new trials.
+        status('ACCOUNTING_AND_FIXED_CONFIRMATION_DESIGN')
+        import h46_long_time_report as accounting
+        accounting.account();accounting.confirmation_plan()
+        status('INDEPENDENT_CONFIRMATION')
+        import h46_long_time_native as native
+        original_context=native.native_context
+        def cached_context(system,prefixes):
+            ctx=native.CONTEXT.get(system)
+            if ctx is None:
+                return original_context(system,prefixes)
+            from h46_new2_native import prepare
+            for prefix in prefixes:
+                if prefix not in ctx.preparations:
+                    ctx.preparations[prefix]=prepare(ctx.ham,prefix)
+            return ctx
+        # Same saved H/state/compiler in this process; only missing prefix
+        # preparations are added before the new independent pool is forked.
+        native.native_context=cached_context
+        accounting.confirm()
+        status('INDEPENDENT_ACCOUNTING_AND_FIGURES')
+        accounting.confirmation_account();accounting.figures();report()
+        status('READY_FOR_FINAL_TECHNICAL_CHECK',scientific_stages_finished=True,
+               new_review_started=False,publication_not_yet_performed=True)
+    except BaseException as exc:
+        status('STAGE_STOP',reason=str(exc),traceback=traceback.format_exc(),automatic_scientific_retry=False)
+        raise
+
+
+if __name__=='__main__':
+    parser=argparse.ArgumentParser();parser.add_argument('--base-pid',type=int,required=True)
+    args=parser.parse_args();run(args.base_pid)

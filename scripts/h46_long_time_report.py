@@ -46,11 +46,34 @@ def endpoints():
 
 def costs():
     result={}
-    for name in ('exploration_costs.json.gz','extension_exploration_costs.json.gz'):
+    for name in ('exploration_costs.json.gz','extension_exploration_costs.json.gz','extension_parallel_costs.json.gz'):
         p=PUBLIC/name
         if p.exists():
             result.update(read(p))
     return result
+
+
+def feasibility():
+    values=endpoints();rows=[]
+    for s in study.PREFIX:
+        for T in study.Q:
+            for e in study.EPS:
+                for family in ('PF','PR'):
+                    for f in study.FORMULAS:
+                        domain=[v for v in values if v['candidate']['system']==s and v['candidate']['T']==T
+                            and v['epsilon']==e and v['candidate']['formula']==f
+                            and (v['candidate']['method']=='PR')==(family=='PR')]
+                        eligible=[v for v in domain if v['status']=='ELIGIBLE']
+                        q=min((v['candidate']['q'] for v in eligible),default=None)
+                        selected=[v for v in eligible if v['candidate']['q']==q]
+                        rows.append(dict(system=s,T=T,epsilon=e,family=family,formula=f,
+                            minimum_eligible_q=q,maximum_eligible_delta=None if q is None else T/q,
+                            eligible_candidates=len(eligible),evaluated_candidates=len(domain),
+                            min_log_B_at_minimum_q=min((v['log_B'] for v in selected),default=None),
+                            max_log_B_at_minimum_q=max((v['log_B'] for v in selected),default=None),
+                            meaning='EMPIRICAL_SIGNAL_ELIGIBILITY_ONLY; not cost optimum or a strict error guarantee'))
+    write_csv(PUBLIC/'signal_feasibility.csv',rows)
+    return dict(rows=len(rows),complete_registered_signal_domain=True,compiled_cost_optimality=False)
 
 
 def write_csv(path,rows,fields=None):
@@ -288,8 +311,8 @@ def figures():
 
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('command',choices=['account','confirmation-plan','confirm','confirmation-account','figures']);args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('command',choices=['feasibility','account','confirmation-plan','confirm','confirmation-account','figures']);args=parser.parse_args()
     study.install()
-    functions={'account':account,'confirmation-plan':confirmation_plan,'confirm':confirm,
+    functions={'feasibility':feasibility,'account':account,'confirmation-plan':confirmation_plan,'confirm':confirm,
                'confirmation-account':confirmation_account,'figures':figures}
     print(json.dumps(functions[args.command](),ensure_ascii=False))
