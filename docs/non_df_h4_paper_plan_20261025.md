@@ -221,3 +221,9 @@ E0の30行を実装系列×方式×精度で配置し、N_cos/N_sin/N_total、G/
 旧SOURCE/入力/raw/結果/grant/ledger/marker/STOPを無変更で保全。旧N/G null、元native UNKNOWN、D1初回historical FAIL/原因UNKNOWN、PR母平均upper/null、全lawρ/null、R2-C PROOF_INCOMPLETE、正式受理falseを維持した。今回は論文資料の追加であり、科学証拠statusの変更ではないため、既存validation manifest・研究結果・実行記録は更新しない。直接の資料索引だけを追記する。
 
 [構造・保全確認](../artifacts/non_df_h4_paper_plan/2026-10-25/verification.json)、[公開状態](../artifacts/non_df_h4_paper_plan/2026-10-25/publication_status.json)。専用branchをcommit・公開してGitHub remote SHAを照合後、**mandatory STOP**。次の科学実行・研究方針採択・正式certificate受理へ自動移行しない。
+
+## 公開確認
+
+論文構成・Methods・図表計画を含む7ファイルの主commitは **`9411a50f351a2879b8b8f56d1b3b1ca230a1885b`**。GitHub接続のGit data APIで公開し、local indexと公開tree `3113bc2c4b51220429e40c54020cabd4cc82df62` の完全一致を確認した。同commitをgit fetchし、専用local branchとGitHub refのSHA一致を確認した。今回、既知の認証不足がある通常HTTPS pushは再試行せず、動作する接続を利用した。
+
+この公開確認文とpublication_statusだけを追記commitで保存し、その最終HEADもremoteと照合して最終回答に示す。科学証拠・数値・SOURCE・旧公開記録は無変更。**論文化準備を完了してmandatory STOP。研究方針の採択、追加科学実行、正式受理へは進まない。**
