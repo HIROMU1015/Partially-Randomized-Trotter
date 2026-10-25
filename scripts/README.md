@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究B B0固定pilot完了
+
+[`run_b2d_outer_b0.py`](run_b2d_outer_b0.py) をSOURCE b190fe28bで実行し、48代表・全288 operator／192 expectation・96費用測定を完了。[結果・費用・修正・STOP](../docs/research/research_b_outer_b0_recovery_20261025.md)。[`diagnose_b2d_b0_compiler.py`](diagnose_b2d_b0_compiler.py) の `--independent-operator` は保存D1同条件のbalanced complex128比較とQPY保存に使用した。使用済みoutputは再起動せず、MC／shotsへ自動進行しない。以下は履歴。
+
 ## 研究B B0復旧・保存回路のcompiler診断
 
 [復旧報告・SOURCE・新attempt・STOP](../docs/research/research_b_outer_b0_recovery_20261025.md)。`run_b2d_outer_b0.py --diagnose-first` は旧B3/+T/代表0/Xのみ、費用なし。`diagnose_b2d_b0_compiler.py` は保存されたB3またはD1/+T/代表0/X回路に限定する技術診断であり、通常の全pilot runnerではない。最終SOURCE5c1fc5bc3でもD1残差は固定tol未達、追加実行しない。

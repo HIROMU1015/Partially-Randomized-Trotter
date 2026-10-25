@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+研究Bの[B0最新結果](../../docs/research/research_b_outer_b0_recovery_20261025.md)：SOURCE b190fe28bでfixed48代表・全correctnessと96 full-wrapper費用を完了。既存DF/RTE/Hadamard部品を維持し、B0専用compilerの微小角・離散phaseを修正した。Expected cost／shots／γ資格は未評価。旧記録を保全しmandatory STOP。
+
 研究Bの[B0技術復旧](../../docs/research/research_b_outer_b0_recovery_20261025.md)はtrotterlibの科学条件を変更せず、B0専用compiler側のphase集計・失敗保存を修正した。D1の残差は固定tol未達のままで、全pilot・費用比較は未完了。旧研究の既定compilerと共有optimizer classは変更していない。
 
 研究Bの[B0実行結果](../../docs/research/research_b_outer_b0_execution_20261025.md)：固定SOURCE8d0cb96dfの最初のcompiled operator検査でFAILし、費用計測0件でmandatory STOP。原因未確定、SOURCE修正・retryなし。以下の未実行記述は準備時点の履歴。

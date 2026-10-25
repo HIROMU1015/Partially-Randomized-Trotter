@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究B B0完了・native費用観測（2026-10-25）
+
+[最新結果・SOURCE・独立診断・全費用・STOP](research/research_b_outer_b0_recovery_20261025.md)。SOURCE b190fe28b、全288 operator／192 expectation PASS後に96 wrapperを測定。Compiled最大4.43e-13、fixed tol1e-12、人工33件PASS。決定論的代表の費用観測で、期待費用・shots・γ資格は未評価。旧失敗記録を保全。以下は停止・復旧の履歴。
+
 ## 研究B B0復旧履歴・未解決のD1 correctness（2026-10-25）
 
 [全修正・固定SOURCE・attempt・診断・STOP](research/research_b_outer_b0_recovery_20261025.md)。初期位相集計誤差と失敗保存不足を改善したが、D1の最終診断差は約1.39e-12で固定tol1e-12を超え、全B0は未完了・費用0。Focused人工30件PASS。旧原本・契約は履歴として保全し、追加計算を開始しない。

@@ -2824,6 +2824,105 @@
         "Publish all corrections,source,attempts and diagnostic limits then mandatory STOP;do not relabel remaining numerical mismatch as PASS.",
         "User/researchB decides further independent numerical diagnosis or scientific contract changes;no automatic new full run,precision/grid,MC/shots or A0 reexecution."
       ]
+    },
+    {
+      "id": "research_b_outer_b0_complete_20261025",
+      "status": "source_present_no_current_ci",
+      "scientific_execution_status": "COMPLETE",
+      "runtime_status": "COMPLETED_DESCRIPTIVE_MANDATORY_STOP",
+      "summary": "Angle-preserving RY/U identities and native1q scalar-phase invariants resolved D1. All fixed288 operator/192 expectation gates completed before96 full prepared wrapper costs;scope exact,no evidence failures. Representative costs only,not expected/shot/total resources.",
+      "documentation": [
+        "docs/research/research_b_outer_b0_recovery_20261025.md",
+        "docs/research/research_b_outer_a0_b0_execution_preparation_20261025.md"
+      ],
+      "source": [
+        "scripts/run_b2d_outer_b0.py",
+        "scripts/diagnose_b2d_b0_compiler.py",
+        "src/trottertracks/b2d_evaluator/b0_native.py",
+        "src/trottertracks/b2d_evaluator/followup_io.py",
+        "src/trottertracks/pr_dictionary_validation/gates.py",
+        "src/trottertracks/pr_dictionary_validation/f2_execution.py"
+      ],
+      "tests": [
+        "tests/management/test_b2d_b0_native.py",
+        "tests/management/test_b2d_followup.py",
+        "tests/management/test_pr_dictionary_compile_phase.py",
+        "tests/management/test_pr_dictionary_compile_metadata.py",
+        "tests/management/test_b2d_balanced_operator.py"
+      ],
+      "artifacts": [
+        "artifacts/research_b_outer_b0/20261025/corrected-2/result.json",
+        "artifacts/research_b_outer_b0/20261025/corrected-2/binding.json",
+        "artifacts/research_b_outer_b0/20261025/corrected-2/partial_results.json",
+        "artifacts/research_b_outer_b0/20261025/corrected-2/status.json",
+        "artifacts/research_b_outer_b0/20261025/corrected-2/STOP.json",
+        "artifacts/research_b_outer_b0/20261025/WRAPPERS_v5.csv",
+        "artifacts/research_b_outer_b0/20261025/independent-1/diagnosis.json",
+        "artifacts/research_b_outer_b0/20261025/independent-2/diagnosis.json",
+        "artifacts/research_b_outer_b0/20261025/independent_tests/opaque.txt",
+        "artifacts/research_b_outer_b0/20261025/independent_tests/compile_phase.txt",
+        "artifacts/research_b_outer_b0/20261025/independent_tests/balanced.txt",
+        "artifacts/research_b_outer_b0/20261025/execution_logs/corrected-2/preflight.json",
+        "artifacts/research_b_outer_b0/20261025/execution_logs/corrected-2/time.txt"
+      ],
+      "science_source_commit": "b190fe28b98d2f94e1509e19cd3d36a63b2bb99e",
+      "independent_diagnosis_source_commit": "edd2d6ffb0f76bae886fd2a86a5b15e6a8feab4d",
+      "snapshot_commit": "33715848bfb83d49ec4e54d6eef481012a7441e4",
+      "counts": {
+        "new_full_pilot_runs": 1,
+        "saved_D1_diagnoses": 2,
+        "cases": 12,
+        "trajectories": 48,
+        "system_builds": 48,
+        "controlled_builds": 48,
+        "wrappers": 96,
+        "compile_requests": 96,
+        "actual_transpiles": 96,
+        "cache_hits": 0,
+        "operator_gates": 288,
+        "expectations": 192,
+        "single_step_means": 24,
+        "single_mean_event_terms": 1692,
+        "full_analytic_means": 12,
+        "configs": 76,
+        "events": 1740,
+        "event_operators": 1740,
+        "native_D_blocks": 372,
+        "native_RTE_sequences": 492,
+        "reference_exponentials": 206,
+        "moments": 16,
+        "cost_measurements": 96,
+        "event_records": 11382,
+        "focused_artificial_tests": 33,
+        "evidence_write_failures": 0,
+        "A0_reexecutions": 0,
+        "shot_evaluations": 0
+      },
+      "residuals": {
+        "max_system_operator": 1.4900799456634123e-13,
+        "max_controlled_operator": 2.2704684187563882e-14,
+        "max_raw_wrapper_operator": 2.4296149023735818e-14,
+        "max_compiled_wrapper_operator": 4.4267254589628355e-13,
+        "max_raw_expectation": 2.3425705819590803e-14,
+        "max_compiled_expectation": 2.504663143554353e-13,
+        "max_single_step_mean": 4.6629375062569485e-15,
+        "max_sector_mean": 2.097888249863112e-15
+      },
+      "qualification": {
+        "gamma": null,
+        "expected_cost": null,
+        "shots": null,
+        "u_num": null,
+        "status": "EMPIRICAL_NATIVE_CORRECTNESS_REPRESENTATIVE_COSTS_ONLY",
+        "absolute_tolerance": 1e-12,
+        "relative_tolerance": 0,
+        "phase_fit": false
+      },
+      "interpretation": "Synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,nD1,T±.18,B3/D1/R2/R4/B4/F1,four deterministic representatives,complex128,Qiskit1.3 opt1 seed17 native rz/sx/x/cx with angle-preserving lowering. All gates precede costs. A3 native RZ burden is much larger in these representatives;no IID/expected-cost,same-accuracy or total-resource superiority inferred. Local committed evidence,not CI/independent external reproduction. Old failed attempts/A0/STOP preserved.",
+      "completion_criteria": [
+        "Publish SOURCE,successful raw,all prior attempts and STOP;mandatory STOP with no automatic new science.",
+        "User/researchB decides whether to separately authorize expected-cost B1,shot qualification or other later stages."
+      ]
     }
   ],
   "repository_completion_criteria": [

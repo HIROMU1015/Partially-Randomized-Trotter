@@ -1,5 +1,7 @@
 # B2-D 5方式評価器：接続準備・技術報告
 
+**B0 COMPLETE（2026-10-25）：** [独立診断・角度保存修正・全結果と費用](../../../docs/research/research_b_outer_b0_recovery_20261025.md)。SOURCE b190fe28b、48代表・288 operator／192 expectation PASS後に96 wrapper費用を保存した。Complex128／tol1e-12／phase fitなし、compiled最大4.43e-13。人工33件PASS。Gamma／shots／expected costはnull。旧SOURCE・全attempt・A0を保全してmandatory STOP。以下は履歴。
+
 **B0復旧後も未完了・STOP：** [修正・診断・全履歴](../../../docs/research/research_b_outer_b0_recovery_20261025.md)。最終SOURCE5c1fc5bc3、失敗matrix／raw・compiled QPYと途中rowを保存する。初期B3検査は改善したがD1の残差が固定tol未達。人工30件PASSを全B0 correctnessとせず、費用0件のままSTOP。以下の原本・旧結果を保全。
 
 **B0 compiled correctness STOP（2026-10-25）：** [停止報告・実績・保存不足・原本](../../../docs/research/research_b_outer_b0_execution_20261025.md)。SOURCE8d0cb96dfを一回実行し、最初のcompiled gateでFAIL。24 single-step meanと最初のraw側gateは通過したが、費用0件・pilot未完了。数値差・回路は未保存で原因未確定。SOURCE修正・retryなし、mandatory STOP。以下のA0結果・準備履歴を保全する。

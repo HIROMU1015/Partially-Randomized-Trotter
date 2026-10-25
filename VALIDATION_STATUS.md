@@ -1,5 +1,10 @@
 # Validation status
 
+## 2026-10-25 B0 COMPLETE after angle-preserving native lowering
+
+Science SOURCE `b190fe28b98d2f94e1509e19cd3d36a63b2bb99e`, synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,nD1,T±.18,B3/D1/R2/R4/B4/F1,4 deterministic representatives/case,complex128,absolute spectral tol1e-12,rtol0,no phase fit. Molecular geometry/AO basis/rank exploration not applicable. RY/U native identities preserve small angles; native1q determinant invariants stabilize discrete scalar phases without fitting a full operator.
+Independent D1 sequential/balanced complex128 checks both passed before the new full run. All12 cases/48 trajectories/288 operator gates/192 expectations,24 single-step means and12 full means completed. Only then96 full prepared X/Y wrappers were measured:96 actual transpiles,cache hits0. Max compiled operator4.4267e-13,compiled signal2.5047e-13. All scope counts matched;failed={} and evidence_write_failures=[];mandatory STOP. Focused tests33 PASS. [Results,fixes,limits](docs/research/research_b_outer_b0_recovery_20261025.md), [all96 metrics](artifacts/research_b_outer_b0/20261025/WRAPPERS_v5.csv), [raw+STOP](artifacts/research_b_outer_b0/20261025/corrected-2/). Local committed science,not CI/independent external reproduction. Expected cost/shots/gamma remain null;no IID-weighted cost,same-accuracy,total-resource or algorithm-GO certification. Old failed attempts,A0 and STOPs preserved. No automatic B1/MC/shot/precision/grid extension. Below are historical stop records.
+
 ## 2026-10-25 B0 recovery: phase-accumulation error improved; D1 correctness unresolved
 
 Final implementation SOURCE `5c1fc5bc36bb3dad32efe7825ca6ac9058deeafb`. Same synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,nD1,T±.18,six candidates/four representatives,complex128,absolute spectral tolerance1e-12,rtol0,no phase fit. Official definition/U/P/fixed-gate identities and scalar-phase summation were stabilized; same Qiskit1.3.0 level1 synthesis reused per1q run with accurate parent phase accumulation. Default compiler and global optimizer class unchanged.

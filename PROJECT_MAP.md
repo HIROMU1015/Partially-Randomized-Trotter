@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究B B0完了：角度保存修正後に全correctness・96費用を完了（2026-10-25）
+
+[独立D1診断・修正・全B0結果・費用・STOP](docs/research/research_b_outer_b0_recovery_20261025.md)。科学SOURCE b190fe28b、12 case・48代表・288 operator／192 expectation全PASS後に96 wrapperの費用を保存した。Compiled operator最大4.43e-13、固定tol1e-12、complex128・phase fitなし。原本 `artifacts/research_b_outer_b0/20261025/corrected-2/`、全費用 `WRAPPERS_v5.csv`、独立診断 `independent-{1,2}/`。人工33件PASS、expected_cost／shots／gammaはnull。旧attempt・A0を保全し、追加段階へ進まずmandatory STOP。以下は履歴。
+
 ## 研究B B0技術復旧：初期誤差を改善、D1は未解決でSTOP（2026-10-25）
 
 [修正・3新attempt・保存回路診断・限界](docs/research/research_b_outer_b0_recovery_20261025.md)。最終実装SOURCE5c1fc5bc3。失敗時matrix／QPY保存、公式gate展開とlevel1 optimizer間のphase集計を改善した。B3限定診断はPASS、全pilot再実行は16 wrapper通過後D1でSTOP。最終保存D1診断も約1.39e-12で固定tol1e-12未達、費用0件・未完了。人工30件PASSは科学PASSではない。旧SOURCE／raw／STOPを保全する。
