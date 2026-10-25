@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## C1：H6修正codecのffsim最適化接続
+
+`../trottertracks/c1_ffsim_corrected_codec.py` は専用process内で保存XDF初期値と修正codecを既存ffsim fitterへ接続し、loss/gradient/minimizeを維持する。`c1_h6_corrected_fit.py` は開始sector gateと終了optimizer／予算を分離する。新規fitは未承認。[技術報告](../../docs/research/research_c_c1_h6_corrected_fit_preparation_20261025.md)。
+
 ## C1：実直交DF codecとH6限定接続
 
 [`c1_real_orthogonal_codec.py`](../trottertracks/c1_real_orthogonal_codec.py)はSciPy real Schur/expmとffsim parameter utilのtask-local接続。[`c1_h6_codec_roundtrip.py`](../trottertracks/c1_h6_codec_roundtrip.py)は既存SectorCAR/rank_assessmentを再利用する評価専用経路。[技術報告](../../docs/research/research_c_c1_h6_codec_roundtrip_preparation_20261025.md)。既存モジュール無変更、人工134 tests＋29subtests PASS、実H6新評価未実行・mandatory STOP。

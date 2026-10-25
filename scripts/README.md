@@ -1,5 +1,9 @@
 # scripts 索引
 
+## C1：H6修正codecのrank14 1 fit（科学未承認）
+
+`run_research_c_c1_h6_corrected_fit.py`：defaultはpassive byte preflight。保存XDF14→修正codec→sector400初期gate→最大1 ffsim fit→終了sector／予算の専用経路。[技術報告](../docs/research/research_c_c1_h6_corrected_fit_preparation_20261025.md)／[未承認20-call契約](../docs/research/research_c_c1_h6_corrected_fit_contract_unapproved_20261025.json)。新科学は別途許可後のみ。
+
 ## C1：修正codecの保存H6 round-trip
 
 `run_research_c_c1_h6_codec_roundtrip.py`は既定byte preflightのみ。将来、保存rank14/18の初期J/Uを再分解せず、修正codec→4sector状態→同値性・DF予算保持だけを最大20callsで確認する。[未承認契約](../docs/research/research_c_c1_h6_codec_roundtrip_contract_unapproved_20261025.json)／[人工結果](../docs/research/research_c_c1_h6_codec_roundtrip_preparation_20261025.md)。科学許可後のみ実行し、fit／PF／native／shots／費用は対象外。

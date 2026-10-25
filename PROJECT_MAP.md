@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：H6修正codecのffsim接続・rank14 1 fit準備（2026-10-25）
+
+[技術報告](docs/research/research_c_c1_h6_corrected_fit_preparation_20261025.md)／[未承認20-call契約](docs/research/research_c_c1_h6_corrected_fit_contract_unapproved_20261025.json)／[人工証拠・SOURCE](artifacts/research_c_c1_h6_corrected_fit/2026-10-25/technical/)。新 `c1_ffsim_corrected_codec.py`＋`c1_h6_corrected_fit.py`、専用CLI・人工tests。保存XDF14→修正pack→実ffsim x0を接続、loss/gradient/L-BFGS-Bは維持。新27＋回帰134 tests・29 subtests PASS。実H6 decode／fit／再解析0、今後最大1 fit・retry0、mandatory STOP。
+
 ## C1：保存H6の修正codec・DF予算保持PASS（2026-10-25）
 
 [結果](docs/research/research_c_c1_h6_codec_roundtrip_execution_20261025.md)／[4状態・gate・原本](artifacts/research_c_c1_h6_codec_roundtrip/2026-10-25/)。SOURCE43941ed8…無変更、rank14/18のJ/projector/tensor/sector同値性とCA/8保持がPASS。20/20 calls、fit/optimizer/retry/resume0、人工54 PASS。frame9も数値allowance内で復元。修正fit・PF・資源比較は未実施、旧証拠保全・mandatory STOP。以下の準備表示は履歴。
