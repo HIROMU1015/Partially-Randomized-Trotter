@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## C1：保存H4 XDF prefix評価adapter
+
+`../trottertracks/c1_h4_xdf_prefix_budget.py`は既存DFHamiltonian／PhysicalSector／df_linear_operator／dense化／bit permutation／SciPy SVD／H4 allowanceを再利用。薄いcounted matvecで全9prefix×36基底を計上する。[技術報告・人工29＋旧関連28 PASS・制約](../../docs/research/research_c_c1_h4_xdf_prefix_budget_preparation_20261026.md)。新sector simulator／fitterなし、旧SOURCEは不変。科学実行は別許可後だけ・mandatory STOP。
+
 ## C1：H6の共通CA・RPE shots・serial資源pilotを実行
 
 既存accuracy/Hoeffding/fixed-N/energy/serial-cost関数をSOURCE55b3d868…のadapterから無変更再利用。119 calls・4候補数値CA PASS・同sの総RZはXDFが小さい。[結果・全指標](../../docs/research/research_c_c1_h6_ca_resources_execution_20261026.md)。資格B・理想測定/oracle/状態準備除外/serialモデルの条件付き結果であり厳密Cや無条件資源優位ではない。mandatory STOP。

@@ -1,0 +1,151 @@
+{
+  "scope": "C1_H4_SAVED_XDF_PREFIX_DF_BUDGET_V1",
+  "status": "UNAPPROVED_SCIENCE_CONTRACT",
+  "preparation_base_commit": "8c5b7e903b27464e8253f23db7c476201be4c176",
+  "entry": "scripts/run_research_c_c1_h4_xdf_prefix_budget.py",
+  "conditions": {
+    "molecule": "linear H4",
+    "distance_angstrom": 1.0,
+    "basis": "STO-3G",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "modes": 8,
+    "number_representation": true,
+    "decomposition": "saved OpenFermion1.6.1 eigh",
+    "order": "original saved lambda/G prefix",
+    "ranks": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "saved_anchor_rank": 10,
+    "CA_Ha": 0.00159,
+    "DF_budget_Ha": 0.00019875,
+    "allowance": "binary64_operation_scale_guard8_v1",
+    "component_atol": 1e-10,
+    "rtol": 0,
+    "sector_order": "ascending Qiskit little-endian interleaved spin occupations",
+    "kappa_policy": "retain saved original-g corrected one-body for every prefix"
+  },
+  "call_limits": {
+    "saved_bundle_load": 1,
+    "sector_context": 1,
+    "input_kappa_scalar_identity": 1,
+    "physical_reference_attachment": 1,
+    "xdf_prefix_model": 9,
+    "xdf_matvec": 324,
+    "sector_error_norm": 9,
+    "numerical_allowance_budget": 9,
+    "prefix_selection_report": 1
+  },
+  "maximum_logical_units": 356,
+  "source_manifest": "artifacts/research_c_c1_h4_xdf_prefix_budget/2026-10-26/technical/SOURCE.json",
+  "source_manifest_sha256": "b63ef45279a27c09fcb0626628b025e4891c6ea58f602ffddce9489cf022a516",
+  "original_input": {
+    "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/snapshot.npz",
+    "publication_commit": "86b8b002704aced8ca239414080f53793de81658",
+    "generation_source": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+    "sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+    "local_cli_path": "Provide --input pointing to the same fixed bytes; cache outside old evidence is permitted"
+  },
+  "records": {
+    "physical": "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/operators/physical_sector.npz",
+    "stage1": "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/result.json",
+    "provenance": "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/provenance.json",
+    "stage3": "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/prepared.json"
+  },
+  "saved_inputs": {
+    "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/operators/physical_sector.npz": "ae177c61323f76e487afc5933f42cdd33448060034c90ac221a333007d1a1bf2",
+    "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/result.json": "bd1e63c2bb36ae9ff041101d67d085cd1349252aa73fe5490089234799aa9cea",
+    "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/provenance.json": "59a38976fe3c6d9be261789cbb69ef2a67e66e748970e3faaa9f27d61a21ea81",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/prepared.json": "21733fb99e258245d75785c466e436944df57d2bb458ae574a8d088771e44ab6",
+    "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/evaluation_SOURCE.json": "5be0fea39b167845343f94985699f31a0a1bb07d085ea2ed9312a1af9b8dede5",
+    "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/STOP.json": "c6b4731ffadbd70c2adbd8e05b7c9b760e6e6033631e478ffacb43d12f792822",
+    "artifacts/research_c_c1_stage3_deterministic_accuracy_science/2026-10-25/execution_summary.json": "1eaf6708a774e4d984b9c40ca8fec05676286c484d6f3eb7af9580d2770de58f"
+  },
+  "historical_sources": [
+    {
+      "commit": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+      "path": "src/trotterlib/h4_molecular_inputs.py",
+      "sha256": "fb53bf44459dc6ef18223d55594511c03766c53537f6c445dad7a0b7a42225ea"
+    },
+    {
+      "commit": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+      "path": "src/trotterlib/df_hamiltonian.py",
+      "sha256": "7d711e1c3c093079ae890ffc1907813d55d211a4fb622e4f36edee05fdea0c52"
+    },
+    {
+      "commit": "bec41ac7dc7e034bd664817acfdcfed858ddadd0",
+      "path": "src/trottertracks/c1_stage1.py",
+      "sha256": "1b58ef7ab5a7c550b9663c028a6496f1e9a18f64895274e8d5c8e80342ec4b16"
+    }
+  ],
+  "evaluation_packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "openfermion": "1.6.1",
+    "openfermionpyscf": "0.5",
+    "pyscf": "2.7.0",
+    "qiskit": "1.3.0",
+    "qiskit-nature": "0.7.2",
+    "threadpoolctl": "3.6.0"
+  },
+  "dependency_lock": "artifacts/research_c_c1_stage2_technical/2026-10-25/environment/requirements.lock",
+  "numerical_definition": {
+    "norm": "scipy.linalg.svd(delta,compute_uv=False,lapack_driver=gesdd)[0]; same call as H4 Stage1",
+    "physical_scale": "abs(c)+sum(abs(spin_one))+sum(abs(spin_two/2)); from original h/g; no physical operator regeneration",
+    "xdf_scale": "abs(c)+sum(abs(saved_df_one_body))+sum(abs(lambda[:r])*sum(abs(G[:r]))**2)",
+    "allowance": "c1_stage1.allowance(bp,bx,operation_lengths(4,36,r)[physical],operation_lengths(4,36,r)[xdf],36,delta)",
+    "decision": "spectral_norm+rank_specific_allowance <= 0.00019875 Ha",
+    "correctness": "rtol0; kappa, physical/one/G/prefix Hermiticity max-entry <=1e-10; finite mandatory",
+    "basis": "Same sorted Qiskit little-endian sector_indices(4,2,2), converted from existing OF PhysicalSector by bit_reverse_indices(8)",
+    "guard_qualification": "unchanged engineering allowance; not a rigorous rounding enclosure"
+  },
+  "call_definitions": {
+    "saved_bundle_load": "Whitelist decode of fixed original h/g/c/MO and saved one/lambda/G; saved physical matrix and rank10/CDF8 scalar anchors. No saved state/energy/QPY decode.",
+    "sector_context": "Existing PhysicalSector and Qiskit/OF permutation once.",
+    "input_kappa_scalar_identity": "One original-g kappa check; retain saved one-body/scalar for all ranks; finite/Hermiticity/basis gates.",
+    "physical_reference_attachment": "Attach saved physical matrix, Hermiticity and original physical formation scale. No Hamiltonian generation or norm.",
+    "xdf_prefix_model": "9 existing DFHamiltonian+df_linear_operator(backend=python) creations, prefixes1..9; no rehermitization/reordering.",
+    "xdf_matvec": "324 individually journaled actual actions:36 basis columns per9 prefixes. Existing _linear_operator_to_dense fills the matrix; original permutation applied.",
+    "sector_error_norm": "9 existing spectral-SVD evaluations of physical minus prefix. No rank10 norm.",
+    "numerical_allowance_budget": "9 composite finite/Hermiticity/scale/operation_lengths/allowance evaluations with norm+guard CA/8 classification.",
+    "prefix_selection_report": "One all9 report with saved rank10/CDF8 anchors and first eligible in saved order only. No cost selection."
+  },
+  "execution_order": [
+    "Separate chat science permission for the fixed published SOURCE/contract/input/fresh output; no permission proof required",
+    "Passive bytes/version/source preflight; actual resources; exclusive fresh output",
+    "Load saved bundle; sector context; kappa/scalar/basis gate; attach saved physical reference",
+    "Evaluate all9 registered prefixes; NOT_MET does not stop remaining ranks; independent jobs may run concurrently",
+    "Selection report and all prefix values/anchors/call journal/resources/SOURCE/partial evidence/STOP",
+    "Commit/push/remote verification; mandatory STOP"
+  ],
+  "STOP": {
+    "correctness": "First SOURCE/input/basis/finite/Hermiticity/reference/matvec/SVD mismatch: stop new dependent calls, drain started calls, preserve partial evidence.",
+    "not_met": "Normal outcome; complete remaining registered prefixes; all NOT_MET is normal completion with saved first passing rank10.",
+    "completion": "mandatory STOP regardless of outcome; no PF/native/shots/cost/rank expansion",
+    "retry_resume": "0; never restart an old or existing output"
+  },
+  "fresh_output": "artifacts/research_c_c1_h4_xdf_prefix_budget/<execution-date>/run01",
+  "performance": "Existing resource_plan with9 independent prefixes and sector36; share read-only arrays; Python backend avoids Numba/JIT; coordinate local BLAS1 when multiple workers. No arbitrary CPU/RAM/worker/wall cap. No shared environment/cache or other-user changes.",
+  "qualification": "Numerical DF-budget pilot only. Low-rank PASS does not qualify PF, synthesis, CA, shots, native resources or total-cost ranking. No minimum-rank claim outside this saved order.",
+  "permission_policy": "Technical preparation only. Separate explicit chat permission for molecular scientific execution; no approval text storage, certificate, receipt or grant.",
+  "new_fit": 0,
+  "new_decomposition": 0,
+  "physical_regeneration": 0,
+  "rank10_norm": 0,
+  "PF": 0,
+  "native_build_compile": 0,
+  "synthesis": 0,
+  "shots": 0,
+  "total_cost": 0,
+  "retry": 0,
+  "resume": 0
+}

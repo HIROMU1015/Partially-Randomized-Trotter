@@ -1,5 +1,9 @@
 # 研究計画資料
 
+## C1：案A採択・H4 XDF prefix予算評価の準備
+
+[最小entry・人工29＋旧関連28 PASS・未解決回帰制約](research_c_c1_h4_xdf_prefix_budget_preparation_20261026.md)／[SOURCE・入力・356-call未承認契約](research_c_c1_h4_xdf_prefix_budget_contract_unapproved_20261026.json)。保存順1..9を全件測定し、保存rank10 anchorと比較する計画。実H4のdecode／新norm／rank判定0。科学実行は別途明示許可後のみ、mandatory STOP。
+
 ## C1：H2／H4／H6比較条件・baselineの技術監査
 
 [統合表・H4 XDF10選定来歴・native精度差分](research_c_c1_h2_h4_h6_comparison_audit_20261026.md)／[最小実験A・Bの独立設計](research_c_c1_minimal_experiment_design_20261026.md)。保存値の引用と静的SOURCE監査、人工29 PASSのみ。H4低prefixのCA/8適格性は未評価、H6 rank13の開始予算gateの違いを明記。案Aを技術推奨するが未採択・新科学call0・mandatory STOP。

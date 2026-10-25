@@ -1,5 +1,9 @@
 # scripts 索引
 
+## C1：H4 XDF prefix1〜9・DF予算の技術準備
+
+`run_research_c_c1_h4_xdf_prefix_budget.py`はdefaultでbyte／環境preflightのみ。明示科学許可後の`--execute`で元順prefix9件と保存rank10 anchorを評価する。[SOURCE再利用・57関連PASS・旧full256回帰制約](../docs/research/research_c_c1_h4_xdf_prefix_budget_preparation_20261026.md)／[未承認356-call契約](../docs/research/research_c_c1_h4_xdf_prefix_budget_contract_unapproved_20261026.json)。新fit／physical生成／rank10 norm／PF／回路／shots／費用0、今回新科学0・mandatory STOP。
+
 ## C1：H6保存値のCA/RPE/serial資源・限定実行完了
 
 `run_research_c_c1_h6_ca_resources.py`をSOURCE55b3d868…で一度実行。119/119 calls、4候補NUMERICAL_PILOT_CA_PASS・52round PASS。同sのshotsは同じで、総RZはXDFが小さい。[結果](../docs/research/research_c_c1_h6_ca_resources_execution_20261026.md)。新fit/誤差再計算/state-action/build/compile/量子sampling0。run01は消費済み、retry/resume0・mandatory STOP。

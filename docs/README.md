@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1：H4保存XDF prefixのDF予算評価準備
+
+[技術報告・SOURCE再利用・57関連PASS・full256回帰制約](research/research_c_c1_h4_xdf_prefix_budget_preparation_20261026.md)／[未承認356-call契約](research/research_c_c1_h4_xdf_prefix_budget_contract_unapproved_20261026.json)。案Aを次の対象に採択、元順prefix1..9・sector36、rank10は保存値のみ。今回新科学0、別実行許可までmandatory STOP。
+
 ## C1：H2／H4／H6結果統合・baseline公平性監査
 
 [保存12候補の比較・XDF rank政策・Gaussian／P0差分](research/research_c_c1_h2_h4_h6_comparison_audit_20261026.md)／[未採択の最小実験2案](research/research_c_c1_minimal_experiment_design_20261026.md)。新科学評価0、人工29 PASS。旧結果を保持し、案A：保存H4 XDF prefix予算検証を次の一実験として技術推奨。公開照合後mandatory STOP。
