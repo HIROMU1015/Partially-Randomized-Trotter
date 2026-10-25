@@ -1,3 +1,7 @@
+## H4 Pauli-PRパラメータ探索（2026-10-25）
+
+[実行結果・独立確認・B0/full PF比較](non_df_h4_pauli_pr_search_20261025.md)。141候補/140 mean/2,320 paired価格/4,640compile。ρ/母平均tail未保証、mandatory STOP。
+
 ## H4 Pauli-PR探索の準備（2026-10-25）
 
 [技術報告・非実行範囲](non_df_h4_pauli_pr_search_preparation_20261025.md)。人工小系10PASS、実H4実行未承認。

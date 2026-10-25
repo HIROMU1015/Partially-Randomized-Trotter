@@ -1,3 +1,7 @@
+## H4 Pauli-PR探索（2026-10-25）
+
+`run_h4_pauli_pr_search.py` は固定候補/価格batch、`summarize_h4_pauli_pr_search.py` はcohort別会計・近傍提案、`finalize_h4_pauli_pr_search.py` は凍結nomineeの独立確認主表を保存する。[結果](../docs/non_df_h4_pauli_pr_search_20261025.md)。完了済み研究の追加実行はmandatory STOPで禁止。
+
 ## 2026-10-25 H4 Pauli B0/B0I有限探索
 
 [`run_h4_pauli_b0_comparison.py`](run_h4_pauli_b0_comparison.py)：事前固定batchのtarget/build/compileをprocess並列。各完了batchは再開不可。

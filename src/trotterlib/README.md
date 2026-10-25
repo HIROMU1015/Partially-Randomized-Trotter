@@ -1,3 +1,7 @@
+## H4 Pauli-PR探索の実行接続（2026-10-25）
+
+`h4_pauli_pr_search` は既存RTE sampler/audited adapter・D2制御・N/Gを使用。`h4_pauli_pr_mean` はCのeffective lawをFLINT vector作用で包含する。[固定実行結果](../../docs/non_df_h4_pauli_pr_search_20261025.md)。局所ρ/全law compiled保証・正式certificateとは区別。
+
 ## H4 Pauli-PR探索接続（2026-10-25）
 
 `h4_pauli_pr_search.py` は既存sampler/D2/会計へ接続し、`h4_pauli_pr_mean.py` はeffective finite-law meanの小系Arb包含を実装する。実H4 dispatcher未実装、科学実行は一括承認待ち。

@@ -1,3 +1,7 @@
+## 2026-10-25 H4 Pauli-PR：条件付き有限候補比較完了
+
+[H4 Pauli-PRパラメータ探索と独立確認](docs/non_df_h4_pauli_pr_search_20261025.md)：141候補、5精度で探索nomineeの確認G点推定が保存最良B0/full PFより低い。実ρ・母平均tail・大域最適性は未保証、mandatory STOP。
+
 ## 2026-10-25 H4 Pauli-PR探索：技術準備のみ
 
 [H4 Pauli-PR探索の実装準備・非実行範囲](docs/non_df_h4_pauli_pr_search_preparation_20261025.md)：初期100候補/適応最大64、探索と独立確認を分離。人工10PASS、実H4科学実行0、一括承認待ち。
