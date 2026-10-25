@@ -1,5 +1,9 @@
 # scripts 索引
 
+## C1：保存H6初期化診断
+
+`run_research_c_c1_h6_initialization.py`は保存H6のrank14／18、変換前／直後／保存CDF終了後だけを評価する専用entry。別fit/eval環境、既存ffsim codec・SectorCAR・rank_assessmentを再利用し、optimizer／PF／nativeを呼ばない。[固定35-call条件](../docs/research/research_c_c1_h6_initialization_contract_20261025.json)／[実行結果](../docs/research/research_c_c1_h6_initialization_execution_20261025.md)。今回の許可は消化済み、fresh再実行には別の範囲・許可が必要。
+
 `run_research_c_c1_h2_h6.py --molecule 2|6 --contract <contract>` は[H2・H6準備](../docs/research/research_c_c1_h2_h6_preparation_20261025.md)。既定はmetadata／byte preflightだけ。新科学条件を採択して別途許可後だけ `--execute --fit-python <isolated-fit-python> --output <fresh>` を使う。H2上限196 unitsはrank→native→数値CA/shots/cost、H6上限129はsector400 DF/PFまで。1コマンド1分子、retry/resume0、H6 nativeや次分子へ自動進行しない。[未承認案](../docs/research/research_c_c1_h2_h6_contract_unapproved_20261025.json)。人工14＋既存166 tests・29 subtests PASS、今回実科学0・STOP。
 
 `run_research_c_c1_stage3_deterministic_accuracy.py` は[決定論4候補の精度準備](../docs/research/research_c_c1_stage3_deterministic_accuracy_preparation_20261025.md)。既定はbyte preflight。別科学許可後にだけ `--execute --output <fresh>` で保存PF・DF・shots・費用、s1保存Stage2残差／s4局所reference2／共通shellを接続する。[未承認契約](../docs/research/research_c_c1_stage3_deterministic_accuracy_contract_unapproved_20261025.json)最大110 units、fit／optimizer／retry／resume／新build・compile／shot-count solving0。厳密CA未資格、数値pilot PASSだけ費用へ接続。人工12＋独立process回帰140 PASS／29 subtests、実H4科学call0・STOP。

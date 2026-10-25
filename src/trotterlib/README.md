@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## C1：保存H6初期値変換の限定診断
+
+[`../trottertracks/c1_h6_initialization.py`](../trottertracks/c1_h6_initialization.py)は既存ffsim pack/unpack・JAX value/gradientとSectorCAR／rank_assessmentを接続する。新fitter・Gaussian合成器なし、列符号案は人工検証のみ。[技術・科学結果](../../docs/research/research_c_c1_h6_initialization_execution_20261025.md)、人工新12＋回帰28 PASS、35-call限定再解析完了・mandatory STOP。
+
 関連trackの `../trottertracks/c1_molecule_extension.py` は[H2／H6への最小接続](../../docs/research/research_c_c1_h2_h6_preparation_20261025.md)。既存PySCF/ao2mo、ffsim bridge、PhysicalSector/excitation table、疎CAR、一般K、native/P0、PF/RPE/費用を再利用。H2はfull16／controlled32、H6はsector400だけでDF/PFを評価し、full4096／controlled8192のdense評価を行わない。SOURCE・人工結果 `artifacts/research_c_c1_h2_h6_technical/2026-10-25/`、CLI `scripts/run_research_c_c1_h2_h6.py`、test `tests/management/test_research_c_c1_h2_h6.py`。rank/guard policy・196/129-call案は未承認。実科学0・mandatory STOP。
 
 関連trackの `../trottertracks/c1_stage3_deterministic_accuracy.py` は[決定論S2の精度資格付け準備](../../docs/research/research_c_c1_stage3_deterministic_accuracy_preparation_20261025.md)。既存CAR／local reference／RPE horizon・energy・費用集計を再利用し、保存4候補の固定Nを逆Hoeffdingで検査する最小拡張。s1保存Stage2 Frobenius、s4保存compiler差を再利用。entry `scripts/run_research_c_c1_stage3_deterministic_accuracy.py`、人工test `tests/management/test_research_c_c1_stage3_deterministic_accuracy.py`。SOURCE・人工結果 `artifacts/research_c_c1_stage3_deterministic_accuracy_technical/2026-10-25/`、未承認110-call契約。実H4科学call0、厳密reference enclosureは未資格・mandatory STOP。
