@@ -1,5 +1,7 @@
 # B2-D 5方式評価器：接続準備・技術報告
 
+研究B [固定24条件shot加重会計：全結果・限界・STOP](../../../docs/research/research_b_outer_shot_weighted_execution_20261025.md)。SOURCE9bebdc46、48 shot要求・144資源行・24比較を一回完了、scope一致・保存失敗0。科学状態INCONCLUSIVE_QUALIFICATIONS_AND_RARE_COSTS、u_num／γ／rare費用は未取得、無条件G・同精度優位は未認定。旧準備・設計と全原本を保全。
+
 研究B [Shot加重評価：実装・人工検証・実行準備](../../../docs/research/research_b_outer_shot_weighted_execution_ready_20261025.md)。入口 `scripts/run_b2d_outer_shot_weighted.py`、保存adapter `b2d_evaluator/shot_weighted.py`、人工test `test_b2d_shot_weighted.py`。固定24条件・48 shot要求・144資源行・24比較を登録、人工45件PASS。実候補のnormalization／shot数／Gは未評価、明示的実行許可後のみ一回起動。
 
 研究B [高次数RTEの最小費用感度：固定2比較・保存値解析](../../../docs/research/research_b_outer_rare_event_minimal_sensitivity_20261025.md)。入口 `scripts/run_b2d_outer_rare_sensitivity.py`、接続 `b2d_evaluator/rare_sensitivity.py`、人工test `test_b2d_rare_sensitivity.py`。8確率／16境界／80 SE cornerを一回完了、人工8件PASS。B4/B3は±2SEでS0差を維持、D1/R4は±1SEで符号未確定。新sampling／build／compileなし、B1のINCONCLUSIVEを維持し、新結果はCONDITIONAL_SENSITIVITY_ONLY・mandatory STOP。

@@ -1181,6 +1181,14 @@
           "research_b_outer_rare_sensitivity_20261025"
         ],
         "reason": "Two fixed saved-data comparisons;8 S0/rare probabilities,16 unknown-mean affine boundaries,80 SE corners and STOP. No new sampling/native computation."
+      },
+      {
+        "path": "artifacts/research_b_outer_shot_weighted/20261025",
+        "kind": "directory",
+        "supports": [
+          "research_b_outer_shot_weighted_20261025"
+        ],
+        "reason": "Fixed24-case saved shot-weighted accounting,48 exact-integer axis shots,144 S0 conditional resources,24 symbolic rare comparisons,provenance and STOP;end-to-end qualifications unresolved."
       }
     ],
     "quarantined": [
@@ -3120,6 +3128,113 @@
       "completion_criteria": [
         "Commit and push only this fixed saved-data analysis;verify remote SOURCE and artifacts;mandatory STOP.",
         "User/researchB decides adoption or any separate shot/MC/A1 work."
+      ]
+    },
+    {
+      "id": "research_b_outer_shot_weighted_20261025",
+      "status": "source_present_no_current_ci",
+      "scientific_execution_status": "INCONCLUSIVE_QUALIFICATIONS_AND_RARE_COSTS",
+      "runtime_status": "COMPLETED_DESCRIPTIVE_MANDATORY_STOP",
+      "fixed_scope_complete": true,
+      "summary": "One fixed-source saved-data run completed conditional scalar shot counts and S0 paired costs. Unknown rare costs and null numerical/implementation qualifications retained;no unconditional total-resource ranking.",
+      "documentation": [
+        "docs/research/research_b_outer_shot_weighted_execution_20261025.md"
+      ],
+      "source": [
+        "src/trottertracks/b2d_evaluator/shot_weighted.py",
+        "scripts/run_b2d_outer_shot_weighted.py",
+        "src/trottertracks/pr_dictionary_validation/intervals.py",
+        "src/trottertracks/pr_dictionary_validation/gates.py",
+        "src/trottertracks/b2d_evaluator/followup_io.py"
+      ],
+      "tests": [
+        "tests/management/test_b2d_shot_weighted.py",
+        "tests/management/test_b2d_shot_design.py",
+        "tests/management/test_pr_dictionary_f2_scalar_intervals.py",
+        "tests/management/test_b2d_followup.py",
+        "tests/management/test_b2d_stage1_launcher.py"
+      ],
+      "artifacts": [
+        "artifacts/research_b_outer_shot_weighted/20261025/PUBLICATION_CHECKS.json",
+        "artifacts/research_b_outer_shot_weighted/20261025/SUMMARY.json",
+        "artifacts/research_b_outer_shot_weighted/20261025/execution_logs/preflight.json",
+        "artifacts/research_b_outer_shot_weighted/20261025/execution_logs/stderr.txt",
+        "artifacts/research_b_outer_shot_weighted/20261025/execution_logs/stdout.json",
+        "artifacts/research_b_outer_shot_weighted/20261025/execution_logs/time.txt",
+        "artifacts/research_b_outer_shot_weighted/20261025/saved-once/COMPARISONS.csv",
+        "artifacts/research_b_outer_shot_weighted/20261025/saved-once/RESOURCES.csv",
+        "artifacts/research_b_outer_shot_weighted/20261025/saved-once/SHOTS.csv",
+        "artifacts/research_b_outer_shot_weighted/20261025/saved-once/STOP.json",
+        "artifacts/research_b_outer_shot_weighted/20261025/saved-once/events.jsonl",
+        "artifacts/research_b_outer_shot_weighted/20261025/saved-once/partial_results.json",
+        "artifacts/research_b_outer_shot_weighted/20261025/saved-once/provenance.json",
+        "artifacts/research_b_outer_shot_weighted/20261025/saved-once/result.json",
+        "artifacts/research_b_outer_shot_weighted/20261025/saved-once/status.json"
+      ],
+      "science_source_commit": "9bebdc46ebd60039f315da9b6c6e57bd9c004b85",
+      "input_result_commits": [
+        "33715848bfb83d49ec4e54d6eef481012a7441e4",
+        "31662b49157b15f2d1c03eef1c2faa07e2f905e7",
+        "0db9b3ed189eb6cd9d66e070993dbd0e72d29104",
+        "bef63edbd8cc564444b44e4e8cf23baa90f05fe5",
+        "cae3cd784dbdfcf2fe96902345379aca4b9606c7"
+      ],
+      "counts": {
+        "candidate_time_conditions": 12,
+        "case_epsilon_conditions": 24,
+        "normalization_enclosures": 12,
+        "normalization_occurrences": 88,
+        "short_step_factors": 200,
+        "added_rare_probabilities": 4,
+        "joint_moments": 72,
+        "axis_shot_evaluations": 48,
+        "resource_rows": 144,
+        "comparisons": 24,
+        "qualification_rows": 24,
+        "event_records": 728,
+        "input_files": 13,
+        "scientific_attempts": 1,
+        "retries": 0,
+        "resumes": 0,
+        "failed_calls": 0,
+        "evidence_write_failures": 0,
+        "preparation_artificial_tests": 45,
+        "new_RTE_sampling": 0,
+        "new_native_build_compile": 0,
+        "new_H_operator_signal": 0,
+        "quantum_shots_executed": 0
+      },
+      "scope": {
+        "shot.bias": 24,
+        "shot.bind": 12,
+        "shot.compare": 24,
+        "shot.count": 48,
+        "shot.joint": 72,
+        "shot.normalization": 12,
+        "shot.qualification": 24,
+        "shot.rare": 4,
+        "shot.resource": 144
+      },
+      "resources": {
+        "evaluator_wall_seconds": 0.7572153289802372,
+        "whole_wall_seconds": 1.05,
+        "peak_RSS_KiB": 114252,
+        "parallelization": "Small scalar saved-data pass;cache,no arbitrary resource caps"
+      },
+      "qualification": {
+        "gamma": null,
+        "u_num": null,
+        "certified_shots": null,
+        "unconditional_G": null,
+        "unconditional_G_SE": null,
+        "unconditional_winner": null,
+        "familywise_guarantee": null,
+        "bias_flags_are_empirical": true
+      },
+      "interpretation": "Synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,nD1,T±.18,six fixed candidates,q2,F1f8,rK2/2,4/2,2/4,epsilon1e-8/1e-9;native-v5 full prepared X/Y costs,n256 paired. Conditional Hoeffding sufficient shots,not actual quantum execution. Scalar model enclosure is not u_num/gamma certificate. S0 costs and rectangular SE sensitivity retain unknown rare terms;no end-to-end or total-resource superiority. Local committed evidence,not CI/external reproduction. Old raw/contracts/STOP unchanged.",
+      "completion_criteria": [
+        "Publish fixed SOURCE,all results,tables,provenance and STOP;verify remote contents then mandatory STOP.",
+        "User/researchB decides any separate qualification/MC/A1/gamma/shot execution scope."
       ]
     }
   ],

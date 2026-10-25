@@ -1,5 +1,13 @@
 # Validation status
 
+## 2026-10-25 research B shot-weighted saved accounting: complete execution, unresolved qualifications
+
+Science SOURCE `9bebdc46ebd60039f315da9b6c6e57bd9c004b85`,one fixed24-condition execution,no source changes/retry/resume. Synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,nD1,T±.18,B3/D1/R2/R4/B4/F1,q2,F1 f8,rK2/2,4/2,2/4,epsilon1e-8/1e-9. Molecular geometry/AO basis/rank exploration not applicable. Saved B1 phase-preserving native-v5 full prepared X/Y wrapper costs,n256 paired trajectories;no new sampling/build/compile/H/operator/signal or quantum-shot execution.
+All12 bindings/12 scalar normalization enclosures/4 added R2-F1 rare probabilities/72 joint moments/24 bias flags/48 integer-shot evaluations/144 resource rows/24 comparisons/24 qualifications completed. All364 registered high-level calls matched,failed={},evidence_write_failures=[];728 events. Whole wall1.05s,peak RSS114252KiB,exit0. Preparation artificial45 PASS,not a physical qualification certificate.
+Per-axis conditional sufficient Hoeffding shots are around1.096e18 at epsilon1e-8 and1.096e20 at1e-9. Exact arbitrary-size integers,Fraction/outward90dps scalar endpoints retained.13 input blobs unchanged. Corrected physical bias point flags are within budget for all candidates at1e-8,and only D1/R2/R4 at1e-9. U_num/gamma/end-to-end qualifications remain null;no familywise claim.
+S0 conditional cost comparisons preserve B4 below B3 and D1 below R2 over +/-2SE rectangular sensitivity;D1/R4 cross zero within +/-1SE. Unknown rare means/variance and unconditional G/SE/winner remain null;no same-accuracy total-resource superiority. Scientific state INCONCLUSIVE_QUALIFICATIONS_AND_RARE_COSTS;runtime COMPLETED_DESCRIPTIVE_MANDATORY_STOP. Previous B1/rare statuses unchanged.
+[Report](docs/research/research_b_outer_shot_weighted_execution_20261025.md),[summary](artifacts/research_b_outer_shot_weighted/20261025/SUMMARY.json),[raw tables/provenance/STOP](artifacts/research_b_outer_shot_weighted/20261025/saved-once/). Local committed fixed-source saved-data analysis,not CI/external reproduction. Old scientific raw/contracts/STOPs preserved;mandatory STOP;User/researchB decides any separate qualification or follow-up scope.
+
 ## 2026-10-25 research B rare RTE: CONDITIONAL_SENSITIVITY_ONLY
 
 Saved-data SOURCE `a8cf99156af692f0facaa1885ab9ed52b28c6f4c`,B1 input commit `bef63edbd8cc564444b44e4e8cf23baa90f05fe5`. Synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,nD1,T±.18;only B4/B3 and D1/R4,q2,r2,K2 except R4K4. Molecular geometry/AO basis/rank exploration not applicable. Saved Qiskit1.3 native v5 full prepared X/Y RZ/CX costs,n256 per axis;no new sampling/build/compile/Hamiltonian/operator/signal/shot calculations.
