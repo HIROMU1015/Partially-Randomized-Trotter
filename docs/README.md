@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1：H6 native修正後の限定実行結果
+
+[結果・8経路費用・資格の限界](research/research_c_c1_h6_native_stable_phase_execution_20261025.md)：298/298 calls・correctness全PASS。Gaussian小角とP0 phase集計を修正、閾値不変。H6 CDF14のkernel RZはXDF14より約1.98%/1.96%多く、literal/shared差0。合成誤差global bound/CA/shots/総費用は未資格。旧2 FAIL・診断を保全し、累積627 units・mandatory STOP。
+
 ## C1：H6 P0 phase集計修正
 
 [同一P0 body・数値phase安定化・97人工PASS](research/research_c_c1_h6_native_stable_phase_repair_20261025.md)／[fresh298-call契約](research/research_c_c1_h6_native_stable_phase_contract_20261025.json)。旧FAIL・診断・STOP保全、科学的allowanceは不変。

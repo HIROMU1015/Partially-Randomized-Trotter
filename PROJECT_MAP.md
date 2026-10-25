@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：H6 native精度修正後・298 calls全PASS（2026-10-25）
+
+[結果・8経路の費用表](docs/research/research_c_c1_h6_native_stable_phase_execution_20261025.md)／[raw・QPY52・104 profile・call・STOP](artifacts/research_c_c1_h6_native_stable_phase/2026-10-25/)。SOURCE3d7b56b448…無変更、correctness FAIL0。局所30／kernel8／shell3／adjoint8／X-Y8 PASS。H6 CDF14はXDF14よりkernel RZが約1.98%/1.96%多く、literal/shared差0。Gaussian小角・P0 phase集計を修正しallowance維持。旧2 FAIL＋診断を含む累積627 units、run内retry0、global合成誤差/CA/shots/総費用未資格・mandatory STOP。以下は準備・旧結果の履歴。
+
 ## C1：H6 P0位相集計の安定化（2026-10-25）
 
 [修正・関連97 PASS](docs/research/research_c_c1_h6_native_stable_phase_repair_20261025.md)／[同一8経路298-call契約](docs/research/research_c_c1_h6_native_stable_phase_contract_20261025.json)。既存P0のgate本体を変えずdeclared phaseだけ160-bitで集計。旧2回の162-call FAILと独立診断5-callを保持し、累積最大627 units。

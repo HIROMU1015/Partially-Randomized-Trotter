@@ -1,5 +1,7 @@
 # 研究計画資料
 
+[C1 H6 native修正後・298-call全PASS](research_c_c1_h6_native_stable_phase_execution_20261025.md)：SOURCE3d7b56b448…無変更、局所30/kernel8/shell3/adjoint8/X-Y8 PASS、QPY52・104未資格profile保存。CDF14のkernel RZはXDF14より約1.98%/1.96%多く、literal/shared費用差0。CA/総費用は未資格、旧FAIL保全・累積627 units・mandatory STOP。
+
 [C1 H6 P0 phase安定化](research_c_c1_h6_native_stable_phase_repair_20261025.md)：長い人工回路で旧4.35e-10→修正5.36e-13、gate本体は完全一致。97 tests PASS、[fresh298-call条件](research_c_c1_h6_native_stable_phase_contract_20261025.json)を固定。
 
 [C1 H6 native Gaussian精度修正](research_c_c1_h6_native_precision_repair_20261025.md)：既存Nature JWの数値処理とactual inverse/P0競合を修正。人工185 PASS、旧162-call STOPを保持。同一8経路・新SOURCE44・fresh298-call再実行条件を固定。

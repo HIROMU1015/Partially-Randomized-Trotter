@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## C1：H6 native修正版・実分子の限定検証完了
+
+H6専用Gaussian精度／declared compiler phase修正をSOURCE3d7b56b448…で実行し、298 calls・局所30/kernel8/shell3/adjoint8/X-Y8全PASS。[結果](../../docs/research/research_c_c1_h6_native_stable_phase_execution_20261025.md)。全operatorの厳密enclosureは得ていない。CDF14のkernel RZはXDF14より約2%多く、literal/shared差0。global合成誤差/CA/総費用は未資格・mandatory STOP。
+
 ## C1：H6 declared compiler phase集計
 
 `../trottertracks/c1_h6_compiler_precision.py`は既存P0 pass・gate本体・角度を保ち、global_phaseの加算だけ既存SymEngine MPFR160で安定化する。出力state/operatorのphase fitは行わない。[97人工PASS・修正報告](../../docs/research/research_c_c1_h6_native_stable_phase_repair_20261025.md)。

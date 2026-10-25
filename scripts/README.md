@@ -1,5 +1,9 @@
 # scripts 索引
 
+## C1：H6 stable-phase SOURCEの限定実行完了
+
+`run_research_c_c1_h6_native.py`をSOURCE3d7b56b448…で1回実行し、298/298 calls・correctness全PASS。[結果・費用表](../docs/research/research_c_c1_h6_native_stable_phase_execution_20261025.md)。QPY52・104 UNRESOLVED profileを保持。旧2 native FAILと5-call診断を保全、累積627、run内retry/resume0。旧runner再起動・CA/shots/costへの自動進行は禁止、mandatory STOP。
+
 ## C1：H6 P0 phase精度修正版
 
 `run_research_c_c1_h6_native.py`を[stable-phase契約](../docs/research/research_c_c1_h6_native_stable_phase_contract_20261025.json)で使用。旧runを再起動しない。`diagnose_research_c_c1_h6_native_state_action.py`は保存1経路・5-call独立診断で完了。[修正報告](../docs/research/research_c_c1_h6_native_stable_phase_repair_20261025.md)。

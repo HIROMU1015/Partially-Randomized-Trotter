@@ -63,6 +63,21 @@
       "sha": "bf431765b1a83ca79d1c2fe15d30284e0b1f28c6",
       "role": "c1_h6_native_scientific_source",
       "description": "Frozen 298-unit contract/source executed once; correctness FAIL at162 units, partial evidence preserved."
+    },
+    {
+      "sha": "5309006f12e3621b578f7deca2a07d974258fc8f",
+      "role": "c1_h6_native_gaussian_precision_SOURCE",
+      "description": "User-permitted repair sequence; old SOURCE/results/STOP preserved, unchanged scientific conditions and allowances."
+    },
+    {
+      "sha": "38c8da551225d2d48fd285b6242e5771619f5b86",
+      "role": "c1_h6_native_independent_state_action_diagnostic_SOURCE",
+      "description": "User-permitted repair sequence; old SOURCE/results/STOP preserved, unchanged scientific conditions and allowances."
+    },
+    {
+      "sha": "3d7b56b44832a2a90a8d3e500bf55e856f36da76",
+      "role": "c1_h6_native_stable_phase_scientific_SOURCE",
+      "description": "User-permitted repair sequence; old SOURCE/results/STOP preserved, unchanged scientific conditions and allowances."
     }
   ],
   "artifact_inventory": {
@@ -1165,6 +1180,30 @@
           "c1_h6_native_partial_stop"
         ],
         "reason": "Frozen native run: local30/shell3 PASS, kernel8 FAIL; raw89 files, QPY52, call162/298, no retry or further evaluation."
+      },
+      {
+        "path": "artifacts/research_c_c1_h6_native_precision/2026-10-25",
+        "kind": "directory",
+        "supports": [
+          "H6_NATIVE_PRECISION_COMPILED_FAIL_PARTIAL_STOP"
+        ],
+        "reason": "Gaussian precision repaired raw/reference; P0/raw FAIL,162 calls and partial evidence preserved."
+      },
+      {
+        "path": "artifacts/research_c_c1_h6_native_state_action_diagnostic/2026-10-25",
+        "kind": "directory",
+        "supports": [
+          "H6_SAVED_NATIVE_ONE_ROUTE_DIAGNOSTIC_COMPLETE"
+        ],
+        "reason": "Five fixed logical units isolate one saved route compiler mismatch with independent state actions; no new build/compile."
+      },
+      {
+        "path": "artifacts/research_c_c1_h6_native_stable_phase/2026-10-25",
+        "kind": "directory",
+        "supports": [
+          "H6_NATIVE_STABLE_PHASE_REEXECUTION_COMPLETE"
+        ],
+        "reason": "All298 units complete; finite-probe correctness PASS,one-h-step RZ costs observed,global synthesis/CA/totalcost unqualified."
       }
     ],
     "quarantined": [
@@ -4579,6 +4618,243 @@
       },
       "evidence_directory": "artifacts/research_c_c1_h6_native/2026-10-25",
       "report": "docs/research/research_c_c1_h6_native_execution_20261025.md"
+    },
+    {
+      "status": "H6_NATIVE_PRECISION_COMPILED_FAIL_PARTIAL_STOP",
+      "source_commit": "5309006f12e3621b578f7deca2a07d974258fc8f",
+      "source_tree": "3ff4cb4ca5d01a840b67486b473468a19cfb827f",
+      "branch": "codex/research-c-c1-h6-native-repair-20261025",
+      "contract": "docs/research/research_c_c1_h6_native_precision_contract_20261025.json",
+      "contract_sha256": "5725985584d24ec3eb6843dd503e23d1510114ce05a718d7efed9ef7341e4cae",
+      "source_manifest_sha256": "88731735b6aea16736c21a6a5837d351537b1872ff64565db4ffa4d2061729bc",
+      "scientific_units": 162,
+      "maximum_logical_units": 298,
+      "scientific_COMPLETE": 154,
+      "scientific_FAIL": 8,
+      "cumulative_native_units": 324,
+      "fresh_reexecution": 1,
+      "retry": 0,
+      "resume": 0,
+      "local_PASS": 30,
+      "shell_PASS": 3,
+      "raw_reference_PASS": 8,
+      "raw_reference_values_not_persisted": true,
+      "compiled_raw_FAIL": 8,
+      "gaussian_transfer_max": 7.782677365833025e-16,
+      "local_component_max": 2.011381761234907e-16,
+      "QPY_files": 52,
+      "compile_COMPLETE": 11,
+      "kernel_metrics": 0,
+      "adjoint": 0,
+      "XY": 0,
+      "round_synthesis": 0,
+      "cost_comparison": 0,
+      "global_kernel_operator_norm_bound": null,
+      "CA_achieved": null,
+      "shots": null,
+      "total_cost": null,
+      "new_fit": 0,
+      "optimizer": 0,
+      "PF_recomputation": 0,
+      "DF_error_recomputation": 0,
+      "postflight": "PASS",
+      "protected_files_unchanged": 593,
+      "raw_files": 98,
+      "mandatory_stop": true,
+      "report": "docs/research/research_c_c1_h6_native_precision_execution_20261025.md",
+      "evidence_directory": "artifacts/research_c_c1_h6_native_precision/2026-10-25"
+    },
+    {
+      "source_commit": "38c8da551225d2d48fd285b6242e5771619f5b86",
+      "source_tree": "2cb657d1607dd1013e9d99ec4508bb82c2bd367d",
+      "contract": "docs/research/research_c_c1_h6_native_state_action_diagnostic_contract_20261025.json",
+      "contract_sha256": "d678eb1f8ac08fd452a454a985aa20190bb600fffbf5b9e56b042de6f7aa568d",
+      "source_manifest_sha256": "56492e68066dec135ac0889d8cddadc3e441c0c8f0717c0dc97ed54e52df130c",
+      "saved_input_hashes": 4,
+      "postflight": "PASS",
+      "scientific_units": 5,
+      "native_attempt_units": 324,
+      "cumulative_units": 329,
+      "retry": 0,
+      "resume": 0,
+      "mandatory_stop": true,
+      "status": "H6_SAVED_NATIVE_ONE_ROUTE_DIAGNOSTIC_COMPLETE",
+      "report": "docs/research/research_c_c1_h6_native_state_action_diagnostic_20261025.md",
+      "evidence_directory": "artifacts/research_c_c1_h6_native_state_action_diagnostic/2026-10-25",
+      "compiler_correctness": "FAIL_OBSERVED_DIAGNOSTIC_TARGET",
+      "global_operator_bound": null
+    },
+    {
+      "status": "H6_NATIVE_STABLE_PHASE_REEXECUTION_COMPLETE",
+      "source_commit": "3d7b56b44832a2a90a8d3e500bf55e856f36da76",
+      "source_tree": "01a9584a4e7c07a3d533b40d740f4cfdc218bca8",
+      "branch": "codex/research-c-c1-h6-native-stable-phase-20261025",
+      "contract": "docs/research/research_c_c1_h6_native_stable_phase_contract_20261025.json",
+      "contract_sha256": "7992823a0c01e022eeeee2cd0ac422c4ad0ec113911c8f5975f0e7cecb82edb5",
+      "source_manifest_sha256": "d34a3816af7af93093c971a4cc915707d41cc0d85d8fd4b07bb6fc85c12b3f37",
+      "conditions": {
+        "atoms": 6,
+        "distance_angstrom": 1.0,
+        "basis": "sto-3g",
+        "Nalpha": 3,
+        "Nbeta": 3,
+        "sector_dimension": 400,
+        "rank": 14,
+        "CA_Ha": 0.00159,
+        "DF_reserve_Ha": 0.00019875,
+        "base_time": 0.1,
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "substeps": [
+          1,
+          4
+        ],
+        "product_formula": "ordered symmetric S2; all original frames; no PR split",
+        "target": "own_DF_sector_ground_oracle",
+        "state_preparation": "EXCLUDED"
+      },
+      "compiler": {
+        "qiskit": "1.3.0",
+        "optimization_level": 1,
+        "seed_transpiler": 17,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "approximation_degree": 1.0,
+        "qubits_initially_zero": false
+      },
+      "native_gaussian": "nature_jw_exact_zero_lapack_atan2_v1",
+      "provenance": {
+        "molecular_input_and_XDF_SOURCE": "33c380d8aa792e5119bb3adec5dd07d1e1377214",
+        "CDF_fit_and_DF_error_SOURCE": "33432e78659b8b3e654e39f1392328cb0ba5c487",
+        "CDF_fit_publication": "598aa4de622b32e76b0b98451c4efb1fdaac1ae0",
+        "initial_XDF_snapshot": "Before snapshot in corrected-fit run byte-identical to original XDF_selected; saved before_sector row is paired with original XDF14; CDF final_sector row is paired with that run final.npz",
+        "reuse": "Do not rerun any old scientific entry. Saved rank14 arrays and prior physical-sector errors only; no new fit/rank search/norm.",
+        "PF_scientific_SOURCE": "87ea924ae28353707bd2eb3adf94231042b67361",
+        "PF_publication": "554f5fa93231c561aaffce1b50335cbb3ce35b92"
+      },
+      "repair_of": {
+        "previous_attempts": [
+          {
+            "source": "bf431765b1a83ca79d1c2fe15d30284e0b1f28c6",
+            "units": 162,
+            "output": "artifacts/research_c_c1_h6_native/2026-10-25/run01"
+          },
+          {
+            "source": "5309006f12e3621b578f7deca2a07d974258fc8f",
+            "units": 162,
+            "output": "artifacts/research_c_c1_h6_native_precision/2026-10-25/run01"
+          }
+        ],
+        "diagnostic": {
+          "source": "38c8da551225d2d48fd285b6242e5771619f5b86",
+          "publication": "d07120b480b628b8d9829e1d8bc9018b014c5f60",
+          "units": 5,
+          "output": "artifacts/research_c_c1_h6_native_state_action_diagnostic/2026-10-25/run01"
+        },
+        "prior_units": 329,
+        "fresh_reexecution": 2,
+        "maximum_cumulative_units": 627,
+        "residual_calls_reused": false
+      },
+      "preflight": "PASS",
+      "postflight": "PASS",
+      "artificial_tests": 97,
+      "scientific_units": 298,
+      "maximum_logical_units": 298,
+      "scientific_COMPLETE": 298,
+      "scientific_FAIL": 0,
+      "inflight_calls": 0,
+      "previous_units": 329,
+      "cumulative_native_attempt_units": 622,
+      "diagnostic_units": 5,
+      "cumulative_scientific_units": 627,
+      "fresh_reexecution": 2,
+      "retry": 0,
+      "resume": 0,
+      "gaussian_checks_PASS": 30,
+      "gaussian_transfer_max": 7.782677365833025e-16,
+      "local_factors_PASS": 30,
+      "local_component_max": 2.011381761234907e-16,
+      "local_norm_drift_max": 1.1102230246251565e-15,
+      "shell_PASS": 3,
+      "kernel_PASS": 8,
+      "actual_adjoint_PASS": 8,
+      "XY_PASS": 8,
+      "kernel_maxima": {
+        "raw_reference": 7.947987303456223e-15,
+        "compiler": 5.5160954967626964e-11,
+        "compiled_reference": 5.516170639624771e-11
+      },
+      "adjoint_maxima": {
+        "raw": 7.11757093484981e-15,
+        "compiled": 9.88987307890296e-13
+      },
+      "XY_maxima": {
+        "raw_reference": 2.652317926234488e-14,
+        "compiled_raw": 5.767926934683378e-12,
+        "compiled_reference": 5.775246485064305e-12
+      },
+      "raw_build_COMPLETE": 41,
+      "compile_COMPLETE": 11,
+      "QPY_files": 52,
+      "metrics_COMPLETE": 11,
+      "round_synthesis_rows": 104,
+      "global_synthesis_qualification": "UNRESOLVED_FINITE_PROBES",
+      "global_kernel_operator_norm_bound": null,
+      "rigorous_enclosure": null,
+      "CA_achieved": null,
+      "shots": null,
+      "total_cost": null,
+      "new_fit": 0,
+      "optimizer": 0,
+      "rank_search": 0,
+      "DF_error_recomputation": 0,
+      "PF_recomputation": 0,
+      "SOURCE_files": 46,
+      "saved_input_hashes": 25,
+      "protected_files_unchanged": 727,
+      "raw_files": 122,
+      "mandatory_stop": true,
+      "all_correctness_gates": "PASS",
+      "compiler_phase_accumulator": "qiskit_P0_mpfr160_declared_phase_v1",
+      "original_input_sha256": "b82ee9864d9c76071944834ae32d3d6eea7e95959708c2e19bca011936bce447",
+      "factor_export_sha256": {
+        "CDF": "cd4de687f99d32bd6f644ac33100fb52d4f7543e710e6c273723a0908b87dc45",
+        "XDF": "559dc43bf923a421ccc62d05c4cefa0bdf39a48ba68824abf3c8f770c04642b1"
+      },
+      "kernel_norm_drift_max": 7.348566199993911e-13,
+      "adjoint_norm_drift_max": 1.4533929615367924e-12,
+      "shell_maxima": {
+        "raw_reference": 0.0,
+        "compiler": 1.6653345369377348e-16,
+        "unitarity": 2.220446049250313e-16
+      },
+      "evidence_directory": "artifacts/research_c_c1_h6_native_stable_phase/2026-10-25",
+      "report": "docs/research/research_c_c1_h6_native_stable_phase_execution_20261025.md",
+      "one_h_step_RZ_counts": {
+        "CDF_s1": 52056,
+        "XDF_s1": 51046,
+        "CDF_s4": 52048,
+        "XDF_s4": 51046
+      },
+      "literal_shared_cost_difference_all_six_metrics": 0
     }
   ],
   "repository_completion_criteria": [
