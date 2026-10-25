@@ -11,7 +11,8 @@ METRICS=('rz_count','rz_depth','cx_count','cx_depth','total_depth','circuit_size
 def run():
     saved=study.read(study.PRIVATE/'saved_prices.json')
     selected={r['id']:r for r in study.read(study.PUBLIC/'native_selection.json')['candidates'] if r['id'] in saved}
-    result={}
+    output=study.PUBLIC/'saved_secondary_metrics.json'
+    result=study.read(output) if output.exists() else {}
     def accept(identity,metrics,origin,n=1):
         old=saved[identity]
         for axis in ('cosine','sine'):
@@ -19,11 +20,21 @@ def run():
             if abs(metrics[axis]['rz_count']-expected)>1e-10:
                 raise ValueError('SAVED_SECONDARY_METRICS_RZ_COHORT_MISMATCH')
         result[identity]=dict(mean_metrics=metrics,origin=origin,n=n,new_compile=0)
+    for identity in selected:
+        if identity in result:
+            continue
+        axes={}
+        for proof in saved[identity].get('proof',[]):
+            if proof.get('common_native_identity'):
+                for axis in proof.get('axes',[]):
+                    axes[axis['axis']]=axis['metrics']
+        if set(axes)=={'cosine','sine'}:
+            accept(identity,axes,'SAVED_COMMON_NATIVE_ACCEPTED_PAIRED_PROOF')
     for system in study.PREFIX:
         folder=study.ROOT/f'artifacts/resource_applicability/track_a_pf_common_{system}_results/2026-10-22'
         for record in study.read(folder/'native_results.json.gz'):
             row=dict(record['candidate'],T=.8,R_outer=None,K=None);identity=study.cid(row)
-            if identity in selected:
+            if identity in selected and identity not in result:
                 accept(identity,{a:record['prices'][a]['metrics'] for a in ('cosine','sine')},
                        str((folder/'native_results.json.gz').relative_to(study.ROOT)))
     path=study.ROOT/'artifacts/resource_applicability/track_a_h46_higher_pf_dataset_v1/2026-10-20/measured_gate_costs_96.csv'
@@ -39,7 +50,7 @@ def run():
     for system in study.PREFIX:
         cfg=study.read(study.ORIGIN/(system+'_PR_EXPLORATION/config_APPROVED_PRIVATE.json'))
         for identity,row in selected.items():
-            if row['method']!='PR' or row['system']!=system:
+            if identity in result or row['method']!='PR' or row['system']!=system:
                 continue
             original_id=saved[identity]['origin'].rsplit('#',1)[-1]
             tasks=[t for t in cfg['tasks'] if t['candidate']['id']==original_id]
