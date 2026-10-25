@@ -200,3 +200,5 @@ s²はunbiased sample variance。下側はU−Cへ適用し、各tailにδを割
 [verification.json](../artifacts/non_df_h4_pr_mean_cost_design/2026-10-25/verification.json)に人工結果・引用field同値・差分範囲を記録する。旧SOURCE/raw/結果/grant/ledger/marker/STOPは変更せず、旧母平均upper/null、全lawρ/null、元native UNKNOWN、D1初回FAIL、正式受理falseを維持する。この設計で科学結果statusを昇格させない。
 
 [publication_status.json](../artifacts/non_df_h4_pr_mean_cost_design/2026-10-25/publication_status.json)に公開状態を記録。専用branchのcommit・GitHub公開・remote SHA照合後、**mandatory STOP**。scalar評価、新compile/sampling、正式certificate受理へ自動移行しない。
+
+公開した主成果物commit：**`4cc80251e3b248adad5f2e6b756ccaaba570b27f`**。GitHub接続のGit data APIで公開し、local準備tree `0b075dd35fcc0b2bd8c7a159291ce85a75b57584` と一致。同commitをgit fetchし、local HEAD／origin ref／GitHub refの同SHA・clean worktreeを確認した。この公開記録だけを追記し、最終HEADもremote照合してチャットへ記載する。**設計完了、mandatory STOP。次のscalar評価は未承認・未実行のまま。**
