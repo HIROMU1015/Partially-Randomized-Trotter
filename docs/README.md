@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1：H2／H4／H6結果統合・baseline公平性監査
+
+[保存12候補の比較・XDF rank政策・Gaussian／P0差分](research/research_c_c1_h2_h4_h6_comparison_audit_20261026.md)／[未採択の最小実験2案](research/research_c_c1_minimal_experiment_design_20261026.md)。新科学評価0、人工29 PASS。旧結果を保持し、案A：保存H4 XDF prefix予算検証を次の一実験として技術推奨。公開照合後mandatory STOP。
+
 ## C1：H6共通CA・shots・条件付き総資源の限定結果
 
 [全4候補数値CA PASS・shots・総RZ/CX/depth](research/research_c_c1_h6_ca_resources_execution_20261026.md)。SOURCE55b3d868…無変更、119 calls、FAIL/retry/resume0。同sのshotsは同じでCDF総RZはXDFより約1.98%/1.96%多い。資格Bとideal IID Born/oracle/serial費用モデルに条件付き、厳密・無条件保証は未資格・mandatory STOP。

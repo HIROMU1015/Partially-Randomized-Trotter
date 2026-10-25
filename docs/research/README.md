@@ -1,5 +1,9 @@
 # 研究計画資料
 
+## C1：H2／H4／H6比較条件・baselineの技術監査
+
+[統合表・H4 XDF10選定来歴・native精度差分](research_c_c1_h2_h4_h6_comparison_audit_20261026.md)／[最小実験A・Bの独立設計](research_c_c1_minimal_experiment_design_20261026.md)。保存値の引用と静的SOURCE監査、人工29 PASSのみ。H4低prefixのCA/8適格性は未評価、H6 rank13の開始予算gateの違いを明記。案Aを技術推奨するが未採択・新科学call0・mandatory STOP。
+
 ## C1：H6共通CA・shots・条件付き総資源pilot完了
 
 [4候補数値CA PASS・総資源表](research_c_c1_h6_ca_resources_execution_20261026.md)。SOURCE55b3d868…無変更・119 calls・52round PASS。同sの全N一致、総RZはXDFが小さい。厳密C/CA/device/状態準備込み/4候補同時/無条件保証には昇格しない。旧証拠保全・mandatory STOP。
