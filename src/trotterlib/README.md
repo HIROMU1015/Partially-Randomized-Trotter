@@ -1,3 +1,7 @@
+## 2026-10-25 Pauli central B0/B0I接続
+
+[`h4_pauli_b0.py`](h4_pauli_b0.py)：PRの明示L_Dを維持した決定論的bodyとD2の両測定軸を接続。B0/B0Iは一候補。人工検証のみ、実H4科学計算なし。[技術報告・非実行計画](../../docs/non_df_h4_pauli_b0_preparation_20261025.md)。
+
 ## 2026-10-25 PF・PR0 sine Arb限定実行
 
 `h4_arb_pf_pr0_sine.py`：既存PF/PR0 kernelをsine限定で再利用。PFは保存C虚部全区間/target作用0、PR0は個別imag。親one-shot・case委譲・各対象早期STOP。

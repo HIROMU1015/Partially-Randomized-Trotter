@@ -1,3 +1,7 @@
+## 2026-10-25 H4 Pauli central B0/B0I比較準備
+
+[専用接続・条件対応・最小の非実行計画](docs/non_df_h4_pauli_b0_preparation_20261025.md)。明示prefix27、D2再利用、B0/B0I一候補。人工39件PASS、実H4 build/compile/signal/N/Gは0、科学結果・旧STOPは変更なし。
+
 ## 2026-10-25 H4 Pauli/DF統合データカタログ
 
 [保存データ索引・比較用CSV/JSON・未保証事項](artifacts/non_df_h4_data_catalog/2026-10-25/README.md)。61項目/6系列。科学条件・SOURCE・保証範囲を分離し、既存値のみ引用。新計算/再解析/作図なし、公開照合後mandatory STOP。

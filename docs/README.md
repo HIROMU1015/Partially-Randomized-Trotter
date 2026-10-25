@@ -1,3 +1,7 @@
+## 2026-10-25 H4 Pauli central B0/B0I比較準備
+
+[実装の利用範囲・D1/D2/C/shot再利用・実行無効計画](non_df_h4_pauli_b0_preparation_20261025.md)。B0固有価格・bias・N/Gは未取得。
+
 ## 2026-10-25 H4 Pauli/DF統合データ整理
 
 [データカタログの使い方・比較表・追加取得候補](../artifacts/non_df_h4_data_catalog/2026-10-25/README.md)。元raw/QPYを参照し、価格・精度・条件付きGと未保証を一元化。科学証拠status変更なし。
