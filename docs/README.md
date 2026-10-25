@@ -1,3 +1,7 @@
+## 2026-10-25 H6 RTE比較条件の追加検証
+
+[同一q/r/K対照・24構成探索・整数上限・結果](h6_rte_fairness_20261025.md)。全5精度の有限・条件付き確認GでHybrid低G、優位倍率は旧r4限定から縮小。未確定2行と実ρ/母平均tailを保持。公開照合後mandatory STOP。
+
 ## 2026-10-25 Hybrid PR対全ランダム化RTE：限定比較完了
 
 [15行の探索/確認比較・G比・費用内訳](pauli_hybrid_rte_comparison_20261025.md)。新144 trajectory/288 compile、状態作用0。仮想ρ=0、有限候補・有限価格標本。H6未解決候補とr範囲差を保持、以下の準備記録を保全。公開照合後mandatory STOP。

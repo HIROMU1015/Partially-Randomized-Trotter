@@ -1,3 +1,7 @@
+## 2026-10-25 H6の任意精度整数会計
+
+`h6_rte_fairness.py`：旧Fraction上界/guard/shot式を再利用し、SAFE_INTEGER_LIMITの表現制限だけexact Python整数ceilへ接続する。旧SOURCE/旧nullを変更せず、guard未確定を適格へ昇格しない。[24構成・matched/familyの条件付き結果](../../docs/h6_rte_fairness_20261025.md)。正式certificateや母平均tail保証ではない。
+
 ## 2026-10-25 Hybrid/RTE helperの承認済み適用
 
 既存 `pauli_hybrid_rte_comparison.py` を新SOURCE `b19ed83c6b4b64821965fa0b756cd2691e34eda8` のdriverで使用し、保存値のcohort別min/tie/null/比を整理した。[限定結果](../../docs/pauli_hybrid_rte_comparison_20261025.md)。旧準備記録は以下に保全する。実ρ/母平均tail/大域最適性は未保証。

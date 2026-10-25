@@ -1,3 +1,10 @@
+## 2026-10-25 H6 RTE fairness追加検証（科学STOP）
+
+`run_h6_rte_fairness.py`：旧H6のlaw/target/price_job/paired統計を再利用し、新候補だけ固定batchで実行。今回の完了batch/cohortは再実行しない。
+`finalize_h6_rte_fairness.py`：保存値のmatched/family比較、任意精度shot・raw QPY・native終了を照合して科学STOP。
+`pack_h6_rte_fairness.py`：元bytesを既存manifest/restorerのidentity形式でarchive。復元は `restore_pauli_h2_h6_evidence.py`。
+`report_h6_rte_fairness.py`：保存済み比較を報告書へ転記。[結果と限界](../docs/h6_rte_fairness_20261025.md)。
+
 ## 2026-10-25 Hybrid/RTE承認範囲の実行・保存
 
 `run_pauli_hybrid_rte_comparison.py`：保存会計と固定nomineeの新paired価格確認。今回runは科学STOP済み、再実行しない。

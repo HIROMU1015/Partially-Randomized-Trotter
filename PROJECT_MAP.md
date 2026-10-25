@@ -1,3 +1,7 @@
+## 2026-10-25 H6 Hybrid/RTE：r8・整数会計の追加検証完了
+
+[r2/4/8の24候補、matched/family比較、保留N/G](docs/h6_rte_fairness_20261025.md)。旧7＋新17、target17作用/新224 trajectory/448 compile。条件付きH/R=.0681–.2189、旧r4に比べRTE Gは約1%へ改善。旧整数上限8行を回収、最厳精度のguard2行はnullを保持。実ρ/tail未保証、公開照合後mandatory STOP。以下は時点履歴。
+
 ## 2026-10-25 H2/H4/H6 Hybrid対RTEの条件付き比較完了
 
 [15精度セル・確認比・費用内訳・保存証拠](docs/pauli_hybrid_rte_comparison_20261025.md)。新確認3候補×48本、compile288・新状態作用0。H2は全5精度Hybrid低G、H4はε=.05でHybrid/他4精度RTE、H6は会計可能な部分集合でHybrid低G。ρ=0/有限標本・H6未解決N/G/r範囲差・母平均tailを保持。公開照合後mandatory STOP。以下は時点履歴。
