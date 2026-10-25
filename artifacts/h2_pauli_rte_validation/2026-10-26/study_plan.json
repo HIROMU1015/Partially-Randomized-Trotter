@@ -1,0 +1,695 @@
+{
+  "status": "FIXED_APPROVED_H2_ONLY_SCOPE",
+  "execute_enabled": true,
+  "parent_commit": "10cb3e5cca7834ebf75301bd91bd093ca51d4a6b",
+  "conditions": {
+    "geometry": "linear H2 adjacent1.00A",
+    "basis": "STO-3G",
+    "charge": 0,
+    "spin": 0,
+    "Pauli_nonidentity_terms": 14,
+    "L_D": 0,
+    "T": "0.8",
+    "formula": "S2",
+    "compiler": "Qiskit1.3.0 rz/sx/x/cx opt1 seed17 no topology/routing override",
+    "control": "central-rotation full Hadamard cosine/+Im sine; no state preparation",
+    "epsilon_sig": [
+      "0.05",
+      "0.01",
+      "0.005",
+      "0.001",
+      "0.0005"
+    ],
+    "alpha_axis": ".025",
+    "rho": "hypothetical zero",
+    "state": "saved raw state/reference; same exact norm; no regeneration/renormalization"
+  },
+  "candidates": [
+    {
+      "candidate_id": "PR_p0000_q1_r2_K2",
+      "phase": "A",
+      "q": 1,
+      "r": 2,
+      "K": 2,
+      "s": 2,
+      "old_case": "H2/batch02/cases/PR_p0000_q1_r2_K2",
+      "role": "additional: saved eligible exploration <= Hybrid or within2combinedSE"
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r4_K2",
+      "phase": "A",
+      "q": 1,
+      "r": 4,
+      "K": 2,
+      "s": 4,
+      "old_case": "H2/batch01/cases/PR_p0000_q1_r4_K2",
+      "role": "additional: saved eligible exploration <= Hybrid or within2combinedSE"
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r4_K4",
+      "phase": "A",
+      "q": 1,
+      "r": 4,
+      "K": 4,
+      "s": 4,
+      "old_case": "H2/batch01/cases/PR_p0000_q1_r4_K4",
+      "role": "mandatory three"
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r8_K2",
+      "phase": "A",
+      "q": 1,
+      "r": 8,
+      "K": 2,
+      "s": 8,
+      "old_case": "H2/batch02/cases/PR_p0000_q1_r8_K2",
+      "role": "additional: saved eligible exploration <= Hybrid or within2combinedSE"
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r8_K4",
+      "phase": "A",
+      "q": 1,
+      "r": 8,
+      "K": 4,
+      "s": 8,
+      "old_case": "H2/batch02/cases/PR_p0000_q1_r8_K4",
+      "role": "additional: saved eligible exploration <= Hybrid or within2combinedSE"
+    },
+    {
+      "candidate_id": "PR_p0000_q2_r2_K4",
+      "phase": "A",
+      "q": 2,
+      "r": 2,
+      "K": 4,
+      "s": 4,
+      "old_case": "H2/batch03/cases/PR_p0000_q2_r2_K4",
+      "role": "mandatory three"
+    },
+    {
+      "candidate_id": "PR_p0000_q2_r4_K2",
+      "phase": "A",
+      "q": 2,
+      "r": 4,
+      "K": 2,
+      "s": 8,
+      "old_case": "H2/batch02/cases/PR_p0000_q2_r4_K2",
+      "role": "mandatory three"
+    },
+    {
+      "candidate_id": "PR_p0000_q2_r4_K4",
+      "phase": "A",
+      "q": 2,
+      "r": 4,
+      "K": 4,
+      "s": 8,
+      "old_case": "H2/batch01/cases/PR_p0000_q2_r4_K4",
+      "role": "additional: saved eligible exploration <= Hybrid or within2combinedSE"
+    },
+    {
+      "candidate_id": "PR_p0000_q8_r8_K2",
+      "phase": "B",
+      "q": 8,
+      "r": 8,
+      "K": 2,
+      "s": 64,
+      "stage": "initial"
+    },
+    {
+      "candidate_id": "PR_p0000_q8_r8_K4",
+      "phase": "B",
+      "q": 8,
+      "r": 8,
+      "K": 4,
+      "s": 64,
+      "stage": "initial"
+    },
+    {
+      "candidate_id": "PR_p0000_q8_r16_K2",
+      "phase": "B",
+      "q": 8,
+      "r": 16,
+      "K": 2,
+      "s": 128,
+      "stage": "initial"
+    },
+    {
+      "candidate_id": "PR_p0000_q8_r16_K4",
+      "phase": "B",
+      "q": 8,
+      "r": 16,
+      "K": 4,
+      "s": 128,
+      "stage": "conditional"
+    },
+    {
+      "candidate_id": "PR_p0000_q8_r32_K2",
+      "phase": "B",
+      "q": 8,
+      "r": 32,
+      "K": 2,
+      "s": 256,
+      "stage": "conditional"
+    },
+    {
+      "candidate_id": "PR_p0000_q8_r32_K4",
+      "phase": "B",
+      "q": 8,
+      "r": 32,
+      "K": 4,
+      "s": 256,
+      "stage": "conditional"
+    }
+  ],
+  "phase_A_selection": "User three plus any unconfirmed pure-RTE eligible exploration <= saved Hybrid confirmation or within2combinedSE in any epsilon. 8IDs frozen; old q1r2K4 n96 reused.",
+  "phase_A_evidence": [
+    {
+      "candidate_id": "PR_p0000_q1_r4_K4",
+      "epsilon_sig": "0.05",
+      "G_exact": "558450",
+      "SE": "90540.77065846397",
+      "Hybrid_G_exact": "1251625/2",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r4_K4",
+      "epsilon_sig": "0.01",
+      "G_exact": "27922875/2",
+      "SE": "2263549.665592226",
+      "Hybrid_G_exact": "250331975/16",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r4_K4",
+      "epsilon_sig": "0.005",
+      "G_exact": "223386075/4",
+      "SE": "9054323.298804473",
+      "Hybrid_G_exact": "500687975/8",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r4_K4",
+      "epsilon_sig": "0.001",
+      "G_exact": "5585330475/4",
+      "SE": "226385587.6035028",
+      "Hybrid_G_exact": "25043990925/16",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r4_K4",
+      "epsilon_sig": "0.0005",
+      "G_exact": "11172361575/2",
+      "SE": "905680210.4714032",
+      "Hybrid_G_exact": "200448054525/32",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q2_r4_K4",
+      "epsilon_sig": "0.05",
+      "G_exact": "702703",
+      "SE": "83937.02181227473",
+      "Hybrid_G_exact": "1251625/2",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q2_r4_K4",
+      "epsilon_sig": "0.01",
+      "G_exact": "70267319/4",
+      "SE": "2098336.526097465",
+      "Hybrid_G_exact": "250331975/16",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q2_r4_K4",
+      "epsilon_sig": "0.005",
+      "G_exact": "281069547/4",
+      "SE": "8393354.19704526",
+      "Hybrid_G_exact": "500687975/8",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q2_r4_K4",
+      "epsilon_sig": "0.001",
+      "G_exact": "14053518813/8",
+      "SE": "209834474.01426962",
+      "Hybrid_G_exact": "25043990925/16",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q2_r4_K4",
+      "epsilon_sig": "0.0005",
+      "G_exact": "14053585479/2",
+      "SE": "839341877.6435354",
+      "Hybrid_G_exact": "200448054525/32",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q4_r4_K4",
+      "epsilon_sig": "0.05",
+      "G_exact": "3751255/4",
+      "SE": "59591.14681182276",
+      "Hybrid_G_exact": "1251625/2",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q4_r4_K4",
+      "epsilon_sig": "0.01",
+      "G_exact": "46888273/2",
+      "SE": "1489701.9584623412",
+      "Hybrid_G_exact": "250331975/16",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q4_r4_K4",
+      "epsilon_sig": "0.005",
+      "G_exact": "187552653/2",
+      "SE": "5958793.886243324",
+      "Hybrid_G_exact": "500687975/8",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q4_r4_K4",
+      "epsilon_sig": "0.001",
+      "G_exact": "18755251691/8",
+      "SE": "148969739.0621363",
+      "Hybrid_G_exact": "25043990925/16",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q4_r4_K4",
+      "epsilon_sig": "0.0005",
+      "G_exact": "75021015983/8",
+      "SE": "595879029.4734769",
+      "Hybrid_G_exact": "200448054525/32",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q8_r4_K4",
+      "epsilon_sig": "0.05",
+      "G_exact": "3069703/2",
+      "SE": "100238.4006070029",
+      "Hybrid_G_exact": "1251625/2",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q8_r4_K4",
+      "epsilon_sig": "0.01",
+      "G_exact": "76742575/2",
+      "SE": "2505960.0151750725",
+      "Hybrid_G_exact": "250331975/16",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q8_r4_K4",
+      "epsilon_sig": "0.005",
+      "G_exact": "613939807/4",
+      "SE": "10023827.113348106",
+      "Hybrid_G_exact": "500687975/8",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q8_r4_K4",
+      "epsilon_sig": "0.001",
+      "G_exact": "7674242433/2",
+      "SE": "250595509.51812425",
+      "Hybrid_G_exact": "25043990925/16",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q8_r4_K4",
+      "epsilon_sig": "0.0005",
+      "G_exact": "15348484866",
+      "SE": "1002382038.072497",
+      "Hybrid_G_exact": "200448054525/32",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r4_K2",
+      "epsilon_sig": "0.05",
+      "G_exact": "5335811/8",
+      "SE": "70346.69121215132",
+      "Hybrid_G_exact": "1251625/2",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r4_K2",
+      "epsilon_sig": "0.01",
+      "G_exact": "16932147",
+      "SE": "1785851.1353835498",
+      "Hybrid_G_exact": "250331975/16",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r4_K2",
+      "epsilon_sig": "0.005",
+      "G_exact": "276209709/4",
+      "SE": "7283031.242606295",
+      "Hybrid_G_exact": "500687975/8",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r4_K2",
+      "epsilon_sig": "0.001",
+      "G_exact": "2029966863",
+      "SE": "214102714.0314535",
+      "Hybrid_G_exact": "25043990925/16",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r4_K2",
+      "epsilon_sig": "0.0005",
+      "G_exact": "40594216607/4",
+      "SE": "1070378550.0092915",
+      "Hybrid_G_exact": "200448054525/32",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q4_r4_K2",
+      "epsilon_sig": "0.05",
+      "G_exact": "4229775/4",
+      "SE": "68011.01488880574",
+      "Hybrid_G_exact": "1251625/2",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q4_r4_K2",
+      "epsilon_sig": "0.01",
+      "G_exact": "211529835/8",
+      "SE": "1700605.677324636",
+      "Hybrid_G_exact": "250331975/16",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q4_r4_K2",
+      "epsilon_sig": "0.005",
+      "G_exact": "423184905/4",
+      "SE": "6804436.376562073",
+      "Hybrid_G_exact": "500687975/8",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q4_r4_K2",
+      "epsilon_sig": "0.001",
+      "G_exact": "21209743665/8",
+      "SE": "170516894.18326843",
+      "Hybrid_G_exact": "25043990925/16",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q4_r4_K2",
+      "epsilon_sig": "0.0005",
+      "G_exact": "42546262275/4",
+      "SE": "684106004.9407023",
+      "Hybrid_G_exact": "200448054525/32",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q8_r4_K2",
+      "epsilon_sig": "0.05",
+      "G_exact": "1680014",
+      "SE": "123664.45112480788",
+      "Hybrid_G_exact": "1251625/2",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q8_r4_K2",
+      "epsilon_sig": "0.01",
+      "G_exact": "42001652",
+      "SE": "3091707.117271159",
+      "Hybrid_G_exact": "250331975/16",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q8_r4_K2",
+      "epsilon_sig": "0.005",
+      "G_exact": "336025151/2",
+      "SE": "12367267.731859878",
+      "Hybrid_G_exact": "500687975/8",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q8_r4_K2",
+      "epsilon_sig": "0.001",
+      "G_exact": "8403123407/2",
+      "SE": "309273507.20311874",
+      "Hybrid_G_exact": "25043990925/16",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q8_r4_K2",
+      "epsilon_sig": "0.0005",
+      "G_exact": "16812497716",
+      "SE": "1237554152.576244",
+      "Hybrid_G_exact": "200448054525/32",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r2_K4",
+      "epsilon_sig": "0.05",
+      "G_exact": "2049489/4",
+      "SE": "91964.25",
+      "Hybrid_G_exact": "1251625/2",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r2_K4",
+      "epsilon_sig": "0.01",
+      "G_exact": "12813801",
+      "SE": "2299912.9999999995",
+      "Hybrid_G_exact": "250331975/16",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r2_K4",
+      "epsilon_sig": "0.005",
+      "G_exact": "51279813",
+      "SE": "9204069.0",
+      "Hybrid_G_exact": "500687975/8",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r2_K4",
+      "epsilon_sig": "0.001",
+      "G_exact": "2573873523/2",
+      "SE": "230988649.49999997",
+      "Hybrid_G_exact": "25043990925/16",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r2_K4",
+      "epsilon_sig": "0.0005",
+      "G_exact": "5172621792",
+      "SE": "928419295.9999999",
+      "Hybrid_G_exact": "200448054525/32",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r8_K4",
+      "epsilon_sig": "0.05",
+      "G_exact": "694924",
+      "SE": "68351.8509896717",
+      "Hybrid_G_exact": "1251625/2",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r8_K4",
+      "epsilon_sig": "0.01",
+      "G_exact": "17372363",
+      "SE": "1708723.7843483405",
+      "Hybrid_G_exact": "250331975/16",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r8_K4",
+      "epsilon_sig": "0.005",
+      "G_exact": "69489519",
+      "SE": "6834901.72742913",
+      "Hybrid_G_exact": "500687975/8",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r8_K4",
+      "epsilon_sig": "0.001",
+      "G_exact": "3474486201/2",
+      "SE": "170873047.32346454",
+      "Hybrid_G_exact": "25043990925/16",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r8_K4",
+      "epsilon_sig": "0.0005",
+      "G_exact": "6949005366",
+      "SE": "683495431.5914562",
+      "Hybrid_G_exact": "200448054525/32",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q2_r4_K2",
+      "epsilon_sig": "0.05",
+      "G_exact": "1172149/2",
+      "SE": "50323.17912787022",
+      "Hybrid_G_exact": "1251625/2",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q2_r4_K2",
+      "epsilon_sig": "0.01",
+      "G_exact": "29357965/2",
+      "SE": "1260408.1320077437",
+      "Hybrid_G_exact": "250331975/16",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q2_r4_K2",
+      "epsilon_sig": "0.005",
+      "G_exact": "58856276",
+      "SE": "5053683.311502838",
+      "Hybrid_G_exact": "500687975/8",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q2_r4_K2",
+      "epsilon_sig": "0.001",
+      "G_exact": "1499962452",
+      "SE": "128794000.00695379",
+      "Hybrid_G_exact": "25043990925/16",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q2_r4_K2",
+      "epsilon_sig": "0.0005",
+      "G_exact": "24589491899/4",
+      "SE": "527843049.6023505",
+      "Hybrid_G_exact": "200448054525/32",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r2_K2",
+      "epsilon_sig": "0.05",
+      "G_exact": "710801",
+      "SE": "149957.01507098626",
+      "Hybrid_G_exact": "1251625/2",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r2_K2",
+      "epsilon_sig": "0.01",
+      "G_exact": "80691161/4",
+      "SE": "4255834.490304733",
+      "Hybrid_G_exact": "250331975/16",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r2_K2",
+      "epsilon_sig": "0.005",
+      "G_exact": "383287803/4",
+      "SE": "20215466.372091558",
+      "Hybrid_G_exact": "500687975/8",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r2_K2",
+      "epsilon_sig": "0.001",
+      "G_exact": "228483197395/4",
+      "SE": "12050721044.015533",
+      "Hybrid_G_exact": "25043990925/16",
+      "within2combinedSE": false
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r8_K2",
+      "epsilon_sig": "0.05",
+      "G_exact": "2811083/4",
+      "SE": "89613.3121145175",
+      "Hybrid_G_exact": "1251625/2",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r8_K2",
+      "epsilon_sig": "0.01",
+      "G_exact": "70407155/4",
+      "SE": "2244479.567522628",
+      "Hybrid_G_exact": "250331975/16",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r8_K2",
+      "epsilon_sig": "0.005",
+      "G_exact": "70575446",
+      "SE": "8999377.77720441",
+      "Hybrid_G_exact": "500687975/8",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r8_K2",
+      "epsilon_sig": "0.001",
+      "G_exact": "1798627542",
+      "SE": "229350711.1657869",
+      "Hybrid_G_exact": "25043990925/16",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q1_r8_K2",
+      "epsilon_sig": "0.0005",
+      "G_exact": "58971259333/8",
+      "SE": "939959771.4464997",
+      "Hybrid_G_exact": "200448054525/32",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q2_r2_K4",
+      "epsilon_sig": "0.05",
+      "G_exact": "580788",
+      "SE": "87561.19712031612",
+      "Hybrid_G_exact": "1251625/2",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q2_r2_K4",
+      "epsilon_sig": "0.01",
+      "G_exact": "14519895",
+      "SE": "2189059.326744513",
+      "Hybrid_G_exact": "250331975/16",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q2_r2_K4",
+      "epsilon_sig": "0.005",
+      "G_exact": "116160759/2",
+      "SE": "8756357.841798156",
+      "Hybrid_G_exact": "500687975/8",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q2_r2_K4",
+      "epsilon_sig": "0.001",
+      "G_exact": "2904371847/2",
+      "SE": "218935546.02183896",
+      "Hybrid_G_exact": "25043990925/16",
+      "within2combinedSE": true
+    },
+    {
+      "candidate_id": "PR_p0000_q2_r2_K4",
+      "epsilon_sig": "0.0005",
+      "G_exact": "5809628019",
+      "SE": "875875507.3578838",
+      "Hybrid_G_exact": "200448054525/32",
+      "within2combinedSE": true
+    }
+  ],
+  "confirmation_rule": "96->192->384 only if finite G within2combinedSE of saved Hybrid/old RTE/another confirmed new RTE AND own SE > that comparator SE AND nominal t95 halfwidth>1%G. At384 retain near-tie/unresolved. No pooling or repeated successful cohorts.",
+  "phase_B_nomination": "After exploration, freeze union of competitive per-epsilon new minima: confirm only when <= current Phase A/old confirmed RTE minimum or within2combinedSE. Add adjacent-s only when within2combinedSE prevents trend/minimum location.",
+  "phase_B_adaptive": "s128 K4 only if s128K2 precision/bias ambiguity or near current confirmed RTE minimum. Add s256 K2/K4 only if s128K2 remains PhaseB minimum/near and is <=current confirmed min or within2combinedSE. Clear deterioration ends B.",
+  "limits": {
+    "new_targets": 6,
+    "new_laws": 6,
+    "exploration_trajectories": 48,
+    "confirmation_trajectories": 5376,
+    "total_trajectories": 5424,
+    "total_axis_compiles": 10848,
+    "new_Hamiltonian_state_reference": 0,
+    "new_H4_H6_or_Hybrid_science": 0
+  },
+  "target_precision": "New B only: existing tight L2 scalar128/vector53,1 state action each; unresolved guard stays null; no invented allowance",
+  "seeds": "Original H2 [20261025,2,0,q,r,K,tag,index], exploration101/confirmation202; only new unused candidate/cohort addresses after checking old raw",
+  "retry": "Technical investigation permitted; preserve failures; no silent scientific retries or repeated successful calls",
+  "stop": "After completed finite comparison/save/publish/SHA/native checks; no broader conclusion adoption or detailed review"
+}
