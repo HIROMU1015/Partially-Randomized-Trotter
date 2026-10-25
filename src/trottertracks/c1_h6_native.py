@@ -13,10 +13,11 @@ from . import c1_stage2_native as native
 from . import c1_stage3_connection as connection
 from . import c1_stage3_deterministic_accuracy as det
 from .c1_stage3_cost_compat import CompileSerialCalls
+from .c1_h6_native_precision import PrecisionBuilder, VERSION as GAUSSIAN_VERSION
 
 io=saved.io
-SCOPE='C1_H6_RANK14_NATIVE_PROBE_COST_V1'
-FAMILY='artifacts/research_c_c1_h6_native'
+SCOPE='C1_H6_RANK14_NATIVE_PRECISION_REEXECUTION_V1'
+FAMILY='artifacts/research_c_c1_h6_native_precision'
 ROUTES=('literal','shared')
 SHELLS=('head','X','Y')
 JOBS=tuple((arm,s,route) for arm,s in saved.CANDIDATES for route in ROUTES)
@@ -40,7 +41,7 @@ def preflight(root,path):
             or c['compiler']!=profile or c['call_limits']!=LIMITS
             or c['maximum_logical_units']!=MAX_CALLS or c['routes']!=list(ROUTES)
             or c['candidate_order']!=[f'{a}:s{s}' for a,s in saved.CANDIDATES]
-            or c['state_action']!=action.VERSION
+            or c['state_action']!=action.VERSION or c['native_gaussian']!=GAUSSIAN_VERSION
             or any(c[k] for k in ('new_fit','optimizer','PF_recomputation','DF_error_recomputation',
                                   'shots_evaluation','total_cost_evaluation','retry','resume'))):
         raise ValueError('H6_NATIVE_SCOPE')
@@ -135,6 +136,7 @@ def run(root,contract_path,output):
     start=time.monotonic();cpu=time.process_time();profile=CompilerProfile()
     plan=saved.molecule.integrated.resource_plan(task_count=8,full_dimension=c['conditions']['sector_dimension'])
     plan['Aer_threads_per_worker']=max(1,(min(plan['available_affinity_cpus'],plan['quota_cpus'] or plan['available_affinity_cpus']))//plan['workers'])
+    plan['Qiskit_actual_inverse_creation_serialized_with_P0']=True
     io.save(output/'contract.json',c);io.save(output/'resource_plan.json',plan)
     def qsave(label,kind,qc):
         with (output/'circuits'/f'{label}_{kind}.qpy').open('xb') as f:qpy.dump(qc,f)
@@ -143,12 +145,13 @@ def run(root,contract_path,output):
         ctx=calls('sector_context','sector400',lambda:saved.molecule.SectorCAR(len(packet['h'])))
         modes=2*len(packet['h']);D=1<<modes
         indices=saved.molecule.stage1.bit_reverse_indices(modes)[ctx.sector.basis_indices]
-        models={};generators={};builder=native.NativeBuilder()
+        models={};generators={};builder=PrecisionBuilder()
         for arm in saved.ARMS:
             models[arm]=calls('native_model',arm,lambda arm=arm:prepare_model(packet,factors[arm],arm,c))
             generators[arm]=calls('sector_generators',arm,lambda arm=arm:ctx.generators(packet['h'],packet['g'],packet['constant'],factors[arm]['J'],factors[arm]['U']))
             for block in models[arm].blocks:
                 calls('gaussian_build',arm+':'+block.block_id,lambda arm=arm,block=block:builder._basis(models[arm],block))
+        io.save(output/'gaussian_precision.json',builder.basis_reports)
         # Build shared cached basis circuits sequentially; heavy independent
         # local exponentials/state batches and candidate actions run in parallel.
         local_jobs=[]
@@ -202,11 +205,24 @@ def run(root,contract_path,output):
                     compiled_reference=action.state_gate(b,expected,label='compiled/ref:'+label),
                     probe_count=5,operator_norm_bound=None,rigorous_enclosure=None)
                 return report,a,b
-            kernel_report,a,b=calls('kernel_action',label,assess)
+            def guarded_assess():
+                try:
+                    return assess()
+                except BaseException as error:
+                    io.save(output/'candidates'/(label+'_kernel_failure.json'),
+                        dict(kind='kernel_action',label=label,error_type=type(error).__name__,error=str(error)))
+                    raise
+            kernel_report,a,b=calls('kernel_action',label,guarded_assess)
             io.save(output/'candidates'/(label+'_kernel.json'),kernel_report)
             def adjoint():
-                return dict(raw=action.state_gate(engine.apply(native.actual_adjoint(raw),a[-1:]),inputs[-1:],label='raw actual adjoint'),
-                    compiled=action.state_gate(engine.apply(native.actual_adjoint(compiled),b[-1:]),inputs[-1:],label='compiled actual adjoint'))
+                # Qiskit controlled-gate inverse() internally invokes a basis
+                # translator. It shares the same Rust equivalence library as
+                # P0, so serialize just circuit creation, not Aer simulation.
+                with compile_calls.lock:
+                    raw_inverse=native.actual_adjoint(raw)
+                    compiled_inverse=native.actual_adjoint(compiled)
+                return dict(raw=action.state_gate(engine.apply(raw_inverse,a[-1:]),inputs[-1:],label='raw actual adjoint'),
+                    compiled=action.state_gate(engine.apply(compiled_inverse,b[-1:]),inputs[-1:],label='compiled actual adjoint'))
             inverse_report=calls('adjoint_action',label,adjoint)
             io.save(output/'candidates'/(label+'_adjoint.json'),inverse_report)
             def hadamard():

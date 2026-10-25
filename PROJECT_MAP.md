@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：H6 nativeのGaussian精度修正・fresh再実行（2026-10-25）
+
+[修正・人工185 PASS](docs/research/research_c_c1_h6_native_precision_repair_20261025.md)／[新298-call契約](docs/research/research_c_c1_h6_native_precision_contract_20261025.json)。H6専用の既存Nature JW数値修正（exact-zero/LAPACK/atan2）とP0/inverse生成mutex。旧run01・162-call STOPは保持。同一8経路・allowance不変、別fresh outputで最大298、累積最大460 units。
+
 ## C1：H6 nativeのcorrectness FAIL・部分証拠（2026-10-25）
 
 [実行結果](docs/research/research_c_c1_h6_native_execution_20261025.md)／[raw・QPY52・call・STOP](artifacts/research_c_c1_h6_native/2026-10-25/)。SOURCE bf431765…無変更、162/298 units（154 COMPLETE／8 FAIL）。局所30・ancilla shell3 PASS、最初のCDF_s1_shared raw/reference差1.0400731857e-10が固定1e-10を超過。8 kernel bundleはFAIL、adjoint/X-Y/kernel費用/104 profileは未到達。原因未確定・合成誤差/CA/資源未資格、retry/resume0、旧証拠保全・mandatory STOP。以下の準備・未実行表示は履歴。

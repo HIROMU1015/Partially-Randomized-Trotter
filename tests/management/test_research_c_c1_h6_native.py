@@ -10,9 +10,10 @@ ROOT=Path(__file__).resolve().parents[2];sys.path.insert(0,str(ROOT/'src'))
 from trottertracks import c1_h6_native as m
 
 
-def artificial(root):
+def artificial(root,angle=None):
     from trottertracks.c1_stage3_reference import reference_kernels
     U=np.array([[[.8,-.6],[.6,.8]]]);J=np.array([[[.02,.003],[.003,.01]]])
+    if angle is not None:U=np.asarray([[[np.cos(angle),-np.sin(angle)],[np.sin(angle),np.cos(angle)]]])
     g=np.einsum('kpi,kqi,kij,krj,ksj->pqrs',U,U,J,U,U,optimize=True)
     packet=dict(h=np.array([[-.2,.03],[.03,.1]]),g=g,constant=np.asarray(.125))
     np.savez(root/'input.npz',**packet)
@@ -43,7 +44,7 @@ def test_artificial_end_to_end_state_actions_and_partial_STOP(tmp_path,fault):
     from trottertracks.pr_dictionary_validation import gates
     c=artificial(tmp_path);out=tmp_path/'out'
     forbidden=Mock(side_effect=AssertionError('NO_NEW_FIT_DF_PF_OR_LARGE_OPERATOR'))
-    ordered=m.native.NativeBuilder.ordered;basis=m.native.NativeBuilder._basis
+    ordered=m.native.NativeBuilder.ordered;basis=m.PrecisionBuilder._basis
     compiler=gates.compiled_wrapper
     def ordered_bad(self,model,time,**kwargs):
         if fault=='frame_order':model=m.replace(model,blocks=tuple(reversed(model.blocks)))
@@ -62,7 +63,7 @@ def test_artificial_end_to_end_state_actions_and_partial_STOP(tmp_path,fault):
         stack.enter_context(patch.object(m.saved.molecule.stage1,'car_bilinears',forbidden))
         stack.enter_context(patch.object(m.native.NativeBuilder,'ordered',ordered_bad))
         stack.enter_context(patch.object(gates,'compiled_wrapper',side_effect=compile_bad))
-        if fault=='Gaussian_direction':stack.enter_context(patch.object(m.native.NativeBuilder,'_basis',lambda self,model,block:basis(self,model,block).inverse()))
+        if fault=='Gaussian_direction':stack.enter_context(patch.object(m.PrecisionBuilder,'_basis',lambda self,model,block:basis(self,model,block).inverse()))
         if fault=='adjoint':stack.enter_context(patch.object(m.native,'actual_adjoint',lambda qc:qc))
         if fault:
             with pytest.raises((ValueError,RuntimeError)):m.run(tmp_path,tmp_path/'unused',out)
@@ -72,6 +73,9 @@ def test_artificial_end_to_end_state_actions_and_partial_STOP(tmp_path,fault):
     assert stop['retry']==stop['resume']==0
     if fault:
         assert (out/'failure.json').exists() and not (out/'result.json').exists()
+        if fault in ('phase','frame_order','compile'):
+            details=list((out/'candidates').glob('*_kernel_failure.json'))
+            assert details and all(m.io.read(p)['error'] for p in details)
     else:
         r=m.io.read(out/'result.json');assert r['global_synthesis_qualification']=='UNRESOLVED_FINITE_PROBES'
         assert len(r['candidates'])==8 and len(r['comparisons'])==8
@@ -86,6 +90,42 @@ def test_artificial_end_to_end_state_actions_and_partial_STOP(tmp_path,fault):
     original=(out/'STOP.json').read_bytes()
     with patch.object(m,'preflight',return_value=c),pytest.raises(FileExistsError):m.run(tmp_path,tmp_path/'unused',out)
     assert (out/'STOP.json').read_bytes()==original
+
+
+def test_tiny_rotation_artificial_end_to_end_with_same_P0_and_allowances(tmp_path):
+    c=artificial(tmp_path,angle=1e-9)
+    with patch.object(m,'preflight',return_value=c):m.run(tmp_path,tmp_path/'unused',tmp_path/'out')
+    result=m.io.read(tmp_path/'out/result.json')
+    assert len(result['candidates'])==8
+    for candidate in result['candidates'].values():
+        assert candidate['kernel']['raw_reference']['max_entry']<2e-14
+        # Use the unchanged registered component allowance for P0. Tiny-angle
+        # preservation is tested separately against the exterior-power oracle.
+        assert candidate['kernel']['compiler']['max_entry']<=m.ALLOWANCES['state_component']
+    precision=m.io.read(tmp_path/'out/gaussian_precision.json')
+    assert all(r['version']==m.GAUSSIAN_VERSION for r in precision.values())
+
+
+def test_inverse_creation_and_P0_share_mutex_but_all_candidates_execute(tmp_path):
+    import threading,time
+    from trottertracks.pr_dictionary_validation import gates
+    c=artificial(tmp_path);lock=threading.Lock();active=[];seen=[]
+    compiler=gates.compiled_wrapper;inverse=m.native.actual_adjoint
+    def guarded(kind,function,*args,**kwargs):
+        with lock:
+            assert not active,'concurrent Qiskit equivalence-library access'
+            active.append(kind);seen.append(kind)
+        try:
+            time.sleep(.003)
+            return function(*args,**kwargs)
+        finally:
+            with lock:active.pop()
+    with patch.object(m,'preflight',return_value=c), \
+            patch.object(gates,'compiled_wrapper',side_effect=lambda *a,**k:guarded('P0',compiler,*a,**k)), \
+            patch.object(m.native,'actual_adjoint',side_effect=lambda *a,**k:guarded('inverse',inverse,*a,**k)):
+        m.run(tmp_path,tmp_path/'unused',tmp_path/'out')
+    assert seen.count('P0')==11 and seen.count('inverse')==16
+    assert len(m.io.read(tmp_path/'out/result.json')['candidates'])==8
 
 
 def test_probe_maxima_never_become_13_round_operator_bounds():
@@ -104,6 +144,7 @@ def contract(root):
     return dict(scope=m.SCOPE,status='UNAPPROVED_SCIENCE_CONTRACT',conditions=m.saved.CONDITIONS,
         allowances=m.ALLOWANCES,compiler=profile,call_limits=m.LIMITS,maximum_logical_units=m.MAX_CALLS,
         routes=list(m.ROUTES),candidate_order=[f'{a}:s{s}' for a,s in m.saved.CANDIDATES],state_action=m.action.VERSION,
+        native_gaussian=m.GAUSSIAN_VERSION,
         new_fit=0,optimizer=0,PF_recomputation=0,DF_error_recomputation=0,shots_evaluation=0,total_cost_evaluation=0,retry=0,resume=0,
         source_manifest='SOURCE.json',source_manifest_sha256=m.io.sha(root/'SOURCE.json'),saved_inputs={'bytes':m.io.sha(root/'bytes')},
         original_input='bytes',saved_optimizer='bytes',PF_result='bytes',factor_arrays={a:'bytes' for a in m.saved.ARMS},
@@ -111,7 +152,7 @@ def contract(root):
         PF_kernels={f'{a}:s{s}':'bytes' for a,s in m.saved.CANDIDATES},evaluation_packages={})
 
 
-@pytest.mark.parametrize('change',[None,'input','SOURCE','compiler','rank','scope','calls'])
+@pytest.mark.parametrize('change',[None,'input','SOURCE','compiler','rank','scope','calls','gaussian'])
 def test_passive_preflight_source_input_and_scientific_scope(tmp_path,change):
     c=contract(tmp_path)
     if change=='input':(tmp_path/'bytes').write_text('modified')
@@ -120,6 +161,7 @@ def test_passive_preflight_source_input_and_scientific_scope(tmp_path,change):
     if change=='rank':c['conditions']=dict(c['conditions'],rank=18)
     if change=='scope':c['shots_evaluation']=1
     if change=='calls':c['maximum_logical_units']+=1
+    if change=='gaussian':c['native_gaussian']='unregistered'
     m.io.save(tmp_path/'contract.json',c)
     with patch.object(np,'load',side_effect=AssertionError('NO_MOLECULAR_DECODE')):
         if change:

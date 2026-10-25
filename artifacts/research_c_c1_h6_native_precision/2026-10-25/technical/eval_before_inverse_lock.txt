@@ -1,0 +1,116 @@
+.............................................F.......................... [ 67%]
+...................................                                      [100%]
+=================================== FAILURES ===================================
+_____ test_tiny_rotation_artificial_end_to_end_with_same_P0_and_allowances _____
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-450/test_tiny_rotation_artificial_0')
+
+    def test_tiny_rotation_artificial_end_to_end_with_same_P0_and_allowances(tmp_path):
+        c=artificial(tmp_path,angle=1e-9)
+>       with patch.object(m,'preflight',return_value=c):m.run(tmp_path,tmp_path/'unused',tmp_path/'out')
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_c1_h6_native.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c1_h6_native.py:245: in run
+    with ThreadPoolExecutor(max_workers=plan['workers']) as pool:results=dict(pool.map(candidate_job,JOBS))
+                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py:619: in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py:317: in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/thread.py:58: in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_h6_native.py:219: in candidate_job
+    inverse_report=calls('adjoint_action',label,adjoint)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage3_integrated.py:108: in __call__
+    value = function()
+            ^^^^^^^^^^
+src/trottertracks/c1_h6_native.py:217: in adjoint
+    return dict(raw=action.state_gate(engine.apply(native.actual_adjoint(raw),a[-1:]),inputs[-1:],label='raw actual adjoint'),
+                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage2_native.py:194: in actual_adjoint
+    return existing(SimpleNamespace(circuit=circuit))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/pr_dictionary_validation/circuits.py:201: in actual_adjoint
+    return result.circuit.inverse()
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+../prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/circuit/quantumcircuit.py:1683: in inverse
+    instruction.replace(operation=instruction.operation.inverse(annotated=annotated))
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/circuit/controlledgate.py:269: in inverse
+    inverse_gate = self.base_gate.inverse().control(
+../prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/circuit/library/standard_gates/rzz.py:150: in control
+    gate = super().control(
+../prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/circuit/gate.py:142: in control
+    return add_control(self, num_ctrl_qubits, label, ctrl_state)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/circuit/add_control.py:61: in add_control
+    cgate = control(operation, num_ctrl_qubits=num_ctrl_qubits, label=label, ctrl_state=ctrl_state)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/circuit/add_control.py:120: in control
+    unrolled_gate = _unroll_gate(operation, basis_gates=basis)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/circuit/add_control.py:273: in _unroll_gate
+    opqc = pm.run(circ)
+           ^^^^^^^^^^^^
+../prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passmanager.py:464: in wrapper
+    return meth(*meth_args, **meth_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passmanager.py:226: in run
+    return super().run(
+../prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/passmanager.py:231: in run
+    out = [
+../prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/passmanager.py:232: in <listcomp>
+    _run_workflow(program=program, pass_manager=self, callback=callback, **kwargs)
+../prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/passmanager.py:292: in _run_workflow
+    passmanager_ir, final_state = flow_controller.execute(
+../prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/base_tasks.py:218: in execute
+    passmanager_ir, state = next_task.execute(
+../prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/basepasses.py:195: in execute
+    new_dag, state = super().execute(
+../prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/base_tasks.py:98: in execute
+    ret = self.run(passmanager_ir)
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <qiskit.transpiler.passes.basis.basis_translator.BasisTranslator object at 0x7183a02e5a90>
+dag = <qiskit._accelerate.circuit.DAGCircuit object at 0x7183800c0d20>
+
+    def run(self, dag):
+        """Translate an input DAGCircuit to the target basis.
+    
+        Args:
+            dag (DAGCircuit): input dag
+    
+        Raises:
+            TranspilerError: if the target basis cannot be reached
+    
+        Returns:
+            DAGCircuit: translated circuit.
+        """
+    
+>       return base_run(
+            dag,
+            self._equiv_lib,
+            self._qargs_with_non_global_operation,
+            self._min_qubits,
+            None if self._target_basis is None else set(self._target_basis),
+            self._target,
+            None if self._non_global_operations is None else set(self._non_global_operations),
+        )
+E       RuntimeError: Already borrowed
+
+../prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passes/basis/basis_translator.py:129: RuntimeError
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_c1_h6_native.py::test_tiny_rotation_artificial_end_to_end_with_same_P0_and_allowances
+1 failed, 106 passed in 9.95s

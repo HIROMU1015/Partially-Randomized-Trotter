@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## C1：H6限定Gaussian数値精度修正
+
+`../trottertracks/c1_h6_native_precision.py`は既存Nature JW消去順序・RZ/XXPlusYYを維持し、小回転をexact-zero/LAPACK/atan2で保持する。H6のbuilderだけ差替え、旧H2/H4 builderは変更しない。`c1_h6_native.py`はP0/inverse生成の共通mutexを使用。[報告・185人工PASS](../../docs/research/research_c_c1_h6_native_precision_repair_20261025.md)。
+
 ## C1：H6 native実行・部分証拠
 
 `c1_h6_native.py`／`c1_h6_state_action.py`をSOURCE bf431765…から無変更実行。局所full8192有限probe30／ancilla shell3 PASS、kernel raw/referenceの最初の差1.0400731857e-10>固定1e-10で停止。162/298 units、kernel bundle8 FAIL、kernel費用・adjoint/X-Y未到達。[結果](../../docs/research/research_c_c1_h6_native_execution_20261025.md)。全operator/合成誤差上界/CA未資格、retry0、mandatory STOP。以下は準備履歴。

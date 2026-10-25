@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1：H6 native精度修正
+
+[Gaussian精度・inverse競合修正と185人工PASS](research/research_c_c1_h6_native_precision_repair_20261025.md)／[同一8経路のfresh298-call契約](research/research_c_c1_h6_native_precision_contract_20261025.json)。旧FAIL・SOURCEを保持し、検証閾値・P0・比較条件は維持。
+
 ## C1：H6 native限定実行・correctness FAIL
 
 [結果](research/research_c_c1_h6_native_execution_20261025.md)：162/298 calls、局所30／shell3 PASS、最初のCDF_s1_shared raw/reference差1.0400731857e-10>固定1e-10。8 kernel bundleはFAIL、QPY52を保全。adjoint/X-Y/kernel費用/合成誤差profileは未到達、原因・CA・資源は未資格。SOURCE無変更・retry/resume0・mandatory STOP。以下は準備等の履歴。

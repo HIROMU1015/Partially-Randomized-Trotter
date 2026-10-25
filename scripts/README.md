@@ -1,5 +1,9 @@
 # scripts 索引
 
+## C1：H6 native精度修正版
+
+`run_research_c_c1_h6_native.py`は[新precision契約](../docs/research/research_c_c1_h6_native_precision_contract_20261025.json)を受け、H6専用PrecisionBuilderを使う。旧契約のrun01は再起動しない。[修正・185人工PASS](../docs/research/research_c_c1_h6_native_precision_repair_20261025.md)。
+
 ## C1：H6 native限定実行のcorrectness FAIL
 
 `run_research_c_c1_h6_native.py`をSOURCE bf431765…で1回実行。162/298 calls、局所30／shell3 PASS、最初のCDF_s1_shared raw/referenceが固定閾値を超過。[部分結果](../docs/research/research_c_c1_h6_native_execution_20261025.md)。8 kernel bundle FAIL、adjoint/X-Y/kernel費用/104 profile未到達、QPY52・STOP保全。retry/resume0、旧runner再起動禁止・mandatory STOP。下記の未承認表示は準備時点の履歴。

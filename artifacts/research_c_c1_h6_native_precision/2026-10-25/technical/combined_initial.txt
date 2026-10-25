@@ -1,0 +1,452 @@
+.............................................F..................F....... [ 39%]
+...............................................................FFFFFFFFF [ 78%]
+FFF.....................................                                 [100%]
+=================================== FAILURES ===================================
+_____ test_tiny_rotation_artificial_end_to_end_with_same_P0_and_allowances _____
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-448/test_tiny_rotation_artificial_0')
+
+    def test_tiny_rotation_artificial_end_to_end_with_same_P0_and_allowances(tmp_path):
+        c=artificial(tmp_path,angle=1e-9)
+        with patch.object(m,'preflight',return_value=c):m.run(tmp_path,tmp_path/'unused',tmp_path/'out')
+        result=m.io.read(tmp_path/'out/result.json')
+        assert len(result['candidates'])==8
+        for candidate in result['candidates'].values():
+            assert candidate['kernel']['raw_reference']['max_entry']<2e-14
+>           assert candidate['kernel']['compiler']['max_entry']<2e-14
+E           assert 2.6963695316519855e-14 < 2e-14
+
+tests/management/test_research_c_c1_h6_native.py:102: AssertionError
+________ test_builder_gaussian_direction_control_phase_and_scalar_once _________
+
+    def test_builder_gaussian_direction_control_phase_and_scalar_once():
+        with bridges() as (ops, gaussian):
+            m = model(ops); builder = native.NativeBuilder()
+            qc = builder.local(m, 0, '1/10')
+            names = [row[0] for row in qc.records]
+            assert names[0].startswith('compose:B') and names[0].endswith('†')
+            assert names[-2].startswith('compose:B') and not names[-2].endswith('†')
+            rzz = [row for row in qc.records if row[0] == 'c-rzz']
+>           assert len(rzz) == 1 and rzz[0][2] == (2, 0, 1)
+E           assert (0 == 1)
+E            +  where 0 = len([])
+
+tests/management/test_research_c_c1_stage2_native.py:115: AssertionError
+__ test_old_positive_det_pi_counterexample_is_repaired_without_logm_or_fitter __
+
+    def test_old_positive_det_pi_counterexample_is_repaired_without_logm_or_fitter():
+        from trottertracks import c1_h6_initialization as old
+        import scipy.linalg,scipy.optimize
+>       from ffsim.linalg import util
+E       ModuleNotFoundError: No module named 'ffsim'
+
+tests/management/test_research_c_c1_real_orthogonal_codec.py:43: ModuleNotFoundError
+___ test_multiple_frames_general_J_and_numpy_JAX_parameter_compatibility[2] ____
+
+n = 2
+
+    @pytest.mark.parametrize('n',[2,6])
+    def test_multiple_frames_general_J_and_numpy_JAX_parameter_compatibility(n):
+        from scipy.linalg import expm
+>       from ffsim.linalg import util
+E       ModuleNotFoundError: No module named 'ffsim'
+
+tests/management/test_research_c_c1_real_orthogonal_codec.py:58: ModuleNotFoundError
+___ test_multiple_frames_general_J_and_numpy_JAX_parameter_compatibility[6] ____
+
+n = 6
+
+    @pytest.mark.parametrize('n',[2,6])
+    def test_multiple_frames_general_J_and_numpy_JAX_parameter_compatibility(n):
+        from scipy.linalg import expm
+>       from ffsim.linalg import util
+E       ModuleNotFoundError: No module named 'ffsim'
+
+tests/management/test_research_c_c1_real_orthogonal_codec.py:58: ModuleNotFoundError
+_ test_invalid_input_is_rejected_without_orthogonalizing_or_real_casting[nonorthogonal] _
+
+bad = 'nonorthogonal'
+
+    @pytest.mark.parametrize('bad',['nonorthogonal','nonfinite','complex','wrong_shape','nonsymmetric_J','wrong_dtype'])
+    def test_invalid_input_is_rejected_without_orthogonalizing_or_real_casting(bad):
+        J=np.eye(2)[None];U=np.eye(2)[None]
+        if bad=='nonorthogonal':U[0,0,0]=1.01
+        if bad=='nonfinite':U[0,0,0]=np.nan
+        if bad=='complex':U=U.astype(complex)
+        if bad=='wrong_shape':U=np.zeros((1,2,3))
+        if bad=='nonsymmetric_J':J[0,0,1]=1e-14
+        if bad=='wrong_dtype':U=U.astype(np.float32)
+>       with pytest.raises(ValueError):c.roundtrip(J,U)
+                                       ^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_c1_real_orthogonal_codec.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+J = array([[[1., 0.],
+        [0., 1.]]])
+U = array([[[1.01, 0.  ],
+        [0.  , 1.  ]]])
+
+    def roundtrip(J,U):
+        """Return J_out,U_out,x,diagnostics,raw arrays in locked ffsim layout.
+    
+        Unchanged J, each original column density projector and reconstructed tensor
+        are required. U_out matches the sign-gauged representative, not a forbidden
+        exponential representation of an original det=-1 matrix.
+        """
+        import numpy as np
+>       import ffsim.linalg.util as util
+E       ModuleNotFoundError: No module named 'ffsim'
+
+src/trottertracks/c1_real_orthogonal_codec.py:79: ModuleNotFoundError
+_ test_invalid_input_is_rejected_without_orthogonalizing_or_real_casting[nonfinite] _
+
+bad = 'nonfinite'
+
+    @pytest.mark.parametrize('bad',['nonorthogonal','nonfinite','complex','wrong_shape','nonsymmetric_J','wrong_dtype'])
+    def test_invalid_input_is_rejected_without_orthogonalizing_or_real_casting(bad):
+        J=np.eye(2)[None];U=np.eye(2)[None]
+        if bad=='nonorthogonal':U[0,0,0]=1.01
+        if bad=='nonfinite':U[0,0,0]=np.nan
+        if bad=='complex':U=U.astype(complex)
+        if bad=='wrong_shape':U=np.zeros((1,2,3))
+        if bad=='nonsymmetric_J':J[0,0,1]=1e-14
+        if bad=='wrong_dtype':U=U.astype(np.float32)
+>       with pytest.raises(ValueError):c.roundtrip(J,U)
+                                       ^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_c1_real_orthogonal_codec.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+J = array([[[1., 0.],
+        [0., 1.]]])
+U = array([[[nan,  0.],
+        [ 0.,  1.]]])
+
+    def roundtrip(J,U):
+        """Return J_out,U_out,x,diagnostics,raw arrays in locked ffsim layout.
+    
+        Unchanged J, each original column density projector and reconstructed tensor
+        are required. U_out matches the sign-gauged representative, not a forbidden
+        exponential representation of an original det=-1 matrix.
+        """
+        import numpy as np
+>       import ffsim.linalg.util as util
+E       ModuleNotFoundError: No module named 'ffsim'
+
+src/trottertracks/c1_real_orthogonal_codec.py:79: ModuleNotFoundError
+_ test_invalid_input_is_rejected_without_orthogonalizing_or_real_casting[complex] _
+
+bad = 'complex'
+
+    @pytest.mark.parametrize('bad',['nonorthogonal','nonfinite','complex','wrong_shape','nonsymmetric_J','wrong_dtype'])
+    def test_invalid_input_is_rejected_without_orthogonalizing_or_real_casting(bad):
+        J=np.eye(2)[None];U=np.eye(2)[None]
+        if bad=='nonorthogonal':U[0,0,0]=1.01
+        if bad=='nonfinite':U[0,0,0]=np.nan
+        if bad=='complex':U=U.astype(complex)
+        if bad=='wrong_shape':U=np.zeros((1,2,3))
+        if bad=='nonsymmetric_J':J[0,0,1]=1e-14
+        if bad=='wrong_dtype':U=U.astype(np.float32)
+>       with pytest.raises(ValueError):c.roundtrip(J,U)
+                                       ^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_c1_real_orthogonal_codec.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+J = array([[[1., 0.],
+        [0., 1.]]])
+U = array([[[1.+0.j, 0.+0.j],
+        [0.+0.j, 1.+0.j]]])
+
+    def roundtrip(J,U):
+        """Return J_out,U_out,x,diagnostics,raw arrays in locked ffsim layout.
+    
+        Unchanged J, each original column density projector and reconstructed tensor
+        are required. U_out matches the sign-gauged representative, not a forbidden
+        exponential representation of an original det=-1 matrix.
+        """
+        import numpy as np
+>       import ffsim.linalg.util as util
+E       ModuleNotFoundError: No module named 'ffsim'
+
+src/trottertracks/c1_real_orthogonal_codec.py:79: ModuleNotFoundError
+_ test_invalid_input_is_rejected_without_orthogonalizing_or_real_casting[wrong_shape] _
+
+bad = 'wrong_shape'
+
+    @pytest.mark.parametrize('bad',['nonorthogonal','nonfinite','complex','wrong_shape','nonsymmetric_J','wrong_dtype'])
+    def test_invalid_input_is_rejected_without_orthogonalizing_or_real_casting(bad):
+        J=np.eye(2)[None];U=np.eye(2)[None]
+        if bad=='nonorthogonal':U[0,0,0]=1.01
+        if bad=='nonfinite':U[0,0,0]=np.nan
+        if bad=='complex':U=U.astype(complex)
+        if bad=='wrong_shape':U=np.zeros((1,2,3))
+        if bad=='nonsymmetric_J':J[0,0,1]=1e-14
+        if bad=='wrong_dtype':U=U.astype(np.float32)
+>       with pytest.raises(ValueError):c.roundtrip(J,U)
+                                       ^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_c1_real_orthogonal_codec.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+J = array([[[1., 0.],
+        [0., 1.]]])
+U = array([[[0., 0., 0.],
+        [0., 0., 0.]]])
+
+    def roundtrip(J,U):
+        """Return J_out,U_out,x,diagnostics,raw arrays in locked ffsim layout.
+    
+        Unchanged J, each original column density projector and reconstructed tensor
+        are required. U_out matches the sign-gauged representative, not a forbidden
+        exponential representation of an original det=-1 matrix.
+        """
+        import numpy as np
+>       import ffsim.linalg.util as util
+E       ModuleNotFoundError: No module named 'ffsim'
+
+src/trottertracks/c1_real_orthogonal_codec.py:79: ModuleNotFoundError
+_ test_invalid_input_is_rejected_without_orthogonalizing_or_real_casting[nonsymmetric_J] _
+
+bad = 'nonsymmetric_J'
+
+    @pytest.mark.parametrize('bad',['nonorthogonal','nonfinite','complex','wrong_shape','nonsymmetric_J','wrong_dtype'])
+    def test_invalid_input_is_rejected_without_orthogonalizing_or_real_casting(bad):
+        J=np.eye(2)[None];U=np.eye(2)[None]
+        if bad=='nonorthogonal':U[0,0,0]=1.01
+        if bad=='nonfinite':U[0,0,0]=np.nan
+        if bad=='complex':U=U.astype(complex)
+        if bad=='wrong_shape':U=np.zeros((1,2,3))
+        if bad=='nonsymmetric_J':J[0,0,1]=1e-14
+        if bad=='wrong_dtype':U=U.astype(np.float32)
+>       with pytest.raises(ValueError):c.roundtrip(J,U)
+                                       ^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_c1_real_orthogonal_codec.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+J = array([[[1.e+00, 1.e-14],
+        [0.e+00, 1.e+00]]])
+U = array([[[1., 0.],
+        [0., 1.]]])
+
+    def roundtrip(J,U):
+        """Return J_out,U_out,x,diagnostics,raw arrays in locked ffsim layout.
+    
+        Unchanged J, each original column density projector and reconstructed tensor
+        are required. U_out matches the sign-gauged representative, not a forbidden
+        exponential representation of an original det=-1 matrix.
+        """
+        import numpy as np
+>       import ffsim.linalg.util as util
+E       ModuleNotFoundError: No module named 'ffsim'
+
+src/trottertracks/c1_real_orthogonal_codec.py:79: ModuleNotFoundError
+_ test_invalid_input_is_rejected_without_orthogonalizing_or_real_casting[wrong_dtype] _
+
+bad = 'wrong_dtype'
+
+    @pytest.mark.parametrize('bad',['nonorthogonal','nonfinite','complex','wrong_shape','nonsymmetric_J','wrong_dtype'])
+    def test_invalid_input_is_rejected_without_orthogonalizing_or_real_casting(bad):
+        J=np.eye(2)[None];U=np.eye(2)[None]
+        if bad=='nonorthogonal':U[0,0,0]=1.01
+        if bad=='nonfinite':U[0,0,0]=np.nan
+        if bad=='complex':U=U.astype(complex)
+        if bad=='wrong_shape':U=np.zeros((1,2,3))
+        if bad=='nonsymmetric_J':J[0,0,1]=1e-14
+        if bad=='wrong_dtype':U=U.astype(np.float32)
+>       with pytest.raises(ValueError):c.roundtrip(J,U)
+                                       ^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_c1_real_orthogonal_codec.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+J = array([[[1., 0.],
+        [0., 1.]]])
+U = array([[[1., 0.],
+        [0., 1.]]], dtype=float32)
+
+    def roundtrip(J,U):
+        """Return J_out,U_out,x,diagnostics,raw arrays in locked ffsim layout.
+    
+        Unchanged J, each original column density projector and reconstructed tensor
+        are required. U_out matches the sign-gauged representative, not a forbidden
+        exponential representation of an original det=-1 matrix.
+        """
+        import numpy as np
+>       import ffsim.linalg.util as util
+E       ModuleNotFoundError: No module named 'ffsim'
+
+src/trottertracks/c1_real_orthogonal_codec.py:79: ModuleNotFoundError
+____________ test_schur_or_ffsim_corruption_causes_explicit_failure ____________
+
+    def test_schur_or_ffsim_corruption_causes_explicit_failure():
+        import scipy.linalg
+>       from ffsim.linalg import util
+E       ModuleNotFoundError: No module named 'ffsim'
+
+tests/management/test_research_c_c1_real_orthogonal_codec.py:88: ModuleNotFoundError
+_ test_artificial_worker_saved_input_reuse_no_initializer_and_partial_STOP[False] _
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-448/test_artificial_worker_saved_i0')
+bad_identity = False
+
+    @pytest.mark.parametrize('bad_identity',[False,True])
+    def test_artificial_worker_saved_input_reuse_no_initializer_and_partial_STOP(tmp_path,bad_identity):
+        from trottertracks import c1_h6_codec_roundtrip as m
+        root=tmp_path/'root';root.mkdir();J=np.zeros((18,2,2));J[0]=[[.2,.03],[.03,.1]]
+        U=np.repeat(rotation(.4)[None],18,axis=0);U[0,:,0]*=-1;U[2]=-np.eye(2)
+        g=m.old.reconstruct(J,U);np.savez(root/'input.npz',g=g);np.savez(root/'full.npz',J=J,U=U)
+        arrays={}
+        for r in (14,18):
+            initial=U[:r].copy()
+            if bad_identity and r==18:initial[0,:,0]*=-1
+            np.savez(root/f'initial{r}.npz',J=J[:r],U=initial);arrays[str(r)]=f'initial{r}.npz'
+        contract=dict(original_input='input.npz',XDF_full='full.npz',initial_arrays=arrays)
+        forbidden=Mock(side_effect=AssertionError('No new initializer or optimizer'))
+        with patch.object(m.old,'initial_decomposition',forbidden),patch.object(m.old,'objective_gradient',forbidden):
+            if bad_identity:
+                with pytest.raises(ValueError,match='IDENTITY_NOT_ESTABLISHED'):m.worker(root,root/'out',contract)
+>           else:m.worker(root,root/'out',contract)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_c1_real_orthogonal_codec.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c1_h6_codec_roundtrip.py:69: in worker
+    J2,U2,x,report,raw=calls('corrected_codec',str(r),lambda:codec.roundtrip(J,U))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage3_integrated.py:108: in __call__
+    value = function()
+            ^^^^^^^^^^
+src/trottertracks/c1_h6_codec_roundtrip.py:69: in <lambda>
+    J2,U2,x,report,raw=calls('corrected_codec',str(r),lambda:codec.roundtrip(J,U))
+                                                             ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+J = array([[[0.2 , 0.03],
+        [0.03, 0.1 ]],
+
+       [[0.  , 0.  ],
+        [0.  , 0.  ]],
+
+       [[0.  , 0.  ],
+    ... ],
+        [0.  , 0.  ]],
+
+       [[0.  , 0.  ],
+        [0.  , 0.  ]],
+
+       [[0.  , 0.  ],
+        [0.  , 0.  ]]])
+U = array([[[-0.92106099,  0.38941834],
+        [ 0.38941834,  0.92106099]],
+
+       [[ 0.92106099,  0.38941834],
+        ...41834],
+        [-0.38941834,  0.92106099]],
+
+       [[ 0.92106099,  0.38941834],
+        [-0.38941834,  0.92106099]]])
+
+    def roundtrip(J,U):
+        """Return J_out,U_out,x,diagnostics,raw arrays in locked ffsim layout.
+    
+        Unchanged J, each original column density projector and reconstructed tensor
+        are required. U_out matches the sign-gauged representative, not a forbidden
+        exponential representation of an original det=-1 matrix.
+        """
+        import numpy as np
+>       import ffsim.linalg.util as util
+E       ModuleNotFoundError: No module named 'ffsim'
+
+src/trottertracks/c1_real_orthogonal_codec.py:79: ModuleNotFoundError
+_ test_artificial_worker_saved_input_reuse_no_initializer_and_partial_STOP[True] _
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-448/test_artificial_worker_saved_i1')
+bad_identity = True
+
+    @pytest.mark.parametrize('bad_identity',[False,True])
+    def test_artificial_worker_saved_input_reuse_no_initializer_and_partial_STOP(tmp_path,bad_identity):
+        from trottertracks import c1_h6_codec_roundtrip as m
+        root=tmp_path/'root';root.mkdir();J=np.zeros((18,2,2));J[0]=[[.2,.03],[.03,.1]]
+        U=np.repeat(rotation(.4)[None],18,axis=0);U[0,:,0]*=-1;U[2]=-np.eye(2)
+        g=m.old.reconstruct(J,U);np.savez(root/'input.npz',g=g);np.savez(root/'full.npz',J=J,U=U)
+        arrays={}
+        for r in (14,18):
+            initial=U[:r].copy()
+            if bad_identity and r==18:initial[0,:,0]*=-1
+            np.savez(root/f'initial{r}.npz',J=J[:r],U=initial);arrays[str(r)]=f'initial{r}.npz'
+        contract=dict(original_input='input.npz',XDF_full='full.npz',initial_arrays=arrays)
+        forbidden=Mock(side_effect=AssertionError('No new initializer or optimizer'))
+        with patch.object(m.old,'initial_decomposition',forbidden),patch.object(m.old,'objective_gradient',forbidden):
+            if bad_identity:
+>               with pytest.raises(ValueError,match='IDENTITY_NOT_ESTABLISHED'):m.worker(root,root/'out',contract)
+                                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_c1_real_orthogonal_codec.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c1_h6_codec_roundtrip.py:69: in worker
+    J2,U2,x,report,raw=calls('corrected_codec',str(r),lambda:codec.roundtrip(J,U))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage3_integrated.py:108: in __call__
+    value = function()
+            ^^^^^^^^^^
+src/trottertracks/c1_h6_codec_roundtrip.py:69: in <lambda>
+    J2,U2,x,report,raw=calls('corrected_codec',str(r),lambda:codec.roundtrip(J,U))
+                                                             ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+J = array([[[0.2 , 0.03],
+        [0.03, 0.1 ]],
+
+       [[0.  , 0.  ],
+        [0.  , 0.  ]],
+
+       [[0.  , 0.  ],
+    ... ],
+        [0.  , 0.  ]],
+
+       [[0.  , 0.  ],
+        [0.  , 0.  ]],
+
+       [[0.  , 0.  ],
+        [0.  , 0.  ]]])
+U = array([[[-0.92106099,  0.38941834],
+        [ 0.38941834,  0.92106099]],
+
+       [[ 0.92106099,  0.38941834],
+        ...41834],
+        [-0.38941834,  0.92106099]],
+
+       [[ 0.92106099,  0.38941834],
+        [-0.38941834,  0.92106099]]])
+
+    def roundtrip(J,U):
+        """Return J_out,U_out,x,diagnostics,raw arrays in locked ffsim layout.
+    
+        Unchanged J, each original column density projector and reconstructed tensor
+        are required. U_out matches the sign-gauged representative, not a forbidden
+        exponential representation of an original det=-1 matrix.
+        """
+        import numpy as np
+>       import ffsim.linalg.util as util
+E       ModuleNotFoundError: No module named 'ffsim'
+
+src/trottertracks/c1_real_orthogonal_codec.py:79: ModuleNotFoundError
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_c1_h6_native.py::test_tiny_rotation_artificial_end_to_end_with_same_P0_and_allowances
+FAILED tests/management/test_research_c_c1_stage2_native.py::test_builder_gaussian_direction_control_phase_and_scalar_once
+FAILED tests/management/test_research_c_c1_real_orthogonal_codec.py::test_old_positive_det_pi_counterexample_is_repaired_without_logm_or_fitter
+FAILED tests/management/test_research_c_c1_real_orthogonal_codec.py::test_multiple_frames_general_J_and_numpy_JAX_parameter_compatibility[2]
+FAILED tests/management/test_research_c_c1_real_orthogonal_codec.py::test_multiple_frames_general_J_and_numpy_JAX_parameter_compatibility[6]
+FAILED tests/management/test_research_c_c1_real_orthogonal_codec.py::test_invalid_input_is_rejected_without_orthogonalizing_or_real_casting[nonorthogonal]
+FAILED tests/management/test_research_c_c1_real_orthogonal_codec.py::test_invalid_input_is_rejected_without_orthogonalizing_or_real_casting[nonfinite]
+FAILED tests/management/test_research_c_c1_real_orthogonal_codec.py::test_invalid_input_is_rejected_without_orthogonalizing_or_real_casting[complex]
+FAILED tests/management/test_research_c_c1_real_orthogonal_codec.py::test_invalid_input_is_rejected_without_orthogonalizing_or_real_casting[wrong_shape]
+FAILED tests/management/test_research_c_c1_real_orthogonal_codec.py::test_invalid_input_is_rejected_without_orthogonalizing_or_real_casting[nonsymmetric_J]
+FAILED tests/management/test_research_c_c1_real_orthogonal_codec.py::test_invalid_input_is_rejected_without_orthogonalizing_or_real_casting[wrong_dtype]
+FAILED tests/management/test_research_c_c1_real_orthogonal_codec.py::test_schur_or_ffsim_corruption_causes_explicit_failure
+FAILED tests/management/test_research_c_c1_real_orthogonal_codec.py::test_artificial_worker_saved_input_reuse_no_initializer_and_partial_STOP[False]
+FAILED tests/management/test_research_c_c1_real_orthogonal_codec.py::test_artificial_worker_saved_input_reuse_no_initializer_and_partial_STOP[True]
+14 failed, 170 passed in 11.03s
