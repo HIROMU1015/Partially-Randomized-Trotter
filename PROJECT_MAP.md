@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+研究Bの[B-Next 1：既知法との差分・強いbaselineの静的調査](docs/research/research_b_bnext1_prior_art_and_strong_baselines_20261026.md)。Exact-R／full DF-PF／調整済み内部PFの再利用経路、旧H246とR2-CS終了との境界を整理。新科学計算・実装・継続方針の正式採択は行っていない。
+
 研究Bの全体像は[成果統合・科学的到達点・発展候補A〜E](docs/research/research_b_integrated_outcomes_and_future_directions_20261025.md)を参照。D内部PFからouter/RTE・native・shot加重会計までの既存8報告を整理し、経験的結果・条件付き費用・未取得保証を区別する。新しい科学結果や研究方針の正式変更ではなく、次の方向はユーザー判断。
 
 研究B [固定24条件shot加重会計：全結果・限界・STOP](docs/research/research_b_outer_shot_weighted_execution_20261025.md)。SOURCE9bebdc46、48 shot要求・144資源行・24比較を一回完了、scope一致・保存失敗0。科学状態INCONCLUSIVE_QUALIFICATIONS_AND_RARE_COSTS、u_num／γ／rare費用は未取得、無条件G・同精度優位は未認定。旧準備・設計と全原本を保全。

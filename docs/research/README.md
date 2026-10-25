@@ -11,6 +11,8 @@
 
 ## 文書の役割
 
+研究Bの[B-Next 1静的調査](research_b_bnext1_prior_art_and_strong_baselines_20261026.md)は、PR／SPRINT等との方法対応、Exact-R・full DF-PF等の強い対照、旧H246・終了済みR2-CSとの関係を整理する。実装・新数値評価・新規性の正式判定は含めない。
+
 研究Bの[成果統合・科学的到達点・発展候補A〜E](research_b_integrated_outcomes_and_future_directions_20261025.md)は、D内部高次PF・outer/RTE・高精度参照・native・条件付きshot加重費用を一冊にまとめた技術報告。既存数値の引用とSOURCEの静的確認に限定し、新しい数値解析・科学レビュー・研究方針の正式採択は行っていない。
 
 Gaussian singletonの[改善候補設計](pr_gaussian_singleton_synthesis_design_20261024.md)は、support1／support2を区別した選択部分空間Givens案と、既存helperの再利用・同値性条件・未承認の48-wrapper対照案。静的調査のみで、削減量未測定・候補未実装。
