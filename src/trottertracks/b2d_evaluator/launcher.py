@@ -106,7 +106,7 @@ class Evidence:
     def finish(self, status, ledger, *, result=None, error=None):
         status = dict(status, mode="MOCK_ONLY" if self.mock_only else "SCIENCE_STAGE1",
                       stop=STOP, utc=datetime.now(timezone.utc).isoformat(),
-                      calls=ledger.snapshot(), precision_status="UNQUALIFIED_COMPLEX128_DESCRIPTIVE_ONLY")
+                      calls=ledger.snapshot(), precision_status=getattr(self,"precision_status","UNQUALIFIED_COMPLEX128_DESCRIPTIVE_ONLY"))
         if error is not None:
             status.update(reason=failure_code(error),
                           error_type=type(error).__name__)
