@@ -1,5 +1,9 @@
 # 研究計画資料
 
+## C1：H4保存順XDF prefix・DF予算の最初の適格はrank8
+
+[科学実行結果・全9prefix・資格](research_c_c1_h4_xdf_prefix_budget_execution_20261026.md)。SOURCE f7bc730d1…無変更、356 COMPLETE・correctness FAIL0・retry/resume0。rank8 norm＋guard9.5339014551e-5 HaでCA/8以内。旧CDF8/XDF10費用は保持、新XDF8のPF・native・RPE・費用比較は未実施。mandatory STOP。
+
 ## C1：案A採択・H4 XDF prefix予算評価の準備
 
 [最小entry・人工29＋旧関連28 PASS・未解決回帰制約](research_c_c1_h4_xdf_prefix_budget_preparation_20261026.md)／[SOURCE・入力・356-call未承認契約](research_c_c1_h4_xdf_prefix_budget_contract_unapproved_20261026.json)。保存順1..9を全件測定し、保存rank10 anchorと比較する計画。実H4のdecode／新norm／rank判定0。科学実行は別途明示許可後のみ、mandatory STOP。

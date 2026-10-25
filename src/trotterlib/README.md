@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## C1：保存H4 XDF prefix・限定DF予算評価完了
+
+既存DF／sector／SVD／allowanceをSOURCE f7bc730d1…のadapterから無変更で再利用し、356 callsで全9prefixを評価。[結果・元順rank8が最初のDF予算PASS](../../docs/research/research_c_c1_h4_xdf_prefix_budget_execution_20261026.md)。新physical／fit／PF／回路／shots／費用なし。旧SOURCE・結果を保持、mandatory STOP。
+
 ## C1：保存H4 XDF prefix評価adapter
 
 `../trottertracks/c1_h4_xdf_prefix_budget.py`は既存DFHamiltonian／PhysicalSector／df_linear_operator／dense化／bit permutation／SciPy SVD／H4 allowanceを再利用。薄いcounted matvecで全9prefix×36基底を計上する。[技術報告・人工29＋旧関連28 PASS・制約](../../docs/research/research_c_c1_h4_xdf_prefix_budget_preparation_20261026.md)。新sector simulator／fitterなし、旧SOURCEは不変。科学実行は別許可後だけ・mandatory STOP。

@@ -88,6 +88,11 @@
       "sha": "55b3d86817308a8d676221982aae13e1a6e3bed4",
       "role": "c1_h6_saved_CA_RPE_serial_resources_scientific_SOURCE",
       "description": "Frozen SOURCE for user-permitted119-call saved scalar evidence evaluation;no fit/error regeneration/circuit work/quantum sampling."
+    },
+    {
+      "sha": "f7bc730d12ad704cdb72cc8a82d2bd973d01b2e5",
+      "role": "c1_h4_saved_XDF_prefix_budget_scientific_SOURCE",
+      "description": "Frozen user-permitted356-call prefix1..9 sector36 DF-budget evaluation; no fit,rank10 norm,physical regeneration,PF,circuit,shots or resource calculation."
     }
   ],
   "artifact_inventory": {
@@ -1230,6 +1235,14 @@
           "H6_SAVED_CA_RPE_SERIAL_RESOURCES_COMPLETE"
         ],
         "reason": "Four numerical CA PASS,119 calls,solved shots and serial totals;XDF lower RZ for same-s comparisons,level-B conditional model only."
+      },
+      {
+        "path": "artifacts/research_c_c1_h4_xdf_prefix_budget/2026-10-26",
+        "kind": "directory",
+        "supports": [
+          "c1_h4_saved_xdf_prefix_budget"
+        ],
+        "reason": "All9 registered prefix norms/allowances,356 calls,raw19,first eligible saved prefix8;rank8/9 PASS; numerical DF-budget only, no new PF/native/CA/cost qualification."
       }
     ],
     "quarantined": [
@@ -5210,6 +5223,97 @@
       "protected_files_unchanged": 872,
       "raw_files": 19,
       "all_correctness_gates": "PASS"
+    },
+    {
+      "status": "H4_XDF_PREFIX_BUDGET_COMPLETE",
+      "scope": "C1_H4_SAVED_XDF_PREFIX_DF_BUDGET_V1",
+      "SOURCE_commit": "f7bc730d12ad704cdb72cc8a82d2bd973d01b2e5",
+      "SOURCE_tree": "1f70265e13045492554591f55df5a71d0d14fd1c",
+      "branch": "codex/research-c-c1-h4-prefix-execution-20261026",
+      "contract": "docs/research/research_c_c1_h4_xdf_prefix_budget_contract_unapproved_20261026.json",
+      "contract_sha256": "56ad290738e1faec290bd66e896fc7da8370e4f31760ddd3429d5fea1c6787d0",
+      "source_manifest_sha256": "b63ef45279a27c09fcb0626628b025e4891c6ea58f602ffddce9489cf022a516",
+      "input_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+      "conditions": {
+        "molecule": "linear H4",
+        "distance_angstrom": 1.0,
+        "basis": "STO-3G",
+        "Nalpha": 2,
+        "Nbeta": 2,
+        "sector_dimension": 36,
+        "modes": 8,
+        "number_representation": true,
+        "decomposition": "saved OpenFermion1.6.1 eigh",
+        "order": "original saved lambda/G prefix",
+        "ranks": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "saved_anchor_rank": 10,
+        "CA_Ha": 0.00159,
+        "DF_budget_Ha": 0.00019875,
+        "allowance": "binary64_operation_scale_guard8_v1",
+        "component_atol": 1e-10,
+        "rtol": 0,
+        "sector_order": "ascending Qiskit little-endian interleaved spin occupations",
+        "kappa_policy": "retain saved original-g corrected one-body for every prefix"
+      },
+      "scientific_units": 356,
+      "maximum_logical_units": 356,
+      "scientific_COMPLETE": 356,
+      "scientific_FAIL": 0,
+      "inflight_calls": 0,
+      "call_counts": {
+        "saved_bundle_load": 1,
+        "sector_context": 1,
+        "input_kappa_scalar_identity": 1,
+        "physical_reference_attachment": 1,
+        "xdf_prefix_model": 9,
+        "xdf_matvec": 324,
+        "sector_error_norm": 9,
+        "numerical_allowance_budget": 9,
+        "prefix_selection_report": 1
+      },
+      "prefix_counts": {
+        "NOT_MET": 7,
+        "PASS": 2
+      },
+      "first_passing_saved_prefix": 8,
+      "rank10_recomputed": false,
+      "rows_csv": "artifacts/research_c_c1_h4_xdf_prefix_budget/2026-10-26/prefix_budget.csv",
+      "raw": "artifacts/research_c_c1_h4_xdf_prefix_budget/2026-10-26/run01",
+      "report": "docs/research/research_c_c1_h4_xdf_prefix_budget_execution_20261026.md",
+      "resources": {
+        "wall_seconds": 1.867182660382241,
+        "process_CPU_seconds": 10.334308106,
+        "peak_RSS_KiB": 277488
+      },
+      "source_files": 15,
+      "saved_inputs": 7,
+      "protected_files": 44,
+      "raw_files": 19,
+      "qualification": "numerical DF-budget eligibility for this saved order only; no PF/native/CA/resources qualification",
+      "rigorous_enclosure": null,
+      "CA_achieved": null,
+      "new_fit": 0,
+      "new_decomposition": 0,
+      "physical_regeneration": 0,
+      "PF": 0,
+      "native_build_compile": 0,
+      "synthesis": 0,
+      "shots": 0,
+      "total_cost": 0,
+      "retry": 0,
+      "resume": 0,
+      "old_full256_regression": "Still unresolved; not exercised in this sector36 run",
+      "mandatory_stop": true
     }
   ],
   "repository_completion_criteria": [

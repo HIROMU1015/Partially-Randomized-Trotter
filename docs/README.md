@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1：H4保存XDF prefix限定実行・rank8が最初の予算PASS
+
+[全9行・call・制約](research/research_c_c1_h4_xdf_prefix_budget_execution_20261026.md)。固定SOURCE f7bc730d1…・356/356 calls、rank1..7 NOT_MET・8/9 PASS。DF予算内の低prefixを確認したが、新baselineのPF／native／shots／費用は未取得。旧結果保全・mandatory STOP。
+
 ## C1：H4保存XDF prefixのDF予算評価準備
 
 [技術報告・SOURCE再利用・57関連PASS・full256回帰制約](research/research_c_c1_h4_xdf_prefix_budget_preparation_20261026.md)／[未承認356-call契約](research/research_c_c1_h4_xdf_prefix_budget_contract_unapproved_20261026.json)。案Aを次の対象に採択、元順prefix1..9・sector36、rank10は保存値のみ。今回新科学0、別実行許可までmandatory STOP。

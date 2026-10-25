@@ -1,5 +1,9 @@
 # scripts 索引
 
+## C1：H4保存XDF prefix・科学実行完了
+
+`run_research_c_c1_h4_xdf_prefix_budget.py`をSOURCE f7bc730d1…のまま一度実行し、356 calls／9prefixを完了。[結果](../docs/research/research_c_c1_h4_xdf_prefix_budget_execution_20261026.md)。保存順first-passing8、rank8/9 PASS、correctness FAIL/retry/resume0。2026-10-26/run01は消費済みで再起動しない。PF／native／shots／費用なし・mandatory STOP。
+
 ## C1：H4 XDF prefix1〜9・DF予算の技術準備
 
 `run_research_c_c1_h4_xdf_prefix_budget.py`はdefaultでbyte／環境preflightのみ。明示科学許可後の`--execute`で元順prefix9件と保存rank10 anchorを評価する。[SOURCE再利用・57関連PASS・旧full256回帰制約](../docs/research/research_c_c1_h4_xdf_prefix_budget_preparation_20261026.md)／[未承認356-call契約](../docs/research/research_c_c1_h4_xdf_prefix_budget_contract_unapproved_20261026.json)。新fit／physical生成／rank10 norm／PF／回路／shots／費用0、今回新科学0・mandatory STOP。

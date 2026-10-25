@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：保存H4 XDFのDF予算first-passingはrank8（2026-10-26）
+
+[全9prefix・gate・SOURCE・制約](docs/research/research_c_c1_h4_xdf_prefix_budget_execution_20261026.md)／[原本・CSV・356 calls・STOP](artifacts/research_c_c1_h4_xdf_prefix_budget/2026-10-26/)。SOURCE f7bc730d1…無変更、rank1..7 NOT_MET・8/9 PASS、correctness FAIL/retry0。rank10は保存値のみ、PF／native／CA／shots／総費用の新評価なし。旧費用結果を保持し、新XDF8 baseline採用は次判断。mandatory STOP。
+
 ## C1：H4保存XDF prefixのDF予算評価準備（2026-10-26）
 
 [接続・人工検証・制約](docs/research/research_c_c1_h4_xdf_prefix_budget_preparation_20261026.md)／[未承認356-call契約](docs/research/research_c_c1_h4_xdf_prefix_budget_contract_unapproved_20261026.json)。SOURCE `c1_h4_xdf_prefix_budget.py`、同名runner／管理test、証拠 `artifacts/research_c_c1_h4_xdf_prefix_budget/2026-10-26/technical/`。案A採択・新科学0、57関連test PASS。旧full256回帰1件の環境異常を報告し、当該旧経路は新sector36評価に使用しない。別科学許可までmandatory STOP。
