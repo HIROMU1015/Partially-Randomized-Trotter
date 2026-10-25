@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究B outer/RTE固定22行の実行準備（2026-10-25）
+
+[固定契約・SOURCE・人工119件・単一command](docs/research/research_b_outer_rte_22row_execution_ready_20261025.md)。SOURCE `26e8734aff3969dc8077cb058826d12394be28e1`、入口 `scripts/run_b2d_outer_rte22.py`、接続 `b2d_evaluator/outer_rte_execution.py`、人工test `tests/management/test_b2d_outer_rte22.py`。候補別r/K、22行・1239 dispatch・274 key・RTE各96・110 expectations。Read-only preflight PASS、科学計算未実行。旧16行の結果・STOPを保全し、別途明示許可後だけ実行する。
+
 ## 研究B outer固定16行の科学実行完了（2026-10-25）
 
 [結果・残差・SOURCE・STOP](docs/research/research_b_outer_splitting_stage1_execution_20261025.md)。SOURCE b85dd3284、全gate先行、16行・906 dispatch・490 key・80 expectationsを完了、retry0。原本9ファイル・CSV・process logは `artifacts/research_b_outer_splitting/20261025/`。Corrected signal改善を限定観測したが、raw改善・総資源優位は認定しない。追加科学計算へ進まずmandatory STOP。

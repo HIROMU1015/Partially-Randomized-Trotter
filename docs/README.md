@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究B outer/RTE固定22行の最終準備（2026-10-25）
+
+[固定22行・候補別r/K・新scope・人工119件・read-only preflight・実行command](research/research_b_outer_rte_22row_execution_ready_20261025.md)。科学SOURCE `26e8734aff3969dc8077cb058826d12394be28e1`。実装準備のみ完了、科学計算未実行。u_num・γ・shotsは未取得、同精度／総資源優位を認定しない。別途明示許可後のみ実行する。
+
 ## 研究B outer Stage 1の完了結果（2026-10-25）
 
 [実行報告・比較・normalization・限界・STOP](research/research_b_outer_splitting_stage1_execution_20261025.md)。SOURCE b85dd3284、16行・906 dispatch・490 key、全correctness PASS。原本と全行CSVは `artifacts/research_b_outer_splitting/20261025/`。技術的中断・修正・再実行なし。追加条件・native費用・Stage2は開始しない。

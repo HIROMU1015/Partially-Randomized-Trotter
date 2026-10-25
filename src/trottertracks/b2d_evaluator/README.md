@@ -1,5 +1,7 @@
 # B2-D 5方式評価器：接続準備・技術報告
 
+**Outer/RTE固定22行の準備完了（2026-10-25、科学計算未実行）：** [`outer_rte_execution.py`](outer_rte_execution.py)、入口 `scripts/run_b2d_outer_rte22.py`、人工test `tests/management/test_b2d_outer_rte22.py`。[固定SOURCE 26e8734af・契約・単一command](../../../docs/research/research_b_outer_rte_22row_execution_ready_20261025.md)。候補別r/K、1239 dispatch／274 key／RTE各96／110 expectations。既存105＋追加14件PASS、read-only preflight PASS。u_num未評価を残し、科学実行は別途明示許可後だけ。旧16行・36行の結果・契約は保全する。
+
 **Outer固定16行の科学実行完了（2026-10-25）：** [結果・SOURCE・STOP](../../../docs/research/research_b_outer_splitting_stage1_execution_20261025.md)。SOURCE b85dd3284を変更せず一回完了。全gate先行、16行・906 dispatch・490 key・80 expectations。Corrected signal改善は限定観測、raw改善／総資源優位は認定しない。原本は `artifacts/research_b_outer_splitting/20261025/`。追加科学計算なし、mandatory STOP。以下の準備記録は履歴として保全する。
 
 **Outer固定16行の接続完了（2026-10-25、科学実行未承認）：** [`outer_execution.py`](outer_execution.py) と `scripts/run_b2d_outer_stage1.py` を追加し、既存Input package・scope・launcher・失敗保存／STOPへ接続した。[SOURCE b85dd3284・最終契約・単一command](../../../docs/research/research_b_outer_splitting_stage1_execution_ready_20261025.md)。906 dispatch／490 key／RTE各24／80 expectation。追加14＋既存91＝105人工件PASS、科学処理0件。以下は前段の履歴。
