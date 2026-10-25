@@ -1,3 +1,7 @@
+## 2026-10-25 H4 Pauli-PR探索：技術準備のみ
+
+[H4 Pauli-PR探索の実装準備・非実行範囲](docs/non_df_h4_pauli_pr_search_preparation_20261025.md)：初期100候補/適応最大64、探索と独立確認を分離。人工10PASS、実H4科学実行0、一括承認待ち。
+
 ## 2026-10-25 H4 Pauli B0/B0I prefix/q比較
 
 [106登録候補・5精度・303点保存値grid](docs/non_df_h4_pauli_b0_comparison_20261025.md)。固定H4/1Å/STO-3G、Pauli184、central/S2/T.8、Qiskit1.3.0/opt1/seed17。

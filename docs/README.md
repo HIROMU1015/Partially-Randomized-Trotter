@@ -1,3 +1,7 @@
+## H4 Pauli-PR探索の準備（2026-10-25）
+
+[技術報告・非実行範囲](non_df_h4_pauli_pr_search_preparation_20261025.md)。人工小系10PASS、実H4実行未承認。
+
 ## 2026-10-25 H4 Pauli B0/B0I探索・比較
 
 [106候補の適格性・最小条件付きG・PR比較](non_df_h4_pauli_b0_comparison_20261025.md)。5精度と303点grid、raw/QPY/nativeはlossless archive、mandatory STOP。

@@ -1,3 +1,7 @@
+## H4 Pauli-PR探索接続（2026-10-25）
+
+`h4_pauli_pr_search.py` は既存sampler/D2/会計へ接続し、`h4_pauli_pr_mean.py` はeffective finite-law meanの小系Arb包含を実装する。実H4 dispatcher未実装、科学実行は一括承認待ち。
+
 ## 2026-10-25 Pauli B0/B0I登録候補比較
 
 [`h4_pauli_b0_comparison.py`](h4_pauli_b0_comparison.py)：保存順序prefix/q、対角同値target・保存PF target転送、共通unitary会計、有限集合最小/guard比較。[結果](../../docs/non_df_h4_pauli_b0_comparison_20261025.md)。

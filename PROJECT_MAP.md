@@ -1,3 +1,7 @@
+## 2026-10-25 H4 Pauli-PR探索準備
+
+[H4 Pauli-PR探索の実装準備・非実行範囲](docs/non_df_h4_pauli_pr_search_preparation_20261025.md)：初期100候補/適応最大64、探索と独立確認を分離。人工10PASS、実H4科学実行0、一括承認待ち。
+
 ## 2026-10-25 H4 Pauli B0/B0I：106候補の条件付き比較完了
 
 [候補集合・適格性・最小G・PR比較・保存証拠](docs/non_df_h4_pauli_b0_comparison_20261025.md)。S2/T.8/q1–8、初期20＋適応86。ε=.05はp132/q1 B0、他4精度は保存PRが低G。全比較はρ/保存平均価格に条件付き、mandatory STOP。
