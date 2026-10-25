@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## C1：保存H6 rank14の一般K・S2 PF接続
+
+`../trottertracks/c1_h6_saved_pf.py` は既存SectorCAR／一般K／PF_roundsを再利用し、保存CDF14/XDF14の4候補・52セルへ接続する。保存DF誤差を再計算せず、新fitやnativeを呼ばない。[技術報告](../../docs/research/research_c_c1_h6_saved_pf_preparation_20261025.md)。人工85 tests＋29 subtests PASS、科学実行は別途許可後のみ。
+
 ## C1：H6修正codecの実ffsim接続をrank14で限定検証
 
 SOURCE33432e786…の`c1_ffsim_corrected_codec.py`／`c1_h6_corrected_fit.py`を無変更で実行。1 fit、20 calls、optimizer成功・DF予算PASS。初期tensor改善とsector悪化を区別する。[実行報告](../../docs/research/research_c_c1_h6_corrected_fit_execution_20261025.md)。後続科学は未実施、mandatory STOP。

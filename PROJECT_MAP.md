@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：保存H6 rank14の一般K・ground/alias・S2 PF準備（2026-10-25）
+
+[技術報告](docs/research/research_c_c1_h6_saved_pf_preparation_20261025.md)／[未承認72-call契約](docs/research/research_c_c1_h6_saved_pf_contract_unapproved_20261025.json)／[SOURCE・人工証拠](artifacts/research_c_c1_h6_saved_pf/2026-10-25/technical/)。`c1_h6_saved_pf.py`＋専用CLI・人工test。保存CDF14/XDF14、一般K2・ground/alias3・S2 s1/s4の52セルへ接続。新21＋回帰64 tests・29 subtests PASS。実H6 decode/新科学0、fit/DFnorm再計算/native/shots/cost除外、mandatory STOP。
+
 ## C1：H6 rank14修正codecの1 fit・DF予算PASS（2026-10-25）
 
 [結果](docs/research/research_c_c1_h6_corrected_fit_execution_20261025.md)／[原本・生x/jac・4状態・call・STOP](artifacts/research_c_c1_h6_corrected_fit/2026-10-25/)。SOURCE33432e786…無変更、20/20 calls、fit/optimizer1、retry/resume0。optimizer成功・最終DF予算PASS、sector1.0689213237e-4＋guard1.1384527737e-6 Ha。旧CDF14比93.9132%減、初期XDF比sector4.3116%増。PF/native/shots/cost未実施、厳密CA未資格、旧結果保全・mandatory STOP。以下は準備・旧結果の履歴。

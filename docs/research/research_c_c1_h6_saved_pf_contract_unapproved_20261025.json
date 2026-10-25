@@ -1,0 +1,170 @@
+{
+  "scope": "C1_H6_SAVED_RANK14_SECTOR_PF_V1",
+  "status": "UNAPPROVED_SCIENCE_CONTRACT",
+  "base_commit": "598aa4de622b32e76b0b98451c4efb1fdaac1ae0",
+  "entry": "scripts/run_research_c_c1_h6_saved_pf.py",
+  "source_manifest": "artifacts/research_c_c1_h6_saved_pf/2026-10-25/technical/SOURCE.json",
+  "source_manifest_sha256": "53d5dce52cf7843e518361f9ed753a00dda91b5bab84213ae111fde0bed94969",
+  "saved_inputs": {
+    "artifacts/research_c_c1_h2_h6_science/2026-10-25/H6-run01/input.npz": "b82ee9864d9c76071944834ae32d3d6eea7e95959708c2e19bca011936bce447",
+    "artifacts/research_c_c1_h2_h6_science/2026-10-25/H6-run01/input_identity.json": "9d26cefc39346b93d0314e98c1867958f364078cd3ef76e2f0f313e17d0bb9fe",
+    "artifacts/research_c_c1_h2_h6_science/2026-10-25/H6-run01/XDF_selected.npz": "559dc43bf923a421ccc62d05c4cefa0bdf39a48ba68824abf3c8f770c04642b1",
+    "artifacts/research_c_c1_h6_corrected_fit/2026-10-25/run01/fit/final.npz": "cd4de687f99d32bd6f644ac33100fb52d4f7543e710e6c273723a0908b87dc45",
+    "artifacts/research_c_c1_h6_corrected_fit/2026-10-25/run01/fit/optimizer.json": "ea40971064ddfd3bd24c9f959479fb15f5ecfbd8257fed3f670b7842db39f4c0",
+    "artifacts/research_c_c1_h6_corrected_fit/2026-10-25/run01/final_sector.json": "9465c08ea6373ed50d7571ddf673702acedd4e8e1b0d66cc6f54f7ee95770b88",
+    "artifacts/research_c_c1_h6_corrected_fit/2026-10-25/run01/before_sector.json": "8e2b36c440aafa7d8683dae6f12da5295fdad9bf850a5f74a40395cf59571f70",
+    "artifacts/research_c_c1_h6_corrected_fit/2026-10-25/run01/STOP.json": "4a7cf3840770930d2f06afdf4449e6e658c60bf5ffe90f06e1a0f1f0d81b725f",
+    "artifacts/research_c_c1_h6_corrected_fit/2026-10-25/run01/result.json": "0cd9dd3eba3364d3e3208bc5ccc21c0721d72210bb811a356d9fa8dcf5984d58",
+    "artifacts/research_c_c1_h6_corrected_fit/2026-10-25/execution_identity.json": "b457b3a5a46560b49ca0743d79900e3d76bcca746c48c637068b86d80b4574b2",
+    "artifacts/research_c_c1_h6_corrected_fit/2026-10-25/postflight.json": "89ee3bf93283c5c53d5fca7bf9ff31e60fc6b3fe005a3ba04823107a77ece0c0",
+    "docs/research/research_c_c1_h6_corrected_fit_contract_unapproved_20261025.json": "996bb93c44d42a10108dd49ba3ea70dbd5d4dd32e315748d6146dc22b552e55d"
+  },
+  "original_input": "artifacts/research_c_c1_h2_h6_science/2026-10-25/H6-run01/input.npz",
+  "saved_optimizer": "artifacts/research_c_c1_h6_corrected_fit/2026-10-25/run01/fit/optimizer.json",
+  "factor_arrays": {
+    "CDF": "artifacts/research_c_c1_h6_corrected_fit/2026-10-25/run01/fit/final.npz",
+    "XDF": "artifacts/research_c_c1_h2_h6_science/2026-10-25/H6-run01/XDF_selected.npz"
+  },
+  "saved_sector_rows": {
+    "CDF": "artifacts/research_c_c1_h6_corrected_fit/2026-10-25/run01/final_sector.json",
+    "XDF": "artifacts/research_c_c1_h6_corrected_fit/2026-10-25/run01/before_sector.json"
+  },
+  "provenance": {
+    "molecular_input_and_XDF_SOURCE": "33c380d8aa792e5119bb3adec5dd07d1e1377214",
+    "CDF_fit_and_DF_error_SOURCE": "33432e78659b8b3e654e39f1392328cb0ba5c487",
+    "CDF_fit_publication": "598aa4de622b32e76b0b98451c4efb1fdaac1ae0",
+    "initial_XDF_snapshot": "Before snapshot in corrected-fit run byte-identical to original XDF_selected; saved before_sector row is paired with original XDF14; CDF final_sector row is paired with that run final.npz",
+    "reuse": "Do not rerun any old scientific entry. Saved rank14 arrays and prior physical-sector errors only; no new fit/rank search/norm."
+  },
+  "conditions": {
+    "atoms": 6,
+    "distance_angstrom": 1.0,
+    "basis": "sto-3g",
+    "Nalpha": 3,
+    "Nbeta": 3,
+    "sector_dimension": 400,
+    "rank": 14,
+    "CA_Ha": 0.00159,
+    "DF_reserve_Ha": 0.00019875,
+    "base_time": 0.1,
+    "rounds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "substeps": [
+      1,
+      4
+    ],
+    "product_formula": "ordered symmetric S2; all original frames; no PR split",
+    "target": "own_DF_sector_ground_oracle",
+    "state_preparation": "EXCLUDED"
+  },
+  "guard_policy": "sector_operation_scale_guard8_proposal_v1",
+  "guard_qualification": "unchanged saved engineering guard; no rigorous enclosure",
+  "allowances": {
+    "component_maxabs": 1e-10,
+    "ground_residual": 1e-10,
+    "alias_rule": "abs(E0*0.1)+pi/6 < pi",
+    "PF_phase_room": "sin(pi/12)",
+    "rigor": "numerical pilot; no rigorous reference enclosure"
+  },
+  "candidate_order": [
+    "CDF:s1",
+    "CDF:s4",
+    "XDF:s1",
+    "XDF:s4"
+  ],
+  "call_limits": {
+    "saved_input_load": 1,
+    "saved_DF_gate": 2,
+    "sector_context": 1,
+    "sector_generators": 2,
+    "representation_gate": 2,
+    "physical_sector": 1,
+    "ground_alias": 3,
+    "sector_kernel_reference": 4,
+    "PF_round_assessment": 52,
+    "candidate_summary": 4
+  },
+  "maximum_logical_units": 72,
+  "call_definition": {
+    "saved_input_load": "One original h/g/c + two saved J/U + paired saved sector rows + optimizer metadata load; allow_pickle=False",
+    "saved_DF_gate": "Per arm one schema/rank14/real-finite/J-symmetry/U-orthogonality/paired saved norm+guard<=CA/8 check; CDF requires saved optimizer success. Reuse saved errors; no norm recomputation.",
+    "sector_context": "One existing sparse spin-sector CAR context: Nalpha=Nbeta3, dimension400",
+    "sector_generators": "One per arm: original-g corrected kappa + scalar base, then all original 14 raw J/U density frames; no full-Fock dense operator",
+    "representation_gate": "One per arm: existing independent general-K I/Z/ZZ expansion vs raw CAR at max-entry1e-10/rtol0 on complete sector-preserving blocks",
+    "physical_sector": "One existing sparse original physical Hamiltonian restricted/densified400 for original ground/alias only; do not compute new DF residual norm",
+    "ground_alias": "Original physical + CDF + XDF: existing sector eigh, ground residual<=1e-10 and abs(E0*.1)+pi/6<pi; save spectra/eigenvectors once and reuse DF eigenpairs for all exact evolutions",
+    "sector_kernel_reference": "Per arm/s one unchanged PF_rounds prepare: ordered symmetric S2 kernel at h=1/(10*s), all base/frames in original order; existing reference_kernels; save sector kernel",
+    "PF_round_assessment": "4 candidates x13 rounds: exact exp from cached DF eigenpairs, PF powers by repeated squaring for total time .1*2^m, spectral operator discrepancy vs own DF; deterministic attenuation1/RTE difference0 structurally, synthesis unknown; save each cell immediately",
+    "candidate_summary": "Per candidate one scalar aggregation: all13 registered sufficient PF phase-room checks must pass for POTENTIALLY_FEASIBLE; else INFEASIBLE_REGISTERED_PHASE_ROOM. No physical impossibility/CA/cost claim"
+  },
+  "classification": {
+    "POTENTIALLY_FEASIBLE": "Saved DF reserve and registered numerical PF sufficient condition satisfied on all13 rounds only; not final CA",
+    "INFEASIBLE_REGISTERED_PHASE_ROOM": "At least one round fails registered sufficient PF room; not a proof of physical impossibility",
+    "reference_qualification": "Numerical pilot, no rigorous matrix-error enclosure",
+    "synthesis_error": null,
+    "CA_achieved": null,
+    "shots": null,
+    "total_cost": null
+  },
+  "execution_order": [
+    "Separate explicit chat science permission for the published SOURCE/contract and fresh output; current scope is technical preparation only",
+    "Passive byte/environment preflight, available resources, fresh output; no new grant or approval record",
+    "Saved-only load, both rank14 schema/paired budget gates, one sector400 context",
+    "Per arm original ordered raw generators and independent general-K equivalence; both must pass",
+    "Original physical sector and physical/CDF/XDF ground/alias gates; all must pass",
+    "Four registered PF candidates in fixed submission order; independent cells parallelized via resource_plan, exact DF eigenpairs reused, powers squared; each completed cell persisted",
+    "Candidate sufficient-condition summaries, full/partial evidence/calls/resources/STOP, commit/push/remote verification, mandatory STOP"
+  ],
+  "STOP": {
+    "identity_input_schema_nonfinite_or_representation_mismatch": "First scientific/technical correctness FAIL: stop dependent calls, drain already started work, preserve partial cells/kernel/ground evidence; no fallback or tolerance changes",
+    "saved_DF_budget_or_ground_alias_fail": "STOP before any PF candidate; no retry/new fit/rank change",
+    "sufficient_condition_not_met": "Record registered INFEASIBLE outcome and finish other explicitly registered cells; this is not a correctness FAIL",
+    "normal_completion": "Mandatory STOP after publication and remote verification; no native/shots/cost/new science"
+  },
+  "evaluation_packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "qiskit-nature": "0.7.2",
+    "openfermion": "1.6.1",
+    "openfermionpyscf": "0.5",
+    "pyscf": "2.7.0",
+    "threadpoolctl": "3.6.0"
+  },
+  "dependency_lock": "artifacts/research_c_c1_stage2_technical/2026-10-25/environment/requirements.lock",
+  "new_fit": 0,
+  "optimizer": 0,
+  "initial_decomposition": 0,
+  "rank_search": 0,
+  "DF_error_recomputation": 0,
+  "native_build_compile": 0,
+  "shots": 0,
+  "total_cost_evaluation": 0,
+  "retry": 0,
+  "resume": 0,
+  "performance": "Existing sparse SectorCAR; only complete400-dimensional sector blocks; no dense4096/controlled8192. Reuse raw context/DF spectra, four independent PF candidates under resource_plan and process-local BLAS coordination, repeated squaring instead of long repeated loops. Check actual CPU/RAM first; no arbitrary CPU/RAM/worker/wall cap; no other-user/shared environment changes.",
+  "preservation": "Old H6/H2/H4 SOURCE/results/grants/ledgers/markers/STOP immutable, no consumed-run restart",
+  "fresh_output": "artifacts/research_c_c1_h6_saved_pf/2026-10-25/run01",
+  "scientific_execution_authorized": false,
+  "permission_policy": "Separate explicit user science permission in chat; no proof/record/certificate/new grant.",
+  "phase_budget_context": {
+    "beta_total": "pi/6",
+    "beta_stat": "pi/12",
+    "PF_known_part_room": "sin(pi/12)",
+    "origin": "unchanged prior H6 PF_rounds; candidate statistical failure0.01 belongs to later RPE and is neither evaluated nor reassigned here",
+    "RPE_shots_evaluation": false
+  }
+}

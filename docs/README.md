@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1：保存H6 rank14・S2 PF限定検証の技術準備
+
+[報告](research/research_c_c1_h6_saved_pf_preparation_20261025.md)／[未承認72-call契約](research/research_c_c1_h6_saved_pf_contract_unapproved_20261025.json)。人工85 tests＋29 subtests PASS。保存DF誤差を再利用し一般K・ground/alias・PF52セルだけへ接続、実H6新評価0。別途実行許可までmandatory STOP。
+
 ## C1：H6 rank14修正codec・限定1 fitの結果
 
 [実行結果](research/research_c_c1_h6_corrected_fit_execution_20261025.md)：20/20 calls、新fit1・retry0、optimizer成功とDF予算PASS。tensor残差は減る一方、初期XDF比sector誤差は4.3116%増。生x/jacと旧CDF14比較を保存。PF・回路・資源比較へ進まずmandatory STOP。
