@@ -10,7 +10,7 @@ METRICS=('rz_count','rz_depth','cx_count','cx_depth','total_depth','circuit_size
 
 def run():
     saved=study.read(study.PRIVATE/'saved_prices.json')
-    selected={r['id']:r for r in study.read(study.PUBLIC/'native_selection.json')['candidates'] if r['id'] in saved}
+    selected={r['id']:r for r in study.candidates() if r['id'] in saved}
     output=study.PUBLIC/'saved_secondary_metrics.json'
     result=study.read(output) if output.exists() else {}
     def accept(identity,metrics,origin,n=1):

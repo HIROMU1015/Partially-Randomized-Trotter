@@ -46,6 +46,11 @@ def endpoints():
 
 def costs():
     result={}
+    # All compatible saved prices remain useful even when the new acquisition
+    # screen did not select that candidate. Do not narrow an existing baseline.
+    p=PUBLIC/'reused_compiled_prices.json.gz'
+    if p.exists():
+        result.update(read(p))
     for name in ('exploration_costs.json.gz','extension_exploration_costs.json.gz','extension_parallel_costs.json.gz'):
         p=PUBLIC/name
         if p.exists():
