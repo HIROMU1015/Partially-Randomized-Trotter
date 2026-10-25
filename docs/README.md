@@ -1,5 +1,7 @@
 # 文書索引
 
+研究B [Full deterministic DF-PFの再利用・実装・実行準備](research/research_b_full_deterministic_df_pf_readiness_20261026.md)。元c0／全DF因子・ordinary control・独立correctnessを接続。旧packageは指定commitから取得して必要定義だけを再利用、科学SOURCE8811ef089、人工39件PASS。新科学結果・費用比較は未取得。
+
 研究B [Exact-R4 case：結果・原本・限界・STOP](research/research_b_bnext3_exact_r_execution_20261026.md)。固定SOURCE e76c04748、correctness全PASS、8 prepared X/Y wrapperの単価取得。D／outer誤差・未資格u_num／γ・総資源比較の未実施を区別する。
 
 研究B [B-Next 3：Exact-R最小pilot実装・人工検証・実行準備](research/research_b_bnext3_exact_r_execution_readiness_20261026.md)。新Exact-R4 caseと保存finite-RTE4 caseを対応付け、phase／control／独立correctness・単価測定のscopeを固定。人工30件とread-only preflight PASS。科学実行・総資源優位の認定は行っていない。
