@@ -1,0 +1,276 @@
+{
+  "scope": "C1_STAGE3_DETERMINISTIC_FIXED_SHOT_ACCURACY_V1",
+  "status": "UNAPPROVED_SCIENTIFIC_EXECUTION",
+  "based_on_public_commit": "5d7faf7121cc281b7e2f38c2e04c224e594ae53d",
+  "entry": "scripts/run_research_c_c1_stage3_deterministic_accuracy.py",
+  "parent_contract": "docs/research/research_c_c1_stage3_cost_compat_contract_20261025.json",
+  "parent_contract_sha256": "4092a5d892eda087e4e3d82c3fe13b0e020c9da9f6ff5af406d6aff6a30a0a42",
+  "physical_conditions": {
+    "model": "saved linear P-H4",
+    "distance_angstrom": 1,
+    "basis": "STO-3G",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "full_dimension": 256,
+    "controlled_dimension": 512,
+    "CDF_rank": 8,
+    "XDF_rank": 10,
+    "CDF": "ordinary number representation, original-g corrected kappa, general K original frames",
+    "system_qubits": 8
+  },
+  "proposal": {
+    "accuracy_target": {
+      "energy_ha": 0.00159,
+      "df_reserve_fraction": 0.125,
+      "base_time": 0.1,
+      "beta_total": 0.5235987755982988,
+      "beta_stat": 0.2617993877991494,
+      "alpha_axis": 0.0003846153846153846,
+      "alpha_total": 0.01
+    },
+    "base_time": "1/10",
+    "rounds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "PR_LD": 2,
+    "compiler": {
+      "qiskit": "1.3.0",
+      "optimization_level": 1,
+      "seed_transpiler": 17,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "approximation_degree": 1.0,
+      "qubits_initially_zero": false
+    },
+    "basis_policy": "full-frame only; adjacent exact basis sharing and angle combining equally for both arms",
+    "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+    "cost_policy": "native_kernel_repeat_with_fences",
+    "long_round_depth": "scheduled_serial_sum; no global recompile/interkernel fusion discount",
+    "readout": "Compile ancilla H head and X/Y readout separately; retain intervening-kernel fence, include one ancilla measurement per shot",
+    "cost_samples_per_PR_candidate": 32,
+    "cost_seed_master": 2026102503,
+    "correctness_tolerance": {
+      "operator_component_abs": 1e-10,
+      "unitarity_component_abs": 1e-10,
+      "xy_abs": 2e-10,
+      "phase_up_to_global": false
+    },
+    "target_state": "own_DF_ground_state_oracle",
+    "state_preparation_included": false,
+    "law_model": "ideal_finite_RTE_law",
+    "original_frame_order": true
+  },
+  "candidate_ids": [
+    "CDF_D_s1_r0_K0",
+    "CDF_D_s4_r0_K0",
+    "XDF_D_s1_r0_K0",
+    "XDF_D_s4_r0_K0"
+  ],
+  "primary_substeps": 1,
+  "control_substeps": 4,
+  "numerical_policy": "binary64_frobenius_telescoping_pilot_v1",
+  "new_fit": 0,
+  "optimizer": 0,
+  "retry": 0,
+  "resume": 0,
+  "input_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+  "feasibility_run": "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01",
+  "shots_run": "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01",
+  "cost_run": "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01",
+  "stage2_run": "artifacts/research_c_c1_stage2_science/2026-10-25/run01",
+  "stage1_operator_directory": "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/operators",
+  "raw_s4_circuits": {
+    "CDF_D_s4_r0_K0": {
+      "raw": "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/circuits/CDF_D_s4_r0_K0_0_raw.qpy"
+    },
+    "XDF_D_s4_r0_K0": {
+      "raw": "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/circuits/XDF_D_s4_r0_K0_0_raw.qpy"
+    }
+  },
+  "shell_circuits": {
+    "head": {
+      "raw": "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/circuits/shell_head_raw.qpy",
+      "compiled": "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/circuits/shell_head_compiled.qpy"
+    },
+    "X": {
+      "raw": "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/circuits/shell_X_raw.qpy",
+      "compiled": "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/circuits/shell_X_compiled.qpy"
+    },
+    "Y": {
+      "raw": "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/circuits/shell_Y_raw.qpy",
+      "compiled": "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/circuits/shell_Y_compiled.qpy"
+    }
+  },
+  "call_limits": {
+    "saved_bundle_load": 1,
+    "input_load": 1,
+    "saved_operator_load": 9,
+    "car_context": 1,
+    "xdf_full_generator": 11,
+    "local_kernel_reference": 2,
+    "qpy_load": 8,
+    "operator_decode": 8,
+    "kernel_assessment": 4,
+    "shell_assessment": 3,
+    "round_accuracy_assessment": 52,
+    "energy_assessment": 4,
+    "cost_attachment": 4,
+    "cost_comparison": 2
+  },
+  "maximum_logical_scientific_units": 110,
+  "runtime_required_packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "qiskit-nature": "0.7.2",
+    "qiskit-algorithms": "0.3.1"
+  },
+  "dependency_lock": "artifacts/research_c_c1_stage2_technical/2026-10-25/environment/requirements.lock",
+  "source_manifest": "artifacts/research_c_c1_stage3_deterministic_accuracy_technical/2026-10-25/SOURCE.json",
+  "fresh_output": "artifacts/research_c_c1_stage3_deterministic_accuracy_science/<date>/<fresh-run-id>",
+  "state_and_measurement_model": {
+    "target": "own_DF_ground_state_oracle",
+    "state_preparation_cost": "EXCLUDED",
+    "measurement": "Independent ideal Born outcomes of saved compiled unitary circuits",
+    "device_noise": "UNMODELLED; no hardware guarantee",
+    "deterministic_law_error": 0,
+    "deterministic_law_reason": "No stochastic RTE/trajectory law exists in the deterministic protocol"
+  },
+  "qualification": {
+    "exact_analytic_relations": [
+      "operator spectral norm <= Frobenius norm",
+      "unitary distance of n repetitions <= n times kernel distance",
+      "axis expectation change <= twice full-unitary distance; complex XY change <=2*hypot(dX,dY)",
+      "Hoeffding/union bound conditional on IID Born outcomes",
+      "Weyl energy shift after RPE phase-to-energy conversion"
+    ],
+    "numerical_evidence": [
+      "Saved full-PF operator norms and DF sector norms/engineering allowance",
+      "Saved Stage2 compiled-versus-CAR Frobenius residuals for s1",
+      "s4 raw-versus-CAR Frobenius plus saved raw-versus-P0 Frobenius",
+      "Fresh numerical readout residuals, fixed-N inverse-Hoeffding margins, 13-round CA assessment"
+    ],
+    "rigorous_reference_enclosures": null,
+    "CA_achieved": null,
+    "guaranteed_actual_shots": null,
+    "guaranteed_total_resource_superiority": false,
+    "unknowns": "CAR/expm/Operator/norm floating-point reference enclosures remain unknown, never zero-filled",
+    "numerical_PASS_is": "Conditional numerical pilot evidence only; no rigorous certificate"
+  },
+  "execution_order": [
+    "Byte/SOURCE/input/environment preflight and fresh output; chat permission suffices, no grant/approval record",
+    "Load only four registered feasibility/shot/cost records and Stage2 reports; verify joins and saved ground/alias evidence",
+    "Reuse nine CDF CAR generators; original-XDF CAR reconstruction needed only for the two missing s4 local-reference checks",
+    "Assess three shared head/X/Y shells; retain controlled phase, no global-phase fit",
+    "Four candidate tasks: s1 uses saved Stage2 residual; s4 local raw reference plus saved P0 residual",
+    "All13 rounds: n=s*2^m; propagate synthesis into raw complex signal; retain saved PF/DF and fixed X/Y shots",
+    "Existing RPE horizon/energy and cost aggregation; attach saved cost only after numerical CA PASS",
+    "Compare CDF/XDF at s1(primary) and s4(control) only when both numerical accuracy assessments pass",
+    "Persist all states/calls/resources/partial evidence and mandatory STOP"
+  ],
+  "statistical_rule": "At fixed saved N, epsilon_N=sqrt(2*log(2/alpha_axis)/N). Require sqrt(2)*epsilon_N <= (1-ePF-eSyn)*sin(beta_stat), asin(ePF+eSyn)+beta_stat <= beta_total; same original alpha allocations. Never solve for/increase N.",
+  "statistical_scope": "Original per-candidate failure allocation; no simultaneous four-protocol or post-selection confidence claim.",
+  "synthesis_rule": "For n=s*2^m: d_axis=min(2,n*eta_kernel+eta_head+eta_tail_axis); numerical complex-signal surrogate=2*hypot(d_X,d_Y). Norm2<=Frobenius and unitary telescoping are analytic; the residual inputs have no rigorous rounding enclosure.",
+  "correctness_policy": "Preserve existing max-entry and unitarity tolerances1e-10, rtol0, no phase fit. They are FAIL gates, not operator-norm bounds or statistical allowances. No new numerical allowance is adopted.",
+  "candidate_states": [
+    "NUMERICAL_PILOT_CA_PASS",
+    "INFEASIBLE_REGISTERED_SUFFICIENT_CONDITION",
+    "UNRESOLVED"
+  ],
+  "INFEASIBLE_meaning": "Registered fixed-shot sufficient conditions failed; not physical impossibility or scientific NO-GO for the research",
+  "STOP": {
+    "first_correctness_schema_or_contract_failure": "Stop dependent new calls, drain already started work, retain partial evidence",
+    "candidate_insufficient_or_unresolved": "Record state and do not attach a CA-qualified cost; continue only other registered candidates",
+    "completion": "mandatory STOP, no PR/next-stage/scientific expansion",
+    "retry": 0,
+    "resume": 0
+  },
+  "excluded": [
+    "New fit/optimizer",
+    "New integrals or chemistry Hamiltonian generation",
+    "PF/RTE round errors or DF norm/ground/alias recomputation",
+    "Any PR qualification or new candidate search",
+    "Circuit build/compile or new compiler settings",
+    "Shot-count solving/increase or quantum shot simulation",
+    "Unconditional/hardware CA or guaranteed resource superiority"
+  ],
+  "performance": "Reuse saved scalar/reference/cost results, only two local CAR/expm references and eight QPY/Operator decodes. Resource-aware independent XDF frame/candidate work; process-local BLAS coordination; no artificial CPU/RAM/worker/wall cap. Never modify shared environments or other users jobs.",
+  "approval_policy": "Execution remains unapproved. Separate explicit chat permission is necessary; no approval certificate, text storage, record, grant, or authentication system is required.",
+  "provenance": {
+    "original_fit_source": "da2edb465d5ae6432439fbd1df8e57512ee59c11",
+    "saved_fit_export_sha256": "c33f782d3224aa80968e1e6ea70f5ae3f764b872b5bce545c38875c83f3c4e08",
+    "saved_CAR_evaluation_source": "bec41ac7dc7e034bd664817acfdcfed858ddadd0",
+    "stage2_source": "a977a4390668bc107360c8ff05f43d851dc81dc9",
+    "cost_evaluation_source": "9ce6703c89874c142c64ad934354bdff0db703d1",
+    "saved_evidence_publication": "5d7faf7121cc281b7e2f38c2e04c224e594ae53d"
+  },
+  "saved_inputs": {
+    "artifacts/research_c_c1_stage1_compat_science/2026-10-25/run01/fit_export.npz": "c33f782d3224aa80968e1e6ea70f5ae3f764b872b5bce545c38875c83f3c4e08",
+    "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/evaluation_SOURCE.json": "5be0fea39b167845343f94985699f31a0a1bb07d085ea2ed9312a1af9b8dede5",
+    "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/operators/raw_base.npz": "9f201ce0f0bd6a1fd32de863a3ac9a1e7e121a95dfd452afc0e350c39506e2d3",
+    "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/operators/raw_frame_0.npz": "36c234fa0f98683f554e88c88627b30242fd5998052c5f2fe16968763ef27c35",
+    "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/operators/raw_frame_1.npz": "fe1ad61290ab6227cbb86e3428e9485bc34baca6f4645d82ee8f1ae973526de2",
+    "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/operators/raw_frame_2.npz": "306b3b69e1b3584db39f73fedac03b6bf2f12e18659a9c3cb60c5621f5c6d29f",
+    "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/operators/raw_frame_3.npz": "6ec023774071d4ecf4792a28da6531775d94ced727e78aef6f6b8b6fabeee32c",
+    "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/operators/raw_frame_4.npz": "bf21b44065552e278dce537b68604f505b20c676e760dd97c407bb6ffa8a0441",
+    "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/operators/raw_frame_5.npz": "ca7880a31fc583cabf4cc75854296b97c05cfbfc201d0f43eee89f072102ee26",
+    "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/operators/raw_frame_6.npz": "2c251f699a22a7b1e72999b2bc01f3ed69ef0eef70ea6206a79909d877858d86",
+    "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/operators/raw_frame_7.npz": "0841ed10f9b2743f565fc7dba91875a8db41538aba5d14f9f08e0b7b2e429347",
+    "artifacts/research_c_c1_stage2_science/2026-10-25/run01/SOURCE.json": "63cff2a63bb49581e44c437f412af63c3b70c328439d1e12cd35c2551aeca8e0",
+    "artifacts/research_c_c1_stage2_science/2026-10-25/run01/STOP.json": "085c8ee806f14c8e6128e8f04229efa7e2c7246f516890681162a6940e6cb118",
+    "artifacts/research_c_c1_stage2_science/2026-10-25/run01/circuits/compiled_1.qpy": "32ce2b0c8cd964c6f24fcd28fc3105c0e76fa65df96bbdcfa47229d735c7a7c6",
+    "artifacts/research_c_c1_stage2_science/2026-10-25/run01/circuits/compiled_3.qpy": "e781c236762a539a8db7669c2ad8f3359094c82e3209244e817299c68965a2e0",
+    "artifacts/research_c_c1_stage2_science/2026-10-25/run01/circuits/full_CDF_True.qpy": "61943401a90d73e8bdf1205734121960ef0a7044dedafb22f2b64035bd0dca8e",
+    "artifacts/research_c_c1_stage2_science/2026-10-25/run01/circuits/full_XDF_True.qpy": "3ab608d1af9f5fd2534d9d48a106f932526cbd2e4a9a924e68e0d9db6078195a",
+    "artifacts/research_c_c1_stage2_science/2026-10-25/run01/result.json": "1592835bd952934038beb0323e6de98d2eb5807a57b4da8233ebd71ec22c4e50",
+    "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/SOURCE.json": "e8d3cd6ac36763feab5c599ce240335338a75121db690eab41499ac188900a06",
+    "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/STOP.json": "64cd28a6b70686df3723bca041aea44b894fe0f3d31f29e6cae10302c5c1e0fb",
+    "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/candidates/CDF_D_s1_r0_K0.json": "3ea10b9d45ac3afed1e3c0d404b8cf9c2b7de4b4a4031230cd459fa64125b865",
+    "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/candidates/CDF_D_s4_r0_K0.json": "f0d0809864c391928f293fbb194488962fe827990d2f7949d39adcd839510fbd",
+    "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/candidates/XDF_D_s1_r0_K0.json": "6b036cc75598a099f03dc10aa3189ab03165b5e4fea5b777b609638b99d9889c",
+    "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/candidates/XDF_D_s4_r0_K0.json": "5896faad81000ebee366d1a7ca4f768e7982c94275ec2cf7595a75f85b7c8436",
+    "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/circuits/CDF_D_s4_r0_K0_0_compiled.qpy": "630a26438fb9ebd424f2df80012a6df2bc69742f13716dafd95faa0b38e4464e",
+    "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/circuits/CDF_D_s4_r0_K0_0_raw.qpy": "8844fc7ba2c9bfee5f27db00921e2914d1a504200e66dc80ac853dec35f0e089",
+    "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/circuits/XDF_D_s4_r0_K0_0_compiled.qpy": "57d9536fff8efdaabc037c5300bbe06e6c11cf655a48dd014e57fa30a0a7b061",
+    "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/circuits/XDF_D_s4_r0_K0_0_raw.qpy": "c44469ee91e76f12f51fd6472e6d3b734f206495bf7296762ff333afa48ff822",
+    "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/circuits/shell_X_compiled.qpy": "e427fd38ebdf546d4c026cea80845d9d4809e3aa0211a1947e8cb62e036eecd8",
+    "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/circuits/shell_X_raw.qpy": "70d90597db0a9a51220af0ee247441cd84c3f66e21ba2f4db0dd2634a30b1175",
+    "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/circuits/shell_Y_compiled.qpy": "334ac98dcf7730e5f8e77b58e736f3da38a67dceffbc89711dbe302981203f73",
+    "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/circuits/shell_Y_raw.qpy": "04975fcb1467cdcfdb10bb417037db10495e85ced36476941331138a69c5bb28",
+    "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/circuits/shell_head_compiled.qpy": "72a359889c4e3f1e6c52972179b1aeff42d2011dc433e223d805eacbf2382666",
+    "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/circuits/shell_head_raw.qpy": "57030010cc149f84843a21fa2f609a98c6434ff726365a9db9e98a55e4f506d6",
+    "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/contract.json": "4092a5d892eda087e4e3d82c3fe13b0e020c9da9f6ff5af406d6aff6a30a0a42",
+    "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01/result.json": "f4922bfc910e8d473a1cc65ba7ae831f414420123d3096b0167a196cc94c9c56",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/STOP.json": "33f346144afab612103f8d2392679df2785a493156253d7202e3532b83f3c97d",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/CDF_D_s1_r0_K0.json": "56f30438c1e54f42d3ed99a8b847e31836e07eb9673b5d70228c1cb9d84e10d0",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/CDF_D_s4_r0_K0.json": "ad8bad67a42609fed818ddd16fc5477da41aad22631b91ff44c753678d6c0e82",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/XDF_D_s1_r0_K0.json": "411e430a6e8dceede6a2abe075fd42f694a026dbd4254ac9baf27208927b1716",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/XDF_D_s4_r0_K0.json": "c97167ac298be8828a99a89af52a52f5595e4d722f08dfd976c1358f7c1b9806",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/prepared.json": "21733fb99e258245d75785c466e436944df57d2bb458ae574a8d088771e44ab6",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/result.json": "0953132c3158301bb1a3b7e702fac8d3f609ba331e53a6c7418fac9082f66aa9",
+    "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01/STOP.json": "28f59f3f81b48bc40645e69ffdcb560c3ae90e617f913b3c0ebb7b0e82a6ca47",
+    "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01/candidates/CDF_D_s1_r0_K0.json": "98cd9a75446c27fc56b1d71701fbc4cf659725186dcb92bec8f2ddbf37669995",
+    "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01/candidates/CDF_D_s4_r0_K0.json": "7fdaf3546fd9f752a9fa18c2f3e45383bb9248501c4339e5f68a13fbe7ac3ad8",
+    "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01/candidates/XDF_D_s1_r0_K0.json": "b6c240f254a60724c38d30f08ed5203c9d1d65e9f1b2de7a1fe0c72cf3943925",
+    "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01/candidates/XDF_D_s4_r0_K0.json": "28f8fc798a3fed3e62cacb0c6e8e3c6cc3e7f71edef79b14503d015955f8499b",
+    "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01/result.json": "317e900281911973ac7c492074add7911eea0b1b41b042ab5caf54a0ad990939"
+  },
+  "source_manifest_sha256": "0aee1202e8bf7150cb0dd2a15805a5fdbaa2b0e2689f2581c310ad4afa284512"
+}

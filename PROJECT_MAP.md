@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1 Stage3：決定論S2の固定N・CA数値pilotが全PASS（2026-10-25）
+
+[結果・4候補・資格の限界](docs/research/research_c_c1_stage3_deterministic_accuracy_execution_20261025.md)／[52round・call・STOP](artifacts/research_c_c1_stage3_deterministic_accuracy_science/2026-10-25/)。SOURCE002d0dc2…で110/110 calls、4候補／52roundが全PASS、固定保存shotsで共通CAの数値条件を満たし、s1/s4ともCDFの条件付き総RZがXDFより約27%小さい。rigorous CAはreference enclosure不足で未資格。fit／retry／resume／新build・compile0、旧証拠保全・mandatory STOP。以下は過去時点の記録。
+
 ## C1 Stage3：決定論S2の固定shots精度資格付け準備（2026-10-25）
 
 [技術報告](docs/research/research_c_c1_stage3_deterministic_accuracy_preparation_20261025.md)／[未承認110-call契約](docs/research/research_c_c1_stage3_deterministic_accuracy_contract_unapproved_20261025.json)。CDF R8／XDF R10のD S2 s1主対象・s4対照、保存PF・DF・shots・費用を再利用し13roundの数値pilot CA判定へ接続。s1保存Frobenius・s4保存compiler残差を再利用、将来の新規local reference2・QPY8のみ。module `c1_stage3_deterministic_accuracy.py`／同名runner・人工test。新12＋独立process回帰140 tests・29 subtests PASS、SOURCE・保存input byte preflight PASS、実H4科学call0。厳密CAはreference enclosure不足で未資格、mandatory STOP。

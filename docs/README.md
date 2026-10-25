@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1 Stage3：決定論S2の固定N・CA数値pilotが全PASS（2026-10-25）
+
+[結果・4候補・資格の限界](research/research_c_c1_stage3_deterministic_accuracy_execution_20261025.md)／[52round・call・STOP](../artifacts/research_c_c1_stage3_deterministic_accuracy_science/2026-10-25/)。SOURCE002d0dc2…で110/110 calls、4候補／52roundが全PASS、固定保存shotsで共通CAの数値条件を満たし、s1/s4ともCDFの条件付き総RZがXDFより約27%小さい。rigorous CAはreference enclosure不足で未資格。fit／retry／resume／新build・compile0、旧証拠保全・mandatory STOP。以下は過去時点の記録。
+
 ## C1 Stage3：決定論S2の精度資格付け準備
 
 [技術報告](research/research_c_c1_stage3_deterministic_accuracy_preparation_20261025.md)／[未承認110-call契約](research/research_c_c1_stage3_deterministic_accuracy_contract_unapproved_20261025.json)／[SOURCE・人工検証](../artifacts/research_c_c1_stage3_deterministic_accuracy_technical/2026-10-25/)。4候補・固定保存N・13roundの数値pilot判定と保存費用を接続。新12＋独立process回帰140 tests・29 subtests PASS、実H4の数値decode／再解析0。Frobenius残差はcertificateへ昇格せず、厳密CAは未資格。科学実行は別チャット許可後、mandatory STOP。
