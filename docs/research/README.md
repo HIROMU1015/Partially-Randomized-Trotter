@@ -1,5 +1,9 @@
 # 研究計画資料
 
+## C1：H6共通CA・RPE shots・条件付き総資源の技術準備
+
+[接続方式・102人工/回帰PASS・資格の限界](research_c_c1_h6_ca_resources_preparation_20261026.md)／[未承認119-call契約](research_c_c1_h6_ca_resources_contract_unapproved_20261026.json)。保存H6の資格B・DF/PF・native metricsを既存評価器へ接続。候補単位failureとserial費用定義を保持し、実H6新評価0・mandatory STOP。
+
 ## C1：H6全基底合成上界・限定実行結果
 
 [結果・8経路上界・全104位相条件PASS](research_c_c1_h6_synthesis_bound_execution_20261026.md)。SOURCE e36e056…無変更、G4×800列、3335 calls、FAIL0。資格B／厳密Cを区別、CA/shots/cost0、旧結果保全・mandatory STOP。

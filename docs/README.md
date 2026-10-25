@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1：H6共通CA・RPE shots・条件付き資源の技術準備
+
+[既存再利用・整数shots/energy/費用接続・102人工/回帰PASS](research/research_c_c1_h6_ca_resources_preparation_20261026.md)／[未承認119-call契約](research/research_c_c1_h6_ca_resources_contract_unapproved_20261026.json)。4候補・52round・最大104軸費用。実H6新規join/shots/CA/cost0、科学実行は別許可後のみ、mandatory STOP。
+
 ## C1：H6全基底合成上界の限定実行結果
 
 [全3200列・8 kernel上界・104位相条件PASS](research/research_c_c1_h6_synthesis_bound_execution_20261026.md)。SOURCE e36e056…無変更、G4、3335 calls、FAIL/retry/resume0。部分空間資格B、厳密C/CA/shots/総費用は未資格。旧証拠保全・mandatory STOP。

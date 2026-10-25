@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：H6共通CA・RPE shots・総資源の技術準備（2026-10-26）
+
+[再利用・誤差接続・102人工/回帰PASS](docs/research/research_c_c1_h6_ca_resources_preparation_20261026.md)／[未承認119-call契約](docs/research/research_c_c1_h6_ca_resources_contract_unapproved_20261026.json)。新 `c1_h6_ca_resources.py`／専用runner／人工test／[technical証拠](artifacts/research_c_c1_h6_ca_resources/2026-10-26/technical/)。既存H2/H4 RPE・Hoeffding・energy・serial費用へ保存H6資格Bを接続。実H6のjoin/shots/CA/cost0、旧結果不変・mandatory STOP。
+
 ## C1：H6全基底合成上界・限定実行完了（2026-10-26）
 
 [結果・8経路上界・104位相条件PASS](docs/research/research_c_c1_h6_synthesis_bound_execution_20261026.md)／[3200列・104行・call・STOP](artifacts/research_c_c1_h6_synthesis_bound/2026-10-25/)。SOURCE e36e056…無変更、exact IR共用G4、3335 calls・correctness FAIL0・retry/resume0。入力800／出力8192の資格Bを取得、厳密C・full全入力・CA/shots/cost未資格。旧証拠849件不変、mandatory STOP。以下は準備・過去時点の履歴。

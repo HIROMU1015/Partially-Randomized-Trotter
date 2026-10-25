@@ -1,5 +1,9 @@
 # scripts 索引
 
+## C1：H6保存値のCA/RPE/serial総資源・未承認
+
+`run_research_c_c1_h6_ca_resources.py`：defaultはbyte/environment preflightのみ。[技術報告・102人工/回帰PASS](../docs/research/research_c_c1_h6_ca_resources_preparation_20261026.md)／[119-call契約](../docs/research/research_c_c1_h6_ca_resources_contract_unapproved_20261026.json)。保存JSONの4候補×13roundから新shots/energy/serial費用を評価する科学entryは、別明示許可後だけ使用。NPZ/QPY数値decode・新build/compile・DF/PF/合成再計算なし、retry/resume0。
+
 ## C1：H6全基底上界の限定実行完了
 
 `run_research_c_c1_h6_synthesis_bound.py`をSOURCE e36e056…で1回実行。G4×800列、3335 calls、8経路×13roundが登録位相条件PASS。[結果](../docs/research/research_c_c1_h6_synthesis_bound_execution_20261026.md)。資格B／Cを区別しCA/shots/cost0。rawとSTOPを保全、消費済みrun01は再起動しない。
