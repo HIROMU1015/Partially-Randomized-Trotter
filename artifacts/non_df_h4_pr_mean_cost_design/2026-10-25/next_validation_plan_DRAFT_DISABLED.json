@@ -1,0 +1,57 @@
+{
+  "schema": "h4-pr-population-cost-validation-design-v1",
+  "status": "DRAFT_DISABLED_NOT_AN_EXECUTION_CONTRACT",
+  "execution_enabled": false,
+  "base_commit": "7a83dc186bddcc35e528e38032814423ef1cba88",
+  "scope": "Pauli central PR versus DF-native PR expected compiled full-wrapper RZ, cosine and sine separately",
+  "fixed_conditions": "H4 linear adjacent 1.00 A / STO-3G; Pauli184 prefix27, DF rank10 prefix1 plus one-body; S2 T=.8 q8 r4 K4; existing Qiskit1.3.0 rz/sx/x/cx opt1 seed17, no target or routing",
+  "adopted_population_order": null,
+  "H4_scalar_bounds_evaluated_now": false,
+  "cost_failure_probability": null,
+  "failure_allocation": "Before numerical work choose delta_cost in (0,1), delta_cos+delta_sin <= delta_cost. Distinct from quantum-shot confidence. Reuse this simultaneous event across fixed precision rows.",
+  "population_model": "Existing effective 53-bit uniform-word IID product law, conditional statistical model; PCG64 independence is not proved.",
+  "proposed_stages": [
+    {
+      "id": "S1",
+      "priority": 1,
+      "task": "Close the restricted gate-count SOURCE premises; evaluate the Z/ZZ-tightened Pauli uniform native-size upper and DF DKW sample-minimum mean lower for both axes.",
+      "inputs": ["Existing fixed Pauli label/support metadata", "Existing compiler count lemma and fixed library/runtime", "Saved DF n and axis minima quoted in evidence_quotes.json"],
+      "mathematical_conditions": ["Normal finite translator/optimizer completion over the fixed input family", "Native-cost shortest-rule bound and native total-count nonincrease", "IID sampling without cost-dependent selection and correct saved price joins", "Accept the conditional statistical model and fix delta before numerical evaluation"],
+      "calculation_scope": "One finite scalar bound/comparison batch for the two axes; exact integers/rationals and outward rounding of log/sqrt as needed; no traversal or reaggregation of raw price samples.",
+      "new_H4_circuit_builds": 0,
+      "new_H4_compiles": 0,
+      "new_sampling_or_RNG_replays": 0,
+      "new_state_actions": 0,
+      "new_N_or_G_accounting": 0,
+      "GO": "Separate user permission for this scalar evaluation; fixed confidence/model and resolved gate-count premises.",
+      "STOP": "Stop on separation for the requested axes, or on a failed premise; do not run lower-priority stages automatically.",
+      "result_limit": "Mean-price ordering at stated statistical confidence and SOURCE premises, not unconditional precision or G dominance."
+    },
+    {
+      "id": "S2",
+      "priority": 2,
+      "only_if": "S1 does not separate and its assumptions remain valid",
+      "task": "Evaluate the Pauli law-weighted count upper using saved effective order/component masses and static local support counts; optionally use the uniform-in-threshold DKW lower integral only if saved-minimum lower is insufficient.",
+      "calculation_scope": "Finite scalar sums over saved components, without full-trajectory enumeration. DKW integral would be a separately specified saved-price reanalysis, not included automatically.",
+      "new_H4_build_compile_sampling_state_actions": 0,
+      "GO": "Separate explicit approval of these particular scalar sums or saved-price reanalysis.",
+      "STOP": "Separation, missing proof, or unhelpful bound; no automatic DF DP or new sampling."
+    },
+    {
+      "id": "SG",
+      "priority": "separate question after a mean-price bound",
+      "task": "If requested, test symbolic weighted inequalities using already saved conditional N endpoints; preserve distinct Pauli/DF and axis/precision weights.",
+      "calculation_scope": "A separately approved comparison of existing fixed weights and new price bounds; no shot recalculation, no rho modification.",
+      "GO": "Explicit permission for this saved-weight G comparison and a specified rho slice or guard box.",
+      "STOP": "Report each tested condition as separated or inconclusive; do not infer actual rho guard membership."
+    }
+  ],
+  "deferred_options": [
+    {"option": "DF finite-state basis-reuse envelope", "only_if": "An actual DF mean upper or reverse ranking is needed, and S1/S2 cannot answer the research question", "missing": "Native lowering envelope and active-basis transition proof; no useful positive deterministic compiled-RZ lower currently established"},
+    {"option": "New fixed sampling batch", "only_if": "A justified inequality fails because of statistical width after existing-data routes, and the user accepts the sampling model", "missing": "Predeclared count/range/confidence/stopping plan and explicit build/compile/sampling permission; count not chosen in this static task"},
+    {"option": "Selected order4 compile", "status": "Not proposed as a population-bound validation; one example cannot bound all allowed events"}
+  ],
+  "current_task_calls": {"H4_scalar_evaluation": 0, "H4_state_actions": 0, "circuit_build_compile": 0, "sampling_RNG_replay": 0, "N_G_reanalysis": 0, "scientific_grants_issued_or_consumed": 0},
+  "no_automatic_execution": true,
+  "mandatory_STOP": true
+}

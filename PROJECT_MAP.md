@@ -1,3 +1,7 @@
+## 2026-10-25 H4 Pauli/DF PR母平均回路費用の追加検証設計
+
+[全law count upper・DF統計的lower・無効の最小計画](docs/non_df_h4_pr_mean_cost_design_20261025.md)。既存値引用と記号式・人工4PASSのみ。H4 scalar/統計再解析/compile/sampling/N_G再計算0、母平均順位は未確定。公開照合後mandatory STOP。
+
 ## 2026-10-25 H4 Pauli/DF統合データカタログ
 
 [保存データ索引・比較用CSV/JSON・未保証事項](artifacts/non_df_h4_data_catalog/2026-10-25/README.md)。61項目/6系列。科学条件・SOURCE・保証範囲を分離し、既存値のみ引用。新計算/再解析/作図なし、公開照合後mandatory STOP。

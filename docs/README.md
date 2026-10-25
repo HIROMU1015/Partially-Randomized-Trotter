@@ -1,3 +1,7 @@
+## 2026-10-25 H4 Pauli/DF PR母平均費用の設計
+
+[Uniform/law-weighted/有限標本比較・Pauli upper＋DF lowerの最小検証案](non_df_h4_pr_mean_cost_design_20261025.md)。新科学計算なし、次計画無効、母平均順位の数値判定なし。
+
 ## 2026-10-25 H4 Pauli/DF統合データ整理
 
 [データカタログの使い方・比較表・追加取得候補](../artifacts/non_df_h4_data_catalog/2026-10-25/README.md)。元raw/QPYを参照し、価格・精度・条件付きGと未保証を一元化。科学証拠status変更なし。
