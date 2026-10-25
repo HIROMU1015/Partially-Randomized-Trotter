@@ -2748,6 +2748,82 @@
         "Preserve fixed source/raw failure/STOP;no retry,resume,tolerance change or extra build/compile.",
         "User/researchB decides whether to authorize a new first-failure diagnostic with numeric/circuit persistence;no automatic full-pilot rerun,MC,shots or new conditions."
       ]
+    },
+    {
+      "id": "research_b_outer_b0_recovery_20261025",
+      "status": "source_present_no_current_ci",
+      "scientific_execution_status": "STOPPED_INCOMPLETE",
+      "runtime_status": "FAILED_MANDATORY_STOP",
+      "summary": "User-authorized B0 recovery improved initial phase error and failure diagnostics;B3 diagnostic passed but full corrected run stopped at D1. Final saved-D1 diagnosis remains1.387e-12 above1e-12 tolerance. No costs or full-pilot PASS.",
+      "documentation": [
+        "docs/research/research_b_outer_b0_recovery_20261025.md"
+      ],
+      "source": [
+        "src/trottertracks/b2d_evaluator/b0_native.py",
+        "src/trottertracks/b2d_evaluator/followup_io.py",
+        "src/trottertracks/pr_dictionary_validation/gates.py",
+        "scripts/run_b2d_outer_b0.py",
+        "scripts/diagnose_b2d_b0_compiler.py"
+      ],
+      "tests": [
+        "tests/management/test_b2d_b0_native.py",
+        "tests/management/test_b2d_followup.py",
+        "tests/management/test_pr_dictionary_compile_phase.py",
+        "tests/management/test_pr_dictionary_compile_metadata.py"
+      ],
+      "artifacts": [
+        "artifacts/research_b_outer_b0/20261025/RECOVERY_COUNTS.csv",
+        "artifacts/research_b_outer_b0/20261025/diagnostic-1/partial_results.json",
+        "artifacts/research_b_outer_b0/20261025/diagnostic-1/STOP.json",
+        "artifacts/research_b_outer_b0/20261025/diagnostic-2/result.json",
+        "artifacts/research_b_outer_b0/20261025/diagnostic-2/STOP.json",
+        "artifacts/research_b_outer_b0/20261025/corrected-1/partial_results.json",
+        "artifacts/research_b_outer_b0/20261025/corrected-1/STOP.json",
+        "artifacts/research_b_outer_b0/20261025/compiler-diagnosis/passes.json",
+        "artifacts/research_b_outer_b0/20261025/compiler-diagnosis-2/passes.json",
+        "artifacts/research_b_outer_b0/20261025/compiler-diagnosis-3/passes.json",
+        "artifacts/research_b_outer_b0/20261025/compiler-diagnosis-4/passes.json",
+        "artifacts/research_b_outer_b0/20261025/compiler-diagnosis-5/passes.json",
+        "artifacts/research_b_outer_b0/20261025/recovery_tests/opaque.txt",
+        "artifacts/research_b_outer_b0/20261025/execution_logs/corrected-1/time.txt"
+      ],
+      "implementation_source_commit": "5c1fc5bc36bb3dad32efe7825ca6ac9058deeafb",
+      "full_attempt_source_commit": "c7cde1868a6b38f9505ecc4f0858b98b49c506e8",
+      "initial_diagnostic_source_commit": "2721d69a98213a35facf4dc7fafa08ab1f0b40ea",
+      "preserved_original_source_commit": "8d0cb96df9d1f6229f207550634c7e11aff2851c",
+      "counts": {
+        "new_launcher_attempts": 3,
+        "limited_launcher_diagnostics": 2,
+        "full_pilot_recovery_attempts": 1,
+        "saved_wrapper_compiler_diagnoses": 5,
+        "full_attempt_compile_requests_completed": 17,
+        "full_attempt_compiled_gate_passes": 16,
+        "full_attempt_operator_gates_passed": 51,
+        "full_attempt_operator_gates_failed": 1,
+        "full_attempt_operator_gates_not_attempted": 236,
+        "full_attempt_expectations_completed": 33,
+        "full_attempt_expectations_not_attempted": 159,
+        "focused_artificial_tests": 30,
+        "cost_measurements": 0,
+        "A0_reexecutions": 0,
+        "shots": 0
+      },
+      "qualification": {
+        "gamma": null,
+        "expected_cost": null,
+        "shots": null,
+        "u_num": null,
+        "full_pilot_pass": false,
+        "final_saved_D1_raw_relative_operator_error": 1.3873417324694195e-12,
+        "absolute_tolerance": 1e-12,
+        "phase_fit": false,
+        "status": "UNRESOLVED_COMPILED_CORRECTNESS"
+      },
+      "interpretation": "Same synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,nD1,T±.18,6 candidates/4 representatives,complex128. Fixed conditions preserved;definition and level1 scalar phase accumulation stabilized only in B0 local compiler path. Initial B3 1.79e-11 improved to4.39e-13;long D1 remains over fixed tolerance. Artificial PASS is not science qualification. Old A0/B0/raw/STOP and default compiler preserved.",
+      "completion_criteria": [
+        "Publish all corrections,source,attempts and diagnostic limits then mandatory STOP;do not relabel remaining numerical mismatch as PASS.",
+        "User/researchB decides further independent numerical diagnosis or scientific contract changes;no automatic new full run,precision/grid,MC/shots or A0 reexecution."
+      ]
     }
   ],
   "repository_completion_criteria": [

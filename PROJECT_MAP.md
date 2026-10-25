@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究B B0技術復旧：初期誤差を改善、D1は未解決でSTOP（2026-10-25）
+
+[修正・3新attempt・保存回路診断・限界](docs/research/research_b_outer_b0_recovery_20261025.md)。最終実装SOURCE5c1fc5bc3。失敗時matrix／QPY保存、公式gate展開とlevel1 optimizer間のphase集計を改善した。B3限定診断はPASS、全pilot再実行は16 wrapper通過後D1でSTOP。最終保存D1診断も約1.39e-12で固定tol1e-12未達、費用0件・未完了。人工30件PASSは科学PASSではない。旧SOURCE／raw／STOPを保全する。
+
 ## 研究B B0：compiled correctness FAILで停止（2026-10-25）
 
 [B0実行報告・未完了項目・原本・STOP](docs/research/research_b_outer_b0_execution_20261025.md)。SOURCE8d0cb96dfを一回実行し、最初のB3／T+.18／代表0／Xのcompiled operator照合でFAILした。Input・24 single-step mean・最初のsystem／controlled／raw wrapperは通過、費用0件、残り未実施。原本は `artifacts/research_b_outer_b0/20261025/native-pilot-once/`。誤差量・回路本体は未保存で原因未確定、retryなし・mandatory STOP。以下のA0結果と準備履歴を保全する。

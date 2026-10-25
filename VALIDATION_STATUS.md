@@ -1,5 +1,10 @@
 # Validation status
 
+## 2026-10-25 B0 recovery: phase-accumulation error improved; D1 correctness unresolved
+
+Final implementation SOURCE `5c1fc5bc36bb3dad32efe7825ca6ac9058deeafb`. Same synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,nD1,T±.18,six candidates/four representatives,complex128,absolute spectral tolerance1e-12,rtol0,no phase fit. Official definition/U/P/fixed-gate identities and scalar-phase summation were stabilized; same Qiskit1.3.0 level1 synthesis reused per1q run with accurate parent phase accumulation. Default compiler and global optimizer class unchanged.
+New diagnostic1 reproduced B3 failure1.79e-11 with matrices/QPY retained. Diagnostic2 passed B3 at4.39e-13 on c7cde1868. Full corrected1 sourcec7cde1868 then passed16 wrappers, stopped at D1/+T/representative0/X with2.32e-12. Further saved-circuit diagnosis reduced final raw-relative error to1.387e-12 on5c1fc5bc3, still above fixed tolerance. No tolerance/precision/physical-condition change, phase fit, or unconditional retry to obtain PASS. Full pilot remains incomplete;cost0. Source-local artificial tests30 PASS, not scientific qualification. [Recovery evidence, limitations and STOP](docs/research/research_b_outer_b0_recovery_20261025.md). Old raw/STOP/A0 preserved; further diagnosis or scientific contract changes return to User/researchB.
+
 ## 2026-10-25 outer B0: compiled correctness FAIL, incomplete pilot; mandatory STOP
 
 Fixed SOURCE `8d0cb96df9d1f6229f207550634c7e11aff2851c` executed once without modification/retry. Synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,nD1,T±.18; B3,D1,R2,R4,B4,F1,48 deterministic representatives/96 planned full X/Y wrapper compile requests. Qiskit1.3.0,rz/sx/x/cx,opt1,seed17,approx1,qubits_initially_zero=False,official-definition lowering,free topology,complex128,absolute spectral2-norm1e-12,rtol0,no phase fit. Molecular geometry/AO basis/rank exploration not applicable.

@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究B B0復旧履歴・未解決のD1 correctness（2026-10-25）
+
+[全修正・固定SOURCE・attempt・診断・STOP](research/research_b_outer_b0_recovery_20261025.md)。初期位相集計誤差と失敗保存不足を改善したが、D1の最終診断差は約1.39e-12で固定tol1e-12を超え、全B0は未完了・費用0。Focused人工30件PASS。旧原本・契約は履歴として保全し、追加計算を開始しない。
+
 ## 研究B B0：最初のcompiled gateでSTOP（2026-10-25）
 
 [B0停止報告・call実績・保存の限界](research/research_b_outer_b0_execution_20261025.md)。SOURCE8d0cb96df、B3／T+.18／代表0／Xのcompiled correctness FAIL、費用計測0件。数値差・回路のFAIL時保存がなく原因未確定。Retry／追加診断なし、A0結果は保全。以下はA0と準備段階の履歴。

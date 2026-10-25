@@ -1,5 +1,7 @@
 # B2-D 5方式評価器：接続準備・技術報告
 
+**B0復旧後も未完了・STOP：** [修正・診断・全履歴](../../../docs/research/research_b_outer_b0_recovery_20261025.md)。最終SOURCE5c1fc5bc3、失敗matrix／raw・compiled QPYと途中rowを保存する。初期B3検査は改善したがD1の残差が固定tol未達。人工30件PASSを全B0 correctnessとせず、費用0件のままSTOP。以下の原本・旧結果を保全。
+
 **B0 compiled correctness STOP（2026-10-25）：** [停止報告・実績・保存不足・原本](../../../docs/research/research_b_outer_b0_execution_20261025.md)。SOURCE8d0cb96dfを一回実行し、最初のcompiled gateでFAIL。24 single-step meanと最初のraw側gateは通過したが、費用0件・pilot未完了。数値差・回路は未保存で原因未確定。SOURCE修正・retryなし、mandatory STOP。以下のA0結果・準備履歴を保全する。
 
 **A0実行完了・B0 STOP（2026-10-25）：** [結果・精度限界・原本・STOP](../../../docs/research/research_b_outer_a0_execution_20261025.md)。SOURCE1e3921ba1、8行×90/128桁を一回完了し、全8比較で経験的安定性・nominal bound整合を確認した。u_num=null／certified=false、B0実回路build／compileは未実行。旧SOURCE・結果・STOPを保全し、追加科学計算へ進まない。以下は準備履歴。

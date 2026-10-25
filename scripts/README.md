@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究B B0復旧・保存回路のcompiler診断
+
+[復旧報告・SOURCE・新attempt・STOP](../docs/research/research_b_outer_b0_recovery_20261025.md)。`run_b2d_outer_b0.py --diagnose-first` は旧B3/+T/代表0/Xのみ、費用なし。`diagnose_b2d_b0_compiler.py` は保存されたB3またはD1/+T/代表0/X回路に限定する技術診断であり、通常の全pilot runnerではない。最終SOURCE5c1fc5bc3でもD1残差は固定tol未達、追加実行しない。
+
 ## 研究B B0実行：compiled correctness FAIL・mandatory STOP
 
 [`run_b2d_outer_b0.py`](run_b2d_outer_b0.py) をSOURCE8d0cb96dfで一回実行し、最初のcompiled operator照合で停止した。[実行報告・原本・call数](../docs/research/research_b_outer_b0_execution_20261025.md)。全48 trajectory・96 compile要求は未完了、費用0件。使用済みoutputは再起動せず、原因を確定したことにしない。以下はA0結果と準備履歴。
