@@ -77,3 +77,7 @@ Arb6局所は同じraw ray/exact norm、phase/control/+Im、B_saved一回の尺�
 旧SOURCE/raw/結果/grant/ledger/marker/STOP、初回D1 FAIL/原因UNKNOWN、元native UNKNOWN、旧actual N/G null、PR全lawρ/null、正式受理falseを維持。後続native正常終了で失われた元終了証拠を代替しない。今回のデータ索引追加は、科学証拠statusの変更ではないため旧validation manifestは更新しない。
 
 最新版共通指示2026-10-25の§8.4/§10/§10.3を適用。共有設定・他ユーザー・他jobへの操作なし。[publication_status.json](publication_status.json)に公開状態を記録し、専用branchのcommit・GitHub公開・remote SHA照合後、**mandatory STOP**。新科学実行・研究方針採択へ自動移行しない。
+
+公開した主カタログcommit：**`2b1700cd75c97fd18944ad0e5d83aae6b89e4428`**。GitHub接続のGit data APIで公開し、localの準備内容と公開tree `c41ae89a0f05925f0ee6aeac3c94c11cc33bff35` が一致した。同commitをgit fetchしてlocal branchへ揃え、GitHub refと同SHAを確認した。通常HTTPS pushの再試行はしていない。
+
+この公開確認とpublication_statusだけを追記commitに保存し、その最終HEADもremoteと照合して最終回答へ記載する。カタログの科学的転記値は変更しない。**統合整理を完了してmandatory STOP。**
