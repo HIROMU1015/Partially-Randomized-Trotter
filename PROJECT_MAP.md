@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：H2の限定CA数値pilot完了（2026-10-25）
+
+[結果](docs/research/research_c_c1_h2_execution_20261025.md)／[証拠](artifacts/research_c_c1_h2_h6_science/2026-10-25/)。SOURCE33c380d8…無変更、CDF R2／XDF R3、S2 s1/s4の4候補・52round数値CA PASS。193/196 calls、fit2・retry/resume0、条件付き総RZ削減36.4122%／36.1527%。厳密CAは未資格、H6未実行、mandatory STOP。以下の準備表示は履歴。
+
 ## C1：H2・H6の決定論S2検証準備（2026-10-25）
 
 [技術報告](docs/research/research_c_c1_h2_h6_preparation_20261025.md)／[未承認実行案](docs/research/research_c_c1_h2_h6_contract_unapproved_20261025.json)。H2は新h/g→rank選定→native/P0→数値CA・shots・総費用、H6はsector400のDF／PFだけ。新module `c1_molecule_extension.py`／CLI `run_research_c_c1_h2_h6.py`／人工test `test_research_c_c1_h2_h6.py`。CDF rank ladder1..3/21とCA/8・engineering guard・explicit-XDF方式は未承認案。上限H2 196／H6 129 calls、実科学0。人工14＋回帰166 tests・29 subtests PASS、旧H4証拠保全・mandatory STOP。

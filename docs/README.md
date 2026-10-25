@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1：H2の限定CA数値pilot完了
+
+[結果・資格の限界](research/research_c_c1_h2_execution_20261025.md)／[4候補・52round・rank・call・STOP](../artifacts/research_c_c1_h2_h6_science/2026-10-25/)。CDF R2／XDF R3、4候補数値CA PASS、193/196 calls。条件付き総RZ削減36.4122%／36.1527%、reference enclosure未資格・H6未実行、mandatory STOP。
+
 ## C1：H2・H6検証準備
 
 [技術報告・負荷と資格の範囲](research/research_c_c1_h2_h6_preparation_20261025.md)／[未承認196・129-call案](research/research_c_c1_h2_h6_contract_unapproved_20261025.json)／[SOURCE・人工結果](../artifacts/research_c_c1_h2_h6_technical/2026-10-25/)。H2はStage1～3、H6は疎CAR／sector400のDF・PFまで。新rank policyを提案し、H4 rank・過去PF係数を転用しない。人工180 tests＋29 subtests PASS、実分子科学0、厳密CAは未資格、mandatory STOP。
