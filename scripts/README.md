@@ -1,3 +1,8 @@
+## 2026-10-25 H4 Pauli B0/B0I有限探索
+
+[`run_h4_pauli_b0_comparison.py`](run_h4_pauli_b0_comparison.py)：事前固定batchのtarget/build/compileをprocess並列。各完了batchは再開不可。
+[`summarize_h4_pauli_b0_comparison.py`](summarize_h4_pauli_b0_comparison.py)：保存値だけの候補最小と精度grid。[結果・mandatory STOP](../docs/non_df_h4_pauli_b0_comparison_20261025.md)。
+
 ## 2026-10-25 H4 Pauli central B0/B0I限定実行
 
 [`run_h4_pauli_b0.py`](run_h4_pauli_b0.py)：固定保存保持bodyを再利用する両軸2compile＋64→96→128bit条件付きtarget評価。run01は完了/mandatory STOP。再実行用コマンドではない。[結果](../docs/non_df_h4_pauli_b0_execution_20261025.md)。

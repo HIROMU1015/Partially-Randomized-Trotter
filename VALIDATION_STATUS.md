@@ -1,3 +1,10 @@
+## 2026-10-25 H4 Pauli B0/B0I prefix/q比較
+
+[106登録候補・5精度・303点保存値grid](docs/non_df_h4_pauli_b0_comparison_20261025.md)。固定H4/1Å/STO-3G、Pauli184、central/S2/T.8、Qiskit1.3.0/opt1/seed17。
+最小B0はε=.05で132/1、.01で144/2、.005で176/2、.001/.0005で180/8。保存PRに対し.05で約12.9%低G、他4精度はPR低G。
+固定保存平均価格・独立rho guard内で5順位が安定。実rho/PR母平均tail/大域最適性/正式受理は未保証。新target98（全64bit）、compile178、旧p27/q8/fullPF/PR再利用。
+新人工5種類・両runtime10実行PASS、4親/365child/解析親は全exit0・回収。旧SOURCE/入力/結果/STOP保全、mandatory STOP。以下は時点履歴。
+
 ## 2026-10-25 H4 Pauli central B0/B0I：限定実行完了
 
 [結果と成立範囲](docs/non_df_h4_pauli_b0_execution_20261025.md)。固定H4/1Å/STO-3G、Pauli184/prefix27、S2/T.8/q8、D2 central、Qiskit1.3.0/opt1/seed17。

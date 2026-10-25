@@ -1,3 +1,7 @@
+## 2026-10-25 H4 Pauli B0/B0I：106候補の条件付き比較完了
+
+[候補集合・適格性・最小G・PR比較・保存証拠](docs/non_df_h4_pauli_b0_comparison_20261025.md)。S2/T.8/q1–8、初期20＋適応86。ε=.05はp132/q1 B0、他4精度は保存PRが低G。全比較はρ/保存平均価格に条件付き、mandatory STOP。
+
 ## 2026-10-25 H4 Pauli central B0/B0I限定実行
 
 [matched B0の回路価格・bias・条件付き会計](docs/non_df_h4_pauli_b0_execution_20261025.md)。両軸868 RZ、64bit/1 target作用。cosine bias約0.182803により5精度の合同N/Gはnull。PR保存会計再利用、native終了/STOP。

@@ -1,3 +1,7 @@
+## 2026-10-25 Pauli B0/B0I登録候補比較
+
+[`h4_pauli_b0_comparison.py`](h4_pauli_b0_comparison.py)：保存順序prefix/q、対角同値target・保存PF target転送、共通unitary会計、有限集合最小/guard比較。[結果](../../docs/non_df_h4_pauli_b0_comparison_20261025.md)。
+
 ## 2026-10-25 H4 Pauli central B0/B0I数値接続
 
 [`h4_pauli_b0_execution.py`](h4_pauli_b0_execution.py)：保存body照合、C/Arb複素target、独自bias/allowance、既存shot会計と保存PR行の接続。[限定実行結果](../../docs/non_df_h4_pauli_b0_execution_20261025.md)。

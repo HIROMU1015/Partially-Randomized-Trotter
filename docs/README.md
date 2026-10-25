@@ -1,3 +1,7 @@
+## 2026-10-25 H4 Pauli B0/B0I探索・比較
+
+[106候補の適格性・最小条件付きG・PR比較](non_df_h4_pauli_b0_comparison_20261025.md)。5精度と303点grid、raw/QPY/nativeはlossless archive、mandatory STOP。
+
 ## 2026-10-25 H4 Pauli central B0/B0I限定実行
 
 [両軸868 RZ・大きい切り捨てbias・5精度のN/G不成立](non_df_h4_pauli_b0_execution_20261025.md)。64bit/1作用、compile2、PR再会計0。
