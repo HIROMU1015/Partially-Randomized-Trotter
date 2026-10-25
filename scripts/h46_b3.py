@@ -34,12 +34,39 @@ def setup():
     import h46_long_time_native as native
     native.PUBLIC, native.PRIVATE = PUBLIC, PRIVATE
     native.trial_seed = trial_seed
+    native.native_context = native_context
     return native
 
 
 def trial_seed(row, cohort, index, outer, piece):
     data = ['H46_B3_20261026', cohort, row['id'], index, outer, piece]
     return int(hashlib.sha256(json.dumps(data).encode()).hexdigest()[:16], 16)
+
+
+def native_context(system, prefixes):
+    """Only the retained one-body spectrum is needed by the B3 oracle."""
+    import numpy as np
+    import qiskit
+    from functools import partial
+    from h46_m5_tol_native import restore
+    from h46_new2_native import OccupationOracle, prepare
+    import trotterlib.rte_compiled_cost as costs
+    if qiskit.__version__!='1.3.0' or np.__version__!='1.26.4':
+        raise ValueError('COMMON_COMPILER_RUNTIME_VERSION')
+    costs.transpile=partial(qiskit.transpile,num_processes=1)
+    info=signal.origin_config()['systems'][system]
+    ham,sector,full,state,metadata=restore(dict(system=system,**info))
+    oracle=OccupationOracle(ham,full,prefix=0)
+    qstate=np.zeros(1<<ham.n_qubits,complex);qstate[oracle.qindices]=oracle.initial
+    prep=prepare(ham,0)
+    if prep.deterministic_fragment_indices or tuple(prep.randomized_block_indices)!=tuple(range(ham.n_blocks)):
+        raise ValueError('B3_FRAGMENT_PARTITION')
+    if len(prep.deterministic_blocks)!=1 or prep.deterministic_blocks[0].block_kind!='one_body':
+        raise ValueError('B3_ONE_BODY_RETAINED')
+    observed=read(PRIVATE/(system+'_context.json'))
+    if abs(prep.exact_rte_lambda_r-observed['prefixes']['0']['lambda_R'])>1e-10 or abs(prep.extracted_identity_coefficient-observed['prefixes']['0']['scalar'])>1e-10:
+        raise ValueError('B3_SIGNAL_NATIVE_TAIL')
+    return SimpleNamespace(ham=ham,oracle=oracle,qstate=qstate,preparations={0:prep})
 
 
 def row(system, T, q, formula, r, k, stage):
