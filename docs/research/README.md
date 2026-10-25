@@ -1,5 +1,7 @@
 # 研究計画資料
 
+[C1 H6 rank14修正codec・1 fit結果](research_c_c1_h6_corrected_fit_execution_20261025.md)：固定SOURCE33432e786…、20/20 calls、optimizer成功とDF予算PASS。初期tensor F減少／sector誤差4.3116%増を区別し、旧CDF14比sector93.9132%減を保存。生x/jac・STOPを公開し、PF/native/shots/costは未評価。mandatory STOP。
+
 [C1 Stage2 native科学結果](research_c_c1_stage2_native_execution_20261025.md)：固定SOURCEで60主検査・内包unitarity52件が全PASS、call243/243、fit／optimizer／retry／resume0。費用はCDFが小さいがCDF/XDFの物理精度差を保持し、同精度総資源とはしない。原本 `artifacts/research_c_c1_stage2_science/2026-10-25/`、Stage3へ進まずmandatory STOP。下記の準備時点の未承認表示は履歴。
 
 [C1 Stage2 native接続準備](research_c_c1_stage2_native_preparation_20261025.md)：CDF rank8の限定対象採択、旧独立CAR／Gaussian／controlled／X/Y／compiler資産を再利用。人工80件＋29 subtests、52 pins・byte preflight PASS。[未承認科学契約](research_c_c1_stage2_native_contract_unapproved_20261025.json)は局所全PASS後にfull/adjoint/X/Y/compile、上限243 unitsの推奨案。科学条件未採択・実H4 decode／実回路／科学call0、証拠 `artifacts/research_c_c1_stage2_technical/2026-10-25/`、mandatory STOP。

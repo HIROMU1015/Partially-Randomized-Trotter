@@ -1,5 +1,9 @@
 # scripts 索引
 
+## C1：H6 rank14修正codec runnerの限定実行結果
+
+`run_research_c_c1_h6_corrected_fit.py`をSOURCE33432e786…で1回実行し20/20 units・optimizer成功／DF予算PASS。[結果](../docs/research/research_c_c1_h6_corrected_fit_execution_20261025.md)。fresh run01とSTOPを保全、retry/resume0。新fit・後続評価は自動実行しない。
+
 ## C1：H6修正codecのrank14 1 fit（科学未承認）
 
 `run_research_c_c1_h6_corrected_fit.py`：defaultはpassive byte preflight。保存XDF14→修正codec→sector400初期gate→最大1 ffsim fit→終了sector／予算の専用経路。[技術報告](../docs/research/research_c_c1_h6_corrected_fit_preparation_20261025.md)／[未承認20-call契約](../docs/research/research_c_c1_h6_corrected_fit_contract_unapproved_20261025.json)。新科学は別途許可後のみ。

@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：H6 rank14修正codecの1 fit・DF予算PASS（2026-10-25）
+
+[結果](docs/research/research_c_c1_h6_corrected_fit_execution_20261025.md)／[原本・生x/jac・4状態・call・STOP](artifacts/research_c_c1_h6_corrected_fit/2026-10-25/)。SOURCE33432e786…無変更、20/20 calls、fit/optimizer1、retry/resume0。optimizer成功・最終DF予算PASS、sector1.0689213237e-4＋guard1.1384527737e-6 Ha。旧CDF14比93.9132%減、初期XDF比sector4.3116%増。PF/native/shots/cost未実施、厳密CA未資格、旧結果保全・mandatory STOP。以下は準備・旧結果の履歴。
+
 ## C1：H6修正codecのffsim接続・rank14 1 fit準備（2026-10-25）
 
 [技術報告](docs/research/research_c_c1_h6_corrected_fit_preparation_20261025.md)／[未承認20-call契約](docs/research/research_c_c1_h6_corrected_fit_contract_unapproved_20261025.json)／[人工証拠・SOURCE](artifacts/research_c_c1_h6_corrected_fit/2026-10-25/technical/)。新 `c1_ffsim_corrected_codec.py`＋`c1_h6_corrected_fit.py`、専用CLI・人工tests。保存XDF14→修正pack→実ffsim x0を接続、loss/gradient/L-BFGS-Bは維持。新27＋回帰134 tests・29 subtests PASS。実H6 decode／fit／再解析0、今後最大1 fit・retry0、mandatory STOP。
