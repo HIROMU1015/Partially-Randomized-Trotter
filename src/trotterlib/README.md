@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## C1：H6 native state-action接続
+
+`../trottertracks/c1_h6_native.py`は既存NativeBuilder/一般K/CAR/P0/metricsを再利用。`c1_h6_state_action.py`は最大3-qubit matrixと既存Aer CPUでfull8192状態を作用させる。有限probeをoperator上界へ昇格させない。[技術報告](../../docs/research/research_c_c1_h6_native_preparation_20261025.md)。117 tests＋29 subtests PASS、実H6新科学は未承認、mandatory STOP。
+
 ## C1：保存H6 rank14の一般K・S2 PFを限定検証
 
 `c1_h6_saved_pf.py`と既存SectorCAR/一般K/PF_roundsをSOURCE87ea924ae…で無変更実行。72 calls、一般K・ground/alias・全52PF条件PASS。4候補は潜在適格でCAや総費用は未資格。[結果](../../docs/research/research_c_c1_h6_saved_pf_execution_20261025.md)。mandatory STOP。

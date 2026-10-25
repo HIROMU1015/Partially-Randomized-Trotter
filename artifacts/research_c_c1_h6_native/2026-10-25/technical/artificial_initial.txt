@@ -1,0 +1,272 @@
+FFFF......F..............                                                [100%]
+=================================== FAILURES ===================================
+__ test_Aer_actions_match_independent_existing_Qiskit_with_nested_phase[0.0] ___
+
+phase = 0.0
+
+    @pytest.mark.parametrize('phase',[0.,.37,-2.1])
+    def test_Aer_actions_match_independent_existing_Qiskit_with_nested_phase(phase):
+        from trotterlib.df_trotter.circuit import simulate_statevector
+        nested=QuantumCircuit(4);nested.global_phase=phase;nested.h(0);nested.cx(0,3)
+        nested.crz(.29,2,1);nested.rzz(-.4,0,2)
+        qc=QuantumCircuit(4);qc.global_phase=-.13;qc.append(nested.to_gate(),range(4));qc.sdg(2)
+        rng=np.random.default_rng(97);states=rng.normal(size=(3,16))+1j*rng.normal(size=(3,16));states/=np.linalg.norm(states,axis=1)[:,None]
+        expected=np.asarray([simulate_statevector(qc,s) for s in states])
+        actual=a.StateActions(1).apply(qc,states)
+>       np.testing.assert_allclose(actual,expected,atol=3e-14,rtol=0)
+
+tests/management/test_research_c_c1_h6_state_action.py:22: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (<function assert_allclose.<locals>.compare at 0x7a9844deb380>, array([[ 0.14302592-0.15081593j,  0.33496067+0.2101572...
+         0.14233214+0.20475681j, -0.26298031-0.0037525j ,
+        -0.09216891-0.02016201j, -0.05549899+0.32609986j]]))
+kwds = {'equal_nan': True, 'err_msg': '', 'header': 'Not equal to tolerance rtol=0, atol=3e-14', 'verbose': True}
+
+    @wraps(func)
+    def inner(*args, **kwds):
+        with self._recreate_cm():
+>           return func(*args, **kwds)
+                   ^^^^^^^^^^^^^^^^^^^
+E           AssertionError: 
+E           Not equal to tolerance rtol=0, atol=3e-14
+E           
+E           Mismatched elements: 48 / 48 (100%)
+E           Max absolute difference: 0.07268272
+E           Max relative difference: 0.12990848
+E            x: array([[ 0.143026-0.150816j,  0.334961+0.210157j, -0.150153-0.129406j,
+E                    0.202069+0.044995j, -0.061852+0.307534j, -0.321019-0.163987j,
+E                   -0.150053+0.233516j, -0.077728+0.029529j, -0.091564+0.252941j,...
+E            y: array([[ 0.122268-0.168084j,  0.359378+0.164962j, -0.165661-0.108849j,
+E                    0.206197+0.01842j , -0.021463+0.312957j, -0.339569-0.120988j,
+E                   -0.118515+0.250997j, -0.073244+0.039356j, -0.058002+0.262676j,...
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/contextlib.py:81: AssertionError
+__ test_Aer_actions_match_independent_existing_Qiskit_with_nested_phase[0.37] __
+
+phase = 0.37
+
+    @pytest.mark.parametrize('phase',[0.,.37,-2.1])
+    def test_Aer_actions_match_independent_existing_Qiskit_with_nested_phase(phase):
+        from trotterlib.df_trotter.circuit import simulate_statevector
+        nested=QuantumCircuit(4);nested.global_phase=phase;nested.h(0);nested.cx(0,3)
+        nested.crz(.29,2,1);nested.rzz(-.4,0,2)
+        qc=QuantumCircuit(4);qc.global_phase=-.13;qc.append(nested.to_gate(),range(4));qc.sdg(2)
+        rng=np.random.default_rng(97);states=rng.normal(size=(3,16))+1j*rng.normal(size=(3,16));states/=np.linalg.norm(states,axis=1)[:,None]
+        expected=np.asarray([simulate_statevector(qc,s) for s in states])
+        actual=a.StateActions(1).apply(qc,states)
+>       np.testing.assert_allclose(actual,expected,atol=3e-14,rtol=0)
+
+tests/management/test_research_c_c1_h6_state_action.py:22: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (<function assert_allclose.<locals>.compare at 0x7a9844deb4c0>, array([[ 0.18788435-0.08888944j,  0.23629687+0.3170623...
+         0.05865692+0.24236987j, -0.24382677-0.0985963j ,
+        -0.0786407 -0.0521273j , -0.16966597+0.28396252j]]))
+kwds = {'equal_nan': True, 'err_msg': '', 'header': 'Not equal to tolerance rtol=0, atol=3e-14', 'verbose': True}
+
+    @wraps(func)
+    def inner(*args, **kwds):
+        with self._recreate_cm():
+>           return func(*args, **kwds)
+                   ^^^^^^^^^^^^^^^^^^^
+E           AssertionError: 
+E           Not equal to tolerance rtol=0, atol=3e-14
+E           
+E           Mismatched elements: 48 / 48 (100%)
+E           Max absolute difference: 0.07268272
+E           Max relative difference: 0.12990848
+E            x: array([[ 0.187884-0.088889j,  0.236297+0.317062j, -0.093196-0.174946j,
+E                    0.172123+0.115021j, -0.168875+0.264355j, -0.239995-0.268975j,
+E                   -0.224341+0.163452j, -0.083146-0.000577j, -0.176835+0.202712j,...
+E            y: array([[ 0.174776-0.112496j,  0.275405+0.283755j, -0.115089-0.161388j,
+E                    0.185582+0.091737j, -0.133181+0.284017j, -0.272838-0.235594j,
+E                   -0.201259+0.191155j, -0.082519+0.010206j, -0.149065+0.223926j,...
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/contextlib.py:81: AssertionError
+__ test_Aer_actions_match_independent_existing_Qiskit_with_nested_phase[-2.1] __
+
+phase = -2.1
+
+    @pytest.mark.parametrize('phase',[0.,.37,-2.1])
+    def test_Aer_actions_match_independent_existing_Qiskit_with_nested_phase(phase):
+        from trotterlib.df_trotter.circuit import simulate_statevector
+        nested=QuantumCircuit(4);nested.global_phase=phase;nested.h(0);nested.cx(0,3)
+        nested.crz(.29,2,1);nested.rzz(-.4,0,2)
+        qc=QuantumCircuit(4);qc.global_phase=-.13;qc.append(nested.to_gate(),range(4));qc.sdg(2)
+        rng=np.random.default_rng(97);states=rng.normal(size=(3,16))+1j*rng.normal(size=(3,16));states/=np.linalg.norm(states,axis=1)[:,None]
+        expected=np.asarray([simulate_statevector(qc,s) for s in states])
+        actual=a.StateActions(1).apply(qc,states)
+>       np.testing.assert_allclose(actual,expected,atol=3e-14,rtol=0)
+
+tests/management/test_research_c_c1_h6_state_action.py:22: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (<function assert_allclose.<locals>.compare at 0x7a9844a92020>, array([[-0.2023918 -0.04732248j,  0.01230615-0.3952382...
+         0.10489217-0.22623311j,  0.12952539+0.2289015j ,
+         0.02912707+0.08973978j,  0.3095109 -0.11672299j]]))
+kwds = {'equal_nan': True, 'err_msg': '', 'header': 'Not equal to tolerance rtol=0, atol=3e-14', 'verbose': True}
+
+    @wraps(func)
+    def inner(*args, **kwds):
+        with self._recreate_cm():
+>           return func(*args, **kwds)
+                   ^^^^^^^^^^^^^^^^^^^
+E           AssertionError: 
+E           Not equal to tolerance rtol=0, atol=3e-14
+E           
+E           Mismatched elements: 48 / 48 (100%)
+E           Max absolute difference: 0.07268272
+E           Max relative difference: 0.12990848
+E            x: array([[-0.202392-0.047322j,  0.012306-0.395238j, -0.0359  +0.194943j,
+E                   -0.063174-0.197143j,  0.296692-0.101866j,  0.02051 +0.359895j,
+E                    0.277327+0.011637j,  0.06473 +0.052188j,  0.264567-0.048657j,...
+E            y: array([[-0.206819-0.020686j, -0.039034-0.393499j, -0.010326+0.197952j,
+E                   -0.088197-0.18729j ,  0.280983-0.139468j,  0.066992+0.354199j,
+E                    0.276495-0.024412j,  0.070949+0.043356j,  0.256027-0.082543j,...
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/contextlib.py:81: AssertionError
+________ test_only_local_matrices_constructed_even_for_large_composite _________
+
+    def test_only_local_matrices_constructed_even_for_large_composite():
+        import qiskit.quantum_info as qi
+        qc=QuantumCircuit(13);qc.global_phase=.19
+        block=QuantumCircuit(13);block.h(0);block.cx(0,12);block.crz(.3,12,6);block.global_phase=.23
+        qc.append(block.to_gate(),range(13))
+        seen=[]
+        def local(op):
+            seen.append(op.num_qubits);assert op.num_qubits<=3
+            return Operator(op)
+        with patch.object(qi,'Operator',side_effect=local):lowered=a.simulation_circuit(qc)
+        assert seen and max(seen)<=3 and lowered.num_qubits==13
+        psi=np.zeros(8192,complex);psi[0]=1
+>       np.testing.assert_allclose(a.StateActions(1).apply(qc,psi[None,:])[0],Statevector(psi).evolve(qc).data,atol=1e-14,rtol=0)
+
+tests/management/test_research_c_c1_h6_state_action.py:38: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (<function assert_allclose.<locals>.compare at 0x7a9844a92340>, array([0.70710678+0.j, 0.        +0.j, 0.        +0.j,... ,
+       0.        +0.j        , ..., 0.        +0.j        ,
+       0.        +0.j        , 0.        +0.j        ]))
+kwds = {'equal_nan': True, 'err_msg': '', 'header': 'Not equal to tolerance rtol=0, atol=1e-14', 'verbose': True}
+
+    @wraps(func)
+    def inner(*args, **kwds):
+        with self._recreate_cm():
+>           return func(*args, **kwds)
+                   ^^^^^^^^^^^^^^^^^^^
+E           AssertionError: 
+E           Not equal to tolerance rtol=0, atol=1e-14
+E           
+E           Mismatched elements: 2 / 8192 (0.0244%)
+E           Max absolute difference: 0.29480682
+E           Max relative difference: 0.4169198
+E            x: array([0.707107+0.j, 0.      +0.j, 0.      +0.j, ..., 0.      +0.j,
+E                  0.      +0.j, 0.      +0.j])
+E            y: array([0.645651+0.28833j, 0.      +0.j     , 0.      +0.j     , ...,
+E                  0.      +0.j     , 0.      +0.j     , 0.      +0.j     ])
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/contextlib.py:81: AssertionError
+_______ test_artificial_end_to_end_state_actions_and_partial_STOP[None] ________
+
+tmp_path = PosixPath('/tmp/prt-c1-h6-native-preparation-20261025/.cache/h6-native/tmp/pytest-of-abe/pytest-0/test_artificial_end_to_end_sta0')
+fault = None
+
+    @pytest.mark.parametrize('fault',[None,'phase','Gaussian_direction','frame_order','compile','adjoint'])
+    def test_artificial_end_to_end_state_actions_and_partial_STOP(tmp_path,fault):
+        from contextlib import ExitStack
+        from trottertracks.pr_dictionary_validation import gates
+        c=artificial(tmp_path);out=tmp_path/'out'
+        forbidden=Mock(side_effect=AssertionError('NO_NEW_FIT_DF_PF_OR_LARGE_OPERATOR'))
+        ordered=m.native.NativeBuilder.ordered;basis=m.native.NativeBuilder._basis
+        compiler=gates.compiled_wrapper
+        def ordered_bad(self,model,time,**kwargs):
+            if fault=='frame_order':model=m.replace(model,blocks=tuple(reversed(model.blocks)))
+            qc=ordered(self,model,time,**kwargs)
+            if fault=='phase':qc.p(.01,model.modes)
+            return qc
+        def compile_bad(qc,profile,**kwargs):
+            result=compiler(qc,profile,**kwargs)
+            if fault=='compile' and len(qc.data)>10:result.p(.01,qc.num_qubits-1)
+            return result
+        with ExitStack() as stack:
+            stack.enter_context(patch.object(m,'preflight',return_value=c))
+            stack.enter_context(patch.object(m.saved.molecule,'factor',forbidden))
+            stack.enter_context(patch.object(m.saved.molecule,'rank_assessment',forbidden))
+            stack.enter_context(patch.object(m.saved.molecule,'PF_rounds',forbidden))
+            stack.enter_context(patch.object(m.saved.molecule.stage1,'car_bilinears',forbidden))
+            stack.enter_context(patch.object(m.native.NativeBuilder,'ordered',ordered_bad))
+            stack.enter_context(patch.object(gates,'compiled_wrapper',side_effect=compile_bad))
+            if fault=='Gaussian_direction':stack.enter_context(patch.object(m.native.NativeBuilder,'_basis',lambda self,model,block:basis(self,model,block).inverse()))
+            if fault=='adjoint':stack.enter_context(patch.object(m.native,'actual_adjoint',lambda qc:qc))
+            if fault:
+                with pytest.raises((ValueError,RuntimeError)):m.run(tmp_path,tmp_path/'unused',out)
+>           else:m.run(tmp_path,tmp_path/'unused',out)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_c1_h6_native.py:69: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c1_h6_native.py:236: in run
+    with ThreadPoolExecutor(max_workers=plan['workers']) as pool:results=dict(pool.map(candidate_job,JOBS))
+                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py:619: in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py:317: in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/thread.py:58: in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_h6_native.py:205: in candidate_job
+    kernel_report,a,b=calls('kernel_action',label,assess)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage3_integrated.py:108: in __call__
+    value = function()
+            ^^^^^^^^^^
+src/trottertracks/c1_h6_native.py:201: in assess
+    compiler=action.state_gate(b,a,label='compiled/raw:'+label),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_h6_state_action.py:107: in state_gate
+    report=component_check(actual,expected,COMPONENT_ATOL,label=label)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = array([[ 1.53497019e-01-8.65740339e-02j, -3.39253526e-01-2.20990166e-02j,
+        -1.48034215e-01+2.24500168e-01j,  7....1464e-03j,  2.31119362e-16+1.51323542e-16j,
+         1.20237124e-17+4.16652383e-17j,  1.22331584e-16-9.85442082e-17j]])
+expected = array([[ 8.68463546e-02+1.53343108e-01j,  2.14968070e-02-3.39292218e-01j,
+        -2.24762575e-01-1.47635495e-01j,  1....9319e-05j,  0.00000000e+00+0.00000000e+00j,
+         0.00000000e+00+0.00000000e+00j,  0.00000000e+00+0.00000000e+00j]])
+tolerance = 1e-10
+
+    def component_check(actual,expected,tolerance,*,label):
+        """The existing maximum-entry acceptance rule without diagnostic SVDs.
+    
+        Stage2's matrix_gate also computes a spectral diagnostic. Calibration here
+        needs no such norm certificate: synthesis remains explicitly UNRESOLVED.
+        Avoid three full512 SVDs for each raw/compiled/adjoint correctness test.
+        """
+        import numpy as np
+        actual,expected=np.asarray(actual),np.asarray(expected)
+        if actual.shape!=expected.shape or not np.isfinite(actual).all() or not np.isfinite(expected).all():
+            raise ValueError(label+': shape/nonfinite')
+        error=actual-expected;maximum=float(np.max(np.abs(error)))
+        result=dict(label=label,max_entry=maximum,frobenius=float(np.linalg.norm(error,'fro')),tolerance=tolerance,rtol=0)
+>       if maximum>tolerance:raise ValueError(str(result))
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: {'label': 'compiled/raw:CDF_s1_literal', 'max_entry': 1.4129442831231838, 'frobenius': 3.1594698937196033, 'tolerance': 1e-10, 'rtol': 0}
+
+src/trottertracks/c1_stage3_molecular.py:35: ValueError
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_c1_h6_state_action.py::test_Aer_actions_match_independent_existing_Qiskit_with_nested_phase[0.0]
+FAILED tests/management/test_research_c_c1_h6_state_action.py::test_Aer_actions_match_independent_existing_Qiskit_with_nested_phase[0.37]
+FAILED tests/management/test_research_c_c1_h6_state_action.py::test_Aer_actions_match_independent_existing_Qiskit_with_nested_phase[-2.1]
+FAILED tests/management/test_research_c_c1_h6_state_action.py::test_only_local_matrices_constructed_even_for_large_composite
+FAILED tests/management/test_research_c_c1_h6_native.py::test_artificial_end_to_end_state_actions_and_partial_STOP[None]
+5 failed, 20 passed in 9.63s

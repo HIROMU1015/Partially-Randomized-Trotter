@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：H6 native正しさ・kernel費用の技術準備（2026-10-25）
+
+[技術報告](docs/research/research_c_c1_h6_native_preparation_20261025.md)／[未承認298-call契約](docs/research/research_c_c1_h6_native_contract_unapproved_20261025.json)／[SOURCE・人工証拠](artifacts/research_c_c1_h6_native/2026-10-25/technical/)。既存NativeBuilder/一般K/P0へ保存CDF14/XDF14を接続。full8192 state-actionの有限probeと局所CAR、literal/sharedの8 kernels、11 compile。117 tests＋29 subtests PASS、実H6新科学0、global合成誤差/CA/shots/総費用未資格、mandatory STOP。
+
 ## C1：H6 rank14・4候補52 PF roundがPASS（2026-10-25）
 
 [結果](docs/research/research_c_c1_h6_saved_pf_execution_20261025.md)／[全52 round・原本・call・STOP](artifacts/research_c_c1_h6_saved_pf/2026-10-25/)。SOURCE87ea924ae…無変更、72/72 units・correctness FAIL0。一般K/ground/alias全PASS、CDF14/XDF14のS2 s1/s4すべてPOTENTIALLY_FEASIBLE。native/CA/shots/costは未資格・未評価、fit/DF誤差再計算/retry0、旧証拠保全・mandatory STOP。以下は準備・旧結果の履歴。

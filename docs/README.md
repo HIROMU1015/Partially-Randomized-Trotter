@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1：H6 native・合成誤差・費用評価の技術準備
+
+[報告](research/research_c_c1_h6_native_preparation_20261025.md)／[未承認298-call契約](research/research_c_c1_h6_native_contract_unapproved_20261025.json)。全unitaryを作らない有限state-action probeと独立CAR、P0 kernel metricsを接続。人工117 tests＋29 subtests PASS。実H6 build/compile0、13round合成誤差上界は未資格を保持、mandatory STOP。
+
 ## C1：保存H6 rank14・S2 PF限定実行結果
 
 [報告](research/research_c_c1_h6_saved_pf_execution_20261025.md)：72/72 calls・correctness FAIL0。保存DF予算・一般K・ground/alias全PASS、CDF/XDF s1/s4の全52セルが登録PF条件PASS。4候補は潜在適格、CA・合成誤差・総資源は未資格。原本を保全しmandatory STOP。
