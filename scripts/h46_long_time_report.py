@@ -83,8 +83,64 @@ def write_csv(path,rows,fields=None):
         writer=csv.DictWriter(stream,fieldnames=fields,extrasaction='ignore');writer.writeheader();writer.writerows(rows)
 
 
+def check_mean_and_trial_binding(prices):
+    """Saved metadata only: native law/scalar must match the priced mean.
+
+    No old simulation, compile, numerical signal or statistical test is replayed.
+    """
+    import numpy as np
+    signals=read(PUBLIC/'signal_records.json.gz')
+    signals.update(read(PUBLIC/'extension_signal_records.json.gz'))
+    contexts={s:read(PRIVATE/(s+'_context.json')) for s in study.PREFIX}
+    constants={}
+    cfg=study.origin_config()
+    for s,info in cfg['systems'].items():
+        item=next(v for k,v in info['inputs'].items() if k.endswith('_snapshot.npz'))
+        with np.load(item['path'],allow_pickle=False) as z:
+            constants[s]=float(z['constant'])
+    selected=dict(prices)
+    if (PUBLIC/'confirmation_costs.json.gz').exists():
+        selected.update({'confirmation_'+k:v for k,v in read(PUBLIC/'confirmation_costs.json.gz').items()})
+    seen=set();count=0;log_error=0.;scalar_error=0.
+    for group in selected.values():
+        for path in group.get('trial_files',[]):
+            trial=read(path);r=trial['candidate'];key=(trial['cohort'],r['id'],trial['index'])
+            if key in seen:
+                raise ValueError('DUPLICATE_TRIAL_IN_ACCOUNTING')
+            seen.add(key);count+=1
+            if trial['status']!='PASS' or trial['conditional']:
+                raise ValueError('UNACCEPTED_OR_CONDITIONAL_COST_SAMPLE')
+            error=abs(trial['log_B']-signals[r['id']]['signal']['log_B']);log_error=max(log_error,error)
+            if error>1e-10:
+                raise ValueError('NATIVE_AND_SIGNAL_NORMALIZATION_DISAGREEMENT')
+            expected=constants[r['system']]
+            if r['method'] in ('PR','B0I'):
+                expected+=contexts[r['system']]['prefixes'][str(r['prefix'])]['scalar']
+            scalar_error=max(scalar_error,abs(trial['scalar']-expected))
+            if abs(trial['scalar']-expected)>1e-12:
+                raise ValueError('NATIVE_AND_SIGNAL_SCALAR_DISAGREEMENT')
+            if r['method']=='PR' and sum(trial['orders'].values())!=r['q']*r['R_outer']:
+                raise ValueError('INCOMPLETE_RTE_TRIAL_ACCOUNTING')
+    occupied=set();seed_counts={}
+    for cohort in ('EXPLORATION','EXTENSION_EXPLORATION','CONFIRMATION'):
+        p=PRIVATE/(cohort+'_seeds.json.gz')
+        if not p.exists():
+            continue
+        values=read(p)
+        if len(set(values))!=len(values) or occupied.intersection(values):
+            raise ValueError('NEW_COHORT_SEED_COLLISION')
+        occupied.update(values);seed_counts[cohort]=len(values)
+    result=dict(checked_new_trials=count,maximum_log_B_disagreement=log_error,
+        maximum_scalar_disagreement=scalar_error,complete_RTE_trial_counts=True,
+        seed_counts=seed_counts,new_seed_collisions=0,old_scientific_runs_replayed=False,
+        scientific_certificate=False,check_kind='RECORDED_MEAN_NATIVE_BINDING_ONLY')
+    save(PUBLIC/('final_mean_trial_binding.json' if 'CONFIRMATION' in seed_counts else 'exploration_mean_trial_binding.json'),result)
+    return result
+
+
 def account():
     data=[];prices=costs();ep=endpoints()
+    check_mean_and_trial_binding(prices)
     signals=read(PUBLIC/'signal_records.json.gz')
     if (PUBLIC/'extension_signal_records.json.gz').exists():
         signals.update(read(PUBLIC/'extension_signal_records.json.gz'))
@@ -240,6 +296,7 @@ def confirm():
 
 
 def confirmation_account():
+    check_mean_and_trial_binding(costs())
     candidates={r['id']:r for r in read(PUBLIC/'accounting.json.gz') if r['G'] is not None}
     # Cost and eligibility depend on epsilon, so recover full endpoint lookup.
     ep={(r['candidate']['id'],r['epsilon']):r for r in endpoints()}
