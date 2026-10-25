@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "performed_by": "primary Codex; technical checks, not independent review",
+  "new_tests_unique": 8,
+  "compiler_runtime": {
+    "python": "3.11.0rc1",
+    "qiskit": "1.3.0",
+    "tests_passed": 5,
+    "Arb_class_skipped": true
+  },
+  "Arb_runtime": {
+    "python": "3.12.3",
+    "python_flint": "0.9.0",
+    "tests_passed": 7,
+    "Qiskit_class_skipped": true
+  },
+  "note": "Four pure accounting tests ran in both runtimes; 12 executions cover 8 unique tests. All tests use artificial data; no H4 scientific call before SOURCE fixation.",
+  "coverage": [
+    "2/3-qubit exact diagonal analytic signal enclosure",
+    "noncommuting Y/negative-term independent dense C oracle",
+    "raw norm=5 without renormalization",
+    "whole reference intervals and norm mismatch rejection",
+    "D1 operand/time/phase correspondence and mismatch rejection",
+    "own bias/allowance; no PR N/G recomputation",
+    "null on bias failure; no price ranking",
+    "precision escalation only for width ambiguity"
+  ],
+  "reuse": [
+    "D2 central_control_body",
+    "B0 central_wrappers",
+    "C real/phase/endpoints and binary64 operand convention",
+    "PR0 exact Pauli map/action",
+    "Arb bridge unitary L2 recenter",
+    "D1 compile_saved",
+    "conditional_cng scale_bounds/base_axis/shot"
+  ],
+  "protected_sources_changed": false
+}
