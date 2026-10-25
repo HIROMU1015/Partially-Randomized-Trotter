@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1 Stage3 feasibility-only限定科学実行
+
+[結果・分類・制約](research/research_c_c1_stage3_feasibility_execution_20261025.md)／[260セル・20候補・call](../artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/)。639/639 callsで潜在適格14／十分条件不適格6、correctness FAIL0、retry0。合成誤差資格・shots・総費用・順位は未評価、mandatory STOP。
+
 [C1 Stage3 feasibility-only準備](research/research_c_c1_stage3_feasibility_preparation_20261025.md)／[限定科学契約](research/research_c_c1_stage3_feasibility_contract_unapproved_20261025.json)。20候補×13roundのPF operator誤差・補正RTE誤差・attenuationを測り、INFEASIBLE／POTENTIALLY_FEASIBLE／UNRESOLVEDへ分類する専用経路。最大639 logical units、回路・shots・総費用・資源順位は除外。人工60 tests PASS、実H4科学call0・mandatory STOP。
 
 

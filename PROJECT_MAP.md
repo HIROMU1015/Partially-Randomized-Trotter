@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1 Stage3：feasibility-only限定科学実行（2026-10-25）
+
+[結果・候補別値・制約](docs/research/research_c_c1_stage3_feasibility_execution_20261025.md)／[260セルCSV・20候補・call・STOP](artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/)。固定SOURCE6ea5c6a9…無変更で639/639 calls、潜在適格14／十分条件不適格6、correctness FAIL0、fit／retry／resume0。回路・shots・総費用・順位付けは未実施、CA達成を意味しない。mandatory STOP。以下の未承認・準備表示は履歴。
+
 ## C1 Stage3：feasibility-only限定経路の準備（2026-10-25）
 
 [技術報告](docs/research/research_c_c1_stage3_feasibility_preparation_20261025.md)／[未承認639-call契約](docs/research/research_c_c1_stage3_feasibility_contract_unapproved_20261025.json)。専用entry `scripts/run_research_c_c1_stage3_feasibility.py --mode feasibility-only`、処理 `c1_stage3_feasibility.py`、人工test `tests/management/test_research_c_c1_stage3_feasibility.py`。旧SOURCE無変更で20候補×13roundのPF／補正RTE誤差・attenuationと分類だけを接続。回路／compile／shots／総費用／順位付けは除外。人工16＋既存44 tests PASS。実H4科学call0・mandatory STOP。
