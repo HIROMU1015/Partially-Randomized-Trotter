@@ -1,3 +1,7 @@
+## 2026-10-26 純RTE q8/r>8の接続準備
+
+`pauli_rte_event_extension.py`：旧validatorを変更せずpure RTEのlaw/seed/trajectory/controlとH4固定高速Arb・H6 tight L2・既存会計を接続。r8互換性とr16–128は人工系だけ検証、実分子科学call0。[準備範囲・承認待ち](../../docs/pauli_rte_event_extension_preparation_20261026.md)。
+
 ## 2026-10-25 H6の任意精度整数会計
 
 `h6_rte_fairness.py`：旧Fraction上界/guard/shot式を再利用し、SAFE_INTEGER_LIMITの表現制限だけexact Python整数ceilへ接続する。旧SOURCE/旧nullを変更せず、guard未確定を適格へ昇格しない。[24構成・matched/familyの条件付き結果](../../docs/h6_rte_fairness_20261025.md)。正式certificateや母平均tail保証ではない。

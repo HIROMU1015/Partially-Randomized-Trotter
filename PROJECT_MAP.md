@@ -1,3 +1,7 @@
+## 2026-10-26 H4/H6 純RTE event数拡張の準備
+
+[初期s128–512・最大s1024の無効実行計画と人工検証](docs/pauli_rte_event_extension_preparation_20261026.md)。初期5/最大12候補、実分子科学call・新N/G・再ランキング0。新7＋再利用5人工PASS。添付§8に従い一括科学実行承認待ちでSTOP。
+
 ## 2026-10-25 H6 Hybrid/RTE：r8・整数会計の追加検証完了
 
 [r2/4/8の24候補、matched/family比較、保留N/G](docs/h6_rte_fairness_20261025.md)。旧7＋新17、target17作用/新224 trajectory/448 compile。条件付きH/R=.0681–.2189、旧r4に比べRTE Gは約1%へ改善。旧整数上限8行を回収、最厳精度のguard2行はnullを保持。実ρ/tail未保証、公開照合後mandatory STOP。以下は時点履歴。

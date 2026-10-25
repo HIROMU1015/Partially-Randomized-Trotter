@@ -1,3 +1,7 @@
+## 2026-10-26 純RTE event拡張の静的準備
+
+`prepare_pauli_rte_event_extension.py`：固定入力のshape/SHA、旧候補重複、既存選択行の文字列引用、無効計画を整理する。実分子kernel・G/min/ratio/科学runnerは呼ばない。現在の準備は完了、科学実行承認待ち。[報告](../docs/pauli_rte_event_extension_preparation_20261026.md)。
+
 ## 2026-10-25 H6 RTE fairness追加検証（科学STOP）
 
 `run_h6_rte_fairness.py`：旧H6のlaw/target/price_job/paired統計を再利用し、新候補だけ固定batchで実行。今回の完了batch/cohortは再実行しない。

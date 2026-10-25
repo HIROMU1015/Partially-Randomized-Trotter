@@ -1,3 +1,7 @@
+## 2026-10-26 H4/H6 純RTEのs>64拡張準備
+
+[code再利用・人工検証・承認対象の候補/call/STOP](pauli_rte_event_extension_preparation_20261026.md)。実分子評価と保存値再解析は未実行。無効計画・準備STOP。
+
 ## 2026-10-25 H6 RTE比較条件の追加検証
 
 [同一q/r/K対照・24構成探索・整数上限・結果](h6_rte_fairness_20261025.md)。全5精度の有限・条件付き確認GでHybrid低G、優位倍率は旧r4限定から縮小。未確定2行と実ρ/母平均tailを保持。公開照合後mandatory STOP。
