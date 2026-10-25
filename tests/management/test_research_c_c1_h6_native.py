@@ -145,6 +145,7 @@ def contract(root):
         allowances=m.ALLOWANCES,compiler=profile,call_limits=m.LIMITS,maximum_logical_units=m.MAX_CALLS,
         routes=list(m.ROUTES),candidate_order=[f'{a}:s{s}' for a,s in m.saved.CANDIDATES],state_action=m.action.VERSION,
         native_gaussian=m.GAUSSIAN_VERSION,
+        compiler_phase_accumulator=m.COMPILER_PHASE_VERSION,
         new_fit=0,optimizer=0,PF_recomputation=0,DF_error_recomputation=0,shots_evaluation=0,total_cost_evaluation=0,retry=0,resume=0,
         source_manifest='SOURCE.json',source_manifest_sha256=m.io.sha(root/'SOURCE.json'),saved_inputs={'bytes':m.io.sha(root/'bytes')},
         original_input='bytes',saved_optimizer='bytes',PF_result='bytes',factor_arrays={a:'bytes' for a in m.saved.ARMS},

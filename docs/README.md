@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1：H6 P0 phase集計修正
+
+[同一P0 body・数値phase安定化・97人工PASS](research/research_c_c1_h6_native_stable_phase_repair_20261025.md)／[fresh298-call契約](research/research_c_c1_h6_native_stable_phase_contract_20261025.json)。旧FAIL・診断・STOP保全、科学的allowanceは不変。
+
 ## C1：H6 native精度修正
 
 [Gaussian精度・inverse競合修正と185人工PASS](research/research_c_c1_h6_native_precision_repair_20261025.md)／[同一8経路のfresh298-call契約](research/research_c_c1_h6_native_precision_contract_20261025.json)。旧FAIL・SOURCEを保持し、検証閾値・P0・比較条件は維持。

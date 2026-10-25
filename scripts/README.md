@@ -1,5 +1,9 @@
 # scripts 索引
 
+## C1：H6 P0 phase精度修正版
+
+`run_research_c_c1_h6_native.py`を[stable-phase契約](../docs/research/research_c_c1_h6_native_stable_phase_contract_20261025.json)で使用。旧runを再起動しない。`diagnose_research_c_c1_h6_native_state_action.py`は保存1経路・5-call独立診断で完了。[修正報告](../docs/research/research_c_c1_h6_native_stable_phase_repair_20261025.md)。
+
 ## C1：H6 native精度修正版
 
 `run_research_c_c1_h6_native.py`は[新precision契約](../docs/research/research_c_c1_h6_native_precision_contract_20261025.json)を受け、H6専用PrecisionBuilderを使う。旧契約のrun01は再起動しない。[修正・185人工PASS](../docs/research/research_c_c1_h6_native_precision_repair_20261025.md)。

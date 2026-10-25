@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## C1：H6 declared compiler phase集計
+
+`../trottertracks/c1_h6_compiler_precision.py`は既存P0 pass・gate本体・角度を保ち、global_phaseの加算だけ既存SymEngine MPFR160で安定化する。出力state/operatorのphase fitは行わない。[97人工PASS・修正報告](../../docs/research/research_c_c1_h6_native_stable_phase_repair_20261025.md)。
+
 ## C1：H6限定Gaussian数値精度修正
 
 `../trottertracks/c1_h6_native_precision.py`は既存Nature JW消去順序・RZ/XXPlusYYを維持し、小回転をexact-zero/LAPACK/atan2で保持する。H6のbuilderだけ差替え、旧H2/H4 builderは変更しない。`c1_h6_native.py`はP0/inverse生成の共通mutexを使用。[報告・185人工PASS](../../docs/research/research_c_c1_h6_native_precision_repair_20261025.md)。

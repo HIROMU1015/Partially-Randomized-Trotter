@@ -14,10 +14,11 @@ from . import c1_stage3_connection as connection
 from . import c1_stage3_deterministic_accuracy as det
 from .c1_stage3_cost_compat import CompileSerialCalls
 from .c1_h6_native_precision import PrecisionBuilder, VERSION as GAUSSIAN_VERSION
+from .c1_h6_compiler_precision import VERSION as COMPILER_PHASE_VERSION
 
 io=saved.io
-SCOPE='C1_H6_RANK14_NATIVE_PRECISION_REEXECUTION_V1'
-FAMILY='artifacts/research_c_c1_h6_native_precision'
+SCOPE='C1_H6_RANK14_NATIVE_STABLE_PHASE_REEXECUTION_V1'
+FAMILY='artifacts/research_c_c1_h6_native_stable_phase'
 ROUTES=('literal','shared')
 SHELLS=('head','X','Y')
 JOBS=tuple((arm,s,route) for arm,s in saved.CANDIDATES for route in ROUTES)
@@ -42,6 +43,7 @@ def preflight(root,path):
             or c['maximum_logical_units']!=MAX_CALLS or c['routes']!=list(ROUTES)
             or c['candidate_order']!=[f'{a}:s{s}' for a,s in saved.CANDIDATES]
             or c['state_action']!=action.VERSION or c['native_gaussian']!=GAUSSIAN_VERSION
+            or c['compiler_phase_accumulator']!=COMPILER_PHASE_VERSION
             or any(c[k] for k in ('new_fit','optimizer','PF_recomputation','DF_error_recomputation',
                                   'shots_evaluation','total_cost_evaluation','retry','resume'))):
         raise ValueError('H6_NATIVE_SCOPE')
@@ -127,7 +129,8 @@ def run(root,contract_path,output):
     from threadpoolctl import threadpool_limits
     from qiskit import qpy
     from .pr_dictionary_validation.fixture import CompilerProfile
-    from .pr_dictionary_validation.gates import compiled_wrapper,signal_gate
+    from .pr_dictionary_validation.gates import signal_gate
+    from .c1_h6_compiler_precision import compiled_wrapper
     from .pr_dictionary_validation.f2_execution import circuit_metrics
     root,output=Path(root),Path(output);c=preflight(root,contract_path)
     output.mkdir(parents=True,exist_ok=False)

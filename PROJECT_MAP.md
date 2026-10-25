@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：H6 P0位相集計の安定化（2026-10-25）
+
+[修正・関連97 PASS](docs/research/research_c_c1_h6_native_stable_phase_repair_20261025.md)／[同一8経路298-call契約](docs/research/research_c_c1_h6_native_stable_phase_contract_20261025.json)。既存P0のgate本体を変えずdeclared phaseだけ160-bitで集計。旧2回の162-call FAILと独立診断5-callを保持し、累積最大627 units。
+
 ## C1：H6 nativeのGaussian精度修正・fresh再実行（2026-10-25）
 
 [修正・人工185 PASS](docs/research/research_c_c1_h6_native_precision_repair_20261025.md)／[新298-call契約](docs/research/research_c_c1_h6_native_precision_contract_20261025.json)。H6専用の既存Nature JW数値修正（exact-zero/LAPACK/atan2）とP0/inverse生成mutex。旧run01・162-call STOPは保持。同一8経路・allowance不変、別fresh outputで最大298、累積最大460 units。
