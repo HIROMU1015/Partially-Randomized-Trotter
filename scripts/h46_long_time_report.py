@@ -50,6 +50,11 @@ def costs():
         p=PUBLIC/name
         if p.exists():
             result.update(read(p))
+    p=PUBLIC/'saved_secondary_metrics.json'
+    if p.exists():
+        for identity,value in read(p).items():
+            if identity in result and 'mean_metrics' not in result[identity]:
+                result[identity]['mean_metrics']=value['mean_metrics']
     return result
 
 
@@ -363,7 +368,32 @@ def figures():
     for suffix in ('png','svg','pdf'):
         fig.savefig(PUBLIC/('selected_delta_vs_time.'+suffix),dpi=160)
     plt.close(fig)
-    return dict(figures=['cost_vs_time','selected_delta_vs_time'],formats=['png','svg','pdf'],
+    import numpy as np
+    from matplotlib.colors import ListedColormap
+    fig,axes=plt.subplots(2,2,figsize=(12,9))
+    labels={'2nd':0,'4th':1,'4th(m5_best)':2}
+    short={'2nd':'S2','4th':'Y4','4th(m5_best)':'m5'}
+    for si,s in enumerate(study.PREFIX):
+        for fi,family in enumerate(('PF','PR')):
+            ax=axes[si,fi];matrix=np.full((5,4),np.nan)
+            for ei,e in enumerate(study.EPS):
+                for ti,T in enumerate(study.Q):
+                    value=next(v['best'] for v in best if v['system']==s and v['family']==family and v['T']==T
+                               and v['epsilon']==e and v['formula_group']=='ALL')
+                    if value:
+                        matrix[ei,ti]=labels[value['formula']]
+                        label=short[value['formula']]+' / q'+str(value['q'])
+                        if family=='PR':
+                            label+='\nR'+str(value['R_outer'])+' K'+str(value['K'])
+                        ax.text(ti,ei,label,ha='center',va='center',fontsize=8)
+            ax.imshow(matrix,cmap=ListedColormap(['#b8d8ef','#e0edbc','#f5c6a5']),vmin=0,vmax=2,aspect='auto')
+            ax.set_xticks(range(4),list(study.Q));ax.set_yticks(range(5),[str(e) for e in study.EPS])
+            ax.set_xlabel('Total time T');ax.set_ylabel('epsilon');ax.set_title(s+' '+family+' lowest acquired point cost')
+    fig.tight_layout()
+    for suffix in ('png','svg','pdf'):
+        fig.savefig(PUBLIC/('selected_formula_grid.'+suffix),dpi=160)
+    plt.close(fig)
+    return dict(figures=['cost_vs_time','selected_delta_vs_time','selected_formula_grid'],formats=['png','svg','pdf'],
                 interpretation='Finite-sample points and 1 SE; empirical signal allowance; evaluated cost subset')
 
 
