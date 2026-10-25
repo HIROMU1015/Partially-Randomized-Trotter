@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究B A0実行完了、B0はSTOP（2026-10-25）
+
+[A0実行報告・全8比較・原本・STOP](research/research_b_outer_a0_execution_20261025.md)。SOURCE1e3921ba1、8行×90/128桁を変更・中断・retryなしに完了。全8比較で経験的精度安定性とnominal bound整合を確認したが、certified u_numはnull。B0 native build／compileは未実行。以下は準備段階の履歴。
+
 ## 研究B A0高精度・B0 full-wrapper pilot準備（2026-10-25）
 
 [技術報告・固定SOURCE・個別科学契約／command](research/research_b_outer_a0_b0_execution_preparation_20261025.md)。A0 1e3921ba1、B0 8d0cb96df、人工138件・両read-only preflight PASS。実高精度／回路build／compileは未実行。u_num・γ資格と科学的correctnessは未確認。A0とB0の実行許可は別々に必要。

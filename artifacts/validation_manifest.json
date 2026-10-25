@@ -2597,6 +2597,74 @@
         "Preserve science SOURCE, raw outputs, logs and STOP; no retry/resume or extra conditions.",
         "User/researchB decides whether to authorize further u_num, native cost, gamma or shot work; no automatic Stage2."
       ]
+    },
+    {
+      "id": "research_b_outer_a0_20261025",
+      "status": "source_present_no_current_ci",
+      "scientific_execution_status": "COMPLETE",
+      "scientific_status": "EMPIRICAL_CONSISTENCY",
+      "runtime_status": "COMPLETED_DESCRIPTIVE_MANDATORY_STOP",
+      "summary": "Unchanged fixed A0 source completed16 case-precision once. All8 registered indicator comparisons stable within1e-40 and nominal Taylor bound consistent. No numerical enclosure or certified u_num; B0 remains unexecuted and STOP.",
+      "documentation": [
+        "docs/research/research_b_outer_a0_execution_20261025.md",
+        "docs/research/research_b_outer_a0_b0_execution_preparation_20261025.md"
+      ],
+      "source": [
+        "scripts/run_b2d_outer_a0.py",
+        "src/trottertracks/b2d_evaluator/a0_reference.py",
+        "src/trottertracks/b2d_evaluator/followup_io.py",
+        "src/trottertracks/pr_dictionary_validation/reference.py",
+        "src/trottertracks/b2d_evaluator/launcher.py"
+      ],
+      "tests": [
+        "tests/management/test_b2d_followup.py"
+      ],
+      "artifacts": [
+        "artifacts/research_b_outer_a0/20261025/COMPARISON.csv",
+        "artifacts/research_b_outer_a0/20261025/independent-once/result.json",
+        "artifacts/research_b_outer_a0/20261025/independent-once/binding.json",
+        "artifacts/research_b_outer_a0/20261025/independent-once/partial_results.json",
+        "artifacts/research_b_outer_a0/20261025/independent-once/status.json",
+        "artifacts/research_b_outer_a0/20261025/independent-once/STOP.json",
+        "artifacts/research_b_outer_a0/20261025/execution_logs/attempt-1/preflight.json",
+        "artifacts/research_b_outer_a0/20261025/execution_logs/attempt-1/time.txt"
+      ],
+      "science_source_commit": "1e3921ba16e5d531e9a3010cffa9ff717609a93a",
+      "execution_contract_commit": "3c1e10f1c061b9b4d15e2690403fd26b841cbc06",
+      "snapshot_commit": "33715848bfb83d49ec4e54d6eef481012a7441e4",
+      "counts": {
+        "scientific_attempts": 1,
+        "rows": 8,
+        "precisions": 2,
+        "case_precisions": 16,
+        "high_level_targets": 80,
+        "signals": 80,
+        "dag_nodes": 3400,
+        "shared_exponentials": 412,
+        "explicit_multiply": 2348,
+        "residual_norms": 96,
+        "comparisons": 8,
+        "stable_comparisons": 8,
+        "nominal_bound_consistent_comparisons": 8,
+        "event_records": 6820,
+        "technical_recoveries": 0,
+        "retries": 0,
+        "new_native_builds": 0,
+        "new_native_compilations": 0,
+        "shot_evaluations": 0
+      },
+      "qualification": {
+        "u_num": null,
+        "certified": false,
+        "implementation_gamma": null,
+        "shots": null,
+        "status": "EMPIRICAL_ONLY_NO_RIGOROUS_ENCLOSURE"
+      },
+      "interpretation": "Saved binary64 synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,nD1,T±.18,S1 SABA2/q4/A2/r2K2,F1 refined-S2/q2/f8/A2/r2K2,B3 Yoshida4/q2/A2/r2K2,R4 Yoshida4/q2/A3/r2K4. Saved indicator90/128 differences max1.84e-89. Old S1/F1 bound excesses did not recur; R4 D residual2.30e-19. Small saved-model identity/Hermiticity/tail-norm deviations persist. Not CI, independent reproduction or a total-resource certificate.",
+      "completion_criteria": [
+        "Preserve frozen A0 source, old/raw results and mandatory STOP; no retry/resume or additional conditions.",
+        "B0 remains unexecuted and STOP. User/researchB decides whether to authorize A1 or B0 separately; no automatic MC/shot/precision/grid extension."
+      ]
     }
   ],
   "repository_completion_criteria": [

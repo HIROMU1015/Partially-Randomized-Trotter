@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究B A0独立高精度検証完了（2026-10-25）
+
+[A0結果・精度診断・SOURCE・STOP](docs/research/research_b_outer_a0_execution_20261025.md)。SOURCE1e3921ba1を変更せず8行×90/128桁を一回完了。全8比較で経験的安定性・nominal bound整合、u_num=nullを維持。原本は `artifacts/research_b_outer_a0/20261025/independent-once/`、列抽出は同日 `COMPARISON.csv`。B0は未実行・STOPを維持。以下は実行前の準備履歴。
+
 ## 研究B A0高精度・B0 native pilotの実行準備（2026-10-25）
 
 [固定SOURCE・scope・人工138件・個別command](docs/research/research_b_outer_a0_b0_execution_preparation_20261025.md)。A0 SOURCE1e3921ba1、8行×90/128桁、入口 `scripts/run_b2d_outer_a0.py`。B0 SOURCE8d0cb96df、48代表・96 compile要求、入口 `scripts/run_b2d_outer_b0.py`。実装 `b2d_evaluator/{a0_reference,b0_native,followup_io}.py`、人工test `tests/management/test_b2d_{followup,b0_native}.py`。両read-only preflight PASS、科学実行0。A0/B0は別許可、次はA0実行を研究Bで判断する。

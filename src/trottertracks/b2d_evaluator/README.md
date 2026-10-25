@@ -1,5 +1,7 @@
 # B2-D 5方式評価器：接続準備・技術報告
 
+**A0実行完了・B0 STOP（2026-10-25）：** [結果・精度限界・原本・STOP](../../../docs/research/research_b_outer_a0_execution_20261025.md)。SOURCE1e3921ba1、8行×90/128桁を一回完了し、全8比較で経験的安定性・nominal bound整合を確認した。u_num=null／certified=false、B0実回路build／compileは未実行。旧SOURCE・結果・STOPを保全し、追加科学計算へ進まない。以下は準備履歴。
+
 **A0／B0準備完了（2026-10-25、科学実行0）：** [`a0_reference.py`](a0_reference.py)／[`b0_native.py`](b0_native.py)／[`followup_io.py`](followup_io.py)。[固定SOURCE・scope・人工138件・個別command](../../../docs/research/research_b_outer_a0_b0_execution_preparation_20261025.md)。A0 SOURCE1e3921ba1、8行×90/128桁。B0 SOURCE8d0cb96df、48代表・96 compile要求。旧科学結果・STOPは保全し、次はA0の実行を先に判断する。B0は別許可。
 
 **Outer/RTE固定22行の科学実行完了（2026-10-25）：** [結果・SOURCE・数値的限界・STOP](../../../docs/research/research_b_outer_rte_22row_execution_20261025.md)。SOURCE26e8734afを変更せず、全correctness先行で22行・1239 dispatch・274 key・RTE各96・110 expectationsを一回で完了した。u_num未評価、nominal boundは浮動誤差を含む証明ではない。精度／総資源の認定や追加計算へ進まない。原本は `artifacts/research_b_outer_rte22/20261025/`。以下の準備記録は保全する。

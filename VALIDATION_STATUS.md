@@ -1,5 +1,11 @@
 # Validation status
 
+## 2026-10-25 outer A0: COMPLETE, empirical high-precision consistency; B0 remains STOP
+
+Unchanged science SOURCE `1e3921ba16e5d531e9a3010cffa9ff717609a93a`, one attempt, no interruption/fix/retry. Saved synthetic2mode one-body+3DF, N1/mode0, LD2 weight-ranked, nD1, T±.18; S1 SABA2/q4/A2/r2K2, F1 refined-S2/q2/f8/A2/r2K2, B3 Yoshida4/q2/A2/r2K2, R4 Yoshida4/q2/A3/r2K4. Molecular geometry/AO basis/rank exploration not applicable.
+Exact binary64 lifts and fixed Fraction/float-derived coefficients were evaluated using 90-digit Taylor and 128-digit Pade matrix exponentials, independent mathematical products and spectral2-norm. All16 case-precision/80 targets+80 signals/3400 nodes/412 exponentials completed. All8 comparisons met empirical 1e-40 precision stability (maximum saved indicator difference1.84e-89) and nominal Taylor bound consistency. S1/F1 excesses in old complex128 results did not recur; R4 D residual is about2.30e-19.
+Saved model H identity4.40e-17, R Hermiticity4.61e-18 and tail-norm assumptions retain small deviations. This is EMPIRICAL_CONSISTENCY, not a rigorous numerical enclosure: u_num=null, certified=false; no epsilon, gamma, shot or total-resource certificate. Old evidence remains unchanged. [Results and limitations](docs/research/research_b_outer_a0_execution_20261025.md), [all8 comparisons](artifacts/research_b_outer_a0/20261025/COMPARISON.csv), [raw+STOP](artifacts/research_b_outer_a0/20261025/independent-once/). Local committed science, not CI or independent reproduction. Mandatory STOP; B0 native build/compile remains unexecuted and stopped. A1/B0/additional precision/grid/MC/shots require a separate decision/permission.
+
 ## 2026-10-25 outer/RTE22: COMPLETE execution; numerical qualification unresolved
 
 Unchanged science SOURCE `26e8734aff3969dc8077cb058826d12394be28e1`, one attempt, no interruption/fix/retry. Synthetic2mode one-body+3DF, N1/mode0, LD2 weight-ranked, T±.18, nD1, A2/A3, q2 plus SABA2 q4, refined f2/f8, candidate rK2/2,4/2,2/4, complex128, atol1e-12, phase off; molecular geometry/AO basis/rank exploration not applicable.

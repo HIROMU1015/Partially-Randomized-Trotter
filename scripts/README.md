@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究B A0実行完了・B0 STOP
+
+[`run_b2d_outer_a0.py`](run_b2d_outer_a0.py) をSOURCE1e3921ba1で一回実行し、8行×90/128桁・3400 DAG node・80 target／signal各要求を完了した。[結果・入力前提・精度の限界・STOP](../docs/research/research_b_outer_a0_execution_20261025.md)。使用済みoutputを再起動しない。B0は未実行・STOPのまま。以下は準備履歴。
+
 ## 研究B A0／B0（準備完了・科学実行未実施）
 
 [`run_b2d_outer_a0.py`](run_b2d_outer_a0.py) と [`run_b2d_outer_b0.py`](run_b2d_outer_b0.py) はそれぞれ `--inspect` がmetadataのみ、個別明示許可後だけ `--execute …`。[SOURCE・scope・人工138件・個別command](../docs/research/research_b_outer_a0_b0_execution_preparation_20261025.md)。A0は8行×90/128桁、B0は48代表・96 compile要求。出力は各 `artifacts/research_b_outer_{a0,b0}/` で今回未生成。次はA0実行を先に判断し、B0／MC／shotsへ自動進行しない。
