@@ -70,7 +70,10 @@ PR本文案：
 >
 > Validation: fixed result refs and literal table transcriptions checked; linked documentation available. No scientific computation or numerical reanalysis performed.
 
-公開commitが確定した後に、その固定URLを用いたREADME-only patchを同branchへ添付する。patchの適用・PR作成・main mergeは自動実行しない。
+公開資料はcommit `0e05f061c86ae853e90568abd4842de652c82398` に固定した。
+そのURLを使う[README-only patch](pauli_jw_main_readme_entry.patch)と[PR本文案](pauli_jw_main_readme_PR_DRAFT.md)を添付した。
+観測したmain SHAのREADMEに対する `git apply --check` と元本文保全を、隔離した一時directoryだけで確認した。[検査記録](../research/data/pauli_jw_summary/main_patch_verification.json)。
+mainへのpatch適用・PR作成・main mergeは実行していない。
 ユーザーが資料そのものをmainへ同居させたい場合は第二案として、main起点で中心Markdown＋小CSV/出典索引だけを明示パスで移植し、各リンクの依存閉包を再確認する。
 巨大な研究branchのcherry-pick/mergeでこの移植を代用せず、rawや科学実装を取り込む判断は別にする。
 

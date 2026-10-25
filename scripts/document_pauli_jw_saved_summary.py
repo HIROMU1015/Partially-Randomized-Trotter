@@ -79,11 +79,20 @@ def check():
                 i=old.index('\n# ')+1;assert old[:i] in new and old[i:] in new
             else:assert old in new
     prior.save(OUT/'verification.json',dict(status='CHECK_IN_PROGRESS'))
-    links=check_links([doc,ROOT/'docs/maintenance/pauli_jw_repository_integration_20261026.md'])
+    paths=[doc,ROOT/'docs/maintenance/pauli_jw_repository_integration_20261026.md']
+    draft=ROOT/'docs/maintenance/pauli_jw_main_readme_PR_DRAFT.md'
+    if draft.exists():paths.append(draft)
+    links=check_links(paths)
+    entry_links=0
+    for name in allowed:
+        for target in re.findall(r'\]\(([^\s)]+)\)',(ROOT/name).read_text()):
+            if target.endswith('pauli_jw_resource_evaluation_summary.md'):
+                assert ((ROOT/name).parent/target).resolve().exists();entry_links+=1
+    assert entry_links>=6
     baseline=json.loads((OUT/'repository_structure.json').read_text())
     assert hashlib.sha256((ROOT/'artifacts/validation_manifest.json').read_bytes()).hexdigest()==baseline['validation_manifest_sha256']
     result=dict(status='PASS_DOCUMENTATION_TRANSCRIPTION',rows=15,all_3_by_5_unique=True,all_G_ratio_ID_n_cohort_and_saved_labels_literal=True,saved_labels_pure_RTE=14,saved_labels_Hybrid_PR=1,
-        source_refs_checked=len(json.loads((OUT/'source_references.json').read_text())),local_and_fixed_git_links_checked=links,old_scientific_artifacts_and_manifest_unchanged=True,
+        source_refs_checked=len(json.loads((OUT/'source_references.json').read_text())),local_and_fixed_git_links_checked=links,new_entry_links_checked=entry_links,old_scientific_artifacts_and_manifest_unchanged=True,
         old_history_text_preserved=True,new_scientific_calls=0,new_N_G_or_statistical_reanalysis=0,new_candidate_selection=0,new_ranking=0,formal_claim_adopted=False,
         existing_manifest_checker='BASELINE_FAIL_UNEXPECTED_TOP_LEVEL_KEYS_UNCHANGED',checking_scope='Primary Codex document/string/path checks; not a detailed scientific review')
     prior.save(OUT/'verification.json',result);print(json.dumps(result,indent=2))
