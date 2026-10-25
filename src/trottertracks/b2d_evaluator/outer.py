@@ -196,7 +196,8 @@ def normalization_product(moments):
                 occurrence_normalizations=values)
 
 
-def build_outer_graph(settings, cases, *, independent_occurrences):
+def build_outer_graph(settings, cases, *, independent_occurrences,
+                      rte_parameters=None, candidate_ids=None, analytic_diagnostics=False):
     """Compile explicit cases into existing Node/Graph; evaluate() is reused.
 
     No default refinement/grid. This does not authorize or launch science.
@@ -205,8 +206,13 @@ def build_outer_graph(settings, cases, *, independent_occurrences):
     """
     settings.validate()
     cases = tuple(cases)
-    if not cases or len(set(cases)) != len(cases):
+    parameters = (tuple((settings.r_rte, settings.cutoff) for _ in cases)
+                  if rte_parameters is None else tuple(rte_parameters))
+    if (not cases or len(parameters) != len(cases)
+            or len(set(zip(cases, parameters))) != len(cases)):
         raise ValueError("Explicit unique outer cases required")
+    if candidate_ids is not None and len(candidate_ids) != len(cases):
+        raise ValueError("One candidate ID required per row")
     nodes, lookup, rows = [], {}, []
 
     def add(kind, deps=(), params=()):
@@ -230,14 +236,18 @@ def build_outer_graph(settings, cases, *, independent_occurrences):
 
     correctness = dict(input_validation=add("validate_input"),
                        weak_perturbation_diagnostics=add("outer_diagnostics"))
+    if analytic_diagnostics:
+        correctness["tail_bound_assumptions"] = add("outer_tail_bound_check")
     for row_id, case in enumerate(cases):
         if (case.macro_steps not in settings.q_values or case.n_d not in settings.n_d_values
                 or case.total_time / case.macro_steps not in settings.deltas):
             raise ValueError("Outer case is outside the declared base time/grid conditions")
-        plan = make_outer_plan(settings.context, case, r_rte=settings.r_rte,
-            cutoff=settings.cutoff, truncation_tolerance=settings.truncation_tolerance,
+        r_rte, cutoff = parameters[row_id]
+        plan = make_outer_plan(settings.context, case, r_rte=r_rte,
+            cutoff=cutoff, truncation_tolerance=settings.truncation_tolerance,
             seed=settings.seed, independent_occurrences=independent_occurrences)
         exact, ideal, corrected, raw, moments = [], [], [], [], []
+        bounds, rte_checks = [], []
         for stage_id, stage in enumerate(plan.body):
             if isinstance(stage, DStage):
                 d = product(exp(op.block_id, op.evolution_time) for op in stage.append_operations())
@@ -246,8 +256,19 @@ def build_outer_graph(settings, cases, *, independent_occurrences):
                 ideal.append(d); corrected.append(d); raw.append(d)
             else:
                 spec = stage.payload
-                moment = add("outer_rte_moments", params=(spec,))
+                identity = (spec,)
+                if analytic_diagnostics:
+                    # Bind the cache to actual scientific inputs as well as the
+                    # signed law. A cached mean does not remove any occurrence.
+                    identity += ((settings.context.tail_id, settings.hamiltonian_id,
+                        settings.input_data_sha256, settings.precision, settings.finite_bit_policy),)
+                moment = add("outer_rte_moments", params=identity)
                 moments.append(moment)
+                if analytic_diagnostics:
+                    check = add("outer_rte_check", (moment,), identity)
+                    correctness[f"RTE:{row_id}:{stage_id}"] = check
+                    rte_checks.append(check)
+                    bounds.append(add("outer_taylor_bound", (check,), identity))
                 tail = exp("exact_R", stage.evolution_time)
                 exact.append(tail); ideal.append(tail)
                 corrected.append(add("moment_field", (moment,), ("corrected_operator",)))
@@ -280,6 +301,25 @@ def build_outer_graph(settings, cases, *, independent_occurrences):
                          finite_RTE_error=error(corrected, ideal),
                          normalization_consistency=consistency, normalization=norm,
                          signals=add("outer_signals", (physical, outer, ideal, corrected, raw)))))
+        if candidate_ids is not None:
+            rows[-1]["candidate_id"] = candidate_ids[row_id]
+        if analytic_diagnostics:
+            rows[-1].update(rte_parameters=dict(r_rte=r_rte, K=cutoff),
+                            error_budget="complex_signal_epsilon_half_bias_plus_u_num")
+            rows[-1]["cost"].update(
+                D_absolute_time=sum((abs(s.duration) for s in plan.body if isinstance(s, DStage)), Fraction()),
+                RTE_short_steps=r_rte * plan.cost_metadata["R_occurrences"],
+                finite_polynomial_degree=cutoff + 1)
+            rows[-1]["outputs"].update(
+                corrected_outer_error=error(corrected, outer),
+                rte_stages=add("outer_rte_records", rte_checks),
+                taylor_residual=add("outer_taylor_total", bounds),
+                bias_qualification=add("outer_bias_qualification", (rows[-1]["outputs"]["signals"],)))
+    if analytic_diagnostics:
+        order = {kind: i for i, kind in enumerate(("validate_input", "outer_diagnostics",
+            "outer_tail_bound_check", "outer_d_check", "outer_order_check", "outer_rte_check",
+            "outer_rescale_check"))}
+        correctness = dict(sorted(correctness.items(), key=lambda item: order[nodes[item[1]].kind]))
     return Graph(settings, tuple(nodes), tuple(rows), correctness)
 
 

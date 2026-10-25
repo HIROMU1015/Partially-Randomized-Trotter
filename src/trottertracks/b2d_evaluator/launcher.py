@@ -156,7 +156,10 @@ def _run(run, *, mock_only=False, input_loader=load_candidate,
                  backend_factory=None, input_saver=save_inputs, outer=False):
     """Shared continuation; artificial tests inject only mock loaders/backends."""
     make_template, ledger_type, resolve, evaluator = candidate_graph, ScopeLedger, resolved_graph, evaluate
-    if outer:
+    if outer == "rte22":
+        from .outer_rte_execution import candidate_graph as make_template, OuterRTE22ScopeLedger as ledger_type, resolved_graph as resolve
+        from .outer import evaluate_outer as evaluator
+    elif outer:
         from .outer_execution import candidate_graph as make_template, OuterScopeLedger as ledger_type, resolved_graph as resolve
         from .outer import evaluate_outer as evaluator
     template = make_template(run.source_commit)
@@ -208,13 +211,20 @@ def launch_outer(source_root, output, source_commit):
     return _launch(source_root, output, source_commit, outer=True)
 
 
+def launch_outer_rte22(source_root, output, source_commit):
+    """The separately permitted fixed 22-row analytic study; no retry/resume."""
+    return _launch(source_root, output, source_commit, outer="rte22")
+
+
 def _launch(source_root, output, source_commit, *, outer):
     try:
         root = Path(source_root).resolve()
         if root != Path(__file__).resolve().parents[3]:
             raise Stage1Failure("LOADED_SOURCE_ROOT_MISMATCH")
         verifier = verify_execution
-        if outer:
+        if outer == "rte22":
+            from .outer_rte_execution import verify_execution as verifier
+        elif outer:
             from .outer_execution import verify_execution as verifier
         run = verifier(root,output,source_commit)
     except BaseException as error:
@@ -227,7 +237,7 @@ def _launch(source_root, output, source_commit, *, outer):
         return dict(status="FRESH_OUTPUT_FAILED_MANDATORY_STOP", error_type=type(error).__name__,
                     reason="EXCLUSIVE_FRESH_OUTPUT_FAILURE", science_started=False, stop=STOP)
     try:
-        return _run(run, outer=True) if outer else _run(run)
+        return _run(run, outer=outer) if outer else _run(run)
     except BaseException as error:
         # Setup failed after this launch's successful mkdir. Best-effort evidence.
         try:

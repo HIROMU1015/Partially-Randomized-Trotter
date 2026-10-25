@@ -4,6 +4,7 @@ No instantiation in artificial preparation tests. The fixed outer execution
 context binds the new graph/scope; the legacy 36-row scope remains separate.
 """
 import math
+from dataclasses import asdict
 from fractions import Fraction
 from .dense_backend import DenseBackend
 from .errors import Stage1Failure
@@ -12,6 +13,21 @@ from trottertracks.b2d_adapter._published import symmetric_s2_sequence
 
 
 class OuterDenseBackend(DenseBackend):
+    def _check_rte_config(self, spec, binding, config):
+        expected = (self.s.context.tail_id, self.s.hamiltonian_id,
+                    self.s.input_data_sha256, self.s.precision, self.s.finite_bit_policy)
+        if binding != expected:
+            raise Stage1Failure("RTE_INPUT_IDENTITY_MISMATCH")
+        tail = self.i.symbolic_tail
+        actual = (config.tail_id, config.tail_hash, config.lambda_r, config.evolution_time,
+                  config.rte_steps, config.finite_taylor_order, config.truncation_tolerance, config.seed,
+                  config.taylor_distribution)
+        expected_config = (tail.tail_id, tail.tail_hash, tail.lambda_r, float(spec.duration),
+                           spec.rte_steps, spec.cutoff, spec.truncation_tolerance, spec.seed,
+                           "rte_even_taylor_paired")
+        if actual != expected_config:
+            raise Stage1Failure("RTE_SIGNED_CONFIG_MISMATCH")
+
     def _outer_signals(self, physical, outer, ideal, corrected, raw):
         records = self._signals((physical, ideal, corrected, raw))
         value = self.execution.science_call("signal.expectation",
@@ -46,11 +62,58 @@ class OuterDenseBackend(DenseBackend):
         if kind.startswith("outer_") and not self.validated:
             raise ValueError("Input correctness must precede outer scientific operations")
         if kind == "outer_rte_moments":
-            spec, = params
-            config, _distribution = self.execution.science_call("rte.config",
+            spec = params[0]
+            config, distribution = self.execution.science_call("rte.config",
                 lambda: spec.make_config(self.i.symbolic_tail, self.make_rte_config), identity=str(spec))
+            if len(params) == 2:
+                self._check_rte_config(spec, params[1], config)
+                if not hasattr(self, "outer_configs"):
+                    self.outer_configs = {}
+                self.outer_configs[params] = (config, distribution)
             return self.execution.science_call("rte.moments",
                 lambda: self.finite_rte_operator_moments(self.i.normalized_tail, config), identity=str(spec))
+        if kind == "outer_tail_bound_check":
+            value = float(self.np.linalg.norm(self.i.normalized_tail, ord=2))
+            if not math.isfinite(value) or value > 1 + self.s.numerical_atol:
+                raise Stage1Failure("RTE_TAIL_BOUND_ASSUMPTION_FAILURE")
+            return dict(normalized_tail_norm=value, theoretical_norm_bound=1,
+                floating_point_certificate=False, assumption="convex_sum_of_signed_involutions")
+        if kind == "outer_rte_check":
+            config, distribution = self.outer_configs[params]
+            self._check_rte_config(*params, config)
+            moments, = args
+            expected = math.exp(config.rte_steps * math.log(config.distribution_normalization))
+            n, attenuation = moments.normalization_product, moments.attenuation_factor
+            if not all(math.isfinite(v) and v > 0 for v in (n, attenuation, expected)):
+                raise Stage1Failure("INCONCLUSIVE_NORMALIZATION_RANGE")
+            if (not math.isclose(n, expected, rel_tol=0, abs_tol=self.s.numerical_atol)
+                    or not math.isclose(n * attenuation, 1, rel_tol=0, abs_tol=self.s.numerical_atol)):
+                raise Stage1Failure("NORMALIZATION_CORRECTNESS_FAILURE")
+            return dict(config=asdict(config), event_distribution=asdict(distribution),
+                normalization_product=n, attenuation=attenuation,
+                event_phase="existing_paired_even_order_phase_and_signed_rotation",
+                negative_time_policy="signed_finite_polynomial_not_inverse",
+                sampling="NONE_ANALYTIC_MOMENTS")
+        if kind == "outer_rte_records":
+            return [dict(append_occurrence=i, **record) for i, record in enumerate(args)]
+        if kind == "outer_taylor_bound":
+            from trotterlib.rte import rte_occurrence_truncation_from_config
+            config, _ = self.outer_configs[params]
+            record = self.execution.science_call("rte.truncation",
+                lambda: rte_occurrence_truncation_from_config(str(params[0]), config), identity=str(params[0]))
+            return asdict(record)
+        if kind == "outer_taylor_total":
+            from trotterlib.rte import compose_truncation_residual_bounds
+            value = self.execution.science_call("bound.compose", lambda: compose_truncation_residual_bounds(
+                [(b["step_truncation_residual_bound"], b["rte_steps"], 1) for b in args]))
+            if not math.isfinite(value):
+                raise Stage1Failure("INCONCLUSIVE_TAYLOR_BOUND_RANGE")
+            return dict(occurrences=[dict(record, append_occurrence=i) for i, record in enumerate(args)], occurrence_count=len(args),
+                corrected_vs_ideal_tail_operator_bound=value, complex_signal_bound=value,
+                floating_point_uncertainty=None, certificate="NOMINAL_ANALYTIC_ONLY")
+        if kind == "outer_bias_qualification":
+            from .outer_rte_execution import bias_qualification
+            return bias_qualification(args[0])
         if kind == "outer_normalization":
             try:
                 return normalization_product(args)

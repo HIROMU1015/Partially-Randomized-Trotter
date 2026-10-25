@@ -54,19 +54,22 @@ def graph_layout(graph):
         if node.kind == "exponential":
             label, time = node.parameters
             record["parameters"] = (slots.get(label, label), time)
+        if node.kind in ("outer_rte_moments", "outer_rte_check", "outer_taylor_bound") and len(node.parameters) == 2:
+            spec, binding = record["parameters"]
+            record["parameters"] = (spec, ("BOUND_TAIL", "BOUND_H", "BOUND_ARRAYS", *binding[3:]))
         nodes.append(record)
     return fingerprint(normalized(dict(settings=_conditions(graph.settings),
         nodes=nodes, rows=graph.rows, correctness=graph.correctness)))
 
 
-def registry(graph):
+def registry(graph, *, graph_factory=candidate_graph, schema="b2d_outer_stage1_scope_v1"):
     graph.settings.validate()
-    template = candidate_graph(graph.settings.source_commit)
+    template = graph_factory(graph.settings.source_commit)
     if (_conditions(graph.settings) != _conditions(template.settings)
             or len(graph.settings.context.block_ids) != 3
             or graph.settings.context.num_system_qubits != 2):
         raise stage1.Stage1Failure("OUTER_FIXED_CONDITIONS_MISMATCH")
-    if graph != candidate_graph(graph.settings.source_commit, settings=graph.settings):
+    if graph != graph_factory(graph.settings.source_commit, settings=graph.settings):
         raise stage1.Stage1Failure("OUTER_GRAPH_LAYOUT_MISMATCH")
     keys = sorted({stage1.exp_key(graph, *n.parameters) for n in graph.nodes if n.kind == "exponential"})
     specs = [str(n.parameters[0]) for n in graph.nodes if n.kind == "outer_rte_moments"]
@@ -74,7 +77,7 @@ def registry(graph):
                   **stage1.INPUT_BOUNDARIES, "backend.expm":len(keys),
                   "rte.config":len(specs), "rte.moments":len(specs),
                   "signal.expectation":5 * len(graph.rows)}
-    return dict(schema="b2d_outer_stage1_scope_v1", graph_layout=graph_layout(graph),
+    return dict(schema=schema, graph_layout=graph_layout(graph),
         recipe_fingerprint=InputRecipe().fingerprint, rows=len(graph.rows),
         dispatch_counts=graph.call_counts, dispatch_total=len(graph.nodes), boundaries=boundaries,
         exponential_keys=[list(k) for k in keys], rte_stage_specs=specs,
@@ -93,12 +96,13 @@ def validate_registry(scope, graph):
         raise stage1.Stage1Failure("OUTER_SCOPE_MISMATCH")
 
 
-def resolved_graph(template, context, inputs, provenance):
+def resolved_graph(template, context, inputs, provenance, *, graph_factory=candidate_graph,
+                   registry_factory=registry, validator=validate_registry):
     settings = replace(template.settings, context=context, hamiltonian_id=inputs.hamiltonian_id,
         sector_id=inputs.sector_id, state_id=inputs.state_id,
         input_data_sha256=provenance["input_data_sha256"])
-    graph = candidate_graph(settings.source_commit, settings=settings)
-    validate_registry(registry(template), graph)
+    graph = graph_factory(settings.source_commit, settings=settings)
+    validator(registry_factory(template), graph)
     return graph
 
 
@@ -114,6 +118,9 @@ class OuterScopeLedger(stage1.ScopeLedger):
 
 
 class OuterRunContext(RunContext):
+    graph_factory = staticmethod(candidate_graph)
+    registry_validator = staticmethod(validate_registry)
+
     def check_settings(self, settings):
         self.check_input(self.source_root, InputRecipe())
         if self._input_binding != (settings.context, settings.hamiltonian_id,
@@ -121,30 +128,33 @@ class OuterRunContext(RunContext):
             raise stage1.Stage1Failure("INPUT_IDENTITY_ORDER_MISMATCH")
         if settings.source_commit != self.source_commit:
             raise stage1.Stage1Failure("SOURCE_MISMATCH")
-        graph = candidate_graph(self.source_commit, settings=settings)
-        validate_registry(self.call_scope, graph)
+        graph = self.graph_factory(self.source_commit, settings=settings)
+        self.registry_validator(self.call_scope, graph)
         if self.scope is not None:
             self.scope.bind_graph(graph)
 
     def begin_evaluation(self, graph):
-        validate_registry(self.call_scope, graph)
+        self.registry_validator(self.call_scope, graph)
         super().begin_evaluation(graph)
 
 
-def verify_execution(source_root, output, source_commit, *, graph=None, call_scope=None):
+def verify_execution(source_root, output, source_commit, *, graph=None, call_scope=None,
+                     graph_factory=candidate_graph, registry_factory=registry,
+                     validator=validate_registry, context_type=OuterRunContext,
+                     output_parent=OUTPUT_PARENT):
     root = Path(source_root).resolve()
     if re.fullmatch(r"[0-9a-f]{40}", source_commit) is None:
         raise ValueError("Full scientific SOURCE commit required")
     _check_source(root, source_commit, output=output)
     read_fixture_definition(root)
-    template = candidate_graph(source_commit)
+    template = graph_factory(source_commit)
     graph = template if graph is None else graph
-    scope = registry(template) if call_scope is None else call_scope
+    scope = registry_factory(template) if call_scope is None else call_scope
     if graph.settings.source_commit != source_commit:
         raise stage1.Stage1Failure("SOURCE_MISMATCH")
-    validate_registry(scope, graph)
+    validator(scope, graph)
     environment = inspect_environment()
-    out, parent = Path(output).resolve(), root / OUTPUT_PARENT
+    out, parent = Path(output).resolve(), root / output_parent
     if not out.is_relative_to(parent) or out == parent or out.exists():
         raise ValueError("Fresh dedicated outer output required")
-    return OuterRunContext(root, out, source_commit, scope, environment)
+    return context_type(root, out, source_commit, scope, environment)
