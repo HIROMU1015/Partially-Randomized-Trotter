@@ -1,3 +1,7 @@
+## 2026-10-25 H4 Pauli/DF統合データ整理
+
+[データカタログの使い方・比較表・追加取得候補](../artifacts/non_df_h4_data_catalog/2026-10-25/README.md)。元raw/QPYを参照し、価格・精度・条件付きGと未保証を一元化。科学証拠status変更なし。
+
 ## 2026-10-25 H4 Pauli/DF論文化準備
 
 [章構成・優先図表・caption・二方向の判断材料](non_df_h4_paper_plan_20261025.md)、[Methods英語草案](non_df_h4_paper_methods_DRAFT_20261025.md)。固定H4のempirical/conditional case study案。科学証拠statusは変更せず、新科学計算・数値再解析・作図0。
