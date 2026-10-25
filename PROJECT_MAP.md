@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1 Stage3：cost-onlyの技術的STOP（2026-10-25）
+
+[例外・到達範囲・証拠](docs/research/research_c_c1_stage3_cost_execution_20261025.md)／[run01原本・partial CSV・STOP](artifacts/research_c_c1_stage3_cost_science/2026-10-25/)。固定SOURCE edb9f6ef…の8候補実行はQiskit1.3並列compile `Already mutably borrowed`でSTOP。106/936 calls、9 compile attempt／7完了／2例外、readout3チェック、部分費用34行・QPY16。総費用・比較未取得、科学的NO-GOではない。retry/resume0、旧SOURCE保全、mandatory STOP。以下は準備履歴。
+
 ## C1 Stage3：8候補限定cost-only準備（2026-10-25）
 
 [技術報告](docs/research/research_c_c1_stage3_cost_preparation_20261025.md)／[未承認936-call契約](docs/research/research_c_c1_stage3_cost_contract_unapproved_20261025.json)。専用module `c1_stage3_cost_only.py`／CLI `scripts/run_research_c_c1_stage3_cost_only.py`／人工test `tests/management/test_research_c_c1_stage3_cost_only.py`。CDF/XDF各D s1/s4とPR s4/r16/K0/K2の8候補、保存楽観shots・native校正・serial期待費用を接続。新13＋既存81 tests PASS、実H4 decode／回路／保存値総費用再解析0、CA・保証付き資源優位なし・mandatory STOP。

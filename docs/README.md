@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1 Stage3 cost-only技術的STOP
+
+[実行報告](research/research_c_c1_stage3_cost_execution_20261025.md)／[部分証拠](../artifacts/research_c_c1_stage3_cost_science/2026-10-25/)。Qiskit1.3並列compileで`Already mutably borrowed`。106/936 calls、compile9 attempt／7完了／2例外、総費用・比較未到達。数値同値性FAILや科学的NO-GOではない。retry0、旧SOURCE保全、mandatory STOP。
+
 ## C1 Stage3 8候補cost-only準備
 
 [技術報告](research/research_c_c1_stage3_cost_preparation_20261025.md)／[未承認936-call契約](research/research_c_c1_stage3_cost_contract_unapproved_20261025.json)／[人工結果・SOURCE](../artifacts/research_c_c1_stage3_cost_technical/2026-10-25/)。D s1/s4・PR s4/r16/K0/K2各arm8候補、保存楽観shotsとnative校正を接続。人工13＋既存81 PASS、実H4科学call0。全law support未資格は点推定のみ、合成／law／CA・保証付き総資源は未資格、mandatory STOP。

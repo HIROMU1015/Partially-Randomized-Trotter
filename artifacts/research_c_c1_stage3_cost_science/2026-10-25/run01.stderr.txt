@@ -1,0 +1,97 @@
+Traceback (most recent call last):
+  File "/tmp/prt-c1-stage3-cost-science-20261025/scripts/run_research_c_c1_stage3_cost_only.py", line 28, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/tmp/prt-c1-stage3-cost-science-20261025/scripts/run_research_c_c1_stage3_cost_only.py", line 24, in main
+    result=execute(ROOT,args.contract,args.input,args.output)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage3-cost-science-20261025/src/trottertracks/c1_stage3_cost_only.py", line 330, in execute
+    try:return run(CostBackend(v,output),v['contract']['proposal'],output)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage3-cost-science-20261025/src/trottertracks/c1_stage3_cost_only.py", line 299, in run
+    for future in as_completed(futures):completed[futures[future].id] = future.result()
+                                                                        ^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage3-cost-science-20261025/src/trottertracks/c1_stage3_cost_only.py", line 277, in task
+    calibration = calls('native_calibration',c.id,lambda:backend.calibrate(c,kernel,calls))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage3-cost-science-20261025/src/trottertracks/c1_stage3_integrated.py", line 108, in __call__
+    value = function()
+            ^^^^^^^^^^
+  File "/tmp/prt-c1-stage3-cost-science-20261025/src/trottertracks/c1_stage3_cost_only.py", line 277, in <lambda>
+    calibration = calls('native_calibration',c.id,lambda:backend.calibrate(c,kernel,calls))
+                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage3-cost-science-20261025/src/trottertracks/c1_stage3_molecular.py", line 368, in calibrate
+    if key not in records:records[key]=build_check(events,len(records))
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage3-cost-science-20261025/src/trottertracks/c1_stage3_molecular.py", line 343, in build_check
+    record=self._validate_compile(label.replace(':','_'),qc,target,controlled=True,arm=arm)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage3-cost-science-20261025/src/trottertracks/c1_stage3_cost_only.py", line 178, in _validate_compile
+    compiled = self.call('compile',label,lambda:compiled_wrapper(raw,profile))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage3-cost-science-20261025/src/trottertracks/c1_stage3_integrated.py", line 108, in __call__
+    value = function()
+            ^^^^^^^^^^
+  File "/tmp/prt-c1-stage3-cost-science-20261025/src/trottertracks/c1_stage3_cost_only.py", line 178, in <lambda>
+    compiled = self.call('compile',label,lambda:compiled_wrapper(raw,profile))
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage3-cost-science-20261025/src/trottertracks/pr_dictionary_validation/gates.py", line 103, in compiled_wrapper
+    compiled=transpile(lowered,basis_gates=list(profile.basis_gates),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/utils/deprecation.py", line 184, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/utils/deprecation.py", line 184, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/utils/deprecation.py", line 184, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  [Previous line repeated 1 more time]
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/compiler/transpiler.py", line 449, in transpile
+    out_circuits = pm.run(circuits, callback=callback, num_processes=num_processes)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passmanager.py", line 441, in run
+    return super().run(circuits, output_name, callback, num_processes=num_processes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passmanager.py", line 464, in wrapper
+    return meth(*meth_args, **meth_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passmanager.py", line 226, in run
+    return super().run(
+           ^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/passmanager.py", line 231, in run
+    out = [
+          ^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/passmanager.py", line 232, in <listcomp>
+    _run_workflow(program=program, pass_manager=self, callback=callback, **kwargs)
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/passmanager.py", line 292, in _run_workflow
+    passmanager_ir, final_state = flow_controller.execute(
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/base_tasks.py", line 218, in execute
+    passmanager_ir, state = next_task.execute(
+                            ^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/basepasses.py", line 195, in execute
+    new_dag, state = super().execute(
+                     ^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/base_tasks.py", line 98, in execute
+    ret = self.run(passmanager_ir)
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passes/synthesis/high_level_synthesis.py", line 279, in run
+    out_dag = self._run(dag, tracker, context, use_ancillas=True, top_level=True)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passes/synthesis/high_level_synthesis.py", line 316, in _run
+    if not self._definitely_skip_node(node, qubits, dag):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passes/synthesis/high_level_synthesis.py", line 840, in _definitely_skip_node
+    in self._equiv_lib.keys()
+       ^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Already mutably borrowed
