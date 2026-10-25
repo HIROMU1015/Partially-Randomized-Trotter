@@ -1,3 +1,15 @@
+## 2026-10-26 H4/H6 長時間PF・PR比較
+
+[REPORT](../REPORT.md)と[成果物](../artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/)。科学取得は終了済み。以下の取得driverを再実行せず、保存済み結果を参照する。
+
+- `h46_long_time_signal.py`：保存入力・signal/shot評価。`h46_long_time_extension.py`：S2限定q32追加。
+- `h46_long_time_native.py`：既存native builder・compiler・paired統計を再利用した単価取得。
+- `h46_long_time_report.py`：固定独立確認設計・会計・図表。`h46_long_time_fixed_delta.py`：固定δ=.2不足候補だけ取得。
+- `h46_long_time_pipeline.py`：取得後の段階処理。報告だけ出す場合は`report()`を使い、取得pipeline全体を起動し直さない。
+- `h46_long_time_recover.py`：今回の実行セッション消失後に未完了だけを再開した処理。中断履歴と同じseed/eventを保全し、完成試行を再取得しない。
+- `h46_long_time_extension_fill.py`：未着手q32試行の並列処理。`h46_long_time_saved_metrics.py`：旧価格指標の回収cache。`h46_long_time_k6_probe.py`：条件付き正しさ確認（費用標本と分離）。
+- 人工テスト：`tests/test_h46_long_time_{signal,native,accounting,recover}.py`。科学的性能や母平均保証の証拠とは別。
+
 ## 2026-10-22 H246共通決定論PF：588候補の固定比較完了
 
 [全結果・契約・監査](../docs/research/track_a_h246_pf_common_final_20261022.md)。588候補の評価が全て完了。H2/H4は再計算せず参照結合。H6不足63metadata・新102signal・1380 endpoint・固有新価格209候補418軸を取得し終了監査PASS。旧187価格は保存値受入監査、新22価格は新grant取得。中断予約を含むcompile実呼出438軸、旧parentのexit/reapは不明のまま保全。linear1Å/STO-3G/tol-only rank3/10/19、固定L_D/q≤8・δ=.8/.4/.2/.1/T=.8/P=0。ε=.0005の全公式PF対保存PR削減率：H2 -25.14%、H4 +37.37%、H6 +40.96%。経験的allowance・有限探索条件付きで母平均保証なし。旧SOURCE/raw/grant/STOP不変、local commit後mandatory STOP・push0。新経路 `h6_pf_metadata_completion.py`、監査 `audit_h6_pf_metadata.py` / `audit_h6_pf_common_run.py`、固定参照統合 `finalize_h6_pf_common_results.py`、数値別照合 `check_h246_pf_common_final.py`。stage driverと消費済みgrantの再使用は禁止。以下は履歴。

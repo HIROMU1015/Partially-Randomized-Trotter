@@ -1,3 +1,7 @@
+## 2026-10-26 H4/H6 長時間PF・PR
+
+[REPORT](REPORT.md) / [最終整合性・来歴](artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/completion_provenance.json)。11,632 signal構成、642価格候補、4,022受入済み新規単価試行。全取得群で失敗0、記録されたmean/native normalization・scalar・event数と新cohort間seedを確認。59独立比較は全件取得、点方向再現58件。これは取得済み域の有限標本・経験的allowance条件付き結果であり、全域最適性・母平均優位・厳密誤差保証ではない。人工テストのPASSを性能証拠として数えない。旧実行のSTOPと履歴は保持。
+
 ## 2026-10-22 H246共通決定論PF：588候補の固定比較完了
 
 [全結果・契約・監査](docs/research/track_a_h246_pf_common_final_20261022.md)。588候補の評価が全て完了。H2/H4は再計算せず参照結合。H6不足63metadata・新102signal・1380 endpoint・固有新価格209候補418軸を取得し終了監査PASS。旧187価格は保存値受入監査、新22価格は新grant取得。中断予約を含むcompile実呼出438軸、旧parentのexit/reapは不明のまま保全。linear1Å/STO-3G/tol-only rank3/10/19、固定L_D/q≤8・δ=.8/.4/.2/.1/T=.8/P=0。ε=.0005の全公式PF対保存PR削減率：H2 -25.14%、H4 +37.37%、H6 +40.96%。経験的allowance・有限探索条件付きで母平均保証なし。旧SOURCE/raw/grant/STOP不変、local commit後mandatory STOP・push0。以下は履歴。
