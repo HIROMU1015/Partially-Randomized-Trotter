@@ -7,6 +7,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--input',required=True)
     parser.add_argument('--output',required=True)
+    parser.add_argument('--stable-phase',action='store_true')
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[1]
     sys.path.insert(0,str(root/'src'))
@@ -19,7 +20,7 @@ def main():
     from qiskit.converters import dag_to_circuit
     from trottertracks.pr_dictionary_validation.fixture import CompilerProfile
     record=json.loads(Path(args.input).read_text())['rows'][-1]
-    assert record['identity']=='B3:9/50:0:cosine'
+    assert record['identity'] in ('B3:9/50:0:cosine','D1:9/50:0:cosine')
     def load(name):
         encoded=record['diagnostics']['circuits'][name]
         return qpy.load(io.BytesIO(gzip.decompress(base64.b64decode(encoded['data']))))[0]
@@ -32,7 +33,10 @@ def main():
             unitarity=float(np.linalg.norm(actual.conj().T@actual-np.eye(8),ord=2)),
             global_phase=float(circuit.global_phase),operations=dict(circuit.count_ops())))
     report(old,'saved_compiled')
-    lowered=PassManager([UnrollCustomDefinitions(EquivalenceLibrary(),list(profile.basis_gates)+['u'])]).run(raw)
+    if args.stable_phase:
+        from trottertracks.pr_dictionary_validation.gates import stable_official_lowering
+        lowered=stable_official_lowering(raw,list(profile.basis_gates)+['u'])
+    else:lowered=PassManager([UnrollCustomDefinitions(EquivalenceLibrary(),list(profile.basis_gates)+['u'])]).run(raw)
     report(lowered,'official_definition_lowering')
     def callback(**kw):
         if kw['pass_'].is_transformation_pass:report(dag_to_circuit(kw['dag']),type(kw['pass_']).__name__)
