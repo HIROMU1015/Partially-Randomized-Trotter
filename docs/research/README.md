@@ -1,5 +1,9 @@
 # 研究計画資料
 
+## C1：H6合成誤差上界の技術準備
+
+[方式比較・数学的条件・人工/回帰134 PASS](research_c_c1_h6_synthesis_bound_preparation_20261025.md)／[未承認6535-call契約](research_c_c1_h6_synthesis_bound_contract_unapproved_20261025.json)。全sector基底streaming数値上界を推奨。厳密C・CA・shots・総費用は未資格、実H6追加科学0・mandatory STOP。
+
 [C1 H6 native修正後・298-call全PASS](research_c_c1_h6_native_stable_phase_execution_20261025.md)：SOURCE3d7b56b448…無変更、局所30/kernel8/shell3/adjoint8/X-Y8 PASS、QPY52・104未資格profile保存。CDF14のkernel RZはXDF14より約1.98%/1.96%多く、literal/shared費用差0。CA/総費用は未資格、旧FAIL保全・累積627 units・mandatory STOP。
 
 [C1 H6 P0 phase安定化](research_c_c1_h6_native_stable_phase_repair_20261025.md)：長い人工回路で旧4.35e-10→修正5.36e-13、gate本体は完全一致。97 tests PASS、[fresh298-call条件](research_c_c1_h6_native_stable_phase_contract_20261025.json)を固定。

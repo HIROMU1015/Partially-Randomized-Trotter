@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## C1：H6合成誤差の全sector基底上界
+
+`../trottertracks/c1_subspace_synthesis_bound.py` は全入力列のFrobenius上界と不変部分空間の反復伝播を実装。`c1_h6_synthesis_bound.py` は既存Aer/QPY/CAR列順・保存PF/shellへ接続する。[報告](../../docs/research/research_c_c1_h6_synthesis_bound_preparation_20261025.md)。資格Bを準備しCへ昇格しない。人工/回帰134 PASS、実H6は未実行・mandatory STOP。
+
 ## C1：H6 native修正版・実分子の限定検証完了
 
 H6専用Gaussian精度／declared compiler phase修正をSOURCE3d7b56b448…で実行し、298 calls・局所30/kernel8/shell3/adjoint8/X-Y8全PASS。[結果](../../docs/research/research_c_c1_h6_native_stable_phase_execution_20261025.md)。全operatorの厳密enclosureは得ていない。CDF14のkernel RZはXDF14より約2%多く、literal/shared差0。global合成誤差/CA/総費用は未資格・mandatory STOP。

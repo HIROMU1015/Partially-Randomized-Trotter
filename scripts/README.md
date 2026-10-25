@@ -1,5 +1,9 @@
 # scripts 索引
 
+## C1：H6合成誤差上界・未承認
+
+`run_research_c_c1_h6_synthesis_bound.py`：defaultはbyte/environment preflightのみ。保存compiled QPYとPF kernelsから全sector基底のfull-output作用差をstreamingする。[導出・134人工/回帰PASS](../docs/research/research_c_c1_h6_synthesis_bound_preparation_20261025.md)／[6535-call契約](../docs/research/research_c_c1_h6_synthesis_bound_contract_unapproved_20261025.json)。実行には別途明示許可が必要。新build/compile・DF/PF再計算・CA/shots/costなし、retry/resume0。
+
 ## C1：H6 stable-phase SOURCEの限定実行完了
 
 `run_research_c_c1_h6_native.py`をSOURCE3d7b56b448…で1回実行し、298/298 calls・correctness全PASS。[結果・費用表](../docs/research/research_c_c1_h6_native_stable_phase_execution_20261025.md)。QPY52・104 UNRESOLVED profileを保持。旧2 native FAILと5-call診断を保全、累積627、run内retry/resume0。旧runner再起動・CA/shots/costへの自動進行は禁止、mandatory STOP。

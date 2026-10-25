@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：H6合成誤差上界の技術準備（2026-10-25）
+
+[方式比較・導出・人工134 PASS](docs/research/research_c_c1_h6_synthesis_bound_preparation_20261025.md)／[未承認6535-call契約](docs/research/research_c_c1_h6_synthesis_bound_contract_unapproved_20261025.json)。新SOURCE `c1_subspace_synthesis_bound.py`／`c1_h6_synthesis_bound.py`、専用runner・人工tests・[技術証拠](artifacts/research_c_c1_h6_synthesis_bound/2026-10-25/technical/)。全800入力×full8192出力のstreaming数値上界を準備。厳密enclosure・CA・shots・総費用は未資格、実H6追加科学0、mandatory STOP。
+
 ## C1：H6 native精度修正後・298 calls全PASS（2026-10-25）
 
 [結果・8経路の費用表](docs/research/research_c_c1_h6_native_stable_phase_execution_20261025.md)／[raw・QPY52・104 profile・call・STOP](artifacts/research_c_c1_h6_native_stable_phase/2026-10-25/)。SOURCE3d7b56b448…無変更、correctness FAIL0。局所30／kernel8／shell3／adjoint8／X-Y8 PASS。H6 CDF14はXDF14よりkernel RZが約1.98%/1.96%多く、literal/shared差0。Gaussian小角・P0 phase集計を修正しallowance維持。旧2 FAIL＋診断を含む累積627 units、run内retry0、global合成誤差/CA/shots/総費用未資格・mandatory STOP。以下は準備・旧結果の履歴。

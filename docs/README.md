@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1：H6合成誤差上界の技術準備
+
+[3方式比較・全列上界の導出・134人工/回帰PASS](research/research_c_c1_h6_synthesis_bound_preparation_20261025.md)／[未承認6535-call契約](research/research_c_c1_h6_synthesis_bound_contract_unapproved_20261025.json)。800入力列・full8192出力、数値reference欠損と13round伝播を扱う。資格B／Cを区別し、実H6追加科学・CA/shots/cost0、mandatory STOP。
+
 ## C1：H6 native修正後の限定実行結果
 
 [結果・8経路費用・資格の限界](research/research_c_c1_h6_native_stable_phase_execution_20261025.md)：298/298 calls・correctness全PASS。Gaussian小角とP0 phase集計を修正、閾値不変。H6 CDF14のkernel RZはXDF14より約1.98%/1.96%多く、literal/shared差0。合成誤差global bound/CA/shots/総費用は未資格。旧2 FAIL・診断を保全し、累積627 units・mandatory STOP。
