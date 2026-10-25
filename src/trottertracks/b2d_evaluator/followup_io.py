@@ -126,16 +126,18 @@ def main(study):
     mode.add_argument("--execute",action="store_true")
     parser.add_argument("--source-commit")
     parser.add_argument("--output")
+    if study == "b0":parser.add_argument("--diagnose-first",action="store_true",help="Only original B3,+T,representative0,X; no costs")
     args = parser.parse_args()
     module = import_module("."+("a0_reference" if study == "a0" else "b0_native"), __package__)
     root = Path(__file__).resolve().parents[3]
+    scope_options={"diagnostic":True} if getattr(args,"diagnose_first",False) else {}
     if args.inspect:
-        print(_encode(dict(status="METADATA_ONLY_NO_SCIENCE",scope=module.scope())))
+        print(_encode(dict(status="METADATA_ONLY_NO_SCIENCE",scope=module.scope(**scope_options))))
         return 0
     if not args.source_commit or not args.output:
         parser.error("--execute requires --source-commit and --output")
     try:
-        run = preflight(root,args.output,args.source_commit,study,module.scope())
+        run = preflight(root,args.output,args.source_commit,study,module.scope(**scope_options))
         status = run_prepared(run,module.execute)
     except BaseException as error:
         status = rejection(error)

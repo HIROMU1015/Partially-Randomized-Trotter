@@ -153,6 +153,30 @@ class B0Tests(unittest.TestCase):
                 self.assertNotIn('b0.measure',status['calls']['attempted'])
                 self.assertTrue((run['output']/'STOP.json').is_file())
 
+    def test_first_diagnostic_exact_scope_and_no_costs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            run=dict(root=ROOT,output=Path(directory)/'diagnostic',scope=b0.scope(diagnostic=True),source='MOCK',inputs={})
+            status=run_prepared(run,lambda r,l,e:b0.execute(r,l,e,native_factory=MockNative),mock_only=True)
+            self.assertEqual(status['status'],'COMPLETED_DESCRIPTIVE_MANDATORY_STOP',status)
+            self.assertNotIn('b0.measure',status['calls']['attempted'])
+            self.assertEqual(status['calls']['completed']['b0.compile'],1)
+            self.assertEqual(status['calls']['completed']['b0.system_build'],1)
+
+    def test_failed_check_details_are_retained_without_scientific_import(self):
+        class Matrix:
+            def __sub__(self,other):return self
+            def __iter__(self):return iter([[complex(1)]])
+        native=object.__new__(b0.Native)
+        native.np=NS(linalg=NS(norm=lambda *a,**kw:2.),isfinite=lambda x:True)
+        native.ledger=FollowupLedger(dict(boundaries={'b0.compiled_gate':1},calls=[['b0.compiled_gate','first']],max_event_records=4))
+        with self.assertRaises(Stage1Failure):
+            native.call('compiled_gate','first',lambda:native.check(Matrix(),Matrix()))
+        row=native.ledger.rows[0]
+        self.assertEqual(row['diagnostics']['spectral_error'],2.)
+        self.assertEqual(row['diagnostics']['atol'],1e-12)
+        self.assertIsNone(row['metrics'])
+        self.assertFalse(row['diagnostics']['phase_fit'])
+
     def test_shared_wrapper_functions_execute_only_against_stub_circuit(self):
         # Extract only stdlib-free function definitions; never import Qiskit.
         source=ast.parse((ROOT/'src/trotterlib/rpe_hadamard_interrogation.py').read_text())

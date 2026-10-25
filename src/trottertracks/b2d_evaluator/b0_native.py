@@ -57,12 +57,12 @@ def block_key(label,time,controlled):return fingerprint((label,str(time),control
 def exp_key(label,time):return label+":"+str(time)
 
 
-def inventory():
+def inventory(*, diagnostic=False):
     configs={};events={};sequences={};blocks={};exps={};means=[];moments={}
-    for row in cases():
+    for row in cases()[:1] if diagnostic else cases():
         plan=outer_plan(row);rs=[s for s in plan.body if not isinstance(s,DStage)]
         for stage in rs:configs[str(stage.payload)]=stage.payload
-        for time in dict.fromkeys(s.evolution_time for s in rs):
+        for time in (() if diagnostic else dict.fromkeys(s.evolution_time for s in rs)):
             spec=next(s.payload for s in rs if s.evolution_time==time)
             moments[str(spec)]=spec
         for stage in plan.body:
@@ -72,15 +72,15 @@ def inventory():
                     exps[exp_key(label,op.evolution_time)]=(label,op.evolution_time)
                     for controlled in (False,True):blocks[block_key(label,op.evolution_time,controlled)]=(label,op.evolution_time,controlled)
         # Independent mathematical reference may use unfused D/R factors.
-        for kind,w in mathematical_stages(row["case"]["method"]):
+        for kind,w in (() if diagnostic else mathematical_stages(row["case"]["method"])):
             time=row["case"]["total_time"]*w/plan.case.step_count
             exps[exp_key(kind,time)]=(kind,time)
-        exps[exp_key("physical",plan.case.total_time)]=("physical",plan.case.total_time)
-        for variant in range(4):
+        if not diagnostic:exps[exp_key("physical",plan.case.total_time)]=("physical",plan.case.total_time)
+        for variant in range(1 if diagnostic else 4):
             for spec,word in trajectory(row,variant,plan):
                 for event in word:events[event_key(spec,event)]=(spec,event)
                 for controlled in (False,True):sequences[rte_key(spec,word,controlled)]=(spec,word,controlled)
-        for slot,index in enumerate(selected_stages(row,plan)):
+        for slot,index in (() if diagnostic else enumerate(selected_stages(row,plan))):
             spec=rs[index].payload;terms=[]
             for order in range(0,spec.cutoff+1,2):
                 for indices in product(range(3),repeat=order+1):
@@ -90,26 +90,29 @@ def inventory():
     return dict(configs=configs,events=events,sequences=sequences,blocks=blocks,exps=exps,means=means,moments=moments)
 
 
-def scope():
-    inv=inventory()
+def scope(*, diagnostic=False):
+    inv=inventory(diagnostic=diagnostic)
     calls=[("b0."+kind,"input") for kind in ("fixture","split","prepare","full_inputs","input_gate")]
     for group,kind in (("configs","config"),("events","event"),("events","event_operator"),
                        ("sequences","rte_build"),("blocks","block_build"),("exps","exponential"),("moments","moments")):
         calls.extend(("b0."+kind,k) for k in inv[group])
     calls.extend(("b0.single_mean",key) for key,spec,terms in inv["means"])
-    for row in cases():
-        key=case_key(row);calls.append(("b0.analytic_mean",key))
-        for variant in range(4):
+    for row in cases()[:1] if diagnostic else cases():
+        key=case_key(row)
+        if not diagnostic:calls.append(("b0.analytic_mean",key))
+        for variant in range(1 if diagnostic else 4):
             item=key+":"+str(variant)
             for kind in ("system_build","controlled_build","reference","system_gate","controlled_gate"):
                 calls.append(("b0."+kind,item))
-            for axis in ("cosine","sine"):
+            for axis in (("cosine",) if diagnostic else ("cosine","sine")):
                 aid=item+":"+axis
                 for kind in ("wrapper_build","wrapper_reference","raw_wrapper_gate","raw_expectation", "compile",
-                             "compiled_gate","compiled_expectation","measure"):
+                             "compiled_gate","compiled_expectation")+(() if diagnostic else ("measure",)):
                     calls.append(("b0."+kind,aid))
-    return registered_scope("b0",calls,cases=12,trajectories=48,system_builds=48,controlled_builds=48,
-        wrappers=96,compile_requests=96,operator_gates=288,expectations=192,single_means=24,
+    return registered_scope("b0",calls,diagnostic_first=diagnostic,cases=1 if diagnostic else 12,
+        trajectories=1 if diagnostic else 48,system_builds=1 if diagnostic else 48,controlled_builds=1 if diagnostic else 48,
+        wrappers=1 if diagnostic else 96,compile_requests=1 if diagnostic else 96,
+        operator_gates=4 if diagnostic else 288,expectations=2 if diagnostic else 192,single_means=0 if diagnostic else 24,
         event_matrix_terms=sum(len(terms) for key,spec,terms in inv["means"]),
         compiler=PROFILE,atol=1e-12,rtol=0,phase_fit=False,
         sampling="DETERMINISTIC_REPRESENTATIVES_NOT_IID_NOT_EXPECTED_COST")
@@ -144,7 +147,16 @@ class Native:
         call("full_inputs","input",self.full_inputs)
         self.input_diagnostics=call("input_gate","input",self.input_gate)
 
-    def call(self,kind,key,fn):return self.ledger.call("b0."+kind,fn,identity=key)
+    def call(self,kind,key,fn):
+        numeric=kind.endswith("_gate") or kind in ("input_gate","single_mean","analytic_mean","raw_expectation","compiled_expectation")
+        try:
+            return self.ledger.call("b0."+kind,fn,identity=key,summary=(lambda value:value) if numeric else None)
+        except BaseException as error:
+            if hasattr(error,"diagnostics") and not getattr(error,"recorded",False):
+                self.ledger.rows.append(dict(failed_boundary="b0."+kind,identity=key,
+                    correctness="FAIL",diagnostics=error.diagnostics,metrics=None,gamma=None))
+                error.recorded=True
+            raise
 
     def cached(self,kind,key,fn):
         pair=(kind,key)
@@ -182,8 +194,30 @@ class Native:
 
     def check(self,a,b,code="B0_CORRECTNESS_FAILURE"):
         value=float(self.np.linalg.norm(a-b,ord=2))
-        if not self.np.isfinite(value) or value>1e-12:raise Stage1Failure(code)
+        if not self.np.isfinite(value) or value>1e-12:
+            error=Stage1Failure(code)
+            def entries(matrix):
+                return [[dict(real=float(z.real) if self.np.isfinite(z.real) else None,
+                              imag=float(z.imag) if self.np.isfinite(z.imag) else None) for z in row] for row in matrix]
+            error.diagnostics=dict(spectral_error=value if self.np.isfinite(value) else None,
+                finite=bool(self.np.isfinite(value)),atol=1e-12,rtol=0,phase_fit=False,
+                actual=entries(a),reference=entries(b))
+            raise error
         return value
+
+    def circuit_gate(self,circuit,reference,*,raw=None):
+        try:
+            return self.check(self.Operator(circuit.remove_final_measurements(inplace=False)).data,reference)
+        except Stage1Failure as error:
+            import base64,gzip,io
+            from qiskit import qpy
+            def encoded(qc):
+                stream=io.BytesIO();qpy.dump(qc,stream)
+                return dict(encoding="gzip+base64+qpy",data=base64.b64encode(gzip.compress(stream.getvalue(),mtime=0)).decode(),
+                    global_phase=float(qc.global_phase),qubits=qc.num_qubits,clbits=qc.num_clbits)
+            error.diagnostics["circuits"]={"actual":encoded(circuit)}
+            if raw is not None:error.diagnostics["circuits"]["raw"]=encoded(raw)
+            raise
 
     def input_gate(self):
         np=self.np;meta=self.run["inputs"]
@@ -352,40 +386,45 @@ class Native:
 
 
 def execute(run,ledger,evidence,*,native_factory=Native):
-    native=native_factory(run,ledger);inv=inventory();reports=[];compiled=[]
+    diagnostic=run["scope"].get("diagnostic_first",False)
+    native=native_factory(run,ledger);inv=inventory(diagnostic=diagnostic);reports=[];compiled=[]
     evidence.write("graph.json",dict(cases=cases(),compiler=PROFILE,scope=run["scope"]))
     for key,(spec,descriptor) in inv["events"].items():
         native.event(spec,descriptor);native.event_matrix(spec,descriptor)
     for key,spec,terms in inv["means"]:
         reports.append(native.call("single_mean",key,lambda spec=spec,terms=terms:native.single_mean(spec,terms,inv)))
-    for row in cases():
+    for row in cases()[:1] if diagnostic else cases():
         key=case_key(row)
-        mean=native.call("analytic_mean",key,lambda row=row:native.analytic_mean(row))
-        for variant in range(4):
+        mean=None if diagnostic else native.call("analytic_mean",key,lambda row=row:native.analytic_mean(row))
+        for variant in range(1 if diagnostic else 4):
             item=key+":"+str(variant)
             system=native.call("system_build",item,lambda:native.render(row,variant,False))
             controlled=native.call("controlled_build",item,lambda:native.render(row,variant,True))
             reference=native.call("reference",item,lambda:native.reference(row,variant))
             gates=dict(system=native.call("system_gate",item,lambda:native.check(native.Operator(system).data,reference)),
                 controlled=native.call("controlled_gate",item,lambda:native.check(native.Operator(controlled).data,native.controlled(reference))))
-            for axis in ("cosine","sine"):
+            for axis in (("cosine",) if diagnostic else ("cosine","sine")):
                 aid=item+":"+axis
                 wrapper=native.call("wrapper_build",aid,lambda:native.wrapper(controlled,axis))
                 wr=native.call("wrapper_reference",aid,lambda:native.wrapper_reference(reference,axis))
-                raw_error=native.call("raw_wrapper_gate",aid,lambda:native.check(native.Operator(wrapper.remove_final_measurements(inplace=False)).data,wr))
+                record=dict(trajectory=item,axis=axis,correctness="IN_PROGRESS",mean=mean,
+                    operator_errors=dict(gates),metrics=None,gamma=None)
+                ledger.rows.append(record)
+                raw_error=native.call("raw_wrapper_gate",aid,lambda:native.circuit_gate(wrapper,wr))
+                record["operator_errors"]["raw_wrapper"]=raw_error
                 raw_signal=native.call("raw_expectation",aid,lambda:native.expectation(wrapper,wr))
+                record["raw_signal"]=raw_signal
                 circuit=native.call("compile",aid,lambda:native.compile(wrapper))
-                compiled_error=native.call("compiled_gate",aid,lambda:native.check(native.Operator(circuit.remove_final_measurements(inplace=False)).data,wr))
+                compiled_error=native.call("compiled_gate",aid,lambda:native.circuit_gate(circuit,wr,raw=wrapper))
                 compiled_signal=native.call("compiled_expectation",aid,lambda:native.expectation(circuit,wr))
                 compiled.append((aid,circuit))
-                ledger.rows.append(dict(trajectory=item,axis=axis,correctness="PASS_EMPIRICAL_NO_PHASE_FIT",
-                    mean=mean,raw_signal=raw_signal,compiled_signal=compiled_signal,
-                    operator_errors=dict(**gates,raw_wrapper=raw_error,compiled_wrapper=compiled_error),metrics=None,gamma=None))
+                record.update(correctness="PASS_EMPIRICAL_NO_PHASE_FIT",compiled_signal=compiled_signal)
+                record["operator_errors"]["compiled_wrapper"]=compiled_error
     # No metric is released until every trajectory, mean and compiled gate passes.
-    for (aid,circuit),record in zip(compiled,ledger.rows):
+    for (aid,circuit),record in (() if diagnostic else zip(compiled,ledger.rows)):
         record["metrics"]=native.call("measure",aid,lambda circuit=circuit:native.measure(circuit))
     return dict(study="B0",rows=ledger.rows,single_step_means=reports,input_diagnostics=native.input_diagnostics,
         source=run["source"],provenance=native.provenance(),gamma=None,shots=None,expected_cost=None,
-        compile_requests=96,actual_transpile_count=len(native.compile_cache),
-        cache_hits=96-len(native.compile_cache),compiled_cache_keys=sorted(native.compile_cache),
+        compile_requests=len(compiled),actual_transpile_count=len(native.compile_cache),
+        cache_hits=len(compiled)-len(native.compile_cache),compiled_cache_keys=sorted(native.compile_cache),
         stop="MANDATORY_STOP_NO_RETRY_NO_RESUME",classification="REPRESENTATIVE_PILOT_NOT_EXPECTED_COST")
