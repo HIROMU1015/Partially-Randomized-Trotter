@@ -89,5 +89,13 @@ class CompilerPhaseTests(unittest.TestCase):
         self.assertIs(Optimize1qGatesDecomposition.run,original)
         self.assertLessEqual(np.linalg.norm(Operator(compiled).data-Operator(circuit).data,ord=2),1e-12)
 
+    def test_small_rotation_angles_preserved_without_pi_addition(self):
+        for angle in (2.**-60,-2.**-40,.013):
+            circuit=QuantumCircuit(1);circuit.ry(angle,0)
+            lowered=stable_official_lowering(circuit,['rz','sx','x','cx','u'])
+            rz=[float(x.operation.params[0]) for x in lowered.data if x.operation.name=='rz']
+            self.assertEqual(rz,[angle])
+            self.assertLessEqual(np.linalg.norm(Operator(lowered).data-Operator(circuit).data,ord=2),1e-15)
+
 
 if __name__=='__main__':unittest.main()

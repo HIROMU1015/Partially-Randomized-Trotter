@@ -13,7 +13,7 @@ from trottertracks.b2d_adapter._published import symmetric_s2_sequence
 IDS=("B3","D1","R2","R4","B4","F1")
 PROFILE=dict(qiskit="1.3.0",basis_gates=("rz","sx","x","cx"),optimization_level=1,
     seed_transpiler=17,approximation_degree=1.0,qubits_initially_zero=False,
-    lowering="official_definitions_exact_phase_native_v4",backend=None,target=None,coupling_map=None,layout=None,routing=None)
+    lowering="official_definitions_angle_preserving_native_v5",backend=None,target=None,coupling_map=None,layout=None,routing=None)
 
 
 def cases():

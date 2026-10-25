@@ -89,6 +89,9 @@ def stable_official_lowering(circuit,basis):
     evaluated or fitted, and no gate definition/equivalence library is mutated.
     """
     result=circuit.copy_empty_like();phases=[];allowed=set(basis)
+    def ry(angle,qubit):
+        # RY(theta)=SX-adjoint RZ(theta) SX. Keep theta itself, never theta+pi.
+        result.sx(qubit);result.rz(angle,qubit);result.sx(qubit);result.x(qubit)
     def expand(source,qubits,clbits):
         phases.append(float(source.global_phase))
         qmap=dict(zip(source.qubits,qubits));cmap=dict(zip(source.clbits,clbits))
@@ -104,16 +107,14 @@ def stable_official_lowering(circuit,basis):
             elif op.name == 'h':
                 result.rz(math.pi/2,qs[0]);result.sx(qs[0]);result.rz(math.pi/2,qs[0])
                 phases.append(math.pi/4)
+            elif op.name == 'ry':ry(float(op.params[0]),qs[0])
             elif op.name == 'u':
-                # Exact U-to-ZSX identity; scalar terms remain separate until
-                # the final exact binary-rational modular sum.
+                # U=exp(i(phi+lambda)/2) RZ(phi) RY(theta) RZ(lambda).
+                # Avoid rounding small theta by forming theta+pi.
                 theta,phi,lam=map(float,op.params)
-                if theta == 0.:
-                    result.rz(phi+lam,qs[0]);phases.extend((phi/2,lam/2))
-                else:
-                    result.rz(lam,qs[0]);result.sx(qs[0]);result.rz(theta+math.pi,qs[0])
-                    result.sx(qs[0]);result.rz(phi+math.pi,qs[0])
-                    phases.extend((phi/2,lam/2,math.pi/2))
+                result.rz(lam,qs[0])
+                if theta != 0.:ry(theta,qs[0])
+                result.rz(phi,qs[0]);phases.extend((phi/2,lam/2))
             elif op.name in allowed or op.name in ('measure','barrier','reset','delay'):
                 result.append(op,qs,cs)
             else:
@@ -133,17 +134,27 @@ def stable_native_transpile(circuit,profile):
     from qiskit.transpiler.passes import Optimize1qGatesDecomposition
     original_run=Optimize1qGatesDecomposition.run
     def stable_run(optimizer,dag):
-        phases=[float(dag.global_phase)]
+        phases=[Fraction(float(dag.global_phase))];quarters=0
         for run in list(dag.collect_1q_runs()):
             small=DAGCircuit();small.add_qubits([run[0].qargs[0]])
             for node in run:small.apply_operation_back(node.op,node.qargs)
             # Reuse Qiskit's original synthesis and gate-choice algorithm on
             # exactly the same run; only parent scalar-phase accumulation differs.
             small=original_run(optimizer,small)
-            phases.append(float(small.global_phase));small.global_phase=0.
+            # Native 1q determinants: det(RZ)=1, det(SX)=i, det(X)=-1.
+            # The synthesis scalar phase is therefore an integer*pi/4,
+            # modulo pi. Preserve the optimizer's discrete branch; do not
+            # accumulate its floating error in this algebraically known value.
+            before=sum({'rz':0,'sx':1,'x':2}[node.op.name] for node in run)
+            after=sum({'rz':0,'sx':1,'x':2}[node.op.name] for node in small.op_nodes())
+            reported=float(small.global_phase);q=round(reported*4/math.pi)
+            if q%4!=(before-after)%4 or abs(reported-q*math.pi/4)>1e-8:
+                raise ValueError('Native one-qubit scalar-phase invariant failed')
+            quarters+=q;small.global_phase=0.
             for node in run[1:]:dag.remove_op_node(node)
             dag.substitute_node_with_dag(run[0],small)
-        dag.global_phase=float(sum(map(Fraction,phases),Fraction())%Fraction(2*math.pi))
+        phases.append(Fraction(math.pi)*quarters/4)
+        dag.global_phase=float(sum(phases,Fraction())%Fraction(2*math.pi))
         return dag
     manager=generate_preset_pass_manager(optimization_level=profile.optimization_level,
         basis_gates=list(profile.basis_gates),seed_transpiler=profile.seed_transpiler,
@@ -168,7 +179,7 @@ def compiled_wrapper(circuit, profile, *, cache=None, identity_context=None,stab
     profile.validate()
     cache_key=None
     if cache is not None:
-        if stable_phase:identity_context=dict(identity_context or {},lowering='official_definitions_exact_phase_native_v4')
+        if stable_phase:identity_context=dict(identity_context or {},lowering='official_definitions_angle_preserving_native_v5')
         cache_key=compile_cache_key(circuit,profile,identity_context)
         if cache_key in cache:
             return cache[cache_key].copy()
