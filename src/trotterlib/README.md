@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## C1：H6 native実行・部分証拠
+
+`c1_h6_native.py`／`c1_h6_state_action.py`をSOURCE bf431765…から無変更実行。局所full8192有限probe30／ancilla shell3 PASS、kernel raw/referenceの最初の差1.0400731857e-10>固定1e-10で停止。162/298 units、kernel bundle8 FAIL、kernel費用・adjoint/X-Y未到達。[結果](../../docs/research/research_c_c1_h6_native_execution_20261025.md)。全operator/合成誤差上界/CA未資格、retry0、mandatory STOP。以下は準備履歴。
+
 ## C1：H6 native state-action接続
 
 `../trottertracks/c1_h6_native.py`は既存NativeBuilder/一般K/CAR/P0/metricsを再利用。`c1_h6_state_action.py`は最大3-qubit matrixと既存Aer CPUでfull8192状態を作用させる。有限probeをoperator上界へ昇格させない。[技術報告](../../docs/research/research_c_c1_h6_native_preparation_20261025.md)。117 tests＋29 subtests PASS、実H6新科学は未承認、mandatory STOP。

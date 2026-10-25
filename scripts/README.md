@@ -1,5 +1,9 @@
 # scripts 索引
 
+## C1：H6 native限定実行のcorrectness FAIL
+
+`run_research_c_c1_h6_native.py`をSOURCE bf431765…で1回実行。162/298 calls、局所30／shell3 PASS、最初のCDF_s1_shared raw/referenceが固定閾値を超過。[部分結果](../docs/research/research_c_c1_h6_native_execution_20261025.md)。8 kernel bundle FAIL、adjoint/X-Y/kernel費用/104 profile未到達、QPY52・STOP保全。retry/resume0、旧runner再起動禁止・mandatory STOP。下記の未承認表示は準備時点の履歴。
+
 ## C1：H6 native finite-probe／kernel費用（科学未承認）
 
 `run_research_c_c1_h6_native.py`：defaultはpassive preflight。30 local factors→3 shells→4候補×literal/sharedの8 kernel routes、actual adjoint/X-Y/P0 metricsへ接続。[報告](../docs/research/research_c_c1_h6_native_preparation_20261025.md)／[未承認298-call契約](../docs/research/research_c_c1_h6_native_contract_unapproved_20261025.json)。新fit/PF再計算/shots/総費用dispatchなし。

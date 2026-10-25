@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：H6 nativeのcorrectness FAIL・部分証拠（2026-10-25）
+
+[実行結果](docs/research/research_c_c1_h6_native_execution_20261025.md)／[raw・QPY52・call・STOP](artifacts/research_c_c1_h6_native/2026-10-25/)。SOURCE bf431765…無変更、162/298 units（154 COMPLETE／8 FAIL）。局所30・ancilla shell3 PASS、最初のCDF_s1_shared raw/reference差1.0400731857e-10が固定1e-10を超過。8 kernel bundleはFAIL、adjoint/X-Y/kernel費用/104 profileは未到達。原因未確定・合成誤差/CA/資源未資格、retry/resume0、旧証拠保全・mandatory STOP。以下の準備・未実行表示は履歴。
+
 ## C1：H6 native正しさ・kernel費用の技術準備（2026-10-25）
 
 [技術報告](docs/research/research_c_c1_h6_native_preparation_20261025.md)／[未承認298-call契約](docs/research/research_c_c1_h6_native_contract_unapproved_20261025.json)／[SOURCE・人工証拠](artifacts/research_c_c1_h6_native/2026-10-25/technical/)。既存NativeBuilder/一般K/P0へ保存CDF14/XDF14を接続。full8192 state-actionの有限probeと局所CAR、literal/sharedの8 kernels、11 compile。117 tests＋29 subtests PASS、実H6新科学0、global合成誤差/CA/shots/総費用未資格、mandatory STOP。
