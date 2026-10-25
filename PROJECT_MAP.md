@@ -1,3 +1,7 @@
+## 2026-10-25 H4 PR母平均価格：第一段階の静的確認
+
+[Pauli count前提・DF DKW条件・95%の無効scalar仕様](docs/non_df_h4_pr_mean_cost_stage1_20261025.md)。正常returnするSOURCEモデルのcount補題を確認。全law実runtime完了は未証明、H4 scalar/順位評価0。公開照合後mandatory STOP。
+
 ## 2026-10-25 H4 Pauli/DF PR母平均回路費用の追加検証設計
 
 [全law count upper・DF統計的lower・無効の最小計画](docs/non_df_h4_pr_mean_cost_design_20261025.md)。既存値引用と記号式・人工4PASSのみ。H4 scalar/統計再解析/compile/sampling/N_G再計算0、母平均順位は未確定。公開照合後mandatory STOP。

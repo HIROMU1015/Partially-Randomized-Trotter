@@ -1,3 +1,7 @@
+## 2026-10-25 H4 PR母平均価格の第一段階
+
+[固定SOURCE確認・DF標本条件・無効scalar仕様](non_df_h4_pr_mean_cost_stage1_20261025.md)。95%配分固定、正常終了/実wheel前提を明示。H4数値評価・新compileなし。
+
 ## 2026-10-25 H4 Pauli/DF PR母平均費用の設計
 
 [Uniform/law-weighted/有限標本比較・Pauli upper＋DF lowerの最小検証案](non_df_h4_pr_mean_cost_design_20261025.md)。新科学計算なし、次計画無効、母平均順位の数値判定なし。
