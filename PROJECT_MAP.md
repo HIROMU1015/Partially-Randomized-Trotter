@@ -1,3 +1,7 @@
+## 2026-10-25 H2/H4/H6 Pauli保存比較の最新版統合
+
+[15行CSV・転記照合・条件差](docs/pauli_h2_h4_h6_integrated_comparison_20261025.md)。H4を最新PR141構成探索のprimaryへ更新、H2/H6の保存値を保持。H4の高精度4行は全ランダム化RTE。選抜方式差・実ρ/tail未保証を保持、新科学計算/再解析0。旧成果は以下の時点履歴。
+
 ## 2026-10-25 H2/H6 Pauli PF/B0/PR拡張完了
 
 [条件付き資源比較・独立確認](docs/pauli_h2_h6_resource_comparison_20261025.md)、[H2/H4/H6 CSV](artifacts/pauli_h2_h6_comparison/2026-10-25/H2_H4_H6_comparison.csv)。H2 120候補・H6 215候補、独立確認n96/n48。実rho・母平均tail・大域最適性は未保証。公開照合後mandatory STOP。

@@ -1,3 +1,7 @@
+## 2026-10-25 H2/H4/H6 Pauli保存比較の最新版統合
+
+[固定refの15行比較・SOURCE・選抜方式](pauli_h2_h4_h6_integrated_comparison_20261025.md)。H4は最新141構成探索、H2/H6は既存値。新科学計算/数値再解析なし。旧H4固定PRの比較は以下の時点履歴。
+
 ## 2026-10-25 H2/H6 Pauli PF/B0/PR
 
 [有限探索・独立確認・条件付きG](pauli_h2_h6_resource_comparison_20261025.md)。H2/H6の新入力対応、335候補、H4固定PRとの比較、未保証範囲。

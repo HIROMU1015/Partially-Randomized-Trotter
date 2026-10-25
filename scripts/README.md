@@ -1,3 +1,7 @@
+## 2026-10-25 H2/H4/H6保存結果の文字列転記
+
+[`integrate_pauli_h2_h4_h6_saved_results.py`](integrate_pauli_h2_h4_h6_saved_results.py)：固定ref snapshotの列転記・ID/文字列照合だけ。科学/会計runnerをimportせずG・ratio・SE・順位は計算しない。[統合報告](../docs/pauli_h2_h4_h6_integrated_comparison_20261025.md)。
+
 ## 2026-10-25 H2/H6 Pauli比較
 
 `prepare_pauli_h2_h6_inputs.py`：新研究の入力準備。`pauli_h2_h6_study.py`：固定batchとprocess分離compile。`pauli_h2_h6_refinement.py`：旧rawを保全した数値精密化と独立確認。`finalize_pauli_h2_h6_study.py` / `package_pauli_h2_h6_results.py`：保存値会計・比較。`pack_pauli_h2_h6_evidence.py` / `restore_pauli_h2_h6_evidence.py`：可逆圧縮・SHA復元。完了runは再実行しない。[報告](../docs/pauli_h2_h6_resource_comparison_20261025.md)。
