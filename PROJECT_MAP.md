@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1 Stage3：決定論S2の固定shots精度資格付け準備（2026-10-25）
+
+[技術報告](docs/research/research_c_c1_stage3_deterministic_accuracy_preparation_20261025.md)／[未承認110-call契約](docs/research/research_c_c1_stage3_deterministic_accuracy_contract_unapproved_20261025.json)。CDF R8／XDF R10のD S2 s1主対象・s4対照、保存PF・DF・shots・費用を再利用し13roundの数値pilot CA判定へ接続。s1保存Frobenius・s4保存compiler残差を再利用、将来の新規local reference2・QPY8のみ。module `c1_stage3_deterministic_accuracy.py`／同名runner・人工test。新12＋独立process回帰140 tests・29 subtests PASS、SOURCE・保存input byte preflight PASS、実H4科学call0。厳密CAはreference enclosure不足で未資格、mandatory STOP。
+
 ## C1 Stage3：修正後8候補cost-onlyが完了（2026-10-25）
 
 [結果・条件付き費用・制約](docs/research/research_c_c1_stage3_cost_compat_execution_20261025.md)／[8候補・208行・12比較・call・STOP](artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/)。SOURCE9ce6703c…でcompile競合再発0、936/936 calls、compile／位相・unitarity各133 PASS。人工100 PASS、旧STOP106 calls保全・fresh再実行1・累積1042。PR4候補の費用support／合成・law／CAは未資格、保証付き優位・最終順位なし、mandatory STOP。以下は過去時点の記録。

@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+関連trackの `../trottertracks/c1_stage3_deterministic_accuracy.py` は[決定論S2の精度資格付け準備](../../docs/research/research_c_c1_stage3_deterministic_accuracy_preparation_20261025.md)。既存CAR／local reference／RPE horizon・energy・費用集計を再利用し、保存4候補の固定Nを逆Hoeffdingで検査する最小拡張。s1保存Stage2 Frobenius、s4保存compiler差を再利用。entry `scripts/run_research_c_c1_stage3_deterministic_accuracy.py`、人工test `tests/management/test_research_c_c1_stage3_deterministic_accuracy.py`。SOURCE・人工結果 `artifacts/research_c_c1_stage3_deterministic_accuracy_technical/2026-10-25/`、未承認110-call契約。実H4科学call0、厳密reference enclosureは未資格・mandatory STOP。
+
 `../trottertracks/c1_stage3_cost_compat.py`は旧cost-only backendを継承し、P0 compile callだけprocess内mutexへ接続する。旧数値／回路SOURCE・compiler profile・936 call・8候補を維持する。人工100 PASS、同時compile例外を人工再現し修正を確認。[修正報告](../../docs/research/research_c_c1_stage3_cost_compat_repair_20261025.md)、entry `scripts/run_research_c_c1_stage3_cost_compat.py`。
 
 C1 Stage3の8候補費用経路は`../trottertracks/c1_stage3_cost_only.py`。旧native calibrator・P0・metric・serial期待費用・全support判定を再利用し、旧CAR/PF/RTE準備とshots再算定を避ける。entry `scripts/run_research_c_c1_stage3_cost_only.py`、test `tests/management/test_research_c_c1_stage3_cost_only.py`、[報告・未承認936-call契約](../../docs/research/research_c_c1_stage3_cost_preparation_20261025.md)。保存楽観Nでの費用は同CA保証ではない。人工94 PASS、実H4回路／総費用0・mandatory STOP。
