@@ -1,3 +1,7 @@
+## 2026-10-25 H4 Pauli central B0/B0I限定実行
+
+[matched B0の回路価格・bias・条件付き会計](docs/non_df_h4_pauli_b0_execution_20261025.md)。両軸868 RZ、64bit/1 target作用。cosine bias約0.182803により5精度の合同N/Gはnull。PR保存会計再利用、native終了/STOP。
+
 ## 2026-10-25 H4 Pauli central B0/B0I比較準備
 
 [専用接続・条件対応・最小の非実行計画](docs/non_df_h4_pauli_b0_preparation_20261025.md)。明示prefix27、D2再利用、B0/B0I一候補。人工39件PASS、実H4 build/compile/signal/N/Gは0、科学結果・旧STOPは変更なし。

@@ -1,3 +1,7 @@
+## 2026-10-25 H4 Pauli central B0/B0I数値接続
+
+[`h4_pauli_b0_execution.py`](h4_pauli_b0_execution.py)：保存body照合、C/Arb複素target、独自bias/allowance、既存shot会計と保存PR行の接続。[限定実行結果](../../docs/non_df_h4_pauli_b0_execution_20261025.md)。
+
 ## 2026-10-25 Pauli central B0/B0I接続
 
 [`h4_pauli_b0.py`](h4_pauli_b0.py)：PRの明示L_Dを維持した決定論的bodyとD2の両測定軸を接続。B0/B0Iは一候補。人工検証のみ、実H4科学計算なし。[技術報告・非実行計画](../../docs/non_df_h4_pauli_b0_preparation_20261025.md)。

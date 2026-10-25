@@ -1,3 +1,7 @@
+## 2026-10-25 H4 Pauli central B0/B0I限定実行
+
+[両軸868 RZ・大きい切り捨てbias・5精度のN/G不成立](non_df_h4_pauli_b0_execution_20261025.md)。64bit/1作用、compile2、PR再会計0。
+
 ## 2026-10-25 H4 Pauli central B0/B0I比較準備
 
 [実装の利用範囲・D1/D2/C/shot再利用・実行無効計画](non_df_h4_pauli_b0_preparation_20261025.md)。B0固有価格・bias・N/Gは未取得。

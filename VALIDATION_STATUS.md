@@ -1,3 +1,10 @@
+## 2026-10-25 H4 Pauli central B0/B0I：限定実行完了
+
+[結果と成立範囲](docs/non_df_h4_pauli_b0_execution_20261025.md)。固定H4/1Å/STO-3G、Pauli184/prefix27、S2/T.8/q8、D2 central、Qiskit1.3.0/opt1/seed17。
+両軸868 RZ、cosine bias約0.182803、sine bias約−0.0155473。64bit/target1作用、compile2。ρ=0でも5精度すべて合同headroom不成立でN/G=null。
+nullは今回の切り捨てbias超過であり旧certificate不足とは別。実compiledρ未評価、PR母平均tail/全lawρ・正式受理・旧native UNKNOWNは維持。
+新人工8種類PASS、親/3child全exit0・回収済み。旧証拠保全、mandatory STOP。以下は時点履歴。
+
 ## 2026-10-25 H4 Pauli/DF PF・PR比較：既存証拠の整理完了
 
 [4方式とPauli generic/centralの比較・完成範囲](docs/non_df_h4_comparison_synthesis_20261025.md)。
