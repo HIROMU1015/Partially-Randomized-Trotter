@@ -1,5 +1,12 @@
 # Validation status
 
+## 2026-10-25 research B rare RTE: CONDITIONAL_SENSITIVITY_ONLY
+
+Saved-data SOURCE `a8cf99156af692f0facaa1885ab9ed52b28c6f4c`,B1 input commit `bef63edbd8cc564444b44e4e8cf23baa90f05fe5`. Synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,nD1,T±.18;only B4/B3 and D1/R4,q2,r2,K2 except R4K4. Molecular geometry/AO basis/rank exploration not applicable. Saved Qiskit1.3 native v5 full prepared X/Y RZ/CX costs,n256 per axis;no new sampling/build/compile/Hamiltonian/operator/signal/shot calculations.
+All8 saved-law probabilities/16 affine boundaries/80 +/-SE corners completed once. Artificial8 PASS,saved law and normalization consistent,exact rational p0-product and affine arithmetic checks passed;no failed calls or persistence failures. Whole-process wall0.37s;no retry/resume.
+B4 vs B3 S0 gap retains sign over +/-2SE box sensitivity;RZ reversal requires u_B4 above approximately(1.43828e8 or1.43862e8)+13.0981*u_B3,conditional on empirical S0 means. D1/R4 +/-1SE already crosses zero;unknown-mean boundary is u_D1 approximately(4035.81 or1174.39)+1.000002676*u_R4. Nonnegative unknown costs without a finite upper bound do not guarantee either unconditional ranking. Axis intercepts are geometric,not assumed zero rare cost;SE corners are not confidence intervals or covariance/independence claims.
+[Report](docs/research/research_b_outer_rare_event_minimal_sensitivity_20261025.md),[raw/probabilities/boundaries/STOP](artifacts/research_b_outer_rare_sensitivity/20261025/saved-once/). Local committed saved-data analysis,not external reproduction/certificate. B1 INCONCLUSIVE_RARE_EVENT_COVERAGE unchanged;new status CONDITIONAL_SENSITIVITY_ONLY. Gamma/u_num/shots/G remain null. Old B1/B0/A0/PR evidence and STOPs preserved;mandatory STOP;next scientific scope is User/researchB's decision.
+
 ## 2026-10-25 B1 fixed IID run completed; INCONCLUSIVE_RARE_EVENT_COVERAGE
 
 Science SOURCE `11e2532a62d54a65f8fad5489be6b135f826011b`, synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,nD1,T±.18,six fixed B3/D1/R2/R4/B4/F1 candidates,q2,F1 f8,rK2/2,4/2,2/4,complex128,spectral2-norm atol1e-12,rtol0,no phase fit,Qiskit1.3.0 angle-preserving native v5. Molecular geometry/AO basis/rank exploration not applicable.

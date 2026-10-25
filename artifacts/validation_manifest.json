@@ -1173,6 +1173,14 @@
           "research_b_outer_b1_iid256_20261025"
         ],
         "reason": "Fixed B1 IID3072 trajectory and6144 X/Y full-wrapper cost requests,statistics,provenance and STOP;rare-event coverage inconclusive."
+      },
+      {
+        "path": "artifacts/research_b_outer_rare_sensitivity/20261025",
+        "kind": "directory",
+        "supports": [
+          "research_b_outer_rare_sensitivity_20261025"
+        ],
+        "reason": "Two fixed saved-data comparisons;8 S0/rare probabilities,16 unknown-mean affine boundaries,80 SE corners and STOP. No new sampling/native computation."
       }
     ],
     "quarantined": [
@@ -3039,6 +3047,79 @@
       "completion_criteria": [
         "Publish fixed SOURCE,all raw samples/statistics,environment and STOP;verify remote then mandatory STOP.",
         "User/researchB decides any separately scoped rare-event MC,shots/gamma or certified numerical work."
+      ]
+    },
+    {
+      "id": "research_b_outer_rare_sensitivity_20261025",
+      "status": "source_present_no_current_ci",
+      "scientific_execution_status": "CONDITIONAL_SENSITIVITY_ONLY",
+      "runtime_status": "COMPLETED_DESCRIPTIVE_MANDATORY_STOP",
+      "B1_scientific_status_unchanged": "INCONCLUSIVE_RARE_EVENT_COVERAGE",
+      "summary": "B4/B3 S0 gap remains positive under +/-2SE sensitivity;D1/R4 remains unresolved within +/-1SE. Unknown nonnegative rare costs retained as variables;no unconditional ranking without a justified upper bound.",
+      "documentation": [
+        "docs/research/research_b_outer_rare_event_minimal_sensitivity_20261025.md"
+      ],
+      "source": [
+        "src/trottertracks/b2d_evaluator/rare_sensitivity.py",
+        "scripts/run_b2d_outer_rare_sensitivity.py"
+      ],
+      "tests": [
+        "tests/management/test_b2d_rare_sensitivity.py"
+      ],
+      "artifacts": [
+        "artifacts/research_b_outer_rare_sensitivity/20261025/PUBLICATION_CHECKS.json",
+        "artifacts/research_b_outer_rare_sensitivity/20261025/execution_logs/artificial_tests.txt",
+        "artifacts/research_b_outer_rare_sensitivity/20261025/execution_logs/preflight.json",
+        "artifacts/research_b_outer_rare_sensitivity/20261025/execution_logs/stderr.txt",
+        "artifacts/research_b_outer_rare_sensitivity/20261025/execution_logs/stdout.json",
+        "artifacts/research_b_outer_rare_sensitivity/20261025/execution_logs/time.txt",
+        "artifacts/research_b_outer_rare_sensitivity/20261025/saved-once/BOUNDARIES.csv",
+        "artifacts/research_b_outer_rare_sensitivity/20261025/saved-once/PROBABILITIES.csv",
+        "artifacts/research_b_outer_rare_sensitivity/20261025/saved-once/STOP.json",
+        "artifacts/research_b_outer_rare_sensitivity/20261025/saved-once/events.jsonl",
+        "artifacts/research_b_outer_rare_sensitivity/20261025/saved-once/partial_results.json",
+        "artifacts/research_b_outer_rare_sensitivity/20261025/saved-once/provenance.json",
+        "artifacts/research_b_outer_rare_sensitivity/20261025/saved-once/result.json",
+        "artifacts/research_b_outer_rare_sensitivity/20261025/saved-once/status.json"
+      ],
+      "science_source_commit": "a8cf99156af692f0facaa1885ab9ed52b28c6f4c",
+      "input_commit": "bef63edbd8cc564444b44e4e8cf23baa90f05fe5",
+      "B1_science_source": "11e2532a62d54a65f8fad5489be6b135f826011b",
+      "reused_scalar_law_source": "e16c3be8a039f6bc468e112f0ed086bde544fef2:scripts/rare_rte_stage_b_core.py:dec/finite_law",
+      "counts": {
+        "candidate_time_conditions": 8,
+        "comparison_time_conditions": 4,
+        "axis_metric_boundaries": 16,
+        "SE_corner_rows": 80,
+        "occurrence_law_checks": 44,
+        "artificial_tests": 8,
+        "analysis_attempts": 1,
+        "new_sampling": 0,
+        "new_build_compile": 0,
+        "new_H_operator_signal": 0,
+        "shots": 0,
+        "retries": 0,
+        "resumes": 0,
+        "evidence_write_failures": 0
+      },
+      "resources": {
+        "wall_seconds_whole_job": 0.37,
+        "peak_RSS_KiB": 33512,
+        "policy": "Small saved-file streaming pass;no artificial resource caps"
+      },
+      "qualification": {
+        "unknown_rare_mean": null,
+        "unconditional_expected_cost_ranking": null,
+        "compiled_cost_upper_bound": null,
+        "gamma": null,
+        "u_num": null,
+        "shot_weighted_G": null,
+        "SE_corners_are_confidence_intervals": false
+      },
+      "interpretation": "Synthetic2mode/3DF,N1/mode0,LD2 weight-ranked,nD1,T±.18,B4/B3/D1/R4 only,q2,r2,K2 or4,saved full prepared X/Y native-v5 RZ/CX,n256. Decimal50 probability complement at exact saved binary64 inputs;unknown costs remain symbolic. Conditional empirical sensitivity,not a rigorous population ranking or same-accuracy total-resource certificate. Existing B1/B0/A0/PR raw/contracts/STOP unchanged.",
+      "completion_criteria": [
+        "Commit and push only this fixed saved-data analysis;verify remote SOURCE and artifacts;mandatory STOP.",
+        "User/researchB decides adoption or any separate shot/MC/A1 work."
       ]
     }
   ],
