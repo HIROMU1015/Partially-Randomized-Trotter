@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+研究B [高次数RTEの最小費用感度：固定2比較・保存値解析](docs/research/research_b_outer_rare_event_minimal_sensitivity_20261025.md)。入口 `scripts/run_b2d_outer_rare_sensitivity.py`、接続 `b2d_evaluator/rare_sensitivity.py`、人工test `test_b2d_rare_sensitivity.py`。新sampling／build／compileなし、B1のINCONCLUSIVEを維持し、別のCONDITIONAL_SENSITIVITY_ONLYとして扱う。
+
 研究B [B1固定IID期待native費用：契約・実装・結果](docs/research/research_b_outer_b1_expected_native_cost_20261025.md)。新入口 `scripts/run_b2d_outer_b1.py`、接続 `b2d_evaluator/b1_native.py`、人工test `test_b2d_b1_native.py`。全3,072 trajectory・6,144費用要求・18,432 operator／12,288 expectationを完了、compiled最大4.55e-13。32 process、wall50:46.95、actual compile6078／hit66。全eventはorder0で科学状態INCONCLUSIVE_RARE_EVENT_COVERAGE、gamma／shots／総費用は未資格。Retry/resume／追加標本なし、mandatory STOP。以下のB0／A0記録は履歴として保全する。
 
 ## 研究B B0完了：角度保存修正後に全correctness・96費用を完了（2026-10-25）
