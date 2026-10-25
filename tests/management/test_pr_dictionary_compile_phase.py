@@ -74,6 +74,10 @@ class CompilerPhaseTests(unittest.TestCase):
             lowered=stable_official_lowering(circuit,['rz','sx','x','cx','u'])
             self.assertLessEqual(np.linalg.norm(Operator(lowered).data-Operator(circuit).data,ord=2),1e-14)
             self.assertLessEqual(set(lowered.count_ops()),{'rz','sx','x','cx'})
+        for name in ('h','s','sdg','t','tdg','sxdg'):
+            circuit=QuantumCircuit(1);getattr(circuit,name)(0)
+            lowered=stable_official_lowering(circuit,['rz','sx','x','cx','u'])
+            self.assertLessEqual(np.linalg.norm(Operator(lowered).data-Operator(circuit).data,ord=2),1e-14)
 
 
 if __name__=='__main__':unittest.main()

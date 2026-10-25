@@ -96,13 +96,24 @@ def stable_official_lowering(circuit,basis):
             op=item.operation;qs=[qmap[q] for q in item.qubits];cs=[cmap[c] for c in item.clbits]
             if op.name == 'p':
                 angle=float(op.params[0]);result.rz(angle,qs[0]);phases.append(angle/2)
+            elif op.name in ('s','sdg','t','tdg'):
+                angle={'s':math.pi/2,'sdg':-math.pi/2,'t':math.pi/4,'tdg':-math.pi/4}[op.name]
+                result.rz(angle,qs[0]);phases.append(angle/2)
+            elif op.name == 'sxdg':
+                result.sx(qs[0]);result.x(qs[0]) # SX^3 = SX-adjoint, no phase
+            elif op.name == 'h':
+                result.rz(math.pi/2,qs[0]);result.sx(qs[0]);result.rz(math.pi/2,qs[0])
+                phases.append(math.pi/4)
             elif op.name == 'u':
                 # Exact U-to-ZSX identity; scalar terms remain separate until
                 # the final exact binary-rational modular sum.
                 theta,phi,lam=map(float,op.params)
-                result.rz(lam,qs[0]);result.sx(qs[0]);result.rz(theta+math.pi,qs[0])
-                result.sx(qs[0]);result.rz(phi+math.pi,qs[0])
-                phases.extend((phi/2,lam/2,math.pi/2))
+                if theta == 0.:
+                    result.rz(phi+lam,qs[0]);phases.extend((phi/2,lam/2))
+                else:
+                    result.rz(lam,qs[0]);result.sx(qs[0]);result.rz(theta+math.pi,qs[0])
+                    result.sx(qs[0]);result.rz(phi+math.pi,qs[0])
+                    phases.extend((phi/2,lam/2,math.pi/2))
             elif op.name in allowed or op.name in ('measure','barrier','reset','delay'):
                 result.append(op,qs,cs)
             else:
@@ -122,7 +133,7 @@ def compiled_wrapper(circuit, profile, *, cache=None, identity_context=None,stab
     profile.validate()
     cache_key=None
     if cache is not None:
-        if stable_phase:identity_context=dict(identity_context or {},lowering='official_definitions_exact_phase_native_v2')
+        if stable_phase:identity_context=dict(identity_context or {},lowering='official_definitions_exact_phase_native_v3')
         cache_key=compile_cache_key(circuit,profile,identity_context)
         if cache_key in cache:
             return cache[cache_key].copy()
