@@ -1,0 +1,162 @@
+{
+  "scope": "C1_H6_CORRECTED_CODEC_ROUNDTRIP_V1",
+  "status": "UNAPPROVED_SCIENCE_CONTRACT",
+  "base_commit": "53f45cacf70e23abe911d78f6f005fce5ce4c26d",
+  "entry": "scripts/run_research_c_c1_h6_codec_roundtrip.py",
+  "codec": "real_schur_column_gauge_v1",
+  "source_manifest": "artifacts/research_c_c1_h6_codec_roundtrip/2026-10-25/technical/SOURCE.json",
+  "source_manifest_sha256": "2ee53559c0164077bd8910f9a075c8f750bf82acab00671e365b89ff850cffa7",
+  "saved_inputs": {
+    "artifacts/research_c_c1_h2_h6_science/2026-10-25/H6-run01/input.npz": "b82ee9864d9c76071944834ae32d3d6eea7e95959708c2e19bca011936bce447",
+    "artifacts/research_c_c1_h2_h6_science/2026-10-25/H6-run01/input_identity.json": "9d26cefc39346b93d0314e98c1867958f364078cd3ef76e2f0f313e17d0bb9fe",
+    "artifacts/research_c_c1_h2_h6_science/2026-10-25/H6-run01/XDF_full.npz": "50623b80baa69a8fece6d0923ad4128634bfb12ba46ff1269d86bf5aa1316abd",
+    "artifacts/research_c_c1_h2_h6_science/2026-10-25/H6-run01/XDF_full.json": "d0a7c49c4631b4f59ebcdcbf4d9689bc8943e55980161e384d6f16ecbf4e94ec",
+    "artifacts/research_c_c1_h6_initialization/2026-10-25/run01/codec/R14_before.npz": "559dc43bf923a421ccc62d05c4cefa0bdf39a48ba68824abf3c8f770c04642b1",
+    "artifacts/research_c_c1_h6_initialization/2026-10-25/run01/codec/R18_before.npz": "50623b80baa69a8fece6d0923ad4128634bfb12ba46ff1269d86bf5aa1316abd",
+    "artifacts/research_c_c1_h6_initialization/2026-10-25/run01/R14_before_sector.json": "068a91731a5611d0ce6a8a3fce3635050dec812bd4bce5bf6c7e2ec3b4233935",
+    "artifacts/research_c_c1_h6_initialization/2026-10-25/run01/R18_before_sector.json": "51561f9bccb3ac04750a84914d3ac78bca895c3c6c8320cbabe5090aa1e0074c",
+    "artifacts/research_c_c1_h6_initialization/2026-10-25/run01/codec/R14_identity.json": "7fa4b8b76f33ab2d08bbca0eafabb9f48a1d74c73ada9f29fabec451b85894b1",
+    "artifacts/research_c_c1_h6_initialization/2026-10-25/run01/codec/R18_identity.json": "795c5a7394cb0e129dc391c7f049cb4c813c76fec1904ae71755e2c8a515358e",
+    "artifacts/research_c_c1_h6_initialization/2026-10-25/run01/contract.json": "b1367e4434892f74dc52c6902b22efa16745f80f12a298f5596846d6742d2b21",
+    "artifacts/research_c_c1_h6_initialization/2026-10-25/run01/STOP.json": "7cd01d1f814892815da37e666d5ae406d969322822528a3e44abb14372365b7c",
+    "artifacts/research_c_c1_h6_initialization/2026-10-25/execution_identity.json": "a23ea1c902b30179a2e0e9d231f31121200ea779ad9a0fbe3b8b1ea7c3fb51d1",
+    "artifacts/research_c_c1_h6_initialization/2026-10-25/postflight.json": "66cd4b6b2ffedc3fc9c68b32a5d195fdbea39a68913589c3230f8837f9d85747"
+  },
+  "original_input": "artifacts/research_c_c1_h2_h6_science/2026-10-25/H6-run01/input.npz",
+  "XDF_full": "artifacts/research_c_c1_h2_h6_science/2026-10-25/H6-run01/XDF_full.npz",
+  "initial_arrays": {
+    "14": "artifacts/research_c_c1_h6_initialization/2026-10-25/run01/codec/R14_before.npz",
+    "18": "artifacts/research_c_c1_h6_initialization/2026-10-25/run01/codec/R18_before.npz"
+  },
+  "saved_sector_rows": {
+    "14": "artifacts/research_c_c1_h6_initialization/2026-10-25/run01/R14_before_sector.json",
+    "18": "artifacts/research_c_c1_h6_initialization/2026-10-25/run01/R18_before_sector.json"
+  },
+  "provenance": {
+    "original_science_SOURCE": "33c380d8aa792e5119bb3adec5dd07d1e1377214",
+    "initial_identity_evaluation_SOURCE": "14cf35589a8501ef5db9a33700ed0c98bc1aa853",
+    "saved_results_commit": "53f45cacf70e23abe911d78f6f005fce5ce4c26d",
+    "initial_source": "Saved before-codec J/U already verified component-identical to XDF_full prefixes; verify again, never regenerate a decomposition"
+  },
+  "molecule": {
+    "atoms": 6,
+    "geometry": "linear H atoms (0,0,i) Angstrom",
+    "distance_angstrom": 1.0,
+    "basis": "sto-3g",
+    "charge": 0,
+    "spin": 0,
+    "norb": 6,
+    "Nalpha": 3,
+    "Nbeta": 3,
+    "sector_dimension": 400
+  },
+  "ranks": [
+    14,
+    18
+  ],
+  "states": [
+    "before",
+    "after"
+  ],
+  "CA_Ha": 0.00159,
+  "DF_reserve_Ha": 0.00019875,
+  "guard_policy": "sector_operation_scale_guard8_proposal_v1",
+  "guard_formula": "unchanged 8*eps64*(n^4+actual_rank*n^3)*(sector_dimension+1)*max(1,||Hphysical||F+sum||Hblock||F)",
+  "allowances": {
+    "component_maxabs": 1e-10,
+    "tensor_frobenius": "1e-10*max(1,||g_before||F)",
+    "saved_sector_replay_absolute_Ha": 1e-10
+  },
+  "codec_rules": [
+    "Require finite real float64 orthogonal U and exactly symmetric finite float64 J; do not orthogonalize or cast invalid input",
+    "For det<0 only, flip final U column; each original density projector unchanged",
+    "Existing scipy.linalg.schur(output=real), signed atan2 for each nonzero-subdiagonal 2x2 rotation block, pair -1 scalar blocks into pi planes",
+    "A=(Q B Q.T-(Q B Q.T).T)/2 removes recorded roundoff only; verify Schur/exponential/skew residuals <= existing1e-10; no complex-log fallback",
+    "Pack real skew upper triangles and symmetric J through existing ffsim util; unpack with df_tensors_from_params(real=True)",
+    "Require exact J/rank/frame-order preservation, U_out matches sign-gauged representative and original per-column density projectors within1e-10; raw U difference due only to recorded gauge is not a failure",
+    "Require reconstructed tensor max-entry and Frobenius residual <=1e-10*max(1,||g_before||F); fail rather than approximate silently"
+  ],
+  "physical_rules": "Original-g corrected kappa, scalar and frame order unchanged. Existing SectorCAR/rank_assessment on sector400 only. Compare each state to same original physical h/g/c. No Gaussian gate projection/full dense4096/controlled8192.",
+  "codec_calls": {
+    "saved_codec_load": 1,
+    "saved_initial_identity": 2,
+    "corrected_codec": 2,
+    "tensor_assessment": 4
+  },
+  "sector_calls": {
+    "snapshots_load": 1,
+    "sector_context": 1,
+    "physical_sector": 1,
+    "sector_assessment": 4,
+    "saved_sector_replay": 2,
+    "fidelity_and_budget_gate": 2
+  },
+  "maximum_logical_units": 20,
+  "call_definition": {
+    "saved_codec_load": "one saved g/full-XDF/two-before-snapshots load in read-only fit env",
+    "saved_initial_identity": "per rank one J/U component comparison with original XDF_full prefix, including column signs",
+    "corrected_codec": "per rank one real-Schur/gauge/ffsim pack-unpack, frame residuals/projectors/J/tensor-fidelity checks; includes per-frame Schur/expm but no fit",
+    "tensor_assessment": "per rank/state one existing tensor reconstruction residual F/max/objective diagnostic; four states total",
+    "snapshots_load": "original h/g/c and four worker state exports loaded once for sector evaluator",
+    "sector_context": "one existing sparse sector CAR context",
+    "physical_sector": "one existing OF sparse physical Hamiltonian restricted then densified400",
+    "sector_assessment": "one existing rank_assessment per rank/state, raw CAR reconstruction, sector norm and unchanged numerical guard",
+    "saved_sector_replay": "per rank compare before norm with previously saved diagnostic scalar at existing1e-10 Ha allowance",
+    "fidelity_and_budget_gate": "per rank existing component_check of sector operators at1e-10, reported spectral norm of difference, and both states must satisfy unchanged norm+guard<=CA/8"
+  },
+  "fit_packages": {
+    "ffsim": "0.0.83",
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "jax": "0.4.38",
+    "jaxlib": "0.4.38",
+    "qiskit": "2.4.2",
+    "pyscf": "2.14.0"
+  },
+  "evaluation_packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "qiskit-nature": "0.7.2",
+    "openfermion": "1.6.1",
+    "openfermionpyscf": "0.5",
+    "pyscf": "2.7.0",
+    "threadpoolctl": "3.6.0"
+  },
+  "ffsim_util_sha256": "5ecfe167846b6d46fd0b3ec794b7c41c0a554c2ac51f1cf83c416a4da3ce0708",
+  "dependency_locks": {
+    "fit": "artifacts/research_c_c1_stage1_technical/2026-10-24/environment/fit-requirements.lock",
+    "evaluation": "artifacts/research_c_c1_stage2_technical/2026-10-25/environment/requirements.lock"
+  },
+  "execution_order": [
+    "Separate explicit user permission after fixed SOURCE/input/call/STOP review; current preparation does not authorize science",
+    "Byte/version preflight and actual resource check; fresh output",
+    "Read saved initial J/U and verify identity; corrected codec/frame/tensor gates in fit env",
+    "Load unchanged original h/g/c and codec states in evaluation env; sparse physical sector400 and four independent sector assessments",
+    "Replay before-sector norms; sector operator equivalence and unchanged DF-budget preservation gates per rank",
+    "Save full/partial evidence, commit/push/remote verification, mandatory STOP"
+  ],
+  "STOP": {
+    "first_codec_identity_nonfinite_condition_or_numerical_failure": "Stop dependent work, drain started workers, preserve partial evidence; no fallback/tolerance change",
+    "DF_budget_fail": "Record DF_BUDGET_NOT_PRESERVED and STOP; do not launch a fit or add ranks",
+    "completion": "mandatory STOP after publication/remote verification",
+    "retry": 0,
+    "resume": 0
+  },
+  "retry": 0,
+  "resume": 0,
+  "new_fit": 0,
+  "optimizer_iterations": 0,
+  "initial_decompositions": 0,
+  "rank_search": 0,
+  "gradient_evaluation": 0,
+  "PF": 0,
+  "native_build_compile": 0,
+  "shots": 0,
+  "total_cost_evaluation": 0,
+  "qualification": "Numerical pilot checks with existing allowances/engineering guard; not a rigorous enclosure, fit-convergence claim or total-resource superiority.",
+  "performance": "Use existing resource_plan from actual affinity/quota/free memory for four independent sector assessments and coordinate process-local BLAS; sequential small Schur frames. No artificial CPU/RAM/wall cap, shared-environment changes or other-user interference.",
+  "fresh_output": "artifacts/research_c_c1_h6_codec_roundtrip/2026-10-25/run01",
+  "scientific_execution_authorized": false,
+  "permission_policy": "Separate chat permission only; no approval record/certificate/new grant."
+}

@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1：H6修正codec・限定round-trip準備
+
+[技術報告](research/research_c_c1_h6_codec_roundtrip_preparation_20261025.md)／[未承認20-call条件](research/research_c_c1_h6_codec_roundtrip_contract_unapproved_20261025.json)／[SOURCE・人工検証](../artifacts/research_c_c1_h6_codec_roundtrip/2026-10-25/technical/)。det=-1列符号とdet=+1のπ分岐を実Schurで扱い、ffsim pack/unpack形式を維持。人工54＋回帰80・29subtests PASS、実H6 numeric decode/evaluation0。別科学許可待ち・mandatory STOP。
+
 ## C1：H6 CDF初期化の技術検証・限定再解析
 
 [報告](research/research_c_c1_h6_initialization_execution_20261025.md)／[35-call契約](research/research_c_c1_h6_initialization_contract_20261025.json)／[6状態比較・原本](../artifacts/research_c_c1_h6_initialization/2026-10-25/)。rank14/18で変換前の予算内XDFが旧real codec直後に予算外へ変化。初期同一性PASS、det+1 frameの分岐注意も保存。SOURCE14cf3558…、35/35 calls、fit0・人工40 PASS、修正H6／修正fit未実施、mandatory STOP。

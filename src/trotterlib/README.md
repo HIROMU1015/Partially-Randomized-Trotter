@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## C1：実直交DF codecとH6限定接続
+
+[`c1_real_orthogonal_codec.py`](../trottertracks/c1_real_orthogonal_codec.py)はSciPy real Schur/expmとffsim parameter utilのtask-local接続。[`c1_h6_codec_roundtrip.py`](../trottertracks/c1_h6_codec_roundtrip.py)は既存SectorCAR/rank_assessmentを再利用する評価専用経路。[技術報告](../../docs/research/research_c_c1_h6_codec_roundtrip_preparation_20261025.md)。既存モジュール無変更、人工134 tests＋29subtests PASS、実H6新評価未実行・mandatory STOP。
+
 ## C1：保存H6初期値変換の限定診断
 
 [`../trottertracks/c1_h6_initialization.py`](../trottertracks/c1_h6_initialization.py)は既存ffsim pack/unpack・JAX value/gradientとSectorCAR／rank_assessmentを接続する。新fitter・Gaussian合成器なし、列符号案は人工検証のみ。[技術・科学結果](../../docs/research/research_c_c1_h6_initialization_execution_20261025.md)、人工新12＋回帰28 PASS、35-call限定再解析完了・mandatory STOP。

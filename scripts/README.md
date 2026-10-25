@@ -1,5 +1,9 @@
 # scripts 索引
 
+## C1：修正codecの保存H6 round-trip
+
+`run_research_c_c1_h6_codec_roundtrip.py`は既定byte preflightのみ。将来、保存rank14/18の初期J/Uを再分解せず、修正codec→4sector状態→同値性・DF予算保持だけを最大20callsで確認する。[未承認契約](../docs/research/research_c_c1_h6_codec_roundtrip_contract_unapproved_20261025.json)／[人工結果](../docs/research/research_c_c1_h6_codec_roundtrip_preparation_20261025.md)。科学許可後のみ実行し、fit／PF／native／shots／費用は対象外。
+
 ## C1：保存H6初期化診断
 
 `run_research_c_c1_h6_initialization.py`は保存H6のrank14／18、変換前／直後／保存CDF終了後だけを評価する専用entry。別fit/eval環境、既存ffsim codec・SectorCAR・rank_assessmentを再利用し、optimizer／PF／nativeを呼ばない。[固定35-call条件](../docs/research/research_c_c1_h6_initialization_contract_20261025.json)／[実行結果](../docs/research/research_c_c1_h6_initialization_execution_20261025.md)。今回の許可は消化済み、fresh再実行には別の範囲・許可が必要。

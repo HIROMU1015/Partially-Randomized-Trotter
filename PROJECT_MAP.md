@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：H6修正codec・20-call評価準備（2026-10-25）
+
+[方式・人工検証](docs/research/research_c_c1_h6_codec_roundtrip_preparation_20261025.md)／[未承認契約](docs/research/research_c_c1_h6_codec_roundtrip_contract_unapproved_20261025.json)／[SOURCE・人工証拠](artifacts/research_c_c1_h6_codec_roundtrip/2026-10-25/technical/)。新 `c1_real_orthogonal_codec.py`＋`c1_h6_codec_roundtrip.py`、専用CLIと人工tests。列符号＋real Schurのπ平面でffsim形式へ接続し、J/projector/tensorをgate化。新54＋回帰80 tests・29 subtests PASS。保存H6新評価0、将来はrank14/18・before/afterの20 calls、fit0、mandatory STOP。
+
 ## C1：保存H6の初期codec劣化を再現（2026-10-25）
 
 [技術・限定再解析報告](docs/research/research_c_c1_h6_initialization_execution_20261025.md)／[6状態・frame・gradient・STOP](artifacts/research_c_c1_h6_initialization/2026-10-25/)。module `c1_h6_initialization.py`／専用runner `run_research_c_c1_h6_initialization.py`／人工test同名。SOURCE14cf3558…、rank14/18の初期J/Uは保存XDFと完全一致、旧real codec直後に両方の誤差が悪化。35/35 calls、新fit・optimizer・retry/resume0、人工40 PASS。修正は人工のみ、最終未達の唯一原因・修正fit性能は未確定、旧結果保全・mandatory STOP。
