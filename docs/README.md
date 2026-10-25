@@ -1,5 +1,7 @@
 # 文書索引
 
+研究B [最終成果統合・一時保留handoff](research/research_b_final_outcomes_and_pause_handoff_20261026.md)。誤差診断・native実装・条件付き費用と強いFull PF baselineを統合。独立算法差・保証付き同精度総資源優位は未確立、追加科学計算を停止。旧SOURCE／raw／STOPを保全し、再開はユーザーの明示判断後。
+
 研究B [Full DF-Yoshida4 q4：固定scope・検証・実行記録](research/research_b_full_df_yoshida4_q4_execution_20261026.md)。既存Full DF-PFを再利用、FD5/6・T±.18だけ。 実行COMPLETE、全correctness PASS、観測b1.21606e-10で予算内、RZ/CX2356/1636。u_num／γ未資格、mandatory STOP。
 
 研究B [Full deterministic DF-PF4 caseの科学実行結果](research/research_b_full_deterministic_df_pf_execution_20261026.md)。全correctness後にFull S2／Yoshida4のsignal・native単価を取得。保存Exact-R／finite-RTEとの固定点対応、未資格u_num／γ、総資源比較の未実施を区別してmandatory STOP。

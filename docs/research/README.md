@@ -1,5 +1,7 @@
 # 研究計画資料
 
+研究Bは**一時保留（追加科学計算停止）**。[最終成果統合・handoff](research_b_final_outcomes_and_pause_handoff_20261026.md)にD内部PFからExact-R／Full DF-PF q4までの到達点、未確定資格、保全先・再開条件をまとめた。旧統合・科学SOURCE・raw・STOPを維持し、新しい研究計画・計算は起動しない。
+
 このディレクトリには、DF部分ランダム化・有限RTE・RPE compiled cost研究の目的、背景、未解決点、解析手順および数値評価計画をまとめる。
 
 実装、runner、テスト、成果物を含むリポジトリ全体の区分は

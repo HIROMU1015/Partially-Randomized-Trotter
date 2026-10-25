@@ -1,5 +1,11 @@
 # Validation status
 
+## 2026-10-26 research B handoff: temporarily paused; scientific evidence unchanged
+
+Research B stops additional scientific calculations and is temporarily paused by the user's research decision. [Final integrated outcomes and pause handoff](docs/research/research_b_final_outcomes_and_pause_handoff_20261026.md) combines the eight earlier series,Exact-R,Full DF-PF q2 and Yoshida4 q4. This is documentation-only consolidation:no new scientific execution,reanalysis,build/compile,sampling,shot/G calculation or independent detailed review.
+Existing fixed-source correctness,observed-bias and native-cost results remain as recorded below. The fixed synthetic2mode one-body+3DF,N1/mode0,T±.18,ordinary controlled prepared native-v5 q4 point meets the b-only budget and has lower deterministic wrapper counts than saved high-precision PR S0 means;this is not a certified same-accuracy total-resource ranking. U_num/gamma/rare costs and baseline G remain unresolved.
+No independent new algorithm mechanism has been identified in the existing limited prior-art study. Pause preserves the error diagnostics,implementation and conditional resource accounting;it is not permanent closure or invalidation. Old SOURCE/raw/contracts/grants/ledgers/markers/STOPs and validation-manifest scientific statuses remain unchanged. R2-CS stays separately closed. No new pause marker or execution plan. User/researchB may consider resumption only after a concrete question or evidence that could change the research judgment;new science requires separate explicit permission. Mandatory STOP;no current follow-up calculation.
+
 ## 2026-10-26 research B Full DF-Yoshida4 q4: two-case descriptive pilot COMPLETE
 
 Unmodified science SOURCE `620448b14235d2d9e0e76d5d0ba7273ce887a628`;one scientific attempt,no interruption/fix/retry/resume. Synthetic2mode one-body+3DF,N1/mode0,all4 blocks,Full Yoshida4 q4,T±.18. No split/nD/RTE in Full evolution;old LD2 weight-ranked snapshot binds common inputs only. Molecular geometry/AO basis/rank exploration not applicable. Complex128,spectral2-norm atol1e-12,rtol0,no phase fit,original c0=.17 once;ordinary controlled prepared X/Y,native-v5.
