@@ -1,5 +1,7 @@
 # tests の役割
 
+研究B [単一複素signalのshot加重資源評価：技術設計・将来scope](../docs/research/research_b_outer_shot_weighted_resource_design_20261025.md)。設計のみ、実shot数／G／新順位の評価なし。新人工test `tests/management/test_b2d_shot_design.py` と既存scalar testの計10件PASS。将来案は6候補×両T×2精度、48 shot要求・144条件付き資源行。計算SOURCE／launcherは未作成、実行は別途明示許可後のみ。
+
 `tests/` は、ライブラリAPI、数値恒等式、成果物schema、ガード条件の回帰検査を置く。
 基本的に `src/trotterlib/<name>.py`、`scripts/run_<name>.py`、
 `tests/test_<name>.py`、`docs/<name>.md`、`artifacts/<name>/`を一組として読む。
