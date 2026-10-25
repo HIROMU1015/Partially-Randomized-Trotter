@@ -143,3 +143,5 @@ lnとeは両軸で同じため一回ずつの共通評価を再利用できる�
 最新版 `research_project_instructions_unified_2026-10-25.md` §8.4・§10・§10.3を適用。共有環境・他ユーザー・他jobへの操作なし。新しい科学実行や承認証明の仕組みは追加していない。
 
 [publication_status.json](../artifacts/non_df_h4_pr_mean_cost_stage1/2026-10-25/publication_status.json)に公開状態を記録する。専用branchでcommit・GitHub公開・remote SHA照合後、**mandatory STOP**。次の限定scalar実行にも自動移行しない。
+
+主成果物commit **`3b26f3af3ae43514ea8b9cc4841a817b8685074c`** をGitHub接続のGit data APIで公開した。local準備tree `100b94a5213d668494e4599dd0340820211ddcdd` と公開treeが一致。同commitをgit fetchしlocal HEAD／origin ref／GitHub refの同SHA・clean状態を確認した。この公開記録だけを追記し、最終HEADもremoteと照合してチャットへ記載する。**第一段階を完了してmandatory STOP。H4 scalar実行は未承認・未実行のまま。**
