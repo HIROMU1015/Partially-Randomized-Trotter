@@ -14,4 +14,8 @@ FAIL時には数値差・actual／reference matrix、raw／compiled回路をgzip
 
 ## 実績
 
-この節は各新attemptのSOURCE・結果・原因・修正・人工検証・公開内容を追記する。旧契約や旧結果を遡及変更しない。A0再実行、A1包含、MC、shots、新PF・grid、全RPE評価は対象外。
+診断SOURCE `2721d69a98213a35facf4dc7fafa08ab1f0b40ea` で最初の失敗caseを再現し、spectral誤差1.791447313e-11、raw wrapper誤差1.155206482e-14とQPY／行列を保存した。保存回路だけのpass診断（script SOURCE e82e99558）では、最適化前のofficial-definition展開ですでにrawから1.792369935e-11ずれ、global phaseが2045.1768174869376 radに累積していた。
+
+修正はB0からだけ指定する `compiled_wrapper(...,stable_phase=True)`。Gateの公式definitionをそのまま辿り、global phaseの項を `math.fsum` で一度集計し2πでreduceしてから既存transpileへ渡す。Operatorから位相を推定・fitしない。Native basis、optimization1、seed17、layoutその他profileは維持し、loweringの数値実装名だけ `official_definitions_fsum_phase_v1` と記録する。旧研究の既定compiler経路は変更しない。Cache identityにも新loweringを含める。
+
+関連人工検証はB0 opaque11件／共通10件PASS、compiler人工5件PASS（旧3件＋多数phase項・controlled公式definition2件）。修正版は最初のcaseを同じtolで確認後に同条件全pilotを行う。旧契約や旧結果を遡及変更しない。A0再実行、A1包含、MC、shots、新PF・grid、全RPE評価は対象外。

@@ -13,7 +13,7 @@ from trottertracks.b2d_adapter._published import symmetric_s2_sequence
 IDS=("B3","D1","R2","R4","B4","F1")
 PROFILE=dict(qiskit="1.3.0",basis_gates=("rz","sx","x","cx"),optimization_level=1,
     seed_transpiler=17,approximation_degree=1.0,qubits_initially_zero=False,
-    lowering="official_definitions",backend=None,target=None,coupling_map=None,layout=None,routing=None)
+    lowering="official_definitions_fsum_phase_v1",backend=None,target=None,coupling_map=None,layout=None,routing=None)
 
 
 def cases():
@@ -364,7 +364,7 @@ class Native:
     def compile(self,wrapper):
         from trottertracks.pr_dictionary_validation.gates import compiled_wrapper
         from trottertracks.pr_dictionary_validation.fixture import CompilerProfile
-        return compiled_wrapper(wrapper,CompilerProfile(),cache=self.compile_cache,
+        return compiled_wrapper(wrapper,CompilerProfile(),cache=self.compile_cache,stable_phase=True,
             identity_context=dict(input=self.run["inputs"]["input_data_sha256"],policy="B0_FULL_PREPARED_WRAPPER"))
 
     def measure(self,circuit):
@@ -388,7 +388,7 @@ class Native:
 def execute(run,ledger,evidence,*,native_factory=Native):
     diagnostic=run["scope"].get("diagnostic_first",False)
     native=native_factory(run,ledger);inv=inventory(diagnostic=diagnostic);reports=[];compiled=[]
-    evidence.write("graph.json",dict(cases=cases(),compiler=PROFILE,scope=run["scope"]))
+    evidence.write("graph.json",dict(cases=cases()[:1] if diagnostic else cases(),compiler=PROFILE,scope=run["scope"]))
     for key,(spec,descriptor) in inv["events"].items():
         native.event(spec,descriptor);native.event_matrix(spec,descriptor)
     for key,spec,terms in inv["means"]:
@@ -427,4 +427,4 @@ def execute(run,ledger,evidence,*,native_factory=Native):
         source=run["source"],provenance=native.provenance(),gamma=None,shots=None,expected_cost=None,
         compile_requests=len(compiled),actual_transpile_count=len(native.compile_cache),
         cache_hits=len(compiled)-len(native.compile_cache),compiled_cache_keys=sorted(native.compile_cache),
-        stop="MANDATORY_STOP_NO_RETRY_NO_RESUME",classification="REPRESENTATIVE_PILOT_NOT_EXPECTED_COST")
+        stop="MANDATORY_STOP_NO_RETRY_NO_RESUME",classification="FIRST_CASE_DIAGNOSTIC_NO_COST" if diagnostic else "REPRESENTATIVE_PILOT_NOT_EXPECTED_COST")

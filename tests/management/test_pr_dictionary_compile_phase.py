@@ -11,7 +11,7 @@ from qiskit.quantum_info import Operator
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'src'))
 from trottertracks.pr_dictionary_validation.fixture import CompilerProfile
-from trottertracks.pr_dictionary_validation.gates import compiled_wrapper
+from trottertracks.pr_dictionary_validation.gates import compiled_wrapper,stable_official_lowering
 
 
 class CompilerPhaseTests(unittest.TestCase):
@@ -47,6 +47,26 @@ class CompilerPhaseTests(unittest.TestCase):
         circuit.cry(0.43,0,1)
         circuit.h(0)
         self.check_compile(circuit)
+
+    def test_many_official_definition_phases_use_one_accurate_sum(self):
+        # Artificial cancellation; no scientific fixture or stored arrays.
+        circuit=QuantumCircuit(1,global_phase=.23)
+        piece=QuantumCircuit(1,global_phase=math.pi/4);piece.rz(.00031,0)
+        gate=piece.to_gate()
+        for _ in range(3000):circuit.append(gate,[0])
+        lowered=stable_official_lowering(circuit,['rz','sx','x','cx','u'])
+        self.assertEqual(lowered.global_phase,math.fsum([.23]+[math.pi/4]*3000)%(2*math.pi))
+        # Analytic scalar/gate construction, no phase fit.
+        expected=QuantumCircuit(1,global_phase=math.fsum([.23]+[math.pi/4]*3000)%(2*math.pi))
+        for _ in range(3000):expected.rz(.00031,0)
+        self.assertLessEqual(np.linalg.norm(Operator(lowered).data-Operator(expected).data,ord=2),1e-12)
+        self.assertEqual(circuit.data[0].operation,gate)
+
+    def test_stable_lowering_controlled_official_definitions(self):
+        circuit=QuantumCircuit(3,global_phase=.19)
+        circuit.append(XXPlusYYGate(.37,.21),[0,1]);circuit.cry(-.27,2,0);circuit.cp(.013,2,1)
+        compiled=compiled_wrapper(circuit,CompilerProfile(),stable_phase=True)
+        self.assertLessEqual(np.linalg.norm(Operator(compiled).data-Operator(circuit).data,ord=2),1e-12)
 
 
 if __name__=='__main__':unittest.main()

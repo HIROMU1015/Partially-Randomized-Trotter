@@ -82,7 +82,30 @@ def compile_cache_key(circuit, profile, identity_context):
         profile=asdict(profile),identity_context=identity_context))).hexdigest()
 
 
-def compiled_wrapper(circuit, profile, *, cache=None, identity_context=None):
+def stable_official_lowering(circuit,basis):
+    """Expand official definitions with one accurate sum of scalar phases.
+
+    Avoid thousands of incremental DAG global-phase additions. No operator is
+    evaluated or fitted, and no gate definition/equivalence library is mutated.
+    """
+    result=circuit.copy_empty_like();phases=[];allowed=set(basis)
+    def expand(source,qubits,clbits):
+        phases.append(float(source.global_phase))
+        qmap=dict(zip(source.qubits,qubits));cmap=dict(zip(source.clbits,clbits))
+        for item in source.data:
+            op=item.operation;qs=[qmap[q] for q in item.qubits];cs=[cmap[c] for c in item.clbits]
+            if op.name in allowed or op.name in ('measure','barrier','reset','delay'):
+                result.append(op,qs,cs)
+            else:
+                definition=op.definition
+                if definition is None:raise ValueError('No official definition for '+op.name)
+                expand(definition,qs,cs)
+    expand(circuit,result.qubits,result.clbits)
+    result.global_phase=math.fsum(phases)%(2*math.pi)
+    return result
+
+
+def compiled_wrapper(circuit, profile, *, cache=None, identity_context=None,stable_phase=False):
     from qiskit import transpile
     from qiskit.circuit.equivalence import EquivalenceLibrary
     from qiskit.transpiler import PassManager
@@ -90,6 +113,7 @@ def compiled_wrapper(circuit, profile, *, cache=None, identity_context=None):
     profile.validate()
     cache_key=None
     if cache is not None:
+        if stable_phase:identity_context=dict(identity_context or {},lowering='official_definitions_fsum_phase_v1')
         cache_key=compile_cache_key(circuit,profile,identity_context)
         if cache_key in cache:
             return cache[cache_key].copy()
@@ -98,8 +122,9 @@ def compiled_wrapper(circuit, profile, *, cache=None, identity_context=None):
     # official gate definitions to U plus the fixed native basis first. This
     # preserves each definition's phase without fitting an output operator or
     # changing the shared SessionEquivalenceLibrary, environment or profile.
-    lowered=PassManager([UnrollCustomDefinitions(EquivalenceLibrary(),
-        list(profile.basis_gates)+['u'])]).run(circuit)
+    lowered=(stable_official_lowering(circuit,list(profile.basis_gates)+['u']) if stable_phase else
+        PassManager([UnrollCustomDefinitions(EquivalenceLibrary(),
+        list(profile.basis_gates)+['u'])]).run(circuit))
     compiled=transpile(lowered,basis_gates=list(profile.basis_gates),
         optimization_level=profile.optimization_level,seed_transpiler=profile.seed_transpiler,
         backend=None,target=None,coupling_map=None,initial_layout=None,
