@@ -1,3 +1,7 @@
+## 2026-10-26 H4/H6 純RTEのevent数拡張
+
+[新しいs>64のtarget/価格確認・条件付き比較・図・保存証拠](docs/pauli_rte_event_extension_20261026.md)。固定q8、保存Hybridとのfamily比較。旧準備・SOURCE・STOPを保全し、実ρ/母平均tail/大域最適性の保証とは区別する。
+
 ## 2026-10-26 H4/H6 純RTE event数拡張の準備
 
 [初期s128–512・最大s1024の無効実行計画と人工検証](docs/pauli_rte_event_extension_preparation_20261026.md)。初期5/最大12候補、実分子科学call・新N/G・再ランキング0。新7＋再利用5人工PASS。添付§8に従い一括科学実行承認待ちでSTOP。

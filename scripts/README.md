@@ -1,3 +1,10 @@
+## 2026-10-26 純RTE event数拡張
+
+`run_pauli_rte_event_extension.py`：準備kernel/会計/D2/compilerを再利用し、fresh batchを固定して実行。完了batch/STOPは再開しない。
+`finalize_pauli_rte_event_extension.py`：保存標本のcohort別会計・有限min/比・図・native/QPY/shot検査。
+`pack_pauli_rte_event_extension.py`：既存可逆QPY-aware archive形式を再利用。復元は `restore_pauli_h2_h6_evidence.py`。
+`report_pauli_rte_event_extension.py`：完成済み結果の転記。[科学条件・結果・制限](../docs/pauli_rte_event_extension_20261026.md)。
+
 ## 2026-10-26 純RTE event拡張の静的準備
 
 `prepare_pauli_rte_event_extension.py`：固定入力のshape/SHA、旧候補重複、既存選択行の文字列引用、無効計画を整理する。実分子kernel・G/min/ratio/科学runnerは呼ばない。現在の準備は完了、科学実行承認待ち。[報告](../docs/pauli_rte_event_extension_preparation_20261026.md)。

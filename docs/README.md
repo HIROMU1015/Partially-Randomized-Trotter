@@ -1,3 +1,7 @@
+## 2026-10-26 H4/H6 純RTEのs>64検証
+
+[s128–1024の限定探索・独立確認・B/N/C/G・比較図](pauli_rte_event_extension_20261026.md)。仮想ρ=0、有限候補・有限価格標本、保存Hybridとのfamily比較。全law実ρ/母平均tailは未保証。
+
 ## 2026-10-26 H4/H6 純RTEのs>64拡張準備
 
 [code再利用・人工検証・承認対象の候補/call/STOP](pauli_rte_event_extension_preparation_20261026.md)。実分子評価と保存値再解析は未実行。無効計画・準備STOP。

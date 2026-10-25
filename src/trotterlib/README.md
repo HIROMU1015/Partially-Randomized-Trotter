@@ -1,3 +1,7 @@
+## 2026-10-26 純RTE拡張kernelの承認済み適用
+
+`pauli_rte_event_extension.py` を新SOURCEのdriverから固定H4/H6のq8/r>8へ適用。[限定target・価格確認と条件付きG](../../docs/pauli_rte_event_extension_20261026.md)。旧科学kernelを変更せず再利用、全law実ρ/母平均tailは未保証。以下の準備時点の記録も保全する。
+
 ## 2026-10-26 純RTE q8/r>8の接続準備
 
 `pauli_rte_event_extension.py`：旧validatorを変更せずpure RTEのlaw/seed/trajectory/controlとH4固定高速Arb・H6 tight L2・既存会計を接続。r8互換性とr16–128は人工系だけ検証、実分子科学call0。[準備範囲・承認待ち](../../docs/pauli_rte_event_extension_preparation_20261026.md)。
