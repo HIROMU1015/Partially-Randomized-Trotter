@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1 Stage3 compile互換修正と再実行
+
+[人工再現・修正SOURCE](research/research_c_c1_stage3_cost_compat_repair_20261025.md)／[新契約](research/research_c_c1_stage3_cost_compat_contract_20261025.json)。compileだけtask内で排他化し、旧SOURCE・科学条件を保持。新6＋既存94 tests PASS。ユーザーが同8候補の修正再実行を許可、結果取得後mandatory STOP。
+
 ## C1 Stage3 cost-only技術的STOP
 
 [実行報告](research/research_c_c1_stage3_cost_execution_20261025.md)／[部分証拠](../artifacts/research_c_c1_stage3_cost_science/2026-10-25/)。Qiskit1.3並列compileで`Already mutably borrowed`。106/936 calls、compile9 attempt／7完了／2例外、総費用・比較未到達。数値同値性FAILや科学的NO-GOではない。retry0、旧SOURCE保全、mandatory STOP。

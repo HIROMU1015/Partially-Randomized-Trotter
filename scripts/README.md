@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_research_c_c1_stage3_cost_compat.py` は[固定Qiskitのcompile競合修正](../docs/research/research_c_c1_stage3_cost_compat_repair_20261025.md)。旧P0を変更せずcompile callbackだけ排他化、他candidate workは旧並列計画。既定はbyte preflight、今回の修正再実行許可に従って`--execute --output <fresh>`で同8候補cost-onlyを実行する。[936-call契約](../docs/research/research_c_c1_stage3_cost_compat_contract_20261025.json)。旧run/STOPは再利用せず、人工100 PASS。
+
 `run_research_c_c1_stage3_cost_only.py --mode cost-only` は[8候補native費用準備](../docs/research/research_c_c1_stage3_cost_preparation_20261025.md)。既定はbyte preflightのみ。別明示科学許可後だけ`--execute --output <fresh>`でD s1/s4・PR s4/r16/K0/K2各armの費用を測り、保存13round X/Y楽観Nで条件付き総RZ等を積算する。[未承認契約](../docs/research/research_c_c1_stage3_cost_contract_unapproved_20261025.json)最大936 units、PR各32校正、fit／retry／resume0。PF/RTE／shots再算定なし。support未資格は点推定のみ、CA／実shots保証へ昇格しない。人工94 PASS、今回実H4科学call0・STOP。
 
 `run_research_c_c1_stage3_shots_screen.py` は[楽観的shotsスクリーニング](../docs/research/research_c_c1_stage3_shots_preparation_20261025.md)。既定はbyte preflightのみ。別明示許可後だけ`--execute --output <fresh>`で保存20候補×13roundのPF/RTE/Aから仮定付きX/Y算定値・合計・減衰診断を作る。[未承認契約](../docs/research/research_c_c1_stage3_shots_contract_unapproved_20261025.json)は最大282 logical units、fit／retry／resume0。未知誤差は実際の0と認定せず、CA・回路・総費用・資源順位なし。人工81 PASS、今回再解析0・STOP。

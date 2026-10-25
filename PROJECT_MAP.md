@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1 Stage3：Qiskit compile競合修正・限定再実行（2026-10-25）
+
+[修正・人工再現](docs/research/research_c_c1_stage3_cost_compat_repair_20261025.md)／[新契約](docs/research/research_c_c1_stage3_cost_compat_contract_20261025.json)。旧SOURCEを保持し、`c1_stage3_cost_compat.py`がP0 compileだけをtask内で排他化。人工100 tests PASS、大きい人工8回路で旧3例外→修正後0。ユーザーが同8候補・936-call条件で修正再実行を許可。entry `scripts/run_research_c_c1_stage3_cost_compat.py`、test `tests/management/test_research_c_c1_stage3_cost_compat.py`。結果取得後mandatory STOP。
+
 ## C1 Stage3：cost-onlyの技術的STOP（2026-10-25）
 
 [例外・到達範囲・証拠](docs/research/research_c_c1_stage3_cost_execution_20261025.md)／[run01原本・partial CSV・STOP](artifacts/research_c_c1_stage3_cost_science/2026-10-25/)。固定SOURCE edb9f6ef…の8候補実行はQiskit1.3並列compile `Already mutably borrowed`でSTOP。106/936 calls、9 compile attempt／7完了／2例外、readout3チェック、部分費用34行・QPY16。総費用・比較未取得、科学的NO-GOではない。retry/resume0、旧SOURCE保全、mandatory STOP。以下は準備履歴。

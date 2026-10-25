@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+`../trottertracks/c1_stage3_cost_compat.py`は旧cost-only backendを継承し、P0 compile callだけprocess内mutexへ接続する。旧数値／回路SOURCE・compiler profile・936 call・8候補を維持する。人工100 PASS、同時compile例外を人工再現し修正を確認。[修正報告](../../docs/research/research_c_c1_stage3_cost_compat_repair_20261025.md)、entry `scripts/run_research_c_c1_stage3_cost_compat.py`。
+
 C1 Stage3の8候補費用経路は`../trottertracks/c1_stage3_cost_only.py`。旧native calibrator・P0・metric・serial期待費用・全support判定を再利用し、旧CAR/PF/RTE準備とshots再算定を避ける。entry `scripts/run_research_c_c1_stage3_cost_only.py`、test `tests/management/test_research_c_c1_stage3_cost_only.py`、[報告・未承認936-call契約](../../docs/research/research_c_c1_stage3_cost_preparation_20261025.md)。保存楽観Nでの費用は同CA保証ではない。人工94 PASS、実H4回路／総費用0・mandatory STOP。
 
 C1 Stage3のshotsスクリーニングは`../trottertracks/c1_stage3_shots_screen.py`。旧精度geometry／Hoeffding／feasibility分類／call・partial証拠を再利用し、極小Aの任意精度countだけ最小拡張。全20候補を保持し、実装誤差が仮になければ式が要求する数を算定する。普遍的下界・CA保証ではない。entry `scripts/run_research_c_c1_stage3_shots_screen.py`、test `tests/management/test_research_c_c1_stage3_shots_screen.py`、[報告・未承認契約](../../docs/research/research_c_c1_stage3_shots_preparation_20261025.md)。人工81 PASS、保存値再解析0・STOP。
