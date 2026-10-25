@@ -35,12 +35,16 @@ def _mean_enclosure(law, raw, reference, bits):
             raise ValueError("EXACT_RAW_STATE")
         maps=[_pauli_map(c["label"],c["sign"]) for c in law["components"]]
         weights=list(map(C.real,ps));zero=[C.acb(0) for _ in v]
+        # Assemble the same signed-Pauli convex sum once. FLINT then applies it
+        # to vectors in native code rather than rebuilding it for every power.
+        dim=len(v);mean_matrix=C.acb_mat(dim,dim)
+        turns=(C.acb(1),C.acb(0,1),C.acb(-1),C.acb(0,-1))
+        for weight,pm in zip(weights,maps):
+            for col,(row,turn) in enumerate(pm):
+                mean_matrix[row,col]+=weight*turns[turn]
         def M(x):
-            out=list(zero)
-            for weight,pm in zip(weights,maps):
-                px=_pauli_action(x,pm,C)
-                out=[z+weight*p for z,p in zip(out,px)]
-            return out
+            out=mean_matrix*C.acb_mat([[z] for z in x])
+            return [out[i,0] for i in range(dim)]
         delta=C.rational(law["step_time"])
         retained=[]
         for b in law["retained"]:

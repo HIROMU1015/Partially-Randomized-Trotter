@@ -87,12 +87,18 @@ def law_descriptor(hamiltonian, cfg):
         compiled_rho=None, formal_certificate_accepted=False)
 
 
-def central_trajectory(hamiltonian, cfg, *, seed):
+def central_trajectory(hamiltonian, cfg, *, seed, audit=None):
     """Same sampler and body builder; no replacement of the RTE algorithm."""
     from .pauli_signal_adapter import PauliSignalAdapter
     from .h4_d2_pauli_control import central_control_body
     from .fixed_signal_evaluation import hadamard_wrapper
-    a = PauliSignalAdapter(hamiltonian,cfg.method,cfg.L_D,cfg.T/cfg.q,cfg.r,cfg.K)
+    if audit is None:
+        cls=PauliSignalAdapter
+        kwargs={}
+    else:
+        from .rte_event_audit import AuditedPauliSignalAdapter
+        cls=AuditedPauliSignalAdapter;kwargs=dict(audit=audit)
+    a = cls(hamiltonian,cfg.method,cfg.L_D,cfg.T/cfg.q,cfg.r,cfg.K,**kwargs)
     if not a.randomized:
         raise ValueError("NONEMPTY_PR_TAIL_REQUIRED")
     body = a.trajectory(q=cfg.q,seed=seed)
