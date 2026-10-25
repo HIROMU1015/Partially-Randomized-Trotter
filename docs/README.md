@@ -1,3 +1,7 @@
+## 2026-10-25 Hybrid PR対全ランダム化RTE：限定比較完了
+
+[15行の探索/確認比較・G比・費用内訳](pauli_hybrid_rte_comparison_20261025.md)。新144 trajectory/288 compile、状態作用0。仮想ρ=0、有限候補・有限価格標本。H6未解決候補とr範囲差を保持、以下の準備記録を保全。公開照合後mandatory STOP。
+
 ## 2026-10-25 Hybrid PR対全ランダム化RTEの比較準備
 
 [候補・確認欠測・再利用SOURCE・一括実行範囲](pauli_hybrid_rte_preparation_20261025.md)。保存値を棚卸し、新ランキング/科学計算は未実行。実行無効の計画を提示し承認待ち。

@@ -1,3 +1,7 @@
+## 2026-10-25 Hybrid/RTE helperの承認済み適用
+
+既存 `pauli_hybrid_rte_comparison.py` を新SOURCE `b19ed83c6b4b64821965fa0b756cd2691e34eda8` のdriverで使用し、保存値のcohort別min/tie/null/比を整理した。[限定結果](../../docs/pauli_hybrid_rte_comparison_20261025.md)。旧準備記録は以下に保全する。実ρ/母平均tail/大域最適性は未保証。
+
 ## 2026-10-25 Hybrid/RTE比較の準備helper
 
 [`pauli_hybrid_rte_comparison.py`](pauli_hybrid_rte_comparison.py)：cohort別exact min/tie/null/比の最小接続。人工データのみ検証、実分子データへの適用は未承認・未実行。[範囲](../../docs/pauli_hybrid_rte_preparation_20261025.md)。

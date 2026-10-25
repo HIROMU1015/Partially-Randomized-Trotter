@@ -1,3 +1,11 @@
+## 2026-10-25 Hybrid/RTE承認範囲の実行・保存
+
+`run_pauli_hybrid_rte_comparison.py`：保存会計と固定nomineeの新paired価格確認。今回runは科学STOP済み、再実行しない。
+`check_pauli_hybrid_rte_results.py`：保存値・SOURCE・QPY・終了記録の照合のみ。
+`pack_pauli_hybrid_rte_evidence.py`：旧形式の可逆圧縮を再利用。復元は既存 `restore_pauli_h2_h6_evidence.py`。
+`report_pauli_hybrid_rte_comparison.py`：既存結果をMarkdown/比較scope CSVへ転記。新ランキング/科学callなし。
+[結果・制約](../docs/pauli_hybrid_rte_comparison_20261025.md)。
+
 ## 2026-10-25 Hybrid/RTE保存証拠の棚卸し
 
 [`inventory_pauli_hybrid_rte.py`](inventory_pauli_hybrid_rte.py)：保存候補・各精度・cohort・適格性・G有無を転記するだけ。科学runner/方式別min/ratioは呼ばない。[準備報告](../docs/pauli_hybrid_rte_preparation_20261025.md)。

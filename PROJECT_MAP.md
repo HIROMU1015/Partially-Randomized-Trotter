@@ -1,3 +1,7 @@
+## 2026-10-25 H2/H4/H6 Hybrid対RTEの条件付き比較完了
+
+[15精度セル・確認比・費用内訳・保存証拠](docs/pauli_hybrid_rte_comparison_20261025.md)。新確認3候補×48本、compile288・新状態作用0。H2は全5精度Hybrid低G、H4はε=.05でHybrid/他4精度RTE、H6は会計可能な部分集合でHybrid低G。ρ=0/有限標本・H6未解決N/G/r範囲差・母平均tailを保持。公開照合後mandatory STOP。以下は時点履歴。
+
 ## 2026-10-25 H2/H4/H6 Hybrid対RTEの比較準備
 
 [306候補・1580行の保存証拠棚卸しと無効実行計画](docs/pauli_hybrid_rte_preparation_20261025.md)。新実データランキング/科学call0。H6 RTE確認とH4厳精度Hybrid確認が不足。一括実行承認待ち。
