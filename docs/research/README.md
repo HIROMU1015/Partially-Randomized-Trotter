@@ -1,5 +1,9 @@
 # 研究計画資料
 
+## C1：H4 XDF8の追加採用・再資格付け準備
+
+[技術報告・既存再利用・人工22＋回帰92 PASS・公平な次段階設計](research_c_c1_h4_xdf8_requalification_preparation_20261026.md)／[未承認93-call契約](research_c_c1_h4_xdf8_pf_contract_unapproved_20261026.json)。保存DF予算PASSを再利用するXDF8専用entryを準備。実H4の表現／own-ground/alias／PF26セル・native／CA／shots／総費用は未実行。旧CDF8/XDF10比較は不変、mandatory STOP。
+
 ## C1：H4保存順XDF prefix・DF予算の最初の適格はrank8
 
 [科学実行結果・全9prefix・資格](research_c_c1_h4_xdf_prefix_budget_execution_20261026.md)。SOURCE f7bc730d1…無変更、356 COMPLETE・correctness FAIL0・retry/resume0。rank8 norm＋guard9.5339014551e-5 HaでCA/8以内。旧CDF8/XDF10費用は保持、新XDF8のPF・native・RPE・費用比較は未実施。mandatory STOP。

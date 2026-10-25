@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：H4 XDF8を追加採用・第1段階の技術準備（2026-10-26）
+
+[表現・own-ground/alias・PF接続と公平な次段階設計](docs/research/research_c_c1_h4_xdf8_requalification_preparation_20261026.md)／[未承認93-call契約](docs/research/research_c_c1_h4_xdf8_pf_contract_unapproved_20261026.json)。SOURCE `c1_h4_xdf8_pf.py`／同名runner・人工test、[技術証拠](artifacts/research_c_c1_h4_xdf8_pf/2026-10-26/technical/)。新22＋回帰92 PASS、実H4 decode・新科学0。保存順prefix8を追加候補に採用し、旧CDF8/XDF10結果は保持。CDF8/XDF8への共通precision/P0は推奨案、第2・3段階は未採択・未実行。mandatory STOP。
+
 ## C1：保存H4 XDFのDF予算first-passingはrank8（2026-10-26）
 
 [全9prefix・gate・SOURCE・制約](docs/research/research_c_c1_h4_xdf_prefix_budget_execution_20261026.md)／[原本・CSV・356 calls・STOP](artifacts/research_c_c1_h4_xdf_prefix_budget/2026-10-26/)。SOURCE f7bc730d1…無変更、rank1..7 NOT_MET・8/9 PASS、correctness FAIL/retry0。rank10は保存値のみ、PF／native／CA／shots／総費用の新評価なし。旧費用結果を保持し、新XDF8 baseline採用は次判断。mandatory STOP。

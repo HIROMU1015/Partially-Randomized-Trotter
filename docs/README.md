@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1：H4 XDF8の再資格付け・技術準備
+
+[最小entry・人工114 PASS・native精度公平性・CA接続案](research/research_c_c1_h4_xdf8_requalification_preparation_20261026.md)／[第1段階の未承認93-call契約](research/research_c_c1_h4_xdf8_pf_contract_unapproved_20261026.json)。元順prefix8を追加採用、旧XDF10／約27%の旧結果は保持。新しい表現・own-ground/alias・26 PFセルは未評価、実H4 decode／科学call0・mandatory STOP。
+
 ## C1：H4保存XDF prefix限定実行・rank8が最初の予算PASS
 
 [全9行・call・制約](research/research_c_c1_h4_xdf_prefix_budget_execution_20261026.md)。固定SOURCE f7bc730d1…・356/356 calls、rank1..7 NOT_MET・8/9 PASS。DF予算内の低prefixを確認したが、新baselineのPF／native／shots／費用は未取得。旧結果保全・mandatory STOP。

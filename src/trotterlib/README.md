@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## C1：H4保存順XDF8の表現・ground/alias・PF adapter
+
+`../trottertracks/c1_h4_xdf8_pf.py`は既存prefix matvec／SectorCAR／一般K／H4 eigensolver・alias／PF_rounds／call journalを再利用し、元順8frameのsector36評価へ接続する。[技術報告・新22＋回帰92 PASS](../../docs/research/research_c_c1_h4_xdf8_requalification_preparation_20261026.md)。新CAR／PF法／fitterなし、旧科学SOURCE不変。未承認93-call scope、実H4数値評価0・mandatory STOP。
+
 ## C1：保存H4 XDF prefix・限定DF予算評価完了
 
 既存DF／sector／SVD／allowanceをSOURCE f7bc730d1…のadapterから無変更で再利用し、356 callsで全9prefixを評価。[結果・元順rank8が最初のDF予算PASS](../../docs/research/research_c_c1_h4_xdf_prefix_budget_execution_20261026.md)。新physical／fit／PF／回路／shots／費用なし。旧SOURCE・結果を保持、mandatory STOP。
