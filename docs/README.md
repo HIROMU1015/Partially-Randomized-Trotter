@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1：H6修正codecの限定科学実行
+
+[結果・資格の限界](research/research_c_c1_h6_codec_roundtrip_execution_20261025.md)／[全gate・20call・原本](../artifacts/research_c_c1_h6_codec_roundtrip/2026-10-25/)。保存初期rank14/18はreal Schur codec後もDF予算内、operator前後差約1.24e-14 Ha。20/20 calls、新fit/optimizer/retry/resume0。修正fitは未検証、mandatory STOP。
+
 ## C1：H6修正codec・限定round-trip準備
 
 [技術報告](research/research_c_c1_h6_codec_roundtrip_preparation_20261025.md)／[未承認20-call条件](research/research_c_c1_h6_codec_roundtrip_contract_unapproved_20261025.json)／[SOURCE・人工検証](../artifacts/research_c_c1_h6_codec_roundtrip/2026-10-25/technical/)。det=-1列符号とdet=+1のπ分岐を実Schurで扱い、ffsim pack/unpack形式を維持。人工54＋回帰80・29subtests PASS、実H6 numeric decode/evaluation0。別科学許可待ち・mandatory STOP。

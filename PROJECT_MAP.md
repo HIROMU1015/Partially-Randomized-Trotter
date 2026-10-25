@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：保存H6の修正codec・DF予算保持PASS（2026-10-25）
+
+[結果](docs/research/research_c_c1_h6_codec_roundtrip_execution_20261025.md)／[4状態・gate・原本](artifacts/research_c_c1_h6_codec_roundtrip/2026-10-25/)。SOURCE43941ed8…無変更、rank14/18のJ/projector/tensor/sector同値性とCA/8保持がPASS。20/20 calls、fit/optimizer/retry/resume0、人工54 PASS。frame9も数値allowance内で復元。修正fit・PF・資源比較は未実施、旧証拠保全・mandatory STOP。以下の準備表示は履歴。
+
 ## C1：H6修正codec・20-call評価準備（2026-10-25）
 
 [方式・人工検証](docs/research/research_c_c1_h6_codec_roundtrip_preparation_20261025.md)／[未承認契約](docs/research/research_c_c1_h6_codec_roundtrip_contract_unapproved_20261025.json)／[SOURCE・人工証拠](artifacts/research_c_c1_h6_codec_roundtrip/2026-10-25/technical/)。新 `c1_real_orthogonal_codec.py`＋`c1_h6_codec_roundtrip.py`、専用CLIと人工tests。列符号＋real Schurのπ平面でffsim形式へ接続し、J/projector/tensorをgate化。新54＋回帰80 tests・29 subtests PASS。保存H6新評価0、将来はrank14/18・before/afterの20 calls、fit0、mandatory STOP。
