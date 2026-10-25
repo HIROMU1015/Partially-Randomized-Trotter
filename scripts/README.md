@@ -1,3 +1,7 @@
+## 2026-10-25 H4 PR母平均費用のscalar準備
+
+[run_h4_pr_mean_cost_scalar.py](run_h4_pr_mean_cost_scalar.py)：既定はSOURCE/input照合のみ。別途明示承認後だけ--outputで限定scalar一batchを起動する。[準備報告](../docs/non_df_h4_pr_mean_cost_scalar_preparation_20261025.md)。現在H4 scalar0・mandatory STOP。
+
 ## 2026-10-25 PF・PR0 sine Arb限定実行
 
 `run_h4_arb_pf_pr0_sine.py`：PF/PR0 sine 2対象のみ。64bitで合計3作用・予算内、grant消費済み/STOP。再launch不可。

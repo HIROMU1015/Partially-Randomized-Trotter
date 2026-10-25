@@ -1,3 +1,7 @@
+## 2026-10-25 H4 PR母平均価格の限定scalar準備
+
+[h4_pr_mean_cost_scalar.py](h4_pr_mean_cost_scalar.py)：既存ln包含を再利用し、96桁sqrtを有理数二乗で検査。両軸比較を一batchに限定。実H4未実行、[準備報告](../../docs/non_df_h4_pr_mean_cost_scalar_preparation_20261025.md)参照。
+
 ## 2026-10-25 PF・PR0 sine Arb限定実行
 
 `h4_arb_pf_pr0_sine.py`：既存PF/PR0 kernelをsine限定で再利用。PFは保存C虚部全区間/target作用0、PR0は個別imag。親one-shot・case委譲・各対象早期STOP。

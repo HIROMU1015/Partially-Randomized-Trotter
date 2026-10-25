@@ -1,3 +1,7 @@
+## 2026-10-25 H4 PR母平均費用のscalar実装準備
+
+[最小実装・人工12検査・固定入力・別承認後の手順](non_df_h4_pr_mean_cost_scalar_preparation_20261025.md)。H4 U/e/L未評価、準備完了後STOP。
+
 ## 2026-10-25 H4 PR母平均価格の第一段階
 
 [固定SOURCE確認・DF標本条件・無効scalar仕様](non_df_h4_pr_mean_cost_stage1_20261025.md)。95%配分固定、正常終了/実wheel前提を明示。H4数値評価・新compileなし。

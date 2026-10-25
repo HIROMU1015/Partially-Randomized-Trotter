@@ -1,3 +1,7 @@
+## 2026-10-25 H4 PR母平均価格：限定scalar実装準備
+
+[既存ln再利用・sqrt有理数包含検査・無効の実行準備](docs/non_df_h4_pr_mean_cost_scalar_preparation_20261025.md)。新8＋既存4人工PASS、SOURCE/input照合のみ。H4 scalar0、実行は別承認、公開後mandatory STOP。
+
 ## 2026-10-25 H4 PR母平均価格：第一段階の静的確認
 
 [Pauli count前提・DF DKW条件・95%の無効scalar仕様](docs/non_df_h4_pr_mean_cost_stage1_20261025.md)。正常returnするSOURCEモデルのcount補題を確認。全law実runtime完了は未証明、H4 scalar/順位評価0。公開照合後mandatory STOP。
