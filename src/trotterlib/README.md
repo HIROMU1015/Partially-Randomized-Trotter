@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## C1：H6の共通CA・RPE shots・serial資源pilotを実行
+
+既存accuracy/Hoeffding/fixed-N/energy/serial-cost関数をSOURCE55b3d868…のadapterから無変更再利用。119 calls・4候補数値CA PASS・同sの総RZはXDFが小さい。[結果・全指標](../../docs/research/research_c_c1_h6_ca_resources_execution_20261026.md)。資格B・理想測定/oracle/状態準備除外/serialモデルの条件付き結果であり厳密Cや無条件資源優位ではない。mandatory STOP。
+
 ## C1：H6共通CA・RPE shots・serial資源の最小adapter
 
 `../trottertracks/c1_h6_ca_resources.py`は既存AccuracyTarget/assess_round/assess_energy、Hoeffding、固定N検証、compose_serial_cost/aggregate_totals/compare_totalsを変更せず再利用。[報告](../../docs/research/research_c_c1_h6_ca_resources_preparation_20261026.md)。保存combinedとの同一性と資格B、candidate別failure0.01、予定測定/serial費用を接続。人工/回帰102 PASS、実H6評価0・mandatory STOP。

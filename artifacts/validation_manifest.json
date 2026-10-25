@@ -83,6 +83,11 @@
       "sha": "e36e0560624c66df0aedf619fc5c8c33ecb4f837",
       "role": "c1_h6_complete_sector_synthesis_bound_scientific_SOURCE",
       "description": "Frozen SOURCE for user-permitted full basis evaluation;3335 units,no retries or new fit/build/compile."
+    },
+    {
+      "sha": "55b3d86817308a8d676221982aae13e1a6e3bed4",
+      "role": "c1_h6_saved_CA_RPE_serial_resources_scientific_SOURCE",
+      "description": "Frozen SOURCE for user-permitted119-call saved scalar evidence evaluation;no fit/error regeneration/circuit work/quantum sampling."
     }
   ],
   "artifact_inventory": {
@@ -1217,6 +1222,14 @@
           "H6_NUMERICAL_RESTRICTED_BOUND_COMPLETE"
         ],
         "reason": "Complete800 input basis per4 exact-IR groups,full8192 outputs; level B bound and104 phase eligibility PASS, no rigorous C/CA/shots/cost claim."
+      },
+      {
+        "path": "artifacts/research_c_c1_h6_ca_resources/2026-10-26",
+        "kind": "directory",
+        "supports": [
+          "H6_SAVED_CA_RPE_SERIAL_RESOURCES_COMPLETE"
+        ],
+        "reason": "Four numerical CA PASS,119 calls,solved shots and serial totals;XDF lower RZ for same-s comparisons,level-B conditional model only."
       }
     ],
     "quarantined": [
@@ -4986,6 +4999,216 @@
       "saved_input_hashes": 38,
       "protected_files_unchanged": 849,
       "raw_files": 23,
+      "all_correctness_gates": "PASS"
+    },
+    {
+      "status": "H6_SAVED_CA_RPE_SERIAL_RESOURCES_COMPLETE",
+      "scope": "C1_H6_SAVED_CA_RPE_SERIAL_RESOURCES_V1",
+      "SOURCE_commit": "55b3d86817308a8d676221982aae13e1a6e3bed4",
+      "SOURCE_tree": "6b8cad5a683fdcef5fb4ba9d02d7f846dc0ea8a6",
+      "branch": "codex/research-c-c1-h6-ca-resources-execution-20261026",
+      "contract": "docs/research/research_c_c1_h6_ca_resources_contract_unapproved_20261026.json",
+      "contract_sha256": "2a0af39e3a795eda74eb9ebac7b60b91a818f6f0c92135179a7b62e90a608504",
+      "source_manifest_sha256": "e9b6b4b106b3a8abd8d7973bae8df8c6320949e9045085802074faf100d64678",
+      "conditions": {
+        "atoms": 6,
+        "distance_angstrom": 1.0,
+        "basis": "sto-3g",
+        "Nalpha": 3,
+        "Nbeta": 3,
+        "sector_dimension": 400,
+        "rank": 14,
+        "CA_Ha": 0.00159,
+        "DF_reserve_Ha": 0.00019875,
+        "base_time": 0.1,
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "substeps": [
+          1,
+          4
+        ],
+        "product_formula": "ordered symmetric S2; all original frames; no PR split",
+        "target": "own_DF_sector_ground_oracle",
+        "state_preparation": "EXCLUDED"
+      },
+      "accuracy_target": {
+        "energy_ha": 0.00159,
+        "df_reserve_fraction": 0.125,
+        "base_time": 0.1,
+        "beta_total": 0.5235987755982988,
+        "beta_stat": 0.2617993877991494,
+        "alpha_axis": 0.0003846153846153846,
+        "alpha_total": 0.01
+      },
+      "compiler": {
+        "qiskit": "1.3.0",
+        "optimization_level": 1,
+        "seed_transpiler": 17,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "approximation_degree": 1.0,
+        "qubits_initially_zero": false
+      },
+      "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+      "scientific_units": 119,
+      "maximum_logical_units": 119,
+      "call_counts": {
+        "saved_bundle_load": 1,
+        "evidence_attachment": 4,
+        "round_accuracy": 52,
+        "energy_assessment": 4,
+        "round_serial_cost": 52,
+        "cost_aggregation": 4,
+        "cost_comparison": 2
+      },
+      "scientific_COMPLETE": 119,
+      "scientific_FAIL": 0,
+      "inflight_calls": 0,
+      "candidate_PASS": 4,
+      "round_PASS": 52,
+      "round_axis_cost_rows": 104,
+      "resources": {
+        "wall_seconds": 1.4797715772874653,
+        "CPU_seconds": 9.776136682999999,
+        "peak_RSS_KiB": 352108
+      },
+      "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+      "rigorous_enclosure": null,
+      "CA_achieved": null,
+      "guaranteed_actual_shots": null,
+      "guaranteed_total_resource_superiority": false,
+      "state_preparation_cost": null,
+      "statistical_scope": "one predeclared candidate at failure upper0.01; no four-candidate or post-selection guarantee",
+      "new_fit": 0,
+      "optimizer": 0,
+      "rank_search": 0,
+      "DF_recomputation": 0,
+      "PF_recomputation": 0,
+      "synthesis_recomputation": 0,
+      "state_action": 0,
+      "build_compile": 0,
+      "quantum_shots_drawn": 0,
+      "retry": 0,
+      "resume": 0,
+      "mandatory_stop": true,
+      "candidates": [
+        {
+          "candidate": "CDF:s1",
+          "classification": "NUMERICAL_PILOT_CA_PASS",
+          "df_norm_plus_guard_Ha": 0.00010803058513925193,
+          "numerical_energy_error_Ha": 0.0013863479083772862,
+          "candidate_failure_upper": 0.01,
+          "shots": 13880,
+          "executions": 13880,
+          "measurements": 13880,
+          "rz_count": 520491751108,
+          "rz_depth": 231299698084,
+          "cx_count": 306659760960,
+          "cx_depth": 261705659712,
+          "total_depth": 507573487852,
+          "circuit_size": 994309619692
+        },
+        {
+          "candidate": "CDF:s4",
+          "classification": "NUMERICAL_PILOT_CA_PASS",
+          "df_norm_plus_guard_Ha": 0.00010803058513925193,
+          "numerical_energy_error_Ha": 0.0013863479083772862,
+          "candidate_failure_upper": 0.01,
+          "shots": 13326,
+          "executions": 13326,
+          "measurements": 13326,
+          "rz_count": 1761144891569,
+          "rz_depth": 782479191641,
+          "cx_count": 1037643479376,
+          "cx_depth": 885512615120,
+          "total_depth": 1717292262491,
+          "circuit_size": 3364338959227
+        },
+        {
+          "candidate": "XDF:s1",
+          "classification": "NUMERICAL_PILOT_CA_PASS",
+          "df_norm_plus_guard_Ha": 0.00010361230763094318,
+          "numerical_energy_error_Ha": 0.0013819296308689773,
+          "candidate_failure_upper": 0.01,
+          "shots": 13880,
+          "executions": 13880,
+          "measurements": 13880,
+          "rz_count": 510393076228,
+          "rz_depth": 226940270116,
+          "cx_count": 301300464192,
+          "cx_depth": 257626195008,
+          "total_depth": 498694652908,
+          "circuit_size": 968772970540
+        },
+        {
+          "candidate": "XDF:s4",
+          "classification": "NUMERICAL_PILOT_CA_PASS",
+          "df_norm_plus_guard_Ha": 0.00010361230763094318,
+          "numerical_energy_error_Ha": 0.0013819296308689773,
+          "candidate_failure_upper": 0.01,
+          "shots": 13326,
+          "executions": 13326,
+          "measurements": 13326,
+          "rz_count": 1727240281697,
+          "rz_depth": 767996983033,
+          "cx_count": 1019642229424,
+          "cx_depth": 871842492976,
+          "total_depth": 1687651106555,
+          "circuit_size": 3278460815659
+        }
+      ],
+      "comparisons": [
+        {
+          "s": 1,
+          "comparison": {
+            "verdict": "XDF_LOWER_CONDITIONAL_INTERROGATION_COST",
+            "unconditional_total_resource_claim": false
+          },
+          "qualification": "conditional numerical pilot only",
+          "rigorous_same_accuracy": null,
+          "guaranteed_total_resource_superiority": false,
+          "CDF_minus_XDF_RZ": 10098674880,
+          "CDF_RZ_premium_percent": 1.9786073421357964,
+          "shots_identical_all_rounds": true
+        },
+        {
+          "s": 4,
+          "comparison": {
+            "verdict": "XDF_LOWER_CONDITIONAL_INTERROGATION_COST",
+            "unconditional_total_resource_claim": false
+          },
+          "qualification": "conditional numerical pilot only",
+          "rigorous_same_accuracy": null,
+          "guaranteed_total_resource_superiority": false,
+          "CDF_minus_XDF_RZ": 33904609872,
+          "CDF_RZ_premium_percent": 1.9629353386020565,
+          "shots_identical_all_rounds": true
+        }
+      ],
+      "report": "docs/research/research_c_c1_h6_ca_resources_execution_20261026.md",
+      "evidence_directory": "artifacts/research_c_c1_h6_ca_resources/2026-10-26",
+      "postflight": "PASS",
+      "SOURCE_files": 54,
+      "saved_input_hashes": 47,
+      "protected_files_unchanged": 872,
+      "raw_files": 19,
       "all_correctness_gates": "PASS"
     }
   ],

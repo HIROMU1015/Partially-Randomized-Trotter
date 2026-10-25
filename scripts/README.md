@@ -1,5 +1,9 @@
 # scripts 索引
 
+## C1：H6保存値のCA/RPE/serial資源・限定実行完了
+
+`run_research_c_c1_h6_ca_resources.py`をSOURCE55b3d868…で一度実行。119/119 calls、4候補NUMERICAL_PILOT_CA_PASS・52round PASS。同sのshotsは同じで、総RZはXDFが小さい。[結果](../docs/research/research_c_c1_h6_ca_resources_execution_20261026.md)。新fit/誤差再計算/state-action/build/compile/量子sampling0。run01は消費済み、retry/resume0・mandatory STOP。
+
 ## C1：H6保存値のCA/RPE/serial総資源・未承認
 
 `run_research_c_c1_h6_ca_resources.py`：defaultはbyte/environment preflightのみ。[技術報告・102人工/回帰PASS](../docs/research/research_c_c1_h6_ca_resources_preparation_20261026.md)／[119-call契約](../docs/research/research_c_c1_h6_ca_resources_contract_unapproved_20261026.json)。保存JSONの4候補×13roundから新shots/energy/serial費用を評価する科学entryは、別明示許可後だけ使用。NPZ/QPY数値decode・新build/compile・DF/PF/合成再計算なし、retry/resume0。

@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：H6共通CA・shots・条件付き資源pilot完了（2026-10-26）
+
+[4候補CA数値PASS・shots・総RZ](docs/research/research_c_c1_h6_ca_resources_execution_20261026.md)／[原本・104軸・119 calls・STOP](artifacts/research_c_c1_h6_ca_resources/2026-10-26/)。SOURCE55b3d868…無変更、全52round PASS、FAIL/retry/resume0。同sのshotsはCDF/XDF同じで、CDF総RZはXDFよりs1+1.978607%／s4+1.962935%。資格B／ideal IID Born／oracle・状態準備除外／serialモデルの数値pilot、厳密・無条件保証ではない。旧証拠872件不変・mandatory STOP。
+
 ## C1：H6共通CA・RPE shots・総資源の技術準備（2026-10-26）
 
 [再利用・誤差接続・102人工/回帰PASS](docs/research/research_c_c1_h6_ca_resources_preparation_20261026.md)／[未承認119-call契約](docs/research/research_c_c1_h6_ca_resources_contract_unapproved_20261026.json)。新 `c1_h6_ca_resources.py`／専用runner／人工test／[technical証拠](artifacts/research_c_c1_h6_ca_resources/2026-10-26/technical/)。既存H2/H4 RPE・Hoeffding・energy・serial費用へ保存H6資格Bを接続。実H6のjoin/shots/CA/cost0、旧結果不変・mandatory STOP。

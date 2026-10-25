@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1：H6共通CA・shots・条件付き総資源の限定結果
+
+[全4候補数値CA PASS・shots・総RZ/CX/depth](research/research_c_c1_h6_ca_resources_execution_20261026.md)。SOURCE55b3d868…無変更、119 calls、FAIL/retry/resume0。同sのshotsは同じでCDF総RZはXDFより約1.98%/1.96%多い。資格Bとideal IID Born/oracle/serial費用モデルに条件付き、厳密・無条件保証は未資格・mandatory STOP。
+
 ## C1：H6共通CA・RPE shots・条件付き資源の技術準備
 
 [既存再利用・整数shots/energy/費用接続・102人工/回帰PASS](research/research_c_c1_h6_ca_resources_preparation_20261026.md)／[未承認119-call契約](research/research_c_c1_h6_ca_resources_contract_unapproved_20261026.json)。4候補・52round・最大104軸費用。実H6新規join/shots/CA/cost0、科学実行は別許可後のみ、mandatory STOP。

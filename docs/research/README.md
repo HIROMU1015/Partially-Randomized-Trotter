@@ -1,5 +1,9 @@
 # 研究計画資料
 
+## C1：H6共通CA・shots・条件付き総資源pilot完了
+
+[4候補数値CA PASS・総資源表](research_c_c1_h6_ca_resources_execution_20261026.md)。SOURCE55b3d868…無変更・119 calls・52round PASS。同sの全N一致、総RZはXDFが小さい。厳密C/CA/device/状態準備込み/4候補同時/無条件保証には昇格しない。旧証拠保全・mandatory STOP。
+
 ## C1：H6共通CA・RPE shots・条件付き総資源の技術準備
 
 [接続方式・102人工/回帰PASS・資格の限界](research_c_c1_h6_ca_resources_preparation_20261026.md)／[未承認119-call契約](research_c_c1_h6_ca_resources_contract_unapproved_20261026.json)。保存H6の資格B・DF/PF・native metricsを既存評価器へ接続。候補単位failureとserial費用定義を保持し、実H6新評価0・mandatory STOP。
