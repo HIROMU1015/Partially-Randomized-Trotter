@@ -1,3 +1,11 @@
+## 2026-10-25 H4 PR母平均価格：限定scalar batchで両軸分離
+
+[Pauli上界・DF DKW下界・前提を分けた結果](non_df_h4_pr_mean_cost_scalar_execution_20261025.md)。固定H4/1Å/STO-3G、Pauli184/prefix27/central、DF tol-only1e-8/rank10/one-body＋fragment0、S2/T.8/q8/r4/K4。
+SOURCE fa3337b57、1 batch/native exit0。Pauli Uはcosine12391/sine12392 RZ、DF下界値の数値包含は両軸 [19741.473302966152,19741.473302966153] RZ、十分条件が両軸で分離。
+95%同時coverageは固定effective lawのIID仮定＋union bound。全allowed入力のcompiler正常終了・Rust SOURCE/wheel対応は未証明、条件付きnamed母平均回路価格だけ。
+G/ρ/最良PF・B0/B0I/正式certificateへ拡張せず、旧SOURCE/結果/STOPを保全。今回追加compile/sampling/状態作用/N_G/新grant0。
+科学計算完了・mandatory STOP。次はユーザーが結果の主張scopeを判断し、Codexは別指示なしで追加計算しない。以下は時点履歴。
+
 ## 2026-10-25 H4 PR母平均費用のscalar実装準備
 
 [最小実装・人工12検査・固定入力・別承認後の手順](non_df_h4_pr_mean_cost_scalar_preparation_20261025.md)。H4 U/e/L未評価、準備完了後STOP。
