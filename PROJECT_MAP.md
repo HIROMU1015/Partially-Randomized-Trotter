@@ -1,3 +1,7 @@
+## 2026-10-25 H4 Pauli/DF論文構成・図表案
+
+[論文構成・主要図表・caption](docs/non_df_h4_paper_plan_20261025.md)と[Methods草案](docs/non_df_h4_paper_methods_DRAFT_20261025.md)。既存証拠のみ。中心主張・投稿方針未採択、新計算/集計/作図なし。公開確認後mandatory STOP。
+
 ## 2026-10-25 H4 Pauli-JW／DF-native PF・PR比較の再整理
 
 [4方式・generic/central・条件付きG・完成範囲](docs/non_df_h4_comparison_synthesis_20261025.md)。保存値引用のみ。D1初回停止と後続9測定を区別、母平均tail/実ρは未確定、新科学計算0、mandatory STOP。

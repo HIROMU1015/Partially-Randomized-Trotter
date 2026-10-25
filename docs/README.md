@@ -1,3 +1,7 @@
+## 2026-10-25 H4 Pauli/DF論文化準備
+
+[章構成・優先図表・caption・二方向の判断材料](non_df_h4_paper_plan_20261025.md)、[Methods英語草案](non_df_h4_paper_methods_DRAFT_20261025.md)。固定H4のempirical/conditional case study案。科学証拠statusは変更せず、新科学計算・数値再解析・作図0。
+
 ## 2026-10-25 H4 Pauli-JW／DF-native PF・PR比較の再整理
 
 [4方式比較・コスト構造・条件付きG・最小の残課題](non_df_h4_comparison_synthesis_20261025.md)。既存値引用のみ、generic/centralを分離。研究方針採択・新計算なし、mandatory STOP。

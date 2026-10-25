@@ -1,0 +1,637 @@
+{
+  "status": "PAPER_PLAN_DRAFT_NO_SCIENTIFIC_REANALYSIS",
+  "base_commit": "03efd057a7e77c40ae7e90b9c77885d6606e793b",
+  "branch": "codex/non-df-h4-paper-plan-20261025",
+  "report": "docs/non_df_h4_paper_plan_20261025.md",
+  "methods": "docs/non_df_h4_paper_methods_DRAFT_20261025.md",
+  "final_claim_or_submission_policy_adopted": false,
+  "source_commits": {
+    "original": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+    "C": "e80d7510880f8db993b777c627bb8e95b05a070d",
+    "D1_initial": "48d4d27a05a529e05b11599f5f3c671302826617",
+    "D1_B": "9843b803878db6c3aee7ab5e7c6bb4818572c944",
+    "D2": "74515d8eb4f073c40fc783681a3775dbca89e9b1",
+    "cohort": "34ef0a7ca2412a61f5215a4ce1192e99f3226b2a",
+    "axes": "a37232f85812688c3b9ab957c5073c5ce143b17e",
+    "generic_accounting": "b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8",
+    "central_accounting": "d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34"
+  },
+  "evidence": {
+    "E0": {
+      "description": "Existing pointer-linked quotation tables; no new dataset",
+      "files": [
+        {
+          "path": "artifacts/non_df_h4_comparison_synthesis/2026-10-25/circuit_costs_QUOTED.csv",
+          "csv_selector": "all 6 saved series"
+        },
+        {
+          "path": "artifacts/non_df_h4_comparison_synthesis/2026-10-25/conditional_resources_QUOTED.csv",
+          "csv_selector": "all 30 already quoted rows; hypothetical zero residual"
+        }
+      ],
+      "source_commits": [
+        "03efd057a7e77c40ae7e90b9c77885d6606e793b"
+      ]
+    },
+    "E1": {
+      "description": "Original generic Pauli and native DF price summaries",
+      "files": [
+        {
+          "path": "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/cost_summary.json",
+          "json_pointers": [
+            "/pauli_jw_PF/axes/cosine",
+            "/pauli_jw_PR/axes/cosine",
+            "/df_native_PF/axes/cosine",
+            "/df_native_PR/axes/cosine"
+          ]
+        }
+      ],
+      "source_commits": [
+        "0c329b30a81accb35c212be8defa66fee0dd0f12",
+        "b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8"
+      ]
+    },
+    "E2": {
+      "description": "Central Pauli both-axis prices and pairing evidence",
+      "files": [
+        {
+          "path": "artifacts/non_df_h4_a_axes/2026-10-24/run01/statistics.json",
+          "json_pointers": [
+            "/PF/cosine/RZ",
+            "/PF/sine/RZ",
+            "/PR/axes/cosine",
+            "/PR/axes/sine",
+            "/PR/n",
+            "/PR/equal_count_by_metric",
+            "/PR/sample_covariance_RZ_exact",
+            "/population_mean_upper"
+          ]
+        }
+      ],
+      "source_commits": [
+        "a37232f85812688c3b9ab957c5073c5ce143b17e"
+      ]
+    },
+    "E3": {
+      "description": "Same-ID generic/central Pauli cohort; existing histogram panels",
+      "files": [
+        {
+          "path": "artifacts/non_df_h4_a_cohort_cos/2026-10-24/run01/statistics.json",
+          "json_pointers": [
+            "/central_cosine_RZ",
+            "/generic_cosine_RZ",
+            "/individual_reduction_percent",
+            "/paired_signed_difference",
+            "/aggregate_mean_reduction_percent",
+            "/population_mean_upper"
+          ]
+        }
+      ],
+      "source_commits": [
+        "34ef0a7ca2412a61f5215a4ce1192e99f3226b2a"
+      ]
+    },
+    "E4": {
+      "description": "D2 same-body PF and PR-index0 controlled-circuit contrast",
+      "files": [
+        {
+          "path": "artifacts/non_df_h4_d2_execution/2026-10-24/comparison_table.csv",
+          "csv_selector": "all 10 rows: case in {pauli_jw_PF, pauli_jw_PR}; metric in {RZ,CX,depth,rz_depth,cx_depth}"
+        }
+      ],
+      "source_commits": [
+        "74515d8eb4f073c40fc783681a3775dbca89e9b1",
+        "9843b803878db6c3aee7ab5e7c6bb4818572c944"
+      ]
+    },
+    "E5": {
+      "description": "Central hypothetical-rho-zero G; saved rows only",
+      "files": [
+        {
+          "path": "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/conditional_results.json",
+          "json_pointers": [
+            ""
+          ]
+        },
+        {
+          "path": "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/axis_results.json",
+          "json_pointers": [
+            ""
+          ]
+        },
+        {
+          "path": "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/error_scale_provenance.json",
+          "json_pointers": [
+            ""
+          ]
+        },
+        {
+          "path": "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/reference_scopes.json",
+          "json_pointers": [
+            ""
+          ]
+        }
+      ],
+      "source_commits": [
+        "d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34"
+      ]
+    },
+    "E6": {
+      "description": "Exactly the 15 saved central independent-guard comparisons",
+      "files": [
+        {
+          "path": "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/comparison_regions.json",
+          "json_pointers": [
+            ""
+          ]
+        }
+      ],
+      "source_commits": [
+        "d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34"
+      ]
+    },
+    "E7": {
+      "description": "Unchanged generic/DF comparison rows for existing six-series G figure",
+      "files": [
+        {
+          "path": "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/reused_reference_rows.json",
+          "json_pointers": [
+            ""
+          ]
+        },
+        {
+          "path": "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/conditional_functions.json",
+          "json_pointers": [
+            ""
+          ]
+        }
+      ],
+      "source_commits": [
+        "b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8",
+        "d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34"
+      ]
+    },
+    "E8": {
+      "description": "D1 criterion-B complete nine configurations; initial FAIL not superseded",
+      "files": [
+        {
+          "path": "artifacts/non_df_h4_d1_source_execution/2026-10-24/metrics_table.csv",
+          "csv_selector": "all 9 configuration IDs including empty"
+        }
+      ],
+      "source_commits": [
+        "9843b803878db6c3aee7ab5e7c6bb4818572c944"
+      ]
+    },
+    "E9": {
+      "description": "Saved D1 interaction values; do not recompute subtraction or allocate causally",
+      "files": [
+        {
+          "path": "artifacts/non_df_h4_d1_source_execution/2026-10-24/interaction_table.csv",
+          "csv_selector": "all 4 rows: representation in {pauli_jw,df_native}, metric in {RZ,CX}"
+        }
+      ],
+      "source_commits": [
+        "9843b803878db6c3aee7ab5e7c6bb4818572c944"
+      ]
+    },
+    "E10": {
+      "description": "Existing axis-pairing histogram and scatter; saved cohort only",
+      "files": [
+        {
+          "path": "artifacts/non_df_h4_a_axes/2026-10-24/run01/statistics.json",
+          "json_pointers": [
+            "/PR/paired_RZ_difference",
+            "/PR/sample_covariance_RZ_exact",
+            "/PR/RZ_equal_count",
+            "/PR/axes"
+          ]
+        }
+      ],
+      "source_commits": [
+        "a37232f85812688c3b9ab957c5073c5ce143b17e"
+      ]
+    },
+    "E11": {
+      "description": "Scientific input, model, state and split conditions",
+      "files": [
+        {
+          "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/receipt.json",
+          "json_pointers": [
+            ""
+          ]
+        },
+        {
+          "path": "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/pauli_jw_model.json",
+          "json_pointers": [
+            ""
+          ]
+        },
+        {
+          "path": "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/df_native_model.json",
+          "json_pointers": [
+            ""
+          ]
+        }
+      ],
+      "source_commits": [
+        "0c329b30a81accb35c212be8defa66fee0dd0f12",
+        "e80d7510880f8db993b777c627bb8e95b05a070d"
+      ]
+    },
+    "E12": {
+      "description": "Existing static SOURCE correspondence and later diagnostic reports",
+      "files": [
+        {
+          "path": "docs/non_df_h4_cost_reversal_structure_20261024.md"
+        },
+        {
+          "path": "docs/non_df_h4_d1_source_execution_20261024.md"
+        },
+        {
+          "path": "docs/non_df_h4_d2_execution_20261024.md"
+        }
+      ],
+      "source_commits": [
+        "0c329b30a81accb35c212be8defa66fee0dd0f12",
+        "9843b803878db6c3aee7ab5e7c6bb4818572c944",
+        "74515d8eb4f073c40fc783681a3775dbca89e9b1"
+      ]
+    },
+    "E13": {
+      "description": "Saved nominal/event-grid distinctions, observations and unknown tail prices",
+      "files": [
+        {
+          "path": "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/rare_cost_sensitivity.json",
+          "json_pointers": [
+            "/pauli_jw_PR/nominal_order_probability_saved",
+            "/df_native_PR/nominal_order_probability_saved",
+            "/pauli_jw_PR/order_event_counts",
+            "/df_native_PR/order_event_counts",
+            "/pauli_jw_PR/implemented_probability",
+            "/df_native_PR/implemented_probability",
+            "/df_native_PR/unseen_component_indices",
+            "/df_native_PR/unseen_selection",
+            "/pauli_jw_PR/observed_stratum_cost/any_order4",
+            "/df_native_PR/observed_stratum_cost/any_order4",
+            "/pauli_jw_PR/valid_whole_wrapper_upper",
+            "/df_native_PR/valid_whole_wrapper_upper"
+          ]
+        }
+      ],
+      "source_commits": [
+        "b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8"
+      ]
+    },
+    "E14": {
+      "description": "All six saved local Arb endpoints and per-row scientific SOURCE links",
+      "files": [
+        {
+          "path": "artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/six_local_results.json",
+          "json_pointers": [
+            "/rows",
+            "/PR_law_rho",
+            "/formal_certificate_accepted",
+            "/original_native"
+          ]
+        }
+      ],
+      "source_commits": [
+        "PER_ROW_SAVED_SOURCE; see rows[*].SOURCE"
+      ]
+    },
+    "E15": {
+      "description": "Existing unresolved proof status only; no proof continuation",
+      "files": [
+        {
+          "path": "artifacts/non_df_h4_r2c_compiler_phase/2026-10-25/proof_summary.json",
+          "json_pointers": [
+            "/status",
+            "/whole_law_rho_upper",
+            "/formal_certificate_accepted"
+          ]
+        }
+      ],
+      "source_commits": [
+        "c45247deb9992d08594ad74b1114e6fac505292f"
+      ]
+    },
+    "E16": {
+      "description": "D1 initial failure and distinct later completion, preserved separately",
+      "files": [
+        {
+          "path": "artifacts/non_df_h4_d1_execution/2026-10-24/result_summary.json",
+          "json_pointers": [
+            "/status",
+            "/top_level_cost_compile_calls",
+            "/hash_mismatch_reason"
+          ]
+        },
+        {
+          "path": "artifacts/non_df_h4_d1_source_execution/2026-10-24/result_summary.json",
+          "json_pointers": [
+            "/status",
+            "/SOURCE",
+            "/calls_used"
+          ]
+        }
+      ],
+      "source_commits": [
+        "48d4d27a05a529e05b11599f5f3c671302826617",
+        "9843b803878db6c3aee7ab5e7c6bb4818572c944"
+      ]
+    }
+  },
+  "figures_and_tables": [
+    {
+      "id": "F1",
+      "priority": "P1",
+      "placement": "main",
+      "title": "Six circuit-price series for four methods and two Pauli controls",
+      "purpose": "Observed prices and implementation dependence",
+      "evidence": [
+        "E0",
+        "E1",
+        "E2"
+      ],
+      "axes": {
+        "x": "Pauli generic/central and DF native, each PF/PR",
+        "y": "compiled RZ per shot, log"
+      },
+      "uncertainty": "Saved nominal t95 half-width on PR only; deterministic PF",
+      "reuse": "New six-series layout specified only, NOT RENDERED; old generic four-method figure retained as supplement",
+      "existing_assets": [
+        "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/cost_comparison.png",
+        "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/cost_comparison.svg",
+        "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/cost_comparison.pdf"
+      ],
+      "mandatory_notes": [
+        "No state preparation",
+        "PR n=256; not population upper",
+        "Different splits, laws and controls",
+        "Axis equality only observed on saved cohort"
+      ],
+      "caption_draft": "Compiled full-wrapper circuit prices for fixed H4. Pauli-JW circuits are shown separately for generic whole-body control and central-rotation control; DF-native circuits use their saved native construction. PF prices are deterministic singleton counts, whereas PR prices are saved means over 256 trajectories. Error bars on PR means denote saved nominal Student-t 95% half-widths, not rigorous bounds on population costs or unseen events. Cosine and sine prices coincide in the saved cohort. State preparation is excluded, and the different splits, event laws and control constructions prevent a representation-only interpretation."
+    },
+    {
+      "id": "F2",
+      "priority": "P1",
+      "placement": "main",
+      "title": "Same-ID Pauli control contrast",
+      "purpose": "Separate same-body control evidence from representation comparison",
+      "evidence": [
+        "E3",
+        "E4"
+      ],
+      "axes": {
+        "panel_a": "x central cosine RZ; y trajectory count",
+        "panel_b": "x per-trajectory same-ID generic-relative reduction [%]; y count",
+        "panel_c": "x five existing price categories; y RZ/wrapper, log"
+      },
+      "uncertainty": "Saved histograms only; no new binning",
+      "reuse": "Existing three-panel figure reusable; D2 contrasts in Table S1",
+      "existing_assets": [
+        "artifacts/non_df_h4_a_cohort_cos/2026-10-24/run01/cost_comparison.png",
+        "artifacts/non_df_h4_a_cohort_cos/2026-10-24/run01/cost_comparison.svg",
+        "artifacts/non_df_h4_a_cohort_cos/2026-10-24/run01/cost_comparison.pdf"
+      ],
+      "mandatory_notes": [
+        "Control construction plus compiler response",
+        "DF unpaired reference",
+        "PR0 is not 256 mean",
+        "No population-tail guarantee"
+      ],
+      "caption_draft": "Pauli control synthesis on saved bodies and trajectories. The saved panels show central-control PR prices, per-trajectory reductions relative to the same-ID generic circuits, and reference circuit prices. The D2 singleton contrasts give PF prices of 255500 versus 15028 RZ and PR-index0 prices of 9652 versus 1145 RZ for generic versus central control. The contrasts hold the body, trajectory, angles and compiler settings fixed; they measure the combined effect of control construction and compiler response. The DF reference cohort is unpaired. Histogram bins and summaries are reused from the saved analysis; they do not establish population-tail bounds."
+    },
+    {
+      "id": "F3",
+      "priority": "P1",
+      "placement": "main",
+      "title": "Conditional G and independent residual guards",
+      "purpose": "Saved shot burden and six-series prices under stated assumptions",
+      "evidence": [
+        "E0",
+        "E5",
+        "E6",
+        "E7",
+        "E14"
+      ],
+      "axes": {
+        "x": "saved epsilon_sig values as five equally spaced categories",
+        "panel_a": "conditional G [RZ], log; hypothetical rho=0",
+        "panel_b": "dimensionless G ratio and saved independent guard-box endpoint ranges"
+      },
+      "uncertainty": "Panel-b bars are sensitivity ranges, NOT CI; saved means fixed",
+      "reuse": "Existing figure reusable without reevaluation",
+      "existing_assets": [
+        "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/conditional_resources.png",
+        "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/conditional_resources.svg",
+        "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/conditional_resources.pdf"
+      ],
+      "mandatory_notes": [
+        "rho=0 is hypothetical",
+        "Actual full-law residual not established",
+        "15 specified comparisons only",
+        "PR population tails unresolved",
+        "Later local Arb does not authorize new N/G",
+        "No end-to-end or common-exact-H transfer claim"
+      ],
+      "caption_draft": "Conditional total RZ resources at five saved signal tolerances. Left: saved prices combined with the saved shot sufficient condition on the hypothetical zero-implementation-residual slice. Right: the three specified central-control comparisons at each tolerance, with ranges over independent method- and axis-specific residual guard boxes. These ranges are deterministic sensitivity ranges, not statistical confidence intervals. All comparisons keep the saved circuit-price means fixed. Selected later Arb enclosures cover the central PF singleton and PR indices 0 and 1 on both axes; they do not establish PR-law residuals or authorize replacing the hypothetical slice by actual residuals. Population-cost tails and an unconditional end-to-end advantage remain unresolved. Lines connect saved conditions for display only."
+    },
+    {
+      "id": "F4_T2",
+      "priority": "P2",
+      "placement": "main_or_table",
+      "title": "D1 nine configurations and signed nonadditivity",
+      "purpose": "Structural diagnostic, not additive attribution",
+      "evidence": [
+        "E8",
+        "E9",
+        "E16"
+      ],
+      "axes": {
+        "price_panel": "x representation/configuration; y RZ or CX count",
+        "interaction_panel": "x representation/metric; y saved signed Delta count, zero reference",
+        "depth": "table only, no additive decomposition"
+      },
+      "uncertainty": "One PR-index0 per representation; no cohort inference",
+      "reuse": "No saved D1 plot found in the specified artifact directory; ready table in report, figure NOT RENDERED",
+      "existing_assets": [],
+      "mandatory_notes": [
+        "Initial D1 FAIL preserved",
+        "Later criterion-B nine measurements",
+        "Generic Pauli only",
+        "Ablations not valid alternative simulations",
+        "No causal stacked allocation or basis/pass percentage"
+      ],
+      "caption_draft": "Operational D1 ablations under the later SOURCE-based criterion B. Nine configurations were measured, including the four full circuits, retained-only and event-only PR-index0 circuits, and an empty wrapper. The separately displayed saved interaction is Δ=C_full−C_retained−C_event+C_empty. It measures nonadditivity in the full construction and compilation context, rather than a uniquely attributable basis or compiler-pass cost. These ablations are diagnostics, not valid alternative simulation algorithms. The initial Pauli-PR historical fingerprint failure remains unresolved; the successful later criterion-B run does not recover the missing old program. Pauli values in this diagnostic use generic control."
+    },
+    {
+      "id": "FS1",
+      "priority": "P2",
+      "placement": "supplement",
+      "title": "Saved price distribution and axis pairing",
+      "purpose": "Finite-cohort variability and observed cosine/sine price equality",
+      "evidence": [
+        "E2",
+        "E10",
+        "E13"
+      ],
+      "axes": {
+        "panel_a": "x compiled RZ; y saved trajectory count",
+        "panel_b": "x same-ID sine-minus-cosine RZ; y count",
+        "panel_c": "x cosine RZ; y sine RZ"
+      },
+      "uncertainty": "No rebinning, KDE, ECDF or new quantile/statistical calculation",
+      "reuse": "Existing three-panel image reusable",
+      "existing_assets": [
+        "artifacts/non_df_h4_a_axes/2026-10-24/run01/paired_costs.png",
+        "artifacts/non_df_h4_a_axes/2026-10-24/run01/paired_costs.svg",
+        "artifacts/non_df_h4_a_axes/2026-10-24/run01/paired_costs.pdf"
+      ],
+      "mandatory_notes": [
+        "Cohort only",
+        "Observed covariance not tail bound",
+        "Unseen order4 cost unknown, never zero"
+      ],
+      "caption_draft": "Saved cosine–sine price pairing for 256 central-control Pauli PR trajectories. The histogram, paired differences and scatter plot are reused without rebinning or recomputing summaries. The observed axis equality and covariance describe this cohort only; they do not bound unseen-event costs or establish equality for the entire event law."
+    },
+    {
+      "id": "T1",
+      "priority": "P1",
+      "placement": "main",
+      "title": "Scientific conditions and comparison constraints",
+      "purpose": "State fixed physical inputs and nonmatched implementation choices",
+      "evidence": [
+        "E1",
+        "E2",
+        "E4",
+        "E11",
+        "E12"
+      ],
+      "axes": {
+        "columns": "Pauli PF / Pauli PR / DF PF / DF PR",
+        "units": "geometry Angstrom; time atomic units; cost RZ/shot"
+      },
+      "uncertainty": "Full-H agreement is saved numerical diagnostic, not exact equality certificate",
+      "reuse": "Draft table in report; no new calculation",
+      "existing_assets": [],
+      "mandatory_notes": [
+        "Pauli generic/central separate",
+        "DF tol-only 1e-8 rank10",
+        "Different retention weights and laws",
+        "State preparation/hardware mapping excluded"
+      ],
+      "caption_draft": "Fixed scientific and implementation conditions. Pauli and DF share the saved molecular integrals and raw state but use different split units, ranking weights, event laws and control constructions. Prefix sizes are therefore not matched physical retention fractions. DF uses the saved tol-only factorization with tolerance 10⁻⁸ and actual rank 10. Counts exclude state preparation and hardware mapping."
+    },
+    {
+      "id": "T3",
+      "priority": "P2",
+      "placement": "main_or_supplement",
+      "title": "Rare-event evidence and unknown costs",
+      "purpose": "Distinguish probability, observation and missing population information",
+      "evidence": [
+        "E13",
+        "E3"
+      ],
+      "axes": {
+        "columns": "Pauli PR / DF PR",
+        "units": "per-event probability; per-trajectory probability; event/trajectory counts; unknown cost"
+      },
+      "uncertainty": "Same-data-selected unseen DF set is descriptive, not coverage evidence",
+      "reuse": "Draft table quotes saved fields; no new strata/counting/probability calculation",
+      "existing_assets": [],
+      "mandatory_notes": [
+        "Nominal versus implemented law distinct",
+        "Zero observations not zero cost",
+        "No histogram with zero-height missing-cost bar",
+        "No transfer of old generic tail sensitivity to central"
+      ],
+      "caption_draft": "Rare-event evidence and missing population-cost information. Nominal per-event probabilities and saved implemented trajectory masses are reported separately. No order4 trajectory was observed in either 256-trajectory cohort, so its conditional cost is unknown rather than zero. The unseen DF component set was selected from the same data and is descriptive, not an independent coverage test. Nominal intervals for observed prices do not certify population means, and the original paper's analytical cost model is distinct from these compiled full-wrapper RZ counts."
+    },
+    {
+      "id": "TS3",
+      "priority": "P2",
+      "placement": "supplement",
+      "title": "Six local Arb residual enclosures",
+      "purpose": "Precisely delimit available local numerical guarantees",
+      "evidence": [
+        "E14",
+        "E15"
+      ],
+      "axes": {
+        "columns": "target, axis, saved outward rho upper, saved local budget, bits, saved relation",
+        "units": "signal residual, bits"
+      },
+      "uncertainty": "Saved outward enclosures only, no new reduction/rounding",
+      "reuse": "Existing six-row table/data reused",
+      "existing_assets": [],
+      "mandatory_notes": [
+        "PF singleton and selected PR0/1 only",
+        "No DF or whole-law/order4 coverage",
+        "Formal acceptance false",
+        "No insertion into new shot/G accounting"
+      ],
+      "caption_draft": "Six saved local Arb residual enclosures for central-control Pauli circuits. Both axes of the PF singleton and selected PR trajectories 0 and 1 have certified numerical upper endpoints within their saved local budgets, all at 64-bit precision. PR1 includes an order2 event. These enclosures apply to the fixed saved ray, selected C-targets and compiled QPYs with the original phase and normalization conventions. They do not cover the whole PR law, unseen order4 events or DF circuits, and formal certificate acceptance remains false."
+    },
+    {
+      "id": "TS1",
+      "priority": "P2",
+      "placement": "supplement",
+      "title": "D2 all five metrics",
+      "evidence": [
+        "E4"
+      ],
+      "axes": {
+        "columns": "target and metric; generic, central, saved signed difference and exact ratio",
+        "units": "gate counts or circuit depth, not execution time"
+      },
+      "reuse": "Existing 10 CSV rows, no new differences/ratios",
+      "mandatory_notes": [
+        "PR0 is one body, not cohort mean",
+        "Control plus compiler response",
+        "Generic references reused, not recompiled"
+      ],
+      "caption_draft": "All five saved D2 circuit metrics for the PF singleton and PR-index0 body. Generic D1 reference values, central D2 values, signed differences and exact ratios are quoted from the existing comparison table. These are same-body control-construction contrasts under the fixed compiler, not cohort averages, execution times or a decomposition into individual compiler-pass effects."
+    },
+    {
+      "id": "TS2",
+      "priority": "P2",
+      "placement": "supplement",
+      "title": "Five-tolerance conditional N/G rows",
+      "evidence": [
+        "E0",
+        "E6"
+      ],
+      "axes": {
+        "columns": "implementation/method/tolerance; N_cos,N_sin,N_total,G,G_exact, saved SE and nominal half-width",
+        "units": "shots and RZ; ratios dimensionless"
+      },
+      "reuse": "Existing 30 quoted rows plus separate 15 saved guard comparisons",
+      "mandatory_notes": [
+        "Hypothetical rho=0, not actual N/G",
+        "Nominal statistical intervals separate from guard ranges",
+        "No interpolation or additional comparison pairs"
+      ],
+      "caption_draft": "Saved conditional shot and resource rows at five signal tolerances. Counts and total RZ resources use the hypothetical zero-residual slice with the original bias and normalization policy. PR standard errors and nominal intervals refer to paired saved prices; residual-guard ranges are listed separately and are not statistical intervals. No actual-N/G fields or population-cost guarantees are inferred from these conditional rows."
+    }
+  ],
+  "existing_pngs_visually_inspected": [
+    "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/cost_comparison.png",
+    "artifacts/non_df_h4_a_cohort_cos/2026-10-24/run01/cost_comparison.png",
+    "artifacts/non_df_h4_a_axes/2026-10-24/run01/paired_costs.png",
+    "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/conditional_resources.png",
+    "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/conditional_G.png"
+  ],
+  "supplemental_generic_sensitivity": {
+    "path": "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/conditional_G.png",
+    "meaning": "Per-case common-rho sensitivity slices; NOT independent guard boxes or actual-rho evidence"
+  },
+  "new_scientific_calculations": 0,
+  "new_scientific_aggregation_or_statistics": 0,
+  "new_figures_rendered": 0,
+  "new_circuit_build_compile_sampling": 0,
+  "new_scientific_grants": 0,
+  "formal_certificate_accepted": false,
+  "mandatory_STOP_after_publication": true
+}
