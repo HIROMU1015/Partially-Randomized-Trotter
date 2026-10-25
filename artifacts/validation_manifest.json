@@ -73,6 +73,11 @@
       "sha": "8811ef089d588a529aca001f9e40cef1b2f6e1c7",
       "role": "research_b_full_df_pf_science_source",
       "description": "Unmodified Full DF-PF four-case source;independent correctness and eight costs completed without interruption or retry."
+    },
+    {
+      "sha": "620448b14235d2d9e0e76d5d0ba7273ce887a628",
+      "role": "research_b_full_df_yoshida4_q4_science_source",
+      "description": "Fixed two-case q4 source using existing Full DF builders;all correctness and four deterministic costs completed once without scientific interruption or retry."
     }
   ],
   "artifact_inventory": {
@@ -3482,6 +3487,136 @@
       "completion_criteria": [
         "Publish fixed SOURCE,raw,signal/native cells,provenance and STOP;verify remote contents then mandatory STOP.",
         "User/researchB decides interpretation or any separately permitted follow-up."
+      ]
+    },
+    {
+      "id": "research_b_full_df_yoshida4_q4_20261026",
+      "status": "source_present_no_current_ci",
+      "scientific_execution_status": "DESCRIPTIVE_ONLY",
+      "execution_status": "COMPLETE",
+      "runtime_status": "COMPLETED_DESCRIPTIVE_MANDATORY_STOP",
+      "fixed_scope_complete": true,
+      "summary": "FD5/FD6 q4 passed all correctness before signals and four deterministic costs;both observed biases within epsilon1e-9 b-only budget. No certified same-accuracy total-resource ranking.",
+      "documentation": [
+        "docs/research/research_b_full_df_yoshida4_q4_execution_20261026.md"
+      ],
+      "source": [
+        "src/trottertracks/b2d_evaluator/full_df_q4.py",
+        "src/trottertracks/b2d_evaluator/full_df.py",
+        "scripts/run_b2d_full_df_y4_q4.py"
+      ],
+      "tests": [
+        "tests/management/test_b2d_full_df_q4.py",
+        "tests/test_b2d_full_df_q4_toy.py",
+        "tests/management/test_b2d_full_df.py",
+        "tests/test_b2d_full_df_toy.py"
+      ],
+      "artifacts": [
+        "artifacts/research_b_outer_full_df_y4_q4/20261026/SAVED_PR_B1_STATISTICS.csv",
+        "artifacts/research_b_outer_full_df_y4_q4/20261026/SIGNALS.csv",
+        "artifacts/research_b_outer_full_df_y4_q4/20261026/WRAPPERS.csv",
+        "artifacts/research_b_outer_full_df_y4_q4/20261026/execution_logs/preflight.json",
+        "artifacts/research_b_outer_full_df_y4_q4/20261026/execution_logs/stderr.log",
+        "artifacts/research_b_outer_full_df_y4_q4/20261026/execution_logs/stdout.json",
+        "artifacts/research_b_outer_full_df_y4_q4/20261026/execution_logs/time.txt",
+        "artifacts/research_b_outer_full_df_y4_q4/20261026/q4-once/STOP.json",
+        "artifacts/research_b_outer_full_df_y4_q4/20261026/q4-once/binding.json",
+        "artifacts/research_b_outer_full_df_y4_q4/20261026/q4-once/events.jsonl",
+        "artifacts/research_b_outer_full_df_y4_q4/20261026/q4-once/inputs.json",
+        "artifacts/research_b_outer_full_df_y4_q4/20261026/q4-once/partial_results.json",
+        "artifacts/research_b_outer_full_df_y4_q4/20261026/q4-once/result.json",
+        "artifacts/research_b_outer_full_df_y4_q4/20261026/q4-once/status.json"
+      ],
+      "science_source_commit": "620448b14235d2d9e0e76d5d0ba7273ce887a628",
+      "contract_commit": "620448b14235d2d9e0e76d5d0ba7273ce887a628",
+      "reused_provider_source_commit": "31cdff47f3282d2898c153a1af22f90e500be4c6",
+      "input_result_commits": {
+        "full_df_q2": "3244f2af9c4017c57c180b9057b22e3eb19c62b1",
+        "finite_RTE": "33715848bfb83d49ec4e54d6eef481012a7441e4",
+        "B1_statistics": "bef63edbd8cc564444b44e4e8cf23baa90f05fe5",
+        "exact_R": "58502f5549d350a8da8cbc23a6e674c4670feb9b"
+      },
+      "counts": {
+        "new_full_DF_cases": 2,
+        "full_prepared_wrappers": 4,
+        "operator_gates": 44,
+        "expectations": 8,
+        "compile_requests": 4,
+        "actual_transpiles": 4,
+        "cost_requests": 4,
+        "block_probes": 32,
+        "exponential_keys": 22,
+        "registered_calls": 138,
+        "event_records": 276,
+        "scientific_attempts": 1,
+        "technical_interruptions_during_science": 0,
+        "source_fixes_after_scientific_dispatch": 0,
+        "retries": 0,
+        "resumes": 0,
+        "failed_calls": 0,
+        "evidence_write_failures": 0,
+        "preparation_artificial_tests": 29,
+        "preparation_subtests": 33,
+        "new_MC_sampling": 0,
+        "shots_executed": 0
+      },
+      "scope": {
+        "full_df.block_build": 32,
+        "full_df.block_gate": 32,
+        "full_df.compile": 4,
+        "full_df.compiled_expectation": 4,
+        "full_df.compiled_gate": 4,
+        "full_df.controlled_build": 2,
+        "full_df.controlled_gate": 2,
+        "full_df.definition_gate": 1,
+        "full_df.exponential": 22,
+        "full_df.fixture": 1,
+        "full_df.full_inputs": 1,
+        "full_df.full_prepare": 1,
+        "full_df.input_gate": 1,
+        "full_df.measure": 4,
+        "full_df.prepare": 1,
+        "full_df.raw_expectation": 4,
+        "full_df.raw_wrapper_gate": 4,
+        "full_df.reference": 2,
+        "full_df.saved_comparisons": 1,
+        "full_df.signals": 2,
+        "full_df.split": 1,
+        "full_df.system_build": 2,
+        "full_df.system_gate": 2,
+        "full_df.wrapper_build": 4,
+        "full_df.wrapper_reference": 4
+      },
+      "resources": {
+        "whole_wall_seconds": 10.29,
+        "user_seconds": 15.9,
+        "system_seconds": 3.1,
+        "CPU_percent": 184,
+        "peak_RSS_KiB": 476784,
+        "affinity_CPUs": 32,
+        "acceleration": "Existing exponential/probe/compile caches;small two-case fail-fast pilot;no artificial resource cap"
+      },
+      "observed_bias": {
+        "epsilon": 1e-09,
+        "budget": 5e-10,
+        "FD5": 1.21606169604673e-10,
+        "FD6": 1.21606169604673e-10,
+        "classification": "WITHIN_OBSERVED_BIAS_BUDGET",
+        "certified": false
+      },
+      "qualification": {
+        "u_num": null,
+        "gamma": null,
+        "shots": null,
+        "G": null,
+        "unconditional_PR_cost": null,
+        "total_resource_superiority": null,
+        "algorithm_adoption": null
+      },
+      "interpretation": "Synthetic2mode one-body+3DF,N1/mode0,all4 Full DF blocks,q4,T±.18,complex128,spectral2-norm atol1e-12,rtol0,no phase fit,c0=.17 once,ordinary controlled full prepared native-v5 X/Y. No D/R/nD/RTE evolution. Saved q2 and PR finite-IID S0 mean/SE cells quoted unchanged. B-only qualification;u_num/gamma and rare costs unknown. Local evidence,not CI/external reproduction. Old raw/contracts/STOP preserved.",
+      "completion_criteria": [
+        "Publish fixed SOURCE,raw,observed bias,native costs,saved comparisons and STOP;verify remote then mandatory STOP.",
+        "User/researchB decides any separately permitted follow-up."
       ]
     }
   ],

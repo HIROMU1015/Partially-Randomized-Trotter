@@ -1,6 +1,6 @@
 # B2-D 5方式評価器：接続準備・技術報告
 
-Full DF-Yoshida4 q4の固定adapterは`full_df_q4.py`、入口`scripts/run_b2d_full_df_y4_q4.py`。`full_df.py`の既存q計算・B0/native-v5を再利用し、FD5/6だけを登録する。管理test`test_b2d_full_df_q4.py`と独立toy`test_b2d_full_df_q4_toy.py`、[実行記録](../../../../docs/research/research_b_full_df_yoshida4_q4_execution_20261026.md)を一組として読む。
+Full DF-Yoshida4 q4の固定adapterは`full_df_q4.py`、入口`scripts/run_b2d_full_df_y4_q4.py`。`full_df.py`の既存q計算・B0/native-v5を再利用し、FD5/6だけを登録する。管理test`test_b2d_full_df_q4.py`と独立toy`test_b2d_full_df_q4_toy.py`、[実行記録](../../../docs/research/research_b_full_df_yoshida4_q4_execution_20261026.md)を一組として読む。
 
 研究B [Full DF-PF科学実行完了・原本・限界](../../../docs/research/research_b_full_deterministic_df_pf_execution_20261026.md)。SOURCE8811ef089、全4 case・72 operator／16 expectation PASS、8 native-v5 prepared wrapperを測定しmandatory STOP。元c0のみを保持し、固定q2の点値を同精度最適資源へ拡張しない。旧準備・SOURCE・STOPを保全。
 

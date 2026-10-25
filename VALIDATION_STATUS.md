@@ -1,5 +1,12 @@
 # Validation status
 
+## 2026-10-26 research B Full DF-Yoshida4 q4: two-case descriptive pilot COMPLETE
+
+Unmodified science SOURCE `620448b14235d2d9e0e76d5d0ba7273ce887a628`;one scientific attempt,no interruption/fix/retry/resume. Synthetic2mode one-body+3DF,N1/mode0,all4 blocks,Full Yoshida4 q4,T±.18. No split/nD/RTE in Full evolution;old LD2 weight-ranked snapshot binds common inputs only. Molecular geometry/AO basis/rank exploration not applicable. Complex128,spectral2-norm atol1e-12,rtol0,no phase fit,original c0=.17 once;ordinary controlled prepared X/Y,native-v5.
+All44 operator gates/8 expectations and saved physical consistency passed before2 signals/4 deterministic native costs. All138 calls matched,276 events,failed={},persistence failures=[];compiled operator max4.4547920656664206e-14. Wall10.29s,peak RSS476784KiB,exit0. Preparation artificial29 tests/33 subtests PASS is separate technical evidence.
+Both T:b=1.21606169604673e-10,WITHIN_OBSERVED_BIAS_BUDGET at epsilon1e-9,budget5e-10. Per-axis RZ/CX2356/1636,depths1544/1636,total depth3609,size4996. Compared with unchanged q2 FD3/4 and saved PR D1/R2/R4 signals plus published B1 finite-IID S0 statistics;no new sampling/re-statistics/shots/G. U_num/gamma remain null. Smaller deterministic per-wrapper counts than saved S0 PR means do not certify unconditional/same-accuracy total-resource ranking or algorithm adoption.
+[Report](docs/research/research_b_full_df_yoshida4_q4_execution_20261026.md),[raw+STOP](artifacts/research_b_outer_full_df_y4_q4/20261026/q4-once/),[signals](artifacts/research_b_outer_full_df_y4_q4/20261026/SIGNALS.csv),[wrappers](artifacts/research_b_outer_full_df_y4_q4/20261026/WRAPPERS.csv),[saved PR mean/SE cells](artifacts/research_b_outer_full_df_y4_q4/20261026/SAVED_PR_B1_STATISTICS.csv). Local fixed-source evidence,not CI/external reproduction. Old raw/contracts/STOPs/R2-CS closure preserved. Mandatory STOP;User/researchB decides any separately permitted follow-up.
+
 ## 2026-10-26 research B Full DF-PF: four-case descriptive pilot COMPLETE
 
 Unmodified science SOURCE `8811ef089d588a529aca001f9e40cef1b2f6e1c7`;one attempt,no interruption/fix/retry/resume. Synthetic2mode one-body+3DF,N1/mode0,all4 blocks,Full S2/Yoshida4,q2,T±.18. No split/RTE/nD in the Full evolution;old LD2 weight-ranked snapshot binds common inputs only. Molecular geometry/AO basis/rank exploration not applicable. Complex128,spectral2-norm atol1e-12,rtol0,no phase fit;ordinary controlled prepared X/Y,native-v5,scalar c0=.17 once.
