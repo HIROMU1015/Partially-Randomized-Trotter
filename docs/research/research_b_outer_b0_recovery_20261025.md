@@ -19,3 +19,7 @@ FAIL時には数値差・actual／reference matrix、raw／compiled回路をgzip
 修正はB0からだけ指定する `compiled_wrapper(...,stable_phase=True)`。Gateの公式definitionをそのまま辿り、global phaseの項を `math.fsum` で一度集計し2πでreduceしてから既存transpileへ渡す。Operatorから位相を推定・fitしない。Native basis、optimization1、seed17、layoutその他profileは維持し、loweringの数値実装名だけ `official_definitions_fsum_phase_v1` と記録する。旧研究の既定compiler経路は変更しない。Cache identityにも新loweringを含める。
 
 関連人工検証はB0 opaque11件／共通10件PASS、compiler人工5件PASS（旧3件＋多数phase項・controlled公式definition2件）。修正版は最初のcaseを同じtolで確認後に同条件全pilotを行う。旧契約や旧結果を遡及変更しない。A0再実行、A1包含、MC、shots、新PF・grid、全RPE評価は対象外。
+
+V1 SOURCE `c7cde1868a6b38f9505ecc4f0858b98b49c506e8` の限定診断はcompiled誤差4.386058909e-13でPASSしたが、同SOURCE全体attempt corrected-1は16 wrapper通過後、D1／+T／代表0／Xで2.318114585e-12となりSTOP。保存D1回路の段階診断では、lowering直後1.585565770e-12、BasisTranslator後4.635958878e-12であり、U-to-native展開と位相の大きな和の剰余処理にも丸めが残っていた。
+
+V2では定義由来binary64 phaseの和と2π剰余をFractionで正確に処理し、最後に一度float化する。Uの既知ZSX分解とP=phase(theta/2)RZ(theta)を明示し、scalar phaseを同じ和へ含める。これでBasisTranslatorへ大量のUを渡さず、native gate列へ同じoptimization1・seed17を適用する。Operator評価や位相fitをcompilerへ導入せず、許容差は固定。Lowering名は `official_definitions_exact_phase_native_v2`。追加の人工U/P identity検証もPASSした。

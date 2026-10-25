@@ -55,9 +55,9 @@ class CompilerPhaseTests(unittest.TestCase):
         gate=piece.to_gate()
         for _ in range(3000):circuit.append(gate,[0])
         lowered=stable_official_lowering(circuit,['rz','sx','x','cx','u'])
-        self.assertEqual(lowered.global_phase,math.fsum([.23]+[math.pi/4]*3000)%(2*math.pi))
+        self.assertEqual(lowered.global_phase,.23) # 3000*pi/4 = 375*2pi
         # Analytic scalar/gate construction, no phase fit.
-        expected=QuantumCircuit(1,global_phase=math.fsum([.23]+[math.pi/4]*3000)%(2*math.pi))
+        expected=QuantumCircuit(1,global_phase=.23)
         for _ in range(3000):expected.rz(.00031,0)
         self.assertLessEqual(np.linalg.norm(Operator(lowered).data-Operator(expected).data,ord=2),1e-12)
         self.assertEqual(circuit.data[0].operation,gate)
@@ -67,6 +67,13 @@ class CompilerPhaseTests(unittest.TestCase):
         circuit.append(XXPlusYYGate(.37,.21),[0,1]);circuit.cry(-.27,2,0);circuit.cp(.013,2,1)
         compiled=compiled_wrapper(circuit,CompilerProfile(),stable_phase=True)
         self.assertLessEqual(np.linalg.norm(Operator(compiled).data-Operator(circuit).data,ord=2),1e-12)
+
+    def test_native_U_and_phase_identities_without_operator_fit(self):
+        for theta,phi,lam in ((.01,.2,-.3),(-.7,1.9,.31),(0.,0.,0.)):
+            circuit=QuantumCircuit(1);circuit.u(theta,phi,lam,0);circuit.p(-.019,0)
+            lowered=stable_official_lowering(circuit,['rz','sx','x','cx','u'])
+            self.assertLessEqual(np.linalg.norm(Operator(lowered).data-Operator(circuit).data,ord=2),1e-14)
+            self.assertLessEqual(set(lowered.count_ops()),{'rz','sx','x','cx'})
 
 
 if __name__=='__main__':unittest.main()

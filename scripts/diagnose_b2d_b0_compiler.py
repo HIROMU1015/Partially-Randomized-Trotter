@@ -8,6 +8,7 @@ def main():
     parser.add_argument('--input',required=True)
     parser.add_argument('--output',required=True)
     parser.add_argument('--stable-phase',action='store_true')
+    parser.add_argument('--final-only',action='store_true')
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[1]
     sys.path.insert(0,str(root/'src'))
@@ -43,7 +44,7 @@ def main():
     compiled=transpile(lowered,basis_gates=list(profile.basis_gates),optimization_level=1,seed_transpiler=17,
         backend=None,target=None,coupling_map=None,initial_layout=None,layout_method=None,routing_method=None,
         translation_method=None,scheduling_method=None,approximation_degree=1.,qubits_initially_zero=False,
-        callback=callback)
+        callback=None if args.final_only else callback)
     report(compiled,'final')
     value=dict(identity=record['identity'],source=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(),
         input=str(Path(args.input).resolve()),rows=rows,raw_operations=dict(raw.count_ops()),

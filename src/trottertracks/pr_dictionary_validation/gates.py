@@ -94,14 +94,23 @@ def stable_official_lowering(circuit,basis):
         qmap=dict(zip(source.qubits,qubits));cmap=dict(zip(source.clbits,clbits))
         for item in source.data:
             op=item.operation;qs=[qmap[q] for q in item.qubits];cs=[cmap[c] for c in item.clbits]
-            if op.name in allowed or op.name in ('measure','barrier','reset','delay'):
+            if op.name == 'p':
+                angle=float(op.params[0]);result.rz(angle,qs[0]);phases.append(angle/2)
+            elif op.name == 'u':
+                # Exact U-to-ZSX identity; scalar terms remain separate until
+                # the final exact binary-rational modular sum.
+                theta,phi,lam=map(float,op.params)
+                result.rz(lam,qs[0]);result.sx(qs[0]);result.rz(theta+math.pi,qs[0])
+                result.sx(qs[0]);result.rz(phi+math.pi,qs[0])
+                phases.extend((phi/2,lam/2,math.pi/2))
+            elif op.name in allowed or op.name in ('measure','barrier','reset','delay'):
                 result.append(op,qs,cs)
             else:
                 definition=op.definition
                 if definition is None:raise ValueError('No official definition for '+op.name)
                 expand(definition,qs,cs)
     expand(circuit,result.qubits,result.clbits)
-    result.global_phase=math.fsum(phases)%(2*math.pi)
+    result.global_phase=float(sum(map(Fraction,phases),Fraction())%Fraction(2*math.pi))
     return result
 
 
@@ -113,7 +122,7 @@ def compiled_wrapper(circuit, profile, *, cache=None, identity_context=None,stab
     profile.validate()
     cache_key=None
     if cache is not None:
-        if stable_phase:identity_context=dict(identity_context or {},lowering='official_definitions_fsum_phase_v1')
+        if stable_phase:identity_context=dict(identity_context or {},lowering='official_definitions_exact_phase_native_v2')
         cache_key=compile_cache_key(circuit,profile,identity_context)
         if cache_key in cache:
             return cache[cache_key].copy()
