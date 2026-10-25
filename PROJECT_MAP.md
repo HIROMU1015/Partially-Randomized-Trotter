@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：H2・H6の決定論S2検証準備（2026-10-25）
+
+[技術報告](docs/research/research_c_c1_h2_h6_preparation_20261025.md)／[未承認実行案](docs/research/research_c_c1_h2_h6_contract_unapproved_20261025.json)。H2は新h/g→rank選定→native/P0→数値CA・shots・総費用、H6はsector400のDF／PFだけ。新module `c1_molecule_extension.py`／CLI `run_research_c_c1_h2_h6.py`／人工test `test_research_c_c1_h2_h6.py`。CDF rank ladder1..3/21とCA/8・engineering guard・explicit-XDF方式は未承認案。上限H2 196／H6 129 calls、実科学0。人工14＋回帰166 tests・29 subtests PASS、旧H4証拠保全・mandatory STOP。
+
 ## C1 Stage3：決定論S2の固定N・CA数値pilotが全PASS（2026-10-25）
 
 [結果・4候補・資格の限界](docs/research/research_c_c1_stage3_deterministic_accuracy_execution_20261025.md)／[52round・call・STOP](artifacts/research_c_c1_stage3_deterministic_accuracy_science/2026-10-25/)。SOURCE002d0dc2…で110/110 calls、4候補／52roundが全PASS、固定保存shotsで共通CAの数値条件を満たし、s1/s4ともCDFの条件付き総RZがXDFより約27%小さい。rigorous CAはreference enclosure不足で未資格。fit／retry／resume／新build・compile0、旧証拠保全・mandatory STOP。以下は過去時点の記録。
