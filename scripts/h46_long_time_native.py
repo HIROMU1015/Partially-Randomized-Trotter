@@ -332,7 +332,8 @@ def run_cost(cohort='EXPLORATION',selection=None):
     groups={};jobs=[];results={};errors=[]
     for row in plan['candidates']:
         if cohort=='EXPLORATION' and row['id'] in saved:
-            results[row['id']]=dict(candidate=row,origin='SAVED_COST_NO_BUILD_OR_COMPILE',**saved[row['id']])
+            results[row['id']]={**saved[row['id']], 'candidate':row,
+                'reuse_provenance':saved[row['id']].get('origin'), 'origin':'SAVED_COST_NO_BUILD_OR_COMPILE'}
             continue
         groups[row['id']]=[]
         n=(plan.get('n_by_candidate',{}).get(row['id'],plan.get('screening_trajectories_per_new_PR',9))
