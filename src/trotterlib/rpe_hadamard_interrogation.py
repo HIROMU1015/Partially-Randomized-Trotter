@@ -39,6 +39,33 @@ RPE_HADAMARD_BIT_VALUE_MAPPING = ((0, 1), (1, -1))
 RPE_HADAMARD_ALLOWED_REPETITION_COUNTS = (1, 2, 4)
 
 
+def append_hadamard_readout(circuit, ancilla, axis):
+    """Shared X/Y convention; does not impose an RPE repetition interpretation."""
+    if axis not in ("cosine", "sine"):
+        raise ValueError("Unknown Hadamard axis")
+    if axis == "sine": circuit.sdg(ancilla)
+    circuit.h(ancilla)
+
+
+def build_prepared_hadamard_wrapper(evolution, *, ancilla, axis, occupied_qubits):
+    """Full outer wrapper: occupation preparation and terminal measurement.
+
+    Separate interface from the unchanged short-RPE request/result contract.
+    The caller must first validate ordinary controlled evolution semantics.
+    """
+    if evolution.num_qubits != ancilla+1 or evolution.num_clbits:
+        raise ValueError("Ancilla-last unitary controlled evolution required")
+    if any(q < 0 or q >= ancilla for q in occupied_qubits):
+        raise ValueError("Occupation must belong to the system")
+    circuit=QuantumCircuit(ancilla+1,1)
+    for q in occupied_qubits: circuit.x(q)
+    circuit.h(ancilla)
+    circuit.compose(evolution, inplace=True)
+    append_hadamard_readout(circuit,ancilla,axis)
+    circuit.measure(ancilla,0)
+    return circuit
+
+
 def round_index_for_short_rpe_repetition_count(repetition_count: int) -> int:
     """Map the directly constructible ``q_m`` values 1, 2, and 4 to ``m``."""
     count = require_integer_count(
@@ -324,9 +351,7 @@ class QiskitRPEHadamardInterrogationBuilder:
             qubits=tuple(range(evolution.circuit.num_qubits)),
             inplace=True,
         )
-        if request.axis == "sine":
-            circuit.sdg(ancilla)
-        circuit.h(ancilla)
+        append_hadamard_readout(circuit,ancilla,request.axis)
 
         measurement_clbit: Clbit | None = None
         measurement_clbit_index: int | None = None

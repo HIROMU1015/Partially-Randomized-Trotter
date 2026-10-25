@@ -732,6 +732,15 @@ class DFPartialS2CircuitResult:
 class QiskitDFPartialS2CircuitBuilder:
     """Build one explicit deterministic-half/RTE/reverse-half S2 step."""
 
+    def append_block_evolution(self, circuit, block, evolution_time, *, controlled=False, ancilla_qubit=None):
+        """Reuse the native block primitive for an explicit arbitrary outer word.
+
+        This is a block operation, not a partial-S2 step/request.
+        """
+        from types import SimpleNamespace
+        self._append_block(circuit, block, SimpleNamespace(controlled=controlled,
+            ancilla_qubit=ancilla_qubit), evolution_time=evolution_time)
+
     @staticmethod
     def _new_circuit(request: DFPartialS2StepRequest) -> QuantumCircuit:
         preparation = request.preparation
