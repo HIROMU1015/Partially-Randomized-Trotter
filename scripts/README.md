@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究B B0実行：compiled correctness FAIL・mandatory STOP
+
+[`run_b2d_outer_b0.py`](run_b2d_outer_b0.py) をSOURCE8d0cb96dfで一回実行し、最初のcompiled operator照合で停止した。[実行報告・原本・call数](../docs/research/research_b_outer_b0_execution_20261025.md)。全48 trajectory・96 compile要求は未完了、費用0件。使用済みoutputは再起動せず、原因を確定したことにしない。以下はA0結果と準備履歴。
+
 ## 研究B A0実行完了・B0 STOP
 
 [`run_b2d_outer_a0.py`](run_b2d_outer_a0.py) をSOURCE1e3921ba1で一回実行し、8行×90/128桁・3400 DAG node・80 target／signal各要求を完了した。[結果・入力前提・精度の限界・STOP](../docs/research/research_b_outer_a0_execution_20261025.md)。使用済みoutputを再起動しない。B0は未実行・STOPのまま。以下は準備履歴。

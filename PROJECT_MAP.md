@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究B B0：compiled correctness FAILで停止（2026-10-25）
+
+[B0実行報告・未完了項目・原本・STOP](docs/research/research_b_outer_b0_execution_20261025.md)。SOURCE8d0cb96dfを一回実行し、最初のB3／T+.18／代表0／Xのcompiled operator照合でFAILした。Input・24 single-step mean・最初のsystem／controlled／raw wrapperは通過、費用0件、残り未実施。原本は `artifacts/research_b_outer_b0/20261025/native-pilot-once/`。誤差量・回路本体は未保存で原因未確定、retryなし・mandatory STOP。以下のA0結果と準備履歴を保全する。
+
 ## 研究B A0独立高精度検証完了（2026-10-25）
 
 [A0結果・精度診断・SOURCE・STOP](docs/research/research_b_outer_a0_execution_20261025.md)。SOURCE1e3921ba1を変更せず8行×90/128桁を一回完了。全8比較で経験的安定性・nominal bound整合、u_num=nullを維持。原本は `artifacts/research_b_outer_a0/20261025/independent-once/`、列抽出は同日 `COMPARISON.csv`。B0は未実行・STOPを維持。以下は実行前の準備履歴。

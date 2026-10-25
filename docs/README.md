@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究B B0：最初のcompiled gateでSTOP（2026-10-25）
+
+[B0停止報告・call実績・保存の限界](research/research_b_outer_b0_execution_20261025.md)。SOURCE8d0cb96df、B3／T+.18／代表0／Xのcompiled correctness FAIL、費用計測0件。数値差・回路のFAIL時保存がなく原因未確定。Retry／追加診断なし、A0結果は保全。以下はA0と準備段階の履歴。
+
 ## 研究B A0実行完了、B0はSTOP（2026-10-25）
 
 [A0実行報告・全8比較・原本・STOP](research/research_b_outer_a0_execution_20261025.md)。SOURCE1e3921ba1、8行×90/128桁を変更・中断・retryなしに完了。全8比較で経験的精度安定性とnominal bound整合を確認したが、certified u_numはnull。B0 native build／compileは未実行。以下は準備段階の履歴。

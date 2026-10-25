@@ -1,5 +1,7 @@
 # B2-D 5方式評価器：接続準備・技術報告
 
+**B0 compiled correctness STOP（2026-10-25）：** [停止報告・実績・保存不足・原本](../../../docs/research/research_b_outer_b0_execution_20261025.md)。SOURCE8d0cb96dfを一回実行し、最初のcompiled gateでFAIL。24 single-step meanと最初のraw側gateは通過したが、費用0件・pilot未完了。数値差・回路は未保存で原因未確定。SOURCE修正・retryなし、mandatory STOP。以下のA0結果・準備履歴を保全する。
+
 **A0実行完了・B0 STOP（2026-10-25）：** [結果・精度限界・原本・STOP](../../../docs/research/research_b_outer_a0_execution_20261025.md)。SOURCE1e3921ba1、8行×90/128桁を一回完了し、全8比較で経験的安定性・nominal bound整合を確認した。u_num=null／certified=false、B0実回路build／compileは未実行。旧SOURCE・結果・STOPを保全し、追加科学計算へ進まない。以下は準備履歴。
 
 **A0／B0準備完了（2026-10-25、科学実行0）：** [`a0_reference.py`](a0_reference.py)／[`b0_native.py`](b0_native.py)／[`followup_io.py`](followup_io.py)。[固定SOURCE・scope・人工138件・個別command](../../../docs/research/research_b_outer_a0_b0_execution_preparation_20261025.md)。A0 SOURCE1e3921ba1、8行×90/128桁。B0 SOURCE8d0cb96df、48代表・96 compile要求。旧科学結果・STOPは保全し、次はA0の実行を先に判断する。B0は別許可。

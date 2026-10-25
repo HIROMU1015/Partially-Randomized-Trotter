@@ -1,5 +1,11 @@
 # Validation status
 
+## 2026-10-25 outer B0: compiled correctness FAIL, incomplete pilot; mandatory STOP
+
+Fixed SOURCE `8d0cb96df9d1f6229f207550634c7e11aff2851c` executed once without modification/retry. Synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,nD1,T±.18; B3,D1,R2,R4,B4,F1,48 deterministic representatives/96 planned full X/Y wrapper compile requests. Qiskit1.3.0,rz/sx/x/cx,opt1,seed17,approx1,qubits_initially_zero=False,official-definition lowering,free topology,complex128,absolute spectral2-norm1e-12,rtol0,no phase fit. Molecular geometry/AO basis/rank exploration not applicable.
+Input gate/config76/event+event_operator1740 each/single-step means24 passed. First B3,T+.18,representative0,X passed system/controlled/raw wrapper and raw expectation; compile returned, then compiled operator gate failed B0_CORRECTNESS_FAILURE. Operator gates3 PASS/1 FAIL/284 unattempted; expectations1/192 completed; costs0/96. All other trajectories and compiled expectations remain unvalidated.
+Raw7/process4 and STOP preserved with no evidence write failures, but partial rows are empty and result.json was not created: failure norm, circuits and numeric gate diagnostics were not persisted. Cause remains unresolved; no compiler-bug, roundoff, phase or algorithm claim. No native cost ranking, gamma, shots or total-resource certificate. [Stop report and limitations](docs/research/research_b_outer_b0_execution_20261025.md), [call counts](artifacts/research_b_outer_b0/20261025/CALL_COUNTS.csv), [raw+STOP](artifacts/research_b_outer_b0/20261025/native-pilot-once/). A0/older evidence unchanged. No retry, tolerance change, re-evaluation or new build/compile after STOP. Local evidence, not CI/independent reproduction.
+
 ## 2026-10-25 outer A0: COMPLETE, empirical high-precision consistency; B0 remains STOP
 
 Unchanged science SOURCE `1e3921ba16e5d531e9a3010cffa9ff717609a93a`, one attempt, no interruption/fix/retry. Saved synthetic2mode one-body+3DF, N1/mode0, LD2 weight-ranked, nD1, T±.18; S1 SABA2/q4/A2/r2K2, F1 refined-S2/q2/f8/A2/r2K2, B3 Yoshida4/q2/A2/r2K2, R4 Yoshida4/q2/A3/r2K4. Molecular geometry/AO basis/rank exploration not applicable.

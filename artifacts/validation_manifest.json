@@ -2665,6 +2665,89 @@
         "Preserve frozen A0 source, old/raw results and mandatory STOP; no retry/resume or additional conditions.",
         "B0 remains unexecuted and STOP. User/researchB decides whether to authorize A1 or B0 separately; no automatic MC/shot/precision/grid extension."
       ]
+    },
+    {
+      "id": "research_b_outer_b0_20261025",
+      "status": "source_present_no_current_ci",
+      "scientific_execution_status": "STOPPED_INCOMPLETE",
+      "runtime_status": "FAILED_MANDATORY_STOP",
+      "stop_reason": "B0_CORRECTNESS_FAILURE",
+      "failed_identity": "B3:9/50:0:cosine",
+      "summary": "First fixed B0 attempt stopped at first compiled wrapper operator gate. Input,24 single-step means and first raw-side gates completed;cost measurements0. Failed norm and circuits not persisted;cause unresolved. No source fix,retry or additional science.",
+      "documentation": [
+        "docs/research/research_b_outer_b0_execution_20261025.md",
+        "docs/research/research_b_outer_a0_b0_execution_preparation_20261025.md"
+      ],
+      "source": [
+        "scripts/run_b2d_outer_b0.py",
+        "src/trottertracks/b2d_evaluator/b0_native.py",
+        "src/trottertracks/b2d_evaluator/followup_io.py",
+        "src/trottertracks/pr_dictionary_validation/gates.py",
+        "src/trotterlib/df_partial_s2.py",
+        "src/trotterlib/rpe_hadamard_interrogation.py"
+      ],
+      "tests": [
+        "tests/management/test_b2d_b0_native.py"
+      ],
+      "artifacts": [
+        "artifacts/research_b_outer_b0/20261025/CALL_COUNTS.csv",
+        "artifacts/research_b_outer_b0/20261025/native-pilot-once/binding.json",
+        "artifacts/research_b_outer_b0/20261025/native-pilot-once/events.jsonl",
+        "artifacts/research_b_outer_b0/20261025/native-pilot-once/partial_results.json",
+        "artifacts/research_b_outer_b0/20261025/native-pilot-once/status.json",
+        "artifacts/research_b_outer_b0/20261025/native-pilot-once/STOP.json",
+        "artifacts/research_b_outer_b0/20261025/execution_logs/attempt-1/preflight.json",
+        "artifacts/research_b_outer_b0/20261025/execution_logs/attempt-1/time.txt"
+      ],
+      "science_source_commit": "8d0cb96df9d1f6229f207550634c7e11aff2851c",
+      "execution_contract_commit": "3c1e10f1c061b9b4d15e2690403fd26b841cbc06",
+      "snapshot_commit": "33715848bfb83d49ec4e54d6eef481012a7441e4",
+      "counts": {
+        "scientific_attempts": 1,
+        "cases_planned": 12,
+        "representatives_planned": 48,
+        "compile_requests_planned": 96,
+        "compile_requests_completed": 1,
+        "input_gate_completed": 1,
+        "rte_configs_completed": 76,
+        "events_completed": 1740,
+        "event_operators_completed": 1740,
+        "single_step_means_completed": 24,
+        "analytic_means_completed": 1,
+        "system_builds_completed": 1,
+        "controlled_builds_completed": 1,
+        "wrapper_builds_completed": 1,
+        "operator_gates_passed": 3,
+        "operator_gates_failed": 1,
+        "operator_gates_not_attempted": 284,
+        "raw_expectations_completed": 1,
+        "compiled_expectations_completed": 0,
+        "cost_measurements": 0,
+        "native_block_builds_completed": 18,
+        "native_rte_builds_completed": 12,
+        "reference_exponentials_completed": 14,
+        "moments_completed": 2,
+        "event_records": 7286,
+        "partial_rows": 0,
+        "evidence_write_failures": 0,
+        "retries": 0,
+        "source_fixes": 0,
+        "shot_evaluations": 0
+      },
+      "qualification": {
+        "gamma": null,
+        "expected_cost": null,
+        "shots": null,
+        "failed_norm": null,
+        "compiled_circuit_saved": false,
+        "final_result_saved": false,
+        "status": "UNRESOLVED_COMPILED_CORRECTNESS_NO_COST_QUALIFICATION"
+      },
+      "interpretation": "Synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,nD1,T±.18,B3/D1/R2/R4/B4/F1,deterministic representatives,fullFock4/controlled8,complex128,atol1e-12,rtol0,no phase fit,Qiskit1.3 opt1 seed17 official-definition lowering. First B3 T+.18 representative0 X compile returned;compiled gate failed. Missing error magnitude/circuits prevent cause attribution. No ranking,expected-cost,shot or total-resource conclusion. A0 and old evidence unchanged.",
+      "completion_criteria": [
+        "Preserve fixed source/raw failure/STOP;no retry,resume,tolerance change or extra build/compile.",
+        "User/researchB decides whether to authorize a new first-failure diagnostic with numeric/circuit persistence;no automatic full-pilot rerun,MC,shots or new conditions."
+      ]
     }
   ],
   "repository_completion_criteria": [
