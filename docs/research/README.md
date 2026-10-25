@@ -1,5 +1,7 @@
 # 研究計画資料
 
+[C1 保存H6 rank14・S2 PF結果](research_c_c1_h6_saved_pf_execution_20261025.md)：SOURCE87ea924ae…、72/72 calls、一般K/ground/alias全PASS、CDF14/XDF14のs1/s4全52roundが登録PF条件PASS。4候補は潜在適格、合成誤差・CA・総資源は未資格。新fit/native/shots/cost0、旧証拠保全・mandatory STOP。
+
 [C1 H6 rank14修正codec・1 fit結果](research_c_c1_h6_corrected_fit_execution_20261025.md)：固定SOURCE33432e786…、20/20 calls、optimizer成功とDF予算PASS。初期tensor F減少／sector誤差4.3116%増を区別し、旧CDF14比sector93.9132%減を保存。生x/jac・STOPを公開し、PF/native/shots/costは未評価。mandatory STOP。
 
 [C1 Stage2 native科学結果](research_c_c1_stage2_native_execution_20261025.md)：固定SOURCEで60主検査・内包unitarity52件が全PASS、call243/243、fit／optimizer／retry／resume0。費用はCDFが小さいがCDF/XDFの物理精度差を保持し、同精度総資源とはしない。原本 `artifacts/research_c_c1_stage2_science/2026-10-25/`、Stage3へ進まずmandatory STOP。下記の準備時点の未承認表示は履歴。

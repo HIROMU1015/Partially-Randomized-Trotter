@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## C1：保存H6 rank14の一般K・S2 PFを限定検証
+
+`c1_h6_saved_pf.py`と既存SectorCAR/一般K/PF_roundsをSOURCE87ea924ae…で無変更実行。72 calls、一般K・ground/alias・全52PF条件PASS。4候補は潜在適格でCAや総費用は未資格。[結果](../../docs/research/research_c_c1_h6_saved_pf_execution_20261025.md)。mandatory STOP。
+
 ## C1：保存H6 rank14の一般K・S2 PF接続
 
 `../trottertracks/c1_h6_saved_pf.py` は既存SectorCAR／一般K／PF_roundsを再利用し、保存CDF14/XDF14の4候補・52セルへ接続する。保存DF誤差を再計算せず、新fitやnativeを呼ばない。[技術報告](../../docs/research/research_c_c1_h6_saved_pf_preparation_20261025.md)。人工85 tests＋29 subtests PASS、科学実行は別途許可後のみ。

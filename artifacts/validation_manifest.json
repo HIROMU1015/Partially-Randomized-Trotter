@@ -4130,6 +4130,320 @@
       "id": "research_c_c1_H6_corrected_codec_one_fit_science_20261025",
       "report": "docs/research/research_c_c1_h6_corrected_fit_execution_20261025.md",
       "artifacts": "artifacts/research_c_c1_h6_corrected_fit/2026-10-25/"
+    },
+    {
+      "status": "H6_SAVED_RANK14_SECTOR_PF_COMPLETE",
+      "source_commit": "87ea924ae28353707bd2eb3adf94231042b67361",
+      "source_tree": "3f6df5aa966be2cc6a498b58bda026148ac4ebbc",
+      "branch": "codex/research-c-c1-h6-saved-pf-execution-20261025",
+      "contract": "docs/research/research_c_c1_h6_saved_pf_contract_unapproved_20261025.json",
+      "contract_sha256": "d37088d4012a7b9f99570386a2e13fcc1e9eb6e770a339be29300564cd16afcd",
+      "source_manifest_sha256": "53d5dce52cf7843e518361f9ed753a00dda91b5bab84213ae111fde0bed94969",
+      "conditions": {
+        "atoms": 6,
+        "distance_angstrom": 1.0,
+        "basis": "sto-3g",
+        "Nalpha": 3,
+        "Nbeta": 3,
+        "sector_dimension": 400,
+        "rank": 14,
+        "CA_Ha": 0.00159,
+        "DF_reserve_Ha": 0.00019875,
+        "base_time": 0.1,
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "substeps": [
+          1,
+          4
+        ],
+        "product_formula": "ordered symmetric S2; all original frames; no PR split",
+        "target": "own_DF_sector_ground_oracle",
+        "state_preparation": "EXCLUDED"
+      },
+      "provenance": {
+        "molecular_input_and_XDF_SOURCE": "33c380d8aa792e5119bb3adec5dd07d1e1377214",
+        "CDF_fit_and_DF_error_SOURCE": "33432e78659b8b3e654e39f1392328cb0ba5c487",
+        "CDF_fit_publication": "598aa4de622b32e76b0b98451c4efb1fdaac1ae0",
+        "initial_XDF_snapshot": "Before snapshot in corrected-fit run byte-identical to original XDF_selected; saved before_sector row is paired with original XDF14; CDF final_sector row is paired with that run final.npz",
+        "reuse": "Do not rerun any old scientific entry. Saved rank14 arrays and prior physical-sector errors only; no new fit/rank search/norm."
+      },
+      "original_input_sha256": "b82ee9864d9c76071944834ae32d3d6eea7e95959708c2e19bca011936bce447",
+      "factor_export_sha256": {
+        "CDF": "cd4de687f99d32bd6f644ac33100fb52d4f7543e710e6c273723a0908b87dc45",
+        "XDF": "559dc43bf923a421ccc62d05c4cefa0bdf39a48ba68824abf3c8f770c04642b1"
+      },
+      "saved_DF": {
+        "CDF": {
+          "status": "PASS",
+          "actual_rank": 14,
+          "orthogonality_maxabs": 8.881784197001252e-16,
+          "saved_sector_error_Ha": 0.00010689213236556284,
+          "saved_guard_Ha": 1.1384527736890936e-06,
+          "norm_plus_guard_Ha": 0.00010803058513925193,
+          "budget_Ha": 0.00019875,
+          "new_sector_error_evaluation": false
+        },
+        "XDF": {
+          "status": "PASS",
+          "actual_rank": 14,
+          "orthogonality_maxabs": 1.1102230246251565e-15,
+          "saved_sector_error_Ha": 0.00010247385485275444,
+          "saved_guard_Ha": 1.1384527781887395e-06,
+          "norm_plus_guard_Ha": 0.00010361230763094318,
+          "budget_Ha": 0.00019875,
+          "new_sector_error_evaluation": false
+        }
+      },
+      "representation": {
+        "CDF": {
+          "label": "sector raw-CAR vs general-K",
+          "max_entry": 6.439293542825908e-15,
+          "frobenius": 4.093091418535585e-14,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        "XDF": {
+          "label": "sector raw-CAR vs general-K",
+          "max_entry": 9.43689570931383e-15,
+          "frobenius": 5.221851412966498e-14,
+          "tolerance": 1e-10,
+          "rtol": 0
+        }
+      },
+      "ground": {
+        "physical": {
+          "energy": -3.236066279892337,
+          "residual": 5.580137269377011e-15,
+          "alias_margin": 2.2943872500022606,
+          "status": "PASS",
+          "rule": "abs(E0*0.1)+pi/6 < pi"
+        },
+        "CDF": {
+          "energy": -3.2360989175122223,
+          "residual": 8.034159045949116e-15,
+          "alias_margin": 2.294383986240272,
+          "status": "PASS",
+          "rule": "abs(E0*0.1)+pi/6 < pi"
+        },
+        "XDF": {
+          "energy": -3.2360910843201,
+          "residual": 4.757567667714003e-15,
+          "alias_margin": 2.2943847695594846,
+          "status": "PASS",
+          "rule": "abs(E0*0.1)+pi/6 < pi"
+        }
+      },
+      "gates": [
+        {
+          "gate": "CDF_saved_DF_budget",
+          "status": "PASS",
+          "value": 0.00010803058513925193,
+          "allowance": 0.00019875
+        },
+        {
+          "gate": "CDF_general_K_vs_raw_CAR",
+          "status": "PASS",
+          "value": 6.439293542825908e-15,
+          "allowance": 1e-10
+        },
+        {
+          "gate": "XDF_saved_DF_budget",
+          "status": "PASS",
+          "value": 0.00010361230763094318,
+          "allowance": 0.00019875
+        },
+        {
+          "gate": "XDF_general_K_vs_raw_CAR",
+          "status": "PASS",
+          "value": 9.43689570931383e-15,
+          "allowance": 1e-10
+        },
+        {
+          "gate": "physical_ground_residual",
+          "status": "PASS",
+          "value": 5.580137269377011e-15,
+          "allowance": 1e-10
+        },
+        {
+          "gate": "physical_alias_margin",
+          "status": "PASS",
+          "value": 2.2943872500022606,
+          "allowance": "positive"
+        },
+        {
+          "gate": "CDF_ground_residual",
+          "status": "PASS",
+          "value": 8.034159045949116e-15,
+          "allowance": 1e-10
+        },
+        {
+          "gate": "CDF_alias_margin",
+          "status": "PASS",
+          "value": 2.294383986240272,
+          "allowance": "positive"
+        },
+        {
+          "gate": "XDF_ground_residual",
+          "status": "PASS",
+          "value": 4.757567667714003e-15,
+          "allowance": 1e-10
+        },
+        {
+          "gate": "XDF_alias_margin",
+          "status": "PASS",
+          "value": 2.2943847695594846,
+          "allowance": "positive"
+        }
+      ],
+      "all_correctness_gates": "PASS",
+      "correctness_FAIL": 0,
+      "scientific_units": 72,
+      "maximum_logical_units": 72,
+      "scientific_attempts": 72,
+      "scientific_COMPLETE": 72,
+      "PF_rounds": 52,
+      "PF_sufficient_PASS": 52,
+      "PF_sufficient_FAIL": 0,
+      "candidate_summaries": [
+        {
+          "candidate": "CDF:s1",
+          "arm": "CDF",
+          "rank": 14,
+          "s": 1,
+          "status": "POTENTIALLY_FEASIBLE",
+          "rounds": 13,
+          "sufficient_rounds_passed": 13,
+          "sufficient_rounds_failed": 0,
+          "maximum_pf_operator_error": 0.12222675584872546,
+          "maximum_m": 12,
+          "threshold": 0.25881904510252074,
+          "saved_DF_norm_plus_guard_Ha": 0.00010803058513925193,
+          "synthesis_error": "UNQUALIFIED",
+          "CA_achieved": "UNQUALIFIED",
+          "shots": "NOT_EVALUATED",
+          "total_cost": "NOT_EVALUATED"
+        },
+        {
+          "candidate": "CDF:s4",
+          "arm": "CDF",
+          "rank": 14,
+          "s": 4,
+          "status": "POTENTIALLY_FEASIBLE",
+          "rounds": 13,
+          "sufficient_rounds_passed": 13,
+          "sufficient_rounds_failed": 0,
+          "maximum_pf_operator_error": 0.007643081719996483,
+          "maximum_m": 12,
+          "threshold": 0.25881904510252074,
+          "saved_DF_norm_plus_guard_Ha": 0.00010803058513925193,
+          "synthesis_error": "UNQUALIFIED",
+          "CA_achieved": "UNQUALIFIED",
+          "shots": "NOT_EVALUATED",
+          "total_cost": "NOT_EVALUATED"
+        },
+        {
+          "candidate": "XDF:s1",
+          "arm": "XDF",
+          "rank": 14,
+          "s": 1,
+          "status": "POTENTIALLY_FEASIBLE",
+          "rounds": 13,
+          "sufficient_rounds_passed": 13,
+          "sufficient_rounds_failed": 0,
+          "maximum_pf_operator_error": 0.12223111631013221,
+          "maximum_m": 12,
+          "threshold": 0.25881904510252074,
+          "saved_DF_norm_plus_guard_Ha": 0.00010361230763094318,
+          "synthesis_error": "UNQUALIFIED",
+          "CA_achieved": "UNQUALIFIED",
+          "shots": "NOT_EVALUATED",
+          "total_cost": "NOT_EVALUATED"
+        },
+        {
+          "candidate": "XDF:s4",
+          "arm": "XDF",
+          "rank": 14,
+          "s": 4,
+          "status": "POTENTIALLY_FEASIBLE",
+          "rounds": 13,
+          "sufficient_rounds_passed": 13,
+          "sufficient_rounds_failed": 0,
+          "maximum_pf_operator_error": 0.007643354759299444,
+          "maximum_m": 12,
+          "threshold": 0.25881904510252074,
+          "saved_DF_norm_plus_guard_Ha": 0.00010361230763094318,
+          "synthesis_error": "UNQUALIFIED",
+          "CA_achieved": "UNQUALIFIED",
+          "shots": "NOT_EVALUATED",
+          "total_cost": "NOT_EVALUATED"
+        }
+      ],
+      "candidate_counts": {
+        "POTENTIALLY_FEASIBLE": 4,
+        "INFEASIBLE_REGISTERED_PHASE_ROOM": 0,
+        "UNRESOLVED": 0
+      },
+      "CDF_XDF_comparison_summary": {
+        "1": {
+          "all_13_CDF_point_errors_smaller": true,
+          "maximum_relative_difference_percent": 0.003591009406622714,
+          "qualification": "point differences only; no rigorous reference enclosure"
+        },
+        "4": {
+          "all_13_CDF_point_errors_smaller": true,
+          "maximum_relative_difference_percent": 0.003590955850774069,
+          "qualification": "point differences only; no rigorous reference enclosure"
+        }
+      },
+      "new_fit": 0,
+      "optimizer": 0,
+      "rank_search": 0,
+      "DF_error_recomputation": 0,
+      "native_build_compile": 0,
+      "shots": 0,
+      "total_cost_evaluation": 0,
+      "retry": 0,
+      "resume": 0,
+      "rigorous_CA_qualification": "UNRESOLVED_REFERENCE_ENCLOSURES",
+      "synthesis_error": null,
+      "CA_achieved": null,
+      "total_resource_superiority": null,
+      "pre_execution_artificial_tests": 21,
+      "resources": {
+        "wall_seconds": 10.742204445879906,
+        "process_CPU_seconds": 19.85284747,
+        "peak_RSS_KiB": 532468
+      },
+      "resource_plan": {
+        "workers": 4,
+        "available_affinity_cpus": 32,
+        "available_memory_bytes": 56556605440,
+        "quota_cpus": null,
+        "estimated_bytes_per_candidate": 655360000,
+        "BLAS_threads_per_worker": 1,
+        "policy": "Independent candidates; process-local BLAS coordination; no shared settings changed"
+      },
+      "post_execution_SOURCE": "PASS",
+      "post_execution_saved_input": "PASS",
+      "external_reproduction": false,
+      "mandatory_STOP": true,
+      "id": "research_c_c1_H6_rank14_saved_S2_PF_science_20261025",
+      "report": "docs/research/research_c_c1_h6_saved_pf_execution_20261025.md",
+      "artifacts": "artifacts/research_c_c1_h6_saved_pf/2026-10-25/",
+      "rounds_csv": "artifacts/research_c_c1_h6_saved_pf/2026-10-25/PF_rounds.csv"
     }
   ],
   "repository_completion_criteria": [

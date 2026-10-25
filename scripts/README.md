@@ -1,5 +1,9 @@
 # scripts 索引
 
+## C1：保存H6 rank14のsector PF実行結果
+
+`run_research_c_c1_h6_saved_pf.py`をSOURCE87ea924ae…で1回実行。72/72 units、4候補・52roundが登録十分条件PASS。[報告](../docs/research/research_c_c1_h6_saved_pf_execution_20261025.md)。fit/optimizer/retry/resume0、旧runは再起動せずfresh run01を保全、native/shots/costへ進まずmandatory STOP。
+
 ## C1：保存H6 rank14のsector PF（科学未承認）
 
 `run_research_c_c1_h6_saved_pf.py`：defaultはpassive preflight。保存CDF14／XDF14、一般K同値性とground/aliasの全PASS後、決定論S2 s1/s4×13roundを評価する専用entry。[技術報告](../docs/research/research_c_c1_h6_saved_pf_preparation_20261025.md)／[未承認72-call契約](../docs/research/research_c_c1_h6_saved_pf_contract_unapproved_20261025.json)。fit・rank探索・回路・shots・費用dispatchなし。

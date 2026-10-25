@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：H6 rank14・4候補52 PF roundがPASS（2026-10-25）
+
+[結果](docs/research/research_c_c1_h6_saved_pf_execution_20261025.md)／[全52 round・原本・call・STOP](artifacts/research_c_c1_h6_saved_pf/2026-10-25/)。SOURCE87ea924ae…無変更、72/72 units・correctness FAIL0。一般K/ground/alias全PASS、CDF14/XDF14のS2 s1/s4すべてPOTENTIALLY_FEASIBLE。native/CA/shots/costは未資格・未評価、fit/DF誤差再計算/retry0、旧証拠保全・mandatory STOP。以下は準備・旧結果の履歴。
+
 ## C1：保存H6 rank14の一般K・ground/alias・S2 PF準備（2026-10-25）
 
 [技術報告](docs/research/research_c_c1_h6_saved_pf_preparation_20261025.md)／[未承認72-call契約](docs/research/research_c_c1_h6_saved_pf_contract_unapproved_20261025.json)／[SOURCE・人工証拠](artifacts/research_c_c1_h6_saved_pf/2026-10-25/technical/)。`c1_h6_saved_pf.py`＋専用CLI・人工test。保存CDF14/XDF14、一般K2・ground/alias3・S2 s1/s4の52セルへ接続。新21＋回帰64 tests・29 subtests PASS。実H6 decode/新科学0、fit/DFnorm再計算/native/shots/cost除外、mandatory STOP。
