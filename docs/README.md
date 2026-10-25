@@ -1,5 +1,7 @@
 # 文書索引
 
+研究B [Exact-R4 case：結果・原本・限界・STOP](research/research_b_bnext3_exact_r_execution_20261026.md)。固定SOURCE e76c04748、correctness全PASS、8 prepared X/Y wrapperの単価取得。D／outer誤差・未資格u_num／γ・総資源比較の未実施を区別する。
+
 研究B [B-Next 3：Exact-R最小pilot実装・人工検証・実行準備](research/research_b_bnext3_exact_r_execution_readiness_20261026.md)。新Exact-R4 caseと保存finite-RTE4 caseを対応付け、phase／control／独立correctness・単価測定のscopeを固定。人工30件とread-only preflight PASS。科学実行・総資源優位の認定は行っていない。
 
 研究B [固定24条件shot加重会計：全結果・限界・STOP](research/research_b_outer_shot_weighted_execution_20261025.md)。SOURCE9bebdc46、48 shot要求・144資源行・24比較を一回完了、scope一致・保存失敗0。科学状態INCONCLUSIVE_QUALIFICATIONS_AND_RARE_COSTS、u_num／γ／rare費用は未取得、無条件G・同精度優位は未認定。旧準備・設計と全原本を保全。

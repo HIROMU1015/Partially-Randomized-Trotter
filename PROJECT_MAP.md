@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+研究B [Exact-R4 case：科学実行結果・単価・STOP](docs/research/research_b_bnext3_exact_r_execution_20261026.md)。SOURCE e76c04748、全36 operator／16 expectation PASS後に8 full prepared wrapperを計測、scope一致・中断0。D／outer誤差は残り、総資源優位は未認定。旧準備と全原本を保全。
+
 研究B [B-Next 3：Exact-R最小pilot実装・人工検証・実行準備](docs/research/research_b_bnext3_exact_r_execution_readiness_20261026.md)。入口`run_b2d_exact_r.py`、SOURCE e76c04748、4新case／8 wrapperを固定。人工30件とread-only preflight PASS、実候補のoperator／build／compile／費用は未実行。科学実行は別途明示許可後のみ。
 
 研究Bの[B-Next 1：既知法との差分・強いbaselineの静的調査](docs/research/research_b_bnext1_prior_art_and_strong_baselines_20261026.md)。Exact-R／full DF-PF／調整済み内部PFの再利用経路、旧H246とR2-CS終了との境界を整理。新科学計算・実装・継続方針の正式採択は行っていない。

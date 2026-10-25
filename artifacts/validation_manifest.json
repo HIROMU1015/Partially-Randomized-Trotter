@@ -63,6 +63,11 @@
       "sha": "26e8734aff3969dc8077cb058826d12394be28e1",
       "role": "research_b_outer_rte22_science_source",
       "description": "Unchanged fixed22-row candidate-specific r/K science; all correctness and comparisons completed once; numerical qualification remains unresolved."
+    },
+    {
+      "sha": "e76c0474806dca42598fa92a6564cded10896f98",
+      "role": "research_b_bnext3_exact_r_science_source",
+      "description": "Unmodified four-case Exact-R source;all correctness gates and eight native costs completed without interruption or retry."
     }
   ],
   "artifact_inventory": {
@@ -3235,6 +3240,121 @@
       "completion_criteria": [
         "Publish fixed SOURCE,all results,tables,provenance and STOP;verify remote contents then mandatory STOP.",
         "User/researchB decides any separate qualification/MC/A1/gamma/shot execution scope."
+      ]
+    },
+    {
+      "id": "research_b_bnext3_exact_r_20261026",
+      "status": "source_present_no_current_ci",
+      "scientific_execution_status": "DESCRIPTIVE_ONLY",
+      "execution_status": "COMPLETE",
+      "runtime_status": "COMPLETED_DESCRIPTIVE_MANDATORY_STOP",
+      "fixed_scope_complete": true,
+      "summary": "Four Exact-R cases passed independent full-Fock/control/wrapper correctness before signal comparisons and eight deterministic native costs. D/outer bias remains;no total-resource claim.",
+      "documentation": [
+        "docs/research/research_b_bnext3_exact_r_execution_20261026.md"
+      ],
+      "source": [
+        "src/trottertracks/b2d_evaluator/exact_r.py",
+        "scripts/run_b2d_exact_r.py"
+      ],
+      "tests": [
+        "tests/management/test_b2d_exact_r.py",
+        "tests/test_b2d_exact_r_toy.py",
+        "tests/management/test_b2d_b0_native.py"
+      ],
+      "artifacts": [
+        "artifacts/research_b_outer_exact_r/20261026/SIGNALS.csv",
+        "artifacts/research_b_outer_exact_r/20261026/WRAPPERS.csv",
+        "artifacts/research_b_outer_exact_r/20261026/exact-r-once/STOP.json",
+        "artifacts/research_b_outer_exact_r/20261026/exact-r-once/binding.json",
+        "artifacts/research_b_outer_exact_r/20261026/exact-r-once/events.jsonl",
+        "artifacts/research_b_outer_exact_r/20261026/exact-r-once/inputs.json",
+        "artifacts/research_b_outer_exact_r/20261026/exact-r-once/partial_results.json",
+        "artifacts/research_b_outer_exact_r/20261026/exact-r-once/result.json",
+        "artifacts/research_b_outer_exact_r/20261026/exact-r-once/status.json",
+        "artifacts/research_b_outer_exact_r/20261026/execution_logs/stderr.log",
+        "artifacts/research_b_outer_exact_r/20261026/execution_logs/stdout.json",
+        "artifacts/research_b_outer_exact_r/20261026/execution_logs/time.txt"
+      ],
+      "science_source_commit": "e76c0474806dca42598fa92a6564cded10896f98",
+      "contract_commit": "7056267ed6e49b573353c815a89bbba7da9ae3fa",
+      "input_result_commit": "33715848bfb83d49ec4e54d6eef481012a7441e4",
+      "counts": {
+        "exact_r_cases": 4,
+        "saved_finite_rte_cases": 4,
+        "operator_gates": 36,
+        "expectations": 16,
+        "full_prepared_wrappers": 8,
+        "compile_requests": 8,
+        "actual_transpiles": 8,
+        "cost_requests": 8,
+        "exponential_keys": 50,
+        "D_block_builds": 84,
+        "tail_builds": 12,
+        "registered_calls": 257,
+        "event_records": 514,
+        "scientific_attempts": 1,
+        "technical_interruptions": 0,
+        "fixes": 0,
+        "retries": 0,
+        "resumes": 0,
+        "failed_calls": 0,
+        "evidence_write_failures": 0,
+        "preparation_artificial_tests": 30,
+        "new_finite_RTE_execution": 0,
+        "new_sampling": 0,
+        "shots_executed": 0
+      },
+      "scope": {
+        "exact_r.block_build": 84,
+        "exact_r.compile": 8,
+        "exact_r.compiled_expectation": 8,
+        "exact_r.compiled_gate": 8,
+        "exact_r.controlled_build": 4,
+        "exact_r.controlled_gate": 4,
+        "exact_r.exponential": 50,
+        "exact_r.fixture": 1,
+        "exact_r.full_inputs": 1,
+        "exact_r.input_gate": 1,
+        "exact_r.measure": 8,
+        "exact_r.prepare": 1,
+        "exact_r.raw_expectation": 8,
+        "exact_r.raw_wrapper_gate": 8,
+        "exact_r.reference": 4,
+        "exact_r.saved_baseline": 4,
+        "exact_r.signals": 4,
+        "exact_r.split": 1,
+        "exact_r.system_build": 4,
+        "exact_r.system_gate": 4,
+        "exact_r.tail_build": 12,
+        "exact_r.tail_gate": 12,
+        "exact_r.tail_identity_gate": 1,
+        "exact_r.tail_prepare": 1,
+        "exact_r.wrapper_build": 8,
+        "exact_r.wrapper_reference": 8
+      },
+      "resources": {
+        "whole_wall_seconds": 14.34,
+        "user_seconds": 20.02,
+        "system_seconds": 3.02,
+        "CPU_percent": 160,
+        "peak_RSS_KiB": 398732,
+        "affinity_CPUs": 32,
+        "acceleration": "Existing shared block/exponential/compile caches,native-v5;small case-ordered fail-fast execution,no artificial resource caps"
+      },
+      "qualification": {
+        "u_num": null,
+        "gamma": null,
+        "shots": null,
+        "G": null,
+        "population_cost_ranking": null,
+        "total_resource_superiority": null,
+        "algorithm_adoption": null
+      },
+      "interpretation": "Synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,D=one-body+factors0/1,R=factor2 minus identity;outer Yoshida4/SABA2,innerA2,nD1,q2,T±.18,complex128,atol1e-12,rtol0,no phase fit. Full prepared ordinary controlled native-v5 X/Y. Exact-R normalization1 but D/outer error remains. Native deterministic unit cost is not B1 unconditional expected cost or shot-weighted G. Old raw/contracts/STOP preserved. Local evidence,not CI/external reproduction.",
+      "completion_criteria": [
+        "Publish fixed SOURCE,raw,signal/native cells,provenance and STOP;verify remote contents then mandatory STOP.",
+        "User/researchB decides interpretation or any separately permitted follow-up."
       ]
     }
   ],

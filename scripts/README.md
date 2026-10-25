@@ -1,5 +1,7 @@
 # scripts 索引
 
+研究B [`run_b2d_exact_r.py`](run_b2d_exact_r.py)をSOURCE e76c04748で一回完了。[4 caseの結果・単価・STOP](../docs/research/research_b_bnext3_exact_r_execution_20261026.md)。全36 operator／16 expectation PASS後に8費用、scope一致・中断0。使用済みoutputを再起動せず、追加科学段階へ自動移行しない。以下の準備記録を保全する。
+
 研究B [Exact-R4 caseの実行準備](../docs/research/research_b_bnext3_exact_r_execution_readiness_20261026.md)。[`run_b2d_exact_r.py`](run_b2d_exact_r.py)の`--inspect`／`--preflight`は科学処理・出力作成なし。`--execute`は固定SOURCE・fresh outputで一回実行しmandatory STOP。人工30件PASS、実候補は未実行。
 
 研究B [固定24条件shot加重会計：全結果・限界・STOP](../docs/research/research_b_outer_shot_weighted_execution_20261025.md)。SOURCE9bebdc46、48 shot要求・144資源行・24比較を一回完了、scope一致・保存失敗0。科学状態INCONCLUSIVE_QUALIFICATIONS_AND_RARE_COSTS、u_num／γ／rare費用は未取得、無条件G・同精度優位は未認定。旧準備・設計と全原本を保全。

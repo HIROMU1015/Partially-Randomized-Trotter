@@ -1,5 +1,12 @@
 # Validation status
 
+## 2026-10-26 research B Exact-R: four-case descriptive pilot COMPLETE
+
+Unmodified science SOURCE `e76c0474806dca42598fa92a6564cded10896f98`;one attempt,no interruption/fix/retry/resume. Synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,D=one-body+factors0/1,R=factor2 minus identity;outer Yoshida4/SABA2,inner A2,nD1,q2,T±.18. Molecular geometry/AO basis/rank exploration not applicable. Complex128,spectral2-norm atol1e-12,rtol0,no phase fit;native-v5 ordinary controlled full prepared X/Y wrappers.
+All36 operator gates/16 expectations and saved ideal-tail/physical consistency passed before4 signal reports/8 costs. All257 registered calls matched,failed={},persistence failures=[];compiled operator max7.106330112796073e-14. Wall14.34s,peak RSS398732KiB,exit0. Preparation artificial30 PASS is separate technical evidence.
+Exact-R physical complex signal errors are5.926752262417758e-10 (Yoshida4) and2.9044769538026594e-9 (SABA2),both T. RZ/CX per prepared wrapper4114/2800 and2100/1424;normalization1. D/outer errors remain. No new finite-RTE execution/sampling,shot/G,rare costs,full DF-PF,nD search or molecular expansion. U_num/gamma/shots/G remain null;no unconditional expected-cost or total-resource superiority/algorithm-GO claim. Old B1/shot qualifications and R2-CS closure unchanged.
+[Report](docs/research/research_b_bnext3_exact_r_execution_20261026.md),[raw+STOP](artifacts/research_b_outer_exact_r/20261026/exact-r-once/),[signals](artifacts/research_b_outer_exact_r/20261026/SIGNALS.csv),[wrappers](artifacts/research_b_outer_exact_r/20261026/WRAPPERS.csv). Local fixed-source evidence,not CI or independent external reproduction. Mandatory STOP;User/researchB decides any separate follow-up scope.
+
 ## 2026-10-25 research B shot-weighted saved accounting: complete execution, unresolved qualifications
 
 Science SOURCE `9bebdc46ebd60039f315da9b6c6e57bd9c004b85`,one fixed24-condition execution,no source changes/retry/resume. Synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,nD1,T±.18,B3/D1/R2/R4/B4/F1,q2,F1 f8,rK2/2,4/2,2/4,epsilon1e-8/1e-9. Molecular geometry/AO basis/rank exploration not applicable. Saved B1 phase-preserving native-v5 full prepared X/Y wrapper costs,n256 paired trajectories;no new sampling/build/compile/H/operator/signal or quantum-shot execution.
