@@ -1,3 +1,7 @@
+## 2026-10-26 H2 純RTEの独立確認とs64/128検証
+
+[Phase Aの8確認・Phase Bの3探索・更新後の条件付きG](h2_pauli_rte_validation_20261026.md)。全5精度で新確認集合minは保存Hybridより低G。有限標本・仮想ρ=0・実ρ/tail未保証を維持。旧研究を上書きしない。
+
 ## 2026-10-26 H4/H6 純RTEのs>64検証
 
 [s128–1024の限定探索・独立確認・B/N/C/G・比較図](pauli_rte_event_extension_20261026.md)。仮想ρ=0、有限候補・有限価格標本、保存Hybridとのfamily比較。全law実ρ/母平均tailは未保証。

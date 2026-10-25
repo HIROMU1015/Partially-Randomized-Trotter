@@ -1,3 +1,7 @@
+## 2026-10-26 既存kernelのH2追加検証への再利用
+
+[H2純RTEの独立確認・event数拡張](../../docs/h2_pauli_rte_validation_20261026.md)。pauli_signal_adapter/rte、D2 control、tight L2、既存shot/paired統計を無変更で使用。追加接続はH2専用runnerに限定し、新アルゴリズム・全lawρ保証・正式certificateは追加しない。
+
 ## 2026-10-26 純RTE拡張kernelの承認済み適用
 
 `pauli_rte_event_extension.py` を新SOURCEのdriverから固定H4/H6のq8/r>8へ適用。[限定target・価格確認と条件付きG](../../docs/pauli_rte_event_extension_20261026.md)。旧科学kernelを変更せず再利用、全law実ρ/母平均tailは未保証。以下の準備時点の記録も保全する。

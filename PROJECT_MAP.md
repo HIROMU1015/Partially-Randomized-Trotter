@@ -1,3 +1,7 @@
+## 2026-10-26 H2 純RTE：既存有望候補の追加確認・限定event拡張
+
+[旧13構成のcoverage、Phase A/B、5精度の条件付き比較、図・保存証拠](docs/h2_pauli_rte_validation_20261026.md)。保存target/Nを再利用して8候補を追加確認。H2だけの新結果で、旧比較/STOPを保全し、主要claimやH2/H4/H6統合結論の正式採択はしていない。
+
 ## 2026-10-26 H4/H6 純RTEのevent数拡張
 
 [新しいs>64のtarget/価格確認・条件付き比較・図・保存証拠](docs/pauli_rte_event_extension_20261026.md)。固定q8、保存Hybridとのfamily比較。旧準備・SOURCE・STOPを保全し、実ρ/母平均tail/大域最適性の保証とは区別する。

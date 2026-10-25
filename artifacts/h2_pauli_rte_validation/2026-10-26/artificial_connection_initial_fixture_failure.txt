@@ -1,0 +1,53 @@
+test_artificial_extended_laws_generated_for_oracle (test_h2_pauli_rte_validation.Checks.test_artificial_extended_laws_generated_for_oracle) ... ERROR
+test_artificial_r8_descriptor_equals_original (test_h2_pauli_rte_validation.Checks.test_artificial_r8_descriptor_equals_original) ... ERROR
+test_extension_only_if_unresolved_and_own_variance_reducible (test_h2_pauli_rte_validation.Checks.test_extension_only_if_unresolved_and_own_variance_reducible) ... ok
+test_narrow_domain_and_old_validator_preserved (test_h2_pauli_rte_validation.Checks.test_narrow_domain_and_old_validator_preserved) ... ok
+test_nulls_not_ranked (test_h2_pauli_rte_validation.Checks.test_nulls_not_ranked) ... ok
+test_seed_addresses_unchanged_and_cohorts_separate (test_h2_pauli_rte_validation.Checks.test_seed_addresses_unchanged_and_cohorts_separate) ... ok
+
+======================================================================
+ERROR: test_artificial_extended_laws_generated_for_oracle (test_h2_pauli_rte_validation.Checks.test_artificial_extended_laws_generated_for_oracle)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h2-pauli-rte-confirmation-extension-20261026/tests/test_h2_pauli_rte_validation.py", line 35, in test_artificial_extended_laws_generated_for_oracle
+    h=PauliHamiltonian(2,.17,(('IZ',.4),('XX',-.08),('YI',.03)),'toy')
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 7, in __init__
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h2-pauli-rte-confirmation-extension-20261026/src/trotterlib/pauli_signal_adapter.py", line 62, in __post_init__
+    if not isinstance(json.loads(self.metadata_json), dict):
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+======================================================================
+ERROR: test_artificial_r8_descriptor_equals_original (test_h2_pauli_rte_validation.Checks.test_artificial_r8_descriptor_equals_original)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h2-pauli-rte-confirmation-extension-20261026/tests/test_h2_pauli_rte_validation.py", line 15, in test_artificial_r8_descriptor_equals_original
+    h=PauliHamiltonian(2,.17,(('IZ',.4),('XX',-.08)),'toy')
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 7, in __init__
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h2-pauli-rte-confirmation-extension-20261026/src/trotterlib/pauli_signal_adapter.py", line 62, in __post_init__
+    if not isinstance(json.loads(self.metadata_json), dict):
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.708s
+
+FAILED (errors=2)

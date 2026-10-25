@@ -1,3 +1,10 @@
+## 2026-10-26 H2 純RTE追加検証
+
+`run_h2_pauli_rte_validation.py`：元H2 price_job/seed、target/shot会計、event-extension dispatchを再利用。H2専用SOURCE・Phase A保存N・Phase B限定law/target、96→192→384固定確認。完了STOPを再開しない。
+`finalize_h2_pauli_rte_validation.py`：保存cohortのG比較・図・native/QPY/shot検査。
+`pack_h2_pauli_rte_evidence.py`：旧QPY-aware archive形式、復元は既存 `restore_pauli_h2_h6_evidence.py`。
+`report_h2_pauli_rte_validation.py`：完成保存値の報告書への転記。[結果・制約](../docs/h2_pauli_rte_validation_20261026.md)。
+
 ## 2026-10-26 純RTE event数拡張
 
 `run_pauli_rte_event_extension.py`：準備kernel/会計/D2/compilerを再利用し、fresh batchを固定して実行。完了batch/STOPは再開しない。
