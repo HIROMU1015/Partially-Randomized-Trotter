@@ -65,3 +65,5 @@ Pauli上界は全allowed order0/2/4を被覆する固定builder/native lowering/
 **ユーザー**：この条件付き母平均価格結果を比較研究・原稿でどの範囲の主張に用いるか判断する。未証明compiler前提の解消やG／ρへの拡張を希望する場合は、その具体的範囲に別の明示承認が必要。**Codex**：今回の保存・公開を完了してSTOPする。上記十分条件は両軸で分離しており、今回の価格判定のための追加compile／sampling／law-weighted評価は不要。新しい科学実行・研究方針採択には進まない。
 
 **mandatory STOP：成功した限定scalar batchを再実行せず、追加科学計算・正式certificate受理へ自動移行しない。**
+
+主成果物commit **`d719a017719d2a621db1878bee0155d24703f840`** をGitHub接続のGit data APIで公開し、local index／GitHub tree `da905492e9a030eeff50ec713054beecfac29474` の一致、local HEAD／origin／GitHub refの同SHA・clean状態を確認した。この公開記録のみを追記し、最終metadata HEADもremote照合してチャットへ報告する。科学result・実行記録は主成果物commitから変更しない。**mandatory STOP継続。**
