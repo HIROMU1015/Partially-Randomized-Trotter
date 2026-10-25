@@ -1,5 +1,7 @@
 # B2-D 5方式評価器：接続準備・技術報告
 
+**Outer/RTE固定22行の科学実行完了（2026-10-25）：** [結果・SOURCE・数値的限界・STOP](../../../docs/research/research_b_outer_rte_22row_execution_20261025.md)。SOURCE26e8734afを変更せず、全correctness先行で22行・1239 dispatch・274 key・RTE各96・110 expectationsを一回で完了した。u_num未評価、nominal boundは浮動誤差を含む証明ではない。精度／総資源の認定や追加計算へ進まない。原本は `artifacts/research_b_outer_rte22/20261025/`。以下の準備記録は保全する。
+
 **Outer/RTE固定22行の準備完了（2026-10-25、科学計算未実行）：** [`outer_rte_execution.py`](outer_rte_execution.py)、入口 `scripts/run_b2d_outer_rte22.py`、人工test `tests/management/test_b2d_outer_rte22.py`。[固定SOURCE 26e8734af・契約・単一command](../../../docs/research/research_b_outer_rte_22row_execution_ready_20261025.md)。候補別r/K、1239 dispatch／274 key／RTE各96／110 expectations。既存105＋追加14件PASS、read-only preflight PASS。u_num未評価を残し、科学実行は別途明示許可後だけ。旧16行・36行の結果・契約は保全する。
 
 **Outer固定16行の科学実行完了（2026-10-25）：** [結果・SOURCE・STOP](../../../docs/research/research_b_outer_splitting_stage1_execution_20261025.md)。SOURCE b85dd3284を変更せず一回完了。全gate先行、16行・906 dispatch・490 key・80 expectations。Corrected signal改善は限定観測、raw改善／総資源優位は認定しない。原本は `artifacts/research_b_outer_splitting/20261025/`。追加科学計算なし、mandatory STOP。以下の準備記録は履歴として保全する。

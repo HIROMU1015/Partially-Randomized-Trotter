@@ -1,5 +1,12 @@
 # Validation status
 
+## 2026-10-25 outer/RTE22: COMPLETE execution; numerical qualification unresolved
+
+Unchanged science SOURCE `26e8734aff3969dc8077cb058826d12394be28e1`, one attempt, no interruption/fix/retry. Synthetic2mode one-body+3DF, N1/mode0, LD2 weight-ranked, T±.18, nD1, A2/A3, q2 plus SABA2 q4, refined f2/f8, candidate rK2/2,4/2,2/4, complex128, atol1e-12, phase off; molecular geometry/AO basis/rank exploration not applicable.
+All169 unique correctness nodes preceded comparisons;22 rows/1239 dispatch/274 exponential keys/RTE config+moments+bound96 each/bound compositions14/signal110 completed. A3+Yoshida4 observed physical complex signal bias: r2K2 4.53e-10, r4K2 8.34e-11, r2K4 7.00e-11. A2 D-approximation remains material. Normalization and structural costs are separate from native/shot cost.
+SABA2 q4 and refined f8 floating finite-RTE operator differences slightly exceed nominal analytic Taylor bounds; these bounds exclude floating uncertainty. K4 finite-RTE discrimination is near roundoff. All22 rows retain null u_num and deterministic qualification. No certified epsilon eligibility, end-to-end accuracy, familywise confidence, shots or total-resource advantage claim.
+[Results and limits](docs/research/research_b_outer_rte_22row_execution_20261025.md), [all22 rows](artifacts/research_b_outer_rte22/20261025/COMPARISON.csv), [raw+STOP](artifacts/research_b_outer_rte22/20261025/analytic-once/). Committed local science, not CI or independent reproduction. Mandatory STOP; no extra calculation, retry/resume, native compilation, shot evaluation or Stage2.
+
 ## 2026-10-25 outer Stage 1: COMPLETE; corrected signal improvement observed in the fixed scope
 
 SOURCE `b85dd328423de5b1159f11939835f04db90f3187`, one successful attempt, no source fixes or reruns. Synthetic2mode one-body+3 DF, N1/mode0, LD2 weight-ranked, T±.18, q2, refined f2, inner A2/A3 nD1, r2K2, complex128, atol1e-12, phase off; molecular geometry/AO basis/rank exploration not applicable.

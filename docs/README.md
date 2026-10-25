@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究B outer/RTE固定22行の完了結果（2026-10-25）
+
+[全結果・r/K・normalization・数値的限界・STOP](research/research_b_outer_rte_22row_execution_20261025.md)。SOURCE26e8734afを変更せず、全gate・22行・1239 dispatch・274 keyを一回で完了した。原本とCSVは `artifacts/research_b_outer_rte22/20261025/`。u_numとdeterministic qualificationは未確定、精度／総資源の認定なし。追加科学計算へ進まない。
+
 ## 研究B outer/RTE固定22行の最終準備（2026-10-25）
 
 [固定22行・候補別r/K・新scope・人工119件・read-only preflight・実行command](research/research_b_outer_rte_22row_execution_ready_20261025.md)。科学SOURCE `26e8734aff3969dc8077cb058826d12394be28e1`。実装準備のみ完了、科学計算未実行。u_num・γ・shotsは未取得、同精度／総資源優位を認定しない。別途明示許可後のみ実行する。

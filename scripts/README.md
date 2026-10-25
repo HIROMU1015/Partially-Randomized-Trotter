@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究B outer/RTE固定22行の科学実行完了（2026-10-25）
+
+[`run_b2d_outer_rte22.py`](run_b2d_outer_rte22.py) をSOURCE26e8734afで一回実行し、全correctnessと22行／1239 dispatch／274 keyを完了した。[結果・未確定事項・STOP](../docs/research/research_b_outer_rte_22row_execution_20261025.md)。原本は `artifacts/research_b_outer_rte22/20261025/analytic-once/`。Retry/resume・追加条件・native／shot段階へ自動進行しない。以下は準備履歴。
+
 ## 研究B outer/RTE固定22行（準備完了・科学計算未実行）
 
 [`run_b2d_outer_rte22.py`](run_b2d_outer_rte22.py) は `--inspect` でmetadataのみ表示する。別途明示許可後だけ `--execute --source-commit … --output …`。[固定22行・SOURCE 26e8734af・単一command・人工119件](../docs/research/research_b_outer_rte_22row_execution_ready_20261025.md)。候補別r/K、1239 dispatch／274 key／RTE各96／110 expectations、専用output `artifacts/research_b_outer_rte22/`。Fresh作成・correctness先行・失敗保存・retry/resume禁止・STOPを既存launcherで維持する。

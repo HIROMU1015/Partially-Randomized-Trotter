@@ -58,6 +58,11 @@
       "sha": "b85dd328423de5b1159f11939835f04db90f3187",
       "role": "research_b_outer_stage1_science_source",
       "description": "Unchanged fixed16-row outer splitting source; input and all correctness gates PASS; no technical interruption or rerun."
+    },
+    {
+      "sha": "26e8734aff3969dc8077cb058826d12394be28e1",
+      "role": "research_b_outer_rte22_science_source",
+      "description": "Unchanged fixed22-row candidate-specific r/K science; all correctness and comparisons completed once; numerical qualification remains unresolved."
     }
   ],
   "artifact_inventory": {
@@ -1152,6 +1157,14 @@
           "research_b_outer_stage1_20261025"
         ],
         "reason": "Nine byte-preserved raw files including inputs and STOP, process logs, and a direct16-row CSV extraction."
+      },
+      {
+        "path": "artifacts/research_b_outer_rte22/20261025",
+        "kind": "directory",
+        "supports": [
+          "research_b_outer_rte22_20261025"
+        ],
+        "reason": "Nine byte-preserved raw files including inputs, analytic22-row results and STOP; four process/provenance files; direct62-column CSV extraction. No further scientific evaluation."
       }
     ],
     "quarantined": [
@@ -2515,6 +2528,74 @@
       "interpretation": "Synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,T±.18,q2,refinedf2,innerA2/A3nD1,r2K2,complex128,phaseoff. Corrected signal improved with outer Yoshida4/SABA2; Yoshida4 exposes D and finite-RTE bias plus larger normalization. No general order, resource-superiority, or weak-regime certification.",
       "completion_criteria": [
         "Preserve raw evidence and mandatory STOP; further scientific conditions or native compilation require a separate decision/permission."
+      ]
+    },
+    {
+      "id": "research_b_outer_rte22_20261025",
+      "status": "source_present_no_current_ci",
+      "scientific_execution_status": "COMPLETE",
+      "runtime_status": "COMPLETED_DESCRIPTIVE_MANDATORY_STOP",
+      "summary": "All169 unique correctness nodes preceded22 comparisons;1239 dispatch/274 exp keys/RTE config+moments+truncation96 each/bound composition14/signal110. Uncertainty-qualified epsilon eligibility and total resources remain unresolved.",
+      "documentation": [
+        "docs/research/research_b_outer_rte_22row_execution_20261025.md",
+        "docs/research/research_b_outer_rte_22row_execution_ready_20261025.md"
+      ],
+      "source": [
+        "scripts/run_b2d_outer_rte22.py",
+        "src/trottertracks/b2d_evaluator/outer_rte_execution.py",
+        "src/trottertracks/b2d_evaluator/outer.py",
+        "src/trottertracks/b2d_evaluator/outer_backend.py",
+        "src/trottertracks/b2d_evaluator/outer_execution.py",
+        "src/trottertracks/b2d_evaluator/input_package.py",
+        "src/trottertracks/b2d_evaluator/launcher.py"
+      ],
+      "tests": [
+        "tests/management/test_b2d_outer_rte22.py",
+        "tests/management/test_b2d_outer_execution.py"
+      ],
+      "artifacts": [
+        "artifacts/research_b_outer_rte22/20261025/COMPARISON.csv",
+        "artifacts/research_b_outer_rte22/20261025/analytic-once/result.json",
+        "artifacts/research_b_outer_rte22/20261025/analytic-once/inputs.npz",
+        "artifacts/research_b_outer_rte22/20261025/analytic-once/status.json",
+        "artifacts/research_b_outer_rte22/20261025/analytic-once/STOP.json",
+        "artifacts/research_b_outer_rte22/20261025/execution_logs/attempt-1/time.txt"
+      ],
+      "science_source_commit": "26e8734aff3969dc8077cb058826d12394be28e1",
+      "execution_contract_commit": "71b460364f8c354eef9096a8651ba3aa32b0da63",
+      "counts": {
+        "scientific_attempts": 1,
+        "comparisons": 22,
+        "correctness_unique_nodes": 169,
+        "dag_dispatch": 1239,
+        "exponential_keys": 274,
+        "rte_configs": 96,
+        "rte_moments": 96,
+        "rte_truncation_records": 96,
+        "bound_compositions": 14,
+        "physical_R_occurrence_references": 140,
+        "signal_expectations": 110,
+        "input_high_level_boundaries": 10,
+        "artificial_preparation_tests": 119,
+        "technical_recoveries": 0,
+        "scientific_reruns_after_completion": 0,
+        "new_native_compilations": 0,
+        "shot_evaluations": 0
+      },
+      "qualification": {
+        "epsilons": [1e-8, 1e-9],
+        "u_num": null,
+        "deterministic_qualified": null,
+        "status": "UNRESOLVED_NUMERICAL_UNCERTAINTY",
+        "implementation_gamma": null,
+        "shots": null,
+        "familywise_budget": "UNALLOCATED",
+        "end_to_end_status": "NOT_CERTIFIED_NO_TOTAL_RESOURCE_CLAIM"
+      },
+      "interpretation": "Synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,T±.18,nD1,A2/A3,q2 plus SABA2q4,refinedf2/f8,rK2/2 or4/2 or2/4,complex128,atol1e-12,phaseoff. A3+Yoshida4 observed bias improves with r4 or K4; A2 D error remains. SABA2q4/refinedf8 floating finite-RTE operator differences slightly exceed nominal analytic bounds; no floating uncertainty certificate, same-accuracy or total-resource claim.",
+      "completion_criteria": [
+        "Preserve science SOURCE, raw outputs, logs and STOP; no retry/resume or extra conditions.",
+        "User/researchB decides whether to authorize further u_num, native cost, gamma or shot work; no automatic Stage2."
       ]
     }
   ],
