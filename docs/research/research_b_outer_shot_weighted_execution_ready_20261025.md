@@ -124,18 +124,20 @@ Focused人工45件PASS：新adapter10、既存設計5、既存interval5、Follow
 
 ## SOURCE固定・read-only確認・許可後command
 
-科学実行SOURCE：本実装commitを固定後に下記へ記録する。実行準備とactual科学的検証を区別する。
+科学実行SOURCE：`9bebdc46ebd60039f315da9b6c6e57bd9c004b85`。公開branchは `codex/research-b-outer-shot-ready-20261025`。このSOURCEの実装を変更せず実行するclean detached checkoutを `/tmp/prt-research-b-outer-shot-science-20261025` に準備した。報告書追補commitは科学SOURCEと区別する。科学実行は未実施。
 
 ```bash
 /tmp/pr-phase2df1pre-private-20261023/venv/bin/python -I -B \
   /tmp/prt-research-b-outer-shot-science-20261025/scripts/run_b2d_outer_shot_weighted.py \
-  --execute --source-commit <SCIENCE_SOURCE> \
+  --execute --source-commit 9bebdc46ebd60039f315da9b6c6e57bd9c004b85 \
   --output /tmp/prt-research-b-outer-shot-science-20261025/artifacts/research_b_outer_shot_weighted/20261025/saved-once
 ```
 
 同じcommandの`--execute`を`--preflight`へ変更すると、SOURCE・13入力blob・scope・mpmath version・環境・fresh outputだけをread-only確認する。`--inspect`はSOURCE引数なしでmetadataだけを出力する。どちらも`read_payload`、実normalization、shot／G／比較・追加確率を呼ばずoutputも作らない。
 
-現時点はSOURCE固定前。Commit後のclean detached checkoutでread-only preflightを行い、結果を追記する。実科学実行用commandは今回起動しない。
+固定SOURCEのclean detached checkoutでCLI `--preflight` が **READY_READ_ONLY_NO_SCIENCE**。13入力blobが各指定commitと一致し、上表の全scope、mpmath metadata version1.3.0、fresh output未使用を確認した。確認時は利用可能CPU32、`MemAvailable: 52712728 kB`。環境全体のbitwise一致は要求していない。
+
+加えてread_payload／normalization_enclosure／scalar_shots／evaluateを呼べば例外にするstubに置換したread-only確認もPASS。NumPy／SciPy／Qiskit／PySCF／mpmathのimportがなく、出力namespaceも未作成、science checkoutはcleanのままである。これは保存値の数値結合・enclosure・shot／Gを実行したという意味ではない。上の `--execute` commandは今回起動していない。
 
 ## 未解決事項とmandatory STOP
 
