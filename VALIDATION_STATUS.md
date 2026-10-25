@@ -1,5 +1,13 @@
 # Validation status
 
+## 2026-10-25 B1 fixed IID run completed; INCONCLUSIVE_RARE_EVENT_COVERAGE
+
+Science SOURCE `11e2532a62d54a65f8fad5489be6b135f826011b`, synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,nD1,T±.18,six fixed B3/D1/R2/R4/B4/F1 candidates,q2,F1 f8,rK2/2,4/2,2/4,complex128,spectral2-norm atol1e-12,rtol0,no phase fit,Qiskit1.3.0 angle-preserving native v5. Molecular geometry/AO basis/rank exploration not applicable.
+All3072 IID trajectories/6144 paired full-wrapper cost requests,18432 operator gates/12288 expectations,51200 sampled short-steps and24 unweighted statistics groups completed once. Max compiled operator4.55054e-13,compiled signal2.87104e-13;33 input gates passed;scope matched,no failed calls/no persistence failures. Artificial45 tests PASS,not scientific performance evidence.
+32 workers,wall50:46.95,CPU3048%,actual transpiles6078/cache hits66. All51200 sampled events had order0;orders2/4 unobserved. Normal-reference intervals separate B4<B3<F1<{D1,R4}<R2,while D1/R4 overlap. RZ/CX relative SE max0.0800% meets the2% diagnostic,without covering unseen rare-event contribution. Scientific state INCONCLUSIVE_RARE_EVENT_COVERAGE despite complete execution. No rigorous expected-cost ranking,same-accuracy,total-resource or algorithm-GO certification;gamma/u_num/shots/G null. No retry/resume/sample extension or A0/B0/22row reanalysis.
+[Report](docs/research/research_b_outer_b1_expected_native_cost_20261025.md),[statistics](artifacts/research_b_outer_b1/20261025/STATISTICS.csv),[summary](artifacts/research_b_outer_b1/20261025/SUMMARY.json),[raw+STOP](artifacts/research_b_outer_b1/20261025/iid256-once/). Local fixed-source evidence,not CI/external reproduction. Old raw/STOP preserved;mandatory STOP after publication verification. Next scientific scope is User/researchB's decision.
+
+
 ## 2026-10-25 B0 COMPLETE after angle-preserving native lowering
 
 Science SOURCE `b190fe28b98d2f94e1509e19cd3d36a63b2bb99e`, synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,nD1,T±.18,B3/D1/R2/R4/B4/F1,4 deterministic representatives/case,complex128,absolute spectral tol1e-12,rtol0,no phase fit. Molecular geometry/AO basis/rank exploration not applicable. RY/U native identities preserve small angles; native1q determinant invariants stabilize discrete scalar phases without fitting a full operator.

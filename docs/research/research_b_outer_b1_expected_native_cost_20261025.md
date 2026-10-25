@@ -43,15 +43,95 @@ Affinity CPUと実MemAvailableを確認してprocess並列化し、子processの
 
 Fresh output `artifacts/research_b_outer_b1/20261025/iid256-once/` にtrajectory／sampleをexclusive streaming保存し、Evidence総容量128MiB、JSON単体8MiB、STOP reserve512KiBを用いる。失敗標本はgzip+base64 QPYとoperator matricesを保存する。依存version・Python・platform・SOURCE・snapshot provenanceを記録する。`--inspect`はmetadataのみ、`--execute`のみ科学入口であり承認証明ではない。承認packet等は不要。
 
-新SOURCEのclean detached checkoutでread-only preflight後、次の一回だけを実行する（SOURCEとcheckoutは固定後に記録）。
+固定SOURCEのclean detached checkoutでread-only preflight後、次のコマンドを一回実行した。使用済みoutputで再起動しない。
 
 ```bash
 /tmp/pr-phase2df1pre-private-20261023/venv/bin/python -I -B \
   /tmp/prt-research-b-outer-b1-science-20261025/scripts/run_b2d_outer_b1.py \
-  --execute --source-commit <B1_SOURCE> \
+  --execute --source-commit 11e2532a62d54a65f8fad5489be6b135f826011b \
   --output /tmp/prt-research-b-outer-b1-science-20261025/artifacts/research_b_outer_b1/20261025/iid256-once
 ```
 
 ## 実行結果
 
-人工45件PASS（B1 9、B0 opaque 11、followup 10、Stage1 launcher 15）。B1最終変更後の9件も再PASS。Metadata inspectは科学importなしで3,072／6,144／51,200を確認。SOURCE固定・preflight前であり、人工テストと科学的PASSを区別し、科学結果は本節へ追記する。Gamma／u_num／shots／shot-weighted Gはnullのまま。B0の代表費用をIID期待費用へ混ぜず、RZ単価だけで科学的GO・同精度総資源優位を認定しない。実行・保存・公開照合後はmandatory STOP。次の科学計算の採否は研究Bのユーザーが判断する。
+科学SOURCE [`11e2532a62d54a65f8fad5489be6b135f826011b`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/commit/11e2532a62d54a65f8fad5489be6b135f826011b)。最終状態 **INCONCLUSIVE**、runtime `COMPLETED_DESCRIPTIVE_MANDATORY_STOP`。人工45件PASS（B1 9、B0 opaque 11、followup 10、Stage1 launcher 15）、read-only preflight PASS。新しい独立branch `codex/research-b-outer-b1-iid256-20261025` のclean detached checkoutで一回だけ実行した。SOURCE変更・retry・resume・追加attempt・追加標本は0件。
+
+原本 [iid256-once/](../../artifacts/research_b_outer_b1/20261025/iid256-once/)、[全完了標本CSV](../../artifacts/research_b_outer_b1/20261025/SAMPLES.csv)、[実行要約](../../artifacts/research_b_outer_b1/20261025/SUMMARY.json)、[process記録](../../artifacts/research_b_outer_b1/20261025/execution_logs/)、[人工test記録](../../artifacts/research_b_outer_b1/20261025/artificial_tests/)。保存trajectoryは3,072件、correctness全通過して費用保存した標本は3072／3,072件（X/Y費用6144／6,144件）。
+
+### Correctnessと完了範囲
+
+完了標本の最大残差：`{"compiled_wrapper": 4.550538909283757e-13, "controlled": 3.8985950626951644e-14, "raw_wrapper": 3.644847141100376e-14, "system": 1.493683375107909e-13, "raw_signal": 3.26405569239796e-14, "compiled_signal": 2.871036741680655e-13}`。Operator2-norm tol1e-12／rtol0／phase fitなし。Input gateはparentとworkerで実行し、入力identity・DF preparationを固定snapshotと照合した。
+
+公開用raw全10fileは科学checkout原本とbyte一致を確認した。Sample／trajectory ID全3,072件と登録scopeが一致し、公開CSVは費用6,144行・統計168行。保存rawから等重みmean／variance／SEを独立に照合した（新しいoperator評価・build／compileなし）。旧科学結果・AGENTS.md・共通運用指示への変更はない。
+
+固定標本を全件完了した。18,432 operator gate／12,288 expectationと6,144 logical費用要求が通過し、24統計群を生成した。Raw／compiled QCを保持するcache hitも各sampleの検査を省略しない。実現trajectoryの経験的correctnessであり、保証付きgammaではない。
+
+実環境はPython3.11.9、NumPy1.26.4、SciPy1.14.1、Qiskit1.3.0、Qiskit Nature0.7.2、OpenFermion1.6.1、OpenFermion-PySCF0.5、PySCF2.7.0。詳細platform／executableとsnapshot blobはbinding.jsonに記録した。Input gateはparent1＋worker32の計33回PASSした。
+
+### Candidate別期待費用と標本SE
+
+各値はmean ± SE、256 IID／case、full prepared wrapper／axis。T別・X/Y別に記載する。
+
+| ID | T | Axis | Expected RZ ± SE | Expected CX ± SE | Relative SE RZ / CX |
+|---|---|---|---|---|---|
+| B3 | +0.18 | X | 4096.89453 ± 1.59814 | 2788.84375 ± 1.26439 | 0.039009% / 0.045337% |
+| B3 | +0.18 | Y | 4096.89453 ± 1.59814 | 2788.84375 ± 1.26439 | 0.039009% / 0.045337% |
+| B3 | −0.18 | X | 4098.81641 ± 1.70473 | 2790.48437 ± 1.35475 | 0.041591% / 0.048549% |
+| B3 | −0.18 | Y | 4098.81641 ± 1.70473 | 2790.48437 ± 1.35475 | 0.041591% / 0.048549% |
+| D1 | +0.18 | X | 27423.63281 ± 1.65513 | 18772.04688 ± 1.29393 | 0.006035% / 0.006893% |
+| D1 | +0.18 | Y | 27423.63281 ± 1.65513 | 18772.04688 ± 1.29393 | 0.006035% / 0.006893% |
+| D1 | −0.18 | X | 27423.23828 ± 1.67576 | 18771.53125 ± 1.31642 | 0.006111% / 0.007013% |
+| D1 | −0.18 | Y | 27423.23828 ± 1.67576 | 18771.53125 ± 1.31642 | 0.006111% / 0.007013% |
+| R2 | +0.18 | X | 27548.05078 ± 2.32664 | 18868.60937 ± 1.80706 | 0.008446% / 0.009577% |
+| R2 | +0.18 | Y | 27548.05078 ± 2.32664 | 18868.60937 ± 1.80706 | 0.008446% / 0.009577% |
+| R2 | −0.18 | X | 27549.84766 ± 2.38316 | 18870.20312 ± 1.84333 | 0.008650% / 0.009768% |
+| R2 | −0.18 | Y | 27549.84766 ± 2.38316 | 18870.20312 ± 1.84333 | 0.008650% / 0.009768% |
+| R4 | +0.18 | X | 27424.37109 ± 1.70766 | 18772.65625 ± 1.34921 | 0.006227% / 0.007187% |
+| R4 | +0.18 | Y | 27424.37109 ± 1.70766 | 18772.65625 ± 1.34921 | 0.006227% / 0.007187% |
+| R4 | −0.18 | X | 27423.45312 ± 1.44781 | 18771.62500 ± 1.15785 | 0.005279% / 0.006168% |
+| R4 | −0.18 | Y | 27423.45312 ± 1.44781 | 18771.62500 ± 1.15785 | 0.005279% / 0.006168% |
+| B4 | +0.18 | X | 2087.82422 ± 1.42353 | 1416.09375 ± 1.13304 | 0.068182% / 0.080012% |
+| B4 | +0.18 | Y | 2087.82422 ± 1.42353 | 1416.09375 ± 1.13304 | 0.068182% / 0.080012% |
+| B4 | −0.18 | X | 2089.28125 ± 1.35072 | 1417.17187 ± 1.06539 | 0.064650% / 0.075177% |
+| B4 | −0.18 | Y | 2089.28125 ± 1.35072 | 1417.17187 ± 1.06539 | 0.064650% / 0.075177% |
+| F1 | +0.18 | X | 10896.96484 ± 2.53092 | 7429.21875 ± 2.02413 | 0.023226% / 0.027246% |
+| F1 | +0.18 | Y | 10896.96484 ± 2.53092 | 7429.21875 ± 2.02413 | 0.023226% / 0.027246% |
+| F1 | −0.18 | X | 10894.18359 ± 2.66979 | 7427.01563 ± 2.10633 | 0.024507% / 0.028360% |
+| F1 | −0.18 | Y | 10894.18359 ± 2.66979 | 7427.01563 ± 2.10633 | 0.024507% / 0.028360% |
+
+全metricのvariance／min／max／count／参考95%区間は[STATISTICS.csv](../../artifacts/research_b_outer_b1/20261025/STATISTICS.csv)と[result.json](../../artifacts/research_b_outer_b1/20261025/iid256-once/result.json)に保存した。Normal95は厳密coverageではなく、多重比較補正もない。RZ/CXの参考区間重複は8／120比較：[SUMMARY.json](../../artifacts/research_b_outer_b1/20261025/SUMMARY.json)。区間が分離しても同精度総資源優位を意味しない。
+
+RZ/CXの参考区間では、両T・両axisとも `B4 < B3 < F1 < {D1,R4} < R2` の群間差が分離した。D1対R4の8区間比較はすべて重なり、順位を識別できない。全24群でRZ／CX relative SEの診断目標2%を満たし、最大はB4/+TのCXで約0.0800%。これは観測標本のSEであり、未観測rare eventの寄与や厳密coverageを保証しない。X/YのRZ／CX記録は各sampleで同一だったが、独立標本数を512へ増やした扱いにはしない。
+
+### Rare event coverage
+
+| Case | K | Observed orders | Max p(order=K) across occurrences | Order K observed |
+|---|---|---|---|---|
+| B3:-9/50 | 2 | {'0': 3072} | 2.0234067e-05 | False |
+| B3:9/50 | 2 | {'0': 3072} | 2.0234067e-05 | False |
+| B4:-9/50 | 2 | {'0': 2048} | 1.7454515e-06 | False |
+| B4:9/50 | 2 | {'0': 2048} | 1.7454515e-06 | False |
+| D1:-9/50 | 2 | {'0': 3072} | 2.0234067e-05 | False |
+| D1:9/50 | 2 | {'0': 3072} | 2.0234067e-05 | False |
+| F1:-9/50 | 2 | {'0': 8192} | 1.0909106e-07 | False |
+| F1:9/50 | 2 | {'0': 8192} | 1.0909106e-07 | False |
+| R2:-9/50 | 2 | {'0': 6144} | 5.0586617e-06 | False |
+| R2:9/50 | 2 | {'0': 6144} | 5.0586617e-06 | False |
+| R4:-9/50 | 4 | {'0': 3072} | 6.8238752e-11 | False |
+| R4:9/50 | 4 | {'0': 3072} | 6.8238752e-11 | False |
+
+51,200 sampled short-stepはすべてorder 0で、order 2とorder 4の観測数は0だった。これは指定lawから得た固定IID標本の結果であり、次数を強制置換したものではない。B1 correctnessの実績は実際に抽出されたtrajectoryに限定され、高次数trajectoryを今回新たに検証したとはいえない。K2側もrare-event coverageが不足し、R4のorder-2確率も正である。各occurrenceの全次数確率はresult.json、case別確率範囲と明示的な0観測数はSUMMARY.jsonへ保存した。
+
+R4の最大次数未観測は費用ゼロの根拠にならない。観測標本に基づく小さいSEやnormal区間は未観測tailの影響を保証しない。全次数の理論probabilityとoccurrence別観測をraw resultへ残し、固定標本を増加・層別化しない。
+
+### Compile効率と資源
+
+32 process、worker内thread各1、RAM由来LRU10 trajectory／worker。集約cache／compiler記録：`{"actual_metric_queries": 6078, "compiler_cpu_seconds": 34401.567642493006, "compiler_wall_seconds": 34851.591293300036, "completed_samples": 3072, "evictions": 2719, "hits": 66, "misses": 6078}`。Logical要求と実transpile／metric queryを区別する。Worker CPU合計92819.032秒、worker単体最大RSS 1,120,720KiB。各worker peak RSSの単純和は同時aggregate peakではない。Whole-job wall／CPU／RSSは[time.txt](../../artifacts/research_b_outer_b1/20261025/execution_logs/time.txt)を参照する。速度向上率の対照測定は行っていない。
+
+Whole-job wallは **50分46.95秒**、CPU合計92,876.33秒（30.48コア相当、CPU3048%）、exit0、swap0、保存失敗0。Logical compile要求6,144に対しactual transpile6,078、実回路cache hit66。Workerは各95–97標本を担当し、wall範囲2,835–3,028秒。Compiler時間34,851.59秒wall／34,401.57秒CPUはworker分の累積で、whole-job経過時間ではない。実行後のSTOPは2026-10-25 20:25 JST（原本UTC11:25）に保存された。
+
+### 確認できたことと次の判断
+
+B0は決定論的代表の限定費用であり、今回のIID期待費用標本に混ぜていない。A0／B0／22行の保存数値を再解析せず、旧SOURCE・raw・grant・STOPを保全した。Gamma／u_num／shots／shot-weighted Gはnull。RZ単価、観測bias、A0のEMPIRICAL_CONSISTENCYから同精度達成・科学的GO・総資源優位を認定しない。ローカル固定SOURCE実行でありCIや外部再現ではない。
+
+次の担当は研究Bのユーザー。Rare-event対応の追加／層別MC、shot／gamma／保証付き数値包含のどれを優先するかを判断する。Codexは採択・別許可後にだけその固定作業を行う。今回は公開内容照合後mandatory STOPし、追加科学計算へ進まない。

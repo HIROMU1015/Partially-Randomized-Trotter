@@ -1,6 +1,6 @@
 # scripts 索引
 
-研究B [B1固定IID期待native費用：契約・実装・結果](../docs/research/research_b_outer_b1_expected_native_cost_20261025.md)。新入口 `scripts/run_b2d_outer_b1.py`、接続 `b2d_evaluator/b1_native.py`、人工test `test_b2d_b1_native.py`。12 case×256 trajectory、6,144 X/Y要求、B0 v5 compilerを再利用。一回のみ・retry/resume禁止・公開後mandatory STOP。以下のB0／A0記録は履歴として保全する。
+研究B [B1固定IID期待native費用：契約・実装・結果](../docs/research/research_b_outer_b1_expected_native_cost_20261025.md)。新入口 `scripts/run_b2d_outer_b1.py`、接続 `b2d_evaluator/b1_native.py`、人工test `test_b2d_b1_native.py`。全3,072 trajectory・6,144費用要求・18,432 operator／12,288 expectationを完了、compiled最大4.55e-13。32 process、wall50:46.95、actual compile6078／hit66。全eventはorder0で科学状態INCONCLUSIVE_RARE_EVENT_COVERAGE、gamma／shots／総費用は未資格。Retry/resume／追加標本なし、mandatory STOP。以下のB0／A0記録は履歴として保全する。
 
 ## 研究B B0固定pilot完了
 

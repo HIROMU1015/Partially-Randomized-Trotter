@@ -1,6 +1,6 @@
 # B2-D 5方式評価器：接続準備・技術報告
 
-研究B [B1固定IID期待native費用：契約・実装・結果](../../../docs/research/research_b_outer_b1_expected_native_cost_20261025.md)。新入口 `scripts/run_b2d_outer_b1.py`、接続 `b2d_evaluator/b1_native.py`、人工test `test_b2d_b1_native.py`。12 case×256 trajectory、6,144 X/Y要求、B0 v5 compilerを再利用。一回のみ・retry/resume禁止・公開後mandatory STOP。以下のB0／A0記録は履歴として保全する。
+研究B [B1固定IID期待native費用：契約・実装・結果](../../../docs/research/research_b_outer_b1_expected_native_cost_20261025.md)。新入口 `scripts/run_b2d_outer_b1.py`、接続 `b2d_evaluator/b1_native.py`、人工test `test_b2d_b1_native.py`。全3,072 trajectory・6,144費用要求・18,432 operator／12,288 expectationを完了、compiled最大4.55e-13。32 process、wall50:46.95、actual compile6078／hit66。全eventはorder0で科学状態INCONCLUSIVE_RARE_EVENT_COVERAGE、gamma／shots／総費用は未資格。Retry/resume／追加標本なし、mandatory STOP。以下のB0／A0記録は履歴として保全する。
 
 **B0 COMPLETE（2026-10-25）：** [独立診断・角度保存修正・全結果と費用](../../../docs/research/research_b_outer_b0_recovery_20261025.md)。SOURCE b190fe28b、48代表・288 operator／192 expectation PASS後に96 wrapper費用を保存した。Complex128／tol1e-12／phase fitなし、compiled最大4.43e-13。人工33件PASS。Gamma／shots／expected costはnull。旧SOURCE・全attempt・A0を保全してmandatory STOP。以下は履歴。
 

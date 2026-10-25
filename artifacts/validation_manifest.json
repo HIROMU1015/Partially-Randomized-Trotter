@@ -1165,6 +1165,14 @@
           "research_b_outer_rte22_20261025"
         ],
         "reason": "Nine byte-preserved raw files including inputs, analytic22-row results and STOP; four process/provenance files; direct62-column CSV extraction. No further scientific evaluation."
+      },
+      {
+        "path": "artifacts/research_b_outer_b1/20261025",
+        "kind": "directory",
+        "supports": [
+          "research_b_outer_b1_iid256_20261025"
+        ],
+        "reason": "Fixed B1 IID3072 trajectory and6144 X/Y full-wrapper cost requests,statistics,provenance and STOP;rare-event coverage inconclusive."
       }
     ],
     "quarantined": [
@@ -2583,7 +2591,10 @@
         "shot_evaluations": 0
       },
       "qualification": {
-        "epsilons": [1e-8, 1e-9],
+        "epsilons": [
+          1e-08,
+          1e-09
+        ],
         "u_num": null,
         "deterministic_qualified": null,
         "status": "UNRESOLVED_NUMERICAL_UNCERTAINTY",
@@ -2922,6 +2933,112 @@
       "completion_criteria": [
         "Publish SOURCE,successful raw,all prior attempts and STOP;mandatory STOP with no automatic new science.",
         "User/researchB decides whether to separately authorize expected-cost B1,shot qualification or other later stages."
+      ]
+    },
+    {
+      "id": "research_b_outer_b1_iid256_20261025",
+      "status": "source_present_no_current_ci",
+      "scientific_execution_status": "INCONCLUSIVE_RARE_EVENT_COVERAGE",
+      "fixed_sample_set_complete": true,
+      "runtime_status": "COMPLETED_DESCRIPTIVE_MANDATORY_STOP",
+      "summary": "One fixed IID run completed all3072 trajectories/6144 wrapper costs after per-sample correctness. All51200 events were order0;higher-order contribution and D1/R4 ranking unresolved. No retries or sample extension.",
+      "documentation": [
+        "docs/research/research_b_outer_b1_expected_native_cost_20261025.md"
+      ],
+      "source": [
+        "scripts/run_b2d_outer_b1.py",
+        "src/trottertracks/b2d_evaluator/b1_native.py",
+        "src/trottertracks/b2d_evaluator/b0_native.py",
+        "src/trottertracks/b2d_evaluator/launcher.py",
+        "src/trotterlib/rte.py",
+        "src/trotterlib/rte_compiled_cost.py"
+      ],
+      "tests": [
+        "tests/management/test_b2d_b1_native.py",
+        "tests/management/test_b2d_b0_native.py",
+        "tests/management/test_b2d_followup.py",
+        "tests/management/test_b2d_stage1_launcher.py"
+      ],
+      "artifacts": [
+        "artifacts/research_b_outer_b1/20261025/SAMPLES.csv",
+        "artifacts/research_b_outer_b1/20261025/STATISTICS.csv",
+        "artifacts/research_b_outer_b1/20261025/SUMMARY.json",
+        "artifacts/research_b_outer_b1/20261025/artificial_tests/b0.txt",
+        "artifacts/research_b_outer_b1/20261025/artificial_tests/b1.txt",
+        "artifacts/research_b_outer_b1/20261025/artificial_tests/followup.txt",
+        "artifacts/research_b_outer_b1/20261025/artificial_tests/launcher.txt",
+        "artifacts/research_b_outer_b1/20261025/execution_logs/preflight.json",
+        "artifacts/research_b_outer_b1/20261025/execution_logs/stderr.txt",
+        "artifacts/research_b_outer_b1/20261025/execution_logs/stdout.json",
+        "artifacts/research_b_outer_b1/20261025/execution_logs/time.txt",
+        "artifacts/research_b_outer_b1/20261025/iid256-once/STOP.json",
+        "artifacts/research_b_outer_b1/20261025/iid256-once/binding.json",
+        "artifacts/research_b_outer_b1/20261025/iid256-once/events.jsonl",
+        "artifacts/research_b_outer_b1/20261025/iid256-once/graph.json",
+        "artifacts/research_b_outer_b1/20261025/iid256-once/inputs.json",
+        "artifacts/research_b_outer_b1/20261025/iid256-once/partial_results.json",
+        "artifacts/research_b_outer_b1/20261025/iid256-once/result.json",
+        "artifacts/research_b_outer_b1/20261025/iid256-once/samples.jsonl",
+        "artifacts/research_b_outer_b1/20261025/iid256-once/status.json",
+        "artifacts/research_b_outer_b1/20261025/iid256-once/trajectories.jsonl"
+      ],
+      "science_source_commit": "11e2532a62d54a65f8fad5489be6b135f826011b",
+      "reused_B0_science_source": "b190fe28b98d2f94e1509e19cd3d36a63b2bb99e",
+      "snapshot_commit": "33715848bfb83d49ec4e54d6eef481012a7441e4",
+      "counts": {
+        "science_attempts": 1,
+        "cases": 12,
+        "IID_samples_per_case": 256,
+        "trajectories": 3072,
+        "compile_requests": 6144,
+        "actual_transpiles": 6078,
+        "actual_metric_queries": 6078,
+        "cache_hits": 66,
+        "operator_gates": 18432,
+        "expectations": 12288,
+        "sampled_short_steps": 51200,
+        "order0": 51200,
+        "order2": 0,
+        "order4": 0,
+        "statistic_groups": 24,
+        "input_gates": 33,
+        "workers": 32,
+        "artificial_tests": 45,
+        "event_records": 12433,
+        "retries": 0,
+        "resumes": 0,
+        "evidence_write_failures": 0
+      },
+      "residuals": {
+        "compiled_wrapper": 4.550538909283757e-13,
+        "controlled": 3.8985950626951644e-14,
+        "raw_wrapper": 3.644847141100376e-14,
+        "system": 1.493683375107909e-13,
+        "raw_signal": 3.26405569239796e-14,
+        "compiled_signal": 2.871036741680655e-13
+      },
+      "resources": {
+        "wall_seconds": 3046.95,
+        "CPU_seconds": 92876.33,
+        "average_CPU_cores": 30.48,
+        "worker_max_RSS_KiB": 1120720,
+        "aggregate_peak_memory_measured": false
+      },
+      "qualification": {
+        "gamma": null,
+        "u_num": null,
+        "shots": null,
+        "total_resource_G": null,
+        "absolute_tolerance": 1e-12,
+        "relative_tolerance": 0,
+        "phase_fit": false,
+        "unseen_high_order_events": true,
+        "normal95_rigorous_coverage": false
+      },
+      "interpretation": "Synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,nD1,T±.18,6 fixed candidates,q2,F1 f8,rK2/2,4/2,2/4,complex128,Qiskit1.3 v5. IID unweighted sample cost estimates with SE;observed normal intervals distinguish B4<B3<F1<{D1,R4}<R2,but D1/R4 overlap and rare orders are entirely unobserved. Not a rigorous expected-cost,same-accuracy,shot or total-resource ranking. Local committed evidence,not CI/external reproduction. Old A0/B0/22row results unchanged.",
+      "completion_criteria": [
+        "Publish fixed SOURCE,all raw samples/statistics,environment and STOP;verify remote then mandatory STOP.",
+        "User/researchB decides any separately scoped rare-event MC,shots/gamma or certified numerical work."
       ]
     }
   ],
