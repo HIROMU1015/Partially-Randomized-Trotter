@@ -1,5 +1,7 @@
 # 文書索引
 
+研究B [Full DF-Yoshida4 q4：固定scope・検証・実行記録](research/research_b_full_df_yoshida4_q4_execution_20261026.md)。既存Full DF-PFを再利用、FD5/6・T±.18だけ。
+
 研究B [Full deterministic DF-PF4 caseの科学実行結果](research/research_b_full_deterministic_df_pf_execution_20261026.md)。全correctness後にFull S2／Yoshida4のsignal・native単価を取得。保存Exact-R／finite-RTEとの固定点対応、未資格u_num／γ、総資源比較の未実施を区別してmandatory STOP。
 
 研究B [Full deterministic DF-PFの再利用・実装・実行準備](research/research_b_full_deterministic_df_pf_readiness_20261026.md)。元c0／全DF因子・ordinary control・独立correctnessを接続。旧packageは指定commitから取得して必要定義だけを再利用、科学SOURCE8811ef089、人工39件PASS。新科学結果・費用比較は未取得。

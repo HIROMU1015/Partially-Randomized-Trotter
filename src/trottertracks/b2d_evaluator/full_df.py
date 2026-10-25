@@ -41,26 +41,26 @@ def validate_case(row):
         raise Stage1Failure("FULL_DF_CASE_SCOPE_MISMATCH")
 
 
-def schedule(row):
-    validate_case(row)
+def schedule(row, *, validator=validate_case):
+    validator(row)
     return deterministic_control_plan(4, float(row["total_time"]), row["q"], row["formula"])
 
 
-def reference_pieces(row):
-    validate_case(row)
+def reference_pieces(row, *, validator=validate_case):
+    validator(row)
     weights = _get_w_list(row["formula"])
     return (1.,) if row["formula"] == "2nd" else (weights[1], weights[0], weights[1])
 
 
-def inventory():
+def inventory(rows=None, *, validator=validate_case):
     probes, exps = {}, {}
-    for row in cases():
-        for stage in schedule(row):
+    for row in cases() if rows is None else rows:
+        for stage in schedule(row, validator=validator):
             for controlled in (False, True):
                 key = b0.block_key(LABELS[stage.term], stage.time, controlled)
                 probes[key] = (stage.term, stage.time, controlled)
             exps[b0.exp_key(LABELS[stage.term], stage.time)] = (LABELS[stage.term], stage.time)
-        for w in reference_pieces(row):
+        for w in reference_pieces(row, validator=validator):
             time = float(row["total_time"])*w/row["q"]
             for i in (0,1,2,3,2,1,0):
                 t = time if i == 3 else time/2
@@ -69,14 +69,15 @@ def inventory():
     return dict(probes=probes, exps=exps)
 
 
-def scope():
-    inv = inventory()
+def scope(rows=None, *, validator=validate_case, study="full_df_pf"):
+    rows = cases() if rows is None else tuple(rows)
+    inv = inventory(rows, validator=validator)
     calls = [("full_df."+k, "input") for k in (
         "fixture", "split", "prepare", "full_inputs", "input_gate", "full_prepare", "definition_gate", "saved_comparisons")]
     for kind in ("block_build", "block_gate"):
         calls.extend(("full_df."+kind, key) for key in inv["probes"])
     calls.extend(("full_df.exponential", key) for key in inv["exps"])
-    for row in cases():
+    for row in rows:
         key = row["case_id"]
         calls.extend(("full_df."+k, key) for k in (
             "system_build", "controlled_build", "reference", "system_gate", "controlled_gate", "signals"))
@@ -84,10 +85,11 @@ def scope():
             calls.extend(("full_df."+k, key+":"+axis) for k in (
                 "wrapper_build", "wrapper_reference", "raw_wrapper_gate", "raw_expectation",
                 "compile", "compiled_gate", "compiled_expectation", "measure"))
-    return registered_scope("full_df_pf", calls, cases=list(cases()), new_cases=4,
-        wrappers=8, compile_requests=8, cost_requests=8, system_builds=4, controlled_builds=4,
+    return registered_scope(study, calls, cases=list(rows), new_cases=len(rows),
+        wrappers=2*len(rows), compile_requests=2*len(rows), cost_requests=2*len(rows),
+        system_builds=len(rows), controlled_builds=len(rows),
         block_probes=len(inv["probes"]), exponential_keys=len(inv["exps"]),
-        operator_gates=len(inv["probes"])+24, expectations=16,
+        operator_gates=len(inv["probes"])+6*len(rows), expectations=4*len(rows),
         precision="complex128", atol=1e-12, rtol=0, phase_fit=False, normalization=1,
         compiler=b0.PROFILE, provider_source=PROVIDER_COMMIT, scalar_policy="original_c0_once",
         target="physical_complex_coherent_signal_absolute_error",
@@ -97,6 +99,8 @@ def scope():
 
 
 class Native(b0.Native):
+    case_validator = staticmethod(validate_case)
+
     def __init__(self, run, ledger):
         super().__init__(run, ledger)
         from . import _full_df_native as provider
@@ -143,7 +147,7 @@ class Native(b0.Native):
         return self.cached("block_build", b0.block_key(LABELS[index],time,controlled), build)
 
     def system(self, row):
-        validate_case(row)
+        self.case_validator(row)
         from trotterlib.df_trotter.circuit import build_df_trotter_circuit
         from trotterlib.df_trotter.model import Block, DFBlock, OneBodyGaussianBlock
         blocks = []
@@ -158,7 +162,7 @@ class Native(b0.Native):
         return qc
 
     def controlled_system(self, row):
-        validate_case(row)
+        self.case_validator(row)
         # The old builder's instruction bound, derived from these actual blocks.
         pieces = 1 if row["formula"] == "2nd" else 3
         bound = row["q"]*pieces*sum(self.provider.block_instruction_bound(b,"ORDINARY")
@@ -170,10 +174,10 @@ class Native(b0.Native):
 
     def full_reference(self, row):
         """Canonical mathematical S2, independent of native/merged stage lists."""
-        validate_case(row)
+        self.case_validator(row)
         value = self.eye.copy()
         for _ in range(row["q"]):
-            for w in reference_pieces(row):
+            for w in reference_pieces(row, validator=self.case_validator):
                 time = float(row["total_time"])*w/row["q"]
                 for i in (0,1,2,3,2,1,0):
                     value = value@self.exp(LABELS[i], time if i == 3 else time/2)
@@ -211,19 +215,20 @@ class Native(b0.Native):
             python=sys.version, executable=sys.executable, platform=platform.platform())
 
 
-def execute(run, ledger, evidence, *, native_factory=Native):
+def execute(run, ledger, evidence, *, native_factory=Native, rows=None, validator=validate_case):
+    rows = cases() if rows is None else tuple(rows)
+    inv = inventory(rows, validator=validator)
     native = native_factory(run, ledger)
-    inv = inventory()
     for label,time in inv["exps"].values(): native.exp(label,time)
     for key,(index,time,controlled) in inv["probes"].items():
         qc = native.block_probe(index,time,controlled); ref = native.exp(LABELS[index],time)
         native.call("block_gate",key,lambda: native.circuit_gate(qc,native.controlled(ref) if controlled else ref))
     outputs, compiled = [], []
-    for row in cases():
+    for row in rows:
         key = row["case_id"]
         record = dict(**row, correctness="IN_PROGRESS", axes={}, normalization=1,
                       append_schedule=[dict(asdict(s), mode="ORDINARY", source_plan_mode=s.mode)
-                                       for s in schedule(row)])
+                                       for s in schedule(row, validator=validator)])
         ledger.rows.append(record)
         system = native.call("system_build",key,lambda:native.system(row))
         control = native.call("controlled_build",key,lambda:native.controlled_system(row))
@@ -249,16 +254,16 @@ def execute(run, ledger, evidence, *, native_factory=Native):
         record["signals"] = native.call("signals",row["case_id"],lambda:native.signals(row,ref))
     for aid,qc,record in compiled:
         record["metrics"] = native.call("measure",aid,lambda:native.measure(qc))
-    return dict(study="B-Next4_Full_DF_PF",source=run["source"],rows=ledger.rows,
+    return dict(study=run["scope"].get("result_study", "B-Next4_Full_DF_PF"),source=run["source"],rows=ledger.rows,
         input_diagnostics=native.input_diagnostics,full_diagnostics=native.full_diagnostics,
-        provenance=native.provenance(),saved_comparisons=saved,compile_requests=8,
+        provenance=native.provenance(),saved_comparisons=saved,compile_requests=len(compiled),
         actual_transpile_count=len(native.compile_cache),scientific_status="DESCRIPTIVE_ONLY",
         classification="FIXED_Q_PILOT_NOT_MATCHED_RESOURCE_OPTIMIZATION",normalization=1,
         shots=None,G=None,gamma=None,stop=STOP)
 
 
-def preflight(root,output,source):
-    run = base_preflight(root,output,source,"full_df_pf",scope())
+def preflight(root,output,source, *, study="full_df_pf", call_scope=None):
+    run = base_preflight(root,output,source,study,scope() if call_scope is None else call_scope)
     if run["versions"]["qiskit"] != b0.PROFILE["qiskit"]: raise ValueError("Full DF compiler version mismatch")
     read_fixture_definition(root)
     blobs = {}
@@ -278,19 +283,23 @@ def preflight(root,output,source):
     return run
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Full DF-S2/Yoshida4 four-case preparation or explicit execution")
+def main(*, scope_factory=None, preflight_function=None, body=None,
+         description="Full DF-S2/Yoshida4 four-case preparation or explicit execution"):
+    scope_factory = scope if scope_factory is None else scope_factory
+    preflight_function = preflight if preflight_function is None else preflight_function
+    body = execute if body is None else body
+    parser = argparse.ArgumentParser(description=description)
     mode = parser.add_mutually_exclusive_group(required=True)
     for name in ("inspect","preflight","execute"): mode.add_argument("--"+name,action="store_true")
     parser.add_argument("--source-commit"); parser.add_argument("--output")
     args = parser.parse_args()
     if args.inspect:
-        print(_encode(dict(status="METADATA_ONLY_NO_SCIENCE",scope=scope()))); return 0
+        print(_encode(dict(status="METADATA_ONLY_NO_SCIENCE",scope=scope_factory()))); return 0
     if not args.source_commit or not args.output: parser.error("--preflight/--execute requires --source-commit and --output")
     try:
-        run = preflight(Path(__file__).resolve().parents[3],args.output,args.source_commit)
+        run = preflight_function(Path(__file__).resolve().parents[3],args.output,args.source_commit)
         status = (dict(status="PREFLIGHT_ONLY_NO_SCIENCE",source=run["source"],versions=run["versions"],scope=run["scope"],fresh_output=True)
-                  if args.preflight else run_prepared(run,execute))
+                  if args.preflight else run_prepared(run,body))
     except BaseException as error: status = rejection(error)
     print(_encode(status))
     return 0 if status["status"] in ("PREFLIGHT_ONLY_NO_SCIENCE","COMPLETED_DESCRIPTIVE_MANDATORY_STOP") else 2
