@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究B A0高精度・B0 native pilotの実行準備（2026-10-25）
+
+[固定SOURCE・scope・人工138件・個別command](docs/research/research_b_outer_a0_b0_execution_preparation_20261025.md)。A0 SOURCE1e3921ba1、8行×90/128桁、入口 `scripts/run_b2d_outer_a0.py`。B0 SOURCE8d0cb96df、48代表・96 compile要求、入口 `scripts/run_b2d_outer_b0.py`。実装 `b2d_evaluator/{a0_reference,b0_native,followup_io}.py`、人工test `tests/management/test_b2d_{followup,b0_native}.py`。両read-only preflight PASS、科学実行0。A0/B0は別許可、次はA0実行を研究Bで判断する。
+
 ## 研究B outer/RTE固定22行の科学実行完了（2026-10-25）
 
 [結果・SOURCE・数値的限界・STOP](docs/research/research_b_outer_rte_22row_execution_20261025.md)。SOURCE26e8734afを変更せず一回完了。全correctness先行、22行・1239 dispatch・274 key・RTE各96・110 expectations。原本9ファイル・CSV・process記録は `artifacts/research_b_outer_rte22/20261025/`。観測bias改善とu_num未資格を区別し、精度保証／総資源優位を認定しない。Mandatory STOP。

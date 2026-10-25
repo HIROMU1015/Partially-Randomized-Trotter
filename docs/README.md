@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究B A0高精度・B0 full-wrapper pilot準備（2026-10-25）
+
+[技術報告・固定SOURCE・個別科学契約／command](research/research_b_outer_a0_b0_execution_preparation_20261025.md)。A0 1e3921ba1、B0 8d0cb96df、人工138件・両read-only preflight PASS。実高精度／回路build／compileは未実行。u_num・γ資格と科学的correctnessは未確認。A0とB0の実行許可は別々に必要。
+
 ## 研究B outer/RTE固定22行の完了結果（2026-10-25）
 
 [全結果・r/K・normalization・数値的限界・STOP](research/research_b_outer_rte_22row_execution_20261025.md)。SOURCE26e8734afを変更せず、全gate・22行・1239 dispatch・274 keyを一回で完了した。原本とCSVは `artifacts/research_b_outer_rte22/20261025/`。u_numとdeterministic qualificationは未確定、精度／総資源の認定なし。追加科学計算へ進まない。

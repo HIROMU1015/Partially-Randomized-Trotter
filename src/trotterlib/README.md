@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+研究Bの[A0／B0準備](../../docs/research/research_b_outer_a0_b0_execution_preparation_20261025.md)では、`df_partial_s2.QiskitDFPartialS2CircuitBuilder.append_block_evolution` と `rpe_hadamard_interrogation.build_prepared_hadamard_wrapper` をouter専用adapterから利用する。旧partial-S2／RPE契約は維持。SOURCE B0 8d0cb96df、人工138件PASS、実回路build／compileは未実行。実行にはA0とは別のB0明示許可が必要。
+
 このディレクトリが実装本体である。`scripts/` は主にここにある関数を呼び出す実行入口、
 `tests/` は回帰検査である。研究全体の入口は[`../../PROJECT_MAP.md`](../../PROJECT_MAP.md)を参照する。
 
