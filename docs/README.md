@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1 Stage3 楽観的shots限定再解析
+
+[候補別結果・意味・制約](research/research_c_c1_stage3_shots_execution_20261025.md)／[20候補・260round・520軸・call](../artifacts/research_c_c1_stage3_shots_science/2026-10-25/)。282/282 callsで14候補合計、6候補の前段不適格を保持。仮定付きの十分shots式内スクリーニングであり普遍的下界・CA達成・実shots保証ではない。回路・総費用未評価、retry0・mandatory STOP。
+
 ## C1 Stage3 shots下界スクリーニング準備
 
 [技術報告](research/research_c_c1_stage3_shots_preparation_20261025.md)／[未承認282-call契約](research/research_c_c1_stage3_shots_contract_unapproved_20261025.json)／[人工証拠](../artifacts/research_c_c1_stage3_shots_technical/2026-10-25/)。保存PF/RTE/Aを保持した理想条件の十分shots式を全20候補・13round・X/Yへ接続。任意精度整数と減衰診断を用い、CA・実装保証・総費用には昇格させない。人工81 PASS、実保存値再解析0・mandatory STOP。
