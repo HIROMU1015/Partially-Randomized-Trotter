@@ -62,17 +62,18 @@ def _encode(value):
 
 class Evidence:
     """Only this launch's newly created output, or isolated mock directory, may use this."""
-    def __init__(self, output, *, mock_only=False):
+    def __init__(self, output, *, mock_only=False, outputs=OUTPUTS, limits=OUTPUT_LIMITS):
         self.output, self.mock_only = Path(output), mock_only
+        self.outputs,self.limits=outputs,limits
         self.total_bytes = 0
         self.output.chmod(0o700)
         self.events = (self.output / "events.jsonl").open("x", encoding="utf-8")
 
     def write(self, name, value):
-        if name not in OUTPUTS:
+        if name not in self.outputs:
             raise Stage1Failure("OUTPUT_SCOPE_EXCEEDED")
         encoded = _encode(value)+"\n"
-        if len(encoded.encode()) > OUTPUT_LIMITS["json_document_bytes"]:
+        if len(encoded.encode()) > self.limits["json_document_bytes"]:
             raise Stage1Failure("OUTPUT_SCOPE_EXCEEDED")
         self.audit(extra_bytes=len(encoded.encode()))
         with (self.output/name).open("x", encoding="utf-8") as file:
@@ -83,9 +84,9 @@ class Evidence:
 
     def event(self, value):
         encoded = _encode(value)+"\n"
-        if len(encoded.encode()) > OUTPUT_LIMITS["event_record_bytes"]:
+        if len(encoded.encode()) > self.limits["event_record_bytes"]:
             raise Stage1Failure("LOG_SCOPE_EXCEEDED")
-        if self.total_bytes+len(encoded.encode()) > OUTPUT_LIMITS["total_bytes"]-OUTPUT_LIMITS["stop_reserve_bytes"]:
+        if self.total_bytes+len(encoded.encode()) > self.limits["total_bytes"]-self.limits["stop_reserve_bytes"]:
             raise Stage1Failure("OUTPUT_SCOPE_EXCEEDED")
         # Actual records are bounded by ScopeLedger and each line's byte limit.
         # Audit aggregate bytes at file boundaries, avoiding a directory scan
@@ -97,9 +98,9 @@ class Evidence:
     def audit(self, extra_bytes=0):
         files = list(self.output.iterdir())
         size = sum(p.stat().st_size for p in files)
-        if (len(files)>OUTPUT_LIMITS["files"] or
-            any(p.name not in OUTPUTS or p.is_symlink() or not p.is_file() for p in files) or
-            size+extra_bytes > OUTPUT_LIMITS["total_bytes"]):
+        if (len(files)>self.limits["files"] or
+            any(p.name not in self.outputs or p.is_symlink() or not p.is_file() for p in files) or
+            size+extra_bytes > self.limits["total_bytes"]):
             raise Stage1Failure("OUTPUT_SCOPE_EXCEEDED")
         self.total_bytes = size
 

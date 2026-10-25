@@ -1,5 +1,7 @@
 # B2-D 5方式評価器：接続準備・技術報告
 
+研究B [B1固定IID期待native費用：契約・実装・結果](../../../docs/research/research_b_outer_b1_expected_native_cost_20261025.md)。新入口 `scripts/run_b2d_outer_b1.py`、接続 `b2d_evaluator/b1_native.py`、人工test `test_b2d_b1_native.py`。12 case×256 trajectory、6,144 X/Y要求、B0 v5 compilerを再利用。一回のみ・retry/resume禁止・公開後mandatory STOP。以下のB0／A0記録は履歴として保全する。
+
 **B0 COMPLETE（2026-10-25）：** [独立診断・角度保存修正・全結果と費用](../../../docs/research/research_b_outer_b0_recovery_20261025.md)。SOURCE b190fe28b、48代表・288 operator／192 expectation PASS後に96 wrapper費用を保存した。Complex128／tol1e-12／phase fitなし、compiled最大4.43e-13。人工33件PASS。Gamma／shots／expected costはnull。旧SOURCE・全attempt・A0を保全してmandatory STOP。以下は履歴。
 
 **B0復旧後も未完了・STOP：** [修正・診断・全履歴](../../../docs/research/research_b_outer_b0_recovery_20261025.md)。最終SOURCE5c1fc5bc3、失敗matrix／raw・compiled QPYと途中rowを保存する。初期B3検査は改善したがD1の残差が固定tol未達。人工30件PASSを全B0 correctnessとせず、費用0件のままSTOP。以下の原本・旧結果を保全。

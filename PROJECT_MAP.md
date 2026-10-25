@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+研究B [B1固定IID期待native費用：契約・実装・結果](docs/research/research_b_outer_b1_expected_native_cost_20261025.md)。新入口 `scripts/run_b2d_outer_b1.py`、接続 `b2d_evaluator/b1_native.py`、人工test `test_b2d_b1_native.py`。12 case×256 trajectory、6,144 X/Y要求、B0 v5 compilerを再利用。一回のみ・retry/resume禁止・公開後mandatory STOP。以下のB0／A0記録は履歴として保全する。
+
 ## 研究B B0完了：角度保存修正後に全correctness・96費用を完了（2026-10-25）
 
 [独立D1診断・修正・全B0結果・費用・STOP](docs/research/research_b_outer_b0_recovery_20261025.md)。科学SOURCE b190fe28b、12 case・48代表・288 operator／192 expectation全PASS後に96 wrapperの費用を保存した。Compiled operator最大4.43e-13、固定tol1e-12、complex128・phase fitなし。原本 `artifacts/research_b_outer_b0/20261025/corrected-2/`、全費用 `WRAPPERS_v5.csv`、独立診断 `independent-{1,2}/`。人工33件PASS、expected_cost／shots／gammaはnull。旧attempt・A0を保全し、追加段階へ進まずmandatory STOP。以下は履歴。

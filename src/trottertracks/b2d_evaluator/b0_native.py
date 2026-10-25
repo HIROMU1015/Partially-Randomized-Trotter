@@ -274,8 +274,8 @@ class Native:
             return self.rte_builder.build_sequence(request).circuit
         return self.cached("rte_build",rte_key(spec,word,controlled),build)
 
-    def render(self,row,variant,controlled):
-        plan=outer_plan(row,self.context);words=iter(trajectory(row,variant,plan));qc=self.QC(3 if controlled else 2)
+    def render(self,row,variant,controlled,*,sampled_words=None):
+        plan=outer_plan(row,self.context);words=iter(trajectory(row,variant,plan) if sampled_words is None else sampled_words);qc=self.QC(3 if controlled else 2)
         for stage in plan.body:
             if isinstance(stage,DStage):
                 for op in stage.append_operations():
@@ -288,9 +288,9 @@ class Native:
         else:qc.global_phase+=phase
         return qc
 
-    def reference(self,row,variant):
+    def reference(self,row,variant,*,sampled_words=None):
         # Independent mathematical product; rightmost factor acts first.
-        plan=outer_plan(row);words=list(trajectory(row,variant,plan))[::-1];tail_index=0;factors=[]
+        plan=outer_plan(row);words=list(trajectory(row,variant,plan) if sampled_words is None else sampled_words)[::-1];tail_index=0;factors=[]
         for kind,w in mathematical_stages(plan.case.method)*plan.case.step_count:
             time=plan.case.total_time*w/plan.case.step_count
             if kind=="D":
@@ -314,8 +314,8 @@ class Native:
         x=np.array([[0,1],[1,0]],complex);prep=np.kron(np.eye(2),np.kron(np.eye(2),x))
         return np.kron(tail,self.eye)@self.controlled(u)@np.kron(h,self.eye)@prep
 
-    def expectation(self,circuit,reference):
-        value=self.Operator(circuit.remove_final_measurements(inplace=False)).data[:,0]
+    def expectation(self,circuit,reference,*,operator=None):
+        value=(self.Operator(circuit.remove_final_measurements(inplace=False)).data if operator is None else operator)[:,0]
         actual=float(self.np.sum(abs(value[:4])**2)-self.np.sum(abs(value[4:])**2))
         expected=float(self.np.sum(abs(reference[:4,0])**2)-self.np.sum(abs(reference[4:,0])**2))
         if not self.np.isfinite(actual) or abs(actual-expected)>1e-12:raise Stage1Failure("B0_HADAMARD_SIGNAL_FAILURE")

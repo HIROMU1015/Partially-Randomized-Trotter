@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+研究B [B1固定IID期待native費用：契約・実装・結果](../../docs/research/research_b_outer_b1_expected_native_cost_20261025.md)。新入口 `scripts/run_b2d_outer_b1.py`、接続 `b2d_evaluator/b1_native.py`、人工test `test_b2d_b1_native.py`。12 case×256 trajectory、6,144 X/Y要求、B0 v5 compilerを再利用。一回のみ・retry/resume禁止・公開後mandatory STOP。以下のB0／A0記録は履歴として保全する。
+
 研究Bの[B0最新結果](../../docs/research/research_b_outer_b0_recovery_20261025.md)：SOURCE b190fe28bでfixed48代表・全correctnessと96 full-wrapper費用を完了。既存DF/RTE/Hadamard部品を維持し、B0専用compilerの微小角・離散phaseを修正した。Expected cost／shots／γ資格は未評価。旧記録を保全しmandatory STOP。
 
 研究Bの[B0技術復旧](../../docs/research/research_b_outer_b0_recovery_20261025.md)はtrotterlibの科学条件を変更せず、B0専用compiler側のphase集計・失敗保存を修正した。D1の残差は固定tol未達のままで、全pilot・費用比較は未完了。旧研究の既定compilerと共有optimizer classは変更していない。

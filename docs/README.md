@@ -1,5 +1,7 @@
 # 文書索引
 
+研究B [B1固定IID期待native費用：契約・実装・結果](research/research_b_outer_b1_expected_native_cost_20261025.md)。新入口 `scripts/run_b2d_outer_b1.py`、接続 `b2d_evaluator/b1_native.py`、人工test `test_b2d_b1_native.py`。12 case×256 trajectory、6,144 X/Y要求、B0 v5 compilerを再利用。一回のみ・retry/resume禁止・公開後mandatory STOP。以下のB0／A0記録は履歴として保全する。
+
 ## 研究B B0完了・native費用観測（2026-10-25）
 
 [最新結果・SOURCE・独立診断・全費用・STOP](research/research_b_outer_b0_recovery_20261025.md)。SOURCE b190fe28b、全288 operator／192 expectation PASS後に96 wrapperを測定。Compiled最大4.43e-13、fixed tol1e-12、人工33件PASS。決定論的代表の費用観測で、期待費用・shots・γ資格は未評価。旧失敗記録を保全。以下は停止・復旧の履歴。
