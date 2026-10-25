@@ -1,5 +1,9 @@
 # scripts 索引
 
+## C1：H4 XDF8・固定SOURCEの限定科学実行完了
+
+`run_research_c_c1_h4_xdf8_pf.py`をSOURCE328f31007…のまま一度実行。[結果・全26 PFセル・保全](../docs/research/research_c_c1_h4_xdf8_pf_execution_20261026.md)。93 calls COMPLETE、表現／own-ground・alias PASS、s1/s4ともPOTENTIALLY_FEASIBLE、correctness FAIL/retry/resume0。2026-10-26/run01は消費済み、再起動しない。DF norm／CDF8/XDF10／native／CA／shots／総費用の新評価なし・mandatory STOP。
+
 ## C1：H4 XDF8の表現・own-ground/alias・PF（科学未承認）
 
 `run_research_c_c1_h4_xdf8_pf.py`はdefaultでbyte／環境preflightのみ。別明示科学許可後だけ`--execute`で保存順prefix8の表現とown-ground／H4 aliasを確認し、S2 s1/s4×13round＝26 PFセルを評価する。[再利用・人工22＋回帰92 PASS・次段階設計](../docs/research/research_c_c1_h4_xdf8_requalification_preparation_20261026.md)／[未承認93-call契約](../docs/research/research_c_c1_h4_xdf8_pf_contract_unapproved_20261026.json)。保存DF予算を再利用し、新fit／DF norm／CDF8-XDF10再評価／native／CA／shots／費用0。現在新科学0・mandatory STOP。

@@ -1,5 +1,9 @@
 # 研究計画資料
 
+## C1：H4保存順XDF8・PF2候補が潜在適格
+
+[限定科学実行・全26セル・SOURCE・資格](research_c_c1_h4_xdf8_pf_execution_20261026.md)。SOURCE328f31007…で93 calls COMPLETE、表現／own-ground/alias／PF26全PASS、s1/s4ともPOTENTIALLY_FEASIBLE。保存DF誤差を再利用、新fit・DF norm再計算・CDF8/XDF10評価・native/合成/CA/shots/費用0。公平な次段階条件は別判断・mandatory STOP。
+
 ## C1：H4 XDF8の追加採用・再資格付け準備
 
 [技術報告・既存再利用・人工22＋回帰92 PASS・公平な次段階設計](research_c_c1_h4_xdf8_requalification_preparation_20261026.md)／[未承認93-call契約](research_c_c1_h4_xdf8_pf_contract_unapproved_20261026.json)。保存DF予算PASSを再利用するXDF8専用entryを準備。実H4の表現／own-ground/alias／PF26セル・native／CA／shots／総費用は未実行。旧CDF8/XDF10比較は不変、mandatory STOP。

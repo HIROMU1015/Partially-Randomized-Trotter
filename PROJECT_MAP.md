@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：H4 XDF8・表現/ground/alias/PF26セルがPASS（2026-10-26）
+
+[結果・全26値・資格の限界](docs/research/research_c_c1_h4_xdf8_pf_execution_20261026.md)／[原本45・93 calls・STOP](artifacts/research_c_c1_h4_xdf8_pf/2026-10-26/)。固定SOURCE328f31007…無変更、93/93 COMPLETE・correctness FAIL/retry0。元順XDF8、S2 s1/s4とも13/13 PASS・POTENTIALLY_FEASIBLE。新fit・DF norm再計算・CDF8/XDF10新評価・native/合成/CA/shots/費用0。旧結果保全・mandatory STOP。以下は準備時点の履歴。
+
 ## C1：H4 XDF8を追加採用・第1段階の技術準備（2026-10-26）
 
 [表現・own-ground/alias・PF接続と公平な次段階設計](docs/research/research_c_c1_h4_xdf8_requalification_preparation_20261026.md)／[未承認93-call契約](docs/research/research_c_c1_h4_xdf8_pf_contract_unapproved_20261026.json)。SOURCE `c1_h4_xdf8_pf.py`／同名runner・人工test、[技術証拠](artifacts/research_c_c1_h4_xdf8_pf/2026-10-26/technical/)。新22＋回帰92 PASS、実H4 decode・新科学0。保存順prefix8を追加候補に採用し、旧CDF8/XDF10結果は保持。CDF8/XDF8への共通precision/P0は推奨案、第2・3段階は未採択・未実行。mandatory STOP。

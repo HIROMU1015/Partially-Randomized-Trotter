@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1：H4 XDF8の表現・own-ground/alias・PF限定結果
+
+[全gate・26 PF値・call・次の判断](research/research_c_c1_h4_xdf8_pf_execution_20261026.md)。固定SOURCE328f31007…無変更、93/93 COMPLETE・correctness FAIL0・retry/resume0。s1/s4とも13round PASS、最大PF誤差.06842795/.004276939。native/合成/CA/shots/総費用は未評価、旧CDF8/XDF10結果を保全してmandatory STOP。
+
 ## C1：H4 XDF8の再資格付け・技術準備
 
 [最小entry・人工114 PASS・native精度公平性・CA接続案](research/research_c_c1_h4_xdf8_requalification_preparation_20261026.md)／[第1段階の未承認93-call契約](research/research_c_c1_h4_xdf8_pf_contract_unapproved_20261026.json)。元順prefix8を追加採用、旧XDF10／約27%の旧結果は保持。新しい表現・own-ground/alias・26 PFセルは未評価、実H4 decode／科学call0・mandatory STOP。

@@ -10,6 +10,11 @@
   },
   "relevant_commits": [
     {
+      "sha": "328f31007ee8069d1f7ba24f91029a3748b59109",
+      "role": "c1_h4_saved_XDF8_representation_ground_PF_scientific_SOURCE",
+      "description": "Frozen permitted93-call SOURCE;own-XDF8 sector36 representation/ground-alias and26 PF cells;no fit,DF norm,native,CA,shots or costs."
+    },
+    {
       "sha": "cf285c0ac1e3d587df4a8eb6bee2279a12ced462",
       "role": "audit_base",
       "description": "GitHub main commit whose committed validation evidence was audited."
@@ -97,6 +102,14 @@
   ],
   "artifact_inventory": {
     "present": [
+      {
+        "path": "artifacts/research_c_c1_h4_xdf8_pf/2026-10-26/run01",
+        "kind": "directory",
+        "supports": [
+          "c1_h4_saved_XDF8_representation_ground_PF_pilot"
+        ],
+        "reason": "45 raw files;93 COMPLETE,correctness FAIL0;representation/ground-alias and26 PF PASS;S2 s1/s4 POTENTIALLY_FEASIBLE,not CA/native/cost qualification;consumed STOP/retry-resume0."
+      },
       {
         "path": "artifacts/research_c_c1_h4_xdf8_pf/2026-10-26/technical",
         "kind": "directory",
@@ -5322,6 +5335,210 @@
       "resume": 0,
       "old_full256_regression": "Still unresolved; not exercised in this sector36 run",
       "mandatory_stop": true
+    },
+    {
+      "status": "XDF8_STAGE1_COMPLETE",
+      "scope": "C1_H4_SAVED_XDF8_REPRESENTATION_GROUND_PF_V1",
+      "SOURCE_commit": "328f31007ee8069d1f7ba24f91029a3748b59109",
+      "SOURCE_tree": "44b024af23b9e907af52b3290f453651e6e99b61",
+      "branch": "codex/research-c-c1-h4-xdf8-pf-execution-20261026",
+      "contract": "docs/research/research_c_c1_h4_xdf8_pf_contract_unapproved_20261026.json",
+      "contract_sha256": "39af588fee2d879cfa1bf38073dac2bc295cc6f8f610a6be7ef6c105f26fa63c",
+      "source_manifest_sha256": "4f4d3261411176bebdade53d3a621badfb120839df49e4ac9f59396cad9489cd",
+      "original_input_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+      "conditions": {
+        "atoms": 4,
+        "distance_angstrom": 1.0,
+        "basis": "STO-3G",
+        "Nalpha": 2,
+        "Nbeta": 2,
+        "sector_dimension": 36,
+        "rank": 8,
+        "source_order": "saved OpenFermion1.6.1 eigh prefix8",
+        "number_representation": true,
+        "original_g_kappa": true,
+        "scalar": "original nuclear once",
+        "product_formula": "all original frames ordered symmetric S2",
+        "substeps": [
+          1,
+          4
+        ],
+        "base_time": "1/10",
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "CA_Ha": 0.00159,
+        "DF_budget_Ha": 0.00019875,
+        "target": "own XDF8 sector ground-state oracle",
+        "state_preparation": "EXCLUDED",
+        "PR_split": null
+      },
+      "allowances": {
+        "component": 1e-10,
+        "ground_residual": 1e-10,
+        "normalization": 1e-12,
+        "rtol": 0,
+        "alias_energy_window_Ha": [
+          -10.0,
+          10.0
+        ],
+        "beta_total": 0.5235987755982988,
+        "beta_stat": 0.2617993877991494,
+        "PF_operator_phase_room": 0.25881904510252074,
+        "spin_lift": "exact; no dropped off-spin terms",
+        "qualification": "binary64 numerical pilot; no rounding enclosure"
+      },
+      "scientific_units": 93,
+      "maximum_logical_units": 93,
+      "scientific_COMPLETE": 93,
+      "scientific_FAIL": 0,
+      "inflight_calls": 0,
+      "call_counts": {
+        "saved_input_load": 1,
+        "saved_DF_gate": 1,
+        "sector_context": 1,
+        "input_identity": 1,
+        "xdf_prefix_model": 1,
+        "xdf_matvec": 36,
+        "raw_factor": 9,
+        "K_model": 1,
+        "representation_gate": 9,
+        "sector_sum_gate": 1,
+        "ground_eigenpair": 1,
+        "ground_alias": 1,
+        "sector_kernel_reference": 2,
+        "PF_round_assessment": 26,
+        "candidate_summary": 2
+      },
+      "saved_DF": {
+        "status": "PASS",
+        "rank": 8,
+        "saved_norm_Ha": 9.533753411107529e-05,
+        "saved_allowance_Ha": 1.480439843662034e-09,
+        "saved_norm_plus_allowance_Ha": 9.533901455091894e-05,
+        "DF_budget_Ha": 0.00019875,
+        "recomputed": false
+      },
+      "representation": {
+        "status": "PASS",
+        "factor_PASS": 9,
+        "factor_max_entry": 8.43769498715119e-15,
+        "total": {
+          "raw": {
+            "label": "raw sum/saved-XDF operator",
+            "max_entry": 1.7763568394002505e-15,
+            "frobenius": 4.6854481288849e-15,
+            "tolerance": 1e-10,
+            "rtol": 0
+          },
+          "general_K": {
+            "label": "K sum/saved-XDF operator",
+            "max_entry": 9.381384558082573e-15,
+            "frobenius": 3.389738536914026e-14,
+            "tolerance": 1e-10,
+            "rtol": 0
+          }
+        }
+      },
+      "ground": {
+        "status": "PASS",
+        "energy": -2.166402428462818,
+        "residual": 1.819886133099374e-15,
+        "normalization_error": 5.551115123125783e-16,
+        "sector_dimension": 36,
+        "base_alias_margin": 1.6179938779914944,
+        "alias_energy_window_Ha": [
+          -10.0,
+          10.0
+        ],
+        "rule": "H4 registered [-10,10] energy window and max(abs(window))*0.1+pi/6 < pi",
+        "state_model": "own XDF8 sector ground-state oracle",
+        "physical_ground_overlap": null
+      },
+      "candidates": [
+        {
+          "target": "XDF8",
+          "s": 1,
+          "status": "POTENTIALLY_FEASIBLE",
+          "rounds": 13,
+          "PF_PASS": 13,
+          "PF_NOT_MET": 0,
+          "PF_UNRESOLVED": 0,
+          "max_PF_operator_error": 0.06842795072754271,
+          "max_error_round": 12,
+          "native_candidate_eligible": true,
+          "CA_achieved": null,
+          "shots": null,
+          "total_cost": null
+        },
+        {
+          "target": "XDF8",
+          "s": 4,
+          "status": "POTENTIALLY_FEASIBLE",
+          "rounds": 13,
+          "PF_PASS": 13,
+          "PF_NOT_MET": 0,
+          "PF_UNRESOLVED": 0,
+          "max_PF_operator_error": 0.004276939210418963,
+          "max_error_round": 12,
+          "native_candidate_eligible": true,
+          "CA_achieved": null,
+          "shots": null,
+          "total_cost": null
+        }
+      ],
+      "PF_cells": 26,
+      "PF_PASS": 26,
+      "PF_NOT_MET": 0,
+      "PF_UNRESOLVED": 0,
+      "resources": {
+        "wall_seconds": 1.3950881799682975,
+        "process_CPU_seconds": 7.525539987,
+        "peak_RSS_KiB": 365452
+      },
+      "resource_plan": {
+        "workers": 2,
+        "available_affinity_cpus": 32,
+        "available_memory_bytes": 56408002560,
+        "quota_cpus": null,
+        "estimated_bytes_per_candidate": 5308416,
+        "BLAS_threads_per_worker": 1,
+        "policy": "Independent candidates; process-local BLAS coordination; no shared settings changed"
+      },
+      "raw_files": 45,
+      "postflight": "PASS",
+      "protected_files_unchanged": 27,
+      "new_fit": 0,
+      "optimizer": 0,
+      "new_decomposition": 0,
+      "DF_norm_recalculation": 0,
+      "CDF_evaluation": 0,
+      "XDF10_evaluation": 0,
+      "native_build_compile": 0,
+      "synthesis": 0,
+      "CA_evaluation": 0,
+      "shots": 0,
+      "total_cost": 0,
+      "retry": 0,
+      "resume": 0,
+      "qualification": "Numerical representation/ground-alias and PF sufficient-condition pilot only; not final CA or resource superiority",
+      "rigorous_enclosure": null,
+      "mandatory_stop": true,
+      "report": "docs/research/research_c_c1_h4_xdf8_pf_execution_20261026.md",
+      "raw": "artifacts/research_c_c1_h4_xdf8_pf/2026-10-26/run01",
+      "rounds_csv": "artifacts/research_c_c1_h4_xdf8_pf/2026-10-26/pf_rounds.csv"
     }
   ],
   "repository_completion_criteria": [
