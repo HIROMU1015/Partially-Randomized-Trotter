@@ -11,6 +11,8 @@
 
 ## 文書の役割
 
+研究Bの[成果統合・科学的到達点・発展候補A〜E](research_b_integrated_outcomes_and_future_directions_20261025.md)は、D内部高次PF・outer/RTE・高精度参照・native・条件付きshot加重費用を一冊にまとめた技術報告。既存数値の引用とSOURCEの静的確認に限定し、新しい数値解析・科学レビュー・研究方針の正式採択は行っていない。
+
 Gaussian singletonの[改善候補設計](pr_gaussian_singleton_synthesis_design_20261024.md)は、support1／support2を区別した選択部分空間Givens案と、既存helperの再利用・同値性条件・未承認の48-wrapper対照案。静的調査のみで、削減量未測定・候補未実装。
 
 限定F2の[保存case寄与分析](pr_algorithm_improvement_phase2d_f2_attribution_20261024.md)は、8分類表のP・条件付き費用・寄与とexact全体照合をまとめる。SP／PS差の記述分解、限界、次の改善候補を明示し、新build／compileは行っていない。
