@@ -1,3 +1,10 @@
+# 文書の現在の入口
+
+Pauli-JW研究は[科学的成果の総合資料](research/pauli_jw_resource_evaluation_summary.md)へ。個別報告・SOURCE・保存値の出典もそこから辿れる。
+
+<details>
+<summary>過去の実験・追記履歴（当時のsnapshot）</summary>
+
 ## 2026-10-26 H2 純RTEの独立確認とs64/128検証
 
 [Phase Aの8確認・Phase Bの3探索・更新後の条件付きG](h2_pauli_rte_validation_20261026.md)。全5精度で新確認集合minは保存Hybridより低G。有限標本・仮想ρ=0・実ρ/tail未保証を維持。旧研究を上書きしない。
@@ -400,6 +407,9 @@ H6 DBA限定並列検証：`docs/research/track_a_h6_dba_20261018.md`。D2軸・
 ## 2026-10-16 Track A V1 Phase A並列準備・V2保存結果照合
 
 [Phase A資料](research/track_a_v1_phase_a_parallel_readiness_20261016.md)。V1は最大16worker・44限定人工tests PASS、SOURCE/input/profile静的照合一致。新科学計算・新grant0、未承認・mandatory STOP。V2は指定commit7e416705…のH6/H8計832理論行を読み取り専用照合し、重複生成・計算を保留。以下は各時点の履歴。
+
+
+</details>
 
 # 文書索引
 

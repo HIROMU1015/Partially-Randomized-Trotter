@@ -1,3 +1,5 @@
+文書索引：[Pauli-JW H2/H4/H6の最新総合資料](docs/research/pauli_jw_resource_evaluation_summary.md)。文書転記・出典への案内であり、以下の科学status・certificate未受理を更新しない。既存manifestとvalidatorのschema不整合は[保守報告](docs/maintenance/pauli_jw_repository_integration_20261026.md)に記載。
+
 ## 2026-10-25 H4 Pauli B0/B0I prefix/q比較
 
 [106登録候補・5精度・303点保存値grid](docs/non_df_h4_pauli_b0_comparison_20261025.md)。固定H4/1Å/STO-3G、Pauli184、central/S2/T.8、Qiskit1.3.0/opt1/seed17。

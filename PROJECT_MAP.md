@@ -1,3 +1,10 @@
+# リポジトリの現在の入口
+
+Pauli-JWの最新研究成果は[H2・H4・H6の総合資料](docs/research/pauli_jw_resource_evaluation_summary.md)から読む。目的・手法・最新15条件・限界を体系化し、以下の実験履歴とは分離する。
+
+<details>
+<summary>過去の実験・追記履歴（当時のsnapshot）</summary>
+
 ## 2026-10-26 H2 純RTE：既存有望候補の追加確認・限定event拡張
 
 [旧13構成のcoverage、Phase A/B、5精度の条件付き比較、図・保存証拠](docs/h2_pauli_rte_validation_20261026.md)。保存target/Nを再利用して8候補を追加確認。H2だけの新結果で、旧比較/STOPを保全し、主要claimやH2/H4/H6統合結論の正式採択はしていない。
@@ -582,6 +589,9 @@ H6 DBA限定並列検証：`docs/research/track_a_h6_dba_20261018.md`。D2軸・
 ## 2026-10-16 Track A V1 Phase A並列準備・V2保存結果照合
 
 [track_a_v1_phase_a_parallel_readiness_20261016.md](docs/research/track_a_v1_phase_a_parallel_readiness_20261016.md)。V1は最大16worker・44限定人工tests PASS、SOURCE/input/profile静的照合一致。新科学計算・新grant0、未承認・mandatory STOP。V2は指定commit7e416705…のH6/H8計832理論行を読み取り専用照合し、重複生成・計算を保留。以下は各時点の履歴。
+
+
+</details>
 
 # プロジェクト案内
 

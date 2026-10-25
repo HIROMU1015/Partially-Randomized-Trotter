@@ -1,5 +1,9 @@
 # Partially Randomized Trotter
 
+## Pauli-JW研究の最新成果
+
+[H2・H4・H6の総合資料](docs/research/pauli_jw_resource_evaluation_summary.md)に、研究目的、PF/B0/Hybrid/純RTEの関係、保存15条件の比較、結果の変遷と限界をまとめた。旧DF screening/UWCの状態は以下の注意を維持し、Pauliの有限候補・仮想ρ=0の結果と分けて読む。
+
 発表資料：[PR資源評価のスライド構成案（14枚基本・12枚圧縮）](docs/progress/track_a/README.md)。本文・数式・図をGitHub上で閲覧できます。
 
 ## 研究内容を確認する入口
