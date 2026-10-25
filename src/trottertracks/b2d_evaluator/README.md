@@ -1,5 +1,7 @@
 # B2-D 5方式評価器：接続準備・技術報告
 
+研究B [Full DF-PF科学実行完了・原本・限界](../../../docs/research/research_b_full_deterministic_df_pf_execution_20261026.md)。SOURCE8811ef089、全4 case・72 operator／16 expectation PASS、8 native-v5 prepared wrapperを測定しmandatory STOP。元c0のみを保持し、固定q2の点値を同精度最適資源へ拡張しない。旧準備・SOURCE・STOPを保全。
+
 研究B [Full DF-PF adapter・技術準備](../../../docs/research/research_b_full_deterministic_df_pf_readiness_20261026.md)。`full_df.py`と`_full_df_{schedule,native}.py`は旧AX-2A/AX-2Bの12定義・現DF system builder・B0 prepared wrapper／compilerを接続する。元c0のみを使用。人工39件・read-only preflight PASS、固定4 caseの科学実行は未実施。
 
 研究B [Exact-R4 caseの科学実行完了](../../../docs/research/research_b_bnext3_exact_r_execution_20261026.md)。`exact_r.py` SOURCE e76c04748、全36 operator／16 expectationと保存整合PASS、8費用を取得しmandatory STOP。D／outer近似誤差・未資格u_num／γを保持し、総資源優位へ拡張しない。旧準備・SOURCE・STOPを保全。

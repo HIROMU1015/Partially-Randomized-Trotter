@@ -1,5 +1,12 @@
 # Validation status
 
+## 2026-10-26 research B Full DF-PF: four-case descriptive pilot COMPLETE
+
+Unmodified science SOURCE `8811ef089d588a529aca001f9e40cef1b2f6e1c7`;one attempt,no interruption/fix/retry/resume. Synthetic2mode one-body+3DF,N1/mode0,all4 blocks,Full S2/Yoshida4,q2,T±.18. No split/RTE/nD in the Full evolution;old LD2 weight-ranked snapshot binds common inputs only. Molecular geometry/AO basis/rank exploration not applicable. Complex128,spectral2-norm atol1e-12,rtol0,no phase fit;ordinary controlled prepared X/Y,native-v5,scalar c0=.17 once.
+All72 operator gates/16 expectations and saved physical consistency passed before4 signal reports/8 native costs. All224 registered calls matched,failed={},persistence failures=[];448 events;compiled operator max2.1208576964133056e-14. Wall8.53s,peak RSS422420KiB,exit0. Preparation artificial39 PASS is separate technical evidence.
+Full S2 physical complex signal error1.80763525850668e-6,RZ/CX406/276;Full Yoshida4 error1.947702126906798e-9,RZ/CX1186/820,both T and each axis. Fixed-q point results,not matched-resource or optimized same-accuracy costs. Saved finite-RTE4/Exact-R4 cells were referenced without recalculation. No new sampling,MC,q/nD search,shot/G,rare costs,molecules or qualification work. U_num/gamma/shots/G remain null;no general expected-cost/total-resource superiority or algorithm-GO claim.
+[Report](docs/research/research_b_full_deterministic_df_pf_execution_20261026.md),[raw+STOP](artifacts/research_b_outer_full_df_pf/20261026/full-df-once/),[signals](artifacts/research_b_outer_full_df_pf/20261026/SIGNALS.csv),[wrappers](artifacts/research_b_outer_full_df_pf/20261026/WRAPPERS.csv). Local fixed-source evidence,not CI/external reproduction. Old results/contracts/STOPs/R2-CS closure preserved. Mandatory STOP;User/researchB decides any separate follow-up scope.
+
 ## 2026-10-26 research B Exact-R: four-case descriptive pilot COMPLETE
 
 Unmodified science SOURCE `e76c0474806dca42598fa92a6564cded10896f98`;one attempt,no interruption/fix/retry/resume. Synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,D=one-body+factors0/1,R=factor2 minus identity;outer Yoshida4/SABA2,inner A2,nD1,q2,T±.18. Molecular geometry/AO basis/rank exploration not applicable. Complex128,spectral2-norm atol1e-12,rtol0,no phase fit;native-v5 ordinary controlled full prepared X/Y wrappers.

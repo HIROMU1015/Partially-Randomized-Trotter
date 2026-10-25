@@ -1,5 +1,7 @@
 # scripts 索引
 
+研究B [`run_b2d_full_df_pf.py`](run_b2d_full_df_pf.py)をSOURCE8811ef089で一回完了。[4 caseの結果・単価・STOP](../docs/research/research_b_full_deterministic_df_pf_execution_20261026.md)。全72 operator／16 expectation PASS後に8単価、scope224一致・中断0。使用済みoutputを再起動せず、追加科学段階へ自動移行しない。以下の準備記録を保全。
+
 研究B [`run_b2d_full_df_pf.py`](run_b2d_full_df_pf.py)の[実行準備・scope・単一command](../docs/research/research_b_full_deterministic_df_pf_readiness_20261026.md)。`--inspect`／`--preflight`は科学処理・出力作成なし。Full S2／Yoshida4の4 case・8 wrapperは別途実行許可後に限り起動しmandatory STOP。人工39件PASS、実候補は未実行。
 
 研究B [`run_b2d_exact_r.py`](run_b2d_exact_r.py)をSOURCE e76c04748で一回完了。[4 caseの結果・単価・STOP](../docs/research/research_b_bnext3_exact_r_execution_20261026.md)。全36 operator／16 expectation PASS後に8費用、scope一致・中断0。使用済みoutputを再起動せず、追加科学段階へ自動移行しない。以下の準備記録を保全する。

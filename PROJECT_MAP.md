@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+研究B [Full DF-PF4 case：科学結果・単価・STOP](docs/research/research_b_full_deterministic_df_pf_execution_20261026.md)。SOURCE8811ef089、Full S2／Yoshida4・q2・T±.18、全72 operator／16 expectation PASS後に8 prepared wrapperを計測。固定点の精度・単価を取得し、同精度最適資源・総優位は未認定。旧準備・結果・STOPを保全。
+
 研究B [B-Next 4：Full DF-PFの既存コード再利用・実行準備](docs/research/research_b_full_deterministic_df_pf_readiness_20261026.md)。旧AX-2A/AX-2Bの定義を再利用し、Full S2／Yoshida4・q2・T±.18の4 case／8 prepared wrapperを固定。人工39件・read-only preflight PASS、実候補の科学処理は未実行。
 
 研究B [Exact-R4 case：科学実行結果・単価・STOP](docs/research/research_b_bnext3_exact_r_execution_20261026.md)。SOURCE e76c04748、全36 operator／16 expectation PASS後に8 full prepared wrapperを計測、scope一致・中断0。D／outer誤差は残り、総資源優位は未認定。旧準備と全原本を保全。

@@ -68,6 +68,11 @@
       "sha": "e76c0474806dca42598fa92a6564cded10896f98",
       "role": "research_b_bnext3_exact_r_science_source",
       "description": "Unmodified four-case Exact-R source;all correctness gates and eight native costs completed without interruption or retry."
+    },
+    {
+      "sha": "8811ef089d588a529aca001f9e40cef1b2f6e1c7",
+      "role": "research_b_full_df_pf_science_source",
+      "description": "Unmodified Full DF-PF four-case source;independent correctness and eight costs completed without interruption or retry."
     }
   ],
   "artifact_inventory": {
@@ -3352,6 +3357,128 @@
         "algorithm_adoption": null
       },
       "interpretation": "Synthetic2mode one-body+3DF,N1/mode0,LD2 weight-ranked,D=one-body+factors0/1,R=factor2 minus identity;outer Yoshida4/SABA2,innerA2,nD1,q2,T±.18,complex128,atol1e-12,rtol0,no phase fit. Full prepared ordinary controlled native-v5 X/Y. Exact-R normalization1 but D/outer error remains. Native deterministic unit cost is not B1 unconditional expected cost or shot-weighted G. Old raw/contracts/STOP preserved. Local evidence,not CI/external reproduction.",
+      "completion_criteria": [
+        "Publish fixed SOURCE,raw,signal/native cells,provenance and STOP;verify remote contents then mandatory STOP.",
+        "User/researchB decides interpretation or any separately permitted follow-up."
+      ]
+    },
+    {
+      "id": "research_b_full_deterministic_df_pf_20261026",
+      "status": "source_present_no_current_ci",
+      "scientific_execution_status": "DESCRIPTIVE_ONLY",
+      "execution_status": "COMPLETE",
+      "runtime_status": "COMPLETED_DESCRIPTIVE_MANDATORY_STOP",
+      "fixed_scope_complete": true,
+      "summary": "Four Full DF-S2/Yoshida4 q2 cases passed independent correctness before signal reports and eight deterministic native costs. Fixed-q point evidence,not matched-resource or optimized same-accuracy costs.",
+      "documentation": [
+        "docs/research/research_b_full_deterministic_df_pf_execution_20261026.md"
+      ],
+      "source": [
+        "src/trottertracks/b2d_evaluator/full_df.py",
+        "src/trottertracks/b2d_evaluator/_full_df_native.py",
+        "src/trottertracks/b2d_evaluator/_full_df_schedule.py",
+        "scripts/run_b2d_full_df_pf.py"
+      ],
+      "tests": [
+        "tests/management/test_b2d_full_df.py",
+        "tests/test_b2d_full_df_toy.py",
+        "tests/management/test_b2d_exact_r.py",
+        "tests/test_b2d_exact_r_toy.py"
+      ],
+      "artifacts": [
+        "artifacts/research_b_outer_full_df_pf/20261026/SIGNALS.csv",
+        "artifacts/research_b_outer_full_df_pf/20261026/WRAPPERS.csv",
+        "artifacts/research_b_outer_full_df_pf/20261026/execution_logs/stderr.log",
+        "artifacts/research_b_outer_full_df_pf/20261026/execution_logs/stdout.json",
+        "artifacts/research_b_outer_full_df_pf/20261026/execution_logs/time.txt",
+        "artifacts/research_b_outer_full_df_pf/20261026/full-df-once/STOP.json",
+        "artifacts/research_b_outer_full_df_pf/20261026/full-df-once/binding.json",
+        "artifacts/research_b_outer_full_df_pf/20261026/full-df-once/events.jsonl",
+        "artifacts/research_b_outer_full_df_pf/20261026/full-df-once/inputs.json",
+        "artifacts/research_b_outer_full_df_pf/20261026/full-df-once/partial_results.json",
+        "artifacts/research_b_outer_full_df_pf/20261026/full-df-once/result.json",
+        "artifacts/research_b_outer_full_df_pf/20261026/full-df-once/status.json"
+      ],
+      "science_source_commit": "8811ef089d588a529aca001f9e40cef1b2f6e1c7",
+      "contract_commit": "0e9214e1a8f68b8c32ca2b06f69a743311f63e68",
+      "reused_provider_source_commit": "31cdff47f3282d2898c153a1af22f90e500be4c6",
+      "input_result_commits": {
+        "finite_RTE": "33715848bfb83d49ec4e54d6eef481012a7441e4",
+        "exact_R": "58502f5549d350a8da8cbc23a6e674c4670feb9b"
+      },
+      "counts": {
+        "full_DF_cases": 4,
+        "saved_finite_RTE_cases": 4,
+        "saved_exact_R_cases": 4,
+        "operator_gates": 72,
+        "expectations": 16,
+        "full_prepared_wrappers": 8,
+        "compile_requests": 8,
+        "actual_transpiles": 8,
+        "cost_requests": 8,
+        "block_probes": 48,
+        "exponential_keys": 32,
+        "registered_calls": 224,
+        "event_records": 448,
+        "scientific_attempts": 1,
+        "technical_interruptions": 0,
+        "fixes": 0,
+        "retries": 0,
+        "resumes": 0,
+        "failed_calls": 0,
+        "evidence_write_failures": 0,
+        "preparation_artificial_tests": 39,
+        "new_finite_RTE_execution": 0,
+        "new_exact_R_execution": 0,
+        "new_sampling": 0,
+        "shots_executed": 0
+      },
+      "scope": {
+        "full_df.block_build": 48,
+        "full_df.block_gate": 48,
+        "full_df.compile": 8,
+        "full_df.compiled_expectation": 8,
+        "full_df.compiled_gate": 8,
+        "full_df.controlled_build": 4,
+        "full_df.controlled_gate": 4,
+        "full_df.definition_gate": 1,
+        "full_df.exponential": 32,
+        "full_df.fixture": 1,
+        "full_df.full_inputs": 1,
+        "full_df.full_prepare": 1,
+        "full_df.input_gate": 1,
+        "full_df.measure": 8,
+        "full_df.prepare": 1,
+        "full_df.raw_expectation": 8,
+        "full_df.raw_wrapper_gate": 8,
+        "full_df.reference": 4,
+        "full_df.saved_comparisons": 1,
+        "full_df.signals": 4,
+        "full_df.split": 1,
+        "full_df.system_build": 4,
+        "full_df.system_gate": 4,
+        "full_df.wrapper_build": 8,
+        "full_df.wrapper_reference": 8
+      },
+      "resources": {
+        "whole_wall_seconds": 8.53,
+        "user_seconds": 14.13,
+        "system_seconds": 3.04,
+        "CPU_percent": 201,
+        "peak_RSS_KiB": 422420,
+        "affinity_CPUs": 32,
+        "acceleration": "Existing CAR exponential/probe/compile caches;small case-ordered fail-fast pilot,native-v5 defaults,no artificial resource cap"
+      },
+      "qualification": {
+        "u_num": null,
+        "gamma": null,
+        "shots": null,
+        "G": null,
+        "population_cost_ranking": null,
+        "total_resource_superiority": null,
+        "algorithm_adoption": null
+      },
+      "interpretation": "Synthetic2mode one-body+3DF,N1/mode0,all4 blocks,Full S2/Yoshida4,q2,T±.18,complex128,spectral2-norm atol1e-12,rtol0,no phase fit,original c0=.17 once;ordinary controlled full prepared native-v5 X/Y. No D/R/RTE/nD in the evolution;old LD2 weight-ranked snapshot binds common inputs only. Fixed-q signal/native point values,not optimized same-accuracy total costs. Old B1 S0 and B0 representatives are not unconditional mean costs. No sampling/shot/G/qualification/expansion. Local evidence,not CI/external reproduction. Old raw/contracts/STOP preserved.",
       "completion_criteria": [
         "Publish fixed SOURCE,raw,signal/native cells,provenance and STOP;verify remote contents then mandatory STOP.",
         "User/researchB decides interpretation or any separately permitted follow-up."
