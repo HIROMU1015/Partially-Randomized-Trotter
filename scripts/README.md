@@ -1,5 +1,9 @@
 # scripts 索引
 
+## C1：H6全基底上界の限定実行完了
+
+`run_research_c_c1_h6_synthesis_bound.py`をSOURCE e36e056…で1回実行。G4×800列、3335 calls、8経路×13roundが登録位相条件PASS。[結果](../docs/research/research_c_c1_h6_synthesis_bound_execution_20261026.md)。資格B／Cを区別しCA/shots/cost0。rawとSTOPを保全、消費済みrun01は再起動しない。
+
 ## C1：H6合成誤差上界・未承認
 
 `run_research_c_c1_h6_synthesis_bound.py`：defaultはbyte/environment preflightのみ。保存compiled QPYとPF kernelsから全sector基底のfull-output作用差をstreamingする。[導出・134人工/回帰PASS](../docs/research/research_c_c1_h6_synthesis_bound_preparation_20261025.md)／[6535-call契約](../docs/research/research_c_c1_h6_synthesis_bound_contract_unapproved_20261025.json)。実行には別途明示許可が必要。新build/compile・DF/PF再計算・CA/shots/costなし、retry/resume0。

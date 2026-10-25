@@ -1,5 +1,9 @@
 # 研究計画資料
 
+## C1：H6全基底合成上界・限定実行結果
+
+[結果・8経路上界・全104位相条件PASS](research_c_c1_h6_synthesis_bound_execution_20261026.md)。SOURCE e36e056…無変更、G4×800列、3335 calls、FAIL0。資格B／厳密Cを区別、CA/shots/cost0、旧結果保全・mandatory STOP。
+
 ## C1：H6合成誤差上界の技術準備
 
 [方式比較・数学的条件・人工/回帰134 PASS](research_c_c1_h6_synthesis_bound_preparation_20261025.md)／[未承認6535-call契約](research_c_c1_h6_synthesis_bound_contract_unapproved_20261025.json)。全sector基底streaming数値上界を推奨。厳密C・CA・shots・総費用は未資格、実H6追加科学0・mandatory STOP。

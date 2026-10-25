@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：H6全基底合成上界・限定実行完了（2026-10-26）
+
+[結果・8経路上界・104位相条件PASS](docs/research/research_c_c1_h6_synthesis_bound_execution_20261026.md)／[3200列・104行・call・STOP](artifacts/research_c_c1_h6_synthesis_bound/2026-10-25/)。SOURCE e36e056…無変更、exact IR共用G4、3335 calls・correctness FAIL0・retry/resume0。入力800／出力8192の資格Bを取得、厳密C・full全入力・CA/shots/cost未資格。旧証拠849件不変、mandatory STOP。以下は準備・過去時点の履歴。
+
 ## C1：H6合成誤差上界の技術準備（2026-10-25）
 
 [方式比較・導出・人工134 PASS](docs/research/research_c_c1_h6_synthesis_bound_preparation_20261025.md)／[未承認6535-call契約](docs/research/research_c_c1_h6_synthesis_bound_contract_unapproved_20261025.json)。新SOURCE `c1_subspace_synthesis_bound.py`／`c1_h6_synthesis_bound.py`、専用runner・人工tests・[技術証拠](artifacts/research_c_c1_h6_synthesis_bound/2026-10-25/technical/)。全800入力×full8192出力のstreaming数値上界を準備。厳密enclosure・CA・shots・総費用は未資格、実H6追加科学0、mandatory STOP。

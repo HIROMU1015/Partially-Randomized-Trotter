@@ -78,6 +78,11 @@
       "sha": "3d7b56b44832a2a90a8d3e500bf55e856f36da76",
       "role": "c1_h6_native_stable_phase_scientific_SOURCE",
       "description": "User-permitted repair sequence; old SOURCE/results/STOP preserved, unchanged scientific conditions and allowances."
+    },
+    {
+      "sha": "e36e0560624c66df0aedf619fc5c8c33ecb4f837",
+      "role": "c1_h6_complete_sector_synthesis_bound_scientific_SOURCE",
+      "description": "Frozen SOURCE for user-permitted full basis evaluation;3335 units,no retries or new fit/build/compile."
     }
   ],
   "artifact_inventory": {
@@ -1204,6 +1209,14 @@
           "H6_NATIVE_STABLE_PHASE_REEXECUTION_COMPLETE"
         ],
         "reason": "All298 units complete; finite-probe correctness PASS,one-h-step RZ costs observed,global synthesis/CA/totalcost unqualified."
+      },
+      {
+        "path": "artifacts/research_c_c1_h6_synthesis_bound/2026-10-25",
+        "kind": "directory",
+        "supports": [
+          "H6_NUMERICAL_RESTRICTED_BOUND_COMPLETE"
+        ],
+        "reason": "Complete800 input basis per4 exact-IR groups,full8192 outputs; level B bound and104 phase eligibility PASS, no rigorous C/CA/shots/cost claim."
       }
     ],
     "quarantined": [
@@ -4855,6 +4868,125 @@
         "XDF_s4": 51046
       },
       "literal_shared_cost_difference_all_six_metrics": 0
+    },
+    {
+      "status": "H6_NUMERICAL_RESTRICTED_BOUND_COMPLETE",
+      "scope": "C1_H6_COMPLETE_SECTOR_SYNTHESIS_BOUND_V1",
+      "SOURCE_commit": "e36e0560624c66df0aedf619fc5c8c33ecb4f837",
+      "SOURCE_tree": "1c8d0b5186c82b1f236575bc1cf66d7cfd70da6b",
+      "branch": "codex/research-c-c1-h6-synthesis-bound-execution-20261026",
+      "contract": "docs/research/research_c_c1_h6_synthesis_bound_contract_unapproved_20261025.json",
+      "contract_sha256": "39a2fe9e6f5fa60a05c7b0c965127f87a53b58d9d831eb7c1b95d263cf35e734",
+      "source_manifest_sha256": "61eaad15866a643a9fca34d686e4cf4c9357d81ba1ba1294625516b9f20a36d9",
+      "conditions": {
+        "atoms": 6,
+        "distance_angstrom": 1.0,
+        "basis": "sto-3g",
+        "Nalpha": 3,
+        "Nbeta": 3,
+        "sector_dimension": 400,
+        "rank": 14,
+        "CA_Ha": 0.00159,
+        "DF_reserve_Ha": 0.00019875,
+        "base_time": 0.1,
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "substeps": [
+          1,
+          4
+        ],
+        "product_formula": "ordered symmetric S2; all original frames; no PR split",
+        "target": "own_DF_sector_ground_oracle",
+        "state_preparation": "EXCLUDED"
+      },
+      "compiler": {
+        "qiskit": "1.3.0",
+        "optimization_level": 1,
+        "seed_transpiler": 17,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "approximation_degree": 1.0,
+        "qubits_initially_zero": false
+      },
+      "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+      "unique_groups": 4,
+      "route_count": 8,
+      "complete_columns_per_unique_group": 800,
+      "unique_state_action_columns": 3200,
+      "input_dimension": 800,
+      "output_dimension": 8192,
+      "scientific_units": 3335,
+      "maximum_logical_units": 6535,
+      "call_counts": {
+        "saved_bundle_load": 1,
+        "sector_basis": 1,
+        "reference_check": 4,
+        "qpy_structure": 8,
+        "route_grouping": 1,
+        "state_action_columns": 3200,
+        "kernel_bound": 8,
+        "round_bound": 104,
+        "candidate_summary": 8
+      },
+      "scientific_COMPLETE": 3335,
+      "scientific_FAIL": 0,
+      "inflight_calls": 0,
+      "round_rows": 104,
+      "round_PASS": 104,
+      "route_classifications": {
+        "CDF_s1_literal": "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL",
+        "CDF_s1_shared": "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL",
+        "CDF_s4_literal": "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL",
+        "CDF_s4_shared": "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL",
+        "XDF_s1_literal": "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL",
+        "XDF_s1_shared": "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL",
+        "XDF_s4_literal": "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL",
+        "XDF_s4_shared": "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL"
+      },
+      "resources": {
+        "wall_seconds": 5173.340925562661,
+        "CPU_seconds": 10058.060342321,
+        "peak_RSS_KiB": 5048440
+      },
+      "rigorous_enclosure": null,
+      "global_full_Fock_operator_bound": null,
+      "CA_achieved": null,
+      "shots": null,
+      "total_cost": null,
+      "new_fit": 0,
+      "optimizer": 0,
+      "rank_search": 0,
+      "DF_recomputation": 0,
+      "PF_recomputation": 0,
+      "build_compile": 0,
+      "retry": 0,
+      "resume": 0,
+      "mandatory_stop": true,
+      "report": "docs/research/research_c_c1_h6_synthesis_bound_execution_20261026.md",
+      "evidence_directory": "artifacts/research_c_c1_h6_synthesis_bound/2026-10-25",
+      "postflight": "PASS",
+      "SOURCE_files": 51,
+      "saved_input_hashes": 38,
+      "protected_files_unchanged": 849,
+      "raw_files": 23,
+      "all_correctness_gates": "PASS"
     }
   ],
   "repository_completion_criteria": [

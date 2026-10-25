@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1：H6全基底合成上界の限定実行結果
+
+[全3200列・8 kernel上界・104位相条件PASS](research/research_c_c1_h6_synthesis_bound_execution_20261026.md)。SOURCE e36e056…無変更、G4、3335 calls、FAIL/retry/resume0。部分空間資格B、厳密C/CA/shots/総費用は未資格。旧証拠保全・mandatory STOP。
+
 ## C1：H6合成誤差上界の技術準備
 
 [3方式比較・全列上界の導出・134人工/回帰PASS](research/research_c_c1_h6_synthesis_bound_preparation_20261025.md)／[未承認6535-call契約](research/research_c_c1_h6_synthesis_bound_contract_unapproved_20261025.json)。800入力列・full8192出力、数値reference欠損と13round伝播を扱う。資格B／Cを区別し、実H6追加科学・CA/shots/cost0、mandatory STOP。

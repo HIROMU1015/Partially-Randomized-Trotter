@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## C1：H6部分空間の数値合成上界を取得
+
+`c1_subspace_synthesis_bound.py`／`c1_h6_synthesis_bound.py`をSOURCE e36e056…無変更で実行し、全800列・full8192出力の資格Bと104roundの位相条件PASSを取得。[報告](../../docs/research/research_c_c1_h6_synthesis_bound_execution_20261026.md)。新fit/build/compile/DF-PF再計算0、厳密C/CA/shots/総費用は未資格、mandatory STOP。
+
 ## C1：H6合成誤差の全sector基底上界
 
 `../trottertracks/c1_subspace_synthesis_bound.py` は全入力列のFrobenius上界と不変部分空間の反復伝播を実装。`c1_h6_synthesis_bound.py` は既存Aer/QPY/CAR列順・保存PF/shellへ接続する。[報告](../../docs/research/research_c_c1_h6_synthesis_bound_preparation_20261025.md)。資格Bを準備しCへ昇格しない。人工/回帰134 PASS、実H6は未実行・mandatory STOP。
