@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1 Stage3：8候補限定cost-only準備（2026-10-25）
+
+[技術報告](docs/research/research_c_c1_stage3_cost_preparation_20261025.md)／[未承認936-call契約](docs/research/research_c_c1_stage3_cost_contract_unapproved_20261025.json)。専用module `c1_stage3_cost_only.py`／CLI `scripts/run_research_c_c1_stage3_cost_only.py`／人工test `tests/management/test_research_c_c1_stage3_cost_only.py`。CDF/XDF各D s1/s4とPR s4/r16/K0/K2の8候補、保存楽観shots・native校正・serial期待費用を接続。新13＋既存81 tests PASS、実H4 decode／回路／保存値総費用再解析0、CA・保証付き資源優位なし・mandatory STOP。
+
 ## C1 Stage3：楽観的shots限定再解析（2026-10-25）
 
 [結果・20候補表](docs/research/research_c_c1_stage3_shots_execution_20261025.md)／[260round・520軸・call・STOP](artifacts/research_c_c1_stage3_shots_science/2026-10-25/)。公開SOURCE f8fd2d373…無変更、282/282 calls、14合計／前段不適格6はnull。PR s4/r16/K0はCDF58,356／XDF21,408 shotsの仮定付き十分式算定値。未知実装誤差・CA・総費用・資源順位は未資格、fit／retry／resume0、mandatory STOP。以下は準備時点の履歴。
