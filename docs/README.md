@@ -1,5 +1,7 @@
 # 文書索引
 
+研究B [Shot加重評価：実装・人工検証・実行準備](research/research_b_outer_shot_weighted_execution_ready_20261025.md)。入口 `scripts/run_b2d_outer_shot_weighted.py`、保存adapter `b2d_evaluator/shot_weighted.py`、人工test `test_b2d_shot_weighted.py`。固定24条件・48 shot要求・144資源行・24比較を登録、人工45件PASS。実候補のnormalization／shot数／Gは未評価、明示的実行許可後のみ一回起動。
+
 研究B [単一複素signalのshot加重資源評価：技術設計・将来scope](research/research_b_outer_shot_weighted_resource_design_20261025.md)。設計のみ、実shot数／G／新順位の評価なし。新人工test `tests/management/test_b2d_shot_design.py` と既存scalar testの計10件PASS。将来案は6候補×両T×2精度、48 shot要求・144条件付き資源行。計算SOURCE／launcherは未作成、実行は別途明示許可後のみ。
 
 研究B [高次数RTEの最小費用感度：固定2比較・保存値解析](research/research_b_outer_rare_event_minimal_sensitivity_20261025.md)。入口 `scripts/run_b2d_outer_rare_sensitivity.py`、接続 `b2d_evaluator/rare_sensitivity.py`、人工test `test_b2d_rare_sensitivity.py`。8確率／16境界／80 SE cornerを一回完了、人工8件PASS。B4/B3は±2SEでS0差を維持、D1/R4は±1SEで符号未確定。新sampling／build／compileなし、B1のINCONCLUSIVEを維持し、新結果はCONDITIONAL_SENSITIVITY_ONLY・mandatory STOP。
