@@ -44,6 +44,8 @@ def main():
         empirical_allowance=True,population_tail_guarantee=False,global_optimality=False,
         detailed_scientific_review_started=False,formal_paper_claim_adopted=False,
         mandatory_stop_reached=True,next_scientific_stage_authorized=False,push_pending=True)
+    interruption=b.PUBLIC/'interruption_run01.json'
+    if interruption.exists(): complete['preserved_interruption_run01']=b.read(interruption)
     b.save(b.PUBLIC/'completion_provenance.json',complete)
     rel=str(b.PUBLIC.relative_to(b.ROOT));report=rel+'/REPORT.md'
     text=f"""## 2026-10-26 H4/H6 長時間DF-native B3追加
@@ -58,7 +60,7 @@ def main():
         if not old.startswith('## 2026-10-26 H4/H6 長時間DF-native B3追加'):
             path.write_text(text.replace('{prefix}',prefix)+old)
     scripts=b.ROOT/'scripts/README.md'
-    entry='B3実装：`h46_b3.py`（既存signal/native APIの設定と最小拡張）、`h46_b3_probe.py`（条件付き正しさ）、`h46_b3_report.py`（会計・固定確認n）、`h46_b3_finish.py`（図表/REPORT）、`h46_b3_archive.py`（完成eventの可逆保存）。人工テストは`tests/test_h46_b3.py`。完成済み科学取得を再実行せず保存結果を参照する。\n\n'
+    entry='B3実装：`h46_b3.py`（既存signal/native APIの設定と最小拡張）、`h46_b3_probe.py`（条件付き正しさ）、`h46_b3_report.py`（会計・固定確認n）、`h46_b3_finish.py`（図表/REPORT）、`h46_b3_archive.py`（完成eventの可逆保存）。`h46_b3_continue.py`は同一number-operator cacheのfork共有、`h46_b3_recover.py`は元pool異常終了後の未完了trialだけを個別processで復旧する。人工テストは`tests/test_h46_b3.py`と`tests/test_h46_b3_recover.py`。完成済み科学取得を再実行せず保存結果を参照する。\n\n'
     content=scripts.read_text()
     if entry not in content:
         pos=content.index('\n\n')+2;scripts.write_text(content[:pos]+entry+content[pos:])
@@ -75,7 +77,9 @@ def main():
         content+='\n'+heading+'\n\n'+text.replace('{prefix}','../../../').split('\n\n',1)[1]
         note.write_text(content)
     with (b.PUBLIC/'REPORT.md').open('a') as stream:
-        stream.write(f"\n## 終了時の技術確認\n\n人工・必要回帰13件PASS。両cohortの全{trials}標本はPASS・worker回収済み。重複標本0、cohort内/間の新seed衝突0。最大native vector差{native_error:.5g}、compiled差{compiled_error:.5g}、mean/native log_B差{log_error:.5g}。元baselineと実行SOURCEの使用fileは不変。eventは元byteへの復元一致を確認したgzipで保存。これらは実装整合性の確認であり、母平均優位の証拠とは区別する。\n")
+        stream.write(f"\n## 終了時の技術確認\n\n人工・必要回帰13件と復旧cache/byte照合の人工2件PASS。両cohortの全{trials}標本はPASS・worker回収済み。重複標本0、cohort内/間の新seed衝突0。最大native vector差{native_error:.5g}、compiled差{compiled_error:.5g}、mean/native log_B差{log_error:.5g}。元baselineと記録した実行SOURCEの使用fileは不変。eventは元byteへの復元一致を確認したgzipで保存。これらは実装整合性の確認であり、母平均優位の証拠とは区別する。\n")
+        if interruption.exists():
+            stream.write('\n元poolは106 trial完成後にworkerが異常終了し、pool全体が停止した。OOM記録0、CPU/AS/DATAのOS上限は無制限で、原因と元workerのexitcodeは未確定。元のSTOP・結果・progressをprivate interruptions/run01と[公開記録](interruption_run01.json)へ保持した。完成106件は再取得せず、同じ候補・n・cohort・seedで未完了trialだけを個別fork processへ復旧した。保存済み未完了eventは再現byte列を照合。検算のrotated-number行列を同じ式で事前cacheしfork共有した。復旧cacheの代表回路でもQPYを復元してcompiled作用チェックを実施した。旧研究のgrant・one-shot・STOPは再利用していない。\n')
     print(json.dumps(complete,ensure_ascii=False))
 
 
