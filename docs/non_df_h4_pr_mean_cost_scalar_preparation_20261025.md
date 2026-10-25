@@ -69,3 +69,5 @@ python3 scripts/run_h4_pr_mean_cost_scalar.py \
 **ユーザー**：この固定SOURCE・入力・95%配分・compiler未証明前提を明記した限定scalar batchの実行を、別の指示で承認するか判断する。**Codex**：明示承認後だけ上記一batchを実行し、数値分離と前提statusを分けて保存してSTOPする。現在は実行未承認である。
 
 最新版共通指示2026-10-25の§8.4／§10／§10.3を適用し、共有環境・他ユーザー・別のB0/B0I作業に変更しない。専用branchでcommit・GitHub公開・local/remote SHA照合を行い、[公開記録](../artifacts/non_df_h4_pr_mean_cost_scalar_preparation/2026-10-25/publication_status.json)を保存する。**準備完了後mandatory STOP。実H4の科学batchへ自動移行しない。**
+
+主成果物commit **`cc67e46a8bee8682d0ab1a1222ac657284973b9c`** をGitHub接続のGit data APIで公開した。local準備tree `a0cdb43f57f4d50106e63a39f9913cec1909fa29` と公開treeが一致。同commitをgit fetchし、local HEAD／origin ref／GitHub refの同SHA・clean状態を確認した。この公開記録だけを追記し、最終HEADもremote照合してチャットへ記載する。**準備完了・mandatory STOP。実H4 scalar batchは未承認・0件のまま。**
