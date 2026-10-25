@@ -1,3 +1,7 @@
+## 2026-10-25 H2/H4/H6 Hybrid対RTEの比較準備
+
+[306候補・1580行の保存証拠棚卸しと無効実行計画](docs/pauli_hybrid_rte_preparation_20261025.md)。新実データランキング/科学call0。H6 RTE確認とH4厳精度Hybrid確認が不足。一括実行承認待ち。
+
 ## 2026-10-25 H2/H4/H6 Pauli保存比較の最新版統合
 
 [15行CSV・転記照合・条件差](docs/pauli_h2_h4_h6_integrated_comparison_20261025.md)。H4を最新PR141構成探索のprimaryへ更新、H2/H6の保存値を保持。H4の高精度4行は全ランダム化RTE。選抜方式差・実ρ/tail未保証を保持、新科学計算/再解析0。旧成果は以下の時点履歴。

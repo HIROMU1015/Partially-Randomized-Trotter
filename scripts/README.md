@@ -1,3 +1,7 @@
+## 2026-10-25 Hybrid/RTE保存証拠の棚卸し
+
+[`inventory_pauli_hybrid_rte.py`](inventory_pauli_hybrid_rte.py)：保存候補・各精度・cohort・適格性・G有無を転記するだけ。科学runner/方式別min/ratioは呼ばない。[準備報告](../docs/pauli_hybrid_rte_preparation_20261025.md)。
+
 ## 2026-10-25 H2/H4/H6保存結果の文字列転記
 
 [`integrate_pauli_h2_h4_h6_saved_results.py`](integrate_pauli_h2_h4_h6_saved_results.py)：固定ref snapshotの列転記・ID/文字列照合だけ。科学/会計runnerをimportせずG・ratio・SE・順位は計算しない。[統合報告](../docs/pauli_h2_h4_h6_integrated_comparison_20261025.md)。

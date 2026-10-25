@@ -1,3 +1,7 @@
+## 2026-10-25 Hybrid/RTE比較の準備helper
+
+[`pauli_hybrid_rte_comparison.py`](pauli_hybrid_rte_comparison.py)：cohort別exact min/tie/null/比の最小接続。人工データのみ検証、実分子データへの適用は未承認・未実行。[範囲](../../docs/pauli_hybrid_rte_preparation_20261025.md)。
+
 ## 2026-10-25 H2/H6 matrix-free包含
 
 `pauli_vector_enclosure.py` と `pauli_vector_tight_enclosure.py`：Arb scalar＋binary64中心/L2誤差、同じraw rayのreference、PR finite law mean。既存`h4_pauli_pr_search.py`/`h4_pauli_pr_mean.py`のCDF・law/人工oracle、D2 controlとshot会計を再利用。compiled rhoや正式certificateを受理しない。[報告](../../docs/pauli_h2_h6_resource_comparison_20261025.md)。
