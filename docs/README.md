@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1：H6のDF予算判定でSTOP
+
+[結果・未到達範囲](research/research_c_c1_h6_execution_20261025.md)／[rank35・call・要約](../artifacts/research_c_c1_h2_h6_science/2026-10-25/H6_execution_summary.json)／[全fit・raw STOP](../artifacts/research_c_c1_h2_h6_science/2026-10-25/H6-run01/)。XDF R14はDF予算PASS、CDF全21fitはoptimizer成功だが予算未達。61/129 calls、retry/resume0。PF／native／shots／総費用は未実行、mandatory STOP。
+
 ## C1：H2の限定CA数値pilot完了
 
 [結果・資格の限界](research/research_c_c1_h2_execution_20261025.md)／[4候補・52round・rank・call・STOP](../artifacts/research_c_c1_h2_h6_science/2026-10-25/)。CDF R2／XDF R3、4候補数値CA PASS、193/196 calls。条件付き総RZ削減36.4122%／36.1527%、reference enclosure未資格・H6未実行、mandatory STOP。

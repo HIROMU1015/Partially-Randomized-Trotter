@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：H6はCDFのDF予算未達でSTOP（2026-10-25）
+
+[結果](docs/research/research_c_c1_h6_execution_20261025.md)／[要約](artifacts/research_c_c1_h2_h6_science/2026-10-25/H6_execution_summary.json)／[原本](artifacts/research_c_c1_h2_h6_science/2026-10-25/H6-run01/)。SOURCE33c380d8…無変更、XDF R14は予算PASS、CDF requested1..21は未達（最小sector norm4.6795e-4 Ha＋guard、actual18）。61/129 calls、fit21・retry/resume0、一般K／ground／PF未実行。回路・shots・費用なし、旧H2/H4証拠保全・mandatory STOP。以下の未実行・準備表示は履歴。
+
 ## C1：H2の限定CA数値pilot完了（2026-10-25）
 
 [結果](docs/research/research_c_c1_h2_execution_20261025.md)／[証拠](artifacts/research_c_c1_h2_h6_science/2026-10-25/)。SOURCE33c380d8…無変更、CDF R2／XDF R3、S2 s1/s4の4候補・52round数値CA PASS。193/196 calls、fit2・retry/resume0、条件付き総RZ削減36.4122%／36.1527%。厳密CAは未資格、H6未実行、mandatory STOP。以下の準備表示は履歴。
