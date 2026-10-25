@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1 Stage3：修正後8候補cost-onlyが完了（2026-10-25）
+
+[結果・条件付き費用・制約](research/research_c_c1_stage3_cost_compat_execution_20261025.md)／[8候補・208行・12比較・call・STOP](../artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/)。SOURCE9ce6703c…でcompile競合再発0、936/936 calls、compile／位相・unitarity各133 PASS。人工100 PASS、旧STOP106 calls保全・fresh再実行1・累積1042。PR4候補の費用support／合成・law／CAは未資格、保証付き優位・最終順位なし、mandatory STOP。以下は過去時点の記録。
+
 ## C1 Stage3 compile互換修正と再実行
 
 [人工再現・修正SOURCE](research/research_c_c1_stage3_cost_compat_repair_20261025.md)／[新契約](research/research_c_c1_stage3_cost_compat_contract_20261025.json)。compileだけtask内で排他化し、旧SOURCE・科学条件を保持。新6＋既存94 tests PASS。ユーザーが同8候補の修正再実行を許可、結果取得後mandatory STOP。

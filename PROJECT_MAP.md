@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1 Stage3：修正後8候補cost-onlyが完了（2026-10-25）
+
+[結果・条件付き費用・制約](docs/research/research_c_c1_stage3_cost_compat_execution_20261025.md)／[8候補・208行・12比較・call・STOP](artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/)。SOURCE9ce6703c…でcompile競合再発0、936/936 calls、compile／位相・unitarity各133 PASS。人工100 PASS、旧STOP106 calls保全・fresh再実行1・累積1042。PR4候補の費用support／合成・law／CAは未資格、保証付き優位・最終順位なし、mandatory STOP。以下は過去時点の記録。
+
 ## C1 Stage3：Qiskit compile競合修正・限定再実行（2026-10-25）
 
 [修正・人工再現](docs/research/research_c_c1_stage3_cost_compat_repair_20261025.md)／[新契約](docs/research/research_c_c1_stage3_cost_compat_contract_20261025.json)。旧SOURCEを保持し、`c1_stage3_cost_compat.py`がP0 compileだけをtask内で排他化。人工100 tests PASS、大きい人工8回路で旧3例外→修正後0。ユーザーが同8候補・936-call条件で修正再実行を許可。entry `scripts/run_research_c_c1_stage3_cost_compat.py`、test `tests/management/test_research_c_c1_stage3_cost_compat.py`。結果取得後mandatory STOP。

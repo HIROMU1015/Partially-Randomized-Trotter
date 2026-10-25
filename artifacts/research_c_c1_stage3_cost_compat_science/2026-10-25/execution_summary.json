@@ -1,0 +1,111 @@
+{
+  "status": "COMPLETE_COST_ONLY",
+  "source_commit": "9ce6703c89874c142c64ad934354bdff0db703d1",
+  "branch": "codex/research-c-c1-stage3-cost-compat-20261025",
+  "contract_sha256": "4092a5d892eda087e4e3d82c3fe13b0e020c9da9f6ff5af406d6aff6a30a0a42",
+  "source_manifest_sha256": "e8d3cd6ac36763feab5c599ce240335338a75121db690eab41499ac188900a06",
+  "source_files_checked": 23,
+  "saved_inputs_checked": 20,
+  "post_execution_identity": "PASS",
+  "call_counts": {
+    "saved_shots_load": 1,
+    "input_load": 1,
+    "fit_export_load": 1,
+    "model_prepare": 2,
+    "split_native_model": 2,
+    "saved_stage2_load": 1,
+    "native_calibration": 8,
+    "gaussian_build": 20,
+    "rte_configuration": 4,
+    "cost_support_probe": 4,
+    "circuit_build": 133,
+    "compile": 133,
+    "compile_equivalence_check": 133,
+    "metrics": 133,
+    "serial_cost_expansion": 208,
+    "cost_kernel_sample": 128,
+    "optimistic_total_aggregate": 8,
+    "cost_interval_assessment": 4,
+    "cost_comparison": 12
+  },
+  "scientific_units": 936,
+  "maximum_scientific_units": 936,
+  "failed_calls": 0,
+  "candidate_totals": 8,
+  "round_axis_records": 208,
+  "comparisons": 12,
+  "new_kernel_numeric_diagnostics": 130,
+  "new_kernel_compiled_max_entry": 5.822019787809778e-11,
+  "new_kernel_unitarity_max_entry": 4.735101200026293e-13,
+  "diagnostic_scope": "130 new kernels; three shell checks completed but scalar residuals not retained by the reused backend",
+  "qpy_files": 266,
+  "support_qualified_candidates": [
+    "CDF_D_s1_r0_K0",
+    "CDF_D_s4_r0_K0",
+    "XDF_D_s1_r0_K0",
+    "XDF_D_s4_r0_K0"
+  ],
+  "point_estimate_only_candidates": [
+    "CDF_PR_s4_r16_K0",
+    "CDF_PR_s4_r16_K2",
+    "XDF_PR_s4_r16_K0",
+    "XDF_PR_s4_r16_K2"
+  ],
+  "prior_technical_stop": {
+    "source_commit": "edb9f6ef99d00e656265900af8447223029fae41",
+    "scientific_units": 106,
+    "preserved": true
+  },
+  "fresh_repair_reruns": 1,
+  "total_cost_attempts": 2,
+  "cumulative_cost_scientific_units": 1042,
+  "new_fit": 0,
+  "optimizer": 0,
+  "PF_RTE_recomputed": 0,
+  "shots_formula_recomputed": 0,
+  "quantum_shots_drawn": 0,
+  "current_attempt_retry": 0,
+  "current_attempt_resume": 0,
+  "synthesis_signal_error": null,
+  "actual_law_signal_error": null,
+  "CA_achieved": null,
+  "guaranteed_total_resource_superiority": false,
+  "mandatory_STOP": true,
+  "external_reproduction": false,
+  "resources": {
+    "plan": {
+      "workers": 8,
+      "available_affinity_cpus": 32,
+      "available_memory_bytes": 56561176576,
+      "quota_cpus": null,
+      "estimated_bytes_per_candidate": 268435456,
+      "BLAS_threads_per_worker": 1,
+      "policy": "Independent candidates; process-local BLAS coordination; no shared settings changed"
+    },
+    "wall_seconds": 773.6507324241102,
+    "process_cpu_seconds": 2517.364123895,
+    "peak_RSS_KiB": 664588
+  },
+  "compatibility": {
+    "version": "qiskit_p0_compile_mutex_v1",
+    "P0_compile_only_serialized": true,
+    "scientific_conditions_unchanged": true,
+    "compile_completed": 133,
+    "compile_queue_wait_seconds": 27.171797023620456,
+    "old_run_preserved": true
+  },
+  "execution_command": {
+    "executable": "/tmp/prt-c1-stage2-preparation-20261025/.venv/bin/python",
+    "arguments": [
+      "scripts/run_research_c_c1_stage3_cost_compat.py",
+      "--contract",
+      "docs/research/research_c_c1_stage3_cost_compat_contract_20261025.json",
+      "--input",
+      "/tmp/prt-c1-stage1-compatibility-20261025/.external/P-H4.npz",
+      "--execute",
+      "--output",
+      "artifacts/research_c_c1_stage3_cost_compat_science/2026-10-25/run01"
+    ],
+    "cache_scope": "task-local .cache/stage3-cost-compat; no shared venv or settings modified"
+  }
+}

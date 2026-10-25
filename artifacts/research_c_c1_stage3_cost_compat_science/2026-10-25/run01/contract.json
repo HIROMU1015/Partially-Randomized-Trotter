@@ -1,0 +1,323 @@
+{
+  "schema": "C1_STAGE3_COST_COMPAT_CONTRACT_V1",
+  "scope": "C1_STAGE3_EIGHT_CANDIDATE_COST_ONLY_V1",
+  "repository": "HIROMU1015/Partially-Randomized-Trotter",
+  "date_JST": "2026-10-25",
+  "base_commit": "4c4a78d48b9d77f8a15cd11ad67968e5f11195ee",
+  "status": "FIXED_FOR_USER_REQUESTED_REPAIR_AND_RERUN",
+  "entry": "scripts/run_research_c_c1_stage3_cost_compat.py",
+  "mode": "cost-only",
+  "source_manifest": "artifacts/research_c_c1_stage3_cost_compat_technical/2026-10-25/SOURCE.json",
+  "source_manifest_sha256": "e8d3cd6ac36763feab5c599ce240335338a75121db690eab41499ac188900a06",
+  "parent_contract": "docs/research/research_c_c1_stage3_integrated_contract_unapproved_20261025.json",
+  "parent_contract_sha256": "5f2c67dc13169f9f6fd7351b9274cf92c0b4fc0fee250d603647a9b60bb62036",
+  "physical_conditions": {
+    "model": "saved linear P-H4",
+    "distance_angstrom": 1,
+    "basis": "STO-3G",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "full_dimension": 256,
+    "controlled_dimension": 512,
+    "CDF_rank": 8,
+    "XDF_rank": 10,
+    "CDF": "ordinary number representation, original-g corrected kappa, general K original frames",
+    "system_qubits": 8
+  },
+  "proposal": {
+    "accuracy_target": {
+      "energy_ha": 0.00159,
+      "df_reserve_fraction": 0.125,
+      "base_time": 0.1,
+      "beta_total": 0.5235987755982988,
+      "beta_stat": 0.2617993877991494,
+      "alpha_axis": 0.0003846153846153846,
+      "alpha_total": 0.01
+    },
+    "base_time": "1/10",
+    "rounds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "PR_LD": 2,
+    "compiler": {
+      "qiskit": "1.3.0",
+      "optimization_level": 1,
+      "seed_transpiler": 17,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "approximation_degree": 1.0,
+      "qubits_initially_zero": false
+    },
+    "basis_policy": "full-frame only; adjacent exact basis sharing and angle combining equally for both arms",
+    "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+    "cost_policy": "native_kernel_repeat_with_fences",
+    "long_round_depth": "scheduled_serial_sum; no global recompile/interkernel fusion discount",
+    "readout": "Compile ancilla H head and X/Y readout separately; retain intervening-kernel fence, include one ancilla measurement per shot",
+    "cost_samples_per_PR_candidate": 32,
+    "cost_seed_master": 2026102503,
+    "correctness_tolerance": {
+      "operator_component_abs": 1e-10,
+      "unitarity_component_abs": 1e-10,
+      "xy_abs": 2e-10,
+      "phase_up_to_global": false
+    },
+    "target_state": "own_DF_ground_state_oracle",
+    "state_preparation_included": false,
+    "law_model": "ideal_finite_RTE_law",
+    "original_frame_order": true
+  },
+  "input_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+  "saved_fit_export": "artifacts/research_c_c1_stage1_compat_science/2026-10-25/run01/fit_export.npz",
+  "saved_fit_export_sha256": "c33f782d3224aa80968e1e6ea70f5ae3f764b872b5bce545c38875c83f3c4e08",
+  "saved_fit_source": "da2edb465d5ae6432439fbd1df8e57512ee59c11",
+  "saved_shots_run": "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01",
+  "saved_shots_evidence_commit": "f85ac4c131b939bf4b8146a98997e61565345d45",
+  "saved_shots_source": "f8fd2d373fc81353330e732c46b3b5d471e7c683",
+  "saved_shots_contract_sha256": "fe0f3c8eee182da01e31f2dc84fcf557580e937190fc4a69183f6e63b4bb8a9f",
+  "stage2_source": "a977a4390668bc107360c8ff05f43d851dc81dc9",
+  "stage2_result": "artifacts/research_c_c1_stage2_science/2026-10-25/run01/result.json",
+  "saved_native_kernels": {
+    "CDF": {
+      "raw": "artifacts/research_c_c1_stage2_science/2026-10-25/run01/circuits/full_CDF_True.qpy",
+      "compiled": "artifacts/research_c_c1_stage2_science/2026-10-25/run01/circuits/compiled_1.qpy"
+    },
+    "XDF": {
+      "raw": "artifacts/research_c_c1_stage2_science/2026-10-25/run01/circuits/full_XDF_True.qpy",
+      "compiled": "artifacts/research_c_c1_stage2_science/2026-10-25/run01/circuits/compiled_3.qpy"
+    }
+  },
+  "saved_inputs": {
+    "artifacts/research_c_c1_stage1_compat_science/2026-10-25/run01/fit_export.npz": "c33f782d3224aa80968e1e6ea70f5ae3f764b872b5bce545c38875c83f3c4e08",
+    "artifacts/research_c_c1_stage1_compat_science/2026-10-25/run01/fit_export.json": "945cbc2ee31930c5367c37300e2e9d59e2c4696e63907a2973a4cb9029311e5f",
+    "artifacts/research_c_c1_stage1_compat_science/2026-10-25/run01/SOURCE.json": "e7bf161d2ab45a78d772c960ab5c2c41d3ed145bfd0a1193ee280536c1547240",
+    "artifacts/research_c_c1_stage2_science/2026-10-25/run01/result.json": "1592835bd952934038beb0323e6de98d2eb5807a57b4da8233ebd71ec22c4e50",
+    "artifacts/research_c_c1_stage2_science/2026-10-25/run01/circuits/full_CDF_True.qpy": "61943401a90d73e8bdf1205734121960ef0a7044dedafb22f2b64035bd0dca8e",
+    "artifacts/research_c_c1_stage2_science/2026-10-25/run01/circuits/compiled_1.qpy": "32ce2b0c8cd964c6f24fcd28fc3105c0e76fa65df96bbdcfa47229d735c7a7c6",
+    "artifacts/research_c_c1_stage2_science/2026-10-25/run01/circuits/full_XDF_True.qpy": "3ab608d1af9f5fd2534d9d48a106f932526cbd2e4a9a924e68e0d9db6078195a",
+    "artifacts/research_c_c1_stage2_science/2026-10-25/run01/circuits/compiled_3.qpy": "e781c236762a539a8db7669c2ad8f3359094c82e3209244e817299c68965a2e0",
+    "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01/result.json": "317e900281911973ac7c492074add7911eea0b1b41b042ab5caf54a0ad990939",
+    "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01/STOP.json": "28f59f3f81b48bc40645e69ffdcb560c3ae90e617f913b3c0ebb7b0e82a6ca47",
+    "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01/SOURCE.json": "1866f4645e91eae549b113624655a591cb44ec588921f92f005b25d9575894c9",
+    "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01/contract.json": "fe0f3c8eee182da01e31f2dc84fcf557580e937190fc4a69183f6e63b4bb8a9f",
+    "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01/candidates/CDF_D_s1_r0_K0.json": "98cd9a75446c27fc56b1d71701fbc4cf659725186dcb92bec8f2ddbf37669995",
+    "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01/candidates/CDF_D_s4_r0_K0.json": "7fdaf3546fd9f752a9fa18c2f3e45383bb9248501c4339e5f68a13fbe7ac3ad8",
+    "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01/candidates/CDF_PR_s4_r16_K0.json": "88d23a6b92e3c8fc5eb4e319410b599958e75a883a23cf5e172fb967b5820066",
+    "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01/candidates/CDF_PR_s4_r16_K2.json": "2e6cf477e138773663f89bea1938af066aba9853357cb337ba18d7cba60d60a3",
+    "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01/candidates/XDF_D_s1_r0_K0.json": "b6c240f254a60724c38d30f08ed5203c9d1d65e9f1b2de7a1fe0c72cf3943925",
+    "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01/candidates/XDF_D_s4_r0_K0.json": "28f8fc798a3fed3e62cacb0c6e8e3c6cc3e7f71edef79b14503d015955f8499b",
+    "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01/candidates/XDF_PR_s4_r16_K0.json": "84afbfad914680c58aa0b6db0e70641ac4946a4d15d6c1bef2fd8d851055e2d7",
+    "artifacts/research_c_c1_stage3_shots_science/2026-10-25/run01/candidates/XDF_PR_s4_r16_K2.json": "03d7ddaaeb90a75238c641dca52aefb36f2bc7679521c63214ef67efa02569ae"
+  },
+  "runtime_required_packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "qiskit-nature": "0.7.2",
+    "qiskit-algorithms": "0.3.1"
+  },
+  "dependency_lock": "artifacts/research_c_c1_stage2_technical/2026-10-25/environment/requirements.lock",
+  "dependency_lock_sha256": "d84a3ea8579fc588e708943a636348f9fa724a25cccddf75b017ab57ec9456e4",
+  "operating_instructions": {
+    "name": "research_project_instructions_unified_2026-10-25.md",
+    "sha256": "e1e3e2625e2b728977402bded6583658e7fb762160f5e787fd45572af0095720"
+  },
+  "candidate_ids": [
+    "CDF_D_s1_r0_K0",
+    "CDF_D_s4_r0_K0",
+    "CDF_PR_s4_r16_K0",
+    "CDF_PR_s4_r16_K2",
+    "XDF_D_s1_r0_K0",
+    "XDF_D_s4_r0_K0",
+    "XDF_PR_s4_r16_K0",
+    "XDF_PR_s4_r16_K2"
+  ],
+  "selection": "User-selected8 only; original20 results preserved. Remaining12 not selected for this cost pilot, not scientific NO-GO",
+  "new_fit": 0,
+  "optimizer": 0,
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "call_limits": {
+    "input_load": 1,
+    "fit_export_load": 1,
+    "model_prepare": 2,
+    "saved_shots_load": 1,
+    "saved_stage2_load": 1,
+    "split_native_model": 2,
+    "gaussian_build": 20,
+    "rte_configuration": 4,
+    "cost_support_probe": 4,
+    "cost_kernel_sample": 128,
+    "circuit_build": 133,
+    "compile": 133,
+    "compile_equivalence_check": 133,
+    "metrics": 133,
+    "native_calibration": 8,
+    "cost_interval_assessment": 4,
+    "serial_cost_expansion": 208,
+    "optimistic_total_aggregate": 8,
+    "cost_comparison": 12
+  },
+  "maximum_logical_scientific_units": 936,
+  "scientific_calls": {
+    "input_load": {
+      "maximum": 1,
+      "scope": "Saved XDF one-body/lambdas/G/scalar whitelist once; no SCF or physical Hamiltonian generation"
+    },
+    "fit_export_load": {
+      "maximum": 1,
+      "scope": "One saved converged CDF export kappa/J/U/constant load; no new fit"
+    },
+    "model_prepare": {
+      "maximum": 2,
+      "scope": "Two existing native value models;12 small orbital diagonalizations"
+    },
+    "saved_shots_load": {
+      "maximum": 1,
+      "scope": "One composite scalar bundle: prior result/STOP plus8 candidate records; no shot/phase/PF/RTE formula evaluation"
+    },
+    "saved_stage2_load": {
+      "maximum": 1,
+      "scope": "One validated Stage2 result; reuse2 deterministic s1 metrics from the fixed shared full kernels"
+    },
+    "split_native_model": {
+      "maximum": 2,
+      "scope": "Two original-order LD2 value tails, preserve scalar/I extraction, no CAR atom operators"
+    },
+    "gaussian_build": {
+      "maximum": 20,
+      "scope": "At most20 original-frame full Gaussian basis requests, shared cache across candidates per arm"
+    },
+    "rte_configuration": {
+      "maximum": 4,
+      "scope": "4 PR settings s4/r16/K0 or2, old finite law/configuration only; no PF/RTE error or attenuation recalculation"
+    },
+    "cost_support_probe": {
+      "maximum": 4,
+      "scope": "4 saturating all-word support probes; enumerate only when all words fit existing32-word compile budget; underflowed positive weights do not remove support"
+    },
+    "cost_kernel_sample": {
+      "maximum": 128,
+      "scope": "4 PR candidates x32 independent occurrence samples with old master2026102503, separate arm/candidate/sample seeds; no quantum shots sampled"
+    },
+    "circuit_build": {
+      "maximum": 133,
+      "scope": "4x32 PR unique words at most +2 new D(s4) kernels +3 shared readout shells; QPY raw archive included; cache dedup stays per candidate"
+    },
+    "compile": {
+      "maximum": 133,
+      "scope": "At most133 new segment compilations, phase-preserving P0; compiled QPY archive included; no long-q build/compile"
+    },
+    "compile_equivalence_check": {
+      "maximum": 133,
+      "scope": "At most133 composite raw-versus-P0 Operator max-entry and compiled unitarity checks, phase fit forbidden; not independent molecular PF reference or whole-law synthesis bound"
+    },
+    "metrics": {
+      "maximum": 133,
+      "scope": "At most133 existing RZ/CX/RZdepth/CXdepth/depth/size/measurement metrics"
+    },
+    "native_calibration": {
+      "maximum": 8,
+      "scope": "8 composite native calibrator calls, reused32-sample means, local caches, shell costs and deterministic singleton support; nested labeled work charged in own category"
+    },
+    "cost_interval_assessment": {
+      "maximum": 4,
+      "scope": "4 PR all-support cost envelope decisions; never sample-max or standard-error certification"
+    },
+    "serial_cost_expansion": {
+      "maximum": 208,
+      "scope": "8x13x2 axis expansions using old n=2^m*s linear serial-fence expected cost/scheduled depth composition"
+    },
+    "optimistic_total_aggregate": {
+      "maximum": 8,
+      "scope": "8 saved-integer-shot weighted metric sums; exact rational representation of declared sample means; no same_accuracy bypass or shot formula"
+    },
+    "cost_comparison": {
+      "maximum": 12,
+      "scope": "12 fixed pairs:4 same-setting CDF/XDF plus8 within-arm PR vs D; point ratios and qualified cost-range relation only, no final protocol selection"
+    }
+  },
+  "call_policy": "19 categories, maximum936 logical units. Attempts count once; native_calibration wraps nested labeled calls, scalar ops and matrix products not separately rebilled. Byte preflight0. Cache hits/reused2 D(s1) metrics can reduce actual units.",
+  "comparison": {
+    "primary": "conditional_expected_total_rz_count_at_saved_optimistic_shots",
+    "secondary": [
+      "cx_count",
+      "rz_depth",
+      "cx_depth",
+      "total_depth",
+      "circuit_size"
+    ],
+    "formula": "sum_m,axis N_saved_opt(m,axis) * [2^m*s * estimated_E_cost_one_fresh_occurrence + head_and_axis_tail_cost]",
+    "depth_semantics": "Scheduled serial sum with all-wire fences; not a globally optimized long-q circuit depth",
+    "saved_shots": "Use stored decimal integers unchanged for each13-round X/Y; do not recompute PF/RTE/attenuation/shots. Counts remain optimistic sufficient-prescription estimates, not actual guaranteed shots.",
+    "expected_cost_law": "PR point estimate from old finite-bit IID sampler, not certified ideal-law expectation. Ideal all-law expectation range only if complete supported circuit set covered.",
+    "sample_size": 32,
+    "sample_policy": "Independent calibration occurrences from separate seeds. Linear expectation n*mean does not replay one random circuit n times; quantum protocol requires fresh independent trajectory per occurrence and per shot.",
+    "calibration_uncertainty": "Same calibration reused across rounds: scale uncertainty by n, no fictitious independent-calibration sqrt(n) shrinkage",
+    "cost_support": "Old32-word full-support enumeration only; otherwise UNRESOLVED lower/upper=null; sample max/min never bounds",
+    "synthesis_signal_error": null,
+    "actual_law_signal_error": null,
+    "CA_achieved": null,
+    "guaranteed_total_resource_superiority": false,
+    "selection": "Report12 fixed pairs and registered-order table only; no resource ranking or automatic continuation"
+  },
+  "compiler_and_basis_policy": "Copy P0 Qiskit1.3.0 opt1 seed17 rz/sx/x/cx approximation1 qubits_initially_zero=false exactly. Both arms use full-frame Gaussian, legal adjacent exact-basis sharing/angle combination within occurrence. No unobserved literal/shared reduction, no cross-occurrence fusion discount, state preparation excluded.",
+  "correctness_policy": "Reuse previously validated Stage2 raw native connection and existing artificial tests; new segments get raw-versus-P0 max-entry1e-10 and compiled unitarity1e-10 with no global-phase fit. Cost-only scope does not repeat independent molecular CAR/PF/RTE/ground/alias/XY evaluation or qualify all-law synthesis error.",
+  "execution_order": [
+    "Byte/SOURCE/parent/input/saved scalar and native-provenance hashes/runtime preflight; no numeric decode",
+    "Fresh output,8 saved optimistic shots records and old D(s1) metrics, saved fit/XDF native values",
+    "Prepare2 models and LD2 tails; original20 data immutable",
+    "Up to8 independent candidate workers; shared basis cache/shells;4 PR finite-law/support probes; native cost calibration",
+    "Local P0 phase/unitarity diagnostics before metric acceptance; first failure stops dependent work",
+    "208 round/axis serial expected-cost expansions and8 optimistic-N aggregates",
+    "12 fixed conditional cost pair comparisons, preserve point versus support distinction",
+    "Save progress/calls/resources/QPY/results/SOURCE/contract/runtime/STOP; mandatory STOP"
+  ],
+  "stop_policy": {
+    "preflight_mismatch": "Reject before scientific decode or fresh-output creation",
+    "saved_shots_not_eligible_or_mismatch": "FAIL/STOP; no automatic candidate replacement or shots recomputation",
+    "first_correctness_or_compiler_failure": "Stop new dependent calls immediately, drain already active calls, preserve partial evidence and failure/STOP; no retry/resume",
+    "unqualified_support": "Continue point-only; never infer guaranteed superiority",
+    "nonfinite_cost": "FAIL/STOP; no clipping or silent fallback",
+    "fresh_output": "artifacts/research_c_c1_stage3_cost_compat_science/<date>/<fresh-run-id>/",
+    "retry": 0,
+    "resume": 0,
+    "mandatory_stop": true,
+    "technical_interruption": "Preserve STOP/evidence; user permits repaired/new frozen SOURCE with a fresh attempt. No in-place retry/resume; no scientific condition changes."
+  },
+  "resource_policy": "Keep old actual-resource8-candidate plan and task-local BLAS/cache coordination. Only the demonstrated unsafe P0 shared-library compile section is serialized for correctness; no artificial CPU/RAM/worker/wall cap; no shared/other-user changes. Numerical Operator checks and other candidate work remain parallel.",
+  "excluded": [
+    "New fit/optimizer/SCF/Hamiltonian generation",
+    "Physical/sector norms, ground/alias or PF/RTE/attenuation reevaluation",
+    "Shot formula or RPE/signal sampling",
+    "Long-q circuit build/global compile or extra candidates",
+    "Whole-law synthesis qualification or actual finite-bit law error certification",
+    "CA achievement or guaranteed actual total-resource superiority"
+  ],
+  "preservation": "Old SOURCE/results/grants/ledgers/markers/STOP remain unchanged",
+  "permission_required": "User chat explicitly requested repair and rerun; no further approval-proof files, certificate, record or grant needed. No authorization for expanded candidates/conditions or stages.",
+  "compatibility_version": "qiskit_p0_compile_mutex_v1",
+  "previous_contract": "docs/research/research_c_c1_stage3_cost_contract_unapproved_20261025.json",
+  "previous_contract_sha256": "d563c4dee6723dda5b2e965aa5fc4e9c0fa258fb4d59daf00c1a2366858d6477",
+  "previous_failure_commit": "4c4a78d48b9d77f8a15cd11ad67968e5f11195ee",
+  "compatibility_policy": "Only Qiskit P0 compile callbacks mutually exclusive within the current process; preserve8 candidate workers, model/emitter/Operator/metrics parallelism, profiles/seeds/angles/precision and all old SOURCE. Waiting compiles are charged only after acquiring the mutex and after the old STOP check.",
+  "technical_recovery_policy": "User explicitly permits repair and rerun, including unintended technical interruptions. Keep each failed attempt and frozen SOURCE; after technical repair/test/source fixation use fresh output, never overwrite/resume old run01.936 logical units per fresh attempt; report cumulative attempts/calls. Numerical correctness FAIL still stops dependent work without changing conditions/tolerances or candidate scope.",
+  "attempt_policy": "retry0/resume0 refer to no in-place retry/resume of each fixed attempt; user-permitted technical repair reruns are separately preserved fresh attempts, not reuse of consumed old records"
+}
