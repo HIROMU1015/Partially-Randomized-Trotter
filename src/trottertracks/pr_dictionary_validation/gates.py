@@ -125,6 +125,41 @@ def stable_official_lowering(circuit,basis):
     return result
 
 
+def stable_native_transpile(circuit,profile):
+    """Same level-1 pass plan, with exact scalar phase sums across 1q runs."""
+    from types import MethodType
+    from qiskit.dagcircuit import DAGCircuit
+    from qiskit.transpiler import generate_preset_pass_manager
+    from qiskit.transpiler.passes import Optimize1qGatesDecomposition
+    original_run=Optimize1qGatesDecomposition.run
+    def stable_run(optimizer,dag):
+        phases=[float(dag.global_phase)]
+        for run in list(dag.collect_1q_runs()):
+            small=DAGCircuit();small.add_qubits([run[0].qargs[0]])
+            for node in run:small.apply_operation_back(node.op,node.qargs)
+            # Reuse Qiskit's original synthesis and gate-choice algorithm on
+            # exactly the same run; only parent scalar-phase accumulation differs.
+            small=original_run(optimizer,small)
+            phases.append(float(small.global_phase));small.global_phase=0.
+            for node in run[1:]:dag.remove_op_node(node)
+            dag.substitute_node_with_dag(run[0],small)
+        dag.global_phase=float(sum(map(Fraction,phases),Fraction())%Fraction(2*math.pi))
+        return dag
+    manager=generate_preset_pass_manager(optimization_level=profile.optimization_level,
+        basis_gates=list(profile.basis_gates),seed_transpiler=profile.seed_transpiler,
+        backend=None,target=None,coupling_map=None,initial_layout=None,layout_method=None,
+        routing_method=None,translation_method=None,scheduling_method=None,
+        approximation_degree=profile.approximation_degree,qubits_initially_zero=profile.qubits_initially_zero)
+    replaced=[]
+    def visit(task):
+        if isinstance(task,Optimize1qGatesDecomposition):
+            task.run=MethodType(stable_run,task);replaced.append(task)
+        for child in getattr(task,'tasks',()):visit(child)
+    visit(manager.to_flow_controller())
+    if not replaced:raise ValueError('Pinned level1 optimizer was not found')
+    return manager.run(circuit)
+
+
 def compiled_wrapper(circuit, profile, *, cache=None, identity_context=None,stable_phase=False):
     from qiskit import transpile
     from qiskit.circuit.equivalence import EquivalenceLibrary
@@ -133,7 +168,7 @@ def compiled_wrapper(circuit, profile, *, cache=None, identity_context=None,stab
     profile.validate()
     cache_key=None
     if cache is not None:
-        if stable_phase:identity_context=dict(identity_context or {},lowering='official_definitions_exact_phase_native_v3')
+        if stable_phase:identity_context=dict(identity_context or {},lowering='official_definitions_exact_phase_native_v4')
         cache_key=compile_cache_key(circuit,profile,identity_context)
         if cache_key in cache:
             return cache[cache_key].copy()
@@ -145,12 +180,13 @@ def compiled_wrapper(circuit, profile, *, cache=None, identity_context=None,stab
     lowered=(stable_official_lowering(circuit,list(profile.basis_gates)+['u']) if stable_phase else
         PassManager([UnrollCustomDefinitions(EquivalenceLibrary(),
         list(profile.basis_gates)+['u'])]).run(circuit))
-    compiled=transpile(lowered,basis_gates=list(profile.basis_gates),
+    compiled=(stable_native_transpile(lowered,profile) if stable_phase else
+        transpile(lowered,basis_gates=list(profile.basis_gates),
         optimization_level=profile.optimization_level,seed_transpiler=profile.seed_transpiler,
         backend=None,target=None,coupling_map=None,initial_layout=None,
         layout_method=None,routing_method=None,translation_method=None,scheduling_method=None,
         approximation_degree=profile.approximation_degree,
-        qubits_initially_zero=profile.qubits_initially_zero)
+        qubits_initially_zero=profile.qubits_initially_zero))
     if compiled.layout is not None:
         permutation=compiled.layout.final_index_layout(filter_ancillas=True)
         if permutation!=list(range(circuit.num_qubits)):

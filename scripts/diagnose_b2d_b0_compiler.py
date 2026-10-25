@@ -41,7 +41,10 @@ def main():
     report(lowered,'official_definition_lowering')
     def callback(**kw):
         if kw['pass_'].is_transformation_pass:report(dag_to_circuit(kw['dag']),type(kw['pass_']).__name__)
-    compiled=transpile(lowered,basis_gates=list(profile.basis_gates),optimization_level=1,seed_transpiler=17,
+    if args.stable_phase and args.final_only:
+        from trottertracks.pr_dictionary_validation.gates import stable_native_transpile
+        compiled=stable_native_transpile(lowered,profile)
+    else:compiled=transpile(lowered,basis_gates=list(profile.basis_gates),optimization_level=1,seed_transpiler=17,
         backend=None,target=None,coupling_map=None,initial_layout=None,layout_method=None,routing_method=None,
         translation_method=None,scheduling_method=None,approximation_degree=1.,qubits_initially_zero=False,
         callback=None if args.final_only else callback)

@@ -79,5 +79,15 @@ class CompilerPhaseTests(unittest.TestCase):
             lowered=stable_official_lowering(circuit,['rz','sx','x','cx','u'])
             self.assertLessEqual(np.linalg.norm(Operator(lowered).data-Operator(circuit).data,ord=2),1e-14)
 
+    def test_many_one_qubit_runs_and_no_shared_optimizer_mutation(self):
+        from qiskit.transpiler.passes import Optimize1qGatesDecomposition
+        original=Optimize1qGatesDecomposition.run
+        circuit=QuantumCircuit(2)
+        for _ in range(500):
+            circuit.ry(.031,0);circuit.rz(-.17,0);circuit.cx(0,1)
+        compiled=compiled_wrapper(circuit,CompilerProfile(),stable_phase=True)
+        self.assertIs(Optimize1qGatesDecomposition.run,original)
+        self.assertLessEqual(np.linalg.norm(Operator(compiled).data-Operator(circuit).data,ord=2),1e-12)
+
 
 if __name__=='__main__':unittest.main()
