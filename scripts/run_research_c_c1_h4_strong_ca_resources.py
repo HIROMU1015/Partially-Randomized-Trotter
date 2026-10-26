@@ -2,6 +2,7 @@
 """H4 B2 CDF/B3 XDF CA/RPE/serial resources; passive by default."""
 import argparse
 import json
+import os
 from pathlib import Path
 import sys
 
@@ -22,6 +23,13 @@ def main():
         print(json.dumps(dict(status='BYTE_PREFLIGHT_PASS', science_calls=0, maximum_calls=m.MAX_CALLS)))
         return
     if not a.output: p.error('Fresh output required')
+    m.fresh_output(ROOT, a.output)
+    # Reused legacy imports may initialize plotting/library caches. Keep them
+    # task-local just as in the prior H4 runner; passive preflight stays read-only.
+    for key, leaf in [('XDG_CACHE_HOME', ''), ('MPLCONFIGDIR', 'matplotlib'), ('TMPDIR', 'tmp')]:
+        directory = ROOT / '.cache/h4-strong-ca' / leaf
+        directory.mkdir(parents=True, exist_ok=True)
+        os.environ[key] = str(directory)
     m.run(ROOT, a.contract, a.output)
 
 
