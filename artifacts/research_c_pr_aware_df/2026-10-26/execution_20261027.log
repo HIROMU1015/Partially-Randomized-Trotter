@@ -1,0 +1,92 @@
+Traceback (most recent call last):
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/scripts/run_research_c_pr_aware_df.py", line 36, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/scripts/run_research_c_pr_aware_df.py", line 29, in main
+    elif a.worker:m.fit_worker(ROOT,a.output,c,a.worker)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/src/trottertracks/c_pr_aware_df_pilot.py", line 123, in fit_worker
+    J,U,res=call('optimized_fitter',role,lambda:objective.fit(p['g'],a['J'],a['U'],a['x0'],spec,before_optimizer=before,after_optimizer=after))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/src/trottertracks/c1_stage3_integrated.py", line 108, in __call__
+    value = function()
+            ^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/src/trottertracks/c_pr_aware_df_pilot.py", line 123, in <lambda>
+    J,U,res=call('optimized_fitter',role,lambda:objective.fit(p['g'],a['J'],a['U'],a['x0'],spec,before_optimizer=before,after_optimizer=after))
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/src/trottertracks/c_pr_aware_df.py", line 144, in fit
+    a,u,result = corrected.fit(g, J, U, x0, before_optimizer=before_optimizer,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/src/trottertracks/c1_ffsim_corrected_codec.py", line 74, in fit
+    result=ffsim.linalg.double_factorized(g,max_vecs=rank,**SETTINGS)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/lib/python3.11/site-packages/ffsim/linalg/double_factorized_decomposition.py", line 263, in double_factorized
+    return _double_factorized_compressed(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/lib/python3.11/site-packages/ffsim/linalg/double_factorized_decomposition.py", line 415, in _double_factorized_compressed
+Traceback (most recent call last):
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/scripts/run_research_c_pr_aware_df.py", line 36, in <module>
+    x0 = df_tensors_to_params(
+         ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/src/trottertracks/c1_ffsim_corrected_codec.py", line 53, in pack
+    if __name__=='__main__':main()
+    if not np.array_equal(x,expected_x0):raise ValueError('QUALIFIED_X0_CHANGED')
+                            ^^^^^^
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/scripts/run_research_c_pr_aware_df.py", line 29, in main
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: QUALIFIED_X0_CHANGED
+    elif a.worker:m.fit_worker(ROOT,a.output,c,a.worker)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/src/trottertracks/c_pr_aware_df_pilot.py", line 123, in fit_worker
+    J,U,res=call('optimized_fitter',role,lambda:objective.fit(p['g'],a['J'],a['U'],a['x0'],spec,before_optimizer=before,after_optimizer=after))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/src/trottertracks/c1_stage3_integrated.py", line 108, in __call__
+    value = function()
+            ^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/src/trottertracks/c_pr_aware_df_pilot.py", line 123, in <lambda>
+    J,U,res=call('optimized_fitter',role,lambda:objective.fit(p['g'],a['J'],a['U'],a['x0'],spec,before_optimizer=before,after_optimizer=after))
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/src/trottertracks/c_pr_aware_df.py", line 144, in fit
+    a,u,result = corrected.fit(g, J, U, x0, before_optimizer=before_optimizer,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/src/trottertracks/c1_ffsim_corrected_codec.py", line 74, in fit
+    result=ffsim.linalg.double_factorized(g,max_vecs=rank,**SETTINGS)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/lib/python3.11/site-packages/ffsim/linalg/double_factorized_decomposition.py", line 263, in double_factorized
+    return _double_factorized_compressed(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/lib/python3.11/site-packages/ffsim/linalg/double_factorized_decomposition.py", line 415, in _double_factorized_compressed
+    x0 = df_tensors_to_params(
+         ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/src/trottertracks/c1_ffsim_corrected_codec.py", line 53, in pack
+    if not np.array_equal(x,expected_x0):raise ValueError('QUALIFIED_X0_CHANGED')
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: QUALIFIED_X0_CHANGED
+Traceback (most recent call last):
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/scripts/run_research_c_pr_aware_df.py", line 36, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/scripts/run_research_c_pr_aware_df.py", line 33, in main
+    m.run(ROOT,a.contract,a.output,a.input,a.fit_python)
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/src/trottertracks/c_pr_aware_df_pilot.py", line 185, in run
+    with ThreadPoolExecutor(max_workers=plan['workers']) as pool:list(pool.map(worker,('baseline','proposed')))
+                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-stage-a-20261027/src/trottertracks/c_pr_aware_df_pilot.py", line 161, in worker
+    subprocess.run([str(Path(fit_python).absolute()),str(root/c['entry']),'--contract',str(Path(path).absolute()),
+  File "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/bin/python', '/tmp/prt-c-pr-aware-df-stage-a-20261027/scripts/run_research_c_pr_aware_df.py', '--contract', '/tmp/prt-c-pr-aware-df-stage-a-20261027/docs/research/research_c_pr_aware_df_pilot_contract_draft_20261026.json', '--input', '/tmp/prt-c1-h4-b3-execution-20261026/.external/P-H4.npz', '--worker', 'baseline', '--output', '/tmp/prt-c-pr-aware-df-stage-a-20261027/artifacts/research_c_pr_aware_df/2026-10-26/run01/baseline']' returned non-zero exit status 1.

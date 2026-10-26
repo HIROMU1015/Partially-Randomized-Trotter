@@ -1,0 +1,463 @@
+{
+  "schema": "C_PR_AWARE_DF_STAGE_A_PARTIAL_EXECUTION_REPORT_V1",
+  "execution_date_JST": "2026-10-27T00:39:36.833283+09:00",
+  "fixed_commit": "94d1c7b4bbed106c3991ef0a5bfd1ffde337807a",
+  "scope": "C_PR_AWARE_DF_PAIRED_STAGE_A_V1",
+  "contract_sha256": "0a628d801ed75142f07ff64833ac0184fa982d979efdbe3a65a3d348d09da34c",
+  "runtime_status": "TECHNICAL_STOP_BEFORE_OPTIMIZER",
+  "reported_stage_A": "STAGE_A_NOT_MET_OR_UNRESOLVED",
+  "classification_reason": "Required optimizer/final DF/exact-mass evidence absent; comparison call not reached, no numerical proxy verdict",
+  "scientific_units": 18,
+  "maximum_units": 30,
+  "complete_units": 16,
+  "failed_units": 2,
+  "call_counts": {
+    "snapshots_load": 1,
+    "sector_context": 1,
+    "physical_sector": 1,
+    "sector_assessment": 2,
+    "representation_assessment": 2,
+    "initial_gate": 1,
+    "original_input_load": 1,
+    "saved_initial_load": 1,
+    "corrected_codec": 1,
+    "tensor_assessment": 2,
+    "objective_setup": 1,
+    "fit_input_load": 2,
+    "optimized_fitter": 2
+  },
+  "fitter_wrapper_attempts": 2,
+  "actual_optimizer_calls": 0,
+  "optimizer_iterations": 0,
+  "completed_fits": 0,
+  "retry": 0,
+  "resume": 0,
+  "initial": {
+    "before": {
+      "rank": 8,
+      "actual_rank": 8,
+      "status": "SECTOR_EVALUATED",
+      "sector_error": 7.666027761376278e-05,
+      "numerical_guard": 3.278760734406151e-09,
+      "evidence_kind": "numerical_pilot",
+      "guard_policy": "sector_operation_scale_guard8_proposal_v1",
+      "rigorous_enclosure": null,
+      "representation": {
+        "label": "sector raw-CAR vs general-K",
+        "max_entry": 4.052314039881821e-15,
+        "frobenius": 9.020513196142105e-15,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "tensor": {
+        "tensor_maxabs": 1.0550030930367438e-05,
+        "tensor_frobenius": 6.609028983585872e-05,
+        "objective_from_tensor": 2.1839632052939052e-09,
+        "actual_rank": 8
+      },
+      "sector_norm_plus_guard_Ha": 7.666355637449718e-05,
+      "DF_budget_PASS": true
+    },
+    "initial": {
+      "rank": 8,
+      "actual_rank": 8,
+      "status": "SECTOR_EVALUATED",
+      "sector_error": 7.666027761495033e-05,
+      "numerical_guard": 3.278760734406151e-09,
+      "evidence_kind": "numerical_pilot",
+      "guard_policy": "sector_operation_scale_guard8_proposal_v1",
+      "rigorous_enclosure": null,
+      "representation": {
+        "label": "sector raw-CAR vs general-K",
+        "max_entry": 2.761679773755077e-15,
+        "frobenius": 8.33529099273796e-15,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "tensor": {
+        "tensor_maxabs": 1.0550030930422949e-05,
+        "tensor_frobenius": 6.609028983603955e-05,
+        "objective_from_tensor": 2.1839632053058567e-09,
+        "actual_rank": 8
+      },
+      "sector_norm_plus_guard_Ha": 7.666355637568474e-05,
+      "DF_budget_PASS": true
+    }
+  },
+  "initial_gate": {
+    "status": "PASS"
+  },
+  "normalization": {
+    "spec": {
+      "rank": 8,
+      "norb": 4,
+      "ld": 2,
+      "loss_scale": 2.1839632053132894e-09,
+      "mass_scale": 2.2093719370722074,
+      "gamma": 0.0,
+      "epsilon": 1e-08
+    },
+    "initial_tensor_objective": 2.1839632053132894e-09,
+    "initial_smooth_tail_mass": 2.2093719370722074
+  },
+  "codec_report": {
+    "version": "real_schur_column_gauge_v1",
+    "actual_rank": 8,
+    "norb": 4,
+    "real": true,
+    "parameter_count": 128,
+    "dtype": "float64",
+    "J_maxabs": 0.0,
+    "frames": [
+      {
+        "frame": 0,
+        "det_original": 0.9999999999999997,
+        "det_representative": 0.9999999999999997,
+        "column_signs": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "orthogonality_maxabs": 3.3306690738754696e-16,
+        "schur_reconstruction_maxabs": 9.992007221626409e-16,
+        "schur_block_exponential_maxabs": 3.3306690738754696e-16,
+        "skew_roundoff_projection_maxabs": 1.1102230246251565e-16,
+        "skew_maxabs": 0.0,
+        "representative_exponential_maxabs": 1.3322676295501878e-15,
+        "rotation_planes": [
+          {
+            "indices": [
+              0,
+              1
+            ],
+            "angle": -1.8082548962537102
+          },
+          {
+            "indices": [
+              2,
+              3
+            ],
+            "angle": -0.21510586200989887
+          }
+        ],
+        "minus_one_pairs": [],
+        "restored_representative_maxabs": 1.3322676295501878e-15,
+        "original_rotation_difference_maxabs": 1.3322676295501878e-15,
+        "restored_orthogonality_maxabs": 2.8709673527416157e-16,
+        "density_projector_maxabs": 1.1587952819525071e-15
+      },
+      {
+        "frame": 1,
+        "det_original": 1.0,
+        "det_representative": 1.0,
+        "column_signs": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "orthogonality_maxabs": 2.7755575615628914e-16,
+        "schur_reconstruction_maxabs": 1.4432899320127035e-15,
+        "schur_block_exponential_maxabs": 5.528530952586901e-16,
+        "skew_roundoff_projection_maxabs": 2.220446049250313e-16,
+        "skew_maxabs": 0.0,
+        "representative_exponential_maxabs": 1.4432899320127035e-15,
+        "rotation_planes": [
+          {
+            "indices": [
+              0,
+              1
+            ],
+            "angle": 3.111398895551608
+          },
+          {
+            "indices": [
+              2,
+              3
+            ],
+            "angle": -0.01631840904446819
+          }
+        ],
+        "minus_one_pairs": [],
+        "restored_representative_maxabs": 1.4432899320127035e-15,
+        "original_rotation_difference_maxabs": 1.4432899320127035e-15,
+        "restored_orthogonality_maxabs": 3.0531133177191805e-16,
+        "density_projector_maxabs": 1.609823385706477e-15
+      },
+      {
+        "frame": 2,
+        "det_original": 0.9999999999999998,
+        "det_representative": 0.9999999999999998,
+        "column_signs": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "orthogonality_maxabs": 4.440892098500626e-16,
+        "schur_reconstruction_maxabs": 6.800116025829084e-16,
+        "schur_block_exponential_maxabs": 4.891920202254596e-16,
+        "skew_roundoff_projection_maxabs": 4.440892098500626e-16,
+        "skew_maxabs": 0.0,
+        "representative_exponential_maxabs": 4.440892098500626e-16,
+        "rotation_planes": [
+          {
+            "indices": [
+              0,
+              1
+            ],
+            "angle": 0.008710080593907928
+          },
+          {
+            "indices": [
+              2,
+              3
+            ],
+            "angle": -3.1217019216636515
+          }
+        ],
+        "minus_one_pairs": [],
+        "restored_representative_maxabs": 4.440892098500626e-16,
+        "original_rotation_difference_maxabs": 4.440892098500626e-16,
+        "restored_orthogonality_maxabs": 4.440892098500626e-16,
+        "density_projector_maxabs": 4.440892098500626e-16
+      },
+      {
+        "frame": 3,
+        "det_original": 1.0,
+        "det_representative": 1.0,
+        "column_signs": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "orthogonality_maxabs": 4.440892098500626e-16,
+        "schur_reconstruction_maxabs": 1.3322676295501878e-15,
+        "schur_block_exponential_maxabs": 7.771561172376096e-16,
+        "skew_roundoff_projection_maxabs": 1.734723475976807e-18,
+        "skew_maxabs": 0.0,
+        "representative_exponential_maxabs": 1.1102230246251565e-15,
+        "rotation_planes": [
+          {
+            "indices": [
+              0,
+              1
+            ],
+            "angle": 2.3115700047942283
+          },
+          {
+            "indices": [
+              2,
+              3
+            ],
+            "angle": 0.007164533211358809
+          }
+        ],
+        "minus_one_pairs": [],
+        "restored_representative_maxabs": 1.1102230246251565e-15,
+        "original_rotation_difference_maxabs": 1.1102230246251565e-15,
+        "restored_orthogonality_maxabs": 8.881784197001252e-16,
+        "density_projector_maxabs": 1.27675647831893e-15
+      },
+      {
+        "frame": 4,
+        "det_original": 0.9999999999999999,
+        "det_representative": 0.9999999999999999,
+        "column_signs": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "orthogonality_maxabs": 2.220446049250313e-16,
+        "schur_reconstruction_maxabs": 9.992007221626409e-16,
+        "schur_block_exponential_maxabs": 9.992007221626409e-16,
+        "skew_roundoff_projection_maxabs": 1.1102230246251565e-16,
+        "skew_maxabs": 0.0,
+        "representative_exponential_maxabs": 3.3306690738754696e-16,
+        "rotation_planes": [
+          {
+            "indices": [
+              0,
+              1
+            ],
+            "angle": 1.5897988972879076
+          },
+          {
+            "indices": [
+              2,
+              3
+            ],
+            "angle": -0.018588197906929046
+          }
+        ],
+        "minus_one_pairs": [],
+        "restored_representative_maxabs": 3.3306690738754696e-16,
+        "original_rotation_difference_maxabs": 3.3306690738754696e-16,
+        "restored_orthogonality_maxabs": 3.3306690738754696e-16,
+        "density_projector_maxabs": 5.551115123125783e-16
+      },
+      {
+        "frame": 5,
+        "det_original": 1.0000000000000004,
+        "det_representative": 1.0000000000000004,
+        "column_signs": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "orthogonality_maxabs": 2.220446049250313e-16,
+        "schur_reconstruction_maxabs": 1.3877787807814457e-15,
+        "schur_block_exponential_maxabs": 8.881784197001252e-16,
+        "skew_roundoff_projection_maxabs": 2.220446049250313e-16,
+        "skew_maxabs": 0.0,
+        "representative_exponential_maxabs": 1.7208456881689926e-15,
+        "rotation_planes": [
+          {
+            "indices": [
+              0,
+              1
+            ],
+            "angle": 2.878026730101687
+          },
+          {
+            "indices": [
+              2,
+              3
+            ],
+            "angle": -0.478003388176901
+          }
+        ],
+        "minus_one_pairs": [],
+        "restored_representative_maxabs": 1.7208456881689926e-15,
+        "original_rotation_difference_maxabs": 1.7208456881689926e-15,
+        "restored_orthogonality_maxabs": 2.220446049250313e-16,
+        "density_projector_maxabs": 1.3877787807814457e-15
+      },
+      {
+        "frame": 6,
+        "det_original": 0.9999999999999997,
+        "det_representative": 0.9999999999999997,
+        "column_signs": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "orthogonality_maxabs": 6.661338147750939e-16,
+        "schur_reconstruction_maxabs": 1.1184629611360464e-15,
+        "schur_block_exponential_maxabs": 5.551115123125783e-16,
+        "skew_roundoff_projection_maxabs": 2.220446049250313e-16,
+        "skew_maxabs": 0.0,
+        "representative_exponential_maxabs": 1.4432899320127035e-15,
+        "rotation_planes": [
+          {
+            "indices": [
+              0,
+              1
+            ],
+            "angle": -2.2462683904483383
+          },
+          {
+            "indices": [
+              2,
+              3
+            ],
+            "angle": -0.6356119268763836
+          }
+        ],
+        "minus_one_pairs": [],
+        "restored_representative_maxabs": 1.4432899320127035e-15,
+        "original_rotation_difference_maxabs": 1.4432899320127035e-15,
+        "restored_orthogonality_maxabs": 4.440892098500626e-16,
+        "density_projector_maxabs": 1.4430730915782064e-15
+      },
+      {
+        "frame": 7,
+        "det_original": 1.0,
+        "det_representative": 1.0,
+        "column_signs": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "orthogonality_maxabs": 8.673617379884035e-17,
+        "schur_reconstruction_maxabs": 1.7763568394002505e-15,
+        "schur_block_exponential_maxabs": 8.881784197001252e-16,
+        "skew_roundoff_projection_maxabs": 2.775726968152342e-17,
+        "skew_maxabs": 0.0,
+        "representative_exponential_maxabs": 2.7755575615628914e-16,
+        "rotation_planes": [
+          {
+            "indices": [
+              0,
+              1
+            ],
+            "angle": 0.6808334005451702
+          },
+          {
+            "indices": [
+              2,
+              3
+            ],
+            "angle": 0.007152293414776092
+          }
+        ],
+        "minus_one_pairs": [],
+        "restored_representative_maxabs": 2.7755575615628914e-16,
+        "original_rotation_difference_maxabs": 2.7755575615628914e-16,
+        "restored_orthogonality_maxabs": 1.1102230246251565e-16,
+        "density_projector_maxabs": 4.440892098500626e-16
+      }
+    ],
+    "tensor_maxabs": 5.269222558279552e-16,
+    "tensor_frobenius": 2.784971319744209e-15,
+    "tensor_allowance": 2.149574788330439e-10,
+    "component_allowance": 1e-10,
+    "rigorous_enclosure": null
+  },
+  "roles": {
+    "baseline": {
+      "wrapper": "FAIL",
+      "error": "QUALIFIED_X0_CHANGED",
+      "optimizer_success": null,
+      "status": null,
+      "message": null,
+      "nit": null,
+      "nfev": null,
+      "njev": null,
+      "final_DF_norm": null,
+      "exact_tail_mass": null,
+      "smooth_tail_mass": null
+    },
+    "proposed": {
+      "wrapper": "FAIL",
+      "error": "QUALIFIED_X0_CHANGED",
+      "optimizer_success": null,
+      "status": null,
+      "message": null,
+      "nit": null,
+      "nfev": null,
+      "njev": null,
+      "final_DF_norm": null,
+      "exact_tail_mass": null,
+      "smooth_tail_mass": null
+    }
+  },
+  "exact_tail_mass_reduction": null,
+  "gradient_diagnostics": null,
+  "PF_error": null,
+  "RTE_error": null,
+  "attenuation": null,
+  "shots": null,
+  "total_cost": null,
+  "CA_achieved": null,
+  "rigorous_enclosure": null,
+  "stages_B_C_executed": false,
+  "source_and_old_saved_input_hashes_unchanged": true,
+  "mandatory_stop": true
+}

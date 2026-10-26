@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-27：PR-aware DF Stage A・optimizer前の技術的STOP
+
+[初期予算・18-call部分証拠・x0接続](docs/research/research_c_pr_aware_df_stage_a_execution_20261027.md)。固定SOURCE94d1c7b4b…無変更、18/30 units（16 COMPLETE／2 FAIL）、ffsim entry各1・実optimizer0・完了fit0・retry/resume0。保存H4・1Å/STO-3G、sector36、CDF8元順prefix LD2、γ0/.1。初期general-K/raw-CARとDF予算はPASS、再pack後の`QUALIFIED_X0_CHANGED`で両arm STOP。終了DF・exact mass削減・PR資源効果は未資格。旧SOURCE/raw/STOPを保全し、公開照合後mandatory STOP。以下の技術準備状態は履歴。
+
 ## 研究C：PR-aware DFの初期設計・技術準備（依頼識別子20261026）
 
 [設計・再利用・人工49 tests＋29 subtests](<docs/research/research_c_pr_aware_df_optimization_design_20261026.md>)／[未承認Stage A・30-call案](<docs/research/research_c_pr_aware_df_pilot_contract_draft_20261026.json>)。`c_pr_aware_df.py`／`c_pr_aware_df_pilot.py`、`run_research_c_pr_aware_df.py`、同名management tests。既存ffsim loss/gradient・修正codec・SectorCARへ固定tail mass代理目的を最小接続。実optimizerは人工mock nit0、両env byte preflight PASS。実分子decode・新科学call0、科学的有効性／新規性・Stage B/Cは未資格・未承認、mandatory STOP。
