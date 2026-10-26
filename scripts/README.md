@@ -322,3 +322,7 @@ PS48の[科学実行結果](../docs/research/pr_rectangular_givens_ps48_executio
 ## H4強baseline：basis／relative Gaussian（2026-10-26）
 
 `run_research_c_c1_h4_strong_baseline.py` はデフォルトでbyte preflightだけを行う。[技術報告](../docs/research/research_c_c1_h4_strong_baseline_preparation_20261026.md)／[未承認227-call案](../docs/research/research_c_c1_h4_strong_baseline_science_contract_draft_20261026.json)。別途許可された場合だけ`--execute --output <fresh run01>`でB1 XDF spin／B2 CDF・XDF relativeのs1三routeを評価する。旧one-shot runnerは再起動しない。科学実行は未実施。
+
+## 2026-10-26：H4強baseline s1科学実行完了
+
+[227-call結果・full512検証・5比較](../docs/research/research_c_c1_h4_strong_baseline_execution_20261026.md)。9 local／3 kernel／6 adjoint／9 complex X/Y gate PASS。B1 XDF RZ11821、B2 CDF11062/XDF11307、保存B0は再buildなし。単一kernelの数値pilotで、B3・s4・CA/shots/総費用は未評価。旧結果・SOURCE・STOPを保全し、公開照合後mandatory STOP。

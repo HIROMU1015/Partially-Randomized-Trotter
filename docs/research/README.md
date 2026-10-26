@@ -181,3 +181,7 @@ Gaussian singletonの[改善候補設計](pr_gaussian_singleton_synthesis_design
 ## C1 H4強baseline：技術準備（2026-10-26）
 
 [技術報告・合法なbasis自由度・位相補正・人工101 PASS](research_c_c1_h4_strong_baseline_preparation_20261026.md)／[未承認227-call契約案](research_c_c1_h4_strong_baseline_science_contract_draft_20261026.json)。保存CDF8/XDF8 baseline、XDF spin基底単独、両armのrelative Gaussian単独をs1で切り分ける。B3・s4・13round総資源は未登録、実H4新科学call0。別途の明示的な科学実行許可までmandatory STOP。
+
+## 2026-10-26：H4強baseline s1科学実行完了
+
+[227-call結果・full512検証・5比較](research_c_c1_h4_strong_baseline_execution_20261026.md)。9 local／3 kernel／6 adjoint／9 complex X/Y gate PASS。B1 XDF RZ11821、B2 CDF11062/XDF11307、保存B0は再buildなし。単一kernelの数値pilotで、B3・s4・CA/shots/総費用は未評価。旧結果・SOURCE・STOPを保全し、公開照合後mandatory STOP。

@@ -310,3 +310,7 @@ DF部分ランダム化研究と混同しない。
 ## H4強baselineのtask-local adapter（2026-10-26）
 
 既存DF primitive／precision Gaussian／P0を再利用する`src/trottertracks/c1_h4_strong_baseline.py`を追加した。[技術報告](../../docs/research/research_c_c1_h4_strong_baseline_preparation_20261026.md)。exact spin XDF basisとanalytic vacuum phase付きrelative boundaryをopt-inで接続し、既存library/defaultは無変更。人工／回帰101 PASS、実H4科学実行0。s1三route・最大227-callの未承認案で、B3・shots・総費用へ自動進行しない。
+
+## 2026-10-26：H4強baseline s1科学実行完了
+
+[227-call結果・full512検証・5比較](../../docs/research/research_c_c1_h4_strong_baseline_execution_20261026.md)。9 local／3 kernel／6 adjoint／9 complex X/Y gate PASS。B1 XDF RZ11821、B2 CDF11062/XDF11307、保存B0は再buildなし。単一kernelの数値pilotで、B3・s4・CA/shots/総費用は未評価。旧結果・SOURCE・STOPを保全し、公開照合後mandatory STOP。

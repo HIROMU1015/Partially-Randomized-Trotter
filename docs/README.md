@@ -332,3 +332,7 @@
 ## H4強baseline：技術準備（2026-10-26）
 
 [基底自由度・相対Gaussian融合・再利用・101 tests](research/research_c_c1_h4_strong_baseline_preparation_20261026.md)／[未承認227-call案](research/research_c_c1_h4_strong_baseline_science_contract_draft_20261026.json)。B0保存nativeとB1 XDF spin／B2両armのs1を比較する経路を準備。実H4の新規数値評価は0、別明示許可までmandatory STOP。
+
+## 2026-10-26：H4強baseline s1科学実行完了
+
+[227-call結果・full512検証・5比較](research/research_c_c1_h4_strong_baseline_execution_20261026.md)。9 local／3 kernel／6 adjoint／9 complex X/Y gate PASS。B1 XDF RZ11821、B2 CDF11062/XDF11307、保存B0は再buildなし。単一kernelの数値pilotで、B3・s4・CA/shots/総費用は未評価。旧結果・SOURCE・STOPを保全し、公開照合後mandatory STOP。
