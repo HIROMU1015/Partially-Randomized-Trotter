@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## C1：H4共通precision・full512の実行結果
+
+[結果・全gate・7 metrics・52 profile](../../docs/research/research_c_c1_h4_native_fair_execution_20261026.md)／[SOURCE・QPY40・call journal・STOP](../../artifacts/research_c_c1_h4_native_fair/2026-10-26/run01/)。SOURCE862a97d…を無変更実行し305/305 COMPLETE、correctness FAIL/retry/resume0。直鎖H4・1Å・STO-3G、CDF8/保存元順XDF8、Nα=Nβ2/sector36、全frame S2 s1/s4、δ.1・m0..12、PRなし、own-DF oracle/状態準備除外。同H6 Gaussian/P0・既存shared routeで局所18/kernel4/shell3/adjoint8/X-YがPASS、full512数値Frobeniusによる52/52位相条件内。単一h-step RZはCDF12,272対XDF13,944（約11.99%減）。丸めenclosure・共通CA・shots・総資源は未資格/未評価。旧SOURCE/raw/STOPを保全しmandatory STOP。以下の技術準備欄は実行前時点の記録。
+
 ## C1：H4共通precision・全Fock Frobeniusの最小接続
 
 `../trottertracks/c1_h4_native_fair.py`は既存NativeBuilder/prepare_cdf/prepare_xdf、H6 Gaussian・MPFR P0、full CAR/Operator/QPY/metricsを無変更再利用。`c1_h4_full_synthesis.py`は既存Frobenius/reference_info/repeat_boundへ両行列・shell norm growthを接続。[技術報告・156 unique人工/回帰PASS](../../docs/research/research_c_c1_h4_native_fair_preparation_20261026.md)。未承認305-call scope、実H4新科学0、厳密enclosure/CA/総資源は未資格・mandatory STOP。

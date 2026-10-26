@@ -1,0 +1,1162 @@
+{
+  "status": "H4_FAIR_NATIVE_FULL512_PILOT_COMPLETE",
+  "scope": "C1_H4_CDF8_XDF8_FAIR_NATIVE_FULL512_V1",
+  "SOURCE_commit": "862a97d4213121749448ca716cde820a44b99772",
+  "SOURCE_tree": "e0ee8c5c7c9fb52eaeabeeac7b9fbde1d932c0d7",
+  "branch": "codex/research-c-c1-h4-native-fair-execution-20261026",
+  "contract": "docs/research/research_c_c1_h4_native_fair_contract_unapproved_20261026.json",
+  "contract_sha256": "4a99e76ea879226e077376dd69f12b529f9eb1a48e98dd048143892a59b0e578",
+  "source_manifest_sha256": "fc00dfef12de6e642ae3a5f52b7b495ad161fb2c2bc6c70f187af7802d74a464",
+  "original_input_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+  "conditions": {
+    "atoms": 4,
+    "distance_angstrom": 1.0,
+    "basis": "STO-3G",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "system_dimension": 256,
+    "controlled_dimension": 512,
+    "CDF_rank": 8,
+    "XDF_rank": 8,
+    "XDF_order": "original saved OpenFermion1.6.1 eigh prefix8",
+    "number_representation": true,
+    "original_g_kappa": true,
+    "scalar": "nuclear once",
+    "frame_order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "PF": "all-frame ordered symmetric S2",
+    "substeps": [
+      1,
+      4
+    ],
+    "base_time": "1/10",
+    "rounds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "route": "existing adjacent identical-basis sharing and fsum angles",
+    "serial_policy": "separate head/kernel/readout with all-wire fences; no long-round compile",
+    "oracle": "own_DF_ground_state_oracle",
+    "state_preparation": "EXCLUDED",
+    "CA_Ha": 0.00159,
+    "DF_reserve_Ha": 0.00019875,
+    "beta_total": 0.5235987755982988,
+    "beta_stat": 0.2617993877991494,
+    "candidate_failure": 0.01,
+    "axis_failure": 0.0003846153846153846,
+    "PR_split": null
+  },
+  "allowances": {
+    "operator_component_abs": 1e-10,
+    "unitarity_component_abs": 1e-10,
+    "signal_complex": 2e-10,
+    "normalization": 1e-12,
+    "rtol": 0,
+    "local_time": "1/20",
+    "global_phase_fit": false,
+    "full_SVD": false,
+    "qualification": "full512 Frobenius numerical pilot; no rounding enclosure"
+  },
+  "compiler": {
+    "qiskit": "1.3.0",
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "approximation_degree": 1.0,
+    "qubits_initially_zero": false
+  },
+  "gaussian": "nature_jw_exact_zero_lapack_atan2_v1",
+  "compiler_phase": "qiskit_P0_mpfr160_declared_phase_v1",
+  "synthesis": "full_fock_frobenius_both_norm_growth_v1",
+  "scientific_units": 305,
+  "maximum_logical_units": 305,
+  "scientific_COMPLETE": 305,
+  "scientific_FAIL": 0,
+  "inflight_calls": 0,
+  "call_counts": {
+    "input_load": 1,
+    "export_load": 1,
+    "evidence_load": 10,
+    "cdf_operator_load": 9,
+    "sector_generator_load": 1,
+    "cdf_sector_load": 1,
+    "ground_load": 2,
+    "saved_kernel_load": 2,
+    "identity_gate": 1,
+    "native_model": 2,
+    "car_context": 1,
+    "xdf_generator": 9,
+    "sector_identity": 2,
+    "gaussian_build": 18,
+    "fairness_gate": 1,
+    "local_build": 18,
+    "local_reference": 18,
+    "local_operator": 18,
+    "local_gate": 18,
+    "shell_build": 3,
+    "compile": 7,
+    "shell_structure": 6,
+    "operator_decode": 14,
+    "segment_assessment": 7,
+    "metrics": 7,
+    "kernel_build": 4,
+    "kernel_reference": 4,
+    "kernel_sector_gate": 2,
+    "adjoint_build": 8,
+    "adjoint_operator": 8,
+    "adjoint_assessment": 8,
+    "signal_reference": 4,
+    "signal_prepare": 8,
+    "signal_axis": 16,
+    "signal_gate": 12,
+    "round_synthesis": 52,
+    "cost_comparison": 2
+  },
+  "local_factors_PASS": 18,
+  "kernels_PASS": 4,
+  "shells_PASS": 3,
+  "adjoints_PASS": 8,
+  "XY_gates_PASS": 12,
+  "gaussian_block_requests": 18,
+  "compile_calls": 7,
+  "full512_Operator_decodes": 40,
+  "ancilla_structure_decodes": 6,
+  "QPY_files": 40,
+  "operator_files": 18,
+  "round_status_counts": {
+    "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL": 52
+  },
+  "saved_identity": {
+    "status": "PASS",
+    "DF_bounds_Ha": {
+      "CDF": 7.666215916301914e-05,
+      "XDF": 9.533901455091894e-05
+    },
+    "alias": "saved H4 own-ground/[-10,10] base branch checks; no new eigensolve"
+  },
+  "resources": {
+    "wall_seconds": 106.26757530961186,
+    "process_CPU_seconds": 450.223945158,
+    "peak_RSS_KiB": 916720
+  },
+  "resource_plan": {
+    "workers": 4,
+    "available_affinity_cpus": 32,
+    "available_memory_bytes": 56675422208,
+    "quota_cpus": null,
+    "estimated_bytes_per_candidate": 268435456,
+    "BLAS_threads_per_worker": 1,
+    "policy": "Independent candidates; process-local BLAS coordination; no shared settings changed",
+    "local_factor_workers": 18
+  },
+  "artificial_tests": {
+    "passed": 20,
+    "failed": 0,
+    "seconds": 16.64
+  },
+  "candidates": {
+    "CDF_s1": {
+      "arm": "CDF",
+      "s": 1,
+      "metrics": {
+        "rz_count": 12272,
+        "cx_count": 7388,
+        "rz_depth": 5873,
+        "cx_depth": 6440,
+        "total_depth": 12806,
+        "circuit_size": 23543,
+        "measurement_count": 0,
+        "quantum_only_depth": 12806
+      },
+      "raw_reference": {
+        "label": "raw:CDF_s1",
+        "max_entry": 4.782846234246745e-15,
+        "frobenius": 4.709031120034062e-14,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "compiled_raw": {
+        "label": "P0:CDF_s1",
+        "max_entry": 2.1256482696550753e-12,
+        "frobenius": 3.290056675109565e-11,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "compiled_reference": {
+        "label": "compiled/ref:CDF_s1",
+        "max_entry": 2.1256482696550753e-12,
+        "frobenius": 3.289713005970301e-11,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "unitarity": [
+        {
+          "label": "raw-unitarity:CDF_s1",
+          "max_entry": 9.769962616701378e-15,
+          "frobenius": 8.528984645137954e-14,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        {
+          "label": "P0-unitarity:CDF_s1",
+          "max_entry": 3.709255125272648e-13,
+          "frobenius": 7.99722928010293e-12,
+          "tolerance": 1e-10,
+          "rtol": 0
+        }
+      ],
+      "norm_upper_pilot": 1.0000000000039988,
+      "XY": {
+        "raw_reference": {
+          "error": 1.2291051413029514e-15,
+          "tolerance": 2e-10,
+          "actual_real": 0.9766288484689161,
+          "actual_imag": 0.21493275905039805
+        },
+        "compiled_raw": {
+          "error": 3.546889254115588e-13,
+          "tolerance": 2e-10,
+          "actual_real": 0.9766288484685668,
+          "actual_imag": 0.21493275905033632
+        },
+        "compiled_reference": {
+          "error": 3.535106417304153e-13,
+          "tolerance": 2e-10,
+          "actual_real": 0.9766288484685668,
+          "actual_imag": 0.21493275905033632
+        }
+      },
+      "adjoints": {
+        "raw": {
+          "actual": {
+            "label": "actual adjoint:CDF_s1",
+            "max_entry": 6.1147454790770456e-15,
+            "frobenius": 4.4083131143877417e-14,
+            "tolerance": 1e-10,
+            "rtol": 0
+          },
+          "reference": {
+            "label": "adjoint/reference:CDF_s1",
+            "max_entry": 5.662317060157568e-15,
+            "frobenius": 4.9328546368310214e-14,
+            "tolerance": 1e-10,
+            "rtol": 0
+          },
+          "recovery": {
+            "label": "adjoint recovery:CDF_s1",
+            "max_entry": 8.66139485597355e-15,
+            "frobenius": 8.577340036189301e-14,
+            "tolerance": 1e-10,
+            "rtol": 0
+          }
+        },
+        "compiled": {
+          "actual": {
+            "label": "actual adjoint:CDF_s1",
+            "max_entry": 1.158105821798016e-14,
+            "frobenius": 2.9417051527999035e-13,
+            "tolerance": 1e-10,
+            "rtol": 0
+          },
+          "reference": {
+            "label": "adjoint/reference:CDF_s1",
+            "max_entry": 2.1209688437404094e-12,
+            "frobenius": 3.2889696666257026e-11,
+            "tolerance": 1e-10,
+            "rtol": 0
+          },
+          "recovery": {
+            "label": "adjoint recovery:CDF_s1",
+            "max_entry": 3.6926445062186653e-13,
+            "frobenius": 8.00635925322154e-12,
+            "tolerance": 1e-10,
+            "rtol": 0
+          }
+        }
+      },
+      "round_status_counts": {
+        "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL": 13
+      },
+      "max_synthesis_signal_bound_pilot": 3.8112109296249397e-07,
+      "max_combined_phase_bound_pilot": 0.06919250966431297,
+      "m12": {
+        "s": 1,
+        "m": 12,
+        "occurrences": 4096,
+        "status": "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL",
+        "alpha": 1.0000000000039988,
+        "norm_growth_pilot": 1.0000000163790903,
+        "kernel_repeat_bound_pilot": 1.347466469310322e-07,
+        "axis_state_distance_pilot": {
+          "X": 1.3474665308559053e-07,
+          "Y": 1.3474665178520705e-07
+        },
+        "complex_signal_bound_pilot": 3.8112109296249397e-07,
+        "saved_PF_operator_error": 0.06913693070912988,
+        "combined_complex_error_pilot": 0.06913731183022284,
+        "phase_bias_bound_pilot": 0.06919250966431297,
+        "registered_phase_room": 0.2617993877991494,
+        "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+        "rigorous_signal_error_bound": null,
+        "floating_point_rounding_enclosed": false,
+        "CA_achieved": null,
+        "shots": null,
+        "total_cost": null
+      }
+    },
+    "CDF_s4": {
+      "arm": "CDF",
+      "s": 4,
+      "metrics": {
+        "rz_count": 12272,
+        "cx_count": 7388,
+        "rz_depth": 5873,
+        "cx_depth": 6440,
+        "total_depth": 12806,
+        "circuit_size": 23543,
+        "measurement_count": 0,
+        "quantum_only_depth": 12806
+      },
+      "raw_reference": {
+        "label": "raw:CDF_s4",
+        "max_entry": 4.44227966050871e-15,
+        "frobenius": 4.025846283056362e-14,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "compiled_raw": {
+        "label": "P0:CDF_s4",
+        "max_entry": 1.861456712146109e-12,
+        "frobenius": 2.690757268796358e-11,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "compiled_reference": {
+        "label": "compiled/ref:CDF_s4",
+        "max_entry": 1.861456712146109e-12,
+        "frobenius": 2.690823087680708e-11,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "unitarity": [
+        {
+          "label": "raw-unitarity:CDF_s4",
+          "max_entry": 8.548717289613705e-15,
+          "frobenius": 7.075497240556732e-14,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        {
+          "label": "P0-unitarity:CDF_s4",
+          "max_entry": 3.6648462042876417e-13,
+          "frobenius": 7.946208717815055e-12,
+          "tolerance": 1e-10,
+          "rtol": 0
+        }
+      ],
+      "norm_upper_pilot": 1.0000000000039735,
+      "XY": {
+        "raw_reference": {
+          "error": 1.5920599140892346e-14,
+          "tolerance": 2e-10,
+          "actual_real": 0.9766260429248321,
+          "actual_imag": 0.21494551001451578
+        },
+        "compiled_raw": {
+          "error": 1.388876238623164e-12,
+          "tolerance": 2e-10,
+          "actual_real": 0.9766260429234722,
+          "actual_imag": 0.21494551001423362
+        },
+        "compiled_reference": {
+          "error": 1.4047817570813894e-12,
+          "tolerance": 2e-10,
+          "actual_real": 0.9766260429234722,
+          "actual_imag": 0.21494551001423362
+        }
+      },
+      "adjoints": {
+        "raw": {
+          "actual": {
+            "label": "actual adjoint:CDF_s4",
+            "max_entry": 5.219713469101257e-15,
+            "frobenius": 4.442898946593458e-14,
+            "tolerance": 1e-10,
+            "rtol": 0
+          },
+          "reference": {
+            "label": "adjoint/reference:CDF_s4",
+            "max_entry": 5.00852130612343e-15,
+            "frobenius": 4.0431507680142655e-14,
+            "tolerance": 1e-10,
+            "rtol": 0
+          },
+          "recovery": {
+            "label": "adjoint recovery:CDF_s4",
+            "max_entry": 6.7736797357810576e-15,
+            "frobenius": 6.773215472839035e-14,
+            "tolerance": 1e-10,
+            "rtol": 0
+          }
+        },
+        "compiled": {
+          "actual": {
+            "label": "actual adjoint:CDF_s4",
+            "max_entry": 1.0857469829641184e-14,
+            "frobenius": 2.9177875825382043e-13,
+            "tolerance": 1e-10,
+            "rtol": 0
+          },
+          "reference": {
+            "label": "adjoint/reference:CDF_s4",
+            "max_entry": 1.8651801427633935e-12,
+            "frobenius": 2.690038004356257e-11,
+            "tolerance": 1e-10,
+            "rtol": 0
+          },
+          "recovery": {
+            "label": "adjoint recovery:CDF_s4",
+            "max_entry": 3.634973941612236e-13,
+            "frobenius": 7.966376809069556e-12,
+            "tolerance": 1e-10,
+            "rtol": 0
+          }
+        }
+      },
+      "round_status_counts": {
+        "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL": 13
+      },
+      "max_synthesis_signal_bound_pilot": 1.246953159907083e-06,
+      "max_combined_phase_bound_pilot": 0.004322598666533139,
+      "m12": {
+        "s": 4,
+        "m": 12,
+        "occurrences": 16384,
+        "status": "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL",
+        "alpha": 1.0000000000039735,
+        "norm_growth_pilot": 1.000000065101633,
+        "kernel_repeat_bound_pilot": 4.4086448338485143e-07,
+        "axis_state_distance_pilot": {
+          "X": 4.40864489541836e-07,
+          "Y": 4.408644882414524e-07
+        },
+        "complex_signal_bound_pilot": 1.246953159907083e-06,
+        "saved_PF_operator_error": 0.004321338252194541,
+        "combined_complex_error_pilot": 0.004322585205354448,
+        "phase_bias_bound_pilot": 0.004322598666533139,
+        "registered_phase_room": 0.2617993877991494,
+        "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+        "rigorous_signal_error_bound": null,
+        "floating_point_rounding_enclosed": false,
+        "CA_achieved": null,
+        "shots": null,
+        "total_cost": null
+      }
+    },
+    "XDF_s1": {
+      "arm": "XDF",
+      "s": 1,
+      "metrics": {
+        "rz_count": 13944,
+        "cx_count": 7756,
+        "rz_depth": 6005,
+        "cx_depth": 6468,
+        "total_depth": 13113,
+        "circuit_size": 26740,
+        "measurement_count": 0,
+        "quantum_only_depth": 13113
+      },
+      "raw_reference": {
+        "label": "raw:XDF_s1",
+        "max_entry": 5.443490401604861e-15,
+        "frobenius": 4.647673529289313e-14,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "compiled_raw": {
+        "label": "P0:XDF_s1",
+        "max_entry": 7.885857664955501e-12,
+        "frobenius": 1.5766182752997328e-10,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "compiled_reference": {
+        "label": "compiled/ref:XDF_s1",
+        "max_entry": 7.885857664955501e-12,
+        "frobenius": 1.5766389176057384e-10,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "unitarity": [
+        {
+          "label": "raw-unitarity:XDF_s1",
+          "max_entry": 1.0436096431476471e-14,
+          "frobenius": 8.093195488191314e-14,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        {
+          "label": "P0-unitarity:XDF_s1",
+          "max_entry": 3.772537837676282e-13,
+          "frobenius": 8.07710626535021e-12,
+          "tolerance": 1e-10,
+          "rtol": 0
+        }
+      ],
+      "norm_upper_pilot": 1.0000000000040388,
+      "XY": {
+        "raw_reference": {
+          "error": 5.573551796744008e-15,
+          "tolerance": 2e-10,
+          "actual_real": 0.9766280138525261,
+          "actual_imag": 0.2149365513719279
+        },
+        "compiled_raw": {
+          "error": 3.5346473053773175e-13,
+          "tolerance": 2e-10,
+          "actual_real": 0.9766280138521838,
+          "actual_imag": 0.2149365513718397
+        },
+        "compiled_reference": {
+          "error": 3.589660260008496e-13,
+          "tolerance": 2e-10,
+          "actual_real": 0.9766280138521838,
+          "actual_imag": 0.2149365513718397
+        }
+      },
+      "adjoints": {
+        "raw": {
+          "actual": {
+            "label": "actual adjoint:XDF_s1",
+            "max_entry": 4.5552186960756e-15,
+            "frobenius": 4.8473742880428366e-14,
+            "tolerance": 1e-10,
+            "rtol": 0
+          },
+          "reference": {
+            "label": "adjoint/reference:XDF_s1",
+            "max_entry": 4.552675923179183e-15,
+            "frobenius": 4.6001627525247373e-14,
+            "tolerance": 1e-10,
+            "rtol": 0
+          },
+          "recovery": {
+            "label": "adjoint recovery:XDF_s1",
+            "max_entry": 7.601343980017703e-15,
+            "frobenius": 7.887543206610896e-14,
+            "tolerance": 1e-10,
+            "rtol": 0
+          }
+        },
+        "compiled": {
+          "actual": {
+            "label": "actual adjoint:XDF_s1",
+            "max_entry": 1.7530370802440715e-14,
+            "frobenius": 3.176737993145518e-13,
+            "tolerance": 1e-10,
+            "rtol": 0
+          },
+          "reference": {
+            "label": "adjoint/reference:XDF_s1",
+            "max_entry": 7.8880720859548e-12,
+            "frobenius": 1.576455175369349e-10,
+            "tolerance": 1e-10,
+            "rtol": 0
+          },
+          "recovery": {
+            "label": "adjoint recovery:XDF_s1",
+            "max_entry": 3.7347976875877164e-13,
+            "frobenius": 8.09345365382527e-12,
+            "tolerance": 1e-10,
+            "rtol": 0
+          }
+        }
+      },
+      "round_status_counts": {
+        "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL": 13
+      },
+      "max_synthesis_signal_bound_pilot": 1.826573707708355e-06,
+      "max_combined_phase_bound_pilot": 0.0684832954225079,
+      "m12": {
+        "s": 1,
+        "m": 12,
+        "occurrences": 4096,
+        "status": "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL",
+        "alpha": 1.0000000000040388,
+        "norm_growth_pilot": 1.0000000165427994,
+        "kernel_repeat_bound_pilot": 6.457913113318983e-07,
+        "axis_state_distance_pilot": {
+          "X": 6.457913174905954e-07,
+          "Y": 6.457913161902119e-07
+        },
+        "complex_signal_bound_pilot": 1.826573707708355e-06,
+        "saved_PF_operator_error": 0.06842795072754271,
+        "combined_complex_error_pilot": 0.06842977730125041,
+        "phase_bias_bound_pilot": 0.0684832954225079,
+        "registered_phase_room": 0.2617993877991494,
+        "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+        "rigorous_signal_error_bound": null,
+        "floating_point_rounding_enclosed": false,
+        "CA_achieved": null,
+        "shots": null,
+        "total_cost": null
+      }
+    },
+    "XDF_s4": {
+      "arm": "XDF",
+      "s": 4,
+      "metrics": {
+        "rz_count": 13944,
+        "cx_count": 7756,
+        "rz_depth": 6005,
+        "cx_depth": 6468,
+        "total_depth": 13113,
+        "circuit_size": 26740,
+        "measurement_count": 0,
+        "quantum_only_depth": 13113
+      },
+      "raw_reference": {
+        "label": "raw:XDF_s4",
+        "max_entry": 5.663572815017117e-15,
+        "frobenius": 5.435723319987942e-14,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "compiled_raw": {
+        "label": "P0:XDF_s4",
+        "max_entry": 7.939358479098356e-12,
+        "frobenius": 1.5875279002679493e-10,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "compiled_reference": {
+        "label": "compiled/ref:XDF_s4",
+        "max_entry": 7.939358479098356e-12,
+        "frobenius": 1.5875367826104e-10,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "unitarity": [
+        {
+          "label": "raw-unitarity:XDF_s4",
+          "max_entry": 1.1213252548714081e-14,
+          "frobenius": 1.0018690264466949e-13,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        {
+          "label": "P0-unitarity:XDF_s4",
+          "max_entry": 3.75921516138078e-13,
+          "frobenius": 8.114765679571875e-12,
+          "tolerance": 1e-10,
+          "rtol": 0
+        }
+      ],
+      "norm_upper_pilot": 1.0000000000040576,
+      "XY": {
+        "raw_reference": {
+          "error": 1.3039361462525455e-14,
+          "tolerance": 2e-10,
+          "actual_real": 0.9766253181158753,
+          "actual_imag": 0.21494880322859355
+        },
+        "compiled_raw": {
+          "error": 1.4342238191860063e-12,
+          "tolerance": 2e-10,
+          "actual_real": 0.9766253181144886,
+          "actual_imag": 0.2149488032282273
+        },
+        "compiled_reference": {
+          "error": 1.4472616642305874e-12,
+          "tolerance": 2e-10,
+          "actual_real": 0.9766253181144886,
+          "actual_imag": 0.2149488032282273
+        }
+      },
+      "adjoints": {
+        "raw": {
+          "actual": {
+            "label": "actual adjoint:XDF_s4",
+            "max_entry": 5.218464578897323e-15,
+            "frobenius": 4.953694732352261e-14,
+            "tolerance": 1e-10,
+            "rtol": 0
+          },
+          "reference": {
+            "label": "adjoint/reference:XDF_s4",
+            "max_entry": 5.998817251582271e-15,
+            "frobenius": 5.384293168536601e-14,
+            "tolerance": 1e-10,
+            "rtol": 0
+          },
+          "recovery": {
+            "label": "adjoint recovery:XDF_s4",
+            "max_entry": 1.0436575931900455e-14,
+            "frobenius": 9.918771561135802e-14,
+            "tolerance": 1e-10,
+            "rtol": 0
+          }
+        },
+        "compiled": {
+          "actual": {
+            "label": "actual adjoint:XDF_s4",
+            "max_entry": 1.2217680470765414e-14,
+            "frobenius": 3.1565812449586267e-13,
+            "tolerance": 1e-10,
+            "rtol": 0
+          },
+          "reference": {
+            "label": "adjoint/reference:XDF_s4",
+            "max_entry": 7.943830129369492e-12,
+            "frobenius": 1.587464930163326e-10,
+            "tolerance": 1e-10,
+            "rtol": 0
+          },
+          "recovery": {
+            "label": "adjoint recovery:XDF_s4",
+            "max_entry": 3.731548266424841e-13,
+            "frobenius": 8.143006364617416e-12,
+            "tolerance": 1e-10,
+            "rtol": 0
+          }
+        }
+      },
+      "round_status_counts": {
+        "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL": 13
+      },
+      "max_synthesis_signal_bound_pilot": 7.356797262311989e-06,
+      "max_combined_phase_bound_pilot": 0.004284309114302369,
+      "m12": {
+        "s": 4,
+        "m": 12,
+        "occurrences": 16384,
+        "status": "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL",
+        "alpha": 1.0000000000040576,
+        "norm_growth_pilot": 1.000000066480427,
+        "kernel_repeat_bound_pilot": 2.601020437535263e-06,
+        "axis_state_distance_pilot": {
+          "X": 2.601020443709852e-06,
+          "Y": 2.6010204424094684e-06
+        },
+        "complex_signal_bound_pilot": 7.356797262311989e-06,
+        "saved_PF_operator_error": 0.004276939210418963,
+        "combined_complex_error_pilot": 0.004284296007681275,
+        "phase_bias_bound_pilot": 0.004284309114302369,
+        "registered_phase_room": 0.2617993877991494,
+        "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+        "rigorous_signal_error_bound": null,
+        "floating_point_rounding_enclosed": false,
+        "CA_achieved": null,
+        "shots": null,
+        "total_cost": null
+      }
+    }
+  },
+  "shell_metrics": {
+    "head": {
+      "rz_count": 2,
+      "cx_count": 0,
+      "rz_depth": 2,
+      "cx_depth": 0,
+      "total_depth": 3,
+      "circuit_size": 3,
+      "measurement_count": 0,
+      "quantum_only_depth": 3
+    },
+    "X": {
+      "rz_count": 2,
+      "cx_count": 0,
+      "rz_depth": 2,
+      "cx_depth": 0,
+      "total_depth": 4,
+      "circuit_size": 4,
+      "measurement_count": 1,
+      "quantum_only_depth": 3
+    },
+    "Y": {
+      "rz_count": 1,
+      "cx_count": 0,
+      "rz_depth": 1,
+      "cx_depth": 0,
+      "total_depth": 3,
+      "circuit_size": 3,
+      "measurement_count": 1,
+      "quantum_only_depth": 2
+    }
+  },
+  "comparisons": [
+    {
+      "label": "CDF8/XDF8 same s",
+      "scope": "one P0 controlled native S2 kernel, no state preparation",
+      "left": {
+        "rz_count": 12272,
+        "cx_count": 7388,
+        "rz_depth": 5873,
+        "cx_depth": 6440,
+        "total_depth": 12806,
+        "circuit_size": 23543,
+        "measurement_count": 0,
+        "quantum_only_depth": 12806
+      },
+      "right": {
+        "rz_count": 13944,
+        "cx_count": 7756,
+        "rz_depth": 6005,
+        "cx_depth": 6468,
+        "total_depth": 13113,
+        "circuit_size": 26740,
+        "measurement_count": 0,
+        "quantum_only_depth": 13113
+      },
+      "difference_left_minus_right": {
+        "rz_count": -1672,
+        "rz_depth": -132,
+        "cx_count": -368,
+        "cx_depth": -28,
+        "total_depth": -307,
+        "circuit_size": -3197
+      },
+      "RZ_ratio_left_over_right": 0.8800917957544464,
+      "CA_achieved": null,
+      "total_resource_superiority": null
+    },
+    {
+      "label": "CDF8/XDF8 same s",
+      "scope": "one P0 controlled native S2 kernel, no state preparation",
+      "left": {
+        "rz_count": 12272,
+        "cx_count": 7388,
+        "rz_depth": 5873,
+        "cx_depth": 6440,
+        "total_depth": 12806,
+        "circuit_size": 23543,
+        "measurement_count": 0,
+        "quantum_only_depth": 12806
+      },
+      "right": {
+        "rz_count": 13944,
+        "cx_count": 7756,
+        "rz_depth": 6005,
+        "cx_depth": 6468,
+        "total_depth": 13113,
+        "circuit_size": 26740,
+        "measurement_count": 0,
+        "quantum_only_depth": 13113
+      },
+      "difference_left_minus_right": {
+        "rz_count": -1672,
+        "rz_depth": -132,
+        "cx_count": -368,
+        "cx_depth": -28,
+        "total_depth": -307,
+        "circuit_size": -3197
+      },
+      "RZ_ratio_left_over_right": 0.8800917957544464,
+      "CA_achieved": null,
+      "total_resource_superiority": null
+    }
+  ],
+  "qualification": "full512 Frobenius represented-matrix numerical pilot, no rounding enclosure; one h-step native cost only",
+  "rigorous_enclosure": null,
+  "CA_achieved": null,
+  "shots": null,
+  "total_cost": null,
+  "new_fit": 0,
+  "optimizer": 0,
+  "DF_error_recalculation": 0,
+  "PF_error_recalculation": 0,
+  "literal_shared_comparison": 0,
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "local_max_entry": 1.5543596675965044e-15,
+  "local_unitarity_max_entry": 3.219646771412954e-15,
+  "shells": {
+    "head": {
+      "label": "shell:head",
+      "raw_reference": {
+        "label": "raw:shell:head",
+        "max_entry": 0.0,
+        "frobenius": 0.0,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "compiler": {
+        "label": "P0:shell:head",
+        "max_entry": 1.6653345369377348e-16,
+        "frobenius": 3.076740298213702e-15,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "unitarity": [
+        {
+          "label": "raw-unitarity:shell:head",
+          "max_entry": 2.220446049250313e-16,
+          "frobenius": 5.0242958677880805e-15,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        {
+          "label": "P0-unitarity:shell:head",
+          "max_entry": 2.220446049250313e-16,
+          "frobenius": 5.0242958677880805e-15,
+          "tolerance": 1e-10,
+          "rtol": 0
+        }
+      ],
+      "unitary_distance_pilot": 3.076740298213702e-15,
+      "evidence_kind": "numerically_qualified_pilot",
+      "rigorous_enclosure": null,
+      "missing_enclosures": [
+        "CAR/expm reference rounding",
+        "Operator reconstruction rounding",
+        "norm evaluation rounding"
+      ],
+      "compiled_reference": {
+        "label": "compiled/ref:shell:head",
+        "max_entry": 1.6653345369377348e-16,
+        "frobenius": 3.076740298213702e-15,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "compiled_reference_frobenius": 3.076740298213702e-15,
+      "operator_bound_pilot": 3.0767402982137025e-15,
+      "norm_upper_pilot": 1.0000000000000029,
+      "norm_guards": {
+        "raw": {
+          "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+          "reference_invariance": "embedded square W maps S into S by construction",
+          "unitarity_defect_max_entry": 2.220446049250313e-16,
+          "unitarity_defect_frobenius": 5.0242958677880805e-15,
+          "reference_norm_upper_pilot": 1.0000000000000029,
+          "reference_exactly_unitary_certified": false,
+          "rigorous_enclosure": null
+        },
+        "compiled": {
+          "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+          "reference_invariance": "embedded square W maps S into S by construction",
+          "unitarity_defect_max_entry": 2.220446049250313e-16,
+          "unitarity_defect_frobenius": 5.0242958677880805e-15,
+          "reference_norm_upper_pilot": 1.0000000000000029,
+          "reference_exactly_unitary_certified": false,
+          "rigorous_enclosure": null
+        },
+        "reference": {
+          "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+          "reference_invariance": "embedded square W maps S into S by construction",
+          "unitarity_defect_max_entry": 2.220446049250313e-16,
+          "unitarity_defect_frobenius": 5.0242958677880805e-15,
+          "reference_norm_upper_pilot": 1.0000000000000029,
+          "reference_exactly_unitary_certified": false,
+          "rigorous_enclosure": null
+        }
+      },
+      "input_dimension": 512,
+      "output_dimension": 512,
+      "coverage": "all full-Fock controlled input columns and all output components",
+      "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+      "floating_point_rounding_enclosed": false,
+      "rigorous_operator_bound": null,
+      "global_phase_fit": false
+    },
+    "X": {
+      "label": "shell:X",
+      "raw_reference": {
+        "label": "raw:shell:X",
+        "max_entry": 0.0,
+        "frobenius": 0.0,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "compiler": {
+        "label": "P0:shell:X",
+        "max_entry": 1.6653345369377348e-16,
+        "frobenius": 3.076740298213702e-15,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "unitarity": [
+        {
+          "label": "raw-unitarity:shell:X",
+          "max_entry": 2.220446049250313e-16,
+          "frobenius": 5.0242958677880805e-15,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        {
+          "label": "P0-unitarity:shell:X",
+          "max_entry": 2.220446049250313e-16,
+          "frobenius": 5.0242958677880805e-15,
+          "tolerance": 1e-10,
+          "rtol": 0
+        }
+      ],
+      "unitary_distance_pilot": 3.076740298213702e-15,
+      "evidence_kind": "numerically_qualified_pilot",
+      "rigorous_enclosure": null,
+      "missing_enclosures": [
+        "CAR/expm reference rounding",
+        "Operator reconstruction rounding",
+        "norm evaluation rounding"
+      ],
+      "compiled_reference": {
+        "label": "compiled/ref:shell:X",
+        "max_entry": 1.6653345369377348e-16,
+        "frobenius": 3.076740298213702e-15,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "compiled_reference_frobenius": 3.076740298213702e-15,
+      "operator_bound_pilot": 3.0767402982137025e-15,
+      "norm_upper_pilot": 1.0000000000000029,
+      "norm_guards": {
+        "raw": {
+          "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+          "reference_invariance": "embedded square W maps S into S by construction",
+          "unitarity_defect_max_entry": 2.220446049250313e-16,
+          "unitarity_defect_frobenius": 5.0242958677880805e-15,
+          "reference_norm_upper_pilot": 1.0000000000000029,
+          "reference_exactly_unitary_certified": false,
+          "rigorous_enclosure": null
+        },
+        "compiled": {
+          "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+          "reference_invariance": "embedded square W maps S into S by construction",
+          "unitarity_defect_max_entry": 2.220446049250313e-16,
+          "unitarity_defect_frobenius": 5.0242958677880805e-15,
+          "reference_norm_upper_pilot": 1.0000000000000029,
+          "reference_exactly_unitary_certified": false,
+          "rigorous_enclosure": null
+        },
+        "reference": {
+          "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+          "reference_invariance": "embedded square W maps S into S by construction",
+          "unitarity_defect_max_entry": 2.220446049250313e-16,
+          "unitarity_defect_frobenius": 5.0242958677880805e-15,
+          "reference_norm_upper_pilot": 1.0000000000000029,
+          "reference_exactly_unitary_certified": false,
+          "rigorous_enclosure": null
+        }
+      },
+      "input_dimension": 512,
+      "output_dimension": 512,
+      "coverage": "all full-Fock controlled input columns and all output components",
+      "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+      "floating_point_rounding_enclosed": false,
+      "rigorous_operator_bound": null,
+      "global_phase_fit": false
+    },
+    "Y": {
+      "label": "shell:Y",
+      "raw_reference": {
+        "label": "raw:shell:Y",
+        "max_entry": 0.0,
+        "frobenius": 0.0,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "compiler": {
+        "label": "P0:shell:Y",
+        "max_entry": 5.551115123125783e-17,
+        "frobenius": 1.7763568394002505e-15,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "unitarity": [
+        {
+          "label": "raw-unitarity:shell:Y",
+          "max_entry": 2.220446049250313e-16,
+          "frobenius": 5.0242958677880805e-15,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        {
+          "label": "P0-unitarity:shell:Y",
+          "max_entry": 2.220446049250313e-16,
+          "frobenius": 5.0242958677880805e-15,
+          "tolerance": 1e-10,
+          "rtol": 0
+        }
+      ],
+      "unitary_distance_pilot": 1.7763568394002505e-15,
+      "evidence_kind": "numerically_qualified_pilot",
+      "rigorous_enclosure": null,
+      "missing_enclosures": [
+        "CAR/expm reference rounding",
+        "Operator reconstruction rounding",
+        "norm evaluation rounding"
+      ],
+      "compiled_reference": {
+        "label": "compiled/ref:shell:Y",
+        "max_entry": 5.551115123125783e-17,
+        "frobenius": 1.7763568394002505e-15,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "compiled_reference_frobenius": 1.7763568394002505e-15,
+      "operator_bound_pilot": 1.776356839400251e-15,
+      "norm_upper_pilot": 1.0000000000000029,
+      "norm_guards": {
+        "raw": {
+          "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+          "reference_invariance": "embedded square W maps S into S by construction",
+          "unitarity_defect_max_entry": 2.220446049250313e-16,
+          "unitarity_defect_frobenius": 5.0242958677880805e-15,
+          "reference_norm_upper_pilot": 1.0000000000000029,
+          "reference_exactly_unitary_certified": false,
+          "rigorous_enclosure": null
+        },
+        "compiled": {
+          "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+          "reference_invariance": "embedded square W maps S into S by construction",
+          "unitarity_defect_max_entry": 2.220446049250313e-16,
+          "unitarity_defect_frobenius": 5.0242958677880805e-15,
+          "reference_norm_upper_pilot": 1.0000000000000029,
+          "reference_exactly_unitary_certified": false,
+          "rigorous_enclosure": null
+        },
+        "reference": {
+          "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+          "reference_invariance": "embedded square W maps S into S by construction",
+          "unitarity_defect_max_entry": 2.220446049250313e-16,
+          "unitarity_defect_frobenius": 5.0242958677880805e-15,
+          "reference_norm_upper_pilot": 1.0000000000000029,
+          "reference_exactly_unitary_certified": false,
+          "rigorous_enclosure": null
+        }
+      },
+      "input_dimension": 512,
+      "output_dimension": 512,
+      "coverage": "all full-Fock controlled input columns and all output components",
+      "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+      "floating_point_rounding_enclosed": false,
+      "rigorous_operator_bound": null,
+      "global_phase_fit": false
+    }
+  }
+}

@@ -10,6 +10,11 @@
   },
   "relevant_commits": [
     {
+      "sha": "862a97d4213121749448ca716cde820a44b99772",
+      "role": "c1_h4_CDF8_XDF8_fair_native_full512_scientific_SOURCE",
+      "description": "Frozen305-call SOURCE executed once,all COMPLETE;local18/kernel4/shell3/adjoint8/XY12 PASS,52 numerical phase profiles;no CA/shots/total-resource evaluation."
+    },
+    {
       "sha": "328f31007ee8069d1f7ba24f91029a3748b59109",
       "role": "c1_h4_saved_XDF8_representation_ground_PF_scientific_SOURCE",
       "description": "Frozen permitted93-call SOURCE;own-XDF8 sector36 representation/ground-alias and26 PF cells;no fit,DF norm,native,CA,shots or costs."
@@ -102,6 +107,14 @@
   ],
   "artifact_inventory": {
     "present": [
+      {
+        "path": "artifacts/research_c_c1_h4_native_fair/2026-10-26/run01",
+        "kind": "directory",
+        "supports": [
+          "c1_h4_CDF8_XDF8_fair_native_full512_pilot"
+        ],
+        "reason": "109 raw files,QPY40/operator18;305 COMPLETE,FAIL/retry/resume0;full512 numerical pilot only,CA/shots/total resources null;consumed mandatory STOP."
+      },
       {
         "path": "artifacts/research_c_c1_h4_native_fair/2026-10-26/technical",
         "kind": "directory",
@@ -5547,6 +5560,238 @@
       "report": "docs/research/research_c_c1_h4_xdf8_pf_execution_20261026.md",
       "raw": "artifacts/research_c_c1_h4_xdf8_pf/2026-10-26/run01",
       "rounds_csv": "artifacts/research_c_c1_h4_xdf8_pf/2026-10-26/pf_rounds.csv"
+    },
+    {
+      "status": "H4_FAIR_NATIVE_FULL512_PILOT_COMPLETE",
+      "scope": "C1_H4_CDF8_XDF8_FAIR_NATIVE_FULL512_V1",
+      "SOURCE_commit": "862a97d4213121749448ca716cde820a44b99772",
+      "SOURCE_tree": "e0ee8c5c7c9fb52eaeabeeac7b9fbde1d932c0d7",
+      "branch": "codex/research-c-c1-h4-native-fair-execution-20261026",
+      "contract": "docs/research/research_c_c1_h4_native_fair_contract_unapproved_20261026.json",
+      "contract_sha256": "4a99e76ea879226e077376dd69f12b529f9eb1a48e98dd048143892a59b0e578",
+      "source_manifest_sha256": "fc00dfef12de6e642ae3a5f52b7b495ad161fb2c2bc6c70f187af7802d74a464",
+      "original_input_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+      "conditions": {
+        "atoms": 4,
+        "distance_angstrom": 1.0,
+        "basis": "STO-3G",
+        "Nalpha": 2,
+        "Nbeta": 2,
+        "sector_dimension": 36,
+        "system_dimension": 256,
+        "controlled_dimension": 512,
+        "CDF_rank": 8,
+        "XDF_rank": 8,
+        "XDF_order": "original saved OpenFermion1.6.1 eigh prefix8",
+        "number_representation": true,
+        "original_g_kappa": true,
+        "scalar": "nuclear once",
+        "frame_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "PF": "all-frame ordered symmetric S2",
+        "substeps": [
+          1,
+          4
+        ],
+        "base_time": "1/10",
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "route": "existing adjacent identical-basis sharing and fsum angles",
+        "serial_policy": "separate head/kernel/readout with all-wire fences; no long-round compile",
+        "oracle": "own_DF_ground_state_oracle",
+        "state_preparation": "EXCLUDED",
+        "CA_Ha": 0.00159,
+        "DF_reserve_Ha": 0.00019875,
+        "beta_total": 0.5235987755982988,
+        "beta_stat": 0.2617993877991494,
+        "candidate_failure": 0.01,
+        "axis_failure": 0.0003846153846153846,
+        "PR_split": null
+      },
+      "allowances": {
+        "operator_component_abs": 1e-10,
+        "unitarity_component_abs": 1e-10,
+        "signal_complex": 2e-10,
+        "normalization": 1e-12,
+        "rtol": 0,
+        "local_time": "1/20",
+        "global_phase_fit": false,
+        "full_SVD": false,
+        "qualification": "full512 Frobenius numerical pilot; no rounding enclosure"
+      },
+      "compiler": {
+        "qiskit": "1.3.0",
+        "optimization_level": 1,
+        "seed_transpiler": 17,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "approximation_degree": 1.0,
+        "qubits_initially_zero": false
+      },
+      "gaussian": "nature_jw_exact_zero_lapack_atan2_v1",
+      "compiler_phase": "qiskit_P0_mpfr160_declared_phase_v1",
+      "synthesis": "full_fock_frobenius_both_norm_growth_v1",
+      "scientific_units": 305,
+      "maximum_logical_units": 305,
+      "scientific_COMPLETE": 305,
+      "scientific_FAIL": 0,
+      "inflight_calls": 0,
+      "call_counts": {
+        "input_load": 1,
+        "export_load": 1,
+        "evidence_load": 10,
+        "cdf_operator_load": 9,
+        "sector_generator_load": 1,
+        "cdf_sector_load": 1,
+        "ground_load": 2,
+        "saved_kernel_load": 2,
+        "identity_gate": 1,
+        "native_model": 2,
+        "car_context": 1,
+        "xdf_generator": 9,
+        "sector_identity": 2,
+        "gaussian_build": 18,
+        "fairness_gate": 1,
+        "local_build": 18,
+        "local_reference": 18,
+        "local_operator": 18,
+        "local_gate": 18,
+        "shell_build": 3,
+        "compile": 7,
+        "shell_structure": 6,
+        "operator_decode": 14,
+        "segment_assessment": 7,
+        "metrics": 7,
+        "kernel_build": 4,
+        "kernel_reference": 4,
+        "kernel_sector_gate": 2,
+        "adjoint_build": 8,
+        "adjoint_operator": 8,
+        "adjoint_assessment": 8,
+        "signal_reference": 4,
+        "signal_prepare": 8,
+        "signal_axis": 16,
+        "signal_gate": 12,
+        "round_synthesis": 52,
+        "cost_comparison": 2
+      },
+      "local_factors_PASS": 18,
+      "kernels_PASS": 4,
+      "shells_PASS": 3,
+      "adjoints_PASS": 8,
+      "XY_gates_PASS": 12,
+      "full512_Operator_decodes": 40,
+      "ancilla_structure_decodes": 6,
+      "QPY_files": 40,
+      "operator_files": 18,
+      "round_status_counts": {
+        "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL": 52
+      },
+      "saved_identity": {
+        "status": "PASS",
+        "DF_bounds_Ha": {
+          "CDF": 7.666215916301914e-05,
+          "XDF": 9.533901455091894e-05
+        },
+        "alias": "saved H4 own-ground/[-10,10] base branch checks; no new eigensolve"
+      },
+      "resources": {
+        "wall_seconds": 106.26757530961186,
+        "process_CPU_seconds": 450.223945158,
+        "peak_RSS_KiB": 916720
+      },
+      "qualification": "full512 Frobenius represented-matrix numerical pilot, no rounding enclosure; one h-step native cost only",
+      "rigorous_enclosure": null,
+      "CA_achieved": null,
+      "shots": null,
+      "total_cost": null,
+      "new_fit": 0,
+      "optimizer": 0,
+      "DF_error_recalculation": 0,
+      "PF_error_recalculation": 0,
+      "literal_shared_comparison": 0,
+      "retry": 0,
+      "resume": 0,
+      "mandatory_stop": true,
+      "raw": "artifacts/research_c_c1_h4_native_fair/2026-10-26/run01",
+      "raw_files": 109,
+      "protected_files": 62,
+      "protected_unchanged": true,
+      "summary": "artifacts/research_c_c1_h4_native_fair/2026-10-26/execution_summary.json",
+      "native_metrics": "artifacts/research_c_c1_h4_native_fair/2026-10-26/native_metrics.csv",
+      "round_profiles": "artifacts/research_c_c1_h4_native_fair/2026-10-26/round_profiles.csv",
+      "report": "docs/research/research_c_c1_h4_native_fair_execution_20261026.md",
+      "kernel_metrics": {
+        "CDF_s1": {
+          "rz_count": 12272,
+          "cx_count": 7388,
+          "rz_depth": 5873,
+          "cx_depth": 6440,
+          "total_depth": 12806,
+          "circuit_size": 23543,
+          "measurement_count": 0,
+          "quantum_only_depth": 12806
+        },
+        "CDF_s4": {
+          "rz_count": 12272,
+          "cx_count": 7388,
+          "rz_depth": 5873,
+          "cx_depth": 6440,
+          "total_depth": 12806,
+          "circuit_size": 23543,
+          "measurement_count": 0,
+          "quantum_only_depth": 12806
+        },
+        "XDF_s1": {
+          "rz_count": 13944,
+          "cx_count": 7756,
+          "rz_depth": 6005,
+          "cx_depth": 6468,
+          "total_depth": 13113,
+          "circuit_size": 26740,
+          "measurement_count": 0,
+          "quantum_only_depth": 13113
+        },
+        "XDF_s4": {
+          "rz_count": 13944,
+          "cx_count": 7756,
+          "rz_depth": 6005,
+          "cx_depth": 6468,
+          "total_depth": 13113,
+          "circuit_size": 26740,
+          "measurement_count": 0,
+          "quantum_only_depth": 13113
+        }
+      },
+      "RZ_ratio_CDF_over_XDF": [
+        0.8800917957544464,
+        0.8800917957544464
+      ]
     }
   ],
   "repository_completion_criteria": [
