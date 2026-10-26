@@ -53,8 +53,12 @@ def main():
         complete['parallel_compiler_prefetch']=cache
     interruption=b.PUBLIC/'interruption_run01.json'
     if interruption.exists(): complete['preserved_interruption_run01']=b.read(interruption)
-    for name in ('interruption_run02.json','data_damage_run02.json','event_log_reconstruction.json'):
+    for name in ('interruption_run02.json','data_damage_run02.json','event_log_reconstruction.json','interruption_run03.json'):
         if (b.PUBLIC/name).exists(): complete[name.removesuffix('.json')]=b.read(b.PUBLIC/name)
+    if (b.PUBLIC/'interruption_run03.json').exists():
+        resumed=b.read(b.PUBLIC/'interruption_run03.json')
+        if b.signal.sha(b.ROOT/resumed['helper_source'])!=resumed['helper_source_sha256']:
+            raise ValueError('TRACED_RECOVERY_SOURCE_CHANGED')
     replays=list((b.PRIVATE/'cost').glob('*/*/*/event_replay_check.json'))
     complete['unfinished_event_replay_checks']=len(replays)
     complete['original_event_log_reconstructions']=archive.get('reconstructed_missing_original_event_logs',0)
@@ -96,6 +100,8 @@ def main():
             stream.write('\n元poolは106 trial完成後にworkerが異常終了し、pool全体が停止した。OOM記録0、CPU/AS/DATAのOS上限は無制限で、原因と元workerのexitcodeは未確定。元のSTOP・結果・progressをprivate interruptions/run01と[公開記録](interruption_run01.json)へ保持した。完成106件は再取得せず、同じ候補・n・cohort・seedで未完了trialだけを個別fork processへ復旧した。保存済み未完了eventは再現byte列を照合。検算のrotated-number行列を同じ式で事前cacheしfork共有した。復旧cacheの代表回路でもQPYを復元してcompiled作用チェックを実施した。旧研究のgrant・one-shot・STOPは再利用していない。\n')
         if (b.PUBLIC/'interruption_run02.json').exists():
             stream.write('\n個別fork復旧では3件のSIGBUSを記録し、その後controllerとworkerが不在となった。完了記録134件のうち1件のresult JSONと2件のevent archiveが空であり、空の原本を保全した。有効な133 resultを再利用し、欠損result1件は同じ固定seedの未完了分として復旧した。resultが有効な1件のevent記録だけを固定seedから再構成し、保存済み両軸native回路fingerprint・compiled価格・log_B・event次数との一致を確認した。元resultのSHAは不変、新規価格観測・compile・signal再取得は0。この再構成で失われた元byteとの同一性は主張しない。以降はfresh Python spawn、自分専用transient user service、atomic fsync保存、fsync後の可逆archiveへ移行した。科学kernel・入力・候補・n・cohort・seedは維持し、旧STOPと欠損原本は保持した。SIGBUSとcontroller消失の根本原因は未確定。[中断](interruption_run02.json) / [欠損](data_damage_run02.json) / [event再構成](event_log_reconstruction.json)。\n')
+        if (b.PUBLIC/'interruption_run03.json').exists():
+            stream.write(f"\nfresh Pythonのrun03でも{len(resumed['previous_errors'])}件のSIGBUSを記録した。正常workerは自然終了まで継続し、完成済みtrialと元の失敗記録を保全した。小さい固定seedの診断再実行から{len(resumed['adopted_diagnostic_trials'])}件を同じcohort/indexの唯一の受理標本として転用し、他の未完了分のみ1回の復旧passで実行した。科学kernel・入力・compiler・候補・n・seedは不変。追加の独立標本や探索/確認のpoolingは行っていない。再発時のsiginfoをstraceで記録し、新たな異常の自動反復は行わない。復旧したこと自体は元SIGBUSの原因解明を意味しない。[run03と復旧の記録](interruption_run03.json)。\n")
     print(json.dumps(complete,ensure_ascii=False))
 
 

@@ -1,3 +1,9 @@
+## 2026-10-26 B3 run03のSIGBUS診断と未完了分の復旧
+
+`h46_b3_trace_recovery.py`は、run03の正常workerを自然終了まで保ち、技術的SIGBUSの未完了分を固定seedで1回だけ復旧する。小さい2件の診断は別private directoryへ保存し、元controller終了後にPASSとevent再現・result SHAを確認して同じcohort/indexへ転用する。完成済みtrialは再取得しない。SOURCE・入力・compiler・候補・n・seedは維持し、科学STOPやSIGBUS以外の異常は自動で再開しない。
+
+`strace`のsignal記録で再発時のsi_code等を取得する。人工SIGBUSの実動作、tracee PID/RSSの参照、終了signal伝達を含む人工7件と既存B3/復旧6件の計13件PASS。SIGBUSの原因は現時点では未確定で、fresh spawnだけで解消したとはしない。自分専用service `prt-h46-b3-20261026-run04.service`はrun03の自然終了を待ってから既存scheduler・会計・独立確認・図表作成を継続する。対応する`complete-run04.service`が最終確認とlocal commitを行う。新たな失敗を再帰的にretryせず記録して停止する。
+
 ## 2026-10-26 実行中B3探索の並列化補助
 
 `h46_b3_prefetch.py`は、未着手の固定B3探索seedに対応するfull-wrapper compiled cacheを空きCPUで先行作成する。本体`prt-h46-b3-20261026-run03.service`の実行SOURCE・scheduler・進行中trialは変更しない。同じsampler/native builder/compilerとfingerprint排他lockを使用し、追加の統計標本やtrial resultは作らない。本体で必要なnative/compiled作用チェックと受理を行う。
