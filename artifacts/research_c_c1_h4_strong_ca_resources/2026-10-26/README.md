@@ -1,3 +1,7 @@
+# 実行前の契約binding修正・科学call0
+
+[修正内容・78 PASS・契約v2](../../../docs/research/research_c_c1_h4_strong_ca_binding_repair_20261026.md)。旧契約のpath比較に不一致があるため、科学run01は開始していない。科学SOURCE／数値条件は無変更、契約参照だけ修正したv2を公開。別明示許可までmandatory STOP。以下は以前の技術準備の記録。
+
 # H4強baseline：共通CA/RPE/serial資源の技術準備
 
 [技術報告](../../../docs/research/research_c_c1_h4_strong_baseline_ca_resources_preparation_20261026.md)／[未承認86-call契約](../../../docs/research/research_c_c1_h4_strong_baseline_ca_resources_contract_draft_20261026.json)。
