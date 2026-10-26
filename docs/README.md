@@ -340,3 +340,7 @@
 ## H4 B3：技術準備（2026-10-26）
 
 [実装・再利用・人工122 PASS・制約](research/research_c_c1_h4_b3_preparation_20261026.md)／[未承認65-call案](research/research_c_c1_h4_b3_science_contract_draft_20261026.json)。B3 XDF8 spin＋relativeの1 kernel／s1だけを新規検証する入口を準備。B1/B2のPASSをB3へ転用せず、新full512/P0/adjoint/X-YのPASS後だけnative比較へ進む。今回科学call0、mandatory STOP。
+
+## 2026-10-26：H4 B3 s1・65-call限定実行完了
+
+[全結果・full512 gate・6指標・3比較](research/research_c_c1_h4_b3_execution_20261026.md)。固定SOURCE b40fce5c…無変更、65/65 COMPLETE、correctness FAIL/retry/resume0。H4直鎖1Å/STO-3G、元順XDF8/保存CDF8、Nα=Nβ2、全frame S2 s1/h.1、PRなし、own-ground/状態準備除外、共通precision/P0。新B3 spin＋relative一件のみbuild/compileし、raw/P0/actual adjoint/X-Yは全512入力・出力で数値PASS。RZ10885/CX6892/totaldepth11973は保存B2 CDF11062/7008/12127より小さく、他3指標も小さい。単一kernel比較で、同CA総順位・13round・shots・費用・厳密enclosureは未評価／未資格。旧raw・SOURCE・STOP保全、mandatory STOP。上の準備・未実行表記は履歴。

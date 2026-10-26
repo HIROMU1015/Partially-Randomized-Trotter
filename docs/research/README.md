@@ -189,3 +189,7 @@ Gaussian singletonの[改善候補設計](pr_gaussian_singleton_synthesis_design
 ## C1 H4 B3：技術準備（2026-10-26）
 
 [技術報告](research_c_c1_h4_b3_preparation_20261026.md)／[未承認65-call案](research_c_c1_h4_b3_science_contract_draft_20261026.json)。保存e0c89f61結果・元reference・shell・own-groundを再利用し、B3 XDF8／s1/h.1の一件だけを新規検証する。新21＋旧101＝122 unique tests PASS、SOURCE35／直接input19・旧binding byte preflight PASS。実H4新評価0、旧SOURCE/結果/STOPと研究状態を保全、別明示許可までmandatory STOP。
+
+## 2026-10-26：H4 B3 s1・65-call限定実行完了
+
+[全結果・full512 gate・6指標・3比較](research_c_c1_h4_b3_execution_20261026.md)。固定SOURCE b40fce5c…無変更、65/65 COMPLETE、correctness FAIL/retry/resume0。H4直鎖1Å/STO-3G、元順XDF8/保存CDF8、Nα=Nβ2、全frame S2 s1/h.1、PRなし、own-ground/状態準備除外、共通precision/P0。新B3 spin＋relative一件のみbuild/compileし、raw/P0/actual adjoint/X-Yは全512入力・出力で数値PASS。RZ10885/CX6892/totaldepth11973は保存B2 CDF11062/7008/12127より小さく、他3指標も小さい。単一kernel比較で、同CA総順位・13round・shots・費用・厳密enclosureは未評価／未資格。旧raw・SOURCE・STOP保全、mandatory STOP。上の準備・未実行表記は履歴。
