@@ -21,7 +21,7 @@ def digest(stream):
 def compress_completed():
     count=0;original=0;compressed=0
     for p in (b.PRIVATE/'cost').glob('*/*/*/events_PRIVATE.json'):
-        if not (p.parent/'result.json').exists(): continue
+        if not (p.parent/'result.json').exists() or (p.parent/'STOP.json').exists(): continue
         result=b.read(p.parent/'result.json')
         if result['status']!='PASS': continue
         archive=p.with_suffix('.json.gz');temp=archive.with_name(archive.name+'.partial')
@@ -34,14 +34,31 @@ def compress_completed():
     return dict(files=count,original_bytes=original,compressed_bytes=compressed)
 
 
-def run():
-    total=dict(files=0,original_bytes=0,compressed_bytes=0,roundtrip_verified=True,
+def inventory():
+    """Recover counts even if a previous controller vanished between saves."""
+    files=0;original=0;compressed=0
+    for p in (b.PRIVATE/'cost').glob('*/*/*/events_PRIVATE.json.gz'):
+        if not (p.parent/'result.json').exists() or (p.parent/'STOP.json').exists(): continue
+        if b.read(p.parent/'result.json')['status']!='PASS': continue
+        with p.open('rb') as stream:
+            stream.seek(-4,2);original+=int.from_bytes(stream.read(4),'little')
+        files+=1;compressed+=p.stat().st_size
+    return dict(files=files,original_bytes=original,compressed_bytes=compressed,
+        gzip_ISIZE_is_modulo_2pow32_per_file=True,roundtrip_verified=True,
         active_trials_modified=False,scientific_bytes_changed=False)
+
+
+def run():
     while True:
         r=compress_completed()
-        for k,v in r.items(): total[k]+=v
+        total=inventory()
         b.save(b.PRIVATE/'event_archive_summary.json',total)
-        if (b.PUBLIC/'stages_complete.json').exists(): break
+        if (b.PUBLIC/'stages_complete.json').exists():
+            # One last scan catches a result written after this scan passed
+            # its directory. Already archived files are never recomputed.
+            if compress_completed()['files']:
+                continue
+            total=inventory();break
         time.sleep(30)
     b.save(b.PUBLIC/'event_archive_summary.json',total)
 
