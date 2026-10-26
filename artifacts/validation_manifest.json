@@ -10,6 +10,11 @@
   },
   "relevant_commits": [
     {
+      "sha": "e1085c95f5c01b68566e17d543ace5832cb94061",
+      "role": "pr_aware_df_stage_A_qualified_x0_v2_scientific_SOURCE",
+      "description": "Executed unchanged once;30 COMPLETE,2 actual fits,initial/final DF and exact tail mass reduction PASS;no PR/PF/RTE/native/shots/resources"
+    },
+    {
       "sha": "94d1c7b4bbed106c3991ef0a5bfd1ffde337807a",
       "role": "pr_aware_df_stage_A_fixed_scientific_SOURCE",
       "description": "Executed unchanged once;18/30 units,initial codec/DF PASS,two x0 re-pack guard failures before any actual optimizer invocation;no retry"
@@ -7878,6 +7883,66 @@
       "report": "docs/research/research_c_pr_aware_df_stage_a_execution_20261027.md",
       "summary": "artifacts/research_c_pr_aware_df/2026-10-26/execution_summary_20261027.json",
       "claim": "Technical x0 initialization guard STOP,not a scientific verdict about PR-aware DF benefit;old evidence preserved"
+    },
+    {
+      "id": "research_c_pr_aware_df_stage_a_x0_v2_20261027",
+      "status": "STAGE_A_PROXY_AND_DF_PASS",
+      "scientific_SOURCE": "e1085c95f5c01b68566e17d543ace5832cb94061",
+      "implementation_SOURCE": "5a185964090f2cb8d19d445d41cf520c4d8ed2c7",
+      "contract": "docs/research/research_c_pr_aware_df_pilot_contract_x0_v2_unapproved_20261027.json",
+      "contract_SHA256": "610be0acc2357f3e9fb0e618d67825ea8d7039292a0fe34fcd81b021e9a9fc5d",
+      "source_manifest_SHA256": "5deabdfab70029ba6ef784e326908fb7a8d8ffdef6b90e0142887c0e59e9a600",
+      "scope": "C_PR_AWARE_DF_PAIRED_STAGE_A_X0_V2",
+      "conditions": "Saved linear H4 1Angstrom/STO-3G,Nalpha=Nbeta2/sector36,normal CDF8,original prefix LD2,shared initial saved J/U,normalized gamma0/.1,epsilon1e-8,DF budget.00019875",
+      "scientific_units": 30,
+      "maximum_units": 30,
+      "COMPLETE": 30,
+      "FAIL": 0,
+      "actual_optimizer_calls": 2,
+      "completed_fits": 2,
+      "retry": 0,
+      "resume": 0,
+      "cumulative_scientific_units": 48,
+      "optimizer_success": {
+        "baseline": true,
+        "proposed": true
+      },
+      "stopping_rule": "REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+      "stationarity_qualified": false,
+      "exact_tail_mass_Ha": {
+        "baseline": 2.2097618367788057,
+        "proposed": 1.4424298855756243
+      },
+      "exact_tail_mass_reduction": 0.34724644911133484,
+      "DF_norm_plus_guard_Ha": {
+        "baseline": 1.0297636237465247e-08,
+        "proposed": 1.229561498918692e-08
+      },
+      "DF_budget_PASS": {
+        "baseline": true,
+        "proposed": true
+      },
+      "gradient_infinity": {
+        "baseline": 0.7423484410886623,
+        "proposed": 1.4825504139166679
+      },
+      "PF_error": null,
+      "RTE_error": null,
+      "attenuation": null,
+      "synthesis_error": null,
+      "shots": null,
+      "total_cost": null,
+      "CA_achieved": null,
+      "rigorous_enclosure": null,
+      "novelty": null,
+      "Stage_B_C_executed": false,
+      "mandatory_stop": true,
+      "raw": "artifacts/research_c_pr_aware_df/2026-10-27/run01",
+      "raw_files": 42,
+      "summary": "artifacts/research_c_pr_aware_df/2026-10-27/execution_summary.json",
+      "metrics": "artifacts/research_c_pr_aware_df/2026-10-27/paired_fit_metrics.csv",
+      "report": "docs/research/research_c_pr_aware_df_stage_a_x0_v2_execution_20261027.md",
+      "claim": "Fixed paired Stage A numerical DF/proxy PASS only;34.7246% lower exact random-tail mass at qualified sector error,not PR resource or novelty qualification"
     }
   ],
   "repository_completion_criteria": [

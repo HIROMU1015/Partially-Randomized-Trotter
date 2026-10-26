@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-27：PR-aware DF Stage A V2・物理予算とexact tail mass基準がPASS
+
+[全gate・paired fit・gradient・科学call・限界](docs/research/research_c_pr_aware_df_stage_a_x0_v2_execution_20261027.md)。固定SOURCEe1085c95f…無変更、30/30 COMPLETE、correctness FAIL0、各1 fit計2、retry/resume0（旧18含む累積48）。保存H4・1Å/STO-3G、sector36、通常CDF8、元順prefix LD2、共通初期値、γ0/.1。両終了DF norm＋guard1.02976e−8/1.22956e−8 Haで予算内、exact tail mass2.20976184/1.44242989 HaでProposed34.7246%削減、STAGE_A_PROXY_AND_DF_PASS。相対目的減少停止でgradient収束・PR費用・最終CAは未資格、Stage B/Cなし。旧証拠保全・公開照合後mandatory STOP。
+
 ## 2026-10-27：PR-aware DFのx0接続を技術修正
 
 [単一qualified x0引渡し・人工61 tests＋29 subtests](docs/research/research_c_pr_aware_df_x0_repair_20261027.md)／[新V2・未承認30-call契約](docs/research/research_c_pr_aware_df_pilot_contract_x0_v2_unapproved_20261027.json)。既存corrected-codecへopt-in prepared初期値を接続し、fit内の再logを除去。旧default・目的／gradient／optimizer条件は維持。実分子decode・新科学call0、旧18-call STOPを保全、新2026-10-27/run01未作成。別明示許可までmandatory STOP。
