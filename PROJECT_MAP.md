@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-27：PR-aware DF B1・両armの13/13 roundが潜在適格
+
+[全gate・26セル・信号・call・資格の限界](docs/research/research_c_pr_aware_df_stage_b1_execution_20261027.md)。固定SOURCE7da0fdb3f…無変更、141/141 COMPLETE、correctness FAIL/中断/retry/resume0。保存H4・1Å/STO-3G、sector36、Stage A最終CDF8 Baseline/Proposed、元順LD2、partial S2 δ.1/s4/r16/K0/m0..12、own-DF ground oracle・状態準備除外。両POTENTIALLY_FEASIBLE。m12のAは.209598/.513867、補正RTE誤差.164305/.125612、PF.00447695/.00447625。newfit/DF norm/native/build-compile/sampling/shots/cost0、全law合成・実装law・CA・総資源未資格。旧証拠保全・公開照合後mandatory STOP。
+
 ## 2026-10-27：PR-aware DF Stage Bの接続・人工検証準備
 
 [2 CDF arm／law／sector reference／共通native接続・人工56 PASS](docs/research/research_c_pr_aware_df_stage_b_readiness_20261027.md)／[未承認B1-only141-call案](docs/research/research_c_pr_aware_df_stage_b_contract_draft_20261027.json)。新`c_pr_aware_df_stage_b.py`／`stage_b_runner.py`／同名runner・management test。保存Stage A J/Uの新評価は0、hash/header/JSON preflightのみPASS、旧97ファイル不変。B1は2arm×13roundのPF/RTE/A/signalをsector36で検証し、build/compile/sampling/shots/costは0の案。B2は人工native部品まで、実行範囲は別固定。科学call0、公開照合後mandatory STOP。

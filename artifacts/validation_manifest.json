@@ -10,6 +10,11 @@
   },
   "relevant_commits": [
     {
+      "sha": "7da0fdb3ff7c2e5e22c7d8658f6980077993c5d9",
+      "role": "pr_aware_df_B1_mechanism_scientific_SOURCE",
+      "description": "141 COMPLETE without source changes;both paired CDF arms13/13 potentially feasible,new sector PF/corrected-RTE/attenuation/signals only"
+    },
+    {
       "sha": "e1085c95f5c01b68566e17d543ace5832cb94061",
       "role": "pr_aware_df_stage_A_qualified_x0_v2_scientific_SOURCE",
       "description": "Executed unchanged once;30 COMPLETE,2 actual fits,initial/final DF and exact tail mass reduction PASS;no PR/PF/RTE/native/shots/resources"
@@ -7943,6 +7948,134 @@
       "metrics": "artifacts/research_c_pr_aware_df/2026-10-27/paired_fit_metrics.csv",
       "report": "docs/research/research_c_pr_aware_df_stage_a_x0_v2_execution_20261027.md",
       "claim": "Fixed paired Stage A numerical DF/proxy PASS only;34.7246% lower exact random-tail mass at qualified sector error,not PR resource or novelty qualification"
+    },
+    {
+      "id": "research_c_pr_aware_df_B1_mechanism_20261027",
+      "status": "B1_MECHANISM_EVALUATION_COMPLETE",
+      "scientific_SOURCE": "7da0fdb3ff7c2e5e22c7d8658f6980077993c5d9",
+      "implementation_SOURCE": "366cb090a2c05c6d7ffeafdba2443bfc64b8a035",
+      "contract": "docs/research/research_c_pr_aware_df_stage_b_contract_draft_20261027.json",
+      "contract_SHA256": "e07e6babb67cd752db0f9ce6bae90b0ddd4d3a7c91b8743f6b9138134d109163",
+      "source_manifest_SHA256": "767b7ffeabe8ad7a402384b664a787e4d6f236e6458baf191dd31f1908cc4171",
+      "scope": "C_PR_AWARE_DF_STAGE_B1_MECHANISM_V1",
+      "conditions": {
+        "norb": 4,
+        "rank": 8,
+        "Nalpha": 2,
+        "Nbeta": 2,
+        "sector_dimension": 36,
+        "ld": 2,
+        "delta": "1/10",
+        "s": 4,
+        "r": 16,
+        "K": 0,
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "CA_Ha": 0.00159,
+        "DF_reserve_Ha": 0.00019875,
+        "beta_total": 0.5235987755982988,
+        "beta_stat": 0.2617993877991494,
+        "alpha_total": 0.01,
+        "alpha_axis": 0.0003846153846153846,
+        "oracle": "own_DF_ground_state_oracle",
+        "state_preparation": "EXCLUDED",
+        "law": "ideal_finite_RTE_IID",
+        "frame_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "new_fit": 0,
+        "optimizer": 0,
+        "sampling_samples": 0,
+        "native_build": 0,
+        "compile": 0,
+        "shots": 0,
+        "resources": 0,
+        "retry": 0,
+        "resume": 0
+      },
+      "scientific_units": 141,
+      "COMPLETE": 141,
+      "FAIL": 0,
+      "interruption": 0,
+      "retry": 0,
+      "resume": 0,
+      "technical_relaunch": 0,
+      "arms": {
+        "baseline": {
+          "classification": "POTENTIALLY_FEASIBLE",
+          "rounds_POTENTIALLY_FEASIBLE": 13,
+          "lambda_R_Ha": 2.2097618367788057,
+          "identity_tail_Ha": 0.4793928496324132,
+          "saved_DF_bound_Ha": 1.0297636237465247e-08,
+          "m12": {
+            "pf_operator_error": 0.004476954277626675,
+            "rte_corrected_operator_error": 0.16430512289082844,
+            "attenuation": 0.209597585528825,
+            "raw_signal_parts": [
+              0.03234436455290321,
+              0.21226983038598965
+            ],
+            "evidence_kind": "binary64_sector_operator_numerical_pilot"
+          }
+        },
+        "proposed": {
+          "classification": "POTENTIALLY_FEASIBLE",
+          "rounds_POTENTIALLY_FEASIBLE": 13,
+          "lambda_R_Ha": 1.4424298855756241,
+          "identity_tail_Ha": 0.3377477315864882,
+          "saved_DF_bound_Ha": 1.229561498918692e-08,
+          "m12": {
+            "pf_operator_error": 0.004476245795572994,
+            "rte_corrected_operator_error": 0.1256120553496939,
+            "attenuation": 0.5138665996551962,
+            "raw_signal_parts": [
+              0.07880495702931041,
+              0.5174097923317142
+            ],
+            "evidence_kind": "binary64_sector_operator_numerical_pilot"
+          }
+        }
+      },
+      "new_fit": 0,
+      "optimizer": 0,
+      "DF_norm_recalculation": 0,
+      "native_build": 0,
+      "compile": 0,
+      "sampling_samples": 0,
+      "shots": null,
+      "total_cost": null,
+      "CA_achieved": null,
+      "whole_law_synthesis_bound": null,
+      "implemented_law_error": null,
+      "cost_support": null,
+      "strict_enclosure": null,
+      "mandatory_stop": true,
+      "raw": "artifacts/research_c_pr_aware_df_stage_b/2026-10-27/B1-run01",
+      "raw_files": 67,
+      "report": "docs/research/research_c_pr_aware_df_stage_b1_execution_20261027.md",
+      "summary": "artifacts/research_c_pr_aware_df_stage_b/2026-10-27/execution_summary.json",
+      "cells": "artifacts/research_c_pr_aware_df_stage_b/2026-10-27/rounds26.csv",
+      "claim": "Ideal finite-RTE sector36 mechanism/registered sufficient-condition pilot only;not shots/CA/native or total-resource qualification"
     }
   ],
   "repository_completion_criteria": [
