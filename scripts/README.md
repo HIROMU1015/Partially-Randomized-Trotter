@@ -1,3 +1,11 @@
+## 2026-10-26 実行中B3探索の並列化補助
+
+`h46_b3_prefetch.py`は、未着手の固定B3探索seedに対応するfull-wrapper compiled cacheを空きCPUで先行作成する。本体`prt-h46-b3-20261026-run03.service`の実行SOURCE・scheduler・進行中trialは変更しない。同じsampler/native builder/compilerとfingerprint排他lockを使用し、追加の統計標本やtrial resultは作らない。本体で必要なnative/compiled作用チェックと受理を行う。
+
+補助serviceは`prt-h46-b3-20261026-prefetch-v2.service`。CPUの実測空きと両処理の将来メモリ増加を考慮する。今回のfresh代表trialが全チェックを終えてPASSし、event数が比較可能な場合に限り、ピークRSS実測に25%の余裕を付けて補助側の予測を更新する。小さな実測から2倍を超えるevent数には外挿しない。現時点の低いRSSだけで予測を下げない。異常時は補助の追加投入をやめ、正常なworkerと本体計算は中断しない。
+
+進捗は`artifacts/resource_applicability/track_a_h46_long_time_b3/2026-10-26/parallel_prefetch.json`、固定seed・fingerprint・実測ピークは専用private `parallel_prefetch/`。最初の1 trial相当の両軸compile完了を確認した。新しいメモリ投入条件の人工7件と既存B3/復旧6件の計13件PASS。処理全体の短縮率は未確定。終了処理`h46_b3_finalize.py`が先行compileを別記し、受理済み標本へ二重計上しない。
+
 ## 2026-10-26 H4/H6 長時間PF・PR比較
 
 [REPORT](../REPORT.md)と[成果物](../artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/)。科学取得は終了済み。以下の取得driverを再実行せず、保存済み結果を参照する。

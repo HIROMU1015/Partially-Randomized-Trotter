@@ -45,6 +45,12 @@ def main():
         detailed_scientific_review_started=False,formal_paper_claim_adopted=False,
         mandatory_stop_reached=True,next_scientific_stage_authorized=False,
         publication_status=str(b.PRIVATE/'final_status.json'))
+    prefetch=b.PUBLIC/'parallel_prefetch.json'
+    if prefetch.exists():
+        cache=b.read(prefetch)
+        if b.signal.sha(b.ROOT/cache['source'])!=cache['source_sha256']:
+            raise ValueError('PREFETCH_SOURCE_CHANGED')
+        complete['parallel_compiler_prefetch']=cache
     interruption=b.PUBLIC/'interruption_run01.json'
     if interruption.exists(): complete['preserved_interruption_run01']=b.read(interruption)
     for name in ('interruption_run02.json','data_damage_run02.json','event_log_reconstruction.json'):
@@ -83,6 +89,8 @@ def main():
         content+='\n'+heading+'\n\n'+text.replace('{prefix}','../../../').split('\n\n',1)[1]
         note.write_text(content)
     with (b.PUBLIC/'REPORT.md').open('a') as stream:
+        if prefetch.exists():
+            stream.write(f"\n空きCPUで同一の固定探索seed・native builder・compilerを用い、未着手trialのcompiled cacheを先行作成した。先行cache完成{cache['cache_ready_trials']} trial相当、新規compile {cache['new_compiled_axes']}軸、既存cache hit {cache['already_cached_axes']}軸。fingerprintごとの既存排他lockにより同じ回路の重複compileを防止。本体のnative/compiled作用検証とtrial受理は省略せず、先行処理を追加の統計標本として数えていない。本体の将来メモリ増加も予約し、比較可能な大きさのfresh full trialがPASSしてから25%の余裕を付けて補助側の予測を更新した。実行中の科学SOURCE・controllerは変更しなかった。[先行compile記録](parallel_prefetch.json)。\n")
         stream.write(f"\n## 終了時の技術確認\n\n人工・必要回帰13件と復旧cache/byte照合の人工2件PASS。atomic永続化writerの人工入出力も確認した。両cohortの全{trials}標本はPASS・worker回収済み。重複標本0、cohort内/間の新seed衝突0。最大native vector差{native_error:.5g}、compiled差{compiled_error:.5g}、mean/native log_B差{log_error:.5g}。元baselineと記録した実行SOURCEの使用fileは不変。eventは取得byteへの復元一致を確認したgzipで保存した。ただし、以下の欠損event再構成について元byteとの同一性は主張しない。これらは実装整合性の確認であり、母平均優位の証拠とは区別する。\n")
         if interruption.exists():
             stream.write('\n元poolは106 trial完成後にworkerが異常終了し、pool全体が停止した。OOM記録0、CPU/AS/DATAのOS上限は無制限で、原因と元workerのexitcodeは未確定。元のSTOP・結果・progressをprivate interruptions/run01と[公開記録](interruption_run01.json)へ保持した。完成106件は再取得せず、同じ候補・n・cohort・seedで未完了trialだけを個別fork processへ復旧した。保存済み未完了eventは再現byte列を照合。検算のrotated-number行列を同じ式で事前cacheしfork共有した。復旧cacheの代表回路でもQPYを復元してcompiled作用チェックを実施した。旧研究のgrant・one-shot・STOPは再利用していない。\n')
