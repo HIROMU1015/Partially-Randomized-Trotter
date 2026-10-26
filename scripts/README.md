@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 2026-10-27：PR-aware DFのx0接続を技術修正
+
+[単一qualified x0引渡し・人工61 tests＋29 subtests](../docs/research/research_c_pr_aware_df_x0_repair_20261027.md)／[新V2・未承認30-call契約](../docs/research/research_c_pr_aware_df_pilot_contract_x0_v2_unapproved_20261027.json)。既存corrected-codecへopt-in prepared初期値を接続し、fit内の再logを除去。旧default・目的／gradient／optimizer条件は維持。実分子decode・新科学call0、旧18-call STOPを保全、新2026-10-27/run01未作成。別明示許可までmandatory STOP。
+
 ## 研究C：PR-aware DFの初期設計・技術準備（依頼識別子20261026）
 
 [設計・再利用・人工49 tests＋29 subtests](<../docs/research/research_c_pr_aware_df_optimization_design_20261026.md>)／[未承認Stage A・30-call案](<../docs/research/research_c_pr_aware_df_pilot_contract_draft_20261026.json>)。`c_pr_aware_df.py`／`c_pr_aware_df_pilot.py`、`run_research_c_pr_aware_df.py`、同名management tests。既存ffsim loss/gradient・修正codec・SectorCARへ固定tail mass代理目的を最小接続。実optimizerは人工mock nit0、両env byte preflight PASS。実分子decode・新科学call0、科学的有効性／新規性・Stage B/Cは未資格・未承認、mandatory STOP。

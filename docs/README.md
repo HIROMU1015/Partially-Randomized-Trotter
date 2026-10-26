@@ -1,5 +1,9 @@
 # 文書索引
 
+## 2026-10-27：PR-aware DFのx0接続を技術修正
+
+[単一qualified x0引渡し・人工61 tests＋29 subtests](research/research_c_pr_aware_df_x0_repair_20261027.md)／[新V2・未承認30-call契約](research/research_c_pr_aware_df_pilot_contract_x0_v2_unapproved_20261027.json)。既存corrected-codecへopt-in prepared初期値を接続し、fit内の再logを除去。旧default・目的／gradient／optimizer条件は維持。実分子decode・新科学call0、旧18-call STOPを保全、新2026-10-27/run01未作成。別明示許可までmandatory STOP。
+
 ## 2026-10-27：PR-aware DF Stage A・optimizer前の技術的STOP
 
 [初期予算・18-call部分証拠・x0接続](research/research_c_pr_aware_df_stage_a_execution_20261027.md)。固定SOURCE94d1c7b4b…無変更、18/30 units（16 COMPLETE／2 FAIL）、ffsim entry各1・実optimizer0・完了fit0・retry/resume0。保存H4・1Å/STO-3G、sector36、CDF8元順prefix LD2、γ0/.1。初期general-K/raw-CARとDF予算はPASS、再pack後の`QUALIFIED_X0_CHANGED`で両arm STOP。終了DF・exact mass削減・PR資源効果は未資格。旧SOURCE/raw/STOPを保全し、公開照合後mandatory STOP。以下の技術準備状態は履歴。
