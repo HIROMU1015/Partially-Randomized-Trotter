@@ -1,0 +1,303 @@
+{
+  "scope": "C1_H4_XDF9_NATIVE_OPTIMISTIC_COST_SCREEN_V1",
+  "status": "XDF9_NATIVE_OPTIMISTIC_SCREEN_COMPLETE",
+  "scientific_SOURCE": "7328ecc9a0602524810e2055cf99c2b1e07729db",
+  "SOURCE_tree": "040bb7d96ef4b74cc3150bbf4816512749d7f38d",
+  "contract_sha256": "fbcb81abf3569d3ace07293ab69d2085e27880a55e2ee6973e7e8a04fb1def7e",
+  "source_manifest_sha256": "d736404b6329d8745246b2a608710398d440750e35700f523ddb8b02b9436e08",
+  "original_input_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+  "conditions": {
+    "atoms": 4,
+    "distance_angstrom": 1.0,
+    "basis": "STO-3G",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "rank": 9,
+    "source_order": "saved OpenFermion1.6.1 eigh prefix9",
+    "number_representation": true,
+    "original_g_kappa": true,
+    "scalar": "original nuclear once",
+    "product_formula": "all original frames ordered symmetric S2",
+    "substeps": [
+      1,
+      4
+    ],
+    "base_time": "1/10",
+    "rounds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "CA_Ha": 0.00159,
+    "DF_budget_Ha": 0.00019875,
+    "target": "own XDF9 sector ground-state oracle",
+    "state_preparation": "EXCLUDED",
+    "PR_split": null,
+    "route": "existing adjacent identical-basis sharing and fsum angles",
+    "serial_policy": "separate head/kernel/readout with all-wire fences; no long-round compile",
+    "full_operator_coverage": false
+  },
+  "accuracy_target": {
+    "energy_ha": 0.00159,
+    "df_reserve_fraction": 0.125,
+    "base_time": 0.1,
+    "beta_total": 0.5235987755982988,
+    "beta_stat": 0.2617993877991494,
+    "alpha_axis": 0.0003846153846153846,
+    "alpha_total": 0.01
+  },
+  "compiler": {
+    "qiskit": "1.3.0",
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "approximation_degree": 1.0,
+    "qubits_initially_zero": false
+  },
+  "gaussian": "nature_jw_exact_zero_lapack_atan2_v1",
+  "compiler_phase": "qiskit_P0_mpfr160_declared_phase_v1",
+  "scientific_units": 83,
+  "call_counts": {
+    "saved_input_load": 1,
+    "saved_identity": 1,
+    "packet_gate": 1,
+    "native_model": 1,
+    "gaussian_build": 10,
+    "model_structure": 1,
+    "kernel_build": 2,
+    "raw_structure": 2,
+    "compile": 2,
+    "compiled_structure": 2,
+    "metrics": 2,
+    "optimistic_round": 26,
+    "round_serial_cost": 26,
+    "optimistic_aggregate": 2,
+    "screen_compare": 4
+  },
+  "journal": {
+    "attempt": 83,
+    "COMPLETE": 83
+  },
+  "correctness_FAIL": 0,
+  "inflight": 0,
+  "retry": 0,
+  "resume": 0,
+  "saved_identity": {
+    "status": "PASS",
+    "shell_metrics": {
+      "head": {
+        "rz_count": 2,
+        "rz_depth": 2,
+        "cx_count": 0,
+        "cx_depth": 0,
+        "total_depth": 3,
+        "circuit_size": 3
+      },
+      "X": {
+        "rz_count": 2,
+        "rz_depth": 2,
+        "cx_count": 0,
+        "cx_depth": 0,
+        "total_depth": 4,
+        "circuit_size": 4
+      },
+      "Y": {
+        "rz_count": 1,
+        "rz_depth": 1,
+        "cx_count": 0,
+        "cx_depth": 0,
+        "total_depth": 3,
+        "circuit_size": 3
+      }
+    },
+    "baselines": {
+      "1": {
+        "XDF": 128445454592,
+        "CDF": 113219727909
+      },
+      "4": {
+        "XDF": 470217718215,
+        "CDF": 413834761607
+      }
+    },
+    "full_operator_correctness_of_XDF9": false,
+    "actual_synthesis_error": null
+  },
+  "packet_gate": {
+    "status": "PASS",
+    "kappa": {
+      "label": "original-g kappa",
+      "max_entry": 2.7755575615628914e-17,
+      "frobenius": 4.754241500621554e-17,
+      "tolerance": 1e-10,
+      "rtol": 0
+    },
+    "rank": 9,
+    "frame_order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "scalar": 2.29310124732,
+    "signed_lambdas_preserved": true
+  },
+  "model_structure": {
+    "status": "PASS",
+    "gaussian": "nature_jw_exact_zero_lapack_atan2_v1",
+    "compiler_phase": "qiskit_P0_mpfr160_declared_phase_v1",
+    "full_operator_correctness": false,
+    "coverage": "single-particle transfers and native model structure"
+  },
+  "gaussian_max_single_particle_transfer_error": 1.2237134026861224e-15,
+  "candidates": {
+    "1": {
+      "status": "NO_STRICT_IMPROVEMENT_VS_XDF8_FIXED_MODEL_NUMERICAL",
+      "metrics": {
+        "rz_count": 15720,
+        "cx_count": 8764,
+        "rz_depth": 6786,
+        "cx_depth": 7314,
+        "total_depth": 14822,
+        "circuit_size": 30208,
+        "measurement_count": 0,
+        "quantum_only_depth": 14822
+      },
+      "optimistic_shots_total_decimal": "13600",
+      "optimistic_total_RZ_decimal": "144805110560",
+      "comparisons": {
+        "XDF": {
+          "status": "EXCLUDED_STRICT_IMPROVEMENT_FIXED_MODEL_NUMERICAL",
+          "baseline": "XDF8",
+          "optimistic_total_RZ_decimal": "144805110560",
+          "saved_total_RZ_decimal": "128445454592",
+          "strictly_beating_excluded": true,
+          "unconditional_resource_superiority": false,
+          "full_operator_correctness": false,
+          "floating_point_rounding_enclosed": false,
+          "interpretation": "Conditional on fixed implementation, nonnegative extra signal error, monotone prescription and serial policy; not a universal lower bound or final CA"
+        },
+        "CDF": {
+          "status": "EXCLUDED_STRICT_IMPROVEMENT_FIXED_MODEL_NUMERICAL",
+          "baseline": "CDF8",
+          "optimistic_total_RZ_decimal": "144805110560",
+          "saved_total_RZ_decimal": "113219727909",
+          "strictly_beating_excluded": true,
+          "unconditional_resource_superiority": false,
+          "full_operator_correctness": false,
+          "floating_point_rounding_enclosed": false,
+          "interpretation": "Conditional on fixed implementation, nonnegative extra signal error, monotone prescription and serial policy; not a universal lower bound or final CA"
+        }
+      },
+      "full_operator_correctness": false,
+      "actual_synthesis_error": null,
+      "actual_total_cost": null,
+      "CA_achieved": null,
+      "floating_point_rounding_enclosed": false,
+      "rigorous_numerical_lower_bound": null
+    },
+    "4": {
+      "status": "NO_STRICT_IMPROVEMENT_VS_XDF8_FIXED_MODEL_NUMERICAL",
+      "metrics": {
+        "rz_count": 15720,
+        "cx_count": 8764,
+        "rz_depth": 6786,
+        "cx_depth": 7314,
+        "total_depth": 14822,
+        "circuit_size": 30208,
+        "measurement_count": 0,
+        "quantum_only_depth": 14822
+      },
+      "optimistic_shots_total_decimal": "13314",
+      "optimistic_total_RZ_decimal": "530107748679",
+      "comparisons": {
+        "XDF": {
+          "status": "EXCLUDED_STRICT_IMPROVEMENT_FIXED_MODEL_NUMERICAL",
+          "baseline": "XDF8",
+          "optimistic_total_RZ_decimal": "530107748679",
+          "saved_total_RZ_decimal": "470217718215",
+          "strictly_beating_excluded": true,
+          "unconditional_resource_superiority": false,
+          "full_operator_correctness": false,
+          "floating_point_rounding_enclosed": false,
+          "interpretation": "Conditional on fixed implementation, nonnegative extra signal error, monotone prescription and serial policy; not a universal lower bound or final CA"
+        },
+        "CDF": {
+          "status": "EXCLUDED_STRICT_IMPROVEMENT_FIXED_MODEL_NUMERICAL",
+          "baseline": "CDF8",
+          "optimistic_total_RZ_decimal": "530107748679",
+          "saved_total_RZ_decimal": "413834761607",
+          "strictly_beating_excluded": true,
+          "unconditional_resource_superiority": false,
+          "full_operator_correctness": false,
+          "floating_point_rounding_enclosed": false,
+          "interpretation": "Conditional on fixed implementation, nonnegative extra signal error, monotone prescription and serial policy; not a universal lower bound or final CA"
+        }
+      },
+      "full_operator_correctness": false,
+      "actual_synthesis_error": null,
+      "actual_total_cost": null,
+      "CA_achieved": null,
+      "floating_point_rounding_enclosed": false,
+      "rigorous_numerical_lower_bound": null
+    }
+  },
+  "resources": {
+    "wall_seconds": 10.006123878993094,
+    "process_CPU_seconds": 14.159464611,
+    "peak_RSS_KiB": 469988
+  },
+  "resource_plan": {
+    "workers": 2,
+    "available_affinity_cpus": 32,
+    "available_memory_bytes": 56668450816,
+    "quota_cpus": null,
+    "estimated_bytes_per_candidate": 268435456,
+    "BLAS_threads_per_worker": 1,
+    "policy": "Independent candidates; process-local BLAS coordination; no shared settings changed"
+  },
+  "raw_file_count": 48,
+  "raw_bytes": 4329205,
+  "exclusions": {
+    "new_fit": 0,
+    "optimizer": 0,
+    "rank_search": 0,
+    "DF_recomputation": 0,
+    "PF_recomputation": 0,
+    "full_operator": 0,
+    "state_action": 0,
+    "synthesis_evaluation": 0,
+    "CA_evaluation": 0,
+    "quantum_sampling": 0,
+    "baseline_build_compile": 0,
+    "baseline_reaggregation": 0
+  },
+  "actual_synthesis_error": null,
+  "actual_total_cost": null,
+  "CA_achieved": null,
+  "rigorous_numerical_lower_bound": null,
+  "full_operator_correctness": false,
+  "next_full512_or_final_resource_evaluation_started": false,
+  "mandatory_stop": true
+}

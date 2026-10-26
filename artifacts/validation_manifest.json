@@ -10,6 +10,11 @@
   },
   "relevant_commits": [
     {
+      "sha": "7328ecc9a0602524810e2055cf99c2b1e07729db",
+      "role": "c1_h4_XDF9_native_optimistic_cost_screen_scientific_SOURCE",
+      "description": "Frozen83-call SOURCE executed once unchanged;2 kernels/P0/metrics and26 optimistic shot/cost pairs;4 negative fixed-model comparisons. No full512/actual synthesis/CA/quantum sampling."
+    },
+    {
       "sha": "9a4cda44a45675c2518b2252a98e78eeeb320942",
       "role": "c1_h4_saved_XDF9_representation_ground_PF_scientific_SOURCE",
       "description": "Frozen95-call SOURCE executed once unchanged;sector36 raw/K10 and own-ground-alias/PF26 pass. No new fit,DF norm,circuit,CA,shots or cost."
@@ -117,6 +122,14 @@
   ],
   "artifact_inventory": {
     "present": [
+      {
+        "path": "artifacts/research_c_c1_h4_xdf9_cost_screen/2026-10-26/run01",
+        "kind": "directory",
+        "supports": [
+          "c1_h4_XDF9_native_optimistic_cost_screen_pilot"
+        ],
+        "reason": "48 raw files/QPY4;83 COMPLETE,correctness FAIL/retry/resume0;structural gates PASS,kernel RZ15720 for both s. Optimistic Copt144805110560/530107748679 exceeds saved XDF8 and CDF8. Fixed-prescription/serial numerical exclusion only;not full operator/strict enclosure/actual CA/guaranteed shots/final resources. Protected80/packet unchanged,mandatory STOP."
+      },
       {
         "path": "artifacts/research_c_c1_h4_xdf9_cost_screen/2026-10-26/technical",
         "kind": "directory",
@@ -6385,6 +6398,190 @@
       "summary": "artifacts/research_c_c1_h4_xdf9_pf/2026-10-26/execution_summary.json",
       "pf_rounds": "artifacts/research_c_c1_h4_xdf9_pf/2026-10-26/pf_rounds.csv",
       "qualification": "Sector36 numerical representation/ground/PF sufficient-condition pilot only;not CA or resource comparison;old XDF8 maxima quoted without reevaluation"
+    },
+    {
+      "id": "research_c_c1_h4_XDF9_native_optimistic_cost_screen_20261026",
+      "status": "XDF9_NATIVE_OPTIMISTIC_SCREEN_COMPLETE",
+      "scientific_SOURCE": "7328ecc9a0602524810e2055cf99c2b1e07729db",
+      "SOURCE_tree": "040bb7d96ef4b74cc3150bbf4816512749d7f38d",
+      "contract": "docs/research/research_c_c1_h4_xdf9_cost_screen_contract_unapproved_20261026.json",
+      "contract_sha256": "fbcb81abf3569d3ace07293ab69d2085e27880a55e2ee6973e7e8a04fb1def7e",
+      "source_manifest_sha256": "d736404b6329d8745246b2a608710398d440750e35700f523ddb8b02b9436e08",
+      "conditions": {
+        "atoms": 4,
+        "distance_angstrom": 1.0,
+        "basis": "STO-3G",
+        "Nalpha": 2,
+        "Nbeta": 2,
+        "sector_dimension": 36,
+        "rank": 9,
+        "source_order": "saved OpenFermion1.6.1 eigh prefix9",
+        "number_representation": true,
+        "original_g_kappa": true,
+        "scalar": "original nuclear once",
+        "product_formula": "all original frames ordered symmetric S2",
+        "substeps": [
+          1,
+          4
+        ],
+        "base_time": "1/10",
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "CA_Ha": 0.00159,
+        "DF_budget_Ha": 0.00019875,
+        "target": "own XDF9 sector ground-state oracle",
+        "state_preparation": "EXCLUDED",
+        "PR_split": null,
+        "route": "existing adjacent identical-basis sharing and fsum angles",
+        "serial_policy": "separate head/kernel/readout with all-wire fences; no long-round compile",
+        "full_operator_coverage": false
+      },
+      "accuracy_target": {
+        "energy_ha": 0.00159,
+        "df_reserve_fraction": 0.125,
+        "base_time": 0.1,
+        "beta_total": 0.5235987755982988,
+        "beta_stat": 0.2617993877991494,
+        "alpha_axis": 0.0003846153846153846,
+        "alpha_total": 0.01
+      },
+      "scientific_calls": 83,
+      "correctness_FAIL": 0,
+      "inflight": 0,
+      "retry": 0,
+      "resume": 0,
+      "candidates": {
+        "1": {
+          "status": "NO_STRICT_IMPROVEMENT_VS_XDF8_FIXED_MODEL_NUMERICAL",
+          "metrics": {
+            "rz_count": 15720,
+            "cx_count": 8764,
+            "rz_depth": 6786,
+            "cx_depth": 7314,
+            "total_depth": 14822,
+            "circuit_size": 30208,
+            "measurement_count": 0,
+            "quantum_only_depth": 14822
+          },
+          "optimistic_shots_total_decimal": "13600",
+          "optimistic_total_RZ_decimal": "144805110560",
+          "comparisons": {
+            "XDF": {
+              "status": "EXCLUDED_STRICT_IMPROVEMENT_FIXED_MODEL_NUMERICAL",
+              "baseline": "XDF8",
+              "optimistic_total_RZ_decimal": "144805110560",
+              "saved_total_RZ_decimal": "128445454592",
+              "strictly_beating_excluded": true,
+              "unconditional_resource_superiority": false,
+              "full_operator_correctness": false,
+              "floating_point_rounding_enclosed": false,
+              "interpretation": "Conditional on fixed implementation, nonnegative extra signal error, monotone prescription and serial policy; not a universal lower bound or final CA"
+            },
+            "CDF": {
+              "status": "EXCLUDED_STRICT_IMPROVEMENT_FIXED_MODEL_NUMERICAL",
+              "baseline": "CDF8",
+              "optimistic_total_RZ_decimal": "144805110560",
+              "saved_total_RZ_decimal": "113219727909",
+              "strictly_beating_excluded": true,
+              "unconditional_resource_superiority": false,
+              "full_operator_correctness": false,
+              "floating_point_rounding_enclosed": false,
+              "interpretation": "Conditional on fixed implementation, nonnegative extra signal error, monotone prescription and serial policy; not a universal lower bound or final CA"
+            }
+          },
+          "full_operator_correctness": false,
+          "actual_synthesis_error": null,
+          "actual_total_cost": null,
+          "CA_achieved": null,
+          "floating_point_rounding_enclosed": false,
+          "rigorous_numerical_lower_bound": null
+        },
+        "4": {
+          "status": "NO_STRICT_IMPROVEMENT_VS_XDF8_FIXED_MODEL_NUMERICAL",
+          "metrics": {
+            "rz_count": 15720,
+            "cx_count": 8764,
+            "rz_depth": 6786,
+            "cx_depth": 7314,
+            "total_depth": 14822,
+            "circuit_size": 30208,
+            "measurement_count": 0,
+            "quantum_only_depth": 14822
+          },
+          "optimistic_shots_total_decimal": "13314",
+          "optimistic_total_RZ_decimal": "530107748679",
+          "comparisons": {
+            "XDF": {
+              "status": "EXCLUDED_STRICT_IMPROVEMENT_FIXED_MODEL_NUMERICAL",
+              "baseline": "XDF8",
+              "optimistic_total_RZ_decimal": "530107748679",
+              "saved_total_RZ_decimal": "470217718215",
+              "strictly_beating_excluded": true,
+              "unconditional_resource_superiority": false,
+              "full_operator_correctness": false,
+              "floating_point_rounding_enclosed": false,
+              "interpretation": "Conditional on fixed implementation, nonnegative extra signal error, monotone prescription and serial policy; not a universal lower bound or final CA"
+            },
+            "CDF": {
+              "status": "EXCLUDED_STRICT_IMPROVEMENT_FIXED_MODEL_NUMERICAL",
+              "baseline": "CDF8",
+              "optimistic_total_RZ_decimal": "530107748679",
+              "saved_total_RZ_decimal": "413834761607",
+              "strictly_beating_excluded": true,
+              "unconditional_resource_superiority": false,
+              "full_operator_correctness": false,
+              "floating_point_rounding_enclosed": false,
+              "interpretation": "Conditional on fixed implementation, nonnegative extra signal error, monotone prescription and serial policy; not a universal lower bound or final CA"
+            }
+          },
+          "full_operator_correctness": false,
+          "actual_synthesis_error": null,
+          "actual_total_cost": null,
+          "CA_achieved": null,
+          "floating_point_rounding_enclosed": false,
+          "rigorous_numerical_lower_bound": null
+        }
+      },
+      "actual_synthesis_error": null,
+      "actual_total_cost": null,
+      "CA_achieved": null,
+      "rigorous_numerical_lower_bound": null,
+      "full_operator_correctness": false,
+      "exclusions": {
+        "new_fit": 0,
+        "optimizer": 0,
+        "rank_search": 0,
+        "DF_recomputation": 0,
+        "PF_recomputation": 0,
+        "full_operator": 0,
+        "state_action": 0,
+        "synthesis_evaluation": 0,
+        "CA_evaluation": 0,
+        "quantum_sampling": 0,
+        "baseline_build_compile": 0,
+        "baseline_reaggregation": 0
+      },
+      "mandatory_stop": true,
+      "raw": "artifacts/research_c_c1_h4_xdf9_cost_screen/2026-10-26/run01",
+      "raw_files": 48,
+      "report": "docs/research/research_c_c1_h4_xdf9_cost_screen_execution_20261026.md",
+      "summary": "artifacts/research_c_c1_h4_xdf9_cost_screen/2026-10-26/execution_summary.json",
+      "metrics": "artifacts/research_c_c1_h4_xdf9_cost_screen/2026-10-26/native_metrics.csv",
+      "optimistic_shots": "artifacts/research_c_c1_h4_xdf9_cost_screen/2026-10-26/optimistic_shots.csv",
+      "comparisons": "artifacts/research_c_c1_h4_xdf9_cost_screen/2026-10-26/screen_comparisons.csv"
     }
   ],
   "repository_completion_criteria": [
